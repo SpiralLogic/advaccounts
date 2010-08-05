@@ -103,6 +103,7 @@ if (isset($_GET['AddedID'])) {
 	submenu_view(_("&View This Order"), ST_SALESORDER, $order_no);
 
 	submenu_print(_("&Print This Order"), ST_SALESORDER, $order_no, 'prtopt');
+       submenu_print(_("Print Proforma Invoice"), ST_PROFORMA, $order_no, 'prtopt');
 	submenu_print(_("&Email This Order"), ST_SALESORDER, $order_no, null, 1);
 	set_focus('prtopt');
 	
@@ -139,6 +140,7 @@ if (isset($_GET['AddedID'])) {
 	submenu_view(_("&View This Quotation"), ST_SALESQUOTE, $order_no);
 
 	submenu_print(_("&Print This Quotation"), ST_SALESQUOTE, $order_no, 'prtopt');
+              submenu_print(_("Print Proforma Invoice"), ST_PROFORMA, $order_no, 'prtopt');
 	submenu_print(_("&Email This Quotation"), ST_SALESQUOTE, $order_no, null, 1);
 	set_focus('prtopt');
 	
@@ -559,14 +561,13 @@ function  handle_cancel_order()
 }
 
 //--------------------------------------------------------------------------------
-
+      
 function create_cart($type, $trans_no)
 { 
 	global $Refs;
-
 	processing_start();
 	$doc_type = $type;
-
+  
 	if (isset($_GET['NewQuoteToSalesOrder']))
 	{
 		$trans_no = $_GET['NewQuoteToSalesOrder'];
@@ -580,16 +581,17 @@ function create_cart($type, $trans_no)
 	}	
 	elseif($type != ST_SALESORDER && $type != ST_SALESQUOTE && $trans_no != 0) { // this is template
 		$doc_type = ST_SALESORDER;
-
 		$doc = new Cart(ST_SALESORDER, array($trans_no));
 		$doc->trans_type = $type;
 		$doc->trans_no = 0;
 		$doc->document_date = new_doc_date();
 		if ($type == ST_SALESINVOICE) {
+       
 			$doc->due_date = get_invoice_duedate($doc->customer_id, $doc->document_date);
 			$doc->pos = user_pos();
 			$pos = get_sales_point($doc->pos);
 			$doc->cash = $pos['cash_sale'];
+
 			if (!$pos['cash_sale'] || !$pos['credit_sale'] || $doc->due_date == Today())
 				$doc->pos = -1; // mark not editable payment type
 			else
@@ -604,6 +606,7 @@ function create_cart($type, $trans_no)
 		$_SESSION['Items'] = $doc;
 	} else
 		$_SESSION['Items'] = new Cart($type,array($trans_no));
+       
 	copy_from_cart();
 }
 

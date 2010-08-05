@@ -52,10 +52,10 @@ function print_invoices() {
     $fno = explode("-", $from);
     $tno = explode("-", $to);
 
-    $cols = array(4, 60, 280, 300, 335, 355, 385, 445);
+    $cols = array(4, 60, 330, 355, 390, 420, 450, 495);
 
     // $headers in doctext.inc
-    $aligns = array('left', 'left', 'center', 'center', 'right', 'right', 'center', 'center');
+    $aligns = array('left', 'left', 'center', 'center', 'left', 'right', 'right', 'right');
 
     $params = array('comments' => $comments);
 
@@ -110,7 +110,8 @@ function print_invoices() {
 
                 $Net = round2($sign * ((1 - $myrow2["discount_percent"]) * $myrow2["unit_price"] * $myrow2["quantity"]),
                                 user_price_dec());
-                $SubTotal += $Net;
+                $SubTotal += $Net; 
+                $TaxType = get_item_tax_type_for_item($myrow2['stock_id']);
                 $DisplayPrice = number_format2($myrow2["unit_price"], $dec);
                 $DisplayQty = number_format2($sign * $myrow2["quantity"], get_qty_dec($myrow2['stock_id']));
                 $DisplayNet = number_format2($Net, $dec);
@@ -126,9 +127,9 @@ function print_invoices() {
                 $rep->TextCol(2, 3, $DisplayQty, -2);
                 $rep->TextCol(3, 4, $myrow2['units'], -2);
                 $rep->TextCol(4, 5, $DisplayPrice, -2);
-                $rep->TextCol(5, 6, $DisplayDiscount, -2);                       
+                $rep->TextCol(5, 6, $DisplayDiscount, -2);
                 $rep->TextCol(6, 7, $DisplayNet, -2);
-                $rep->TextCol(7, 8,	$TaxType[1], -2);
+                $rep->TextCol(7, 8, $TaxType[1], -2);
                 $rep->row = $newrow;
                 //$rep->NewLine(1);
                 if ($rep->row < $rep->bottomMargin + (15 * $rep->lineHeight))

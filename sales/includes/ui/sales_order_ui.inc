@@ -115,6 +115,10 @@ function get_customer_details_to_order(&$order, $customer_id, $branch_id)
 		$order->due_date = get_invoice_duedate($customer_id, $order->document_date);
 		if ($order->pos != -1)
 			$order->cash = date_diff2($order->due_date, Today(), 'd')<2;
+              if ($order->due_date==Today())
+                      $order->pos == -1;
+                  
+
 	}
 	if($order->cash ) {
 		if($order->pos != -1) {
@@ -369,7 +373,7 @@ function display_order_header(&$order, $editable, $date_text, $display_tax_group
 	}
 	table_section(3);
 
-	if ($order->trans_type == ST_SALESINVOICE && $order->pos != -1) {
+	if ($order->trans_type == ST_SALESINVOICE && $order->pos != -1 && !$order->cash) {
 		sale_payment_list_cells(_('Payment:'), 'cash', null, true);
 		$cash_payment = get_post('cash', 0);
 		// current user can issue both credit and cash invoices
@@ -386,9 +390,11 @@ function display_order_header(&$order, $editable, $date_text, $display_tax_group
 			$Ajax->activate('delivery');
 			set_focus($order->pos == -1 ? 'delivery_date' : 'account');
 		}
-	} else
+	} else {
+           label_row(_('Payment:'), _("Cash up front"));
+            
 		hidden('cash', $order->cash);
-
+       }
 	if($editable) {
 		$str = sales_types_list_row(_("Price List"), 'sales_type', null, true);
 	} else {

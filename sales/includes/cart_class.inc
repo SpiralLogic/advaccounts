@@ -188,7 +188,8 @@ class cart
 				  $this->pos = user_pos();
 				  $pos = get_sales_point($this->pos);
 				  $this->cash = !$pos['credit_sale'];
-				  if (!$pos['cash_sale'] || !$pos['credit_sale']) 
+                              
+				  if (!$pos['cash_sale'] || !$pos['credit_sale'] || $this->due_date==Today())
 				  	$this->pos = -1; // mark not editable payment type
 				  else
 					$this->cash = date_diff2($this->due_date, Today(), 'd')<2;

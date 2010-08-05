@@ -113,9 +113,15 @@ function view_link($dummy, $order_no)
 function prt_link($row)
 {
 	global $trans_type;
-	return print_document_link($row['order_no'], _("Print"), true, $trans_type, ICON_PRINT);
-}
+	return  print_document_link($row['order_no'], _("Print"), true, $trans_type, ICON_PRINT);
 
+}
+function prt_link2($row)
+{
+	global $trans_type;
+	return print_document_link($row['order_no'], 'Proforma', true, ST_PROFORMA, ICON_PRINT);
+
+}
 function edit_link($row) 
 {
 	global $trans_type;
@@ -366,12 +372,13 @@ if ($_POST['order_view_mode'] == 'OutstandingOnly') {
 } elseif ($trans_type == ST_SALESQUOTE) {
 	 array_append($cols,array(
 					array('insert'=>true, 'fun'=>'edit_link'),
-					array('insert'=>true, 'fun'=>'order_link'),
+					array('insert'=>true, 'fun'=>'order_link'),array('insert'=>true, 'fun'=>'prt_link2'),
 					array('insert'=>true, 'fun'=>'prt_link')));
 } elseif ($trans_type == ST_SALESORDER) {
 	 array_append($cols,array(
 			_("Tmpl") => array('insert'=>true, 'fun'=>'tmpl_checkbox'),
 					array('insert'=>true, 'fun'=>'edit_link'),
+					array('insert'=>true, 'fun'=>'prt_link2'),
 					array('insert'=>true, 'fun'=>'prt_link')));
 };
 

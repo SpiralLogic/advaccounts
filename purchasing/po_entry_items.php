@@ -200,7 +200,7 @@ function handle_update_item()
 		}
 	
 		$_SESSION['PO']->update_order_item($_POST['line_no'], input_num('qty'), input_num('price'),
-  			$_POST['req_del_date']);
+  			$_POST['req_del_date'],$_POST['item_description']);
 		unset_form_variables();
 	}	
     line_start_focus();
