@@ -1,0 +1,82 @@
+<br />
+<b>Warning</b>:  session_start() [<a href='function.session-start'>function.session-start</a>]: Cannot send session cookie - headers already sent in <b>Z:\includes\session.inc</b> on line <b>161</b><br />
+<br />
+<b>Warning</b>:  session_start() [<a href='function.session-start'>function.session-start</a>]: Cannot send session cache limiter - headers already sent (output started at Z:\includes\session.inc:161) in <b>Z:\includes\session.inc</b> on line <b>161</b><br />
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html dir='ltr' >
+<head><title>Advanced Accounting 2.2.11 - Login</title>
+<meta http-equiv='Content-type' content='text/html; charset=iso-8859-1' />
+<link href='./themes/default/default.css' rel='stylesheet' type='text/css'> 
+<script language='JavaScript' type='text/javascript'>
+function defaultCompany()
+{
+	document.forms[0].company_login_name.options[0].selected = true;
+}
+function fixPNG(myImage)
+{
+ var arVersion = navigator.appVersion.split("MSIE")
+ var version = parseFloat(arVersion[1])
+ if ((version >= 5.5) && (version < 7) && (document.body.filters))
+ {
+  var imgID = (myImage.id) ? "id='" + myImage.id + "' " : ""
+  var imgClass = (myImage.className) ? "class='" + myImage.className + "' " : ""
+  var imgTitle = (myImage.title) ?
+    "title='" + myImage.title  + "' " : "title='" + myImage.alt + "' "
+  var imgStyle = "display:inline-block;" + myImage.style.cssText
+  var strNewHTML = "<span " + imgID + imgClass + imgTitle
+    + " style=\"" + "width:" + myImage.width
+    + "px; height:" + myImage.height
+    + "px;" + imgStyle + ";"
+    + "filter:progid:DXImageTransform.Microsoft.AlphaImageLoader"
+    + "(src=\'" + myImage.src + "\', sizingMethod='scale');\"></span>"
+  myImage.outerHTML = strNewHTML
+ }
+}
+</script><script language='JavaScript' type='text/javascript'>
+function set_fullmode() {
+	document.getElementById('ui_mode').value = 1;
+	document.loginform.submit();
+	return true;
+}
+</script></head>
+<body id='loginscreen' onload='defaultCompany()'>
+<table class='titletext'><tr><td>Advanced Accounting 2.2.11 - Login</td></tr></table>
+<div id='_page_body'><br><br><form method='post' action='' name='loginform'>
+<center><table class='login' cellpadding=2 cellspacing=0>
+<tr>
+<td align='center' colspan=2><a target='_blank' href='http://www.advancedroadsigns.com.au'><img src='./themes/default/images/logo_frontaccounting.png' alt='FrontAccounting' height='50' onload='fixPNG(this)' border='0' /></a></td>
+</tr>
+<input type='hidden' id=ui_mode name='ui_mode' value='0' />
+<tr><td colspan=2 class='tableheader'>Version 2.2.11   Build 01.01.1970 - Login</td></tr>
+<tr><td class='label'>User name</td><td><input  type="text" name="user_name_entry_field" size="20" maxlength="30" value=""></td>
+</tr>
+<tr><td class='label'>Password:</td><td ><input type='password' name='password' size=20 maxlength=20 value='' /></td>
+</tr>
+<tr><td>Company</td><td><select name='company_login_name'>
+<option value=0 selected>Advanced Group PTY LTD</option></select>
+<tr>
+<td colspan=2 align='center'>Please login here</td>
+</tr>
+</table></center>
+<br><center><input type='submit' value='&nbsp;&nbsp;Login -->&nbsp;&nbsp;' name='SubmitUser' onclick='set_fullmode();' /></center>
+<br><input type="hidden" name="_focus" value="user_name_entry_field">
+</form>
+<script language='JavaScript' type='text/javascript'>
+    //<![CDATA[
+            <!--
+            document.forms[0].user_name_entry_field.select();
+            document.forms[0].user_name_entry_field.focus();
+            //-->
+    //]]>
+    </script></div><table class='bottomBar'>
+<tr><td class='bottomBarCell'>08/04/2010 | 06:01 pm</td>
+</tr></table>
+<table class='footer'>
+<tr>
+<td><a target='_blank' href='http://www.advancedroadsigns.com.au' tabindex='-1'>Advanced Accounting 2.2.11 - Theme: default</a></td>
+</tr>
+<tr>
+<td><a target='_blank' href='http://www.advancedroadsigns.com.au' tabindex='-1'>Advanced Accounting</a></td>
+</tr>
+</table><br><br>
+</body></html>
