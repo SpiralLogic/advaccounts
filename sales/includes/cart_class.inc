@@ -34,11 +34,11 @@ class cart
 
 	var $document_date;
 	var $due_date;
+       var $salesman;
 	var $sales_type; // set to the customer's sales type
 	var $sales_type_name; // set to customer's sales type name
 	var $tax_included;
-
-	var $customer_currency; // set to the customer's currency
+    var $customer_currency; // set to the customer's currency
 	var $default_discount; // set to the customer's discount %
 	var $customer_name;
 	var $customer_id;
