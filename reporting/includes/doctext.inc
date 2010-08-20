@@ -22,7 +22,7 @@ if (isset($header2type)) {
     }
     else {
         if ($doctype == ST_CUSTPAYMENT)
-            $doc_Charge_To = _("With thanks from");
+            $doc_Charge_To = _("Charged To");
         else
             $doc_Charge_To = _("Charge To");
         $doc_Delivered_To = _("Delivered To");
@@ -61,11 +61,18 @@ if (isset($header2type)) {
             $doc_Our_Order_No = "";
             $doc_Due_Date = "Due Date";
             $doc_Payment_Terms = _("Payment Terms");
-        } else {
-            $doc_Customers_Ref = ($doctype == ST_SALESQUOTE) ? "" : "Purchase Order#";
+        } elseif ( $doctype == ST_STATEMENT) {
+            $doc_Customers_Ref = "Acount Number";
+            $doc_Our_Ref = "";
+            $doc_Your_VAT_no = "Phone";
+            $doc_Our_Order_No = "Fax";
+            $doc_Due_Date = "";
+        }
 
+        else {
+            $doc_Customers_Ref = ($doctype == ST_SALESQUOTE || $doctype == ST_STATEMENT) ? "" : "Purchase Order#";
             $doc_Payment_Terms = "Payment Terms";
-            $doc_Your_VAT_no = ($doctype == ST_SALESQUOTE) ? "" : $doc_Your_VAT_no = "";
+            $doc_Your_VAT_no = "Phone";
             $doc_Our_Order_No = ($doctype == ST_SALESORDER) ? "Our Quote No" : "Our Order No";
         }
         #  __ADVANCEDEDIT__ END #

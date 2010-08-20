@@ -128,6 +128,12 @@ function page_header($title, $no_menu=false, $is_index=false, $onload="", $js=""
 	echo "<head><title>$title</title>";
 	echo "<meta http-equiv='Content-type' content='text/html; charset=$encoding'>";
 	echo "<link href='$local_path_to_root/themes/$theme/default.css' rel='stylesheet' type='text/css'> \n";
+       if ($_SESSION['sel_app']=="AP") {
+          	echo "<link href='$local_path_to_root/themes/$theme/default2.css' rel='stylesheet' type='text/css'> \n";
+       }
+              if ($_SESSION['sel_app']=="stock") {
+          	echo "<link href='$local_path_to_root/themes/$theme/default3.css' rel='stylesheet' type='text/css'> \n";
+       }
 	send_scripts($js);
 
 	echo "</head> \n";

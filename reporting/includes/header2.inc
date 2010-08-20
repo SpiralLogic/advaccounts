@@ -130,6 +130,14 @@ if ($doctype == ST_SALESQUOTE || $doctype == ST_PURCHORDER || $doctype == ST_SAL
     else
         $this->Text($mcol + 180, $myrow['reference']);
 }
+
+if ($doctype == ST_SALESQUOTE || $doctype == ST_PURCHORDER || $doctype == ST_SALESORDER) { // QUOTE, PO or SO
+    if ($print_invoice_no == 1)
+        $this->Text($mcol + 180, $myrow['order_no']);
+    else
+        $this->Text($mcol + 180, $myrow['reference']);
+}
+
 elseif ($doctype == ST_WORKORDER)
     $this->Text($mcol + 180, $myrow['id']);
 else if (isset($myrow['trans_no']) && isset($myrow['reference'])) { // INV/CRE/STA
@@ -138,7 +146,24 @@ else if (isset($myrow['trans_no']) && isset($myrow['reference'])) { // INV/CRE/S
     else
         $this->Text($mcol + 180, $myrow['reference']);
 }
+if ($doctype != ST_STATEMENT) {
+    $this->NewLine();
+    $this->Text($mcol + 100, _('Salesperson'));
+//$id = $branch['salesman'];
+//$sql = "SELECT salesman_name  FROM " . TB_PREF . "salesman WHERE salesman_code='$id'";
+//$result = db_query($sql, "could not get sales person");
+//$row = db_fetch($result);
+    if (!isset($_SESSION["wa_current_user"]))
+        $_SESSION["wa_current_user"] = new current_user();
+    $user = $_SESSION["wa_current_user"];
 
+//$sql = "SELECT salesman_name  FROM " . TB_PREF . "sales_order WHERE salesman_code='$id'";
+//$result = db_query($sql, "could not get sales person");
+//$row = db_fetch($result);
+    $this->Text($mcol + 180, $user->name);
+//$this->TextWrap($col, $this->row, $width, $row['salesman_name'], 'C');
+//$this->TextWrap($col, $this->row, $width, $_SESSION['wa_current_user'], 'C');
+}
 if ($this->pageNumber > 1 && !strstr($this->filename, "Bulk"))
     $this->Text($this->endLine - 35, _("Page") . ' ' . $this->pageNumber);
 $this->row = $iline1 - $this->lineHeight;
@@ -165,7 +190,7 @@ if ($doctype == ST_SALESQUOTE || $doctype == ST_SALESORDER) {
         $addr = $myrow['address'];
     } else {
         if (trim($branch['br_address']) != '') {
-            $name = $branch['br_name'];
+            $name = $myrow['DebtorName'] . '-' . $branch['br_name'];
             $addr = $branch['br_address'];
         } else {
             $name = $myrow['DebtorName'];
@@ -213,13 +238,13 @@ elseif (isset($myrow["debtor_ref"]))
 $col += $width;
 #  __ADVANCEDEDIT__ BEGIN # skip one column for PO and display current user not branch salesman
 //if ($branch != null && $doctype != ST_PURCHORDER)
-if ($doctype != ST_PURCHORDER) {
+if ($doctype == ST_PURCHORDER) {
 
     $id = $branch['salesman'];
-    $sql = "SELECT salesman_name  FROM ".TB_PREF."salesman WHERE salesman_code='$id'";
-    $result = db_query($sql,"could not get sales person");
+    $sql = "SELECT salesman_name  FROM " . TB_PREF . "salesman WHERE salesman_code='$id'";
+    $result = db_query($sql, "could not get sales person");
     $row = db_fetch($result);
-     			$this->TextWrap($col, $this->row, $width, $row['salesman_name'], 'C');
+    $this->TextWrap($col, $this->row, $width, $row['salesman_name'], 'C');
     $this->TextWrap($col, $this->row, $width, $_SESSION['wa_current_user'], 'C');
 }
 #  __ADVANCEDEDIT__ END #
@@ -227,14 +252,23 @@ elseif ($doctype == ST_SUPPAYMENT || $doctype == ST_CUSTPAYMENT)
     $this->TextWrap($col, $this->row, $width, $systypes_array[$myrow["type"]], 'C');
 elseif ($doctype == ST_WORKORDER)
     $this->TextWrap($col, $this->row, $width, $wo_types_array[$myrow["type"]], 'C');
+elseif ($doctype == ST_SALESORDER || $doctype == ST_SALESQUOTE || $doctype == ST_SALESINVOICE)
+    $this->TextWrap($col, $this->row, $width, $myrow['contact_name'], 'C');
 $col += $width;
 if ($doctype == ST_WORKORDER)
     $this->TextWrap($col, $this->row, $width, $myrow["StockItemName"], 'C');
-elseif (isset($myrow['tax_id']))
-    $this->TextWrap($col, $this->row, $width, $myrow['tax_id'], 'C');
+//elseif (isset($myrow['tax_id']))
+//   $this->TextWrap($col, $this->row, $width, $myrow['tax_id'], 'C');
 #  __ADVANCEDEDIT__ BEGIN # add supplier phone to PO
 elseif ($doctype == ST_PURCHORDER)
     $this->TextWrap($col, $this->row, $width, $myrow['phone'], 'C');
+#  __ADVANCEDEDIT__ END #
+elseif ($doctype == ST_SALESORDER || $doctype == ST_SALESQUOTE || $doctype == ST_SALESINVOICE) {
+    $this->TextWrap($col, $this->row, $width, $myrow['phone'], 'C');
+} else {
+    $this->TextWrap($col, $this->row, $width, $myrow['phone'], 'C');
+}
+
 #  __ADVANCEDEDIT__ END #
 
 $col += $width;
@@ -302,18 +336,32 @@ $count = count($this->headers);
 $this->cols[$count] = $right - 3;
 for ($i = 0; $i < $count; $i++)
     $this->TextCol($i, $i + 1, $this->headers[$i], -2);
+
+
 $this->Font();
 $this->Font('italic');
 $this->row = $iline7 - $this->lineHeight - 6;
-if ($doctype != ST_WORKORDER)
-    $this->TextWrap($ccol, $this->row, $right - $ccol, $doc_Please_Quote . ": " . $myrow['curr_code'], 'C');
+//if ($doctype != ST_WORKORDER)
+//    $this->TextWrap($ccol, $this->row, $right - $ccol, $doc_Please_Quote . ": " . $myrow['curr_code'], 'C');
 $this->row -= $this->lineHeight;
 #  __ADVANCEDEDIT__ BEGIN # remove bank details from purchaseo order
+
+if ($doctype == ST_STATEMENT) {
+    $this->Font();
+
+    $this->Font('bold');
+    $this->TextWrap($ccol, $this->row, $right - $ccol, _("IMPORTANT PLEASE PASS THIS ON TO YOUR ACCOUNTS DEPARTMENT ASAP"), 'C');
+    $this->row -= $this->lineHeight;
+    $this->row -= $this->lineHeight;
+}
+$this->Font();
+$this->Font('italic');
 if (isset($bankaccount['bank_name']) && $doctype != ST_PURCHORDER && $doctype != ST_SALESQUOTE && $doctype != ST_CUSTPAYMENT) {
     $txt = $doc_Bank . ": " . $bankaccount['bank_name'] . " " . $doc_Bank_Account . ": " . $bankaccount['bank_account_number'];
     $this->TextWrap($ccol, $this->row, $right - $ccol, $txt, 'C');
     $this->row -= $this->lineHeight;
 }
+
 if ($doctype == ST_SALESINVOICE && $branch['disable_branch'] > 0) { // payment links
     if ($branch['disable_branch'] == 1) {
         $amt = number_format($myrow["ov_freight"] + $myrow["ov_gst"] + $myrow["ov_amount"], user_price_dec());

@@ -52,10 +52,10 @@ function print_invoices() {
     $fno = explode("-", $from);
     $tno = explode("-", $to);
 
-    $cols = array(4, 60, 330, 355, 390, 420, 450, 495);
+    $cols = array(4, 60, 330, 355, 380, 410, 450, 495);
 
     // $headers in doctext.inc
-    $aligns = array('left', 'left', 'center', 'center', 'left', 'right', 'right', 'right');
+    $aligns = array('left', 'left', 'center', 'left', 'right', 'right', 'right', 'right');
 
     $params = array('comments' => $comments);
 
@@ -76,6 +76,7 @@ function print_invoices() {
                 continue;
             $sign = $j == ST_SALESINVOICE ? 1 : -1;
             $myrow = get_customer_trans($i, $j);
+
             $baccount = get_default_bank_account($myrow['curr_code']);
             $params['bankaccount'] = $baccount['id'];
 
@@ -101,7 +102,7 @@ function print_invoices() {
             else
                 $rep->title = ($j == ST_SALESINVOICE) ? _('INVOICE') : _('CREDIT NOTE');
             $rep->Header2($myrow, $branch, $sales_order, $baccount, $j);
-
+            
             $result = get_customer_trans_details($j, $i);
             $SubTotal = 0;
             while ($myrow2 = db_fetch($result)) {
@@ -110,7 +111,7 @@ function print_invoices() {
 
                 $Net = round2($sign * ((1 - $myrow2["discount_percent"]) * $myrow2["unit_price"] * $myrow2["quantity"]),
                                 user_price_dec());
-                $SubTotal += $Net; 
+                $SubTotal += $Net;
                 $TaxType = get_item_tax_type_for_item($myrow2['stock_id']);
                 $DisplayPrice = number_format2($myrow2["unit_price"], $dec);
                 $DisplayQty = number_format2($sign * $myrow2["quantity"], get_qty_dec($myrow2['stock_id']));
@@ -119,6 +120,7 @@ function print_invoices() {
                     $DisplayDiscount = "";
                 else
                     $DisplayDiscount = number_format2($myrow2["discount_percent"] * 100, user_percent_dec()) . "%";
+                var_dump($myrow2);
                 $rep->TextCol(0, 1, $myrow2['stock_id'], -2);
                 $oldrow = $rep->row;
                 $rep->TextColLines(1, 2, $myrow2['StockDescription'], -2);
@@ -173,7 +175,6 @@ function print_invoices() {
                             $tax_item['rate'] . "%)", -2);
                     $rep->TextCol(6, 7, $DisplayTax, -2);
                 }
-                $rep->NewLine();
             }
             $rep->NewLine();
             $DisplayTotal = number_format2($sign * ($myrow["ov_freight"] + $myrow["ov_gst"] +
@@ -182,6 +183,16 @@ function print_invoices() {
             $rep->TextCol(3, 6, $doc_TOTAL_INVOICE, - 2);
             $rep->TextCol(6, 7, $DisplayTotal, -2);
             $words = price_in_words($myrow['Total'], $j);
+            $rep->NewLine();
+            $rep->NewLine();
+		
+              $invBalance = get_DebtorTrans_allocation_balance($myrow['type'], $myrow['trans_no']);
+            $rep->TextCol(3, 6, 'Total Received', -2);
+            $rep->AmountCol(6, 7, $myrow['Total'] - $invBalance, $dec, -2);
+            $rep->NewLine();
+            $rep->TextCol(3, 6, 'Outstanding Balance', -2);
+            $rep->AmountCol(6, 7, $invBalance, $dec, -2);
+            $rep->NewLine();
             if ($words != "") {
                 $rep->NewLine(1);
                 $rep->TextCol(1, 7, $myrow['curr_code'] . ": " . $words, - 2);
@@ -200,4 +211,3 @@ function print_invoices() {
     if ($email == 0)
         $rep->End();
 }
-?>

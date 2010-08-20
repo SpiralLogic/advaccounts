@@ -273,14 +273,14 @@ function po_item_controls(&$order, $stock_id=null) {
         label_cell($_POST['stock_id']);
         //label_cell($order->line_items[$id]->item_description);
         $Ajax->activate('items_table');
-        text_cells(null,'item_description', null, 50, 150);
+        textarea_cells(null,'item_description', null, 50,5);
         $qty_rcvd = $order->line_items[$id]->qty_received;
     } else {
         hidden('line_no', ($_SESSION['PO']->lines_on_order + 1));
 
         stock_purchasable_items_list_cells(null, 'stock_id', null, false, true, true);
         if (list_updated('stock_id')) {
-            $Ajax->activate('price');
+            $Ajax->activatnulle('price');
             $Ajax->activate('units');
             $Ajax->activate('item_description');
             $Ajax->activate('qty');
@@ -323,7 +323,6 @@ function po_item_controls(&$order, $stock_id=null) {
 
     end_row();
 
-    var_dump(xdebug_get_declared_vars());
 }
 
 //---------------------------------------------------------------------------------------------------

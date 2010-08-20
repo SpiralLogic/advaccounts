@@ -70,6 +70,7 @@ if (isset($_GET['AddedID'])) {
     $invoice_no = $_GET['UpdatedID'];
 
     display_notification_centered(sprintf(_('Sales Invoice # %d has been updated.'), $invoice_no));
+  hyperlink_no_params($path_to_root . "/sales/customer_payments.php", _("Customer Payments"));
 
     display_note(get_trans_view_str(ST_SALESINVOICE, $invoice_no, _("&View This Invoice")));
     echo '<br>';

@@ -89,11 +89,13 @@ function print_document_link($doc_no, $link_text, $link=true, $type_no,
                  		case ST_PROFORMA :
 			$rep = 113;
 			// from, to, currency, bank acc, email, comments
-			$ar = array(
-				'PARAM_0' => $doc_no,
+					$ar = array(
+                                       'PARAM_0' => $doc_no,
 				'PARAM_1' => $doc_no,
 				'PARAM_2' => '',
-				'PARAM_4' => '');
+				'PARAM_3' => $email,
+				'PARAM_4' => 0,
+				'PARAM_5' => '');
 			break;
 		case ST_SUPPAYMENT :
 			$rep = 210;

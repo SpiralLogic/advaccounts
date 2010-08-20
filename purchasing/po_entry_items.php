@@ -216,11 +216,12 @@ function handle_add_new_item()
 	{ 
 		if (count($_SESSION['PO']->line_items) > 0)
 		{
+                  /*
 		    foreach ($_SESSION['PO']->line_items as $order_item) 
 		    {
 
     			/* do a loop round the items on the order to see that the item
-    			is not already on this order */
+    			is not already on this order 
    			    if (($order_item->stock_id == $_POST['stock_id']) && 
    			    	($order_item->Deleted == false)) 
    			    {
@@ -229,10 +230,10 @@ function handle_add_new_item()
 			    }
 		    } /* end of the foreach loop to look for pre-existing items of the same code */
 		}
-
+                
 		if ($allow_update == true)
 		{
-		   	$sql = "SELECT description, units, mb_flag
+		   	$sql = "SELECT long_description as description , units, mb_flag
 				FROM ".TB_PREF."stock_master WHERE stock_id = ".db_escape($_POST['stock_id']);
 
 		    $result = db_query($sql,"The stock details for " . $_POST['stock_id'] . " could not be retrieved");

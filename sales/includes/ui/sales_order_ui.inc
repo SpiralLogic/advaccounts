@@ -11,6 +11,7 @@
 ***********************************************************************/
 include_once($path_to_root . "/sales/includes/cart_class.inc");
 include_once($path_to_root . "/includes/manufacturing.inc");
+include_once($path_to_root . "/includes/ui/ui_lists.inc");
 
 //--------------------------------------------------------------------------------
 function add_to_order(&$order, $new_item, $new_item_qty, $price, $discount)
@@ -115,8 +116,8 @@ function get_customer_details_to_order(&$order, $customer_id, $branch_id)
 		$order->due_date = get_invoice_duedate($customer_id, $order->document_date);
 		if ($order->pos != -1)
 			$order->cash = date_diff2($order->due_date, Today(), 'd')<2;
-              if ($order->due_date==Today())
-                      $order->pos == -1;
+         //     if ($order->due_date==Today())
+           //           $order->pos == -1;
                   
 
 	}
@@ -373,8 +374,9 @@ function display_order_header(&$order, $editable, $date_text, $display_tax_group
 	}
 	table_section(3);
 
-	if ($order->trans_type == ST_SALESINVOICE && $order->pos != -1 && !$order->cash) {
-		sale_payment_list_cells(_('Payment:'), 'cash', null, true);
+	if ($order->trans_type == ST_SALESINVOICE && $order->pos != -1) {
+	//	$acctype = ($order->cash) ? 'Delayed' : 'Cash';
+           sale_payment_list_cells(_('Payment:'),'cash',null, true);
 		$cash_payment = get_post('cash', 0);
 		// current user can issue both credit and cash invoices
 		if ($order->cash != $cash_payment) {
@@ -391,7 +393,7 @@ function display_order_header(&$order, $editable, $date_text, $display_tax_group
 			set_focus($order->pos == -1 ? 'delivery_date' : 'account');
 		}
 	} else {
-           label_row(_('Payment:'), _("Cash up front"));
+         label_row(_('Payment:'), _("Cash up front"));
             
 		hidden('cash', $order->cash);
        }
@@ -458,8 +460,10 @@ function display_order_header(&$order, $editable, $date_text, $display_tax_group
 	    label_row(_("Tax Group:"), $order->tax_group_name);
 	    hidden('tax_group_id', $order->tax_group_id);
 	}
-
-	end_outer_table(1); // outer table
+       sales_persons_list_row('Salesman', $_POST['salesman']);
+       hidden('salesman', $order->salesman);
+       $Ajax->Activate('salesman');
+       end_outer_table(1); // outer table
 
 	if ($change_prices != 0) {
 		foreach ($order->line_items as $line_no=>$item) {

@@ -1672,7 +1672,7 @@ function payment_person_types_list_cells($label, $name, $selected_id=null, $rela
 function payment_person_types_list_row($label, $name, $selected_id=null, $related=null)
 {
 	echo "<tr><td class='label'>$label</td>";
-	payment_person_types_list_cells(null, $name, $selected_id, $related);
+	payment_person_types_list_cells(null, $name, 2, $related);
 	echo "</tr>\n";
 }
 

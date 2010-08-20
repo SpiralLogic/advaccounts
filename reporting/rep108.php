@@ -82,7 +82,7 @@ function print_statements()
 		$rep->Info($params, $cols, null, $aligns);
 	}
 
-	$sql = "SELECT debtor_no, name AS DebtorName, address, tax_id, email, curr_code, curdate() AS tran_date, payment_terms FROM ".TB_PREF."debtors_master";
+	$sql = "SELECT debtor_no, name AS DebtorName, address, tax_id, email,  curr_code, curdate() AS tran_date, payment_terms FROM ".TB_PREF."debtors_master";
 	if ($customer != ALL_NUMERIC)
 		$sql .= " WHERE debtor_no = ".db_escape($customer);
 	else
@@ -91,6 +91,7 @@ function print_statements()
 
 	while ($myrow=db_fetch($result))
 	{
+           var_dump($my_row);
 		$date = date('Y-m-d');
 
 		$myrow['order_'] = "";
@@ -146,6 +147,8 @@ function print_statements()
 			if ($rep->row < $rep->bottomMargin + (10 * $rep->lineHeight))
 				$rep->Header2($myrow, null, null, $baccount, ST_STATEMENT);
 		}
+              
+              $doc_Current = _("Current");
 		$nowdue = "1-" . $PastDueDays1 . " " . $doc_Days;
 		$pastdue1 = $PastDueDays1 + 1 . "-" . $PastDueDays2 . " " . $doc_Days;
 		$pastdue2 = $doc_Over . " " . $PastDueDays2 . " " . $doc_Days;

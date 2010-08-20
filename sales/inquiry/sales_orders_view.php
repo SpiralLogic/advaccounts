@@ -372,7 +372,8 @@ if ($_POST['order_view_mode'] == 'OutstandingOnly') {
 } elseif ($trans_type == ST_SALESQUOTE) {
 	 array_append($cols,array(
 					array('insert'=>true, 'fun'=>'edit_link'),
-					array('insert'=>true, 'fun'=>'order_link'),array('insert'=>true, 'fun'=>'prt_link2'),
+					array('insert'=>true, 'fun'=>'order_link'),
+                                     array('insert'=>true, 'fun'=>'prt_link2'),
 					array('insert'=>true, 'fun'=>'prt_link')));
 } elseif ($trans_type == ST_SALESORDER) {
 	 array_append($cols,array(
