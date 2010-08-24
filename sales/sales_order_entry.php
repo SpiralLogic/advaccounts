@@ -95,7 +95,8 @@ if (list_updated('branch_id')) {
 
 if (isset($_GET['AddedID'])) {
     $order_no = $_GET['AddedID'];
-    display_notification_centered(sprintf(_("Order # %d has been entered."), $order_no));
+
+    display_notification_centered(sprintf(_("Order # %s (%d) has been entered."), $_GET['ref'], $_GET['AddedID']));
 
     submenu_view(_("&View This Order"), ST_SALESORDER, $order_no);
 
@@ -129,8 +130,9 @@ if (isset($_GET['AddedID'])) {
 
     display_footer_exit();
 } elseif (isset($_GET['AddedQU'])) {
+
     $order_no = $_GET['AddedQU'];
-    display_notification_centered(sprintf(_("Quotation # %d has been entered."), $order_no));
+    display_notification_centered(sprintf(_("Quotation # %s (%d) has been entered."), $_GET['ref'], $_GET['AddedQU']));
 
     submenu_view(_("&View This Quotation"), ST_SALESQUOTE, $order_no);
 
@@ -167,7 +169,7 @@ if (isset($_GET['AddedID'])) {
     $delivery = $_GET['AddedDN'];
 
     display_notification_centered(sprintf(_("Delivery # %d has been entered."), $delivery));
-   submenu_option(_("Make &Invoice Against This Delivery"),
+    submenu_option(_("Make &Invoice Against This Delivery"),
             "/sales/customer_invoice.php?DeliveryNumber=$delivery");
     submenu_view(_("&View This Delivery"), ST_CUSTDELIVERY, $delivery);
 
@@ -179,7 +181,7 @@ if (isset($_GET['AddedID'])) {
 
     display_note(get_gl_view_str(ST_CUSTDELIVERY, $delivery, _("View the GL Journal Entries for this Dispatch")), 0, 1);
 
- 
+
 
     if ((isset($_GET['Type']) && $_GET['Type'] == 1))
         submenu_option(_("Enter a New Template &Delivery"),
@@ -192,7 +194,7 @@ if (isset($_GET['AddedID'])) {
 } elseif (isset($_GET['AddedDI'])) {
     $invoice = $_GET['AddedDI'];
 
-    display_notification_centered(sprintf(_("Invoice # %d has been entered."), $invoice));
+    display_notification_centered(sprintf(_("Invoice # %s (%d) has been entered."), $_GET['ref'], $_GET['AddedDI']));
 
     submenu_view(_("&View This Invoice"), ST_SALESINVOICE, $invoice);
 
@@ -390,7 +392,9 @@ function can_process() {
         display_error(_("The entered reference is already in use."));
         set_focus('ref');
         return false;
+        //$_POST['ref']=$Refs->get_next($_SESSION['Items']->trans_type);
     }
+
     return true;
 }
 
@@ -412,17 +416,17 @@ if (isset($_POST['ProcessOrder']) && can_process()) {
     processing_end();
     if ($modified) {
         if ($trans_type == ST_SALESQUOTE)
-            meta_forward($_SERVER['PHP_SELF'], "UpdatedQU=$trans_no");
+            meta_forward($_SERVER['PHP_SELF'], "UpdatedQU=$trans_no&ref={$_POST['ref']}");
         else
-            meta_forward($_SERVER['PHP_SELF'], "UpdatedID=$trans_no");
+            meta_forward($_SERVER['PHP_SELF'], "UpdatedID=$trans_no&ref={$_POST['ref']}");
     } elseif ($trans_type == ST_SALESORDER) {
-        meta_forward($_SERVER['PHP_SELF'], "AddedID=$trans_no");
+        meta_forward($_SERVER['PHP_SELF'], "AddedID=$trans_no&ref={$_POST['ref']}");
     } elseif ($trans_type == ST_SALESQUOTE) {
-        meta_forward($_SERVER['PHP_SELF'], "AddedQU=$trans_no");
+        meta_forward($_SERVER['PHP_SELF'], "AddedQU=$trans_no&ref={$_POST['ref']}");
     } elseif ($trans_type == ST_SALESINVOICE) {
-        meta_forward($_SERVER['PHP_SELF'], "AddedDI=$trans_no&Type=$so_type");
+        meta_forward($_SERVER['PHP_SELF'], "AddedDI=$trans_no&Type=$so_type&ref={$_POST['ref']}");
     } else {
-        meta_forward($_SERVER['PHP_SELF'], "AddedDN=$trans_no&Type=$so_type");
+        meta_forward($_SERVER['PHP_SELF'], "AddedDN=$trans_no&Type=$so_type&ref={$_POST['ref']}");
     }
 }
 

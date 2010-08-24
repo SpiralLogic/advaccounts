@@ -53,7 +53,7 @@ class references
 	{
 		return get_next_reference($type);
 	}
-	
+
 	//------------------------------------
 
 	function is_valid($reference) 
