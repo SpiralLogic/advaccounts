@@ -120,7 +120,7 @@ function print_invoices() {
                     $DisplayDiscount = "";
                 else
                     $DisplayDiscount = number_format2($myrow2["discount_percent"] * 100, user_percent_dec()) . "%";
-                var_dump($myrow2);
+                
                 $rep->TextCol(0, 1, $myrow2['stock_id'], -2);
                 $oldrow = $rep->row;
                 $rep->TextColLines(1, 2, $myrow2['StockDescription'], -2);

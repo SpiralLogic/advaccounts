@@ -62,11 +62,12 @@ if (isset($header2type)) {
             $doc_Due_Date = "Due Date";
             $doc_Payment_Terms = _("Payment Terms");
         } elseif ( $doctype == ST_STATEMENT) {
-            $doc_Customers_Ref = "Acount Number";
+            $doc_Customers_Ref = "";
             $doc_Our_Ref = "";
             $doc_Your_VAT_no = "Phone";
             $doc_Our_Order_No = "Fax";
             $doc_Due_Date = "";
+            $doc_Payment_Terms = "Payment Terms";
         }
 
         else {
@@ -135,7 +136,7 @@ if (isset($header2type)) {
     }
     else if ($doctype == ST_STATEMENT) {
         $this->title = _("STATEMENT");
-        $this->headers = array(_("Trans Type"), _("#"), _("Date"), _("DueDate"), _("Charges"),
+        $this->headers = array(_("Trans Type"), _("#"), _("PO#"), _("Date"), _("DueDate"), _("Charges"),
             _("Credits"), _("Allocated"), _("Outstanding"));
     }
 }

@@ -190,7 +190,7 @@ function read_po_items($order_no, &$order, $open_items_only=false)
         	$data = get_purchase_data($order->supplier_id, $myrow['item_code']);
         	if ($data !== false)
         	{
-                  var_dump($myrow);
+                  
         		if ($data['supplier_description'] != "")
             		$myrow['supplier_description'] = $data['supplier_description'];
         		if ($data['suppliers_uom'] != "")

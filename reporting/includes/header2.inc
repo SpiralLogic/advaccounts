@@ -81,6 +81,9 @@ $this->TextWrapLines($ccol, $icol, $this->company['postal_address']);
 $this->NewLine();
 #  __ADVANCEDEDIT__ END #
 $this->Font('italic');
+if ($doctype == ST_STATEMENT) {
+    $customer_branch_details = get_main_branch($myrow['debtor_no']);
+}
 if ($this->company['phone'] != "") {
     $this->Text($ccol, _("Phone"), $c2col);
     $this->Text($c2col, $this->company['phone'], $mcol);
@@ -171,7 +174,7 @@ $this->row = $iline1 - $this->lineHeight;
 //		$this->fontSize -= 4;
 $this->Font('bold');
 $this->Text($ccol, $doc_Charge_To . ':', $icol);
-$this->Text($mcol, $doc_Delivered_To . ':');
+if ($doctype != ST_STATEMENT) $this->Text($mcol, $doc_Delivered_To . ':');
 $this->Font('');
 //		$this->fontSize += 4;
 
@@ -190,7 +193,8 @@ if ($doctype == ST_SALESQUOTE || $doctype == ST_SALESORDER) {
         $addr = $myrow['address'];
     } else {
         if (trim($branch['br_address']) != '') {
-            $name = $myrow['DebtorName'] . '-' . $branch['br_name'];
+            $name = $myrow['DebtorName'];
+            //. '-' . $branch['br_name'];
             $addr = $branch['br_address'];
         } else {
             $name = $myrow['DebtorName'];
@@ -203,7 +207,7 @@ if ($doctype == ST_SALESQUOTE || $doctype == ST_SALESORDER) {
 }
 if ($sales_order != NULL) {
     $this->row = $temp;
-    if ($doctype != ST_SUPPAYMENT && isset($sales_order['deliver_to'])) {
+    if ($doctype != ST_SUPPAYMENT && $doctype != ST_STATEMENT && isset($sales_order['deliver_to'])) {
         $this->Text($mcol, $sales_order['deliver_to']);
         $this->NewLine();
     }
@@ -255,20 +259,21 @@ elseif ($doctype == ST_WORKORDER)
 elseif ($doctype == ST_SALESORDER || $doctype == ST_SALESQUOTE || $doctype == ST_SALESINVOICE)
     $this->TextWrap($col, $this->row, $width, $myrow['contact_name'], 'C');
 $col += $width;
-if ($doctype == ST_WORKORDER)
+if ($doctype == ST_WORKORDER) {
     $this->TextWrap($col, $this->row, $width, $myrow["StockItemName"], 'C');
 //elseif (isset($myrow['tax_id']))
 //   $this->TextWrap($col, $this->row, $width, $myrow['tax_id'], 'C');
 #  __ADVANCEDEDIT__ BEGIN # add supplier phone to PO
-elseif ($doctype == ST_PURCHORDER)
+} elseif ($doctype == ST_PURCHORDER) {
     $this->TextWrap($col, $this->row, $width, $myrow['phone'], 'C');
-#  __ADVANCEDEDIT__ END #
-elseif ($doctype == ST_SALESORDER || $doctype == ST_SALESQUOTE || $doctype == ST_SALESINVOICE) {
+#  __ADVANCEDEDIT__ END # }
+} elseif ($doctype == ST_SALESORDER || $doctype == ST_SALESQUOTE || $doctype == ST_SALESINVOICE) {
     $this->TextWrap($col, $this->row, $width, $myrow['phone'], 'C');
+} elseif ($doctype == ST_STATEMENT) {
+    $this->TextWrap($col, $this->row, $width, $customer_branch_details['phone'], 'C');
 } else {
     $this->TextWrap($col, $this->row, $width, $myrow['phone'], 'C');
 }
-
 #  __ADVANCEDEDIT__ END #
 
 $col += $width;
@@ -304,6 +309,11 @@ elseif (isset($myrow['order_']) && $myrow['order_'] != 0)
 #  __ADVANCEDEDIT__ BEGIN # add supplier fax to PO
 elseif ($doctype == ST_PURCHORDER)
     $this->TextWrap($col, $this->row, $width, $myrow["fax"], 'C');
+elseif ($doctype == ST_STATEMENT) {
+
+//var_dump($customer_branch_details['fax']);
+    $this->TextWrap($col, $this->row, $width, $customer_branch_details['fax'], 'C');
+}
 #  __ADVANCEDEDIT__ END #
 $col += $width;
 if ($doctype == ST_SALESORDER || $doctype == ST_SALESQUOTE)
@@ -314,9 +324,17 @@ elseif ($doctype != ST_PURCHORDER && $doctype != ST_CUSTCREDIT && $doctype != ST
         $doctype != ST_SUPPAYMENT && isset($myrow['due_date']))
     $this->TextWrap($col, $this->row, $width, sql2date($myrow['due_date']), 'C');
 #  __ADVANCEDEDIT__ BEGIN # remove payment terms from purchase order
+if ($doctype == ST_STATEMENT) {
+
+//var_dump($customer_branch_details['fax']);
+    $this->NewLine();
+    $this->NewLine();
+    $this->TextWrap($ccol, $this->row, $right - $ccol, "Email:  " . $customer_branch_details['email']);
+}
 if ((!isset($packing_slip) || $packing_slip == 0 ) && $doctype != ST_PURCHORDER) {
     #  __ADVANCEDEDIT__ END #
-    $this->row -= ( 2 * $this->lineHeight);
+    //$this->row -= ( 2 * $this->lineHeight);
+    $this->NewLine();
     if ($doctype == ST_WORKORDER)
         $str = sql2date($myrow["required_by"]);
     else {
