@@ -137,8 +137,3 @@ function get_salesman_name($id)
 	$row = db_fetch_row($result);
 	return $row[0];
 }
-
-
-
-
-?>

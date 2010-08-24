@@ -144,8 +144,7 @@ class Ajax extends JsHttpRequest {
 //		display_error('Commands :'.htmlentities(print_r($this->aCommands, true)));
 	    $GLOBALS['_RESULT'] = $this->aCommands;
 //	    exit();
-     var_dump(xdebug_get_declared_vars());
-	}
+     	}
 }
 
 function in_ajax() {
