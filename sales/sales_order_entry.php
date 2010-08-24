@@ -379,6 +379,7 @@
             set_focus('ref');
             return false;
         }
+
         if ($_SESSION['Items']->trans_no == 0 && !is_new_reference($_POST['ref'],
                         $_SESSION['Items']->trans_type)) {
             //display_error(_("The entered reference is already in use."));
