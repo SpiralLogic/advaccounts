@@ -203,7 +203,7 @@ if (isset($_POST['AddPaymentItem'])) {
     $_SESSION['alloc']->trans_no = $payment_no;
     $_SESSION['alloc']->write();
 
-   meta_forward($_SERVER['PHP_SELF'], "AddedID=$payment_no");
+    meta_forward($_SERVER['PHP_SELF'], "AddedID=$payment_no");
 }
 
 //----------------------------------------------------------------------------------------------

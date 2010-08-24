@@ -129,7 +129,7 @@ if (isset($_POST['AddGLCodeToTrans'])){
 	{
 		$_SESSION['supp_trans']->add_gl_codes_to_trans($_POST['gl_code'], $gl_act_name,
 			$_POST['dimension_id'], $_POST['dimension2_id'], 
-			input_num('amount'), $_POST['memo_']."test");
+			input_num('amount'), $_POST['memo_']);
 		set_focus('gl_code');
 	}
 }

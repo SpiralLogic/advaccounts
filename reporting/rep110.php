@@ -53,10 +53,10 @@ function print_deliveries()
 	$fno = explode("-", $from);
 	$tno = explode("-", $to);
 
-    $cols = array(4, 60, 330, 355, 380, 410, 450, 495);
+	$cols = array(4, 60, 225, 300, 325, 385, 450, 515);
 
-    // $headers in doctext.inc
-    $aligns = array('left', 'left', 'center', 'left', 'right', 'right', 'right', 'right');
+	// $headers in doctext.inc
+	$aligns = array('left',	'left',	'right', 'left', 'right', 'right', 'right');
 
 	$params = array('comments' => $comments);
 
@@ -111,7 +111,6 @@ function print_deliveries()
 				$Net = round2(((1 - $myrow2["discount_percent"]) * $myrow2["unit_price"] * $myrow2["quantity"]),
 				   user_price_dec());
 				$SubTotal += $Net;
-                                            $TaxType = get_item_tax_type_for_item($myrow2['stock_id']);
 	    		$DisplayPrice = number_format2($myrow2["unit_price"],$dec);
 	    		$DisplayQty = number_format2($myrow2["quantity"],get_qty_dec($myrow2['stock_id']));
 	    		$DisplayNet = number_format2($Net,$dec);
@@ -131,7 +130,6 @@ function print_deliveries()
 					$rep->TextCol(4, 5,	$DisplayPrice, -2);
 					$rep->TextCol(5, 6,	$DisplayDiscount, -2);
 					$rep->TextCol(6, 7,	$DisplayNet, -2);
-                                                   $rep->TextCol(7, 8, $TaxType[1], -2);
 				}	
 				$rep->row = $newrow;
 				//$rep->NewLine(1);
