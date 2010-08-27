@@ -37,8 +37,8 @@
 // trail, or your future backup files are overloaded with unneeded data.
 //
 
-    $sql_trail = 1; // save all sql queries in sql_trail
-    $select_trail = 1; // track also SELECT queries
+    $sql_trail = 0; // save all sql queries in sql_trail
+    $select_trail = 0; // track also SELECT queries
     if ($go_debug == 1) {
         error_reporting(E_ALL);
         ini_set("display_errors", "On");
@@ -72,7 +72,7 @@
     $use_date_picker = 1;
 
     /* use Audit Trails in GL */
-    $use_audit_trail = 1;
+    $use_audit_trail = 0;
 
     /* use old style convert (income and expense in BS, PL) */
     $use_oldstyle_convert = 0;

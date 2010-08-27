@@ -276,22 +276,23 @@
         elseif ($_POST['order_view_mode'] == 'InvoiceTemplates' || $_POST['order_view_mode'] == 'DeliveryTemplates')
                 $sql .= " AND sorder.type=1";
 
-        $sql .= " GROUP BY sorder.order_no,
+        $sql .= " GROUP BY sorder.ord_date,
+        sorder.order_no,
 				sorder.debtor_no,
 				sorder.branch_code,
 				sorder.customer_ref,
-				sorder.ord_date,
+
 				sorder.deliver_to";
     }
 
     if ($trans_type == ST_SALESORDER)
             $cols = array(
-            _("Order #") => array('fun' => 'view_link'),
-            _("Ref"),
-            _("Customer"),
-            _("Branch"),
-            _("Customer PO#"),
-            _("Order Date") => 'date',
+            _("Order #") => array('fun' => 'view_link', 'ord' => 'desc'),
+            _("Ref")=> array('ord' => ''),
+            _("Customer")=> array('ord' => ''),
+            _("Branch") => array('ord' => ''),
+            _("Customer PO#") => array('ord' => ''),
+            _("Order Date") => array('type' => 'date', 'ord' => ''),
             _("Required By") => array('type' => 'date', 'ord' => ''),
             _("Delivery To"),
             _("Order Total") => array('type' => 'amount', 'ord' => ''),
@@ -300,12 +301,12 @@
         );
     else
             $cols = array(
-            _("Quote #") => array('fun' => 'view_link'),
-            _("Ref"),
-            _("Customer"),
-            _("Branch"),
-            _("Customer PO#"),
-            _("Quote Date") => 'date',
+            _("Quote #") => array('fun' => 'view_link', 'ord' => 'desc'),
+            _("Ref") => array('ord' => ''),
+            _("Customer") => array('ord' => ''),
+            _("Branch") => array('ord' => ''),
+            _("Customer PO#") => array('ord' => ''),
+            _("Quote Date") => array('type' => 'date', 'ord' => ''),
             _("Valid until") => array('type' => 'date', 'ord' => ''),
             _("Delivery To"),
             _("Quote Total") => array('type' => 'amount', 'ord' => ''),
@@ -326,7 +327,7 @@
     } elseif ($trans_type == ST_SALESQUOTE) {
         array_append($cols, array(
             array('insert' => true, 'fun' => 'edit_link'),
-            array('insert' => true, 'fun' => 'order_link'), array('insert' => true, 'fun' => 'prt_link2'),
+            array('insert' => true, 'fun' => 'order_link'),
             array('insert' => true, 'fun' => 'prt_link')));
     } elseif ($trans_type == ST_SALESORDER) {
         array_append($cols, array(
@@ -337,7 +338,7 @@
     };
 
 
-    $table = & new_db_pager('orders_tbl', $sql, $cols);
+    $table = & new_db_pager('orders_tbl', $sql, $cols,null,null,0,_("Order #"));
     $table->set_marker('check_overdue', _("Marked items are overdue."));
 
     $table->width = "80%";

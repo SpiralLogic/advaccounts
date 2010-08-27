@@ -202,6 +202,7 @@ class current_user
 function round2($number, $decimals=0)
 {
 	$delta = ($number < 0 ? -.0000000001 : .0000000001);
+    $delta += -10^-($decimals+1);
 	return round($number+$delta, $decimals);
 }
 

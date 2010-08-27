@@ -237,13 +237,14 @@ function process_receive_po()
 		hyperlink_params("$path_to_root/purchasing/po_receive_items.php", 
 			 _("Re-Read the updated purchase order for receiving goods against"),
 			 "PONumber=" . $_SESSION['PO']->order_no);
+
 		unset($_SESSION['PO']->line_items);
 		unset($_SESSION['PO']);
 		unset($_POST['ProcessGoodsReceived']);
 		$Ajax->activate('_page_body');
 		display_footer_exit();
 	}
-
+        $_SESSION['wa_global_supplier_id']=$_SESSION['PO']->supplier_id;
 	$grn = add_grn($_SESSION['PO'], $_POST['DefaultReceivedDate'],
 		$_POST['ref'], $_POST['Location']);
 

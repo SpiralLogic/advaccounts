@@ -1160,7 +1160,7 @@ function workorders_list_row($label, $name, $selected_id=null)
 function payment_terms_list($name, $selected_id=null)
 {
 	$sql = "SELECT terms_indicator, terms, inactive FROM ".TB_PREF."payment_terms";
-	return combo_input($name, $selected_id, $sql, 'terms_indicator', 'terms', array());
+	return combo_input($name, $selected_id, $sql, 'terms_indicator', 'terms_indicator', array());
 }
 
 function payment_terms_list_cells($label, $name, $selected_id=null)

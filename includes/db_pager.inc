@@ -446,7 +446,7 @@ class db_pager {
 //  during display, but can be used in format handlers for 'spec' and 'insert' 
 //	type columns.
 
-function &new_db_pager($name, $sql, $coldef, $table = null, $key = null, $page_len = 0)  {
+function &new_db_pager($name, $sql, $coldef, $table = null, $key = null, $page_len = 0, $sort=null)  {
 
     if (isset($_SESSION[$name]) &&
 		 ($_SERVER['REQUEST_METHOD'] == 'GET' || $_SESSION[$name]->sql != $sql)) {
@@ -458,6 +458,7 @@ function &new_db_pager($name, $sql, $coldef, $table = null, $key = null, $page_l
 		$_SESSION[$name]->key = $key;
 		$_SESSION[$name]->set_sql($sql);
 		$_SESSION[$name]->set_columns($coldef);
+        $_SESSION[$name]->sort_table($sort);
 	}
 	
 	return  $_SESSION[$name];

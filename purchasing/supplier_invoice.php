@@ -43,12 +43,12 @@ if (isset($_GET['AddedID']))
     display_notification_centered(_("Supplier invoice has been processed."));
     display_note(get_trans_view_str($trans_type, $invoice_no, _("View this Invoice")));
 
-	display_note(get_gl_view_str($trans_type, $invoice_no, _("View the GL Journal Entries for this Invoice")), 1);
-
+		hyperlink_no_params("$path_to_root/purchasing/inquiry/po_search.php", _("Purchase Order Maintainants"));
+hyperlink_params($_SERVER['PHP_SELF'], _("Enter Another Invoice"), "New=1");
 	hyperlink_no_params("$path_to_root/purchasing/supplier_payment.php", _("Entry supplier &payment for this invoice"));
 
-	hyperlink_params($_SERVER['PHP_SELF'], _("Enter Another Invoice"), "New=1");
 
+display_note(get_gl_view_str($trans_type, $invoice_no, _("View the GL Journal Entries for this Invoice")), 1);
 	hyperlink_params("$path_to_root/admin/attachments.php", _("Add an Attachment"), "filterType=$trans_type&trans_no=$invoice_no");
 	
 	display_footer_exit();
@@ -246,12 +246,13 @@ function check_item_data($n)
 	}
 
 	$margin = $SysPrefs->over_charge_allowance();
-	if ($check_price_charged_vs_order_price == True)
+	if ($check_price_charged_vs_order_price == True && $margin!=0)
 	{
 		if ($_POST['order_price'.$n]!=input_num('ChgPrice'.$n)) {
-		     if ($_POST['order_price'.$n]==0 ||
+		     if (
+                     $_POST['order_price'.$n]==0 ||
 				input_num('ChgPrice'.$n)/$_POST['order_price'.$n] >
-			    (1 + ($margin/ 100)))
+			    (1 + ($margin/ 100)) )
 		    {
 			display_error(_("The price being invoiced is more than the purchase order price by more than the allowed over-charge percentage. The system is set up to prohibit this. See the system administrator to modify the set up parameters if necessary.") .
 			_("The over-charge percentage allowance is :") . $margin . "%");

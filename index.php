@@ -14,6 +14,9 @@
 		header("Location: ".$path_to_root."/install/index.php");
 
 	$page_security = 'SA_OPEN';
+
+
+
 /*	ini_set('xdebug.auto_trace',1);
 ini_set('xdebug.collect_params', '4');
 ini_set('xdebug.dump_globals', 'on');

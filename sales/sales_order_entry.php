@@ -21,13 +21,13 @@
     $path_to_root = "..";
     $page_security = 'SA_SALESORDER';
 
-    include_once($path_to_root . "/sales/includes/cart_class.inc");
-    include_once($path_to_root . "/includes/session.inc");
-    include_once($path_to_root . "/sales/includes/sales_ui.inc");
-    include_once($path_to_root . "/sales/includes/ui/sales_order_ui.inc");
-    include_once($path_to_root . "/sales/includes/sales_db.inc");
-    include_once($path_to_root . "/sales/includes/db/sales_types_db.inc");
-    include_once($path_to_root . "/reporting/includes/reporting.inc");
+    include_once("$path_to_root/sales/includes/cart_class.inc");
+    include_once("$path_to_root/includes/session.inc");
+    include_once("$path_to_root/sales/includes/sales_ui.inc");
+    include_once("$path_to_root/sales/includes/ui/sales_order_ui.inc");
+    include_once("$path_to_root/sales/includes/sales_db.inc");
+    include_once("$path_to_root/sales/includes/db/sales_types_db.inc");
+    include_once("$path_to_root/reporting/includes/reporting.inc");
 
     set_page_security(@$_SESSION['Items']->trans_type,
             array(ST_SALESORDER => 'SA_SALESORDER',
@@ -569,7 +569,7 @@
             $doc->reference = $Refs->get_next($doc->trans_type);
             //$doc->Comments='';
             foreach ($doc->line_items as $line_no => $line) {
-                $doc->line_items[$line_no]->qty_done = 0;
+                $doc->line_items[$line]->qty_done = 0;
             }
             $_SESSION['Items'] = $doc;
         } else $_SESSION['Items'] = new Cart($type, array($trans_no));
