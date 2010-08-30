@@ -25,7 +25,7 @@ class customers_app extends application {
         $this->add_lapp_function(0, "", "");
         $this->add_lapp_function(0, _("Prepare &Invoice"),
                 "sales/sales_order_entry.php?NewDelivery=0", 'SA_SALESDELIVERY');
-        if ($_SESSION['wa_current_user']->username != 'mike')
+        if ($_SESSION['wa_current_user']->username != 'mike' && $_SESSION['wa_current_user']->username != 'samj')
         $this->add_lapp_function(0, _("Direct &Invoice"),
         		"sales/sales_order_entry.php?NewInvoice=0", 'SA_SALESINVOICE');
         $this->add_lapp_function(0, "", "");

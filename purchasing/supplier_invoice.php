@@ -153,11 +153,12 @@ function check_data()
 		return false;
 	}
 
-	if (!is_new_reference($_SESSION['supp_trans']->reference, ST_SUPPINVOICE)) 
+	while (!is_new_reference($_SESSION['supp_trans']->reference, ST_SUPPINVOICE))
 	{
-		display_error(_("The entered reference is already in use."));
-		set_focus('reference');
-		return false;
+		//display_error(_("The entered reference is already in use."));
+		//set_focus('reference');
+		//return false;
+                   $_SESSION['supp_trans']->reference= $Refs->get_next(ST_SUPPINVOICE);
 	}
 
 	if (!$Refs->is_valid($_SESSION['supp_trans']->supp_reference)) 
@@ -254,10 +255,16 @@ function check_item_data($n)
 				input_num('ChgPrice'.$n)/$_POST['order_price'.$n] >
 			    (1 + ($margin/ 100)) )
 		    {
+                 if ($_SESSION['err_over_charge']!=true) {
 			display_error(_("The price being invoiced is more than the purchase order price by more than the allowed over-charge percentage. The system is set up to prohibit this. See the system administrator to modify the set up parameters if necessary.") .
 			_("The over-charge percentage allowance is :") . $margin . "%");
 			set_focus('ChgPrice'.$n);
-			return false;
+            $_SESSION['err_over_charge']=true;
+                     return false;
+                 }else {
+            $_SESSION['err_over_charge']=false;
+
+            }
 		    }
 		}
 	}
@@ -289,7 +296,7 @@ function commit_item_data($n)
     	{
     		$complete = false;
     	}
-
+$_SESSION['err_over_charge']=false;
 		$_SESSION['supp_trans']->add_grn_to_trans($n, $_POST['po_detail_item'.$n],
 			$_POST['item_code'.$n], $_POST['item_description'.$n], $_POST['qty_recd'.$n],
 			$_POST['prev_quantity_inv'.$n], input_num('this_quantity_inv'.$n),

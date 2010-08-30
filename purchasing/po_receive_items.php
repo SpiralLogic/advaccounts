@@ -175,11 +175,12 @@ function can_process()
 		return false;
 	}
 
-	if (!is_new_reference($_POST['ref'], ST_SUPPRECEIVE))
+	while (!is_new_reference($_POST['ref'], ST_SUPPRECEIVE))
 	{
-		display_error(_("The entered reference is already in use."));
-		set_focus('ref');
-		return false;
+//		display_error(_("The entered reference is already in use."));
+//		set_focus('ref');
+//		return false;
+                    $_POST['ref'] = $Refs->get_next(ST_SUPPRECEIVE);
 	}
 
 	$something_received = 0;
@@ -302,15 +303,18 @@ if (isset($_POST['ProcessGoodsReceived']))
 }
 
 //--------------------------------------------------------------------------------------------------
-
 start_form();
 
 display_grn_summary($_SESSION['PO'], true);
 display_heading(_("Items to Receive"));
 display_po_receive_items();
+hyperlink_params(
+  "/purchasing/po_entry_items.php", _("Edit This Purchase Order"),"ModifyOrderNumber=" . $_SESSION['PO']->  order_no);
 
 echo '<br>';
+
 submit_center_first('Update', _("Update"), '', true);
+
 submit_center_last('ProcessGoodsReceived', _("Process Receive Items"), _("Clear all GL entry fields"), 'default');
 
 end_form();

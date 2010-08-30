@@ -366,7 +366,8 @@ function display_grn_items_for_selection(&$supp_trans, $k)
             	hidden('order_price'.$n, $myrow['unit_price'], false).
             	hidden('std_cost_unit'.$n, $myrow['std_cost_unit'], false).
             	hidden('po_detail_item'.$n, $myrow['po_detail_item'], false));
-        	label_cell(get_trans_view_str(ST_PURCHORDER, $myrow["purch_order_no"]));
+                    	label_cell(get_trans_view_str(ST_PURCHORDER, $myrow["purch_order_no"]));
+
             label_cell($myrow["item_code"]);
             label_cell($myrow["description"]);
             label_cell(sql2date($myrow["delivery_date"]));
@@ -394,6 +395,7 @@ function display_grn_items_for_selection(&$supp_trans, $k)
 				submit_js_confirm('void_item_id'.$n,
 					sprintf(_('You are about to remove all yet non-invoiced items from delivery line #%d. This operation also irreversibly changes related order line. Do you want to continue ?'), $n));
 			}
+            hyperlink_params_td(  "/purchasing/po_entry_items.php", _("Edit PO"),"ModifyOrderNumber=" . $myrow["purch_order_no"]).
 			end_row();
     	}
     }
@@ -467,7 +469,7 @@ function display_grn_items(&$supp_trans, $mode=0)
 	{
     	$th = array(_("Delivery"), _("Sequence #"), _("P.O."), _("Item"), _("Description"),
     		_("Received On"), _("Quantity Received"), _("Quantity Invoiced"),
-    		_("Qty Yet To Invoice"), _("Order Price"), _("Total"), "");
+    		_("Qty Yet To Invoice"), _("Order Price"), _("Total"), "", "",_("Edit"));
     	if ($supp_trans->is_invoice && $_SESSION["wa_current_user"]->can_access('SA_GRNDELETE'))	// Added 2008-10-18 by Joe Hunt. Only admins can remove GRNs
     		$th[] = "";
 		if (!$supp_trans->is_invoice)
@@ -497,6 +499,7 @@ function display_grn_items(&$supp_trans, $mode=0)
     		{
 				label_cell($entered_grn->id);
 				label_cell(""); // PO
+
 			}	
 			label_cell($entered_grn->item_code);
 			label_cell($entered_grn->item_description);
@@ -516,6 +519,7 @@ function display_grn_items(&$supp_trans, $mode=0)
 				delete_button_cell("Delete" . $entered_grn->id, _("Edit"), _('Edit document line'));
 				if ($supp_trans->is_invoice && $_SESSION["wa_current_user"]->can_access('SA_GRNDELETE'))	  
 					label_cell("");
+                label_cell(""); // PO
 			}	
 			end_row();
 

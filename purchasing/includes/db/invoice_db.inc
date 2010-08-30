@@ -233,7 +233,9 @@ function add_supp_invoice($supp_trans, $invoice_no=0) // do not receive as ref b
 			$mat_cost = update_average_material_cost(null, $entered_grn->item_code,
 				$diff, $entered_grn->this_quantity_inv, $old_date, true);
 			// added 2008-12-08 Joe Hunt. Update the purchase data table
-			add_or_update_purchase_data($supp_trans->supplier_id, $entered_grn->item_code, $entered_grn->chg_price); 
+			$current_purchase_price=get_purchase_price($entered_grn->supplier_id,$entered_grn->stock_id);
+            if ($current_purchase_price[0]>$entered_grn->chg_price)
+            add_or_update_purchase_data($supp_trans->supplier_id, $entered_grn->item_code, $entered_grn->chg_price);
 			$deliveries = get_deliveries_between($entered_grn->item_code, $old_date, Today()); // extend the period, if invoice is before any deliveries.
 			if ($deliveries[0] != 0) // have deliveries been done during the period?
 			{

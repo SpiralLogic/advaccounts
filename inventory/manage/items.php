@@ -418,7 +418,7 @@ else
 
 table_section_title(_("Other"));
 
-// Add image upload for New Item  - by Joe
+// Add image    for New Item  - by Joe
 file_row(_("Image File (.jpg)") . ":", 'pic', 'pic');
 // Add Image upload for New Item  - by Joe
 $stock_img_link = "";
@@ -444,6 +444,12 @@ if ($check_remove_image)
 check_row(_("Exclude from sales:"), 'no_sale');
 
 record_status_list_row(_("Item status:"), 'inactive');
+        start_row();
+        echo '<td>' . _('Customer branches') . ':</td>';
+        hyperlink_params_td($path_to_root . "inventory/inventory/purchasing_data.php",
+                '<b>' .  _("&Add or Edit ").'</b>',
+                '&popup=1');
+        end_row();
 end_outer_table(1);
 div_end();
 div_start('controls');

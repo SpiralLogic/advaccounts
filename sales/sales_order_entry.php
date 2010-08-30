@@ -380,7 +380,7 @@
             return false;
         }
 
-        if ($_SESSION['Items']->trans_no == 0 && !is_new_reference($_POST['ref'],
+        while ($_SESSION['Items']->trans_no == 0 && !is_new_reference($_POST['ref'],
                         $_SESSION['Items']->trans_type)) {
             //display_error(_("The entered reference is already in use."));
             //set_focus('ref');
@@ -394,7 +394,6 @@
 
     if (isset($_POST['ProcessOrder']) && can_process()) {
         copy_to_cart();
-
         $modified = ($_SESSION['Items']->trans_no != 0);
         $so_type = $_SESSION['Items']->so_type;
         $_SESSION['Items']->write(1);
