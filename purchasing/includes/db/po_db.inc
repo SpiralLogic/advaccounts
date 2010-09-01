@@ -35,7 +35,6 @@ function add_po(&$po_obj) {
             db_escape($po_obj->requisition_no) . ", " .
             db_escape($po_obj->Location) . ", " .
             db_escape($po_obj->delivery_address) . ")";
-
     db_query($sql, "The purchase order header record could not be inserted");
 
     /*Get the auto increment value of the order number created from the sql above */
@@ -45,12 +44,13 @@ function add_po(&$po_obj) {
     foreach ($po_obj->line_items as $po_line)
     {
         if ($po_line->Deleted == false) {
-            $sql = "INSERT INTO " . TB_PREF . "purch_order_details (order_no, item_code, description, delivery_date,	unit_price,	quantity_ordered) VALUES (";
+            $sql = "INSERT INTO " . TB_PREF . "purch_order_details (order_no, item_code, description, delivery_date, unit_price, quantity_ordered, discount) VALUES (";
             $sql .= $po_obj->order_no . ", " . db_escape($po_line->stock_id) . "," .
                     db_escape($po_line->item_description) . ",'" .
                     date2sql($po_line->req_del_date) . "'," .
                     db_escape($po_line->price) . ", " .
-                    db_escape($po_line->quantity) . ")";
+                    db_escape($po_line->quantity) . ", " .
+                    db_escape($po_line->discount) . ")";
             db_query($sql, "One of the purchase order detail records could not be inserted");
         }
     }
@@ -92,12 +92,15 @@ function update_po(&$po_obj) {
         }
         else if ($po_line->po_detail_rec == '') {
             // Sherifoz 21.06.03 Handle adding new lines vs. updating. if no key(po_detail_rec) then it's a new line
-            $sql = "INSERT INTO " . TB_PREF . "purch_order_details (order_no, item_code, description, delivery_date, unit_price,	quantity_ordered) VALUES (";
+            $sql = "INSERT INTO " . TB_PREF . "purch_order_details (order_no, item_code, description, delivery_date, unit_price, quantity_ordered, discount) VALUES (";
             $sql .= $po_obj->order_no . "," .
                     db_escape($po_line->stock_id) . "," .
                     db_escape($po_line->item_description) . ",'" .
                     date2sql($po_line->req_del_date) . "'," .
-                    db_escape($po_line->price) . ", " . db_escape($po_line->quantity) . ")";
+                    db_escape($po_line->price) . ", " .
+                    db_escape($po_line->quantity) . ", " .
+                    db_escape($po_line->discount) .
+                    ")";
         }
         else
         {
@@ -105,7 +108,8 @@ function update_po(&$po_obj) {
 				description =" . db_escape($po_line->item_description) . ",
 				delivery_date ='" . date2sql($po_line->req_del_date) . "',
 				unit_price=" . db_escape($po_line->price) . ",
-				quantity_ordered=" . db_escape($po_line->quantity) . "
+				quantity_ordered=" . db_escape($po_line->quantity)  . ",
+				discount=" . db_escape($po_line->discount) . "
 				WHERE po_detail_item=" . db_escape($po_line->po_detail_rec);
         }
         db_query($sql, "One of the purchase order detail records could not be updated");
@@ -138,7 +142,6 @@ function read_po_header($order_no, &$order) {
         $order->supplier_id = $myrow["supplier_id"];
         $order->supplier_name = $myrow["supp_name"];
         $order->curr_code = $myrow["curr_code"];
-
         $order->orig_order_date = sql2date($myrow["ord_date"]);
         $order->Comments = $myrow["comments"];
         $order->Location = $myrow["into_stock_location"];
@@ -195,7 +198,7 @@ function read_po_items($order_no, &$order, $open_items_only = false) {
             if ($order->add_to_order($order->lines_on_order + 1, $myrow["item_code"],
                 $myrow["quantity_ordered"], $myrow["description"],
                 $myrow["unit_price"], $units, sql2date($myrow["delivery_date"]),
-                $myrow["qty_invoiced"], $myrow["quantity_received"])) {
+                $myrow["qty_invoiced"], $myrow["quantity_received"], $myrow["discount"])) {
                 $order->line_items[$order->lines_on_order]->po_detail_rec = $myrow["po_detail_item"];
                 $order->line_items[$order->lines_on_order]->standard_cost = $myrow["std_cost_unit"]; /*Needed for receiving goods and GL interface */
             }

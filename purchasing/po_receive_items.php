@@ -60,7 +60,7 @@ function display_po_receive_items()
 	div_start('grn_items');
     start_table("colspan=7 $table_style width=90%");
     $th = array(_("Item Code"), _("Description"), _("Ordered"), _("Units"), _("Received"),
-    	_("Outstanding"), _("This Delivery"), _("Price"), _("Total"));
+    	_("Outstanding"), _("This Delivery"), _("Price"), _('Discount %'), _("Total"));
     table_header($th);
 
     /*show the line items on the order with the quantity being received for modification */
@@ -82,7 +82,7 @@ function display_po_receive_items()
     	    	$ln_itm->receive_qty = $qty_outstanding;
     		}
 
-    		$line_total = ($ln_itm->receive_qty * $ln_itm->price);
+    		$line_total = ($ln_itm->receive_qty * $ln_itm->price * (1-$ln_itm->discount) );
     		$total += $line_total;
 
 			label_cell($ln_itm->stock_id);
@@ -102,13 +102,14 @@ function display_po_receive_items()
 				label_cell(number_format2($ln_itm->receive_qty, $dec), "align=right");
 
 			amount_decimal_cell($ln_itm->price);
+            percent_cell($ln_itm->discount*100);
 			amount_cell($line_total);
 			end_row();
        	}
     }
 
     $display_total = number_format2($total,user_price_dec());
-    label_row(_("Total value of items received"), $display_total, "colspan=8 align=right",
+    label_row(_("Total value of items received"), $display_total, "colspan=9 align=right",
     	"nowrap align=right");
     end_table();
 	div_end();
@@ -240,22 +241,19 @@ function process_receive_po()
 		hyperlink_params("$path_to_root/purchasing/po_receive_items.php", 
 			 _("Re-Read the updated purchase order for receiving goods against"),
 			 "PONumber=" . $_SESSION['PO']->order_no);
-
 		unset($_SESSION['PO']->line_items);
 		unset($_SESSION['PO']);
 		unset($_POST['ProcessGoodsReceived']);
 		$Ajax->activate('_page_body');
 		display_footer_exit();
 	}
-        $_SESSION['wa_global_supplier_id']=$_SESSION['PO']->supplier_id;
-
+    $_SESSION['wa_global_supplier_id']=$_SESSION['PO']->supplier_id;
 	$grn = add_grn($_SESSION['PO'], $_POST['DefaultReceivedDate'],
-		$_POST['ref'], $_POST['Location']);
+	$_POST['ref'], $_POST['Location']);
     $_SESSION['delivery_po']=$_SESSION['PO']->order_no;
 	new_doc_date($_POST['DefaultReceivedDate']);
 	unset($_SESSION['PO']->line_items);
 	unset($_SESSION['PO']);
-
 	meta_forward($_SERVER['PHP_SELF'], "AddedID=$grn");
 }
 
@@ -263,15 +261,11 @@ function process_receive_po()
 
 if (isset($_GET['PONumber']) && $_GET['PONumber'] > 0 && !isset($_POST['Update']))
 {
-
 	create_new_po();
-
 	/*read in all the selected order into the Items cart  */
 	read_po($_GET['PONumber'], $_SESSION['PO']);
 }
-
 //--------------------------------------------------------------------------------------------------
-
 if (isset($_POST['Update']) || isset($_POST['ProcessGoodsReceived']))
 {
 

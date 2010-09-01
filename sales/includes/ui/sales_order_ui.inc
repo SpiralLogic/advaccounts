@@ -19,10 +19,13 @@ function add_to_order(&$order, $new_item, $new_item_qty, $price, $discount) {
     $std_price = get_kit_price($new_item, $order->customer_currency,
         $order->sales_type, $order->price_factor, get_post('OrderDate'), true);
 
-    if ($std_price == 0)
+    if ($std_price == 0) {
         $price_factor = 0;
+    }
     else
+    {
         $price_factor = $price / $std_price;
+    }
 
     $kit = get_item_kit($new_item);
     $item_num = db_num_rows($kit);
@@ -74,8 +77,9 @@ function get_customer_details_to_order(&$order, $customer_id, $branch_id) {
 
     $name = $myrow['name'];
 
-    if ($myrow['dissallow_invoices'] == 1)
+    if ($myrow['dissallow_invoices'] == 1) {
         $ret_error = _("The selected customer account is currently on hold. Please contact the credit control personnel to discuss.");
+    }
 
     $deliver = $myrow['address']; // in case no branch address use company address
 
@@ -143,8 +147,9 @@ function display_order_summary($title, &$order, $editable_items = false) {
         unset($th[3]);
     }
 
-    if (count($order->line_items))
+    if (count($order->line_items)) {
         $th[] = '';
+    }
 
     table_header($th);
 
@@ -209,12 +214,14 @@ function display_order_summary($title, &$order, $editable_items = false) {
         $total += $line_total;
     }
 
-    if ($id == -1 && $editable_items)
+    if ($id == -1 && $editable_items) {
         sales_order_item_controls($order, $k);
+    }
 
     $colspan = 6;
-    if ($order->trans_no != 0)
+    if ($order->trans_no != 0) {
         ++$colspan;
+    }
     start_row();
     label_cell(_("Shipping Charge"), "colspan=$colspan align=right");
     small_amount_cells(null, 'freight_cost', price_format(get_post('freight_cost', 0)));
@@ -228,6 +235,7 @@ function display_order_summary($title, &$order, $editable_items = false) {
     $display_total = price_format(($total + input_num('freight_cost') + $tax_total));
 
     start_row();
+
     label_cells(_("Amount Total"), $display_total, "colspan=$colspan align=right", "align=right");
     submit_cells('update', _("Update"), "colspan=2", _("Refresh"), true);
     end_row();

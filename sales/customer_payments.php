@@ -48,8 +48,9 @@ if (list_updated('BranchID')) {
     $Ajax->activate('customer_id');
 }
 
-if (!isset($_POST['customer_id']))
+if (!isset($_POST['customer_id'])) {
     $_POST['customer_id'] = get_global_customer(false);
+}
 if (!isset($_POST['DateBanked'])) {
     $_POST['DateBanked'] = new_doc_date();
     if (!is_date_in_fiscalyear($_POST['DateBanked'])) {
@@ -159,10 +160,13 @@ function can_process() {
 
     $_SESSION['alloc']->amount = input_num('amount');
 
-    if (isset($_POST["TotalNumberOfAllocs"]))
+    if (isset($_POST["TotalNumberOfAllocs"])) {
         return check_allocations();
+    }
     else
+    {
         return true;
+    }
 }
 
 //----------------------------------------------------------------------------------------------
@@ -237,7 +241,9 @@ table_section(1);
 
 customer_list_row(_("From Customer:"), 'customer_id', null, false, true);
 if (!isset($_POST['bank_account'])) // first page call
+{
     $_SESSION['alloc'] = new allocation(ST_CUSTPAYMENT, 0);
+}
 
 if (db_customer_has_branches($_POST['customer_id'])) {
     customer_branches_list_row(_("Branch:"), $_POST['customer_id'], 'BranchID', null, false, true, true);

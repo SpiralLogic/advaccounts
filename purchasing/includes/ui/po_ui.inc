@@ -152,7 +152,7 @@ function display_po_items(&$order, $editable=true) {
 
     $th = array(_("Item Code"), _("Item Description"), _("Quantity"),
         _("Received"), _("Unit"),
-        _("Required Delivery Date"), _("Price"), _("Line Total"), "");
+        _("Required Delivery Date"), _("Price"),_('Discount %'), _("Line Total"), "");
 
     if (count($order->line_items))
         $th[] = '';
@@ -164,7 +164,7 @@ function display_po_items(&$order, $editable=true) {
     foreach ($order->line_items as $line_no => $po_line) {
 
         if ($po_line->Deleted == false) {
-            $line_total = round($po_line->quantity * $po_line->price, user_price_dec());
+            $line_total = round($po_line->quantity * $po_line->price * (1-$po_line->discount), user_price_dec());
             if (!$editable || ($id != $line_no)) {
                 alt_table_row_color($k);
                 label_cell($po_line->stock_id);
@@ -174,8 +174,8 @@ function display_po_items(&$order, $editable=true) {
                 label_cell($po_line->units);
                 label_cell($po_line->req_del_date);
                 amount_decimal_cell($po_line->price);
+                percent_cell($po_line->discount*100);
                 amount_cell($line_total);
-
                 if ($editable) {
                     edit_button_cell("Edit$line_no", _("Edit"),
                             _('Edit document line'));
@@ -189,13 +189,18 @@ function display_po_items(&$order, $editable=true) {
             $total += $line_total;
         }
     }
-
     if ($id == -1 && $editable)
         po_item_controls($order);
+    label_cell(_("Freight"), "colspan=8 align=right");
 
-    $display_total = price_format($total);
-    label_row(_("Total Excluding Shipping/Tax"), $display_total, "colspan=7 align=right",
+    //small_amount_cells(null, 'freight', price_format(get_post('freight', 0)));
+   // $display_total = price_format($total + input_num('freight'));
+    start_row();
+
+    label_cells(_("Total Excluding Shipping/Tax"), $display_total, "colspan=8 align=right",
             "nowrap align=right", 2);
+   // submit_cells('update', _("Update"), "colspan=2", _("Refresh"), true);
+    end_row();
 
     end_table(1);
     div_end();
@@ -258,18 +263,16 @@ function po_item_controls(&$order, $stock_id=null) {
     $id = find_submit('Edit');
     if (($id != -1) && $stock_id != null) {
         hidden('line_no', $id);
-
         $_POST['stock_id'] = $order->line_items[$id]->stock_id;
         $dec = get_qty_dec($_POST['stock_id']);
         $_POST['qty'] = qty_format($order->line_items[$id]->quantity, $_POST['stock_id'], $dec);
         //$_POST['price'] = price_format($order->line_items[$id]->price);
         $_POST['price'] = price_decimal_format($order->line_items[$id]->price, $dec2);
+        $_POST['discount'] = percent_format($order->line_items[$id]->discount*100);
         $_POST['req_del_date'] = $order->line_items[$id]->req_del_date;
         $_POST['item_description'] = $order->line_items[$id]->item_description;
         $_POST['units'] = $order->line_items[$id]->units;
-
         hidden('stock_id', $_POST['stock_id']);
-
         label_cell($_POST['stock_id']);
         //label_cell($order->line_items[$id]->item_description);
         $Ajax->activate('items_table');
@@ -277,37 +280,36 @@ function po_item_controls(&$order, $stock_id=null) {
         $qty_rcvd = $order->line_items[$id]->qty_received;
     } else {
         hidden('line_no', ($_SESSION['PO']->lines_on_order + 1));
-
         stock_purchasable_items_list_cells(null, 'stock_id', null, false, true, true);
         if (list_updated('stock_id')) {
             $Ajax->activate('price');
             $Ajax->activate('units');
             $Ajax->activate('item_description');
             $Ajax->activate('qty');
+            $Ajax->activate('discount');
             $Ajax->activate('req_del_date');
             $Ajax->activate('line_total');
         }
         $item_info = get_item_edit_info($_POST['stock_id']);
         $_POST['units'] = $item_info["units"];
         $_POST['item_description'] = $item_info['item_description'];
-
         $dec = $item_info["decimals"];
         $_POST['qty'] = number_format2(get_purchase_conversion_factor($order->supplier_id, $_POST['stock_id']), $dec);
         //$_POST['price'] = price_format(get_purchase_price ($order->supplier_id, $_POST['stock_id']));
         $_POST['price'] = price_decimal_format(get_purchase_price($order->supplier_id, $_POST['stock_id']), $dec2);
         $_POST['req_del_date'] = add_days(Today(), 10);
+        $_POST['discount'] = percent_format(0);
         $qty_rcvd = '';
     }
     
     qty_cells(null, 'qty', null, null, null, $dec);
     qty_cell($qty_rcvd, false, $dec);
-
     label_cell($_POST['units'], '', 'units');
     date_cells(null, 'req_del_date', '', null, 0, 0, 0);
     amount_cells(null, 'price', null, null, null, $dec2);
-
+    small_amount_cells(null, 'discount', percent_format($_POST['discount']), null, null, user_percent_dec());
     //$line_total = $_POST['qty'] * $_POST['price'] * (1 - $_POST['Disc'] / 100);
-    $line_total = round(input_num('qty') * input_num('price'), user_price_dec());
+    $line_total = input_num('qty') * input_num('price')* (1 - input_num('discount')/100);
     amount_cell($line_total, false, '', 'line_total');
 
     if ($id != -1) {

@@ -37,22 +37,24 @@ class purch_order
 		$this->lines_on_order = $this->order_no = $this->supplier_id = 0;
 	}
 
-	function add_to_order($line_no, $stock_id, $qty, $item_descr, $price, $uom, $req_del_date, $qty_inv, $qty_recd)
+	function add_to_order($line_no, $stock_id, $qty, $item_descr, $price, $uom, $req_del_date, $qty_inv, $qty_recd, $discount)
 	{
 		if ($qty != 0 && isset($qty))
 		{
-			$this->line_items[$line_no] = new line_details($line_no, $stock_id, $item_descr, $qty, $price, $uom, $req_del_date, $qty_inv, $qty_recd);
+			$this->line_items[$line_no] = new line_details($line_no, $stock_id, $item_descr, $qty, $price, $uom, $req_del_date, $qty_inv, $qty_recd, $discount);
 			$this->lines_on_order++;
 			Return 1;
 		}
 		Return 0;
 	}
 
-	function update_order_item($line_no, $qty, $price, $req_del_date, $item_descr='')
+	function update_order_item($line_no, $qty, $price, $req_del_date, $item_descr='',$discount=0)
 	{
 		$this->line_items[$line_no]->quantity = $qty;
 		$this->line_items[$line_no]->price = $price;
-    if (!empty($item_descr))    $this->line_items[$line_no]->item_description = $item_descr;
+        $this->line_items[$line_no]->discount = $discount;
+    if (!empty($item_descr))    { $this->line_items[$line_no]->item_description = $item_descr; }
+
 		$this->line_items[$line_no]->req_del_date = $req_del_date;
 		$this->line_items[$line_no]->price = $price;
 	}
@@ -131,11 +133,12 @@ class line_details
 	Var $req_del_date;
 	Var $qty_inv;
 	Var $qty_received;
+    var $discount;
 	Var $standard_cost;
 	Var $receive_qty;
 	Var $Deleted;	
 	
-	function line_details($line_no, $stock_item, $item_descr, $qty, $prc, $uom, $req_del_date, $qty_inv, $qty_recd)
+	function line_details($line_no, $stock_item, $item_descr, $qty, $prc, $uom, $req_del_date, $qty_inv, $qty_recd, $discount)
 	{
 
 		/* Constructor function to add a new LineDetail object with passed params */
@@ -147,6 +150,7 @@ class line_details
 		$this->price = $prc;
 		$this->units = $uom;
 		$this->qty_received = $qty_recd;
+        $this->discount = $discount;
 		$this->qty_inv = $qty_inv;
 		$this->receive_qty = 0;	/*initialise these last two only */
 		$this->standard_cost =0;
