@@ -31,7 +31,7 @@ if ($use_date_picker) {
 }
 add_js_file('payalloc.js');
 
-page(_($help_context = "Customer Payment Entry"), false, false, "", $js);
+page(_($help_context = "Customer Payment Entry"), @$_REQUEST['frame'], false, "", $js);
 
 //----------------------------------------------------------------------------------------------
 
@@ -63,9 +63,9 @@ if (isset($_GET['AddedID'])) {
     display_notification_centered(_("The customer payment has been successfully entered."));
 
     submenu_print(_("&Print This Receipt"), ST_CUSTPAYMENT, $payment_no . "-" . ST_CUSTPAYMENT, 'prtopt');
- hyperlink_no_params($path_to_root . "/sales/inquiry/customer_inquiry.php", _("Show Invoices"));
+    hyperlink_no_params($path_to_root . "/sales/inquiry/customer_inquiry.php", _("Show Invoices"));
 
- 
+
     display_note(get_gl_view_str(ST_CUSTPAYMENT, $payment_no, _("&View the GL Journal Entries for this Customer Payment")));
 
 //	hyperlink_params($path_to_root . "/sales/allocations/customer_allocate.php", _("&Allocate this Customer Payment"), "trans_no=$payment_no&trans_type=12");
@@ -174,7 +174,7 @@ if (isset($_POST['AddPaymentItem'])) {
     }
 }
 if (isset($_POST['_customer_id_button'])) {
-//	unset($_POST['branch_id']);
+    //	unset($_POST['branch_id']);
     $Ajax->activate('BranchID');
 }
 if (isset($_POST['_DateBanked_changed'])) {
@@ -199,8 +199,8 @@ if (isset($_POST['AddPaymentItem'])) {
     new_doc_date($_POST['DateBanked']);
 
     $payment_no = write_customer_payment(0, $_POST['customer_id'], $_POST['BranchID'],
-                    $_POST['bank_account'], $_POST['DateBanked'], $_POST['ref'],
-                    input_num('amount'), input_num('discount'), $_POST['memo_'], $rate, input_num('charge'));
+        $_POST['bank_account'], $_POST['DateBanked'], $_POST['ref'],
+        input_num('amount'), input_num('discount'), $_POST['memo_'], $rate, input_num('charge'));
 
     $_SESSION['alloc']->trans_no = $payment_no;
     $_SESSION['alloc']->write();
@@ -297,5 +297,11 @@ if (isset($_POST['HoldAccount']) && $_POST['HoldAccount'] != 0) {
 br();
 
 end_form();
-end_page();
+if ($_REQUEST['frame']) {
+    end_page(true, true, true);
+
+} else {
+    end_page();
+}
+
 ?>

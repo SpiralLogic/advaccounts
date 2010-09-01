@@ -1,4 +1,5 @@
 $(function () {
-	$('#ChgPriceCalc*').calculator({
-		showOn: 'both', buttonImageOnly: true, buttonImage: '../themes/default/images/calculator.png'});
+	$("input[id^='ChgPriceCalc']").calculator({
+		showOn: 'focus'});
 });
+/*, buttonImageOnly: true, buttonImage: '../themes/default/images/calculator.png'*/

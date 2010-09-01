@@ -188,13 +188,14 @@ if (isset($_POST['addupdate']))
 				$_POST['adjustment_account'], $_POST['assembly_account'], 
 				$_POST['dimension_id'], $_POST['dimension2_id'],
 				check_value('no_sale'));
-
+			set_global_stock_item($_POST['NewStockID']);
 			display_notification(_("A new item has been added."));
 			$_POST['stock_id'] = $_POST['NewStockID'] = 
 			$_POST['description'] = $_POST['long_description'] = '';
 			$_POST['no_sale'] = 0;
-			set_focus('NewStockID');
+            set_focus('NewStockID');
 		}
+$_POST['stock_id']=get_global_stock_item();
 		$Ajax->activate('_page_body');
 	}
 }
@@ -444,31 +445,36 @@ if ($check_remove_image)
 check_row(_("Exclude from sales:"), 'no_sale');
 
 record_status_list_row(_("Item status:"), 'inactive');
-        start_row();
-        echo '<td>' . _('Customer branches') . ':</td>';
-        hyperlink_params_td($path_to_root . "inventory/inventory/purchasing_data.php",
-                '<b>' .  _("&Add or Edit ").'</b>',
-                '&popup=1');
-        end_row();
+
 end_outer_table(1);
 div_end();
 div_start('controls');
-if (!isset($_POST['NewStockID']) || $new_item) 
+if (!isset($_POST['NewStockID']) || $new_item)
 {
 	submit_center('addupdate', _("Insert New Item"), true, '', 'default');
-} 
-else 
+}
+else
 {
-	submit_center_first('addupdate', _("Update Item"), '', 
+	submit_center_first('addupdate', _("Update Item"), '',
 		@$_REQUEST['popup'] ? true : 'default');
-	submit_return('select', get_post('stock_id'), 
+	submit_return('select', get_post('stock_id'),
 		_("Select this items and return to document entry."), 'default');
 	submit('clone', _("Clone This Item"), true, '', true);
 	submit('delete', _("Delete This Item"), true, '', true);
 	submit_center_last('cancel', _("Cancel"), _("Cancel Edition"), 'cancel');
 }
 
+if (get_post('stock_id')) {
+set_global_stock_item(get_post('stock_id'));
+echo "<iframe src='{$path_to_root}/inventory/purchasing_data.php?frame=1' width='45%' height='450' scrolling='no' frameborder='0'></iframe> ";
+}
+if (get_post('stock_id')) {
+set_global_stock_item(get_post('stock_id'));
+echo "<iframe style='float:right;' src='{$path_to_root}/inventory/prices.php?frame=1' width='45%' height='450' scrolling='no' frameborder='0'></iframe> ";
+}
 div_end();
+
+
 hidden('popup', @$_REQUEST['popup']);
 end_form();
 

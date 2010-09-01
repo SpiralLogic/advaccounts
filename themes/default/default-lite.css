@@ -21,12 +21,12 @@ body {
 	margin: 0;
 	font: .7em Tahoma, Arial, sans-serif;
 	line-height: 1.7em;
+/*
 	background: #fff url(images/bg.gif) repeat-x;
+*/
 	color: #454545;
 }
-iframe {
-    border: 1px solid #8ab9f2;
-}
+
 tr, td, th {
 	font-size: 11px;
 	line-height: 19px;
@@ -388,7 +388,7 @@ ul { margin: 0; padding : 0; list-style : none; }
 img { border: 0; }
 
 
-#content { margin: 5px auto; width: 90%; }
+#content { margin: 5px auto; width: 90%;     border: 1px solid #8ab9f2; }
 #logo { margin: 0 0 10px 0; }
 #slogan { font-size: 0.9em; margin: 0 0 10px 2px; padding: 0; color: #808080; background: #fff; }
 #top { float: right; color: #808080; background: #fff; margin: 16px 5px 0 0; text-align: right; }
@@ -421,8 +421,8 @@ img { border: 0; }
 #wrapper {
 	clear: left;
 	width: 100%;
-	background: #fff url(images/wrapbg.gif) repeat-x;
-	border: 1px solid #8ab9f2;
+/*	background: #fff url(images/wrapbg.gif) repeat-x;
+	border: 1px solid #8ab9f2;*/
 	padding: 8px 5px;
 	margin: 0 0 5px 0;
 	color: #000;

@@ -22,6 +22,8 @@ if ($use_popup_windows)
 	$js .= get_js_open_window(900, 500);
 if ($use_date_picker)
 	$js .= get_js_date_picker();
+
+
 page(_($help_context = "Receive Purchase Order Items"), false, false, "", $js);
 
 //---------------------------------------------------------------------------------------------------------------
@@ -246,9 +248,10 @@ function process_receive_po()
 		display_footer_exit();
 	}
         $_SESSION['wa_global_supplier_id']=$_SESSION['PO']->supplier_id;
+
 	$grn = add_grn($_SESSION['PO'], $_POST['DefaultReceivedDate'],
 		$_POST['ref'], $_POST['Location']);
-
+    $_SESSION['delivery_po']=$_SESSION['PO']->order_no;
 	new_doc_date($_POST['DefaultReceivedDate']);
 	unset($_SESSION['PO']->line_items);
 	unset($_SESSION['PO']);

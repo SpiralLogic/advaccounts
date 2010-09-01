@@ -13,7 +13,7 @@ $page_security = 'SA_SALESPRICE';
 $path_to_root = "..";
 include_once($path_to_root . "/includes/session.inc");
 
-page(_($help_context = "Inventory Item Sales prices"));
+page(_($help_context = "Inventory Item Sales prices"), @$_REQUEST['frame']);
 
 include_once($path_to_root . "/sales/includes/sales_db.inc");
 include_once($path_to_root . "/sales/includes/db/sales_types_db.inc");
@@ -48,14 +48,22 @@ if (!isset($_POST['curr_abrev']))
 
 //---------------------------------------------------------------------------------------------------
 
-start_form();
+if ($_REQUEST['frame']) {
+start_form(false,false,$_SERVER['PHP_SELF'].'?frame=1');
+} else {
+    start_form();
+}
 
 if (!isset($_POST['stock_id']))
 	$_POST['stock_id'] = get_global_stock_item();
 
-echo "<center>" . _("Item:"). "&nbsp;";
-echo sales_items_list('stock_id', $_POST['stock_id'], false, true);
-echo "<hr></center>";
+
+if (!$_REQUEST['frame']) {
+    echo "<center>" . _("Item:"). "&nbsp;";
+    echo sales_items_list('stock_id', $_POST['stock_id'], false, true);
+    echo "<hr></center>";
+} 
+
 
 set_global_stock_item($_POST['stock_id']);
 
@@ -128,7 +136,11 @@ if (list_updated('stock_id') || isset($_POST['_curr_abrev_update']) || isset($_P
 $prices_list = get_prices($_POST['stock_id']);
 
 div_start('price_table');
-start_table("$table_style width=30%");
+       if ($_REQUEST['frame']) {
+        start_table("$table_style width=90%");
+        } else {
+            start_table("$table_style width=30%");
+        }
 
 $th = array(_("Currency"), _("Sales Type"), _("Price"), "", "");
 table_header($th);
@@ -191,5 +203,9 @@ submit_add_or_update_center($selected_id == -1, '', 'both');
 div_end();
 
 end_form();
-end_page();
-?>
+if ($_REQUEST['frame']) {
+    end_page(true, true, true);
+
+} else {
+    end_page();
+}

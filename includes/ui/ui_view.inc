@@ -742,7 +742,18 @@ function get_js_png_fix() {
             . "}\n";
     return $js;
 }
+function get_js_calc() {
+    global $path_to_root;
+   add_js_file('jquery.min.js'); 
+   add_js_file('jquery.calculator.pack.js');
+    add_js_file('calc.js');
 
+
+    $_SESSION['using_js_calc']=true;
+    
+    return $js;
+    
+}
 function get_js_date_picker() {
     global $comp_path, $go_debug;
     $fpath = $comp_path . '/' . user_company() . '/js_cache/' . 'date_picker.js';

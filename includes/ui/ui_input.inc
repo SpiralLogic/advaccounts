@@ -682,7 +682,7 @@ function percent_row($label, $name, $init=null)
 	small_amount_row($label, $name, $_POST[$name], null, "%", user_percent_dec());
 }
 
-function amount_cells_ex($label, $name, $size, $max=null, $init=null, $params=null, $post_label=null, $dec=null)
+function amount_cells_ex($label, $name, $size, $max=null, $init=null, $params=null, $post_label=null, $dec=null,$id=null)
 {
 	global $Ajax;
 
@@ -709,7 +709,10 @@ function amount_cells_ex($label, $name, $size, $max=null, $init=null, $params=nu
 	else
 		echo "<td align='right'>";
 
-	echo "<input class='amount' type=\"text\" name=\"$name\" size=\"$size\" maxlength=\"$max\" dec=\"$dec\" value=\"" . $_POST[$name]. "\">";
+	echo "<input ";
+    if ($id!=null)
+        echo "id='$id'";
+        echo "class='amount' type=\"text\" name=\"$name\" size=\"$size\" maxlength=\"$max\" dec=\"$dec\" value=\"" . $_POST[$name]. "\">";
 
 	if ($post_label) {
 		echo "<span id='_{$name}_label'> $post_label</span>";
@@ -723,9 +726,9 @@ function amount_cells_ex($label, $name, $size, $max=null, $init=null, $params=nu
 
 //-----------------------------------------------------------------------------------
 
-function amount_cells($label, $name, $init=null, $params=null, $post_label=null, $dec=null)
+function amount_cells($label, $name, $init=null, $params=null, $post_label=null, $dec=null,$id=null)
 {
-	amount_cells_ex($label, $name, 15, 15, $init, $params, $post_label, $dec);
+	amount_cells_ex($label, $name, 15, 15, $init, $params, $post_label, $dec,$id);
 }
 
 //JAM  Allow entered unit prices to be fractional

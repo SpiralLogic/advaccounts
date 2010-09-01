@@ -4133,7 +4133,7 @@ msgstr ""
 
 #: c:\Apache2\htdocs\account228/inventory/purchasing_data.php:229
 msgid "Supplier's Code or Description:"
-msgstr ""
+msgstr "Supplier's Product Code:"
 
 #: c:\Apache2\htdocs\account228/inventory/reorder_level.php:16
 msgid "Reorder Levels"

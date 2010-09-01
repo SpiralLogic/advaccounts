@@ -77,7 +77,7 @@
             if ($no_menu == false) {
                 echo "<div id='footer'>\n";
                 if (isset($_SESSION['wa_current_user'])) {
-                    echo "<span class='power'><a target='_blank' href='$power_url'>$power_by</a></span\n";
+                    echo "<span class='power'><a target='_blank' href='{$power_url}'>{$power_by}</a></span>\n";
                     echo "<span class='date'>" . Today() . " | " . Now() . "</span>\n";
                     echo "<span class='date'>" . show_users_online() . "</span>\n";
                 }
@@ -85,6 +85,17 @@
             }
             echo "</div>\n";
             echo "</div>\n";
+                if ($_SESSION['wa_current_user']->username=='admin') {
+                echo '<div style="word-wrap: break-word; margin:0 auto; width:90%;"><table ><tr style="vertical-align: top;"><td  style="width: 30%; ">';
+                var_dump($_SESSION);
+                echo '</td><td style="width: 30%; ">';
+                var_dump($_REQUEST);
+                echo '</td><td style="width: 30%; ">';
+                var_dump($_POST);
+                echo '<br>';
+                var_dump($_GET);
+                echo '</td></tr></table></div>';
+            }
         }
 
         function display_applications(&$waapp) {
