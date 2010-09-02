@@ -180,7 +180,6 @@ $name = $myrow['DebtorName'];
    $addr =  (trim($branch['br_address']) != '') ? $branch['br_address'] : $addr = $myrow['address'];
 if ($doctype == ST_SALESQUOTE || $doctype == ST_SALESORDER) {
 $name = $myrow['name'];
-    var_dump($myrow);
 } elseif ($doctype == ST_WORKORDER) {
     $name = $myrow['location_name'];
     $addr = $myrow['delivery_address'];

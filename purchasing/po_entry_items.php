@@ -26,9 +26,7 @@ if ($use_date_picker) {
 
 if (isset($_GET['ModifyOrderNumber'])) {
     page(_($help_context = "Modify Purchase Order #") . $_GET['ModifyOrderNumber'], false, false, "", $js);
-}
-else
-{
+} else {
     page(_($help_context = "Purchase Order Entry"), false, false, "", $js);
 }
 
@@ -45,8 +43,7 @@ if (isset($_GET['AddedID'])) {
     $trans_type = ST_PURCHORDER;
 
     if (!isset($_GET['Updated']))
-        display_notification_centered(_("Purchase Order has been entered"));
-    else
+        display_notification_centered(_("Purchase Order has been entered")); else
         display_notification_centered(_("Purchase Order has been updated") . " #$order_no");
     display_note(get_trans_view_str($trans_type, $order_no, _("&View this order")), 0, 1);
 
@@ -108,9 +105,7 @@ function handle_delete_item($line_no) {
     if ($_SESSION['PO']->some_already_received($line_no) == 0) {
         $_SESSION['PO']->remove_from_order($line_no);
         unset_form_variables();
-    }
-    else
-    {
+    } else {
         display_error(_("This item cannot be deleted because some of it has already been received."));
     }
     line_start_focus();
@@ -122,10 +117,8 @@ function handle_cancel_po() {
     global $path_to_root;
 
     //need to check that not already dispatched or invoiced by the supplier
-    if (($_SESSION['PO']->order_no != 0) &&
-            $_SESSION['PO']->any_already_received() == 1) {
-        display_error(_("This order cannot be cancelled because some of it has already been received.")
-                . "<br>" . _("The line item quantities may be modified to quantities more than already received. prices cannot be altered for lines that have already been received and quantities cannot be reduced below the quantity already received."));
+    if (($_SESSION['PO']->order_no != 0) && $_SESSION['PO']->any_already_received() == 1) {
+        display_error(_("This order cannot be cancelled because some of it has already been received.") . "<br>" . _("The line item quantities may be modified to quantities more than already received. prices cannot be altered for lines that have already been received and quantities cannot be reduced below the quantity already received."));
         return;
     }
 
@@ -185,20 +178,22 @@ function handle_update_item() {
     $allow_update = check_data();
 
     if ($allow_update) {
-        if ($_SESSION['PO']->line_items[$_POST['line_no']]->qty_inv > input_num('qty') ||
-                $_SESSION['PO']->line_items[$_POST['line_no']]->qty_received > input_num('qty')) {
-            display_error(_("You are attempting to make the quantity ordered a quantity less than has already been invoiced or received.  This is prohibited.") .
-                    "<br>" . _("The quantity received can only be modified by entering a negative receipt and the quantity invoiced can only be reduced by entering a credit note against this item."));
+        if ($_SESSION['PO']->line_items[$_POST['line_no']]->qty_inv > input_num('qty') || $_SESSION['PO']->line_items[$_POST['line_no']]->qty_received > input_num('qty')) {
+            display_error(_("You are attempting to make the quantity ordered a quantity less than has already been invoiced or received.  This is prohibited.") . "<br>" . _("The quantity received can only be modified by entering a negative receipt and the quantity invoiced can only be reduced by entering a credit note against this item."));
             set_focus('qty');
             return;
         }
-
-        $_SESSION['PO']->update_order_item($_POST['line_no'], input_num('qty'), input_num('price'),
-            $_POST['req_del_date'], $_POST['item_description'], $_POST['discount']/100);
+        $_SESSION['PO']->update_order_item($_POST['line_no'], input_num('qty'), input_num('price'), $_POST['req_del_date'], $_POST['item_description'], $_POST['discount'] / 100);
         unset_form_variables();
     }
     line_start_focus();
 }
+//---------------------------------------------------------------------------------------------------
+
+function handle_update_freight() {
+    global $Ajax;
+    $Ajax->activate('items_table');
+   }
 
 //---------------------------------------------------------------------------------------------------
 
@@ -234,15 +229,11 @@ function handle_add_new_item() {
 
             if ($allow_update) {
                 $myrow = db_fetch($result);
-                $_SESSION['PO']->add_to_order($_POST['line_no'], $_POST['stock_id'], input_num('qty'),
-                    $myrow["description"], input_num('price'), $myrow["units"],
-                    $_POST['req_del_date'], 0, 0, $_POST['discount'] / 100);
+                $_SESSION['PO']->add_to_order($_POST['line_no'], $_POST['stock_id'], input_num('qty'), $myrow["description"], input_num('price'), $myrow["units"], $_POST['req_del_date'], 0, 0, $_POST['discount'] / 100);
 
                 unset_form_variables();
                 $_POST['stock_id'] = "";
-            }
-            else
-            {
+            } else {
                 display_error(_("The selected item does not exist or it is a kit part and therefore cannot be purchased."));
             }
 
@@ -275,7 +266,7 @@ function can_commit() {
             return false;
         }
         while (!is_new_reference(get_post('ref'), ST_PURCHORDER)) {
-//            if (!is_new_reference(get_post('ref'), ST_PURCHORDER)) {
+            //            if (!is_new_reference(get_post('ref'), ST_PURCHORDER)) {
             //display_error(_("The entered reference is already in use."));
             //set_focus('ref');
             //return false;
@@ -336,7 +327,9 @@ if (isset($_POST['Commit'])) {
 if (isset($_POST['UpdateLine'])) {
     handle_update_item();
 }
-
+if (isset($_POST['UpdateFreight'])) {
+    handle_update_freight();
+}
 if (isset($_POST['EnterLine'])) {
     handle_add_new_item();
 }
@@ -381,12 +374,10 @@ end_table(1);
 div_start('controls', 'items_table');
 if ($_SESSION['PO']->order_has_items()) {
     if ($_SESSION['PO']->order_no)
-        submit_center_first('Commit', _("Update Order"), '', 'default');
-    else
+        submit_center_first('Commit', _("Update Order"), '', 'default'); else
         submit_center_first('Commit', _("Place Order"), '', 'default');
     submit_center_last('CancelOrder', _("Cancel Order"));
-}
-else
+} else
     submit_center('CancelOrder', _("Cancel Order"), true, false, 'cancel');
 div_end();
 //---------------------------------------------------------------------------------------------------

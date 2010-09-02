@@ -96,7 +96,7 @@
 
     function prt_link2($row) {
         global $trans_type;
-        return print_document_link($row['order_no'], 'Proforma', true, ST_PROFORMA, ICON_PRINT);
+        return print_document_link($row['order_no'], _("Proforma"), true, ST_PROFORMA, ICON_PRINT);
     }
 
     function edit_link($row) {

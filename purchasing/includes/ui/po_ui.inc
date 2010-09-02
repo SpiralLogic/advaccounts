@@ -191,17 +191,20 @@ function display_po_items(&$order, $editable=true) {
     }
     if ($id == -1 && $editable)
         po_item_controls($order);
-    label_cell(_("Freight"), "colspan=8 align=right");
+div_start('totals');
 
-    //small_amount_cells(null, 'freight', price_format(get_post('freight', 0)));
-   // $display_total = price_format($total + input_num('freight'));
+    label_cell(_("Freight"), "colspan=8 align=right");
+    small_amount_cells(null, 'freight', price_format(get_post('freight', 0)));
+    $display_total = price_format($total + input_num('freight'));
     start_row();
 
     label_cells(_("Total Excluding Shipping/Tax"), $display_total, "colspan=8 align=right",
             "nowrap align=right", 2);
-   // submit_cells('update', _("Update"), "colspan=2", _("Refresh"), true);
-    end_row();
+    submit_cells('UpdateFreight', _("Update"), "", _("Refresh"), true);
+    div_end('totals');
 
+    end_row();
+    div_end();
     end_table(1);
     div_end();
 }

@@ -44,22 +44,22 @@
                 echo "<p id='slogan'>" . _("Theme:") . " " . user_theme() . "</p>\n";
                 echo "</div>\n";
                 $local_path_to_root = $path_to_root;
-
-                echo "<ul id='_tabs'>\n";
+                echo '<div id="_tabs2"><div class="menu_container">';
+                echo "<ul class='menu'>\n";
                 foreach ($applications as $app) {
                     $acc = access_string($app->name);
                     if ($app->id == 'cards') {
-                        echo "<li><a " . ($sel_app == $app->id ? "class='current' " : "") .
-                        " title='Another Mike is shit addition!' href='$local_path_to_root/sales/manage/customer_branches.php?'>" . $acc[0] . "</a><li>\n";
+                        echo "<li " . ($sel_app == $app->id ? "class='active' " : "") .
+                        "><a title='Another Mike is shit addition!' href='$local_path_to_root/sales/manage/customer_branches.php?application=cards'>" . $acc[0] . "</a><li>\n";
                     } else {
-                        echo "<li><a " . ($sel_app == $app->id ? "class='current' " : "") .
-                        "href='$local_path_to_root/index.php?application=" . $app->id
+                        echo "<li " . ($sel_app == $app->id ? "class='active' " : "") .
+                        "><a href='$local_path_to_root/index.php?application=" . $app->id
                         . "'$acc[1]>" . $acc[0] . "</a></li>\n";
                     }
                 }
                 echo "</ul>\n";
             }
-            echo "<div id='wrapper'>\n";
+            echo "</div></div><div id='wrapper'>\n";
             if ($no_menu) echo "<br>";
             elseif ($title && !$is_index) {
                 echo "<center><table id='title'><tr><td width='100%' class='titletext'>$title</td>"

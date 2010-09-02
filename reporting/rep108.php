@@ -127,7 +127,6 @@
             for ($i = 0; $i < count($transactions); $i++) {
 
                 if ($prev_branch != $transactions[$i]['branch_code']) {
-                    var_dump(get_branch($transactions[$i]['branch_code']));
                     $rep->Header2($myrow, get_branch($transactions[$i]['branch_code']), null, $baccount, ST_STATEMENT);
                     $rep->NewLine();
                     $linetype = true;
