@@ -190,8 +190,9 @@ function display_po_items(&$order, $editable=true) {
         }
     }
     if ($id == -1 && $editable)
+        
         po_item_controls($order);
-div_start('totals');
+        div_start('totals');
 
     label_cell(_("Freight"), "colspan=8 align=right");
     small_amount_cells(null, 'freight', price_format(get_post('freight', 0)));
@@ -201,7 +202,7 @@ div_start('totals');
     label_cells(_("Total Excluding Shipping/Tax"), $display_total, "colspan=8 align=right",
             "nowrap align=right", 2);
     submit_cells('UpdateFreight', _("Update"), "", _("Refresh"), true);
-    div_end('totals');
+    div_end();
 
     end_row();
     div_end();
@@ -289,7 +290,7 @@ function po_item_controls(&$order, $stock_id=null) {
             $Ajax->activate('units');
             $Ajax->activate('item_description');
             $Ajax->activate('qty');
-            $Ajax->activate('discount');
+            $Ajax->activate('discount');    
             $Ajax->activate('req_del_date');
             $Ajax->activate('line_total');
         }

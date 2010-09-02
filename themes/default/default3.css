@@ -401,8 +401,8 @@ img { border: 0; }
     width: 100%;
     height: 80px;
     background : #464646;
-    background : -webkit-gradient(linear, left top, left bottom, from(rgb(168,168,168)), to(rgb(69,69,69)));
-    background : -moz-linear-gradient(top, rgb(168,168,168), rgb(69,69,69));
+    background : -webkit-gradient(linear, 100% 19%, 100% 71%, from(#858585), to(#9E9E9E), color-stop(0,#C7C7C7))   ;
+    background : -moz-linear-gradient(19% 100% 90deg,#858585, #9E9E9E, #C7C7C7 71%);
     border-top: 2px solid #939393;
     position: relative;
     margin-bottom: 30px;
@@ -451,8 +451,8 @@ margin: 0 auto;
     float:left;
     height: 79px;
     text-align: center;
-    background: -webkit-gradient(radial, 50% 100%, 10, 50% 50%, 90, from(rgba(31,169,244,1)), to(rgba(0,28,78, 1)) );
-    background: -moz-radial-gradient(center 80px 45deg, circle cover, rgba(31,169,244,1) 0%, rgba(0,28,78, 1) 100%);
+     background: -webkit-gradient(linear, 100% 100%, 100% 0%, from(#B81D1D), to(#E38881), color-stop(.5,#DB4949));
+    background:-moz-linear-gradient(100% 100% 90deg,#B81D1D, #E38881, #DB4949 100%);
     }
 
 #_tabs2 ul li a {
@@ -462,8 +462,8 @@ margin: 0 auto;
     border-right: 1px solid rgba(0,0,0,0.1);
     text-align: center;
     line-height: 79px;
-    background : -webkit-gradient(linear, left top, left bottom, from(rgb(168,168,168)), to(rgb(69,69,69)));
-    background : -moz-linear-gradient(top, rgb(168,168,168), rgb(69,69,69));
+    background : -webkit-gradient(linear, 100% 19%, 100% 71%, from(#858585), to(#9E9E9E), color-stop(0,#C7C7C7))   ;
+    background : -moz-linear-gradient(19% 100% 90deg,#858585, #9E9E9E, #C7C7C7 71%);
     -webkit-transition-property: background;
     -webkit-transition-duration: 700ms;
     -moz-transition-property: background;
@@ -483,8 +483,8 @@ margin: 0 auto;
 }
 
 #_tabs2 ul li.active a{
-    background: -webkit-gradient(radial, 50% 100%, 10, 50% 50%, 90, from(rgba(31,169,244,1)), to(rgba(0,28,78, 1)) );
-    background: -moz-radial-gradient(center 80px 45deg, circle cover, rgba(31,169,244,1) 0%, rgba(0,28,78, 1) 100%);
+     background: -webkit-gradient(linear, 100% 100%, 100% 0%, from(#B81D1D), to(#E38881), color-stop(.5,#DB4949));
+    background:-moz-linear-gradient(100% 100% 90deg,#B81D1D, #E38881, #DB4949 100%);
 }
 
 
