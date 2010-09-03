@@ -69,6 +69,7 @@ function copy_from_cart() {
     $_POST['Comments'] = $_SESSION['PO']->Comments;
     $_POST['StkLocation'] = $_SESSION['PO']->Location;
     $_POST['delivery_address'] = $_SESSION['PO']->delivery_address;
+        $_POST['freight'] = $_SESSION['PO']->freight;
 }
 
 function copy_to_cart() {
@@ -79,6 +80,7 @@ function copy_to_cart() {
     $_SESSION['PO']->Comments = $_POST['Comments'];
     $_SESSION['PO']->Location = $_POST['StkLocation'];
     $_SESSION['PO']->delivery_address = $_POST['delivery_address'];
+    $_SESSION['PO']->freight = $_POST['freight'];
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -193,6 +195,7 @@ function handle_update_item() {
 function handle_update_freight() {
     global $Ajax;
     $Ajax->activate('items_table');
+    
    }
 
 //---------------------------------------------------------------------------------------------------
@@ -279,7 +282,11 @@ function can_commit() {
         set_focus('delivery_address');
         return false;
     }
-
+    if (!check_num('freight', 0)) {
+        display_error(_("The freight entered must be numeric and not less than zero."));
+        set_focus('freight');
+        return false;
+    }
     if (get_post('StkLocation') == '') {
         display_error(_("There is no location specified to move any items into."));
         set_focus('StkLocation');

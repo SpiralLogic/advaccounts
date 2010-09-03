@@ -27,15 +27,16 @@ function add_po(&$po_obj) {
     begin_transaction();
 
     /*Insert to purchase order header record */
-    $sql = "INSERT INTO " . TB_PREF . "purch_orders (supplier_id, Comments, ord_date, reference, requisition_no, into_stock_location, delivery_address) VALUES(";
+    $sql = "INSERT INTO " . TB_PREF . "purch_orders (supplier_id, Comments, ord_date, reference, requisition_no, into_stock_location, delivery_address, freight) VALUES(";
     $sql .= db_escape($po_obj->supplier_id) . "," .
             db_escape($po_obj->Comments) . ",'" .
             date2sql($po_obj->orig_order_date) . "', " .
             db_escape($po_obj->reference) . ", " .
             db_escape($po_obj->requisition_no) . ", " .
             db_escape($po_obj->Location) . ", " .
-            db_escape($po_obj->delivery_address) . ")";
-    db_query($sql, "The purchase order header record could not be inserted");
+            db_escape($po_obj->delivery_address) . ", " .
+            db_escape($po_obj->freight) . ")";
+            db_query($sql, "The purchase order header record could not be inserted");
 
     /*Get the auto increment value of the order number created from the sql above */
     $po_obj->order_no = db_insert_id();
@@ -75,7 +76,8 @@ function update_po(&$po_obj) {
 		requisition_no= " . db_escape($po_obj->requisition_no) . ",
 		into_stock_location=" . db_escape($po_obj->Location) . ",
 		ord_date='" . date2sql($po_obj->orig_order_date) . "',
-		delivery_address=" . db_escape($po_obj->delivery_address);
+		delivery_address=" . db_escape($po_obj->delivery_address) . ",
+		freight=" . db_escape($po_obj->freight);
     $sql .= " WHERE order_no = " . $po_obj->order_no;
     db_query($sql, "The purchase order could not be updated");
 
@@ -148,6 +150,7 @@ function read_po_header($order_no, &$order) {
         $order->requisition_no = $myrow["requisition_no"];
         $order->reference = $myrow["reference"];
         $order->delivery_address = $myrow["delivery_address"];
+        $order->freight = $myrow["freight"];
 
         return true;
     }

@@ -440,7 +440,7 @@ function qty_cell($label, $bold=false, $dec=null, $id=null)
 function label_cells($label, $value, $params="", $params2="", $id='')
 {
 	if ($label != null)
-		echo "<td $params>$label</td>\n";
+		echo "<td {$params}>{$label}</td>\n";
 	label_cell($value, $params2, $id);
 }
 
@@ -497,7 +497,7 @@ function text_cells_ex($label, $name, $size, $max=null, $init=null, $title=null,
 			$_POST[$name] = "";
 	}
 	if ($label != null)
-		label_cell($label, $labparams);
+		label_cell($label,$labparams);
 
 	if (!isset($max))
 		$max = $size;
@@ -524,10 +524,10 @@ function text_row($label, $name, $value, $size, $max, $title=null, $params="", $
 
 //-----------------------------------------------------------------------------------
 
-function text_row_ex($label, $name, $size, $max=null, $title=null, $value=null, $params=null, $post_label=null)
+function text_row_ex($label, $name, $size, $max=null, $title=null, $value=null, $params=null, $post_label=null,$params2='', $submit_on_change=false)
 {
-	echo "<tr><td class='label'>$label</td>";
-	text_cells_ex(null, $name, $size, $max, $value, $title, $params, $post_label);
+	echo "<tr {$params}><td class='label' {$params2}>$label</td>";
+	text_cells_ex(null, $name, $size, $max, $value, $title, $params, $post_label,$submit_on_change);
 
 	echo "</tr>\n";
 }

@@ -27,7 +27,7 @@ class purch_order
 	var $orig_order_date;
 	var $order_no; /*Only used for modification of existing orders otherwise only established when order committed */
 	var $lines_on_order;
-	
+	var $freight;
 	var $reference;
 	
 	function purch_order()
@@ -54,7 +54,6 @@ class purch_order
 		$this->line_items[$line_no]->price = $price;
         $this->line_items[$line_no]->discount = $discount;
     if (!empty($item_descr))    { $this->line_items[$line_no]->item_description = $item_descr; }
-
 		$this->line_items[$line_no]->req_del_date = $req_del_date;
 		$this->line_items[$line_no]->price = $price;
 	}

@@ -190,7 +190,6 @@ function display_po_items(&$order, $editable=true) {
         }
     }
     if ($id == -1 && $editable)
-        
         po_item_controls($order);
         div_start('totals');
 
@@ -262,7 +261,6 @@ function display_po_summary(&$po, $is_self=false, $editable=false) {
 function po_item_controls(&$order, $stock_id=null) {
     global $Ajax;
     start_row();
-
     $dec2 = 0;
     $id = find_submit('Edit');
     if (($id != -1) && $stock_id != null) {
