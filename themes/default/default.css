@@ -489,7 +489,7 @@ img {
     position: absolute;
     right: 20px;
     top: 10px;
-    font-size: 18px;
+    font-size: 15px;
     text-transform: uppercase;
 }
 
@@ -514,58 +514,51 @@ img {
     text-decoration: none;
     color: #363636;
     text-transform: uppercase;
-    font-size: 15px;
+    font-size: 12px;
     font-weight: bold;
 }
-
 #_tabs2 ul {
     margin: 0;
     padding: 0;
 }
-
 #_tabs2 ul.menu li {
+
     list-style: none;
     float: left;
     height: 79px;
     text-align: center;
-    background: -webkit-gradient(linear, 100% 100%, 100% 0%, from(#192E9C), to(#5CADFF), color-stop(.5, #4E6AD9));
-    background: -moz-linear-gradient(100% 100% 90deg, #192E9C, #5CADFF, #4E6AD9 100%);
+  
 }
+#_tabs2  ul li a {
+  background : -webkit-gradient(linear, 100% 19%, 100% 71%, from(#858585), to(#9E9E9E), color-stop(0,#C7C7C7))   ;
+    background : -moz-linear-gradient(19% 100% 90deg,#858585, #9E9E9E, #C7C7C7 71%);
 
-#_tabs2 ul li a {
     display: block;
-    padding: 0 20px;
+    padding: 0 10px;
     border-left: 1px solid rgba(255, 255, 255, 0.1);
     border-right: 1px solid rgba(0, 0, 0, 0.1);
     text-align: center;
     line-height: 79px;
-    background: -webkit-gradient(linear, 100% 19%, 100% 71%, from(#858585), to(#9E9E9E), color-stop(0, #C7C7C7));
-    background: -moz-linear-gradient(19% 100% 90deg, #858585, #9E9E9E, #C7C7C7 71%);
-    -webkit-transition-property: background;
-    -webkit-transition-duration: 700ms;
-    -moz-transition-property: background;
-    -moz-transition-duration: 700ms;
+    -webkit-transition-property: opacity;
+    -webkit-transition-duration: 1s;
+    -moz-transition-property: opacity;
+    -moz-transition-duration: 1s;
 }
+ #_tabs2 ul li a:hover {
 
-#_tabs2 ul li a:hover {
-    background: transparent none;
-}
-
-#_tabs2 ul[rel=sam1] li a {
-    background: -webkit-gradient(linear, 100% 100%, 100% 0%, from(#192E9C), to(#5CADFF), color-stop(.5, #4E6AD9));
+background: -webkit-gradient(linear, 100% 100%, 100% 0%, from(#192E9C), to(#5CADFF), color-stop(.5, #4E6AD9));
     background: -moz-linear-gradient(100% 100% 90deg, #192E9C, #5CADFF, #4E6AD9 100%);
-    background: #606060;
-}
 
-#_tabs2 ul[rel=sam1] li a:hover {
-    background: transparent none;
+opacity:0;
+    color:white;
 }
 
 #_tabs2 ul li.active a {
-    background: -webkit-gradient(linear, 100% 100%, 100% 0%, from(#192E9C), to(#5CADFF), color-stop(.5, #4E6AD9));
+    background-image: -webkit-gradient(linear, 100% 100%, 100% 0%, from(#192E9C), to(#5CADFF), color-stop(.5, #4E6AD9));
     background: -moz-linear-gradient(100% 100% 90deg, #192E9C, #5CADFF, #4E6AD9 100%);
-}
 
+        color:white;
+}
 /*
 #_tabs{ padding: 3px 0; margin: 0; float: left; }
 #_tabs li{ list-style: none; display: inline; margin: 0; }
