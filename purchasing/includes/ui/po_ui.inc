@@ -143,7 +143,7 @@ function display_po_header(&$order) {
 //---------------------------------------------------------------------------------------------------
 
 function display_po_items(&$order, $editable=true) {
-    global $table_style;
+    global $table_style, $Ajax;
 
     display_heading(_("Order Items"));
 
@@ -191,22 +191,23 @@ function display_po_items(&$order, $editable=true) {
     }
     if ($id == -1 && $editable)
         po_item_controls($order);
-        div_start('totals');
-
     label_cell(_("Freight"), "colspan=8 align=right");
     small_amount_cells(null, 'freight', price_format(get_post('freight', 0)));
     $display_total = price_format($total + input_num('freight'));
+
     start_row();
 
     label_cells(_("Total Excluding Shipping/Tax"), $display_total, "colspan=8 align=right",
-            "nowrap align=right", 2);
-    submit_cells('UpdateFreight', _("Update"), "", _("Refresh"), true);
-    div_end();
+            "nowrap align=right _nofreight='$total'", 2);
+       end_row();
 
-    end_row();
-    div_end();
+
     end_table(1);
     div_end();
+
+
+
+
 }
 
 //---------------------------------------------------------------------------------------------------

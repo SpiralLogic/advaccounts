@@ -65,7 +65,7 @@
                 $doc_Customers_Ref = ($doctype == ST_SALESQUOTE || $doctype == ST_STATEMENT) ? "" : "Purchase Order#";
                 $doc_Payment_Terms = "Payment Terms";
                 $doc_Your_VAT_no = "Phone";
-                $doc_Our_Order_No = ($doctype == ST_SALESORDER) ? "Our Quote No" : "Our Order No";
+                $doc_Our_Order_No = "Fax";
             }
             #  __ADVANCEDEDIT__ END #
         }

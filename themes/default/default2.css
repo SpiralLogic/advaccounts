@@ -252,15 +252,16 @@ table.tablestyle_inner td {
 	border: 1px solid #cccccc;
 }
 
-.amount {
-	font-family: Verdana, Arial, Helvetica;
-	font-size: 11px;
-	text-align: right;
+
+.amount, .freight {
+    font-family: Verdana, Arial, Helvetica;
+    font-size: 11px;
+    text-align: right;
 }
 
-input.amount {
-	padding-right: 0px;
-	border-right: none;
+input.amount, input.freight {
+    padding-right: 0px;
+    border-right: none;
 }
 
 .editbutton {

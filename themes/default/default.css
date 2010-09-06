@@ -266,13 +266,13 @@ table.tablestyle_inner td {
     border: 1px solid #cccccc;
 }
 
-.amount {
+.amount, .freight {
     font-family: Verdana, Arial, Helvetica;
     font-size: 11px;
     text-align: right;
 }
 
-input.amount {
+input.amount, input.freight {
     padding-right: 0px;
     border-right: none;
 }

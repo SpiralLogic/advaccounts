@@ -744,14 +744,14 @@ function get_js_png_fix() {
 }
 function get_js_calc() {
     global $path_to_root;
-   add_js_file('jquery.min.js'); 
+
    add_js_file('jquery.calculator.pack.js');
     add_js_file('calc.js');
 
 
     $_SESSION['using_js_calc']=true;
-    
-    return $js;
+
+    return '';
     
 }
 function get_js_date_picker() {
@@ -1081,7 +1081,7 @@ function CC() {
       }
       table += \"</tr>\";
     }
-    table += \"<tr class='header'><th colspan='8' style='padding: 3px;text-align:center;'><a href='javascript:hideCC();'>$back</a></td></tr>\";
+    table += \"<tr class='header'><th colspan='8' style='padding: 3px;text-align:center;'><a href='javascript:hideCC();'>$back</a></th></tr>\";
     table += \"</table>\";
     return table;
   }

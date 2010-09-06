@@ -113,7 +113,7 @@ $sql = "SELECT
 	porder.requisition_no, 
 	porder.ord_date, 
 	supplier.curr_code, 
-	Sum(line.unit_price*line.quantity_ordered) AS OrderValue,
+	Sum(line.unit_price*line.quantity_ordered)+porder.freight AS OrderValue,
 	porder.into_stock_location
 	FROM ".TB_PREF."purch_orders as porder, "
 		.TB_PREF."purch_order_details as line, "

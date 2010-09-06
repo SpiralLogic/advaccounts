@@ -30,7 +30,7 @@ function page($title, $no_menu=false, $is_index=false, $onload="", $js="", $scri
 
    	global $path_to_root, $page_security;
 
-
+  add_js_file('jquery.min.js'); 
    	$hide_menu = $no_menu;
 
    	include($path_to_root . "/includes/page/header.inc");

@@ -141,7 +141,11 @@ function can_process() {
         set_focus('DefaultReceivedDate');
         return false;
     }
-
+   if (!check_num('freight', 0)) {
+        display_error(_("The freight entered must be numeric and not less than zero."));
+        set_focus('freight');
+        return false;
+    }
     if (!$Refs->is_valid($_POST['ref'])) {
         display_error(_("You must enter a reference."));
         set_focus('ref');

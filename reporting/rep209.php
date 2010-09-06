@@ -107,6 +107,9 @@ function print_po() {
         $SubTotal = 0;
         while ($myrow2 = db_fetch($result))
         {
+            if ($myrow2['item_code']!='freight' || $myrow['freight']!=$myrow2['unit_price']) {
+
+
             $data = get_purchase_data($myrow['supplier_id'], $myrow2['item_code']);
             if ($data !== false) {
                 if ($data['supplier_description'] != "")
@@ -141,6 +144,7 @@ function print_po() {
            
             if ($rep->row < $rep->bottomMargin + (15 * $rep->lineHeight))
                 $rep->Header2($myrow, $branch, $myrow, $baccount, ST_PURCHORDER);
+            }
         }
         if ($myrow['comments'] != "") {
             $rep->NewLine();
@@ -162,7 +166,11 @@ function print_po() {
         $rep->TextCol(3, 6, $doc_Sub_total, -2);
         $rep->TextCol(6, 7, $DisplaySubTot, -2);
         $rep->NewLine();
-        $DisplayTotal = number_format2($SubTotal, $dec);
+        $rep->TextCol(3, 6, 'Freight:', -2);
+        $rep->TextCol(6, 7, number_format2($myrow['freight'], $dec), -2);
+        $rep->NewLine();
+
+        $DisplayTotal = number_format2($SubTotal+$myrow['freight'], $dec);
         $rep->Font('bold');
         $rep->TextCol(3, 6, $doc_TOTAL_PO, -2);
         $rep->TextCol(6, 7, $DisplayTotal, -2);

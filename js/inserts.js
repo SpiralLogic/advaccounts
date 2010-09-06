@@ -245,8 +245,16 @@ var inserts = {
 			var dec = this.getAttribute("dec");
 			price_format(this.name, get_amount(this.name), dec);
 		  };
-		}
+		} 
 	},
+    '.freight': function(e) {
+        		if(e.onblur==undefined) {
+  		  e.onblur = function() {
+			var dec = this.getAttribute("dec");
+			price_format(this.name, get_amount(this.name), dec,'2');
+		  };
+		}
+    },
 	'.searchbox': // emulated onchange event handling for text inputs
 		function(e) {
 			e.setAttribute('_last_val', e.value);

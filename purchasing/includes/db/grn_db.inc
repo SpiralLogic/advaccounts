@@ -99,6 +99,7 @@ function add_grn(&$po, $date_, $reference, $location) {
         } /*quantity received is != 0 */
     } /*end of order_line loop */
 
+    $grn_item = add_grn_detail_item($grn, add_freight_to_po($po, $date_), 'Freight', 'Freight Charges', 0, 1, $po->freight, 0);
     $Refs->save(ST_SUPPRECEIVE, $grn, $reference);
 
     add_audit_trail(ST_SUPPRECEIVE, $grn, $date_);
@@ -109,7 +110,20 @@ function add_grn(&$po, $date_, $reference, $location) {
 }
 
 //----------------------------------------------------------------------------------------
+     function     add_freight_to_po(&$po,$date_) {
+         $sql = "INSERT INTO " . TB_PREF . "purch_order_details (order_no, item_code, description, delivery_date, unit_price, quantity_ordered, discount) VALUES (";
 
+            $sql .= $po->order_no . "," .
+                    db_escape('freight') . "," .
+                    db_escape('Freight Charges') . ",'" .
+                    date2sql($date_) . "'," .
+                    db_escape($po->freight) . ", " .
+                    db_escape(1) . ", " .
+                    db_escape(0) .
+                    ")";
+          db_query($sql, "One of the purchase order detail records could not be updated");
+         return db_insert_id();
+}
 function add_grn_batch($po_number, $supplier_id, $reference, $location, $date_) {
     $date = date2sql($date_);
 

@@ -16,7 +16,7 @@ include_once($path_to_root . "/includes/session.inc");
 include_once($path_to_root . "/purchasing/includes/purchasing_ui.inc");
 include_once($path_to_root . "/reporting/includes/reporting.inc");
 
-$js = '';
+
 if ($use_popup_windows) {
     $js .= get_js_open_window(900, 500);
 }
@@ -192,11 +192,6 @@ function handle_update_item() {
 }
 //---------------------------------------------------------------------------------------------------
 
-function handle_update_freight() {
-    global $Ajax;
-    $Ajax->activate('items_table');
-    
-   }
 
 //---------------------------------------------------------------------------------------------------
 
@@ -334,9 +329,8 @@ if (isset($_POST['Commit'])) {
 if (isset($_POST['UpdateLine'])) {
     handle_update_item();
 }
-if (isset($_POST['UpdateFreight'])) {
-    handle_update_freight();
-}
+
+
 if (isset($_POST['EnterLine'])) {
     handle_add_new_item();
 }
@@ -380,9 +374,10 @@ end_table(1);
 
 div_start('controls', 'items_table');
 if ($_SESSION['PO']->order_has_items()) {
-    if ($_SESSION['PO']->order_no)
-        submit_center_first('Commit', _("Update Order"), '', 'default'); else
-        submit_center_first('Commit', _("Place Order"), '', 'default');
+    if ($_SESSION['PO']->order_no) {
+        submit_center_first('Commit', _("Update Order"), '', 'default'); }
+    else{
+        submit_center_first('Commit', _("Place Order"), '', 'default');}
     submit_center_last('CancelOrder', _("Cancel Order"));
 } else
     submit_center('CancelOrder', _("Cancel Order"), true, false, 'cancel');

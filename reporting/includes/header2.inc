@@ -296,9 +296,10 @@ elseif (isset($myrow['order_']) && $myrow['order_'] != 0)
     #  __ADVANCEDEDIT__ BEGIN # add supplier fax to PO
 elseif ($doctype == ST_PURCHORDER)
     $this->TextWrap($col, $this->row, $width, $myrow["fax"], 'C');
-elseif ($doctype == ST_STATEMENT) {
-
-    $this->TextWrap($col, $this->row, $width, $branch['fax'], 'C');
+elseif ($doctype == ST_STATEMENT || $doctype == ST_SALESQUOTE || $doctype == ST_SALESORDER) {
+    if (!empty($branch['fax'])) { $this->TextWrap($col, $this->row, $width, $branch['fax'], 'C'); } else {
+      $this->TextWrap($col, $this->row, $width, $myrow['fax'], 'C');  
+    }
 }
 #  __ADVANCEDEDIT__ END #
 $col += $width;
