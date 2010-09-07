@@ -58,6 +58,8 @@
         if ($email == 0) {
             if ($print_as_quote == 0)
                     $rep = new FrontReport(_("ORDER"), "SalesOrderBulk", user_pagesize());
+                elseif($print_as_quote ==2)
+                    $rep = new FrontReport(_("PROFORMA INVOICE"), "QuoteBulk", user_pagesize());
             else $rep = new FrontReport(_("QUOTE"), "QuoteBulk", user_pagesize());
             $rep->currency = $cur;
             $rep->Font();
@@ -65,7 +67,11 @@
         }
 
         for ($i = $from; $i <= $to; $i++) {
-            $myrow = get_sales_order_header($i, ST_SALESORDER);
+            if ($print_as_quote<3) {
+            $myrow = get_sales_order_header($i, ST_SALESORDER);}
+            else {
+                $myrow = get_sales_order_header($i, ST_SALESQUOTE);
+            }
             $baccount = get_default_bank_account($myrow['curr_code']);
             $params['bankaccount'] = $baccount['id'];
             $branch = get_branch($myrow["branch_code"]);
@@ -76,16 +82,27 @@
                 if ($print_as_quote == 1) {
                     $rep->title = _('QUOTE');
                     $rep->filename = "Quote" . $i . ".pdf";
+                } elseif ($print_as_quote==2||$print_as_quote==3) {
+                    $rep->title = _('PROFORMA');
+                                        $rep->filename = "Proforna" . $i . ".pdf";
                 } else {
                     $rep->title = _("ORDER");
                     $rep->filename = "SalesOrder" . $i . ".pdf";
                 }
                 $rep->Info($params, $cols, null, $aligns);
             }
-            else $rep->title = ($print_as_quote == 1 ? _("QUOTE") : _("ORDER"));
+            else {
+                $rep->title = ($print_as_quote == 1 ? _("QUOTE") : _("ORDER"));
+                if($print_as_quote==2||$print_as_quote==3) $rep->title = _("PROFORMA");
+            }
+            if ($print_as_quote<3){
             $rep->Header2($myrow, $branch, $myrow, $baccount, ST_SALESORDER);
+                $result = get_sales_order_details($i, ST_SALESORDER);
+            } else {
+                $rep->Header2($myrow, $branch, $myrow, $baccount, ST_SALESQUOTE);
+                $result = get_sales_order_details($i, ST_SALESQUOTE);
+            }
 
-            $result = get_sales_order_details($i, ST_SALESORDER);
             $SubTotal = 0;
             $TaxTotal = 0;
             while ($myrow2 = db_fetch($result)) {
@@ -117,8 +134,12 @@
                 $rep->row = $newrow;
                 //$rep->NewLine(1);
                 if ($rep->row < $rep->bottomMargin + (15 * $rep->lineHeight))
+    if ($print_as_quote<3) {
                         $rep->Header2($myrow, $branch, $myrow, $baccount, ST_SALESORDER);
-            }
+        } else {
+                        $rep->Header2($myrow, $branch, $myrow, $baccount, ST_SALESQUOTE);
+    }
+                }
             if ($myrow['comments'] != "") {
                 $rep->NewLine();
                 $rep->TextColLines(1, 5, $myrow['comments'], -2);
@@ -130,7 +151,7 @@
 
             $rep->row = $rep->bottomMargin + (15 * $rep->lineHeight);
             $linetype = true;
-            $doctype = ST_SALESORDER;
+            $doctype =  ($print_as_quote<3)  ? ST_SALESORDER: ST_SALESQUOTE;
             if ($rep->currency != $myrow['curr_code']) {
                 include($path_to_root . "/reporting/includes/doctext2.inc");
             } else {
@@ -154,7 +175,12 @@
             #	else
             $rep->TextCol(4, 7, $doc_TOTAL_ORDER2, - 2);
             $rep->TextCol(7, 8, $DisplayTotal, -2);
+    if ($print_as_quote<3) {
             $words = price_in_words($myrow["freight_cost"] + $SubTotal, ST_SALESORDER);
+    } else {
+           $words = price_in_words($myrow["freight_cost"] + $SubTotal,  ST_SALESQUOTE);
+    }
+
             if ($words != "") {
                 $rep->NewLine(1);
                 $rep->TextCol(1, 7, $myrow['curr_code'] . ": " . $words, - 2);
