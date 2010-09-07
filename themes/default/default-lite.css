@@ -420,12 +420,17 @@ img { border: 0; }
 /* main wrapper */
 #wrapper {
 	clear: left;
-	width: 100%;
+	width: 80%;
 /*	background: #fff url(images/wrapbg.gif) repeat-x;
 	border: 1px solid #8ab9f2;*/
 	padding: 8px 5px;
 	margin: 0 0 5px 0;
 	color: #000;
+    text-align:center;
+}
+#_page_body {
+    
+    margin:0 auto;
 }
 /*#wrapper li a { background-image: url(images/bullet.png); background-repeat: no-repeat; background-position: center left; font-size: 12px; padding: 0 0 0 20px; }*/
 #wrapper li a.left { background-image: url(images/bullet.png); background-repeat: no-repeat; background-position: center left; font-size: 12px; padding: 0 0 0 20px; }

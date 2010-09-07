@@ -245,7 +245,7 @@ var inserts = {
 			var dec = this.getAttribute("dec");
 			price_format(this.name, get_amount(this.name), dec);
 		  };
-		} 
+		}
 	},
     '.freight': function(e) {
         		if(e.onblur==undefined) {

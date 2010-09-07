@@ -130,7 +130,7 @@ function page_header($title, $no_menu=false, $is_index=false, $onload="", $js=""
 
 
        if ($no_menu) {
-    echo "<link href='$local_path_to_root/themes/$theme/default-lite.css' rel='stylesheet' type='text/css'> \n";
+             echo "<link href='$local_path_to_root/themes/$theme/default-lite.css' rel='stylesheet' type='text/css'> \n";
        } elseif ($_SESSION['sel_app']=="AP") {
           	echo "<link href='$local_path_to_root/themes/$theme/default2.css' rel='stylesheet' type='text/css'> \n";
        } elseif($_SESSION['sel_app']=="stock") {

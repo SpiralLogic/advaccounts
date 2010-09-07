@@ -365,6 +365,7 @@ if (isset($_GET['NewOrder'])) {
 //---------------------------------------------------------------------------------------------------
 
 start_form();
+if ($_GET['NewOrder']) echo "<center><iframe src='{$path_to_root}/purchasing/inquiry/po_search_completed.php?NFY=1&frame=1'  width='90%' height='350' frameborder='0'></iframe> </center>";
 display_po_header($_SESSION['PO']);
 echo "<br>";
 display_po_items($_SESSION['PO']);
@@ -374,13 +375,14 @@ end_table(1);
 
 div_start('controls', 'items_table');
 if ($_SESSION['PO']->order_has_items()) {
+    submit_center_first('CancelOrder', _("Delete This Order"));
     if ($_SESSION['PO']->order_no) {
-        submit_center_first('Commit', _("Update Order"), '', 'default'); }
+        submit_center_last('Commit', _("Update Order"), '', 'default'); }
     else{
-        submit_center_first('Commit', _("Place Order"), '', 'default');}
-    submit_center_last('CancelOrder', _("Cancel Order"));
+        submit_center_last('Commit', _("Place Order"), '', 'default');}
+    
 } else
-    submit_center('CancelOrder', _("Cancel Order"), true, false, 'cancel');
+    submit_center('CancelOrder', _("Delete This Order"), true, false, 'cancel');
 div_end();
 //---------------------------------------------------------------------------------------------------
 

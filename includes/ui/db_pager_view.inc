@@ -18,7 +18,9 @@ function pager_link($link_text, $url, $icon=false)
 		$link_text = set_icon($icon, $link_text);
 
 	$href = $path_to_root . $url;
-	return "<a href='$href'>" . $link_text . "</a>";
+    $href = ($_REQUEST['frame']) ? "javascript:window.parent.location='$href'" : $path_to_root . $url;
+    
+	return "<a href=\"$href\">" . $link_text . "</a>";
 }
 
 function navi_button($name, $value, $enabled=true, $icon = false) {

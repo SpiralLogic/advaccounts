@@ -13,7 +13,6 @@ $page_security = 'SA_SUPPTRANSVIEW';
 $path_to_root="../..";
 include($path_to_root . "/includes/db_pager.inc");
 include($path_to_root . "/includes/session.inc");
-
 include($path_to_root . "/purchasing/includes/purchasing_ui.inc");
 include_once($path_to_root . "/reporting/includes/reporting.inc");
 $js = "";
@@ -21,7 +20,8 @@ if ($use_popup_windows)
 	$js .= get_js_open_window(900, 500);
 if ($use_date_picker)
 	$js .= get_js_date_picker();
-page(_($help_context = "Search Purchase Orders"), false, false, "", $js);
+
+page(_($help_context = "Search Purchase Orders"), @$_REQUEST['frame'], false, "", $js);
 
 if (isset($_GET['order_number']))
 {
@@ -52,23 +52,19 @@ if (get_post('SearchOrders'))
 	$Ajax->activate('orders_tbl');
 }
 //---------------------------------------------------------------------------------------------
-
 start_form();
-
-start_table("class='tablestyle_noborder'");
+if ($_REQUEST['frame']) start_table("class='tablestyle_noborder' style='display:none;'");
+else start_table("class='tablestyle_noborder'");
 start_row();
 ref_cells(_("#:"), 'order_number', '',null, '', true);
-
 date_cells(_("from:"), 'OrdersAfterDate', '', null, -30);
 date_cells(_("to:"), 'OrdersToDate');
-
 locations_list_cells(_("into location:"), 'StockLocation', null, true);
-
 stock_items_list_cells(_("for item:"), 'SelectStockFromList', null, true);
-
 submit_cells('SearchOrders', _("Search"),'',_('Select documents'), 'default');
 end_row();
 end_table();
+
 //---------------------------------------------------------------------------------------------
 if (isset($_POST['order_number']))
 {
@@ -136,9 +132,10 @@ else
 	$sql .= " AND porder.ord_date >= '$data_after'";
 	$sql .= " AND porder.ord_date <= '$date_before'";
 
-	if (isset($_POST['StockLocation']) && $_POST['StockLocation'] != ALL_TEXT)
+	if ((isset($_POST['StockLocation']) && $_POST['StockLocation'] != ALL_TEXT) || isset($_GET['NFY']))
 	{
-		$sql .= " AND porder.into_stock_location = ".db_escape($_POST['StockLocation']);
+		$sql .= " AND porder.into_stock_location = ";
+        $sql .= (!$_GET['NFY']==1) ? db_escape($_POST['StockLocation']) : db_escape('NFY');
 	}
 	if (isset($selected_stock_item))
 	{

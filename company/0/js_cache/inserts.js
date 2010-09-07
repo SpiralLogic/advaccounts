@@ -247,13 +247,11 @@ var inserts = {
 		  };
 		}
 	},
-    '.freight': function(e) {
+   '.freight': function(e) {
         		if(e.onblur==undefined) {
   		  e.onblur = function() {
 			var dec = this.getAttribute("dec");
-               total = parseInt(document.getElementById('2').getAttribute('_nofreight'));
-			price_format('2', get_amount(this.name)+total, dec, true);
-                			price_format(this.name, get_amount(this.name), dec);
+			price_format(this.name, get_amount(this.name), dec,'2');
 		  };
 		}
     },
