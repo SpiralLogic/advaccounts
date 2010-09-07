@@ -36,7 +36,7 @@ function print_sales_quotations()
 	global $path_to_root, $print_as_quote;
 
 	include_once($path_to_root . "/reporting/includes/pdf_report.inc");
-
+ 
 	$from = $_POST['PARAM_0'];
 	$to = $_POST['PARAM_1'];
 	$currency = $_POST['PARAM_2'];
