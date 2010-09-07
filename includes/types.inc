@@ -36,7 +36,8 @@ define('ST_WORKORDER', 26);
 define('ST_MANUISSUE', 28);
 define('ST_MANURECEIVE', 29);
 
-define('ST_PROFORMA', 36);
+define('ST_PROFORMA', 36); 
+define('ST_PROFORMAQ', 37);
 define('ST_SALESORDER', 30);
 define('ST_SALESQUOTE', 32);
 define('ST_COSTUPDATE', 35);

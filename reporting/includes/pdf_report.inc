@@ -332,7 +332,10 @@
             $this->pageNumber++;
             if ($this->pageNumber > 1) $this->newPage();
             $header2type = true;
-
+            if ($doctype == ST_PROFORMA || $doctype==ST_PROFORMAQ) {
+                $isproforma = true;
+                $doctype = ($doctype==ST_PROFORMA) ? ST_SALESORDER : ST_SALESQUOTE;
+            }
             // leave layout files names without path to enable including
             // modified versions from comapny/x/reporting directory
             if (isset($myrow['curr_code']) && $this->currency != $myrow['curr_code']) {

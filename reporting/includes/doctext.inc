@@ -102,11 +102,12 @@
             elseif ($doctype == ST_WORKORDER) $this->title = _("WORK ORDER");
             elseif ($doctype == ST_SUPPAYMENT) $this->title = _("REMITTANCE");
             elseif ($doctype == ST_CUSTPAYMENT) $this->title = _("RECEIPT");
-            elseif ($doctype == ST_PROFORMA) {
-                $this->title = _("PROFORMA INVOICE");
-                $doctype = ST_SALESORDER;
-            }
             else $this->title = _("CREDIT NOTE");
+            if ($isproforma) {
+                $this->title = _("PROFORMA INVOICE");
+                
+            }
+
             if ($doctype == ST_PURCHORDER)
                     $this->headers = array(_("Item Code"), _("Item Description"),
                     '', _("Quantity"), _("Unit"), _("Price"), _("Total"));
