@@ -12,7 +12,9 @@
 
 
 require_once($path_to_root. "/includes/JsHttpRequest.php");
-
+/**
+ * @global 
+ */
 class Ajax extends JsHttpRequest {
 
 	var $aCommands = array();

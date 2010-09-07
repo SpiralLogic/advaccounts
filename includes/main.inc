@@ -59,7 +59,8 @@ $nomenu=$is_index=$hide_back_link=true;
 		hyperlink_back(true, $no_menu);
 	div_end();	// end of _page_body section
 
-	 if (!$_REQUEST['frame'])include($path_to_root . "/includes/page/footer.inc");
+	 //if (!$_REQUEST['frame'])
+         include($path_to_root . "/includes/page/footer.inc");
 	page_footer($no_menu, $is_index, $hide_back_link);
 }
 
