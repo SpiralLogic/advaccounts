@@ -128,16 +128,12 @@ function page_header($title, $no_menu=false, $is_index=false, $onload="", $js=""
 	echo "<head><title>$title</title>";
 	echo "<meta http-equiv='Content-type' content='text/html; charset=$encoding'>";
 
+    echo "<link href='$local_path_to_root/themes/$theme/default.css' rel='stylesheet' type='text/css'> \n";
 
        if ($no_menu) {
              echo "<link href='$local_path_to_root/themes/$theme/default-lite.css' rel='stylesheet' type='text/css'> \n";
-       } elseif ($_SESSION['sel_app']=="AP") {
-          	echo "<link href='$local_path_to_root/themes/$theme/default2.css' rel='stylesheet' type='text/css'> \n";
-       } elseif($_SESSION['sel_app']=="stock") {
-          	echo "<link href='$local_path_to_root/themes/$theme/default3.css' rel='stylesheet' type='text/css'> \n";
-       } else {
-           echo "<link href='$local_path_to_root/themes/$theme/default.css' rel='stylesheet' type='text/css'> \n";
        }
+    echo "<link href='$local_path_to_root/themes/$theme/{$_SESSION['sel_app']}.css' rel='stylesheet' type='text/css'> \n";    
     if ($_SESSION['using_js_calc']) {
         echo "<link href='$local_path_to_root/themes/$theme/jquery.calculator.css' rel='stylesheet' type='text/css'> \n";
         

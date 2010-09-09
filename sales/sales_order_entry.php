@@ -28,19 +28,14 @@ include_once("$path_to_root/sales/includes/ui/sales_order_ui.inc");
 include_once("$path_to_root/sales/includes/sales_db.inc");
 include_once("$path_to_root/sales/includes/db/sales_types_db.inc");
 include_once("$path_to_root/reporting/includes/reporting.inc");
-
 set_page_security(@$_SESSION['Items']->trans_type, array(ST_SALESORDER => 'SA_SALESORDER', ST_SALESQUOTE => 'SA_SALESQUOTE', ST_CUSTDELIVERY => 'SA_SALESDELIVERY', ST_SALESINVOICE => 'SA_SALESINVOICE'), array('NewOrder' => 'SA_SALESORDER', 'ModifySalesOrder' => 'SA_SALESORDER', 'NewQuotation' => 'SA_SALESQUOTE', 'ModifyQuotationNumber' => 'SA_SALESQUOTE', 'NewDelivery' => 'SA_SALESDELIVERY', 'NewInvoice' => 'SA_SALESINVOICE'));
-
 $js = '';
-
 if ($use_popup_windows) {
     $js .= get_js_open_window(900, 500);
 }
-
 if ($use_date_picker) {
     $js .= get_js_date_picker();
 }
-
 if (isset($_GET['NewDelivery']) && is_numeric($_GET['NewDelivery'])) {
 
     $_SESSION['page_title'] = _($help_context = "Direct Sales Delivery");
@@ -137,10 +132,7 @@ if (isset($_GET['AddedID'])) {
     submenu_print(_("P&rint as Packing Slip"), ST_CUSTDELIVERY, $delivery, 'prtopt', null, 1);
     submenu_print(_("E&mail as Packing Slip"), ST_CUSTDELIVERY, $delivery, null, 1, 1);
     set_focus('prtopt');
-
     display_note(get_gl_view_str(ST_CUSTDELIVERY, $delivery, _("View the GL Journal Entries for this Dispatch")), 0, 1);
-
-
     if ((isset($_GET['Type']) && $_GET['Type'] == 1))
         submenu_option(_("Enter a New Template &Delivery"), "/sales/inquiry/sales_orders_view.php?DeliveryTemplates=Yes"); else
         submenu_option(_("Enter a &New Delivery"), "/sales/sales_order_entry.php?NewDelivery=0");
@@ -170,7 +162,6 @@ if (isset($_GET['AddedID'])) {
     }
 
     if ($_GET['AddedDI'] && isset($_SESSION['wa_global_customer_id']) && $row == false) {
-
         echo "<div style='text-align:center;'><iframe  style='margin:0 auto; border-width:0;' src='{$path_to_root}/sales/customer_payments.php?frame=1' width='80%' height='475' scrolling='no' frameborder='0'></iframe> </div>";
     }
 
@@ -183,11 +174,8 @@ if (isset($_GET['AddedID'])) {
 
 function copy_to_cart() {
     $cart = &$_SESSION['Items'];
-
     $cart->reference = $_POST['ref'];
-
     $cart->Comments = $_POST['Comments'];
-
     $cart->document_date = $_POST['OrderDate'];
     if ($cart->trans_type == ST_SALESINVOICE) {
         $cart->cash = $_POST['cash'];
@@ -227,23 +215,18 @@ function copy_to_cart() {
 
 function copy_from_cart() {
     $cart = &$_SESSION['Items'];
-
     $_POST['ref'] = $cart->reference;
     $_POST['Comments'] = $cart->Comments;
-
     $_POST['OrderDate'] = $cart->document_date;
     $_POST['delivery_date'] = $cart->due_date;
     $_POST['cust_ref'] = $cart->cust_ref;
     $_POST['freight_cost'] = price_format($cart->freight_cost);
-
     $_POST['deliver_to'] = $cart->deliver_to;
     $_POST['delivery_address'] = $cart->delivery_address;
     $_POST['phone'] = $cart->phone;
     $_POST['Location'] = $cart->Location;
     $_POST['ship_via'] = $cart->ship_via;
-
     $_POST['customer_id'] = $cart->customer_id;
-
     $_POST['branch_id'] = $cart->Branch;
     $_POST['sales_type'] = $cart->sales_type;
 // POS
@@ -261,7 +244,6 @@ function copy_from_cart() {
 
 function line_start_focus() {
     global $Ajax;
-
     $Ajax->activate('items_table');
     set_focus('_stock_id_edit');
 }
@@ -269,7 +251,6 @@ function line_start_focus() {
 //--------------------------------------------------------------------------------
 function can_process() {
     global $Refs;
-
     if (!get_post('customer_id')) {
         display_error(_("There is no customer selected."));
         set_focus('customer_id');

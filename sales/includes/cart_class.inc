@@ -490,7 +490,7 @@ class line_details
 		$this->mb_flag = $item_row["mb_flag"];
 		$this->units = $item_row["units"];
 		if ($description == null)
-			$this->item_description = $item_row["description"];
+			$this->item_description = $item_row["long_description"];
 		else
 			$this->item_description = $description;
 		//$this->standard_cost = $item_row["material_cost"] + $item_row["labour_cost"] + $item_row["overhead_cost"];

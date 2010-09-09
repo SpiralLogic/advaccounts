@@ -456,7 +456,7 @@ img {
 
 #top p {
     margin: 0;
-}
+}rgba(199,199,199, 1)
 
 #top ul {
     margin: 5px 0 0;
@@ -478,9 +478,9 @@ img {
     width: 100%;
     height: 80px;
     background: #464646;
-    background: -webkit-gradient(linear, 100% 19%, 100% 71%, from(#858585), to(#9E9E9E), color-stop(0, #C7C7C7));
-    background: -moz-linear-gradient(19% 100% 90deg, #858585, #9E9E9E, #C7C7C7 71%);
-    border-top: 2px solid #939393;
+    background: -webkit-gradient(linear, 100% 19%, 100% 71%, from(rgba(133,133,133, 1)), to(rgba(158,158,158, 1)), color-stop(0, #C7C7C7));
+    background-image : -moz-linear-gradient(19% 100% 90deg,rgba(133,133,133, 1), rgba(158,158,158, 1),  rgba(199,199,199, 1) 71%);
+      border-top: 2px solid #939393;
     position: relative;
     margin-bottom: 30px;
 }
@@ -522,40 +522,39 @@ img {
     padding: 0;
 }
 #_tabs2 ul.menu li {
-
     list-style: none;
     float: left;
     height: 79px;
     text-align: center;
-  
 }
-#_tabs2  ul li a {
-  background : -webkit-gradient(linear, 100% 19%, 100% 71%, from(#858585), to(#9E9E9E), color-stop(0,#C7C7C7))   ;
-    background : -moz-linear-gradient(19% 100% 90deg,#858585, #9E9E9E, #C7C7C7 71%);
-
+#_tabs2  ul  a {
+     background-image : -webkit-gradient(linear, 100% 19%, 100% 71%, from(rgba(133,133,133, 1)), to(rgba(158,158,158, 1)), color-stop(0,#C7C7C7));
+     background-image : -moz-linear-gradient(19% 100% 90deg,rgba(133,133,133, 1), rgba(158,158,158, 1),  rgba(199,199,199, 1) 71%);
+    background:transparent;
+    -moz-transition-duration: 0.5s;
+    -moz-transition-timing-function: linear;
     display: block;
     padding: 0 10px;
     border-left: 1px solid rgba(255, 255, 255, 0.1);
     border-right: 1px solid rgba(0, 0, 0, 0.1);
     text-align: center;
     line-height: 79px;
-    -webkit-transition-property: opacity;
-    -webkit-transition-duration: 1s;
-    -moz-transition-property: opacity;
-    -moz-transition-duration: 1s;
+    -webkit-transition-duration: 0.5s;
+    -webkit-transition-timing-function: linear;
+
 }
- #_tabs2 ul li a:hover {
-
-background: -webkit-gradient(linear, 100% 100%, 100% 0%, from(#192E9C), to(#5CADFF), color-stop(.5, #4E6AD9));
-    background: -moz-linear-gradient(100% 100% 90deg, #192E9C, #5CADFF, #4E6AD9 100%);
-
-opacity:0;
+ #_tabs2 ul  a:hover {
+    -moz-transition-duration: 1s;
+    -moz-transition-timing-function: linear;
+         -webkit-transition-duration: 1s;
+    -webkit-transition-timing-function: linear;
+    background-image: -webkit-gradient(linear, 100% 100%, 100% 0%, from(#192E9C), to(#5CADFF), color-stop(.5, #4E6AD9));
+    background-image: -moz-linear-gradient(100% 100% 90deg, rgba(25,46,156,1),  rgba(92,173,255,1), rgba(78,106,217,1) 100%);
     color:white;
 }
-
 #_tabs2 ul li.active a {
     background-image: -webkit-gradient(linear, 100% 100%, 100% 0%, from(#192E9C), to(#5CADFF), color-stop(.5, #4E6AD9));
-    background: -moz-linear-gradient(100% 100% 90deg, #192E9C, #5CADFF, #4E6AD9 100%);
+     background-image: -moz-linear-gradient(100% 100% 90deg, rgba(25,46,156,1),  rgba(92,173,255,1), rgba(78,106,217,1) 100%);
 
         color:white;
 }

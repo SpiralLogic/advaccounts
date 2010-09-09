@@ -437,7 +437,7 @@ function sales_order_item_controls(&$order, &$rowcounter, $line_no = -1) {
         $units = $order->line_items[$id]->units;
         hidden('stock_id', $_POST['stock_id']);
         label_cell($_POST['stock_id']);
-        text_cells(null, 'item_description', null, 45, 150);
+        textarea_cells(null,'item_description', null, 50,5);
         //label_cell($order->line_items[$line_no]->item_description, "nowrap");
         $Ajax->activate('items_table');
     } else // prepare new line
@@ -445,6 +445,7 @@ function sales_order_item_controls(&$order, &$rowcounter, $line_no = -1) {
         sales_items_list_cells(null, 'stock_id', null, false, true);
         if (list_updated('stock_id')) {
             $Ajax->activate('price');
+            $Ajax->activate('item_description');
             $Ajax->activate('units');
             $Ajax->activate('qty');
             $Ajax->activate('line_total');
