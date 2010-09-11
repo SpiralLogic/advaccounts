@@ -79,7 +79,12 @@ if (list_updated('branch_id')) {
 
 if (isset($_GET['AddedID'])) {
     $order_no = $_GET['AddedID'];
-    display_notification_centered(sprintf(_("Order # %d has been entered."), $order_no));
+    if ($_REQUEST['AddedJB']) {
+        display_notification_centered(sprintf(_("Order # %d has been added to Jobs Board."), $order_no));
+    } else {
+        display_notification_centered(sprintf(_("Order # %d has been entered."), $order_no));
+        submenu_option(_("Add Job to Jobsboard"), "/jobsboard/");
+    }
     submenu_view(_("&View This Order"), ST_SALESORDER, $order_no);
     submenu_print(_("&Print This Order"), ST_SALESORDER, $order_no, 'prtopt');
     submenu_print(_("Print Proforma Invoice"), ST_PROFORMA, $order_no, 'prtopt');
@@ -87,10 +92,21 @@ if (isset($_GET['AddedID'])) {
     set_focus('prtopt');
     submenu_option(_("Make &Delivery Against This Order"), "/sales/customer_delivery.php?OrderNumber=$order_no");
     submenu_option(_("Enter a &New Order"), "/sales/sales_order_entry.php?NewOrder=0");
+
+
     display_footer_exit();
 } elseif (isset($_GET['UpdatedID'])) {
     $order_no = $_GET['UpdatedID'];
-    display_notification_centered(sprintf(_("Order # %d has been updated."), $order_no));
+
+    if ($_REQUEST['AddedJB']) {
+        display_notification_centered(sprintf(_("Order # %d has been added to Jobs Board."), $order_no));
+
+    } else {
+        display_notification_centered(sprintf(_("Order # %d has been updated."), $order_no));
+        submenu_option(_("Add Job to Jobsboard"), "/jobsboard/");
+    }
+
+
     submenu_view(_("&View This Order"), ST_SALESORDER, $order_no);
     submenu_print(_("&Print This Order"), ST_SALESORDER, $order_no, 'prtopt');
     submenu_print(_("Print Proforma Invoice"), ST_PROFORMA, $order_no, 'prtopt');
@@ -349,6 +365,8 @@ if (isset($_POST['ProcessOrder']) && can_process()) {
     $trans_no = key($_SESSION['Items']->trans_no);
     $trans_type = $_SESSION['Items']->trans_type;
     new_doc_date($_SESSION['Items']->document_date);
+    $_SESSION['Jobsboard'] = clone($_SESSION['Items']);
+
     processing_end();
     $_SESSION['order_no'] = $trans_no;
     if ($modified) {

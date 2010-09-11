@@ -156,7 +156,7 @@ include_once($path_to_root . "/includes/ui/ui_msgs.inc");
 //ini_set('session.save_path', dirname(__FILE__).'/../tmp/');
 
 ini_set('session.gc_maxlifetime', 36000); // 10hrs
-
+            
 session_name('FA'.md5(dirname(__FILE__)));
 session_start();
 
