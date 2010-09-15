@@ -95,6 +95,7 @@
                 echo '<br>';
                 var_dump($_GET);
                 echo '</td></tr></table></div>';
+                   
             }
         }
 

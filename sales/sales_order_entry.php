@@ -83,7 +83,7 @@ if (isset($_GET['AddedID'])) {
         display_notification_centered(sprintf(_("Order # %d has been added to Jobs Board."), $order_no));
     } else {
         display_notification_centered(sprintf(_("Order # %d has been entered."), $order_no));
-        submenu_option(_("Add Job to Jobsboard"), "/jobsboard/");
+        submenu_option(_("Add Job to Jobsboard"), "/jobsboard/jobsboard/addjob");
     }
     submenu_view(_("&View This Order"), ST_SALESORDER, $order_no);
     submenu_print(_("&Print This Order"), ST_SALESORDER, $order_no, 'prtopt');
@@ -103,7 +103,7 @@ if (isset($_GET['AddedID'])) {
 
     } else {
         display_notification_centered(sprintf(_("Order # %d has been updated."), $order_no));
-        submenu_option(_("Add Job to Jobsboard"), "/jobsboard/");
+        submenu_option(_("Add Job to Jobsboard"), "/jobsboard/jobsboard/addjob");
     }
 
 

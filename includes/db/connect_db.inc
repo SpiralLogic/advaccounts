@@ -33,7 +33,9 @@
 
 
         $result = mysql_query($sql, $db);
+
         if ($sql_trail) {
+           db_set_info();
             if ($select_trail || (strstr($sql, 'SELECT') === false)) {
                 mysql_query(
                         "INSERT INTO " . TB_PREF . "sql_trail
@@ -120,14 +122,25 @@
         return mysql_error($conn);
     }
 
-    function db_insert_id() {
+    function db_insert_id($sqltrail) {
         global $db;
+        if ($sqltrail) {
+            return $_SESSION['db_info']['insert_id'];
+        }
         return mysql_insert_id($db);
+    }
+    function db_set_info() {
+        global $db;
+        $_SESSION['db_info']['insert_id']=mysql_insert_id($db);
+        $_SESSION['db_info']['affected_rows']=mysql_affected_rows($db);
+
     }
 
     function db_num_affected_rows() {
         global $db;
         return mysql_affected_rows($db);
     }
+   
+
 
 ?>
