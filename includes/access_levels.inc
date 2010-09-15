@@ -52,7 +52,9 @@ define('SS_GL_C',	61<<8);
 define('SS_GL',		62<<8);
 define('SS_GL_A',	63<<8);
 
+define('SS_ADV',71<<8);
 $security_sections = array(
+
  SS_SADMIN => _("System administration"),
  SS_SETUP => _("Company setup"),
  SS_SPEC => _("Special maintenance"),
@@ -72,7 +74,8 @@ $security_sections = array(
  SS_DIM => _("Dimensions"),
  SS_GL_C => _("Banking & GL configuration"),
  SS_GL => _("Banking & GL transactions"),
- SS_GL_A => _("Banking & GL analytics")
+ SS_GL_A => _("Banking & GL analytics"),
+SS_ADV => _("Advanced")
 );
 
 /*
@@ -87,6 +90,10 @@ $security_sections = array(
 	Special value 'SA_OPEN' is used for publicly available pages like login/logout.
 */
 $security_areas =array(
+//
+//	Advanced
+//
+'SA_ADVANCED' => array(SS_ADV|1, _("Advanced")),
 //
 //	Site administration
 //

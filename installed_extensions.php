@@ -41,7 +41,7 @@ $installed_extensions = array (
 		),
     3 => array ( 'tab' => 'system',
 			'name' => 'Advanced',
-			'path' => '',
+			'path' => 'advanced',
 			'title' => 'Advanced',
 			'active' => '1',
 			'type' => 'plugin',

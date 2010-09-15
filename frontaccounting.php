@@ -17,6 +17,7 @@
     include_once($path_to_root . '/applications/cards.php');
     include_once($path_to_root . '/applications/suppliers.php');
     include_once($path_to_root . '/applications/inventory.php');
+    include_once($path_to_root . '/applications/advanced.php');
     include_once($path_to_root . '/applications/manufacturing.php');
     include_once($path_to_root . '/applications/dimensions.php');
     include_once($path_to_root . '/applications/generalledger.php');
@@ -85,6 +86,7 @@
             $this->add_application(new cards_app());
             $this->add_application(new suppliers_app());
             $this->add_application(new inventory_app());
+            $this->add_application(new advanced_app());
             $this->add_application(new manufacturing_app());
             $this->add_application(new dimensions_app());
             $this->add_application(new general_ledger_app());

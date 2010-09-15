@@ -48,14 +48,11 @@
                 echo "<ul class='menu'>\n";
                 foreach ($applications as $app) {
                     $acc = access_string($app->name);
-                    if ($app->id == 'cards') {
-                        echo "<li " . ($sel_app == $app->id ? "class='active' " : "") .
-                        "><a title='Another Mike is shit addition!' href='$local_path_to_root/sales/manage/customer_branches.php?application=cards'>" . $acc[0] . "</a><li>\n";
-                    } else {
+
                         echo "<li " . ($sel_app == $app->id ? "class='active' " : "") .
                         "><a href='$local_path_to_root/index.php?application=" . $app->id
                         . "'$acc[1]>" . $acc[0] . "</a></li>\n";
-                    }
+
                 }
                 echo "</ul>\n";
             }
@@ -95,14 +92,14 @@
                 echo '<br>';
                 var_dump($_GET);
                 echo '</td></tr></table></div>';
-                   
+
             }
         }
 
         function display_applications(&$waapp) {
 
             $selected_app = $waapp->get_selected_application();
-
+            
             foreach ($selected_app->modules as $module) {
                 // image
                 echo "<table width='100%'><tr>";

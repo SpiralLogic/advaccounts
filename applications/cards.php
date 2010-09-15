@@ -15,8 +15,9 @@ class cards_app extends application {
 
     function cards_app() {
        $this->application("cards", _($this->help_context = "&Customers"));
-
-
+    
+    
+                    
         }
 
 }
