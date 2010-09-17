@@ -139,7 +139,9 @@ if (!isset($path_to_root))
 // Prevent register_globals vulnerability
 if (isset($_GET['path_to_root']) || isset($_POST['path_to_root']))
 	die("Restricted access");
-
+require_once("$path_to_root.'includes/firephp.php'");
+require_once('FirePHPCore/FirePHP.class.php');
+$firephp = FirePHP::getInstance(true);
 include_once($path_to_root . "/includes/current_user.inc");
 include_once($path_to_root . "/frontaccounting.php");
 include_once($path_to_root . "/admin/db/security_db.inc");
@@ -260,3 +262,6 @@ if (strstr($_SERVER['PHP_SELF'], 'logout.php') == false){
 // POST vars cleanup needed for direct reuse.
 // We quote all values later with db_escape() before db update.
 	$_POST = strip_quotes($_POST);
+
+
+
