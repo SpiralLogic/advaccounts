@@ -123,6 +123,10 @@ function display_order_summary($title, &$order, $editable_items = false) {
     display_heading($title);
 
     div_start('items_table');
+        if (count($_SESSION['Items']->line_items)>0) {
+    global $path_to_root;
+hyperlink_params_separate("$path_to_root/purchasing/po_entry_items.php", _("Create PO from this order"), 'NewOrder=Yes&UseOrder=1',true);
+    }
     start_table("$table_style colspan=7 width=90%");
     $th = array(_("Item Code"), _("Item Description"), _("Quantity"), _("Delivered"), _("Unit"), _("Price"), _("Discount %"), _("Total"), "");
 
@@ -437,7 +441,7 @@ function sales_order_item_controls(&$order, &$rowcounter, $line_no = -1) {
         $units = $order->line_items[$id]->units;
         hidden('stock_id', $_POST['stock_id']);
         label_cell($_POST['stock_id']);
-        textarea_cells(null,'item_description', null, 50,5);
+        textarea_cells(null, 'item_description', null, 50, 5);
         //label_cell($order->line_items[$line_no]->item_description, "nowrap");
         $Ajax->activate('items_table');
     } else // prepare new line

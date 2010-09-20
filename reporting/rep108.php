@@ -105,6 +105,8 @@
 
             $TransResult = getTransactions($myrow['debtor_no'], $date);
             $CustomerRecord = get_customer_details($myrow['debtor_no']);
+            FB::info($CustomerRecord);
+            if (round($CustomerRecord["Balance"],2) == 0) continue;
             $baccount = get_default_bank_account($myrow['curr_code']);
             $params['bankaccount'] = $baccount['id'];
             if ((db_num_rows($TransResult) == 0)) { //|| ($CustomerRecord['Balance'] == 0)

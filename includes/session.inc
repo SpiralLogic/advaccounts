@@ -139,9 +139,10 @@ if (!isset($path_to_root))
 // Prevent register_globals vulnerability
 if (isset($_GET['path_to_root']) || isset($_POST['path_to_root']))
 	die("Restricted access");
-require_once("$path_to_root.'includes/firephp.php'");
-require_once('FirePHPCore/FirePHP.class.php');
-$firephp = FirePHP::getInstance(true);
+
+require_once('FirePHPCore/fb.php');
+require_once("$path_to_root/includes/firephp.php");
+
 include_once($path_to_root . "/includes/current_user.inc");
 include_once($path_to_root . "/frontaccounting.php");
 include_once($path_to_root . "/admin/db/security_db.inc");

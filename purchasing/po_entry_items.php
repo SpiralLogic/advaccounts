@@ -11,6 +11,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
  ***********************************************************************/
 $page_security = 'SA_PURCHASEORDER';
 $path_to_root = "..";
+
 include_once($path_to_root . "/purchasing/includes/po_class.inc");
 include_once($path_to_root . "/includes/session.inc");
 include_once($path_to_root . "/purchasing/includes/purchasing_ui.inc");
@@ -69,7 +70,7 @@ function copy_from_cart() {
     $_POST['Comments'] = $_SESSION['PO']->Comments;
     $_POST['StkLocation'] = $_SESSION['PO']->Location;
     $_POST['delivery_address'] = $_SESSION['PO']->delivery_address;
-        $_POST['freight'] = $_SESSION['PO']->freight;
+    $_POST['freight'] = $_SESSION['PO']->freight;
 }
 
 function copy_to_cart() {
@@ -190,6 +191,7 @@ function handle_update_item() {
     }
     line_start_focus();
 }
+
 //---------------------------------------------------------------------------------------------------
 
 
@@ -360,12 +362,49 @@ if (isset($_POST['CancelUpdate']) || isset($_POST['UpdateLine'])) {
 
 if (isset($_GET['NewOrder'])) {
     create_new_po();
+    if ($_GET['UseOrder'] && isset($_SESSION['Items']->line_items)) {
+
+
+        foreach ($_SESSION['Items']->line_items as $line_no => $line_item) {
+            $sql = "SELECT " . TB_PREF . "purch_data.price," . TB_PREF . "purch_data.supplier_id
+		FROM " . TB_PREF . "purch_data INNER JOIN " . TB_PREF . "suppliers
+		ON " . TB_PREF . "purch_data.supplier_id=" . TB_PREF . "suppliers.supplier_id
+		WHERE stock_id = " . db_escape($line_item->stock_id) . ' ORDER BY price';
+            $result = db_query($sql);
+            $myrow = array();
+            if (db_num_rows($result) > 0) {
+                if (db_num_rows($result) == 1) {
+                    $myrow[] = db_fetch($result, 'pricing');
+                } else {
+                    $myrow = db_fetch($result, 'pricing');
+                }
+                            if (isset($po_lines[$myrow[0]['supplier_id']])) {
+                $po_lines[$myrow[0]['supplier_id']]++;
+            } else {
+                $po_lines[$myrow[0]['supplier_id']] = 1;
+            }
+            }
+
+            $_SESSION['PO']->add_to_order($line_no, $line_item->stock_id, $line_item->quantity, $line_item->item_description, price_decimal_format($myrow[0]['price'], $dec2), $line_item->units, add_days(Today(), 10), 0, 0, 0);
+
+
+        }
+        arsort($po_lines);
+FB::info($po_lines);
+        $_SESSION['wa_global_supplier_id'] = key($po_lines);
+    }
+
 }
 
 //---------------------------------------------------------------------------------------------------
 
 start_form();
-if ($_GET['NewOrder']) echo "<center><iframe src='{$path_to_root}/purchasing/inquiry/po_search_completed.php?NFY=1&frame=1'  width='90%' height='350' frameborder='0'></iframe> </center>";
+if ($_GET['NewOrder'] && !$_GET['UseOrder']) {
+    echo "
+<center>
+    <iframe src='{$path_to_root}/purchasing/inquiry/po_search_completed.php?NFY=1&frame=1' width='90%' height='350' frameborder='0'></iframe>
+</center>";
+}
 display_po_header($_SESSION['PO']);
 echo "<br>";
 display_po_items($_SESSION['PO']);
@@ -377,10 +416,11 @@ div_start('controls', 'items_table');
 if ($_SESSION['PO']->order_has_items()) {
     submit_center_first('CancelOrder', _("Delete This Order"));
     if ($_SESSION['PO']->order_no) {
-        submit_center_last('Commit', _("Update Order"), '', 'default'); }
-    else{
-        submit_center_last('Commit', _("Place Order"), '', 'default');}
-    
+        submit_center_last('Commit', _("Update Order"), '', 'default');
+    } else {
+        submit_center_last('Commit', _("Place Order"), '', 'default');
+    }
+
 } else
     submit_center('CancelOrder', _("Delete This Order"), true, false, 'cancel');
 div_end();

@@ -28,6 +28,10 @@ include_once("$path_to_root/sales/includes/ui/sales_order_ui.inc");
 include_once("$path_to_root/sales/includes/sales_db.inc");
 include_once("$path_to_root/sales/includes/db/sales_types_db.inc");
 include_once("$path_to_root/reporting/includes/reporting.inc");
+
+fbTimer::start();
+FB::info("execution time :" . fbTimer::get() . ' seconds');
+
 set_page_security(@$_SESSION['Items']->trans_type, array(ST_SALESORDER => 'SA_SALESORDER', ST_SALESQUOTE => 'SA_SALESQUOTE', ST_CUSTDELIVERY => 'SA_SALESDELIVERY', ST_SALESINVOICE => 'SA_SALESINVOICE'), array('NewOrder' => 'SA_SALESORDER', 'ModifySalesOrder' => 'SA_SALESORDER', 'NewQuotation' => 'SA_SALESQUOTE', 'ModifyQuotationNumber' => 'SA_SALESQUOTE', 'NewDelivery' => 'SA_SALESDELIVERY', 'NewInvoice' => 'SA_SALESINVOICE'));
 $js = '';
 if ($use_popup_windows) {
@@ -366,7 +370,7 @@ if (isset($_POST['ProcessOrder']) && can_process()) {
     $trans_type = $_SESSION['Items']->trans_type;
     new_doc_date($_SESSION['Items']->document_date);
     $_SESSION['Jobsboard'] = clone($_SESSION['Items']);
-
+    $_SESSION['wa_global_customer_id'] = $_SESSION['Items']->customer_id;
     processing_end();
     $_SESSION['order_no'] = $trans_no;
     if ($modified) {
@@ -448,9 +452,14 @@ function handle_new_item() {
     if (!check_item_data()) {
         return;
     }
+
+
     add_to_order($_SESSION['Items'], $_POST['stock_id'], input_num('qty'), input_num('price'), input_num('Disc') / 100);
+
+
     $_POST['_stock_id_edit'] = $_POST['stock_id'] = "";
     line_start_focus();
+
 }
 
 //--------------------------------------------------------------------------------
@@ -551,7 +560,6 @@ if (isset($_POST['UpdateItem'])) {
 if (isset($_POST['AddItem'])) {
     handle_new_item();
 }
-
 if (isset($_POST['CancelItemChanges'])) {
     line_start_focus();
 }
@@ -614,11 +622,11 @@ if ($customer_error == "") {
     if ($_SESSION['Items']->trans_no == 0) {
 
         submit_center_first('ProcessOrder', $porder, _('Check entered data and save document'), 'default');
-        submit_js_confirm('CancelOrder', _('You are about to void this Document.\nDo you want to continue?'));
+
     } else {
         submit_center_first('ProcessOrder', $corder, _('Validate changes and update document'), 'default');
     }
-
+    submit_js_confirm('CancelOrder', _('You are about to void this Document.\nDo you want to continue?'));
     submit_center_last('CancelOrder', $cancelorder, _('Cancels document entry or removes sales order when editing an old document'));
 } else {
     display_error($customer_error);

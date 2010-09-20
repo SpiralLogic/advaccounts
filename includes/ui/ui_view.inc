@@ -380,7 +380,6 @@ function display_supp_trans_tax_details($tax_items, $columns) {
                 $tax, "colspan=$columns align=right", "align=right");
     }
 }
-
 //--------------------------------------------------------------------------------------
 
 function display_edit_tax_items($taxes, $columns, $tax_included, $leftspan = 0) {

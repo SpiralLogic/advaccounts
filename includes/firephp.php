@@ -20,8 +20,4 @@ class fbTimer {
     }
 }
 
-// this class is simple to use
-fbTimer::start();
-// some code you want to benchmark
-fbTimer::stop();
-fb::log("execution time :" . fbTimer::get() . ' seconds');
+
