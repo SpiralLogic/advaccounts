@@ -170,14 +170,16 @@
                     $doc_Total_Payment = _("TOTAL RECEIPT");
             else $doc_Total_Payment = _("TOTAL REMITTANCE");
         }
-        elseif ($doctype == ST_STATEMENT) {
+
+    }
+if ($doctype == ST_STATEMENT) {
             $doc_Outstanding = _("Outstanding Transactions");
             $doc_Current = _("Current");
             $doc_Total_Balance = _("Total Balance");
-            $doc_Statement = _("Statement");
+            $doc_Statement = _("Your Statement");
+              $doc_Kindest_regards = _("Please pass this statement on to your accounts department.\n\nIf this is not the correct email address to send future statements to please respond to this email with the correct address.\n\nKindest regards");
             $doc_as_of = _("as of");
             $doc_Days = _("Days");
             $doc_Over = _("Over");
         }
-    }
 ?>

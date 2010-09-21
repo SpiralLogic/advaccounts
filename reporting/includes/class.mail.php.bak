@@ -140,4 +140,3 @@ class email
         return $ret;
     }
 }
-?>
