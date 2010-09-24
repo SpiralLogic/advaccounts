@@ -32,6 +32,7 @@ class email {
         $this->mail->Password = '1willenberg';
         $this->mail->From = "sales@advancedroadsigns.com.au";
         $this->mail->FromName = 'Advanced Group Accounts';
+        $this->mail->AddBCC("sales@advancedroadsigns.com.au");
     }
 
     function to($mail) {

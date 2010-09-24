@@ -67,7 +67,7 @@ if ($this->company['coy_logo'] != '') {
     $this->Font();
     $this->fontSize -= 4;
 }
-$this->SetTextColor(190, 190, 190);
+//$this->SetTextColor(190, 190, 190);
 $this->fontSize += 10;
 $this->Font('bold');
 $this->TextWrap($mcol, $this->row, $this->pageWidth - $this->rightMargin - $mcol - 20, $this->title, 'right');

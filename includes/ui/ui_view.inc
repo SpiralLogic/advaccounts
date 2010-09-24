@@ -743,7 +743,7 @@ function get_js_png_fix() {
 }
 function get_js_calc() {
     global $path_to_root;
-
+    add_js_file('jquery.min.js');
    add_js_file('jquery.calculator.pack.js');
     add_js_file('calc.js');
 

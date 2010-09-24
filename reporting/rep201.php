@@ -113,9 +113,9 @@ function print_supplier_balances()
 	if ($no_zeros) $nozeros = _('Yes');
 	else $nozeros = _('No');
 
-	$cols = array(0, 100, 130, 190,	250, 320, 385, 450,	515);
+	$cols = array(0, 100, 180, 240,	270, 340, 405, 470,	515);
 
-	$headers = array(_('Trans Type'), _('#'), _('Date'), _('Due Date'), _('Charges'),
+	$headers = array(_('Trans Type'), _('# - Invoice #'), _('Date'), _('Due Date'), _('Charges'),
 		_('Credits'), _('Allocated'), _('Outstanding'));
 
 	$aligns = array('left',	'left',	'left',	'left',	'right', 'right', 'right', 'right');
@@ -129,6 +129,7 @@ function print_supplier_balances()
     $rep = new FrontReport(_('Supplier Balances'), "SupplierBalances", user_pagesize());
 
     $rep->Font();
+        $rep->fontSize -= 2;
     $rep->Info($params, $cols, $headers, $aligns);
     $rep->Header();
 
@@ -160,7 +161,7 @@ function print_supplier_balances()
 		$res = getTransactions($myrow['supplier_id'], $from, $to);
 		if ($no_zeros && db_num_rows($res) == 0) continue;
 
-		$rep->fontSize += 2;
+		
 		$rep->TextCol(0, 2, $myrow['name']);
 		if ($convert) $rep->TextCol(2, 3,	$myrow['curr_code']);
 		$rep->fontSize -= 2;
@@ -175,10 +176,11 @@ function print_supplier_balances()
 		$rep->Line($rep->row + 4);
 		while ($trans=db_fetch($res))
 		{
+            
 			if ($no_zeros && $trans['TotalAmount'] == 0 && $trans['Allocated'] == 0) continue;
 			$rep->NewLine(1, 2);
 			$rep->TextCol(0, 1, $systypes_array[$trans['type']]);
-			$rep->TextCol(1, 2,	$trans['reference']);
+			$rep->TextCol(1, 2,	$trans['reference'].' - '.$trans['supp_reference']);
 			$rep->DateCol(2, 3,	$trans['tran_date'], true);
 			if ($trans['type'] == ST_SUPPINVOICE)
 				$rep->DateCol(3, 4,	$trans['due_date'], true);
