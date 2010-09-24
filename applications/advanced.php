@@ -15,12 +15,12 @@ class advanced_app extends application {
 
     function advanced_app() {
        $this->application("Advanced", _($this->help_context = "&Advanced"));
-	$this->add_module(_("Websales"));
+	$this->add_module(_("Websales To Jobsboard"));
 		$this->add_lapp_function(0, _("Put websales on Bobs Joard"),
-			"http://advaccounts/jobsboard/accounting/fuckyou", 'SA_OPEN');
+			"http://advaccounts/jobsboard/websales/", 'SA_OPEN');
+       $this->add_lapp_function(0, _("Search"),
+           "http://advaccounts/jobsboard/search/", 'SA_OPEN');
 
         }
 
 }
-
-?>
