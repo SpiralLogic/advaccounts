@@ -224,6 +224,7 @@ hyperlink_params_separate("$path_to_root/purchasing/po_entry_items.php", _("Crea
         if ($order->trans_type != 30 && !$SysPrefs->allow_negative_stock())
             display_error(_("The delivery cannot be processed because there is an insufficient quantity for item:") . '<br>' . $qoh_msg);
     }
+  
     div_end();
 }
 

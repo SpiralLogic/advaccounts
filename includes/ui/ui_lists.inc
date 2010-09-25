@@ -1226,7 +1226,7 @@ function gl_all_accounts_list($name, $selected_id = null, $skip_bank_accounts = 
 			WHERE chart.account_type=type.id";
     }
 
-    return combo_input($name, $selected_id, $sql, 'chart.account_code', 'chart.account_name', array('format' => '_format_account', 'spec_option' => $all_option===true ? _("Use Item Sales Accounts") : $all_option, 'spec_id' => '', 'order' => array('type.id', 'account_code'), 'search_box' => $cells, 'search_submit' => false, 'size' => 12, 'max' => 10, 'cells' => true, 'select_submit' => $submit_on_change, 'async' => false, 'category' => 2, 'show_inactive' => $all));
+    return combo_input($name, $selected_id, $sql, 'chart.account_code', 'chart.account_name', array('format' => '_format_account', 'type' => 2, 'spec_option' => $all_option===true ? _("Use Item Sales Accounts") : $all_option, 'spec_id' => '', 'order' => array('type.id', 'account_code'), 'search_box' => $cells, 'search_submit' => false, 'size' => 12, 'max' => 10, 'cells' => true, 'select_submit' => $submit_on_change, 'async' => false, 'category' => 2, 'show_inactive' => $all));
 
 }
 
