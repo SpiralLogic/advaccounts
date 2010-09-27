@@ -16,7 +16,7 @@ include_once($path_to_root . "/includes/session.inc");
 include_once($path_to_root . "/sales/includes/sales_ui.inc");
 
 include_once($path_to_root . "/sales/includes/sales_db.inc");
-
+include_once("$path_to_root/reporting/includes/reporting.inc");
 $js = "";
 if ($use_popup_windows)
 	$js .= get_js_open_window(900, 600);
@@ -168,6 +168,7 @@ end_table(1);
 
 is_voided_display(ST_SALESINVOICE, $trans_id, _("This invoice has been voided."));
 
+submenu_print(_("&Print This Invoice"), ST_SALESINVOICE, $_GET['trans_no'], 'prtopt');
 end_page(true);
 
 ?>

@@ -16,7 +16,7 @@ include_once($path_to_root . "/includes/session.inc");
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/sales/includes/sales_db.inc");
-
+include_once("$path_to_root/reporting/includes/reporting.inc");
 $js = "";
 if ($use_popup_windows)
 	$js .= get_js_open_window(900, 600);
@@ -59,6 +59,6 @@ if (!$voided)
 {
 	display_allocations_from(PT_CUSTOMER, $receipt['debtor_no'], ST_CUSTPAYMENT, $trans_id, $receipt['Total']);
 }
-
+submenu_print(_("&Print This Receipt"), ST_CUSTPAYMENT, $_GET['trans_no'], 'prtopt');
 end_page(true);
 ?>

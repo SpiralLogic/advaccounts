@@ -18,6 +18,7 @@ include_once($path_to_root . "/includes/date_functions.inc");
 
 include_once($path_to_root . "/sales/includes/sales_ui.inc");
 include_once($path_to_root . "/sales/includes/sales_db.inc");
+include_once("$path_to_root/reporting/includes/reporting.inc");
 
 $js = "";
 if ($use_popup_windows)
@@ -246,6 +247,10 @@ label_row(_("Total Order Value"), $display_total, "align=right colspan=6",
 	"nowrap align=right", 1);
 
 end_table(2);
+    $modify = ($_GET['trans_type'] == ST_SALESORDER ? "ModifyOrderNumber" : "ModifyQuotationNumber");
+submenu_option(_('Edit This Order'),"/sales/sales_order_entry.php?{$modify}={$_GET['trans_no']}' target='_top' ");
+
+submenu_print(_("&Print This Order"), ST_SALESORDER, $_GET['trans_no'], 'prtopt');
 
 end_page(true);
 

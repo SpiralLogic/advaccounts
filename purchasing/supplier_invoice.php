@@ -75,6 +75,9 @@ function clear_fields() {
     unset($_POST['amount']);
     unset($_POST['memo_']);
     unset($_POST['AddGLCodeToTrans']);
+
+
+
     $Ajax->activate('gl_items');
     set_focus('gl_code');
 }
@@ -295,6 +298,19 @@ if ($id3 != -1) {
 $id4 = find_submit('Delete2');
 if ($id4 != -1) {
     $_SESSION['supp_trans']->remove_gl_codes_from_trans($id4);
+      foreach ($_SESSION['supp_trans']->gl_codes as $key => $gl_item) {
+            if ($gl_item->gl_code == 2421) {
+                $taxrecord = $key;
+                continue;
+            }
+        $taxtotal += $gl_item->amount;
+        }
+
+    if (!is_null($taxrecord)) {
+        $_SESSION['supp_trans']->gl_codes[$taxrecord]->amount = $taxtotal*.1;
+    }
+        FB::info($taxrecord);
+        FB::info($taxtotal);
     clear_fields();
     $Ajax->activate('gl_items');
     $Ajax->activate('inv_tot');

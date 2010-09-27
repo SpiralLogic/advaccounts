@@ -210,9 +210,7 @@ $this->TextWrap($col, $this->row, $width, $doc_Our_Ref, 'C');
 $col += $width;
 $this->TextWrap($col, $this->row, $width, $doc_Your_VAT_no, 'C');
 $col += $width;
-if ($doctype == ST_SALESINVOICE)
-    $this->TextWrap($col, $this->row, $width, $doc_Delivery_no, 'C');
-else $this->TextWrap($col, $this->row, $width, $doc_Our_Order_No, 'C');
+$this->TextWrap($col, $this->row, $width, $doc_Our_Order_No, 'C');
 $col += $width;
 $this->TextWrap($col, $this->row, $width, $doc_Due_Date, 'C');
 $this->row = $iline3 - $this->lineHeight - 1;
@@ -266,9 +264,9 @@ if ($doctype == ST_WORKORDER) {
     $this->TextWrap($col, $this->row, $width, $report_phone, 'C');
 }
 #  __ADVANCEDEDIT__ END #
-
+ 
 $col += $width;
-if ($doctype == ST_SALESINVOICE) {
+/*if ($doctype == ST_SALESINVOICE) {
     $deliveries = get_parent_trans(ST_SALESINVOICE, $myrow['trans_no']);
     $line = "";
     foreach ($deliveries as $delivery) {
@@ -281,7 +279,8 @@ if ($doctype == ST_SALESINVOICE) {
     }
     $this->TextWrap($col, $this->row, $width, $line, 'C');
 }
-elseif ($doctype == ST_CUSTDELIVERY) {
+else*/
+if ($doctype == ST_CUSTDELIVERY) {
     $ref = $myrow['order_'];
     if ($print_invoice_no == 0) {
         $ref = get_reference(ST_SALESORDER, $myrow['order_']);
@@ -291,16 +290,17 @@ elseif ($doctype == ST_CUSTDELIVERY) {
 }
 elseif ($doctype == ST_WORKORDER)
     $this->TextWrap($col, $this->row, $width, $myrow["location_name"], 'C');
+elseif ($doctype == ST_STATEMENT || $doctype == ST_SALESQUOTE || $doctype == ST_SALESORDER || $doctype == ST_SALESINVOICE) {
+    if (!empty($branch['fax'])) { $this->TextWrap($col, $this->row, $width, $branch['fax'], 'C'); } else {
+      $this->TextWrap($col, $this->row, $width, $myrow['fax'], 'C');
+    }
+}
 elseif (isset($myrow['order_']) && $myrow['order_'] != 0)
     $this->TextWrap($col, $this->row, $width, $myrow['order_'], 'C');
     #  __ADVANCEDEDIT__ BEGIN # add supplier fax to PO
 elseif ($doctype == ST_PURCHORDER)
     $this->TextWrap($col, $this->row, $width, $myrow["fax"], 'C');
-elseif ($doctype == ST_STATEMENT || $doctype == ST_SALESQUOTE || $doctype == ST_SALESORDER) {
-    if (!empty($branch['fax'])) { $this->TextWrap($col, $this->row, $width, $branch['fax'], 'C'); } else {
-      $this->TextWrap($col, $this->row, $width, $myrow['fax'], 'C');  
-    }
-}
+
 #  __ADVANCEDEDIT__ END #
 $col += $width;
 if ($doctype == ST_SALESORDER || $doctype == ST_SALESQUOTE)

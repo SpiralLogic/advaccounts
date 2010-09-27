@@ -17,7 +17,7 @@ include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
 
 include_once($path_to_root . "/sales/includes/sales_db.inc");
-
+include_once("$path_to_root/reporting/includes/reporting.inc");
 $js = "";
 if ($use_popup_windows)
 	$js .= get_js_open_window(900, 500);
@@ -151,7 +151,7 @@ if (!$voided)
 		$myrow['debtor_no'], ST_CUSTCREDIT, $trans_id, $credit_total);
 
 /* end of check to see that there was an invoice record to print */
-
+submenu_print(_("&Print This Credit Note"), ST_CUSTCREDIT, $_GET['trans_no'], 'prtopt');
 end_page(true);
 
 ?>

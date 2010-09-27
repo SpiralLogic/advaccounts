@@ -16,7 +16,7 @@ include_once($path_to_root . "/includes/session.inc");
 include_once($path_to_root . "/sales/includes/sales_ui.inc");
 
 include_once($path_to_root . "/sales/includes/sales_db.inc");
-
+include_once("$path_to_root/reporting/includes/reporting.inc");
 $js = "";
 if ($use_popup_windows)
 	$js .= get_js_open_window(900, 600);
@@ -165,7 +165,5 @@ label_row(_("TOTAL VALUE"), $display_total, "colspan=6 align=right",
 end_table(1);
 
 is_voided_display(ST_CUSTDELIVERY, $trans_id, _("This dispatch has been voided."));
-
+submenu_print(_("&Print This Delivery Note"), ST_CUSTDELIVERY, $_GET['trans_no'], 'prtopt');
 end_page(true);
-
-?>
