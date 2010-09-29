@@ -146,20 +146,15 @@ function display_gl_controls(&$supp_trans, $k) {
     $dim = get_company_pref('use_dimension');
     if ($dim >= 1) {
         dimensions_list_cells(null, 'dimension_id', null, true, " ", false, 1);
+     hidden('dimension_id', 0);
     }
     if ($dim > 1) {
+
         dimensions_list_cells(null, 'dimension2_id', null, true, " ", false, 2);
+        hidden('dimension2_id', 0);
     }
+    textarea_cells(null, 'memo_', null, 50, 1);
     amount_cells(null, 'amount');
-    if ($dim < 1) {
-        text_cells_ex(null, 'memo_', 35, 50, null, null, null, hidden('dimension_id', 0, false) . hidden('dimension2_id', 0, false));
-    } else {
-        if ($dim < 2) {
-            text_cells_ex(null, 'memo_', 35, 50, null, null, null, hidden('dimension2_id', 0, false));
-        } else {
-            text_cells_ex(null, 'memo_', 35, 50, null, null, null);
-        }
-    }
     submit_cells('AddGLCodeToTrans', _("Add"), "", _('Add GL Line'), true);
     submit_cells('ClearFields', _("Reset"), "", _("Clear all GL entry fields"), true);
     end_row();
@@ -216,12 +211,12 @@ function display_gl_items(&$supp_trans, $mode = 0) {
 
     $dim = get_company_pref('use_dimension');
     if ($dim == 2) {
-        $th = array(_("Account"), _("Name"), _("Dimension") . " 1", _("Dimension") . " 2", _("Amount"), _("Memo"));
+        $th = array(_("Account"), _("Name"), _("Dimension") . " 1", _("Dimension") . " 2", _("Memo"), _("Amount"));
     } else {
         if ($dim == 1) {
-            $th = array(_("Account"), _("Name"), _("Dimension"), _("Amount"), _("Memo"));
+            $th = array(_("Account"), _("Name"), _("Dimension"), _("Memo"), _("Amount"));
         } else {
-            $th = array(_("Account"), _("Name"), _("Amount"), _("Memo"));
+            $th = array(_("Account"), _("Name"), _("Memo"), _("Amount"));
         }
     }
 
@@ -249,9 +244,9 @@ function display_gl_items(&$supp_trans, $mode = 0) {
                 label_cell(get_dimension_string($entered_gl_code->gl_dim, true));
             if ($dim > 1)
                 label_cell(get_dimension_string($entered_gl_code->gl_dim2, true));
-
-            amount_cell($entered_gl_code->amount, true);
             label_cell($entered_gl_code->memo_);
+            amount_cell($entered_gl_code->amount, true);
+
 
             if ($mode == 1) {
                 delete_button_cell("Delete2" . $entered_gl_code->Counter, _("Delete"), _('Remove line from document'));
@@ -328,7 +323,9 @@ function display_grn_items_for_selection(&$supp_trans, $k) {
                     qty_cells(null, 'this_quantity_inv' . $n, number_format2($myrow["qty_recd"] - $myrow["quantity_inv"], $dec), null, null, $dec); else
                     qty_cells(null, 'This_QuantityCredited' . $n, number_format2(max($myrow["quantity_inv"], 0), $dec), null, null, $dec);
                 $dec2 = 0;
+                FB::info($myrow);
                 amount_cells(null, 'ChgPrice' . $n, price_decimal_format($myrow["unit_price"], $dec2), null, null, $dec2, 'ChgPriceCalc' . $n);
+                amount_cells(null, 'ExpPrice' . $n, price_decimal_format($myrow["unit_price"], $dec2), null, null, $dec2, 'ExpPriceCalc' . $n);
                 small_amount_cells(null, 'ChgDiscount' . $n, percent_format($myrow['discount'] * 100), null, null, user_percent_dec());
                 if ($supp_trans->is_invoice)
                     amount_cell(round2($myrow["unit_price"] * ($myrow["qty_recd"] - $myrow["quantity_inv"]) * (1 - $myrow['discount']), user_price_dec())); else
@@ -401,14 +398,15 @@ function display_grn_items(&$supp_trans, $mode = 0) {
     div_start('grn_items');
     start_table("$table_style width=95%");
     if ($mode == 1) {
-        $th = array(_("Delivery"), _("Sequence #"), _("P.O."), _("Item"), _("Description"), _("Received On"), _("Quantity Received"), _("Quantity Invoiced"), _("Qty Yet To Invoice"), _("Order Price"), _('Discount %'), _("Total"), "", "", _("Edit"));
-        if ($supp_trans->is_invoice && $_SESSION["wa_current_user"]->can_access('SA_GRNDELETE')) // Added 2008-10-18 by Joe Hunt. Only admins can remove GRNs
-            $th[] = "";
+        $th = array(_("Delivery"), _("Sequence #"), _("P.O."), _("Item"), _("Description"), _("Received On"), _("Quantity Received"), _("Quantity Invoiced"), _("Qty Yet To Invoice"), _("Order Price"), _("Expected Price"), _('Discount %'), _("Total"), "", "", _("Edit"));
+        //      if ($supp_trans->is_invoice && $_SESSION["wa_current_user"]->can_access('SA_GRNDELETE')) // Added 2008-10-18 by Joe Hunt. Only admins can remove GRNs
+        //         $th[] = "";
         if (!$supp_trans->is_invoice) {
+            unset($th[14]);
             $th[8] = _("Qty Yet To Credit");
         }
     } else
-        $th = array(_("Delivery"), _("Item"), _("Description"), _("Quantity"), _("Price"), _("Discount %"), _("Line Value"));
+        $th = array(_("Delivery"), _("Item"), _("Description"), _("Quantity"), _("Price"), _("Expected Price"), _("Discount %"), _("Line Value"));
 
     table_header($th);
     $total_grn_value = 0;
@@ -432,13 +430,15 @@ function display_grn_items(&$supp_trans, $mode = 0) {
             }
             qty_cell(abs($entered_grn->this_quantity_inv), true, $dec);
             amount_decimal_cell($entered_grn->chg_price);
+            amount_decimal_cell($entered_grn->exp_price);
             percent_cell($entered_grn->discount);
             amount_cell(round2($entered_grn->chg_price * abs($entered_grn->this_quantity_inv * (1 - $entered_grn->discount / 100)), user_price_dec()));
             if ($mode == 1) {
-                delete_button_cell("Delete" . $entered_grn->id, _("Edit"), _('Edit document line'));
+
                 if ($supp_trans->is_invoice && $_SESSION["wa_current_user"]->can_access('SA_GRNDELETE'))
                     label_cell("");
                 label_cell(""); // PO
+                delete_button_cell("Delete" . $entered_grn->id, _("Edit"), _('Edit document line'));
             }
             end_row();
             $total_grn_value += round2($entered_grn->chg_price * abs($entered_grn->this_quantity_inv), user_price_dec());
@@ -451,9 +451,9 @@ function display_grn_items(&$supp_trans, $mode = 0) {
     }
     if ($mode == 1) {
         $ret = display_grn_items_for_selection($supp_trans, $k);
-        $colspan = 10;
+        $colspan = 12;
     } else
-        $colspan = 6;
+        $colspan = 8;
     label_row(_("Total"), price_format($total_grn_value), "colspan=$colspan align=right", "nowrap align=right");
     if (!$ret) {
         start_row();

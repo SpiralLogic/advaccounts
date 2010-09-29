@@ -97,7 +97,11 @@ function get_item_kit($item_code)
 
 	return $result;
 }
+function is_item_kit($item_code) {
+ $sql="SELECT * FROM ".TB_PREF."item_codes WHERE item_code=".db_escape($item_code);
+return db_query($sql,"Could not do shit for some reason");
 
+}
 function get_item_code_dflts($stock_id)
 {
 	$sql = "SELECT units, decimals, description, category_id

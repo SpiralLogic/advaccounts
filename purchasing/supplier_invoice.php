@@ -266,7 +266,7 @@ function commit_item_data($n) {
             $complete = false;
         }
         $_SESSION['err_over_charge'] = false;
-        $_SESSION['supp_trans']->add_grn_to_trans($n, $_POST['po_detail_item' . $n], $_POST['item_code' . $n], $_POST['item_description' . $n], $_POST['qty_recd' . $n], $_POST['prev_quantity_inv' . $n], input_num('this_quantity_inv' . $n), $_POST['order_price' . $n], input_num('ChgPrice' . $n), $complete, $_POST['std_cost_unit' . $n], "", input_num('ChgDiscount' . $n));
+        $_SESSION['supp_trans']->add_grn_to_trans($n, $_POST['po_detail_item' . $n], $_POST['item_code' . $n], $_POST['item_description' . $n], $_POST['qty_recd' . $n], $_POST['prev_quantity_inv' . $n], input_num('this_quantity_inv' . $n), $_POST['order_price' . $n], input_num('ChgPrice' . $n), $complete, $_POST['std_cost_unit' . $n], "", input_num('ChgDiscount' . $n), input_num('ExpPrice' . $n));
     }
 }
 
@@ -309,8 +309,7 @@ if ($id4 != -1) {
     if (!is_null($taxrecord)) {
         $_SESSION['supp_trans']->gl_codes[$taxrecord]->amount = $taxtotal*.1;
     }
-        FB::info($taxrecord);
-        FB::info($taxtotal);
+
     clear_fields();
     $Ajax->activate('gl_items');
     $Ajax->activate('inv_tot');

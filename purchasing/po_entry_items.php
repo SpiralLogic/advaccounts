@@ -218,7 +218,7 @@ function handle_add_new_item() {
         }
 
         if ($allow_update == true) {
-            $sql = "SELECT long_description as description , units, mb_flag
+                $sql = "SELECT long_description as description , units, mb_flag
 				FROM " . TB_PREF . "stock_master WHERE stock_id = " . db_escape($_POST['stock_id']);
 
             $result = db_query($sql, "The stock details for " . $_POST['stock_id'] . " could not be retrieved");
@@ -229,7 +229,7 @@ function handle_add_new_item() {
 
             if ($allow_update) {
                 $myrow = db_fetch($result);
-                $_SESSION['PO']->add_to_order($_POST['line_no'], $_POST['stock_id'], input_num('qty'), $myrow["description"], input_num('price'), $myrow["units"], $_POST['req_del_date'], 0, 0, $_POST['discount'] / 100);
+                $_SESSION['PO']->add_to_order($_POST['line_no'], $_POST['stock_id'], input_num('qty'),$_POST['stock_id_text'], input_num('price'), $myrow["units"], $_POST['req_del_date'], 0, 0, $_POST['discount'] / 100);
 
                 unset_form_variables();
                 $_POST['stock_id'] = "";
@@ -390,7 +390,7 @@ if (isset($_GET['NewOrder'])) {
 
         }
         arsort($po_lines);
-FB::info($po_lines);
+
         $_SESSION['wa_global_supplier_id'] = key($po_lines);
     }
 

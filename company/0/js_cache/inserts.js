@@ -43,18 +43,18 @@ function expandtab(tabcontentid, tabnumber) {
   var tabs = document.getElementById(tabcontentid);
  _expand(tabs.getElementsByTagName("input")[tabnumber]);
 }
-
 function _set_combo_input(e) {
 		e.setAttribute('_last', e.value);
-		e.onblur=function() { 
+		e.onblur=function() {
 		  var but_name = this.name.substring(0, this.name.length-4)+'button';
 		  var button = document.getElementsByName(but_name)[0];
 		  var select = document.getElementsByName(this.getAttribute('rel'))[0];
 		  save_focus(select);
-// submit request if there is submit_on_change option set and 
+// submit request if there is submit_on_change option set and
 // search field has changed.
+
 		  if (button && (this.value != this.getAttribute('_last'))) {
-	  		JsHttpRequest.request(button);
+			JsHttpRequest.request(button);
 		  } else if(this.className=='combo2') {
 				this.style.display = 'none';
 				select.style.display = 'inline';
@@ -78,7 +78,7 @@ function _set_combo_input(e) {
 			  }
 			}
 		};
-    	e.onkeydown = function(ev) { 
+    	e.onkeydown = function(ev) {
 	  		ev = ev||window.event;
 	  		key = ev.keyCode||ev.which;
 	  		if(key == 13) {
@@ -95,26 +95,31 @@ function _update_box(s) {
 		if(box && s.selectedIndex>=0) {
 			  var opt = s.options[s.selectedIndex];
 				if(box) {
+				  var old = box.value;
 				  box.value = byid ? opt.value : opt.text;
 				  box.setAttribute('_last', box.value);
+				  return old != box.value
 				}
 		}
 }
 
 function _set_combo_select(e) {
 		// When combo position is changed via js (eg from searchbox)
-		// no onchange event is generated. To ensure proper change 
+		// no onchange event is generated. To ensure proper change
 		// signaling we must track selectedIndex in onblur handler.
 		e.setAttribute('_last', e.selectedIndex);
 		e.onblur = function() {
-			if(this.className=='combo')
-			    _update_box(this);
-			if (this.selectedIndex != this.getAttribute('_last'))
-				this.onchange();
+		    var box = document.getElementsByName(this.getAttribute('rel'))[0];
+//			if(this.className=='combo')
+//			    _update_box(this);
+			if ((this.selectedIndex != this.getAttribute('_last'))
+				||(this.className=='combo' && _update_box(this))
+				)
+					this.onchange();
 		}
 		e.onchange = function() {
 			var s = this;
-			this.setAttribute('_last', this.selectedIndex);			
+			this.setAttribute('_last', this.selectedIndex);
 			if(s.className=='combo')
 			    _update_box(s);
 			if(s.selectedIndex>=0) {
@@ -122,7 +127,7 @@ function _set_combo_select(e) {
 				 var update = document.getElementsByName(sname)[0];
 				 if(update) {
 					    JsHttpRequest.request(update);
-				} 
+				}
 			}
 			return true;
 		}

@@ -1,7 +1,7 @@
 /* Main style sheet for jQuery Calculator v1.2.4 */
 div.hasCalculator, span.hasCalculator, .hasCalculator {
 	position: relative;
-    margin-right:30px;
+    /*margin-right:30px;*/
 }
 button.calculator-trigger {
 	width: 25px;

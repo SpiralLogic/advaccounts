@@ -108,9 +108,7 @@ class email {
 
         // Attachment hinzufügen
         $ret = $this->mail->Send();
-        if (!$ret) {
-            FB::info($this->mail->ErrorInfo);
-        }
+
         return $ret;
     }
 }

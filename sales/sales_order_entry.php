@@ -29,8 +29,7 @@ include_once("$path_to_root/sales/includes/sales_db.inc");
 include_once("$path_to_root/sales/includes/db/sales_types_db.inc");
 include_once("$path_to_root/reporting/includes/reporting.inc");
 
-fbTimer::start();
-FB::info("execution time :" . fbTimer::get() . ' seconds');
+
 
 set_page_security(@$_SESSION['Items']->trans_type, array(ST_SALESORDER => 'SA_SALESORDER', ST_SALESQUOTE => 'SA_SALESQUOTE', ST_CUSTDELIVERY => 'SA_SALESDELIVERY', ST_SALESINVOICE => 'SA_SALESINVOICE'), array('NewOrder' => 'SA_SALESORDER', 'ModifySalesOrder' => 'SA_SALESORDER', 'NewQuotation' => 'SA_SALESQUOTE', 'ModifyQuotationNumber' => 'SA_SALESQUOTE', 'NewDelivery' => 'SA_SALESDELIVERY', 'NewInvoice' => 'SA_SALESINVOICE'));
 $js = '';
@@ -455,7 +454,7 @@ function handle_new_item() {
     }
 
 
-    add_to_order($_SESSION['Items'], $_POST['stock_id'], input_num('qty'), input_num('price'), input_num('Disc') / 100);
+ add_to_order($_SESSION['Items'], $_POST['stock_id'], input_num('qty'), input_num('price'), input_num('Disc') / 100, $_POST['stock_id_text']);
 
 
     $_POST['_stock_id_edit'] = $_POST['stock_id'] = "";

@@ -278,8 +278,9 @@ function po_item_controls(&$order, $stock_id=null) {
         hidden('stock_id', $_POST['stock_id']);
         label_cell($_POST['stock_id']);
         //label_cell($order->line_items[$id]->item_description);
-        $Ajax->activate('items_table');
+
         textarea_cells(null,'item_description', null, 50,5);
+        $Ajax->activate('items_table');
         $qty_rcvd = $order->line_items[$id]->qty_received;
     } else {
         hidden('line_no', ($_SESSION['PO']->lines_on_order + 1));

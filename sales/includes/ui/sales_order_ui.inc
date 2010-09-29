@@ -13,23 +13,34 @@ include_once($path_to_root . "/sales/includes/cart_class.inc");
 include_once($path_to_root . "/includes/manufacturing.inc");
 
 //--------------------------------------------------------------------------------
-function add_to_order(&$order, $new_item, $new_item_qty, $price, $discount) {
+function add_to_order(&$order, $new_item, $new_item_qty, $price, $discount,$description) {
     // calculate item price to sum of kit element prices factor for
     // value distribution over all exploded kit items
-    $std_price = get_kit_price($new_item, $order->customer_currency, $order->sales_type, $order->price_factor, get_post('OrderDate'), true);
+    $item = is_item_kit($new_item);
+    if (db_num_rows($item) == 1) {
+        $item = db_fetch($item);
+        if (!$item['is_foreign'] && $item['item_code'] == $item['stock_id']) {
 
+            foreach ($order->line_items as $order_item) {
+                if (strcasecmp($order_item->stock_id, $item['stock_id']) == 0) {
+                    display_warning(_("For Part :") . $item['stock_id'] . " " . _("This item is already on this document. You have been warned."));
+                    break;
+                }
+            }
+            $order->add_to_cart(count($order->line_items), $item['stock_id'], $new_item_qty * $item['quantity'], $price, $discount,0,0,$description);
+        return;
+        }
+    }
+    $std_price = get_kit_price($new_item, $order->customer_currency, $order->sales_type, $order->price_factor, get_post('OrderDate'), true);
     if ($std_price == 0) {
         $price_factor = 0;
     } else {
         $price_factor = $price / $std_price;
     }
-
     $kit = get_item_kit($new_item);
     $item_num = db_num_rows($kit);
-
     while ($item = db_fetch($kit)) {
         $std_price = get_kit_price($item['stock_id'], $order->customer_currency, $order->sales_type, $order->price_factor, get_post('OrderDate'), true);
-
         // rounding differences are included in last price item in kit
         $item_num--;
         if ($item_num) {
@@ -41,7 +52,6 @@ function add_to_order(&$order, $new_item, $new_item_qty, $price, $discount) {
             $item_price = $price;
         }
         $item_price = round($item_price, user_price_dec());
-
         if (!$item['is_foreign'] && $item['item_code'] != $item['stock_id']) { // this is sales kit - recurse
             add_to_order($order, $item['stock_id'], $new_item_qty * $item['quantity'], $item_price, $discount, $std_price);
         } else { // stock item record eventually with foreign code
@@ -123,9 +133,9 @@ function display_order_summary($title, &$order, $editable_items = false) {
     display_heading($title);
 
     div_start('items_table');
-        if (count($_SESSION['Items']->line_items)>0) {
-    global $path_to_root;
-hyperlink_params_separate("$path_to_root/purchasing/po_entry_items.php", _("Create PO from this order"), 'NewOrder=Yes&UseOrder=1',true);
+    if (count($_SESSION['Items']->line_items) > 0) {
+        global $path_to_root;
+        hyperlink_params_separate("$path_to_root/purchasing/po_entry_items.php", _("Create PO from this order"), 'NewOrder=Yes&UseOrder=1', true);
     }
     start_table("$table_style colspan=7 width=90%");
     $th = array(_("Item Code"), _("Item Description"), _("Quantity"), _("Delivered"), _("Unit"), _("Price"), _("Discount %"), _("Total"), "");
@@ -224,7 +234,7 @@ hyperlink_params_separate("$path_to_root/purchasing/po_entry_items.php", _("Crea
         if ($order->trans_type != 30 && !$SysPrefs->allow_negative_stock())
             display_error(_("The delivery cannot be processed because there is an insufficient quantity for item:") . '<br>' . $qoh_msg);
     }
-  
+
     div_end();
 }
 

@@ -46,10 +46,10 @@ class supp_trans {
     }
 
     function add_grn_to_trans($grn_item_id, $po_detail_item, $item_code, $item_description, $qty_recd, $prev_quantity_inv, $this_quantity_inv, $order_price, $chg_price,
-                              $Complete, $std_cost_unit, $gl_code, $discount) {
+                              $Complete, $std_cost_unit, $gl_code, $discount=0, $exp_price=null) {
             $this->grn_items[$grn_item_id] = new grn_item($grn_item_id, $po_detail_item,
             $item_code, $item_description, $qty_recd, $prev_quantity_inv, $this_quantity_inv,
-            $order_price, $chg_price, $Complete, $std_cost_unit, $gl_code, $discount);
+            $order_price, $chg_price, $Complete, $std_cost_unit, $gl_code, $discount, $exp_price);
         return 1;
     }
 
@@ -163,6 +163,7 @@ all the info to do the necessary entries without looking up ie additional querie
     var $this_quantity_inv;
     var $order_price;
     var $chg_price;
+    var $exp_price;
     var $discount;
     var $Complete;
     var $std_cost_unit;
@@ -170,7 +171,7 @@ all the info to do the necessary entries without looking up ie additional querie
 
     function grn_item($id, $po_detail_item, $item_code, $item_description, $qty_recd,
                       $prev_quantity_inv, $this_quantity_inv, $order_price, $chg_price, $Complete,
-                      $std_cost_unit, $gl_code, $discount=0) {
+                      $std_cost_unit, $gl_code, $discount=0, $exp_price=null) {
 
         $this->id = $id;
         $this->po_detail_item = $po_detail_item;
@@ -181,6 +182,7 @@ all the info to do the necessary entries without looking up ie additional querie
         $this->this_quantity_inv = $this_quantity_inv;
         $this->order_price = $order_price;
         $this->chg_price = $chg_price;
+        $this->exp_price = ($exp_price==null) ? $chg_price : $exp_price;
         $this->discount = $discount;
         $this->Complete = $Complete;
         $this->std_cost_unit = $std_cost_unit;

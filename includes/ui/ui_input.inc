@@ -389,7 +389,9 @@ function label_cell($label, $params="", $id=null)
 
 	return $label;
 }
-
+function empty_cells($qty) {
+    echo "<td colspan=$qty></td>";
+}
 function email_cell($label, $params="", $id=null)
 {
 	label_cell("<a href='mailto:$label'>$label</a>", $params, $id);

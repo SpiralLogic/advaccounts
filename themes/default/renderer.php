@@ -77,7 +77,7 @@ class renderer {
         }
         echo "</div>\n";
         echo "</div>\n";
-        if ($_SESSION['wa_current_user']->username == 'admin') {
+/*        if ($_SESSION['wa_current_user']->username == 'admin') {
             foreach($_SESSION as $key => $value) {
             FB::info($value, '$_SESSION['.$key.']');    
             }
@@ -87,7 +87,7 @@ class renderer {
             FB::info($_GET, '$_GET');
             FB::info("execution time :" . fbTimer::get() . ' seconds');
             fbTimer::stop();
-        }
+        }*/
     }
 
     function display_applications(&$waapp) {
