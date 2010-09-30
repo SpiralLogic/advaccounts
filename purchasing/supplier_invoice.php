@@ -122,7 +122,7 @@ if (isset($_POST['AddGLCodeToTrans'])) {
         $taxexists = false;
         foreach ($_SESSION['supp_trans']->gl_codes as &$gl_item) {
 
-            if ($gl_item->gl_code == 2421) {
+            if ($gl_item->gl_code == 2430) {
                 $taxexists = true;
                 $gl_item->amount += input_num('amount') * .1;
                 break;
@@ -130,7 +130,7 @@ if (isset($_POST['AddGLCodeToTrans'])) {
 
         }
         if (!$taxexists) {
-            $_SESSION['supp_trans']->add_gl_codes_to_trans(2421, 'GST Collected', 0, 0, input_num('amount') * .1, 'GST TAX Collected');
+            $_SESSION['supp_trans']->add_gl_codes_to_trans(2430, 'GST Paid', 0, 0, input_num('amount') * .1, 'GST TAX Paid');
         }
         set_focus('gl_code');
     }
@@ -229,7 +229,11 @@ function check_item_data($n) {
         set_focus('ChgPrice' . $n);
         return false;
     }
-
+ if (!check_num('ExpPrice' . $n)) {
+        display_error(_("The price is not numeric."));
+        set_focus('ExpPrice' . $n);
+        return false;
+    }
     $margin = $SysPrefs->over_charge_allowance();
     if ($check_price_charged_vs_order_price == True && $margin != 0) {
         if ($_POST['order_price' . $n] != input_num('ChgPrice' . $n)) {
@@ -299,7 +303,7 @@ $id4 = find_submit('Delete2');
 if ($id4 != -1) {
     $_SESSION['supp_trans']->remove_gl_codes_from_trans($id4);
       foreach ($_SESSION['supp_trans']->gl_codes as $key => $gl_item) {
-            if ($gl_item->gl_code == 2421) {
+            if ($gl_item->gl_code == 2430) {
                 $taxrecord = $key;
                 continue;
             }

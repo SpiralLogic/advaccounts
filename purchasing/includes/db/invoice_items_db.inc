@@ -13,15 +13,17 @@
 
 function add_supp_invoice_item($supp_trans_type, $supp_trans_no, $stock_id, $description,
 	$gl_code, $unit_price, $unit_tax, $quantity, $grn_item_id, $po_detail_item_id, $memo_,
-	$err_msg="")
+	$err_msg="",$discount, $exp_price=-1)
 {
+    $unit_price = $unit_price / (1-$discount/100);
+
 	$sql = "INSERT INTO ".TB_PREF."supp_invoice_items (supp_trans_type, supp_trans_no, stock_id, description, gl_code, unit_price, unit_tax, quantity,
-	  	grn_item_id, po_detail_item_id, memo_) ";
+	  	grn_item_id, po_detail_item_id, memo_, discount, exp_price) ";
 	$sql .= "VALUES (".db_escape($supp_trans_type).", ".db_escape($supp_trans_no).", "
 		.db_escape($stock_id).
 	", ".db_escape($description).", ".db_escape($gl_code).", ".db_escape($unit_price)
 	.", ".db_escape($unit_tax).", ".db_escape($quantity).",
-		".db_escape($grn_item_id).", ".db_escape($po_detail_item_id).", ".db_escape($memo_).")";
+		".db_escape($grn_item_id).", ".db_escape($po_detail_item_id).", ".db_escape($memo_).", ".db_escape($discount).",".db_escape($exp_price).")";
 
 	if ($err_msg == "")
 		$err_msg = "Cannot insert a supplier transaction detail record";

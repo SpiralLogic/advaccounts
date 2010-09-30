@@ -260,7 +260,7 @@ function add_supp_invoice($supp_trans, $invoice_no=0) // do not receive as ref b
 
 		add_supp_invoice_item($trans_type, $invoice_id, $entered_grn->item_code,
 			$entered_grn->item_description, 0, 	$line_taxfree, $line_tax,
-			$entered_grn->this_quantity_inv, $entered_grn->id, $entered_grn->po_detail_item, "");
+			$entered_grn->this_quantity_inv, $entered_grn->id, $entered_grn->po_detail_item, "","",$entered_grn->discount,$entered_grn->exp_price);
     } /* end of GRN postings */
     /* Now the TAX account */
     $taxes = $supp_trans->get_taxes($supp_trans->tax_group_id, 0, false); // 2009.08-18 Joe Hunt. We have already got the gl lines
@@ -386,7 +386,7 @@ function read_supp_invoice($trans_no, $trans_type, &$supp_trans)
              	{
              		$supp_trans->add_grn_to_trans($details_row["grn_item_id"], $details_row["po_detail_item_id"], $details_row["stock_id"],
            				$details_row["description"], 0, 0, $details_row["quantity"], 0, $details_row["FullUnitPrice"],
-           				false, 0, 0);
+           				false, 0, 0,$details_row['discount'],$details_row['exp_price']);
              	}
              	else
              	{

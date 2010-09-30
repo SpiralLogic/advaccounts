@@ -268,8 +268,8 @@ function display_gl_items(&$supp_trans, $mode = 0) {
     if ($mode == 1) {
         display_gl_controls($supp_trans, $k);
     }
-    $colspan = ($dim == 2 ? 4 : ($dim == 1 ? 3 : 2));
-    label_row(_("Total"), price_format($total_gl_value), "colspan=" . $colspan . " align=right", "nowrap align=right", ($mode == 1 ? 3 : 1));
+    $colspan = ($dim == 2 ? 5 : ($dim == 1 ? 4 : 3));
+    label_row(_("Total"), price_format($total_gl_value), "colspan=" . $colspan . " align=right", "nowrap align=right", ($mode == 1 ? 3 : 0));
 
     end_table(1);
     div_end();
@@ -432,7 +432,7 @@ function display_grn_items(&$supp_trans, $mode = 0) {
             amount_decimal_cell($entered_grn->chg_price);
             amount_decimal_cell($entered_grn->exp_price);
             percent_cell($entered_grn->discount);
-            amount_cell(round2($entered_grn->chg_price * abs($entered_grn->this_quantity_inv * (1 - $entered_grn->discount / 100)), user_price_dec()));
+            amount_cell(round2($entered_grn->chg_price * abs($entered_grn->this_quantity_inv) * (1 - $entered_grn->discount / 100), user_price_dec()));
             if ($mode == 1) {
 
                 if ($supp_trans->is_invoice && $_SESSION["wa_current_user"]->can_access('SA_GRNDELETE'))
@@ -441,7 +441,7 @@ function display_grn_items(&$supp_trans, $mode = 0) {
                 delete_button_cell("Delete" . $entered_grn->id, _("Edit"), _('Edit document line'));
             }
             end_row();
-            $total_grn_value += round2($entered_grn->chg_price * abs($entered_grn->this_quantity_inv), user_price_dec());
+            $total_grn_value += round2($entered_grn->chg_price * abs($entered_grn->this_quantity_inv) * (1 - $entered_grn->discount / 100), user_price_dec());
             $i++;
             if ($i > 15) {
                 $i = 0;
@@ -453,7 +453,7 @@ function display_grn_items(&$supp_trans, $mode = 0) {
         $ret = display_grn_items_for_selection($supp_trans, $k);
         $colspan = 12;
     } else
-        $colspan = 8;
+        $colspan = 7;
     label_row(_("Total"), price_format($total_grn_value), "colspan=$colspan align=right", "nowrap align=right");
     if (!$ret) {
         start_row();

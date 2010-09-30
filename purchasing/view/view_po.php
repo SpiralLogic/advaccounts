@@ -42,7 +42,7 @@ display_heading2(_("Line Details"));
 
 start_table("colspan=9 $table_style width=100%");
 
-$th = array(_("Item Code"), _("Item Description"), _("Quantity"), _("Unit"), _("Price"),
+$th = array(_("Item Code"), _("Item Description"), _("Quantity"), _("Unit"), _("Price"),_("Discount"),
 	_("Line Total"), _("Requested By"), _("Quantity Received"), _("Quantity Invoiced"));
 table_header($th);
 $total = $k = 0;
@@ -51,7 +51,7 @@ $overdue_items = false;
 foreach ($purchase_order->line_items as $stock_item)
 {
 
-	$line_total = $stock_item->quantity * $stock_item->price;
+	$line_total = $stock_item->quantity * $stock_item->price * (1- $stock_item->discount);
 
 	// if overdue and outstanding quantities, then highlight as so
 	if (($stock_item->quantity - $stock_item->qty_received > 0)	&&
@@ -71,6 +71,7 @@ foreach ($purchase_order->line_items as $stock_item)
 	qty_cell($stock_item->quantity, false, $dec);
 	label_cell($stock_item->units);
 	amount_decimal_cell($stock_item->price);
+    percent_cell($stock_item->discount*100);
 	amount_cell($line_total);
 	label_cell($stock_item->req_del_date);
 	qty_cell($stock_item->qty_received, false, $dec);
@@ -82,7 +83,7 @@ foreach ($purchase_order->line_items as $stock_item)
 
 $display_total = number_format2($total,user_price_dec());
 label_row(_("Total Excluding Tax/Shipping"), $display_total,
-	"align=right colspan=5", "nowrap align=right", 3);
+	"align=right colspan=6", "nowrap align=right", 3);
 
 end_table();
 
