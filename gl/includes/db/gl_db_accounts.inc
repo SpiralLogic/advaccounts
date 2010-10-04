@@ -27,6 +27,70 @@ function update_gl_account($account_code, $account_name, $account_type, $account
 	return db_query($sql);
 }
 
+//---------------------------------------------------------------------------------------------
+
+function update_reconciled_values($reconcile_id, $reconcile_value, $reconcile_date, $end_balance, $bank_account)
+{
+	$sql = "UPDATE ".TB_PREF."bank_trans SET reconciled=$reconcile_value"
+		." WHERE id=".db_escape($reconcile_id);
+
+  	db_query($sql, "Can't change reconciliation status");
+	// save last reconcilation status (date, end balance)
+    $sql2 = "UPDATE ".TB_PREF."bank_accounts SET last_reconciled_date='"
+			.date2sql($reconcile_date)."',
+    	    ending_reconcile_balance=$end_balance
+			WHERE id=".db_escape($bank_account);
+
+	db_query($sql2,"Error updating reconciliation information");
+}
+
+//---------------------------------------------------------------------------------------------
+
+function get_max_reconciled($date, $bank_account)
+{
+	$date = date2sql($date);
+	 // temporary fix to enable fix of invalid entries made in 2.2RC
+	if ($date == 0) $date = '0000-00-00';
+
+	$sql = "SELECT MAX(reconciled) as last_date,
+			 SUM(IF(reconciled<='$date', amount, 0)) as end_balance,
+			 SUM(IF(reconciled<'$date', amount, 0)) as beg_balance,
+			 SUM(amount) as total
+		FROM ".TB_PREF."bank_trans trans
+		WHERE undeposited=0 AND bank_act=".db_escape($bank_account);
+	//	." AND trans.reconciled IS NOT NULL";
+
+	return db_query($sql,"Cannot retrieve reconciliation data");
+
+}
+
+//---------------------------------------------------------------------------------------------
+
+function get_ending_reconciled($bank_account, $bank_date)
+{
+	$sql = "SELECT ending_reconcile_balance
+		FROM ".TB_PREF."bank_accounts WHERE id=".db_escape($bank_account)
+		. " AND last_reconciled_date=".db_escape($bank_date);
+	$result = db_query($sql,"Cannot retrieve last reconciliation");
+	return db_fetch($result);
+}
+
+//---------------------------------------------------------------------------------------------
+
+function get_sql_for_bank_account_reconcile($bank_account, $date)
+{
+	$sql = "SELECT	type, trans_no, ref, trans_date,
+				amount,	person_id, person_type_id, reconciled, id
+		FROM ".TB_PREF."bank_trans
+		WHERE ".TB_PREF."bank_trans.bank_act = ".db_escape($bank_account) . "
+			AND undeposited = 0 AND trans_date <= '".date2sql($date)."' AND (reconciled IS NULL OR reconciled='". date2sql($date) ."')
+		ORDER BY trans_date,".TB_PREF."bank_trans.id";
+// or	ORDER BY reconciled desc, trans_date,".TB_PREF."bank_trans.id";
+	return $sql;
+}
+
+//---------------------------------------------------------------------------------------------
+
 function delete_gl_account($code)
 {
 	$sql = "DELETE FROM ".TB_PREF."chart_master WHERE account_code=".db_escape($code);

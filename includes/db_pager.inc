@@ -130,6 +130,7 @@ class db_pager {
 	//
 	function sort_table($col) 
 	{
+        if (is_null($col)) return false;
 	    $ord = $this->columns[$col]['ord'];
 	    $ord = ($ord == '') ? 'asc' : (($ord == 'asc') ? 'desc' : '');
 	    $this->columns[$col]['ord'] = $ord;
@@ -211,6 +212,7 @@ class db_pager {
 	//  $flds: array( fldname1, fldname2=>type,...)
 	function set_columns($flds)
 	{
+
 		$this->columns = array();
 		if (!is_array($flds)) {
 			$flds = array($flds);
@@ -245,7 +247,8 @@ class db_pager {
 	  		}
 			$this->columns[] = $c;	
 		}
-	}
+
+    }
 	//
 	// Generate db query from base sql
 	// $count==false - for current page data retrieval 
@@ -458,7 +461,9 @@ function &new_db_pager($name, $sql, $coldef, $table = null, $key = null, $page_l
 		$_SESSION[$name]->key = $key;
 		$_SESSION[$name]->set_sql($sql);
 		$_SESSION[$name]->set_columns($coldef);
+
         $_SESSION[$name]->sort_table($sort);
+
 	}
 	
 	return  $_SESSION[$name];

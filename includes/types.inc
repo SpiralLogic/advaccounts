@@ -22,7 +22,7 @@ define('ST_SALESINVOICE', 10);
 define('ST_CUSTCREDIT', 11);
 define('ST_CUSTPAYMENT', 12);
 define('ST_CUSTDELIVERY', 13);
-
+define('ST_DEPOSIT_GROUP', 15);
 define('ST_LOCTRANSFER', 16);
 define('ST_INVADJUST', 17);
 
@@ -55,6 +55,7 @@ $systypes_array = array (
 	ST_BANKTRANSFER => _("Funds Transfer"),
 	ST_SALESINVOICE => _("Sales Invoice"),
 	ST_CUSTCREDIT => _("Customer Credit Note"),
+    ST_DEPOSIT_GROUP => _("Group Deposit"),
 	ST_CUSTPAYMENT => _("Customer Payment"),
 	ST_CUSTDELIVERY => _("Delivery Note"),
 	ST_LOCTRANSFER => _("Location Transfer"),
@@ -109,6 +110,7 @@ define('PT_CUSTOMER', 2);
 define('PT_SUPPLIER', 3);
 define('PT_QUICKENTRY', 4);
 define('PT_DIMESION', 5);
+
 
 $payment_person_types = array (
 	PT_MISC => _("Miscellaneous"),

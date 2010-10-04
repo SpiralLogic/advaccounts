@@ -1,12 +1,12 @@
 <?php
 /**********************************************************************
     Copyright (C) FrontAccounting, LLC.
-	Released under the terms of the GNU General Public License, GPL, 
-	as published by the Free Software Foundation, either version 3 
+	Released under the terms of the GNU General Public License, GPL,
+	as published by the Free Software Foundation, either version 3
 	of the License, or (at your option) any later version.
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
 /* Author Rob Mallon */
@@ -43,7 +43,7 @@ function check_date() {
 	return true;
 }
 //
-//	This function can be used directly in table pager 
+//	This function can be used directly in table pager
 //	if we would like to change page layout.
 //
 function rec_checkbox($row)
@@ -60,7 +60,7 @@ function rec_checkbox($row)
 function systype_name($dummy, $type)
 {
 	global $systypes_array;
-	
+
 	return $systypes_array[$type];
 }
 
@@ -95,7 +95,7 @@ $update_pager = false;
 function update_data()
 {
 	global $Ajax, $update_pager;
-	
+
 	unset($_POST["beg_balance"]);
 	unset($_POST["end_balance"]);
 	$Ajax->activate('summary');
@@ -108,7 +108,7 @@ function change_tpl_flag($reconcile_id)
 {
 	global	$Ajax;
 
-	if (!check_date() 
+	if (!check_date()
 		&& check_value("rec_".$reconcile_id)) // temporary fix
 		return false;
 
@@ -116,24 +116,23 @@ function change_tpl_flag($reconcile_id)
 		$Ajax->activate('bank_date');
 
 	$_POST['bank_date'] = date2sql(get_post('reconcile_date'));
-	$reconcile_value = check_value("rec_".$reconcile_id) 
+	$reconcile_value = check_value("rec_".$reconcile_id)
 						? ("'".$_POST['bank_date'] ."'") : 'NULL';
-	$sql = "UPDATE ".TB_PREF."bank_trans SET reconciled=$reconcile_value"
-		." WHERE id=".db_escape($reconcile_id);
 
-  	db_query($sql, "Can't change reconciliation status");
-	// save last reconcilation status (date, end balance)
-    $sql2="UPDATE ".TB_PREF."bank_accounts SET last_reconciled_date='"
-			.date2sql($_POST["reconcile_date"])."',
-    	    ending_reconcile_balance=".input_num("end_balance")
-			." WHERE id=".db_escape($_POST["bank_account"]);
-
-	$result = db_query($sql2,"Error updating reconciliation information");
+	update_reconciled_values($reconcile_id, $reconcile_value, $_POST['reconcile_date'],
+		input_num('end_balance'), $_POST['bank_account']);
 	$Ajax->activate('reconciled');
 	$Ajax->activate('difference');
 	return true;
 }
+if (isset($_SESSION['wa_current_reconcile_date']) && count($_POST)<1) {
+    if ($_SESSION['wa_current_reconcile_date'] != '') {
 
+        $_POST['bank_date'] = $_SESSION['wa_current_reconcile_date'];
+        $_POST['_bank_date_update'] = $_POST['bank_date'];
+        update_data();
+    }
+}
 if (!isset($_POST['reconcile_date'])) { // init page
 	$_POST['reconcile_date'] = new_doc_date();
 //	$_POST['bank_date'] = date2sql(Today());
@@ -144,7 +143,7 @@ if (list_updated('bank_account')) {
 	update_data();
 }
 if (list_updated('bank_date')) {
-	$_POST['reconcile_date'] = 
+	$_POST['reconcile_date'] =
 		get_post('bank_date')=='' ? Today() : sql2date($_POST['bank_date']);
 	update_data();
 }
@@ -155,7 +154,7 @@ if (get_post('_reconcile_date_changed')) {
 }
 
 $id = find_submit('_rec_');
-if ($id != -1) 
+if ($id != -1)
 	change_tpl_flag($id);
 
 if (isset($_POST['Reconcile'])) {
@@ -164,11 +163,13 @@ if (isset($_POST['Reconcile'])) {
 		if ($value != check_value('rec_'.$id))
 			if(!change_tpl_flag($id)) break;
     $Ajax->activate('_page_body');
+
+
 }
 
 //------------------------------------------------------------------------------------------------
 start_form();
-start_table("class='tablestyle_noborder'");
+start_table();
 start_row();
 bank_accounts_list_cells(_("Account:"), 'bank_account', null, true);
 
@@ -176,20 +177,8 @@ bank_reconciliation_list_cells(_("Bank Statement:"), get_post('bank_account'),
 	'bank_date', null, true, _("New"));
 end_row();
 end_table();
-
-$date = date2sql(get_post('reconcile_date'));
- // temporary fix to enable fix of invalid entries made in 2.2RC
-if ($date == 0) $date = '0000-00-00';
-
-$sql = "SELECT MAX(reconciled) as last_date,
-		 SUM(IF(reconciled<='$date', amount, 0)) as end_balance,
-		 SUM(IF(reconciled<'$date', amount, 0)) as beg_balance,
-		 SUM(amount) as total
-	FROM ".TB_PREF."bank_trans trans
-	WHERE bank_act=".db_escape($_POST['bank_account']);
-//	." AND trans.reconciled IS NOT NULL";
-
-$result = db_query($sql,"Cannot retrieve reconciliation data");
+$_SESSION['wa_current_reconcile_date'] = $_POST['bank_date'];
+$result = get_max_reconciled(get_post('reconcile_date'), $_POST['bank_account']);
 
 if ($row = db_fetch($result)) {
 	$_POST["reconciled"] = price_format($row["end_balance"]-$row["beg_balance"]);
@@ -200,29 +189,26 @@ if ($row = db_fetch($result)) {
 		$_POST["end_balance"] = price_format($row["end_balance"]);
 		if (get_post('bank_date')) {
 			// if it is the last updated bank statement retrieve ending balance
-			$sql = "SELECT ending_reconcile_balance
-				FROM ".TB_PREF."bank_accounts WHERE id=".db_escape($_POST['bank_account'])
-				. " AND last_reconciled_date=".db_escape($_POST['bank_date']);
-			$result = db_query($sql,"Cannot retrieve last reconciliation");
-			$row = db_fetch($result);
+
+			$row = get_ending_reconciled($_POST['bank_account'], $_POST['bank_date']);
 			if($row) {
 				$_POST["end_balance"] = price_format($row["ending_reconcile_balance"]);
 			}
 		}
-	} 
+	}
 }
 
 echo "<hr>";
 
 div_start('summary');
 
-start_table($table_style);
-$th = array(_("Reconcile Date"), _("Beginning<br>Balance"), 
+start_table();
+$th = array(_("Reconcile Date"), _("Beginning<br>Balance"),
 	_("Ending<br>Balance"), _("Account<br>Total"),_("Reconciled<br>Amount"), _("Difference"));
 table_header($th);
 start_row();
 
-date_cells("", "reconcile_date", _('Date of bank statement to reconcile'), 
+date_cells("", "reconcile_date", _('Date of bank statement to reconcile'),
 	get_post('bank_date')=='', 0, 0, 0, null, true);
 
 amount_cells_ex("", "beg_balance", 15);
@@ -245,13 +231,8 @@ echo "<hr>";
 if (!isset($_POST['bank_account']))
     $_POST['bank_account'] = "";
 
-$sql = "SELECT	type, trans_no, ref, trans_date, 
-				amount,	person_id, person_type_id, reconciled, id
-		FROM ".TB_PREF."bank_trans
-		WHERE ".TB_PREF."bank_trans.bank_act = ".db_escape($_POST['bank_account']) . "
-			AND (reconciled IS NULL OR reconciled='". $date ."')
-		ORDER BY trans_date,".TB_PREF."bank_trans.id";
-// or	ORDER BY reconciled desc, trans_date,".TB_PREF."bank_trans.id";
+
+$sql = get_sql_for_bank_account_reconcile($_POST['bank_account'], get_post('reconcile_date'));
 
 $act = get_bank_account($_POST["bank_account"]);
 display_heading($act['bank_account_name']." - ".$act['bank_curr_code']);
@@ -260,14 +241,15 @@ display_heading($act['bank_account_name']." - ".$act['bank_curr_code']);
 	array(
 		_("Type") => array('fun'=>'systype_name', 'ord'=>''),
 		_("#") => array('fun'=>'trans_view', 'ord'=>''),
-		_("Reference"), 
+		_("Reference"),
 		_("Date") => 'date',
-		_("Debit") => array('align'=>'right', 'fun'=>'fmt_debit'), 
-		_("Credit") => array('align'=>'right','insert'=>true, 'fun'=>'fmt_credit'), 
-	    _("Person/Item") => array('fun'=>'fmt_person'), 
+		_("Debit") => array('align'=>'right', 'fun'=>'fmt_debit'),
+		_("Credit") => array('align'=>'right','insert'=>true, 'fun'=>'fmt_credit'),
+	    _("Person/Item") => array('fun'=>'fmt_person'),
 		array('insert'=>true, 'fun'=>'gl_view'),
 		"X"=>array('insert'=>true, 'fun'=>'rec_checkbox')
 	   );
+
 	$table =& new_db_pager('trans_tbl', $sql, $cols);
 
 	$table->width = "80%";

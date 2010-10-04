@@ -29,7 +29,8 @@ class general_ledger_app extends application
 			"gl/gl_budget.php?", 'SA_BUDGETENTRY');
 		$this->add_rapp_function(0, _("&Reconcile Bank Account"),
 			"gl/bank_account_reconcile.php?", 'SA_RECONCILE');
-			
+		$this->add_rapp_function(0, _("Undepostied Funds"),
+			"gl/undeposited_funds.php?", 'SA_RECONCILE');			
 		$this->add_module(_("Inquiries and Reports"));
 		$this->add_lapp_function(1, _("&Journal Inquiry"),
 			"gl/inquiry/journal_inquiry.php?", 'SA_GLANALYTIC');
@@ -58,8 +59,10 @@ class general_ledger_app extends application
 			"gl/manage/gl_quick_entries.php?", 'SA_QUICKENTRY');
 		$this->add_lapp_function(2, _("Account &Tags"),
 			"admin/tags.php?type=account", 'SA_GLACCOUNTTAGS');
-		$this->add_lapp_function(2, "","");
-		$this->add_lapp_function(2, _("&Currencies"),
+
+		$this->add_lapp_function(2, _("Payment Methods"),
+			"gl/manage/bank_accounts.php", 'SA_BANKACCOUNT');
+        $this->add_lapp_function(2, _("&Currencies"),
 			"gl/manage/currencies.php?", 'SA_CURRENCY');
 		$this->add_lapp_function(2, _("&Exchange Rates"),
 			"gl/manage/exchange_rates.php?", 'SA_EXCHANGERATE');

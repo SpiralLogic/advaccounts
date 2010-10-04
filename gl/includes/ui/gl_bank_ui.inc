@@ -59,6 +59,7 @@ function display_bank_header(&$order)
     	//	workorders_list_row(_("Work Order:"), 'person_id', null);
     	//	break;
 		case PT_SUPPLIER :
+                    
     		supplier_list_row(_("Supplier:"), 'person_id', null, false, true, false, true);
     		break;
 		case PT_CUSTOMER :

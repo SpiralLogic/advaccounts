@@ -34,8 +34,9 @@
 
         $result = mysql_query($sql, $db);
 
+
         if ($sql_trail) {
-           db_set_info();
+  db_set_info();
             if ($select_trail || (strstr($sql, 'SELECT') === false)) {
                 mysql_query(
                         "INSERT INTO " . TB_PREF . "sql_trail

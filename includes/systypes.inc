@@ -30,7 +30,7 @@ function get_next_trans_no ($trans_type){
 
     $result = db_query($sql,"The next transaction number for $trans_type could not be retrieved");
     $myrow = db_fetch_row($result);
-
+FB::info($sql);
     return $myrow[0] + 1;
 }
 

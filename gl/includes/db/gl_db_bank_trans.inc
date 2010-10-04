@@ -38,11 +38,11 @@ function add_bank_trans($type, $trans_no, $bank_act, $ref, $date_,
 	//$BankToHomeCurrencyRate = get_exchange_rate_to_home_currency($bank_account_currency, $date_);
 
 	$sql = "INSERT INTO ".TB_PREF."bank_trans (type, trans_no, bank_act, ref,
-		trans_date, amount, person_type_id, person_id) ";
-
+		trans_date, amount, person_type_id, person_id, undeposited) ";
+$undeposited = ($bank_act==5) ? 1 : 0;
 	$sql .= "VALUES ($type, $trans_no, '$bank_act', ".db_escape($ref).", '$sqlDate',
 		".db_escape($amount_bank).", ".db_escape($person_type_id)
-		.", ". db_escape($person_id).")";
+		.", ". db_escape($person_id).", ". db_escape($undeposited).")";
 
 	if ($err_msg == "")
 		$err_msg = "The bank transaction could not be inserted";
