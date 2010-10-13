@@ -152,7 +152,7 @@ function get_customer_trans($trans_id, $trans_type)
 
 	if ($trans_type == ST_CUSTPAYMENT) {
 		// it's a payment so also get the bank account
-		$sql .= ", ".TB_PREF."bank_accounts.bank_name, ".TB_PREF."bank_accounts.bank_account_name,
+		$sql .= ", " . TB_PREF . "bank_accounts.bank_name, " . TB_PREF . "bank_accounts.id, ".TB_PREF."bank_accounts.bank_account_name,
 			".TB_PREF."bank_accounts.account_type AS BankTransType ";
 	}
 

@@ -74,10 +74,10 @@ if (isset($_GET['AddedID'])) {
     display_note(get_trans_view_str(ST_SALESINVOICE, $invoice_no, _("&View This Invoice")));
     echo '<br>';
     display_note(print_document_link($invoice_no, _("&Print This Invoice"), true, ST_SALESINVOICE));
-
+    display_note(print_document_link($invoice_no, _("&Email This Invoice"), true, ST_SALESINVOICE, false, "printlink", "", 1), 1);
     hyperlink_no_params($path_to_root . "/sales/inquiry/customer_inquiry.php", _("Select A Different &Invoice to Modify"));
 
-    display_footer_exit();
+    display_footer_exit(); 
 } elseif (isset($_GET['RemoveDN'])) {
 
     for ($line_no = 0; $line_no < count($_SESSION['Items']->line_items); $line_no++) {
