@@ -61,6 +61,11 @@
                 $doc_Our_Order_No = "Fax";
                 $doc_Due_Date = "";
                 $doc_Payment_Terms = "Payment Terms";
+            } elseif ($doctype == ST_CUSTDELIVERY) {
+                $doc_Customers_Ref = "Purchase Order#";
+                $doc_Payment_Terms = "";
+                $doc_Your_VAT_no = "Phone";
+                $doc_Our_Order_No = "Order No:";
             } else {
                 $doc_Customers_Ref = ($doctype == ST_SALESQUOTE || $doctype == ST_STATEMENT) ? "" : "Purchase Order#";
                 $doc_Payment_Terms = "Payment Terms";
@@ -116,6 +121,9 @@
                     _("From Location"), _("Work Centre"), _("Unit Quantity"), _("Total Quantity"), _("Units Issued"));
             elseif ($doctype == ST_SUPPAYMENT || $doctype == ST_CUSTPAYMENT)
                     $this->headers = array(_("Trans Type"), _("#"), _("Date"), _("Due Date"), _("Total Amount"), _("Left to Allocate"), _("This Allocation"));
+
+            elseif ($doctype == ST_CUSTDELIVERY ) $this->headers = array(_("Item Code"), _("Item Description"), _("Qty"), );
+
             else
                     $this->headers = array(_("Item Code"), _("Item Description"), _("Qty"),
                     _("Unit"), _("Price"), _("Disc.%"), _("Tax"), _("Total"));

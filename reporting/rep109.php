@@ -148,13 +148,15 @@ function print_sales_orders() {
             $rep->TextColLines(1, 5, $myrow['comments'], -2);
         }
         $DisplayFreight = number_format2($myrow["freight_cost"], $dec);
-        $TaxTotal += $myrow["freight_cost"] * .1;
-        $DisplayTaxTot = number_format2($TaxTotal, $dec);
+        $SubTotal += $myrow["freight_cost"];
+        $TaxTotal += $myrow['freight_cost']*.1;
         $DisplaySubTot = number_format2($SubTotal, $dec);
+        $DisplayTaxTot = number_format2($TaxTotal, $dec);
+        $DisplayTotal = number_format2($SubTotal + $TaxTotal, $dec);
 
         $rep->row = $rep->bottomMargin + (15 * $rep->lineHeight);
         $linetype = true;
-$doctype = ($print_as_quote < 3) ? ST_SALESORDER : ST_SALESQUOTE;
+        $doctype = ($print_as_quote < 3) ? ST_SALESORDER : ST_SALESQUOTE;
         if ($rep->currency != $myrow['curr_code']) {
             include($path_to_root . "/reporting/includes/doctext2.inc");
         } else {
@@ -164,14 +166,19 @@ $doctype = ($print_as_quote < 3) ? ST_SALESORDER : ST_SALESQUOTE;
         $rep->TextCol(4, 7, $doc_Shipping . ' (ex.GST)', -2);
         $rep->TextCol(7, 8, $DisplayFreight, -2);
         $rep->NewLine();
+        $rep->TextCol(4, 7, $doc_Sub_total, -2);
+        $rep->TextCol(7, 8, $DisplaySubTot, -2);
+        $rep->NewLine();
+        $rep->NewLine();
         #  __ADVANCEDEDIT__ BEGIN # added tax to invoice
         $rep->TextCol(4, 7, 'Total GST (10%)', -2);
         $rep->TextCol(7, 8, $DisplayTaxTot, -2);
         $rep->NewLine();
+
         #  __ADVANCEDEDIT__ END #
 
 
-        $DisplayTotal = number_format2($myrow["freight_cost"] + $SubTotal + $DisplayTaxTot, $dec);
+
         $rep->Font('bold');
         #	if ($myrow['tax_included'] == 0)
         #	$rep->TextCol(4, 7, $doc_TOTAL_ORDER, - 2);

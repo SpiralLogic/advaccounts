@@ -43,9 +43,11 @@ if (isset($_GET['AddedID'])) {
     $order_no = $_GET['AddedID'];
     $trans_type = ST_PURCHORDER;
 
-    if (!isset($_GET['Updated']))
-        display_notification_centered(_("Purchase Order has been entered")); else
+    if (!isset($_GET['Updated'])) {
+        display_notification_centered(_("Purchase Order has been entered"));
+    } else {
         display_notification_centered(_("Purchase Order has been updated") . " #$order_no");
+    }
     display_note(get_trans_view_str($trans_type, $order_no, _("&View this order")), 0, 1);
 
     display_note(print_document_link($order_no, _("&Print This Order"), true, $trans_type), 0, 1);
@@ -218,7 +220,7 @@ function handle_add_new_item() {
         }
 
         if ($allow_update == true) {
-                $sql = "SELECT long_description as description , units, mb_flag
+            $sql = "SELECT long_description as description , units, mb_flag
 				FROM " . TB_PREF . "stock_master WHERE stock_id = " . db_escape($_POST['stock_id']);
 
             $result = db_query($sql, "The stock details for " . $_POST['stock_id'] . " could not be retrieved");
@@ -229,7 +231,8 @@ function handle_add_new_item() {
 
             if ($allow_update) {
                 $myrow = db_fetch($result);
-                $_SESSION['PO']->add_to_order($_POST['line_no'], $_POST['stock_id'], input_num('qty'),$_POST['stock_id_text'], input_num('price'), $myrow["units"], $_POST['req_del_date'], 0, 0, $_POST['discount'] / 100);
+                $_SESSION['PO']->add_to_order($_POST['line_no'], $_POST['stock_id'], input_num('qty'), $_POST['stock_id_text'], input_num('price'), $myrow["units"],
+                    $_POST['req_del_date'], 0, 0, $_POST['discount'] / 100);
 
                 unset_form_variables();
                 $_POST['stock_id'] = "";
@@ -378,20 +381,33 @@ if (isset($_GET['NewOrder'])) {
                 } else {
                     $myrow = db_fetch($result, 'pricing');
                 }
-                            if (isset($po_lines[$myrow[0]['supplier_id']])) {
-                $po_lines[$myrow[0]['supplier_id']]++;
-            } else {
-                $po_lines[$myrow[0]['supplier_id']] = 1;
-            }
+                if (isset($po_lines[$myrow[0]['supplier_id']])) {
+                    $po_lines[$myrow[0]['supplier_id']]++;
+                } else {
+                    $po_lines[$myrow[0]['supplier_id']] = 1;
+                }
             }
 
-            $_SESSION['PO']->add_to_order($line_no, $line_item->stock_id, $line_item->quantity, $line_item->item_description, price_decimal_format($myrow[0]['price'], $dec2), $line_item->units, add_days(Today(), 10), 0, 0, 0);
+            $_SESSION['PO']->add_to_order($line_no, $line_item->stock_id, $line_item->quantity, $line_item->item_description, price_decimal_format($myrow[0]['price'], $dec2),
+                $line_item->units, add_days(Today(), 10), 0, 0, 0);
 
 
         }
         arsort($po_lines);
 
         $_SESSION['wa_global_supplier_id'] = key($po_lines);
+        if ($_GET['DS']) {
+            $item_info = get_item('DS');
+            $_SESSION['PO']->add_to_order(count($_SESSION['PO']->line_items), 'DS', 1, $item_info['long_description'], 0,
+                '', add_days(Today(), 10), 0, 0, 0);
+            $_SESSION['PO']->delivery_address='';
+            if (!empty($_SESSION['Items']->deliver_to))
+$_SESSION['PO']->delivery_address .= $_SESSION['Items']->deliver_to."\n";
+            if (!empty($_SESSION['Items']->phone)) $_SESSION['PO']->delivery_address .= 'Ph:'.$_SESSION['Items']->phone . "\n";
+
+                    $_SESSION['PO']->delivery_address .= $_SESSION['Items']->delivery_address;
+            $_POST['delivery_address'] = $_SESSION['PO']->delivery_address;
+        }
     }
 
 }
@@ -421,8 +437,9 @@ if ($_SESSION['PO']->order_has_items()) {
         submit_center_last('Commit', _("Place Order"), '', 'default');
     }
 
-} else
+} else {
     submit_center('CancelOrder', _("Delete This Order"), true, false, 'cancel');
+}
 div_end();
 //---------------------------------------------------------------------------------------------------
 

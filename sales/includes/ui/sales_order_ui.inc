@@ -132,10 +132,19 @@ function display_order_summary($title, &$order, $editable_items = false) {
 
     display_heading($title);
 
+
     div_start('items_table');
     if (count($_SESSION['Items']->line_items) > 0) {
         global $path_to_root;
+        start_outer_table("$table_style2 width=90%");
+        table_section(1);
         hyperlink_params_separate("$path_to_root/purchasing/po_entry_items.php", _("Create PO from this order"), 'NewOrder=Yes&UseOrder=1', true);
+
+        table_section(2);
+        hyperlink_params_separate("$path_to_root/purchasing/po_entry_items.php", _("Dropship this order"), 'NewOrder=Yes&UseOrder=1&DS=1', true);
+
+        end_outer_table(1);
+
     }
     start_table("$table_style colspan=7 width=90%");
     $th = array(_("Item Code"), _("Item Description"), _("Quantity"), _("Delivered"), _("Unit"), _("Price"), _("Discount %"), _("Total"), "");

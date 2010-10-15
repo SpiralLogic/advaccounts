@@ -89,7 +89,7 @@ if ($this->company['phone'] != "") {
     $this->Text($c2col, $this->company['phone'], $mcol);
     $this->NewLine();
 }
-if ($this->company['fax'] != "") {
+if ($this->company['fax'] != "" ) {
     $this->Text($ccol, _("Fax"), $c2col);
     $this->Text($c2col, $this->company['fax'], $mcol);
     $this->NewLine();
@@ -318,7 +318,7 @@ if ($doctype == ST_STATEMENT) {
     $this->NewLine();
     $this->TextWrap($ccol, $this->row, $right - $ccol, "Email:  " . $customer_branch_details['email']);
 }
-if ((!isset($packing_slip) || $packing_slip == 0) && $doctype != ST_PURCHORDER) {
+if ((!isset($packing_slip) || $packing_slip == 0) && $doctype != ST_PURCHORDER && $doctype != ST_CUSTDELIVERY) {
     #  __ADVANCEDEDIT__ END #
 
 

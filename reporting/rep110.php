@@ -53,10 +53,10 @@ function print_deliveries()
 	$fno = explode("-", $from);
 	$tno = explode("-", $to);
 
-	$cols = array(4, 60, 225, 300, 325, 385, 450, 515);
+	$cols = array(4, 60, 225, 450, 515);
 
 	// $headers in doctext.inc
-	$aligns = array('left',	'left',	'right', 'left', 'right', 'right', 'right');
+	$aligns = array('left',	'left', 'right', 'right');
 
 	$params = array('comments' => $comments);
 
@@ -108,29 +108,17 @@ function print_deliveries()
 				if ($myrow2["quantity"] == 0)
 					continue;
 					
-				$Net = round2(((1 - $myrow2["discount_percent"]) * $myrow2["unit_price"] * $myrow2["quantity"]),
-				   user_price_dec());
-				$SubTotal += $Net;
+
 	    		$DisplayPrice = number_format2($myrow2["unit_price"],$dec);
 	    		$DisplayQty = number_format2($myrow2["quantity"],get_qty_dec($myrow2['stock_id']));
-	    		$DisplayNet = number_format2($Net,$dec);
-	    		if ($myrow2["discount_percent"]==0)
-		  			$DisplayDiscount ="";
-	    		else
-		  			$DisplayDiscount = number_format2($myrow2["discount_percent"]*100,user_percent_dec()) . "%";
+
 				$rep->TextCol(0, 1,	$myrow2['stock_id'], -2);
 				$oldrow = $rep->row;
 				$rep->TextColLines(1, 2, $myrow2['StockDescription'], -2);
 				$newrow = $rep->row;
 				$rep->row = $oldrow;
 				$rep->TextCol(2, 3,	$DisplayQty, -2);
-				$rep->TextCol(3, 4,	$myrow2['units'], -2);
-				if ($packing_slip == 0)
-				{
-					$rep->TextCol(4, 5,	$DisplayPrice, -2);
-					$rep->TextCol(5, 6,	$DisplayDiscount, -2);
-					$rep->TextCol(6, 7,	$DisplayNet, -2);
-				}	
+
 				$rep->row = $newrow;
 				//$rep->NewLine(1);
 				if ($rep->row < $rep->bottomMargin + (15 * $rep->lineHeight))
@@ -159,45 +147,7 @@ function print_deliveries()
 			{
 				include($path_to_root . "/reporting/includes/doctext.inc");
 			}
-			if ($packing_slip == 0)
-			{
-				$rep->TextCol(3, 6, $doc_Sub_total, -2);
-				$rep->TextCol(6, 7,	$DisplaySubTot, -2);
-				$rep->NewLine();
-				$rep->TextCol(3, 6, $doc_Shipping, -2);
-				$rep->TextCol(6, 7,	$DisplayFreight, -2);
-				$rep->NewLine();
-				$tax_items = get_trans_tax_details(ST_CUSTDELIVERY, $i);
-    			while ($tax_item = db_fetch($tax_items))
-    			{
-    				$DisplayTax = number_format2($tax_item['amount'], $dec);
-    				if ($tax_item['included_in_price'])
-    				{
-						$rep->TextCol(3, 7, $doc_Included . " " . $tax_item['tax_type_name'] .
-							" (" . $tax_item['rate'] . "%) " . $doc_Amount . ": " . $DisplayTax, -2);
-					}
-    				else
-    				{
-						$rep->TextCol(3, 6, $tax_item['tax_type_name'] . " (" .
-							$tax_item['rate'] . "%)", -2);
-						$rep->TextCol(6, 7,	$DisplayTax, -2);
-					}
-					$rep->NewLine();
-    			}
-    			$rep->NewLine();
-				$DisplayTotal = number_format2($myrow["ov_freight"] +$myrow["ov_freight_tax"] + $myrow["ov_gst"] +
-					$myrow["ov_amount"],$dec);
-				$rep->Font('bold');
-				$rep->TextCol(3, 6, $doc_TOTAL_DELIVERY, - 2);
-				$rep->TextCol(6, 7,	$DisplayTotal, -2);
-				$words = price_in_words($myrow['Total'], ST_CUSTDELIVERY);
-				if ($words != "")
-				{
-					$rep->NewLine(1);
-					$rep->TextCol(1, 7, $myrow['curr_code'] . ": " . $words, - 2);
-				}	
-				$rep->Font();
-			}	
+
 			if ($email == 1)
 			{
 				if ($myrow['email'] == '')
