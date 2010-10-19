@@ -14,6 +14,7 @@
     $path_to_root = "../..";
 
     include_once($path_to_root . "/includes/session.inc");
+
     page(_($help_context = "Customers"), @$_REQUEST['popup']);
 
 
@@ -22,11 +23,6 @@
     include_once($path_to_root . "/includes/banking.inc");
     include_once($path_to_root . "/includes/ui.inc");
 
-    $menu = new ui_menu();
-    $menu->addTab('test1','testing');
-    $menu->addTab('test2', 'testing2');
-    FB::info($menu);
-    $menu->render();
 
 
 

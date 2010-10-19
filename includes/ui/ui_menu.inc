@@ -20,21 +20,35 @@ class ui_menu {
     protected $tabs = array();
     protected $content = '';
     function __construct() {
+
+        FB::info('test');
         $this->content = "<div id='tabs'><ul>";
     }
     function addTab($title,$link,$tooltip='') {
             $this->tabs[] = new ui_menu_item($title,$link,$tooltip);
+            FB::info($this->tabs);
     }
     function render() {
+        global $js_lib;
+
         foreach ($this->tabs as $key => $tab) {
-            $content.= "<li><a href='#tabs-$key'>{$tab->title}</a></li>";
+            $this->content .= "<li><a href='{$tab->link}'><span>{$tab->title}</span></a></li>";
         }
-        $content .= "</ul>";
+        $this->content .= "</ul>";/*
         foreach ($this->tabs as $key => $tab) {
-            $content .= "<div id='tabs-$key'><p>test</p></div>";
-        }
-        $content .= '</div>';
-        echo $content;
+            $this->content .= "<div id='tabs-$key'><p>{$tab->link}</p></div>";
+        }*/
+        $this->content .= '<div id="tabs-0">Test</div>';
+        echo $this->content;
+$js_lib[] = '	$(function() {
+		$("#tabs").tabs({
+			ajaxOptions: {
+				error: function(xhr, status, index, anchor) {
+					$(anchor.hash).html("Couldn\'t load this tab . We\'ll try to fix this as soon as possible. If this wouldn\'t be a demo .");
+				}
+			}
+		});
+	});';
     }
 }
 
