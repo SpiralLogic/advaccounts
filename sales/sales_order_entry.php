@@ -40,6 +40,7 @@ if ($use_date_picker) {
     $js .= get_js_date_picker();
 }
 $js .= get_js_calc();
+$js .= get_jqueryui();
 if (isset($_GET['NewDelivery']) && is_numeric($_GET['NewDelivery'])) {
 
     $_SESSION['page_title'] = _($help_context = "Direct Sales Delivery");

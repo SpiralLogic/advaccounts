@@ -741,11 +741,31 @@ function get_js_png_fix() {
             . "}\n";
     return $js;
 }
+function get_jquery() {
+    static $inserted;
+    if(!$inserted) {
+    global $comp_path, $path_to_root;
+    $fpath = $comp_path . '/' . user_company() . '/js_cache/';
+    add_js_ufile($fpath . 'jquery-1.4.3.min.js');
+    $inserted = true;
+    }
+}
+function get_jqueryui() {
+    get_jquery();   
+    static $inserted;
+    if (!$inserted) {
+        global $comp_path, $path_to_root;
+        $fpath = $comp_path . '/' . user_company() . '/js_cache/';
+        add_js_ufile($fpath . 'jquery-ui-1.8.5.min.js');
+        $inserted = true;
+    }
+}
 function get_js_calc() {
     global $comp_path,$path_to_root;
     $fpath = $comp_path . '/' . user_company() . '/js_cache/';
-    add_js_ufile($fpath.'jquery.min.js');
-   add_js_ufile($fpath.'jquery.calculator.pack.js');
+    get_jquery();
+    
+    add_js_ufile($fpath.'jquery.calculator.pack.js');
     add_js_ufile($fpath.'calc.js');
 
 
@@ -754,6 +774,7 @@ function get_js_calc() {
     return '';
     
 }
+
 function get_js_date_picker() {
     global $comp_path, $go_debug;
     $fpath = $comp_path . '/' . user_company() . '/js_cache/' . 'date_picker.js';
