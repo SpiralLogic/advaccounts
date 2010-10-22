@@ -1196,6 +1196,8 @@ function shippers_list_row($label, $name, $selected_id = null) {
 //-------------------------------------------------------------------------------------
 
 function sales_persons_list($name, $selected_id = null, $spec_opt = false) {
+
+
     $sql = "SELECT salesman_code, salesman_name, inactive FROM " . TB_PREF . "salesman";
     return combo_input($name, $selected_id, $sql, 'salesman_code', 'salesman_name', array('order' => array('salesman_name'), 'spec_option' => $spec_opt, 'spec_id' => ALL_NUMERIC));
 }

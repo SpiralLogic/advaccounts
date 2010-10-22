@@ -147,18 +147,23 @@ else if (isset($myrow['trans_no']) && isset($myrow['reference'])) { // INV/CRE/S
 if ($doctype != ST_STATEMENT) {
     $this->NewLine();
     $this->Text($mcol + 100, _('Salesperson'));
-//$id = $branch['salesman'];
-//$sql = "SELECT salesman_name  FROM " . TB_PREF . "salesman WHERE salesman_code='$id'";
-//$result = db_query($sql, "could not get sales person");
-//$row = db_fetch($result);
-    if (!isset($_SESSION["wa_current_user"]))
+$id = $myrow['salesman'];
+$sql = "SELECT salesman_name  FROM " . TB_PREF . "salesman WHERE salesman_code='$id'";
+$result = db_query($sql, "could not get sales person");
+$row = db_fetch($result);
+    if (!isset($_SESSION["wa_current_user"]) || empty($row['salesman_name'])) {
         $_SESSION["wa_current_user"] = new current_user();
-    $user = $_SESSION["wa_current_user"];
+    }
+    if (empty($row['salesman_name'])) {
+    $user = $_SESSION["wa_current_user"]->name;
+    } else {
+        $user = $row['salesman_name'];
+    }
 
 //$sql = "SELECT salesman_name  FROM " . TB_PREF . "sales_order WHERE salesman_code='$id'";
 //$result = db_query($sql, "could not get sales person");
 //$row = db_fetch($result);
-    $this->Text($mcol + 180, $user->name);
+    $this->Text($mcol + 180, $user);
     //$this->TextWrap($col, $this->row, $width, $row['salesman_name'], 'C');
     //$this->TextWrap($col, $this->row, $width, $_SESSION['wa_current_user'], 'C');
 }

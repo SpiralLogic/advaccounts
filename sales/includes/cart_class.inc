@@ -163,6 +163,7 @@ class cart {
             if (!is_date_in_fiscalyear($this->document_date))
                 $this->document_date = end_fiscalyear();
             $this->reference = $Refs->get_next($this->trans_type);
+            $this->set_salesman();
             if ($type != ST_SALESORDER && $type != ST_SALESQUOTE) // Added 2.1 Joe Hunt 2008-11-12
             {
                 $dim = get_company_pref('use_dimension');
@@ -263,7 +264,16 @@ class cart {
         $this->tax_group_id = $tax_group_id;
         $this->tax_group_array = get_tax_group_items_as_array($tax_group_id);
     }
-
+    function set_salesman($salesman_code=null) {
+        if ($salesman_code == null) {
+            $salesman_name = $_SESSION['wa_current_user']->name;
+            $sql = "SELECT salesman_code FROM " . TB_PREF . "salesman WHERE salesman_name = " . db_escape($salesman_name);
+            $query = db_query($sql, 'Couldn\'t find current salesman');
+            $result = db_fetch_assoc($query);
+            if (!empty($result['salesman_code'])) $salesman_code = $result['salesman_code'];
+        }
+        if ($salesman_code!=null) $this->salesman = $salesman_code;
+    }
     function set_sales_type($sales_type, $sales_name, $tax_included = 0, $factor = 0) {
         $this->sales_type = $sales_type;
         $this->sales_type_name = $sales_name;

@@ -89,6 +89,7 @@
 
         var $id;
         var $name;
+        var $direct = false;
         var $help_context;
         var $modules;
         var $enabled;

@@ -38,17 +38,9 @@ class ui_menu {
         foreach ($this->tabs as $key => $tab) {
             $this->content .= "<div id='tabs-$key'><p>{$tab->link}</p></div>";
         }*/
-        $this->content .= '<div id="tabs-0">Test</div>';
+    //    $this->content .= '<div id="tabs-0"></div>';
         echo $this->content;
-$js_lib[] = '	$(function() {
-		$("#tabs").tabs({
-			ajaxOptions: {
-				error: function(xhr, status, index, anchor) {
-					$(anchor.hash).html("Couldn\'t load this tab . We\'ll try to fix this as soon as possible. If this wouldn\'t be a demo .");
-				}
-			}
-		});
-	});';
+
     }
 }
 

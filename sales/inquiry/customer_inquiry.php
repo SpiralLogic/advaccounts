@@ -40,7 +40,7 @@ if (!isset($_POST['customer_id']))
 
 start_table("class='tablestyle_noborder'");
 start_row();
-
+ref_cells(_("Ref"), 'reference', '', null, '', true);
 customer_list_cells(_("Select a customer: "), 'customer_id', null, true);
 
 date_cells(_("From:"), 'TransAfterDate', '', null, -30);
@@ -241,8 +241,12 @@ function check_overdue($row)
 
    	if ($_POST['customer_id'] != ALL_TEXT)
    		$sql .= " AND trans.debtor_no = ".db_escape($_POST['customer_id']);
+if ($_POST['reference'] != ALL_TEXT) {
+    $number_like = "%" . $_POST['reference'] . "%";
+    $sql .= " AND trans.reference LIKE " . db_escape($number_like);
+}
 
-   	if ($_POST['filterType'] != ALL_TEXT)
+if ($_POST['filterType'] != ALL_TEXT)
    	{
    		if ($_POST['filterType'] == '1')
    		{

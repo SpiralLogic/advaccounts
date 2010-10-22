@@ -329,10 +329,10 @@ function display_credit_items()
 
     $inv_items_total = $_SESSION['Items']->get_items_total_dispatch();
 
-    $display_sub_total = price_format($inv_items_total + input_num($_POST['ChargeFreightCost']));
+    $display_sub_total = price_format($inv_items_total + input_num('ChargeFreightCost'));
     label_row(_("Sub-total"), $display_sub_total, "colspan=$colspan align=right", "align=right");
 
-    $taxes = $_SESSION['Items']->get_taxes(input_num($_POST['ChargeFreightCost']));
+    $taxes = $_SESSION['Items']->get_taxes(input_num('ChargeFreightCost'));
 
     $tax_total = display_edit_tax_items($taxes, $colspan, $_SESSION['Items']->tax_included);
 

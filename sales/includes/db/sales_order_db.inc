@@ -19,14 +19,15 @@ function add_sales_order(&$order)
 	$order_no = get_next_trans_no($order->trans_type);
 	$del_date = date2sql($order->due_date);
 	$order_type = 0; // this is default on new order
-	$sql = "INSERT INTO ".TB_PREF."sales_orders (order_no, type, debtor_no, trans_type, branch_code, customer_ref, reference, comments, ord_date,
+	$sql = "INSERT INTO ".TB_PREF."sales_orders (order_no, type, debtor_no, trans_type, branch_code, customer_ref, reference, salesman, comments, ord_date,
 		order_type, ship_via, deliver_to, delivery_address, contact_phone,
 		contact_email, freight_cost, from_stk_loc, delivery_date)
 		VALUES (" .db_escape($order_no) . "," .db_escape($order_type) . "," . db_escape($order->customer_id) .
 		 ", " .db_escape($order->trans_type) . "," .db_escape($order->Branch) . ", ".
 			db_escape($order->cust_ref) .",". 
-			db_escape($order->reference) .",". 
-			db_escape($order->Comments) .",'" . 
+			db_escape($order->reference) .",".
+            db_escape($order->salesman) . "," .
+            db_escape($order->Comments) .",'" .
 			date2sql($order->document_date) . "', " .
 			db_escape($order->sales_type) . ", " .
 			db_escape($order->ship_via)."," . 
@@ -163,6 +164,7 @@ function update_sales_order($order)
 		branch_code = " . db_escape($order->Branch) . ",
 		customer_ref = ". db_escape($order->cust_ref) .",
 		reference = ". db_escape($order->reference) .",
+		salesman = " . db_escape($order->salesman) . ",
 		comments = ". db_escape($order->Comments) .",
 		ord_date = " . db_escape($ord_date) . ",
 		order_type = " .db_escape($order->sales_type) . ",
@@ -359,6 +361,7 @@ function read_sales_order($order_no, &$order, $trans_type)
 	$order->cust_ref = $myrow["customer_ref"];
 	$order->sales_type =$myrow["order_type"];
 	$order->reference = $myrow["reference"];
+    $order->salesman = $myrow["salesman"];
 	$order->Comments = $myrow["comments"];
 	$order->due_date = sql2date($myrow["delivery_date"]);
 	$order->document_date = sql2date($myrow["ord_date"]);

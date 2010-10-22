@@ -59,6 +59,7 @@ start_form();
 
 start_table("class='tablestyle_noborder'");
 start_row();
+supplier_list_cells(_("Select a supplier: "), 'supplier_id', $_POST['supplier_id'], true);
 ref_cells(_("#:"), 'order_number', '',null, '', true);
 
 date_cells(_("from:"), 'OrdersAfterDate', '', null, -30);
@@ -136,6 +137,8 @@ $sql = "SELECT
 	AND porder.supplier_id = supplier.supplier_id
 	AND location.loc_code = porder.into_stock_location
 	AND (line.quantity_ordered > line.quantity_received) ";
+
+if ($_POST['supplier_id'] != ALL_TEXT) $sql .= " AND supplier.supplier_id = " . db_escape($_POST['supplier_id']);
 
 if (isset($order_number) && $order_number != "")
 {

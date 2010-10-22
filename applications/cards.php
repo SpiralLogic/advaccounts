@@ -11,15 +11,14 @@
   See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
  * ********************************************************************* */
 
+
 class cards_app extends application {
 
     function cards_app() {
-       $this->application("cards", _($this->help_context = "&Customers"));
+        $this->direct = 'sales/customers.php';
+        $this->application("cards", _($this->help_context = "&Customers"));
 
-       meta_forward('/sales/customers.php');
-                    
-        }
+   
 
 }
-
-?>
+}

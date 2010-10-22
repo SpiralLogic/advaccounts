@@ -15,16 +15,44 @@
     $path_to_root = "..";
 
     include_once($path_to_root . "/includes/session.inc");
+$_SESSION['App']->selected_application = 'cards';
+get_jqueryui();
 
-
-    page(_($help_context = "Customers"), @$_REQUEST['popup']);
 
     include_once($path_to_root . "/includes/date_functions.inc");
     include_once($path_to_root . "/includes/banking.inc");
     include_once($path_to_root . "/includes/ui.inc");
-get_jqueryui();
+
+page(_($help_context = "Customers"), @$_REQUEST['popup']);
+start_form();
+if (db_has_customers()) {
+    start_table("class = 'tablestyle_noborder'");
+    start_row();
+    customer_list_cells(_("Select a customer: "), 'customer_id', null, _('New customer'), true, check_value('show_inactive'));
+    check_cells(_("Show inactive:"), 'show_inactive', null, true);
+    end_row();
+    end_table();
+    if (get_post('_show_inactive_update')) {
+        $Ajax->activate('customer_id');
+        set_focus('customer_id');
+    }
+} else {
+    hidden('customer_id');
+}
+
 $menu = new ui_menu();
-$menu->addTab('test1', '/sales/manage/customers.php?debtor_no=&popup=1');
-$menu->addTab('test2', '/sales/manage/customer_branches.php?debtor_no=&popup=1');
+$menu->addTab('Customer', '/sales/manage/customers.php?debtor_no=&popup=1');
+$menu->addTab('Branches', '/sales/manage/customer_branches.php?debtor_no=&popup=1');
 $menu->render();
-    end_page();
+$_POST['_focus']='customer_id';
+end_form();
+$js_lib[] = '$(window).load(function() {
+		$("#tabs").tabs({
+			ajaxOptions: {
+				error: function(xhr, status, index, anchor) {
+					$(anchor.hash).html("Couldn\'t load this tab . We\'ll try to fix this as soon as possible. If this wouldn\'t be a demo .");
+				}
+			}
+		});
+	});';
+end_page(true,true);

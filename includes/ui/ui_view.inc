@@ -743,15 +743,18 @@ function get_js_png_fix() {
 }
 function get_jquery() {
     static $inserted;
+
     if(!$inserted) {
-    global $comp_path, $path_to_root;
+
+        global $comp_path, $path_to_root;
     $fpath = $comp_path . '/' . user_company() . '/js_cache/';
     add_js_ufile($fpath . 'jquery-1.4.3.min.js');
     $inserted = true;
     }
 }
 function get_jqueryui() {
-    get_jquery();   
+    get_jquery();
+
     static $inserted;
     if (!$inserted) {
         global $comp_path, $path_to_root;
