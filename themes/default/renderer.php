@@ -12,7 +12,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 * ********************************************************************* */
 
 class renderer {
-
+protected $has_header = true;
     function wa_header() {
         page(_($help_context = "Main Menu"), false, true);
     }
@@ -28,6 +28,7 @@ class renderer {
         echo "<div id='content'>\n";
         if (!$no_menu) {
             $applications = $_SESSION['App']->applications;
+            $this->sidemenu();
             echo "<div id='top'>\n";
             echo "<p>" . $db_connections[$_SESSION["wa_current_user"]->company]["name"] . " | " . $_SERVER['SERVER_NAME'] . " | " . $_SESSION["wa_current_user"]->name . "</p>\n";
             echo "<ul>\n";
@@ -58,8 +59,10 @@ class renderer {
         }
         echo "</div></div><div id='wrapper'>\n";
         if ($no_menu) {
+            $this->has_header=false;
             echo "<br>";
         } elseif ($title && !$is_index) {
+            
             echo "<center><table id='title'><tr><td width='100%' class='titletext'>$title</td>" . "<td align=right>" . (user_hints() ? "<span id='hints'></span>" : '') . "</td>" . "</tr></table></center>";
         }
     }
@@ -76,7 +79,9 @@ class renderer {
                 echo "<span class='date'>" . show_users_online() . "</span>\n";
             }
             echo "</div>\n";
+        
         }
+
         echo "</div>\n";
         echo "</div>\n";
 /*        if ($_SESSION['wa_current_user']->username == 'admin') {
@@ -91,7 +96,20 @@ class renderer {
             fbTimer::stop();
         }*/
     }
+function sidemenu() {
+    global $path_to_root;
+    if ($this->has_header) {
+    echo '<div class="shortmenu">
+<p>
+<a href="'.$path_to_root.'/sales/sales_order_entry.php?NewQuotation=Yes">New Quote</a>
+<a href="' . $path_to_root . '/sales/sales_order_entry.php?NewOrder=Yes">New Order</a>
+<a href="' . $path_to_root . '/sales/sales_order_entry.php?NewInvoice=0">New Direct Invoice</a>
+<a href="' . $path_to_root . '/purchasing/po_entry_items.php?NewOrder=Yes">New Purchase Order</a>
 
+</div>';
+
+    }
+}
     function display_applications(&$waapp) {
 
         $selected_app = $waapp->get_selected_application();
