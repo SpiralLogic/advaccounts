@@ -82,7 +82,7 @@ function page_header($title, $no_menu=false, $is_index=false, $onload="", $js=""
 
 //	if (file_exists($_SERVER['DOCUMENT_ROOT'].$jsext))
 //		add_js_ufile($jsext);
-
+get_jqueryui();
 	$theme = user_theme();
 	$local_path_to_root = $path_to_root;
 

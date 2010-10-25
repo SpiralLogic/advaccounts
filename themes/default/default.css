@@ -785,9 +785,9 @@ div.note_msg {
     width: 100%;
 }
 
-div.shortmenu {
+#shortmenu {
     margin: 0;
-    font-size: 110% /*smaller*/;
+    border:solid gray;
     font-weight: bold;
     line-height: 1.5;
     text-align: center;
@@ -798,55 +798,45 @@ div.shortmenu {
     right: 2em;
 }
 
-
-div.shortmenu p {
+#shortmenu p {
     margin: 0;
-    padding: 0.3em 0.4em;
     font-family: Arial, sans-serif;
-    background: #CCFFCC; /* Override according to type of page */
-    border: 1px solid #33CC00; /* Override this color together with bg */
-    color: black;
+ 
 }
 
 /*
 div.banner a { display: block; margin: 0 0.5em }
 div.banner a + a { border-top: 2px groove #999 }
 */
-div.shortmenu a, div.shortmenu em {
+#shortmenu a, #shortmenu em {
     display: block;
     margin: 0 0.5em;
     padding: 0.3em 0.4em;
 
 }
 
-div.shortmenu a, div.shortmenu em {
-    border-top: 2px groove #33CC00
-}
 
-div.shortmenu a:first-child {
+
+#shortmenu a:first-child {
     border-top: none
 }
 
-div.shortmenu em {
-    color: black
-}
 
-div.shortmenu a:link {
+#shortmenu a:link {
     text-decoration: none;
-    color: #555555
+
 }
 
-div.shortmenu a:visited {
+#shortmenu a:visited {
     text-decoration: none;
-    color: black
+
 }
 
-div.shortmenu a:hover {
-    
-    color: white
+#shortmenu a:hover {
+
 }
 
-div.shortmenu img {
+#shortmenu img {
     height: 24px;
     float: none;
     vertical-align: middle
