@@ -46,8 +46,8 @@ $menu->addTab('Branches', '/sales/manage/customer_branches.php?debtor_no=&popup=
 $menu->render();
 $_POST['_focus']='customer_id';
 end_form();
-$js_lib[] = '$(window).load(function() {
-		$("#tabs").tabs({
+$js_lib[] = '$("#tabs").livequery("ready", function() {
+		$(this).tabs({
 			ajaxOptions: {
 				error: function(xhr, status, index, anchor) {
 					$(anchor.hash).html("Couldn\'t load this tab . We\'ll try to fix this as soon as possible. If this wouldn\'t be a demo .");

@@ -122,7 +122,11 @@ function sidemenu() {
 		$( "#shortmenu" ).accordion({
 					autoHeight: false,
 			event: "mouseover"
-		});
+		}).fadeTo("slow",.75);
+		$( "#shortmenu" ).draggable().hover(function() {
+		    $(this).fadeTo("fast",1);},
+		    function() {
+		    $(this).fadeTo("fast",.75);});
 	});
 ';
 }

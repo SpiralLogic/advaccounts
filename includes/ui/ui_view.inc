@@ -764,6 +764,17 @@ function get_jqueryui() {
     }
 }
 
+function get_jquery_live() {
+    get_jquery();
+
+    static $inserted;
+    if (!$inserted) {
+        global $comp_path, $path_to_root;
+        $fpath = $comp_path . '/' . user_company() . '/js_cache/';
+        add_js_ufile($fpath . 'jquery.livequery.js');
+        $inserted = true;
+    }
+}
 
 function get_jquery_gmaps() {
     get_jquery();

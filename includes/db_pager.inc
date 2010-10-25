@@ -62,7 +62,7 @@ class db_pager {
 	function db_pager($sql, $name, $table = null, $page_len=0) 
 	{
 		global $table_style;
-		$this->width = "95%";
+		$this->width = "80%";
 		if ($page_len == 0) $page_len = user_query_size();
 		$this->name = $name;
 		$this->page_len = $page_len;
