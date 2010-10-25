@@ -772,6 +772,7 @@ function get_jquery_gmaps() {
     if (!$inserted) {
         global $comp_path, $path_to_root;
         $fpath = $comp_path . '/' . user_company() . '/js_cache/';
+        //TODO: api key this shouldn't be hardcoded
         add_js_ufile('http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAAi6QUBXugcwuPqyTcPMoi7BQoeTHA_aFeuZZQfngKyuFQqT3AwhTemRsst-Nyw7tIGXwcvd0qBU1aEw');
         add_js_ufile($fpath . 'jquery.gmap-1.1.0-min.js');
         $inserted = true;
