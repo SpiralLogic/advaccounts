@@ -73,6 +73,7 @@ function copy_from_cart() {
     $_POST['StkLocation'] = $_SESSION['PO']->Location;
     $_POST['delivery_address'] = $_SESSION['PO']->delivery_address;
     $_POST['freight'] = $_SESSION['PO']->freight;
+    $_POST['salesman'] = $_SESSION['PO']->salesman;
 }
 
 function copy_to_cart() {
@@ -84,6 +85,7 @@ function copy_to_cart() {
     $_SESSION['PO']->Location = $_POST['StkLocation'];
     $_SESSION['PO']->delivery_address = $_POST['delivery_address'];
     $_SESSION['PO']->freight = $_POST['freight'];
+    $_SESSION['PO']->salesman = $_POST['salesman'];
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -366,8 +368,6 @@ if (isset($_POST['CancelUpdate']) || isset($_POST['UpdateLine'])) {
 if (isset($_GET['NewOrder'])) {
     create_new_po();
     if ($_GET['UseOrder'] && isset($_SESSION['Items']->line_items)) {
-
-
         foreach ($_SESSION['Items']->line_items as $line_no => $line_item) {
             $sql = "SELECT " . TB_PREF . "purch_data.price," . TB_PREF . "purch_data.supplier_id
 		FROM " . TB_PREF . "purch_data INNER JOIN " . TB_PREF . "suppliers
@@ -398,14 +398,16 @@ if (isset($_GET['NewOrder'])) {
         $_SESSION['wa_global_supplier_id'] = key($po_lines);
         if ($_GET['DS']) {
             $item_info = get_item('DS');
-            $_SESSION['PO']->add_to_order(count($_SESSION['PO']->line_items), 'DS', 1, $item_info['long_description'], 0,
-                '', add_days(Today(), 10), 0, 0, 0);
-            $_SESSION['PO']->delivery_address='';
-            if (!empty($_SESSION['Items']->deliver_to))
-$_SESSION['PO']->delivery_address .= $_SESSION['Items']->deliver_to."\n";
-            if (!empty($_SESSION['Items']->phone)) $_SESSION['PO']->delivery_address .= 'Ph:'.$_SESSION['Items']->phone . "\n";
+            $_SESSION['PO']->add_to_order(count($_SESSION['PO']->line_items), 'DS', 1, $item_info['long_description'], 0, '', add_days(Today(), 10), 0, 0, 0);
+            $_SESSION['PO']->delivery_address = '';
+            if (!empty($_SESSION['Items']->deliver_to)) {
+                $_SESSION['PO']->delivery_address .= $_SESSION['Items']->deliver_to . "\n";
+            }
+            if (!empty($_SESSION['Items']->phone)) {
+                $_SESSION['PO']->delivery_address .= 'Ph:' . $_SESSION['Items']->phone . "\n";
+            }
 
-                    $_SESSION['PO']->delivery_address .= $_SESSION['Items']->delivery_address;
+            $_SESSION['PO']->delivery_address .= $_SESSION['Items']->delivery_address;
             $_POST['delivery_address'] = $_SESSION['PO']->delivery_address;
         }
     }

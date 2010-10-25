@@ -146,7 +146,7 @@ else if (isset($myrow['trans_no']) && isset($myrow['reference'])) { // INV/CRE/S
 }
 if ($doctype != ST_STATEMENT) {
     $this->NewLine();
-    $this->Text($mcol + 100, _('Salesperson'));
+    $this->Text($mcol + 100, _('Salesperson:'));
 $id = $myrow['salesman'];
 $sql = "SELECT salesman_name  FROM " . TB_PREF . "salesman WHERE salesman_code='$id'";
 $result = db_query($sql, "could not get sales person");

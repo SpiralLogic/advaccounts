@@ -100,17 +100,17 @@ function sidemenu() {
     global $path_to_root, $js_lib;
     if ($this->has_header) {
     echo '<div id="shortmenu">
-<h3> <a href="#">Create</a></h3><div><p>
+<h3> <a href="#">Create</a></h3><div>
 <a href="'.$path_to_root.'/sales/sales_order_entry.php?NewQuotation=Yes">Quote</a>
 <a href="' . $path_to_root . '/sales/sales_order_entry.php?NewOrder=Yes">Order</a>
 <a href="' . $path_to_root . '/sales/sales_order_entry.php?NewInvoice=0">Direct Invoice</a>
 <a href="' . $path_to_root . '/purchasing/po_entry_items.php?NewOrder=Yes">Purchase Order</a>
-</p></div>
-<h3> <a href="#">Search</a></h3><div><p>
+</div>
+<h3> <a href="#">Search</a></h3><div>
 <a href="' . $path_to_root . '/sales/inquiry/sales_orders_view.php?type=32">Quote</a>
 <a href="' . $path_to_root . '/sales/inquiry/sales_orders_view.php?type=30">Order</a>
 <a href="' . $path_to_root . '/sales/inquiry/customer_inquiry.php?">Invoice/Delivery</a>
-<a href="' . $path_to_root . '/purchasing/inquiry/po_search_completed.php?">Purchase Order</a></p></div>
+<a href="' . $path_to_root . '/purchasing/inquiry/po_search_completed.php?">Purchase Order</a></div>
 
 </div>
 

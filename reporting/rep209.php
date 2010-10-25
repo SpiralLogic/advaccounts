@@ -88,6 +88,7 @@ function print_po() {
     for ($i = $from; $i <= $to; $i++)
     {
         $myrow = get_po($i);
+        
         $baccount = get_default_bank_account($myrow['curr_code']);
         $params['bankaccount'] = $baccount['id'];
 
@@ -108,8 +109,6 @@ function print_po() {
         while ($myrow2 = db_fetch($result))
         {
             if ($myrow2['item_code']!='freight' || $myrow['freight']!=$myrow2['unit_price']) {
-
-
             $data = get_purchase_data($myrow['supplier_id'], $myrow2['item_code']);
             if ($data !== false) {
                 if ($data['supplier_description'] != "")

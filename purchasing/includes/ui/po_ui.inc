@@ -39,6 +39,7 @@ function create_new_po() {
     //session_register("PO");
 
     $_SESSION['PO'] = new purch_order;
+    FB::info($_SESSION['PO']);
     $_POST['OrderDate'] = new_doc_date();
     if (!is_date_in_fiscalyear($_POST['OrderDate']))
         $_POST['OrderDate'] = end_fiscalyear();
@@ -93,7 +94,7 @@ function display_po_header(&$order) {
         hidden('ref', $order->reference);
         label_row(_("Purchase Order #:"), $order->reference);
     }
-
+    sales_persons_list_row(_("Sales Person:"), 'salesman', $order->salesman);
     table_section(2);
 
     // check this out?????????
@@ -220,7 +221,7 @@ function display_po_summary(&$po, $is_self=false, $editable=false) {
     label_cells(_("Reference"), $po->reference, "class='tableheader2'");
 
     label_cells(_("Supplier"), $po->supplier_name, "class='tableheader2'");
-
+  
     if (!is_company_currency($po->curr_code))
         label_cells(_("Order Currency"), $po->curr_code, "class='tableheader2'");
 

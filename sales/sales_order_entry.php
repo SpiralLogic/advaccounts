@@ -42,6 +42,7 @@ if ($use_date_picker) {
 }
 $js .= get_js_calc();
 $js .= get_jqueryui();
+$js .= get_jquery_gmaps();
 if (isset($_GET['NewDelivery']) && is_numeric($_GET['NewDelivery'])) {
 
     $_SESSION['page_title'] = _($help_context = "Direct Sales Delivery");
@@ -101,7 +102,7 @@ if (isset($_GET['AddedID'])) {
     submenu_option(_("Make &Delivery Against This Order"), "/sales/customer_delivery.php?OrderNumber=$order_no");
     submenu_option(_("Enter a &New Order"), "/sales/sales_order_entry.php?NewOrder=0");
 
-    http: //advaccounts/sales/sales_order_entry.php?ModifyOrderNumber=
+
     display_footer_exit();
 } elseif (isset($_GET['UpdatedID'])) {
     $order_no = $_GET['UpdatedID'];
@@ -656,5 +657,6 @@ if ($customer_error == "") {
     display_error($customer_error);
 }
 end_form();
+echo '<div id="map"></div>';
 end_page();
 unset($_SESSION['order_no']);

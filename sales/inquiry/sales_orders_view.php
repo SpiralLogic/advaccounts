@@ -190,6 +190,7 @@ start_form();
 
 start_table("class='tablestyle_noborder'");
 start_row();
+customer_list_cells(_("Select a customer: "), 'customer_id', null, true);
 ref_cells(_("#:"), 'OrderNumber', '', null, '', true);
 if ($_POST['order_view_mode'] != 'DeliveryTemplates' && $_POST['order_view_mode'] != 'InvoiceTemplates') {
     ref_cells(_("Ref"), 'OrderReference', '', null, '', true);
@@ -216,6 +217,7 @@ end_table(1);
 //
 $sql = "SELECT
 		sorder.order_no,
+
 		sorder.reference,
 		debtor.name,
 		branch.br_name," . ($_POST['order_view_mode'] == 'InvoiceTemplates' || $_POST['order_view_mode'] == 'DeliveryTemplates' ? "sorder.comments, " : "sorder.customer_ref, ") . "sorder.ord_date,
@@ -233,7 +235,7 @@ $sql = "SELECT
 		AND sorder.debtor_no = debtor.debtor_no
 		AND sorder.branch_code = branch.branch_code
 		AND debtor.debtor_no = branch.debtor_no";
-
+if ($_POST['customer_id'] != ALL_TEXT) $sql .= " AND sorder.debtor_no = " . db_escape($_POST['customer_id']);
 if (isset($_POST['OrderNumber']) && $_POST['OrderNumber'] != "") {
     // search orders with number like
     $number_like = "%" . $_POST['OrderNumber'];

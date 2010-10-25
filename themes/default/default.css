@@ -790,7 +790,6 @@ div.note_msg {
     border:solid gray;
     font-weight: bold;
     line-height: 1.5;
-    text-align: center;
     position: fixed; /* Fallback if 'fixed' is not supported */
     top: 20em;
     left: auto;
@@ -810,9 +809,9 @@ div.banner a + a { border-top: 2px groove #999 }
 */
 #shortmenu a, #shortmenu em {
     display: block;
-    margin: 0 0.5em;
-    padding: 0.3em 0.4em;
-
+    margin: 0.5em 0 ;
+    /*  padding: 0.3em 0.4em;*/
+white-space: nowrap;
 }
 
 
@@ -840,4 +839,14 @@ div.banner a + a { border-top: 2px groove #999 }
     height: 24px;
     float: none;
     vertical-align: middle
+}
+#map {
+ height: 400px;
+    width: 1000px;
+    margin: 0 auto;
+    overflow: hidden;
+}
+#address_map {
+cursor: pointer;
+
 }

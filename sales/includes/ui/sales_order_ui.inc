@@ -13,7 +13,7 @@ include_once($path_to_root . "/sales/includes/cart_class.inc");
 include_once($path_to_root . "/includes/manufacturing.inc");
 
 //--------------------------------------------------------------------------------
-function add_to_order(&$order, $new_item, $new_item_qty, $price, $discount,$description) {
+function add_to_order(&$order, $new_item, $new_item_qty, $price, $discount, $description) {
     // calculate item price to sum of kit element prices factor for
     // value distribution over all exploded kit items
     $item = is_item_kit($new_item);
@@ -27,8 +27,8 @@ function add_to_order(&$order, $new_item, $new_item_qty, $price, $discount,$desc
                     break;
                 }
             }
-            $order->add_to_cart(count($order->line_items), $item['stock_id'], $new_item_qty * $item['quantity'], $price, $discount,0,0,$description);
-        return;
+            $order->add_to_cart(count($order->line_items), $item['stock_id'], $new_item_qty * $item['quantity'], $price, $discount, 0, 0, $description);
+            return;
         }
     }
     $std_price = get_kit_price($new_item, $order->customer_currency, $order->sales_type, $order->price_factor, get_post('OrderDate'), true);
@@ -47,8 +47,9 @@ function add_to_order(&$order, $new_item, $new_item_qty, $price, $discount,$desc
             $price -= $item['quantity'] * $std_price * $price_factor;
             $item_price = $std_price * $price_factor;
         } else {
-            if ($item['quantity'])
+            if ($item['quantity']) {
                 $price = $price / $item['quantity'];
+            }
             $item_price = $price;
         }
         $item_price = round($item_price, user_price_dec());
@@ -107,10 +108,12 @@ function get_customer_details_to_order(&$order, $customer_id, $branch_id) {
     $order->set_delivery($myrow["default_ship_via"], $myrow["br_name"], $address);
     if ($order->trans_type == ST_SALESINVOICE) {
         $order->due_date = get_invoice_duedate($customer_id, $order->document_date);
-        if ($order->pos != -1)
+        if ($order->pos != -1) {
             $order->cash = date_diff2($order->due_date, Today(), 'd') < 2;
-        if ($order->due_date == Today())
+        }
+        if ($order->due_date == Today()) {
             $order->pos == -1;
+        }
 
 
     }
@@ -119,8 +122,9 @@ function get_customer_details_to_order(&$order, $customer_id, $branch_id) {
             $paym = get_sales_point($order->pos);
             $order->set_location($paym["pos_location"], $paym["location_name"]);
         }
-    } else
+    } else {
         $order->set_location($myrow["default_location"], $myrow["location_name"]);
+    }
 
     return $ret_error;
 }
@@ -175,10 +179,12 @@ function display_order_summary($title, &$order, $editable_items = false) {
                 if ($stock_item->qty_dispatched > $qoh) {
                     // oops, we don't have enough of one of the component items
                     start_row("class='stockmankobg'");
-                    $qoh_msg .= $stock_item->stock_id . " - " . $stock_item->item_description . ": " . _("Quantity On Hand") . " = " . number_format2($qoh, get_qty_dec($stock_item->stock_id)) . '<br>';
+                    $qoh_msg .= $stock_item->stock_id . " - " . $stock_item->item_description . ": " . _("Quantity On Hand") . " = " . number_format2($qoh,
+                        get_qty_dec($stock_item->stock_id)) . '<br>';
                     $has_marked = true;
-                } else
+                } else {
                     alt_table_row_color($k);
+                }
             } else {
                 alt_table_row_color($k);
             }
@@ -190,8 +196,9 @@ function display_order_summary($title, &$order, $editable_items = false) {
             $dec = get_qty_dec($stock_item->stock_id);
             qty_cell($stock_item->qty_dispatched, false, $dec);
 
-            if ($order->trans_no != 0)
+            if ($order->trans_no != 0) {
                 qty_cell($stock_item->qty_done, false, $dec);
+            }
 
             label_cell($stock_item->units);
             amount_cell($stock_item->price);
@@ -240,8 +247,9 @@ function display_order_summary($title, &$order, $editable_items = false) {
     end_table();
     if ($has_marked) {
         display_note(_("Marked items have insufficient quantities in stock as on day of delivery."), 0, 1, "class='stockmankofg'");
-        if ($order->trans_type != 30 && !$SysPrefs->allow_negative_stock())
+        if ($order->trans_type != 30 && !$SysPrefs->allow_negative_stock()) {
             display_error(_("The delivery cannot be processed because there is an insufficient quantity for item:") . '<br>' . $qoh_msg);
+        }
     }
 
     div_end();
@@ -266,7 +274,7 @@ function display_order_header(&$order, $editable, $date_text, $display_tax_group
         hidden('customer_id', $order->customer_id);
         hidden('branch_id', $order->Branch);
         hidden('sales_type', $order->sales_type);
-//		if ($order->trans_type != ST_SALESORDER  && $order->trans_type != ST_SALESQUOTE) {
+        //		if ($order->trans_type != ST_SALESORDER  && $order->trans_type != ST_SALESQUOTE) {
         hidden('dimension_id', $order->dimension_id); // 2008-11-12 Joe Hunt
         hidden('dimension2_id', $order->dimension2_id);
         //		}
@@ -338,8 +346,9 @@ function display_order_header(&$order, $editable, $date_text, $display_tax_group
         } // changed branch
         else {
             $row = get_customer_to_order($_POST['customer_id']);
-            if ($row['dissallow_invoices'] == 1)
+            if ($row['dissallow_invoices'] == 1) {
                 $customer_error = _("The selected customer account is currently on hold. Please contact the credit control personnel to discuss.");
+            }
 
         }
     }
@@ -393,8 +402,9 @@ function display_order_header(&$order, $editable, $date_text, $display_tax_group
     table_section(4);
 
     if ($editable) {
-        if (!isset($_POST['OrderDate']) || $_POST['OrderDate'] == "")
+        if (!isset($_POST['OrderDate']) || $_POST['OrderDate'] == "") {
             $_POST['OrderDate'] = $order->document_date;
+        }
 
         date_row($date_text, 'OrderDate', _('Date of order receive'), $order->trans_no == 0, 0, 0, 0, null, true);
         if (isset($_POST['_OrderDate_changed'])) {
@@ -404,19 +414,24 @@ function display_order_header(&$order, $editable, $date_text, $display_tax_group
             $Ajax->activate('_ex_rate');
             if ($order->trans_type == ST_SALESINVOICE) {
                 $_POST['delivery_date'] = get_invoice_duedate(get_post('customer_id'), get_post('OrderDate'));
-            } else
+            } else {
                 $_POST['delivery_date'] = add_days(get_post('OrderDate'), $SysPrefs->default_delivery_required_by());
+            }
             $Ajax->activate('items_table');
             $Ajax->activate('delivery_date');
         }
         if ($order->trans_type != ST_SALESORDER && $order->trans_type != ST_SALESQUOTE) { // 2008-11-12 Joe Hunt added dimensions
             $dim = get_company_pref('use_dimension');
-            if ($dim > 0)
-                dimensions_list_row(_("Dimension") . ":", 'dimension_id', null, true, ' ', false, 1, false); else
+            if ($dim > 0) {
+                dimensions_list_row(_("Dimension") . ":", 'dimension_id', null, true, ' ', false, 1, false);
+            } else {
                 hidden('dimension_id', 0);
-            if ($dim > 1)
-                dimensions_list_row(_("Dimension") . " 2:", 'dimension2_id', null, true, ' ', false, 2, false); else
+            }
+            if ($dim > 1) {
+                dimensions_list_row(_("Dimension") . " 2:", 'dimension2_id', null, true, ' ', false, 2, false);
+            } else {
                 hidden('dimension2_id', 0);
+            }
         }
     } else {
         label_row($date_text, $order->document_date);
@@ -517,7 +532,7 @@ function sales_order_item_controls(&$order, &$rowcounter, $line_no = -1) {
 //--------------------------------------------------------------------------------
 
 function display_delivery_details(&$order) {
-    global $table_style2, $Ajax;
+    global $table_style2, $Ajax, $js_lib;
 
     div_start('delivery');
 
@@ -551,15 +566,31 @@ function display_delivery_details(&$order) {
         table_section(1);
 
         locations_list_row(_("Deliver from Location:"), 'Location', null, false, true);
-        if (list_updated('Location'))
+        if (list_updated('Location')) {
             $Ajax->activate('items_table');
+        }
 
 
-        date_row($delname, 'delivery_date', $order->trans_type == ST_SALESORDER ? _('Enter requested day of delivery') : $order->trans_type == ST_SALESQUOTE ? _('Enter Valid until Date') : '');
+        date_row($delname, 'delivery_date',
+            $order->trans_type == ST_SALESORDER ? _('Enter requested day of delivery') : $order->trans_type == ST_SALESQUOTE ? _('Enter Valid until Date') : '');
         text_row(_("Deliver To:"), 'deliver_to', $order->deliver_to, 40, 40, _('Additional identifier for delivery e.g. name of receiving person'));
 
-        textarea_row(_("Address:"), 'delivery_address', $order->delivery_address, 35, 5, _('Delivery address. Default is address of customer branch'));
+        textarea_row("<a href='#'>Address:</a>", 'delivery_address', $order->delivery_address, 35, 5, _('Delivery address. Default is address of customer branch'), null,
+            'id="address_map"');
+        $js_lib[] = '$(function() {
+$("#map").gMap({
+address:"' . ereg_replace("[\r\t\n\v]", ", ", $order->delivery_address) . '",
+markers: [{ address:"' . ereg_replace("[\r\t\n\v]", ", ", $order->delivery_address) . '", html: "_address", popup: true}],
 
+zoom: 10
+}).dialog({title: "Delivery to: ' . $order->deliver_to . '", autoOpen: false, show: "slide", hide: "slide", height: 450, width: 1000, modal: true});
+$("#address_map").click(function() {
+    $("#map").dialog("open");
+    return false; });
+    $(".ui-widget-overlay").live("click", function() {
+    $("#map").dialog("close");
+    return false; });
+});';
         table_section(2);
 
         text_row(_("Contact Phone Number:"), 'phone', $order->phone, 25, 25, _('Phone number of ordering person. Defaults to branch phone number'));

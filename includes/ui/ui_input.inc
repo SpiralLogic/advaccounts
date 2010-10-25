@@ -823,9 +823,9 @@ function textarea_cells($label, $name, $value, $cols, $rows, $title = null, $par
 	$Ajax->addUpdate($name, $name, $value);
 }
 
-function textarea_row($label, $name, $value, $cols, $rows, $title=null, $params="")
+function textarea_row($label, $name, $value, $cols, $rows, $title=null, $params="", $labelparams="")
 {
-	echo "<tr><td class='label'>$label</td>";
+	echo "<tr><td class='label' $labelparams>$label</td>";
 	textarea_cells(null, $name, $value, $cols, $rows, $title, $params);
 	echo "</tr>\n";
 }

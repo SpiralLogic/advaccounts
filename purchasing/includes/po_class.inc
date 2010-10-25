@@ -23,11 +23,13 @@ class purch_order
 	var $delivery_address;
 	var $Comments;
 	var $Location;
+    
 	var $supplier_name;
 	var $orig_order_date;
 	var $order_no; /*Only used for modification of existing orders otherwise only established when order committed */
 	var $lines_on_order;
 	var $freight;
+    var $salesman;
 	var $reference;
 	
 	function purch_order()
@@ -35,6 +37,7 @@ class purch_order
 		/*Constructor function initialises a new purchase order object */
 		$this->line_items = array();
 		$this->lines_on_order = $this->order_no = $this->supplier_id = 0;
+        $this->set_salesman();
 	}
 
 	function add_to_order($line_no, $stock_id, $qty, $item_descr, $price, $uom, $req_del_date, $qty_inv, $qty_recd, $discount)
@@ -48,6 +51,17 @@ class purch_order
 		Return 0;
 	}
 
+    function set_salesman($salesman_code = null) {
+
+        if ($salesman_code == null) {
+            $salesman_name = $_SESSION['wa_current_user']->name;
+            $sql = "SELECT salesman_code FROM " . TB_PREF . "salesman WHERE salesman_name = " . db_escape($salesman_name);
+            $query = db_query($sql, 'Couldn\'t find current salesman');
+            $result = db_fetch_assoc($query);
+            if (!empty($result['salesman_code'])) $salesman_code = $result['salesman_code'];
+        }
+        if ($salesman_code != null) $this->salesman = $salesman_code;
+    }
 	function update_order_item($line_no, $qty, $price, $req_del_date, $item_descr='',$discount=0)
 	{
 		$this->line_items[$line_no]->quantity = $qty;
