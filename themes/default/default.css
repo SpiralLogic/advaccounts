@@ -171,7 +171,7 @@ hr {
 }
 
 .evenrow {
-    background-color: #ecf4fd;
+    background-color: #99ccff;
 }
 
 .overduebg {
@@ -219,6 +219,9 @@ table.tablestyle {
 table.tablestyle td {
     border-collapse: collapse;
     border: 1px solid #e1e1e1;
+    border-top-color: #dcdcdc;
+    border-bottom-color: #dcdcdc; 
+
 }
 
 table.tablestyle2 {

@@ -642,7 +642,7 @@ function supplier_list_row($label, $name, $selected_id = null, $all_option = fal
 
 //----------------------------------------------------------------------------------------------
 
-function customer_list($name, $selected_id = null, $spec_option = false, $submit_on_change = false, $show_inactive = false, $editkey = false) {
+function customer_list($name, $selected_id = null, $spec_option = false, $submit_on_change = false, $show_inactive = false, $editkey = false, $async=false) {
     global $all_items;
 
     $sql = "SELECT debtor_no, debtor_ref, curr_code, inactive FROM " . TB_PREF . "debtors_master ";
@@ -654,15 +654,15 @@ function customer_list($name, $selected_id = null, $spec_option = false, $submit
     }
 
     return combo_input($name, $selected_id, $sql, 'debtor_no', 'name',
-        array('format' => '_format_add_curr', 'order' => array('debtor_ref'), 'search_box' => $mode != 0, 'type' => 1, 'size' => 20, 'spec_option' => $spec_option === true ? _("All Customers") : $spec_option, 'spec_id' => $all_items, 'select_submit' => $submit_on_change, 'async' => false, 'sel_hint' => $mode ? _('Press Space tab to filter by name fragment; F2 - entry new customer') : _('Select customer'), 'show_inactive' => $show_inactive));
+        array('format' => '_format_add_curr', 'order' => array('debtor_ref'), 'search_box' => $mode != 0, 'type' => 1, 'size' => 20, 'spec_option' => $spec_option === true ? _("All Customers") : $spec_option, 'spec_id' => $all_items, 'select_submit' => $submit_on_change, 'async' => $async, 'sel_hint' => $mode ? _('Press Space tab to filter by name fragment; F2 - entry new customer') : _('Select customer'), 'show_inactive' => $show_inactive));
 }
 
-function customer_list_cells($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false, $show_inactive = false, $editkey = false) {
+function customer_list_cells($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false, $show_inactive = false, $editkey = false, $async = false) {
     if ($label != null) {
         echo "<td>$label</td>\n";
     }
     echo "<td nowrap>";
-    echo customer_list($name, $selected_id, $all_option, $submit_on_change, $show_inactive, $editkey);
+    echo customer_list($name, $selected_id, $all_option, $submit_on_change, $show_inactive, $editkey, $async);
     echo "</td>\n";
 }
 

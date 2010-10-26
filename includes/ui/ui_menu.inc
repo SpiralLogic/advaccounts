@@ -21,12 +21,11 @@ class ui_menu {
     protected $content = '';
     function __construct() {
 
-        FB::info('test');
         $this->content = "<div id='tabs'><ul>";
     }
     function addTab($title,$link,$tooltip='') {
             $this->tabs[] = new ui_menu_item($title,$link,$tooltip);
-            FB::info($this->tabs);
+         
     }
     function render() {
         global $js_lib;
@@ -34,11 +33,16 @@ class ui_menu {
         foreach ($this->tabs as $key => $tab) {
             $this->content .= "<li><a href='{$tab->link}'><span>{$tab->title}</span></a></li>";
         }
-        $this->content .= "</ul>";/*
-        foreach ($this->tabs as $key => $tab) {
-            $this->content .= "<div id='tabs-$key'><p>{$tab->link}</p></div>";
-        }*/
-    //    $this->content .= '<div id="tabs-0"></div>';
+        $this->content .= "</ul>";
+     $this->content .= '<script>$(function() {
+		$("#tabs") .tabs({
+                ajaxOptions: {
+                    error: function(xhr, status, index, anchor) {
+                        $(anchor . hash) . html("Couldn\'t load this tab . We\'ll try to fix this as soon as possible. If this wouldn\'t be a demo .");
+                    }
+			}
+            });
+	});</script>';
         echo $this->content;
 
     }

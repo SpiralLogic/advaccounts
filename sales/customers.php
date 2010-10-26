@@ -17,7 +17,7 @@
     include_once($path_to_root . "/includes/session.inc");
 $_SESSION['App']->selected_application = 'cards';
 get_jqueryui();
-
+get_jquery_live();
 
     include_once($path_to_root . "/includes/date_functions.inc");
     include_once($path_to_root . "/includes/banking.inc");
@@ -25,10 +25,10 @@ get_jqueryui();
 
 page(_($help_context = "Customers"), @$_REQUEST['popup']);
 start_form();
-if (db_has_customers()) {
+if (db_has_customers() ) {
     start_table("class = 'tablestyle_noborder'");
     start_row();
-    customer_list_cells(_("Select a customer: "), 'customer_id', null, _('New customer'), true, check_value('show_inactive'));
+    customer_list_cells(_("Select a customer: "), 'customer_id', null, _('New customer'), true, check_value('show_inactive'),false,true);
     check_cells(_("Show inactive:"), 'show_inactive', null, true);
     end_row();
     end_table();
@@ -46,13 +46,9 @@ $menu->addTab('Branches', '/sales/manage/customer_branches.php?debtor_no=&popup=
 $menu->render();
 $_POST['_focus']='customer_id';
 end_form();
-$js_lib[] = '$("#tabs").livequery("ready", function() {
-		$(this).tabs({
-			ajaxOptions: {
-				error: function(xhr, status, index, anchor) {
-					$(anchor.hash).html("Couldn\'t load this tab . We\'ll try to fix this as soon as possible. If this wouldn\'t be a demo .");
-				}
-			}
-		});
-	});';
+$js_lib[] = '$(".combo2").live("change",  function() {alert(
+$("#_customer_id_sel select option:selected").text());
+});';
+
+
 end_page(true,true);
