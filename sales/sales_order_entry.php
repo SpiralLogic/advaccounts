@@ -658,5 +658,6 @@ if ($customer_error == "") {
 }
 end_form();
 echo '<div id="map"></div>';
+
 end_page();
 unset($_SESSION['order_no']);

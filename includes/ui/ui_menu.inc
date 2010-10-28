@@ -31,19 +31,12 @@ class ui_menu {
         global $js_lib;
 
         foreach ($this->tabs as $key => $tab) {
-            $this->content .= "<li><a href='{$tab->link}'><span>{$tab->title}</span></a></li>";
+            $this->content .= "<li><a title='{$tab->link}' href='{$tab->link}'><span>{$tab->title}</span></a></li>";
         }
         $this->content .= "</ul>";
-     $this->content .= '<script>$(function() {
-		$("#tabs") .tabs({
-                ajaxOptions: {
-                    error: function(xhr, status, index, anchor) {
-                        $(anchor . hash) . html("Couldn\'t load this tab . We\'ll try to fix this as soon as possible. If this wouldn\'t be a demo .");
-                    }
-			}
-            });
-	});</script>';
         echo $this->content;
+
+        
 
     }
 }

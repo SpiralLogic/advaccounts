@@ -33,7 +33,7 @@ function page_footer($no_menu=false, $is_index=false, $hide_back_link=false)
 	  	echo $text;
 	echo "\n--></script>\n";
     echo "</body></html>\n";
-    FB::info($_SESSION);
+    CP::log($_SESSION);
 }
 
 ?>

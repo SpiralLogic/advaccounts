@@ -28,12 +28,12 @@ start_form();
 if (db_has_customers() ) {
     start_table("class = 'tablestyle_noborder'");
     start_row();
-    customer_list_cells(_("Select a customer: "), 'customer_id', null, _('New customer'), true, check_value('show_inactive'),false,true);
+    customer_list_cells(_("Select a customer: "), 'customer_id', null, _('New customer'), true, check_value('show_inactive'),false);
     check_cells(_("Show inactive:"), 'show_inactive', null, true);
     end_row();
     end_table();
     if (get_post('_show_inactive_update')) {
-        $Ajax->activate('customer_id');
+        $Ajax->activate('_page_body');
         set_focus('customer_id');
     }
 } else {
@@ -46,9 +46,9 @@ $menu->addTab('Branches', '/sales/manage/customer_branches.php?debtor_no=&popup=
 $menu->render();
 $_POST['_focus']='customer_id';
 end_form();
-$js_lib[] = '$(".combo2").live("change",  function() {alert(
+/*$js_lib[] = '$(".combo2").live("change",  function() {alert(
 $("#_customer_id_sel select option:selected").text());
-});';
+});';*/
 
 
 end_page(true,true);

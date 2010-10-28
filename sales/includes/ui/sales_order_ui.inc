@@ -577,20 +577,21 @@ function display_delivery_details(&$order) {
 
         textarea_row("<a href='#'>Address:</a>", 'delivery_address', $order->delivery_address, 35, 5, _('Delivery address. Default is address of customer branch'), null,
             'id="address_map"');
-        $js_lib[] = '$(function() {
+        if (strlen($order->delivery_address)>10) { echo '<script>$(function() {
 $("#map").gMap({
 address:"' . ereg_replace("[\r\t\n\v]", ", ", $order->delivery_address) . '",
 markers: [{ address:"' . ereg_replace("[\r\t\n\v]", ", ", $order->delivery_address) . '", html: "_address", popup: true}],
-
 zoom: 10
 }).dialog({title: "Delivery to: ' . $order->deliver_to . '", autoOpen: false, show: "slide", hide: "slide", height: 450, width: 1000, modal: true});
-$("#address_map").click(function() {
+$("#address_map").live("click", function() {
     $("#map").dialog("open");
     return false; });
     $(".ui-widget-overlay").live("click", function() {
     $("#map").dialog("close");
     return false; });
-});';
+});</script>
+';
+        }
         table_section(2);
 
         text_row(_("Contact Phone Number:"), 'phone', $order->phone, 25, 25, _('Phone number of ordering person. Defaults to branch phone number'));

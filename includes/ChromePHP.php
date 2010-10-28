@@ -21,7 +21,7 @@
  * @package ChromePhp
  * @author Craig Campbell <iamcraigcampbell@gmail.com>
  */
-class ChromePhp {
+class CP {
     /**
      * @var string
      */
@@ -104,7 +104,7 @@ class ChromePhp {
      */
     public static function getInstance() {
         if (self::$_instance === null) {
-            self::$_instance = new ChromePhp();
+            self::$_instance = new CP();
         }
         return self::$_instance;
     }

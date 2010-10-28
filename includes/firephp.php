@@ -4,17 +4,17 @@ class fbTimer {
     protected static $timerEnd = 0;
 
     public static function start() {
-        self::$timerStart = microtime();
+        self::$timerStart = microtime(true);
         self::$timerEnd = 0;
     }
 
     public static function stop() {
-        self::$timerEnd = microtime();
+        self::$timerEnd = microtime(true);
     }
 
     public static function get() {
         if (self::$timerEnd == 0) {
-            self::stop();
+            return microtime(true) - self::$timerStart;
         }
         return self::$timerEnd - self::$timerStart;
     }
