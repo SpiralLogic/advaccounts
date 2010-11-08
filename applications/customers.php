@@ -59,6 +59,7 @@ $this->add_rapp_function(1, _("Direct &Invoice"),
         $this->add_lapp_function(2,'','');
            $this->add_lapp_function(2, _("Customer &Payments"),
                 "sales/customer_payments.php?", 'SA_SALESPAYMNT');
+           $this->add_lapp_function(2, _("Customer &Refunds"), "sales/customer_refunds.php?", 'SA_SALESREFUND');
         $this->add_lapp_function(2, _("Customer &Credit Notes"),
                 "sales/credit_note_entry.php?NewCredit=Yes", 'SA_SALESCREDIT');
         $this->add_lapp_function(2, _("&Allocate Customer Payments or Credit Notes"),

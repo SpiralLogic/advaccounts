@@ -323,7 +323,7 @@ function display_grn_items_for_selection(&$supp_trans, $k) {
                     qty_cells(null, 'this_quantity_inv' . $n, number_format2($myrow["qty_recd"] - $myrow["quantity_inv"], $dec), null, null, $dec); else
                     qty_cells(null, 'This_QuantityCredited' . $n, number_format2(max($myrow["quantity_inv"], 0), $dec), null, null, $dec);
                 $dec2 = 0;
-                FB::info($myrow);
+               
                 amount_cells(null, 'ChgPrice' . $n, price_decimal_format($myrow["unit_price"], $dec2), null, null, $dec2, 'ChgPriceCalc' . $n);
                 amount_cells(null, 'ExpPrice' . $n, price_decimal_format($myrow["unit_price"], $dec2), null, null, $dec2, 'ExpPriceCalc' . $n);
                 small_amount_cells(null, 'ChgDiscount' . $n, percent_format($myrow['discount'] * 100), null, null, user_percent_dec());

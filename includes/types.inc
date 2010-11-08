@@ -22,6 +22,7 @@ define('ST_SALESINVOICE', 10);
 define('ST_CUSTCREDIT', 11);
 define('ST_CUSTPAYMENT', 12);
 define('ST_CUSTDELIVERY', 13);
+define('ST_CUSTREFUND', 14);
 define('ST_DEPOSIT_GROUP', 15);
 define('ST_LOCTRANSFER', 16);
 define('ST_INVADJUST', 17);
@@ -57,6 +58,7 @@ $systypes_array = array (
 	ST_CUSTCREDIT => _("Customer Credit Note"),
     ST_DEPOSIT_GROUP => _("Group Deposit"),
 	ST_CUSTPAYMENT => _("Customer Payment"),
+	ST_CUSTREFUND => _("Customer Refund"),
 	ST_CUSTDELIVERY => _("Delivery Note"),
 	ST_LOCTRANSFER => _("Location Transfer"),
 	ST_INVADJUST => _("Inventory Adjustment"),

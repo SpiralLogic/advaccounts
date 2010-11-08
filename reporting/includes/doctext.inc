@@ -20,6 +20,7 @@
         }
         else {
             if ($doctype == ST_CUSTPAYMENT) $doc_Charge_To = _("Charged To");
+            elseif ($doctype == ST_CUSTREFUND) $doc_Charge_To = _("Refunded To");
             else $doc_Charge_To = _("Charge To");
             $doc_Delivered_To = _("Delivered To");
         }
@@ -78,7 +79,7 @@
 //	$doc_Domicile = _("Domicile");
         $doc_Extra = "";
         if ($doctype == ST_CUSTDELIVERY || $doctype == ST_SALESQUOTE || $doctype == ST_PURCHORDER || $doctype == ST_SALESORDER ||
-                $doctype == ST_SUPPAYMENT || $doctype == ST_CUSTPAYMENT) {
+                $doctype == ST_SUPPAYMENT || $doctype == ST_CUSTPAYMENT || $doctype == ST_CUSTREFUND) {
             if ($doctype == ST_CUSTPAYMENT)
                     $doc_Extra = _("* Subject to Realisation of the Cheque.");
             $doc_Bank_Account = '';
@@ -94,8 +95,8 @@
         $doc_Bank = _("Bank");
         $doc_Payment_Link = _("You can pay through");
         if ($doctype == ST_SALESQUOTE || $doctype == ST_PURCHORDER || $doctype == ST_SALESORDER || $doctype == ST_SALESINVOICE ||
-                $doctype == ST_CUSTCREDIT || $doctype == ST_CUSTDELIVERY || $doctype == ST_PROFORMA || $doctype == ST_WORKORDER || $doctype == ST_SUPPAYMENT ||
-                $doctype == ST_CUSTPAYMENT) {
+                $doctype == ST_CUSTCREDIT || $doctype == ST_CUSTDELIVERY || $doctype == ST_PROFORMA || $doctype == ST_WORKORDER || $doctype == ST_SUPPAYMENT || $doctype ==
+		        ST_CUSTPAYMENT || $doctype == ST_CUSTREFUND) {
             if ($doctype == ST_SALESQUOTE) $this->title = _("QUOTATION");
             elseif ($doctype == ST_PURCHORDER)
                     $this->title = _("PURCHASE ORDER");
@@ -107,6 +108,7 @@
             elseif ($doctype == ST_WORKORDER) $this->title = _("WORK ORDER");
             elseif ($doctype == ST_SUPPAYMENT) $this->title = _("REMITTANCE");
             elseif ($doctype == ST_CUSTPAYMENT) $this->title = _("RECEIPT");
+            elseif ($doctype == ST_CUSTREFUND) $this->title = _("REFUND");
             else $this->title = _("CREDIT NOTE");
             if ($isproforma) {
                 $this->title = _("PROFORMA INVOICE");
@@ -119,7 +121,7 @@
             elseif ($doctype == ST_WORKORDER)
                     $this->headers = array(_("Item Code"), _("Item Description"),
                     _("From Location"), _("Work Centre"), _("Unit Quantity"), _("Total Quantity"), _("Units Issued"));
-            elseif ($doctype == ST_SUPPAYMENT || $doctype == ST_CUSTPAYMENT)
+            elseif ($doctype == ST_SUPPAYMENT || $doctype == ST_CUSTPAYMENT || $doctype == ST_CUSTREFUND)
                     $this->headers = array(_("Trans Type"), _("#"), _("Date"), _("Due Date"), _("Total Amount"), _("Left to Allocate"), _("This Allocation"));
 
             elseif ($doctype == ST_CUSTDELIVERY ) $this->headers = array(_("Item Code"), _("Item Description"), _("Qty"), );
@@ -143,19 +145,20 @@
     if (isset($header2type) || isset($linetype)) {
         $doc_Invoice_no = ($doctype == ST_CUSTDELIVERY ? _("Delivery Note No.") :
                         ($doctype == ST_CUSTPAYMENT ? _("Receipt No.") :
+		                        ($doctype == ST_CUSTREFUND? _("Refund No.") :
                                 ($doctype == ST_SUPPAYMENT ? _("Remittance No.") :
                                         ($doctype == ST_PURCHORDER ? _("Purchase Order #:") :
                                                 ($doctype == ST_SALESORDER ? _("Order No.") :
                                                         ($doctype == ST_SALESQUOTE ? _("Quotation No.") :
                                                                 ($doctype == ST_SALESINVOICE ? _("Invoice No.") :
-                                                                        ($doctype == ST_WORKORDER ? _("Work Order No.") : _("Credit No.")))))))));
+                                                                        ($doctype == ST_WORKORDER ? _("Work Order No.") : _("Credit No."))))))))));
 
         $doc_Delivery_no = _("Delivery Note No.");
         $doc_Order_no = _("Order No.");
     }
     if (isset($linetype)) {
         if ($doctype == ST_SALESQUOTE || $doctype == ST_PURCHORDER || $doctype == ST_SALESORDER ||
-                $doctype == ST_SALESINVOICE || $doctype == ST_CUSTCREDIT || $doctype == ST_CUSTDELIVERY) {
+                $doctype == ST_SALESINVOICE || $doctype == ST_CUSTCREDIT  ||$doctype == ST_CUSTDELIVERY) {
             $doc_Sub_total = _("Subtotal");
             $doc_Shipping = _("Shipping");
             $doc_Included = _("Included");
@@ -165,7 +168,7 @@
             $doc_TOTAL_ORDER2 = _("TOTAL ORDER VAT INCL.");
             $doc_TOTAL_PO = _("TOTAL PO EX VAT");
             $doc_TOTAL_DELIVERY = _("TOTAL DELIVERY INCL. VAT");
-        } elseif ($doctype == ST_SUPPAYMENT || ST_CUSTPAYMENT) {
+        } elseif ($doctype == ST_SUPPAYMENT || ST_CUSTPAYMENT || $doctype == ST_CUSTREFUND) {
             $doc_Towards = _("As advance / full / part / payment towards:");
             $doc_by_Cheque = _("By Cash / Cheque* / Draft No.");
             $doc_Dated = _("Dated");
@@ -176,7 +179,9 @@
             $doc_Left_To_Allocate = _("Left to Allocate");
             if ($doctype == ST_CUSTPAYMENT)
                     $doc_Total_Payment = _("TOTAL RECEIPT");
-            else $doc_Total_Payment = _("TOTAL REMITTANCE");
+            elseif ($doctype == ST_CUSTREFUND)  $doc_Total_Payment = _("TOTAL REFUND");
+            else
+            $doc_Total_Payment = _("TOTAL REMITTANCE");
         }
 
     }

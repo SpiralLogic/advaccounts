@@ -16,7 +16,7 @@ function write_customer_refund($trans_no, $customer_id, $branch_id, $bank_accoun
 	$date_, $ref, $amount, $discount, $memo_, $rate=0, $charge=0)
 {
 	global $Refs;
-
+$amount = $amount*-1;
 	begin_transaction();
 
 	$company_record = get_company_prefs();

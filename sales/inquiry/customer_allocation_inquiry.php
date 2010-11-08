@@ -102,13 +102,13 @@ function alloc_link($row)
 		/*its a credit note which could have an allocation */
 		return $link;
 	}
-	elseif (($row["type"] == ST_CUSTPAYMENT || $row["type"] == ST_BANKDEPOSIT) &&
+	elseif (($row["type"] == ST_CUSTPAYMENT || $row["type"] == ST_CUSTREFUND || $row["type"] == ST_BANKDEPOSIT) &&
 		($row['TotalAmount'] - $row['Allocated']) > 0)
 	{
 		/*its a receipt  which could have an allocation*/
 		return $link;
 	}
-	elseif ($row["type"] == ST_CUSTPAYMENT && $row['TotalAmount'] < 0)
+	elseif ($row["type"] == ST_CUSTPAYMENT || $row["type"] == ST_CUSTREFUND && $row['TotalAmount'] < 0)
 	{
 		/*its a negative receipt */
 		return '';
@@ -118,7 +118,7 @@ function alloc_link($row)
 function fmt_debit($row)
 {
 	$value =
-	    $row['type']==ST_CUSTCREDIT || $row['type']==ST_CUSTPAYMENT || $row['type']==ST_BANKDEPOSIT ?
+	    $row['type']==ST_CUSTCREDIT || $row['type'] == ST_CUSTPAYMENT || $row['type'] == ST_CUSTREFUND || $row['type']==ST_BANKDEPOSIT ?
 		-$row["TotalAmount"] : $row["TotalAmount"];
 	return $value>=0 ? price_format($value) : '';
 
@@ -127,7 +127,7 @@ function fmt_debit($row)
 function fmt_credit($row)
 {
 	$value =
-	    !($row['type']==ST_CUSTCREDIT || $row['type']==ST_CUSTPAYMENT || $row['type']==ST_BANKDEPOSIT) ?
+	    !($row['type']==ST_CUSTCREDIT || $row['type']==ST_CUSTPAYMENT || $row['type'] == ST_CUSTREFUND || $row['type']==ST_BANKDEPOSIT) ?
 		-$row["TotalAmount"] : $row["TotalAmount"];
 	return $value>0 ? price_format($value) : '';
 }
@@ -170,7 +170,7 @@ function fmt_credit($row)
    		}
    		elseif ($_POST['filterType'] == '3')
    		{
-			$sql .= " AND trans.type = " . ST_CUSTPAYMENT;
+			$sql .= " AND (trans.type = " . ST_CUSTPAYMENT. " OR trans.type = " . ST_CUSTREFUND.")";
    		}
    		elseif ($_POST['filterType'] == '4')
    		{

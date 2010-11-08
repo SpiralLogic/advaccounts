@@ -199,7 +199,7 @@ function print_customer_balances()
 				$rate = $trans['rate'];
 			else
 				$rate = 1.0;
-			if ($trans['type'] == ST_CUSTCREDIT || $trans['type'] == ST_CUSTPAYMENT || $trans['type'] == ST_BANKDEPOSIT)
+			if ($trans['type'] == ST_CUSTCREDIT || $trans['type'] == ST_CUSTPAYMENT || $trans['type'] == ST_CUSTREFUND || $trans['type'] == ST_BANKDEPOSIT)
 				$trans['TotalAmount'] *= -1;
 			if ($trans['TotalAmount'] > 0.0)
 			{

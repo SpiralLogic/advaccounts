@@ -181,7 +181,7 @@ function print_aged_customer_analysis()
         		$rep->TextCol(0, 1, $systypes_array[$trans['type']], -2);
 				$rep->TextCol(1, 2,	$trans['reference'], -2);
 				$rep->DateCol(2, 3, $trans['tran_date'], true, -2);
-				if ($trans['type'] == ST_CUSTCREDIT || $trans['type'] == ST_CUSTPAYMENT || $trans['type'] == ST_BANKDEPOSIT)
+				if ($trans['type'] == ST_CUSTCREDIT || $trans['type'] == ST_CUSTPAYMENT || $trans['type'] == ST_CUSTREFUND || $trans['type'] == ST_BANKDEPOSIT)
 				{
 					$trans['Balance'] *= -1;
 					$trans['Due'] *= -1;

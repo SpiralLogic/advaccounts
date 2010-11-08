@@ -20,8 +20,8 @@ include_once("$path_to_root/reporting/includes/reporting.inc");
 $js = "";
 if ($use_popup_windows)
 	$js .= get_js_open_window(900, 600);
-
-page(_($help_context = "View Customer Payment"), true, false, "", $js);
+$trans_type = $_GET['trans_type'];
+page(_($help_context), true, false, "", $js);
 
 if (isset($_GET["trans_no"]))
 {
@@ -31,11 +31,15 @@ if (isset($_GET["trans_no"]))
 
 
 if (isset($_POST)) {
-FB::info($_POST);
 unset($_POST);
 }
-$receipt = get_customer_trans($trans_id, ST_CUSTPAYMENT);
-display_heading(sprintf(_("Customer Payment #%d"),$trans_id));
+$receipt = get_customer_trans($trans_id, $trans_type);
+if ($trans_type == ST_CUSTPAYMENT) {
+	display_heading(sprintf(_("Customer Payment #%d"), $trans_id));
+} else {
+	display_heading(sprintf(_("Customer Refund #%d"), $trans_id));
+}
+
 
 echo "<br>";
 start_table("$table_style width=80%");
@@ -59,16 +63,16 @@ label_cells(_("Payment Type"),
 label_cells(_("Reference"), $receipt['reference'], "class='tableheader2'", "colspan=4");
 end_form();
 end_row();
-comments_display_row(ST_CUSTPAYMENT, $trans_id);
+comments_display_row($trans_type, $trans_id);
 
 end_table(1);
 
-$voided = is_voided_display(ST_CUSTPAYMENT, $trans_id, _("This customer payment has been voided."));
+$voided = is_voided_display($trans_type, $trans_id, _("This customer payment has been voided."));
 
-if (!$voided)
+if (!$voided && ($trans_type != ST_CUSTREFUND))
 {
 	display_allocations_from(PT_CUSTOMER, $receipt['debtor_no'], ST_CUSTPAYMENT, $trans_id, $receipt['Total']);
 }
-submenu_print(_("&Print This Receipt"), ST_CUSTPAYMENT, $_GET['trans_no'], 'prtopt');
+submenu_print(_("&Print This Receipt"), $trans_type, $_GET['trans_no'], 'prtopt');
 end_page(true);
 ?>

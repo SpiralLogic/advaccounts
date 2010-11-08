@@ -10,18 +10,17 @@
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
   See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
  * ********************************************************************* */
-ini_set('xdebug.collect_vars', '5');
 include_once($path_to_root . "/purchasing/includes/purchasing_db.inc");
 
 // ------------------------------------------------------------------------------
 
 function get_supplier_details_to_order(&$order, $supplier_id) {
-    $sql = "SELECT curr_code,supp_name FROM " . TB_PREF . "suppliers
+    $sql = "SELECT * FROM " . TB_PREF . "suppliers
 		WHERE supplier_id = '$supplier_id'";
     $result = db_query($sql, "The supplier details could not be retreived");
 
-    $myrow = db_fetch($result);
-
+    $myrow = db_fetch_assoc($result);
+	$order->supplier_details = $myrow;
     $order->curr_code = $_POST['curr_code'] = $myrow["curr_code"];
     $order->supplier_name = $_POST['supplier_name'] = $myrow["supp_name"];
     $order->supplier_id = $_POST['supplier_id'] = $supplier_id;
@@ -39,7 +38,7 @@ function create_new_po() {
     //session_register("PO");
 
     $_SESSION['PO'] = new purch_order;
-    FB::info($_SESSION['PO']);
+    
     $_POST['OrderDate'] = new_doc_date();
     if (!is_date_in_fiscalyear($_POST['OrderDate']))
         $_POST['OrderDate'] = end_fiscalyear();
@@ -63,8 +62,9 @@ function display_po_header(&$order) {
         supplier_list_row(_("Supplier:"), 'supplier_id', null, false, true, false, true);
     }
     else {
+	    if (isset($_POST['supplier_id'])) get_supplier_details_to_order($order, $_POST['supplier_id']);;
         hidden('supplier_id', $order->supplier_id);
-        label_row(_("Supplier:"), $order->supplier_name);
+        label_row(_("Supplier:"), $order->supplier_name,'class="label" name="supplier_name"');
     }
 
     if ($order->supplier_id != get_post('supplier_id', -1)) {

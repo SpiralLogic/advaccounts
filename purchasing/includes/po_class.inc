@@ -16,7 +16,7 @@ class purch_order
 {
 
 	var $supplier_id;
-	
+	var $supplier_details;
 	var $line_items; /*array of objects of class line_details using the product id as the pointer */
 	var $curr_code;
 	var $requisition_no;

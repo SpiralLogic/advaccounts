@@ -139,8 +139,8 @@ if (!isset($path_to_root))
 // Prevent register_globals vulnerability
 if (isset($_GET['path_to_root']) || isset($_POST['path_to_root']))
 	die("Restricted access");
-require_once("$path_to_root/includes/ChromePHP.php");
-CP::useFile('/tmp/chromelogs', $path_to_root.'/chromelogs');
+//require_once("$path_to_root/includes/ChromePHP.php");
+//CP::useFile('/tmp/chromelogs', $path_to_root.'/chromelogs');
 
 require_once('FirePHPCore/fb.php');
 require_once("$path_to_root/includes/firephp.php");

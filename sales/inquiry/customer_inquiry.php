@@ -140,7 +140,7 @@ function gl_view($row)
 function fmt_debit($row)
 {
 	$value =
-	    $row['type']==ST_CUSTCREDIT || $row['type']==ST_CUSTPAYMENT || $row['type']==ST_BANKDEPOSIT ?
+	    $row['type']==ST_CUSTCREDIT || $row['type'] == ST_CUSTPAYMENT || $row['type'] == ST_CUSTREFUND || $row['type']==ST_BANKDEPOSIT ?
 		-$row["TotalAmount"] : $row["TotalAmount"];
 	return $value>=0 ? price_format($value) : '';
 
@@ -149,7 +149,7 @@ function fmt_debit($row)
 function fmt_credit($row)
 {
 	$value =
-	    !($row['type']==ST_CUSTCREDIT || $row['type']==ST_CUSTPAYMENT || $row['type']==ST_BANKDEPOSIT) ?
+	    !($row['type']==ST_CUSTCREDIT || $row['type'] == ST_CUSTREFUND || $row['type']==ST_CUSTPAYMENT || $row['type']==ST_BANKDEPOSIT) ?
 		-$row["TotalAmount"] : $row["TotalAmount"];
 	return $value>0 ? price_format($value) : '';
 }
@@ -193,10 +193,10 @@ function edit_link($row)
 
 function prt_link($row)
 {
-  	if ($row['type'] != ST_CUSTPAYMENT && $row['type'] != ST_BANKDEPOSIT) // customer payment or bank deposit printout not defined yet.
+  	if ($row['type'] != ST_CUSTPAYMENT && $row['type'] != ST_CUSTREFUND && $row['type'] != ST_BANKDEPOSIT) // customer payment or bank deposit printout not defined yet.
  		return print_document_link($row['trans_no']."-".$row['type'], _("Print"), true, $row['type'], ICON_PRINT);
  	else	
-		return print_document_link($row['trans_no']."-".$row['type'], _("Print Receipt"), true, ST_CUSTPAYMENT, ICON_PRINT);
+		return print_document_link($row['trans_no']."-".$row['type'], _("Print Receipt"), true, $row['type'], ICON_PRINT);
 }
 
 function check_overdue($row)
@@ -258,8 +258,8 @@ if ($_POST['filterType'] != ALL_TEXT)
    		}
    		elseif ($_POST['filterType'] == '3')
    		{
-			$sql .= " AND (trans.type = " . ST_CUSTPAYMENT 
-					." OR trans.type = ".ST_BANKDEPOSIT.") ";
+			$sql .= " AND (trans.type = " . ST_CUSTPAYMENT . " OR trans.type = " . ST_CUSTREFUND . " OR trans.type = " . ST_BANKDEPOSIT
+					." OR trans.type = " . ST_BANKDEPOSIT .") ";
    		}
    		elseif ($_POST['filterType'] == '4')
    		{
@@ -312,7 +312,7 @@ if ($_POST['filterType'] == ALL_TEXT)
 $table =& new_db_pager('trans_tbl', $sql, $cols);
 $table->set_marker('check_overdue', _("Marked items are overdue."));
 
-$table->width = "85%";
+$table->width = "80%";
 
 display_db_pager($table);
 

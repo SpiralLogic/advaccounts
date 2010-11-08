@@ -180,7 +180,7 @@ if (isset($_POST['Deposit'])) {
     $sql = "INSERT INTO " . TB_PREF . "bank_trans (type, bank_act, amount, ref, trans_date, person_type_id, person_id, undeposited) VALUES (15, 5, $total_amount," . db_escape(implode($ref,
         ',')) . ",'" . date2sql($_POST['deposit_date']) . "', 6, '" . $_SESSION['wa_current_user']->user . "',0)";
     $query = db_query($sql, "Undeposited Cannot be Added");
-    FB::info(db_insert_id());
+    
     $sql = "SELECT LAST_INSERT_ID()";
     $order_no = db_query($sql);
     $order_no = db_fetch_row($order_no);

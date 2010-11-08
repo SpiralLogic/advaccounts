@@ -147,6 +147,7 @@ $security_areas =array(
 	'SA_SALESCREDITINV' => array(SS_SALES|6, _("Sales credit notes against invoice")),
 	'SA_SALESCREDIT' => array(SS_SALES|7, _("Sales freehand credit notes")),
 	'SA_SALESPAYMNT' => array(SS_SALES|8, _("Customer payments entry")),
+	'SA_SALESREFUND' => array(SS_SALES|11, _("Customer refund entry")),
 	'SA_SALESALLOC' => array(SS_SALES|9, _("Customer payments allocation")),
 
 	'SA_SALESANALYTIC' => array(SS_SALES_A|1, _("Sales analytical reports")),
@@ -155,7 +156,8 @@ $security_areas =array(
 	'SA_SALESMANREP' => array(SS_SALES_A|4, _("Sales staff listing")),
 	'SA_CUSTBULKREP' => array(SS_SALES_A|5, _("Customer bulk listing")),
 	'SA_CUSTSTATREP' => array(SS_SALES_A|6, _("Customer status report")),
-	'SA_CUSTPAYMREP' => array(SS_SALES_A|7, _("Customer payments report")),
+	'SA_CUSTPAYMREP' => array(SS_SALES_A | 7, _("Customer payments report")),
+	'SA_CUSTREFUNDREP' => array(SS_SALES_A | 8, _("Customer refund report")),
 
 //
 // Purchase related functions

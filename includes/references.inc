@@ -89,10 +89,12 @@ function is_new_reference(&$ref, $type) {
     if ($db_ref != null) {
         do {
             $sql = "SELECT $db_ref FROM $db_name WHERE $db_ref='$ref'";
+
             if ($db_type != null) {
                 $sql .= " AND $db_type=$type";
             }
             $result = db_query($sql, "could not test for unique reference");
+            FB::info(db_num_rows($result));
         } while (db_num_rows($result) != 0 && ($ref=$Refs->increment($ref)));
 
         return (db_num_rows($result) == 0);

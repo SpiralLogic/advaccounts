@@ -20,20 +20,20 @@ function page_footer($no_menu=false, $is_index=false, $hide_back_link=false)
 	$edits = "editors = ".$Ajax->php2js($Editors).";";
 	$Ajax->addScript('editors', $edits);
 
-	echo "<script>
+	echo "<script language=\"javascript\"  type=\"text/javascript\">
 		_focus = '" . get_post('_focus') . "';
 		_validate = " . $Ajax->php2js($Validate).";
 		var $edits
 	</script>";
 
    	add_user_js_data();
-	echo "\n<script type=\"text/javascript\"><!--\n";
+	echo "\n<script language=\"javascript\"  type=\"text/javascript\"><!--\n";
 
 	foreach($js_lib as $text)
 	  	echo $text;
 	echo "\n--></script>\n";
     echo "</body></html>\n";
-    CP::log($_SESSION);
+    //CP::log($_SESSION);
 }
 
 ?>

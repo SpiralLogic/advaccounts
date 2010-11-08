@@ -49,7 +49,7 @@ $this->Line($iline7);
 $this->LineTo($this->leftMargin, $iline2, $this->leftMargin, $iline4);
 $col = $this->leftMargin;
 for ($i = 0; $i < 5; $i++) {
-    $this->LineTo($col += $width, $iline2, $col, $iline4);
+	$this->LineTo($col += $width, $iline2, $col, $iline4);
 }
 $this->LineTo($right, $iline2, $right, $iline4);
 $this->LineTo($this->leftMargin, $iline5, $this->leftMargin, $iline7);
@@ -58,14 +58,14 @@ $this->LineTo($right, $iline5, $right, $iline7);
 
 $this->NewLine();
 if ($this->company['coy_logo'] != '') {
-    $logo = $comp_path . '/' . user_company() . "/images/" . $this->company['coy_logo'];
-    $this->AddImage($logo, $ccol, $this->row, 0, 40);
+	$logo = $comp_path . '/' . user_company() . "/images/" . $this->company['coy_logo'];
+	$this->AddImage($logo, $ccol, $this->row, 0, 40);
 } else {
-    $this->fontSize += 4;
-    $this->Font('bold');
-    $this->Text($ccol, $this->company['coy_name'], $icol);
-    $this->Font();
-    $this->fontSize -= 4;
+	$this->fontSize += 4;
+	$this->Font('bold');
+	$this->Text($ccol, $this->company['coy_name'], $icol);
+	$this->Font();
+	$this->fontSize -= 4;
 }
 //$this->SetTextColor(190, 190, 190);
 $this->fontSize += 10;
@@ -82,99 +82,118 @@ $this->NewLine();
 #  __ADVANCEDEDIT__ END #
 $this->Font('italic');
 if ($doctype == ST_STATEMENT) {
-    $customer_branch_details = get_main_branch($myrow['debtor_no']);
+	$customer_branch_details = get_main_branch($myrow['debtor_no']);
 }
 if ($this->company['phone'] != "") {
-    $this->Text($ccol, _("Phone"), $c2col);
-    $this->Text($c2col, $this->company['phone'], $mcol);
-    $this->NewLine();
+	$this->Text($ccol, _("Phone"), $c2col);
+	$this->Text($c2col, $this->company['phone'], $mcol);
+	$this->NewLine();
 }
-if ($this->company['fax'] != "" ) {
-    $this->Text($ccol, _("Fax"), $c2col);
-    $this->Text($c2col, $this->company['fax'], $mcol);
-    $this->NewLine();
+if ($this->company['fax'] != "") {
+	$this->Text($ccol, _("Fax"), $c2col);
+	$this->Text($c2col, $this->company['fax'], $mcol);
+	$this->NewLine();
 }
 if ($this->company['email'] != "") {
-    $this->Text($ccol, _("Email"), $c2col);
+	$this->Text($ccol, _("Email"), $c2col);
 
-    $url = "mailto:" . $this->company['email'];
-    $this->SetTextColor(0, 0, 255);
-    $this->Text($c2col, $this->company['email'], $mcol);
-    $this->SetTextColor(0, 0, 0);
-    $this->addLink($url, $c2col, $this->row, $mcol, $this->row + $this->lineHeight);
+	$url = "mailto:" . $this->company['email'];
+	$this->SetTextColor(0, 0, 255);
+	$this->Text($c2col, $this->company['email'], $mcol);
+	$this->SetTextColor(0, 0, 0);
+	$this->addLink($url, $c2col, $this->row, $mcol, $this->row + $this->lineHeight);
 
-    $this->NewLine();
+	$this->NewLine();
 }
 if ($this->company['gst_no'] != "") {
-    $this->Text($ccol, $doc_Our_VAT_no, $c2col);
-    $this->Text($c2col, $this->company['gst_no'], $mcol);
-    $this->NewLine();
+	$this->Text($ccol, $doc_Our_VAT_no, $c2col);
+	$this->Text($c2col, $this->company['gst_no'], $mcol);
+	$this->NewLine();
 }
 if (($doctype == ST_SALESINVOICE || $doctype == ST_STATEMENT) && $this->company['domicile'] != "") {
-    $this->Text($ccol, $doc_Domicile, $c2col);
-    $this->Text($c2col, $this->company['domicile'], $mcol);
-    $this->NewLine();
+	$this->Text($ccol, $doc_Domicile, $c2col);
+	$this->Text($c2col, $this->company['domicile'], $mcol);
+	$this->NewLine();
 }
 $this->Font();
 $this->row = $adrline;
 $this->NewLine(3);
 $this->Text($mcol + 100, $doc_Date);
-if ($doctype == ST_SALESQUOTE || $doctype == ST_PURCHORDER || $doctype == ST_SALESORDER)
-    $this->Text($mcol + 180, sql2date($myrow['ord_date']));
-elseif ($doctype == ST_WORKORDER)
-    $this->Text($mcol + 180, sql2date($myrow['date_']));
-else $this->Text($mcol + 180, sql2date($myrow['tran_date']));
+if ($doctype == ST_SALESQUOTE || $doctype == ST_PURCHORDER || $doctype == ST_SALESORDER) {
+	$this->Text($mcol + 180, sql2date($myrow['ord_date']));
+} elseif ($doctype == ST_WORKORDER) {
+	$this->Text($mcol + 180, sql2date($myrow['date_']));
+} else {
+	$this->Text($mcol + 180, sql2date($myrow['tran_date']));
+}
 $this->NewLine();
 $this->Text($mcol + 100, $doc_Invoice_no);
 if ($doctype == ST_SALESQUOTE || $doctype == ST_PURCHORDER || $doctype == ST_SALESORDER) { // QUOTE, PO or SO
-    if ($print_invoice_no == 1)
-        $this->Text($mcol + 180, $myrow['order_no']);
-    else $this->Text($mcol + 180, $myrow['reference']);
+	if ($print_invoice_no == 1) {
+		$this->Text($mcol + 180, $myrow['order_no']);
+	} else {
+		$this->Text($mcol + 180, $myrow['reference']);
+	}
 }
 
 if ($doctype == ST_SALESQUOTE || $doctype == ST_PURCHORDER || $doctype == ST_SALESORDER) { // QUOTE, PO or SO
-    if ($print_invoice_no == 1)
-        $this->Text($mcol + 180, $myrow['order_no']);
-    else $this->Text($mcol + 180, $myrow['reference']);
+	if ($print_invoice_no == 1) {
+		$this->Text($mcol + 180, $myrow['order_no']);
+	} else {
+		$this->Text($mcol + 180, $myrow['reference']);
+	}
 }
 
-elseif ($doctype == ST_WORKORDER) $this->Text($mcol + 180, $myrow['id']);
-else if (isset($myrow['trans_no']) && isset($myrow['reference'])) { // INV/CRE/STA
-    if ($print_invoice_no == 1)
-        $this->Text($mcol + 180, $myrow['trans_no']);
-    else $this->Text($mcol + 180, $myrow['reference']);
+elseif ($doctype == ST_WORKORDER) {
+	$this->Text($mcol + 180, $myrow['id']);
+} else {
+	if (isset($myrow['trans_no']) && isset($myrow['reference'])) { // INV/CRE/STA
+		if ($print_invoice_no == 1) {
+			$this->Text($mcol + 180, $myrow['trans_no']);
+		} else {
+			$this->Text($mcol + 180, $myrow['reference']);
+		}
+	}
 }
 if ($doctype != ST_STATEMENT) {
-    $this->NewLine();
-    $this->Text($mcol + 100, _('Salesperson:'));
-$id = $myrow['salesman'];
-$sql = "SELECT salesman_name  FROM " . TB_PREF . "salesman WHERE salesman_code='$id'";
-$result = db_query($sql, "could not get sales person");
-$row = db_fetch($result);
-    if (!isset($_SESSION["wa_current_user"]) || empty($row['salesman_name'])) {
-        $_SESSION["wa_current_user"] = new current_user();
-    }
-    if (empty($row['salesman_name'])) {
-    $user = $_SESSION["wa_current_user"]->name;
-    } else {
-        $user = $row['salesman_name'];
-    }
+	$this->NewLine();
+	$this->Text($mcol + 100, _('Salesperson:'));
+	if ($doctype==ST_SALESINVOICE) {
+		$id = $sales_order['salesman'];
+	} else {
+		$id = $myrow['salesman'];	
+	}
 
-//$sql = "SELECT salesman_name  FROM " . TB_PREF . "sales_order WHERE salesman_code='$id'";
-//$result = db_query($sql, "could not get sales person");
-//$row = db_fetch($result);
-    $this->Text($mcol + 180, $user);
-    //$this->TextWrap($col, $this->row, $width, $row['salesman_name'], 'C');
-    //$this->TextWrap($col, $this->row, $width, $_SESSION['wa_current_user'], 'C');
+	$sql = "SELECT salesman_name  FROM " . TB_PREF . "salesman WHERE salesman_code='$id'";
+	$result = db_query($sql, "could not get sales person");
+	$row = db_fetch($result);
+	if (!isset($_SESSION["wa_current_user"]) || empty($row['salesman_name'])) {
+		$_SESSION["wa_current_user"] = new current_user();
+	}
+	if (empty($row['salesman_name'])) {
+		$user = $_SESSION["wa_current_user"]->name;
+	} else {
+		$user = $row['salesman_name'];
+	}
+
+	//$sql = "SELECT salesman_name  FROM " . TB_PREF . "sales_order WHERE salesman_code='$id'";
+	//$result = db_query($sql, "could not get sales person");
+	//$row = db_fetch($result);
+	$this->Text($mcol + 180, $user);
+	//$this->TextWrap($col, $this->row, $width, $row['salesman_name'], 'C');
+	//$this->TextWrap($col, $this->row, $width, $_SESSION['wa_current_user'], 'C');
 }
-if ($this->pageNumber > 1 && !strstr($this->filename, "Bulk"))
-    $this->Text($this->endLine - 35, _("Page") . ' ' . $this->pageNumber);
+if ($this->pageNumber > 1 && !strstr($this->filename, "Bulk")) {
+	$this->Text($this->endLine - 35, _("Page") . ' ' . $this->pageNumber);
+}
 $this->row = $iline1 - $this->lineHeight;
 #  __ADVANCEDEDIT__ BEGIN # increase font size on order to: and delvier to:
 //		$this->fontSize -= 4;
 $this->Font('bold');
 $this->Text($ccol, $doc_Charge_To . ':', $icol);
-if ($doctype != ST_STATEMENT) $this->Text($mcol, $doc_Delivered_To . ':');
+if ($doctype != ST_STATEMENT) {
+	$this->Text($mcol, $doc_Delivered_To . ':');
+}
 $this->Font('');
 //		$this->fontSize += 4;
 
@@ -182,30 +201,31 @@ $this->row = $this->row - $this->lineHeight - 5;
 
 $temp = $this->row;
 $name = $myrow['DebtorName'];
-   $addr =  (trim($branch['br_address']) != '') ? $branch['br_address'] : $addr = $myrow['address'];
+$addr = (trim($branch['br_address']) != '') ? $branch['br_address'] : $addr = $myrow['address'];
 if ($doctype == ST_SALESQUOTE || $doctype == ST_SALESORDER) {
-$name = $myrow['name'];
+	$name = $myrow['name'];
 } elseif ($doctype == ST_WORKORDER) {
-    $name = $myrow['location_name'];
-    $addr = $myrow['delivery_address'];
+	$name = $myrow['location_name'];
+	$addr = $myrow['delivery_address'];
 } elseif ($doctype == ST_PURCHORDER || $doctype == ST_SUPPAYMENT) {
-    $name = $myrow['supp_name'];
-    $addr = $myrow['address'];
+	$name = $myrow['supp_name'];
+	$addr = $myrow['address'];
 }
 
-    $this->Text($ccol, $name, $icol);
-    $this->NewLine();
-    $this->TextWrapLines($ccol, $icol - $ccol, $addr);
+$this->Text($ccol, $name, $icol);
+$this->NewLine();
+$this->TextWrapLines($ccol, $icol - $ccol, $addr);
 
 if ($sales_order != NULL) {
-    $this->row = $temp;
-    if ($doctype != ST_SUPPAYMENT && $doctype != ST_STATEMENT && isset($sales_order['deliver_to'])) {
-        $this->Text($mcol, $sales_order['deliver_to']);
-        $this->NewLine();
-    }
-    // if you need the company name in purchase order then write it as first line in location addresss.
-    if ($doctype != ST_SUPPAYMENT && isset($sales_order['delivery_address']))
-        $this->TextWrapLines($mcol, $this->rightMargin - $mcol, $sales_order['delivery_address']);
+	$this->row = $temp;
+	if ($doctype != ST_SUPPAYMENT && $doctype != ST_STATEMENT && isset($sales_order['deliver_to'])) {
+		$this->Text($mcol, $sales_order['deliver_to']);
+		$this->NewLine();
+	}
+	// if you need the company name in purchase order then write it as first line in location addresss.
+	if ($doctype != ST_SUPPAYMENT && isset($sales_order['delivery_address'])) {
+		$this->TextWrapLines($mcol, $this->rightMargin - $mcol, $sales_order['delivery_address']);
+	}
 }
 $this->row = $iline2 - $this->lineHeight - 1;
 $col = $this->leftMargin;
@@ -220,56 +240,56 @@ $col += $width;
 $this->TextWrap($col, $this->row, $width, $doc_Due_Date, 'C');
 $this->row = $iline3 - $this->lineHeight - 1;
 $col = $this->leftMargin;
-if ($doctype == ST_PURCHORDER || $doctype == ST_SUPPAYMENT)
-    $this->TextWrap($col, $this->row, $width, $myrow['supp_account_no'], 'C');
-elseif ($doctype == ST_WORKORDER)
-    $this->TextWrap($col, $this->row, $width, $myrow['wo_ref'], 'C');
-elseif (isset($sales_order["customer_ref"]))
-    $this->TextWrap($col, $this->row, $width, $sales_order["customer_ref"], 'C');
-elseif (isset($myrow["debtor_ref"]))
-    $this->TextWrap($col, $this->row, $width, $myrow["debtor_ref"], 'C');
+if ($doctype == ST_PURCHORDER || $doctype == ST_SUPPAYMENT) {
+	$this->TextWrap($col, $this->row, $width, $myrow['supp_account_no'], 'C');
+} elseif ($doctype == ST_WORKORDER) {
+	$this->TextWrap($col, $this->row, $width, $myrow['wo_ref'], 'C');
+} elseif (isset($sales_order["customer_ref"])) {
+	$this->TextWrap($col, $this->row, $width, $sales_order["customer_ref"], 'C');
+} elseif (isset($myrow["debtor_ref"])) {
+	$this->TextWrap($col, $this->row, $width, $myrow["debtor_ref"], 'C');
+}
 $col += $width;
 #  __ADVANCEDEDIT__ BEGIN # skip one column for PO and display current user not branch salesman
 //if ($branch != null && $doctype != ST_PURCHORDER)
 $report_contact = (!empty($myrow['contact_name'])) ? $myrow['contact_name'] : $branch['contact_name'];
 if ($doctype == ST_PURCHORDER) {
 
-    $id = $branch['salesman'];
-    $sql = "SELECT salesman_name  FROM " . TB_PREF . "salesman WHERE salesman_code='$id'";
-    $result = db_query($sql, "could not get sales person");
-    $row = db_fetch($result);
-    $this->TextWrap($col, $this->row, $width, $row['salesman_name'], 'C');
-    $this->TextWrap($col, $this->row, $width, $_SESSION['wa_current_user'], 'C');
-}
-    #  __ADVANCEDEDIT__ END #
-elseif ($doctype == ST_SUPPAYMENT || $doctype == ST_CUSTPAYMENT)
-    $this->TextWrap($col, $this->row, $width, $systypes_array[$myrow["type"]], 'C');
-elseif ($doctype == ST_WORKORDER)
-    $this->TextWrap($col, $this->row, $width, $wo_types_array[$myrow["type"]], 'C');
-elseif ($doctype == ST_SALESORDER || $doctype == ST_SALESQUOTE || $doctype == ST_SALESINVOICE) {
+	$id = $branch['salesman'];
+	$sql = "SELECT salesman_name  FROM " . TB_PREF . "salesman WHERE salesman_code='$id'";
+	$result = db_query($sql, "could not get sales person");
+	$row = db_fetch($result);
+	$this->TextWrap($col, $this->row, $width, $row['salesman_name'], 'C');
+	$this->TextWrap($col, $this->row, $width, $_SESSION['wa_current_user'], 'C');
+} #  __ADVANCEDEDIT__ END #
+elseif ($doctype == ST_SUPPAYMENT || $doctype == ST_CUSTPAYMENT || $doctype == ST_CUSTREFUND) {
+	$this->TextWrap($col, $this->row, $width, $systypes_array[$myrow["type"]], 'C');
+} elseif ($doctype == ST_WORKORDER) {
+	$this->TextWrap($col, $this->row, $width, $wo_types_array[$myrow["type"]], 'C');
+} elseif ($doctype == ST_SALESORDER || $doctype == ST_SALESQUOTE || $doctype == ST_SALESINVOICE) {
 
 
-    $this->TextWrap($col, $this->row, $width, $report_contact, 'C');
+	$this->TextWrap($col, $this->row, $width, $report_contact, 'C');
 }
 $col += $width;
 $report_phone = (!empty($branch['phone'])) ? $branch['phone'] : $myrow['phone'];
 if ($doctype == ST_WORKORDER) {
-    $this->TextWrap($col, $this->row, $width, $myrow["StockItemName"], 'C');
-    //elseif (isset($myrow['tax_id']))
-    //   $this->TextWrap($col, $this->row, $width, $myrow['tax_id'], 'C');
-    #  __ADVANCEDEDIT__ BEGIN # add supplier phone to PO
+	$this->TextWrap($col, $this->row, $width, $myrow["StockItemName"], 'C');
+	//elseif (isset($myrow['tax_id']))
+	//   $this->TextWrap($col, $this->row, $width, $myrow['tax_id'], 'C');
+	#  __ADVANCEDEDIT__ BEGIN # add supplier phone to PO
 } elseif ($doctype == ST_PURCHORDER) {
-    $this->TextWrap($col, $this->row, $width, $report_phone, 'C');
-    #  __ADVANCEDEDIT__ END # }
+	$this->TextWrap($col, $this->row, $width, $report_phone, 'C');
+	#  __ADVANCEDEDIT__ END # }
 } elseif ($doctype == ST_SALESORDER || $doctype == ST_SALESQUOTE || $doctype == ST_SALESINVOICE) {
-    $this->TextWrap($col, $this->row, $width, $report_phone, 'C');
+	$this->TextWrap($col, $this->row, $width, $report_phone, 'C');
 } elseif ($doctype == ST_STATEMENT) {
-    $this->TextWrap($col, $this->row, $width, $report_phone, 'C');
+	$this->TextWrap($col, $this->row, $width, $report_phone, 'C');
 } else {
-    $this->TextWrap($col, $this->row, $width, $report_phone, 'C');
+	$this->TextWrap($col, $this->row, $width, $report_phone, 'C');
 }
 #  __ADVANCEDEDIT__ END #
- 
+
 $col += $width;
 /*if ($doctype == ST_SALESINVOICE) {
     $deliveries = get_parent_trans(ST_SALESINVOICE, $myrow['trans_no']);
@@ -286,71 +306,75 @@ $col += $width;
 }
 else*/
 if ($doctype == ST_CUSTDELIVERY) {
-    $ref = $myrow['order_'];
-    if ($print_invoice_no == 0) {
-        $ref = get_reference(ST_SALESORDER, $myrow['order_']);
-        if (!$ref) $ref = $myrow['order_'];
-    }
-    $this->TextWrap($col, $this->row, $width, $ref, 'C');
+	$ref = $myrow['order_'];
+	if ($print_invoice_no == 0) {
+		$ref = get_reference(ST_SALESORDER, $myrow['order_']);
+		if (!$ref) {
+			$ref = $myrow['order_'];
+		}
+	}
+	$this->TextWrap($col, $this->row, $width, $ref, 'C');
+} elseif ($doctype == ST_WORKORDER) {
+	$this->TextWrap($col, $this->row, $width, $myrow["location_name"], 'C');
+} elseif ($doctype == ST_STATEMENT || $doctype == ST_SALESQUOTE || $doctype == ST_SALESORDER || $doctype == ST_SALESINVOICE) {
+	if (!empty($branch['fax'])) {
+		$this->TextWrap($col, $this->row, $width, $branch['fax'], 'C');
+	} else {
+		$this->TextWrap($col, $this->row, $width, $myrow['fax'], 'C');
+	}
+} elseif (isset($myrow['order_']) && $myrow['order_'] != 0) {
+	$this->TextWrap($col, $this->row, $width, $myrow['order_'], 'C');
+} #  __ADVANCEDEDIT__ BEGIN # add supplier fax to PO
+elseif ($doctype == ST_PURCHORDER) {
+	$this->TextWrap($col, $this->row, $width, $myrow["fax"], 'C');
 }
-elseif ($doctype == ST_WORKORDER)
-    $this->TextWrap($col, $this->row, $width, $myrow["location_name"], 'C');
-elseif ($doctype == ST_STATEMENT || $doctype == ST_SALESQUOTE || $doctype == ST_SALESORDER || $doctype == ST_SALESINVOICE) {
-    if (!empty($branch['fax'])) { $this->TextWrap($col, $this->row, $width, $branch['fax'], 'C'); } else {
-      $this->TextWrap($col, $this->row, $width, $myrow['fax'], 'C');
-    }
-}
-elseif (isset($myrow['order_']) && $myrow['order_'] != 0)
-    $this->TextWrap($col, $this->row, $width, $myrow['order_'], 'C');
-    #  __ADVANCEDEDIT__ BEGIN # add supplier fax to PO
-elseif ($doctype == ST_PURCHORDER)
-    $this->TextWrap($col, $this->row, $width, $myrow["fax"], 'C');
 
 #  __ADVANCEDEDIT__ END #
 $col += $width;
-if ($doctype == ST_SALESORDER || $doctype == ST_SALESQUOTE)
-    $this->TextWrap($col, $this->row, $width, sql2date($myrow['delivery_date']), 'C');
-elseif ($doctype == ST_WORKORDER)
-    $this->TextWrap($col, $this->row, $width, $myrow["units_issued"], 'C');
-elseif ($doctype != ST_PURCHORDER && $doctype != ST_CUSTCREDIT && $doctype != ST_CUSTPAYMENT &&
-        $doctype != ST_SUPPAYMENT && isset($myrow['due_date']))
-    $this->TextWrap($col, $this->row, $width, sql2date($myrow['due_date']), 'C');
+if ($doctype == ST_SALESORDER || $doctype == ST_SALESQUOTE) {
+	$this->TextWrap($col, $this->row, $width, sql2date($myrow['delivery_date']), 'C');
+} elseif ($doctype == ST_WORKORDER) {
+	$this->TextWrap($col, $this->row, $width, $myrow["units_issued"], 'C');
+} elseif ($doctype != ST_PURCHORDER && $doctype != ST_CUSTCREDIT && $doctype != ST_CUSTPAYMENT && $doctype != ST_CUSTREFUND && $doctype != ST_SUPPAYMENT && isset
+($myrow['due_date'])) {
+	$this->TextWrap($col, $this->row, $width, sql2date($myrow['due_date']), 'C');
+}
 #  __ADVANCEDEDIT__ BEGIN # remove payment terms from purchase order
 if ($doctype == ST_STATEMENT) {
 
-    //var_dump($customer_branch_details['fax']);
-    $this->NewLine();
-    $this->NewLine();
-    $this->TextWrap($ccol, $this->row, $right - $ccol, "Email:  " . $customer_branch_details['email']);
+	//var_dump($customer_branch_details['fax']);
+	$this->NewLine();
+	$this->NewLine();
+	$this->TextWrap($ccol, $this->row, $right - $ccol, "Email:  " . $customer_branch_details['email']);
 }
 if ((!isset($packing_slip) || $packing_slip == 0) && $doctype != ST_PURCHORDER && $doctype != ST_CUSTDELIVERY) {
-    #  __ADVANCEDEDIT__ END #
+	#  __ADVANCEDEDIT__ END #
 
 
-    if ($doctype == ST_STATEMENT) {
-        $this->NewLine();
-    } else {
-        $this->row -= (2 * $this->lineHeight);
-    }
+	if ($doctype == ST_STATEMENT) {
+		$this->NewLine();
+	} else {
+		$this->row -= (2 * $this->lineHeight);
+	}
 
-    if ($doctype == ST_WORKORDER) $str = sql2date($myrow["required_by"]);
-    else {
-        $id = $myrow['payment_terms'];
-        $sql = "SELECT terms FROM " . TB_PREF . "payment_terms WHERE terms_indicator='$id'";
-        $result = db_query($sql, "could not get paymentterms");
-        $row = db_fetch($result);
-        $str = $row["terms"];
-    }
-    $this->Font('italic');
-    $this->TextWrap($ccol, $this->row, $right - $ccol, $doc_Payment_Terms . ":  " . $str);
-    $this->Font();
+	if ($doctype == ST_WORKORDER) {
+		$str = sql2date($myrow["required_by"]);
+	} else {
+		$id = $myrow['payment_terms'];
+		$sql = "SELECT terms FROM " . TB_PREF . "payment_terms WHERE terms_indicator='$id'";
+		$result = db_query($sql, "could not get paymentterms");
+		$row = db_fetch($result);
+		$str = $row["terms"];
+	}
+	$this->Font('italic');
+	$this->TextWrap($ccol, $this->row, $right - $ccol, $doc_Payment_Terms . ":  " . $str);
+	$this->Font();
 }
 $this->row = $iline5 - $this->lineHeight - 1;
 $this->Font('bold');
 $count = count($this->headers);
 $this->cols[$count] = $right - 3;
-for ($i = 0; $i < $count; $i++)
-    $this->TextCol($i, $i + 1, $this->headers[$i], -2);
+for ($i = 0; $i < $count; $i++) $this->TextCol($i, $i + 1, $this->headers[$i], -2);
 
 
 $this->Font();
@@ -362,51 +386,54 @@ $this->row -= $this->lineHeight;
 #  __ADVANCEDEDIT__ BEGIN # remove bank details from purchaseo order
 
 if ($doctype == ST_STATEMENT) {
-    $this->Font();
+	$this->Font();
 
-    $this->Font('bold');
-    $this->TextWrap($ccol, $this->row, $right - $ccol, _("IMPORTANT PLEASE PASS THIS ON TO YOUR ACCOUNTS DEPARTMENT ASAP"), 'C');
-    $this->row -= $this->lineHeight;
-    $this->row -= $this->lineHeight;
+	$this->Font('bold');
+	$this->TextWrap($ccol, $this->row, $right - $ccol, _("IMPORTANT PLEASE PASS THIS ON TO YOUR ACCOUNTS DEPARTMENT ASAP"), 'C');
+	$this->row -= $this->lineHeight;
+	$this->row -= $this->lineHeight;
 }
 $this->Font();
 $this->Font('italic');
-if (isset($bankaccount['bank_name']) && $doctype != ST_PURCHORDER && $doctype != ST_SALESQUOTE && $doctype != ST_CUSTPAYMENT) {
-    $txt = $doc_Bank . ": " . $bankaccount['bank_name'] . " " . $doc_Bank_Account . ": " . $bankaccount['bank_account_number'];
-    $this->TextWrap($ccol, $this->row, $right - $ccol, $txt, 'C');
-    $this->row -= $this->lineHeight;
+if (isset($bankaccount['bank_name']) && $doctype != ST_PURCHORDER && $doctype != ST_CUSTPAYMENT && $doctype != ST_CUSTREFUND) {
+	$txt = "If you do not have an account, our terms are Pre payments only. All accounts are 30 days Cash, cheque, Visa, MasterCard, or Direct deposit";
+	$this->TextWrap($ccol, $this->row, $right - $ccol, $txt, 'C');
+	$this->row -= $this->lineHeight;
+	$txt = $doc_Bank . ": " . $bankaccount['bank_name'] . " " . $doc_Bank_Account . ": " . 			$bankaccount['bank_account_number'];
+	$this->TextWrap($ccol, $this->row, $right - $ccol, $txt, 'C');
+	$this->row -= $this->lineHeight;
 }
 
 if ($doctype == ST_SALESINVOICE && $branch['disable_branch'] > 0) { // payment links
-    if ($branch['disable_branch'] == 1) {
-        $amt = number_format($myrow["ov_freight"] + $myrow["ov_gst"] + $myrow["ov_amount"], user_price_dec());
-        $txt = $doc_Payment_Link . " PayPal: ";
-        $name = urlencode($this->title . " " . $myrow['reference']);
-        $url = "https://www.paypal.com/xclick/business=" . $this->company['email'] . "&item_name=" .
-                $name . "&amount=" . $amt . "&currency_code=" . $myrow['curr_code'];
-        $this->fontSize -= 2;
-        $this->TextWrap($ccol, $this->row, $right - $ccol, $txt, 'C');
-        $this->row -= $this->lineHeight;
-        $this->SetTextColor(0, 0, 255);
-        $this->TextWrap($ccol, $this->row, $right - $ccol, $url, 'C');
-        $this->SetTextColor(0, 0, 0);
-        $this->addLink($url, $ccol, $this->row, $this->pageWidth - $this->rightMargin, $this->row + $this->lineHeight);
-        $this->fontSize += 2;
-        $this->row -= $this->lineHeight;
-    }
+	if ($branch['disable_branch'] == 1) {
+		$amt = number_format($myrow["ov_freight"] + $myrow["ov_gst"] + $myrow["ov_amount"], user_price_dec());
+		$txt = $doc_Payment_Link . " PayPal: ";
+		$name = urlencode($this->title . " " . $myrow['reference']);
+		$url = "https://www.paypal.com/xclick/business=" . $this->company['email'] . "&item_name=" . $name . "&amount=" . $amt . "&currency_code=" . $myrow['curr_code'];
+		$this->fontSize -= 2;
+		$this->TextWrap($ccol, $this->row, $right - $ccol, $txt, 'C');
+		$this->row -= $this->lineHeight;
+		$this->SetTextColor(0, 0, 255);
+		$this->TextWrap($ccol, $this->row, $right - $ccol, $url, 'C');
+		$this->SetTextColor(0, 0, 0);
+		$this->addLink($url, $ccol, $this->row, $this->pageWidth - $this->rightMargin, $this->row + $this->lineHeight);
+		$this->fontSize += 2;
+		$this->row -= $this->lineHeight;
+	}
 }
 if ($doc_Extra != "") {
-    $this->TextWrap($ccol, $this->row, $right - $ccol, $doc_Extra, 'C');
-    $this->row -= $this->lineHeight;
+	$this->TextWrap($ccol, $this->row, $right - $ccol, $doc_Extra, 'C');
+	$this->row -= $this->lineHeight;
 }
 if ($this->params['comments'] != '') {
-    $this->TextWrap($ccol, $this->row, $right - $ccol, $this->params['comments'], 'C');
-    $this->row -= $this->lineHeight;
+	$this->TextWrap($ccol, $this->row, $right - $ccol, $this->params['comments'], 'C');
+	$this->row -= $this->lineHeight;
 }
 #  __ADVANCEDEDIT__ BEGIN # added legal_text to quotations and orders and payments and receipts
-if (($doctype == ST_SALESINVOICE || $doctype == ST_STATEMENT || $doctype == ST_SALESQUOTE || $doctype == ST_SALESORDER) && $this->company['legal_text'] != "" || $doctype == ST_CUSTDELIVERY || $doctype == ST_CUSTPAYMENT) {
-    #  __ADVANCEDEDIT__ END #
-    $this->TextWrapLines($ccol, $right - $ccol, $this->company['legal_text'], 'C');
+if (($doctype == ST_SALESINVOICE || $doctype == ST_STATEMENT || $doctype == ST_SALESQUOTE || $doctype == ST_SALESORDER) && $this->company['legal_text'] != "" || $doctype ==
+		ST_CUSTDELIVERY || $doctype == ST_CUSTPAYMENT || $doctype == ST_CUSTREFUND) {
+	#  __ADVANCEDEDIT__ END #
+	$this->TextWrapLines($ccol, $right - $ccol, $this->company['legal_text'], 'C');
 }
 $this->Font();
 $temp = $iline6 - $this->lineHeight - 2;

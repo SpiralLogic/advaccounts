@@ -10,7 +10,7 @@
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
   See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
  * ********************************************************************* */
-$page_security = 'SA_SALESPAYMNT';
+$page_security = 'SA_SALESREFUND';
 $path_to_root = "..";
 include_once($path_to_root . "/includes/ui/allocation_cart.inc");
 include_once($path_to_root . "/includes/session.inc");
@@ -63,13 +63,13 @@ if (isset($_GET['AddedID'])) {
 
     display_notification_centered(_("The customer refund has been successfully entered."));
 
-    submenu_print(_("&Print This Receipt"), ST_CUSTPAYMENT, $refund_id . "-" . ST_CUSTPAYMENT, 'prtopt');
+    submenu_print(_("&Print This Receipt"), ST_CUSTREFUND, $refund_id . "-" . ST_CUSTREFUND, 'prtopt');
     hyperlink_no_params($path_to_root . "/sales/inquiry/customer_inquiry.php", _("Show Invoices"));
 
 
-    display_note(get_gl_view_str(ST_CUSTPAYMENT, $refund_id, _("&View the GL Journal Entries for this Customer Refund")));
+    display_note(get_gl_view_str(ST_CUSTREFUND, $refund_id, _("&View the GL Journal Entries for this Customer Refund")));
 
-//	hyperlink_params($path_to_root . "/sales/allocations/customer_allocate.php", _("&Allocate this Customer Payment"), "trans_no=$refund_no&trans_type=12");
+
 
 
 
@@ -109,7 +109,7 @@ function can_process() {
         return false;
     }
 
-    if (!is_new_reference($_POST['ref'], ST_CUSTPAYMENT)) {
+    if (!is_new_reference($_POST['ref'], ST_CUSTREFUND)) {
         display_error(_("The entered reference is already in use."));
         set_focus('ref');
         return false;
@@ -202,7 +202,7 @@ if (isset($_POST['AddRefundItem'])) {
 
     new_doc_date($_POST['DateBanked']);
 
-    $refund_id = write_customer_payment(0, $_POST['customer_id'], $_POST['BranchID'],
+    $refund_id = write_customer_refund(0, $_POST['customer_id'], $_POST['BranchID'],
         $_POST['bank_account'], $_POST['DateBanked'], $_POST['ref'],
         input_num('amount'), input_num('discount'), $_POST['memo_'], $rate, input_num('charge'));
 
@@ -242,7 +242,7 @@ table_section(1);
 customer_list_row(_("From Customer:"), 'customer_id', null, false, true);
 if (!isset($_POST['bank_account'])) // first page call
 {
-    $_SESSION['alloc'] = new allocation(ST_CUSTPAYMENT, 0);
+    $_SESSION['alloc'] = new allocation(ST_CUSTREFUND, 0);
 }
 
 if (db_customer_has_branches($_POST['customer_id'])) {
@@ -295,7 +295,7 @@ if (isset($_POST['HoldAccount']) && $_POST['HoldAccount'] != 0) {
 
     br();
 
-    submit_center('AddRefundItem', _("Add Payment"), true, '', 'default');
+    submit_center('AddRefundItem', _("Add Refund"), true, '', 'default');
 }
 
 br();

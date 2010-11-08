@@ -20,7 +20,12 @@ function get_global_supplier($return_all=true)
 {
 	if (!isset($_SESSION['wa_global_supplier_id']) || 
 		($return_all == false && $_SESSION['wa_global_supplier_id'] == ALL_TEXT))
-		return "";	
+	{
+
+		return "";
+
+	}
+
 	return $_SESSION['wa_global_supplier_id'];
 }
 

@@ -23,7 +23,7 @@ protected $has_header = true;
 
     function menu_header($title, $no_menu, $is_index) {
         global $path_to_root, $help_base_url, $db_connections, $app_title, $version;
-
+get_jqueryui();
         $sel_app = $_SESSION['sel_app'];
         echo "<div id='content'>\n";
         if (!$no_menu) {
@@ -84,17 +84,16 @@ protected $has_header = true;
 
         echo "</div>\n";
         echo "</div>\n";
-/*        if ($_SESSION['wa_current_user']->username == 'admin') {
-            foreach($_SESSION as $key => $value) {
-            FB::info($value, '$_SESSION['.$key.']');    
-            }
+	    if ($_SESSION['wa_current_user']->username == 'admin') {
+		foreach($_SESSION as $key => $value) {
+		FB::log($value, '$_SESSION['.$key.']');
+		}
 
-            FB::info($_REQUEST, '$_REQUEST');
-            FB::info($_POST, '$_POST');
-            FB::info($_GET, '$_GET');
-            FB::info("execution time :" . fbTimer::get() . ' seconds');
-            fbTimer::stop();
-        }*/
+        FB::log($_REQUEST,"request");
+        FB::log($_POST,"post");
+        FB::log($_GET,"get");
+
+	}
     }
 function sidemenu() {
     global $path_to_root, $js_lib;

@@ -1,5 +1,4 @@
-
-jQuery(document).ready(function() {
+jQuery(function($) {
     $("#tabs").livequery(function() {
         $(this).tabs({
             ajaxOptions: {
@@ -10,3 +9,4 @@ jQuery(document).ready(function() {
         });
     });
 });
+ 

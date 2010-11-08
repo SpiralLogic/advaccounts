@@ -380,7 +380,7 @@ function label_cell($label, $params="", $id=null)
 {
     global $Ajax;
 
-	if(isset($id))
+	if(!empty($id))
 	{
 	    $params .= " id='$id'";
 	    $Ajax->addUpdate($id, $id, $label);
@@ -439,14 +439,14 @@ function qty_cell($label, $bold=false, $dec=null, $id=null)
 		label_cell(number_format2($label, $dec), "nowrap align=right", $id);
 }
 
-function label_cells($label, $value, $params="", $params2="", $id='')
+function label_cells($label, $value, $params="", $params2="", $id=null)
 {
 	if ($label != null)
 		echo "<td {$params}>{$label}</td>\n";
 	label_cell($value, $params2, $id);
 }
 
-function label_row($label, $value, $params="", $params2="", $leftfill=0, $id='')
+function label_row($label, $value, $params="", $params2="", $leftfill=0, $id=null)
 {
 	echo "<tr>";
 	if ($params == "")

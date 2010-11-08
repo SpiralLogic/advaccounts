@@ -16,8 +16,8 @@
 
     include_once($path_to_root . "/includes/session.inc");
 $_SESSION['App']->selected_application = 'cards';
-get_jqueryui();
-get_jquery_live();
+$js .= get_jqueryui();
+$js .= get_jquery_live();
 
     include_once($path_to_root . "/includes/date_functions.inc");
     include_once($path_to_root . "/includes/banking.inc");
@@ -33,7 +33,7 @@ if (db_has_customers() ) {
     end_row();
     end_table();
     if (get_post('_show_inactive_update')) {
-        $Ajax->activate('_page_body');
+        $Ajax->activate('customer_id');
         set_focus('customer_id');
     }
 } else {
@@ -49,6 +49,14 @@ end_form();
 /*$js_lib[] = '$(".combo2").live("change",  function() {alert(
 $("#_customer_id_sel select option:selected").text());
 });';*/
-
-
+$js_lib[] = '$(function() {$("#_page_body").livequery(function() {
+        $("#tabs").tabs({
+            ajaxOptions: {
+                error: function(xhr, status, index, anchor) {
+                    $(anchor.hash).html("Couldn\'t load this tab . We\'ll try to fix this as soon as possible. If this wouldn\'t be a demo .");
+                }
+            }
+        });
+    });
+});';
 end_page(true,true);

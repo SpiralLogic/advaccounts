@@ -11,13 +11,13 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
  ***********************************************************************/
 $page_security = 'SA_PURCHASEORDER';
 $path_to_root = "..";
-
+$js='';
 include_once($path_to_root . "/purchasing/includes/po_class.inc");
 include_once($path_to_root . "/includes/session.inc");
 include_once($path_to_root . "/purchasing/includes/purchasing_ui.inc");
 include_once($path_to_root . "/reporting/includes/reporting.inc");
-
-
+//$js.=get_jqueryui();
+//$js .= get_jquery_live();
 if ($use_popup_windows) {
     $js .= get_js_open_window(900, 500);
 }
@@ -264,20 +264,7 @@ function can_commit() {
         return false;
     }
 
-    if (!$_SESSION['PO']->order_no) {
-        if (!$Refs->is_valid(get_post('ref'))) {
-            display_error(_("There is no reference entered for this purchase order."));
-            set_focus('ref');
-            return false;
-        }
-        while (!is_new_reference(get_post('ref'), ST_PURCHORDER)) {
-            //            if (!is_new_reference(get_post('ref'), ST_PURCHORDER)) {
-            //display_error(_("The entered reference is already in use."));
-            //set_focus('ref');
-            //return false;
-            $_POST['ref'] = $Refs->get_next(ST_PURCHORDER);
-        }
-    }
+
 
     if (get_post('delivery_address') == '') {
         display_error(_("There is no delivery address specified."));
@@ -298,6 +285,20 @@ function can_commit() {
     if ($_SESSION['PO']->order_has_items() == false) {
         display_error(_("The order cannot be placed because there are no lines entered on this order."));
         return false;
+    }
+    if (!$_SESSION['PO']->order_no) {
+	    if (!$Refs->is_valid(get_post('ref'))) {
+		    display_error(_("There is no reference entered for this purchase order."));
+		    set_focus('ref');
+		    return false;
+	    }
+	    while (!is_new_reference($_POST['ref'], ST_PURCHORDER)) {
+		    //            if (!is_new_reference(get_post('ref'), ST_PURCHORDER)) {
+		    //display_error(_("The entered reference is already in use."));
+		    //set_focus('ref');
+		    //return false;
+		    $_POST['ref'] = $Refs->get_next(ST_PURCHORDER);
+	    }
     }
 
     return true;
@@ -364,6 +365,7 @@ if (isset($_GET['ModifyOrderNumber']) && $_GET['ModifyOrderNumber'] != "") {
 if (isset($_POST['CancelUpdate']) || isset($_POST['UpdateLine'])) {
     line_start_focus();
 }
+
 
 if (isset($_GET['NewOrder'])) {
     create_new_po();
@@ -440,11 +442,51 @@ if ($_SESSION['PO']->order_has_items()) {
     }
 
 } else {
+	submit_js_confirm('CancelOrder', _('You are about to void this Document.\nDo you want to continue?'));
     submit_center('CancelOrder', _("Delete This Order"), true, false, 'cancel');
 }
 div_end();
 //---------------------------------------------------------------------------------------------------
 
 end_form();
+
+if (isset($_SESSION['PO']->supplier_id)) {
+	$supplier_details=$_SESSION['PO']->supplier_details;
+	echo '<div id="supplier_details" style="display: none;">';
+
+	if (!empty($supplier_details['supp_address'])) echo '<span class="bold">Shipping Address:</span><br>'.$supplier_details['supp_address'] . '</br></br>';
+	if (!empty($supplier_details['address'])) echo '<span class="bold">Mailing Address:</span><br>' . $supplier_details['address'] . '</br></br>';
+	if (!empty($supplier_details['phone'])) echo '<span class="bold">Phone: </span>' . $supplier_details['phone'] . '</br></br>';
+	if (!empty($supplier_details['phone2'])) echo '<span class="bold">Phone2: </span>' . $supplier_details['phone2'] . '</br></br>';
+	if (!empty($supplier_details['fax'])) echo '<span class="bold">Fax: </span>' . $supplier_details['fax'] . '</br></br>';
+	if (!empty($supplier_details['contact'])) echo '<span class="bold">Contact: </span>' . $supplier_details['Contact'] . '</br></br>';
+	if (!empty($supplier_details['email'])) echo '<span class="bold">Email: </span><a href="mailto:' . $supplier_details['email'] . '">' . $supplier_details['email'] . '</a></br></br>';
+	if (!empty($supplier_details['website'])) echo '<span class="bold">Website: </span><a target="_new" href="http://' . $supplier_details['website'] . '">'. $supplier_details['website'].'</a></br></br>';
+	if (!empty($supplier_details['supp_account_no'])) echo '<span class="bold">Account #: </span>' . $supplier_details['supp_account_no'] . '</br></br>';
+echo '</div>';
+	$js_lib[] = '$(function() {
+	$( "#dialog:ui-dialog" ) . dialog("destroy");
+
+		$( "#supplier_details" ) .dialog({
+			title:"'. $supplier_details['supp_name'].'",
+			autoOpen: false,
+						buttons: {
+				Close: function() {
+					$( this ).dialog( "close" );
+				}
+			},
+			modal: true
+		});
+		$(\'td[name="supplier_name"]\').addClass("pointer").live("click", function() {
+    $("#supplier_details").dialog("open");
+    return false; });
+		  $(".ui-widget-overlay").live("click", function() {
+    $("#supplier_details").dialog("close");
+    return false; });
+
+	});';
+}
+
 end_page();
+
 ?>

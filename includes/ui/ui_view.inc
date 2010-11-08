@@ -74,6 +74,8 @@ function get_customer_trans_view_str($type, $trans_no, $label = "", $icon = fals
         $viewer .= "view_credit.php";
     elseif ($type == ST_CUSTPAYMENT)
         $viewer .= "view_receipt.php";
+    elseif ($type == ST_CUSTREFUND)
+    $viewer .= "view_receipt.php";
     elseif ($type == ST_CUSTDELIVERY)
         $viewer .= "view_dispatch.php";
     elseif ($type == ST_SALESORDER || $type == ST_SALESQUOTE)
@@ -660,7 +662,7 @@ function price_in_words($amount, $document = 0) {
         return $Hooks->price_in_words($amount, $document);
     }
     // Only usefor Remittance and Receipts as default
-    if (!($document == ST_SUPPAYMENT || $document == ST_CUSTPAYMENT || $document == ST_CHEQUE))
+    if (!($document == ST_SUPPAYMENT || $document == ST_CUSTPAYMENT || $document == ST_CUSTREFUND || $document == ST_CHEQUE))
         return "";
     if ($amount < 0 || $amount > 999999999999)
         return "";
@@ -742,11 +744,12 @@ function get_js_png_fix() {
     return $js;
 }
 function get_jquery() {
-    static $inserted;
 
+    global $comp_path, $path_to_root;
+    static $inserted;
     if(!$inserted) {
 
-        global $comp_path, $path_to_root;
+
     $fpath = $comp_path . '/' . user_company() . '/js_cache/';
     add_js_ufile($fpath . 'jquery-1.4.3.min.js');
     $inserted = true;
@@ -754,10 +757,10 @@ function get_jquery() {
 }
 function get_jqueryui() {
     get_jquery();
-
+    global $comp_path, $path_to_root;
     static $inserted;
     if (!$inserted) {
-        global $comp_path, $path_to_root;
+
         $fpath = $comp_path . '/' . user_company() . '/js_cache/';
         add_js_ufile($fpath . 'jquery-ui-1.8.5.min.js');
         $inserted = true;
@@ -772,7 +775,7 @@ function get_jquery_live() {
         global $comp_path, $path_to_root;
         $fpath = $comp_path . '/' . user_company() . '/js_cache/';
         add_js_ufile($fpath . 'jquery.livequery.js');
-        $inserted = true;
+         $inserted = true;
     }
 }
 
@@ -786,7 +789,7 @@ function get_jquery_gmaps() {
         //TODO: api key this shouldn't be hardcoded
         add_js_ufile('http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAAi6QUBXugcwuPqyTcPMoi7BQoeTHA_aFeuZZQfngKyuFQqT3AwhTemRsst-Nyw7tIGXwcvd0qBU1aEw');
         add_js_ufile($fpath . 'jquery.gmap-1.1.0-min.js');
-        add_js_ufile($fpath . 'menu.js');
+     
         $inserted = true;
     }
 }
@@ -1255,7 +1258,7 @@ document.write(\"<div id='CC'></div>\");";
 }
 
 function alert($msg) {
-    echo "\n<script type=\"text/javascript\">\n"
+    echo "\n<script language=\"javascript\"  type=\"text/javascript\">\n"
             . "<!--\n"
             . "alert('$msg');\n"
             . "-->\n"

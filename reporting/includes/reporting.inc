@@ -85,8 +85,13 @@ function print_document_link($doc_no, $link_text, $link = true, $type_no,
                 'PARAM_2' => '',
                 'PARAM_4' => '');
             break;
+	    case ST_CUSTREFUND :
+		    $rep = 113;
+		    // from, to, currency, bank acc, email, comments
+		    $ar = array('PARAM_0' => $doc_no, 'PARAM_1' => $doc_no, 'PARAM_2' => '', 'PARAM_4' => '');
+		    break;
         case ST_PROFORMA :
-            $rep = 113;
+            $rep = 129;
             // from, to, currency, bank acc, email, comments
             $ar = array(
                 'PARAM_0' => $doc_no,
@@ -96,7 +101,7 @@ function print_document_link($doc_no, $link_text, $link = true, $type_no,
                 'PARAM_4' => '2');
             break;
         case ST_PROFORMAQ :
-            $rep = 109;
+            $rep = 131;
             // from, to, currency, bank acc, email, comments
             $ar = array(
                 'PARAM_0' => $doc_no,

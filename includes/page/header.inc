@@ -54,6 +54,7 @@ function send_scripts()
 	foreach($js_static as $jsfile)
 	{
 	    $fpath = $comp_path.'/'.user_company().'/js_cache/'.$jsfile;
+	    $fpath = $js_path.$jsfile;
 	    // compress also static files
 	  	if (!file_exists($fpath) || $go_debug)
 			cache_js_file($fpath, file_get_contents($js_path.$jsfile));
@@ -139,7 +140,7 @@ get_jqueryui();
 
 
 
-	send_scripts($js);
+if (!$_GET['frame'])	send_scripts($js);
 
 	echo "</head> \n";
 	if ($onload == "")
