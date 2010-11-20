@@ -190,8 +190,10 @@ function check_overdue($row)
    		elseif (($_POST['filterType'] == '2')) 
    		{
    			$sql .= " AND trans.type = ".ST_SUPPINVOICE." ";
-   		} 
-   		elseif ($_POST['filterType'] == '3') 
+   		} elseif (($_POST['filterType'] == '6')) {
+			   $sql .= " AND trans.type = " . ST_SUPPINVOICE . " ";
+		   }
+		   elseif ($_POST['filterType'] == '3')
    		{
 			$sql .= " AND (trans.type = ".ST_SUPPAYMENT." OR trans.type = ".ST_BANKPAYMENT.") ";
    		} 

@@ -14,7 +14,7 @@
             die("Restricted access");
     include_once($path_to_root . '/applications/application.php');
     include_once($path_to_root . '/applications/customers.php');
-    include_once($path_to_root . '/applications/cards.php');
+    include_once($path_to_root . '/applications/contacts.php');
     include_once($path_to_root . '/applications/suppliers.php');
     include_once($path_to_root . '/applications/inventory.php');
     include_once($path_to_root . '/applications/advanced.php');
@@ -83,7 +83,7 @@
             $this->menu->add_item(_("Logout"), "/account/access/logout.php");
             $this->applications = array();
             $this->add_application(new customers_app());
-            $this->add_application(new cards_app());
+            $this->add_application(new contacts_app());
             $this->add_application(new suppliers_app());
             $this->add_application(new inventory_app());
             $this->add_application(new advanced_app());

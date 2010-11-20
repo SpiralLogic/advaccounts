@@ -14,45 +14,57 @@ include_once($path_to_root . "/includes/types.inc");
 
 //--------------------------------------------------------------------------------------
 
+class MenuUi {
 
-class ui_menu {
+	protected $tabs = array();
+	protected $menu = '';
+	protected $content = '';
 
-    protected $tabs = array();
-    protected $content = '';
-    function __construct() {
+	function __construct() {
+		ob_start();
+		$this->menu = "<div id='tabs'>";
+	}
 
-        $this->content = "<div id='tabs'><ul>";
-    }
-    function addTab($title,$link,$tooltip='') {
-            $this->tabs[] = new ui_menu_item($title,$link,$tooltip);
-         
-    }
-    function render() {
-        global $js_lib;
+	function addTab($title, $tooltip = '', $link = '#') {
+		$this->tabs[] = new MenuUi_item($title, $tooltip, $link);
+	}
 
-        foreach ($this->tabs as $key => $tab) {
-            $this->content .= "<li><a title='{$tab->link}' href='{$tab->link}'><span>{$tab->title}</span></a></li>";
-        }
-        $this->content .= "</ul>";
-        echo $this->content;
+	function startTab($title, $tooltip) {
+		$this->addTab($title, $tooltip,'#');
+		echo '<div id="tabs-' . count($this->tabs) . '">';
+	}
 
-        
+	function endTab() {
+		echo '</div>';
+	}
 
-    }
+	function render() {
+		global $js_lib;
+		$this->menu.="<ul>";
+		foreach ($this->tabs as $key => $tab) {
+			$num=$key+1;
+			$this->menu .= "<li><a title='{$tab->title}' href='#tabs-{$num}'><span>{$tab->title}</span></a></li>";
+		}
+		$this->menu .= "</ul>";
+		 $this->content = ob_get_clean();
+	     echo $this->menu . $this->content.'</div>';
+	     $js_lib[] = '$("#tabs").tabs();';
+	}
 }
 
 
-class ui_menu_item {
-    public $content ='';
-    public $link = '';
-    public $title = '';
-    public $tooltip = '';
-function __construct($title,$link,$tooltip='') {
-    $this->title = $title;
-    $this->link = $link;
-    $this->tooltop = $tooltip;
-    
-}
+class MenuUi_item {
+	public $content = '';
+	public $link = '';
+	public $title = '';
+	public $tooltip = '';
+
+	function __construct($title, $link, $tooltip = '') {
+		$this->title = $title;
+		$this->link = $link;
+		$this->$tooltip = $tooltip;
+
+	}
 
 
 }

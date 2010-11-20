@@ -29,6 +29,7 @@ if ($use_popup_windows) {
 if ($use_date_picker) {
     $js .= get_js_date_picker();
 }
+
 add_js_file('payalloc.js');
 
 page(_($help_context = "Customer Refund Entry"), @$_REQUEST['frame'], false, "", $js);

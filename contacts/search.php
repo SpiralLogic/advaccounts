@@ -8,7 +8,16 @@
  */
 $path_to_root = "..";
 include_once($path_to_root . "/includes/session.inc");
-$sql = "SELECT debtor_no, debtor_ref, curr_code, inactive FROM " . TB_PREF . "debtors_master " . "where debtor_name LIKE '%".$_GET['q']."%'";
-$result = db_query($sql,'Couldn\'t Get Customers');
-$data = db_fetch_assoc($result);
+include_once("includes/contacts.inc");
+if (isset($_GET['term'])) {
+	$sql = "SELECT debtor_no as id, debtor_ref as label, debtor_ref as value FROM " . TB_PREF . "debtors_master " . "where debtor_ref LIKE '%" . $_GET['term'] . "%' LIMIT 20";
+	$result = db_query($sql, 'Couldn\'t Get Customers');
+	while ($row = db_fetch_assoc($result)) {
+		$data[] = $row;
+	}
+}
+ elseif (isset ($_GET['id'])) {
+	 $data = new Customer($_GET['id']);
+}
+
 echo json_encode($data);

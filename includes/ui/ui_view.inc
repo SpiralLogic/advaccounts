@@ -395,9 +395,14 @@ function display_edit_tax_items($taxes, $columns, $tax_included, $leftspan = 0) 
         }
         else
         {
+	        $total += round2($taxitem['Value'], user_price_dec());
+	    $_POST['ChgTax']=0;
+	     //small_amount_cells(null, 'ChgTax', price_format(getpost('ChgTax'), 2));
             label_row($taxitem['tax_type_name'] . " (" . $taxitem['rate'] . "%)",
                 number_format2($taxitem['Value'], user_price_dec()), "colspan=$columns align=right", "align=right", $leftspan);
-            $total += round2($taxitem['Value'], user_price_dec());
+
+
+
         }
     }
 
@@ -749,20 +754,19 @@ function get_jquery() {
     static $inserted;
     if(!$inserted) {
 
-
-    $fpath = $comp_path . '/' . user_company() . '/js_cache/';
+	    $fpath = $path_to_root . '/js/';
     add_js_ufile($fpath . 'jquery-1.4.3.min.js');
     $inserted = true;
     }
 }
 function get_jqueryui() {
     get_jquery();
-    global $comp_path, $path_to_root;
+    global $path_to_root;
     static $inserted;
     if (!$inserted) {
 
-        $fpath = $comp_path . '/' . user_company() . '/js_cache/';
-        add_js_ufile($fpath . 'jquery-ui-1.8.5.min.js');
+        $fpath = $path_to_root . '/js/';
+        add_js_ufile($fpath . 'jquery-ui-1.8.6.min.js');
         $inserted = true;
     }
 }

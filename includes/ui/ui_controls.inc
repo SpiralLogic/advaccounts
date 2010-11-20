@@ -267,9 +267,10 @@ function alt_table_row_color(&$k)
 	}
 }
 
-function table_section_title($msg, $colspan=2)
+function table_section_title($msg, $colspan=2,$class='tableheader')
 {
-	echo "<tr><td colspan=$colspan class='tableheader'>$msg</td></tr>\n";
+
+	echo "<tr class='$class'><td colspan=$colspan class='$class'>$msg</td></tr>\n";
 }
 
 function table_header($labels, $params='')

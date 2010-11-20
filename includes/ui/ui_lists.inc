@@ -882,7 +882,7 @@ function stock_items_list_cells($label, $name, $selected_id = null, $all_option 
     if ($label != null) {
         echo "<td>$label</td>\n";
     }
-    echo stock_items_list($name, $selected_id, $all_option, $submit_on_change, array('cells' => true, 'show_inactive' => $all), $editkey);
+    echo stock_items_list($name, $selected_id, $all_option, $submit_on_change, array('cells' => true, 'show_inactive' => $all, 'editable'=>false), $editkey);
 }
 
 /*
@@ -1050,7 +1050,7 @@ function stock_purchasable_items_list($name, $selected_id=null,
 {
 	return stock_items_list($name, $selected_id, $all_option, $submit_on_change,
 		array('where'=>array("mb_flag!= 'M'"),
-			'show_inactive'=>$all), $editkey);
+			'show_inactive'=>$all, 'editable'=>false), $editkey);
 }
 
 function stock_purchasable_items_list_cells($label, $name, $selected_id=null,
@@ -1870,7 +1870,8 @@ function supp_allocations_list_cell($name, $selected = null) {
     global $all_items;
 
     echo "<td>\n";
-    $allocs = array($all_items => _("All Types"), '1' => _("Invoices"), '2' => _("Overdue Invoices"), '3' => _("Payments"), '4' => _("Credit Notes"), '5' => _("Overdue Credit Notes"));
+    $allocs = array($all_items => _("All Types"), '1' => _("Invoices"), '2' => _("Overdue Invoices"), '6' => _("Unpaid Invoices"), '3' => _("Payments"),
+	    '4' => _("Credit Notes"), '5' => _("Overdue Credit Notes"));
     echo array_selector($name, $selected, $allocs);
     echo "</td>\n";
 }

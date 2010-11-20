@@ -94,7 +94,7 @@ function is_new_reference(&$ref, $type) {
                 $sql .= " AND $db_type=$type";
             }
             $result = db_query($sql, "could not test for unique reference");
-            FB::info(db_num_rows($result));
+            
         } while (db_num_rows($result) != 0 && ($ref=$Refs->increment($ref)));
 
         return (db_num_rows($result) == 0);

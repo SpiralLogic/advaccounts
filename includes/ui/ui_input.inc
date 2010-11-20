@@ -676,11 +676,10 @@ function ref_row($label, $name, $title=null, $init=null, $submit_on_change=false
 function percent_row($label, $name, $init=null)
 {
 
-	if (!isset($_POST[$name]) || $_POST[$name]=="")
+	if (!isset($_POST[$name]) || $_POST[$name]=="" )
 	{
-		$_POST[$name] = $init == null ? '' : $init;
+		$_POST[$name] = ($init === null) ? '' : $init;
 	}
-
 	small_amount_row($label, $name, $_POST[$name], null, "%", user_percent_dec());
 }
 
@@ -815,7 +814,7 @@ function textarea_cells($label, $name, $value, $cols, $rows, $title = null, $par
 	default_focus($name);
 	if ($label != null)
 		echo "<td $params>$label</td>\n";
-	if ($value == null)
+	if ($value === null)
 		$value = (!isset($_POST[$name]) ? "" : $_POST[$name]);
 	echo "<td><textarea name='$name' cols='$cols' rows='$rows'"
 	.($title ? " title='$title'" : '')

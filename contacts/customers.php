@@ -2,123 +2,118 @@
 
 
 /*     * ********************************************************************
-Copyright (C) FrontAccounting, LLC.
-Released under the terms of the GNU General Public License, GPL,
-as published by the Free Software Foundation, either version 3
-of the License, or (at your option) any later version.
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
-* ********************************************************************* */
+		Copyright (C) FrontAccounting, LLC.
+		Released under the terms of the GNU General Public License, GPL,
+		as published by the Free Software Foundation, either version 3
+		of the License, or (at your option) any later version.
+		This program is distributed in the hope that it will be useful,
+		but WITHOUT ANY WARRANTY; without even the implied warranty of
+		MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+		See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+		* ********************************************************************* */
 $page_security = 'SA_CUSTOMER';
 $path_to_root = "..";
-include_once($path_to_root . "/contacts/includes/contacts.inc");
-
+include_once("includes/contacts.inc");
+add_js_ufile("includes/js/customers.js");
 page(_($help_context = "Customers"), @$_REQUEST['popup']);
 
 check_db_has_sales_types(_("There are no sales types defined. Please define at least one sales type before adding a customer."));
+check_db_has_sales_people(_("There are no sales people defined in the system. At least one sales person is required before proceeding."));
+check_db_has_sales_areas(_("There are no sales areas defined in the system. At least one sales area is required before proceeding."));
+check_db_has_shippers(_("There are no shipping companies defined in the system. At least one shipping company is required before proceeding."));
+check_db_has_tax_groups(_("There are no tax groups defined in the system. At least one tax group is required before proceeding."));
 
 if (isset($_GET['debtor_no'])) {
 	$customer = new Customer($_GET['debtor_no']);
-} elseif (isset($_POST['customer_id']) && $_POST['customer_id'] == "") {
-	$customer = new Customer($_POST['customer_id']);
+} elseif (isset($_POST['id']) && $_POST['id'] != "") {
+	$customer = new Customer($_POST['id']);
 } else {
 	$customer = new Customer();
-}
-
-
-//--------------------------------------------------------------------------------------------
-
-
-
-
-//--------------------------------------------------------------------------------------------
-
-function handle_submit() {
-	global  $Ajax, $customer;
-	if (!$customer->save()) {
-		$status= $customer->getStatus();
-		display_error($status['message']);
-		set_focus($status['var']);
-
-	} else {
-		$status= $customer->getStatus();
-		display_notification($status['message']);
-	}
-	$Ajax->activate('customer_id'); // in case of status change
-	return $status['status'];
 }
 
 //--------------------------------------------------------------------------------------------
 
 if (isset($_POST['submit'])) {
-handle_submit();
+	handle_submit();
 }
 //--------------------------------------------------------------------------------------------
-
+function handle_submit() {
+	global $Ajax, $customer;
+	if (!$customer->save($_POST)) {
+		$status = $customer->getStatus();
+		display_error($status['message']);
+		set_focus($status['var']);
+	} else {
+		$status = $customer->getStatus();
+		display_notification($status['message']);
+	}
+	$Ajax->activate('customers'); // in case of status change
+	return $status['status'];
+}
+//--------------------------------------------------------------------------------------------
 if (isset($_POST['delete'])) {
-$customer->delete();
-$status = $customer->getStatus();
-display_notification($status['message']);
-$Ajax->activate('_page_body');
+	$customer->delete();
+	$status = $customer->getStatus();
+	display_notification($status['message']);
+	$Ajax->activate('_page_body');
 	//the link to delete a selected record was clicked instead of the submit button
 }
-
+//--------------------------------------------------------------------------------------------
 
 start_form();
 
 if (db_has_customers()) {
-	start_table("class = 'tablestyle_noborder'");
-	start_row();
-	customer_list_cells(_("Select a customer: "), 'customer_id', null, _('New customer'), true, check_value('show_inactive'));
-	check_cells(_("Show inactive:"), 'show_inactive', null, true);
-	end_row();
-	end_table();
-	if (get_post('_show_inactive_update')) {
-		$Ajax->activate('customer_id');
-		set_focus('customer_id');
+	UI::divStart('search', null, array('style' => 'text-align:center; '));
+
+	//customer_list_cells(_("Select a customer: "), 'customer_id', null, _('New customer'), true, check_value('show_inactive'));
+	//	check_cells(_("Show inactive:"), 'show_inactive', null, true);
+	UI::search('customers', 'Customer:', 80);
+	if ($customer->id) {
+		UI::button('submit', 'Update Customer', 'btnCustomer', 'submit', 'submit', null, array('style' => 'margin:10px 0;'));
+	} else {
+		UI::button('submit', 'New Customer', 'btnCustomer', 'submit', 'submit', null, array('style' => 'margin:10px 0;'));
 	}
-} else {
-	hidden('customer_id');
+	UI::divEnd();
 }
 
 
+//-------------------------------- Customer Details---------------------------------------------------
+$menu = new MenuUi();
+$menu->startTab('Details', 'Customer Details');
 start_outer_table($table_style2, 5);
+
+
 table_section(1);
-table_section_title(_("Name and Address"));
+hidden('id', $customer->id);
+table_section_title(_("Name and Address"), 2, 'tableheader3');
+text_row(_("Customer Name:"), 'name', $customer->name, 35, 80);
+text_row(_("Customer Short Name:"), 'debtor_ref', $customer->debtor_ref, 35, 30);
+textarea_row(_("Address:"), 'address', $customer->address, 35, 5);
+email_row(_("E-mail:"), 'email', $customer->email, 35, 40);
+text_row(_("GSTNo:"), 'taxId', $customer->taxId, 35, 40);
 
-text_row(_("Customer Name:"), 'name', $_POST['name'], 40, 80);
-text_row(_("Customer Short Name:"), 'debtor_ref', null, 30, 30);
-textarea_row(_("Address:"), 'address', $_POST['address'], 35, 5);
-
-email_row(_("E-mail:"), 'email', null, 40, 40);
-text_row(_("GSTNo:"), 'taxId', null, 40, 40);
-
-if ($new_customer) {
-	currencies_list_row(_("Customer's Currency:"), 'curr_code', $_POST['curr_code']);
+if (!$customer->id) {
+	currencies_list_row(_("Customer's Currency:"), 'curr_code', $customer->curr_code);
 } else {
-	label_row(_("Customer's Currency:"), $_POST['curr_code']);
-	hidden('curr_code', $_POST['curr_code']);
+	label_row(_("Customer's Currency:"), $customer->curr_code);
+	hidden('curr_code', $customer->curr_code);
 }
-sales_types_list_row(_("Sales Type/Price List:"), 'sales_type', $_POST['sales_type']);
 
+sales_types_list_row(_("Sales Type/Price List:"), 'sales_type', $customer->sales_type);
 table_section(2);
-
-table_section_title(_("Sales"));
-
-percent_row(_("Discount Percent:"), 'discount', $_POST['discount']);
-percent_row(_("Prompt Payment Discount Percent:"), 'pymt_discount', $_POST['pymt_discount']);
-amount_row(_("Credit Limit:"), 'credit_limit', $_POST['credit_limit']);
-
-payment_terms_list_row(_("Payment Terms:"), 'payment_terms', $_POST['payment_terms']);
-credit_status_list_row(_("Credit Status:"), 'credit_status', $_POST['credit_status']);
+table_section_title(_("Sales"), 2, 'tableheader3 ');
+percent_row(_("Discount Percent:"), 'discount', $customer->discount);
+percent_row(_("Prompt Payment Discount Percent:"), 'pymt_discount', $customer->pymt_discount);
+amount_row(_("Credit Limit:"), 'credit_limit', $customer->credit_limit);
+payment_terms_list_row(_("Pament Terms:"), 'payment_terms', $customer->payment_terms);
+credit_status_list_row(_("Credit Status:"), 'credit_status', $customer->credit_status);
 $dim = get_company_pref('use_dimension');
+
 if ($dim >= 1) {
-	dimensions_list_row(_("Dimension") . " 1:", 'dimension_id', $_POST['dimension_id'], true, " ", false, 1);
+	dimensions_list_row(_("Dimension") . " 1:", 'dimension_id', $customer->dimension_id, true, " ", false, 1);
 }
 if ($dim > 1) {
-	dimensions_list_row(_("Dimension") . " 2:", 'dimension2_id', $_POST['dimension2_id'], true, " ", false, 2);
+	dimensions_list_row(_("Dimension") . " 2:", 'dimension2_id', $customer->dimension2_id, true, " ", false, 2);
 }
 if ($dim < 1) {
 	hidden('dimension_id', 0);
@@ -127,27 +122,68 @@ if ($dim < 2) {
 	hidden('dimension2_id', 0);
 }
 
-if (!$customer->id) {
+if ($customer->id) {
 	start_row();
 	echo '<td>' . _('Customer branches') . ':</td>';
 	hyperlink_params_td($path_to_root . "/sales/manage/customer_branches.php", '<b>' . (@$_REQUEST['popup'] ? _("Select or &Add") : _("&Add or Edit ")) . '</b>',
-			"debtor_no=" . $_POST['customer_id'] . (@$_REQUEST['popup'] ? '&popup=1' : ''));
+			"debtor_no=" . $customer->id . (@$_REQUEST['popup'] ? '&popup=1' : ''));
 	end_row();
 }
 
-textarea_row(_("General Notes:"), 'notes', null, 35, 5);
+textarea_row(_("General Notes:"), 'notes', $customer->notes, 35, 5);
 record_status_list_row(_("Customer status:"), 'inactive');
 end_outer_table(1);
+$menu->endTab();
 
-div_start('controls');
-if ($customer->id==0) {
-	submit_center('submit', _("Add New Customer"), true, '', 'default');
-} else {
-	submit_center_first('submit', _("Update Customer"), _('Update customer data'), @$_REQUEST['popup'] ? true : 'default');
-	submit_return('select', get_post('customer_id'), _("Select this customer and return to document entry."));
-	submit_center_last('delete', _("Delete Customer"), _('Delete customer data if have been never used'), true);
-}
-div_end();
+$menu->startTab('Accounts', 'Accounts');
+start_outer_table($table_style2, 5);
+table_section(1);
+table_section_title(_("Accounts Details:"), 2, ' tableheader3 ');
+text_row(_("Customer Name:"), 'name', $customer->name, 40, 80);
+text_row(_("Contact Person:"), 'acc_contact_name', null, 40, 40);
+textarea_row(_("Billing Address:"), 'acc_address', null, 35, 5);
+email_row(_("E-mail:"), 'acc_email', null, 40, 40);
+text_row(_("Phone Number:"), 'acc_phone', null, 40, 30);
+text_row(_("Secondary Phone Number:"), 'acc_phone2', null, 40, 30);
+text_row(_("Fax Number:"), 'acc_fax', null, 40, 30);
+table_section(2);
+
+//table_section_title("<span class='ui-icon ui-icon-circle-plus'>"._("Contact log:")."</span>", 2, 'tableheader3');
+table_section_title(_("Contact log:") . "</span>", 2, 'tableheader3');
+textarea_cells(null, null, null, 100, 30);
+end_outer_table(1);
+
+UI::divStart('contactLog', array('title' => 'New contact log entry', 'class' => 'ui-widget-overlay'));
+UI::p('New log entry:', array('class' => 'validateTips'));
+start_form();
+start_table();
+label_row('Date:', Now());
+text_row('Contact:', 'acc_contact_name', $customer->acc_contact_name, 40, 40);
+textarea_row('Entry:', 'log_entry', '', 100, 10);
+end_table();
+end_form();
+UI::p();
+UI::divEnd();
+
+$menu->endTab();
+
+$menu->startTab('Branches', 'Branches');
+print_r(json_encode($customer->branches));
+$menu->endTab();
+$menu->render();
+//$('#contactLog').dialog({width:700, modal:true,buttons: {Ok: function() {$( this ).dialog( 'close' );},'Cancel': function() {$( this ).dialog( 'close' );}}});;
+
+/*
+	   div_start('controls');
+	   if ($customer->id==0) {
+		   submit_center('submit', _("Add New Customer"), true, '', 'default');
+	   } else {
+		   submit_center_first('submit', _("Update Customer"), _('Update customer data'), @$_REQUEST['popup'] ? true : 'default');
+		   submit_return('select', get_post('id'), _("Select this customer and return to document entry."));
+		   submit_center_last('delete', _("Delete Customer"), _('Delete customer data if have been never used'), true);
+	   }
+	   div_end();*/
+
 hidden('popup', @$_REQUEST['popup']);
 end_form();
 end_page(true, true);

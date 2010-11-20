@@ -135,12 +135,13 @@ get_jqueryui();
              echo "<link href='$local_path_to_root/themes/$theme/default-lite.css' rel='stylesheet' type='text/css'> \n";
        }
     echo "<link href='$local_path_to_root/themes/$theme/{$_SESSION['sel_app']}.css' rel='stylesheet' type='text/css'> \n";
-    echo "<link href='$local_path_to_root/themes/$theme/jquery-ui-1.8.5.css' rel='stylesheet' type='text/css'> \n";
+    echo "<link href='$local_path_to_root/themes/$theme/jquery-ui-1.8.6.css' rel='stylesheet' type='text/css'> \n";
     echo "<link href='$local_path_to_root/themes/$theme/jquery.calculator.css' rel='stylesheet' type='text/css'> \n";
 
 
 
-if (!$_GET['frame'])	send_scripts($js);
+//if (!$_GET['frame'])
+    send_scripts($js);
 
 	echo "</head> \n";
 	if ($onload == "")

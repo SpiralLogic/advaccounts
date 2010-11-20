@@ -12,11 +12,11 @@
  * ********************************************************************* */
 
 
-class cards_app extends application {
+class contacts_app extends application {
 
-    function cards_app() {
-        $this->direct = 'sales/customers.php';
-        $this->application("cards", _($this->help_context = "&Customers"));
+    function contacts_app() {
+        $this->direct = 'contacts/customers.php';
+        $this->application("contacts", _($this->help_context = "&Customers"));
 
    
 

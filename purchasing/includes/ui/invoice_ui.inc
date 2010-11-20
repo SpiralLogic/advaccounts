@@ -123,6 +123,7 @@ function invoice_totals(&$supp_trans) {
     $taxes = $supp_trans->get_taxes($supp_trans->tax_group_id);
     $tax_total = display_edit_tax_items($taxes, $colspan, 0); // tax_included==0 (we are the company)
     $display_total = price_format($supp_trans->ov_amount + $tax_total);
+
     if ($supp_trans->is_invoice) {
         label_row(_("Invoice Total:"), $display_total, "colspan=$colspan align=right style='font-weight:bold;'", "align=right style='font-weight:bold;'");
     } else {

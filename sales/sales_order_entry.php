@@ -98,6 +98,7 @@ if (isset($_GET['AddedID'])) {
 	submenu_print(_("&Print This Order"), ST_SALESORDER, $order_no, 'prtopt');
 	submenu_print(_("Print Proforma Invoice"), ST_PROFORMA, $order_no, 'prtopt');
 	submenu_print(_("&Email This Order"), ST_SALESORDER, $order_no, null, 1);
+	submenu_print(_("Email Proforma Invoice"), ST_PROFORMA, $order_no,null, 1);
 	set_focus('prtopt');
 	submenu_option(_("Make &Delivery Against This Order"), "/sales/customer_delivery.php?OrderNumber=$order_no");
 	submenu_option(_("Enter a &New Order"), "/sales/sales_order_entry.php?NewOrder=0");
@@ -121,6 +122,7 @@ if (isset($_GET['AddedID'])) {
 	submenu_print(_("&Print This Order"), ST_SALESORDER, $order_no, 'prtopt');
 	submenu_print(_("Print Proforma Invoice"), ST_PROFORMA, $order_no, 'prtopt');
 	submenu_print(_("&Email This Order"), ST_SALESORDER, $order_no, null, 1);
+	submenu_print(_("Email Proforma Invoice"), ST_PROFORMA, $order_no, null, 1);
 	set_focus('prtopt');
 	submenu_option(_("Confirm Order Quantities and Make &Delivery"), "/sales/customer_delivery.php?OrderNumber=$order_no");
 	submenu_option(_("Select A Different &Order"), "/sales/inquiry/sales_orders_view.php?OutstandingOnly=1");
@@ -134,6 +136,7 @@ if (isset($_GET['AddedID'])) {
 	submenu_print(_("&Print This Quotation"), ST_SALESQUOTE, $order_no, 'prtopt');
 	submenu_print(_("Print Proforma Invoice"), ST_PROFORMAQ, $order_no, 'prtopt');
 	submenu_print(_("&Email This Quotation"), ST_SALESQUOTE, $order_no, null, 1);
+submenu_print(_("Email Proforma Invoice"), ST_PROFORMAQ, $order_no, null, 1);
 	set_focus('prtopt');
 	submenu_option(_("Make &Sales Order Against This Quotation"), "/sales/sales_order_entry.php?NewQuoteToSalesOrder=$order_no");
 	submenu_option(_("Enter a New &Quotation"), "/sales/sales_order_entry.php?NewQuotation=0");
@@ -147,6 +150,7 @@ if (isset($_GET['AddedID'])) {
 	submenu_print(_("&Print This Quotation"), ST_SALESQUOTE, $order_no, 'prtopt');
 	submenu_print(_("Print Proforma Invoice"), ST_PROFORMAQ, $order_no, 'prtopt');
 	submenu_print(_("&Email This Quotation"), ST_SALESQUOTE, $order_no, null, 1);
+	submenu_print(_("Email Proforma Invoice"), ST_PROFORMAQ, $order_no, null, 1);
 	set_focus('prtopt');
 	submenu_option(_("Make &Sales Order Against This Quotation"), "/sales/sales_order_entry.php?NewQuoteToSalesOrder=$order_no");
 	submenu_option(_("Select A Different &Quotation"), "/sales/inquiry/sales_orders_view.php?type=" . ST_SALESQUOTE);
@@ -205,6 +209,8 @@ if (isset($_GET['AddedID'])) {
 //-----------------------------------------------------------------------------
 
 function copy_to_cart() {
+
+
 	$cart = &$_SESSION['Items'];
 	$cart->reference = $_POST['ref'];
 	$cart->Comments = $_POST['Comments'];
@@ -473,7 +479,7 @@ function handle_new_item() {
 		return;
 	}
 
-
+FB::info($_POST);
 	add_to_order($_SESSION['Items'], $_POST['stock_id'], input_num('qty'), input_num('price'), input_num('Disc') / 100, $_POST['stock_id_text']);
 
 

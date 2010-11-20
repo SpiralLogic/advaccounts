@@ -84,21 +84,14 @@ get_jqueryui();
 
         echo "</div>\n";
         echo "</div>\n";
-	    if ($_SESSION['wa_current_user']->username == 'admin') {
-		foreach($_SESSION as $key => $value) {
-		FB::log($value, '$_SESSION['.$key.']');
-		}
 
-        FB::log($_REQUEST,"request");
-        FB::log($_POST,"post");
-        FB::log($_GET,"get");
 
-	}
+	
     }
 function sidemenu() {
     global $path_to_root, $js_lib;
     if ($this->has_header) {
-    echo '<div id="shortmenu">
+    echo '<div id="shortmenu" class="ui-widget-shadow ui-corner-all">
 <h3> <a href="#">Create</a></h3><div>
 <a href="'.$path_to_root.'/sales/sales_order_entry.php?NewQuotation=Yes">Quote</a>
 <a href="' . $path_to_root . '/sales/sales_order_entry.php?NewOrder=Yes">Order</a>

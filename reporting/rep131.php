@@ -60,7 +60,7 @@ function print_sales_quotations()
 
 	if ($email == 0)
 	{
-		$rep = new FrontReport(_("SALES QUOTATION"), "SalesQuotationBulk", user_pagesize());
+		$rep = new FrontReport(_("PROFORMA INVOICE"), "SalesQuotationBulk", user_pagesize());
 		$rep->currency = $cur;
 		$rep->Font();
 		$rep->Info($params, $cols, null, $aligns);
@@ -74,14 +74,14 @@ function print_sales_quotations()
 		$branch = get_branch($myrow["branch_code"]);
 		if ($email == 1)
 		{
-			$rep = new FrontReport("", "", user_pagesize());
+			$rep = new FrontReport("PROFORMA INVOICE", "", user_pagesize());
 			$rep->currency = $cur;
 			$rep->Font();
-			$rep->filename = "SalesQuotation" . $i . ".pdf";
+			$rep->filename = "ProformaInvoice" . $i . ".pdf";
 			$rep->Info($params, $cols, null, $aligns);
 		}
-		$rep->title = _("SALES QUOTATION");
-		$rep->Header2($myrow, $branch, $myrow, $baccount, ST_SALESQUOTE);
+		$rep->title = _("PROFORMA INVOICE");
+		$rep->Header2($myrow, $branch, $myrow, $baccount, ST_PROFORMAQ);
 
 		$result = get_sales_order_details($i, ST_SALESQUOTE);
 		$SubTotal = 0;
@@ -117,7 +117,7 @@ function print_sales_quotations()
 			$rep->row = $newrow;
 			//$rep->NewLine(1);
 			if ($rep->row < $rep->bottomMargin + (15 * $rep->lineHeight))
-				$rep->Header2($myrow, $branch, $myrow, $baccount, ST_SALESQUOTE);
+				$rep->Header2($myrow, $branch, $myrow, $baccount, ST_PROFORMAQ);
 		}
 		if ($myrow['comments'] != "")
 		{

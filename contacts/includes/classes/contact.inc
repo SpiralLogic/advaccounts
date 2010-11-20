@@ -23,7 +23,7 @@ abstract class Contact {
 	abstract protected function _countTransactions();
 
 	protected function _status($status = null, $process = null, $message = '', $var=null) {
-		if ($status == null || $process == null) {
+		if ($status === null || $process === null) {
 			$this->_status['status'] = false;
 			$this->_status['process'] = 'status';
 			$this->_status['message'] = 'Not enough parameters passed for status update.';

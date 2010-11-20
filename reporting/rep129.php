@@ -78,10 +78,10 @@ function print_sales_orders() {
             $rep->Font();
             if ($print_as_quote == 1) {
                 $rep->title = _('PROFORMA INVOICE');
-                $rep->filename = "Quote" . $i . ".pdf";
+                $rep->filename = "ProformaInvoice" . $i . ".pdf";
             } else {
                 $rep->title = _("PROFORMA INVOICE");
-                $rep->filename = "SalesOrder" . $i . ".pdf";
+                $rep->filename = "ProformaInvoice" . $i . ".pdf";
             }
             $rep->Info($params, $cols, null, $aligns);
         }
