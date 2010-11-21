@@ -64,7 +64,7 @@ function start_outer_table($extra="", $padding='2', $spacing='0', $br=false)
 	echo "<tr valign=top><td>\n"; // outer table
 }
 
-function table_section($number=1, $width=false)
+function table_section($number=1, $width=false, $class='')
 {
 	if ($number > 1)
 	{
@@ -73,7 +73,7 @@ function table_section($number=1, $width=false)
 		//echo "</td><td class='tableseparator' $width>\n"; // outer table
 		echo "</td><td style='border-left:1px solid #cccccc;' $width>\n"; // outer table
 	}
-	echo "<table class='tablestyle_inner'>\n";
+	echo "<table class='tablestyle_inner $class'>\n";
 }	
 
 function end_outer_table($breaks=0, $close_table=true)

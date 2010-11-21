@@ -32,7 +32,7 @@ class Customer extends Contact {
 
 	
 	public function __construct($id = null) {
-		if ($id != null) {
+		if ($id != null || $id == 0) {
 			$this->_read($id);
 		} else {
 			$this->_new();
@@ -86,7 +86,7 @@ class Customer extends Contact {
             credit_limit=" . input_num('credit_limit') . ",
             sales_type = " . db_escape($_POST['sales_type']) . ",
             notes=" . db_escape($_POST['notes']) . "
-            WHERE debtor_no = " . db_escape($_POST['customer_id']);
+            WHERE debtor_no = " . db_escape($_POST['id']);
 
 		db_query($sql, "The customer could not be updated");
 		update_record_status($this->id, $this->inactive, 'debtors_master', 'debtor_no');
@@ -174,7 +174,7 @@ class Customer extends Contact {
 		return db_fetch_row($result);
 	}
 
-	protected function delete() {
+	public function delete() {
 		global $Ajax;
 		if ($this->_countTransactions() > 0) {
 			$this->_status(false, 'delete', "This customer cannot be deleted because there are transactions that refer to it.");

@@ -16,4 +16,4 @@ $(function() {
 	                                  function() {
 		                                  $(this).fadeTo("fast", .75);
 	                                  });
-});
+}); 

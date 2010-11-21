@@ -84,7 +84,9 @@ function page_header($title, $no_menu=false, $is_index=false, $onload="", $js=""
 //	if (file_exists($_SERVER['DOCUMENT_ROOT'].$jsext))
 //		add_js_ufile($jsext);
 get_jqueryui();
-	$theme = user_theme();
+add_js_ufile($path_to_root . "/js/shortmenu.js");
+
+$theme = user_theme();
 	$local_path_to_root = $path_to_root;
 
 	if ($help_base_url != null && $use_popup_windows && $js == '')
@@ -101,6 +103,7 @@ get_jqueryui();
 	if (!isset($no_menu))
 	{
 		$no_menu = false;
+
 	}
 	//if (!isset($_SESSION["sel_app"]))
 	//	session_register("sel_app");

@@ -10,7 +10,15 @@
 class UI
 {
 
-	static function button($name, $caption, $id = null, $value = null, $type = 'button', $class = null, $opts = null)
+	static protected function _openTag($type, $attr) {
+
+		$content = '<'. $type;
+	    foreach ($attr as $key =>$value) {
+		    $content .= " $key='$value'";
+	    }
+	    return $content.'>';
+	}
+	static function button($name, $caption, $id = null, $value = null, $type = 'button', $class = null, $attr = null)
 	{
 		if ($class == null) {
 			$class = 'ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only';
@@ -24,8 +32,8 @@ class UI
 		if ($id != null) {
 			$params['id'] = $id;
 		}
-		if (is_array($opts)) {
-			$params = array_merge($params, $opts);
+		if (is_array($attr)) {
+			$params = array_merge($params, $attr);
 		}
 		$content = '<button ';
 		foreach ($params as $key => $value) {
@@ -34,7 +42,19 @@ class UI
 		$content .= ">$caption</button>";
 		echo $content;
 	}
-
+	static function tdStart($id=null,$attr=null) {
+		if (!is_array($attr)) {
+			$attr=array();
+		}
+		if ($id != null) {
+			$attr['id']=$id;
+		}
+	    $content = self::_openTag('td',$attr);
+	    echo $content;
+	}
+static function tdEnd() {
+	echo '</td>';
+}
 	static function search($id, $label, $size = 50)
 	{
 		echo "
@@ -44,14 +64,14 @@ class UI
 	</div>";
 	}
 
-	static function divStart($id, $class = null, $opts = null)
+	static function divStart($id, $class = null, $attr = null)
 	{
 		$params['id'] = $id;
 		if ($class != null) {
 			$params['class'] = $class;
 		}
-		if (is_array($opts)) {
-			$params = array_merge($params, $opts);
+		if (is_array($attr)) {
+			$params = array_merge($params, $attr);
 		}
 		$content = '<div ';
 		foreach ($params as $key => $value) {
@@ -66,7 +86,7 @@ class UI
 		echo '</div>';
 	}
 
-	static function p($text, $params = array())
+	static function p($text, $attr = array())
 	{
 		static $open = false;
 		if (!$open) {
@@ -75,8 +95,8 @@ class UI
 		return;
 		}
 		$content = '<p ';
-		if (is_array($params)) {
-			foreach ($params as $key => $value) {
+		if (is_array($attr)) {
+			foreach ($attr as $key => $value) {
 				$content .= " $key='$value'";
 			}
 		}

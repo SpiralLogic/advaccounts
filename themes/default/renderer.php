@@ -27,8 +27,10 @@ get_jqueryui();
         $sel_app = $_SESSION['sel_app'];
         echo "<div id='content'>\n";
         if (!$no_menu) {
-            $applications = $_SESSION['App']->applications;
-            $this->sidemenu();
+
+	        $this->sidemenu();
+
+	        $applications = $_SESSION['App']->applications;
             echo "<div id='top'>\n";
             echo "<p>" . $db_connections[$_SESSION["wa_current_user"]->company]["name"] . " | " . $_SERVER['SERVER_NAME'] . " | " . $_SESSION["wa_current_user"]->name . "</p>\n";
             echo "<ul>\n";
@@ -79,7 +81,7 @@ get_jqueryui();
                 echo "<span class='date'>" . show_users_online() . "</span>\n";
             }
             echo "</div>\n";
-        
+
         }
 
         echo "</div>\n";
@@ -90,6 +92,7 @@ get_jqueryui();
     }
 function sidemenu() {
     global $path_to_root, $js_lib;
+
     if ($this->has_header) {
     echo '<div id="shortmenu" class="ui-widget-shadow ui-corner-all">
 <h3> <a href="#">Create</a></h3><div>
@@ -110,17 +113,7 @@ function sidemenu() {
 ';
 
     }
-    $js_lib[] = '	$(function() {
-		$( "#shortmenu" ).accordion({
-					autoHeight: false,
-			event: "mouseover"
-		}).fadeTo("slow",.75);
-		$( "#shortmenu" ).draggable().hover(function() {
-		    $(this).fadeTo("fast",1);},
-		    function() {
-		    $(this).fadeTo("fast",.75);});
-	});
-';
+
 }
     function display_applications(&$waapp) {
 

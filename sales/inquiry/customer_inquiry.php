@@ -235,16 +235,16 @@ function check_overdue($row)
 			.TB_PREF."debtors_master as debtor, "
 			.TB_PREF."cust_branch as branch
 		WHERE debtor.debtor_no = trans.debtor_no
-			AND trans.tran_date >= '$date_after'
-			AND trans.tran_date <= '$date_to'
-			AND trans.branch_code = branch.branch_code";
-
+		AND trans.branch_code = branch.branch_code";
+if ($_POST['reference'] != ALL_TEXT) {
+	$number_like = "%" . $_POST['reference'] . "%";
+	$sql .= " AND trans.reference LIKE " . db_escape($number_like);
+} else { $sql .= " AND trans.tran_date >= '$date_after'
+			AND trans.tran_date <= '$date_to'";
+}
    	if ($_POST['customer_id'] != ALL_TEXT)
    		$sql .= " AND trans.debtor_no = ".db_escape($_POST['customer_id']);
-if ($_POST['reference'] != ALL_TEXT) {
-    $number_like = "%" . $_POST['reference'] . "%";
-    $sql .= " AND trans.reference LIKE " . db_escape($number_like);
-}
+
 
 if ($_POST['filterType'] != ALL_TEXT)
    	{
@@ -287,7 +287,7 @@ $cols = array(
 	_("#") => array('fun'=>'trans_view', 'ord'=>''),
 	_("Order") => array('fun'=>'order_view'), 
 	_("Reference") => array('ord'=>''), 
-	_("Date") => array('name'=>'tran_date', 'type'=>'date', 'ord'=>''),
+	_("Date") => array('name'=>'tran_date', 'type'=>'date', 'ord'=>'desc'),
 	_("Due Date") => array('type'=>'date', 'fun'=>'due_date'),
 	_("Customer") => array('ord'=>''), 
 	_("Branch") => array('ord'=>''), 

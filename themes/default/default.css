@@ -884,3 +884,9 @@ td.tableheader3 {
 	font-size: 1em;
 
 }
+.center-content {
+	text-align:center;
+}
+.dialog-confirm {
+	display:none;
+}

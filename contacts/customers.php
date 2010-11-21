@@ -69,10 +69,12 @@ if (db_has_customers()) {
 	//	check_cells(_("Show inactive:"), 'show_inactive', null, true);
 	UI::search('customers', 'Customer:', 80);
 	if ($customer->id) {
-		UI::button('submit', 'Update Customer', 'btnCustomer', 'submit', 'submit', null, array('style' => 'margin:10px 0;'));
+		UI::button('submit', 'Update Customer', 'btnCustomer', 'submit', 'submit', 'ajaxsubmit', array('style' => 'margin:10px;'));
 	} else {
-		UI::button('submit', 'New Customer', 'btnCustomer', 'submit', 'submit', null, array('style' => 'margin:10px 0;'));
+		UI::button('submit', 'New Customer', 'btnCustomer', 'submit', 'submit', 'ajaxsubmit ui-helper-hidden', array('style' => 'margin:10px;'));
 	}
+	UI::button('cancel', 'Cancel', 'btnCancel', 'cancel', 'submit', 'ui-helper-hidden', array('style' => 'margin:10px;'));
+	//submit('submit', _("Update Customer"), _('Update customer data'), @$_REQUEST['popup'] ? true : 'default');
 	UI::divEnd();
 }
 
@@ -146,10 +148,16 @@ email_row(_("E-mail:"), 'acc_email', null, 40, 40);
 text_row(_("Phone Number:"), 'acc_phone', null, 40, 30);
 text_row(_("Secondary Phone Number:"), 'acc_phone2', null, 40, 30);
 text_row(_("Fax Number:"), 'acc_fax', null, 40, 30);
-table_section(2);
+table_section(2,false,'ui-widget');
+
 
 //table_section_title("<span class='ui-icon ui-icon-circle-plus'>"._("Contact log:")."</span>", 2, 'tableheader3');
-table_section_title(_("Contact log:") . "</span>", 2, 'tableheader3');
+table_section_title(_("Contact log:"), 2, 'tableheader3 ');
+start_row();
+UI::tdStart(null, array('class'=>'ui-widget-content center-content'));
+UI::button('addLog',"Add log entry",'addLog');
+UI::tdEnd();
+end_row();
 textarea_cells(null, null, null, 100, 30);
 end_outer_table(1);
 
@@ -171,6 +179,7 @@ $menu->startTab('Branches', 'Branches');
 print_r(json_encode($customer->branches));
 $menu->endTab();
 $menu->render();
+
 //$('#contactLog').dialog({width:700, modal:true,buttons: {Ok: function() {$( this ).dialog( 'close' );},'Cancel': function() {$( this ).dialog( 'close' );}}});;
 
 /*
