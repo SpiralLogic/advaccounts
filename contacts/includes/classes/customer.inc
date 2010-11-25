@@ -9,6 +9,7 @@
 
 class Customer extends Contact {
 
+
 	public $id = 0;
 	public $name = '';
 	public $address = '';
@@ -27,12 +28,10 @@ class Customer extends Contact {
 	public $inactive = 0;
 	public $debtor_ref = '';
 	public $branches = array();
+	public $accounts;
 
-	public $acc_contact_name='';
-
-	
 	public function __construct($id = null) {
-		if ($id != null || $id == 0) {
+		if ($id != null && $id != 0) {
 			$this->_read($id);
 		} else {
 			$this->_new();
@@ -64,8 +63,12 @@ class Customer extends Contact {
 	}
 
 	public function save($changes = null) {
+
 		if (!$this->setFromArray($changes) || !$this->_canProcess()) {
 			return false;
+		}
+		if (count($changes)) {
+			$this->accounts->save($changes);
 		}
 		if ($this->id == 0) {
 			return $this->_saveNew();
@@ -90,6 +93,7 @@ class Customer extends Contact {
 
 		db_query($sql, "The customer could not be updated");
 		update_record_status($this->id, $this->inactive, 'debtors_master', 'debtor_no');
+
 		commit_transaction();
 		$this->_status(true, 'Processing', "Customer has been updated.");
 		return true;
@@ -100,23 +104,24 @@ class Customer extends Contact {
 		$sql = "INSERT INTO " . TB_PREF . "debtors_master (name, debtor_ref, address, tax_id, email, dimension_id, dimension2_id,
 			curr_code, credit_status, payment_terms, discount, pymt_discount,credit_limit,
 			sales_type, notes) VALUES (" .
-		       db_escape($this->name) . ", " .
-		       db_escape($this->debtor_ref) . ", " .
-		       db_escape($this->address) . ", " .
-		       db_escape($this->taxId) . "," .
-		       db_escape($this->email) . ", " .
-		       db_escape($this->dimension_id) . ", " .
-		       db_escape($this->dimension2_id) . ", " .
-		       db_escape($this->curr_code) . ", " .
-		       db_escape($this->credit_status) . ", " .
-		       db_escape($this->payment_terms) . ", " .
-		       input_num($this->discount) / 100 . "," .
-		       input_num($this->pymt_discount) / 100 . ", " .
-		       input_num($this->credit_limit) . ", " .
-		       db_escape($this->sales_type) . ", " .
-		       db_escape($this->notes) . ")";
+				db_escape($this->name) . ", " .
+				db_escape($this->debtor_ref) . ", " .
+				db_escape($this->address) . ", " .
+				db_escape($this->taxId) . "," .
+				db_escape($this->email) . ", " .
+				db_escape($this->dimension_id) . ", " .
+				db_escape($this->dimension2_id) . ", " .
+				db_escape($this->curr_code) . ", " .
+				db_escape($this->credit_status) . ", " .
+				db_escape($this->payment_terms) . ", " .
+				input_num($this->discount) / 100 . "," .
+				input_num($this->pymt_discount) / 100 . ", " .
+				input_num($this->credit_limit) . ", " .
+				db_escape($this->sales_type) . ", " .
+				db_escape($this->notes) . ")";
 		db_query($sql, "The customer could not be added");
 		$this->id = db_insert_id();
+		$this->accounts->save();
 		commit_transaction();
 		$this->_status(true, 'Saving New', "A new customer has been added.");
 		return true;
@@ -127,10 +132,12 @@ class Customer extends Contact {
 		$this->id = $this->dimension_id = $this->dimension2_id = $this->inactive = 0;
 		$this->sales_type = $this->credit_status = -1;
 		$this->name = $this->address = $this->email = $this->taxId = $this->payment_terms = $this->notes = $this->debtor_ref = '';
+		$this->accounts = new Accounts($this->id);
+		$this->branches[0] = new Branch($this->id);
 		$this->curr_code = get_company_currency();
 		$this->discount = $this->pymt_discount = percent_format(0);
 		$this->credit_limit = price_format($SysPrefs->default_credit_limit());
-		$this->_status(true, '_new', 'Now working with a new customer');
+		$this->_status(true, 'Initialize new customer', 'Now working with a new customer');
 	}
 
 	protected function _read($id = null) {
@@ -145,10 +152,11 @@ class Customer extends Contact {
 			$this->_status(false, 'read', "Customer could not be found!");
 			return false;
 		}
-		$myrow = db_fetch($result);
+		$myrow = db_fetch_assoc($result);
 		$this->id = $id;
 		$this->setFromArray($myrow);
-		$this->branches = $this->_getBranches();
+		$this->_getBranches();
+		$this->_getAccounts();
 		$this->curr_code = get_company_currency();
 		$this->discount = $_POST['discount'] = $this->discount * 100;
 		$this->pymt_discount = $_POST['pymt_discount'] = $this->pymt_discount * 100;
@@ -199,33 +207,24 @@ class Customer extends Contact {
 
 	}
 
-	protected function _getBranches() {
-		$sql = "SELECT "
-		       . "b.branch_code, "
-		       . "b.branch_ref, "
-		       . "b.br_name, "
-		       . "b.contact_name, "
-		       . "s.salesman_name, "
-		       . "a.description, "
-		       . "b.phone, "
-		       . "b.fax, "
-		       . "b.email, "
-		       . "t.name AS tax_group_name, "
-		       . "b.inactive
-		FROM " . TB_PREF . "cust_branch b, "
-		       . TB_PREF . "debtors_master c, "
-		       . TB_PREF . "areas a, "
-		       . TB_PREF . "salesman s, "
-		       . TB_PREF . "tax_groups t
-		WHERE b.debtor_no=c.debtor_no
-		AND b.tax_group_id=t.id
-		AND b.area=a.area_code
-		AND b.salesman=s.salesman_code
-		AND b.debtor_no = " . db_escape($this->id);
-		$result = db_query($sql, 'Could not get customer branches.');
-		while ($row = db_fetch_assoc($result)) {
-			$this->branches[] = $row;
+	protected function _getAccounts() {
+		$this->accounts = new Accounts($this->id);
+		if ($this->accounts->accounts_id == 0 && $this->id > 0) {
+			$defaults = array(
+				'debtor_no'=>$this->id,
+				'email' => $this->email,
+				'br_address' => $this->address,
+				'br_name' => 'Accounts Department');
+			$this->accounts->save($defaults);
 		}
-		return $this->branches;
+	}
+
+	protected function _getBranches() {
+		$sql = "SELECT branch_code, br_name FROM " . TB_PREF . "cust_branch WHERE debtor_no=" . $this->id;
+		$result = db_query($sql, 'Couldn\'t retrieve any branches');
+		while ($row = db_fetch_assoc($result)) {
+			$this->branches[$row['branch_code']] = new Branch($row['branch_code']);
+		}
+		FB::info($this->branches);
 	}
 }

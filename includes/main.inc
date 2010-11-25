@@ -20,7 +20,8 @@ include_once($path_to_root . "/includes/db/comments_db.inc");
 include_once($path_to_root . "/includes/db/sql_functions.inc");
 include_once($path_to_root . "/includes/db/audit_trail_db.inc");
 //include_once($path_to_root . "/includes/validation.inc");
-
+include_once($path_to_root . "/includes/ui/ui_menu.inc");
+		
 include_once($path_to_root . "/admin/db/users_db.inc");
 include_once($path_to_root . "/includes/ui/ui_view.inc");
 include_once($path_to_root . "/includes/ui/ui_controls.inc");
@@ -49,7 +50,7 @@ function page($title, $no_menu = false, $is_index = false, $onload = "", $js = "
 
 function end_page($no_menu = false, $is_index = false, $hide_back_link = false) {
     global $path_to_root;
-    if ($_REQUEST['frame']) {
+    if (isset($_REQUEST['frame']) && $_REQUEST['frame']) {
         $nomenu = $is_index = $hide_back_link = true;
 
     }

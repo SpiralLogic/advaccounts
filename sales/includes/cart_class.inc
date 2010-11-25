@@ -240,6 +240,8 @@ class cart {
                 return write_sales_delivery($this, $policy);
             case ST_SALESORDER:
             case ST_SALESQUOTE:
+	        $_SESSION['Jobsboard'] = clone($this);
+
             if ($this->trans_no == 0) // new document
             {
                 return add_sales_order($this);

@@ -11,6 +11,7 @@
 		MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 		See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		* ********************************************************************* */
+
 $page_security = 'SA_CUSTOMER';
 $path_to_root = "..";
 include_once("includes/contacts.inc");
@@ -25,7 +26,7 @@ check_db_has_tax_groups(_("There are no tax groups defined in the system. At lea
 
 if (isset($_GET['debtor_no'])) {
 	$customer = new Customer($_GET['debtor_no']);
-} elseif (isset($_POST['id']) && $_POST['id'] != "") {
+} elseif (isset($_POST['id']) && !empty($_POST['id']) && !$_POST['submit']) {
 	$customer = new Customer($_POST['id']);
 } else {
 	$customer = new Customer();
@@ -39,6 +40,7 @@ if (isset($_POST['submit'])) {
 //--------------------------------------------------------------------------------------------
 function handle_submit() {
 	global $Ajax, $customer;
+	FB::info($_POST);
 	if (!$customer->save($_POST)) {
 		$status = $customer->getStatus();
 		display_error($status['message']);
@@ -141,13 +143,13 @@ $menu->startTab('Accounts', 'Accounts');
 start_outer_table($table_style2, 5);
 table_section(1);
 table_section_title(_("Accounts Details:"), 2, ' tableheader3 ');
-text_row(_("Customer Name:"), 'name', $customer->name, 40, 80);
-text_row(_("Contact Person:"), 'acc_contact_name', null, 40, 40);
-textarea_row(_("Billing Address:"), 'acc_address', null, 35, 5);
-email_row(_("E-mail:"), 'acc_email', null, 40, 40);
-text_row(_("Phone Number:"), 'acc_phone', null, 40, 30);
-text_row(_("Secondary Phone Number:"), 'acc_phone2', null, 40, 30);
-text_row(_("Fax Number:"), 'acc_fax', null, 40, 30);
+text_row(_("Customer Name:"), 'acc_br_name', $customer->accounts->br_name, 40, 80);
+text_row(_("Contact Person:"), 'acc_contact_name', $customer->accounts->contact_name, 40, 40);
+textarea_row(_("Billing Address:"), 'acc_br_address', $customer->accounts->br_address, 35, 5);
+email_row(_("E-mail:"), 'acc_email', $customer->accounts->email, 40, 40);
+text_row(_("Phone Number:"), 'acc_phone', $customer->accounts->phone, 40, 30);
+text_row(_("Secondary Phone Number:"), 'acc_phone2',$customer->accounts->phone2, 40, 30);
+text_row(_("Fax Number:"), 'acc_fax', $customer->accounts->fax, 40, 30);
 table_section(2,false,'ui-widget');
 
 
@@ -166,7 +168,7 @@ UI::p('New log entry:', array('class' => 'validateTips'));
 start_form();
 start_table();
 label_row('Date:', Now());
-text_row('Contact:', 'acc_contact_name', $customer->acc_contact_name, 40, 40);
+text_row('Contact:', 'acc_contact_name', $customer->accounts->contact_name, 40, 40);
 textarea_row('Entry:', 'log_entry', '', 100, 10);
 end_table();
 end_form();
@@ -176,8 +178,47 @@ UI::divEnd();
 $menu->endTab();
 
 $menu->startTab('Branches', 'Branches');
-print_r(json_encode($customer->branches));
+
+UI::select('branchList',$customer->branches);
+FB::info($customer->branches);
+$currentBranch = $customer->branches[0];
+start_outer_table($table_style2, 5);
+table_section(1);
+hidden('branch_code', $currentBranch->branch_code);
+table_section_title(_("Name and Contact"));
+text_row(_("Branch Name:"), 'br_name', $currentBranch->br_name, 35, 40);
+text_row(_("Branch Short Name:"), 'br_ref', $currentBranch->branch_ref, 30, 30);
+text_row(_("Contact Person:"), 'contact_name', $currentBranch->phone, 35, 40);
+text_row(_("Phone Number:"), 'phone', $currentBranch->phone, 32, 30);
+text_row(_("Secondary Phone Number:"), 'phone2', $currentBranch->phone2, 32, 30);
+text_row(_("Fax Number:"), 'fax', $currentBranch->fax, 32, 30);
+email_row(_("E-mail:"), 'email', $currentBranch->email, 35, 55);
+table_section_title(_("Sales"));
+sales_persons_list_row(_("Sales Person:"), 'salesman', $currentBranch->salesman);
+sales_areas_list_row(_("Sales Area:"), 'area', $currentBranch->area);
+sales_groups_list_row(_("Sales Group:"), 'group_no', $currentBranch->group_no, true);
+locations_list_row(_("Default Inventory Location:"), 'default_location', $currentBranch->default_location);
+shippers_list_row(_("Default Shipping Company:"), 'default_ship_via', $currentBranch->default_ship_via);
+tax_groups_list_row(_("Tax Group:"), 'tax_group_id', $currentBranch->tax_group_id);
+yesno_list_row(_("Disable this Branch:"), 'disable_trans', $currentBranch->disable_trans);
+table_section(2);
+table_section_title(_("GL Accounts"));
+// 2006-06-14. Changed gl_al_accounts_list to have an optional all_option 'Use Item Sales Accounts'
+gl_all_accounts_list_row(_("Sales Account:"), 'sales_account', $currentBranch->sales_account, false, false, true);
+gl_all_accounts_list_row(_("Sales Discount Account:"), 'sales_discount_account');
+gl_all_accounts_list_row(_("Accounts Receivable Account:"), 'receivables_account');
+gl_all_accounts_list_row(_("Prompt Payment Discount Account:"), 'payment_discount_account');
+table_section_title(_("Addresses"));
+textarea_row(_("Mailing Address:"), 'br_post_address', $currentBranch->br_post_address, 35, 4);
+textarea_row(_("Billing Address:"), 'br_address', $currentBranch->br_address, 35, 4);
+textarea_row(_("General Notes:"), 'notes', $currentBranch->notes, 35, 4);
+end_outer_table(1);
+end_form();
 $menu->endTab();
+
+$menu->startTab('Invoices','Invoices');
+$menu->endTab();
+
 $menu->render();
 
 //$('#contactLog').dialog({width:700, modal:true,buttons: {Ok: function() {$( this ).dialog( 'close' );},'Cancel': function() {$( this ).dialog( 'close' );}}});;

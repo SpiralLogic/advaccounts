@@ -455,7 +455,8 @@ function &new_db_pager($name, $sql, $coldef, $table = null, $key = null, $page_l
 		 ($_SERVER['REQUEST_METHOD'] == 'GET' || $_SESSION[$name]->sql != $sql)) {
 		unset($_SESSION[$name]); // kill pager if sql has changed
 	}
-	if (!isset($_SESSION[$name])) {
+  
+    if (!isset($_SESSION[$name])) {
 	    $_SESSION[$name] = new db_pager($sql, $name, $table, $page_len);
 		$_SESSION[$name]->main_tbl = $table;
 		$_SESSION[$name]->key = $key;
@@ -477,4 +478,11 @@ function refresh_pager($name)
 	if (isset($_SESSION[$name]))
 		$_SESSION[$name]->ready = false;
 }
-?>
+
+function countFilter($table=false,$feild=false,$where=false) {
+	if ($table && $where && $feild) {
+		$sql = "SELECT * FROM ".TB_PREF.$table." WHERE ".$feild." LIKE ".db_escape($where);
+	    $result = db_query($sql,'Couldnt do shit');
+	    return db_num_rows($result);
+	}
+}

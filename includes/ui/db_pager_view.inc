@@ -18,7 +18,7 @@ function pager_link($link_text, $url, $icon=false)
 		$link_text = set_icon($icon, $link_text);
 
 	$href = $path_to_root . $url;
-    $href = ($_REQUEST['frame']) ? "javascript:window.parent.location='$href'" : $path_to_root . $url;
+    $href = (isset($_REQUEST['frame']) && $_REQUEST['frame']) ? "javascript:window.parent.location='$href'" : $path_to_root . $url;
     
 	return "<a href=\"$href\">" . $link_text . "</a>";
 }

@@ -51,6 +51,13 @@ check_edit_conflicts();
 if (isset($_GET['AddedID'])) {
 
     $invoice_no = $_GET['AddedID'];
+    if ($_REQUEST['AddedJB']) {
+	    display_notification_centered(sprintf(_("Order # %d has been added to Jobs Board."), $order_no));
+    } else {
+	    display_notification_centered(sprintf(_("Order # %d has been entered."), $order_no));
+	    submenu_option(_("Add Job to Jobsboard"), "/jobsboard/jobsboard/addjob");
+    }
+
     $trans_type = ST_SALESINVOICE;
 
     display_notification(_("Selected deliveries has been processed"), true);

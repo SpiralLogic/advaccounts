@@ -30,13 +30,12 @@ if ($use_date_picker) {
 }
 
 if (get_post('type')) {
-    $trans_type = $_POST['type'];
+	$trans_type = $_POST['type'];
 } elseif (isset($_GET['type']) && $_GET['type'] == ST_SALESQUOTE) {
-    $trans_type = ST_SALESQUOTE;
+	$trans_type = ST_SALESQUOTE;
 } else {
-    $trans_type = ST_SALESORDER;
+	$trans_type = ST_SALESORDER;
 }
-
 if ($trans_type == ST_SALESORDER) {
     if (isset($_GET['OutstandingOnly']) && ($_GET['OutstandingOnly'] == true)) {
         $_POST['order_view_mode'] = 'OutstandingOnly';
@@ -215,6 +214,9 @@ end_table(1);
 //---------------------------------------------------------------------------------------------
 //	Orders inquiry table
 //
+if (isRefererCorrect() && !empty($_POST['ajaxsearch'])) {
+$searchArray = explode(' ', $_POST['ajaxsearch']);
+}
 $sql = "SELECT
 		sorder.order_no,
 
@@ -230,9 +232,17 @@ $sql = "SELECT
 		Sum(line.quantity) AS TotQuantity
 	FROM " . TB_PREF . "sales_orders as sorder, " . TB_PREF . "sales_order_details as line, " . TB_PREF . "debtors_master as debtor, " . TB_PREF . "cust_branch as branch
 		WHERE sorder.order_no = line.order_no
-		AND sorder.trans_type = line.trans_type
-		AND sorder.trans_type = $trans_type
-		AND sorder.debtor_no = debtor.debtor_no
+		AND sorder.trans_type = line.trans_type";
+if (isset($searchArray) && $searchArray[0] == 'o') {
+$sql .= " AND sorder.trans_type = 30 ";
+} elseif (isset($searchArray) && $searchArray[0] == 'q') {
+	$sql .= " AND sorder.trans_type = 32 ";
+} elseif (isset($searchArray)) {
+	$sql .= " AND ( sorder.trans_type = 30 OR sorder.trans_type = 32) ";
+} else {
+	$sql .= " AND sorder.trans_type = ".$trans_type;
+}
+	$sql .=" AND sorder.debtor_no = debtor.debtor_no
 		AND sorder.branch_code = branch.branch_code
 		AND debtor.debtor_no = branch.debtor_no";
 if ($_POST['customer_id'] != ALL_TEXT) $sql .= " AND sorder.debtor_no = " . db_escape($_POST['customer_id']);
@@ -243,9 +253,39 @@ if (isset($_POST['OrderNumber']) && $_POST['OrderNumber'] != "") {
 } elseif (isset($_POST['OrderReference']) && $_POST['OrderReference'] != "") {
     // search orders with reference like
     $number_like = "%" . $_POST['OrderReference'] . "%";
-    $sql .= " AND sorder.reference LIKE " . db_escape($number_like) . " GROUP BY sorder.order_no";
-} else { // ... or select inquiry constraints
-    if ($_POST['order_view_mode'] != 'DeliveryTemplates' && $_POST['order_view_mode'] != 'InvoiceTemplates') {
+    $sql .= " AND sorder.reference LIKE " . db_escape($number_like) . " GROUP BY sorder.order_no"; 
+} elseif (isRefererCorrect() && !empty($_POST['ajaxsearch'])) {
+
+	foreach ($searchArray as $ajaxsearch) {
+							$ajaxsearch = "%" . $ajaxsearch . "%";
+			$sql .= " AND (";
+			$sql .= " debtor.name LIKE " . db_escape($ajaxsearch);
+			if (countFilter('sales_orders','order_no',$ajaxsearch)>0) {
+				$sql .= " OR sorder.order_no LIKE " . db_escape($ajaxsearch);
+			    $_POST['OrderNumber'] = $_POST['ajaxsearch'];
+			}
+			if (countFilter('sales_orders', 'reference', $ajaxsearch) > 0) {
+				$sql .= " OR sorder.reference LIKE " . db_escape($ajaxsearch);
+				$_POST['reference'] = $_POST['ajaxsearch'];
+			}
+			if (countFilter('sales_orders', 'customer_ref', $ajaxsearch) > 0) {
+				$sql .= " OR sorder.customer_ref LIKE " . db_escape($ajaxsearch);
+			}
+
+			$sql .= " OR branch.br_name LIKE " . db_escape($ajaxsearch);
+			$sql .= ")";
+			}
+
+		$sql .= " GROUP BY sorder.ord_date,
+        sorder.order_no,
+				sorder.debtor_no,
+				sorder.branch_code,
+				sorder.customer_ref,
+
+				sorder.deliver_to";
+	}
+else { // ... or select inquiry constraints
+    if ($_POST['order_view_mode'] != 'DeliveryTemplates' && $_POST['order_view_mode'] != 'InvoiceTemplates' && !$_POST['ajaxsearch']) {
         $date_after = date2sql($_POST['OrdersAfterDate']);
         $date_before = date2sql($_POST['OrdersToDate']);
 
@@ -293,14 +333,14 @@ if ($_POST['order_view_mode'] == 'OutstandingOnly') {
     array_append($cols, array(array('insert' => true, 'fun' => 'edit_link'), array('insert' => true, 'fun' => 'order_link'), array('insert' => true, 'fun' => 'prt_link')));
 } elseif ($trans_type == ST_SALESORDER) {
     array_append($cols, array(_("Tmpl") => array('insert' => true, 'fun' => 'tmpl_checkbox'), array('insert' => true, 'fun' => 'edit_link'), array('insert' => true, 'fun' => 'prt_link2'), array('insert' => true, 'fun' => 'prt_link')));
-}
-;
-
+};
+FB::info($_SESSION['orders_tbl']);
 
 $table = & new_db_pager('orders_tbl', $sql, $cols, null, null, 0, _("Order #"));
 $table->set_marker('check_overdue', _("Marked items are overdue."));
-
+FB::info($_SESSION['orders_tbl']);
 $table->width = "80%";
+
 
 display_db_pager($table);
 submit_center('Update', _("Update"), true, '', null);

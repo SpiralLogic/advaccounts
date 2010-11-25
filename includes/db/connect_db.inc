@@ -123,7 +123,7 @@
         return mysql_error($conn);
     }
 
-    function db_insert_id($sqltrail) {
+    function db_insert_id($sqltrail=false) {
         global $db;
         if ($sqltrail) {
             return $_SESSION['db_info']['insert_id'];

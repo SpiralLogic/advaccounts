@@ -791,7 +791,7 @@ div.note_msg {
     width: 100%;
 }
 
-#shortmenu {
+#sidemenu {
     margin: 0;
 
     font-weight: bold;
@@ -805,7 +805,7 @@ div.note_msg {
 
 }
 
-#shortmenu p {
+#sidemenu p {
     margin: 0;
     font-family: Arial, sans-serif;
  
@@ -815,7 +815,7 @@ div.note_msg {
 div.banner a { display: block; margin: 0 0.5em }
 div.banner a + a { border-top: 2px groove #999 }
 */
-#shortmenu a, #shortmenu em {
+#sidemenu a, #sidemenu em {
     display: block;
     margin: 0.5em 0 ;
     /*  padding: 0.3em 0.4em;*/
@@ -824,26 +824,26 @@ white-space: nowrap;
 
 
 
-#shortmenu a:first-child {
+#sidemenu a:first-child {
     border-top: none
 }
 
 
-#shortmenu a:link {
+#sidemenu a:link {
     text-decoration: none;
 
 }
 
-#shortmenu a:visited {
+#sidemenu a:visited {
     text-decoration: none;
 
 }
 
-#shortmenu a:hover {
+#sidemenu a:hover {
 
 }
 
-#shortmenu img {
+#sidemenu img {
     height: 24px;
     float: none;
     vertical-align: middle

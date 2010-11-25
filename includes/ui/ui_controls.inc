@@ -209,7 +209,7 @@ function submenu_print($title, $type, $number, $id=null, $email=0, $extra=0)
 }
 //-----------------------------------------------------------------------------------
 
-function hyperlink_params($target, $label, $params, $center=true)
+function hyperlink_params($target, $label, $params='', $center=true)
 {
 	$id = default_focus();
 	

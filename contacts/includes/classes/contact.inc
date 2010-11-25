@@ -8,13 +8,16 @@
  */
 
 abstract class Contact {
+
+
 	// Current status of class, status as current state, process status error occurred, message for current state and if related variable if it applies
 	protected $_status = Array('status' => true, 'process' => 'construct', 'message' => 'Customer Initialised', 'var');
 
-
 	abstract protected function _canProcess();
 
-	abstract function save($changes=null);
+	abstract function save($changes = null);
+
+	abstract protected function _saveNew();
 
 	abstract protected function _new();
 
@@ -22,7 +25,7 @@ abstract class Contact {
 
 	abstract protected function _countTransactions();
 
-	protected function _status($status = null, $process = null, $message = '', $var=null) {
+	protected function _status($status = null, $process = null, $message = '', $var = null) {
 		if ($status === null || $process === null) {
 			$this->_status['status'] = false;
 			$this->_status['process'] = 'status';
@@ -31,10 +34,13 @@ abstract class Contact {
 			$this->_status['status'] = $status;
 			$this->_status['process'] = $process;
 			$this->_status['message'] = $message;
-		    if (!empty($var) && $var!=null) $this->_status['var']=$var;
+			if (!empty($var) && $var != null) {
+				$this->_status['var'] = $var;
+			}
 		}
 		return $this->_status;
 	}
+
 	public function getStatus() {
 		return $this->_status;
 	}
@@ -44,13 +50,16 @@ abstract class Contact {
 			$this->_status(false, 'setFromArray', 'Variable array was either not passed, empty or is not an array');
 			return false;
 		}
-		foreach ($changes as $var => $value) {
-			if (isset($this->$var))
-				$this->$var = $value;
+		$remainder = array();
+
+		foreach ($changes as $key => $value) {
+
+			(property_exists($this, $key)) ? $this->$key = $value : $remainder[$key] = $value;
 		}
+
+		$changes = $remainder;
+
 		return true;
 	}
-
-
 
 }

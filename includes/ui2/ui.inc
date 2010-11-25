@@ -10,7 +10,7 @@
 class UI
 {
 
-	static protected function _openTag($type, $attr) {
+	static protected function _openTag($type, $attr=array()) {
 
 		$content = '<'. $type;
 	    foreach ($attr as $key =>$value) {
@@ -85,8 +85,17 @@ static function tdEnd() {
 	{
 		echo '</div>';
 	}
-
-	static function p($text, $attr = array())
+static function select($id=false,$options=array(),$attr=array()) {
+	if ($id!==false) $params['id']=$id;
+    $params = array_merge($params, $attr);
+	$content = self::_openTag("select",$params);
+    foreach($options as $option => $value) {
+		$content.="<option value='$value'>$option</option>";
+    }
+    $content.= "</select>";
+    echo $content;
+}
+	static function p($text='', $attr = array())
 	{
 		static $open = false;
 		if (!$open) {

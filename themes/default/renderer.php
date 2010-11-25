@@ -23,13 +23,13 @@ protected $has_header = true;
 
     function menu_header($title, $no_menu, $is_index) {
         global $path_to_root, $help_base_url, $db_connections, $app_title, $version;
-get_jqueryui();
+		get_jqueryui();
         $sel_app = $_SESSION['sel_app'];
         echo "<div id='content'>\n";
         if (!$no_menu) {
-
-	        $this->sidemenu();
-
+	        if ($this->has_header) {
+	        Sidemenu::render();
+	       }
 	        $applications = $_SESSION['App']->applications;
             echo "<div id='top'>\n";
             echo "<p>" . $db_connections[$_SESSION["wa_current_user"]->company]["name"] . " | " . $_SERVER['SERVER_NAME'] . " | " . $_SESSION["wa_current_user"]->name . "</p>\n";
@@ -90,31 +90,6 @@ get_jqueryui();
 
 	
     }
-function sidemenu() {
-    global $path_to_root, $js_lib;
-
-    if ($this->has_header) {
-    echo '<div id="shortmenu" class="ui-widget-shadow ui-corner-all">
-<h3> <a href="#">Create</a></h3><div>
-<a href="'.$path_to_root.'/sales/sales_order_entry.php?NewQuotation=Yes">Quote</a>
-<a href="' . $path_to_root . '/sales/sales_order_entry.php?NewOrder=Yes">Order</a>
-<a href="' . $path_to_root . '/sales/sales_order_entry.php?NewInvoice=0">Direct Invoice</a>
-<a href="' . $path_to_root . '/purchasing/po_entry_items.php?NewOrder=Yes">Purchase Order</a>
-</div>
-<h3> <a href="#">Search</a></h3><div>
-<a href="' . $path_to_root . '/sales/inquiry/sales_orders_view.php?type=32">Quote</a>
-<a href="' . $path_to_root . '/sales/inquiry/sales_orders_view.php?type=30">Order</a>
-<a href="' . $path_to_root . '/sales/inquiry/customer_inquiry.php?">Invoice/Delivery</a>
-<a href="' . $path_to_root . '/purchasing/inquiry/po_search_completed.php?">Purchase Order</a></div>
-
-</div>
-
-
-';
-
-    }
-
-}
     function display_applications(&$waapp) {
 
         $selected_app = $waapp->get_selected_application();

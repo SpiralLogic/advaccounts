@@ -9,30 +9,47 @@
 
 class Accounts extends Branch {
 
+	public $accounts_id = 0;
+	public $br_name = 'Accounts Department';
+	public $branch_ref = 'accounts';
 
-	public function __construct($debtor_id = false) {
-		if ($debtor_id) {
-			$result = $this->_getAccounts($debtor_id);
-			if ($result !== true) {
-				$this->_new(array(
-					'debtor_id' => $debtor_id,
-					'branch_ref' => 'accounts'
-				));
+	public function __construct($debtor_no = false) {
+
+		if ($debtor_no === false) {
+			$this->_status(false, 'Initialise Account Information', 'Debtor not passed and not a new debtor.');
+			return false;
+		} elseif ($debtor_no == 0) {
+			$this->_new(array('debtor_no' => 0));
+			return true;
+		} elseif ($this->_getAccounts($debtor_no) === false) {
+			$this->_status(true, 'Retrieving customer accounts/ info', 'No accounts information for this Customer found');
+			$this->_new(array('debtor_no'=>$debtor_no));
+		    return false;
+		} elseif ($this->branch_code > 0) {
+			$this->accounts_id = &$this->branch_code;
+			return true;
+		}
+		return false;
+
+	}
+
+	public function save($changes = null) {
+		if (is_array($changes)) {
+			$tochange = array();
+			foreach ($changes as $key => $value) {
+				$tochange[str_ireplace('acc_', '', $key)] = $value;
 			}
 		}
-		$this->_status(false, 'Retrieving Accounts', 'No customer to retrieve accounts for.');
+		$result = parent::save($tochange);
+		$this->accounts_id = &$this->branch_code;
+	    return $result;
 	}
-
-	protected function _getAccounts($debtor_id = false) {
-		if (!$debtor_id) {
+	protected function _getAccounts($debtor_no = null) {
+		if ($debtor_no==null) {
+			$this->_status(false,'Retrieving Accounts','No Customer ID to retrieve accounts for');
 			return false;
 		}
-		$accounts_id = $this->_read(array('branch_ref' => 'accounts', 'debtor_no' => $debtor_id));
-		if (!$accounts_id) {
-			return false;
-		}
-		$this->_status(true, 'Retrieving Accounts', 'Customer Accounts successfully retrieved.');
-		return true;
-	}
+		return $this->_read(array('branch_ref' => 'accounts', 'debtor_no' => $debtor_no));
 
+	}
 }

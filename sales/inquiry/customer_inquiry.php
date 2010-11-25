@@ -30,7 +30,6 @@ if (isset($_GET['customer_id']))
 {
 	$_POST['customer_id'] = $_GET['customer_id'];
 }
-
 //------------------------------------------------------------------------------------------------
 
 start_form();
@@ -239,7 +238,27 @@ function check_overdue($row)
 if ($_POST['reference'] != ALL_TEXT) {
 	$number_like = "%" . $_POST['reference'] . "%";
 	$sql .= " AND trans.reference LIKE " . db_escape($number_like);
-} else { $sql .= " AND trans.tran_date >= '$date_after'
+}
+elseif (isRefererCorrect() && !empty($_POST['ajaxsearch'])) {
+	$ajaxsearch = "%" . $_POST['ajaxsearch'] . "%";
+	$sql .= " AND (";
+	$sql .= " debtor.name LIKE " . db_escape($ajaxsearch);
+	if (countFilter('debtor_trans', 'trans_no', $ajaxsearch) > 0) {
+		$sql .= " OR trans.trans_no LIKE " . db_escape($ajaxsearch);
+		$_POST['OrderNumber'] = $_POST['ajaxsearch'];
+	}
+	if (countFilter('debtor_trans', 'reference', $ajaxsearch) > 0) {
+		$sql .= " OR trans.reference LIKE " . db_escape($ajaxsearch);
+		$_POST['OrderNumber'] = $_POST['ajaxsearch'];
+	}
+	if (countFilter('debtor_trans', 'order_', $ajaxsearch) > 0) {
+		$sql .= " OR trans.order_ LIKE " . db_escape($ajaxsearch);
+		$_POST['OrderNumber'] = $_POST['ajaxsearch'];
+	}
+	$sql .= " OR branch.br_name LIKE " . db_escape($ajaxsearch);
+
+	$sql .= ") ";
+}else { $sql .= " AND trans.tran_date >= '$date_after'
 			AND trans.tran_date <= '$date_to'";
 }
    	if ($_POST['customer_id'] != ALL_TEXT)
