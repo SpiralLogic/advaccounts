@@ -29,6 +29,7 @@ $(function() {
 
 	var previous;
 	var ajaxRequest;
+
 	$("#search").delegate("a", "click",
 	                     function(event) {
 		                     event.preventDefault();
@@ -36,24 +37,31 @@ $(function() {
 		                     previous = $(this);
 		                     $(this).replaceWith(createInput($(this).attr('href'), $(this).attr('id')));
 		                     $('#' + $(this).attr('id')).focus();
-
+		                     // $("#replaced").hide().add($("#_page_body").clone());
 		                     return false;
 	                     });
 
-	$("#search input").live('change blur keyup', function(event) {
+	$("#search input").live("change blur keyup", function(event) {
 		var term = $(this).val();
-		if (event.type != 'blur' && (term.length > 1)) {
+		if (event.type != "blur" && term.length > 1 && event.which != 13 && event.which < 123) {
 			if (ajaxRequest && event.type == 'keyup') {
 				ajaxRequest.abort();
 			}
 			ajaxRequest = $.post(
 					$(this).data("url"),
-			{ ajaxsearch: term },
+			{ ajaxsearch: term, limit: true },
 			                    function(data) {
 				                    var content = $('#_page_body', data);
 				                    $("#_page_body", document).replaceWith(content);
+
 			                    }
 					);
 		}
 		if (event.type != 'keyup') {
-			$(this).replaceWith(previous);}});});
+			$(this).replaceWith(previous);
+			//$("#_page_body").replaceWith($("#replaced").clone());
+		}
+
+	});
+
+});

@@ -225,6 +225,6 @@ class Customer extends Contact {
 		while ($row = db_fetch_assoc($result)) {
 			$this->branches[$row['branch_code']] = new Branch($row['branch_code']);
 		}
-		FB::info($this->branches);
+		
 	}
 }

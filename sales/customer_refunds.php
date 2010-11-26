@@ -116,13 +116,13 @@ function can_process() {
         return false;
     }
 
-    if (!check_num('amount',null,0)) {
+    if (!check_num('amount',0,null)) {
         display_error(_("The entered amount is invalid or positive and cannot be processed."));
         set_focus('amount');
         return false;
     }
 
-    if (isset($_POST['charge']) && !check_num('charge',nu0)) {
+    if (isset($_POST['charge']) && !check_num('charge',0)) {
         display_error(_("The entered amount is invalid or negative and cannot be processed."));
         set_focus('charge');
         return false;
@@ -153,13 +153,13 @@ function can_process() {
     }
 
     //if ((input_num('amount') - input_num('discount') <= 0)) {
-    if (input_num('amount') >= 0) {
+  /*  if (input_num('amount') >= 0) {
         display_error(_("The balance of the amount and discount is zero or positive. Please enter valid amounts."));
         set_focus('discount');
         return false;
-    }
+    }*/
 
-    $_SESSION['alloc']->amount = input_num('amount');
+    $_SESSION['alloc']->amount = -1*input_num('amount');
 
     if (isset($_POST["TotalNumberOfAllocs"])) {
         return check_allocations();
@@ -279,7 +279,7 @@ if (isset($_POST['HoldAccount']) && $_POST['HoldAccount'] != 0) {
 
     if ($cust_currency == $bank_currency) {
         div_start('alloc_tbl');
-        show_allocatable(false);
+        show_allocatable(true);
         div_end();
     }
 

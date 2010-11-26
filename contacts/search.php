@@ -18,7 +18,7 @@ if (isset($_GET['term'])) {
 }
  elseif (isset ($_GET['id'])) {
 	 $data = new Customer($_GET['id']);
-     FB::info($data);
+
 }
 if (isset($_GET['id']) && isset($_GET{'branch'})) {
 

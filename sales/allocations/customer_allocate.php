@@ -99,6 +99,7 @@ if (isset($_POST['Cancel']))
 if (isset($_GET['trans_no']) && isset($_GET['trans_type']))
 {
 	clear_allocations();
+
 	$_SESSION['alloc'] = new allocation($_GET['trans_type'], $_GET['trans_no']);
 }
 

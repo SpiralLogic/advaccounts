@@ -297,7 +297,7 @@ if ($_POST['filterType'] != ALL_TEXT)
 				trans.ov_freight + trans.ov_discount - trans.alloc > 0) ";
     	}
    	}
-
+FB::info($_SESSION);
 //------------------------------------------------------------------------------------------------
 db_query("set @bal:=0");
 

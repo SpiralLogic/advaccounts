@@ -84,8 +84,8 @@ class Sidemenu {
 
 			echo '<div id="sidemenu" class="ui-widget-shadow ui-corner-all">
 <h3> <a href="#">Search</a></h3><div id="search">
-<a id="quotes" href="' . $path_to_root . '/sales/inquiry/sales_orders_view.php?type=32">Quote</a>
-<a id="orders" href="' . $path_to_root . '/sales/inquiry/sales_orders_view.php?type=30">Order</a>
+
+<a id="orders" href="' . $path_to_root . '/sales/inquiry/sales_orders_view.php?type=30">Orders/Quotes</a>
 <a id="invoices" href="' . $path_to_root . '/sales/inquiry/customer_inquiry.php?">Invoice/Delivery</a>
 <a id="purchaseOrders" href="' . $path_to_root . '/purchasing/inquiry/po_search_completed.php?">Purchase Order</a></div>
 
@@ -96,8 +96,7 @@ class Sidemenu {
 <a href="' . $path_to_root . '/purchasing/po_entry_items.php?NewOrder=Yes">Purchase Order</a>
 </div>
 </div>
-
-
+<div id="replaced"></div>
 ';
 
 	}

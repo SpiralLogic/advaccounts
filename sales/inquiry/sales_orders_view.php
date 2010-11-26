@@ -257,8 +257,9 @@ if (isset($_POST['OrderNumber']) && $_POST['OrderNumber'] != "") {
 } elseif (isRefererCorrect() && !empty($_POST['ajaxsearch'])) {
 
 	foreach ($searchArray as $ajaxsearch) {
-							$ajaxsearch = "%" . $ajaxsearch . "%";
-			$sql .= " AND (";
+		if (empty($ajaxsearch)) continue;
+		$ajaxsearch = "%" . $ajaxsearch . "%";
+		$sql .= " AND (";
 			$sql .= " debtor.name LIKE " . db_escape($ajaxsearch);
 			if (countFilter('sales_orders','order_no',$ajaxsearch)>0) {
 				$sql .= " OR sorder.order_no LIKE " . db_escape($ajaxsearch);
@@ -311,7 +312,6 @@ else { // ... or select inquiry constraints
 				sorder.debtor_no,
 				sorder.branch_code,
 				sorder.customer_ref,
-
 				sorder.deliver_to";
 }
 
@@ -334,11 +334,10 @@ if ($_POST['order_view_mode'] == 'OutstandingOnly') {
 } elseif ($trans_type == ST_SALESORDER) {
     array_append($cols, array(_("Tmpl") => array('insert' => true, 'fun' => 'tmpl_checkbox'), array('insert' => true, 'fun' => 'edit_link'), array('insert' => true, 'fun' => 'prt_link2'), array('insert' => true, 'fun' => 'prt_link')));
 };
-FB::info($_SESSION['orders_tbl']);
+
 
 $table = & new_db_pager('orders_tbl', $sql, $cols, null, null, 0, _("Order #"));
 $table->set_marker('check_overdue', _("Marked items are overdue."));
-FB::info($_SESSION['orders_tbl']);
 $table->width = "80%";
 
 
@@ -346,5 +345,6 @@ display_db_pager($table);
 submit_center('Update', _("Update"), true, '', null);
 
 end_form();
+
 end_page();
 ?>

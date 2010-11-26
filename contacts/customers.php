@@ -40,7 +40,7 @@ if (isset($_POST['submit'])) {
 //--------------------------------------------------------------------------------------------
 function handle_submit() {
 	global $Ajax, $customer;
-	FB::info($_POST);
+
 	if (!$customer->save($_POST)) {
 		$status = $customer->getStatus();
 		display_error($status['message']);
@@ -180,7 +180,7 @@ $menu->endTab();
 $menu->startTab('Branches', 'Branches');
 
 UI::select('branchList',$customer->branches);
-FB::info($customer->branches);
+
 $currentBranch = $customer->branches[0];
 start_outer_table($table_style2, 5);
 table_section(1);

@@ -15,6 +15,11 @@
 //  any form.
 //
 //	View definition you will find in the following file:
+//require_once("$path_to_root/includes/ChromePHP.php");
+//CP::useFile('/tmp/chromelogs', $path_to_root.'/chromelogs');
+
+require_once('FirePHPCore/fb.php');
+require_once($path_to_root . "/includes/firephp.php");
 include_once($path_to_root."/includes/ui/db_pager_view.inc");
 
 class db_pager {
@@ -155,7 +160,7 @@ class db_pager {
 	    $sql = $this->_sql_gen(false);
 
 	    $result = db_query($sql, 'Error browsing database: '.$sql );
-
+	    
 	    if ($result) {
 		// setting field names for subsequent queries
 			$c = 0;
@@ -297,7 +302,7 @@ class db_pager {
 	    $offset = ($this->curr_page - 1) * $page_len;
 
 	    $sql .= " LIMIT $offset, $page_len";
-
+	
 		return $sql;
 		
 	}
@@ -311,6 +316,7 @@ class db_pager {
 	    if ($this->ready == false ) {
 			$sql = $this->_sql_gen(true);
 			$result = db_query($sql, 'Error reading record set');
+			
 			if ($result == false) 
 				return false;
 			$row = db_fetch_row($result);
@@ -462,13 +468,9 @@ function &new_db_pager($name, $sql, $coldef, $table = null, $key = null, $page_l
 		$_SESSION[$name]->key = $key;
 		$_SESSION[$name]->set_sql($sql);
 		$_SESSION[$name]->set_columns($coldef);
-
         $_SESSION[$name]->sort_table($sort);
-
 	}
-	
 	return  $_SESSION[$name];
-
 }
 //
 //	Force pager initialization.
@@ -481,7 +483,7 @@ function refresh_pager($name)
 
 function countFilter($table=false,$feild=false,$where=false) {
 	if ($table && $where && $feild) {
-		$sql = "SELECT * FROM ".TB_PREF.$table." WHERE ".$feild." LIKE ".db_escape($where);
+		$sql = "SELECT * FROM ".TB_PREF.$table." WHERE ".$feild." LIKE ".db_escape($where). " LIMIT 1";
 	    $result = db_query($sql,'Couldnt do shit');
 	    return db_num_rows($result);
 	}

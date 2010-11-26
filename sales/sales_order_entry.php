@@ -479,7 +479,7 @@ function handle_new_item() {
 		return;
 	}
 
-FB::info($_POST);
+
 	add_to_order($_SESSION['Items'], $_POST['stock_id'], input_num('qty'), input_num('price'), input_num('Disc') / 100, $_POST['stock_id_text']);
 
 

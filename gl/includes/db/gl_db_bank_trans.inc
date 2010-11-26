@@ -39,7 +39,7 @@ function add_bank_trans($type, $trans_no, $bank_act, $ref, $date_,
 
 	$sql = "INSERT INTO ".TB_PREF."bank_trans (type, trans_no, bank_act, ref,
 		trans_date, amount, person_type_id, person_id, undeposited) ";
-$undeposited = ($bank_act==5) ? 1 : 0;
+$undeposited = ($bank_act==5 && $type==12) ? 1 : 0;
 	$sql .= "VALUES ($type, $trans_no, '$bank_act', ".db_escape($ref).", '$sqlDate',
 		".db_escape($amount_bank).", ".db_escape($person_type_id)
 		.", ". db_escape($person_id).", ". db_escape($undeposited).")";
