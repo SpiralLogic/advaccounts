@@ -7,12 +7,12 @@
  */
 $(function() {
     var customer = new Object();
-    var resetState = function (newcustomer) {
+    var resetState = function () {
         $(".ui-state-highlight").each(
                                      function() {
-                                         if (feildsChanged>0 && !newcustomer) this.value = $(this).data('init');
+                                         if (feildsChanged>0 ) this.value = $(this).data('init');
                                      }).removeClass("ui-state-highlight");
-        if (newcustomer) {
+        if (customer.id==0) {
         $("#tabs input, #tabs textarea").empty();
         }
         window.onbeforeunload = function () {
@@ -133,7 +133,7 @@ var feildsChanged=0;
     var btnCancel = $("#btnCancel").button().click(function() {
 
         if (feildsChanged == 0)
-        resetState(true); resetState(false);
+        resetState(); resetState();
         return false;
     });
     var btnCustomer = $("#btnCustomer").button().click(function() {

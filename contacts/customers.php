@@ -205,9 +205,9 @@ table_section(2);
 table_section_title(_("GL Accounts"));
 // 2006-06-14. Changed gl_al_accounts_list to have an optional all_option 'Use Item Sales Accounts'
 gl_all_accounts_list_row(_("Sales Account:"), 'sales_account', $currentBranch->sales_account, false, false, true);
-gl_all_accounts_list_row(_("Sales Discount Account:"), 'sales_discount_account');
-gl_all_accounts_list_row(_("Accounts Receivable Account:"), 'receivables_account');
-gl_all_accounts_list_row(_("Prompt Payment Discount Account:"), 'payment_discount_account');
+gl_all_accounts_list_row(_("Sales Discount Account:"), 'sales_discount_account', $currentBranch->sales_discount_account);
+gl_all_accounts_list_row(_("Accounts Receivable Account:"), 'receivables_account', $currentBranch->receivables_account);
+gl_all_accounts_list_row(_("Prompt Payment Discount Account:"), 'payment_discount_account', $currentBranch->payment_discount_account);
 table_section_title(_("Addresses"));
 textarea_row(_("Mailing Address:"), 'br_post_address', $currentBranch->br_post_address, 35, 4);
 textarea_row(_("Billing Address:"), 'br_address', $currentBranch->br_address, 35, 4);
