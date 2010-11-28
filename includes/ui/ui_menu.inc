@@ -96,7 +96,7 @@ class Sidemenu {
 <a href="' . $path_to_root . '/purchasing/po_entry_items.php?NewOrder=Yes">Purchase Order</a>
 </div>
 </div>
-<div id="replaced"></div>
+
 ';
 
 	}

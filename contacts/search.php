@@ -16,12 +16,12 @@ if (isset($_GET['term'])) {
 		$data[] = $row;
 	}
 }
- elseif (isset ($_GET['id'])) {
-	 $data = new Customer($_GET['id']);
+ elseif (isset ($_POST['id'])) {
+	 $data = new Customer($_POST['id']);
 
 }
-if (isset($_GET['id']) && isset($_GET{'branch'})) {
-
+if (isset($_POST['branch_code'])) {
+  $data = new Branch(array('branch_code'=>$_POST['branch_code']));
 
 }
 

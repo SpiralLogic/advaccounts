@@ -101,6 +101,10 @@ function prt_link($row)
 
 //---------------------------------------------------------------------------------------------
 
+if (isRefererCorrect() && !empty($_POST['ajaxsearch'])) {
+    $searchArray = explode(' ', $_POST['ajaxsearch']);
+    unset($_POST['supplier_id']);
+}
 $sql = "SELECT 
 	porder.order_no, 
 	porder.reference, 
@@ -119,7 +123,30 @@ $sql = "SELECT
 	AND porder.supplier_id = supplier.supplier_id
 	AND location.loc_code = porder.into_stock_location ";
 
-if (isset($order_number) && $order_number != "")
+if (isRefererCorrect() && !empty($_POST['ajaxsearch'])) {
+
+    foreach ($searchArray as $ajaxsearch) {
+        if (empty($ajaxsearch)) continue;
+        $ajaxsearch = "%" . $ajaxsearch . "%";
+        $sql .= " AND (";
+        $sql .= " supplier.supp_name LIKE " . db_escape($ajaxsearch);
+        if (countFilter('purch_orders', 'order_no', $ajaxsearch) > 0) {
+            $sql .= " OR porder.order_no LIKE " . db_escape($ajaxsearch);
+
+        }
+        if (countFilter('purch_orders', 'reference', $ajaxsearch) > 0) {
+            $sql .= " OR porder.reference LIKE " . db_escape($ajaxsearch);
+
+        }
+        if (countFilter('purch_orders', 'requisition_no', $ajaxsearch) > 0) {
+            $sql .= " OR porder.requisition_no LIKE " . db_escape($ajaxsearch);
+
+        }
+
+        $sql .= " OR location.location_name LIKE " . db_escape($ajaxsearch);
+        $sql .= ")";
+    }
+} elseif (isset($order_number) && $order_number != "")
 {
 	$sql .= "AND porder.reference LIKE ".db_escape('%'. $order_number . '%');
 }

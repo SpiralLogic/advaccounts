@@ -678,7 +678,7 @@ function customer_branches_list($customer_id, $name, $selected_id = null, $spec_
     global $all_items;
 
     $sql = "SELECT branch_code, branch_ref FROM " . TB_PREF . "cust_branch
-		WHERE debtor_no='" . $customer_id . "' ";
+		WHERE branch_ref <> 'accounts' AND debtor_no='" . $customer_id . "' ";
 
     if ($editkey) {
         set_editor('branch', $name, $editkey);

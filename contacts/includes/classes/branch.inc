@@ -83,6 +83,7 @@ class Branch extends Contact {
 			$this->_status(false,'Retrieving  Branch','No results from query');
 			return false;
 		}
+     
 		$myrow = db_fetch_assoc($result);
 		$this->setFromArray($myrow);
 	    return true;
@@ -97,6 +98,7 @@ class Branch extends Contact {
 		if (!$this->setFromArray($changes) || !$this->_canProcess()) {
 			return false;
 		}
+
 		if ($this->branch_code == 0) {
 			return $this->_saveNew();
 		}
@@ -104,6 +106,7 @@ class Branch extends Contact {
 		$sql = "UPDATE " . TB_PREF . "cust_branch SET
 			br_name=" . db_escape($this->br_name) . ",
 			br_address=" . db_escape($this->br_address) . ",
+			br_post_address=" . db_escape($this->br_post_address).", 
 			area=" . db_escape($this->area) . ",
 			salesman=" . db_escape($this->salesman) . ",
 			phone=" . db_escape($this->phone) . ",

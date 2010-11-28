@@ -139,7 +139,6 @@ $sql = "SELECT
 	AND (line.quantity_ordered > line.quantity_received) ";
 
 if ($_POST['supplier_id'] != ALL_TEXT) $sql .= " AND supplier.supplier_id = " . db_escape($_POST['supplier_id']);
-
 if (isset($order_number) && $order_number != "")
 {
 	$sql .= "AND porder.reference LIKE ".db_escape('%'. $order_number . '%');

@@ -263,14 +263,15 @@ if (isset($_POST['OrderNumber']) && $_POST['OrderNumber'] != "") {
 			$sql .= " debtor.name LIKE " . db_escape($ajaxsearch);
 			if (countFilter('sales_orders','order_no',$ajaxsearch)>0) {
 				$sql .= " OR sorder.order_no LIKE " . db_escape($ajaxsearch);
-			    $_POST['OrderNumber'] = $_POST['ajaxsearch'];
+			    $_POST['OrderNumber'] = $ajaxsearch;
 			}
 			if (countFilter('sales_orders', 'reference', $ajaxsearch) > 0) {
 				$sql .= " OR sorder.reference LIKE " . db_escape($ajaxsearch);
-				$_POST['reference'] = $_POST['ajaxsearch'];
+				$_POST['reference'] = $ajaxsearch;
 			}
 			if (countFilter('sales_orders', 'customer_ref', $ajaxsearch) > 0) {
 				$sql .= " OR sorder.customer_ref LIKE " . db_escape($ajaxsearch);
+                $_POST['customer_ref']=$ajaxsearch;
 			}
 
 			$sql .= " OR branch.br_name LIKE " . db_escape($ajaxsearch);

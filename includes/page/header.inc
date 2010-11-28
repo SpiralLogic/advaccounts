@@ -44,7 +44,7 @@ function help_url($context=null)
 		.urlencode(strtr(ucwords($help_page_url), array(' '=>'', '/'=>'', '&'=>'And')))
 		.'&ctxhelp=1&lang='.$country;
 }
-
+ 
 function send_scripts()
 {
     global $js_lib, $js_static, $js_path, $js_userlib, $comp_path,

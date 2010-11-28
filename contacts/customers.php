@@ -26,7 +26,7 @@ check_db_has_tax_groups(_("There are no tax groups defined in the system. At lea
 
 if (isset($_GET['debtor_no'])) {
 	$customer = new Customer($_GET['debtor_no']);
-} elseif (isset($_POST['id']) && !empty($_POST['id']) && !$_POST['submit']) {
+} elseif (isset($_POST['id']) && !empty($_POST['id']) ) {
 	$customer = new Customer($_POST['id']);
 } else {
 	$customer = new Customer();
@@ -65,7 +65,7 @@ if (isset($_POST['delete'])) {
 start_form();
 
 if (db_has_customers()) {
-	UI::divStart('search', null, array('style' => 'text-align:center; '));
+	UI::divStart('custsearch', null, array('style' => 'text-align:center; '));
 
 	//customer_list_cells(_("Select a customer: "), 'customer_id', null, _('New customer'), true, check_value('show_inactive'));
 	//	check_cells(_("Show inactive:"), 'show_inactive', null, true);

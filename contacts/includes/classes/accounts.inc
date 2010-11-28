@@ -34,13 +34,16 @@ class Accounts extends Branch {
 	}
 
 	public function save($changes = null) {
+     
 		if (is_array($changes)) {
 			$tochange = array();
 			foreach ($changes as $key => $value) {
+                if (substr($key,0,4)=='acc_')
 				$tochange[str_ireplace('acc_', '', $key)] = $value;
 			}
 		}
-		$result = parent::save($tochange);
+
+        $result = parent::save($tochange);
 		$this->accounts_id = &$this->branch_code;
 	    return $result;
 	}

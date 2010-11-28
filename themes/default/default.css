@@ -587,7 +587,7 @@ img {
 }
 */
 /* main wrapper */
-#wrapper {
+#wrapper, #results {
     clear: left;
     width: 100%;
     background: #fff url(images/wrapbg.gif) repeat-x;
@@ -598,7 +598,7 @@ img {
 }
 
 /*#wrapper li a { background-image: url(images/bullet.png); background-repeat: no-repeat; background-position: center left; font-size: 12px; padding: 0 0 0 20px; }*/
-#wrapper li a.left {
+#wrapper li a.left, #results li a.left {
     background-image: url(images/bullet.png);
     background-repeat: no-repeat;
     background-position: center left;
@@ -606,7 +606,7 @@ img {
     padding: 0 0 0 20px;
 }
 
-#wrapper li a.right {
+#wrapper li a.right, #results li a.right {
     background-image: url(images/bullet.png);
     background-repeat: no-repeat;
     background-position: center right;
@@ -614,7 +614,7 @@ img {
     padding: 0 20px 0 20px;
 }
 
-#wrapper li .empty {
+#wrapper li .empty, #results li .empty {
     font-size: 12px;
     padding: 0 0 0 20px;
 }
@@ -889,4 +889,7 @@ td.tableheader3 {
 }
 .dialog-confirm {
 	display:none;
+}
+#search input {
+
 }

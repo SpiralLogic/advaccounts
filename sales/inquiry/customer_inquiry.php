@@ -93,7 +93,7 @@ function display_customer_summary($customer_record)
 //------------------------------------------------------------------------------------------------
 
 div_start('totals_tbl');
-if ($_POST['customer_id'] != "" && $_POST['customer_id'] != ALL_TEXT)
+if ($_POST['customer_id'] != "" && $_POST['customer_id'] != ALL_TEXT && !isset($_POST['ajaxsearch']))
 {
 	$customer_record = get_customer_details($_POST['customer_id'], $_POST['TransToDate']);
     display_customer_summary($customer_record);
@@ -206,7 +206,18 @@ function check_overdue($row)
 //------------------------------------------------------------------------------------------------
     $date_after = date2sql($_POST['TransAfterDate']);
     $date_to = date2sql($_POST['TransToDate']);
-
+if (isRefererCorrect() && !empty($_POST['ajaxsearch'])) {
+    $searchArray = explode(' ', $_POST['ajaxsearch']);
+    unset($_POST['customer_id']);
+    unset($_POST['filterType']);
+    if ($searchArray[0] == 'd') {
+        $_POST['filterType']=5;
+    } elseif ($searchArray[0] == 'i') {
+            $_POST['filterType'] = 1;
+    } elseif ($searchArray[0] == 'p') {
+        $_POST['filterType'] = 3;
+    }
+}
   $sql = "SELECT 
   		trans.type, 
 		trans.trans_no, 
@@ -235,31 +246,36 @@ function check_overdue($row)
 			.TB_PREF."cust_branch as branch
 		WHERE debtor.debtor_no = trans.debtor_no
 		AND trans.branch_code = branch.branch_code";
-if ($_POST['reference'] != ALL_TEXT) {
-	$number_like = "%" . $_POST['reference'] . "%";
-	$sql .= " AND trans.reference LIKE " . db_escape($number_like);
-}
-elseif (isRefererCorrect() && !empty($_POST['ajaxsearch'])) {
-	$ajaxsearch = "%" . $_POST['ajaxsearch'] . "%";
-	$sql .= " AND (";
+
+if (isRefererCorrect() && !empty($_POST['ajaxsearch'])) {
+
+    foreach ($searchArray as $ajaxsearch) {
+        if (empty($ajaxsearch)) continue;
+        $ajaxsearch = "%" . $ajaxsearch . "%";
+        $sql .= " AND (";
 	$sql .= " debtor.name LIKE " . db_escape($ajaxsearch);
 	if (countFilter('debtor_trans', 'trans_no', $ajaxsearch) > 0) {
 		$sql .= " OR trans.trans_no LIKE " . db_escape($ajaxsearch);
-		$_POST['OrderNumber'] = $_POST['ajaxsearch'];
+	//	$_POST['OrderNumber'] = $ajaxsearch;
 	}
 	if (countFilter('debtor_trans', 'reference', $ajaxsearch) > 0) {
 		$sql .= " OR trans.reference LIKE " . db_escape($ajaxsearch);
-		$_POST['OrderNumber'] = $_POST['ajaxsearch'];
+	//	$_POST['reference'] = $ajaxsearch;
 	}
 	if (countFilter('debtor_trans', 'order_', $ajaxsearch) > 0) {
 		$sql .= " OR trans.order_ LIKE " . db_escape($ajaxsearch);
-		$_POST['OrderNumber'] = $_POST['ajaxsearch'];
 	}
-	$sql .= " OR branch.br_name LIKE " . db_escape($ajaxsearch);
+
+    $sql .= " OR branch.br_name LIKE " . db_escape($ajaxsearch);
 
 	$sql .= ") ";
+    }
 }else { $sql .= " AND trans.tran_date >= '$date_after'
 			AND trans.tran_date <= '$date_to'";
+}
+if ($_POST['reference'] != ALL_TEXT) {
+    $number_like = "%" . $_POST['reference'] . "%";
+    $sql .= " AND trans.reference LIKE " . db_escape($number_like);
 }
    	if ($_POST['customer_id'] != ALL_TEXT)
    		$sql .= " AND trans.debtor_no = ".db_escape($_POST['customer_id']);
@@ -297,7 +313,7 @@ if ($_POST['filterType'] != ALL_TEXT)
 				trans.ov_freight + trans.ov_discount - trans.alloc > 0) ";
     	}
    	}
-FB::info($_SESSION);
+
 //------------------------------------------------------------------------------------------------
 db_query("set @bal:=0");
 

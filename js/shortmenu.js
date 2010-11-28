@@ -5,22 +5,37 @@
  * Time: 3:30 AM
  * To change this template use File | Settings | File Templates.
  */
+
 $(function() {
-	$("#sidemenu").accordion({
-		autoHeight: false,
-		event: "mouseover"
-	}).fadeTo("slow", .75);
-	$("#sidemenu").draggable().hover(
-	                                function() {
-		                                $(this).fadeTo("fast", 1);
-	                                },
-	                                function() {
-		                                $(this).fadeTo("fast", .75);
-	                                });
+console.log('dom loaded');
+    var sidemenu = $("#sidemenu").draggable().accordion({
+        autoHeight: false,
+        event: "mouseover"
+    }).fadeTo("slow", .75).hover(
+                                function() {
+                                    $(this).fadeTo("fast", 1);
+                                },
+                                function() {
+                                    $(this).fadeTo("fast", .75);
+                                });
+	var sidemenuOn = function() { sidemenu.accordion("enable");
+        sidemenu.find("h3 a").unbind('click');
+    };
+
+    var sidemenuOff = function() {
+        
+        sidemenu.accordion("disable");
+
+        sidemenu.find("h3 a").click(function() {
+
+        $("#results").detach()
+        $("#wrapper").show(); }
+    )}
+
 
 	function createInput(url, id) {
 
-		input = "<input type='text' value='' maxlength='18'"
+		input = "<input type='text' value='' size='14' maxlength='18'"
 				+ " id='" + id + "'"
 				+ " data-url='" + url + "'"
 				+ ">";
@@ -32,14 +47,14 @@ $(function() {
 
 	$("#search").delegate("a", "click",
 	                     function(event) {
+                             sidemenuOff();
 		                     event.preventDefault();
 		                     $("#search input").trigger('blur');
 		                     previous = $(this);
 		                     $(this).replaceWith(createInput($(this).attr('href'), $(this).attr('id')));
 		                     $('#' + $(this).attr('id')).focus();
-		                     // $("#replaced").hide().add($("#_page_body").clone());
 		                     return false;
-	                     });
+	                     })
 
 	$("#search input").live("change blur keyup", function(event) {
 		var term = $(this).val();
@@ -51,17 +66,21 @@ $(function() {
 					$(this).data("url"),
 			{ ajaxsearch: term, limit: true },
 			                    function(data) {
-				                    var content = $('#_page_body', data);
-				                    $("#_page_body", document).replaceWith(content);
-
+				                    var content = $('#wrapper', data).attr("id","results");
+                                    $("#results").remove();
+				                    $("#wrapper", document).hide().before(content);
 			                    }
 					);
 		}
 		if (event.type != 'keyup') {
 			$(this).replaceWith(previous);
-			//$("#_page_body").replaceWith($("#replaced").clone());
+            sidemenuOn();
 		}
+   /*     $("#SearchOrders").live("click", function(event) {
+            event.preventDefault();
+            return false;
+            })*/
 
-	});
+	})
 
 });

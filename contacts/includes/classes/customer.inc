@@ -63,13 +63,15 @@ class Customer extends Contact {
 	}
 
 	public function save($changes = null) {
-
 		if (!$this->setFromArray($changes) || !$this->_canProcess()) {
 			return false;
 		}
-		if (count($changes)) {
+
+        if (count($changes)) {
+            $this->branches[$changes['branch_code']]->save($changes);
 			$this->accounts->save($changes);
-		}
+
+        }
 		if ($this->id == 0) {
 			return $this->_saveNew();
 		}
@@ -217,10 +219,11 @@ class Customer extends Contact {
 				'br_name' => 'Accounts Department');
 			$this->accounts->save($defaults);
 		}
+        
 	}
 
 	protected function _getBranches() {
-		$sql = "SELECT branch_code, br_name FROM " . TB_PREF . "cust_branch WHERE debtor_no=" . $this->id;
+		$sql = "SELECT branch_code, br_name FROM " . TB_PREF . "cust_branch WHERE branch_ref <> 'accounts' AND debtor_no=" . $this->id;
 		$result = db_query($sql, 'Couldn\'t retrieve any branches');
 		while ($row = db_fetch_assoc($result)) {
 			$this->branches[$row['branch_code']] = new Branch($row['branch_code']);
