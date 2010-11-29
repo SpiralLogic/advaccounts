@@ -248,25 +248,32 @@ if (isRefererCorrect() && !empty($_POST['ajaxsearch'])) {
 		AND trans.branch_code = branch.branch_code";
 
 if (isRefererCorrect() && !empty($_POST['ajaxsearch'])) {
-
+$sql = "SELECT * FROM ".TB_PREF."debtor_trans_view WHERE ";
     foreach ($searchArray as $ajaxsearch) {
         if (empty($ajaxsearch)) continue;
+        $sql .= ($ajaxsearch == $searchArray[0]) ? " (" :
+        " AND (";
+
+        if ($ajaxsearch[0] == "$") {
+	        $sql .= "TotalAmount LIKE ".db_escape('%' .substr($ajaxsearch,1) . '%').") ";
+            continue;
+        };
         $ajaxsearch = "%" . $ajaxsearch . "%";
-        $sql .= " AND (";
-	$sql .= " debtor.name LIKE " . db_escape($ajaxsearch);
-	if (countFilter('debtor_trans', 'trans_no', $ajaxsearch) > 0) {
-		$sql .= " OR trans.trans_no LIKE " . db_escape($ajaxsearch);
+
+	$sql .= " name LIKE " . db_escape($ajaxsearch);
+	if (countFilter('debtor_trans_view', 'trans_no', $ajaxsearch) > 0) {
+		$sql .= " OR trans_no LIKE " . db_escape($ajaxsearch);
 	//	$_POST['OrderNumber'] = $ajaxsearch;
 	}
-	if (countFilter('debtor_trans', 'reference', $ajaxsearch) > 0) {
-		$sql .= " OR trans.reference LIKE " . db_escape($ajaxsearch);
+	if (countFilter('debtor_trans_view', 'reference', $ajaxsearch) > 0) {
+		$sql .= " OR reference LIKE " . db_escape($ajaxsearch);
 	//	$_POST['reference'] = $ajaxsearch;
 	}
-	if (countFilter('debtor_trans', 'order_', $ajaxsearch) > 0) {
-		$sql .= " OR trans.order_ LIKE " . db_escape($ajaxsearch);
+	if (countFilter('debtor_trans_view', 'order_', $ajaxsearch) > 0) {
+		$sql .= " OR order_ LIKE " . db_escape($ajaxsearch);
 	}
 
-    $sql .= " OR branch.br_name LIKE " . db_escape($ajaxsearch);
+    $sql .= " OR br_name LIKE " . db_escape($ajaxsearch);
 
 	$sql .= ") ";
     }

@@ -767,6 +767,7 @@ function get_jqueryui() {
 
         $fpath = $path_to_root . '/js/';
         add_js_ufile($fpath . 'jquery-ui-1.8.6.min.js');
+        add_js_ufile($fpath . 'jquery.datalink.js');
         $inserted = true;
     }
 }

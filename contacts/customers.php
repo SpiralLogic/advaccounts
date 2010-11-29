@@ -178,10 +178,13 @@ UI::divEnd();
 $menu->endTab();
 
 $menu->startTab('Branches', 'Branches');
+UI::divStart('branchSelect',null,array('style'=>"text-align:center; margin:0 auto;"));
+UI::button('addBranch','Add new branch','addBranch');
 
 UI::select('branchList',$customer->branches);
 
 $currentBranch = $customer->branches[0];
+UI::divEnd();
 start_outer_table($table_style2, 5);
 table_section(1);
 hidden('branch_code', $currentBranch->branch_code);

@@ -21,8 +21,12 @@ if (isset($_GET['term'])) {
 
 }
 if (isset($_POST['branch_code'])) {
+	if ($_POST['branch_code']>0) {
   $data = new Branch(array('branch_code'=>$_POST['branch_code']));
+	} else {
+		$data = new Branch();
 
+	}
 }
 
 

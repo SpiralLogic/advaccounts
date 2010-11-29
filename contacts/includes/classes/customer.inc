@@ -28,6 +28,7 @@ class Customer extends Contact {
 	public $inactive = 0;
 	public $debtor_ref = '';
 	public $branches = array();
+	public $defaultBranch;
 	public $accounts;
 
 	public function __construct($id = null) {
@@ -136,6 +137,7 @@ class Customer extends Contact {
 		$this->name = $this->address = $this->email = $this->taxId = $this->payment_terms = $this->notes = $this->debtor_ref = '';
 		$this->accounts = new Accounts($this->id);
 		$this->branches[0] = new Branch($this->id);
+		$this->defaultBranch = reset($this->branches)->branch_code;
 		$this->curr_code = get_company_currency();
 		$this->discount = $this->pymt_discount = percent_format(0);
 		$this->credit_limit = price_format($SysPrefs->default_credit_limit());
@@ -158,6 +160,7 @@ class Customer extends Contact {
 		$this->id = $id;
 		$this->setFromArray($myrow);
 		$this->_getBranches();
+		$this->defaultBranch = reset($this->branches)->branch_code;
 		$this->_getAccounts();
 		$this->curr_code = get_company_currency();
 		$this->discount = $_POST['discount'] = $this->discount * 100;

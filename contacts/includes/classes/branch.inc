@@ -11,7 +11,7 @@ class Branch extends Contact {
 
 
 	public $branch_code = 0;
-	public $br_name;
+	public $br_name = "Main Branch";
 	public $br_address;
 	public $area;
 	public $br_post_address;
@@ -36,16 +36,15 @@ class Branch extends Contact {
 	public $tax_group_id;
 
 	public function __construct($id = null) {
-		if ($id !== null) {
+			if ($id == 0 || $id === null) {
+				$this->_new();
+			} else {
 			$result = $this->_read($id);
-
 			if (is_array($result)) {
 				return $result;
 			} else {
 				return true;
 			}
-		} else {
-			$this->_new();
 		}
 	}
 
