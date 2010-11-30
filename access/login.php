@@ -51,7 +51,9 @@ function set_fullmode() {
 	echo "<html dir='$rtl' >\n";
 	echo "<head><title>$title</title>\n";
    	echo "<meta http-equiv='Content-type' content='text/html; charset=$encoding' />\n";
-	echo "<link href='$path_to_root/themes/$def_theme/default.css' rel='stylesheet' type='text/css'> \n";
+echo "<link rel='apple-touch-icon' href='$local_path_to_root/company/" . user_company() . "/images/advanced-icon.png'/>";
+
+echo "<link href='$path_to_root/themes/$def_theme/default.css' rel='stylesheet' type='text/css'> \n";
 	if (!$login_timeout)
 	{
 		echo $js;

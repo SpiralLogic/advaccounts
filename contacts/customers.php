@@ -1,17 +1,5 @@
 <?php
 
-
-/*     * ********************************************************************
-		Copyright (C) FrontAccounting, LLC.
-		Released under the terms of the GNU General Public License, GPL,
-		as published by the Free Software Foundation, either version 3
-		of the License, or (at your option) any later version.
-		This program is distributed in the hope that it will be useful,
-		but WITHOUT ANY WARRANTY; without even the implied warranty of
-		MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-		See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
-		* ********************************************************************* */
-
 $page_security = 'SA_CUSTOMER';
 $path_to_root = "..";
 include_once("includes/contacts.inc");
@@ -32,12 +20,10 @@ if (isset($_GET['debtor_no'])) {
 	$customer = new Customer();
 }
 
-//--------------------------------------------------------------------------------------------
-
 if (isset($_POST['submit'])) {
 	handle_submit();
 }
-//--------------------------------------------------------------------------------------------
+
 function handle_submit() {
 	global $Ajax, $customer;
 
@@ -52,23 +38,16 @@ function handle_submit() {
 	$Ajax->activate('customers'); // in case of status change
 	return $status['status'];
 }
-//--------------------------------------------------------------------------------------------
 if (isset($_POST['delete'])) {
 	$customer->delete();
 	$status = $customer->getStatus();
 	display_notification($status['message']);
 	$Ajax->activate('_page_body');
-	//the link to delete a selected record was clicked instead of the submit button
 }
-//--------------------------------------------------------------------------------------------
-
 start_form();
-
 if (db_has_customers()) {
 	UI::divStart('custsearch', null, array('style' => 'text-align:center; '));
 
-	//customer_list_cells(_("Select a customer: "), 'customer_id', null, _('New customer'), true, check_value('show_inactive'));
-	//	check_cells(_("Show inactive:"), 'show_inactive', null, true);
 	UI::search('customers', 'Customer:', 80);
 	if ($customer->id) {
 		UI::button('submit', 'Update Customer', 'btnCustomer', 'submit', 'submit', 'ajaxsubmit', array('style' => 'margin:10px;'));
@@ -76,16 +55,12 @@ if (db_has_customers()) {
 		UI::button('submit', 'New Customer', 'btnCustomer', 'submit', 'submit', 'ajaxsubmit ui-helper-hidden', array('style' => 'margin:10px;'));
 	}
 	UI::button('cancel', 'Cancel', 'btnCancel', 'cancel', 'submit', 'ui-helper-hidden', array('style' => 'margin:10px;'));
-	//submit('submit', _("Update Customer"), _('Update customer data'), @$_REQUEST['popup'] ? true : 'default');
 	UI::divEnd();
 }
 
-
-//-------------------------------- Customer Details---------------------------------------------------
 $menu = new MenuUi();
 $menu->startTab('Details', 'Customer Details');
 start_outer_table($table_style2, 5);
-
 
 table_section(1);
 hidden('id', $customer->id);
@@ -206,7 +181,6 @@ tax_groups_list_row(_("Tax Group:"), 'tax_group_id', $currentBranch->tax_group_i
 yesno_list_row(_("Disable this Branch:"), 'disable_trans', $currentBranch->disable_trans);
 table_section(2);
 table_section_title(_("GL Accounts"));
-// 2006-06-14. Changed gl_al_accounts_list to have an optional all_option 'Use Item Sales Accounts'
 gl_all_accounts_list_row(_("Sales Account:"), 'sales_account', $currentBranch->sales_account, false, false, true);
 gl_all_accounts_list_row(_("Sales Discount Account:"), 'sales_discount_account', $currentBranch->sales_discount_account);
 gl_all_accounts_list_row(_("Accounts Receivable Account:"), 'receivables_account', $currentBranch->receivables_account);
@@ -223,20 +197,6 @@ $menu->startTab('Invoices','Invoices');
 $menu->endTab();
 
 $menu->render();
-
-//$('#contactLog').dialog({width:700, modal:true,buttons: {Ok: function() {$( this ).dialog( 'close' );},'Cancel': function() {$( this ).dialog( 'close' );}}});;
-
-/*
-	   div_start('controls');
-	   if ($customer->id==0) {
-		   submit_center('submit', _("Add New Customer"), true, '', 'default');
-	   } else {
-		   submit_center_first('submit', _("Update Customer"), _('Update customer data'), @$_REQUEST['popup'] ? true : 'default');
-		   submit_return('select', get_post('id'), _("Select this customer and return to document entry."));
-		   submit_center_last('delete', _("Delete Customer"), _('Delete customer data if have been never used'), true);
-	   }
-	   div_end();*/
-
 hidden('popup', @$_REQUEST['popup']);
 end_form();
 end_page(true, true);

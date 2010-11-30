@@ -131,13 +131,14 @@ $theme = user_theme();
 	echo "<html dir='" . $_SESSION['language']->dir . "' >\n";
 	echo "<head><title>$title</title>";
 	echo "<meta http-equiv='Content-type' content='text/html; charset=$encoding'>";
-
+	echo "<link rel='apple-touch-icon' href='$local_path_to_root/company/". user_company()."/images/advanced-icon.png'/>";
     echo "<link href='$local_path_to_root/themes/$theme/default.css' rel='stylesheet' type='text/css'> \n";
 
        if ($no_menu) {
              echo "<link href='$local_path_to_root/themes/$theme/default-lite.css' rel='stylesheet' type='text/css'> \n";
        }
-    echo "<link href='$local_path_to_root/themes/$theme/{$_SESSION['sel_app']}.css' rel='stylesheet' type='text/css'> \n";
+       if (file_exists("$local_path_to_root/themes/$theme/{$_SESSION['sel_app']}.css"))
+	       echo "<link href='$local_path_to_root/themes/$theme/{$_SESSION['sel_app']}.css' rel='stylesheet' type='text/css'> \n";
     echo "<link href='$local_path_to_root/themes/$theme/jquery-ui-1.8.6.css' rel='stylesheet' type='text/css'> \n";
     echo "<link href='$local_path_to_root/themes/$theme/jquery.calculator.css' rel='stylesheet' type='text/css'> \n";
 

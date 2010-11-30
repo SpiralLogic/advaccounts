@@ -11,7 +11,7 @@ class Branch extends Contact {
 
 
 	public $branch_code = 0;
-	public $br_name = "Main Branch";
+	public $br_name = "New Branch";
 	public $br_address;
 	public $area;
 	public $br_post_address;
@@ -94,6 +94,7 @@ class Branch extends Contact {
 
 
 	public function save($changes = null) {
+		if (isset($changes['debtor_no'])) unset($changes['debtor_no']);
 		if (!$this->setFromArray($changes) || !$this->_canProcess()) {
 			return false;
 		}

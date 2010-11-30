@@ -211,12 +211,15 @@ if (isRefererCorrect() && !empty($_POST['ajaxsearch'])) {
     unset($_POST['customer_id']);
     unset($_POST['filterType']);
     if ($searchArray[0] == 'd') {
-        $_POST['filterType']=5;
+        $filter = " AND type = " . ST_CUSTDELIVERY . " ";
     } elseif ($searchArray[0] == 'i') {
-            $_POST['filterType'] = 1;
+
+            $filter = " AND (type = " . ST_SALESINVOICE . " OR type = " . ST_BANKPAYMENT . ") ";
     } elseif ($searchArray[0] == 'p') {
-        $_POST['filterType'] = 3;
+        $filter = " AND (type = " . ST_CUSTPAYMENT . " OR type = " . ST_CUSTREFUND . " OR type = " . ST_BANKDEPOSIT ." AND (type = " . ST_CUSTPAYMENT . " OR type = " . ST_CUSTREFUND . " OR type = "
+		        . ST_BANKDEPOSIT." OR type = " . ST_BANKDEPOSIT . ") ";
     }
+
 }
   $sql = "SELECT 
   		trans.type, 
@@ -277,6 +280,7 @@ $sql = "SELECT * FROM ".TB_PREF."debtor_trans_view WHERE ";
 
 	$sql .= ") ";
     }
+    if ($filter) $sql .= $filter;
 }else { $sql .= " AND trans.tran_date >= '$date_after'
 			AND trans.tran_date <= '$date_to'";
 }
