@@ -8,110 +8,94 @@
  */
 
 class UI {
+
+
 	private static $_instance = null;
 
 	private function __construct() {
-}
+	}
 
-	private function _openTag($type, $attr = array()) {
-
-		$content = '<' . $type;
-		foreach ($attr as $key => $value) {
+	private function _openTag($type, $attr) {
+		$content = '';
+		foreach ($attr as $key => $value)
 			$content .= " $key='$value'";
-		}
-		return $content . '>';
+		echo '<' . $type . ' ' . $content . '>';
+		return $this;
 	}
 
 	private function _closeTag($type) {
-		return '</' . $type . '>';
+		echo '</' . $type . '>';
+		return $this;
 	}
 
-	private function button($name, $caption, $id = null, $value = null, $type = 'button', $class = null, $attr = null) {
-		if ($class == null) {
-			$class = 'ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only';
+	private function button($func = null, $attr) {
+		$id = array_shift($attr);
+		if (count($attr) > 0) {
+			$content = $attr['content'] = array_shift($attr);
 		}
-		$params = array(
-			'name' => $name,
-			'value' => $value,
-			'type' => $type,
-			'class' => $class
-		);
-		if ($id != null) {
-			$params['id'] = $id;
-		}
-		if (is_array($attr)) {
-			$params = array_merge($params, $attr);
-		}
-		$content = '<button ';
-		foreach ($params as $key => $value) {
-			$content .= "$key='$value' ";
-		}
-		$content .= ">$caption</button>";
-		echo $content;
-	}
-
-	private function tdStart($id = null, $attr = null) {
-		if (!is_array($attr)) {
-			$attr = array();
-		}
-		if ($id != null) {
+		if (!empty($id)) {
 			$attr['id'] = $id;
 		}
-		$content = $this->_openTag('td', $attr);
-		echo $content;
-	}
-
-	private function tdEnd() {
-		echo '</td>';
-	}
-
-	private function search($id, $label, $size = 50) {
-		echo "
-	<div class='ui-widget'>
-	<label for='$id'>$label</label>
-	<input id='$id' size='$size' />
-	</div>";
-	}
-
-	 static function __callStatic($name, $args = array()) {
-		 if (self::$_instance===null)  self::$_instance = new self;
-		  if (method_exists(self::$_instance, $name)) call_user_func_array(array(self::$_instance,$name),$args);
-		else call_user_func_array(array(self::$_instance,'__call'),array($name,$args));
-		 return self::$_instance;
-	}
-	public function __call($name, $args = array()) {
-		$attr = (isset($args[1])) ? array_merge(array('id' => array_shift($args)), $args) : $args;
-		if (count($args) == 0 || (isset($attr['id']) && $attr['id'] != 'end')) {
-			echo $this->_openTag($name, $attr);
+		if (empty($attr['name'])) {
+			$attr['name'] = $id;
 		}
-		if (count($args) == 0 || (isset($attr['id']) && $attr['id'] != 'start')) {
-			echo $this->_closeTag($name);
+		$attr['class'] = (isset($attr['class']) && !empty($attr['class'])) ? : 'ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only';
+		$this->_openTag('button', $attr);
+		echo $content;
+		$this->_closeTag('button');
+		return $this;
+	}
+
+	public function __call($func, $args) {
+		self::__callStatic($func, $args);
+		return self::$_instance;
+	}
+
+	static function __callStatic($func, $args) {
+		if (self::$_instance === null) {
+			self::$_instance = new self;
+		}
+		self::$_instance->_Builder($func, $args);
+		return self::$_instance;
+	}
+
+	private function _Builder($func, $args) {
+		if ((end($args) !== true) && (end($args) !== false)) {
+			array_push($args, null);
+		}
+		if ($content = '' || count($args) > 0) {
+			$open = array_pop($args);
+		}
+		FB::info($open);FB::info('gomango');FB::info($open===false);
+		$attr = array('id' => '');
+		foreach ($args as $key => $val) {
+			if ((($key == 0 && $key < 3 && !is_array($val)) || $key == 'id')) {
+				$attr['id'] = $val;
+			} elseif (isset($val) && !is_array($val) && ($open === null)) {
+				$content = $attr['content'] = $val;
+			} elseif ($key != 'id' && is_array($val)) {
+				$attr = array_merge($attr, $val);
+			}
+		}
+		if (method_exists(self::$_instance, $func)) {
+			return self::$_instance->$func($func, $attr);
+		}
+		FB::info($open);
+		if ($open === true) {
+			$this->_openTag($func, $attr);
+		} elseif
+		($open === false) {
+			FB::info('closing');
+			$this->_closeTag($func);
+		} elseif
+		($open === null) {
+			$this->_openTag($func, $attr) . $content . $this->_closeTag($func);
 		}
 		return $this;
 	}
-	private function divStart($id, $class = null, $attr = null) {
-		$params['id'] = $id;
-		if (is_array($class)) {
-			$attr = $class;
-		} elseif ($class != null) {
-			$params['class'] = $class;
-		}
-		if (is_array($attr)) {
-			$params = array_merge($params, $attr);
-		}
-		$content = '<div ';
-		foreach ($params as $key => $value) {
-			$content .= "$key='$value' ";
-		}
-		$content .= '>';
-		echo $content;
-	}
 
-	private function divEnd() {
-		echo '</div>';
-	}
-
-	private function select($id = false, $options = array(), $attr = array()) {
+	private
+	function select($id = false, $options = array(), $attr = array()) {
 		if ($id !== false) {
 			$params['id'] = $id;
 		}
@@ -124,21 +108,8 @@ class UI {
 		echo $content;
 	}
 
-	private function p($text = '', $attr = array()) {
-		static $open = false;
-		if (!$open) {
-			echo '</p>';
-			$open = false;
-			return;
-		}
-		$content = '<p ';
-		if (is_array($attr)) {
-			foreach ($attr as $key => $value) {
-				$content .= " $key='$value'";
-			}
-		}
-		$content .= '>';
-		echo $content;
-		$open = true;
+	private
+	function search($id, $label, $size = 50) {
+		echo "<div class='ui-widget'>	<label for='$id'>$label</label>	<input id='$id' size='$size' />	</div>";
 	}
 }
