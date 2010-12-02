@@ -74,10 +74,15 @@ class MenuUi_item {
 }
 
 
-
+/**
+ *
+ */
 class Sidemenu {
 
-
+/**
+ * @static
+ * @return void
+ */
 	static function render() {
 		global $path_to_root, $js_lib;
 		get_jqueryui();

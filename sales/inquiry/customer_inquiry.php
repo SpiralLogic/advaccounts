@@ -216,8 +216,7 @@ if (isRefererCorrect() && !empty($_POST['ajaxsearch'])) {
 
             $filter = " AND (type = " . ST_SALESINVOICE . " OR type = " . ST_BANKPAYMENT . ") ";
     } elseif ($searchArray[0] == 'p') {
-        $filter = " AND (type = " . ST_CUSTPAYMENT . " OR type = " . ST_CUSTREFUND . " OR type = " . ST_BANKDEPOSIT ." AND (type = " . ST_CUSTPAYMENT . " OR type = " . ST_CUSTREFUND . " OR type = "
-		        . ST_BANKDEPOSIT." OR type = " . ST_BANKDEPOSIT . ") ";
+        $filter = " AND (type = " . ST_CUSTPAYMENT . " OR type = " . ST_CUSTREFUND . " OR type = " . ST_BANKDEPOSIT . ") ";
     }
 
 }
@@ -352,7 +351,7 @@ if ($_POST['customer_id'] != ALL_TEXT) {
 	$cols[_("Customer")] = 'skip';
 	$cols[_("Currency")] = 'skip';
 }
-if ($_POST['filterType'] == ALL_TEXT)
+if ($_POST['filterType'] == ALL_TEXT || !empty($_POST['ajaxsearch']))
 	$cols[_("RB")] = 'skip';
 
 $table =& new_db_pager('trans_tbl', $sql, $cols);

@@ -46,16 +46,15 @@ if (isset($_POST['delete'])) {
 }
 start_form();
 if (db_has_customers()) {
-	UI::divStart('custsearch', null, array('style' => 'text-align:center; '));
-
-	UI::search('customers', 'Customer:', 80);
+	UI::div('custsearch', array('style' => 'text-align:center; '));
+	UI::search('customers', array('label'=>'Customer:','size'=>80));
 	if ($customer->id) {
-		UI::button('submit', 'Update Customer', 'btnCustomer', 'submit', 'submit', 'ajaxsubmit', array('style' => 'margin:10px;'));
+		UI::button('btnCustomer', 'Update Customer', array('name'=>'submit', 'type'=>'submit', 'class'=> 'ajaxsubmit', 'style' => 'margin:10px;'));
 	} else {
-		UI::button('submit', 'New Customer', 'btnCustomer', 'submit', 'submit', 'ajaxsubmit ui-helper-hidden', array('style' => 'margin:10px;'));
+		UI::button('btnCustomer', 'New Customer', array('name' =>'submit', 'type' => 'submit',  'class' => 'ajaxsubmit ui-helper-hidden', 'style' => 'margin:10px;'));
 	}
-	UI::button('cancel', 'Cancel', 'btnCancel', 'cancel', 'submit', 'ui-helper-hidden', array('style' => 'margin:10px;'));
-	UI::divEnd();
+	UI::button('btnCancel', 'Cancel', array('name' => 'cancel', 'type' => 'submit', 'class' => 'ui-helper-hidden', 'style' => 'margin:10px;'))->div;
+
 }
 
 $menu = new MenuUi();
@@ -131,14 +130,13 @@ table_section(2,false,'ui-widget');
 //table_section_title("<span class='ui-icon ui-icon-circle-plus'>"._("Contact log:")."</span>", 2, 'tableheader3');
 table_section_title(_("Contact log:"), 2, 'tableheader3 ');
 start_row();
-UI::tdStart(null, array('class'=>'ui-widget-content center-content'));
-UI::button('addLog',"Add log entry",'addLog');
-UI::tdEnd();
-end_row();
+UI::td('', array('class'=>'ui-widget-content center-content'));
+UI::button('addLog',"Add log entry")->td->tr;
+
 textarea_cells(null, null, null, 100, 30);
 end_outer_table(1);
 
-UI::divStart('contactLog', array('title' => 'New contact log entry', 'class' => 'ui-widget-overlay'));
+UI::div('contactLog', array('title' => 'New contact log entry', 'class' => 'ui-widget-overlay'));
 UI::p('New log entry:', array('class' => 'validateTips'));
 start_form();
 start_table();
@@ -147,19 +145,16 @@ text_row('Contact:', 'acc_contact_name', $customer->accounts->contact_name, 40, 
 textarea_row('Entry:', 'log_entry', '', 100, 10);
 end_table();
 end_form();
-UI::p();
-UI::divEnd();
+UI::p()->div;
 
 $menu->endTab();
 
 $menu->startTab('Branches', 'Branches');
-UI::divStart('branchSelect',null,array('style'=>"text-align:center; margin:0 auto;"));
-UI::button('addBranch','Add new branch','addBranch');
-
-UI::select('branchList',$customer->branches);
-
+UI::div('branchSelect',array('style'=>"text-align:center; margin:0 auto;"));
 $currentBranch = $customer->branches[0];
-UI::divEnd();
+UI::select('branchList', $customer->branches, array('name' => 'branchList'));
+UI::button('addBranch','Add new branch',array('name'=>'addBranch'));
+UI::div();
 start_outer_table($table_style2, 5);
 table_section(1);
 hidden('branch_code', $currentBranch->branch_code);

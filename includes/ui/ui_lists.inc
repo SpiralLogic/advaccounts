@@ -23,7 +23,16 @@ $all_items = ALL_TEXT;
 //	Universal sql combo generator
 //	$sql must return selector values and selector texts in columns 0 & 1
 //	Options are merged with defaults.
-
+/**
+ *
+ * @param  $name
+ * @param  $selected_id
+ * @param  $sql
+ * @param  $valfield
+ * @param  $namefield
+ * @param null $options
+ * @return string
+ */
 function combo_input($name, $selected_id, $sql, $valfield, $namefield,
 	$options=null)
 {

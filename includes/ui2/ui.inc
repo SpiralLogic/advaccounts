@@ -1,115 +1,116 @@
 <?php
 /**
- * Created by JetBrains PhpStorm.
- * User: advanced
- * Date: 16/11/10
- * Time: 12:35 AM
- * To change this template use File | Settings | File Templates.
+ *
+ *@package UI
+ *@method string body() static body()
+ *@method string td() static td()
+ *@method string button()
+ *@method string div()
+ *@method string table()
+ *@method string img()
+ *@method string input()
+ *@method string br()
+ *@method string tr()
+ *@method string input()
+ *@method string a()
+ *@method string p()
+ *@property string $tr
+ *@property string $td
+ *@property string $br
+ *@property string $img
+ *@property mixed $input
+ *@property string $div
+ *
  */
-
 class UI {
-
-
 	private static $_instance = null;
-
 	private function __construct() {
 	}
-
-	private function _openTag($type, $attr) {
-		$content = '';
-		foreach ($attr as $key => $value)
-			$content .= " $key='$value'";
-		echo '<' . $type . ' ' . $content . '>';
-		return $this;
-	}
-
-	private function _closeTag($type) {
-		echo '</' . $type . '>';
-		return $this;
-	}
-
-	private function button($func = null, $attr) {
-		$id = array_shift($attr);
-		if (count($attr) > 0) {
-			$content = $attr['content'] = array_shift($attr);
-		}
-		if (!empty($id)) {
-			$attr['id'] = $id;
-		}
-		if (empty($attr['name'])) {
-			$attr['name'] = $id;
-		}
-		$attr['class'] = (isset($attr['class']) && !empty($attr['class'])) ? : 'ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only';
-		$this->_openTag('button', $attr);
-		echo $content;
-		$this->_closeTag('button');
-		return $this;
-	}
-
-	public function __call($func, $args) {
+	/**
+	 *
+	 *
+	 */
+	 function __call($func, $args) {
 		self::__callStatic($func, $args);
 		return self::$_instance;
 	}
-
+	 function __get($func) {
+		self::$_instance->_closeTag($func);
+		return self::$_instance;
+	}
 	static function __callStatic($func, $args) {
-		if (self::$_instance === null) {
-			self::$_instance = new self;
-		}
-		self::$_instance->_Builder($func, $args);
+
+		(self::$_instance !== null)?:self::$_instance = new self;
+		($func[0] == '_' || count($args)==0) ? self::$_instance->_closeTag(substr($func,1)): self::$_instance->_Builder($func, $args);
 		return self::$_instance;
 	}
 
-	private function _Builder($func, $args) {
-		if ((end($args) !== true) && (end($args) !== false)) {
-			array_push($args, null);
-		}
-		if ($content = '' || count($args) > 0) {
-			$open = array_pop($args);
-		}
-		FB::info($open);FB::info('gomango');FB::info($open===false);
-		$attr = array('id' => '');
+	private function _openTag($type, $attr = array(), $content = '') {
+		$attrs = '';
+		foreach ($attr as $key => $value)
+			$attrs .= (empty($value)) ? : " $key='$value'";
+		echo  '<' . $type . ' ' . $attrs . '>' . $content;
+	}
+	private function _closeTag($type) {
+		echo '</' . $type . '>';
+	}
+	private function _Builder($func, $args, $attr = array(), $content='') {
+		$open = ((end($args) !== true) || (end($args) !== false))? true: array_pop($args);
 		foreach ($args as $key => $val) {
-			if ((($key == 0 && $key < 3 && !is_array($val)) || $key == 'id')) {
+			if ($key == 'id' || ($key == 0 && $key < 3 && !is_array($val))) {
 				$attr['id'] = $val;
-			} elseif (isset($val) && !is_array($val) && ($open === null)) {
+			} elseif ( !isset($attr['content']) && (!is_array($val) || count($args)>2)) {
 				$content = $attr['content'] = $val;
-			} elseif ($key != 'id' && is_array($val)) {
+			} elseif (is_array($val)) {
 				$attr = array_merge($attr, $val);
 			}
 		}
-		if (method_exists(self::$_instance, $func)) {
-			return self::$_instance->$func($func, $attr);
-		}
-		FB::info($open);
+		if (method_exists(self::$_instance, $func))
+			return self::$_instance->$func( $attr);
 		if ($open === true) {
 			$this->_openTag($func, $attr);
-		} elseif
-		($open === false) {
-			FB::info('closing');
+		} elseif ($open === false) {
 			$this->_closeTag($func);
-		} elseif
-		($open === null) {
-			$this->_openTag($func, $attr) . $content . $this->_closeTag($func);
+		} elseif ($open === null) {
+			$this->_openTag($func, $attr,$content);
+			$this->_closeTag($func);
 		}
-		return $this;
 	}
-
-	private
-	function select($id = false, $options = array(), $attr = array()) {
-		if ($id !== false) {
-			$params['id'] = $id;
-		}
+	private function button($attr = array(), $content = '') {
+		$id = (isset($attr['id'])) ? array_shift($attr) : null;
+		if (count($attr) > 0)
+			$content = $attr['content'] = array_shift($attr);
+		if (!empty($id))
+			$attr['id'] = $id;
+		if (empty($attr['name']) && !empty($id))
+			$attr['name'] = $id;
+		$attr['class'] = (@isset($attr['class']) && @empty($attr['class'])) ? $attr['class'] : 'ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only';
+		$this->_openTag('button', $attr, $content);
+		$this->_closeTag('button');
+	}
+	/**
+	 * @static
+	 * @param array $attr
+	 * @param string $content
+	 * @return void
+	 * @access public
+	 */
+	private	function select($attr = array(),$content=''   ) {
+		$params['id'] = array_shift($attr);
+		$options = array_shift($attr);
 		$params = array_merge($params, $attr);
-		$content = $this->_openTag("select", $params);
-		foreach ($options as $option => $value) {
+		foreach ($options as $option => $value)
 			$content .= "<option value='$value'>$option</option>";
-		}
-		$content .= "</select>";
-		echo $content;
+		$this->_openTag("select", $params,$content);
+		$this->_closeTag("select");
+	}
+	private	function search($attr = array()) {
+		$id = $attr['id'];
+		$this->_openTag('div', array('class'=>'ui-widget'));
+		$this->_openTag('label', array('for'=>$id),$attr['label']);
+		$this->_closeTag('label');
+		$this->_openTag('input',array('id'=>$id, 'size'=>$attr['size']));
+		$this->_closeTag('div');
 	}
 
-	private
-	function search($id, $label, $size = 50) {
-		echo "<div class='ui-widget'>	<label for='$id'>$label</label>	<input id='$id' size='$size' />	</div>";
-	}
 }
