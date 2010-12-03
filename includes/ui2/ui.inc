@@ -4,7 +4,6 @@
  *@package UI
  *@method string body() static body()
  *@method string td() static td()
- *@method string button()
  *@method string div()
  *@method string table()
  *@method string img()
@@ -57,7 +56,7 @@ class UI {
 	private function _Builder($func, $args, $attr = array(), $content='') {
 		$open = ((end($args) !== true) || (end($args) !== false))? true: array_pop($args);
 		foreach ($args as $key => $val) {
-			if ($key == 'id' || ($key == 0 && $key < 3 && !is_array($val))) {
+			if (($key == 0 && $key < 3 && !is_array($val))) {
 				$attr['id'] = $val;
 			} elseif ( !isset($attr['content']) && (!is_array($val) || count($args)>2)) {
 				$content = $attr['content'] = $val;

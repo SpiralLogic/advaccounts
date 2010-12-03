@@ -130,7 +130,7 @@ table_section(2,false,'ui-widget');
 //table_section_title("<span class='ui-icon ui-icon-circle-plus'>"._("Contact log:")."</span>", 2, 'tableheader3');
 table_section_title(_("Contact log:"), 2, 'tableheader3 ');
 start_row();
-UI::td('', array('class'=>'ui-widget-content center-content'));
+UI::td(array('class'=>'ui-widget-content center-content'));
 UI::button('addLog',"Add log entry")->td->tr;
 
 textarea_cells(null, null, null, 100, 30);

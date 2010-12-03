@@ -178,7 +178,7 @@ class Branch extends Contact {
 		$default['sales_discount_account'] = $company_record['default_sales_discount_act'];
 		$default['receivables_account'] = $company_record['debtors_act'];
 		$default['payment_discount_account'] = $company_record['default_prompt_payment_act'];
-        $default['salesman'] = $_SERVER['wa_current_user']->user;
+        $default['salesman'] = null;
 		$params = array_merge($default, $params);
 		$this->setFromArray($params);
 	}

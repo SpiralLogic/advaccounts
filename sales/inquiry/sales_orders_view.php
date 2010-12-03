@@ -29,9 +29,19 @@ if ($use_date_picker) {
     $js .= get_js_date_picker();
 }
 
-if (get_post('type')) {
+if (isRefererCorrect() && !empty($_POST['ajaxsearch'])) {
+	$searchArray = explode(' ', $_POST['ajaxsearch']);
+}
+
+if (isset($searchArray) && $searchArray[0] == 'o') {
+	$trans_type = ST_SALESORDER;
+} elseif (isset($searchArray) && $searchArray[0] == 'q') {
+	$trans_type = ST_SALESQUOTE;
+} elseif (isset($searchArray)) {
+	$trans_type = ST_SALESORDER;
+} elseif (get_post('type')) {
 	$trans_type = $_POST['type'];
-} elseif (isset($_GET['type']) && $_GET['type'] == ST_SALESQUOTE) {
+} elseif (isset($_GET['type']) && ($_GET['type'] == ST_SALESQUOTE)) {
 	$trans_type = ST_SALESQUOTE;
 } else {
 	$trans_type = ST_SALESORDER;
@@ -214,9 +224,6 @@ end_table(1);
 //---------------------------------------------------------------------------------------------
 //	Orders inquiry table
 //
-if (isRefererCorrect() && !empty($_POST['ajaxsearch'])) {
-$searchArray = explode(' ', $_POST['ajaxsearch']);
-}
 $sql = "SELECT
 		sorder.order_no,
 
