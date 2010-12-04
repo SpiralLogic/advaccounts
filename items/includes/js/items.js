@@ -13,12 +13,16 @@ function getItem(id) {
         item = data;
         var content = "<table  style='margin:0 auto;'><tr>";
 var even = true;
-        $.each(data, function(i, data) {
+        delete data.stock_id;
+                $.each(data, function(i, data) {
 
 
+if(i=='description' || i=='long_description')
 
-            content += "<td style='font-weight:bold;'>"+i+"</td><td width='20px'></td><td><input value='" + data + "' size=20></input></td><td width='20px'></td>";
-            if (!even) {
+    content += "<td style='font-weight:bold;'>" + i + "</td><td width='20px'></td><td><textarea rows=5>"+data+"</textarea></td><td width='20px'></td>";
+            else
+    content += "<td style='font-weight:bold;'>" + i + "</td><td width='20px'></td><td><input value='" + data + "'></input></td><td width='20px'></td>";
+                    if (!even) {
                 content += "</tr><tr>";
             }
             even = !even;
