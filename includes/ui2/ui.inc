@@ -21,6 +21,7 @@
  *@property string $div
  *
  */
+include_once($path_to_root.'/includes/ui2/js.inc');
 class UI {
 	private static $_instance = null;
 	private function __construct() {
@@ -110,6 +111,8 @@ class UI {
 		$this->_closeTag('label');
 		$this->_openTag('input',array('id'=>$id, 'size'=>$attr['size']));
 		$this->_closeTag('div');
+        $callback = strtoupper($id[0]).strtolower(substr($id,1));
+   JS::autocomplete($id,$callback);
 	}
 
 }

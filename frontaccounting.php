@@ -1,6 +1,6 @@
 <?php
 
-    /*     * ********************************************************************
+    /*     * *******************************************************************
       Copyright (C) FrontAccounting, LLC.
       Released under the terms of the GNU General Public License, GPL,
       as published by the Free Software Foundation, either version 3
@@ -17,6 +17,7 @@
     include_once($path_to_root . '/applications/contacts.php');
     include_once($path_to_root . '/applications/suppliers.php');
     include_once($path_to_root . '/applications/inventory.php');
+include_once($path_to_root . '/applications/items.php');
     include_once($path_to_root . '/applications/advanced.php');
     include_once($path_to_root . '/applications/manufacturing.php');
     include_once($path_to_root . '/applications/dimensions.php');
@@ -77,7 +78,6 @@
 
         function init() {
             global $installed_extensions, $path_to_root;
-
             $this->menu = new menu(_("Main  Menu"));
             $this->menu->add_item(_("Main  Menu"), "index.php");
             $this->menu->add_item(_("Logout"), "/account/access/logout.php");
@@ -86,6 +86,7 @@
             $this->add_application(new contacts_app());
             $this->add_application(new suppliers_app());
             $this->add_application(new inventory_app());
+            $this->add_application(new items_app());
             $this->add_application(new advanced_app());
             $this->add_application(new manufacturing_app());
             $this->add_application(new dimensions_app());

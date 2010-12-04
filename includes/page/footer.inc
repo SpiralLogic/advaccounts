@@ -29,8 +29,12 @@ function page_footer($no_menu=false, $is_index=false, $hide_back_link=false)
    	add_user_js_data();
 	echo "\n<script language=\"javascript\"  type=\"text/javascript\"><!--\n";
 
-	foreach($js_lib as $text)
-	  	echo $text;
+	foreach($js_lib as $text)  {
+
+      $text=  str_replace(array('<script>', '</script>'), '',$text);
+    echo $text;
+    }
+
 	echo "\n--></script>\n";
     echo "</body></html>\n";
  

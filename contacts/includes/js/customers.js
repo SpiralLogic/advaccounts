@@ -116,6 +116,7 @@ function getCustomer(id) {
 		});
 	}, 'json')
 }
+getCustomers= getCustomer;
 function stateModified(feild) {
 	btnCancel.button('option', 'label', 'Cancel Changes').show();
 	if (customer.id == null || customer.id == 0) {
@@ -196,19 +197,6 @@ $(function() {
 		stateModified();
 	});
 	resetState();
-	$("#customers").autocomplete({
-		source: function(request, response) {
-			lastXhr = $.getJSON("search.php", request, function(data, status, xhr) {
-				if (xhr === lastXhr) {
-					response(data);
-				}
-			})
-		},
-		minLength: 2,
-		select: function(event, ui) {
-		getCustomer(ui.item.id);
-	}
-}).css({"z-index" : "2", "margin" : "10px"});
 $("#addLog").button().click(function() {
 		$('#contactLog').dialog("open")
 	});
