@@ -6,17 +6,23 @@
  * To change this template use File | Settings | File Templates.
  */
 var item;
-function getItems(id) {
+function getItem(id) {
 
     $.post("search.php",
     {id: id}, function(data) {
         item = data;
-        var content = "<table  style='margin:0 auto;'>";
-
+        var content = "<table  style='margin:0 auto;'><tr>";
+var even = true;
         $.each(data, function(i, data) {
-             content += "<tr><td style='font-weight:bold;'>"+i+"</td><td width='20px'></td><td>"+data+"</td></tr>";
-            
-        });
-        $("#item").append(content+"</table>");
+
+
+
+            content += "<td style='font-weight:bold;'>"+i+"</td><td width='20px'></td><td><input value='" + data + "' size=20></input></td><td width='20px'></td>";
+            if (!even) {
+                content += "</tr><tr>";
+            }
+            even = !even;
+                    });
+        $("#itemdetails").empty().append(content+"</tr></table>");
     }, 'json')
 }

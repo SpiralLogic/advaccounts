@@ -25,6 +25,6 @@ $path_to_root = "../";
 add_js_ufile("includes/js/items.js");
 page(_($help_context = "Items"), @$_REQUEST['popup']);
 UI::div('itemsearch', array('style' => 'text-align:center; '));
-UI::search('items', array('label' => 'Item:', 'size' => 80))->div;
-UI::div('item', array('style' => 'text-align:center; '))->div;
+UI::search('item', array('label' => 'Item:', 'size' => 80))->div;
+UI::div('itemdetails', array('style' => 'text-align:center; '))->div;
 end_page(true, true);
