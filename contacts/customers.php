@@ -35,7 +35,7 @@ function handle_submit() {
 		$status = $customer->getStatus();
 		display_notification($status['message']);
 	}
-	$Ajax->activate('customers'); // in case of status change
+//	$Ajax->activate('_page_body'); // in case of status change
 	return $status['status'];
 }
 if (isset($_POST['delete'])) {
@@ -46,14 +46,16 @@ if (isset($_POST['delete'])) {
 }
 start_form();
 if (db_has_customers()) {
-	UI::div('custsearch', array('style' => 'text-align:center; '));
-	UI::search('customers', array('label'=>'Customer:','size'=>80));
+	/** @noinspection PhpUndefinedMethodInspection */
+	HTML::div('custsearch', array('style' => 'text-align:center; '));
+	/** @noinspection PhpDynamicAsStaticMethodCallInspection */
+	HTML::search('customer', array('label'=>'Customer:','size'=>80));
 	if ($customer->id) {
-		UI::button('btnCustomer', 'Update Customer', array('name'=>'submit', 'type'=>'submit', 'class'=> 'ajaxsubmit', 'style' => 'margin:10px;'));
+		HTML::button('btnCustomer', 'Update Customer', array('name'=>'submit', 'type'=>'submit', 'class'=> 'ajaxsubmit', 'style' => 'margin:10px;'));
 	} else {
-		UI::button('btnCustomer', 'New Customer', array('name' =>'submit', 'type' => 'submit',  'class' => 'ajaxsubmit ui-helper-hidden', 'style' => 'margin:10px;'));
+		HTML::button('btnCustomer', 'New Customer', array('name' =>'submit', 'type' => 'submit',  'class' => 'ajaxsubmit ui-helper-hidden', 'style' => 'margin:10px;'));
 	}
-	UI::button('btnCancel', 'Cancel', array('name' => 'cancel', 'type' => 'submit', 'class' => 'ui-helper-hidden', 'style' => 'margin:10px;'))->div;
+	HTML::button('btnCancel', 'Cancel', array('name' => 'cancel', 'type' => 'submit', 'class' => 'ui-helper-hidden', 'style' => 'margin:10px;'))->div;
 
 }
 
@@ -68,7 +70,7 @@ text_row(_("Customer Name:"), 'name', $customer->name, 35, 80);
 text_row(_("Customer Short Name:"), 'debtor_ref', $customer->debtor_ref, 35, 30);
 textarea_row(_("Address:"), 'address', $customer->address, 35, 5);
 email_row(_("E-mail:"), 'email', $customer->email, 35, 40);
-text_row(_("GSTNo:"), 'taxId', $customer->taxId, 35, 40);
+text_row(_("GSTNo:"), 'tax_id', $customer->tax_id, 35, 40);
 
 if (!$customer->id) {
 	currencies_list_row(_("Customer's Currency:"), 'curr_code', $customer->curr_code);
@@ -130,14 +132,15 @@ table_section(2,false,'ui-widget');
 //table_section_title("<span class='ui-icon ui-icon-circle-plus'>"._("Contact log:")."</span>", 2, 'tableheader3');
 table_section_title(_("Contact log:"), 2, 'tableheader3 ');
 start_row();
-UI::td(array('class'=>'ui-widget-content center-content'));
-UI::button('addLog',"Add log entry")->td->tr;
+
+HTML::td(array('class'=>'ui-widget-content center-content'));
+HTML::button('addLog',"Add log entry")->td->tr;
 
 textarea_cells(null, null, null, 100, 30);
 end_outer_table(1);
 
-UI::div('contactLog', array('title' => 'New contact log entry', 'class' => 'ui-widget-overlay'));
-UI::p('New log entry:', array('class' => 'validateTips'));
+HTML::div('contactLog', array('title' => 'New contact log entry', 'class' => 'ui-widget-overlay'));
+HTML::p('New log entry:', array('class' => 'validateTips'));
 start_form();
 start_table();
 label_row('Date:', Now());
@@ -145,16 +148,17 @@ text_row('Contact:', 'acc_contact_name', $customer->accounts->contact_name, 40, 
 textarea_row('Entry:', 'log_entry', '', 100, 10);
 end_table();
 end_form();
-UI::p()->div;
+HTML::p()->div;
 
 $menu->endTab();
 
 $menu->startTab('Branches', 'Branches');
-UI::div('branchSelect',array('style'=>"text-align:center; margin:0 auto;"));
-$currentBranch = $customer->branches[0];
-UI::select('branchList', $customer->branches, array('name' => 'branchList'));
-UI::button('addBranch','Add new branch',array('name'=>'addBranch'));
-UI::div();
+HTML::div('branchSelect',array('style'=>"text-align:center; margin:0 auto;"));
+$currentBranch = $customer->branches[$customer->defaultBranch];
+HTML::select('branchList', $customer->branches, array('name' => 'branchList'));
+/** @noinspection PhpDynamicAsStaticMethodCallInspection */
+HTML::button('addBranch','Add new branch',array('name'=>'addBranch'));
+HTML::div();
 start_outer_table($table_style2, 5);
 table_section(1);
 hidden('branch_code', $currentBranch->branch_code);
@@ -191,7 +195,7 @@ $menu->endTab();
 $menu->startTab('Invoices','Invoices');
 $menu->endTab();
 
-$menu->render();
+$menu->render(); 
 hidden('popup', @$_REQUEST['popup']);
 end_form();
 end_page(true, true);

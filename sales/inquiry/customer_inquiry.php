@@ -231,7 +231,7 @@ if (isRefererCorrect() && !empty($_POST['ajaxsearch'])) {
 		branch.br_name,
 		debtor.curr_code,
 		(trans.ov_amount + trans.ov_gst + trans.ov_freight 
-			+ trans.ov_freight_tax + trans.ov_discount)	AS TotalAmount, "; 
+			+ trans.ov_freight_tax + trans.ov_discount)	AS TotalAmount, ";
    	if ($_POST['filterType'] != ALL_TEXT)
 		$sql .= "@bal := @bal+(trans.ov_amount + trans.ov_gst + trans.ov_freight + trans.ov_freight_tax + trans.ov_discount), ";
 
@@ -257,6 +257,7 @@ $sql = "SELECT * FROM ".TB_PREF."debtor_trans_view WHERE ";
         " AND (";
 
         if ($ajaxsearch[0] == "$") {
+	        if (substr($ajaxsearch,-1)==0 && substr($ajaxsearch,-3, 1)=='.') $ajaxsearch = (substr($ajaxsearch,0,-1));
 	        $sql .= "TotalAmount LIKE ".db_escape('%' .substr($ajaxsearch,1) . '%').") ";
             continue;
         };

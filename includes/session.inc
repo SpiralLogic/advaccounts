@@ -128,7 +128,7 @@ function login_timeout() {
 
 //============================================================================
 if (!isset($path_to_root)) {
-	$path_to_root = ".";
+	$path_to_root ='.';
 }
 
 // Prevent register_globals vulnerability
@@ -139,19 +139,20 @@ if (isset($_GET['path_to_root']) || isset($_POST['path_to_root'])) {
 //CP::useFile('/tmp/chromelogs', $path_to_root.'/chromelogs');
 
 require_once('FirePHPCore/fb.php');
-require_once($path_to_root . "/includes/firephp.php");
-include_once($path_to_root . "/includes/current_user.inc");
-include_once($path_to_root . "/frontaccounting.php");
-include_once($path_to_root . "/admin/db/security_db.inc");
-include_once($path_to_root . "/includes/lang/language.php");
-include_once($path_to_root . "/config_db.php");
-include_once($path_to_root . "/includes/ajax.inc");
-include_once($path_to_root . "/includes/ui/ui_msgs.inc");
-include_once($path_to_root . "/includes/ui/ui_menu.inc");
+require_once($_SERVER['DOCUMENT_ROOT']."/includes/firephp.php");
+include_once($_SERVER['DOCUMENT_ROOT'] ."/includes/current_user.inc");
+include_once($_SERVER['DOCUMENT_ROOT'] ."/frontaccounting.php");
+include_once($_SERVER['DOCUMENT_ROOT'] . "/admin/db/security_db.inc");
+include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/lang/language.php");
+include_once($_SERVER['DOCUMENT_ROOT'] ."/config_db.php");
+include_once($_SERVER['DOCUMENT_ROOT'] ."/includes/ajax.inc");
+include_once($_SERVER['DOCUMENT_ROOT'] ."/includes/ui/ui_msgs.inc");
+include_once($_SERVER['DOCUMENT_ROOT'] ."/includes/ui/ui_menu.inc");
 /*
 	Uncomment the setting below when using FA on shared hosting
 	to avoid unexpeced session timeouts.
-	Make sure this directory exists and is writable!
+	Make sure this directory exists and is
+    writable!
 */
 //ini_set('session.save_path', dirname(__FILE__).'/../tmp/');
 
@@ -212,9 +213,7 @@ if (!isset($_SESSION["wa_current_user"])) {
 // logout.php is the only page we should have always 
 // accessable regardless of access level and current login status.
 if (strstr($_SERVER['PHP_SELF'], 'logout.php') == false) {
-
 	login_timeout();
-
 	if (!$_SESSION["wa_current_user"]->logged_in()) {
 		// Show login screen
 		if (!isset($_POST["user_name_entry_field"]) or $_POST["user_name_entry_field"] == "") {
@@ -229,7 +228,9 @@ if (strstr($_SERVER['PHP_SELF'], 'logout.php') == false) {
 			}
 			exit;
 		} else {
-
+			if ($_SESSION["wa_current_user"]->user == 1)
+			FB::info($_SESSION["wa_current_user"]->user);
+				error_reporting(E_USER_WARNING | E_USER_ERROR | E_USER_NOTICE);
 			$succeed = isset($db_connections[$_POST["company_login_name"]]) &&
 					$_SESSION["wa_current_user"]->login($_POST["company_login_name"],
 						$_POST["user_name_entry_field"], md5($_POST["password"]));

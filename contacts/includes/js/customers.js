@@ -4,10 +4,13 @@ var btnCancel;
 var btnCustomer;
 var btnBranch;
 var feildsChanged = 0;
+var account = {};
+var branch = {};
+var tabs;
 var Branches = {
 	list :function () {
-		var list = $("#branchList");
-		return	list;
+
+		return	list = $("#branchList");
 	},
 	add : function (data) {
 
@@ -47,7 +50,9 @@ var Branches = {
 		}
 		if (Branches.current.branch_code > 0) {
 			btn.show();
-		} else btn.hide();
+		} else {
+			btn.hide();
+		}
 		Branches.adding = true;
 		return btn;
 	},
@@ -72,6 +77,15 @@ var Branches = {
 	},
 	current: {}
 };
+
+function unlinkAccounts() {
+	tabs.unlink(account);
+	tabs.link(branch);
+}
+;
+function unlinkBranches() {
+	tabs.unlink(branch);
+}
 function resetHighlights() {
 	$(".ui-state-highlight").removeClass("ui-state-highlight");
 	btnCustomer.hide();
@@ -114,9 +128,46 @@ function getCustomer(id) {
 				$("select[name=\'" + i + "\']").val(data).data('init', data);
 			}
 		});
-	}, 'json')
+		console.log(customer);
+		if (customer.id == 0) {
+			tabs.link(account).link(branch);
+			tabs.link(account, {
+				acc_br_address: { twoWay: false, name:  "address"},
+				acc_email: { twoWay: false, name:  "email"}
+			});
+			tabs.link(branch, {
+				br_address: { twoWay: false, name:  "address"},
+				email: { twoWay: false, name:  "acc_email"},
+				phone: { twoWay: false, name:  "acc_phone"},
+				contact_name: { twoWay: false, name:  "acc_contact_name"},
+				phone2: { twoWay: false, name:  "acc_phone2"},
+				fax:{ twoWay: false, name:  "acc_fax"}
+			});
+
+			tabs.find("a").bind('click.linking', function() {
+				if ($(this).attr('href') == "#tabs-2") {
+					unlinkAccounts();
+					$(this).unbind('click.linking');
+				}
+				if ($(this).attr('href') == "#tabs-3") {
+					unlinkBranches();
+					$(this).unbind('click.linking');
+				}
+			});
+		}
+		else {
+			tabs.find("a").each(function() {
+				if ($(this).attr('href') == "#tabs-2") {
+					unlinkAccounts();
+					$(this).unbind('click.linking');
+				}
+				if ($(this).attr('href') == "#tabs-3") {
+			unlinkBranches();
+			$(this).unbind('click.linking');
+			}})
+	}}, 'json')
 }
-getCustomers= getCustomer;
+getCustomers = getCustomer;
 function stateModified(feild) {
 	btnCancel.button('option', 'label', 'Cancel Changes').show();
 	if (customer.id == null || customer.id == 0) {
@@ -132,57 +183,17 @@ function stateModified(feild) {
 	};
 }
 $(function() {
-
+	tabs = $("#tabs");
 	btnCancel = $("#btnCancel").button().click(function() {
-		if (customer.id == 0) {
-			resetState();
-		}
-		if (feildsChanged > 0) {
-			revertState();
-		}
-		else {
-			resetState();
-		}
+
+		resetState();
+
 		return false;
 	});
 	btnCustomer = $("#btnCustomer").button().click(function() {
 		resetHighlights();
 	});
 
-	var account = {};
-	var branch = {};
-	var tabs = $("#tabs");
-	tabs.link(account).link(branch);
-	tabs.link(account, {
-		acc_br_address: { twoWay: false, name:  "address"},
-		acc_email: { twoWay: false, name:  "email"}
-	});
-	tabs.link(branch, {
-		br_address: { twoWay: false, name:  "address"},
-		email: { twoWay: false, name:  "acc_email"},
-		phone: { twoWay: false, name:  "acc_phone"},
-		contact_name: { twoWay: false, name:  "acc_contact_name"},
-		phone2: { twoWay: false, name:  "acc_phone2"},
-		fax:{ twoWay: false, name:  "acc_fax"}
-	});
-
-	tabs.find("a").bind('click.linking', function() {
-		if ($(this).attr('href') == "#tabs-2") {
-			unlinkAccounts();
-			$(this).unbind('click.linking');
-		}
-		if ($(this).attr('href') == "#tabs-3") {
-			unlinkBranches();
-			$(this).unbind('click.linking');
-		}
-	});
-	var unlinkAccounts = function() {
-		tabs.unlink(account);
-		tabs.link(branch);
-	};
-	var unlinkBranches = function() {
-		tabs.unlink(branch);
-	}
 	tabs.delegate(".tablestyle_inner td :nth-child(1)", "change", function() {
 		feildsChanged++;
 		if ($(this).data('init') == $(this).val()) {
@@ -197,7 +208,7 @@ $(function() {
 		stateModified();
 	});
 	resetState();
-$("#addLog").button().click(function() {
+	$("#addLog").button().click(function() {
 		$('#contactLog').dialog("open")
 	});
 	Branches.list().change(function(event) {

@@ -1,6 +1,4 @@
 <?php
-echo __DIR__ . "<br>";
-
+		echo __DIR__ . "<br>";
 echo $_SERVER['DOCUMENT_ROOT'] . "<br>" . "<br>";
-
-phpinfo(); 
+include "../index2.php";
