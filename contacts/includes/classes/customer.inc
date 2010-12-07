@@ -14,7 +14,7 @@ class Customer extends Contact {
 	public $name = '';
 	public $address = '';
 	public $email = '';
-	public $taxId = '';
+	public $tax_id = '';
 	public $curr_code = '';
 	public $sales_type = -1;
 	public $dimension_id = 0;
@@ -81,7 +81,7 @@ class Customer extends Contact {
 		$sql = "UPDATE " . TB_PREF . "debtors_master SET name=" . db_escape($_POST['name']) . ",
 			debtor_ref=" . db_escape($_POST['debtor_ref']) . ",
 			address=" . db_escape($_POST['address']) . ",
-			tax_id=" . db_escape($_POST['taxId']) . ",
+			tax_id=" . db_escape($_POST['tax_id']) . ",
 			curr_code=" . db_escape($_POST['curr_code']) . ",
 			email=" . db_escape($_POST['email']) . ",
 			dimension_id=" . db_escape($_POST['dimension_id']) . ",
@@ -111,7 +111,7 @@ class Customer extends Contact {
 				db_escape($this->name) . ", " .
 				db_escape($this->debtor_ref) . ", " .
 				db_escape($this->address) . ", " .
-				db_escape($this->taxId) . "," .
+				db_escape($this->tax_id) . "," .
 				db_escape($this->email) . ", " .
 				db_escape($this->dimension_id) . ", " .
 				db_escape($this->dimension2_id) . ", " .

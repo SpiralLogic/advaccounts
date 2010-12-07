@@ -121,7 +121,7 @@ if (isset($_GET['AddedID'])) {
 	submenu_option(_("&Edit This Order"), "/sales/sales_order_entry.php?ModifyOrderNumber=$order_no");
 	submenu_print(_("&Print This Order"), ST_SALESORDER, $order_no, 'prtopt');
 	submenu_print(_("Print Proforma Invoice"), ST_PROFORMA, $order_no, 'prtopt');
-	submenu_print(_("&Email This Order"), ST_SALESORDER, $order_no, null, 1);
+	submenu_print(_("&Email This Order") . " (to: " . $_SESSION['Jobsboard']->email . ")", ST_SALESORDER, $order_no, null, 1);
 	submenu_print(_("Email Proforma Invoice"), ST_PROFORMA, $order_no, null, 1);
 	set_focus('prtopt');
 	submenu_option(_("Confirm Order Quantities and Make &Delivery"), "/sales/customer_delivery.php?OrderNumber=$order_no");

@@ -16,6 +16,7 @@ class JS {
 
 
         $js_lib[] = "<script>$(function() {
+
        $('#{$id}').autocomplete({
 		source: function(request, response) {
 			lastXhr = $.getJSON('search.php', request, function(data, status, xhr) {
@@ -29,6 +30,6 @@ class JS {
 		get{$callback}(ui.item.id);
 	}
 }).css({'z-index' : '2', 'margin' : '10px'}); });</script>";
-
+ 
     }
 }

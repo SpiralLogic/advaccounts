@@ -152,7 +152,7 @@ function submit($name, $value, $echo=true, $title=false, $atype=false, $icon=fal
 	    .($title ? " title='$title'" : '')
 	    .">"
 		.($icon ? "<img src='$path_to_root/themes/".user_theme()."/images/$icon' height='12'>" : '')
-		."<span>$value</span>"
+			. "<span>$value</span>"
 		."</button>\n";
 	if ($echo)
 		echo $submit_str;

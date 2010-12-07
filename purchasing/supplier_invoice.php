@@ -118,7 +118,7 @@ if (isset($_POST['AddGLCodeToTrans'])) {
     }
 
     if ($input_error == false) {
-        $_SESSION['supp_trans']->add_gl_codes_to_trans($_POST['gl_code'], $gl_act_name, $_POST['dimension_id'], $_POST['dimension2_id'], input_num('amount'), $_POST['memo_']);
+        $_SESSION['supp_trans']->add_gl_codes_to_trans($_POST['gl_code'], $gl_act_name, null, null, input_num('amount'), $_POST['memo_']);
         $taxexists = false;
         foreach ($_SESSION['supp_trans']->gl_codes as &$gl_item) {
 
@@ -301,6 +301,7 @@ if ($id3 != -1) {
 
 $id4 = find_submit('Delete2');
 if ($id4 != -1) {
+	if (!isset($taxtotal)) $taxtotal=0;
     $_SESSION['supp_trans']->remove_gl_codes_from_trans($id4);
       foreach ($_SESSION['supp_trans']->gl_codes as $key => $gl_item) {
             if ($gl_item->gl_code == 2430) {

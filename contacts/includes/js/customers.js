@@ -1,3 +1,4 @@
+var loader;
 var lastXhr;
 var customer;
 var btnCancel;
@@ -107,7 +108,7 @@ function resetState() {
 	resetHighlights();
 }
 function getCustomer(id) {
-
+	loader.show();
 	$.post("search.php",
 	{id: id}, function(data) {
 		customer = data;
@@ -165,7 +166,9 @@ function getCustomer(id) {
 			unlinkBranches();
 			$(this).unbind('click.linking');
 			}})
-	}}, 'json')
+	}
+	loader.hide();
+	}, 'json')
 }
 getCustomers = getCustomer;
 function stateModified(feild) {
@@ -184,10 +187,9 @@ function stateModified(feild) {
 }
 $(function() {
 	tabs = $("#tabs");
+	loader = $("#loader").show();
 	btnCancel = $("#btnCancel").button().click(function() {
-
 		resetState();
-
 		return false;
 	});
 	btnCustomer = $("#btnCustomer").button().click(function() {

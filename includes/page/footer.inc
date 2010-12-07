@@ -14,6 +14,7 @@ function page_footer($no_menu=false, $is_index=false, $hide_back_link=false)
 	global $path_to_root, $js_lib, $Validate, $Editors, $Ajax;
 
 	include_once($path_to_root."/themes/".user_theme()."/renderer.php");
+
 	$rend = new renderer();
 	$rend->menu_footer($no_menu, $is_index);
 
@@ -36,8 +37,18 @@ function page_footer($no_menu=false, $is_index=false, $hide_back_link=false)
     }
 	//show_messages();
 	echo "\n--></script>\n";
-    echo "</body></html>\n";
- 
-}
 
-?>
+
+
+	$messages = new Messages();
+		if ($messages->getNewUserMessages($_SESSION['wa_current_user']->user)>0)
+		$messages->makeDialog();
+
+	
+
+
+
+	echo "</body></html>\n";
+    if ($_SESSION["wa_current_user"]->user == 1)
+FB::info($_SESSION);
+}

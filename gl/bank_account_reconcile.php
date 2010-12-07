@@ -56,7 +56,13 @@ function rec_checkbox($row)
 	return checkbox(null, $name, $value, true, _('Reconcile this transaction'))
 		. hidden($hidden, $value, false);
 }
+function ungroup($row) {
 
+	if ($row['type'] != 15) return;
+
+    return "<button value='".$row['id'].'\' onclick="JsHttpRequest.request(\'_ungroup_'.$row['id'].'\', this.form)" name="_ungroup_' . $row['id'] . '" type="submit" title="Ungroup"
+    class="ajaxsubmit">Ungroup</button>'.hidden("ungroup_".$row['id'],$row['ref'],true);
+}
 function systype_name($dummy, $type)
 {
 	global $systypes_array;
@@ -104,6 +110,7 @@ function update_data()
 //---------------------------------------------------------------------------------------------
 // Update db record if respective checkbox value has changed.
 //
+
 function change_tpl_flag($reconcile_id)
 {
 	global	$Ajax;
@@ -124,6 +131,21 @@ function change_tpl_flag($reconcile_id)
 	$Ajax->activate('reconciled');
 	$Ajax->activate('difference');
 	return true;
+}
+$groupid = find_submit("_ungroup_");
+if (isset($groupid) && $groupid>1) {
+    $grouprefs = $_POST['ungroup_'.$groupid];
+
+    $trans = explode($grouprefs, ',');
+    foreach ($trans as $tran) {
+	    $sql = "UPDATE " . TB_PREF . "bank_trans SET undeposited=1, reconciled='' WHERE trans_no=" . db_escape($trans);
+	    db_query($sql, 'Couldn\'t update undesposited status');
+    }
+    $sql = "UPDATE " . TB_PREF . "bank_trans SET ref=" . db_escape('Removed group: ' . $grouprefs) . ", amount=0, reconciled='" . date2sql(Today()) . "',
+    undeposited=".$groupid." WHERE id=" . $groupid;
+    db_query($sql,"Couldn't update removed group data");
+    
+  update_data();
 }
 if (isset($_SESSION['wa_current_reconcile_date']) && count($_POST)<1) {
     if ($_SESSION['wa_current_reconcile_date'] != '') {
@@ -247,7 +269,8 @@ display_heading($act['bank_account_name']." - ".$act['bank_curr_code']);
 		_("Credit") => array('align'=>'right','insert'=>true, 'fun'=>'fmt_credit'),
 	    _("Person/Item") => array('fun'=>'fmt_person'),
 		array('insert'=>true, 'fun'=>'gl_view'),
-		"X"=>array('insert'=>true, 'fun'=>'rec_checkbox')
+		"X"=>array('insert'=>true, 'fun'=>'rec_checkbox'),
+		array('insert'=>true,'fun' => 'ungroup')
 	   );
 
 	$table =& new_db_pager('trans_tbl', $sql, $cols);

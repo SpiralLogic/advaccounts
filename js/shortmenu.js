@@ -5,7 +5,7 @@
  * Time: 3:30 AM
  * To change this template use File | Settings | File Templates.
  */
-
+var loader;
 $(function() {
 console.log('dom loaded');
     var sidemenu = $("#sidemenu").draggable().accordion({
@@ -62,6 +62,7 @@ console.log('dom loaded');
 			if (ajaxRequest && event.type == 'keyup') {
 				ajaxRequest.abort();
 			}
+			loader = $("#loader").show();
 			ajaxRequest = $.post(
 					$(this).data("url"),
 			{ ajaxsearch: term, limit: true },
@@ -69,6 +70,7 @@ console.log('dom loaded');
 				                    var content = $('#wrapper', data).attr("id","results");
                                     $("#results").remove();
 				                    $("#wrapper", document).hide().before(content);
+				                    loader = $("#loader").hide();
 			                    }
 					);
 		}

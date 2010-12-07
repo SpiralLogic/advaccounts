@@ -148,6 +148,9 @@ include_once($_SERVER['DOCUMENT_ROOT'] ."/config_db.php");
 include_once($_SERVER['DOCUMENT_ROOT'] ."/includes/ajax.inc");
 include_once($_SERVER['DOCUMENT_ROOT'] ."/includes/ui/ui_msgs.inc");
 include_once($_SERVER['DOCUMENT_ROOT'] ."/includes/ui/ui_menu.inc");
+include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/ui2/dialog.inc");
+include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/ui2/HTML.inc");
+include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/ui2/messages.inc");
 /*
 	Uncomment the setting below when using FA on shared hosting
 	to avoid unexpeced session timeouts.
@@ -155,7 +158,6 @@ include_once($_SERVER['DOCUMENT_ROOT'] ."/includes/ui/ui_menu.inc");
     writable!
 */
 //ini_set('session.save_path', dirname(__FILE__).'/../tmp/');
-
 ini_set('session.gc_maxlifetime', 36000); // 10hrs
 
 session_name('FA' . md5(dirname(__FILE__)));
@@ -228,9 +230,6 @@ if (strstr($_SERVER['PHP_SELF'], 'logout.php') == false) {
 			}
 			exit;
 		} else {
-			if ($_SESSION["wa_current_user"]->user == 1)
-			FB::info($_SESSION["wa_current_user"]->user);
-				error_reporting(E_USER_WARNING | E_USER_ERROR | E_USER_NOTICE);
 			$succeed = isset($db_connections[$_POST["company_login_name"]]) &&
 					$_SESSION["wa_current_user"]->login($_POST["company_login_name"],
 						$_POST["user_name_entry_field"], md5($_POST["password"]));
@@ -245,6 +244,8 @@ if (strstr($_SERVER['PHP_SELF'], 'logout.php') == false) {
 		}
 	} else
 	{
+		if ($_SESSION["wa_current_user"]->user == 1)
+			error_reporting(E_ALL && ~E_STRICT);
 		set_global_connection();
 	}
 

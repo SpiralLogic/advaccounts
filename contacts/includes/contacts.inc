@@ -9,6 +9,6 @@ include_once($path_to_root."/contacts/includes/classes/accounts.inc");
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/banking.inc");
 include_once($path_to_root . "/includes/ui.inc");
-include_once($path_to_root . '/includes/ui2/ui.inc');
+include_once($path_to_root . '/includes/ui2/HTML.inc');
 get_jqueryui();
 get_jquery_live();
