@@ -12,9 +12,9 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 * ********************************************************************* */
 $path_to_root = "../..";
 
-include($path_to_root . "/includes/db_pager.inc");
-include($path_to_root . "/includes/session.inc");
-include($path_to_root . "/sales/includes/sales_ui.inc");
+include_once($path_to_root . "/includes/db_pager.inc");
+include_once($path_to_root . "/includes/session.inc");
+include_once($path_to_root . "/sales/includes/sales_ui.inc");
 include_once($path_to_root . "/reporting/includes/reporting.inc");
 
 $page_security = 'SA_SALESTRANSVIEW';
@@ -92,14 +92,14 @@ function check_overdue($row) {
     }
 }
 
-function view_link($dummy, $order_no) {
+function view_link($row, $order_no) {
     global $trans_type;
-    return get_customer_trans_view_str($trans_type, $order_no);
+    return get_customer_trans_view_str($row['trans_type'], $order_no);
 }
 
 function prt_link($row) {
     global $trans_type;
-    return print_document_link($row['order_no'], _("Print"), true, $trans_type, ICON_PRINT);
+    return print_document_link($row['order_no'], _("Print"), true, $row['trans_type'], ICON_PRINT);
 }
 
 function prt_link2($row) {
@@ -109,13 +109,13 @@ function prt_link2($row) {
 
 function edit_link($row) {
     global $trans_type;
-    $modify = ($trans_type == ST_SALESORDER ? "ModifyOrderNumber" : "ModifyQuotationNumber");
+    $modify = ($row['trans_type'] == ST_SALESORDER ? "ModifyOrderNumber" : "ModifyQuotationNumber");
     return pager_link(_("Edit"), "/sales/sales_order_entry.php?$modify=" . $row['order_no'], ICON_EDIT);
 }
 
 function dispatch_link($row) {
     global $trans_type;
-    if ($trans_type == ST_SALESORDER) {
+    if ($row['trans_type'] == ST_SALESORDER) {
         return pager_link(_("Dispatch"), "/sales/customer_delivery.php?OrderNumber=" . $row['order_no'], ICON_DOC);
     } else {
         return pager_link(_("Sales Order"), "/sales/sales_order_entry.php?OrderNumber=" . $row['order_no'], ICON_DOC);
@@ -124,7 +124,7 @@ function dispatch_link($row) {
 
 function invoice_link($row) {
     global $trans_type;
-    if ($trans_type == ST_SALESORDER) {
+    if ($row['trans_type'] == ST_SALESORDER) {
         return pager_link(_("Invoice"), "/sales/sales_order_entry.php?NewInvoice=" . $row["order_no"], ICON_DOC);
     } else {
         return '';
@@ -226,7 +226,7 @@ end_table(1);
 //
 $sql = "SELECT
 		sorder.order_no,
-
+		sorder.trans_type,
 		sorder.reference,
 		debtor.name,
 		branch.br_name," . ($_POST['order_view_mode'] == 'InvoiceTemplates' || $_POST['order_view_mode'] == 'DeliveryTemplates' ? "sorder.comments, " : "sorder.customer_ref, ") . "sorder.ord_date,
@@ -290,7 +290,6 @@ if (isset($_POST['OrderNumber']) && $_POST['OrderNumber'] != "") {
 				sorder.debtor_no,
 				sorder.branch_code,
 				sorder.customer_ref,
-
 				sorder.deliver_to";
 	}
 else { // ... or select inquiry constraints
@@ -324,9 +323,12 @@ else { // ... or select inquiry constraints
 }
 
 if ($trans_type == ST_SALESORDER) {
-    $cols = array(_("Order #") => array('fun' => 'view_link', 'ord' => 'desc'), _("Ref") => array('ord' => ''), _("Customer") => array('ord' => ''), _("Branch") => array('ord' => ''), _("Customer PO#") => array('ord' => ''), _("Order Date") => array('type' => 'date', 'ord' => ''), _("Required By") => array('type' => 'date', 'ord' => ''), _("Delivery To"), _("Order Total") => array('type' => 'amount', 'ord' => ''), 'Type' => 'skip', _("Currency") => array('align' => 'center'));
+    $cols = array(_("Order #") => array('fun' => 'view_link', 'ord' => 'desc'), array('type'=>'skip'), _("Ref") => array('ord' => ''), _("Customer") => array('ord' => ''),
+    _("Branch") => array('ord' => ''),
+	    _("Customer PO#") => array('ord' => ''), _("Order Date") => array('type' => 'date', 'ord' => ''), _("Required By") => array('type' => 'date', 'ord' => ''), _("Delivery To"), _("Order Total") => array('type' => 'amount', 'ord' => ''), 'Type' => 'skip', _("Currency") => array('align' => 'center'));
 } else {
-    $cols = array(_("Quote #") => array('fun' => 'view_link', 'ord' => 'desc'), _("Ref") => array('ord' => ''), _("Customer") => array('ord' => ''), _("Branch") => array('ord' => ''), _("Customer PO#") => array('ord' => ''), _("Quote Date") => array('type' => 'date', 'ord' => ''), _("Valid until") => array('type' => 'date', 'ord' => ''), _("Delivery To"), _("Quote Total") => array('type' => 'amount', 'ord' => ''), 'Type' => 'skip', _("Currency") => array('align' => 'center'));
+    $cols = array(_("Quote #") => array('fun' => 'view_link', 'ord' => 'desc'), array('type' => 'skip'), _("Ref") => array('ord' => ''), _("Customer") => array('ord' => ''), _("Branch") => array('ord' => ''),
+	    _("Customer PO#") => array('ord' => ''), _("Quote Date") => array('type' => 'date', 'ord' => ''), _("Valid until") => array('type' => 'date', 'ord' => ''), _("Delivery To"), _("Quote Total") => array('type' => 'amount', 'ord' => ''), 'Type' => 'skip', _("Currency") => array('align' => 'center'));
 }
 if ($_POST['order_view_mode'] == 'OutstandingOnly') {
     //array_substitute($cols, 3, 1, _("Cust Order Ref"));

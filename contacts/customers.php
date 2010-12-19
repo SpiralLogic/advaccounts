@@ -43,19 +43,19 @@ if (isset($_POST['delete'])) {
 	$status = $customer->getStatus();
 	display_notification($status['message']);
 	$Ajax->activate('_page_body');
-}
+} 
 start_form();
 if (db_has_customers()) {
 	/** @noinspection PhpUndefinedMethodInspection */
 	HTML::div('custsearch', array('style' => 'text-align:center; '));
 	/** @noinspection PhpDynamicAsStaticMethodCallInspection */
-	HTML::search('customer', array('label'=>'Customer:','size'=>80));
+	UI::search('customer', array('label'=>'Search Customer:','size'=>80, 'url'=>'search.php'));
 	if ($customer->id) {
-		HTML::button('btnCustomer', 'Update Customer', array('name'=>'submit', 'type'=>'submit', 'class'=> 'ajaxsubmit', 'style' => 'margin:10px;'));
+		UI::button('btnCustomer', 'Update Customer', array('name'=>'submit', 'type'=>'submit', 'class'=> 'ajaxsubmit', 'style' => 'margin:10px;'));
 	} else {
-		HTML::button('btnCustomer', 'New Customer', array('name' =>'submit', 'type' => 'submit',  'class' => 'ajaxsubmit ui-helper-hidden', 'style' => 'margin:10px;'));
+		UI::button('btnCustomer', 'New Customer', array('name' =>'submit', 'type' => 'submit',  'class' => 'ajaxsubmit ui-helper-hidden', 'style' => 'margin:10px;'));
 	}
-	HTML::button('btnCancel', 'Cancel', array('name' => 'cancel', 'type' => 'submit', 'class' => 'ui-helper-hidden', 'style' => 'margin:10px;'))->div;
+	UI::button('btnCancel', 'Cancel', array('name' => 'cancel', 'type' => 'submit', 'class' => 'ui-helper-hidden', 'style' => 'margin:10px;'))->div;
 
 }
 
@@ -68,7 +68,12 @@ hidden('id', $customer->id);
 table_section_title(_("Name and Address"), 2, 'tableheader3');
 text_row(_("Customer Name:"), 'name', $customer->name, 35, 80);
 text_row(_("Customer Short Name:"), 'debtor_ref', $customer->debtor_ref, 35, 30);
-textarea_row(_("Address:"), 'address', $customer->address, 35, 5);
+textarea_row(_("Billing Address:"), 'acc_br_address', $customer->accounts->br_address, 35, 5);
+textarea_row(_("Shipping Address:"), 'address', $customer->address, 35, 5);
+text_row(_("Phone Number:"), 'acc_phone', $customer->accounts->phone, 40, 30);
+text_row(_("Secondary Phone Number:"), 'acc_phone2', $customer->accounts->phone2, 40, 30);
+text_row(_("Fax Number:"), 'acc_fax', $customer->accounts->fax, 40, 30);
+
 email_row(_("E-mail:"), 'email', $customer->email, 35, 40);
 text_row(_("GSTNo:"), 'tax_id', $customer->tax_id, 35, 40);
 
@@ -120,7 +125,8 @@ start_outer_table($table_style2, 5);
 table_section(1);
 table_section_title(_("Accounts Details:"), 2, ' tableheader3 ');
 text_row(_("Customer Name:"), 'acc_br_name', $customer->accounts->br_name, 40, 80);
-text_row(_("Contact Person:"), 'acc_contact_name', $customer->accounts->contact_name, 40, 40);
+text_row(_("Contact Person:"), 'acc_contact_name',
+$customer->accounts->contact_name, 40, 40);
 textarea_row(_("Billing Address:"), 'acc_br_address', $customer->accounts->br_address, 35, 5);
 email_row(_("E-mail:"), 'acc_email', $customer->accounts->email, 40, 40);
 text_row(_("Phone Number:"), 'acc_phone', $customer->accounts->phone, 40, 30);
@@ -134,7 +140,7 @@ table_section_title(_("Contact log:"), 2, 'tableheader3 ');
 start_row();
 
 HTML::td(array('class'=>'ui-widget-content center-content'));
-HTML::button('addLog',"Add log entry")->td->tr;
+UI::button('addLog',"Add log entry")->td->tr;
 
 textarea_cells(null, null, null, 100, 30);
 end_outer_table(1);
@@ -155,9 +161,9 @@ $menu->endTab();
 $menu->startTab('Branches', 'Branches');
 HTML::div('branchSelect',array('style'=>"text-align:center; margin:0 auto;"));
 $currentBranch = $customer->branches[$customer->defaultBranch];
-HTML::select('branchList', $customer->branches, array('name' => 'branchList'));
+UI::select('branchList', $customer->branches, array('name' => 'branchList'));
 /** @noinspection PhpDynamicAsStaticMethodCallInspection */
-HTML::button('addBranch','Add new branch',array('name'=>'addBranch'));
+UI::button('addBranch','Add new branch',array('name'=>'addBranch'));
 HTML::div();
 start_outer_table($table_style2, 5);
 table_section(1);

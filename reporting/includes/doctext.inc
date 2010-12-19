@@ -110,7 +110,7 @@
             elseif ($doctype == ST_CUSTPAYMENT) $this->title = _("RECEIPT");
             elseif ($doctype == ST_CUSTREFUND) $this->title = _("REFUND");
             else $this->title = _("CREDIT NOTE");
-            if ($isproforma) {
+            if (isset($isproforma) && $isproforma) {
                 $this->title = _("PROFORMA INVOICE");
                 
             }

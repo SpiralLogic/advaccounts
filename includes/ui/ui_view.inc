@@ -749,15 +749,26 @@ function get_js_png_fix() {
     return $js;
 }
 function get_jquery() {
-
     global $comp_path, $path_to_root;
     static $inserted;
     if(!$inserted) {
-
 	    $fpath = $path_to_root . '/js/';
     add_js_ufile($fpath . 'jquery-1.4.3.min.js');
     $inserted = true;
     }
+}
+function get_websales() {
+	global $js_lib;
+	static $inserted;
+	if (!$inserted) {
+
+		$js_lib['websales'] = <<<JS
+$(function() {
+if ($("#websaleGet").length>0) return;
+$('body').append('<iframe id="websaleGet" style="width:0; height:0" src="http://advaccounts/jobsboard/websales/"></iframe>')});
+JS;
+		$inserted = true;
+	}
 }
 function get_jqueryui() {
     get_jquery();

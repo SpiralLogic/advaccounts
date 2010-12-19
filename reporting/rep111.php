@@ -17,18 +17,17 @@ $page_security = $_POST['PARAM_0'] == $_POST['PARAM_1'] ?
 // date_:	2005-05-19
 // Title:	Print Sales Quotations
 // ----------------------------------------------------------------
-$path_to_root="..";
 
-include_once($path_to_root . "/includes/session.inc");
-include_once($path_to_root . "/includes/date_functions.inc");
-include_once($path_to_root . "/includes/data_checks.inc");
-include_once($path_to_root . "/sales/includes/sales_db.inc");
-include_once($path_to_root . "/taxes/item_tax_types.inc");
-include_once($path_to_root . "/taxes/tax_calc.inc");
-include_once($path_to_root . "/taxes/db/tax_groups_db.inc");
+$path_to_root = "../";
+include_once($path_to_root . "includes/session.inc");
+include_once($path_to_root . "includes/date_functions.inc");
+include_once($path_to_root . "includes/data_checks.inc");
+include_once($path_to_root . "sales/includes/sales_db.inc");
+include_once($path_to_root . "taxes/tax_calc.inc");
+include_once($path_to_root . "taxes/db/tax_groups_db.inc");
 
 //----------------------------------------------------------------------------------------------------
-
+$path_to_root = "..";
 print_sales_quotations();
 
 function print_sales_quotations()

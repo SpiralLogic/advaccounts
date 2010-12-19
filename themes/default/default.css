@@ -864,16 +864,12 @@ cursor: pointer;
 .pointer {
     cursor: pointer;
 }
-tr.tableheader3 {
 
-
-	margin-bottom: 5px;
-}
 
 td.tableheader3 {
 	margin: 0 auto;
 	text-align: center;
-	padding: 0.5em 1em 0.3em;
+	padding: 0.5em 1em 0.3em ;
 	position: relative;
 	border-radius: 6px 6px 6px 6px;
 	background: url("images/ui-bg_hexagon_40_f6a828_12x10.png") repeat scroll 50% 50% #F6A828;

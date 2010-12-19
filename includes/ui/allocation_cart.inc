@@ -25,7 +25,6 @@ class allocation
 	var $person_type;
 	var $date_;
 	var $amount = 0; /*Total amount of the transaction in FX */
-	
 	var $allocs; /*array of transactions allocated to */	
 
 	function allocation($type, $trans_no)

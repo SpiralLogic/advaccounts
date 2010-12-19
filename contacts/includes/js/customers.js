@@ -72,6 +72,7 @@ var Branches = {
 				Branches.btnBranchAdd();
 				customer.branches[data.branch_code] = data;
 				$("#msgbox").prepend("Customer branch updated");
+				
 			}, 'json');
 		});
 		return btn;
@@ -106,6 +107,9 @@ function resetState() {
 	$("#tabs input, #tabs textarea").empty();
 	getCustomer(0);
 	resetHighlights();
+}
+function Customer(item) {
+	getCustomer(item.id);
 }
 function getCustomer(id) {
 	loader.show();
@@ -170,11 +174,20 @@ function getCustomer(id) {
 	loader.hide();
 	}, 'json')
 }
+
 getCustomers = getCustomer;
 function stateModified(feild) {
 	btnCancel.button('option', 'label', 'Cancel Changes').show();
 	if (customer.id == null || customer.id == 0) {
 		btnCustomer.button("option", "label", "Save New Customer").show();
+		fieldname = feild.attr('name');
+		tochange = [];
+		tochange.push($("input[name='acc_br"+fieldname+"']"));
+		tochange.push($("#acc_".fieldname));
+		tochange.push($("#br_".fieldname));
+		$.each(tochange, function() {
+			if (tochange.length ==1 && feild.val().length==0) tochange.val(feild.val())
+		});
 	} else {
 		btnCustomer.button("option", "label", "Save Changes").show();
 	}
@@ -187,7 +200,7 @@ function stateModified(feild) {
 }
 $(function() {
 	tabs = $("#tabs");
-	loader = $("#loader").show();
+	loader = $("<div></div>").hide().attr('id', 'loader').prependTo('#content');
 	btnCancel = $("#btnCancel").button().click(function() {
 		resetState();
 		return false;
@@ -207,7 +220,7 @@ $(function() {
 			return;
 		}
 		$(this).addClass("ui-state-highlight");
-		stateModified();
+		stateModified($(this));
 	});
 	resetState();
 	$("#addLog").button().click(function() {

@@ -135,11 +135,11 @@ if (!isset($path_to_root)) {
 if (isset($_GET['path_to_root']) || isset($_POST['path_to_root'])) {
 	die("Restricted access");
 }
-//require_once("$path_to_root/includes/ChromePHP.php");
-//CP::useFile('/tmp/chromelogs', $path_to_root.'/chromelogs');
+include_once($_SERVER['DOCUMENT_ROOT'] ."/includes/ChromePHP.php");
+FB::useFile('/tmp/chromelogs', $path_to_root.'/chromelogs');
 
-require_once('FirePHPCore/fb.php');
-require_once($_SERVER['DOCUMENT_ROOT']."/includes/firephp.php");
+//require_once('FirePHPCore/fb.php');
+//require_once($_SERVER['DOCUMENT_ROOT']."/includes/firephp.php");
 include_once($_SERVER['DOCUMENT_ROOT'] ."/includes/current_user.inc");
 include_once($_SERVER['DOCUMENT_ROOT'] ."/frontaccounting.php");
 include_once($_SERVER['DOCUMENT_ROOT'] . "/admin/db/security_db.inc");
@@ -162,6 +162,9 @@ ini_set('session.gc_maxlifetime', 36000); // 10hrs
 
 session_name('FA' . md5(dirname(__FILE__)));
 session_start();
+if (isset($_SESSION["wa_current_user"]) && $_SESSION["wa_current_user"]->user == 1) {
+	error_reporting(E_ALL);
+}
 
 // this is to fix the "back-do-you-want-to-refresh" issue - thanx PHPFreaks
 header("Cache-control: private");
@@ -239,13 +242,14 @@ if (strstr($_SERVER['PHP_SELF'], 'logout.php') == false) {
 				// Incorrect password
 				login_fail();
 			}
+			get_websales();
+			FB::info($js_lib);
 			$lang = &$_SESSION['language'];
 			$lang->set_language($_SESSION['language']->code);
 		}
 	} else
 	{
-		if ($_SESSION["wa_current_user"]->user == 1)
-			error_reporting(E_ALL && ~E_STRICT);
+
 		set_global_connection();
 	}
 
@@ -259,8 +263,13 @@ if (strstr($_SERVER['PHP_SELF'], 'logout.php') == false) {
 	}
 }
 function isRefererCorrect() {
-	return $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest';
+	return (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest');
 }
+
+if ($_SESSION["wa_current_user"]->user == 1) {
+	error_reporting(E_ALL);
+}
+
 // POST vars cleanup needed for direct reuse.
 // We quote all values later with db_escape() before db update.
 $_POST = strip_quotes($_POST);

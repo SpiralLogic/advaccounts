@@ -7,7 +7,6 @@
  */
 var loader;
 $(function() {
-console.log('dom loaded');
     var sidemenu = $("#sidemenu").draggable().accordion({
         autoHeight: false,
         event: "mouseover"
@@ -44,7 +43,7 @@ console.log('dom loaded');
 
 	var previous;
 	var ajaxRequest;
-
+ 
 	$("#search").delegate("a", "click",
 	                     function(event) {
                              sidemenuOff();

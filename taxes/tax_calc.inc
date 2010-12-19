@@ -65,7 +65,7 @@ function get_tax_for_item($stock_id, $price, $tax_group=false)
 	 if (!$tax_group) $tax_group=get_item_tax_type_for_item($stock_id);
 
 	// if array already read, then make a copy and use that
-	if ($tax_group_array)
+	if (isset($tax_group_array) &&$tax_group_array)
 		$ret_tax_array = $tax_group_array;
 	else
 		$ret_tax_array = get_tax_group_items_as_array($tax_group[0]);

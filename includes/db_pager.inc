@@ -18,8 +18,8 @@
 //require_once("$path_to_root/includes/ChromePHP.php");
 //CP::useFile('/tmp/chromelogs', $path_to_root.'/chromelogs');
 
-require_once('FirePHPCore/fb.php');
-require_once($path_to_root . "/includes/firephp.php");
+//require_once('FirePHPCore/fb.php');
+//require_once($path_to_root . "/includes/firephp.php");
 include_once($path_to_root."/includes/ui/db_pager_view.inc");
 
 class db_pager {
@@ -136,8 +136,9 @@ class db_pager {
 	function sort_table($col) 
 	{
         if (is_null($col)) return false;
-	    $ord = $this->columns[$col]['ord'];
-	    $ord = ($ord == '') ? 'asc' : (($ord == 'asc') ? 'desc' : '');
+
+        $ord = (!isset($this->columns[$col]['ord'])) ? '' : $this->columns[$col]['ord'];
+	    $ord = ( $ord == '') ? 'asc' : (($ord == 'asc') ? 'desc' : '');
 	    $this->columns[$col]['ord'] = $ord;
 	    $this->set_page(1);
 	    $this->query();

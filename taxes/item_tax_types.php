@@ -12,7 +12,7 @@
 $page_security = 'SA_ITEMTAXTYPE';
 $path_to_root = "..";
 
-include($path_to_root . "/includes/session.inc");
+include_once($path_to_root . "/includes/session.inc");
 
 page(_($help_context = "Item Tax Types")); 
 

@@ -11,13 +11,12 @@
 ***********************************************************************/
 $page_security = 'SA_SALESTRANSVIEW';
 $path_to_root = "../..";
-include($path_to_root . "/includes/db_pager.inc");
-include_once($path_to_root . "/includes/session.inc");
 
-include_once($path_to_root . "/sales/includes/sales_ui.inc");
-include_once($path_to_root . "/sales/includes/sales_db.inc");
-include_once($path_to_root . "/reporting/includes/reporting.inc");
-
+include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/db_pager.inc");
+include_once($_SERVER['DOCUMENT_ROOT']. "/includes/session.inc");
+include_once($_SERVER['DOCUMENT_ROOT']. "/sales/includes/sales_ui.inc");
+include_once($_SERVER['DOCUMENT_ROOT']. "/sales/includes/sales_db.inc");
+include_once($_SERVER['DOCUMENT_ROOT']. "/reporting/includes/reporting.inc");
 $js = "";
 if ($use_popup_windows)
 	$js .= get_js_open_window(900, 500);
@@ -200,7 +199,8 @@ function prt_link($row)
 
 function check_overdue($row)
 {
-	return $row['OverDue'] == 1
+
+	return (isset($row['OverDue']) && $row['OverDue'] == 1)
 		&& (abs($row["TotalAmount"]) - $row["Allocated"] != 0);
 }
 //------------------------------------------------------------------------------------------------
@@ -232,7 +232,7 @@ if (isRefererCorrect() && !empty($_POST['ajaxsearch'])) {
 		debtor.curr_code,
 		(trans.ov_amount + trans.ov_gst + trans.ov_freight 
 			+ trans.ov_freight_tax + trans.ov_discount)	AS TotalAmount, ";
-   	if ($_POST['filterType'] != ALL_TEXT)
+   	if (isset($_POST['filterType']) && $_POST['filterType'] != ALL_TEXT)
 		$sql .= "@bal := @bal+(trans.ov_amount + trans.ov_gst + trans.ov_freight + trans.ov_freight_tax + trans.ov_discount), ";
 
 //	else
@@ -280,7 +280,7 @@ $sql = "SELECT * FROM ".TB_PREF."debtor_trans_view WHERE ";
 
 	$sql .= ") ";
     }
-    if ($filter) $sql .= $filter;
+    if (isset($filter) && $filter) $sql .= $filter;
 }else { $sql .= " AND trans.tran_date >= '$date_after'
 			AND trans.tran_date <= '$date_to'";
 }
@@ -288,11 +288,11 @@ if ($_POST['reference'] != ALL_TEXT) {
     $number_like = "%" . $_POST['reference'] . "%";
     $sql .= " AND trans.reference LIKE " . db_escape($number_like);
 }
-   	if ($_POST['customer_id'] != ALL_TEXT)
+   	if (isset($_POST['customer_id']) && $_POST['customer_id'] != ALL_TEXT)
    		$sql .= " AND trans.debtor_no = ".db_escape($_POST['customer_id']);
 
 
-if ($_POST['filterType'] != ALL_TEXT)
+if (isset($_POST['filterType']) && $_POST['filterType'] != ALL_TEXT)
    	{
    		if ($_POST['filterType'] == '1')
    		{
@@ -348,11 +348,11 @@ $cols = array(
 	);
 
 
-if ($_POST['customer_id'] != ALL_TEXT) {
+if (isset($_POST['customer_id']) && $_POST['customer_id'] != ALL_TEXT) {
 	$cols[_("Customer")] = 'skip';
 	$cols[_("Currency")] = 'skip';
 }
-if ($_POST['filterType'] == ALL_TEXT || !empty($_POST['ajaxsearch']))
+if (isset($_POST['filterType']) && $_POST['filterType'] == ALL_TEXT || !empty($_POST['ajaxsearch']))
 	$cols[_("RB")] = 'skip';
 
 $table =& new_db_pager('trans_tbl', $sql, $cols);

@@ -91,7 +91,7 @@ function display_db_pager(&$pager) {
 	    else	
 			alt_table_row_color($cc);
 	    foreach ($pager->columns as $k=>$col) {
-		   $coltype = $col['type'];
+		   $coltype = isset($col['type']) ? $col['type'] : '';
 		   $cell = isset($col['name']) ? $row[$col['name']] : '';
 
 		   if (isset($col['fun'])) { // use data input function if defined
