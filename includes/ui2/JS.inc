@@ -1,19 +1,15 @@
 <?php
-/**
- * Created by JetBrains PhpStorm.
- * User: advanced
- * Date: 12/4/10
- * Time: 7:01 PM
- * To change this template use File | Settings | File Templates.
- */
- 
+
 class JS {
 
     private static $_javascript = array();
-    private function __construct(){}
-    public static function autocomplete($id,$callback, $url=false) {
+
+    private function __construct() {
+    }
+
+    public static function autocomplete($id, $callback, $url = false) {
         global $js_lib;
-     if (!$url) $url = $_SERVER['PHP_SELF'];
+        if (!$url) $url = $_SERVER['PHP_SELF'];
         $js_lib[] = <<< JS
 $(function() {
        $('#{$id}').autocomplete({
@@ -34,14 +30,15 @@ $(function() {
 }).css({'z-index' : '2', 'margin' : '10px'}); });
 JS;
     }
-	public static function setfocus($id=false) {
-	if (!$id)return;
-		global $js_lib;
-	    $js_lib[]= <<< JS
+
+    public static function setfocus($id = false) {
+        if (!$id) return;
+        global $js_lib;
+        $js_lib[] = <<< JS
 $(function() {
 $('{$id}').focus();
 })
 JS;
 
-	}
+    }
 }
