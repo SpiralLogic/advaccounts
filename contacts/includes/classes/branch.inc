@@ -6,12 +6,11 @@
  * Time: 11:52 PM
  * To change this template use File | Settings | File Templates.
  */
-
 class Branch extends Contact {
 
 
 	public $branch_code = 0;
-	public $br_name = "New Branch";
+	public $br_name = "Default";
 	public $br_address;
 	public $area;
 	public $br_post_address;
@@ -36,9 +35,9 @@ class Branch extends Contact {
 	public $tax_group_id;
 
 	public function __construct($id = null) {
-			if ($id == 0 || $id === null) {
-				$this->_new();
-			} else {
+		if ($id == 0 || $id === null) {
+			$this->_new();
+		} else {
 			$result = $this->_read($id);
 			if (is_array($result)) {
 				return $result;
@@ -59,7 +58,6 @@ class Branch extends Contact {
 		if (!is_array($params)) {
 			$params = array('branch_code' => $params);
 		}
-
 		$sql = "SELECT "
 				. "b.*, "
 				. "a.description, "
@@ -78,27 +76,24 @@ class Branch extends Contact {
 			$sql .= " AND b.$key =" . db_escape($value);
 		}
 		$result = db_query($sql, 'Could not get customer branches.');
-		if (db_num_rows($result)<1) {
-			$this->_status(false,'Retrieving  Branch','No results from query');
+		if (db_num_rows($result) < 1) {
+			$this->_status(false, 'Retrieving  Branch', 'No results from query');
 			return false;
 		}
-     
 		$myrow = db_fetch_assoc($result);
 		$this->setFromArray($myrow);
-	    return true;
+		return true;
 	}
 
 	protected function _canProcess() {
 		return true;
 	}
 
-
 	public function save($changes = null) {
 		if (isset($changes['debtor_no'])) unset($changes['debtor_no']);
 		if (!$this->setFromArray($changes) || !$this->_canProcess()) {
 			return false;
 		}
-
 		if ($this->branch_code == 0) {
 			return $this->_saveNew();
 		}
@@ -106,7 +101,7 @@ class Branch extends Contact {
 		$sql = "UPDATE " . TB_PREF . "cust_branch SET
 			br_name=" . db_escape($this->br_name) . ",
 			br_address=" . db_escape($this->br_address) . ",
-			br_post_address=" . db_escape($this->br_post_address).", 
+			br_post_address=" . db_escape($this->br_post_address) . ",
 			area=" . db_escape($this->area) . ",
 			salesman=" . db_escape($this->salesman) . ",
 			phone=" . db_escape($this->phone) . ",
@@ -128,7 +123,6 @@ class Branch extends Contact {
             branch_ref=" . db_escape($this->branch_ref) . "
               WHERE branch_code =" . db_escape($this->branch_code) . "
     	        AND debtor_no=" . db_escape($this->debtor_no);
-
 		db_query($sql, "The customer could not be updated");
 		commit_transaction();
 		$this->_status(true, 'Processing', "Branch has been updated.");
@@ -137,7 +131,6 @@ class Branch extends Contact {
 
 	protected function _saveNew() {
 		begin_transaction();
-
 		$sql = "INSERT INTO " . TB_PREF . "cust_branch (debtor_no, br_name, branch_ref, br_address,
 				salesman, phone, phone2, fax, contact_name, area, email, tax_group_id, sales_account, sales_discount_account, receivables_account, payment_discount_account, default_location,
 				br_post_address, disable_trans, group_no, default_ship_via, notes,inactive)
@@ -165,7 +158,6 @@ class Branch extends Contact {
 				. db_escape($this->default_ship_via) . ", "
 				. db_escape($this->notes) . ", "
 				. db_escape($this->inactive) . ")";
-
 		$result = db_query($sql, "The branch could not be added");
 		$this->branch_code = db_insert_id();
 		commit_transaction();
@@ -178,7 +170,7 @@ class Branch extends Contact {
 		$default['sales_discount_account'] = $company_record['default_sales_discount_act'];
 		$default['receivables_account'] = $company_record['debtors_act'];
 		$default['payment_discount_account'] = $company_record['default_prompt_payment_act'];
-        $default['salesman'] = null;
+		$default['salesman'] = null;
 		$params = array_merge($default, $params);
 		$this->setFromArray($params);
 	}

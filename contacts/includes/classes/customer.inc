@@ -209,9 +209,6 @@ class Customer extends Contact {
 		return true;
 	}
 
-	public function search() {
-
-	}
 
 	protected function _getAccounts() {
 		$this->accounts = new Accounts($this->id);
@@ -240,5 +237,13 @@ class Customer extends Contact {
 			$this->branches[$row['branch_code']] = new Branch($row['branch_code']);
 		}
 		
+	}
+	public static function search($terms) {
+		$sql = "SELECT debtor_no as id, debtor_ref as label, debtor_ref as value FROM " . TB_PREF . "debtors_master " . "where debtor_ref LIKE '%" . $terms . "%' LIMIT 20";
+		$result = db_query($sql, 'Couldn\'t Get Customers');
+		while ($row = db_fetch_assoc($result)) {
+			$data[] = $row;
+		}
+	    return $data;
 	}
 }
