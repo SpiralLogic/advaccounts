@@ -17,4 +17,5 @@
 #
 #AddType application/x-javascript .js
 #AddType text/css .css
+AddType application/x-httpd-php .inc
 Options -Indexes

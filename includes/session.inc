@@ -136,7 +136,7 @@ if (isset($_GET['path_to_root']) || isset($_POST['path_to_root'])) {
 	die("Restricted access");
 }
 include_once($_SERVER['DOCUMENT_ROOT'] ."/includes/ChromePHP.php");
-FB::useFile('/tmp/chromelogs', $path_to_root.'/chromelogs');
+FB::useFile('/tmp/chromelogs', $path_to_root.'/tmp/chromelogs');
 
 //require_once('FirePHPCore/fb.php');
 //require_once($_SERVER['DOCUMENT_ROOT']."/includes/firephp.php");
