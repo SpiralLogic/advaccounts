@@ -45,7 +45,7 @@ class HTML {
 
     static function __callStatic($func, $args) {
         (static::$_instance !== null) ? : static::$_instance = new static;
-        ($func[0] == '_' || count($args) == 0) ? static::$_instance->_closeTag(substr($func, 1)) : static::$_instance->_Builder($func, $args);
+        (count($args) == 0) ? static::$_instance->_closeTag(($func[0] == '_') ? substr($func, 1) : $func) : static::$_instance->_Builder($func, $args);
         return static::$_instance;
     }
 
@@ -60,7 +60,7 @@ class HTML {
     }
 
     protected function _Builder($func, $args, $attr = array(), $content = '') {
-        $open = ((end($args) !== true) || (end($args) !== false)) ? true : array_pop($args);
+        $open = ((end($args) !== true) && (end($args) !== false)) ? true : array_pop($args);
         foreach ($args as $key => $val) {
             if (($key == 0 && $key < 3 && !is_array($val))) {
                 $attr['id'] = $val;

@@ -44,7 +44,6 @@ if (isset($_POST['delete'])) {
 	display_notification($status['message']);
 	$Ajax->activate('_page_body');
 } 
-start_form();
 if (db_has_customers()) {
 	/** @noinspection PhpUndefinedMethodInspection */
 	HTML::div('custsearch', array('style' => 'text-align:center; '));
@@ -58,7 +57,7 @@ if (db_has_customers()) {
 	UI::button('btnCancel', 'Cancel', array('name' => 'cancel', 'type' => 'submit', 'class' => 'ui-helper-hidden', 'style' => 'margin:10px;'))->div;
 
 }
-
+start_form();
 $menu = new MenuUi();
 $menu->startTab('Details', 'Customer Details');
 start_outer_table($table_style2, 5);
@@ -123,10 +122,10 @@ $menu->endTab();
 $menu->startTab('Accounts', 'Accounts');
 start_outer_table($table_style2, 5);
 table_section(1);
+hidden('accounts_id', $customer->accounts->accounts_id);
 table_section_title(_("Accounts Details:"), 2, ' tableheader3 ');
 text_row(_("Customer Name:"), 'acc_br_name', $customer->accounts->br_name, 40, 80);
-text_row(_("Contact Person:"), 'acc_contact_name',
-$customer->accounts->contact_name, 40, 40);
+text_row(_("Contact Person:"), 'acc_contact_name',$customer->accounts->contact_name, 40, 40);
 textarea_row(_("Billing Address:"), 'acc_br_address', $customer->accounts->br_address, 35, 5);
 email_row(_("E-mail:"), 'acc_email', $customer->accounts->email, 40, 40);
 text_row(_("Phone Number:"), 'acc_phone', $customer->accounts->phone, 40, 30);
@@ -147,19 +146,17 @@ end_outer_table(1);
 
 HTML::div('contactLog', array('title' => 'New contact log entry', 'class' => 'ui-widget-overlay'));
 HTML::p('New log entry:', array('class' => 'validateTips'));
-start_form();
 start_table();
 label_row('Date:', Now());
 text_row('Contact:', 'acc_contact_name', $customer->accounts->contact_name, 40, 40);
 textarea_row('Entry:', 'log_entry', '', 100, 10);
 end_table();
-end_form();
 HTML::p()->div;
 
 $menu->endTab();
 
 $menu->startTab('Branches', 'Branches');
-HTML::div('branchSelect',array('style'=>"text-align:center; margin:0 auto;"));
+HTML::div('branchSelect',array('style'=>"text-align:center; margin:0 auto;"),true);
 $currentBranch = $customer->branches[$customer->defaultBranch];
 UI::select('branchList', $customer->branches, array('name' => 'branchList'));
 /** @noinspection PhpDynamicAsStaticMethodCallInspection */
@@ -179,7 +176,7 @@ email_row(_("E-mail:"), 'email', $currentBranch->email, 35, 55);
 table_section_title(_("Sales"));
 sales_persons_list_row(_("Sales Person:"), 'salesman', $currentBranch->salesman);
 sales_areas_list_row(_("Sales Area:"), 'area', $currentBranch->area);
-sales_groups_list_row(_("Sales Group:"), 'group_no', $currentBranch->group_no, true);
+sales_groups_list_row(_("Sales Group:"), 'group_no', $currentBranch->group_no);
 locations_list_row(_("Default Inventory Location:"), 'default_location', $currentBranch->default_location);
 shippers_list_row(_("Default Shipping Company:"), 'default_ship_via', $currentBranch->default_ship_via);
 tax_groups_list_row(_("Tax Group:"), 'tax_group_id', $currentBranch->tax_group_id);
@@ -195,13 +192,11 @@ textarea_row(_("Mailing Address:"), 'br_post_address', $currentBranch->br_post_a
 textarea_row(_("Billing Address:"), 'br_address', $currentBranch->br_address, 35, 4);
 textarea_row(_("General Notes:"), 'notes', $currentBranch->notes, 35, 4);
 end_outer_table(1);
-end_form();
 $menu->endTab();
-
 $menu->startTab('Invoices','Invoices');
 $menu->endTab();
+$menu->render();
 
-$menu->render(); 
 hidden('popup', @$_REQUEST['popup']);
 end_form();
 end_page(true, true);

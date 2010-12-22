@@ -212,9 +212,6 @@ class Customer extends Contact {
 
 	protected function _getAccounts() {
 		$this->accounts = new Accounts($this->id);
-
-
-
 		if ($this->accounts->accounts_id == 0 && $this->id > 0 && $this->defaultBranch>0) {
 			$defaults = array(
 				'acc_debtor_no'=>$this->id,

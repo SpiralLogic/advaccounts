@@ -17,8 +17,8 @@ class Branch extends Contact {
 	public $debtor_no;
 	public $branch_ref;
 	public $contact_name;
-	public $default_location;
-	public $default_ship_via;
+	public $default_location=null;
+	public $default_ship_via=null;
 	public $disable_trans;
 	public $email;
 	public $fax;
@@ -32,7 +32,7 @@ class Branch extends Contact {
 	public $sales_account;
 	public $sales_discount_account;
 	public $salesman;
-	public $tax_group_id;
+	public $tax_group_id = null;
 
 	public function __construct($id = null) {
 		if ($id == 0 || $id === null) {

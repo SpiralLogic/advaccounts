@@ -92,7 +92,8 @@ class Sidemenu {
 
 <a id="orders" href="/sales/inquiry/sales_orders_view.php?type=30">Orders/Quotes</a>
 <a id="invoices" href="/sales/inquiry/customer_inquiry.php?">Invoice/Delivery</a>
-<a id="purchaseOrders" href="/purchasing/inquiry/po_search_completed.php?">Purchase Order</a></div>
+<a id="purchaseOrders" href="/purchasing/inquiry/po_search_completed.php?">Purchase Order</a>
+<a id="supplierInvoices" href="/purchasing/inquiry/supplier_inquiry.php?">Supplier Invoices</a></div>
 
 <h3> <a href="#">Create</a></h3><div>
 <a href="/sales/sales_order_entry.php?NewQuotation=Yes">Quote</a>

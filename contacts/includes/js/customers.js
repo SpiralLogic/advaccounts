@@ -10,20 +10,23 @@ var branch = {};
 var tabs;
 var Branches = {
 	list :function () {
-
 		return	list = $("#branchList");
 	},
 	add : function (data) {
-
 		$.each(data, function(key, value) {
 			Branches.list().append('<option value="' + value.branch_code + '">' + value.br_name + '</option>');
 		});
 	},
 	change:function (data) {
+
 		$.each(data, function(key, value) {
-			$("input[name=\'" + key + "\'],textarea[name=\'" + key + "\']").val(value).data('init', value);
-			$("select[name=\'" + key + "\']").val(value);
-		});
+
+			if (value && value.length > 0) {
+				$("input[name=\'" + key + "\'],textarea[name=\'" + key + "\'],select[name=\'" + key + "\']").val(value).data('init', value);
+			
+			}
+
+			});
 		resetHighlights();
 		Branches.list().val(data.branch_code);
 		Branches.current = data;
@@ -62,7 +65,6 @@ var Branches = {
 		btn.button('option', 'label', 'Save New Branch').show().unbind().click(function() {
 			var data = $('form').serializeArray();
 			$.merge(data, $.makeArray({ name: "submit", value: true}));
-
 			$.post('search.php', data, function(data) {
 				//Branches.update(data);
 				resetHighlights();
@@ -72,14 +74,12 @@ var Branches = {
 				Branches.btnBranchAdd();
 				customer.branches[data.branch_code] = data;
 				$("#msgbox").prepend("Customer branch updated");
-				
 			}, 'json');
 		});
 		return btn;
 	},
 	current: {}
 };
-
 function unlinkAccounts() {
 	tabs.unlink(account);
 	tabs.link(branch);
@@ -98,7 +98,6 @@ function resetHighlights() {
 		return null
 	};
 }
-
 function revertState() {
 	resetHighlights();
 	getCustomer(customer.id);
@@ -121,7 +120,9 @@ function getCustomer(id) {
 			if (i == 'accounts') {
 				$.each(data, function(key, value) {
 					$("input[name=\'acc_" + key + "\'],textarea[name=\'acc_" + key + "\']").val(value).data('init', value);
-					$("select[name=\'" + key + "\']").val(value);
+					if (value && value.length > 0) {
+						$("select[name=\'" + key + "\']").val(value);
+					}
 				})
 			}
 			if (i == 'branches') {
@@ -130,10 +131,11 @@ function getCustomer(id) {
 			}
 			else {
 				$("input[name=\'" + i + "\'],textarea[name=\'" + i + "\']").val(data).data('init', data);
-				$("select[name=\'" + i + "\']").val(data).data('init', data);
+				if (data && data.length > 0) {
+					$("select[name=\'" + i + "\']").val(data).data('init', data);
+				}
 			}
 		});
-		console.log(customer);
 		if (customer.id == 0) {
 			tabs.link(account).link(branch);
 			tabs.link(account, {
@@ -148,7 +150,6 @@ function getCustomer(id) {
 				phone2: { twoWay: false, name:  "acc_phone2"},
 				fax:{ twoWay: false, name:  "acc_fax"}
 			});
-
 			tabs.find("a").bind('click.linking', function() {
 				if ($(this).attr('href') == "#tabs-2") {
 					unlinkAccounts();
@@ -167,14 +168,14 @@ function getCustomer(id) {
 					$(this).unbind('click.linking');
 				}
 				if ($(this).attr('href') == "#tabs-3") {
-			unlinkBranches();
-			$(this).unbind('click.linking');
-			}})
-	}
-	loader.hide();
+					unlinkBranches();
+					$(this).unbind('click.linking');
+				}
+			})
+		}
+		loader.hide();
 	}, 'json')
 }
-
 getCustomers = getCustomer;
 function stateModified(feild) {
 	btnCancel.button('option', 'label', 'Cancel Changes').show();
@@ -182,11 +183,13 @@ function stateModified(feild) {
 		btnCustomer.button("option", "label", "Save New Customer").show();
 		fieldname = feild.attr('name');
 		tochange = [];
-		tochange.push($("input[name='acc_br"+fieldname+"']"));
+		tochange.push($("input[name='acc_br" + fieldname + "']"));
 		tochange.push($("#acc_".fieldname));
 		tochange.push($("#br_".fieldname));
 		$.each(tochange, function() {
-			if (tochange.length ==1 && feild.val().length==0) tochange.val(feild.val())
+			if (tochange.length == 1 && feild.val().length == 0) {
+				tochange.val(feild.val())
+			}
 		});
 	} else {
 		btnCustomer.button("option", "label", "Save Changes").show();
@@ -208,7 +211,6 @@ $(function() {
 	btnCustomer = $("#btnCustomer").button().click(function() {
 		resetHighlights();
 	});
-
 	tabs.delegate(".tablestyle_inner td :nth-child(1)", "change", function() {
 		feildsChanged++;
 		if ($(this).data('init') == $(this).val()) {
