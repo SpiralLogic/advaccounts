@@ -159,6 +159,7 @@ class Customer extends Contact {
 		}
 		$myrow = db_fetch_assoc($result);
 		$this->id = $id;
+      
 		$this->setFromArray($myrow);
 		$this->_getBranches();
 		$this->defaultBranch = reset($this->branches)->branch_code;
@@ -169,7 +170,6 @@ class Customer extends Contact {
 		$this->credit_limit = price_format($this->credit_limit);
 		return $id;
 	}
-
 	protected function _countTransactions() {
 		$sql = "SELECT COUNT(*) FROM " . TB_PREF . "debtor_trans WHERE debtor_no=" . $this->id;
 		$result = db_query($sql, "check failed");

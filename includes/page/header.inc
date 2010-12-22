@@ -71,6 +71,21 @@ function send_scripts()
     echo $js;
 }
 
+function send_fscripts() {
+    global $js_lib, $js_static, $js_path, $js_fuserlib, $comp_path, $path_to_root, $go_debug;
+    $js = '';
+    foreach ($js_static as $jsfile) {
+        $fpath = $comp_path . '/' . user_company() . '/js_cache/' . $jsfile;
+        $fpath = $js_path . $jsfile;
+        // compress also static files
+        if (!file_exists($fpath) || $go_debug) cache_js_file($fpath, file_get_contents($js_path . $jsfile));
+        $js .= '<script language="javascript" type="text/javascript" src="' . $fpath . '"></script>';
+    }
+    foreach ($js_fuserlib as $jsfile) {
+        $js .= '<script language="javascript" type="text/javascript" src="' . $jsfile . '"></script>';
+    }
+    echo $js;
+}
 function page_header($title, $no_menu=false, $is_index=false, $onload="", $js="")
 {
 	// titles and screen header

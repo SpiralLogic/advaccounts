@@ -189,7 +189,7 @@
 // standard external js scripts included in all files
     $js_static = array('JsHttpRequest.js', 'behaviour.js', 'utils.js', 'inserts.js');
 // additional js source included in header
-    $js_lib = $js_userlib = array();
+    $js_lib = $js_userlib = $js_fuserlib = array();
 
     if (!defined('ICON_EDIT')) {
         define("ICON_EDIT", "edit.gif");

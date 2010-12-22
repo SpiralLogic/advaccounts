@@ -114,6 +114,14 @@ function add_js_ufile($filename) {
     }
 }
 
+function add_js_ffile($filename) {
+    global $js_fuserlib;
+    $search = array_search($filename, $js_fuserlib);
+    if ($search === false || $search === null) // php>4.2.0 returns null
+    {
+        $js_fuserlib[] = $filename;
+    }
+}
 function add_js_source($text) {
     global $js_lib;
 

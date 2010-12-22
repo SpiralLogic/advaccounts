@@ -3,7 +3,7 @@
 $page_security = 'SA_CUSTOMER';
 $path_to_root = "..";
 include_once("includes/contacts.inc");
-add_js_ufile("includes/js/customers.js");
+add_js_ffile("includes/js/customers.js");
 page(_($help_context = "Customers"), @$_REQUEST['popup']);
 
 check_db_has_sales_types(_("There are no sales types defined. Please define at least one sales type before adding a customer."));
@@ -49,7 +49,8 @@ if (db_has_customers()) {
 	HTML::div('custsearch', array('style' => 'text-align:center; '));
 	/** @noinspection PhpDynamicAsStaticMethodCallInspection */
 	UI::search('customer', array('label'=>'Search Customer:','size'=>80, 'url'=>'search.php'));
-	if ($customer->id) {
+    start_form();
+    if ($customer->id) {
 		UI::button('btnCustomer', 'Update Customer', array('name'=>'submit', 'type'=>'submit', 'class'=> 'ajaxsubmit', 'style' => 'margin:10px;'));
 	} else {
 		UI::button('btnCustomer', 'New Customer', array('name' =>'submit', 'type' => 'submit',  'class' => 'ajaxsubmit ui-helper-hidden', 'style' => 'margin:10px;'));
@@ -57,7 +58,6 @@ if (db_has_customers()) {
 	UI::button('btnCancel', 'Cancel', array('name' => 'cancel', 'type' => 'submit', 'class' => 'ui-helper-hidden', 'style' => 'margin:10px;'))->div;
 
 }
-start_form();
 $menu = new MenuUi();
 $menu->startTab('Details', 'Customer Details');
 start_outer_table($table_style2, 5);
@@ -167,7 +167,7 @@ table_section(1);
 hidden('branch_code', $currentBranch->branch_code);
 table_section_title(_("Name and Contact"));
 text_row(_("Branch Name:"), 'br_name', $currentBranch->br_name, 35, 40);
-text_row(_("Branch Short Name:"), 'br_ref', $currentBranch->branch_ref, 30, 30);
+text_row(_("Branch Short Name:"), 'branch_ref', $currentBranch->branch_ref, 30, 30);
 text_row(_("Contact Person:"), 'contact_name', $currentBranch->phone, 35, 40);
 text_row(_("Phone Number:"), 'phone', $currentBranch->phone, 32, 30);
 text_row(_("Secondary Phone Number:"), 'phone2', $currentBranch->phone2, 32, 30);
