@@ -8,7 +8,7 @@
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
-***********************************************************************/
+***********************************************************************/ 
 $page_security = 'SA_SUPPTRANSVIEW';
 $path_to_root = "../..";
 include($path_to_root . "/includes/db_pager.inc");
@@ -157,7 +157,7 @@ function check_overdue($row)
 		&& (abs($row["TotalAmount"]) - $row["Allocated"] != 0);
 }
 //------------------------------------------------------------------------------------------------
-if (isRefererCorrect() && !empty($_POST['ajaxsearch'])) {
+if (isAjaxReferrer() && !empty($_POST['ajaxsearch'])) {
 	$searchArray = explode(' ', $_POST['ajaxsearch']);
 	unset($_POST['supplier_id']);
 }
@@ -182,7 +182,7 @@ if (isRefererCorrect() && !empty($_POST['ajaxsearch'])) {
      	AND trans.tran_date >= '$date_after'
     	AND trans.tran_date <= '$date_to'
 		AND trans.ov_amount != 0";	// exclude voided transactions
-if (isRefererCorrect() && !empty($_POST['ajaxsearch'])) {
+if (isAjaxReferrer() && !empty($_POST['ajaxsearch'])) {
 	foreach ($searchArray as $ajaxsearch) {
 		if (empty($ajaxsearch)) continue;
 		$ajaxsearch = "%" . $ajaxsearch . "%";

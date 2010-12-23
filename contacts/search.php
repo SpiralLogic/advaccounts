@@ -9,16 +9,13 @@
 $path_to_root = "..";
 include_once($path_to_root . "/includes/session.inc");
 include_once("includes/contacts.inc");
-
 if (isset($_GET['term'])) {
-$data = Customer::search($_GET['term']);
+	$data = Customer::search($_GET['term']);
 }
 elseif (isset ($_POST['id'])) {
 	$data = new Customer($_POST['id']);
 	//$data=$_POST;
-
 }
-
 if (isset($_POST['branch_code'])) {
 	if (isset($_POST['submit']) && $_POST['id'] > 0) {
 		$customer = new customer($_POST['id']);

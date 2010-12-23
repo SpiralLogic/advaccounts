@@ -24,12 +24,12 @@ set_page_security(@$_POST['order_view_mode'], array('OutstandingOnly' => 'SA_SAL
 $js = "";
 if ($use_popup_windows) {
     $js .= get_js_open_window(900, 600);
-}
+} 
 if ($use_date_picker) {
     $js .= get_js_date_picker();
 }
 
-if (isRefererCorrect() && !empty($_POST['ajaxsearch'])) {
+if (isAjaxReferrer() && !empty($_POST['ajaxsearch'])) {
 	$searchArray = explode(' ', $_POST['ajaxsearch']);
 }
 
@@ -261,7 +261,7 @@ if (isset($_POST['OrderNumber']) && $_POST['OrderNumber'] != "") {
     // search orders with reference like
     $number_like = "%" . $_POST['OrderReference'] . "%";
     $sql .= " AND sorder.reference LIKE " . db_escape($number_like) . " GROUP BY sorder.order_no"; 
-} elseif (isRefererCorrect() && !empty($_POST['ajaxsearch'])) {
+} elseif (isAjaxReferrer() && !empty($_POST['ajaxsearch'])) {
 
 	foreach ($searchArray as $ajaxsearch) {
 		if (empty($ajaxsearch)) continue;

@@ -11,7 +11,7 @@
 ***********************************************************************/
 $page_security = 'SA_SALESTRANSVIEW';
 $path_to_root = "../..";
-
+ 
 include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/db_pager.inc");
 include_once($_SERVER['DOCUMENT_ROOT']. "/includes/session.inc");
 include_once($_SERVER['DOCUMENT_ROOT']. "/sales/includes/sales_ui.inc");
@@ -206,7 +206,7 @@ function check_overdue($row)
 //------------------------------------------------------------------------------------------------
     $date_after = date2sql($_POST['TransAfterDate']);
     $date_to = date2sql($_POST['TransToDate']);
-if (isRefererCorrect() && !empty($_POST['ajaxsearch'])) {
+if (isAjaxReferrer() && !empty($_POST['ajaxsearch'])) {
     $searchArray = explode(' ', $_POST['ajaxsearch']);
     unset($_POST['customer_id']);
     unset($_POST['filterType']);
@@ -249,7 +249,7 @@ if (isRefererCorrect() && !empty($_POST['ajaxsearch'])) {
 		WHERE debtor.debtor_no = trans.debtor_no
 		AND trans.branch_code = branch.branch_code";
 
-if (isRefererCorrect() && !empty($_POST['ajaxsearch'])) {
+if (isAjaxReferrer() && !empty($_POST['ajaxsearch'])) {
 $sql = "SELECT * FROM ".TB_PREF."debtor_trans_view WHERE ";
     foreach ($searchArray as $ajaxsearch) {
         if (empty($ajaxsearch)) continue;

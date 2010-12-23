@@ -64,36 +64,34 @@ class Customer extends Contact {
 	}
 
 	public function save($changes = null) {
-		if (!$this->setFromArray($changes) || !$this->_canProcess()) {
+		if (!$this->_canProcess()) {
 			return false;
 		}
-
+		$changes=$this->setFromArray($changes);
         if (count($changes)) {
-            $this->branches[$changes['branch_code']]->save($changes);
-			$this->accounts->save($changes);
-
+	        $changes = $this->accounts->save($changes);
+	        $this->branches[$changes['branch_code']]->save($changes);
         }
-
 		if ($this->id == 0) {
 			return $this->_saveNew();
 		}
 		begin_transaction();
-		$sql = "UPDATE " . TB_PREF . "debtors_master SET name=" . db_escape($_POST['name']) . ",
-			debtor_ref=" . db_escape($_POST['debtor_ref']) . ",
-			address=" . db_escape($_POST['address']) . ",
-			tax_id=" . db_escape($_POST['tax_id']) . ",
-			curr_code=" . db_escape($_POST['curr_code']) . ",
-			email=" . db_escape($_POST['email']) . ",
-			dimension_id=" . db_escape($_POST['dimension_id']) . ",
-			dimension2_id=" . db_escape($_POST['dimension2_id']) . ",
-            credit_status=" . db_escape($_POST['credit_status']) . ",
-            payment_terms=" . db_escape($_POST['payment_terms']) . ",
-            discount=" . input_num('discount') / 100 . ",
-            pymt_discount=" . input_num('pymt_discount') / 100 . ",
-            credit_limit=" . input_num('credit_limit') . ",
-            sales_type = " . db_escape($_POST['sales_type']) . ",
-            notes=" . db_escape($_POST['notes']) . "
-            WHERE debtor_no = " . db_escape($_POST['id']);
+		$sql = "UPDATE " . TB_PREF . "debtors_master SET name=" . db_escape($this->name) . ",
+			debtor_ref=" . db_escape($this->debtor_ref) . ",
+			address=" . db_escape($this->address) . ",
+			tax_id=" . db_escape($this->tax_id) . ",
+			curr_code=" . db_escape($this->curr_code) . ",
+			email=" . db_escape($this->email) . ",
+			dimension_id=" . db_escape($this->dimension_id) . ",
+			dimension2_id=" . db_escape($this->dimension2_id) . ",
+            credit_status=" . db_escape($this->credit_status) . ",
+            payment_terms=" . db_escape($this->payment_terms) . ",
+            discount=" . input_num($this->discount) / 100 . ",
+            pymt_discount=" . input_num($this->pymt_discount) / 100 . ",
+            credit_limit=" . input_num($this->credit_limit) . ",
+            sales_type = " . db_escape($this->sales_type) . ",
+            notes=" . db_escape($this->notes) . "
+            WHERE debtor_no = " . db_escape($this->id);
 
 		db_query($sql, "The customer could not be updated");
 		update_record_status($this->id, $this->inactive, 'debtors_master', 'debtor_no');

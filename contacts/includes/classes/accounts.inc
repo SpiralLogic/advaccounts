@@ -38,14 +38,15 @@ class Accounts extends Branch {
 		if (is_array($changes)) {
 			$tochange = array();
 			foreach ($changes as $key => $value) {
-                if (substr($key,0,4)=='acc_')
-				$tochange[str_ireplace('acc_', '', $key)] = $value;
+				if (substr($key,0,4)=='acc_') {
+					unset($changes[$key]);
+					$tochange[str_ireplace('acc_', '', $key)] = $value;
+				}
 			}
 		}
-
-        $result = parent::save($tochange);
-		$this->accounts_id = &$this->branch_code;
-	    return $result;
+        parent::save($tochange);
+		$this->accounts_id = $this->branch_code;
+	    return $changes;
 	}
 	protected function _getAccounts($debtor_no = null) {
 		if ($debtor_no==null) {

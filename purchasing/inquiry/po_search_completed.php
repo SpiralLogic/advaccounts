@@ -101,7 +101,7 @@ function prt_link($row)
 
 //---------------------------------------------------------------------------------------------
 
-if (isRefererCorrect() && !empty($_POST['ajaxsearch'])) {
+if (isAjaxReferrer() && !empty($_POST['ajaxsearch'])) {
     $searchArray = explode(' ', $_POST['ajaxsearch']);
     unset($_POST['supplier_id']);
 }
@@ -123,7 +123,7 @@ $sql = "SELECT
 	AND porder.supplier_id = supplier.supplier_id
 	AND location.loc_code = porder.into_stock_location ";
 
-if (isRefererCorrect() && !empty($_POST['ajaxsearch'])) {
+if (isAjaxReferrer() && !empty($_POST['ajaxsearch'])) {
 
     foreach ($searchArray as $ajaxsearch) {
         if (empty($ajaxsearch)) continue;

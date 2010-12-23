@@ -51,15 +51,10 @@ abstract class Contact {
 			return false;
 		}
 		$remainder = array();
-
 		foreach ($changes as $key => $value) {
-
 			(property_exists($this, $key)) ? $this->$key = $value : $remainder[$key] = $value;
 		}
-
-		$changes = $remainder;
-
-		return true;
+		return $remainder;
 	}
 
 }

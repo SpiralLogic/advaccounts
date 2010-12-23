@@ -135,11 +135,11 @@ if (!isset($path_to_root)) {
 if (isset($_GET['path_to_root']) || isset($_POST['path_to_root'])) {
 	die("Restricted access");
 }
-include_once($_SERVER['DOCUMENT_ROOT'] ."/includes/ChromePHP.php");
-FB::useFile('/tmp/chromelogs', $path_to_root.'/tmp/chromelogs');
+//include_once($_SERVER['DOCUMENT_ROOT'] ."/includes/ChromePHP.php");
+//FB::useFile('/tmp/chromelogs', $path_to_root.'/tmp/chromelogs');
 
-//require_once('FirePHPCore/fb.php');
-//require_once($_SERVER['DOCUMENT_ROOT']."/includes/firephp.php");
+require_once('FirePHPCore/fb.php');
+require_once($_SERVER['DOCUMENT_ROOT']."/includes/firephp.php");
 include_once($_SERVER['DOCUMENT_ROOT'] ."/includes/current_user.inc");
 include_once($_SERVER['DOCUMENT_ROOT'] ."/frontaccounting.php");
 include_once($_SERVER['DOCUMENT_ROOT'] . "/admin/db/security_db.inc");
@@ -262,10 +262,9 @@ if (strstr($_SERVER['PHP_SELF'], 'logout.php') == false) {
 		$_SESSION["App"]->init();
 	}
 }
-function isRefererCorrect() {
+function isAjaxReferrer() {
 	return (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest');
 }
-
 if ($_SESSION["wa_current_user"]->user == 1) {
 	error_reporting(E_ALL);
 }

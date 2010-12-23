@@ -34,11 +34,11 @@ class Branch extends Contact {
 	public $salesman;
 	public $tax_group_id = null;
 
-	public function __construct($id = null) {
-		if ($id == 0 || $id === null) {
+	public function __construct($branch_id = null) {
+		if ($branch_id == 0 || $branch_id === null) {
 			$this->_new();
 		} else {
-			$result = $this->_read($id);
+			$result = $this->_read($branch_id);
 			if (is_array($result)) {
 				return $result;
 			} else {

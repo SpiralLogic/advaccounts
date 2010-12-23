@@ -19,3 +19,16 @@
 #AddType text/css .css
 AddType application/x-httpd-php .inc
 Options -Indexes
+
+<IfModule mod_expires.c>
+  Header set Cache-Control "public"
+  ExpiresActive on
+
+# Perhaps better to whitelist expires rules? Perhaps.
+  ExpiresDefault                          "access plus 1 month"
+
+# css and javascript
+  ExpiresByType text/css                 "access plus 0 seconds"
+  ExpiresByType application/javascript    "access plus 0 seconds"
+  ExpiresByType text/javascript           "access plus 0 seconds"
+</IfModule>
