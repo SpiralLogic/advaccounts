@@ -22,7 +22,12 @@
  * @property string $p
  *
  */
-include_once($_SERVER['DOCUMENT_ROOT'] . '/includes/ui2/JS.inc');
+
+
+
+
+
+
 class HTML {
     protected static $_instance = null;
 

@@ -127,30 +127,50 @@ function login_timeout() {
 }
 
 //============================================================================
-if (!isset($path_to_root)) {
-	$path_to_root ='.';
-}
 
+
+if (!isset($path_to_root)) {
+	$path_to_root = '..';
+}
+define('APP_PATH', realpath($path_to_root). '/');
+$paths = array(
+        realpath('.') . '/includes/classes',
+    APP_PATH . 'includes/ui2',
+    APP_PATH . 'includes/ui',
+    APP_PATH . 'includes',
+    get_include_path()
+);
+set_include_path(implode(PATH_SEPARATOR,$paths));
 // Prevent register_globals vulnerability
 if (isset($_GET['path_to_root']) || isset($_POST['path_to_root'])) {
 	die("Restricted access");
 }
-//include_once($_SERVER['DOCUMENT_ROOT'] ."/includes/ChromePHP.php");
-//FB::useFile('/tmp/chromelogs', $path_to_root.'/tmp/chromelogs');
+function __autoload($className) {
+    if (!@include_once(strtolower($className).'.inc')) include_once(strtolower($className).'.php');
+}
 
-require_once('FirePHPCore/fb.php');
-require_once($_SERVER['DOCUMENT_ROOT']."/includes/firephp.php");
-include_once($_SERVER['DOCUMENT_ROOT'] ."/includes/current_user.inc");
-include_once($_SERVER['DOCUMENT_ROOT'] ."/frontaccounting.php");
-include_once($_SERVER['DOCUMENT_ROOT'] . "/admin/db/security_db.inc");
-include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/lang/language.php");
-include_once($_SERVER['DOCUMENT_ROOT'] ."/config_db.php");
-include_once($_SERVER['DOCUMENT_ROOT'] ."/includes/ajax.inc");
-include_once($_SERVER['DOCUMENT_ROOT'] ."/includes/ui/ui_msgs.inc");
-include_once($_SERVER['DOCUMENT_ROOT'] ."/includes/ui/ui_menu.inc");
-include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/ui2/dialog.inc");
-include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/ui2/HTML.inc");
-include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/ui2/messages.inc");
+FB::useFile('/tmp/chromelogs', $path_to_root . '/tmp/chromelogs');
+// Configure FirePHP
+/*define('INSIGHT_IPS', '*');
+define('INSIGHT_AUTHKEYS', '');
+define('INSIGHT_PATHS', __DIR__);
+define('INSIGHT_SERVER_PATH', '/index.php'); // assumes /index.php exists on your hostname
+// NOTE: Based on this configuration /index.php MUST include FirePHP
+// If using the zip archive
+// TODO: Put the 'lib' folder from the archive on your include path
+require_once('FirePHP/fb.php'); // (procedural API) or
+require_once('FirePHP/Init.php'); // (object oriented API)*/
+require_once(APP_PATH ."includes/firephp.php");
+include_once(APP_PATH ."includes/current_user.inc");
+include_once(APP_PATH ."frontaccounting.php");
+include_once(APP_PATH ."admin/db/security_db.inc");
+include_once(APP_PATH ."includes/lang/language.php");
+include_once(APP_PATH ."config_db.php");
+include_once(APP_PATH ."includes/ajax.inc");
+include_once(APP_PATH ."includes/ui/ui_msgs.inc");
+include_once(APP_PATH ."includes/ui2/dialog.inc");
+//include_once(APP_PATH . "includes/ui2/html.inc");
+include_once(APP_PATH ."includes/ui2/messages.inc");
 /*
 	Uncomment the setting below when using FA on shared hosting
 	to avoid unexpeced session timeouts.

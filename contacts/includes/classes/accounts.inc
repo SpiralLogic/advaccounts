@@ -6,54 +6,48 @@
  * Time: 1:25 PM
  * To change this template use File | Settings | File Templates.
  */
-
 class Accounts extends Branch {
 
-	public $accounts_id = 0;
-	public $br_name = 'Accounts Department';
-	public $branch_ref = 'accounts';
+    public $accounts_id = 0;
+    public $br_name = 'Accounts Department';
+    public $branch_ref = 'accounts';
 
-	public function __construct($debtor_no = false) {
+    public function __construct($accounts_id = false) {
+        if ($accounts_id === false) {
+            $this->_status(false, 'Initialise Account Information', 'Debtor not passed and not a new debtor.');
+            return false;
+		} elseif ($accounts_id == 0) {
+            $this->_new(array('debtor_no' => 0));
+            return true;
+        }
+        $this->accounts_id = $accounts_id;
+        $this->_getAccounts();
+        if ($this->branch_code == 0) {
+            $this->_status(true, 'Retrieving customer accounts/ info', 'No accounts information for this Customer found');
+            $this->_new(array('debtor_no' => $this->debtor_no));
+            return false;
+        }
 
-		if ($debtor_no === false) {
-			$this->_status(false, 'Initialise Account Information', 'Debtor not passed and not a new debtor.');
-			return false;
-		} elseif ($debtor_no == 0) {
-			$this->_new(array('debtor_no' => 0));
-			return true;
-		} elseif ($this->_getAccounts($debtor_no) === false) {
-			$this->_status(true, 'Retrieving customer accounts/ info', 'No accounts information for this Customer found');
-			$this->_new(array('debtor_no'=>$debtor_no));
-		    return false;
-		} elseif ($this->branch_code > 0) {
-			$this->accounts_id = &$this->branch_code;
-			return true;
-		}
-		return false;
+    }
 
-	}
-
-	public function save($changes = null) {
-     
-		if (is_array($changes)) {
-			$tochange = array();
-			foreach ($changes as $key => $value) {
-				if (substr($key,0,4)=='acc_') {
-					unset($changes[$key]);
-					$tochange[str_ireplace('acc_', '', $key)] = $value;
-				}
-			}
-		}
+    public function save($changes = null) {
+        if (is_array($changes)) {
+            $tochange = array();
+            foreach ($changes as $key => $value) {
+                if (substr($key, 0, 4) == 'acc_') {
+                    unset($changes[$key]);
+                    $tochange[str_ireplace('acc_', '', $key)] = $value;
+                }
+            }
+        }
         parent::save($tochange);
-		$this->accounts_id = $this->branch_code;
-	    return $changes;
-	}
-	protected function _getAccounts($debtor_no = null) {
-		if ($debtor_no==null) {
-			$this->_status(false,'Retrieving Accounts','No Customer ID to retrieve accounts for');
-			return false;
-		}
-		return $this->_read(array('branch_ref' => 'accounts', 'debtor_no' => $debtor_no));
+        $this->accounts_id = $this->branch_code;
+        return $changes;
+    }
 
-	}
+    protected function _getAccounts() {
+        $accounts_id["branch_code"] = $this->accounts_id;
+        $accounts_id["branch_ref"] = "accounts";
+        $this->_read($accounts_id);
+    }
 }
