@@ -12,14 +12,8 @@ include_once("includes/contacts.inc");
 if (isset($_GET['term'])) {
     $data = Customer::search($_GET['term']);
 }
-if (isset($_GET['id'])) {
-    echo "<pre>";
-    print_r(new Customer($_GET['id']));
-    echo "</pre>";
-    exit();
-} elseif (isset($_POST['id'])) {
+if (isset($_POST['id'])) {
     $data = new Customer($_POST['id']);
-    //$data=$_POST;
 }
 if (isset($_POST['branch_code'])) {
     if (isset($_POST['submit']) && $_POST['id'] > 0) {
@@ -32,8 +26,8 @@ if (isset($_POST['branch_code'])) {
         $data = $branch;
     } elseif ($_POST['branch_code'] > 0) {
         $data = new Branch(array('branch_code' => $_POST['branch_code']));
-    } else {
-        $data = new Branch();
+    } elseif ($_POST['debtor_no'] > 0) {
+        $data = new Branch(array('debtor_no' => $_POST['debtor_no']));
 
     }
 

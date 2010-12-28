@@ -44,11 +44,11 @@ class HTML {
     }
 
     function __get($func) {
-        static::$_instance->_closeTag($func);
+        static::__callStatic($func);
         return static::$_instance;
     }
 
-    static function __callStatic($func, $args) {
+    static function __callStatic($func, $args=array()) {
         (static::$_instance !== null) ? : static::$_instance = new static;
         (count($args) == 0) ? static::$_instance->_closeTag(($func[0] == '_') ? substr($func, 1) : $func) : static::$_instance->_Builder($func, $args);
         return static::$_instance;
@@ -74,9 +74,6 @@ class HTML {
             } elseif (is_array($val)) {
                 $attr = array_merge($attr, $val);
             }
-        }
-        if (method_exists(static::$_instance, $func)) {
-            return static::$_instance->$func($attr);
         }
         if ($open === true) {
             $this->_openTag($func, $attr);

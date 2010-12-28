@@ -10,6 +10,8 @@ abstract class Contact {
 
     // Current status of class, status as current state, process status error occurred, message for current state and if related variable if it applies
     protected $_status = Array('status' => true, 'process' => 'construct', 'message' => 'Customer Initialised', 'var');
+    public $email = "";
+    public $inactive = 0;
 
     abstract protected function _canProcess();
 
@@ -19,9 +21,28 @@ abstract class Contact {
 
     abstract protected function _new();
 
+    abstract protected function _read();
+
     abstract protected function delete();
 
+    abstract protected function _defaults();
+
     abstract protected function _countTransactions();
+
+    protected function __construct($id = null) {
+        if (is_array($id)) {
+            $this->_defaults();
+            $this->setFromArray($id);
+            return $this->_status(true, 'initalise', get_class($this) . " details contructed!");
+        }
+        if ($id != null && $id != 0) {
+            $this->_read($id);
+            return $this->_status(true, 'initalise', get_class($this) . " details loaded from DB!");
+        } else {
+            $this->_new();
+            return $this->_status(true, 'initalise', 'Created new ' . get_class($this) . "!");
+        }
+    }
 
     protected function _status($status = null, $process = null, $message = '', $var = null) {
         if ($status === null || $process === null) {
@@ -36,14 +57,14 @@ abstract class Contact {
                 $this->_status['var'] = $var;
             }
         }
-        return $this->_status;
+        return $this->_status['status'];
     }
 
     public function getStatus() {
         return $this->_status;
     }
 
-    public function setFromArray($changes = NULL) {
+    protected function setFromArray($changes = NULL) {
         if ($changes == null || empty($changes) || !is_array($changes)) {
             $this->_status(false, 'setFromArray', 'Variable array was either not passed, empty or is not an array');
             return false;

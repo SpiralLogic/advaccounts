@@ -25,6 +25,6 @@ $db_connections = array (
 		'dbpassword' => '1willenberg',
 		'dbname' => 'fa',
 		'tbpref' => '0_')
-
 	);
+
 ?>

@@ -10,7 +10,6 @@ class Customer extends Contact {
     public $id = 0;
     public $name = '';
     public $address = '';
-    public $email = '';
     public $tax_id = '';
     public $curr_code = '';
     public $sales_type = -1;
@@ -18,22 +17,18 @@ class Customer extends Contact {
     public $dimension2_id = 0;
     public $credit_status = -1;
     public $payment_terms = '';
-    public $discount = 0;
-    public $pymt_discount = 0;
+    public $discount = '0';
+    public $pymt_discount = '0';
     public $credit_limit = 0;
     public $notes = '';
-    public $inactive = 0;
     public $debtor_ref = '';
-    public $branches = array();
+    public $branches;
     public $defaultBranch;
     public $accounts;
 
-    public function __construct($id = null) {
-        if ($id != null && $id != 0) {
-            $this->_read($id);
-        } else {
-            $this->_new();
-        }
+    function __construct($id = null) {
+        parent::__construct($id);
+
     }
 
     protected function _canProcess() {
@@ -60,21 +55,27 @@ class Customer extends Contact {
         return true;
     }
 
+    protected function setFromArray($changes) {
+        parent::setFromArray($changes);
+        if (isset($changes['accounts']) && is_array($changes['accounts'])) $this->accounts = new Accounts($changes['accounts']);
+        if (isset($changes['branches']) && is_array($changes['branches'])) {
+            foreach ($changes['branches'] as $branchid => $branch) {
+                $this->branches[$branchid] = new Branch($branch);
+            }
+        }
+    }
+
     public function save($changes = null) {
         if (!$this->_canProcess()) {
             return false;
         }
-        $changes = $this->setFromArray($changes);
-        if (count($changes)) {
-            $changes = $this->accounts->save($changes);
-            $this->branches[$changes['branch_code']]->save($changes);
-        }
+        if (is_array($changes)) $this->setFromArray($changes);
         if ($this->id == 0) {
             return $this->_saveNew();
         }
         begin_transaction();
         $sql = "UPDATE " . TB_PREF . "debtors_master SET name=" . db_escape($this->name) . ",
-			debtor_ref=" . db_escape($this->debtor_ref) . ",
+			debtor_ref=" . substr(db_escape($this->name), 0, 30) . ",
 			address=" . db_escape($this->address) . ",
 			tax_id=" . db_escape($this->tax_id) . ",
 			curr_code=" . db_escape($this->curr_code) . ",
@@ -92,8 +93,11 @@ class Customer extends Contact {
         db_query($sql, "The customer could not be updated");
         update_record_status($this->id, $this->inactive, 'debtors_master', 'debtor_no');
         commit_transaction();
-        $this->_status(true, 'Processing', "Customer has been updated.");
-        return true;
+        $this->accounts->save();
+        foreach ($this->branches as $branch) {
+            $branch->save();
+        }
+        return $this->_status(true, 'Processing', "Customer has been updated.");
     }
 
     protected function _saveNew() {
@@ -105,47 +109,48 @@ class Customer extends Contact {
         $this->id = db_insert_id();
         $this->accounts->save();
         commit_transaction();
-        $this->_status(true, 'Saving New', "A new customer has been added.");
-        return true;
+        return $this->_status(true, 'Saving', "A Customer has been added.");
     }
 
     protected function _new() {
+        $this->_defaults();
+        $this->accounts = new Accounts();
+        $this->branches[0] = new Branch();
+        $this->branches[0]->debtor_no = $this->accounts->debtor_no = $this->id;
+        $this->defaultBranch = reset($this->branches)->branch_code;
+        return $this->_status(true, 'Initialize new customer', 'Now working with a new customer');
+    }
+
+    protected function _defaults() {
         global $SysPrefs;
         $this->id = $this->dimension_id = $this->dimension2_id = $this->inactive = 0;
         $this->sales_type = $this->credit_status = -1;
-        $this->name = $this->address = $this->email = $this->taxId = $this->payment_terms = $this->notes = $this->debtor_ref = '';
-        $this->accounts = new Accounts($this->id);
-        $this->branches[0] = new Branch($this->id);
-        $this->defaultBranch = reset($this->branches)->branch_code;
+        $this->name = $this->address = $this->email = $this->tax_id = $this->payment_terms = $this->notes = $this->debtor_ref = '';
         $this->curr_code = get_company_currency();
         $this->discount = $this->pymt_discount = percent_format(0);
         $this->credit_limit = price_format($SysPrefs->default_credit_limit());
-        $this->_status(true, 'Initialize new customer', 'Now working with a new customer');
     }
 
     protected function _read($id = null) {
-        global $SysPrefs;
         if ($id == null || empty($id)) {
-            $this->_status(false, 'read', 'No customer ID to read');
-            return false;
+            return $this->_status(false, 'read', 'No customer ID to read');
         }
+        $this->_defaults();
+        $this->id = $id;
         $sql = "SELECT * FROM " . TB_PREF . "debtors_master WHERE debtor_no = " . db_escape($id);
         $result = db_query($sql, "check failed");
         if (db_num_rows($result) != 1) {
             $this->_status(false, 'read', "Customer could not be found!");
             return false;
         }
-        $myrow = db_fetch_assoc($result);
-        $this->id = $id;
-        $this->setFromArray($myrow);
+        $result = db_fetch_assoc($result);
+        $this->setFromArray($result);
         $this->_getBranches();
-        $this->defaultBranch = reset($this->branches)->branch_code;
         $this->_getAccounts();
-        $this->curr_code = get_company_currency();
-        $this->discount = $_POST['discount'] = $this->discount * 100;
-        $this->pymt_discount = $_POST['pymt_discount'] = $this->pymt_discount * 100;
+        $this->discount = $this->discount * 100;
+        $this->pymt_discount = $this->pymt_discount * 100;
         $this->credit_limit = price_format($this->credit_limit);
-        return $id;
+        return $this->id;
     }
 
     protected function _countTransactions() {
@@ -167,34 +172,38 @@ class Customer extends Contact {
     }
 
     public function delete() {
-        global $Ajax;
         if ($this->_countTransactions() > 0) {
-            $this->_status(false, 'delete', "This customer cannot be deleted because there are transactions that refer to it.");
-            return false;
+            return $this->_status(false, 'delete', "This customer cannot be deleted because there are transactions that refer to it.");
         }
         if ($this->_countOrders() > 0) {
-            $this->_status(false, 'delete', "Cannot delete the customer record because orders have been created against it.");
-            return false;
+            return $this->_status(false, 'delete', "Cannot delete the customer record because orders have been created against it.");
         }
         if ($this->_countBranches() > 0) {
-            $this->_status(false, 'delete', "Cannot delete this customer because there are branch records set up against it.");
-            return false;
+            return $this->_status(false, 'delete', "Cannot delete this customer because there are branch records set up against it.");
         }
         $sql = "DELETE FROM " . TB_PREF . "debtors_master WHERE debtor_no=" . $this->id;
         db_query($sql, "cannot delete customer");
         unset($this->id);
         $this->_new();
-        return true;
+        return $this->_status(true, 'delete', "Customer deleted.");
     }
 
     protected function _getAccounts() {
         $sql = "SELECT branch_code FROM " . TB_PREF . "cust_branch WHERE debtor_no=" . $this->id . " AND branch_ref = 'accounts'";
         $result = db_query($sql, 'Couldn\'t retrieve any accounts');
-        $row = db_fetch_assoc($result);
-        $this->accounts = new Accounts($row['branch_code']);
+        $result = db_fetch_assoc($result);
+        $this->accounts = new Accounts($result['branch_code']);
+        $this->accounts->debtor_no = $this->id;
         if ($this->accounts->accounts_id == 0 && $this->id > 0 && $this->defaultBranch > 0) {
-            $defaults = array('acc_debtor_no' => $this->id, 'acc_email' => $this->email, 'acc_br_address' => $this->address, 'acc_phone' => $this->branches[$this->defaultBranch]->phone, 'acc_phone2' => $this->branches[$this->defaultBranch]->phone2, 'acc_fax' => $this->branches[$this->defaultBranch]->fax, 'acc_contact_name' => $this->branches[$this->defaultBranch]->contact_name, 'acc_br_name' => 'Accounts Department');
-            $this->accounts->save($defaults);
+            $this->accounts->debtor_no = $this->id;
+            $this->accounts->email = $this->email;
+            $this->accounts->br_address = $this->address;
+            $this->accounts->phone = $this->branches[$this->defaultBranch]->phone;
+            $this->accounts->phone2 = $this->branches[$this->defaultBranch]->phone2;
+            $this->accounts->fax = $this->branches[$this->defaultBranch]->fax;
+            $this->accounts->contact_name = $this->branches[$this->defaultBranch]->contact_name;
+            $this->accounts->br_name = 'Accounts Department';
+            $this->accounts->save();
         }
     }
 
@@ -203,16 +212,15 @@ class Customer extends Contact {
         $result = db_query($sql, 'Couldn\'t retrieve any branches');
         while ($row = db_fetch_assoc($result)) {
             $this->branches[$row['branch_code']] = new Branch($row['branch_code']);
-
         }
+        $this->defaultBranch = reset($this->branches)->branch_code;
     }
 
     public function addBranch($details = null) {
-        $branch = new Branch();
+        $branch = new Branch($details);
         $branch->debtor_no = $this->id;
-        $this->branch_ref = 'New Branch';
-        $branch_code = $branch->save($details);
-        return ($branch_code) ? $this->branches[$branch->branch_code] = $branch : false;
+        $branch->save();
+        $this->branches[$branch->branch_code] = $branch;
     }
 
     public static function search($terms) {
