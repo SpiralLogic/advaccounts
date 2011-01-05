@@ -89,6 +89,17 @@ function get_sql_for_bank_account_reconcile($bank_account, $date)
 	return $sql;
 }
 
+function reset_sql_for_bank_account_reconcile($bank_account, $date)
+{
+	$sql = "UPDATE	reconciled
+		FROM " . TB_PREF . "bank_trans
+		WHERE " . TB_PREF . "bank_trans.bank_act = " . db_escape($bank_account) . "
+			AND undeposited = 0 AND reconciled = '" . date2sql($date) . "'";
+	// or	ORDER BY reconciled desc, trans_date,".TB_PREF."bank_trans.id";
+	$result = db_query($sql);
+	FB::info($sql);
+
+}
 //---------------------------------------------------------------------------------------------
 
 function delete_gl_account($code)

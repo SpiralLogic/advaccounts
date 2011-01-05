@@ -191,7 +191,17 @@ $Refs = new references();
 register_shutdown_function('end_flush');
 ob_start('output_html', 0);
 // colect all error msgs
-set_error_handler('error_handler' /*, errtypes */);
+set_error_handler('fb_errors' /*, errtypes */);
+function fb_errors() {
+
+	$error = func_get_args();
+	if (!(error_reporting() & $error[0])) {
+		// This error code is not included in error_reporting
+		return;
+	}
+	FB::info($error);
+    return true;
+}
 if (!isset($_SESSION["wa_current_user"])) {
     $_SESSION["wa_current_user"] = new current_user();
 }

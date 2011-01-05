@@ -326,11 +326,11 @@ public static function info() {
 	 * @return bool
 	 */
 	protected function _writeCookie() {
-		$json = json_encode($this->_json);
+		$json = @json_encode($this->_json);
 
 		// if we are going to use a file then use that
 		if ($this->getSetting(self::LOG_PATH) !== null) {
-			return $this->_writeToFile($json);
+			return $this->_writeToFile($json); 
 		}
 
 		// if we don't have multibyte string length available just use regular string length

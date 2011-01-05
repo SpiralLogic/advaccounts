@@ -6,86 +6,98 @@
  * Time: 11:52 PM
  * To change this template use File | Settings | File Templates.
  */
-class Branch extends Contact {
+class Branch extends Contact
+{
 
-    public $branch_code = 0;
-    public $br_name = "New Branch";
-    public $br_address = "";
-    public $area = DEFAULT_AREA;
-    public $br_post_address = "";
-    public $debtor_no;
-    public $branch_ref = "New Branch";
-    public $contact_name = "";
-    public $default_location = DEFAULT_LOCATION;
-    public $default_ship_via = DEFAULT_SHIP_VIA;
-    public $disable_trans = 0;
-    public $fax = "";
-    public $group_no = 0;
-    public $notes = "";
-    public $payment_discount_account;
-    public $phone = "";
-    public $phone2 = "";
-    public $receivables_account;
-    public $sales_account = "";
-    public $sales_discount_account;
-    public $salesman;
-    public $tax_group_id = DEFAULT_TAX_GROUP;
 
-    function __construct($id = null) {
-        parent::__construct($id);
-    }
+	public $branch_code = 0;
+	public $br_name = "New Address";
+	public $br_address = "";
+	public $area = DEFAULT_AREA;
+	public $br_post_address = "";
+	public $debtor_no;
+	public $branch_ref = "New Address";
+	public $contact_name = "";
+	public $default_location = DEFAULT_LOCATION;
+	public $default_ship_via = DEFAULT_SHIP_VIA;
+	public $disable_trans = 0;
+	public $fax = "";
+	public $group_no = 0;
+	public $notes = "";
+	public $payment_discount_account;
+	public $phone = "";
+	public $phone2 = "";
+	public $receivables_account;
+	public $sales_account = "";
+	public $sales_discount_account;
+	public $salesman;
+	public $tax_group_id = DEFAULT_TAX_GROUP;
 
-    protected function delete() {
-        $sql = "DELETE FROM " . TB_PREF . "cust_branch WHERE branch_code=" . $this->branch_code;
-        db_query($sql, "cannot delete branch");
-        unset($this->branch_code);
-        $this->_new();
-        return $this->_status(true, 'delete', "Branch deleted.");
-    }
+	function __construct($id = null)
+	{
+		parent::__construct($id);
+	}
 
-    protected function _read($params = false) {
-        if (!$params) {
-            $this->_status(false, 'Retrieving branch', 'No parameters provided');
-            return false;
-        }
-        $this->_defaults();
-        if (!is_array($params)) {
-            $params = array('branch_code' => $params);
-        }
-        $sql = "SELECT " . "b.*, " . "a.description, " . "s.salesman_name, " . "t.name AS tax_group_name
+	protected function delete()
+	{
+		$sql = "DELETE FROM " . TB_PREF . "cust_branch WHERE branch_code=" . $this->branch_code;
+		db_query($sql, "cannot delete branch");
+		unset($this->branch_code);
+		$this->_new();
+		return $this->_status(true, 'delete', "Branch deleted.");
+	}
+
+	protected function _read($params = false)
+	{
+		if (!$params) {
+			$this->_status(false, 'Retrieving branch', 'No parameters provided');
+			return false;
+		}
+		$this->_defaults();
+		if (!is_array($params)) {
+			$params = array('branch_code' => $params);
+		}
+		$sql = "SELECT " . "b.*, " . "a.description, " . "s.salesman_name, " . "t.name AS tax_group_name
 		FROM " . TB_PREF . "cust_branch b, " . TB_PREF . "debtors_master c, " . TB_PREF . "areas a, " . TB_PREF . "salesman s, " . TB_PREF . "tax_groups t
 		WHERE b.debtor_no=c.debtor_no
 		AND b.tax_group_id=t.id
 		AND b.area=a.area_code
 		AND b.salesman=s.salesman_code";
-        foreach ($params as $key => $value) {
-            $sql .= " AND b.$key =" . db_escape($value);
-        }
-        $result = db_query($sql, 'Could not get customer branch.');
-        if (db_num_rows($result) < 1) {
-            $this->_status(false, 'Retrieving  Branch', 'No results from query');
-            return false;
-        }
-        $result = db_fetch_assoc($result);
-        $this->setFromArray($result);
-        return $this->branch_code;
-    }
+		foreach ($params as $key => $value) {
+			$sql .= " AND b.$key =" . db_escape($value);
+		}
+		$result = db_query($sql, 'Could not get customer branch.');
+		if (db_num_rows($result) < 1) {
+			$this->_status(false, 'Retrieving  Branch', 'No results from query');
+			return false;
+		}
+		$result = db_fetch_assoc($result);
+		$this->setFromArray($result);
+		return $this->branch_code;
+	}
 
-    protected function _canProcess() {
-        return true;
-    }
+	protected function _canProcess()
+	{
+		return true;
+	}
 
-    public function save($changes = null) {
-        if (isset($changes['debtor_no'])) unset($changes['debtor_no']);
-        if ($this->branch_code == 0) {
-            return $this->_saveNew();
-        }
-        if ($changes != null && (!$this->setFromArray($changes) || !$this->_canProcess() || $this->debtor_no == 0)) {
-            return false;
-        }
-        if ($this->branch_ref != 'accounts') $this->branch_ref = substr(db_escape($this->br_name), 0, 30);
-        begin_transaction();
-        $sql = "UPDATE " . TB_PREF . "cust_branch SET
+	public function save($changes = null)
+	{
+
+		if (is_array($changes)) {
+			$this->setFromArray($changes);
+		}
+		if ((int)$this->branch_code == 0) {
+			$this->_saveNew();
+		}
+		if (!$this->_canProcess()) {
+			return false;
+		}
+		if ($this->branch_ref != 'accounts') {
+			$this->branch_ref = substr(db_escape($this->br_name), 0, 30);
+		}
+		begin_transaction();
+		$sql = "UPDATE " . TB_PREF . "cust_branch SET
 			br_name=" . db_escape($this->br_name) . ",
 			br_address=" . db_escape($this->br_address) . ",
 			br_post_address=" . db_escape($this->br_post_address) . ",
@@ -110,38 +122,47 @@ class Branch extends Contact {
             branch_ref=" . db_escape($this->branch_ref) . "
               WHERE branch_code =" . db_escape($this->branch_code) . "
     	        AND debtor_no=" . db_escape($this->debtor_no);
-        db_query($sql, "The customer could not be updated");
-        commit_transaction();
-        return $this->_status(true, 'Processing', "Branch has been updated.");
-    }
+		db_query($sql, "The customer could not be updated");
+		commit_transaction();
+		return $this->_status(true, 'Processing', "Branch has been updated.");
+	}
 
-    protected function _saveNew() {
-        begin_transaction();
-        $sql = "INSERT INTO " . TB_PREF . "cust_branch (debtor_no, br_name, branch_ref, br_address,
+	protected function _saveNew()
+	{
+		begin_transaction();
+		$sql = "INSERT INTO " . TB_PREF . "cust_branch (debtor_no, br_name, branch_ref, br_address,
 				salesman, phone, phone2, fax, contact_name, area, email, tax_group_id, sales_account, sales_discount_account, receivables_account, payment_discount_account, default_location,
 				br_post_address, disable_trans, group_no, default_ship_via, notes,inactive)
-				VALUES (" . db_escape($this->debtor_no) . "," . db_escape($this->br_name) . ", " . db_escape($this->branch_ref) . ", " . db_escape($this->br_address) . ", " . db_escape($this->salesman) . ", " . db_escape($this->phone) . ", " . db_escape($this->phone2) . ", " . db_escape($this->fax) . "," . db_escape($this->contact_name) . ", " . db_escape($this->area) . ", " . db_escape($this->email) . ", " . db_escape($this->tax_group_id) . ", " . db_escape($this->sales_account) . ", " . db_escape($this->sales_discount_account) . ", " . db_escape($this->receivables_account) . ", " . db_escape($this->payment_discount_account) . ", " . db_escape($this->default_location) . ", " . db_escape($this->br_post_address) . "," . db_escape($this->disable_trans) . ", " . db_escape($this->group_no) . ", " . db_escape($this->default_ship_via) . ", " . db_escape($this->notes) . ", " . db_escape($this->inactive) . ")";
-        db_query($sql, "The branch could not be added");
-        $this->branch_code = db_insert_id();
-        commit_transaction();
-        return $this->_status(true, 'Saving', "New branch has been added");
-    }
+				VALUES (" . db_escape($this->debtor_no) . "," . db_escape($this->br_name) . ", " . db_escape($this->branch_ref) . ", " . db_escape($this->br_address) . ", "
+		       . db_escape($this->salesman) . ", " . db_escape($this->phone) . ", " . db_escape($this->phone2) . ", " . db_escape($this->fax) . "," . db_escape($this->contact_name) . ", "
+		       . db_escape($this->area) . ", " . db_escape($this->email) . ", " . db_escape($this->tax_group_id) . ", " . db_escape($this->sales_account) . ", "
+		       . db_escape($this->sales_discount_account) . ", " . db_escape($this->receivables_account) . ", " . db_escape($this->payment_discount_account) . ", " . db_escape($this->default_location)
+		       . ", " . db_escape($this->br_post_address) . "," . db_escape($this->disable_trans) . ", " . db_escape($this->group_no) . ", " . db_escape($this->default_ship_via) . ", "
+		       . db_escape($this->notes) . ", " . db_escape($this->inactive) . ")";
+		db_query($sql, "The branch could not be added");
+		$this->branch_code = db_insert_id();
+		commit_transaction();
+		$this->_status(true, 'Saving', "New branch has been added");
+	}
 
-    protected function _defaults() {
-        $company_record = get_company_prefs();
-        $this->sales_discount_account = $company_record['default_sales_discount_act'];
-        $this->receivables_account = $company_record['debtors_act'];
-        $this->payment_discount_account = $company_record['default_prompt_payment_act'];
-        $this->salesman = ($_SESSION['wa_current_user']) ? $_SESSION['wa_current_user']->salesmanid : 1;
-    }
+	protected function _defaults()
+	{
+		$company_record = get_company_prefs();
+		$this->sales_discount_account = $company_record['default_sales_discount_act'];
+		$this->receivables_account = $company_record['debtors_act'];
+		$this->payment_discount_account = $company_record['default_prompt_payment_act'];
+		$this->salesman = ($_SESSION['wa_current_user']) ? $_SESSION['wa_current_user']->salesmanid : 1;
+	}
 
-    protected function _new() {
-        $this->_defaults();
-        return $this->_status(true, 'Initialize new Branch', 'Now working with a new Branch');
-    }
+	protected function _new()
+	{
+		$this->_defaults();
+		return $this->_status(true, 'Initialize new Branch', 'Now working with a new Branch');
+	}
 
-    protected function _countTransactions() {
-    }
+	protected function _countTransactions()
+	{
+	}
 
 }
 

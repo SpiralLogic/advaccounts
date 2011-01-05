@@ -63,14 +63,7 @@ var Branches = function() {
             $.post('customers.php', Customer.get(), function(data) {
                 resetHighlights();
                 adding = false;
-                current = data;
-                if (adding) {
-                    Branches.add([data]);
-                    Customer.get().branches[data.branch_code] = data;
-                    
-                }
-                Branches.btnBranchAdd();
-                $("#msgbox").prepend("Customer branch updated");
+                Customer.setValues(data);
             }, 'json');
         },
         btnBranchAdd : function() {
@@ -146,28 +139,31 @@ var setContactLog = function(data) {
 var Customer = function (item) {
     var customer;
     return {
+	    setValues: function(data) {
+		    customer = data;
+		    Branches.list().empty();
+		    $.each(data, function(i, data) {
+			    if (i == 'accounts') {
+				    $.each(data, function(id, value) {
+					    setFormValue('acc_' + id, value);
+				    })
+			    } else {
+				    if (i == 'branches') {
+					    Branches.add(data);
+				    } else {
+					    setFormValue(i, data);
+				    }
+			    }
+		    });
+		    Branches.change(data.branches[data.defaultBranch]);
+		    resetHighlights();
+		    getContactLog();
+	    },
         fetch: function(id) {
             loader.show();
             $.post("customers.php", {id: id}, function(data) {
-                customer = data;
-                Branches.list().empty();
-                $.each(data, function(i, data) {
-                    if (i == 'accounts') {
-                        $.each(data, function(id, value) {
-                            setFormValue('acc_' + id, value);
-                        })
-                    } else {
-                        if (i == 'branches') {
-                            Branches.add(data);
-                        } else {
-                            setFormValue(i, data);
-                        }
-                    }
-                });
-                Branches.change(data.branches[data.defaultBranch]);
-                resetHighlights();
-                getContactLog();
-                loader.hide();
+                Customer.setValues(data);
+	            loader.hide();
             }, 'json')
         },
         set: function(key, value) {
@@ -201,7 +197,7 @@ $(function() {
     tabs = $("#tabs");
     loader = $("<div></div>").hide().attr('id', 'loader').prependTo('#content');
     btnCancel = $("#btnCancel").button().click(function() {
-        (btnCustomer.hasClass('ui-helper-hidden')) ? resetState() : revertState();
+        (  ! feildsChanged>0) ? resetState() : revertState();
         return false;
     });
     btnCustomer = $("#btnCustomer").button().click(function(event) {
@@ -213,7 +209,7 @@ $(function() {
         event.stopImmediatePropagation();
         return false;
     });
-    tabs.delegate(".tablestyle_inner td :nth-child(1)", "change", function(event) {
+    tabs.delegate("#tabs :input", "change", function(event) {
         if ($(this).attr('name')=='messageLog' || $(this).attr('name') == 'branchList') return;
         event.stopImmediatePropagation();
         feildsChanged++;

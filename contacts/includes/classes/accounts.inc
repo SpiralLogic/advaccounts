@@ -24,8 +24,8 @@ class Accounts extends Branch {
 
     public function save($changes = null) {
         if (is_array($changes)) $this->setFromArray($changes);
-        $this->accounts_id = $this->branch_code;
         parent::save();
+        $this->accounts_id = $this->branch_code;
         $this->_status(true, 'save', 'Accounts Saved');
     }
 

@@ -99,6 +99,8 @@ function page_header($title, $no_menu=false, $is_index=false, $onload="", $js=""
 //	if (file_exists($_SERVER['DOCUMENT_ROOT'].$jsext))
 //		add_js_ufile($jsext);
 get_jqueryui();
+get_jquery_live();
+get_js_calc();
 add_js_ufile($path_to_root . "/js/shortmenu.js");
 
 $theme = user_theme();

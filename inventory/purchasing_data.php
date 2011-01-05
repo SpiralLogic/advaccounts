@@ -150,7 +150,7 @@ else
             start_table("$table_style width=65%");
         }
         $th = array(_("Supplier"), _("Price"), _("Currency"),
-            _("Supplier's Unit"), _("Conversion Factor"), _("Supplier's Description"), "", "");
+            _("Supplier's Unit"), _("Conversion Factor"), _("Supplier's Product Code"), "", "");
 
         table_header($th);
 

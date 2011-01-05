@@ -1370,13 +1370,12 @@ class FirePHP {
             if (self::is_utf8($Object)) {
                 return $Object;
             } else {
-                return utf8_encode($Object);
+                return @utf8_encode($Object);
             }
         }
         return $return;
     }
-
-    /**
+     /**
      * Returns true if $string is valid UTF-8 and false otherwise.
      *
      * @param mixed $str String to be tested
@@ -1385,7 +1384,7 @@ class FirePHP {
     protected static function is_utf8($str)
     {
         if(function_exists('mb_detect_encoding')) {
-            return (mb_detect_encoding($str) == 'UTF-8');
+            return (@mb_detect_encoding($str) == 'UTF-8');
         }
         $c=0; $b=0;
         $bits=0;
