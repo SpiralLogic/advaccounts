@@ -67,7 +67,7 @@
 // dullus for text Justification.
 // Bob Vincent (pillarsdotnet@users.sourceforge.net) for <li> value attribute.
 // Patrick Benny for text stretch suggestion on Cell().
-// Johannes Güntert for JavaScript support.
+// Johannes Gï¿½ntert for JavaScript support.
 // Denis Van Nuffelen for Dynamic Form.
 // Jacek Czekaj for multibyte justification
 // Anthony Ferrara for the reintroduction of legacy image methods.
@@ -78,7 +78,7 @@
 // Mohamad Ali Golkar, Saleh AlMatrafe, Charles Abbott for Arabic and Persian support.
 // Moritz Wagner and Andreas Wurmser for graphic functions.
 // Andrew Whitehead for core fonts support.
-// Esteban Joël Marín for OpenType font conversion.
+// Esteban Joï¿½l Marï¿½n for OpenType font conversion.
 // Teus Hagen for several suggestions and fixes.
 // Yukihiro Nakadaira for CID-0 CJK fonts fixes.
 // Kosmas Papachristos for some CSS improvements.
@@ -3598,7 +3598,7 @@ if (!class_exists('TCPDF')) {
 					$type = "jpeg";
 				}
 				$mqr = get_magic_quotes_runtime();
-				set_magic_quotes_runtime(0);
+				@set_magic_quotes_runtime(0);
 				// Specific image handlers
 				$mtd = '_parse'.$type;
 				// GD image handler function
@@ -3625,7 +3625,7 @@ if (!class_exists('TCPDF')) {
 					//If false, we cannot process image
 					return;
 				}
-				set_magic_quotes_runtime($mqr);
+				@set_magic_quotes_runtime($mqr);
 				$info['i'] = count($this->images) + 1;
 				// add image to document
 				$this->images[$file] = $info;
@@ -4506,7 +4506,7 @@ if (!class_exists('TCPDF')) {
 				$this->_out('endobj');
 			}
 			$mqr = get_magic_quotes_runtime();
-			set_magic_quotes_runtime(0);
+			@set_magic_quotes_runtime(0);
 			foreach($this->FontFiles as $file => $info) {
 				//Font file embedding
 				$this->_newobj();
@@ -4536,7 +4536,7 @@ if (!class_exists('TCPDF')) {
 				$this->_putstream($font);
 				$this->_out('endobj');
 			}
-			set_magic_quotes_runtime($mqr);
+			@set_magic_quotes_runtime($mqr);
 			foreach($this->fonts as $k => $font) {
 				//Font objects
 				$this->fonts[$k]['n'] = $this->n + 1;
@@ -7694,7 +7694,7 @@ if (!class_exists('TCPDF')) {
 		/*
 		* Adds a javascript
 		* @access public
-		* @author Johannes Güntert, Nicola Asuni
+		* @author Johannes Gï¿½ntert, Nicola Asuni
 		* @since 2.1.002 (2008-02-12)
 		*/
 		function IncludeJS($script) {
@@ -7704,7 +7704,7 @@ if (!class_exists('TCPDF')) {
 		/*
 		* Create a javascript PDF string.
 		* @access protected
-		* @author Johannes Güntert, Nicola Asuni
+		* @author Johannes Gï¿½ntert, Nicola Asuni
 		* @since 2.1.002 (2008-02-12)
 		*/
 		function _putjavascript() {
@@ -8205,7 +8205,7 @@ if (!class_exists('TCPDF')) {
 		* @param array $col1 first color (RGB components).
 		* @param array $col2 second color (RGB components).
 		* @param array $coords array of the form (x1, y1, x2, y2) which defines the gradient vector (see linear_gradient_coords.jpg). The default value is from left to right (x1=0, y1=0, x2=1, y2=0).
-		* @author Andreas Würmser, Nicola Asuni
+		* @author Andreas Wï¿½rmser, Nicola Asuni
 		* @since 3.1.000 (2008-06-09)
 		* @access public
 		*/
@@ -8223,7 +8223,7 @@ if (!class_exists('TCPDF')) {
 		* @param array $col1 first color (RGB components).
 		* @param array $col2 second color (RGB components).
 		* @param array $coords array of the form (fx, fy, cx, cy, r) where (fx, fy) is the starting point of the gradient with color1, (cx, cy) is the center of the circle with color2, and r is the radius of the circle (see radial_gradient_coords.jpg). (fx, fy) should be inside the circle, otherwise some areas will not be defined.
-		* @author Andreas Würmser, Nicola Asuni
+		* @author Andreas Wï¿½rmser, Nicola Asuni
 		* @since 3.1.000 (2008-06-09)
 		* @access public
 		*/
@@ -8245,7 +8245,7 @@ if (!class_exists('TCPDF')) {
 		* @param array $coords <ul><li>for one patch mesh: array(float x1, float y1, .... float x12, float y12): 12 pairs of coordinates (normally from 0 to 1) which specify the Bezier control points that define the patch. First pair is the lower left edge point, next is its right control point (control point 2). Then the other points are defined in the order: control point 1, edge point, control point 2 going counter-clockwise around the patch. Last (x12, y12) is the first edge point's left control point (control point 1).</li><li>for two or more patch meshes: array[number of patches]: arrays with the following keys for each patch: f: where to put that patch (0 = first patch, 1, 2, 3 = right, top and left of precedent patch - I didn't figure this out completely - just try and error ;-) points: 12 pairs of coordinates of the Bezier control points as above for the first patch, 8 pairs of coordinates for the following patches, ignoring the coordinates already defined by the precedent patch (I also didn't figure out the order of these - also: try and see what's happening) colors: must be 4 colors for the first patch, 2 colors for the following patches</li></ul>
 		* @param array $coords_min minimum value used by the coordinates. If a coordinate's value is smaller than this it will be cut to coords_min. default: 0
 		* @param array $coords_max maximum value used by the coordinates. If a coordinate's value is greater than this it will be cut to coords_max. default: 1
-		* @author Andreas Würmser, Nicola Asuni
+		* @author Andreas Wï¿½rmser, Nicola Asuni
 		* @since 3.1.000 (2008-06-09)
 		* @access public
 		*/
@@ -8322,7 +8322,7 @@ if (!class_exists('TCPDF')) {
 		* @param float $y ordinate of the top left corner of the rectangle.
 		* @param float $w width of the rectangle.
 		* @param float $h height of the rectangle.
-		* @author Andreas Würmser, Nicola Asuni
+		* @author Andreas Wï¿½rmser, Nicola Asuni
 		* @since 3.1.000 (2008-06-09)
 		* @access protected
 		*/
@@ -8345,7 +8345,7 @@ if (!class_exists('TCPDF')) {
 		* @param array $col1 first color (RGB components).
 		* @param array $col2 second color (RGB components).
 		* @param array $coords array of coordinates.
-		* @author Andreas Würmser, Nicola Asuni
+		* @author Andreas Wï¿½rmser, Nicola Asuni
 		* @since 3.1.000 (2008-06-09)
 		* @access protected
 		*/
@@ -8369,7 +8369,7 @@ if (!class_exists('TCPDF')) {
 
 		/**
 		* Output shaders.
-		* @author Andreas Würmser, Nicola Asuni
+		* @author Andreas Wï¿½rmser, Nicola Asuni
 		* @since 3.1.000 (2008-06-09)
 		* @access protected
 		*/
