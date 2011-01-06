@@ -176,5 +176,3 @@ define('DEFAULT_LOCATION', 'MEL');
 define('DEFAULT_TAX_GROUP', 1);
 define('DEFAULT_AREA', 1);
 define('DEFAULT_SHIP_VIA', 1);
-
-?>
