@@ -136,7 +136,13 @@ if (!isset($path_to_root)) {
 
 define('APP_PATH', $_SERVER['DOCUMENT_ROOT'] . '/');
 
-$paths = array(realpath('.') . '/includes/classes', APP_PATH . 'includes/ui2', APP_PATH . 'includes/ui', APP_PATH . 'includes');
+$paths = array(
+	realpath('.') . '/includes/classes',
+	APP_PATH . 'includes/ui2',
+	APP_PATH . 'includes/ui',
+	APP_PATH . 'includes',
+	APP_PATH . 'includes/classes'
+);
 add_include_path($paths);
 
 
