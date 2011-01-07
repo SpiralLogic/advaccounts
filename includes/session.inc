@@ -153,20 +153,11 @@ elseif (preg_match('/Chrome/i', $_SERVER['HTTP_USER_AGENT']))
 if (isset($_GET['path_to_root']) || isset($_POST['path_to_root'])) {
 	die("Restricted access");
 }
-<<<<<<< .mine
-function __autoload($className)
-{
-	FB::info(get_include_path());
-	if (!@include_once(strtolower($className) . '.inc')) {
-		@include_once(strtolower($className) . '.php');
-	}
-=======
 function __autoload($className)
 {
 	if (!@include_once(strtolower($className) . '.inc')) {
 		@include_once(strtolower($className) . '.php');
 	}
->>>>>>> .r119
 }
 
 
@@ -191,11 +182,7 @@ ini_set('session.gc_maxlifetime', 36000); // 10hrs
 session_name('FA' . md5(dirname(__FILE__)));
 session_start();
 if (isset($_SESSION["wa_current_user"]) && $_SESSION["wa_current_user"]->user == 1) {
-<<<<<<< .mine
 	error_reporting(E_ALL);
-=======
-	//error_reporting(E_ALL);
->>>>>>> .r119
 }
 // this is to fix the "back-do-you-want-to-refresh" issue - thanx PHPFreaks
 header("Cache-control: private");
@@ -246,7 +233,6 @@ if (!isset($_SESSION["wa_current_user"])) {
 // logout.php is the only page we should have always
 // accessable regardless of access level and current login status.
 if (strstr($_SERVER['PHP_SELF'], 'logout.php') == false) {
-<<<<<<< .mine
 	login_timeout();
 	if (!$_SESSION["wa_current_user"]->logged_in()) {
 		// Show login screen
@@ -282,42 +268,6 @@ if (strstr($_SERVER['PHP_SELF'], 'logout.php') == false) {
 		$_SESSION["App"] = new front_accounting();
 		$_SESSION["App"]->init();
 	}
-=======
-	login_timeout();
-	if (!$_SESSION["wa_current_user"]->logged_in()) {
-		// Show login screen
-		if (!isset($_POST["user_name_entry_field"]) or $_POST["user_name_entry_field"] == "") {
-			// strip ajax marker from uri, to force synchronous page reload
-			$_SESSION['timeout'] = array('uri' => preg_replace('/JsHttpRequest=(?:(\d+)-)?([^&]+)/s', '', @$_SERVER['REQUEST_URI']), 'post' => $_POST);
-			include($path_to_root . "/access/login.php");
-			if (in_ajax()) {
-				$Ajax->activate('_page_body');
-			}
-			exit;
-		} else {
-			$succeed =
-					isset($db_connections[$_POST["company_login_name"]]) && $_SESSION["wa_current_user"]->login($_POST["company_login_name"], $_POST["user_name_entry_field"], md5($_POST["password"]));
-			// select full vs fallback ui mode on login
-			$_SESSION["wa_current_user"]->ui_mode = $_POST['ui_mode'];
-			if (!$succeed) {
-				// Incorrect password
-				login_fail();
-			}
-			get_websales();
-			$lang = &$_SESSION['language'];
-			$lang->set_language($_SESSION['language']->code);
-		}
-	} else {
-		set_global_connection();
-	}
-	if (!$_SESSION["wa_current_user"]->old_db) {
-		include_once($path_to_root . '/company/' . user_company() . '/installed_extensions.php');
-	}
-	if (!isset($_SESSION["App"])) {
-		$_SESSION["App"] = new front_accounting();
-		$_SESSION["App"]->init();
-	}
->>>>>>> .r119
 }
 function isAjaxReferrer()
 {
@@ -325,11 +275,7 @@ function isAjaxReferrer()
 }
 
 if ($_SESSION["wa_current_user"]->user == 1) {
-<<<<<<< .mine
 	error_reporting(E_ALL);
-=======
-	//error_reporting(E_ALL);
->>>>>>> .r119
 }
 // POST vars cleanup needed for direct reuse.
 // We quote all values later with db_escape() before db update.
