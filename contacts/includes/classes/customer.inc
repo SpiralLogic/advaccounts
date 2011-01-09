@@ -184,13 +184,14 @@ class Customer extends Contact
 
     public function getTransactions()
     {
-  /*      $sql = "SELECT " . TB_PREF . "debtor_trans.*,
+        $sql = "SELECT " . TB_PREF . "debtor_trans.*,
 				(" . TB_PREF . "debtor_trans.ov_amount + " . TB_PREF . "debtor_trans.ov_gst + " . TB_PREF . "debtor_trans.ov_freight +
 				" . TB_PREF . "debtor_trans.ov_freight_tax + " . TB_PREF . "debtor_trans.ov_discount)
 				AS TotalAmount, " . TB_PREF . "debtor_trans.alloc AS Allocated,
 				((" . TB_PREF . "debtor_trans.type = " . ST_SALESINVOICE . ")
     			FROM " . TB_PREF . "debtor_trans LEFT OUTER JOIN 0_sales_orders ON  " . TB_PREF . "debtor_trans.order_ =  " . TB_PREF . "sales_orders.order_no
-    			WHERE  AND " . TB_PREF . "debtor_trans.debtor_no = " . db_escape($this->id) . "
+    			WHERE  " . TB_PREF . "debtor_trans.debtor_no = " . db_escape($this->id) . "
+    			 AND " . TB_PREF . "sales_orders.debtor_no = " . db_escape($this->id) . "
     				AND " . TB_PREF . "debtor_trans.type <> " . ST_CUSTDELIVERY . "
     				AND (" . TB_PREF . "debtor_trans.ov_amount + " . TB_PREF . "debtor_trans.ov_gst + " . TB_PREF . "debtor_trans.ov_freight +
 				" . TB_PREF . "debtor_trans.ov_freight_tax + " . TB_PREF . "debtor_trans.ov_discount) != 0
@@ -201,7 +202,7 @@ class Customer extends Contact
         while ($row = db_fetch_assoc($result)) {
             $rows[] = $row;
         }
-        return $results;*/
+        return $results;
         /*todo need to make into left join "SELECT customer_ref
           FROM " . TB_PREF . "sales_orders
           WHERE order_no=$no";

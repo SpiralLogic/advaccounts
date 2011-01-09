@@ -24,7 +24,7 @@ $(function() {
 		select: function(event, ui) {
 		/*if (!window['{$callback}']) {
 		{$callback}=ui.item;
-} else*/
+} else*/ 
 		
 		
 		{$callback}(ui.item.id);
