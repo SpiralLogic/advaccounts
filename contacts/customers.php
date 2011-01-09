@@ -6,19 +6,23 @@ include_once("includes/contacts.inc");
 if (isAjaxReferrer()) {
     if (isset($_GET['term'])) {
         $data = Customer::search($_GET['term']);
-    } elseif (isset($_POST['id']) && !isset($_POST['name'])) {
-        $data = $customer = new Customer($_POST['id']);
     } else {
-        $data = new Customer();
-    }
-    if (isset($_POST['name']) && isset($_POST['id'])) {
-        $data = $customer = new Customer($_POST);
-        $customer->save();
+        if (isset($_POST['id']) && !isset($_POST['name'])) {
+            $data['customer'] = $customer = new Customer($_POST['id']);
+        } else {
+            $data['customer'] = new Customer();
+        }
+        if (isset($_POST['name']) && isset($_POST['id'])) {
+            $data['customer'] = $customer = new Customer($_POST);
+            $customer->save();
+        }
+
+    $data['contact_log'] = contact_log::read($customer->id, 'C');
+    $data['transactions'] = '<pre>'.print_r($customer->getTransactions(),true).'</pre>';
     }
     echo json_encode($data);
     exit();
 }
-FB::info('test');
 add_js_ffile("includes/js/customers.js");
 page(_($help_context = "Customers"), @$_REQUEST['popup']);
 check_db_has_sales_types(_("There are no sales types defined. Please define at least one sales type before adding a customer."));
@@ -164,7 +168,7 @@ textarea_row(_("Address:"), 'br_br_address', $currentBranch->br_address, 35, 4);
 textarea_row(_("Branch Mailing Address:"), 'br_br_post_address', $currentBranch->br_post_address, 35, 4);
 end_outer_table(1);
 $menu->endTab()->startTab('Invoices', 'Invoices');
-echo '<pre>' . $customer->getTransactions() . '</pre>';
+HTML::div('transactions');
 $menu->endTab()->render();
 hidden('popup', @$_REQUEST['popup']);
 end_form();

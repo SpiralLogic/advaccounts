@@ -280,6 +280,7 @@ class Customer extends Contact
     {
         $sql = "SELECT debtor_no as id, debtor_ref as label, debtor_ref as value FROM " . TB_PREF . "debtors_master " . "where debtor_ref LIKE '%" . $terms . "%' LIMIT 20";
         $result = db_query($sql, 'Couldn\'t Get Customers');
+        $data = '';
         while ($row = db_fetch_assoc($result)) {
             $data[] = $row;
         }

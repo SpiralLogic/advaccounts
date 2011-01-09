@@ -141,7 +141,8 @@ $paths = array(
 	APP_PATH . 'includes/ui2',
 	APP_PATH . 'includes/ui',
 	APP_PATH . 'includes',
-	APP_PATH . 'includes/classes'
+	APP_PATH . 'includes/classes',
+    APP_PATH . 'contacts/includes/classes'
 );
 add_include_path($paths);
 
