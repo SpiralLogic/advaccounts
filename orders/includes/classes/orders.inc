@@ -15,7 +15,5 @@ abstract class Orders extends DB_abstract {
     public $reference;
     public $delivery_address;
     public $salesman;
-
-
-
+	public $freight; // $freight_cost for orders
 }

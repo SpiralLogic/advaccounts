@@ -15,10 +15,10 @@ class Customer extends Contact
 	public $address = '';
 	public $tax_id = '';
 	public $curr_code = '';
-	public $sales_type = 1;
+	public $sales_type;
 	public $dimension_id = 0;
 	public $dimension2_id = 0;
-	public $credit_status = 1;
+	public $credit_status;
 	public $payment_terms = 1;
 	public $discount = '0';
 	public $pymt_discount = '0';
@@ -144,7 +144,7 @@ class Customer extends Contact
 	{
 		global $SysPrefs;
 		$this->id = $this->dimension_id = $this->dimension2_id = $this->inactive = 0;
-		$this->sales_type = $this->credit_status = -1;
+		$this->sales_type = $this->credit_status = 1;
 		$this->name = $this->address = $this->email = $this->tax_id = $this->payment_terms = $this->notes = $this->debtor_ref = '';
 		$this->curr_code = get_company_currency();
 		$this->discount = $this->pymt_discount = percent_format(0);
@@ -180,7 +180,28 @@ class Customer extends Contact
 		$result = db_query($sql, "check failed");
 		return db_fetch_row($result);
 	}
+public function getTransactions() {
+		$sql = "SELECT " . TB_PREF . "debtor_trans.*,
+				(" . TB_PREF . "debtor_trans.ov_amount + " . TB_PREF . "debtor_trans.ov_gst + " . TB_PREF . "debtor_trans.ov_freight +
+				" . TB_PREF . "debtor_trans.ov_freight_tax + " . TB_PREF . "debtor_trans.ov_discount)
+				AS TotalAmount, " . TB_PREF . "debtor_trans.alloc AS Allocated,
+				((" . TB_PREF . "debtor_trans.type = " . ST_SALESINVOICE . ")
+    			FROM " . TB_PREF . "debtor_trans LEFT OUTER JOIN 0_sales_orders ON  " . TB_PREF . "debtor_trans.order_ =  " . TB_PREF . "sales_orders.order_no
+    			WHERE  AND " . TB_PREF . "debtor_trans.debtor_no = " . db_escape($this->id) . "
+    				AND " . TB_PREF . "debtor_trans.type <> " . ST_CUSTDELIVERY . "
+    				AND (" . TB_PREF . "debtor_trans.ov_amount + " . TB_PREF . "debtor_trans.ov_gst + " . TB_PREF . "debtor_trans.ov_freight +
+				" . TB_PREF . "debtor_trans.ov_freight_tax + " . TB_PREF . "debtor_trans.ov_discount) != 0
+    				ORDER BY " . TB_PREF . "debtor_trans.branch_code, " . TB_PREF . "debtor_trans.tran_date";
+		return db_query($sql, "No transactions were returned");
 
+		/*todo need to make into left join "SELECT customer_ref
+        FROM " . TB_PREF . "sales_orders
+        WHERE order_no=$no";
+
+		 SELECT * FROM `0_debtor_trans` AS debt LEFT OUTER JOIN `0_sales_orders` AS orders ON debt.order_ = orders.order_no WHERE debt.debtor_no = 3338 AND orders.debtor_no = 3388
+
+		 */
+}
 	protected function _countOrders()
 	{
 		$sql = "SELECT COUNT(*) FROM " . TB_PREF . "sales_orders WHERE debtor_no=" . $this->id;

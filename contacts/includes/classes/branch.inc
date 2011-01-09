@@ -22,7 +22,7 @@ class Branch extends Contact
 	public $default_ship_via = DEFAULT_SHIP_VIA;
 	public $disable_trans = 0;
 	public $fax = "";
-	public $group_no = 0;
+	public $group_no = 1;
 	public $payment_discount_account;
 	public $phone = "";
 	public $phone2 = "";
