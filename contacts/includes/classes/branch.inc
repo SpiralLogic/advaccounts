@@ -23,7 +23,6 @@ class Branch extends Contact
 	public $disable_trans = 0;
 	public $fax = "";
 	public $group_no = 0;
-	public $notes = "";
 	public $payment_discount_account;
 	public $phone = "";
 	public $phone2 = "";

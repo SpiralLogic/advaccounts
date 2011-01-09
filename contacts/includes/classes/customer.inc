@@ -23,7 +23,6 @@ class Customer extends Contact
 	public $discount = '0';
 	public $pymt_discount = '0';
 	public $credit_limit = 0;
-	public $notes = '';
 	public $debtor_ref = '';
 	public $branches;
 	public $defaultBranch;
