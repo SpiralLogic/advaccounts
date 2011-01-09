@@ -143,7 +143,7 @@ var Customer = function (item) {
 		setValues: function(data) {
 			customer = data;
 			Branches.list().empty();
-			$.each(data, function(i, data) {
+            $.each(data, function(i, data) {
 				if (i == 'accounts') {
 					$.each(data, function(id, value) {
 						setFormValue('acc_' + id, value);

@@ -1,13 +1,16 @@
 <?php
 
-class JS {
- 
+class JS
+{
+
     private static $_javascript = array();
 
-    private function __construct() {
+    private function __construct()
+    {
     }
 
-    public static function autocomplete($id, $callback, $url = false) {
+    public static function autocomplete($id, $callback, $url = false)
+    {
         global $js_lib;
         if (!$url) $url = $_SERVER['PHP_SELF'];
         $js_lib[] = <<< JS
@@ -24,8 +27,7 @@ $(function() {
 		select: function(event, ui) {
 		/*if (!window['{$callback}']) {
 		{$callback}=ui.item;
-} else*/ 
-		
+} else*/  
 		
 		{$callback}(ui.item.id);
 
@@ -34,7 +36,8 @@ $(function() {
 JS;
     }
 
-    public static function setfocus($id = false) {
+    public static function setfocus($id = false)
+    {
         if (!$id) return;
         global $js_lib;
         $js_lib[] = <<< JS

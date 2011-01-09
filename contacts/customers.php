@@ -167,11 +167,11 @@ table_section_title(_("Addresses"));
 textarea_row(_("Address:"), 'br_br_address', $currentBranch->br_address, 35, 4);
 textarea_row(_("Branch Mailing Address:"), 'br_br_post_address', $currentBranch->br_post_address, 35, 4);
 end_outer_table(1);
-$menu->endTab()->startTab('Invoices', 'Invoices');
+$menu->endTab();
+$menu->startTab('Invoices', 'Invoices');
 
-//echo '<pre>'.$customer->getTransactions().'</pre>';
-
-$menu->endTab()->render();
+$menu->endTab();
+$menu->render();
 hidden('popup', @$_REQUEST['popup']);
 end_form();
 HTML::div('contactLog', array('title' => 'New contact log entry', 'class' => 'ui-widget-overlay', 'style' => 'display:none;'));

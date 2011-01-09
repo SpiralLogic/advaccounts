@@ -1,4 +1,4 @@
-<?php
+ <?php
 /**********************************************************************
 Copyright (C) FrontAccounting, LLC.
 Released under the terms of the GNU General Public License, GPL,
@@ -23,7 +23,7 @@ class MenuUI {
     function addTab($title, $tooltip = '', $link = '#') {
         $this->tabs[] = new MenuUi_item($title, $tooltip, $link);
         return $this;
-    }
+    } 
 
     function startTab($title, $tooltip) {
         $this->addTab($title, $tooltip, '#');
@@ -40,7 +40,7 @@ class MenuUI {
         global $js_lib;
         $this->menu .= "<ul>";
         foreach ($this->tabs as $key => $tab) {
-            $num = $key + 1;
+            $num = $key + 1; 
             $this->menu .= "<li><a title='{$tab->title}' href='#tabs-{$num}'><span>{$tab->title}</span></a></li>";
         }
         $this->menu .= "</ul>";

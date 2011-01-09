@@ -27,11 +27,13 @@ class Customer extends Contact
     public $branches;
     public $defaultBranch;
     public $accounts;
+    public $transactions;
 
     function __construct($id = null)
     {
         parent::__construct($id);
         $this->debtor_ref = substr($this->name, 0, 29);
+        $this->transactions = $this->getTransactions();
     }
 
     protected function _canProcess()
@@ -184,12 +186,11 @@ class Customer extends Contact
 
     public function getTransactions()
     {
-        $sql = "SELECT " . TB_PREF . "debtor_trans.*,
+        $sql = "SELECT " . TB_PREF . "debtor_trans.*, " . TB_PREF . "sales_orders.customer_ref,
 				(" . TB_PREF . "debtor_trans.ov_amount + " . TB_PREF . "debtor_trans.ov_gst + " . TB_PREF . "debtor_trans.ov_freight +
 				" . TB_PREF . "debtor_trans.ov_freight_tax + " . TB_PREF . "debtor_trans.ov_discount)
-				AS TotalAmount, " . TB_PREF . "debtor_trans.alloc AS Allocated,
-				((" . TB_PREF . "debtor_trans.type = " . ST_SALESINVOICE . ")
-    			FROM " . TB_PREF . "debtor_trans LEFT OUTER JOIN 0_sales_orders ON  " . TB_PREF . "debtor_trans.order_ =  " . TB_PREF . "sales_orders.order_no
+				AS TotalAmount, " . TB_PREF . "debtor_trans.alloc AS Allocated
+				FROM " . TB_PREF . "debtor_trans LEFT OUTER JOIN 0_sales_orders ON  " . TB_PREF . "debtor_trans.order_ =  " . TB_PREF . "sales_orders.order_no
     			WHERE  " . TB_PREF . "debtor_trans.debtor_no = " . db_escape($this->id) . "
     			 AND " . TB_PREF . "sales_orders.debtor_no = " . db_escape($this->id) . "
     				AND " . TB_PREF . "debtor_trans.type <> " . ST_CUSTDELIVERY . "
@@ -197,19 +198,12 @@ class Customer extends Contact
 				" . TB_PREF . "debtor_trans.ov_freight_tax + " . TB_PREF . "debtor_trans.ov_discount) != 0
     				ORDER BY " . TB_PREF . "debtor_trans.branch_code, " . TB_PREF . "debtor_trans.tran_date";
         $result = db_query($sql, "No transactions were returned");
-        FB::info($result);
         $results = array();
         while ($row = db_fetch_assoc($result)) {
-            $rows[] = $row;
+            $results[] = $row;
         }
         return $results;
-        /*todo need to make into left join "SELECT customer_ref
-          FROM " . TB_PREF . "sales_orders
-          WHERE order_no=$no";
-
-           SELECT * FROM `0_debtor_trans` AS debt LEFT OUTER JOIN `0_sales_orders` AS orders ON debt.order_ = orders.order_no WHERE debt.debtor_no = 3338 AND orders.debtor_no = 3388
-
-           */
+    
     }
 
     protected function _countOrders()
