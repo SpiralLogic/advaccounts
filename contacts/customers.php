@@ -15,10 +15,10 @@ if (isAjaxReferrer()) {
         $data = $customer = new Customer($_POST);
         $customer->save();
     }
-    FB::info($customer);
     echo json_encode($data);
     exit();
 }
+FB::info('test');
 add_js_ffile("includes/js/customers.js");
 page(_($help_context = "Customers"), @$_REQUEST['popup']);
 check_db_has_sales_types(_("There are no sales types defined. Please define at least one sales type before adding a customer."));
@@ -37,7 +37,8 @@ $currentBranch = $customer->branches[$customer->defaultBranch];
 if (isset($_POST['submit'])) {
     handle_submit();
 }
-function handle_submit() {
+function handle_submit()
+{
     global $Ajax, $customer;
     if (!$customer->save($_POST)) {
         $status = $customer->getStatus();
@@ -166,11 +167,12 @@ textarea_row(_("Branch Mailing Address:"), 'br_br_post_address', $currentBranch-
 end_outer_table(1);
 $menu->endTab()->startTab('Invoices', 'Invoices');
 
+//echo '<pre>'.$customer->getTransactions().'</pre>';
 
-        $menu->endTab()->render();
+$menu->endTab()->render();
 hidden('popup', @$_REQUEST['popup']);
 end_form();
-HTML::div('contactLog', array('title' => 'New contact log entry', 'class' => 'ui-widget-overlay', 'style'=>'display:none;'));
+HTML::div('contactLog', array('title' => 'New contact log entry', 'class' => 'ui-widget-overlay', 'style' => 'display:none;'));
 HTML::p('New log entry:', array('class' => 'validateTips'));
 start_table();
 label_row('Date:', date('Y-m-d H:i:s'));

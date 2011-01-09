@@ -52,7 +52,7 @@ class Item extends DB_abstract {
         // TODO: Implement _saveNew() method.
     }
 
-    protected function delete() {
+    public function delete() {
         // TODO: Implement delete() method.
     }
 
