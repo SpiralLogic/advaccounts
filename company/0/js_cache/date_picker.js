@@ -273,7 +273,8 @@ function CC() {
             }
             table += "</tr>";
         }
-        table += "<tr class='header'><th colspan='8' style='padding: 3px;text-align:center;'><a href='javascript:hideCC();'>Back</a></td></tr>";
+        table += "<tr class='header'><th colspan='8' style='padding: 3px;text-align:center;'><a " +
+                "href='javascript:hideCC();'>Back</a></th></tr>";
         table += "</table>";
         return table;
     }

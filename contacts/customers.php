@@ -18,7 +18,7 @@ if (isAjaxReferrer()) {
     echo json_encode($data);
     exit();
 }
-
+FB::info('test');
 add_js_ffile("includes/js/customers.js");
 page(_($help_context = "Customers"), @$_REQUEST['popup']);
 check_db_has_sales_types(_("There are no sales types defined. Please define at least one sales type before adding a customer."));
@@ -26,7 +26,6 @@ check_db_has_sales_people(_("There are no sales people defined in the system. At
 check_db_has_sales_areas(_("There are no sales areas defined in the system. At least one sales area is required before proceeding."));
 check_db_has_shippers(_("There are no shipping companies defined in the system. At least one shipping company is required before proceeding."));
 check_db_has_tax_groups(_("There are no tax groups defined in the system. At least one tax group is required before proceeding."));
-
 if (isset($_GET['debtor_no'])) {
     $customer = new Customer($_GET['debtor_no']);
 } elseif (isset($_POST['id']) && !empty($_POST['id'])) {
@@ -34,13 +33,11 @@ if (isset($_GET['debtor_no'])) {
 } else {
     $customer = new Customer();
 }
-
 $currentBranch = $customer->branches[$customer->defaultBranch];
 if (isset($_POST['submit'])) {
     handle_submit();
 }
-function handle_submit()
-{
+function handle_submit() {
     global $Ajax, $customer;
     if (!$customer->save($_POST)) {
         $status = $customer->getStatus();
@@ -87,7 +84,6 @@ textarea_row(_("Shipping Address:"), 'br_br_address', $currentBranch->br_address
 table_section(2);
 hidden('id', $customer->id);
 table_section_title(_("Accounts Details"), 2, 'tableheader3');
-
 text_row(_("Phone Number:"), 'acc_phone', $customer->accounts->phone, 40, 30);
 text_row(_("Secondary Phone Number:"), 'acc_phone2', $customer->accounts->phone2, 40, 30);
 text_row(_("Fax Number:"), 'acc_fax', $customer->accounts->fax, 40, 30);
@@ -167,11 +163,9 @@ table_section_title(_("Addresses"));
 textarea_row(_("Address:"), 'br_br_address', $currentBranch->br_address, 35, 4);
 textarea_row(_("Branch Mailing Address:"), 'br_br_post_address', $currentBranch->br_post_address, 35, 4);
 end_outer_table(1);
-$menu->endTab();
-$menu->startTab('Invoices', 'Invoices');
-
-$menu->endTab();
-$menu->render();
+$menu->endTab()->startTab('Invoices', 'Invoices');
+echo '<pre>' . $customer->getTransactions() . '</pre>';
+$menu->endTab()->render();
 hidden('popup', @$_REQUEST['popup']);
 end_form();
 HTML::div('contactLog', array('title' => 'New contact log entry', 'class' => 'ui-widget-overlay', 'style' => 'display:none;'));

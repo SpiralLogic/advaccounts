@@ -11,9 +11,7 @@
 function set_mark(img) {
     var box = document.getElementById('ajaxmark');
     if (box) {
-        if (img) {
-            box.src = user.theme + 'images/' + img;
-        }
+        if (img) box.src = user.theme + 'images/' + img;
         box.style.visibility = img ? 'visible' : 'hidden'
     }
 }
@@ -22,9 +20,7 @@ function disp_msg(msg, cl) {
     var box = document.getElementById('msgbox')
     box.innerHTML = "<div class='" + (cl || 'err_msg') + "'>" + msg + '</div>';
 //	box.style.display = msg=='' ? 'none':'block';
-    if (msg != '') {
-        window.scrollTo(0, element_pos(box).y - 10);
-    }
+    if (msg != '') window.scrollTo(0, element_pos(box).y - 10);
 }
 
 //
@@ -35,8 +31,8 @@ function disp_msg(msg, cl) {
 // 	- input object - all form values are also submited
 //  - arbitrary string - POST var trigger with value 1 is added to request;
 //		if form parameter exists also form values are submited, otherwise
-//		request is directed to current location 
-// 
+//		request is directed to current location
+//
 JsHttpRequest.request = function(trigger, form, tout) {
 //	if (trigger.type=='submit' && !validate(trigger)) return false;
     tout = tout | 15000;	// default timeout value
@@ -49,23 +45,21 @@ JsHttpRequest._request = function(trigger, form, tout, retry) {
         var content = {};
         var upload = 0;
         var url = trigger.href;
-        if (trigger.id) {
-            content[trigger.id] = 1;
-        }
+        if (trigger.id) content[trigger.id] = 1;
     } else {
-        var submitObj = typeof(trigger) == "string" ? document.getElementsByName(trigger)[0] : trigger;
+        var submitObj = typeof(trigger) == "string" ?
+                document.getElementsByName(trigger)[0] : trigger;
 
         form = form || (submitObj && submitObj.form);
 
         var upload = form && form.enctype == 'multipart/form-data';
 
-        var url = form ? form.action : window.location.toString();
+        var url = form ? form.action :
+                window.location.toString();
 
         var content = this.formInputs(trigger, form, upload);
 
-        if (!form) {
-            url = url.substring(0, url.indexOf('?'));
-        }
+        if (!form) url = url.substring(0, url.indexOf('?'));
 
         if (!submitObj) {
             content[trigger] = 1;
@@ -74,28 +68,28 @@ JsHttpRequest._request = function(trigger, form, tout, retry) {
     // this is to avoid caching problems
     content['_random'] = Math.random() * 1234567;
 
-    var tcheck = setTimeout(function() {
-        for (var id in JsHttpRequest.PENDING) {
-            var call = JsHttpRequest.PENDING[id];
-            if (call != false) {
-                if (call._ldObj.xr) // needed for gecko
-                {
-                    call._ldObj.xr.onreadystatechange = function() {
-                    };
-                }
-                call.abort(); // why this doesn't kill request in firebug?
+    var tcheck = setTimeout(
+                           function() {
+                               for (var id in JsHttpRequest.PENDING) {
+                                   var call = JsHttpRequest.PENDING[id];
+                                   if (call != false) {
+                                       if (call._ldObj.xr) // needed for gecko
+                                           call._ldObj.xr.onreadystatechange = function() {
+                                           };
+                                       call.abort(); // why this doesn't kill request in firebug?
 //						call._ldObj.xr.abort();
-                delete JsHttpRequest.PENDING[id];
-            }
-        }
-        set_mark(retry ? 'ajax-loader2.gif' : 'warning.png');
-        if (retry) {
-            JsHttpRequest._request(trigger, form, tout, retry - 1);
-        }
-    }, tout);
+                                       delete JsHttpRequest.PENDING[id];
+                                   }
+                               }
+                               set_mark(retry ? 'ajax-loader2.gif' : 'warning.png');
+                               if (retry)
+                                   JsHttpRequest._request(trigger, form, tout, retry - 1);
+                           }, tout);
 
-    JsHttpRequest.query((upload ? "form." : "") + "POST " + url, // force form loader
-            content, // Function is called when an answer arrives.
+    JsHttpRequest.query(
+            (upload ? "form." : "") + "POST " + url, // force form loader
+            content,
+        // Function is called when an answer arrives.
                        function(result, errors) {
                            // Write the answer.
                            var newwin = 0;
@@ -112,70 +106,56 @@ JsHttpRequest._request = function(trigger, form, tout, retry) {
                                    objElement = document.getElementsByName(id)[0] || document.getElementById(id);
                                    if (cmd == 'as') {
                                        eval("objElement.setAttribute('" + property + "'," + data + ");");
-                                   } else {
-                                       if (cmd == 'up') {
+                                   } else if (cmd == 'up') {
 //				if(!objElement) alert('No element "'+id+'"');
-                                           if (objElement) {
-                                               if (objElement.tagName == 'INPUT' || objElement.tagName == 'TEXTAREA') {
-                                                   objElement.value = data;
-                                               } else {
-                                                   objElement.innerHTML = data;
-                                               } // selector, div, span etc
-                                           }
-                                       } else {
-                                           if (cmd == 'di') { // disable/enable element
-                                               objElement.disabled = data;
-                                           } else {
-                                               if (cmd == 'fc') { // set focus
-                                                   _focus = data;
-                                               } else {
-                                                   if (cmd == 'js') {    // evaluate js code
-                                                       eval(data);
-                                                   } else {
-                                                       if (cmd == 'rd') {    // client-side redirection
-                                                           window.location = data;
-                                                       } else {
-                                                           if (cmd == 'pu') {    // pop-up
-                                                               newwin = 1;
-                                                               window.open(data, 'REP_WINDOW', 'toolbar=no,scrollbar=no,resizable=yes,menubar=no');
-                                                           } else {
-                                                               errors = errors + '<br>Unknown ajax function: ' + cmd;
-                                                           }
-                                                       }
-                                                   }
-                                               }
-                                           }
+                                       if (objElement) {
+                                           if (objElement.tagName == 'INPUT' || objElement.tagName == 'TEXTAREA')
+                                               objElement.value = data;
+                                           else
+                                               objElement.innerHTML = data; // selector, div, span etc
                                        }
+                                   } else if (cmd == 'di') { // disable/enable element
+                                       objElement.disabled = data;
+                                   } else if (cmd == 'fc') { // set focus
+                                       _focus = data;
+                                   } else if (cmd == 'js') {    // evaluate js code
+                                       eval(data);
+                                   } else if (cmd == 'rd') {    // client-side redirection
+                                       window.location = data;
+                                   } else if (cmd == 'pu') {    // pop-up
+                                       newwin = 1;
+                                       window.open(data, 'REP_WINDOW', 'toolbar=no,scrollbar=no,resizable=yes,menubar=no');
+                                   } else {
+                                       errors = errors + '<br>Unknown ajax function: ' + cmd;
                                    }
                                }
-                               if (tcheck) {
+                               if (tcheck)
                                    JsHttpRequest.clearTimeout(tcheck);
-                               }
                                // Write errors to the debug div.
                                document.getElementById('msgbox').innerHTML = errors;
                                set_mark();
 
                                Behaviour.apply();
 
-                               if (errors.length > 0) {
+                               if (errors.length > 0)
                                    window.scrollTo(0, 0);
-                               }
                                //document.getElementById('msgbox').scrollIntoView(true);
                                // Restore focus if we've just lost focus because of DOM element refresh
                                if (!newwin) {
                                    setFocus();
                                }
                            }
-                       }, false  // do not disable caching);
+                       },
+            false  // do not disable caching
+            );
 }
 // collect all form input values plus inp trigger value
 JsHttpRequest.formInputs = function(inp, objForm, upload) {
     var submitObj = inp;
     var q = {};
 
-    if (typeof(inp) == "string") {
+    if (typeof(inp) == "string")
         submitObj = document.getElementsByName(inp)[0] || inp;
-    }
 
     objForm = objForm || (submitObj && submitObj.form);
 
@@ -184,34 +164,31 @@ JsHttpRequest.formInputs = function(inp, objForm, upload) {
         for (var i = 0; i < formElements.length; i++) {
             var el = formElements[i];
             var name = el.name;
-            if (!el.name) {
-                continue;
-            }
+            if (!el.name) continue;
             if (upload) { // for form containing file inputs collect all
                 // form elements and add value of trigger submit button
                 // (internally form is submitted via form.submit() not button click())
                 q[name] = submitObj.type == 'submit' && el == submitObj ? el.value : el;
                 continue;
             }
-            if (el.type) {
-                if (((el.type == 'radio' || el.type == 'checkbox') && el.checked == false) || (el.type == 'submit' && (!submitObj || el.name != submitObj.name))) {
+            if (el.type)
+                if (
+                        ((el.type == 'radio' || el.type == 'checkbox') && el.checked == false)
+                                || (el.type == 'submit' && (!submitObj || el.name != submitObj.name)))
                     continue;
-                }
-            }
-            if (el.disabled && el.disabled == true) {
+            if (el.disabled && el.disabled == true)
                 continue;
-            }
             if (name) {
                 if (el.type == 'select-multiple') {
                     name = name.substr(0, name.length - 2);
                     q[name] = new Array;
                     for (var j = 0; j < el.length; j++) {
                         s = name.substring(0, name.length - 2);
-                        if (el.options[j].selected == true) {
+                        if (el.options[j].selected == true)
                             q[name].push(el.options[j].value);
-                        }
                     }
-                } else {
+                }
+                else {
                     q[name] = el.value;
                 }
             }
@@ -225,13 +202,10 @@ JsHttpRequest.formInputs = function(inp, objForm, upload) {
 function price_format(post, num, dec, label, color) {
     var el = label ? document.getElementById(post) : document.getElementsByName(post)[0];
     //num = num.toString().replace(/\$|\,/g,'');
-    if (isNaN(num)) {
+    if (isNaN(num))
         num = "0";
-    }
     sign = (num == (num = Math.abs(num)));
-    if (dec < 0) {
-        dec = 2;
-    }
+    if (dec < 0) dec = 2;
     decsize = Math.pow(10, dec);
     num = Math.floor(num * decsize + 0.50000000001);
     cents = num % decsize;
@@ -240,27 +214,25 @@ function price_format(post, num, dec, label, color) {
         cents = "0" + cents;
     }
     for (var i = 0; i < Math.floor((num.length - (1 + i)) / 3); i++)
-        num = num.substring(0, num.length - (4 * i + 3)) + user.ts + num.substring(num.length - (4 * i + 3));
+        num = num.substring(0, num.length - (4 * i + 3)) + user.ts +
+                num.substring(num.length - (4 * i + 3));
     num = ((sign) ? '' : '-') + num;
-    if (dec != 0) {
-        num = num + user.ds + cents;
-    }
-    if (label) {
+    if (dec != 0) num = num + user.ds + cents;
+    if (label)
         el.innerHTML = num;
-    } else {
+    else
         el.value = num;
-    }
     if (color) {
         el.style.color = (sign) ? '' : '#FF0000';
     }
 }
 
 function get_amount(doc, label) {
-    if (label) {
+    if (label)
         var val = document.getElementById(doc).innerHTML;
-    } else {
-        var val = typeof(doc) == "string" ? document.getElementsByName(doc)[0].value : doc.value;
-    }
+    else
+        var val = typeof(doc) == "string" ?
+                document.getElementsByName(doc)[0].value : doc.value;
 
     val = val.replace(new RegExp('\\' + user.ts, 'g'), '');
     val = +val.replace(new RegExp('\\' + user.ds, 'g'), '.');
@@ -268,34 +240,28 @@ function get_amount(doc, label) {
 }
 
 function goBack() {
-    if (window.history.length <= 1) {
+    if (window.history.length <= 1)
         window.close();
-    } else {
+    else
         window.history.go(-1);
-    }
 }
 
 function setFocus(name, byId) {
 
-    if (typeof(name) == 'object') {
+    if (typeof(name) == 'object')
         el = name;
-    } else {
+    else {
         if (!name) { // page load/ajax update
-            if (_focus) {
-                name = _focus;
-            }    // last focus set in onfocus handlers
-            else {
-                if (document.forms.length) {    // no current focus (first page display) -  set it from from last form
-                    var cur = document.getElementsByName('_focus')[document.forms.length - 1];
-                    if (cur) {
-                        name = cur.value;
-                    }
-                }
+            if (_focus)
+                name = _focus;    // last focus set in onfocus handlers
+            else
+            if (document.forms.length) {    // no current focus (first page display) -  set it from from last form
+                var cur = document.getElementsByName('_focus')[document.forms.length - 1];
+                if (cur) name = cur.value;
             }
         }
-        if (byId || !(el = document.getElementsByName(name)[0])) {
+        if (byId || !(el = document.getElementsByName(name)[0]))
             el = document.getElementById(name);
-        }
     }
     if (el && el.focus) {
         // The timeout is needed to prevent unpredictable behaviour on IE & Gecko.
@@ -303,9 +269,7 @@ function setFocus(name, byId) {
 
         var tmp = function() {
             el.focus();
-            if (el.select) {
-                el.select();
-            }
+            if (el.select) el.select();
         };
         setTimeout(tmp, 0);
     }
@@ -322,7 +286,8 @@ function move_focus(dir, e0, neighbours) {
         var e = neighbours[i];
         var p = element_pos(e);
         if (p != null && (e.className == 'menu_option' || e.className == 'printlink')) {
-            if (((dir == 40) && (p.y > p0.y)) || (dir == 38 && (p.y < p0.y)) || ((dir == 37) && (p.x < p0.x)) || ((dir == 39 && (p.x > p0.x)))) {
+            if (((dir == 40) && (p.y > p0.y)) || (dir == 38 && (p.y < p0.y))
+                    || ((dir == 37) && (p.x < p0.x)) || ((dir == 39 && (p.x > p0.x)))) {
                 var l1 = (p.y - p0.y) * (p.y - p0.y) + (p.x - p0.x) * (p.x - p0.x);
                 if ((l1 < l) || (l == 0)) {
                     l = l1;
@@ -331,9 +296,8 @@ function move_focus(dir, e0, neighbours) {
             }
         }
     }
-    if (t) {
+    if (t)
         setFocus(t);
-    }
     return t;
 }
 
@@ -371,8 +335,6 @@ function element_pos(e) {
         }
     }
     // parentNode has style.display set to none
-    if (parentNode != document.documentElement) {
-        return null;
-    }
+    if (parentNode != document.documentElement) return null;
     return res;
 }

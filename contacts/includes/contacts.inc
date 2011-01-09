@@ -6,4 +6,3 @@ include_once(APP_PATH . "includes/date_functions.inc");
 include_once(APP_PATH . "includes/banking.inc");
 include_once(APP_PATH . "includes/ui.inc");
 get_jqueryui();
-get_jquery_live();
