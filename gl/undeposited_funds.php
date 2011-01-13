@@ -195,7 +195,7 @@ if (isset($_POST['Deposit'])) {
 
 }
 $_POST['to_deposit'] = 0;
-foreach ($_SESSION['undeposited'] as $rowid => $row) {
+if (isset ($_SESSION['undeposited']) && $_SESSION['undeposited'] ) foreach ($_SESSION['undeposited'] as $rowid => $row) {
 	if (substr($rowid, 0, 4) == 'dep_') {
 		$_POST['to_deposit'] += $row;
 	}

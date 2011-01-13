@@ -4,24 +4,24 @@ $page_security = 'SA_CUSTOMER';
 $path_to_root = "..";
 include_once("includes/contacts.inc");
 if (isAjaxReferrer()) {
-    if (isset($_GET['term'])) {
-        $data = Customer::search($_GET['term']);
-    } else {
-        if (isset($_POST['id']) && !isset($_POST['name'])) {
-            $data['customer'] = $customer = new Customer($_POST['id']);
-        } else {
-            $data['customer'] = new Customer();
-        }
-        if (isset($_POST['name']) && isset($_POST['id'])) {
-            $data['customer'] = $customer = new Customer($_POST);
-            $customer->save();
-        }
-
-    $data['contact_log'] = contact_log::read($customer->id, 'C');
-    $data['transactions'] = '<pre>'.print_r($customer->getTransactions(),true).'</pre>';
-    }
-    echo json_encode($data);
-    exit();
+	if (isset($_GET['term'])) {
+		$data = Customer::search($_GET['term']);
+	} else {
+		if (isset($_POST['id']) && !isset($_POST['name'])) {
+			$data['customer'] = $customer = new Customer($_POST['id']);
+		} else {
+			$data['customer'] = new Customer();
+		}
+		if (isset($_POST['name']) && isset($_POST['id'])) {
+			$data['customer'] = $customer = new Customer($_POST);
+			$customer->save();
+			$data['status'] = $customer->getStatus();
+		}
+		$data['contact_log'] = contact_log::read($customer->id, 'C');
+		$data['transactions'] = '<pre>' . print_r($customer->getTransactions(), true) . '</pre>';
+	}
+	echo json_encode($data);
+	exit();
 }
 add_js_ffile("includes/js/customers.js");
 page(_($help_context = "Customers"), @$_REQUEST['popup']);
@@ -31,42 +31,26 @@ check_db_has_sales_areas(_("There are no sales areas defined in the system. At l
 check_db_has_shippers(_("There are no shipping companies defined in the system. At least one shipping company is required before proceeding."));
 check_db_has_tax_groups(_("There are no tax groups defined in the system. At least one tax group is required before proceeding."));
 if (isset($_GET['debtor_no'])) {
-    $customer = new Customer($_GET['debtor_no']);
+	$customer = new Customer($_GET['debtor_no']);
 } elseif (isset($_POST['id']) && !empty($_POST['id'])) {
-    $customer = new Customer($_POST['id']);
+	$customer = new Customer($_POST['id']);
 } else {
-    $customer = new Customer();
+	$customer = new Customer();
 }
 $currentBranch = $customer->branches[$customer->defaultBranch];
-if (isset($_POST['submit'])) {
-    handle_submit();
-}
-function handle_submit() {
-    global $Ajax, $customer;
-    if (!$customer->save($_POST)) {
-        $status = $customer->getStatus();
-        display_error($status['message']);
-        set_focus($status['var']);
-    } else {
-        $status = $customer->getStatus();
-        display_notification($status['message']);
-    }
-    //	$Ajax->activate('_page_body'); // in case of status change
-    return $status['status'];
-}
 
 if (isset($_POST['delete'])) {
-    $customer->delete();
-    $status = $customer->getStatus();
-    display_notification($status['message']);
-    $Ajax->activate('_page_body');
+	$customer->delete();
+	$status = $customer->getStatus();
+	display_notification($status['message']);
+	$Ajax->activate('_page_body');
 }
 if (db_has_customers()) {
-    /** @noinspection PhpUndefinedMethodInspection */
-    HTML::div('custsearch', array('style' => 'text-align:center; '));
-    /** @noinspection PhpDynamicAsStaticMethodCallInspection */
-    UI::search('customer', array('label' => 'Search Customer:', 'size' => 80, 'url' => 'search.php', 'callback' => 'Customer.fetch'));
-    start_form();
+	/** @noinspection PhpUndefinedMethodInspection */
+	HTML::div('custsearch', array('style' => 'text-align:center; '));
+	/** @noinspection PhpDynamicAsStaticMethodCallInspection */
+	UI::search('customer', array('label' => 'Search Customer:', 'size' => 80, 'url' => 'search.php', 'callback' => 'Customer.fetch'));
+	start_form();
 }
 $menu = new MenuUi();
 $menu->startTab('Details', 'Customer Details');
@@ -79,7 +63,7 @@ UI::select('branchList', array($currentBranch->branch_code => $currentBranch->br
 UI::button('addBranch', 'Add new address', array('name' => 'addBranch'));
 HTML::td()->tr;
 text_row(_("Address Name:"), 'br_br_name', $currentBranch->br_name, 35, 40);
-text_row(_("Contact:"), 'br_contact_name', $currentBranch->phone, 35, 40);
+text_row(_("Contact:"), 'br_contact_name', $currentBranch->contact_name, 35, 40);
 text_row(_("Phone Number:"), 'br_phone', $currentBranch->phone, 32, 30);
 text_row(_("2nd Phone Number:"), 'br_phone2', $currentBranch->phone2, 32, 30);
 text_row(_("Fax Number:"), 'br_fax', $currentBranch->fax, 32, 30);
@@ -115,23 +99,23 @@ payment_terms_list_row(_("Pament Terms:"), 'payment_terms', $customer->payment_t
 credit_status_list_row(_("Credit Status:"), 'credit_status', $customer->credit_status);
 text_row(_("GSTNo:"), 'tax_id', $customer->tax_id, 35, 40);
 if (!$customer->id) {
-    currencies_list_row(_("Customer's Currency:"), 'curr_code', $customer->curr_code);
+	currencies_list_row(_("Customer's Currency:"), 'curr_code', $customer->curr_code);
 } else {
-    label_row(_("Customer's Currency:"), $customer->curr_code);
-    hidden('curr_code', $customer->curr_code);
+	label_row(_("Customer's Currency:"), $customer->curr_code);
+	hidden('curr_code', $customer->curr_code);
 }
 $dim = get_company_pref('use_dimension');
 if ($dim >= 1) {
-    dimensions_list_row(_("Dimension") . " 1:", 'dimension_id', $customer->dimension_id, true, " ", false, 1);
+	dimensions_list_row(_("Dimension") . " 1:", 'dimension_id', $customer->dimension_id, true, " ", false, 1);
 }
 if ($dim > 1) {
-    dimensions_list_row(_("Dimension") . " 2:", 'dimension2_id', $customer->dimension2_id, true, " ", false, 2);
+	dimensions_list_row(_("Dimension") . " 2:", 'dimension2_id', $customer->dimension2_id, true, " ", false, 2);
 }
 if ($dim < 1) {
-    hidden('dimension_id', 0);
+	hidden('dimension_id', 0);
 }
 if ($dim < 2) {
-    hidden('dimension2_id', 0);
+	hidden('dimension2_id', 0);
 }
 table_section(2, false, 'ui-widget');
 //table_section_title("<span class='ui-icon ui-icon-circle-plus'>"._("Contact log:")."</span>", 2, 'tableheader3');
@@ -182,9 +166,9 @@ textarea_row('Entry:', 'message', '', 100, 10);
 end_table();
 HTML::p()->div;
 if ($customer->id) {
-    UI::button('btnCustomer', 'Update Customer', array('name' => 'submit', 'type' => 'submit', 'style' => 'margin:10px;'));
+	UI::button('btnCustomer', 'Update Customer', array('name' => 'submit', 'type' => 'submit', 'style' => 'margin:10px;'));
 } else {
-    UI::button('btnCustomer', 'New Customer', array('name' => 'submit', 'type' => 'submit', 'class' => ' ui-helper-hidden', 'style' => 'margin:10px;'));
+	UI::button('btnCustomer', 'New Customer', array('name' => 'submit', 'type' => 'submit', 'class' => ' ui-helper-hidden', 'style' => 'margin:10px;'));
 }
 UI::button('btnCancel', 'Cancel', array('name' => 'cancel', 'type' => 'submit', 'class' => 'ui-helper-hidden', 'style' => 'margin:10px;'))->div;
 end_page(true, true);

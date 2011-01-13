@@ -19,7 +19,7 @@ $(function() {
 	                            });
 	var sidemenuOn = function() {
 		sidemenu.accordion("enable");
-		sidemenu.find("h3").undelegate("a","click");
+		sidemenu.find("h3").undelegate("a", "click");
 	};
 	var sidemenuOff = function() {
 		sidemenu.accordion("disable");
@@ -38,6 +38,8 @@ $(function() {
 	}
 	var previous;
 	var ajaxRequest;
+	var SearchboxThis = undefined;
+	var Searchboxtimeout;
 	$("#search").delegate("a", "click",
 	                     function(event) {
 		                     sidemenuOff();
@@ -49,30 +51,33 @@ $(function() {
 		                     return false;
 	                     });
 	$("#search input").live("change blur keyup", function(event) {
-		var term = $(this).val();
-		if (event.type != "blur" && term.length > 1 && event.which != 13 && event.which < 123) {
-			if (ajaxRequest && event.type == 'keyup') {
-				ajaxRequest.abort();
-			}
-			loader = $("#loader").show();
-			ajaxRequest = $.post(
-					$(this).data("url"),
-			{ ajaxsearch: term, limit: true },
-			                    function(data) {
-				                    var content = $('#wrapper', data).attr("id", "results");
-				                    $("#results").remove();
-				                    $("#wrapper", document).hide().before(content);
-				                    loader = $("#loader").hide();
-			                    }
-					);
+		 SearchboxThis = $(this);
+		if (ajaxRequest && event.type == 'keyup') {
+			ajaxRequest.abort();
+		}
+		if (event.type != "blur" && SearchboxThis.val().length > 1 && event.which != 13 && event.which < 123) {
+			window.clearTimeout(Searchboxtimeout);
+			Searchboxtimeout = window.setTimeout(doSearch, 1000); 
 		}
 		if (event.type != 'keyup') {
-			$(this).replaceWith(previous);
+			SearchboxThis.replaceWith(previous);
 			sidemenuOn();
 		}
-		/*     $("#SearchOrders").live("click", function(event) {
-		 event.preventDefault();
-		 return false;
-		 })*/
-	})
+	});
+	function doSearch() {
+		term = SearchboxThis.val();
+
+		loader = $("#loader").show();
+		ajaxRequest = $.post(
+				SearchboxThis.data("url"),
+		{ ajaxsearch: term, limit: true },
+		                    function(data) {
+			                    var content = $('#wrapper', data).attr("id", "results");
+			                    $("#results").remove();
+			                    $("#wrapper", document).hide().before(content);
+			                    loader = $("#loader").hide();
+		                    }
+				);
+	}
+
 });

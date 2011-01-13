@@ -800,18 +800,12 @@ function get_jquery_gmaps() {
     }
 }
 function get_js_calc() {
-    global $comp_path,$path_to_root;
-    $fpath = $comp_path . '/' . user_company() . '/js_cache/';
-    get_jquery();
     get_jqueryui();
-    add_js_ufile($fpath.'jquery.calculator.pack.js');
-    add_js_ufile($fpath.'calc.js');
-
-
-    $_SESSION['using_js_calc']=true;
-
-    return '';
-    
+    static $inserted;
+    if ($inserted) return;
+    add_js_ufile('/js/jquery.calculator.pack.js');
+    add_js_ufile('/js/calc.js');
+    $inserted = true;
 }
 
 function get_js_date_picker() {

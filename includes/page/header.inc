@@ -82,7 +82,7 @@ function send_fscripts() {
         $js .= '<script language="javascript" type="text/javascript" src="' . $fpath . '"></script>';
     }
     foreach ($js_fuserlib as $jsfile) {
-        $js .= '<script language="javascript" type="text/javascript" src="' . $jsfile . '"></script>';
+        $js .= '<script language="javascript" type="text/javascript" src="' . $jsfile . '?'.rand(0,1000).'"></script>';
     }
     echo $js;
 }

@@ -323,11 +323,11 @@ class FrontReport extends Cpdf {
         }
         // leave layout files names without path to enable including
         // modified versions from comapny/x/reporting directory
-        if ($doctype == ST_STATEMENT) {
+  /*      if ($doctype == ST_STATEMENT) {
             $customer = new Customer($myrow['debtor_no']);
             include("includes/lang/en_AU/statement.inc");
             include("includes/lang/en_AU/statement_head.inc");
-        } else {
+        } else {*/
             if (isset($myrow['curr_code']) && $this->currency != $myrow['curr_code']) {
                 include("includes/doctext2.inc");
             } else {
@@ -335,7 +335,7 @@ class FrontReport extends Cpdf {
             }
             include("includes/header2.inc");
 
-        }
+    //    }
         $this->row = $temp;
     }
 

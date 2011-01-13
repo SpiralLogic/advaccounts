@@ -293,7 +293,7 @@ if (isset($_POST['OrderNumber']) && $_POST['OrderNumber'] != "") {
 				sorder.deliver_to";
 	}
 else { // ... or select inquiry constraints
-    if ($_POST['order_view_mode'] != 'DeliveryTemplates' && $_POST['order_view_mode'] != 'InvoiceTemplates' && !$_POST['ajaxsearch']) {
+    if ($_POST['order_view_mode'] != 'DeliveryTemplates' && $_POST['order_view_mode'] != 'InvoiceTemplates' && !isset($_POST['ajaxsearch'])) {
         $date_after = date2sql($_POST['OrdersAfterDate']);
         $date_before = date2sql($_POST['OrdersToDate']);
 

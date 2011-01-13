@@ -189,6 +189,7 @@ ini_set('session.gc_maxlifetime', 36000); // 10hrs
 session_name('FA' . md5(dirname(__FILE__)));
 session_start();
 if (isset($_SESSION["wa_current_user"]) && $_SESSION["wa_current_user"]->user == 1) {
+	$pdf_debug = 1;
 	error_reporting(E_ALL);
 }
 // this is to fix the "back-do-you-want-to-refresh" issue - thanx PHPFreaks
@@ -226,6 +227,7 @@ set_error_handler('fb_errors' /*, errtypes */);
 function fb_errors()
 {
 	$error = func_get_args();
+	error_handler($error[0],$error[1],$error[2],$error[3]);
 	if (!(error_reporting() & $error[0])) {
 		// This error code is not included in error_reporting
 		return;
@@ -282,11 +284,9 @@ function isAjaxReferrer()
 }
 
 if ($_SESSION["wa_current_user"]->user == 1) {
+	$pdf_debug = 0;
 	error_reporting(E_ALL);
 }
 // POST vars cleanup needed for direct reuse.
 // We quote all values later with db_escape() before db update.
 $_POST = strip_quotes($_POST);
-
-
-

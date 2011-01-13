@@ -797,7 +797,7 @@ div.note_msg {
     font-weight: bold;
     line-height: 1.5;
     position: fixed; /* Fallback if 'fixed' is not supported */
-    top: 20em;
+    top: 5em;
     left: auto;
     width: 12em;
     right: 2em;

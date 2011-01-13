@@ -24,7 +24,7 @@ class Customer extends Contact
     public $pymt_discount = '0';
     public $credit_limit = 0;
     public $debtor_ref = '';
-    public $branches;
+    public $branches=array();
     public $defaultBranch;
     public $accounts;
     public $transactions;
@@ -260,7 +260,7 @@ class Customer extends Contact
 
     protected function _getBranches()
     {
-        $sql = "SELECT branch_code, br_name, branch_ref FROM " . TB_PREF . "cust_branch WHERE debtor_no=" . $this->id . " AND branch_ref != 'accounts'";
+        $sql = "SELECT branch_code, br_name, branch_ref FROM " . TB_PREF . "cust_branch WHERE debtor_no=" . $this->id . " AND branch_ref != 'accounts' AND disable_trans =0";
         $result = db_query($sql, 'Couldn\'t retrieve any branches');
         while ($row = db_fetch_assoc($result)) {
             $this->branches[$row['branch_code']] = new Branch($row['branch_code']);

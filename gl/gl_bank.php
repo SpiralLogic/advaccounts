@@ -151,9 +151,9 @@ if (isset($_POST['Process']))
 	}
 	elseif (!is_date_in_fiscalyear($_POST['date_']))
 	{
-		display_error(_("The entered date is not in fiscal year."));
-		set_focus('date_');
-		$input_error = 1;
+	//	display_error(_("The entered date is not in fiscal year."));
+	//	set_focus('date_');
+	//	$input_error = 1;
 	}
 
 	if ($input_error == 1)
