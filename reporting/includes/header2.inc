@@ -80,6 +80,12 @@ $this->Font('italic');
 if (!isset($customer) && isset($myrow['debtor_no'])) {
 	$customer = new Customer($myrow['debtor_no']);
 }
+if (isset($myrow['branch'])) {
+	$currentBranch = $customer->branches[$myrow['branch']];
+	if (!isset($customer_branch_details)) {
+		$customer_branch_details = $currentBranch;
+	}
+}
 if ($this->company['phone'] != "") {
 	$this->Text($ccol, _("Phone"), $c2col);
 	$this->Text($c2col, $this->company['phone'], $mcol);
@@ -201,7 +207,7 @@ $this->Text($ccol, $name, $icol);
 $this->NewLine();
 $this->TextWrapLines($ccol, $icol - $ccol, $addr);
 $this->row = $temp;
-if ($sales_order != NULL && $doctype != ST_STATEMENT) {
+if (!empty($sales_order) && $doctype != ST_STATEMENT) {
 	if ($doctype != ST_SUPPAYMENT && isset($sales_order['deliver_to'])) {
 		$this->TextWrapLines($mcol, $this->rightMargin - $mcol, $sales_order['deliver_to']);
 		$this->NewLine();
@@ -211,12 +217,9 @@ if ($sales_order != NULL && $doctype != ST_STATEMENT) {
 		$this->TextWrapLines($mcol, $this->rightMargin - $mcol, $sales_order['delivery_address']);
 	}
 }
-
 if ($doctype == ST_STATEMENT) {
-	$contact_name = $customer->branches[$branch['branch_code']]->contact_name;
-	if (strlen($contact_name>0)) {
-		$this->Text($mcol, $customer->branches[$branch['branch_code']]->contact_name, $icol);
-		$this->NewLine();
+	if (!empty($currentBranch->contanct_name)) {
+		$this->Text($mcol, $currentBranch->contanct_name, $icol);
 	}
 	$addr = $customer->branches[$branch['branch_code']]->br_address;
 	$this->TextWrapLines($mcol, $this->rightMargin - $mcol, $addr);
@@ -263,7 +266,8 @@ elseif ($doctype == ST_SUPPAYMENT || $doctype == ST_CUSTPAYMENT || $doctype == S
 	$this->TextWrap($col, $this->row, $width, $report_contact, 'C');
 }
 $col += $width;
-$report_phone = (!empty($branch['phone'])) ? $branch['phone'] : $myrow['phone'];
+
+$report_phone = (!isset($branch['phone'])) ? $branch['phone'] : (!isset($myrow['phone'])) ?'': $myrow['phone'] ;
 if ($doctype == ST_WORKORDER) {
 	$this->TextWrap($col, $this->row, $width, $myrow["StockItemName"], 'C');
 	//elseif (isset($myrow['tax_id']))
@@ -309,7 +313,7 @@ if ($doctype == ST_CUSTDELIVERY) {
 } elseif ($doctype == ST_STATEMENT || $doctype == ST_SALESQUOTE || $doctype == ST_SALESORDER || $doctype == ST_SALESINVOICE) {
 	if (!empty($branch['fax'])) {
 		$this->TextWrap($col, $this->row, $width, $branch['fax'], 'C');
-	} else {
+	} elseif (isset($myrow['fax'])) {
 		$this->TextWrap($col, $this->row, $width, $myrow['fax'], 'C');
 	}
 } elseif (isset($myrow['order_']) && $myrow['order_'] != 0) {
@@ -329,7 +333,7 @@ if ($doctype == ST_SALESORDER || $doctype == ST_SALESQUOTE) {
 	$this->TextWrap($col, $this->row, $width, sql2date($myrow['due_date']), 'C');
 }
 #  __ADVANCEDEDIT__ BEGIN # remove payment terms from purchase order
-if ($doctype == ST_STATEMENT) {
+if ($doctype == ST_STATEMENT && isset($customer_branch_details)) {
 	//var_dump($customer_branch_details['fax']);
 	$this->NewLine();
 	$this->NewLine();

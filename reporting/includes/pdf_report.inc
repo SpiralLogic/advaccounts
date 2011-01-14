@@ -321,13 +321,14 @@ class FrontReport extends Cpdf {
             $isproforma = true;
             $doctype = ($doctype == ST_PROFORMA) ? ST_SALESORDER : ST_SALESQUOTE;
         }
-        // leave layout files names without path to enable including
-        // modified versions from comapny/x/reporting directory
-  /*      if ($doctype == ST_STATEMENT) {
+
+      if ($doctype == ST_STATEMENT) {
             $customer = new Customer($myrow['debtor_no']);
-            include("includes/lang/en_AU/statement.inc");
-            include("includes/lang/en_AU/statement_head.inc");
-        } else {*/
+
+      //      include("includes/lang/en_AU/statement.inc");
+        //    include("includes/lang/en_AU/statement_head.inc");
+        //} else
+      }
             if (isset($myrow['curr_code']) && $this->currency != $myrow['curr_code']) {
                 include("includes/doctext2.inc");
             } else {

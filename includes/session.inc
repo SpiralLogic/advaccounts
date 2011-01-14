@@ -284,7 +284,7 @@ function isAjaxReferrer()
 }
 
 if ($_SESSION["wa_current_user"]->user == 1) {
-	$pdf_debug = 0;
+	$pdf_debug = 1;
 	error_reporting(E_ALL);
 }
 // POST vars cleanup needed for direct reuse.
