@@ -1,2 +1,1 @@
-<html><?php
-phpinfo(); 
+<?php
