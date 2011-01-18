@@ -158,8 +158,8 @@ var Customer = function (item) {
 	var transactions = $('#transactions');
 	return {
 		setValues: function(data) {
-			setContactLog(data.contact_log);
-			transactions.empty().append(data.transactions);
+            if (data.contact_log != undefined) setContactLog(data.contact_log);
+			if (data.transacionts != undefined) transactions.empty().append(data.transactions);
 			data = data.customer;
 			customer = data;
 			Branches.list().empty();

@@ -221,7 +221,9 @@ if ($doctype == ST_STATEMENT) {
 	if (!empty($currentBranch)) {
 		$this->Text($mcol, $currentBranch->contact_name, $icol);
         $addr = $currentBranch->br_address;
-}
+        $this->NewLine();
+
+    }
 
 	}
 $this->TextWrapLines($mcol, $this->rightMargin - $mcol, $addr);
@@ -280,6 +282,7 @@ if ($doctype == ST_WORKORDER) {
 } elseif ($doctype == ST_SALESORDER || $doctype == ST_SALESQUOTE || $doctype == ST_SALESINVOICE) {
 	$this->TextWrap($col, $this->row, $width, $report_phone, 'C');
 } elseif ($doctype == ST_STATEMENT) {
+    $report_phone = $customer->accounts->phone;
 	$this->TextWrap($col, $this->row, $width, $report_phone, 'C');
 } else {
 	$this->TextWrap($col, $this->row, $width, $report_phone, 'C');
@@ -311,13 +314,15 @@ if ($doctype == ST_CUSTDELIVERY) {
 	$this->TextWrap($col, $this->row, $width, $ref, 'C');
 } elseif ($doctype == ST_WORKORDER) {
 	$this->TextWrap($col, $this->row, $width, $myrow["location_name"], 'C');
-} elseif ($doctype == ST_STATEMENT || $doctype == ST_SALESQUOTE || $doctype == ST_SALESORDER || $doctype == ST_SALESINVOICE) {
+} elseif ($doctype == ST_SALESQUOTE || $doctype == ST_SALESORDER || $doctype == ST_SALESINVOICE) {
 	if (!empty($branch['fax'])) {
 		$this->TextWrap($col, $this->row, $width, $branch['fax'], 'C');
 	} elseif (isset($myrow['fax'])) {
 		$this->TextWrap($col, $this->row, $width, $myrow['fax'], 'C');
 	}
-} elseif (isset($myrow['order_']) && $myrow['order_'] != 0) {
+} elseif ($doctype == ST_STATEMENT) {
+    $this->TextWrap($col, $this->row, $width, $customer->accounts->fax, 'C');
+} elseif  (isset($myrow['order_']) && $myrow['order_'] != 0) {
 	$this->TextWrap($col, $this->row, $width, $myrow['order_'], 'C');
 } #  __ADVANCEDEDIT__ BEGIN # add supplier fax to PO
 elseif ($doctype == ST_PURCHORDER) {
@@ -335,10 +340,10 @@ if ($doctype == ST_SALESORDER || $doctype == ST_SALESQUOTE) {
 }
 #  __ADVANCEDEDIT__ BEGIN # remove payment terms from purchase order
 if ($doctype == ST_STATEMENT && isset($currentBranch)) {
-	//var_dump($customer_branch_details['fax']);
+
 	$this->NewLine();
 	$this->NewLine();
-	$this->TextWrap($ccol, $this->row, $right - $ccol, "Email:  " . $currentBranch->email);
+	$this->TextWrap($ccol, $this->row, $right - $ccol, "Email:  " . $customer->accounts->email);
 }
 if ((!isset($packing_slip) || $packing_slip == 0) && $doctype != ST_PURCHORDER && $doctype != ST_CUSTDELIVERY) {
 	#  __ADVANCEDEDIT__ END #

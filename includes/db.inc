@@ -10,7 +10,6 @@ class DB {
     protected static $conn;
     protected static $showsql = false;
     protected static $debug = false;
-    protected static $resource;
     protected static $result;
     protected static $dbname;
     protected static $dbpass;

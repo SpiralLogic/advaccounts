@@ -69,7 +69,7 @@ function print_statements() {
     $currency = $_POST['PARAM_1'];
     $email = $_POST['PARAM_2'];
     $comments = $_POST['PARAM_3'];
-
+    $doc_Outstanding=$doc_Over=$doc_Days=$doc_Current=$doc_Total_Balance=null;
     $dec = user_price_dec();
 
     $cols = array(4, 80, 120, 180, 230, 280, 320, 385, 450, 515);
