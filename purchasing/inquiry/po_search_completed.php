@@ -53,7 +53,7 @@ if (get_post('SearchOrders'))
 }
 //---------------------------------------------------------------------------------------------
 start_form();
-if ($_REQUEST['frame']) start_table("class='tablestyle_noborder' style='display:none;'");
+if (@$_REQUEST['frame']) start_table("class='tablestyle_noborder' style='display:none;'");
 else start_table("class='tablestyle_noborder'");
 start_row();
 ref_cells(_("#:"), 'order_number', '',null, '', true);

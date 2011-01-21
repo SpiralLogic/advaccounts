@@ -193,7 +193,6 @@ $this->Font('');
 $this->row = $this->row - $this->lineHeight - 5;
 $temp = $this->row;
 $name = @$myrow['DebtorName'];
-$addr = $customer->accounts->br_address;
 if ($doctype == ST_SALESQUOTE || $doctype == ST_SALESORDER) {
 	$name = $myrow['name'];
 } elseif ($doctype == ST_WORKORDER) {
@@ -202,31 +201,30 @@ if ($doctype == ST_SALESQUOTE || $doctype == ST_SALESORDER) {
 } elseif ($doctype == ST_PURCHORDER || $doctype == ST_SUPPAYMENT) {
 	$name = $myrow['supp_name'];
 	$addr = $myrow['address'];
+} elseif (isset($customer)) {
+	$addr = $customer->accounts->br_address;
 }
 $this->Text($ccol, $name, $icol);
 $this->NewLine();
 $this->TextWrapLines($ccol, $icol - $ccol, $addr);
 $this->row = $temp;
-if (!empty($sales_order) && $doctype != ST_STATEMENT) {
-	if ($doctype != ST_SUPPAYMENT && isset($sales_order['deliver_to'])) {
-		$addr = $sales_order['deliver_to'];
-		
-	}
-	// if you need the company name in purchase order then write it as first line in location addresss.
-	if ($doctype != ST_SUPPAYMENT && isset($sales_order['delivery_address'])) {
-		$addr = $sales_order['delivery_address'];
-	}
+unset($name);
+if ($doctype != ST_SUPPAYMENT && $doctype != ST_PURCHORDER && isset($sales_order['deliver_to'])) {
+	$name = $sales_order['deliver_to'];
+} elseif (isset($customer->name)) {
+	$name = $customer->name;
 }
-if ($doctype == ST_STATEMENT) {
-	if (!empty($currentBranch)) {
-		$this->Text($mcol, $currentBranch->contact_name, $icol);
-        $addr = $currentBranch->br_address;
-        $this->NewLine();
-
-    }
-
-	}
+if ($doctype != ST_SUPPAYMENT && isset($sales_order['delivery_address'])) {
+	$addr = $sales_order['delivery_address'];
+} elseif (($doctype == ST_STATEMENT) && (!empty($currentBranch->br_address))) {
+	$addr = $currentBranch->br_address;
+}
+if (isset($name)) {
+	$this->Text($mcol, $name, $icol);
+	$this->NewLine();
+}
 $this->TextWrapLines($mcol, $this->rightMargin - $mcol, $addr);
+$this->NewLine();
 $this->row = $iline2 - $this->lineHeight - 1;
 $col = $this->leftMargin;
 $this->TextWrap($col, $this->row, $width, $doc_Customers_Ref, 'C');
@@ -250,8 +248,6 @@ if ($doctype == ST_PURCHORDER || $doctype == ST_SUPPAYMENT) {
 	$this->TextWrap($col, $this->row, $width, $myrow["debtor_ref"], 'C');
 }
 $col += $width;
-#  __ADVANCEDEDIT__ BEGIN # skip one column for PO and display current user not branch salesman
-//if ($branch != null && $doctype != ST_PURCHORDER)
 $report_contact = (!empty($myrow['contact_name'])) ? $myrow['contact_name'] : $branch['contact_name'];
 if ($doctype == ST_PURCHORDER) {
 	$id = $branch['salesman'];
@@ -268,30 +264,23 @@ elseif ($doctype == ST_SUPPAYMENT || $doctype == ST_CUSTPAYMENT || $doctype == S
 } elseif ($doctype == ST_SALESORDER || $doctype == ST_SALESQUOTE || $doctype == ST_SALESINVOICE) {
 	$this->TextWrap($col, $this->row, $width, $report_contact, 'C');
 }
-$col += $width; 
-$report_phone = (isset($currentBranch)) ? $currentBranch->phone : (!isset($myrow['phone'])) ? '': $myrow['phone'] ;
-
+$col += $width;
+$report_phone = (!empty($myrow["contact_phone"])) ? $myrow["contact_phone"] : ((!isset($branch['phone'])) ? '' : $branch['phone']);
 if ($doctype == ST_WORKORDER) {
 	$this->TextWrap($col, $this->row, $width, $myrow["StockItemName"], 'C');
-	//elseif (isset($myrow['tax_id']))
-	//   $this->TextWrap($col, $this->row, $width, $myrow['tax_id'], 'C');
-	#  __ADVANCEDEDIT__ BEGIN # add supplier phone to PO
+
 } elseif ($doctype == ST_PURCHORDER) {
 	$this->TextWrap($col, $this->row, $width, $report_phone, 'C');
-	#  __ADVANCEDEDIT__ END # }
-} elseif ($doctype == ST_SALESORDER || $doctype == ST_SALESQUOTE || $doctype == ST_SALESINVOICE) {
-	$this->TextWrap($col, $this->row, $width, $report_phone, 'C');
 } elseif ($doctype == ST_STATEMENT) {
-    $report_phone = $customer->accounts->phone;
-	$this->TextWrap($col, $this->row, $width, $report_phone, 'C');
-} else {
-	$this->TextWrap($col, $this->row, $width, $report_phone, 'C');
+	$report_phone = $customer->accounts->phone;
 }
+$this->TextWrap($col, $this->row, $width, $report_phone, 'C');
 #  __ADVANCEDEDIT__ END #
 $col += $width;
 /*if ($doctype == ST_SALESINVOICE) {
     $deliveries = get_parent_trans(ST_SALESINVOICE, $myrow['trans_no']);
-    $line = "";
+    $line = "";	#  __ADVANCEDEDIT__ END # }
+
     foreach ($deliveries as $delivery) {
         if ($print_invoice_no == 0) {
             $ref = get_reference(ST_CUSTDELIVERY, $delivery);
@@ -321,8 +310,8 @@ if ($doctype == ST_CUSTDELIVERY) {
 		$this->TextWrap($col, $this->row, $width, $myrow['fax'], 'C');
 	}
 } elseif ($doctype == ST_STATEMENT) {
-    $this->TextWrap($col, $this->row, $width, $customer->accounts->fax, 'C');
-} elseif  (isset($myrow['order_']) && $myrow['order_'] != 0) {
+	$this->TextWrap($col, $this->row, $width, $customer->accounts->fax, 'C');
+} elseif (isset($myrow['order_']) && $myrow['order_'] != 0) {
 	$this->TextWrap($col, $this->row, $width, $myrow['order_'], 'C');
 } #  __ADVANCEDEDIT__ BEGIN # add supplier fax to PO
 elseif ($doctype == ST_PURCHORDER) {
@@ -340,7 +329,6 @@ if ($doctype == ST_SALESORDER || $doctype == ST_SALESQUOTE) {
 }
 #  __ADVANCEDEDIT__ BEGIN # remove payment terms from purchase order
 if ($doctype == ST_STATEMENT && isset($currentBranch)) {
-
 	$this->NewLine();
 	$this->NewLine();
 	$this->TextWrap($ccol, $this->row, $right - $ccol, "Email:  " . $customer->accounts->email);

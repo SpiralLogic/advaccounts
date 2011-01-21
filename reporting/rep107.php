@@ -180,6 +180,7 @@
                 $rep->NewLine();
 
                 $invBalance = get_DebtorTrans_allocation_balance($myrow['type'], $myrow['trans_no']);
+
                 $rep->TextCol(3, 6, 'Total Received', -2);
                 $rep->AmountCol(6, 7, $myrow['Total'] - $invBalance, $dec, -2);
                 $rep->NewLine();

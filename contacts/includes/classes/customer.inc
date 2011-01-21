@@ -114,7 +114,8 @@ class Customer extends Contact {
         begin_transaction();
         $sql = "INSERT INTO " . TB_PREF . "debtors_master (name, debtor_ref, address, tax_id, email, dimension_id, dimension2_id,
 			curr_code, credit_status, payment_terms, discount, pymt_discount,credit_limit,
-			sales_type, notes) VALUES (" . db_escape($this->name) . ", " . substr(db_escape($this->name), 0, 29) . ", " . db_escape($this->address) . ", " . db_escape($this->tax_id) . "," . db_escape($this->email) . ", " . db_escape($this->dimension_id) . ", " . db_escape($this->dimension2_id) . ", " . db_escape($this->curr_code) . ", " . db_escape($this->credit_status) . ", " . db_escape($this->payment_terms) . ", " . user_numeric($this->discount) / 100 . "," . user_numeric($this->pymt_discount) / 100 . ", " . user_numeric($this->credit_limit) . ", " . db_escape($this->sales_type) . ", " . db_escape($this->notes) . ")";
+			sales_type, notes) VALUES (" . db_escape($this->name) . ", " . db_escape(substr($this->name, 0, 29)) . ", " . db_escape($this->address) . ", " . db_escape($this->tax_id) . ",
+			" . db_escape($this->email) . ", " . db_escape($this->dimension_id) . ", " . db_escape($this->dimension2_id) . ", " . db_escape($this->curr_code) . ", " . db_escape($this->credit_status) . ", " . db_escape($this->payment_terms) . ", " . user_numeric($this->discount) / 100 . "," . user_numeric($this->pymt_discount) / 100 . ", " . user_numeric($this->credit_limit) . ", " . db_escape($this->sales_type) . ", " . db_escape($this->notes) . ")";
         db_query($sql, "The customer could not be added");
         $this->id = db_insert_id();
         commit_transaction();
@@ -258,7 +259,10 @@ class Customer extends Contact {
         $result = db_query($sql, 'Couldn\'t Get Customers');
         $data = '';
         while ($row = db_fetch_assoc($result)) {
-            $data[] = $row;
+            foreach ($row as &$value) {
+	            $value = htmlspecialchars_decode($value);
+            }
+	        $data[] = $row;
         }
         return $data;
     }

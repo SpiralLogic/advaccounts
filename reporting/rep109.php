@@ -136,6 +136,7 @@ function print_sales_orders() {
             $rep->TextCol(7, 8, $DisplayNet, -2);
             $rep->row = $newrow;
             //$rep->NewLine(1);
+            $rep->NewLine();
             if ($rep->row < $rep->bottomMargin + (15 * $rep->lineHeight))
                 if ($print_as_quote < 3) {
                     $rep->Header2($myrow, $branch, $myrow, $baccount, ST_SALESORDER);

@@ -234,7 +234,7 @@ if (strstr($_SERVER['PHP_SELF'], 'logout.php') == false) {
                 // Incorrect password
                 login_fail();
             }
-            get_websales();
+            
             $lang = &$_SESSION['language'];
             $lang->set_language($_SESSION['language']->code);
         }
@@ -255,7 +255,7 @@ function isAjaxReferrer() {
 
 if (isset($_SESSION["wa_current_user"]) && $_SESSION["wa_current_user"]->user == 1) {
     $pdf_debug = 0;
-    error_reporting(E_ALL);
+   // error_reporting(E_ALL);
 }
 // POST vars cleanup needed for direct reuse.
 // We quote all values later with db_escape() before db update.

@@ -5,6 +5,7 @@ var feildsChanged = 0;
 //var account = {};
 //var branch = {};
 var tabs;
+
 var setFormValue = function(id, value) {
 	var element = $("[name=\'" + id + "\']");
 	if (element.find('option').length > 0) {
@@ -158,7 +159,7 @@ var Customer = function (item) {
 	var transactions = $('#transactions');
 	return {
 		setValues: function(data) {
-            if (data.contact_log != undefined) setContactLog(data.contact_log);
+			if (data.contact_log != undefined) setContactLog(data.contact_log);
 			if (data.transacionts != undefined) transactions.empty().append(data.transactions);
 			data = data.customer;
 			customer = data;
@@ -228,7 +229,6 @@ $(function() {
 		return false;
 	});
 	btnCustomer = $("#btnCustomer").button().click(function(event) {
-
 		Branches.Save();
 		return false;
 	});
