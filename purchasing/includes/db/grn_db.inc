@@ -86,7 +86,7 @@ function add_grn(&$po, $date_, $reference, $location) {
             }
             // added 2008-12-08 Joe Hunt. Update the purchase data table
             if ($order_line->price <= $order_line->standard_cost) {
-                add_or_update_purchase_data($po->supplier_id, $order_line->stock_id, $order_line->price, $order_line->item_description);
+                add_or_update_purchase_data($po->supplier_id, $order_line->stock_id, $order_line->price);
             }
 
             /*Need to insert a grn item */

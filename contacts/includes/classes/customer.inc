@@ -8,26 +8,19 @@
  */
 class Customer extends Contact {
 
-    public $id = 0;
     public $name = 'New Customer';
-    public $address = '';
-    public $tax_id = '';
-    public $curr_code = '';
     public $sales_type;
-    public $dimension_id = 0;
-    public $dimension2_id = 0;
-    public $credit_status;
-    public $payment_terms = 1;
-    public $discount = '0';
-    public $pymt_discount = '0';
-    public $credit_limit = 0;
     public $debtor_ref = '';
-    public $branches = array();
-    public $defaultBranch;
-    public $accounts;
-    public $transactions;
 
-    function __construct($id = null) {
+    public $credit_status;
+	public $payment_discount = '0';
+	public $defaultBranch;
+	public $branches = array();
+	public $accounts;
+	public $transactions;
+
+	function __construct($id = null) {
+		$this->pymt_discount=&$this->payment_discount;
         parent::__construct($id);
         $this->debtor_ref = substr($this->name, 0, 29);
     }

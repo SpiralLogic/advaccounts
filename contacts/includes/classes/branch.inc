@@ -12,7 +12,9 @@ class Branch extends Contact
 
 	public $branch_code = 0;
 	public $br_name = "New Address";
-	public $br_address = "";
+	public $br_address;
+
+
 	public $area = DEFAULT_AREA;
 	public $br_post_address = "";
 	public $debtor_no;
@@ -21,11 +23,10 @@ class Branch extends Contact
 	public $default_location = DEFAULT_LOCATION;
 	public $default_ship_via = DEFAULT_SHIP_VIA;
 	public $disable_trans = 0;
-	public $fax = "";
+
 	public $group_no = 1;
 	public $payment_discount_account;
-	public $phone = "";
-	public $phone2 = "";
+
 	public $receivables_account;
 	public $sales_account = "";
 	public $sales_discount_account;
@@ -34,6 +35,9 @@ class Branch extends Contact
 
 	function __construct($id = null)
 	{
+		$this->id = &$this->branch_code;
+		$this->name = &$this->br_name;
+		$this->address= &$this->br_address;
 		parent::__construct($id);
 	}
 
