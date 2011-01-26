@@ -36,7 +36,7 @@ class Supplier extends Contact
 	public $payable_account;
 	public $payment_discount_account;
 	public $supp_ref = '';
-	function __construct($id)
+	function __construct($id=null)
 	{
 		$this->supplier_id= &$this->id;
 		$this->supp_name=&$this->name;
