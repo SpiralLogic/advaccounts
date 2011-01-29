@@ -4,7 +4,7 @@ class Sidemenu {
     static function render() {
         global $path_to_root;
         get_jqueryui();
-        echo '
+        echo <<<HTML
 <div id="sidemenu" class="ui-widget-shadow ui-corner-all">
     <h3><a href="#">Search</a></h3>
 
@@ -24,8 +24,8 @@ class Sidemenu {
         <a href="/purchasing/po_entry_items.php?NewOrder=Yes">Purchase Order</a>
     </div>
 </div>
-
-';
+HTML
+;
 
     }
 }

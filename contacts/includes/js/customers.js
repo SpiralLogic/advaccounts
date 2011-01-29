@@ -2,8 +2,7 @@ var loader;
 var btnCancel;
 var btnCustomer;
 var feildsChanged = 0;
-//var account = {};
-//var branch = {};
+
 var tabs;
 
 var setFormValue = function(id, value) {

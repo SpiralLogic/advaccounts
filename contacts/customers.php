@@ -26,6 +26,7 @@ if (isAjaxReferrer()) {
 }
 add_js_ffile("includes/js/customers.js");
 page(_($help_context = "Customers"), @$_REQUEST['popup']);
+
 check_db_has_sales_types(_("There are no sales types defined. Please define at least one sales type before adding a customer."));
 check_db_has_sales_people(_("There are no sales people defined in the system. At least one sales person is required before proceeding."));
 check_db_has_sales_areas(_("There are no sales areas defined in the system. At least one sales area is required before proceeding."));
@@ -43,7 +44,6 @@ if (isset($_POST['delete'])) {
     $customer->delete();
     $status = $customer->getStatus();
     display_notification($status['message']);
-    $Ajax->activate('_page_body');
 }
 if (db_has_customers()) {
     /** @noinspection PhpUndefinedMethodInspection */
