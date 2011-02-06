@@ -265,10 +265,9 @@ elseif ($doctype == ST_SUPPAYMENT || $doctype == ST_CUSTPAYMENT || $doctype == S
 	$this->TextWrap($col, $this->row, $width, $report_contact, 'C');
 }
 $col += $width;
-$report_phone = (!empty($myrow["contact_phone"])) ? $myrow["contact_phone"] : ((!isset($branch['phone'])) ? '' : $branch['phone']);
+$report_phone = (!empty($myrow["contact_phone"])) ? $myrow["contact_phone"] : ((isset($branch['phone'])) ? $branch['phone'] : ((isset($myrow['phone'])) ? $myrow['phone'] : ''));
 if ($doctype == ST_WORKORDER) {
 	$this->TextWrap($col, $this->row, $width, $myrow["StockItemName"], 'C');
-
 } elseif ($doctype == ST_PURCHORDER) {
 	$this->TextWrap($col, $this->row, $width, $report_phone, 'C');
 } elseif ($doctype == ST_STATEMENT) {

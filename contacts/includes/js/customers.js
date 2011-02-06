@@ -1,11 +1,3 @@
-(function(window, undefined) {
-	if (window.advAcc == undefined) {
-	window.advAcc = {};
-		
-	}
-}(window));
-
-
 var loader;
 var btnCancel;
 var btnCustomer;
