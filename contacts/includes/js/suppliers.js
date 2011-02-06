@@ -6,6 +6,8 @@
  * To change this template use File | Settings | File Templates.
  */
 var supplier;
+
+
 function getSupplier(id) {
 	$.post("suppliers.php",
 	{id: id}, function(data) {

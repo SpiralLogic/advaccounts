@@ -23,7 +23,6 @@ protected $has_header = true;
 
     function menu_header($title, $no_menu, $is_index) {
         global $path_to_root, $help_base_url, $db_connections, $app_title, $version;
-		get_jqueryui();
         $sel_app = $_SESSION['sel_app'];
         echo "<div id='content'>\n<div id='loader'></div>";
         if (!$no_menu) {

@@ -34,17 +34,17 @@ $pdf_debug = 0;
 $sql_trail = 0; // save all sql queries in sql_trail
 $select_trail = 0; // track also SELECT queries
 if ($go_debug == 1) {
-    error_reporting(E_ALL);
-    ini_set("display_errors", "On");
+	error_reporting(E_ALL);
+	ini_set("display_errors", "On");
 } else {
-    error_reporting(E_USER_WARNING | E_USER_ERROR | E_USER_NOTICE);
-    // ini_alter("error_reporting","E_COMPILE_ERROR|E_ERROR|E_CORE_ERROR|E_PARSE");
-    ini_set("display_errors", "On");
+	error_reporting(E_USER_WARNING | E_USER_ERROR | E_USER_NOTICE);
+	// ini_alter("error_reporting","E_COMPILE_ERROR|E_ERROR|E_CORE_ERROR|E_PARSE");
+	ini_set("display_errors", "On");
 }
 if ($error_logfile != '') {
-    ini_set("error_log", $error_logfile);
-    ini_set("ignore_repeated_errors", "On");
-    ini_set("log_errors", "On");
+	ini_set("error_log", $error_logfile);
+	ini_set("ignore_repeated_errors", "On");
+	ini_set("log_errors", "On");
 }
 // Main Title
 $app_title = "Advanced Accounting";
@@ -143,34 +143,45 @@ $graph_skin = 1;
 */
 //MySQL Backup and Restore Settings
 if (isset($_SESSION["wa_current_user"])) {
-    define("BACKUP_PATH", $comp_path . '/' . user_company() . "/backup/");
+	define("BACKUP_PATH", $comp_path . '/' . user_company() . "/backup/");
 }
 // static js files path
 $js_path = $path_to_root . '/js/';
 // standard external js scripts included in all files
-$js_static = array('JsHttpRequest.js', 'behaviour.js', 'utils.js', 'inserts.js');
+$js_static = array(
+	'JsHttpRequest.js',
+	'behaviour.js',
+	'utils.js',
+	'inserts.js',
+	'js2/jquery-1.4.4.min.js',
+	'js2/jquery-ui-1.8.6.min.js',
+	'js2/shortmenu.js',
+	'js2/jquery.calculator.pack.js',
+	'js2/calc.js'
+);
+
 // additional js source included in header
 $js_lib = $js_userlib = $js_fuserlib = array();
 if (!defined('ICON_EDIT')) {
-    define("ICON_EDIT", "edit.gif");
-    define("ICON_DELETE", "delete.gif");
-    define("ICON_ADD", "ok.gif");
-    define("ICON_UPDATE", "ok.gif");
-    define("ICON_OK", "ok.gif");
-    define("ICON_CANCEL", "cancel.png");
-    define("ICON_GL", "gl.png");
-    define("ICON_PRINT", "print.png");
-    define("ICON_PDF", "pdf.gif");
-    define("ICON_DOC", "invoice.gif");
-    define("ICON_CREDIT", "credit.gif");
-    define("ICON_RECEIVE", "receive.gif");
-    define("ICON_DOWN", "download.gif");
-    define("ICON_MONEY", "money.png");
-    define("ICON_REMOVE", "remove.png");
-    define("ICON_REPORT", "report.png");
-    define("ICON_VIEW", "view.gif");
-    define("ICON_SUBMIT", "ok.gif");
-    define("ICON_ESCAPE", "escape.png");
+	define("ICON_EDIT", "edit.gif");
+	define("ICON_DELETE", "delete.gif");
+	define("ICON_ADD", "ok.gif");
+	define("ICON_UPDATE", "ok.gif");
+	define("ICON_OK", "ok.gif");
+	define("ICON_CANCEL", "cancel.png");
+	define("ICON_GL", "gl.png");
+	define("ICON_PRINT", "print.png");
+	define("ICON_PDF", "pdf.gif");
+	define("ICON_DOC", "invoice.gif");
+	define("ICON_CREDIT", "credit.gif");
+	define("ICON_RECEIVE", "receive.gif");
+	define("ICON_DOWN", "download.gif");
+	define("ICON_MONEY", "money.png");
+	define("ICON_REMOVE", "remove.png");
+	define("ICON_REPORT", "report.png");
+	define("ICON_VIEW", "view.gif");
+	define("ICON_SUBMIT", "ok.gif");
+	define("ICON_ESCAPE", "escape.png");
 }
 define('DEFAULT_LOCATION', 'MEL');
 define('DEFAULT_TAX_GROUP', 1);

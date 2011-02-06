@@ -94,15 +94,8 @@ function page_header($title, $no_menu=false, $is_index=false, $onload="", $js=""
 	if (in_ajax())
 		return; // just for speed up
 
-//	$jsext = substr_replace($_SERVER['PHP_SELF'], '.js', -4);
-
-//	if (file_exists($_SERVER['DOCUMENT_ROOT'].$jsext))
-//		add_js_ufile($jsext);
-get_jqueryui();
-get_js_calc();
-add_js_ufile($path_to_root . "/js/shortmenu.js");
-
-$theme = user_theme();
+	
+	$theme = user_theme();
 	$local_path_to_root = $path_to_root;
 
 	if ($help_base_url != null && $use_popup_windows && $js == '')

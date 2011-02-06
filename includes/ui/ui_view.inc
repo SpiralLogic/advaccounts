@@ -832,17 +832,6 @@ function get_js_png_fix()
 	return $js;
 }
 
-function get_jquery()
-{
-	global $comp_path, $path_to_root;
-	static $inserted;
-	if (!$inserted) {
-		$fpath = $path_to_root . '/js/';
-		add_js_ufile($fpath . 'jquery-1.4.3.min.js');
-		$inserted = true;
-	}
-}
-
 function get_websales()
 {
 	global $js_lib;
@@ -858,22 +847,8 @@ JS;
 	}
 }
 
-function get_jqueryui()
-{
-	get_jquery();
-	global $path_to_root;
-	static $inserted;
-	if (!$inserted) {
-		$fpath = $path_to_root . '/js/';
-		add_js_ufile($fpath . 'jquery-ui-1.8.6.min.js');
-		add_js_ufile($fpath . 'jquery.datalink.js');
-		$inserted = true;
-	}
-}
-
 function get_jquery_gmaps()
 {
-	get_jquery();
 	static $inserted;
 	if (!$inserted) {
 		global $comp_path, $path_to_root;
@@ -885,17 +860,6 @@ function get_jquery_gmaps()
 	}
 }
 
-function get_js_calc()
-{
-	get_jqueryui();
-	static $inserted;
-	if ($inserted) {
-		return;
-	}
-	add_js_ufile('/js/jquery.calculator.pack.js');
-	add_js_ufile('/js/calc.js');
-	$inserted = true;
-}
 
 function get_js_date_picker()
 {

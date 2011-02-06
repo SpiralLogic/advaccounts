@@ -16,8 +16,6 @@ include_once($path_to_root . "/purchasing/includes/po_class.inc");
 include_once($path_to_root . "/includes/session.inc");
 include_once($path_to_root . "/purchasing/includes/purchasing_ui.inc");
 include_once($path_to_root . "/reporting/includes/reporting.inc");
-//$js.=get_jqueryui();
-//$js .= get_jquery_live();
 if ($use_popup_windows) {
     $js .= get_js_open_window(900, 500);
 }
