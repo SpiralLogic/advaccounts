@@ -40,6 +40,7 @@ if ($use_popup_windows) {
 if ($use_date_picker) {
 	$js .= get_js_date_picker();
 }
+
 $js .= get_jquery_gmaps();
 if (isset($_GET['NewDelivery']) && is_numeric($_GET['NewDelivery'])) {
 

@@ -22,7 +22,6 @@ include_once($path_to_root . "/includes/data_checks.inc");
 include_once($path_to_root . "/gl/includes/ui/gl_bank_ui.inc");
 include_once($path_to_root . "/gl/includes/gl_db.inc");
 include_once($path_to_root . "/gl/includes/gl_ui.inc");
-get_js_calc();
 $js = '';
 if ($use_popup_windows)
 	$js .= get_js_open_window(800, 500);

@@ -254,8 +254,9 @@ function isAjaxReferrer() {
 }
 
 if (isset($_SESSION["wa_current_user"]) && $_SESSION["wa_current_user"]->user == 1) {
-    $pdf_debug = 0;
-   // error_reporting(E_ALL);
+    //$pdf_debug = 1;
+//	$show_sql=1;
+//
 }
 // POST vars cleanup needed for direct reuse.
 // We quote all values later with db_escape() before db update.

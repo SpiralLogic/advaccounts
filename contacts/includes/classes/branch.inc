@@ -35,10 +35,10 @@ class Branch extends Contact
 
 	function __construct($id = null)
 	{
+		parent::__construct($id);
 		$this->id = &$this->branch_code;
 		$this->name = &$this->br_name;
-		$this->address= &$this->br_address;
-		parent::__construct($id);
+		$this->address = &$this->br_address;
 	}
 
 	protected function delete()
@@ -99,11 +99,12 @@ class Branch extends Contact
 		if ($this->branch_ref != 'accounts') {
 			$this->branch_ref = substr(db_escape($this->br_name), 0, 30);
 		}
+		
 		begin_transaction();
 		$sql = "UPDATE " . TB_PREF . "cust_branch SET
-			br_name=" . db_escape($this->br_name) . ",
-			br_address=" . db_escape($this->br_address) . ",
-			br_post_address=" . db_escape($this->br_post_address) . ",
+			br_name=" . db_escape($this->name) . ",
+			br_address=" . db_escape($this->address) . ",
+			br_post_address=" . db_escape($this->post_address) . ",
 			area=" . db_escape($this->area) . ",
 			salesman=" . db_escape($this->salesman) . ",
 			phone=" . db_escape($this->phone) . ",
@@ -136,7 +137,7 @@ class Branch extends Contact
 		$sql = "INSERT INTO " . TB_PREF . "cust_branch (debtor_no, br_name, branch_ref, br_address,
 				salesman, phone, phone2, fax, contact_name, area, email, tax_group_id, sales_account, sales_discount_account, receivables_account, payment_discount_account, default_location,
 				br_post_address, disable_trans, group_no, default_ship_via, notes,inactive)
-				VALUES (" . db_escape($this->debtor_no) . "," . db_escape($this->br_name) . ", " . db_escape($this->branch_ref) . ", " . db_escape($this->br_address) . ", "
+				VALUES (" . db_escape($this->debtor_no) . "," . db_escape($this->name) . ", " . db_escape($this->branch_ref) . ", " . db_escape($this->address) . ", "
 		       . db_escape($this->salesman) . ", " . db_escape($this->phone) . ", " . db_escape($this->phone2) . ", " . db_escape($this->fax) . "," . db_escape($this->contact_name) . ", "
 		       . db_escape($this->area) . ", " . db_escape($this->email) . ", " . db_escape($this->tax_group_id) . ", " . db_escape($this->sales_account) . ", "
 		       . db_escape($this->sales_discount_account) . ", " . db_escape($this->receivables_account) . ", " . db_escape($this->payment_discount_account) . ", " . db_escape($this->default_location)

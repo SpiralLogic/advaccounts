@@ -38,14 +38,14 @@ class Supplier extends Contact
 	public $supp_ref = '';
 	function __construct($id=null)
 	{
-		$this->supplier_id= &$this->id;
-		$this->supp_name=&$this->name;
-		$this->gst_no= &$this->tax_id;
-		$this->contact= &$this->contact_name;
-		$this->supp_address= &$this->post_address;
-		$this->supp_account_no= &$this->account_no;
 		parent::__construct($id);
-		$this->supp_ref = substr($this->name, 0, 29);
+		$this->supplier_id = &$this->id;
+		$this->supp_name =& $this->name;
+		$this->gst_no = &$this->tax_id;
+		$this->contact = &$this->contact_name;
+		$this->supp_address = &$this->post_address;
+		$this->supp_account_no = &$this->account_no;
+			$this->supp_ref = substr($this->name, 0, 29);
 	}
 	protected function _canProcess()
 	{

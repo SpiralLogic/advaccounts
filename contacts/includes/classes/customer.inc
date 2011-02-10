@@ -20,8 +20,8 @@ class Customer extends Contact {
 	public $transactions;
 
 	function __construct($id = null) {
-		$this->pymt_discount=&$this->payment_discount;
         parent::__construct($id);
+        $this->pymt_discount =& $this->payment_discount;
         $this->debtor_ref = substr($this->name, 0, 29);
     }
 
@@ -112,6 +112,9 @@ class Customer extends Contact {
         db_query($sql, "The customer could not be added");
         $this->id = db_insert_id();
         commit_transaction();
+        foreach ($this->branches as $branch) {
+        if ($branch->name == 'New Address') $branch->name = $this->name;
+        }
         $this->_status(true, 'Saving', "A Customer has been added.");
     }
 
@@ -234,9 +237,13 @@ class Customer extends Contact {
     protected function _getBranches() {
         $sql = "SELECT branch_code, br_name, branch_ref FROM " . TB_PREF . "cust_branch WHERE debtor_no=" . $this->id . " AND branch_ref != 'accounts' AND disable_trans =0";
         $result = db_query($sql, 'Couldn\'t retrieve any branches');
-        while ($row = db_fetch_assoc($result)) {
+
+if (!db_num_rows($result)) return;		
+
+		while ($row = db_fetch_assoc($result)) {
             $this->branches[$row['branch_code']] = new Branch($row['branch_code']);
         }
+
         $this->defaultBranch = reset($this->branches)->branch_code;
     }
 

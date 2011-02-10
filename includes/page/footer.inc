@@ -11,7 +11,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
  ***********************************************************************/
 function page_footer($no_menu = false, $is_index = false, $hide_back_link = false)
 {
-	global $path_to_root, $js_lib, $Validate, $Editors, $Ajax;
+ 	global $path_to_root, $js_lib, $Validate, $Editors, $Ajax;
 	include_once($path_to_root . "/themes/" . user_theme() . "/renderer.php");
 	$rend = new renderer();
 	$rend->menu_footer($no_menu, $is_index);

@@ -27,7 +27,6 @@ if ($use_popup_windows) {
 if ($use_date_picker) {
     $js .= get_js_date_picker();
 }
-$js .= get_js_calc();
 page(_($help_context = "Enter Supplier Invoice"), false, false, "", $js);
 
 //----------------------------------------------------------------------------------------

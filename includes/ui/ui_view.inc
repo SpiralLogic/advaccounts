@@ -838,7 +838,7 @@ function get_websales()
 	static $inserted;
 	if (!$inserted && !isset($_SESSION['getWebsales'])) {
 		$_SESSION['getWebsales'] = false;
-		echo <<<JS
+ 		echo <<<JS
 $(function() {
 if ($("#websaleGet").length>0) return;
 $('body').append('<iframe id="websaleGet" style="width:0; height:0" src="http://advaccounts/jobsboard/websales/"></iframe>')});
