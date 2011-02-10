@@ -1,4 +1,4 @@
-$("input[id^='ChgPriceCalc']").live('focus', function() {
+$("#_psge_body").delegate('.amount', 'focus', function() {
           $(this).calculator({
     showOn: 'operator', isOperator: mathsOnly});
 
