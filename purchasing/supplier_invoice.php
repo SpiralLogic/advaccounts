@@ -13,12 +13,9 @@ $page_security = 'SA_SUPPLIERINVOICE';
 $path_to_root = "..";
 
 include_once($path_to_root . "/purchasing/includes/purchasing_db.inc");
-
 include_once($path_to_root . "/includes/session.inc");
-
 include_once($path_to_root . "/includes/banking.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
-
 include_once($path_to_root . "/purchasing/includes/purchasing_ui.inc");
 $js = "";
 if ($use_popup_windows) {
@@ -57,7 +54,6 @@ if (isset($_GET['New'])) {
         unset ($_SESSION['supp_trans']->gl_codes);
         unset ($_SESSION['supp_trans']);
     }
-
     //session_register("SuppInv");
     //session_register("supp_trans");
     $_SESSION['supp_trans'] = new supp_trans;
@@ -67,16 +63,12 @@ if (isset($_GET['New'])) {
 //--------------------------------------------------------------------------------------------------
 function clear_fields() {
     global $Ajax;
-
     unset($_POST['gl_code']);
     unset($_POST['dimension_id']);
     unset($_POST['dimension2_id']);
     unset($_POST['amount']);
     unset($_POST['memo_']);
     unset($_POST['AddGLCodeToTrans']);
-
-
-
     $Ajax->activate('gl_items');
     set_focus('gl_code');
 }
@@ -90,10 +82,8 @@ if (isset($_POST['ClearFields'])) {
 }
 
 if (isset($_POST['AddGLCodeToTrans'])) {
-
     $Ajax->activate('gl_items');
     $input_error = false;
-
     $sql = "SELECT account_code, account_name FROM " . TB_PREF . "chart_master WHERE account_code=" . db_escape($_POST['gl_code']);
     $result = db_query($sql, "get account information");
     if (db_num_rows($result) == 0) {
@@ -326,24 +316,17 @@ if ($_SESSION["wa_current_user"]->can_access('SA_GRNDELETE')) {
         begin_transaction();
 
         $myrow = get_grn_item_detail($id2);
-
         $grn = get_grn_batch($myrow['grn_batch_id']);
-
         $sql = "UPDATE " . TB_PREF . "purch_order_details
 			SET quantity_received = qty_invoiced, quantity_ordered = qty_invoiced WHERE po_detail_item = " . $myrow["po_detail_item"];
         db_query($sql, "The quantity invoiced of the purchase order line could not be updated");
-
         $sql = "UPDATE " . TB_PREF . "grn_items
 	    	SET qty_recd = quantity_inv WHERE id = " . $myrow["id"];
         db_query($sql, "The quantity invoiced off the items received record could not be updated");
-
         update_average_material_cost($grn["supplier_id"], $myrow["item_code"], $myrow["unit_price"], -$myrow["QtyOstdg"], Today());
-
         add_stock_move(ST_SUPPRECEIVE, $myrow["item_code"], $myrow['grn_batch_id'], $grn['loc_code'], sql2date($grn["delivery_date"]), "", -$myrow["QtyOstdg"], $myrow['std_cost_unit'], $grn["supplier_id"], 1, $myrow['unit_price']);
-
         commit_transaction();
         display_notification(sprintf(_('All yet non-invoiced items on delivery line # %d has been removed.'), $id2));
-
     }
 }
 
@@ -356,7 +339,6 @@ if (isset($_POST['go'])) {
 }
 
 start_form();
-
 invoice_header($_SESSION['supp_trans']);
 
 if ($_POST['supplier_id'] == '') {

@@ -58,7 +58,7 @@ function display_supplier_summary($supplier_record)
 	$pastdue2 = _('Over') . " " . $past2 . " " . _('Days');
 	start_table("width=80% $table_style");
 	$th = array(_("Currency"), _("Terms"), _("Current"), $nowdue,
-	            $pastdue1, $pastdue2, _("Total Balance"));
+	            $pastdue1, $pastdue2, _("Total Balance"), _("Total For Search Period"));
 	table_header($th);
 	start_row();
 	label_cell($supplier_record["curr_code"]);
@@ -68,6 +68,7 @@ function display_supplier_summary($supplier_record)
 	amount_cell($supplier_record["Overdue1"] - $supplier_record["Overdue2"]);
 	amount_cell($supplier_record["Overdue2"]);
 	amount_cell($supplier_record["Balance"]);
+	amount_cell(get_supplier_oweing($_POST['supplier_id'], $_POST['TransAfterDate'], $_POST['TransToDate'])	);
 	end_row();
 	end_table(1);
 }
@@ -180,7 +181,6 @@ if (isAjaxReferrer() && !empty($_POST['ajaxsearch'])) {
 			$sql .= " OR trans.supp_reference LIKE " . db_escape($ajaxsearch);
 		}
 		$sql .= ")";
-	    FB::info($sql);
 	}
 } else {
 	$sql .=" AND trans . tran_date >= '$date_after'
