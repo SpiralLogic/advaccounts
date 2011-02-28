@@ -10,11 +10,11 @@ class Supplier extends Contact
 {
 
 
-	public $id;//$supplier_id; //
-	public $name; //$supp_name; //
-	public $tax_id;//$gst_no; //
-	public $contact_name;//$contact; //
-	public $post_address;//$supp_address; //
+	public $id,$supplier_id; //
+	public $name,$supp_name; //
+	public $tax_id,$gst_no; //
+	public $contact_name,$contact; //
+	public $post_address,$supp_address; //
 	/*
 	 public $pymt_discount = '0';
 	public $credit_limit = 0;
@@ -29,7 +29,7 @@ class Supplier extends Contact
 	public $phone2 = "";
 	public $fax = "";
 	public $website;*/
-	public $account_no=''; //$supp_account_no = ''; //
+	public $account_no='',$supp_account_no = ''; //
 	public $bank_account;
 	public $tax_group_id = '';
 	public $purchase_account;
@@ -38,13 +38,14 @@ class Supplier extends Contact
 	public $supp_ref = '';
 	function __construct($id=null)
 	{
+        $this->supplier_id = &$this->id;
+        $this->supp_name =& $this->name;
+        $this->gst_no = &$this->tax_id;
+        $this->contact = &$this->contact_name;
+        $this->supp_address = &$this->post_address;
+        $this->supp_account_no = &$this->account_no;
 		parent::__construct($id);
-		$this->supplier_id = &$this->id;
-		$this->supp_name =& $this->name;
-		$this->gst_no = &$this->tax_id;
-		$this->contact = &$this->contact_name;
-		$this->supp_address = &$this->post_address;
-		$this->supp_account_no = &$this->account_no;
+
 			$this->supp_ref = substr($this->name, 0, 29);
 	}
 	protected function _canProcess()
