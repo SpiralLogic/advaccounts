@@ -114,8 +114,8 @@ function print_sales_quotations()
             $rep->TextCol(6, 7,	$TaxType[1], -2);
 			$rep->TextCol(7, 8,	$DisplayNet, -2);
 			$rep->row = $newrow;
-			//$rep->NewLine(1);
-			if ($rep->row < $rep->bottomMargin + (15 * $rep->lineHeight))
+            $rep->NewLine();
+            if ($rep->row < $rep->bottomMargin + (15 * $rep->lineHeight))
 				$rep->Header2($myrow, $branch, $myrow, $baccount, ST_SALESQUOTE);
 		}
 		if ($myrow['comments'] != "")
@@ -123,6 +123,7 @@ function print_sales_quotations()
 			$rep->NewLine();
 			$rep->TextColLines(1, 5, $myrow['comments'], -2);
 		}
+        if ($rep->row < $rep->bottomMargin + (15 * $rep->lineHeight)) $rep->Header2($myrow, $branch, $myrow, $baccount, ST_SALESQUOTE);
                 		$DisplayFreight = number_format2($myrow["freight_cost"],$dec);
         $TaxTotal += $myrow["freight_cost"]*.1;
 		$DisplayTaxTot = number_format2($TaxTotal,$dec);

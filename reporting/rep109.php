@@ -148,6 +148,11 @@ function print_sales_orders() {
             $rep->NewLine();
             $rep->TextColLines(1, 5, $myrow['comments'], -2);
         }
+        if ($rep->row < $rep->bottomMargin + (15 * $rep->lineHeight)) if ($print_as_quote < 3) {
+            $rep->Header2($myrow, $branch, $myrow, $baccount, ST_SALESORDER);
+        } else {
+            $rep->Header2($myrow, $branch, $myrow, $baccount, ST_SALESQUOTE);
+        }
         $DisplayFreight = number_format2($myrow["freight_cost"], $dec);
         $SubTotal += $myrow["freight_cost"];
         $TaxTotal += $myrow['freight_cost']*.1;

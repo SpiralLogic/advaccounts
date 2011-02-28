@@ -128,7 +128,7 @@
 
             else
                     $this->headers = array(_("Item Code"), _("Item Description"), _("Qty"),
-                    _("Unit"), _("Price"), _("Disc.%"), _("Total"), _("Tax"));
+                    _("Unit"), _("Price"), _("Disc.%"), _("Tax"), _("Total"));
         }
         else if ($doctype == ST_STATEMENT) {
             $this->title = _("STATEMENT");
