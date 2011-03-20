@@ -97,7 +97,7 @@ class supp_trans {
         {
             $items[] = $ln_itm->item_code;
             $prices[] = round(($ln_itm->this_quantity_inv * $ln_itm->taxfree_charge_price($tax_group_id, $tax_group)),
-                user_price_dec());
+                user_price_dec(),PHP_ROUND_HALF_EVEN);
         }
 
         if ($tax_group_id == null) {
@@ -135,7 +135,7 @@ class supp_trans {
 
         foreach ($this->grn_items as $ln_itm) {
             $total += round(($ln_itm->this_quantity_inv * $ln_itm->taxfree_charge_price($tax_group_id, $tax_group)),
-                user_price_dec());
+                user_price_dec(),PHP_ROUND_HALF_EVEN);
         }
 
         foreach ($this->gl_codes as $gl_line)

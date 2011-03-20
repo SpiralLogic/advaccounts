@@ -33,7 +33,7 @@ function get_tax_free_price_for_item($stock_id, $price, $tax_group, $tax_include
     foreach ($tax_array as $taxitem) {
         $tax_multiplier += $taxitem["rate"];
     }
-    return round($price / (1 + ($tax_multiplier / 100)), 2 * user_price_dec());
+    return round($price / (1 + ($tax_multiplier / 100)), 2 * user_price_dec(),PHP_ROUND_HALF_EVEN);
 }
 
 //
@@ -55,7 +55,7 @@ function get_tax_for_item($stock_id, $price, $tax_group = false) {
     foreach ($tax_array as $taxitem) {
         $tax_multiplier += $taxitem["rate"];
     }
-    return round($price * (($tax_multiplier / 100)), 2 * user_price_dec());
+    return round($price * (($tax_multiplier / 100)), 2 * user_price_dec(),PHP_ROUND_HALF_EVEN);
 }
 
 #  __ADVANCEDEDIT__ BEGIN #
@@ -75,7 +75,7 @@ function get_full_price_for_item($stock_id, $price, $tax_group, $tax_included, $
     foreach ($tax_array as $taxitem) {
         $tax_multiplier += $taxitem["rate"];
     }
-    return round($price * (1 + ($tax_multiplier / 100)), 2 * user_price_dec());
+    return round($price * (1 + ($tax_multiplier / 100)), 2 * user_price_dec(),PHP_ROUND_HALF_EVEN);
 }
 
 #  __ADVANCEDEDIT__ END #

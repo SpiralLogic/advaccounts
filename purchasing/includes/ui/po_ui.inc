@@ -165,7 +165,7 @@ function display_po_items(&$order, $editable=true) {
     foreach ($order->line_items as $line_no => $po_line) {
 
         if ($po_line->Deleted == false) {
-            $line_total = round($po_line->quantity * $po_line->price * (1-$po_line->discount), user_price_dec());
+            $line_total = round($po_line->quantity * $po_line->price * (1-$po_line->discount), user_price_dec(),PHP_ROUND_HALF_EVEN);
             if (!$editable || ($id != $line_no)) {
                 alt_table_row_color($k);
                 label_cell($po_line->stock_id);

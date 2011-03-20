@@ -160,7 +160,7 @@ class current_user {
 function round2($number, $decimals = 0) {
     $delta = ($number < 0 ? -.0000000001 : .0000000001);
     //  $delta -=  pow(10,-($decimals+1));
-    return round($number + $delta, $decimals);
+    return round($number, $decimals,PHP_ROUND_HALF_EVEN);
 }
 
 function number_format2($number, $decimals = 0) {
