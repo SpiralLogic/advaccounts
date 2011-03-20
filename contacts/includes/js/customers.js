@@ -1,9 +1,24 @@
 (function(window, undefined) {
-	if (window.advAcc == undefined) {
-	window.advAcc = {};
-		
-	}
-}(window));
+	var Adv = {
+		loader: false,
+		fieldsChanged: 0,
+		tabs: 0
+
+	};
+	(function() {
+		var private = 'private';
+		this.method = function() {
+			return 'private method';
+		}
+		this.getter = function() {
+			return 'got ' + private + ' property';
+		}
+		this.setter = function(value) {
+			this.fieldsChanged++;
+		}
+	}).apply(Adv);
+window.Adv = Adv;
+})(window);
 
 
 var loader;
@@ -82,12 +97,12 @@ var Branches = function() {
 			btn.unbind('click');
 			if (!adding && current.branch_code > 0 && Customer.get().id > 0) {
 				btn.button('option', 'label', 'Add New Branch').one('click',
-				                                                   function(event) {
-					                                                   event.stopImmediatePropagation();
-					                                                   Branches.New();
-					                                                   adding = true;
-					                                                   return false
-				                                                   }).show();
+						function(event) {
+							event.stopImmediatePropagation();
+							Branches.New();
+							adding = true;
+							return false
+						}).show();
 			} else {
 				if (current.branch_code > 0) {
 					btn.show();
