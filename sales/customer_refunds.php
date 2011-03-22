@@ -16,13 +16,13 @@ include_once($path_to_root . "includes/ui/allocation_cart.inc");
 include_once($path_to_root . "includes/session.inc");
 include_once($path_to_root . "includes/date_functions.inc");
 include_once($path_to_root . "includes/ui.inc");
-include_once($path_to_root."contacts/includes/contacts.inc");
+include_once($path_to_root . "contacts/includes/contacts.inc");
 include_once($path_to_root . "includes/banking.inc");
 include_once($path_to_root . "includes/data_checks.inc");
 include_once($path_to_root . "sales/includes/sales_db.inc");
 //include_once($path_to_root . "/sales/includes/ui/cust_alloc_ui.inc");
 include_once($path_to_root . "reporting/includes/reporting.inc");
-$path_to_root='..';
+$path_to_root = '..';
 $js = "";
 if ($use_popup_windows) {
 	$js .= get_js_open_window(900, 500);
@@ -61,7 +61,8 @@ if (isset($_GET['AddedID'])) {
 }
 
 //----------------------------------------------------------------------------------------------
-function can_process() {
+function can_process()
+{
 	global $Refs;
 	if (!get_post('customer_id')) {
 		display_error(_("There is no customer selected."));
@@ -130,6 +131,7 @@ function can_process() {
 	}
 	return true;
 }
+
 //----------------------------------------------------------------------------------------------
 // validate inputs
 if (isset($_POST['AddRefundItem'])) {
@@ -160,8 +162,9 @@ if (isset($_POST['AddRefundItem'])) {
 	}
 	new_doc_date($_POST['DateBanked']);
 	$refund_id = write_customer_refund(0, $_POST['customer_id'], $_POST['BranchID'],
-		$_POST['bank_account'], $_POST['DateBanked'], $_POST['ref'],
-		input_num('amount'), input_num('discount'), $_POST['memo_'], $rate, input_num('charge'));
+									   $_POST['bank_account'], $_POST['DateBanked'], $_POST['ref'],
+									   input_num('amount'), input_num('discount'),
+									   $_POST['memo_'], $rate, input_num('charge'));
 	$_SESSION['alloc']->trans_no = $refund_id;
 	$_SESSION['alloc']->write();
 	meta_forward($_SERVER['PHP_SELF'], "AddedID=$refund_id");
@@ -169,8 +172,9 @@ if (isset($_POST['AddRefundItem'])) {
 
 //----------------------------------------------------------------------------------------------
 
-function read_customer_data() {
-	global $Refs,$customer;
+function read_customer_data()
+{
+	global $Refs, $customer;
 	$sql = "SELECT " . TB_PREF . "debtors_master.pymt_discount,
 		" . TB_PREF . "credit_status.dissallow_invoices
 		FROM " . TB_PREF . "debtors_master, " . TB_PREF . "credit_status
@@ -182,6 +186,7 @@ function read_customer_data() {
 	$_POST['pymt_discount'] = 0;
 	$_POST['ref'] = $Refs->get_next(12);
 }
+
 //----------------------------------------------------------------------------------------------
 
 start_form();
@@ -193,7 +198,7 @@ if (!isset($_POST['bank_account'])) // first page call
 {
 	$_SESSION['alloc'] = new allocation(ST_CUSTREFUND, 0);
 }
-if (count($customer->branches)==0) {
+if (count($customer->branches) == 0) {
 	customer_branches_list_row(_("Branch:"), $_POST['customer_id'], 'BranchID', null, false, true, true);
 } else {
 	hidden('BranchID', ANY_NUMERIC);

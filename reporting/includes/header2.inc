@@ -35,11 +35,13 @@ $this->SetDrawColor(205, 205, 205);
 $this->Line($iline1, 3);
 $this->SetDrawColor(128, 128, 128);
 $this->Line($iline1);
-$this->rectangle($this->leftMargin, $iline2, $right - $this->leftMargin, $iline2 - $iline3, "F", null, array(222, 231, 236));
+$this->rectangle($this->leftMargin, $iline2, $right - $this->leftMargin, $iline2 - $iline3, "F", null,
+				 array(222, 231, 236));
 $this->Line($iline2);
 $this->Line($iline3);
 $this->Line($iline4);
-$this->rectangle($this->leftMargin, $iline5, $right - $this->leftMargin, $iline5 - $iline6, "F", null, array(222, 231, 236));
+$this->rectangle($this->leftMargin, $iline5, $right - $this->leftMargin, $iline5 - $iline6, "F", null,
+				 array(222, 231, 236));
 $this->Line($iline5);
 $this->Line($iline6);
 $this->Line($iline7);
@@ -265,7 +267,8 @@ elseif ($doctype == ST_SUPPAYMENT || $doctype == ST_CUSTPAYMENT || $doctype == S
 	$this->TextWrap($col, $this->row, $width, $report_contact, 'C');
 }
 $col += $width;
-$report_phone = (!empty($myrow["contact_phone"])) ? $myrow["contact_phone"] : ((isset($branch['phone'])) ? $branch['phone'] : ((isset($myrow['phone'])) ? $myrow['phone'] : ''));
+$report_phone = (!empty($myrow["contact_phone"])) ? $myrow["contact_phone"] : ((isset($branch['phone'])) ?
+		$branch['phone'] : ((isset($myrow['phone'])) ? $myrow['phone'] : ''));
 if ($doctype == ST_WORKORDER) {
 	$this->TextWrap($col, $this->row, $width, $myrow["StockItemName"], 'C');
 } elseif ($doctype == ST_PURCHORDER) {
@@ -375,11 +378,13 @@ if ($doctype == ST_STATEMENT) {
 }
 $this->Font();
 $this->Font('italic');
-if (isset($bankaccount['bank_name']) && $doctype != ST_PURCHORDER && $doctype != ST_CUSTPAYMENT && $doctype != ST_CUSTREFUND) {
+if (isset($bankaccount['bank_name'
+]) && $doctype != ST_PURCHORDER && $doctype != ST_CUSTPAYMENT && $doctype != ST_CUSTREFUND) {
 	$txt = "If you do not have an account, our terms are Pre payments only. All accounts are 30 days Cash, cheque, Visa, MasterCard, or Direct deposit";
 	$this->TextWrap($ccol, $this->row, $right - $ccol, $txt, 'C');
 	$this->row -= $this->lineHeight;
-	$txt = $doc_Bank . ": " . $bankaccount['bank_name'] . " " . $doc_Bank_Account . ": " . $bankaccount['bank_account_number'];
+	$txt = $doc_Bank . ": " . $bankaccount['bank_name'] . " " . $doc_Bank_Account . ": " .
+		   $bankaccount['bank_account_number'];
 	$this->TextWrap($ccol, $this->row, $right - $ccol, $txt, 'C');
 	$this->row -= $this->lineHeight;
 }
@@ -388,7 +393,8 @@ if ($doctype == ST_SALESINVOICE && $branch['disable_branch'] > 0) { // payment l
 		$amt = number_format($myrow["ov_freight"] + $myrow["ov_gst"] + $myrow["ov_amount"], user_price_dec());
 		$txt = $doc_Payment_Link . " PayPal: ";
 		$name = urlencode($this->title . " " . $myrow['reference']);
-		$url = "https://www.paypal.com/xclick/business=" . $this->company['email'] . "&item_name=" . $name . "&amount=" . $amt . "&currency_code=" . $myrow['curr_code'];
+		$url = "https://www.paypal.com/xclick/business=" . $this->company['email'] . "&item_name=" . $name . "&amount=" . $amt . "&currency_code=" .
+			   $myrow['curr_code'];
 		$this->fontSize -= 2;
 		$this->TextWrap($ccol, $this->row, $right - $ccol, $txt, 'C');
 		$this->row -= $this->lineHeight;
@@ -410,8 +416,8 @@ if ($this->params['comments'] != '') {
 }
 #  __ADVANCEDEDIT__ BEGIN # added legal_text to quotations and orders and payments and receipts
 if (($doctype == ST_SALESINVOICE || $doctype == ST_STATEMENT || $doctype == ST_SALESQUOTE || $doctype == ST_SALESORDER) && $this->company['legal_text'] != "" || $doctype ==
-                                                                                                                                                                 ST_CUSTDELIVERY ||
-    $doctype == ST_CUSTPAYMENT || $doctype == ST_CUSTREFUND) {
+																																								 ST_CUSTDELIVERY ||
+	$doctype == ST_CUSTPAYMENT || $doctype == ST_CUSTREFUND) {
 	#  __ADVANCEDEDIT__ END #
 	$this->TextWrapLines($ccol, $right - $ccol, $this->company['legal_text'], 'C');
 }

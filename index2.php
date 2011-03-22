@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-		
+
 		<?php
-include('includes/ui2/html.inc');
+  include('includes/ui2/html.inc');
 /* mysql_pconnect('localhost','fa','1willenberg');
 mysql_select_db('fa');
 $sql = "SHOW tables";
@@ -23,7 +23,7 @@ echo "dsgsgs";
 HTML::td()->tr->tr(true)->td(true);
 echo "sfdgsrfg";
 HTML::td()->tr->table;
-HTML::img('teetst',array('src'=>'http://www.w3schools.com/images/w3schoolslogo.gif'));
+HTML::img('teetst', array('src' => 'http://www.w3schools.com/images/w3schoolslogo.gif'));
 
 HTML::html();
 

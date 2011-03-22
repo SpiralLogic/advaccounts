@@ -1,14 +1,14 @@
 <?php
 /**********************************************************************
-    Copyright (C) FrontAccounting, LLC.
-	Released under the terms of the GNU General Public License, GPL, 
-	as published by the Free Software Foundation, either version 3 
-	of the License, or (at your option) any later version.
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
-    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
-***********************************************************************/
+Copyright (C) FrontAccounting, LLC.
+Released under the terms of the GNU General Public License, GPL,
+as published by the Free Software Foundation, either version 3
+of the License, or (at your option) any later version.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+ ***********************************************************************/
 $page_security = 'SA_BANKREP';
 // ----------------------------------------------------------------
 // $ Revision:	2.0 $
@@ -16,7 +16,7 @@ $page_security = 'SA_BANKREP';
 // date_:	2005-05-19
 // Title:	Bank Accounts Transactions
 // ----------------------------------------------------------------
-$path_to_root="..";
+$path_to_root = "..";
 
 include_once($path_to_root . "/includes/session.inc");
 include_once($path_to_root . "/includes/date_functions.inc");
@@ -32,7 +32,7 @@ print_bank_transactions();
 function get_bank_balance_to($to, $account)
 {
 	$to = date2sql($to);
-	$sql = "SELECT SUM(amount) FROM ".TB_PREF."bank_trans WHERE bank_act='$account'
+	$sql = "SELECT SUM(amount) FROM " . TB_PREF . "bank_trans WHERE bank_act='$account'
 	AND trans_date < '$to'";
 	$result = db_query($sql, "The starting balance on hand could not be calculated");
 	$row = db_fetch_row($result);
@@ -43,13 +43,13 @@ function get_bank_transactions($from, $to, $account)
 {
 	$from = date2sql($from);
 	$to = date2sql($to);
-	$sql = "SELECT ".TB_PREF."bank_trans.* FROM ".TB_PREF."bank_trans
-		WHERE ".TB_PREF."bank_trans.bank_act = '$account'
+	$sql = "SELECT " . TB_PREF . "bank_trans.* FROM " . TB_PREF . "bank_trans
+		WHERE " . TB_PREF . "bank_trans.bank_act = '$account'
 		AND trans_date >= '$from'
 		AND trans_date <= '$to'
-		ORDER BY trans_date,".TB_PREF."bank_trans.id";
+		ORDER BY trans_date," . TB_PREF . "bank_trans.id";
 
-	return db_query($sql,"The transactions for '$account' could not be retrieved");
+	return db_query($sql, "The transactions for '$account' could not be retrieved");
 }
 
 function print_bank_transactions()
@@ -71,16 +71,16 @@ function print_bank_transactions()
 
 	$cols = array(0, 90, 110, 170, 225, 350, 400, 460, 520);
 
-	$aligns = array('left',	'left',	'left',	'left',	'left',	'right', 'right', 'right');
+	$aligns = array('left', 'left', 'left', 'left', 'left', 'right', 'right', 'right');
 
-	$headers = array(_('Type'),	_('#'),	_('Reference'), _('Date'), _('Person/Item'),
-		_('Debit'),	_('Credit'), _('Balance'));
+	$headers = array(_('Type'), _('#'), _('Reference'), _('Date'), _('Person/Item'),
+					 _('Debit'), _('Credit'), _('Balance'));
 
 	$account = get_bank_account($acc);
-	$act = $account['bank_account_name']." - ".$account['bank_curr_code']." - ".$account['bank_account_number'];
-   	$params =   array( 	0 => $comments,
-	    1 => array('text' => _('Period'), 'from' => $from, 'to' => $to),
-	    2 => array('text' => _('Bank Account'),'from' => $act,'to' => ''));
+	$act = $account['bank_account_name'] . " - " . $account['bank_curr_code'] . " - " . $account['bank_account_number'];
+	$params = array(0 => $comments,
+					1 => array('text' => _('Period'), 'from' => $from, 'to' => $to),
+					2 => array('text' => _('Bank Account'), 'from' => $act, 'to' => ''));
 
 	$rep->Font();
 	$rep->Info($params, $cols, $headers, $aligns);
@@ -92,10 +92,9 @@ function print_bank_transactions()
 	$trans = get_bank_transactions($from, $to, $account['id']);
 
 	$rows = db_num_rows($trans);
-	if ($prev_balance != 0.0 || $rows != 0)
-	{
+	if ($prev_balance != 0.0 || $rows != 0) {
 		$rep->Font('bold');
-		$rep->TextCol(0, 3,	$act);
+		$rep->TextCol(0, 3, $act);
 		$rep->TextCol(3, 5, _('Opening Balance'));
 		if ($prev_balance > 0.0)
 			$rep->AmountCol(5, 6, abs($prev_balance), $dec);
@@ -104,23 +103,21 @@ function print_bank_transactions()
 		$rep->Font();
 		$total = $prev_balance;
 		$rep->NewLine(2);
-		if ($rows > 0)
-		{
+		if ($rows > 0) {
 			// Keep a running total as we loop through
 			// the transactions.
-			$total_debit = $total_credit = 0;			
-			
-			while ($myrow=db_fetch($trans))
+			$total_debit = $total_credit = 0;
+
+			while ($myrow = db_fetch($trans))
 			{
 				$total += $myrow['amount'];
 
 				$rep->TextCol(0, 1, $systypes_array[$myrow["type"]]);
-				$rep->TextCol(1, 2,	$myrow['trans_no']);
-				$rep->TextCol(2, 3,	$myrow['ref']);
-				$rep->DateCol(3, 4,	$myrow["trans_date"], true);
-				$rep->TextCol(4, 5,	payment_person_name($myrow["person_type_id"],$myrow["person_id"], false));
-				if ($myrow['amount'] > 0.0)
-				{
+				$rep->TextCol(1, 2, $myrow['trans_no']);
+				$rep->TextCol(2, 3, $myrow['ref']);
+				$rep->DateCol(3, 4, $myrow["trans_date"], true);
+				$rep->TextCol(4, 5, payment_person_name($myrow["person_type_id"], $myrow["person_id"], false));
+				if ($myrow['amount'] > 0.0) {
 					$rep->AmountCol(5, 6, abs($myrow['amount']), $dec);
 					$total_debit += abs($myrow['amount']);
 				}
@@ -131,15 +128,14 @@ function print_bank_transactions()
 				}
 				$rep->AmountCol(7, 8, $total, $dec);
 				$rep->NewLine();
-				if ($rep->row < $rep->bottomMargin + $rep->lineHeight)
-				{
+				if ($rep->row < $rep->bottomMargin + $rep->lineHeight) {
 					$rep->Line($rep->row - 2);
 					$rep->Header();
 				}
 			}
 			$rep->NewLine();
 		}
-		
+
 		// Print totals for the debit and credit columns.
 		$rep->TextCol(3, 5, _("Total Debit / Credit"));
 		$rep->AmountCol(5, 6, $total_debit, $dec);
@@ -147,7 +143,7 @@ function print_bank_transactions()
 		$rep->NewLine(2);
 
 		$rep->Font('bold');
-		$rep->TextCol(3, 5,	_("Ending Balance"));
+		$rep->TextCol(3, 5, _("Ending Balance"));
 		if ($total > 0.0)
 			$rep->AmountCol(5, 6, abs($total), $dec);
 		else
@@ -155,9 +151,9 @@ function print_bank_transactions()
 		$rep->Font();
 		$rep->Line($rep->row - $rep->lineHeight + 4);
 		$rep->NewLine(2, 1);
-		
+
 		// Print the difference between starting and ending balances.
-		$net_change = ($total - $prev_balance); 
+		$net_change = ($total - $prev_balance);
 		$rep->TextCol(3, 5, _("Net Change"));
 		if ($total > 0.0)
 			$rep->AmountCol(5, 6, $net_change, $dec, 0, 0, 0, 0, null, 1, True);

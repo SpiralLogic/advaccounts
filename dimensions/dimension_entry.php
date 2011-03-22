@@ -1,14 +1,14 @@
 <?php
 /**********************************************************************
-    Copyright (C) FrontAccounting, LLC.
-	Released under the terms of the GNU General Public License, GPL, 
-	as published by the Free Software Foundation, either version 3 
-	of the License, or (at your option) any later version.
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
-    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
-***********************************************************************/
+Copyright (C) FrontAccounting, LLC.
+Released under the terms of the GNU General Public License, GPL,
+as published by the Free Software Foundation, either version 3
+of the License, or (at your option) any later version.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+ ***********************************************************************/
 $page_security = 'SA_DIMENSION';
 $path_to_root = "..";
 include_once($path_to_root . "/includes/session.inc");
@@ -28,11 +28,10 @@ page(_($help_context = "Dimension Entry"), false, false, "", $js);
 
 //---------------------------------------------------------------------------------------
 
-if (isset($_GET['trans_no']))
-{
+if (isset($_GET['trans_no'])) {
 	$selected_id = $_GET['trans_no'];
-} 
-elseif(isset($_POST['selected_id']))
+}
+elseif (isset($_POST['selected_id']))
 {
 	$selected_id = $_POST['selected_id'];
 }
@@ -40,8 +39,7 @@ else
 	$selected_id = -1;
 //---------------------------------------------------------------------------------------
 
-if (isset($_GET['AddedID'])) 
-{
+if (isset($_GET['AddedID'])) {
 	$id = $_GET['AddedID'];
 
 	display_notification_centered(_("The dimension has been entered."));
@@ -51,8 +49,7 @@ if (isset($_GET['AddedID']))
 
 //---------------------------------------------------------------------------------------
 
-if (isset($_GET['UpdatedID'])) 
-{
+if (isset($_GET['UpdatedID'])) {
 	$id = $_GET['UpdatedID'];
 
 	display_notification_centered(_("The dimension has been updated."));
@@ -61,8 +58,7 @@ if (isset($_GET['UpdatedID']))
 
 //---------------------------------------------------------------------------------------
 
-if (isset($_GET['DeletedID'])) 
-{
+if (isset($_GET['DeletedID'])) {
 	$id = $_GET['DeletedID'];
 
 	display_notification_centered(_("The dimension has been deleted."));
@@ -71,8 +67,7 @@ if (isset($_GET['DeletedID']))
 
 //---------------------------------------------------------------------------------------
 
-if (isset($_GET['ClosedID'])) 
-{
+if (isset($_GET['ClosedID'])) {
 	$id = $_GET['ClosedID'];
 
 	display_notification_centered(_("The dimension has been closed. There can be no more changes to it.") . " #$id");
@@ -81,8 +76,7 @@ if (isset($_GET['ClosedID']))
 
 //---------------------------------------------------------------------------------------
 
-if (isset($_GET['ReopenedID'])) 
-{
+if (isset($_GET['ReopenedID'])) {
 	$id = $_GET['ReopenedID'];
 
 	display_notification_centered(_("The dimension has been re-opened. ") . " #$id");
@@ -108,41 +102,35 @@ function can_process()
 {
 	global $selected_id, $Refs;
 
-	if ($selected_id == -1) 
-	{
+	if ($selected_id == -1) {
 
-    	if (!$Refs->is_valid($_POST['ref'])) 
-    	{
-    		display_error( _("The dimension reference must be entered."));
+		if (!$Refs->is_valid($_POST['ref'])) {
+			display_error(_("The dimension reference must be entered."));
 			set_focus('ref');
-    		return false;
-    	}
+			return false;
+		}
 
-    	if (!is_new_reference($_POST['ref'], ST_DIMENSION)) 
-    	{
-    		display_error(_("The entered reference is already in use."));
+		if (!is_new_reference($_POST['ref'], ST_DIMENSION)) {
+			display_error(_("The entered reference is already in use."));
 			set_focus('ref');
-    		return false;
-    	}
+			return false;
+		}
 	}
 
-	if (strlen($_POST['name']) == 0) 
-	{
-		display_error( _("The dimension name must be entered."));
+	if (strlen($_POST['name']) == 0) {
+		display_error(_("The dimension name must be entered."));
 		set_focus('name');
 		return false;
 	}
 
-	if (!is_date($_POST['date_']))
-	{
-		display_error( _("The date entered is in an invalid format."));
+	if (!is_date($_POST['date_'])) {
+		display_error(_("The date entered is in an invalid format."));
 		set_focus('date_');
 		return false;
 	}
 
-	if (!is_date($_POST['due_date']))
-	{
-		display_error( _("The required by date entered is in an invalid format."));
+	if (!is_date($_POST['due_date'])) {
+		display_error(_("The required by date entered is in an invalid format."));
 		set_focus('due_date');
 		return false;
 	}
@@ -152,24 +140,23 @@ function can_process()
 
 //-------------------------------------------------------------------------------------
 
-if (isset($_POST['ADD_ITEM']) || isset($_POST['UPDATE_ITEM'])) 
-{
+if (isset($_POST['ADD_ITEM']) || isset($_POST['UPDATE_ITEM'])) {
 	if (!isset($_POST['dimension_tags']))
 		$_POST['dimension_tags'] = array();
-		
-	if (can_process()) 
-	{
 
-		if ($selected_id == -1) 
-		{
-			$id = add_dimension($_POST['ref'], $_POST['name'], $_POST['type_'], $_POST['date_'], $_POST['due_date'], $_POST['memo_']);
+	if (can_process()) {
+
+		if ($selected_id == -1) {
+			$id = add_dimension(
+				$_POST['ref'], $_POST['name'], $_POST['type_'], $_POST['date_'], $_POST['due_date'], $_POST['memo_']);
 			add_tag_associations($id, $_POST['dimension_tags']);
 			meta_forward($_SERVER['PHP_SELF'], "AddedID=$id");
-		} 
-		else 
+		}
+		else
 		{
 
-			update_dimension($selected_id, $_POST['name'], $_POST['type_'], $_POST['date_'], $_POST['due_date'], $_POST['memo_']);
+			update_dimension($selected_id, $_POST['name'], $_POST['type_'], $_POST['date_'], $_POST['due_date'],
+							 $_POST['memo_']);
 			update_tag_associations(TAG_DIMENSION, $selected_id, $_POST['dimension_tags']);
 
 			meta_forward($_SERVER['PHP_SELF'], "UpdatedID=$selected_id");
@@ -179,41 +166,36 @@ if (isset($_POST['ADD_ITEM']) || isset($_POST['UPDATE_ITEM']))
 
 //--------------------------------------------------------------------------------------
 
-if (isset($_POST['delete'])) 
-{
+if (isset($_POST['delete'])) {
 
 	$cancel_delete = false;
 
 	// can't delete it there are productions or issues
-	if (dimension_has_payments($selected_id) || dimension_has_deposits($selected_id))
-	{
+	if (dimension_has_payments($selected_id) || dimension_has_deposits($selected_id)) {
 		display_error(_("This dimension cannot be deleted because it has already been processed."));
 		set_focus('ref');
 		$cancel_delete = true;
 	}
 
-	if ($cancel_delete == false) 
-	{ //ie not cancelled the delete as a result of above tests
+	if ($cancel_delete == false) { //ie not cancelled the delete as a result of above tests
 
 		// delete
 		delete_dimension($selected_id);
-		delete_tag_associations(TAG_DIMENSION,$selected_id, true);
+		delete_tag_associations(TAG_DIMENSION, $selected_id, true);
 		meta_forward($_SERVER['PHP_SELF'], "DeletedID=$selected_id");
 	}
 }
 
 //-------------------------------------------------------------------------------------
 
-if (isset($_POST['close'])) 
-{
+if (isset($_POST['close'])) {
 
 	// update the closed flag
 	close_dimension($selected_id);
 	meta_forward($_SERVER['PHP_SELF'], "ClosedID=$selected_id");
 }
 
-if (isset($_POST['reopen'])) 
-{
+if (isset($_POST['reopen'])) {
 
 	// update the closed flag
 	reopen_dimension($selected_id);
@@ -225,12 +207,10 @@ start_form();
 
 start_table($table_style2);
 
-if ($selected_id != -1)
-{
+if ($selected_id != -1) {
 	$myrow = get_dimension($selected_id);
 
-	if (strlen($myrow[0]) == 0) 
-	{
+	if (strlen($myrow[0]) == 0) {
 		display_error(_("The dimension sent is not valid."));
 		display_footer_exit();
 	}
@@ -249,20 +229,20 @@ if ($selected_id != -1)
 	$_POST['date_'] = sql2date($myrow["date_"]);
 	$_POST['due_date'] = sql2date($myrow["due_date"]);
 	$_POST['memo_'] = get_comments_string(ST_DIMENSION, $selected_id);
-	
- 	$tags_result = get_tags_associated_with_record(TAG_DIMENSION, $selected_id);
- 	$tagids = array();
- 	while ($tag = db_fetch($tags_result)) 
- 	 	$tagids[] = $tag['id'];
- 	$_POST['dimension_tags'] = $tagids;	
+
+	$tags_result = get_tags_associated_with_record(TAG_DIMENSION, $selected_id);
+	$tagids = array();
+	while ($tag = db_fetch($tags_result))
+		$tagids[] = $tag['id'];
+	$_POST['dimension_tags'] = $tagids;
 
 	hidden('ref', $_POST['ref']);
 
 	label_row(_("Dimension Reference:"), $_POST['ref']);
 
 	hidden('selected_id', $selected_id);
-} 
-else 
+}
+else
 {
 	$_POST['dimension_tags'] = array();
 	ref_row(_("Dimension Reference:"), 'ref', '', $Refs->get_next(ST_DIMENSION));
@@ -287,13 +267,12 @@ end_table(1);
 if (isset($_POST['closed']) && $_POST['closed'] == 1)
 	display_note(_("This Dimension is closed."), 0, 0, "class='currentfg'");
 
-if ($selected_id != -1) 
-{
+if ($selected_id != -1) {
 	echo "<br>";
 	submit_center_first('UPDATE_ITEM', _("Update"), _('Save changes to dimension'), 'default');
 	if ($_POST['closed'] == 1)
 		submit('reopen', _("Re-open This Dimension"), true, _('Mark this dimension as re-opened'), true);
-	else	
+	else
 		submit('close', _("Close This Dimension"), true, _('Mark this dimension as closed'), true);
 	submit_center_last('delete', _("Delete This Dimension"), _('Delete unused dimension'), true);
 }

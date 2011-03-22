@@ -66,7 +66,8 @@ echo "<td align='center' colspan=2>";
 if (!$login_timeout) { // FA logo
 	echo "<a target='_blank' href='$power_url'><img src='$path_to_root/themes/$def_theme/images/logo_frontaccounting.png' alt='FrontAccounting' height='50' onload='fixPNG(this)' border='0' /></a>";
 } else {
-	echo "<font size=5>" . _('Authorization timeout') . "</font><br>You were idle for: ". ($_SESSION["wa_current_user"]->last_act + $tout - time());
+	echo "<font size=5>" . _('Authorization timeout') . "</font><br>You were idle for: " . (
+			$_SESSION["wa_current_user"]->last_act + $tout - time());
 }
 echo "</td>\n";
 end_row();
@@ -101,11 +102,11 @@ if ($login_timeout) {
 ;
 end_table(1);
 echo "<center><input type='submit' value='&nbsp;&nbsp;" . _("Login -->") . "&nbsp;&nbsp;' name='SubmitUser'"
-     . ($login_timeout ? '' : " onclick='set_fullmode();'") . " /></center>\n";
+	 . ($login_timeout ? '' : " onclick='set_fullmode();'") . " /></center>\n";
 foreach ($_SESSION['timeout']['post'] as $p => $val) {
 	// add all request variables to be resend together with login data
 	if (!in_array($p, array('ui_mode', 'user_name_entry_field',
-	                       'password', 'SubmitUser', 'company_login_name'))) {
+						   'password', 'SubmitUser', 'company_login_name'))) {
 		echo "<input type='hidden' name='$p' value='$val'>";
 	}
 }

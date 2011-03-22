@@ -1,14 +1,14 @@
 <?php
 /**********************************************************************
-    Copyright (C) FrontAccounting, LLC.
-	Released under the terms of the GNU General Public License, GPL, 
-	as published by the Free Software Foundation, either version 3 
-	of the License, or (at your option) any later version.
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
-    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
-***********************************************************************/
+Copyright (C) FrontAccounting, LLC.
+Released under the terms of the GNU General Public License, GPL,
+as published by the Free Software Foundation, either version 3
+of the License, or (at your option) any later version.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+ ***********************************************************************/
 //-----------------------------------------------------------------------------
 //
 //	Entry/Modify Delivery Note against Sales Order
@@ -47,7 +47,7 @@ page($_SESSION['page_title'], false, false, "", $js);
 if (isset($_GET['AddedID'])) {
 	$dispatch_no = $_GET['AddedID'];
 
-	display_notification_centered(sprintf(_("Delivery # %d has been entered."),$dispatch_no));
+	display_notification_centered(sprintf(_("Delivery # %d has been entered."), $dispatch_no));
 
 	display_note(get_customer_trans_view_str(ST_CUSTDELIVERY, $dispatch_no, _("&View This Delivery")), 0, 1);
 
@@ -56,7 +56,7 @@ if (isset($_GET['AddedID'])) {
 	display_note(print_document_link($dispatch_no, _("P&rint as Packing Slip"), true, ST_CUSTDELIVERY, false, "printlink", "", 0, 1));
 	display_note(print_document_link($dispatch_no, _("E&mail as Packing Slip"), true, ST_CUSTDELIVERY, false, "printlink", "", 1, 1), 1);
 
-	display_note(get_gl_view_str(13, $dispatch_no, _("View the GL Journal Entries for this Dispatch")),1);
+	display_note(get_gl_view_str(13, $dispatch_no, _("View the GL Journal Entries for this Dispatch")), 1);
 
 	hyperlink_params("$path_to_root/sales/customer_invoice.php", _("Invoice This Delivery"), "DeliveryNumber=$dispatch_no");
 
@@ -68,7 +68,7 @@ if (isset($_GET['AddedID'])) {
 
 	$delivery_no = $_GET['UpdatedID'];
 
-	display_notification_centered(sprintf(_('Delivery Note # %d has been updated.'),$delivery_no));
+	display_notification_centered(sprintf(_('Delivery Note # %d has been updated.'), $delivery_no));
 
 	display_note(get_trans_view_str(ST_CUSTDELIVERY, $delivery_no, _("View this delivery")), 0, 1);
 
@@ -93,7 +93,7 @@ if (isset($_GET['OrderNumber']) && $_GET['OrderNumber'] > 0) {
 
 	if ($ord->count_items() == 0) {
 		hyperlink_params($path_to_root . "/sales/inquiry/sales_orders_view.php",
-			_("Select a different sales order to delivery"), "OutstandingOnly=1");
+						 _("Select a different sales order to delivery"), "OutstandingOnly=1");
 		die ("<br><b>" . _("This order has no items. There is nothing to delivery.") . "</b>");
 	}
 
@@ -108,19 +108,19 @@ if (isset($_GET['OrderNumber']) && $_GET['OrderNumber'] > 0) {
 
 } elseif (isset($_GET['ModifyDelivery']) && $_GET['ModifyDelivery'] > 0) {
 
-	$_SESSION['Items'] = new Cart(ST_CUSTDELIVERY,$_GET['ModifyDelivery']);
+	$_SESSION['Items'] = new Cart(ST_CUSTDELIVERY, $_GET['ModifyDelivery']);
 
 	if ($_SESSION['Items']->count_items() == 0) {
 		hyperlink_params($path_to_root . "/sales/inquiry/sales_orders_view.php",
-			_("Select a different delivery"), "OutstandingOnly=1");
+						 _("Select a different delivery"), "OutstandingOnly=1");
 		echo "<br><center><b>" . _("This delivery has all items invoiced. There is nothing to modify.") .
-			"</center></b>";
+			 "</center></b>";
 		display_footer_exit();
 	}
 
 	copy_from_cart();
-	
-} elseif ( !processing_active() ) {
+
+} elseif (!processing_active()) {
 	/* This page can only be called with an order number for invoicing*/
 
 	display_error(_("This page can only be opened if an order or delivery note has been selected. Please select it first."));
@@ -136,7 +136,7 @@ if (isset($_GET['OrderNumber']) && $_GET['OrderNumber'] > 0) {
 	if (!check_quantities()) {
 		display_error(_("Selected quantity cannot be less than quantity invoiced nor more than quantity	not dispatched on sales order."));
 
-	} elseif(!check_num('ChargeFreightCost', 0)) {
+	} elseif (!check_num('ChargeFreightCost', 0)) {
 		display_error(_("Freight cost cannot be less than zero"));
 		set_focus('ChargeFreightCost');
 	}
@@ -148,7 +148,7 @@ function check_data()
 {
 	global $Refs;
 
-	if (!isset($_POST['DispatchDate']) || !is_date($_POST['DispatchDate']))	{
+	if (!isset($_POST['DispatchDate']) || !is_date($_POST['DispatchDate'])) {
 		display_error(_("The entered date of delivery is invalid."));
 		set_focus('DispatchDate');
 		return false;
@@ -160,20 +160,20 @@ function check_data()
 		return false;
 	}
 
-	if (!isset($_POST['due_date']) || !is_date($_POST['due_date']))	{
+	if (!isset($_POST['due_date']) || !is_date($_POST['due_date'])) {
 		display_error(_("The entered dead-line for invoice is invalid."));
 		set_focus('due_date');
 		return false;
 	}
 
-	if ($_SESSION['Items']->trans_no==0) {
+	if ($_SESSION['Items']->trans_no == 0) {
 		if (!$Refs->is_valid($_POST['ref'])) {
 			display_error(_("You must enter a reference."));
 			set_focus('ref');
 			return false;
 		}
 
-		if ($_SESSION['Items']->trans_no==0 && !is_new_reference($_POST['ref'], ST_CUSTDELIVERY)) {
+		if ($_SESSION['Items']->trans_no == 0 && !is_new_reference($_POST['ref'], ST_CUSTDELIVERY)) {
 			display_error(_("The entered reference is already in use."));
 			set_focus('ref');
 			return false;
@@ -183,7 +183,7 @@ function check_data()
 		$_POST['ChargeFreightCost'] = price_format(0);
 	}
 
-	if (!check_num('ChargeFreightCost',0)) {
+	if (!check_num('ChargeFreightCost', 0)) {
 		display_error(_("The entered shipping value is not numeric."));
 		set_focus('ChargeFreightCost');
 		return false;
@@ -200,6 +200,7 @@ function check_data()
 
 	return true;
 }
+
 //------------------------------------------------------------------------------
 function copy_to_cart()
 {
@@ -207,13 +208,14 @@ function copy_to_cart()
 	$cart->ship_via = $_POST['ship_via'];
 	$cart->freight_cost = input_num('ChargeFreightCost');
 	$cart->document_date = $_POST['DispatchDate'];
-	$cart->due_date =  $_POST['due_date'];
+	$cart->due_date = $_POST['due_date'];
 	$cart->Location = $_POST['Location'];
 	$cart->Comments = $_POST['Comments'];
 	if ($cart->trans_no == 0)
 		$cart->reference = $_POST['ref'];
 
 }
+
 //------------------------------------------------------------------------------
 
 function copy_from_cart()
@@ -228,51 +230,53 @@ function copy_from_cart()
 	$_POST['cart_id'] = $cart->cart_id;
 	$_POST['ref'] = $cart->reference;
 }
+
 //------------------------------------------------------------------------------
 
 function check_quantities()
 {
-	$ok =1;
+	$ok = 1;
 	// Update cart delivery quantities/descriptions
-	foreach ($_SESSION['Items']->line_items as $line=>$itm) {
-		if (isset($_POST['Line'.$line])) {
-		if($_SESSION['Items']->trans_no) {
-			$min = $itm->qty_done;
-			$max = $itm->quantity;
-		} else {
-			$min = 0;
-			$max = $itm->quantity - $itm->qty_done;
-		}
-		
-			if (check_num('Line'.$line, $min, $max)) {
-				$_SESSION['Items']->line_items[$line]->qty_dispatched =
-				  input_num('Line'.$line);
+	foreach ($_SESSION['Items']->line_items as $line => $itm) {
+		if (isset($_POST['Line' . $line])) {
+			if ($_SESSION['Items']->trans_no) {
+				$min = $itm->qty_done;
+				$max = $itm->quantity;
 			} else {
-				set_focus('Line'.$line);
+				$min = 0;
+				$max = $itm->quantity - $itm->qty_done;
+			}
+
+			if (check_num('Line' . $line, $min, $max)) {
+				$_SESSION['Items']->line_items[$line]->qty_dispatched =
+						input_num('Line' . $line);
+			} else {
+				set_focus('Line' . $line);
 				$ok = 0;
 			}
 
 		}
 
-		if (isset($_POST['Line'.$line.'Desc'])) {
-			$line_desc = $_POST['Line'.$line.'Desc'];
+		if (isset($_POST['Line' . $line . 'Desc'])) {
+			$line_desc = $_POST['Line' . $line . 'Desc'];
 			if (strlen($line_desc) > 0) {
 				$_SESSION['Items']->line_items[$line]->item_description = $line_desc;
 			}
 		}
 	}
-// ...
-//	else
-//	  $_SESSION['Items']->freight_cost = input_num('ChargeFreightCost');
+	// ...
+	//	else
+	//	  $_SESSION['Items']->freight_cost = input_num('ChargeFreightCost');
 	return $ok;
 }
+
 //------------------------------------------------------------------------------
 
 function check_qoh()
 {
 	global $SysPrefs;
 
-	if (!$SysPrefs->allow_negative_stock())	{
+	if (!$SysPrefs->allow_negative_stock()) {
 		foreach ($_SESSION['Items']->line_items as $itm) {
 
 			if ($itm->qty_dispatched && has_stock_holding($itm->mb_flag)) {
@@ -280,7 +284,7 @@ function check_qoh()
 
 				if ($itm->qty_dispatched > $qoh) {
 					display_error(_("The delivery cannot be processed because there is an insufficient quantity for item:") .
-						" " . $itm->stock_id . " - " .  $itm->item_description);
+								  " " . $itm->stock_id . " - " . $itm->item_description);
 					return false;
 				}
 			}
@@ -288,6 +292,7 @@ function check_qoh()
 	}
 	return true;
 }
+
 //------------------------------------------------------------------------------
 
 if (isset($_POST['process_delivery']) && check_data() && check_qoh()) {
@@ -334,13 +339,14 @@ start_row();
 //if (!isset($_POST['ref']))
 //	$_POST['ref'] = $Refs->get_next(ST_CUSTDELIVERY);
 
-if ($_SESSION['Items']->trans_no==0) {
+if ($_SESSION['Items']->trans_no == 0) {
 	ref_cells(_("Reference"), 'ref', '', null, "class='tableheader2'");
 } else {
 	label_cells(_("Reference"), $_SESSION['Items']->reference, "class='tableheader2'");
 }
 
-label_cells(_("For Sales Order"), get_customer_trans_view_str(ST_SALESORDER, $_SESSION['Items']->order_no), "class='tableheader2'");
+label_cells(_("For Sales Order"), get_customer_trans_view_str(ST_SALESORDER,
+															  $_SESSION['Items']->order_no), "class='tableheader2'");
 
 label_cells(_("Sales Type"), $_SESSION['Items']->sales_type_name, "class='tableheader2'");
 end_row();
@@ -365,12 +371,12 @@ if (!isset($_POST['DispatchDate']) || !is_date($_POST['DispatchDate'])) {
 		$_POST['DispatchDate'] = end_fiscalyear();
 	}
 }
-date_cells(_("Date"), 'DispatchDate', '', $_SESSION['Items']->trans_no==0, 0, 0, 0, "class='tableheader2'");
+date_cells(_("Date"), 'DispatchDate', '', $_SESSION['Items']->trans_no == 0, 0, 0, 0, "class='tableheader2'");
 end_row();
 
 end_table();
 
-echo "</td><td>";// outer table
+echo "</td><td>"; // outer table
 
 start_table("$table_style width=90%");
 
@@ -386,28 +392,27 @@ echo "</td></tr>";
 end_table(1); // outer table
 
 $row = get_customer_to_order($_SESSION['Items']->customer_id);
-if ($row['dissallow_invoices'] == 1)
-{
+if ($row['dissallow_invoices'] == 1) {
 	display_error(_("The selected customer account is currently on hold. Please contact the credit control personnel to discuss."));
 	end_form();
 	end_page();
 	exit();
-}	
+}
 display_heading(_("Delivery Items"));
 div_start('Items');
 start_table("$table_style width=80%");
 
-$new = $_SESSION['Items']->trans_no==0;
-$th = array(_("Item Code"), _("Item Description"), 
-	$new ? _("Ordered") : _("Max. delivery"), _("Units"), $new ? _("Delivered") : _("Invoiced"),
-	_("This Delivery"), _("Price"), _("Tax Type"), _("Discount"), _("Total"));
+$new = $_SESSION['Items']->trans_no == 0;
+$th = array(_("Item Code"), _("Item Description"),
+			$new ? _("Ordered") : _("Max. delivery"), _("Units"), $new ? _("Delivered") : _("Invoiced"),
+			_("This Delivery"), _("Price"), _("Tax Type"), _("Discount"), _("Total"));
 
 table_header($th);
 $k = 0;
 $has_marked = false;
 
-foreach ($_SESSION['Items']->line_items as $line=>$ln_itm) {
-	if ($ln_itm->quantity==$ln_itm->qty_done) {
+foreach ($_SESSION['Items']->line_items as $line => $ln_itm) {
+	if ($ln_itm->quantity == $ln_itm->qty_done) {
 		continue; //this line is fully delivered
 	}
 	// if it's a non-stock item (eg. service) don't show qoh
@@ -430,15 +435,15 @@ foreach ($_SESSION['Items']->line_items as $line=>$ln_itm) {
 	}
 	view_stock_status_cell($ln_itm->stock_id);
 
-	text_cells(null, 'Line'.$line.'Desc', $ln_itm->item_description, 30, 50);
+	text_cells(null, 'Line' . $line . 'Desc', $ln_itm->item_description, 30, 50);
 	$dec = get_qty_dec($ln_itm->stock_id);
 	qty_cell($ln_itm->quantity, false, $dec);
 	label_cell($ln_itm->units);
 	qty_cell($ln_itm->qty_done, false, $dec);
 
-	small_qty_cells(null, 'Line'.$line, qty_format($ln_itm->qty_dispatched, $ln_itm->stock_id, $dec), null, null, $dec);
+	small_qty_cells(null, 'Line' . $line, qty_format($ln_itm->qty_dispatched, $ln_itm->stock_id, $dec), null, null, $dec);
 
-	$display_discount_percent = percent_format($ln_itm->discount_percent*100) . "%";
+	$display_discount_percent = percent_format($ln_itm->discount_percent * 100) . "%";
 
 	$line_total = ($ln_itm->qty_dispatched * $ln_itm->price * (1 - $ln_itm->discount_percent));
 
@@ -450,8 +455,8 @@ foreach ($_SESSION['Items']->line_items as $line=>$ln_itm) {
 	end_row();
 }
 
-$_POST['ChargeFreightCost'] =  get_post('ChargeFreightCost', 
-	price_format($_SESSION['Items']->freight_cost));
+$_POST['ChargeFreightCost'] = get_post('ChargeFreightCost',
+									   price_format($_SESSION['Items']->freight_cost));
 
 $colspan = 9;
 
@@ -464,14 +469,14 @@ $inv_items_total = $_SESSION['Items']->get_items_total_dispatch();
 
 $display_sub_total = price_format($inv_items_total + input_num('ChargeFreightCost'));
 
-label_row(_("Sub-total"), $display_sub_total, "colspan=$colspan align=right","align=right");
+label_row(_("Sub-total"), $display_sub_total, "colspan=$colspan align=right", "align=right");
 
 $taxes = $_SESSION['Items']->get_taxes(input_num('ChargeFreightCost'));
 $tax_total = display_edit_tax_items($taxes, $colspan, $_SESSION['Items']->tax_included);
 
 $display_total = price_format(($inv_items_total + input_num('ChargeFreightCost') + $tax_total));
 
-label_row(_("Amount Total"), $display_total, "colspan=$colspan align=right","align=right");
+label_row(_("Amount Total"), $display_total, "colspan=$colspan align=right", "align=right");
 
 end_table(1);
 
@@ -487,9 +492,9 @@ textarea_row(_("Memo"), 'Comments', null, 50, 4);
 end_table(1);
 div_end();
 submit_center_first('Update', _("Update"),
-  _('Refresh document page'), true);
+					_('Refresh document page'), true);
 submit_center_last('process_delivery', _("Process Dispatch"),
-  _('Check entered data and save document'), 'default');
+				   _('Check entered data and save document'), 'default');
 
 end_form();
 

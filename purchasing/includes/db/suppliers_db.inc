@@ -9,7 +9,8 @@ but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
  ***********************************************************************/
-function get_supplier_details($supplier_id, $to = null) {
+function get_supplier_details($supplier_id, $to = null)
+{
 
 	if ($to == null)
 		$todate = date("Y-m-d");
@@ -83,8 +84,9 @@ function get_supplier_details($supplier_id, $to = null) {
 /**
  *	 Get how much we owe the supplier for the period
  */
-function get_supplier_oweing($supplier_id, $date_from, $date_to) {
-global $show_sql;
+function get_supplier_oweing($supplier_id, $date_from, $date_to)
+{
+	global $show_sql;
 	$date_from = date2sql($date_from);
 	$date_to = date2sql($date_to);
 	// Sherifoz 22.06.03 Also get the description
@@ -108,7 +110,8 @@ global $show_sql;
 }
 
 
-function get_supplier($supplier_id) {
+function get_supplier($supplier_id)
+{
 	$sql = "SELECT * FROM " . TB_PREF . "suppliers WHERE supplier_id=" . db_escape($supplier_id);
 
 	$result = db_query($sql, "could not get supplier");
@@ -116,7 +119,8 @@ function get_supplier($supplier_id) {
 	return db_fetch($result);
 }
 
-function get_supplier_name($supplier_id) {
+function get_supplier_name($supplier_id)
+{
 	$sql = "SELECT supp_name AS name FROM " . TB_PREF . "suppliers WHERE supplier_id=" . db_escape($supplier_id);
 
 	$result = db_query($sql, "could not get supplier");
@@ -126,7 +130,8 @@ function get_supplier_name($supplier_id) {
 	return $row[0];
 }
 
-function get_supplier_accounts($supplier_id) {
+function get_supplier_accounts($supplier_id)
+{
 	$sql = "SELECT payable_account,purchase_account,payment_discount_account FROM " . TB_PREF . "suppliers WHERE supplier_id=" . db_escape($supplier_id);
 
 	$result = db_query($sql, "could not get supplier");

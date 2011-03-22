@@ -1,14 +1,14 @@
 <?php
 /**********************************************************************
-    Copyright (C) FrontAccounting, LLC.
-	Released under the terms of the GNU General Public License, GPL, 
-	as published by the Free Software Foundation, either version 3 
-	of the License, or (at your option) any later version.
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
-    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
-***********************************************************************/
+Copyright (C) FrontAccounting, LLC.
+Released under the terms of the GNU General Public License, GPL,
+as published by the Free Software Foundation, either version 3
+of the License, or (at your option) any later version.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+ ***********************************************************************/
 include_once($path_to_root . "/includes/prefs/sysprefs.inc");
 include_once($path_to_root . "/inventory/includes/inventory_db.inc");
 
@@ -18,7 +18,7 @@ class items_cart
 	var $line_items;
 	var $gl_items;
 
-	var	$order_id;
+	var $order_id;
 
 	var $editing_item, $deleting_item;
 
@@ -31,7 +31,7 @@ class items_cart
 	var $person_id;
 	var $branch_id;
 	var $reference;
-	
+
 	function items_cart($type)
 	{
 		$this->trans_type = $type;
@@ -40,11 +40,10 @@ class items_cart
 
 	// --------------- line item functions
 
-	function add_to_cart($line_no, $stock_id, $qty, $standard_cost, $description=null)
+	function add_to_cart($line_no, $stock_id, $qty, $standard_cost, $description = null)
 	{
 
-		if (isset($stock_id) && $stock_id != "" && isset($qty))
-		{
+		if (isset($stock_id) && $stock_id != "" && isset($qty)) {
 			$this->line_items[$line_no] = new line_item($stock_id, $qty,
 				$standard_cost, $description);
 			return true;
@@ -60,7 +59,7 @@ class items_cart
 
 	function find_cart_item($stock_id)
 	{
-		foreach($this->line_items as $line_no=>$line) {
+		foreach ($this->line_items as $line_no => $line) {
 			if ($line->stock_id == $stock_id)
 				return $this->line_items[$line_no];
 		}
@@ -83,7 +82,7 @@ class items_cart
 		return count($this->line_items);
 	}
 
-	function check_qoh($location, $date_, $reverse=false)
+	function check_qoh($location, $date_, $reverse = false)
 	{
 		foreach ($this->line_items as $line_no => $line_item)
 		{
@@ -96,11 +95,10 @@ class items_cart
 
 	// ----------- GL item functions
 
-	function add_gl_item($code_id, $dimension_id, $dimension2_id, $amount, $reference, $description=null)
+	function add_gl_item($code_id, $dimension_id, $dimension2_id, $amount, $reference, $description = null)
 	{
-		if (isset($code_id) && $code_id != "" && isset($amount) && isset($dimension_id)  &&
-			isset($dimension2_id))
-		{
+		if (isset($code_id) && $code_id != "" && isset($amount) && isset($dimension_id) &&
+			isset($dimension2_id)) {
 			$this->gl_items[] = new gl_item($code_id, $dimension_id, $dimension2_id, $amount, $reference, $description);
 			return true;
 		}
@@ -113,9 +111,9 @@ class items_cart
 		return false;
 	}
 
-	function update_gl_item($index, $code_id, $dimension_id, $dimension2_id, $amount, $reference, $description=null)
+	function update_gl_item($index, $code_id, $dimension_id, $dimension2_id, $amount, $reference, $description = null)
 	{
-	    $this->gl_items[$index]->code_id = $code_id;
+		$this->gl_items[$index]->code_id = $code_id;
 		$this->gl_items[$index]->dimension_id = $dimension_id;
 		$this->gl_items[$index]->dimension2_id = $dimension2_id;
 		$this->gl_items[$index]->amount = $amount;
@@ -171,10 +169,10 @@ class items_cart
 
 	function clear_items()
 	{
-    	unset($this->line_items);
+		unset($this->line_items);
 		$this->line_items = array();
 
-    	unset($this->gl_items);
+		unset($this->gl_items);
 		$this->gl_items = array();
 
 	}
@@ -193,7 +191,7 @@ class line_item
 	var $price;
 	var $standard_cost;
 
-	function line_item ($stock_id, $qty, $standard_cost=null, $description=null)
+	function line_item($stock_id, $qty, $standard_cost = null, $description = null)
 	{
 		$item_row = get_item($stock_id);
 
@@ -222,11 +220,9 @@ class line_item
 	function check_qoh($location, $date_, $reverse)
 	{
 		global $SysPrefs;
-		
-    	if (!$SysPrefs->allow_negative_stock())
-    	{
-			if (has_stock_holding($this->mb_flag))
-			{
+
+		if (!$SysPrefs->allow_negative_stock()) {
+			if (has_stock_holding($this->mb_flag)) {
 				$quantity = $this->quantity;
 				if ($reverse)
 					$quantity = -$this->quantity;
@@ -235,14 +231,13 @@ class line_item
 					return null;
 
 				$qoh = get_qoh_on_date($this->stock_id, $location, $date_);
-        		if ($quantity + $qoh < 0)
-        		{
-        			return $this;
-        		}
-    		}
-    	}
+				if ($quantity + $qoh < 0) {
+					return $this;
+				}
+			}
+		}
 
-    	return null;
+		return null;
 	}
 }
 
@@ -259,7 +254,7 @@ class gl_item
 	var $description;
 
 	function gl_item($code_id, $dimension_id, $dimension2_id, $amount, $reference,
-		$description=null)
+		$description = null)
 	{
 		//echo "adding $index, $code_id, $dimension_id, $amount, $reference<br>";
 

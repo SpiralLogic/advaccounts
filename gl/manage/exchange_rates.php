@@ -1,14 +1,14 @@
 <?php
 /**********************************************************************
-    Copyright (C) FrontAccounting, LLC.
-	Released under the terms of the GNU General Public License, GPL, 
-	as published by the Free Software Foundation, either version 3 
-	of the License, or (at your option) any later version.
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
-    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
-***********************************************************************/
+Copyright (C) FrontAccounting, LLC.
+Released under the terms of the GNU General Public License, GPL,
+as published by the Free Software Foundation, either version 3
+of the License, or (at your option) any later version.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+ ***********************************************************************/
 $page_security = 'SA_EXCHANGERATE';
 $path_to_root = "../..";
 include($path_to_root . "/includes/db_pager.inc");
@@ -28,21 +28,18 @@ simple_page_mode(false);
 //---------------------------------------------------------------------------------------------
 function check_data()
 {
-	if (!is_date($_POST['date_']))
-	{
-		display_error( _("The entered date is invalid."));
+	if (!is_date($_POST['date_'])) {
+		display_error(_("The entered date is invalid."));
 		set_focus('date_');
 		return false;
 	}
-	if (input_num('BuyRate') <= 0)
-	{
-		display_error( _("The exchange rate cannot be zero or a negative number."));
+	if (input_num('BuyRate') <= 0) {
+		display_error(_("The exchange rate cannot be zero or a negative number."));
 		set_focus('BuyRate');
 		return false;
 	}
-	if (get_date_exchange_rate($_POST['curr_abrev'], $_POST['date_']))
-	{
-		display_error( _("The exchange rate for the date is already there."));
+	if (get_date_exchange_rate($_POST['curr_abrev'], $_POST['date_'])) {
+		display_error(_("The exchange rate for the date is already there."));
 		set_focus('date_');
 		return false;
 	}
@@ -58,17 +55,16 @@ function handle_submit()
 	if (!check_data())
 		return false;
 
-	if ($selected_id != "")
-	{
+	if ($selected_id != "") {
 
 		update_exchange_rate($_POST['curr_abrev'], $_POST['date_'],
-		input_num('BuyRate'), input_num('BuyRate'));
+							 input_num('BuyRate'), input_num('BuyRate'));
 	}
 	else
 	{
 
 		add_exchange_rate($_POST['curr_abrev'], $_POST['date_'],
-		    input_num('BuyRate'), input_num('BuyRate'));
+						  input_num('BuyRate'), input_num('BuyRate'));
 	}
 
 	$selected_id = '';
@@ -89,14 +85,14 @@ function handle_delete()
 }
 
 //---------------------------------------------------------------------------------------------
-function edit_link($row) 
+function edit_link($row)
 {
-  return button('Edit'.$row["id"], _("Edit"), true, ICON_EDIT);
+	return button('Edit' . $row["id"], _("Edit"), true, ICON_EDIT);
 }
 
-function del_link($row) 
+function del_link($row)
 {
-  return button('Delete'.$row["id"], _("Delete"), true, ICON_DELETE);
+	return button('Delete' . $row["id"], _("Delete"), true, ICON_DELETE);
 }
 
 function display_rates($curr_code)
@@ -113,8 +109,7 @@ function display_rate_edit()
 
 	start_table($table_style2);
 
-	if ($selected_id != "")
-	{
+	if ($selected_id != "") {
 		//editing an existing exchange rate
 
 		$myrow = get_exchange_rate($selected_id);
@@ -133,15 +128,14 @@ function display_rate_edit()
 		$_POST['BuyRate'] = '';
 		date_row(_("Date to Use From:"), 'date_');
 	}
-	if (isset($_POST['get_rate']))
-	{
-		$_POST['BuyRate'] = 
-			exrate_format(retrieve_exrate($_POST['curr_abrev'], $_POST['date_']));
+	if (isset($_POST['get_rate'])) {
+		$_POST['BuyRate'] =
+				exrate_format(retrieve_exrate($_POST['curr_abrev'], $_POST['date_']));
 		$Ajax->activate('BuyRate');
 	}
 	small_amount_row(_("Exchange Rate:"), 'BuyRate', null, '',
-	  	submit('get_rate',_("Get"), false, _('Get current ECB rate') , true),
-		user_exrate_dec());
+					 submit('get_rate', _("Get"), false, _('Get current ECB rate'), true),
+					 user_exrate_dec());
 
 	end_table(1);
 
@@ -161,7 +155,7 @@ function clear_data()
 
 //---------------------------------------------------------------------------------------------
 
-if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM') 
+if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM')
 	handle_submit();
 
 //---------------------------------------------------------------------------------------------
@@ -183,8 +177,7 @@ echo currencies_list('curr_abrev', null, true);
 echo "</center>";
 
 // if currency sel has changed, clear the form
-if ($_POST['curr_abrev'] != get_global_curr_code())
-{
+if ($_POST['curr_abrev'] != get_global_curr_code()) {
 	clear_data();
 	$selected_id = "";
 }
@@ -192,20 +185,19 @@ if ($_POST['curr_abrev'] != get_global_curr_code())
 set_global_curr_code($_POST['curr_abrev']);
 
 $sql = "SELECT date_, rate_buy, id FROM "
-	.TB_PREF."exchange_rates "
-	."WHERE curr_code=".db_escape($_POST['curr_abrev'])."
+	   . TB_PREF . "exchange_rates "
+	   . "WHERE curr_code=" . db_escape($_POST['curr_abrev']) . "
 	 ORDER BY date_ DESC";
 
 $cols = array(
-	_("Date to Use From") => 'date', 
+	_("Date to Use From") => 'date',
 	_("Exchange Rate") => 'rate',
-	array('insert'=>true, 'fun'=>'edit_link'),
-	array('insert'=>true, 'fun'=>'del_link'),
+	array('insert' => true, 'fun' => 'edit_link'),
+	array('insert' => true, 'fun' => 'del_link'),
 );
 $table =& new_db_pager('orders_tbl', $sql, $cols);
 
-if (is_company_currency($_POST['curr_abrev']))
-{
+if (is_company_currency($_POST['curr_abrev'])) {
 
 	display_note(_("The selected currency is the company currency."), 2);
 	display_note(_("The company currency is the base currency so exchange rates cannot be set for it."), 1);
@@ -218,8 +210,8 @@ else
 	if ($table->rec_count == 0)
 		$table->ready = false;
 	display_db_pager($table);
-   	br(1);
-    display_rate_edit();
+	br(1);
+	display_rate_edit();
 }
 
 end_form();

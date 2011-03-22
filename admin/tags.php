@@ -1,14 +1,14 @@
 <?php
 /**********************************************************************
-    Copyright (C) FrontAccounting, LLC.
-	Released under the terms of the GNU General Public License, GPL, 
-	as published by the Free Software Foundation, either version 3 
-	of the License, or (at your option) any later version.
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
-    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
-***********************************************************************/
+Copyright (C) FrontAccounting, LLC.
+Released under the terms of the GNU General Public License, GPL,
+as published by the Free Software Foundation, either version 3
+of the License, or (at your option) any later version.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+ ***********************************************************************/
 $path_to_root = "..";
 include($path_to_root . "/includes/session.inc");
 include_once($path_to_root . "/includes/types.inc"); // For tag constants
@@ -18,7 +18,7 @@ include($path_to_root . "/includes/ui.inc");
 // Set up page security based on what type of tags we're working with
 if (@$_GET['type'] == "account" || get_post('type') == TAG_ACCOUNT) {
 	$page_security = 'SA_GLACCOUNTTAGS';
-} else if(@$_GET['type'] == "dimension" || get_post('type') == TAG_DIMENSION) {
+} else if (@$_GET['type'] == "dimension" || get_post('type') == TAG_DIMENSION) {
 	$page_security = 'SA_DIMTAGS';
 }
 
@@ -50,11 +50,10 @@ simple_page_mode(true);
 
 //-----------------------------------------------------------------------------------
 
-function can_process() 
+function can_process()
 {
-	if (strlen($_POST['name']) == 0) 
-	{
-		display_error( _("The tag name cannot be empty."));
+	if (strlen($_POST['name']) == 0) {
+		display_error(_("The tag name cannot be empty."));
 		set_focus('name');
 		return false;
 	}
@@ -63,20 +62,17 @@ function can_process()
 
 //-----------------------------------------------------------------------------------
 
-if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM') 
-{
-	if (can_process()) 
-	{
-    	if ($selected_id != -1) 
-    	{
-    		if( $ret = update_tag($selected_id, $_POST['name'], $_POST['description']))
+if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
+	if (can_process()) {
+		if ($selected_id != -1) {
+			if ($ret = update_tag($selected_id, $_POST['name'], $_POST['description']))
 				display_notification(_('Selected tag settings have been updated'));
-    	} 
-    	else 
-    	{
-    		if( $ret = add_tag($_POST['type'], $_POST['name'], $_POST['description']))
+		}
+		else
+		{
+			if ($ret = add_tag($_POST['type'], $_POST['name'], $_POST['description']))
 				display_notification(_('New tag has been added'));
-    	}
+		}
 		if ($ret) $Mode = 'RESET';
 	}
 }
@@ -88,9 +84,8 @@ function can_delete($selected_id)
 	if ($selected_id == -1)
 		return false;
 	$result = get_records_associated_with_tag($selected_id);
-	
-	if (db_num_rows($result) > 0)	
-	{
+
+	if (db_num_rows($result) > 0) {
 		display_error(_("Cannot delete this tag because records have been created referring to it."));
 		return false;
 	}
@@ -101,10 +96,8 @@ function can_delete($selected_id)
 
 //-----------------------------------------------------------------------------------
 
-if ($Mode == 'Delete')
-{
-	if (can_delete($selected_id))
-	{
+if ($Mode == 'Delete') {
+	if (can_delete($selected_id)) {
 		delete_tag($selected_id);
 		display_notification(_('Selected tag has been deleted'));
 	}
@@ -113,8 +106,7 @@ if ($Mode == 'Delete')
 
 //-----------------------------------------------------------------------------------
 
-if ($Mode == 'RESET')
-{
+if ($Mode == 'RESET') {
 	$selected_id = -1;
 	$_POST['name'] = $_POST['description'] = '';
 }
@@ -130,15 +122,15 @@ inactive_control_column($th);
 table_header($th);
 
 $k = 0;
-while ($myrow = db_fetch($result)) 
+while ($myrow = db_fetch($result))
 {
 	alt_table_row_color($k);
 
 	label_cell($myrow['name']);
 	label_cell($myrow['description']);
 	inactive_control_cell($myrow["id"], $myrow["inactive"], 'tags', 'id');
-	edit_button_cell("Edit".$myrow["id"], _("Edit"));
-	delete_button_cell("Delete".$myrow["id"], _("Delete"));
+	edit_button_cell("Edit" . $myrow["id"], _("Edit"));
+	delete_button_cell("Delete" . $myrow["id"], _("Delete"));
 	end_row();
 }
 
@@ -154,14 +146,14 @@ if ($selected_id != -1) // We've selected a tag
 	if ($Mode == 'Edit') {
 		// Editing an existing tag
 		$myrow = get_tag($selected_id);
-	
+
 		$_POST['name'] = $myrow["name"];
 		$_POST['description'] = $myrow["description"];
 	}
 	// Note the selected tag
 	hidden('selected_id', $selected_id);
 }
-	
+
 text_row_ex(_("Tag Name:"), 'name', 15, 30);
 text_row_ex(_("Tag Description:"), 'description', 40, 60);
 hidden('type');

@@ -27,11 +27,11 @@ include_once("$path_to_root/sales/includes/sales_db.inc");
 include_once("$path_to_root/sales/includes/db/sales_types_db.inc");
 include_once("$path_to_root/reporting/includes/reporting.inc");
 set_page_security(@$_SESSION['Items']->trans_type,
-	array(ST_SALESORDER => 'SA_SALESORDER', ST_SALESQUOTE => 'SA_SALESQUOTE',
-		ST_CUSTDELIVERY => 'SA_SALESDELIVERY', ST_SALESINVOICE => 'SA_SALESINVOICE'),
-	array('NewOrder' => 'SA_SALESORDER', 'ModifySalesOrder' => 'SA_SALESORDER',
-		'NewQuotation' => 'SA_SALESQUOTE', 'ModifyQuotationNumber' => 'SA_SALESQUOTE',
-		'NewDelivery' => 'SA_SALESDELIVERY', 'NewInvoice' => 'SA_SALESINVOICE'));
+				  array(ST_SALESORDER => 'SA_SALESORDER', ST_SALESQUOTE => 'SA_SALESQUOTE',
+					   ST_CUSTDELIVERY => 'SA_SALESDELIVERY', ST_SALESINVOICE => 'SA_SALESINVOICE'),
+				  array('NewOrder' => 'SA_SALESORDER', 'ModifySalesOrder' => 'SA_SALESORDER',
+					   'NewQuotation' => 'SA_SALESQUOTE', 'ModifyQuotationNumber' => 'SA_SALESQUOTE',
+					   'NewDelivery' => 'SA_SALESDELIVERY', 'NewInvoice' => 'SA_SALESINVOICE'));
 $js = '';
 if ($use_popup_windows) {
 	$js .= get_js_open_window(900, 500);
@@ -130,7 +130,8 @@ elseif (isset($_GET['UpdatedID'])) {
 	submenu_option(_("&Edit This Order"), "/sales/sales_order_entry.php?ModifyOrderNumber=$order_no");
 	submenu_print(_("&Print This Order"), ST_SALESORDER, $order_no, 'prtopt');
 	submenu_print(_("Print Proforma Invoice"), ST_PROFORMA, $order_no, 'prtopt');
-	submenu_print(_("&Email This Order") . " (to: " . $_SESSION['Jobsboard']->email . ")", ST_SALESORDER, $order_no, null, 1);
+	submenu_print(_("&Email This Order") . " (to: " .
+				  $_SESSION['Jobsboard']->email . ")", ST_SALESORDER, $order_no, null, 1);
 	submenu_print(_("Email Proforma Invoice"), ST_PROFORMA, $order_no, null, 1);
 	set_focus('prtopt');
 	submenu_option(_("Confirm Order Quantities and Make &Delivery"), "/sales/customer_delivery.php?OrderNumber=$order_no");
@@ -198,7 +199,7 @@ elseif (isset($_GET['UpdatedID'])) {
 	$row = db_fetch($result);
 	if ($row !== false) {
 		submenu_print(_("Print &Receipt"), $row['trans_type_from'],
-				$row['trans_no_from'] . "-" . $row['trans_type_from'], 'prtopt');
+					  $row['trans_no_from'] . "-" . $row['trans_type_from'], 'prtopt');
 	}
 	display_note(get_gl_view_str(ST_SALESINVOICE, $invoice, _("View the GL &Journal Entries for this Invoice")), 0, 1);
 	if ((isset($_GET['Type']) && $_GET['Type'] == 1)) {
@@ -216,7 +217,8 @@ else {
 	check_edit_conflicts();
 }
 //-----------------------------------------------------------------------------
-function copy_to_cart() {
+function copy_to_cart()
+{
 	$cart = &$_SESSION['Items'];
 	$cart->reference = $_POST['ref'];
 	$cart->Comments = $_POST['Comments'];
@@ -261,7 +263,8 @@ function copy_to_cart() {
 }
 
 //-----------------------------------------------------------------------------
-function copy_from_cart() {
+function copy_from_cart()
+{
 	$cart = &$_SESSION['Items'];
 	$_POST['ref'] = $cart->reference;
 	$_POST['Comments'] = $cart->Comments;
@@ -290,14 +293,16 @@ function copy_from_cart() {
 }
 
 //--------------------------------------------------------------------------------
-function line_start_focus() {
+function line_start_focus()
+{
 	global $Ajax;
 	$Ajax->activate('items_table');
 	set_focus('_stock_id_edit');
 }
 
 //--------------------------------------------------------------------------------
-function can_process() {
+function can_process()
+{
 	global $Refs;
 	if (!get_post('customer_id')) {
 		display_error(_("There is no customer selected."));
@@ -315,7 +320,7 @@ function can_process() {
 		return false;
 	}
 	if ($_SESSION['Items']->trans_type != ST_SALESORDER &&
-			$_SESSION['Items']->trans_type != ST_SALESQUOTE && !is_date_in_fiscalyear($_POST['OrderDate'])) {
+		$_SESSION['Items']->trans_type != ST_SALESQUOTE && !is_date_in_fiscalyear($_POST['OrderDate'])) {
 		display_error(_("The entered date is not in fiscal year"));
 		set_focus('OrderDate');
 		return false;
@@ -428,7 +433,8 @@ if (isset($_POST['update'])) {
 	$Ajax->activate('items_table');
 }
 //--------------------------------------------------------------------------------
-function check_item_data() {
+function check_item_data()
+{
 	global $SysPrefs;
 	if (!check_num('qty', 0) || !check_num('Disc', 0, 100)) {
 		display_error(_("The item could not be updated because you are attempting to set the quantity ordered to less than 0, or the discount percent to more than 100."));
@@ -441,7 +447,12 @@ function check_item_data() {
 		return false;
 	}
 	elseif (isset($_POST['LineNo']) && isset($_SESSION['Items']->line_items[$_POST['LineNo']]) && !check_num('qty',
-		$_SESSION['Items']->line_items[$_POST['LineNo']]->qty_done)) {
+																											 $_SESSION[
+																											 'Items'
+																											 ]->line_items[
+																											 $_POST[
+																											 'LineNo'
+																											 ]]->qty_done)) {
 		set_focus('qty');
 		display_error(_("You attempting to make the quantity ordered a quantity less than has already been delivered. The quantity delivered cannot be modified retrospectively."));
 		return false;
@@ -453,7 +464,8 @@ function check_item_data() {
 		if (input_num('qty') > $qoh) {
 			$stock = get_item($_POST['stock_id']);
 			display_error(_("The delivery cannot be processed because there is an insufficient quantity for item:") . " " .
-					$stock['stock_id'] . " - " . $stock['description'] . " - " . _("Quantity On Hand") . " = " . number_format2($qoh, get_qty_dec($_POST['stock_id'])));
+						  $stock['stock_id'] . " - " . $stock['description'
+			] . " - " . _("Quantity On Hand") . " = " . number_format2($qoh, get_qty_dec($_POST['stock_id'])));
 			return false;
 		}
 		return true;
@@ -462,7 +474,8 @@ function check_item_data() {
 }
 
 //--------------------------------------------------------------------------------
-function handle_update_item() {
+function handle_update_item()
+{
 	if ($_POST['UpdateItem'] != '' && check_item_data()) {
 		$_SESSION['Items']->update_cart_item(
 			$_POST['LineNo'], input_num('qty'), input_num('price'), input_num('Disc') / 100,
@@ -472,7 +485,8 @@ function handle_update_item() {
 }
 
 //--------------------------------------------------------------------------------
-function handle_delete_item($line_no) {
+function handle_delete_item($line_no)
+{
 	if ($_SESSION['Items']->some_already_delivered($line_no) == 0) {
 		$_SESSION['Items']->remove_from_cart($line_no);
 	}
@@ -483,19 +497,21 @@ function handle_delete_item($line_no) {
 }
 
 //--------------------------------------------------------------------------------
-function handle_new_item() {
+function handle_new_item()
+{
 	if (!check_item_data()) {
 		return;
 	}
 	add_to_order($_SESSION['Items'], $_POST['stock_id'], input_num('qty'), input_num('price'), input_num('Disc') / 100,
-		$_POST['stock_id_text']);
+				 $_POST['stock_id_text']);
 	$_POST['_stock_id_edit'] = $_POST['stock_id'] = "";
 	line_start_focus();
 
 }
 
 //--------------------------------------------------------------------------------
-function handle_cancel_order() {
+function handle_cancel_order()
+{
 	global $path_to_root, $Ajax;
 	if ($_SESSION['Items']->trans_type == ST_CUSTDELIVERY) {
 		display_notification(_("Direct delivery entry has been cancelled as requested."), 1);
@@ -507,7 +523,8 @@ function handle_cancel_order() {
 	}
 	else {
 		if ($_SESSION['Items']->trans_no != 0) {
-			if ($_SESSION['Items']->trans_type == ST_SALESORDER && sales_order_has_deliveries(key($_SESSION['Items']->trans_no))) {
+			if ($_SESSION['Items']->trans_type == ST_SALESORDER && sales_order_has_deliveries(key($_SESSION['Items'
+																								  ]->trans_no))) {
 				display_error(_("This order cannot be cancelled because some of it has already been invoiced or dispatched. However, the line item quantities may be modified."));
 			}
 			else {
@@ -533,7 +550,8 @@ function handle_cancel_order() {
 }
 
 //--------------------------------------------------------------------------------
-function create_cart($type, $trans_no) {
+function create_cart($type, $trans_no)
+{
 	global $Refs;
 	processing_start();
 	$doc_type = $type;

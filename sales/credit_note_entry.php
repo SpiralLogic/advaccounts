@@ -1,14 +1,14 @@
 <?php
 /**********************************************************************
-    Copyright (C) FrontAccounting, LLC.
-	Released under the terms of the GNU General Public License, GPL, 
-	as published by the Free Software Foundation, either version 3 
-	of the License, or (at your option) any later version.
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
-    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
-***********************************************************************/
+Copyright (C) FrontAccounting, LLC.
+Released under the terms of the GNU General Public License, GPL,
+as published by the Free Software Foundation, either version 3
+of the License, or (at your option) any later version.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+ ***********************************************************************/
 //---------------------------------------------------------------------------
 //
 //	Entry/Modify free hand Credit Note
@@ -33,7 +33,7 @@ if ($use_date_picker) {
 	$js .= get_js_date_picker();
 }
 
-if(isset($_GET['NewCredit'])) {
+if (isset($_GET['NewCredit'])) {
 	$_SESSION['page_title'] = _($help_context = "Customer Credit Note");
 	handle_new_credit(0);
 } elseif (isset($_GET['ModifyCredit'])) {
@@ -42,7 +42,7 @@ if(isset($_GET['NewCredit'])) {
 	$help_context = "Modifying Customer Credit Note";
 }
 
-page($_SESSION['page_title'],false, false, "", $js);
+page($_SESSION['page_title'], false, false, "", $js);
 
 //-----------------------------------------------------------------------------
 
@@ -63,12 +63,12 @@ if (isset($_GET['AddedID'])) {
 	$credit_no = $_GET['AddedID'];
 	$trans_type = ST_CUSTCREDIT;
 
-	display_notification_centered(sprintf(_("Credit Note # %d has been processed"),$credit_no));
+	display_notification_centered(sprintf(_("Credit Note # %d has been processed"), $credit_no));
 
 	display_note(get_customer_trans_view_str($trans_type, $credit_no, _("&View this credit note")), 0, 1);
 
-	display_note(print_document_link($credit_no, _("&Print This Credit Invoice"), true, ST_CUSTCREDIT),0, 1);
-	display_note(print_document_link($credit_no, _("&Email This Credit Invoice"), true, ST_CUSTCREDIT, false, "printlink", "", 1),0, 1);
+	display_note(print_document_link($credit_no, _("&Print This Credit Invoice"), true, ST_CUSTCREDIT), 0, 1);
+	display_note(print_document_link($credit_no, _("&Email This Credit Invoice"), true, ST_CUSTCREDIT, false, "printlink", "", 1), 0, 1);
 
 	display_note(get_gl_view_str($trans_type, $credit_no, _("View the GL &Journal Entries for this Credit Note")));
 
@@ -80,10 +80,11 @@ if (isset($_GET['AddedID'])) {
 
 //--------------------------------------------------------------------------------
 
-function line_start_focus() {
-  global $Ajax;
-  $Ajax->activate('items_table');
-  set_focus('_stock_id_edit');
+function line_start_focus()
+{
+	global $Ajax;
+	$Ajax->activate('items_table');
+	set_focus('_stock_id_edit');
 }
 
 //-----------------------------------------------------------------------------
@@ -124,7 +125,7 @@ function copy_from_cn()
 function handle_new_credit($trans_no)
 {
 	processing_start();
-	$_SESSION['Items'] = new Cart(11,$trans_no);
+	$_SESSION['Items'] = new Cart(11, $trans_no);
 	copy_from_cn();
 }
 
@@ -136,18 +137,18 @@ function can_process()
 
 	$input_error = 0;
 
-	if ($_SESSION['Items']->count_items() == 0 && (!check_num('ChargeFreightCost',0)))
+	if ($_SESSION['Items']->count_items() == 0 && (!check_num('ChargeFreightCost', 0)))
 		return false;
-	if($_SESSION['Items']->trans_no == 0) {
-	    if (!$Refs->is_valid($_POST['ref'])) {
-		display_error( _("You must enter a reference."));
-		set_focus('ref');
-		$input_error = 1;
-	    } elseif (!is_new_reference($_POST['ref'], ST_CUSTCREDIT))	{
-		display_error( _("The entered reference is already in use."));
-		set_focus('ref');
-		$input_error = 1;
-	    }
+	if ($_SESSION['Items']->trans_no == 0) {
+		if (!$Refs->is_valid($_POST['ref'])) {
+			display_error(_("You must enter a reference."));
+			set_focus('ref');
+			$input_error = 1;
+		} elseif (!is_new_reference($_POST['ref'], ST_CUSTCREDIT)) {
+			display_error(_("The entered reference is already in use."));
+			set_focus('ref');
+			$input_error = 1;
+		}
 	}
 	if (!is_date($_POST['OrderDate'])) {
 		display_error(_("The entered date for the credit note is invalid."));
@@ -166,11 +167,11 @@ function can_process()
 if (isset($_POST['ProcessCredit']) && can_process()) {
 	copy_to_cn();
 	if ($_POST['CreditType'] == "WriteOff" && (!isset($_POST['WriteOffGLCode']) ||
-		$_POST['WriteOffGLCode'] == '')) {
+											   $_POST['WriteOffGLCode'] == '')) {
 		display_note(_("For credit notes created to write off the stock, a general ledger account is required to be selected."), 1, 0);
 		display_note(_("Please select an account to write the cost of the stock off to, then click on Process again."), 1, 0);
 		exit;
-		
+
 	}
 	if (!isset($_POST['WriteOffGLCode'])) {
 		$_POST['WriteOffGLCode'] = 0;
@@ -183,16 +184,16 @@ if (isset($_POST['ProcessCredit']) && can_process()) {
 
 } /*end of process credit note */
 
-  //-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
 function check_item_data()
 {
-	if (!check_num('qty',0)) {
+	if (!check_num('qty', 0)) {
 		display_error(_("The quantity must be greater than zero."));
 		set_focus('qty');
 		return false;
 	}
-	if (!check_num('price',0)) {
+	if (!check_num('price', 0)) {
 		display_error(_("The entered price is negative or invalid."));
 		set_focus('price');
 		return false;
@@ -211,9 +212,9 @@ function handle_update_item()
 {
 	if ($_POST['UpdateItem'] != "" && check_item_data()) {
 		$_SESSION['Items']->update_cart_item($_POST['line_no'], input_num('qty'),
-			input_num('price'), input_num('Disc') / 100);
+											 input_num('price'), input_num('Disc') / 100);
 	}
-    line_start_focus();
+	line_start_focus();
 }
 
 //-----------------------------------------------------------------------------
@@ -221,7 +222,7 @@ function handle_update_item()
 function handle_delete_item($line_no)
 {
 	$_SESSION['Items']->remove_from_cart($line_no);
-    line_start_focus();
+	line_start_focus();
 }
 
 //-----------------------------------------------------------------------------
@@ -233,12 +234,13 @@ function handle_new_item()
 		return;
 
 	add_to_order($_SESSION['Items'], $_POST['stock_id'], input_num('qty'),
-		input_num('price'), input_num('Disc') / 100);
-    line_start_focus();
+				 input_num('price'), input_num('Disc') / 100);
+	line_start_focus();
 }
+
 //-----------------------------------------------------------------------------
 $id = find_submit('Delete');
-if ($id!=-1)
+if ($id != -1)
 	handle_delete_item($id);
 
 if (isset($_POST['AddItem']))

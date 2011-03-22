@@ -1,99 +1,98 @@
-
 #_tabs2 {
-    text-align:center;
-    width: 100%;
-    height: 80px;
-    background : #464646;
-    background : -webkit-gradient(linear, 100% 19%, 100% 71%, from(#858585), to(#9E9E9E), color-stop(0,#C7C7C7))   ;
-    background : -moz-linear-gradient(19% 100% 90deg,#858585, #9E9E9E, #C7C7C7 71%);
-    border-top: 2px solid #939393;
-    position: relative;
-    margin-bottom: 30px;
+	text-align: center;
+	width: 100%;
+	height: 80px;
+	background: #464646;
+	background: -webkit-gradient(linear, 100% 19%, 100% 71%, from(#858585), to(#9E9E9E), color-stop(0, #C7C7C7));
+	background: -moz-linear-gradient(19% 100% 90deg, #858585, #9E9E9E, #C7C7C7 71%);
+	border-top: 2px solid #939393;
+	position: relative;
+	margin-bottom: 30px;
 }
 
 #_tabs2 .title {
-    position: absolute;
-    right: 20px;
-    top: 10px;
-    font-size: 18px;
-    text-transform: uppercase;
+	position: absolute;
+	right: 20px;
+	top: 10px;
+	font-size: 18px;
+	text-transform: uppercase;
 }
 
 #_tabs2 .fl {
-    float: left;
+	float: left;
 }
 
 #_tabs2 .menu_container {
 
-    margin: 0 auto;
-    display:inline-block;
+	margin: 0 auto;
+	display: inline-block;
 }
 
 #_tabs2 .menu {
-    height: 80px;
-    border-left: 1px solid rgba(0,0,0,0.3);
-    border-right: 1px solid rgba(255,255,255,0.3);
-margin: 0 auto;
+	height: 80px;
+	border-left: 1px solid rgba(0, 0, 0, 0.3);
+	border-right: 1px solid rgba(255, 255, 255, 0.3);
+	margin: 0 auto;
 }
 
 #_tabs2 a {
-    text-decoration: none;
-    color: #363636;
-    text-transform: uppercase;
-    font-size: 15px;
-    font-weight: bold;
+	text-decoration: none;
+	color: #363636;
+	text-transform: uppercase;
+	font-size: 15px;
+	font-weight: bold;
 }
 
 #_tabs2 ul {
-    margin: 0;
-    padding: 0;
+	margin: 0;
+	padding: 0;
 }
 
 #_tabs2 ul.menu li {
-    list-style: none;
-    float:left;
-    height: 79px;
-    text-align: center;
-     background: -webkit-gradient(linear, 100% 100%, 100% 0%, from(#B81D1D), to(#E38881), color-stop(.5,#DB4949));
-    background:-moz-linear-gradient(100% 100% 90deg,#B81D1D, #E38881, #DB4949 100%);
-    }
+	list-style: none;
+	float: left;
+	height: 79px;
+	text-align: center;
+	background: -webkit-gradient(linear, 100% 100%, 100% 0%, from(#B81D1D), to(#E38881), color-stop(.5, #DB4949));
+	background: -moz-linear-gradient(100% 100% 90deg, #B81D1D, #E38881, #DB4949 100%);
+}
 
 #_tabs2 ul a {
 
-      background : -webkit-gradient(linear, 100% 19%, 100% 71%, from(#858585), to(#9E9E9E), color-stop(0,#C7C7C7))   ;
-    background : -moz-linear-gradient(19% 100% 90deg,#858585, #9E9E9E, #C7C7C7 71%);
-    -moz-transition-duration: 0.5s;
-    -moz-transition-timing-function: linear;
-    display: block;
-    padding: 0 10px;
-    border-left: 1px solid rgba(255, 255, 255, 0.1);
-    border-right: 1px solid rgba(0, 0, 0, 0.1);
-    text-align: center;
-    line-height: 79px;
-    -webkit-transition-duration: 0.5s;
-    -webkit-transition-timing-function: linear;
-    }
-
-#_tabs2 ul  a:hover {
-        -moz-transition-duration: 1s;
-    -moz-transition-timing-function: linear;
-     -webkit-transition-duration: 1s;
-    -webkit-transition-timing-function: linear;
-         background: -webkit-gradient(linear, 100% 100%, 100% 0%, from(#B81D1D), to(#E38881), color-stop(.5,#DB4949));
-    background:-moz-linear-gradient(100% 100% 90deg,#B81D1D, #E38881, #DB4949 100%);
-    color:white;
+	background: -webkit-gradient(linear, 100% 19%, 100% 71%, from(#858585), to(#9E9E9E), color-stop(0, #C7C7C7));
+	background: -moz-linear-gradient(19% 100% 90deg, #858585, #9E9E9E, #C7C7C7 71%);
+	-moz-transition-duration: 0.5s;
+	-moz-transition-timing-function: linear;
+	display: block;
+	padding: 0 10px;
+	border-left: 1px solid rgba(255, 255, 255, 0.1);
+	border-right: 1px solid rgba(0, 0, 0, 0.1);
+	text-align: center;
+	line-height: 79px;
+	-webkit-transition-duration: 0.5s;
+	-webkit-transition-timing-function: linear;
 }
 
+#_tabs2 ul  a:hover {
+	-moz-transition-duration: 1s;
+	-moz-transition-timing-function: linear;
+	-webkit-transition-duration: 1s;
+	-webkit-transition-timing-function: linear;
+	background: -webkit-gradient(linear, 100% 100%, 100% 0%, from(#B81D1D), to(#E38881), color-stop(.5, #DB4949));
+	background: -moz-linear-gradient(100% 100% 90deg, #B81D1D, #E38881, #DB4949 100%);
+	color: white;
+}
 
-#_tabs2 ul li.active a{
-     background: -webkit-gradient(linear, 100% 100%, 100% 0%, from(#B81D1D), to(#E38881), color-stop(.5,#DB4949));
-    background:-moz-linear-gradient(100% 100% 90deg,#B81D1D, #E38881, #DB4949 100%);
+#_tabs2 ul li.active a {
+	background: -webkit-gradient(linear, 100% 100%, 100% 0%, from(#B81D1D), to(#E38881), color-stop(.5, #DB4949));
+	background: -moz-linear-gradient(100% 100% 90deg, #B81D1D, #E38881, #DB4949 100%);
 }
 
 .menu_group {
-    color: #555;
-    background-color: #DB4949;
+	color: #555;
+	background-color: #DB4949;
 }
+
 /* main wrapper */
 #wrapper {
 	clear: left;

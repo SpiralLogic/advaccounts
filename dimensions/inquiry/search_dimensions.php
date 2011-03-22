@@ -1,16 +1,16 @@
 <?php
 /**********************************************************************
-    Copyright (C) FrontAccounting, LLC.
-	Released under the terms of the GNU General Public License, GPL, 
-	as published by the Free Software Foundation, either version 3 
-	of the License, or (at your option) any later version.
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
-    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
-***********************************************************************/
+Copyright (C) FrontAccounting, LLC.
+Released under the terms of the GNU General Public License, GPL,
+as published by the Free Software Foundation, either version 3
+of the License, or (at your option) any later version.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+ ***********************************************************************/
 $page_security = 'SA_DIMTRANSVIEW';
-$path_to_root="../..";
+$path_to_root = "../..";
 
 include($path_to_root . "/includes/db_pager.inc");
 include_once($path_to_root . "/includes/session.inc");
@@ -23,8 +23,7 @@ if ($use_popup_windows)
 if ($use_date_picker)
 	$js .= get_js_date_picker();
 
-if (isset($_GET['outstanding_only']) && $_GET['outstanding_only'])
-{
+if (isset($_GET['outstanding_only']) && $_GET['outstanding_only']) {
 	$outstanding_only = 1;
 	page(_($help_context = "Search Outstanding Dimensions"), false, false, "", $js);
 }
@@ -36,8 +35,7 @@ else
 //-----------------------------------------------------------------------------------
 // Ajax updates
 //
-if (get_post('SearchOrders'))
-{
+if (get_post('SearchOrders')) {
 	$Ajax->activate('dim_table');
 } elseif (get_post('_OrderNumber_changed'))
 {
@@ -50,7 +48,7 @@ if (get_post('SearchOrders'))
 	$Ajax->addDisable(true, 'OpenOnly', $disable);
 
 	if ($disable) {
-//		$Ajax->addFocus(true, 'OrderNumber');
+		//		$Ajax->addFocus(true, 'OrderNumber');
 		set_focus('OrderNumber');
 	} else
 		set_focus('type_');
@@ -65,22 +63,21 @@ if (isset($_GET["stock_id"]))
 
 //--------------------------------------------------------------------------------------
 
-start_form(false, false, $_SERVER['PHP_SELF'] ."?outstanding_only=$outstanding_only");
+start_form(false, false, $_SERVER['PHP_SELF'] . "?outstanding_only=$outstanding_only");
 
 start_table("class='tablestyle_noborder'");
 start_row();
 
-ref_cells(_("Reference:"), 'OrderNumber', '',null, '', true);
+ref_cells(_("Reference:"), 'OrderNumber', '', null, '', true);
 
 number_list_cells(_("Type"), 'type_', null, 1, 2, _("All"));
 date_cells(_("From:"), 'FromDate', '', null, 0, 0, -5);
 date_cells(_("To:"), 'ToDate');
 
-check_cells( _("Only Overdue:"), 'OverdueOnly', null);
+check_cells(_("Only Overdue:"), 'OverdueOnly', null);
 
-if (!$outstanding_only)
-{
-   	check_cells( _("Only Open:"), 'OpenOnly', null);
+if (!$outstanding_only) {
+	check_cells(_("Only Open:"), 'OpenOnly', null);
 }
 else
 	$_POST['OpenOnly'] = 1;
@@ -92,7 +89,7 @@ end_table();
 
 $dim = get_company_pref('use_dimension');
 
-function view_link($row) 
+function view_link($row)
 {
 	return get_dimensions_trans_view_str(ST_DIMENSION, $row["id"]);
 }
@@ -102,12 +99,12 @@ function is_closed($row)
 	return $row['closed'] ? _('Yes') : _('No');
 }
 
-function sum_dimension($row) 
+function sum_dimension($row)
 {
-	$sql = "SELECT SUM(amount) FROM ".TB_PREF."gl_trans WHERE tran_date >= '" .
-		date2sql($_POST['FromDate']) . "' AND
+	$sql = "SELECT SUM(amount) FROM " . TB_PREF . "gl_trans WHERE tran_date >= '" .
+		   date2sql($_POST['FromDate']) . "' AND
 		tran_date <= '" . date2sql($_POST['ToDate']) . "' AND (dimension_id = " .
-		$row['id']." OR dimension2_id = " .$row['id'].")";
+		   $row['id'] . " OR dimension2_id = " . $row['id'] . ")";
 	$res = db_query($sql, "Sum of transactions could not be calculated");
 	$row = db_fetch_row($res);
 
@@ -125,7 +122,7 @@ function edit_link($row)
 	//	pager_link(_("Edit"),
 	//		"/dimensions/dimension_entry.php?trans_no=" . $row["id"], ICON_EDIT);
 	return pager_link(_("Edit"),
-			"/dimensions/dimension_entry.php?trans_no=" . $row["id"], ICON_EDIT);
+					  "/dimensions/dimension_entry.php?trans_no=" . $row["id"], ICON_EDIT);
 }
 
 $sql = "SELECT dim.id,
@@ -135,31 +132,27 @@ $sql = "SELECT dim.id,
 	dim.date_,
 	dim.due_date,
 	dim.closed
-	FROM ".TB_PREF."dimensions as dim WHERE id > 0";
+	FROM " . TB_PREF . "dimensions as dim WHERE id > 0";
 
-if (isset($_POST['OrderNumber']) && $_POST['OrderNumber'] != "")
-{
-	$sql .= " AND reference LIKE ".db_escape("%". $_POST['OrderNumber'] . "%");
+if (isset($_POST['OrderNumber']) && $_POST['OrderNumber'] != "") {
+	$sql .= " AND reference LIKE " . db_escape("%" . $_POST['OrderNumber'] . "%");
 } else {
 
 	if ($dim == 1)
 		$sql .= " AND type_=1";
 
-	if (isset($_POST['OpenOnly']))
-	{
-   		$sql .= " AND closed=0";
+	if (isset($_POST['OpenOnly'])) {
+		$sql .= " AND closed=0";
 	}
 
-	if (isset($_POST['type_']) && ($_POST['type_'] > 0))
-	{
-   		$sql .= " AND type_=".db_escape($_POST['type_']);
+	if (isset($_POST['type_']) && ($_POST['type_'] > 0)) {
+		$sql .= " AND type_=" . db_escape($_POST['type_']);
 	}
 
-	if (isset($_POST['OverdueOnly']))
-	{
+	if (isset($_POST['OverdueOnly'])) {
 		$today = date2sql(Today());
 
-	   	$sql .= " AND due_date < '$today'";
+		$sql .= " AND due_date < '$today'";
 	}
 
 	$sql .= " AND date_ >= '" . date2sql($_POST['FromDate']) . "'
@@ -167,15 +160,15 @@ if (isset($_POST['OrderNumber']) && $_POST['OrderNumber'] != "")
 }
 
 $cols = array(
-	_("#") => array('fun'=>'view_link'), 
-	_("Reference"), 
-	_("Name"), 
-	_("Type"), 
-	_("Date") =>'date',
-	_("Due Date") => array('name'=>'due_date', 'type'=>'date', 'ord'=>'asc'), 
-	_("Closed") => array('fun'=>'is_closed'),
-	_("Balance") => array('type'=>'amount', 'insert'=>true, 'fun'=>'sum_dimension'),
-	array('insert'=>true, 'fun'=>'edit_link')
+	_("#") => array('fun' => 'view_link'),
+	_("Reference"),
+	_("Name"),
+	_("Type"),
+	_("Date") => 'date',
+	_("Due Date") => array('name' => 'due_date', 'type' => 'date', 'ord' => 'asc'),
+	_("Closed") => array('fun' => 'is_closed'),
+	_("Balance") => array('type' => 'amount', 'insert' => true, 'fun' => 'sum_dimension'),
+	array('insert' => true, 'fun' => 'edit_link')
 );
 
 if ($outstanding_only) {

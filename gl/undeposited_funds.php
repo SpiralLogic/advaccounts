@@ -155,7 +155,8 @@ if ($id != -1) {
 	change_tpl_flag($id);
 }
 if (isset($_POST['Deposit'])) {
-	$sql = "SELECT * FROM " . TB_PREF . "bank_trans WHERE undeposited=1 AND trans_date <= '" . date2sql($_POST['deposit_date']) . "' AND reconciled IS NULL";
+	$sql = "SELECT * FROM " . TB_PREF . "bank_trans WHERE undeposited=1 AND trans_date <= '" . date2sql(
+		$_POST['deposit_date']) . "' AND reconciled IS NULL";
 	$query = db_query($sql);
 	$undeposited = array();
 	while ($row = db_fetch($query)) {
@@ -175,8 +176,8 @@ if (isset($_POST['Deposit'])) {
 		$ref[] = $row['ref'];
 	}
 	$sql = "INSERT INTO " . TB_PREF . "bank_trans (type, bank_act, amount, ref, trans_date, person_type_id, person_id, undeposited) VALUES (15, 5, $total_amount," . db_escape(implode($ref,
-	                                                                                                                                                                                   ',')) . ",'"
-	       . date2sql($_POST['deposit_date']) . "', 6, '" . $_SESSION['wa_current_user']->user . "',0)";
+																																													   ',')) . ",'"
+		   . date2sql($_POST['deposit_date']) . "', 6, '" . $_SESSION['wa_current_user']->user . "',0)";
 	$query = db_query($sql, "Undeposited Cannot be Added");
 	$order_no = db_insert_id($query);
 	if (!isset($order_no) || !empty($order_no) || $order_no == 127) {
@@ -195,7 +196,7 @@ if (isset($_POST['Deposit'])) {
 
 }
 $_POST['to_deposit'] = 0;
-if (isset ($_SESSION['undeposited']) && $_SESSION['undeposited'] ) foreach ($_SESSION['undeposited'] as $rowid => $row) {
+if (isset ($_SESSION['undeposited']) && $_SESSION['undeposited']) foreach ($_SESSION['undeposited'] as $rowid => $row) {
 	if (substr($rowid, 0, 4) == 'dep_') {
 		$_POST['to_deposit'] += $row;
 	}

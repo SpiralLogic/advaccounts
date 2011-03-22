@@ -6,36 +6,51 @@
  * Time: 4:00 PM
  * To change this template use File | Settings | File Templates.
  */
-class PurchaseOrder extends Orders {
-
+class PurchaseOrder extends Orders
+{
 
 
 	public $supplier_id;
 	public $requisition_no;
 	public $into_stk_loc;
 
-	protected function _canProcess() {
+	protected function _canProcess()
+	{
 		// TODO: Implement _canProcess() method.
 	}
-	protected function _countTransactions() {
+
+	protected function _countTransactions()
+	{
 		// TODO: Implement _countTransactions() method.
 	}
-	protected function _defaults() {
+
+	protected function _defaults()
+	{
 		// TODO: Implement _defaults() method.
 	}
-	protected function _new() {
+
+	protected function _new()
+	{
 		// TODO: Implement _new() method.
 	}
-	protected function _read() {
+
+	protected function _read()
+	{
 		// TODO: Implement _read() method.
 	}
-	protected function _saveNew() {
+
+	protected function _saveNew()
+	{
 		// TODO: Implement _saveNew() method.
 	}
-	public function delete() {
+
+	public function delete()
+	{
 		// TODO: Implement delete() method.
 	}
-	public function save($changes = null) {
+
+	public function save($changes = null)
+	{
 		// TODO: Implement save() method.
 	}
 }

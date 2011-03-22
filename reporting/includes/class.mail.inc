@@ -11,106 +11,127 @@
     Leave this header in this file!
 */
 require_once('class.phpmailer.php');
-class email {
-    var $to = array();
-    var $cc = array();
-    var $bcc = array();
-    var $attachment = array();
-    var $boundary = "";
-    var $header = "";
-    var $subject = "";
-    var $body = "";
-    var $mail;
+class email
+{
+	var $to = array();
+	var $cc = array();
+	var $bcc = array();
+	var $attachment = array();
+	var $boundary = "";
+	var $header = "";
+	var $subject = "";
+	var $body = "";
+	var $mail;
+	var $toerror = "No vaild email address";
 
-    function email($name, $mail) {
-        $this->mail = new PHPMailer();
-        $this->mail->IsSMTP(); // telling the class to use SMTP
-        $this->mail->Host = "mx2.sorijen.net.au"; // SMTP server
-        $this->mail->SMTPAuth = true;
-        $this->mail->WordWrap = 50;
-        $this->mail->Username = 'sales@advancedroadsigns.com.au';
-        $this->mail->Password = '1willenberg';
-        $this->mail->From = "sales@advancedroadsigns.com.au";
-        $this->mail->FromName = 'Advanced Group Accounts';
-        $this->mail->AddBCC("sales@advancedroadsigns.com.au");
-    }
 
-    function to($mail) {
-        $this->mail->AddAddress($mail);
-    }
+	function email($name, $mail)
+	{
+		$this->mail = new PHPMailer();
+		$this->mail->IsSMTP(); // telling the class to use SMTP
+		$this->mail->Host = "mx2.sorijen.net.au"; // SMTP server
+		$this->mail->SMTPAuth = true;
+		$this->mail->WordWrap = 50;
+		$this->mail->Username = 'sales@advancedroadsigns.com.au';
+		$this->mail->Password = '1willenberg';
+		$this->mail->From = "sales@advancedroadsigns.com.au";
+		$this->mail->FromName = 'Advanced Group Accounts';
+		$this->mail->AddBCC("sales@advancedroadsigns.com.au");
+	}
 
-    function cc($mail) {
-        $this->mail->AddCC($mail);
-    }
+	private function _checkEmail($email)
+	{
+		if (preg_match('/^[^@]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$/', $email))
+			$this->toerror = false;
+	}
 
-    function bcc($mail) {
-        $this->mail->AddBCC($mail);
-    }
+	function to($mail)
+	{
+		$this->_checkEmail($mail);
+		$this->mail->AddAddress($mail);
 
-    function attachment($file) {
-        $this->mail->AddAttachment($file);
-    }
+	}
 
-    function subject($subject) {
-        $this->mail->Subject = $subject;
-    }
+	function cc($mail)
+	{
+		$this->_checkEmail($mail);
+		$this->mail->AddCC($mail);
+	}
 
-    function text($text) {
-        //$this->mail->ContentType = "Content-Type: text/plain; charset=ISO-8859-1\n";
-        //$this->mail->Encoding = "8bit";
-        $this->mail->Body  = $text . "\n";
-    }
+	function bcc($mail)
+	{
+		$this->_checkEmail($mail);
+		$this->mail->AddBCC($mail);
+	}
 
-    function html($html) {
-        //$this->mail->ContentType = "text/html; charset=ISO-8859-1";
-        //$this->mail->Encoding = "quoted-printable";
-        $this->mail->IsHTML(true);
-          $this->mail->AltBody  = $text . "\n";
-        $this->mail->Body = "<html><body>\n" . $html . "\n</body></html>\n";
-    }
+	function attachment($file)
+	{
+		$this->mail->AddAttachment($file);
+	}
 
-    function mime_type($filename) {
-        $file = basename($filename, '.zip');
-        if ($filename == $file . '.zip') {
-            return 'application/x-zip-compressed';
-        }
-        $file = basename($filename, '.pdf');
-        if ($filename == $file . '.pdf') {
-            return 'application/pdf';
-        }
-        $file = basename($filename, '.csv');
-        if ($filename == $file . '.csv') {
-            return 'application/vnd.ms-excel';
-        }
-        $file = basename($filename, '.tar');
-        if ($filename == $file . '.tar') {
-            return 'application/x-tar';
-        }
-        $file = basename($filename, '.tar.gz');
-        if ($filename == $file . '.tar.gz') {
-            return 'application/x-tar-gz';
-        }
-        $file = basename($filename, '.tgz');
-        if ($filename == $file . '.tgz') {
-            return 'application/x-tar-gz';
-        }
-        $file = basename($filename, '.gz');
-        if ($filename == $file . '.gz') {
-            return 'application/x-gzip';
-        }
-        return 'application/unknown';
-    }
+	function subject($subject)
+	{
+		$this->mail->Subject = $subject;
+	}
 
-    function send() {
-        // CC Empfänger hinzufügen
+	function text($text)
+	{
+		//$this->mail->ContentType = "Content-Type: text/plain; charset=ISO-8859-1\n";
+		//$this->mail->Encoding = "8bit";
+		$this->mail->Body = $text . "\n";
+	}
 
-        // BCC Empfänger hinzufügen
+	function html($html)
+	{
+		//$this->mail->ContentType = "text/html; charset=ISO-8859-1";
+		//$this->mail->Encoding = "quoted-printable";
+		$this->mail->IsHTML(true);
+		$this->mail->AltBody = $text . "\n";
+		$this->mail->Body = "<html><body>\n" . $html . "\n</body></html>\n";
+	}
 
-        // Attachment hinzufügen
-        $ret = $this->mail->Send();
+	function mime_type($filename)
+	{
+		$file = basename($filename, '.zip');
+		if ($filename == $file . '.zip') {
+			return 'application/x-zip-compressed';
+		}
+		$file = basename($filename, '.pdf');
+		if ($filename == $file . '.pdf') {
+			return 'application/pdf';
+		}
+		$file = basename($filename, '.csv');
+		if ($filename == $file . '.csv') {
+			return 'application/vnd.ms-excel';
+		}
+		$file = basename($filename, '.tar');
+		if ($filename == $file . '.tar') {
+			return 'application/x-tar';
+		}
+		$file = basename($filename, '.tar.gz');
+		if ($filename == $file . '.tar.gz') {
+			return 'application/x-tar-gz';
+		}
+		$file = basename($filename, '.tgz');
+		if ($filename == $file . '.tgz') {
+			return 'application/x-tar-gz';
+		}
+		$file = basename($filename, '.gz');
+		if ($filename == $file . '.gz') {
+			return 'application/x-gzip';
+		}
+		return 'application/unknown';
+	}
 
-        return $ret;
-    }
+	function send()
+	{
+
+		if ($this->toerror)
+			return false;
+
+		$ret = $this->mail->Send();
+		return $ret;
+	}
 }
 
 ?>

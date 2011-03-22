@@ -58,8 +58,8 @@ function get_gl_view_str($type, $trans_no, $label = "", $force = false, $class =
 		$icon = ICON_GL;
 	}
 	return viewer_link($label,
-	                   "gl/view/gl_trans_view.php?type_id=$type&trans_no=$trans_no",
-	                   $class, $id, $icon);
+					   "gl/view/gl_trans_view.php?type_id=$type&trans_no=$trans_no",
+					   $class, $id, $icon);
 }
 
 //--------------------------------------------------------------------------------------
@@ -116,7 +116,7 @@ function get_customer_trans_view_str($type, $trans_no, $label = "", $icon = fals
 			$preview_str .= ',';
 		}
 		$preview_str .= viewer_link($lbl, $viewer . "?trans_no=$trans&trans_type=$type",
-		                            $class, $id, $icon);
+									$class, $id, $icon);
 
 	}
 	return $preview_str;
@@ -145,7 +145,7 @@ function get_banking_trans_view_str($type, $trans_no, $label = "",
 		return null;
 	}
 	return viewer_link($label, "gl/view/$viewer?trans_no=$trans_no",
-	                   $class, $id, $icon);
+					   $class, $id, $icon);
 }
 
 //--------------------------------------------------------------------------------------
@@ -417,12 +417,12 @@ function display_customer_trans_tax_details($tax_items, $columns)
 		$tax = number_format2($tax_item['amount'], user_price_dec());
 		if ($tax_item['included_in_price']) {
 			label_row(_("Included") . " " . $tax_item['tax_type_name'] . " (" . $tax_item['rate'] . "%) " .
-			          _("Amount") . ": $tax", "", "colspan=$columns align=right", "align=right");
+					  _("Amount") . ": $tax", "", "colspan=$columns align=right", "align=right");
 		}
 		else
 		{
 			label_row($tax_item['tax_type_name'] . " (" . $tax_item['rate'] . "%)",
-			          $tax, "colspan=$columns align=right", "align=right");
+					  $tax, "colspan=$columns align=right", "align=right");
 		}
 	}
 }
@@ -435,12 +435,12 @@ function display_supp_trans_tax_details($tax_items, $columns)
 		$tax = number_format2(abs($tax_item['amount']), user_price_dec());
 		if ($tax_item['included_in_price']) {
 			label_row(_("Included") . " " . $tax_item['tax_type_name'] . " (" . $tax_item['rate'] . "%) " .
-			          _("Amount") . ": $tax", "colspan=$columns align=right", "align=right");
+					  _("Amount") . ": $tax", "colspan=$columns align=right", "align=right");
 		}
 		else
 		{
 			label_row($tax_item['tax_type_name'] . " (" . $tax_item['rate'] . "%)",
-			          $tax, "colspan=$columns align=right", "align=right");
+					  $tax, "colspan=$columns align=right", "align=right");
 		}
 	}
 }
@@ -453,7 +453,8 @@ function display_edit_tax_items($taxes, $columns, $tax_included, $leftspan = 0)
 	{
 		if ($tax_included) {
 			label_row(_("Included") . " " . $taxitem['tax_type_name'] . " (" . $taxitem['rate'] . "%) " .
-			          _("Amount:") . " " . number_format2($taxitem['Value'], user_price_dec()), "", "colspan=$columns align=right", "align=right", $leftspan);
+					  _("Amount:") . " " . number_format2(
+				$taxitem['Value'], user_price_dec()), "", "colspan=$columns align=right", "align=right", $leftspan);
 		}
 		else
 		{
@@ -461,7 +462,8 @@ function display_edit_tax_items($taxes, $columns, $tax_included, $leftspan = 0)
 			$_POST['ChgTax'] = 0;
 			//small_amount_cells(null, 'ChgTax', price_format(getpost('ChgTax'), 2));
 			label_row($taxitem['tax_type_name'] . " (" . $taxitem['rate'] . "%)",
-			          number_format2($taxitem['Value'], user_price_dec()), "colspan=$columns align=right", "align=right", $leftspan);
+					  number_format2($taxitem['Value'
+									 ], user_price_dec()), "colspan=$columns align=right", "align=right", $leftspan);
 
 		}
 	}
@@ -486,7 +488,7 @@ function display_allocations($alloc_result, $total)
 	display_heading2(_("Allocations"));
 	start_table("$table_style width=80%");
 	$th = array(_("Type"), _("Number"), _("Date"), _("Total Amount"),
-	            _("Left to Allocate"), _("This Allocation"));
+				_("Left to Allocate"), _("This Allocation"));
 	table_header($th);
 	$k = $total_allocated = 0;
 	while ($alloc_row = db_fetch($alloc_result))
@@ -566,9 +568,9 @@ function display_quick_entries(&$cart, $id, $base, $type, $descr = '')
 				case "t": // post taxes calculated on base amount
 				case "t+": // ditto & increase base amount
 				case "t-": // ditto & reduce base amount
-				if (substr($row['action'], 0, 1) != 'T') {
-					$totrate += get_tax_type_default_rate($row['dest_id']);
-				}
+					if (substr($row['action'], 0, 1) != 'T') {
+						$totrate += get_tax_type_default_rate($row['dest_id']);
+					}
 			}
 		}
 		$first = true;
@@ -641,15 +643,15 @@ function display_quick_entries(&$cart, $id, $base, $type, $descr = '')
 					}
 					if ($type != QE_SUPPINV) {
 						$cart->add_gl_item($gl_code,
-						                   $qe_line['dimension_id'], $qe_line['dimension2_id'],
-						                   $tax, $qe['description']);
+										   $qe_line['dimension_id'], $qe_line['dimension2_id'],
+										   $tax, $qe['description']);
 					}
 					else
 					{
 						$acc_name = get_gl_account_name($gl_code);
 						$cart->add_gl_codes_to_trans($gl_code,
-						                             $acc_name, $qe_line['dimension_id'],
-						                             $qe_line['dimension2_id'], $tax, $qe['description']);
+													 $acc_name, $qe_line['dimension_id'],
+													 $qe_line['dimension2_id'], $tax, $qe['description']);
 					}
 					if (strpos($qe_line['action'], '+')) {
 						$base += $tax;
@@ -662,14 +664,14 @@ function display_quick_entries(&$cart, $id, $base, $type, $descr = '')
 			}
 			if ($type != QE_SUPPINV) {
 				$cart->add_gl_item($qe_line['dest_id'], $qe_line['dimension_id'],
-				                   $qe_line['dimension2_id'], $part, $qe['description']);
+								   $qe_line['dimension2_id'], $part, $qe['description']);
 			}
 			else
 			{
 				$acc_name = get_gl_account_name($qe_line['dest_id']);
 				$cart->add_gl_codes_to_trans($qe_line['dest_id'],
-				                             $acc_name, $qe_line['dimension_id'],
-				                             $qe_line['dimension2_id'], $part, $qe['description']);
+											 $acc_name, $qe_line['dimension_id'],
+											 $qe_line['dimension2_id'], $part, $qe['description']);
 			}
 		}
 	}
@@ -706,11 +708,11 @@ function _number_to_words($number)
 		$res .= (empty($res) ? "" : " ") . _number_to_words($Hn) . " Hundred";
 	}
 	$ones = array("", "One", "Two", "Three", "Four", "Five", "Six",
-	              "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen",
-	              "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eightteen",
-	              "Nineteen");
+				  "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen",
+				  "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eightteen",
+				  "Nineteen");
 	$tens = array("", "", "Twenty", "Thirty", "Fourty", "Fifty", "Sixty",
-	              "Seventy", "Eigthy", "Ninety");
+				  "Seventy", "Eigthy", "Ninety");
 	if ($Dn || $n) {
 		if (!empty($res)) {
 			$res .= " and ";
@@ -764,11 +766,11 @@ function price_in_words($amount, $document = 0)
 function get_js_open_window($width, $height)
 {
 	$js = "function openWindow(url, title)\n"
-	      . "{\n"
-	      . " var left = (screen.width - $width) / 2;\n"
-	      . " var top = (screen.height - $height) / 2;\n"
-	      . " return window.open(url, title, 'width=$width,height=$height,left='+left+',top='+top+',screenX='+left+',screenY='+top+',status=no,scrollbars=yes');\n"
-	      . "}\n";
+		  . "{\n"
+		  . " var left = (screen.width - $width) / 2;\n"
+		  . " var top = (screen.height - $height) / 2;\n"
+		  . " return window.open(url, title, 'width=$width,height=$height,left='+left+',top='+top+',screenX='+left+',screenY='+top+',status=no,scrollbars=yes');\n"
+		  . "}\n";
 	return $js;
 }
 
@@ -810,25 +812,25 @@ function reset_focus()
 function get_js_png_fix()
 {
 	$js = "function fixPNG(myImage)\n"
-	      . "{\n"
-	      . " var arVersion = navigator.appVersion.split(\"MSIE\")\n"
-	      . " var version = parseFloat(arVersion[1])\n"
-	      . " if ((version >= 5.5) && (version < 7) && (document.body.filters))\n"
-	      . " {\n"
-	      . "  var imgID = (myImage.id) ? \"id='\" + myImage.id + \"' \" : \"\"\n"
-	      . "  var imgClass = (myImage.className) ? \"class='\" + myImage.className + \"' \" : \"\"\n"
-	      . "  var imgTitle = (myImage.title) ?\n"
-	      . "    \"title='\" + myImage.title  + \"' \" : \"title='\" + myImage.alt + \"' \"\n"
-	      . "  var imgStyle = \"display:inline-block;\" + myImage.style.cssText\n"
-	      . "  var strNewHTML = \"<span \" + imgID + imgClass + imgTitle\n"
-	      . "    + \" style=\\\"\" + \"width:\" + myImage.width\n"
-	      . "    + \"px; height:\" + myImage.height\n"
-	      . "    + \"px;\" + imgStyle + \";\"\n"
-	      . "    + \"filter:progid:DXImageTransform.Microsoft.AlphaImageLoader\"\n"
-	      . "    + \"(src=\'\" + myImage.src + \"\', sizingMethod='scale');\\\"></span>\"\n"
-	      . "  myImage.outerHTML = strNewHTML\n"
-	      . " }\n"
-	      . "}\n";
+		  . "{\n"
+		  . " var arVersion = navigator.appVersion.split(\"MSIE\")\n"
+		  . " var version = parseFloat(arVersion[1])\n"
+		  . " if ((version >= 5.5) && (version < 7) && (document.body.filters))\n"
+		  . " {\n"
+		  . "  var imgID = (myImage.id) ? \"id='\" + myImage.id + \"' \" : \"\"\n"
+		  . "  var imgClass = (myImage.className) ? \"class='\" + myImage.className + \"' \" : \"\"\n"
+		  . "  var imgTitle = (myImage.title) ?\n"
+		  . "    \"title='\" + myImage.title  + \"' \" : \"title='\" + myImage.alt + \"' \"\n"
+		  . "  var imgStyle = \"display:inline-block;\" + myImage.style.cssText\n"
+		  . "  var strNewHTML = \"<span \" + imgID + imgClass + imgTitle\n"
+		  . "    + \" style=\\\"\" + \"width:\" + myImage.width\n"
+		  . "    + \"px; height:\" + myImage.height\n"
+		  . "    + \"px;\" + imgStyle + \";\"\n"
+		  . "    + \"filter:progid:DXImageTransform.Microsoft.AlphaImageLoader\"\n"
+		  . "    + \"(src=\'\" + myImage.src + \"\', sizingMethod='scale');\\\"></span>\"\n"
+		  . "  myImage.outerHTML = strNewHTML\n"
+		  . " }\n"
+		  . "}\n";
 	return $js;
 }
 
@@ -838,7 +840,7 @@ function get_websales()
 	static $inserted;
 	if (!$inserted && !isset($_SESSION['getWebsales'])) {
 		$_SESSION['getWebsales'] = false;
- 		echo <<<JS
+		echo <<<JS
 $(function() {
 if ($("#websaleGet").length>0) return;
 $('body').append('<iframe id="websaleGet" style="width:0; height:0" src="http://advaccounts/jobsboard/websales/"></iframe>')});
@@ -869,8 +871,11 @@ function get_js_date_picker()
 		global $dateseps, $date_system;
 		$how = user_date_format(); // 0 = us/ca, 1 = eu, au, nz, 2 = jp, sw
 		$sep = $dateseps[user_date_sep()]; // date separator
-		$wstart = (($date_system == 1 || $date_system == 2 || $date_system == 3) ? 6 : ($how == 0 ? 0 : 1)); // weekstart (sun = 0, mon = 1)
-		$months = array(_("January"), _("February"), _("March"), _("April"), _("May"), _("June"), _("July"), _("August"), _("September"), _("October"), _("November"), _("December"));
+		$wstart = (($date_system == 1 || $date_system == 2 || $date_system == 3) ? 6 : ($how == 0 ? 0
+				: 1)); // weekstart (sun = 0, mon = 1)
+		$months =
+				array(_("January"), _("February"), _("March"), _("April"), _("May"), _("June"), _("July"), _("August"),
+					  _("September"), _("October"), _("November"), _("December"));
 		$wdays = array(_("Su"), _("Mo"), _("Tu"), _("We"), _("Th"), _("Fr"), _("Sa"));
 		$wno = _("W"); // week no
 		$back = _("Back");
@@ -1339,10 +1344,10 @@ document.write(\"<div id='CC'></div>\");";
 function alert($msg)
 {
 	echo "\n<script language=\"javascript\"  type=\"text/javascript\">\n"
-	     . "<!--\n"
-	     . "alert('$msg');\n"
-	     . "-->\n"
-	     . "</script>\n";
+		 . "<!--\n"
+		 . "alert('$msg');\n"
+		 . "-->\n"
+		 . "</script>\n";
 }
 
 if (!function_exists('_vd')) {

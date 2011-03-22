@@ -10,11 +10,11 @@ class Supplier extends Contact
 {
 
 
-	public $id,$supplier_id; //
-	public $name,$supp_name; //
-	public $tax_id,$gst_no; //
-	public $contact_name,$contact; //
-	public $post_address,$supp_address; //
+	public $id, $supplier_id; //
+	public $name, $supp_name; //
+	public $tax_id, $gst_no; //
+	public $contact_name, $contact; //
+	public $post_address, $supp_address; //
 	/*
 	 public $pymt_discount = '0';
 	public $credit_limit = 0;
@@ -29,25 +29,27 @@ class Supplier extends Contact
 	public $phone2 = "";
 	public $fax = "";
 	public $website;*/
-	public $account_no='',$supp_account_no = ''; //
+	public $account_no = '', $supp_account_no = ''; //
 	public $bank_account;
 	public $tax_group_id = '';
 	public $purchase_account;
 	public $payable_account;
 	public $payment_discount_account;
 	public $supp_ref = '';
-	function __construct($id=null)
+
+	function __construct($id = null)
 	{
-        $this->supplier_id = &$this->id;
-        $this->supp_name =& $this->name;
-        $this->gst_no = &$this->tax_id;
-        $this->contact = &$this->contact_name;
-        $this->supp_address = &$this->post_address;
-        $this->supp_account_no = &$this->account_no;
+		$this->supplier_id = &$this->id;
+		$this->supp_name =& $this->name;
+		$this->gst_no = &$this->tax_id;
+		$this->contact = &$this->contact_name;
+		$this->supp_address = &$this->post_address;
+		$this->supp_account_no = &$this->account_no;
 		parent::__construct($id);
 
-			$this->supp_ref = substr($this->name, 0, 29);
+		$this->supp_ref = substr($this->name, 0, 29);
 	}
+
 	protected function _canProcess()
 	{
 		if (empty($this->name)) {
@@ -56,10 +58,12 @@ class Supplier extends Contact
 		}
 		return true;
 	}
+
 	protected function _countTransactions()
 	{
 		// TODO: Implement _countTransactions() method.
 	}
+
 	protected function _defaults()
 	{
 		$this->credit_limit = price_format(0);
@@ -70,12 +74,14 @@ class Supplier extends Contact
 		$this->payment_discount_account = $company_record['pyt_discount_act'];
 
 	}
+
 	protected function _new()
 	{
 		$this->_defaults();
 		return $this->_status(true, 'Initialize new supplier', 'Now working with a new supplier');
 
 	}
+
 	protected function _read($id = null)
 	{
 		if ($id == null || empty($id)) {
@@ -94,6 +100,7 @@ class Supplier extends Contact
 		$this->credit_limit = price_format($this->credit_limit);
 		return $this->id;
 	}
+
 	protected function _saveNew()
 	{
 		begin_transaction();
@@ -101,37 +108,39 @@ class Supplier extends Contact
 				contact, supp_account_no, bank_account, credit_limit, dimension_id, dimension2_id, curr_code,
 				payment_terms, payable_account, purchase_account, payment_discount_account, notes, tax_group_id)
 				VALUES (" . db_escape($this->name) . ", "
-		       . db_escape($this->supp_ref) . ", "
-		       . db_escape($this->address) . ", "
-		       . db_escape($this->post_address) . ", "
-		       . db_escape($this->phone) . ", "
-		       . db_escape($this->phone2) . ", "
-		       . db_escape($this->fax) . ", "
-		       . db_escape($this->tax_id) . ", "
-		       . db_escape($this->email) . ", "
-		       . db_escape($this->website) . ", "
-		       . db_escape($this->contact_name) . ", "
-		       . db_escape($this->account_no) . ", "
-		       . db_escape($this->bank_account) . ", "
-		       . db_escape($this->credit_limit) . ", "
-		       . db_escape($this->dimension_id) . ", "
-		       . db_escape($this->dimension2_id) . ", "
-		       . db_escape($this->curr_code) . ", "
-		       . db_escape($this->payment_terms) . ", "
-		       . db_escape($this->payable_account) . ", "
-		       . db_escape($this->purchase_account) . ", "
-		       . db_escape($this->payment_discount_account) . ", "
-		       . db_escape($this->notes) . ", "
-		       . db_escape($this->tax_group_id) . ")";
+			   . db_escape($this->supp_ref) . ", "
+			   . db_escape($this->address) . ", "
+			   . db_escape($this->post_address) . ", "
+			   . db_escape($this->phone) . ", "
+			   . db_escape($this->phone2) . ", "
+			   . db_escape($this->fax) . ", "
+			   . db_escape($this->tax_id) . ", "
+			   . db_escape($this->email) . ", "
+			   . db_escape($this->website) . ", "
+			   . db_escape($this->contact_name) . ", "
+			   . db_escape($this->account_no) . ", "
+			   . db_escape($this->bank_account) . ", "
+			   . db_escape($this->credit_limit) . ", "
+			   . db_escape($this->dimension_id) . ", "
+			   . db_escape($this->dimension2_id) . ", "
+			   . db_escape($this->curr_code) . ", "
+			   . db_escape($this->payment_terms) . ", "
+			   . db_escape($this->payable_account) . ", "
+			   . db_escape($this->purchase_account) . ", "
+			   . db_escape($this->payment_discount_account) . ", "
+			   . db_escape($this->notes) . ", "
+			   . db_escape($this->tax_group_id) . ")";
 		db_query($sql, "The supplier could not be added");
 		$this->id = db_insert_id();
 		commit_transaction();
 		$this->_status(true, 'Saving', "A Supplier has been added.");
 	}
+
 	protected function delete()
 	{
 		// TODO: Implement delete() method.
 	}
+
 	function save($changes = null)
 	{
 		if (is_array($changes)) {
@@ -172,6 +181,7 @@ class Supplier extends Contact
 		commit_transaction();
 		return $this->_status(true, 'Processing', "Supplier has been updated.");
 	}
+
 	public static function search($terms)
 	{
 		$sql = "SELECT supplier_id as id, supp_ref as label, supp_ref as value FROM " . TB_PREF . "suppliers " . "where supp_ref LIKE '%" . $terms . "%' LIMIT 20";

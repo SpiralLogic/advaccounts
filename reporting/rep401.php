@@ -1,14 +1,14 @@
 <?php
 /**********************************************************************
-    Copyright (C) FrontAccounting, LLC.
-	Released under the terms of the GNU General Public License, GPL, 
-	as published by the Free Software Foundation, either version 3 
-	of the License, or (at your option) any later version.
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
-    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
-***********************************************************************/
+Copyright (C) FrontAccounting, LLC.
+Released under the terms of the GNU General Public License, GPL,
+as published by the Free Software Foundation, either version 3
+of the License, or (at your option) any later version.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+ ***********************************************************************/
 $page_security = 'SA_BOMREP';
 // ----------------------------------------------------------------
 // $ Revision:	2.0 $
@@ -16,7 +16,7 @@ $page_security = 'SA_BOMREP';
 // date_:	2005-05-19
 // Title:	Bill Of Material
 // ----------------------------------------------------------------
-$path_to_root="..";
+$path_to_root = "..";
 
 include_once($path_to_root . "/includes/session.inc");
 include_once($path_to_root . "/includes/date_functions.inc");
@@ -30,63 +30,61 @@ print_bill_of_material();
 
 function getTransactions($from, $to)
 {
-	$sql = "SELECT ".TB_PREF."bom.parent,
-			".TB_PREF."bom.component,
-			".TB_PREF."stock_master.description as CompDescription,
-			".TB_PREF."bom.quantity,
-			".TB_PREF."bom.loc_code,
-			".TB_PREF."bom.workcentre_added
+	$sql = "SELECT " . TB_PREF . "bom.parent,
+			" . TB_PREF . "bom.component,
+			" . TB_PREF . "stock_master.description as CompDescription,
+			" . TB_PREF . "bom.quantity,
+			" . TB_PREF . "bom.loc_code,
+			" . TB_PREF . "bom.workcentre_added
 		FROM
-			".TB_PREF."stock_master,
-			".TB_PREF."bom
-		WHERE ".TB_PREF."stock_master.stock_id=".TB_PREF."bom.component
-		AND ".TB_PREF."bom.parent >= ".db_escape($from)."
-		AND ".TB_PREF."bom.parent <= ".db_escape($to)."
+			" . TB_PREF . "stock_master,
+			" . TB_PREF . "bom
+		WHERE " . TB_PREF . "stock_master.stock_id=" . TB_PREF . "bom.component
+		AND " . TB_PREF . "bom.parent >= " . db_escape($from) . "
+		AND " . TB_PREF . "bom.parent <= " . db_escape($to) . "
 		ORDER BY
-			".TB_PREF."bom.parent,
-			".TB_PREF."bom.component";
+			" . TB_PREF . "bom.parent,
+			" . TB_PREF . "bom.component";
 
-    return db_query($sql,"No transactions were returned");
+	return db_query($sql, "No transactions were returned");
 }
 
 //----------------------------------------------------------------------------------------------------
 
 function print_bill_of_material()
 {
-    global $path_to_root;
+	global $path_to_root;
 
-    $frompart = $_POST['PARAM_0'];
-    $topart = $_POST['PARAM_1'];
-    $comments = $_POST['PARAM_2'];
+	$frompart = $_POST['PARAM_0'];
+	$topart = $_POST['PARAM_1'];
+	$comments = $_POST['PARAM_2'];
 	$destination = $_POST['PARAM_3'];
 	if ($destination)
 		include_once($path_to_root . "/reporting/includes/excel_report.inc");
 	else
 		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 
-	$cols = array(0, 50, 305, 375, 445,	515);
+	$cols = array(0, 50, 305, 375, 445, 515);
 
 	$headers = array(_('Component'), _('Description'), _('Loc'), _('Wrk Ctr'), _('Quantity'));
 
-	$aligns = array('left',	'left',	'left', 'left', 'right');
+	$aligns = array('left', 'left', 'left', 'left', 'right');
 
-    $params =   array( 	0 => $comments,
-    				    1 => array('text' => _('Component'), 'from' => $frompart, 'to' => $topart));
+	$params = array(0 => $comments,
+					1 => array('text' => _('Component'), 'from' => $frompart, 'to' => $topart));
 
-    $rep = new FrontReport(_('Bill of Material Listing'), "BillOfMaterial", user_pagesize());
+	$rep = new FrontReport(_('Bill of Material Listing'), "BillOfMaterial", user_pagesize());
 
-    $rep->Font();
-    $rep->Info($params, $cols, $headers, $aligns);
-    $rep->Header();
+	$rep->Font();
+	$rep->Info($params, $cols, $headers, $aligns);
+	$rep->Header();
 
 	$res = getTransactions($frompart, $topart);
 	$parent = '';
-	while ($trans=db_fetch($res))
+	while ($trans = db_fetch($res))
 	{
-		if ($parent != $trans['parent'])
-		{
-			if ($parent != '')
-			{
+		if ($parent != $trans['parent']) {
+			if ($parent != '') {
 				$rep->Line($rep->row - 2);
 				$rep->NewLine(2, 3);
 			}
@@ -110,7 +108,7 @@ function print_bill_of_material()
 	}
 	$rep->Line($rep->row - 4);
 	$rep->NewLine();
-    $rep->End();
+	$rep->End();
 }
 
 ?>

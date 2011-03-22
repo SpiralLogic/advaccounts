@@ -90,7 +90,7 @@ class Branch extends Contact
 		if (is_array($changes)) {
 			$this->setFromArray($changes);
 		}
-		if ((int)$this->branch_code == 0) {
+		if ((int) $this->branch_code == 0) {
 			$this->_saveNew();
 		}
 		if (!$this->_canProcess()) {
@@ -99,7 +99,7 @@ class Branch extends Contact
 		if ($this->branch_ref != 'accounts') {
 			$this->branch_ref = substr(db_escape($this->br_name), 0, 30);
 		}
-		
+
 		begin_transaction();
 		$sql = "UPDATE " . TB_PREF . "cust_branch SET
 			br_name=" . db_escape($this->name) . ",
@@ -138,11 +138,11 @@ class Branch extends Contact
 				salesman, phone, phone2, fax, contact_name, area, email, tax_group_id, sales_account, sales_discount_account, receivables_account, payment_discount_account, default_location,
 				br_post_address, disable_trans, group_no, default_ship_via, notes,inactive)
 				VALUES (" . db_escape($this->debtor_no) . "," . db_escape($this->name) . ", " . db_escape($this->branch_ref) . ", " . db_escape($this->address) . ", "
-		       . db_escape($this->salesman) . ", " . db_escape($this->phone) . ", " . db_escape($this->phone2) . ", " . db_escape($this->fax) . "," . db_escape($this->contact_name) . ", "
-		       . db_escape($this->area) . ", " . db_escape($this->email) . ", " . db_escape($this->tax_group_id) . ", " . db_escape($this->sales_account) . ", "
-		       . db_escape($this->sales_discount_account) . ", " . db_escape($this->receivables_account) . ", " . db_escape($this->payment_discount_account) . ", " . db_escape($this->default_location)
-		       . ", " . db_escape($this->br_post_address) . "," . db_escape($this->disable_trans) . ", " . db_escape($this->group_no) . ", " . db_escape($this->default_ship_via) . ", "
-		       . db_escape($this->notes) . ", " . db_escape($this->inactive) . ")";
+			   . db_escape($this->salesman) . ", " . db_escape($this->phone) . ", " . db_escape($this->phone2) . ", " . db_escape($this->fax) . "," . db_escape($this->contact_name) . ", "
+			   . db_escape($this->area) . ", " . db_escape($this->email) . ", " . db_escape($this->tax_group_id) . ", " . db_escape($this->sales_account) . ", "
+			   . db_escape($this->sales_discount_account) . ", " . db_escape($this->receivables_account) . ", " . db_escape($this->payment_discount_account) . ", " . db_escape($this->default_location)
+			   . ", " . db_escape($this->br_post_address) . "," . db_escape($this->disable_trans) . ", " . db_escape($this->group_no) . ", " . db_escape($this->default_ship_via) . ", "
+			   . db_escape($this->notes) . ", " . db_escape($this->inactive) . ")";
 		db_query($sql, "The branch could not be added");
 		$this->branch_code = db_insert_id();
 		commit_transaction();

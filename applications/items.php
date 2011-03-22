@@ -11,10 +11,10 @@
 class items_app extends application
 {
 
-    function __construct()
-    {
-        $this->direct = 'items/items.php';
-        $this->application("items", _($this->help_context = "Items"));
+	function __construct()
+	{
+		$this->direct = 'items/items.php';
+		$this->application("items", _($this->help_context = "Items"));
 
-    }
+	}
 }

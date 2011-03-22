@@ -23,7 +23,7 @@
  *
 */
 $page_security = 'SA_REPORT_GENERATOR';
-$path_to_root="../..";
+$path_to_root = "../..";
 include_once($path_to_root . "/includes/session.inc");
 add_access_extensions();
 
@@ -35,38 +35,38 @@ require_once("repgen_def.inc");
 require_once("repgen.inc");
 
 function check_short($short)
-{ 	// controls, that short-name of blocks does not be twice
-  	global $id_new;
-    if (empty($short))
-    	return false;
-    $query = "SELECT attrib,id FROM xx_reports WHERE typ='block'";
-    $res = db_query($query);
-    while ($f = db_fetch($res))
-    {
-    	$h=explode("|",$f["attrib"]);
-        if (($h[0] == $short) && (trim($f["id"]) != $id_new))
-        	return false;
-    }
-    return true;
+{ // controls, that short-name of blocks does not be twice
+	global $id_new;
+	if (empty($short))
+		return false;
+	$query = "SELECT attrib,id FROM xx_reports WHERE typ='block'";
+	$res = db_query($query);
+	while ($f = db_fetch($res))
+	{
+		$h = explode("|", $f["attrib"]);
+		if (($h[0] == $short) && (trim($f["id"]) != $id_new))
+			return false;
+	}
+	return true;
 }
 
-function m_s($a1,$a2)
-{   // sets "selected" in select box when $a1 == $a2
-   	if ($a1 == $a2)
-   		return "selected";
-   	else
-   		return "";
+function m_s($a1, $a2)
+{ // sets "selected" in select box when $a1 == $a2
+	if ($a1 == $a2)
+		return "selected";
+	else
+		return "";
 }
 
 
 function store($id, $info)
-{   // stores the records 'block' in the database
-   	db_query("BEGIN");
-   	$query="DELETE FROM xx_reports WHERE (id ='".$id."' AND typ='block')";
-   	db_query($query);
-   	$query="INSERT INTO xx_reports VALUES ('".$id."','block','".$info."')";
-   	db_query($query);
-   	db_query("COMMIT");
+{ // stores the records 'block' in the database
+	db_query("BEGIN");
+	$query = "DELETE FROM xx_reports WHERE (id ='" . $id . "' AND typ='block')";
+	db_query($query);
+	$query = "INSERT INTO xx_reports VALUES ('" . $id . "','block','" . $info . "')";
+	db_query($query);
+	db_query("COMMIT");
 }
 
 ###
@@ -75,48 +75,44 @@ function store($id, $info)
 
 ## Check if there was a submission
 
-if (isset($select))
-{
+if (isset($select)) {
 	// go to the page for selection of an old block without storing the content of this page
-	$url = REPGENDIR."/repgen_select.php";
-	header("Location: http://$HTTP_HOST".$url);  // switches to repgen_select.php
+	$url = REPGENDIR . "/repgen_select.php";
+	header("Location: http://$HTTP_HOST" . $url); // switches to repgen_select.php
 	exit;
 }
-if (isset($page_strings))
-{
+if (isset($page_strings)) {
 	// go to page for definition of String-items
 	$error = "";
-	if (!check_short($short))
-	{
+	if (!check_short($short)) {
 		$error = ID_ERROR;
 	}
 	else
 	{
 		// switches to repgen_strings.php (Definition of String-items of the block)
-		$info = $short."|".$date_."|".$author."|".$long ;
-		store($id_new,$info);
-		$url=REPGENDIR."/repgen_strings.php";
-		$url .= "?id_new=".$id_new."&long=".urlencode($long)."&report_type=".$report_type;
-		header("Location: http://$HTTP_HOST".$url);  // switches to repgen_strings.php
+		$info = $short . "|" . $date_ . "|" . $author . "|" . $long;
+		store($id_new, $info);
+		$url = REPGENDIR . "/repgen_strings.php";
+		$url .= "?id_new=" . $id_new . "&long=" . urlencode($long) . "&report_type=" . $report_type;
+		header("Location: http://$HTTP_HOST" . $url); // switches to repgen_strings.php
 		exit;
-   	}
+	}
 }
-if (isset($page_graphics))
-{
+if (isset($page_graphics)) {
 	// go to page for definition of Line-items
-	if (!check_short($short))
-	{
+	if (!check_short($short)) {
 		$error = ID_ERROR;
 	}
 	else
 	{
 		// switches to repgen_graphics.php (Definition of items of the report)
-		$info = $short."|".$date_."|".$author."|".$long ;
-		store($id_new,$info);
-		$url=REPGENDIR."/repgen_graphics.php?id_new=".$id_new;;
-		header("Location: http://$HTTP_HOST".$url);  // switches to repgen_graphics.php
-		 exit;
-   	}
+		$info = $short . "|" . $date_ . "|" . $author . "|" . $long;
+		store($id_new, $info);
+		$url = REPGENDIR . "/repgen_graphics.php?id_new=" . $id_new;
+		;
+		header("Location: http://$HTTP_HOST" . $url); // switches to repgen_graphics.php
+		exit;
+	}
 }
 
 page("Report Generator REPGEN");
@@ -126,26 +122,27 @@ page("Report Generator REPGEN");
 ?>
 
 <script language="javascript"><!--
-function num_test(feld) {
-if (isNaN(feld.value) == true)
-{ alert("Use only Numbers here!");
- feld.focus();
- return (false); }
+function num_test(feld)
+{
+	if (isNaN(feld.value) == true) {
+		alert("Use only Numbers here!");
+		feld.focus();
+		return (false);
+	}
 
 }
 //--></script>
 <?php
 if (!empty($long))
-	display_heading(ALTER_BLOCK.":   ".$long);
+	display_heading(ALTER_BLOCK . ":   " . $long);
 else
 	display_heading(CREATE_BLOCK);
-if (!empty($error))
-{
+if (!empty($error)) {
 	display_error($error);
 	$error = NULL;
 }
 
-start_form(false, false, REPGENDIR."/repgen_createblock.php", "edit");
+start_form(false, false, REPGENDIR . "/repgen_createblock.php", "edit");
 
 start_table($table_style2);
 label_row(ID_BLOCK, $id_new);
@@ -153,7 +150,7 @@ hidden("id_new", $id_new);
 text_row(SHORT, "short", $short, 10, 10);
 text_row(LONG, "long", $long, 40, 40);
 text_row(AUTHOR, "author", $author, 20, 20);
-label_row(DATE, today().hidden("date_", date("Y-m-d"),false).hidden("id", $id_new,false));
+label_row(DATE, today() . hidden("date_", date("Y-m-d"), false) . hidden("id", $id_new, false));
 end_table(1);
 
 start_table($table_style);

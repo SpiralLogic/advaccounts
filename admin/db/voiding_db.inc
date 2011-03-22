@@ -1,14 +1,14 @@
 <?php
 /**********************************************************************
-    Copyright (C) FrontAccounting, LLC.
-	Released under the terms of the GNU General Public License, GPL, 
-	as published by the Free Software Foundation, either version 3 
-	of the License, or (at your option) any later version.
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
-    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
-***********************************************************************/
+Copyright (C) FrontAccounting, LLC.
+Released under the terms of the GNU General Public License, GPL,
+as published by the Free Software Foundation, either version 3
+of the License, or (at your option) any later version.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+ ***********************************************************************/
 include_once($path_to_root . "/sales/includes/sales_db.inc");
 include_once($path_to_root . "/purchasing/includes/purchasing_db.inc");
 include_once($path_to_root . "/inventory/includes/inventory_db.inc");
@@ -44,15 +44,14 @@ function void_transaction($type, $type_no, $date_, $memo_)
 		case ST_CUSTDELIVERY : // it's a customer dispatch
 			if (!exists_customer_trans($type, $type_no))
 				return false;
-			if ($type == 13)	// added 04 Oct 2008 by Joe Hunt. If delivery note has a not voided invoice, then NO.
+			if ($type == 13) // added 04 Oct 2008 by Joe Hunt. If delivery note has a not voided invoice, then NO.
 			{
 				$delivery = get_customer_trans($type_no, $type);
-				if ($delivery['trans_link'] != 0)
-				{
+				if ($delivery['trans_link'] != 0) {
 					if (get_voided_entry(10, $delivery['trans_link']) === false)
 						return false;
 				}
-			}	
+			}
 			post_void_customer_trans($type, $type_no);
 			break;
 
@@ -108,7 +107,7 @@ function void_transaction($type, $type_no, $date_, $memo_)
 	}
 
 	// only add an entry if it's actually been voided
-	add_audit_trail($type, $type_no, $date_, _("Voided.")."\n".$memo_);
+	add_audit_trail($type, $type_no, $date_, _("Voided.") . "\n" . $memo_);
 	add_voided_entry($type, $type_no, $date_, $memo_);
 	return true;
 }
@@ -117,8 +116,8 @@ function void_transaction($type, $type_no, $date_, $memo_)
 
 function get_voided_entry($type, $type_no)
 {
-	$sql = "SELECT * FROM ".TB_PREF."voided WHERE type=".db_escape($type)
-		." AND id=".db_escape($type_no);
+	$sql = "SELECT * FROM " . TB_PREF . "voided WHERE type=" . db_escape($type)
+		   . " AND id=" . db_escape($type_no);
 
 	$result = db_query($sql, "could not query voided transaction table");
 
@@ -130,9 +129,9 @@ function get_voided_entry($type, $type_no)
 function add_voided_entry($type, $type_no, $date_, $memo_)
 {
 	$date = date2sql($date_);
-	$sql = "INSERT INTO ".TB_PREF."voided (type, id, date_, memo_)
-		VALUES (".db_escape($type).", ".db_escape($type_no).", "
-		.db_escape($date).", ".db_escape($memo_).")";
+	$sql = "INSERT INTO " . TB_PREF . "voided (type, id, date_, memo_)
+		VALUES (" . db_escape($type) . ", " . db_escape($type_no) . ", "
+		   . db_escape($date) . ", " . db_escape($memo_) . ")";
 
 	db_query($sql, "could not add voided transaction entry");
 }

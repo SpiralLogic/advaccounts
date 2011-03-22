@@ -1,14 +1,14 @@
 <?php
 /**********************************************************************
-    Copyright (C) FrontAccounting, LLC.
-	Released under the terms of the GNU General Public License, GPL, 
-	as published by the Free Software Foundation, either version 3 
-	of the License, or (at your option) any later version.
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
-    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
-***********************************************************************/
+Copyright (C) FrontAccounting, LLC.
+Released under the terms of the GNU General Public License, GPL,
+as published by the Free Software Foundation, either version 3
+of the License, or (at your option) any later version.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+ ***********************************************************************/
 $page_security = 'SA_SALESTRANSVIEW';
 $path_to_root = "../..";
 include_once($path_to_root . "/includes/session.inc");
@@ -23,8 +23,7 @@ if ($use_popup_windows)
 page(_($help_context = "View Sales Dispatch"), true, false, "", $js);
 
 
-if (isset($_GET["trans_no"]))
-{
+if (isset($_GET["trans_no"])) {
 	$trans_id = $_GET["trans_no"];
 }
 elseif (isset($_POST["trans_no"]))
@@ -40,7 +39,7 @@ $branch = get_branch($myrow["branch_code"]);
 
 $sales_order = get_sales_order_header($myrow["order_"], ST_SALESORDER);
 
-display_heading(sprintf(_("DISPATCH NOTE #%d"),$trans_id));
+display_heading(sprintf(_("DISPATCH NOTE #%d"), $trans_id));
 
 echo "<br>";
 start_table("$table_style2 width=95%");
@@ -75,7 +74,7 @@ $th = array(_("Delivered To"));
 table_header($th);
 
 label_row(null, $sales_order["deliver_to"] . "<br>" . nl2br($sales_order["delivery_address"]),
-	"nowrap");
+		  "nowrap");
 end_table();
 
 echo "</td><td>"; // outer table
@@ -85,7 +84,7 @@ start_row();
 label_cells(_("Reference"), $myrow["reference"], "class='tableheader2'");
 label_cells(_("Currency"), $sales_order["curr_code"], "class='tableheader2'");
 label_cells(_("Our Order No"),
-	get_customer_trans_view_str(ST_SALESORDER,$sales_order["order_no"]), "class='tableheader2'");
+			get_customer_trans_view_str(ST_SALESORDER, $sales_order["order_no"]), "class='tableheader2'");
 end_row();
 start_row();
 label_cells(_("Customer Order Ref."), $sales_order["customer_ref"], "class='tableheader2'");
@@ -107,40 +106,38 @@ $result = get_customer_trans_details(ST_CUSTDELIVERY, $trans_id);
 
 start_table("$table_style width=95%");
 
-if (db_num_rows($result) > 0)
-{
+if (db_num_rows($result) > 0) {
 	$th = array(_("Item Code"), _("Item Description"), _("Quantity"),
-		_("Unit"), _("Price"), _("Discount %"), _("Total"));
+				_("Unit"), _("Price"), _("Discount %"), _("Total"));
 	table_header($th);
 
-	$k = 0;	//row colour counter
+	$k = 0; //row colour counter
 	$sub_total = 0;
 	while ($myrow2 = db_fetch($result))
 	{
-		if($myrow2['quantity']==0) continue;
+		if ($myrow2['quantity'] == 0) continue;
 		alt_table_row_color($k);
 
 		$value = round2(((1 - $myrow2["discount_percent"]) * $myrow2["unit_price"] * $myrow2["quantity"]),
-		   user_price_dec());
+			user_price_dec());
 		$sub_total += $value;
 
-	    if ($myrow2["discount_percent"] == 0)
-	    {
-		  	$display_discount = "";
-	    }
-	    else
-	    {
-		  	$display_discount = percent_format($myrow2["discount_percent"]*100) . "%";
-	    }
+		if ($myrow2["discount_percent"] == 0) {
+			$display_discount = "";
+		}
+		else
+		{
+			$display_discount = percent_format($myrow2["discount_percent"] * 100) . "%";
+		}
 
 		label_cell($myrow2["stock_id"]);
 		label_cell($myrow2["StockDescription"]);
-        qty_cell($myrow2["quantity"], false, get_qty_dec($myrow2["stock_id"]));
-        label_cell($myrow2["units"], "align=right");
-        amount_cell($myrow2["unit_price"]);
-        label_cell($display_discount, "nowrap align=right");
-        amount_cell($value);
-	end_row();
+		qty_cell($myrow2["quantity"], false, get_qty_dec($myrow2["stock_id"]));
+		label_cell($myrow2["units"], "align=right");
+		amount_cell($myrow2["unit_price"]);
+		label_cell($display_discount, "nowrap align=right");
+		amount_cell($value);
+		end_row();
 	} //end while there are line items to print out
 
 }
@@ -152,16 +149,16 @@ $display_freight = price_format($myrow["ov_freight"]);
 
 /*Print out the delivery note text entered */
 label_row(_("Sub-total"), $display_sub_tot, "colspan=6 align=right",
-	"nowrap align=right width=15%");
+		  "nowrap align=right width=15%");
 label_row(_("Shipping"), $display_freight, "colspan=6 align=right", "nowrap align=right");
 
 $tax_items = get_trans_tax_details(ST_CUSTDELIVERY, $trans_id);
 display_customer_trans_tax_details($tax_items, 6);
 
-$display_total = price_format($myrow["ov_freight"]+$myrow["ov_amount"]+$myrow["ov_freight_tax"]+$myrow["ov_gst"]);
+$display_total = price_format($myrow["ov_freight"] + $myrow["ov_amount"] + $myrow["ov_freight_tax"] + $myrow["ov_gst"]);
 
 label_row(_("TOTAL VALUE"), $display_total, "colspan=6 align=right",
-	"nowrap align=right");
+		  "nowrap align=right");
 end_table(1);
 
 is_voided_display(ST_CUSTDELIVERY, $trans_id, _("This dispatch has been voided."));

@@ -58,7 +58,7 @@ function display_supplier_summary($supplier_record)
 	$pastdue2 = _('Over') . " " . $past2 . " " . _('Days');
 	start_table("width=80% $table_style");
 	$th = array(_("Currency"), _("Terms"), _("Current"), $nowdue,
-	            $pastdue1, $pastdue2, _("Total Balance"), _("Total For Search Period"));
+				$pastdue1, $pastdue2, _("Total Balance"), _("Total For Search Period"));
 	table_header($th);
 	start_row();
 	label_cell($supplier_record["curr_code"]);
@@ -68,7 +68,7 @@ function display_supplier_summary($supplier_record)
 	amount_cell($supplier_record["Overdue1"] - $supplier_record["Overdue2"]);
 	amount_cell($supplier_record["Overdue2"]);
 	amount_cell($supplier_record["Balance"]);
-	amount_cell(get_supplier_oweing($_POST['supplier_id'], $_POST['TransAfterDate'], $_POST['TransToDate'])	);
+	amount_cell(get_supplier_oweing($_POST['supplier_id'], $_POST['TransAfterDate'], $_POST['TransToDate']));
 	end_row();
 	end_table(1);
 }
@@ -109,8 +109,8 @@ function credit_link($row)
 {
 	return $row['type'] == ST_SUPPINVOICE && $row["TotalAmount"] - $row["Allocated"] > 0 ?
 			pager_link(_("Credit This"),
-			           "/purchasing/supplier_credit.php?New=1&invoice_no=" .
-			           $row['trans_no'], ICON_CREDIT)
+					   "/purchasing/supplier_credit.php?New=1&invoice_no=" .
+					   $row['trans_no'], ICON_CREDIT)
 			: '';
 }
 
@@ -130,14 +130,15 @@ function fmt_credit($row)
 function prt_link($row)
 {
 	if ($row['type'] == ST_SUPPAYMENT || $row['type'] == ST_BANKPAYMENT || $row['type'] == ST_SUPPCREDIT) {
-		return print_document_link($row['trans_no'] . "-" . $row['type'], _("Print Remittance"), true, ST_SUPPAYMENT, ICON_PRINT);
+		return print_document_link(
+			$row['trans_no'] . "-" . $row['type'], _("Print Remittance"), true, ST_SUPPAYMENT, ICON_PRINT);
 	}
 }
 
 function check_overdue($row)
 {
 	return $row['OverDue'] == 1
-	       && (abs($row["TotalAmount"]) - $row["Allocated"] != 0);
+		   && (abs($row["TotalAmount"]) - $row["Allocated"] != 0);
 }
 
 //------------------------------------------------------------------------------------------------
@@ -183,7 +184,7 @@ if (isAjaxReferrer() && !empty($_POST['ajaxsearch'])) {
 		$sql .= ")";
 	}
 } else {
-	$sql .=" AND trans . tran_date >= '$date_after'
+	$sql .= " AND trans . tran_date >= '$date_after'
 	            AND trans . tran_date <= '$date_to'";
 
 }

@@ -71,14 +71,15 @@ if (isset($header2type)) {
 	$doc_Our_VAT_no = "Our VAT No.";
 	$doc_Domicile = "Domicile";
 	if ($doctype == ST_CUSTDELIVERY || $doctype == ST_SALESQUOTE || $doctype == ST_PURCHORDER || $doctype == ST_SALESORDER || $doctype == ST_SUPPAYMENT || $doctype == ST_CUSTPAYMENT ||
-	    $doctype == ST_CUSTPREFUND) {
+		$doctype == ST_CUSTPREFUND) {
 		if ($doctype == ST_CUSTPAYMENT) {
 			$doc_Extra = "* Subject to Realisation of the Cheque.";
 		}
 		$doc_Bank_Account = '';
 		$doc_Please_Quote = "All amounts stated in";
 	} else {
-		$doc_Please_Quote = "Please quote " . ($doctype == ST_SALESINVOICE ? "Invoice" : "Credit") . " no. when paying. All amounts stated in";
+		$doc_Please_Quote = "Please quote " . ($doctype == ST_SALESINVOICE ? "Invoice"
+				: "Credit") . " no. when paying. All amounts stated in";
 		$doc_Bank_Account = "Bank Account";
 	}
 	$doc_Address = "Address";
@@ -86,7 +87,7 @@ if (isset($header2type)) {
 	$doc_Bank = "Bank";
 	$doc_Payment_Link = "You can pay through";
 	if ($doctype == ST_SALESQUOTE || $doctype == ST_PURCHORDER || $doctype == ST_SALESORDER || $doctype == ST_SALESINVOICE || $doctype == ST_CUSTCREDIT || $doctype == ST_CUSTDELIVERY ||
-	    $doctype == ST_WORKORDER || $doctype == ST_SUPPAYMENT || $doctype == ST_CUSTPAYMENT || $doctype == ST_CUSTREFUND) {
+		$doctype == ST_WORKORDER || $doctype == ST_SUPPAYMENT || $doctype == ST_CUSTPAYMENT || $doctype == ST_CUSTREFUND) {
 		if ($doctype == ST_SALESQUOTE) {
 			$this->title = "SALES QUOTATION";
 		} elseif ($doctype == ST_PURCHORDER) {
@@ -109,11 +110,14 @@ if (isset($header2type)) {
 			$this->title = "CREDIT NOTE";
 		}
 		if ($doctype == ST_PURCHORDER) {
-			$this->headers = array('Item Code', 'Item Description', 'Delivery Date', 'Quantity', 'Unit', 'Price', 'Total');
+			$this->headers =
+					array('Item Code', 'Item Description', 'Delivery Date', 'Quantity', 'Unit', 'Price', 'Total');
 		} elseif ($doctype == ST_WORKORDER) {
-			$this->headers = array("Item Code", "Item Description", "From Location", "Work Centre", "Unit Quantity", "Total Quantity", "Units Issued");
+			$this->headers = array("Item Code", "Item Description", "From Location", "Work Centre", "Unit Quantity",
+								   "Total Quantity", "Units Issued");
 		} elseif ($doctype == ST_SUPPAYMENT || $doctype == ST_CUSTPAYMENT) {
-			$this->headers = array('Trans Type', '#', 'Date', 'Due Date', 'Total Amount', 'Left to Allocate', 'This Allocation');
+			$this->headers =
+					array('Trans Type', '#', 'Date', 'Due Date', 'Total Amount', 'Left to Allocate', 'This Allocation');
 		} elseif ($doctype == ST_CUSTREFUND) {
 			$this->headers = array('Trans Type', '#', 'Date', '', 'Total Amount', '', '');
 		}
@@ -132,10 +136,12 @@ if (isset($emailtype)) {
 	$doc_Payment_Link = "You can pay through";
 }
 if (isset($header2type) || isset($linetype)) {
-	$doc_Invoice_no = ($doctype == ST_CUSTDELIVERY ? "Delivery Note No." : ($doctype == ST_CUSTPAYMENT ? "Receipt No." : $doctype == ST_CUSTREFUND ? "Refund No." : ($doctype ==
-	                                                                                                                                                                 ST_SUPPAYMENT ? "Remittance No." :
-			($doctype == ST_PURCHORDER ? "Purchase Order #:" : ($doctype == ST_SALESORDER ? "Order No." :
-					($doctype == ST_SALESQUOTE ? "Quotation No." : ($doctype == ST_SALESINVOICE ? "Invoice No." : ($doctype == ST_WORKORDER ? "Work Order No." : "Credit No."))))))));
+	$doc_Invoice_no = ($doctype == ST_CUSTDELIVERY ? "Delivery Note No." : ($doctype == ST_CUSTPAYMENT ? "Receipt No."
+			: $doctype == ST_CUSTREFUND ? "Refund No." : ($doctype ==
+														  ST_SUPPAYMENT ? "Remittance No." :
+					($doctype == ST_PURCHORDER ? "Purchase Order #:" : ($doctype == ST_SALESORDER ? "Order No." :
+							($doctype == ST_SALESQUOTE ? "Quotation No." : ($doctype == ST_SALESINVOICE ? "Invoice No."
+									: ($doctype == ST_WORKORDER ? "Work Order No." : "Credit No."))))))));
 	$doc_Delivery_no = "Delivery Note No.";
 	$doc_Order_no = "Order No.";
 }

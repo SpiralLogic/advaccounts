@@ -1,6 +1,6 @@
 <?php
 $page_security = 'SA_ADVANCED';
-$path_to_root="../..";
+$path_to_root = "../..";
 
 include_once($path_to_root . "/includes/session.inc");
 add_access_extensions();

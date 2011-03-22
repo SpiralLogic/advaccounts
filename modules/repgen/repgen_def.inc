@@ -6,16 +6,16 @@
 ///////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
 
-foreach($_GET as $name => $value)
+foreach ($_GET as $name => $value)
 	$$name = $value;
 
-foreach($_POST as $name => $value)
+foreach ($_POST as $name => $value)
 	$$name = $value;
 
-foreach($_SERVER as $name => $value)
+foreach ($_SERVER as $name => $value)
 	$$name = $value;
 
-foreach($_ENV as $name => $value)
+foreach ($_ENV as $name => $value)
 	$$name = $value;
 
 //error_reporting(E_ALL);
@@ -44,8 +44,8 @@ if (!isset($group))
 if (!isset($group_type))
 	$group_type = "";
 
-define("REPGENDIR",dirname($PHP_SELF));  // Directory of Repgen, should be altered if you use another directory
+define("REPGENDIR", dirname($PHP_SELF)); // Directory of Repgen, should be altered if you use another directory
 //////////////////////////////////////////////////////////////////////////
-define("VERSION","Version 2.0");    // Version Number
+define("VERSION", "Version 2.0"); // Version Number
 
 ?>

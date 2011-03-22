@@ -6,7 +6,8 @@
  * Time: 4:00 PM
  * To change this template use File | Settings | File Templates.
  */
-class SalesOrder extends Orders {
+class SalesOrder extends Orders
+{
 
 
 	public $trans_type, $type;
@@ -14,28 +15,43 @@ class SalesOrder extends Orders {
 	public $branch_id; //$branch_code in DB
 	public $customer_ref, $order_type, $ship_via, $contact_phone, $contact_email, $deliver_to, $from_stk_loc, $delivery_date;
 
-	protected function _canProcess() {
+	protected function _canProcess()
+	{
 		// TODO: Implement _canProcess() method.
 	}
-	protected function _countTransactions() {
+
+	protected function _countTransactions()
+	{
 		// TODO: Implement _countTransactions() method.
 	}
-	protected function _defaults() {
+
+	protected function _defaults()
+	{
 		// TODO: Implement _defaults() method.
 	}
-	protected function _new() {
+
+	protected function _new()
+	{
 		// TODO: Implement _new() method.
 	}
-	protected function _read() {
+
+	protected function _read()
+	{
 		// TODO: Implement _read() method.
 	}
-	protected function _saveNew() {
+
+	protected function _saveNew()
+	{
 		// TODO: Implement _saveNew() method.
 	}
-	public function delete() {
+
+	public function delete()
+	{
 		// TODO: Implement delete() method.
 	}
-	public function save($changes = null) {
+
+	public function save($changes = null)
+	{
 		// TODO: Implement save() method.
 	}
 }

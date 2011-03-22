@@ -1,16 +1,16 @@
 <?php
 /**********************************************************************
-    Copyright (C) FrontAccounting, LLC.
-	Released under the terms of the GNU General Public License, GPL, 
-	as published by the Free Software Foundation, either version 3 
-	of the License, or (at your option) any later version.
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
-    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
-***********************************************************************/
+Copyright (C) FrontAccounting, LLC.
+Released under the terms of the GNU General Public License, GPL,
+as published by the Free Software Foundation, either version 3
+of the License, or (at your option) any later version.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+ ***********************************************************************/
 $page_security = 'SA_CREATELANGUAGE';
-$path_to_root="..";
+$path_to_root = "..";
 include_once($path_to_root . "/includes/session.inc");
 
 page(_($help_context = "Install/Update Languages"));
@@ -22,8 +22,7 @@ include_once($path_to_root . "/includes/ui.inc");
 
 //---------------------------------------------------------------------------------------------
 
-if (isset($_GET['selected_id']))
-{
+if (isset($_GET['selected_id'])) {
 	$selected_id = $_GET['selected_id'];
 }
 elseif (isset($_POST['selected_id']))
@@ -56,33 +55,30 @@ function handle_submit()
 	$id = $_GET['id'];
 
 	if ($_POST['dflt']) {
-			$dflt_lang = $_POST['code'];
+		$dflt_lang = $_POST['code'];
 	}
-	
+
 	$installed_languages[$id]['code'] = $_POST['code'];
 	$installed_languages[$id]['name'] = $_POST['name'];
 	$installed_languages[$id]['encoding'] = $_POST['encoding'];
-	$installed_languages[$id]['rtl'] = (bool)$_POST['rtl'];
+	$installed_languages[$id]['rtl'] = (bool) $_POST['rtl'];
 	if (!write_lang())
 		return false;
 	$directory = $path_to_root . "/lang/" . $_POST['code'];
-	if (!file_exists($directory))
-	{
+	if (!file_exists($directory)) {
 		mkdir($directory);
 		mkdir($directory . "/LC_MESSAGES");
 	}
-	if (is_uploaded_file($_FILES['uploadfile']['tmp_name']))
-	{
+	if (is_uploaded_file($_FILES['uploadfile']['tmp_name'])) {
 		$file1 = $_FILES['uploadfile']['tmp_name'];
-		$file2 = $directory . "/LC_MESSAGES/".$_POST['code'].".po";
+		$file2 = $directory . "/LC_MESSAGES/" . $_POST['code'] . ".po";
 		if (file_exists($file2))
 			unlink($file2);
 		move_uploaded_file($file1, $file2);
 	}
-	if (is_uploaded_file($_FILES['uploadfile2']['tmp_name']))
-	{
+	if (is_uploaded_file($_FILES['uploadfile2']['tmp_name'])) {
 		$file1 = $_FILES['uploadfile2']['tmp_name'];
-		$file2 = $directory . "/LC_MESSAGES/".$_POST['code'].".mo";
+		$file2 = $directory . "/LC_MESSAGES/" . $_POST['code'] . ".mo";
 		if (file_exists($file2))
 			unlink($file2);
 		move_uploaded_file($file1, $file2);
@@ -94,18 +90,18 @@ function handle_submit()
 
 function handle_delete()
 {
-	global  $path_to_root, $installed_languages, $dflt_lang;
+	global $path_to_root, $installed_languages, $dflt_lang;
 
 	$id = $_GET['id'];
 
 	$lang = $installed_languages[$id]['code'];
 	$filename = "$path_to_root/lang/$lang/LC_MESSAGES";
 
-	if ($lang == $dflt_lang ) { 
+	if ($lang == $dflt_lang) {
 		// on delete set default to current.
 		$dflt_lang = $_SESSION['language']->code;
 	}
-	
+
 	unset($installed_languages[$id]);
 	$installed_languages = array_values($installed_languages);
 
@@ -145,9 +141,9 @@ function display_languages()
 	for ($i = 0; $i < $n; $i++)
 	{
 		if ($conn[$i]['code'] == $lang)
-    		start_row("class='stockmankobg'");
-    	else
-    		alt_table_row_color($k);
+			start_row("class='stockmankobg'");
+		else
+			alt_table_row_color($k);
 
 		label_cell($conn[$i]['code']);
 		label_cell($conn[$i]['name']);
@@ -157,22 +153,21 @@ function display_languages()
 		else
 			$rtl = _("No");
 		label_cell($rtl);
-		label_cell($dflt_lang == $conn[$i]['code'] ? _("Yes") :_("No"));
+		label_cell($dflt_lang == $conn[$i]['code'] ? _("Yes") : _("No"));
 		$edit = _("Edit");
 		$delete = _("Delete");
-		if (user_graphic_links())
-		{
+		if (user_graphic_links()) {
 			$edit = set_icon(ICON_EDIT, $edit);
 			$delete = set_icon(ICON_DELETE, $delete);
 		}
-    	label_cell("<a href='" . $_SERVER['PHP_SELF']. "?selected_id=$i'>$edit</a>");
+		label_cell("<a href='" . $_SERVER['PHP_SELF'] . "?selected_id=$i'>$edit</a>");
 		label_cell($conn[$i]['code'] == $lang ? '' :
-			"<a href='javascript:deleteLanguage(" . $i . ")'>$delete</a>");
+						   "<a href='javascript:deleteLanguage(" . $i . ")'>$delete</a>");
 		end_row();
 	}
 
 	end_table();
-    display_note(_("The marked language is the current language which cannot be deleted."), 0, 0, "class='currentfg'");
+	display_note(_("The marked language is the current language which cannot be deleted."), 0, 0, "class='currentfg'");
 }
 
 //---------------------------------------------------------------------------------------------
@@ -198,14 +193,13 @@ function display_language_edit($selected_id)
 
 	start_table($table_style2);
 
-	if ($selected_id != -1)
-	{
+	if ($selected_id != -1) {
 		$conn = $installed_languages[$selected_id];
 		$_POST['code'] = $conn['code'];
-		$_POST['name']  = $conn['name'];
-		$_POST['encoding']  = $conn['encoding'];
+		$_POST['name'] = $conn['name'];
+		$_POST['encoding'] = $conn['encoding'];
 		if (isset($conn['rtl']))
-			$_POST['rtl']  = $conn['rtl'];
+			$_POST['rtl'] = $conn['rtl'];
 		else
 			$_POST['rtl'] = false;
 		$_POST['dflt'] = $dflt_lang == $conn['code'];
@@ -223,7 +217,7 @@ function display_language_edit($selected_id)
 
 	end_table(0);
 	display_note(_("Select your language files from your local harddisk."), 0, 1);
-	echo "<center><input onclick='javascript:updateLanguage()' type='button' style='width:150px' value='". _("Save"). "'></center>";
+	echo "<center><input onclick='javascript:updateLanguage()' type='button' style='width:150px' value='" . _("Save") . "'></center>";
 
 
 	end_form();
@@ -232,17 +226,13 @@ function display_language_edit($selected_id)
 
 //---------------------------------------------------------------------------------------------
 
-if (isset($_GET['c']))
-{
-	if ($_GET['c'] == 'df')
-	{
+if (isset($_GET['c'])) {
+	if ($_GET['c'] == 'df') {
 		handle_delete();
 	}
 
-	if ($_GET['c'] == 'u')
-	{
-		if (handle_submit())
-		{
+	if ($_GET['c'] == 'u') {
+		if (handle_submit()) {
 			//meta_forward($_SERVER['PHP_SELF']);
 		}
 	}

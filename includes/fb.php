@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *	 http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -21,8 +21,9 @@
  * @package ChromePhp
  * @author Craig Campbell <iamcraigcampbell@gmail.com>
  */
-class FB {
- 
+class FB
+{
+
 
 	/**
 	 * @var string
@@ -100,7 +101,8 @@ class FB {
 	/**
 	 * constructor
 	 */
-	private function __construct() {
+	private function __construct()
+	{
 		$this->_deleteCookie();
 		$this->_php_version = phpversion();
 		$this->_timestamp = $this->_php_version >= 5.1 ? $_SERVER['REQUEST_TIME'] : time();
@@ -112,7 +114,8 @@ class FB {
 	 *
 	 * @return ChromePhp
 	 */
-	public static function getInstance() {
+	public static function getInstance()
+	{
 		if (self::$_instance === null) {
 			self::$_instance = new FB();
 		}
@@ -126,12 +129,16 @@ class FB {
 	 * @param mixed $value
 	 * @return void
 	 */
-	public static function log() {
+	public static function log()
+	{
 		return self::_log(func_get_args() + array('type' => ''));
 	}
-public static function info() {
+
+	public static function info()
+	{
 		return self::_log(func_get_args() + array('type' => 'info'));
 	}
+
 	/**
 	 * logs a warning to the console
 	 *
@@ -139,7 +146,8 @@ public static function info() {
 	 * @param mixed $value
 	 * @return void
 	 */
-	public static function warn() {
+	public static function warn()
+	{
 		return self::_log(func_get_args() + array('type' => 'warn'));
 	}
 
@@ -150,7 +158,8 @@ public static function info() {
 	 * @param mixed $value
 	 * @return void
 	 */
-	public static function error() {
+	public static function error()
+	{
 		return self::_log(func_get_args() + array('type' => 'error'));
 	}
 
@@ -160,7 +169,8 @@ public static function info() {
 	 * @param string $type
 	 * @return void
 	 */
-	protected static function _log(array $args) {
+	protected static function _log(array $args)
+	{
 		$type = $args['type'];
 		unset($args['type']);
 
@@ -199,7 +209,8 @@ public static function info() {
 	 * @param Object
 	 * @return array
 	 */
-	protected function _convert($object) {
+	protected function _convert($object)
+	{
 		// if this isn't an object then just return it
 		if (!is_object($object)) {
 			return $object;
@@ -258,7 +269,8 @@ public static function info() {
 	 * @param ReflectionProperty
 	 * @return string
 	 */
-	protected function _getPropertyKey(ReflectionProperty $property) {
+	protected function _getPropertyKey(ReflectionProperty $property)
+	{
 		$static = $property->isStatic() ? ' static' : '';
 		if ($property->isPublic()) {
 			return 'public' . $static . ' ' . $property->getName();
@@ -279,7 +291,8 @@ public static function info() {
 	 * @var mixed
 	 * @return void
 	 */
-	protected function _addRow($label, $log, $backtrace, $type) {
+	protected function _addRow($label, $log, $backtrace, $type)
+	{
 		// if this is logged on the same line for example in a loop, set it to null to save space
 		if (in_array($backtrace, $this->_backtraces)) {
 			$backtrace = null;
@@ -302,7 +315,8 @@ public static function info() {
 	 *
 	 * @return void
 	 */
-	protected function _clearRows() {
+	protected function _clearRows()
+	{
 		// if we are in file mode we want the file to have all the log data
 		if ($this->getSetting(self::LOG_PATH) !== null) {
 			return;
@@ -325,12 +339,13 @@ public static function info() {
 	 *
 	 * @return bool
 	 */
-	protected function _writeCookie() {
+	protected function _writeCookie()
+	{
 		$json = @json_encode($this->_json);
 
 		// if we are going to use a file then use that
 		if ($this->getSetting(self::LOG_PATH) !== null) {
-			return $this->_writeToFile($json); 
+			return $this->_writeToFile($json);
 		}
 
 		// if we don't have multibyte string length available just use regular string length
@@ -350,7 +365,8 @@ public static function info() {
 	 *
 	 * @return bool
 	 */
-	protected function _deleteCookie() {
+	protected function _deleteCookie()
+	{
 		return setcookie(self::COOKIE_NAME, null, 1);
 	}
 
@@ -360,7 +376,8 @@ public static function info() {
 	 * @param array
 	 * @return bool
 	 */
-	protected function _setCookie($data) {
+	protected function _setCookie($data)
+	{
 		$data = json_encode($data);
 		$data = utf8_encode($data);
 		$data = base64_encode($data);
@@ -374,7 +391,8 @@ public static function info() {
 	 * @param mixed value
 	 * @return void
 	 */
-	public function addSetting($key, $value) {
+	public function addSetting($key, $value)
+	{
 		$this->_settings[$key] = $value;
 	}
 
@@ -384,7 +402,8 @@ public static function info() {
 	 * @param string key
 	 * @return mixed
 	 */
-	public function getSetting($key) {
+	public function getSetting($key)
+	{
 		if (!isset($this->_settings[$key])) {
 			return null;
 		}
@@ -399,7 +418,8 @@ public static function info() {
 	 * @param string path to directory on disk to keep log files
 	 * @param string url path to url to access the files
 	 */
-	public static function useFile($path, $url) {
+	public static function useFile($path, $url)
+	{
 		$logger = self::getInstance();
 		$logger->addSetting(self::LOG_PATH, rtrim($path, '/'));
 		$logger->addSetting(self::URL_PATH, rtrim($url, '/'));
@@ -411,7 +431,8 @@ public static function info() {
 	 * @param string
 	 * @return void
 	 */
-	protected function _cookieMonster() {
+	protected function _cookieMonster()
+	{
 		$this->_deleteCookie();
 
 		$this->_error_triggered = true;
@@ -429,7 +450,8 @@ public static function info() {
 	 * @param string
 	 * @return void
 	 */
-	protected function _writeToFile($json) {
+	protected function _writeToFile($json)
+	{
 		// if the log path is not setup then create it
 		if (!is_dir($this->getSetting(self::LOG_PATH))) {
 			mkdir($this->getSetting(self::LOG_PATH));

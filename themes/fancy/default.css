@@ -43,7 +43,7 @@ input, select {
 }
 
 select {
-    max-width: 200px;
+	max-width: 200px;
 }
 
 option.inactive {
@@ -91,7 +91,7 @@ button {
 }
 
 button img, span {
-	padding: 0px 2px ;
+	padding: 0px 2px;
 	vertical-align: middle;
 }
 
@@ -115,8 +115,7 @@ button img, span {
 	background-color: #285b86;
 	border: 0;
 	margin: 0;
-	padding: 0;
-	/*text-align: right;*/
+	padding: 0; /*text-align: right;*/
 }
 
 .quick_menu_selected {
@@ -171,12 +170,14 @@ div.logoutBar {
 	border-bottom: 1px solid #8cacbb;
 	text-align: right;
 }
+
 div.logoutBar a {
 	font-weight: normal;
 	margin-left: 1em;
 	color: #436976;
 	background-color: transparent;
 }
+
 div.logoutBar img {
 	vertical-align: top;
 }
@@ -189,6 +190,7 @@ div.tabs {
 	border-bottom: 1px solid #8cacbb;
 
 }
+
 div.tabs a {
 	border: 1px solid #8cacbb;
 	padding: 3px 10px;
@@ -198,15 +200,17 @@ div.tabs a {
 	margin-right: 0;
 	height: 10px;
 }
+
 div.tabs a.selected {
 	border-top: 1px solid #8cacbb;
 	border-right: 1px solid #8cacbb;
-	border-bottom:  1px solid #dee7ec;
+	border-bottom: 1px solid #dee7ec;
 	border-left: 1px solid #8cacbb;
 	font-weight: normal;
 	background: #dee7ec;
 	color: #436976;
 }
+
 div.tabs a:hover {
 	background: #dee7ec;
 	color: #436976;
@@ -362,26 +366,32 @@ table.tablestyle {
 	border-collapse: collapse;
 	border: 1px solid #8cacbb;
 }
+
 table.tablestyle td {
 	border-collapse: collapse;
 	border: 1px solid #8cacbb;
 }
+
 table.tablestyle2 {
 	border-collapse: collapse;
 	border: 1px solid #cccccc;
 }
+
 table.tablestyle2 td {
 	border-collapse: collapse;
 	border: 1px solid #cccccc;
 }
+
 table.tablestyle_inner {
 	border-collapse: collapse;
 	border: 1px solid #f9f9f9;
 }
+
 table.tablestyle_inner td {
 	border-collapse: collapse;
 	border: 1px solid #f9f9f9;
 }
+
 .tablestyle_noborder {
 	padding: 3px;
 }
@@ -401,6 +411,7 @@ table.tablestyle_inner td {
 	border-collapse: collapse;
 	background-color: #eeeeee;
 }
+
 .login td {
 	border-collapse: collapse;
 	border: 1px solid #cccccc;
@@ -418,66 +429,66 @@ input.amount {
 }
 
 .editbutton {
-   color:#0000FF;
-   background-color:transparent;
-   border-style:none;
-   text-decoration:underline;
-   cursor: pointer;
+	color: #0000FF;
+	background-color: transparent;
+	border-style: none;
+	text-decoration: underline;
+	cursor: pointer;
 }
 
 .navibutton[disabled], .navibutton[disabled] span {
-  color:#808080;
-  text-decoration: none;
-  cursor: auto;
+	color: #808080;
+	text-decoration: none;
+	cursor: auto;
 }
 
 button.navibutton {
 	font-family: Verdana, Arial, Helvetica;
 	font-size: 11px;
 	font-weight: bold;
-   color:#000;
-   padding: 0 3px;
-   background-color:transparent;
-   border-style:none;
-   cursor: pointer;
+	color: #000;
+	padding: 0 3px;
+	background-color: transparent;
+	border-style: none;
+	cursor: pointer;
 }
 
 .navibutton span {
 	text-decoration: underline;
-}	
+}
 
 .navibar {
-    padding: 0 3px;
+	padding: 0 3px;
 	color: #000;
-    border-collapse: collapse;
-    background-color: #dee7ec;
+	border-collapse: collapse;
+	background-color: #dee7ec;
 }
 
 .navibar tr td {
-    border: none;
+	border: none;
 }
 
 .listsubmit {
-    display: none;
+	display: none;
 }
 
-ul.ajaxtabs{
+ul.ajaxtabs {
 	padding: 3px 0 0 0;
 	margin: 3px 3px 0 3px;
-	font: 12px Tahoma,Verdana;
+	font: 12px Tahoma, Verdana;
 	font-weight: bold;
 }
 
-ul.ajaxtabs li{
+ul.ajaxtabs li {
 	list-style: none;
 	margin: 0;
 	display: inline;
 }
 
-ul.ajaxtabs li input{
-    background-color: #dee7ec;
-/*	background-repeat: repeat-x;
-	background-position: top; */
+ul.ajaxtabs li input {
+	background-color: #dee7ec;
+	/*	background-repeat: repeat-x;
+		background-position: top; */
 	padding: 3px 8px;
 	margin: 0px;
 	border-top: 1px solid #8cacbb;
@@ -487,29 +498,31 @@ ul.ajaxtabs li input{
 	font-weight: bold;
 }
 
-ul.ajaxtabs li input:hover{
+ul.ajaxtabs li input:hover {
 	border-top: 1px solid #8cacbb;
-	color:#FFFFFF;
+	color: #FFFFFF;
 }
-div.spaceBox{
+
+div.spaceBox {
 	background-color: #8cacbb;
-	height:8px;
+	height: 8px;
 	border-bottom: 1px solid #8cacbb;
 	border-left: 1px solid #8cacbb;
-	border-right:1px solid #8cacbb;
+	border-right: 1px solid #8cacbb;
 	margin: 0 3px 0px 3px
 }
 
-div.contentBox{
+div.contentBox {
 	border: 1px solid #8cacbb;
 	margin: 0 3px 3px 3px
 }
 
-ul.ajaxtabs li input.current, ul.ajaxtabs li input.current:hover{
+ul.ajaxtabs li input.current, ul.ajaxtabs li input.current:hover {
 	border-left: 1px solid #8cacbb;
 	background-color: #8cacbb;
-	color:#FFFFFF;
+	color: #FFFFFF;
 }
+
 #hints {
 	font-size: 13px;
 	padding: 5px;
@@ -519,6 +532,7 @@ ul.ajaxtabs li input.current, ul.ajaxtabs li input.current:hover{
 	background-color: #FFFFE0;
 	white-space: nowrap;
 }
+
 /*
 	Calendar style
 */
@@ -531,83 +545,102 @@ ul.ajaxtabs li input.current, ul.ajaxtabs li input.current:hover{
 	width: 270px;
 	z-index: 99;
 }
-#CC { 
-	position:absolute;
-	background-color:#FFF;
-	margin:0; padding:0;
-	display:none;
+
+#CC {
+	position: absolute;
+	background-color: #FFF;
+	margin: 0;
+	padding: 0;
+	display: none;
 	z-index: 100;
 }
-#CC table { 
+
+#CC table {
 	font-family: arial, verdana, helvetica, sans-serif;
 	font-size: 8pt;
 	border-left: 1px solid #336;
 	border-right: 1px solid #336;
 }
+
 #CC th {
 	font-weight: normal;
 	text-align: center;
 }
+
 #CC th a {
 	font-weight: normal;
 	text-decoration: none;
 	color: #FFF;
 	padding: 1px;
 }
+
 #CC td {
 	text-align: center;
 }
+
 #CC .header {
 	background-color: #285b86;
 }
+
 #CC .weekday {
 	background-color: #eee;
 	color: #000;
 }
+
 #CC .weekend {
 	background-color: #FFC;
 	color: #000;
 }
+
 #CC .weekno {
 	background-color: #c0daf8;
 	color: #555;
 }
+
 #CC .current {
 	border: 1px solid #339;
 	background-color: #285b86;
 	color: #FFF;
 }
+
 #CC .weekday, #CC .weekend, #CC .current {
 	display: block;
 	text-decoration: none;
 	border: 1px solid #FFF;
 	width: 2em;
 }
+
 #CC .weekday:hover, #CC .weekend:hover, #CC .current:hover {
 	color: #FFF;
 	background-color: #285b86;
 	border: 1px solid #999;
 }
+
 #CC .previous {
 	text-align: left;
 }
+
 #CC .next {
 	text-align: right;
 }
+
 #CC .previous, #CC .next {
 	padding: 1px 3px 1px 3px;
 	font-size: 1.4em;
 }
+
 #CC .previous a, #CC .next a {
 	color: #FFF;
 	text-decoration: none;
 	font-weight: bold;
 }
+
 #CC .title {
 	text-align: center;
-	font-weight: bold; 
+	font-weight: bold;
 	color: #FFF;
 }
+
 #CC .empty {
 	background-color: #ddd;
 	border: 1px solid #FFF;
@@ -632,7 +665,7 @@ div.warn_msg {
 }
 
 div.note_msg {
-	margin: 10px; 
+	margin: 10px;
 	padding: 3px;
 	border: 1px solid #33cc00;
 	background-color: #ccffcc;

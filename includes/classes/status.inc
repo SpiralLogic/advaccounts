@@ -6,18 +6,21 @@
  * Time: 4:21 PM
  * To change this template use File | Settings | File Templates.
  */
-class status {
+class status
+{
 
 
 	protected $_status = Array('status' => true, 'process' => 'construct', 'message' => 'Initialised', 'var');
-/**
- * @param null $status
- * @param null $process
- * @param string $message
- * @param null $var
- * @return array
- */
-	public function set($status = null, $process = null, $message = '', $var = null) {
+
+	/**
+	 * @param null $status
+	 * @param null $process
+	 * @param string $message
+	 * @param null $var
+	 * @return array
+	 */
+	public function set($status = null, $process = null, $message = '', $var = null)
+	{
 		if ($status === null || $process === null) {
 			$this->_status['status'] = false;
 			$this->_status['process'] = 'status';
@@ -33,7 +36,8 @@ class status {
 		return $this->_status['status'];
 	}
 
-	public function get() {
+	public function get()
+	{
 		return $this->_status;
 	}
 

@@ -50,7 +50,7 @@ function rec_checkbox($row)
 	$value = $row['reconciled'] != '';
 	// save also in hidden field for testing during 'Reconcile'
 	return checkbox(null, $name, $value, true, _('Reconcile this transaction'))
-	       . hidden($hidden, $value, false);
+		   . hidden($hidden, $value, false);
 }
 
 function ungroup($row)
@@ -58,7 +58,8 @@ function ungroup($row)
 	if ($row['type'] != 15) {
 		return;
 	}
-	return "<button value='" . $row['id'] . '\' onclick="JsHttpRequest.request(\'_ungroup_' . $row['id'] . '\', this.form)" name="_ungroup_' . $row['id'] . '" type="submit" title="Ungroup"
+	return "<button value='" . $row['id'] . '\' onclick="JsHttpRequest.request(\'_ungroup_' .
+		   $row['id'] . '\', this.form)" name="_ungroup_' . $row['id'] . '" type="submit" title="Ungroup"
     class="ajaxsubmit">Ungroup</button>' . hidden("ungroup_" . $row['id'], $row['ref'], true);
 }
 
@@ -112,7 +113,7 @@ function change_tpl_flag($reconcile_id)
 {
 	global $Ajax;
 	if (!check_date()
-	    && check_value("rec_" . $reconcile_id)) // temporary fix
+		&& check_value("rec_" . $reconcile_id)) // temporary fix
 	{
 		return false;
 	}
@@ -124,19 +125,20 @@ function change_tpl_flag($reconcile_id)
 	$reconcile_value = check_value("rec_" . $reconcile_id)
 			? ("'" . $_POST['bank_date'] . "'") : 'NULL';
 	update_reconciled_values($reconcile_id, $reconcile_value, $_POST['reconcile_date'],
-	                         input_num('end_balance'), $_POST['bank_account']);
+							 input_num('end_balance'), $_POST['bank_account']);
 	$Ajax->activate('reconciled');
 	$Ajax->activate('difference');
 	return true;
 }
+
 if ($_POST['reset']) {
 	reset_sql_for_bank_account_reconcile($_POST['bank_account'], get_post('reconcile_date'));
-    update_data();
+	update_data();
 }
 $groupid = find_submit("_ungroup_");
 if (isset($groupid) && $groupid > 1) {
 	$grouprefs = $_POST['ungroup_' . $groupid];
-	$trans = explode(',',$grouprefs);
+	$trans = explode(',', $grouprefs);
 	reset($trans);
 	foreach ($trans as $tran) {
 
@@ -194,7 +196,7 @@ start_table();
 start_row();
 bank_accounts_list_cells(_("Account:"), 'bank_account', null, true);
 bank_reconciliation_list_cells(_("Bank Statement:"), get_post('bank_account'),
-                               'bank_date', null, true, _("New"));
+							   'bank_date', null, true, _("New"));
 //button_cell("reset", "reset", "reset");
 end_row();
 end_table();
@@ -220,11 +222,11 @@ echo "<hr>";
 div_start('summary');
 start_table();
 $th = array(_("Reconcile Date"), _("Beginning<br>Balance"),
-            _("Ending<br>Balance"), _("Account<br>Total"), _("Reconciled<br>Amount"), _("Difference"));
+			_("Ending<br>Balance"), _("Account<br>Total"), _("Reconciled<br>Amount"), _("Difference"));
 table_header($th);
 start_row();
 date_cells("", "reconcile_date", _('Date of bank statement to reconcile'),
-           get_post('bank_date') == '', 0, 0, 0, null, true);
+		   get_post('bank_date') == '', 0, 0, 0, null, true);
 amount_cells_ex("", "beg_balance", 15);
 amount_cells_ex("", "end_balance", 15);
 $reconciled = input_num('reconciled');

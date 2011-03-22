@@ -14,9 +14,9 @@ abstract class Contact extends DB_abstract
 	protected $_status = null;
 	public $discount = '0';
 	public $id = 0;
-	public $name='';
+	public $name = '';
 	public $address = '';
-	public $post_address ='';
+	public $post_address = '';
 	public $tax_id = '';
 	public $contact_name;
 	public $credit_limit = 0;
@@ -26,10 +26,10 @@ abstract class Contact extends DB_abstract
 	public $curr_code = '';
 	public $email = '';
 	public $inactive = 0;
-    public $notes = '';
+	public $notes = '';
 	public $phone = '';
 	public $phone2 = '';
 	public $fax = '';
-	public $website='';
+	public $website = '';
 
 }

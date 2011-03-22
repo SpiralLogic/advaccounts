@@ -1,4 +1,4 @@
-<?php      
+<?php
 // session_start();
 /* Delete a report
  * repgen_del.php for PHP Report Generator
@@ -27,7 +27,7 @@
 /* If this page is called direct, switch to repgen_main.php
 */
 $page_security = 'SA_REPORT_GENERATOR';
-$path_to_root="../..";
+$path_to_root = "../..";
 include_once($path_to_root . "/includes/session.inc");
 add_access_extensions();
 
@@ -43,20 +43,18 @@ require_once("repgen_def.inc");
 ###
 
 ## Check if there was a submission
-if (isset($back))
-{
-	$url=REPGENDIR."/repgen_select.php";
-	header("Location: http://$HTTP_HOST".$url);
+if (isset($back)) {
+	$url = REPGENDIR . "/repgen_select.php";
+	header("Location: http://$HTTP_HOST" . $url);
 	exit;
 }
-if (isset($delete))
-{
+if (isset($delete)) {
 	// deletes all records with id from table reports
-	$query="DELETE FROM xx_reports WHERE id = '".$id."'";
+	$query = "DELETE FROM xx_reports WHERE id = '" . $id . "'";
 	db_query($query);
-	$url=REPGENDIR."/repgen_select.php?id=".$id;
-	$url ="http://$HTTP_HOST".$url;
-	header("Location: ".$url);  // switches to repgen_select.php
+	$url = REPGENDIR . "/repgen_select.php?id=" . $id;
+	$url = "http://$HTTP_HOST" . $url;
+	header("Location: " . $url); // switches to repgen_select.php
 	exit;
 }
 
@@ -67,21 +65,21 @@ page("Report Generator REPGEN");
 display_heading(DESCRIPT);
 
 $note = DEL_REALLY;
-switch (substr($id,0,1))
+switch (substr($id, 0, 1))
 {
-  	case 'B':
-  		$note .= DEL_BLOCK;
-        break;
-   	case 'F': 
-   		$note .= DEL_FUNC;
-        break;
-   	default:  
-   		$note .= DEL_REPORT;
-        break;
+	case 'B':
+		$note .= DEL_BLOCK;
+		break;
+	case 'F':
+		$note .= DEL_FUNC;
+		break;
+	default:
+		$note .= DEL_REPORT;
+		break;
 }
 
-$h= explode("|",$attr);
-$note .= "  ".$h[3]."  "; /* longname of report*/ 
+$h = explode("|", $attr);
+$note .= "  " . $h[3] . "  "; /* longname of report*/
 $note .= DEL_DELETE;
 
 display_notification($note);

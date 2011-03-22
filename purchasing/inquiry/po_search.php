@@ -1,14 +1,14 @@
 <?php
 /**********************************************************************
-    Copyright (C) FrontAccounting, LLC.
-	Released under the terms of the GNU General Public License, GPL, 
-	as published by the Free Software Foundation, either version 3 
-	of the License, or (at your option) any later version.
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
-    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
-***********************************************************************/
+Copyright (C) FrontAccounting, LLC.
+Released under the terms of the GNU General Public License, GPL,
+as published by the Free Software Foundation, either version 3
+of the License, or (at your option) any later version.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+ ***********************************************************************/
 $page_security = 'SA_SUPPTRANSVIEW';
 $path_to_root = "../..";
 include($path_to_root . "/includes/db_pager.inc");
@@ -24,17 +24,15 @@ if ($use_date_picker)
 	$js .= get_js_date_picker();
 page(_($help_context = "Search Outstanding Purchase Orders"), false, false, "", $js);
 
-if (isset($_GET['order_number']))
-{
+if (isset($_GET['order_number'])) {
 	$_POST['order_number'] = $_GET['order_number'];
 }
 //-----------------------------------------------------------------------------------
 // Ajax updates
 //
-if (get_post('SearchOrders')) 
-{
+if (get_post('SearchOrders')) {
 	$Ajax->activate('orders_tbl');
-} elseif (get_post('_order_number_changed')) 
+} elseif (get_post('_order_number_changed'))
 {
 	$disable = get_post('order_number') !== '';
 
@@ -60,7 +58,7 @@ start_form();
 start_table("class='tablestyle_noborder'");
 start_row();
 supplier_list_cells(_("Select a supplier: "), 'supplier_id', $_POST['supplier_id'], true);
-ref_cells(_("#:"), 'order_number', '',null, '', true);
+ref_cells(_("#:"), 'order_number', '', null, '', true);
 
 date_cells(_("from:"), 'OrdersAfterDate', '', null, -30);
 date_cells(_("to:"), 'OrdersToDate');
@@ -69,7 +67,7 @@ locations_list_cells(_("Location:"), 'StockLocation', null, true);
 
 stock_items_list_cells(_("Item:"), 'SelectStockFromList', null, true);
 
-submit_cells('SearchOrders', _("Search"),'',_('Select documents'), 'default');
+submit_cells('SearchOrders', _("Search"), '', _('Select documents'), 'default');
 end_row();
 end_table();
 //---------------------------------------------------------------------------------------------
@@ -78,10 +76,10 @@ function trans_view($trans)
 	return get_trans_view_str(ST_PURCHORDER, $trans["order_no"]);
 }
 
-function edit_link($row) 
+function edit_link($row)
 {
-  return pager_link( _("Edit"),
-	"/purchasing/po_entry_items.php?ModifyOrderNumber=" . $row["order_no"], ICON_EDIT);
+	return pager_link(_("Edit"),
+					  "/purchasing/po_entry_items.php?ModifyOrderNumber=" . $row["order_no"], ICON_EDIT);
 }
 
 function prt_link($row)
@@ -89,27 +87,26 @@ function prt_link($row)
 	return print_document_link($row['order_no'], _("Print"), true, 18, ICON_PRINT);
 }
 
-function receive_link($row) 
+function receive_link($row)
 {
-  return pager_link( _("Receive"),
-	"/purchasing/po_receive_items.php?PONumber=" . $row["order_no"], ICON_RECEIVE);
+	return pager_link(_("Receive"),
+					  "/purchasing/po_receive_items.php?PONumber=" . $row["order_no"], ICON_RECEIVE);
 }
 
 function check_overdue($row)
 {
-	return $row['OverDue']==1;
+	return $row['OverDue'] == 1;
 }
+
 //---------------------------------------------------------------------------------------------
 
-if (isset($_POST['order_number']) && ($_POST['order_number'] != ""))
-{
+if (isset($_POST['order_number']) && ($_POST['order_number'] != "")) {
 	$order_number = $_POST['order_number'];
 }
 
 if (isset($_POST['SelectStockFromList']) && ($_POST['SelectStockFromList'] != "") &&
-	($_POST['SelectStockFromList'] != $all_items))
-{
- 	$selected_stock_item = $_POST['SelectStockFromList'];
+	($_POST['SelectStockFromList'] != $all_items)) {
+	$selected_stock_item = $_POST['SelectStockFromList'];
 }
 else
 {
@@ -126,22 +123,21 @@ $sql = "SELECT
 	porder.ord_date,
 	supplier.curr_code,
 	Sum(line.unit_price*line.quantity_ordered) AS OrderValue,
-	Sum(line.delivery_date < '". date2sql(Today()) ."'
+	Sum(line.delivery_date < '" . date2sql(Today()) . "'
 	AND (line.quantity_ordered > line.quantity_received)) As OverDue
 	FROM "
-		.TB_PREF."purch_orders as porder, "
-		.TB_PREF."purch_order_details as line, "
-		.TB_PREF."suppliers as supplier, "
-		.TB_PREF."locations as location
+	   . TB_PREF . "purch_orders as porder, "
+	   . TB_PREF . "purch_order_details as line, "
+	   . TB_PREF . "suppliers as supplier, "
+	   . TB_PREF . "locations as location
 	WHERE porder.order_no = line.order_no
 	AND porder.supplier_id = supplier.supplier_id
 	AND location.loc_code = porder.into_stock_location
 	AND (line.quantity_ordered > line.quantity_received) ";
 
 if ($_POST['supplier_id'] != ALL_TEXT) $sql .= " AND supplier.supplier_id = " . db_escape($_POST['supplier_id']);
-if (isset($order_number) && $order_number != "")
-{
-	$sql .= "AND porder.reference LIKE ".db_escape('%'. $order_number . '%');
+if (isset($order_number) && $order_number != "") {
+	$sql .= "AND porder.reference LIKE " . db_escape('%' . $order_number . '%');
 }
 else
 {
@@ -151,34 +147,32 @@ else
 	$sql .= "  AND porder.ord_date >= '$data_after'";
 	$sql .= "  AND porder.ord_date <= '$data_before'";
 
-	if (isset($_POST['StockLocation']) && $_POST['StockLocation'] != $all_items)
-	{
-		$sql .= " AND porder.into_stock_location = ".db_escape($_POST['StockLocation']);
+	if (isset($_POST['StockLocation']) && $_POST['StockLocation'] != $all_items) {
+		$sql .= " AND porder.into_stock_location = " . db_escape($_POST['StockLocation']);
 	}
 
-	if (isset($selected_stock_item))
-	{
-		$sql .= " AND line.item_code=".db_escape($selected_stock_item);
+	if (isset($selected_stock_item)) {
+		$sql .= " AND line.item_code=" . db_escape($selected_stock_item);
 	}
 } //end not order number selected
 
 $sql .= " GROUP BY porder.order_no";
 
-$result = db_query($sql,"No orders were returned");
+$result = db_query($sql, "No orders were returned");
 
 /*show a table of the orders returned by the sql */
 $cols = array(
-		_("#") => array('fun'=>'trans_view', 'ord'=>''), 
-		_("Reference"), 
-		_("Supplier") => array('ord'=>''),
-		_("Location"),
-		_("Supplier's Reference"), 
-		_("Order Date") => array('name'=>'ord_date', 'type'=>'date', 'ord'=>'desc'),
-		_("Currency") => array('align'=>'center'), 
-		_("Order Total") => 'amount',
-		array('insert'=>true, 'fun'=>'edit_link'),
-		array('insert'=>true, 'fun'=>'prt_link'),
-		array('insert'=>true, 'fun'=>'receive_link')
+	_("#") => array('fun' => 'trans_view', 'ord' => ''),
+	_("Reference"),
+	_("Supplier") => array('ord' => ''),
+	_("Location"),
+	_("Supplier's Reference"),
+	_("Order Date") => array('name' => 'ord_date', 'type' => 'date', 'ord' => 'desc'),
+	_("Currency") => array('align' => 'center'),
+	_("Order Total") => 'amount',
+	array('insert' => true, 'fun' => 'edit_link'),
+	array('insert' => true, 'fun' => 'prt_link'),
+	array('insert' => true, 'fun' => 'receive_link')
 );
 
 if (get_post('StockLocation') != $all_items) {

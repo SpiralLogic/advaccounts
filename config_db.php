@@ -18,13 +18,13 @@ $def_coy = 0;
 
 $tb_pref_counter = 1;
 
-$db_connections = array (
-	0 => array ('name' => 'Advanced Group PTY LTD',
-		'host' => 'localhost',
-		'dbuser' => 'fa',
-		'dbpassword' => '1willenberg',
-		'dbname' => 'fa',
-		'tbpref' => '0_')
-	);
+$db_connections = array(
+	0 => array('name' => 'Advanced Group PTY LTD',
+			   'host' => 'localhost',
+			   'dbuser' => 'fa',
+			   'dbpassword' => '1willenberg',
+			   'dbname' => 'fa',
+			   'tbpref' => '0_')
+);
 
 ?>
