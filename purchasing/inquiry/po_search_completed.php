@@ -16,10 +16,12 @@ include($path_to_root . "/includes/session.inc");
 include($path_to_root . "/purchasing/includes/purchasing_ui.inc");
 include_once($path_to_root . "/reporting/includes/reporting.inc");
 $js = "";
-if ($use_popup_windows)
+if ($use_popup_windows) {
 	$js .= get_js_open_window(900, 500);
-if ($use_date_picker)
+}
+if ($use_date_picker) {
 	$js .= get_js_date_picker();
+}
 
 page(_($help_context = "Search Purchase Orders"), @$_REQUEST['frame'], false, "", $js);
 
@@ -32,8 +34,7 @@ if (isset($_GET['order_number'])) {
 //
 if (get_post('SearchOrders')) {
 	$Ajax->activate('orders_tbl');
-} elseif (get_post('_order_number_changed'))
-{
+} elseif (get_post('_order_number_changed')) {
 	$disable = get_post('order_number') !== '';
 
 	$Ajax->addDisable(true, 'OrdersAfterDate', $disable);
@@ -44,15 +45,19 @@ if (get_post('SearchOrders')) {
 
 	if ($disable) {
 		$Ajax->addFocus(true, 'order_number');
-	} else
+	} else {
 		$Ajax->addFocus(true, 'OrdersAfterDate');
+	}
 
 	$Ajax->activate('orders_tbl');
 }
 //---------------------------------------------------------------------------------------------
 start_form();
-if (@$_REQUEST['frame']) start_table("class='tablestyle_noborder' style='display:none;'");
-else start_table("class='tablestyle_noborder'");
+if (@$_REQUEST['frame']) {
+	start_table("class='tablestyle_noborder' style='display:none;'");
+} else {
+	start_table("class='tablestyle_noborder'");
+}
 start_row();
 ref_cells(_("#:"), 'order_number', '', null, '', true);
 date_cells(_("from:"), 'OrdersAfterDate', '', null, -30);
@@ -68,31 +73,33 @@ if (isset($_POST['order_number'])) {
 	$order_number = $_POST['order_number'];
 }
 
-if (isset($_POST['SelectStockFromList']) && ($_POST['SelectStockFromList'] != "") &&
-	($_POST['SelectStockFromList'] != ALL_TEXT)) {
+if (isset($_POST['SelectStockFromList']) && ($_POST['SelectStockFromList'] != "") && (
+		$_POST['SelectStockFromList'] != ALL_TEXT)) {
 	$selected_stock_item = $_POST['SelectStockFromList'];
-}
-else
-{
+} else {
 	unset($selected_stock_item);
 }
 
 //---------------------------------------------------------------------------------------------
-function trans_view($trans)
-{
+function trans_view($trans) {
 	return get_trans_view_str(ST_PURCHORDER, $trans["order_no"]);
 }
 
-function edit_link($row)
-{
-	return pager_link(_("Edit"),
-					  "/purchasing/po_entry_items.php?" . SID
-					  . "ModifyOrderNumber=" . $row["order_no"], ICON_EDIT);
+function edit_link($row) {
+	return pager_link(_("Edit"), "/purchasing/po_entry_items.php?" . SID . "ModifyOrderNumber=" .
+								 $row["order_no"], ICON_EDIT);
 }
 
-function prt_link($row)
-{
+function prt_link($row) {
 	return print_document_link($row['order_no'], _("Print"), true, 18, ICON_PRINT);
+}
+
+function receive_link($row) {
+	if ($row['Received']>0)
+	return pager_link(_("Receive"), "/purchasing/po_receive_items.php?PONumber=" . $row["order_no"], ICON_RECEIVE);
+	elseif ($row['Invoiced']>0) return pager_link(_("Invoice"), "/purchasing/supplier_invoice.php?New=1&SuppID=". 	$row['supplier_id']."&PONumber=" . $row["order_no"], ICON_RECEIVE);
+
+	//advaccounts/purchasing/supplier_invoice.php?New=1
 }
 
 //---------------------------------------------------------------------------------------------
@@ -110,11 +117,10 @@ $sql = "SELECT
 	porder.ord_date, 
 	supplier.curr_code, 
 	Sum(line.unit_price*line.quantity_ordered)+porder.freight AS OrderValue,
-	porder.into_stock_location
-	FROM " . TB_PREF . "purch_orders as porder, "
-	   . TB_PREF . "purch_order_details as line, "
-	   . TB_PREF . "suppliers as supplier, "
-	   . TB_PREF . "locations as location
+	Sum(line.quantity_ordered - line.quantity_received) AS Received,
+	Sum(line.quantity_received - line.qty_invoiced) AS Invoiced,
+	porder.into_stock_location, supplier.supplier_id
+	FROM " . TB_PREF . "purch_orders as porder, " . TB_PREF . "purch_order_details as line, " . TB_PREF . "suppliers as supplier, " . TB_PREF . "locations as location
 	WHERE porder.order_no = line.order_no
 	AND porder.supplier_id = supplier.supplier_id
 	AND location.loc_code = porder.into_stock_location ";
@@ -122,7 +128,9 @@ $sql = "SELECT
 if (isAjaxReferrer() && !empty($_POST['ajaxsearch'])) {
 
 	foreach ($searchArray as $ajaxsearch) {
-		if (empty($ajaxsearch)) continue;
+		if (empty($ajaxsearch)) {
+			continue;
+		}
 		$ajaxsearch = "%" . $ajaxsearch . "%";
 		$sql .= " AND (";
 		$sql .= " supplier.supp_name LIKE " . db_escape($ajaxsearch);
@@ -142,12 +150,9 @@ if (isAjaxReferrer() && !empty($_POST['ajaxsearch'])) {
 		$sql .= " OR location.location_name LIKE " . db_escape($ajaxsearch);
 		$sql .= ")";
 	}
-} elseif (isset($order_number) && $order_number != "")
-{
+} elseif (isset($order_number) && $order_number != "") {
 	$sql .= "AND porder.reference LIKE " . db_escape('%' . $order_number . '%');
-}
-else
-{
+} else {
 
 	$data_after = date2sql($_POST['OrdersAfterDate']);
 	$date_before = date2sql($_POST['OrdersToDate']);
@@ -167,17 +172,17 @@ else
 
 $sql .= " GROUP BY porder.order_no";
 
-$cols = array(
-	_("#") => array('fun' => 'trans_view', 'ord' => ''),
-	_("Reference"),
-	_("Supplier") => array('ord' => ''),
-	_("Location"),
-	_("Supplier's Reference"),
-	_("Order Date") => array('name' => 'ord_date', 'type' => 'date', 'ord' => 'desc'),
-	_("Currency") => array('align' => 'center'),
-	_("Order Total") => 'amount',
-	array('insert' => true, 'fun' => 'edit_link'),
-	array('insert' => true, 'fun' => 'prt_link'),
+$cols = array(_("#") => array('fun' => 'trans_view', 'ord' => ''),
+			  _("Reference"),
+			  _("Supplier") => array('ord' => ''),
+			  _("Location"),
+			  _("Supplier's Reference"),
+			  _("Order Date") => array('name' => 'ord_date', 'type' => 'date', 'ord' => 'desc'),
+			  _("Currency") => array('align' => 'center'),
+			  _("Order Total") => 'amount', 
+			  array('insert' => true, 'fun' => 'edit_link'),
+			  array('insert' => true, 'fun' => 'prt_link'),
+			  array('insert' => true, 'fun' => 'receive_link'),
 );
 
 if (get_post('StockLocation') != $all_items) {

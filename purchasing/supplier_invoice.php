@@ -51,10 +51,11 @@ if (isset($_GET['New'])) {
 	//session_register("supp_trans");
 	$_SESSION['supp_trans'] = new supp_trans;
 	$_SESSION['supp_trans']->is_invoice = true;
+	if ($_GET['SuppID']) $_SESSION['wa_global_supplier_id'] = $_GET['SuppID'];
+
 }
 //--------------------------------------------------------------------------------------------------
-function clear_fields()
-{
+function clear_fields() {
 	global $Ajax;
 	unset($_POST['gl_code']);
 	unset($_POST['dimension_id']);
@@ -83,8 +84,7 @@ if (isset($_POST['AddGLCodeToTrans'])) {
 		display_error(_("The account code entered is not a valid code, this line cannot be added to the transaction."));
 		set_focus('gl_code');
 		$input_error = true;
-	}
-	else {
+	} else {
 		$myrow = db_fetch_row($result);
 		$gl_act_name = $myrow[1];
 		if (!check_num('amount')) {
@@ -118,8 +118,7 @@ if (isset($_POST['AddGLCodeToTrans'])) {
 	}
 }
 //------------------------------------------------------------------------------------------------
-function check_data()
-{
+function check_data() {
 	global $Refs;
 	if (!$_SESSION['supp_trans']->is_valid_trans_to_post()) {
 		display_error(_("The invoice cannot be processed because the there are no items or values on the invoice.  Invoices are expected to have a charge."));
@@ -145,8 +144,7 @@ function check_data()
 		display_error(_("The invoice as entered cannot be processed because the invoice date is in an incorrect format."));
 		set_focus('trans_date');
 		return false;
-	}
-	elseif (!is_date_in_fiscalyear($_SESSION['supp_trans']->tran_date)) {
+	} elseif (!is_date_in_fiscalyear($_SESSION['supp_trans']->tran_date)) {
 		display_error(_("The entered date is not in fiscal year."));
 		set_focus('trans_date');
 		return false;
@@ -170,8 +168,7 @@ function check_data()
 }
 
 //--------------------------------------------------------------------------------------------------
-function handle_commit_invoice()
-{
+function handle_commit_invoice() {
 	copy_to_trans($_SESSION['supp_trans']);
 	if (!check_data()) {
 		return;
@@ -179,6 +176,7 @@ function handle_commit_invoice()
 	$invoice_no = add_supp_invoice($_SESSION['supp_trans']);
 	$_SESSION['supp_trans']->clear_items();
 	unset($_SESSION['supp_trans']);
+
 	meta_forward($_SERVER['PHP_SELF'], "AddedID=$invoice_no");
 }
 
@@ -186,8 +184,7 @@ function handle_commit_invoice()
 if (isset($_POST['PostInvoice'])) {
 	handle_commit_invoice();
 }
-function check_item_data($n)
-{
+function check_item_data($n) {
 	global $check_price_charged_vs_order_price, $check_qty_charged_vs_del_qty, $SysPrefs;
 	if (!check_num('this_quantity_inv' . $n, 0) || input_num('this_quantity_inv' . $n) == 0) {
 		display_error(_("The quantity to invoice must be numeric and greater than zero."));
@@ -214,8 +211,7 @@ function check_item_data($n)
 					set_focus('ChgPrice' . $n);
 					$_SESSION['err_over_charge'] = true;
 					return false;
-				}
-				else {
+				} else {
 					$_SESSION['err_over_charge'] = false;
 
 				}
@@ -223,8 +219,7 @@ function check_item_data($n)
 		}
 	}
 	if ($check_qty_charged_vs_del_qty == True) {
-		if (input_num('this_quantity_inv' . $n) / (
-				$_POST['qty_recd' . $n] - $_POST['prev_quantity_inv' . $n]) > (1 + ($margin / 100))) {
+		if (input_num('this_quantity_inv' . $n) / (				$_POST['qty_recd' . $n] - $_POST['prev_quantity_inv' . $n]) > (1 + ($margin / 100))) {
 			display_error(_("The quantity being invoiced is more than the outstanding quantity by more than the allowed over-charge percentage. The system is set up to prohibit this. See the system administrator to modify the set up parameters if necessary.") . _("The over-charge percentage allowance is :") . $margin . "%");
 			set_focus('this_quantity_inv' . $n);
 			return false;
@@ -233,13 +228,11 @@ function check_item_data($n)
 	return true;
 }
 
-function commit_item_data($n)
-{
+function commit_item_data($n) {
 	if (check_item_data($n)) {
 		if (input_num('this_quantity_inv' . $n) >= ($_POST['qty_recd' . $n] - $_POST['prev_quantity_inv' . $n])) {
 			$complete = true;
-		}
-		else {
+		} else {
 			$complete = false;
 		}
 		$_SESSION['err_over_charge'] = false;
@@ -275,8 +268,9 @@ if ($id3 != -1) {
 }
 $id4 = find_submit('Delete2');
 if ($id4 != -1) {
-	if (!isset($taxtotal))
+	if (!isset($taxtotal)) {
 		$taxtotal = 0;
+	}
 	$_SESSION['supp_trans']->remove_gl_codes_from_trans($id4);
 	foreach ($_SESSION['supp_trans']->gl_codes as $key => $gl_item) {
 		if ($gl_item->gl_code == 2430) {
@@ -324,10 +318,16 @@ if (isset($_POST['go'])) {
 }
 start_form();
 invoice_header($_SESSION['supp_trans']);
+if ($_SESSION['wa_global_supplier_id']) {
+	$_POST['supplier_id'] = $_SESSION['wa_global_supplier_id'];
+	if ($_SESSION['supp_trans']) {
+	unset($_SESSION['wa_global_supplier_id']);
+	unset($_SESSION['delivery_po']);
+	}
+}
 if ($_POST['supplier_id'] == '') {
 	display_error(_("There is no supplier selected."));
-}
-else {
+} else {
 	display_grn_items($_SESSION['supp_trans'], 1);
 	display_gl_items($_SESSION['supp_trans'], 1);
 	div_start('inv_tot');

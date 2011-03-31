@@ -47,19 +47,15 @@ class supp_trans
 		$this->gl_codes = array();
 	}
 
-	function add_grn_to_trans($grn_item_id, $po_detail_item, $item_code, $item_description, $qty_recd, $prev_quantity_inv, $this_quantity_inv, $order_price, $chg_price,
-		$Complete, $std_cost_unit, $gl_code, $discount = 0, $exp_price = null)
+	function add_grn_to_trans($grn_item_id, $po_detail_item, $item_code, $item_description, $qty_recd, $prev_quantity_inv, $this_quantity_inv, $order_price, $chg_price, $Complete, $std_cost_unit, $gl_code, $discount = 0, $exp_price = null)
 	{
-		$this->grn_items[$grn_item_id] = new grn_item($grn_item_id, $po_detail_item,
-			$item_code, $item_description, $qty_recd, $prev_quantity_inv, $this_quantity_inv,
-			$order_price, $chg_price, $Complete, $std_cost_unit, $gl_code, $discount, $exp_price);
+		$this->grn_items[$grn_item_id] = new grn_item($grn_item_id, $po_detail_item, $item_code, $item_description, $qty_recd, $prev_quantity_inv, $this_quantity_inv, $order_price, $chg_price, $Complete, $std_cost_unit, $gl_code, $discount, $exp_price);
 		return 1;
 	}
 
 	function add_gl_codes_to_trans($gl_code, $gl_act_name, $gl_dim, $gl_dim2, $amount, $memo_)
 	{
-		$this->gl_codes[$this->gl_codes_counter] = new gl_codes($this->gl_codes_counter,
-			$gl_code, $gl_act_name, $gl_dim, $gl_dim2, $amount, $memo_);
+		$this->gl_codes[$this->gl_codes_counter] = new gl_codes($this->gl_codes_counter, $gl_code, $gl_act_name, $gl_dim, $gl_dim2, $amount, $memo_);
 		$this->gl_codes_counter++;
 		return 1;
 	}
@@ -76,8 +72,7 @@ class supp_trans
 
 	function is_valid_trans_to_post()
 	{
-		return (count($this->grn_items) > 0 || count($this->gl_codes) > 0 ||
-				($this->ov_amount != 0) || ($this->ov_discount > 0));
+		return (count($this->grn_items) > 0 || count($this->gl_codes) > 0 || ($this->ov_amount != 0) || ($this->ov_discount > 0));
 	}
 
 	function clear_items()
@@ -98,15 +93,10 @@ class supp_trans
 		if ($tax_group_id == null) {
 			$tax_group_id = $this->tax_group_id;
 		}
-
-		// preload the taxgroup !
 		$tax_group = get_tax_group_items_as_array($tax_group_id);
-
-		foreach ($this->grn_items as $ln_itm)
-		{
+		foreach ($this->grn_items as $ln_itm) {
 			$items[] = $ln_itm->item_code;
-			$prices[] = round(($ln_itm->this_quantity_inv * $ln_itm->taxfree_charge_price($tax_group_id, $tax_group)),
-				user_price_dec(), PHP_ROUND_HALF_EVEN);
+			$prices[] = round(($ln_itm->this_quantity_inv * $ln_itm->taxfree_charge_price($tax_group_id, $tax_group)), user_price_dec(), PHP_ROUND_HALF_EVEN);
 		}
 
 		if ($tax_group_id == null) {
@@ -118,8 +108,7 @@ class supp_trans
 		///////////////// Joe Hunt 2009.08.18
 
 		if ($gl_codes) {
-			foreach ($this->gl_codes as $gl_code)
-			{
+			foreach ($this->gl_codes as $gl_code) {
 				$index = is_tax_account($gl_code->gl_code);
 				if ($index !== false) {
 					$taxes[$index]['Value'] += $gl_code->amount;
@@ -137,19 +126,15 @@ class supp_trans
 		// preload the taxgroup !
 		if ($tax_group_id != null) {
 			$tax_group = get_tax_group_items_as_array($tax_group_id);
-		}
-		else
-		{
+		} else {
 			$tax_group = null;
 		}
 
 		foreach ($this->grn_items as $ln_itm) {
-			$total += round(($ln_itm->this_quantity_inv * $ln_itm->taxfree_charge_price($tax_group_id, $tax_group)),
-				user_price_dec(), PHP_ROUND_HALF_EVEN);
+			$total += round(($ln_itm->this_quantity_inv * $ln_itm->taxfree_charge_price($tax_group_id, $tax_group)), user_price_dec(), PHP_ROUND_HALF_EVEN);
 		}
 
-		foreach ($this->gl_codes as $gl_line)
-		{ //////// 2009-08-18 Joe Hunt
+		foreach ($this->gl_codes as $gl_line) { //////// 2009-08-18 Joe Hunt
 			if (!is_tax_account($gl_line->gl_code)) {
 				$total += $gl_line->amount;
 			}
@@ -162,8 +147,8 @@ class supp_trans
 class grn_item
 {
 
-/* Contains relavent information from the purch_order_details as well to provide in cached form,
-all the info to do the necessary entries without looking up ie additional queries of the database again */
+	/* Contains relavent information from the purch_order_details as well to provide in cached form,
+	all the info to do the necessary entries without looking up ie additional queries of the database again */
 
 	var $id;
 	var $po_detail_item;
@@ -179,10 +164,10 @@ all the info to do the necessary entries without looking up ie additional querie
 	var $Complete;
 	var $std_cost_unit;
 	var $gl_code;
+	var $freight;
 
-	function grn_item($id, $po_detail_item, $item_code, $item_description, $qty_recd,
-		$prev_quantity_inv, $this_quantity_inv, $order_price, $chg_price, $Complete,
-		$std_cost_unit, $gl_code, $discount = 0, $exp_price = null)
+
+	function grn_item($id, $po_detail_item, $item_code, $item_description, $qty_recd, $prev_quantity_inv, $this_quantity_inv, $order_price, $chg_price, $Complete, $std_cost_unit, $gl_code, $discount = 0, $exp_price = null)
 	{
 
 		$this->id = $id;
@@ -201,18 +186,21 @@ all the info to do the necessary entries without looking up ie additional querie
 		$this->gl_code = $gl_code;
 	}
 
+	function setFreight($freight)
+	{
+		$this->freight = $freight;
+	}
+
 	function full_charge_price($tax_group_id, $tax_group = null)
 	{
-		return get_full_price_for_item($this->item_code,
-									   $this->chg_price * (1 - $this->discount), $tax_group_id, 0, $tax_group);
+		return get_full_price_for_item($this->item_code, $this->chg_price * (1 - $this->discount), $tax_group_id, 0, $tax_group);
 	}
 
 	function taxfree_charge_price($tax_group_id, $tax_group = null)
 	{
 		//		if ($tax_group_id==null)
 		//			return $this->chg_price;
-		return get_tax_free_price_for_item($this->item_code, $this->chg_price * (1 - $this->discount / 100),
-										   $tax_group_id, 0, $tax_group);
+		return get_tax_free_price_for_item($this->item_code, $this->chg_price * (1 - $this->discount / 100), $tax_group_id, 0, $tax_group);
 	}
 }
 

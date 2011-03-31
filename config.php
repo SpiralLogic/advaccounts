@@ -16,7 +16,9 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 /* Show debug messages returned from an error on the page.
 Debugging info level also determined by settings in PHP.ini
 if $debug=1 show debugging info, dont show if $debug=0 */
-if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_to_root'])) die("Restricted access");
+if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_to_root'])) {
+	die("Restricted access");
+}
 // Log file for error/warning messages. Should be set to any location
 // writable by www server. When set to empty string logging is switched off.
 // Special value 'syslog' can be used for system logger usage (see php manual).
@@ -148,17 +150,8 @@ if (isset($_SESSION["wa_current_user"])) {
 // static js files path
 $js_path = $path_to_root . '/js/';
 // standard external js scripts included in all files
-$js_static = array(
-	'JsHttpRequest.js',
-	'behaviour.js',
-	'utils.js',
-	'inserts.js',
-	'js2/jquery-1.4.4.min.js',
-	'js2/jquery-ui-1.8.6.min.js',
-	'js2/shortmenu.js',
-	'js2/jquery.calculator.pack.js',
-	'js2/calc.js'
-);
+$js_static = array('JsHttpRequest.js', 'behaviour.js', 'utils.js', 'inserts.js', 'js2/jquery-1.4.4.min.js', 'js2/jquery-ui-1.8.6.min.js', 'js2/shortmenu.js',
+				   'js2/jquery.calculator.pack.js', 'js2/calc.js');
 
 // additional js source included in header
 $js_lib = $js_userlib = $js_fuserlib = array();

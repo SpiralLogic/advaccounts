@@ -402,13 +402,13 @@ if (isset($_POST['ProcessOrder']) && can_process()) {
 		$Ajax->activate('_page_body');
 		display_footer_exit();
 	}
-	$trans_no = key($_SESSION['Items']->trans_no);
+	$_SESSION['order_no'] = $trans_no = key($_SESSION['Items']->trans_no);
 	$trans_type = $_SESSION['Items']->trans_type;
 	new_doc_date($_SESSION['Items']->document_date);
 	$_SESSION['Jobsboard'] = clone($_SESSION['Items']);
 	$_SESSION['wa_global_customer_id'] = $_SESSION['Items']->customer_id;
 	processing_end();
-	$_SESSION['order_no'] = $trans_no;
+
 
 	if ($modified) {
 		if ($trans_type == ST_SALESQUOTE) {
@@ -423,8 +423,8 @@ if (isset($_POST['ProcessOrder']) && can_process()) {
 	} elseif ($trans_type == ST_SALESQUOTE) {
 		meta_forward($_SERVER['PHP_SELF'], "AddedQU=$trans_no");
 	} elseif ($trans_type == ST_SALESINVOICE) {
-		meta_forward("/jobsboard/jobsboard/addjob/AddedDI/$trans_no/$so_type", "");
-		//meta_forward($_SERVER['PHP_SELF'], "AddedDI=$trans_no&Type=$so_type");
+		//meta_forward("/jobsboard/jobsboard/addjob/AddedDI/$trans_no/$so_type", "");
+		meta_forward($_SERVER['PHP_SELF'], "AddedDI=$trans_no&Type=$so_type");
 	} else {
 		meta_forward($_SERVER['PHP_SELF'], "AddedDN=$trans_no&Type=$so_type");
 	}

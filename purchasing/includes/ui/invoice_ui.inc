@@ -324,29 +324,15 @@ function display_grn_items_for_selection(&$supp_trans, $k)
 				alt_table_row_color($k);
 				$n = $myrow["id"];
 				label_cell(get_trans_view_str(25, $myrow["grn_batch_id"]));
-				label_cell($myrow["id"] . hidden('qty_recd' . $n, $myrow["qty_recd"], false) . hidden('item_code' . $n,
-																									  $myrow["item_code"
-																									  ], false) . hidden('item_description' . $n,
-																														 $myrow
-																														 [
-																														 "description"
-																														 ], false) . hidden('prev_quantity_inv' . $n,
-																																			$myrow
-																																			[
-																																			'quantity_inv'
-																																			], false) . hidden('order_price' . $n,
-																																							   $myrow
-																																							   [
-																																							   'unit_price'
-																																							   ], false) . hidden('std_cost_unit' . $n,
-																																												  $myrow
-																																												  [
-																																												  'std_cost_unit'
-																																												  ], false) . hidden('po_detail_item' . $n,
-																																																	 $myrow
-																																																	 [
-																																																	 'po_detail_item'
-																																																	 ], false));
+				label_cell($myrow["id"] .
+						   hidden('qty_recd' . $n, $myrow["qty_recd"], false) .
+						   hidden('item_code' . $n,$myrow["item_code"], false) .
+						   hidden('item_description' . $n, $myrow["description"], false) .
+						   hidden('prev_quantity_inv' . $n,$myrow['quantity_inv'], false) .
+						   hidden('order_price' . $n,$myrow['unit_price'], false) .
+						   hidden('std_cost_unit' . $n,$myrow['std_cost_unit'], false) .
+						   hidden('po_detail_item' . $n,$myrow['po_detail_item'], false));
+
 				label_cell(get_trans_view_str(ST_PURCHORDER, $myrow["purch_order_no"]));
 				label_cell($myrow["item_code"]);
 				label_cell($myrow["description"]);
@@ -387,6 +373,7 @@ function display_grn_items_for_selection(&$supp_trans, $k)
 				hyperlink_params_td("/purchasing/po_entry_items.php", _("Modify"), "ModifyOrderNumber=" .
 																				   $myrow["purch_order_no"
 																				   ]) . end_row();
+				
 			}
 		}
 

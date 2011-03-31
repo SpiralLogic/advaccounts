@@ -460,10 +460,8 @@ function display_edit_tax_items($taxes, $columns, $tax_included, $leftspan = 0)
 		{
 			$total += round2($taxitem['Value'], user_price_dec());
 			$_POST['ChgTax'] = 0;
-			//small_amount_cells(null, 'ChgTax', price_format(getpost('ChgTax'), 2));
-			label_row($taxitem['tax_type_name'] . " (" . $taxitem['rate'] . "%)",
-					  number_format2($taxitem['Value'
-									 ], user_price_dec()), "colspan=$columns align=right", "align=right", $leftspan);
+			small_amount_cells(null, 'ChgTax', price_format(get_post('ChgTax'), 2));
+			label_row($taxitem['tax_type_name'] . " (" . $taxitem['rate'] . "%)", number_format2($taxitem['Value'], user_price_dec()), "colspan=$columns align=right", "align=right", $leftspan);
 
 		}
 	}
