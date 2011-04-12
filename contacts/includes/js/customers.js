@@ -338,9 +338,15 @@ $(function()
 								  });
 	  Branches.list().change(function(event)
 							 {
-								 var data = Customer.get().branches[$(this).val()];
+								 var data = Customer.get().branches[$(this).attr('value')];
 								 Branches.change(data);
 							 });
+
+
+
+	  var useShipAddress = $("[name='useShipAddress']").change(function() {
+	  console.log($(this).val())
+  })
 	  var ContactLog = $("#contactLog").hide().dialog({
 														  autoOpen: false,
 														  show: "slide",

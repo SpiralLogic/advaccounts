@@ -188,8 +188,10 @@ $this->row = $iline1 - $this->lineHeight;
 #  __ADVANCEDEDIT__ BEGIN # increase font size on order to: and delvier to:
 //		$this->fontSize -= 4;
 $this->Font('bold');
-$this->Text($ccol, $doc_Charge_To . ':', $icol);
-$this->Text($mcol, $doc_Delivered_To . ':');
+$this->NewLine();
+
+$this->Text($ccol+60, $doc_Charge_To . ':', $icol);
+$this->Text($mcol+60, $doc_Delivered_To . ':');
 $this->Font('');
 //		$this->fontSize += 4;
 $this->row = $this->row - $this->lineHeight - 5;
@@ -206,9 +208,9 @@ if ($doctype == ST_SALESQUOTE || $doctype == ST_SALESORDER) {
 } elseif (isset($customer)) {
 	$addr = $customer->accounts->br_address;
 }
-$this->Text($ccol, $name, $icol);
+$this->Text($ccol+60, $name, $icol);
 $this->NewLine();
-$this->TextWrapLines($ccol, $icol - $ccol, $addr);
+$this->TextWrapLines($ccol + 60, $icol - $ccol, $addr);
 $this->row = $temp;
 unset($name);
 if ($doctype != ST_SUPPAYMENT && $doctype != ST_PURCHORDER && isset($sales_order['deliver_to'])) {
@@ -222,11 +224,10 @@ if ($doctype != ST_SUPPAYMENT && isset($sales_order['delivery_address'])) {
 	$addr = $currentBranch->br_address;
 }
 if (isset($name)) {
-	$this->Text($mcol, $name, $icol);
+	$this->Text($mcol+60, $name, $icol);
 	$this->NewLine();
 }
-$this->TextWrapLines($mcol, $this->rightMargin - $mcol, $addr);
-$this->NewLine();
+$this->TextWrapLines($mcol+60, $this->rightMargin - $mcol, $addr);
 $this->row = $iline2 - $this->lineHeight - 1;
 $col = $this->leftMargin;
 $this->TextWrap($col, $this->row, $width, $doc_Customers_Ref, 'C');

@@ -45,6 +45,8 @@ getTransactions($debtorno, $date)
     				AND " . TB_PREF . "debtor_trans.type <> " . ST_CUSTDELIVERY . "
     				AND (" . TB_PREF . "debtor_trans.ov_amount + " . TB_PREF . "debtor_trans.ov_gst + " . TB_PREF . "debtor_trans.ov_freight +
 				" . TB_PREF . "debtor_trans.ov_freight_tax + " . TB_PREF . "debtor_trans.ov_discount) != 0
+				 AND (" . TB_PREF . "debtor_trans.ov_amount + " . TB_PREF . "debtor_trans.ov_gst + " . TB_PREF . "debtor_trans.ov_freight +
+				" . TB_PREF . "debtor_trans.ov_freight_tax + " . TB_PREF . "debtor_trans.ov_discount - ".TB_PREF. "debtor_trans.alloc) != 0
     				ORDER BY " . TB_PREF . "debtor_trans.branch_code, " . TB_PREF . "debtor_trans.tran_date";
 
 	return db_query($sql, "No transactions were returned");
@@ -135,8 +137,6 @@ function print_statements()
 			if ($prev_branch != $transactions[$i]['branch_code']) {
 				$rep->Header2($myrow, get_branch($transactions[$i]['branch_code']), null, $baccount, ST_STATEMENT);
 				$rep->NewLine();
-				$linetype = true;
-				$doctype = ST_STATEMENT;
 				if ($rep->currency != $myrow['curr_code']) {
 					include($path_to_root . "/reporting/includes/doctext2.inc");
 				} else {
@@ -148,12 +148,11 @@ function print_statements()
 				$rep->NewLine(2);
 				$prev_branch = $transactions[$i]['branch_code'];
 			}
-
 			$myrow2 = $transactions[$i];
 			$DisplayTotal = number_format2(Abs($myrow2["TotalAmount"]), $dec);
 			$DisplayAlloc = number_format2($myrow2["Allocated"], $dec);
 			$DisplayNet = number_format2($myrow2["TotalAmount"] - $myrow2["Allocated"], $dec);
-
+			if ($DisplayNet==0) continue;
 			$rep->TextCol(0, 1, $systypes_array[$myrow2['type']], -2);
 			if ($myrow2['type'] == '10')
 				$rep->TextCol(2, 3, getTransactionPO($myrow2['order_']), -2); else $rep->TextCol(2, 3, '', -2);
@@ -166,7 +165,9 @@ function print_statements()
 			if ($myrow2['type'] == ST_SALESINVOICE)
 				$rep->TextCol(5, 6, $DisplayTotal, -2); else $rep->TextCol(6, 7, $DisplayTotal, -2);
 			$rep->TextCol(7, 8, $DisplayAlloc, -2);
-			$rep->TextCol(8, 9, $DisplayNet, -2);
+			if ($myrow2['type'] == ST_SALESINVOICE || $DisplayNet == 0) $rep->TextCol(8, 9, $DisplayNet, -2); else $rep->TextCol(8, 9, -1*$DisplayNet, -2);
+
+
 			$rep->NewLine();
 			if ($rep->row < $rep->bottomMargin + (10 * $rep->lineHeight))
 				$rep->Header2($myrow, null, null, $baccount, ST_STATEMENT);

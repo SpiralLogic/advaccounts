@@ -63,21 +63,28 @@ HTML::tr(true)->td('branchSelect', array('colspan' => 2, 'style' => "text-align:
 UI::select('branchList', array($currentBranch->branch_code => $currentBranch->br_name), array('name' => 'branchList'));
 UI::button('addBranch', 'Add new address', array('name' => 'addBranch'));
 HTML::td()->tr;
-text_row(_("Address Name:"), 'br_br_name', $currentBranch->br_name, 35, 40);
+
 text_row(_("Contact:"), 'br_contact_name', $currentBranch->contact_name, 35, 40);
 text_row(_("Phone Number:"), 'br_phone', $currentBranch->phone, 32, 30);
 text_row(_("2nd Phone Number:"), 'br_phone2', $currentBranch->phone2, 32, 30);
 text_row(_("Fax Number:"), 'br_fax', $currentBranch->fax, 32, 30);
 email_row(_("Email:"), 'br_email', $currentBranch->email, 35, 55);
-textarea_row(_("Shipping Address:"), 'br_br_address', $currentBranch->br_address, 35, 5);
+textarea_row(_("Address:"), 'br_br_address', $currentBranch->br_address, 35, 2);
+email_row(_("City"), 'br_city', $currentBranch->city, 35, 40);
+email_row(_("State:"), 'br_state', $currentBranch->state, 35, 40);
+email_row(_("postcode"), 'br_postcode', $currentBranch->postcode, 35, 40);
 table_section(2);
 hidden('id', $customer->id);
 table_section_title(_("Accounts Details"), 2, 'tableheader3');
+check_row(_("Use shipping details"), 'useShipAddress');
 text_row(_("Phone Number:"), 'acc_phone', $customer->accounts->phone, 40, 30);
 text_row(_("Secondary Phone Number:"), 'acc_phone2', $customer->accounts->phone2, 40, 30);
 text_row(_("Fax Number:"), 'acc_fax', $customer->accounts->fax, 40, 30);
 email_row(_("E-mail:"), 'email', $customer->email, 35, 40);
-textarea_row(_("Billing Address:"), 'acc_br_address', $customer->accounts->br_address, 35, 5);
+textarea_row(_("Address:"), 'acc_br_address', $customer->accounts->br_address, 35, 2);
+email_row(_("City"), 'acc_city', $customer->accounts->city, 35, 40);
+email_row(_("State:"), 'acc_state', $customer->accounts->state, 35, 40);
+email_row(_("postcode"), 'acc_postcode', $customer->accounts->postcode, 35, 40);
 sales_types_list_row(_("Sales Type/Price List:"), 'sales_type', $customer->sales_type);
 record_status_list_row(_("Customer status:"), 'inactive');
 end_outer_table(1);
@@ -91,7 +98,10 @@ email_row(_("Email:"), 'acc_email', $customer->accounts->email, 40, 40);
 text_row(_("Phone Number:"), 'acc_phone', $customer->accounts->phone, 40, 30);
 text_row(_("2nd Phone Number:"), 'acc_phone2', $customer->accounts->phone2, 40, 30);
 text_row(_("Fax Number:"), 'acc_fax', $customer->accounts->fax, 40, 30);
-textarea_row(_("Billing Address:"), 'acc_br_address', $customer->accounts->br_address, 35, 5);
+textarea_row(_("Address:"), 'acc_br_address', $customer->accounts->br_address, 35, 5);
+email_row(_("City"), 'acc_city', $customer->accounts->city, 35, 40);
+email_row(_("State:"), 'acc_state', $customer->accounts->state, 35, 40);
+email_row(_("postcode"), 'acc_postcode', $customer->accounts->postcode, 35, 40);
 textarea_row(_("Postal Address:"), 'acc_br_post_address', $customer->accounts->br_address, 35, 5);
 percent_row(_("Discount Percent:"), 'discount', $customer->discount);
 percent_row(_("Prompt Payment Discount Percent:"), 'pymt_discount', $customer->pymt_discount);
@@ -120,9 +130,20 @@ if ($dim < 2) {
 }
 table_section(2, false, 'ui-widget');
 //table_section_title("<span class='ui-icon ui-icon-circle-plus'>"._("Contact log:")."</span>", 2, 'tableheader3');
-table_section_title(_("Contact log:"), 2, 'tableheader3 ');
+start_table();
+text_row("Name:", '2name', null, 35, 40);
+text_row("Phone:", '2phone', null, 35, 40);
+text_row("Email:", '2email', null, 35, 40);
+text_row("Dept:", '2dept', null, 35, 40);
+
+end_table(1);
+table_section_title(_("Contact log:"), 1, 'tableheader3 ');
 start_row();
+
+
 HTML::td(array('class' => 'ui-widget-content center-content'));
+
+
 UI::button('addLog', "Add log entry")->td->tr;
 textarea_cells(null, 'messageLog', contact_log::read($customer->id, 'C'), 50, 30);
 end_outer_table(1);
@@ -149,7 +170,7 @@ gl_all_accounts_list_row(_("Sales Discount Account:"), 'br_sales_discount_accoun
 gl_all_accounts_list_row(_("Accounts Receivable Account:"), 'br_receivables_account', $currentBranch->receivables_account);
 gl_all_accounts_list_row(_("Prompt Payment Discount Account:"), 'br_payment_discount_account', $currentBranch->payment_discount_account);
 table_section_title(_("Addresses"));
-textarea_row(_("Address:"), 'br_br_address', $currentBranch->br_address, 35, 4);
+textarea_row(_("Address:"), 'br_br_address', $currentBranch->br_address, 35, 2);
 textarea_row(_("Branch Mailing Address:"), 'br_br_post_address', $currentBranch->br_post_address, 35, 4);
 end_outer_table(1);
 $menu->endTab()->startTab('Invoices', 'Invoices');

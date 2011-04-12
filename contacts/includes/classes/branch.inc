@@ -13,12 +13,13 @@ class Branch extends Contact
 	public $branch_code = 0;
 	public $br_name = "New Address";
 	public $br_address;
-
-
+	public $city;
+	public $state;
+	public $postcode;
 	public $area = DEFAULT_AREA;
 	public $br_post_address = "";
 	public $debtor_no;
-	public $branch_ref = "New Address";
+	public $branch_ref = "New";
 	public $contact_name = "";
 	public $default_location = DEFAULT_LOCATION;
 	public $default_ship_via = DEFAULT_SHIP_VIA;
@@ -96,6 +97,9 @@ class Branch extends Contact
 		if (!$this->_canProcess()) {
 			return false;
 		}
+		if (!empty($this->city)) {
+			$this->br_name = $this->city . " " . strtoupper($this->state);
+		}
 		if ($this->branch_ref != 'accounts') {
 			$this->branch_ref = substr(db_escape($this->br_name), 0, 30);
 		}
@@ -104,6 +108,9 @@ class Branch extends Contact
 		$sql = "UPDATE " . TB_PREF . "cust_branch SET
 			br_name=" . db_escape($this->name) . ",
 			br_address=" . db_escape($this->address) . ",
+			city=" . db_escape($this->city) . ",
+			state=" . db_escape($this->state) . ",
+			postcode=" . db_escape($this->postcode) . ",
 			br_post_address=" . db_escape($this->post_address) . ",
 			area=" . db_escape($this->area) . ",
 			salesman=" . db_escape($this->salesman) . ",
@@ -134,15 +141,10 @@ class Branch extends Contact
 	protected function _saveNew()
 	{
 		begin_transaction();
-		$sql = "INSERT INTO " . TB_PREF . "cust_branch (debtor_no, br_name, branch_ref, br_address,
+		$sql = "INSERT INTO " . TB_PREF . "cust_branch (debtor_no, br_name, branch_ref, br_address, city, state, postcode,
 				salesman, phone, phone2, fax, contact_name, area, email, tax_group_id, sales_account, sales_discount_account, receivables_account, payment_discount_account, default_location,
 				br_post_address, disable_trans, group_no, default_ship_via, notes,inactive)
-				VALUES (" . db_escape($this->debtor_no) . "," . db_escape($this->name) . ", " . db_escape($this->branch_ref) . ", " . db_escape($this->address) . ", "
-			   . db_escape($this->salesman) . ", " . db_escape($this->phone) . ", " . db_escape($this->phone2) . ", " . db_escape($this->fax) . "," . db_escape($this->contact_name) . ", "
-			   . db_escape($this->area) . ", " . db_escape($this->email) . ", " . db_escape($this->tax_group_id) . ", " . db_escape($this->sales_account) . ", "
-			   . db_escape($this->sales_discount_account) . ", " . db_escape($this->receivables_account) . ", " . db_escape($this->payment_discount_account) . ", " . db_escape($this->default_location)
-			   . ", " . db_escape($this->br_post_address) . "," . db_escape($this->disable_trans) . ", " . db_escape($this->group_no) . ", " . db_escape($this->default_ship_via) . ", "
-			   . db_escape($this->notes) . ", " . db_escape($this->inactive) . ")";
+				VALUES (" . db_escape($this->debtor_no) . "," . db_escape($this->name) . ", " . db_escape($this->branch_ref) . ", " . db_escape($this->address) . ", " . db_escape($this->city) . ", " . db_escape($this->state) . ", " . db_escape($this->postcode) . ", " . db_escape($this->phone) . ", " . db_escape($this->phone2) . ", " . db_escape($this->fax) . "," . db_escape($this->contact_name) . ", " . db_escape($this->area) . ", " . db_escape($this->email) . ", " . db_escape($this->tax_group_id) . ", " . db_escape($this->sales_account) . ", " . db_escape($this->sales_discount_account) . ", " . db_escape($this->receivables_account) . ", " . db_escape($this->payment_discount_account) . ", " . db_escape($this->default_location) . ", " . db_escape($this->br_post_address) . "," . db_escape($this->disable_trans) . ", " . db_escape($this->group_no) . ", " . db_escape($this->default_ship_via) . ", " . db_escape($this->notes) . ", " . db_escape($this->inactive) . ")";
 		db_query($sql, "The branch could not be added");
 		$this->branch_code = db_insert_id();
 		commit_transaction();
