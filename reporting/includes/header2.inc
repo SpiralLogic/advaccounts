@@ -206,7 +206,7 @@ if ($doctype == ST_SALESQUOTE || $doctype == ST_SALESORDER) {
 	$name = $myrow['supp_name'];
 	$addr = $myrow['address'];
 } elseif (isset($customer)) {
-	$addr = $customer->accounts->br_address;
+	$addr = $customer->accounts->getAddress();
 }
 $this->Text($ccol+60, $name, $icol);
 $this->NewLine();
@@ -221,7 +221,7 @@ if ($doctype != ST_SUPPAYMENT && $doctype != ST_PURCHORDER && isset($sales_order
 if ($doctype != ST_SUPPAYMENT && isset($sales_order['delivery_address'])) {
 	$addr = $sales_order['delivery_address'];
 } elseif (($doctype == ST_STATEMENT) && (!empty($currentBranch->br_address))) {
-	$addr = $currentBranch->br_address;
+	$addr = $currentBranch->getAddress();
 }
 if (isset($name)) {
 	$this->Text($mcol+60, $name, $icol);

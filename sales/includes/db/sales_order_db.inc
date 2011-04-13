@@ -459,7 +459,7 @@ function get_branch_to_order($customer_id, $branch_id)
 
 	// the branch was also selected from the customer selection so default the delivery details from the customer branches table cust_branch. The order process will ask for branch details later anyway
 	$sql = "SELECT " . TB_PREF . "cust_branch.br_name, "
-		   . TB_PREF . "cust_branch.br_address, "
+		   . TB_PREF . "cust_branch.br_address, " . TB_PREF . "cust_branch.city, " . TB_PREF . "cust_branch.state, " . TB_PREF . "cust_branch.postcode, " . TB_PREF . "cust_branch.contact_name, "
 		   . TB_PREF . "cust_branch.br_post_address, "
 		   . TB_PREF . "cust_branch.phone, "
 		   . TB_PREF . "cust_branch.email,

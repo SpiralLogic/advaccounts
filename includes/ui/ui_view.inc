@@ -860,6 +860,18 @@ function get_jquery_gmaps()
 	}
 }
 
+function get_jquery_file_upload()
+{
+	static $inserted;
+	if (!$inserted) {
+		global $comp_path, $path_to_root;
+		$fpath = $comp_path . '/' . user_company() . '/js_cache/';
+		add_js_ufile($fpath . 'jquery.fileupload.js');
+		add_js_ufile($fpath . 'jquery.fileupload-ui.js');
+		add_js_ufile($fpath . 'jquery.fileupload-app.js');
+		$inserted = true;
+	}
+}
 
 function get_js_date_picker()
 {

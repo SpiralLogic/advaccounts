@@ -142,6 +142,7 @@ function page_header($title, $no_menu = false, $is_index = false, $onload = "", 
 		echo "<link href='$local_path_to_root/themes/$theme/{$_SESSION['sel_app']}.css' rel='stylesheet' type='text/css'> \n";
 	echo "<link href='$local_path_to_root/themes/$theme/jquery-ui-1.8.6.css' rel='stylesheet' type='text/css'> \n";
 	echo "<link href='$local_path_to_root/themes/$theme/jquery.calculator.css' rel='stylesheet' type='text/css'> \n";
+	echo "<link href='$local_path_to_root/themes/$theme/jquery.fileupload-ui.css' rel='stylesheet' type='text/css'> \n";
 
 
 	//if (!$_GET['frame'])

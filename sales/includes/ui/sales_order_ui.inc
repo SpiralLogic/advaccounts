@@ -111,10 +111,14 @@ function get_customer_details_to_order(&$order, $customer_id, $branch_id)
 
 	$order->set_branch($branch_id, $myrow["tax_group_id"], $myrow["tax_group_name"], $myrow["phone"], $myrow["email"]);
 
-	$address = trim($myrow["br_post_address"]) != '' ? $myrow["br_post_address"] : (trim($myrow["br_address"]) != '' ?
-			$myrow["br_address"] : $deliver);
+	//$address = trim($myrow["br_post_address"]) != '' ? $myrow["br_post_address"] : (trim($myrow["br_address"]) != '' ?		$myrow["br_address"] : $deliver);
 
-	$order->set_delivery($myrow["default_ship_via"], $myrow["br_name"], $address);
+		$address = $myrow['br_address'] . "\n";
+		if ($myrow['city']) $address .= $myrow['city'];
+		if ($myrow['state']) $address .= ", " . strtoupper($myrow['state']);
+		if ($myrow['postcode']) $address .= ", " . $myrow['postcode'];
+
+	$order->set_delivery($myrow["default_ship_via"], $name, $address);
 	if ($order->trans_type == ST_SALESINVOICE) {
 		$order->due_date = get_invoice_duedate($customer_id, $order->document_date);
 		if ($order->pos != -1) {

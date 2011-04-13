@@ -133,7 +133,11 @@ function print_statements()
 
 		$prev_branch = 0;
 		for ($i = 0; $i < count($transactions); $i++) {
-
+			$myrow2 = $transactions[$i];
+			$DisplayTotal = number_format2(Abs($myrow2["TotalAmount"]), $dec);
+			$DisplayAlloc = number_format2($myrow2["Allocated"], $dec);
+			$DisplayNet = number_format2($myrow2["TotalAmount"] - $myrow2["Allocated"], $dec);
+			if ($DisplayNet == 0) continue;
 			if ($prev_branch != $transactions[$i]['branch_code']) {
 				$rep->Header2($myrow, get_branch($transactions[$i]['branch_code']), null, $baccount, ST_STATEMENT);
 				$rep->NewLine();
@@ -148,11 +152,7 @@ function print_statements()
 				$rep->NewLine(2);
 				$prev_branch = $transactions[$i]['branch_code'];
 			}
-			$myrow2 = $transactions[$i];
-			$DisplayTotal = number_format2(Abs($myrow2["TotalAmount"]), $dec);
-			$DisplayAlloc = number_format2($myrow2["Allocated"], $dec);
-			$DisplayNet = number_format2($myrow2["TotalAmount"] - $myrow2["Allocated"], $dec);
-			if ($DisplayNet==0) continue;
+
 			$rep->TextCol(0, 1, $systypes_array[$myrow2['type']], -2);
 			if ($myrow2['type'] == '10')
 				$rep->TextCol(2, 3, getTransactionPO($myrow2['order_']), -2); else $rep->TextCol(2, 3, '', -2);

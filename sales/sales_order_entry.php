@@ -40,6 +40,7 @@ if ($use_date_picker) {
 	$js .= get_js_date_picker();
 }
 $js .= get_jquery_gmaps();
+$js .= get_jquery_file_upload();
 if (isset($_GET['NewDelivery']) && is_numeric($_GET['NewDelivery'])) {
 	$_SESSION['page_title'] = _($help_context = "Direct Sales Delivery");
 	create_cart(ST_CUSTDELIVERY, $_GET['NewDelivery']);
