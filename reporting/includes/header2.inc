@@ -197,6 +197,9 @@ $this->Font('');
 $this->row = $this->row - $this->lineHeight - 5;
 $temp = $this->row;
 $name = @$myrow['DebtorName'];
+if (isset($customer)) {
+	$addr = $customer->accounts->getAddress();
+}
 if ($doctype == ST_SALESQUOTE || $doctype == ST_SALESORDER) {
 	$name = $myrow['name'];
 } elseif ($doctype == ST_WORKORDER) {
@@ -205,8 +208,6 @@ if ($doctype == ST_SALESQUOTE || $doctype == ST_SALESORDER) {
 } elseif ($doctype == ST_PURCHORDER || $doctype == ST_SUPPAYMENT) {
 	$name = $myrow['supp_name'];
 	$addr = $myrow['address'];
-} elseif (isset($customer)) {
-	$addr = $customer->accounts->getAddress();
 }
 $this->Text($ccol+60, $name, $icol);
 $this->NewLine();

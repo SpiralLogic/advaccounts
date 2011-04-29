@@ -6,12 +6,11 @@
  * Time: 4:07 PM
  * To change this template use File | Settings | File Templates.
  */
-abstract class Contact extends DB_abstract
+abstract class Company extends DB_abstract
 {
 
 
 	// Current status of class, status as current state, process status error occurred, message for current state and if related variable if it applies
-	protected $_status = null;
 	public $discount = '0';
 	public $id = 0;
 	public $name = '';

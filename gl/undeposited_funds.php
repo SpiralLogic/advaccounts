@@ -155,8 +155,7 @@ if ($id != -1) {
 	change_tpl_flag($id);
 }
 if (isset($_POST['Deposit'])) {
-	$sql = "SELECT * FROM " . TB_PREF . "bank_trans WHERE undeposited=1 AND trans_date <= '" . date2sql(
-		$_POST['deposit_date']) . "' AND reconciled IS NULL";
+	$sql = "SELECT * FROM " . TB_PREF . "bank_trans WHERE undeposited=1 AND trans_date <= '" . date2sql($_POST['deposit_date']) . "' AND reconciled IS NULL";
 	$query = db_query($sql);
 	$undeposited = array();
 	while ($row = db_fetch($query)) {
@@ -175,9 +174,8 @@ if (isset($_POST['Deposit'])) {
 		$total_amount += $row['amount'];
 		$ref[] = $row['ref'];
 	}
-	$sql = "INSERT INTO " . TB_PREF . "bank_trans (type, bank_act, amount, ref, trans_date, person_type_id, person_id, undeposited) VALUES (15, 5, $total_amount," . db_escape(implode($ref,
-																																													   ',')) . ",'"
-		   . date2sql($_POST['deposit_date']) . "', 6, '" . $_SESSION['wa_current_user']->user . "',0)";
+	$sql = "INSERT INTO " . TB_PREF . "bank_trans (type, bank_act, amount, ref, trans_date, person_type_id, person_id, undeposited) VALUES (15, 5, $total_amount,"
+		   . db_escape(implode($ref,',')) . ",'" . date2sql($_POST['deposit_date']) . "', 6, '" . $_SESSION['wa_current_user']->user . "',0)";
 	$query = db_query($sql, "Undeposited Cannot be Added");
 	$order_no = db_insert_id($query);
 	if (!isset($order_no) || !empty($order_no) || $order_no == 127) {
@@ -196,9 +194,11 @@ if (isset($_POST['Deposit'])) {
 
 }
 $_POST['to_deposit'] = 0;
-if (isset ($_SESSION['undeposited']) && $_SESSION['undeposited']) foreach ($_SESSION['undeposited'] as $rowid => $row) {
-	if (substr($rowid, 0, 4) == 'dep_') {
-		$_POST['to_deposit'] += $row;
+if (isset ($_SESSION['undeposited']) && $_SESSION['undeposited']) {
+	foreach ($_SESSION['undeposited'] as $rowid => $row) {
+		if (substr($rowid, 0, 4) == 'dep_') {
+			$_POST['to_deposit'] += $row;
+		}
 	}
 }
 $_POST['deposited'] = $_POST['to_deposit'];
@@ -228,16 +228,9 @@ $sql = "SELECT	type, trans_no, ref, trans_date,
 		FROM " . TB_PREF . "bank_trans
 		WHERE undeposited=1 AND trans_date <= '" . date2sql($date) . "' AND reconciled IS NULL
 		ORDER BY trans_date," . TB_PREF . "bank_trans.id";
-$cols = array(
-	_("Type") => array('fun' => 'systype_name', 'ord' => ''),
-	_("#") => array('fun' => 'trans_view', 'ord' => ''),
-	_("Reference"),
-	_("Date") => 'date',
-	_("Debit") => array('align' => 'right', 'fun' => 'fmt_debit'),
-	_("Credit") => array('align' => 'right', 'insert' => true, 'fun' => 'fmt_credit'),
-	_("Person/Item") => array('fun' => 'fmt_person'),
-	array('insert' => true, 'fun' => 'gl_view'),
-	"X" => array('insert' => true, 'fun' => 'dep_checkbox'));
+$cols = array(_("Type") => array('fun' => 'systype_name', 'ord' => ''), _("#") => array('fun' => 'trans_view', 'ord' => ''), _("Reference"), _("Date") => 'date',
+			  _("Debit") => array('align' => 'right', 'fun' => 'fmt_debit'), _("Credit") => array('align' => 'right', 'insert' => true, 'fun' => 'fmt_credit'),
+			  _("Person/Item") => array('fun' => 'fmt_person'), array('insert' => true, 'fun' => 'gl_view'), "X" => array('insert' => true, 'fun' => 'dep_checkbox'));
 $table =& new_db_pager('trans_tbl', $sql, $cols);
 $table->width = "80%";
 display_db_pager($table);

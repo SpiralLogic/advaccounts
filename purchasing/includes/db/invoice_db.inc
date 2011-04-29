@@ -120,7 +120,7 @@ function add_supp_invoice($supp_trans, $invoice_no = 0) // do not receive as ref
 
 	$tax_total = 0;
 	$taxes = $supp_trans->get_taxes($supp_trans->tax_group_id);
-
+;
 	foreach ($taxes as $taxitem)
 	{
 		$taxitem['Value'] = round2($taxitem['Value'], user_price_dec());
@@ -128,7 +128,7 @@ function add_supp_invoice($supp_trans, $invoice_no = 0) // do not receive as ref
 	}
 
 	$invoice_items_total = $supp_trans->get_total_charged($supp_trans->tax_group_id);
-
+	$tax_total;
 	if ($supp_trans->is_invoice)
 		$trans_type = ST_SUPPINVOICE;
 	else

@@ -15,11 +15,12 @@ class MenuUI
 	protected $tabs = array();
 	protected $menu = '';
 	protected $content = '';
+	static $menuCount =0;
 
 	function __construct()
 	{
 		ob_start();
-		$this->menu = "<div id='tabs'>";
+		$this->menu = "<div id='tabs" . MenuUI::$menuCount . "'>";
 	}
 
 	function addTab($title, $tooltip = '', $link = '#')
@@ -31,7 +32,7 @@ class MenuUI
 	function startTab($title, $tooltip)
 	{
 		$this->addTab($title, $tooltip, '#');
-		echo '<div id="tabs-' . count($this->tabs) . '">';
+		echo '<div id="tabs' . MenuUI::$menuCount . '-' . count($this->tabs) . '">';
 		return $this;
 	}
 
@@ -47,12 +48,13 @@ class MenuUI
 		$this->menu .= "<ul>";
 		foreach ($this->tabs as $key => $tab) {
 			$num = $key + 1;
-			$this->menu .= "<li><a title='{$tab->title}' href='#tabs-{$num}'><span>{$tab->title}</span></a></li>";
+			$this->menu .= "<li><a title='{$tab->title}' href='#tabs" . MenuUI::$menuCount . "-{$num}'><span>{$tab->title}</span></a></li>";
 		}
 		$this->menu .= "</ul>";
 		$this->content = ob_get_clean();
 		echo $this->menu . $this->content . '</div>';
-		$js_lib[] = '$("#tabs").tabs();';
+		$js_lib[] = "$('#tabs" . MenuUI::$menuCount . "').tabs();";
+		MenuUI::$menuCount++;
 	}
 
 }

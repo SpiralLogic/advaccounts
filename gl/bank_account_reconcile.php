@@ -49,8 +49,7 @@ function rec_checkbox($row)
 	$hidden = 'last[' . $row['id'] . ']';
 	$value = $row['reconciled'] != '';
 	// save also in hidden field for testing during 'Reconcile'
-	return checkbox(null, $name, $value, true, _('Reconcile this transaction'))
-		   . hidden($hidden, $value, false);
+	return checkbox(null, $name, $value, true, _('Reconcile this transaction')) . hidden($hidden, $value, false);
 }
 
 function ungroup($row)
@@ -58,8 +57,7 @@ function ungroup($row)
 	if ($row['type'] != 15) {
 		return;
 	}
-	return "<button value='" . $row['id'] . '\' onclick="JsHttpRequest.request(\'_ungroup_' .
-		   $row['id'] . '\', this.form)" name="_ungroup_' . $row['id'] . '" type="submit" title="Ungroup"
+	return "<button value='" . $row['id'] . '\' onclick="JsHttpRequest.request(\'_ungroup_' . $row['id'] . '\', this.form)" name="_ungroup_' . $row['id'] . '" type="submit" title="Ungroup"
     class="ajaxsubmit">Ungroup</button>' . hidden("ungroup_" . $row['id'], $row['ref'], true);
 }
 
@@ -112,8 +110,7 @@ function update_data()
 function change_tpl_flag($reconcile_id)
 {
 	global $Ajax;
-	if (!check_date()
-		&& check_value("rec_" . $reconcile_id)) // temporary fix
+	if (!check_date() && check_value("rec_" . $reconcile_id)) // temporary fix
 	{
 		return false;
 	}
@@ -122,10 +119,8 @@ function change_tpl_flag($reconcile_id)
 		$Ajax->activate('bank_date');
 	}
 	$_POST['bank_date'] = date2sql(get_post('reconcile_date'));
-	$reconcile_value = check_value("rec_" . $reconcile_id)
-			? ("'" . $_POST['bank_date'] . "'") : 'NULL';
-	update_reconciled_values($reconcile_id, $reconcile_value, $_POST['reconcile_date'],
-							 input_num('end_balance'), $_POST['bank_account']);
+	$reconcile_value = check_value("rec_" . $reconcile_id) ? ("'" . $_POST['bank_date'] . "'") : 'NULL';
+	update_reconciled_values($reconcile_id, $reconcile_value, $_POST['reconcile_date'], input_num('end_balance'), $_POST['bank_account']);
 	$Ajax->activate('reconciled');
 	$Ajax->activate('difference');
 	return true;
@@ -141,8 +136,7 @@ if (isset($groupid) && $groupid > 1) {
 	$trans = explode(',', $grouprefs);
 	reset($trans);
 	foreach ($trans as $tran) {
-
-		$sql = "UPDATE " . TB_PREF . "bank_trans SET undeposited=1, reconciled='' WHERE ref=" . db_escape($tran);
+		$sql = "UPDATE " . TB_PREF . "bank_trans SET undeposited=1, reconciled=NULL WHERE ref=" . db_escape($tran);
 		db_query($sql, 'Couldn\'t update undesposited status');
 	}
 	$sql = "UPDATE " . TB_PREF . "bank_trans SET ref=" . db_escape('Removed group: ' . $grouprefs) . ", amount=0, reconciled='" . date2sql(Today()) . "',
@@ -166,8 +160,7 @@ if (list_updated('bank_account')) {
 	update_data();
 }
 if (list_updated('bank_date')) {
-	$_POST['reconcile_date'] =
-			get_post('bank_date') == '' ? Today() : sql2date($_POST['bank_date']);
+	$_POST['reconcile_date'] = get_post('bank_date') == '' ? Today() : sql2date($_POST['bank_date']);
 	update_data();
 }
 if (get_post('_reconcile_date_changed')) {
@@ -181,12 +174,11 @@ if ($id != -1) {
 }
 if (isset($_POST['Reconcile'])) {
 	set_focus('bank_date');
-	foreach ($_POST['last'] as $id => $value)
-		if ($value != check_value('rec_' . $id)) {
-			if (!change_tpl_flag($id)) {
-				break;
-			}
+	foreach ($_POST['last'] as $id => $value) if ($value != check_value('rec_' . $id)) {
+		if (!change_tpl_flag($id)) {
+			break;
 		}
+	}
 	$Ajax->activate('_page_body');
 
 }
@@ -195,8 +187,7 @@ start_form();
 start_table();
 start_row();
 bank_accounts_list_cells(_("Account:"), 'bank_account', null, true);
-bank_reconciliation_list_cells(_("Bank Statement:"), get_post('bank_account'),
-							   'bank_date', null, true, _("New"));
+bank_reconciliation_list_cells(_("Bank Statement:"), get_post('bank_account'), 'bank_date', null, true, _("New"));
 //button_cell("reset", "reset", "reset");
 end_row();
 end_table();
@@ -221,12 +212,10 @@ if ($row = db_fetch($result)) {
 echo "<hr>";
 div_start('summary');
 start_table();
-$th = array(_("Reconcile Date"), _("Beginning<br>Balance"),
-			_("Ending<br>Balance"), _("Account<br>Total"), _("Reconciled<br>Amount"), _("Difference"));
+$th = array(_("Reconcile Date"), _("Beginning<br>Balance"), _("Ending<br>Balance"), _("Account<br>Total"), _("Reconciled<br>Amount"), _("Difference"));
 table_header($th);
 start_row();
-date_cells("", "reconcile_date", _('Date of bank statement to reconcile'),
-		   get_post('bank_date') == '', 0, 0, 0, null, true);
+date_cells("", "reconcile_date", _('Date of bank statement to reconcile'), get_post('bank_date') == '', 0, 0, 0, null, true);
 amount_cells_ex("", "beg_balance", 15);
 amount_cells_ex("", "end_balance", 15);
 $reconciled = input_num('reconciled');
@@ -245,19 +234,10 @@ if (!isset($_POST['bank_account'])) {
 $sql = get_sql_for_bank_account_reconcile($_POST['bank_account'], get_post('reconcile_date'));
 $act = get_bank_account($_POST["bank_account"]);
 display_heading($act['bank_account_name'] . " - " . $act['bank_curr_code']);
-$cols =
-		array(
-			_("Type") => array('fun' => 'systype_name', 'ord' => ''),
-			_("#") => array('fun' => 'trans_view', 'ord' => ''),
-			_("Reference"),
-			_("Date") => 'date',
-			_("Debit") => array('align' => 'right', 'fun' => 'fmt_debit'),
-			_("Credit") => array('align' => 'right', 'insert' => true, 'fun' => 'fmt_credit'),
-			_("Person/Item") => array('fun' => 'fmt_person'),
-			array('insert' => true, 'fun' => 'gl_view'),
-			"X" => array('insert' => true, 'fun' => 'rec_checkbox'),
-			array('insert' => true, 'fun' => 'ungroup')
-		);
+$cols = array(_("Type") => array('fun' => 'systype_name', 'ord' => ''), _("#") => array('fun' => 'trans_view', 'ord' => ''), _("Reference"), _("Date") => 'date',
+			  _("Debit") => array('align' => 'right', 'fun' => 'fmt_debit'), _("Credit") => array('align' => 'right', 'insert' => true, 'fun' => 'fmt_credit'),
+			  _("Person/Item") => array('fun' => 'fmt_person'), array('insert' => true, 'fun' => 'gl_view'), "X" => array('insert' => true, 'fun' => 'rec_checkbox'),
+			  array('insert' => true, 'fun' => 'ungroup'));
 $table =& new_db_pager('trans_tbl', $sql, $cols);
 $table->width = "80%";
 display_db_pager($table);

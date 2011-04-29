@@ -29,6 +29,7 @@
 var loader;
 var btnCancel;
 var btnCustomer;
+var btnContact;
 var feildsChanged = 0;
 
 var tabs;
@@ -47,11 +48,84 @@ var setFormValue = function(id, value)
 	}
 	if (String(value).length > 0) {
 		element.val(value).data('init', value);
-	}
-	else {
+	} else {
 		element.val(value).data('init', '');
 	}
 };
+var Contacts = function()
+{
+	var current = {},list = $("#contactList"),adding = false,btn = $("#btnContact").button();
+	return {
+		list:function()
+		{
+			return list;
+		},
+		add:function(data)
+		{
+			$.each(data, function(key, value)
+			{
+				list.append('<option value="' + value.id + '">' + value.name + '</option>');
+			});
+		},
+		setval: function (key, value)
+		{
+			current[key] = value;
+			Customer.get().contacts[current.id][key] = value;
+		},
+		change:function(data)
+		{
+			$.each(data, function(key, value)
+			{
+				setFormValue('con_' + key, value);
+			});
+			resetHighlights();
+			list.val(data.id);
+			current = data;
+			if (current.id > 0) {
+				list.find("[value=0]").remove();
+				delete Customer.get().contacts[0];
+				Contacts.btnContactAdd();
+				adding = false;
+			}
+		},
+		New: function()
+		{
+			var newCurrent = current;
+			$.each(current, function(k, v)
+			{
+				newCurrent[k] = '';
+			});
+			newCurrent.id = 0;
+			Contacts.add([newCurrent]);
+			Customer.get().contacts[0] = newCurrent;
+			Contacts.change(newCurrent);
+
+			btn.hide();
+			adding = true;
+		},
+		btnContactAdd : function()
+		{
+			btn.unbind('click');
+			if (!adding && current.id > 0 && Customer.get().id > 0) {
+				btn.button('option', 'label', 'Add New Contact').one('click',
+																	 function(event)
+																	 {
+																		 event.stopImmediatePropagation();
+																		 Contacts.New();
+																		 adding = true;
+																		 return false
+																	 }).show();
+			} else {
+				if (current.id > 0) {
+					btn.show();
+				} else {
+					btn.hide();
+				}
+			}
+			return false;
+		}
+	};
+}();
 var Branches = function()
 {
 	var current = {}, list = $("#branchList"),adding = false, btn = $("#addBranch").button();
@@ -129,7 +203,7 @@ var Branches = function()
 					btn.hide();
 				}
 			}
-			return btn;
+			return false;
 		},
 		btnBranchSave : function()
 		{
@@ -149,6 +223,7 @@ resetHighlights = function()
 	btnCustomer.hide();
 	btnCancel.button('option', 'label', 'New Customer');
 	Branches.btnBranchAdd();
+	Contacts.btnContactAdd();
 	feildsChanged = 0;
 	window.onbeforeunload = function ()
 	{
@@ -165,9 +240,10 @@ function revertState()
 }
 function resetState()
 {
-	$("#tabs input, #tabs textarea").empty();
+	$("#tabs0 input, #tabs0 textarea").empty();
 	$("#customer").val('');
 	Customer.fetch(0);
+
 }
 var msgbox = $('#msgbox').ajaxError(function(event, request, settings)
 									{
@@ -203,8 +279,7 @@ var setContactLog = function(data)
 	var str = '';
 	$.each(data, function(key, message)
 	{
-		str += '[' + message['date'] + '] Contact: ' + message['contact_name'] + "\nMessage:  " + message['message']
-				+ "\n\n";
+		str += '[' + message['date'] + '] Contact: ' + message['contact_name'] + "\nMessage:  " + message['message'] + "\n\n";
 	});
 	logbox.val(str);
 };
@@ -215,11 +290,16 @@ var Customer = function (item)
 	return {
 		setValues: function(data)
 		{
-			if (data.contact_log != undefined) setContactLog(data.contact_log);
-			if (data.transacionts != undefined) transactions.empty().append(data.transactions);
+			if (data.contact_log != undefined) {
+				setContactLog(data.contact_log);
+			}
+			if (data.transacionts != undefined) {
+				transactions.empty().append(data.transactions);
+			}
 			data = data.customer;
 			customer = data;
 			Branches.list().empty();
+			Contacts.list().empty();
 			$.each(data, function(i, data)
 			{
 				if (i == 'accounts') {
@@ -231,11 +311,16 @@ var Customer = function (item)
 					if (i == 'branches') {
 						Branches.add(data);
 					} else {
-						setFormValue(i, data);
+						if (i == 'contacts') {
+							Contacts.add(data);
+						} else {
+							setFormValue(i, data);
+						}
 					}
 				}
 			});
 			Branches.change(data.branches[data.defaultBranch]);
+			Contacts.change(data.contacts[data.defaultContact]);
 			resetHighlights();
 		},
 		fetch: function(id)
@@ -245,19 +330,23 @@ var Customer = function (item)
 			{
 				Customer.setValues(data);
 				loader.hide();
+				$('#customer').focus();
 			}, 'json')
 		},
 		set: function(key, value)
 		{
+			console.log(value);
 			if (key.substr(0, 4) == ('acc_')) {
 				customer.accounts[key.substr(4)] = value;
-			}
-			else {
+			} else {
 				if (key.substr(0, 3) == ('br_')) {
 					Branches.setval(key.substr(3), value);
-				}
-				else {
-					customer[key] = value;
+				} else {
+					if (key.substr(0, 4) == ('con_')) {
+						Contacts.setval(key.substr(4), value);
+					} else {
+						customer[key] = value;
+					}
 				}
 			}
 		},
@@ -288,7 +377,21 @@ function stateModified(feild)
 }
 $(function()
   {
-	  tabs = $("#tabs");
+	  tabs = $("#tabs0");
+	  var $useShipAddress = $("[name='useShipAddress']").click(function()
+															   {
+																   if ($(this).attr('checked')) {
+																	   $("[name*='acc_']").attr('disabled', true).each(function()
+																													   {
+																														   var newVal = $("[name='br_" + $(this).attr('name').substr(4) + "']").val();
+																														   $(this).val(newVal);
+																														   Customer.set($(this).attr('name'), newVal);
+																													   });
+
+																   } else {
+																	   $("[name*='acc_']").attr('disabled', false);
+																   }
+															   });
 	  loader = $("<div></div>").hide().attr('id', 'loader').prependTo('#content');
 	  btnCancel = $("#btnCancel").button().click(function()
 												 {
@@ -300,14 +403,15 @@ $(function()
 														 Branches.Save();
 														 return false;
 													 });
+
 	  $("[name='messageLog']").keypress(function(event)
 										{
 											event.stopImmediatePropagation();
 											return false;
 										});
-	  tabs.delegate("#tabs :input", "change", function(event)
+	  tabs.delegate("#tabs0 :input", "change", function(event)
 	  {
-		  if ($(this).attr('name') == 'messageLog' || $(this).attr('name') == 'branchList') {
+		  if ($(this).attr('name') == 'messageLog' || $(this).attr('name') == 'branchList' || $(this).attr('name') == 'contactList') {
 			  return;
 		  }
 		  event.stopImmediatePropagation();
@@ -321,6 +425,11 @@ $(function()
 			  return;
 		  }
 		  stateModified($(this));
+		  if ($useShipAddress.attr('checked') && $(this).attr('name').substr(0, 3) == 'br_') {
+			  var feildname = 'acc_' + $(this).attr('name').substr(3);
+			  setFormValue(feildname, $(this).val());
+			  Customer.set(feildname, $(this).val());
+		  }
 	  });
 	  tabs.delegate(".tablestyle_inner td :nth-child(1)", "keydown", function(event)
 	  {
@@ -341,12 +450,12 @@ $(function()
 								 var data = Customer.get().branches[$(this).attr('value')];
 								 Branches.change(data);
 							 });
+	  Contacts.list().change(function(event)
+							 {
+								 var data = Customer.get().contacts[$(this).attr('value')];
+								 Contacts.change(data);
+							 });
 
-
-
-	  var useShipAddress = $("[name='useShipAddress']").change(function() {
-	  console.log($(this).val())
-  })
 	  var ContactLog = $("#contactLog").hide().dialog({
 														  autoOpen: false,
 														  show: "slide",

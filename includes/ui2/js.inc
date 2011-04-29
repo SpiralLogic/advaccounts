@@ -9,7 +9,7 @@ class JS
 	{
 	}
 
-	public static function autocomplete($id, $callback, $url = false)
+	public static function autocomplete($id, $callback, $url = false,$focus=true)
 	{
 		global $js_lib;
 		if (!$url) $url = $_SERVER['PHP_SELF'];
@@ -29,7 +29,7 @@ $(function() {
 		{$callback}(ui.item.id);
 
 	}
-}).css({'z-index' : '2', 'margin' : '10px'}); });
+}).css({'z-index' : '2', 'margin' : '10px'}).focus(); });
 JS;
 	}
 

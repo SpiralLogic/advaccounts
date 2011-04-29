@@ -19,6 +19,7 @@ function copy_from_trans(&$supp_trans)
 	$_POST['supp_reference'] = $supp_trans->supp_reference;
 	$_POST['reference'] = $supp_trans->reference;
 	$_POST['supplier_id'] = $supp_trans->supplier_id;
+	$_POST['ChgTax'] = $supp_trans->tax_correction;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -32,6 +33,7 @@ function copy_to_trans(&$supp_trans)
 	$supp_trans->reference = $_POST['reference'];
 
 	$supp_trans->ov_amount = 0; /* for starters */
+	$supp_trans->tax_correction =$_POST['ChgTax']; /* for starters */
 	if (count($supp_trans->grn_items) > 0) {
 		foreach ($supp_trans->grn_items as $grn) {
 			$supp_trans->ov_amount += round2(($grn->this_quantity_inv * $grn->chg_price * (1 - $grn->discount / 100)), user_price_dec());
@@ -128,8 +130,11 @@ function invoice_totals(&$supp_trans)
 	label_row(_("Sub-total:"), price_format($supp_trans->ov_amount), "colspan=$colspan align=right", "align=right");
 
 	$taxes = $supp_trans->get_taxes($supp_trans->tax_group_id);
-	$tax_total = display_edit_tax_items($taxes, $colspan, 0); // tax_included==0 (we are the company)
-	$display_total = price_format($supp_trans->ov_amount + $tax_total);
+	$tax_total = display_edit_tax_items($taxes, $colspan, 0,null,true); // tax_included==0 (we are the company)
+	label_cell(_("Total Correction"), "colspan=$colspan align=right width='90%'");
+	small_amount_cells(null, 'ChgTotal', price_format(get_post('ChgTotal'), 2));
+
+	$display_total = price_format($supp_trans->ov_amount + $tax_total + get_post('ChgTotal'));
 
 	if ($supp_trans->is_invoice) {
 		label_row(_("Invoice Total:"), $display_total, "colspan=$colspan align=right style='font-weight:bold;'", "align=right style='font-weight:bold;'");

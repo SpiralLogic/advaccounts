@@ -65,7 +65,7 @@ start_table("width=95% $table_style");
 label_row(_("Sub Total"), $display_sub_tot, "align=right", "nowrap align=right width=15%");
 
 $tax_items = get_trans_tax_details(ST_SUPPINVOICE, $trans_no);
-display_supp_trans_tax_details($tax_items, 1);
+$tax_total = display_supp_trans_tax_details($tax_items, 1,$supp_trans->ov_gst);
 
 $display_total = number_format2($supp_trans->ov_amount + $supp_trans->ov_gst, user_price_dec());
 

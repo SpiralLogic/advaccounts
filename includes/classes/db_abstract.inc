@@ -25,6 +25,8 @@ abstract class DB_abstract
 
 	abstract protected function _countTransactions();
 
+	protected $_status = null;
+
 	protected function _status($status = null, $process = null, $message = '', $var = null)
 	{
 		if (!$this->_status) {
@@ -62,9 +64,27 @@ abstract class DB_abstract
 		}
 		$remainder = array();
 		foreach ($changes as $key => $value) {
-			$value = ($value == null) ? '' : trim($value);
-			(property_exists($this, $key)) ? $this->$key = htmlspecialchars_decode($value) : $remainder[$key] = $value;
+			$value = (trim($value) == null) ? '' : trim($value);
+			(property_exists($this, $key)) ? $this->$key = $value : $remainder[$key] = $value;
 		}
 		return $remainder;
+	}
+	protected function db_escape($value) {
+		//reset default if second parameter is skipped
+		//check for null/unset/empty strings
+			if (is_string($value)) {
+				//value is a string and should be quoted; determine best method based on available extensions
+				if (function_exists('mysql_real_escape_string')) {
+					$value = "'" . mysql_real_escape_string($value) . "'";
+				} else {
+					$value = "'" . mysql_escape_string($value) . "'";
+				}
+			} else if (!is_numeric($value)) {
+				//value is not a string nor numeric
+				display_error("ERROR: incorrect data type send to sql query");
+				echo '<br><br>';
+				exit();
+			}
+				return $value;
 	}
 }

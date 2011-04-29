@@ -51,11 +51,14 @@ if (isset($_GET['New'])) {
 	//session_register("supp_trans");
 	$_SESSION['supp_trans'] = new supp_trans;
 	$_SESSION['supp_trans']->is_invoice = true;
-	if ($_GET['SuppID']) $_SESSION['wa_global_supplier_id'] = $_GET['SuppID'];
+	if (isset($_GET['SuppID'])) {
+		$_SESSION['wa_global_supplier_id'] = $_GET['SuppID'];
+	}
 
 }
 //--------------------------------------------------------------------------------------------------
-function clear_fields() {
+function clear_fields()
+{
 	global $Ajax;
 	unset($_POST['gl_code']);
 	unset($_POST['dimension_id']);
@@ -77,8 +80,7 @@ if (isset($_POST['ClearFields'])) {
 if (isset($_POST['AddGLCodeToTrans'])) {
 	$Ajax->activate('gl_items');
 	$input_error = false;
-	$sql = "SELECT account_code, account_name FROM " . TB_PREF . "chart_master WHERE account_code=" . db_escape(
-		$_POST['gl_code']);
+	$sql = "SELECT account_code, account_name FROM " . TB_PREF . "chart_master WHERE account_code=" . db_escape($_POST['gl_code']);
 	$result = db_query($sql, "get account information");
 	if (db_num_rows($result) == 0) {
 		display_error(_("The account code entered is not a valid code, this line cannot be added to the transaction."));
@@ -99,8 +101,7 @@ if (isset($_POST['AddGLCodeToTrans'])) {
 		$input_error = true;
 	}
 	if ($input_error == false) {
-		$_SESSION['supp_trans']->add_gl_codes_to_trans(
-			$_POST['gl_code'], $gl_act_name, null, null, input_num('amount'), $_POST['memo_']);
+		$_SESSION['supp_trans']->add_gl_codes_to_trans($_POST['gl_code'], $gl_act_name, null, null, input_num('amount'), $_POST['memo_']);
 		$taxexists = false;
 		foreach ($_SESSION['supp_trans']->gl_codes as &$gl_item) {
 			if ($gl_item->gl_code == 2430) {
@@ -111,14 +112,14 @@ if (isset($_POST['AddGLCodeToTrans'])) {
 
 		}
 		if (!$taxexists) {
-			$_SESSION['supp_trans'
-			]->add_gl_codes_to_trans(2430, 'GST Paid', 0, 0, input_num('amount') * .1, 'GST TAX Paid');
+			$_SESSION['supp_trans']->add_gl_codes_to_trans(2430, 'GST Paid', 0, 0, input_num('amount') * .1, 'GST TAX Paid');
 		}
 		set_focus('gl_code');
 	}
 }
 //------------------------------------------------------------------------------------------------
-function check_data() {
+function check_data()
+{
 	global $Refs;
 	if (!$_SESSION['supp_trans']->is_valid_trans_to_post()) {
 		display_error(_("The invoice cannot be processed because the there are no items or values on the invoice.  Invoices are expected to have a charge."));
@@ -154,24 +155,40 @@ function check_data() {
 		set_focus('due_date');
 		return false;
 	}
-	$sql = "SELECT Count(*) FROM " . TB_PREF . "supp_trans WHERE supplier_id=" . db_escape(
-		$_SESSION['supp_trans']->supplier_id) . " AND supp_reference=" . db_escape(
-		$_POST['supp_reference']) . " AND ov_amount!=0"; // ignore voided invoice references
+	$sql = "SELECT Count(*) FROM " . TB_PREF . "supp_trans WHERE supplier_id=" . db_escape($_SESSION['supp_trans']->supplier_id) . " AND supp_reference=" . db_escape($_POST['supp_reference']) . " AND ov_amount!=0"; // ignore voided invoice references
 	$result = db_query($sql, "The sql to check for the previous entry of the same invoice failed");
 	$myrow = db_fetch_row($result);
 	if ($myrow[0] == 1) { /*Transaction reference already entered */
-		display_error(_("This invoice number has already been entered. It cannot be entered again." . " (" .
-						$_POST['supp_reference'] . ")"));
+		display_error(_("This invoice number has already been entered. It cannot be entered again." . " (" . $_POST['supp_reference'] . ")"));
 		return false;
 	}
 	return true;
 }
 
 //--------------------------------------------------------------------------------------------------
-function handle_commit_invoice() {
+function handle_commit_invoice()
+{
 	copy_to_trans($_SESSION['supp_trans']);
 	if (!check_data()) {
 		return;
+	}
+	if (get_post('ChgTax', 0) != 0) {
+		$taxexists = false;
+		foreach ($_SESSION['supp_trans']->gl_codes as &$gl_item) {
+			if ($gl_item->gl_code == 2430) {
+				$taxexists = true;
+				$gl_item->amount += get_post('ChgTax');
+				break;
+			}
+		}
+		if (!$taxexists) {
+			$_SESSION['supp_trans']->add_gl_codes_to_trans(2430, 'GST Paid', 0, 0, get_post('ChgTax'), 'GST Correction');
+		}
+	}
+	if (get_post('ChgTotal', 0) != 0) {
+
+			$_SESSION['supp_trans']->add_gl_codes_to_trans(get_company_pref('default_cogs_act'), 'Cost of Goods Sold', 0, 0, get_post('ChgTotal'), 'Rounding Correction');
+
 	}
 	$invoice_no = add_supp_invoice($_SESSION['supp_trans']);
 	$_SESSION['supp_trans']->clear_items();
@@ -184,7 +201,8 @@ function handle_commit_invoice() {
 if (isset($_POST['PostInvoice'])) {
 	handle_commit_invoice();
 }
-function check_item_data($n) {
+function check_item_data($n)
+{
 	global $check_price_charged_vs_order_price, $check_qty_charged_vs_del_qty, $SysPrefs;
 	if (!check_num('this_quantity_inv' . $n, 0) || input_num('this_quantity_inv' . $n) == 0) {
 		display_error(_("The quantity to invoice must be numeric and greater than zero."));
@@ -204,8 +222,7 @@ function check_item_data($n) {
 	$margin = $SysPrefs->over_charge_allowance();
 	if ($check_price_charged_vs_order_price == True && $margin != 0) {
 		if ($_POST['order_price' . $n] != input_num('ChgPrice' . $n)) {
-			if ($_POST['order_price' . $n] == 0 || input_num('ChgPrice' . $n) /
-												   $_POST['order_price' . $n] > (1 + ($margin / 100))) {
+			if ($_POST['order_price' . $n] == 0 || input_num('ChgPrice' . $n) / $_POST['order_price' . $n] > (1 + ($margin / 100))) {
 				if ($_SESSION['err_over_charge'] != true) {
 					display_error(_("The price being invoiced is more than the purchase order price by more than the allowed over-charge percentage. The system is set up to prohibit this. See the system administrator to modify the set up parameters if necessary.") . _("The over-charge percentage allowance is :") . $margin . "%");
 					set_focus('ChgPrice' . $n);
@@ -219,7 +236,7 @@ function check_item_data($n) {
 		}
 	}
 	if ($check_qty_charged_vs_del_qty == True) {
-		if (input_num('this_quantity_inv' . $n) / (				$_POST['qty_recd' . $n] - $_POST['prev_quantity_inv' . $n]) > (1 + ($margin / 100))) {
+		if (input_num('this_quantity_inv' . $n) / ($_POST['qty_recd' . $n] - $_POST['prev_quantity_inv' . $n]) > (1 + ($margin / 100))) {
 			display_error(_("The quantity being invoiced is more than the outstanding quantity by more than the allowed over-charge percentage. The system is set up to prohibit this. See the system administrator to modify the set up parameters if necessary.") . _("The over-charge percentage allowance is :") . $margin . "%");
 			set_focus('this_quantity_inv' . $n);
 			return false;
@@ -228,7 +245,8 @@ function check_item_data($n) {
 	return true;
 }
 
-function commit_item_data($n) {
+function commit_item_data($n)
+{
 	if (check_item_data($n)) {
 		if (input_num('this_quantity_inv' . $n) >= ($_POST['qty_recd' . $n] - $_POST['prev_quantity_inv' . $n])) {
 			$complete = true;
@@ -236,12 +254,9 @@ function commit_item_data($n) {
 			$complete = false;
 		}
 		$_SESSION['err_over_charge'] = false;
-		$_SESSION['supp_trans']->add_grn_to_trans($n, $_POST['po_detail_item' . $n], $_POST['item_code' . $n],
-												  $_POST['item_description' . $n], $_POST['qty_recd' . $n],
-												  $_POST['prev_quantity_inv' . $n], input_num('this_quantity_inv' . $n),
-												  $_POST['order_price' . $n], input_num('ChgPrice' . $n), $complete,
-												  $_POST['std_cost_unit' . $n
-												  ], "", input_num('ChgDiscount' . $n), input_num('ExpPrice' . $n));
+		$_SESSION['supp_trans']->add_grn_to_trans($n, $_POST['po_detail_item' . $n], $_POST['item_code' . $n], $_POST['item_description' . $n], $_POST['qty_recd' . $n],
+												  $_POST['prev_quantity_inv' . $n], input_num('this_quantity_inv' . $n), $_POST['order_price' . $n], input_num('ChgPrice' . $n),
+												  $complete, $_POST['std_cost_unit' . $n], "", input_num('ChgDiscount' . $n), input_num('ExpPrice' . $n));
 	}
 }
 
@@ -254,7 +269,7 @@ if (isset($_POST['InvGRNAll'])) {
 	foreach ($_POST as $postkey => $postval) {
 		if (strpos($postkey, "qty_recd") === 0) {
 			$id = substr($postkey, strlen("qty_recd"));
-			$id = (int) $id;
+			$id = (int)$id;
 			commit_item_data($id);
 		}
 	}
@@ -294,17 +309,14 @@ if ($_SESSION["wa_current_user"]->can_access('SA_GRNDELETE')) {
 		$myrow = get_grn_item_detail($id2);
 		$grn = get_grn_batch($myrow['grn_batch_id']);
 		$sql = "UPDATE " . TB_PREF . "purch_order_details
-			SET quantity_received = qty_invoiced, quantity_ordered = qty_invoiced WHERE po_detail_item = " .
-			   $myrow["po_detail_item"];
+			SET quantity_received = qty_invoiced, quantity_ordered = qty_invoiced WHERE po_detail_item = " . $myrow["po_detail_item"];
 		db_query($sql, "The quantity invoiced of the purchase order line could not be updated");
 		$sql = "UPDATE " . TB_PREF . "grn_items
 	    	SET qty_recd = quantity_inv WHERE id = " . $myrow["id"];
 		db_query($sql, "The quantity invoiced off the items received record could not be updated");
-		update_average_material_cost(
-			$grn["supplier_id"], $myrow["item_code"], $myrow["unit_price"], -$myrow["QtyOstdg"], Today());
-		add_stock_move(ST_SUPPRECEIVE, $myrow["item_code"], $myrow['grn_batch_id'], $grn['loc_code'], sql2date(
-			$grn["delivery_date"]), "", -$myrow["QtyOstdg"], $myrow['std_cost_unit'], $grn["supplier_id"], 1,
-					   $myrow['unit_price']);
+		update_average_material_cost($grn["supplier_id"], $myrow["item_code"], $myrow["unit_price"], -$myrow["QtyOstdg"], Today());
+		add_stock_move(ST_SUPPRECEIVE, $myrow["item_code"], $myrow['grn_batch_id'], $grn['loc_code'], sql2date($grn["delivery_date"]), "", -$myrow["QtyOstdg"],
+					   $myrow['std_cost_unit'], $grn["supplier_id"], 1, $myrow['unit_price']);
 		commit_transaction();
 		display_notification(sprintf(_('All yet non-invoiced items on delivery line # %d has been removed.'), $id2));
 	}
@@ -321,8 +333,8 @@ invoice_header($_SESSION['supp_trans']);
 if ($_SESSION['wa_global_supplier_id']) {
 	$_POST['supplier_id'] = $_SESSION['wa_global_supplier_id'];
 	if ($_SESSION['supp_trans']) {
-	unset($_SESSION['wa_global_supplier_id']);
-	unset($_SESSION['delivery_po']);
+		unset($_SESSION['wa_global_supplier_id']);
+		unset($_SESSION['delivery_po']);
 	}
 }
 if ($_POST['supplier_id'] == '') {

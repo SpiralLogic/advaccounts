@@ -6,7 +6,7 @@
  * Time: 11:52 PM
  * To change this template use File | Settings | File Templates.
  */
-class Branch extends Contact
+class Branch extends Company
 {
 
 

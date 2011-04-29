@@ -6,7 +6,7 @@
  * Time: 4:07 PM
  * To change this template use File | Settings | File Templates.
  */
-class Customer extends Contact
+class Customer extends Company
 {
 
 	public $name = 'New Customer';
@@ -17,6 +17,7 @@ class Customer extends Contact
 	public $payment_discount = '0';
 	public $defaultBranch;
 	public $branches = array();
+	public $contacts = array();
 	public $accounts;
 	public $transactions;
 
@@ -63,6 +64,12 @@ class Customer extends Contact
 				$this->branches[$branchid] = new Branch($branch);
 			}
 		}
+		if (isset($changes['contacts']) && is_array($changes['contacts'])) {
+			foreach ($changes['contacts'] as $id => $contact) {
+				$this->contacts[$id] = new Contact($contact);
+
+			}
+		}
 	}
 
 	public function save($changes = null)
@@ -104,7 +111,15 @@ class Customer extends Contact
 				unset($this->branches[0]);
 			}
 		}
+		foreach ($this->contacts as $id => $contact) {
+			$contact->save(array('parent_id' => $this->id));
+			if ($id == 0) {
+				$this->contacts[$contact->id] = $contact;
+				unset($this->contacts[0]);
+			}
+		}
 		$this->defaultBranch = reset($this->branches)->branch_code;
+		$this->defaultContact = reset($this->contacts)->id;
 		return $this->_status(true, 'Processing', "Customer has been updated.");
 	}
 
@@ -129,8 +144,10 @@ class Customer extends Contact
 		$this->_defaults();
 		$this->accounts = new Accounts();
 		$this->branches[0] = new Branch();
-		$this->branches[0]->debtor_no = $this->accounts->debtor_no = $this->id;
+		$this->contacts[0] = new Contact();
+		$this->branches[0]->debtor_no = $this->accounts->debtor_no =$this->contacts[0]->parent_id = $this->id;
 		$this->defaultBranch = reset($this->branches)->branch_code;
+		$this->defaultContact = reset($this->contacts)->id;
 		return $this->_status(true, 'Initialize new customer', 'Now working with a new customer');
 	}
 
@@ -162,6 +179,7 @@ class Customer extends Contact
 		$this->setFromArray($result);
 		$this->_getBranches();
 		$this->_getAccounts();
+		$this->_getContacts();
 		$this->discount = $this->discount * 100;
 		$this->pymt_discount = $this->pymt_discount * 100;
 		$this->credit_limit = price_format($this->credit_limit);
@@ -211,6 +229,12 @@ class Customer extends Contact
 		return db_fetch_row($result);
 	}
 
+	protected function _countContacts()
+	{
+		$sql = "SELECT COUNT(*) FROM " . TB_PREF . "contacts WHERE parent_id=" . $this->id;
+		$result = db_query($sql, "check failed");
+		return db_fetch_row($result);
+	}
 	public function delete()
 	{
 		if ($this->_countTransactions() > 0) {
@@ -221,6 +245,9 @@ class Customer extends Contact
 		}
 		if ($this->_countBranches() > 0) {
 			return $this->_status(false, 'delete', "Cannot delete this customer because there are branch records set up against it.");
+		}
+		if ($this->_countContacts() >0) {
+			return $this->_status(false, 'delete', "Cannot delete this customer because there are contact records set up against it.");
 		}
 		$sql = "DELETE FROM " . TB_PREF . "debtors_master WHERE debtor_no=" . $this->id;
 		db_query($sql, "cannot delete customer");
@@ -263,6 +290,19 @@ class Customer extends Contact
 		$this->defaultBranch = reset($this->branches)->branch_code;
 	}
 
+	protected function _getContacts()
+	{
+		$sql = "SELECT id, name  FROM " . TB_PREF . "contacts WHERE parent_id=" . $this->id;
+		$result = db_query($sql, 'Couldn\'t retrieve any contacts');
+
+		if (!db_num_rows($result)) $this->contacts[0] = new Contact();
+
+		while ($row = db_fetch_assoc($result)) {
+
+			$this->contacts[$row['id']] = new Contact($row['id']);
+		}
+		$this->defaultContact = reset($this->contacts)->id;
+	}
 	public function addBranch($details = null)
 	{
 		$branch = new Branch($details);

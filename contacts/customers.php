@@ -9,7 +9,7 @@ if (isAjaxReferrer()) {
 	} elseif (isset($_POST['id'])) {
 		if (isset($_POST['name'])) {
 			$data['customer'] = $customer = new Customer($_POST);
-			$customer->save();
+			$data['customer']->save();
 			$data['status'] = $customer->getStatus();
 		} elseif (!isset($_POST['name'])) {
 			$data['customer'] = $customer = new Customer($_POST['id']);
@@ -39,6 +39,7 @@ if (isset($_GET['debtor_no'])) {
 } else {
 	$customer = new Customer();
 }
+$currentContact = $customer->contacts[$customer->defaultContact];
 $currentBranch = $customer->branches[$customer->defaultBranch];
 if (isset($_POST['delete'])) {
 	$customer->delete();
@@ -69,19 +70,19 @@ text_row(_("Phone Number:"), 'br_phone', $currentBranch->phone, 32, 30);
 text_row(_("2nd Phone Number:"), 'br_phone2', $currentBranch->phone2, 32, 30);
 text_row(_("Fax Number:"), 'br_fax', $currentBranch->fax, 32, 30);
 email_row(_("Email:"), 'br_email', $currentBranch->email, 35, 55);
-textarea_row(_("Address:"), 'br_br_address', $currentBranch->br_address, 35, 2);
+textarea_row(_("Street:"), 'br_br_address', $currentBranch->br_address, 35, 2);
 email_row(_("City"), 'br_city', $currentBranch->city, 35, 40);
 email_row(_("State:"), 'br_state', $currentBranch->state, 35, 40);
 email_row(_("postcode"), 'br_postcode', $currentBranch->postcode, 35, 40);
 table_section(2);
 hidden('id', $customer->id);
 table_section_title(_("Accounts Details"), 2, 'tableheader3');
-check_row(_("Use shipping details"), 'useShipAddress');
+check_row(_("Use shipping details"), 'useShipAddress',1);
 text_row(_("Phone Number:"), 'acc_phone', $customer->accounts->phone, 40, 30);
 text_row(_("Secondary Phone Number:"), 'acc_phone2', $customer->accounts->phone2, 40, 30);
 text_row(_("Fax Number:"), 'acc_fax', $customer->accounts->fax, 40, 30);
 email_row(_("E-mail:"), 'email', $customer->email, 35, 40);
-textarea_row(_("Address:"), 'acc_br_address', $customer->accounts->br_address, 35, 2);
+textarea_row(_("Street:"), 'acc_br_address', $customer->accounts->br_address, 35, 2);
 email_row(_("City"), 'acc_city', $customer->accounts->city, 35, 40);
 email_row(_("State:"), 'acc_state', $customer->accounts->state, 35, 40);
 email_row(_("postcode"), 'acc_postcode', $customer->accounts->postcode, 35, 40);
@@ -94,11 +95,11 @@ table_section(1);
 hidden('accounts_id', $customer->accounts->accounts_id);
 table_section_title(_("Accounts Details:"), 2, ' tableheader3 ');
 text_row(_("Accounts Contact:"), 'acc_contact_name', $customer->accounts->contact_name, 40, 40);
-email_row(_("Email:"), 'acc_email', $customer->accounts->email, 40, 40);
+email_row(_("E-mail:"), 'email', $customer->email, 40, 40);
 text_row(_("Phone Number:"), 'acc_phone', $customer->accounts->phone, 40, 30);
 text_row(_("2nd Phone Number:"), 'acc_phone2', $customer->accounts->phone2, 40, 30);
 text_row(_("Fax Number:"), 'acc_fax', $customer->accounts->fax, 40, 30);
-textarea_row(_("Address:"), 'acc_br_address', $customer->accounts->br_address, 35, 5);
+textarea_row(_("Street:"), 'acc_br_address', $customer->accounts->br_address, 35, 5);
 email_row(_("City"), 'acc_city', $customer->accounts->city, 35, 40);
 email_row(_("State:"), 'acc_state', $customer->accounts->state, 35, 40);
 email_row(_("postcode"), 'acc_postcode', $customer->accounts->postcode, 35, 40);
@@ -131,10 +132,14 @@ if ($dim < 2) {
 table_section(2, false, 'ui-widget');
 //table_section_title("<span class='ui-icon ui-icon-circle-plus'>"._("Contact log:")."</span>", 2, 'tableheader3');
 start_table();
-text_row("Name:", '2name', null, 35, 40);
-text_row("Phone:", '2phone', null, 35, 40);
-text_row("Email:", '2email', null, 35, 40);
-text_row("Dept:", '2dept', null, 35, 40);
+
+UI::select('contactList', array(0=>""), array('name' => 'contactList'));
+UI::button('btnContact', 'Add new contact', array('name' => 'btnContact'));
+text_row("Name:", 'con_name', $currentContact->name, 35, 40);
+text_row("Phone:", 'con_phone1', $currentContact->phone1, 35, 40);
+text_row("Phone2:", 'con_phone2', $currentContact->phone2, 35, 40);
+text_row("Email:", 'con_email', $currentContact->email, 35, 40);
+text_row("Dept:", 'con_department', $currentContact->department, 35, 40);
 
 end_table(1);
 table_section_title(_("Contact log:"), 1, 'tableheader3 ');
@@ -197,5 +202,21 @@ if ($customer->id) {
 					'style' => 'margin:10px;'));
 }
 UI::button('btnCancel', 'Cancel', array('name' => 'cancel', 'type' => 'submit', 'class' => 'ui-helper-hidden',
-									   'style' => 'margin:10px;'))->div;
+									   'style' => 'margin:10px;'));
+HTML::div('shortcuts', array('style' => 'width:50%;display:block;margin:0 auto;'));
+$shortcuts = new MenuUI();
+$shortcuts->startTab('Create Order', 'Create Order for this customer!', '/sales/sales_order_entry.php?NewOrder=Yes');
+$shortcuts->endTab();
+$shortcuts->startTab('Create Quote', 'Create Quote for this customer!', '/sales/sales_order_entry.php?NewQuote=Yes');
+$shortcuts->endTab();
+$shortcuts->render();
+HTML::_div()->div;
+
+echo '<script>';
+echo <<<JS
+$(function() {});
+
+JS;
+echo '</script>';
+
 end_page(true, true);

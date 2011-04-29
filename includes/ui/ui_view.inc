@@ -12,31 +12,20 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 include_once($path_to_root . "/admin/db/voiding_db.inc");
 include_once($path_to_root . "/includes/types.inc");
 //--------------------------------------------------------------------------------------
-function get_supplier_trans_view_str($type, $trans_no, $label = "", $icon = false,
-	$class = '', $id = '')
+function get_supplier_trans_view_str($type, $trans_no, $label = "", $icon = false, $class = '', $id = '')
 {
 	$viewer = "purchasing/view/";
 	if ($type == ST_PURCHORDER) {
 		$viewer .= "view_po.php";
-	}
-	elseif ($type == ST_SUPPINVOICE)
-	{
+	} elseif ($type == ST_SUPPINVOICE) {
 		$viewer .= "view_supp_invoice.php";
-	}
-	elseif ($type == ST_SUPPCREDIT)
-	{
+	} elseif ($type == ST_SUPPCREDIT) {
 		$viewer .= "view_supp_credit.php";
-	}
-	elseif ($type == ST_SUPPAYMENT)
-	{
+	} elseif ($type == ST_SUPPAYMENT) {
 		$viewer .= "view_supp_payment.php";
-	}
-	elseif ($type == ST_SUPPRECEIVE)
-	{
+	} elseif ($type == ST_SUPPRECEIVE) {
 		$viewer .= "view_grn.php";
-	}
-	else
-	{
+	} else {
 		return null;
 	}
 	$viewer .= "?trans_no=$trans_no";
@@ -57,9 +46,7 @@ function get_gl_view_str($type, $trans_no, $label = "", $force = false, $class =
 		$label = _("GL");
 		$icon = ICON_GL;
 	}
-	return viewer_link($label,
-					   "gl/view/gl_trans_view.php?type_id=$type&trans_no=$trans_no",
-					   $class, $id, $icon);
+	return viewer_link($label, "gl/view/gl_trans_view.php?type_id=$type&trans_no=$trans_no", $class, $id, $icon);
 }
 
 //--------------------------------------------------------------------------------------
@@ -72,35 +59,22 @@ function get_gl_view_str_cell($type, $trans_no, $label = "")
 }
 
 //--------------------------------------------------------------------------------------
-function get_customer_trans_view_str($type, $trans_no, $label = "", $icon = false,
-	$class = '', $id = '')
+function get_customer_trans_view_str($type, $trans_no, $label = "", $icon = false, $class = '', $id = '')
 {
 	$viewer = "sales/view/";
 	if ($type == ST_SALESINVOICE) {
 		$viewer .= "view_invoice.php";
-	}
-	elseif ($type == ST_CUSTCREDIT)
-	{
+	} elseif ($type == ST_CUSTCREDIT) {
 		$viewer .= "view_credit.php";
-	}
-	elseif ($type == ST_CUSTPAYMENT)
-	{
+	} elseif ($type == ST_CUSTPAYMENT) {
 		$viewer .= "view_receipt.php";
-	}
-	elseif ($type == ST_CUSTREFUND)
-	{
+	} elseif ($type == ST_CUSTREFUND) {
 		$viewer .= "view_receipt.php";
-	}
-	elseif ($type == ST_CUSTDELIVERY)
-	{
+	} elseif ($type == ST_CUSTDELIVERY) {
 		$viewer .= "view_dispatch.php";
-	}
-	elseif ($type == ST_SALESORDER || $type == ST_SALESQUOTE)
-	{
+	} elseif ($type == ST_SALESORDER || $type == ST_SALESQUOTE) {
 		$viewer .= "view_sales_order.php";
-	}
-	else
-	{
+	} else {
 		return null;
 	}
 	if (!is_array($trans_no)) {
@@ -115,53 +89,39 @@ function get_customer_trans_view_str($type, $trans_no, $label = "", $icon = fals
 		if ($preview_str != '') {
 			$preview_str .= ',';
 		}
-		$preview_str .= viewer_link($lbl, $viewer . "?trans_no=$trans&trans_type=$type",
-									$class, $id, $icon);
+		$preview_str .= viewer_link($lbl, $viewer . "?trans_no=$trans&trans_type=$type", $class, $id, $icon);
 
 	}
 	return $preview_str;
 }
 
 //--------------------------------------------------------------------------------------
-function get_banking_trans_view_str($type, $trans_no, $label = "",
-	$icon = false, $class = '', $id = '')
+function get_banking_trans_view_str($type, $trans_no, $label = "", $icon = false, $class = '', $id = '')
 {
 	if ($label == "") {
 		$label = $trans_no;
 	}
 	if ($type == ST_BANKTRANSFER) {
 		$viewer = "bank_transfer_view.php";
-	}
-	elseif ($type == ST_BANKPAYMENT)
-	{
+	} elseif ($type == ST_BANKPAYMENT) {
 		$viewer = "gl_payment_view.php";
-	}
-	elseif ($type == ST_BANKDEPOSIT)
-	{
+	} elseif ($type == ST_BANKDEPOSIT) {
 		$viewer = "gl_deposit_view.php";
-	}
-	else
-	{
+	} else {
 		return null;
 	}
-	return viewer_link($label, "gl/view/$viewer?trans_no=$trans_no",
-					   $class, $id, $icon);
+	return viewer_link($label, "gl/view/$viewer?trans_no=$trans_no", $class, $id, $icon);
 }
 
 //--------------------------------------------------------------------------------------
-function get_inventory_trans_view_str($type, $trans_no, $label = "",
-	$icon = false, $class = '', $id = '')
+function get_inventory_trans_view_str($type, $trans_no, $label = "", $icon = false, $class = '', $id = '')
 {
 	$viewer = "inventory/view/";
 	if ($type == ST_INVADJUST) {
 		$viewer .= "view_adjustment.php";
-	}
-	elseif ($type == ST_LOCTRANSFER)
-	{
+	} elseif ($type == ST_LOCTRANSFER) {
 		$viewer .= "view_transfer.php";
-	}
-	else
-	{
+	} else {
 		return null;
 	}
 	$viewer .= "?trans_no=$trans_no";
@@ -172,23 +132,16 @@ function get_inventory_trans_view_str($type, $trans_no, $label = "",
 }
 
 //--------------------------------------------------------------------------------------
-function get_manufacturing_trans_view_str($type, $trans_no, $label = "",
-	$icon = false, $class = '', $id = '')
+function get_manufacturing_trans_view_str($type, $trans_no, $label = "", $icon = false, $class = '', $id = '')
 {
 	$viewer = "manufacturing/view/";
 	if ($type == ST_MANUISSUE) {
 		$viewer .= "wo_issue_view.php";
-	}
-	elseif ($type == ST_MANURECEIVE)
-	{
+	} elseif ($type == ST_MANURECEIVE) {
 		$viewer .= "wo_production_view.php";
-	}
-	elseif ($type == ST_WORKORDER)
-	{
+	} elseif ($type == ST_WORKORDER) {
 		$viewer .= "work_order_view.php";
-	}
-	else
-	{
+	} else {
 		return null;
 	}
 	$viewer .= "?trans_no=$trans_no";
@@ -199,14 +152,11 @@ function get_manufacturing_trans_view_str($type, $trans_no, $label = "",
 }
 
 //--------------------------------------------------------------------------------------
-function get_dimensions_trans_view_str($type, $trans_no, $label = "", $icon = false,
-	$class = '', $id = '')
+function get_dimensions_trans_view_str($type, $trans_no, $label = "", $icon = false, $class = '', $id = '')
 {
 	if ($type == ST_DIMENSION) {
 		$viewer = "dimensions/view/view_dimension.php?trans_no=$trans_no";
-	}
-	else
-	{
+	} else {
 		return null;
 	}
 	if ($label == "") {
@@ -218,14 +168,11 @@ function get_dimensions_trans_view_str($type, $trans_no, $label = "", $icon = fa
 /*
     Journal entry or cost update postings link
 */
-function get_journal_trans_view_str($type, $trans_no, $label = "", $icon = false,
-	$class = '', $id = '')
+function get_journal_trans_view_str($type, $trans_no, $label = "", $icon = false, $class = '', $id = '')
 {
 	if ($type == ST_JOURNAL || $type == ST_COSTUPDATE) {
 		$viewer = "gl/view/gl_trans_view.php?type_id=$type&trans_no=$trans_no";
-	}
-	else
-	{
+	} else {
 		return null;
 	}
 	if ($label == "") {
@@ -235,8 +182,7 @@ function get_journal_trans_view_str($type, $trans_no, $label = "", $icon = false
 }
 
 //--------------------------------------------------------------------------------------
-function get_trans_view_str($type, $trans_no, $label = "", $icon = false,
-	$class = '', $id = '')
+function get_trans_view_str($type, $trans_no, $label = "", $icon = false, $class = '', $id = '')
 {
 	$view_str = get_customer_trans_view_str($type, $trans_no, $label, $icon, $class, $id);
 	if ($view_str != null) {
@@ -281,9 +227,7 @@ function exchange_rate_display($from_currency, $to_currency, $date_, $edit_rate 
 		$comp_currency = get_company_currency();
 		if ($from_currency == $comp_currency) {
 			$currency = $to_currency;
-		}
-		else
-		{
+		} else {
 			$currency = $from_currency;
 		}
 		$rate = 0;
@@ -308,9 +252,7 @@ function exchange_rate_display($from_currency, $to_currency, $date_, $edit_rate 
 		$rate = number_format2($rate, user_exrate_dec());
 		if ($edit_rate) {
 			text_row(_("Exchange Rate:"), '_ex_rate', $rate, 8, 8, null, "", " $from_currency = 1 $to_currency");
-		}
-		else
-		{
+		} else {
 			label_row(_("Exchange Rate:"), "<span style='vertical-align:top;' id='_ex_rate'>$rate</span> $from_currency = 1 $to_currency");
 		}
 		$Ajax->addUpdate('_ex_rate', '_ex_rate', $rate);
@@ -342,8 +284,7 @@ function comments_display_row($type, $id)
 	$comments = get_comments($type, $id);
 	if ($comments and db_num_rows($comments)) {
 		echo "<tr><td colspan=15>";
-		while ($comment = db_fetch($comments))
-		{
+		while ($comment = db_fetch($comments)) {
 			echo $comment["memo_"] . "<br>";
 		}
 		echo "</td></tr>";
@@ -355,8 +296,7 @@ function get_comments_string($type, $type_no)
 {
 	$str_return = "";
 	$result = get_comments($type, $type_no);
-	while ($comment = db_fetch($result))
-	{
+	while ($comment = db_fetch($result)) {
 		if (strlen($str_return)) {
 			$str_return = $str_return . " \n";
 		}
@@ -371,15 +311,11 @@ function view_stock_status($stock_id, $description = null, $echo = true)
 	global $path_to_root;
 	if ($description) //hyperlink_params_separate($path_to_root . "/inventory/inquiry/stock_status.php", (user_show_codes()?$stock_id . " - ":"") . $description, "stock_id=$stock_id");
 	{
-		$preview_str =
-				"<a target='_blank' href='$path_to_root/inventory/inquiry/stock_status.php?stock_id=$stock_id' onclick=\"javascript:openWindow(this.href,this.target); return false;\" >" . (
-				user_show_codes() ? $stock_id . " - " : "") . $description . "</a>";
-	}
-	else
-		//hyperlink_params_separate($path_to_root . "/inventory/inquiry/stock_status.php", $stock_id, "stock_id=$stock_id");
+		$preview_str = "<a target='_blank' href='$path_to_root/inventory/inquiry/stock_status.php?stock_id=$stock_id' onclick=\"javascript:openWindow(this.href,this.target); return false;\" >" . (user_show_codes()
+				? $stock_id . " - " : "") . $description . "</a>";
+	} else //hyperlink_params_separate($path_to_root . "/inventory/inquiry/stock_status.php", $stock_id, "stock_id=$stock_id");
 	{
-		$preview_str =
-				"<a target='_blank' href='$path_to_root/inventory/inquiry/stock_status.php?stock_id=$stock_id' onclick=\"javascript:openWindow(this.href,this.target); return false;\" >$stock_id</a>";
+		$preview_str = "<a target='_blank' href='$path_to_root/inventory/inquiry/stock_status.php?stock_id=$stock_id' onclick=\"javascript:openWindow(this.href,this.target); return false;\" >$stock_id</a>";
 	}
 	if ($echo) {
 		echo $preview_str;
@@ -401,9 +337,7 @@ function display_debit_or_credit_cells($value)
 	if ($value >= 0) {
 		amount_cell($value);
 		label_cell("");
-	}
-	elseif ($value < 0)
-	{
+	} elseif ($value < 0) {
 		label_cell("");
 		amount_cell(abs($value));
 	}
@@ -412,58 +346,58 @@ function display_debit_or_credit_cells($value)
 //--------------------------------------------------------------------------------------
 function display_customer_trans_tax_details($tax_items, $columns)
 {
-	while ($tax_item = db_fetch($tax_items))
-	{
+	while ($tax_item = db_fetch($tax_items)) {
 		$tax = number_format2($tax_item['amount'], user_price_dec());
 		if ($tax_item['included_in_price']) {
-			label_row(_("Included") . " " . $tax_item['tax_type_name'] . " (" . $tax_item['rate'] . "%) " .
-					  _("Amount") . ": $tax", "", "colspan=$columns align=right", "align=right");
-		}
-		else
-		{
-			label_row($tax_item['tax_type_name'] . " (" . $tax_item['rate'] . "%)",
-					  $tax, "colspan=$columns align=right", "align=right");
+			label_row(_("Included") . " " . $tax_item['tax_type_name'] . " (" . $tax_item['rate'] . "%) " . _("Amount") . ": $tax", "", "colspan=$columns align=right",
+					  "align=right");
+		} else {
+			label_row($tax_item['tax_type_name'] . " (" . $tax_item['rate'] . "%)", $tax, "colspan=$columns align=right", "align=right");
 		}
 	}
 }
 
 //--------------------------------------------------------------------------------------
-function display_supp_trans_tax_details($tax_items, $columns)
+function display_supp_trans_tax_details($tax_items, $columns, $tax_recorded = 0)
 {
-	while ($tax_item = db_fetch($tax_items))
-	{
+	$tax_total = 0;
+	while ($tax_item = db_fetch($tax_items)) {
 		$tax = number_format2(abs($tax_item['amount']), user_price_dec());
 		if ($tax_item['included_in_price']) {
-			label_row(_("Included") . " " . $tax_item['tax_type_name'] . " (" . $tax_item['rate'] . "%) " .
-					  _("Amount") . ": $tax", "colspan=$columns align=right", "align=right");
+			label_row(_("Included") . " " . $tax_item['tax_type_name'] . " (" . $tax_item['rate'] . "%) " . _("Amount") . ": $tax", "colspan=$columns align=right", "align=right");
+		} else {
+			label_row($tax_item['tax_type_name'] . " (" . $tax_item['rate'] . "%)", $tax, "colspan=$columns align=right", "align=right");
 		}
-		else
-		{
-			label_row($tax_item['tax_type_name'] . " (" . $tax_item['rate'] . "%)",
-					  $tax, "colspan=$columns align=right", "align=right");
-		}
+		$tax_total += $tax;
+	}
+
+	if ($tax_recorded != 0) {
+		$tax_correction = number_format2($tax_recorded - $tax_total, user_price_dec());
+		label_row("Tax Correction" . " ", $tax_correction, "colspan=$columns align=right", "align=right");
+
 	}
 }
 
 //--------------------------------------------------------------------------------------
-function display_edit_tax_items($taxes, $columns, $tax_included, $leftspan = 0)
+function display_edit_tax_items($taxes, $columns, $tax_included, $leftspan = 0,$tax_correcting=false)
 {
 	$total = 0;
-	foreach ($taxes as $taxitem)
-	{
+	foreach ($taxes as $taxitem) {
 		if ($tax_included) {
-			label_row(_("Included") . " " . $taxitem['tax_type_name'] . " (" . $taxitem['rate'] . "%) " .
-					  _("Amount:") . " " . number_format2(
-				$taxitem['Value'], user_price_dec()), "", "colspan=$columns align=right", "align=right", $leftspan);
-		}
-		else
-		{
+			label_row(_("Included") . " " . $taxitem['tax_type_name'] . " (" . $taxitem['rate'] . "%) " . _("Amount:") . " ", number_format2($taxitem['Value'], user_price_dec()),
+					  "colspan=$columns align=right", "align=right", $leftspan);
+		} else {
 			$total += round2($taxitem['Value'], user_price_dec());
-			$_POST['ChgTax'] = 0;
-			small_amount_cells(null, 'ChgTax', price_format(get_post('ChgTax'), 2));
-			label_row($taxitem['tax_type_name'] . " (" . $taxitem['rate'] . "%)", number_format2($taxitem['Value'], user_price_dec()), "colspan=$columns align=right", "align=right", $leftspan);
 
+			label_row($taxitem['tax_type_name'] . " (" . $taxitem['rate'] . "%)", number_format2($taxitem['Value'], user_price_dec()), "colspan=$columns align=right",
+					  "align=right", $leftspan);
 		}
+	}
+	if ($tax_correcting) {
+	label_cell(_("Tax Correction"), "colspan=$columns align=right width='90%'");
+	small_amount_cells(null, 'ChgTax', price_format(get_post('ChgTax'), 2));
+		end_row();
+	$total += get_post('ChgTax');
 	}
 	return $total;
 }
@@ -485,12 +419,10 @@ function display_allocations($alloc_result, $total)
 	}
 	display_heading2(_("Allocations"));
 	start_table("$table_style width=80%");
-	$th = array(_("Type"), _("Number"), _("Date"), _("Total Amount"),
-				_("Left to Allocate"), _("This Allocation"));
+	$th = array(_("Type"), _("Number"), _("Date"), _("Total Amount"), _("Left to Allocate"), _("This Allocation"));
 	table_header($th);
 	$k = $total_allocated = 0;
-	while ($alloc_row = db_fetch($alloc_result))
-	{
+	while ($alloc_row = db_fetch($alloc_result)) {
 		alt_table_row_color($k);
 		label_cell($systypes_array[$alloc_row['type']]);
 		label_cell(get_trans_view_str($alloc_row['type'], $alloc_row['trans_no']));
@@ -519,8 +451,7 @@ function display_allocations($alloc_result, $total)
 //--------------------------------------------------------------------------------------
 function display_allocations_from($person_type, $person_id, $type, $type_no, $total)
 {
-	switch ($person_type)
-	{
+	switch ($person_type) {
 		case PT_CUSTOMER :
 			$alloc_result = get_allocatable_to_cust_transactions($person_id, $type_no, $type);
 			display_allocations($alloc_result, $total);
@@ -543,9 +474,7 @@ function display_quick_entries(&$cart, $id, $base, $type, $descr = '')
 	if (!isset($id) || $id == null || $id == "") {
 		display_error(_("No Quick Entries are defined."));
 		set_focus('totamount');
-	}
-	else
-	{
+	} else {
 		if ($type == QE_DEPOSIT) {
 			$base = -$base;
 		}
@@ -559,8 +488,7 @@ function display_quick_entries(&$cart, $id, $base, $type, $descr = '')
 		}
 		$result = get_quick_entry_lines($id);
 		$totrate = 0;
-		while ($row = db_fetch($result))
-		{
+		while ($row = db_fetch($result)) {
 			$qe_lines[] = $row;
 			switch (strtolower($row['action'])) {
 				case "t": // post taxes calculated on base amount
@@ -573,8 +501,7 @@ function display_quick_entries(&$cart, $id, $base, $type, $descr = '')
 		}
 		$first = true;
 		$taxbase = 0;
-		foreach ($qe_lines as $qe_line)
-		{
+		foreach ($qe_lines as $qe_line) {
 			switch (strtolower($qe_line['action'])) {
 				case "=": // post current base amount to GL account
 					$part = $base;
@@ -610,9 +537,7 @@ function display_quick_entries(&$cart, $id, $base, $type, $descr = '')
 					}
 					if (substr($qe_line['action'], 0, 1) != 'T') {
 						$part = $taxbase;
-					}
-					else
-					{
+					} else {
 						$part = $base / 100;
 					}
 					$item_tax = get_tax_type($qe_line['dest_id']);
@@ -621,8 +546,7 @@ function display_quick_entries(&$cart, $id, $base, $type, $descr = '')
 						$taxgroup = $cart->tax_group_id;
 						$rates = 0;
 						$res = get_tax_group_items($cart->tax_group_id);
-						while ($row = db_fetch($res))
-						{
+						while ($row = db_fetch($res)) {
 							$rates += $row['rate'];
 						}
 						if ($rates == 0) {
@@ -633,43 +557,29 @@ function display_quick_entries(&$cart, $id, $base, $type, $descr = '')
 					if ($tax == 0) {
 						continue 2;
 					}
-					$gl_code = ($type == QE_DEPOSIT || ($type == QE_JOURNAL && $base < 0))
-							? $item_tax['sales_gl_code'] : $item_tax['purchasing_gl_code'];
+					$gl_code = ($type == QE_DEPOSIT || ($type == QE_JOURNAL && $base < 0)) ? $item_tax['sales_gl_code'] : $item_tax['purchasing_gl_code'];
 					if (!is_tax_gl_unique($gl_code)) {
 						display_error(_("Cannot post to GL account used by more than one tax type."));
 						break 2;
 					}
 					if ($type != QE_SUPPINV) {
-						$cart->add_gl_item($gl_code,
-										   $qe_line['dimension_id'], $qe_line['dimension2_id'],
-										   $tax, $qe['description']);
-					}
-					else
-					{
+						$cart->add_gl_item($gl_code, $qe_line['dimension_id'], $qe_line['dimension2_id'], $tax, $qe['description']);
+					} else {
 						$acc_name = get_gl_account_name($gl_code);
-						$cart->add_gl_codes_to_trans($gl_code,
-													 $acc_name, $qe_line['dimension_id'],
-													 $qe_line['dimension2_id'], $tax, $qe['description']);
+						$cart->add_gl_codes_to_trans($gl_code, $acc_name, $qe_line['dimension_id'], $qe_line['dimension2_id'], $tax, $qe['description']);
 					}
 					if (strpos($qe_line['action'], '+')) {
 						$base += $tax;
-					}
-					elseif (strpos($qe_line['action'], '-'))
-					{
+					} elseif (strpos($qe_line['action'], '-')) {
 						$base -= $tax;
 					}
 					continue 2;
 			}
 			if ($type != QE_SUPPINV) {
-				$cart->add_gl_item($qe_line['dest_id'], $qe_line['dimension_id'],
-								   $qe_line['dimension2_id'], $part, $qe['description']);
-			}
-			else
-			{
+				$cart->add_gl_item($qe_line['dest_id'], $qe_line['dimension_id'], $qe_line['dimension2_id'], $part, $qe['description']);
+			} else {
 				$acc_name = get_gl_account_name($qe_line['dest_id']);
-				$cart->add_gl_codes_to_trans($qe_line['dest_id'],
-											 $acc_name, $qe_line['dimension_id'],
-											 $qe_line['dimension2_id'], $part, $qe['description']);
+				$cart->add_gl_codes_to_trans($qe_line['dest_id'], $acc_name, $qe_line['dimension_id'], $qe_line['dimension2_id'], $part, $qe['description']);
 			}
 		}
 	}
@@ -705,21 +615,16 @@ function _number_to_words($number)
 	if ($Hn) {
 		$res .= (empty($res) ? "" : " ") . _number_to_words($Hn) . " Hundred";
 	}
-	$ones = array("", "One", "Two", "Three", "Four", "Five", "Six",
-				  "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen",
-				  "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eightteen",
-				  "Nineteen");
-	$tens = array("", "", "Twenty", "Thirty", "Fourty", "Fifty", "Sixty",
-				  "Seventy", "Eigthy", "Ninety");
+	$ones = array("", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen",
+				  "Eightteen", "Nineteen");
+	$tens = array("", "", "Twenty", "Thirty", "Fourty", "Fifty", "Sixty", "Seventy", "Eigthy", "Ninety");
 	if ($Dn || $n) {
 		if (!empty($res)) {
 			$res .= " and ";
 		}
 		if ($Dn < 2) {
 			$res .= $ones[$Dn * 10 + $n];
-		}
-		else
-		{
+		} else {
 			$res .= $tens[$Dn];
 			if ($n) {
 				$res .= "-" . $ones[$n];
@@ -753,9 +658,7 @@ function price_in_words($amount, $document = 0)
 		$frac = sprintf("%0{$dec}d", $frac);
 		$and = _("and");
 		$frac = " $and $frac/$divisor";
-	}
-	else
-	{
+	} else {
 		$frac = "";
 	}
 	return _number_to_words(intval($amount)) . $frac;
@@ -763,12 +666,7 @@ function price_in_words($amount, $document = 0)
 
 function get_js_open_window($width, $height)
 {
-	$js = "function openWindow(url, title)\n"
-		  . "{\n"
-		  . " var left = (screen.width - $width) / 2;\n"
-		  . " var top = (screen.height - $height) / 2;\n"
-		  . " return window.open(url, title, 'width=$width,height=$height,left='+left+',top='+top+',screenX='+left+',screenY='+top+',status=no,scrollbars=yes');\n"
-		  . "}\n";
+	$js = "function openWindow(url, title)\n" . "{\n" . " var left = (screen.width - $width) / 2;\n" . " var top = (screen.height - $height) / 2;\n" . " return window.open(url, title, 'width=$width,height=$height,left='+left+',top='+top+',screenX='+left+',screenY='+top+',status=no,scrollbars=yes');\n" . "}\n";
 	return $js;
 }
 
@@ -809,26 +707,7 @@ function reset_focus()
 
 function get_js_png_fix()
 {
-	$js = "function fixPNG(myImage)\n"
-		  . "{\n"
-		  . " var arVersion = navigator.appVersion.split(\"MSIE\")\n"
-		  . " var version = parseFloat(arVersion[1])\n"
-		  . " if ((version >= 5.5) && (version < 7) && (document.body.filters))\n"
-		  . " {\n"
-		  . "  var imgID = (myImage.id) ? \"id='\" + myImage.id + \"' \" : \"\"\n"
-		  . "  var imgClass = (myImage.className) ? \"class='\" + myImage.className + \"' \" : \"\"\n"
-		  . "  var imgTitle = (myImage.title) ?\n"
-		  . "    \"title='\" + myImage.title  + \"' \" : \"title='\" + myImage.alt + \"' \"\n"
-		  . "  var imgStyle = \"display:inline-block;\" + myImage.style.cssText\n"
-		  . "  var strNewHTML = \"<span \" + imgID + imgClass + imgTitle\n"
-		  . "    + \" style=\\\"\" + \"width:\" + myImage.width\n"
-		  . "    + \"px; height:\" + myImage.height\n"
-		  . "    + \"px;\" + imgStyle + \";\"\n"
-		  . "    + \"filter:progid:DXImageTransform.Microsoft.AlphaImageLoader\"\n"
-		  . "    + \"(src=\'\" + myImage.src + \"\', sizingMethod='scale');\\\"></span>\"\n"
-		  . "  myImage.outerHTML = strNewHTML\n"
-		  . " }\n"
-		  . "}\n";
+	$js = "function fixPNG(myImage)\n" . "{\n" . " var arVersion = navigator.appVersion.split(\"MSIE\")\n" . " var version = parseFloat(arVersion[1])\n" . " if ((version >= 5.5) && (version < 7) && (document.body.filters))\n" . " {\n" . "  var imgID = (myImage.id) ? \"id='\" + myImage.id + \"' \" : \"\"\n" . "  var imgClass = (myImage.className) ? \"class='\" + myImage.className + \"' \" : \"\"\n" . "  var imgTitle = (myImage.title) ?\n" . "    \"title='\" + myImage.title  + \"' \" : \"title='\" + myImage.alt + \"' \"\n" . "  var imgStyle = \"display:inline-block;\" + myImage.style.cssText\n" . "  var strNewHTML = \"<span \" + imgID + imgClass + imgTitle\n" . "    + \" style=\\\"\" + \"width:\" + myImage.width\n" . "    + \"px; height:\" + myImage.height\n" . "    + \"px;\" + imgStyle + \";\"\n" . "    + \"filter:progid:DXImageTransform.Microsoft.AlphaImageLoader\"\n" . "    + \"(src=\'\" + myImage.src + \"\', sizingMethod='scale');\\\"></span>\"\n" . "  myImage.outerHTML = strNewHTML\n" . " }\n" . "}\n";
 	return $js;
 }
 
@@ -881,18 +760,15 @@ function get_js_date_picker()
 		global $dateseps, $date_system;
 		$how = user_date_format(); // 0 = us/ca, 1 = eu, au, nz, 2 = jp, sw
 		$sep = $dateseps[user_date_sep()]; // date separator
-		$wstart = (($date_system == 1 || $date_system == 2 || $date_system == 3) ? 6 : ($how == 0 ? 0
-				: 1)); // weekstart (sun = 0, mon = 1)
+		$wstart = (($date_system == 1 || $date_system == 2 || $date_system == 3) ? 6 : ($how == 0 ? 0 : 1)); // weekstart (sun = 0, mon = 1)
 		$months =
-				array(_("January"), _("February"), _("March"), _("April"), _("May"), _("June"), _("July"), _("August"),
-					  _("September"), _("October"), _("November"), _("December"));
+				array(_("January"), _("February"), _("March"), _("April"), _("May"), _("June"), _("July"), _("August"), _("September"), _("October"), _("November"), _("December"));
 		$wdays = array(_("Su"), _("Mo"), _("Tu"), _("We"), _("Th"), _("Fr"), _("Sa"));
 		$wno = _("W"); // week no
 		$back = _("Back");
 		if ($date_system == 1) {
 			list($cyear, $cmon, $cday) = gregorian_to_jalali(date("Y"), date("n"), date("j"));
-		}
-		else {
+		} else {
 			if ($date_system == 2) {
 				list($cyear, $cmon, $cday) = gregorian_to_islamic(date("Y"), date("n"), date("j"));
 			}
@@ -1013,15 +889,12 @@ function CC() {
 			$js .= "
     return [31,31,31,31,31,31,30,30,30,30,30,(((((((year - ((year > 0) ? 474 : 473)) % 2820) + 474) + 38) * 682) % 2816) < 682 ? 30 : 29)][month-1];
 ";
-		}
-		else {
+		} else {
 			if ($date_system == 2) {
 				$js .= "
     return [30,29,30,29,30,29,30,29,30,29,30,(((((11 * year) + 14) % 30) < 11) ? 30 : 29)][month-1];
 ";
-			}
-			else
-			{
+			} else {
 				$js .= "
     return [31,((!(year % 4 ) && ( (year % 100 ) || !( year % 400 ) ))?29:28),31,30,31,30,31,31,30,31,30,31][month-1];
 ";
@@ -1051,8 +924,7 @@ function CC() {
       Math.floor(((epyear * 682) - 110) / 2816) + (epyear - 1) * 365 +
       Math.floor(epbase / 2820) * 1029983 + (1948320.5 - 1);
 ";
-			}
-			else {
+			} else {
 				if ($date_system == 2) {
 					$js .= "
 	var t;
@@ -1064,9 +936,7 @@ function CC() {
 			$js .= "
     return jwday(t);
 ";
-		}
-		else
-		{
+		} else {
 			$js .= "
     var date = new Date(year,month-1,day)
     return date.getDay();
@@ -1105,15 +975,12 @@ function CC() {
 			$js .= "
       var dateString = month+'$sep'+day+'$sep'+year;
 ";
-		}
-		else {
+		} else {
 			if ($how == 1) {
 				$js .= "
       var dateString = day+'$sep'+month+'$sep'+year;
 ";
-			}
-			else
-			{
+			} else {
 				$js .= "
       var dateString = year+'$sep'+month+'$sep'+day;
 ";
@@ -1205,9 +1072,7 @@ function CC() {
 			$js .= "
           } else if (dayOfWeek == 5) {
 ";
-		}
-		else
-		{
+		} else {
 			$js .= "
           } else if (dayOfWeek == 0 || dayOfWeek == 6) {
 ";
@@ -1248,17 +1113,14 @@ function CC() {
         selectedDay = parseInt(dateParts[1],10);
         selectedYear = parseInt(dateParts[2],10);
 ";
-		}
-		else {
+		} else {
 			if ($how == 1) {
 				$js .= "
         selectedDay = parseInt(dateParts[0],10);
         selectedMonth = parseInt(dateParts[1],10);
         selectedYear = parseInt(dateParts[2],10);
 ";
-			}
-			else
-			{
+			} else {
 				$js .= "
         selectedYear = parseInt(dateParts[0],10);
         selectedMonth = parseInt(dateParts[1],10);
@@ -1277,9 +1139,7 @@ function CC() {
       selectedDay = $cday;
       selectedYear = $cyear;
 ";
-		}
-		else
-		{
+		} else {
 			$js .= "
       selectedMonth = getCurrentMonth();
       selectedDay = getCurrentDay();
@@ -1353,11 +1213,7 @@ document.write(\"<div id='CC'></div>\");";
 
 function alert($msg)
 {
-	echo "\n<script language=\"javascript\"  type=\"text/javascript\">\n"
-		 . "<!--\n"
-		 . "alert('$msg');\n"
-		 . "-->\n"
-		 . "</script>\n";
+	echo "\n<script language=\"javascript\"  type=\"text/javascript\">\n" . "<!--\n" . "alert('$msg');\n" . "-->\n" . "</script>\n";
 }
 
 if (!function_exists('_vd')) {
@@ -1378,9 +1234,7 @@ function display_backtrace($cond = true, $msg = '')
 	if ($cond) {
 		if ($msg) {
 			$str = "<center><span class='headingtext'>$msg</span></center>\n";
-		}
-		else
-		{
+		} else {
 			$str = '';
 		}
 		$str .= '<table border=0>';
@@ -1407,9 +1261,7 @@ function display_backtrace($cond = true, $msg = '')
 				}
 				if (is_array($tr['args'][$n])) {
 					$tr['args'][$n] = "(Array[" . count($tr['args'][$n]) . "])";
-				}
-				else
-				{
+				} else {
 					$tr['args'][$n] = "'" . $tr['args'][$n] . "'";
 				}
 			}

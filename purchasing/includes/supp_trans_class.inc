@@ -37,7 +37,8 @@ class supp_trans
 	var $reference;
 	var $ov_amount;
 	var $ov_discount;
-	var $ov_gst;
+	var $tax_correction=0;
+	var $total_correction = 0;
 	var $gl_codes_counter = 0;
 
 	function supp_trans()
@@ -79,7 +80,7 @@ class supp_trans
 	{
 		unset($this->grn_items);
 		unset($this->gl_codes);
-		$this->ov_amount = $this->ov_discount = $this->supplier_id = 0;
+		$this->ov_amount = $this->ov_discount = $this->supplier_id = $this->tax_correction = $this->total_correction = 0;
 
 		$this->grn_items = array();
 		$this->gl_codes = array();
@@ -116,6 +117,7 @@ class supp_trans
 			}
 		}
 		////////////////
+
 		return $taxes;
 	}
 
