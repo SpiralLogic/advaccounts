@@ -26,7 +26,6 @@ if (isAjaxReferrer()) {
 }
 add_js_ffile("includes/js/customers.js");
 page(_($help_context = "Customers"), @$_REQUEST['popup']);
-
 check_db_has_sales_types(_("There are no sales types defined. Please define at least one sales type before adding a customer."));
 check_db_has_sales_people(_("There are no sales people defined in the system. At least one sales person is required before proceeding."));
 check_db_has_sales_areas(_("There are no sales areas defined in the system. At least one sales area is required before proceeding."));
@@ -57,14 +56,15 @@ if (db_has_customers()) {
 $menu = new MenuUi();
 $menu->startTab('Details', 'Customer Details');
 text_row(_("Customer Name:"), 'name', $customer->name, 35, 80);
+
 start_outer_table($table_style2, 5);
+
 table_section(1);
 table_section_title(_("Shipping Details"), 2, 'tableheader3 ');
 HTML::tr(true)->td('branchSelect', array('colspan' => 2, 'style' => "text-align:center; margin:0 auto; "), true);
-UI::select('branchList', array($currentBranch->branch_code => $currentBranch->br_name), array('name' => 'branchList'));
+UI::select('branchList', array($currentBranch->br_name => $currentBranch->branch_code), array('name' => 'branchList'));
 UI::button('addBranch', 'Add new address', array('name' => 'addBranch'));
 HTML::td()->tr;
-
 text_row(_("Contact:"), 'br_contact_name', $currentBranch->contact_name, 35, 40);
 text_row(_("Phone Number:"), 'br_phone', $currentBranch->phone, 32, 30);
 text_row(_("2nd Phone Number:"), 'br_phone2', $currentBranch->phone2, 32, 30);
@@ -74,6 +74,7 @@ textarea_row(_("Street:"), 'br_br_address', $currentBranch->br_address, 35, 2);
 email_row(_("City"), 'br_city', $currentBranch->city, 35, 40);
 email_row(_("State:"), 'br_state', $currentBranch->state, 35, 40);
 email_row(_("postcode"), 'br_postcode', $currentBranch->postcode, 35, 40);
+
 table_section(2);
 hidden('id', $customer->id);
 table_section_title(_("Accounts Details"), 2, 'tableheader3');
@@ -89,6 +90,8 @@ email_row(_("postcode"), 'acc_postcode', $customer->accounts->postcode, 35, 40);
 sales_types_list_row(_("Sales Type/Price List:"), 'sales_type', $customer->sales_type);
 record_status_list_row(_("Customer status:"), 'inactive');
 end_outer_table(1);
+
+
 $menu->endTab()->startTab('Accounts', 'Accounts');
 start_outer_table($table_style2, 5);
 table_section(1);
@@ -129,29 +132,38 @@ if ($dim < 1) {
 if ($dim < 2) {
 	hidden('dimension2_id', 0);
 }
-table_section(2, false, 'ui-widget');
-//table_section_title("<span class='ui-icon ui-icon-circle-plus'>"._("Contact log:")."</span>", 2, 'tableheader3');
-start_table();
+table_section(2);
 
-UI::select('contactList', array(0=>""), array('name' => 'contactList'));
-UI::button('btnContact', 'Add new contact', array('name' => 'btnContact'));
-text_row("Name:", 'con_name', $currentContact->name, 35, 40);
-text_row("Phone:", 'con_phone1', $currentContact->phone1, 35, 40);
-text_row("Phone2:", 'con_phone2', $currentContact->phone2, 35, 40);
-text_row("Email:", 'con_email', $currentContact->email, 35, 40);
-text_row("Dept:", 'con_department', $currentContact->department, 35, 40);
-
-end_table(1);
-table_section_title(_("Contact log:"), 1, 'tableheader3 ');
+table_section_title(_("Contact log:"), 2, 'tableheader3 ');
 start_row();
-
-
-HTML::td(array('class' => 'ui-widget-content center-content'));
-
-
-UI::button('addLog', "Add log entry")->td->tr;
-textarea_cells(null, 'messageLog', contact_log::read($customer->id, 'C'), 50, 30);
+HTML::td(array('class' => 'ui-widget-content center-content','colspan'=>2));
+UI::button('addLog', "Add log entry")->td->tr->tr(true)->td(array('colspan'=>2))->textarea('messageLog', array('cols'=>50,'rows'=> 25));
+contact_log::read($customer->id, 'C');
+HTML::textarea()->td->td;
 end_outer_table(1);
+
+$menu->endTab()->startTab('Customer Contacts', 'Customer Contacts');
+start_outer_table($table_style2, 5);
+table_section(1);
+HTML::tr(true);
+//$count =0;
+//foreach($customer->contacts as $index => $currentContact) {
+// if ($count/4 == floor($count/4)) HTML::tr()->tr(true);
+HTML::td('contactplace',array('colspan'=>2, 'style'=>'text-align:center'));
+HTML::table('contactcell-')->tr(true)->td(array('colspan'=>2));
+table_section_title($currentContact->name, 2, 'tableheader3');
+$id = $currentContact->id;
+text_row("Name:", 'con_name-', $currentContact->name, 35, 40);
+text_row("Phone:", 'con_phone1-', $currentContact->phone1, 35, 40);
+text_row("Phone2:", 'con_phone2-', $currentContact->phone2, 35, 40);
+text_row("Email:", 'con_email-', $currentContact->email, 35, 40);
+text_row("Dept:", 'con_department-', $currentContact->department, 35, 40);
+HTML::td()->tr()->table()->td();
+//$count++;
+//}
+HTML::tr();
+end_outer_table(1);
+
 $menu->endTab()->startTab('Extra Shipping Info', 'Extra Shipping Info');
 start_outer_table($table_style2, 5);
 table_section(1);
@@ -211,12 +223,9 @@ $shortcuts->startTab('Create Quote', 'Create Quote for this customer!', '/sales/
 $shortcuts->endTab();
 $shortcuts->render();
 HTML::_div()->div;
-
 echo '<script>';
 echo <<<JS
 $(function() {});
-
 JS;
 echo '</script>';
-
 end_page(true, true);

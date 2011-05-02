@@ -27,7 +27,7 @@ function db_query($sql, $err_msg = null)
 		echo $sql;
 		echo "</pre>\n";
 	}
-	FB::info($sql);
+	if ($show_sql) FB::info($sql);
  	
 	$result = mysql_query($sql, $db);
 	if ($sql_trail) {

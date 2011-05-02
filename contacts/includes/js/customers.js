@@ -52,20 +52,50 @@ var setFormValue = function(id, value)
 		element.val(value).data('init', '');
 	}
 };
+var current33;
 var Contacts = function()
 {
-	var current = {},list = $("#contactList"),adding = false,btn = $("#btnContact").button();
+	var current = {},list = $("#contactList"),adding = false,btn = $("#btnContact").button(),count = 0,contactCell = $('#contactcell-');
 	return {
 		list:function()
 		{
 			return list;
 		},
+		empty:function()
+		{
+			list.empty();
+			return this;
+		},
 		add:function(data)
 		{
+			var count = 1,count2 = 1;
+			current33 = contactCell.detach().addClass('isrow');
+
 			$.each(data, function(key, value)
-			{
-				list.append('<option value="' + value.id + '">' + value.name + '</option>');
-			});
+				   {
+					   contactCell = contactCell.clone();
+					   current33 = current33.append(contactCell.clone().attr('id', 'contactcell-' + key).find('input').each(
+							   function()
+							   {
+								   var $value = $(this).attr('name').substr(4);
+								   $value = $value.substr(0, $value.length - 1);
+								   $(this).val(value[$value]).attr('name', $(this).attr('name') + key)
+							   }).end().addClass('isrow isrow' + count2));
+					   if (count == 4) {
+
+						   count2++;
+						   count = 1;
+					   } else {
+						   count++;
+					   }
+				   });
+			for (var i = 1; i == count2; i++) {
+				$('.isrow' + i, current33).wrapAll("<tr/>");
+			}
+			;
+
+			console.log(current33.appendTo($('#contactplace')));
+			return this;
 		},
 		setval: function (key, value)
 		{
@@ -75,9 +105,9 @@ var Contacts = function()
 		change:function(data)
 		{
 			$.each(data, function(key, value)
-			{
-				setFormValue('con_' + key, value);
-			});
+				   {
+					   setFormValue('con_' + key, value);
+				   });
 			resetHighlights();
 			list.val(data.id);
 			current = data;
@@ -92,9 +122,9 @@ var Contacts = function()
 		{
 			var newCurrent = current;
 			$.each(current, function(k, v)
-			{
-				newCurrent[k] = '';
-			});
+				   {
+					   newCurrent[k] = '';
+				   });
 			newCurrent.id = 0;
 			Contacts.add([newCurrent]);
 			Customer.get().contacts[0] = newCurrent;
@@ -134,12 +164,18 @@ var Branches = function()
 		{
 			return list;
 		},
+		empty:function()
+		{
+			list.empty();
+			return this;
+		},
 		add : function (data)
 		{
 			$.each(data, function(key, value)
-			{
-				list.append('<option value="' + value.branch_code + '">' + value.br_name + '</option>');
-			});
+				   {
+					   list.append('<option value="' + value.branch_code + '">' + value.br_name + '</option>');
+				   });
+			return this;
 		},
 		setval: function (key, value)
 		{
@@ -149,9 +185,9 @@ var Branches = function()
 		change:function (data)
 		{
 			$.each(data, function(key, value)
-			{
-				setFormValue('br_' + key, value);
-			});
+				   {
+					   setFormValue('br_' + key, value);
+				   });
 			resetHighlights();
 			list.val(data.branch_code);
 			current = data;
@@ -165,24 +201,23 @@ var Branches = function()
 		New: function()
 		{
 			$.post('search.php', {branch_code: 0, debtor_no: Customer.get().id}, function(data)
-			{
-				Branches.add([data]);
-				Branches.change(data);
-				Customer.get().branches[data.branch_code] = data;
-				btn.hide();
-				adding = true;
-			}, 'json');
+				   {
+					   Branches.add(data).change(data);
+					   Customer.get().branches[data.branch_code] = data;
+					   btn.hide();
+					   adding = true;
+				   }, 'json');
 		},
 		Save: function()
 		{
 			btn.unbind('click');
 			$.post('customers.php', Customer.get(), function(data)
-			{
-				resetHighlights();
-				adding = false;
-				Customer.setValues(data);
-				showStatus(data.status);
-			}, 'json');
+				   {
+					   resetHighlights();
+					   adding = false;
+					   Customer.setValues(data);
+					   showStatus(data.status);
+				   }, 'json');
 		},
 		btnBranchAdd : function()
 		{
@@ -208,15 +243,27 @@ var Branches = function()
 		btnBranchSave : function()
 		{
 			btn.button('option', 'label', 'Save New Branch').show().one('click', function(event)
-			{
-				event.stopImmediatePropagation();
-				Branches.Save();
-				return false
-			});
+																		{
+																			event.stopImmediatePropagation();
+																			Branches.Save();
+																			return false
+																		});
 			return btn;
 		}
 	};
 }();
+var Accounts = function()
+{
+	return {
+		change: function(data)
+		{
+			$.each(data, function(id, value)
+				   {
+					   setFormValue('acc_' + id, value);
+				   })
+		}
+	}
+}
 resetHighlights = function()
 {
 	$(".ui-state-highlight").removeClass("ui-state-highlight");
@@ -269,18 +316,18 @@ var getContactLog = function()
 		type: "C"
 	};
 	$.post('contact_log.php', data, function(data)
-	{
-		setContactLog(data);
-	}, 'json')
+		   {
+			   setContactLog(data);
+		   }, 'json')
 };
 var setContactLog = function(data)
 {
 	var logbox = $("[name='messageLog']").val('');
 	var str = '';
 	$.each(data, function(key, message)
-	{
-		str += '[' + message['date'] + '] Contact: ' + message['contact_name'] + "\nMessage:  " + message['message'] + "\n\n";
-	});
+		   {
+			   str += '[' + message['date'] + '] Contact: ' + message['contact_name'] + "\nMessage:  " + message['message'] + "\n\n";
+		   });
 	logbox.val(str);
 };
 var Customer = function (item)
@@ -288,7 +335,7 @@ var Customer = function (item)
 	var customer;
 	var transactions = $('#transactions');
 	return {
-		setValues: function(data)
+		setValues: function(data, quiet)
 		{
 			if (data.contact_log != undefined) {
 				setContactLog(data.contact_log);
@@ -296,46 +343,34 @@ var Customer = function (item)
 			if (data.transacionts != undefined) {
 				transactions.empty().append(data.transactions);
 			}
-			data = data.customer;
-			customer = data;
-			Branches.list().empty();
-			Contacts.list().empty();
-			$.each(data, function(i, data)
-			{
-				if (i == 'accounts') {
-					$.each(data, function(id, value)
-					{
-						setFormValue('acc_' + id, value);
-					})
-				} else {
-					if (i == 'branches') {
-						Branches.add(data);
-					} else {
-						if (i == 'contacts') {
-							Contacts.add(data);
-						} else {
-							setFormValue(i, data);
-						}
-					}
-				}
-			});
-			Branches.change(data.branches[data.defaultBranch]);
-			Contacts.change(data.contacts[data.defaultContact]);
+			customer = data = data.customer;
+			Contacts.empty().add(data.contacts);
+			if (quiet === undefined) {
+				return;
+			}
+			Branches.empty().add(data.branches).change(data.branches[data.defaultBranch]);
+			Accounts.change(data.accounts);
+			$.each(customer, function(i, data)
+				   {
+					   if (i !== 'contacts' && i !== 'branches' && i !== 'accounts') {
+						   setFormValue(i, data);
+					   }
+				   });
 			resetHighlights();
+
 		},
 		fetch: function(id)
 		{
 			loader.show();
 			$.post("customers.php", {id: id}, function(data)
-			{
-				Customer.setValues(data);
-				loader.hide();
-				$('#customer').focus();
-			}, 'json')
+				   {
+					   Customer.setValues(data);
+					   loader.hide();
+					   $('#customer').focus();
+				   }, 'json')
 		},
 		set: function(key, value)
 		{
-			console.log(value);
 			if (key.substr(0, 4) == ('acc_')) {
 				customer.accounts[key.substr(4)] = value;
 			} else {
@@ -410,35 +445,35 @@ $(function()
 											return false;
 										});
 	  tabs.delegate("#tabs0 :input", "change", function(event)
-	  {
-		  if ($(this).attr('name') == 'messageLog' || $(this).attr('name') == 'branchList' || $(this).attr('name') == 'contactList') {
-			  return;
-		  }
-		  event.stopImmediatePropagation();
-		  feildsChanged++;
-		  if ($(this).data('init') == $(this).val()) {
-			  $(this).removeClass("ui-state-highlight");
-			  feildsChanged--;
-			  if (feildsChanged == 0) {
-				  resetHighlights();
-			  }
-			  return;
-		  }
-		  stateModified($(this));
-		  if ($useShipAddress.attr('checked') && $(this).attr('name').substr(0, 3) == 'br_') {
-			  var feildname = 'acc_' + $(this).attr('name').substr(3);
-			  setFormValue(feildname, $(this).val());
-			  Customer.set(feildname, $(this).val());
-		  }
-	  });
+					{
+						if ($(this).attr('name') == 'messageLog' || $(this).attr('name') == 'branchList' || $(this).attr('name') == 'contactList') {
+							return;
+						}
+						event.stopImmediatePropagation();
+						feildsChanged++;
+						if ($(this).data('init') == $(this).val()) {
+							$(this).removeClass("ui-state-highlight");
+							feildsChanged--;
+							if (feildsChanged == 0) {
+								resetHighlights();
+							}
+							return;
+						}
+						stateModified($(this));
+						if ($useShipAddress.attr('checked') && $(this).attr('name').substr(0, 3) == 'br_') {
+							var feildname = 'acc_' + $(this).attr('name').substr(3);
+							setFormValue(feildname, $(this).val());
+							Customer.set(feildname, $(this).val());
+						}
+					});
 	  tabs.delegate(".tablestyle_inner td :nth-child(1)", "keydown", function(event)
-	  {
-		  if (feildsChanged > 0) {
-			  return;
-		  }
-		  $(this).trigger('change');
-	  });
-	  resetState();
+					{
+						if (feildsChanged > 0) {
+							return;
+						}
+						$(this).trigger('change');
+					});
+	  //resetState();
 	  $("#addLog").button().click(function(event)
 								  {
 									  event.stopImmediatePropagation();
@@ -475,14 +510,14 @@ $(function()
 																  };
 																  ContactLog.dialog('disable');
 																  $.post('contact_log.php', data, function(data)
-																  {
-																	  ContactLog.find(':input').each(function()
-																									 {
-																										 ContactLog.dialog('close').dialog('enable');
-																									 });
-																	  ContactLog.find("[name='message']").val('');
-																	  setContactLog(data);
-																  }, 'json')
+																		 {
+																			 ContactLog.find(':input').each(function()
+																											{
+																												ContactLog.dialog('close').dialog('enable');
+																											});
+																			 ContactLog.find("[name='message']").val('');
+																			 setContactLog(data);
+																		 }, 'json')
 															  },
 															  Cancel: function()
 															  {
@@ -494,4 +529,10 @@ $(function()
 															   {
 																   $(this).dialog("open");
 															   });
+	  $.post("customers.php", {id: $("[name='id']").val()}, function(data)
+			 {
+				 console.log(data);
+				 Customer.setValues(data, true);
+			 }, 'json')
+
   });
