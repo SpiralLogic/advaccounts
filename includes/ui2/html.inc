@@ -80,12 +80,12 @@ class HTML
 				$attr = array_merge($attr, $val);
 			}
 		}
-		if ($open === true) {
+		if ($open === null || !empty($content)) {
+			$this->_openTag($func, $attr, $content);
+			$this->_closeTag($func);
+		}elseif ($open === true) {
 			$this->_openTag($func, $attr);
 		} elseif ($open === false) {
-			$this->_closeTag($func);
-		} elseif ($open === null) {
-			$this->_openTag($func, $attr, $content);
 			$this->_closeTag($func);
 		}
 	}
