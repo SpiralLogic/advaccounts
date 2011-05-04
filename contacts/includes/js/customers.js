@@ -51,12 +51,18 @@ var Contacts = function() {
 		add:function(data) {
 			var finaldata = [];
 			$.each(data, function(key, value) {
-					   finaldata[finaldata.length] = contactCell.clone().attr('id', 'contactcell-' + key).find('input').each(
-							   function() {
+					   finaldata[finaldata.length] = contactCell.clone()
+							   .attr({'id': 'contactcell-' + key,'contactid':key})
+							   .find("[name='contactname']")
+							   .attr('name','contactname-' + key)
+							   .text(data[key]['name'])
+							   .end().find('input')
+							   .each(function() {
 								   var $value = $(this).attr('name').substr(4);
 								   $value = $value.substr(0, $value.length - 1);
 								   $(this).val(value[$value]).attr('name', $(this).attr('name') + key)
-							   }).end();
+							   })
+							   .end();
 
 				   });
 			$("#contactplace").empty();
@@ -77,17 +83,7 @@ var Contacts = function() {
 		change:function(data) {
 		},
 		New: function() {
-			var newCurrent = current;
-			$.each(current, function(k, v) {
-					   newCurrent[k] = '';
-				   });
-			newCurrent.id = 0;
-			Contacts.add([newCurrent]);
-			Customer.get().contacts[0] = newCurrent;
-			Contacts.change(newCurrent);
-
-			btn.hide();
-			adding = true;
+		
 		},
 		btnContactAdd : function() {
 			return false;
@@ -116,7 +112,9 @@ var Branches = function() {
 			Customer.get().branches[current.branch_code][key] = value;
 		},
 		change:function (data) {
-			if (typeof data !== 'object') data = Customer.get().branches[data];
+			if (typeof data !== 'object') {
+				data = Customer.get().branches[data];
+			}
 			$.each(data, function(key, value) {
 					   setFormValue('br_' + key, value);
 				   });
@@ -158,7 +156,7 @@ var Branches = function() {
 																		return false
 																	}).show();
 			} else {
-				(current.branch_code > 0) ? btn.show():btn.hide();
+				(current.branch_code > 0) ? btn.show() : btn.hide();
 			}
 			return false;
 		},
@@ -249,11 +247,15 @@ var Customer = function () {
 				transactions.empty().append(data.transactions);
 			}
 			Contacts.add(data.contacts);
-			if (quiet === true) return;
+			if (quiet === true) {
+				return;
+			}
 			Branches.empty().add(data.branches).change(data.branches[data.defaultBranch]);
 			Accounts.change(data.accounts);
 			$.each(customer, function(i, data) {
-					   if (i !== 'contacts' && i !== 'branches' && i !== 'accounts') setFormValue(i, data);
+					   if (i !== 'contacts' && i !== 'branches' && i !== 'accounts') {
+						   setFormValue(i, data);
+					   }
 				   });
 			resetHighlights();
 		},
@@ -301,15 +303,15 @@ function stateModified(feild) {
 	};
 }
 $(function() {
-	  var tabs = $("#tabs0"),accFields= $("[name*='acc_']").attr('disabled', true);
+	  var tabs = $("#tabs0"),accFields = $("[name*='acc_']").attr('disabled', true);
 	  var $useShipAddress = $("[name='useShipAddress']").click(function() {
 																   if ($(this).attr('checked')) {
 																	   accFields.attr('disabled', true).each(function() {
-																														   var newVal = $("[name='br_" + $(this).attr('name').substr(4) + "']").val();
-																														   $(this).val(newVal);
-																														   console.log($(this).attr('name').substr(4) + ': ' + newVal);
-																														   Customer.set($(this).attr('name'), newVal);
-																													   });
+																												 var newVal = $("[name='br_" + $(this).attr('name').substr(4) + "']").val();
+																												 $(this).val(newVal);
+																												 console.log($(this).attr('name').substr(4) + ': ' + newVal);
+																												 Customer.set($(this).attr('name'), newVal);
+																											 });
 
 																   } else {
 																	   accFields.attr('disabled', false);
@@ -350,7 +352,9 @@ $(function() {
 						}
 					});
 	  tabs.delegate(".tablestyle_inner td :nth-child(1)", "keydown", function(event) {
-						if (feildsChanged > 0) return;
+						if (feildsChanged > 0) {
+							return;
+						}
 						$(this).trigger('change');
 					});
 	  $("#addLog").button().click(function(event) {
@@ -399,5 +403,5 @@ $(function() {
 				 Customer.setValues(data, true);
 				 Branches.change(Customer.get().defaultBranch);
 				 $('#customer').focus();
-			 },'json');
+			 }, 'json');
   });

@@ -12,10 +12,10 @@ class Branch extends Company
 
 	public $branch_code = 0;
 	public $br_name = "New Address";
-	public $br_address;
-	public $city;
-	public $state;
-	public $postcode;
+	public $br_address='';
+	public $city = '';
+	public $state = '';
+	public $postcode = '';
 	public $area = DEFAULT_AREA;
 	public $br_post_address = "";
 	public $debtor_no;

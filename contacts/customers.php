@@ -150,7 +150,7 @@ HTML::tr(true);
 //foreach($customer->contacts as $index => $currentContact) {
 // if ($count/4 == floor($count/4)) HTML::tr()->tr(true);
 HTML::td('contactplace',array('colspan'=>2, 'style'=>'text-align:center'));
-HTML::table('contactcell-')->tr(true)->td('contactcell-', $currentContact->name,array('class'=>'tableheader3','colspan'=>2))->tr;
+HTML::table('contactcell-')->tr(true)->td(array('name'=> 'contactname','class'=>'tableheader3','colspan'=>2))->tr;
 text_row("Name:", 'con_name-', $currentContact->name, 35, 40);
 text_row("Phone:", 'con_phone1-', $currentContact->phone1, 35, 40);
 text_row("Phone2:", 'con_phone2-', $currentContact->phone2, 35, 40);
