@@ -150,7 +150,7 @@ if (isset($_SESSION["wa_current_user"])) {
 // static js files path
 $js_path = $path_to_root . '/js/';
 // standard external js scripts included in all files
-$js_static = array('JsHttpRequest.js', 'behaviour.js', 'utils.js', 'inserts.js', 'js2/jquery-1.4.4.min.js', 'js2/jquery-ui-1.8.6.min.js', 'js2/shortmenu.js',
+$js_static = array('JsHttpRequest.js', 'behaviour.js', 'utils.js', 'inserts.js', 'js2/jquery-1.6.min.js', 'js2/jquery-ui-1.8.6.min.js', 'js2/shortmenu.js',
 				   'js2/jquery.calculator.pack.js', 'js2/calc.js');
 
 // additional js source included in header
