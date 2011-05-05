@@ -320,6 +320,7 @@ function display_order_header(&$order, $editable, $date_text, $display_tax_group
 				$_POST['Location'] = $order->Location;
 				$_POST['deliver_to'] = $order->deliver_to;
 				$_POST['delivery_address'] = $order->delivery_address;
+				$_POST['name'] = $order->name;
 				$_POST['phone'] = $order->phone;
 				if (get_post('cash') !== $order->cash) {
 					$_POST['cash'] = $order->cash;
@@ -332,6 +333,7 @@ function display_order_header(&$order, $editable, $date_text, $display_tax_group
 					}
 					$Ajax->activate('Location');
 					$Ajax->activate('deliver_to');
+					$Ajax->activate('name');
 					$Ajax->activate('phone');
 					$Ajax->activate('delivery_address');
 				}
@@ -612,9 +614,9 @@ $("#address_map").live("click", function() {
 ';
 		}
 		table_section(2);
-
+		text_row(_("Person ordering:"), 'name', $order->name, 25, 25, 'Ordering person&#39;s name');
 		text_row(_("Contact Phone Number:"), 'phone', $order->phone, 25, 25, _('Phone number of ordering person. Defaults to branch phone number'));
-		text_row(_("Customer Reference:"), 'cust_ref', $order->cust_ref, 25, 25, _('Customer reference number for this order (if any)'));
+		text_row(_("Customer Purchase Order #:"), 'cust_ref', $order->cust_ref, 25, 25, _('Customer reference number for this order (if any)'));
 		textarea_row(_("Comments:"), "Comments", $order->Comments, 31, 5);
 
 		shippers_list_row(_("Shipping Company:"), 'ship_via', $order->ship_via);

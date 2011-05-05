@@ -247,9 +247,10 @@ function check_quantities()
 				$max = $itm->quantity - $itm->qty_done;
 			}
 
-			if (check_num('Line' . $line, $min, $max)) {
-				$_SESSION['Items']->line_items[$line]->qty_dispatched =
-						input_num('Line' . $line);
+			if ($itm->quantity>0 && check_num('Line' . $line, $min, $max)) {
+				$_SESSION['Items']->line_items[$line]->qty_dispatched = input_num('Line' . $line);
+			} elseif ($itm->quantity<0 && check_num('Line' . $line, $max, $min)) {
+				$_SESSION['Items']->line_items[$line]->qty_dispatched = input_num('Line' . $line);
 			} else {
 				set_focus('Line' . $line);
 				$ok = 0;
@@ -317,7 +318,6 @@ if (isset($_POST['process_delivery']) && check_data() && check_qoh()) {
 		meta_forward($_SERVER['PHP_SELF'], "UpdatedID=$delivery_no");
 	}
 }
-
 if (isset($_POST['Update']) || isset($_POST['_Location_update'])) {
 	$Ajax->activate('Items');
 }

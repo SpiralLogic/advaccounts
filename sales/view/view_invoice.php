@@ -87,7 +87,7 @@ label_cells(_("Our Order No"),
 			get_customer_trans_view_str(ST_SALESORDER, $sales_order["order_no"]), "class='tableheader2'");
 end_row();
 start_row();
-label_cells(_("Customer Order Ref."), $sales_order["customer_ref"], "class='tableheader2'");
+label_cells(_("Customer Purchase Order #"), $sales_order["customer_ref"], "class='tableheader2'");
 label_cells(_("Shipping Company"), $myrow["shipper_name"], "class='tableheader2'");
 label_cells(_("Sales Type"), $myrow["sales_type"], "class='tableheader2'");
 end_row();

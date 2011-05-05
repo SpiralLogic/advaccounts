@@ -49,9 +49,11 @@ function display_credit_header(&$order)
 		$_POST['Location'] = $order->Location;
 		$_POST['deliver_to'] = $order->deliver_to;
 		$_POST['delivery_address'] = $order->delivery_address;
+		$_POST['name'] = $order->name;
 		$_POST['phone'] = $order->phone;
 		$Ajax->activate('Location');
 		$Ajax->activate('deliver_to');
+		$Ajax->activate('name');
 		$Ajax->activate('phone');
 		$Ajax->activate('delivery_address');
 		// change prices if necessary

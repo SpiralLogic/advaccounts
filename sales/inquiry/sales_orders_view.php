@@ -306,11 +306,18 @@ if (isset($_POST['OrderNumber']) && $_POST['OrderNumber'] != "") {
 			$sql .= " OR sorder.reference LIKE " . db_escape($ajaxsearch);
 			$_POST['reference'] = $ajaxsearch;
 		}
+		if (countFilter('sales_orders', 'contact_name', $ajaxsearch) > 0) {
+			$sql .= " OR sorder.contact_name LIKE " . db_escape($ajaxsearch);
+			$_POST['contact_name'] = $ajaxsearch;
+		}
 		if (countFilter('sales_orders', 'customer_ref', $ajaxsearch) > 0) {
 			$sql .= " OR sorder.customer_ref LIKE " . db_escape($ajaxsearch);
 			$_POST['customer_ref'] = $ajaxsearch;
 		}
-
+		if (countFilter('sales_orders', 'customer_ref', $ajaxsearch) > 0) {
+			$sql .= " OR sorder.customer_ref LIKE " . db_escape($ajaxsearch);
+			$_POST['customer_ref'] = $ajaxsearch;
+		}
 		$sql .= " OR branch.br_name LIKE " . db_escape($ajaxsearch);
 		$sql .= ")";
 	}

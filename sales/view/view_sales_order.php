@@ -57,7 +57,7 @@ start_table("$table_style width=95%");
 label_row(_("Customer Name"), $_SESSION['View']->customer_name, "class='tableheader2'",
 		  "colspan=3");
 start_row();
-label_cells(_("Customer Order Ref."), $_SESSION['View']->cust_ref, "class='tableheader2'");
+label_cells(_("Customer Purchase Order #"), $_SESSION['View']->cust_ref, "class='tableheader2'");
 label_cells(_("Deliver To Branch"), $_SESSION['View']->deliver_to, "class='tableheader2'");
 end_row();
 start_row();
@@ -71,6 +71,7 @@ start_row();
 label_cells(_("Order Currency"), $_SESSION['View']->customer_currency, "class='tableheader2'");
 label_cells(_("Deliver From Location"), $_SESSION['View']->location_name, "class='tableheader2'");
 end_row();
+label_row(_("Person Ordering"), nl2br($_SESSION['View']->name), "class='tableheader2'", "colspan=3");
 
 label_row(_("Delivery Address"), nl2br($_SESSION['View']->delivery_address),
 		  "class='tableheader2'", "colspan=3");

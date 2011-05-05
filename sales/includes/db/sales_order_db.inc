@@ -20,7 +20,7 @@ function add_sales_order(&$order)
 	$del_date = date2sql($order->due_date);
 	$order_type = 0; // this is default on new order
 	$sql = "INSERT INTO " . TB_PREF . "sales_orders (order_no, type, debtor_no, trans_type, branch_code, customer_ref, reference, salesman, comments, ord_date,
-		order_type, ship_via, deliver_to, delivery_address, contact_phone,
+		order_type, ship_via, deliver_to, delivery_address, contact_name, contact_phone,
 		contact_email, freight_cost, from_stk_loc, delivery_date)
 		VALUES (" . db_escape($order_no) . "," . db_escape($order_type) . "," . db_escape($order->customer_id) .
 		   ", " . db_escape($order->trans_type) . "," . db_escape($order->Branch) . ", " .
@@ -33,6 +33,7 @@ function add_sales_order(&$order)
 		   db_escape($order->ship_via) . "," .
 		   db_escape($order->deliver_to) . "," .
 		   db_escape($order->delivery_address) . ", " .
+		   db_escape($order->name) . ", " .
 		   db_escape($order->phone) . ", " .
 		   db_escape($order->email) . ", " .
 		   db_escape($order->freight_cost) . ", " .
@@ -167,6 +168,7 @@ function update_sales_order($order)
 		ship_via = " . db_escape($order->ship_via) . ",
 		deliver_to = " . db_escape($order->deliver_to) . ",
 		delivery_address = " . db_escape($order->delivery_address) . ",
+		contact_name = " . db_escape($order->name) . ",
 		contact_phone = " . db_escape($order->phone) . ",
 		contact_email = " . db_escape($order->email) . ",
 		freight_cost = " . db_escape($order->freight_cost) . ",
@@ -339,7 +341,7 @@ function read_sales_order($order_no, &$order, $trans_type)
 						 $myrow["curr_code"], $myrow["discount"]);
 
 	$order->set_branch($myrow["branch_code"], $myrow["tax_group_id"],
-					   $myrow["tax_group_name"], $myrow["contact_phone"], $myrow["contact_email"]);
+					   $myrow["tax_group_name"], $myrow["contact_phone"], $myrow["contact_email"], $myrow["contact_name"] );
 
 	$order->set_sales_type($myrow["sales_type_id"], $myrow["sales_type"],
 						   $myrow["tax_included"], 0); // no default price calculations on edit
@@ -350,6 +352,7 @@ function read_sales_order($order_no, &$order, $trans_type)
 						 $myrow["delivery_address"], $myrow["freight_cost"]);
 
 	$order->cust_ref = $myrow["customer_ref"];
+	$order->name = $myrow["contact_name"];
 	$order->sales_type = $myrow["order_type"];
 	$order->reference = $myrow["reference"];
 	$order->salesman = $myrow["salesman"];

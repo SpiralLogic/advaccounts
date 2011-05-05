@@ -45,8 +45,8 @@ getTransactions($debtorno, $date)
     				AND " . TB_PREF . "debtor_trans.type <> " . ST_CUSTDELIVERY . "
     				AND (" . TB_PREF . "debtor_trans.ov_amount + " . TB_PREF . "debtor_trans.ov_gst + " . TB_PREF . "debtor_trans.ov_freight +
 				" . TB_PREF . "debtor_trans.ov_freight_tax + " . TB_PREF . "debtor_trans.ov_discount) != 0
-				 AND (" . TB_PREF . "debtor_trans.ov_amount + " . TB_PREF . "debtor_trans.ov_gst + " . TB_PREF . "debtor_trans.ov_freight +
-				" . TB_PREF . "debtor_trans.ov_freight_tax + " . TB_PREF . "debtor_trans.ov_discount - ".TB_PREF. "debtor_trans.alloc) != 0
+				 AND ROUND(" . TB_PREF . "debtor_trans.ov_amount + " . TB_PREF . "debtor_trans.ov_gst + " . TB_PREF . "debtor_trans.ov_freight +
+				" . TB_PREF . "debtor_trans.ov_freight_tax + " . TB_PREF . "debtor_trans.ov_discount - ".TB_PREF. "debtor_trans.alloc,2) != 0
     				ORDER BY " . TB_PREF . "debtor_trans.branch_code, " . TB_PREF . "debtor_trans.tran_date";
 
 	return db_query($sql, "No transactions were returned");

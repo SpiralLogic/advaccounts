@@ -47,6 +47,7 @@ class cart
 
 	var $deliver_to;
 	var $delivery_address;
+	var $name;
 	var $phone;
 
 	var $cust_ref;
@@ -124,6 +125,7 @@ class cart
 					$this->cust_ref = $sodata["customer_ref"];
 					// currently currency is hard linked to debtor account
 					//	$this->customer_currency = $sodata["curr_code"];
+					$this->name = $sodata["contact_name"];
 					$this->delivery_to = $sodata["deliver_to"];
 					$this->delivery_address = $sodata["delivery_address"];
 				}
@@ -265,7 +267,7 @@ class cart
 		$this->customer_currency = $currency;
 	}
 
-	function set_branch($branch_id, $tax_group_id, $tax_group_name, $phone = '', $email = '')
+	function set_branch($branch_id, $tax_group_id, $tax_group_name, $phone = '', $email = '',$name='')
 	{
 		$this->Branch = $branch_id;
 		$this->phone = $phone;

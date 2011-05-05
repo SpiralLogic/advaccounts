@@ -13,7 +13,7 @@ class SalesOrder extends Orders
 	public $trans_type, $type;
 	public $customer_id; // $debtor_no in DB
 	public $branch_id; //$branch_code in DB
-	public $customer_ref, $order_type, $ship_via, $contact_phone, $contact_email, $deliver_to, $from_stk_loc, $delivery_date;
+	public $customer_ref, $order_type, $ship_via, $name, $contact_phone, $contact_email, $deliver_to, $from_stk_loc, $delivery_date;
 
 	protected function _canProcess()
 	{
