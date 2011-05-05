@@ -21,6 +21,8 @@ if (isAjaxReferrer()) {
 	} else {
 		$data['customer'] = new Customer();
 	}
+	FB::info($_POST);
+	FB::info($data);
 	echo json_encode($data);
 	exit();
 }
