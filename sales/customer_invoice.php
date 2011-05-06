@@ -180,9 +180,10 @@ function check_quantities()
 				$min = 0;
 				$max = $itm->quantity - $itm->qty_done;
 			}
-			if (check_num('Line' . $line_no, $min, $max)) {
-				$_SESSION['Items']->line_items[$line_no]->qty_dispatched =
-						input_num('Line' . $line_no);
+			if ($itm->quantity > 0 && check_num('Line' . $line_no, $min, $max)) {
+				$_SESSION['Items']->line_items[$line_no]->qty_dispatched = input_num('Line' . $line_no);
+			} elseif ($itm->quantity < 0 && check_num('Line' . $line_no, $max, $min)) {
+				$_SESSION['Items']->line_items[$line_no]->qty_dispatched = input_num('Line' . $line_no);
 			} else {
 				$ok = 0;
 			}

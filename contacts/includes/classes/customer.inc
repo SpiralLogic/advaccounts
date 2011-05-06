@@ -12,7 +12,6 @@ class Customer extends Company
 	public $name = 'New Customer';
 	public $sales_type;
 	public $debtor_ref = '';
-
 	public $credit_status;
 	public $payment_discount = '0';
 	public $defaultBranch;
@@ -64,6 +63,7 @@ class Customer extends Company
 				$this->branches[$branchid] = new Branch($branch);
 			}
 		}
+
 		if (isset($changes['contacts']) && is_array($changes['contacts'])) {
 			foreach ($changes['contacts'] as $id => $contact) {
 				$this->contacts[$id] = new Contact($contact);
@@ -111,6 +111,7 @@ class Customer extends Company
 				unset($this->branches[0]);
 			}
 		}
+
 		foreach ($this->contacts as $id => $contact) {
 			$contact->save(array('parent_id' => $this->id));
 			if ($id == 0) {
@@ -128,13 +129,16 @@ class Customer extends Company
 		begin_transaction();
 		$sql = "INSERT INTO " . TB_PREF . "debtors_master (name, debtor_ref, address, tax_id, email, dimension_id, dimension2_id,
 			curr_code, credit_status, payment_terms, discount, pymt_discount,credit_limit,
-			sales_type, notes) VALUES (" . db_escape($this->name) . ", " . db_escape(substr($this->name, 0, 29)) . ", " . db_escape($this->address) . ", " . db_escape($this->tax_id) . ",
+			sales_type, notes) VALUES (" . db_escape($this->name) . ", " . db_escape(substr($this->name, 0,
+																							29)) . ", " . db_escape($this->address) . ", " . db_escape($this->tax_id) . ",
 			" . db_escape($this->email) . ", " . db_escape($this->dimension_id) . ", " . db_escape($this->dimension2_id) . ", " . db_escape($this->curr_code) . ", " . db_escape($this->credit_status) . ", " . db_escape($this->payment_terms) . ", " . user_numeric($this->discount) / 100 . "," . user_numeric($this->pymt_discount) / 100 . ", " . user_numeric($this->credit_limit) . ", " . db_escape($this->sales_type) . ", " . db_escape($this->notes) . ")";
 		db_query($sql, "The customer could not be added");
 		$this->id = db_insert_id();
 		commit_transaction();
 		foreach ($this->branches as $branch) {
-			if ($branch->name == 'New Address') $branch->name = $this->name;
+			if ($branch->name == 'New Address') {
+				$branch->name = $this->name;
+			}
 		}
 		$this->_status(true, 'Saving', "A Customer has been added.");
 	}
@@ -145,7 +149,7 @@ class Customer extends Company
 		$this->accounts = new Accounts();
 		$this->branches[0] = new Branch();
 		$this->contacts[0] = new Contact();
-		$this->branches[0]->debtor_no = $this->accounts->debtor_no =$this->contacts[0]->parent_id = $this->id;
+		$this->branches[0]->debtor_no = $this->accounts->debtor_no = $this->contacts[0]->parent_id = $this->id;
 		$this->defaultBranch = reset($this->branches)->branch_code;
 		$this->defaultContact = reset($this->contacts)->id;
 		return $this->_status(true, 'Initialize new customer', 'Now working with a new customer');
@@ -160,6 +164,7 @@ class Customer extends Company
 		$this->curr_code = get_company_currency();
 		$this->discount = $this->pymt_discount = percent_format(0);
 		$this->credit_limit = price_format($SysPrefs->default_credit_limit());
+		
 	}
 
 	protected function _read($id = null)
@@ -235,6 +240,7 @@ class Customer extends Company
 		$result = db_query($sql, "check failed");
 		return db_fetch_row($result);
 	}
+
 	public function delete()
 	{
 		if ($this->_countTransactions() > 0) {
@@ -246,7 +252,7 @@ class Customer extends Company
 		if ($this->_countBranches() > 0) {
 			return $this->_status(false, 'delete', "Cannot delete this customer because there are branch records set up against it.");
 		}
-		if ($this->_countContacts() >0) {
+		if ($this->_countContacts() > 0) {
 			return $this->_status(false, 'delete', "Cannot delete this customer because there are contact records set up against it.");
 		}
 		$sql = "DELETE FROM " . TB_PREF . "debtors_master WHERE debtor_no=" . $this->id;
@@ -281,7 +287,9 @@ class Customer extends Company
 		$sql = "SELECT branch_code, br_name, branch_ref FROM " . TB_PREF . "cust_branch WHERE debtor_no=" . $this->id . " AND branch_ref != 'accounts' AND disable_trans =0";
 		$result = db_query($sql, 'Couldn\'t retrieve any branches');
 
-		if (!db_num_rows($result)) return;
+		if (!db_num_rows($result)) {
+			return;
+		}
 
 		while ($row = db_fetch_assoc($result)) {
 			$this->branches[$row['branch_code']] = new Branch($row['branch_code']);
@@ -295,7 +303,9 @@ class Customer extends Company
 		$sql = "SELECT id, name  FROM " . TB_PREF . "contacts WHERE parent_id=" . $this->id;
 		$result = db_query($sql, 'Couldn\'t retrieve any contacts');
 
-		if (!db_num_rows($result)) $this->contacts[0] = new Contact();
+		if (!db_num_rows($result)) {
+			$this->contacts[0] = new Contact();
+		}
 
 		while ($row = db_fetch_assoc($result)) {
 
@@ -303,6 +313,7 @@ class Customer extends Company
 		}
 		$this->defaultContact = reset($this->contacts)->id;
 	}
+
 	public function addBranch($details = null)
 	{
 		$branch = new Branch($details);

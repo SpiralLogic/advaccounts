@@ -11,6 +11,7 @@ if (isAjaxReferrer()) {
 			$data['customer'] = $customer = new Customer($_POST);
 			$data['customer']->save();
 			$data['status'] = $customer->getStatus();
+
 		} elseif (!isset($_POST['name'])) {
 			$data['customer'] = $customer = new Customer($_POST['id']);
 		}
@@ -21,8 +22,7 @@ if (isAjaxReferrer()) {
 	} else {
 		$data['customer'] = new Customer();
 	}
-	FB::info($_POST);
-	FB::info($data);
+	if (isset($data['customer'])) $data['customer']->contacts[0] = new Contact(array('parent_id' => $customer->id));
 	echo json_encode($data);
 	exit();
 }
@@ -67,7 +67,8 @@ HTML::tr(true)->td('branchSelect', array('colspan' => 2, 'style' => "text-align:
 UI::select('branchList', array($currentBranch->br_name => $currentBranch->branch_code), array('name' => 'branchList'));
 UI::button('addBranch', 'Add new address', array('name' => 'addBranch'));
 HTML::td()->tr;
-text_row(_("Contact:"), 'br_contact_name', $currentBranch->contact_name, 35, 40);
+//text_row(_("Contact:"), 'br_contact_name', $currentBranch->contact_name, 35, 40);
+hidden('br_contact_name', $customer->contact_name);
 text_row(_("Phone Number:"), 'br_phone', $currentBranch->phone, 32, 30);
 text_row(_("2nd Phone Number:"), 'br_phone2', $currentBranch->phone2, 32, 30);
 text_row(_("Fax Number:"), 'br_fax', $currentBranch->fax, 32, 30);

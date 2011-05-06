@@ -9,10 +9,10 @@ class contact extends DB_abstract
 	public $id = 0;
 	public $parent_id;
 	public $name="New Contact";
-	public $phone1;
-	public $phone2;
-	public $email;
-	public $department;
+	public $phone1 = '';
+	public $phone2 = '';
+	public $email = '';
+	public $department = '';
 
 	function __construct($id = null)
 	{
@@ -22,6 +22,7 @@ class contact extends DB_abstract
 	protected function _canProcess()
 	{
 		// TODO: Implement _canProcess() method.
+		return true;
 	}
 
 	protected function _countTransactions()
@@ -42,6 +43,7 @@ class contact extends DB_abstract
 
 	protected function _read($params = array())
 	{
+		$where=array();
 		if (!is_array($params)) {
 			$params = array('id' => $params);
 		} elseif (empty($params)) {
