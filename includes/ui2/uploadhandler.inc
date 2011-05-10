@@ -9,6 +9,8 @@
  * Licensed under the MIT license:
  * http://creativecommons.org/licenses/MIT/
  */
+	ini_set('post_max_size', '3M');
+	ini_set('upload_max_filesize', '3M');
 	error_reporting(E_ALL | E_STRICT);
 	class UploadHandler {
 		private $upload_id;
@@ -51,7 +53,7 @@
 			$upload_id = (isset($_REQUEST['id'])) ? stripslashes($_REQUEST['id']) : null;
 			
 			if ($upload_id) {
-				$sql = "SELECT `content`,`type` FROM upload WHERE `id` = {$upload_id}";
+				$sql = "SELECT UNCOMPRESS(content) as content,type FROM upload WHERE `id` = {$upload_id}";
 				$result = db_query($sql, 'Could not retrieve file');
 				$result = db_fetch_assoc($result);
 				header('Cache-Control: no-cache, must-revalidate');
@@ -76,6 +78,8 @@
 			$headers = getallheaders();
 			$file_request = isset($_FILES['file']) ? $_FILES['file'] : null;
 			$uploaded_file = $file_request ? $file_request['tmp_name'] : null;
+
+
 			$file = new stdClass();
 			$file->name = basename(isset($headers['X-File-Name']) ? $headers['X-File-Name'] : $file_request['name']);
 			$file->type = isset($headers['X-File-Type']) ? $headers['X-File-Type'] : $file_request['type'];
@@ -101,7 +105,6 @@
 				 }*/
 					$fp = fopen($uploaded_file, 'r');
 					$content = fread($fp, filesize($uploaded_file));
-					$content = addslashes($content);
 				}
 				else {
 					// Non-multipart uploads (PUT method support)
@@ -116,7 +119,7 @@
 				$content = addslashes($content);
 				//	$file->size = filesize($file_path);
 				begin_transaction();
-				$sql = "INSERT INTO upload (`filename`,`size`,`type`,`order_no`,`content`) VALUES ('{$file->name}','{$file->size}','{$file->type}','{$this->order_no}','{$content}')";
+				$sql = "INSERT INTO upload (`filename`,`size`,`type`,`order_no`,`content`) VALUES ('{$file->name}','{$file->size}','{$file->type}','{$this->order_no}', COMPRESS('{$content}'))";
 				db_query($sql, 'Could not insert file into database');
 				$upload_id = db_insert_id();
 				$file->id = $this->upload_id = $upload_id;
