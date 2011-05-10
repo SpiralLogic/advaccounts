@@ -38,7 +38,7 @@ if ($use_date_picker) {
 	$js .= get_js_date_picker();
 }
 $js .= get_jquery_gmaps();
-$js .= get_jquery_file_upload();
+
 if (isset($_GET['NewDelivery']) && is_numeric($_GET['NewDelivery'])) {
 	$_SESSION['page_title'] = _($help_context = "Direct Sales Delivery");
 	create_cart(ST_CUSTDELIVERY, $_GET['NewDelivery']);
@@ -62,6 +62,8 @@ if (isset($_GET['NewDelivery']) && is_numeric($_GET['NewDelivery'])) {
 } elseif (isset($_GET['NewQuoteToSalesOrder'])) {
 	$_SESSION['page_title'] = _($help_context = "Sales Order Entry");
 	create_cart(ST_SALESQUOTE, $_GET['NewQuoteToSalesOrder']);
+} else {
+	$js .= get_jquery_file_upload();
 }
 page($_SESSION['page_title'], false, false, "", $js);
 //-----------------------------------------------------------------------------
@@ -88,7 +90,9 @@ if (isset($_GET['AddedID'])) {
 	set_focus('prtopt');
 	submenu_option(_("Make &Delivery Against This Order"), "/sales/customer_delivery.php?OrderNumber=$order_no");
 	submenu_option(_("Enter a &New Order"), "/sales/sales_order_entry.php?NewOrder=0");
+	show_upload();
 	display_footer_exit();
+
 } elseif (isset($_GET['UpdatedID'])) {
 	$order_no = $_GET['UpdatedID'];
 	if ($_REQUEST['UpdatedJB']) {
@@ -101,7 +105,7 @@ if (isset($_GET['AddedID'])) {
 	set_focus('prtopt');
 	submenu_option(_("Make &Delivery Against This Order"), "/sales/customer_delivery.php?OrderNumber=$order_no");
 	submenu_option(_("Enter a &New Order"), "/sales/sales_order_entry.php?NewOrder=0");
-
+	show_upload();
 
 	display_footer_exit();
 } elseif (isset($_GET['UpdatedID'])) {
@@ -126,6 +130,7 @@ if (isset($_GET['AddedID'])) {
 	set_focus('prtopt');
 	submenu_option(_("Confirm Order Quantities and Make &Delivery"), "/sales/customer_delivery.php?OrderNumber=$order_no");
 	submenu_option(_("Select A Different &Order"), "/sales/inquiry/sales_orders_view.php?OutstandingOnly=1");
+	show_upload();
 	display_footer_exit();
 } elseif (isset($_GET['AddedQU'])) {
 	$order_no = $_GET['AddedQU'];
@@ -182,6 +187,7 @@ if (isset($_GET['AddedID'])) {
 	echo '<br>';
 	submenu_print(_("&Print Sales Invoice"), ST_SALESINVOICE, $invoice . "-" . ST_SALESINVOICE, 'prtopt');
 	submenu_print(_("&Email Sales Invoice"), ST_SALESINVOICE, $invoice . "-" . ST_SALESINVOICE, null, 1);
+	show_upload();
 	set_focus('prtopt');
 	$sql = "SELECT trans_type_from, trans_no_from FROM " . TB_PREF . "cust_allocations
 			WHERE trans_type_to=" . ST_SALESINVOICE . " AND trans_no_to=" . db_escape($invoice);
@@ -199,6 +205,7 @@ if (isset($_GET['AddedID'])) {
 	if ($_GET['AddedDI'] && isset($_SESSION['wa_global_customer_id']) && $row == false) {
 		echo "<div style='text-align:center;'><iframe  style='margin:0 auto; border-width:0;' src='{$path_to_root}/sales/customer_payments.php?frame=1' width='80%' height='475' scrolling='no' frameborder='0'></iframe> </div>";
 	}
+
 	display_footer_exit();
 } else {
 	check_edit_conflicts();
@@ -649,3 +656,51 @@ end_form();
 echo '<div id="map"></div>';
 end_page();
 unset($_SESSION['order_no']);
+
+function show_upload() {
+	?>
+<form id="file_upload" action="." method="POST" enctype="multipart/form-data">
+	<input type="file" name="file" multiple>
+	<button type="submit">Upload</button>
+	<div class="js">Upload files</div>
+</form>
+<table id="files" data-order-id="<?echo $_SESSION['order_no'];?>">
+	<tr id="template_upload" style="display:none;">
+		<td class="file_upload_preview"></td>
+		<td class="file_upload_name"></td>
+		<td class="file_upload_progress">
+			<div></div>
+		</td>
+		<td class="file_upload_start">
+			<button class="ui-button ui-widget ui-state-default ui-corner-all" title="Start">
+				<span class="ui-icon ui-icon-circle-arrow-e">Start</span>
+			</button>
+		</td>
+		<td class="file_upload_cancel">
+			<button class="ui-button ui-widget ui-state-default ui-corner-all" title="Cancel">
+				<span class="ui-icon ui-icon-cancel">Cancel</span>
+			</button>
+		</td>
+	</tr>
+	<tr id="template_download" style="display:none;">
+		<td class="file_upload_preview"><img/></td>
+		<td class="file_upload_name"><a></a></td>
+		<td class="file_upload_delete" colspan="3">
+			<button class="ui-button ui-widget ui-state-default ui-corner-all" title="Delete">
+				<span class="ui-icon ui-icon-trash">Delete</span>
+			</button>
+		</td>
+	</tr>
+</table>
+<div id="file_upload_progress" class="js file_upload_progress">
+	<div style="display:none;"></div>
+</div>
+<div class="js">
+
+	<button id="file_upload_delete" class="ui-button ui-state-default ui-corner-all ui-button-text-icon-primary">
+		<span class="ui-button-icon-primary ui-icon ui-icon-trash"></span>
+		<span class="ui-button-text">Delete All</span>
+	</button>
+</div>
+<?php
+}

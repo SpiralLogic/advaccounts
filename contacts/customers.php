@@ -22,7 +22,7 @@ if (isAjaxReferrer()) {
 	} else {
 		$data['customer'] = new Customer();
 	}
-	if (isset($data['customer'])) $data['customer']->contacts[0] = new Contact(array('parent_id' => $customer->id));
+	
 	echo json_encode($data);
 	exit();
 }
@@ -224,9 +224,5 @@ $shortcuts->startTab('Create Quote', 'Create Quote for this customer!', '/sales/
 $shortcuts->endTab();
 $shortcuts->render();
 HTML::_div()->div;
-echo '<script>';
-echo <<<JS
-$(function() {});
-JS;
-echo '</script>';
+
 end_page(true, true);

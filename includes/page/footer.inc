@@ -23,6 +23,7 @@ function page_footer($no_menu = false, $is_index = false, $hide_back_link = fals
 		var $edits
 	</script>";
 	add_user_js_data();
+	send_fscripts();
 	echo "\n<script language=\"javascript\"  type=\"text/javascript\"><!--\n";
 	foreach ($js_lib as $text) {
 		$text = str_replace(array('<script>', '</script>'), '', $text);
@@ -35,7 +36,6 @@ function page_footer($no_menu = false, $is_index = false, $hide_back_link = fals
 		$messages->makeDialog();
 	}
 	echo "</body>";
-	send_fscripts();
 	get_websales();
 	echo	"</html>\n";
 	if ($_SESSION["wa_current_user"]->user == 1) {

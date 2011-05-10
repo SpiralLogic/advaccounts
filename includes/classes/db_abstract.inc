@@ -64,7 +64,9 @@ abstract class DB_abstract
 		}
 		$remainder = array();
 		foreach ($changes as $key => $value) {
-			$value = (trim($value) == null) ? '' : trim($value);
+			if (!is_array($value)) {
+			    $value = (trim($value) == null) ? '' : trim($value);
+			}
 			(property_exists($this, $key)) ? $this->$key = $value : $remainder[$key] = $value;
 		}
 		return $remainder;
