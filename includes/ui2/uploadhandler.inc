@@ -18,7 +18,7 @@
 
 		function __construct($order_no) {
 			$this->order_no = $order_no;
-			
+
 		}
 
 		private function make_dir() {
@@ -49,25 +49,25 @@
 		}
 
 		public function get() {
-			$info=array();
+			$info = array();
 			$upload_id = (isset($_REQUEST['id'])) ? stripslashes($_REQUEST['id']) : null;
-			
 			if ($upload_id) {
 				$sql = "SELECT UNCOMPRESS(content) as content,type FROM upload WHERE `id` = {$upload_id}";
 				$result = db_query($sql, 'Could not retrieve file');
 				$result = db_fetch_assoc($result);
 				header('Cache-Control: no-cache, must-revalidate');
-				header('Content-type: '.$result['type']);
+				header('Content-type: ' . $result['type']);
 				$content = stripslashes($result['content']);
 				echo $content;
 			}
 			else {
-
 				$sql = "SELECT `id`,`filename` as name, `size` ,`type` FROM upload WHERE `order_no` = {$this->order_no}";
 				$result = db_query($sql, 'Could not retrieve upload information');
-				if (db_num_rows($result)<1) return;
-				while($row = db_fetch_assoc($result))
-				$info[] = $row;
+				if (db_num_rows($result) < 1)
+					return;
+				while ($row = db_fetch_assoc($result)) {
+					$info[] = $row;
+				}
 				header('Cache-Control: no-cache, must-revalidate');
 				header('Content-type: application/json');
 				echo json_encode($info);
@@ -78,15 +78,10 @@
 			$headers = getallheaders();
 			$file_request = isset($_FILES['file']) ? $_FILES['file'] : null;
 			$uploaded_file = $file_request ? $file_request['tmp_name'] : null;
-
-
 			$file = new stdClass();
 			$file->name = basename(isset($headers['X-File-Name']) ? $headers['X-File-Name'] : $file_request['name']);
 			$file->type = isset($headers['X-File-Type']) ? $headers['X-File-Type'] : $file_request['type'];
 			$file->size = intval(isset($headers['X-File-Size']) ? $headers['X-File-Size'] : $file_request['size']);
-		
-			
-
 			if ($file->name) {
 				//$file_path = $this->upload_dir . $file->name;
 				//$append_file = is_file($file_path) && $file->size > filesize($file_path);
@@ -139,7 +134,7 @@
 			$name = isset($_REQUEST['file']) ? ($_REQUEST['file']) : null;
 			$id = isset($_REQUEST['id']) ? ($_REQUEST['id']) : null;
 			$sql = "DELETE FROM upload WHERE `id` = {$id} AND `filename` = '{$name}'";
-			$result = db_query($sql,'Could not delete file');
+			$result = db_query($sql, 'Could not delete file');
 			header('Content-type: application/json');
 			echo json_encode($result);
 		}
