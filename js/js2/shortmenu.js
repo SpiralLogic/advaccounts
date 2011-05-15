@@ -5,92 +5,85 @@
  * Time: 3:30 AM
  * To change this template use File | Settings | File Templates.
  */
-var loader;
-$(function()
-  {
-	  var sidemenu = $("#sidemenu").draggable().accordion({
-															  autoHeight: false,
-															  event: "mouseover"
-														  }).fadeTo("slow", .75).hover(
-			  function()
-			  {
-				  $(this).fadeTo("fast", 1);
-			  },
-			  function()
-			  {
-				  $(this).fadeTo("fast", .75);
-			  });
-	  var sidemenuOn = function()
-	  {
-		  sidemenu.accordion("enable");
-		  sidemenu.find("h3").undelegate("a", "click");
-	  };
-	  var sidemenuOff = function()
-	  {
-		  sidemenu.accordion("disable");
-		  sidemenu.find("h3").delegate("a", "click", function()
-		  {
-			  $("#results").detach();
-			  $("#wrapper").show();
-		  }
-				  )
-	  };
+(function(window, undefined) {
+	var previous,
+			ajaxRequest,
+			Searchboxtimeout,
+			Adv = window.Adv,
+			sidemenu = {},
+			searchInput = $('<input/>').attr({type: 'text',value:'',size:14,maxlength:18}).data({'id':'',url:''}),
+			$search = $("#search");
+	(function() {
+		var $this = this,
+				$results = $("#results"),
+				$wrapper = $("#wrapper");
+		this.menu = $("#sidemenu").draggable().accordion({autoHeight: false,event: "mouseover"}).fadeTo("slow", .75).hover(function() {
+			$(this).fadeTo("fast", 1);
+		}, function() {
+			$(this).fadeTo("fast", .75);
+		});
+		this.sidemenuOn = function() {
+			$this.menu.accordion("enable");
+			$this.menu.find("h3").undelegate("a", "click");
+		};
+		this.sidemenuOff = function() {
+			$this.menu.accordion("disable");
+			$this.menu.find("h3").delegate("a", "click", function() {
+				$results.detach();
+				$wrapper.show();
+			})
+		};
+		this.doSearch = function () {
+			term = searchInput.val();
+			Adv.loader.show();
+			ajaxRequest = $.post(searchInput.data("url"), { ajaxsearch: term, limit: true }, $this.showSearch);
+		};
+		this.showSearch = function (data) {
+			var content = $('#wrapper', data).attr("id", "results");
+			$results.remove();
+			$wrapper.before(content).hide();
+			Adv.loader.hide();
+		}
+		$search.delegate("a", "click", function(event) {
+			$this.sidemenuOff();
+			event.preventDefault();
+			$search.find('input').trigger('blur');
+			previous = $(this);
+			previous.after(searchInput.data({'id':previous.attr('href'),url:previous.attr('href')})).detach();
+			searchInput.focus();
+			return false;
+		});
+		$search.delegate('input', "change blur keyup", function(event) {
+			if (ajaxRequest && event.type == 'keyup') {
+				ajaxRequest.abort();
+			}
+			if (event.type != "blur" && searchInput.val().length > 1 && event.which != 13 && event.which < 123) {
+				window.clearTimeout(Searchboxtimeout);
+				Searchboxtimeout = window.setTimeout($this.doSearch, 1000);
+			}
+			if (event.type != 'keyup') {
+				searchInput.after(previous).detach().val('');
+				$this.sidemenuOn();
+			}
+		});
+		$('#quickCustomer').autocomplete({
+			                                 source: function(request, response) {
+				                                 lastXhr = $.getJSON('/contacts/customers.php', request, function(data, status, xhr) {
+					                                 if (xhr === lastXhr) {
+						                                 response(data);
+					                                 }
+				                                 })
+			                                 },
+			                                 minLength: 2,
+			                                 select: function(event, ui) {
 
-	  function createInput(url, id)
-	  {
-		  input = "<input type='text' value='' size='14' maxlength='18'"
-						  + " id='" + id + "'"
-						  + " data-url='" + url + "'"
-				  + ">";
-		  return input;
-	  }
+				                                 $this.showSearch(ui.item.id);
 
-	  var previous;
-	  var ajaxRequest;
-	  var SearchboxThis = undefined;
-	  var Searchboxtimeout;
-	  $("#search").delegate("a", "click",
-							function(event)
-							{
-								sidemenuOff();
-								event.preventDefault();
-								$("#search input").trigger('blur');
-								previous = $(this);
-								$(this).replaceWith(createInput($(this).attr('href'), $(this).attr('id')));
-								$('#' + $(this).attr('id')).focus();
-								return false;
-							});
-	  $("#search input").live("change blur keyup", function(event)
-	  {
-		  SearchboxThis = $(this);
-		  if (ajaxRequest && event.type == 'keyup') {
-			  ajaxRequest.abort();
-		  }
-		  if (event.type != "blur" && SearchboxThis.val().length > 1 && event.which != 13 && event.which < 123) {
-			  window.clearTimeout(Searchboxtimeout);
-			  Searchboxtimeout = window.setTimeout(doSearch, 1000);
-		  }
-		  if (event.type != 'keyup') {
-			  SearchboxThis.replaceWith(previous);
-			  sidemenuOn();
-		  }
-	  });
-	  function doSearch()
-	  {
-		  term = SearchboxThis.val();
+			                                 }
+		                                 });
+	}).apply(sidemenu);
+	window.Adv.extend(sidemenu);
+})(window);
+$(function() {
 
-		  loader = $("#loader").show();
-		  ajaxRequest = $.post(
-				  SearchboxThis.data("url"),
-				  { ajaxsearch: term, limit: true },
-				  function(data)
-				  {
-					  var content = $('#wrapper', data).attr("id", "results");
-					  $("#results").remove();
-					  $("#wrapper", document).hide().before(content);
-					  loader = $("#loader").hide();
-				  }
-				  );
-	  }
-
-  });
+})

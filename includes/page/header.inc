@@ -76,7 +76,7 @@ function send_fscripts()
 	$js = '';
 
 	foreach ($js_fuserlib as $jsfile) {
-		$js .= '<script language="javascript" type="text/javascript" src="' . $jsfile . '?' . rand(0, 1000) . '"></script>';
+		$js .= '<script language="javascript" type="text/javascript" src="' . $jsfile. '"></script>';
 	}
 	echo $js;
 }

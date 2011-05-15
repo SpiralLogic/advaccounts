@@ -22,7 +22,6 @@ if (isAjaxReferrer()) {
 	} else {
 		$data['customer'] = new Customer();
 	}
-	
 	echo json_encode($data);
 	exit();
 }
