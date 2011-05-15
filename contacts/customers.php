@@ -215,13 +215,13 @@ if ($customer->id) {
 }
 UI::button('btnCancel', 'Cancel', array('name' => 'cancel', 'type' => 'submit', 'class' => 'ui-helper-hidden',
 									   'style' => 'margin:10px;'));
-HTML::div('shortcuts', array('style' => 'width:50%;display:block;margin:0 auto;'));
+HTML::_div()->div('shortcuts', array('style' => 'width:50%;display:block;margin:0 auto;'));
 $shortcuts = new MenuUI();
-$shortcuts->startTab('Create Order', 'Create Order for this customer!', '/sales/sales_order_entry.php?NewOrder=Yes');
+$shortcuts->startTab('Create Order', 'Create Order for this customer!'); //, '/sales/sales_order_entry.php?NewOrder=Yes');
 $shortcuts->endTab();
-$shortcuts->startTab('Create Quote', 'Create Quote for this customer!', '/sales/sales_order_entry.php?NewQuote=Yes');
+$shortcuts->startTab('Create Quote', 'Create Quote for this customer!'); //, '/sales/sales_order_entry.php?NewQuote=Yes');
 $shortcuts->endTab();
 $shortcuts->render();
-HTML::_div()->div;
+HTML::_div();
 
 end_page(true, true);

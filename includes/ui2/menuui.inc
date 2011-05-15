@@ -29,9 +29,9 @@ class MenuUI
 		return $this;
 	}
 
-	function startTab($title, $tooltip)
+	function startTab($title, $tooltip,$link='#')
 	{
-		$this->addTab($title, $tooltip, '#');
+		$this->addTab($title, $tooltip,$link);
 		echo '<div id="tabs' . MenuUI::$menuCount . '-' . count($this->tabs) . '">';
 		return $this;
 	}
@@ -48,7 +48,9 @@ class MenuUI
 		$this->menu .= "<ul>";
 		foreach ($this->tabs as $key => $tab) {
 			$num = $key + 1;
-			$this->menu .= "<li><a title='{$tab->title}' href='#tabs" . MenuUI::$menuCount . "-{$num}'><span>{$tab->title}</span></a></li>";
+			$this->menu .= "<li><a title='{$tab->title}'";
+			$this->menu .= ($tab->link!="#") ? ' href="'.$tab->link.'" ' : " href='#tabs" . MenuUI::$menuCount . "-{$num}'";
+			$this->menu .= "><span>{$tab->title}</span></a></li>";
 		}
 		$this->menu .= "</ul>";
 		$this->content = ob_get_clean();
@@ -67,11 +69,11 @@ class MenuUi_item
 	public $title = '';
 	public $tooltip = '';
 
-	function __construct($title, $link, $tooltip = '')
+	function __construct($title, $tooltip = '', $link)
 	{
 		$this->title = $title;
 		$this->link = $link;
-		$this->$tooltip = $tooltip;
+		$this->tooltip = $tooltip;
 
 	}
 
