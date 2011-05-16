@@ -21,6 +21,7 @@ include_once($path_to_root . "/sales/includes/sales_db.inc");
 include_once("$path_to_root/reporting/includes/reporting.inc");
 
 $js = "";
+	
 if ($use_popup_windows)
 	$js .= get_js_open_window(900, 600);
 
@@ -236,8 +237,11 @@ foreach ($_SESSION['View']->line_items as $stock_item) {
 	qty_cell($stock_item->qty_done, false, $dec);
 	end_row();
 }
+$qty_remaining = array_sum(array_map(function($line) {
+		return ($line->quantity - $line->qty_done );
+	}, $_SESSION['View']->line_items));
 
-$items_total = $_SESSION['View']->get_items_total();
+	$items_total = $_SESSION['View']->get_items_total();
 
 $display_total = price_format($items_total + $_SESSION['View']->freight_cost);
 
@@ -249,9 +253,12 @@ label_row(_("Total Order Value"), $display_total, "align=right colspan=6",
 end_table(2);
 $modify = ($_GET['trans_type'] == ST_SALESORDER ? "ModifyOrderNumber" : "ModifyQuotationNumber");
 submenu_option(_('Edit This Order'), "/sales/sales_order_entry.php?{$modify}={$_GET['trans_no']}' target='_top' ");
+	submenu_print(_("&Print This Order"), ST_SALESORDER, $_GET['trans_no'], 'prtopt');
+	submenu_print(_("Print Proforma Invoice"), ST_PROFORMA, $_GET['trans_no'], 'prtopt');
+	if ($qty_remaining>0) submenu_option(_("Make &Delivery Against This Order"), "/sales/customer_delivery.php?OrderNumber={$_GET['trans_no']}'  target='_top' ");
+	submenu_option(_("Enter a &New Order"), "/sales/sales_order_entry.php?NewOrder=0'  target='_top' ");
+	show_upload(); 
 
-submenu_print(_("&Print This Order"), ST_SALESORDER, $_GET['trans_no'], 'prtopt');
-
-end_page(true);
+end_page(true); 
 
 ?>

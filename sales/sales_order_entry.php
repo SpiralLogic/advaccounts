@@ -380,7 +380,7 @@
 		if (strlen($_POST['name']) < 1) {
 			display_error(_("You must enter a Person Ordering name."));
 			set_focus('name');
-			return false;
+	//		return false;
 		}
 		if (!$Refs->is_valid($_POST['ref'])) {
 			display_error(_("You must enter a reference."));
