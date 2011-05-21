@@ -1,4 +1,3 @@
-
 Adv.extend({
 	           msgbox: $('#msgbox').ajaxError(function(event, request, settings) {
 		           var status = {
@@ -144,7 +143,7 @@ var Contacts = function() {
 		},
 		setval: function (key, value) {
 			key = key.split('-');
-			Customer.get().contacts[key[1]][key[0]] = value;
+			if (value!==undefined) Customer.get().contacts[key[1]][key[0]] = value;
 		},
 
 		New: function() {
@@ -326,7 +325,6 @@ $(function() {
 		           }),
 
 		           useShipAddress: $("[name='useShipAddress']"),
-		           useShipAddressState: 'ticked',
 		           ContactLog: $("#contactLog").hide()
 	           });
 	Adv.ContactLog.dialog({
@@ -360,10 +358,10 @@ $(function() {
 			                      }
 		                      }
 	                      }).click(function() {
-		$(this).dialog("open");
-	});
+		                               $(this).dialog("open");
+	                               });
 	Adv.useShipAddress.change(function() {
-		if (Adv.useShipAddressState === 'ticked') {
+		if (Adv.useShipAddress.prop('checked')) {
 			Adv.accFields.attr('disabled', true).each(function() {
 				var newVal = $("[name='br_" + $(this).attr('name').substr(4) + "']").val();
 				$(this).val(newVal);
@@ -373,9 +371,8 @@ $(function() {
 		} else {
 			Adv.accFields.attr('disabled', false);
 		}
-		Adv.useShipAddressState = (Adv.useShipAddressState !== 'ticked') ? 'ticked' : false;
 	})
-	Adv.loader.prependTo('#content');
+
 	Adv.tabs.delegate(":input", "change",
 	                  function(event) {
 		                  if ($(this).attr('name') == 'messageLog' || $(this).attr('name') == 'branchList') {
@@ -392,15 +389,15 @@ $(function() {
 			                  return;
 		                  }
 		                  Adv.stateModified($(this));
-		                  if (Adv.useShipAddressState === 'ticked' && $(this).attr('name').substr(0, 3) == 'br_') {
+		                  if (Adv.useShipAddress.prop('checked') && $(this).attr('name').substr(0, 3) == 'br_') {
 			                  var fieldname = 'acc_' + $(this).attr('name').substr(3);
 			                  Adv.setFormValue(fieldname, $(this).val());
 			                  Customer.set(fieldname, $(this).val());
 		                  }
 	                  }).delegate(".tablestyle_inner td :nth-child(1)", "keydown", function() {
-		if (Adv.fieldsChanged > 0) return;
-		$(this).trigger('change');
-	});
+		                              if (Adv.fieldsChanged > 0) return;
+		                              $(this).trigger('change');
+	                              });
 	$("[name='messageLog']").keypress(function(event) {
 		event.stopImmediatePropagation();
 		return false;
