@@ -15,12 +15,68 @@
 	class UploadHandler {
 		private $upload_id;
 		private $order_no;
-
+private static $inserted;
 		function __construct($order_no) {
 			$this->order_no = $order_no;
 
 		}
+public static function insert($id) {
 
+	if (!self::$inserted) {
+		$fpath = '/js/js2/';
+		add_js_ffile($fpath . 'jquery.fileupload.js');
+		add_js_ffile($fpath . 'jquery.fileupload-ui.js');
+		add_js_ffile($fpath . 'jquery.fileupload-app.js');
+		self::$inserted = true;
+	}
+	echo '
+	<div id="file_upload_div"><form id="file_upload" action="." method="POST" enctype="multipart/form-data">
+		<input type="file" name="file" multiple>
+		<button type="submit">Upload</button>
+		<div class="js">Upload files</div>
+	</form>
+	<table id="files" data-order-id="'.$id.'">
+		<tr id="template_upload" style="display:none;">
+			<td class="file_upload_preview"></td>
+			<td class="file_upload_name"></td>
+			<td class="file_upload_progress">
+				<div></div>
+			</td>
+			<td class="file_upload_start">
+				<button class="ui-button ui-widget ui-state-default ui-corner-all" title="Start">
+					<span class="ui-icon ui-icon-circle-arrow-e">Start</span>
+				</button>
+			</td>
+			<td class="file_upload_cancel">
+				<button class="ui-button ui-widget ui-state-default ui-corner-all" title="Cancel">
+					<span class="ui-icon ui-icon-cancel">Cancel</span>
+				</button>
+			</td>
+		</tr>
+		<tr id="template_download" style="display:none;">
+			<td class="file_upload_preview"><img/></td>
+			<td class="file_upload_name"><a></a></td>
+			<td class="file_upload_delete" colspan="3">
+				<button class="ui-button ui-widget ui-state-default ui-corner-all" title="Delete">
+					<span class="ui-icon ui-icon-trash">Delete</span>
+				</button>
+			</td>
+		</tr>
+	</table>
+	<div id="file_upload_progress" class="js file_upload_progress">
+		<div style="display:none;"></div>
+	</div>
+	<div class="js">
+
+		<button id="file_upload_delete" class="ui-button ui-state-default ui-corner-all ui-button-text-icon-primary">
+			<span class="ui-button-icon-primary ui-icon ui-icon-trash"></span>
+			<span class="ui-button-text">Delete All</span>
+		</button>
+	</div></div>
+';
+
+
+}
 		private function make_dir() {
 			$old = umask(0);
 			//@mkdir($this->upload_dir, 0777);

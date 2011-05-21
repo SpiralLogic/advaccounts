@@ -68,9 +68,6 @@
 		$_SESSION['page_title'] = _($help_context = "Sales Order Entry");
 		create_cart(ST_SALESQUOTE, $_GET['NewQuoteToSalesOrder']);
 	}
-	else {
-		$js .= get_jquery_file_upload();
-	}
 	page($_SESSION['page_title'], false, false, "", $js);
 	//-----------------------------------------------------------------------------
 	if (list_updated('branch_id')) {
@@ -97,7 +94,7 @@
 		set_focus('prtopt');
 		submenu_option(_("Make &Delivery Against This Order"), "/sales/customer_delivery.php?OrderNumber=$order_no");
 		submenu_option(_("Enter a &New Order"), "/sales/sales_order_entry.php?NewOrder=0");
-		show_upload();
+		UploadHandler::insert($_SESSION['order_no']);
 		display_footer_exit();
 
 	}
@@ -113,7 +110,7 @@
 		set_focus('prtopt');
 		submenu_option(_("Make &Delivery Against This Order"), "/sales/customer_delivery.php?OrderNumber=$order_no");
 		submenu_option(_("Enter a &New Order"), "/sales/sales_order_entry.php?NewOrder=0");
-		show_upload();
+		UploadHandler::insert($_SESSION['order_no']);
 		display_footer_exit();
 	}
 	elseif (isset($_GET['UpdatedID'])) {
@@ -137,7 +134,7 @@
 		set_focus('prtopt');
 		submenu_option(_("Confirm Order Quantities and Make &Delivery"), "/sales/customer_delivery.php?OrderNumber=$order_no");
 		submenu_option(_("Select A Different &Order"), "/sales/inquiry/sales_orders_view.php?OutstandingOnly=1");
-		show_upload();
+		UploadHandler::insert($_SESSION['order_no']);
 		display_footer_exit();
 	}
 	elseif (isset($_GET['AddedQU'])) {
@@ -195,7 +192,7 @@
 		echo '<br>';
 		submenu_print(_("&Print Sales Invoice"), ST_SALESINVOICE, $invoice . "-" . ST_SALESINVOICE, 'prtopt');
 		submenu_print(_("&Email Sales Invoice"), ST_SALESINVOICE, $invoice . "-" . ST_SALESINVOICE, null, 1);
-		show_upload();
+		UploadHandler::insert($_SESSION['order_no']);
 		set_focus('prtopt');
 		$sql = "SELECT trans_type_from, trans_no_from FROM " . TB_PREF . "cust_allocations
 			WHERE trans_type_to=" . ST_SALESINVOICE . " AND trans_no_to=" . db_escape($invoice);
@@ -380,7 +377,7 @@
 		if (strlen($_POST['name']) < 1) {
 			display_error(_("You must enter a Person Ordering name."));
 			set_focus('name');
-	//		return false;
+			//		return false;
 		}
 		if (!$Refs->is_valid($_POST['ref'])) {
 			display_error(_("You must enter a reference."));
@@ -665,59 +662,13 @@
 		}
 		submit_js_confirm('CancelOrder', _('You are about to void this Document.\nDo you want to continue?'));
 		submit_center_last('CancelOrder', $cancelorder, _('Cancels document entry or removes sales order when editing an old document'));
+		if (isset($_GET['ModifyOrderNumber']) && is_numeric($_GET['ModifyOrderNumber'])) {
+			UploadHandler::insert($_GET['ModifyOrderNumber']);
+		}
 	}
 	else {
 		display_error($customer_error);
 	}
 	end_form();
-	echo '<div id="map"></div>';
 	end_page();
 	unset($_SESSION['order_no']);
-	function show_upload() {
-		?>
-	<form id="file_upload" action="." method="POST" enctype="multipart/form-data">
-		<input type="file" name="file" multiple>
-		<button type="submit">Upload</button>
-		<div class="js">Upload files</div>
-	</form>
-	<table id="files" data-order-id="<?echo $_SESSION['order_no'];?>">
-		<tr id="template_upload" style="display:none;">
-			<td class="file_upload_preview"></td>
-			<td class="file_upload_name"></td>
-			<td class="file_upload_progress">
-				<div></div>
-			</td>
-			<td class="file_upload_start">
-				<button class="ui-button ui-widget ui-state-default ui-corner-all" title="Start">
-					<span class="ui-icon ui-icon-circle-arrow-e">Start</span>
-				</button>
-			</td>
-			<td class="file_upload_cancel">
-				<button class="ui-button ui-widget ui-state-default ui-corner-all" title="Cancel">
-					<span class="ui-icon ui-icon-cancel">Cancel</span>
-				</button>
-			</td>
-		</tr>
-		<tr id="template_download" style="display:none;">
-			<td class="file_upload_preview"><img/></td>
-			<td class="file_upload_name"><a></a></td>
-			<td class="file_upload_delete" colspan="3">
-				<button class="ui-button ui-widget ui-state-default ui-corner-all" title="Delete">
-					<span class="ui-icon ui-icon-trash">Delete</span>
-				</button>
-			</td>
-		</tr>
-	</table>
-	<div id="file_upload_progress" class="js file_upload_progress">
-		<div style="display:none;"></div>
-	</div>
-	<div class="js">
-
-		<button id="file_upload_delete" class="ui-button ui-state-default ui-corner-all ui-button-text-icon-primary">
-			<span class="ui-button-icon-primary ui-icon ui-icon-trash"></span>
-			<span class="ui-button-text">Delete All</span>
-		</button>
-	</div>
-	<?php
-
-	}

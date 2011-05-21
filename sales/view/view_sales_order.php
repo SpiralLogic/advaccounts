@@ -257,7 +257,7 @@ submenu_option(_('Edit This Order'), "/sales/sales_order_entry.php?{$modify}={$_
 	submenu_print(_("Print Proforma Invoice"), ST_PROFORMA, $_GET['trans_no'], 'prtopt');
 	if ($qty_remaining>0) submenu_option(_("Make &Delivery Against This Order"), "/sales/customer_delivery.php?OrderNumber={$_GET['trans_no']}'  target='_top' ");
 	submenu_option(_("Enter a &New Order"), "/sales/sales_order_entry.php?NewOrder=0'  target='_top' ");
-	show_upload(); 
+	UploadHandler::insert($_GET['trans_no']);
 
 end_page(true); 
 

@@ -112,11 +112,14 @@
 					unset($this->contacts[0]);
 				}
 			}
-			$this->defaultBranch = reset($this->branches)->branch_code;
-			$this->defaultContact = reset($this->contacts)->id;
+$this->_setDefaults();
 			return $this->_status(true, 'Processing', "Customer has been updated.");
 		}
-
+protected function _setDefaults() {
+	$this->defaultBranch = reset($this->branches)->branch_code;
+	$this->defaultContact = reset($this->contacts)->id;
+	$this->contacts[0] = new Contact(array('parent_id' => $this->id));
+}
 		protected function _saveNew() {
 			begin_transaction();
 			$sql = "INSERT INTO " . TB_PREF . "debtors_master (name, debtor_ref, address, tax_id, email, dimension_id, dimension2_id,
@@ -140,8 +143,7 @@
 			$this->branches[0] = new Branch();
 			$this->contacts[0] = new Contact();
 			$this->branches[0]->debtor_no = $this->accounts->debtor_no = $this->contacts[0]->parent_id = $this->id;
-			$this->defaultBranch = reset($this->branches)->branch_code;
-			$this->defaultContact = reset($this->contacts)->id;
+			$this->_setDefaults();
 			return $this->_status(true, 'Initialize new customer', 'Now working with a new customer');
 		}
 
@@ -279,9 +281,12 @@
 			$sql = "SELECT id, name  FROM " . TB_PREF . "contacts WHERE parent_id=" . $this->id;
 			$result = db_query($sql, 'Couldn\'t retrieve any contacts');
 			if (!db_num_rows($result)) {
-				$this->contacts[0] = new Contact(array("name"=>$this->branches[$this->defaultBranch]->contact_name,
-"phone1"=>$this->branches[$this->defaultBranch]->phone));
-
+				$contact = new Contact(
+					array("parent_id" => $this->id, "name" => $this->branches[$this->defaultBranch]->contact_name, "phone1" => $this->branches[$this->defaultBranch]->phone));
+				if (strlen($contact->name) == 0)
+					$contact->name = $this->name;
+				$contact->save();
+				$this->contacts[$contact->id] = $contact;
 			}
 			else {
 				while ($row = db_fetch_assoc($result)) {
@@ -289,6 +294,8 @@
 				}
 			}
 			$this->defaultContact = reset($this->contacts)->id;
+			$this->contacts[0] = new Contact(array('parent_id' => $this->id));
+
 		}
 
 		public function addBranch($details = null) {
@@ -299,7 +306,8 @@
 		}
 
 		public static function search($terms) {
-			$sql = "SELECT debtor_no as id, debtor_ref as label, debtor_ref as value FROM " . TB_PREF . "debtors_master " . "where debtor_ref LIKE '%" . $terms . "%' LIMIT 20";
+			$sql = "SELECT debtor_no as id, name as label, name as value FROM " . TB_PREF . "debtors_master " . " where debtor_ref LIKE '%" . $terms . "%' OR name
+			LIKE '%" . $terms . "%' LIMIT 20";
 			$result = db_query($sql, 'Couldn\'t Get Customers');
 			$data = '';
 			while ($row = db_fetch_assoc($result)) {

@@ -714,7 +714,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 
 		static $inserted;
 		if ($_SERVER['SERVER_NAME'] == 'advaccounts' && !$inserted && !isset($_SESSION['getWebsales'])) {
-			$_SESSION['getWebsales'] = false;
+			$_SESSION['getWebsales'] = true;
 			echo <<<JS
 $(function() {
 if ($("#websaleGet").length>0) return;
@@ -728,25 +728,14 @@ JS;
 		static $inserted;
 		if (!$inserted && $_SERVER['SERVER_NAME']=='advaccounts') {
 			global $comp_path, $path_to_root;
-			$fpath = $comp_path . '/' . user_company() . '/js_cache/';
+			$fpath = '/js/js2/';
 			//TODO: api key this shouldn't be hardcoded
 			add_js_ufile('http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAAi6QUBXugcwuPqyTcPMoi7BQoeTHA_aFeuZZQfngKyuFQqT3AwhTemRsst-Nyw7tIGXwcvd0qBU1aEw');
 			add_js_ufile($fpath . 'jquery.gmap-1.1.0-min.js');
 			$inserted = true;
 		}
 	}
-
-	function get_jquery_file_upload() {
-		static $inserted;
-		if (!$inserted) {
-			global $comp_path, $path_to_root;
-			$fpath = $comp_path . '/' . user_company() . '/js_cache/';
-			add_js_ufile($fpath . 'jquery.fileupload.js');
-			add_js_ufile($fpath . 'jquery.fileupload-ui.js');
-			add_js_ufile($fpath . 'jquery.fileupload-app.js');
-			$inserted = true;
-		}
-	}
+ 
 
 	function get_js_date_picker() {
 		global $comp_path, $go_debug;

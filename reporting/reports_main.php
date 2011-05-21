@@ -91,7 +91,8 @@ $reports->addReport(_('Customer'), 108, _('Print &Statements'),
 					array(_('Customer') => 'CUSTOMERS_NO_FILTER',
 						 _('Currency Filter') => 'CURRENCY',
 						 _('Email Customers') => 'YES_NO',
-						 _('Comments') => 'TEXTBOX'));
+						 _('Comments') => 'TEXTBOX',
+					_('Include Payments') => 'YES_NO'));
 $reports->addReport(_('Customer'), 109, _('&Print Sales Orders'),
 					array(_('From') => 'ORDERS',
 						 _('To') => 'ORDERS',

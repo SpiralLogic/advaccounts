@@ -6,16 +6,16 @@
  * To change this template use File | Settings | File Templates.
  */
 (function(window, undefined) {
-	var previous,
+	var $current,
 			ajaxRequest,
 			Searchboxtimeout,
 			Adv = window.Adv,
 			sidemenu = {},
 			searchInput = $('<input/>').attr({type: 'text',value:'',size:14,maxlength:18}).data({'id':'',url:''}),
-			$search = $("#search");
+			$search = $("#search"),
+			$quickMenu = $('#quickCustomer');
 	(function() {
 		var $this = this,
-				$results = $("#results"),
 				$wrapper = $("#wrapper");
 		this.menu = $("#sidemenu").draggable().accordion({autoHeight: false,event: "mouseover"}).fadeTo("slow", .75).hover(function() {
 			$(this).fadeTo("fast", 1);
@@ -24,33 +24,30 @@
 		});
 		this.sidemenuOn = function() {
 			$this.menu.accordion("enable");
-			$this.menu.find("h3").undelegate("a", "click");
 		};
 		this.sidemenuOff = function() {
 			$this.menu.accordion("disable");
-			$this.menu.find("h3").delegate("a", "click", function() {
-				$results.detach();
+			$this.menu.find("h3").one("click", function() {
+				$("#results").detach();
 				$wrapper.show();
 			})
 		};
 		this.doSearch = function () {
-			term = searchInput.val();
+			var term = searchInput.val();
 			Adv.loader.show();
 			ajaxRequest = $.post(searchInput.data("url"), { ajaxsearch: term, limit: true }, $this.showSearch);
 		};
 		this.showSearch = function (data) {
-			var content = $('#wrapper', data).attr("id", "results");
-			$results.remove();
-			$wrapper.before(content).hide();
+			var content = $('#wrapper', data).attr("id", "results"), $results = $("#results");
+			($results.length > 0) ? $results.replaceWith(content) : $wrapper.after(content);
+			$wrapper.hide();
 			Adv.loader.hide();
 		}
 		$search.delegate("a", "click", function(event) {
+			searchInput.trigger('blur');
+			$current = $(this).hide();
 			$this.sidemenuOff();
-			event.preventDefault();
-			$search.find('input').trigger('blur');
-			previous = $(this);
-			previous.after(searchInput.data({'id':previous.attr('href'),url:previous.attr('href')})).detach();
-			searchInput.focus();
+			searchInput.data({'id':$current.attr('href'),url:$current.attr('href')}).insertBefore($current).focus();
 			return false;
 		});
 		$search.delegate('input', "change blur keyup", function(event) {
@@ -62,28 +59,27 @@
 				Searchboxtimeout = window.setTimeout($this.doSearch, 1000);
 			}
 			if (event.type != 'keyup') {
-				searchInput.after(previous).detach().val('');
+				searchInput.detach().val('');
+				$current.show();
+
 				$this.sidemenuOn();
 			}
 		});
-		$('#quickCustomer').autocomplete({
-			                                 source: function(request, response) {
-				                                 lastXhr = $.getJSON('/contacts/customers.php', request, function(data, status, xhr) {
-					                                 if (xhr === lastXhr) {
-						                                 response(data);
-					                                 }
-				                                 })
-			                                 },
-			                                 minLength: 2,
-			                                 select: function(event, ui) {
+		$quickMenu.autocomplete({
+			                        source: function(request, response) {
+				                        ajaxRequest = $.getJSON('/contacts/customers.php', request, function(data, status, xhr) {
+					                        if (xhr === ajaxRequest) {
+						                        response(data);
+					                        }
+				                        })
+			                        },
+			                        minLength: 2,
+			                        select: function(event, ui) {
 
-				                                 $this.showSearch(ui.item.id);
+				                        $this.showSearch(ui.item.id);
 
-			                                 }
-		                                 });
+			                        }
+		                        });
 	}).apply(sidemenu);
-	window.Adv.extend(sidemenu);
+	Adv.sidemenu = sidemenu;
 })(window);
-$(function() {
-
-})

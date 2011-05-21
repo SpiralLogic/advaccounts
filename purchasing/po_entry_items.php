@@ -404,8 +404,7 @@ if (isset($_GET['NewOrder'])) {
 				}
 			}
 
-			$_SESSION['PO'
-			]->add_to_order($line_no, $line_item->stock_id, $line_item->quantity, $line_item->item_description, price_decimal_format(
+			$_SESSION['PO']->add_to_order($line_no, $line_item->stock_id, $line_item->quantity, $line_item->item_description, price_decimal_format(
 				$myrow[0]['price'], $dec2),
 							$line_item->units, add_days(Today(), 10), 0, 0, 0);
 
@@ -416,18 +415,18 @@ if (isset($_GET['NewOrder'])) {
 		$_SESSION['wa_global_supplier_id'] = key($po_lines);
 		if ($_GET['DS']) {
 			$item_info = get_item('DS');
-			$_SESSION['PO']->add_to_order(count($_SESSION['PO']->line_items), 'DS', 1,
-										  $item_info['long_description'], 0, '', add_days(Today(), 10), 0, 0, 0);
-			$_SESSION['PO']->delivery_address = '';
-			if (!empty($_SESSION['Items']->deliver_to)) {
-				$_SESSION['PO']->delivery_address .= $_SESSION['Items']->deliver_to . "\n";
+			$_SESSION['PO']->add_to_order(count($_SESSION['PO']->line_items), 'DS', 1, $item_info['long_description'], 0, '', add_days(Today(), 10), 0, 0, 0);
+			$address = $_SESSION['Items']->customer_name . "\n";
+			if (!empty($_SESSION['Items']->name) && $_SESSION['Items']->deliver_to == $_SESSION['Items']->customer_name) {
+				$address .= $_SESSION['Items']->name . "\n";
+			} elseif($_SESSION['Items']->deliver_to != $_SESSION['Items']->customer_name) {
+				$address .= $_SESSION['Items']->deliver_to . "\n";
 			}
 			if (!empty($_SESSION['Items']->phone)) {
-				$_SESSION['PO']->delivery_address .= 'Ph:' . $_SESSION['Items']->phone . "\n";
+				$address .= 'Ph:' . $_SESSION['Items']->phone . "\n";
 			}
-
-			$_SESSION['PO']->delivery_address .= $_SESSION['Items']->delivery_address;
-			$_POST['delivery_address'] = $_SESSION['PO']->delivery_address;
+			$address .= $_SESSION['Items']->delivery_address;
+			$_POST['delivery_address'] = $_SESSION['PO']->delivery_address = $address;
 		}
 	}
 

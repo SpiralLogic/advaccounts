@@ -465,6 +465,7 @@ img {
 }
 
 rgba
+
 (
 199
 ,
@@ -901,6 +902,42 @@ td.tableheader3 {
 	text-align: center;
 }
 
+.center {
+	text-align: center;
+	margin: 0 auto;
+}
+
+.width50 {
+	width: 50%
+}
+
+a.button {
+	outline: 0;
+	margin: 0 4px 0 0;
+	height: 2em;
+	text-decoration: none !important;
+	cursor: pointer;
+	position: relative;
+	text-align: center;
+	-moz-border-radius: 5px;
+
+	-webkit-border-radius: 5px;
+	font: menu;
+	line-height:2em;
+	font-weight:900;
+	display: inline-block;
+	padding: 5px 10px;
+	background: ButtonFace;
+	color: ButtonText;
+	border-style: solid;
+	border-width: 2px;
+	border-color: ButtonHighlight ButtonShadow ButtonShadow ButtonHighlight;
+}
+
+a.button:active {
+	border-color: ButtonShadow ButtonHighlight ButtonHighlight ButtonShadow;
+}
+
 .dialog-confirm {
 	display: none;
 }
@@ -915,9 +952,15 @@ td.tableheader3 {
 	width: 90%;
 	height: 100%;
 	background: url("/themes/default/images/ajax-loader3.gif") no-repeat center center;
-	display: none;
 }
-
+div#file_upload_div {
+	margin:0 auto;
+	width: 50%;
+	text-align: center;
+	padding:10px;
+	
+	border: #ff6666 groove  thin;
+}
 .file_upload {
 	position: relative;
 	overflow: hidden;
@@ -925,6 +968,7 @@ td.tableheader3 {
 	cursor: pointer;
 	text-align: center;
 	color: #333;
+display:inline-block;
 	font-weight: bold;
 	-moz-border-radius: 10px;
 	-webkit-border-radius: 10px;
@@ -957,7 +1001,9 @@ td.tableheader3 {
 .file_upload_highlight {
 	background: lawngreen;
 }
-
+#files {
+	margin:0 auto;
+}
 .file_upload input {
 	position: absolute;
 	top: 0;

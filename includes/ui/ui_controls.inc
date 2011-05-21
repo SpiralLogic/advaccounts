@@ -232,13 +232,14 @@ function hyperlink_params_td($target, $label, $params)
 
 //-----------------------------------------------------------------------------------
 
-function hyperlink_params_separate($target, $label, $params, $center = false)
+function hyperlink_params_separate($target, $label, $params, $center = false,$nobr=false)
 {
 	$id = default_focus();
 
 	$pars = access_string($label);
+	if (!$nobr) echo "<br>";
 	if ($center)
-		echo "<br><center>";
+		echo "<center>";
 	echo "<a target='_blank' id='$id' href='$target?$params' $pars[1]>$pars[0]</a>\n";
 	if ($center)
 		echo "</center>";
