@@ -72,7 +72,7 @@ $path_to_root, $go_debug;
 
 function send_fscripts()
 {
-	global $js_lib, $js_static, $js_path, $js_fuserlib, $comp_path, $path_to_root, $go_debug;
+	global  $js_fuserlib;
 	$js = '';
 
 	foreach ($js_fuserlib as $jsfile) {
@@ -117,7 +117,7 @@ function page_header($title, $no_menu = false, $is_index = false, $onload = "", 
 		$sel_app = user_startup_tab();
 	$_SESSION["sel_app"] = $sel_app;
 
-	// When startup tab for current user was set to already 
+	// When startup tab for current user was set to already
 	// removed/inactivated extension module select Sales tab as default.
 	if (isset($_SESSION["App"]) && is_object($_SESSION["App"]))
 		$_SESSION["App"]->selected_application =
