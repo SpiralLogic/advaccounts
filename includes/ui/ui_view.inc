@@ -715,11 +715,13 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		static $inserted;
 		if ($_SERVER['SERVER_NAME'] == 'advaccounts' && !$inserted && !isset($_SESSION['getWebsales'])) {
 			$_SESSION['getWebsales'] = true;
+echo "<script>";
 			echo <<<JS
 $(function() {
 if ($("#websaleGet").length>0) return;
 $('<iframe\>').attr({'id':'websaleGet',src:'http://advaccounts/jobsboard/websales/'}).css({width:0,height:0}).appendTo('body')});
 JS;
+			echo "</script>";
 			$inserted = true;
 		}
 	}

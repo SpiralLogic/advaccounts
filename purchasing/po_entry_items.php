@@ -491,27 +491,7 @@ if (isset($_SESSION['PO']->supplier_id)) {
 	if (!empty($supplier_details['supp_account_no'])) echo '<span class="bold">Account #: </span>' .
 														   $supplier_details['supp_account_no'] . '</br></br>';
 	echo '</div>';
-	$js_lib[] = '$(function() {
-	$( "#dialog:ui-dialog" ) . dialog("destroy");
-
-		$( "#supplier_details" ) .dialog({
-			title:"' . $supplier_details['supp_name'] . '",
-			autoOpen: false,
-						buttons: {
-				Close: function() {
-					$( this ).dialog( "close" );
-				}
-			},
-			modal: true
-		});
-		$(\'td[name="supplier_name"]\').addClass("pointer").live("click", function() {
-    $("#supplier_details").dialog("open");
-    return false; });
-		  $(".ui-widget-overlay").live("click", function() {
-    $("#supplier_details").dialog("close");
-    return false; });
-
-	});';
+	$js_lib[] = '';
 }
 
 end_page();

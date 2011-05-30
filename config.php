@@ -54,7 +54,7 @@
 	// application version
 	$version = "2.2.11";
 	// Build for development purposes
-	$build_version = date("d.m.Y", filemtime("$path_to_root/index2.php"));
+	$build_version = date("d.m.Y", filemtime("/opt/git/accounts/.git/refs/heads/master"));
 	// Powered by
 	$power_by = "Advanced Accounting";
 	$power_url = "http://www.advancedroadsigns.com.au";

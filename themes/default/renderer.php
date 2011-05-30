@@ -29,7 +29,7 @@ class renderer
 	{
 		global $path_to_root, $help_base_url, $db_connections, $app_title, $version;
 		$sel_app = $_SESSION['sel_app'];
-		echo "<div id='content'>\n<div id='loader'></div>";
+		echo "<div id='content'>\n";
 		if (!$no_menu) {
 			if ($this->has_header) {
 				Sidemenu::render();

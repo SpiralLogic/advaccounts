@@ -188,7 +188,8 @@ function number_format2($number, $decimals = 0)
 	$dsep = $decseps[$_SESSION["wa_current_user"]->prefs->dec_sep()];
 	//return number_format($number, $decimals, $dsep,	$tsep);
 	$delta = ($number < 0 ? -.0000000001 : .0000000001);
-	return number_format($number + $delta, $decimals, $dsep, $tsep);
+	$number = number_format($number + $delta, $decimals, $dsep, $tsep);
+	return ($number==-0 ? 0 : $number);
 }
 
 //

@@ -77,145 +77,84 @@
 		$Ajax->activate('customer_id');
 	}
 	if (isset($_GET['AddedID'])) {
-		$order_no = $_GET['AddedID'];
-		if ($_REQUEST['AddedJB']) {
-			display_notification_centered(sprintf(_("Order # %d has been added to Jobs Board."), $order_no));
-		}
-		else {
-			display_notification_centered(sprintf(_("Order # %d has been entered."), $order_no));
-			submenu_option(_("Add Job to Jobsboard"), "/jobsboard/jobsboard/addjob");
-		}
-		submenu_view(_("&View This Order"), ST_SALESORDER, $order_no);
-		submenu_option(_("&Edit This Order"), "/sales/sales_order_entry.php?ModifyOrderNumber=$order_no");
-		submenu_print(_("&Print This Order"), ST_SALESORDER, $order_no, 'prtopt');
-		submenu_print(_("Print Proforma Invoice"), ST_PROFORMA, $order_no, 'prtopt');
-		submenu_print(_("&Email This Order"), ST_SALESORDER, $order_no, null, 1);
-		submenu_print(_("Email Proforma Invoice"), ST_PROFORMA, $order_no, null, 1);
-		set_focus('prtopt');
-		submenu_option(_("Make &Delivery Against This Order"), "/sales/customer_delivery.php?OrderNumber=$order_no");
-		submenu_option(_("Enter a &New Order"), "/sales/sales_order_entry.php?NewOrder=0");
-		UploadHandler::insert($_SESSION['order_no']);
-		display_footer_exit();
-
+		page_complete($_GET['AddedID'], ST_SALESORDER, "Order",true);
 	}
 	elseif (isset($_GET['UpdatedID'])) {
-		$order_no = $_GET['UpdatedID'];
-		if ($_REQUEST['UpdatedJB']) {
-			display_notification_centered(sprintf(_("Order # %d has been updated on Jobs Board."), $order_no));
-		}
-		submenu_print(_("&Print This Order"), ST_SALESORDER, $order_no, 'prtopt');
-		submenu_print(_("Print Proforma Invoice"), ST_PROFORMA, $order_no, 'prtopt');
-		submenu_print(_("&Email This Order"), ST_SALESORDER, $order_no, null, 1);
-		submenu_print(_("Email Proforma Invoice"), ST_PROFORMA, $order_no, null, 1);
-		set_focus('prtopt');
-		submenu_option(_("Make &Delivery Against This Order"), "/sales/customer_delivery.php?OrderNumber=$order_no");
-		submenu_option(_("Enter a &New Order"), "/sales/sales_order_entry.php?NewOrder=0");
-		UploadHandler::insert($_SESSION['order_no']);
-		display_footer_exit();
-	}
-	elseif (isset($_GET['UpdatedID'])) {
-		$order_no = $_GET['UpdatedID'];
-		if ($_REQUEST['UpdatedJB']) {
-			display_notification_centered(sprintf(_("Order # %d has been updated on Jobs Board."), $order_no));
-
-		}
-		elseif ($_REQUEST['AddedJB']) {
-			display_notification_centered(sprintf(_("Order # %d has been added to Jobs Board."), $order_no));
-		}
-		else {
-			display_notification_centered(sprintf(_("Order # %d has been updated."), $order_no));
-		}
-		submenu_view(_("&View This Order"), ST_SALESORDER, $order_no);
-		submenu_option(_("&Edit This Order"), "/sales/sales_order_entry.php?ModifyOrderNumber=$order_no");
-		submenu_print(_("&Print This Order"), ST_SALESORDER, $order_no, 'prtopt');
-		submenu_print(_("Print Proforma Invoice"), ST_PROFORMA, $order_no, 'prtopt');
-		submenu_print(_("&Email This Order") . " (to: " . $_SESSION['Jobsboard']->email . ")", ST_SALESORDER, $order_no, null, 1);
-		submenu_print(_("Email Proforma Invoice"), ST_PROFORMA, $order_no, null, 1);
-		set_focus('prtopt');
-		submenu_option(_("Confirm Order Quantities and Make &Delivery"), "/sales/customer_delivery.php?OrderNumber=$order_no");
-		submenu_option(_("Select A Different &Order"), "/sales/inquiry/sales_orders_view.php?OutstandingOnly=1");
-		UploadHandler::insert($_SESSION['order_no']);
-		display_footer_exit();
+		page_complete($_GET['UpdatedID'], ST_SALESORDER, "Order",true,true);
 	}
 	elseif (isset($_GET['AddedQU'])) {
-		$order_no = $_GET['AddedQU'];
-		display_notification_centered(sprintf(_("Quotation # %d has been entered."), $order_no));
-		submenu_view(_("&View This Quotation"), ST_SALESQUOTE, $order_no);
-		submenu_option(_("&Edit This Quotation"), "/sales/sales_order_entry.php?ModifyQuotationNumber=$order_no");
-		submenu_print(_("&Print This Quotation"), ST_SALESQUOTE, $order_no, 'prtopt');
-		submenu_print(_("Print Proforma Invoice"), ST_PROFORMAQ, $order_no, 'prtopt');
-		submenu_print(_("&Email This Quotation"), ST_SALESQUOTE, $order_no, null, 1);
-		submenu_print(_("Email Proforma Invoice"), ST_PROFORMAQ, $order_no, null, 1);
-		set_focus('prtopt');
-		submenu_option(_("Make &Sales Order Against This Quotation"), "/sales/sales_order_entry.php?NewQuoteToSalesOrder=$order_no");
-		submenu_option(_("Enter a New &Quotation"), "/sales/sales_order_entry.php?NewQuotation=0");
-		display_footer_exit();
+		page_complete($_GET['AddedQU'], ST_SALESQUOTE, "Quotation",true);
 	}
 	elseif (isset($_GET['UpdatedQU'])) {
-		$order_no = $_GET['UpdatedQU'];
-		display_notification_centered(sprintf(_("Quotation # %d has been updated."), $order_no));
-		submenu_view(_("&View This Quotation"), ST_SALESQUOTE, $order_no);
-		submenu_option(_("&Edit This Quotation"), "/sales/sales_order_entry.php?ModifyQuotationNumber=$order_no");
-		submenu_print(_("&Print This Quotation"), ST_SALESQUOTE, $order_no, 'prtopt');
-		submenu_print(_("Print Proforma Invoice"), ST_PROFORMAQ, $order_no, 'prtopt');
-		submenu_print(_("&Email This Quotation"), ST_SALESQUOTE, $order_no, null, 1);
-		submenu_print(_("Email Proforma Invoice"), ST_PROFORMAQ, $order_no, null, 1);
-		set_focus('prtopt');
-		submenu_option(_("Make &Sales Order Against This Quotation"), "/sales/sales_order_entry.php?NewQuoteToSalesOrder=$order_no");
-		submenu_option(_("Select A Different &Quotation"), "/sales/inquiry/sales_orders_view.php?type=" . ST_SALESQUOTE);
-		display_footer_exit();
+				page_complete($_GET['UpdatedQU'], ST_SALESQUOTE, "Quotation", true, true);
 	}
 	elseif (isset($_GET['AddedDN'])) {
-		$delivery = $_GET['AddedDN'];
-		display_notification_centered(sprintf(_("Delivery # %d has been entered."), $delivery));
-		submenu_option(_("Make &Invoice Against This Delivery"), "/sales/customer_invoice.php?DeliveryNumber=$delivery");
-		submenu_view(_("&View This Delivery"), ST_CUSTDELIVERY, $delivery);
-		submenu_print(_("&Print Delivery Note"), ST_CUSTDELIVERY, $delivery, 'prtopt');
-		submenu_print(_("&Email Delivery Note"), ST_CUSTDELIVERY, $delivery, null, 1);
-		submenu_print(_("P&rint as Packing Slip"), ST_CUSTDELIVERY, $delivery, 'prtopt', null, 1);
-		submenu_print(_("E&mail as Packing Slip"), ST_CUSTDELIVERY, $delivery, null, 1, 1);
-		set_focus('prtopt');
-		display_note(get_gl_view_str(ST_CUSTDELIVERY, $delivery, _("View the GL Journal Entries for this Dispatch")), 0, 1);
-		if ((isset($_GET['Type']) && $_GET['Type'] == 1)) {
-			submenu_option(_("Enter a New Template &Delivery"), "/sales/inquiry/sales_orders_view.php?DeliveryTemplates=Yes");
-		}
-		else {
-			submenu_option(_("Enter a &New Delivery"), "/sales/sales_order_entry.php?NewDelivery=0");
-		}
-		display_footer_exit();
+		page_complete($_GET['AddedDN'], ST_CUSTDELIVERY, "Delivery");
 	}
 	elseif (isset($_GET['AddedDI'])) {
-		$invoice = $_GET['AddedDI'];
-		display_notification_centered(sprintf(_("Invoice # %d has been entered."), $invoice));
-		submenu_view(_("&View This Invoice"), ST_SALESINVOICE, $invoice);
-		hyperlink_params("$path_to_root/sales/customer_payments.php", _("Apply a customer payment"));
-		echo '<br>';
-		submenu_print(_("&Print Sales Invoice"), ST_SALESINVOICE, $invoice . "-" . ST_SALESINVOICE, 'prtopt');
-		submenu_print(_("&Email Sales Invoice"), ST_SALESINVOICE, $invoice . "-" . ST_SALESINVOICE, null, 1);
-		UploadHandler::insert($_SESSION['order_no']);
-		set_focus('prtopt');
-		$sql = "SELECT trans_type_from, trans_no_from FROM " . TB_PREF . "cust_allocations
-			WHERE trans_type_to=" . ST_SALESINVOICE . " AND trans_no_to=" . db_escape($invoice);
-		$result = db_query($sql, "could not retrieve customer allocation");
-		$row = db_fetch($result);
-		if ($row !== false) {
-			submenu_print(_("Print &Receipt"), $row['trans_type_from'], $row['trans_no_from'] . "-" . $row['trans_type_from'], 'prtopt');
-		}
-		display_note(get_gl_view_str(ST_SALESINVOICE, $invoice, _("View the GL &Journal Entries for this Invoice")), 0, 1);
-		if ((isset($_GET['Type']) && $_GET['Type'] == 1)) {
-			submenu_option(_("Enter a &New Template Invoice"), "/sales/inquiry/sales_orders_view.php?InvoiceTemplates=Yes");
-		}
-		else {
-			submenu_option(_("Enter a &New Direct Invoice"), "/sales/sales_order_entry.php?NewInvoice=0");
-		}
-		if ($_GET['AddedDI'] && isset($_SESSION['wa_global_customer_id']) && $row == false) {
-			echo "<div style='text-align:center;'><iframe  style='margin:0 auto; border-width:0;' src='{$path_to_root}/sales/customer_payments.php?frame=1' width='80%' height='475' scrolling='no' frameborder='0'></iframe> </div>";
-		}
-		display_footer_exit();
+		submenu_view(_("&View This Invoice"), ST_SALESINVOICE, $_GET['AddedDI']);
+		$order_no = $_GET['AddedDI'] . "-" . ST_SALESINVOICE;
+		page_complete($order_no, ST_SALESINVOICE, "Invoice");
 	}
 	else {
 		check_edit_conflicts();
 	}
+	function page_complete($order_no, $trans_type, $trans_name='Transaction', $edit = false,$update=false) {
+		global $path_to_root;
+		$customer = new Customer($_SESSION['Jobsboard']->customer_id);
+		$email = (empty($customer->accounts->email) ?"No Email Address": $customer->accounts->email);
+		display_notification_centered(sprintf(_($trans_name." # %d has been ".($update ? "updated!":"added!")),$order_no ));
+		submenu_view(_("&View This ". $trans_name), $trans_type, $order_no);
+		if ($edit)
+			submenu_option(_("&Edit This ". $trans_name), "/sales/sales_order_entry.php?" . ($trans_type == ST_SALESORDER ? "ModifyQuotationNumber" : "ModifyOrderNumber") . "=$order_no");
+		submenu_print(_("&Print This " . $trans_name), $trans_type, $order_no, 'prtopt');
+		submenu_print(_("&Email This Proforma Invoice (" . $email. ")"), $trans_type, $order_no, null, 1);
+		if ($trans_type == ST_SALESORDER || $trans_type == ST_SALESQUOTE) {
+			submenu_print(_("Print Proforma ". $trans_name), ($trans_type == ST_SALESORDER ? ST_PROFORMA : ST_PROFORMAQ), $order_no, 'prtopt');
+			submenu_print(_("&Email This " . $trans_name) . " (" . $email. ")", ($trans_type == ST_SALESORDER ? ST_PROFORMA : ST_PROFORMAQ), $order_no, null, 1);
+		}
+		if ($trans_type == ST_SALESORDER) {
+			submenu_option(_("Make &Delivery Against This Order"), "/sales/customer_delivery.php?OrderNumber=$order_no");
+			submenu_option(_("Show outstanding &Orders"), "/sales/inquiry/sales_orders_view.php?OutstandingOnly=1");
+			submenu_option(_("Select A Different Order to edit"), "/sales/inquiry/sales_orders_view.php?type=" . ST_SALESORDER);
+		}
+		elseif ($trans_type == ST_SALESQUOTE) {
+			submenu_option(_("Make &Sales Order Against This Quotation"), "/sales/sales_order_entry.php?NewQuoteToSalesOrder=$order_no");
+			submenu_option(_("Enter a New &Quotation"), "/sales/sales_order_entry.php?NewQuotation=0");
+			submenu_option(_("Select A Different &Quotation to edit"), "/sales/inquiry/sales_orders_view.php?type=" . ST_SALESQUOTE);
+		}
+		elseif ($trans_type == ST_CUSTDELIVERY) {
+			submenu_print(_("&Print Delivery Note"), ST_CUSTDELIVERY, $order_no, 'prtopt');
+			submenu_print(_("P&rint as Packing Slip"), ST_CUSTDELIVERY, $order_no, 'prtopt', null, 1);
+			display_note(get_gl_view_str(ST_CUSTDELIVERY, $order_no, _("View the GL Journal Entries for this Dispatch")), 0, 1);
+			submenu_option(_("Make &Invoice Against This Delivery"), "/sales/customer_invoice.php?DeliveryNumber=$order_no");
+			((isset($_GET['Type']) && $_GET['Type'] == 1)) ? submenu_option(_("Enter a New Template &Delivery"), "/sales/inquiry/sales_orders_view.php?DeliveryTemplates=Yes")
+					: submenu_option(_("Enter a &New Delivery"), "/sales/sales_order_entry.php?NewDelivery=0");
+		}
+		elseif ($trans_type == ST_SALESINVOICE) {
+			$sql = "SELECT trans_type_from, trans_no_from FROM " . TB_PREF . "cust_allocations WHERE trans_type_to=" . ST_SALESINVOICE . " AND trans_no_to=" . db_escape($order_no);
+			$result = db_query($sql, "could not retrieve customer allocation");
+			$row = db_fetch($result);
+			if ($row !== false) {
+				submenu_print(_("Print &Receipt"), $row['trans_type_from'], $row['trans_no_from'] . "-" . $row['trans_type_from'], 'prtopt');
+			}
+			display_note(get_gl_view_str(ST_SALESINVOICE, $order_no, _("View the GL &Journal Entries for this Invoice")), 0, 1);
+			if ((isset($_GET['Type']) && $_GET['Type'] == 1)) {
+				submenu_option(_("Enter a &New Template Invoice"), "/sales/inquiry/sales_orders_view.php?InvoiceTemplates=Yes");
+			}
+			else {
+				submenu_option(_("Enter a &New Direct Invoice"), "/sales/sales_order_entry.php?NewInvoice=0");
+			}
+			hyperlink_params("$path_to_root/sales/customer_payments.php", _("Apply a customer payment"));
+			if ($_GET['AddedDI'] && isset($_SESSION['wa_global_customer_id']) && $row == false) {
+				echo "<div style='text-align:center;'><iframe  style='margin:0 auto; border-width:0;' src='{$path_to_root}/sales/customer_payments.php?frame=1' width='80%' height='475' scrolling='no' frameborder='0'></iframe> </div>";
+			}
+		}
+		set_focus('prtopt');
+		UploadHandler::insert($_SESSION['order_no']);
+		display_footer_exit();
+	}
+
 	//-----------------------------------------------------------------------------
 	function copy_to_cart() {
 		$cart = &$_SESSION['Items'];

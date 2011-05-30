@@ -29,7 +29,7 @@ function page_footer($no_menu = false, $is_index = false, $hide_back_link = fals
 		$text = str_replace(array('<script>', '</script>'), '', $text);
 		echo $text;
 	}
-	//show_messages();
+	show_messages();
 	echo "\n--></script>\n";
 	$messages = new Messages();
 	if ($messages->getNewUserMessages($_SESSION['wa_current_user']->user) > 0) {
