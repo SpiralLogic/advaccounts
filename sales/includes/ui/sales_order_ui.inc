@@ -12,7 +12,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	include_once($path_to_root . "/sales/includes/cart_class.inc");
 	include_once($path_to_root . "/includes/manufacturing.inc");
 	//--------------------------------------------------------------------------------
-	function add_to_order(&$order, $new_item, $new_item_qty, $price, $discount, $description) {
+	function add_to_order(&$order, $new_item, $new_item_qty, $price, $discount, $description, $no_errors=false) {
 		// calculate item price to sum of kit element prices factor for
 		// value distribution over all exploded kit items
 		$item = is_item_kit($new_item);
@@ -20,7 +20,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 			$item = db_fetch($item);
 			if (!$item['is_foreign'] && $item['item_code'] == $item['stock_id']) {
 				foreach ($order->line_items as $order_item) {
-					if (strcasecmp($order_item->stock_id, $item['stock_id']) == 0) {
+					if (strcasecmp($order_item->stock_id, $item['stock_id']) == 0 && !$no_errors) {
 						display_warning(_("For Part :") . $item['stock_id'] . " " . _("This item is already on this document. You have been warned."));
 						break;
 					}

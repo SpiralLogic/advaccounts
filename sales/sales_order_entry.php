@@ -111,7 +111,7 @@
 		submenu_print(_("&Email This Proforma Invoice (" . $email. ")"), $trans_type, $order_no, null, 1);
 		if ($trans_type == ST_SALESORDER || $trans_type == ST_SALESQUOTE) {
 			submenu_print(_("Print Proforma ". $trans_name), ($trans_type == ST_SALESORDER ? ST_PROFORMA : ST_PROFORMAQ), $order_no, 'prtopt');
-			submenu_print(_("&Email This " . $trans_name) . " (" . $email. ")", ($trans_type == ST_SALESORDER ? ST_PROFORMA : ST_PROFORMAQ), $order_no, null, 1);
+			submenu_print(_("&Email This " . $trans_name) . " (" . $email. ")", ($trans_type == ST_SALESORDER ? ST_SALESORDER : ST_SALESQUOTE), $order_no, 'printlink', 1);
 		}
 		if ($trans_type == ST_SALESORDER) {
 			submenu_option(_("Make &Delivery Against This Order"), "/sales/customer_delivery.php?OrderNumber=$order_no");

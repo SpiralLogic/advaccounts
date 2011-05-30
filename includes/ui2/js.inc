@@ -13,6 +13,7 @@
 			$js_lib[] = <<< JS
 $(function() {
        $('#{$id}').autocomplete({
+       autoFocus:true,
 		source: function(request, response) {
 			lastXhr = $.getJSON('{$url}', request, function(data, status, xhr) {
 				if (xhr === lastXhr) {
