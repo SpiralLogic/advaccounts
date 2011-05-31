@@ -68,6 +68,10 @@
 		$_SESSION['page_title'] = _($help_context = "Sales Order Entry");
 		create_cart(ST_SALESQUOTE, $_GET['NewQuoteToSalesOrder']);
 	}
+	elseif (isset($_GET['NewRemoteToSalesOrder'])) {
+		$_SESSION['page_title'] = _($help_context = "Sales Order Entry");
+		create_cart(ST_SALESORDER, $_GET['NewRemoteToSalesOrder']);
+	}
 	page($_SESSION['page_title'], false, false, "", $js);
 	//-----------------------------------------------------------------------------
 	if (list_updated('branch_id')) {
@@ -478,6 +482,7 @@
 		global $Refs;
 		processing_start();
 		$doc_type = $type;
+
 		if (isset($_GET['NewQuoteToSalesOrder'])) {
 			$trans_no = $_GET['NewQuoteToSalesOrder'];
 			$doc = new Cart(ST_SALESQUOTE, $trans_no);
@@ -487,6 +492,10 @@
 			$doc->document_date = $doc->due_date = new_doc_date();
 			$doc->Comments = _("Sales Quotation") . " # " . $trans_no;
 			$_SESSION['Items'] = $doc;
+		}
+		elseif (isset($_GET['NewRemoteToSalesOrder'])) {
+			$_SESSION['Items'] = $_SESSION['remote_order'];
+			unset($_SESSION['remote_order']);
 		}
 		elseif ($type != ST_SALESORDER && $type != ST_SALESQUOTE && $trans_no != 0) { // this is template
 			$doc_type = ST_SALESORDER;

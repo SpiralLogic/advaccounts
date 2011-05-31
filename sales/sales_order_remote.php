@@ -24,10 +24,18 @@
 	if (isset($_GET['item'])) {
 		handle_new_item();
 	}
-	function handle_new_item() {
 
-		add_to_order($_SESSION['remote_order'], $_GET['item'], 1, 10, 0, 'test',true);
-	echo  $_GET['item'];
+	function handle_new_item() {
+		$current_count = count($_SESSION['remote_order']->line_items);
+		add_to_order($_SESSION['remote_order'], $_GET['item'], $_GET['qty'], 10, 0, $_GET['desc'], true);
+		if ($current_count == count($_SESSION['remote_order']->line_items)) {
+			$data['message']='No item added';
+		} else
+		{
+			$data['added']=$_GET['item'];
+		}
+	FB::info($data);
+		echo $_GET['jsoncallback'] . '(' . json_encode($data) . ')';
 	}
 
 	function copy_from_cart() {
