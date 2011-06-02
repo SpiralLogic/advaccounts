@@ -76,7 +76,7 @@ elseif (isset($_GET['xml']))
 	exit();
 }
 
-if (!isset($_POST['REP_ID'])) { // print link clicked
+if (!isset($_POST['REP_ID']) && isset($_GET['REP_ID']) ) { // print link clicked
 	$def_pars = array(0, 0, '', '', 0, '', '', 0); //default values
 	$rep = $_POST['REP_ID'] = $_GET['REP_ID'];
 	for ($i = 0; $i < 8; $i++) {
@@ -84,10 +84,10 @@ if (!isset($_POST['REP_ID'])) { // print link clicked
 				? $_GET['PARAM_' . $i] : $def_pars[$i];
 	}
 }
-$rep = $_POST['REP_ID'];
+if (isset($_POST['REP_ID'])) $rep_file = find_report_file($_POST['REP_ID']);
 
-$rep_file = find_report_file($rep);
-require($rep_file);
+
+if (!empty($rep_file)) require($rep_file);
 exit();
 
 ?>
