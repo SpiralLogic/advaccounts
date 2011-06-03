@@ -19,27 +19,26 @@
 		global $Refs;
 		processing_start();
 		$_SESSION['remote_order'] = new Cart(ST_SALESORDER, array(0));
-		copy_from_cart();
+		copy_from_cart($_SESSION['remote_order']);
 	}
-	if (isset($_GET['item'])) {
-		handle_new_item();
+	if (isset($_GET['item']) && isset($_GET['new'])) {
+		handle_new_remote();
 	}
 
-	function handle_new_item() {
+	function handle_new_remote() {
 		$current_count = count($_SESSION['remote_order']->line_items);
 		add_to_order($_SESSION['remote_order'], $_GET['item'], $_GET['qty'], 10, 0, $_GET['desc'], true);
 		if ($current_count == count($_SESSION['remote_order']->line_items)) {
-			$data['message']='No item added';
+			$data['message']='No item with this code.';
 		} else
 		{
-			$data['added']=$_GET['item'];
+			$data['added']=$_GET['item']."<br><br>".($current_count+1)." items are currently on order.";
 		}
-	FB::info($data);
 		echo $_GET['jsoncallback'] . '(' . json_encode($data) . ')';
 	}
 
-	function copy_from_cart() {
-		$cart = &$_SESSION['remote_order'];
+	function copy_from_cart($order) {
+		$cart = &$order;
 		$_POST['ref'] = $cart->reference;
 		$_POST['Comments'] = $cart->Comments;
 		$_POST['OrderDate'] = $cart->document_date;

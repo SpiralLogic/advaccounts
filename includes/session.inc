@@ -260,9 +260,10 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	}
 
 	if (isset($_SESSION["wa_current_user"]) && $_SESSION["wa_current_user"]->user == 1) {
-		//$pdf_debug = 1;
-		//	$show_sql=1;
-		//
+		if ($go_debug == 1) {
+			error_reporting(E_ALL);
+			ini_set("display_errors", "On");
+		}
 	}
 	// POST vars cleanup needed for direct reuse.
 	// We quote all values later with db_escape() before db update.

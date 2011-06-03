@@ -22,7 +22,9 @@ class advanced_app extends application
 								 "http://advaccounts/jobsboard/websales/", 'SA_OPEN');
 		$this->add_lapp_function(0, _("Search"),
 								 "http://advaccounts/jobsboard/search/", 'SA_OPEN');
-
+$this->add_rapp_function(0,"Add To Order from Website",'javascript:var%20s=document.createElement("script");s.setAttribute("src",%20"http://advaccounts/js/js2/addfromsite.js?"+Math.floor(Math . random() * 1000000));document .
+                                                                                                                       getElementsByTagName("body")[0].appendChild(s);;void(0);',
+                         'SA_OPEN');
 	}
 
 }
