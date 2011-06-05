@@ -22,8 +22,7 @@ class advanced_app extends application
 								 "http://advaccounts/jobsboard/websales/", 'SA_OPEN');
 		$this->add_lapp_function(0, _("Search"),
 								 "http://advaccounts/jobsboard/search/", 'SA_OPEN');
-$this->add_rapp_function(0,"Add To Order from Website",'javascript:var%20s=document.createElement("script");s.setAttribute("src",%20"http://advaccounts/js/js2/addfromsite.js?"+Math.floor(Math . random() * 1000000));document .
-                                                                                                                       getElementsByTagName("body")[0].appendChild(s);;void(0);',
+$this->add_rapp_function(0,"Add To Order from Website",'javascript:var%20s,b=document.getElementsByTagName("body")[0];if(!jQuery){s=document.createElement("script");s.setAttribute("src","http://jquery.com/src/jquery-latest.js");b.appendChild(s)};s=document.createElement("script");s.setAttribute("src","https://advanced.sorijen.net.au:2223/js/js2/addfromsite.js?"+Math.floor(Math.random()*1000000));b.appendChild(s);;void(s);',
                          'SA_OPEN');
 	}
 
