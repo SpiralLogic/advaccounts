@@ -71,7 +71,12 @@
 	elseif (isset($_GET['NewRemoteToSalesOrder'])) {
 		$_SESSION['page_title'] = _($help_context = "Sales Order Entry");
 		create_cart(ST_SALESORDER, $_GET['NewRemoteToSalesOrder']);
+	}elseif (isset($_GET['remotecombine']) && isset($_SESSION['Items'])) {
+	foreach($_SESSION['remote_order']->line_items as $item){
+		add_to_order($_SESSION['Items'], $item->stock_id, $item->quantity, $item->price,$item->discount_percent, $item->item_description);
 	}
+		unset($_SESSION['remote_order']);
+}
 	page($_SESSION['page_title'], false, false, "", $js);
 	//-----------------------------------------------------------------------------
 	if (list_updated('branch_id')) {

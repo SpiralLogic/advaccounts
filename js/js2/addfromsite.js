@@ -4,7 +4,6 @@
  */
 $ = jQuery;
 
-
 remote_order = (function () {
 	var overlay,remote,message,button;
 	return  {
@@ -55,15 +54,20 @@ remote_order = (function () {
 						function() {
 							window.location.href = "http://advaccounts/sales/sales_order_entry.php?NewRemoteToSalesOrder=Yes"
 						}).appendTo(remote);
+				button.clone().text('Add items to current order').click(
+						function() {
+							window.location.href = "http://advaccounts/sales/sales_order_entry.php?remotecombine=Yes"
+						}).appendTo(remote);
 			}
 		},
 		show: function() {
 			overlay.appendTo('body'),remote.appendTo('body')
 		},
 		getDetails: function() {
-			return {			code: $('.product_code').text(),
-				quantity: $("[name^='QTY']").val(),
-				description: $("font.productnamecolorLARGE").text()
+			return {			item: $('.product_code').text(),
+				qty: $("[name^='QTY']").val(),
+				desc: $("font.productnamecolorLARGE").text(),
+				"new":true
 			}
 		},
 		send: function() {
