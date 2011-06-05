@@ -26,7 +26,7 @@
 	$error_logfile = dirname(__FILE__) . '/tmp/errors.log';
 	$debug = 0;
 	$show_sql = 0;
-	$go_debug =1;
+	$go_debug =0;
 	$pdf_debug = 0;
 	// set $sql_trail to 1 only if you want to perform bugtracking sql trail
 	// Warning: this produces huge amount of data in sql_trail table.
@@ -54,7 +54,7 @@
 	// application version
 	$version = "2.2.11";
 	// Build for development purposes
-	$build_version = date("d.m.Y", filemtime("/opt/git/accounts/.git/refs/heads/master"));
+	$build_version = date("d.m.Y", filemtime("index2.php"));
 	// Powered by
 	$power_by = "Advanced Accounting";
 	$power_url = "http://www.advancedroadsigns.com.au";
