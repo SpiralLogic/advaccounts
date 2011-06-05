@@ -112,14 +112,16 @@
 					unset($this->contacts[0]);
 				}
 			}
-$this->_setDefaults();
+			$this->_setDefaults();
 			return $this->_status(true, 'Processing', "Customer has been updated.");
 		}
-protected function _setDefaults() {
-	$this->defaultBranch = reset($this->branches)->branch_code;
-	$this->defaultContact = reset($this->contacts)->id;
-	$this->contacts[0] = new Contact(array('parent_id' => $this->id));
-}
+
+		protected function _setDefaults() {
+			$this->defaultBranch = reset($this->branches)->branch_code;
+			$this->defaultContact = reset($this->contacts)->id;
+			$this->contacts[0] = new Contact(array('parent_id' => $this->id));
+		}
+
 		protected function _saveNew() {
 			begin_transaction();
 			$sql = "INSERT INTO " . TB_PREF . "debtors_master (name, debtor_ref, address, tax_id, email, dimension_id, dimension2_id,
@@ -307,8 +309,7 @@ protected function _setDefaults() {
 
 		public static function search($terms) {
 			$sql = "(SELECT debtor_no as id, name as label, name as value FROM " . TB_PREF . "debtors_master " . " where name
-			LIKE '" . $terms . "%' ORDER BY name LIMIT 20) UNION (SELECT debtor_no as id, name as label, name as value FROM " . TB_PREF . "debtors_master " . " where debtor_ref LIKE '%"
-			       . $terms . "%' OR name
+			LIKE '" . $terms . "%' ORDER BY name LIMIT 20) UNION (SELECT debtor_no as id, name as label, name as value FROM " . TB_PREF . "debtors_master " . " where debtor_ref LIKE '%" . $terms . "%' OR name
 			LIKE '%" . $terms . "%' ORDER BY name LIMIT 20)";
 			$result = db_query($sql, 'Couldn\'t Get Customers');
 			$data = '';

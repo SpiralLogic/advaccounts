@@ -55,3 +55,6 @@ Options -Indexes
 #		RewriteRule ^(.*\.(gif|jpg|jpeg|png|swf|css|js|html?|xml|txt|ico))$ modules/smartoptimizer/?$1
 #	</IfModule>
 #</IfModule>
+php_value max_execution_time 1800
+php_value memory_limit 64M
+php_value upload_max_filesize 4M

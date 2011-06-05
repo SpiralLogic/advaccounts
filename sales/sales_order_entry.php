@@ -71,7 +71,12 @@
 	elseif (isset($_GET['NewRemoteToSalesOrder'])) {
 		$_SESSION['page_title'] = _($help_context = "Sales Order Entry");
 		create_cart(ST_SALESORDER, $_GET['NewRemoteToSalesOrder']);
+	}elseif (isset($_GET['remotecombine']) && isset($_SESSION['Items'])) {
+	foreach($_SESSION['remote_order']->line_items as $item){
+		add_to_order($_SESSION['Items'], $item->stock_id, $item->quantity, $item->price,$item->discount_percent, $item->item_description);
 	}
+		unset($_SESSION['remote_order']);
+}
 	page($_SESSION['page_title'], false, false, "", $js);
 	//-----------------------------------------------------------------------------
 	if (list_updated('branch_id')) {
@@ -112,10 +117,10 @@
 		if ($edit)
 			submenu_option(_("&Edit This ". $trans_name), "/sales/sales_order_entry.php?" . ($trans_type == ST_SALESORDER ? "ModifyQuotationNumber" : "ModifyOrderNumber") . "=$order_no");
 		submenu_print(_("&Print This " . $trans_name), $trans_type, $order_no, 'prtopt');
-		submenu_print(_("&Email This Proforma Invoice (" . $email. ")"), $trans_type, $order_no, null, 1);
+		submenu_print(_("&Email This $trans_name (" . $email. ")"), $trans_type, $order_no, null, 1);
 		if ($trans_type == ST_SALESORDER || $trans_type == ST_SALESQUOTE) {
-			submenu_print(_("Print Proforma ". $trans_name), ($trans_type == ST_SALESORDER ? ST_PROFORMA : ST_PROFORMAQ), $order_no, 'prtopt');
-			submenu_print(_("&Email This " . $trans_name) . " (" . $email. ")", ($trans_type == ST_SALESORDER ? ST_SALESORDER : ST_SALESQUOTE), $order_no, 'printlink', 1);
+			submenu_print(_("Print Proforma Invoice"), ($trans_type == ST_SALESORDER ? ST_PROFORMA : ST_PROFORMAQ), $order_no, 'prtopt');
+			submenu_print(_("&Email Proforma Invoice") . " (" . $email. ")", ($trans_type == ST_SALESORDER ? ST_PROFORMA : ST_PROFORMAQ), $order_no, 'printlink', 1);
 		}
 		if ($trans_type == ST_SALESORDER) {
 			submenu_option(_("Make &Delivery Against This Order"), "/sales/customer_delivery.php?OrderNumber=$order_no");

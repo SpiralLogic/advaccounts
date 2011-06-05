@@ -120,7 +120,8 @@ class BoxReports
 		{
 			$ctrl = '';
 			foreach ($this->ctrl_handlers as $fun) { // first check for non-standard controls
-				$ctrl = $fun('PARAM_' . $cnt, $type);
+				call_user_func($fun, 'PARAM_' . $cnt, $type);
+					//$ctrl = $fun('PARAM_' . $cnt, $type);
 				if ($ctrl) break;
 			}
 			if ($ctrl == '') {
