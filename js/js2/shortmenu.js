@@ -18,10 +18,10 @@
 		var $this = this,
 				$wrapper = $("#wrapper");
 		this.menu = $("#sidemenu").draggable().accordion({autoHeight: false,event: "mouseover"}).fadeTo("slow", .75).hover(function() {
-			$(this).fadeTo("fast", 1);
-		}, function() {
-			$(this).fadeTo("fast", .75);
-		});
+			                                                                                                                   $(this).fadeTo("fast", 1);
+		                                                                                                                   }, function() {
+			                                                                                                                   $(this).fadeTo("fast", .75);
+		                                                                                                                   });
 		this.sidemenuOn = function() {
 			$this.menu.accordion("enable");
 		};
@@ -51,17 +51,23 @@
 			return false;
 		});
 		$search.delegate('input', "change blur keyup", function(event) {
+
 			if (ajaxRequest && event.type == 'keyup') {
+				if (event.keyCode == 13) {
+					window.clearTimeout(Searchboxtimeout);
+					$this.doSearch();
+					return false;
+				}
 				ajaxRequest.abort();
+
 			}
-			if (event.type != "blur" && searchInput.val().length > 1 && event.which != 13 && event.which < 123) {
+			if (event.type != "blur" && searchInput.val().length > 1 && event.which < 123) {
 				window.clearTimeout(Searchboxtimeout);
 				Searchboxtimeout = window.setTimeout($this.doSearch, 1000);
 			}
 			if (event.type != 'keyup') {
 				searchInput.detach().val('');
 				$current.show();
-
 				$this.sidemenuOn();
 			}
 		});

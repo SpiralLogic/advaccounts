@@ -21,7 +21,7 @@
 			$temp = new Contact();
 			if ($this->id == 0)
 				foreach ($this as $key => $value) {
-					FB::info($key . " " . $this->$key . " " . $temp->$key . " " . $value);
+
 					if ($key != 'parent_id' && $key != 'id' && $key != '_status' && $temp->$key !== $value)
 						return true;
 				}

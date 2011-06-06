@@ -143,7 +143,7 @@ var Contacts = function() {
 		},
 		setval: function (key, value) {
 			key = key.split('-');
-			if (value!==undefined) Customer.get().contacts[key[1]][key[0]] = value;
+			if (value !== undefined) Customer.get().contacts[key[1]][key[0]] = value;
 		},
 
 		New: function() {
@@ -204,11 +204,11 @@ var Branches = function() {
 		},
 		New: function() {
 			$.post('search.php', {branch_code: 0, debtor_no: Customer.get().id}, function(data) {
-				Branches.add(data).change(data);
-				Customer.get().branches[data.branch_code] = data;
-				btn.hide();
-				adding = true;
-			}, 'json');
+				       Branches.add(data).change(data);
+				       Customer.get().branches[data.branch_code] = data;
+				       btn.hide();
+				       adding = true;
+			       }, 'json');
 		},
 		Save: function() {
 			btn.unbind('click');
@@ -258,10 +258,10 @@ var Customer = function () {
 	return {
 		init: function() {
 			$.post('customers.php', {id:$('[name="id"]').val()}, function(data) {
-				Customer.setValues(data, true);
-				Branches.change(Customer.get().defaultBranch);
-				$('#customer').focus();
-			}, 'json')
+				       Customer.setValues(data, true);
+				       Branches.change(Customer.get().defaultBranch);
+				       $('#customer').focus();
+			       }, 'json')
 		},
 		setValues: function(data, quiet) {
 			customer = data = data.customer;
@@ -287,9 +287,9 @@ var Customer = function () {
 		fetch: function(id) {
 			Adv.loader.show();
 			$.post("customers.php", {"id": id}, function(data) {
-				Customer.setValues(data);
-				Adv.loader.hide();
-			}, 'json')
+				       Customer.setValues(data);
+				       Adv.loader.hide();
+			       }, 'json')
 		},
 		set: function(key, value) {
 			if (key.substr(0, 4) == ('acc_')) {
@@ -314,7 +314,7 @@ var Customer = function () {
 $(function() {
 	Adv.extend({
 		           tabs: $("#tabs0"),
-		           accFields: $("[name^='acc_']").attr('disabled', true),
+		           accFields: $("[name^='acc_']"),
 		           btnCustomer: $("#btnCustomer").button().click(function() {
 			           Branches.Save();
 			           return false;
@@ -324,7 +324,16 @@ $(function() {
 			           return false;
 		           }),
 
-		           useShipAddress: $("[name='useShipAddress']"),
+		           btnUseShipAddress: $("#useShipAddress").button().click(function() {
+
+			           Adv.accFields.each(function() {
+				           var newVal = $("[name='br_" + $(this).attr('name').substr(4) + "']").val();
+				           $(this).val(newVal);
+				           Customer.set($(this).attr('name'), newVal);
+
+			           });
+			           return false;
+		           }),
 		           ContactLog: $("#contactLog").hide()
 	           });
 	Adv.ContactLog.dialog({
@@ -360,18 +369,6 @@ $(function() {
 	                      }).click(function() {
 		                               $(this).dialog("open");
 	                               });
-	Adv.useShipAddress.change(function() {
-		if (Adv.useShipAddress.prop('checked')) {
-			Adv.accFields.attr('disabled', true).each(function() {
-				var newVal = $("[name='br_" + $(this).attr('name').substr(4) + "']").val();
-				$(this).val(newVal);
-				Customer.set($(this).attr('name'), newVal);
-			});
-
-		} else {
-			Adv.accFields.attr('disabled', false);
-		}
-	})
 
 	Adv.tabs.delegate(":input", "change",
 	                  function(event) {
@@ -389,11 +386,7 @@ $(function() {
 			                  return;
 		                  }
 		                  Adv.stateModified($(this));
-		                  if (Adv.useShipAddress.prop('checked') && $(this).attr('name').substr(0, 3) == 'br_') {
-			                  var fieldname = 'acc_' + $(this).attr('name').substr(3);
-			                  Adv.setFormValue(fieldname, $(this).val());
-			                  Customer.set(fieldname, $(this).val());
-		                  }
+
 	                  }).delegate(".tablestyle_inner td :nth-child(1)", "keydown", function() {
 		                              if (Adv.fieldsChanged > 0) return;
 		                              $(this).trigger('change');

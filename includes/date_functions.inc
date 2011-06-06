@@ -315,7 +315,7 @@ function date2sql($date_, $pad = true)
 
 	$return .= (($month > 0) ? $month . '-' : '');
 	$return .= ($day > 0) ? $day : '';
-	FB::info($return);
+
 	return $return;
 
 }

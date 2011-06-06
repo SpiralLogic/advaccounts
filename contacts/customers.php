@@ -78,10 +78,12 @@ email_row(_("State:"), 'br_state', $currentBranch->state, 35, 40);
 email_row(_("postcode"), 'br_postcode', $currentBranch->postcode, 35, 40);
 
 table_section(2);
-hidden('id', $customer->id);
 table_section_title(_("Accounts Details"), 2, 'tableheader3');
-check_row(_("Use shipping details"), 'useShipAddress',1);
-text_row(_("Phone Number:"), 'acc_phone', $customer->accounts->phone, 40, 30);
+
+	HTML::tr(true)->td(array('style' => "text-align:center; margin:0 auto",'colspan'=>2));
+	hidden('id', $customer->id);UI::button('useShipAddress', _("Use shipping details"),array('name'=>'useShipAddress'));
+	text_row(_("Accounts Contact:"), 'acc_contact_name', $customer->accounts->contact_name, 40, 40);
+	HTML::td()->tr;text_row(_("Phone Number:"), 'acc_phone', $customer->accounts->phone, 40, 30);
 text_row(_("Secondary Phone Number:"), 'acc_phone2', $customer->accounts->phone2, 40, 30);
 text_row(_("Fax Number:"), 'acc_fax', $customer->accounts->fax, 40, 30);
 email_row(_("E-mail:"), 'acc_email', $customer->email, 35, 40);
