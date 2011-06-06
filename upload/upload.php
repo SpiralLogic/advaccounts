@@ -2,10 +2,16 @@
 $page_security = 'SA_SALESMAN';
 	$path_to_root = "..";
 	include($path_to_root . "/includes/session.inc");
+	
+	
 	//$upload_dir = APP_PATH.'sales/upload/';
+	$_SESSION['order_no']= 2183;
+
+
 	if (isset($_SESSION['order_no'])) {
 		$upload_handler = new UploadHandler($_SESSION['order_no']);
-		switch ($_SERVER['REQUEST_METHOD']) {
+	
+			switch ($_SERVER['REQUEST_METHOD']) {
 			case 'HEAD':
 			case 'GET':
 				$upload_handler->get();

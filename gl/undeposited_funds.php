@@ -203,7 +203,7 @@ if (isset ($_SESSION['undeposited']) && $_SESSION['undeposited']) {
 }
 $_POST['deposited'] = $_POST['to_deposit'];
 $Ajax->activate('summary');
-FB::info($_SESSION);
+
 start_form();
 start_table("class='tablestyle_noborder'");
 start_row();

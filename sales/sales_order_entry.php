@@ -31,6 +31,8 @@
 	                  array('NewOrder' => 'SA_SALESORDER', 'ModifySalesOrder' => 'SA_SALESORDER', 'NewQuotation' => 'SA_SALESQUOTE', 'ModifyQuotationNumber' => 'SA_SALESQUOTE',
 	                       'NewDelivery' => 'SA_SALESDELIVERY', 'NewInvoice' => 'SA_SALESINVOICE'));
 	$js = '';
+	FB::info($_SESSION['Items']);
+	FB::info($_SESSION['remote_order']);
 	if ($use_popup_windows) {
 		$js .= get_js_open_window(900, 500);
 	}
@@ -38,6 +40,11 @@
 		$js .= get_js_date_picker();
 	}
 	$js .= get_jquery_gmaps();
+	if (isset($_POST['saveorder'])) {
+		$_SESSION['Items']->store();
+		echo $_POST['saveorder'];
+		exit();
+	}
 	if (isset($_GET['NewDelivery']) && is_numeric($_GET['NewDelivery'])) {
 		$_SESSION['page_title'] = _($help_context = "Direct Sales Delivery");
 		create_cart(ST_CUSTDELIVERY, $_GET['NewDelivery']);
@@ -68,15 +75,23 @@
 		$_SESSION['page_title'] = _($help_context = "Sales Order Entry");
 		create_cart(ST_SALESQUOTE, $_GET['NewQuoteToSalesOrder']);
 	}
-	elseif (isset($_GET['NewRemoteToSalesOrder'])) {
+	elseif (isset($_GET['NewRemoteToSalesOrder']) || isset($_GET['remotecombine'])) {
 		$_SESSION['page_title'] = _($help_context = "Sales Order Entry");
-		create_cart(ST_SALESORDER, $_GET['NewRemoteToSalesOrder']);
-	}elseif (isset($_GET['remotecombine']) && isset($_SESSION['Items'])) {
-	foreach($_SESSION['remote_order']->line_items as $item){
-		add_to_order($_SESSION['Items'], $item->stock_id, $item->quantity, $item->price,$item->discount_percent, $item->item_description);
-	}
+		if (isset($_GET['remotecombine']) && isset($_SESSION['Items'])) {
+			foreach ($_SESSION['remote_order']->line_items as $item) {
+				add_to_order($_SESSION['Items'], $item->stock_id, $item->quantity, $item->price, $item->discount_percent, $item->item_description);
+			}
+		}
+		else {
+			create_cart(ST_SALESORDER, $_GET['NewRemoteToSalesOrder']);
+		}
 		unset($_SESSION['remote_order']);
-}
+	}
+	else	if (isset($_GET['restoreorder'])) {
+		$serial = Cart::restore();
+		create_cart($serial, 0);
+	}
+
 	page($_SESSION['page_title'], false, false, "", $js);
 	//-----------------------------------------------------------------------------
 	if (list_updated('branch_id')) {
@@ -86,16 +101,16 @@
 		$Ajax->activate('customer_id');
 	}
 	if (isset($_GET['AddedID'])) {
-		page_complete($_GET['AddedID'], ST_SALESORDER, "Order",true);
+		page_complete($_GET['AddedID'], ST_SALESORDER, "Order", true);
 	}
 	elseif (isset($_GET['UpdatedID'])) {
-		page_complete($_GET['UpdatedID'], ST_SALESORDER, "Order",true,true);
+		page_complete($_GET['UpdatedID'], ST_SALESORDER, "Order", true, true);
 	}
 	elseif (isset($_GET['AddedQU'])) {
-		page_complete($_GET['AddedQU'], ST_SALESQUOTE, "Quotation",true);
+		page_complete($_GET['AddedQU'], ST_SALESQUOTE, "Quotation", true);
 	}
 	elseif (isset($_GET['UpdatedQU'])) {
-				page_complete($_GET['UpdatedQU'], ST_SALESQUOTE, "Quotation", true, true);
+		page_complete($_GET['UpdatedQU'], ST_SALESQUOTE, "Quotation", true, true);
 	}
 	elseif (isset($_GET['AddedDN'])) {
 		page_complete($_GET['AddedDN'], ST_CUSTDELIVERY, "Delivery");
@@ -108,19 +123,20 @@
 	else {
 		check_edit_conflicts();
 	}
-	function page_complete($order_no, $trans_type, $trans_name='Transaction', $edit = false,$update=false) {
+	function page_complete($order_no, $trans_type, $trans_name = 'Transaction', $edit = false, $update = false) {
 		global $path_to_root;
 		$customer = new Customer($_SESSION['Jobsboard']->customer_id);
-		$email = (empty($customer->accounts->email) ?"No Email Address": $customer->accounts->email);
-		display_notification_centered(sprintf(_($trans_name." # %d has been ".($update ? "updated!":"added!")),$order_no ));
-		submenu_view(_("&View This ". $trans_name), $trans_type, $order_no);
+		$email = (empty($customer->accounts->email) ? "No Email Address" : $customer->accounts->email);
+		display_notification_centered(sprintf(_($trans_name . " # %d has been " . ($update ? "updated!" : "added!")), $order_no));
+		submenu_view(_("&View This " . $trans_name), $trans_type, $order_no);
 		if ($edit)
-			submenu_option(_("&Edit This ". $trans_name), "/sales/sales_order_entry.php?" . ($trans_type == ST_SALESORDER ? "ModifyQuotationNumber" : "ModifyOrderNumber") . "=$order_no");
+			submenu_option(_("&Edit This " . $trans_name), "/sales/sales_order_entry.php?" . ($trans_type == ST_SALESORDER ? "ModifyQuotationNumber"
+					: "ModifyOrderNumber") . "=$order_no");
 		submenu_print(_("&Print This " . $trans_name), $trans_type, $order_no, 'prtopt');
-		submenu_print(_("&Email This $trans_name (" . $email. ")"), $trans_type, $order_no, null, 1);
+		submenu_print(_("&Email This $trans_name (" . $email . ")"), $trans_type, $order_no, null, 1);
 		if ($trans_type == ST_SALESORDER || $trans_type == ST_SALESQUOTE) {
 			submenu_print(_("Print Proforma Invoice"), ($trans_type == ST_SALESORDER ? ST_PROFORMA : ST_PROFORMAQ), $order_no, 'prtopt');
-			submenu_print(_("&Email Proforma Invoice") . " (" . $email. ")", ($trans_type == ST_SALESORDER ? ST_PROFORMA : ST_PROFORMAQ), $order_no, 'printlink', 1);
+			submenu_print(_("&Email Proforma Invoice") . " (" . $email . ")", ($trans_type == ST_SALESORDER ? ST_PROFORMA : ST_PROFORMAQ), $order_no, 'printlink', 1);
 		}
 		if ($trans_type == ST_SALESORDER) {
 			submenu_option(_("Make &Delivery Against This Order"), "/sales/customer_delivery.php?OrderNumber=$order_no");
@@ -322,10 +338,10 @@
 				return false;
 			}
 		}
-		if (strlen($_POST['name']) < 1) {
+		if ($_SESSION['Items']->trans_type == ST_SALESORDER && strlen($_POST['name']) < 1) {
 			display_error(_("You must enter a Person Ordering name."));
 			set_focus('name');
-			//		return false;
+					return false;
 		}
 		if (!$Refs->is_valid($_POST['ref'])) {
 			display_error(_("You must enter a reference."));
@@ -487,7 +503,6 @@
 		global $Refs;
 		processing_start();
 		$doc_type = $type;
-
 		if (isset($_GET['NewQuoteToSalesOrder'])) {
 			$trans_no = $_GET['NewQuoteToSalesOrder'];
 			$doc = new Cart(ST_SALESQUOTE, $trans_no);
@@ -623,5 +638,13 @@
 		display_error($customer_error);
 	}
 	end_form();
+	echo '<script>';
+	echo <<<JS
+
+window.onbeforeunload = function() {
+$.post('sales_order_entry.php',{ saveorder: true })};
+
+JS;
+	echo '</script>';
 	end_page();
 	unset($_SESSION['order_no']);

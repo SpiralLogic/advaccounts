@@ -84,15 +84,6 @@ public static function insert($id) {
 		}
 
 		private function get_file_object($upload_id) {
-			/*			$file_path = $this->upload_dir . $file_name;
-						if ($file_name[0] === '.' || !is_file($file_path)) {
-							return null;
-						}
-
-						$file = new stdClass();
-						$file->name = $file_name;
-						$file->size = filesize($file_path);
-						return $file;*/
 			$sql = "SELECT * FROM upload WHERE id = {$upload_id} LIMIT 1";
 			$result = db_query($sql, 'Could not query uploads');
 			$result = db_fetch_assoc($result);
@@ -106,14 +97,16 @@ public static function insert($id) {
 
 		public function get() {
 			$info = array();
+
 			$upload_id = (isset($_REQUEST['id'])) ? stripslashes($_REQUEST['id']) : null;
+
 			if ($upload_id) {
-				$sql = "SELECT UNCOMPRESS(content) as content,type FROM upload WHERE `id` = {$upload_id}";
+				$sql = "SELECT content as content,type FROM upload WHERE `id` = {$upload_id}";
 				$result = db_query($sql, 'Could not retrieve file');
 				$result = db_fetch_assoc($result);
-				header('Cache-Control: no-cache, must-revalidate');
+					header('Cache-Control: no-cache, must-revalidate');
 				header('Content-type: ' . $result['type']);
-				$content = stripslashes($result['content']);
+				$content = $result['content'];
 				echo $content;
 			}
 			else {
@@ -170,18 +163,16 @@ public static function insert($id) {
 				$content = addslashes($content);
 				//	$file->size = filesize($file_path);
 				begin_transaction();
-				$sql = "INSERT INTO upload (`filename`,`size`,`type`,`order_no`,`content`) VALUES ('{$file->name}','{$file->size}','{$file->type}','{$this->order_no}', COMPRESS('{$content}'))";
+				$sql = "INSERT INTO upload (`filename`,`size`,`type`,`order_no`,`content`) VALUES ('{$file->name}','{$file->size}','{$file->type}','{$this->order_no}', '{$content}')";
 				db_query($sql, 'Could not insert file into database');
 				$upload_id = db_insert_id();
 				$file->id = $this->upload_id = $upload_id;
 				//$sql = "INSERT INTO upload_to_order(upload_id,order_no) VALUES (`{$upload_id}`,`($this->order_no}`)";
 				//db_query($sql);
 				commit_transaction();
-
 			}
 			if (isset($headers['X-Requested-With']) && $headers['X-Requested-With'] === 'XMLHttpRequest') {
 				header('Content-type: application/json');
-
 			}
 			echo json_encode($file);
 		}
@@ -193,5 +184,16 @@ public static function insert($id) {
 			$result = db_query($sql, 'Could not delete file');
 			header('Content-type: application/json');
 			echo json_encode($result);
+		}
+	}
+
+	if (!function_exists('getallheaders')) {
+		function getallheaders() {
+			foreach ($_SERVER as $name => $value) {
+				if (substr($name, 0, 5) == 'HTTP_') {
+					$headers[str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($name, 5)))))] = $value;
+				}
+			}
+			return $headers;
 		}
 	}

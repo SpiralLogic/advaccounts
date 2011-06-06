@@ -151,10 +151,11 @@
 	// static js files path
 	$js_path = $path_to_root . '/js/';
 	// standard external js scripts included in all files
-	$js_static = array('JsHttpRequest.js', 'behaviour.js', 'utils.js', 'inserts.js', 'js2/jquery-1.6.min.js', 'js2/jquery-ui-1.8.6.min.js');
-	$js_fuserlib = array('/js/js2/advanced.js', '/js/js2/shortmenu.js', '/js/js2/jquery.calculator.pack.js', '/js/js2/calc.js');
+	$js_static = array('JsHttpRequest.js', 'behaviour.js', 'utils.js', 'inserts.js');
+	$js_huserlib = array('jquery-1.6.min.js', 'jquery-ui-1.8.6.min.js');
+	$js_fstatic = array('advanced.js', 'shortmenu.js', 'jquery.calculator.pack.js','calc.js');
 	// additional js source included in header
-	$js_lib = $js_userlib = array();
+	$js_lib = $js_fuserlib = array();
 	if (!defined('ICON_EDIT')) {
 		define("ICON_EDIT", "edit.gif");
 		define("ICON_DELETE", "delete.gif");
