@@ -5,8 +5,7 @@ $page_security = 'SA_SALESMAN';
 	
 	
 	//$upload_dir = APP_PATH.'sales/upload/';
-	$_SESSION['order_no']= 2183;
-
+FB::info($_SESSION['order_no']);
 
 	if (isset($_SESSION['order_no'])) {
 		$upload_handler = new UploadHandler($_SESSION['order_no']);

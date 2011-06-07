@@ -168,10 +168,10 @@ if (isset($linetype)) {
 		$doc_Included = _("Included");
 		$doc_Amount = _("Amount");
 		$doc_TOTAL_INVOICE = $doctype == ST_SALESINVOICE ? _("TOTAL INVOICE") : _("TOTAL CREDIT");
-		$doc_TOTAL_ORDER = _("TOTAL ORDER EX VAT");
-		$doc_TOTAL_ORDER2 = _("TOTAL ORDER VAT INCL.");
-		$doc_TOTAL_PO = _("TOTAL PO EX VAT");
-		$doc_TOTAL_DELIVERY = _("TOTAL DELIVERY INCL. VAT");
+		$doc_TOTAL_ORDER = _("TOTAL ORDER EX GST");
+		$doc_TOTAL_ORDER2 = _("TOTAL ORDER GST INCL.");
+		$doc_TOTAL_PO = _("TOTAL PO EX GST");
+		$doc_TOTAL_DELIVERY = _("TOTAL DELIVERY INCL. GST");
 	} elseif ($doctype == ST_SUPPAYMENT || ST_CUSTPAYMENT || $doctype == ST_CUSTREFUND) {
 		$doc_Towards = _("As advance / full / part / payment towards:");
 		$doc_by_Cheque = _("By Cash / Cheque* / Draft No.");

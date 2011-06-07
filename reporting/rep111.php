@@ -169,7 +169,7 @@ function print_sales_quotations()
 				$myrow['contact_email'] = $branch['email'];
 				if ($myrow['contact_email'] == '')
 					$myrow['contact_email'] = $myrow['master_email'];
-				$myrow['DebtorName'] = $branch['br_name'];
+				$myrow['DebtorName'] = $myrow['name'];
 			}
 			//$myrow['reference'] = $i;
 			$rep->End($email, $doc_Invoice_no . " " . $i, $myrow);

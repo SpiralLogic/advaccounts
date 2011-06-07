@@ -110,7 +110,7 @@ public static function insert($id) {
 				echo $content;
 			}
 			else {
-				$sql = "SELECT `id`,`filename` as name, `size` ,`type` FROM upload WHERE `order_no` = {$this->order_no}";
+				$sql = "SELECT `id`,`filename` as name, `size` ,`type` FROM upload WHERE `order_no` = ".$this->order_no;
 				$result = db_query($sql, 'Could not retrieve upload information');
 				if (db_num_rows($result) < 1)
 					return;
