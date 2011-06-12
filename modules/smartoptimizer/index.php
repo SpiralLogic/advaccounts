@@ -15,7 +15,7 @@
 $settings = array(
 	'baseDir' => '../',
 	'charSet' => 'utf-8',
-	'debug' => true,
+	'debug' => false,
 	'gzip' => true,
 	'compressionLevel' => 9,
 	'gzipExceptions' => array('gif','jpeg','jpg','png','swf','ico'),
