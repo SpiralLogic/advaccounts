@@ -14,21 +14,20 @@ function set_global_connection()
 {
 	global $db;
 	$db = $_SESSION["wa_current_user"]->get_db_connection();
-}
+} 
 
 $db_duplicate_error_code = 1062;
 //DB wrapper functions to change only once for whole application
 function db_query($sql, $err_msg = null)
 {
 	global $db, $show_sql, $sql_trail, $select_trail, $go_debug;
-	if ($show_sql) {
+/*	if ($show_sql) {
 		echo "<font face=arial size=2 color=000099><b>SQL..</b></font>";
 		echo "<pre>";
 		echo $sql;
 		echo "</pre>\n";
-	}
+	}*/
 	if ($show_sql) FB::info($sql);
- 	
 	$result = mysql_query($sql, $db);
 	if ($sql_trail) {
 		db_set_info();

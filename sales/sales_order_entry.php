@@ -130,8 +130,7 @@
 		display_notification_centered(sprintf(_($trans_name . " # %d has been " . ($update ? "updated!" : "added!")), $order_no));
 		submenu_view(_("&View This " . $trans_name), $trans_type, $order_no);
 		if ($edit)
-			submenu_option(_("&Edit This " . $trans_name), "/sales/sales_order_entry.php?" . ($trans_type == ST_SALESORDER ? "ModifyQuotationNumber"
-					: "ModifyOrderNumber") . "=$order_no");
+			submenu_option(_("&Edit This " . $trans_name), "/sales/sales_order_entry.php?" . ($trans_type == ST_SALESORDER ?  "ModifyOrderNumber" : "ModifyQuotationNumber") . "=$order_no");
 		submenu_print(_("&Print This " . $trans_name), $trans_type, $order_no, 'prtopt');
 		submenu_print(_("&Email This $trans_name (" . $email . ")"), $trans_type, $order_no, null, 1);
 		if ($trans_type == ST_SALESORDER || $trans_type == ST_SALESQUOTE) {
@@ -353,6 +352,11 @@
 			//set_focus('ref');
 			//return false;
 			$_POST['ref'] = $Refs->get_next($_SESSION['Items']->trans_type);
+		}
+		if ($_SESSION['Items']->trans_no == 0 && !empty($_POST['cust_ref']) && !$_SESSION['Items']->check_cust_ref($_POST['cust_ref'])) {
+			display_error(_("This customer already has a purchase order with this number."));
+			set_focus('cust_ref');
+			return false;
 		}
 		return true;
 	}
