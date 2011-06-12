@@ -25,7 +25,7 @@
 	//$error_logfile = '';
 	$error_logfile = dirname(__FILE__) . '/tmp/errors.log';
 	$debug = 0;
-	$show_sql = 0;
+	$show_sql = 1;
 	$go_debug =0;
 	$pdf_debug = 0;
 	// set $sql_trail to 1 only if you want to perform bugtracking sql trail

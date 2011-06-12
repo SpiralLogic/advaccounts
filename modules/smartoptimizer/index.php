@@ -118,7 +118,7 @@ if (preg_match('/^\/?(.+\/)?(.+)$/', $query, $matchResult)) {
 	$fileDir = $settings['baseDir'].$matchResult[1];
 } else debugExit("Invalid file name ($query)");
 
-if (strpos(realpath($fileDir), realpath($settings['baseDir'])) !== 0) debugExit("File is out of base directory.");
+//if (strpos(realpath($fileDir), realpath($settings['baseDir'])) !== 0) debugExit("File is out of base directory.");
 
 if ($settings['concatenate']) {
 	$files = explode($settings['separator'], $fileNames);
