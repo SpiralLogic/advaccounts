@@ -91,7 +91,6 @@
       $serial = Cart::restore();
       create_cart($serial, 0);
    }
-
    page($_SESSION['page_title'], false, false, "", $js);
    //-----------------------------------------------------------------------------
    if (list_updated('branch_id')) {
@@ -123,25 +122,20 @@
    else {
       check_edit_conflicts();
    }
-   function page_complete($order_no, $trans_type, $trans_name = 'Transaction', $edit = false, $update = false)
-   {
+   function page_complete($order_no, $trans_type, $trans_name = 'Transaction', $edit = false, $update = false) {
       global $path_to_root;
       $customer = new Customer($_SESSION['Jobsboard']->customer_id);
       $email = (empty($customer->accounts->email) ? "No Email Address" : $customer->accounts->email);
-      display_notification_centered(sprintf(_($trans_name . " # %d has been " . ($update ? "updated!"
-                                                 : "added!")), $order_no));
+      display_notification_centered(sprintf(_($trans_name . " # %d has been " . ($update ? "updated!" : "added!")), $order_no));
       submenu_view(_("&View This " . $trans_name), $trans_type, $order_no);
       if ($edit)
-         submenu_option(_("&Edit This " . $trans_name), "/sales/sales_order_entry.php?" . ($trans_type == ST_SALESORDER
-            ? "ModifyQuotationNumber"
-            : "ModifyOrderNumber") . "=$order_no");
+         submenu_option(_("&Edit This " . $trans_name), "/sales/sales_order_entry.php?" . ($trans_type == ST_SALESORDER ? "ModifyOrderNumber"
+            : "ModifyQuotationNumber") . "=$order_no");
       submenu_print(_("&Print This " . $trans_name), $trans_type, $order_no, 'prtopt');
       submenu_print(_("&Email This $trans_name (" . $email . ")"), $trans_type, $order_no, null, 1);
       if ($trans_type == ST_SALESORDER || $trans_type == ST_SALESQUOTE) {
-         submenu_print(_("Print Proforma Invoice"), ($trans_type == ST_SALESORDER ? ST_PROFORMA
-               : ST_PROFORMAQ), $order_no, 'prtopt');
-         submenu_print(_("&Email Proforma Invoice") . " (" . $email . ")", ($trans_type == ST_SALESORDER ? ST_PROFORMA
-               : ST_PROFORMAQ), $order_no, 'printlink', 1);
+         submenu_print(_("Print Proforma Invoice"), ($trans_type == ST_SALESORDER ? ST_PROFORMA : ST_PROFORMAQ), $order_no, 'prtopt');
+         submenu_print(_("&Email Proforma Invoice") . " (" . $email . ")", ($trans_type == ST_SALESORDER ? ST_PROFORMA : ST_PROFORMAQ), $order_no, 'printlink', 1);
       }
       if ($trans_type == ST_SALESORDER) {
          submenu_option(_("Make &Delivery Against This Order"), "/sales/customer_delivery.php?OrderNumber=$order_no");
@@ -158,8 +152,7 @@
          submenu_print(_("P&rint as Packing Slip"), ST_CUSTDELIVERY, $order_no, 'prtopt', null, 1);
          display_note(get_gl_view_str(ST_CUSTDELIVERY, $order_no, _("View the GL Journal Entries for this Dispatch")), 0, 1);
          submenu_option(_("Make &Invoice Against This Delivery"), "/sales/customer_invoice.php?DeliveryNumber=$order_no");
-         ((isset($_GET['Type']) && $_GET['Type'] == 1))
-            ? submenu_option(_("Enter a New Template &Delivery"), "/sales/inquiry/sales_orders_view.php?DeliveryTemplates=Yes")
+         ((isset($_GET['Type']) && $_GET['Type'] == 1)) ? submenu_option(_("Enter a New Template &Delivery"), "/sales/inquiry/sales_orders_view.php?DeliveryTemplates=Yes")
             : submenu_option(_("Enter a &New Delivery"), "/sales/sales_order_entry.php?NewDelivery=0");
       }
       elseif ($trans_type == ST_SALESINVOICE) {
@@ -187,8 +180,7 @@
    }
 
    //-----------------------------------------------------------------------------
-   function copy_to_cart()
-   {
+   function copy_to_cart() {
       $cart = &$_SESSION['Items'];
       $cart->reference = $_POST['ref'];
       $cart->Comments = $_POST['Comments'];
@@ -234,8 +226,7 @@
    }
 
    //-----------------------------------------------------------------------------
-   function copy_from_cart()
-   {
+   function copy_from_cart() {
       $cart = &$_SESSION['Items'];
       $_POST['ref'] = $cart->reference;
       $_POST['Comments'] = $cart->Comments;
@@ -265,16 +256,14 @@
    }
 
    //--------------------------------------------------------------------------------
-   function line_start_focus()
-   {
+   function line_start_focus() {
       global $Ajax;
       $Ajax->activate('items_table');
       set_focus('_stock_id_edit');
    }
 
    //--------------------------------------------------------------------------------
-   function can_process()
-   {
+   function can_process() {
       global $Refs;
       if (!get_post('customer_id')) {
          display_error(_("There is no customer selected."));
@@ -290,7 +279,7 @@
          display_error(_("The entered date is invalid."));
          set_focus('OrderDate');
          return false;
-      } 
+      }
       if ($_SESSION['Items']->trans_type != ST_SALESORDER && $_SESSION['Items']->trans_type != ST_SALESQUOTE && !is_date_in_fiscalyear($_POST['OrderDate'])) {
          display_error(_("The entered date is not in fiscal year"));
          set_focus('OrderDate');
@@ -364,11 +353,16 @@
          //return false;
          $_POST['ref'] = $Refs->get_next($_SESSION['Items']->trans_type);
       }
+      if ($_SESSION['Items']->trans_no == 0 && !empty($_POST['cust_ref']) && !$_SESSION['Items']->check_cust_ref($_POST['cust_ref'])) {
+         display_error(_("This customer already has a purchase order with this number."));
+         set_focus('cust_ref');
+         return false;
+      }
       return true;
    }
 
    //--------------- --------------------------------------------------------------
-if (isset($_POST['ProcessOrder']) && can_process()) {
+   if (isset($_POST['ProcessOrder']) && can_process()) {
       copy_to_cart();
       $modified = ($_SESSION['Items']->trans_no != 0);
       $so_type = $_SESSION['Items']->so_type;
@@ -411,8 +405,7 @@ if (isset($_POST['ProcessOrder']) && can_process()) {
       $Ajax->activate('items_table');
    }
    //--------------------------------------------------------------------------------
-   function check_item_data()
-   {
+   function check_item_data() {
       global $SysPrefs;
       if (!$_SESSION["wa_current_user"]->can_access('SA_SALESCREDIT') && (!check_num('qty', 0) || !check_num('Disc', 0, 100))) {
          display_error(_("The item could not be updated because you are attempting to set the quantity ordered to less than 0, or the discount percent to more than 100."));
@@ -442,8 +435,7 @@ if (isset($_POST['ProcessOrder']) && can_process()) {
    }
 
    //--------------------------------------------------------------------------------
-   function handle_update_item()
-   {
+   function handle_update_item() {
       if ($_POST['UpdateItem'] != '' && check_item_data()) {
          $_SESSION['Items']->update_cart_item($_POST['LineNo'], input_num('qty'), input_num('price'), input_num('Disc') / 100, $_POST['item_description']);
       }
@@ -451,8 +443,7 @@ if (isset($_POST['ProcessOrder']) && can_process()) {
    }
 
    //--------------------------------------------------------------------------------
-   function handle_delete_item($line_no)
-{
+   function handle_delete_item($line_no) {
       if ($_SESSION['Items']->some_already_delivered($line_no) == 0) {
          $_SESSION['Items']->remove_from_cart($line_no);
       }
@@ -463,8 +454,7 @@ if (isset($_POST['ProcessOrder']) && can_process()) {
    }
 
    //--------------------------------------------------------------------------------
-   function handle_new_item()
-   {
+   function handle_new_item() {
       if (!check_item_data()) {
          return;
       }
@@ -475,8 +465,7 @@ if (isset($_POST['ProcessOrder']) && can_process()) {
    }
 
    //--------------------------------------------------------------------------------
-   function handle_cancel_order()
-   {
+   function handle_cancel_order() {
       global $path_to_root, $Ajax;
       if ($_SESSION['Items']->trans_type == ST_CUSTDELIVERY) {
          display_notification(_("Direct delivery entry has been cancelled as requested."), 1);
@@ -514,8 +503,7 @@ if (isset($_POST['ProcessOrder']) && can_process()) {
    }
 
    //--------------------------------------------------------------------------------
-   function create_cart($type, $trans_no)
-   {
+   function create_cart($type, $trans_no) {
       global $Refs;
       processing_start();
       $doc_type = $type;

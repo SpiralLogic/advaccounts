@@ -78,7 +78,7 @@ Adv.extend({
     }, 'json')
   },
   setContactLog:function (data) {
-    var logbox = $("[name='messageLog']").val('');
+    var logbox = $("[id='messageLog']").val('');
     var str = '';
     $.each(data, function(key, message) {
       str += '[' + message['date'] + '] Contact: ' + message['contact_name'] + "\nMessage:  " + message['message'] + "\n\n";
@@ -263,13 +263,13 @@ var Customer = function () {
             $('#customer').focus();
           }, 'json')
     },
-    setValues: function(data, quiet) {
-      customer = data = data.customer;
-      if (data.contact_log !== undefined) {
-        Adv.setContactLog(data.contact_log);
+    setValues: function(content, quiet) {
+      customer = data = content.customer;
+      if (content.contact_log !== undefined) {
+        Adv.setContactLog(content.contact_log);
       }
-      if (data.transactions !== undefined) {
-        transactions.empty().append(data.transactions);
+      if (content.transactions !== undefined) {
+        transactions.empty().append(content.transactions);
       }
       Contacts.init(data.contacts);
       if (quiet === true) {
@@ -402,4 +402,5 @@ $(function() {
   });
   Branches.init();
   Customer.init();
+	
 });

@@ -2,15 +2,10 @@
 $page_security = 'SA_SALESMAN';
    $path_to_root = "..";
    include($path_to_root . "/includes/session.inc");
-
-
    //$upload_dir = APP_PATH.'sales/upload/';
-   $_GET['trans_no'] = $_SESSION['order_no'] = $_GET['trans_no'];
-
-
+   FB::info($_SESSION['order_no']);
    if (isset($_SESSION['order_no'])) {
       $upload_handler = new UploadHandler($_SESSION['order_no']);
-
       switch ($_SERVER['REQUEST_METHOD']) {
          case 'HEAD':
          case 'GET':
