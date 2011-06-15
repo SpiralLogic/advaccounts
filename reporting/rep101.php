@@ -170,30 +170,30 @@ function print_customer_balances()
 		if ($convert)
 			$rep->TextCol(2, 3, $myrow['curr_code']);
 		$rep->fontSize -= 2;
-		$rep->TextCol(3, 4, _("Open Balance"));
-		$rep->AmountCol(4, 5, $init[0], $dec);
-		$rep->AmountCol(5, 6, $init[1], $dec);
-		$rep->AmountCol(6, 7, $init[2], $dec);
-		$rep->AmountCol(7, 8, $init[3], $dec);
+//		$rep->TextCol(3, 4, _("Open Balance"));
+//		$rep->AmountCol(4, 5, $init[0], $dec);
+//		$rep->AmountCol(5, 6, $init[1], $dec);
+//		$rep->AmountCol(6, 7, $init[2], $dec);
+//		$rep->AmountCol(7, 8, $init[3], $dec);
 		$total = array(0, 0, 0, 0);
 		for ($i = 0; $i < 4; $i++)
 		{
 			$total[$i] += $init[$i];
 			$grandtotal[$i] += $init[$i];
 		}
-		$rep->NewLine(1, 2);
+//		$rep->NewLine(1, 2);
 		if (db_num_rows($res) == 0)
 			continue;
-		$rep->Line($rep->row + 4);
+//		$rep->Line($rep->row + 4);
 		while ($trans = db_fetch($res))
 		{
 			if ($no_zeros && $trans['TotalAmount'] == 0 && $trans['Allocated'] == 0) continue;
-			$rep->NewLine(1, 2);
-			$rep->TextCol(0, 1, $systypes_array[$trans['type']]);
-			$rep->TextCol(1, 2, $trans['reference']);
-			$rep->DateCol(2, 3, $trans['tran_date'], true);
+//			$rep->NewLine(1, 2);
+//			$rep->TextCol(0, 1, $systypes_array[$trans['type']]);
+//			$rep->TextCol(1, 2, $trans['reference']);
+//			$rep->DateCol(2, 3, $trans['tran_date'], true);
 			if ($trans['type'] == ST_SALESINVOICE)
-				$rep->DateCol(3, 4, $trans['due_date'], true);
+//				$rep->DateCol(3, 4, $trans['due_date'], true);
 			$item[0] = $item[1] = 0.0;
 			if ($convert)
 				$rate = $trans['rate'];
@@ -204,35 +204,35 @@ function print_customer_balances()
 				$trans['TotalAmount'] *= -1;
 			if ($trans['TotalAmount'] > 0.0) {
 				$item[0] = round2(abs($trans['TotalAmount']) * $rate, $dec);
-				$rep->AmountCol(4, 5, $item[0], $dec);
+//				$rep->AmountCol(4, 5, $item[0], $dec);
 			}
 			else
 			{
 				$item[1] = round2(Abs($trans['TotalAmount']) * $rate, $dec);
-				$rep->AmountCol(5, 6, $item[1], $dec);
+//				$rep->AmountCol(5, 6, $item[1], $dec);
 			}
 			$item[2] = round2($trans['Allocated'] * $rate, $dec);
-			$rep->AmountCol(6, 7, $item[2], $dec);
-			/*
+//			$rep->AmountCol(6, 7, $item[2], $dec);
+
 			if ($trans['type'] == 10)
 				$item[3] = ($trans['TotalAmount'] - $trans['Allocated']) * $rate;
 			else
 				$item[3] = ($trans['TotalAmount'] + $trans['Allocated']) * $rate;
-			*/
+			
 			if ($trans['type'] == ST_SALESINVOICE || $trans['type'] == ST_BANKPAYMENT)
 				$item[3] = $item[0] + $item[1] - $item[2];
 			else
 				$item[3] = $item[0] - $item[1] + $item[2];
-			$rep->AmountCol(7, 8, $item[3], $dec);
+//			$rep->AmountCol(7, 8, $item[3], $dec);
 			for ($i = 0; $i < 4; $i++)
 			{
 				$total[$i] += $item[$i];
 				$grandtotal[$i] += $item[$i];
 			}
 		}
-		$rep->Line($rep->row - 8);
-		$rep->NewLine(2);
-		$rep->TextCol(0, 3, _('Total'));
+//		$rep->Line($rep->row - 8);
+//		$rep->NewLine(2);
+		$rep->TextCol(3, 4, _('Total'));
 		for ($i = 0; $i < 4; $i++)
 			$rep->AmountCol($i + 4, $i + 5, $total[$i], $dec);
 		$rep->Line($rep->row - 4);
