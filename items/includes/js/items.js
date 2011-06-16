@@ -5,29 +5,73 @@
  * Time: 7:49 PM
  * To change this template use File | Settings | File Templates.
  */
-var item;
-function getItem(id)
-{
-	$.post("items.php",
-		   {id: id}, function(data)
-			{
-				item = data;
-				var content = "<table  style='margin:0 auto;'><tr>";
-				var even = true;
-				delete data.stock_id;
-				$.each(data, function(i, data)
-				{
-					if (i == 'description' || i == 'long_description') {
-						content += "<td style='font-weight:bold;'>" + i + "</td><td width='20px'></td><td><textarea rows=5>" + data + "</textarea></td><td width='20px'></td>";
+(function(window, undefined) {
+   var Adv = window.Adv,
+      ajaxRequest,
+      Items = {};
+   (function() {
+      var $this = this,item,term,results,itemList = $('#itemList'),itemDetails=$("#itemDetails");
+      itemList.delegate('span', 'click', function() {
+         $this.getItem($(this).attr('id'));
+         $(this).remove();
+      })
+      this.getItem = function (id) {
+         $.post("items.php", {id: id}, function(data) {
+            var content = $('<td><td/>').css('vertical-align','top');
+            item = {stock_id:data.stock_id,
+               description:data.description,
+               long_description:data.long_description,
+               actual_cost:data.actual_cost,
+               last_cost:data.last_cost,
+               inactive:data.inactive,
+               no_sale:data.no_sale};
+            $.each(item, function(i, data) {
+               $this.addFeild(i, data).appendTo(content) ;
+            });
+            $('<tr></tr>').append(content).appendTo(itemDetails);
+         }, 'json')
+      };
+      this.makeItemList = function(results, request) {
+         term = request;
+         this.results = results;
+         itemList.empty();
+         $.map(results, function(v) {
+            $('<span>').attr('id', v.id).css('display', 'block').html(v.id + '<br/>').appendTo(itemList);
+         })
+      }
+      this.addFeild = function(name, value) {
+
+         var input = (name=='description' || name=='long_description')? $('<textarea>').attr({'name':name}).text(value): $('<input/>').attr({'name':name,value:value});
+        if (name=='inactive'|name=='no_sale') input.attr('type','checkbox');
+         return input;
+
+      }
+   }).apply(Items);
+   Adv.Items = Items;
+})(window);
+
+$(function($) {
+				var oTable = $('#itemDetails').dataTable( {
+					"bProcessing": true,
+					"bServerSide": true,
+               "bJQueryUI": true,
+               "iDisplayLength": 100,
+					"sAjaxSource": "includes/server_processing.php",
+               "aoColumns": [
+                  {"sClass":"editable"},
+                  {"sClass":"editable"},
+                  {"sClass":"editable"},
+                  {"sClass":"editable","sType":"numeric"},
+                  {"sType":"numeric"}
+               ],
+					"fnDrawCallback": function () {
+						$('#itemDetails').find('.editable').editable( '../examples_support/editable_ajax.php', {
+							"callback": function( sValue, y ) {
+								/* Redraw the table from the new data on the server */
+								oTable.fnDraw();
+							},
+							"height": "14px"
+						} );
 					}
-					else {
-						content += "<td style='font-weight:bold;'>" + i + "</td><td width='20px'></td><td><input value='" + data + "'></input></td><td width='20px'></td>";
-					}
-					if (!even) {
-						content += "</tr><tr>";
-					}
-					even = !even;
-				});
-				$("#itemdetails").empty().append(content + "</tr></table>");
-			}, 'json')
-}
+				} );
+			} );

@@ -1,16 +1,18 @@
 <?php
 
-	class JS {
+   class JS {
 
-		private static $_javascript = array();
+      private static $_javascript = array();
 
-		private function __construct() {
-		}
-		public static function autocomplete($id, $callback, $url = false) {
-			global $js_lib;
-			if (!$url)
-				$url = $_SERVER['PHP_SELF'];
-			$js_lib[] = <<< JS
+      private function __construct() {
+      }
+
+      public static function autocomplete($id, $callback, $url = false, $options = array()) {
+         global $js_lib;
+         $afterSource = (isset($options['afterSource'])) ? $options['afterSource'] : '';
+         if (!$url)
+            $url = $_SERVER['PHP_SELF'];
+         $js_lib[] = <<< JS
 $(function() {
        $('#{$id}').autocomplete({
        autoFocus:true,
@@ -18,8 +20,10 @@ $(function() {
 			lastXhr = $.getJSON('{$url}', request, function(data, status, xhr) {
 				if (xhr === lastXhr) {
 					response(data);
+					{$afterSource}(data,request);
 				}
-			})
+			});
+
 		},
 		minLength: 2,
 		select: function(event, ui) {
@@ -32,23 +36,23 @@ $(function() {
 	}
 }).css({'z-index' : '2', 'margin' : '10px'}); });
 JS;
-		}
+      }
 
-		public static function setfocus($id = false) {
-			if (!$id)
-				return;
-			global $js_lib;
-			$js_lib[] = <<< JS
+      public static function setfocus($id = false) {
+         if (!$id)
+            return;
+         global $js_lib;
+         $js_lib[] = <<< JS
 $(function() {
 $('{$id}').focus();
 })
 JS;
 
-		}
+      }
 
-		public static function gmap($selector, $address, $title) {
-			$address = ereg_replace("[\r\t\n\v]", ", ", $address);
-			$script = <<<JS
+      public static function gmap($selector, $address, $title) {
+         $address = ereg_replace("[\r\t\n\v]", ", ", $address);
+         $script = <<<JS
 $(function() {
 	var map = $("<div/>").gMap({
 	address:"{$address}",
@@ -62,6 +66,6 @@ $("{$selector}").click(function() {
     return false; });
 });
 JS;
-			JS::$_javascript[] = $script;
-		}
-	}
+         JS::$_javascript[] = $script;
+      }
+   }

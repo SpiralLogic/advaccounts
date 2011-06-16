@@ -26,7 +26,7 @@ class UI extends HTML {
         return static::$_instance;
     }
 
-    static function search($id = false, $attr = array()) {
+    static function search($id = false, $attr = array(),$options=array()) {
         if ($id) $attr['id'] = $id;
         $url = (!empty($attr['url'])) ? $attr['url'] : false;
         static::$_instance->_openTag('div', array('class' => 'ui-widget'));
@@ -34,7 +34,7 @@ class UI extends HTML {
         if ($id && isset($attr['size'])) static::$_instance->_openTag('input', array('id' => $id, 'size' => $attr['size']));
         static::$_instance->_closeTag('div');
         $callback = (isset($attr['callback'])) ? $attr['callback'] : strtoupper($id[0]) . strtolower(substr($id, 1));
-        JS::autocomplete($id, $callback, $url);
+        JS::autocomplete($id, $callback, $url, $options);
         return static::$_instance;
     }
 }

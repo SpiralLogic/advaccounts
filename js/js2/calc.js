@@ -1,4 +1,4 @@
-$(function()
+$(function($)
   {
 	  $("#wrapper").delegate(".amount", 'focus', function()
 	  {
@@ -14,4 +14,4 @@ $(function()
 /// $("#_page_body").('.amount','focus',
 	  /*, buttonImageOnly: true, buttonImage: '../themes/default/images/calculator.png'*/
 
-  })
+  });
