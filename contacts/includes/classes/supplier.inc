@@ -89,7 +89,7 @@ class Supplier extends Company
 		}
 		$this->_defaults();
 		$this->id = $id;
-		$sql = "SELECT * FROM " . TB_PREF . "suppliers WHERE supplier_id = " . db_escape($id);
+		$sql = "SELECT * FROM suppliers WHERE supplier_id = " . db_escape($id);
 		$result = db_query($sql, "check failed");
 		if (db_num_rows($result) != 1) {
 			$this->_status(false, 'read', "Supplier could not be found!");
@@ -104,7 +104,7 @@ class Supplier extends Company
 	protected function _saveNew()
 	{
 		begin_transaction();
-		$sql = "INSERT INTO " . TB_PREF . "suppliers (supp_name, supp_ref, address, supp_address, phone, phone2, fax, gst_no, email, website,
+		$sql = "INSERT INTO suppliers (supp_name, supp_ref, address, supp_address, phone, phone2, fax, gst_no, email, website,
 				contact, supp_account_no, bank_account, credit_limit, dimension_id, dimension2_id, curr_code,
 				payment_terms, payable_account, purchase_account, payment_discount_account, notes, tax_group_id)
 				VALUES (" . db_escape($this->name) . ", "
@@ -153,7 +153,7 @@ class Supplier extends Company
 			$this->_saveNew();
 		}
 		begin_transaction();
-		$sql = "UPDATE " . TB_PREF . "suppliers SET name=" . db_escape($this->name) . ",
+		$sql = "UPDATE suppliers SET name=" . db_escape($this->name) . ",
 			supp_ref=" . db_escape(substr($this->name, 0, 29)) . ",
 			address=" . db_escape($this->address) . ",
 			supp_account_no=" . db_escape($this->account_no) . ",
@@ -184,7 +184,7 @@ class Supplier extends Company
 
 	public static function search($terms)
 	{
-		$sql = "SELECT supplier_id as id, supp_ref as label, supp_ref as value FROM " . TB_PREF . "suppliers " . "where supp_ref LIKE '%" . $terms . "%' LIMIT 20";
+		$sql = "SELECT supplier_id as id, supp_ref as label, supp_ref as value FROM suppliers " . "where supp_ref LIKE '%" . $terms . "%' LIMIT 20";
 		$result = db_query($sql, 'Couldn\'t Get Supplier');
 		$data = '';
 		while ($row = db_fetch_assoc($result)) {

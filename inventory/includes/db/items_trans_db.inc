@@ -24,7 +24,7 @@ function stock_cost_update($stock_id, $material_cost, $labour_cost, $overhead_co
 
 	begin_transaction();
 
-	$sql = "UPDATE " . TB_PREF . "stock_master SET material_cost=" . db_escape($material_cost) . ",
+	$sql = "UPDATE stock_master SET material_cost=" . db_escape($material_cost) . ",
 		labour_cost=" . db_escape($labour_cost) . ",
 		overhead_cost=" . db_escape($overhead_cost) . ",
 		last_cost=" . db_escape($last_cost) . "

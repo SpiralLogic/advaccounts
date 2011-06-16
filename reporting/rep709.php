@@ -37,14 +37,14 @@ function getTaxTransactions($from, $to)
 	            taxrec.net_amount*ex_rate AS net_amount,
 				IF(ISNULL(supp.supp_name), debt.name, supp.supp_name) as name,
 				branch.br_name
-		FROM " . TB_PREF . "trans_tax_details taxrec
-		LEFT JOIN " . TB_PREF . "supp_trans strans
+		FROM trans_tax_details taxrec
+		LEFT JOIN supp_trans strans
 			ON taxrec.trans_no=strans.trans_no AND taxrec.trans_type=strans.type
-		LEFT JOIN " . TB_PREF . "suppliers as supp ON strans.supplier_id=supp.supplier_id
-		LEFT JOIN " . TB_PREF . "debtor_trans dtrans
+		LEFT JOIN suppliers as supp ON strans.supplier_id=supp.supplier_id
+		LEFT JOIN debtor_trans dtrans
 			ON taxrec.trans_no=dtrans.trans_no AND taxrec.trans_type=dtrans.type
-		LEFT JOIN " . TB_PREF . "debtors_master as debt ON dtrans.debtor_no=debt.debtor_no
-		LEFT JOIN " . TB_PREF . "cust_branch as branch ON dtrans.branch_code=branch.branch_code
+		LEFT JOIN debtors_master as debt ON dtrans.debtor_no=debt.debtor_no
+		LEFT JOIN cust_branch as branch ON dtrans.branch_code=branch.branch_code
 		WHERE (taxrec.amount <> 0 OR taxrec.net_amount <> 0)
 			AND taxrec.trans_type <> " . ST_CUSTDELIVERY . "
 			AND taxrec.tran_date >= '$fromdate'
@@ -56,13 +56,13 @@ function getTaxTransactions($from, $to)
 
 function getTaxTypes()
 {
-	$sql = "SELECT * FROM " . TB_PREF . "tax_types ORDER BY id";
+	$sql = "SELECT * FROM tax_types ORDER BY id";
 	return db_query($sql, "No transactions were returned");
 }
 
 function getTaxInfo($id)
 {
-	$sql = "SELECT * FROM " . TB_PREF . "tax_types WHERE id=$id";
+	$sql = "SELECT * FROM tax_types WHERE id=$id";
 	$result = db_query($sql, "No transactions were returned");
 	return db_fetch($result);
 }

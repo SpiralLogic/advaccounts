@@ -36,26 +36,26 @@ function get_invoices($supplier_id, $to)
 	$PastDueDays2 = 2 * $PastDueDays1;
 
 	// Revomed allocated from sql
-	$value = "(" . TB_PREF . "supp_trans.ov_amount + " . TB_PREF . "supp_trans.ov_gst + " . TB_PREF . "supp_trans.ov_discount)";
-	$due = "IF (" . TB_PREF . "supp_trans.type=" . ST_SUPPINVOICE . " OR " . TB_PREF . "supp_trans.type=" . ST_SUPPCREDIT . "," . TB_PREF . "supp_trans.due_date," . TB_PREF . "supp_trans.tran_date)";
-	$sql = "SELECT " . TB_PREF . "supp_trans.type,
-		" . TB_PREF . "supp_trans.reference,
-		" . TB_PREF . "supp_trans.tran_date,
+	$value = "(supp_trans.ov_amount + supp_trans.ov_gst + supp_trans.ov_discount)";
+	$due = "IF (supp_trans.type=" . ST_SUPPINVOICE . " OR supp_trans.type=" . ST_SUPPCREDIT . ",supp_trans.due_date,supp_trans.tran_date)";
+	$sql = "SELECT supp_trans.type,
+		supp_trans.reference,
+		supp_trans.tran_date,
 		$value as Balance,
 		IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= 0,$value,0) AS Due,
 		IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= $PastDueDays1,$value,0) AS Overdue1,
 		IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= $PastDueDays2,$value,0) AS Overdue2
 
-		FROM " . TB_PREF . "suppliers,
-			" . TB_PREF . "payment_terms,
-			" . TB_PREF . "supp_trans
+		FROM suppliers,
+			payment_terms,
+			supp_trans
 
-	   	WHERE " . TB_PREF . "suppliers.payment_terms = " . TB_PREF . "payment_terms.terms_indicator
-			AND " . TB_PREF . "suppliers.supplier_id = " . TB_PREF . "supp_trans.supplier_id
-			AND " . TB_PREF . "supp_trans.supplier_id = $supplier_id
-			AND " . TB_PREF . "supp_trans.tran_date <= '$todate'
-			AND ABS(" . TB_PREF . "supp_trans.ov_amount + " . TB_PREF . "supp_trans.ov_gst + " . TB_PREF . "supp_trans.ov_discount) > 0.004
-			ORDER BY " . TB_PREF . "supp_trans.tran_date";
+	   	WHERE suppliers.payment_terms = payment_terms.terms_indicator
+			AND suppliers.supplier_id = supp_trans.supplier_id
+			AND supp_trans.supplier_id = $supplier_id
+			AND supp_trans.tran_date <= '$todate'
+			AND ABS(supp_trans.ov_amount + supp_trans.ov_gst + supp_trans.ov_discount) > 0.004
+			ORDER BY supp_trans.tran_date";
 
 
 	return db_query($sql, "The supplier details could not be retrieved");
@@ -141,7 +141,7 @@ function print_aged_supplier_analysis()
 	$pastdue1 = $PastDueDays1 + 1 . "-" . $PastDueDays2 . " " . _('Days');
 	$pastdue2 = _('Over') . " " . $PastDueDays2 . " " . _('Days');
 
-	$sql = "SELECT supplier_id, supp_name AS name, curr_code FROM " . TB_PREF . "suppliers";
+	$sql = "SELECT supplier_id, supp_name AS name, curr_code FROM suppliers";
 	if ($fromsupp != ALL_NUMERIC)
 		$sql .= " WHERE supplier_id=" . db_escape($fromsupp);
 	$sql .= " ORDER BY supp_name";

@@ -33,39 +33,39 @@ function getTransactions($category, $location, $fromcust, $from, $to)
 {
 	$from = date2sql($from);
 	$to = date2sql($to);
-	$sql = "SELECT " . TB_PREF . "stock_master.category_id,
-			" . TB_PREF . "stock_category.description AS cat_description,
-			" . TB_PREF . "stock_master.stock_id,
-			" . TB_PREF . "stock_master.description, " . TB_PREF . "stock_master.inactive,
-			" . TB_PREF . "stock_moves.loc_code,
-			" . TB_PREF . "debtor_trans.debtor_no,
-			" . TB_PREF . "debtors_master.name AS debtor_name,
-			" . TB_PREF . "stock_moves.tran_date,
-			SUM(-" . TB_PREF . "stock_moves.qty) AS qty,
-			SUM(-" . TB_PREF . "stock_moves.qty*" . TB_PREF . "stock_moves.price*(1-" . TB_PREF . "stock_moves.discount_percent)) AS amt,
-			SUM(-" . TB_PREF . "stock_moves.qty *(" . TB_PREF . "stock_master.material_cost + " . TB_PREF . "stock_master.labour_cost + " . TB_PREF . "stock_master.overhead_cost)) AS cost
-		FROM " . TB_PREF . "stock_master,
-			" . TB_PREF . "stock_category,
-			" . TB_PREF . "debtor_trans,
-			" . TB_PREF . "debtors_master,
-			" . TB_PREF . "stock_moves
-		WHERE " . TB_PREF . "stock_master.stock_id=" . TB_PREF . "stock_moves.stock_id
-		AND " . TB_PREF . "stock_master.category_id=" . TB_PREF . "stock_category.category_id
-		AND " . TB_PREF . "debtor_trans.debtor_no=" . TB_PREF . "debtors_master.debtor_no
-		AND " . TB_PREF . "stock_moves.type=" . TB_PREF . "debtor_trans.type
-		AND " . TB_PREF . "stock_moves.trans_no=" . TB_PREF . "debtor_trans.trans_no
-		AND " . TB_PREF . "stock_moves.tran_date>='$from'
-		AND " . TB_PREF . "stock_moves.tran_date<='$to'
-		AND ((" . TB_PREF . "debtor_trans.type=" . ST_CUSTDELIVERY . " AND " . TB_PREF . "debtor_trans.version=1) OR " . TB_PREF . "stock_moves.type=" . ST_CUSTCREDIT . ")
-		AND (" . TB_PREF . "stock_master.mb_flag='B' OR " . TB_PREF . "stock_master.mb_flag='M')";
+	$sql = "SELECT stock_master.category_id,
+			stock_category.description AS cat_description,
+			stock_master.stock_id,
+			stock_master.description, stock_master.inactive,
+			stock_moves.loc_code,
+			debtor_trans.debtor_no,
+			debtors_master.name AS debtor_name,
+			stock_moves.tran_date,
+			SUM(-stock_moves.qty) AS qty,
+			SUM(-stock_moves.qty*stock_moves.price*(1-stock_moves.discount_percent)) AS amt,
+			SUM(-stock_moves.qty *(stock_master.material_cost + stock_master.labour_cost + stock_master.overhead_cost)) AS cost
+		FROM stock_master,
+			stock_category,
+			debtor_trans,
+			debtors_master,
+			stock_moves
+		WHERE stock_master.stock_id=stock_moves.stock_id
+		AND stock_master.category_id=stock_category.category_id
+		AND debtor_trans.debtor_no=debtors_master.debtor_no
+		AND stock_moves.type=debtor_trans.type
+		AND stock_moves.trans_no=debtor_trans.trans_no
+		AND stock_moves.tran_date>='$from'
+		AND stock_moves.tran_date<='$to'
+		AND ((debtor_trans.type=" . ST_CUSTDELIVERY . " AND debtor_trans.version=1) OR stock_moves.type=" . ST_CUSTCREDIT . ")
+		AND (stock_master.mb_flag='B' OR stock_master.mb_flag='M')";
 	if ($category != 0)
-		$sql .= " AND " . TB_PREF . "stock_master.category_id = " . db_escape($category);
+		$sql .= " AND stock_master.category_id = " . db_escape($category);
 	if ($location != 'all')
-		$sql .= " AND " . TB_PREF . "stock_moves.loc_code = " . db_escape($location);
+		$sql .= " AND stock_moves.loc_code = " . db_escape($location);
 	if ($fromcust != -1)
-		$sql .= " AND " . TB_PREF . "debtors_master.debtor_no = " . db_escape($fromcust);
-	$sql .= " GROUP BY " . TB_PREF . "stock_master.stock_id, " . TB_PREF . "debtors_master.name ORDER BY " . TB_PREF . "stock_master.category_id,
-			" . TB_PREF . "stock_master.stock_id, " . TB_PREF . "debtors_master.name";
+		$sql .= " AND debtors_master.debtor_no = " . db_escape($fromcust);
+	$sql .= " GROUP BY stock_master.stock_id, debtors_master.name ORDER BY stock_master.category_id,
+			stock_master.stock_id, debtors_master.name";
 	return db_query($sql, "No transactions were returned");
 
 }

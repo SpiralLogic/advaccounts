@@ -54,7 +54,7 @@ function display_note($msg, $br = 0, $br2 = 0, $extra = "")
 function stock_item_heading($stock_id)
 {
 	if ($stock_id != "") {
-		$result = db_query("SELECT description, units FROM " . TB_PREF . "stock_master WHERE stock_id='$stock_id'");
+		$result = db_query("SELECT description, units FROM stock_master WHERE stock_id='$stock_id'");
 		$myrow = db_fetch_row($result);
 
 		display_heading("$stock_id - $myrow[0]");

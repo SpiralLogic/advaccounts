@@ -595,7 +595,7 @@ function _format_add_curr($row)
 function supplier_list($name, $selected_id = null, $spec_option = false, $submit_on_change = false, $all = false, $editkey = false)
 {
 	global $all_items;
-	$sql = "SELECT supplier_id, supp_ref, curr_code, inactive FROM " . TB_PREF . "suppliers ";
+	$sql = "SELECT supplier_id, supp_ref, curr_code, inactive FROM suppliers ";
 	$mode = get_company_pref('no_supplier_list');
 	if ($editkey) {
 		set_editor('supplier', $name, $editkey);
@@ -626,7 +626,7 @@ function supplier_list_row($label, $name, $selected_id = null, $all_option = fal
 function customer_list($name, $selected_id = null, $spec_option = false, $submit_on_change = false, $show_inactive = false, $editkey = false, $async = false)
 {
 	global $all_items;
-	$sql = "SELECT debtor_no, debtor_ref, curr_code, inactive FROM " . TB_PREF . "debtors_master ";
+	$sql = "SELECT debtor_no, debtor_ref, curr_code, inactive FROM debtors_master ";
 	$mode = get_company_pref('no_customer_list');
 	if ($editkey) {
 		set_editor('customer', $name, $editkey);
@@ -659,7 +659,7 @@ function customer_list_row($label, $name, $selected_id = null, $all_option = fal
 function customer_branches_list($customer_id, $name, $selected_id = null, $spec_option = true, $enabled = true, $submit_on_change = false, $editkey = false)
 {
 	global $all_items;
-	$sql = "SELECT branch_code, branch_ref FROM " . TB_PREF . "cust_branch
+	$sql = "SELECT branch_code, branch_ref FROM cust_branch
 		WHERE branch_ref <> 'accounts' AND debtor_no='" . $customer_id . "' ";
 	if ($editkey) {
 		set_editor('branch', $name, $editkey);
@@ -692,7 +692,7 @@ function customer_branches_list_row($label, $customer_id, $name, $selected_id = 
 function locations_list($name, $selected_id = null, $all_option = false, $submit_on_change = false)
 {
 	global $all_items;
-	$sql = "SELECT loc_code, location_name, inactive FROM " . TB_PREF . "locations";
+	$sql = "SELECT loc_code, location_name, inactive FROM locations";
 	return combo_input($name, $selected_id, $sql, 'loc_code', 'location_name',
 					   array('spec_option' => $all_option === true ? _("All Locations") : $all_option, 'spec_id' => $all_items, 'select_submit' => $submit_on_change));
 }
@@ -717,7 +717,7 @@ function locations_list_row($label, $name, $selected_id = null, $all_option = fa
 //-----------------------------------------------------------------------------------------------
 function currencies_list($name, $selected_id = null, $submit_on_change = false)
 {
-	$sql = "SELECT curr_abrev, currency, inactive FROM " . TB_PREF . "currencies";
+	$sql = "SELECT curr_abrev, currency, inactive FROM currencies";
 	// default to the company currency
 	return combo_input($name, $selected_id, $sql, 'curr_abrev', 'currency', array('select_submit' => $submit_on_change, 'default' => get_company_currency(), 'async' => false));
 }
@@ -742,7 +742,7 @@ function currencies_list_row($label, $name, $selected_id = null, $submit_on_chan
 //---------------------------------------------------------------------------------------------------
 function fiscalyears_list($name, $selected_id = null, $submit_on_change = false)
 {
-	$sql = "SELECT * FROM " . TB_PREF . "fiscal_year";
+	$sql = "SELECT * FROM fiscal_year";
 	// default to the company current fiscal year
 	return combo_input($name, $selected_id, $sql, 'id', '',
 					   array('order' => 'begin', 'default' => get_company_pref('f_year'), 'format' => '_format_fiscalyears', 'select_submit' => $submit_on_change,
@@ -774,7 +774,7 @@ function fiscalyears_list_row($label, $name, $selected_id = null)
 //------------------------------------------------------------------------------------
 function dimensions_list($name, $selected_id = null, $no_option = false, $showname = ' ', $submit_on_change = false, $showclosed = false, $showtype = 1)
 {
-	$sql = "SELECT id, CONCAT(reference,'  ',name) as ref FROM " . TB_PREF . "dimensions";
+	$sql = "SELECT id, CONCAT(reference,'  ',name) as ref FROM dimensions";
 	$options = array('order' => 'reference', 'spec_option' => $no_option ? $showname : false, 'spec_id' => 0, 'select_submit' => $submit_on_change, 'async' => false,);
 	if (!$showclosed) {
 		$options['where'][] = "closed=0";
@@ -807,7 +807,7 @@ function stock_items_list($name, $selected_id = null, $all_option = false, $subm
 {
 	global $all_items;
 	$sql = "SELECT stock_id, s.description, c.description, s.inactive, s.editable, s.long_description
-			FROM " . TB_PREF . "stock_master s," . TB_PREF . "stock_category c WHERE s.category_id=c.category_id";
+			FROM stock_master s,stock_category c WHERE s.category_id=c.category_id";
 	if ($editkey) {
 		set_editor('item', $name, $editkey);
 	}
@@ -822,7 +822,7 @@ function stock_items_list($name, $selected_id = null, $all_option = false, $subm
 	global $all_items;
 
 	$sql = "SELECT stock_id, s.description, c.description, s.inactive
-			FROM " . TB_PREF . "stock_master s," . TB_PREF . "stock_category c WHERE s.category_id=c.category_id";
+			FROM stock_master s,stock_category c WHERE s.category_id=c.category_id";
 
 	if ($editkey) {
 		set_editor('item', $name, $editkey);
@@ -874,10 +874,10 @@ function sales_items_list($name, $selected_id = null, $all_option = false, $subm
 	$sql = "SELECT i.item_code, i.description, c.description, count(*)>1 as kit,
 			 i.inactive, if(count(*)>1, '0', s.editable) as editable, s.long_description
 			FROM
-			" . TB_PREF . "stock_master s,
-			" . TB_PREF . "item_codes i
+			stock_master s,
+			item_codes i
 			LEFT JOIN
-			" . TB_PREF . "stock_category c
+			stock_category c
 			ON i.category_id=c.category_id
 			WHERE i.stock_id=s.stock_id";
 	if ($type == 'local') { // exclude foreign codes
@@ -900,10 +900,10 @@ function sales_items_list($name, $selected_id = null, $all_option = false, $subm
 	$sql = "SELECT i.item_code, i.description, c.description, count(*)>1 as kit,
 			 i.inactive
 			FROM
-			" . TB_PREF . "stock_master s,
-			" . TB_PREF . "item_codes i
+			stock_master s,
+			item_codes i
 			LEFT JOIN
-			" . TB_PREF . "stock_category c
+			stock_category c
 			ON i.category_id=c.category_id
 			WHERE i.stock_id=s.stock_id";
 
@@ -1058,7 +1058,7 @@ function stock_units_list_row($label, $name, $value = null, $enabled = true)
 //------------------------------------------------------------------------------------
 function tax_types_list($name, $selected_id = null, $none_option = false, $submit_on_change = false)
 {
-	$sql = "SELECT id, CONCAT(name, ' (',rate,'%)') as name FROM " . TB_PREF . "tax_types";
+	$sql = "SELECT id, CONCAT(name, ' (',rate,'%)') as name FROM tax_types";
 	return combo_input($name, $selected_id, $sql, 'id', 'name',
 					   array('spec_option' => $none_option, 'spec_id' => ALL_NUMERIC, 'select_submit' => $submit_on_change, 'async' => false,));
 }
@@ -1083,7 +1083,7 @@ function tax_types_list_row($label, $name, $selected_id = null, $none_option = f
 //------------------------------------------------------------------------------------
 function tax_groups_list($name, $selected_id = null, $none_option = false, $submit_on_change = false)
 {
-	$sql = "SELECT id, name FROM " . TB_PREF . "tax_groups";
+	$sql = "SELECT id, name FROM tax_groups";
 	return combo_input($name, $selected_id, $sql, 'id', 'name',
 					   array('order' => 'id', 'spec_option' => $none_option, 'spec_id' => ALL_NUMERIC, 'select_submit' => $submit_on_change, 'async' => false,));
 }
@@ -1108,7 +1108,7 @@ function tax_groups_list_row($label, $name, $selected_id = null, $none_option = 
 //------------------------------------------------------------------------------------
 function item_tax_types_list($name, $selected_id = null)
 {
-	$sql = "SELECT id, name FROM " . TB_PREF . "item_tax_types";
+	$sql = "SELECT id, name FROM item_tax_types";
 	return combo_input($name, $selected_id, $sql, 'id', 'name', array('order' => 'id'));
 }
 
@@ -1132,7 +1132,7 @@ function item_tax_types_list_row($label, $name, $selected_id = null)
 //------------------------------------------------------------------------------------
 function shippers_list($name, $selected_id = null)
 {
-	$sql = "SELECT shipper_id, shipper_name, inactive FROM " . TB_PREF . "shippers";
+	$sql = "SELECT shipper_id, shipper_name, inactive FROM shippers";
 	return combo_input($name, $selected_id, $sql, 'shipper_id', 'shipper_name', array('order' => array('shipper_name')));
 }
 
@@ -1156,7 +1156,7 @@ function shippers_list_row($label, $name, $selected_id = null)
 //-------------------------------------------------------------------------------------
 function sales_persons_list($name, $selected_id = null, $spec_opt = false)
 {
-	$sql = "SELECT salesman_code, salesman_name, inactive FROM " . TB_PREF . "salesman";
+	$sql = "SELECT salesman_code, salesman_name, inactive FROM salesman";
 	return combo_input($name, $selected_id, $sql, 'salesman_code', 'salesman_name', array('order' => array('salesman_name'), 'spec_option' => $spec_opt, 'spec_id' => ALL_NUMERIC));
 }
 
@@ -1180,7 +1180,7 @@ function sales_persons_list_row($label, $name, $selected_id = null, $spec_opt = 
 //------------------------------------------------------------------------------------
 function sales_areas_list($name, $selected_id = null)
 {
-	$sql = "SELECT area_code, description, inactive FROM " . TB_PREF . "areas";
+	$sql = "SELECT area_code, description, inactive FROM areas";
 	return combo_input($name, $selected_id, $sql, 'area_code', 'description', array());
 }
 
@@ -1204,7 +1204,7 @@ function sales_areas_list_row($label, $name, $selected_id = null)
 //------------------------------------------------------------------------------------
 function sales_groups_list($name, $selected_id = null, $special_option = false)
 {
-	$sql = "SELECT id, description, inactive FROM " . TB_PREF . "groups";
+	$sql = "SELECT id, description, inactive FROM groups";
 	return combo_input($name, $selected_id, $sql, 'id', 'description',
 					   array('spec_option' => $special_option === true ? ' ' : $special_option, 'order' => 'description', 'spec_id' => 0,));
 }
@@ -1235,7 +1235,7 @@ function _format_template_items($row)
 function templates_list($name, $selected_id = null, $special_option = false)
 {
 	$sql = "SELECT sorder.order_no,	Sum(line.unit_price*line.quantity*(1-line.discount_percent)) AS OrderValue
-		FROM " . TB_PREF . "sales_orders as sorder, " . TB_PREF . "sales_order_details as line
+		FROM sales_orders as sorder, sales_order_details as line
 		WHERE sorder.order_no = line.order_no AND sorder.type = 1 GROUP BY line.order_no";
 	return combo_input($name, $selected_id, $sql, 'order_no', 'OrderValue',
 					   array('format' => '_format_template_items', 'spec_option' => $special_option === true ? ' ' : $special_option, 'order' => 'order_no', 'spec_id' => 0,));
@@ -1261,7 +1261,7 @@ function templates_list_row($label, $name, $selected_id = null, $special_option 
 //------------------------------------------------------------------------------------
 function workorders_list($name, $selected_id = null)
 {
-	$sql = "SELECT id, wo_ref FROM " . TB_PREF . "workorders WHERE closed=0";
+	$sql = "SELECT id, wo_ref FROM workorders WHERE closed=0";
 	return combo_input($name, $selected_id, $sql, 'id', 'wo_ref', array());
 }
 
@@ -1285,7 +1285,7 @@ function workorders_list_row($label, $name, $selected_id = null)
 //------------------------------------------------------------------------------------
 function payment_terms_list($name, $selected_id = null)
 {
-	$sql = "SELECT terms_indicator, terms, inactive FROM " . TB_PREF . "payment_terms";
+	$sql = "SELECT terms_indicator, terms, inactive FROM payment_terms";
 	return combo_input($name, $selected_id, $sql, 'terms_indicator', 'terms_indicator', array());
 }
 
@@ -1309,7 +1309,7 @@ function payment_terms_list_row($label, $name, $selected_id = null)
 //------------------------------------------------------------------------------------
 function credit_status_list($name, $selected_id = null)
 {
-	$sql = "SELECT id, reason_description, inactive FROM " . TB_PREF . "credit_status";
+	$sql = "SELECT id, reason_description, inactive FROM credit_status";
 	return combo_input($name, $selected_id, $sql, 'id', 'reason_description', array());
 }
 
@@ -1333,7 +1333,7 @@ function credit_status_list_row($label, $name, $selected_id = null)
 //-----------------------------------------------------------------------------------------------
 function sales_types_list($name, $selected_id = null, $submit_on_change = false, $special_option = false)
 {
-	$sql = "SELECT id, sales_type, inactive FROM " . TB_PREF . "sales_types";
+	$sql = "SELECT id, sales_type, inactive FROM sales_types";
 	return combo_input($name, $selected_id, $sql, 'id', 'sales_type',
 					   array('spec_option' => $special_option === true ? _("All Sales Types") : $special_option, 'spec_id' => 0, 'select_submit' => $submit_on_change,
 							//	  'async' => false,
@@ -1360,7 +1360,7 @@ function sales_types_list_row($label, $name, $selected_id = null, $submit_on_cha
 //-----------------------------------------------------------------------------------------------
 function movement_types_list($name, $selected_id = null)
 {
-	$sql = "SELECT id, name FROM " . TB_PREF . "movement_types";
+	$sql = "SELECT id, name FROM movement_types";
 	return combo_input($name, $selected_id, $sql, 'id', 'name', array());
 }
 
@@ -1389,7 +1389,7 @@ function _format_date($row)
 
 function bank_reconciliation_list($account, $name, $selected_id = null, $submit_on_change = false, $special_option = false)
 {
-	$sql = "SELECT reconciled, reconciled FROM " . TB_PREF . "bank_trans
+	$sql = "SELECT reconciled, reconciled FROM bank_trans
 		WHERE bank_act=" . db_escape($account) . " AND reconciled IS NOT NULL
 		GROUP BY reconciled";
 	return combo_input($name, $selected_id, $sql, 'id', 'reconciled',
@@ -1418,7 +1418,7 @@ function bank_reconciliation_list_row($label, $account, $name, $selected_id=null
 function workcenter_list($name, $selected_id = null, $all_option = false)
 {
 	global $all_items;
-	$sql = "SELECT id, name, inactive FROM " . TB_PREF . "workcentres";
+	$sql = "SELECT id, name, inactive FROM workcentres";
 	return combo_input($name, $selected_id, $sql, 'id', 'name', array('spec_option' => $all_option === true ? _("All Suppliers") : $all_option, 'spec_id' => $all_items,));
 }
 
@@ -1443,8 +1443,8 @@ function workcenter_list_row($label, $name, $selected_id = null, $all_option = f
 //-----------------------------------------------------------------------------------------------
 function bank_accounts_list($name, $selected_id = null, $submit_on_change = false)
 {
-	$sql = "SELECT " . TB_PREF . "bank_accounts.id, bank_account_name, bank_curr_code, inactive
-		FROM " . TB_PREF . "bank_accounts";
+	$sql = "SELECT bank_accounts.id, bank_account_name, bank_curr_code, inactive
+		FROM bank_accounts";
 	return combo_input($name, $selected_id, $sql, 'id', 'bank_account_name', array('format' => '_format_add_curr', 'select_submit' => $submit_on_change, 'async' => false));
 }
 
@@ -1468,9 +1468,9 @@ function bank_accounts_list_row($label, $name, $selected_id = null, $submit_on_c
 //-----------------------------------------------------------------------------------------------
 function cash_accounts_list_row($label, $name, $selected_id = null, $submit_on_change = false)
 {
-	$sql = "SELECT " . TB_PREF . "bank_accounts.id, bank_account_name, bank_curr_code, inactive
-		FROM " . TB_PREF . "bank_accounts
-		WHERE " . TB_PREF . "bank_accounts.account_type=3";
+	$sql = "SELECT bank_accounts.id, bank_account_name, bank_curr_code, inactive
+		FROM bank_accounts
+		WHERE bank_accounts.account_type=3";
 	if ($label != null) {
 		echo "<tr><td class='label'>$label</td>\n";
 	}
@@ -1482,7 +1482,7 @@ function cash_accounts_list_row($label, $name, $selected_id = null, $submit_on_c
 //-----------------------------------------------------------------------------------------------
 function pos_list_row($label, $name, $selected_id = null, $spec_option = false, $submit_on_change = false)
 {
-	$sql = "SELECT id, pos_name, inactive FROM " . TB_PREF . "sales_pos";
+	$sql = "SELECT id, pos_name, inactive FROM sales_pos";
 	default_focus($name);
 	echo '<tr>';
 	if ($label != null) {
@@ -1509,7 +1509,7 @@ function sale_payment_list_cells($label, $name, $selected_id = null, $submit_on_
 //-----------------------------------------------------------------------------------------------
 function class_list($name, $selected_id = null, $submit_on_change = false)
 {
-	$sql = "SELECT cid, class_name FROM " . TB_PREF . "chart_class";
+	$sql = "SELECT cid, class_name FROM chart_class";
 	return combo_input($name, $selected_id, $sql, 'cid', 'class_name', array('select_submit' => $submit_on_change, 'async' => false));
 
 }
@@ -1534,7 +1534,7 @@ function class_list_row($label, $name, $selected_id = null, $submit_on_change = 
 //-----------------------------------------------------------------------------------------------
 function stock_categories_list($name, $selected_id = null, $spec_opt = false, $submit_on_change = false)
 {
-	$sql = "SELECT category_id, description, inactive FROM " . TB_PREF . "stock_category";
+	$sql = "SELECT category_id, description, inactive FROM stock_category";
 	return combo_input($name, $selected_id, $sql, 'category_id', 'description',
 					   array('order' => 'category_id', 'spec_option' => $spec_opt, 'spec_id' => -1, 'select_submit' => $submit_on_change, 'async' => true));
 }
@@ -1560,7 +1560,7 @@ function stock_categories_list_row($label, $name, $selected_id = null, $spec_opt
 function gl_account_types_list($name, $selected_id = null, $all_option = false, $all_option_numeric = true)
 {
 	global $all_items;
-	$sql = "SELECT id, name FROM " . TB_PREF . "chart_types";
+	$sql = "SELECT id, name FROM chart_types";
 	return combo_input($name, $selected_id, $sql, 'id', 'name', array('order' => 'id', 'spec_option' => $all_option, 'spec_id' => $all_option_numeric ? 0 : $all_items));
 }
 
@@ -1586,12 +1586,12 @@ function gl_all_accounts_list($name, $selected_id = null, $skip_bank_accounts = 
 {
 	if ($skip_bank_accounts) {
 		$sql = "SELECT chart.account_code, chart.account_name, type.name, chart.inactive, type.id
-			FROM (" . TB_PREF . "chart_master chart," . TB_PREF . "chart_types type) " . "LEFT JOIN " . TB_PREF . "bank_accounts acc " . "ON chart.account_code=acc.account_code
+			FROM (chart_master chart,chart_types type) " . "LEFT JOIN bank_accounts acc " . "ON chart.account_code=acc.account_code
 				WHERE acc.account_code  IS NULL
 			AND chart.account_type=type.id";
 	} else {
 		$sql = "SELECT chart.account_code, chart.account_name, type.name, chart.inactive, type.id
-			FROM " . TB_PREF . "chart_master chart," . TB_PREF . "chart_types type
+			FROM chart_master chart,chart_types type
 			WHERE chart.account_type=type.id";
 	}
 	return combo_input($name, $selected_id, $sql, 'chart.account_code', 'chart.account_name',
@@ -1925,7 +1925,7 @@ function number_list_row($label, $name, $selected, $from, $to, $no_option = fals
 
 function print_profiles_list_row($label, $name, $selected_id = null, $spec_opt = false, $submit_on_change = true)
 {
-	$sql = "SELECT profile FROM " . TB_PREF . "print_profiles" . " GROUP BY profile";
+	$sql = "SELECT profile FROM print_profiles" . " GROUP BY profile";
 	$result = db_query($sql, 'cannot get all profile names');
 	$profiles = array();
 	while ($myrow = db_fetch($result)) {
@@ -1944,7 +1944,7 @@ function printers_list($name, $selected_id = null, $spec_opt = false, $submit_on
 {
 	static $printers; // query only once for page display
 	if (!$printers) {
-		$sql = "SELECT id, name, description FROM " . TB_PREF . "printers";
+		$sql = "SELECT id, name, description FROM printers";
 		$result = db_query($sql, 'cannot get all printers');
 		$printers = array();
 		while ($myrow = db_fetch($result)) {
@@ -1958,7 +1958,7 @@ function printers_list($name, $selected_id = null, $spec_opt = false, $submit_on
 function quick_entries_list($name, $selected_id = null, $type = null, $submit_on_change = false)
 {
 	$where = false;
-	$sql = "SELECT id, description FROM " . TB_PREF . "quick_entries";
+	$sql = "SELECT id, description FROM quick_entries";
 	if ($type != null) {
 		$sql .= " WHERE type=$type";
 	}
@@ -2016,7 +2016,7 @@ function class_types_list_row($label, $name, $selected_id = null, $submit_on_cha
 function security_roles_list($name, $selected_id = null, $new_item = false, $submit_on_change = false, $show_inactive = false)
 {
 	global $all_items;
-	$sql = "SELECT id, role, inactive FROM " . TB_PREF . "security_roles";
+	$sql = "SELECT id, role, inactive FROM security_roles";
 	return combo_input($name, $selected_id, $sql, 'id', 'description',
 					   array('spec_option' => $new_item ? _("New role") : false, 'spec_id' => '', 'select_submit' => $submit_on_change, 'show_inactive' => $show_inactive));
 }

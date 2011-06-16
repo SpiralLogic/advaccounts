@@ -179,7 +179,7 @@ foreach ($installers as $i => $inst)
 	// this is checked only for first (site admin) company,
 	// but in fact we should always upgrade all data sets after
 	// source upgrade.
-	$check = $inst->installed(TB_PREF);
+	$check = $inst->installed('');
 	if ($check === true)
 		label_cell(_("Installed"));
 	else

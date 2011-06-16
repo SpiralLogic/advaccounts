@@ -12,7 +12,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 
 function add_audit_trail($trans_type, $trans_no, $trans_date, $descr = '')
 {
-	$sql = "INSERT INTO " . TB_PREF . "audit_trail"
+	$sql = "INSERT INTO audit_trail"
 		   . " (type, trans_no, user, fiscal_year, gl_date, description, gl_seq)
 			VALUES(" . db_escape($trans_type) . ", " . db_escape($trans_no) . ","
 		   . $_SESSION["wa_current_user"]->user . ","
@@ -24,7 +24,7 @@ function add_audit_trail($trans_type, $trans_no, $trans_date, $descr = '')
 
 	// all audit records beside latest one should have gl_seq set to NULL
 	// to avoid need for subqueries (not existing in MySQL 3) all over the code
-	$sql = "UPDATE " . TB_PREF . "audit_trail SET gl_seq = NULL"
+	$sql = "UPDATE audit_trail SET gl_seq = NULL"
 		   . " WHERE type=" . db_escape($trans_type) . " AND trans_no="
 		   . db_escape($trans_no) . " AND id!=" . db_insert_id();
 
@@ -33,7 +33,7 @@ function add_audit_trail($trans_type, $trans_no, $trans_date, $descr = '')
 
 function get_audit_trail_all($trans_type, $trans_no)
 {
-	$sql = "SELECT * FROM " . TB_PREF . "audit_trail"
+	$sql = "SELECT * FROM audit_trail"
 		   . " WHERE type=" . db_escape($trans_type) . " AND trans_no="
 		   . db_escape($trans_no);
 
@@ -42,7 +42,7 @@ function get_audit_trail_all($trans_type, $trans_no)
 
 function get_audit_trail_last($trans_type, $trans_no)
 {
-	$sql = "SELECT * FROM " . TB_PREF . "audit_trail"
+	$sql = "SELECT * FROM audit_trail"
 		   . " WHERE type=" . db_escape($trans_type) .
 		   " AND trans_no=" . db_escape($trans_no) . " AND NOT ISNULL(gl_seq)";
 
@@ -61,8 +61,8 @@ function close_transactions($todate)
 {
 	$errors = 0;
 	$sql = "SELECT DISTINCT a.id, a.gl_date, a.fiscal_year"
-		   . " FROM " . TB_PREF . "gl_trans gl"
-		   . " LEFT JOIN " . TB_PREF . "audit_trail a ON
+		   . " FROM gl_trans gl"
+		   . " LEFT JOIN audit_trail a ON
 			(gl.type=a.type AND gl.type_no=a.trans_no)"
 		   . " WHERE gl_date<='" . date2sql($todate) . "'"
 		   . " AND NOT ISNULL(gl_seq)"
@@ -83,7 +83,7 @@ function close_transactions($todate)
 				$counter = 1; // reset counter on fiscal year change
 			} else
 				$counter++;
-			$sql2 = "UPDATE " . TB_PREF . "audit_trail SET"
+			$sql2 = "UPDATE audit_trail SET"
 					. " gl_seq=$counter"
 					. " WHERE id=" . $row['id'];
 
@@ -102,8 +102,8 @@ function open_transactions($fromdate)
 {
 
 	$sql = "SELECT a.id, a.gl_date, a.fiscal_year"
-		   . " FROM " . TB_PREF . "gl_trans gl"
-		   . " LEFT JOIN " . TB_PREF . "audit_trail a ON
+		   . " FROM gl_trans gl"
+		   . " LEFT JOIN audit_trail a ON
 			(gl.type=a.type AND gl.type_no=a.trans_no)"
 		   . " WHERE gl_date>='" . date2sql($fromdate) . "'"
 		   . " AND !ISNULL(gl_seq)"
@@ -118,7 +118,7 @@ function open_transactions($fromdate)
 			if ($row['fiscal_year'] == null) {
 				continue;
 			}
-			$sql2 = "UPDATE " . TB_PREF . "audit_trail SET"
+			$sql2 = "UPDATE audit_trail SET"
 					. " gl_seq=0"
 					. " WHERE id=" . $row['id'];
 
@@ -132,7 +132,7 @@ function open_transactions($fromdate)
 */
 function is_closed_trans($type, $trans_no)
 {
-	$sql = "SELECT	gl_seq  FROM " . TB_PREF . "audit_trail"
+	$sql = "SELECT	gl_seq  FROM audit_trail"
 		   . " WHERE type=" . db_escape($type)
 		   . " AND trans_no=" . db_escape($trans_no)
 		   . " AND gl_seq>0";

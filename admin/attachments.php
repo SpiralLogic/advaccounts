@@ -103,7 +103,7 @@ if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 	}
 	$date = date2sql(Today());
 	if ($Mode == 'ADD_ITEM') {
-		$sql = "INSERT INTO " . TB_PREF . "attachments (type_no, trans_no, description, filename, unique_name,
+		$sql = "INSERT INTO attachments (type_no, trans_no, description, filename, unique_name,
 			filesize, filetype, tran_date) VALUES (" . db_escape($_POST['filterType']) . ","
 			   . db_escape($_POST['trans_no']) . "," . db_escape($_POST['description']) . ", "
 			   . db_escape($filename) . ", " . db_escape($unique_name) . ", " . db_escape($filesize)
@@ -113,7 +113,7 @@ if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 	}
 	else
 	{
-		$sql = "UPDATE " . TB_PREF . "attachments SET
+		$sql = "UPDATE attachments SET
 			type_no=" . db_escape($_POST['filterType']) . ",
 			trans_no=" . db_escape($_POST['trans_no']) . ",
 			description=" . db_escape($_POST['description']) . ", ";
@@ -135,7 +135,7 @@ if ($Mode == 'Delete') {
 	$dir = $comp_path . "/" . user_company() . "/attachments";
 	if (file_exists($dir . "/" . $row['unique_name']))
 		unlink($dir . "/" . $row['unique_name']);
-	$sql = "DELETE FROM " . TB_PREF . "attachments WHERE id = " . db_escape($selected_id);
+	$sql = "DELETE FROM attachments WHERE id = " . db_escape($selected_id);
 	db_query($sql, "Could not delete attachment");
 	display_notification(_("Attachment has been deleted."));
 	$Mode = 'RESET';
@@ -164,14 +164,14 @@ function viewing_controls()
 
 function get_attached_documents($type)
 {
-	$sql = "SELECT * FROM " . TB_PREF . "attachments WHERE type_no=" . db_escape($type)
+	$sql = "SELECT * FROM attachments WHERE type_no=" . db_escape($type)
 		   . " ORDER BY trans_no";
 	return db_query($sql, "Could not retrieve attachments");
 }
 
 function get_attachment($id)
 {
-	$sql = "SELECT * FROM " . TB_PREF . "attachments WHERE id=" . db_escape($id);
+	$sql = "SELECT * FROM attachments WHERE id=" . db_escape($id);
 	$result = db_query($sql, "Could not retrieve attachments");
 	return db_fetch($result);
 }

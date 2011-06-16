@@ -179,11 +179,11 @@ $sql = "SELECT trans.trans_no,
 		Sum(line.quantity-line.qty_done) AS Outstanding,
 		Sum(line.qty_done) AS Done
 	FROM "
-	   . TB_PREF . "sales_orders as sorder, "
-	   . TB_PREF . "debtor_trans as trans, "
-	   . TB_PREF . "debtor_trans_details as line, "
-	   . TB_PREF . "debtors_master as debtor, "
-	   . TB_PREF . "cust_branch as branch
+	   .  "sales_orders as sorder, "
+	   .  "debtor_trans as trans, "
+	   .  "debtor_trans_details as line, "
+	   .  "debtors_master as debtor, "
+	   .  "cust_branch as branch
 		WHERE
 		sorder.order_no = trans.order_ AND
 		trans.debtor_no = debtor.debtor_no

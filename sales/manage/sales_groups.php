@@ -31,13 +31,13 @@ if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 
 	if ($input_error != 1) {
 		if ($selected_id != -1) {
-			$sql = "UPDATE " . TB_PREF . "groups SET description=" . db_escape(
+			$sql = "UPDATE groups SET description=" . db_escape(
 				$_POST['description']) . " WHERE id = " . db_escape($selected_id);
 			$note = _('Selected sales group has been updated');
 		}
 		else
 		{
-			$sql = "INSERT INTO " . TB_PREF . "groups (description) VALUES (" . db_escape($_POST['description']) . ")";
+			$sql = "INSERT INTO groups (description) VALUES (" . db_escape($_POST['description']) . ")";
 			$note = _('New sales group has been added');
 		}
 
@@ -53,7 +53,7 @@ if ($Mode == 'Delete') {
 
 	// PREVENT DELETES IF DEPENDENT RECORDS IN 'debtors_master'
 
-	$sql = "SELECT COUNT(*) FROM " . TB_PREF . "cust_branch WHERE group_no=" . db_escape($selected_id);
+	$sql = "SELECT COUNT(*) FROM cust_branch WHERE group_no=" . db_escape($selected_id);
 	$result = db_query($sql, "check failed");
 	$myrow = db_fetch_row($result);
 	if ($myrow[0] > 0) {
@@ -61,7 +61,7 @@ if ($Mode == 'Delete') {
 		display_error(_("Cannot delete this group because customers have been created using this group."));
 	}
 	if ($cancel_delete == 0) {
-		$sql = "DELETE FROM " . TB_PREF . "groups WHERE id=" . db_escape($selected_id);
+		$sql = "DELETE FROM groups WHERE id=" . db_escape($selected_id);
 		db_query($sql, "could not delete sales group");
 
 		display_notification(_('Selected sales group has been deleted'));
@@ -77,7 +77,7 @@ if ($Mode == 'RESET') {
 }
 //-------------------------------------------------------------------------------------------------
 
-$sql = "SELECT * FROM " . TB_PREF . "groups";
+$sql = "SELECT * FROM groups";
 if (!check_value('show_inactive')) $sql .= " WHERE !inactive";
 $sql .= " ORDER BY description";
 $result = db_query($sql, "could not get groups");
@@ -114,7 +114,7 @@ start_table($table_style2);
 if ($selected_id != -1) {
 	if ($Mode == 'Edit') {
 		//editing an existing area
-		$sql = "SELECT * FROM " . TB_PREF . "groups WHERE id=" . db_escape($selected_id);
+		$sql = "SELECT * FROM groups WHERE id=" . db_escape($selected_id);
 
 		$result = db_query($sql, "could not get group");
 		$myrow = db_fetch($result);

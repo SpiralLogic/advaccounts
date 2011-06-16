@@ -46,7 +46,7 @@ function add_gl_trans_supplier($type, $type_no, $date_, $account, $dimension, $d
 
 function get_purchase_price($supplier_id, $stock_id)
 {
-	$sql = "SELECT price, conversion_factor FROM " . TB_PREF . "purch_data
+	$sql = "SELECT price, conversion_factor FROM purch_data
 		WHERE supplier_id = " . db_escape($supplier_id) . "
 		AND stock_id = " . db_escape($stock_id);
 	$result = db_query($sql, "The supplier pricing details for " . $stock_id . " could not be retrieved");
@@ -63,7 +63,7 @@ function get_purchase_price($supplier_id, $stock_id)
 
 function get_purchase_conversion_factor($supplier_id, $stock_id)
 {
-	$sql = "SELECT conversion_factor FROM " . TB_PREF . "purch_data
+	$sql = "SELECT conversion_factor FROM purch_data
 		WHERE supplier_id = " . db_escape($supplier_id) . "
 		AND stock_id = " . db_escape($stock_id);
 	$result = db_query($sql, "The supplier pricing details for " . $stock_id . " could not be retrieved");
@@ -82,7 +82,7 @@ function get_purchase_conversion_factor($supplier_id, $stock_id)
 
 function get_purchase_data($supplier_id, $stock_id)
 {
-	$sql = "SELECT * FROM " . TB_PREF . "purch_data
+	$sql = "SELECT * FROM purch_data
 		WHERE supplier_id = " . db_escape($supplier_id) . "
 		AND stock_id = " . db_escape($stock_id);
 	$result = db_query($sql, "The supplier pricing details for " . $stock_id . " could not be retrieved");
@@ -95,7 +95,7 @@ function add_or_update_purchase_data($supplier_id, $stock_id, $price, $supplier_
 	$data = get_purchase_data($supplier_id, $stock_id);
 	if ($data === false) {
 		$supplier_code = $stock_id;
-		$sql = "INSERT INTO " . TB_PREF . "purch_data (supplier_id, stock_id, price, suppliers_uom,
+		$sql = "INSERT INTO purch_data (supplier_id, stock_id, price, suppliers_uom,
 			conversion_factor, supplier_description) VALUES (" . db_escape($supplier_id)
 			   . ", " . db_escape($stock_id) . ", " . db_escape($price) . ", "
 			   . db_escape($uom) . ", 1, " . db_escape($supplier_code) . ")";
@@ -103,7 +103,7 @@ function add_or_update_purchase_data($supplier_id, $stock_id, $price, $supplier_
 		return;
 	}
 	$price = round($price * $data['conversion_factor'], user_price_dec());
-	$sql = "UPDATE " . TB_PREF . "purch_data SET price=" . db_escape($price);
+	$sql = "UPDATE purch_data SET price=" . db_escape($price);
 	if ($uom != "")
 		$sql .= ",suppliers_uom=" . db_escape($uom);
 	if ($supplier_code != "")

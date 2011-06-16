@@ -32,21 +32,21 @@ function getTransactions($supplier, $date)
 	$date = date2sql($date);
 	$dec = user_price_dec();
 
-	$sql = "SELECT " . TB_PREF . "supp_trans.supp_reference,
-			" . TB_PREF . "supp_trans.tran_date,
-			" . TB_PREF . "supp_trans.due_date,
-			" . TB_PREF . "supp_trans.trans_no,
-			" . TB_PREF . "supp_trans.type,
-			" . TB_PREF . "supp_trans.rate,
-			(ABS(" . TB_PREF . "supp_trans.ov_amount) + ABS(" . TB_PREF . "supp_trans.ov_gst) - " . TB_PREF . "supp_trans.alloc) AS Balance,
-			(ABS(" . TB_PREF . "supp_trans.ov_amount) + ABS(" . TB_PREF . "supp_trans.ov_gst) ) AS TranTotal
-		FROM " . TB_PREF . "supp_trans
-		WHERE " . TB_PREF . "supp_trans.supplier_id = '" . $supplier . "'
-		AND ROUND(ABS(" . TB_PREF . "supp_trans.ov_amount),$dec) + ROUND(ABS(" . TB_PREF . "supp_trans.ov_gst),$dec) -
-		ROUND(" . TB_PREF . "supp_trans.alloc,$dec) != 0
-		AND " . TB_PREF . "supp_trans.tran_date <='" . $date . "'
-		ORDER BY " . TB_PREF . "supp_trans.type,
-			" . TB_PREF . "supp_trans.trans_no";
+	$sql = "SELECT supp_trans.supp_reference,
+			supp_trans.tran_date,
+			supp_trans.due_date,
+			supp_trans.trans_no,
+			supp_trans.type,
+			supp_trans.rate,
+			(ABS(supp_trans.ov_amount) + ABS(supp_trans.ov_gst) - supp_trans.alloc) AS Balance,
+			(ABS(supp_trans.ov_amount) + ABS(supp_trans.ov_gst) ) AS TranTotal
+		FROM supp_trans
+		WHERE supp_trans.supplier_id = '" . $supplier . "'
+		AND ROUND(ABS(supp_trans.ov_amount),$dec) + ROUND(ABS(supp_trans.ov_gst),$dec) -
+		ROUND(supp_trans.alloc,$dec) != 0
+		AND supp_trans.tran_date <='" . $date . "'
+		ORDER BY supp_trans.type,
+			supp_trans.trans_no";
 
 	return db_query($sql, "No transactions were returned");
 }
@@ -107,11 +107,11 @@ function print_payment_report()
 	$total = array();
 	$grandtotal = array(0, 0);
 
-	$sql = "SELECT supplier_id, supp_name AS name, curr_code, " . TB_PREF . "payment_terms.terms FROM " . TB_PREF . "suppliers, " . TB_PREF . "payment_terms
+	$sql = "SELECT supplier_id, supp_name AS name, curr_code, payment_terms.terms FROM suppliers, payment_terms
 		WHERE ";
 	if ($fromsupp != ALL_NUMERIC)
 		$sql .= "supplier_id=" . db_escape($fromsupp) . " AND ";
-	$sql .= "" . TB_PREF . "suppliers.payment_terms = " . TB_PREF . "payment_terms.terms_indicator
+	$sql .= "suppliers.payment_terms = payment_terms.terms_indicator
 		ORDER BY supp_name";
 	$result = db_query($sql, "The customers could not be retrieved");
 

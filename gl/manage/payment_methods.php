@@ -62,14 +62,14 @@ elseif ($Mode == 'Delete')
 	$acc = db_escape($selected_id);
 	// PREVENT DELETES IF DEPENDENT RECORDS IN 'bank_trans'
 
-	$sql = "SELECT COUNT(*) FROM " . TB_PREF . "bank_trans WHERE bank_act=$acc";
+	$sql = "SELECT COUNT(*) FROM bank_trans WHERE bank_act=$acc";
 	$result = db_query($sql, "check failed");
 	$myrow = db_fetch_row($result);
 	if ($myrow[0] > 0) {
 		$cancel_delete = 1;
 		display_error(_("Cannot delete this bank account because transactions have been created using this account."));
 	}
-	$sql = "SELECT COUNT(*) FROM " . TB_PREF . "sales_pos WHERE pos_account=$acc";
+	$sql = "SELECT COUNT(*) FROM sales_pos WHERE pos_account=$acc";
 	$result = db_query($sql, "check failed");
 	$myrow = db_fetch_row($result);
 	if ($myrow[0] > 0) {
@@ -92,7 +92,7 @@ if ($Mode == 'RESET') {
 /* Always show the list of accounts */
 
 $sql = "SELECT account.*, gl_account.account_name
-	FROM " . TB_PREF . "bank_accounts account, " . TB_PREF . "chart_master gl_account
+	FROM bank_accounts account, chart_master gl_account
 	WHERE account.account_code = gl_account.account_code";
 if (!check_value('show_inactive')) $sql .= " AND !account.inactive";
 $sql .= " ORDER BY account_code, bank_curr_code";

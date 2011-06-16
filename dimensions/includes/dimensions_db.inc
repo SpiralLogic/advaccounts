@@ -18,7 +18,7 @@ function add_dimension($reference, $name, $type_, $date_, $due_date, $memo_)
 	$date = date2sql($date_);
 	$duedate = date2sql($due_date);
 
-	$sql = "INSERT INTO " . TB_PREF . "dimensions (reference, name, type_, date_, due_date)
+	$sql = "INSERT INTO dimensions (reference, name, type_, date_, due_date)
 		VALUES (" . db_escape($reference) . ", " . db_escape($name) . ", " . db_escape($type_)
 		   . ", '$date', '$duedate')";
 	db_query($sql, "could not add dimension");
@@ -40,7 +40,7 @@ function update_dimension($id, $name, $type_, $date_, $due_date, $memo_)
 	$date = date2sql($date_);
 	$duedate = date2sql($due_date);
 
-	$sql = "UPDATE " . TB_PREF . "dimensions SET name=" . db_escape($name) . ",
+	$sql = "UPDATE dimensions SET name=" . db_escape($name) . ",
 		type_ = " . db_escape($type_) . ",
 		date_='$date',
 		due_date='$duedate'
@@ -60,7 +60,7 @@ function delete_dimension($id)
 	begin_transaction();
 
 	// delete the actual dimension
-	$sql = "DELETE FROM " . TB_PREF . "dimensions WHERE id=" . db_escape($id);
+	$sql = "DELETE FROM dimensions WHERE id=" . db_escape($id);
 	db_query($sql, "The dimension could not be deleted");
 
 	delete_comments(ST_DIMENSION, $id);
@@ -72,7 +72,7 @@ function delete_dimension($id)
 
 function get_dimension($id, $allow_null = false)
 {
-	$sql = "SELECT * FROM " . TB_PREF . "dimensions	WHERE id=" . db_escape($id);
+	$sql = "SELECT * FROM dimensions	WHERE id=" . db_escape($id);
 
 	$result = db_query($sql, "The dimension could not be retrieved");
 
@@ -105,7 +105,7 @@ function get_dimension_string($id, $html = false, $space = ' ')
 
 function get_dimensions()
 {
-	$sql = "SELECT * FROM " . TB_PREF . "dimensions ORDER BY date_";
+	$sql = "SELECT * FROM dimensions ORDER BY date_";
 
 	return db_query($sql, "The dimensions could not be retrieved");
 }
@@ -121,7 +121,7 @@ function dimension_has_deposits($id)
 
 function dimension_has_payments($id)
 {
-	$sql = "SELECT SUM(amount) FROM " . TB_PREF . "gl_trans WHERE dimension_id = " . db_escape($id);
+	$sql = "SELECT SUM(amount) FROM gl_trans WHERE dimension_id = " . db_escape($id);
 	$res = db_query($sql, "Transactions could not be calculated");
 	$row = db_fetch_row($res);
 	return ($row[0] != 0.0);
@@ -137,7 +137,7 @@ function dimension_is_closed($id)
 
 function close_dimension($id)
 {
-	$sql = "UPDATE " . TB_PREF . "dimensions SET closed='1' WHERE id = " . db_escape($id);
+	$sql = "UPDATE dimensions SET closed='1' WHERE id = " . db_escape($id);
 	db_query($sql, "could not close dimension");
 }
 
@@ -145,7 +145,7 @@ function close_dimension($id)
 
 function reopen_dimension($id)
 {
-	$sql = "UPDATE " . TB_PREF . "dimensions SET closed='0' WHERE id = $id";
+	$sql = "UPDATE dimensions SET closed='0' WHERE id = $id";
 	db_query($sql, "could not reopen dimension");
 }
 

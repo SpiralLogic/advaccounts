@@ -101,7 +101,7 @@ function is_closed($row)
 
 function sum_dimension($row)
 {
-	$sql = "SELECT SUM(amount) FROM " . TB_PREF . "gl_trans WHERE tran_date >= '" .
+	$sql = "SELECT SUM(amount) FROM gl_trans WHERE tran_date >= '" .
 		   date2sql($_POST['FromDate']) . "' AND
 		tran_date <= '" . date2sql($_POST['ToDate']) . "' AND (dimension_id = " .
 		   $row['id'] . " OR dimension2_id = " . $row['id'] . ")";
@@ -132,7 +132,7 @@ $sql = "SELECT dim.id,
 	dim.date_,
 	dim.due_date,
 	dim.closed
-	FROM " . TB_PREF . "dimensions as dim WHERE id > 0";
+	FROM dimensions as dim WHERE id > 0";
 
 if (isset($_POST['OrderNumber']) && $_POST['OrderNumber'] != "") {
 	$sql .= " AND reference LIKE " . db_escape("%" . $_POST['OrderNumber'] . "%");

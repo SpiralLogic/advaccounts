@@ -161,7 +161,7 @@ $sql = "SELECT trans.type,
 		trans.alloc AS Allocated,
 		((trans.type = " . ST_SUPPINVOICE . " OR trans.type = " . ST_SUPPCREDIT . ") AND trans.due_date < '" . date2sql(Today()) . "') AS OverDue,
     	(ABS(trans.ov_amount + trans.ov_gst  + trans.ov_discount - trans.alloc) <= 0.005) AS Settled
-    	FROM " . TB_PREF . "supp_trans as trans, " . TB_PREF . "suppliers as supplier
+    	FROM supp_trans as trans, suppliers as supplier
     	WHERE supplier.supplier_id = trans.supplier_id
      	AND trans.ov_amount != 0"; // exclude voided transactions
 if (isAjaxReferrer() && !empty($_POST['ajaxsearch'])) {

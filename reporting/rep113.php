@@ -31,16 +31,16 @@ print_receipts();
 //----------------------------------------------------------------------------------------------------
 function get_receipt($type, $trans_no)
 {
-	$sql = "SELECT " . TB_PREF . "debtor_trans.*,
-				(" . TB_PREF . "debtor_trans.ov_amount + " . TB_PREF . "debtor_trans.ov_gst + " . TB_PREF . "debtor_trans.ov_freight +
-				" . TB_PREF . "debtor_trans.ov_freight_tax + " . TB_PREF . "debtor_trans.ov_discount) AS Total,
-   				" . TB_PREF . "debtors_master.name AS DebtorName,  " . TB_PREF . "debtors_master.debtor_ref,
-   				" . TB_PREF . "debtors_master.curr_code, " . TB_PREF . "debtors_master.payment_terms, " . TB_PREF . "debtors_master.tax_id AS tax_id,
-   				" . TB_PREF . "debtors_master.email, " . TB_PREF . "debtors_master.address
-    			FROM " . TB_PREF . "debtor_trans, " . TB_PREF . "debtors_master
-				WHERE " . TB_PREF . "debtor_trans.debtor_no = " . TB_PREF . "debtors_master.debtor_no
-				AND " . TB_PREF . "debtor_trans.type = " . db_escape($type) . "
-				AND " . TB_PREF . "debtor_trans.trans_no = " . db_escape($trans_no);
+	$sql = "SELECT debtor_trans.*,
+				(debtor_trans.ov_amount + debtor_trans.ov_gst + debtor_trans.ov_freight +
+				debtor_trans.ov_freight_tax + debtor_trans.ov_discount) AS Total,
+   				debtors_master.name AS DebtorName,  debtors_master.debtor_ref,
+   				debtors_master.curr_code, debtors_master.payment_terms, debtors_master.tax_id AS tax_id,
+   				debtors_master.email, debtors_master.address
+    			FROM debtor_trans, debtors_master
+				WHERE debtor_trans.debtor_no = debtors_master.debtor_no
+				AND debtor_trans.type = " . db_escape($type) . "
+				AND debtor_trans.trans_no = " . db_escape($trans_no);
 	$result = db_query($sql, "The remittance cannot be retrieved");
 	if (db_num_rows($result) == 0)
 		return false;
@@ -54,7 +54,7 @@ function get_allocations_for_receipt($debtor_id, $type, $trans_no)
 		AND alloc.trans_no_from=$trans_no
 		AND alloc.trans_type_from=$type
 		AND trans.debtor_no=" . db_escape($debtor_id),
-							   TB_PREF . "cust_allocations as alloc");
+							    "cust_allocations as alloc");
 	$sql .= " ORDER BY trans_no";
 	return db_query($sql, "Cannot retreive alloc to transactions");
 }

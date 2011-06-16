@@ -73,7 +73,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
       display_heading2(_("Delivery Notes"));
       $th = array(_("#"), _("Ref"), _("Date"), _("Total"));
       table_header($th);
-      $sql = "SELECT * FROM " . TB_PREF . "debtor_trans WHERE type=" . ST_CUSTDELIVERY . " AND order_=" . db_escape($_GET['trans_no']);
+      $sql = "SELECT * FROM debtor_trans WHERE type=" . ST_CUSTDELIVERY . " AND order_=" . db_escape($_GET['trans_no']);
       $result = db_query($sql, "The related delivery notes could not be retreived");
       $delivery_total = 0;
       $k = 0;
@@ -100,7 +100,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
       $inv_numbers = array();
       $invoices_total = 0;
       if (count($dn_numbers)) {
-         $sql = "SELECT * FROM " . TB_PREF . "debtor_trans WHERE type=" . ST_SALESINVOICE . " AND trans_no IN(" . implode(',', array_values($dn_numbers)) . ")";
+         $sql = "SELECT * FROM debtor_trans WHERE type=" . ST_SALESINVOICE . " AND trans_no IN(" . implode(',', array_values($dn_numbers)) . ")";
          $result = db_query($sql, "The related invoices could not be retreived");
          $k = 0;
          while ($inv_row = db_fetch($result)) {
@@ -126,7 +126,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
       if (count($inv_numbers)) {
          // FIXME -  credit notes retrieved here should be those linked to invoices containing
          // at least one line from this order
-         $sql = "SELECT * FROM " . TB_PREF . "debtor_trans WHERE type=" . ST_CUSTCREDIT . " AND trans_link IN(" . implode(',', array_values($inv_numbers)) . ")";
+         $sql = "SELECT * FROM debtor_trans WHERE type=" . ST_CUSTCREDIT . " AND trans_link IN(" . implode(',', array_values($inv_numbers)) . ")";
          $result = db_query($sql, "The related credit notes could not be retreived");
          $k = 0;
          while ($credits_row = db_fetch($result)) {

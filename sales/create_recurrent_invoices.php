@@ -26,7 +26,7 @@ page(_($help_context = "Create and Print Recurrent Invoices"), false, false, "",
 function set_last_sent($id, $date)
 {
 	$date = date2sql($date);
-	$sql = "UPDATE " . TB_PREF . "recurrent_invoices SET last_sent='$date' WHERE id=" . db_escape($id);
+	$sql = "UPDATE recurrent_invoices SET last_sent='$date' WHERE id=" . db_escape($id);
 	db_query($sql, "The recurrent invoice could not be updated or added");
 }
 
@@ -63,7 +63,7 @@ if (isset($_GET['recurrent'])) {
 	$date = Today();
 	if (is_date_in_fiscalyear($date)) {
 		$invs = array();
-		$sql = "SELECT * FROM " . TB_PREF . "recurrent_invoices WHERE id=" . db_escape($_GET['recurrent']);
+		$sql = "SELECT * FROM recurrent_invoices WHERE id=" . db_escape($_GET['recurrent']);
 
 		$result = db_query($sql, "could not get recurrent invoice");
 		$myrow = db_fetch($result);
@@ -103,13 +103,13 @@ if (isset($_GET['recurrent'])) {
 //-------------------------------------------------------------------------------------------------
 function get_sales_group_name($group_no)
 {
-	$sql = "SELECT description FROM " . TB_PREF . "groups WHERE id = " . db_escape($group_no);
+	$sql = "SELECT description FROM groups WHERE id = " . db_escape($group_no);
 	$result = db_query($sql, "could not get group");
 	$row = db_fetch($result);
 	return $row[0];
 }
 
-$sql = "SELECT * FROM " . TB_PREF . "recurrent_invoices ORDER BY description, group_no, debtor_no";
+$sql = "SELECT * FROM recurrent_invoices ORDER BY description, group_no, debtor_no";
 $result = db_query($sql, "could not get recurrent invoices");
 
 start_table("$table_style width=70%");

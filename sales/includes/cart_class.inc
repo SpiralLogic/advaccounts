@@ -259,7 +259,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
       function check_cust_ref($cust_ref)
       {
 
-         $sql = "SELECT customer_ref FROM " . TB_PREF . "sales_orders WHERE `debtor_no`=" . $this->customer_id . " AND `customer_ref`=" . db_query($cust_ref);
+         $sql = "SELECT customer_ref FROM sales_orders WHERE `debtor_no`=" . $this->customer_id . " AND `customer_ref`=" . db_query($cust_ref);
          $result = db_query($sql);
          return (db_num_fields($result) > 0) ? false : true;
       }
@@ -286,7 +286,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
       {
          if ($salesman_code == null) {
             $salesman_name = $_SESSION['wa_current_user']->name;
-            $sql = "SELECT salesman_code FROM " . TB_PREF . "salesman WHERE salesman_name = " . db_escape($salesman_name);
+            $sql = "SELECT salesman_code FROM salesman WHERE salesman_name = " . db_escape($salesman_name);
             $query = db_query($sql, 'Couldn\'t find current salesman');
             $result = db_fetch_assoc($query);
             if (!empty($result['salesman_code']))
@@ -479,15 +479,15 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
       function store()
       {
          $serial = serialize($this);
-         $sql = "DELETE FROM `" . TB_PREF . "user_class_store` WHERE `user_id`=" . $_SESSION['wa_current_user']->user;
+         $sql = "DELETE FROM `user_class_store` WHERE `user_id`=" . $_SESSION['wa_current_user']->user;
          db_query($sql);
-         $sql = "INSERT INTO `" . TB_PREF . "user_class_store` (`user_id`, `data`) VALUE (" . $_SESSION['wa_current_user']->user . ",'" . $serial . "')";
+         $sql = "INSERT INTO `user_class_store` (`user_id`, `data`) VALUE (" . $_SESSION['wa_current_user']->user . ",'" . $serial . "')";
          db_query($sql);
       }
 
       static function restore()
       {
-         $sql = "SELECT `data` FROM  `" . TB_PREF . "user_class_store` WHERE `user_id`=" . $_SESSION['wa_current_user']->user;
+         $sql = "SELECT `data` FROM  `user_class_store` WHERE `user_id`=" . $_SESSION['wa_current_user']->user;
          $result = db_query($sql);
          $serial = db_fetch_assoc($result);
          $serial = $serial['data'];

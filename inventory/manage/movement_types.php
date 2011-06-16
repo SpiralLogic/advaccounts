@@ -52,7 +52,7 @@ if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 
 function can_delete($selected_id)
 {
-	$sql = "SELECT COUNT(*) FROM " . TB_PREF . "stock_moves
+	$sql = "SELECT COUNT(*) FROM stock_moves
 		WHERE type=" . ST_INVADJUST . " AND person_id=" . db_escape($selected_id);
 
 	$result = db_query($sql, "could not query stock moves");

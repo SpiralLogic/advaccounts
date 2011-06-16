@@ -52,7 +52,7 @@ if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 
 function can_delete($selected_id)
 {
-	$sql = "SELECT COUNT(*) FROM " . TB_PREF . "bom WHERE workcentre_added=" . db_escape($selected_id);
+	$sql = "SELECT COUNT(*) FROM bom WHERE workcentre_added=" . db_escape($selected_id);
 	$result = db_query($sql, "check can delete work centre");
 	$myrow = db_fetch_row($result);
 	if ($myrow[0] > 0) {
@@ -60,7 +60,7 @@ function can_delete($selected_id)
 		return false;
 	}
 
-	$sql = "SELECT COUNT(*) FROM " . TB_PREF . "wo_requirements WHERE workcentre=" . db_escape($selected_id);
+	$sql = "SELECT COUNT(*) FROM wo_requirements WHERE workcentre=" . db_escape($selected_id);
 	$result = db_query($sql, "check can delete work centre");
 	$myrow = db_fetch_row($result);
 	if ($myrow[0] > 0) {

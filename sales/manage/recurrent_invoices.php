@@ -36,7 +36,7 @@ if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 
 	if ($input_error != 1) {
 		if ($selected_id != -1) {
-			$sql = "UPDATE " . TB_PREF . "recurrent_invoices SET
+			$sql = "UPDATE recurrent_invoices SET
     			description=" . db_escape($_POST['description']) . ",
     			order_no=" . db_escape($_POST['order_no']) . ",
     			debtor_no=" . db_escape($_POST['debtor_no']) . ",
@@ -50,7 +50,7 @@ if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 		}
 		else
 		{
-			$sql = "INSERT INTO " . TB_PREF . "recurrent_invoices (description, order_no, debtor_no,
+			$sql = "INSERT INTO recurrent_invoices (description, order_no, debtor_no,
     			group_no, days, monthly, begin, end, last_sent) VALUES (" . db_escape($_POST['description']) . ", "
 				   . db_escape($_POST['order_no']) . ", " . db_escape($_POST['debtor_no']) . ", "
 				   . db_escape(
@@ -72,7 +72,7 @@ if ($Mode == 'Delete') {
 	$cancel_delete = 0;
 
 	if ($cancel_delete == 0) {
-		$sql = "DELETE FROM " . TB_PREF . "recurrent_invoices WHERE id=" . db_escape($selected_id);
+		$sql = "DELETE FROM recurrent_invoices WHERE id=" . db_escape($selected_id);
 		db_query($sql, "could not delete recurrent invoice");
 
 		display_notification(_('Selected recurrent invoice has been deleted'));
@@ -87,13 +87,13 @@ if ($Mode == 'RESET') {
 //-------------------------------------------------------------------------------------------------
 function get_sales_group_name($group_no)
 {
-	$sql = "SELECT description FROM " . TB_PREF . "groups WHERE id = " . db_escape($group_no);
+	$sql = "SELECT description FROM groups WHERE id = " . db_escape($group_no);
 	$result = db_query($sql, "could not get group");
 	$row = db_fetch($result);
 	return $row[0];
 }
 
-$sql = "SELECT * FROM " . TB_PREF . "recurrent_invoices ORDER BY description, group_no, debtor_no";
+$sql = "SELECT * FROM recurrent_invoices ORDER BY description, group_no, debtor_no";
 $result = db_query($sql, "could not get recurrent invoices");
 
 start_form();
@@ -144,7 +144,7 @@ start_table($table_style2);
 if ($selected_id != -1) {
 	if ($Mode == 'Edit') {
 		//editing an existing area
-		$sql = "SELECT * FROM " . TB_PREF . "recurrent_invoices WHERE id=" . db_escape($selected_id);
+		$sql = "SELECT * FROM recurrent_invoices WHERE id=" . db_escape($selected_id);
 
 		$result = db_query($sql, "could not get recurrent invoice");
 		$myrow = db_fetch($result);

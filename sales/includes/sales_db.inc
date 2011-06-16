@@ -97,7 +97,7 @@ function get_price($stock_id, $currency, $sales_type_id, $factor = null, $date =
 	$home_curr = get_company_currency();
 	//	AND (sales_type_id = $sales_type_id	OR sales_type_id = $base_id)
 	$sql = "SELECT price, curr_abrev, sales_type_id
-		FROM " . TB_PREF . "prices
+		FROM prices
 		WHERE stock_id = " . db_escape($stock_id) . "
 			AND (curr_abrev = " . db_escape($currency) . " OR curr_abrev = " . db_escape($home_curr) . ")";
 
@@ -205,7 +205,7 @@ function set_document_parent($cart)
 		$src = array_keys($cart->src_docs);
 		$del_no = reset($src);
 
-		$sql = 'UPDATE ' . TB_PREF . 'debtor_trans SET trans_link = ' . $del_no .
+		$sql = 'UPDATE ' .  'debtor_trans SET trans_link = ' . $del_no .
 			   ' WHERE type=' . db_escape($cart->trans_type) . ' AND trans_no=' . $inv_no;
 		db_query($sql, 'Child document link cannot be updated');
 
@@ -221,7 +221,7 @@ function set_document_parent($cart)
 		}
 	}
 
-	$sql = 'UPDATE ' . TB_PREF . 'debtor_trans SET trans_link = ' . $inv_no .
+	$sql = 'UPDATE ' .  'debtor_trans SET trans_link = ' . $inv_no .
 		   ' WHERE type=' . get_parent_type($cart->trans_type) . ' AND (';
 
 	$deliveries = array_keys($cart->src_docs);
@@ -253,11 +253,11 @@ function update_parent_line($doc_type, $line_id, $qty_dispatched)
 		return false;
 	else {
 		if ($doc_type == ST_SALESORDER)
-			$sql = "UPDATE " . TB_PREF . "sales_order_details
+			$sql = "UPDATE sales_order_details
 				SET qty_sent = qty_sent + $qty_dispatched
 				WHERE id=" . db_escape($line_id);
 		else
-			$sql = "UPDATE " . TB_PREF . "debtor_trans_details
+			$sql = "UPDATE debtor_trans_details
 				SET qty_done = qty_done + $qty_dispatched
 				WHERE id=" . db_escape($line_id);
 	}
@@ -270,12 +270,12 @@ function update_parent_line($doc_type, $line_id, $qty_dispatched)
 //
 function get_location(&$cart)
 {
-	$sql = "SELECT " . TB_PREF . "locations.* FROM " . TB_PREF . "stock_moves,"
-		   . TB_PREF . "locations" .
+	$sql = "SELECT locations.* FROM stock_moves,"
+		   .  "locations" .
 		   " WHERE type=" . db_escape($cart->trans_type) .
 		   " AND trans_no=" . key($cart->trans_no) .
 		   " AND qty!=0 " .
-		   " AND " . TB_PREF . "locations.loc_code=" . TB_PREF . "stock_moves.loc_code";
+		   " AND locations.loc_code=stock_moves.loc_code";
 	$result = db_query($sql, 'Retreiving inventory location');
 
 

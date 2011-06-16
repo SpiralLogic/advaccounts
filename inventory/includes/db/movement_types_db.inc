@@ -11,7 +11,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
  ***********************************************************************/
 function add_movement_type($name)
 {
-	$sql = "INSERT INTO " . TB_PREF . "movement_types (name)
+	$sql = "INSERT INTO movement_types (name)
 		VALUES (" . db_escape($name) . ")";
 
 	db_query($sql, "could not add item movement type");
@@ -19,7 +19,7 @@ function add_movement_type($name)
 
 function update_movement_type($type_id, $name)
 {
-	$sql = "UPDATE " . TB_PREF . "movement_types SET name=" . db_escape($name) . "
+	$sql = "UPDATE movement_types SET name=" . db_escape($name) . "
 			WHERE id=" . db_escape($type_id);
 
 	db_query($sql, "could not update item movement type");
@@ -27,7 +27,7 @@ function update_movement_type($type_id, $name)
 
 function get_all_movement_type($all = false)
 {
-	$sql = "SELECT * FROM " . TB_PREF . "movement_types";
+	$sql = "SELECT * FROM movement_types";
 	if (!$all) $sql .= " WHERE !inactive";
 
 	return db_query($sql, "could not get all item movement type");
@@ -35,7 +35,7 @@ function get_all_movement_type($all = false)
 
 function get_movement_type($type_id)
 {
-	$sql = "SELECT * FROM " . TB_PREF . "movement_types WHERE id=" . db_escape($type_id);
+	$sql = "SELECT * FROM movement_types WHERE id=" . db_escape($type_id);
 
 	$result = db_query($sql, "could not get item movement type");
 
@@ -44,7 +44,7 @@ function get_movement_type($type_id)
 
 function delete_movement_type($type_id)
 {
-	$sql = "DELETE FROM " . TB_PREF . "movement_types WHERE id=" . db_escape($type_id);
+	$sql = "DELETE FROM movement_types WHERE id=" . db_escape($type_id);
 
 	db_query($sql, "could not delete item movement type");
 }

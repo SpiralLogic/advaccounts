@@ -55,7 +55,7 @@ if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 if ($Mode == 'Delete') {
 	// PREVENT DELETES IF DEPENDENT RECORDS IN print_profiles
 
-	$sql = "SELECT COUNT(*) FROM " . TB_PREF . "print_profiles WHERE printer = " . db_escape($selected_id);
+	$sql = "SELECT COUNT(*) FROM print_profiles WHERE printer = " . db_escape($selected_id);
 	$result = db_query($sql, "check printers relations failed");
 	$myrow = db_fetch_row($result);
 	if ($myrow[0] > 0) {
@@ -63,7 +63,7 @@ if ($Mode == 'Delete') {
 	}
 	else
 	{
-		$sql = "DELETE FROM " . TB_PREF . "printers WHERE id=" . db_escape($selected_id);
+		$sql = "DELETE FROM printers WHERE id=" . db_escape($selected_id);
 		db_query($sql, "could not delete printer definition");
 		display_notification(_('Selected printer definition has been deleted'));
 	}

@@ -16,11 +16,11 @@ function get_customer_trans_details($debtor_trans_type, $debtor_trans_no)
 	if (!is_array($debtor_trans_no))
 		$debtor_trans_no = array(0 => $debtor_trans_no);
 
-	$sql = "SELECT " . TB_PREF . "debtor_trans_details.*,
-		" . TB_PREF . "debtor_trans_details.unit_price+" . TB_PREF . "debtor_trans_details.unit_tax AS FullUnitPrice,
-		" . TB_PREF . "debtor_trans_details.description As StockDescription,
-		" . TB_PREF . "stock_master.units
-		FROM " . TB_PREF . "debtor_trans_details," . TB_PREF . "stock_master
+	$sql = "SELECT debtor_trans_details.*,
+		debtor_trans_details.unit_price+debtor_trans_details.unit_tax AS FullUnitPrice,
+		debtor_trans_details.description As StockDescription,
+		stock_master.units
+		FROM debtor_trans_details,stock_master
 		WHERE (";
 
 	$tr = array();
@@ -31,7 +31,7 @@ function get_customer_trans_details($debtor_trans_type, $debtor_trans_no)
 
 
 	$sql .= ") AND debtor_trans_type=" . db_escape($debtor_trans_type) . "
-		AND " . TB_PREF . "stock_master.stock_id=" . TB_PREF . "debtor_trans_details.stock_id
+		AND stock_master.stock_id=debtor_trans_details.stock_id
 		ORDER BY id";
 	return db_query($sql, "The debtor transaction detail could not be queried");
 }
@@ -40,7 +40,7 @@ function get_customer_trans_details($debtor_trans_type, $debtor_trans_no)
 
 function void_customer_trans_details($type, $type_no)
 {
-	$sql = "UPDATE " . TB_PREF . "debtor_trans_details SET quantity=0, unit_price=0,
+	$sql = "UPDATE debtor_trans_details SET quantity=0, unit_price=0,
 		unit_tax=0, discount_percent=0, standard_cost=0
 		WHERE debtor_trans_no=" . db_escape($type_no) . "
 		AND debtor_trans_type=" . db_escape($type);
@@ -57,7 +57,7 @@ function write_customer_trans_detail_item($debtor_trans_type, $debtor_trans_no, 
 	$quantity, $unit_price, $unit_tax, $discount_percent, $std_cost, $line_id = 0)
 {
 	if ($line_id != 0)
-		$sql = "UPDATE " . TB_PREF . "debtor_trans_details SET
+		$sql = "UPDATE debtor_trans_details SET
 			stock_id=" . db_escape($stock_id) . ",
 			description=" . db_escape($description) . ",
 			quantity=$quantity,
@@ -67,7 +67,7 @@ function write_customer_trans_detail_item($debtor_trans_type, $debtor_trans_no, 
 			standard_cost=$std_cost WHERE
 			id=" . db_escape($line_id);
 	else
-		$sql = "INSERT INTO " . TB_PREF . "debtor_trans_details (debtor_trans_no,
+		$sql = "INSERT INTO debtor_trans_details (debtor_trans_no,
 				debtor_trans_type, stock_id, description, quantity, unit_price,
 				unit_tax, discount_percent, standard_cost)
 			VALUES (" . db_escape($debtor_trans_no) . ", " . db_escape($debtor_trans_type) . ", " . db_escape($stock_id) .

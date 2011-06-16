@@ -44,7 +44,7 @@ class Branch extends Company
 
 	protected function delete()
 	{
-		$sql = "DELETE FROM " . TB_PREF . "cust_branch WHERE branch_code=" . $this->branch_code;
+		$sql = "DELETE FROM cust_branch WHERE branch_code=" . $this->branch_code;
 		db_query($sql, "cannot delete branch");
 		unset($this->branch_code);
 		$this->_new();
@@ -62,7 +62,7 @@ class Branch extends Company
 			$params = array('branch_code' => $params);
 		}
 		$sql = "SELECT " . "b.*, " . "a.description, " . "s.salesman_name, " . "t.name AS tax_group_name
-		FROM " . TB_PREF . "cust_branch b, " . TB_PREF . "debtors_master c, " . TB_PREF . "areas a, " . TB_PREF . "salesman s, " . TB_PREF . "tax_groups t
+		FROM cust_branch b, debtors_master c, areas a, salesman s, tax_groups t
 		WHERE b.debtor_no=c.debtor_no
 		AND b.tax_group_id=t.id
 		AND b.area=a.area_code
@@ -111,7 +111,7 @@ public function getAddress() {
 		}
 
 		begin_transaction();
-		$sql = "UPDATE " . TB_PREF . "cust_branch SET
+		$sql = "UPDATE cust_branch SET
 			br_name=" . db_escape($this->name) . ",
 			br_address=" . db_escape($this->address) . ",
 			city=" . db_escape($this->city) . ",
@@ -147,7 +147,7 @@ public function getAddress() {
 	protected function _saveNew()
 	{
 		begin_transaction();
-		$sql = "INSERT INTO " . TB_PREF . "cust_branch (debtor_no, br_name, branch_ref, br_address, city, state, postcode,
+		$sql = "INSERT INTO cust_branch (debtor_no, br_name, branch_ref, br_address, city, state, postcode,
 				salesman, phone, phone2, fax, contact_name, area, email, tax_group_id, sales_account, sales_discount_account, receivables_account, payment_discount_account, default_location,
 				br_post_address, disable_trans, group_no, default_ship_via, notes,inactive)
 				VALUES (" .

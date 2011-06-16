@@ -33,34 +33,34 @@ function get_open_balance($debtorno, $to, $convert)
 {
 	$to = date2sql($to);
 
-    $sql = "SELECT SUM(IF(".TB_PREF."debtor_trans.type = ".ST_SALESINVOICE.", (".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + 
-    	".TB_PREF."debtor_trans.ov_freight + ".TB_PREF."debtor_trans.ov_freight_tax + ".TB_PREF."debtor_trans.ov_discount)";
+    $sql = "SELECT SUM(IF(".''."debtor_trans.type = ".ST_SALESINVOICE.", (".''."debtor_trans.ov_amount + ".''."debtor_trans.ov_gst +
+    	".''."debtor_trans.ov_freight + ".''."debtor_trans.ov_freight_tax + ".''."debtor_trans.ov_discount)";
     if ($convert)
     	$sql .= " * rate";
     $sql .= ", 0)) AS charges,
-    	SUM(IF(".TB_PREF."debtor_trans.type <> ".ST_SALESINVOICE.", (".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + 
-    	".TB_PREF."debtor_trans.ov_freight + ".TB_PREF."debtor_trans.ov_freight_tax + ".TB_PREF."debtor_trans.ov_discount)";
+    	SUM(IF(".''."debtor_trans.type <> ".ST_SALESINVOICE.", (".''."debtor_trans.ov_amount + ".''."debtor_trans.ov_gst +
+    	".''."debtor_trans.ov_freight + ".''."debtor_trans.ov_freight_tax + ".''."debtor_trans.ov_discount)";
     if ($convert)
     	$sql .= " * rate";
     $sql .= " * -1, 0)) AS credits,
-		SUM(".TB_PREF."debtor_trans.alloc";
+		SUM(".''."debtor_trans.alloc";
 	if ($convert)
 		$sql .= " * rate";
 	$sql .= ") AS Allocated,
-		SUM(IF(".TB_PREF."debtor_trans.type = ".ST_SALESINVOICE.", (".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + 
-    	".TB_PREF."debtor_trans.ov_freight + ".TB_PREF."debtor_trans.ov_freight_tax + ".TB_PREF."debtor_trans.ov_discount - ".TB_PREF."debtor_trans.alloc)";
+		SUM(IF(".''."debtor_trans.type = ".ST_SALESINVOICE.", (".''."debtor_trans.ov_amount + ".''."debtor_trans.ov_gst +
+    	".''."debtor_trans.ov_freight + ".''."debtor_trans.ov_freight_tax + ".''."debtor_trans.ov_discount - ".''."debtor_trans.alloc)";
     if ($convert)
     	$sql .= " * rate";
     $sql .= ", 
-    	((".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + ".TB_PREF."debtor_trans.ov_freight + 
-    	".TB_PREF."debtor_trans.ov_freight_tax + ".TB_PREF."debtor_trans.ov_discount) * -1 + ".TB_PREF."debtor_trans.alloc)";
+    	((".''."debtor_trans.ov_amount + ".''."debtor_trans.ov_gst + ".''."debtor_trans.ov_freight +
+    	".''."debtor_trans.ov_freight_tax + ".''."debtor_trans.ov_discount) * -1 + ".''."debtor_trans.alloc)";
     if ($convert)
     	$sql .= " * rate";
     $sql .= ")) AS OutStanding
-		FROM ".TB_PREF."debtor_trans
-    	WHERE ".TB_PREF."debtor_trans.tran_date < '$to'
-		AND ".TB_PREF."debtor_trans.debtor_no = ".db_escape($debtorno)."
-		AND ".TB_PREF."debtor_trans.type <> ".ST_CUSTDELIVERY." GROUP BY debtor_no";
+		FROM ".''."debtor_trans
+    	WHERE ".''."debtor_trans.tran_date < '$to'
+		AND ".''."debtor_trans.debtor_no = ".db_escape($debtorno)."
+		AND ".''."debtor_trans.type <> ".ST_CUSTDELIVERY." GROUP BY debtor_no";
 
     $result = db_query($sql,"No transactions were returned");
     return db_fetch($result);
@@ -71,18 +71,18 @@ function get_transactions($debtorno, $from, $to)
 	$from = date2sql($from);
 	$to = date2sql($to);
 
-    $sql = "SELECT ".TB_PREF."debtor_trans.*,
-		(".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + ".TB_PREF."debtor_trans.ov_freight + 
-		".TB_PREF."debtor_trans.ov_freight_tax + ".TB_PREF."debtor_trans.ov_discount)
-		AS TotalAmount, ".TB_PREF."debtor_trans.alloc AS Allocated,
-		((".TB_PREF."debtor_trans.type = ".ST_SALESINVOICE.")
-		AND ".TB_PREF."debtor_trans.due_date < '$to') AS OverDue
-    	FROM ".TB_PREF."debtor_trans
-    	WHERE ".TB_PREF."debtor_trans.tran_date >= '$from'
-		AND ".TB_PREF."debtor_trans.tran_date <= '$to'
-		AND ".TB_PREF."debtor_trans.debtor_no = ".db_escape($debtorno)."
-		AND ".TB_PREF."debtor_trans.type <> ".ST_CUSTDELIVERY."
-    	ORDER BY ".TB_PREF."debtor_trans.tran_date";
+    $sql = "SELECT ".''."debtor_trans.*,
+		(".''."debtor_trans.ov_amount + ".''."debtor_trans.ov_gst + ".''."debtor_trans.ov_freight +
+		".''."debtor_trans.ov_freight_tax + ".''."debtor_trans.ov_discount)
+		AS TotalAmount, ".''."debtor_trans.alloc AS Allocated,
+		((".''."debtor_trans.type = ".ST_SALESINVOICE.")
+		AND ".''."debtor_trans.due_date < '$to') AS OverDue
+    	FROM ".''."debtor_trans
+    	WHERE ".''."debtor_trans.tran_date >= '$from'
+		AND ".''."debtor_trans.tran_date <= '$to'
+		AND ".''."debtor_trans.debtor_no = ".db_escape($debtorno)."
+		AND ".''."debtor_trans.type <> ".ST_CUSTDELIVERY."
+    	ORDER BY ".''."debtor_trans.tran_date";
 
     return db_query($sql,"No transactions were returned");
 }
@@ -143,7 +143,7 @@ function print_customer_balances()
 
 	$grandtotal = array(0,0,0,0);
 
-	$sql = "SELECT debtor_no, name, curr_code FROM ".TB_PREF."debtors_master ";
+	$sql = "SELECT debtor_no, name, curr_code FROM ".''."debtors_master ";
 	if ($fromcust != ALL_NUMERIC)
 		$sql .= "WHERE debtor_no=".db_escape($fromcust);
 	$sql .= " ORDER BY name";

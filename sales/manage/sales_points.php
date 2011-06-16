@@ -59,7 +59,7 @@ if ($Mode == 'UPDATE_ITEM' && can_process()) {
 //----------------------------------------------------------------------------------------------------
 
 if ($Mode == 'Delete') {
-	$sql = "SELECT * FROM " . TB_PREF . "users WHERE pos=" . db_escape($selected_id);
+	$sql = "SELECT * FROM users WHERE pos=" . db_escape($selected_id);
 	$res = db_query($sql, "canot check pos usage");
 	if (db_num_rows($res)) {
 		display_error(_("Cannot delete this POS because it is used in users setup."));

@@ -12,7 +12,7 @@
 	$sIndexColumn = "stock_id";
 	
 	/* DB table to use */
-	$sTable = "0_stock_master";
+	$sTable = "stock_master";
 	
 	/* Database connection information */
 	$gaSql['user']       = "fa";

@@ -24,7 +24,7 @@
       }
 
       protected function _read($id = 0) {
-         $sql = "SELECT * FROM " . TB_PREF . "stock_master WHERE stock_id = " . db_escape($id);
+         $sql = "SELECT * FROM stock_master WHERE stock_id = " . db_escape($id);
          $result = db_query($sql, 'Could not retrieve stock information');
          if (db_num_rows($result) == 1) {
             $myrow = db_fetch_assoc($result);
@@ -65,7 +65,7 @@
       }
 
       function  getSalePrices() {
-         $sql = "SELECT * FROM " . TB_PREF . "prices WHERE stock_id = " . $this->id;
+         $sql = "SELECT * FROM prices WHERE stock_id = " . $this->id;
          $result = db_query($sql, 'Could not get item pricing');
          while ($row = db_fetch_assoc($result)) {
             $this->prices[$row['id']] = array("curr" => $row['curr_abrev'], "type" => $row['type'], "price" => $row['price']);
@@ -73,7 +73,7 @@
       }
 
       function  getPurchPrices() {
-         $sql = "SELECT * FROM " . TB_PREF . "purch_data WHERE stock_id = " . $this->id;
+         $sql = "SELECT * FROM purch_data WHERE stock_id = " . $this->id;
          $result = db_query($sql, 'Could not get item pricing');
          while ($row = db_fetch_assoc($result)) {
             $this->prices[$row['supplier_id']] =
@@ -82,7 +82,7 @@
       }
 
       static function search($term) {
-         $sql = "SELECT stock_id as id, description as label, description as value FROM " . TB_PREF . "stock_master " . "where stock_id LIKE '%" . $term . "%' OR description LIKE '%" . $term . "%' LIMIT 200";
+         $sql = "SELECT stock_id as id, description as label, description as value FROM stock_master " . "where stock_id LIKE '%" . $term . "%' OR description LIKE '%" . $term . "%' LIMIT 200";
          $result = db_query($sql, 'Couldn\'t Get Items');
          while ($row = db_fetch_assoc($result)) {
             $data[] = $row;

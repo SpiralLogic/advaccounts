@@ -32,23 +32,23 @@ print_po();
 function get_po($order_no)
 {
 	#  __ADVANCEDEDIT__ BEGIN # include suppliers phone and fax number
-	$sql = "SELECT " . TB_PREF . "purch_orders.*, " . TB_PREF . "suppliers.supp_name,  " . TB_PREF . "suppliers.supp_account_no,
-   		" . TB_PREF . "suppliers.curr_code, " . TB_PREF . "suppliers.payment_terms, " . TB_PREF . "suppliers.phone, " . TB_PREF . "suppliers.fax, " . TB_PREF . "locations.location_name,
-   		" . TB_PREF . "suppliers.email, " . TB_PREF . "suppliers.address, " . TB_PREF . "suppliers.contact
-		FROM " . TB_PREF . "purch_orders, " . TB_PREF . "suppliers, " . TB_PREF . "locations
-		WHERE " . TB_PREF . "purch_orders.supplier_id = " . TB_PREF . "suppliers.supplier_id
-		AND " . TB_PREF . "locations.loc_code = into_stock_location
-		AND " . TB_PREF . "purch_orders.order_no = " . db_escape($order_no);
+	$sql = "SELECT purch_orders.*, suppliers.supp_name,  suppliers.supp_account_no,
+   		suppliers.curr_code, suppliers.payment_terms, suppliers.phone, suppliers.fax, locations.location_name,
+   		suppliers.email, suppliers.address, suppliers.contact
+		FROM purch_orders, suppliers, locations
+		WHERE purch_orders.supplier_id = suppliers.supplier_id
+		AND locations.loc_code = into_stock_location
+		AND purch_orders.order_no = " . db_escape($order_no);
 	$result = db_query($sql, "The order cannot be retrieved");
 	return db_fetch($result);
 }
 
 function get_po_details($order_no)
 {
-	$sql = "SELECT " . TB_PREF . "purch_order_details.*, units
-		FROM " . TB_PREF . "purch_order_details
-		LEFT JOIN " . TB_PREF . "stock_master
-		ON " . TB_PREF . "purch_order_details.item_code=" . TB_PREF . "stock_master.stock_id
+	$sql = "SELECT purch_order_details.*, units
+		FROM purch_order_details
+		LEFT JOIN stock_master
+		ON purch_order_details.item_code=stock_master.stock_id
 		WHERE order_no =" . db_escape($order_no) . " ";
 	$sql .= " ORDER BY po_detail_item";
 	return db_query($sql, "Retreive order Line Items");

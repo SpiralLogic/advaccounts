@@ -158,7 +158,7 @@ class BoxReports
 		switch ($type)
 		{
 			case 'CURRENCY':
-				$sql = "SELECT curr_abrev, concat(curr_abrev,' - ', currency) AS name FROM " . TB_PREF . "currencies";
+				$sql = "SELECT curr_abrev, concat(curr_abrev,' - ', currency) AS name FROM currencies";
 				return combo_input($name, '', $sql, 'curr_abrev', 'name',
 								   array('spec_option' => _("No Currency Filter"), 'spec_id' => ALL_TEXT,
 										'order' => false));
@@ -238,7 +238,7 @@ class BoxReports
 				return "<textarea rows=4 cols=30 name='$name'></textarea>";
 
 			case 'ACCOUNTS': // not used
-//					$sql = "SELECT id, name FROM ".TB_PREF."chart_types";
+//					$sql = "SELECT id, name FROM ".''."chart_types";
 //					return combo_input($name, '', $sql, 'id', 'name',array('spec_option'=>_("No Account Group Filter"),'spec_id'=>ALL_NUMERIC));
 				return gl_account_types_list($name, null, _("No Account Group Filter"), true);
 
@@ -271,7 +271,7 @@ class BoxReports
 
 			case 'CUSTOMERS_NO_FILTER':
 			case 'CUSTOMERS':
-				$sql = "SELECT debtor_no, name FROM " . TB_PREF . "debtors_master";
+				$sql = "SELECT debtor_no, name FROM debtors_master";
 				if ($type == 'CUSTOMERS_NO_FILTER')
 					return combo_input($name, '', $sql, 'debtor_no', 'name',
 									   array('spec_option' => _("No Customer Filter"), 'spec_id' => ALL_NUMERIC));
@@ -283,7 +283,7 @@ class BoxReports
 
 			case 'SUPPLIERS_NO_FILTER':
 			case 'SUPPLIERS':
-				$sql = "SELECT supplier_id, supp_name FROM " . TB_PREF . "suppliers";
+				$sql = "SELECT supplier_id, supp_name FROM suppliers";
 				if ($type == 'SUPPLIERS_NO_FILTER')
 					return combo_input($name, '', $sql, 'supplier_id', 'supp_name',
 									   array('spec_option' => _("No Supplier Filter"), 'spec_id' => ALL_NUMERIC));
@@ -297,42 +297,42 @@ class BoxReports
 				$IV = _("IV");
 				$CN = _("CN");
 				$ref = ($print_invoice_no == 1 ? "trans_no" : "reference");
-				$sql = "SELECT concat(" . TB_PREF . "debtor_trans.trans_no, '-',
-						" . TB_PREF . "debtor_trans.type) AS TNO, concat(" . TB_PREF . "debtor_trans.$ref, if (type=" . ST_SALESINVOICE . ", ' $IV ', ' $CN '), " . TB_PREF . "debtors_master.name) as IName
-						FROM " . TB_PREF . "debtors_master, " . TB_PREF . "debtor_trans WHERE (type=" . ST_SALESINVOICE . " OR type=" . ST_CUSTCREDIT . ") AND " . TB_PREF . "debtors_master.debtor_no=" . TB_PREF . "debtor_trans.debtor_no ORDER BY " . TB_PREF . "debtor_trans.trans_no DESC";
+				$sql = "SELECT concat(debtor_trans.trans_no, '-',
+						debtor_trans.type) AS TNO, concat(debtor_trans.$ref, if (type=" . ST_SALESINVOICE . ", ' $IV ', ' $CN '), debtors_master.name) as IName
+						FROM debtors_master, debtor_trans WHERE (type=" . ST_SALESINVOICE . " OR type=" . ST_CUSTCREDIT . ") AND debtors_master.debtor_no=debtor_trans.debtor_no ORDER BY debtor_trans.trans_no DESC";
 				return combo_input($name, '', $sql, 'TNO', 'IName', array('order' => false));
 
 			case 'DELIVERY':
 				$DN = _("DN");
 				$sql = "SELECT
-					concat(" . TB_PREF . "debtor_trans.trans_no, '-', " . TB_PREF . "debtor_trans.type) AS TNO, concat(" . TB_PREF . "debtor_trans.trans_no, ' $DN ',
-					 " . TB_PREF . "debtors_master.name) as IName
-						FROM " . TB_PREF . "debtors_master, " . TB_PREF . "debtor_trans
-						WHERE type=" . ST_CUSTDELIVERY . " AND " . TB_PREF . "debtors_master.debtor_no=" .
-					   TB_PREF . "debtor_trans.debtor_no ORDER BY " . TB_PREF . "debtor_trans.trans_no DESC";
+					concat(debtor_trans.trans_no, '-', debtor_trans.type) AS TNO, concat(debtor_trans.trans_no, ' $DN ',
+					 debtors_master.name) as IName
+						FROM debtors_master, debtor_trans
+						WHERE type=" . ST_CUSTDELIVERY . " AND debtors_master.debtor_no=" .
+					    "debtor_trans.debtor_no ORDER BY debtor_trans.trans_no DESC";
 				return combo_input($name, '', $sql, 'TNO', 'IName', array('order' => false));
 
 			case 'ORDERS':
 				$ref = ($print_invoice_no == 1 ? "order_no" : "reference");
-				$sql = "SELECT " . TB_PREF . "sales_orders.order_no, concat(" . TB_PREF . "sales_orders.$ref, '-',
-						" . TB_PREF . "debtors_master.name) as IName
-						FROM " . TB_PREF . "debtors_master, " . TB_PREF . "sales_orders WHERE " . TB_PREF . "debtors_master.debtor_no=" . TB_PREF . "sales_orders.debtor_no
-						AND " . TB_PREF . "sales_orders.trans_type=" . ST_SALESORDER . " ORDER BY " . TB_PREF . "sales_orders.order_no DESC";
+				$sql = "SELECT sales_orders.order_no, concat(sales_orders.$ref, '-',
+						debtors_master.name) as IName
+						FROM debtors_master, sales_orders WHERE debtors_master.debtor_no=sales_orders.debtor_no
+						AND sales_orders.trans_type=" . ST_SALESORDER . " ORDER BY sales_orders.order_no DESC";
 				return combo_input($name, '', $sql, 'order_no', 'IName', array('order' => false));
 
 			case 'QUOTATIONS':
 				$ref = ($print_invoice_no == 1 ? "order_no" : "reference");
-				$sql = "SELECT " . TB_PREF . "sales_orders.order_no, concat(" . TB_PREF . "sales_orders.$ref, '-',
-						" . TB_PREF . "debtors_master.name) as IName
-						FROM " . TB_PREF . "debtors_master, " . TB_PREF . "sales_orders WHERE " . TB_PREF . "debtors_master.debtor_no=" . TB_PREF . "sales_orders.debtor_no
-						AND " . TB_PREF . "sales_orders.trans_type=" . ST_SALESQUOTE . " ORDER BY " . TB_PREF . "sales_orders.order_no DESC";
+				$sql = "SELECT sales_orders.order_no, concat(sales_orders.$ref, '-',
+						debtors_master.name) as IName
+						FROM debtors_master, sales_orders WHERE debtors_master.debtor_no=sales_orders.debtor_no
+						AND sales_orders.trans_type=" . ST_SALESQUOTE . " ORDER BY sales_orders.order_no DESC";
 				return combo_input($name, '', $sql, 'order_no', 'IName', array('order' => false));
 
 			case 'PO':
 				$ref = ($print_invoice_no == 1 ? "order_no" : "reference");
-				$sql = "SELECT " . TB_PREF . "purch_orders.order_no, concat(" . TB_PREF . "purch_orders.$ref, '-',
-						" . TB_PREF . "suppliers.supp_name) as IName
-						FROM " . TB_PREF . "suppliers, " . TB_PREF . "purch_orders WHERE " . TB_PREF . "suppliers.supplier_id=" . TB_PREF . "purch_orders.supplier_id ORDER BY " . TB_PREF . "purch_orders.order_no DESC";
+				$sql = "SELECT purch_orders.order_no, concat(purch_orders.$ref, '-',
+						suppliers.supp_name) as IName
+						FROM suppliers, purch_orders WHERE suppliers.supplier_id=purch_orders.supplier_id ORDER BY purch_orders.order_no DESC";
 				return combo_input($name, '', $sql, 'order_no', 'IName', array('order' => false));
 
 			case 'REMITTANCE':
@@ -340,9 +340,9 @@ class BoxReports
 				$SP = _("SP");
 				$CN = _("CN");
 				$ref = ($print_invoice_no == 1 ? "trans_no" : "reference");
-				$sql = "SELECT concat(" . TB_PREF . "supp_trans.trans_no, '-',
-						" . TB_PREF . "supp_trans.type) AS TNO, concat(" . TB_PREF . "supp_trans.$ref, if (type=" . ST_BANKPAYMENT . ", ' $BP ', if (type=" . ST_SUPPAYMENT . ", ' $SP ', ' $CN ')), " . TB_PREF . "suppliers.supp_name) as IName
-						FROM " . TB_PREF . "suppliers, " . TB_PREF . "supp_trans WHERE (type=" . ST_BANKPAYMENT . " OR type=" . ST_SUPPAYMENT . " OR type=" . ST_SUPPCREDIT . ") AND " . TB_PREF . "suppliers.supplier_id=" . TB_PREF . "supp_trans.supplier_id ORDER BY " . TB_PREF . "supp_trans.trans_no DESC";
+				$sql = "SELECT concat(supp_trans.trans_no, '-',
+						supp_trans.type) AS TNO, concat(supp_trans.$ref, if (type=" . ST_BANKPAYMENT . ", ' $BP ', if (type=" . ST_SUPPAYMENT . ", ' $SP ', ' $CN ')), suppliers.supp_name) as IName
+						FROM suppliers, supp_trans WHERE (type=" . ST_BANKPAYMENT . " OR type=" . ST_SUPPAYMENT . " OR type=" . ST_SUPPCREDIT . ") AND suppliers.supplier_id=supp_trans.supplier_id ORDER BY supp_trans.trans_no DESC";
 				return combo_input($name, '', $sql, 'TNO', 'IName', array('order' => false));
 
 			case 'RECEIPT':
@@ -350,28 +350,28 @@ class BoxReports
 				$CP = _("CP");
 				$CN = _("CN");
 				$ref = ($print_invoice_no == 1 ? "trans_no" : "reference");
-				$sql = "SELECT concat(" . TB_PREF . "debtor_trans.trans_no, '-',
-						" . TB_PREF . "debtor_trans.type) AS TNO, concat(" . TB_PREF . "debtor_trans.$ref, if (type=" . ST_BANKDEPOSIT . ", ' $BD ', if (type=" . ST_CUSTPAYMENT . ", ' $CP ', ' $CN ')), " . TB_PREF . "debtors_master.name) as IName
-						FROM " . TB_PREF . "debtors_master, " . TB_PREF . "debtor_trans WHERE (type=" . ST_BANKDEPOSIT . " OR type=" . ST_CUSTPAYMENT . " OR type=" . ST_CUSTCREDIT . ") AND " . TB_PREF . "debtors_master.debtor_no=" . TB_PREF . "debtor_trans.debtor_no ORDER BY " . TB_PREF . "debtor_trans.trans_no DESC";
+				$sql = "SELECT concat(debtor_trans.trans_no, '-',
+						debtor_trans.type) AS TNO, concat(debtor_trans.$ref, if (type=" . ST_BANKDEPOSIT . ", ' $BD ', if (type=" . ST_CUSTPAYMENT . ", ' $CP ', ' $CN ')), debtors_master.name) as IName
+						FROM debtors_master, debtor_trans WHERE (type=" . ST_BANKDEPOSIT . " OR type=" . ST_CUSTPAYMENT . " OR type=" . ST_CUSTCREDIT . ") AND debtors_master.debtor_no=debtor_trans.debtor_no ORDER BY debtor_trans.trans_no DESC";
 				return combo_input($name, '', $sql, 'TNO', 'IName', array('order' => false));
 			case 'REFUND':
 				$BD = _("BD");
 				$CP = _("CP");
 				$CN = _("CN");
 				$ref = ($print_invoice_no == 1 ? "trans_no" : "reference");
-				$sql = "SELECT concat(" . TB_PREF . "debtor_trans.trans_no, '-',
-						" . TB_PREF . "debtor_trans.type) AS TNO, concat(" . TB_PREF . "debtor_trans.$ref, if (type=" . ST_BANKDEPOSIT . ", ' $BD ', if (type=" . ST_CUSTREFUND . ",
-						' $CP ', ' $CN ')), " . TB_PREF . "debtors_master.name) as IName
-						FROM " . TB_PREF . "debtors_master, " . TB_PREF . "debtor_trans WHERE (type=" . ST_CUSTREFUND . ") AND " . TB_PREF . "debtors_master.debtor_no=" . TB_PREF .
-					   "debtor_trans.debtor_no ORDER BY " . TB_PREF . "debtor_trans.trans_no DESC";
+				$sql = "SELECT concat(debtor_trans.trans_no, '-',
+						debtor_trans.type) AS TNO, concat(debtor_trans.$ref, if (type=" . ST_BANKDEPOSIT . ", ' $BD ', if (type=" . ST_CUSTREFUND . ",
+						' $CP ', ' $CN ')), debtors_master.name) as IName
+						FROM debtors_master, debtor_trans WHERE (type=" . ST_CUSTREFUND . ") AND debtors_master.debtor_no=" .
+					   "debtor_trans.debtor_no ORDER BY debtor_trans.trans_no DESC";
 				return combo_input($name, '', $sql, 'TNO', 'IName', array('order' => false));
 			case 'ITEMS':
 				return stock_manufactured_items_list($name);
 
 			case 'WORKORDER':
-				$sql = "SELECT " . TB_PREF . "workorders.id, concat(" . TB_PREF . "workorders.id, '-',
-						" . TB_PREF . "stock_master.description) as IName
-						FROM " . TB_PREF . "stock_master, " . TB_PREF . "workorders WHERE " . TB_PREF . "stock_master.stock_id=" . TB_PREF . "workorders.stock_id ORDER BY " . TB_PREF . "workorders.id DESC";
+				$sql = "SELECT workorders.id, concat(workorders.id, '-',
+						stock_master.description) as IName
+						FROM stock_master, workorders WHERE stock_master.stock_id=workorders.stock_id ORDER BY workorders.id DESC";
 				return combo_input($name, '', $sql, 'id', 'IName', array('order' => false));
 
 			case 'LOCATIONS':
@@ -393,7 +393,7 @@ class BoxReports
 				return fiscalyears_list($name);
 
 			case 'USERS':
-				$sql = "SELECT id, user_id FROM " . TB_PREF . "users";
+				$sql = "SELECT id, user_id FROM users";
 				return combo_input($name, '', $sql, 'id', 'user_id',
 								   array('spec_option' => _("No Users Filter"), 'spec_id' => ALL_NUMERIC));
 

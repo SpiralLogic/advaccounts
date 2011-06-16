@@ -27,7 +27,7 @@ check_db_has_gl_account_groups(_("There are no account groups defined. Please de
 
 function exists_gl_budget($date_, $account, $dimension, $dimension2)
 {
-	$sql = "SELECT account FROM " . TB_PREF . "budget_trans WHERE account=" . db_escape($account)
+	$sql = "SELECT account FROM budget_trans WHERE account=" . db_escape($account)
 		   . " AND tran_date='$date_' AND
 		dimension_id=" . db_escape($dimension) . " AND dimension2_id=" . db_escape($dimension2);
 	$result = db_query($sql, "Cannot retreive a gl transaction");
@@ -40,13 +40,13 @@ function add_update_gl_budget_trans($date_, $account, $dimension, $dimension2, $
 	$date = date2sql($date_);
 
 	if (exists_gl_budget($date, $account, $dimension, $dimension2))
-		$sql = "UPDATE " . TB_PREF . "budget_trans SET amount=" . db_escape($amount)
+		$sql = "UPDATE budget_trans SET amount=" . db_escape($amount)
 			   . " WHERE account=" . db_escape($account)
 			   . " AND dimension_id=" . db_escape($dimension)
 			   . " AND dimension2_id=" . db_escape($dimension2)
 			   . " AND tran_date='$date'";
 	else
-		$sql = "INSERT INTO " . TB_PREF . "budget_trans (tran_date,
+		$sql = "INSERT INTO budget_trans (tran_date,
 			account, dimension_id, dimension2_id, amount, memo_) VALUES ('$date',
 			" . db_escape($account) . ", " . db_escape($dimension) . ", "
 			   . db_escape($dimension2) . ", " . db_escape($amount) . ", '')";
@@ -58,7 +58,7 @@ function delete_gl_budget_trans($date_, $account, $dimension, $dimension2)
 {
 	$date = date2sql($date_);
 
-	$sql = "DELETE FROM " . TB_PREF . "budget_trans WHERE account=" . db_escape($account)
+	$sql = "DELETE FROM budget_trans WHERE account=" . db_escape($account)
 		   . " AND dimension_id=" . db_escape($dimension)
 		   . " AND dimension2_id=" . db_escape($dimension2)
 		   . " AND tran_date='$date'";
@@ -71,7 +71,7 @@ function get_only_budget_trans_from_to($from_date, $to_date, $account, $dimensio
 	$from = date2sql($from_date);
 	$to = date2sql($to_date);
 
-	$sql = "SELECT SUM(amount) FROM " . TB_PREF . "budget_trans
+	$sql = "SELECT SUM(amount) FROM budget_trans
 		WHERE account=" . db_escape($account)
 		   . " AND tran_date >= '$from' AND tran_date <= '$to'
 		 AND dimension_id = " . db_escape($dimension)
@@ -148,7 +148,7 @@ if (db_has_gl_accounts()) {
 	table_header($th);
 	$year = $_POST['fyear'];
 	if (get_post('update') == '') {
-		$sql = "SELECT * FROM " . TB_PREF . "fiscal_year WHERE id=" . db_escape($year);
+		$sql = "SELECT * FROM fiscal_year WHERE id=" . db_escape($year);
 
 		$result = db_query($sql, "could not get current fiscal year");
 

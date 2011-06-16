@@ -136,10 +136,10 @@ if (isset($groupid) && $groupid > 1) {
 	$trans = explode(',', $grouprefs);
 	reset($trans);
 	foreach ($trans as $tran) {
-		$sql = "UPDATE " . TB_PREF . "bank_trans SET undeposited=1, reconciled=NULL WHERE ref=" . db_escape($tran);
+		$sql = "UPDATE bank_trans SET undeposited=1, reconciled=NULL WHERE ref=" . db_escape($tran);
 		db_query($sql, 'Couldn\'t update undesposited status');
 	}
-	$sql = "UPDATE " . TB_PREF . "bank_trans SET ref=" . db_escape('Removed group: ' . $grouprefs) . ", amount=0, reconciled='" . date2sql(Today()) . "',
+	$sql = "UPDATE bank_trans SET ref=" . db_escape('Removed group: ' . $grouprefs) . ", amount=0, reconciled='" . date2sql(Today()) . "',
     undeposited=" . $groupid . " WHERE id=" . $groupid;
 	db_query($sql, "Couldn't update removed group data");
 	update_data();

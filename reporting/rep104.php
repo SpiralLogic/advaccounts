@@ -32,17 +32,17 @@ print_price_listing();
 
 function fetch_items($category = 0)
 {
-	$sql = "SELECT " . TB_PREF . "stock_master.stock_id, " . TB_PREF . "stock_master.description AS name,
-				" . TB_PREF . "stock_master.material_cost+" . TB_PREF . "stock_master.labour_cost+" . TB_PREF . "stock_master.overhead_cost AS Standardcost,
-				" . TB_PREF . "stock_master.category_id,
-				" . TB_PREF . "stock_category.description
-			FROM " . TB_PREF . "stock_master,
-				" . TB_PREF . "stock_category
-			WHERE " . TB_PREF . "stock_master.category_id=" . TB_PREF . "stock_category.category_id AND NOT " . TB_PREF . "stock_master.inactive";
+	$sql = "SELECT stock_master.stock_id, stock_master.description AS name,
+				stock_master.material_cost+stock_master.labour_cost+stock_master.overhead_cost AS Standardcost,
+				stock_master.category_id,
+				stock_category.description
+			FROM stock_master,
+				stock_category
+			WHERE stock_master.category_id=stock_category.category_id AND NOT stock_master.inactive";
 	if ($category != 0)
-		$sql .= " AND " . TB_PREF . "stock_category.category_id = " . db_escape($category);
-	$sql .= " ORDER BY " . TB_PREF . "stock_master.category_id,
-				" . TB_PREF . "stock_master.stock_id";
+		$sql .= " AND stock_category.category_id = " . db_escape($category);
+	$sql .= " ORDER BY stock_master.category_id,
+				stock_master.stock_id";
 
 	return db_query($sql, "No transactions were returned");
 }
@@ -51,9 +51,9 @@ function get_kits($category = 0)
 {
 	$sql = "SELECT i.item_code AS kit_code, i.description AS kit_name, c.category_id AS cat_id, c.description AS cat_name, count(*)>1 AS kit
 			FROM
-			" . TB_PREF . "item_codes i
+			item_codes i
 			LEFT JOIN
-			" . TB_PREF . "stock_category c
+			stock_category c
 			ON i.category_id=c.category_id";
 	$sql .= " WHERE !i.is_foreign AND i.item_code!=i.stock_id";
 	if ($category != 0)

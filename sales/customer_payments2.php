@@ -214,11 +214,11 @@ function read_customer_data()
 {
 	global $Refs;
 
-	$sql = "SELECT " . TB_PREF . "debtors_master.pymt_discount,
-		" . TB_PREF . "credit_status.dissallow_invoices
-		FROM " . TB_PREF . "debtors_master, " . TB_PREF . "credit_status
-		WHERE " . TB_PREF . "debtors_master.credit_status = " . TB_PREF . "credit_status.id
-			AND " . TB_PREF . "debtors_master.debtor_no = " . db_escape($_POST['customer_id']);
+	$sql = "SELECT debtors_master.pymt_discount,
+		credit_status.dissallow_invoices
+		FROM debtors_master, credit_status
+		WHERE debtors_master.credit_status = credit_status.id
+			AND debtors_master.debtor_no = " . db_escape($_POST['customer_id']);
 
 	$result = db_query($sql, "could not query customers");
 

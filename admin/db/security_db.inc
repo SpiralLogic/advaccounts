@@ -13,7 +13,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 
 function get_security_role($id)
 {
-	$sql = "SELECT * FROM " . TB_PREF . "security_roles WHERE id='$id'";
+	$sql = "SELECT * FROM security_roles WHERE id='$id'";
 	$ret = db_query($sql, "could not retrieve security roles");
 	$row = db_fetch($ret);
 	if ($row != false) {
@@ -27,7 +27,7 @@ function get_security_role($id)
 
 function add_security_role($name, $description, $sections, $areas)
 {
-	$sql = "INSERT INTO " . TB_PREF . "security_roles (role, description, sections, areas)
+	$sql = "INSERT INTO security_roles (role, description, sections, areas)
 	VALUES ("
 		   . db_escape($name) . ","
 		   . db_escape($description) . ","
@@ -41,7 +41,7 @@ function add_security_role($name, $description, $sections, $areas)
 
 function update_security_role($id, $name, $description, $sections, $areas)
 {
-	$sql = "UPDATE " . TB_PREF . "security_roles SET role=" . db_escape($name)
+	$sql = "UPDATE security_roles SET role=" . db_escape($name)
 		   . ",description=" . db_escape($description)
 		   . ",sections=" . db_escape(implode(';', $sections))
 		   . ",areas=" . db_escape(implode(';', $areas))
@@ -53,7 +53,7 @@ function update_security_role($id, $name, $description, $sections, $areas)
 
 function delete_security_role($id)
 {
-	$sql = "DELETE FROM " . TB_PREF . "security_roles WHERE id=$id";
+	$sql = "DELETE FROM security_roles WHERE id=$id";
 
 	db_query($sql, "could not delete role");
 }
@@ -62,7 +62,7 @@ function delete_security_role($id)
 
 function check_role_used($id)
 {
-	$sql = "SELECT count(*) FROM " . TB_PREF . "users WHERE role_id=$id";
+	$sql = "SELECT count(*) FROM users WHERE role_id=$id";
 	$ret = db_query($sql, 'cannot check role usage');
 	$row = db_fetch($ret);
 	return $row[0];

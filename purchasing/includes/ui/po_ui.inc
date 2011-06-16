@@ -16,7 +16,7 @@ include_once($path_to_root . "/purchasing/includes/purchasing_db.inc");
 
 function get_supplier_details_to_order(&$order, $supplier_id)
 {
-	$sql = "SELECT * FROM " . TB_PREF . "suppliers
+	$sql = "SELECT * FROM suppliers
 		WHERE supplier_id = '$supplier_id'";
 	$result = db_query($sql, "The supplier details could not be retreived");
 
@@ -126,7 +126,7 @@ function display_po_header(&$order)
 		/* If this is the first time the form loaded set up defaults */
 
 		//$_POST['StkLocation'] = $_SESSION['UserStockLocation'];
-		$sql = "SELECT delivery_address, phone FROM " . TB_PREF . "locations WHERE loc_code='" .
+		$sql = "SELECT delivery_address, phone FROM locations WHERE loc_code='" .
 			   $_POST['StkLocation'] . "'";
 		$result = db_query($sql, "could not get location info");
 

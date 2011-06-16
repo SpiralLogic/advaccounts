@@ -61,7 +61,7 @@ $before_date = date2sql($_POST['BeforeDate']);
 $after_date = date2sql($_POST['AfterDate']);
 
 $sql = "SELECT type, trans_no, tran_date, person_id, qty, reference
-	FROM " . TB_PREF . "stock_moves
+	FROM stock_moves
 	WHERE loc_code=" . db_escape($_POST['StockLocation']) . "
 	AND tran_date >= '" . $after_date . "'
 	AND tran_date <= '" . $before_date . "'
@@ -77,7 +77,7 @@ $th = array(_("Type"), _("#"), _("Reference"), _("Date"), _("Detail"),
 
 table_header($th);
 
-$sql = "SELECT SUM(qty) FROM " . TB_PREF . "stock_moves WHERE stock_id=" . db_escape($_POST['stock_id']) . "
+$sql = "SELECT SUM(qty) FROM stock_moves WHERE stock_id=" . db_escape($_POST['stock_id']) . "
 	AND loc_code=" . db_escape($_POST['StockLocation']) . "
 	AND tran_date < '" . $after_date . "'";
 $before_qty = db_query($sql, "The starting quantity on hand could not be calculated");
@@ -142,7 +142,7 @@ while ($myrow = db_fetch($result))
 	elseif ($myrow["type"] == ST_SUPPRECEIVE || $myrow['type'] == ST_SUPPCREDIT)
 	{
 		// get the supplier name
-		$sql = "SELECT supp_name FROM " . TB_PREF . "suppliers WHERE supplier_id = '" . $myrow["person_id"] . "'";
+		$sql = "SELECT supp_name FROM suppliers WHERE supplier_id = '" . $myrow["person_id"] . "'";
 		$supp_result = db_query($sql, "check failed");
 
 		$supp_row = db_fetch($supp_result);

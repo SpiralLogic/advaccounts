@@ -163,7 +163,7 @@ if ($doctype != ST_STATEMENT) {
 	} else {
 		$id = $myrow['salesman'];
 	}
-	$sql = "SELECT salesman_name  FROM " . TB_PREF . "salesman WHERE salesman_code='$id'";
+	$sql = "SELECT salesman_name  FROM salesman WHERE salesman_code='$id'";
 	$result = db_query($sql, "could not get sales person");
 	$row = db_fetch($result);
 	if (!isset($_SESSION["wa_current_user"]) || empty($row['salesman_name'])) {
@@ -174,7 +174,7 @@ if ($doctype != ST_STATEMENT) {
 	} else {
 		$user = $row['salesman_name'];
 	}
-	//$sql = "SELECT salesman_name  FROM " . TB_PREF . "sales_order WHERE salesman_code='$id'";
+	//$sql = "SELECT salesman_name  FROM sales_order WHERE salesman_code='$id'";
 	//$result = db_query($sql, "could not get sales person");
 	//$row = db_fetch($result);
 	$this->Text($mcol + 180, $user);
@@ -255,7 +255,7 @@ $col += $width;
 $report_contact = (!empty($myrow['contact_name'])) ? $myrow['contact_name'] : $branch['contact_name'];
 if ($doctype == ST_PURCHORDER) {
 	$id = $branch['salesman'];
-	$sql = "SELECT salesman_name  FROM " . TB_PREF . "salesman WHERE salesman_code='$id'";
+	$sql = "SELECT salesman_name  FROM salesman WHERE salesman_code='$id'";
 	$result = db_query($sql, "could not get sales person");
 	$row = db_fetch($result);
 	$this->TextWrap($col, $this->row, $width, $row['salesman_name'], 'C');
@@ -348,7 +348,7 @@ if ((!isset($packing_slip) || $packing_slip == 0) && $doctype != ST_PURCHORDER &
 		$str = sql2date($myrow["required_by"]);
 	} else {
 		$id = $myrow['payment_terms'];
-		$sql = "SELECT terms FROM " . TB_PREF . "payment_terms WHERE terms_indicator='$id'";
+		$sql = "SELECT terms FROM payment_terms WHERE terms_indicator='$id'";
 		$result = db_query($sql, "could not get paymentterms");
 		$row = db_fetch($result);
 		$str = $row["terms"];

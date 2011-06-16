@@ -32,7 +32,7 @@ print_bank_transactions();
 function get_bank_balance_to($to, $account)
 {
 	$to = date2sql($to);
-	$sql = "SELECT SUM(amount) FROM " . TB_PREF . "bank_trans WHERE bank_act='$account'
+	$sql = "SELECT SUM(amount) FROM bank_trans WHERE bank_act='$account'
 	AND trans_date < '$to'";
 	$result = db_query($sql, "The starting balance on hand could not be calculated");
 	$row = db_fetch_row($result);
@@ -43,11 +43,11 @@ function get_bank_transactions($from, $to, $account)
 {
 	$from = date2sql($from);
 	$to = date2sql($to);
-	$sql = "SELECT " . TB_PREF . "bank_trans.* FROM " . TB_PREF . "bank_trans
-		WHERE " . TB_PREF . "bank_trans.bank_act = '$account'
+	$sql = "SELECT bank_trans.* FROM bank_trans
+		WHERE bank_trans.bank_act = '$account'
 		AND trans_date >= '$from'
 		AND trans_date <= '$to'
-		ORDER BY trans_date," . TB_PREF . "bank_trans.id";
+		ORDER BY trans_date,bank_trans.id";
 
 	return db_query($sql, "The transactions for '$account' could not be retrieved");
 }

@@ -23,7 +23,7 @@ class Messages
 		if (!$userid) {
 			return false;
 		}
-		$sql = "SELECT * FROM " . TB_PREF . "user_messages WHERE user =$userid AND unread=1";
+		$sql = "SELECT * FROM user_messages WHERE user =$userid AND unread=1";
 		$result = db_query($sql, "could not retrieve user messages");
 		$this->count = db_num_rows($result);
 		while ($row = db_fetch_assoc($result)) {
@@ -35,7 +35,7 @@ class Messages
 				$this->messages .= '<hr style="margin-top:0px;"> '
 								   . $row['message'] . '<br>';
 		}
-		$sql = "UPDATE " . TB_PREF . "user_messages SET unread=0 WHERE unread=1 AND user=" . $userid;
+		$sql = "UPDATE user_messages SET unread=0 WHERE unread=1 AND user=" . $userid;
 		$result = db_query($sql, 'Could not mark messages as unread');
 		return $this->count;
 	}

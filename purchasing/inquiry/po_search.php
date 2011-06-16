@@ -126,10 +126,10 @@ $sql = "SELECT
 	Sum(line.delivery_date < '" . date2sql(Today()) . "'
 	AND (line.quantity_ordered > line.quantity_received)) As OverDue
 	FROM "
-	   . TB_PREF . "purch_orders as porder, "
-	   . TB_PREF . "purch_order_details as line, "
-	   . TB_PREF . "suppliers as supplier, "
-	   . TB_PREF . "locations as location
+	   .  "purch_orders as porder, "
+	   .  "purch_order_details as line, "
+	   .  "suppliers as supplier, "
+	   .  "locations as location
 	WHERE porder.order_no = line.order_no
 	AND porder.supplier_id = supplier.supplier_id
 	AND location.loc_code = porder.into_stock_location

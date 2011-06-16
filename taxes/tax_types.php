@@ -69,7 +69,7 @@ if ($Mode == 'UPDATE_ITEM' && can_process()) {
 
 function can_delete($selected_id)
 {
-	$sql = "SELECT COUNT(*) FROM " . TB_PREF . "tax_group_items	WHERE tax_type_id=" . db_escape($selected_id);
+	$sql = "SELECT COUNT(*) FROM tax_group_items	WHERE tax_type_id=" . db_escape($selected_id);
 	$result = db_query($sql, "could not query tax groups");
 	$myrow = db_fetch_row($result);
 	if ($myrow[0] > 0) {

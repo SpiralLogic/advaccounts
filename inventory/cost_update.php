@@ -85,7 +85,7 @@ set_global_stock_item($_POST['stock_id']);
 
 $sql = "SELECT description, units, material_cost, labour_cost,
 	overhead_cost, mb_flag
-	FROM " . TB_PREF . "stock_master
+	FROM stock_master
 	WHERE stock_id=" . db_escape($_POST['stock_id']) . "
 	GROUP BY description, units, material_cost, labour_cost, overhead_cost, mb_flag";
 $result = db_query($sql);

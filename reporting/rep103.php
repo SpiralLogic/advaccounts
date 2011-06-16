@@ -29,43 +29,43 @@ print_customer_details_listing();
 
 function get_customer_details_for_report($area = 0, $salesid = 0)
 {
-	$sql = "SELECT " . TB_PREF . "debtors_master.debtor_no,
-			" . TB_PREF . "debtors_master.name,
-			" . TB_PREF . "debtors_master.address,
-			" . TB_PREF . "sales_types.sales_type,
-			" . TB_PREF . "cust_branch.branch_code,
-			" . TB_PREF . "cust_branch.br_name,
-			" . TB_PREF . "cust_branch.br_address,
-			" . TB_PREF . "cust_branch.contact_name,
-			" . TB_PREF . "cust_branch.phone,
-			" . TB_PREF . "cust_branch.fax,
-			" . TB_PREF . "cust_branch.email,
-			" . TB_PREF . "cust_branch.area,
-			" . TB_PREF . "cust_branch.salesman,
-			" . TB_PREF . "areas.description,
-			" . TB_PREF . "salesman.salesman_name
-		FROM " . TB_PREF . "debtors_master
-		INNER JOIN " . TB_PREF . "cust_branch
-			ON " . TB_PREF . "debtors_master.debtor_no=" . TB_PREF . "cust_branch.debtor_no
-		INNER JOIN " . TB_PREF . "sales_types
-			ON " . TB_PREF . "debtors_master.sales_type=" . TB_PREF . "sales_types.id
-		INNER JOIN " . TB_PREF . "areas
-			ON " . TB_PREF . "cust_branch.area = " . TB_PREF . "areas.area_code
-		INNER JOIN " . TB_PREF . "salesman
-			ON " . TB_PREF . "cust_branch.salesman=" . TB_PREF . "salesman.salesman_code";
+	$sql = "SELECT debtors_master.debtor_no,
+			debtors_master.name,
+			debtors_master.address,
+			sales_types.sales_type,
+			cust_branch.branch_code,
+			cust_branch.br_name,
+			cust_branch.br_address,
+			cust_branch.contact_name,
+			cust_branch.phone,
+			cust_branch.fax,
+			cust_branch.email,
+			cust_branch.area,
+			cust_branch.salesman,
+			areas.description,
+			salesman.salesman_name
+		FROM debtors_master
+		INNER JOIN cust_branch
+			ON debtors_master.debtor_no=cust_branch.debtor_no
+		INNER JOIN sales_types
+			ON debtors_master.sales_type=sales_types.id
+		INNER JOIN areas
+			ON cust_branch.area = areas.area_code
+		INNER JOIN salesman
+			ON cust_branch.salesman=salesman.salesman_code";
 	if ($area != 0) {
 		if ($salesid != 0)
-			$sql .= " WHERE " . TB_PREF . "salesman.salesman_code=" . db_escape($salesid) . "
-				AND " . TB_PREF . "areas.area_code=" . db_escape($area);
+			$sql .= " WHERE salesman.salesman_code=" . db_escape($salesid) . "
+				AND areas.area_code=" . db_escape($area);
 		else
-			$sql .= " WHERE " . TB_PREF . "areas.area_code=" . db_escape($area);
+			$sql .= " WHERE areas.area_code=" . db_escape($area);
 	}
 	elseif ($salesid != 0)
-		$sql .= " WHERE " . TB_PREF . "salesman.salesman_code=" . db_escape($salesid);
+		$sql .= " WHERE salesman.salesman_code=" . db_escape($salesid);
 	$sql .= " ORDER BY description,
-			" . TB_PREF . "salesman.salesman_name,
-			" . TB_PREF . "debtors_master.debtor_no,
-			" . TB_PREF . "cust_branch.branch_code";
+			salesman.salesman_name,
+			debtors_master.debtor_no,
+			cust_branch.branch_code";
 
 	return db_query($sql, "No transactions were returned");
 }
@@ -76,7 +76,7 @@ function getTransactions($debtorno, $branchcode, $date)
 	$date = date2sql($date);
 
 	$sql = "SELECT SUM((ov_amount+ov_freight+ov_discount)*rate) AS Turnover
-		FROM " . TB_PREF . "debtor_trans
+		FROM debtor_trans
 		WHERE debtor_no=" . db_escape($debtorno) . "
 		AND branch_code=" . db_escape($branchcode) . "
 		AND (type=" . ST_SALESINVOICE . " OR type=" . ST_CUSTCREDIT . ")

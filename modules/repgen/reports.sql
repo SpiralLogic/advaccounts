@@ -53,7 +53,7 @@ INSERT INTO `xx_reports` VALUES('6', 'item', 'DB|DE|Helvetica|9|20l|400|0|class_
 INSERT INTO `xx_reports` VALUES('6', 'item', 'DB|DE|Helvetica|9|50l|100|0|account_name||||||||');
 INSERT INTO `xx_reports` VALUES('F7', 'funct', 'subcount|2007-09-26|bauer|total number of records of a group|function subcount($it) {return $it->subcount;}');
 INSERT INTO `xx_reports` VALUES('6', 'info', 'Accounts|2009-02-08|Hunt|Accounts List|portrait|a4|class');
-INSERT INTO `xx_reports` VALUES('6', 'select', 'select * from 0_chart_master,0_chart_types,0_chart_class where account_type=id and class_id=cid order by account_code');
+INSERT INTO `xx_reports` VALUES('6', 'select', 'select * from chart_master,chart_types,chart_class where account_type=id and class_id=cid order by account_code');
 INSERT INTO `xx_reports` VALUES('2', 'info', 'single|2007-09-26|Bauer|Single page per Record|portrait|a4|single');
 INSERT INTO `xx_reports` VALUES('2', 'select', 'select * from xx_reports');
 INSERT INTO `xx_reports` VALUES('2', 'group', '|nopage');

@@ -128,16 +128,16 @@ $sql = "SELECT	IF(ISNULL(a.gl_seq),0,a.gl_seq) as gl_seq,
 	  SUM(IF(gl.amount>0, gl.amount,0))) as amount,
 	com.memo_,
 	IF(ISNULL(u.user_id),'',u.user_id) as user_id
-	FROM ".TB_PREF."gl_trans as gl
-	 LEFT JOIN ".TB_PREF."audit_trail as a ON 
+	FROM ".''."gl_trans as gl
+	 LEFT JOIN ".''."audit_trail as a ON
 		(gl.type=a.type AND gl.type_no=a.trans_no)
-	 LEFT JOIN ".TB_PREF."comments as com ON 
+	 LEFT JOIN ".''."comments as com ON
 		(gl.type=com.type AND gl.type_no=com.id)
-	 LEFT JOIN ".TB_PREF."refs as refs ON 
+	 LEFT JOIN ".''."refs as refs ON
 		(gl.type=refs.type AND gl.type_no=refs.id)
-	 LEFT JOIN ".TB_PREF."users as u ON 
+	 LEFT JOIN ".''."users as u ON
 		a.user=u.id
-	 LEFT JOIN ".TB_PREF."bank_trans as bank_trans ON 
+	 LEFT JOIN ".''."bank_trans as bank_trans ON
 		(gl.type=bank_trans.type AND gl.type_no=bank_trans.trans_no)		
 	WHERE gl.tran_date >= '" . date2sql($_POST['FromDate']) . "'
 	AND gl.tran_date <= '" . date2sql($_POST['ToDate']) . "'
@@ -162,14 +162,14 @@ $sql = "SELECT	IF(ISNULL(a.gl_seq),0,a.gl_seq) as gl_seq,
  	SUM(IF(gl.amount>0, gl.amount,0)) as amount,
  	com.memo_,
  	IF(ISNULL(u.user_id),'',u.user_id) as user_id
- 	FROM " . TB_PREF . "gl_trans as gl
- 	 LEFT JOIN " . TB_PREF . "audit_trail as a ON
+ 	FROM gl_trans as gl
+ 	 LEFT JOIN audit_trail as a ON
  		(gl.type=a.type AND gl.type_no=a.trans_no)
- 	 LEFT JOIN " . TB_PREF . "comments as com ON
+ 	 LEFT JOIN comments as com ON
  		(gl.type=com.type AND gl.type_no=com.id)
- 	 LEFT JOIN " . TB_PREF . "refs as refs ON
+ 	 LEFT JOIN refs as refs ON
  		(gl.type=refs.type AND gl.type_no=refs.id)
- 	 LEFT JOIN " . TB_PREF . "users as u ON
+ 	 LEFT JOIN users as u ON
  		a.user=u.id
  	WHERE gl.tran_date >= '" . date2sql($_POST['FromDate']) . "'
  	AND gl.tran_date <= '" . date2sql($_POST['ToDate']) . "'

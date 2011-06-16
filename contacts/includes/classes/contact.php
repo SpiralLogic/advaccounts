@@ -51,7 +51,7 @@
 				return false;
 			}
 			$sql = "SELECT *
-		FROM " . TB_PREF . "contacts WHERE ";
+		FROM contacts WHERE ";
 			foreach ($params as $key => $value) {
 				$where[] = "$key =" . db_escape($value);
 			}
@@ -70,7 +70,7 @@
 
 		protected function _saveNew() {
 			begin_transaction();
-			$sql = "INSERT INTO " . TB_PREF . "contacts (parent_id, name, phone1, phone2, email, department)
+			$sql = "INSERT INTO contacts (parent_id, name, phone1, phone2, email, department)
 				VALUES (" . db_escape($this->parent_id) . "," . db_escape($this->name) . ", " . db_escape($this->phone1) . ", " . db_escape($this->phone2) . ", " . db_escape($this->email) . ", " . db_escape($this->department) . ")";
 			db_query($sql, "The contact could not be added");
 			$this->id = db_insert_id();
@@ -93,7 +93,7 @@
 				$this->_saveNew();
 			}
 			begin_transaction();
-			$sql = "UPDATE " . TB_PREF . "contacts SET
+			$sql = "UPDATE contacts SET
 			name=" . db_escape($this->name) . ",
 			phone1=" . db_escape($this->phone1) . ",
 			phone2=" . db_escape($this->phone2) . ",

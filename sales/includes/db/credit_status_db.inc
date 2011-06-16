@@ -11,7 +11,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
  ***********************************************************************/
 function add_credit_status($description, $disallow_invoicing)
 {
-	$sql = "INSERT INTO " . TB_PREF . "credit_status (reason_description, dissallow_invoices)
+	$sql = "INSERT INTO credit_status (reason_description, dissallow_invoices)
 		VALUES (" . db_escape($description) . "," . db_escape($disallow_invoicing) . ")";
 
 	db_query($sql, "could not add credit status");
@@ -19,7 +19,7 @@ function add_credit_status($description, $disallow_invoicing)
 
 function update_credit_status($status_id, $description, $disallow_invoicing)
 {
-	$sql = "UPDATE " . TB_PREF . "credit_status SET reason_description=" . db_escape($description) . ",
+	$sql = "UPDATE credit_status SET reason_description=" . db_escape($description) . ",
 		dissallow_invoices=" . db_escape($disallow_invoicing) . " WHERE id=" . db_escape($status_id);
 
 	db_query($sql, "could not update credit status");
@@ -27,7 +27,7 @@ function update_credit_status($status_id, $description, $disallow_invoicing)
 
 function get_all_credit_status($all = false)
 {
-	$sql = "SELECT * FROM " . TB_PREF . "credit_status";
+	$sql = "SELECT * FROM credit_status";
 	if (!$all) $sql .= " WHERE !inactive";
 
 	return db_query($sql, "could not get all credit status");
@@ -35,7 +35,7 @@ function get_all_credit_status($all = false)
 
 function get_credit_status($status_id)
 {
-	$sql = "SELECT * FROM " . TB_PREF . "credit_status WHERE id=" . db_escape($status_id);
+	$sql = "SELECT * FROM credit_status WHERE id=" . db_escape($status_id);
 
 	$result = db_query($sql, "could not get credit status");
 
@@ -44,7 +44,7 @@ function get_credit_status($status_id)
 
 function delete_credit_status($status_id)
 {
-	$sql = "DELETE FROM " . TB_PREF . "credit_status WHERE id=" . db_escape($status_id);
+	$sql = "DELETE FROM credit_status WHERE id=" . db_escape($status_id);
 
 	db_query($sql, "could not delete credit status");
 }

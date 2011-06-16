@@ -157,7 +157,7 @@
             : submenu_option(_("Enter a &New Delivery"), "/sales/sales_order_entry.php?NewDelivery=0");
       }
       elseif ($trans_type == ST_SALESINVOICE) {
-         $sql = "SELECT trans_type_from, trans_no_from FROM " . TB_PREF . "cust_allocations WHERE trans_type_to=" . ST_SALESINVOICE . " AND trans_no_to=" . db_escape($order_no);
+         $sql = "SELECT trans_type_from, trans_no_from FROM cust_allocations WHERE trans_type_to=" . ST_SALESINVOICE . " AND trans_no_to=" . db_escape($order_no);
          $result = db_query($sql, "could not retrieve customer allocation");
          $row = db_fetch($result);
          if ($row !== false) {

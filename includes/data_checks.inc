@@ -11,7 +11,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
  ***********************************************************************/
 function db_has_customers()
 {
-	return check_empty_result("SELECT COUNT(*) FROM " . TB_PREF . "debtors_master");
+	return check_empty_result("SELECT COUNT(*) FROM debtors_master");
 }
 
 function check_db_has_customers($msg)
@@ -26,7 +26,7 @@ function check_db_has_customers($msg)
 
 function db_has_currencies()
 {
-	return check_empty_result("SELECT COUNT(*) FROM " . TB_PREF . "currencies");
+	return check_empty_result("SELECT COUNT(*) FROM currencies");
 }
 
 function check_db_has_currencies($msg)
@@ -41,7 +41,7 @@ function check_db_has_currencies($msg)
 
 function db_has_sales_types()
 {
-	return check_empty_result("SELECT COUNT(*) FROM " . TB_PREF . "sales_types");
+	return check_empty_result("SELECT COUNT(*) FROM sales_types");
 }
 
 function check_db_has_sales_types($msg)
@@ -56,7 +56,7 @@ function check_db_has_sales_types($msg)
 
 function db_has_item_tax_types()
 {
-	return check_empty_result("SELECT COUNT(*) FROM " . TB_PREF . "item_tax_types");
+	return check_empty_result("SELECT COUNT(*) FROM item_tax_types");
 }
 
 function check_db_has_item_tax_types($msg)
@@ -71,7 +71,7 @@ function check_db_has_item_tax_types($msg)
 
 function db_has_tax_types()
 {
-	return check_empty_result("SELECT COUNT(*) FROM " . TB_PREF . "tax_types");
+	return check_empty_result("SELECT COUNT(*) FROM tax_types");
 }
 
 function check_db_has_tax_types($msg)
@@ -86,7 +86,7 @@ function check_db_has_tax_types($msg)
 
 function db_has_tax_groups()
 {
-	return check_empty_result("SELECT COUNT(*) FROM " . TB_PREF . "tax_groups");
+	return check_empty_result("SELECT COUNT(*) FROM tax_groups");
 }
 
 function check_db_has_tax_groups($msg)
@@ -101,7 +101,7 @@ function check_db_has_tax_groups($msg)
 
 function db_has_movement_types()
 {
-	return check_empty_result("SELECT COUNT(*) FROM " . TB_PREF . "movement_types");
+	return check_empty_result("SELECT COUNT(*) FROM movement_types");
 }
 
 function check_db_has_movement_types($msg)
@@ -116,14 +116,14 @@ function check_db_has_movement_types($msg)
 
 function db_customer_has_branches($customer_id)
 {
-	return check_empty_result("SELECT COUNT(*) FROM " . TB_PREF . "cust_branch "
+	return check_empty_result("SELECT COUNT(*) FROM cust_branch "
 							  . "WHERE debtor_no='$customer_id'");
 }
 
 function db_has_customer_branches()
 {
 	return check_empty_result("SELECT COUNT(*) FROM "
-							  . TB_PREF . "cust_branch WHERE !inactive");
+							  .  "cust_branch WHERE !inactive");
 }
 
 function check_db_has_customer_branches($msg)
@@ -138,7 +138,7 @@ function check_db_has_customer_branches($msg)
 
 function db_has_sales_people()
 {
-	return check_empty_result("SELECT COUNT(*) FROM " . TB_PREF . "salesman");
+	return check_empty_result("SELECT COUNT(*) FROM salesman");
 }
 
 function check_db_has_sales_people($msg)
@@ -153,7 +153,7 @@ function check_db_has_sales_people($msg)
 
 function db_has_sales_areas()
 {
-	return check_empty_result("SELECT COUNT(*) FROM " . TB_PREF . "areas");
+	return check_empty_result("SELECT COUNT(*) FROM areas");
 }
 
 function check_db_has_sales_areas($msg)
@@ -168,7 +168,7 @@ function check_db_has_sales_areas($msg)
 
 function db_has_shippers()
 {
-	return check_empty_result("SELECT COUNT(*) FROM " . TB_PREF . "shippers");
+	return check_empty_result("SELECT COUNT(*) FROM shippers");
 }
 
 function check_db_has_shippers($msg)
@@ -183,12 +183,12 @@ function check_db_has_shippers($msg)
 
 function db_has_open_workorders()
 {
-	return check_empty_result("SELECT COUNT(*) FROM " . TB_PREF . "workorders WHERE closed=0");
+	return check_empty_result("SELECT COUNT(*) FROM workorders WHERE closed=0");
 }
 
 function db_has_workorders()
 {
-	return check_empty_result("SELECT COUNT(*) FROM " . TB_PREF . "workorders");
+	return check_empty_result("SELECT COUNT(*) FROM workorders");
 }
 
 function check_db_has_workorders($msg)
@@ -203,12 +203,12 @@ function check_db_has_workorders($msg)
 
 function db_has_open_dimensions()
 {
-	return check_empty_result("SELECT COUNT(*) FROM " . TB_PREF . "dimensions WHERE closed=0");
+	return check_empty_result("SELECT COUNT(*) FROM dimensions WHERE closed=0");
 }
 
 function db_has_dimensions()
 {
-	return check_empty_result("SELECT COUNT(*) FROM " . TB_PREF . "dimensions");
+	return check_empty_result("SELECT COUNT(*) FROM dimensions");
 }
 
 function check_db_has_dimensions($msg)
@@ -224,7 +224,7 @@ function check_db_has_dimensions($msg)
 
 function db_has_suppliers()
 {
-	return check_empty_result("SELECT COUNT(*) FROM " . TB_PREF . "suppliers");
+	return check_empty_result("SELECT COUNT(*) FROM suppliers");
 }
 
 function check_db_has_suppliers($msg)
@@ -239,7 +239,7 @@ function check_db_has_suppliers($msg)
 
 function db_has_stock_items()
 {
-	return check_empty_result("SELECT COUNT(*) FROM " . TB_PREF . "stock_master");
+	return check_empty_result("SELECT COUNT(*) FROM stock_master");
 }
 
 function check_db_has_stock_items($msg)
@@ -254,7 +254,7 @@ function check_db_has_stock_items($msg)
 
 function db_has_bom_stock_items()
 {
-	return check_empty_result("SELECT COUNT(*) FROM " . TB_PREF . "stock_master WHERE mb_flag='M'");
+	return check_empty_result("SELECT COUNT(*) FROM stock_master WHERE mb_flag='M'");
 }
 
 function check_db_has_bom_stock_items($msg)
@@ -269,7 +269,7 @@ function check_db_has_bom_stock_items($msg)
 
 function db_has_manufacturable_items()
 {
-	return check_empty_result("SELECT COUNT(*) FROM " . TB_PREF . "stock_master WHERE (mb_flag='M')");
+	return check_empty_result("SELECT COUNT(*) FROM stock_master WHERE (mb_flag='M')");
 }
 
 function check_db_has_manufacturable_items($msg)
@@ -284,7 +284,7 @@ function check_db_has_manufacturable_items($msg)
 
 function db_has_purchasable_items()
 {
-	return check_empty_result("SELECT COUNT(*) FROM " . TB_PREF . "stock_master WHERE mb_flag!='M'");
+	return check_empty_result("SELECT COUNT(*) FROM stock_master WHERE mb_flag!='M'");
 }
 
 function check_db_has_purchasable_items($msg)
@@ -299,7 +299,7 @@ function check_db_has_purchasable_items($msg)
 
 function db_has_costable_items()
 {
-	return check_empty_result("SELECT COUNT(*) FROM " . TB_PREF . "stock_master WHERE mb_flag!='D'");
+	return check_empty_result("SELECT COUNT(*) FROM stock_master WHERE mb_flag!='D'");
 }
 
 function check_db_has_costable_items($msg)
@@ -314,7 +314,7 @@ function check_db_has_costable_items($msg)
 
 function db_has_stock_categories()
 {
-	return check_empty_result("SELECT COUNT(*) FROM " . TB_PREF . "stock_category");
+	return check_empty_result("SELECT COUNT(*) FROM stock_category");
 }
 
 function check_db_has_stock_categories($msg)
@@ -329,7 +329,7 @@ function check_db_has_stock_categories($msg)
 
 function db_has_workcentres()
 {
-	return check_empty_result("SELECT COUNT(*) FROM " . TB_PREF . "workcentres");
+	return check_empty_result("SELECT COUNT(*) FROM workcentres");
 }
 
 function check_db_has_workcentres($msg)
@@ -344,7 +344,7 @@ function check_db_has_workcentres($msg)
 
 function db_has_locations()
 {
-	return check_empty_result("SELECT COUNT(*) FROM " . TB_PREF . "locations");
+	return check_empty_result("SELECT COUNT(*) FROM locations");
 }
 
 function check_db_has_locations($msg)
@@ -359,7 +359,7 @@ function check_db_has_locations($msg)
 
 function db_has_bank_accounts()
 {
-	return check_empty_result("SELECT COUNT(*) FROM " . TB_PREF . "bank_accounts");
+	return check_empty_result("SELECT COUNT(*) FROM bank_accounts");
 }
 
 function check_db_has_bank_accounts($msg)
@@ -375,18 +375,18 @@ function check_db_has_bank_accounts($msg)
 
 function db_has_cash_accounts()
 {
-	return check_empty_result("SELECT COUNT(*) FROM " . TB_PREF . "bank_accounts
+	return check_empty_result("SELECT COUNT(*) FROM bank_accounts
 		WHERE account_type=3");
 }
 
 function db_has_gl_accounts()
 {
-	return check_empty_result("SELECT COUNT(*) FROM " . TB_PREF . "chart_master");
+	return check_empty_result("SELECT COUNT(*) FROM chart_master");
 }
 
 function db_has_gl_account_groups()
 {
-	return check_empty_result("SELECT COUNT(*) FROM " . TB_PREF . "chart_types");
+	return check_empty_result("SELECT COUNT(*) FROM chart_types");
 }
 
 function check_db_has_gl_account_groups($msg)
@@ -401,12 +401,12 @@ function check_db_has_gl_account_groups($msg)
 
 function db_has_quick_entries()
 {
-	return check_empty_result("SELECT COUNT(*) FROM " . TB_PREF . "quick_entries");
+	return check_empty_result("SELECT COUNT(*) FROM quick_entries");
 }
 
 function db_has_tags($type)
 {
-	return check_empty_result("SELECT COUNT(*) FROM " . TB_PREF . "tags WHERE type=$type");
+	return check_empty_result("SELECT COUNT(*) FROM tags WHERE type=$type");
 }
 
 function check_db_has_tags($type, $msg)

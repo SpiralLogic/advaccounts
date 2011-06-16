@@ -12,16 +12,16 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 //----------------------------------------------------------------------------------------
 function get_demand_qty($stock_id, $location)
 {
-	$sql = "SELECT SUM(" . TB_PREF . "sales_order_details.quantity - "
-		   . TB_PREF . "sales_order_details.qty_sent) AS QtyDemand
-			FROM " . TB_PREF . "sales_order_details,
-					" . TB_PREF . "sales_orders
-				WHERE " . TB_PREF . "sales_order_details.order_no="
-		   . TB_PREF . "sales_orders.order_no AND " . TB_PREF . "sales_orders.trans_type=" . ST_SALESORDER . " AND
-				" . TB_PREF . "sales_orders.trans_type=" . TB_PREF . "sales_order_details.trans_type AND ";
+	$sql = "SELECT SUM(sales_order_details.quantity - "
+		   .  "sales_order_details.qty_sent) AS QtyDemand
+			FROM sales_order_details,
+					sales_orders
+				WHERE sales_order_details.order_no="
+		   .  "sales_orders.order_no AND sales_orders.trans_type=" . ST_SALESORDER . " AND
+				sales_orders.trans_type=sales_order_details.trans_type AND ";
 	if ($location != "")
-		$sql .= TB_PREF . "sales_orders.from_stk_loc =" . db_escape($location) . " AND ";
-	$sql .= TB_PREF . "sales_order_details.stk_code = " . db_escape($stock_id);
+		$sql .=  "sales_orders.from_stk_loc =" . db_escape($location) . " AND ";
+	$sql .=  "sales_order_details.stk_code = " . db_escape($stock_id);
 
 	$result = db_query($sql, "No transactions were returned");
 	$row = db_fetch($result);
@@ -38,7 +38,7 @@ function load_stock_levels($location)
 	global $qoh_stock;
 	$date = date2sql(Today());
 
-	$sql = "SELECT stock_id, SUM(qty) FROM " . TB_PREF . "stock_moves WHERE tran_date <= '$date'";
+	$sql = "SELECT stock_id, SUM(qty) FROM stock_moves WHERE tran_date <= '$date'";
 	if ($location != '') $sql .= " AND loc_code = " . db_escape($location);
 	$sql .= " GROUP BY stock_id";
 	$result = db_query($sql, "QOH calulcation failed");
@@ -67,7 +67,7 @@ function stock_demand_manufacture($stock_id, $qty, $demand_id, $location, $level
 	$bom = @$bom_list[$stock_id];
 	if ($bom == NULL) {
 		$sql = "SELECT parent, component, quantity FROM "
-			   . TB_PREF . "bom WHERE parent = " . db_escape($stock_id);
+			   .  "bom WHERE parent = " . db_escape($stock_id);
 		if ($location != "") $sql .= " AND loc_code = " . db_escape($location);
 		$result = db_query($sql, "Could not search bom");
 		$bom = array();
@@ -97,20 +97,20 @@ function stock_demand_manufacture($stock_id, $qty, $demand_id, $location, $level
 function get_demand_asm_qty($stock_id, $location)
 {
 	$demand_qty = 0.0;
-	$sql = "SELECT " . TB_PREF . "sales_order_details.stk_code, SUM(" . TB_PREF . "sales_order_details.quantity-" . TB_PREF . "sales_order_details.qty_sent)
+	$sql = "SELECT sales_order_details.stk_code, SUM(sales_order_details.quantity-sales_order_details.qty_sent)
 				   AS Demmand
-				   FROM " . TB_PREF . "sales_order_details,
-						" . TB_PREF . "sales_orders,
-						" . TB_PREF . "stock_master
-				   WHERE " . TB_PREF . "sales_orders.order_no = " . TB_PREF . "sales_order_details.order_no AND
-				   	" . TB_PREF . "sales_orders.trans_type=" . ST_SALESORDER . " AND
-					" . TB_PREF . "sales_orders.trans_type=" . TB_PREF . "sales_order_details.trans_type AND ";
+				   FROM sales_order_details,
+						sales_orders,
+						stock_master
+				   WHERE sales_orders.order_no = sales_order_details.order_no AND
+				   	sales_orders.trans_type=" . ST_SALESORDER . " AND
+					sales_orders.trans_type=sales_order_details.trans_type AND ";
 	if ($location != "")
-		$sql .= TB_PREF . "sales_orders.from_stk_loc =" . db_escape($location) . " AND ";
-	$sql .= TB_PREF . "sales_order_details.quantity-" . TB_PREF . "sales_order_details.qty_sent > 0 AND
-				   " . TB_PREF . "stock_master.stock_id=" . TB_PREF . "sales_order_details.stk_code AND
-				   (" . TB_PREF . "stock_master.mb_flag='M' OR " . TB_PREF . "stock_master.mb_flag='A')
-				   GROUP BY " . TB_PREF . "sales_order_details.stk_code";
+		$sql .=  "sales_orders.from_stk_loc =" . db_escape($location) . " AND ";
+	$sql .=  "sales_order_details.quantity-sales_order_details.qty_sent > 0 AND
+				   stock_master.stock_id=sales_order_details.stk_code AND
+				   (stock_master.mb_flag='M' OR stock_master.mb_flag='A')
+				   GROUP BY sales_order_details.stk_code";
 	$result = db_query($sql, "No transactions were returned");
 	while ($row = db_fetch_row($result)) {
 		$demand_qty += stock_demand_manufacture($row[0], $row[1], $stock_id, $location);
@@ -120,14 +120,14 @@ function get_demand_asm_qty($stock_id, $location)
 
 function get_on_porder_qty($stock_id, $location)
 {
-	$sql = "SELECT SUM(" . TB_PREF . "purch_order_details.quantity_ordered - "
-		   . TB_PREF . "purch_order_details.quantity_received) AS qoo
-		FROM " . TB_PREF . "purch_order_details INNER JOIN "
-		   . TB_PREF . "purch_orders ON " . TB_PREF . "purch_order_details.order_no=" . TB_PREF . "purch_orders.order_no
-		WHERE " . TB_PREF . "purch_order_details.item_code=" . db_escape($stock_id) . " ";
+	$sql = "SELECT SUM(purch_order_details.quantity_ordered - "
+		   .  "purch_order_details.quantity_received) AS qoo
+		FROM purch_order_details INNER JOIN "
+		   .  "purch_orders ON purch_order_details.order_no=purch_orders.order_no
+		WHERE purch_order_details.item_code=" . db_escape($stock_id) . " ";
 	if ($location != "")
-		$sql .= "AND " . TB_PREF . "purch_orders.into_stock_location=" . db_escape($location) . " ";
-	$sql .= "AND " . TB_PREF . "purch_order_details.item_code=" . db_escape($stock_id);
+		$sql .= "AND purch_orders.into_stock_location=" . db_escape($location) . " ";
+	$sql .= "AND purch_order_details.item_code=" . db_escape($stock_id);
 	$qoo_result = db_query($sql, "could not receive quantity on order for item");
 
 	if (db_num_rows($qoo_result) == 1) {
@@ -143,14 +143,14 @@ function get_on_porder_qty($stock_id, $location)
 
 function get_on_worder_qty($stock_id, $location)
 {
-	$sql = "SELECT SUM((" . TB_PREF . "workorders.units_reqd-" . TB_PREF . "workorders.units_issued) *
-		(" . TB_PREF . "wo_requirements.units_req-" . TB_PREF . "wo_requirements.units_issued)) AS qoo
-		FROM " . TB_PREF . "wo_requirements INNER JOIN " . TB_PREF . "workorders
-			ON " . TB_PREF . "wo_requirements.workorder_id=" . TB_PREF . "workorders.id
-		WHERE " . TB_PREF . "wo_requirements.stock_id=" . db_escape($stock_id) . " ";
+	$sql = "SELECT SUM((workorders.units_reqd-workorders.units_issued) *
+		(wo_requirements.units_req-wo_requirements.units_issued)) AS qoo
+		FROM wo_requirements INNER JOIN workorders
+			ON wo_requirements.workorder_id=workorders.id
+		WHERE wo_requirements.stock_id=" . db_escape($stock_id) . " ";
 	if ($location != "")
-		$sql .= "AND " . TB_PREF . "wo_requirements.loc_code=" . db_escape($location) . " ";
-	$sql .= "AND " . TB_PREF . "workorders.released=1";
+		$sql .= "AND wo_requirements.loc_code=" . db_escape($location) . " ";
+	$sql .= "AND workorders.released=1";
 	$qoo_result = db_query($sql, "could not receive quantity on order for item");
 	if (db_num_rows($qoo_result) == 1) {
 		$qoo_row = db_fetch_row($qoo_result);
@@ -160,12 +160,12 @@ function get_on_worder_qty($stock_id, $location)
 		$qoo = 0.0;
 	$flag = get_mb_flag($stock_id);
 	if ($flag == 'A' || $flag == 'M') {
-		$sql = "SELECT SUM((" . TB_PREF . "workorders.units_reqd-" . TB_PREF . "workorders.units_issued)) AS qoo
-			FROM " . TB_PREF . "workorders
-			WHERE " . TB_PREF . "workorders.stock_id=" . db_escape($stock_id) . " ";
+		$sql = "SELECT SUM((workorders.units_reqd-workorders.units_issued)) AS qoo
+			FROM workorders
+			WHERE workorders.stock_id=" . db_escape($stock_id) . " ";
 		if ($location != "")
-			$sql .= "AND " . TB_PREF . "workorders.loc_code=" . db_escape($location) . " ";
-		$sql .= "AND " . TB_PREF . "workorders.released=1";
+			$sql .= "AND workorders.loc_code=" . db_escape($location) . " ";
+		$sql .= "AND workorders.released=1";
 		$qoo_result = db_query($sql, "could not receive quantity on order for item");
 		if (db_num_rows($qoo_result) == 1) {
 			$qoo_row = db_fetch_row($qoo_result);
@@ -177,7 +177,7 @@ function get_on_worder_qty($stock_id, $location)
 
 function get_mb_flag($stock_id)
 {
-	$sql = "SELECT mb_flag FROM " . TB_PREF . "stock_master WHERE stock_id = "
+	$sql = "SELECT mb_flag FROM stock_master WHERE stock_id = "
 		   . db_escape($stock_id);
 	$result = db_query($sql, "retreive mb_flag from item");
 
@@ -192,14 +192,14 @@ function get_mb_flag($stock_id)
 
 function get_bom($item)
 {
-	$sql = "SELECT " . TB_PREF . "bom.*, " . TB_PREF . "locations.location_name, " . TB_PREF . "workcentres.name AS WorkCentreDescription,
-    	" . TB_PREF . "stock_master.description, " . TB_PREF . "stock_master.mb_flag AS ResourceType,
-    	" . TB_PREF . "stock_master.material_cost+ " . TB_PREF . "stock_master.labour_cost+" . TB_PREF . "stock_master.overhead_cost AS standard_cost, units,
-    	" . TB_PREF . "bom.quantity * (" . TB_PREF . "stock_master.material_cost+ " . TB_PREF . "stock_master.labour_cost+ " . TB_PREF . "stock_master.overhead_cost) AS ComponentCost
-    	FROM (" . TB_PREF . "workcentres, " . TB_PREF . "locations, " . TB_PREF . "bom) INNER JOIN " . TB_PREF . "stock_master ON " . TB_PREF . "bom.component = " . TB_PREF . "stock_master.stock_id
-    	WHERE " . TB_PREF . "bom.parent = " . db_escape($item) . "
-		AND " . TB_PREF . "workcentres.id=" . TB_PREF . "bom.workcentre_added
-		AND " . TB_PREF . "bom.loc_code = " . TB_PREF . "locations.loc_code ORDER BY " . TB_PREF . "bom.id";
+	$sql = "SELECT bom.*, locations.location_name, workcentres.name AS WorkCentreDescription,
+    	stock_master.description, stock_master.mb_flag AS ResourceType,
+    	stock_master.material_cost+ stock_master.labour_cost+stock_master.overhead_cost AS standard_cost, units,
+    	bom.quantity * (stock_master.material_cost+ stock_master.labour_cost+ stock_master.overhead_cost) AS ComponentCost
+    	FROM (workcentres, locations, bom) INNER JOIN stock_master ON bom.component = stock_master.stock_id
+    	WHERE bom.parent = " . db_escape($item) . "
+		AND workcentres.id=bom.workcentre_added
+		AND bom.loc_code = locations.loc_code ORDER BY bom.id";
 
 	return db_query($sql, "The bill of material could not be retrieved");
 }

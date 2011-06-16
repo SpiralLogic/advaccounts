@@ -32,7 +32,7 @@ function db_query($sql, $err_msg = null)
 	if ($sql_trail) {
 		db_set_info();
 		if ($select_trail || (strstr($sql, 'SELECT') === false)) {
-			mysql_query("INSERT INTO " . TB_PREF . "sql_trail
+			mysql_query("INSERT INTO sql_trail
 				(`sql`, `result`, `msg`)
 				VALUES(" . db_escape($sql) . "," . ($result ? 1 : 0) . ",
 				" . db_escape($err_msg) . ")", $db);

@@ -62,7 +62,7 @@ function get_dimension_id_from_reference($ref)
 	if ($ref == null || trim($ref) == '')
 		return 0;
 
-	$sql = "SELECT id FROM " . TB_PREF . "dimensions WHERE reference LIKE " . db_escape($ref);
+	$sql = "SELECT id FROM dimensions WHERE reference LIKE " . db_escape($ref);
 
 	$result = db_query($sql, "could not get dimension from reference");
 

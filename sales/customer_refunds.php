@@ -175,11 +175,11 @@ if (isset($_POST['AddRefundItem'])) {
 function read_customer_data()
 {
 	global $Refs, $customer;
-	$sql = "SELECT " . TB_PREF . "debtors_master.pymt_discount,
-		" . TB_PREF . "credit_status.dissallow_invoices
-		FROM " . TB_PREF . "debtors_master, " . TB_PREF . "credit_status
-		WHERE " . TB_PREF . "debtors_master.credit_status = " . TB_PREF . "credit_status.id
-			AND " . TB_PREF . "debtors_master.debtor_no = " . $customer->id;
+	$sql = "SELECT debtors_master.pymt_discount,
+		credit_status.dissallow_invoices
+		FROM debtors_master, credit_status
+		WHERE debtors_master.credit_status = credit_status.id
+			AND debtors_master.debtor_no = " . $customer->id;
 	$result = db_query($sql, "could not query customers");
 	$myrow = db_fetch($result);
 	$_POST['HoldAccount'] = $myrow["dissallow_invoices"];

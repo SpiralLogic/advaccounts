@@ -24,7 +24,7 @@ $db_connections = array(
 			   'dbuser' => 'fa',
 			   'dbpassword' => '1willenberg',
 			   'dbname' => 'fa',
-			   'tbpref' => '0_')
+			   'tbpref' => '0')
 );
 
 ?>
