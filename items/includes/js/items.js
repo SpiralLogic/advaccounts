@@ -50,3 +50,27 @@
    Adv.Items = Items;
 })(window);
 
+$(function($) {
+				var oTable = $('#itemDetails').dataTable( {
+					"bProcessing": true,
+					"bServerSide": true,
+               "bJQueryUI": true,
+               "iDisplayLength": 100,
+					"sAjaxSource": "includes/server_processing.php",
+               "aoColumns": [
+                  {"sClass":"editable"},
+                  {"sClass":"editable"},
+                  {"sClass":"editable"},
+                  {"sClass":"editable","sType":"numeric"}
+               ],
+					"fnDrawCallback": function () {
+						$('#itemDetails').find('.editable').editable( '../examples_support/editable_ajax.php', {
+							"callback": function( sValue, y ) {
+								/* Redraw the table from the new data on the server */
+								oTable.fnDraw();
+							},
+							"height": "14px"
+						} );
+					}
+				} );
+			} );

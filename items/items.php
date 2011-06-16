@@ -36,10 +36,36 @@
       exit;
    }
    add_js_ffile("includes/js/items.js");
+   $js_fstatic[] = 'jquery.jeditable.js';
+   $js_fstatic[] = 'jquery.dataTables.min.js';
+
    page(_($help_context = "Items"), @$_REQUEST['popup']);
-   HTML::div('itemsearch', array('style' => 'text-align:center'));
-   UI::search('item', array('label' => 'Item:', 'size' => 80, 'callback' => 'Adv.Items.getItem'), array('afterSource' => 'Adv.Items.makeItemList'))->div;
-   HTML::div(array('style' => 'text-align:center'))->table(array('style' => "height:100px"))->tr(true)->td('itemList', array('style' => 'width:20%'));
-   HTML::td()->td(array("style" => "width:80%"));
-   HTML::div(array('style' => 'text-align:left; '))->table('itemDetails')->table->div->td()->tr()->table();
+ ?>			<div id="dynamic"  style="margin:0 auto;text-align:center;width:80%">
+<table width="100%" cellpadding="0" cellspacing="0" border="0" class="display" id="itemDetails">
+	<thead>
+		<tr>
+			<th width="20%">Stock Id</th>
+			<th >Description</th>
+         <th >Long Description</th>
+         <th width="5%">Price</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td class="dataTables_empty">Loading data from server</td>
+		</tr>
+	</tbody>
+	<tfoot>
+		<tr>
+	<th >Stock Id</th>
+			<th >Description</th>
+            <th >Long Description</th>
+         <th width="5%">price</th>
+		</tr>
+	</tfoot>
+</table>
+			</div>
+			<div class="spacer"></div>
+<?
+
    end_page(true, true);
