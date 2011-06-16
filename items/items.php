@@ -21,11 +21,7 @@
    include_once("includes/items.inc");
    if (isAjaxReferrer()) {
       if (isset($_GET['term'])) {
-         $sql = "SELECT stock_id as id, description as label, description as value FROM " . TB_PREF . "stock_master " . "where stock_id LIKE '%" . $_GET['term'] . "%' OR description LIKE '%" . $_GET['term'] . "%' LIMIT 200";
-         $result = db_query($sql, 'Couldn\'t Get Items');
-         while ($row = db_fetch_assoc($result)) {
-            $data[] = $row;
-         }
+         $data = Item::search($_GET['term']);
       }
       elseif (isset ($_POST['id'])) {
          $data = new Item($_POST['id']);
@@ -33,39 +29,41 @@
 
       }
       echo json_encode($data);
-      exit;
+      exit();
    }
    add_js_ffile("includes/js/items.js");
    $js_fstatic[] = 'jquery.jeditable.js';
    $js_fstatic[] = 'jquery.dataTables.min.js';
-
    page(_($help_context = "Items"), @$_REQUEST['popup']);
- ?>			<div id="dynamic"  style="margin:0 auto;text-align:center;width:80%">
-<table width="100%" cellpadding="0" cellspacing="0" border="0" class="display" id="itemDetails">
-	<thead>
-		<tr>
-			<th width="20%">Stock Id</th>
-			<th >Description</th>
-         <th >Long Description</th>
+?>
+<div id="dynamic" style="margin:0 auto;text-align:center;width:80%">
+   <table width="100%" cellpadding="0" cellspacing="0" border="0" class="display" id="itemDetails">
+      <thead>
+      <tr>
+         <th width="20%">Stock Id</th>
+         <th>Description</th>
+         <th>Long Description</th>
          <th width="5%">Price</th>
-		</tr>
-	</thead>
-	<tbody>
-		<tr>
-			<td class="dataTables_empty">Loading data from server</td>
-		</tr>
-	</tbody>
-	<tfoot>
-		<tr>
-	<th >Stock Id</th>
-			<th >Description</th>
-            <th >Long Description</th>
+         <th width="5%">Last Cost</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+         <td class="dataTables_empty">Loading data from server</td>
+      </tr>
+      </tbody>
+      <tfoot>
+      <tr>
+         <th>Stock Id</th>
+         <th>Description</th>
+         <th>Long Description</th>
          <th width="5%">price</th>
-		</tr>
-	</tfoot>
-</table>
-			</div>
-			<div class="spacer"></div>
+         <th width="5%">Last Cost</th>
+      </tr>
+      </tfoot>
+   </table>
+</div>
+<div class="spacer"></div>
 <?
 
    end_page(true, true);

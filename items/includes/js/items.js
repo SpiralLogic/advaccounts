@@ -61,7 +61,8 @@ $(function($) {
                   {"sClass":"editable"},
                   {"sClass":"editable"},
                   {"sClass":"editable"},
-                  {"sClass":"editable","sType":"numeric"}
+                  {"sClass":"editable","sType":"numeric"},
+                  {"sType":"numeric"}
                ],
 					"fnDrawCallback": function () {
 						$('#itemDetails').find('.editable').editable( '../examples_support/editable_ajax.php', {
