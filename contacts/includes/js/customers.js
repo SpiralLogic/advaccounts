@@ -164,7 +164,7 @@ var Branches = function() {
   return {
     init:function() {
       list.change(function() {
-        var newBranch = Customer.get().branches[$(this).attr('value')];
+        var newBranch = Customer.get().branches[$(this).val()];
         Branches.change(newBranch);
       })
     },
@@ -271,7 +271,7 @@ var Customer = function () {
       if (content.transactions !== undefined) {
         transactions.empty().append(content.transactions);
       }
-      Contacts.init(data.contacts);
+      Contacts.init(customer.contacts);
       if (quiet === true) {
         return;
       }

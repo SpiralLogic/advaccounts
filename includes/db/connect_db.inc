@@ -82,8 +82,9 @@ function db_num_fields($result)
 
 function db_escape($value = "", $nullify = false)
 {
-	$value = @html_entity_decode($value, ENT_QUOTES, $_SESSION['language']->encoding);
-	$value = @htmlspecialchars($value, ENT_QUOTES, $_SESSION['language']->encoding);
+	//$value = @html_entity_decode($value, ENT_QUOTES, $_SESSION['language']->encoding);
+	//$value = @htmlspecialchars($value, ENT_QUOTES, $_SESSION['language']->encoding);
+$value = trim($value);
 	//reset default if second parameter is skipped
 	$nullify = ($nullify === null) ? (false) : ($nullify);
 	//check for null/unset/empty strings

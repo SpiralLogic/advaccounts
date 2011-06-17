@@ -78,7 +78,7 @@
 				$this->_saveNew();
 			}
 			begin_transaction();
-			$sql = "UPDATE " . TB_PREF . "debtors_master SET name=" . db_escape($this->name) . ",
+			$sql = "UPDATE debtors_master SET name=" . db_escape($this->name) . ",
 			debtor_ref=" . db_escape(substr($this->name, 0, 29)) . ",
 			address=" . db_escape($this->address) . ",
 			tax_id=" . db_escape($this->tax_id) . ",
@@ -124,7 +124,7 @@
 
 		protected function _saveNew() {
 			begin_transaction();
-			$sql = "INSERT INTO " . TB_PREF . "debtors_master (name, debtor_ref, address, tax_id, email, dimension_id, dimension2_id,
+			$sql = "INSERT INTO debtors_master (name, debtor_ref, address, tax_id, email, dimension_id, dimension2_id,
 			curr_code, credit_status, payment_terms, discount, pymt_discount,credit_limit,
 			sales_type, notes) VALUES (" . db_escape($this->name) . ", " . db_escape(substr($this->name, 0, 29)) . ", " . db_escape($this->address) . ", " . db_escape($this->tax_id) . ",
 			" . db_escape($this->email) . ", " . db_escape($this->dimension_id) . ", " . db_escape($this->dimension2_id) . ", " . db_escape($this->curr_code) . ", " . db_escape($this->credit_status) . ", " . db_escape($this->payment_terms) . ", " . user_numeric($this->discount) / 100 . "," . user_numeric($this->pymt_discount) / 100 . ", " . user_numeric($this->credit_limit) . ", " . db_escape($this->sales_type) . ", " . db_escape($this->notes) . ")";
@@ -166,7 +166,7 @@
 			}
 			$this->_defaults();
 			$this->id = $id;
-			$sql = "SELECT * FROM " . TB_PREF . "debtors_master WHERE debtor_no = " . db_escape($id);
+			$sql = "SELECT * FROM debtors_master WHERE debtor_no = " . db_escape($id);
 			$result = db_query($sql, "check failed");
 			if (db_num_rows($result) != 1) {
 				$this->_status(false, 'read', "Customer could not be found!");
@@ -184,23 +184,23 @@
 		}
 
 		protected function _countTransactions() {
-			$sql = "SELECT COUNT(*) FROM " . TB_PREF . "debtor_trans WHERE debtor_no=" . $this->id;
+			$sql = "SELECT COUNT(*) FROM debtor_trans WHERE debtor_no=" . $this->id;
 			$result = db_query($sql, "check failed");
 			return db_fetch_row($result);
 		}
 
 		public function getTransactions() {
-			$sql = "SELECT " . TB_PREF . "debtor_trans.*, " . TB_PREF . "sales_orders.customer_ref,
-				(" . TB_PREF . "debtor_trans.ov_amount + " . TB_PREF . "debtor_trans.ov_gst + " . TB_PREF . "debtor_trans.ov_freight +
-				" . TB_PREF . "debtor_trans.ov_freight_tax + " . TB_PREF . "debtor_trans.ov_discount)
-				AS TotalAmount, " . TB_PREF . "debtor_trans.alloc AS Allocated
-				FROM " . TB_PREF . "debtor_trans LEFT OUTER JOIN 0_sales_orders ON  " . TB_PREF . "debtor_trans.order_ =  " . TB_PREF . "sales_orders.order_no
-    			WHERE  " . TB_PREF . "debtor_trans.debtor_no = " . db_escape($this->id) . "
-    			 AND " . TB_PREF . "sales_orders.debtor_no = " . db_escape($this->id) . "
-    				AND " . TB_PREF . "debtor_trans.type <> " . ST_CUSTDELIVERY . "
-    				AND (" . TB_PREF . "debtor_trans.ov_amount + " . TB_PREF . "debtor_trans.ov_gst + " . TB_PREF . "debtor_trans.ov_freight +
-				" . TB_PREF . "debtor_trans.ov_freight_tax + " . TB_PREF . "debtor_trans.ov_discount) != 0
-    				ORDER BY " . TB_PREF . "debtor_trans.branch_code, " . TB_PREF . "debtor_trans.tran_date";
+			$sql = "SELECT debtor_trans.*, sales_orders.customer_ref,
+				(debtor_trans.ov_amount + debtor_trans.ov_gst + debtor_trans.ov_freight +
+				debtor_trans.ov_freight_tax + debtor_trans.ov_discount)
+				AS TotalAmount, debtor_trans.alloc AS Allocated
+				FROM debtor_trans LEFT OUTER JOIN 0_sales_orders ON  debtor_trans.order_ =  sales_orders.order_no
+    			WHERE  debtor_trans.debtor_no = " . db_escape($this->id) . "
+    			 AND sales_orders.debtor_no = " . db_escape($this->id) . "
+    				AND debtor_trans.type <> " . ST_CUSTDELIVERY . "
+    				AND (debtor_trans.ov_amount + debtor_trans.ov_gst + debtor_trans.ov_freight +
+				debtor_trans.ov_freight_tax + debtor_trans.ov_discount) != 0
+    				ORDER BY debtor_trans.branch_code, debtor_trans.tran_date";
 			$result = db_query($sql);
 			$results = array();
 			foreach ($result as $row) {
@@ -211,19 +211,19 @@
 		}
 
 		protected function _countOrders() {
-			$sql = "SELECT COUNT(*) FROM " . TB_PREF . "sales_orders WHERE debtor_no=" . $this->id;
+			$sql = "SELECT COUNT(*) FROM sales_orders WHERE debtor_no=" . $this->id;
 			$result = db_query($sql, "check failed");
 			return db_fetch_row($result);
 		}
 
 		protected function _countBranches() {
-			$sql = "SELECT COUNT(*) FROM " . TB_PREF . "cust_branch WHERE debtor_no=" . $this->id;
+			$sql = "SELECT COUNT(*) FROM cust_branch WHERE debtor_no=" . $this->id;
 			$result = db_query($sql, "check failed");
 			return db_fetch_row($result);
 		}
 
 		protected function _countContacts() {
-			$sql = "SELECT COUNT(*) FROM " . TB_PREF . "contacts WHERE parent_id=" . $this->id;
+			$sql = "SELECT COUNT(*) FROM contacts WHERE parent_id=" . $this->id;
 			$result = db_query($sql, "check failed");
 			return db_fetch_row($result);
 		}
@@ -241,7 +241,7 @@
 			if ($this->_countContacts() > 0) {
 				return $this->_status(false, 'delete', "Cannot delete this customer because there are contact records set up against it.");
 			}
-			$sql = "DELETE FROM " . TB_PREF . "debtors_master WHERE debtor_no=" . $this->id;
+			$sql = "DELETE FROM debtors_master WHERE debtor_no=" . $this->id;
 			db_query($sql, "cannot delete customer");
 			unset($this->id);
 			$this->_new();
@@ -249,7 +249,7 @@
 		}
 
 		protected function _getAccounts() {
-			$sql = "SELECT branch_code FROM " . TB_PREF . "cust_branch WHERE debtor_no=" . $this->id . " AND branch_ref = 'accounts'";
+			$sql = "SELECT branch_code FROM cust_branch WHERE debtor_no=" . $this->id . " AND branch_ref = 'accounts'";
 			$result = db_query($sql, 'Couldn\'t retrieve any accounts');
 			$result = db_fetch_assoc($result);
 			$this->accounts = new Accounts($result['branch_code']);
@@ -268,7 +268,7 @@
 		}
 
 		protected function _getBranches() {
-			$sql = "SELECT branch_code, br_name, branch_ref FROM " . TB_PREF . "cust_branch WHERE debtor_no=" . $this->id . " AND branch_ref != 'accounts' AND disable_trans =0";
+			$sql = "SELECT branch_code, br_name, branch_ref FROM cust_branch WHERE debtor_no=" . $this->id . " AND branch_ref != 'accounts' AND disable_trans =0";
 			$result = db_query($sql, 'Couldn\'t retrieve any branches');
 			if (!db_num_rows($result)) {
 				return;
@@ -280,7 +280,7 @@
 		}
 
 		protected function _getContacts() {
-			$sql = "SELECT id, name  FROM " . TB_PREF . "contacts WHERE parent_id=" . $this->id;
+			$sql = "SELECT id, name  FROM contacts WHERE parent_id=" . $this->id;
 			$result = db_query($sql, 'Couldn\'t retrieve any contacts');
 			if (!db_num_rows($result)) {
 				$contact = new Contact(
@@ -308,8 +308,8 @@
 		}
 
 		public static function search($terms) {
-			$sql = "(SELECT debtor_no as id, name as label, name as value FROM " . TB_PREF . "debtors_master " . " where name
-			LIKE '" . $terms . "%' ORDER BY name LIMIT 20) UNION (SELECT debtor_no as id, name as label, name as value FROM " . TB_PREF . "debtors_master " . " where debtor_ref LIKE '%" . $terms . "%' OR name
+			$sql = "(SELECT debtor_no as id, name as label, name as value FROM debtors_master " . " where name
+			LIKE '" . $terms . "%' ORDER BY name LIMIT 20) UNION (SELECT debtor_no as id, name as label, name as value FROM debtors_master " . " where debtor_ref LIKE '%" . $terms . "%' OR name
 			LIKE '%" . $terms . "%' ORDER BY name LIMIT 20)";
 			$result = db_query($sql, 'Couldn\'t Get Customers');
 			$data = '';
