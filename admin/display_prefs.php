@@ -46,7 +46,7 @@ if (isset($_POST['setprefs'])) {
 			$_SESSION['language']->set_language($_POST['language']);
 		// refresh main menu
 
-		flush_dir($comp_path . '/' . user_company() . '/js_cache');
+		flush_dir($comp_path . '/js_cache');
 
 		if ($chg_theme && $allow_demo_mode)
 			$_SESSION["wa_current_user"]->prefs->theme = $_POST['theme'];

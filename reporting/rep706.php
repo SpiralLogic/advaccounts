@@ -285,7 +285,7 @@ function print_balance_sheet()
 		$pg->built_in = false;
 		$pg->fontfile = $path_to_root . "/reporting/fonts/Vera.ttf";
 		$pg->latin_notation = ($decseps[$_SESSION["wa_current_user"]->prefs->dec_sep()] != ".");
-		$filename = $comp_path . '/' . user_company() . "/pdf_files/test.png";
+		$filename = $comp_path . "/pdf_files/test.png";
 		$pg->display($filename, true);
 		$w = $pg->width / 1.5;
 		$h = $pg->height / 1.5;

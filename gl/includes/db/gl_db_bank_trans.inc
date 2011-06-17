@@ -36,7 +36,7 @@ function add_bank_trans($type, $trans_no, $bank_act, $ref, $date_,
 	// Also store the rate to the home
 	//$BankToHomeCurrencyRate = get_exchange_rate_to_home_currency($bank_account_currency, $date_);
 
-	$sql = "INSERT INTO " . TB_PREF . "bank_trans (type, trans_no, bank_act, ref,
+	$sql = "INSERT INTO bank_trans (type, trans_no, bank_act, ref,
 		trans_date, amount, person_type_id, person_id, undeposited) ";
 	$undeposited = ($bank_act == 5 && $type == 12) ? 1 : 0;
 	$sql .= "VALUES ($type, $trans_no, '$bank_act', " . db_escape($ref) . ", '$sqlDate',
@@ -53,7 +53,7 @@ function add_bank_trans($type, $trans_no, $bank_act, $ref, $date_,
 
 function exists_bank_trans($type, $type_no)
 {
-	$sql = "SELECT trans_no FROM " . TB_PREF . "bank_trans WHERE type=" . db_escape($type)
+	$sql = "SELECT trans_no FROM bank_trans WHERE type=" . db_escape($type)
 		   . " AND trans_no=" . db_escape($type_no);
 	$result = db_query($sql, "Cannot retreive a bank transaction");
 
@@ -65,17 +65,17 @@ function exists_bank_trans($type, $type_no)
 function get_bank_trans($type, $trans_no = null, $person_type_id = null, $person_id = null)
 {
 	$sql = "SELECT *, bank_account_name, account_code, bank_curr_code
-		FROM " . TB_PREF . "bank_trans, " . TB_PREF . "bank_accounts
-		WHERE " . TB_PREF . "bank_accounts.id=" . TB_PREF . "bank_trans.bank_act ";
+		FROM bank_trans, bank_accounts
+		WHERE bank_accounts.id=bank_trans.bank_act ";
 	if ($type != null)
 		$sql .= " AND type=" . db_escape($type);
 	if ($trans_no != null)
-		$sql .= " AND " . TB_PREF . "bank_trans.trans_no = " . db_escape($trans_no);
+		$sql .= " AND bank_trans.trans_no = " . db_escape($trans_no);
 	if ($person_type_id != null)
-		$sql .= " AND " . TB_PREF . "bank_trans.person_type_id = " . db_escape($person_type_id);
+		$sql .= " AND bank_trans.person_type_id = " . db_escape($person_type_id);
 	if ($person_id != null)
-		$sql .= " AND " . TB_PREF . "bank_trans.person_id = " . db_escape($person_id);
-	$sql .= " ORDER BY trans_date, " . TB_PREF . "bank_trans.id";
+		$sql .= " AND bank_trans.person_id = " . db_escape($person_id);
+	$sql .= " ORDER BY trans_date, bank_trans.id";
 
 	return db_query($sql, "query for bank transaction");
 }
@@ -84,7 +84,7 @@ function get_bank_trans($type, $trans_no = null, $person_type_id = null, $person
 
 function get_gl_trans_value($account, $type, $trans_no)
 {
-	$sql = "SELECT SUM(amount) FROM " . TB_PREF . "gl_trans WHERE account="
+	$sql = "SELECT SUM(amount) FROM gl_trans WHERE account="
 		   . db_escape($account) . " AND type=" . db_escape($type)
 		   . " AND type_no=" . db_escape($trans_no);
 
@@ -101,7 +101,7 @@ function void_bank_trans($type, $type_no, $nested = false)
 	if (!$nested)
 		begin_transaction();
 
-	$sql = "UPDATE " . TB_PREF . "bank_trans SET amount=0
+	$sql = "UPDATE bank_trans SET amount=0
 		WHERE type=" . db_escape($type) . " AND trans_no=" . db_escape($type_no);
 
 	$result = db_query($sql, "could not void bank transactions for type=$type and trans_no=$type_no");

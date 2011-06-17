@@ -101,7 +101,7 @@ function can_delete($selected_account)
 		return false;
 	$acc = db_escape($selected_account);
 
-	$sql = "SELECT COUNT(*) FROM " . TB_PREF . "gl_trans WHERE account=$acc";
+	$sql = "SELECT COUNT(*) FROM gl_trans WHERE account=$acc";
 	$result = db_query($sql, "Couldn't test for existing transactions");
 
 	$myrow = db_fetch_row($result);
@@ -110,7 +110,7 @@ function can_delete($selected_account)
 		return false;
 	}
 
-	$sql = "SELECT COUNT(*) FROM " . TB_PREF . "company WHERE debtors_act=$acc
+	$sql = "SELECT COUNT(*) FROM company WHERE debtors_act=$acc
 		OR pyt_discount_act=$acc
 		OR creditors_act=$acc 
 		OR bank_charge_act=$acc 
@@ -134,7 +134,7 @@ function can_delete($selected_account)
 		return false;
 	}
 
-	$sql = "SELECT COUNT(*) FROM " . TB_PREF . "bank_accounts WHERE account_code=$acc";
+	$sql = "SELECT COUNT(*) FROM bank_accounts WHERE account_code=$acc";
 	$result = db_query($sql, "Couldn't test for bank accounts");
 
 	$myrow = db_fetch_row($result);
@@ -143,7 +143,7 @@ function can_delete($selected_account)
 		return false;
 	}
 
-	$sql = "SELECT COUNT(*) FROM " . TB_PREF . "stock_master WHERE
+	$sql = "SELECT COUNT(*) FROM stock_master WHERE
 		inventory_account=$acc 
 		OR cogs_account=$acc
 		OR adjustment_account=$acc 
@@ -156,7 +156,7 @@ function can_delete($selected_account)
 		return false;
 	}
 
-	$sql = "SELECT COUNT(*) FROM " . TB_PREF . "tax_types WHERE sales_gl_code=$acc OR purchasing_gl_code=$acc";
+	$sql = "SELECT COUNT(*) FROM tax_types WHERE sales_gl_code=$acc OR purchasing_gl_code=$acc";
 	$result = db_query($sql, "Couldn't test for existing tax GL codes");
 
 	$myrow = db_fetch_row($result);
@@ -165,7 +165,7 @@ function can_delete($selected_account)
 		return false;
 	}
 
-	$sql = "SELECT COUNT(*) FROM " . TB_PREF . "cust_branch WHERE
+	$sql = "SELECT COUNT(*) FROM cust_branch WHERE
 		sales_account=$acc 
 		OR sales_discount_account=$acc
 		OR receivables_account=$acc
@@ -178,7 +178,7 @@ function can_delete($selected_account)
 		return false;
 	}
 
-	$sql = "SELECT COUNT(*) FROM " . TB_PREF . "suppliers WHERE
+	$sql = "SELECT COUNT(*) FROM suppliers WHERE
 		purchase_account=$acc
 		OR payment_discount_account=$acc
 		OR payable_account=$acc";
@@ -190,7 +190,7 @@ function can_delete($selected_account)
 		return false;
 	}
 
-	$sql = "SELECT COUNT(*) FROM " . TB_PREF . "quick_entry_lines WHERE
+	$sql = "SELECT COUNT(*) FROM quick_entry_lines WHERE
 		dest_id=$acc AND UPPER(LEFT(action, 1)) <> 'T'";
 	$result = db_query($sql, "Couldn't test for existing suppliers GL codes");
 

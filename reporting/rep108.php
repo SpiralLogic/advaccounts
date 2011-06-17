@@ -34,20 +34,20 @@ function
 getTransactions($debtorno, $date)
 {
 
-	$sql = "SELECT " . TB_PREF . "debtor_trans.*,
-				(" . TB_PREF . "debtor_trans.ov_amount + " . TB_PREF . "debtor_trans.ov_gst + " . TB_PREF . "debtor_trans.ov_freight +
-				" . TB_PREF . "debtor_trans.ov_freight_tax + " . TB_PREF . "debtor_trans.ov_discount)
-				AS TotalAmount, " . TB_PREF . "debtor_trans.alloc AS Allocated,
-				((" . TB_PREF . "debtor_trans.type = " . ST_SALESINVOICE . ")
-					AND " . TB_PREF . "debtor_trans.due_date < '$date') AS OverDue
-    			FROM " . TB_PREF . "debtor_trans
-    			WHERE " . TB_PREF . "debtor_trans.tran_date <= '$date' AND " . TB_PREF . "debtor_trans.debtor_no = " . db_escape($debtorno) . "
-    				AND " . TB_PREF . "debtor_trans.type <> " . ST_CUSTDELIVERY . "
-    				AND (" . TB_PREF . "debtor_trans.ov_amount + " . TB_PREF . "debtor_trans.ov_gst + " . TB_PREF . "debtor_trans.ov_freight +
-				" . TB_PREF . "debtor_trans.ov_freight_tax + " . TB_PREF . "debtor_trans.ov_discount) != 0
-				 AND (" . TB_PREF . "debtor_trans.ov_amount + " . TB_PREF . "debtor_trans.ov_gst + " . TB_PREF . "debtor_trans.ov_freight +
-				" . TB_PREF . "debtor_trans.ov_freight_tax + " . TB_PREF . "debtor_trans.ov_discount - ".TB_PREF. "debtor_trans.alloc) != 0
-    				ORDER BY " . TB_PREF . "debtor_trans.branch_code, " . TB_PREF . "debtor_trans.tran_date";
+	$sql = "SELECT debtor_trans.*,
+				(debtor_trans.ov_amount + debtor_trans.ov_gst + debtor_trans.ov_freight +
+				debtor_trans.ov_freight_tax + debtor_trans.ov_discount)
+				AS TotalAmount, debtor_trans.alloc AS Allocated,
+				((debtor_trans.type = " . ST_SALESINVOICE . ")
+					AND debtor_trans.due_date < '$date') AS OverDue
+    			FROM debtor_trans
+    			WHERE debtor_trans.tran_date <= '$date' AND debtor_trans.debtor_no = " . db_escape($debtorno) . "
+    				AND debtor_trans.type <> " . ST_CUSTDELIVERY . "
+    				AND (debtor_trans.ov_amount + debtor_trans.ov_gst + debtor_trans.ov_freight +
+				debtor_trans.ov_freight_tax + debtor_trans.ov_discount) != 0
+				 AND (debtor_trans.ov_amount + debtor_trans.ov_gst + debtor_trans.ov_freight +
+				debtor_trans.ov_freight_tax + debtor_trans.ov_discount - ".''. "debtor_trans.alloc) != 0
+    				ORDER BY debtor_trans.branch_code, debtor_trans.tran_date";
 
 	return db_query($sql, "No transactions were returned");
 }
@@ -56,7 +56,7 @@ getTransactions($debtorno, $date)
 function getTransactionPO($no)
 {
 	$sql = "SELECT customer_ref
-        FROM " . TB_PREF . "sales_orders
+        FROM sales_orders
         WHERE order_no=$no";
 	$result = db_query($sql, "Could not retrieve any branches");
 	$myrow = db_fetch_assoc($result);
@@ -96,7 +96,7 @@ function print_statements()
 		$rep->Info($params, $cols, null, $aligns);
 	}
 
-	$sql = "SELECT debtor_no, name AS DebtorName, address, tax_id, email,  curr_code, curdate() AS tran_date, payment_terms FROM " . TB_PREF . "debtors_master";
+	$sql = "SELECT debtor_no, name AS DebtorName, address, tax_id, email,  curr_code, curdate() AS tran_date, payment_terms FROM debtors_master";
 	if ($customer != ALL_NUMERIC) {
 		$sql .= " WHERE debtor_no = " . db_escape($customer);
 	} else {

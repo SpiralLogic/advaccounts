@@ -30,33 +30,33 @@ print_inventory_valuation_report();
 
 function getTransactions($category, $location)
 {
-	$sql = "SELECT " . TB_PREF . "stock_master.category_id,
-			" . TB_PREF . "stock_category.description AS cat_description,
-			" . TB_PREF . "stock_master.stock_id,
-			" . TB_PREF . "stock_master.description, " . TB_PREF . "stock_master.inactive,
-			" . TB_PREF . "stock_moves.loc_code,
-			SUM(" . TB_PREF . "stock_moves.qty) AS QtyOnHand,
-			" . TB_PREF . "stock_master.material_cost + " . TB_PREF . "stock_master.labour_cost + " . TB_PREF . "stock_master.overhead_cost AS UnitCost,
-			SUM(" . TB_PREF . "stock_moves.qty) *(" . TB_PREF . "stock_master.material_cost + " . TB_PREF . "stock_master.labour_cost + " . TB_PREF . "stock_master.overhead_cost) AS ItemTotal
-		FROM " . TB_PREF . "stock_master,
-			" . TB_PREF . "stock_category,
-			" . TB_PREF . "stock_moves
-		WHERE " . TB_PREF . "stock_master.stock_id=" . TB_PREF . "stock_moves.stock_id
-		AND " . TB_PREF . "stock_master.category_id=" . TB_PREF . "stock_category.category_id
-		GROUP BY " . TB_PREF . "stock_master.category_id,
-			" . TB_PREF . "stock_category.description, ";
+	$sql = "SELECT stock_master.category_id,
+			stock_category.description AS cat_description,
+			stock_master.stock_id,
+			stock_master.description, stock_master.inactive,
+			stock_moves.loc_code,
+			SUM(stock_moves.qty) AS QtyOnHand,
+			stock_master.material_cost + stock_master.labour_cost + stock_master.overhead_cost AS UnitCost,
+			SUM(stock_moves.qty) *(stock_master.material_cost + stock_master.labour_cost + stock_master.overhead_cost) AS ItemTotal
+		FROM stock_master,
+			stock_category,
+			stock_moves
+		WHERE stock_master.stock_id=stock_moves.stock_id
+		AND stock_master.category_id=stock_category.category_id
+		GROUP BY stock_master.category_id,
+			stock_category.description, ";
 	if ($location != 'all')
-		$sql .= TB_PREF . "stock_moves.loc_code, ";
+		$sql .=  "stock_moves.loc_code, ";
 	$sql .= "UnitCost,
-			" . TB_PREF . "stock_master.stock_id,
-			" . TB_PREF . "stock_master.description
-		HAVING SUM(" . TB_PREF . "stock_moves.qty) != 0";
+			stock_master.stock_id,
+			stock_master.description
+		HAVING SUM(stock_moves.qty) != 0";
 	if ($category != 0)
-		$sql .= " AND " . TB_PREF . "stock_master.category_id = " . db_escape($category);
+		$sql .= " AND stock_master.category_id = " . db_escape($category);
 	if ($location != 'all')
-		$sql .= " AND " . TB_PREF . "stock_moves.loc_code = " . db_escape($location);
-	$sql .= " ORDER BY " . TB_PREF . "stock_master.category_id,
-			" . TB_PREF . "stock_master.stock_id";
+		$sql .= " AND stock_moves.loc_code = " . db_escape($location);
+	$sql .= " ORDER BY stock_master.category_id,
+			stock_master.stock_id";
 
 	return db_query($sql, "No transactions were returned");
 }

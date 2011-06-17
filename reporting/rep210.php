@@ -31,15 +31,15 @@ print_remittances();
 //----------------------------------------------------------------------------------------------------
 function get_remittance($type, $trans_no)
 {
-	$sql = "SELECT " . TB_PREF . "supp_trans.*,
-   		(" . TB_PREF . "supp_trans.ov_amount+" . TB_PREF . "supp_trans.ov_gst+" . TB_PREF . "supp_trans.ov_discount) AS Total,
-   		" . TB_PREF . "suppliers.supp_name,  " . TB_PREF . "suppliers.supp_account_no,
-   		" . TB_PREF . "suppliers.curr_code, " . TB_PREF . "suppliers.payment_terms, " . TB_PREF . "suppliers.gst_no AS tax_id,
-   		" . TB_PREF . "suppliers.email, " . TB_PREF . "suppliers.address, " . TB_PREF . "suppliers.contact
-		FROM " . TB_PREF . "supp_trans, " . TB_PREF . "suppliers
-		WHERE " . TB_PREF . "supp_trans.supplier_id = " . TB_PREF . "suppliers.supplier_id
-		AND " . TB_PREF . "supp_trans.type = " . db_escape($type) . "
-		AND " . TB_PREF . "supp_trans.trans_no = " . db_escape($trans_no);
+	$sql = "SELECT supp_trans.*,
+   		(supp_trans.ov_amount+supp_trans.ov_gst+supp_trans.ov_discount) AS Total,
+   		suppliers.supp_name,  suppliers.supp_account_no,
+   		suppliers.curr_code, suppliers.payment_terms, suppliers.gst_no AS tax_id,
+   		suppliers.email, suppliers.address, suppliers.contact
+		FROM supp_trans, suppliers
+		WHERE supp_trans.supplier_id = suppliers.supplier_id
+		AND supp_trans.type = " . db_escape($type) . "
+		AND supp_trans.trans_no = " . db_escape($trans_no);
 	$result = db_query($sql, "The remittance cannot be retrieved");
 	if (db_num_rows($result) == 0)
 		return false;
@@ -53,7 +53,7 @@ function get_allocations_for_remittance($supplier_id, $type, $trans_no)
 		AND alloc.trans_no_from=" . db_escape($trans_no) . "
 		AND alloc.trans_type_from=" . db_escape($type) . "
 		AND trans.supplier_id=" . db_escape($supplier_id),
-							  TB_PREF . "supp_allocations as alloc");
+							   "supp_allocations as alloc");
 	$sql .= " ORDER BY trans_no";
 	return db_query($sql, "Cannot retreive alloc to transactions");
 }

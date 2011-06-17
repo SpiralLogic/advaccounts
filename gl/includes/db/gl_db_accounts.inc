@@ -11,7 +11,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
  ***********************************************************************/
 function add_gl_account($account_code, $account_name, $account_type, $account_code2)
 {
-	$sql = "INSERT INTO " . TB_PREF . "chart_master (account_code, account_code2, account_name, account_type)
+	$sql = "INSERT INTO chart_master (account_code, account_code2, account_name, account_type)
 		VALUES (" . db_escape($account_code) . ", " . db_escape($account_code2) . ", "
 		   . db_escape($account_name) . ", " . db_escape($account_type) . ")";
 
@@ -20,7 +20,7 @@ function add_gl_account($account_code, $account_name, $account_type, $account_co
 
 function update_gl_account($account_code, $account_name, $account_type, $account_code2)
 {
-	$sql = "UPDATE " . TB_PREF . "chart_master SET account_name=" . db_escape($account_name)
+	$sql = "UPDATE chart_master SET account_name=" . db_escape($account_name)
 		   . ",account_type=" . db_escape($account_type) . ", account_code2=" . db_escape($account_code2)
 		   . " WHERE account_code = " . db_escape($account_code);
 
@@ -31,12 +31,12 @@ function update_gl_account($account_code, $account_name, $account_type, $account
 
 function update_reconciled_values($reconcile_id, $reconcile_value, $reconcile_date, $end_balance, $bank_account)
 {
-	$sql = "UPDATE " . TB_PREF . "bank_trans SET reconciled=$reconcile_value"
+	$sql = "UPDATE bank_trans SET reconciled=$reconcile_value"
 		   . " WHERE id=" . db_escape($reconcile_id);
 
 	db_query($sql, "Can't change reconciliation status");
 	// save last reconcilation status (date, end balance)
-	$sql2 = "UPDATE " . TB_PREF . "bank_accounts SET last_reconciled_date='"
+	$sql2 = "UPDATE bank_accounts SET last_reconciled_date='"
 			. date2sql($reconcile_date) . "',
     	    ending_reconcile_balance=$end_balance
 			WHERE id=" . db_escape($bank_account);
@@ -56,7 +56,7 @@ function get_max_reconciled($date, $bank_account)
 			 SUM(IF(reconciled<='$date', amount, 0)) as end_balance,
 			 SUM(IF(reconciled<'$date', amount, 0)) as beg_balance,
 			 SUM(amount) as total
-		FROM " . TB_PREF . "bank_trans trans
+		FROM bank_trans trans
 		WHERE undeposited=0 AND bank_act=" . db_escape($bank_account);
 	//	." AND trans.reconciled IS NOT NULL";
 
@@ -69,7 +69,7 @@ function get_max_reconciled($date, $bank_account)
 function get_ending_reconciled($bank_account, $bank_date)
 {
 	$sql = "SELECT ending_reconcile_balance
-		FROM " . TB_PREF . "bank_accounts WHERE id=" . db_escape($bank_account)
+		FROM bank_accounts WHERE id=" . db_escape($bank_account)
 		   . " AND last_reconciled_date=" . db_escape($bank_date);
 	$result = db_query($sql, "Cannot retrieve last reconciliation");
 	return db_fetch($result);
@@ -81,21 +81,21 @@ function get_sql_for_bank_account_reconcile($bank_account, $date)
 {
 	$sql = "SELECT	type, trans_no, ref, trans_date,
 				amount,	person_id, person_type_id, reconciled, id
-		FROM " . TB_PREF . "bank_trans
-		WHERE " . TB_PREF . "bank_trans.bank_act = " . db_escape($bank_account) . "
+		FROM bank_trans
+		WHERE bank_trans.bank_act = " . db_escape($bank_account) . "
 			AND undeposited = 0 AND trans_date <= '" . date2sql($date) . "' AND (reconciled IS NULL OR reconciled='" . date2sql($date) . "')
-		ORDER BY trans_date," . TB_PREF . "bank_trans.id";
-	// or	ORDER BY reconciled desc, trans_date,".TB_PREF."bank_trans.id";
+		ORDER BY trans_date,bank_trans.id";
+	// or	ORDER BY reconciled desc, trans_date,".''."bank_trans.id";
 	return $sql;
 }
 
 function reset_sql_for_bank_account_reconcile($bank_account, $date)
 {
 	$sql = "UPDATE	reconciled
-		FROM " . TB_PREF . "bank_trans
-		WHERE " . TB_PREF . "bank_trans.bank_act = " . db_escape($bank_account) . "
+		FROM bank_trans
+		WHERE bank_trans.bank_act = " . db_escape($bank_account) . "
 			AND undeposited = 0 AND reconciled = '" . date2sql($date) . "'";
-	// or	ORDER BY reconciled desc, trans_date,".TB_PREF."bank_trans.id";
+	// or	ORDER BY reconciled desc, trans_date,".''."bank_trans.id";
 	$result = db_query($sql);
 
 
@@ -105,20 +105,20 @@ function reset_sql_for_bank_account_reconcile($bank_account, $date)
 
 function delete_gl_account($code)
 {
-	$sql = "DELETE FROM " . TB_PREF . "chart_master WHERE account_code=" . db_escape($code);
+	$sql = "DELETE FROM chart_master WHERE account_code=" . db_escape($code);
 
 	db_query($sql, "could not delete gl account");
 }
 
 function get_gl_accounts($from = null, $to = null, $type = null)
 {
-	$sql = "SELECT " . TB_PREF . "chart_master.*," . TB_PREF . "chart_types.name AS AccountTypeName
-		FROM " . TB_PREF . "chart_master," . TB_PREF . "chart_types
-		WHERE " . TB_PREF . "chart_master.account_type=" . TB_PREF . "chart_types.id";
+	$sql = "SELECT chart_master.*,chart_types.name AS AccountTypeName
+		FROM chart_master,chart_types
+		WHERE chart_master.account_type=chart_types.id";
 	if ($from != null)
-		$sql .= " AND " . TB_PREF . "chart_master.account_code >= " . db_escape($from);
+		$sql .= " AND chart_master.account_code >= " . db_escape($from);
 	if ($to != null)
-		$sql .= " AND " . TB_PREF . "chart_master.account_code <= " . db_escape($to);
+		$sql .= " AND chart_master.account_code <= " . db_escape($to);
 	if ($type != null)
 		$sql .= " AND account_type=" . db_escape($type);
 	$sql .= " ORDER BY account_code";
@@ -128,7 +128,7 @@ function get_gl_accounts($from = null, $to = null, $type = null)
 
 function get_gl_account($code)
 {
-	$sql = "SELECT * FROM " . TB_PREF . "chart_master WHERE account_code=" . db_escape($code);
+	$sql = "SELECT * FROM chart_master WHERE account_code=" . db_escape($code);
 
 	$result = db_query($sql, "could not get gl account");
 	return db_fetch($result);
@@ -136,11 +136,11 @@ function get_gl_account($code)
 
 function is_account_balancesheet($code)
 {
-	$sql = "SELECT " . TB_PREF . "chart_class.ctype FROM " . TB_PREF . "chart_class, "
-		   . TB_PREF . "chart_types, " . TB_PREF . "chart_master
-		WHERE " . TB_PREF . "chart_master.account_type=" . TB_PREF . "chart_types.id AND
-		" . TB_PREF . "chart_types.class_id=" . TB_PREF . "chart_class.cid
-		AND " . TB_PREF . "chart_master.account_code=" . db_escape($code);
+	$sql = "SELECT chart_class.ctype FROM chart_class, "
+		   .  "chart_types, chart_master
+		WHERE chart_master.account_type=chart_types.id AND
+		chart_types.class_id=chart_class.cid
+		AND chart_master.account_code=" . db_escape($code);
 
 	$result = db_query($sql, "could not retreive the account class for $code");
 	$row = db_fetch_row($result);
@@ -149,7 +149,7 @@ function is_account_balancesheet($code)
 
 function get_gl_account_name($code)
 {
-	$sql = "SELECT account_name from " . TB_PREF . "chart_master WHERE account_code=" . db_escape($code);
+	$sql = "SELECT account_name from chart_master WHERE account_code=" . db_escape($code);
 
 	$result = db_query($sql, "could not retreive the account name for $code");
 

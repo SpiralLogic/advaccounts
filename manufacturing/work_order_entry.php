@@ -390,7 +390,7 @@ else
 	date_row(_("Date") . ":", 'date_', '', true);
 	hidden('RequDate', '');
 
-	$sql = "SELECT DISTINCT account_code FROM " . TB_PREF . "bank_accounts";
+	$sql = "SELECT DISTINCT account_code FROM bank_accounts";
 	$rs = db_query($sql, "could not get bank accounts");
 	$r = db_fetch_row($rs);
 	if (!isset($_POST['Labour'])) {

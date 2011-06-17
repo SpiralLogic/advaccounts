@@ -68,7 +68,7 @@ if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 
 function can_delete($selected_id)
 {
-	$sql = "SELECT COUNT(*) FROM " . TB_PREF . "stock_moves WHERE loc_code=" . db_escape($selected_id);
+	$sql = "SELECT COUNT(*) FROM stock_moves WHERE loc_code=" . db_escape($selected_id);
 	$result = db_query($sql, "could not query stock moves");
 	$myrow = db_fetch_row($result);
 	if ($myrow[0] > 0) {
@@ -76,7 +76,7 @@ function can_delete($selected_id)
 		return false;
 	}
 
-	$sql = "SELECT COUNT(*) FROM " . TB_PREF . "workorders WHERE loc_code=" . db_escape($selected_id);
+	$sql = "SELECT COUNT(*) FROM workorders WHERE loc_code=" . db_escape($selected_id);
 	$result = db_query($sql, "could not query work orders");
 	$myrow = db_fetch_row($result);
 	if ($myrow[0] > 0) {
@@ -84,7 +84,7 @@ function can_delete($selected_id)
 		return false;
 	}
 
-	$sql = "SELECT COUNT(*) FROM " . TB_PREF . "cust_branch WHERE default_location='$selected_id'";
+	$sql = "SELECT COUNT(*) FROM cust_branch WHERE default_location='$selected_id'";
 	$result = db_query($sql, "could not query customer branches");
 	$myrow = db_fetch_row($result);
 	if ($myrow[0] > 0) {
@@ -92,35 +92,35 @@ function can_delete($selected_id)
 		return false;
 	}
 
-	$sql = "SELECT COUNT(*) FROM " . TB_PREF . "bom WHERE loc_code=" . db_escape($selected_id);
+	$sql = "SELECT COUNT(*) FROM bom WHERE loc_code=" . db_escape($selected_id);
 	$result = db_query($sql, "could not query bom");
 	$myrow = db_fetch_row($result);
 	if ($myrow[0] > 0) {
 		display_error(_("Cannot delete this location because it is used by some related records in other tables."));
 		return false;
 	}
-	$sql = "SELECT COUNT(*) FROM " . TB_PREF . "grn_batch WHERE loc_code=" . db_escape($selected_id);
+	$sql = "SELECT COUNT(*) FROM grn_batch WHERE loc_code=" . db_escape($selected_id);
 	$result = db_query($sql, "could not query grn batch");
 	$myrow = db_fetch_row($result);
 	if ($myrow[0] > 0) {
 		display_error(_("Cannot delete this location because it is used by some related records in other tables."));
 		return false;
 	}
-	$sql = "SELECT COUNT(*) FROM " . TB_PREF . "purch_orders WHERE into_stock_location=" . db_escape($selected_id);
+	$sql = "SELECT COUNT(*) FROM purch_orders WHERE into_stock_location=" . db_escape($selected_id);
 	$result = db_query($sql, "could not query purch orders");
 	$myrow = db_fetch_row($result);
 	if ($myrow[0] > 0) {
 		display_error(_("Cannot delete this location because it is used by some related records in other tables."));
 		return false;
 	}
-	$sql = "SELECT COUNT(*) FROM " . TB_PREF . "sales_orders WHERE from_stk_loc=" . db_escape($selected_id);
+	$sql = "SELECT COUNT(*) FROM sales_orders WHERE from_stk_loc=" . db_escape($selected_id);
 	$result = db_query($sql, "could not query sales orders");
 	$myrow = db_fetch_row($result);
 	if ($myrow[0] > 0) {
 		display_error(_("Cannot delete this location because it is used by some related records in other tables."));
 		return false;
 	}
-	$sql = "SELECT COUNT(*) FROM " . TB_PREF . "sales_pos WHERE pos_location=" . db_escape($selected_id);
+	$sql = "SELECT COUNT(*) FROM sales_pos WHERE pos_location=" . db_escape($selected_id);
 	$result = db_query($sql, "could not query sales pos");
 	$myrow = db_fetch_row($result);
 	if ($myrow[0] > 0) {
@@ -148,7 +148,7 @@ if ($Mode == 'RESET') {
 	$_POST['show_inactive'] = $sav;
 }
 
-$sql = "SELECT * FROM " . TB_PREF . "locations";
+$sql = "SELECT * FROM locations";
 if (!check_value('show_inactive')) $sql .= " WHERE !inactive";
 $result = db_query($sql, "could not query locations");
 ;

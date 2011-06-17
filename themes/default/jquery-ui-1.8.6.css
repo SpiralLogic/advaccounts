@@ -121,7 +121,7 @@
 
 .ui-widget-content {
 	border: 1px solid #dddddd;
-	background: #f1f9fd url(images/ui-bg_highlight-hard_100_f1f9fd_1x100.png) 50% top repeat-x;
+	background: #f1f9fd url(images/ui-bg_highlight-hard_10f1f9fd_1x100.png) 50% top repeat-x;
 	color: #362b36;
 }
 
@@ -131,7 +131,7 @@
 
 .ui-widget-header {
 	border: 1px solid #c7a5fe;
-	background: #f6a828 url(images/ui-bg_hexagon_40_f6a828_12x10.png) 50% 50% repeat;
+	background: #f6a828 url(images/ui-bg_hexagon_4f6a828_12x10.png) 50% 50% repeat;
 	color: #362b36;
 	font-weight: bold;
 }
@@ -144,7 +144,7 @@
 ----------------------------------*/
 .ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {
 	border: 1px solid #dddddd;
-	background: #c5ddfc url(images/ui-bg_diagonals-small_60_c5ddfc_40x40.png) 50% 50% repeat;
+	background: #c5ddfc url(images/ui-bg_diagonals-small_6c5ddfc_40x40.png) 50% 50% repeat;
 	font-weight: bold;
 	color: #333333;
 }
@@ -156,7 +156,7 @@
 
 .ui-state-hover, .ui-widget-content .ui-state-hover, .ui-widget-header .ui-state-hover, .ui-state-focus, .ui-widget-content .ui-state-focus, .ui-widget-header .ui-state-focus {
 	border: 1px solid #4297d7;
-	background: #1846cd url(images/ui-bg_layered-circles_40_1846cd_13x13.png) 50% 50% repeat;
+	background: #1846cd url(images/ui-bg_layered-circles_41846cd_13x13.png) 50% 50% repeat;
 	font-weight: bold;
 	color: #f4f06c;
 }
@@ -168,7 +168,7 @@
 
 .ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active {
 	border: 1px solid #2694e8;
-	background: #2b4fee url(images/ui-bg_glass_30_2b4fee_1x400.png) 50% 50% repeat-x;
+	background: #2b4fee url(images/ui-bg_glass_32b4fee_1x400.png) 50% 50% repeat-x;
 	font-weight: bold;
 	color: #ffffff;
 }
@@ -1032,7 +1032,7 @@
 
 /* Overlays */
 .ui-widget-overlay {
-	background: #2b2922 url(images/ui-bg_diamond_50_2b2922_10x8.png) 50% 50% repeat;
+	background: #2b2922 url(images/ui-bg_diamond_52b2922_10x8.png) 50% 50% repeat;
 	opacity: .80;
 	filter: Alpha(Opacity = 80);
 }
@@ -1040,7 +1040,7 @@
 .ui-widget-shadow {
 	margin: -12px 0 0 -12px;
 	padding: 12px;
-	background: #cccccc url(images/ui-bg_diagonals-thick_10_cccccc_40x40.png) 50% 50% repeat;
+	background: #cccccc url(images/ui-bg_diagonals-thick_1cccccc_40x40.png) 50% 50% repeat;
 	opacity: .50;
 	filter: Alpha(Opacity = 50);
 	-moz-border-radius: 10px;

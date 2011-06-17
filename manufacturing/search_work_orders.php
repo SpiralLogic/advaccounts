@@ -166,10 +166,10 @@ $sql = "SELECT
 	workorder.released,
 	workorder.stock_id,
 	unit.decimals
-	FROM " . TB_PREF . "workorders as workorder,"
-	   . TB_PREF . "stock_master as item,"
-	   . TB_PREF . "item_units as unit,"
-	   . TB_PREF . "locations as location
+	FROM workorders as workorder,"
+	   .  "stock_master as item,"
+	   .  "item_units as unit,"
+	   .  "locations as location
 	WHERE workorder.stock_id=item.stock_id 
 		AND workorder.loc_code=location.loc_code
 		AND item.units=unit.abbr";

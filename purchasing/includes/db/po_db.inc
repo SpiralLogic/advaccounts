@@ -13,10 +13,10 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 
 function delete_po($po)
 {
-	$sql = "DELETE FROM " . TB_PREF . "purch_orders WHERE order_no=" . db_escape($po);
+	$sql = "DELETE FROM purch_orders WHERE order_no=" . db_escape($po);
 	db_query($sql, "The order header could not be deleted");
 
-	$sql = "DELETE FROM " . TB_PREF . "purch_order_details WHERE order_no =" . db_escape($po);
+	$sql = "DELETE FROM purch_order_details WHERE order_no =" . db_escape($po);
 	db_query($sql, "The order detail lines could not be deleted");
 }
 
@@ -29,7 +29,7 @@ function add_po(&$po_obj)
 	begin_transaction();
 
 	/*Insert to purchase order header record */
-	$sql = "INSERT INTO " . TB_PREF . "purch_orders (supplier_id, Comments, ord_date, reference, requisition_no, into_stock_location, delivery_address, freight, salesman) VALUES(";
+	$sql = "INSERT INTO purch_orders (supplier_id, Comments, ord_date, reference, requisition_no, into_stock_location, delivery_address, freight, salesman) VALUES(";
 	$sql .= db_escape($po_obj->supplier_id) . "," .
 			db_escape($po_obj->Comments) . ",'" .
 			date2sql($po_obj->orig_order_date) . "', " .
@@ -48,7 +48,7 @@ function add_po(&$po_obj)
 	foreach ($po_obj->line_items as $po_line)
 	{
 		if ($po_line->Deleted == false) {
-			$sql = "INSERT INTO " . TB_PREF . "purch_order_details (order_no, item_code, description, delivery_date, unit_price, quantity_ordered, discount) VALUES (";
+			$sql = "INSERT INTO purch_order_details (order_no, item_code, description, delivery_date, unit_price, quantity_ordered, discount) VALUES (";
 			$sql .= $po_obj->order_no . ", " . db_escape($po_line->stock_id) . "," .
 					db_escape($po_line->item_description) . ",'" .
 					date2sql($po_line->req_del_date) . "'," .
@@ -76,7 +76,7 @@ function update_po(&$po_obj)
 	begin_transaction();
 
 	/*Update the purchase order header with any changes */
-	$sql = "UPDATE " . TB_PREF . "purch_orders SET Comments=" . db_escape($po_obj->Comments) . ",
+	$sql = "UPDATE purch_orders SET Comments=" . db_escape($po_obj->Comments) . ",
 		requisition_no= " . db_escape($po_obj->requisition_no) . ",
 		into_stock_location=" . db_escape($po_obj->Location) . ",
 		ord_date='" . date2sql($po_obj->orig_order_date) . "',
@@ -93,13 +93,13 @@ function update_po(&$po_obj)
 		if ($po_line->Deleted == True) {
 			// Sherifoz 21.06.03 Handle deleting existing lines
 			if ($po_line->po_detail_rec != '') {
-				$sql = "DELETE FROM " . TB_PREF . "purch_order_details WHERE po_detail_item=" . db_escape($po_line->po_detail_rec);
+				$sql = "DELETE FROM purch_order_details WHERE po_detail_item=" . db_escape($po_line->po_detail_rec);
 				db_query($sql, "could not query purch order details");
 			}
 		}
 		else if ($po_line->po_detail_rec == '') {
 			// Sherifoz 21.06.03 Handle adding new lines vs. updating. if no key(po_detail_rec) then it's a new line
-			$sql = "INSERT INTO " . TB_PREF . "purch_order_details (order_no, item_code, description, delivery_date, unit_price, quantity_ordered, discount) VALUES (";
+			$sql = "INSERT INTO purch_order_details (order_no, item_code, description, delivery_date, unit_price, quantity_ordered, discount) VALUES (";
 			$sql .= $po_obj->order_no . "," .
 					db_escape($po_line->stock_id) . "," .
 					db_escape($po_line->item_description) . ",'" .
@@ -111,7 +111,7 @@ function update_po(&$po_obj)
 		}
 		else
 		{
-			$sql = "UPDATE " . TB_PREF . "purch_order_details SET item_code=" . db_escape($po_line->stock_id) . ",
+			$sql = "UPDATE purch_order_details SET item_code=" . db_escape($po_line->stock_id) . ",
 				description =" . db_escape($po_line->item_description) . ",
 				delivery_date ='" . date2sql($po_line->req_del_date) . "',
 				unit_price=" . db_escape($po_line->price) . ",
@@ -133,12 +133,12 @@ function update_po(&$po_obj)
 
 function read_po_header($order_no, &$order)
 {
-	$sql = "SELECT " . TB_PREF . "purch_orders.*, " . TB_PREF . "suppliers.supp_name,
-   		" . TB_PREF . "suppliers.curr_code, " . TB_PREF . "locations.location_name
-		FROM " . TB_PREF . "purch_orders, " . TB_PREF . "suppliers, " . TB_PREF . "locations
-		WHERE " . TB_PREF . "purch_orders.supplier_id = " . TB_PREF . "suppliers.supplier_id
-		AND " . TB_PREF . "locations.loc_code = into_stock_location
-		AND " . TB_PREF . "purch_orders.order_no = " . db_escape($order_no);
+	$sql = "SELECT purch_orders.*, suppliers.supp_name,
+   		suppliers.curr_code, locations.location_name
+		FROM purch_orders, suppliers, locations
+		WHERE purch_orders.supplier_id = suppliers.supplier_id
+		AND locations.loc_code = into_stock_location
+		AND purch_orders.order_no = " . db_escape($order_no);
 
 	$result = db_query($sql, "The order cannot be retrieved");
 
@@ -171,14 +171,14 @@ function read_po_items($order_no, &$order, $open_items_only = false)
 {
 	/*now populate the line po array with the purchase order details records */
 
-	$sql = "SELECT " . TB_PREF . "purch_order_details.*, units
-		FROM " . TB_PREF . "purch_order_details
-		LEFT JOIN " . TB_PREF . "stock_master
-		ON " . TB_PREF . "purch_order_details.item_code=" . TB_PREF . "stock_master.stock_id
+	$sql = "SELECT purch_order_details.*, units
+		FROM purch_order_details
+		LEFT JOIN stock_master
+		ON purch_order_details.item_code=stock_master.stock_id
 		WHERE order_no =" . db_escape($order_no);
 
 	if ($open_items_only)
-		$sql .= " AND (" . TB_PREF . "purch_order_details.quantity_ordered > " . TB_PREF . "purch_order_details.quantity_received) ";
+		$sql .= " AND (purch_order_details.quantity_ordered > purch_order_details.quantity_received) ";
 
 	$sql .= " ORDER BY po_detail_item";
 

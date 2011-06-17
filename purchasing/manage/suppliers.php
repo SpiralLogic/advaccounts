@@ -52,7 +52,7 @@ if (isset($_POST['submit'])) {
 
 		if (!$new_supplier) {
 
-			$sql = "UPDATE " . TB_PREF . "suppliers SET supp_name=" . db_escape($_POST['supp_name']) . ",
+			$sql = "UPDATE suppliers SET supp_name=" . db_escape($_POST['supp_name']) . ",
 				supp_ref=" . db_escape($_POST['supp_ref']) . ",
                 address=" . db_escape($_POST['address']) . ",
                 supp_address=" . db_escape($_POST['supp_address']) . ",
@@ -87,7 +87,7 @@ if (isset($_POST['submit'])) {
 		else
 		{
 
-			$sql = "INSERT INTO " . TB_PREF . "suppliers (supp_name, supp_ref, address, supp_address, phone, phone2, fax, gst_no, email, website,
+			$sql = "INSERT INTO suppliers (supp_name, supp_ref, address, supp_address, phone, phone2, fax, gst_no, email, website,
 				contact, supp_account_no, bank_account, credit_limit, dimension_id, dimension2_id, curr_code,
 				payment_terms, payable_account, purchase_account, payment_discount_account, notes, tax_group_id)
 				VALUES (" . db_escape($_POST['supp_name']) . ", "
@@ -131,7 +131,7 @@ elseif (isset($_POST['delete']) && $_POST['delete'] != "")
 
 	// PREVENT DELETES IF DEPENDENT RECORDS IN 'supp_trans' , purch_orders
 
-	$sql = "SELECT COUNT(*) FROM " . TB_PREF . "supp_trans WHERE supplier_id=" . db_escape($_POST['supplier_id']);
+	$sql = "SELECT COUNT(*) FROM supp_trans WHERE supplier_id=" . db_escape($_POST['supplier_id']);
 	$result = db_query($sql, "check failed");
 	$myrow = db_fetch_row($result);
 	if ($myrow[0] > 0) {
@@ -141,7 +141,7 @@ elseif (isset($_POST['delete']) && $_POST['delete'] != "")
 	}
 	else
 	{
-		$sql = "SELECT COUNT(*) FROM " . TB_PREF . "purch_orders WHERE supplier_id=" . db_escape($_POST['supplier_id']);
+		$sql = "SELECT COUNT(*) FROM purch_orders WHERE supplier_id=" . db_escape($_POST['supplier_id']);
 		$result = db_query($sql, "check failed");
 		$myrow = db_fetch_row($result);
 		if ($myrow[0] > 0) {
@@ -151,7 +151,7 @@ elseif (isset($_POST['delete']) && $_POST['delete'] != "")
 
 	}
 	if ($cancel_delete == 0) {
-		$sql = "DELETE FROM " . TB_PREF . "suppliers WHERE supplier_id=" . db_escape($_POST['supplier_id']);
+		$sql = "DELETE FROM suppliers WHERE supplier_id=" . db_escape($_POST['supplier_id']);
 		db_query($sql, "check failed");
 
 		unset($_SESSION['supplier_id']);

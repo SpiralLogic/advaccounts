@@ -55,7 +55,7 @@ if ($Mode == 'UPDATE_ITEM' && can_process()) {
 
 function can_delete($selected_id)
 {
-	$sql = "SELECT COUNT(*) FROM " . TB_PREF . "debtors_master
+	$sql = "SELECT COUNT(*) FROM debtors_master
 		WHERE credit_status=" . db_escape($selected_id);
 	$result = db_query($sql, "could not query customers");
 	$myrow = db_fetch_row($result);

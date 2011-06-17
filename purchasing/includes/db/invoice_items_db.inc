@@ -17,7 +17,7 @@ function add_supp_invoice_item($supp_trans_type, $supp_trans_no, $stock_id, $des
 {
 	$unit_price = $unit_price / (1 - $discount / 100);
 
-	$sql = "INSERT INTO " . TB_PREF . "supp_invoice_items (supp_trans_type, supp_trans_no, stock_id, description, gl_code, unit_price, unit_tax, quantity,
+	$sql = "INSERT INTO supp_invoice_items (supp_trans_type, supp_trans_no, stock_id, description, gl_code, unit_price, unit_tax, quantity,
 	  	grn_item_id, po_detail_item_id, memo_, discount, exp_price) ";
 	$sql .= "VALUES (" . db_escape($supp_trans_type) . ", " . db_escape($supp_trans_no) . ", "
 			. db_escape($stock_id) .
@@ -48,7 +48,7 @@ function add_supp_invoice_gl_item($supp_trans_type, $supp_trans_no, $gl_code, $a
 
 function get_supp_invoice_items($supp_trans_type, $supp_trans_no)
 {
-	$sql = "SELECT *, unit_price AS FullUnitPrice FROM " . TB_PREF . "supp_invoice_items
+	$sql = "SELECT *, unit_price AS FullUnitPrice FROM supp_invoice_items
 		WHERE supp_trans_type = " . db_escape($supp_trans_type) . "
 		AND supp_trans_no = " . db_escape($supp_trans_no) . " ORDER BY id";
 	return db_query($sql, "Cannot retreive supplier transaction detail records");
@@ -58,7 +58,7 @@ function get_supp_invoice_items($supp_trans_type, $supp_trans_no)
 
 function void_supp_invoice_items($type, $type_no)
 {
-	$sql = "UPDATE " . TB_PREF . "supp_invoice_items SET quantity=0, unit_price=0
+	$sql = "UPDATE supp_invoice_items SET quantity=0, unit_price=0
 		WHERE supp_trans_type = " . db_escape($type) . " AND supp_trans_no=" . db_escape($type_no);
 	db_query($sql, "could not void supptrans details");
 }

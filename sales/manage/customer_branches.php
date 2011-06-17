@@ -72,7 +72,7 @@ if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 		if ($selected_id != -1) {
 			/* SelectedBranch could also exist if submit had not been clicked this code would not run in this case cos submit is false of course see the 	delete code below */
 
-			$sql = "UPDATE " . TB_PREF . "cust_branch SET br_name = " . db_escape($_POST['br_name']) . ",
+			$sql = "UPDATE cust_branch SET br_name = " . db_escape($_POST['br_name']) . ",
 				branch_ref = " . db_escape($_POST['br_ref']) . ",
 				br_address = " . db_escape($_POST['br_address']) . ",
     	        phone=" . db_escape($_POST['phone']) . ",
@@ -99,7 +99,7 @@ if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 			$note = _('Selected customer branch has been updated');
 		} else {
 			/* Selected branch is null cos no item selected on first time round so must be adding a	record must be submitting new entries in the new Customer Branches form */
-			$sql = "INSERT INTO " . TB_PREF . "cust_branch (debtor_no, br_name, branch_ref, br_address,
+			$sql = "INSERT INTO cust_branch (debtor_no, br_name, branch_ref, br_address,
 				salesman, phone, phone2, fax,
 				contact_name, area, email, tax_group_id, sales_account, receivables_account, payment_discount_account, sales_discount_account, default_location,
 				br_post_address, disable_trans, group_no, default_ship_via, notes)
@@ -135,14 +135,14 @@ if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 	//the link to delete a selected record was clicked instead of the submit button
 	// PREVENT DELETES IF DEPENDENT RECORDS IN 'debtor_trans'
 
-	$sql = "SELECT COUNT(*) FROM " . TB_PREF . "debtor_trans WHERE branch_code=" . db_escape(
+	$sql = "SELECT COUNT(*) FROM debtor_trans WHERE branch_code=" . db_escape(
 		$_POST['branch_code']) . " AND debtor_no = " . db_escape($_POST['customer_id']);
 	$result = db_query($sql, "could not query debtortrans");
 	$myrow = db_fetch_row($result);
 	if ($myrow[0] > 0) {
 		display_error(_("Cannot delete this branch because customer transactions have been created to this branch."));
 	} else {
-		$sql = "SELECT COUNT(*) FROM " . TB_PREF . "sales_orders WHERE branch_code=" . db_escape(
+		$sql = "SELECT COUNT(*) FROM sales_orders WHERE branch_code=" . db_escape(
 			$_POST['branch_code']) . " AND debtor_no = " . db_escape($_POST['customer_id']);
 		$result = db_query($sql, "could not query sales orders");
 
@@ -150,7 +150,7 @@ if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 		if ($myrow[0] > 0) {
 			display_error(_("Cannot delete this branch because sales orders exist for it. Purge old sales orders first."));
 		} else {
-			$sql = "DELETE FROM " . TB_PREF . "cust_branch WHERE branch_code=" . db_escape(
+			$sql = "DELETE FROM cust_branch WHERE branch_code=" . db_escape(
 				$_POST['branch_code']) . " AND debtor_no=" . db_escape($_POST['customer_id']);
 			db_query($sql, "could not delete branch");
 			display_notification(_('Selected customer branch has been deleted'));
@@ -209,11 +209,11 @@ $sql = "SELECT "
 	   . "b.email, "
 	   . "t.name AS tax_group_name, "
 	   . "b.inactive
-		FROM " . TB_PREF . "cust_branch b, "
-	   . TB_PREF . "debtors_master c, "
-	   . TB_PREF . "areas a, "
-	   . TB_PREF . "salesman s, "
-	   . TB_PREF . "tax_groups t
+		FROM cust_branch b, "
+	   .  "debtors_master c, "
+	   .  "areas a, "
+	   .  "salesman s, "
+	   .  "tax_groups t
 		WHERE b.debtor_no=c.debtor_no
 		AND b.tax_group_id=t.id
 		AND b.area=a.area_code
@@ -263,7 +263,7 @@ if ($selected_id != -1) {
 	if ($Mode == 'Edit') {
 
 		//editing an existing branch
-		$sql = "SELECT * FROM " . TB_PREF . "cust_branch
+		$sql = "SELECT * FROM cust_branch
 			WHERE branch_code=" . db_escape($_POST['branch_code']) . "
 			AND debtor_no=" . db_escape($_POST['customer_id']);
 		$result = db_query($sql, "check failed");
@@ -295,7 +295,7 @@ if ($selected_id != -1) {
 } elseif ($Mode != 'ADD_ITEM') { //end of if $SelectedBranch only do the else when a new record is being entered
 	if (!$num_branches) {
 		$sql = "SELECT name, address, email, debtor_ref
-			FROM " . TB_PREF . "debtors_master WHERE debtor_no = " . db_escape($_POST['customer_id']);
+			FROM debtors_master WHERE debtor_no = " . db_escape($_POST['customer_id']);
 		$result = db_query($sql, "check failed");
 		$myrow = db_fetch($result);
 		$_POST['br_name'] = $myrow["name"];

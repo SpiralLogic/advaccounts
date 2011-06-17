@@ -66,7 +66,7 @@ function can_delete($selected_id)
 {
 	if ($selected_id == -1)
 		return false;
-	$sql = "SELECT COUNT(*) FROM " . TB_PREF . "chart_types
+	$sql = "SELECT COUNT(*) FROM chart_types
 		WHERE class_id=$selected_id";
 	$result = db_query($sql, "could not query chart master");
 	$myrow = db_fetch_row($result);

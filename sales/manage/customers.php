@@ -74,7 +74,7 @@ function handle_submit()
 
 	if ($new_customer == false) {
 
-		$sql = "UPDATE " . TB_PREF . "debtors_master SET name=" . db_escape($_POST['CustName']) . ",
+		$sql = "UPDATE debtors_master SET name=" . db_escape($_POST['CustName']) . ",
 			debtor_ref=" . db_escape($_POST['cust_ref']) . ",
 			address=" . db_escape($_POST['address']) . ",
 			tax_id=" . db_escape($_POST['tax_id']) . ",
@@ -101,7 +101,7 @@ function handle_submit()
 	} else { //it is a new customer
 		begin_transaction();
 
-		$sql = "INSERT INTO " . TB_PREF . "debtors_master (name, debtor_ref, address, tax_id, email, dimension_id, dimension2_id,
+		$sql = "INSERT INTO debtors_master (name, debtor_ref, address, tax_id, email, dimension_id, dimension2_id,
 			curr_code, credit_status, payment_terms, discount, pymt_discount,credit_limit,  
 			sales_type, notes) VALUES (" . db_escape($_POST['CustName']) . ", " . db_escape($_POST['cust_ref']) . ", "
 			   . db_escape($_POST['address']) . ", " . db_escape($_POST['tax_id']) . ","
@@ -139,21 +139,21 @@ if (isset($_POST['delete'])) {
 
 	// PREVENT DELETES IF DEPENDENT RECORDS IN 'debtor_trans'
 	$sel_id = db_escape($_POST['customer_id']);
-	$sql = "SELECT COUNT(*) FROM " . TB_PREF . "debtor_trans WHERE debtor_no=$sel_id";
+	$sql = "SELECT COUNT(*) FROM debtor_trans WHERE debtor_no=$sel_id";
 	$result = db_query($sql, "check failed");
 	$myrow = db_fetch_row($result);
 	if ($myrow[0] > 0) {
 		$cancel_delete = 1;
 		display_error(_("This customer cannot be deleted because there are transactions that refer to it."));
 	} else {
-		$sql = "SELECT COUNT(*) FROM " . TB_PREF . "sales_orders WHERE debtor_no=$sel_id";
+		$sql = "SELECT COUNT(*) FROM sales_orders WHERE debtor_no=$sel_id";
 		$result = db_query($sql, "check failed");
 		$myrow = db_fetch_row($result);
 		if ($myrow[0] > 0) {
 			$cancel_delete = 1;
 			display_error(_("Cannot delete the customer record because orders have been created against it."));
 		} else {
-			$sql = "SELECT COUNT(*) FROM " . TB_PREF . "cust_branch WHERE debtor_no=$sel_id";
+			$sql = "SELECT COUNT(*) FROM cust_branch WHERE debtor_no=$sel_id";
 			$result = db_query($sql, "check failed");
 			$myrow = db_fetch_row($result);
 			if ($myrow[0] > 0) {
@@ -165,7 +165,7 @@ if (isset($_POST['delete'])) {
 	}
 
 	if ($cancel_delete == 0) { //ie not cancelled the delete as a result of above tests
-		$sql = "DELETE FROM " . TB_PREF . "debtors_master WHERE debtor_no=$sel_id";
+		$sql = "DELETE FROM debtors_master WHERE debtor_no=$sel_id";
 		db_query($sql, "cannot delete customer");
 
 		display_notification(_("Selected customer has been deleted."));
@@ -210,7 +210,7 @@ if ($new_customer) {
 	$_POST['inactive'] = 0;
 } else {
 
-	$sql = "SELECT * FROM " . TB_PREF . "debtors_master WHERE debtor_no = " . db_escape($_POST['customer_id']);
+	$sql = "SELECT * FROM debtors_master WHERE debtor_no = " . db_escape($_POST['customer_id']);
 	$result = db_query($sql, "check failed");
 
 	$myrow = db_fetch($result);

@@ -55,7 +55,7 @@ class purch_order
 
 		if ($salesman_code == null) {
 			$salesman_name = $_SESSION['wa_current_user']->name;
-			$sql = "SELECT salesman_code FROM " . TB_PREF . "salesman WHERE salesman_name = " . db_escape($salesman_name);
+			$sql = "SELECT salesman_code FROM salesman WHERE salesman_name = " . db_escape($salesman_name);
 			$query = db_query($sql, 'Couldn\'t find current salesman');
 			$result = db_fetch_assoc($query);
 			if (!empty($result['salesman_code'])) $salesman_code = $result['salesman_code'];

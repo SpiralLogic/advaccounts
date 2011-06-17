@@ -30,7 +30,7 @@ function work_order_produce($woid, $ref, $quantity, $date_, $memo_, $close_wo)
 
 	$date = date2sql($date_);
 
-	$sql = "INSERT INTO " . TB_PREF . "wo_manufacture (workorder_id, reference, quantity, date_)
+	$sql = "INSERT INTO wo_manufacture (workorder_id, reference, quantity, date_)
 		VALUES (" . db_escape($woid) . ", " . db_escape($ref) . ", " . db_escape($quantity)
 		   . ", '$date')";
 
@@ -64,12 +64,12 @@ function work_order_produce($woid, $ref, $quantity, $date_, $memo_, $close_wo)
 
 function get_work_order_produce($id)
 {
-	$sql = "SELECT " . TB_PREF . "wo_manufacture.*," . TB_PREF . "workorders.stock_id, "
-		   . TB_PREF . "stock_master.description AS StockDescription
-		FROM " . TB_PREF . "wo_manufacture, " . TB_PREF . "workorders, " . TB_PREF . "stock_master
-		WHERE " . TB_PREF . "wo_manufacture.workorder_id=" . TB_PREF . "workorders.id
-		AND " . TB_PREF . "stock_master.stock_id=" . TB_PREF . "workorders.stock_id
-		AND " . TB_PREF . "wo_manufacture.id=" . db_escape($id);
+	$sql = "SELECT wo_manufacture.*,workorders.stock_id, "
+		   .  "stock_master.description AS StockDescription
+		FROM wo_manufacture, workorders, stock_master
+		WHERE wo_manufacture.workorder_id=workorders.id
+		AND stock_master.stock_id=workorders.stock_id
+		AND wo_manufacture.id=" . db_escape($id);
 	$result = db_query($sql, "The work order production could not be retrieved");
 
 	return db_fetch($result);
@@ -79,7 +79,7 @@ function get_work_order_produce($id)
 
 function get_work_order_productions($woid)
 {
-	$sql = "SELECT * FROM " . TB_PREF . "wo_manufacture WHERE workorder_id="
+	$sql = "SELECT * FROM wo_manufacture WHERE workorder_id="
 		   . db_escape($woid) . " ORDER BY id";
 	return db_query($sql, "The work order issues could not be retrieved");
 }
@@ -88,7 +88,7 @@ function get_work_order_productions($woid)
 
 function exists_work_order_produce($id)
 {
-	$sql = "SELECT id FROM " . TB_PREF . "wo_manufacture WHERE id=" . db_escape($id);
+	$sql = "SELECT id FROM wo_manufacture WHERE id=" . db_escape($id);
 	$result = db_query($sql, "Cannot retreive a wo production");
 
 	return (db_num_rows($result) > 0);
@@ -109,7 +109,7 @@ function void_work_order_produce($type_no)
 		$row['workorder_id'], $row['stock_id'], -$row['quantity'], sql2date($row['date_']), $type_no);
 
 	// clear the production record
-	$sql = "UPDATE " . TB_PREF . "wo_manufacture SET quantity=0 WHERE id=" . db_escape($type_no);
+	$sql = "UPDATE wo_manufacture SET quantity=0 WHERE id=" . db_escape($type_no);
 	db_query($sql, "Cannot void a wo production");
 
 	// void all related stock moves

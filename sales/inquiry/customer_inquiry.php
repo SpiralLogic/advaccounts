@@ -220,11 +220,11 @@ if (isset($_POST['filterType']) && $_POST['filterType'] != ALL_TEXT)
 $sql .= "trans.alloc AS Allocated,
 		((trans.type = " . ST_SALESINVOICE . ")
 			AND trans.due_date < '" . date2sql(Today()) . "') AS OverDue
-		FROM " . TB_PREF . "debtor_trans as trans, " . TB_PREF . "debtors_master as debtor, " . TB_PREF . "cust_branch as branch
+		FROM debtor_trans as trans, debtors_master as debtor, cust_branch as branch
 		WHERE debtor.debtor_no = trans.debtor_no
 		AND trans.branch_code = branch.branch_code";
 if (isAjaxReferrer() && !empty($_POST['ajaxsearch'])) {
-	$sql = "SELECT * FROM " . TB_PREF . "debtor_trans_view WHERE ";
+	$sql = "SELECT * FROM debtor_trans_view WHERE ";
 	foreach ($searchArray as $ajaxsearch) {
 		if (empty($ajaxsearch))
 			continue;

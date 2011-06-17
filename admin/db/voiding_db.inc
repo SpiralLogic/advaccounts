@@ -116,7 +116,7 @@ function void_transaction($type, $type_no, $date_, $memo_)
 
 function get_voided_entry($type, $type_no)
 {
-	$sql = "SELECT * FROM " . TB_PREF . "voided WHERE type=" . db_escape($type)
+	$sql = "SELECT * FROM voided WHERE type=" . db_escape($type)
 		   . " AND id=" . db_escape($type_no);
 
 	$result = db_query($sql, "could not query voided transaction table");
@@ -129,7 +129,7 @@ function get_voided_entry($type, $type_no)
 function add_voided_entry($type, $type_no, $date_, $memo_)
 {
 	$date = date2sql($date_);
-	$sql = "INSERT INTO " . TB_PREF . "voided (type, id, date_, memo_)
+	$sql = "INSERT INTO voided (type, id, date_, memo_)
 		VALUES (" . db_escape($type) . ", " . db_escape($type_no) . ", "
 		   . db_escape($date) . ", " . db_escape($memo_) . ")";
 

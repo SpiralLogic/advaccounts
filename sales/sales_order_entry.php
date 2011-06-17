@@ -122,7 +122,8 @@
    else {
       check_edit_conflicts();
    }
-   function page_complete($order_no, $trans_type, $trans_name = 'Transaction', $edit = false, $update = false) {
+   function page_complete($order_no, $trans_type, $trans_name = 'Transaction', $edit = false, $update = false)
+   {
       global $path_to_root;
       $customer = new Customer($_SESSION['Jobsboard']->customer_id);
       $email = (empty($customer->accounts->email) ? "No Email Address" : $customer->accounts->email);
@@ -156,7 +157,7 @@
             : submenu_option(_("Enter a &New Delivery"), "/sales/sales_order_entry.php?NewDelivery=0");
       }
       elseif ($trans_type == ST_SALESINVOICE) {
-         $sql = "SELECT trans_type_from, trans_no_from FROM " . TB_PREF . "cust_allocations WHERE trans_type_to=" . ST_SALESINVOICE . " AND trans_no_to=" . db_escape($order_no);
+         $sql = "SELECT trans_type_from, trans_no_from FROM cust_allocations WHERE trans_type_to=" . ST_SALESINVOICE . " AND trans_no_to=" . db_escape($order_no);
          $result = db_query($sql, "could not retrieve customer allocation");
          $row = db_fetch($result);
          if ($row !== false) {
@@ -175,12 +176,13 @@
          }
       }
       set_focus('prtopt');
-      UploadHandler::insert($_SESSION['order_no']);
+      UploadHandler::insert($order_no);
       display_footer_exit();
-   }
+   } 
 
    //-----------------------------------------------------------------------------
-   function copy_to_cart() {
+   function copy_to_cart()
+   {
       $cart = &$_SESSION['Items'];
       $cart->reference = $_POST['ref'];
       $cart->Comments = $_POST['Comments'];
@@ -226,7 +228,8 @@
    }
 
    //-----------------------------------------------------------------------------
-   function copy_from_cart() {
+   function copy_from_cart()
+   {
       $cart = &$_SESSION['Items'];
       $_POST['ref'] = $cart->reference;
       $_POST['Comments'] = $cart->Comments;
@@ -256,14 +259,16 @@
    }
 
    //--------------------------------------------------------------------------------
-   function line_start_focus() {
+   function line_start_focus()
+   {
       global $Ajax;
       $Ajax->activate('items_table');
       set_focus('_stock_id_edit');
    }
 
    //--------------------------------------------------------------------------------
-   function can_process() {
+   function can_process()
+   {
       global $Refs;
       if (!get_post('customer_id')) {
          display_error(_("There is no customer selected."));
@@ -405,7 +410,8 @@
       $Ajax->activate('items_table');
    }
    //--------------------------------------------------------------------------------
-   function check_item_data() {
+   function check_item_data()
+   {
       global $SysPrefs;
       if (!$_SESSION["wa_current_user"]->can_access('SA_SALESCREDIT') && (!check_num('qty', 0) || !check_num('Disc', 0, 100))) {
          display_error(_("The item could not be updated because you are attempting to set the quantity ordered to less than 0, or the discount percent to more than 100."));
@@ -435,7 +441,8 @@
    }
 
    //--------------------------------------------------------------------------------
-   function handle_update_item() {
+   function handle_update_item()
+   {
       if ($_POST['UpdateItem'] != '' && check_item_data()) {
          $_SESSION['Items']->update_cart_item($_POST['LineNo'], input_num('qty'), input_num('price'), input_num('Disc') / 100, $_POST['item_description']);
       }
@@ -443,7 +450,8 @@
    }
 
    //--------------------------------------------------------------------------------
-   function handle_delete_item($line_no) {
+   function handle_delete_item($line_no)
+   {
       if ($_SESSION['Items']->some_already_delivered($line_no) == 0) {
          $_SESSION['Items']->remove_from_cart($line_no);
       }
@@ -454,7 +462,8 @@
    }
 
    //--------------------------------------------------------------------------------
-   function handle_new_item() {
+   function handle_new_item()
+   {
       if (!check_item_data()) {
          return;
       }
@@ -465,7 +474,8 @@
    }
 
    //--------------------------------------------------------------------------------
-   function handle_cancel_order() {
+   function handle_cancel_order()
+   {
       global $path_to_root, $Ajax;
       if ($_SESSION['Items']->trans_type == ST_CUSTDELIVERY) {
          display_notification(_("Direct delivery entry has been cancelled as requested."), 1);
@@ -503,7 +513,8 @@
    }
 
    //--------------------------------------------------------------------------------
-   function create_cart($type, $trans_no) {
+   function create_cart($type, $trans_no)
+   {
       global $Refs;
       processing_start();
       $doc_type = $type;

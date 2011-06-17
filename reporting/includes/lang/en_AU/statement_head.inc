@@ -56,7 +56,7 @@ $this->LineTo($this->cols[$cols - 2] + 4, $iline5, $this->cols[$cols - 2] + 4, $
 $this->LineTo($right, $iline5, $right, $iline7);
 $this->NewLine();
 if ($this->company['coy_logo'] != '') {
-	$logo = $comp_path . '/' . user_company() . "/images/" . $this->company['coy_logo'];
+	$logo = $comp_path . "/images/" . $this->company['coy_logo'];
 	$this->AddImage($logo, $ccol, $this->row, 0, 40);
 } else {
 	$this->fontSize += 4;
@@ -172,7 +172,7 @@ $this->NewLine();
 $this->TextWrap($ccol, $this->row, $right - $ccol, "Email:  " . $customer_branch_details['email']);
 $this->NewLine();
 $id = $myrow['payment_terms'];
-$sql = "SELECT terms FROM " . TB_PREF . "payment_terms WHERE terms_indicator='$id'";
+$sql = "SELECT terms FROM payment_terms WHERE terms_indicator='$id'";
 $result = db_query($sql, "could not get paymentterms");
 $row = db_fetch($result);
 $str = $row["terms"];

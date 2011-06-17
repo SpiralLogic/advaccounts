@@ -186,7 +186,7 @@ function change_tpl_flag($id)
 {
 	global $Ajax;
 
-	$sql = "UPDATE " . TB_PREF . "sales_orders SET type = !type WHERE order_no=$id";
+	$sql = "UPDATE sales_orders SET type = !type WHERE order_no=$id";
 
 	db_query($sql, "Can't change sales order type");
 	$Ajax->activate('orders_tbl');
@@ -267,7 +267,7 @@ $sql = "SELECT
 		debtor.curr_code,
 		Sum(line.qty_sent) AS TotDelivered,
 		Sum(line.quantity) AS TotQuantity
-	FROM " . TB_PREF . "sales_orders as sorder, " . TB_PREF . "sales_order_details as line, " . TB_PREF . "debtors_master as debtor, " . TB_PREF . "cust_branch as branch
+	FROM sales_orders as sorder, sales_order_details as line, debtors_master as debtor, cust_branch as branch
 		WHERE sorder.order_no = line.order_no
 		AND sorder.trans_type = line.trans_type";
 if (isset($searchArray) && $searchArray[0] == 'o') {

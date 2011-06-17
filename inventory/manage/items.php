@@ -21,7 +21,7 @@ include_once($path_to_root . "/includes/data_checks.inc");
 
 include_once($path_to_root . "/inventory/includes/inventory_db.inc");
 
-$user_comp = user_company();
+$user_comp = '';
 $new_item = get_post('stock_id') == '' || get_post('cancel') || get_post('clone');
 //------------------------------------------------------------------------------------
 
@@ -202,16 +202,16 @@ function check_usage($stock_id, $dispmsg = true)
 {
 	$sqls = array(
 		"SELECT COUNT(*) FROM "
-		. TB_PREF . "stock_moves WHERE stock_id=" . db_escape($stock_id) =>
+		.  "stock_moves WHERE stock_id=" . db_escape($stock_id) =>
 		_('Cannot delete this item because there are stock movements that refer to this item.'),
 		"SELECT COUNT(*) FROM "
-		. TB_PREF . "bom WHERE component=" . db_escape($stock_id) =>
+		.  "bom WHERE component=" . db_escape($stock_id) =>
 		_('Cannot delete this item record because there are bills of material that require this part as a component.'),
 		"SELECT COUNT(*) FROM "
-		. TB_PREF . "sales_order_details WHERE stk_code=" . db_escape($stock_id) =>
+		.  "sales_order_details WHERE stk_code=" . db_escape($stock_id) =>
 		_('Cannot delete this item because there are existing purchase order items for it.'),
 		"SELECT COUNT(*) FROM "
-		. TB_PREF . "purch_order_details WHERE item_code=" . db_escape($stock_id) =>
+		.  "purch_order_details WHERE item_code=" . db_escape($stock_id) =>
 		_('Cannot delete this item because there are existing purchase order items for it.')
 	);
 

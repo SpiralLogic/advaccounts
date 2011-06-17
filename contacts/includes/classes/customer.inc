@@ -194,7 +194,7 @@
 				(debtor_trans.ov_amount + debtor_trans.ov_gst + debtor_trans.ov_freight +
 				debtor_trans.ov_freight_tax + debtor_trans.ov_discount)
 				AS TotalAmount, debtor_trans.alloc AS Allocated
-				FROM debtor_trans LEFT OUTER JOIN 0_sales_orders ON  debtor_trans.order_ =  sales_orders.order_no
+				FROM debtor_trans LEFT OUTER JOIN sales_orders ON  debtor_trans.order_ =  sales_orders.order_no
     			WHERE  debtor_trans.debtor_no = " . db_escape($this->id) . "
     			 AND sales_orders.debtor_no = " . db_escape($this->id) . "
     				AND debtor_trans.type <> " . ST_CUSTDELIVERY . "

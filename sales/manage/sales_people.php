@@ -45,7 +45,7 @@ if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 		if ($selected_id != -1) {
 			/*selected_id could also exist if submit had not been clicked this code would not run in this case cos submit is false of course  see the delete code below*/
 
-			$sql = "UPDATE " . TB_PREF . "salesman SET salesman_name=" . db_escape($_POST['salesman_name']) . ",
+			$sql = "UPDATE salesman SET salesman_name=" . db_escape($_POST['salesman_name']) . ",
     			salesman_phone=" . db_escape($_POST['salesman_phone']) . ",
     			salesman_fax=" . db_escape($_POST['salesman_fax']) . ",
     			salesman_email=" . db_escape($_POST['salesman_email']) . ",
@@ -57,7 +57,7 @@ if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 		else
 		{
 			/*Selected group is null cos no item selected on first time round so must be adding a record must be submitting new entries in the new Sales-person form */
-			$sql = "INSERT INTO " . TB_PREF . "salesman (salesman_name, salesman_phone, salesman_fax, salesman_email,
+			$sql = "INSERT INTO salesman (salesman_name, salesman_phone, salesman_fax, salesman_email,
     			provision, break_pt, provision2)
     			VALUES (" . db_escape($_POST['salesman_name']) . ", "
 				   . db_escape($_POST['salesman_phone']) . ", "
@@ -81,7 +81,7 @@ if ($Mode == 'Delete') {
 
 	// PREVENT DELETES IF DEPENDENT RECORDS IN 'debtors_master'
 
-	$sql = "SELECT COUNT(*) FROM " . TB_PREF . "cust_branch WHERE salesman=" . db_escape($selected_id);
+	$sql = "SELECT COUNT(*) FROM cust_branch WHERE salesman=" . db_escape($selected_id);
 	$result = db_query($sql, "check failed");
 	$myrow = db_fetch_row($result);
 	if ($myrow[0] > 0) {
@@ -89,7 +89,7 @@ if ($Mode == 'Delete') {
 	}
 	else
 	{
-		$sql = "DELETE FROM " . TB_PREF . "salesman WHERE salesman_code=" . db_escape($selected_id);
+		$sql = "DELETE FROM salesman WHERE salesman_code=" . db_escape($selected_id);
 		db_query($sql, "The sales-person could not be deleted");
 		display_notification(_('Selected sales person data have been deleted'));
 	}
@@ -104,7 +104,7 @@ if ($Mode == 'RESET') {
 }
 //------------------------------------------------------------------------------------------------
 
-$sql = "SELECT * FROM " . TB_PREF . "salesman";
+$sql = "SELECT * FROM salesman";
 if (!check_value('show_inactive')) $sql .= " WHERE !inactive";
 $result = db_query($sql, "could not get sales persons");
 
@@ -146,7 +146,7 @@ $_POST['salesman_email'] = "";
 if ($selected_id != -1) {
 	if ($Mode == 'Edit') {
 		//editing an existing Sales-person
-		$sql = "SELECT *  FROM " . TB_PREF . "salesman WHERE salesman_code=" . db_escape($selected_id);
+		$sql = "SELECT *  FROM salesman WHERE salesman_code=" . db_escape($selected_id);
 
 		$result = db_query($sql, "could not get sales person");
 		$myrow = db_fetch($result);

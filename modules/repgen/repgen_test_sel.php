@@ -36,7 +36,7 @@ $sqle = urldecode($sql);
 
 display_notification($sqle);
 
-$sql = str_replace("0_", TB_PREF, $sql);
+$sql = str_replace("", '', $sql);
 
 $res = db_query($sql, SQL_ERROR); // test, if SQL-statement is correct
 $th = array();

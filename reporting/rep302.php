@@ -31,28 +31,28 @@ print_inventory_planning();
 
 function getTransactions($category, $location)
 {
-	$sql = "SELECT " . TB_PREF . "stock_master.category_id,
-			" . TB_PREF . "stock_category.description AS cat_description,
-			" . TB_PREF . "stock_master.stock_id,
-			" . TB_PREF . "stock_master.description, " . TB_PREF . "stock_master.inactive,
-			IF(" . TB_PREF . "stock_moves.stock_id IS NULL, '', " . TB_PREF . "stock_moves.loc_code) AS loc_code,
-			SUM(IF(" . TB_PREF . "stock_moves.stock_id IS NULL,0," . TB_PREF . "stock_moves.qty)) AS qty_on_hand
-		FROM (" . TB_PREF . "stock_master,
-			" . TB_PREF . "stock_category)
-		LEFT JOIN " . TB_PREF . "stock_moves ON
-			(" . TB_PREF . "stock_master.stock_id=" . TB_PREF . "stock_moves.stock_id OR " . TB_PREF . "stock_master.stock_id IS NULL)
-		WHERE " . TB_PREF . "stock_master.category_id=" . TB_PREF . "stock_category.category_id
-		AND (" . TB_PREF . "stock_master.mb_flag='B' OR " . TB_PREF . "stock_master.mb_flag='M')";
+	$sql = "SELECT stock_master.category_id,
+			stock_category.description AS cat_description,
+			stock_master.stock_id,
+			stock_master.description, stock_master.inactive,
+			IF(stock_moves.stock_id IS NULL, '', stock_moves.loc_code) AS loc_code,
+			SUM(IF(stock_moves.stock_id IS NULL,0,stock_moves.qty)) AS qty_on_hand
+		FROM (stock_master,
+			stock_category)
+		LEFT JOIN stock_moves ON
+			(stock_master.stock_id=stock_moves.stock_id OR stock_master.stock_id IS NULL)
+		WHERE stock_master.category_id=stock_category.category_id
+		AND (stock_master.mb_flag='B' OR stock_master.mb_flag='M')";
 	if ($category != 0)
-		$sql .= " AND " . TB_PREF . "stock_master.category_id = " . db_escape($category);
+		$sql .= " AND stock_master.category_id = " . db_escape($category);
 	if ($location != 'all')
-		$sql .= " AND IF(" . TB_PREF . "stock_moves.stock_id IS NULL, '1=1'," . TB_PREF . "stock_moves.loc_code = " . db_escape($location) . ")";
-	$sql .= " GROUP BY " . TB_PREF . "stock_master.category_id,
-		" . TB_PREF . "stock_category.description,
-		" . TB_PREF . "stock_master.stock_id,
-		" . TB_PREF . "stock_master.description
-		ORDER BY " . TB_PREF . "stock_master.category_id,
-		" . TB_PREF . "stock_master.stock_id";
+		$sql .= " AND IF(stock_moves.stock_id IS NULL, '1=1',stock_moves.loc_code = " . db_escape($location) . ")";
+	$sql .= " GROUP BY stock_master.category_id,
+		stock_category.description,
+		stock_master.stock_id,
+		stock_master.description
+		ORDER BY stock_master.category_id,
+		stock_master.stock_id";
 
 	return db_query($sql, "No transactions were returned");
 
@@ -72,7 +72,7 @@ function getPeriods($stockid, $location)
 				SUM(CASE WHEN tran_date >= '$date2' AND tran_date < '$date3' THEN -qty ELSE 0 END) AS prd2,
 				SUM(CASE WHEN tran_date >= '$date3' AND tran_date < '$date4' THEN -qty ELSE 0 END) AS prd3,
 				SUM(CASE WHEN tran_date >= '$date4' AND tran_date <= '$date5' THEN -qty ELSE 0 END) AS prd4
-			FROM " . TB_PREF . "stock_moves
+			FROM stock_moves
 			WHERE stock_id='$stockid'
 			AND loc_code ='$location'
 			AND (type=13 OR type=11)

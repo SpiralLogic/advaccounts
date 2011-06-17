@@ -55,7 +55,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	function send_scripts() {
 		global $js_static, $js_path, $js_userlib, $go_debug, $js_huserlib;
 		//foreach ($js_static as &$jsfile) {
-			//$fpath = $comp_path . '/' . user_company() . '/js_cache/' . $jsfile;
+			//$fpath = $comp_path . '/js_cache/' . $jsfile;
 			$fpath = $js_path . $jsfile;
 			// compress also static files
 			//if (!file_exists($fpath) || $go_debug)
@@ -120,7 +120,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		echo "<html dir='" . $_SESSION['language']->dir . "' >\n";
 		echo "<head><title>$title</title>";
 		echo "<meta http-equiv='Content-type' content='text/html; charset=$encoding'>";
-		echo "<link rel='apple-touch-icon' href='$local_path_to_root/company/" . user_company() . "/images/advanced-icon.png'/>";
+		echo "<link rel='apple-touch-icon' href='$local_path_to_root/company/images/advanced-icon.png'/>";
 		add_css('default.css');
 		if ($no_menu) {
 			add_css('default-lite.css');

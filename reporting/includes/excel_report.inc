@@ -76,7 +76,7 @@ class FrontReport extends Spreadsheet_Excel_Writer_Workbook
 		$this->code = strtolower($_SESSION['language']->encoding);
 		$this->filename = $filename . ".xls";
 		$this->unique_name = uniqid('') . ".xls";
-		$this->path = $comp_path . '/' . user_company() . '/pdf_files';
+		$this->path = $comp_path . '/pdf_files';
 		$this->Spreadsheet_Excel_Writer_Workbook($this->path . "/" . $this->unique_name);
 		//$this->setCountry(48);
 		if ($this->code != "iso-8859-1")

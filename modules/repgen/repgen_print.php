@@ -16,7 +16,7 @@ include_once($path_to_root . "/admin/db/company_db.inc");
 include_once($path_to_root . "/includes/ui.inc");
 require_once("repgen.inc");
 $id = $_GET['id'];
-$file = $comp_path . '/' . user_company() . '/pdf_files/' . $id . '.pdf';
+$file = $comp_path . '/pdf_files/' . $id . '.pdf';
 create_report($id, $file);
 
 ?>

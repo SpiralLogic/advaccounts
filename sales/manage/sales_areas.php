@@ -31,13 +31,13 @@ if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 
 	if ($input_error != 1) {
 		if ($selected_id != -1) {
-			$sql = "UPDATE " . TB_PREF . "areas SET description=" . db_escape(
+			$sql = "UPDATE areas SET description=" . db_escape(
 				$_POST['description']) . " WHERE area_code = " . db_escape($selected_id);
 			$note = _('Selected sales area has been updated');
 		}
 		else
 		{
-			$sql = "INSERT INTO " . TB_PREF . "areas (description) VALUES (" . db_escape($_POST['description']) . ")";
+			$sql = "INSERT INTO areas (description) VALUES (" . db_escape($_POST['description']) . ")";
 			$note = _('New sales area has been added');
 		}
 
@@ -53,7 +53,7 @@ if ($Mode == 'Delete') {
 
 	// PREVENT DELETES IF DEPENDENT RECORDS IN 'debtors_master'
 
-	$sql = "SELECT COUNT(*) FROM " . TB_PREF . "cust_branch WHERE area=" . db_escape($selected_id);
+	$sql = "SELECT COUNT(*) FROM cust_branch WHERE area=" . db_escape($selected_id);
 	$result = db_query($sql, "check failed");
 	$myrow = db_fetch_row($result);
 	if ($myrow[0] > 0) {
@@ -61,7 +61,7 @@ if ($Mode == 'Delete') {
 		display_error(_("Cannot delete this area because customer branches have been created using this area."));
 	}
 	if ($cancel_delete == 0) {
-		$sql = "DELETE FROM " . TB_PREF . "areas WHERE area_code=" . db_escape($selected_id);
+		$sql = "DELETE FROM areas WHERE area_code=" . db_escape($selected_id);
 		db_query($sql, "could not delete sales area");
 
 		display_notification(_('Selected sales area has been deleted'));
@@ -78,7 +78,7 @@ if ($Mode == 'RESET') {
 
 //-------------------------------------------------------------------------------------------------
 
-$sql = "SELECT * FROM " . TB_PREF . "areas";
+$sql = "SELECT * FROM areas";
 if (!check_value('show_inactive')) $sql .= " WHERE !inactive";
 $result = db_query($sql, "could not get areas");
 
@@ -116,7 +116,7 @@ start_table($table_style2);
 if ($selected_id != -1) {
 	if ($Mode == 'Edit') {
 		//editing an existing area
-		$sql = "SELECT * FROM " . TB_PREF . "areas WHERE area_code=" . db_escape($selected_id);
+		$sql = "SELECT * FROM areas WHERE area_code=" . db_escape($selected_id);
 
 		$result = db_query($sql, "could not get area");
 		$myrow = db_fetch($result);

@@ -481,7 +481,7 @@ start_row();
 $txt = "<input type='radio' name='sel_typ' value = 'DB' " . m_c("DB", $sel_typ) . ">" . DBFELD . "\n";
 label_cell($txt);
 if (substr($id_new, 0, 1) != 'B') { // This is a report
-	$sql1 = str_replace("0_", TB_PREF, $sql);
+	$sql1 = str_replace("", '', $sql);
 	$res = db_query($sql1);
 	$num = db_num_fields($res);
 	$txt = "<td><select name = 'feld' size='1'>\n";

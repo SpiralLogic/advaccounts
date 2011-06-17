@@ -22,7 +22,7 @@ function add_exchange_variation($trans_type, $trans_no, $date_, $acc_id, $accoun
 	// upto $date_ and calculate with the exchange rates. And then compare with the GL account balance.
 	// 2010-02-23 Joe Hunt with help of Ary Wibowo
 	$sql = "SELECT SUM(bt.amount) AS for_amount, ba.bank_curr_code 		
-		FROM " . TB_PREF . "bank_trans bt, " . TB_PREF . "bank_accounts ba
+		FROM bank_trans bt, bank_accounts ba
 		WHERE ba.id = bt.bank_act AND ba.account_code = " . db_escape($account) . " AND bt.trans_date<='" . date2sql($date_) . "'
 		GROUP BY ba.bank_curr_code";
 	$result = db_query($sql, "Transactions for bank account $acc_id could not be calculated");
@@ -52,7 +52,7 @@ function add_exchange_variation($trans_type, $trans_no, $date_, $acc_id, $accoun
 function add_exchange_variation_all()
 {
 	$trans_no = get_next_trans_no(ST_JOURNAL);
-	$sql = "SELECT * FROM " . TB_PREF . "bank_accounts";
+	$sql = "SELECT * FROM bank_accounts";
 	$result = db_query($sql, "could not retreive bank accounts");
 	while ($myrow = db_fetch($result))
 		add_exchange_variation(ST_JOURNAL, $trans_no, null, $myrow['id'], $myrow['account_code'],

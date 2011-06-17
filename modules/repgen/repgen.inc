@@ -826,7 +826,7 @@ class report
 		// prints a string at the given position
 		// translates Umlaute into pdf-format
 		//   $uml = sprintf("%c%c%c%c%c%c%c",138,128,154,133,159,134,167);
-		//   $str=strtr($string,"äÄöÖüÜß", $uml);
+		//   $str=strtr($string,"ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½", $uml);
 
 		switch ($mode)
 		{
@@ -857,7 +857,7 @@ class report
 		// prints a string at the given position
 		// translates Umlaute into pdf-format
 		//   $uml = sprintf("%c%c%c%c%c%c%c",138,128,154,133,159,134,167);
-		//   $str=strtr($string,"äÄöÖüÜß", $uml);
+		//   $str=strtr($string,"ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½", $uml);
 
 		$this->pdf->addText($x, $y, $fs, $string);
 	}
@@ -1508,7 +1508,7 @@ class report
 		// executes the select for data-source.
 
 		$sql = $this->get_select();
-		$sql = str_replace("0_", TB_PREF, $sql);
+		$sql = str_replace("", '', $sql);
 
 		$this->res = db_query($sql, "EXIT3 !!!");
 		if (db_num_rows($this->res) == 0) {

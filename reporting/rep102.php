@@ -34,28 +34,28 @@ function get_invoices($customer_id, $to)
 	$PastDueDays2 = 2 * $PastDueDays1;
 
 	// Revomed allocated from sql
-	$value = "(" . TB_PREF . "debtor_trans.ov_amount + " . TB_PREF . "debtor_trans.ov_gst + "
-			 . TB_PREF . "debtor_trans.ov_freight + " . TB_PREF . "debtor_trans.ov_freight_tax + "
-			 . TB_PREF . "debtor_trans.ov_discount)";
-	$due = "IF (" . TB_PREF . "debtor_trans.type=" . ST_SALESINVOICE . "," . TB_PREF . "debtor_trans.due_date," . TB_PREF . "debtor_trans.tran_date)";
-	$sql = "SELECT " . TB_PREF . "debtor_trans.type, " . TB_PREF . "debtor_trans.reference,
-		" . TB_PREF . "debtor_trans.tran_date,
+	$value = "(debtor_trans.ov_amount + debtor_trans.ov_gst + "
+			 .  "debtor_trans.ov_freight + debtor_trans.ov_freight_tax + "
+			 .  "debtor_trans.ov_discount)";
+	$due = "IF (debtor_trans.type=" . ST_SALESINVOICE . ",debtor_trans.due_date,debtor_trans.tran_date)";
+	$sql = "SELECT debtor_trans.type, debtor_trans.reference,
+		debtor_trans.tran_date,
 		$value as Balance,
 		IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= 0,$value,0) AS Due,
 		IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= $PastDueDays1,$value,0) AS Overdue1,
 		IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= $PastDueDays2,$value,0) AS Overdue2
 
-		FROM " . TB_PREF . "debtors_master,
-			" . TB_PREF . "payment_terms,
-			" . TB_PREF . "debtor_trans
+		FROM debtors_master,
+			payment_terms,
+			debtor_trans
 
-		WHERE " . TB_PREF . "debtor_trans.type <> " . ST_CUSTDELIVERY . "
-			AND " . TB_PREF . "debtors_master.payment_terms = " . TB_PREF . "payment_terms.terms_indicator
-			AND " . TB_PREF . "debtors_master.debtor_no = " . TB_PREF . "debtor_trans.debtor_no
-			AND " . TB_PREF . "debtor_trans.debtor_no = $customer_id
-			AND " . TB_PREF . "debtor_trans.tran_date <= '$todate'
-			AND ABS(" . TB_PREF . "debtor_trans.ov_amount + " . TB_PREF . "debtor_trans.ov_gst + " . TB_PREF . "debtor_trans.ov_freight + " . TB_PREF . "debtor_trans.ov_freight_tax + " . TB_PREF . "debtor_trans.ov_discount) > 0.004
-			ORDER BY " . TB_PREF . "debtor_trans.tran_date";
+		WHERE debtor_trans.type <> " . ST_CUSTDELIVERY . "
+			AND debtors_master.payment_terms = payment_terms.terms_indicator
+			AND debtors_master.debtor_no = debtor_trans.debtor_no
+			AND debtor_trans.debtor_no = $customer_id
+			AND debtor_trans.tran_date <= '$todate'
+			AND ABS(debtor_trans.ov_amount + debtor_trans.ov_gst + debtor_trans.ov_freight + debtor_trans.ov_freight_tax + debtor_trans.ov_discount) > 0.004
+			ORDER BY debtor_trans.tran_date";
 
 	return db_query($sql, "The customer details could not be retrieved");
 }
@@ -132,7 +132,7 @@ function print_aged_customer_analysis()
 
 	$total = array(0, 0, 0, 0, 0);
 
-	$sql = "SELECT debtor_no, name, curr_code FROM " . TB_PREF . "debtors_master";
+	$sql = "SELECT debtor_no, name, curr_code FROM debtors_master";
 	if ($fromcust != ALL_NUMERIC)
 		$sql .= " WHERE debtor_no=" . db_escape($fromcust);
 	$sql .= " ORDER BY name";
@@ -226,7 +226,7 @@ function print_aged_customer_analysis()
 		$pg->built_in = false;
 		$pg->fontfile = $path_to_root . "/reporting/fonts/Vera.ttf";
 		$pg->latin_notation = ($decseps[$_SESSION["wa_current_user"]->prefs->dec_sep()] != ".");
-		$filename = $comp_path . '/' . user_company() . "/images/test.png";
+		$filename = $comp_path . "/images/test.png";
 		$pg->display($filename, true);
 		$w = $pg->width / 1.5;
 		$h = $pg->height / 1.5;

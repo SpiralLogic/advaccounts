@@ -191,7 +191,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 			}
 			if ($allow_update == true) {
 				$sql = "SELECT long_description as description , units, mb_flag
-				FROM " . TB_PREF . "stock_master WHERE stock_id = " . db_escape($_POST['stock_id']);
+				FROM stock_master WHERE stock_id = " . db_escape($_POST['stock_id']);
 				$result = db_query($sql, "The stock details for " . $_POST['stock_id'] . " could not be retrieved");
 				if (db_num_rows($result) == 0) {
 					$allow_update = false;
@@ -314,9 +314,9 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		create_new_po();
 		if ($_GET['UseOrder'] && isset($_SESSION['Items']->line_items)) {
 			foreach ($_SESSION['Items']->line_items as $line_no => $line_item) {
-				$sql = "SELECT " . TB_PREF . "purch_data.price," . TB_PREF . "purch_data.supplier_id
-		FROM " . TB_PREF . "purch_data INNER JOIN " . TB_PREF . "suppliers
-		ON " . TB_PREF . "purch_data.supplier_id=" . TB_PREF . "suppliers.supplier_id
+				$sql = "SELECT purch_data.price,purch_data.supplier_id
+		FROM purch_data INNER JOIN suppliers
+		ON purch_data.supplier_id=suppliers.supplier_id
 		WHERE stock_id = " . db_escape($line_item->stock_id) . ' ORDER BY price';
 				$result = db_query($sql);
 				$myrow = array();

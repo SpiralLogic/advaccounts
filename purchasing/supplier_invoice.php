@@ -80,7 +80,7 @@ if (isset($_POST['ClearFields'])) {
 if (isset($_POST['AddGLCodeToTrans'])) {
 	$Ajax->activate('gl_items');
 	$input_error = false;
-	$sql = "SELECT account_code, account_name FROM " . TB_PREF . "chart_master WHERE account_code=" . db_escape($_POST['gl_code']);
+	$sql = "SELECT account_code, account_name FROM chart_master WHERE account_code=" . db_escape($_POST['gl_code']);
 	$result = db_query($sql, "get account information");
 	if (db_num_rows($result) == 0) {
 		display_error(_("The account code entered is not a valid code, this line cannot be added to the transaction."));
@@ -155,7 +155,7 @@ function check_data()
 		set_focus('due_date');
 		return false;
 	}
-	$sql = "SELECT Count(*) FROM " . TB_PREF . "supp_trans WHERE supplier_id=" . db_escape($_SESSION['supp_trans']->supplier_id) . " AND supp_reference=" . db_escape($_POST['supp_reference']) . " AND ov_amount!=0"; // ignore voided invoice references
+	$sql = "SELECT Count(*) FROM supp_trans WHERE supplier_id=" . db_escape($_SESSION['supp_trans']->supplier_id) . " AND supp_reference=" . db_escape($_POST['supp_reference']) . " AND ov_amount!=0"; // ignore voided invoice references
 	$result = db_query($sql, "The sql to check for the previous entry of the same invoice failed");
 	$myrow = db_fetch_row($result);
 	if ($myrow[0] == 1) { /*Transaction reference already entered */
@@ -308,10 +308,10 @@ if ($_SESSION["wa_current_user"]->can_access('SA_GRNDELETE')) {
 		begin_transaction();
 		$myrow = get_grn_item_detail($id2);
 		$grn = get_grn_batch($myrow['grn_batch_id']);
-		$sql = "UPDATE " . TB_PREF . "purch_order_details
+		$sql = "UPDATE purch_order_details
 			SET quantity_received = qty_invoiced, quantity_ordered = qty_invoiced WHERE po_detail_item = " . $myrow["po_detail_item"];
 		db_query($sql, "The quantity invoiced of the purchase order line could not be updated");
-		$sql = "UPDATE " . TB_PREF . "grn_items
+		$sql = "UPDATE grn_items
 	    	SET qty_recd = quantity_inv WHERE id = " . $myrow["id"];
 		db_query($sql, "The quantity invoiced off the items received record could not be updated");
 		update_average_material_cost($grn["supplier_id"], $myrow["item_code"], $myrow["unit_price"], -$myrow["QtyOstdg"], Today());

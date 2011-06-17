@@ -107,7 +107,7 @@ if (isset($page_strings)) {
 		//                   get_session_data();
 		// test, if $sql is correct SQL Statement
 		$sql = urldecode(stripslashes($sql));
-		$sql1 = str_replace("0_", TB_PREF, $sql);
+		$sql1 = str_replace("", '', $sql);
 		db_query($sql1, "SQL-Statement : '" . $sql . "' " . SQL_ERROR . ":<BR>" . NOTSTORED);
 		$info = $short . "|" . $date_ . "|" . $author . "|" . $long . "|" . $print_format . "|" . $print_size . "|" . $report_type;
 		store($id_new, $info, $sql, $group, $group_type);
@@ -131,7 +131,7 @@ if (isset($page_graphics)) {
 		// set_session_data();
 		// test, if $sql is correct SQL Statement
 		$sql = urldecode(stripslashes($sql));
-		$sql1 = str_replace("0_", TB_PREF, $sql);
+		$sql1 = str_replace("", '', $sql);
 		db_query($sql1, "Entered values NOT saved!");
 		$info = $short . "|" . $date_ . "|" . $author . "|" . $long . "|" . $print_format . "|" . $print_size . "|" . $report_type;
 		store($id_new, $info, $sql, $group, $group_type);

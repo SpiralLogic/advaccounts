@@ -741,7 +741,7 @@ JS;
 
 	function get_js_date_picker() {
 		global $comp_path, $go_debug;
-		$fpath = $comp_path . '/' . user_company() . '/js_cache/' . 'date_picker.js';
+		$fpath = $comp_path . '/js_cache/' . 'date_picker.js';
 		if (!file_exists($fpath) || $go_debug) {
 			global $dateseps, $date_system;
 			$how = user_date_format(); // 0 = us/ca, 1 = eu, au, nz, 2 = jp, sw

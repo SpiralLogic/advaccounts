@@ -35,34 +35,34 @@ function GetSalesOrders($from, $to, $category = 0, $location = null, $backorder 
 	$fromdate = date2sql($from);
 	$todate = date2sql($to);
 
-	$sql = "SELECT " . TB_PREF . "sales_orders.order_no,
-				" . TB_PREF . "sales_orders.debtor_no,
-                " . TB_PREF . "sales_orders.branch_code,
-                " . TB_PREF . "sales_orders.customer_ref,
-                " . TB_PREF . "sales_orders.ord_date,
-                " . TB_PREF . "sales_orders.from_stk_loc,
-                " . TB_PREF . "sales_orders.delivery_date,
-                " . TB_PREF . "sales_order_details.stk_code,
-                " . TB_PREF . "stock_master.description,
-                " . TB_PREF . "stock_master.units,
-                " . TB_PREF . "sales_order_details.quantity,
-                " . TB_PREF . "sales_order_details.qty_sent
-            FROM " . TB_PREF . "sales_orders
-            	INNER JOIN " . TB_PREF . "sales_order_details
-            	    ON (" . TB_PREF . "sales_orders.order_no = " . TB_PREF . "sales_order_details.order_no
-            	    AND " . TB_PREF . "sales_orders.trans_type = " . TB_PREF . "sales_order_details.trans_type
-            	    AND " . TB_PREF . "sales_orders.trans_type = " . ST_SALESORDER . ")
-            	INNER JOIN " . TB_PREF . "stock_master
-            	    ON " . TB_PREF . "sales_order_details.stk_code = " . TB_PREF . "stock_master.stock_id
-            WHERE " . TB_PREF . "sales_orders.ord_date >='$fromdate'
-                AND " . TB_PREF . "sales_orders.ord_date <='$todate'";
+	$sql = "SELECT sales_orders.order_no,
+				sales_orders.debtor_no,
+                sales_orders.branch_code,
+                sales_orders.customer_ref,
+                sales_orders.ord_date,
+                sales_orders.from_stk_loc,
+                sales_orders.delivery_date,
+                sales_order_details.stk_code,
+                stock_master.description,
+                stock_master.units,
+                sales_order_details.quantity,
+                sales_order_details.qty_sent
+            FROM sales_orders
+            	INNER JOIN sales_order_details
+            	    ON (sales_orders.order_no = sales_order_details.order_no
+            	    AND sales_orders.trans_type = sales_order_details.trans_type
+            	    AND sales_orders.trans_type = " . ST_SALESORDER . ")
+            	INNER JOIN stock_master
+            	    ON sales_order_details.stk_code = stock_master.stock_id
+            WHERE sales_orders.ord_date >='$fromdate'
+                AND sales_orders.ord_date <='$todate'";
 	if ($category > 0)
-		$sql .= " AND " . TB_PREF . "stock_master.category_id=" . db_escape($category);
+		$sql .= " AND stock_master.category_id=" . db_escape($category);
 	if ($location != null)
-		$sql .= " AND " . TB_PREF . "sales_orders.from_stk_loc=" . db_escape($location);
+		$sql .= " AND sales_orders.from_stk_loc=" . db_escape($location);
 	if ($backorder)
-		$sql .= " AND " . TB_PREF . "sales_order_details.quantity - " . TB_PREF . "sales_order_details.qty_sent > 0";
-	$sql .= " ORDER BY " . TB_PREF . "sales_orders.order_no";
+		$sql .= " AND sales_order_details.quantity - sales_order_details.qty_sent > 0";
+	$sql .= " ORDER BY sales_orders.order_no";
 
 	return db_query($sql, "Error getting order details");
 }

@@ -37,8 +37,8 @@ function getTransactions($from, $to, $type, $user)
 		SUM(IF(ISNULL(g.amount), NULL, IF(g.amount > 0, g.amount, 0))) AS amount,
 		u.user_id,
 		UNIX_TIMESTAMP(a.stamp) as unix_stamp
-		FROM " . TB_PREF . "audit_trail AS a JOIN " . TB_PREF . "users AS u
-		LEFT JOIN " . TB_PREF . "gl_trans AS g ON (g.type_no=a.trans_no
+		FROM audit_trail AS a JOIN users AS u
+		LEFT JOIN gl_trans AS g ON (g.type_no=a.trans_no
 			AND g.type=a.type)
 		WHERE a.user = u.id ";
 	if ($type != -1)

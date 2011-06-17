@@ -271,7 +271,7 @@ var Customer = function () {
       if (content.transactions !== undefined) {
         transactions.empty().append(content.transactions);
       }
-      Contacts.init(customer.contacts);
+      Contacts.init(data.contacts);
       if (quiet === true) {
         return;
       }

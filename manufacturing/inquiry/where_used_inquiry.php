@@ -43,10 +43,10 @@ $sql = "SELECT
 		location.location_name,
 		bom.quantity,
 		parent.description
-		FROM " . TB_PREF . "bom as bom, "
-	   . TB_PREF . "stock_master as parent, "
-	   . TB_PREF . "workcentres as workcentre, "
-	   . TB_PREF . "locations as location
+		FROM bom as bom, "
+	   .  "stock_master as parent, "
+	   .  "workcentres as workcentre, "
+	   .  "locations as location
 		WHERE bom.parent = parent.stock_id 
 			AND bom.workcentre_added = workcentre.id
 			AND bom.loc_code = location.loc_code

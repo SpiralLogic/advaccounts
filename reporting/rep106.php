@@ -35,20 +35,20 @@ function GetSalesmanTrans($from, $to)
 	$fromdate = date2sql($from);
 	$todate = date2sql($to);
 
-	$sql = "SELECT DISTINCT " . TB_PREF . "debtor_trans.*,
+	$sql = "SELECT DISTINCT debtor_trans.*,
 		ov_amount+ov_discount AS InvoiceTotal,
-		" . TB_PREF . "debtors_master.name AS DebtorName, " . TB_PREF . "debtors_master.curr_code, " . TB_PREF . "cust_branch.br_name,
-		" . TB_PREF . "cust_branch.contact_name, " . TB_PREF . "salesman.*
-		FROM " . TB_PREF . "debtor_trans, " . TB_PREF . "debtors_master, " . TB_PREF . "sales_orders, " . TB_PREF . "cust_branch,
-			" . TB_PREF . "salesman
-		WHERE " . TB_PREF . "sales_orders.order_no=" . TB_PREF . "debtor_trans.order_
-		    AND " . TB_PREF . "sales_orders.branch_code=" . TB_PREF . "cust_branch.branch_code
-		    AND " . TB_PREF . "cust_branch.salesman=" . TB_PREF . "salesman.salesman_code
-		    AND " . TB_PREF . "debtor_trans.debtor_no=" . TB_PREF . "debtors_master.debtor_no
-		    AND (" . TB_PREF . "debtor_trans.type=" . ST_SALESINVOICE . " OR " . TB_PREF . "debtor_trans.type=" . ST_CUSTCREDIT . ")
-		    AND " . TB_PREF . "debtor_trans.tran_date>='$fromdate'
-		    AND " . TB_PREF . "debtor_trans.tran_date<='$todate'
-		ORDER BY " . TB_PREF . "salesman.salesman_code, " . TB_PREF . "debtor_trans.tran_date";
+		debtors_master.name AS DebtorName, debtors_master.curr_code, cust_branch.br_name,
+		cust_branch.contact_name, salesman.*
+		FROM debtor_trans, debtors_master, sales_orders, cust_branch,
+			salesman
+		WHERE sales_orders.order_no=debtor_trans.order_
+		    AND sales_orders.branch_code=cust_branch.branch_code
+		    AND cust_branch.salesman=salesman.salesman_code
+		    AND debtor_trans.debtor_no=debtors_master.debtor_no
+		    AND (debtor_trans.type=" . ST_SALESINVOICE . " OR debtor_trans.type=" . ST_CUSTCREDIT . ")
+		    AND debtor_trans.tran_date>='$fromdate'
+		    AND debtor_trans.tran_date<='$todate'
+		ORDER BY salesman.salesman_code, debtor_trans.tran_date";
 
 	return db_query($sql, "Error getting order details");
 }

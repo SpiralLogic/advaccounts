@@ -22,7 +22,7 @@ function find_report_file($rep)
 	global $installed_extensions, $comp_path, $path_to_root;
 
 	// customized per company versions 
-	$path = $comp_path . '/' . user_company() . "/reporting";
+	$path = $comp_path . "/reporting";
 	$rep_file = $path . "/rep$rep.php";
 	if (file_exists($rep_file)) {
 		// add local include path for custom reports
@@ -53,7 +53,7 @@ function find_report_file($rep)
 if (isset($_GET['xls'])) {
 	$filename = $_GET['filename'];
 	$unique_name = $_GET['unique'];
-	$path = $comp_path . '/' . user_company() . '/pdf_files/';
+	$path = $comp_path . '/pdf_files/';
 	header("Content-type: application/vnd.ms-excel");
 	header("Content-Disposition: attachment; filename=$filename");
 	header("Expires: 0");
@@ -66,7 +66,7 @@ elseif (isset($_GET['xml']))
 {
 	$filename = $_GET['filename'];
 	$unique_name = $_GET['unique'];
-	$path = $comp_path . '/' . user_company() . '/pdf_files/';
+	$path = $comp_path . '/pdf_files/';
 	header("content-type: text/xml");
 	header("Content-Disposition: attachment; filename=$filename");
 	header("Expires: 0");

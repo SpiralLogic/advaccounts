@@ -21,7 +21,7 @@ include_once($path_to_root . "/gl/includes/gl_db.inc");
 //
 function is_bank_account($account_code)
 {
-	$sql = "SELECT id FROM " . TB_PREF . "bank_accounts WHERE account_code='$account_code'";
+	$sql = "SELECT id FROM bank_accounts WHERE account_code='$account_code'";
 	$result = db_query($sql, "checking account is bank account");
 	if (db_num_rows($result) > 0) {
 		$acct = db_fetch($result);
@@ -41,7 +41,7 @@ function is_company_currency($currency)
 
 function get_company_currency()
 {
-	$sql = "SELECT curr_default FROM " . TB_PREF . "company";
+	$sql = "SELECT curr_default FROM company";
 	$result = db_query($sql, "retreive company currency");
 
 	if (db_num_rows($result) == 0)
@@ -55,7 +55,7 @@ function get_company_currency()
 
 function get_bank_account_currency($id)
 {
-	$sql = "SELECT bank_curr_code FROM " . TB_PREF . "bank_accounts WHERE id='$id'";
+	$sql = "SELECT bank_curr_code FROM bank_accounts WHERE id='$id'";
 	$result = db_query($sql, "retreive bank account currency");
 
 	$myrow = db_fetch_row($result);
@@ -66,7 +66,7 @@ function get_bank_account_currency($id)
 
 function get_customer_currency($customer_id)
 {
-	$sql = "SELECT curr_code FROM " . TB_PREF . "debtors_master WHERE debtor_no = '$customer_id'";
+	$sql = "SELECT curr_code FROM debtors_master WHERE debtor_no = '$customer_id'";
 
 	$result = db_query($sql, "Retreive currency of customer $customer_id");
 
@@ -78,7 +78,7 @@ function get_customer_currency($customer_id)
 
 function get_supplier_currency($supplier_id)
 {
-	$sql = "SELECT curr_code FROM " . TB_PREF . "suppliers WHERE supplier_id = '$supplier_id'";
+	$sql = "SELECT curr_code FROM suppliers WHERE supplier_id = '$supplier_id'";
 
 	$result = db_query($sql, "Retreive currency of supplier $supplier_id");
 
@@ -95,7 +95,7 @@ function get_exchange_rate_from_home_currency($currency_code, $date_)
 
 	$date = date2sql($date_);
 
-	$sql = "SELECT rate_buy, max(date_) as date_ FROM " . TB_PREF . "exchange_rates WHERE curr_code = '$currency_code'
+	$sql = "SELECT rate_buy, max(date_) as date_ FROM exchange_rates WHERE curr_code = '$currency_code'
 				AND date_ <= '$date' GROUP BY rate_buy ORDER BY date_ Desc LIMIT 1";
 
 	$result = db_query($sql, "could not query exchange rates");

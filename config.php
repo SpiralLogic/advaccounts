@@ -146,7 +146,7 @@
  */
 	//MySQL Backup and Restore Settings
 	if (isset($_SESSION["wa_current_user"])) {
-		define("BACKUP_PATH", $comp_path . '/' . user_company() . "/backup/");
+		define("BACKUP_PATH", $comp_path . "/backup/");
 	}
 	// static js files path
 	$js_path = $path_to_root . '/js/';

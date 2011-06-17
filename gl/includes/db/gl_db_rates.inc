@@ -12,7 +12,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 //---------------------------------------------------------------------------------------------
 function get_exchange_rate($rate_id)
 {
-	$sql = "SELECT * FROM " . TB_PREF . "exchange_rates WHERE id=" . db_escape($rate_id);
+	$sql = "SELECT * FROM exchange_rates WHERE id=" . db_escape($rate_id);
 	$result = db_query($sql, "could not get exchange rate for $rate_id");
 
 	return db_fetch($result);
@@ -22,7 +22,7 @@ function get_exchange_rate($rate_id)
 function get_date_exchange_rate($curr_code, $date_)
 {
 	$date = date2sql($date_);
-	$sql = "SELECT rate_buy FROM " . TB_PREF . "exchange_rates WHERE curr_code=" . db_escape($curr_code)
+	$sql = "SELECT rate_buy FROM exchange_rates WHERE curr_code=" . db_escape($curr_code)
 		   . " AND date_='$date'";
 	$result = db_query($sql, "could not get exchange rate for $curr_code - $date_");
 
@@ -41,7 +41,7 @@ function update_exchange_rate($curr_code, $date_, $buy_rate, $sell_rate)
 
 	$date = date2sql($date_);
 
-	$sql = "UPDATE " . TB_PREF . "exchange_rates SET rate_buy=$buy_rate, rate_sell=" . db_escape($sell_rate)
+	$sql = "UPDATE exchange_rates SET rate_buy=$buy_rate, rate_sell=" . db_escape($sell_rate)
 		   . " WHERE curr_code=" . db_escape($curr_code) . " AND date_='$date'";
 
 	db_query($sql, "could not add exchange rate for $curr_code");
@@ -56,7 +56,7 @@ function add_exchange_rate($curr_code, $date_, $buy_rate, $sell_rate)
 
 	$date = date2sql($date_);
 
-	$sql = "INSERT INTO " . TB_PREF . "exchange_rates (curr_code, date_, rate_buy, rate_sell)
+	$sql = "INSERT INTO exchange_rates (curr_code, date_, rate_buy, rate_sell)
 		VALUES (" . db_escape($curr_code) . ", '$date', " . db_escape($buy_rate)
 		   . ", " . db_escape($sell_rate) . ")";
 	db_query($sql, "could not add exchange rate for $curr_code");
@@ -66,7 +66,7 @@ function add_exchange_rate($curr_code, $date_, $buy_rate, $sell_rate)
 
 function delete_exchange_rate($rate_id)
 {
-	$sql = "DELETE FROM " . TB_PREF . "exchange_rates WHERE id=" . db_escape($rate_id);
+	$sql = "DELETE FROM exchange_rates WHERE id=" . db_escape($rate_id);
 	db_query($sql, "could not delete exchange rate $rate_id");
 }
 

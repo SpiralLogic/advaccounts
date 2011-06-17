@@ -415,7 +415,7 @@ class FrontReport extends Cpdf
 		// Print company logo if present and requested, or else just print company name
 		if ($this->companyLogoEnable && ($this->company['coy_logo'] != '')) {
 			// Build a string specifying the location of the company logo file
-			$logo = $comp_path . '/' . user_company() . "/images/" . $this->company['coy_logo'];
+			$logo = $comp_path . "/images/" . $this->company['coy_logo'];
 			// Width being zero means that the image will be scaled to the specified height
 			// keeping its aspect ratio intact.
 			if ($this->scaleLogoWidth) $this->AddImage($logo, $companyCol, $this->row, COMPANY_WIDTH, 0); else
@@ -808,7 +808,7 @@ class FrontReport extends Cpdf
 			//header('Pragma: public');
 			//$this->pdf->stream();
 		} else {
-			$dir = $comp_path . '/' . user_company() . '/pdf_files';
+			$dir = $comp_path . '/pdf_files';
 			//save the file
 			if (!file_exists($dir)) {
 				mkdir($dir, 0777);

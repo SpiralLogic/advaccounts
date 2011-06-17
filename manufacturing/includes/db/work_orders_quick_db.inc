@@ -31,7 +31,7 @@ function add_work_order_quick($wo_ref, $loc_code, $units_reqd, $stock_id, $type,
 		$labour = 0;
 	add_labour_cost($stock_id, $units_reqd, $date_, $labour);
 
-	$sql = "INSERT INTO " . TB_PREF . "workorders (wo_ref, loc_code, units_reqd, units_issued, stock_id,
+	$sql = "INSERT INTO workorders (wo_ref, loc_code, units_reqd, units_issued, stock_id,
 		type, additional_costs, date_, released_date, required_by, released, closed)
     	VALUES (" . db_escape($wo_ref) . ", " . db_escape($loc_code) . ", " . db_escape($units_reqd)
 		   . ", " . db_escape($units_reqd) . ", " . db_escape($stock_id) . ",
@@ -52,7 +52,7 @@ function add_work_order_quick($wo_ref, $loc_code, $units_reqd, $stock_id, $type,
 		$item_quantity = $bom_item["quantity"] * $units_reqd;
 
 
-		$sql = "INSERT INTO " . TB_PREF . "wo_requirements (workorder_id, stock_id, workcentre, units_req, units_issued, loc_code)
+		$sql = "INSERT INTO wo_requirements (workorder_id, stock_id, workcentre, units_req, units_issued, loc_code)
 			VALUES ($woid, " . "'" . $bom_item["component"] . "'" . ",
 			'" . $bom_item["workcentre_added"] . "',
 			$unit_quantity,	$item_quantity, '" . $bom_item["loc_code"] . "')";

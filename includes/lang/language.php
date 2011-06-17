@@ -52,7 +52,7 @@ class language
 
 		if ($lang && $changed) {
 			// flush cache as we can use several languages in one account
-			flush_dir($comp_path . '/' . user_company() . '/js_cache');
+			flush_dir($comp_path . '/js_cache');
 
 			$this->name = $lang['name'];
 			$this->code = $lang['code'];

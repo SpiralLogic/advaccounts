@@ -67,7 +67,7 @@ function check_for_recursive_bom($ultimate_parent, $component_to_check)
 	/* returns true ie 1 if the bom contains the parent part as a component
 	ie the bom is recursive otherwise false ie 0 */
 
-	$sql = "SELECT component FROM " . TB_PREF . "bom WHERE parent=" . db_escape($component_to_check);
+	$sql = "SELECT component FROM bom WHERE parent=" . db_escape($component_to_check);
 	$result = db_query($sql, "could not check recursive bom");
 
 	if ($result != 0) {
@@ -133,7 +133,7 @@ function on_submit($selected_parent, $selected_component = -1)
 
 	if ($selected_component != -1) {
 
-		$sql = "UPDATE " . TB_PREF . "bom SET workcentre_added=" . db_escape($_POST['workcentre_added'])
+		$sql = "UPDATE bom SET workcentre_added=" . db_escape($_POST['workcentre_added'])
 			   . ",loc_code=" . db_escape($_POST['loc_code']) . ",
 			quantity= " . input_num('quantity') . "
 			WHERE parent=" . db_escape($selected_parent) . "
@@ -155,7 +155,7 @@ function on_submit($selected_parent, $selected_component = -1)
 		if (!check_for_recursive_bom($selected_parent, $_POST['component'])) {
 
 			/*Now check to see that the component is not already on the bom */
-			$sql = "SELECT component FROM " . TB_PREF . "bom
+			$sql = "SELECT component FROM bom
 				WHERE parent=" . db_escape($selected_parent) . "
 				AND component=" . db_escape($_POST['component']) . "
 				AND workcentre_added=" . db_escape($_POST['workcentre_added']) . "
@@ -163,7 +163,7 @@ function on_submit($selected_parent, $selected_component = -1)
 			$result = db_query($sql, "check failed");
 
 			if (db_num_rows($result) == 0) {
-				$sql = "INSERT INTO " . TB_PREF . "bom (parent, component, workcentre_added, loc_code, quantity)
+				$sql = "INSERT INTO bom (parent, component, workcentre_added, loc_code, quantity)
 					VALUES (" . db_escape($selected_parent) . ", " . db_escape($_POST['component']) . ","
 					   . db_escape($_POST['workcentre_added']) . ", " . db_escape($_POST['loc_code']) . ", "
 					   . input_num('quantity') . ")";
@@ -189,7 +189,7 @@ function on_submit($selected_parent, $selected_component = -1)
 //--------------------------------------------------------------------------------------------------
 
 if ($Mode == 'Delete') {
-	$sql = "DELETE FROM " . TB_PREF . "bom WHERE id=" . db_escape($selected_id);
+	$sql = "DELETE FROM bom WHERE id=" . db_escape($selected_id);
 	db_query($sql, "Could not delete this bom components");
 
 	display_notification(_("The component item has been deleted from this bom"));
@@ -232,10 +232,10 @@ if (get_post('stock_id') != '') { //Parent Item selected so display bom or edit 
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {
 			//editing a selected component from the link to the line item
-			$sql = "SELECT " . TB_PREF . "bom.*," . TB_PREF . "stock_master.description FROM "
-				   . TB_PREF . "bom," . TB_PREF . "stock_master
+			$sql = "SELECT bom.*,stock_master.description FROM "
+				   .  "bom,stock_master
 				WHERE id=" . db_escape($selected_id) . "
-				AND " . TB_PREF . "stock_master.stock_id=" . TB_PREF . "bom.component";
+				AND stock_master.stock_id=bom.component";
 
 			$result = db_query($sql, "could not get bom");
 			$myrow = db_fetch($result);

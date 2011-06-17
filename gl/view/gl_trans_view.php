@@ -48,9 +48,9 @@ function display_gl_heading($myrow)
 }
 
 $sql = "SELECT gl.*, cm.account_name, IF(ISNULL(refs.reference), '', refs.reference) AS reference FROM "
-	   . TB_PREF . "gl_trans as gl
-	LEFT JOIN " . TB_PREF . "chart_master as cm ON gl.account = cm.account_code
-	LEFT JOIN " . TB_PREF . "refs as refs ON (gl.type=refs.type AND gl.type_no=refs.id)"
+	   .  "gl_trans as gl
+	LEFT JOIN chart_master as cm ON gl.account = cm.account_code
+	LEFT JOIN refs as refs ON (gl.type=refs.type AND gl.type_no=refs.id)"
 	   . " WHERE gl.type= " . db_escape($_GET['type_id'])
 	   . " AND gl.type_no = " . db_escape($_GET['trans_no'])
 	   . " ORDER BY counter";

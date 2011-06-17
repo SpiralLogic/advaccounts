@@ -134,8 +134,8 @@ $sql = "SELECT
 		trans.alloc AS Allocated,
 		((trans.type = " . ST_SUPPINVOICE . " OR trans.type = " . ST_SUPPCREDIT . ") AND trans.due_date < '" . date2sql(Today()) . "') AS OverDue
     	FROM "
-	   . TB_PREF . "supp_trans as trans, "
-	   . TB_PREF . "suppliers as supplier
+	   .  "supp_trans as trans, "
+	   .  "suppliers as supplier
     	WHERE supplier.supplier_id = trans.supplier_id
      	AND trans.tran_date >= '$date_after'
     	AND trans.tran_date <= '$date_to'";

@@ -20,9 +20,9 @@ function get_supplier_details($supplier_id, $to = null)
 	$past2 = 2 * $past1;
 	// removed - supp_trans.alloc from all summations
 
-	$value = "(" . TB_PREF . "supp_trans.ov_amount + " . TB_PREF . "supp_trans.ov_gst + " . TB_PREF . "supp_trans.ov_discount)";
-	$due = "IF (" . TB_PREF . "supp_trans.type=" . ST_SUPPINVOICE . " OR " . TB_PREF . "supp_trans.type=" . ST_SUPPCREDIT . "," . TB_PREF . "supp_trans.due_date," . TB_PREF . "supp_trans.tran_date)";
-	$sql = "SELECT " . TB_PREF . "suppliers.supp_name, " . TB_PREF . "suppliers.curr_code, " . TB_PREF . "payment_terms.terms,
+	$value = "(supp_trans.ov_amount + supp_trans.ov_gst + supp_trans.ov_discount)";
+	$due = "IF (supp_trans.type=" . ST_SUPPINVOICE . " OR supp_trans.type=" . ST_SUPPCREDIT . ",supp_trans.due_date,supp_trans.tran_date)";
+	$sql = "SELECT suppliers.supp_name, suppliers.curr_code, payment_terms.terms,
 
 		Sum($value) AS Balance,
 
@@ -30,21 +30,21 @@ function get_supplier_details($supplier_id, $to = null)
 		Sum(IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= $past1,$value,0)) AS Overdue1,
 		Sum(IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= $past2,$value,0)) AS Overdue2
 
-		FROM " . TB_PREF . "suppliers,
-			 " . TB_PREF . "payment_terms,
-			 " . TB_PREF . "supp_trans
+		FROM suppliers,
+			 payment_terms,
+			 supp_trans
 
 		WHERE
-			 " . TB_PREF . "suppliers.payment_terms = " . TB_PREF . "payment_terms.terms_indicator
-			 AND " . TB_PREF . "suppliers.supplier_id = $supplier_id
-			 AND " . TB_PREF . "supp_trans.tran_date <= '$todate'
-			 AND " . TB_PREF . "suppliers.supplier_id = " . TB_PREF . "supp_trans.supplier_id
+			 suppliers.payment_terms = payment_terms.terms_indicator
+			 AND suppliers.supplier_id = $supplier_id
+			 AND supp_trans.tran_date <= '$todate'
+			 AND suppliers.supplier_id = supp_trans.supplier_id
 
 		GROUP BY
-			  " . TB_PREF . "suppliers.supp_name,
-			  " . TB_PREF . "payment_terms.terms,
-			  " . TB_PREF . "payment_terms.days_before_due,
-			  " . TB_PREF . "payment_terms.day_in_following_month";
+			  suppliers.supp_name,
+			  payment_terms.terms,
+			  payment_terms.days_before_due,
+			  payment_terms.day_in_following_month";
 
 	$result = db_query($sql, "The customer details could not be retrieved");
 
@@ -54,12 +54,12 @@ function get_supplier_details($supplier_id, $to = null)
 
 		$nil_balance = true;
 
-		$sql = "SELECT " . TB_PREF . "suppliers.supp_name, " . TB_PREF . "suppliers.curr_code, " . TB_PREF . "suppliers.supplier_id,  " . TB_PREF . "payment_terms.terms
-			FROM " . TB_PREF . "suppliers,
-				 " . TB_PREF . "payment_terms
+		$sql = "SELECT suppliers.supp_name, suppliers.curr_code, suppliers.supplier_id,  payment_terms.terms
+			FROM suppliers,
+				 payment_terms
 			WHERE
-				 " . TB_PREF . "suppliers.payment_terms = " . TB_PREF . "payment_terms.terms_indicator
-				 AND " . TB_PREF . "suppliers.supplier_id = " . db_escape($supplier_id);
+				 suppliers.payment_terms = payment_terms.terms_indicator
+				 AND suppliers.supplier_id = " . db_escape($supplier_id);
 
 		$result = db_query($sql, "The customer details could not be retrieved");
 
@@ -96,7 +96,7 @@ function get_supplier_oweing($supplier_id, $date_from, $date_to)
     	SUM((trans.ov_amount + trans.ov_gst  + trans.ov_discount)) AS Total
 
 
-    	FROM " . TB_PREF . "supp_trans as trans
+    	FROM supp_trans as trans
      	WHERE trans.ov_amount != 0
 		AND trans . tran_date >= '$date_from'
 		AND trans . tran_date <= '$date_to'
@@ -112,7 +112,7 @@ function get_supplier_oweing($supplier_id, $date_from, $date_to)
 
 function get_supplier($supplier_id)
 {
-	$sql = "SELECT * FROM " . TB_PREF . "suppliers WHERE supplier_id=" . db_escape($supplier_id);
+	$sql = "SELECT * FROM suppliers WHERE supplier_id=" . db_escape($supplier_id);
 
 	$result = db_query($sql, "could not get supplier");
 
@@ -121,7 +121,7 @@ function get_supplier($supplier_id)
 
 function get_supplier_name($supplier_id)
 {
-	$sql = "SELECT supp_name AS name FROM " . TB_PREF . "suppliers WHERE supplier_id=" . db_escape($supplier_id);
+	$sql = "SELECT supp_name AS name FROM suppliers WHERE supplier_id=" . db_escape($supplier_id);
 
 	$result = db_query($sql, "could not get supplier");
 
@@ -132,7 +132,7 @@ function get_supplier_name($supplier_id)
 
 function get_supplier_accounts($supplier_id)
 {
-	$sql = "SELECT payable_account,purchase_account,payment_discount_account FROM " . TB_PREF . "suppliers WHERE supplier_id=" . db_escape($supplier_id);
+	$sql = "SELECT payable_account,purchase_account,payment_discount_account FROM suppliers WHERE supplier_id=" . db_escape($supplier_id);
 
 	$result = db_query($sql, "could not get supplier");
 

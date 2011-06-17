@@ -43,7 +43,7 @@ class current_user
 	{
 		if ($salesman_code == null) {
 			$salesman_name = $this->name;
-			$sql = "SELECT salesman_code FROM " . TB_PREF . "salesman WHERE salesman_name = " . db_escape($salesman_name);
+			$sql = "SELECT salesman_code FROM salesman WHERE salesman_name = " . db_escape($salesman_name);
 			$query = db_query($sql, 'Couldn\'t find current salesman');
 			$result = db_fetch_assoc($query);
 			if (!empty($result['salesman_code'])) $this->salesmanid = $result['salesman_code'];
@@ -151,7 +151,7 @@ class current_user
 		//print_r($connection);
 		$db = mysql_connect($connection["host"], $connection["dbuser"], $connection["dbpassword"]);
 		mysql_select_db($connection["dbname"], $db);
-		if (!defined('TB_PREF')) define('TB_PREF', $connection["tbpref"]);
+		if (!defined('TB_PREF')) define('TB_PREF', '');
 		return $db;
 	}
 
@@ -269,7 +269,8 @@ function user_numeric($input)
 
 function user_company()
 {
-	return $_SESSION["wa_current_user"]->company;
+//	return $_SESSION["wa_current_user"]->company;
+return '';
 }
 
 function user_pos()

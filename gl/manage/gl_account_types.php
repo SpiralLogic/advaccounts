@@ -73,7 +73,7 @@ function can_delete($selected_id)
 		return false;
 	$type = db_escape($selected_id);
 
-	$sql = "SELECT COUNT(*) FROM " . TB_PREF . "chart_master
+	$sql = "SELECT COUNT(*) FROM chart_master
 		WHERE account_type=$type";
 	$result = db_query($sql, "could not query chart master");
 	$myrow = db_fetch_row($result);
@@ -82,7 +82,7 @@ function can_delete($selected_id)
 		return false;
 	}
 
-	$sql = "SELECT COUNT(*) FROM " . TB_PREF . "chart_types
+	$sql = "SELECT COUNT(*) FROM chart_types
 		WHERE parent=$type";
 	$result = db_query($sql, "could not query chart types");
 	$myrow = db_fetch_row($result);

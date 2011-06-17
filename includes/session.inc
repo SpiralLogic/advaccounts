@@ -248,7 +248,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 			set_global_connection();
 		}
 		if (!$_SESSION["wa_current_user"]->old_db) {
-			include_once($path_to_root . '/company/' . user_company() . '/installed_extensions.php');
+			include_once($path_to_root . '/company/installed_extensions.php');
 		}
 		if (!isset($_SESSION["App"])) {
 			$_SESSION["App"] = new front_accounting();
