@@ -200,7 +200,7 @@ $ext = $sec = $m = -1;
 foreach (sort_areas($security_areas) as $area => $parms) {
 	// system setup areas are accessable only for site admins i.e.
 	// admins of first registered company
-	if (user_company() && (($parms[0] & 0xff00) == SS_SADMIN)) continue;
+	if ((($parms[0] & 0xff00) == SS_SADMIN)) continue;
 
 	$newsec = ($parms[0] >> 8) & 0xff;
 	$newext = $parms[0] >> 16;

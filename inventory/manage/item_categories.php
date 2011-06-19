@@ -87,8 +87,7 @@ if (list_updated('mb_flag')) {
 }
 //----------------------------------------------------------------------------------
 
-$sql = "SELECT c.*, t.name as tax_name FROM stock_category c, "
-	   .  "item_tax_types t WHERE c.dflt_tax_type=t.id";
+$sql = "SELECT c.*, t.name as tax_name FROM stock_category c, item_tax_types t WHERE c.dflt_tax_type=t.id";
 if (!check_value('show_inactive')) $sql .= " AND !c.inactive";
 
 $result = db_query($sql, "could not get stock categories");

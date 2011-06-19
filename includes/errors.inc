@@ -33,7 +33,7 @@ function error_handler($errno, $errstr, $file, $line)
 	if ($errno & error_reporting())
 		$messages[] = array($errno, $errstr, $file, $line);
 	else if ($errno & ~E_NOTICE) // log all not displayed messages
-		error_log(user_company() . ':' . $_SESSION["wa_current_user"]->loginname . ':'
+		error_log($_SESSION["wa_current_user"]->loginname . ':'
 				  . basename($file) . ":$line: $errstr");
 
 	return true;

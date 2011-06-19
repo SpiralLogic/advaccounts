@@ -205,9 +205,9 @@ function set_document_parent($cart)
 		$src = array_keys($cart->src_docs);
 		$del_no = reset($src);
 
-		$sql = 'UPDATE ' .  'debtor_trans SET trans_link = ' . $del_no .
+		$sql = 'UPDATE debtor_trans SET trans_link = ' . $del_no .
 			   ' WHERE type=' . db_escape($cart->trans_type) . ' AND trans_no=' . $inv_no;
-		db_query($sql, 'Child document link cannot be updated');
+		db_query($sql, 'UPDATE Child document link cannot be updated');
 
 	}
 	if ($cart->trans_type != ST_SALESINVOICE)
@@ -221,7 +221,7 @@ function set_document_parent($cart)
 		}
 	}
 
-	$sql = 'UPDATE ' .  'debtor_trans SET trans_link = ' . $inv_no .
+	$sql = 'UPDATE debtor_trans SET trans_link = ' . $inv_no .
 		   ' WHERE type=' . get_parent_type($cart->trans_type) . ' AND (';
 
 	$deliveries = array_keys($cart->src_docs);

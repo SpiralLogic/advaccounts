@@ -184,8 +184,7 @@ if ($_POST['curr_abrev'] != get_global_curr_code()) {
 
 set_global_curr_code($_POST['curr_abrev']);
 
-$sql = "SELECT date_, rate_buy, id FROM "
-	   .  "exchange_rates "
+$sql = "SELECT date_, rate_buy, id FROM exchange_rates "
 	   . "WHERE curr_code=" . db_escape($_POST['curr_abrev']) . "
 	 ORDER BY date_ DESC";
 

@@ -61,7 +61,7 @@ class Branch extends Company
 		if (!is_array($params)) {
 			$params = array('branch_code' => $params);
 		}
-		$sql = "SELECT " . "b.*, " . "a.description, " . "s.salesman_name, " . "t.name AS tax_group_name
+		$sql = "SELECT " . "b.*, a.description, s.salesman_name, t.name AS tax_group_name
 		FROM cust_branch b, debtors_master c, areas a, salesman s, tax_groups t
 		WHERE b.debtor_no=c.debtor_no
 		AND b.tax_group_id=t.id

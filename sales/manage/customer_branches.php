@@ -209,11 +209,7 @@ $sql = "SELECT "
 	   . "b.email, "
 	   . "t.name AS tax_group_name, "
 	   . "b.inactive
-		FROM cust_branch b, "
-	   .  "debtors_master c, "
-	   .  "areas a, "
-	   .  "salesman s, "
-	   .  "tax_groups t
+		FROM cust_branch b, debtors_master c, areas a, salesman s, tax_groups t
 		WHERE b.debtor_no=c.debtor_no
 		AND b.tax_group_id=t.id
 		AND b.area=a.area_code

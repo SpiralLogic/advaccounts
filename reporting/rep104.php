@@ -116,10 +116,7 @@ function print_price_listing()
 					3 => array('text' => _('Sales Type'), 'from' => $stype, 'to' => ''),
 					4 => array('text' => _('Show GP %'), 'from' => $GP, 'to' => ''));
 
-	if ($pictures)
-		$user_comp = user_company();
-	else
-		$user_comp = "";
+
 
 	$rep = new FrontReport(_('Price Listing'), "PriceListing", user_pagesize());
 
@@ -156,7 +153,7 @@ function print_price_listing()
 			$rep->TextCol(3, 4, number_format2($disp, user_percent_dec()) . " %");
 		}
 		if ($pictures) {
-			$image = $comp_path . '/' . $user_comp . "/images/"
+			$image = $comp_path . "/images/"
 					 . item_img_name($myrow['stock_id']) . ".jpg";
 			if (file_exists($image)) {
 				$rep->NewLine();

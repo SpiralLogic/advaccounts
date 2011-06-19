@@ -36,9 +36,8 @@ if (isset($_POST['update']) && $_POST['update'] != "") {
 		set_focus('coy_name');
 	}
 	if (isset($_FILES['pic']) && $_FILES['pic']['name'] != '') {
-		$user_comp = user_company();
 		$result = $_FILES['pic']['error'];
-		$filename = $comp_path . "/$user_comp/images";
+		$filename = $comp_path . "/images";
 		if (!file_exists($filename)) {
 			mkdir($filename);
 		}
@@ -77,8 +76,7 @@ if (isset($_POST['update']) && $_POST['update'] != "") {
 		}
 	}
 	if (check_value('del_coy_logo')) {
-		$user_comp = user_company();
-		$filename = $comp_path . "/$user_comp/images/" . $_POST['coy_logo'];
+		$filename = $comp_path . "/images/" . $_POST['coy_logo'];
 		if (file_exists($filename)) {
 			$result = unlink($filename);
 			if (!$result) {

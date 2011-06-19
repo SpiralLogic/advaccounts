@@ -48,7 +48,7 @@ function get_parent_trans($trans_type, $trans_no)
 function update_customer_trans_version($type, $versions)
 {
 
-	$sql = 'UPDATE ' .  'debtor_trans SET version=version+1
+	$sql = 'UPDATE debtor_trans SET version=version+1
 			WHERE type=' . db_escape($type) . ' AND (';
 
 	foreach ($versions as $trans_no => $version)

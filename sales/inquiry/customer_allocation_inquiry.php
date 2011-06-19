@@ -151,9 +151,7 @@ $sql = "SELECT
 		trans.alloc AS Allocated,
 		((trans.type = " . ST_SALESINVOICE . ")
 			AND trans.due_date < '" . date2sql(Today()) . "') AS OverDue
-    	FROM "
-	   .  "debtor_trans as trans, "
-	   .  "debtors_master as debtor
+    	FROM debtor_trans as trans, debtors_master as debtor
     	WHERE debtor.debtor_no = trans.debtor_no
 			AND (trans.ov_amount + trans.ov_gst + trans.ov_freight 
 				+ trans.ov_freight_tax + trans.ov_discount != 0)

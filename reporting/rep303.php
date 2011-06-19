@@ -120,10 +120,7 @@ function print_stock_check()
 					3 => array('text' => _('Only Shortage'), 'from' => $short, 'to' => ''),
 					4 => array('text' => _('Suppress Zeros'), 'from' => $nozeros, 'to' => ''));
 
-	if ($pictures)
-		$user_comp = user_company();
-	else
-		$user_comp = "";
+
 
 	$rep = new FrontReport(_('Stock Check Sheets'), "StockCheckSheet", user_pagesize());
 
@@ -177,7 +174,7 @@ function print_stock_check()
 			$rep->AmountCol(5, 6, $onorder, $dec);
 		}
 		if ($pictures) {
-			$image = $comp_path . '/' . $user_comp . '/images/'
+			$image = $comp_path . '/images/'
 					 . item_img_name($trans['stock_id']) . '.jpg';
 			if (file_exists($image)) {
 				$rep->NewLine();

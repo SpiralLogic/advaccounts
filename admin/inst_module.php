@@ -323,7 +323,6 @@ if (get_post('Update')) {
 		$exts[$i]['active'] = check_value('Active' . $i);
 	}
 	write_extensions($exts, get_post('extset'));
-	if (get_post('extset') == user_company())
 		$installed_extensions = $exts;
 	display_notification(_('Current active extensions set has been saved.'));
 }

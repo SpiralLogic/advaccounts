@@ -98,7 +98,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
    //
    function update_sales_order_version($order) {
       foreach ($order as $so_num => $so_ver) {
-         $sql = 'UPDATE ' .  'sales_orders SET version=version+1 WHERE order_no=' . $so_num . ' AND version=' . $so_ver . " AND trans_type=30";
+         $sql = 'UPDATE sales_orders SET version=version+1 WHERE order_no=' . $so_num . ' AND version=' . $so_ver . " AND trans_type=30";
          db_query($sql, 'Concurrent editing conflict while sales order update');
       }
    }
