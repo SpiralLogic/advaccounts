@@ -10,6 +10,7 @@ if (isAjaxReferrer()) {
 		if (isset($_POST['name'])) {
 			$data['customer'] = $customer = new Customer($_POST);
 			$data['customer']->save();
+         $data['customer']=new Customer($_POST['id']);
 			$data['status'] = $customer->getStatus();
 
 		} elseif (!isset($_POST['name'])) {

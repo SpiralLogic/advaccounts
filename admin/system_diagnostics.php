@@ -318,7 +318,7 @@ $k = 0; //row colour counter
 foreach ($system_tests as $test)
 {
 	alt_table_row_color($k);
-	$result = $test();
+	$result = call_user_func($test);
 	if (!$result) continue;
 	label_cell($result['descr']);
 	label_cell($test_level[$result['type']]);

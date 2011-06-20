@@ -26,7 +26,7 @@
 	$error_logfile = dirname(__FILE__) . '/tmp/errors.log';
 	$debug = 0;
 	$show_sql = 0;
-	$go_debug =0;
+	$go_debug =1;
 	$pdf_debug = 0;
 	// set $sql_trail to 1 only if you want to perform bugtracking sql trail
 	// Warning: this produces huge amount of data in sql_trail table.
@@ -35,11 +35,12 @@
 	//
 	$sql_trail = 0; // save all sql queries in sql_trail
 	$select_trail = 0; // track also SELECT queries
-	if ($go_debug == 1) {
+   if ($go_debug && isset($_SESSION["wa_current_user"]) && $_SESSION["wa_current_user"]->user == 1) {
 		error_reporting(E_ALL);
 		ini_set("display_errors", "On");
 	}
 	else {
+      $go_debug = 0;
 		error_reporting(E_USER_WARNING | E_USER_ERROR | E_USER_NOTICE);
 		// ini_alter("error_reporting","E_COMPILE_ERROR|E_ERROR|E_CORE_ERROR|E_PARSE");
 		ini_set("display_errors", "On");
@@ -54,7 +55,7 @@
 	// application version
 	$version = "2.2.11";
 	// Build for development purposes
-	$build_version = date("d.m.Y", filemtime("index2.php"));
+	$build_version = date("d.m.Y", filemtime(__FILE__));
 	// Powered by
 	$power_by = "Advanced Accounting";
 	$power_url = "http://www.advancedroadsigns.com.au";
@@ -155,7 +156,7 @@
 	$js_huserlib = array('jquery-1.6.min.js', 'jquery-ui-1.8.6.min.js');
 	$js_fstatic = array('advanced.js', 'shortmenu.js', 'jquery.calculator.pack.js','calc.js');
 	// additional js source included in header
-	$js_lib = $js_fuserlib = array();
+	$js_lib = $js_fuserlib = $js_userlib = array();
 	if (!defined('ICON_EDIT')) {
 		define("ICON_EDIT", "edit.gif");
 		define("ICON_DELETE", "delete.gif");

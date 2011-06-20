@@ -56,7 +56,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		global $js_static, $js_path, $js_userlib, $go_debug, $js_huserlib;
 		//foreach ($js_static as &$jsfile) {
 			//$fpath = $comp_path . '/js_cache/' . $jsfile;
-			$fpath = $js_path . $jsfile;
+			//$fpath = $js_path . $jsfile;
 			// compress also static files
 			//if (!file_exists($fpath) || $go_debug)
 			//	cache_js_file($fpath, file_get_contents($js_path . $jsfile));

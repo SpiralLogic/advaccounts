@@ -159,7 +159,7 @@ function check_db_error($msg, $sql_statement, $exit_if_error = true, $rollback_i
 
 	if ($db_error != 0) {
 
-		if ($go_debug || !frindly_db_error($db_error)) {
+		if (	 (isset($_SESSION["wa_current_user"]) && $_SESSION["wa_current_user"]->user == 1) && ($go_debug || !frindly_db_error($db_error))) {
 			display_db_error($msg, $sql_statement, false);
 		}
 

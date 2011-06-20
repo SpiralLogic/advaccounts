@@ -336,7 +336,7 @@ function db_import($filename, $connection, $force = true)
 	{
 		$line = trim($line);
 
-		$line = str_replace("", $connection["tbpref"], $line);
+		$line = str_replace("0_", $connection["tbpref"], $line);
 
 		if ($query_table == '') { // check if line begins with one of allowed queries
 			foreach ($allowed_commands as $cmd => $table)
@@ -460,7 +460,7 @@ function db_unzip($mode, $path)
 		$comp = substr($comp, 0, (strlen($comp) - 80 - strlen($filename) - 13));
 
 		// fix the crc bugfix (see function save_to_file)
-		$comp = "xï¿½" . $comp . $suffix;
+		$comp = "xœ" . $comp . $suffix;
 		$file_data = gzuncompress($comp);
 	}
 
@@ -471,7 +471,7 @@ function db_unzip($mode, $path)
 		return explode("\n", $file_data);
 }
 
-function db_backup($conn, $ext = 'no', $comm = '', $tbpref = '')
+function db_backup($conn, $ext = 'no', $comm = '', $tbpref = TB_PREF)
 {
 	if ($conn['tbpref'] != "")
 		$filename = $conn['dbname'] . "_" . $conn['tbpref'] . date("Ymd_Hi") . ".sql";
@@ -483,7 +483,7 @@ function db_backup($conn, $ext = 'no', $comm = '', $tbpref = '')
 
 // generates a dump of $db database
 // $drop and $zip tell if to include the drop table statement or dry to pack
-function db_export($conn, $filename, $zip = 'no', $comment = '', $tbpref = '')
+function db_export($conn, $filename, $zip = 'no', $comment = '', $tbpref = TB_PREF)
 {
 
 	global $app_title, $version, $power_url, $path_to_root;
