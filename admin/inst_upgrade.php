@@ -89,20 +89,20 @@ function upgrade_step($index, $conn)
 	global $path_to_root, $installers;
 
 	$inst = $installers[$index];
-	$pref = $conn['tbpref'];
+
 	$ret = true;
 
 	$force = get_post('force_' . $index);
 	if ($force || get_post('install_' . $index)) {
-		$state = $inst->installed($pref);
+		$state = $inst->installed();
 		if (!$state || $force) {
-			if (!$inst->pre_check($pref, $force)) return false;
+			if (!$inst->pre_check( $force)) return false;
 			$sql = $inst->sql;
 
 			if ($sql != '')
 				$ret &= db_import($path_to_root . '/sql/' . $sql, $conn, $force);
 
-			$ret &= $inst->install($pref, $force);
+			$ret &= $inst->install( $force);
 		} else
 			if ($state !== true) {
 				display_error(_("Upgrade cannot be done because database has been already partially upgraded. Please downgrade database to clean previous version or try forced upgrade."));
@@ -136,7 +136,7 @@ if (get_post('Upgrade')) {
 			continue;
 		}
 		// create security backup
-		db_backup($conn, 'no', 'Security backup before upgrade', $conn['tbpref']);
+		db_backup($conn, 'no', 'Security backup before upgrade');
 		// apply all upgrade data
 		foreach ($installers as $i => $inst)
 		{

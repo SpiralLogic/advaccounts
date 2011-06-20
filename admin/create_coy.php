@@ -37,7 +37,7 @@ else
 
 function check_data()
 {
-	global $db_connections, $tb_pref_counter, $selected_id;
+	global $db_connections, $selected_id;
 
 	if ($_POST['name'] == "" || $_POST['host'] == "" || $_POST['dbuser'] == "" || $_POST['dbname'] == "")
 		return false;
@@ -49,14 +49,7 @@ function check_data()
 	{
 		if ($id != $selected_id && $_POST['host'] == $con['host']
 			&& $_POST['dbname'] == $con['dbname']) {
-			if ($_POST['tbpref'] == $con['tbpref']) {
-				display_error(_("This database settings are already used by another company."));
-				return false;
-			}
-			if (($_POST['tbpref'] == 0) ^ ($con['tbpref'] == '')) {
-				display_error(_("You cannot have table set without prefix together with prefixed sets in the same database."));
-				return false;
-			}
+
 		}
 	}
 	return true;
@@ -81,7 +74,7 @@ function remove_connection($id)
 
 function handle_submit()
 {
-	global $db_connections, $def_coy, $tb_pref_counter, $db,
+	global $db_connections, $def_coy, $db,
 $comp_path, $comp_subdirs, $path_to_root;
 
 	$error = false;
@@ -96,16 +89,7 @@ $comp_path, $comp_subdirs, $path_to_root;
 	$db_connections[$id]['dbuser'] = $_POST['dbuser'];
 	$db_connections[$id]['dbpassword'] = $_POST['dbpassword'];
 	$db_connections[$id]['dbname'] = $_POST['dbname'];
-	if (isset($_GET['ul']) && $_GET['ul'] == 1) {
-		if (is_numeric($_POST['tbpref'])) {
-			$db_connections[$id]['tbpref'] = $_POST['tbpref'] == 1 ?
-					$tb_pref_counter . "_" : '';
-		}
-		else if ($_POST['tbpref'] != "")
-			$db_connections[$id]['tbpref'] = $_POST['tbpref'];
-		else
-			$db_connections[$id]['tbpref'] = "";
-	}
+
 	if ((bool) $_POST['def'] == true)
 		$def_coy = $id;
 	if (isset($_GET['ul']) && $_GET['ul'] == 1) {
@@ -122,7 +106,7 @@ $comp_path, $comp_subdirs, $path_to_root;
 					$error = true;
 				} else
 					if (isset($_POST['admpassword']) && $_POST['admpassword'] != "")
-						db_query("UPDATE " . $conn['tbpref'] . "users set password = '" . md5(
+						db_query("UPDATE users set password = '" . md5(
 							$_POST['admpassword']) . "' WHERE user_id = 'admin'");
 			}
 			else
@@ -143,7 +127,7 @@ $comp_path, $comp_subdirs, $path_to_root;
 				display_error(_("Error connecting to Database: ") . $conn['dbname'] . _(", Please correct it"));
 				$error = true;
 			} elseif ($_POST['admpassword'] != "") {
-				db_query("UPDATE " . $conn['tbpref'] . "users set password = '" . md5(
+				db_query("UPDATE users set password = '" . md5(
 					$_POST['admpassword']) . "' WHERE user_id = 'admin'");
 			}
 		}
@@ -271,7 +255,7 @@ function display_companies()
 		label_cell($conn[$i]['host']);
 		label_cell($conn[$i]['dbuser']);
 		label_cell($conn[$i]['dbname']);
-		label_cell($conn[$i]['tbpref']);
+
 		label_cell($what);
 		$edit = _("Edit");
 		$delete = _("Delete");
@@ -293,7 +277,7 @@ function display_companies()
 
 function display_company_edit($selected_id)
 {
-	global $def_coy, $db_connections, $tb_pref_counter, $table_style2;
+	global $def_coy, $db_connections, $table_style2;
 
 	if ($selected_id != -1)
 		$n = $selected_id;
@@ -324,28 +308,22 @@ function display_company_edit($selected_id)
 		$_POST['dbuser'] = $conn['dbuser'];
 		$_POST['dbpassword'] = $conn['dbpassword'];
 		$_POST['dbname'] = $conn['dbname'];
-		$_POST['tbpref'] = $conn['tbpref'];
+
 		if ($selected_id == $def_coy)
 			$_POST['def'] = true;
 		else
 			$_POST['def'] = false;
 		$_POST['dbcreate'] = false;
 		hidden('selected_id', $selected_id);
-		hidden('tbpref', $_POST['tbpref']);
+
 		hidden('dbpassword', $_POST['dbpassword']);
 	}
-	else
-		$_POST['tbpref'] = $tb_pref_counter . "_";
 	text_row_ex(_("Company"), 'name', 30);
 	text_row_ex(_("Host"), 'host', 30);
 	text_row_ex(_("Database User"), 'dbuser', 30);
 	if ($selected_id == -1)
 		text_row_ex(_("Database Password"), 'dbpassword', 30);
 	text_row_ex(_("Database Name"), 'dbname', 30);
-	if ($selected_id == -1)
-		yesno_list_row(_("Table Pref"), 'tbpref', 1, $_POST['tbpref'], _("None"), false);
-	else
-		label_row(_("Table Pref"), $_POST['tbpref']);
 	yesno_list_row(_("Default"), 'def', null, "", "", false);
 
 	file_row(_("Database Script"), "uploadfile");

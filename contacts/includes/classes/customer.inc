@@ -22,7 +22,7 @@
       function __construct($id = null) {
          parent::__construct($id);
          $this->pymt_discount =& $this->payment_discount;
-         $this->debtor_ref = substr($this->name, 0, 29);
+         $this->debtor_ref = substr($this->name, 0, 60);
       }
 
       protected function _canProcess() {

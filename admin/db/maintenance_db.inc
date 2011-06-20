@@ -58,10 +58,9 @@ function array_natsort($aryData, $strIndex, $strSortBy, $strSortType = false)
 
 function write_config_db($new = false)
 {
-	global $path_to_root, $def_coy, $db_connections, $tb_pref_counter;
+	global $path_to_root, $def_coy, $db_connections;
 
-	if ($new)
-		$tb_pref_counter++;
+
 	$n = count($db_connections);
 	$msg = "<?php\n\n";
 	$msg .= "/*Connection Information for the database\n";
@@ -74,7 +73,6 @@ function write_config_db($new = false)
 	$msg .= "  The scripts for MySQL provided use the name logicworks */\n\n\n";
 
 	$msg .= "\$def_coy = " . $def_coy . ";\n\n";
-	$msg .= "\$tb_pref_counter = " . $tb_pref_counter . ";\n\n";
 	$msg .= "\$db_connections = array (\n";
 	$msg .= "\t0 => ";
 	for ($i = 0; $i < $n; $i++)
@@ -88,7 +86,7 @@ function write_config_db($new = false)
 		$msg .= "\t\t'dbuser' => '" . $db_connections[$i]['dbuser'] . "',\n";
 		$msg .= "\t\t'dbpassword' => '" . $db_connections[$i]['dbpassword'] . "',\n";
 		$msg .= "\t\t'dbname' => '" . $db_connections[$i]['dbname'] . "',\n";
-		$msg .= "\t\t'tbpref' => '" . $db_connections[$i]['tbpref'] . "')";
+
 		if ($i != $n - 1)
 			$msg .= ",";
 		$msg .= "\n\n";
@@ -275,12 +273,6 @@ function db_create_db($connection)
 function db_drop_db($connection)
 {
 
-	if ($connection["tbpref"] == "") {
-		$sql = "DROP DATABASE " . $connection["dbname"] . "";
-		return mysql_query($sql);
-	}
-	else
-	{
 		$res = db_query("show table status");
 		$all_tables = array();
 		while ($row = db_fetch($res))
@@ -288,13 +280,12 @@ function db_drop_db($connection)
 		// get table structures
 		foreach ($all_tables as $table)
 		{
-			if (strpos($table['Name'], $connection["tbpref"]) === 0)
+
 				db_query("DROP TABLE `" . $table['Name'] . "`");
 		}
 		//deleting the tables, how??
 		return true;
 	}
-}
 
 function db_import($filename, $connection, $force = true)
 {
@@ -336,7 +327,6 @@ function db_import($filename, $connection, $force = true)
 	{
 		$line = trim($line);
 
-		$line = str_replace("0_", $connection["tbpref"], $line);
 
 		if ($query_table == '') { // check if line begins with one of allowed queries
 			foreach ($allowed_commands as $cmd => $table)
@@ -471,19 +461,16 @@ function db_unzip($mode, $path)
 		return explode("\n", $file_data);
 }
 
-function db_backup($conn, $ext = 'no', $comm = '', $tbpref = TB_PREF)
+function db_backup($conn, $ext = 'no', $comm = '')
 {
-	if ($conn['tbpref'] != "")
-		$filename = $conn['dbname'] . "_" . $conn['tbpref'] . date("Ymd_Hi") . ".sql";
-	else
 		$filename = $conn['dbname'] . "_" . date("Ymd_Hi") . ".sql";
 
-	return db_export($conn, $filename, $ext, $comm, $tbpref);
+	return db_export($conn, $filename, $ext, $comm);
 }
 
 // generates a dump of $db database
 // $drop and $zip tell if to include the drop table statement or dry to pack
-function db_export($conn, $filename, $zip = 'no', $comment = '', $tbpref = TB_PREF)
+function db_export($conn, $filename, $zip = 'no', $comment = '')
 {
 
 	global $app_title, $version, $power_url, $path_to_root;
@@ -502,7 +489,7 @@ function db_export($conn, $filename, $zip = 'no', $comment = '', $tbpref = TB_PR
 		$backupfile = $filename . ".zip";
 	else
 		$backupfile = $filename;
-	$company = get_company_pref('coy_name', $tbpref);
+	$company = get_company_pref('coy_name');
 
 	//create comment
 	$out = "# MySQL dump of database '" . $conn["dbname"] . "' on host '" . $conn["host"] . "'\n";
@@ -529,9 +516,7 @@ function db_export($conn, $filename, $zip = 'no', $comment = '', $tbpref = TB_PR
 	$all_tables = array();
 	while ($row = db_fetch($res))
 	{
-		//if ($conn["tbpref"] == "" || strpos($row['Name'], $conn["tbpref"]) !== false) replaced
-		if (($conn["tbpref"] == "" && !preg_match('/[0-9]+_/', $row['Name'])) ||
-			($conn["tbpref"] != "" && strpos($row['Name'], $conn["tbpref"]) === 0))
+		
 			$all_tables[] = $row;
 	}
 	// get table structures

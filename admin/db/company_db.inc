@@ -71,10 +71,10 @@ function update_company_setup($coy_name, $coy_no, $gst_no, $tax_prd, $tax_last, 
 	get_company_prefs();
 }
 
-function get_company_prefs($tbpref = '')
+function get_company_prefs()
 {
 	if (!isset($_SESSION['company_prefs'])) {
-		$sql = "SELECT * FROM " . $tbpref . "company WHERE coy_code=1";
+		$sql = "SELECT * FROM company WHERE coy_code=1";
 		$result = db_query($sql, "The company preferences could not be retrieved");
 		if (db_num_rows($result) == 0) {
 			display_db_error("FATAL : Could not find company prefs", $sql);
@@ -84,9 +84,9 @@ function get_company_prefs($tbpref = '')
 	return $_SESSION['company_prefs'];
 }
 
-function get_company_pref($pref_name, $tbpref = '')
+function get_company_pref($pref_name)
 {
-	$prefs = get_company_prefs($tbpref);
+	$prefs = get_company_prefs();
 	return $prefs[$pref_name];
 }
 
