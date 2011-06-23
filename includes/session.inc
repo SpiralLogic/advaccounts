@@ -140,15 +140,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 
    }
    else {
-      define('INSIGHT_IPS', '*'); // <- Your IP here for extra security
-      define('INSIGHT_AUTHKEYS', '829C3A79C1C83D5F6ED4421DD00ACFF4');
-      define('INSIGHT_PATHS', dirname(__FILE__));
-      define('INSIGHT_SERVER_PATH', '/');
-      // If using ZIP Archive TODO: Add 'lib/' of extracted archive to include path
-      require_once('firephp/lib/FirePHP/Init.php');
-      $inspector = FirePHP::to('page');
-      $console = $inspector->console();
-      $console->log(get_include_path());
+    
    }
    if (isset($_GET['path_to_root']) || isset($_POST['path_to_root'])) {
       die("Restricted access");
@@ -175,7 +167,6 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
       Make sure this directory exists and is
          writable!
    */
-   FB::info(get_include_path());
    //ini_set('session.save_path', dirname(__FILE__).'/../tmp/');
    ini_set('session.gc_maxlifetime', 36000); // 10hrs
    session_name('FA' . md5(dirname(__FILE__)));
