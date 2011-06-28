@@ -325,7 +325,7 @@ function display_grn_items_for_selection(&$supp_trans, $k)
 			}
 		}
 		if ($grn_already_on_invoice == false) {
-			if ($myrow["purch_order_no"] == $_SESSION['delivery_po'] || empty($_SESSION['delivery_po'])) {
+			if (!isset($_SESSION['delivery_po']) || $myrow["purch_order_no"] == $_SESSION['delivery_po'] ) {
 				alt_table_row_color($k);
 				$n = $myrow["id"];
 				label_cell(get_trans_view_str(25, $myrow["grn_batch_id"]));

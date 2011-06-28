@@ -136,11 +136,11 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
    add_include_path($paths);
    if (preg_match('/Chrome/i', $_SERVER['HTTP_USER_AGENT'])) {
       @require_once(APP_PATH . 'includes/fb.php');
-      FB::useFile('/var/www/advaccounts/web/tmp/chromelogs', $path_to_root . '/tmp/chromelogs');
-
+      FB::useFile('/tmp/chromelogs', $path_to_root . '/tmp/chromelogs');
    }
    else {
-    
+      @require_once(APP_PATH . 'includes/FirePHP/FirePHP.class.php');
+      @require_once(APP_PATH . 'includes/FirePHP/fb.php');
    }
    if (isset($_GET['path_to_root']) || isset($_POST['path_to_root'])) {
       die("Restricted access");
@@ -210,8 +210,10 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
          // This error code is not included in error_reporting
          return;
       }
-      FB::info($error);
-      return true;
+
+        
+         return true;
+ 
    }
 
    if (!isset($_SESSION["wa_current_user"])) {
