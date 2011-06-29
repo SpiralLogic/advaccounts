@@ -47,13 +47,13 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	function send_css() {
 		global $path_to_root;
 		$theme = user_theme();
-		$path = "$path_to_root/themes/$theme/";
+		$path = "/themes/$theme/";
 		$css = implode(',', add_css());
 		echo "<link href='{$path}{$css}' rel='stylesheet' type='text/css'> \n";
 	}
 
 	function send_scripts() {
-		global $js_static, $js_path, $js_userlib, $go_debug, $js_huserlib;
+		global $js_static, $js_userlib, $go_debug, $js_huserlib;
 		//foreach ($js_static as &$jsfile) {
 			//$fpath = $comp_path . '/js_cache/' . $jsfile;
 			//$fpath = $js_path . $jsfile;
@@ -120,12 +120,12 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		echo "<html dir='" . $_SESSION['language']->dir . "' >\n";
 		echo "<head><title>$title</title>";
 		echo "<meta http-equiv='Content-type' content='text/html; charset=$encoding'>";
-		echo "<link rel='apple-touch-icon' href='$local_path_to_root/company/images/advanced-icon.png'/>";
+		echo "<link rel='apple-touch-icon' href='/company/images/advanced-icon.png'/>";
 		add_css('default.css');
 		if ($no_menu) {
 			add_css('default-lite.css');
 		}
-		if (file_exists("$local_path_to_root/themes/$theme/{$_SESSION['sel_app']}.css"))
+		if (file_exists("/themes/$theme/{$_SESSION['sel_app']}.css"))
 			add_css($_SESSION['sel_app'].'.css');
 		add_css('jquery-ui-1.8.6.css,jquery.calculator.css,jquery.fileupload-ui.css');
 		send_css();
@@ -136,7 +136,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 			echo "<body>";
 		else
 			echo "<body onload=\"$onload\">";
-		include_once($local_path_to_root . "/themes/" . user_theme() . "/renderer.php");
+		include_once(APP_PATH."/themes/" . user_theme() . "/renderer.php");
 		$rend = new renderer();
 		$rend->menu_header($title, $no_menu, $is_index);
 		error_box();

@@ -107,7 +107,7 @@ public function getAddress() {
 			$this->br_name = $this->city . " " . strtoupper($this->state);
 		}
 		if ($this->branch_ref != 'accounts') {
-			$this->branch_ref = substr(db_escape($this->br_name), 0, 30);
+			$this->branch_ref = substr($this->br_name, 0, 30);
 		}
 
 		begin_transaction();

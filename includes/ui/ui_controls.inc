@@ -206,7 +206,11 @@ function submenu_print($title, $type, $number, $id = null, $email = 0, $extra = 
 {
 	display_note(print_document_link($number, $title, true, $type, false, 'menu_option', $id, $email, $extra), 0, 1);
 }
-
+function submenu_email($title, $type, $number, $id = null, $emails, $extra = 0)
+{
+  
+	email_document_link($number, $title, true, $type, 'EmailLink', $id, $emails, $extra);
+}
 //-----------------------------------------------------------------------------------
 
 function hyperlink_params($target, $label, $params = '', $center = true)

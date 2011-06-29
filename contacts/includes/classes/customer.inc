@@ -118,7 +118,7 @@
 
       protected function _setDefaults() {
          $this->defaultBranch = reset($this->branches)->branch_code;
-         $this->defaultContact = reset($this->contacts)->id;
+          $this->defaultContact = (count($this->contacts)>0)?reset($this->contacts)->id: 0;
          $this->contacts[0] = new Contact(array('parent_id' => $this->id));
       }
 
@@ -305,6 +305,22 @@
          $branch->debtor_no = $this->id;
          $branch->save();
          $this->branches[$branch->branch_code] = $branch;
+      }
+
+      public function getEmailAddresses() {
+         $emails = array();
+         if (!empty($this->accounts->email))
+            $emails['Accounts'][$this->accounts->id] = array('Accounts',$this->accounts->email);
+         foreach ($this->contacts as $id => $contact) {
+            if (!empty($contact->email))
+               $emails['Contacts'][$id] = array($contact->name,$contact->email);
+         }
+         foreach ($this->branches as $id => $branch) {
+            if (!empty($branch->email))
+               $emails['Branches'][$id] = array($branch->br_name,$branch->email);
+         }
+
+         return (count($emails) > 0) ? $emails : false;
       }
 
       public static function search($terms) {

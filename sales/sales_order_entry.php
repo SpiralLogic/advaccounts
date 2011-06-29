@@ -19,20 +19,19 @@
    //
    $path_to_root = "..";
    $page_security = 'SA_SALESORDER';
-   include_once("$path_to_root/sales/includes/cart_class.inc");
-   include_once("$path_to_root/includes/session.inc");
-   include_once("$path_to_root/sales/includes/sales_ui.inc");
-   include_once("$path_to_root/sales/includes/ui/sales_order_ui.inc");
-   include_once("$path_to_root/sales/includes/sales_db.inc");
-   include_once("$path_to_root/sales/includes/db/sales_types_db.inc");
-   include_once("$path_to_root/reporting/includes/reporting.inc");
+   include_once($_SERVER['DOCUMENT_ROOT'] . "/sales/includes/cart_class.inc");
+   include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+   require_once(APP_PATH . 'includes/ui2/html.inc');
+   include_once(APP_PATH . "sales/includes/sales_ui.inc");
+   include_once(APP_PATH . "sales/includes/ui/sales_order_ui.inc");
+   include_once(APP_PATH . "sales/includes/sales_db.inc");
+   include_once(APP_PATH . "sales/includes/db/sales_types_db.inc");
+   include_once(APP_PATH . "reporting/includes/reporting.inc");
    set_page_security(@$_SESSION['Items']->trans_type,
                      array(ST_SALESORDER => 'SA_SALESORDER', ST_SALESQUOTE => 'SA_SALESQUOTE', ST_CUSTDELIVERY => 'SA_SALESDELIVERY', ST_SALESINVOICE => 'SA_SALESINVOICE'),
                      array('NewOrder' => 'SA_SALESORDER', 'ModifySalesOrder' => 'SA_SALESORDER', 'NewQuotation' => 'SA_SALESQUOTE', 'ModifyQuotationNumber' => 'SA_SALESQUOTE',
                           'NewDelivery' => 'SA_SALESDELIVERY', 'NewInvoice' => 'SA_SALESINVOICE'));
    $js = '';
-   FB::info($_SESSION['Items']);
-   FB::info($_SESSION['remote_order']);
    if ($use_popup_windows) {
       $js .= get_js_open_window(900, 500);
    }
@@ -122,21 +121,20 @@
    else {
       check_edit_conflicts();
    }
-   function page_complete($order_no, $trans_type, $trans_name = 'Transaction', $edit = false, $update = false)
-   {
-      global $path_to_root;
+   function page_complete($order_no, $trans_type, $trans_name = 'Transaction', $edit = false, $update = false) {
       $customer = new Customer($_SESSION['Jobsboard']->customer_id);
-      $email = (empty($customer->accounts->email) ? "No Email Address" : $customer->accounts->email);
+      $emails = (empty($customer->accounts->email) ? "No Email Address" : $customer->getEmailAddresses());
       display_notification_centered(sprintf(_($trans_name . " # %d has been " . ($update ? "updated!" : "added!")), $order_no));
       submenu_view(_("&View This " . $trans_name), $trans_type, $order_no);
       if ($edit)
          submenu_option(_("&Edit This " . $trans_name), "/sales/sales_order_entry.php?" . ($trans_type == ST_SALESORDER ? "ModifyOrderNumber"
             : "ModifyQuotationNumber") . "=$order_no");
       submenu_print(_("&Print This " . $trans_name), $trans_type, $order_no, 'prtopt');
-      submenu_print(_("&Email This $trans_name (" . $email . ")"), $trans_type, $order_no, null, 1);
+      submenu_email(_("Email This $trans_name"), $trans_type, $order_no, null, $emails, 1);
       if ($trans_type == ST_SALESORDER || $trans_type == ST_SALESQUOTE) {
          submenu_print(_("Print Proforma Invoice"), ($trans_type == ST_SALESORDER ? ST_PROFORMA : ST_PROFORMAQ), $order_no, 'prtopt');
-         submenu_print(_("&Email Proforma Invoice") . " (" . $email . ")", ($trans_type == ST_SALESORDER ? ST_PROFORMA : ST_PROFORMAQ), $order_no, 'printlink', 1);
+         submenu_email(_("Email This Proforma Invoice"), ($trans_type == ST_SALESORDER ? ST_PROFORMA : ST_PROFORMAQ), $order_no, null, $emails, 1);
+
       }
       if ($trans_type == ST_SALESORDER) {
          submenu_option(_("Make &Delivery Against This Order"), "/sales/customer_delivery.php?OrderNumber=$order_no");
@@ -170,19 +168,18 @@
          else {
             submenu_option(_("Enter a &New Direct Invoice"), "/sales/sales_order_entry.php?NewInvoice=0");
          }
-         hyperlink_params("$path_to_root/sales/customer_payments.php", _("Apply a customer payment"));
+         hyperlink_params("/sales/customer_payments.php", _("Apply a customer payment"));
          if ($_GET['AddedDI'] && isset($_SESSION['wa_global_customer_id']) && $row == false) {
-            echo "<div style='text-align:center;'><iframe  style='margin:0 auto; border-width:0;' src='{$path_to_root}/sales/customer_payments.php?frame=1' width='80%' height='475' scrolling='no' frameborder='0'></iframe> </div>";
+            echo "<div style='text-align:center;'><iframe  style='margin:0 auto; border-width:0;' src='/sales/customer_payments.php?frame=1' width='80%' height='475' scrolling='no' frameborder='0'></iframe> </div>";
          }
       }
       set_focus('prtopt');
       UploadHandler::insert($order_no);
       display_footer_exit();
-   } 
+   }
 
    //-----------------------------------------------------------------------------
-   function copy_to_cart()
-   {
+   function copy_to_cart() {
       $cart = &$_SESSION['Items'];
       $cart->reference = $_POST['ref'];
       $cart->Comments = $_POST['Comments'];
@@ -228,8 +225,7 @@
    }
 
    //-----------------------------------------------------------------------------
-   function copy_from_cart()
-   {
+   function copy_from_cart() {
       $cart = &$_SESSION['Items'];
       $_POST['ref'] = $cart->reference;
       $_POST['Comments'] = $cart->Comments;
@@ -259,16 +255,14 @@
    }
 
    //--------------------------------------------------------------------------------
-   function line_start_focus()
-   {
+   function line_start_focus() {
       global $Ajax;
       $Ajax->activate('items_table');
       set_focus('_stock_id_edit');
    }
 
    //--------------------------------------------------------------------------------
-   function can_process()
-   {
+   function can_process() {
       global $Refs;
       if (!get_post('customer_id')) {
          display_error(_("There is no customer selected."));
@@ -388,18 +382,15 @@
          }
          else {
             meta_forward("/jobsboard/jobsboard/addjob/UpdatedID/$trans_no/$so_type", "");
-            //		meta_forward($_SERVER['PHP_SELF'], "UpdatedID=$trans_no");
          }
       }
       elseif ($trans_type == ST_SALESORDER) {
          meta_forward("/jobsboard/jobsboard/addjob/AddedID/$trans_no/$so_type", "");
-         //meta_forward($_SERVER['PHP_SELF'], "AddedID=$trans_no");
       }
       elseif ($trans_type == ST_SALESQUOTE) {
          meta_forward($_SERVER['PHP_SELF'], "AddedQU=$trans_no");
       }
       elseif ($trans_type == ST_SALESINVOICE) {
-         //meta_forward("/jobsboard/jobsboard/addjob/AddedDI/$trans_no/$so_type", "");
          meta_forward($_SERVER['PHP_SELF'], "AddedDI=$trans_no&Type=$so_type");
       }
       else {
@@ -410,8 +401,7 @@
       $Ajax->activate('items_table');
    }
    //--------------------------------------------------------------------------------
-   function check_item_data()
-   {
+   function check_item_data() {
       global $SysPrefs;
       if (!$_SESSION["wa_current_user"]->can_access('SA_SALESCREDIT') && (!check_num('qty', 0) || !check_num('Disc', 0, 100))) {
          display_error(_("The item could not be updated because you are attempting to set the quantity ordered to less than 0, or the discount percent to more than 100."));
@@ -441,8 +431,7 @@
    }
 
    //--------------------------------------------------------------------------------
-   function handle_update_item()
-   {
+   function handle_update_item() {
       if ($_POST['UpdateItem'] != '' && check_item_data()) {
          $_SESSION['Items']->update_cart_item($_POST['LineNo'], input_num('qty'), input_num('price'), input_num('Disc') / 100, $_POST['item_description']);
       }
@@ -450,8 +439,7 @@
    }
 
    //--------------------------------------------------------------------------------
-   function handle_delete_item($line_no)
-   {
+   function handle_delete_item($line_no) {
       if ($_SESSION['Items']->some_already_delivered($line_no) == 0) {
          $_SESSION['Items']->remove_from_cart($line_no);
       }
@@ -462,8 +450,7 @@
    }
 
    //--------------------------------------------------------------------------------
-   function handle_new_item()
-   {
+   function handle_new_item() {
       if (!check_item_data()) {
          return;
       }
@@ -474,8 +461,7 @@
    }
 
    //--------------------------------------------------------------------------------
-   function handle_cancel_order()
-   {
+   function handle_cancel_order() {
       global $path_to_root, $Ajax;
       if ($_SESSION['Items']->trans_type == ST_CUSTDELIVERY) {
          display_notification(_("Direct delivery entry has been cancelled as requested."), 1);
@@ -504,7 +490,7 @@
          }
          else {
             processing_end();
-            meta_forward($path_to_root . '/index.php', 'application=orders');
+            meta_forward('/index.php', 'application=orders');
          }
       }
       $Ajax->activate('_page_body');
@@ -513,8 +499,7 @@
    }
 
    //--------------------------------------------------------------------------------
-   function create_cart($type, $trans_no)
-   {
+   function create_cart($type, $trans_no) {
       global $Refs;
       processing_start();
       $doc_type = $type;
@@ -658,7 +643,6 @@
 
 window.onbeforeunload = function() {
 $.post('sales_order_entry.php',{ saveorder: true })};
-
 JS;
    echo '</script>';
    end_page();

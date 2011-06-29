@@ -12,7 +12,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_to_root'])) {
 	die(_("Restricted access"));
 }
-include_once($path_to_root . "/includes/ui.inc");
+include_once(APP_PATH . "includes/ui.inc");
 $js = "<script language='JavaScript' type='text/javascript'>
 function defaultCompany()
 {
@@ -47,8 +47,8 @@ echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://
 echo "<html dir='$rtl' >\n";
 echo "<head><title>$title</title>\n";
 echo "<meta http-equiv='Content-type' content='text/html; charset=$encoding' />\n";
-echo "<link rel='apple-touch-icon' href='$path_to_root/company/images/advanced-icon.png'/>";
-echo "<link href='$path_to_root/themes/$def_theme/default.css' rel='stylesheet' type='text/css'> \n";
+echo "<link rel='apple-touch-icon' href='/company/images/advanced-icon.png'/>";
+echo "<link href='/themes/$def_theme/default.css' rel='stylesheet' type='text/css'> \n";
 if (!$login_timeout) {
 	echo $js;
 }
@@ -64,7 +64,7 @@ start_table("class='login'");
 start_row();
 echo "<td align='center' colspan=2>";
 if (!$login_timeout) { // FA logo
-	echo "<a target='_blank' href='$power_url'><img src='$path_to_root/themes/$def_theme/images/logo_frontaccounting.png' alt='FrontAccounting' height='50' onload='fixPNG(this)' border='0' /></a>";
+	echo "<a target='_blank' href='$power_url'><img src='/themes/$def_theme/images/logo_frontaccounting.png' alt='FrontAccounting' height='50' onload='fixPNG(this)' border='0' /></a>";
 } else {
 	echo "<font size=5>" . _('Authorization timeout') . "</font><br>You were idle for: " . (
 			$_SESSION["wa_current_user"]->last_act + $tout - time());

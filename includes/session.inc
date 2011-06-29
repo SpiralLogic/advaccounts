@@ -22,13 +22,11 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
       return in_ajax() ? fmt_errors() : ($before_box . fmt_errors() . $text);
    }
 
-   //----------------------------------------------------------------------------------------
    function kill_login() {
       session_unset();
       session_destroy();
    }
 
-   //---- ------------------------------------------------------------------------------------
    function login_fail() {
       global $path_to_root;
       header("HTTP/1.1 401 Authorization Required");
@@ -41,7 +39,6 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
       die();
    }
 
-   //----------------------------------------------------------------------------------------
    function check_page_security($page_security) {
       if (!$_SESSION["wa_current_user"]->check_user_access()) {
          // notification after upgrade from pre-2.2 version
@@ -82,9 +79,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
       }
    }
 
-   //-----------------------------------------------------------------------------
    //	Removing magic quotes from nested arrays/variables
-   //
    function strip_quotes($data) {
       if (get_magic_quotes_gpc()) {
          if (is_array($data)) {
@@ -113,14 +108,12 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
       }
    }
 
-   function add_include_path($path = false) {
-      if ($path) {
-         if (!is_array($path)) {
-            $path = array($path);
-         }
-         $path[] .= get_include_path();
-         set_include_path(implode(PATH_SEPARATOR, $path));
+   function add_include_path($path = array()) {
+      if (!is_array($path)) {
+         $path = array($path);
       }
+      $path[] .= get_include_path();
+      set_include_path(implode(PATH_SEPARATOR, $path));
    }
 
    //============================================================================
@@ -130,13 +123,17 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
    /**
     * @ $_SERVER['DOCUMENT_ROOT'] = document root
     */
-   define('APP_PATH', $_SERVER['DOCUMENT_ROOT'] . '/');
-   $paths = array(realpath('.') . '/includes/classes', APP_PATH . 'includes/ui2', APP_PATH . 'includes/ui', APP_PATH . 'includes', APP_PATH . 'includes/classes',
-                  APP_PATH . 'contacts/includes/classes');
-   add_include_path($paths);
+   define('APP_PATH', $_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR);
+   add_include_path(array(
+                         realpath('.') . '/includes/classes',
+                         APP_PATH . 'includes/ui2',
+                         APP_PATH . 'includes/ui',
+                         APP_PATH . 'includes',
+                         APP_PATH . 'includes/classes',
+                         APP_PATH . 'contacts/includes/classes'));
    if (preg_match('/Chrome/i', $_SERVER['HTTP_USER_AGENT'])) {
       @require_once(APP_PATH . 'includes/fb.php');
-      FB::useFile('/tmp/chromelogs', $path_to_root . '/tmp/chromelogs');
+      FB::useFile('/tmp/chromelogs', APP_PATH . 'tmp/chromelogs');
    }
    else {
       @require_once(APP_PATH . 'includes/FirePHP/FirePHP.class.php');
@@ -151,7 +148,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
       }
    }
 
-   include_once(APP_PATH . "/includes/current_user.inc");
+   include_once(APP_PATH . "includes/current_user.inc");
    include_once(APP_PATH . "frontaccounting.php");
    include_once(APP_PATH . "admin/db/security_db.inc");
    include_once(APP_PATH . "includes/lang/language.php");
@@ -161,6 +158,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
    include_once(APP_PATH . "includes/ui2/dialog.inc");
    include_once(APP_PATH . "includes/ui2/sidemenu.inc");
    include_once(APP_PATH . "includes/ui2/messages.inc");
+   
    /*
       Uncomment the setting below when using FA on shared hosting
       to avoid unexpeced session timeouts.
@@ -181,13 +179,13 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
    }
    $_SESSION['language']->set_language($_SESSION['language']->code);
    // include $Hooks object if locale file exists
-   if (file_exists($path_to_root . "/lang/" . $_SESSION['language']->code . "/locale.inc")) {
-      include_once($path_to_root . "/lang/" . $_SESSION['language']->code . "/locale.inc");
+   if (file_exists(APP_PATH . "lang/" . $_SESSION['language']->code . "/locale.inc")) {
+      include_once(APP_PATH . "lang/" . $_SESSION['language']->code . "/locale.inc");
       $Hooks = new Hooks();
    }
-   include_once($path_to_root . "/includes/access_levels.inc");
-   include_once($path_to_root . "/config.php");
-   include_once($path_to_root . "/includes/main.inc");
+   include_once(APP_PATH . "includes/access_levels.inc");
+   include_once(APP_PATH . "config.php");
+   include_once(APP_PATH . "includes/main.inc");
    // Ajax communication object
    $Ajax = new Ajax();
    // js/php validation rules container
@@ -202,7 +200,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
    register_shutdown_function('end_flush');
    ob_start('output_html', 0);
    // colect all error msgs
-   set_error_handler('fb_errors' /*, errtypes */);
+   set_error_handler('fb_errors');
    function fb_errors() {
       $error = func_get_args();
       error_handler($error[0], $error[1], $error[2], $error[3]);
@@ -210,10 +208,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
          // This error code is not included in error_reporting
          return;
       }
-
-        
-         return true;
- 
+      return true;
    }
 
    if (!isset($_SESSION["wa_current_user"])) {
@@ -228,14 +223,15 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
          if (!isset($_POST["user_name_entry_field"]) or $_POST["user_name_entry_field"] == "") {
             // strip ajax marker from uri, to force synchronous page reload
             $_SESSION['timeout'] = array('uri' => preg_replace('/JsHttpRequest=(?:(\d+)-)?([^&]+)/s', '', @$_SERVER['REQUEST_URI']), 'post' => $_POST);
-            include($path_to_root . "/access/login.php");
+            include(APP_PATH. "access/login.php");
             if (in_ajax()) {
                $Ajax->activate('_page_body');
             }
             exit;
          }
          else {
-            $succeed = isset($db_connections[$_POST["company_login_name"]]) && $_SESSION["wa_current_user"]->login($_POST["company_login_name"], $_POST["user_name_entry_field"], md5($_POST["password"]));
+            $succeed = isset($db_connections[$_POST["company_login_name"]]) && $_SESSION["wa_current_user"]->login($_POST["company_login_name"],
+                                                                                                                   $_POST["user_name_entry_field"], md5($_POST["password"]));
             // select full vs fallback ui mode on login
             $_SESSION["wa_current_user"]->ui_mode = $_POST['ui_mode'];
             if (!$succeed) {
@@ -250,7 +246,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
          set_global_connection();
       }
       if (!$_SESSION["wa_current_user"]->old_db) {
-         include_once($path_to_root . '/company/installed_extensions.php');
+         include_once(APP_PATH. 'company/installed_extensions.php');
       }
       if (!isset($_SESSION["App"])) {
          $_SESSION["App"] = new front_accounting();

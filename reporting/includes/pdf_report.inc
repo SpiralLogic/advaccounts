@@ -13,9 +13,9 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 //include_once($path_to_root . "reporting/includes/class.pdf.inc");
 include_once(dirname(__FILE__) . "/class.pdf.inc");
 include_once(dirname(__FILE__) . "/printer_class.inc");
-include_once($path_to_root . "/admin/db/company_db.inc");
-include_once($path_to_root . "/admin/db/printers_db.inc");
-include_once($path_to_root . "/config.php");
+include_once($_SERVER['DOCUMENT_ROOT']. "/admin/db/company_db.inc");
+include_once($_SERVER['DOCUMENT_ROOT']. "/admin/db/printers_db.inc");
+include_once($_SERVER['DOCUMENT_ROOT']. "/config.php");
 class FrontReport extends Cpdf
 {
 
@@ -846,12 +846,13 @@ class FrontReport extends Cpdf
 				$msg .= $doc_Kindest_regards . "\n\n";
 				$sender = $this->company['postal_address'] . "\n" . $this->company['email'] . "\n" . $this->company['phone'];
 				//$mail->to($to);
-				$mail->to($myrow['email'], str_replace(",", "", $myrow['DebtorName']));
+            $emailAddress = (isset($_GET['Email'])) ? $_GET['Email'] : $myrow['email'];
+				$mail->to($emailAddress, str_replace(",", "", $myrow['DebtorName']));
 				$mail->subject($subject);
 				$mail->text($msg . $sender);
 				$mail->attachment($fname);
 				$ret = $mail->send();
-				if (!$ret) display_error($mail->toerror); else
+				if (!$ret) display_error('Error: '.$emailAddress.': '.$mail->toerror); else
 					display_notification($this->title . " " . $myrow['reference'] . " " . _("has been sent by email."));
 				unlink($fname);
 			} else {

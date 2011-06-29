@@ -5822,7 +5822,7 @@ if (!class_exists('TCPDF')) {
 			if (!$this->isunicode) {
 				// split string into array of equivalent codes
 				$strarr = array();
-				$strlen = strlen($str);
+				$strlen = @strlen($str);
 				for ($i = 0; $i < $strlen; $i++) {
 					$strarr[] = ord($str{$i});
 				}
