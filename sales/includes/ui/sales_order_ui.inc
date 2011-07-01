@@ -437,7 +437,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		}
 		else // prepare new line
 		{
-			sales_items_list_cells(null, 'stock_id', null, false, true);
+			sales_items_list_cells(null, 'stock_id', null, false, true,false);
 			if (list_updated('stock_id')) {
 				$Ajax->activate('price');
 				$Ajax->activate('item_description');
