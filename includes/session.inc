@@ -132,32 +132,33 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
                          APP_PATH . 'includes/classes',
                          APP_PATH . 'contacts/includes/classes'));
    if (preg_match('/Chrome/i', $_SERVER['HTTP_USER_AGENT'])) {
-      @require_once(APP_PATH . 'includes/fb.php');
+      include(APP_PATH . 'includes/fb.php');
       FB::useFile('/tmp/chromelogs', APP_PATH . 'tmp/chromelogs');
    }
    else {
-      @require_once(APP_PATH . 'includes/FirePHP/FirePHP.class.php');
-      @require_once(APP_PATH . 'includes/FirePHP/fb.php');
+      include(APP_PATH . 'includes/FirePHP/FirePHP.class.php');
+      include(APP_PATH . 'includes/FirePHP/fb.php');
    }
    if (isset($_GET['path_to_root']) || isset($_POST['path_to_root'])) {
       die("Restricted access");
    }
    function __autoload($className) {
-      if (!@include_once(strtolower($className) . '.inc')) {
-         @include_once(strtolower($className) . '.php');
+      if (!@include(strtolower($className) . '.inc')) {
+         @include(strtolower($className) . '.php');
       }
    }
 
-   include_once(APP_PATH . "includes/current_user.inc");
-   include_once(APP_PATH . "frontaccounting.php");
-   include_once(APP_PATH . "admin/db/security_db.inc");
-   include_once(APP_PATH . "includes/lang/language.php");
-   include_once(APP_PATH . "config_db.php");
-   include_once(APP_PATH . "includes/ajax.inc");
-   include_once(APP_PATH . "includes/ui/ui_msgs.inc");
-   include_once(APP_PATH . "includes/ui2/dialog.inc");
-   include_once(APP_PATH . "includes/ui2/sidemenu.inc");
-   include_once(APP_PATH . "includes/ui2/messages.inc");
+/** @define "$_SERVER['DOCUMENT_ROOT']/" "VALUE" */
+   include(APP_PATH . "includes/current_user.inc");
+   include(APP_PATH . "frontaccounting.php");
+   include(APP_PATH . "admin/db/security_db.inc");
+   include(APP_PATH . "includes/lang/language.php");
+   include(APP_PATH . "config_db.php");
+   include(APP_PATH . "includes/ajax.inc");
+   include(APP_PATH . "includes/ui/ui_msgs.inc");
+   include(APP_PATH . "includes/ui2/dialog.inc");
+   include(APP_PATH . "includes/ui2/sidemenu.inc");
+   include(APP_PATH . "includes/ui2/messages.inc");
    
    /*
       Uncomment the setting below when using FA on shared hosting
@@ -180,12 +181,13 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
    $_SESSION['language']->set_language($_SESSION['language']->code);
    // include $Hooks object if locale file exists
    if (file_exists(APP_PATH . "lang/" . $_SESSION['language']->code . "/locale.inc")) {
-      include_once(APP_PATH . "lang/" . $_SESSION['language']->code . "/locale.inc");
+      include(APP_PATH . "lang/" . $_SESSION['language']->code . "/locale.inc");
       $Hooks = new Hooks();
    }
-   include_once(APP_PATH . "includes/access_levels.inc");
-   include_once(APP_PATH . "config.php");
-   include_once(APP_PATH . "includes/main.inc");
+   include(APP_PATH . "includes/access_levels.inc");
+   include(APP_PATH . "config.php");
+   include(APP_PATH . "includes/main.inc");
+
    // Ajax communication object
    $Ajax = new Ajax();
    // js/php validation rules container
@@ -246,7 +248,8 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
          set_global_connection();
       }
       if (!$_SESSION["wa_current_user"]->old_db) {
-         include_once(APP_PATH. 'company/installed_extensions.php');
+         /** @define "$_SERVER['DOCUMENT_ROOT']/" "VALUE" */
+         include(APP_PATH. 'company/installed_extensions.php');
       }
       if (!isset($_SESSION["App"])) {
          $_SESSION["App"] = new front_accounting();

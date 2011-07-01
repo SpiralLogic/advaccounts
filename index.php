@@ -9,14 +9,13 @@ but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
  ***********************************************************************/
-$path_to_root = ".";
-if (!file_exists($path_to_root . '/config.php'))
-	header("Location: " . $path_to_root . "/install/index.php");
+if (!file_exists('/config.php'))
+	header("Location: " .  "/install/index.php");
 
 $page_security = 'SA_OPEN';
 
 
-include_once("includes/session.inc");
+include_once('includes/session.inc');
  
 add_access_extensions();
 $app = &$_SESSION["App"];
