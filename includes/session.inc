@@ -148,7 +148,6 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
       }
    }
 
-/** @define "$_SERVER['DOCUMENT_ROOT']/" "VALUE" */
    include(APP_PATH . "includes/current_user.inc");
    include(APP_PATH . "frontaccounting.php");
    include(APP_PATH . "admin/db/security_db.inc");
