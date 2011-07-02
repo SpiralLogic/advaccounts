@@ -38,7 +38,7 @@
    if ($use_date_picker) {
       $js .= get_js_date_picker();
    }
-   $js .= get_jquery_gmaps();
+//   $js .= get_jquery_gmaps();
    if (isset($_POST['saveorder'])) {
       $_SESSION['Items']->store();
       echo $_POST['saveorder'];
