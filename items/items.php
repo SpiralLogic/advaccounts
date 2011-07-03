@@ -19,7 +19,7 @@
    $page_security = 'SA_ITEM';
    $path_to_root = "..";
    include_once("includes/items.inc");
-   if (isAjaxReferrer()) {
+   if (AJAX_REFERRER) {
       if (isset($_GET['term'])) {
          $data = Item::search($_GET['term']);
       }

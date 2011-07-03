@@ -3,7 +3,7 @@
 $page_security = 'SA_CUSTOMER';
 $path_to_root = "..";
 include_once("includes/contacts.inc");
-if (isAjaxReferrer()) {
+if (AJAX_REFERRER) {
 	if (isset($_GET['term'])) {
 		$data = Customer::search($_GET['term']);
 	} elseif (isset($_POST['id'])) {

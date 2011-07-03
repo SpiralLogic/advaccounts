@@ -184,7 +184,7 @@ function check_overdue($row)
 $date_after = date2sql($_POST['TransAfterDate']);
 $date_to = date2sql($_POST['TransToDate']);
 $searchArray = trim($_POST['ajaxsearch']);
-if (isAjaxReferrer() && !empty($searchArray)) {
+if (AJAX_REFERRER && !empty($searchArray)) {
 	$searchArray = explode(' ', $searchArray);
 	unset($_POST['customer_id']);
 	unset($_POST['filterType']);
@@ -223,7 +223,7 @@ $sql .= "trans.alloc AS Allocated,
 		FROM debtor_trans as trans, debtors_master as debtor, cust_branch as branch
 		WHERE debtor.debtor_no = trans.debtor_no
 		AND trans.branch_code = branch.branch_code";
-if (isAjaxReferrer() && !empty($_POST['ajaxsearch'])) {
+if (AJAX_REFERRER && !empty($_POST['ajaxsearch'])) {
 	$sql = "SELECT * FROM debtor_trans_view WHERE ";
 	foreach ($searchArray as $ajaxsearch) {
 		if (empty($ajaxsearch))

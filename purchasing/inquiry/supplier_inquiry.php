@@ -142,7 +142,7 @@ function check_overdue($row)
 }
 
 //------------------------------------------------------------------------------------------------
-if (isAjaxReferrer() && !empty($_POST['ajaxsearch'])) {
+if (AJAX_REFERRER && !empty($_POST['ajaxsearch'])) {
 	$searchArray = explode(' ', $_POST['ajaxsearch']);
 	unset($_POST['supplier_id']);
 }
@@ -164,7 +164,7 @@ $sql = "SELECT trans.type,
     	FROM supp_trans as trans, suppliers as supplier
     	WHERE supplier.supplier_id = trans.supplier_id
      	AND trans.ov_amount != 0"; // exclude voided transactions
-if (isAjaxReferrer() && !empty($_POST['ajaxsearch'])) {
+if (AJAX_REFERRER && !empty($_POST['ajaxsearch'])) {
 	foreach ($searchArray as $ajaxsearch) {
 		if (empty($ajaxsearch)) {
 			continue;

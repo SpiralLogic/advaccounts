@@ -26,7 +26,7 @@
    if ($use_date_picker) {
       $js .= get_js_date_picker();
    }
-   if (isAjaxReferrer() && !empty($_POST['ajaxsearch'])) {
+   if (AJAX_REFERRER && !empty($_POST['ajaxsearch'])) {
       $searchArray = explode(' ', $_POST['ajaxsearch']);
    }
    if (isset($searchArray) && $searchArray[0] == 'o') {
@@ -274,7 +274,7 @@
       $number_like = "%" . $_POST['OrderReference'] . "%";
       $sql .= " AND sorder.reference LIKE " . db_escape($number_like) . " GROUP BY sorder.order_no";
    }
-   elseif (isAjaxReferrer() && !empty($_POST['ajaxsearch'])) {
+   elseif (AJAX_REFERRER && !empty($_POST['ajaxsearch'])) {
       foreach ($searchArray as $ajaxsearch) {
          if (empty($ajaxsearch))
             continue;

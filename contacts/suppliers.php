@@ -19,7 +19,7 @@
    $page_security = 'SA_SUPPLIER';
    $path_to_root = "../";
    include_once("includes/contacts.inc");
-   if (isAjaxReferrer()) {
+   if (AJAX_REFERRER) {
       if (isset($_GET['term'])) {
          $data = Supplier::search($_GET['term']);
       }

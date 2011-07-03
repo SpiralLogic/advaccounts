@@ -1,6 +1,6 @@
 <?php
 
-   /*     * ********************************************************************
+   /** ********************************************************************
     Copyright (C) FrontAccounting, LLC.
     Released under the terms of the GNU General Public License, GPL,
     as published by the Free Software Foundation, either version 3
@@ -181,5 +181,8 @@
    define('DEFAULT_TAX_GROUP', 1);
    define('DEFAULT_AREA', 1);
    define('DEFAULT_SHIP_VIA', 1);
-
+FB::info(realpath($_SERVER["SCRIPT_FILENAME"]));
+FB::info($_SERVER["SCRIPT_FILENAME"]);
+FB::info(realpath($_SERVER['DOCUMENT_ROOT']));
+FB::info(realpath(__FILE__));
 ?>

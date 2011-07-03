@@ -28,12 +28,12 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
    }
 
    function login_fail() {
-      global $path_to_root;
+
       header("HTTP/1.1 401 Authorization Required");
       echo "<center><br><br><font size='5' color='red'><b>" . _("Incorrect Password") . "<b></font><br><br>";
       echo "<b>" . _("The user and password combination is not valid for the system.") . "<b><br><br>";
       echo _("If you are not an authorized user, please contact your system administrator to obtain an account to enable you to use the system.");
-      echo "<br><a href='$path_to_root/index.php'>" . _("Try again") . "</a>";
+      echo "<br><a href='/index.php'>" . _("Try again") . "</a>";
       echo "</center>";
       kill_login();
       die();
@@ -41,7 +41,6 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 
    function check_page_security($page_security) {
       if (!$_SESSION["wa_current_user"]->check_user_access()) {
-         // notification after upgrade from pre-2.2 version
          $msg = $_SESSION["wa_current_user"]->old_db ? _("Security settings have not been defined for your user account.") . "<br>" . _("Please contact your system administrator.")
             : _("Please remove \$security_groups and \$security_headings arrays from config.php file!");
          display_error($msg);
@@ -123,7 +122,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
    /**
     * @ $_SERVER['DOCUMENT_ROOT'] = document root
     */
-   define('APP_PATH', $_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR);
+   define('APP_PATH', realpath(__DIR__.'/..') . DIRECTORY_SEPARATOR);
    add_include_path(array(
                          realpath('.') . '/includes/classes',
                          APP_PATH . 'includes/ui2',
@@ -255,9 +254,8 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
          $_SESSION["App"]->init();
       }
    }
-   function isAjaxReferrer() {
-      return (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest');
-   }
+   define("AJAX_REFERRER",(isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest'));
+   
 
    if (isset($_SESSION["wa_current_user"]) && $_SESSION["wa_current_user"]->user == 1) {
       if ($go_debug == 1) {
