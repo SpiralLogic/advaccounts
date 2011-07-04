@@ -118,7 +118,7 @@
          elseif ($doctype == ST_SALESORDER)
             $this->title = ($print_as_quote == 1 ? _("QUOTE") : _("ORDER"));
          elseif ($doctype == ST_SALESINVOICE)
-            $this->title = _("INVOICE");
+            $this->title = _("TAX INVOICE");
          elseif ($doctype == ST_WORKORDER)
             $this->title = _("WORK ORDER");
          elseif ($doctype == ST_SUPPAYMENT)

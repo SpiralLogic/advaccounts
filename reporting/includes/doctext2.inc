@@ -110,7 +110,7 @@
             $this->title = ($print_as_quote == 1 ? "QUOTE" : "SALES ORDER");
          }
          elseif ($doctype == ST_SALESINVOICE) {
-            $this->title = "INVOICE";
+            $this->title = "TAX INVOICE";
          }
          elseif ($doctype == ST_CUSTDELIVERY) {
             $this->title = ($packing_slip == 1 ? "PACKING SLIP" : "DELIVERY NOTE");

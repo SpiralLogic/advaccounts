@@ -46,7 +46,7 @@
       $params = array('comments' => $comments);
       $cur = get_company_Pref('curr_default');
       if ($email == 0) {
-         $rep = new FrontReport(_('INVOICE'), "InvoiceBulk", user_pagesize());
+         $rep = new FrontReport(_('TAX INVOICE'), "InvoiceBulk", user_pagesize());
          $rep->currency = $cur;
          $rep->Font();
          $rep->Info($params, $cols, null, $aligns);
@@ -71,7 +71,7 @@
                $rep->currency = $cur;
                $rep->Font();
                if ($j == ST_SALESINVOICE) {
-                  $rep->title = _('INVOICE');
+                  $rep->title = _('TAX INVOICE');
                   $rep->filename = "Invoice" . $myrow['reference'] . ".pdf";
                }
                else {
@@ -80,7 +80,7 @@
                }
                $rep->Info($params, $cols, null, $aligns);
             }
-            else $rep->title = ($j == ST_SALESINVOICE) ? _('INVOICE') : _('CREDIT NOTE');
+            else $rep->title = ($j == ST_SALESINVOICE) ? _('TAX INVOICE') : _('CREDIT NOTE');
             $rep->Header2($myrow, $branch, $sales_order, $baccount, $j);
             $result = get_customer_trans_details($j, $i);
             $SubTotal = 0;
