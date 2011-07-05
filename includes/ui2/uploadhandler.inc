@@ -184,7 +184,6 @@
          if (isset($headers['X-Requested-With']) && $headers['X-Requested-With'] === 'XMLHttpRequest') {
             header('Content-type: application/json');
          }
-         FB::info($file);
          echo json_encode($file);
       }
 

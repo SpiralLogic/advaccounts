@@ -130,9 +130,10 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
                          APP_PATH . 'includes',
                          APP_PATH . 'includes/classes',
                          APP_PATH . 'contacts/includes/classes'));
+
    if (preg_match('/Chrome/i', $_SERVER['HTTP_USER_AGENT'])) {
       include(APP_PATH . 'includes/fb.php');
-      FB::useFile('/tmp/chromelogs', APP_PATH . 'tmp/chromelogs');
+      FB::useFile(APP_PATH.'tmp/chromelogs', '/tmp/chromelogs');
    }
    else {
       include(APP_PATH . 'includes/FirePHP/FirePHP.class.php');
@@ -146,7 +147,6 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
          @include(strtolower($className) . '.php');
       }
    }
-
    include(APP_PATH . "includes/current_user.inc");
    include(APP_PATH . "frontaccounting.php");
    include(APP_PATH . "admin/db/security_db.inc");
@@ -214,6 +214,8 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
    if (!isset($_SESSION["wa_current_user"])) {
       $_SESSION["wa_current_user"] = new current_user();
    }
+   define("AJAX_REFERRER",(isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest'));
+
    // logout.php is the only page we should have always
    // accessable regardless of access level and current login status.
    if (strstr($_SERVER['PHP_SELF'], 'logout.php') == false) {
@@ -223,6 +225,10 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
          if (!isset($_POST["user_name_entry_field"]) or $_POST["user_name_entry_field"] == "") {
             // strip ajax marker from uri, to force synchronous page reload
             $_SESSION['timeout'] = array('uri' => preg_replace('/JsHttpRequest=(?:(\d+)-)?([^&]+)/s', '', @$_SERVER['REQUEST_URI']), 'post' => $_POST);
+            if (AJAX_REFERRER) {
+               echo json_encode(array("LOGGED_OUT"=>true));
+            exit;
+            }
             include(APP_PATH. "access/login.php");
             if (in_ajax()) {
                $Ajax->activate('_page_body');
@@ -254,8 +260,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
          $_SESSION["App"]->init();
       }
    }
-   define("AJAX_REFERRER",(isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest'));
-   
+
 
    if (isset($_SESSION["wa_current_user"]) && $_SESSION["wa_current_user"]->user == 1) {
       if ($go_debug == 1) {

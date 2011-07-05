@@ -8,7 +8,7 @@
 // this has to be an own page, because otherwise we could not get Content-type application/pdf
 $path_to_root = "../..";
 $page_security = 'SA_REPORT_GENERATOR';
-include_once($path_to_root . "/includes/session.inc");
+include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 add_access_extensions();
 
 include_once($path_to_root . "/includes/date_functions.inc");

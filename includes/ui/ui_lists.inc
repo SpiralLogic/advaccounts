@@ -885,7 +885,6 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
       }
       $sql .= " AND !i.inactive AND !s.inactive AND !s.no_sale";
       $sql .= " GROUP BY i.item_code";
-      FB::info($sql);
       return combo_input($name, $selected_id, $sql, 'i.item_code', 'c.description',
                          array_merge(array('format' => '_format_stock_items',
                                           'spec_option' => $all_option === true ? _("All Items") : $all_option,
@@ -1250,44 +1249,48 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
    }
 
    //------------------------------------------------------------------------------------
-   function payment_terms_list($name, $selected_id = null) {
+   function payment_terms_list($name, $selected_id = null,$disabled=null) {
+      if ($disabled===null) $disabled=(!$_SESSION['wa_current_user']->can_access
+            ('SA_CUSTOMER_CREDIT'));
       $sql = "SELECT terms_indicator, terms, inactive FROM payment_terms";
-      return combo_input($name, $selected_id, $sql, 'terms_indicator', 'terms_indicator', array());
+      return combo_input($name, $selected_id, $sql, 'terms_indicator', 'terms_indicator', array('disabled'=>$disabled));
    }
 
-   function payment_terms_list_cells($label, $name, $selected_id = null) {
+   function payment_terms_list_cells($label, $name, $selected_id = null, $disabled=null) {
       if ($label != null) {
          echo "<td>$label</td>\n";
       }
       echo "<td>";
-      echo payment_terms_list($name, $selected_id);
+      echo payment_terms_list($name, $selected_id,$disabled);
       echo "</td>\n";
    }
 
-   function payment_terms_list_row($label, $name, $selected_id = null) {
+   function payment_terms_list_row($label, $name, $selected_id = null,$disabled=null) {
       echo "<tr><td class='label'>$label</td>";
-      payment_terms_list_cells(null, $name, $selected_id);
+      payment_terms_list_cells(null, $name, $selected_id, $disabled);
       echo "</tr>\n";
    }
 
    //------------------------------------------------------------------------------------
-   function credit_status_list($name, $selected_id = null) {
+   function credit_status_list($name, $selected_id = null,$disabled=null) {
+      if ($disabled===null) $disabled=(!$_SESSION['wa_current_user']->can_access
+            ('SA_CUSTOMER_CREDIT'));
       $sql = "SELECT id, reason_description, inactive FROM credit_status";
-      return combo_input($name, $selected_id, $sql, 'id', 'reason_description', array());
+      return combo_input($name, $selected_id, $sql, 'id', 'reason_description', array('disabled'=>$disabled));
    }
 
-   function credit_status_list_cells($label, $name, $selected_id = null) {
+   function credit_status_list_cells($label, $name, $selected_id = null,$disabled=null) {
       if ($label != null) {
          echo "<td>$label</td>\n";
       }
       echo "<td>";
-      echo credit_status_list($name, $selected_id);
+      echo credit_status_list($name, $selected_id,$disabled);
       echo "</td>\n";
    }
 
-   function credit_status_list_row($label, $name, $selected_id = null) {
+   function credit_status_list_row($label, $name, $selected_id = null,$disabled=null) {
       echo "<tr><td class='label'>$label</td>";
-      credit_status_list_cells(null, $name, $selected_id);
+      credit_status_list_cells(null, $name, $selected_id,$disabled);
       echo "</tr>\n";
    }
 

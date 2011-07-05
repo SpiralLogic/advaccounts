@@ -150,10 +150,9 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
       UI::select('EmailSelect' . $count, $emails, array('style' => 'display:inline-block;max-width:600px'))->br;
       UI::button('EmailButton' . $count, $link_text, array('style' => 'margin:20px', 'data-url' => $url, 'data-count' => 'id-' . $count));
       HTML::br()->br->div(false);
-      echo '<script>';
-      echo <<<JS
+      JS::register(<<<JS
 $(function() {
-$('[id^="EmailButton"]').button().click(function() {
+$('#EmailButton{$count}').button().click(function() {
 Adv.loader.show();
 var email = $("#EmailSelect" + $(this).data('count').substr(3)).val();
 $.get($(this).data('url') + "&Email="+email,function(responce) {
@@ -163,8 +162,8 @@ Adv.loader.hide();
 });
 
 })
-JS;
-      echo '</script>';
+JS
+      );
       $count++;
 
    }

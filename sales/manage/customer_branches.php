@@ -14,7 +14,7 @@ $page_security = 'SA_CUSTOMER';
 //$page_security = 3;
 $path_to_root = "../..";
 include_once($path_to_root . "/includes/db_pager.inc");
-include_once($path_to_root . "/includes/session.inc");
+include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 
 page(_($help_context = "Customer Branches"), @$_REQUEST['popup']);
 

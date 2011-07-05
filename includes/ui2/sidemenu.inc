@@ -2,7 +2,6 @@
 
 	class Sidemenu {
 		static function render() {
-			global $path_to_root;
 			echo <<<HTML
 <div id="sidemenu" class="ui-widget-shadow ui-corner-all">
     <h3><a href="#">Search</a></h3>

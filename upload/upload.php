@@ -1,7 +1,7 @@
 <?php
 $page_security = 'SA_SALESMAN';
    $path_to_root = "..";
-   include($path_to_root . "/includes/session.inc");
+   include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
    //$upload_dir = APP_PATH.'sales/upload/';
    if (isset($_SESSION['order_no'])) {
       $upload_handler = new UploadHandler($_SESSION['order_no']);

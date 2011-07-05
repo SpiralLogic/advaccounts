@@ -69,7 +69,7 @@
             $doc_Our_Order_No = "";
          }
          else {
-            $doc_Your_VAT_no = "Your VAT no.";
+            $doc_Your_VAT_no = "Your ABN no.";
             $doc_Payment_Terms = "Payment Terms";
             $doc_Customers_Ref = "Customers Reference";
             $doc_Our_Order_No = "Our Order No";
@@ -77,7 +77,7 @@
          #  __ADVANCEDEDIT__ END #
       }
       $doc_Extra = "";
-      $doc_Our_VAT_no = "Our VAT No.";
+      $doc_Our_VAT_no = "Our ABN No.";
       $doc_Domicile = "Domicile";
       if ($doctype == ST_CUSTDELIVERY || $doctype == ST_SALESQUOTE || $doctype == ST_PURCHORDER || $doctype == ST_SALESORDER || $doctype == ST_SUPPAYMENT || $doctype == ST_CUSTPAYMENT ||
           $doctype == ST_CUSTPREFUND

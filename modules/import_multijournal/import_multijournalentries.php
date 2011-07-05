@@ -9,7 +9,7 @@ $path_to_root = "../..";
 
 include_once($path_to_root . "/includes/ui/items_cart.inc");
 include_once($path_to_root . "/gl/includes/db/gl_db_trans.inc");
-include_once($path_to_root . "/includes/session.inc");
+include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 add_access_extensions();
 
 // Turn these next two lines on for debugging

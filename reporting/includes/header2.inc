@@ -354,7 +354,7 @@ if ((!isset($packing_slip) || $packing_slip == 0) && $doctype != ST_PURCHORDER &
 		$str = $row["terms"];
 	}
 	$this->Font('italic');
-	$this->TextWrap($ccol, $this->row, $right - $ccol, $doc_Payment_Terms . ":  " . $str);
+	$this->TextWrap($ccol, $this->row, $right - $ccol, $doc_Payment_Terms . ":  " . $str  ."         ". $doc_customer_id.": ".$customer->id);
 	$this->Font();
 }
 $this->row = $iline5 - $this->lineHeight - 1;

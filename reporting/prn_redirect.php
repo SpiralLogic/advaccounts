@@ -15,7 +15,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 */
 $path_to_root = "..";
 $page_security = 'SA_OPEN'; // this level is later overriden in rep file
-include_once($path_to_root . "/includes/session.inc");
+include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 
 function find_report_file($rep)
 {

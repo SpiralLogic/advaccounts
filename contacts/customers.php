@@ -57,9 +57,12 @@ if (db_has_customers()) {
 }
 $menu = new MenuUi();
 $menu->startTab('Details', 'Customer Details');
-text_row(_("Customer Name:"), 'name', $customer->name, 35, 80);
-
-start_outer_table($table_style2, 5);
+HTML::table(true,array("style"=>"margin:0 auto; padding-bottom:5px; font-weight:bold"));
+text_cells(_("Customer Name: "), 'name', $customer->name, 35, 80);
+   HTML::td(array("style"=>"width:40px"));
+   text_cells(_("Customer ID: "), 'id', $customer->id, 7, 10);
+HTML::table();
+   start_outer_table($table_style2, 5);
 
 table_section(1);
 table_section_title(_("Shipping Details"), 2, 'tableheader3 ');
@@ -112,9 +115,12 @@ email_row(_("City"), 'acc_city', $customer->accounts->city, 35, 40);
 email_row(_("State:"), 'acc_state', $customer->accounts->state, 35, 40);
 email_row(_("postcode"), 'acc_postcode', $customer->accounts->postcode, 35, 40);
 textarea_row(_("Postal Address:"), 'acc_br_post_address', $customer->accounts->br_address, 35, 5);
-percent_row(_("Discount Percent:"), 'discount', $customer->discount);
-percent_row(_("Prompt Payment Discount Percent:"), 'pymt_discount', $customer->pymt_discount);
-amount_row(_("Credit Limit:"), 'credit_limit', $customer->credit_limit);
+percent_row(_("Discount Percent:"), 'discount', $customer->discount,($_SESSION['wa_current_user']->can_access
+            ('SA_CUSTOMER_CREDIT')) ? "" : " disabled=\"\"");
+percent_row(_("Prompt Payment Discount Percent:"), 'pymt_discount', $customer->pymt_discount,($_SESSION['wa_current_user']->can_access
+            ('SA_CUSTOMER_CREDIT')) ? "" : " disabled=\"\"");
+amount_row(_("Credit Limit:"), 'credit_limit', $customer->credit_limit,($_SESSION['wa_current_user']->can_access
+            ('SA_CUSTOMER_CREDIT')) ? "" : " disabled=\"\"");
 payment_terms_list_row(_("Pament Terms:"), 'payment_terms', $customer->payment_terms);
 credit_status_list_row(_("Credit Status:"), 'credit_status', $customer->credit_status);
 text_row(_("GSTNo:"), 'tax_id', $customer->tax_id, 35, 40);
@@ -219,10 +225,10 @@ if ($customer->id) {
 UI::button('btnCancel', 'Cancel', array('name' => 'cancel', 'type' => 'submit', 'class' => 'ui-helper-hidden',
 									   'style' => 'margin:10px;'));
 HTML::_div()->div('shortcuts', array('style' => 'width:50%;display:block;margin:0 auto;'));
-$shortcuts = new MenuUI();
-$shortcuts->startTab('Create Order', 'Create Order for this customer!'); //, '/sales/sales_order_entry.php?NewOrder=Yes');
+$shortcuts = new MenuUI(array('noajax'=>true));
+$shortcuts->startTab('Create Order', 'Create Order for this customer!', '/sales/sales_order_entry.php?NewOrder=Yes&customer_id='.$customer->id);
 $shortcuts->endTab();
-$shortcuts->startTab('Create Quote', 'Create Quote for this customer!'); //, '/sales/sales_order_entry.php?NewQuote=Yes');
+$shortcuts->startTab('Create Quote', 'Create Quote for this customer!', '/sales/sales_order_entry.php?NewQuote=Yes&customer_id='.$customer->id);
 $shortcuts->endTab();
 $shortcuts->render();
 HTML::_div();

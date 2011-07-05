@@ -7,7 +7,7 @@
  * To change this template use File | Settings | File Templates.
  */
 $path_to_root = "..";
-include_once($path_to_root . "/includes/session.inc");
+include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 include_once("includes/contacts.inc");
 if (isset($_GET['term'])) {
 	$data = Customer::search($_GET['term']);

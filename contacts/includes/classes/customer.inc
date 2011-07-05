@@ -46,6 +46,15 @@
             $this->_status(false, 'Processing', "The discount percentage must be numeric and is expected to be less than 100% and greater than or equal to 0.", 'discount');
             return false;
          }
+         if ($this->id != 0) {
+            $previous = new Customer($this->id);
+            if (($this->credit_limit != $previous->credit_limit || $this->payment_terms != $previous->payment_terms) && !$_SESSION['wa_current_user']->can_access
+            ('SA_CUSTOMER_CREDIT')
+            ) {
+               $this->_status(false, 'Processing', "You don't have access to alter credit limits", 'credit_limit');
+               return false;
+            }
+         }
          return true;
       }
 
@@ -118,7 +127,7 @@
 
       protected function _setDefaults() {
          $this->defaultBranch = reset($this->branches)->branch_code;
-          $this->defaultContact = (count($this->contacts)>0)?reset($this->contacts)->id: 0;
+         $this->defaultContact = (count($this->contacts) > 0) ? reset($this->contacts)->id : 0;
          $this->contacts[0] = new Contact(array('parent_id' => $this->id));
       }
 
@@ -310,23 +319,31 @@
       public function getEmailAddresses() {
          $emails = array();
          if (!empty($this->accounts->email))
-            $emails['Accounts'][$this->accounts->id] = array('Accounts',$this->accounts->email);
+            $emails['Accounts'][$this->accounts->id] = array('Accounts', $this->accounts->email);
          foreach ($this->contacts as $id => $contact) {
             if (!empty($contact->email))
-               $emails['Contacts'][$id] = array($contact->name,$contact->email);
+               $emails['Contacts'][$id] = array($contact->name, $contact->email);
          }
          foreach ($this->branches as $id => $branch) {
             if (!empty($branch->email))
-               $emails['Branches'][$id] = array($branch->br_name,$branch->email);
+               $emails['Branches'][$id] = array($branch->br_name, $branch->email);
          }
-
          return (count($emails) > 0) ? $emails : false;
       }
 
       public static function search($terms) {
-         $sql = "(SELECT debtor_no as id, name as label, name as value FROM debtors_master " . " where name
-			LIKE '" . $terms . "%' ORDER BY name LIMIT 20) UNION (SELECT debtor_no as id, name as label, name as value FROM debtors_master " . " where debtor_ref LIKE '%" . $terms . "%' OR name
-			LIKE '%" . $terms . "%' ORDER BY name LIMIT 20)";
+         $sql = "(SELECT debtor_no as id, name as label, name as value FROM debtors_master "
+                . " where name LIKE '" . $terms . "%' ORDER BY name LIMIT 20) UNION (SELECT debtor_no as id, name as label,
+                name as value FROM debtors_master "
+                . " where debtor_ref LIKE '%". $terms . "%'
+
+
+                 OR name LIKE '%" . str_replace(' ',"%' AND name LIKE '%",trim($terms)) . "%'
+
+                 OR debtor_no LIKE '%" . $terms . "%'
+
+
+                 ORDER BY debtor_no, name LIMIT 20)";
          $result = db_query($sql, 'Couldn\'t Get Customers');
          $data = '';
          while ($row = db_fetch_assoc($result)) {

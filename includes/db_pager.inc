@@ -19,7 +19,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 //CP::useFile('/tmp/chromelogs', $path_to_root.'/chromelogs');
 
 //require_once('FirePHPCore/fb.php');
-//require_once($path_to_root . "/includes/firephp.php");
+//require_once($path_to_root . "/includes/firephp.php"); 
 include_once($path_to_root . "/includes/ui/db_pager_view.inc");
 
 class db_pager

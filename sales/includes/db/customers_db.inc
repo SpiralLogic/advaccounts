@@ -20,7 +20,7 @@ function get_customer_details($customer_id, $to = null)
 	$past2 = 2 * $past1;
 	// removed - debtor_trans.alloc from all summations
 
-	$value = "IF(debtor_trans.type=11 OR debtor_trans.type=12 OR debtor_trans.type=2,
+	$value = "IF(debtor_trans.type=11 OR debtor_trans.type=1 OR debtor_trans.type=12 OR debtor_trans.type=2,
 	-1, 1) *" .
 			 "(debtor_trans.ov_amount + debtor_trans.ov_gst + "
 			 .  "debtor_trans.ov_freight + debtor_trans.ov_freight_tax + "

@@ -13,7 +13,7 @@ $page_security = 'SA_SUPPTRANSVIEW';
 $path_to_root = "../..";
 include($path_to_root . "/purchasing/includes/po_class.inc");
 
-include($path_to_root . "/includes/session.inc");
+include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 
 $js = "";
 if ($use_popup_windows)

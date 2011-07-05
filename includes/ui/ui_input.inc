@@ -685,13 +685,13 @@ function ref_row($label, $name, $title = null, $init = null, $submit_on_change =
 
 //-----------------------------------------------------------------------------------
 
-function percent_row($label, $name, $init = null)
+function percent_row($label, $name, $init = null,$params='')
 {
 
 	if (!isset($_POST[$name]) || $_POST[$name] == "") {
 		$_POST[$name] = ($init === null) ? '' : $init;
 	}
-	small_amount_row($label, $name, $_POST[$name], null, "%", user_percent_dec());
+	small_amount_row($label, $name . '" '.$params, $_POST[$name], null, "%", user_percent_dec());
 }
 
 function amount_cells_ex($label, $name, $size, $max = null, $init = null, $params = null, $post_label = null, $dec = null, $id = null)

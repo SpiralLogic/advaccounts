@@ -78,13 +78,15 @@
          }
          else {
             $doc_Customers_Ref = ($doctype == ST_SALESQUOTE || $doctype == ST_STATEMENT) ? "" : "Purchase Order#";
+            $doc_Our_Ref = "Contact";
             $doc_Payment_Terms = "Payment Terms";
+            $doc_customer_id = "Customer ID";
             $doc_Your_VAT_no = "Phone";
             $doc_Our_Order_No = "Fax";
          }
          #  __ADVANCEDEDIT__ END #
       }
-      $doc_Our_VAT_no = _("Our VAT No.");
+      $doc_Our_VAT_no = _("Our ABN No.");
       //	$doc_Domicile = _("Domicile");
       $doc_Extra = "";
       if ($doctype == ST_CUSTDELIVERY || $doctype == ST_SALESQUOTE || $doctype == ST_PURCHORDER || $doctype == ST_SALESORDER ||

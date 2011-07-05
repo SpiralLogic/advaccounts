@@ -18,7 +18,7 @@ $page_security = 'SA_BANKREP';
 // ----------------------------------------------------------------
 $path_to_root = "..";
 
-include_once($path_to_root . "/includes/session.inc");
+include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
 include_once($path_to_root . "/gl/includes/gl_db.inc");

@@ -25,7 +25,7 @@
 
 $page_security = 'SA_REPORT_GENERATOR';
 $path_to_root = "../..";
-include_once($path_to_root . "/includes/session.inc");
+include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 add_access_extensions();
 
 include_once($path_to_root . "/includes/date_functions.inc");

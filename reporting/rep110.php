@@ -20,7 +20,7 @@ $page_security = $_POST['PARAM_0'] == $_POST['PARAM_1'] ?
 // ----------------------------------------------------------------
 $path_to_root = "..";
 
-include_once($path_to_root . "/includes/session.inc");
+include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
 include_once($path_to_root . "/sales/includes/sales_db.inc");

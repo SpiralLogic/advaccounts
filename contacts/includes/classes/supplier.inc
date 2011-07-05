@@ -185,8 +185,7 @@
       }
 
       public function getEmailAddresses() {
-         FB::info(array('Accounts' => array($this->name => $this->email)));
-         
+
          return array('Accounts' => array($this->id=>array($this->name,$this->email)));
       }
    }
