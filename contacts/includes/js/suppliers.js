@@ -5,7 +5,7 @@
 	}
 	var AdvAcc = function()
 	{
-		var loader,btnCancel,btnSupplier,feildsChanged = 0,tabs,
+		var btnCancel,btnSupplier,feildsChanged = 0,tabs,
 				resetHighlights = function()
 				{
 					$(".ui-state-highlight").removeClass("ui-state-highlight");
@@ -88,9 +88,9 @@
 					else {
 						element.val(value).data('init', '');
 					}
-				}
+				};
 		return this;
-	}
+	};
 	return window.AdvAcc = AdvAcc();
 }(window));
 

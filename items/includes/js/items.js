@@ -14,7 +14,7 @@
       itemList.delegate('span', 'click', function() {
          $this.getItem($(this).attr('id'));
          $(this).remove();
-      })
+      });
       this.getItem = function (id) {
          $.post("items.php", {id: id}, function(data) {
             var content = $('<td><td/>').css('vertical-align','top');
@@ -38,7 +38,7 @@
          $.map(results, function(v) {
             $('<span>').attr('id', v.id).css('display', 'block').html(v.id + '<br/>').appendTo(itemList);
          })
-      }
+      };
       this.addFeild = function(name, value) {
 
          var input = (name=='description' || name=='long_description')? $('<textarea>').attr({'name':name}).text(value): $('<input/>').attr({'name':name,value:value});

@@ -14,6 +14,7 @@
       public $credit_status;
       public $payment_discount = '0';
       public $defaultBranch;
+      public $defaultContact;
       public $branches = array();
       public $contacts = array();
       public $accounts;

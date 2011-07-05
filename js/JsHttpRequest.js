@@ -61,7 +61,7 @@ function JsHttpRequest()
 			}
 			_changeReadyState(4, true); // 4 in IE & FF on abort() call; Opera does not change to 4.
 		}
-	}
+	};
 
 	/**
 	 * Prepares the object for data loading.
@@ -93,7 +93,7 @@ function JsHttpRequest()
 				asyncFlag:  asyncFlag,
 				username:   username != null ? username : '',
 				password:   password != null ? password : ''
-			}
+			};
 			_ldObj = null;
 			_changeReadyState(1, true); // compatibility with XMLHttpRequest
 			return true;
@@ -163,7 +163,7 @@ function JsHttpRequest()
 
 		// If no loader matched, generate error message.
 		return tryLoader ? this._error('no_loader_matched', errors.join('\n')) : this._error('no_loaders');
-	}
+	};
 
 	/**
 	 * Returns all response headers (if supported).
@@ -223,7 +223,8 @@ function JsHttpRequest()
 			_changeReadyState(4);
 			_cleanup();
 		}
-	}
+	};
+
 
 	/**
 	 * Analog of sprintf(), but translates the first parameter by _errors.
