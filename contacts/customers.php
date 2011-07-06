@@ -6,16 +6,14 @@
    if (AJAX_REFERRER) {
       if (isset($_GET['term'])) {
          $data = Customer::search($_GET['term']);
-      }
-      elseif (isset($_POST['id'])) {
+      } elseif (isset($_POST['id'])) {
          if (isset($_POST['name'])) {
             $data['customer'] = $customer = new Customer($_POST);
             $data['customer']->save();
             //$data['customer']=new Customer($_POST['id']);
             $data['status'] = $customer->getStatus();
 
-         }
-         elseif (!isset($_POST['name'])) {
+         } elseif (!isset($_POST['name'])) {
             $data['customer'] = $customer = new Customer($_POST['id']);
          }
          if ($_POST['id'] > 0) {
@@ -23,8 +21,7 @@
             $data['transactions'] = '<pre>' . print_r($customer->getTransactions(), true) . '</pre>';
             $_SESSION['wa_global_customer_id'] = $customer->id;
          }
-      }
-      else {
+      } else {
          $data['customer'] = new Customer();
       }
       echo json_encode($data);
@@ -39,11 +36,9 @@
    check_db_has_tax_groups(_("There are no tax groups defined in the system. At least one tax group is required before proceeding."));
    if (isset($_GET['debtor_no'])) {
       $customer = new Customer($_GET['debtor_no']);
-   }
-   elseif (isset($_POST['id']) && !empty($_POST['id'])) {
+   } elseif (isset($_POST['id']) && !empty($_POST['id'])) {
       $customer = new Customer($_POST['id']);
-   }
-   else {
+   } else {
       $customer = new Customer();
    }
    $currentContact = $customer->contacts[$customer->defaultContact];
@@ -71,6 +66,7 @@
    text_cells(_("Customer ID: "), 'id', $customer->id, 7, 10);
    HTML::table()->div();
    start_outer_table($table_style2, 5);
+
    table_section(1);
    table_section_title(_("Shipping Details"), 2, 'tableheader3 ');
    /** @noinspection PhpUndefinedMethodInspection */
@@ -133,8 +129,7 @@
    text_row(_("GSTNo:"), 'tax_id', $customer->tax_id, 35, 40);
    if (!$customer->id) {
       currencies_list_row(_("Customer's Currency:"), 'curr_code', $customer->curr_code);
-   }
-   else {
+   } else {
       label_row(_("Customer's Currency:"), $customer->curr_code);
       hidden('curr_code', $customer->curr_code);
    }
@@ -160,6 +155,7 @@
    /** @noinspection PhpUndefinedMethodInspection */
    HTML::textarea()->td->td;
    end_outer_table(1);
+
    $menu->endTab()->startTab('Customer Contacts', 'Customer Contacts');
    start_outer_table($table_style2, 5);
    table_section(1);
@@ -181,6 +177,7 @@
    //}
    HTML::tr();
    end_outer_table(1);
+
    $menu->endTab()->startTab('Extra Shipping Info', 'Extra Shipping Info');
    start_outer_table($table_style2, 5);
    table_section(1);
@@ -224,8 +221,7 @@
    if ($customer->id) {
       UI::button('btnCustomer', 'Update Customer',
                  array('name' => 'submit', 'type' => 'submit', 'style' => 'margin:10px;'));
-   }
-   else {
+   } else {
       UI::button('btnCustomer', 'New Customer',
                  array('name' => 'submit', 'type' => 'submit', 'class' => ' ui-helper-hidden',
                       'style' => 'margin:10px;'));
@@ -242,4 +238,5 @@
    $shortcuts->render();
    /** @noinspection PhpUndefinedMethodInspection */
    HTML::_div();
+
    end_page(true, true);
