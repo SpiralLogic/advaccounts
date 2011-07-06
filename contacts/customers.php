@@ -6,21 +6,25 @@
    if (AJAX_REFERRER) {
       if (isset($_GET['term'])) {
          $data = Customer::search($_GET['term']);
-      } elseif (isset($_POST['id'])) {
+      }
+      elseif (isset($_POST['id'])) {
          if (isset($_POST['name'])) {
             $data['customer'] = $customer = new Customer($_POST);
             $data['customer']->save();
             //$data['customer']=new Customer($_POST['id']);
             $data['status'] = $customer->getStatus();
 
-         } elseif (!isset($_POST['name'])) {
+         }
+         elseif (!isset($_POST['name'])) {
             $data['customer'] = $customer = new Customer($_POST['id']);
          }
          if ($_POST['id'] > 0) {
             $data['contact_log'] = contact_log::read($customer->id, 'C');
             $data['transactions'] = '<pre>' . print_r($customer->getTransactions(), true) . '</pre>';
+            $_SESSION['wa_global_customer_id'] = $customer->id;
          }
-      } else {
+      }
+      else {
          $data['customer'] = new Customer();
       }
       echo json_encode($data);
@@ -35,9 +39,11 @@
    check_db_has_tax_groups(_("There are no tax groups defined in the system. At least one tax group is required before proceeding."));
    if (isset($_GET['debtor_no'])) {
       $customer = new Customer($_GET['debtor_no']);
-   } elseif (isset($_POST['id']) && !empty($_POST['id'])) {
+   }
+   elseif (isset($_POST['id']) && !empty($_POST['id'])) {
       $customer = new Customer($_POST['id']);
-   } else {
+   }
+   else {
       $customer = new Customer();
    }
    $currentContact = $customer->contacts[$customer->defaultContact];
@@ -53,17 +59,18 @@
       /** @noinspection PhpDynamicAsStaticMethodCallInspection */
       UI::search('customer', array('label' => 'Search Customer:', 'size' => 80, 'url' => 'search.php',
                                   'callback' => 'Customer.fetch'));
-      start_form();
+      HTML::div(false);
    }
+   start_form();
    $menu = new MenuUi();
    $menu->startTab('Details', 'Customer Details');
-   HTML::table(true, array("style" => "margin:0 auto; padding-bottom:5px; font-weight:bold"));
+   HTML::div('customerIDs');
+   HTML::table(null, array("style" => "margin:0 auto; padding-bottom:5px; font-weight:bold"));
    text_cells(_("Customer Name: "), 'name', $customer->name, 35, 80);
    HTML::td(array("style" => "width:40px"));
    text_cells(_("Customer ID: "), 'id', $customer->id, 7, 10);
-   HTML::table();
+   HTML::table()->div();
    start_outer_table($table_style2, 5);
-
    table_section(1);
    table_section_title(_("Shipping Details"), 2, 'tableheader3 ');
    /** @noinspection PhpUndefinedMethodInspection */
@@ -81,10 +88,8 @@
    email_row(_("City"), 'br_city', $currentBranch->city, 35, 40);
    email_row(_("State:"), 'br_state', $currentBranch->state, 35, 40);
    email_row(_("postcode"), 'br_postcode', $currentBranch->postcode, 35, 40);
-
    table_section(2);
    table_section_title(_("Accounts Details"), 2, 'tableheader3');
-
    /** @noinspection PhpUndefinedMethodInspection */
    HTML::tr(true)->td(array('style' => "text-align:center; margin:0 auto", 'colspan' => 2));
    hidden('id', $customer->id);
@@ -102,8 +107,6 @@
    sales_types_list_row(_("Sales Type/Price List:"), 'sales_type', $customer->sales_type);
    record_status_list_row(_("Customer status:"), 'inactive');
    end_outer_table(1);
-
-
    $menu->endTab()->startTab('Accounts', 'Accounts');
    start_outer_table($table_style2, 5);
    table_section(1);
@@ -130,7 +133,8 @@
    text_row(_("GSTNo:"), 'tax_id', $customer->tax_id, 35, 40);
    if (!$customer->id) {
       currencies_list_row(_("Customer's Currency:"), 'curr_code', $customer->curr_code);
-   } else {
+   }
+   else {
       label_row(_("Customer's Currency:"), $customer->curr_code);
       hidden('curr_code', $customer->curr_code);
    }
@@ -148,7 +152,6 @@
       hidden('dimension2_id', 0);
    }
    table_section(2);
-
    table_section_title(_("Contact log:"), 2, 'tableheader3 ');
    start_row();
    HTML::td(array('class' => 'ui-widget-content center-content', 'colspan' => 2));
@@ -157,7 +160,6 @@
    /** @noinspection PhpUndefinedMethodInspection */
    HTML::textarea()->td->td;
    end_outer_table(1);
-
    $menu->endTab()->startTab('Customer Contacts', 'Customer Contacts');
    start_outer_table($table_style2, 5);
    table_section(1);
@@ -179,7 +181,6 @@
    //}
    HTML::tr();
    end_outer_table(1);
-
    $menu->endTab()->startTab('Extra Shipping Info', 'Extra Shipping Info');
    start_outer_table($table_style2, 5);
    table_section(1);
@@ -223,7 +224,8 @@
    if ($customer->id) {
       UI::button('btnCustomer', 'Update Customer',
                  array('name' => 'submit', 'type' => 'submit', 'style' => 'margin:10px;'));
-   } else {
+   }
+   else {
       UI::button('btnCustomer', 'New Customer',
                  array('name' => 'submit', 'type' => 'submit', 'class' => ' ui-helper-hidden',
                       'style' => 'margin:10px;'));
@@ -235,10 +237,9 @@
    $shortcuts = new MenuUI(array('noajax' => true));
    $shortcuts->startTab('Create Order', 'Create Order for this customer!', '/sales/sales_order_entry.php?NewOrder=Yes&customer_id=');
    $shortcuts->endTab();
-   $shortcuts->startTab('Create Quote', 'Create Quote for this customer!', '/sales/sales_order_entry.php?NewQuote=Yes&customer_id=');
+   $shortcuts->startTab('Create Quote', 'Create Quote for this customer!', '/sales/sales_order_entry.php?NewQuotation=Yes&customer_id=');
    $shortcuts->endTab();
    $shortcuts->render();
    /** @noinspection PhpUndefinedMethodInspection */
    HTML::_div();
-
    end_page(true, true);

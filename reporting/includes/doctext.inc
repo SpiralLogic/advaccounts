@@ -13,6 +13,8 @@
    if (isset($header2type)) {
       $doc_Cust_no = _("Cust no");
       $doc_Date = _("Date");
+      $doc_customer_id = "Customer ID";
+
       if ($doctype == ST_PURCHORDER || $doctype == ST_SUPPAYMENT) { // Purchase Order
          $doc_Charge_To = _("Order To");
          if ($doctype == ST_PURCHORDER)

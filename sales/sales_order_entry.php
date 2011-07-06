@@ -38,11 +38,15 @@
    if ($use_date_picker) {
       $js .= get_js_date_picker();
    }
-//   $js .= get_jquery_gmaps();
+   //   $js .= get_jquery_gmaps();
    if (isset($_POST['saveorder'])) {
       $_SESSION['Items']->store();
       echo $_POST['saveorder'];
       exit();
+   }
+   if (isset($_GET['customer_id']) && is_numeric($_GET['customer_id'])) {
+      $_POST['customer_id'] = $_GET['customer_id'];
+      $Ajax->activate('customer_id');
    }
    if (isset($_GET['NewDelivery']) && is_numeric($_GET['NewDelivery'])) {
       $_SESSION['page_title'] = _($help_context = "Direct Sales Delivery");
