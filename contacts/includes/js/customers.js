@@ -258,7 +258,7 @@ var Accounts = function() {
    }
 }();
 var Customer = function () {
-   var customer,searchContents,transactions = $('#transactions'),searchBox=$("#custsearch"),customerIDs=$("#customerIDs");
+   var customer,transactions = $('#transactions'),searchBox=$("#custsearch"),customerIDs=$("#customerIDs");
    return {
       init: function() {
          $.post('customers.php', {id:$('[name="id"]').val()}, function(data) {
@@ -290,13 +290,10 @@ var Customer = function () {
          Adv.resetHighlights();
       },
       hideSearch: function() {
-         searchContents = customerIDs.contents();
-         searchBox.after(customerIDs.contents()).hide();
 
       },
       showSearch: function() {
-         searchContents.detach();
-         searchBox.show();
+
       },
       fetch: function(id) {
          $.post("customers.php", {"id": id}, function(data) {

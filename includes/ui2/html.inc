@@ -70,11 +70,11 @@ class HTML
 
 	protected function _Builder($func, $args, $attr = array(), $content = '')
 	{
-		$open = ((end($args) !== true) && (end($args) !== false)) ? true : array_pop($args);
+		$open = (!is_bool(end($args)) && !end($args)) ? array_pop($args):true;
 		foreach ($args as $key => $val) {
-			if (($key == 0 && $key < 3 && !is_array($val))) {
+			if (($key == 0 && $key < 3 && is_string($val))) {
 				$attr['id'] = $val;
-			} elseif (!isset($attr['content']) && (!is_array($val) || count($args) > 2)) {
+			} elseif (!isset($attr['content']) && (is_string($val) || count($args) > 2)) {
 				$content = $attr['content'] = $val;
 			} elseif (is_array($val)) {
 				$attr = array_merge($attr, $val);
