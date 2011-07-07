@@ -122,6 +122,7 @@
             $sql = "SELECT `id`,`filename` as name, `size` ,`type` FROM upload WHERE `order_no` = " . $this->order_no;
             $result = db_query($sql, 'Could not retrieve upload information');
             if (db_num_rows($result) < 1)
+               echo json_encode(array());
                return;
             while ($row = db_fetch_assoc($result)) {
                $info[] = $row;

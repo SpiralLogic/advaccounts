@@ -45,6 +45,8 @@
          <th>Long Description</th>
          <th width="5%">Price</th>
          <th width="5%">Last Cost</th>
+      <th width="5%">Inactive</th>
+         <th width="5%">No Sale</th>
       </tr>
       </thead>
       <tbody>
@@ -59,6 +61,9 @@
          <th>Long Description</th>
          <th width="5%">price</th>
          <th width="5%">Last Cost</th>
+         <th width="5%">Inactive</th>
+         <th width="5%">No Sale</th>
+
       </tr>
       </tfoot>
    </table>

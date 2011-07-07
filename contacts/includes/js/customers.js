@@ -40,6 +40,7 @@ Adv.extend({
    resetState:function() {
       $("#tabs0 input, #tabs0 textarea").empty();
       $("#customer").val('');
+      Customer.showSearch();
       Customer.fetch(0);
    },
    showStatus:function (status) {
@@ -257,7 +258,7 @@ var Accounts = function() {
    }
 }();
 var Customer = function () {
-   var customer,transactions = $('#transactions');
+   var customer,transactions = $('#transactions'),searchBox=$("#custsearch"),customerIDs=$("#customerIDs");
    return {
       init: function() {
          $.post('customers.php', {id:$('[name="id"]').val()}, function(data) {
@@ -280,12 +281,19 @@ var Customer = function () {
          }
          Branches.empty().add(data.branches).change(data.branches[data.defaultBranch]);
          Accounts.change(data.accounts);
+         Customer.hideSearch();
          $.each(customer, function(i, data) {
             if (i !== 'contacts' && i !== 'branches' && i !== 'accounts') {
                Adv.setFormValue(i, data);
             }
          });
          Adv.resetHighlights();
+      },
+      hideSearch: function() {
+
+      },
+      showSearch: function() {
+
       },
       fetch: function(id) {
          $.post("customers.php", {"id": id}, function(data) {
