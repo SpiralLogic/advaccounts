@@ -1,19 +1,19 @@
 <?php
 /**********************************************************************
-Copyright (C) FrontAccounting, LLC.
-Released under the terms of the GNU General Public License, GPL,
-as published by the Free Software Foundation, either version 3
-of the License, or (at your option) any later version.
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
- ***********************************************************************/
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 $page_security = 'SA_MANUFISSUE';
 $path_to_root = "..";
 include_once($path_to_root . "/includes/ui/items_cart.inc");
 
-include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+include_once($path_to_root . "/includes/session.inc");
 
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
@@ -30,38 +30,42 @@ page(_($help_context = "Issue Items to Work Order"), false, false, "", $js);
 
 //-----------------------------------------------------------------------------------------------
 
-if (isset($_GET['AddedID'])) {
-	display_notification(_("The work order issue has been entered."));
+if (isset($_GET['AddedID'])) 
+{
+	$id = $_GET['AddedID'];
+   	display_notification(_("The work order issue has been entered."));
 
-	display_note(get_trans_view_str(ST_WORKORDER, $_GET['AddedID'], _("View this Work Order")));
+    display_note(get_trans_view_str(ST_WORKORDER, $id, _("View this Work Order")));
 
-	hyperlink_no_params("search_work_orders.php", _("Select another &Work Order to Process"));
+   	display_note(get_gl_view_str(ST_WORKORDER, $id, _("View the GL Journal Entries for this Work Order")), 1);
+
+   	hyperlink_no_params("search_work_orders.php", _("Select another &Work Order to Process"));
 
 	display_footer_exit();
 }
 //--------------------------------------------------------------------------------------------------
 
-function line_start_focus()
-{
-	global $Ajax;
+function line_start_focus() {
+  global 	$Ajax;
 
-	$Ajax->activate('items_table');
-	set_focus('_stock_id_edit');
+  $Ajax->activate('items_table');
+  set_focus('_stock_id_edit');
 }
 
 //--------------------------------------------------------------------------------------------------
 
 function handle_new_order()
 {
-	if (isset($_SESSION['issue_items'])) {
+	if (isset($_SESSION['issue_items']))
+	{
 		$_SESSION['issue_items']->clear_items();
 		unset ($_SESSION['issue_items']);
 	}
 
-	Session_register("issue_items");
+     Session_register("issue_items");
 
-	$_SESSION['issue_items'] = new items_cart(28);
-	$_SESSION['issue_items']->order_id = $_GET['trans_no'];
+     $_SESSION['issue_items'] = new items_cart(ST_MANUISSUE);
+     $_SESSION['issue_items']->order_id = $_GET['trans_no'];
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -70,54 +74,60 @@ function can_process()
 {
 	global $Refs;
 
-	if (!is_date($_POST['date_'])) {
+	if (!is_date($_POST['date_'])) 
+	{
 		display_error(_("The entered date for the issue is invalid."));
 		set_focus('date_');
 		return false;
-	}
-	elseif (!is_date_in_fiscalyear($_POST['date_']))
+	} 
+	elseif (!is_date_in_fiscalyear($_POST['date_'])) 
 	{
 		display_error(_("The entered date is not in fiscal year."));
 		set_focus('date_');
 		return false;
 	}
-	if (!$Refs->is_valid($_POST['ref'])) {
+	if (!$Refs->is_valid($_POST['ref'])) 
+	{
 		display_error(_("You must enter a reference."));
 		set_focus('ref');
 		return false;
 	}
 
-	if (!is_new_reference($_POST['ref'], 28)) {
+	if (!is_new_reference($_POST['ref'], ST_MANUISSUE)) 
+	{
 		display_error(_("The entered reference is already in use."));
 		set_focus('ref');
 		return false;
 	}
 
 	$failed_item = $_SESSION['issue_items']->check_qoh($_POST['Location'], $_POST['date_'], !$_POST['IssueType']);
-	if ($failed_item != -1) {
-		display_error(_("The issue cannot be processed because an entered item would cause a negative inventory balance :") .
-					  " " . $failed_item->stock_id . " - " . $failed_item->item_description);
+	if ($failed_item != -1) 
+	{
+    	display_error( _("The issue cannot be processed because an entered item would cause a negative inventory balance :") .
+    		" " . $failed_item->stock_id . " - " .  $failed_item->item_description);
 		return false;
 	}
 
 	return true;
 }
 
-if (isset($_POST['Process']) && can_process()) {
+if (isset($_POST['Process']) && can_process())
+{
 
 	// if failed, returns a stockID
 	$failed_data = add_work_order_issue($_SESSION['issue_items']->order_id,
-										$_POST['ref'], $_POST['IssueType'], $_SESSION['issue_items']->line_items,
-										$_POST['Location'], $_POST['WorkCentre'], $_POST['date_'], $_POST['memo_']);
+		$_POST['ref'], $_POST['IssueType'], $_SESSION['issue_items']->line_items,
+		$_POST['Location'], $_POST['WorkCentre'], $_POST['date_'], $_POST['memo_']);
 
-	if ($failed_data != null) {
-		display_error(_("The process cannot be completed because there is an insufficient total quantity for a component.") . "<br>"
-					  . _("Component is :") . $failed_data[0] . "<br>"
-					  . _("From location :") . $failed_data[1] . "<br>");
-	}
-	else
+	if ($failed_data != null) 
 	{
-		meta_forward($_SERVER['PHP_SELF'], "AddedID=" . $_SESSION['issue_items']->order_id);
+		display_error(_("The process cannot be completed because there is an insufficient total quantity for a component.") . "<br>"
+		. _("Component is :"). $failed_data[0] . "<br>"
+		. _("From location :"). $failed_data[1] . "<br>");
+	} 
+	else 
+	{
+		meta_forward($_SERVER['PHP_SELF'], "AddedID=".$_SESSION['issue_items']->order_id);
 	}
 
 } /*end of process credit note */
@@ -126,29 +136,32 @@ if (isset($_POST['Process']) && can_process()) {
 
 function check_item_data()
 {
-	if (!check_num('qty', 0)) {
+	if (input_num('qty') == 0 || !check_num('qty', 0))
+	{
 		display_error(_("The quantity entered is negative or invalid."));
 		set_focus('qty');
 		return false;
 	}
 
-	if (!check_num('std_cost', 0)) {
+	if (!check_num('std_cost', 0))
+	{
 		display_error(_("The entered standard cost is negative or invalid."));
 		set_focus('std_cost');
 		return false;
 	}
 
-	return true;
+   	return true;
 }
 
 //-----------------------------------------------------------------------------------------------
 
 function handle_update_item()
 {
-	if ($_POST['UpdateItem'] != "" && check_item_data()) {
+    if($_POST['UpdateItem'] != "" && check_item_data())
+    {
 		$id = $_POST['LineNo'];
-		$_SESSION['issue_items']->update_cart_item($id, input_num('qty'), input_num('std_cost'));
-	}
+    	$_SESSION['issue_items']->update_cart_item($id, input_num('qty'), input_num('std_cost'));
+    }
 	line_start_focus();
 }
 
@@ -168,7 +181,7 @@ function handle_new_item()
 		return;
 
 	add_to_issue($_SESSION['issue_items'], $_POST['stock_id'], input_num('qty'),
-				 input_num('std_cost'));
+		 input_num('std_cost'));
 	line_start_focus();
 }
 
@@ -189,7 +202,8 @@ if (isset($_POST['CancelItemChanges'])) {
 
 //-----------------------------------------------------------------------------------------------
 
-if (isset($_GET['trans_no'])) {
+if (isset($_GET['trans_no']))
+{
 	handle_new_order();
 }
 
@@ -200,7 +214,7 @@ echo "<br>";
 
 start_form();
 
-start_table("$table_style width=90%", 10);
+start_table(TABLESTYLE, "width=90%", 10);
 echo "<tr><td>";
 display_issue_items(_("Items to Issue"), $_SESSION['issue_items']);
 issue_options_controls();

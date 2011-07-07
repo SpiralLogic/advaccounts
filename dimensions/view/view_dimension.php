@@ -1,18 +1,18 @@
 <?php
 /**********************************************************************
-Copyright (C) FrontAccounting, LLC.
-Released under the terms of the GNU General Public License, GPL,
-as published by the Free Software Foundation, either version 3
-of the License, or (at your option) any later version.
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
- ***********************************************************************/
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 $page_security = 'SA_DIMTRANSVIEW';
 $path_to_root = "../..";
 
-include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+include_once($path_to_root . "/includes/session.inc");
 
 $js = "";
 if ($use_date_picker)
@@ -27,11 +27,13 @@ include_once($path_to_root . "/dimensions/includes/dimensions_ui.inc");
 
 //-------------------------------------------------------------------------------------------------
 
-if (isset($_GET['trans_no']) && $_GET['trans_no'] != "") {
+if (isset($_GET['trans_no']) && $_GET['trans_no'] != "")
+{
 	$id = $_GET['trans_no'];
 }
 
-if (isset($_POST['Show'])) {
+if (isset($_POST['Show']))
+{
 	$id = $_POST['trans_no'];
 }
 
@@ -41,12 +43,13 @@ display_heading($systypes_array[ST_DIMENSION] . " # " . $id);
 br(1);
 $myrow = get_dimension($id);
 
-if (strlen($myrow[0]) == 0) {
+if (strlen($myrow[0]) == 0)
+{
 	echo _("The dimension number sent is not valid.");
-	exit;
+    exit;
 }
 
-start_table($table_style);
+start_table(TABLESTYLE);
 
 $th = array(_("#"), _("Reference"), _("Name"), _("Type"), _("Date"), _("Due Date"));
 table_header($th);
@@ -64,13 +67,14 @@ comments_display_row(ST_DIMENSION, $id);
 
 end_table();
 
-if ($myrow["closed"] == true) {
+if ($myrow["closed"] == true)
+{
 	display_note(_("This dimension is closed."));
 }
 
 start_form();
 
-start_table("class='tablestyle_noborder'");
+start_table(TABLESTYLE_NOBORDER);
 start_row();
 
 if (!isset($_POST['TransFromDate']))
@@ -79,7 +83,7 @@ if (!isset($_POST['TransToDate']))
 	$_POST['TransToDate'] = Today();
 date_cells(_("from:"), 'TransFromDate');
 date_cells(_("to:"), 'TransToDate');
-submit_cells('Show', _("Show"), '', false, 'default');
+submit_cells('Show',_("Show"), '', false);
 
 end_row();
 
@@ -91,6 +95,6 @@ display_dimension_balance($id, $_POST['TransFromDate'], $_POST['TransToDate']);
 
 br(1);
 
-end_page(true);
+end_page(true, false, false, ST_DIMENSION, $id);
 
 ?>

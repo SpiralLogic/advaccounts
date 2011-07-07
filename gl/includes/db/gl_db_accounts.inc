@@ -1,126 +1,50 @@
 <?php
 /**********************************************************************
-Copyright (C) FrontAccounting, LLC.
-Released under the terms of the GNU General Public License, GPL,
-as published by the Free Software Foundation, either version 3
-of the License, or (at your option) any later version.
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
- ***********************************************************************/
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 function add_gl_account($account_code, $account_name, $account_type, $account_code2)
 {
-	$sql = "INSERT INTO chart_master (account_code, account_code2, account_name, account_type)
-		VALUES (" . db_escape($account_code) . ", " . db_escape($account_code2) . ", "
-		   . db_escape($account_name) . ", " . db_escape($account_type) . ")";
+	$sql = "INSERT INTO ".TB_PREF."chart_master (account_code, account_code2, account_name, account_type)
+		VALUES (".db_escape($account_code).", ".db_escape($account_code2).", "
+			.db_escape($account_name).", ".db_escape($account_type).")";
 
 	return db_query($sql);
 }
 
 function update_gl_account($account_code, $account_name, $account_type, $account_code2)
 {
-	$sql = "UPDATE chart_master SET account_name=" . db_escape($account_name)
-		   . ",account_type=" . db_escape($account_type) . ", account_code2=" . db_escape($account_code2)
-		   . " WHERE account_code = " . db_escape($account_code);
+    $sql = "UPDATE ".TB_PREF."chart_master SET account_name=".db_escape($account_name)
+    .",account_type=".db_escape($account_type).", account_code2=".db_escape($account_code2)
+		." WHERE account_code = ".db_escape($account_code);
 
 	return db_query($sql);
 }
 
-//---------------------------------------------------------------------------------------------
-
-function update_reconciled_values($reconcile_id, $reconcile_value, $reconcile_date, $end_balance, $bank_account)
-{
-	$sql = "UPDATE bank_trans SET reconciled=$reconcile_value"
-		   . " WHERE id=" . db_escape($reconcile_id);
-
-	db_query($sql, "Can't change reconciliation status");
-	// save last reconcilation status (date, end balance)
-	$sql2 = "UPDATE bank_accounts SET last_reconciled_date='"
-			. date2sql($reconcile_date) . "',
-    	    ending_reconcile_balance=$end_balance
-			WHERE id=" . db_escape($bank_account);
-
-	db_query($sql2, "Error updating reconciliation information");
-}
-
-//---------------------------------------------------------------------------------------------
-
-function get_max_reconciled($date, $bank_account)
-{
-	$date = date2sql($date);
-	// temporary fix to enable fix of invalid entries made in 2.2RC
-	if ($date == 0) $date = '0000-00-00';
-
-	$sql = "SELECT MAX(reconciled) as last_date,
-			 SUM(IF(reconciled<='$date', amount, 0)) as end_balance,
-			 SUM(IF(reconciled<'$date', amount, 0)) as beg_balance,
-			 SUM(amount) as total
-		FROM bank_trans trans
-		WHERE undeposited=0 AND bank_act=" . db_escape($bank_account);
-	//	." AND trans.reconciled IS NOT NULL";
-
-	return db_query($sql, "Cannot retrieve reconciliation data");
-
-}
-
-//---------------------------------------------------------------------------------------------
-
-function get_ending_reconciled($bank_account, $bank_date)
-{
-	$sql = "SELECT ending_reconcile_balance
-		FROM bank_accounts WHERE id=" . db_escape($bank_account)
-		   . " AND last_reconciled_date=" . db_escape($bank_date);
-	$result = db_query($sql, "Cannot retrieve last reconciliation");
-	return db_fetch($result);
-}
-
-//---------------------------------------------------------------------------------------------
-
-function get_sql_for_bank_account_reconcile($bank_account, $date)
-{
-	$sql = "SELECT	type, trans_no, ref, trans_date,
-				amount,	person_id, person_type_id, reconciled, id
-		FROM bank_trans
-		WHERE bank_trans.bank_act = " . db_escape($bank_account) . "
-			AND undeposited = 0 AND trans_date <= '" . date2sql($date) . "' AND (reconciled IS NULL OR reconciled='" . date2sql($date) . "')
-		ORDER BY trans_date,bank_trans.id";
-	// or	ORDER BY reconciled desc, trans_date,".''."bank_trans.id";
-	return $sql;
-}
-
-function reset_sql_for_bank_account_reconcile($bank_account, $date)
-{
-	$sql = "UPDATE	reconciled
-		FROM bank_trans
-		WHERE bank_trans.bank_act = " . db_escape($bank_account) . "
-			AND undeposited = 0 AND reconciled = '" . date2sql($date) . "'";
-	// or	ORDER BY reconciled desc, trans_date,".''."bank_trans.id";
-	$result = db_query($sql);
-
-
-}
-
-//---------------------------------------------------------------------------------------------
-
 function delete_gl_account($code)
 {
-	$sql = "DELETE FROM chart_master WHERE account_code=" . db_escape($code);
+	$sql = "DELETE FROM ".TB_PREF."chart_master WHERE account_code=".db_escape($code);
 
 	db_query($sql, "could not delete gl account");
 }
 
-function get_gl_accounts($from = null, $to = null, $type = null)
+function get_gl_accounts($from=null, $to=null, $type=null)
 {
-	$sql = "SELECT chart_master.*,chart_types.name AS AccountTypeName
-		FROM chart_master,chart_types
-		WHERE chart_master.account_type=chart_types.id";
+	$sql = "SELECT ".TB_PREF."chart_master.*,".TB_PREF."chart_types.name AS AccountTypeName
+		FROM ".TB_PREF."chart_master,".TB_PREF."chart_types
+		WHERE ".TB_PREF."chart_master.account_type=".TB_PREF."chart_types.id";
 	if ($from != null)
-		$sql .= " AND chart_master.account_code >= " . db_escape($from);
+		$sql .= " AND ".TB_PREF."chart_master.account_code >= ".db_escape($from);
 	if ($to != null)
-		$sql .= " AND chart_master.account_code <= " . db_escape($to);
+		$sql .= " AND ".TB_PREF."chart_master.account_code <= ".db_escape($to);
 	if ($type != null)
-		$sql .= " AND account_type=" . db_escape($type);
+		$sql .= " AND account_type=".db_escape($type);
 	$sql .= " ORDER BY account_code";
 
 	return db_query($sql, "could not get gl accounts");
@@ -128,7 +52,7 @@ function get_gl_accounts($from = null, $to = null, $type = null)
 
 function get_gl_account($code)
 {
-	$sql = "SELECT * FROM chart_master WHERE account_code=" . db_escape($code);
+	$sql = "SELECT * FROM ".TB_PREF."chart_master WHERE account_code=".db_escape($code);
 
 	$result = db_query($sql, "could not get gl account");
 	return db_fetch($result);
@@ -136,24 +60,25 @@ function get_gl_account($code)
 
 function is_account_balancesheet($code)
 {
-	$sql = "SELECT chart_class.ctype FROM chart_class, "
-		   .  "chart_types, chart_master
-		WHERE chart_master.account_type=chart_types.id AND
-		chart_types.class_id=chart_class.cid
-		AND chart_master.account_code=" . db_escape($code);
+	$sql = "SELECT ".TB_PREF."chart_class.ctype FROM ".TB_PREF."chart_class, "
+		.TB_PREF."chart_types, ".TB_PREF."chart_master
+		WHERE ".TB_PREF."chart_master.account_type=".TB_PREF."chart_types.id AND
+		".TB_PREF."chart_types.class_id=".TB_PREF."chart_class.cid
+		AND ".TB_PREF."chart_master.account_code=".db_escape($code);
 
-	$result = db_query($sql, "could not retreive the account class for $code");
+	$result = db_query($sql,"could not retreive the account class for $code");
 	$row = db_fetch_row($result);
 	return $row[0] > 0 && $row[0] < CL_INCOME;
 }
 
 function get_gl_account_name($code)
 {
-	$sql = "SELECT account_name from chart_master WHERE account_code=" . db_escape($code);
+	$sql = "SELECT account_name from ".TB_PREF."chart_master WHERE account_code=".db_escape($code);
 
-	$result = db_query($sql, "could not retreive the account name for $code");
+	$result = db_query($sql,"could not retreive the account name for $code");
 
-	if (db_num_rows($result) == 1) {
+	if (db_num_rows($result) == 1)
+	{
 		$row = db_fetch_row($result);
 		return $row[0];
 	}
@@ -161,5 +86,97 @@ function get_gl_account_name($code)
 	display_db_error("could not retreive the account name for $code", $sql, true);
 }
 
+function gl_account_in_company_defaults($acc)
+{
+	$sql= "SELECT COUNT(*) FROM ".TB_PREF."sys_prefs WHERE (name='debtors_act' 
+		OR name='pyt_discount_act'
+		OR name='creditors_act' 
+		OR name='bank_charge_act' 
+		OR name='exchange_diff_act'
+		OR name='profit_loss_year_act'
+		OR name='retained_earnings_act'
+		OR name='freight_act'
+		OR name='default_sales_act' 
+		OR name='default_sales_discount_act'
+		OR name='default_prompt_payment_act'
+		OR name='default_inventory_act'
+		OR name='default_cogs_act'
+		OR name='default_adj_act'
+		OR name='default_inv_sales_act'
+		OR name='default_assembly_act') AND value=$acc";
+	$result = db_query($sql,"Couldn't test for default company GL codes");
 
+	$myrow = db_fetch_row($result);
+	return ($myrow[0] > 0); 
+}
+
+function gl_account_in_stock_category($acc)
+{
+	$sql= "SELECT COUNT(*) FROM ".TB_PREF."stock_category WHERE 
+		dflt_inventory_act=$acc 
+		OR dflt_cogs_act=$acc
+		OR dflt_adjustment_act=$acc 
+		OR dflt_sales_act=$acc";
+	$result = db_query($sql,"Couldn't test for existing stock category GL codes");
+
+	$myrow = db_fetch_row($result);
+	return ($myrow[0] > 0); 
+}
+
+function gl_account_in_stock_master($acc)
+{
+	$sql= "SELECT COUNT(*) FROM ".TB_PREF."stock_master WHERE 
+		inventory_account=$acc 
+		OR cogs_account=$acc
+		OR adjustment_account=$acc 
+		OR sales_account=$acc";
+	$result = db_query($sql,"Couldn't test for existing stock GL codes");
+
+	$myrow = db_fetch_row($result);
+	return ($myrow[0] > 0); 
+}
+
+function gl_account_in_tax_types($acc)
+{
+	$sql= "SELECT COUNT(*) FROM ".TB_PREF."tax_types WHERE sales_gl_code=$acc OR purchasing_gl_code=$acc";
+	$result = db_query($sql,"Couldn't test for existing tax GL codes");
+
+	$myrow = db_fetch_row($result);
+	return ($myrow[0] > 0); 
+}
+
+function gl_account_in_cust_branch($acc)
+{
+	$sql= "SELECT COUNT(*) FROM ".TB_PREF."cust_branch WHERE 
+		sales_account=$acc 
+		OR sales_discount_account=$acc
+		OR receivables_account=$acc
+		OR payment_discount_account=$acc";
+	$result = db_query($sql,"Couldn't test for existing cust branch GL codes");
+
+	$myrow = db_fetch_row($result);
+	return ($myrow[0] > 0); 
+}
+
+function gl_account_in_suppliers($acc)
+{
+	$sql= "SELECT COUNT(*) FROM ".TB_PREF."suppliers WHERE 
+		purchase_account=$acc
+		OR payment_discount_account=$acc
+		OR payable_account=$acc";
+	$result = db_query($sql,"Couldn't test for existing suppliers GL codes");
+
+	$myrow = db_fetch_row($result);
+	return ($myrow[0] > 0); 
+}
+
+function gl_account_in_quick_entry_lines($acc)
+{
+	$sql= "SELECT COUNT(*) FROM ".TB_PREF."quick_entry_lines WHERE 
+		dest_id=$acc AND UPPER(LEFT(action, 1)) <> 'T'";
+	$result = db_query($sql,"Couldn't test for existing Quick Entry Line GL codes");
+
+	$myrow = db_fetch_row($result);
+	return ($myrow[0] > 0); 
+}
 ?>

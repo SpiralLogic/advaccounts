@@ -1,17 +1,17 @@
 <?php
 /**********************************************************************
-Copyright (C) FrontAccounting, LLC.
-Released under the terms of the GNU General Public License, GPL,
-as published by the Free Software Foundation, either version 3
-of the License, or (at your option) any later version.
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
- ***********************************************************************/
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 $page_security = 'SA_MANUFTRANSVIEW';
 $path_to_root = "../..";
-include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+include_once($path_to_root . "/includes/session.inc");
 
 $js = "";
 if ($use_popup_windows)
@@ -27,7 +27,8 @@ include_once($path_to_root . "/manufacturing/includes/manufacturing_ui.inc");
 
 //-------------------------------------------------------------------------------------------------
 
-if ($_GET['trans_no'] != "") {
+if ($_GET['trans_no'] != "")
+{
 	$wo_issue_no = $_GET['trans_no'];
 }
 
@@ -35,27 +36,25 @@ if ($_GET['trans_no'] != "") {
 
 function display_wo_issue($issue_no)
 {
-	global $table_style;
-
-	$myrow = get_work_order_issue($issue_no);
+    $myrow = get_work_order_issue($issue_no);
 
 	br(1);
-	start_table($table_style);
-	$th = array(_("Issue #"), _("Reference"), _("For Work Order #"),
-				_("Item"), _("From Location"), _("To Work Centre"), _("Date of Issue"));
-	table_header($th);
+    start_table(TABLESTYLE);
+    $th = array(_("Issue #"), _("Reference"), _("For Work Order #"),
+    	_("Item"), _("From Location"), _("To Work Centre"), _("Date of Issue"));
+    table_header($th);
 
 	start_row();
 	label_cell($myrow["issue_no"]);
 	label_cell($myrow["reference"]);
-	label_cell(get_trans_view_str(ST_WORKORDER, $myrow["workorder_id"]));
+	label_cell(get_trans_view_str(ST_WORKORDER,$myrow["workorder_id"]));
 	label_cell($myrow["stock_id"] . " - " . $myrow["description"]);
 	label_cell($myrow["location_name"]);
 	label_cell($myrow["WorkCentreName"]);
 	label_cell(sql2date($myrow["issue_date"]));
 	end_row();
 
-	comments_display_row(28, $issue_no);
+    comments_display_row(28, $issue_no);
 
 	end_table(1);
 
@@ -66,47 +65,44 @@ function display_wo_issue($issue_no)
 
 function display_wo_issue_details($issue_no)
 {
-	global $table_style;
+    $result = get_work_order_issue_details($issue_no);
 
-	$result = get_work_order_issue_details($issue_no);
+    if (db_num_rows($result) == 0)
+    {
+    	display_note(_("There are no items for this issue."));
+    }
+    else
+    {
+        start_table(TABLESTYLE);
+        $th = array(_("Component"), _("Quantity"), _("Units"));
 
-	if (db_num_rows($result) == 0) {
-		display_note(_("There are no items for this issue."));
-	}
-	else
-	{
-		start_table($table_style);
-		$th = array(_("Component"), _("Quantity"), _("Units"));
+        table_header($th);
 
-		table_header($th);
+        $j = 1;
+        $k = 0; //row colour counter
 
-		$j = 1;
-		$k = 0; //row colour counter
+        $total_cost = 0;
 
-		$total_cost = 0;
-
-		while ($myrow = db_fetch($result))
-		{
+        while ($myrow = db_fetch($result))
+        {
 
 			alt_table_row_color($k);
 
-			label_cell($myrow["stock_id"] . " - " . $myrow["description"]);
-			qty_cell($myrow["qty_issued"], false, get_qty_dec($myrow["stock_id"]));
+        	label_cell($myrow["stock_id"]  . " - " . $myrow["description"]);
+            qty_cell($myrow["qty_issued"], false, get_qty_dec($myrow["stock_id"]));
 			label_cell($myrow["units"]);
-			end_row();
-			;
+			end_row();;
 
-			$j++;
-			If ($j == 12) {
-				$j = 1;
-				table_header($th);
-			}
-			//end of page full new headings if
-		}
-		//end of while
+        	$j++;
+        	If ($j == 12)
+        	{
+        		$j = 1;
+        		table_header($th);
+        	}//end of page full new headings if
+		}//end of while
 
 		end_table();
-	}
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -123,7 +119,7 @@ display_wo_issue_details($wo_issue_no);
 
 echo "<br>";
 
-end_page(true);
+end_page(true, false, false, ST_MANUISSUE, $wo_issue_no);
 
 ?>
 

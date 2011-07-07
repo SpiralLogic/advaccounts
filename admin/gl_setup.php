@@ -1,17 +1,17 @@
 <?php
 /**********************************************************************
-Copyright (C) FrontAccounting, LLC.
-Released under the terms of the GNU General Public License, GPL,
-as published by the Free Software Foundation, either version 3
-of the License, or (at your option) any later version.
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
- ***********************************************************************/
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 $page_security = 'SA_GLSETUP';
-$path_to_root = "..";
-include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+$path_to_root="..";
+include($path_to_root . "/includes/session.inc");
 
 page(_($help_context = "System and General GL Setup"));
 
@@ -25,21 +25,33 @@ include_once($path_to_root . "/admin/db/company_db.inc");
 
 function can_process()
 {
-	if (!check_num('po_over_receive', 0, 100)) {
+	if (!check_num('po_over_receive', 0, 100))
+	{
 		display_error(_("The delivery over-receive allowance must be between 0 and 100."));
 		set_focus('po_over_receive');
 		return false;
 	}
 
-	if (!check_num('po_over_charge', 0, 100)) {
+	if (!check_num('po_over_charge', 0, 100))
+	{
 		display_error(_("The invoice over-charge allowance must be between 0 and 100."));
 		set_focus('po_over_charge');
 		return false;
 	}
 
-	if (!check_num('past_due_days', 0, 100)) {
+	if (!check_num('past_due_days', 0, 100))
+	{
 		display_error(_("The past due days interval allowance must be between 0 and 100."));
 		set_focus('past_due_days');
+		return false;
+	}
+
+	$grn_act = get_company_pref('grn_clearing_act');
+	if ((get_post('grn_clearing_act',0) != $grn_act) && db_num_rows(get_grn_items(0, '', true)))
+	{
+		display_error(_("Before GRN Clearing Account can be changed all GRNs have to be invoiced"));
+		$_POST['grn_clearing_act'] = $grn_act;
+		set_focus('grn_clearing_account');
 		return false;
 	}
 	return true;
@@ -47,29 +59,18 @@ function can_process()
 
 //-------------------------------------------------------------------------------------------------
 
-if (isset($_POST['submit']) && can_process()) {
-	update_company_gl_setup($_POST['retained_earnings_act'], $_POST['profit_loss_year_act'],
-							$_POST['debtors_act'], $_POST['pyt_discount_act'],
-							$_POST['creditors_act'], $_POST['freight_act'],
-							$_POST['exchange_diff_act'], $_POST['bank_charge_act'],
-							$_POST['default_sales_act'],
-							$_POST['default_sales_discount_act'],
-							$_POST['default_prompt_payment_act'],
-							$_POST['default_inventory_act'],
-							$_POST['default_cogs_act'],
-							$_POST['default_adj_act'],
-							$_POST['default_inv_sales_act'],
-							$_POST['default_assembly_act'],
-							check_value('allow_negative_stock'),
-							input_num('po_over_receive'),
-							input_num('po_over_charge'),
-							check_value('accumulate_shipping'),
-							$_POST['legal_text'],
-							$_POST['past_due_days'],
-							$_POST['default_credit_limit'],
-							$_POST['default_workorder_required'],
-							$_POST['default_dim_required'],
-							$_POST['default_delivery_required']);
+if (isset($_POST['submit']) && can_process())
+{
+	update_company_prefs( get_post( array( 'retained_earnings_act', 'profit_loss_year_act',
+		'debtors_act', 'pyt_discount_act', 'creditors_act', 'freight_act',
+		'exchange_diff_act', 'bank_charge_act', 'default_sales_act', 'default_sales_discount_act',
+		'default_prompt_payment_act', 'default_inventory_act', 'default_cogs_act',
+		'default_adj_act', 'default_inv_sales_act', 'default_assembly_act', 'legal_text',
+		'past_due_days', 'default_workorder_required', 'default_dim_required',
+		'default_delivery_required', 'grn_clearing_act',
+		'allow_negative_stock'=> 0, 'accumulate_shipping'=> 0,
+		'po_over_receive' => 0.0, 'po_over_charge' => 0.0, 'default_credit_limit'=>0.0
+)));
 
 	display_notification(_("The general GL setup has been updated."));
 
@@ -79,25 +80,29 @@ if (isset($_POST['submit']) && can_process()) {
 
 start_form();
 
-//start_outer_table("class='tablestyle'");
-start_outer_table($table_style2, 5);
+start_outer_table(TABLESTYLE2);
 
 table_section(1);
 
+if (get_company_pref('grn_clearing_act') === null) { // available form 2.3.1, can be not defined on pre-2.4 installations
+	set_company_pref('grn_clearing_act', 'glsetup.purchase', 'varchar', 15, 0);
+	refresh_sys_prefs();
+}
+
 $myrow = get_company_prefs();
 
-$_POST['retained_earnings_act'] = $myrow["retained_earnings_act"];
-$_POST['profit_loss_year_act'] = $myrow["profit_loss_year_act"];
-$_POST['debtors_act'] = $myrow["debtors_act"];
-$_POST['creditors_act'] = $myrow["creditors_act"];
+$_POST['retained_earnings_act']  = $myrow["retained_earnings_act"];
+$_POST['profit_loss_year_act']  = $myrow["profit_loss_year_act"];
+$_POST['debtors_act']  = $myrow["debtors_act"];
+$_POST['creditors_act']  = $myrow["creditors_act"];
 $_POST['freight_act'] = $myrow["freight_act"];
-$_POST['pyt_discount_act'] = $myrow["pyt_discount_act"];
+$_POST['pyt_discount_act']  = $myrow["pyt_discount_act"];
 
 $_POST['exchange_diff_act'] = $myrow["exchange_diff_act"];
 $_POST['bank_charge_act'] = $myrow["bank_charge_act"];
 $_POST['default_sales_act'] = $myrow["default_sales_act"];
-$_POST['default_sales_discount_act'] = $myrow["default_sales_discount_act"];
-$_POST['default_prompt_payment_act'] = $myrow["default_prompt_payment_act"];
+$_POST['default_sales_discount_act']  = $myrow["default_sales_discount_act"];
+$_POST['default_prompt_payment_act']  = $myrow["default_prompt_payment_act"];
 
 $_POST['default_inventory_act'] = $myrow["default_inventory_act"];
 $_POST['default_cogs_act'] = $myrow["default_cogs_act"];
@@ -111,6 +116,8 @@ $_POST['po_over_receive'] = percent_format($myrow['po_over_receive']);
 $_POST['po_over_charge'] = percent_format($myrow['po_over_charge']);
 $_POST['past_due_days'] = $myrow['past_due_days'];
 
+$_POST['grn_clearing_act'] = $myrow['grn_clearing_act'];
+
 $_POST['default_credit_limit'] = $myrow['default_credit_limit'];
 $_POST['legal_text'] = $myrow['legal_text'];
 $_POST['accumulate_shipping'] = $myrow['accumulate_shipping'];
@@ -123,11 +130,6 @@ $_POST['default_delivery_required'] = $myrow['default_delivery_required'];
 
 
 table_section_title(_("General GL"));
-
-// Not used in FA2.0.
-//gl_all_accounts_list_row(_("Retained Earning Clearing Account:"), 'retained_earnings_act', $_POST['retained_earnings_act']);
-// Not used in FA2.0.
-//gl_all_accounts_list_row(_("Payroll Account:"), 'payroll_act', $_POST['payroll_act']);
 
 text_row(_("Past Due Days Interval:"), 'past_due_days', $_POST['past_due_days'], 6, 6, '', "", _("days"));
 
@@ -158,14 +160,13 @@ table_section_title(_("Customers and Sales Defaults"));
 gl_all_accounts_list_row(_("Receivable Account:"), 'debtors_act');
 
 gl_all_accounts_list_row(_("Sales Account:"), 'default_sales_act', null,
-						 false, false, true);
+	false, false, true);
 
 gl_all_accounts_list_row(_("Sales Discount Account:"), 'default_sales_discount_act');
 
 gl_all_accounts_list_row(_("Prompt Payment Discount Account:"), 'default_prompt_payment_act');
 
-text_row(_("Delivery Required By:"), 'default_delivery_required',
-		 $_POST['default_delivery_required'], 6, 6, '', "", _("days"));
+text_row(_("Delivery Required By:"), 'default_delivery_required', $_POST['default_delivery_required'], 6, 6, '', "", _("days"));
 
 //----------------
 
@@ -173,8 +174,7 @@ table_section(2);
 
 table_section_title(_("Dimension Defaults"));
 
-text_row(_("Dimension Required By After:"), 'default_dim_required',
-		 $_POST['default_dim_required'], 6, 6, '', "", _("days"));
+text_row(_("Dimension Required By After:"), 'default_dim_required', $_POST['default_dim_required'], 6, 6, '', "", _("days"));
 //---------------
 
 table_section_title(_("Suppliers and Purchasing"));
@@ -189,10 +189,12 @@ gl_all_accounts_list_row(_("Payable Account:"), 'creditors_act', $_POST['credito
 
 gl_all_accounts_list_row(_("Purchase Discount Account:"), 'pyt_discount_act', $_POST['pyt_discount_act']);
 
+gl_all_accounts_list_row(_("GRN Clearing Account:"), 'grn_clearing_act', get_post('grn_clearing_act'), true, false, _("No postings on GRN"));
+
 table_section_title(_("Inventory"));
 
 check_row(_("Allow Negative Inventory:"), 'allow_negative_stock', null);
-label_row(null, _("Warning:  This may cause a delay in GL postings"), "", "class='stockmankofg' colspan=2");
+label_row(null, _("Warning:  This may cause a delay in GL postings"), "", "class='stockmankofg' colspan=2"); 
 
 table_section_title(_("Items Defaults"));
 gl_all_accounts_list_row(_("Sales Account:"), 'default_inv_sales_act', $_POST['default_inv_sales_act']);
@@ -209,8 +211,7 @@ gl_all_accounts_list_row(_("Item Assembly Costs Account:"), 'default_assembly_ac
 
 table_section_title(_("Manufacturing Defaults"));
 
-text_row(_("Work Order Required By After:"), 'default_workorder_required',
-		 $_POST['default_workorder_required'], 6, 6, '', "", _("days"));
+text_row(_("Work Order Required By After:"), 'default_workorder_required', $_POST['default_workorder_required'], 6, 6, '', "", _("days"));
 
 
 //----------------

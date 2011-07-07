@@ -1,100 +1,125 @@
 <?php
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 
-/*     * ********************************************************************
-	  Copyright (C) FrontAccounting, LLC.
-	  Released under the terms of the GNU General Public License, GPL,
-	  as published by the Free Software Foundation, either version 3
-	  of the License, or (at your option) any later version.
-	  This program is distributed in the hope that it will be useful,
-	  but WITHOUT ANY WARRANTY; without even the implied warranty of
-	  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-	  See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
-	 * ********************************************************************* */
+function add_customer($CustName, $cust_ref, $address, $tax_id, $curr_code,
+	$dimension_id, $dimension2_id, $credit_status, $payment_terms, $discount, $pymt_discount, 
+	$credit_limit, $sales_type, $notes)
+{
+	$sql = "INSERT INTO ".TB_PREF."debtors_master (name, debtor_ref, address, tax_id,
+		dimension_id, dimension2_id, curr_code, credit_status, payment_terms, discount, 
+		pymt_discount,credit_limit, sales_type, notes) VALUES ("
+		.db_escape($CustName) .", " .db_escape($cust_ref) .", "
+		.db_escape($address) . ", " . db_escape($tax_id) . ","
+		.db_escape($dimension_id) . ", " 
+		.db_escape($dimension2_id) . ", ".db_escape($curr_code) . ", 
+		" . db_escape($credit_status) . ", ".db_escape($payment_terms) . ", " . $discount . ", 
+		" . $pymt_discount . ", " . $credit_limit 
+		 .", ".db_escape($sales_type).", ".db_escape($notes) . ")";
 
-function get_customer_details($customer_id, $to = null)
+	db_query($sql,"The customer could not be added");
+}
+
+function update_customer($customer_id, $CustName, $cust_ref, $address, $tax_id, $curr_code,
+	$dimension_id, $dimension2_id, $credit_status, $payment_terms, $discount, $pymt_discount,
+	$credit_limit, $sales_type, $notes)
+{
+	$sql = "UPDATE ".TB_PREF."debtors_master SET name=" . db_escape($CustName) . ", 
+		debtor_ref=" . db_escape($cust_ref) . ",
+		address=".db_escape($address) . ", 
+		tax_id=".db_escape($tax_id) . ", 
+		curr_code=".db_escape($curr_code) . ", 
+		dimension_id=".db_escape($dimension_id) . ", 
+		dimension2_id=".db_escape($dimension2_id) . ", 
+		credit_status=".db_escape($credit_status) . ", 
+		payment_terms=".db_escape($payment_terms) . ", 
+		discount=" . $discount . ", 
+		pymt_discount=" . $pymt_discount . ", 
+		credit_limit=" . $credit_limit . ", 
+		sales_type = ".db_escape($sales_type) . ", 
+		notes=".db_escape($notes) ."
+		WHERE debtor_no = ".db_escape($customer_id);
+
+	db_query($sql,"The customer could not be updated");
+}
+
+function delete_customer($customer_id)
+{
+	begin_transaction();
+	delete_entity_contacts('customer', $customer_id);
+
+	$sql = "DELETE FROM ".TB_PREF."debtors_master WHERE debtor_no=".db_escape($customer_id);;
+	db_query($sql,"cannot delete customer");
+	commit_transaction();
+}
+
+function get_customer_details($customer_id, $to=null, $all=true)
 {
 
-	if ($to == null) $todate = date("Y-m-d");
-	else $todate = date2sql($to);
+	if ($to == null)
+		$todate = date("Y-m-d");
+	else
+		$todate = date2sql($to);
 	$past1 = get_company_pref('past_due_days');
 	$past2 = 2 * $past1;
 	// removed - debtor_trans.alloc from all summations
+	if ($all)
+    	$value = "IFNULL(IF(trans.type=11 OR trans.type=12 OR trans.type=2, -1, 1) 
+    		* (trans.ov_amount + trans.ov_gst + trans.ov_freight + trans.ov_freight_tax + trans.ov_discount),0)";
+    else		
+    	$value = "IFNULL(IF(trans.type=11 OR trans.type=12 OR trans.type=2, -1, 1) 
+    		* (trans.ov_amount + trans.ov_gst + trans.ov_freight + trans.ov_freight_tax + trans.ov_discount - 
+    		trans.alloc),0)";
+	$due = "IF (trans.type=10, trans.due_date, trans.tran_date)";
+    $sql = "SELECT ".TB_PREF."debtors_master.name, ".TB_PREF."debtors_master.curr_code, ".TB_PREF."payment_terms.terms,
+		".TB_PREF."debtors_master.credit_limit, ".TB_PREF."credit_status.dissallow_invoices, ".TB_PREF."credit_status.reason_description,
 
-	$value = "IF(debtor_trans.type=11 OR debtor_trans.type=1 OR debtor_trans.type=12 OR debtor_trans.type=2,
-	-1, 1) *" .
-			 "(debtor_trans.ov_amount + debtor_trans.ov_gst + "
-			 .  "debtor_trans.ov_freight + debtor_trans.ov_freight_tax + "
-			 .  "debtor_trans.ov_discount)";
-	$due = "IF (debtor_trans.type=10,debtor_trans.due_date,debtor_trans.tran_date)";
-	$sql = "SELECT debtors_master.name, debtors_master.curr_code, payment_terms.terms,
-		debtors_master.credit_limit, credit_status.dissallow_invoices, credit_status.reason_description,
-
-		Sum(" . $value . ") AS Balance,
-
+		Sum(IFNULL($value,0)) AS Balance,
 		Sum(IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= 0,$value,0)) AS Due,
 		Sum(IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= $past1,$value,0)) AS Overdue1,
 		Sum(IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= $past2,$value,0)) AS Overdue2
 
-		FROM debtors_master,
-			 payment_terms,
-			 credit_status,
-			 debtor_trans
+		FROM ".TB_PREF."debtors_master
+			 LEFT JOIN ".TB_PREF."debtor_trans trans ON 
+			 trans.tran_date <= '$todate' AND ".TB_PREF."debtors_master.debtor_no = trans.debtor_no AND trans.type <> 13
+,
+			 ".TB_PREF."payment_terms,
+			 ".TB_PREF."credit_status
 
 		WHERE
-			 debtors_master.payment_terms = payment_terms.terms_indicator
-			 AND debtors_master.credit_status = credit_status.id
-			 AND debtors_master.debtor_no = " . db_escape($customer_id) . "
-			 AND debtor_trans.tran_date <= '$todate'
-			 AND debtor_trans.type <> 13
-			 AND debtors_master.debtor_no = debtor_trans.debtor_no
+			 ".TB_PREF."debtors_master.payment_terms = ".TB_PREF."payment_terms.terms_indicator
+ 			 AND ".TB_PREF."debtors_master.credit_status = ".TB_PREF."credit_status.id
+			 AND ".TB_PREF."debtors_master.debtor_no = ".db_escape($customer_id)." ";
+	if (!$all)
+		$sql .= "AND ABS(trans.ov_amount + trans.ov_gst + trans.ov_freight + trans.ov_freight_tax + trans.ov_discount - trans.alloc) > 0.004 ";  
+	$sql .= "GROUP BY
+			  ".TB_PREF."debtors_master.name,
+			  ".TB_PREF."payment_terms.terms,
+			  ".TB_PREF."payment_terms.days_before_due,
+			  ".TB_PREF."payment_terms.day_in_following_month,
+			  ".TB_PREF."debtors_master.credit_limit,
+			  ".TB_PREF."credit_status.dissallow_invoices,
+			  ".TB_PREF."credit_status.reason_description";
+    $result = db_query($sql,"The customer details could not be retrieved");
 
-		GROUP BY
-			  debtors_master.name,
-			  payment_terms.terms,
-			  payment_terms.days_before_due,
-			  payment_terms.day_in_following_month,
-			  debtors_master.credit_limit,
-			  credit_status.dissallow_invoices,
-			  credit_status.reason_description";
-	$result = db_query($sql, "The customer details could not be retrieved");
+    $customer_record = db_fetch($result);
 
-	if (db_num_rows($result) == 0) {
+    return $customer_record;
 
-		/* Because there is no balance - so just retrieve the header information about the customer - the choice is do one query to get the balance and transactions for those customers who have a balance and two queries for those who don't have a balance OR always do two queries - I opted for the former */
-
-		$nil_balance = true;
-
-		$sql = "SELECT debtors_master.name, debtors_master.curr_code, debtors_master.debtor_no,  payment_terms.terms,
-    		debtors_master.credit_limit, credit_status.dissallow_invoices, credit_status.reason_description
-    		FROM debtors_master,
-    		     payment_terms,
-    		     credit_status
-
-    		WHERE
-    		     debtors_master.payment_terms = payment_terms.terms_indicator
-    		     AND debtors_master.credit_status = credit_status.id
-    		     AND debtors_master.debtor_no = " . db_escape($customer_id);
-
-		$result = db_query($sql, "The customer details could not be retrieved");
-	} else {
-		$nil_balance = false;
-	}
-
-	$customer_record = db_fetch($result);
-
-	if ($nil_balance == true) {
-		$customer_record["Balance"] = 0;
-		$customer_record["Due"] = 0;
-		$customer_record["Overdue1"] = 0;
-		$customer_record["Overdue2"] = 0;
-	}
-
-	return $customer_record;
 }
+
 
 function get_customer($customer_id)
 {
-	$sql = "SELECT * FROM debtors_master WHERE debtor_no=" . db_escape($customer_id);
+	$sql = "SELECT * FROM ".TB_PREF."debtors_master WHERE debtor_no=".db_escape($customer_id);
 
 	$result = db_query($sql, "could not get customer");
 
@@ -103,7 +128,7 @@ function get_customer($customer_id)
 
 function get_customer_name($customer_id)
 {
-	$sql = "SELECT name FROM debtors_master WHERE debtor_no=" . db_escape($customer_id);
+	$sql = "SELECT name FROM ".TB_PREF."debtors_master WHERE debtor_no=".db_escape($customer_id);
 
 	$result = db_query($sql, "could not get customer");
 
@@ -112,22 +137,41 @@ function get_customer_name($customer_id)
 	return $row[0];
 }
 
-function get_area_name($id)
+function get_customer_habit($customer_id)
 {
-	$sql = "SELECT description FROM areas WHERE area_code=" . db_escape($id);
+	$sql = "SELECT ".TB_PREF."debtors_master.pymt_discount,
+		".TB_PREF."credit_status.dissallow_invoices
+		FROM ".TB_PREF."debtors_master, ".TB_PREF."credit_status
+		WHERE ".TB_PREF."debtors_master.credit_status = ".TB_PREF."credit_status.id
+			AND ".TB_PREF."debtors_master.debtor_no = ".db_escape($customer_id);
 
-	$result = db_query($sql, "could not get sales type");
+	$result = db_query($sql, "could not query customers");
 
-	$row = db_fetch_row($result);
-	return $row[0];
+	return db_fetch($result);
 }
 
-function get_salesman_name($id)
+function get_customer_contacts($customer_id, $action=null)
 {
-	$sql = "SELECT salesman_name FROM salesman WHERE salesman_code=" . db_escape($id);
+	$results = array();
+	$res = get_crm_persons('customer', $action, $customer_id);
+	while($contact = db_fetch($res))
+		$results[] = $contact;
 
-	$result = db_query($sql, "could not get sales type");
-
-	$row = db_fetch_row($result);
-	return $row[0];
+	return $results;
 }
+
+function get_current_cust_credit($customer_id)
+{
+	$custdet = get_customer_details($customer_id);
+
+	return $custdet['credit_limit']-$custdet['Balance'];
+
+}
+
+function is_new_customer($id)
+{
+	$tables = array('cust_branch', 'debtor_trans', 'recurrent_invoices', 'sales_orders');
+
+	return !key_in_foreign_table($id, $tables, 'debtor_no');
+}
+?>

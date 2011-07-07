@@ -1,18 +1,18 @@
 <?php
 /**********************************************************************
-Copyright (C) FrontAccounting, LLC.
-Released under the terms of the GNU General Public License, GPL,
-as published by the Free Software Foundation, either version 3
-of the License, or (at your option) any later version.
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
- ***********************************************************************/
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 $page_security = 'SA_BANKTRANSFER';
 $path_to_root = "..";
 
-include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+include_once($path_to_root . "/includes/session.inc");
 
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
@@ -31,15 +31,16 @@ check_db_has_bank_accounts(_("There are no bank accounts defined in the system."
 
 //----------------------------------------------------------------------------------------
 
-if (isset($_GET['AddedID'])) {
+if (isset($_GET['AddedID'])) 
+{
 	$trans_no = $_GET['AddedID'];
 	$trans_type = ST_BANKTRANSFER;
 
-	display_notification_centered(_("Transfer has been entered"));
+   	display_notification_centered( _("Transfer has been entered"));
 
 	display_note(get_gl_view_str($trans_type, $trans_no, _("&View the GL Journal Entries for this Transfer")));
 
-	hyperlink_no_params($_SERVER['PHP_SELF'], _("Enter &Another Transfer"));
+   	hyperlink_no_params($_SERVER['PHP_SELF'], _("Enter &Another Transfer"));
 
 	display_footer_exit();
 }
@@ -52,31 +53,34 @@ if (isset($_POST['_DatePaid_changed'])) {
 
 function gl_payment_controls()
 {
-	global $table_style2, $Refs;
-
+	global $Refs;
+	
 	$home_currency = get_company_currency();
 
 	start_form();
 
-	start_outer_table($table_style2, 5);
+	start_outer_table(TABLESTYLE2);
 
 	table_section(1);
 
 	bank_accounts_list_row(_("From Account:"), 'FromBankAccount', null, true);
 
-	bank_accounts_list_row(_("To Account:"), 'ToBankAccount', null, true);
+	bank_balance_row($_POST['FromBankAccount']);
 
-	date_row(_("Transfer Date:"), 'DatePaid', '', null, 0, 0, 0, null, true);
+    bank_accounts_list_row(_("To Account:"), 'ToBankAccount', null, true);
+
+    date_row(_("Transfer Date:"), 'DatePaid', '', null, 0, 0, 0, null, true);
 
 	$from_currency = get_bank_account_currency($_POST['FromBankAccount']);
 	$to_currency = get_bank_account_currency($_POST['ToBankAccount']);
-	if ($from_currency != "" && $to_currency != "" && $from_currency != $to_currency) {
+	if ($from_currency != "" && $to_currency != "" && $from_currency != $to_currency) 
+	{
 		amount_row(_("Amount:"), 'amount', null, null, $from_currency);
 		amount_row(_("Bank Charge:"), 'charge', null, null, $from_currency);
 
 		exchange_rate_display($from_currency, $to_currency, $_POST['DatePaid']);
-	}
-	else
+	} 
+	else 
 	{
 		amount_row(_("Amount:"), 'amount');
 		amount_row(_("Bank Charge:"), 'charge');
@@ -84,13 +88,13 @@ function gl_payment_controls()
 
 	table_section(2);
 
-	ref_row(_("Reference:"), 'ref', '', $Refs->get_next(ST_BANKTRANSFER));
+    ref_row(_("Reference:"), 'ref', '', $Refs->get_next(ST_BANKTRANSFER));
 
-	textarea_row(_("Memo:"), 'memo_', null, 40, 4);
+    textarea_row(_("Memo:"), 'memo_', null, 40,4);
 
 	end_outer_table(1); // outer table
 
-	submit_center('AddPayment', _("Enter Transfer"), true, '', 'default');
+    submit_center('AddPayment',_("Enter Transfer"), true, '', 'default');
 
 	end_form();
 }
@@ -100,25 +104,52 @@ function gl_payment_controls()
 function check_valid_entries()
 {
 	global $Refs;
-
-	if (!is_date($_POST['DatePaid'])) {
+	
+	if (!is_date($_POST['DatePaid'])) 
+	{
 		display_error(_("The entered date is invalid."));
 		set_focus('DatePaid');
 		return false;
 	}
-	if (!is_date_in_fiscalyear($_POST['DatePaid'])) {
+	if (!is_date_in_fiscalyear($_POST['DatePaid']))
+	{
 		display_error(_("The entered date is not in fiscal year."));
 		set_focus('DatePaid');
 		return false;
 	}
 
-	if (!check_num('amount', 0)) {
+	if (!check_num('amount', 0)) 
+	{
 		display_error(_("The entered amount is invalid or less than zero."));
 		set_focus('amount');
 		return false;
 	}
+	if (input_num('amount') == 0) {
+		display_error(_("The total bank amount cannot be 0."));
+		set_focus('amount');
+		return false;
+	}
 
-	if (isset($_POST['charge']) && !check_num('charge', 0)) {
+	$limit = get_bank_account_limit($_POST['FromBankAccount'], $_POST['DatePaid']);
+
+	$amnt_tr = input_num('charge') + input_num('amount');
+
+	if ($limit != null && ($limit < $amnt_tr))
+	{
+		display_error(sprintf(_("The total bank amount exceeds allowed limit (%s) for source account."), price_format($limit)));
+		set_focus('amount');
+		return false;
+	}
+	if ($trans = check_bank_account_history(-$amnt_tr, $_POST['FromBankAccount'], $_POST['DatePaid'])) {
+
+		display_error(sprintf(_("The bank transaction would result in exceed of authorized overdraft limit for transaction: %s #%s on %s."),
+			$systypes_array[$trans['type']], $trans['trans_no'], sql2date($trans['trans_date'])));
+		set_focus('amount');
+		$input_error = 1;
+	}
+
+	if (isset($_POST['charge']) && !check_num('charge', 0)) 
+	{
 		display_error(_("The entered amount is invalid or less than zero."));
 		set_focus('charge');
 		return false;
@@ -128,25 +159,28 @@ function check_valid_entries()
 		set_focus('charge');
 		return false;
 	}
-	if (!$Refs->is_valid($_POST['ref'])) {
+	if (!$Refs->is_valid($_POST['ref'])) 
+	{
 		display_error(_("You must enter a reference."));
 		set_focus('ref');
 		return false;
 	}
 
-	if (!is_new_reference($_POST['ref'], ST_BANKTRANSFER)) {
+	if (!is_new_reference($_POST['ref'], ST_BANKTRANSFER)) 
+	{
 		display_error(_("The entered reference is already in use."));
 		set_focus('ref');
 		return false;
 	}
 
-	if ($_POST['FromBankAccount'] == $_POST['ToBankAccount']) {
+	if ($_POST['FromBankAccount'] == $_POST['ToBankAccount']) 
+	{
 		display_error(_("The source and destination bank accouts cannot be the same."));
 		set_focus('ToBankAccount');
 		return false;
 	}
 
-	return true;
+    return true;
 }
 
 //----------------------------------------------------------------------------------------
@@ -154,16 +188,17 @@ function check_valid_entries()
 function handle_add_deposit()
 {
 	$trans_no = add_bank_transfer($_POST['FromBankAccount'], $_POST['ToBankAccount'],
-								  $_POST['DatePaid'], input_num('amount'), $_POST['ref'],
-								  $_POST['memo_'], input_num('charge'));
+		$_POST['DatePaid'], input_num('amount'), $_POST['ref'], $_POST['memo_'], input_num('charge'));
 
 	meta_forward($_SERVER['PHP_SELF'], "AddedID=$trans_no");
 }
 
 //----------------------------------------------------------------------------------------
 
-if (isset($_POST['AddPayment'])) {
-	if (check_valid_entries() == true) {
+if (isset($_POST['AddPayment']))
+{
+	if (check_valid_entries() == true) 
+	{
 		handle_add_deposit();
 	}
 }

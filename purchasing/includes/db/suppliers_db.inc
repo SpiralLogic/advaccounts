@@ -1,15 +1,83 @@
 <?php
 /**********************************************************************
-Copyright (C) FrontAccounting, LLC.
-Released under the terms of the GNU General Public License, GPL,
-as published by the Free Software Foundation, either version 3
-of the License, or (at your option) any later version.
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
- ***********************************************************************/
-function get_supplier_details($supplier_id, $to = null)
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
+
+function add_supplier($supp_name, $supp_ref, $address, $supp_address, $gst_no,
+	$website, $supp_account_no, $bank_account, $credit_limit, $dimension_id, $dimension2_id, 
+	$curr_code, $payment_terms, $payable_account, $purchase_account, $payment_discount_account, 
+	$notes, $tax_group_id, $tax_included)
+{
+	$sql = "INSERT INTO ".TB_PREF."suppliers (supp_name, supp_ref, address, supp_address, gst_no, website,
+		supp_account_no, bank_account, credit_limit, dimension_id, dimension2_id, curr_code,
+		payment_terms, payable_account, purchase_account, payment_discount_account, notes, 
+		tax_group_id, tax_included)
+		VALUES (".db_escape($_POST['supp_name']). ", "
+		.db_escape($supp_ref). ", "
+		.db_escape($address) . ", "
+		.db_escape($supp_address) . ", "
+		.db_escape($gst_no). ", "
+		.db_escape($website). ", "
+		.db_escape($supp_account_no). ", "
+		.db_escape($bank_account). ", "
+		.$credit_limit. ", "
+		.db_escape($dimension_id). ", "
+		.db_escape($dimension2_id). ", "
+		.db_escape($curr_code). ", "
+		.db_escape($payment_terms). ", "
+		.db_escape($payable_account). ", "
+		.db_escape($purchase_account). ", "
+		.db_escape($payment_discount_account). ", "
+		.db_escape($notes). ", "
+		.db_escape($tax_group_id). ", "
+		.db_escape($tax_included). ")";
+
+	db_query($sql,"The supplier could not be added");
+}
+
+function update_supplier($supplier_id, $supp_name, $supp_ref, $address, $supp_address, $gst_no, 
+	$website, $supp_account_no, $bank_account, $credit_limit, $dimension_id, $dimension2_id, 
+	$curr_code, $payment_terms, $payable_account, $purchase_account, $payment_discount_account, 
+	$notes, $tax_group_id, $tax_included)
+{
+	$sql = "UPDATE ".TB_PREF."suppliers SET supp_name=".db_escape($supp_name) . ",
+		supp_ref=".db_escape($supp_ref) . ",
+		address=".db_escape($address) . ",
+		supp_address=".db_escape($supp_address) . ",
+		gst_no=".db_escape($gst_no) . ",
+		website=".db_escape($website) . ",
+		supp_account_no=".db_escape($supp_account_no) . ",
+		bank_account=".db_escape($bank_account) . ",
+		credit_limit=".$credit_limit . ",
+		dimension_id=".db_escape($dimension_id) . ",
+		dimension2_id=".db_escape($dimension2_id) . ",
+		curr_code=".db_escape($curr_code).",
+		payment_terms=".db_escape($payment_terms) . ",
+		payable_account=".db_escape($payable_account) . ",
+		purchase_account=".db_escape($purchase_account) . ",
+		payment_discount_account=".db_escape($payment_discount_account) . ",
+		notes=".db_escape($notes) . ",
+		tax_group_id=".db_escape($tax_group_id). ",
+		tax_included=".db_escape($tax_included)
+		." WHERE supplier_id = ".db_escape($supplier_id);
+
+	db_query($sql,"The supplier could not be updated");
+}
+
+function delete_supplier($supplier_id)
+{
+	$sql="DELETE FROM ".TB_PREF."suppliers WHERE supplier_id=".db_escape($supplier_id);
+	db_query($sql,"check failed");
+}
+
+function get_supplier_details($supplier_id, $to=null, $all=true)
 {
 
 	if ($to == null)
@@ -20,99 +88,48 @@ function get_supplier_details($supplier_id, $to = null)
 	$past2 = 2 * $past1;
 	// removed - supp_trans.alloc from all summations
 
-	$value = "(supp_trans.ov_amount + supp_trans.ov_gst + supp_trans.ov_discount)";
-	$due = "IF (supp_trans.type=" . ST_SUPPINVOICE . " OR supp_trans.type=" . ST_SUPPCREDIT . ",supp_trans.due_date,supp_trans.tran_date)";
-	$sql = "SELECT suppliers.supp_name, suppliers.curr_code, payment_terms.terms,
+	if ($all)
+    	$value = "(trans.ov_amount + trans.ov_gst + trans.ov_discount)";
+    else	
+    	$value = "IF (trans.type=".ST_SUPPINVOICE." OR trans.type=".ST_BANKDEPOSIT.",
+    		(trans.ov_amount + trans.ov_gst + trans.ov_discount - trans.alloc),
+    		(trans.ov_amount + trans.ov_gst + trans.ov_discount + trans.alloc))";
+	$due = "IF (trans.type=".ST_SUPPINVOICE." OR trans.type=".ST_SUPPCREDIT.",trans.due_date,trans.tran_date)";
+    $sql = "SELECT supp.supp_name, supp.curr_code, ".TB_PREF."payment_terms.terms,
 
-		Sum($value) AS Balance,
+		Sum(IFNULL($value,0)) AS Balance,
 
 		Sum(IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= 0,$value,0)) AS Due,
 		Sum(IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= $past1,$value,0)) AS Overdue1,
-		Sum(IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= $past2,$value,0)) AS Overdue2
+		Sum(IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= $past2,$value,0)) AS Overdue2,
+		supp.credit_limit - Sum(IFNULL(IF(trans.type=".ST_SUPPCREDIT.", -1, 1) 
+			* (ov_amount + ov_gst + ov_discount),0)) as cur_credit,
+		supp.tax_group_id
 
-		FROM suppliers,
-			 payment_terms,
-			 supp_trans
+		FROM ".TB_PREF."suppliers supp
+			 LEFT JOIN ".TB_PREF."supp_trans trans ON supp.supplier_id = trans.supplier_id AND trans.tran_date <= '$todate',
+			 ".TB_PREF."payment_terms
 
 		WHERE
-			 suppliers.payment_terms = payment_terms.terms_indicator
-			 AND suppliers.supplier_id = $supplier_id
-			 AND supp_trans.tran_date <= '$todate'
-			 AND suppliers.supplier_id = supp_trans.supplier_id
+			 supp.payment_terms = ".TB_PREF."payment_terms.terms_indicator
+			 AND supp.supplier_id = $supplier_id ";
+	if (!$all)
+		$sql .= "AND ABS(trans.ov_amount + trans.ov_gst + trans.ov_discount) - trans.alloc > 0.004 ";  
+	$sql .= "GROUP BY
+			  supp.supp_name,
+			  ".TB_PREF."payment_terms.terms,
+			  ".TB_PREF."payment_terms.days_before_due,
+			  ".TB_PREF."payment_terms.day_in_following_month";
 
-		GROUP BY
-			  suppliers.supp_name,
-			  payment_terms.terms,
-			  payment_terms.days_before_due,
-			  payment_terms.day_in_following_month";
+    $result = db_query($sql,"The customer details could not be retrieved");
+    $supp = db_fetch($result);
 
-	$result = db_query($sql, "The customer details could not be retrieved");
-
-	if (db_num_rows($result) == 0) {
-
-		/*Because there is no balance - so just retrieve the header information about the customer - the choice is do one query to get the balance and transactions for those customers who have a balance and two queries for those who don't have a balance OR always do two queries - I opted for the former */
-
-		$nil_balance = true;
-
-		$sql = "SELECT suppliers.supp_name, suppliers.curr_code, suppliers.supplier_id,  payment_terms.terms
-			FROM suppliers,
-				 payment_terms
-			WHERE
-				 suppliers.payment_terms = payment_terms.terms_indicator
-				 AND suppliers.supplier_id = " . db_escape($supplier_id);
-
-		$result = db_query($sql, "The customer details could not be retrieved");
-
-	}
-	else
-	{
-		$nil_balance = false;
-	}
-
-	$supp = db_fetch($result);
-
-	if ($nil_balance == true) {
-		$supp["Balance"] = 0;
-		$supp["Due"] = 0;
-		$supp["Overdue1"] = 0;
-		$supp["Overdue2"] = 0;
-	}
-	return $supp;
-
+    return $supp;
 }
-
-/**
- *	 Get how much we owe the supplier for the period
- */
-function get_supplier_oweing($supplier_id, $date_from, $date_to)
-{
-	global $show_sql;
-	$date_from = date2sql($date_from);
-	$date_to = date2sql($date_to);
-	// Sherifoz 22.06.03 Also get the description
-	$sql = "SELECT
-
-
-    	SUM((trans.ov_amount + trans.ov_gst  + trans.ov_discount)) AS Total
-
-
-    	FROM supp_trans as trans
-     	WHERE trans.ov_amount != 0
-		AND trans . tran_date >= '$date_from'
-		AND trans . tran_date <= '$date_to'
-		AND trans.supplier_id = " . db_escape($supplier_id) . "
-		AND trans.type = " . ST_SUPPINVOICE;
-	$result = db_query($sql);
-	$results = db_fetch($result);
-	return $results['Total'];
-
-
-}
-
 
 function get_supplier($supplier_id)
 {
-	$sql = "SELECT * FROM suppliers WHERE supplier_id=" . db_escape($supplier_id);
+	$sql = "SELECT * FROM ".TB_PREF."suppliers WHERE supplier_id=".db_escape($supplier_id);
 
 	$result = db_query($sql, "could not get supplier");
 
@@ -121,7 +138,7 @@ function get_supplier($supplier_id)
 
 function get_supplier_name($supplier_id)
 {
-	$sql = "SELECT supp_name AS name FROM suppliers WHERE supplier_id=" . db_escape($supplier_id);
+	$sql = "SELECT supp_name AS name FROM ".TB_PREF."suppliers WHERE supplier_id=".db_escape($supplier_id);
 
 	$result = db_query($sql, "could not get supplier");
 
@@ -132,12 +149,34 @@ function get_supplier_name($supplier_id)
 
 function get_supplier_accounts($supplier_id)
 {
-	$sql = "SELECT payable_account,purchase_account,payment_discount_account FROM suppliers WHERE supplier_id=" . db_escape($supplier_id);
+	$sql = "SELECT payable_account,purchase_account,payment_discount_account FROM ".TB_PREF."suppliers WHERE supplier_id=".db_escape($supplier_id);
 
 	$result = db_query($sql, "could not get supplier");
 
 	return db_fetch($result);
 }
 
+function get_supplier_contacts($supplier_id, $action=null)
+{
+	$results = array();
+	$res = get_crm_persons('supplier', $action, $supplier_id);
+	while($contact = db_fetch($res))
+		$results[] = $contact;
 
+	return $results;
+}
+
+function get_current_supp_credit($supplier_id)
+{
+	$suppdet = get_supplier_details($supplier_id);
+	return $suppdet['cur_credit'];
+
+}
+
+function is_new_supplier($id)
+{
+	$tables = array('supp_trans', 'grn_batch', 'purch_orders', 'purch_data');
+
+	return !key_in_foreign_table($id, $tables, 'supplier_id');
+}
 ?>

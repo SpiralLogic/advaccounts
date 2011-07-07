@@ -1,17 +1,17 @@
 <?php
 /**********************************************************************
-Copyright (C) FrontAccounting, LLC.
-Released under the terms of the GNU General Public License, GPL,
-as published by the Free Software Foundation, either version 3
-of the License, or (at your option) any later version.
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
- ***********************************************************************/
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 $page_security = 'SA_BOM';
 $path_to_root = "../..";
-include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+include_once($path_to_root . "/includes/session.inc");
 
 page(_($help_context = "Bill Of Materials"));
 
@@ -33,9 +33,10 @@ $selected_component = $selected_id;
 //{
 //	$_POST['stock_id'] = $_GET["NewItem"];
 //}
-if (isset($_GET['stock_id'])) {
+if (isset($_GET['stock_id']))
+{
 	$_POST['stock_id'] = $_GET['stock_id'];
-	$selected_parent = $_GET['stock_id'];
+	$selected_parent =  $_GET['stock_id'];
 }
 
 /* selected_parent could come from a post or a get */
@@ -61,43 +62,13 @@ else
 
 //--------------------------------------------------------------------------------------------------
 
-function check_for_recursive_bom($ultimate_parent, $component_to_check)
-{
-
-	/* returns true ie 1 if the bom contains the parent part as a component
-	ie the bom is recursive otherwise false ie 0 */
-
-	$sql = "SELECT component FROM bom WHERE parent=" . db_escape($component_to_check);
-	$result = db_query($sql, "could not check recursive bom");
-
-	if ($result != 0) {
-		while ($myrow = db_fetch_row($result))
-		{
-			if ($myrow[0] == $ultimate_parent) {
-				return 1;
-			}
-
-			if (check_for_recursive_bom($ultimate_parent, $myrow[0])) {
-				return 1;
-			}
-		} //(while loop)
-	} //end if $result is true
-
-	return 0;
-
-} //end of function check_for_recursive_bom
-
-//--------------------------------------------------------------------------------------------------
-
 function display_bom_items($selected_parent)
 {
-	global $table_style;
-
 	$result = get_bom($selected_parent);
 	div_start('bom');
-	start_table("$table_style width=60%");
+	start_table(TABLESTYLE, "width=60%");
 	$th = array(_("Code"), _("Description"), _("Location"),
-				_("Work Centre"), _("Quantity"), _("Units"), '', '');
+		_("Work Centre"), _("Quantity"), _("Units"),'','');
 	table_header($th);
 
 	$k = 0;
@@ -108,13 +79,13 @@ function display_bom_items($selected_parent)
 
 		label_cell($myrow["component"]);
 		label_cell($myrow["description"]);
-		label_cell($myrow["location_name"]);
-		label_cell($myrow["WorkCentreDescription"]);
-		qty_cell($myrow["quantity"], false, get_qty_dec($myrow["component"]));
-		label_cell($myrow["units"]);
-		edit_button_cell("Edit" . $myrow['id'], _("Edit"));
-		delete_button_cell("Delete" . $myrow['id'], _("Delete"));
-		end_row();
+        label_cell($myrow["location_name"]);
+        label_cell($myrow["WorkCentreDescription"]);
+        qty_cell($myrow["quantity"], false, get_qty_dec($myrow["component"]));
+        label_cell($myrow["units"]);
+ 		edit_button_cell("Edit".$myrow['id'], _("Edit"));
+ 		delete_button_cell("Delete".$myrow['id'], _("Delete"));
+        end_row();
 
 	} //END WHILE LIST LOOP
 	end_table();
@@ -123,24 +94,19 @@ function display_bom_items($selected_parent)
 
 //--------------------------------------------------------------------------------------------------
 
-function on_submit($selected_parent, $selected_component = -1)
+function on_submit($selected_parent, $selected_component=-1)
 {
-	if (!check_num('quantity', 0)) {
+	if (!check_num('quantity', 0))
+	{
 		display_error(_("The quantity entered must be numeric and greater than zero."));
 		set_focus('quantity');
 		return;
 	}
 
-	if ($selected_component != -1) {
-
-		$sql = "UPDATE bom SET workcentre_added=" . db_escape($_POST['workcentre_added'])
-			   . ",loc_code=" . db_escape($_POST['loc_code']) . ",
-			quantity= " . input_num('quantity') . "
-			WHERE parent=" . db_escape($selected_parent) . "
-			AND id=" . db_escape($selected_component);
-		check_db_error("Could not update this bom component", $sql);
-
-		db_query($sql, "could not update bom");
+	if ($selected_component != -1)
+	{
+		update_bom($selected_parent, $selected_component, $_POST['workcentre_added'], $_POST['loc_code'],
+			input_num('quantity'));
 		display_notification(_('Selected component has been updated'));
 		$Mode = 'RESET';
 	}
@@ -152,23 +118,15 @@ function on_submit($selected_parent, $selected_component = -1)
 		component form */
 
 		//need to check not recursive bom component of itself!
-		if (!check_for_recursive_bom($selected_parent, $_POST['component'])) {
+		if (!check_for_recursive_bom($selected_parent, $_POST['component']))
+		{
 
 			/*Now check to see that the component is not already on the bom */
-			$sql = "SELECT component FROM bom
-				WHERE parent=" . db_escape($selected_parent) . "
-				AND component=" . db_escape($_POST['component']) . "
-				AND workcentre_added=" . db_escape($_POST['workcentre_added']) . "
-				AND loc_code=" . db_escape($_POST['loc_code']);
-			$result = db_query($sql, "check failed");
-
-			if (db_num_rows($result) == 0) {
-				$sql = "INSERT INTO bom (parent, component, workcentre_added, loc_code, quantity)
-					VALUES (" . db_escape($selected_parent) . ", " . db_escape($_POST['component']) . ","
-					   . db_escape($_POST['workcentre_added']) . ", " . db_escape($_POST['loc_code']) . ", "
-					   . input_num('quantity') . ")";
-
-				db_query($sql, "check failed");
+			if (!is_component_already_on_bom($_POST['component'], $_POST['workcentre_added'],
+				$_POST['loc_code'], $selected_parent))
+			{
+				add_bom($selected_parent, $_POST['component'], $_POST['workcentre_added'],
+					$_POST['loc_code'], input_num('quantity'));
 				display_notification(_("A new component part has been added to the bill of material for this item."));
 				$Mode = 'RESET';
 			}
@@ -188,15 +146,16 @@ function on_submit($selected_parent, $selected_component = -1)
 
 //--------------------------------------------------------------------------------------------------
 
-if ($Mode == 'Delete') {
-	$sql = "DELETE FROM bom WHERE id=" . db_escape($selected_id);
-	db_query($sql, "Could not delete this bom components");
+if ($Mode == 'Delete')
+{
+	delete_bom($selected_id);
 
 	display_notification(_("The component item has been deleted from this bom"));
 	$Mode = 'RESET';
 }
 
-if ($Mode == 'RESET') {
+if ($Mode == 'RESET')
+{
 	$selected_id = -1;
 	unset($_POST['quantity']);
 }
@@ -206,8 +165,10 @@ if ($Mode == 'RESET') {
 start_form();
 
 start_form(false, true);
-start_table("class='tablestyle_noborder'");
-stock_manufactured_items_list_row(_("Select a manufacturable item:"), 'stock_id', null, false, true);
+start_table(TABLESTYLE_NOBORDER);
+start_row();
+stock_manufactured_items_list_cells(_("Select a manufacturable item:"), 'stock_id', null, false, true);
+end_row();
 if (list_updated('stock_id'))
 	$Ajax->activate('_page_body');
 end_table();
@@ -216,33 +177,29 @@ br();
 end_form();
 //--------------------------------------------------------------------------------------------------
 
-if (get_post('stock_id') != '') { //Parent Item selected so display bom or edit component
+if (get_post('stock_id') != '')
+{ //Parent Item selected so display bom or edit component
 	$selected_parent = $_POST['stock_id'];
-	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM')
+	if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 		on_submit($selected_parent, $selected_id);
 	//--------------------------------------------------------------------------------------
 
-	start_form();
+start_form();
 	display_bom_items($selected_parent);
 	//--------------------------------------------------------------------------------------
 	echo '<br>';
 
-	start_table($table_style2);
+	start_table(TABLESTYLE2);
 
-	if ($selected_id != -1) {
-		if ($Mode == 'Edit') {
+	if ($selected_id != -1)
+	{
+ 		if ($Mode == 'Edit') {
 			//editing a selected component from the link to the line item
-			$sql = "SELECT bom.*,stock_master.description FROM "
-				   .  "bom,stock_master
-				WHERE id=" . db_escape($selected_id) . "
-				AND stock_master.stock_id=bom.component";
-
-			$result = db_query($sql, "could not get bom");
-			$myrow = db_fetch($result);
+			$myrow = get_component_from_bom($selected_id);
 
 			$_POST['loc_code'] = $myrow["loc_code"];
 			$_POST['component'] = $myrow["component"]; // by Tom Moulton
-			$_POST['workcentre_added'] = $myrow["workcentre_added"];
+			$_POST['workcentre_added']  = $myrow["workcentre_added"];
 			$_POST['quantity'] = number_format2($myrow["quantity"], get_qty_dec($myrow["component"]));
 			label_row(_("Component:"), $myrow["component"] . " - " . $myrow["description"]);
 		}
@@ -251,11 +208,12 @@ if (get_post('stock_id') != '') { //Parent Item selected so display bom or edit 
 	else
 	{
 		start_row();
-		label_cell(_("Component:"));
+		label_cell(_("Component:"), "class='label'");
 
 		echo "<td>";
 		echo stock_component_items_list('component', $selected_parent, null, false, true);
-		if (get_post('_component_update')) {
+		if (get_post('_component_update')) 
+		{
 			$Ajax->activate('quantity');
 		}
 		echo "</td>";
@@ -266,7 +224,7 @@ if (get_post('stock_id') != '') { //Parent Item selected so display bom or edit 
 	locations_list_row(_("Location to Draw From:"), 'loc_code', null);
 	workcenter_list_row(_("Work Centre Added:"), 'workcentre_added', null);
 	$dec = get_qty_dec(get_post('component'));
-	$_POST['quantity'] = number_format2(input_num('quantity', 1), $dec);
+	$_POST['quantity'] = number_format2(input_num('quantity',1), $dec);
 	qty_row(_("Quantity:"), 'quantity', null, null, null, $dec);
 
 	end_table(1);

@@ -19,10 +19,11 @@ $page_security = 'SA_CUSTPAYMREP';
 // ----------------------------------------------------------------
 $path_to_root="..";
 
-include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+include_once($path_to_root . "/includes/session.inc");
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
 include_once($path_to_root . "/gl/includes/gl_db.inc");
+include_once($path_to_root . "/sales/includes/db/customers_db.inc");
 
 //----------------------------------------------------------------------------------------------------
 
@@ -31,36 +32,38 @@ print_customer_balances();
 
 function get_open_balance($debtorno, $to, $convert)
 {
-	$to = date2sql($to);
+	if($to)
+		$to = date2sql($to);
 
-    $sql = "SELECT SUM(IF(".''."debtor_trans.type = ".ST_SALESINVOICE.", (".''."debtor_trans.ov_amount + ".''."debtor_trans.ov_gst +
-    	".''."debtor_trans.ov_freight + ".''."debtor_trans.ov_freight_tax + ".''."debtor_trans.ov_discount)";
+    $sql = "SELECT SUM(IF(t.type = ".ST_SALESINVOICE.",
+    	(t.ov_amount + t.ov_gst + t.ov_freight + t.ov_freight_tax + t.ov_discount)";
     if ($convert)
     	$sql .= " * rate";
     $sql .= ", 0)) AS charges,
-    	SUM(IF(".''."debtor_trans.type <> ".ST_SALESINVOICE.", (".''."debtor_trans.ov_amount + ".''."debtor_trans.ov_gst +
-    	".''."debtor_trans.ov_freight + ".''."debtor_trans.ov_freight_tax + ".''."debtor_trans.ov_discount)";
+    	SUM(IF(t.type <> ".ST_SALESINVOICE.",
+    	(t.ov_amount + t.ov_gst + t.ov_freight + t.ov_freight_tax + t.ov_discount)";
     if ($convert)
     	$sql .= " * rate";
     $sql .= " * -1, 0)) AS credits,
-		SUM(".''."debtor_trans.alloc";
+		SUM(t.alloc";
 	if ($convert)
 		$sql .= " * rate";
 	$sql .= ") AS Allocated,
-		SUM(IF(".''."debtor_trans.type = ".ST_SALESINVOICE.", (".''."debtor_trans.ov_amount + ".''."debtor_trans.ov_gst +
-    	".''."debtor_trans.ov_freight + ".''."debtor_trans.ov_freight_tax + ".''."debtor_trans.ov_discount - ".''."debtor_trans.alloc)";
+		SUM(IF(t.type = ".ST_SALESINVOICE.",
+			(t.ov_amount + t.ov_gst + t.ov_freight + t.ov_freight_tax + t.ov_discount - t.alloc)";
     if ($convert)
     	$sql .= " * rate";
     $sql .= ", 
-    	((".''."debtor_trans.ov_amount + ".''."debtor_trans.ov_gst + ".''."debtor_trans.ov_freight +
-    	".''."debtor_trans.ov_freight_tax + ".''."debtor_trans.ov_discount) * -1 + ".''."debtor_trans.alloc)";
+    	((t.ov_amount + t.ov_gst + t.ov_freight + t.ov_freight_tax + t.ov_discount) * -1 + t.alloc)";
     if ($convert)
     	$sql .= " * rate";
     $sql .= ")) AS OutStanding
-		FROM ".''."debtor_trans
-    	WHERE ".''."debtor_trans.tran_date < '$to'
-		AND ".''."debtor_trans.debtor_no = ".db_escape($debtorno)."
-		AND ".''."debtor_trans.type <> ".ST_CUSTDELIVERY." GROUP BY debtor_no";
+		FROM ".TB_PREF."debtor_trans t
+    	WHERE t.debtor_no = ".db_escape($debtorno)
+		." AND t.type <> ".ST_CUSTDELIVERY;
+    if ($to)
+    	$sql .= " AND t.tran_date < '$to'";
+	$sql .= " GROUP BY debtor_no";
 
     $result = db_query($sql,"No transactions were returned");
     return db_fetch($result);
@@ -71,18 +74,18 @@ function get_transactions($debtorno, $from, $to)
 	$from = date2sql($from);
 	$to = date2sql($to);
 
-    $sql = "SELECT ".''."debtor_trans.*,
-		(".''."debtor_trans.ov_amount + ".''."debtor_trans.ov_gst + ".''."debtor_trans.ov_freight +
-		".''."debtor_trans.ov_freight_tax + ".''."debtor_trans.ov_discount)
-		AS TotalAmount, ".''."debtor_trans.alloc AS Allocated,
-		((".''."debtor_trans.type = ".ST_SALESINVOICE.")
-		AND ".''."debtor_trans.due_date < '$to') AS OverDue
-    	FROM ".''."debtor_trans
-    	WHERE ".''."debtor_trans.tran_date >= '$from'
-		AND ".''."debtor_trans.tran_date <= '$to'
-		AND ".''."debtor_trans.debtor_no = ".db_escape($debtorno)."
-		AND ".''."debtor_trans.type <> ".ST_CUSTDELIVERY."
-    	ORDER BY ".''."debtor_trans.tran_date";
+    $sql = "SELECT ".TB_PREF."debtor_trans.*,
+		(".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + ".TB_PREF."debtor_trans.ov_freight + 
+		".TB_PREF."debtor_trans.ov_freight_tax + ".TB_PREF."debtor_trans.ov_discount)
+		AS TotalAmount, ".TB_PREF."debtor_trans.alloc AS Allocated,
+		((".TB_PREF."debtor_trans.type = ".ST_SALESINVOICE.")
+		AND ".TB_PREF."debtor_trans.due_date < '$to') AS OverDue
+    	FROM ".TB_PREF."debtor_trans
+    	WHERE ".TB_PREF."debtor_trans.tran_date >= '$from'
+		AND ".TB_PREF."debtor_trans.tran_date <= '$to'
+		AND ".TB_PREF."debtor_trans.debtor_no = ".db_escape($debtorno)."
+		AND ".TB_PREF."debtor_trans.type <> ".ST_CUSTDELIVERY."
+    	ORDER BY ".TB_PREF."debtor_trans.tran_date";
 
     return db_query($sql,"No transactions were returned");
 }
@@ -105,7 +108,7 @@ function print_customer_balances()
 	else
 		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 
-	if ($fromcust == ALL_NUMERIC)
+	if ($fromcust == ALL_TEXT)
 		$cust = _('All');
 	else
 		$cust = get_customer_name($fromcust);
@@ -129,22 +132,21 @@ function print_customer_balances()
 
 	$aligns = array('left',	'left',	'left',	'left',	'right', 'right', 'right', 'right');
 
-    	$params =   array( 	0 => $comments,
-    				1 => array('text' => _('Period'), 'from' => $from, 		'to' => $to),
-    				2 => array('text' => _('Customer'), 'from' => $cust,   	'to' => ''),
-    				3 => array('text' => _('Currency'), 'from' => $currency, 'to' => ''),
-				4 => array('text' => _('Suppress Zeros'), 'from' => $nozeros, 'to' => ''));
+    $params =   array( 	0 => $comments,
+    				    1 => array('text' => _('Period'), 'from' => $from, 		'to' => $to),
+    				    2 => array('text' => _('Customer'), 'from' => $cust,   	'to' => ''),
+    				    3 => array('text' => _('Currency'), 'from' => $currency, 'to' => ''),
+						4 => array('text' => _('Suppress Zeros'), 'from' => $nozeros, 'to' => ''));
 
-    	$rep = new FrontReport(_('Customer Balances'), "CustomerBalances", user_pagesize());
-
-    	$rep->Font();
-    	$rep->Info($params, $cols, $headers, $aligns);
-    	$rep->Header();
+    $rep = new FrontReport(_('Customer Balances'), "CustomerBalances", user_pagesize());
+    $rep->Font();
+    $rep->Info($params, $cols, $headers, $aligns);
+    $rep->NewPage();
 
 	$grandtotal = array(0,0,0,0);
 
-	$sql = "SELECT debtor_no, name, curr_code FROM ".''."debtors_master ";
-	if ($fromcust != ALL_NUMERIC)
+	$sql = "SELECT debtor_no, name, curr_code FROM ".TB_PREF."debtors_master ";
+	if ($fromcust != ALL_TEXT)
 		$sql .= "WHERE debtor_no=".db_escape($fromcust);
 	$sql .= " ORDER BY name";
 	$result = db_query($sql, "The customers could not be retrieved");
@@ -170,11 +172,11 @@ function print_customer_balances()
 		if ($convert)
 			$rep->TextCol(2, 3,	$myrow['curr_code']);
 		$rep->fontSize -= 2;
-		//$rep->TextCol(3, 4,	_("Open Balance"));
-		//$rep->AmountCol(4, 5, $init[0], $dec);
-		//$rep->AmountCol(5, 6, $init[1], $dec);
-		//$rep->AmountCol(6, 7, $init[2], $dec);
-		//$rep->AmountCol(7, 8, $init[3], $dec);
+		$rep->TextCol(3, 4,	_("Open Balance"));
+		$rep->AmountCol(4, 5, $init[0], $dec);
+		$rep->AmountCol(5, 6, $init[1], $dec);
+		$rep->AmountCol(6, 7, $init[2], $dec);
+		$rep->AmountCol(7, 8, $init[3], $dec);
 		$total = array(0,0,0,0);
 		for ($i = 0; $i < 4; $i++)
 		{
@@ -188,12 +190,12 @@ function print_customer_balances()
 		while ($trans = db_fetch($res))
 		{
 			if ($no_zeros && $trans['TotalAmount'] == 0 && $trans['Allocated'] == 0) continue;
-			//$rep->NewLine(1, 2);
-			//$rep->TextCol(0, 1, $systypes_array[$trans['type']]);
-			//$rep->TextCol(1, 2,	$trans['reference']);
-			//$rep->DateCol(2, 3,	$trans['tran_date'], true);
+			$rep->NewLine(1, 2);
+			$rep->TextCol(0, 1, $systypes_array[$trans['type']]);
+			$rep->TextCol(1, 2,	$trans['reference']);
+			$rep->DateCol(2, 3,	$trans['tran_date'], true);
 			if ($trans['type'] == ST_SALESINVOICE)
-			//	$rep->DateCol(3, 4,	$trans['due_date'], true);
+				$rep->DateCol(3, 4,	$trans['due_date'], true);
 			$item[0] = $item[1] = 0.0;
 			if ($convert)
 				$rate = $trans['rate'];
@@ -204,15 +206,15 @@ function print_customer_balances()
 			if ($trans['TotalAmount'] > 0.0)
 			{
 				$item[0] = round2(abs($trans['TotalAmount']) * $rate, $dec);
-		//		$rep->AmountCol(4, 5, $item[0], $dec);
+				$rep->AmountCol(4, 5, $item[0], $dec);
 			}
 			else
 			{
 				$item[1] = round2(Abs($trans['TotalAmount']) * $rate, $dec);
-		//		$rep->AmountCol(5, 6, $item[1], $dec);
+				$rep->AmountCol(5, 6, $item[1], $dec);
 			}
 			$item[2] = round2($trans['Allocated'] * $rate, $dec);
-		//	$rep->AmountCol(6, 7, $item[2], $dec);
+			$rep->AmountCol(6, 7, $item[2], $dec);
 			/*
 			if ($trans['type'] == 10)
 				$item[3] = ($trans['TotalAmount'] - $trans['Allocated']) * $rate;
@@ -223,20 +225,20 @@ function print_customer_balances()
 				$item[3] = $item[0] + $item[1] - $item[2];
 			else	
 				$item[3] = $item[0] - $item[1] + $item[2];
-		//	$rep->AmountCol(7, 8, $item[3], $dec);
+			$rep->AmountCol(7, 8, $item[3], $dec);
 			for ($i = 0; $i < 4; $i++)
 			{
 				$total[$i] += $item[$i];
 				$grandtotal[$i] += $item[$i];
 			}
 		}
-		//$rep->Line($rep->row - 8);
-		//$rep->NewLine(2);
-		//$rep->TextCol(0, 3, _('Total'));
-//		for ($i = 0; $i < 4; $i++)
-//			$rep->AmountCol($i + 4, $i + 5, $total[$i], $dec);
-  //  		$rep->Line($rep->row  - 4);
-    //		$rep->NewLine(2);
+		$rep->Line($rep->row - 8);
+		$rep->NewLine(2);
+		$rep->TextCol(0, 3, _('Total'));
+		for ($i = 0; $i < 4; $i++)
+			$rep->AmountCol($i + 4, $i + 5, $total[$i], $dec);
+    		$rep->Line($rep->row  - 4);
+    		$rep->NewLine(2);
 	}
 	$rep->fontSize += 2;
 	$rep->TextCol(0, 3, _('Grand Total'));
