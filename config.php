@@ -152,7 +152,7 @@
    // static js files path
    // standard external js scripts included in all files
    $js_static = array('JsHttpRequest.js', 'behaviour.js', 'utils.js', 'inserts.js');
-   $js_huserlib = array('jquery-1.6.min.js', 'jquery-ui-1.8.6.min.js');
+   $js_huserlib = array('jquery-1.6.2.min.js', 'jquery-ui-1.8.6.min.js');
    $js_fstatic = array('advanced.js', 'shortmenu.js', 'jquery.calculator.pack.js', 'calc.js');
    // additional js source included in header
    $js_lib = $js_fuserlib = $js_userlib = array();
