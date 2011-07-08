@@ -56,7 +56,6 @@ if (db_has_customers()) {
     UI::search('customer', array('label' => 'Search Customer:', 'size' => 80, 'url' => 'search.php',
                                 'callback' => 'Customer.fetch'));
     HTML::td()->table()->div();
-
     HTML::div(false);
 }
 start_form();
