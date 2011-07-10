@@ -137,6 +137,7 @@ function new_doc_date($date = null)
 
 function is_date_in_fiscalyear($date, $convert = false)
 {
+    return 1;
 	global $path_to_root;
 	include_once($path_to_root . "/admin/db/company_db.inc");
 	$myrow = get_current_fiscalyear();
