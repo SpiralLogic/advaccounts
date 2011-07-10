@@ -281,6 +281,8 @@ if (isset($_POST['filterType']) && $_POST['filterType'] != ALL_TEXT) {
 	}
 	elseif ($_POST['filterType'] == '5') {
 		$sql .= " AND trans.type = " . ST_CUSTDELIVERY . " ";
+	}	elseif ($_POST['filterType'] == '6') {
+		$sql .= " AND trans.type = " . ST_SALESINVOICE . " ";
 	}
 	if ($_POST['filterType'] == '2') {
 		$today = date2sql(Today());

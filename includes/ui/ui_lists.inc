@@ -1759,7 +1759,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
       }
       echo "<td>\n";
       $allocs = array($all_items => _("All Types"), '1' => _("Sales Invoices"), '2' => _("Overdue Invoices"), '3' => _("Payments"), '4' => _("Credit Notes"),
-                      '5' => _("Delivery Notes"));
+                      '5' => _("Delivery Notes"), '6' => _("Invoices Only"));
       echo array_selector($name, $selected, $allocs);
       echo "</td>\n";
    }
