@@ -40,10 +40,8 @@ Adv.extend({
     resetState:function() {
         $("#tabs0 input, #tabs0 textarea").empty();
         $("#customer").val('');
-        Customer.showSearch();
-       $('#name').autocomplete('enable');
-
         Customer.fetch(0);
+
     },
     showStatus:function (status) {
         Adv.msgbox.empty();
@@ -260,7 +258,7 @@ var Accounts = function() {
     }
 }();
 var Customer = function () {
-    var customer,transactions = $('#transactions'),searchBox = $("#customer"),customerIDs = $("#customerIDs");
+    var customer,transactions = $('#transactions'),searchBox = $("#customer"),customerIDs = $("#customerIDs"), $customerID = $("#name").attr('autocomplete', 'off');
     return {
         init: function() {
             $.post('customers.php', {id:$('[name="id"]').val()}, function(data) {
@@ -268,6 +266,29 @@ var Customer = function () {
                 Branches.change(Customer.get().defaultBranch);
 
             }, 'json');
+            $customerID.autocomplete({
+                source: function(request, response) {
+                    var lastXhr = $.getJSON('search.php', request, function(data, status, xhr) {
+                        if (xhr === lastXhr) {
+                            response(data);
+                        }
+                    });
+                },
+                select: function(event, ui) {
+                    Customer.fetch(ui.item);
+                    return false;
+                },
+                focus:function() {
+                    return false;
+                },
+                autoFocus:false, delay:10,'position': {
+                    my: "left middle",
+                    at: "right top",
+                    of: $customerID,
+                    collision: "none"
+                }
+
+            });
 
         },
         setValues: function(content, quiet) {
@@ -284,7 +305,7 @@ var Customer = function () {
             }
             Branches.empty().add(data.branches).change(data.branches[data.defaultBranch]);
             Accounts.change(data.accounts);
-            Customer.hideSearch();
+            (!customer.id) ? Customer.showSearch() : Customer.hideSearch();
             $.each(customer, function(i, data) {
                 if (i !== 'contacts' && i !== 'branches' && i !== 'accounts') {
                     Adv.setFormValue(i, data);
@@ -293,16 +314,14 @@ var Customer = function () {
             Adv.resetHighlights();
         },
         hideSearch: function() {
-
+            $customerID.autocomplete('disable');
         },
         showSearch: function() {
-
+            $customerID.autocomplete('enable');
         },
-        fetch: function(id) {
-            $.post("customers.php", {"id": id}, function(data) {
+        fetch: function(item) {
+            $.post("customers.php", {"id": item.id}, function(data) {
                 Customer.setValues(data);
-               $('#name').autocomplete('disable');
-               
             }, 'json')
         },
         set: function(key, value) {
@@ -424,27 +443,6 @@ $(function() {
         Adv.ContactLog.dialog("open");
         return false;
     });
-    var $customerBox = $("#customer"), $customerID = $("#name").attr('autocomplete', 'off');
-    $customerID.autocomplete({
-              source: function(request, response) {
-		      var lastXhr = $.getJSON('search.php', request, function(data, status, xhr) {
-			   	if (xhr === lastXhr) {
-				   	response(data);
-				   }
-			   });
-		   },
-		   select: function(event, ui) {
-	   	   Customer.fetch(ui.item.id);
-   	   },
-       focus:function() { return false;},
-       autoFocus:false, delay:10,'position': {
-                    my: "left top",
-                    at: "right top",
-                    of: $customerID,
-                    collision: "none"
-               }
-
-        });
     Branches.init();
     Customer.init();
 

@@ -29,9 +29,9 @@ class JS
 			   });
 		   },
 		   select: function(event, ui) {
-	   	   {$callback}(ui.item.id);
+	   	 if ({$callback}(ui.item)===false) return false;
    	   }
-      }).css({'z-index' : '2', 'margin' : '10px'});
+      }).css({'z-index' : '2'});
 JS;
     }
 

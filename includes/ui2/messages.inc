@@ -11,46 +11,60 @@ class Messages
 {
 
 
-	protected $messages = '';
-	protected $count = 0;
+    protected static $messages = '';
+    protected static $count = 0;
 
-	function __construct()
-	{
-	}
+    function __construct()
+    {
+    }
 
-	function getNewUserMessages($userid = false)
-	{
-		if (!$userid) {
-			return false;
-		}
-		$sql = "SELECT * FROM user_messages WHERE user =$userid AND unread=1";
-		$result = db_query($sql, "could not retrieve user messages");
-		$this->count = db_num_rows($result);
-		while ($row = db_fetch_assoc($result)) {
-			if (!empty($row['subject']))
-				$this->messages .= '<span style="padding-top:20px; margin-bottom:5px; font-weight:bold; text-decoration:underline;">' .
-								   $row['subject'] . '</span>:<hr style="margin-top:0px;"> '
-								   . $row['message'] . '<br>';
-			else
-				$this->messages .= '<hr style="margin-top:0px;"> '
-								   . $row['message'] . '<br>';
-		}
-		$sql = "UPDATE user_messages SET unread=0 WHERE unread=1 AND user=" . $userid;
-		$result = db_query($sql, 'Could not mark messages as unread');
-		return $this->count;
-	}
+    static function  getNewUserMessages($userid = false)
+    {
+        if (!$userid) {
+            return false;
+        }
+        $sql = "SELECT * FROM user_messages WHERE user =$userid AND unread > 0";
+        $result = db_query($sql, "could not retrieve user messages");
+        static::$count = db_num_rows($result);
+        while ($row = db_fetch_assoc($result)) {
+            if (!empty($row['subject']))
+                static::$messages .= '<div style="margin-top:5px; margin-bottom:5px; font-weight:bold; text-decoration:underline;">' .
+                                     $row['subject'] . ':</div><hr style="margin-top:1px;"/> <div style="padding-top:5px;" >'
+                                     . trim($row['message']) . '</div>';
+            else
+                static::$messages .= '<hr style="margin-top:1px;"/> <div style="margin-top:5px; padding-bottom:10px;" >'
+                                     . trim($row['message']) . '</div>';
+            $unread = $row['unread'] - 1;
+            $id = $row['id'];
+            $sql2 = "UPDATE user_messages SET unread={$unread} WHERE  id={$id} AND user=" . $userid;
 
-	function setNewMessage($message)
-	{
-		$this->messages .= $message . '<hr>';
-	}
+            $result2 = db_query($sql2, 'Could not mark messages as unread');
 
-	function makeDialog()
-	{
+        }
+        return static::$count;
+    }
 
-		$dialog = new Dialog($this->count . ' New Messages', 'messagesbox', $this->messages);
-		$dialog->addButtons(array('Close' => '$(this).dialog("close");'));
-		$dialog->setOptions(array('autoopen' => true, 'modal' => true, 'width' => '500', 'resizeable' => false));
-		$dialog->show();
-	}
+    static function setNewMessage($userid, $subject, $message)
+    {
+        $sql = "INSERT INTO user_messages (user, subject,message,unread) VALUES (" . db_escape($userid) . ", " . db_escape($subject) . ", " . db_escape($message) . ", 1)";
+        $result = db_query($sql, "Couldn't add message for $userid");
+        return $result;
+    }
+
+    static function showNewMessages($user = false)
+    {
+        if (!$user) $user = $_SESSION['wa_current_user']->user;
+        if (static::getNewUserMessages($user) > 0) {
+            static::makeDialog();
+        }
+    }
+
+    static function makeDialog()
+    {
+
+        $dialog = new Dialog(static::$count . ' New Messages', 'messagesbox', static::$messages);
+        $dialog->addButtons(array('Close' => '$(this).dialog("close");'));
+        $dialog->setOptions(array('autoopen' => true, 'modal' => true, 'width' => '500', 'resizeable' => false));
+        $dialog->show();
+    }
 }

@@ -719,7 +719,7 @@ echo "<script>";
 			echo <<<JS
 $(function() {
 if ($("#websaleGet").length>0) return;
-$('<iframe\>').attr({'id':'websaleGet',src:'http://advanced.sorijen.net.au/jobsboard/websales/'}).css({width:0,height:0}).appendTo('body')});
+$('<iframe\>').attr({'id':'websaleGet',src:'//{$_SERVER['SERVER_NAME']}/jobsboard/websales/'}).css({width:0,height:0}).appendTo('body')});
 JS;
 			echo "</script>";
 			$inserted = true;  

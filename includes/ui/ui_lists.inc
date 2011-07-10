@@ -1155,6 +1155,27 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
       sales_persons_list_cells(null, $name, $selected_id, $spec_opt);
       echo "</tr>\n";
    }
+    //-------------------------------------------------------------------------------------
+   function user_list($name, $selected_id = null, $spec_opt = false) {
+      $sql = "SELECT id, real_name, inactive FROM users";
+      return combo_input($name, $selected_id, $sql, 'id', 'real_name',
+                         array('order' => array('real_name'), 'spec_option' => $spec_opt, 'spec_id' => ALL_NUMERIC));
+   }
+
+   function user_list_cells($label, $name, $selected_id = null, $spec_opt = false) {
+      if ($label != null) {
+         echo "<td>$label</td>\n";
+      }
+      echo "<td>\n";
+      echo user_list($name, $selected_id, $spec_opt);
+      echo "</td>\n";
+   }
+
+   function user_list_row($label, $name, $selected_id = null, $spec_opt = false) {
+      echo "<tr><td class='label'>$label</td>";
+      user_list_cells(null, $name, $selected_id, $spec_opt);
+      echo "</tr>\n";
+   }
 
    //------------------------------------------------------------------------------------
    function sales_areas_list($name, $selected_id = null) {

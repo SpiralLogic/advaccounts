@@ -259,9 +259,10 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
       function check_cust_ref($cust_ref)
       {
 
-         $sql = "SELECT customer_ref FROM sales_orders WHERE `debtor_no`=" . $this->customer_id . " AND `customer_ref`=" . db_query($cust_ref);
+         $sql = "SELECT customer_ref FROM sales_orders WHERE debtor_no=" . db_escape($this->customer_id) . " AND customer_ref=" . db_escape($cust_ref);
          $result = db_query($sql);
-         return (db_num_fields($result) > 0) ? false : true;
+
+         return ( db_num_rows($result) > 0) ? false : true;
       }
 
       function set_customer($customer_id, $customer_name, $currency, $discount, $cdiscount = 0)

@@ -1,76 +1,81 @@
 <?php
 
-	/* * ********************************************************************
-		Copyright (C) FrontAccounting, LLC.
-		Released under the terms of the GNU General Public License, GPL,
-		as published by the Free Software Foundation, either version 3
-		of the License, or (at your option) any later version.
-		This program is distributed in the hope that it will be useful,
-		but WITHOUT ANY WARRANTY; without even the implied warranty of
-		MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-		See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
-	 * ********************************************************************* */
-	//---------------------------------------------------------------------------
-	//
-	//	Entry/Modify Sales Invoice against single delivery
-	//	Entry/Modify Batch Sales Invoice against batch of deliveries
-	//
-	$page_security = 'SA_SALESINVOICE';
-	$path_to_root = "..";
-	include_once($path_to_root . "/sales/includes/cart_class.inc");
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
-	include_once($path_to_root . "/includes/data_checks.inc");
-	include_once($path_to_root . "/includes/manufacturing.inc");
-	include_once($path_to_root . "/sales/includes/sales_db.inc");
-	include_once($path_to_root . "/sales/includes/sales_ui.inc");
-	include_once($path_to_root . "/reporting/includes/reporting.inc");
-	include_once($path_to_root . "/taxes/tax_calc.inc");
-	$js = "";
-	if ($use_popup_windows) {
-		$js .= get_js_open_window(900, 500);
-	}
-	if ($use_date_picker) {
-		$js .= get_js_date_picker();
-	}
-	if (isset($_GET['ModifyInvoice'])) {
-		$_SESSION['page_title'] = sprintf(_("Modifying Sales Invoice # %d."), $_GET['ModifyInvoice']);
-		$help_context = "Modifying Sales Invoice";
-	}
-	elseif (isset($_GET['DeliveryNumber'])) {
-		$_SESSION['page_title'] = _($help_context = "Issue an Invoice for Delivery Note");
-	}
-	elseif (isset($_GET['BatchInvoice'])) {
-		$_SESSION['page_title'] = _($help_context = "Issue Batch Invoice for Delivery Notes");
-	}
-	page($_SESSION['page_title'], false, false, "", $js);
-	//-----------------------------------------------------------------------------
-	check_edit_conflicts();
+        /* * ********************************************************************
+          Copyright (C) FrontAccounting, LLC.
+          Released under the terms of the GNU General Public License, GPL,
+          as published by the Free Software Foundation, either version 3
+          of the License, or (at your option) any later version.
+          This program is distributed in the hope that it will be useful,
+          but WITHOUT ANY WARRANTY; without even the implied warranty of
+          MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+          See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+       * ********************************************************************* */
+        //---------------------------------------------------------------------------
+        //
+        //	Entry/Modify Sales Invoice against single delivery
+        //	Entry/Modify Batch Sales Invoice against batch of deliveries
+        //
+        $page_security = 'SA_SALESINVOICE';
+        $path_to_root = "..";
+        include_once($path_to_root . "/sales/includes/cart_class.inc");
+        include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+        include_once($path_to_root . "/includes/data_checks.inc");
+        include_once($path_to_root . "/includes/manufacturing.inc");
+        include_once($path_to_root . "/sales/includes/sales_db.inc");
+        include_once($path_to_root . "/sales/includes/sales_ui.inc");
+        include_once($path_to_root . "/reporting/includes/reporting.inc");
+        include_once($path_to_root . "/taxes/tax_calc.inc");
+        $js = "";
+        if ($use_popup_windows) {
+            $js .= get_js_open_window(900, 500);
+        }
+        if ($use_date_picker) {
+            $js .= get_js_date_picker();
+        }
+        if (isset($_GET['ModifyInvoice'])) {
+            $_SESSION['page_title'] = sprintf(_("Modifying Sales Invoice # %d."), $_GET['ModifyInvoice']);
+            $help_context = "Modifying Sales Invoice";
+        }
+        elseif (isset($_GET['DeliveryNumber'])) {
+            $_SESSION['page_title'] = _($help_context = "Issue an Invoice for Delivery Note");
+        }
+        elseif (isset($_GET['BatchInvoice'])) {
+            $_SESSION['page_title'] = _($help_context = "Issue Batch Invoice for Delivery Notes");
+        }
+        page($_SESSION['page_title'], false, false, "", $js);
+        //-----------------------------------------------------------------------------
+        check_edit_conflicts();
 	if (isset($_GET['AddedID'])) {
-		$invoice_no = $_GET['AddedID'];
-		if ($_REQUEST['AddedJB']) {
-			display_notification_centered(sprintf(_("Order # %d has been added to Jobs Board."), $order_no));
-		}
-		else {
-			display_notification_centered(sprintf(_("Order # %d has been entered."), $order_no));
-			submenu_option(_("Add Job to Jobsboard"), "/jobsboard/jobsboard/addjob");
-		}
-		$trans_type = ST_SALESINVOICE;
-		display_notification(_("Selected deliveries has been processed"), true);
-		display_note(get_customer_trans_view_str($trans_type, $invoice_no, _("&View This Invoice")), 0, 1);
-		display_note(print_document_link($invoice_no, _("&Print This Invoice"), true, ST_SALESINVOICE));
-		display_note(print_document_link($invoice_no, _("&Email This Invoice"), true, ST_SALESINVOICE, false, "printlink", "", 1), 1);
-		hyperlink_params("$path_to_root/sales/customer_payments.php", _("Apply a customer payment"));
-		display_note(get_gl_view_str($trans_type, $invoice_no, _("View the GL &Journal Entries for this Invoice")), 1);
-		hyperlink_params("$path_to_root/sales/inquiry/sales_deliveries_view.php", _("Select Another &Delivery For Invoicing"), "OutstandingOnly=1");
-		display_footer_exit();
-	}
+          $_SESSION['Items'] = new Cart(ST_SALESINVOICE, $_GET['AddedID']);
+        $customer = new Customer($_SESSION['Items']->customer_id);
+        $emails = $customer->getEmailAddresses();
+        $invoice_no = $_GET['AddedID'];
+
+            display_notification_centered(sprintf(_("Order # %d has been entered."), $invoice_no));
+
+        $trans_type = ST_SALESINVOICE;
+        display_notification(_("Selected deliveries has been processed"), true);
+        display_note(get_customer_trans_view_str($trans_type, $invoice_no, _("&View This Invoice")), 0, 1);
+        display_note(print_document_link($invoice_no, _("&Print This Invoice"), true, ST_SALESINVOICE));		echo '<br>';
+
+        submenu_email(_("Email This Invoice"), ST_SALESINVOICE, $invoice_no, null, $emails, 1);
+        hyperlink_params("$path_to_root/sales/customer_payments.php", _("Apply a customer payment"));
+        display_note(get_gl_view_str($trans_type, $invoice_no, _("View the GL &Journal Entries for this Invoice")), 1);
+        hyperlink_params("$path_to_root/sales/inquiry/sales_deliveries_view.php", _("Select Another &Delivery For Invoicing"), "OutstandingOnly=1");
+        display_footer_exit();
+    }
 	elseif (isset($_GET['UpdatedID'])) {
+        $_SESSION['Items'] = new Cart(ST_SALESINVOICE, $_GET['UpdatedID']);
+        $customer = new Customer($_SESSION['Items']->customer_id);
+        $emails = $customer->getEmailAddresses();
 		$invoice_no = $_GET['UpdatedID'];
 		display_notification_centered(sprintf(_('Sales Invoice # %d has been updated.'), $invoice_no));
 		display_note(get_trans_view_str(ST_SALESINVOICE, $invoice_no, _("&View This Invoice")));
+
 		echo '<br>';
 		display_note(print_document_link($invoice_no, _("&Print This Invoice"), true, ST_SALESINVOICE));
-		display_note(print_document_link($invoice_no, _("&Email This Invoice"), true, ST_SALESINVOICE, false, "printlink", "", 1), 1);
+        submenu_email(_("Email This Invoice"), ST_SALESINVOICE, $invoice_no, null, $emails, 1);
+
 		hyperlink_no_params($path_to_root . "/sales/inquiry/customer_inquiry.php", _("Select A Different &Invoice to Modify"));
 		display_footer_exit();
 	}

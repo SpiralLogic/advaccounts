@@ -21,11 +21,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
       add_user_js_data();
       JS::register($js_lib);
       JS::render();
-      show_messages();
-      $messages = new Messages();
-      if ($messages->getNewUserMessages($_SESSION['wa_current_user']->user) > 0) {
-         $messages->makeDialog();
-      }
+Messages::showNewMessages();
       echo "</body>";
       get_websales();
       echo   "</html>\n";

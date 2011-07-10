@@ -74,7 +74,7 @@ table_section(1);
 table_section_title(_("Shipping Details"), 2, 'tableheader3 ');
 /** @noinspection PhpUndefinedMethodInspection */
 HTML::tr(true)->td('branchSelect', array('colspan' => 2, 'style' => "text-align:center; margin:0 auto; "));
-UI::select('branchList', array($currentBranch->br_name => $currentBranch->branch_code, 'name' => 'branchList'));
+UI::select('branchList', array($currentBranch->br_name => $currentBranch->branch_code), array('name' => 'branchList'));
 UI::button('addBranch', 'Add new address', array('name' => 'addBranch'));
 HTML::td()->tr;
 text_row(_("Contact:"), 'br_contact_name', $currentBranch->contact_name, 35, 40);
@@ -84,9 +84,7 @@ text_row(_("2nd Phone Number:"), 'br_phone2', $currentBranch->phone2, 32, 30);
 text_row(_("Fax Number:"), 'br_fax', $currentBranch->fax, 32, 30);
 email_row(_("Email:"), 'br_email', $currentBranch->email, 35, 55);
 textarea_row(_("Street:"), 'br_br_address', $currentBranch->br_address, 35, 2);
-email_row(_("City"), 'br_city', $currentBranch->city, 35, 40);
-email_row(_("State:"), 'br_state', $currentBranch->state, 35, 40);
-email_row(_("postcode"), 'br_postcode', $currentBranch->postcode, 35, 40);
+postcode::render(array('br_postcode',$currentBranch->postcode),array('br_city',$currentBranch->city),array('br_state',$currentBranch->state));
 table_section(2);
 table_section_title(_("Accounts Details"), 2, 'tableheader3');
 /** @noinspection PhpUndefinedMethodInspection */
@@ -100,9 +98,9 @@ text_row(_("Secondary Phone Number:"), 'acc_phone2', $customer->accounts->phone2
 text_row(_("Fax Number:"), 'acc_fax', $customer->accounts->fax, 40, 30);
 email_row(_("E-mail:"), 'acc_email', $customer->email, 35, 40);
 textarea_row(_("Street:"), 'acc_br_address', $customer->accounts->br_address, 35, 2);
-email_row(_("City"), 'acc_city', $customer->accounts->city, 35, 40);
-email_row(_("State:"), 'acc_state', $customer->accounts->state, 35, 40);
-email_row(_("postcode"), 'acc_postcode', $customer->accounts->postcode, 35, 40);
+
+postcode::render(array('acc_postcode',$customer->accounts->postcode),array('acc_city',$customer->accounts->city),array('acc_state',$customer->accounts->state));
+
 sales_types_list_row(_("Sales Type/Price List:"), 'sales_type', $customer->sales_type);
 record_status_list_row(_("Customer status:"), 'inactive');
 end_outer_table(1);
@@ -118,8 +116,8 @@ text_row(_("2nd Phone Number:"), 'acc_phone2', $customer->accounts->phone2, 40, 
 text_row(_("Fax Number:"), 'acc_fax', $customer->accounts->fax, 40, 30);
 textarea_row(_("Street:"), 'acc_br_address', $customer->accounts->br_address, 35, 5);
 email_row(_("City"), 'acc_city', $customer->accounts->city, 35, 40);
-email_row(_("State:"), 'acc_state', $customer->accounts->state, 35, 40);
 email_row(_("postcode"), 'acc_postcode', $customer->accounts->postcode, 35, 40);
+email_row(_("State:"), 'acc_state', $customer->accounts->state, 35, 40);
 textarea_row(_("Postal Address:"), 'acc_br_post_address', $customer->accounts->br_address, 35, 5);
 percent_row(_("Discount Percent:"), 'discount', $customer->discount, ($_SESSION['wa_current_user']->can_access
                                   ('SA_CUSTOMER_CREDIT')) ? "" : " disabled=\"\"");

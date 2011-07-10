@@ -273,9 +273,3 @@ function js_compress($sJS)
 	}
 	return $sJS;
 }
-
-function show_messages()
-{
-	//$user = $_SESSION['wa_current_user']->user;
-
-}
