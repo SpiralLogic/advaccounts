@@ -60,13 +60,14 @@ if (db_has_customers()) {
 }
 start_form();
 $menu = new MenuUi();
-$menu->startTab('Details', 'Customer Details');
-   HTML::div('customerIDs');
-   HTML::table(null, array("style" => "margin:0 auto; padding-bottom:5px; font-weight:bold"));
-text_cells(_("Customer Name:"), 'name', $customer->name, 35, 80);
-   HTML::td(array("style" => "width:40px"));
-   text_cells(_("Customer ID: "), 'id', $customer->id, 7, 10);
-   HTML::table()->div();
+   $menu->startTab('Details', 'Customer Details','#','text-align:center');
+   HTML::div('customerIDs',array('style'=>'display:inline-block'));
+   HTML::table(null, array("style" => "margin:0 auto; padding-bottom:5px; font-weight:bold"))->tr(true)->td(true);
+       UI::search('name', array('label' => 'Customer name:', 'size' => 50, 'url' => 'search.php',
+                                'callback' => 'Customer.fetch'));
+   HTML::td(array('content'=>_("Customer ID: "),"style" => "width:40px"),true);
+   text_cells('', 'id', $customer->id, 7, 10);
+   HTML::td()->table()->div();
 start_outer_table($table_style2, 5);
 
 table_section(1);

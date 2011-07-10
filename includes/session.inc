@@ -252,7 +252,6 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
          set_global_connection();
       }
       if (!$_SESSION["wa_current_user"]->old_db) {
-         /** @define "$_SERVER['DOCUMENT_ROOT']/" "VALUE" */
          include(APP_PATH. 'company/installed_extensions.php');
       }
       if (!isset($_SESSION["App"])) {

@@ -420,41 +420,28 @@ $(function() {
         Adv.ContactLog.dialog("open");
         return false;
     });
-    var $customerBox = $("#customer"), $customerID = $("[name='name']").attr('autocomplete', 'off');
-    $customerID.focus(
-        function(event) {
-            event.stopPropagation();
-            $customerBox.autocomplete('option', {
-                delay:10, 'focus':function() {
-                    return false
-                },'position': {
+    var $customerBox = $("#customer"), $customerID = $("#name").attr('autocomplete', 'off');
+    $customerID.autocomplete('option', {
+                autoFocus:false, delay:10,'position': {
                     my: "left top",
-                    at: "left bottom",
+                    at: "right top",
                     of: $customerID,
                     collision: "none"
-                }});
+               }
 
-        }).blur(
-        function() {
-            $customerBox.autocomplete('option', {
-                'position': {
-                    my: "left top",
-                    at: "left bottom",
-                    of: $customerBox,
-                    collision: "none" }});
         }).keypress(function(e) {
             var key = e.charCode || e.keyCode || 0;
             console.log(key);
             // allow backspace, tab, delete, arrows, letters, numbers and keypad numbers ONLY
-            if (!(
+          /*  if (!(
                 key == 8 ||
                     key == 9 ||
                     key == 46 ||
                     (key >= 37 && key <= 40) ||
                     (key >= 48 && key <= 57) ||
                     (key >= 65 && key <= 90) ||
-                    (key >= 96 && key <= 105)))
-                $customerBox.autocomplete('search', $(this).val());
+                    (key >= 96 && key <= 105)))*/
+
         });
     Branches.init();
     Customer.init();

@@ -28,9 +28,11 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
          return $this;
       }
 
-      function startTab($title, $tooltip, $link = '#') {
+      function startTab($title, $tooltip, $link = '#', $style='') {
          $this->addTab($title, $tooltip, $link);
-         echo '<div id="tabs' . MenuUI::$menuCount . '-' . count($this->tabs) . '">';
+         echo '<div id="tabs' . MenuUI::$menuCount . '-' . count($this->tabs).'" ';
+         if (!empty($style)) echo ' style="'.$style.'" ';
+         echo '>';
          return $this;
       }
 
