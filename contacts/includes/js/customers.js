@@ -41,6 +41,8 @@ Adv.extend({
         $("#tabs0 input, #tabs0 textarea").empty();
         $("#customer").val('');
         Customer.showSearch();
+       $('#name').autocomplete('enable');
+
         Customer.fetch(0);
     },
     showStatus:function (status) {
@@ -299,6 +301,8 @@ var Customer = function () {
         fetch: function(id) {
             $.post("customers.php", {"id": id}, function(data) {
                 Customer.setValues(data);
+               $('#name').autocomplete('disable');
+               
             }, 'json')
         },
         set: function(key, value) {
@@ -420,41 +424,26 @@ $(function() {
         Adv.ContactLog.dialog("open");
         return false;
     });
-    var $customerBox = $("#customer"), $customerID = $("[name='name']").attr('autocomplete', 'off');
-    $customerID.focus(
-        function(event) {
-            event.stopPropagation();
-            $customerBox.autocomplete('option', {
-                delay:10, 'focus':function() {
-                    return false
-                },'position': {
+    var $customerBox = $("#customer"), $customerID = $("#name").attr('autocomplete', 'off');
+    $customerID.autocomplete({
+              source: function(request, response) {
+		      var lastXhr = $.getJSON('search.php', request, function(data, status, xhr) {
+			   	if (xhr === lastXhr) {
+				   	response(data);
+				   }
+			   });
+		   },
+		   select: function(event, ui) {
+	   	   Customer.fetch(ui.item.id);
+   	   },
+       focus:function() { return false;},
+       autoFocus:false, delay:10,'position': {
                     my: "left top",
-                    at: "left bottom",
+                    at: "right top",
                     of: $customerID,
                     collision: "none"
-                }});
+               }
 
-        }).blur(
-        function() {
-            $customerBox.autocomplete('option', {
-                'position': {
-                    my: "left top",
-                    at: "left bottom",
-                    of: $customerBox,
-                    collision: "none" }});
-        }).keypress(function(e) {
-            var key = e.charCode || e.keyCode || 0;
-            console.log(key);
-            // allow backspace, tab, delete, arrows, letters, numbers and keypad numbers ONLY
-            if (!(
-                key == 8 ||
-                    key == 9 ||
-                    key == 46 ||
-                    (key >= 37 && key <= 40) ||
-                    (key >= 48 && key <= 57) ||
-                    (key >= 65 && key <= 90) ||
-                    (key >= 96 && key <= 105)))
-                $customerBox.autocomplete('search', $(this).val());
         });
     Branches.init();
     Customer.init();

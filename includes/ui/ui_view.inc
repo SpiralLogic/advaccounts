@@ -719,17 +719,16 @@ echo "<script>";
 			echo <<<JS
 $(function() {
 if ($("#websaleGet").length>0) return;
-$('<iframe\>').attr({'id':'websaleGet',src:'http://advaccounts/jobsboard/websales/'}).css({width:0,height:0}).appendTo('body')});
+$('<iframe\>').attr({'id':'websaleGet',src:'http://advanced.sorijen.net.au/jobsboard/websales/'}).css({width:0,height:0}).appendTo('body')});
 JS;
 			echo "</script>";
-			$inserted = true;
+			$inserted = true;  
 		}
 	}
 
 	function get_jquery_gmaps() {
 		static $inserted;
 		if (!$inserted && $_SERVER['SERVER_NAME']=='advaccounts') {
-			global $comp_path, $path_to_root;
 
 			//TODO: api key this shouldn't be hardcoded
 			

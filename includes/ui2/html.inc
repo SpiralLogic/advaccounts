@@ -59,8 +59,8 @@ class HTML
 	protected function _openTag($type, $attr = array(), $content = '')
 	{
 		$attrs = '';
-		foreach ($attr as $key => $value) $attrs .= (empty($value)) ? : " $key='$value'";
-		echo  '<' . $type . ' ' . $attrs . '>' . $content;
+		foreach ($attr as $key => $value) $attrs .= (empty($value)||$key=='content') ? '': " $key='$value'";
+		echo  '<' . $type . ' ' . $attrs . '>' . (isset($attr['content']) ? $attr['content']:$content);
 	}
 
 	protected function _closeTag($type)

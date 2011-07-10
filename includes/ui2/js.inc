@@ -28,13 +28,8 @@ class JS
 				   }
 			   });
 		   },
-		   minLength: 2,
 		   select: function(event, ui) {
 	   	   {$callback}(ui.item.id);
-   	   },
-   	   close: function(event,ui) {
-   	 
-   	      {$callback}(autocomplete{$id}.id);
    	   }
       }).css({'z-index' : '2', 'margin' : '10px'});
 JS;
