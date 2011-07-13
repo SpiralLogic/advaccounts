@@ -28,6 +28,7 @@ body {
 iframe {
 	border: 1px solid #8ab9f2;
 }
+div#content { position: relative; z-index: 3;} /* change selector */ canvas { cursor: crosshair; position: fixed; top: 0px; z-index: 2;}
 
 tr, td, th {
 	font-size: 11px;
@@ -437,7 +438,7 @@ img {
 
 #content {
 	margin: 5px auto;
-	width: 90%;
+	width: 80%;
 }
 
 #logo {

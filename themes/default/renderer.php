@@ -66,9 +66,9 @@ class renderer
 						 $acc[0] . "</a></li>\n";
 				}
 			}
-			echo "</ul>\n";
+			echo "</ul></div></div>\n";
 		}
-		echo "</div></div><div id='wrapper'>\n";
+		echo "<div id='wrapper'>\n";
 		if ($no_menu) {
 			$this->has_header = false;
 			echo "<br>";

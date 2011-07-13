@@ -65,8 +65,9 @@ $menu = new MenuUi();
    HTML::table(null, array("style" => "margin:0 auto; padding-bottom:5px; font-weight:bold"))->tr(true)->td(true);
        HTML::label(array('for'=>'name','content' => 'Customer name:'));
    HTML::input('name',$customer->name,array('name'=>'name','size' => 50));
-   HTML::td(array('content'=>_("Customer ID: "),"style" => "width:90px"),true);
-   text_cells('', 'id', $customer->id, 7, 10);
+   HTML::td(array('content'=>_("Customer ID: "),"style" => "width:90px"),true)->td(true);
+HTML::input('id',array('value'=>$customer->id,'name'=>'id','size' => 10,'maxlength'=>'7'));
+
    HTML::td()->table()->div();
 start_outer_table($table_style2, 5);
 

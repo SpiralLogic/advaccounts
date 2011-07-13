@@ -121,6 +121,17 @@ elseif (isset($_GET['AddedDI'])) {
     submenu_view(_("&View This Invoice"), ST_SALESINVOICE, $_GET['AddedDI']);
     $order_no = $_GET['AddedDI'] . "-" . ST_SALESINVOICE;
     page_complete($order_no, ST_SALESINVOICE, "Invoice");
+} elseif (isset($_GET['RemovedID'])) {
+    if ($_GET['Type'] == ST_SALESQUOTE) {
+        display_notification(_("This sales quotation has been cancelled as requested."), 1);
+        submenu_option(_("Enter a New Sales Quotation"), "/sales/sales_order_entry.php?NewQuotation=Yes");
+    }
+    else {
+        display_notification(_("This sales order has been cancelled as requested."), 1);
+        submenu_option(_("Enter a New Sales Order"), "/sales/sales_order_entry.php?NewOrder=Yes");
+    }
+    display_footer_exit();
+
 }
 else {
     check_edit_conflicts();
@@ -497,15 +508,13 @@ function handle_cancel_order()
                 display_error(_("This order cannot be cancelled because some of it has already been invoiced or dispatched. However, the line item quantities may be modified."));
             }
             else {
-                delete_sales_order(key($_SESSION['Items']->trans_no), $_SESSION['Items']->trans_type);
-                if ($_SESSION['Items']->trans_type == ST_SALESQUOTE) {
-                    display_notification(_("This sales quotation has been cancelled as requested."), 1);
-                    submenu_option(_("Enter a New Sales Quotation"), "/sales/sales_order_entry.php?NewQuotation=Yes");
+                $trans_no = key($_SESSION['Items']->trans_no);
+                $trans_type = $_SESSION['Items']->trans_type;
+                if (!isset($_GET['RemovedID'])) {
+                    delete_sales_order($trans_no, $trans_type);
+                    meta_forward("/jobsboard/jobsboard/removejob/RemovedID/$trans_no/$trans_type", "");
                 }
-                else {
-                    display_notification(_("This sales order has been cancelled as requested."), 1);
-                    submenu_option(_("Enter a New Sales Order"), "/sales/sales_order_entry.php?NewOrder=Yes");
-                }
+
             }
         }
         else {

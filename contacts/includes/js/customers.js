@@ -443,6 +443,8 @@ $(function() {
         Adv.ContactLog.dialog("open");
         return false;
     });
+    $("#id").prop('disabled',true);
+    
     Branches.init();
     Customer.init();
 

@@ -26,6 +26,7 @@ body {
  */
 	color: #454545;
 }
+div#content { position: relative; z-index: 3;} /* change selector */ canvas { cursor: crosshair; position: fixed; top: 0px; z-index: 2;}
 
 tr, td, th {
 	font-size: 11px;
@@ -429,7 +430,7 @@ img {
 
 #content {
 	margin: 5px auto;
-	width: 90%;
+	width: 60%;
 	border: 1px solid #8ab9f2;
 }
 
@@ -507,7 +508,6 @@ img {
 /* main wrapper */
 #wrapper {
 	clear: left;
-	width: 80%;
 	/*	background: #fff url(images/wrapbg.gif) repeat-x;
 		border: 1px solid #8ab9f2;*/
 	padding: 8px 5px;
@@ -562,7 +562,7 @@ img {
 	padding: 0 12px 0 12px;
 	background: #fff url(images/news.gif) no-repeat center left;
 	color: #808080;
-}
+} `
 
 #footer .date {
 	font-size: 1.0em;
