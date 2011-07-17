@@ -25,7 +25,7 @@
       }
       elseif (isset ($_POST['id'])) {
          $data = new Item($_POST['id']);
-         $data = $data->data;
+        // $data = $data->data;
 
       }
       echo json_encode($data);

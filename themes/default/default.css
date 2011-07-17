@@ -1036,3 +1036,30 @@ display:inline-block;
 	width: 150px;
 	height: 15px;
 }
+.floatleft {
+   float:left;
+}
+.alignright {
+   text-align:right;
+}
+.alignleft {
+   text-align:left;
+}
+.marginauto {
+   margin:0 auto;
+}
+.aligncenter {
+   text-align:center;
+}
+.aligncentertop {
+  text-align:center;
+   vertical-align: top;
+   
+}
+.floatright {
+float:right;
+}
+.floatclear {
+   
+   clear:both;
+}

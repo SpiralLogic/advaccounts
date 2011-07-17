@@ -223,7 +223,7 @@ fur.prototype =
         flattenCanvas.width = SCREEN_WIDTH;
         flattenCanvas.height = SCREEN_HEIGHT;
         if (!brush) {
-            brush = new longfur(context);
+            brush = new ribbon(context);
         }
         window.addEventListener("mousemove", onWindowMouseMove, false);
         window.addEventListener("resize", onWindowResize, false);
@@ -248,7 +248,7 @@ fur.prototype =
         canvas.width = SCREEN_WIDTH;
         canvas.height = SCREEN_HEIGHT;
         context.drawImage(savecanvas, 0, 0);
-        brush = new longfur(context);
+        brush = new ribbon(context);
     }
     function onDocumentMouseDown(event) {
         if (!isMenuMouseOver) event.preventDefault();

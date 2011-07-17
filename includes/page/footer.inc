@@ -9,7 +9,8 @@ but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
  ***********************************************************************/
-   function page_footer($no_menu = false, $is_index = false, $hide_back_link = false) {
+   function page_footer($no_menu = false, $is_index = false, $hide_back_link = false)
+   {
       global $path_to_root, $js_lib, $Validate, $Editors, $Ajax;
       include_once($path_to_root . "/themes/" . user_theme() . "/renderer.php");
       $rend = new renderer();
@@ -21,9 +22,9 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
       add_user_js_data();
       JS::register($js_lib);
       JS::render();
-Messages::showNewMessages();
+      Messages::showNewMessages();
       echo "</body>";
-      get_websales();
+   //   get_websales();
       echo   "</html>\n";
       if ($_SESSION["wa_current_user"]->user == 1) {
       }
