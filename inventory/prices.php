@@ -1,19 +1,19 @@
 <?php
 /**********************************************************************
-Copyright (C) FrontAccounting, LLC.
-Released under the terms of the GNU General Public License, GPL,
-as published by the Free Software Foundation, either version 3
-of the License, or (at your option) any later version.
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
- ***********************************************************************/
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 $page_security = 'SA_SALESPRICE';
 $path_to_root = "..";
-include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+include_once($path_to_root . "/includes/session.inc");
 
-page(_($help_context = "Inventory Item Sales prices"), @$_REQUEST['frame']);
+page(_($help_context = "Inventory Item Sales prices"));
 
 include_once($path_to_root . "/sales/includes/sales_db.inc");
 include_once($path_to_root . "/sales/includes/db/sales_types_db.inc");
@@ -32,54 +32,53 @@ simple_page_mode(true);
 //---------------------------------------------------------------------------------------------------
 $input_error = 0;
 
-if (isset($_GET['stock_id'])) {
+if (isset($_GET['stock_id']))
+{
 	$_POST['stock_id'] = $_GET['stock_id'];
 }
-if (isset($_GET['Item'])) {
+if (isset($_GET['Item']))
+{
 	$_POST['stock_id'] = $_GET['Item'];
 }
 
-if (!isset($_POST['curr_abrev'])) {
+if (!isset($_POST['curr_abrev']))
+{
 	$_POST['curr_abrev'] = get_company_currency();
 }
 
 //---------------------------------------------------------------------------------------------------
 
-if ($_REQUEST['frame']) {
-	start_form(false, false, $_SERVER['PHP_SELF'] . '?frame=1');
-} else {
-	start_form();
-}
+start_form();
 
 if (!isset($_POST['stock_id']))
 	$_POST['stock_id'] = get_global_stock_item();
 
-
-if (!$_REQUEST['frame']) {
-	echo "<center>" . _("Item:") . "&nbsp;";
-	echo sales_items_list('stock_id', $_POST['stock_id'], false, true);
-	echo "<hr></center>";
-}
-
+echo "<center>" . _("Item:"). "&nbsp;";
+echo sales_items_list('stock_id', $_POST['stock_id'], false, true, '', array('editable' => false));
+echo "<hr></center>";
 
 set_global_stock_item($_POST['stock_id']);
 
 //----------------------------------------------------------------------------------------------------
 
-if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
+if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM') 
+{
 
-	if (!check_num('price', 0)) {
+	if (!check_num('price', 0))
+	{
 		$input_error = 1;
-		display_error(_("The price entered must be numeric."));
+		display_error( _("The price entered must be numeric."));
 		set_focus('price');
 	}
 
-	if ($input_error != 1) {
+	if ($input_error != 1)
+	{
 
-		if ($selected_id != -1) {
+    	if ($selected_id != -1) 
+		{
 			//editing an existing price
 			update_item_price($selected_id, $_POST['sales_type_id'],
-							  $_POST['curr_abrev'], input_num('price'));
+			$_POST['curr_abrev'], input_num('price'));
 
 			$msg = _("This price has been updated.");
 		}
@@ -87,7 +86,7 @@ if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 		{
 
 			add_item_price($_POST['stock_id'], $_POST['sales_type_id'],
-						   $_POST['curr_abrev'], input_num('price'));
+			    $_POST['curr_abrev'], input_num('price'));
 
 			$msg = _("The new price has been added.");
 		}
@@ -99,14 +98,16 @@ if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 
 //------------------------------------------------------------------------------------------------------
 
-if ($Mode == 'Delete') {
+if ($Mode == 'Delete')
+{
 	//the link to delete a selected record was clicked
 	delete_item_price($selected_id);
 	display_notification(_("The selected price has been deleted."));
 	$Mode = 'RESET';
 }
 
-if ($Mode == 'RESET') {
+if ($Mode == 'RESET')
+{
 	$selected_id = -1;
 }
 
@@ -127,11 +128,7 @@ if (list_updated('stock_id') || isset($_POST['_curr_abrev_update']) || isset($_P
 $prices_list = get_prices($_POST['stock_id']);
 
 div_start('price_table');
-if ($_REQUEST['frame']) {
-	start_table("$table_style width=90%");
-} else {
-	start_table("$table_style width=30%");
-}
+start_table(TABLESTYLE, "width=30%");
 
 $th = array(_("Currency"), _("Sales Type"), _("Price"), "", "");
 table_header($th);
@@ -143,15 +140,16 @@ while ($myrow = db_fetch($prices_list))
 	alt_table_row_color($k);
 
 	label_cell($myrow["curr_abrev"]);
-	label_cell($myrow["sales_type"]);
-	amount_cell($myrow["price"]);
-	edit_button_cell("Edit" . $myrow['id'], _("Edit"));
-	delete_button_cell("Delete" . $myrow['id'], _("Delete"));
-	end_row();
+    label_cell($myrow["sales_type"]);
+    amount_cell($myrow["price"]);
+ 	edit_button_cell("Edit".$myrow['id'], _("Edit"));
+ 	delete_button_cell("Delete".$myrow['id'], _("Delete"));
+    end_row();
 
 }
 end_table();
-if (db_num_rows($prices_list) == 0) {
+if (db_num_rows($prices_list) == 0)
+{
 	if (get_company_pref('add_pct') != -1)
 		$calculated = true;
 	display_note(_("There are no prices set up for this part."), 1);
@@ -161,7 +159,8 @@ div_end();
 
 echo "<br>";
 
-if ($Mode == 'Edit') {
+if ($Mode == 'Edit')
+{
 	$myrow = get_stock_price($selected_id);
 	$_POST['curr_abrev'] = $myrow["curr_abrev"];
 	$_POST['sales_type_id'] = $myrow["sales_type_id"];
@@ -170,19 +169,19 @@ if ($Mode == 'Edit') {
 
 hidden('selected_id', $selected_id);
 div_start('price_details');
-start_table($table_style2);
+start_table(TABLESTYLE2);
 
 currencies_list_row(_("Currency:"), 'curr_abrev', null, true);
 
 sales_types_list_row(_("Sales Type:"), 'sales_type_id', null, true);
 
 if (!isset($_POST['price'])) {
-	$_POST['price'] = price_format(get_kit_price(get_post('stock_id'),
-												 get_post('curr_abrev'), get_post('sales_type_id')));
+	$_POST['price'] = price_format(get_kit_price(get_post('stock_id'), 
+		get_post('curr_abrev'),	get_post('sales_type_id')));
 }
 
 $kit = get_item_code_dflts($_POST['stock_id']);
-small_amount_row(_("Price:"), 'price', null, '', _('per') . ' ' . $kit["units"]);
+small_amount_row(_("Price:"), 'price', null, '', _('per') .' '.$kit["units"]);
 
 end_table(1);
 if ($calculated)
@@ -192,9 +191,5 @@ submit_add_or_update_center($selected_id == -1, '', 'both');
 div_end();
 
 end_form();
-if ($_REQUEST['frame']) {
-	end_page(true, true, true);
-
-} else {
-	end_page();
-}
+end_page();
+?>
