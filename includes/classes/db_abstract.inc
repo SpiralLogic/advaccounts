@@ -40,20 +40,20 @@ abstract class DB_abstract
 		return $this->_status->get();
 	}
 
-	protected function __construct($id = null)
+	protected function __construct($id =false)
 	{
-		if (is_array($id)) {
+		
+		if ($id===false || $id == 0) {
+			$this->_new();
+			return $this->_status(true, 'initalise', 'Created new ' . get_class($this) . "!");
+		} elseif (is_array($id)) {
 			$this->_defaults();
 			$this->setFromArray($id);
 			return $this->_status(true, 'initalise', get_class($this) . " details contructed!");
 		}
-		if ($id != null && $id != 0) {
+
 			$this->_read($id);
 			return $this->_status(true, 'initalise', get_class($this) . " details loaded from DB!");
-		} else {
-			$this->_new();
-			return $this->_status(true, 'initalise', 'Created new ' . get_class($this) . "!");
-		}
 	}
 
 	protected function setFromArray($changes = NULL)
