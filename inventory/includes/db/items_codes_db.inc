@@ -15,7 +15,7 @@
 */
 function update_item_code($id, $item_code, $stock_id, $description, $category, $qty, $foreign=0)
 {
-	$sql = "UPDATE ".TB_PREF."item_codes SET
+	$sql = "UPDATE item_codes SET
 	 	item_code = ".db_escape($item_code).",
 	 	stock_id = ".db_escape($stock_id).",
 	 	description = ".db_escape($description).",
@@ -35,7 +35,7 @@ function update_item_code($id, $item_code, $stock_id, $description, $category, $
 
 function add_item_code($item_code, $stock_id, $description, $category, $qty, $foreign=0)
 {
-	$sql = "INSERT INTO ".TB_PREF."item_codes
+	$sql = "INSERT INTO item_codes
 			(item_code, stock_id, description, category_id, quantity, is_foreign) 
 			VALUES( ".db_escape($item_code).",".db_escape($stock_id).",
 	  		".db_escape($description).",".db_escape($category)
@@ -46,13 +46,13 @@ function add_item_code($item_code, $stock_id, $description, $category, $qty, $fo
 
 function delete_item_code($id)
 {
-	$sql="DELETE FROM ".TB_PREF."item_codes WHERE id=".db_escape($id);
+	$sql="DELETE FROM item_codes WHERE id=".db_escape($id);
 	db_query($sql,"an item code could not be deleted");
 }
 
 function get_item_code($id)
 {
-	$sql="SELECT * FROM ".TB_PREF."item_codes WHERE id=".db_escape($id);
+	$sql="SELECT * FROM item_codes WHERE id=".db_escape($id);
 
 	$result = db_query($sql,"item code could not be retrieved");
 
@@ -61,9 +61,7 @@ function get_item_code($id)
 
 function get_all_item_codes($stock_id, $foreign=1)
 {
-	$sql="SELECT i.*, c.description as cat_name FROM "
-		.TB_PREF."item_codes as i,"
-		.TB_PREF."stock_category as c
+	$sql="SELECT i.*, c.description as cat_name FROM item_codes as i,stock_category as c
 		WHERE stock_id=".db_escape($stock_id)."
 		AND i.category_id=c.category_id
 		AND i.is_foreign=".db_escape($foreign);
@@ -75,18 +73,15 @@ function get_all_item_codes($stock_id, $foreign=1)
 
 function delete_item_kit($item_code)
 {
-	$sql="DELETE FROM ".TB_PREF."item_codes WHERE item_code=".db_escape($item_code);
+	$sql="DELETE FROM item_codes WHERE item_code=".db_escape($item_code);
 	db_query($sql,"an item kit could not be deleted");
 }
 
 function get_item_kit($item_code)
 {
 	$sql="SELECT DISTINCT kit.*, item.units, comp.description as comp_name 
-		FROM "
-		.TB_PREF."item_codes kit,"
-		.TB_PREF."item_codes comp
-		LEFT JOIN "
-		.TB_PREF."stock_master item
+		FROM item_codes kit,item_codes comp
+		LEFT JOIN stock_master item
 		ON 
 			item.stock_id=comp.item_code
 		WHERE
@@ -101,7 +96,7 @@ function get_item_kit($item_code)
 function get_item_code_dflts($stock_id)
 {
 	$sql = "SELECT units, decimals, description, category_id
-		FROM ".TB_PREF."stock_master,".TB_PREF."item_units
+		FROM stock_master,item_units
 		WHERE stock_id=".db_escape($stock_id);
 
 	$result = db_query($sql,"item code defaults could not be retrieved");
@@ -137,7 +132,7 @@ function check_item_in_kit($old_id, $kit_code, $item_code, $recurse=false)
 
 function get_kit_props($kit_code)
 {
-	$sql = "SELECT description, category_id FROM ".TB_PREF."item_codes "
+	$sql = "SELECT description, category_id FROM item_codes "
 		. " WHERE item_code=".db_escape($kit_code);
 	$res = db_query($sql, "kit name query failed");
 	return db_fetch($res);
@@ -145,7 +140,7 @@ function get_kit_props($kit_code)
 
 function update_kit_props($kit_code, $name, $category)
 {
-	$sql = "UPDATE ".TB_PREF."item_codes SET description="
+	$sql = "UPDATE item_codes SET description="
 		. db_escape($name).",category_id=".db_escape($category)
 		. " WHERE item_code=".db_escape($kit_code);
 	db_query($sql, "kit name update failed");
@@ -153,8 +148,7 @@ function update_kit_props($kit_code, $name, $category)
 
 function get_where_used($item_code)
 {
-	$sql = "SELECT item_code, description FROM "
-		.TB_PREF."item_codes "
+	$sql = "SELECT item_code, description FROM item_codes "
 		. " WHERE stock_id=".db_escape($item_code)."
 			AND item_code!=".db_escape($item_code);
 	return db_query($sql, "where used query failed");

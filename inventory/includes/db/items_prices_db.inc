@@ -11,7 +11,7 @@
 ***********************************************************************/
 function add_item_price($stock_id, $sales_type_id, $curr_abrev, $price)
 {
-	$sql = "INSERT INTO ".TB_PREF."prices (stock_id, sales_type_id, curr_abrev, price) 
+	$sql = "INSERT INTO prices (stock_id, sales_type_id, curr_abrev, price)
 		VALUES (".db_escape($stock_id).", ".db_escape($sales_type_id)
 		.", ".db_escape($curr_abrev).", ".db_escape($price).")";
 	
@@ -20,7 +20,7 @@ function add_item_price($stock_id, $sales_type_id, $curr_abrev, $price)
 
 function update_item_price($price_id, $sales_type_id, $curr_abrev, $price)
 {
-	$sql = "UPDATE ".TB_PREF."prices SET sales_type_id=".db_escape($sales_type_id).", 
+	$sql = "UPDATE prices SET sales_type_id=".db_escape($sales_type_id).",
 		curr_abrev=".db_escape($curr_abrev).", 
 		price=".db_escape($price)." WHERE id=".db_escape($price_id);
 	
@@ -29,15 +29,15 @@ function update_item_price($price_id, $sales_type_id, $curr_abrev, $price)
 
 function delete_item_price($price_id)
 {
-	$sql="DELETE FROM ".TB_PREF."prices WHERE id= ".db_escape($price_id);
+	$sql="DELETE FROM prices WHERE id= ".db_escape($price_id);
 	db_query($sql,"an item price could not be deleted");			
 }
 
 function get_prices($stock_id)
 {
-	$sql = "SELECT ".TB_PREF."sales_types.sales_type, ".TB_PREF."prices.* 
-		FROM ".TB_PREF."prices, ".TB_PREF."sales_types 
-		WHERE ".TB_PREF."prices.sales_type_id = ".TB_PREF."sales_types.id 
+	$sql = "SELECT sales_types.sales_type, prices.*
+		FROM prices, sales_types
+		WHERE prices.sales_type_id = sales_types.id
 		AND stock_id=".db_escape($stock_id)
 		." ORDER BY curr_abrev, sales_type_id";	
 	
@@ -46,7 +46,7 @@ function get_prices($stock_id)
 
 function get_stock_price($price_id)
 {
-	$sql = "SELECT * FROM ".TB_PREF."prices WHERE id=".db_escape($price_id);
+	$sql = "SELECT * FROM prices WHERE id=".db_escape($price_id);
 	
 	$result = db_query($sql,"price could not be retreived");
 	

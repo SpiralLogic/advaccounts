@@ -132,10 +132,16 @@ function display_db_error($msg, $sql_statement = null, $exit = true)
 	}
 
 	$str .= "<br><br>";
-	if ($msg)
+	if ($msg) {
 		trigger_error($str, E_USER_ERROR);
-	else // $msg can be null here only in debug mode, otherwise the error is ignored
+		FB::info($str);
+	}
+
+	else {
 		trigger_error($str, E_USER_WARNING);
+		FB::info($str);
+	}// $msg can be null here only in debug mode, otherwise the error is ignored
+
 	if ($exit)
 		exit;
 }

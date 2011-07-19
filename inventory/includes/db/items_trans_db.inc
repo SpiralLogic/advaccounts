@@ -23,7 +23,7 @@ function stock_cost_update($stock_id, $material_cost, $labour_cost, $overhead_co
     	//display_db_error("Cannot do cost update for Service item : $stock_id", "");	
 		
 		//Chaitanya
-		$sql = "UPDATE ".TB_PREF."stock_master SET material_cost=".db_escape($material_cost)."
+		$sql = "UPDATE stock_master SET material_cost=".db_escape($material_cost)."
 		WHERE stock_id=".db_escape($stock_id);
 		
 		db_query($sql,"The cost details for the inventory item could not be updated");
@@ -34,7 +34,7 @@ function stock_cost_update($stock_id, $material_cost, $labour_cost, $overhead_co
 	
 	begin_transaction();
 	
-	$sql = "UPDATE ".TB_PREF."stock_master SET material_cost=".db_escape($material_cost).", 
+	$sql = "UPDATE stock_master SET material_cost=".db_escape($material_cost).",
 		labour_cost=".db_escape($labour_cost).", 
 		overhead_cost=".db_escape($overhead_cost).", 
 		last_cost=".db_escape($last_cost)." 

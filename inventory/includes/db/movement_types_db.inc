@@ -11,7 +11,7 @@
 ***********************************************************************/
 function add_movement_type($name)
 {
-	$sql = "INSERT INTO ".TB_PREF."movement_types (name)
+	$sql = "INSERT INTO movement_types (name)
 		VALUES (".db_escape($name).")";
 
 	db_query($sql, "could not add item movement type");
@@ -19,7 +19,7 @@ function add_movement_type($name)
 
 function update_movement_type($type_id, $name)
 {
-	$sql = "UPDATE ".TB_PREF."movement_types SET name=".db_escape($name)."
+	$sql = "UPDATE movement_types SET name=".db_escape($name)."
 			WHERE id=".db_escape($type_id);
 
 	db_query($sql, "could not update item movement type");
@@ -27,7 +27,7 @@ function update_movement_type($type_id, $name)
 
 function get_all_movement_type($all=false)
 {
-	$sql = "SELECT * FROM ".TB_PREF."movement_types";
+	$sql = "SELECT * FROM movement_types";
 	if (!$all) $sql .= " WHERE !inactive";
 
 	return db_query($sql, "could not get all item movement type");
@@ -35,7 +35,7 @@ function get_all_movement_type($all=false)
 
 function get_movement_type($type_id)
 {
-	$sql = "SELECT * FROM ".TB_PREF."movement_types WHERE id=".db_escape($type_id);
+	$sql = "SELECT * FROM movement_types WHERE id=".db_escape($type_id);
 
 	$result = db_query($sql, "could not get item movement type");
 
@@ -44,7 +44,7 @@ function get_movement_type($type_id)
 
 function delete_movement_type($type_id)
 {
-	$sql="DELETE FROM ".TB_PREF."movement_types WHERE id=".db_escape($type_id);
+	$sql="DELETE FROM movement_types WHERE id=".db_escape($type_id);
 
 	db_query($sql, "could not delete item movement type");
 }
@@ -54,7 +54,7 @@ function get_stock_movements($stock_id, $StockLocation,	$BeforeDate, $AfterDate)
 	$before_date = date2sql($BeforeDate);
 	$after_date = date2sql($AfterDate);
 	$sql = "SELECT type, trans_no, tran_date, person_id, qty, reference
-		FROM ".TB_PREF."stock_moves
+		FROM stock_moves
 		WHERE loc_code=".db_escape($StockLocation)."
 		AND tran_date >= '". $after_date . "'
 		AND tran_date <= '" . $before_date . "'
@@ -65,7 +65,7 @@ function get_stock_movements($stock_id, $StockLocation,	$BeforeDate, $AfterDate)
 function get_stock_movements_before($stock_id, $StockLocation, $AfterDate)
 {
 	$after_date = date2sql($AfterDate);
-	$sql = "SELECT SUM(qty) FROM ".TB_PREF."stock_moves WHERE stock_id=".db_escape($stock_id) . "
+	$sql = "SELECT SUM(qty) FROM stock_moves WHERE stock_id=".db_escape($stock_id) . "
 		AND loc_code=".db_escape( $StockLocation) . "
 		AND tran_date < '" . $after_date . "'";
 	$before_qty = db_query($sql, "The starting quantity on hand could not be calculated");
@@ -76,7 +76,7 @@ function get_stock_movements_before($stock_id, $StockLocation, $AfterDate)
 
 function movement_types_in_stock_moves($selected_id)
 {
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."stock_moves 
+	$sql= "SELECT COUNT(*) FROM stock_moves
 		WHERE type=" . ST_INVADJUST. " AND person_id=".db_escape($selected_id);
 
 	$result = db_query($sql, "could not query stock moves");

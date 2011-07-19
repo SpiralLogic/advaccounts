@@ -12,13 +12,13 @@
 function write_item_unit($selected, $abbr, $description, $decimals)
 {
     if($selected!='')
-		$sql = "UPDATE ".TB_PREF."item_units SET
+		$sql = "UPDATE item_units SET
 	 	abbr = ".db_escape($abbr).",
 	 	name = ".db_escape($description).",
 	 	decimals = ".db_escape($decimals)."
         	WHERE abbr = ".db_escape($selected);
     else
-		$sql = "INSERT INTO ".TB_PREF."item_units
+		$sql = "INSERT INTO item_units
 			(abbr, name, decimals) VALUES( ".db_escape($abbr).",
 	  		".db_escape($description).", ".db_escape($decimals).")";
 
@@ -27,14 +27,14 @@ function write_item_unit($selected, $abbr, $description, $decimals)
 
 function delete_item_unit($unit)
 {
-	$sql="DELETE FROM ".TB_PREF."item_units WHERE abbr=".db_escape($unit);
+	$sql="DELETE FROM item_units WHERE abbr=".db_escape($unit);
 
 	db_query($sql,"an unit of measure could not be deleted");
 }
 
 function get_item_unit($unit)
 {
-	$sql="SELECT * FROM ".TB_PREF."item_units WHERE abbr=".db_escape($unit);
+	$sql="SELECT * FROM item_units WHERE abbr=".db_escape($unit);
 
 	$result = db_query($sql,"an unit of measure could not be retrieved");
 
@@ -43,7 +43,7 @@ function get_item_unit($unit)
 
 function get_unit_descr($unit)
 {
-	$sql = "SELECT description FROM ".TB_PREF."item_units WHERE abbr=".db_escape($unit);
+	$sql = "SELECT description FROM item_units WHERE abbr=".db_escape($unit);
 
 	$result = db_query($sql, "could not unit description");
 
@@ -52,14 +52,14 @@ function get_unit_descr($unit)
 }
 
 function item_unit_used($unit) {
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."stock_master WHERE units=".db_escape($unit);
+	$sql= "SELECT COUNT(*) FROM stock_master WHERE units=".db_escape($unit);
 	$result = db_query($sql, "could not query stock master");
 	$myrow = db_fetch_row($result);
 	return ($myrow[0] > 0);
 }
 
 function get_all_item_units($all=false) {
-    $sql = "SELECT * FROM ".TB_PREF."item_units";
+    $sql = "SELECT * FROM item_units";
 	if (!$all) $sql .= " WHERE !inactive";
 	$sql .= " ORDER BY name";
     return  db_query($sql, "could not get stock categories");
@@ -67,7 +67,7 @@ function get_all_item_units($all=false) {
 // 2008-06-15. Added Joe Hunt to get a measure of unit by given stock_id
 function get_unit_dec($stock_id)
 {
-	$sql = "SELECT decimals FROM ".TB_PREF."item_units,	".TB_PREF."stock_master
+	$sql = "SELECT decimals FROM item_units,	stock_master
 		WHERE abbr=units AND stock_id=".db_escape($stock_id)." LIMIT 1";
 	$result = db_query($sql, "could not get unit decimals");
 

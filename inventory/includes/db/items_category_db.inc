@@ -13,7 +13,7 @@ function add_item_category($description, $tax_type_id, $sales_account,
 	$cogs_account, $inventory_account, $adjustment_account, $assembly_account, 
 	$units, $mb_flag, $dim1, $dim2, $no_sale)
 {
-	$sql = "INSERT INTO ".TB_PREF."stock_category (description, dflt_tax_type,
+	$sql = "INSERT INTO stock_category (description, dflt_tax_type,
 			dflt_units, dflt_mb_flag, dflt_sales_act, dflt_cogs_act, 
 			dflt_inventory_act, dflt_adjustment_act, dflt_assembly_act, 
 			dflt_dim1, dflt_dim2, dflt_no_sale)
@@ -39,7 +39,7 @@ function update_item_category($id, $description, $tax_type_id,
 	$assembly_account, $units, $mb_flag, $dim1, $dim2, $no_sale)
 
 {
-	$sql = "UPDATE ".TB_PREF."stock_category SET "
+	$sql = "UPDATE stock_category SET "
 		."description = ".db_escape($description).","
 		."dflt_tax_type = ".db_escape($tax_type_id).","
 		."dflt_units = ".db_escape($units).","
@@ -59,15 +59,14 @@ function update_item_category($id, $description, $tax_type_id,
 
 function delete_item_category($id)
 {
-	$sql="DELETE FROM ".TB_PREF."stock_category WHERE category_id=".db_escape($id);
+	$sql="DELETE FROM stock_category WHERE category_id=".db_escape($id);
 
 	db_query($sql,"an item category could not be deleted");
 }
 
 function get_item_categories($show_inactive)
 {
-	$sql = "SELECT c.*, t.name as tax_name FROM ".TB_PREF."stock_category c, "
-		.TB_PREF."item_tax_types t WHERE c.dflt_tax_type=t.id";
+	$sql = "SELECT c.*, t.name as tax_name FROM stock_category c, item_tax_types t WHERE c.dflt_tax_type=t.id";
 	if (!$show_inactive) $sql .= " AND !c.inactive";
 
 	return db_query($sql, "could not get stock categories");
@@ -75,7 +74,7 @@ function get_item_categories($show_inactive)
 
 function get_item_category($id)
 {
-	$sql="SELECT * FROM ".TB_PREF."stock_category WHERE category_id=".db_escape($id);
+	$sql="SELECT * FROM stock_category WHERE category_id=".db_escape($id);
 
 	$result = db_query($sql,"an item category could not be retrieved");
 
@@ -84,7 +83,7 @@ function get_item_category($id)
 
 function get_category_name($id)
 {
-	$sql = "SELECT description FROM ".TB_PREF."stock_category WHERE category_id=".db_escape($id);
+	$sql = "SELECT description FROM stock_category WHERE category_id=".db_escape($id);
 
 	$result = db_query($sql, "could not get sales type");
 

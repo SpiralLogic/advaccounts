@@ -71,6 +71,7 @@ while ($myrow = db_fetch($result))
 	{
 
 		$myrow["reorder_level"] = input_num($myrow["loc_code"]);
+		FB::info($myrow['reorder_level']);
 		set_reorder_level($_POST['stock_id'], $myrow["loc_code"], input_num($myrow["loc_code"]));
 		display_notification(_("Reorder levels has been updated."));
 	}
@@ -82,7 +83,7 @@ while ($myrow = db_fetch($result))
 	$_POST[$myrow["loc_code"]] = qty_format($myrow["reorder_level"], $_POST['stock_id'], $dec);
 
 	qty_cell($qoh, false, $dec);
-	qty_cells(null, $myrow["loc_code"], null, null, null, $dec);
+	qty_cells(null, $myrow["loc_code"], is_numeric(input_num($myrow["loc_code"])) ? input_num($myrow["loc_code"]) : 0 , null, null, $dec);
 	end_row();
 	$j++;
 	If ($j == 12)
