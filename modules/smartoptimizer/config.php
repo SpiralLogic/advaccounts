@@ -11,7 +11,7 @@ $settings['baseDir'] = '../../';
 $settings['charSet'] = 'utf-8'; 
 
 //Show error messages if any error occurs (true or false)
-$settings['debug'] = false;
+$settings['debug'] = true;
 
 //use this to set gzip compression On or Off
 $settings['gzip'] = true;

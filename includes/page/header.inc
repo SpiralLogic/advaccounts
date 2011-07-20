@@ -43,7 +43,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		$css[] = $file;
 
 	}
- 
+
 	function send_css() {
 		global $path_to_root;
 		$theme = user_theme();
@@ -127,7 +127,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		}
 		if (file_exists("/themes/$theme/{$_SESSION['sel_app']}.css"))
 			add_css($_SESSION['sel_app'].'.css');
-		add_css('jquery-ui-1.8.6.css,jquery.calculator.css,jquery.fileupload-ui.css');
+		add_css('jquery-ui-1.8.7.css,jquery.calculator.css,jquery.fileupload-ui.css');
 		send_css();
 		//if (!$_GET['frame'])
 		send_scripts($js);

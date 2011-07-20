@@ -35,7 +35,8 @@
 </div>
 HTML;
 $menu->endTab();
-	$menu->startTab("Selling","Sales Prices","/inventory/prices.php?frame=1");
+	$menu->startTab("Selling","Sales Prices");
+
 	$menu->endTab();
 	$menu->render();
 	end_page(true, true);
