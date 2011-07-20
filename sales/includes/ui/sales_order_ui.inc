@@ -169,7 +169,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 				else {
 					alt_table_row_color($k);
 				}
-				view_stock_status_cell($stock_item->stock_id);
+				label_cell($stock_item->stock_id,"class='stock' data-stock_id='{$stock_item->stock_id}'");
 				//label_cell($stock_item->item_description, "nowrap" );
 				label_cell($stock_item->item_description);
 				$dec = get_qty_dec($stock_item->stock_id);

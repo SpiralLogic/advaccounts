@@ -75,7 +75,8 @@ var Items = function() {
    $("#stockRow").template('stockrow');
    return {
       fetch: function(id) {
-         $.post("search.php", {"id": id.id}, function(data) {
+	      if (id.id!==undefined) id = id.id;
+         $.post("search.php", {"id": id}, function(data) {
             $("#Items").empty();
 	         
 	         $.tmpl('items', data.item).appendTo("#Items");

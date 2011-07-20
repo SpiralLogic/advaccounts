@@ -20,7 +20,6 @@ class Dialog
 
     function __construct($title, $name = false, $contents = false)
     {
-        global $js_lib;
         $this->title = $title;
         $this->name = ($name) ? $name : "Message Box";
         if ($contents) {
@@ -73,7 +72,9 @@ class Dialog
             }
             $buttons .= '} ';
         }
-        $js = '<div id="' . $this->name . '" title="' . $this->title . '">' . $this->contents . '</div><script>$(function () {$("#' . $this->name . '").dialog({';
+        echo '<div id="' . $this->name . '" title="' . $this->title . '">' . $this->contents . '</div>';
+
+        $js = '$("#' . $this->name . '").dialog({';
         $js .= 'autoOpen: ' . (($this->autoopen) ? 'true' : 'false') . ',';
         if ($this->modal) $js .= 'modal: true, ';
         if ($this->width) $js .= 'width: ' . $this->width . ', ';
@@ -84,12 +85,9 @@ class Dialog
         if (!empty($buttons)) {
             $js .= $buttons;
         }
-		$js .= '})
-})
-;
-</script >';
+		$js .= '});';
 		if (!empty($js)) {
-            echo $js;
+            JS::onLoad($js);
         }
 	}
 

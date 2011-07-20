@@ -713,4 +713,16 @@ div.note_msg {
 #title {
 	margin-bottom: 10px;
 	width: 100%;
+	border:none;
+}
+#content, #wrapper{
+	width: 95%;
+border:none;
+	background:none;
+}
+iframe {
+	border:none;
+}
+body {
+	background:none
 }

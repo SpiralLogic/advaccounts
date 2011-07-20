@@ -90,13 +90,15 @@
 		}
 
 		function  getStockLevels() {
-			$sql = "SELECT l.loc_code, l.location_name, i.stock_id as id, r.reorder_level, o.demand, (qty-o.demand) as available, p.onorder, qty FROM locations l LEFT JOIN (SELECT stock_id, loc_code, SUM(qty) as qty FROM stock_moves WHERE stock_id=" . db_escape($this->id) .
-					" AND tran_date <= '" . date2sql(Today()) . "' GROUP BY loc_code) i ON l.loc_code = i.loc_code LEFT JOIN loc_stock r ON r.loc_code = l.loc_code AND r.stock_id = " . db_escape($this->id)
-					. " LEFT JOIN (SELECT SUM(sales_order_details.quantity - sales_order_details.qty_sent) AS demand , sales_orders.from_stk_loc AS loc_code FROM sales_order_details, sales_orders
+			$sql = "SELECT l.loc_code, l.location_name, i.stock_id as id, r.reorder_level, o.demand, (qty-o.demand) as available, p.onorder, qty
+			FROM locations l
+			LEFT JOIN (SELECT stock_id, loc_code, SUM(qty) as qty FROM stock_moves WHERE stock_id=" . db_escape($this->id) ." AND tran_date <= '" . date2sql(Today()) . "' GROUP BY loc_code) i ON l.loc_code = i.loc_code
+					LEFT JOIN loc_stock r ON r.loc_code = l.loc_code AND r.stock_id = " . db_escape($this->id). "
+					LEFT JOIN (SELECT SUM(sales_order_details.quantity - sales_order_details.qty_sent) AS demand , sales_orders.from_stk_loc AS loc_code FROM sales_order_details, sales_orders
 					WHERE sales_order_details.order_no= sales_orders.order_no AND sales_orders.trans_type=30 AND sales_orders.trans_type=sales_order_details.trans_type AND sales_order_details.stk_code = " . db_escape($this->id) . "
-					GROUP BY sales_orders.from_stk_loc) o ON o.loc_code=l.loc_code LEFT JOIN (SELECT SUM(purch_order_details.quantity_ordered - purch_order_details.quantity_received) AS onorder , purch_orders.into_stock_location AS loc_code FROM purch_order_details, purch_orders
-					WHERE purch_order_details.order_no= purch_orders.order_no AND purch_order_details.item_code = " . db_escape($this->id) . "
-					GROUP BY purch_orders.into_stock_location) p ON p.loc_code=l.loc_code";
+					GROUP BY sales_orders.from_stk_loc) o ON o.loc_code=l.loc_code
+					LEFT JOIN (SELECT SUM(purch_order_details.quantity_ordered - purch_order_details.quantity_received) AS onorder , purch_orders.into_stock_location AS loc_code
+					FROM purch_order_details, purch_orders	WHERE purch_order_details.order_no= purch_orders.order_no AND purch_order_details.item_code = " . db_escape($this->id) . " GROUP BY purch_orders.into_stock_location) p ON p.loc_code=l.loc_code";
 
 					FB::info($sql);
 			$result = db_query($sql, 'Could not get item stock levels');
