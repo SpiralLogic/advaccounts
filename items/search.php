@@ -16,4 +16,4 @@ include_once("includes/items.inc");
         $data['item'] = $item = new Item($_POST['id']);
 	    $data['stockLevels'] = $item->getStockLevels();
     }
-echo json_encode($data);
+echo json_encode($data,JSON_NUMERIC_CHECK);

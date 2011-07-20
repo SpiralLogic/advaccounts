@@ -16,6 +16,9 @@
 	HTML::div('itemSearch');
 	UI::search('item', array('label' => 'Search Item', 'size' => 80, 'url' => 'search.php', 'callback' => 'Items.fetch'));
 	HTML::div();
+	$menu = new MenuUI();
+	$menu->startTab("Items","Items");
+
 	echo <<<HTML
 <div id="Items" class="aligncenter">
 <table class="marginauto" style="width:80%">
@@ -27,9 +30,12 @@
 </table>
 <table id="stockLevels" class="marginauto" style="width:80%">
 <tr><th>Location</th><th>QOH</th><th>Reorder Level</th><th>On Sales<br>Order</th><th>Available</th><th>On Purchase<br>Order</th></tr>
-<script id="stockRow" type="text/x-jquery-tmpl"><tr><td>\${location_name}</td><td>\${quantity}</td><td>\${reorder_level}</td><td>\${demand}</td><td>\${available}</td><td>\${on_order}</td></tr></script>
+<script id="stockRow" type="text/x-jquery-tmpl"><tr><td>\${location_name}</td><td>\${qty}</td><td>\${reorder_level}</td><td>\${demand}</td><td>\${available}</td><td>\${onorder}</td></tr></script>
 </table>
 </div>
 HTML;
-
+$menu->endTab();
+	$menu->startTab("Selling","Sales Prices","/inventory/prices.php?frame=1");
+	$menu->endTab();
+	$menu->render();
 	end_page(true, true);
