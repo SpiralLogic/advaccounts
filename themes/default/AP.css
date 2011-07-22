@@ -90,9 +90,14 @@
 
 .menu_group {
 	background:  -moz-linear-gradient(center top, #80FE80 , #62BB46) repeat scroll 0 0 transparent;
-	
-	color:            #333;
-	background-color: #62BB46;
+	background:   -moz-linear-gradient(center top, #80FE80, #62BB46)   repeat scroll 0 0 transparent;
+	box-shadow:    0 1px 0 rgba(255, 255, 255, 0.6) inset;
+	background-image:    -moz-linear-gradient(center top, #80FE80, #62BB46);
+	background-image: -webkit-gradient(linear, left top, left bottom,color-stop(0.00, #80FE80),color-stop(1.00, #62BB46));
+	filter: progid:DXImageTransform.Microsoft.gradient(enabled='true',startColorstr=#80FE80,endColorstr=#62BB46,GradientType=1);
+	border:      1px solid #7096AB;
+	box-shadow:  none;
+	color:       #333;
 }
 
 /* main wrapper */ 

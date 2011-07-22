@@ -90,12 +90,23 @@
 
 .tableheader, .tableheader2, .menu_group{
 
-	background:  -moz-linear-gradient(center top,#FE9980, #DB4949) repeat scroll 0 0 transparent;
+	background:  -moz-linear-gradient(center top,#FFB4B4, #DB4949) repeat scroll 0 0 transparent;
 	border:      2px solid #7096AB;
 
-	color:            #333;
+	color:            #555;
 
 
+}
+.menu_group {
+	background:  -moz-linear-gradient(center top, #ffbaba , #B81D1D) repeat scroll 0 0 transparent;
+	background:   -moz-linear-gradient(center top, #ffbaba, #B81D1D)   repeat scroll 0 0 transparent;
+	box-shadow:    0 1px 0 rgba(255, 255, 255, 0.6) inset;
+	background-image:    -moz-linear-gradient(center top, #ffbaba, #B81D1D);
+	background-image: -webkit-gradient(linear, left top, left bottom,color-stop(0.00, #ffbaba),color-stop(1.00, #B81D1D));
+	filter: progid:DXImageTransform.Microsoft.gradient(enabled='true',startColorstr=#ffbaba,endColorstr=#B81D1D,GradientType=1);
+	border:      1px solid #7096AB;
+	box-shadow:  none;
+	color:       #000;
 }
 /* main wrapper */
 #wrapper {

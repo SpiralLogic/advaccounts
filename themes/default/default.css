@@ -119,10 +119,15 @@ hr {
 	line-height: 1.3em;
 	font-weight: bold;
 
-	background:  -moz-linear-gradient(center top, #B9E0F5, #5F83B9) repeat scroll 0 0 transparent;
-	border:      2px solid #7096AB;
+	
+	background:   -moz-linear-gradient(center top, #B9E0F5, #5F83B9)   repeat scroll 0 0 transparent;
+	box-shadow:    0 1px 0 rgba(255, 255, 255, 0.6) inset;
+	background-image:    -moz-linear-gradient(center top, #B9E0F5, #5F83B9);
+	background-image: -webkit-gradient(linear, left top, left bottom,color-stop(0.00, #B9E0F5),color-stop(1.00, #5F83B9));
+	filter: progid:DXImageTransform.Microsoft.gradient(enabled='true',startColorstr=#EDEDED,endColorstr=#C4C4C4,GradientType=1);
+	border:      1px solid #7096AB;
 	box-shadow:  none;
-	color:       #1C4257;
+	color:       #333;
 	padding:     5px;
 
 }
@@ -193,8 +198,14 @@ hr {
 	font-weight:   500;
 	color:         #000000;
 	border-radius: 3px 3px 3px 3px;
-	background:    -moz-linear-gradient(center top, #EDEDED, #C4C4C4) repeat scroll 0 0 transparent;
+	background:   -moz-linear-gradient(center top, #B9E0F5, #5F83B9)   repeat scroll 0 0 transparent;
 	box-shadow:    0 1px 0 rgba(255, 255, 255, 0.6) inset;
+	background-image:    -moz-linear-gradient(center top, #B9E0F5, #5F83B9);
+	background-image: -webkit-gradient(linear, left top, left bottom,color-stop(0.00, #B9E0F5),color-stop(1.00, #5F83B9));
+	filter: progid:DXImageTransform.Microsoft.gradient(enabled='true',startColorstr=#EDEDED,endColorstr=#C4C4C4,GradientType=1);
+	border:      1px solid #7096AB;
+	box-shadow:  none;
+	color:       #333;
 }
 
 .oddrow {
@@ -915,9 +926,16 @@ td.tableheader3 {
 	padding:       0.5em 1em 0.3em;
 	position:      relative;
 	border-radius: 6px 6px 6px 6px;
-	background:    -moz-linear-gradient(center top, #B9E0F5, #5F83B9) repeat scroll 0 0 transparent;
-	border:        1px solid #192e9c;
-	box-shadow:    none;
+background:   -moz-linear-gradient(center top, #EDEDED, #C4C4C4)   repeat scroll 0 0 transparent;
+	box-shadow:    0 1px 0 rgba(255, 255, 255, 0.6) inset;
+	background-image:    -moz-linear-gradient(center top, #EDEDED, #C4C4C4);
+	background-image: -webkit-gradient(linear, left top, left bottom,color-stop(0.00, #EDEDED),color-stop(1.00, #C4C4C4));
+
+   	/* IE code - note GradientType=1 means horizontal */
+filter: progid:DXImageTransform.Microsoft.gradient(enabled='true',
+                startColorstr=#EDEDED,
+                endColorstr=#C4C4C4,
+               GradientType=1);
 	color:         #333;
 	font-weight:   bold;
 	font-family:   Lucida Grande, Lucida Sans, Arial, sans-serif;
