@@ -111,7 +111,7 @@ class renderer
 			echo "<table width='100%'><tr>";
 			echo "<td valign='top' class='menu_group'>";
 			echo "<table border=0 width='100%'>";
-			echo "<tr><td class='menu_group'>";
+			echo "<tr><td class='menu_group' colspan=2>";
 			echo $module->name;
 			echo "</td></tr><tr>";
 			echo "<td width='50%' class='menu_group_items'>";

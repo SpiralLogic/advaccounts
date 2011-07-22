@@ -89,11 +89,13 @@
 }
 
 .menu_group {
-	color:            #555;
+	background:  -moz-linear-gradient(center top, #80FE80 , #62BB46) repeat scroll 0 0 transparent;
+	
+	color:            #333;
 	background-color: #62BB46;
 }
 
-/* main wrapper */
+/* main wrapper */ 
 #wrapper {
 	clear:      left;
 	width:      100%;

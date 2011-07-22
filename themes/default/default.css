@@ -98,10 +98,12 @@ hr {
 .menu_group {
 	font-size:        13px;
 	padding:          0px;
-	color:            #555;
+	text-indent:      20px;
+	color:            #333;
 	background-color: #95bff3;
 	padding-left:     3px;
 	font-weight:      bold;
+	text-align:       left;
 }
 
 .menu_group_items {
@@ -109,26 +111,32 @@ hr {
 	font-weight:      normal;
 	padding:          9px;
 	border:           1px solid #8cacbb;
+	font-size:        14px;
+}
+
+.tableheader, .tableheader2, .menu_group {
+	font-size:   1.3em;
+	line-height: 1.3em;
+	font-weight: bold;
+
+	background:  -moz-linear-gradient(center top, #B9E0F5, #5F83B9) repeat scroll 0 0 transparent;
+	border:      2px solid #7096AB;
+	box-shadow:  none;
+	color:       #1C4257;
+	padding:     5px;
+
 }
 
 .tableheader {
-	font-size:        1.3em;
-	line-height:      1.3em;
-	font-weight:      bold;
-	    background: -moz-linear-gradient(center top , #B9E0F5, #5F83B9) repeat scroll 0 0 transparent;
-    border: 1px solid #7096AB;
-    box-shadow: none;
-    color: #1C4257;
-	text-align:       center;
+	color:      #333;
 
+	text-align: center;
 }
 
 .tableheader2 {
-	font-weight:      bold;
-	    background: -moz-linear-gradient(center top , #B9E0F5, #5F83B9) repeat scroll 0 0 transparent;
-    border: 1px solid #7096AB;
-    box-shadow: none;	color:            #555;
-	text-align:       left;
+	color:      #333;
+
+	text-align: left;
 }
 
 .tableseparator {
@@ -138,7 +146,7 @@ hr {
 .titletext {
 	font-weight:   bold;
 	font-size:     13px;
-	color:         #555;
+	color:         #333;
 	border-bottom: 1px solid #8cacbb;
 	padding:       5px;
 }
@@ -151,7 +159,7 @@ hr {
 .headingtext {
 	font-weight: bold;
 	font-size:   13px;
-	color:       #555;
+	color:       #333;
 }
 
 .headingtext2 {
@@ -178,11 +186,15 @@ hr {
 	padding:          1px 4px;
 }
 
-.ajaxsubmit {
-	font-size:        11px;
-	border:           1px #06c solid;
-	background-color: #ecf4fd;
-	padding:          1px 4px;
+.ajaxsubmit, .inputsubmit, .editbutton {
+	font-size:     11px;
+	border:        1px #06c solid;
+	padding:       3px 4px;
+	font-weight:   500;
+	color:         #000000;
+	border-radius: 3px 3px 3px 3px;
+	background:    -moz-linear-gradient(center top, #EDEDED, #C4C4C4) repeat scroll 0 0 transparent;
+	box-shadow:    0 1px 0 rgba(255, 255, 255, 0.6) inset;
 }
 
 .oddrow {
@@ -233,12 +245,12 @@ hr {
 
 table.tablestyle {
 	border-collapse: collapse;
-	border:          1px solid #e1e1e1;
+	border:          2px solid #e1e1e1;
 }
 
 table.tablestyle td {
 	border-collapse:     collapse;
-	border:              1px solid #e1e1e1;
+	border:              2px solid #e1e1e1;
 	border-top-color:    #dcdcdc;
 	border-bottom-color: #dcdcdc;
 
@@ -246,12 +258,12 @@ table.tablestyle td {
 
 table.tablestyle2 {
 	border-collapse: collapse;
-	border:          1px solid #cccccc;
+	border:          2px solid #cccccc;
 }
 
 table.tablestyle2 td {
 	border-collapse: collapse;
-	border:          1px solid #cccccc;
+	border:          2px solid #cccccc;
 }
 
 table.tablestyle_inner {
@@ -271,6 +283,7 @@ table.tablestyle_inner td {
 .label {
 	background-color: #ecf4fd;
 	color:            black;
+	font-weight:bold;
 }
 
 #loginscreen {
@@ -301,10 +314,7 @@ input.amount, input.freight {
 }
 
 .editbutton {
-	color:            #00f;
 	background-color: transparent;
-	border-style:     none;
-	text-decoration:  underline;
 	cursor:           pointer;
 }
 
@@ -318,7 +328,7 @@ button.navibutton {
 	font-family:      Tahoma, Arial, sans-serif;
 	font-size:        11px;
 	font-weight:      bold;
-	color:            #555;
+	color:            #333;
 	padding:          0 3px;
 	background-color: transparent;
 	border-style:     none;
@@ -331,7 +341,7 @@ button.navibutton {
 
 .navibar {
 	padding:          0 3px;
-	color:            #555;
+	color:            #333;
 	border:           1px solid #8cacbb;
 	border-collapse:  collapse;
 	background-color: #f69f20;
@@ -352,7 +362,6 @@ button {
 }
 
 button img, span {
-	padding:        0px 2px;
 	vertical-align: middle;
 }
 
@@ -410,7 +419,6 @@ ul.ajaxtabs li button.current, ul.ajaxtabs li button.current:hover {
 #hints {
 	font-size:        13px;
 	padding:          5px;
-	border-bottom:    1px solid #8cacbb;
 	margin:           -4px -2px -2px;
 	border:           1px solid #8cacbb;
 	background-color: #FFFFE0;
@@ -657,6 +665,7 @@ rgba
 .button {
 	padding: 4px;
 	font:    bold 1em Arial, Sans-Serif;
+	margin:  1px;
 }
 
 #footer {
@@ -742,7 +751,7 @@ rgba
 
 #CC .weekno {
 	background-color: #c9def9;
-	color:            #555;
+	color:            #333;
 }
 
 #CC .current {
@@ -906,10 +915,10 @@ td.tableheader3 {
 	padding:       0.5em 1em 0.3em;
 	position:      relative;
 	border-radius: 6px 6px 6px 6px;
-		    background: -moz-linear-gradient(center top , #B9E0F5, #5F83B9) repeat scroll 0 0 transparent;
-    border:1px solid #192e9c;
-    box-shadow: none;
-	color:         #362B36;
+	background:    -moz-linear-gradient(center top, #B9E0F5, #5F83B9) repeat scroll 0 0 transparent;
+	border:        1px solid #192e9c;
+	box-shadow:    none;
+	color:         #333;
 	font-weight:   bold;
 	font-family:   Lucida Grande, Lucida Sans, Arial, sans-serif;
 	font-size:     1em;

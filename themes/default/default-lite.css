@@ -68,7 +68,7 @@
 
 #CC .weekno {
 	background-color: #c9def9;
-	color:            #555;
+	color:            #333;
 }
 
 #CC table {
@@ -282,7 +282,7 @@
 
 
 .headingtext {
-	color:       #555;
+	color:       #333;
 	font-size:   13px;
 	font-weight: 700;
 }
@@ -331,7 +331,7 @@
 
 .menu_group {
 	background-color: #95bff3;
-	color:            #555;
+	color:            #333;
 	font-size:        13px;
 	font-weight:      700;
 	padding:          0 0 0 3px;
@@ -348,7 +348,7 @@
 	background-color: #f69f20;
 	border:           1px solid #8cacbb;
 	border-collapse:  collapse;
-	color:            #555;
+	color:            #333;
 	padding:          0 3px;
 }
 
@@ -393,14 +393,14 @@
 
 .tableheader {
 	background-color: #f69f20;
-	color:            #555;
+	color:            #333;
 	font-weight:      700;
 	text-align:       center;
 }
 
 .tableheader2 {
 	background-color: #f69f20;
-	color:            #555;
+	color:            #333;
 	font-weight:      700;
 	text-align:       left;
 }
@@ -415,7 +415,7 @@
 
 .titletext {
 	border-bottom: 1px solid #8cacbb;
-	color:         #555;
+	color:         #333;
 	font-size:     13px;
 	font-weight:   700;
 	padding:       5px;
@@ -471,7 +471,7 @@ button img, span {
 button.navibutton {
 	background-color: transparent;
 	border-style:     none;
-	color:            #555;
+	color:            #333;
 	cursor:           pointer;
 	font-family:      Tahoma, Arial, sans-serif;
 	font-size:        11px;

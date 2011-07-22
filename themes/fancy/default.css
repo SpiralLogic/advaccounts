@@ -256,19 +256,14 @@ div.tabs a:hover {
 	width: 100%;
 }
 
-.tableheader {
+.tableheader, .tableheader2 {
 	font-weight: bold;
 	background-color: #dee7ec;
 	color: black;
 	text-align: center;
+	padding:2px;
 }
 
-.tableheader2 {
-	font-weight: bold;
-	background-color: #dee7ec;
-	color: black;
-	text-align: left;
-}
 
 .titletext {
 	font-weight: bold;
@@ -594,7 +589,7 @@ ul.ajaxtabs li input.current, ul.ajaxtabs li input.current:hover {
 
 #CC .weekno {
 	background-color: #c0daf8;
-	color: #555;
+	color: #333;
 }
 
 #CC .current {

@@ -88,11 +88,15 @@
 	background: -moz-linear-gradient(100% 100% 90deg, #B81D1D, #E38881, #DB4949 100%);
 }
 
-.menu_group {
-	color:            #555;
-	background-color: #DB4949;
-}
+.tableheader, .tableheader2, .menu_group{
 
+	background:  -moz-linear-gradient(center top,#FE9980, #DB4949) repeat scroll 0 0 transparent;
+	border:      2px solid #7096AB;
+
+	color:            #333;
+
+
+}
 /* main wrapper */
 #wrapper {
 	clear:      left;
