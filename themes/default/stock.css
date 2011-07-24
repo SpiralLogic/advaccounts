@@ -98,12 +98,10 @@
 
 }
 .menu_group {
-	background:  -moz-linear-gradient(center top, #DB4949 , #FF3333) repeat scroll 0 0 transparent;
-	background:   -moz-linear-gradient(center top, #DB4949, #FF3333)   repeat scroll 0 0 transparent;
 	box-shadow:    0 1px 0 rgba(255, 255, 255, 0.6) inset;
-	background-image:    -moz-linear-gradient(center top, #DB4949  , #E38881);
-	background-image: -webkit-gradient(linear, left top, left bottom,color-stop(0.00, #DB4949),color-stop(1.00, #62BB46));
-	filter: progid:DXImageTransform.Microsoft.gradient(enabled='true',startColorstr=#DB4949,endColorstr=#62BB46,GradientType=1);
+	background-image:    -moz-linear-gradient(center top, #E38881  , #DB4949);
+	background-image: -webkit-gradient(linear, left top, left bottom,color-stop(0.00, #E38881),color-stop(1.00, #DB4949));
+	filter: progid:DXImageTransform.Microsoft.gradient(enabled='true',startColorstr=#E38881,endColorstr=#DB4949,GradientType=1);
 	border:      1px solid #7096AB;
 	box-shadow:  none;
 	color:       #333;
