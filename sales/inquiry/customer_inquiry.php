@@ -183,8 +183,8 @@ function check_overdue($row)
 //------------------------------------------------------------------------------------------------
 $date_after = date2sql($_POST['TransAfterDate']);
 $date_to = date2sql($_POST['TransToDate']);
+if (AJAX_REFERRER && isset($_POST['ajaxsearch'])) {
 $searchArray = trim($_POST['ajaxsearch']);
-if (AJAX_REFERRER && !empty($searchArray)) {
 	$searchArray = explode(' ', $searchArray);
 	unset($_POST['customer_id']);
 	unset($_POST['filterType']);
