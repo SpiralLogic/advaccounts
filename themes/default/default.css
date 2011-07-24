@@ -97,12 +97,11 @@ hr {
 
 .menu_group {
 	font-size:        13px;
-	padding:          0px;
-	text-indent:      20px;
+   padding:          0 0 0 3px;
+   text-indent:      20px;
 	color:            #333;
 	background-color: #95bff3;
-	padding-left:     3px;
-	font-weight:      bold;
+   font-weight:      bold;
 	text-align:       left;
 }
 
@@ -117,11 +116,7 @@ hr {
 .tableheader, .tableheader2, .menu_group {
 	font-size:   1.3em;
 	line-height: 1.3em;
-	font-weight: bold;
-
-	
-	background:   -moz-linear-gradient(center top, #B9E0F5, #5F83B9)   repeat scroll 0 0 transparent;
-	box-shadow:    0 1px 0 rgba(255, 255, 255, 0.6) inset;
+	font-weight: bold;	box-shadow:    0 1px 0 rgba(255, 255, 255, 0.6) inset;
 	background-image:    -moz-linear-gradient(center top, #B9E0F5, #5F83B9);
 	background-image: -webkit-gradient(linear, left top, left bottom,color-stop(0.00, #B9E0F5),color-stop(1.00, #5F83B9));
 	filter: progid:DXImageTransform.Microsoft.gradient(enabled='true',startColorstr=#EDEDED,endColorstr=#C4C4C4,GradientType=1);
@@ -193,15 +188,12 @@ hr {
 
 .ajaxsubmit, .inputsubmit, .editbutton {
 	font-size:     11px;
-	border:        1px #06c solid;
 	padding:       3px 4px;
 	font-weight:   500;
-	color:         #000000;
 	border-radius: 3px 3px 3px 3px;
-	background:   -moz-linear-gradient(center top, #B9E0F5, #5F83B9)   repeat scroll 0 0 transparent;
 	box-shadow:    0 1px 0 rgba(255, 255, 255, 0.6) inset;
-	background-image:    -moz-linear-gradient(center top, #B9E0F5, #5F83B9);
-	background-image: -webkit-gradient(linear, left top, left bottom,color-stop(0.00, #B9E0F5),color-stop(1.00, #5F83B9));
+	background-image:    -moz-linear-gradient(center top, #EDEDED, #C4C4C4);
+	background-image: -webkit-gradient(linear, left top, left bottom,color-stop(0.00, #EDEDED),color-stop(1.00, #C4C4C4));
 	filter: progid:DXImageTransform.Microsoft.gradient(enabled='true',startColorstr=#EDEDED,endColorstr=#C4C4C4,GradientType=1);
 	border:      1px solid #7096AB;
 	box-shadow:  none;

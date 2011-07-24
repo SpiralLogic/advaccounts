@@ -6,89 +6,97 @@
  * Time: 5:49 PM
  * To change this template use File | Settings | File Templates.
  */
-class Dialog
-{
+   class Dialog
+   {
 
-    protected $height ="'auto'";
-    protected $width = 300;
-    protected $buttons = array();
-    protected $autoopen = false;
-    protected $modal = false;
-    protected $name;
-    protected $resizable = true;
-    protected $contents = '';
+      protected $height = "'auto'";
+      protected $width = 300;
+      protected $buttons = array();
+      protected $autoopen = false;
+      protected $modal = false;
+      protected $name;
+      protected $resizable = true;
+      protected $contents = '';
+      protected $events = array();
 
-    function __construct($title, $name = false, $contents = false)
-    {
-        $this->title = $title;
-        $this->name = ($name) ? $name : "Message Box";
-        if ($contents) {
+      function __construct($title, $name = false, $contents = false)
+      {
+         $this->name = $name;
+         $this->title = ($title) ? $title : "Message Box";
+         if ($contents) {
             $this->setContents($contents);
-        }
-    }
+         }
+      }
 
-    function setContents($contents)
-    {
-        if (empty($contents)) {
+      function setContents($contents)
+      {
+         if (empty($contents)) {
             return false;
-        }
-        if (is_array($contents)) {
+         }
+         if (is_array($contents)) {
             foreach ($contents as $content) {
-                $this->contents .= $content . "<hr>";
+               $this->contents .= $content . "<hr>";
             }
             ;
-        } else {
+         } else {
             $this->contents = $contents;
-        }
-    }
+         }
+      }
 
-    function addButtons($buttons = array())
-    {
-        foreach ($buttons as $button => $action) {
-            $this->buttons[$button] = $action;
-        }
+      function addOpenEvent($selector, $type = 'click')
+      {
+         $this->events[] = "$('$selector').bind('$type',function(e){ \${$this->name}.dialog('open'); });";
+      }
 
-    }
+      function addButtons($buttons = array())
+      {
+         foreach ($buttons as $button => $action) {
+            $this->addButton($button,$action);
+         }
+      }
 
-    function setOptions($options = array())
-    {
-        if (is_array($options) && count($options) > 0) {
+      function addButton($button, $action)
+      {
+         $this->buttons[$button] = $action;
+      }
+
+      function setOptions($options = array())
+      {
+         if (is_array($options) && count($options) > 0) {
             foreach ($options as $option => $value) {
-                if (property_exists($this, $option)) {
-                    $this->$option = $value;
-                }
+               if (property_exists($this, $option)) {
+                  $this->$option = $value;
+               }
             }
 
-        }
+         }
 
-    }
+      }
 
-    function show()
-    {
-        if (count($this->buttons > 0)) {
+      function show()
+      {
+         if (count($this->buttons > 0)) {
             $buttons = 'buttons: { ';
             foreach ($this->buttons as $button => $action) {
-                $buttons .= '"' . $button . '": function() { ' . $action . '}, ';
+               $buttons .= '"' . $button . '": function() { ' . $action . '}, ';
             }
             $buttons .= '} ';
-        }
-        echo '<div id="' . $this->name . '" title="' . $this->title . '">' . $this->contents . '</div>';
+         }
+         echo '<div id="' . $this->name . '" title="' . $this->title . '">' . $this->contents . '</div>';
 
-        $js = '$("#' . $this->name . '").dialog({';
-        $js .= 'autoOpen: ' . (($this->autoopen) ? 'true' : 'false') . ',';
-        if ($this->modal) $js .= 'modal: true, ';
-        if ($this->width) $js .= 'width: ' . $this->width . ', ';
-        $js .= 'height: ' . $this->height .', ';
-        if (!$this->resizable) $js .= 'resizable: false, ';
+         $js = '$' . $this->name . '=$("#' . $this->name . '").dialog({';
+         $js .= 'autoOpen: ' . (($this->autoopen) ? 'true' : 'false') . ',';
 
+         if ($this->modal) $js .= 'modal: true, ';
+         if ($this->width) $js .= 'width: ' . $this->width . ', ';
+         $js .= 'height: ' . $this->height . ', ';
+         if (!$this->resizable) $js .= 'resizable: false, ';
+         if (!empty($buttons)) $js .= $buttons;
+         $js .= '});';
+         if (!empty($js)) {
+            JS::onload(implode(';', $this->events));
+            JS::onload($js);
+         }
+      }
 
-        if (!empty($buttons)) {
-            $js .= $buttons;
-        }
-		$js .= '});';
-		if (!empty($js)) {
-            JS::onLoad($js);
-        }
-	}
-
-}
+   }

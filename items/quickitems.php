@@ -19,7 +19,7 @@
 		HTML::div();
 	} else {
 $item= $_GET['id'];
-		JS::onLoad(<<<JS
+		JS::onload(<<<JS
 Items.fetch('{$item}');
 JS
 );

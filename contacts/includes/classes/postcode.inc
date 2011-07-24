@@ -41,12 +41,12 @@ private static $count=0;
         UI::search($postcode[0], array('url' => $url.'?postcode=1', 'nodiv' => true, 'name' => $postcode[0], 'size' => 35, 'max' => 40, 'callback' => 'Adv.postcode'.static::$count.'.fetch'));
         HTML::_td()->tr;
         static::registerJS("#".$postcode[0],"#".$city[0],"#".$state[0]);
-    }
+    } 
 
     static function registerJS($postcode, $city, $state)
     {
 $count = static::$count;
-        JS::register(<<<JS
+        JS::beforeload(<<<JS
 Adv.extend({
     postcode{$count}: (function() {
             var postcode = $('{$postcode}'),state = $('{$state}'), city = $('{$city}');

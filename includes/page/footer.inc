@@ -18,9 +18,9 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
       send_fscripts();
       $edits = "editors = " . $Ajax->php2js($Editors) . ";";
       $Ajax->addScript('editors', $edits);
-      JS::register("_focus = '" . get_post('_focus') . "';_validate = " . $Ajax->php2js($Validate) . ";var $edits");
+      JS::beforeload("_focus = '" . get_post('_focus') . "';_validate = " . $Ajax->php2js($Validate) . ";var $edits");
       add_user_js_data();
-      JS::register($js_lib);
+      JS::beforeload($js_lib);
       JS::render();
       Messages::showNewMessages();
       echo "</body>";
@@ -30,4 +30,4 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
       }
 
 
-   }
+   } 

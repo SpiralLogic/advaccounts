@@ -51,11 +51,12 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 
       hyperlink_params(APP_PATH . "/purchasing/po_receive_items.php", _("&Receive Items on this Purchase Order"), "PONumber=$order_no");
       hyperlink_params($_SERVER['PHP_SELF'], _("Enter &Another Purchase Order"), "NewOrder=yes");
-      hyperlink_no_params(APP_PATH. "/purchasing/inquiry/po_search.php", _("Select An &Outstanding Purchase Order"));
+      hyperlink_no_params(APP_PATH . "/purchasing/inquiry/po_search.php", _("Select An &Outstanding Purchase Order"));
       display_footer_exit();
    }
    //--------------------------------------------------------------------------------------------------
-   function copy_from_cart() {
+   function copy_from_cart()
+   {
       $_POST['supplier_id'] = $_SESSION['PO']->supplier_id;
       $_POST['OrderDate'] = $_SESSION['PO']->orig_order_date;
       $_POST['Requisition'] = $_SESSION['PO']->requisition_no;
@@ -67,7 +68,8 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
       $_POST['salesman'] = $_SESSION['PO']->salesman;
    }
 
-   function copy_to_cart() {
+   function copy_to_cart()
+   {
       $_SESSION['PO']->supplier_id = $_POST['supplier_id'];
       $_SESSION['PO']->orig_order_date = $_POST['OrderDate'];
       $_SESSION['PO']->reference = $_POST['ref'];
@@ -80,14 +82,16 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
    }
 
    //--------------------------------------------------------------------------------------------------
-   function line_start_focus() {
+   function line_start_focus()
+   {
       global $Ajax;
       $Ajax->activate('items_table');
       set_focus('_stock_id_edit');
    }
 
    //--------------------------------------------------------------------------------------------------
-   function unset_form_variables() {
+   function unset_form_variables()
+   {
       unset($_POST['stock_id']);
       unset($_POST['qty']);
       unset($_POST['price']);
@@ -95,7 +99,8 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
    }
 
    //---------------------------------------------------------------------------------------------------
-   function handle_delete_item($line_no) {
+   function handle_delete_item($line_no)
+   {
       if ($_SESSION['PO']->some_already_received($line_no) == 0) {
          $_SESSION['PO']->remove_from_order($line_no);
          unset_form_variables();
@@ -107,7 +112,8 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
    }
 
    //---------------------------------------------------------------------------------------------------
-   function handle_cancel_po() {
+   function handle_cancel_po()
+   {
       global $path_to_root;
       //need to check that not already dispatched or invoiced by the supplier
       if (($_SESSION['PO']->order_no != 0) && $_SESSION['PO']->any_already_received() == 1) {
@@ -132,7 +138,8 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
    }
 
    //---------------------------------------------------------------------------------------------------
-   function check_data() {
+   function check_data()
+   {
       $dec = get_qty_dec($_POST['stock_id']);
       $min = 1 / pow(10, $dec);
       if (!check_num('qty', $min)) {
@@ -160,7 +167,8 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
    }
 
    //---------------------------------------------------------------------------------------------------
-   function handle_update_item() {
+   function handle_update_item()
+   {
       $allow_update = check_data();
       if ($allow_update) {
          if ($_SESSION['PO']->line_items[$_POST['line_no']]->qty_inv > input_num('qty') || $_SESSION['PO']->line_items[$_POST['line_no']]->qty_received > input_num('qty')) {
@@ -176,7 +184,8 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 
    //---------------------------------------------------------------------------------------------------
    //---------------------------------------------------------------------------------------------------
-   function handle_add_new_item() {
+   function handle_add_new_item()
+   {
       $allow_update = check_data();
       if ($allow_update == true) {
          if (count($_SESSION['PO']->line_items) > 0) {
@@ -217,7 +226,8 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
    }
 
    //---------------------------------------------------------------------------------------------------
-   function can_commit() {
+   function can_commit()
+   {
       global $Refs;
       if (!get_post('supplier_id')) {
          display_error(_("There is no supplier selected."));
@@ -266,7 +276,8 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
    }
 
    //---------------------------------------------------------------------------------------------------
-   function handle_commit_order() {
+   function handle_commit_order()
+   {
       if (can_commit()) {
          copy_to_cart();
          if ($_SESSION['PO']->order_no == 0) {
@@ -399,27 +410,20 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
    end_form();
    if (isset($_SESSION['PO']->supplier_id)) {
       $supplier_details = $_SESSION['PO']->supplier_details;
-      echo '<div id="supplier_details" style="display: none;">';
-      if (!empty($supplier_details['supp_address']))
-         echo '<span class="bold">Shipping Address:</span><br>' . $supplier_details['supp_address'] . '</br></br>';
-      if (!empty($supplier_details['address']))
-         echo '<span class="bold">Mailing Address:</span><br>' . $supplier_details['address'] . '</br></br>';
-      if (!empty($supplier_details['phone']))
-         echo '<span class="bold">Phone: </span>' . $supplier_details['phone'] . '</br></br>';
-      if (!empty($supplier_details['phone2']))
-         echo '<span class="bold">Phone2: </span>' . $supplier_details['phone2'] . '</br></br>';
-      if (!empty($supplier_details['fax']))
-         echo '<span class="bold">Fax: </span>' . $supplier_details['fax'] . '</br></br>';
-      if (!empty($supplier_details['contact']))
-         echo '<span class="bold">Contact: </span>' . $supplier_details['Contact'] . '</br></br>';
-      if (!empty($supplier_details['email']))
-         echo '<span class="bold">Email: </span><a href="mailto:' . $supplier_details['email'] . '">' . $supplier_details['email'] . '</a></br></br>';
-      if (!empty($supplier_details['website']))
-         echo '<span class="bold">Website: </span><a target="_new" href="http://' . $supplier_details['website'] . '">' . $supplier_details['website'] . '</a></br></br>';
-      if (!empty($supplier_details['supp_account_no']))
-         echo '<span class="bold">Account #: </span>' . $supplier_details['supp_account_no'] . '</br></br>';
-      echo '</div>';
-      $js_lib[] = '';
+      $content = '<div >' .
+                 '<span class="bold">Shipping Address:</span><br>' . $supplier_details['supp_address'] . '</br></br>' .
+                 '<span class="bold">Mailing Address:</span><br>' . $supplier_details['address'] . '</br></br>' .
+                 '<span class="bold">Phone: </span>' . $supplier_details['phone'] . '</br></br>' .
+                 '<span class="bold">Phone2: </span>' . $supplier_details['phone2'] . '</br></br>' .
+                 '<span class="bold">Fax: </span>' . $supplier_details['fax'] . '</br></br>' .
+                 '<span class="bold">Contact: </span>' . $supplier_details['contact'] . '</br></br>' .
+                 '<span class="bold">Email: </span><a href="mailto:' . $supplier_details['email'] . '">' . $supplier_details['email'] . '</a></br></br>' .
+                 '<span class="bold">Website: </span><a target="_new" href="http://' . $supplier_details['website'] . '">' . $supplier_details['website'] . '</a></br></br>' .
+                 '<span class="bold">Account #: </span>' . $supplier_details['supp_account_no'] . '</br></br></div>';
+      $supp_details = new Dialog('Supplier Details:', 'supplier_details', $content);
+      $supp_details->addOpenEvent("td[name=\"supplier_name\"]", 'click');
+      $supp_details->addButton('Close','$(this).dialog("close")' );
+      $supp_details->show();
    }
    end_page();
 
