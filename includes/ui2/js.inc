@@ -81,6 +81,14 @@ JS;
          echo "\n<script language=\"javascript\"  type=\"text/javascript\"><!--\n" . minify_js($content) . "\n--></script>\n";
       }
 
+
+      public static function arrayToOptions($options = array())
+      {
+         $options = (object)$options;
+         return json_encode($options);
+      } 
+
+
       public static function onload($js = false)
       {
          if ($js)
@@ -93,7 +101,8 @@ JS;
          self::register($js, self::$_beforeload);
       }
 
-      protected static function register($js = false, &$var = array())
+
+      protected static function register($js = false, &$var )
       {
          if (empty($var))
             $var = &self::$_beforeload;
@@ -102,6 +111,3 @@ JS;
 
       }
    }
-
-
-?> 

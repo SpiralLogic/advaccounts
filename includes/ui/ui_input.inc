@@ -628,10 +628,11 @@ function date_cells($label, $name, $title = null, $check = null, $inc_days = 0,
 
 	default_focus($name);
 
-	echo "<input type=\"text\" name=\"$name\" $class $aspect size=\"9\" maxlength=\"12\" value=\""
+	echo "<input id='$name' type=\"text\" name=\"$name\" $class $aspect size=\"9\" maxlength=\"12\" value=\""
 		 . $_POST[$name] . "\""
 		 . ($title ? " title='$title'" : '') . " > $post_label";
 	echo "</td>\n";
+   DatePicker::add($name,array('numberOfMonths'=>3,'showButtonPanel'=>true,'showCurrentAtPos'=>2,'dateFormat'=>'dd/mm/yy'));
 	$Ajax->addUpdate($name, $name, $_POST[$name]);
 }
 
