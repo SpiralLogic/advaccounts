@@ -11,8 +11,7 @@
             $data['customer'] = $customer = new Customer($_POST);
             $data['customer']->save();
             //$data['customer']=new Customer($_POST['id']);
-            $data['status'][] = $customer->getStatus();
-	         $data['status'][] = $customer->branches[1];
+            $data['status'] = $customer->getStatus();
 
          } elseif (!isset($_POST['name'])) {
             $data['customer'] = $customer = new Customer($_POST['id']);
@@ -25,7 +24,6 @@
       } else {
          $data['customer'] = new Customer();
       }
-	   FB::info($data);
       echo json_encode($data);
       exit();
    }

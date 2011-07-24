@@ -43,7 +43,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		$css[] = $file;
 
 	}
-
+ 
 	function send_css() {
 		global $path_to_root;
 		$theme = user_theme();

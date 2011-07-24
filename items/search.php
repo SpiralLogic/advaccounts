@@ -13,6 +13,7 @@ include_once("includes/items.inc");
         $data = Item::search($_GET['term']);
     }
     if (isset($_POST['id'])) {
-        $data = new Item($_POST['id']);
+        $data['item'] = $item = new Item($_POST['id']);
+	    $data['stockLevels'] = $item->getStockLevels();
     }
 echo json_encode($data,JSON_NUMERIC_CHECK);
