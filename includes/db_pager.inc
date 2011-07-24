@@ -513,7 +513,7 @@ function refresh_pager($name)
 function countFilter($table = false, $feild = false, $where = false)
 {
 	if ($table && $where && $feild) {
-		$sql = "SELECT * FROM "  . $table . " WHERE " . $feild . " LIKE " . db_escape($where) . " LIMIT 1";
+		$sql = "SELECT * FROM " .   $table . " WHERE " . $feild . " LIKE " . db_escape($where) . " LIMIT 1";
 		$result = db_query($sql, 'Couldnt do shit');
 		return db_num_rows($result);
 	}

@@ -1,19 +1,19 @@
 <?php
 /**********************************************************************
-    Copyright (C) FrontAccounting, LLC.
-	Released under the terms of the GNU General Public License, GPL, 
-	as published by the Free Software Foundation, either version 3 
-	of the License, or (at your option) any later version.
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
-    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
-***********************************************************************/
+Copyright (C) FrontAccounting, LLC.
+Released under the terms of the GNU General Public License, GPL,
+as published by the Free Software Foundation, either version 3
+of the License, or (at your option) any later version.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+ ***********************************************************************/
 $page_security = 'SA_INVENTORYADJUSTMENT';
 $path_to_root = "..";
 include_once($path_to_root . "/includes/ui/items_cart.inc");
 
-include_once($path_to_root . "/includes/session.inc");
+include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
@@ -35,8 +35,7 @@ check_db_has_movement_types(_("There are no inventory movement types defined in 
 
 //-----------------------------------------------------------------------------------------------
 
-if (isset($_GET['AddedID'])) 
-{
+if (isset($_GET['AddedID'])) {
 	$trans_no = $_GET['AddedID'];
 	$trans_type = ST_INVADJUST;
 
@@ -47,35 +46,34 @@ if (isset($_GET['AddedID']))
 
 	hyperlink_no_params($_SERVER['PHP_SELF'], _("Enter &Another Adjustment"));
 
-	hyperlink_params("$path_to_root/admin/attachments.php", _("Add an Attachment"), "filterType=$trans_type&trans_no=$trans_no");
-
 	display_footer_exit();
 }
 //--------------------------------------------------------------------------------------------------
 
-function line_start_focus() {
-  global 	$Ajax;
+function line_start_focus()
+{
+	global $Ajax;
 
-  $Ajax->activate('items_table');
-  set_focus('_stock_id_edit');
+	$Ajax->activate('items_table');
+	set_focus('_stock_id_edit');
 }
+
 //-----------------------------------------------------------------------------------------------
 
 function handle_new_order()
 {
-	if (isset($_SESSION['adj_items']))
-	{
+	if (isset($_SESSION['adj_items'])) {
 		$_SESSION['adj_items']->clear_items();
 		unset ($_SESSION['adj_items']);
 	}
 
-    //session_register("adj_items");
+	//session_register("adj_items");
 
-    $_SESSION['adj_items'] = new items_cart(ST_INVADJUST);
+	$_SESSION['adj_items'] = new items_cart(ST_INVADJUST);
 	$_POST['AdjDate'] = new_doc_date();
 	if (!is_date_in_fiscalyear($_POST['AdjDate']))
 		$_POST['AdjDate'] = end_fiscalyear();
-	$_SESSION['adj_items']->tran_date = $_POST['AdjDate'];	
+	$_SESSION['adj_items']->tran_date = $_POST['AdjDate'];
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -86,46 +84,42 @@ function can_process()
 
 	$adj = &$_SESSION['adj_items'];
 
-	if (count($adj->line_items) == 0)	{
+	if (count($adj->line_items) == 0) {
 		display_error(_("You must enter at least one non empty item line."));
 		set_focus('stock_id');
 		return false;
 	}
-	if (!$Refs->is_valid($_POST['ref'])) 
-	{
-		display_error( _("You must enter a reference."));
+	if (!$Refs->is_valid($_POST['ref'])) {
+		display_error(_("You must enter a reference."));
 		set_focus('ref');
 		return false;
 	}
 
-	if (!is_new_reference($_POST['ref'], ST_INVADJUST)) 
-	{
-		display_error( _("The entered reference is already in use."));
+	if (!is_new_reference($_POST['ref'], ST_INVADJUST)) {
+		display_error(_("The entered reference is already in use."));
 		set_focus('ref');
 		return false;
 	}
 
-	if (!is_date($_POST['AdjDate'])) 
-	{
+	if (!is_date($_POST['AdjDate'])) {
 		display_error(_("The entered date for the adjustment is invalid."));
 		set_focus('AdjDate');
 		return false;
-	} 
-	elseif (!is_date_in_fiscalyear($_POST['AdjDate'])) 
+	}
+	elseif (!is_date_in_fiscalyear($_POST['AdjDate']))
 	{
 		display_error(_("The entered date is not in fiscal year."));
 		set_focus('AdjDate');
 		return false;
 	} else {
 		$failed_item = $adj->check_qoh($_POST['StockLocation'], $_POST['AdjDate'], !$_POST['Increase']);
-		if ($failed_item >= 0) 
-		{
+		if ($failed_item >= 0) {
 			$line = $adj->line_items[$failed_item];
-    		display_error(_("The adjustment cannot be processed because an adjustment item would cause a negative inventory balance :") .
-    			" " . $line->stock_id . " - " .  $line->item_description);
-			$_POST['Edit'.$failed_item] = 1; // enter edit mode
+			display_error(_("The adjustment cannot be processed because an adjustment item would cause a negative inventory balance :") .
+						  " " . $line->stock_id . " - " . $line->item_description);
+			$_POST['Edit' . $failed_item] = 1; // enter edit mode
 			unset($_POST['Process']);
-		return false;
+			return false;
 		}
 	}
 	return true;
@@ -133,49 +127,46 @@ function can_process()
 
 //-------------------------------------------------------------------------------
 
-if (isset($_POST['Process']) && can_process()){
+if (isset($_POST['Process']) && can_process()) {
 
 	$trans_no = add_stock_adjustment($_SESSION['adj_items']->line_items,
-		$_POST['StockLocation'], $_POST['AdjDate'],	$_POST['type'], $_POST['Increase'],
-		$_POST['ref'], $_POST['memo_']);
+									 $_POST['StockLocation'], $_POST['AdjDate'], $_POST['type'], $_POST['Increase'],
+									 $_POST['ref'], $_POST['memo_']);
 	new_doc_date($_POST['AdjDate']);
 	$_SESSION['adj_items']->clear_items();
 	unset($_SESSION['adj_items']);
 
-   	meta_forward($_SERVER['PHP_SELF'], "AddedID=$trans_no");
+	meta_forward($_SERVER['PHP_SELF'], "AddedID=$trans_no");
 } /*end of process credit note */
 
 //-----------------------------------------------------------------------------------------------
 
 function check_item_data()
 {
-	if (!check_num('qty',0))
-	{
+	if (!check_num('qty', 0)) {
 		display_error(_("The quantity entered is negative or invalid."));
 		set_focus('qty');
 		return false;
 	}
 
-	if (!check_num('std_cost', 0))
-	{
+	if (!check_num('std_cost', 0)) {
 		display_error(_("The entered standard cost is negative or invalid."));
 		set_focus('std_cost');
 		return false;
 	}
 
-   	return true;
+	return true;
 }
 
 //-----------------------------------------------------------------------------------------------
 
 function handle_update_item()
 {
-    if($_POST['UpdateItem'] != "" && check_item_data())
-    {
+	if ($_POST['UpdateItem'] != "" && check_item_data()) {
 		$id = $_POST['LineNo'];
-    	$_SESSION['adj_items']->update_cart_item($id, input_num('qty'), 
-			input_num('std_cost'));
-    }
+		$_SESSION['adj_items']->update_cart_item($id, input_num('qty'),
+												 input_num('std_cost'));
+	}
 	line_start_focus();
 }
 
@@ -194,8 +185,8 @@ function handle_new_item()
 	if (!check_item_data())
 		return;
 
-	add_to_order($_SESSION['adj_items'], $_POST['stock_id'], 
-	  input_num('qty'), input_num('std_cost'));
+	add_to_order($_SESSION['adj_items'], $_POST['stock_id'],
+				 input_num('qty'), input_num('std_cost'));
 	line_start_focus();
 }
 
@@ -215,8 +206,7 @@ if (isset($_POST['CancelItemChanges'])) {
 }
 //-----------------------------------------------------------------------------------------------
 
-if (isset($_GET['NewAdjustment']) || !isset($_SESSION['adj_items']))
-{
+if (isset($_GET['NewAdjustment']) || !isset($_SESSION['adj_items'])) {
 	handle_new_order();
 }
 
@@ -225,7 +215,7 @@ start_form();
 
 display_order_header($_SESSION['adj_items']);
 
-start_outer_table(TABLESTYLE, "width=70%", 10);
+start_outer_table("$table_style width=70%", 10);
 
 display_adjustment_items(_("Adjustment Items"), $_SESSION['adj_items']);
 adjustment_options_controls();

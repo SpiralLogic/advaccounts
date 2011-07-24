@@ -72,12 +72,16 @@ Adv.extend({
 var Items = function() {
    var btn = $("#btnItems").button(),iten;
    $("#Items").template('items');
-
+   $("#stockRow").template('stockrow');
    return {
-      fetch: function(item) {
-         $.post("items.php", {"id": item.id}, function(data) {
-         $("#Items").empty();   $.tmpl('items', data).appendTo("#Items");
-            Adv.setFormValue('category_id',data.category_id);
+      fetch: function(id) {
+	      if (id.id!==undefined) id = id.id;
+         $.post("search.php", {"id": id}, function(data) {
+            $("#Items").empty();
+	         
+	         $.tmpl('items', data.item).appendTo("#Items");
+	         $.tmpl('stockrow',data.stockLevels).appendTo("#stockLevels");
+
          }, 'json')
 
       },

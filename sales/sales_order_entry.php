@@ -668,12 +668,16 @@ else {
     display_error($customer_error);
 }
 end_form();
-echo '<script>';
-echo <<<JS
-
+	   $dialog = new Dialog('Item Edit', 'stockbox', '');
+        $dialog->addButtons(array('Close' => '$(this).dialog("close");'));
+        $dialog->setOptions(array('autoopen' => false, 'modal' => true, 'width' => '700', 'resizeable' => true));
+        $dialog->show();
+JS::onLoad(<<<JS
+$(".stock").click(function() { $('#stockbox').html("<iframe src='/items/quickitems.php?id="+$(this).data('stock_id')+"' width='100%' height='600' scrolling='no' style='border:none' frameborder='0'></iframe>").dialog('open') });
 window.onbeforeunload = function() {
 $.post('sales_order_entry.php',{ saveorder: true })};
-JS;
-echo '</script>';
+JS
+);
+
 end_page();
 unset($_SESSION['order_no']);

@@ -15,4 +15,4 @@ include_once("includes/items.inc");
     if (isset($_POST['id'])) {
         $data = new Item($_POST['id']);
     }
-echo json_encode($data);
+echo json_encode($data,JSON_NUMERIC_CHECK);
