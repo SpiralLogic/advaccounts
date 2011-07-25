@@ -17,12 +17,12 @@
    (function() {
       var $this = this,
          $wrapper = $("#wrapper");
-      this.menu = $("#sidemenu").accordion({autoHeight: false,collapsible:true,active: false, event: "mouseenter"}).css('right', '-6em').fadeTo("slow", .75);
+      this.menu = $("#sidemenu").accordion({autoHeight: false,active: false, event: "mouseover"}).fadeTo("slow", .75);
       this.sidemenuOn = function() {
          $this.menu.accordion("enable").hover(function() {
-            $(this).animate({right:'2em'}, 300).fadeTo("fast", 1);
+            $(this).fadeTo("fast", 1).accordion({collapsible:false,active:false});
          }, function() {
-            $(this).animate({right:'-6em'}, 300).accordion({active:false}).fadeTo("fast", .75);
+            $(this).accordion({collapsible:true,active:false}).fadeTo("fast", .75);
          });
       };
       this.sidemenuOn();

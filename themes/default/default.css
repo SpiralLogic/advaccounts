@@ -62,7 +62,7 @@ input, select {
 
 select {
 	max-width: 250px;
-   min-width: 150px;
+	min-width: 150px;
 
 }
 
@@ -99,11 +99,11 @@ hr {
 
 .menu_group {
 	font-size:        13px;
-   padding:          0 0 0 3px;
-   text-indent:      20px;
+	padding:          0 0 0 3px;
+	text-indent:      20px;
 	color:            #333;
 	background-color: #95bff3;
-   font-weight:      bold;
+	font-weight:      bold;
 	text-align:       left;
 }
 
@@ -116,28 +116,27 @@ hr {
 }
 
 .tableheader, .tableheader2, .menu_group {
-	font-size:   1.3em;
-	line-height: 1.3em;
-	font-weight: bold;	box-shadow:    0 1px 0 rgba(255, 255, 255, 0.6) inset;
-	background-image:    -moz-linear-gradient(center top, #B9E0F5, #5F83B9);
-	background-image: -webkit-gradient(linear, left top, left bottom,color-stop(0.00, #B9E0F5),color-stop(1.00, #5F83B9));
-	filter: progid:DXImageTransform.Microsoft.gradient(enabled='true',startColorstr=#EDEDED,endColorstr=#C4C4C4,GradientType=1);
-	border:      1px solid #7096AB;
-	box-shadow:  none;
-	color:       #333;
-	padding:     5px;
+	font-size:        1.3em;
+	line-height:      1.3em;
+	font-weight:      bold;
+	box-shadow:       0 1px 0 rgba(255, 255, 255, 0.6) inset;
+	background-image: -moz-linear-gradient(center top, #B9E0F5, #5F83B9);
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0.00, #B9E0F5), color-stop(1.00, #5F83B9));
+	filter:           progid:DXImageTransform.Microsoft.gradient(enabled = 'true', startColorstr = #EDEDED, endColorstr = #C4C4C4, GradientType = 1);
+	border:           1px solid #7096AB;
+	box-shadow:       none;
+	color:            #333;
+	padding:          5px;
 
 }
 
 .tableheader {
 	color:      #333;
-
 	text-align: center;
 }
 
 .tableheader2 {
 	color:      #333;
-
 	text-align: left;
 }
 
@@ -189,17 +188,17 @@ hr {
 }
 
 .ajaxsubmit, .inputsubmit, .editbutton {
-	font-size:     11px;
-	padding:       3px 4px;
-	font-weight:   500;
-	border-radius: 3px 3px 3px 3px;
-	box-shadow:    0 1px 0 rgba(255, 255, 255, 0.6) inset;
-	background-image:    -moz-linear-gradient(center top, #EDEDED, #C4C4C4);
-	background-image: -webkit-gradient(linear, left top, left bottom,color-stop(0.00, #EDEDED),color-stop(1.00, #C4C4C4));
-	filter: progid:DXImageTransform.Microsoft.gradient(enabled='true',startColorstr=#EDEDED,endColorstr=#C4C4C4,GradientType=1);
-	border:      1px solid #7096AB;
-	box-shadow:  none;
-	color:       #333;
+	font-size:        11px;
+	padding:          3px 4px;
+	font-weight:      500;
+	border-radius:    3px 3px 3px 3px;
+	box-shadow:       0 1px 0 rgba(255, 255, 255, 0.6) inset;
+	background-image: -moz-linear-gradient(center top, #EDEDED, #C4C4C4);
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0.00, #EDEDED), color-stop(1.00, #C4C4C4));
+	filter:           progid:DXImageTransform.Microsoft.gradient(enabled = 'true', startColorstr = #EDEDED, endColorstr = #C4C4C4, GradientType = 1);
+	border:           1px solid #7096AB;
+	box-shadow:       none;
+	color:            #333;
 }
 
 .oddrow {
@@ -288,7 +287,7 @@ table.tablestyle_inner td {
 .label {
 	background-color: #ecf4fd;
 	color:            black;
-	font-weight:bold;
+	font-weight:      bold;
 }
 
 #loginscreen {
@@ -852,9 +851,10 @@ div.note_msg {
 	z-index:     10;
 
 }
+
 #sidemenu div.rightHidden {
-   right:6em !important;
-} 
+	right: 6em !important;
+}
 
 #sidemenu p {
 	margin:      0;
@@ -917,25 +917,22 @@ div.banner a + a { border-top: 2px groove #999 }
 }
 
 td.tableheader3 {
-	margin:        0 auto;
-	text-align:    center;
-	padding:       0.5em 1em 0.3em;
-	position:      relative;
-	border-radius: 6px 6px 6px 6px;
-background:   -moz-linear-gradient(center top, #EDEDED, #C4C4C4)   repeat scroll 0 0 transparent;
-	box-shadow:    0 1px 0 rgba(255, 255, 255, 0.6) inset;
-	background-image:    -moz-linear-gradient(center top, #EDEDED, #C4C4C4);
-	background-image: -webkit-gradient(linear, left top, left bottom,color-stop(0.00, #EDEDED),color-stop(1.00, #C4C4C4));
+	margin:           0 auto;
+	text-align:       center;
+	padding:          0.5em 1em 0.3em;
+	position:         relative;
+	border-radius:    6px 6px 6px 6px;
+	background:       -moz-linear-gradient(center top, #EDEDED, #C4C4C4) repeat scroll 0 0 transparent;
+	box-shadow:       0 1px 0 rgba(255, 255, 255, 0.6) inset;
+	background-image: -moz-linear-gradient(center top, #EDEDED, #C4C4C4);
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0.00, #EDEDED), color-stop(1.00, #C4C4C4));
 
-   	/* IE code - note GradientType=1 means horizontal */
-filter: progid:DXImageTransform.Microsoft.gradient(enabled='true',
-                startColorstr=#EDEDED,
-                endColorstr=#C4C4C4,
-               GradientType=1);
-	color:         #333;
-	font-weight:   bold;
-	font-family:   Lucida Grande, Lucida Sans, Arial, sans-serif;
-	font-size:     1em;
+	/* IE code - note GradientType=1 means horizontal */
+	filter:           progid:DXImageTransform.Microsoft.gradient(enabled = 'true', startColorstr = #EDEDED, endColorstr = #C4C4C4, GradientType = 1);
+	color:            #333;
+	font-weight:      bold;
+	font-family:      Lucida Grande, Lucida Sans, Arial, sans-serif;
+	font-size:        1em;
 
 }
 
