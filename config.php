@@ -62,7 +62,7 @@
    /* use popup windows for views */
    $use_popup_windows = 1;
    /* use date picker for all date fields */
-   $use_date_picker = 1;
+   $use_date_picker = 0;
    /* use Audit Trails in GL */
    $use_audit_trail = 0;
    /* use old style convert (income and expense in BS, PL) */

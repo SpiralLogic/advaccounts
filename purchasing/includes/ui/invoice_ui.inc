@@ -310,7 +310,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 								hidden('std_cost_unit' . $n, $myrow['std_cost_unit'], false) .
 								hidden('po_detail_item' . $n, $myrow['po_detail_item'], false));
 					label_cell(get_trans_view_str(ST_PURCHORDER, $myrow["purch_order_no"]));
-					label_cell($myrow["item_code"]);
+					label_cell($myrow["item_code"],"class='stock' data-stock_id='".$myrow['item_code']."'");
 					label_cell($myrow["description"]);
 					label_cell(sql2date($myrow["delivery_date"]));
 					$dec = get_qty_dec($myrow["item_code"]);
@@ -445,7 +445,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 					label_cell($entered_grn->id);
 					label_cell(""); // PO
 				}
-				label_cell($entered_grn->item_code);
+				label_cell($entered_grn->item_code,"class='stock' data-stock_id='{$entered_grn->item_code}'");
 				label_cell($entered_grn->item_description);
 				$dec = get_qty_dec($entered_grn->item_code);
 				if ($mode == 1) {
