@@ -393,7 +393,7 @@ JS
 
 
 	JS::addLive(<<<JS
-$("#wrapper").delegate('.stock','click',function() { $('#stockbox').html("<iframe src='/items/quickitems.php?id="+$(this).data('stock_id')+"' width='100%' height='600' scrolling='no' style='border:none' frameborder='0'></iframe>").dialog('open') });
+$("#wrapper").delegate('.stock','click',function() { $('#stockbox').html("<iframe src='/items/quickitems.php?id="+$(this).data('stock_id')+"&page=2' width='100%' height='600' scrolling='no' style='border:none' frameborder='0'></iframe>").dialog('open') });
 
 window.onbeforeunload = function() {
 $.post('sales_order_entry.php',{ saveorder: true })};
