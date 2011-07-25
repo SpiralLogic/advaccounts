@@ -232,7 +232,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
          $selected_id = array($first_id);
       }
       $_POST[$name] = $multi ? $selected_id : $selected_id[0];
-      $selector = "<select autocomplete='off' " . ($multi ? "multiple" : '') . (
+      $selector = "<select id='$name' autocomplete='off' " . ($multi ? "multiple" : '') . (
       $opts['height'] !== false ? ' size="' . $opts['height'] . '"' : '') . "$disabled name='$name" . ($multi ? '[]' : '') . "' class='$class' title='" .
                   $opts['sel_hint'] . "' $rel>" . $selector . "</select>\n";
       if ($by_id && ($search_box != false || $opts['editable'])) {
@@ -650,6 +650,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
       echo "<tr><td class='label'>$label</td><td nowrap>";
       echo customer_list($name, $selected_id, $all_option, $submit_on_change, $show_inactive, $editkey);
       echo "</td>\n</tr>\n";
+
    }
 
    //------------------------------------------------------------------------------------------------
