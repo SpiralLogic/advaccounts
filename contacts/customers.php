@@ -37,8 +37,8 @@
    check_db_has_sales_areas(_("There are no sales areas defined in the system. At least one sales area is required before proceeding."));
    check_db_has_shippers(_("There are no shipping companies defined in the system. At least one shipping company is required before proceeding."));
    check_db_has_tax_groups(_("There are no tax groups defined in the system. At least one tax group is required before proceeding."));
-   if (isset($_GET['debtor_no'])) {
-      $customer = new Customer($_GET['debtor_no']);
+   if (isset($_GET['id'])) {
+      $customer = new Customer($_GET['id']);
    } elseif (isset($_POST['id']) && !empty($_POST['id'])) {
       $customer = new Customer($_POST['id']);
    } else {
@@ -51,7 +51,7 @@
       $status = $customer->getStatus();
       display_notification($status['message']);
    }
-   if (db_has_customers()) {
+   if (db_has_customers() && !isset($_GET['id']) && !isset($_GET['popup'])) {
       /** @noinspection PhpUndefinedMethodInspection */
       HTML::div('custsearch');
       HTML::table(null, array("style" => "margin:0 auto; padding-bottom:5px; font-weight:bold"));
@@ -67,7 +67,7 @@
    HTML::div('customerIDs', array('style' => 'display:inline-block'));
    HTML::table(null, array("style" => "margin:0 auto; padding-bottom:5px; font-weight:bold"))->tr(true)->td(true);
    HTML::label(array('for' => 'name', 'content' => 'Customer name:'));
-   HTML::input('name', $customer->name, array('name' => 'name', 'size' => 50));
+   HTML::input('name', array('value' => $customer->name, 'name' => 'name', 'size' => 50));
    HTML::td(array('content' => _("Customer ID: "), "style" => "width:90px"), true)->td(true);
    HTML::input('id', array('value' => $customer->id, 'name' => 'id', 'size' => 10, 'maxlength' => '7'));
 
@@ -75,7 +75,7 @@
    start_outer_table($table_style2, 5);
 
    table_section(1);
-   table_section_title(_("Shipping Details"), 2, 'tableheader3 ');
+   table_section_title(_("Shipping Details"), 2);
    /** @noinspection PhpUndefinedMethodInspection */
    HTML::tr(true)->td('branchSelect', array('colspan' => 2, 'style' => "text-align:center; margin:0 auto; "));
    UI::select('branchList', array($currentBranch->br_name => $currentBranch->branch_code), array('name' => 'branchList'));
@@ -90,7 +90,7 @@
    textarea_row(_("Street:"), 'br_br_address', $currentBranch->br_address, 35, 2);
    postcode::render(array('br_postcode', $currentBranch->postcode), array('br_city', $currentBranch->city), array('br_state', $currentBranch->state));
    table_section(2);
-   table_section_title(_("Accounts Details"), 2, 'tableheader3');
+   table_section_title(_("Accounts Details"), 2);
    /** @noinspection PhpUndefinedMethodInspection */
    HTML::tr(true)->td(array('style' => "text-align:center; margin:0 auto", 'colspan' => 2));
    hidden('id', $customer->id);
@@ -112,7 +112,7 @@
    start_outer_table($table_style2, 5);
    table_section(1);
    hidden('accounts_id', $customer->accounts->accounts_id);
-   table_section_title(_("Accounts Details:"), 2, ' tableheader3 ');
+   table_section_title(_("Accounts Details:"), 2);
    text_row(_("Accounts Contact:"), 'acc_contact_name', $customer->accounts->contact_name, 40, 40);
    email_row(_("E-mail:"), 'acc_email', $customer->email, 40, 40);
    text_row(_("Phone Number:"), 'acc_phone', $customer->accounts->phone, 40, 30);
@@ -152,7 +152,7 @@
       hidden('dimension2_id', 0);
    }
    table_section(2);
-   table_section_title(_("Contact log:"), 2, 'tableheader3 ');
+   table_section_title(_("Contact log:"), 2);
    start_row();
    HTML::td(array('class' => 'ui-widget-content center-content', 'colspan' => 2));
    UI::button('addLog', "Add log entry")->td->tr->tr(true)->td(array('colspan' => 2))->textarea('messageLog', array('cols' => 50, 'rows' => 25));
@@ -162,18 +162,18 @@
    end_outer_table(1);
 
    $menu->endTab()->startTab('Customer Contacts', 'Customer Contacts');
-   HTML::div(array('style' => 'text-align:center'))->div('Contacts',array('style'=>'min-height:200px;'));
-   HTML::script('contact', array('type' => 'text/x-jquery-tmpl'))->table('contact-${id}',array('class'=>'','style'=>'display:inline-block'))->tr(true)->td(array('content' =>
+   HTML::div(array('style' => 'text-align:center'))->div('Contacts', array('style' => 'min-height:200px;'));
+   HTML::script('contact', array('type' => 'text/x-jquery-tmpl'))->table('contact-${id}', array('class' => '', 'style' => 'display:inline-block'))->tr(true)->td(array('content' =>
                                                                                                                                                                  '${name}',
-   'class' => 'tableheader3',
-                                                                                                                 'colspan' => 2))->td->tr;
+                                                                                                                                                                      'class' => 'tableheader',
+                                                                                                                                                                      'colspan' => 2))->td->tr;
    text_row("Name:", 'con_name-${id}', '${name}', 35, 40);
    text_row("Phone:", 'con_phone1-${id}', '${phone1}', 35, 40);
    text_row("Phone2:", 'con_phone2-${id}', '${phone2}', 35, 40);
    text_row("Email:", 'con_email-${id}', '${email}', 35, 40);
    text_row("Dept:", 'con_department-${id}', '${department}', 35, 40);
 
-   HTML::td()->tr->table->script->div->div; 
+   HTML::td()->tr->table->script->div->div;
 
    $menu->endTab()->startTab('Extra Shipping Info', 'Extra Shipping Info');
    start_outer_table($table_style2, 5);
@@ -204,8 +204,10 @@
    $menu->endTab()->startTab('Invoices', 'Invoices');
    HTML::div('transactions');
    $menu->endTab()->render();
+
    hidden('popup', @$_REQUEST['popup']);
    end_form();
+     
    HTML::div('contactLog', array('title' => 'New contact log entry', 'class' => 'ui-widget-overlay', 'style' => 'display:none;'));
    HTML::p('New log entry:', array('class' => 'validateTips'));
    start_table();
@@ -218,7 +220,7 @@
    if ($customer->id) {
       UI::button('btnCustomer', 'Update Customer',
                  array('name' => 'submit', 'type' => 'submit', 'style' => 'margin:10px;'));
-   } else {
+   } elseif (!isset($_GET['id']) && !isset($_GET['popup'])) {
       UI::button('btnCustomer', 'New Customer',
                  array('name' => 'submit', 'type' => 'submit', 'class' => ' ui-helper-hidden',
                       'style' => 'margin:10px;'));
@@ -227,14 +229,17 @@
                                           'style' => 'margin:10px;'));
    /** @noinspection PhpUndefinedMethodInspection */
    HTML::_div();
-   HTML::_div()->div('shortcuts', array('style' => 'width:50%;display:block;margin:0 auto;'));
-   $shortcuts = new MenuUI(array('noajax' => true));
-   $shortcuts->startTab('Create Order', 'Create Order for this customer!', '/sales/sales_order_entry.php?NewOrder=Yes&customer_id=');
-   $shortcuts->endTab();
-   $shortcuts->startTab('Create Quote', 'Create Quote for this customer!', '/sales/sales_order_entry.php?NewQuotation=Yes&customer_id=');
-   $shortcuts->endTab();
-   $shortcuts->render();
-   /** @noinspection PhpUndefinedMethodInspection */
    HTML::_div();
+   if (!isset($_GET['id']) && !isset($_GET['popup'])) {
+      HTML::div('shortcuts', array('style' => 'width:50%;display:block;margin:0 auto;'));
+      $shortcuts = new MenuUI(array('noajax' => true));
 
+      $shortcuts->startTab('Create Order', 'Create Order for this customer!', '/sales/sales_order_entry.php?NewOrder=Yes&customer_id=');
+      $shortcuts->endTab();
+      $shortcuts->startTab('Create Quote', 'Create Quote for this customer!', '/sales/sales_order_entry.php?NewQuotation=Yes&customer_id=');
+      $shortcuts->endTab();
+      $shortcuts->render();
+      /** @noinspection PhpUndefinedMethodInspection */
+      HTML::_div();
+   }
    end_page(true, true);

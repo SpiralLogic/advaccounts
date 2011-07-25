@@ -397,7 +397,7 @@ function add_user_js_data()
 	$js = "\n" . "var user = {\n" . "theme: '" . $path_to_root . '/themes/' . user_theme() . '/' . "',\n" . "loadtxt: '" . _('Requesting data...') . "',\n" . "date: '" . Today() . "',\n" // server date
 		  . "datesys: " . $date_system . ",\n" . "datefmt: " . user_date_format() . ",\n" . "datesep: '" .
 		  $dateseps[user_date_sep()] . "',\n" . "ts: '$ts',\n" . "ds: '$ds',\n" . "pdec : " . user_price_dec() . "}\n";
-	JS::register($js);
+	JS::beforeload($js);
 }
 
 //--------------------------------------------------------------------------
