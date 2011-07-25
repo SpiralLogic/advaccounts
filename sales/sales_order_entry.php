@@ -647,6 +647,7 @@
 			submit_center_first('ProcessOrder', $porder, _('Check entered data and save document'), 'default');
 
 		}
+
 		else {
 			submit_center_first('ProcessOrder', $corder, _('Validate changes and update document'), 'default');
 		}

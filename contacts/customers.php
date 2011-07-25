@@ -67,7 +67,7 @@
    HTML::div('customerIDs', array('style' => 'display:inline-block'));
    HTML::table(null, array("style" => "margin:0 auto; padding-bottom:5px; font-weight:bold"))->tr(true)->td(true);
    HTML::label(array('for' => 'name', 'content' => 'Customer name:'));
-   HTML::input('name', $customer->name, array('name' => 'name', 'size' => 50));
+   HTML::input('name', array('value' => $customer->name, 'name' => 'name', 'size' => 50));
    HTML::td(array('content' => _("Customer ID: "), "style" => "width:90px"), true)->td(true);
    HTML::input('id', array('value' => $customer->id, 'name' => 'id', 'size' => 10, 'maxlength' => '7'));
 
@@ -112,7 +112,7 @@
    start_outer_table($table_style2, 5);
    table_section(1);
    hidden('accounts_id', $customer->accounts->accounts_id);
-   table_section_title(_("Accounts Details:"), 2, '  ');
+   table_section_title(_("Accounts Details:"), 2);
    text_row(_("Accounts Contact:"), 'acc_contact_name', $customer->accounts->contact_name, 40, 40);
    email_row(_("E-mail:"), 'acc_email', $customer->email, 40, 40);
    text_row(_("Phone Number:"), 'acc_phone', $customer->accounts->phone, 40, 30);
@@ -163,8 +163,8 @@
 	end_outer_table(1);
 
    $menu->endTab()->startTab('Customer Contacts', 'Customer Contacts');
-   HTML::div(array('style' => 'text-align:center'))->div('Contacts',array('style'=>'min-height:200px;'));
-   HTML::script('contact', array('type' => 'text/x-jquery-tmpl'))->table('contact-${id}',array('class'=>'','style'=>'display:inline-block'))->tr(true)->td(array('content' =>
+   HTML::div(array('style' => 'text-align:center'))->div('Contacts', array('style' => 'min-height:200px;'));
+   HTML::script('contact', array('type' => 'text/x-jquery-tmpl'))->table('contact-${id}', array('class' => '', 'style' => 'display:inline-block'))->tr(true)->td(array('content' =>
                                                                                                                                                                  '${name}',
    'class' => 'tableheader',
                                                                                                                  'colspan' => 2))->td->tr;
@@ -174,7 +174,7 @@
    text_row("Email:", 'con_email-${id}', '${email}', 35, 40);
    text_row("Dept:", 'con_department-${id}', '${department}', 35, 40);
 
-   HTML::td()->tr->table->script->div->div; 
+   HTML::td()->tr->table->script->div->div;
 
    $menu->endTab()->startTab('Extra Shipping Info', 'Extra Shipping Info');
    start_outer_table($table_style2, 5);
@@ -205,8 +205,10 @@
    $menu->endTab()->startTab('Invoices', 'Invoices');
    HTML::div('transactions');
    $menu->endTab()->render();
+
    hidden('popup', @$_REQUEST['popup']);
    end_form();
+     
    HTML::div('contactLog', array('title' => 'New contact log entry', 'class' => 'ui-widget-overlay', 'style' => 'display:none;'));
    HTML::p('New log entry:', array('class' => 'validateTips'));
    start_table();
@@ -219,7 +221,7 @@
    if ($customer->id) {
       UI::button('btnCustomer', 'Update Customer',
                  array('name' => 'submit', 'type' => 'submit', 'style' => 'margin:10px;'));
-   } else {
+   } elseif (!isset($_GET['id']) && !isset($_GET['popup'])) {
       UI::button('btnCustomer', 'New Customer',
                  array('name' => 'submit', 'type' => 'submit', 'class' => ' ui-helper-hidden',
                       'style' => 'margin:10px;'));

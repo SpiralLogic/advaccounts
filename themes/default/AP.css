@@ -1,13 +1,9 @@
 #_tabs2 {
-	text-align:    center;
-	width:         100%;
-	height:        80px;
-	background:    #464646;
+	
 	background:    -webkit-gradient(linear, 100% 19%, 100% 71%, from(#858585), to(#9E9E9E), color-stop(0, #C7C7C7));
 	background:    -moz-linear-gradient(19% 100% 90deg, #858585, #9E9E9E, #C7C7C7 71%);
 	border-top:    2px solid #939393;
 	position:      relative;
-	margin-bottom: 30px;
 }
 
 #_tabs2 .title {
@@ -29,7 +25,7 @@
 }
 
 #_tabs2 .menu {
-	height:       80px;
+	height:       40px;
 	border-left:  1px solid rgba(0, 0, 0, 0.3);
 	border-right: 1px solid rgba(255, 255, 255, 0.3);
 	margin:       0 auto;
@@ -51,7 +47,7 @@
 #_tabs2 ul.menu li {
 	list-style: none;
 	float:      left;
-	height:     79px;
+	height:     39px;
 	text-align: center;
 	background: -webkit-gradient(linear, 100% 100%, 100% 0%, from(#1B9C52), to(#49C46E), color-stop(.5, #43E85E));
 	background: -moz-linear-gradient(100% 100% 90deg, #1B9C52, #43E85E, #49C46E 100%);
@@ -66,8 +62,7 @@
 	border-left:                        1px solid rgba(255, 255, 255, 0.1);
 	border-right:                       1px solid rgba(0, 0, 0, 0.1);
 	text-align:                         center;
-	line-height:                        79px;
-	-webkit-transition-duration:        0.5s;
+	line-height:                        39px;	-webkit-transition-duration:        0.5s;
 	-webkit-transition-timing-function: linear;
 	background:                         -webkit-gradient(linear, 100% 19%, 100% 71%, from(#858585), to(#9E9E9E), color-stop(0, #C7C7C7));
 	background:                         -moz-linear-gradient(19% 100% 90deg, #858585, #9E9E9E, #C7C7C7 71%);
