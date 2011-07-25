@@ -647,6 +647,16 @@ function customer_list($name, $selected_id = null, $spec_option = false, $submit
     if ($editkey) {
         set_editor('customer', $name, $editkey);
     }
+	$customerBox = new Dialog('Customer Edit', 'customerBox', '');
+	$customerBox->addButtons(array('Close' => '$(this).dialog("close");$("#customer_id").trigger("change")'));
+	$customerBox->setOptions(array('autoopen' => false, 'modal' => true, 'width' => '850', 'height' => '850', 'resizeable' => true));
+	$customerBox->show();
+	JS::addLiveEvent('#customer_id_label', 'click', <<<JS
+var val = $("#customer_id").val();
+if (val>0) {
+$("#customerBox").html("<iframe src='/contacts/customers.php?popup=1&id="+val+"' width='100%' height='710' scrolling='no' style='border:none' frameborder='0'></iframe>").dialog('open');}
+JS
+	);
     return combo_input($name, $selected_id, $sql, 'debtor_no', 'name',
                        array('format' => '_format_add_curr', 'order' => array('debtor_ref'), 'search_box' => $mode != 0, 'type' => 1, 'size' => 20,
                             'spec_option' => $spec_option === true ? _("All Customers")
@@ -672,6 +682,7 @@ function customer_list_row($label, $name, $selected_id = null, $all_option = fal
     echo "<tr><td id='customer_id_label' class='label'>$label</td><td nowrap>";
     echo customer_list($name, $selected_id, $all_option, $submit_on_change, $show_inactive, $editkey);
     echo "</td>\n</tr>\n";
+		
 }
 
 //------------------------------------------------------------------------------------------------
@@ -945,6 +956,7 @@ function sales_items_list($name,
                                         'editable' => 30,
                                         'max' => 50),
                                    $opts));
+
 }
 
 /*function sales_items_list($name, $selected_id = null, $all_option = false, $submit_on_change = false, $type = '', $opts = array()) {
