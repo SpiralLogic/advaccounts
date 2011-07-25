@@ -25,8 +25,9 @@ check_db_has_costable_items(_("There are no inventory items defined in the syste
 
 //------------------------------------------------------------------------------------
 
-if (isset($_GET['stock_id']))
+if (isset($_GET['stock_id'])) {
 	$_POST['stock_id'] = $_GET['stock_id'];
+}
 
 if (list_updated('stock_id')) {
 	$Ajax->activate('show_heading');
@@ -36,8 +37,9 @@ if (list_updated('stock_id')) {
 
 start_form();
 
-if (!isset($_POST['stock_id']))
+if (!isset($_POST['stock_id'])) {
 	$_POST['stock_id'] = get_global_stock_item();
+}
 
 echo "<center>" . _("Item:") . "&nbsp;";
 echo stock_costable_items_list('stock_id', $_POST['stock_id'], false, true);

@@ -727,7 +727,7 @@ function amount_cells_ex($label, $name, $size, $max = null, $init = null, $param
 		echo "class='freight' ";
 	else
 		echo "class='amount' ";
-	echo "type=\"text\" id=\"ChgPriceCalc$name\" name=\"$name\" size=\"$size\" maxlength=\"$max\" dec=\"$dec\" value=\"" .
+	echo "type=\"text\" name=\"$name\" size=\"$size\" maxlength=\"$max\" dec=\"$dec\" value=\"" .
 		 $_POST[$name] . "\">";
 
 	if ($post_label) {

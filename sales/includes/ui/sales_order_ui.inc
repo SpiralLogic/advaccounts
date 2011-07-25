@@ -169,7 +169,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 				else {
 					alt_table_row_color($k);
 				}
-				view_stock_status_cell($stock_item->stock_id);
+				label_cell($stock_item->stock_id,"class='stock' data-stock_id='{$stock_item->stock_id}'");
 				//label_cell($stock_item->item_description, "nowrap" );
 				label_cell($stock_item->item_description);
 				$dec = get_qty_dec($stock_item->stock_id);
@@ -430,12 +430,12 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 			$_POST['item_description'] = $order->line_items[$id]->item_description;
 			$units = $order->line_items[$id]->units;
 			hidden('stock_id', $_POST['stock_id']);
-			label_cell($_POST['stock_id']);
+			label_cell($_POST['stock_id'],'class=".stock"');
 			textarea_cells(null, 'item_description', null, 50, 5);
 			//label_cell($order->line_items[$line_no]->item_description, "nowrap");
 			$Ajax->activate('items_table');
 		}
-		else // prepare new line
+		else // prepare new line 
 		{
 			sales_items_list_cells(null, 'stock_id', null, false, true,false);
 			if (list_updated('stock_id')) {

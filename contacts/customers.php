@@ -51,7 +51,7 @@
       $status = $customer->getStatus();
       display_notification($status['message']);
    }
-   if (db_has_customers() && !isset($_GET['id']) && !isset($_GET['popup'])) {
+   if (db_has_customers() && !isset($_GET['popup'])&& !isset($_GET['id'])) {
       /** @noinspection PhpUndefinedMethodInspection */
       HTML::div('custsearch');
       HTML::table(null, array("style" => "margin:0 auto; padding-bottom:5px; font-weight:bold"));
@@ -118,19 +118,18 @@
    text_row(_("Phone Number:"), 'acc_phone', $customer->accounts->phone, 40, 30);
    text_row(_("2nd Phone Number:"), 'acc_phone2', $customer->accounts->phone2, 40, 30);
    text_row(_("Fax Number:"), 'acc_fax', $customer->accounts->fax, 40, 30);
-   textarea_row(_("Street:"), 'acc_br_address', $customer->accounts->br_address, 35, 5);
+   textarea_row(_("Street:"), 'acc_br_address', $customer->accounts->br_address, 35, 2);
    email_row(_("City"), 'acc_city', $customer->accounts->city, 35, 40);
    email_row(_("postcode"), 'acc_postcode', $customer->accounts->postcode, 35, 40);
    email_row(_("State:"), 'acc_state', $customer->accounts->state, 35, 40);
-   textarea_row(_("Postal Address:"), 'acc_br_post_address', $customer->accounts->br_address, 35, 5);
+   textarea_row(_("Postal Address:"), 'acc_br_post_address', $customer->accounts->br_address, 35, 2);
    percent_row(_("Discount Percent:"), 'discount', $customer->discount, ($_SESSION['wa_current_user']->can_access
                                      ('SA_CUSTOMER_CREDIT')) ? "" : " disabled=\"\"");
    percent_row(_("Prompt Payment Discount Percent:"), 'pymt_discount', $customer->pymt_discount, ($_SESSION['wa_current_user']->can_access
                                                     ('SA_CUSTOMER_CREDIT')) ? "" : " disabled=\"\"");
    amount_row(_("Credit Limit:"), 'credit_limit', $customer->credit_limit, ($_SESSION['wa_current_user']->can_access
                                 ('SA_CUSTOMER_CREDIT')) ? "" : " disabled=\"\"");
-   payment_terms_list_row(_("Pament Terms:"), 'payment_terms', $customer->payment_terms);
-   credit_status_list_row(_("Credit Status:"), 'credit_status', $customer->credit_status);
+
    text_row(_("GSTNo:"), 'tax_id', $customer->tax_id, 35, 40);
    if (!$customer->id) {
       currencies_list_row(_("Customer's Currency:"), 'curr_code', $customer->curr_code);
@@ -159,14 +158,16 @@
    contact_log::read($customer->id, 'C');
    /** @noinspection PhpUndefinedMethodInspection */
    HTML::textarea()->td->td;
-   end_outer_table(1);
+   payment_terms_list_row(_("Pament Terms:"), 'payment_terms', $customer->payment_terms);
+   credit_status_list_row(_("Credit Status:"), 'credit_status', $customer->credit_status);
+	end_outer_table(1);
 
    $menu->endTab()->startTab('Customer Contacts', 'Customer Contacts');
    HTML::div(array('style' => 'text-align:center'))->div('Contacts', array('style' => 'min-height:200px;'));
    HTML::script('contact', array('type' => 'text/x-jquery-tmpl'))->table('contact-${id}', array('class' => '', 'style' => 'display:inline-block'))->tr(true)->td(array('content' =>
                                                                                                                                                                  '${name}',
-                                                                                                                                                                      'class' => 'tableheader',
-                                                                                                                                                                      'colspan' => 2))->td->tr;
+   'class' => 'tableheader',
+                                                                                                                 'colspan' => 2))->td->tr;
    text_row("Name:", 'con_name-${id}', '${name}', 35, 40);
    text_row("Phone:", 'con_phone1-${id}', '${phone1}', 35, 40);
    text_row("Phone2:", 'con_phone2-${id}', '${phone2}', 35, 40);
@@ -229,17 +230,17 @@
                                           'style' => 'margin:10px;'));
    /** @noinspection PhpUndefinedMethodInspection */
    HTML::_div();
-   HTML::_div();
-   if (!isset($_GET['id']) && !isset($_GET['popup'])) {
-      HTML::div('shortcuts', array('style' => 'width:50%;display:block;margin:0 auto;'));
-      $shortcuts = new MenuUI(array('noajax' => true));
+	if (!isset($_GET['popup'])&& !isset($_GET['id'])) {
 
-      $shortcuts->startTab('Create Order', 'Create Order for this customer!', '/sales/sales_order_entry.php?NewOrder=Yes&customer_id=');
-      $shortcuts->endTab();
-      $shortcuts->startTab('Create Quote', 'Create Quote for this customer!', '/sales/sales_order_entry.php?NewQuotation=Yes&customer_id=');
-      $shortcuts->endTab();
-      $shortcuts->render();
-      /** @noinspection PhpUndefinedMethodInspection */
-      HTML::_div();
-   }
+   HTML::_div()->div('shortcuts', array('style' => 'width:50%;display:block;margin:0 auto;'));
+   $shortcuts = new MenuUI(array('noajax' => true));
+   $shortcuts->startTab('Create Order', 'Create Order for this customer!', '/sales/sales_order_entry.php?NewOrder=Yes&customer_id=');
+   $shortcuts->endTab();
+   $shortcuts->startTab('Create Quote', 'Create Quote for this customer!', '/sales/sales_order_entry.php?NewQuotation=Yes&customer_id=');
+   $shortcuts->endTab();
+   $shortcuts->render();
+   /** @noinspection PhpUndefinedMethodInspection */
+	}
+	HTML::_div();
+
    end_page(true, true);

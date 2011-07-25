@@ -133,7 +133,7 @@
 #content {
 	border: 1px solid #8ab9f2;
 	margin: 5px auto;
-	width:  60%;
+	width:  100%;
 }
 
 #content, #wrapper {
@@ -391,20 +391,30 @@
 	background-color: #FFC0CB;
 }
 
-.tableheader {
-	background-color: #f69f20;
+.tableheader, .tableheader2, .menu_group {
+	font-size:        1.3em;
+	line-height:      1.3em;
+	font-weight:      bold;
+	box-shadow:       0 1px 0 rgba(255, 255, 255, 0.6) inset;
+	background-image: -moz-linear-gradient(center top, #B9E0F5, #5F83B9);
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0.00, #B9E0F5), color-stop(1.00, #5F83B9));
+	filter:           progid:DXImageTransform.Microsoft.gradient(enabled = 'true', startColorstr = #EDEDED, endColorstr = #C4C4C4, GradientType = 1);
+	border:           1px solid #7096AB;
+	box-shadow:       none;
 	color:            #333;
-	font-weight:      700;
-	text-align:       center;
+	padding:          5px;
+
+}
+
+.tableheader {
+	color:      #333;
+	text-align: center;
 }
 
 .tableheader2 {
-	background-color: #f69f20;
-	color:            #333;
-	font-weight:      700;
-	text-align:       left;
+	color:      #333;
+	text-align: left;
 }
-
 .tableseparator {
 	border-left: 1px solid #446;
 }

@@ -144,7 +144,7 @@ JsHttpRequest._request = function(trigger, form, tout, retry)
 					set_mark();
 
 					Behaviour.apply();
-
+Adv.Events.rebind();
 					if (errors.length > 0)
 						window.scrollTo(0, 0);
 					//document.getElementById('msgbox').scrollIntoView(true);

@@ -289,7 +289,9 @@ $stock_types = array(
 
 define('TAG_ACCOUNT', 1);
 define('TAG_DIMENSION', 2);
-
+define('TABLESTYLE_NOBORDER','tablestyle_noborder');
+define('TABLESTYLE2','tablestyle2');
+define('TABLESTYLE','tablestyle');
 $tag_types = array(
 	TAG_ACCOUNT => _("Account"),
 	TAG_DIMENSION => _("Dimension")
