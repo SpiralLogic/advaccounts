@@ -49,9 +49,9 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 
 		submenu_email(_("Email This Order"), $trans_type, $order_no, null, $supplier->getEmailAddresses(), 1);
 
-		hyperlink_params(APP_PATH . "/purchasing/po_receive_items.php", _("&Receive Items on this Purchase Order"), "PONumber=$order_no");
+		hyperlink_params("/purchasing/po_receive_items.php", _("&Receive Items on this Purchase Order"), "PONumber=$order_no");
 		hyperlink_params($_SERVER['PHP_SELF'], _("Enter &Another Purchase Order"), "NewOrder=yes");
-		hyperlink_no_params(APP_PATH . "/purchasing/inquiry/po_search.php", _("Select An &Outstanding Purchase Order"));
+		hyperlink_no_params("/purchasing/inquiry/po_search.php", _("Select An &Outstanding Purchase Order"));
 		display_footer_exit();
 	}
 	//--------------------------------------------------------------------------------------------------
