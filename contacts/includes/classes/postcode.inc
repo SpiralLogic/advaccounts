@@ -17,7 +17,7 @@ private static $count=0;
         while (($resultArray[] = mysql_fetch_assoc($result)) || array_pop($resultArray)) ;
         return $resultArray;
     }
-
+ 
     static function searchByCity($city = "*")
     {
         $sql = "SELECT ID as id, CONCAT(Locality,', ',Pcode,', ',State) as label,  CONCAT(Locality,'|',Pcode,'|',State) as value FROM postcodes WHERE Locality LIKE " . db_escape('%' . $city . '%') . " ORDER BY Locality LIMIT 20";
@@ -31,12 +31,12 @@ private static $count=0;
         $opts = array('url'=>'search.php');
         extract(array_merge($opts,$options));
         $url='search.php';
-        HTML::tr(true)->td(true)->label(array('content' => 'City: ','for'=>$city[0]),false)->td->td(true);
+        HTML::tr(true)->td(array('class'=>'label'))->label(array('content' => 'City: ','for'=>$city[0]),false)->td->td(true);
         UI::search($city[0], array('url' => $url.'?city=1', 'nodiv' => true, 'name' => $city[0], 'size' => 35, 'max' => 40, 'callback' => 'Adv.postcode'.static::$count.'.fetch'));
         HTML::_td()->tr;
-        HTML::tr(true)->td(true)->label(array('content' => 'State: ','for'=>$state[0]),false)->td->td(true);
+        HTML::tr(true)->td(array('class'=>'label'))->label(array('content' => 'State: ','for'=>$state[0]),false)->td->td(true);
         HTML::input($state[0],array('maxlength'=>35,'size'=> 35,'value'=>$state[1],'name'=>$state[0]));
-        HTML::tr(true)->td(true)->label(array('content' => 'Postcode: ','for'=>$postcode[0]),false)->td->td(true);
+        HTML::tr(true)->td(array('class'=>'label'))->label(array('content' => 'Postcode: ','for'=>$postcode[0]),false)->td->td(true);
 
         UI::search($postcode[0], array('url' => $url.'?postcode=1', 'nodiv' => true, 'name' => $postcode[0], 'size' => 35, 'max' => 40, 'callback' => 'Adv.postcode'.static::$count.'.fetch'));
         HTML::_td()->tr;

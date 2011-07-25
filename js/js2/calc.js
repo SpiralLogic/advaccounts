@@ -11,7 +11,5 @@ $(function($)
 		  }
 
 	  });
-/// $("#_page_body").('.amount','focus',
-	  /*, buttonImageOnly: true, buttonImage: '../themes/default/images/calculator.png'*/
 
   });
