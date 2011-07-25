@@ -40,21 +40,17 @@
 var Behaviour = {
 	list : new Array,
 
-	register : function(sheet)
-	{
+	register : function(sheet) {
 		Behaviour.list.push(sheet);
 	},
 
-	start : function()
-	{
-		Behaviour.addLoadEvent(function()
-							   {
-								   Behaviour.apply();
-							   });
+	start : function() {
+		Behaviour.addLoadEvent(function() {
+			Behaviour.apply();
+		});
 	},
 
-	apply : function()
-	{
+	apply : function() {
 		for (h = 0; sheet = Behaviour.list[h]; h++) {
 			for (selector in sheet) {
 				var sels = selector.split(',');
@@ -73,15 +69,13 @@ var Behaviour = {
 		}
 	},
 
-	addLoadEvent : function(func)
-	{
+	addLoadEvent : function(func) {
 		var oldonload = window.onload;
 
 		if (typeof window.onload != 'function') {
 			window.onload = func;
 		} else {
-			window.onload = function()
-			{
+			window.onload = function() {
 				oldonload();
 				func();
 			}
@@ -113,14 +107,12 @@ Behaviour.start();
  -- Opera 7 fails
  */
 
-function getAllChildren(e)
-{
+function getAllChildren(e) {
 	// Returns all children of element. Workaround required for IE5/Windows. Ugh.
 	return e.all ? e.all : e.getElementsByTagName('*');
 }
 
-document.getElementsBySelector = function(selector)
-{
+document.getElementsBySelector = function(selector) {
 	// Attempt to fail gracefully in lesser browsers
 	if (!document.getElementsByTagName) {
 		return new Array();
@@ -206,50 +198,43 @@ document.getElementsBySelector = function(selector)
 			var checkFunction; // This function will be used to filter the elements
 			switch (attrOperator) {
 				case '=': // Equality
-					checkFunction = function(e)
-					{
+					checkFunction = function(e) {
 						return (e.getAttribute(attrName) == attrValue);
 					};
 					break;
 				case '~': // Match one of space seperated words
-					checkFunction = function(e)
-					{
+					checkFunction = function(e) {
 						var a = e.getAttribute(attrName);
 						return (a && a.match(new RegExp('\\b' + attrValue + '\\b')));
 					};
 					break;
 				case '|': // Match start with value followed by optional hyphen
-					checkFunction = function(e)
-					{
+					checkFunction = function(e) {
 						var a = e.getAttribute(attrName);
 						return (a && a.match(new RegExp('^' + attrValue + '-?')));
 					};
 					break;
 				case '^': // Match starts with value
-					checkFunction = function(e)
-					{
+					checkFunction = function(e) {
 						var a = e.getAttribute(attrName);
 						return (a && a.indexOf(attrValue) == 0);
 					};
 					break;
 				case '$': // Match ends with value - fails with "Warning" in Opera 7
-					checkFunction = function(e)
-					{
+					checkFunction = function(e) {
 						var a = e.getAttribute(attrName);
 						return (a && a.lastIndexOf(attrValue) == e.getAttribute(attrName).length - attrValue.length);
 					};
 					break;
 				case '*': // Match contains value
-					checkFunction = function(e)
-					{
+					checkFunction = function(e) {
 						var a = e.getAttribute(attrName);
 						return (a && a.indexOf(attrValue) > -1);
 					};
 					break;
 				default :
 					// Just test for existence of attribute
-					checkFunction = function(e)
-					{
+					checkFunction = function(e) {
 						return e.getAttribute(attrName);
 					};
 			}

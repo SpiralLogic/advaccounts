@@ -235,7 +235,7 @@ function combo_input($name, $selected_id = null, $sql, $valfield, $namefield, $o
         $selected_id = array($first_id);
     }
     $_POST[$name] = $multi ? $selected_id : $selected_id[0];
-    $selector = "<select autocomplete='off' " . ($multi ? "multiple" : '') . (
+    $selector = "<select id='$name' autocomplete='off' " . ($multi ? "multiple" : '') . (
     $opts['height'] !== false ? ' size="' . $opts['height'] . '"' : '') . "$disabled name='$name" . ($multi ? '[]'
             : '') . "' class='$class' title='" .
                 $opts['sel_hint'] . "' $rel>" . $selector . "</select>\n";
@@ -669,7 +669,7 @@ function customer_list_cells($label, $name, $selected_id = null, $all_option = f
 
 function customer_list_row($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false, $show_inactive = false, $editkey = false)
 {
-    echo "<tr><td class='label'>$label</td><td nowrap>";
+    echo "<tr><td id='customer_id_label' class='label'>$label</td><td nowrap>";
     echo customer_list($name, $selected_id, $all_option, $submit_on_change, $show_inactive, $editkey);
     echo "</td>\n</tr>\n";
 }

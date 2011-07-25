@@ -100,7 +100,6 @@
 					LEFT JOIN (SELECT SUM(purch_order_details.quantity_ordered - purch_order_details.quantity_received) AS onorder , purch_orders.into_stock_location AS loc_code
 					FROM purch_order_details, purch_orders	WHERE purch_order_details.order_no= purch_orders.order_no AND purch_order_details.item_code = " . db_escape($this->id) . " GROUP BY purch_orders.into_stock_location) p ON p.loc_code=l.loc_code";
 
-					FB::info($sql);
 			$result = db_query($sql, 'Could not get item stock levels');
 			while ($row = db_fetch_assoc($result)) {
 				$this->stockLevels[] = $row;

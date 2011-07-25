@@ -37,8 +37,8 @@
    check_db_has_sales_areas(_("There are no sales areas defined in the system. At least one sales area is required before proceeding."));
    check_db_has_shippers(_("There are no shipping companies defined in the system. At least one shipping company is required before proceeding."));
    check_db_has_tax_groups(_("There are no tax groups defined in the system. At least one tax group is required before proceeding."));
-   if (isset($_GET['debtor_no'])) {
-      $customer = new Customer($_GET['debtor_no']);
+   if (isset($_GET['id'])) {
+      $customer = new Customer($_GET['id']);
    } elseif (isset($_POST['id']) && !empty($_POST['id'])) {
       $customer = new Customer($_POST['id']);
    } else {
@@ -51,7 +51,7 @@
       $status = $customer->getStatus();
       display_notification($status['message']);
    }
-   if (db_has_customers()) {
+   if (db_has_customers() && !isset($_GET['popup'])&& !isset($_GET['id'])) {
       /** @noinspection PhpUndefinedMethodInspection */
       HTML::div('custsearch');
       HTML::table(null, array("style" => "margin:0 auto; padding-bottom:5px; font-weight:bold"));
@@ -75,7 +75,7 @@
    start_outer_table($table_style2, 5);
 
    table_section(1);
-   table_section_title(_("Shipping Details"), 2, 'tableheader3 ');
+   table_section_title(_("Shipping Details"), 2);
    /** @noinspection PhpUndefinedMethodInspection */
    HTML::tr(true)->td('branchSelect', array('colspan' => 2, 'style' => "text-align:center; margin:0 auto; "));
    UI::select('branchList', array($currentBranch->br_name => $currentBranch->branch_code), array('name' => 'branchList'));
@@ -90,7 +90,7 @@
    textarea_row(_("Street:"), 'br_br_address', $currentBranch->br_address, 35, 2);
    postcode::render(array('br_postcode', $currentBranch->postcode), array('br_city', $currentBranch->city), array('br_state', $currentBranch->state));
    table_section(2);
-   table_section_title(_("Accounts Details"), 2, 'tableheader3');
+   table_section_title(_("Accounts Details"), 2);
    /** @noinspection PhpUndefinedMethodInspection */
    HTML::tr(true)->td(array('style' => "text-align:center; margin:0 auto", 'colspan' => 2));
    hidden('id', $customer->id);
@@ -112,25 +112,24 @@
    start_outer_table($table_style2, 5);
    table_section(1);
    hidden('accounts_id', $customer->accounts->accounts_id);
-   table_section_title(_("Accounts Details:"), 2, ' tableheader3 ');
+   table_section_title(_("Accounts Details:"), 2, '  ');
    text_row(_("Accounts Contact:"), 'acc_contact_name', $customer->accounts->contact_name, 40, 40);
    email_row(_("E-mail:"), 'acc_email', $customer->email, 40, 40);
    text_row(_("Phone Number:"), 'acc_phone', $customer->accounts->phone, 40, 30);
    text_row(_("2nd Phone Number:"), 'acc_phone2', $customer->accounts->phone2, 40, 30);
    text_row(_("Fax Number:"), 'acc_fax', $customer->accounts->fax, 40, 30);
-   textarea_row(_("Street:"), 'acc_br_address', $customer->accounts->br_address, 35, 5);
+   textarea_row(_("Street:"), 'acc_br_address', $customer->accounts->br_address, 35, 2);
    email_row(_("City"), 'acc_city', $customer->accounts->city, 35, 40);
    email_row(_("postcode"), 'acc_postcode', $customer->accounts->postcode, 35, 40);
    email_row(_("State:"), 'acc_state', $customer->accounts->state, 35, 40);
-   textarea_row(_("Postal Address:"), 'acc_br_post_address', $customer->accounts->br_address, 35, 5);
+   textarea_row(_("Postal Address:"), 'acc_br_post_address', $customer->accounts->br_address, 35, 2);
    percent_row(_("Discount Percent:"), 'discount', $customer->discount, ($_SESSION['wa_current_user']->can_access
                                      ('SA_CUSTOMER_CREDIT')) ? "" : " disabled=\"\"");
    percent_row(_("Prompt Payment Discount Percent:"), 'pymt_discount', $customer->pymt_discount, ($_SESSION['wa_current_user']->can_access
                                                     ('SA_CUSTOMER_CREDIT')) ? "" : " disabled=\"\"");
    amount_row(_("Credit Limit:"), 'credit_limit', $customer->credit_limit, ($_SESSION['wa_current_user']->can_access
                                 ('SA_CUSTOMER_CREDIT')) ? "" : " disabled=\"\"");
-   payment_terms_list_row(_("Pament Terms:"), 'payment_terms', $customer->payment_terms);
-   credit_status_list_row(_("Credit Status:"), 'credit_status', $customer->credit_status);
+
    text_row(_("GSTNo:"), 'tax_id', $customer->tax_id, 35, 40);
    if (!$customer->id) {
       currencies_list_row(_("Customer's Currency:"), 'curr_code', $customer->curr_code);
@@ -152,20 +151,22 @@
       hidden('dimension2_id', 0);
    }
    table_section(2);
-   table_section_title(_("Contact log:"), 2, 'tableheader3 ');
+   table_section_title(_("Contact log:"), 2);
    start_row();
    HTML::td(array('class' => 'ui-widget-content center-content', 'colspan' => 2));
    UI::button('addLog', "Add log entry")->td->tr->tr(true)->td(array('colspan' => 2))->textarea('messageLog', array('cols' => 50, 'rows' => 25));
    contact_log::read($customer->id, 'C');
    /** @noinspection PhpUndefinedMethodInspection */
    HTML::textarea()->td->td;
-   end_outer_table(1);
+   payment_terms_list_row(_("Pament Terms:"), 'payment_terms', $customer->payment_terms);
+   credit_status_list_row(_("Credit Status:"), 'credit_status', $customer->credit_status);
+	end_outer_table(1);
 
    $menu->endTab()->startTab('Customer Contacts', 'Customer Contacts');
    HTML::div(array('style' => 'text-align:center'))->div('Contacts',array('style'=>'min-height:200px;'));
    HTML::script('contact', array('type' => 'text/x-jquery-tmpl'))->table('contact-${id}',array('class'=>'','style'=>'display:inline-block'))->tr(true)->td(array('content' =>
                                                                                                                                                                  '${name}',
-   'class' => 'tableheader3',
+   'class' => 'tableheader',
                                                                                                                  'colspan' => 2))->td->tr;
    text_row("Name:", 'con_name-${id}', '${name}', 35, 40);
    text_row("Phone:", 'con_phone1-${id}', '${phone1}', 35, 40);
@@ -227,6 +228,8 @@
                                           'style' => 'margin:10px;'));
    /** @noinspection PhpUndefinedMethodInspection */
    HTML::_div();
+	if (!isset($_GET['popup'])&& !isset($_GET['id'])) {
+
    HTML::_div()->div('shortcuts', array('style' => 'width:50%;display:block;margin:0 auto;'));
    $shortcuts = new MenuUI(array('noajax' => true));
    $shortcuts->startTab('Create Order', 'Create Order for this customer!', '/sales/sales_order_entry.php?NewOrder=Yes&customer_id=');
@@ -235,6 +238,7 @@
    $shortcuts->endTab();
    $shortcuts->render();
    /** @noinspection PhpUndefinedMethodInspection */
-   HTML::_div();
+	}
+	HTML::_div();
 
    end_page(true, true);

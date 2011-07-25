@@ -18,11 +18,16 @@
 		UI::search('item', array('label' => 'Search Item', 'size' => 80, 'url' => 'search.php', 'callback' => 'Items.fetch'));
 		HTML::div();
 	} else {
-$item= $_GET['id'];
+		$item = new Item($_GET['id']);
+		$data['item'] = $item;
+		$data['stockLevels'] = $item->getStockLevels();
+		$data = json_encode($data);
+
 		JS::onload(<<<JS
-Items.fetch('{$item}');
+Items.onload($data);
 JS
-);
+		);
+		//Items.fetch('{$item}');
 	}
 	$menu = new MenuUI();
 	$menu->startTab("Items", "Items");
@@ -44,11 +49,11 @@ JS
 HTML;
 	$menu->endTab();
 	$menu->startTab("Selling", "Sales Prices");
-	echo "<iframe src='{$path_to_root}/inventory/prices.php?frame=1' width='90%' height='600' scrolling='no' frameborder='0'></iframe> ";
+	echo "<iframe id='sellFrame' src='{$path_to_root}/inventory/prices.php?frame=1' width='90%' height='600' scrolling='no' frameborder='0'></iframe> ";
 
 	$menu->endTab();
 	$menu->startTab("Purchasing", "Purchasing Prices");
-	echo "<iframe src='{$path_to_root}/inventory/purchasing_data.php?frame=1' width='90%' height='600' scrolling='no' frameborder='0'></iframe> ";
+	echo "<iframe id='buyFrame' src='{$path_to_root}/inventory/purchasing_data.php?frame=1' width='90%' height='600' scrolling='no' frameborder='0'></iframe> ";
 
 	$menu->endTab();
 	$menu->render();

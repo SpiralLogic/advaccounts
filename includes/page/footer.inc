@@ -22,10 +22,10 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
       add_user_js_data();
       JS::beforeload($js_lib);
 
-      JS::render();
       Messages::showNewMessages();
-      echo "</body>";
-   //   get_websales();
+      echo "</body>";      JS::render();
+
+     get_websales();
       echo   "</html>\n";
       if ($_SESSION["wa_current_user"]->user == 1) {
       }
