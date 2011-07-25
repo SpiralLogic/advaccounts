@@ -666,16 +666,7 @@
 	$stockbox->addButtons(array('Close' => '$(this).dialog("close");'));
 	$stockbox->setOptions(array('autoopen' => false, 'modal' => true, 'width' => '700', 'resizeable' => true));
 	$stockbox->show();
-	$customerBox = new Dialog('Customer Edit', 'customerBox', '');
-	$customerBox->addButtons(array('Close' => '$(this).dialog("close");$("#customer_id").trigger("change")'));
-	$customerBox->setOptions(array('autoopen' => false, 'modal' => true, 'width' => '850', 'height' => '850', 'resizeable' => true));
-	$customerBox->show();
-	JS::addLiveEvent('#customer_id_label', 'click', <<<JS
-var val = $("#customer_id").val();
-if (val>0) {
-$("#customerBox").html("<iframe src='/contacts/customers.php?popup=1&id="+val+"' width='100%' height='710' scrolling='no' style='border:none' frameborder='0'></iframe>").dialog('open');}
-JS
-	);
+
 
 	JS::addLive(<<<JS
 $("#wrapper").delegate('.stock','click',function() { $('#stockbox').html("<iframe src='/items/quickitems.php?id="+$(this).data('stock_id')+"' width='100%' height='600' scrolling='no' style='border:none' frameborder='0'></iframe>").dialog('open') });
