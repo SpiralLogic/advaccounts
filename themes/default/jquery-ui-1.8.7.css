@@ -203,9 +203,9 @@
 /* Interaction Cues
 ----------------------------------*/
 .ui-state-highlight, .ui-widget-content .ui-state-highlight, .ui-widget-header .ui-state-highlight {
-	border:                1px solid #d2dbf4;
-	background:            #f4f8fd;
-	color:                 #0d2054;
+	border: 1px solid #FED22F;
+background: #FFE45C  50% top repeat-x;
+color: #363636;
 	-moz-border-radius:    0 !important;
 	-webkit-border-radius: 0 !important;
 	border-radius:         0 !important;

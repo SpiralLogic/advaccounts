@@ -115,7 +115,7 @@ function CC() {
   }
   function getDayOfWeek(year, month, day) {
 
-    var date = new Date(year,month-1,day);
+    var date = new Date(year,month-1,day)
     return date.getDay();
 
   }

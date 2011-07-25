@@ -50,8 +50,7 @@ class renderer
 			echo "<div id='logo'>\n";
 			$indicator = "$path_to_root/themes/" . user_theme() . "/images/ajax-loader.gif";
 			echo "<h1>$app_title $version<span style='padding-left:280px;'><img id='ajaxmark' src='$indicator' align='center' style='visibility:hidden;'></span></h1>\n";
-			echo "<p id='slogan'>" . _("Theme:") . " " . user_theme() . "</p>\n";
-			echo "</div>\n";
+						echo "</div>\n";
 			$local_path_to_root = $path_to_root;
 			echo '<div id="_tabs2"><div class="menu_container">';
 			echo "<ul class='menu'>\n";
