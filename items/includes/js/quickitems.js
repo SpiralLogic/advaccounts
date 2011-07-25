@@ -97,13 +97,13 @@ var Items = function() {
 
 		},
 		onload: function(data) {
-			console.log(data);
 			$("#Items").empty();
-				$.tmpl('items', data.item).appendTo("#Items");
-				$.tmpl('stockrow', data.stockLevels).appendTo("#stockLevels");
+			$.tmpl('items', data.item).appendTo("#Items");
+			$.tmpl('stockrow', data.stockLevels).appendTo("#stockLevels");
 		},
 		get:function() {
 			return Items.item;
 		}
 	};
 }();
+

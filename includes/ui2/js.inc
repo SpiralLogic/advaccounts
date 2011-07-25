@@ -65,11 +65,15 @@ JS;
 
 		}
 
-		public static function tabs($id, $options = array()) {
+		public static function tabs($id, $options = array(),$page) {
 			$defaults = array('noajax' => false);
 			extract(array_merge($defaults, $options));
-			$content = '';
-			self::$_onload[] = "$('" . $id . "').tabs(" . $content . ");";
+			$content = "$('" . $id . "').tabs()";
+					if ($page) $content .= ".tabs('select',".$page.")";
+			$content .=		";";
+
+
+			self::onload($content);
 		}
 
 		public static function render() {

@@ -15,6 +15,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
       protected $menu = '';
       protected $content = '';
       protected $options= array() ;
+	   public $firstPage = false;
       static $menuCount = 0;
 
       function __construct($options= array()) {
@@ -52,7 +53,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
          $this->menu .= "</ul>";
          $this->content = ob_get_clean();
          echo $this->menu . $this->content . '</div>';
-         JS::tabs('#tabs' . MenuUI::$menuCount,$this->options);
+         JS::tabs('#tabs' . MenuUI::$menuCount,$this->options,$this->firstPage);
          MenuUI::$menuCount++;
       }
 
