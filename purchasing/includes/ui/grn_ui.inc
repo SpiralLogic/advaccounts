@@ -48,7 +48,7 @@ function display_grn_summary(&$po, $editable = false)
 	}
 	else
 	{
-		label_cells(_("Reference"), $po->reference, "class='tableheader2'");
+		label_cells(_("Reference"), $po->reference, "class='label'");
 		label_cells(_("Deliver Into Location"), get_location_name($po->Location), "class='label'");
 	}
 
