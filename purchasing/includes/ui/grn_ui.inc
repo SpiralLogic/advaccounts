@@ -23,7 +23,7 @@ function display_grn_summary(&$po, $editable = false)
 		label_cells(_("Order Currency"), $po->curr_code, "class='label'");
 
 	label_cells(_("For Purchase Order"), get_trans_view_str(ST_PURCHORDER, $po->order_no),
-				"class='tableheader2'");
+				"class='label'");
 
 	label_cells(_("Ordered On"), $po->orig_order_date, "class='label'");
 	label_cells(_("Supplier's Reference"), $po->requisition_no, "class='label'");
