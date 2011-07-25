@@ -1,13 +1,11 @@
 #_tabs2 {
-	text-align:    center;
-	width:         100%;
-	height:        80px;
+	
 	background:    #464646;
 	background:    -webkit-gradient(linear, 100% 19%, 100% 71%, from(#858585), to(#9E9E9E), color-stop(0, #C7C7C7));
 	background:    -moz-linear-gradient(19% 100% 90deg, #858585, #9E9E9E, #C7C7C7 71%);
 	border-top:    2px solid #939393;
 	position:      relative;
-	margin-bottom: 30px;
+	margin-bottom: 4px;
 }
 
 #_tabs2 .title {
@@ -29,7 +27,7 @@
 }
 
 #_tabs2 .menu {
-	height:       80px;
+	height:       40px;
 	border-left:  1px solid rgba(0, 0, 0, 0.3);
 	border-right: 1px solid rgba(255, 255, 255, 0.3);
 	margin:       0 auto;
@@ -51,7 +49,7 @@
 #_tabs2 ul.menu li {
 	list-style: none;
 	float:      left;
-	height:     79px;
+	
 	text-align: center;
 	background: -webkit-gradient(linear, 100% 100%, 100% 0%, from(#B81D1D), to(#E38881), color-stop(.5, #DB4949));
 	background: -moz-linear-gradient(100% 100% 90deg, #B81D1D, #E38881, #DB4949 100%);
@@ -68,8 +66,7 @@
 	border-left:                        1px solid rgba(255, 255, 255, 0.1);
 	border-right:                       1px solid rgba(0, 0, 0, 0.1);
 	text-align:                         center;
-	line-height:                        79px;
-	-webkit-transition-duration:        0.5s;
+	line-height:                        39px;	-webkit-transition-duration:        0.5s;
 	-webkit-transition-timing-function: linear;
 }
 
@@ -98,12 +95,10 @@
 
 }
 .menu_group {
-	background:  -moz-linear-gradient(center top, #DB4949 , #FF3333) repeat scroll 0 0 transparent;
-	background:   -moz-linear-gradient(center top, #DB4949, #FF3333)   repeat scroll 0 0 transparent;
 	box-shadow:    0 1px 0 rgba(255, 255, 255, 0.6) inset;
-	background-image:    -moz-linear-gradient(center top, #DB4949  , #E38881);
-	background-image: -webkit-gradient(linear, left top, left bottom,color-stop(0.00, #DB4949),color-stop(1.00, #62BB46));
-	filter: progid:DXImageTransform.Microsoft.gradient(enabled='true',startColorstr=#DB4949,endColorstr=#62BB46,GradientType=1);
+	background-image:    -moz-linear-gradient(center top, #E38881  , #DB4949);
+	background-image: -webkit-gradient(linear, left top, left bottom,color-stop(0.00, #E38881),color-stop(1.00, #DB4949));
+	filter: progid:DXImageTransform.Microsoft.gradient(enabled='true',startColorstr=#E38881,endColorstr=#DB4949,GradientType=1);
 	border:      1px solid #7096AB;
 	box-shadow:  none;
 	color:       #333;

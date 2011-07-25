@@ -156,8 +156,7 @@ function email_document_link($doc_no, $link_text, $link = true, $type_no,
         UI::select('EmailSelect' . $count, $emails, array('style' => 'display:inline-block;max-width:600px'))->br;
         UI::button('EmailButton' . $count, $link_text, array('style' => 'margin:20px', 'data-url' => $url, 'data-count' => 'id-' . $count));
 
-        JS::register(<<<JS
-$(function() {
+        JS::onload(<<<JS
 $('#EmailButton{$count}').button().click(function() {
 Adv.loader.show();
 var email = $("#EmailSelect" + $(this).data('count').substr(3)).val();
@@ -167,7 +166,7 @@ Adv.loader.hide();
 })
 });
 
-})
+
 JS
         );
 
