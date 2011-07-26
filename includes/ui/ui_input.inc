@@ -609,10 +609,7 @@ function date_cells($label, $name, $title = null, $check = null, $inc_days = 0,
 			$_POST[$name] = $dd;
 		}
 	}
-	if ($use_date_picker)
-		$post_label = "<a tabindex='-1' href=\"javascript:date_picker(document.getElementsByName('$name')[0]);\">"
-					  . "	<img src='$path_to_root/themes/default/images/cal.gif' width='16' height='16' border='0' alt='" . _('Click Here to Pick up the date') . "'></a>\n";
-	else
+
 		$post_label = "";
 
 	if ($label != null)
