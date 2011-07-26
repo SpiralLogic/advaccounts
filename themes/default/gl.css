@@ -304,13 +304,6 @@ button.navibutton {
 	text-decoration: underline;
 }
 
-.navibar {
-	padding:          0 3px;
-	color:            #333;
-	border:           1px solid #8cacbb;
-	border-collapse:  collapse;
-	background-color: #f69f20;
-}
 
 .listsubmit {
 	display: none;

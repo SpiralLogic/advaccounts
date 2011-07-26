@@ -339,12 +339,18 @@
 }
 
 .navibar {
-	background-color: #f69f20;
-	border:           1px solid #8cacbb;
-	border-collapse:  collapse;
-	color:            #333;
 	padding:          0 3px;
+	color:            #333;
+	border-collapse:  collapse;	background-image: -moz-linear-gradient(center top, #EDEDED, #C4C4C4);
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0.00, #EDEDED), color-stop(1.00, #C4C4C4));
+	filter:           progid:DXImageTransform.Microsoft.gradient(enabled = 'true', startColorstr = #EDEDED, endColorstr = #C4C4C4, GradientType = 1);
+	border:           1px solid #7096AB;
+	box-shadow:       none;
+	font-weight: bold;
+line-height: 15px;
+
 }
+
 
 .navibutton span {
 	text-decoration: underline;
