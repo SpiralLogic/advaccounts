@@ -123,7 +123,7 @@
 
    function email_link($row) {
       global $trans_type;
-      return print_document_link($row['order_no'], _("Email"), true, $row['trans_type'], false, "printlink", "", 1);
+      return print_document_link($row['order_no'], _("Email"), true, $row['trans_type'], false, "button printlink", "", 1);
 
    }
 

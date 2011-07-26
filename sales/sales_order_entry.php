@@ -664,7 +664,7 @@
 
 	$stockbox = new Dialog('Item Edit', 'stockbox', '');
 	$stockbox->addButtons(array('Close' => '$(this).dialog("close");'));
-	$stockbox->setOptions(array('autoopen' => false, 'modal' => true, 'width' => '700', 'resizeable' => true));
+	$stockbox->setOptions(array('autoopen' => false, 'modal' => true, 'width' => '"75%"', 'resizeable' => true));
 	$stockbox->show();
 
 
