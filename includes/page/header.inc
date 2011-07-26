@@ -53,29 +53,11 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	}
 
 	function send_scripts() {
-		global $js_static, $js_userlib, $go_debug, $js_huserlib;
-		//foreach ($js_static as &$jsfile) {
-			//$fpath = $comp_path . '/js_cache/' . $jsfile;
-			//$fpath = $js_path . $jsfile;
-			// compress also static files
-			//if (!file_exists($fpath) || $go_debug)
-			//	cache_js_file($fpath, file_get_contents($js_path . $jsfile));
-		//}
-		$js = '<script language="javascript" type="text/javascript" src="/js/' . implode(',',$js_static) . '"></script>';
-		$js .= '<script language="javascript" type="text/javascript" src="/js/js2/' . implode(',', $js_huserlib) . '"></script>';
-		foreach ($js_userlib as $jsfile) {
-			$js .= '<script language="javascript" type="text/javascript" src="' . $jsfile. '"></script>';
-		}
-		echo $js;
+		JS::renderHeader();
 	}
 
 	function send_fscripts() {
-		global $js_fstatic, $js_fuserlib;
-		$js ='<script language="javascript" type="text/javascript" src="/js/js2/' . implode(',', $js_fstatic) . '"></script>';
-		foreach ($js_fuserlib as $jsfile) {
-			$js .= '<script language="javascript" type="text/javascript" src="' . $jsfile . '"></script>';
-		}
-		echo $js;
+
 
 
 	}

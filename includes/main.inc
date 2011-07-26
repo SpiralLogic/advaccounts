@@ -99,45 +99,28 @@ function cache_js_file($fpath, $text)
 
 function add_js_file($filename)
 {
-	global $js_static;
 
-	$search = array_search($filename, $js_static);
-	if ($search === false || $search === null) // php>4.2.0 returns null
-	{
-		$js_static[] = $filename;
-	}
+		JS::headerFile($filename);
 }
 
 function add_js_ufile($filename)
 {
-	global $js_userlib;
 
-	$search = array_search($filename, $js_userlib);
-	if ($search === false || $search === null) // php>4.2.0 returns null
-	{
-		$js_userlib[] = $filename;
-	}
+		JS::footerFile($filename);
 }
 
 function add_js_ffile($filename)
 {
-	global $js_fuserlib;
-	$search = array_search($filename, $js_fuserlib);
-	if ($search === false || $search === null) // php>4.2.0 returns null
-	{
-		$js_fuserlib[] = $filename;
-	}
+
+		JS::footerFile($filename);
+
 }
 
 function add_js_source($text)
 {
-	global $js_lib;
 
-	$search = array_search($text, $js_lib);
-	if ($search === false || $search === null) // php>4.2.0 returns null
-	{
-		$js_lib[] = $text;
-	}
+		JS::beforeload($text);
+
 }
 
 /**

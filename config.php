@@ -151,9 +151,8 @@
    }
    // static js files path
    // standard external js scripts included in all files
-   $js_static = array('JsHttpRequest.js', 'behaviour.js', 'utils.js', 'inserts.js');
-   $js_huserlib = array('jquery-1.6.2.min.js', 'jquery-ui-1.8.14.min.js');
-   $js_fstatic = array('advanced.js', 'shortmenu.js', 'jquery.calculator.pack.js', 'calc.js');
+   JS::headerFile(array('/js/JsHttpRequest.js', '/js/behaviour.js', '/js/utils.js', '/js/inserts.js','/js/js2/jquery-1.6.2.min.js', '/js/js2/jquery-ui-1.8.14.min.js'));
+   JS::footerFile ( array('/js/js2/advanced.js', '/js/js2/shortmenu.js', '/js/js2/jquery.calculator.pack.js', '/js/js2/calc.js'));
    // additional js source included in header
    $js_lib = $js_fuserlib = $js_userlib = array();
    if (!defined('ICON_EDIT')) {

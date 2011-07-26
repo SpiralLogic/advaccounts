@@ -33,7 +33,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
    }
    $_SESSION['View'] = new Cart($_GET['trans_type'], $_GET['trans_no'], true);
    start_table("$table_style2 width=95%", 5);
-   echo "<tr valign=top><td>";
+   echo "<tr valign=top class='tableheader2'><td >";
    display_heading2(_("Order Information"));
    if ($_GET['trans_type'] != ST_SALESQUOTE) {
       echo "</td><td>";
@@ -44,28 +44,28 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
    echo "</td></tr>";
    echo "<tr valign=top><td>";
    start_table("$table_style width=95%");
-   label_row(_("Customer Name"), $_SESSION['View']->customer_name, "class='tableheader2'", "colspan=3");
+   label_row(_("Customer Name"), $_SESSION['View']->customer_name, "class='label'", "colspan=3");
    start_row();
-   label_cells(_("Customer Purchase Order #"), $_SESSION['View']->cust_ref, "class='tableheader2'");
-   label_cells(_("Deliver To Branch"), $_SESSION['View']->deliver_to, "class='tableheader2'");
+   label_cells(_("Customer Purchase Order #"), $_SESSION['View']->cust_ref, "class='label'");
+   label_cells(_("Deliver To Branch"), $_SESSION['View']->deliver_to, "class='label'");
    end_row();
    start_row();
-   label_cells(_("Ordered On"), $_SESSION['View']->document_date, "class='tableheader2'");
+   label_cells(_("Ordered On"), $_SESSION['View']->document_date, "class='label'");
    if ($_GET['trans_type'] == ST_SALESQUOTE)
-      label_cells(_("Valid until"), $_SESSION['View']->due_date, "class='tableheader2'");
+      label_cells(_("Valid until"), $_SESSION['View']->due_date, "class='label'");
    else
-      label_cells(_("Requested Delivery"), $_SESSION['View']->due_date, "class='tableheader2'");
+      label_cells(_("Requested Delivery"), $_SESSION['View']->due_date, "class='label'");
    end_row();
    start_row();
-   label_cells(_("Order Currency"), $_SESSION['View']->customer_currency, "class='tableheader2'");
-   label_cells(_("Deliver From Location"), $_SESSION['View']->location_name, "class='tableheader2'");
+   label_cells(_("Order Currency"), $_SESSION['View']->customer_currency, "class='label'");
+   label_cells(_("Deliver From Location"), $_SESSION['View']->location_name, "class='label'");
    end_row();
-   label_row(_("Person Ordering"), nl2br($_SESSION['View']->name), "class='tableheader2'", "colspan=3");
-   label_row(_("Delivery Address"), nl2br($_SESSION['View']->delivery_address), "class='tableheader2'", "colspan=3");
-   label_row(_("Reference"), $_SESSION['View']->reference, "class='tableheader2'", "colspan=3");
-   label_row(_("Telephone"), $_SESSION['View']->phone, "class='tableheader2'", "colspan=3");
-   label_row(_("E-mail"), "<a href='mailto:" . $_SESSION['View']->email . "'>" . $_SESSION['View']->email . "</a>", "class='tableheader2'", "colspan=3");
-   label_row(_("Comments"), $_SESSION['View']->Comments, "class='tableheader2'", "colspan=3");
+   label_row(_("Person Ordering"), nl2br($_SESSION['View']->name), "class='label'", "colspan=3");
+   label_row(_("Delivery Address"), nl2br($_SESSION['View']->delivery_address), "class='label'", "colspan=3");
+   label_row(_("Reference"), $_SESSION['View']->reference, "class='label'", "colspan=3");
+   label_row(_("Telephone"), $_SESSION['View']->phone, "class='label'", "colspan=3");
+   label_row(_("E-mail"), "<a href='mailto:" . $_SESSION['View']->email . "'>" . $_SESSION['View']->email . "</a>", "class='label'", "colspan=3");
+   label_row(_("Comments"), $_SESSION['View']->Comments, "class='label'", "colspan=3");
    end_table();
    if ($_GET['trans_type'] != ST_SALESQUOTE) {
       echo "</td><td valign='top'>";

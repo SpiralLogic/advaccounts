@@ -358,6 +358,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
    br();
    end_form();
    //--------------------------------------------------------------------------------------------------
+	Item::addEditDialog();
 
    JS::onload(<<<JS
    $("#wrapper").delegate('.amount','change',function() {
@@ -386,18 +387,6 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 });
 JS
    );
-   $stockbox = new Dialog('Item Edit', 'stockbox', '');
-	$stockbox->addButtons(array('Close' => '$(this).dialog("close");'));
-	$stockbox->setOptions(array('autoopen' => false, 'modal' => true, 'width' => '700', 'resizeable' => true));
-	$stockbox->show();
-
-
-	JS::addLive(<<<JS
-$("#wrapper").delegate('.stock','click',function() { $('#stockbox').html("<iframe src='/items/quickitems.php?id="+$(this).data('stock_id')+"&page=2' width='100%' height='600' scrolling='no' style='border:none' frameborder='0'></iframe>").dialog('open') });
-
-window.onbeforeunload = function() {
-$.post('sales_order_entry.php',{ saveorder: true })};
-JS
-	);
+ 
    end_page();
 ?>

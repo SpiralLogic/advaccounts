@@ -20,12 +20,6 @@
 	float: left;
 }
 
-#_tabs2 .menu_container {
-
-	margin:  0 auto;
-	display: inline-block;
-}
-
 #_tabs2 .menu {
 	height:       40px;
 	border-left:  1px solid rgba(0, 0, 0, 0.3);
@@ -37,7 +31,6 @@
 	text-decoration: none;
 	color:           #363636;
 	text-transform:  uppercase;
-	font-size:       15px;
 	font-weight:     bold;
 }
 
