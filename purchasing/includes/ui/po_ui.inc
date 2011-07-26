@@ -174,7 +174,7 @@ function display_po_items(&$order, $editable = true)
 			$line_total = round($po_line->quantity * $po_line->price * (1 - $po_line->discount), user_price_dec(), PHP_ROUND_HALF_EVEN);
 			if (!$editable || ($id != $line_no)) {
 				alt_table_row_color($k);
-				label_cell($po_line->stock_id);
+				label_cell($po_line->stock_id," class='stock'  data-stock_id='{$po_line->stock_id}'");
 				label_cell($po_line->item_description);
 				qty_cell($po_line->quantity, false, get_qty_dec($po_line->stock_id));
 				qty_cell($po_line->qty_received, false, get_qty_dec($po_line->stock_id));
@@ -283,9 +283,7 @@ function po_item_controls(&$order, $stock_id = null)
 		$_POST['item_description'] = $order->line_items[$id]->item_description;
 		$_POST['units'] = $order->line_items[$id]->units;
 		hidden('stock_id', $_POST['stock_id']);
-		label_cell($_POST['stock_id']);
-		//label_cell($order->line_items[$id]->item_description);
-
+		label_cell($_POST['stock_id']," class='stock'   data-stock_id='{$_POST['stock_id']}'");
 		textarea_cells(null, 'item_description', null, 50, 5);
 		$Ajax->activate('items_table');
 		$qty_rcvd = $order->line_items[$id]->qty_received;

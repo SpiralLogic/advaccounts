@@ -395,7 +395,8 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	}
 	div_end();
 	//---------------------------------------------------------------------------------------------------
-	end_form();
+	end_form();   Item::addEditDialog();
+
 	if (isset($_SESSION['PO']->supplier_id)) {
 		$supplier_details = $_SESSION['PO']->supplier_details;
 		$content = '<div >' .
