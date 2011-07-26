@@ -104,18 +104,19 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		echo "<meta http-equiv='Content-type' content='text/html; charset=$encoding'>";
 		echo "<link rel='apple-touch-icon' href='/company/images/advanced-icon.png'/>";
 
-		($no_menu) ? add_css('default-lite.css'):add_css('default.css');
+      add_css('default.css,jquery-ui-1.8.7.css,jquery.calculator.css,jquery.fileupload-ui.css');
+
 		if (file_exists(APP_PATH."/themes/$theme/{$_SESSION['sel_app']}.css"))
-			add_css($_SESSION['sel_app'].'.css');
-		add_css('jquery-ui-1.8.7.css,jquery.calculator.css,jquery.fileupload-ui.css');
+      add_css($_SESSION['sel_app'].'.css');
 		send_css();
 		//if (!$_GET['frame'])
 		send_scripts($js);
 		echo "</head> \n";
 		if ($onload == "")
-			echo "<body>";
+			echo "<body";
 		else
-			echo "<body onload=\"$onload\">";
+			echo "body onload='$onload'";
+    echo  ($no_menu) ? ' class="lite">':'>';
 		include_once(APP_PATH."/themes/" . user_theme() . "/renderer.php");
 		$rend = new renderer();
 		$rend->menu_header($title, $no_menu, $is_index);

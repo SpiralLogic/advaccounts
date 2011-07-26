@@ -27,16 +27,13 @@ $js = "";
 if ($use_popup_windows) {
 	$js .= get_js_open_window(900, 500);
 }
-if ($use_date_picker) {
-	$js .= get_js_date_picker();
-}
 $js_lib[] = <<< JS
 function Customer() {
 
 }
 JS;
 
-add_js_file('payalloc.js');
+	JS::headerFile('/js/payalloc.js');
 page(_($help_context = "Customer Refund Entry"), @$_REQUEST['frame'], false, "", $js);
 //----------------------------------------------------------------------------------------------
 check_db_has_customers(_("There are no customers defined in the system."));
