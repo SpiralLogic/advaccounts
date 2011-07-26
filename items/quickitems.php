@@ -21,7 +21,9 @@
 		$item = new Item($_GET['id']);
 		$data['item'] = $item;
 		$data['stockLevels'] = $item->getStockLevels();
-if (isset($_GET['page'])) $data['page']=$_GET['page'];
+		if (isset($_GET['page'])) {
+			$data['page'] = $_GET['page'];
+		}
 		$data = json_encode($data);
 
 		JS::onload(<<<JS
@@ -50,14 +52,16 @@ JS
 HTML;
 	$menu->endTab();
 	$menu->startTab("Selling", "Sales Prices");
-	echo "<iframe id='sellFrame' src='{$path_to_root}/inventory/prices.php?frame=1&stock_id=".$_GET['id']."' width='90%' height='600' scrolling='no' frameborder='0'></iframe> ";
+	echo "<iframe id='sellFrame' src='{$path_to_root}/inventory/prices.php?frame=1&stock_id=" . $_GET['id'] . "' width='90%' height='600' scrolling='no' frameborder='0'></iframe> ";
 
 	$menu->endTab();
 	$menu->startTab("Purchasing", "Purchasing Prices");
-	echo "<iframe id='buyFrame' src='{$path_to_root}/inventory/purchasing_data.php?frame=1&stock_id=".$_GET['id']."' width='90%' height='600' scrolling='no' frameborder='0'></iframe> ";
+	echo "<iframe id='buyFrame' src='{$path_to_root}/inventory/purchasing_data.php?frame=1&stock_id=" . $_GET['id'] . "' width='90%' height='600' scrolling='no' frameborder='0'></iframe> ";
 
 	$menu->endTab();
-	if (isset($_GET['page']))$menu->firstPage = $_GET['page'];
+	if (isset($_GET['page'])) {
+		$menu->firstPage = $_GET['page'];
+	}
 	$menu->render();
-	
+
 	end_page(true, true);
