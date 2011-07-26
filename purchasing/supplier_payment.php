@@ -26,7 +26,7 @@ if ($use_popup_windows)
 if ($use_date_picker)
 	$js .= get_js_date_picker();
 
-add_js_file('payalloc.js');
+JS::headerFile('/js/payalloc.js');
 
 page(_($help_context = "Supplier Payment Entry"), false, false, "", $js);
 
