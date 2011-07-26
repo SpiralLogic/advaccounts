@@ -265,13 +265,6 @@
 	color: #f66;
 }
 
-.editbutton {
-	background-color: transparent;
-	border-style:     none;
-	color:            #00f;
-	cursor:           pointer;
-	text-decoration:  underline;
-}
 
 .errortext {
 	color:       red;
