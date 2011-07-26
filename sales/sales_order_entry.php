@@ -662,7 +662,7 @@
 	}
 	end_form();
 
-Item::addEditDialog();
+	Item::addEditDialog();
 	JS::addLive(<<<JS
 window.onbeforeunload = function() {
 $.post('sales_order_entry.php',{ saveorder: true })};
