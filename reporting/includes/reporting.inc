@@ -14,7 +14,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 // or display_note(print_document_link($order_no, _("Print this order")));
 // You only need full parameter list for invoices/credit notes
 function print_document_link($doc_no, $link_text, $link = true, $type_no,
-    $icon = false, $class = 'printlink', $id = '', $email = 0, $extra = 0)
+    $icon = false, $class = 'button printlink', $id = '', $email = 0, $extra = 0)
 {
     $url = '/reporting/prn_redirect.php?';
     $options = print_document_option_array($type_no, $doc_no, $email, $extra);

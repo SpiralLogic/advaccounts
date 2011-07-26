@@ -42,8 +42,8 @@ JS
 <tr><td><label for="category_id">Category:</label></td><td>$stock_cats</td></tr>
 <tr><td><label for="uom">Units of Mesasure:</label><br></td><td><input id="uom" type="text" value="\${uom}" maxlength="10"></td></tr>
 </table>
-<table id="stockLevels" class="marginauto" style="width:80%">
-<tr><th>Location</th><th>QOH</th><th>Reorder Level</th><th>On Sales<br>Order</th><th>Available</th><th>On Purchase<br>Order</th></tr>
+<table id="stockLevels" class="marginauto grid" style="width:80%">
+<tr><th>Location</th><th>QOH</th><th>Reorder Level</th><th>On SalesOrder</th><th>Available</th><th>On PurchaseOrder</th></tr>
 <script id="stockRow" type="text/x-jquery-tmpl"><tr><td>\${location_name}</td><td>\${qty}</td><td>\${reorder_level}</td><td>\${demand}</td><td>\${available}</td><td>\${onorder}</td></tr></script>
 </table>
 </div>

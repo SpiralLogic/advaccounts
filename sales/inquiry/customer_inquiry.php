@@ -125,7 +125,7 @@ function fmt_credit($row)
 function credit_link($row)
 {
 	return $row['type'] == ST_SALESINVOICE && $row["TotalAmount"] - $row["Allocated"] > 0
-			? pager_link(_("Credit This"), "/sales/customer_credit_invoice.php?InvoiceNumber=" .
+			? pager_link(_("Credit"), "/sales/customer_credit_invoice.php?InvoiceNumber=" .
 										   $row['trans_no'], ICON_CREDIT) : '';
 }
 
@@ -164,14 +164,14 @@ function prt_link($row)
 		return print_document_link($row['trans_no'] . "-" . $row['type'], _("Print"), true, $row['type'], ICON_PRINT);
 	else
 		return print_document_link(
-			$row['trans_no'] . "-" . $row['type'], _("Print Receipt"), true, $row['type'], ICON_PRINT);
+			$row['trans_no'] . "-" . $row['type'], _("Receipt"), true, $row['type'], ICON_PRINT);
 }
 
 function email_link($row)
 {
 	if ($row['type'] != ST_CUSTPAYMENT && $row['type'] != ST_CUSTREFUND &&
 		$row['type'] != ST_BANKDEPOSIT) // customer payment or bank deposit printout not defined yet.
-		return print_document_link($row['trans_no'], _("Email"), true, ST_SALESINVOICE, false, "printlink", "", 1);
+		return print_document_link($row['trans_no'], _("Email"), true, ST_SALESINVOICE, false, "button printlink", "", 1);
 
 }
 
@@ -305,7 +305,7 @@ $cols = array(_("Type") => array('fun' => 'systype_name', 'ord' => ''),
 			  array('insert' => true, 'fun' => 'credit_link'),
 			  array('insert' => true, 'fun' => 'edit_link'),
 			  array('insert' => true, 'fun' => 'email_link'),
-			  array('insert' => true, 'fun' => 'prt_link'));
+			  array('insert' => true, 'align' => 'center', 'fun' => 'prt_link'));
 if (isset($_POST['customer_id']) && $_POST['customer_id'] != ALL_TEXT) {
 	$cols[_("Customer")] = 'skip';
 	$cols[_("Currency")] = 'skip';

@@ -265,13 +265,6 @@
 	color: #f66;
 }
 
-.editbutton {
-	background-color: transparent;
-	border-style:     none;
-	color:            #00f;
-	cursor:           pointer;
-	text-decoration:  underline;
-}
 
 .errortext {
 	color:       red;
@@ -316,6 +309,7 @@
 .label {
 	background-color: #ecf4fd;
 	color:            #000;
+	font-weight:bold;
 }
 
 .listsubmit {
@@ -391,7 +385,7 @@
 	background-color: #FFC0CB;
 }
 
-.tableheader, .tableheader2, .menu_group {
+.tableheader, .tableheader2, .menu_group, th {
 	font-size:        1.3em;
 	line-height:      1.3em;
 	font-weight:      bold;
@@ -670,4 +664,12 @@ ul.ajaxtabs li button.current, ul.ajaxtabs li button.current:hover {
 ul.ajaxtabs li button:hover {
 	border-top: 1px solid #8cacbb;
 	color:      #FFF;
+}
+.oddrow , .grid tr:nth-child(odd) {
+	background-color: #f3f9fe;
+}
+
+.evenrow , .grid tr:nth-child(even){
+	background: none repeat scroll 0 0 #D2DBF4;
+	border:     1px solid #D2DBF4;
 }

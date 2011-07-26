@@ -115,7 +115,7 @@ hr {
 	font-size:        14px;
 }
 
-.tableheader, .tableheader2, .menu_group {
+.tableheader, .tableheader2, .menu_group, th {
 	font-size:        1.3em;
 	line-height:      1.3em;
 	font-weight:      bold;
@@ -126,6 +126,7 @@ hr {
 	border:           1px solid #7096AB;
 	box-shadow:       none;
 	color:            #333;
+   white-space: nowrap;
 	padding:          5px;
 
 }
@@ -187,7 +188,7 @@ hr {
 	padding:          1px 4px;
 }
 
-.ajaxsubmit, .inputsubmit, .editbutton {
+.ajaxsubmit, .inputsubmit, .editbutton, button,.button {
 	font-size:        11px;
 	padding:          3px 4px;
 	font-weight:      500;
@@ -201,11 +202,11 @@ hr {
 	color:            #333;
 }
 
-.oddrow {
+.oddrow , .grid tr:nth-child(odd) {
 	background-color: #f3f9fe;
 }
 
-.evenrow {
+.evenrow , .grid tr:nth-child(even){
 	background: none repeat scroll 0 0 #D2DBF4;
 	border:     1px solid #D2DBF4;
 }
@@ -330,13 +331,13 @@ input.amount, input.freight {
 
 button.navibutton {
 	font-family:      Tahoma, Arial, sans-serif;
-	font-size:        11px;
 	font-weight:      bold;
 	color:            #333;
-	padding:          0 3px;
+	padding:          0 3px;font-size: 14px;
 	background-color: transparent;
 	border-style:     none;
 	cursor:           pointer;
+   background-image: none;
 }
 
 .navibutton span {
@@ -346,9 +347,11 @@ button.navibutton {
 .navibar {
 	padding:          0 3px;
 	color:            #333;
-	border:           1px solid #8cacbb;
-	border-collapse:  collapse;
-	background-color: #f69f20;
+	border-collapse:  collapse;	background-image: -moz-linear-gradient(center top, #EDEDED, #C4C4C4);
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0.00, #EDEDED), color-stop(1.00, #C4C4C4));
+	filter:           progid:DXImageTransform.Microsoft.gradient(enabled = 'true', startColorstr = #EDEDED, endColorstr = #C4C4C4, GradientType = 1);
+	border:           1px solid #7096AB;
+	box-shadow:       none;
 }
 
 .listsubmit {
@@ -561,7 +564,6 @@ rgba
 	text-decoration: none;
 	color:           #363636;
 	text-transform:  uppercase;
-	font-size:       15px;
 	font-weight:     bold;
 }
 
@@ -670,6 +672,8 @@ rgba
 	padding: 4px;
 	font:    bold 1em Arial, Sans-Serif;
 	margin:  1px;
+	white-space: nowrap;
+
 }
 
 #footer {
@@ -949,32 +953,7 @@ td.tableheader3 {
 	width: 50%
 }
 
-a.button {
-	outline:               0;
-	margin:                0 4px 0 0;
-	height:                2em;
-	text-decoration:       none !important;
-	cursor:                pointer;
-	position:              relative;
-	text-align:            center;
-	-moz-border-radius:    5px;
 
-	-webkit-border-radius: 5px;
-	font:                  menu;
-	line-height:           2em;
-	font-weight:           900;
-	display:               inline-block;
-	padding:               5px 10px;
-	background:            ButtonFace;
-	color:                 ButtonText;
-	border-style:          solid;
-	border-width:          2px;
-	border-color:          ButtonHighlight ButtonShadow ButtonShadow ButtonHighlight;
-}
-
-a.button:active {
-	border-color: ButtonShadow ButtonHighlight ButtonHighlight ButtonShadow;
-}
 
 .dialog-confirm {
 	display: none;

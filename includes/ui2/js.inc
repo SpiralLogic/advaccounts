@@ -6,6 +6,9 @@ include(APP_PATH . 'modules/smartoptimizer/minifiers/js.php');
 		private static $_beforeload = array();
 		private static $_onload = array();
 		private static $_onlive = array();
+		
+		private static $_headerFiles = array();
+		private static $_footerFiles = array();
 
 		private function __construct() {
 		}
@@ -65,23 +68,35 @@ JS;
 
 		}
 
-		public static function tabs($id, $options = array(),$page) {
+		public static function tabs($id, $options = array(), $page) {
 			$defaults = array('noajax' => false);
 			extract(array_merge($defaults, $options));
 			$content = "$('" . $id . "').tabs()";
-					if ($page) $content .= ".tabs('select',".$page.")";
-			$content .=		";";
-
+			if ($page) {
+				$content .= ".tabs('select'," . $page . ")";
+			}
+			$content .= ";";
 
 			self::onload($content);
 		}
 
+		public static function renderHeader() {
+			$js = '';
+			foreach (self::$_headerFiles as $dir => $files) {
+				$js .= '<script  src="' . $dir .'/'. implode(',', $files) . '"></script>';
+			}
+			echo $js;
+		}
+
 		public static function render() {
-			$content = '';
+			$js=$content = '';
+			foreach (self::$_footerFiles as $dir => $files) {
+				$js .= '<script  src="' . $dir .'/'. implode(',', $files) . '"></script>';
+			}
 			if (count(self::$_beforeload)) {
 				$content .= implode(";\n", self::$_beforeload);
 			}
-			$content .= '$(function() { ';
+			$content .= ';$(function() { ';
 			if (count(self::$_onlive)) {
 				$content .= 'Adv.Events.onload(function() {' . implode(";\n", self::$_onlive) . '});';
 			}
@@ -89,7 +104,7 @@ JS;
 				$content .= implode(";\n", self::$_onload);
 			}
 			$content .= '});';
-			echo "\n<script language=\"javascript\"  type=\"text/javascript\"><!--\n" . $content . "\n--></script>\n";
+			echo $js."\n<script language=\"javascript\"  type=\"text/javascript\"><!--\n" . $content . "\n--></script>\n";
 		}
 
 		public static function arrayToOptions($options = array()) {
@@ -102,10 +117,12 @@ JS;
 			self::onload("$('$selector').bind('$type',function(e){ {$action} });");
 		}
 
-		public static function addLiveEvent($selector, $type, $action) {
+		public static function addLiveEvent($selector, $type, $action, $delegate = false) {
 
-			self::addLive("$('$selector').bind('$type',function(e){ {$action} });");
-
+			if (!$delegate) {
+				return self::addLive("$('$selector').bind('$type',function(e){ {$action} });");
+			}
+			self::addLive("$('$delegate').delegate('$selector','$type',function(e){ {$action} } )");
 		}
 
 		public static function addLive($action) {
@@ -134,15 +151,32 @@ JS;
 			}
 		}
 
-		protected static function register($js = false, &$var) {
+		public static function headerFile($file) {
+			self::registerFile($file, self::$_headerFiles);
 
+		}
+
+		public static function footerFile($file) {
+			self::registerFile($file, self::$_footerFiles);
+		}
+
+		protected static function register($js = false, &$var) {
 			if (is_array($js)) {
 				foreach ($js as $j) self::register($j, $var);
-			} else
-			{
-				array_push($var, str_replace(array('<script>', '</script>'), '', $js));
+			} else {
+				array_unshift($var, str_replace(array('<script>', '</script>'), '', $js));
 			}
+		}
 
+		protected static function registerFile($file, &$var) {
+			if (is_array($file)) {
+				foreach ($file as $f) self::registerFile($f, $var);
+			} else {
+				$dir = dirname($file);
+				$file = basename($file);
+				if (!isset($var[$dir])) $var[$dir] =array();
+				array_push($var[$dir], $file);
+			}
 		}
 
 	}
