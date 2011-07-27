@@ -181,6 +181,7 @@
 		$Ajax->activate('_ex_rate');
 	}
 	if (list_updated('customer_id') || list_updated('bank_account')) {
+		FB::info($_POST);
 		$Ajax->activate('alloc_tbl');
 	}
 	//----------------------------------------------------------------------------------------------
@@ -216,19 +217,11 @@
 	function read_customer_data() {
 		global $Refs;
 
-		$sql = "SELECT debtors_master.pymt_discount,
-		credit_status.dissallow_invoices
-		FROM debtors_master, credit_status
-		WHERE debtors_master.credit_status = credit_status.id
-			AND debtors_master.debtor_no = " . db_escape($_POST['customer_id']);
-
-		$result = db_query($sql, "could not query customers");
-
-		$myrow = db_fetch($result);
+	$myrow = get_customer_habit($_POST['customer_id']);
 
 		$_POST['HoldAccount'] = $myrow["dissallow_invoices"];
 		$_POST['pymt_discount'] = $myrow["pymt_discount"];
-		$_POST['ref'] = $Refs->get_next(12);
+	$_POST['ref'] = $Refs->get_next(ST_CUSTPAYMENT);
 	}
 
 	//----------------------------------------------------------------------------------------------
@@ -263,9 +256,15 @@
 			$_POST['bank_account'] = get_default_customer_bank_account($_POST['customer_id']);
 		}
 		bank_accounts_list_row(_("Into Bank Account:"), 'bank_account', null, true);
+
+
 		text_row(_("Reference:"), 'ref', null, 20, 40);
 		table_section(3);
+
 		date_row(_("Date of Deposit:"), 'DateBanked', '', true, 0, 0, 0, null, true);
+
+
+
 		$comp_currency = get_company_currency();
 		$cust_currency = get_customer_currency($_POST['customer_id']);
 		$bank_currency = get_bank_account_currency($_POST['bank_account']);
@@ -307,11 +306,7 @@
 	br();
 
 	end_form();
-	if ($_REQUEST['frame']) {
-		end_page(true, true, true);
-
-	} else {
-		end_page();
-	}
+	(isset($_REQUEST['frame'])) ? end_page() : end_page(true, true, true);
+	
 
 ?>
