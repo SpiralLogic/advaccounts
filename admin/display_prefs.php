@@ -16,7 +16,7 @@ include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 page(_($help_context = "Display Setup"));
 
 include_once($path_to_root . "/includes/date_functions.inc");
-include_once($path_to_root . "/includes/ui.inc");
+include_once($path_to_root . "/includes/faui.inc");
 
 include_once($path_to_root . "/admin/db/company_db.inc");
 

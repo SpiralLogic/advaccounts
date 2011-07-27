@@ -13,7 +13,7 @@ $page_security = 'SA_PRINTPROFILE';
 $path_to_root = "..";
 include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 include($path_to_root . "/admin/db/printers_db.inc");
-include($path_to_root . "/includes/ui.inc");
+include($path_to_root . "/includes/faui.inc");
 
 page(_($help_context = "Printing Profiles"));
 

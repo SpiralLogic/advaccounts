@@ -19,7 +19,7 @@ page(_($help_context = "Customers"), @$_REQUEST['popup']);
 
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/banking.inc");
-include_once($path_to_root . "/includes/ui.inc");
+include_once($path_to_root . "/includes/faui.inc");
 
 
 if (isset($_GET['debtor_no'])) {

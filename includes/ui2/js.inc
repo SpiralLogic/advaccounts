@@ -122,7 +122,7 @@ JS;
 			if (!$delegate) {
 				return self::addLive("$('$selector').bind('$type',function(e){ {$action} });");
 			}
-			self::addLive("$('$delegate').delegate('$selector','$type',function(e){ {$action} } )");
+			self::register("$('$delegate').delegate('$selector','$type',function(e){ {$action} } )",self::$_onload);
 		}
 
 		public static function addLive($action) {

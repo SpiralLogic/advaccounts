@@ -16,7 +16,7 @@
       {
          $js = '$("#' . $name . '").datepicker(' . JS::arrayToOptions($options) . ');';
 
-         JS::onload($js);
+         JS::addLive($js);
       }
 
    }

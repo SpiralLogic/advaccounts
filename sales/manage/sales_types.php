@@ -15,7 +15,7 @@ include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 
 page(_($help_context = "Sales Types"));
 
-include_once($path_to_root . "/includes/ui.inc");
+include_once($path_to_root . "/includes/faui.inc");
 include_once($path_to_root . "/sales/includes/db/sales_types_db.inc");
 
 simple_page_mode(true);

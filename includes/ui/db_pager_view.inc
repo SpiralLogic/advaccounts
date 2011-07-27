@@ -199,7 +199,7 @@ function display_db_pager(&$pager)
 		if ($to > $pager->rec_count)
 			$to = $pager->rec_count;
 		$all = $pager->rec_count;
-		echo sprintf(_('Records %d-%d of %d'), $from, $to, $all);
+		HTML::span(true,"Records $to-$from of $all");
 		echo $inact;
 		echo "</td>";
 	} else {

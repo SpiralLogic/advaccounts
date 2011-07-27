@@ -17,7 +17,7 @@ include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 page(_($help_context = "View Inventory Adjustment"), true);
 
 include_once($path_to_root . "/includes/date_functions.inc");
-include_once($path_to_root . "/includes/ui.inc");
+include_once($path_to_root . "/includes/faui.inc");
 include_once($path_to_root . "/inventory/includes/inventory_db.inc");
 
 if (isset($_GET["trans_no"])) {

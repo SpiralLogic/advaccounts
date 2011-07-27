@@ -145,9 +145,12 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		die("Restricted access");
 	}
 	function __autoload($className) {
-		if (!@include(strtolower($className) . '.inc')) {
-			@include(strtolower($className) . '.php');
-		}
+
+			if (!@include(strtolower($className) . '.inc')) {
+				@include(strtolower($className) . '.php');
+			}
+	
+
 	}
 
 	include(APP_PATH . "includes/current_user.inc");
@@ -156,10 +159,8 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	include(APP_PATH . "includes/lang/language.php");
 	include(APP_PATH . "config_db.php");
 	include(APP_PATH . "includes/ajax.inc");
-	include(APP_PATH . "includes/ui/ui_msgs.inc");
-	include(APP_PATH . "includes/ui2/dialog.inc");
-	include(APP_PATH . "includes/ui2/sidemenu.inc");
-	include(APP_PATH . "includes/ui2/messages.inc");
+	include(APP_PATH . "includes/faui.inc");
+
 
 	/*
 	Uncomment the setting below when using FA on shared hosting

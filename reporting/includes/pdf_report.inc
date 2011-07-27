@@ -11,8 +11,8 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 * ********************************************************************* */
 //include_once($path_to_root . "reporting/includes/class.pdf.inc");
-include_once(dirname(__FILE__) . "/class.pdf.inc");
-include_once(dirname(__FILE__) . "/printer_class.inc");
+include_once($_SERVER['DOCUMENT_ROOT']. "/reporting/includes/class.pdf.inc");
+include_once($_SERVER['DOCUMENT_ROOT']. "/reporting/includes/printer_class.inc");
 include_once($_SERVER['DOCUMENT_ROOT']. "/admin/db/company_db.inc");
 include_once($_SERVER['DOCUMENT_ROOT']. "/admin/db/printers_db.inc");
 include_once($_SERVER['DOCUMENT_ROOT']. "/config.php");
@@ -853,7 +853,7 @@ class FrontReport extends Cpdf
 				$mail->attachment($fname);
 				$ret = $mail->send();
 				if (!$ret) display_error('Error: '.$emailAddress.': '.$mail->toerror); else
-					display_notification($this->title . " " . $myrow['reference'] . " " . _("has been sent by email."));
+					display_notification($this->title . " " . $myrow['reference'] . " " . _("has been sent by email to: ").str_replace(",", "", $myrow['DebtorName'])."  &lt;".$emailAddress."&gt;");
 				unlink($fname);
 			} else {
 				$printer = get_report_printer(user_print_profile(), $_POST['REP_ID']);

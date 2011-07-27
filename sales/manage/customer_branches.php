@@ -18,7 +18,7 @@ include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 
 page(_($help_context = "Customer Branches"), @$_REQUEST['popup']);
 
-include_once($path_to_root . "/includes/ui.inc");
+include_once($path_to_root . "/includes/faui.inc");
 
 //-----------------------------------------------------------------------------------------------
 

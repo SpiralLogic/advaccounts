@@ -14,7 +14,7 @@ $path_to_root = "../..";
 
 include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 
-include_once($path_to_root . "/includes/ui.inc");
+include_once($path_to_root . "/includes/faui.inc");
 include_once($path_to_root . "/purchasing/includes/purchasing_db.inc");
 $js = "";
 if ($use_popup_windows)
