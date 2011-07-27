@@ -17,3 +17,4 @@ tmp/*
 .ht*
 .git*
 .gitignore
+.idea/vcs.xml
