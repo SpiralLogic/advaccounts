@@ -4,7 +4,5 @@ include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
    $_SESSION['App']->selected_application = 'Items';
    include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/date_functions.inc");
    include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/banking.inc");
-   include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/ui2/html.inc");
-   include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/ui2/ui.inc");
-   include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/ui.inc");
+   include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/faui.inc");
 

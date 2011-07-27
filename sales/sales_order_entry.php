@@ -21,7 +21,7 @@
 	$page_security = 'SA_SALESORDER';
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/sales/includes/cart_class.inc");
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
-	require_once(APP_PATH . 'includes/ui2/html.inc');
+	
 	include_once(APP_PATH . "sales/includes/sales_ui.inc");
 	include_once(APP_PATH . "sales/includes/ui/sales_order_ui.inc");
 	include_once(APP_PATH . "sales/includes/sales_db.inc");

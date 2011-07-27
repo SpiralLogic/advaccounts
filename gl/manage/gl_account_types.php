@@ -17,7 +17,7 @@ page(_($help_context = "GL Account Groups"));
 
 include($path_to_root . "/gl/includes/gl_db.inc");
 
-include($path_to_root . "/includes/ui.inc");
+include($path_to_root . "/includes/faui.inc");
 
 simple_page_mode(true);
 //-----------------------------------------------------------------------------------

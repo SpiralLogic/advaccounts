@@ -17,7 +17,7 @@ page(_($help_context = "Inventory Item Sales prices"), @$_REQUEST['frame']);
 
 include_once($path_to_root . "/sales/includes/sales_db.inc");
 include_once($path_to_root . "/sales/includes/db/sales_types_db.inc");
-include_once($path_to_root . "/includes/ui.inc");
+include_once($path_to_root . "/includes/faui.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
 
 include_once($path_to_root . "/inventory/includes/inventory_db.inc");
@@ -170,7 +170,7 @@ if ($Mode == 'Edit') {
 
 hidden('selected_id', $selected_id);
 div_start('price_details');
-start_table($table_style2);
+start_table('class="tableinfo"');
 
 currencies_list_row(_("Currency:"), 'curr_abrev', null, true);
 

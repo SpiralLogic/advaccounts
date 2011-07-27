@@ -214,7 +214,7 @@ if (isset($_POST['import'])) {
 }
 
 // Begin the UI
-include_once($path_to_root . "/includes/ui.inc");
+include_once($path_to_root . "/includes/faui.inc");
 
 page("Import Multiple Journal Entries / Deposits / Payments");
 

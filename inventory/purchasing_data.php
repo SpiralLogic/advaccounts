@@ -16,7 +16,7 @@ include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 page(_($help_context = "Supplier Purchasing Data"), @$_REQUEST['frame']);
 
 include_once($path_to_root . "/includes/date_functions.inc");
-include_once($path_to_root . "/includes/ui.inc");
+include_once($path_to_root . "/includes/faui.inc");
 include_once($path_to_root . "/includes/manufacturing.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
 
@@ -205,7 +205,7 @@ if ($Mode == 'Edit') {
 
 br();
 hidden('selected_id', $selected_id);
-start_table($table_style2);
+start_table('class="tableinfo"');
 
 if ($Mode == 'Edit') {
 	hidden('supplier_id');
@@ -217,7 +217,7 @@ else
 	$_POST['price'] = $_POST['suppliers_uom'] = $_POST['conversion_factor'] = $_POST['supplier_description'] = "";
 }
 amount_row(_("Price:"), 'price', null, '', get_supplier_currency($selected_id), $dec2);
-text_row(_("Suppliers Unit of Measure:"), 'suppliers_uom', null, 50, 51);
+text_row(_("Suppliers Unit of Measure:"), 'suppliers_uom', null, false, 51);
 
 if (!isset($_POST['conversion_factor']) || $_POST['conversion_factor'] == "") {
 	$_POST['conversion_factor'] = exrate_format(1);

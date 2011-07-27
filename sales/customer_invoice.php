@@ -56,7 +56,7 @@
         $trans_type = ST_SALESINVOICE;
         display_notification(_("Selected deliveries has been processed"), true);
         display_note(get_customer_trans_view_str($trans_type, $invoice_no, _("&View This Invoice")), 0, 1);
-        display_note(print_document_link($invoice_no, _("&Print This Invoice"), true, ST_SALESINVOICE));		echo '<br>';
+        display_note(print_document_link($invoice_no, _("&Print This Invoice"), true, ST_SALESINVOICE));		
 
         submenu_email(_("Email This Invoice"), ST_SALESINVOICE, $invoice_no, null, $emails, 1);
         hyperlink_params("$path_to_root/sales/customer_payments.php", _("Apply a customer payment"));
@@ -70,6 +70,7 @@
         $emails = $customer->getEmailAddresses();
 		$invoice_no = $_GET['UpdatedID'];
 		display_notification_centered(sprintf(_('Sales Invoice # %d has been updated.'), $invoice_no));
+
 		display_note(get_trans_view_str(ST_SALESINVOICE, $invoice_no, _("&View This Invoice")));
 
 		echo '<br>';
@@ -274,7 +275,7 @@
 		$invoice_no = $_SESSION['Items']->write();
 		processing_end();
 		if ($newinvoice) {
-			
+
 			meta_forward($_SERVER['PHP_SELF'], "AddedID=$invoice_no");
 		}
 		else {

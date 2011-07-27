@@ -39,7 +39,7 @@ canvas {
 
 tr, td, th {
 	font-size:   11px;
-	line-height: 19px;
+	line-height: 22px;
 }
 
 table {
@@ -50,14 +50,16 @@ textarea {
 	font-size: 12px;
 }
 
-input, select {
+input, select,textarea {
 	font-size: 11px;
 	padding:   1px;
+	min-width:150px
 }
-
+input[type="checkbox"] {
+min-width: inherit;
+}
 select {
 	max-width: 250px;
-	min-width: 150px;
 }
 
 input.big {
@@ -429,6 +431,7 @@ div.banner a + a { border-top: 2px groove #999 }
 .headingtext2 {
 	font-size: 13px;
 	color:     black;
+	font-weight: bold;
 }
 
 .headingtext3 {
@@ -455,7 +458,7 @@ div.banner a + a { border-top: 2px groove #999 }
 	font-size:        14px;
 }
 
-.tableheader, .tableheader2, .menu_group, th {
+.tableheader, tr.tableheader2, .menu_group, th {
 	font-size:        1.3em;
 	line-height:      1.3em;
 	font-weight:      bold;
@@ -473,11 +476,6 @@ div.banner a + a { border-top: 2px groove #999 }
 .tableheader {
 	color:      #333;
 	text-align: center;
-}
-
-.tableheader2 {
-	color:      #333;
-	text-align: left;
 }
 
 .tableseparator {
@@ -516,10 +514,26 @@ table.tablestyle_inner td {
 	border:          1px solid #f9f9f9;
 }
 
-.tablestyle_noborder {
-	padding: 3px;
+.tablestyle_noborder td
+{
+	font-weight: bold;
+	font-size: 12px;
+	padding-left: 5px;
 }
 
+.label, td.tableheader2,.tableheader2 td,.tableinfo td:first-child, td + input {
+	text-indent: 10px;	border:          1px solid #cccccc;
+
+	background-color: #D4E6F6;
+	color:            black;
+	font-weight:      bold;
+}
+.tableinfo input,.tableinfo textarea,.tableinfo select {
+	min-width: 300px;
+}
+.tableinfo input.amount {
+	min-width:100px;
+}
 .oddrow, .grid tr:nth-child(odd) {
 	background-color: #f3f9fe;
 }
@@ -533,27 +547,6 @@ table.tablestyle_inner td {
 	font-size:   13px;
 	color:       #ff0000;
 	font-weight: bold;
-}
-
-.inputsubmit {
-	font-size:        11px;
-	border:           1px #06c solid;
-	background-color: #ecf4fd;
-	padding:          1px 4px;
-}
-
-.ajaxsubmit, .inputsubmit, .editbutton, button, .button {
-	font-size:        11px;
-	padding:          3px 4px;
-	font-weight:      bold;
-	border-radius:    3px 3px 3px 3px;
-	box-shadow:       0 1px 0 rgba(255, 255, 255, 0.6) inset;
-	background-image: -moz-linear-gradient(center top, #EDEDED, #C4C4C4);
-	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0.00, #EDEDED), color-stop(1.00, #C4C4C4));
-	filter:           progid:DXImageTransform.Microsoft.gradient(enabled = 'true', startColorstr = #EDEDED, endColorstr = #C4C4C4, GradientType = 1);
-	border:           1px solid #7096AB;
-	box-shadow:       none;
-	color:            #333;
 }
 
 .overduebg {
@@ -593,21 +586,37 @@ table.tablestyle_inner td {
 	background-color: pink;
 }
 
-.label {
+/*states*/
+
+.inputsubmit {
+	font-size:        11px;
+	border:           1px #06c solid;
 	background-color: #ecf4fd;
-	color:            black;
-	font-weight:      bold;
+	padding:          1px 4px;
 }
 
-/*states*/
-.ajaxsubmit:hover, .inputsubmit:hover, .editbutton:hover, .button:hover {
+.ajaxsubmit, .inputsubmit, .editbutton, button, .button {
+	font-size:        11px;
+	padding:          3px 4px;
+	font-weight:      bold;
+	border-radius:    3px 3px 3px 3px;
+	box-shadow:       0 1px 0 rgba(255, 255, 255, 0.6) inset;
+	background-image: -moz-linear-gradient(center top, #EDEDED, #C4C4C4);
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0.00, #EDEDED), color-stop(1.00, #C4C4C4));
+	filter:           progid:DXImageTransform.Microsoft.gradient(enabled = 'true', startColorstr = #EDEDED, endColorstr = #C4C4C4, GradientType = 1);
+	border:           1px solid #7096AB;
+	box-shadow:       none;
+	color:            #333;
+}
+
+.ajaxsubmit:hover, .inputsubmit:hover, .editbutton:hover, .button:hover , .button-large:hover{
 	color:              #1c4257;
 	-moz-box-shadow:    0 0 8px rgba(0, 0, 0, 0.15), 0 1px 0 rgba(255, 255, 255, 0.8) inset;
 	-webkit-box-shadow: 0 0 8px rgba(0, 0, 0, 0.15), 0 1px 0 rgba(255, 255, 255, 0.8) inset;
 	box-shadow:         0 0 8px rgba(0, 0, 0, 0.15), 0 1px 0 rgba(255, 255, 255, 0.8) inset;
 }
 
-.ajaxsubmit:focus, .inputsubmit:focus, .editbutton:focus, .button:focus {
+.ajaxsubmit:focus, .inputsubmit:focus, .editbutton:focus, .button:focus, .button-large:focus {
 	outline:            none;
 	color:              #1c4257;
 	border-color:       #7096ab;
@@ -619,7 +628,7 @@ table.tablestyle_inner td {
 	box-shadow:         0 0 8px rgba(0, 0, 0, 0.15), 0 1px 0 rgba(255, 255, 255, 0.8) inset;
 }
 
-.ajaxsubmit:active, .inputsubmit:active, .editbutton:active, .button:active {
+.ajaxsubmit:active, .inputsubmit:active, .editbutton:active, .button:active, .button-large:active {
 	color:              #1c4257;
 	border-color:       #7096ab;
 	background-image:   -webkit-gradient(linear, left bottom, left top, color-stop(1, rgb(185, 224, 245)), color-stop(0, rgb(146, 189, 214)));
@@ -627,6 +636,21 @@ table.tablestyle_inner td {
 	-webkit-box-shadow: none;
 	-moz-box-shadow:    none;
 	box-shadow:         none;
+}
+
+.button {
+	padding:     4px;
+	font:        bold 1em Arial, Sans-Serif;
+	margin:      1px;
+	white-space: nowrap;
+}
+
+.button.printlink, .button-large {
+	padding:     .4em 1em;
+	line-height: 1.4;
+	font-size:   14px;
+	font-weight: bold;
+	text-shadow: 0 1px 0;
 }
 
 .navibutton[disabled], .navibutton[disabled] span {
@@ -654,26 +678,29 @@ button.navibutton {
 .navibar {
 	padding:          0 3px;
 	color:            #333;
-	border-collapse:  collapse;
+		border-collapse:  collapse;
 	background-image: -moz-linear-gradient(center top, #EDEDED, #C4C4C4);
 	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0.00, #EDEDED), color-stop(1.00, #C4C4C4));
 	filter:           progid:DXImageTransform.Microsoft.gradient(enabled = 'true', startColorstr = #EDEDED, endColorstr = #C4C4C4, GradientType = 1);
 	border:           1px solid #7096AB;
 	box-shadow:       none;
 }
-
+.navibar span {
+	font-family:      Tahoma, Arial, sans-serif;
+		font-weight:      bold;
+		color:            #333;
+		padding:          0 3px;
+		font-size:        12px;
+		background-color: transparent;
+		border-style:     none;
+			
+}
 .editbutton {
 	cursor:             pointer;
+	min-width: inherit;
 	-webkit-transition: -webkit-box-shadow 0.25s ease-in-out;
 	-moz-transition:    -moz-box-shadow 0.25s ease-in-out;
 	-o-transition:      -o-box-shadow 0.25s ease-in-out;
-}
-
-.button {
-	padding:     4px;
-	font:        bold 1em Arial, Sans-Serif;
-	margin:      1px;
-	white-space: nowrap;
 }
 
 .listsubmit {
@@ -690,7 +717,10 @@ input.amount, input.freight {
 	padding-right: 0px;
 	border-right:  none;
 }
-
+input.hasDatepicker {
+	max-width: 70px;
+	min-width: inherit;
+}
 /* main wrapper */
 
 #footer {
@@ -912,6 +942,7 @@ td.tableheader3 {
 }
 
 .marginauto {
+
 	margin: 0 auto;
 }
 

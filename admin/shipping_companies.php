@@ -13,7 +13,7 @@ $page_security = 'SA_SHIPPING';
 $path_to_root = "..";
 include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 page(_($help_context = "Shipping Company"));
-include($path_to_root . "/includes/ui.inc");
+include($path_to_root . "/includes/faui.inc");
 
 simple_page_mode(true);
 //----------------------------------------------------------------------------------------------

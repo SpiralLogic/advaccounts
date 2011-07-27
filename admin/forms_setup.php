@@ -15,7 +15,7 @@ include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 
 page(_($help_context = "Forms Setup"));
 
-include($path_to_root . "/includes/ui.inc");
+include($path_to_root . "/includes/faui.inc");
 
 //-------------------------------------------------------------------------------------------------
 

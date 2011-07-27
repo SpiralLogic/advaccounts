@@ -14,7 +14,7 @@ $path_to_root = "..";
 include_once($path_to_root . "/sales/includes/cart_class.inc");
 include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 include_once($path_to_root . "/sales/includes/ui/sales_order_ui.inc");
-include_once($path_to_root . "/includes/ui.inc");
+include_once($path_to_root . "/includes/faui.inc");
 include_once($path_to_root . "/reporting/includes/reporting.inc");
 
 $js = "";

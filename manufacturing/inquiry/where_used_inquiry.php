@@ -16,7 +16,7 @@ include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 
 page(_($help_context = "Inventory Item Where Used Inquiry"));
 
-include($path_to_root . "/includes/ui.inc");
+include($path_to_root . "/includes/faui.inc");
 
 check_db_has_stock_items(_("There are no items defined in the system."));
 

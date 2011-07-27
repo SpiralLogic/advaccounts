@@ -21,9 +21,9 @@ $page_security = $_POST['PARAM_0'] == $_POST['PARAM_1'] ?
 $path_to_root = "..";
 
 include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
-include_once($path_to_root . "/includes/date_functions.inc");
-include_once($path_to_root . "/includes/data_checks.inc");
-include_once($path_to_root . "/sales/includes/sales_db.inc");
+include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/date_functions.inc");
+include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/data_checks.inc");
+include_once($_SERVER['DOCUMENT_ROOT'] . "/sales/includes/sales_db.inc");
 
 $packing_slip = 0;
 //----------------------------------------------------------------------------------------------------
@@ -36,7 +36,7 @@ function print_deliveries()
 {
 	global $path_to_root, $packing_slip;
 
-	include_once($path_to_root . "/reporting/includes/pdf_report.inc");
+	include_once($_SERVER['DOCUMENT_ROOT'] . "/reporting/includes/pdf_report.inc");
 
 	$from = $_POST['PARAM_0'];
 	$to = $_POST['PARAM_1'];

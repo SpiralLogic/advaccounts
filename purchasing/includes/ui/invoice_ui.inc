@@ -310,7 +310,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 								hidden('std_cost_unit' . $n, $myrow['std_cost_unit'], false) .
 								hidden('po_detail_item' . $n, $myrow['po_detail_item'], false));
 					label_cell(get_trans_view_str(ST_PURCHORDER, $myrow["purch_order_no"]));
-					label_cell($myrow["item_code"],"class='stock' data-stock_id='".$myrow['item_code']."'");
+					label_cell($myrow["item_code"], "class='stock' data-stock_id='" . $myrow['item_code'] . "'");
 					label_cell($myrow["description"]);
 					label_cell(sql2date($myrow["delivery_date"]));
 					$dec = get_qty_dec($myrow["item_code"]);
@@ -335,8 +335,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 						$dec2, 'Ea' . $n);
 					if ($supp_trans->is_invoice) {
 						amount_cells(null, 'ChgTotal' . $n, price_decimal_format($myrow["unit_price"] * ($myrow["qty_recd"] - $myrow["quantity_inv"]) * (1 -
-										$myrow['discount'])
-								, $dec2), null, null, $dec2, 'ChgTotalCalc' . $n);
+										$myrow['discount']), $dec2), null, null, $dec2, 'ChgTotalCalc' . $n);
 					}
 					else {
 						amount_cell(round2($myrow["unit_price"] * max($myrow['quantity_inv'], 0) * (1 - $myrow['discount']), user_price_dec()));
@@ -352,7 +351,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 						submit_js_confirm('void_item_id' . $n, sprintf(_('You are about to remove all yet non-invoiced items from delivery line #%d. This operation also irreversibly changes related order line. Do you want to continue ?'), $n));
 					}
 					hyperlink_params_td("/purchasing/po_entry_items.php", _("Modify"), "ModifyOrderNumber=" .
-							$myrow["purch_order_no"]) . end_row();
+							$myrow["purch_order_no"], ' class="button"') . end_row();
 
 				}
 			}
@@ -413,7 +412,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 				display_note($heading2, 0, 0, "class='overduefg'");
 			}
 			echo "</td><td width=10% align='right'>";
-			submit('InvGRNAll', _("Add All Items"), true, false, true);
+			submit('InvGRNAll', _("Add All Items"), true, false, 'button-large');
 		}
 		end_outer_table(0, false);
 		div_start('grn_items');
@@ -421,7 +420,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		if ($mode == 1) {
 			$th = array(_("Delivery"), _("Sequence #"), _("P.O."), _("Item"), _("Description"), _("Received On"),
 				_("Quantity Received"), _("Quantity Invoiced"), _("Qty Yet To Invoice"), _("Order Price"),
-				_("Expected Price"), _('Discount %'), _('Each Price'), "Each Price", _("Total"), "", _("Edit"));
+				_("Expected Price"), _('Discount %'), _('Each Price'), _("Total"), "", "", "");
 			//      if ($supp_trans->is_invoice && $_SESSION["wa_current_user"]->can_access('SA_GRNDELETE')) // Added 2008-10-18 by Joe Hunt. Only admins can remove GRNs
 			//         $th[] = "";
 			if (!$supp_trans->is_invoice) {
@@ -445,7 +444,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 					label_cell($entered_grn->id);
 					label_cell(""); // PO
 				}
-				label_cell($entered_grn->item_code,"class='stock' data-stock_id='{$entered_grn->item_code}'");
+				label_cell($entered_grn->item_code, "class='stock' data-stock_id='{$entered_grn->item_code}'");
 				label_cell($entered_grn->item_description);
 				$dec = get_qty_dec($entered_grn->item_code);
 				if ($mode == 1) {

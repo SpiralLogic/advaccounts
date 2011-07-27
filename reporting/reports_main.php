@@ -13,13 +13,11 @@ $path_to_root = "..";
 $page_security = 'SA_OPEN';
 include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 
-include_once($path_to_root . "/includes/date_functions.inc");
-include_once($path_to_root . "/includes/data_checks.inc");
-include_once($path_to_root . "/includes/ui.inc");
-include_once($path_to_root . "/reporting/includes/reports_classes.inc");
+include_once(APP_PATH. "/includes/date_functions.inc");
+include_once(APP_PATH. "/includes/data_checks.inc");
+include_once(APP_PATH. "/includes/faui.inc");
+include_once(APP_PATH. "/reporting/includes/reports_classes.inc");
 $js = "";
-if ($use_date_picker)
-	$js .= get_js_date_picker();
 page(_($help_context = "Reports and Analysis"), false, false, "", $js);
 
 $reports = new BoxReports;

@@ -17,7 +17,7 @@ add_access_extensions();
 
 page(_($help_context = "Access setup"));
 
-include_once($path_to_root . "/includes/ui.inc");
+include_once($path_to_root . "/includes/faui.inc");
 include_once($path_to_root . "/includes/access_levels.inc");
 include_once($path_to_root . "/admin/db/security_db.inc");
 

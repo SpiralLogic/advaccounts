@@ -13,7 +13,7 @@ $path_to_root = "..";
 include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 include_once($path_to_root . "/includes/types.inc"); // For tag constants
 include_once($path_to_root . "/admin/db/tags_db.inc");
-include($path_to_root . "/includes/ui.inc");
+include($path_to_root . "/includes/faui.inc");
 
 // Set up page security based on what type of tags we're working with
 if (@$_GET['type'] == "account" || get_post('type') == TAG_ACCOUNT) {

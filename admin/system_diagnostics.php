@@ -16,7 +16,7 @@ include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 
 page(_($help_context = "System Diagnostics"));
 
-include($path_to_root . "/includes/ui.inc");
+include($path_to_root . "/includes/faui.inc");
 
 // Type of requirement for positive test result
 $test_level = array(

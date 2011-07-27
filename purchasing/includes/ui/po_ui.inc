@@ -157,9 +157,9 @@ function display_po_items(&$order, $editable = true)
 	div_start('items_table');
 	start_table("$table_style width=80%");
 
-	$th = array(_("Item Code"), _("Item Description"), _("Quantity"),
+	$th = array(_("Item Code"), _("Description"), _("Quantity"),
 				_("Received"), _("Unit"),
-				_("Required Delivery Date"), _("Price"), _('Discount %'), _("Line Total"), "");
+				_("Required Date"), _("Price"), _('Discount %'), _("Total"), "");
 
 	if (count($order->line_items))
 		$th[] = '';
