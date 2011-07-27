@@ -10,7 +10,7 @@ desktop.ini
 fuel/app/logs/*/*/*
 fuel/app/cache/*/*
 nbproject/
-.idea
+.idea*
 modules/smartoptimizer/cache/*
 company/pdf_files/*
 tmp/*
