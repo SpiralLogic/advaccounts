@@ -150,7 +150,7 @@ function submit($name, $value, $echo = true, $title = false, $atype = false, $ic
 		}
 	}
 	$submit_str = "<button class=\""
-				  . ($atype ? 'ajaxsubmit' : 'inputsubmit')
+				  . (($atype===true||$atype===false) ? (($atype) ? 'ajaxsubmit' : 'inputsubmit' ): $atype)
 				  . "\" type=\"submit\""
 				  . $aspect
 				  . " name=\"$name\"  id=\"$name\" value=\"$value\""
@@ -384,7 +384,7 @@ function check_row($label, $name, $value = null, $submit_on_change = false, $tit
 
 function labelheader_cell($label, $params = "")
 {
-	echo "<td class='tableheader' $params>$label</td>\n";
+	echo "<th  $params>$label</th>\n";
 }
 
 function label_cell($label, $params = "", $id = null)
@@ -528,7 +528,7 @@ function text_cells_ex($label, $name, $size, $max = null, $init = null, $title =
 	$Ajax->addUpdate($name, $name, $_POST[$name]);
 }
 
-function text_row($label, $name, $value, $size, $max, $title = null, $params = "", $post_label = "")
+function text_row($label, $name, $value, $size=false, $max, $title = null, $params = "", $post_label = "")
 {
 	echo "<tr><td class='label'>$label</td>";
 	text_cells(null, $name, $value, $size, $max, $title, $params, $post_label);
@@ -669,7 +669,7 @@ function file_row($label, $name, $id = "")
 
 function ref_cells($label, $name, $title = null, $init = null, $params = null, $submit_on_change = false)
 {
-	text_cells_ex($label, $name, 16, 18, $init, $title, $params, null, $submit_on_change);
+	text_cells_ex($label, $name, 13, 18, $init, $title, $params, null, $submit_on_change);
 }
 
 //-----------------------------------------------------------------------------------

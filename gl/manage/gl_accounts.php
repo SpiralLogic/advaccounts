@@ -15,7 +15,7 @@ include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 
 page(_($help_context = "Chart of Accounts"));
 
-include($path_to_root . "/includes/ui.inc");
+include($path_to_root . "/includes/faui.inc");
 include($path_to_root . "/gl/includes/gl_db.inc");
 include($path_to_root . "/admin/db/tags_db.inc");
 include_once($path_to_root . "/includes/data_checks.inc");

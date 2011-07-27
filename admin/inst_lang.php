@@ -18,7 +18,7 @@ page(_($help_context = "Install/Update Languages"));
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/admin/db/company_db.inc");
 include_once($path_to_root . "/admin/db/maintenance_db.inc");
-include_once($path_to_root . "/includes/ui.inc");
+include_once($path_to_root . "/includes/faui.inc");
 
 //---------------------------------------------------------------------------------------------
 

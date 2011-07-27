@@ -81,21 +81,21 @@ echo "</td><td>"; // outer table
 
 start_table("$table_style width=100%");
 start_row();
-label_cells(_("Reference"), $myrow["reference"], "class='tableheader2'");
-label_cells(_("Currency"), $sales_order["curr_code"], "class='tableheader2'");
+label_cells(_("Reference"), $myrow["reference"], "class='label'");
+label_cells(_("Currency"), $sales_order["curr_code"], "class='label'");
 label_cells(_("Our Order No"),
-			get_customer_trans_view_str(ST_SALESORDER, $sales_order["order_no"]), "class='tableheader2'");
+			get_customer_trans_view_str(ST_SALESORDER, $sales_order["order_no"]), "class='label'");
 end_row();
 start_row();
-label_cells(_("Customer Purchase Order #"), $sales_order["customer_ref"], "class='tableheader2'");
-label_cells(_("Shipping Company"), $myrow["shipper_name"], "class='tableheader2'");
-label_cells(_("Sales Type"), $myrow["sales_type"], "class='tableheader2'");
+label_cells(_("Customer Purchase Order #"), $sales_order["customer_ref"], "class='label'");
+label_cells(_("Shipping Company"), $myrow["shipper_name"], "class='label'");
+label_cells(_("Sales Type"), $myrow["sales_type"], "class='label'");
 end_row();
 start_row();
-label_cells(_("Invoice Date"), sql2date($myrow["tran_date"]), "class='tableheader2'", "nowrap");
-label_cells(_("Due Date"), sql2date($myrow["due_date"]), "class='tableheader2'", "nowrap");
+label_cells(_("Invoice Date"), sql2date($myrow["tran_date"]), "class='label'", "nowrap");
+label_cells(_("Due Date"), sql2date($myrow["due_date"]), "class='label'", "nowrap");
 label_cells(_("Deliveries"), get_customer_trans_view_str(ST_CUSTDELIVERY,
-														 get_parent_trans(ST_SALESINVOICE, $trans_id)), "class='tableheader2'");
+														 get_parent_trans(ST_SALESINVOICE, $trans_id)), "class='label'");
 end_row();
 comments_display_row(ST_SALESINVOICE, $trans_id);
 end_table();

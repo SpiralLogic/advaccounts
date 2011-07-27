@@ -17,7 +17,7 @@ page(_($help_context = "Suppliers"), @$_REQUEST['popup']);
 
 //include($path_to_root . "/includes/date_functions.inc");
 
-include("../../includes/ui.inc");
+include("../../includes/faui.inc");
 
 check_db_has_tax_groups(_("There are no tax groups defined in the system. At least one tax group is required before proceeding."));
 

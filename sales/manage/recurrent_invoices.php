@@ -12,7 +12,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 $page_security = 'SA_SRECURRENT';
 $path_to_root = "../..";
 include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
-include($path_to_root . "/includes/ui.inc");
+include($path_to_root . "/includes/faui.inc");
 
 $js = "";
 if ($use_popup_windows)

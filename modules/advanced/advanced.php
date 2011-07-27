@@ -12,7 +12,7 @@ add_access_extensions();
 //--------------------------------------------------------------------------------------------------
 
 // Begin the UI
-include_once($path_to_root . "/includes/ui.inc");
+include_once($path_to_root . "/includes/faui.inc");
 
 page("Advanced");
 

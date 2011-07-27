@@ -17,7 +17,7 @@ page(_($help_context = "Quick Entries"));
 
 include($path_to_root . "/gl/includes/gl_db.inc");
 
-include($path_to_root . "/includes/ui.inc");
+include($path_to_root . "/includes/faui.inc");
 
 simple_page_mode(true);
 simple_page_mode2(true);

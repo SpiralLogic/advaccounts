@@ -17,7 +17,7 @@ page(_($help_context = "Inventory Movement Types"));
 
 include_once($path_to_root . "/inventory/includes/inventory_db.inc");
 
-include_once($path_to_root . "/includes/ui.inc");
+include_once($path_to_root . "/includes/faui.inc");
 
 simple_page_mode(true);
 //-----------------------------------------------------------------------------------

@@ -13,7 +13,7 @@ $page_security = 'SA_BACKUP';
 
 $path_to_root = "..";
 include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
-include_once($path_to_root . "/includes/ui.inc");
+include_once($path_to_root . "/includes/faui.inc");
 include_once($path_to_root . "/admin/db/maintenance_db.inc");
 
 if (get_post('view')) {

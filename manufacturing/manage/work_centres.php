@@ -17,7 +17,7 @@ page(_($help_context = "Work Centres"));
 
 include($path_to_root . "/manufacturing/includes/manufacturing_db.inc");
 
-include($path_to_root . "/includes/ui.inc");
+include($path_to_root . "/includes/faui.inc");
 
 simple_page_mode(true);
 //-----------------------------------------------------------------------------------

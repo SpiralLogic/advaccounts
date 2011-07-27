@@ -20,8 +20,7 @@
 		public $purchPrices = array();
 		protected $stockLevels = array();
 
-		public function __construct($id = 0) {
-			$this->id = $id;
+		public function __construct($id = null) {
 			parent::__construct($id);
 			$this->stock_id = &$this->id;
 			$this->uom = &$this->units;
@@ -45,7 +44,7 @@
 		}
 
 		protected function _canProcess() {
-			// TODO: Implement _canProcess() method.
+return true;
 		}
 
 		protected function _countTransactions() {
@@ -69,7 +68,32 @@
 		}
 
 		function save($changes = null) {
-			// TODO: Implement save() method.
+			if (is_array($changes)) {
+				$this->setFromArray($changes);
+			}
+			if (!$this->_canProcess()) {
+				return false;
+			}
+			if ($this->id == 0) {
+				$this->_saveNew();
+			}
+			begin_transaction();
+			$sql = "UPDATE stock_master SET description=" . db_escape($this->name) . ",
+					long_description=" . db_escape($this->description) . ",
+					category_id=" . db_escape($this->category_id) . ",
+					stock_id=" . db_escape($this->id) . ",
+					units=" . db_escape($this->units) . "
+		            WHERE stock_id = " . db_escape($this->id);
+
+			db_query($sql, "The item could not be updated");
+			$sql = "UPDATE item_codes SET stock_id=" . db_escape($this->id) . ",
+							category_id=" . db_escape($this->category_id) . ",
+							description=" . db_escape($this->name) . ",
+							item_code=" . db_escape($this->id) . "
+							WHERE stock_id = " . db_escape($this->id);
+			db_query($sql, "The item could not be updated");
+			commit_transaction();
+			return $this->_status(true, 'Processing', "Item has been updated.");
 		}
 
 		function  getSalePrices() {
@@ -90,6 +114,9 @@
 		}
 
 		function  getStockLevels() {
+			if (!$this->id > 0) {
+				return;
+			}
 			$sql = "SELECT l.loc_code, l.location_name, i.stock_id as id, r.reorder_level, o.demand, (qty-o.demand) as available, p.onorder, qty
 			FROM locations l
 			LEFT JOIN (SELECT stock_id, loc_code, SUM(qty) as qty FROM stock_moves WHERE stock_id=" . db_escape($this->id) . " AND tran_date <= '" . date2sql(Today()) . "' GROUP BY loc_code) i ON l.loc_code = i.loc_code
@@ -127,12 +154,13 @@
 			return $data;
 		}
 
-		static function addEditDialog($options=array()) {
-			$default = array('page'=>0);
-			$options = array_merge($default,$options);
+		static function addEditDialog($options = array()) {
+			$default = array('page' => 0);
+			$options = array_merge($default, $options);
 			extract($options);
 			$stockbox = new Dialog('Item Edit', 'stockbox', '');
-			$stockbox->addButtons(array('Close' => '$(this).dialog("close");'));
+			$stockbox->addButtons(array('Save' => 'Item.save()', 'Close' => '$(this).dialog("close");'));
+
 			$stockbox->setOptions(array('autoopen' => false, 'modal' => true, 'width' => '"75%"', 'resizeable' => true));
 			$stockbox->show();
 			$action = <<<JS

@@ -206,14 +206,14 @@ function submenu_print($title, $type, $number, $id = null, $email = 0, $extra = 
 {
 	display_note(print_document_link($number, $title, true, $type, false, 'menu_option', $id, $email, $extra), 0, 1);
 }
-function submenu_email($title, $type, $number, $id = null, $emails, $extra = 0)
+function submenu_email($title, $type, $number, $id = null, $emails, $extra = 0,$return = false)
 {
   
-	email_document_link($number, $title, true, $type, 'EmailLink', $id, $emails, $extra);
+	return email_document_link($number, $title, true, $type, 'EmailLink', $id, $emails, $extra,$return);
 }
 //-----------------------------------------------------------------------------------
 
-function hyperlink_params($target, $label, $params = '', $center = true)
+function hyperlink_params($target, $label, $link_params = '', $center = true,$params='')
 {
 	$id = default_focus();
 
@@ -222,15 +222,15 @@ function hyperlink_params($target, $label, $params = '', $center = true)
 		$target = $_SERVER['PHP_SELF'];
 	if ($center)
 		echo "<br><center>";
-	echo "<a id='$id' href='$target?$params'$pars[1]>$pars[0]</a>\n";
+	echo "<a id='$id' href='$target?$link_params'$pars[1] >$pars[0]</a>\n";
 	if ($center)
 		echo "</center>";
 }
 
-function hyperlink_params_td($target, $label, $params)
+function hyperlink_params_td($target, $label, $link_params,$params='')
 {
 	echo "<td>";
-	hyperlink_params($target, $label, $params, false);
+	hyperlink_params($target, $label, $link_params, false, $params);
 	echo "</td>\n";
 }
 
@@ -279,10 +279,10 @@ function table_section_title($msg, $colspan = 2, $class = 'tableheader')
 
 function table_header($labels, $params = '')
 {
-	start_row();
+	echo '<thead>';
 	foreach ($labels as $label)
 		labelheader_cell($label, $params);
-	end_row();
+	echo '</thead>';
 }
 
 //-----------------------------------------------------------------------------------

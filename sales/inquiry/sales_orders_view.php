@@ -108,29 +108,25 @@
 	}
 
 	function prt_link($row) {
-		global $trans_type;
-		return print_document_link($row['order_no'], _("Print"), true, $row['trans_type'], ICON_PRINT);
+		
+		return print_document_link($row['order_no'], _("Print"), true, $row['trans_type'], ICON_PRINT,'button');
 	}
 
 	function prt_link2($row) {
-		global $trans_type;
-		return print_document_link($row['order_no'], _("Proforma"), true, ST_PROFORMA, ICON_PRINT);
+		return print_document_link($row['order_no'], _("Proforma"), true, ST_PROFORMA, ICON_PRINT,'button');
 	}
 
 	function edit_link($row) {
-		global $trans_type;
 		$modify = ($row['trans_type'] == ST_SALESORDER ? "ModifyOrderNumber" : "ModifyQuotationNumber");
 		return pager_link(_("Edit"), "/sales/sales_order_entry.php?$modify=" . $row['order_no'], ICON_EDIT);
 	}
 
 	function email_link($row) {
-		global $trans_type;
-		return print_document_link($row['order_no'], _("Email"), true, $row['trans_type'], false, "button printlink", "", 1);
+		return print_document_link($row['order_no'], _("Email"), true, $row['trans_type'], false, "button", "", 1);
 
 	}
 
 	function dispatch_link($row) {
-		global $trans_type;
 		if ($row['trans_type'] == ST_SALESORDER) {
 			return pager_link(_("Dispatch"), "/sales/customer_delivery.php?OrderNumber=" . $row['order_no'], ICON_DOC);
 		}
@@ -140,7 +136,6 @@
 	}
 
 	function invoice_link($row) {
-		global $trans_type;
 		if ($row['trans_type'] == ST_SALESORDER) {
 			return pager_link(_("Invoice"), "/sales/sales_order_entry.php?NewInvoice=" . $row["order_no"], ICON_DOC);
 		}
@@ -214,12 +209,12 @@
 	start_form();
 	start_table("class='tablestyle_noborder'");
 	start_row();
-	customer_list_cells(_("Select a customer: "), 'customer_id', null, true);
+	customer_list_cells(_("Customer: "), 'customer_id', null, true);
 	ref_cells(_("#:"), 'OrderNumber', '', null, '', true);
 	if ($_POST['order_view_mode'] != 'DeliveryTemplates' && $_POST['order_view_mode'] != 'InvoiceTemplates') {
 		ref_cells(_("Ref"), 'OrderReference', '', null, '', true);
-		date_cells(_("from:"), 'OrdersAfterDate', '', null, -30);
-		date_cells(_("to:"), 'OrdersToDate', '', null, 1);
+		date_cells(_("From:"), 'OrdersAfterDate', '', null, -30);
+		date_cells(_("To:"), 'OrdersToDate', '', null, 1);
 	}
 	locations_list_cells(_("Location:"), 'StockLocation', null, true);
 	stock_items_list_cells(_("Item:"), 'SelectStockFromList', null, true);

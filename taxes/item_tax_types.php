@@ -19,7 +19,7 @@ page(_($help_context = "Item Tax Types"));
 include_once($path_to_root . "/taxes/db/item_tax_types_db.inc");
 include_once($path_to_root . "/taxes/db/tax_types_db.inc");
 
-include($path_to_root . "/includes/ui.inc");
+include($path_to_root . "/includes/faui.inc");
 
 simple_page_mode(true);
 //-----------------------------------------------------------------------------------

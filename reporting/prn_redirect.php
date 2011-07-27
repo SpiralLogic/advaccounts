@@ -19,10 +19,10 @@ include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 
 function find_report_file($rep)
 {
-	global $installed_extensions, $comp_path, $path_to_root;
+	global $installed_extensions, $path_to_root;
 
 	// customized per company versions 
-	$path = $comp_path . "/reporting";
+	$path =  "/company/reporting";
 	$rep_file = $path . "/rep$rep.php";
 	if (file_exists($rep_file)) {
 		// add local include path for custom reports

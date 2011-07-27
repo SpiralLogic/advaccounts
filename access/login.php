@@ -12,7 +12,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_to_root'])) {
 	die(_("Restricted access"));
 }
-include_once(APP_PATH . "includes/ui.inc");
+include_once(APP_PATH . "includes/faui.inc");
 $js = "<script language='JavaScript' type='text/javascript'>
 function defaultCompany()
 {

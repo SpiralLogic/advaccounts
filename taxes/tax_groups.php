@@ -17,7 +17,7 @@ include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 page(_($help_context = "Tax Groups"));
 
 include_once($path_to_root . "/includes/data_checks.inc");
-include_once($path_to_root . "/includes/ui.inc");
+include_once($path_to_root . "/includes/faui.inc");
 
 include_once($path_to_root . "/taxes/db/tax_groups_db.inc");
 include_once($path_to_root . "/taxes/db/tax_types_db.inc");
