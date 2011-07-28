@@ -531,9 +531,6 @@ table.tablestyle_inner td {
 	padding-right:5px;
 	white-space:nowrap;
 }
-.tablestyle tr:nth-child(odd) td:first-child {
-	background-color:#E9CFEC		;
-}
 
 .tableinfo input, .tableinfo textarea, .tableinfo select {
 	min-width: 300px;

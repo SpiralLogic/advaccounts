@@ -93,7 +93,8 @@
 	else {
 		if (isset($_GET['restoreorder'])) {
 			$serial = Cart::restore();
-			create_cart($serial, 0);
+			$_SESSION['Items']=$serial;
+			copy_from_cart();
 		}
 	}
 	page($_SESSION['page_title'], false, false, "", $js);
