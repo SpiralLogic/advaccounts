@@ -27,6 +27,7 @@
 
 
 		protected static $_instance = null;
+		protected static $_return = false;
 
 		function __call($func, $args) {
 			static::__callStatic($func, $args);
@@ -38,8 +39,12 @@
 			return static::$_instance;
 		}
 
-		static function __callStatic($func, $args = array()) {
+		static function setReturn($state = null) {
+			static::$_return = ($state === null) ? !(static::$_return) : $state;
+			return static::$_instance;
+		}
 
+		static function __callStatic($func, $args = array()) {
 			if (static::$_instance === null) {
 				static::$_instance = new static;
 				if ($func === 'load') {
@@ -47,7 +52,9 @@
 				}
 			}
 			;
-
+			if (static::$_return) {
+				ob_start();
+			}
 			(count($args) == 0) ? static::$_instance->_closeTag(($func[0] == '_') ? substr($func, 1) : $func)
 					: static::$_instance->_Builder($func, $args);
 			return static::$_instance;
@@ -83,5 +90,4 @@
 				$this->_closeTag($func);
 			}
 		}
-
 	}

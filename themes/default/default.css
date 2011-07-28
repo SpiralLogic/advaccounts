@@ -521,15 +521,17 @@ table.tablestyle_inner td {
 	font-size:    12px;
 	padding-left: 5px;
 }
+.label {
+	background-color: #D4E6F6;
+	font-weight: bold;
 
-.label, td.tableheader2, .tableheader2 td, .tableinfo td:first-child, td + input,.grid td:first-child ,.tablestyle td:first-child {
+
+}
+.td.tableheader2, .tableheader2 td, .tableinfo td:first-child, td + input,.grid td:first-child ,.tablestyle td:first-child {
 	text-indent:      12px;
 	border:           1px solid #cccccc;
-	background-color: #D4E6F6;
 	color:            black;
-	font-weight:      bold;
 	padding-right:5px;
-	white-space:nowrap;
 }
 
 .tableinfo input, .tableinfo textarea, .tableinfo select {

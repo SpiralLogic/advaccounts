@@ -6,7 +6,7 @@ include(APP_PATH . 'modules/smartoptimizer/minifiers/js.php');
 		private static $_beforeload = array();
 		private static $_onload = array();
 		private static $_onlive = array();
-		
+
 		private static $_headerFiles = array();
 		private static $_footerFiles = array();
 
@@ -83,20 +83,22 @@ JS;
 		public static function renderHeader() {
 			$js = '';
 			foreach (self::$_headerFiles as $dir => $files) {
-				$js .= '<script  src="' . $dir .'/'. implode(',', $files) . '"></script>';
+				$js .= '<script  src="' . $dir . '/' . implode(',', $files) . '"></script>';
 			}
 			echo $js;
 		}
 
 		public static function render() {
-			$js=$content = '';
+			HTML::setReturn(true);
+			$js = $content = '';
 			foreach (self::$_footerFiles as $dir => $files) {
-				$js .= '<script  src="' . $dir .'/'. implode(',', $files) . '"></script>';
+				$js .= HTML::script(array('src' => $dir . '/' . implode(',', $files)))->script;
 			}
 			if (count(self::$_beforeload)) {
 				$content .= implode(";\n", self::$_beforeload);
 			}
-			$content .= ';$(function() { ';
+
+			$content .= ";\n$(function() { ";
 			if (count(self::$_onlive)) {
 				$content .= 'Adv.Events.onload(function() {' . implode(";\n", self::$_onlive) . '});';
 			}
@@ -104,7 +106,8 @@ JS;
 				$content .= implode(";\n", self::$_onload);
 			}
 			$content .= '});';
-			echo $js."\n<script language=\"javascript\"  type=\"text/javascript\"><!--\n" . $content . "\n--></script>\n";
+			echo $js;
+			HTML::script(array('content' => $content));
 		}
 
 		public static function arrayToOptions($options = array()) {
@@ -122,7 +125,7 @@ JS;
 			if (!$delegate) {
 				return self::addLive("$('$selector').bind('$type',function(e){ {$action} });");
 			}
-			self::register("$('$delegate').delegate('$selector','$type',function(e){ {$action} } )",self::$_onload);
+			self::register("$('$delegate').delegate('$selector','$type',function(e){ {$action} } )", self::$_onload);
 		}
 
 		public static function addLive($action) {
@@ -174,7 +177,9 @@ JS;
 			} else {
 				$dir = dirname($file);
 				$file = basename($file);
-				if (!isset($var[$dir])) $var[$dir] =array();
+				if (!isset($var[$dir])) {
+					$var[$dir] = array();
+				}
 				array_push($var[$dir], $file);
 			}
 		}
