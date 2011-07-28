@@ -491,8 +491,9 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
          $sql = "SELECT `data` FROM  `user_class_store` WHERE `user_id`=" . $_SESSION['wa_current_user']->user;
          $result = db_query($sql);
          $serial = db_fetch_assoc($result);
-         $serial = $serial['data'];
+        $serial  = $serial['data'];
          return unserialize($serial);
+
       }
    } /* end of class defintion */
    class line_details
