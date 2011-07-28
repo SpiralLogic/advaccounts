@@ -41,7 +41,9 @@
 
 		static function setReturn($state = null) {
 			static::$_return = ($state === null) ? !(static::$_return) : $state;
+			if (!static::$_return) echo ob_get_flush();
 			return static::$_instance;
+
 		}
 
 		static function __callStatic($func, $args = array()) {
