@@ -825,10 +825,6 @@ JS
 		if ($editkey) {
 			set_editor('item', $name, $editkey);
 		}
-		JS::addLiveEvent('#stock_id', 'blur', <<<JS
-$('#stock_id').trigger('change');
-JS
-		);
 		return combo_input($name, $selected_id, $sql, 'stock_id', 's.description',
 			array_merge(array('format' => '_format_stock_items',
 					'spec_option' => $all_option === true ? _("All Items") : $all_option,
