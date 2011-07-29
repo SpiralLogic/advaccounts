@@ -78,7 +78,7 @@
    table_section_title(_("Shipping Details"), 2);
    /** @noinspection PhpUndefinedMethodInspection */
    HTML::tr(true)->td('branchSelect', array('colspan' => 2, 'style' => "text-align:center; margin:0 auto; "));
-   UI::select('branchList', array($currentBranch->br_name => $currentBranch->branch_code), array('name' => 'branchList'));
+   UI::select('branchList', array_map(function($v) { return $v->name; },$customer->branches), array('name' => 'branchList'));
    UI::button('addBranch', 'Add new address', array('name' => 'addBranch'));
    HTML::td()->tr;
    text_row(_("Contact:"), 'br_contact_name', $currentBranch->contact_name, 35, 40);

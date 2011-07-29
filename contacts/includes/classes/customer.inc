@@ -24,6 +24,7 @@
          parent::__construct($id);
          $this->pymt_discount =& $this->payment_discount;
          $this->debtor_ref = substr($this->name, 0, 60);
+	      return $this;
       }
 
       protected function _canProcess() {
@@ -320,14 +321,14 @@
       public function getEmailAddresses() {
          $emails = array();
          if (!empty($this->accounts->email))
-            $emails['Accounts'][$this->accounts->id] = array('Accounts', $this->accounts->email);
+            $emails['Accounts'][$this->accounts->id] = array($this->accounts->email,'Accounts');
          foreach ($this->contacts as $id => $contact) {
             if (!empty($contact->email))
-               $emails['Contacts'][$id] = array($contact->name, $contact->email);
+               $emails['Contacts'][$id] = array($contact->email,$contact->name);
          }
          foreach ($this->branches as $id => $branch) {
             if (!empty($branch->email))
-               $emails['Branches'][$id] = array($branch->br_name, $branch->email);
+               $emails['Branches'][$id] = array($contact->email,$contact->name);
          }
          return (count($emails) > 0) ? $emails : false;
       }
