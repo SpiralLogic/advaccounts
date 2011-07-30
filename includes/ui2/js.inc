@@ -98,7 +98,7 @@ JS;
 			}
 			$content .= ";\n$(function() { ";
 			if (count(self::$_onlive)) {
-				$content .= 'Adv.Events.onload(function() {' . implode(";\n", self::$_onlive) . '});';
+				$content .= 'Adv.Events.onload([function() {' . implode("},function() {", self::$_onlive) . '}]);';
 			}
 			if (count(self::$_onload)) {
 				$content .= implode(";\n\n", self::$_onload);

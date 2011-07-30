@@ -173,12 +173,12 @@
       {
          $term2 = db_escape('%' . $term . '%');
          $term = db_escape($term . '%');
-         $sql = "SELECT search.stock_id, stock.description,c.cat_name as category FROM ((SELECT s.stock_id as id, category_id as category, s.description as label,
+         $sql = "SELECT stock_id, stock_id as id,label, description,price, c.cat_name as category FROM ((SELECT s.stock_id , category_id as category, s.description as label,
          s.long_description as description,
                p.price FROM stock_master s
                   LEFT JOIN prices p ON s.stock_id = p.stock_id WHERE s.stock_id LIKE $term AND s.inactive = 0 AND s.no_sale = 0
                   ORDER BY s.stock_id LIMIT 100) UNION
-                  (SELECT s.stock_id as id, category_id as category, s.description as label, s.long_description as description ,p.price FROM stock_master s
+                  (SELECT s.stock_id, category_id as category, s.description as label, s.long_description as description ,p.price FROM stock_master s
                   LEFT JOIN prices p ON s.stock_id = p.stock_id WHERE s.description LIKE $term2 AND s.inactive = 0 AND s.no_sale = 0
                   ORDER BY s.category_id, s.long_description LIMIT 100)) search LEFT JOIN (SELECT description as cat_name, category_id FROM stock_category ) c ON search.category=c.category_id";
 
@@ -210,23 +210,22 @@ JS;
 
       static function addSearchBox($options = array())
       {
-         HTML::td(true)->input('stock_id',array('name'=>'stock_id'))->td;
-         HTML::td(true)->input('description',array('name'=>'description'))->td;
-         JS::onload(<<<JS
-
-            $( "#stock_id").autocomplete({
+         HTML::td(true)->input('stock_id', array('name' => 'stock_id'))->td;
+         HTML::td(true)->input('description', array('name' => 'description'))->td;
+         JS::addLive(<<<JS
+           var stock_id = $( "#stock_id").autocomplete({
                         delay: 0,
                         minLength: 0,
                         source: '/items/search.php',
                         autoFocus: true,
                         select: function( event, ui ) {
                            $.each(ui.item,function(\$k,\$v) {
-                           $('name="'+\$k+'"]').val(\$v);
+                           $('[name="'+\$k+'"]').val(\$v);
                            })
                         }
-                     })
+                     });
+                     return  function (stock_id) {stock_id.autocomplete('destroy') }
 JS
          );
-
       }
    }
