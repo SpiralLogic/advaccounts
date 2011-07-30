@@ -27,8 +27,8 @@
       echo json_encode($data);
       exit();
    }
-   add_js_ffile("/js/js2/jquery-tmpl.min.js");
-   add_js_ffile("includes/js/customers.js");
+   JS::footerFile("/js/js2/jquery-tmpl.min.js");
+   JS::footerFile("includes/js/customers.js");
 
 
    page(_($help_context = "Customers"), @$_REQUEST['popup']);
@@ -54,26 +54,23 @@
    if (db_has_customers() && !isset($_GET['popup'])&& !isset($_GET['id'])) {
       /** @noinspection PhpUndefinedMethodInspection */
       HTML::div('custsearch');
-      HTML::table(null, array("style" => "margin:0 auto; padding-bottom:5px; font-weight:bold"));
-      HTML::td(array("style" => "width:750px"));
+      HTML::table(array("style" => "margin:0 auto; padding-bottom:5px; font-weight:bold"));
+      HTML::tr(true)->td(array("style" => "width:750px"));
       UI::search('customer', array('label' => 'Search Customer:', 'size' => 80, 'url' => 'search.php',
                                   'callback' => 'Customer.fetch'));
-      HTML::td()->table()->div();
-      HTML::div(false);
+      HTML::td()->tr->table->div;
    }
    start_form();
    $menu = new MenuUi();
    $menu->startTab('Details', 'Customer Details', '#', 'text-align:center');
    HTML::div('customerIDs', array('style' => 'display:inline-block'));
-   HTML::table(null, array("style" => "margin:0 auto; padding-bottom:5px; font-weight:bold"))->tr(true)->td(true);
-   HTML::label(array('for' => 'name', 'content' => 'Customer name:'));
+   HTML::table(array("style" => "margin:0 auto; padding-bottom:5px; font-weight:bold"))->tr(true)->td(true);
+   HTML::label(array('for' => 'name', 'content' => 'Customer name:'),false);
    HTML::input('name', array('value' => $customer->name, 'name' => 'name', 'size' => 50));
-   HTML::td(array('content' => _("Customer ID: "), "style" => "width:90px"), true)->td(true);
+   HTML::td()->td(array('content' => _("Customer ID: "), "style" => "width:90px"), false)->td(true);
    HTML::input('id', array('value' => $customer->id, 'name' => 'id', 'size' => 10, 'maxlength' => '7'));
-
-   HTML::td()->table()->div();
+   HTML::td()->tr->table->div;
    start_outer_table($table_style2, 5);
-
    table_section(1);
    table_section_title(_("Shipping Details"), 2);
    /** @noinspection PhpUndefinedMethodInspection */

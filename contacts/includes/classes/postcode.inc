@@ -33,13 +33,13 @@ private static $count=0;
         $url='search.php';
         HTML::tr(true)->td(array('class'=>'label'))->label(array('content' => 'City: ','for'=>$city[0]),false)->td->td(true);
         UI::search($city[0], array('url' => $url.'?city=1', 'nodiv' => true, 'name' => $city[0], 'size' => 35, 'max' => 40, 'callback' => 'Adv.postcode'.static::$count.'.fetch'));
-        HTML::_td()->tr;
+        HTML::td()->tr;
         HTML::tr(true)->td(array('class'=>'label'))->label(array('content' => 'State: ','for'=>$state[0]),false)->td->td(true);
         HTML::input($state[0],array('maxlength'=>35,'size'=> 35,'value'=>$state[1],'name'=>$state[0]));
         HTML::tr(true)->td(array('class'=>'label'))->label(array('content' => 'Postcode: ','for'=>$postcode[0]),false)->td->td(true);
 
         UI::search($postcode[0], array('url' => $url.'?postcode=1', 'nodiv' => true, 'name' => $postcode[0], 'size' => 35, 'max' => 40, 'callback' => 'Adv.postcode'.static::$count.'.fetch'));
-        HTML::_td()->tr;
+        HTML::td()->tr;
         static::registerJS("#".$postcode[0],"#".$city[0],"#".$state[0]);
     } 
 

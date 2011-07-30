@@ -58,7 +58,10 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 			exit;
 		}
 	}
-
+$time = microtime();
+$time = explode(' ', $time);
+$time = $time[1] + $time[0];
+$start22 = $time;
 	/*
 	Helper function for setting page security level depeding on
 	GET start variable and/or some value stored in session variable.

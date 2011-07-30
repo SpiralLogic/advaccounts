@@ -82,16 +82,16 @@ JS;
 		public static function renderHeader() {
 
 			foreach (self::$_headerFiles as $dir => $files) {
-				HTML::script(array('src' => $dir . '/' . implode(',', $files)))->script;
+				HTML::script(array('src' => $dir . '/' . implode(',', $files)),false);
 			}
 
 		}
 
 		public static function render() {
-			HTML::setReturn(true);
+
 			$js = $content = '';
 			foreach (self::$_footerFiles as $dir => $files) {
-				$js .= HTML::script(array('src' => $dir . '/' . implode(',', $files)))->script;
+				$js .= HTML::setReturn(true)->script(array('src' => $dir . '/' . implode(',', $files)),false)->setReturn(false);
 			}
 			if (count(self::$_beforeload)) {
 				$content .= implode(";\n", self::$_beforeload);
@@ -106,7 +106,7 @@ JS;
 			$content .= '});';
 			echo $js;
 			HTML::script(array('content' => $content))->script;
-			HTML::setReturn(false);
+			
 		}
 
 		public static function arrayToOptions($options = array()) {
