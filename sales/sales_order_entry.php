@@ -479,7 +479,7 @@
 		if (!check_item_data()) {
 			return;
 		}
-		add_to_order($_SESSION['Items'], $_POST['stock_id'], input_num('qty'), input_num('price'), input_num('Disc') / 100, $_POST['stock_id_text']);
+		add_to_order($_SESSION['Items'], $_POST['stock_id'], input_num('qty'), input_num('price'), input_num('Disc') / 100, $_POST['description']);
 		$_POST['_stock_id_edit'] = $_POST['stock_id'] = "";
 		line_start_focus();
 

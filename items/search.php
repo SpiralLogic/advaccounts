@@ -1,11 +1,26 @@
 <?php
-/**
- * Created by JetBrains PhpStorm.
- * User: advanced
- * Date: 15/11/10
- * Time: 9:50 PM
- * To change this template use File | Settings | File Templates.
- */
-$path_to_root = "..";
-include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
-include_once("includes/items.inc");
+
+   $page_security = 'SA_CUSTOMER';
+   $path_to_root = "..";
+   include_once("includes/items.inc");
+   if (AJAX_REFERRER) {
+
+      if (isset($_GET['term'])) {
+         $data = Item::searchOrder($_GET['term']);
+      } elseif (isset($_POST['id'])) {
+         if (isset($_POST['name'])) {
+            $item = new Item($_POST);
+            $item->save($_POST);
+         } else {
+            $item = new Item($_POST['id']);
+         }
+         $data['item'] = $item;
+
+      }
+      if (isset($_GET['page'])) {
+         $data['page'] = $_GET['page'];
+      }
+
+      echo json_encode($data, JSON_NUMERIC_CHECK);
+      exit();
+   }
