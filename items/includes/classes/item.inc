@@ -171,7 +171,7 @@
 					WHERE stock_id LIKE $term1 $where ORDER BY stock_id LIMIT 1)
                     UNION (SELECT stock_id, category_id, description, long_description
                     FROM stock_master WHERE  long_description LIKE $term2 $where
-                    ORDER BY category_id, long_description LIMIT 100)) s, stock_category c, prices p
+                    ORDER BY category_id, long_description LIMIT 30)) s, stock_category c, prices p
 					WHERE  s.stock_id = p.stock_id $sales_type AND s.category_id=c.category_id";
 			$result = db_query($sql, 'Couldn\'t Get Items');
 			while ($row = db_fetch_assoc($result)) {
