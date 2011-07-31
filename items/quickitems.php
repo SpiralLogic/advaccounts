@@ -32,7 +32,7 @@
 	$stock_cats = stock_categories_list('category_id');
 	if (!isset($_GET['id'])) {
 		HTML::div('itemSearch');
-		UI::search('item', array('label' => 'Search Item', 'size' => 80, 'url' => '#', 'callback' => 'Items.fetch'));
+		UI::search('item', array('label' => 'Search Item', 'size' => 80, 'url' => 'search.php', 'callback' => 'Items.fetch'));
 		HTML::div();
 	} else {
 		$data['item'] = $item = new item($_GET['id']);

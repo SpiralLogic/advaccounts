@@ -50,16 +50,14 @@ textarea {
 	font-size: 12px;
 }
 
-input, select, textarea {
+input, select,textarea {
 	font-size: 11px;
 	padding:   1px;
-	min-width: 150px
+	min-width:150px
 }
-
 input[type="checkbox"] {
-	min-width: inherit;
+min-width: inherit;
 }
-
 select {
 	max-width: 250px;
 }
@@ -431,8 +429,8 @@ div.banner a + a { border-top: 2px groove #999 }
 }
 
 .headingtext2 {
-	font-size:   13px;
-	color:       black;
+	font-size: 13px;
+	color:     black;
 	font-weight: bold;
 }
 
@@ -516,32 +514,26 @@ table.tablestyle_inner td {
 	border:          1px solid #f9f9f9;
 }
 
-.tablestyle_noborder td {
-	font-weight:  bold;
-	font-size:    12px;
+.tablestyle_noborder td
+{
+	font-weight: bold;
+	font-size: 12px;
 	padding-left: 5px;
 }
-.label {
+
+.label, td.tableheader2,.tableheader2 td,.tableinfo td:first-child, td + input {
+	text-indent: 10px;	border:          1px solid #cccccc;
+
 	background-color: #D4E6F6;
-	font-weight: bold;
-
-
-}
-.td.tableheader2, .tableheader2 td, .tableinfo td:first-child, td + input,.grid td:first-child ,.tablestyle td:first-child {
-	text-indent:      12px;
-	border:           1px solid #cccccc;
 	color:            black;
-	padding-right:5px;
+	font-weight:      bold;
 }
-
-.tableinfo input, .tableinfo textarea, .tableinfo select {
+.tableinfo input,.tableinfo textarea,.tableinfo select {
 	min-width: 300px;
 }
-
 .tableinfo input.amount {
-	min-width: 100px;
+	min-width:100px;
 }
-
 .oddrow, .grid tr:nth-child(odd) {
 	background-color: #f3f9fe;
 }
@@ -617,7 +609,7 @@ table.tablestyle_inner td {
 	color:            #333;
 }
 
-.ajaxsubmit:hover, .inputsubmit:hover, .editbutton:hover, .button:hover, .button-large:hover {
+.ajaxsubmit:hover, .inputsubmit:hover, .editbutton:hover, .button:hover , .button-large:hover{
 	color:              #1c4257;
 	-moz-box-shadow:    0 0 8px rgba(0, 0, 0, 0.15), 0 1px 0 rgba(255, 255, 255, 0.8) inset;
 	-webkit-box-shadow: 0 0 8px rgba(0, 0, 0, 0.15), 0 1px 0 rgba(255, 255, 255, 0.8) inset;
@@ -686,28 +678,26 @@ button.navibutton {
 .navibar {
 	padding:          0 3px;
 	color:            #333;
-	border-collapse:  collapse;
+		border-collapse:  collapse;
 	background-image: -moz-linear-gradient(center top, #EDEDED, #C4C4C4);
 	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0.00, #EDEDED), color-stop(1.00, #C4C4C4));
 	filter:           progid:DXImageTransform.Microsoft.gradient(enabled = 'true', startColorstr = #EDEDED, endColorstr = #C4C4C4, GradientType = 1);
 	border:           1px solid #7096AB;
 	box-shadow:       none;
 }
-
 .navibar span {
 	font-family:      Tahoma, Arial, sans-serif;
-	font-weight:      bold;
-	color:            #333;
-	padding:          0 3px;
-	font-size:        12px;
-	background-color: transparent;
-	border-style:     none;
-
+		font-weight:      bold;
+		color:            #333;
+		padding:          0 3px;
+		font-size:        12px;
+		background-color: transparent;
+		border-style:     none;
+			
 }
-
 .editbutton {
 	cursor:             pointer;
-	min-width:          inherit;
+	min-width: inherit;
 	-webkit-transition: -webkit-box-shadow 0.25s ease-in-out;
 	-moz-transition:    -moz-box-shadow 0.25s ease-in-out;
 	-o-transition:      -o-box-shadow 0.25s ease-in-out;
@@ -727,12 +717,10 @@ input.amount, input.freight {
 	padding-right: 0px;
 	border-right:  none;
 }
-
 input.hasDatepicker {
 	max-width: 70px;
 	min-width: inherit;
 }
-
 /* main wrapper */
 
 #footer {

@@ -18,26 +18,28 @@ class UI extends HTML
             $attr['name'] = $id;
         if (!isset($attr['class']))
             $attr['class'] = 'ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only';
-       
-        HTML::button($id,$content,$attr,false);
+        static::$_instance->_openTag('button', $attr, $content);
+        static::$_instance->_closeTag('button');
         return static::$_instance;
     }
 
     static function select($id = false, $options = array(), $params = array())
     {
+        if ($id)
+            $params['id'] = $id;
         $content = '';
-        HTML::select($id,$params);
-        foreach ((array)$options as  $label  => $option) {
-            if (is_array($option)) { 
+        static::$_instance->_openTag("select", $params);
+        foreach ((array)$options as $option => $value) {
+            if (is_array($value)) {
                 $optContent = '';
-                foreach ($option as $data) {
-                    $optContent .= HTML::setReturn(true)->option(null,$data[0] .'('.$data[1].')', array('value'=>$data[1]),false);
+                foreach ($value as $data) {
+                    $optContent .= "<option value='{$data[1]}'>{$data[0]} ({$data[1]})</option>";
                 }
-                HTML::setReturn(false)->optgroup(array('label' => $label), $optContent,false);
-
+                static::$_instance->_openTag("optgroup", array('label' => $option), $optContent);
+                static::$_instance->_closeTag("optgroup");
             }
             else {
-                $content .= "<option value='$label'>$option</option>";
+                $content .= "<option value='$value'>$option</option>";
             }
         }
         echo $content;
