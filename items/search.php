@@ -6,7 +6,7 @@
    if (AJAX_REFERRER) {
 
       if (isset($_GET['term'])) {
-         $data = Item::searchOrder($_GET['term']);
+         $data = Item::searchOrder($_GET['term'],$_GET['id']);
       } elseif (isset($_POST['id'])) {
          if (isset($_POST['name'])) {
             $item = new Item($_POST);

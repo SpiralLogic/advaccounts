@@ -491,19 +491,19 @@ table.tablestyle {
 
 table.tablestyle td {
 	border-collapse:     collapse;
-	border:              2px solid #e1e1e1;
+	border:              1px solid #e1e1e1;
 	border-top-color:    #dcdcdc;
 	border-bottom-color: #dcdcdc;
 }
 
 table.tablestyle2 {
 	border-collapse: collapse;
-	border:          2px solid #cccccc;
+	border:          1px solid #cccccc;
 }
 
 table.tablestyle2 td {
 	border-collapse: collapse;
-	border:          2px solid #cccccc;
+	border:          1px solid #cccccc;
 }
 
 table.tablestyle_inner {
