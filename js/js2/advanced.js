@@ -22,6 +22,8 @@ var Adv;
 	}).apply(Adv);
 	window.Adv = Adv;
 })(window);
+
+
 Adv.extend({
 	           Events: (function($) {
 		           var events = [];
