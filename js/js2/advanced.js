@@ -4,7 +4,8 @@ var Adv;
 	var Adv = {
 		$content: $("#content"),
 		loader: $("<div/>").attr('id', 'loader'),
-		fieldsChanged: 0
+		fieldsChanged: 0,
+		generateinfo: ''
 	};
 	(function() {
 		var extender = jQuery.extend, toInit = [];
@@ -47,4 +48,16 @@ Adv.extend({
 			           }
 		           }
 	           }(jQuery))
+});$(function() {
+	Adv.generateinfo = $('#generateinfo').ajaxComplete(function() {
+		var info;
+		try {
+			info = $("#generateinfo", arguments[1].responseText);
+		} catch (e) {
+			return;
+		}
+		if (info.length > 0) {
+			$(this).html(info.html());
+		}
+	})
 });
