@@ -14,6 +14,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		include_once($path_to_root . "/themes/" . user_theme() . "/renderer.php");
 		$rend = new renderer();
 		$rend->menu_footer($no_menu, $is_index);
+
 		$edits = "editors = " . $Ajax->php2js($Editors) . ";";
 		$Ajax->addScript('editors', $edits);
 		JS::beforeload("_focus = '" . get_post('_focus') . "';_validate = " . $Ajax->php2js($Validate) . ";var $edits");
@@ -21,12 +22,46 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		JS::beforeload($js_lib);
 
 		Messages::showNewMessages();
-		echo "</body>";
+
 		JS::render();
 
+
+
+		global $start22;
+
+		$time = microtime();
+		$time = explode(' ', $time);
+		$time = $time[1] + $time[0];
+		$finish = $time;
+		$total_time = getReadableTime($finish - $start22);
+		$generateinfo = 'Memory Usage: '.convert(memory_get_usage()) . "<br>\n" .
+				'Memory Peak Usage: '.convert(memory_get_peak_usage()) . "<br>" . 'Page generated in ' . $total_time . ' seconds.' . "\n";
+		HTML::div('generateinfo', $generateinfo, false);
+		echo "</div></body>";
 		get_websales();
 		echo   "</html>\n";
 		if ($_SESSION["wa_current_user"]->user == 1) {
 		}
 
+	}
+
+	function convert($size) {
+		$unit = array('b', 'kb', 'mb', 'gb', 'tb', 'pb');
+		return @round($size / pow(1024, ($i = floor(log($size, 1024)))), 2) . ' ' . $unit[$i];
+	}
+
+	function getReadableTime($time) {
+		$ret = $time;
+		$formatter = 0;
+		$formats = array('ms', 's', 'm');
+		if ($time >= 1000 && $time < 60000) {
+			$formatter = 1;
+			$ret = ($time / 1000);
+		}
+		if ($time >= 60000) {
+			$formatter = 2;
+			$ret = ($time / 1000) / 60;
+		}
+		$ret = number_format($ret, 3, '.', '') . ' ' . $formats[$formatter];
+		return $ret;
 	}
