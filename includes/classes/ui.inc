@@ -88,7 +88,7 @@
                            'inactive' => false,
                            'sales_type' => 1,
                            'no_sale' => false,
-                           'select'=>false,
+                           'select' => false,
                            'type' => 'local',
                            'where' => '');
 
@@ -115,12 +115,27 @@ JS;
          JS::addLive(<<<JS
 	\$$id = $("#$id").catcomplete({
                         delay: 0,
-                        minLength: 0,
-                        source: '$url?id=$id',
+                        minLength: 0,source: function( request, response ) {
+				$.ajax({
+					url: "$url?id=$id",
+					dataType: "json",
+					data: {
+						term: request.term
+					},
+					success: function( data ) {
+						response( $.map( data, function( item ) {
+							return {
+								label: item.label,
+								value: item
+							}
+						}));
+					}
+				});
+			},
                         autoFocus: true,
 
                         select: function( event, ui ) {
-                           $.each(ui.item,function(\$k,\$v) {
+                           $.each(ui,function(\$k,\$v) {
                            $('[name="'+\$k+'"]').val(\$v);
                            });
                         $desc_js
