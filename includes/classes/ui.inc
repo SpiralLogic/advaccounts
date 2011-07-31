@@ -88,6 +88,7 @@
                            'inactive' => false,
                            'sales_type' => 1,
                            'no_sale' => false,
+                           'select'=>false,
                            'type' => 'local',
                            'where' => '');
 
@@ -116,7 +117,7 @@ JS;
                         delay: 0,
                         minLength: 0,
                         source: '$url?id=$id',
-                        autoFocus: true, 
+                        autoFocus: true,
 
                         select: function( event, ui ) {
                            $.each(ui.item,function(\$k,\$v) {

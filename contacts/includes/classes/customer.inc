@@ -369,7 +369,11 @@
 						UNION (SELECT debtor_no as id, name as label, debtor_no as value, name as description FROM debtors_master
 						WHERE debtor_ref LIKE $term1 OR name LIKE $term2 OR debtor_no LIKE $term1 $where ORDER BY debtor_no, name LIMIT 20)";
 			$result = db_query($sql, 'Couldn\'t Get Customers');
+			$data = '';
 			while ($row = db_fetch_assoc($result)) {
+				foreach ($row as &$value) {
+					$value = htmlspecialchars_decode($value);
+				}
 				$data[] = $row;
 			}
 			return $data;

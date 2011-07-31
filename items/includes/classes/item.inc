@@ -164,7 +164,11 @@
          $term = db_escape("%$term%");
          $sql = "SELECT stock_id AS id, description AS label, stock_id AS value FROM stock_master WHERE stock_id LIKE $term OR description LIKE $term LIMIT 200";
          $result = db_query($sql, 'Couldn\'t Get Items');
+         $data = '';
          while ($row = db_fetch_assoc($result)) {
+            foreach ($row as &$value) {
+               $value = htmlspecialchars_decode($value, ENT_QUOTES);
+            }
             $data[] = $row;
          }
          return $data;
@@ -182,22 +186,25 @@
                                                           }, $term));
          $sales_type = ' AND p.sales_type_id =' . $o['sales_type'];
          $where = ($o['inactive'] ? '' : ' AND inactive = 0 ') . ($o['no_sale'] ? '' : ' AND no_sale =0 ');
-         $where2 = (!empty($o['where']) ? ' AND '.$o['where'] :' ');
+         $where2 = (!empty($o['where']) ? ' AND ' . $o['where'] : ' ');
          if ($o['type'] == 'local') $where2 .= " AND !i.is_foreign ";
          if ($o['type'] == 'kits') $where2 .= " AND !i.is_foreign AND i.item_code!=i.stock_id ";
-         $sql = "SELECT s.stock_id as id, s.stock_id as value, CONCAT(s.stock_id,': ',s.description) as label, s.long_description as description, p.price, c.description as category, editable, s.stock_id
-					FROM ((SELECT stock_id, category_id, description,long_description, mb_flag, editable FROM stock_master
-					   WHERE stock_id LIKE $term1 $where ORDER BY stock_id LIMIT 1)
-               UNION (SELECT stock_id, category_id, description, long_description, mb_flag, editable
-                  FROM stock_master WHERE  long_description LIKE $term2 $where
-                  ORDER BY category_id, long_description LIMIT 30)) s, stock_category c, prices p, item_codes i
-					WHERE  s.stock_id = p.stock_id AND s.stock_id = i.stock_id $where2 $sales_type AND s.category_id=c.category_id";
+        $select = ($o['select']) ?$o['select']: ' ';
+
+        $sql = "SELECT $select s.stock_id as id, s.stock_id as value, CONCAT(s.stock_id,': ',s.description) as label, c.description as category, s.long_description as description, p.price,
+         editable, s.stock_id
+					FROM ((SELECT * FROM stock_master WHERE stock_id LIKE $term1 $where ORDER BY stock_id LIMIT 1)
+               UNION (SELECT * FROM stock_master WHERE  long_description LIKE $term2 $where ORDER BY category_id, long_description LIMIT 30))
+               s, stock_category c, prices p, item_codes i WHERE  s.stock_id = p.stock_id  AND s.category_id=c.category_id AND s.stock_id = i.stock_id $where2 $sales_type";
          $result = db_query($sql, 'Couldn\'t Get Items');
+         $data = '';
          while ($row = db_fetch_assoc($result)) {
+            foreach ($row as &$value) {
+               $value = htmlspecialchars_decode($value, ENT_QUOTES);
+            }
             $data[] = $row;
          }
          return $data;
-
       }
 
       static function addEditDialog($options = array())

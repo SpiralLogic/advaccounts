@@ -852,7 +852,7 @@ JS
 		if ($label != null) {
 			echo "<td>$label</td>\n";
 		}
-		echo stock_items_list($name, $selected_id, $all_option, $submit_on_change, array('cells' => true, 'show_inactive' => $all, 'editable' => $editkey) );
+		echo stock_items_list($name, $selected_id, $all_option, $submit_on_change, array('cells' => true, 'show_inactive' => $all, 'select'=>'*, ', 'editable' => $editkey) );
 	}
 
 	//---------------------------------------------------------------------------------------------------
