@@ -6,60 +6,115 @@
  * Time: 5:47 PM
  * To change this template use File | Settings | File Templates.
  */
-HTML::load();
+	HTML::load();
 
-class UI extends HTML
-{
-    static function button($id = false, $content = false, $attr = array())
-    {
-        if ($id)
-            $attr['id'] = $id;
-        if (empty($attr['name']) && ($id))
-            $attr['name'] = $id;
-        if (!isset($attr['class']))
-            $attr['class'] = 'ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only';
+	class UI extends HTML {
 
-        HTML::button($id,$content,$attr,false);
-        return static::$_instance;
-    }
 
-    static function select($id = false, $options = array(), $params = array())
-    {
-        $content = '';
-        HTML::setReturn(true)->select($id,$params);
-        foreach ((array)$options as  $label  => $option) {
-            if (is_array($option)) { 
-                $optContent = '';
-                foreach ($option as $data) {
-                    $optContent .= HTML::option(null,$data[0] .'('.$data[1].')', array('value'=>$data[1]),false);
-                }
-                HTML::optgroup(array('label' => $label,'content'=> $optContent),false);
-            }
-            else {
-                HTML::option(array('value'=>$label),false);
-            }
-        }
+		static function button($id = false, $content = false, $attr = array()) {
+			if ($id) {
+				$attr['id'] = $id;
+			}
+			if (empty($attr['name']) && ($id)) {
+				$attr['name'] = $id;
+			}
+			if (!isset($attr['class'])) {
+				$attr['class'] = 'ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only';
+			}
 
-        echo HTML::_select()->setReturn(false);
-        return static::$_instance;
-    }
+			HTML::button($id, $content, $attr, false);
+			return static::$_instance;
+		}
 
-    static function search($id = false, $attr = array(), $options = array())
-    {
-        if ($id)
-            $attr['id'] = $id;
-        $url = (!empty($attr['url'])) ? $attr['url'] : false;
-        if (!isset($attr['nodiv'])) HTML::div(array('class' => 'ui-widget'));
-        if ($id && isset($attr['label']))
-            HTML::label(array('for' => $id), $attr['label'],false);
-        $input_attr = array();
-        if ($id && isset($attr['size'])) $input_attr['size'] = $attr['size'];
-        if ($id && isset($attr['name'])) $input_attr['name'] = $attr['name'];
+		static function select($id = false, $options = array(), $params = array()) {
+			$content = '';
+			HTML::setReturn(true)->select($id, $params);
+			foreach ((array) $options as $label => $option) {
+				if (is_array($option)) {
+					$optContent = '';
+					foreach ($option as $data) {
+						$optContent .= HTML::option(null, $data[0] . '(' . $data[1] . ')', array('value' => $data[1]), false);
+					}
+					HTML::optgroup(array('label' => $label, 'content' => $optContent), false);
+				}
+				else {
+					HTML::option(array('value' => $label), false);
+				}
+			}
 
-        HTML::input($id,$input_attr);
-        if (!isset($attr['nodiv'])) HTML::div();
-        $callback = (isset($attr['callback'])) ? $attr['callback'] : strtoupper($id[0]) . strtolower(substr($id, 1));
-        JS::autocomplete($id, $callback, $url, $options);
-        return static::$_instance;
-    }
-}
+			echo HTML::_select()->setReturn(false);
+			return static::$_instance;
+		}
+
+		static function search($id = false, $attr = array(), $options = array()) {
+			if ($id) {
+				$attr['id'] = $id;
+			}
+			$url = (!empty($attr['url'])) ? $attr['url'] : false;
+			if (!isset($attr['nodiv'])) {
+				HTML::div(array('class' => 'ui-widget'));
+			}
+			if ($id && isset($attr['label'])) {
+				HTML::label(array('for' => $id), $attr['label'], false);
+			}
+			$input_attr = array();
+			if ($id && isset($attr['size'])) {
+				$input_attr['size'] = $attr['size'];
+			}
+			if ($id && isset($attr['name'])) {
+				$input_attr['name'] = $attr['name'];
+			}
+
+			HTML::input($id, $input_attr);
+			if (!isset($attr['nodiv'])) {
+				HTML::div();
+			}
+			$callback = (isset($attr['callback'])) ? $attr['callback'] : strtoupper($id[0]) . strtolower(substr($id, 1));
+			JS::autocomplete($id, $callback, $url, $options);
+			return static::$_instance;
+		}
+
+		static function searchLine($id, $url = '#', $options = array()) {
+			$defaults = array(
+				'selected' => '',
+				'cell' => false,
+			'description'=>false);
+
+			$o = array_merge($defaults, $options);
+			HTML::setReturn(true);
+			if ($o['cell']) {
+				HTML::td(true);
+			}
+			HTML::input($id, $o['selected'], array('name' => $id));
+			if ($o['cell']) {
+				HTML::td()->td(true);
+			}
+			$desc_js ='';
+			if ($o['description']!==false) {
+				HTML::textarea('description', $o['description'], array('style'=>'height:15px;','name' => 'description','rows'=>2,'cols'=>45),false);
+				$desc_js = <<<JS
+$("#description").css({'height':'inherit',rows:5});
+JS;
+			}
+			if ($o['cell']) { 
+				HTML::td();
+			}
+			JS::addLive(<<<JS
+	\$$id = $("#$id").catcomplete({
+                        delay: 0,
+                        minLength: 0,
+                        source: '$url',
+                        autoFocus: true,
+                        select: function( event, ui ) {
+                           $.each(ui.item,function(\$k,\$v) {
+                           $('[name="'+\$k+'"]').val(\$v);
+                           });
+                        $desc_js
+                        }
+                     });
+                     return  function () {return \$$id.catcomplete('destroy').focus() };
+JS
+			);
+			return HTML::setReturn(false);
+		}
+	}

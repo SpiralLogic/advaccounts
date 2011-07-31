@@ -825,10 +825,7 @@ JS
 		if ($editkey) {
 			set_editor('item', $name, $editkey);
 		}
-		JS::onload(<<<JS
-$('#wrapper').delegate('#items_table select','blur',function(){ $(this).trigger('change')});
-JS
-		);
+	
 		return combo_input($name, $selected_id, $sql, 'stock_id', 's.description',
 			array_merge(array('format' => '_format_stock_items',
 					'spec_option' => $all_option === true ? _("All Items") : $all_option,
@@ -869,6 +866,7 @@ JS
 	                          $opts = array()) {
 		global $all_items;
 		// all sales codes
+		return Item::addSearchBox($name,array_merge(array('selected'=>$selected_id,'type'=>$type,'cell'=>true,'description'=>''),$opts));
 		$sql = "SELECT i.item_code, i.description, c.description, count(*)>1 as kit,
 			 i.inactive, if(count(*)>1, '0', s.editable) as editable, s.long_description
 			FROM
@@ -907,6 +905,7 @@ JS
 		if ($label != null) {
 			echo "<td>$label</td>\n";
 		}
+
 		echo sales_items_list($name, $selected_id, $all_option, $submit_on_change, '', array('cells' => true));
 
 	}

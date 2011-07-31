@@ -137,7 +137,8 @@ var Branches = function() {
    return {
       init:function() {
          list.change(function() {
-            var newBranch = Customer.get().branches[$(this).val()];
+            if (!$(this).val().length) return;
+	         var newBranch = Customer.get().branches[$(this).val()];
             Branches.change(newBranch);
          })
       },
@@ -237,7 +238,7 @@ var Customer = function () {
          }, 'json');
          $customerID.autocomplete({
             source: function(request, response) {
-               var lastXhr = $.getJSON('search.php', request, function(data, status, xhr) {
+               var lastXhr = $.getJSON('#', request, function(data, status, xhr) {
                   if (xhr === lastXhr) {
                      response(data);
                   }

@@ -95,7 +95,7 @@ class renderer
 		}
 
 		echo "</div>\n";
-		echo "</div>\n";
+		
 
 
 	}

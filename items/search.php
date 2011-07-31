@@ -1,8 +1,8 @@
 <?php
 
-   $page_security = 'SA_CUSTOMER';
-   $path_to_root = "..";
-   include_once("includes/items.inc");
+   $page_security = 'SA_ITEM';
+	$path_to_root = "..";
+	include_once("includes/items.inc");
    if (AJAX_REFERRER) {
 
       if (isset($_GET['term'])) {

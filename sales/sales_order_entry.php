@@ -628,7 +628,7 @@
 	hidden('cart_id');
 	$customer_error = display_order_header($_SESSION['Items'], ($_SESSION['Items']->any_already_delivered() == 0), $idate);
 	if ($customer_error == "") {
-		start_table("$table_style width=80%", 10);
+		start_table("$table_style width=100%", 10);
 		echo "
 <tr>
     <td>";

@@ -725,7 +725,7 @@ button.navibutton {
 
 input.amount, input.freight {
 	padding-right: 0px;
-	border-right:  none;
+	//border-right:  none;
 }
 
 input.hasDatepicker {
