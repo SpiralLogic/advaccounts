@@ -191,8 +191,7 @@
          if ($o['type'] == 'kits') $where2 .= " AND !i.is_foreign AND i.item_code!=i.stock_id ";
         $select = ($o['select']) ?$o['select']: ' ';
 
-        $sql = "SELECT $select s.stock_id as id, s.stock_id as value, CONCAT(s.stock_id,': ',s.description) as label, c.description as category, s.long_description as description, p.price,
-         editable, s.stock_id
+        $sql = "SELECT $select s.stock_id ,s.description, c.description as category, s.long_description , p.price, editable
 					FROM ((SELECT * FROM stock_master WHERE stock_id LIKE $term1 $where ORDER BY stock_id LIMIT 1)
                UNION (SELECT * FROM stock_master WHERE  long_description LIKE $term2 $where ORDER BY category_id, long_description LIMIT 30))
                s, stock_category c, prices p, item_codes i WHERE  s.stock_id = p.stock_id  AND s.category_id=c.category_id AND s.stock_id = i.stock_id $where2 $sales_type";

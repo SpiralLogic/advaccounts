@@ -459,11 +459,11 @@ else
 
 if (get_post('stock_id')) {
 	set_global_stock_item(get_post('stock_id'));
-	echo "<iframe src='{$path_to_root}/inventory/purchasing_data.php?frame=1' width='45%' height='450' scrolling='no' frameborder='0'></iframe> ";
+	echo "<iframe src='/inventory/purchasing_data.php?frame=1' width='45%' height='450' scrolling='no' frameborder='0'></iframe> ";
 }
 if (get_post('stock_id')) {
 	set_global_stock_item(get_post('stock_id'));
-	echo "<iframe style='float:right;' src='{$path_to_root}/inventory/prices.php?frame=1' width='45%' height='450' scrolling='no' frameborder='0'></iframe> ";
+	echo "<iframe style='float:right;' src='/inventory/prices.php?frame=1' width='45%' height='450' scrolling='no' frameborder='0'></iframe> ";
 }
 div_end();
 

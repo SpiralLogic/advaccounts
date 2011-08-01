@@ -852,7 +852,16 @@ JS
 		if ($label != null) {
 			echo "<td>$label</td>\n";
 		}
-		echo stock_items_list($name, $selected_id, $all_option, $submit_on_change, array('cells' => true, 'show_inactive' => $all, 'select'=>'*, ', 'editable' => $editkey) );
+		$js=<<<JS
+		var stock_id = $('#stock_id').val();
+$('[name="NewStockID"]').val(stock_id).prop('disabled',true);
+var details =$('#details');
+details.find('iframe').remove();
+details.append("<iframe src='/inventory/purchasing_data.php?frame=1&stock_id="+stock_id+"' width='45%' height='450' scrolling='no' frameborder='0'></iframe><iframe style='float:right;' src='/inventory/prices.php?frame=1&stock_id="+stock_id+"' width='45%' height='450' scrolling='no' frameborder='0'></iframe>");
+
+JS;
+
+		echo stock_items_list($name, $selected_id, $all_option, $submit_on_change, array('cells' => true, 'show_inactive' => $all, 'select'=>'s.*, ', 'js'=>$js,'editable' => $editkey) );
 	}
 
 	//---------------------------------------------------------------------------------------------------

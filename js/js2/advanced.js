@@ -35,7 +35,46 @@ $.widget("custom.catcomplete", $.ui.autocomplete, {
 	}).apply(Adv);
 	window.Adv = Adv;
 })(window);
+Adv.extend({
+	           msgbox: $('#msgbox').ajaxError(function(event, request, settings) {
+		           var status = {
+			           status: false,
+			           message: "Request failed: " + request + "<br>" + settings
+		           };
+		           console.log(request);
+		           Adv.showStatus(status);
+	           }),
+	           showStatus:function (status) {
+		           Adv.msgbox.empty();
+		           if (status.status) {
+			           Adv.msgbox.attr('class', 'note_msg').text(status.message);
+		           } else {
+			           Adv.msgbox.attr('class', 'err_msg').text(status.message);
+		           }
+	           },
+	           setFormValue: function (id, value,disabled) {
+		           var el = $('[name="' + id + '"]');
+		           if (!el.length) {
+			           el = $('#' + id);
+		           }
+		           if (disabled===true || disabled ===false) el.prop('disabled',disabled);
+		           if (el.is('select')) {
+			           if (el.val() == null || String(value).length == 0) {
+				           el.find('option:first').prop('selected', true);
+				           el.data('init', el.val());
+				           return;
+			           }
+		           }
+		           if (el.is(':checkbox')) {
+			           return el.prop('checked',!!value);
+		           };
+		           if (String(value).length == 0) {
+			           value = '';
+		           }
+		           el.val(value).data('init', value);
 
+	           }
+           })
 Adv.extend({
 	           Events: (function($) {
 		           var events = [],

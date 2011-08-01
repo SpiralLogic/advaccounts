@@ -1,25 +1,5 @@
 Adv.extend({
-   msgbox: $('#msgbox').ajaxError(function(event, request, settings) {
-      var status = {
-         status: false,
-         message: "Request failed: " + request + "<br>" + settings
-      };
-      Adv.showStatus(status);
-   }),
-   setFormValue: function (id, value) {
-      var el = $("[name=\'" + id + "\']");
-      if (el.find('option').length > 0) {
-         if (el.val() == null || String(value).length == 0) {
-            el.find('option:first').attr('selected', true);
-            el.data('init', el.val());
-         } else {
-            el.val(value).data('init', value);
-         }
-         return;
-      }
-      (String(value).length > 0) ? el.val(value).data('init', value) : el.val(value).data('init', '');
-
-   },
+   
    resetHighlights: function() {
       $(".ui-state-highlight").removeClass("ui-state-highlight");
       Adv.btnCustomer.hide();
@@ -42,14 +22,6 @@ Adv.extend({
       $("#customer").val('');
       Customer.fetch(0);
 
-   },
-   showStatus:function (status) {
-      Adv.msgbox.empty();
-      if (status.status) {
-         Adv.msgbox.attr('class', 'note_msg').text(status.message);
-      } else {
-         Adv.msgbox.attr('class', 'err_msg').text(status.message);
-      }
    },
    stateModified:function (feild) {
       if (feild.prop('disabled')) return;
