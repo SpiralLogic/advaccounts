@@ -21,7 +21,7 @@
 	$page_security = 'SA_SALESORDER';
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/sales/includes/cart_class.inc");
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
-	
+
 	include_once(APP_PATH . "sales/includes/sales_ui.inc");
 	include_once(APP_PATH . "sales/includes/ui/sales_order_ui.inc");
 	include_once(APP_PATH . "sales/includes/sales_db.inc");
@@ -478,7 +478,7 @@
 		if (!check_item_data()) {
 			return;
 		}
-		add_to_order($_SESSION['Items'], $_POST['stock_id'], input_num('qty'), input_num('price'), input_num('Disc') / 100, $_POST['stock_id_text']);
+		add_to_order($_SESSION['Items'], $_POST['stock_id'], input_num('qty'), input_num('price'), input_num('Disc') / 100, $_POST['description']);
 		$_POST['_stock_id_edit'] = $_POST['stock_id'] = "";
 		line_start_focus();
 
@@ -627,7 +627,7 @@
 	hidden('cart_id');
 	$customer_error = display_order_header($_SESSION['Items'], ($_SESSION['Items']->any_already_delivered() == 0), $idate);
 	if ($customer_error == "") {
-		start_table("$table_style width=80%", 10);
+		start_table("$table_style width=100%", 10);
 		echo "
 <tr>
     <td>";

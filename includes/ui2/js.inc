@@ -6,7 +6,7 @@ include(APP_PATH . 'modules/smartoptimizer/minifiers/js.php');
 		private static $_beforeload = array();
 		private static $_onload = array();
 		private static $_onlive = array();
-		
+
 		private static $_headerFiles = array();
 		private static $_footerFiles = array();
 
@@ -14,20 +14,19 @@ include(APP_PATH . 'modules/smartoptimizer/minifiers/js.php');
 		}
 
 		public static function autocomplete($id, $callback, $url = false, $options = array()) {
-			$afterSource = (isset($options['afterSource'])) ? $options['afterSource'] : '';
+			$afterSource = (isset($options['afterSource'])) ? $options['afterSource'] . '(data,request);' : '';
 			if (!$url) {
 				$url = $_SERVER['PHP_SELF'];
 			}
 			self::$_onload[] = <<< JS
-      var autocomplete{$id};
-      $('#{$id}').autocomplete({
+      var autocomplete{$id},\${$id} =$('#{$id}').autocomplete({
          autoFocus:true,
 	      source: function(request, response) {
 		      var lastXhr = $.getJSON('{$url}', request, function(data, status, xhr) {
 			   	if (xhr === lastXhr) {
 				   	response(data);
-				   	autocomplete{$id} = data[0];
-				   	{$afterSource}(data,request);
+				/*   	autocomplete{$id} = data[0];*/
+				   	{$afterSource}
 				   }
 			   });
 		   },
@@ -58,7 +57,7 @@ JS;
 	address:"{$address}",
 	markers: [{ address:"{$address}", html: "_address", popup: true}],
 	zoom: 10}).appendTo('body').dialog({title: "{$title}", autoOpen: false, show: "slide", hide: "slide", height: 450, width: 1000, modal: true});
-$("{$selector}").click(function() {
+${$selector} = $("{$selector}").click(function() {
     map.dialog("open");
     return false; });
     $(".ui-widget-overlay").click(function() {
@@ -81,30 +80,33 @@ JS;
 		}
 
 		public static function renderHeader() {
-			$js = '';
+
 			foreach (self::$_headerFiles as $dir => $files) {
-				$js .= '<script  src="' . $dir .'/'. implode(',', $files) . '"></script>';
+				HTML::script(array('src' => $dir . '/' . implode(',', $files)), false);
 			}
-			echo $js;
+
 		}
 
 		public static function render() {
-			$js=$content = '';
+
+			$js = $content = '';
 			foreach (self::$_footerFiles as $dir => $files) {
-				$js .= '<script  src="' . $dir .'/'. implode(',', $files) . '"></script>';
+				$js .= HTML::setReturn(true)->script(array('src' => $dir . '/' . implode(',', $files)), false)->setReturn(false);
 			}
 			if (count(self::$_beforeload)) {
 				$content .= implode(";\n", self::$_beforeload);
 			}
-			$content .= ';$(function() { ';
+			$content .= ";\n$(function() { ";
 			if (count(self::$_onlive)) {
-				$content .= 'Adv.Events.onload(function() {' . implode(";\n", self::$_onlive) . '});';
+				$content .= 'Adv.Events.onload([function() {' . implode("}, function() {", self::$_onlive) . '}]);';
 			}
 			if (count(self::$_onload)) {
-				$content .= implode(";\n", self::$_onload);
+				$content .= implode(";\n\n", self::$_onload);
 			}
 			$content .= '});';
-			echo $js."\n<script language=\"javascript\"  type=\"text/javascript\"><!--\n" . $content . "\n--></script>\n";
+			echo $js;
+			HTML::script(array('content' => $content))->script;
+
 		}
 
 		public static function arrayToOptions($options = array()) {
@@ -122,7 +124,7 @@ JS;
 			if (!$delegate) {
 				return self::addLive("$('$selector').bind('$type',function(e){ {$action} });");
 			}
-			self::register("$('$delegate').delegate('$selector','$type',function(e){ {$action} } )",self::$_onload);
+			self::register("$('$delegate').delegate('$selector','$type',function(e){ {$action} } )", self::$_onload);
 		}
 
 		public static function addLive($action) {
@@ -174,7 +176,9 @@ JS;
 			} else {
 				$dir = dirname($file);
 				$file = basename($file);
-				if (!isset($var[$dir])) $var[$dir] =array();
+				if (!isset($var[$dir])) {
+					$var[$dir] = array();
+				}
 				array_push($var[$dir], $file);
 			}
 		}

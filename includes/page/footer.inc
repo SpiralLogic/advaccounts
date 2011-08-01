@@ -20,15 +20,12 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		JS::beforeload("_focus = '" . get_post('_focus') . "';_validate = " . $Ajax->php2js($Validate) . ";var $edits");
 		add_user_js_data();
 		JS::beforeload($js_lib);
-
 		Messages::showNewMessages();
 
-		JS::render();
-
-
+if	(!AJAX_REFERRER)	JS::render();
 
 		global $start22;
-
+		
 		$time = microtime();
 		$time = explode(' ', $time);
 		$time = $time[1] + $time[0];
