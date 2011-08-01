@@ -37,19 +37,22 @@ $.widget("custom.catcomplete", $.ui.autocomplete, {
 })(window);
 Adv.extend({
 	           msgbox: $('#msgbox').ajaxError(function(event, request, settings) {
-		           var status = {
+
+		           if (typeof request =='String') {
+			           var status = {
 			           status: false,
-			           message: "Request failed: " + request + "<br>" + settings
+			           message: "Request failed: " + String(request) + "<br>"
 		           };
-		           console.log(request);
+
 		           Adv.showStatus(status);
+		           }
 	           }),
 	           showStatus:function (status) {
 		           Adv.msgbox.empty();
 		           if (status.status) {
-			           Adv.msgbox.attr('class', 'note_msg').text(status.message);
+			           Adv.msgbox.attr('class', 'note_msg').html(status.message);
 		           } else {
-			           Adv.msgbox.attr('class', 'err_msg').text(status.message);
+			           Adv.msgbox.attr('class', 'err_msg').html(status.message);
 		           }
 	           },
 	           setFormValue: function (id, value,disabled) {
@@ -118,7 +121,8 @@ $(function() {
 	Adv.generateinfo = $('#generateinfo').ajaxComplete(function() {
 		var info;
 		try {
-			info = $("#generateinfo", arguments[1].responseText);
+			info = $("#generateinfo", arguments[1].responseText);	console.log(info);
+
 		} catch (e) {
 			return;
 		}
