@@ -181,7 +181,6 @@
 		$Ajax->activate('_ex_rate');
 	}
 	if (list_updated('customer_id') || list_updated('bank_account')) {
-		FB::info($_POST);
 		$Ajax->activate('alloc_tbl');
 	}
 	//----------------------------------------------------------------------------------------------

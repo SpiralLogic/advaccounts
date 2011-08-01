@@ -179,6 +179,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		global $emailBoxEmails;
 		//if ($row['type'] != ST_CUSTPAYMENT && $row['type'] != ST_CUSTREFUND &&
 		//$row['type'] != ST_BANKDEPOSIT) // customer payment or bank deposit printout not defined yet.
+		if (empty($row['debtor'])) return;
 		$debtor = $row['debtor_no'];
 		$trans = $row['trans_no'];
 		$type = $row['type'];
@@ -276,10 +277,6 @@ JS;
 	if (isset($_POST['filterType']) && $_POST['filterType'] != ALL_TEXT) {
 		$sql .= "@bal := @bal+(trans.ov_amount + trans.ov_gst + trans.ov_freight + trans.ov_freight_tax + trans.ov_discount), ";
 	}
-	//	else
-	//		$sql .= "IF(trans.type=".ST_CUSTDELIVERY.",'', IF(trans.type=".ST_SALESINVOICE." OR trans.type=".ST_BANKPAYMENT.",@bal := @bal+
-	//			(trans.ov_amount + trans.ov_gst + trans.ov_freight + trans.ov_freight_tax + trans.ov_discount), @bal := @bal-
-	//			(trans.ov_amount + trans.ov_gst + trans.ov_freight + trans.ov_freight_tax + trans.ov_discount))) , ";
 	$sql .= "trans.alloc AS Allocated,
 		((trans.type = " . ST_SALESINVOICE . ")
 			AND trans.due_date < '" . date2sql(Today()) . "') AS OverDue
@@ -304,21 +301,9 @@ JS;
 			if (stripos($ajaxsearch, '/') > 0) {
 				$sql .= " tran_date LIKE '%" . date2sql($ajaxsearch, false) . "%' OR";
 			}
-			$ajaxsearch = "%" . $ajaxsearch . "%";
-			$sql .= " name LIKE " . db_escape($ajaxsearch);
-			if (countFilter('debtor_trans_view', 'trans_no', $ajaxsearch) > 0) {
-				$sql .= " OR trans_no LIKE " . db_escape($ajaxsearch);
-				//	$_POST['OrderNumber'] = $ajaxsearch;
-			}
-			if (countFilter('debtor_trans_view', 'reference', $ajaxsearch) > 0) {
-				$sql .= " OR reference LIKE " . db_escape($ajaxsearch);
-				//	$_POST['reference'] = $ajaxsearch;
-			}
-			if (countFilter('debtor_trans_view', 'order_', $ajaxsearch) > 0) {
-				$sql .= " OR order_ LIKE " . db_escape($ajaxsearch);
-			}
-			$sql .= " OR br_name LIKE " . db_escape($ajaxsearch);
-			$sql .= ") ";
+			$ajaxsearch = db_escape("%" . $ajaxsearch . "%");
+			$sql .= " name LIKE $ajaxsearch OR trans_no LIKE $ajaxsearch OR reference LIKE $ajaxsearch
+			 OR order_ LIKE $ajaxsearch OR br_name LIKE $ajaxsearch) ";
 		}
 		if (isset($filter) && $filter) {
 			$sql .= $filter;

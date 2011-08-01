@@ -280,31 +280,11 @@
 			if (empty($ajaxsearch)) {
 				continue;
 			}
-			$ajaxsearch = "%" . $ajaxsearch . "%";
-			$sql .= " AND (";
-			$sql .= " debtor.name LIKE " . db_escape($ajaxsearch);
-			if (countFilter('sales_orders', 'order_no', $ajaxsearch) > 0) {
-				$sql .= " OR sorder.order_no LIKE " . db_escape($ajaxsearch);
-				$_POST['OrderNumber'] = $ajaxsearch;
-			}
-			if (countFilter('sales_orders', 'reference', $ajaxsearch) > 0) {
-				$sql .= " OR sorder.reference LIKE " . db_escape($ajaxsearch);
-				$_POST['reference'] = $ajaxsearch;
-			}
-			if (countFilter('sales_orders', 'contact_name', $ajaxsearch) > 0) {
-				$sql .= " OR sorder.contact_name LIKE " . db_escape($ajaxsearch);
-				$_POST['contact_name'] = $ajaxsearch;
-			}
-			if (countFilter('sales_orders', 'customer_ref', $ajaxsearch) > 0) {
-				$sql .= " OR sorder.customer_ref LIKE " . db_escape($ajaxsearch);
-				$_POST['customer_ref'] = $ajaxsearch;
-			}
-			if (countFilter('sales_orders', 'customer_ref', $ajaxsearch) > 0) {
-				$sql .= " OR sorder.customer_ref LIKE " . db_escape($ajaxsearch);
-				$_POST['customer_ref'] = $ajaxsearch;
-			}
-			$sql .= " OR branch.br_name LIKE " . db_escape($ajaxsearch);
-			$sql .= ")";
+			$ajaxsearch = db_escape("%" . trim($ajaxsearch) . "%");
+			$sql .= " AND (debtor.name LIKE $ajaxsearch OR sorder.order_no LIKE $ajaxsearch
+			OR sorder.reference LIKE $ajaxsearch  OR sorder.contact_name LIKE $ajaxsearch
+			OR sorder.customer_ref LIKE $ajaxsearch
+			 OR sorder.customer_ref LIKE $ajaxsearch OR branch.br_name LIKE $ajaxsearch)";
 		}
 		$sql .= " GROUP BY sorder.ord_date,
         sorder.order_no,
