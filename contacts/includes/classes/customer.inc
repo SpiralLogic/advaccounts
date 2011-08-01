@@ -363,7 +363,8 @@
 			$term = explode(' ', $term);
 			$term1 = db_escape(trim($term[0]) . '%');
 			$term2 = db_escape('%' . implode(' AND name LIKE ', array_map(function($v) {
-						return trim($v) ;}, $term)). '%');
+							return trim($v);
+						}, $term)) . '%');
 			$where = ($o['inactive'] ? '' : ' AND inactive = 0 ');
 			$sql = "(SELECT debtor_no as id, name as label, debtor_no as value, name as description FROM debtors_master WHERE name LIKE $term1 $where ORDER BY name LIMIT 20)
 						UNION (SELECT debtor_no as id, name as label, debtor_no as value, name as description FROM debtors_master

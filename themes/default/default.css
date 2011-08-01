@@ -521,17 +521,18 @@ table.tablestyle_inner td {
 	font-size:    12px;
 	padding-left: 5px;
 }
+
 .label {
 	background-color: #D4E6F6;
-	font-weight: bold;
-
+	font-weight:      bold;
 
 }
-.td.tableheader2, .tableheader2 td, .tableinfo td:first-child, td + input,.grid td:first-child ,.tablestyle td:first-child {
-	text-indent:      12px;
-	border:           1px solid #cccccc;
-	color:            black;
-	padding-right:5px;
+
+.td.tableheader2, .tableheader2 td, .tableinfo td:first-child, td + input, .grid td:first-child, .tablestyle td:first-child {
+	text-indent:   12px;
+	border:        1px solid #cccccc;
+	color:         black;
+	padding-right: 5px;
 }
 
 .tableinfo input, .tableinfo textarea, .tableinfo select {
@@ -725,7 +726,7 @@ button.navibutton {
 
 input.amount, input.freight {
 	padding-right: 0px;
-	//border-right:  none;
+/ / border-right : none;
 }
 
 input.hasDatepicker {

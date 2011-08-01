@@ -820,7 +820,7 @@ JS
 	                          $opts = array(),
 	                          $editkey = false) {
 		global $all_items;
-      return Item::addSearchBox($name,array_merge(array('selected'=>$selected_id,'cell'=>true),$opts));
+		return Item::addSearchBox($name, array_merge(array('selected' => $selected_id, 'cell' => true), $opts));
 		$sql = "SELECT stock_id, s.description, c.description, s.inactive, s.editable, s.long_description
 			FROM stock_master s,stock_category c WHERE s.category_id=c.category_id";
 		if ($editkey) {
@@ -852,7 +852,7 @@ JS
 		if ($label != null) {
 			echo "<td>$label</td>\n";
 		}
-		$js=<<<JS
+		$js = <<<JS
 		var stock_id = $('#stock_id').val();
 $('[name="NewStockID"]').val(stock_id).prop('disabled',true);
 var details =$('#details');
@@ -861,7 +861,7 @@ details.append("<iframe src='/inventory/purchasing_data.php?frame=1&stock_id="+s
 
 JS;
 
-		echo stock_items_list($name, $selected_id, $all_option, $submit_on_change, array('cells' => true, 'show_inactive' => $all, 'select'=>'s.*, ', 'js'=>$js,'editable' => $editkey) );
+		echo stock_items_list($name, $selected_id, $all_option, $submit_on_change, array('cells' => true, 'show_inactive' => $all, 'select' => 's.*, ', 'js' => $js, 'editable' => $editkey));
 	}
 
 	//---------------------------------------------------------------------------------------------------
@@ -876,10 +876,12 @@ JS;
 	                          $opts = array()) {
 		global $all_items;
 		// all sales codes
-		return Item::addSearchBox($name,array_merge(array('selected'=>$selected_id,'type'=>$type,'cell'=>true),$opts));
-		$where = ($type == 'local') ? " AND !i.is_foreign": ' ';
-		if ($type == 'kits') $where .= " AND !i.is_foreign AND i.item_code!=i.stock_id ";
-      $sql = "SELECT i.item_code, i.description, c.description, count(*)>1 as kit,
+		return Item::addSearchBox($name, array_merge(array('selected' => $selected_id, 'type' => $type, 'cell' => true), $opts));
+		$where = ($type == 'local') ? " AND !i.is_foreign" : ' ';
+		if ($type == 'kits') {
+			$where .= " AND !i.is_foreign AND i.item_code!=i.stock_id ";
+		}
+		$sql = "SELECT i.item_code, i.description, c.description, count(*)>1 as kit,
 			 i.inactive, if(count(*)>1, '0', s.editable) as editable, s.long_description
 			FROM stock_master s, item_codes i LEFT JOIN stock_category c ON i.category_id=c.category_id
 			WHERE i.stock_id=s.stock_id $where AND !i.inactive AND !s.inactive AND !s.no_sale GROUP BY i.item_code";
@@ -900,11 +902,11 @@ JS;
 
 	}
 
-	function sales_items_list_cells($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false,$opts) {
+	function sales_items_list_cells($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false, $opts) {
 		if ($label != null) {
 			echo "<td>$label</td>\n";
 		}
-		echo sales_items_list($name, $selected_id, $all_option, $submit_on_change, '', array_merge(array('cell' => true,'description'=>''),$opts));
+		echo sales_items_list($name, $selected_id, $all_option, $submit_on_change, '', array_merge(array('cell' => true, 'description' => ''), $opts));
 	}
 
 	function sales_kits_list($name, $selected_id = null, $all_option = false, $submit_on_change = false) {
@@ -924,6 +926,7 @@ JS;
 	function stock_manufactured_items_list($name, $selected_id = null, $all_option = false, $submit_on_change = false) {
 		return stock_items_list($name, $selected_id, $all_option, $submit_on_change, array('where' => array("mb_flag= 'M'")));
 	}
+
 	function stock_manufactured_items_list_cells($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false) {
 		if ($label != null) {
 			echo "<td>$label</td>\n";
@@ -972,7 +975,7 @@ JS;
 		if ($label != null) {
 			echo "<td>$label</td>\n";
 		}
-		echo stock_items_list($name, $selected_id, $all_option, $submit_on_change, array('where' => "mb_flag!= 'M'", 'editable' => 30, 'cell' => true,'description'=>''));
+		echo stock_items_list($name, $selected_id, $all_option, $submit_on_change, array('where' => "mb_flag!= 'M'", 'editable' => 30, 'cell' => true, 'description' => ''));
 	}
 
 	function stock_purchasable_items_list_row($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false, $editkey = false) {

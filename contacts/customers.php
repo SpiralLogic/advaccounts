@@ -24,7 +24,7 @@
 				$_SESSION['wa_global_customer_id'] = $customer->id;
 
 			} else {
-				$data['customer'] = $customer= new Customer();
+				$data['customer'] = $customer = new Customer();
 			}
 			$data['status'] = $customer->getStatus();
 		}
@@ -59,7 +59,7 @@
 		HTML::div('custsearch');
 		HTML::table(array("style" => "margin:0 auto; padding-bottom:5px; font-weight:bold"));
 		HTML::tr(true)->td(array("style" => "width:750px"));
-		UI::search('customer', array('label' => 'Search Customer:', 'size' => 80, 
+		UI::search('customer', array('label' => 'Search Customer:', 'size' => 80,
 				'callback' => 'Customer.fetch'));
 		HTML::td()->tr->table->div;
 	}

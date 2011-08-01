@@ -57,7 +57,7 @@
 			if ($id && isset($attr['label'])) {
 				HTML::label(array('for' => $id), $attr['label'], false);
 			}
-		
+
 			if ($id && isset($attr['size'])) {
 				$input_attr['size'] = $attr['size'];
 			}
@@ -81,7 +81,7 @@
 				'selected' => '',
 				'cell' => false,
 				'inactive' => false,
-				'js'=>'',
+				'js' => '',
 				'sales_type' => 1,
 				'no_sale' => false,
 				'select' => false,
@@ -94,7 +94,7 @@
 			if ($o['cell']) {
 				HTML::td(true);
 			}
-			HTML::input($id, $o['selected'], array('name' => $id,'size'=>50));
+			HTML::input($id, $o['selected'], array('name' => $id, 'size' => 50));
 			if ($o['cell']) {
 				HTML::td()->td(true);
 			}

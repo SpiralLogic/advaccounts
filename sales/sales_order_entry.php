@@ -21,7 +21,7 @@
 	$page_security = 'SA_SALESORDER';
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/sales/includes/cart_class.inc");
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
-	
+
 	include_once(APP_PATH . "sales/includes/sales_ui.inc");
 	include_once(APP_PATH . "sales/includes/ui/sales_order_ui.inc");
 	include_once(APP_PATH . "sales/includes/sales_db.inc");
@@ -93,8 +93,7 @@
 	else {
 		if (isset($_GET['restoreorder'])) {
 			$serial = Cart::restore();
-			$_SESSION['Items']=$serial;
-			copy_from_cart();
+			create_cart($serial, 0);
 		}
 	}
 	page($_SESSION['page_title'], false, false, "", $js);
