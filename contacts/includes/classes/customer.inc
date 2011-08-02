@@ -323,16 +323,16 @@
 		public function getEmailAddresses() {
 			$emails = array();
 			if (!empty($this->accounts->email)) {
-				$emails['Accounts'][$this->accounts->id] = array($this->accounts->email, 'Accounts');
+				$emails['Accounts'][$this->accounts->id] = array('Accounts',$this->accounts->email);
 			}
 			foreach ($this->contacts as $id => $contact) {
 				if ($id>0 && !empty($contact->email)) {
-					$emails['Contacts'][$id] = array($contact->email, $contact->name);
+					$emails['Contacts'][$id] = array($contact->name,$contact->email);
 				}
 			}
 			foreach ($this->branches as $id => $branch) {
 				if ($id>0&& !empty($branch->email)) {
-					$emails['Branches'][$id] = array($branch->email, $branch->name);
+					$emails['Branches'][$id] = array($branch->name,$branch->email);
 				}
 			}
 			return (count($emails) > 0) ? $emails : false;
