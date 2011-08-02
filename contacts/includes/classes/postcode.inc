@@ -50,7 +50,6 @@ Adv.extend({
             var postcode = $('{$postcode}'),state = $('{$state}'), city = $('{$city}');
         return {
             fetch: function(data) {
-            console.log(data);
                 data = data.value.split('|');
                 postcode.val(data[1]).trigger('change');
                 state.val(data[2]).trigger('change');
