@@ -1,14 +1,14 @@
 <?php
 
    /** ********************************************************************
-    Copyright (C) FrontAccounting, LLC.
-    Released under the terms of the GNU General Public License, GPL,
-    as published by the Free Software Foundation, either version 3
-    of the License, or (at your option) any later version.
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+   Copyright (C) FrontAccounting, LLC.
+   Released under the terms of the GNU General Public License, GPL,
+   as published by the Free Software Foundation, either version 3
+   of the License, or (at your option) any later version.
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+   See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
     * ********************************************************************* */
    //--------------------------------------------------
    // User configurable variables
@@ -151,8 +151,8 @@
    }
    // static js files path
    // standard external js scripts included in all files
-   JS::headerFile(array('/js/JsHttpRequest.js', '/js/behaviour.js', '/js/utils.js', '/js/inserts.js','/js/js2/jquery-1.6.2.min.js', '/js/js2/jquery-ui-1.8.14.min.js'));
-   JS::footerFile ( array('/js/js2/advanced.js', '/js/js2/shortmenu.js', '/js/js2/jquery.calculator.pack.js', '/js/js2/calc.js','/js/js2/chosen.jquery.min.js'));
+   JS::headerFile(array('/js/JsHttpRequest.js', '/js/behaviour.js', '/js/utils.js', '/js/inserts.js', '/js/js2/jquery-1.6.2.min.js', '/js/js2/jquery-ui-1.8.14.min.js'));
+   JS::footerFile(array('/js/js2/advanced.js', '/js/js2/shortmenu.js', '/js/js2/jquery.calculator.pack.js', '/js/js2/calc.js', '/js/js2/chosen.jquery.min.js'));
    // additional js source included in header
    $js_lib = $js_fuserlib = $js_userlib = array();
    if (!defined('ICON_EDIT')) {
