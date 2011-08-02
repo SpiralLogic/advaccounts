@@ -18,7 +18,8 @@ $.widget("custom.catcomplete", $.ui.autocomplete, {
 		$content: $("#content"),
 		loader: $("<div/>").attr('id', 'loader'),
 		fieldsChanged: 0,
-		generateinfo: ''
+		generateinfo: '',
+		lastXhr:''
 	};
 	(function() {
 		var extender = jQuery.extend, toInit = [];
@@ -38,13 +39,13 @@ $.widget("custom.catcomplete", $.ui.autocomplete, {
 Adv.extend({
 	           msgbox: $('#msgbox').ajaxError(function(event, request, settings) {
 
-		           if (typeof request =='String') {
+		           if (typeof request == 'String') {
 			           var status = {
-			           status: false,
-			           message: "Request failed: " + String(request) + "<br>"
-		           };
+				           status: false,
+				           message: "Request failed: " + String(request) + "<br>"
+			           };
 
-		           Adv.showStatus(status);
+			           Adv.showStatus(status);
 		           }
 	           }),
 	           showStatus:function (status) {
@@ -55,12 +56,14 @@ Adv.extend({
 			           Adv.msgbox.attr('class', 'err_msg').html(status.message);
 		           }
 	           },
-	           setFormValue: function (id, value,disabled) {
+	           setFormValue: function (id, value, disabled) {
 		           var el = $('[name="' + id + '"]');
 		           if (!el.length) {
 			           el = $('#' + id);
 		           }
-		           if (disabled===true || disabled ===false) el.prop('disabled',disabled);
+		           if (disabled === true || disabled === false) {
+			           el.prop('disabled', disabled);
+		           }
 		           if (el.is('select')) {
 			           if (el.val() == null || String(value).length == 0) {
 				           el.find('option:first').prop('selected', true);
@@ -69,8 +72,9 @@ Adv.extend({
 			           }
 		           }
 		           if (el.is(':checkbox')) {
-			           return el.prop('checked',!!value);
-		           };
+			           return el.prop('checked', !!value);
+		           }
+		           ;
 		           if (String(value).length == 0) {
 			           value = '';
 		           }
@@ -79,7 +83,7 @@ Adv.extend({
 	           }
            })
 Adv.extend({
-	           Events: (function($) {
+	           Events: (function() {
 		           var events = [],
 				           onload = [],
 				           toClean = [];
@@ -100,9 +104,7 @@ Adv.extend({
 					           }
 				           });
 			           },
-			           debug: function() {
-				           return toClean;
-			           },
+			        
 			           rebind: function() {
 				           $.each(toClean, function(k, v) {
 					           v();
@@ -115,19 +117,5 @@ Adv.extend({
 				           });
 			           }
 		           }
-	           }(jQuery))
+	           }())
            });
-$(function() {
-	Adv.generateinfo = $('#generateinfo').ajaxComplete(function() {
-		var info;
-		try {
-			info = $("#generateinfo", arguments[1].responseText);	console.log(info);
-
-		} catch (e) {
-			return;
-		}
-		if (info.length > 0) {
-			$(this).html(info.html());
-		}
-	})
-});

@@ -179,14 +179,15 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		global $emailBoxEmails;
 		//if ($row['type'] != ST_CUSTPAYMENT && $row['type'] != ST_CUSTREFUND &&
 		//$row['type'] != ST_BANKDEPOSIT) // customer payment or bank deposit printout not defined yet.
-		if (empty($row['debtor'])) return;
 		$debtor = $row['debtor_no'];
 		$trans = $row['trans_no'];
 		$type = $row['type'];
 		$id = $debtor . '-' . $type . '-' . $trans;
+		if (empty($row['debtor_no']) || isset($emailBoxEmails [$id])) return;
 		$customer = new Customer($debtor);
 		$emails = $customer->getEmailAddresses();
-		if (count($emails) > 0 && !isset($emailBoxEmails [$id])) {
+
+		if (!$emails) return $emailBoxEmails [$id]='';
 			switch ($type) {
 				case ST_CUSTDELIVERY:
 					$text = "Delivery Notice";
@@ -206,9 +207,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 			}
 
 			$emailBoxEmails[$id] = submenu_email(_("Email This ").$text, $type, $trans, null, $emails, 0, true);
-		} else {
-			return;
-		}
+
 		if ($first) {
 			$emailBox = new Dialog('Select Email Address:', 'emailBox', '');
 			$emailBox->addButtons(array('Email' => '$("#EmailButton").trigger("click")', 'Close' => '$(this).dialog("close");'));

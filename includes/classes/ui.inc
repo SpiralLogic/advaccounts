@@ -31,11 +31,11 @@
 			HTML::setReturn(true)->select($id, $params);
 			foreach ((array) $options as $label => $option) {
 				if (is_array($option)) {
-					$optContent = '';
+					HTML::optgroup(array('label' => $label));
 					foreach ($option as $data) {
-						$optContent .= HTML::option(null, $data[0] . '(' . $data[1] . ')', array('value' => $data[1]), false);
+						HTML::option(null, $data[0] . ' (' . $data[1] . ')', array('value' => $data[1]), false);
 					}
-					HTML::optgroup(array('label' => $label, 'content' => $optContent), false);
+					HTML::optgroup();
 				}
 				else {
 					HTML::option(array('value' => $label), false);
@@ -114,28 +114,31 @@ JS;
 					    autoFocus: true,
                         minLength: 0,
                         source: function( request, response ) {
-							$.ajax({
+							Adv.lastXhr = $.ajax({
 								url: "$url",
 								dataType: "json",
 								data: {id: '$id',term: request.term},
-								success: function( data ) {
+								success: function( data,status,xhr ) {
+								if ( xhr === Adv.lastXhr ) {
 									response($.map( data, function( item ) {
 										return {
 											label: item.stock_id+": "+item.description,
 											value: item,
 											category: item.category
 										}
-							}))}})},
+									}))}
+								}
+							})
+						},
                         select: function( event, ui ) {
-							$(this).val(ui.item.value.stock_id);
-							$.each(ui.item.value,function(k,v) {
+							var value = ui.item.value;
+							$(this).val(value.stock_id);
+							value.description = value.long_description
+							$.each(value,function(k,v) {
 								Adv.setFormValue(k,v);
                             });
                             $desc_js
                             return false;
-                        },
-                        change: function(even,ui) {
-                            $(this).val(ui.item.value.stock_id);
                         },
                          focus: function(event,ui){
 							return false;

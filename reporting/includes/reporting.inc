@@ -136,7 +136,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		//HTML::div(true, array('class' => 'aligncenter marginauto'));
 		if (!$emails) {
 			$content =  $link_text . ": No valid email addresses";
-		if ($return) return $content; else echo $content;
+		if ($return) return; else echo $content;
 		} else {
 			if ($return) {
 				ob_start();

@@ -25,7 +25,7 @@ include(APP_PATH . 'modules/smartoptimizer/minifiers/js.php');
 		      var lastXhr = $.getJSON('{$url}', request, function(data, status, xhr) {
 			   	if (xhr === lastXhr) {
 				   	response(data);
-				/*   	autocomplete{$id} = data[0];*/
+
 				   	{$afterSource}
 				   }
 			   });
