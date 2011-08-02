@@ -326,13 +326,13 @@
 				$emails['Accounts'][$this->accounts->id] = array($this->accounts->email, 'Accounts');
 			}
 			foreach ($this->contacts as $id => $contact) {
-				if (!empty($contact->email)) {
+				if ($id>0 && !empty($contact->email)) {
 					$emails['Contacts'][$id] = array($contact->email, $contact->name);
 				}
 			}
 			foreach ($this->branches as $id => $branch) {
-				if (!empty($branch->email)) {
-					$emails['Branches'][$id] = array($contact->email, $contact->name);
+				if ($id>0&& !empty($branch->email)) {
+					$emails['Branches'][$id] = array($branch->email, $branch->name);
 				}
 			}
 			return (count($emails) > 0) ? $emails : false;
