@@ -45,13 +45,13 @@
 
       function addOpenEvent($selector, $type = 'click')
       {
-         $this->events[] = array($selector,$type,"\$({$this->name}).dialog('open');");
+         $this->events[] = array($selector, $type, "\$({$this->name}).dialog('open');");
       }
 
       function addButtons($buttons = array())
       {
          foreach ($buttons as $button => $action) {
-            $this->addButton($button,$action);
+            $this->addButton($button, $action);
          }
       }
 
@@ -95,7 +95,7 @@
          $js .= '});';
          if (!empty($js)) {
             JS::addEvents($this->events);
-	         JS::addLive($js);
+            JS::addLive($js);
          }
       }
 

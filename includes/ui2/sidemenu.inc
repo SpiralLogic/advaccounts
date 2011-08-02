@@ -1,8 +1,10 @@
 <?php
 
-	class Sidemenu {
-		static function render() {
-			echo <<<HTML
+   class Sidemenu
+   {
+      static function render()
+      {
+         echo <<<HTML
 <div id="sidemenu" class="ui-widget-shadow ui-corner-all">
     <h3><a href="#">Search</a></h3>
 
@@ -28,5 +30,5 @@
 </div>
 HTML;
 
-		}
-	}
+      }
+   }

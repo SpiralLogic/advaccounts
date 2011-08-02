@@ -1,14 +1,32 @@
-<?
+<?php
+/**
+ *
+ * @package HTML
+ *@method string body() static body()
+ *@method string td() static td()
+ *@method string div()
+ *@method string table()
+ *@method string img()
+ *@method string input()
+ *@method string br()
+ *@method string tr()
+ *@method string input()
+ *@method string a()
+ *@method string p() static p()
+ * @property string $tr
+ * @property string $td
+ * @property string $br
+ * @property string $img
+ * @property mixed $input
+ * @property string $div
+ * @property string $p
+ *
+ */
+
    class HTML
    {
       protected static $_instance = null;
       protected static $_return = false;
-
-      function __call($func, $args)
-      {
-         static::__callStatic($func, $args);
-         return static::$_instance;
-      }
 
       function __get($func)
       {
