@@ -24,10 +24,10 @@
    // Special value 'syslog' can be used for system logger usage (see php manual).
    //$error_logfile = '';
    $error_logfile = dirname(__FILE__) . '/tmp/errors.log';
-   $debug = 0;
-   $show_sql = 0;
+   $debug = 1;
+   $show_sql = 1;
    $go_debug = 1;
-   $pdf_debug = 0;
+   $pdf_debug = 1;
    // set $sql_trail to 1 only if you want to perform bugtracking sql trail
    // Warning: this produces huge amount of data in sql_trail table.
    // Don't forget switch the option off and flush the table manually after
