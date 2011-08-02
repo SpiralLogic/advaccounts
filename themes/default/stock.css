@@ -32,6 +32,11 @@
 	background:                         -moz-linear-gradient(100% 100% 90deg, #B81D1D, #E38881, #DB4949 100%);
 }
 
+#_tabs2 ul li.active a {
+	background:                         -webkit-gradient(linear, 100% 100%, 100% 0%, from(#B81D1D), to(#E38881), color-stop(.5, #DB4949));
+	background:                         -moz-linear-gradient(100% 100% 90deg, #B81D1D, #E38881, #DB4949 100%);
+	color:            white;
+}
 .menu_group {
 	box-shadow:    0 1px 0 rgba(255, 255, 255, 0.6) inset;
 	background-image:    -moz-linear-gradient(center top, #E38881  , #DB4949);

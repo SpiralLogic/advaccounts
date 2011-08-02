@@ -348,8 +348,8 @@ class db_pager
 				foreach ($this->columns as $col) {
 					if (isset($col['ord']) && $col['ord'] != ''
 						&& !isset($col['name'])) {
-						display_warning("Result field names must be set
-								for all intially ordered db_pager columns.");
+						//display_warning("Result field names must be set
+						//		for all intially ordered db_pager columns.");
 					}
 				}
 			}

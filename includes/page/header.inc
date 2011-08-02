@@ -104,7 +104,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		echo "<meta http-equiv='Content-type' content='text/html; charset=$encoding'>";
 		echo "<link rel='apple-touch-icon' href='/company/images/advanced-icon.png'/>";
 
-      add_css('default.css,jquery-ui-1.8.7.css,jquery.calculator.css,jquery.fileupload-ui.css,chosen.css');
+      add_css('default.css,jquery-ui-1.8.7.css,jquery.calculator.css,jquery.fileupload-ui.css');
 
 		if (file_exists(APP_PATH."/themes/$theme/{$_SESSION['sel_app']}.css"))
       add_css($_SESSION['sel_app'].'.css');

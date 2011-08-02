@@ -25,7 +25,6 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 if	(!AJAX_REFERRER)	JS::render();
 
 		global $start22;
-		
 		$time = microtime();
 		$time = explode(' ', $time);
 		$time = $time[1] + $time[0];
@@ -37,8 +36,7 @@ if	(!AJAX_REFERRER)	JS::render();
 		echo "</div></body>";
 		get_websales();
 		echo   "</html>\n";
-		if ($_SESSION["wa_current_user"]->user == 1) {
-		}
+		
 
 	}
 

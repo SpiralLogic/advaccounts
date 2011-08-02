@@ -11,25 +11,15 @@
 	include_once("includes/contacts.inc");
 
 	if (AJAX_REFERRER) {
-		if (isset($_GET['term'])) {
-			$data = Customer::searchOrder($_GET['term']);
-		} elseif (isset($_POST['id'])) {
-			if (isset($_POST['name'])) {
-				$customer = new Customer($_POST);
-				$customer->save($_POST);
-			} else {
-				$customer = new Customer($_POST['id']);
-			}
-			$data['customer'] = $customer;
-		}
-		if (isset($_GET['page'])) {
-			$data['page'] = $_GET['page'];
+		if (isset($_GET['postcode']) && isset($_GET['term'])) {
+			$data = Postcode::searchByPostcode($_GET['term']);
+		} elseif (isset($_GET['city']) && isset($_GET['term'])) {
+			$data = Postcode::searchByCity($_GET['term']);
 		}
 
 		echo json_encode($data, JSON_NUMERIC_CHECK);
 		exit();
 	}
-
 
 	page(_($help_context = "Items"), @$_REQUEST['popup']);
 	Customer::addSearchBox('customer_id', array('cell' => false, 'description' => ''));

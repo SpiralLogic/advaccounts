@@ -493,7 +493,8 @@ table.tablestyle td {
 	border-collapse:     collapse;
 	border:              1px solid #e1e1e1;
 	border-top-color:    #dcdcdc;
-	border-bottom-color: #dcdcdc;
+	border-bottom-color: #dcdcdc;	padding-left: 5px;
+
 }
 
 table.tablestyle2 {
@@ -529,10 +530,10 @@ table.tablestyle_inner td {
 }
 
 .td.tableheader2, .tableheader2 td, .tableinfo td:first-child, td + input, .grid td:first-child, .tablestyle td:first-child {
-	text-indent:   12px;
+	text-indent:   10px;
 	border:        1px solid #cccccc;
 	color:         black;
-	padding-right: 5px;
+	padding-right: 7px;
 }
 
 .tableinfo input, .tableinfo textarea, .tableinfo select {

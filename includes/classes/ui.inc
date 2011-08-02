@@ -111,34 +111,35 @@ JS;
 			JS::addLive(<<<JS
 	\$$id = $("#$id").catcomplete({
                         delay: 0,
-                        minLength: 0,source: function( request, response ) {
-				$.ajax({
-					url: "$url",
-					dataType: "json",
-					data: {
-						id: '$id',
-						term: request.term
-					},
-					success: function( data ) {
-						response( $.map( data, function( item ) {
-								return {
-								label: item.stock_id+": "+item.description,
-								value: item,
-								category: item.category
-							}
-						}));
-					}
-				});
-			},
-                        autoFocus: true,
+					    autoFocus: true,
+                        minLength: 0,
+                        source: function( request, response ) {
+							$.ajax({
+								url: "$url",
+								dataType: "json",
+								data: {id: '$id',term: request.term},
+								success: function( data ) {
+									response($.map( data, function( item ) {
+										return {
+											label: item.stock_id+": "+item.description,
+											value: item,
+											category: item.category
+										}
+							}))}})},
                         select: function( event, ui ) {
-                           $.each(ui.item.value,function(k,v) {
-                           Adv.setFormValue(k,v);
-                        });
-                        $desc_js
-                        return false;
-
-                     }});
+							$(this).val(ui.item.value.stock_id);
+							$.each(ui.item.value,function(k,v) {
+								Adv.setFormValue(k,v);
+                            });
+                            $desc_js
+                            return false;
+                        },
+                        change: function(even,ui) {
+                            $(this).val(ui.item.value.stock_id);
+                        },
+                         focus: function(event,ui){
+							return false;
+                        }});
                      return  function () {return \$$id.catcomplete('destroy').focus() };
 JS
 			);
