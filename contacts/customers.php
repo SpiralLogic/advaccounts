@@ -5,11 +5,7 @@
 	include_once("includes/contacts.inc");
 	if (AJAX_REFERRER) {
 
-		if (isset($_GET['postcode']) && isset($_GET['term'])) {
-			$data = Postcode::searchByPostcode($_GET['term']);
-		} elseif (isset($_GET['city']) && isset($_GET['term'])) {
-			$data = Postcode::searchByCity($_GET['term']);
-		} elseif (isset($_GET['term'])) {
+		if (isset($_GET['term'])) {
 			$data = Customer::search($_GET['term']);
 		} else {
 			if (isset($_POST['id']) && isset($_POST['id']) > 0) {
