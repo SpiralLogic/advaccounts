@@ -6,8 +6,7 @@
  * Time: 4:12 PM
  * To change this template use File | Settings | File Templates.
  */
-   class Supplier extends Company
-   {
+   class Supplier extends Company {
 
       public $id, $supplier_id; //
       public $name, $supp_name; //
@@ -37,8 +36,7 @@
       public $payment_discount_account;
       public $supp_ref = '';
 
-      function __construct($id = null)
-      {
+      function __construct($id = null) {
          $this->supplier_id = &$this->id;
          $this->supp_name =& $this->name;
          $this->gst_no = &$this->tax_id;
@@ -49,8 +47,7 @@
          $this->supp_ref = substr($this->name, 0, 29);
       }
 
-      protected function _canProcess()
-      {
+      protected function _canProcess() {
          if (empty($this->name)) {
             $this->_status(false, 'Processing', "The supplier name cannot be empty.", 'name');
             return false;
@@ -58,13 +55,11 @@
          return true;
       }
 
-      protected function _countTransactions()
-      {
+      protected function _countTransactions() {
          // TODO: Implement _countTransactions() method.
       }
 
-      protected function _defaults()
-      {
+      protected function _defaults() {
          $this->credit_limit = price_format(0);
          $company_record = get_company_prefs();
          $this->curr_code = $company_record["curr_default"];
@@ -74,15 +69,13 @@
 
       }
 
-      protected function _new()
-      {
+      protected function _new() {
          $this->_defaults();
          return $this->_status(true, 'Initialize new supplier', 'Now working with a new supplier');
 
       }
 
-      protected function _read($id = null)
-      {
+      protected function _read($id = null) {
          if ($id == null || empty($id)) {
             return $this->_status(false, 'read', 'No supplier ID to read');
          }
@@ -100,8 +93,7 @@
          return $this->id;
       }
 
-      protected function _saveNew()
-      {
+      protected function _saveNew() {
          begin_transaction();
          $sql = "INSERT INTO suppliers (supp_name, supp_ref, address, supp_address, phone, phone2, fax, gst_no, email, website,
 				contact, supp_account_no, bank_account, credit_limit, dimension_id, dimension2_id, curr_code,
@@ -135,13 +127,11 @@
          $this->_status(true, 'Saving', "A Supplier has been added.");
       }
 
-      protected function delete()
-      {
+      protected function delete() {
          // TODO: Implement delete() method.
       }
 
-      function save($changes = null)
-      {
+      function save($changes = null) {
          if (is_array($changes)) {
             $this->setFromArray($changes);
          }
@@ -181,8 +171,7 @@
          return $this->_status(true, 'Processing', "Supplier has been updated.");
       }
 
-      public static function search($terms)
-      {
+      public static function search($terms) {
          $sql = "SELECT supplier_id as id, supp_ref as label, supp_ref as value FROM suppliers " . "where supp_ref LIKE '%" . $terms . "%' LIMIT 20";
          $result = db_query($sql, 'Couldn\'t Get Supplier');
          $data = '';
@@ -195,9 +184,8 @@
          return $data;
       }
 
-      public function getEmailAddresses()
-      {
+      public function getEmailAddresses() {
 
-         return array('Accounts' => array($this->id => array($this->name, $this->email)));
+         return array('Accounts' => array($this->id=>array($this->name,$this->email)));
       }
    }

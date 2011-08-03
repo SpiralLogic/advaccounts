@@ -1,5 +1,5 @@
 Adv.extend({
-
+   
    resetHighlights: function() {
       $(".ui-state-highlight").removeClass("ui-state-highlight");
       Adv.btnCustomer.hide();
@@ -74,8 +74,7 @@ var Contacts = function() {
          $Contacts.empty();
          return this;
       },
-      init: function(data) {
-         Contacts.empty();
+      init: function(data) {         Contacts.empty();
 
          Contacts.addMany(data);
          Contacts.New();
@@ -111,7 +110,7 @@ var Branches = function() {
       init:function() {
          list.change(function() {
             if (!$(this).val().length) return;
-            var newBranch = Customer.get().branches[$(this).val()];
+	         var newBranch = Customer.get().branches[$(this).val()];
             Branches.change(newBranch);
          })
       },

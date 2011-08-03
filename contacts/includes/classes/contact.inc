@@ -3,8 +3,7 @@
  * User: Sorijen
  * Date: 15/04/11 - 4:08 PM
  */
-   class contact extends DB_abstract
-   {
+   class contact extends DB_abstract {
       public $id = 0;
       public $parent_id;
       public $name = "New Contact";
@@ -13,14 +12,12 @@
       public $email = '';
       public $department = '';
 
-      function __construct($id = null)
-      {
+      function __construct($id = null) {
          parent::__construct($id);
 
       }
 
-      protected function _canProcess()
-      {
+      protected function _canProcess() {
          $temp = new Contact();
          if ($this->id > 0)
             return true;
@@ -30,24 +27,20 @@
          }
       }
 
-      protected function _countTransactions()
-      {
+      protected function _countTransactions() {
          // TODO: Implement _countTransactions() method.
       }
 
-      protected function _defaults()
-      {
+      protected function _defaults() {
          $this->id = 0;
       }
 
-      protected function _new()
-      {
+      protected function _new() {
          $this->_defaults();
          return $this->_status(true, 'Initialize new Contact', 'Now working with a new Contact');
       }
 
-      protected function _read($params = array())
-      {
+      protected function _read($params = array()) {
          $where = array();
          if (!is_array($params)) {
             $params = array('id' => $params);
@@ -74,8 +67,7 @@
 
       }
 
-      protected function _saveNew()
-      {
+      protected function _saveNew() {
          begin_transaction();
          $sql = "INSERT INTO contacts (parent_id, name, phone1, phone2, email, department)
 				VALUES (" . db_escape($this->parent_id) . "," . db_escape($this->name) . ", " . db_escape($this->phone1) . ", " . db_escape($this->phone2) . ", " . db_escape($this->email) . ", " . db_escape($this->department) . ")";
@@ -85,13 +77,11 @@
          $this->_status(true, 'Saving', "New contact has been added");
       }
 
-      protected function delete()
-      {
+      protected function delete() {
          // TODO: Implement delete() method.
       }
 
-      function save($changes = null)
-      {
+      function save($changes = null) {
          if (is_array($changes)) {
             $this->setFromArray($changes);
          }

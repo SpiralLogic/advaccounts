@@ -7,18 +7,16 @@
  * To change this template use File | Settings | File Templates.
  */
 
-   class DatePicker
-   {
+	class DatePicker {
 
 
-      protected $options;
-      protected $name;
+		protected $options;
+		protected $name;
 
-      static function add($name, $options = array())
-      {
-         $js = '$("#' . $name . '").datepicker(' . JS::arrayToOptions($options) . ');';
+		static function add($name, $options = array()) {
+			$js = '$("#' . $name . '").datepicker(' . JS::arrayToOptions($options) . ');';
 
-         JS::addLive($js);
-      }
+			JS::addLive($js);
+		}
 
-   }
+	}

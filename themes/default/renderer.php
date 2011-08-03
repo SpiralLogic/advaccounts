@@ -98,6 +98,7 @@ class renderer
 		echo "</div>\n";
 
 
+
 	}
 
 	function display_applications(&$waapp)
