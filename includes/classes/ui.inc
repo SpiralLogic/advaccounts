@@ -91,23 +91,21 @@
 			$o = array_merge($defaults, $options);
 			$_SESSION['options'][$id] = $o;
 			HTML::setReturn(true);
-			if ($o['cell']) {
-				HTML::td(true);
-			}
+			if ($o['cell']) HTML::td(true);
+
+
 			HTML::input($id, $o['selected'], array('name' => $id, 'size' => 50));
-			if ($o['cell']) {
-				HTML::td()->td(true);
-			}
+			if ($o['cell']) HTML::td()->td(true);
+
 			$desc_js = $o['js'];
+
 			if ($o['description'] !== false) {
 				HTML::textarea('description', $o['description'], array('style' => 'height:15px;', 'name' => 'description', 'rows' => 2, 'cols' => 45), false);
-				$desc_js .= <<<JS
-$("#description").css('height','auto').attr('rows',4);
-JS;
+				$desc_js .= "$('#description').css('height','auto').attr('rows',4);";
 			}
-			if ($o['cell']) {
-				HTML::td();
-			}
+
+			if ($o['cell']) HTML::td();
+
 			JS::addLive(<<<JS
 	\$$id = $("#$id").catcomplete({
                         delay: 0,
@@ -140,7 +138,7 @@ JS;
                             $desc_js
                             return false;
                         },
-                         focus: function(event,ui){
+                         focus: function(){
 							return false;
                         }});
                      return  function () {return \$$id.catcomplete('destroy').focus() };
