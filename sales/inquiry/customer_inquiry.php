@@ -133,16 +133,10 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 				}
 				break;
 			case ST_CUSTCREDIT:
-				if (get_voided_entry(ST_CUSTCREDIT, $row["trans_no"]) === false &&
-						$row['Allocated'] == 0
-				) // 2008-11-19 Joe Hunt
-				{
-					if ($row['order_'] == 0) // free-hand credit note
-					{
+				if (get_voided_entry(ST_CUSTCREDIT, $row["trans_no"]) === false && $row['Allocated'] == 0) {
+					if ($row['order_'] == 0) {
 						$str = "/sales/credit_note_entry.php?ModifyCredit=" . $row['trans_no'];
-					}
-					else // credit invoice
-					{
+					} else {
 						$str = "/sales/customer_credit_invoice.php?ModifyCredit=" . $row['trans_no'];
 					}
 				}
@@ -173,68 +167,8 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		}
 	}
 
-	$emailBoxEmails = array();
 	function email_link($row) {
-		static $first = true;
-		global $emailBoxEmails;
-		//if ($row['type'] != ST_CUSTPAYMENT && $row['type'] != ST_CUSTREFUND &&
-		//$row['type'] != ST_BANKDEPOSIT) // customer payment or bank deposit printout not defined yet.
-		$debtor = $row['debtor_no'];
-		$trans = $row['trans_no'];
-		$type = $row['type'];
-		$id = $debtor . '-' . $type . '-' . $trans;
-		if (empty($row['debtor_no']) || isset($emailBoxEmails [$id])) return;
-		$customer = new Customer($debtor);
-		$emails = $customer->getEmailAddresses();
-
-		if (!$emails) return $emailBoxEmails [$id]='';
-			switch ($type) {
-				case ST_CUSTDELIVERY:
-					$text = "Delivery Notice";
-					break;
-				case ST_SALESINVOICE:
-					$text = "Tax Invoice";
-					break;
-				case ST_CUSTPAYMENT:
-					$text = "Payment Receipt";
-					break;
-				case ST_CUSTREFUND:
-					$text = "Refund Receipt";
-					break;
-				case ST_CUSTCREDIT:
-					$text = "Credit Note";
-					break;
-			}
-
-			$emailBoxEmails[$id] = submenu_email(_("Email This ").$text, $type, $trans, null, $emails, 0, true);
-
-		if ($first) {
-			$emailBox = new Dialog('Select Email Address:', 'emailBox', '');
-			$emailBox->addButtons(array('Email' => '$("#EmailButton").trigger("click")', 'Close' => '$(this).dialog("close");'));
-			$emailBox->setOptions(array('autoopen' => false, 'modal' => true, 'width' => '"500"', 'height' => '"300"', 'resizeable' => false));
-			$emailBox->show();
-			$action = <<<JS
-	var emailID= $(this).data('emailid');
-	\$emailBox.html(emailBoxEmails[emailID]);
-	\$emailBox.dialog('open');
-	$('#EmailButton').button().click(function() {
-		Adv.loader.show();
-		var email = $("#EmailSelect").val();
-		$.get($(this).data('url') + "&Email="+email,function(responce) {
-			$('#msgbox').append(responce);
-			\$emailBox.dialog('close');
-			Adv.loader.hide();
-		});
-	});
-	return false;
-JS;
-			JS::addLiveEvent('.email-button', 'click', $action, '#wrapper');
-
-			$first = false;
-		}
-		ob_start();
-		UI::button(false, 'Email', array('class' => 'button email-button', 'data-emailid' => $id));
-		return ob_get_clean();
+	
 	}
 
 	function check_overdue($row) {
@@ -356,7 +290,8 @@ JS;
 		_("Branch") => array('ord' => ''), _("Currency") => array('align' => 'center'),
 		_("Debit") => array('align' => 'right', 'fun' => 'fmt_debit'),
 		_("Credit") => array('align' => 'right', 'insert' => true, 'fun' => 'fmt_credit'),
-		_("RB") => array('align' => 'right', 'type' => 'amount'), array('insert' => true, 'fun' => 'gl_view'),
+		_("RB") => array('align' => 'right', 'type' => 'amount'),
+		array('insert' => true, 'fun' => 'gl_view'),
 		array('insert' => true, 'align' => 'center', 'fun' => 'credit_link'),
 		array('insert' => true, 'align' => 'center', 'fun' => 'edit_link'),
 		array('insert' => true, 'align' => 'center', 'fun' => 'email_link'),

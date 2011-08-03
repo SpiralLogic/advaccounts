@@ -16,7 +16,7 @@
       $quickMenu = $('#quickCustomer');
    (function() {
       var $this = this,
-         $wrapper = $("#wrapper");
+         $wrapper = $("#_page_body");
       this.menu = $("#sidemenu").accordion({autoHeight: false,active: false, event: "mouseover"}).fadeTo("slow", .75);
       this.sidemenuOn = function() {
          $this.menu.accordion("enable").hover(function() {
@@ -35,14 +35,10 @@
       };
       this.doSearch = function () {
          var term = searchInput.val();
-         Adv.loader.show();
          ajaxRequest = $.post(searchInput.data("url"), { ajaxsearch: term, limit: true }, $this.showSearch);
       };
       this.showSearch = function (data) {
-         var content = $('#wrapper', data).attr("id", "results"), $results = $("#results");
-         ($results.length > 0) ? $results.replaceWith(content) : $wrapper.after(content);
-         $wrapper.hide();
-         Adv.loader.hide();
+	      $('#_page_body').empty().append(data);
       }
       $search.delegate("a", "click", function(event) {
          searchInput.trigger('blur');
@@ -52,7 +48,6 @@
          return false;
       });
       $search.delegate('input', "change blur keyup", function(event) {
-
          if (ajaxRequest && event.type == 'keyup') {
             if (event.keyCode == 13) {
                window.clearTimeout(Searchboxtimeout);
@@ -60,7 +55,6 @@
                return false;
             }
             ajaxRequest.abort();
-
          }
          if (event.type != "blur" && searchInput.val().length > 1 && event.which < 123) {
             window.clearTimeout(Searchboxtimeout);

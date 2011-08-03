@@ -483,7 +483,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 
 	//--------------------------------------------------------------------------------
 	function display_delivery_details(&$order) {
-		global $table_style2, $Ajax, $js_lib;
+		global $table_style2, $Ajax;
 		div_start('delivery');
 		if (get_post('cash', 0)) { // Direct payment sale
 			$Ajax->activate('items_table');

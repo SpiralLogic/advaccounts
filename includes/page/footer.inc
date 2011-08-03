@@ -10,19 +10,21 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
  ***********************************************************************/
 	function page_footer($no_menu = false, $is_index = false, $hide_back_link = false) {
-		global $path_to_root, $js_lib, $Validate, $Editors, $Ajax;
+		global $path_to_root, $Validate, $Editors, $Ajax;
 		include_once($path_to_root . "/themes/" . user_theme() . "/renderer.php");
 		$rend = new renderer();
 		$rend->menu_footer($no_menu, $is_index);
 
+		if (AJAX_REFERRER) 	return;
+					JS::beforeload("_focus = '" . get_post('_focus') . "';_validate = " . $Ajax->php2js($Validate) . ";var $edits");
+
+
 		$edits = "editors = " . $Ajax->php2js($Editors) . ";";
 		$Ajax->addScript('editors', $edits);
-		JS::beforeload("_focus = '" . get_post('_focus') . "';_validate = " . $Ajax->php2js($Validate) . ";var $edits");
 		add_user_js_data();
-		JS::beforeload($js_lib);
 		Messages::showNewMessages();
 
-if	(!AJAX_REFERRER)	JS::render();
+		return JS::render();
 
 		global $start22;
 		$time = microtime();
@@ -30,13 +32,12 @@ if	(!AJAX_REFERRER)	JS::render();
 		$time = $time[1] + $time[0];
 		$finish = $time;
 		$total_time = getReadableTime($finish - $start22);
-		$generateinfo = 'Memory Usage: '.convert(memory_get_usage()) . "<br>\n" .
-				'Memory Peak Usage: '.convert(memory_get_peak_usage()) . "<br>" . 'Page generated in ' . $total_time . ' seconds.' . "\n";
+		$generateinfo = 'Memory Usage: ' . convert(memory_get_usage()) . "<br>\n" .
+				'Memory Peak Usage: ' . convert(memory_get_peak_usage()) . "<br>" . 'Page generated in ' . $total_time . ' seconds.' . "\n";
 		HTML::div('generateinfo', $generateinfo, false);
 		echo "</div></body>";
 		get_websales();
 		echo   "</html>\n";
-		
 
 	}
 

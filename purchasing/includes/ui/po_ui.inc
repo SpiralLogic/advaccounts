@@ -331,7 +331,6 @@ function po_item_controls(&$order, $stock_id = null)
 		submit_cells('EnterLine', _("Add Item"), "colspan=2",
 					 _('Add new item to document'), true);
 	}
-
 	end_row();
 
 }

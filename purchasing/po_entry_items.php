@@ -168,7 +168,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 				set_focus('qty');
 				return;
 			}
-			$_SESSION['PO']->update_order_item($_POST['line_no'], input_num('qty'), input_num('price'), $_POST['req_del_date'], $_POST['item_description'], $_POST['discount'] / 100);
+			$_SESSION['PO']->update_order_item($_POST['line_no'], input_num('qty'), input_num('price'), $_POST['req_del_date'], $_POST['description'], $_POST['discount'] / 100);
 			unset_form_variables();
 		}
 		line_start_focus();
@@ -203,7 +203,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 				}
 				if ($allow_update) {
 					$myrow = db_fetch($result);
-					$_SESSION['PO']->add_to_order($_POST['line_no'], $_POST['stock_id'], input_num('qty'), $_POST['stock_id_text'], input_num('price'), $myrow["units"], $_POST['req_del_date'], 0, 0, $_POST['discount'] / 100);
+					$_SESSION['PO']->add_to_order($_POST['line_no'], $_POST['stock_id'], input_num('qty'), $_POST['description'], input_num('price'), $myrow["units"], $_POST['req_del_date'], 0, 0, $_POST['discount'] / 100);
 					unset_form_variables();
 					$_POST['stock_id'] = "";
 				}
@@ -395,7 +395,8 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	}
 	div_end();
 	//---------------------------------------------------------------------------------------------------
-	end_form();   Item::addEditDialog();
+	end_form();
+	Item::addEditDialog();
 
 	if (isset($_SESSION['PO']->supplier_id)) {
 		$supplier_details = $_SESSION['PO']->supplier_details;
