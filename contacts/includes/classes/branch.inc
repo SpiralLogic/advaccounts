@@ -6,7 +6,7 @@
  * Time: 11:52 PM
  * To change this template use File | Settings | File Templates.
  */
-class Branch extends Company
+class Branch extends DB_abstract
 {
 
 
@@ -24,7 +24,13 @@ class Branch extends Company
 	public $default_location = DEFAULT_LOCATION;
 	public $default_ship_via = DEFAULT_SHIP_VIA;
 	public $disable_trans = 0;
-
+ public $phone = '';
+      public $phone2 = '';
+      public $fax = '';
+      public $website = '';      public $email = '';
+      public $inactive = 0;
+      public $notes = '';
+     
 	public $group_no = 1;
 	public $payment_discount_account;
 

@@ -1,14 +1,14 @@
 <?php
 
    /** ********************************************************************
-    Copyright (C) FrontAccounting, LLC.
-    Released under the terms of the GNU General Public License, GPL,
-    as published by the Free Software Foundation, either version 3
-    of the License, or (at your option) any later version.
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+   Copyright (C) FrontAccounting, LLC.
+   Released under the terms of the GNU General Public License, GPL,
+   as published by the Free Software Foundation, either version 3
+   of the License, or (at your option) any later version.
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+   See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
     * ********************************************************************* */
    //--------------------------------------------------
    // User configurable variables
@@ -19,42 +19,22 @@
    if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_to_root'])) {
       die("Restricted access");
    }
+
+
    // Log file for error/warning messages. Should be set to any location
    // writable by www server. When set to empty string logging is switched off.
    // Special value 'syslog' can be used for system logger usage (see php manual).
    //$error_logfile = '';
-   $error_logfile = dirname(__FILE__) . '/tmp/errors.log';
+   $error_logfile = '';
    $debug = 1;
    $show_sql = 0;
    $go_debug = 1;
    $pdf_debug = 0;
-   // set $sql_trail to 1 only if you want to perform bugtracking sql trail
-   // Warning: this produces huge amount of data in sql_trail table.
-   // Don't forget switch the option off and flush the table manually after
-   // trail, or your future backup files are overloaded with unneeded data.
-   //
-   $sql_trail = 0; // save all sql queries in sql_trail
-   $select_trail = 0; // track also SELECT queries
-   if ($go_debug && isset($_SESSION["wa_current_user"]) && $_SESSION["wa_current_user"]->user == 1) {
-      error_reporting(E_ALL);
-      ini_set("display_errors", "On");
-   }
-   else {
-      $go_debug = 0;
-      error_reporting(E_USER_WARNING | E_USER_ERROR | E_USER_NOTICE);
-      // ini_alter("error_reporting","E_COMPILE_ERROR|E_ERROR|E_CORE_ERROR|E_PARSE");
-      ini_set("display_errors", "On");
-   }
-   if ($error_logfile != '') {
-      ini_set("error_log", $error_logfile);
-      ini_set("ignore_repeated_errors", "On");
-      ini_set("log_errors", "On");
-   }  error_reporting(E_ALL);
-      ini_set("display_errors", "On");
-   // Main Title
    $app_title = "Advanced Accounting";
-   // application version
    $version = "2.2.11";
+
+   // application version
+   $version = $version;
    // Build for development purposes
    $build_version = date("d.m.Y", filemtime(__FILE__));
    // Powered by
@@ -86,7 +66,7 @@
    /* allow alpha characters in accounts. 0 = numeric, 1 = alpha numeric, 2 = uppercase alpha numeric */
    $accounts_alpha = 0;
    /* Date systems. 0 = traditional, 1 = Jalali used by Iran, nabour countries, Afghanistan and some other Central Asian nations,
-    2 = Islamic used by other arabic nations. 3 = traditional, but where non-workday is Friday and start of week is Saturday */
+2 = Islamic used by other arabic nations. 3 = traditional, but where non-workday is Friday and start of week is Saturday */
    $date_system = 0;
    /* email stock location if order below reorder-level */
    $loc_notification = 0;
@@ -101,17 +81,17 @@
    $dflt_date_sep = 0;
    $pagesizes = array("Letter", "A4"); // default PDF pagesize
    /* Default border and spacing for tables
-    *  Should be moved to CSS */
+*  Should be moved to CSS */
    $table_style = "class='tablestyle'";
    $table_style2 = "class='tablestyle2'";
    /* Accounts Payable
-    System check to see if quantity charged on purchase invoices exceeds the quantity received.
-    If this parameter is checked the proportion by which the purchase invoice is an overcharge
-    referred to before reporting an error */
+System check to see if quantity charged on purchase invoices exceeds the quantity received.
+If this parameter is checked the proportion by which the purchase invoice is an overcharge
+referred to before reporting an error */
    $check_qty_charged_vs_del_qty = true;
    /* System check to see if price charged on purchase invoices exceeds the purchase order price.
-    If this parameter is checked the proportion by which the purchase invoice is an overcharge
-    referred to before reporting an error */
+If this parameter is checked the proportion by which the purchase invoice is an overcharge
+referred to before reporting an error */
    $check_price_charged_vs_order_price = True;
    $config_allocation_settled_allowance = 0.005;
    // Internal configurable variables
@@ -124,38 +104,38 @@
    $max_image_size = 500;
    /* skin for Business Graphics, 1, 2 or 3 */
    $graph_skin = 1;
-   /*
-     Before upgrade from pre-2.2 FA you have to move here your customized
-     security roles definitions. If you have used standard roles, you
-     can simply uncomment following two arrays. After upgrade both arrays need
-     to be deleted or commented out. You may wish to change user roles to
-     new better defined in Users Setup. Old not used roles can be set inactive
-     or deleted.
 
-     Standard FA2.1 Security Group definitions
 
-     $security_headings = array(
-     _("Inquiries"),
-     _("Accountant"),
-     _("System Administrator"),
-     );
+   // set $sql_trail to 1 only if you want to perform bugtracking sql trail
+   // Warning: this produces huge amount of data in sql_trail table.
+   // Don't forget switch the option off and flush the table manually after
+   // trail, or your future backup files are overloaded with unneeded data.
 
-     $security_groups = array(
-     array(1,2),
-     array(1,2,3,4,5,6,7,8,9,10,11,12,13,14,16),
-     array(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,20),
-     );
-   */
-   //MySQL Backup and Restore Settings
-   if (isset($_SESSION["wa_current_user"])) {
-      define("BACKUP_PATH", $comp_path . "/backup/");
+   $sql_trail = 0; // save all sql queries in sql_trail
+   $select_trail = 0; // track also SELECT queries
+
+
+   $error_logfile = dirname(__FILE__) . '/tmp/errors.log';
+   if ($go_debug && isset($_SESSION["wa_current_user"]) && $_SESSION["wa_current_user"]->user == 1) {
+      error_reporting(E_ALL);
+      ini_set("display_errors", "On");
    }
-   // static js files path
-   // standard external js scripts included in all files
-   JS::headerFile(array('/js/JsHttpRequest.js', '/js/behaviour.js', '/js/utils.js', '/js/inserts.js','/js/js2/jquery-1.6.2.min.js', '/js/js2/jquery-ui-1.8.14.min.js'));
-   JS::footerFile ( array('/js/js2/advanced.js', '/js/js2/shortmenu.js', '/js/js2/jquery.calculator.pack.js', '/js/js2/calc.js','/js/js2/chosen.jquery.min.js'));
-   // additional js source included in header
-   $js_lib = $js_fuserlib = $js_userlib = array();
+   else {
+      $go_debug = 0;
+      error_reporting(E_USER_WARNING | E_USER_ERROR | E_USER_NOTICE);
+      ini_set("display_errors", "On");
+   }
+   if ($error_logfile != '') {
+      ini_set("error_log", $error_logfile);
+      ini_set("ignore_repeated_errors", "On");
+      ini_set("log_errors", "On");
+   }
+   error_reporting(E_ALL);
+   ini_set("display_errors", "On");
+   JS::headerFile(array('/js/JsHttpRequest.js', '/js/behaviour.js', '/js/utils.js', '/js/inserts.js', '/js/js2/jquery-1.6.2.min.js', '/js/js2/jquery-ui-1.8.14.min.js'));
+   JS::footerFile(array('/js/js2/advanced.js', '/js/js2/shortmenu.js', '/js/js2/jquery.calculator.pack.js', '/js/js2/calc.js', '/js/js2/chosen.jquery.min.js'));
+
+
    if (!defined('ICON_EDIT')) {
       define("ICON_EDIT", "edit.gif");
       define("ICON_DELETE", "delete.gif");
@@ -177,9 +157,9 @@
       define("ICON_SUBMIT", "ok.gif");
       define("ICON_ESCAPE", "escape.png");
    }
+   define("BACKUP_PATH", $comp_path . "/backup/");
    define('DEFAULT_LOCATION', 'MEL');
    define('DEFAULT_TAX_GROUP', 1);
    define('DEFAULT_AREA', 1);
    define('DEFAULT_SHIP_VIA', 1);
-
 ?>

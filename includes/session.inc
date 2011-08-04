@@ -148,12 +148,13 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
    if (isset($_GET['path_to_root']) || isset($_POST['path_to_root'])) {
       die("Restricted access");
    }
+
    function __autoload($className) {
       if (!@include(strtolower($className) . '.inc'))
          if (!@include(strtolower($className) . '.php')) {
-            $className = str_ireplace('_',DIRECTORY_SEPARATOR,$className);
-            $file = APP_PATH . 'includes/classes/' . $className.'.php';
-                  include(strtolower($file));
+            $className = str_ireplace('_', DIRECTORY_SEPARATOR, $className);
+            $file = APP_PATH . 'includes/classes/' . $className . '.php';
+            include(strtolower($file));
 
          }
 
@@ -193,8 +194,11 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
       include(APP_PATH . "lang/" . $_SESSION['language']->code . "/locale.inc");
       $Hooks = new Hooks();
    }
+
+
    include(APP_PATH . "includes/access_levels.inc");
    include(APP_PATH . "config.php");
+   
    include(APP_PATH . "includes/main.inc");
 
    // Ajax communication object
