@@ -24,9 +24,9 @@
    // Special value 'syslog' can be used for system logger usage (see php manual).
    //$error_logfile = '';
    $error_logfile = dirname(__FILE__) . '/tmp/errors.log';
-   $debug = 0;
+   $debug = 1;
    $show_sql = 0;
-   $go_debug = 0;
+   $go_debug = 1;
    $pdf_debug = 0;
    // set $sql_trail to 1 only if you want to perform bugtracking sql trail
    // Warning: this produces huge amount of data in sql_trail table.
@@ -49,7 +49,8 @@
       ini_set("error_log", $error_logfile);
       ini_set("ignore_repeated_errors", "On");
       ini_set("log_errors", "On");
-   }
+   }  error_reporting(E_ALL);
+      ini_set("display_errors", "On");
    // Main Title
    $app_title = "Advanced Accounting";
    // application version

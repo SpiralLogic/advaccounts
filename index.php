@@ -15,7 +15,6 @@ if (!file_exists($path_to_root . '/config.php'))
 
 $page_security = 'SA_OPEN';
 
-
 include_once("includes/session.inc");
 
 add_access_extensions();
