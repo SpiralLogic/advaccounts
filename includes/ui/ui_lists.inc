@@ -603,7 +603,7 @@ JS
 
 	//---------------------------------------------------------------------------------------------------
 	function stock_items_list($name,$selected_id = null,$all_option = false,$submit_on_change = false,$opts = array(),$editkey = false) { global $all_items;
-		return Item::addSearchBox($name, array_merge(array('selected' => $selected_id, 'cell' => true), $opts));
+		return Item::addSearchBox($name, array_merge(array('selected' => $selected_id, 'supplier_id'=>$_SESSION['wa_global_supplier_id'],'cell' => true,'purchase'=>true), $opts));
 		$sql = "SELECT stock_id, s.description, c.description, s.inactive, s.editable, s.long_description
 			FROM stock_master s,stock_category c WHERE s.category_id=c.category_id";
 		if ($editkey) {
@@ -654,7 +654,7 @@ JS;
 	function sales_items_list($name, $selected_id = null, $all_option = false, $submit_on_change = false, $type = '', $opts = array()) {
 		global $all_items;
 		// all sales codes
-		return Item::addSearchBox($name, array_merge(array('selected' => $selected_id, 'type' => $type, 'cell' => true), $opts));
+		return Item::addSearchBox($name, array_merge(array('selected' => $selected_id, 'type' => $type,'sale'=>true, 'cell' => true), $opts));
 		$where = ($type == 'local') ? " AND !i.is_foreign" : ' ';
 		if ($type == 'kits') {
 			$where .= " AND !i.is_foreign AND i.item_code!=i.stock_id ";
@@ -684,7 +684,7 @@ JS;
 		if ($label != null) {
 			echo "<td>$label</td>\n";
 		}
-		echo sales_items_list($name, $selected_id, $all_option, $submit_on_change, '', array_merge(array('cell' => true, 'description' => ''), $opts));
+		echo sales_items_list($name, $selected_id, $all_option, $submit_on_change, '', array_merge(array('sale'=>true,'cell' => true, 'description' => ''), $opts));
 	}
 
 	function sales_kits_list($name, $selected_id = null, $all_option = false, $submit_on_change = false) {
@@ -696,7 +696,7 @@ JS;
 		if ($label != null) {
 			echo "<td class='label'>$label</td>\n";
 		}
-		echo sales_items_list($name, $selected_id, $all_option, $submit_on_change, 'local', array('cells' => false));
+		echo sales_items_list($name, $selected_id, $all_option, $submit_on_change, 'local', array('cells' => false,'sale'=>true));
 		echo "</tr>";
 	}
 
