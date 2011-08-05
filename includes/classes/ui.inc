@@ -80,8 +80,12 @@
 				'editable' => true,
 				'selected' => '',
 				'cell' => false,
+				'stock_id' => ' stock_id ',
 				'inactive' => false,
 				'js' => '',
+				'purchase' => false,
+				'sale' => false,
+				'prices' => '',
 				'sales_type' => 1,
 				'no_sale' => false,
 				'select' => false,
@@ -91,11 +95,14 @@
 			$o = array_merge($defaults, $options);
 			$_SESSION['options'][$id] = $o;
 			HTML::setReturn(true);
-			if ($o['cell']) HTML::td(true);
-
+			if ($o['cell']) {
+				HTML::td(true);
+			}
 
 			HTML::input($id, $o['selected'], array('name' => $id, 'size' => 50));
-			if ($o['cell']) HTML::td()->td(true);
+			if ($o['cell']) {
+				HTML::td()->td(true);
+			}
 
 			$desc_js = $o['js'];
 
@@ -104,7 +111,9 @@
 				$desc_js .= "$('#description').css('height','auto').attr('rows',4);";
 			}
 
-			if ($o['cell']) HTML::td();
+			if ($o['cell']) {
+				HTML::td();
+			}
 
 			JS::addLive(<<<JS
 	\$$id = $("#$id").catcomplete({
