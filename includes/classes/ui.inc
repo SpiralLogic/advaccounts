@@ -144,7 +144,7 @@
                      return  function () {return \$$id.catcomplete('destroy').focus() };
 JS
          );
-         return HTML::setReturn(false);
+         return HTML::setReturn(false); 
       }
 
       public static function emailDialogue($contactType, $emailid) {
