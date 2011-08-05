@@ -1,6 +1,6 @@
 <?
 	class HTML {
-	protected static $_instance = null;
+		protected static $_instance = null;
 		protected static $_return = false;
 
 		function __call($func, $args) {
@@ -35,8 +35,7 @@
 				static::$_instance = new static;
 			}
 			;
-			(count($args) == 0) ? static::$_instance->_closeTag(($func[0] == '_') ? substr($func, 1) : $func)
-					: static::$_instance->_Builder($func, $args);
+			(count($args) == 0) ? static::$_instance->_closeTag(($func[0] == '_') ? substr($func, 1) : $func) : static::$_instance->_Builder($func, $args);
 			return static::$_instance;
 		}
 

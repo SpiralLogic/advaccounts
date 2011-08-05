@@ -29,15 +29,14 @@
 		static function select($id = false, $options = array(), $params = array()) {
 			$content = '';
 			HTML::setReturn(true)->select($id, $params);
-			foreach ((array) $options as $label => $option) {
+			foreach ((array)$options as $label => $option) {
 				if (is_array($option)) {
 					HTML::optgroup(array('label' => $label));
 					foreach ($option as $data) {
 						HTML::option(null, $data[0] . ' (' . $data[1] . ')', array('value' => $data[1]), false);
 					}
 					HTML::optgroup();
-				}
-				else {
+				} else {
 					HTML::option(array('value' => $label), false);
 				}
 			}

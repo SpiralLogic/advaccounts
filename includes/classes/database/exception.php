@@ -10,4 +10,5 @@
  */
 
 
-class Database_Exception extends Adv_Exception {}
+	class Database_Exception extends Adv_Exception {
+	}
