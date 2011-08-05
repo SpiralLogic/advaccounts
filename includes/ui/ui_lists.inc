@@ -86,15 +86,13 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 			$opts['sel_hint'] = $by_id || $search_box == false ? '' : _('Press Space tab for search pattern entry');
 		}
 		if ($opts['box_hint'] === null) {
-			$opts['box_hint'] = $search_box && $search_submit != false ? ($by_id
-					? _('Enter code fragment to search or * for all')
-					: _('Enter description fragment to search or * for all')) : '';
+			$opts['box_hint'] = $search_box && $search_submit != false ? ($by_id ? _('Enter code fragment to search or * for all') : _('Enter description fragment to search or * for all')) : '';
 		}
 		if ($selected_id == null) {
-			$selected_id = get_post($name, (string) $opts['default']);
+			$selected_id = get_post($name, (string)$opts['default']);
 		}
 		if (!is_array($selected_id)) {
-			$selected_id = array((string) $selected_id);
+			$selected_id = array((string)$selected_id);
 		} // code is generalized for multiple selection support
 		$txt = get_post($search_box);
 		$rel = '';
@@ -105,16 +103,14 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 			}
 			if (!$opts['async']) {
 				$Ajax->activate('_page_body');
-			}
-			else {
+			} else {
 				$Ajax->activate($name);
 			}
 		}
 		if (isset($_POST[$search_button])) {
 			if (!$opts['async']) {
 				$Ajax->activate('_page_body');
-			}
-			else {
+			} else {
 				$Ajax->activate($name);
 			}
 		}
@@ -126,20 +122,17 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 					$selected_id = array(); // ignore selected_id while search
 					if (!$opts['async']) {
 						$Ajax->activate('_page_body');
-					}
-					else {
+					} else {
 						$Ajax->activate($name);
 					}
 				}
 				if ($txt == '') {
 					if ($spec_option === false && $selected_id == array()) {
 						$limit = ' LIMIT 1';
-					}
-					else {
+					} else {
 						$opts['where'][] = $valfield . "='" . get_post($name, $spec_id) . "'";
 					}
-				}
-				else {
+				} else {
 					if ($txt != '*') {
 						$texts = explode(" ", trim($txt));
 						foreach ($texts as $text) {
@@ -147,8 +140,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 								continue;
 							}
 							$search_feilds = $opts['search'];
-							foreach ($search_feilds as $i => $s)
-								$search_feilds[$i] = $s . " LIKE '%{$text}%'";
+							foreach ($search_feilds as $i => $s) $search_feilds[$i] = $s . " LIKE '%{$text}%'";
 							$opts['where'][] = '(' . implode($search_feilds, ' OR ') . ')';
 						}
 					}
@@ -163,8 +155,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 			if ($group_pos) {
 				$group = substr($sql, $group_pos);
 				$sql = substr($sql, 0, $group_pos) . $where . ' ' . $group;
-			}
-			else {
+			} else {
 				$sql .= $where;
 			}
 		}
@@ -191,11 +182,10 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 				if (get_post($search_button) && ($txt == $value)) {
 					$selected_id[] = $value;
 				}
-				if (in_array((string) $value, $selected_id, true)) {
+				if (in_array((string)$value, $selected_id, true)) {
 					$sel = 'selected';
 					$found = $value;
-					$edit = $opts['editable'] && $contact_row['editable'] && (@$_POST[$search_box] == $value)
-							? $contact_row[1] : false; // get non-formatted description
+					$edit = $opts['editable'] && $contact_row['editable'] && (@$_POST[$search_box] == $value) ? $contact_row[1] : false; // get non-formatted description
 					if ($edit) {
 						break; // selected field is editable - abandon list construction
 					}
@@ -204,8 +194,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 				// show selected option even if inactive
 				if (!$opts['show_inactive'] && @$contact_row['inactive'] && $sel === '') {
 					continue;
-				}
-				else {
+				} else {
 					$optclass = @$contact_row['inactive'] ? "class='inactive'" : '';
 				}
 				if ($first_id === false) {
@@ -235,24 +224,19 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 			$selected_id = array($first_id);
 		}
 		$_POST[$name] = $multi ? $selected_id : $selected_id[0];
-		$selector = "<select id='$name' autocomplete='off' " . ($multi ? "multiple" : '') . (
-		$opts['height'] !== false ? ' size="' . $opts['height'] . '"' : '') . "$disabled name='$name" . ($multi ? '[]'
-				: '') . "' class='$class' title='" .
-				$opts['sel_hint'] . "' $rel>" . $selector . "</select>\n";
+		$selector = "<select id='$name' autocomplete='off' " . ($multi ? "multiple" : '') . ($opts['height'] !== false ? ' size="' . $opts['height'] . '"' : '') . "$disabled name='$name" . ($multi
+				? '[]' : '') . "' class='$class' title='" . $opts['sel_hint'] . "' $rel>" . $selector . "</select>\n";
 		if ($by_id && ($search_box != false || $opts['editable'])) {
 			// on first display show selector list
 			if (isset($_POST[$search_box]) && $opts['editable'] && $edit) {
 				$selector = "<input type='hidden' name='$name' value='" . $_POST[$name] . "'>";
 				if (isset($contact_row['long_description'])) {
 					$selector .= "<textarea name='{$name}_text' cols='{$opts['max']}'  id='{$name}_text' $rel rows='2'>{$contact_row['long_description']}</textarea></td>\n";
-				}
-				else {
-					$selector .= "<input type='text' $disabled name='{$name}_text' id='{$name}_text' size='" . $opts['editable'] . "' maxlength='" .
-							$opts['max'] . "' $rel value='$edit'>\n";
+				} else {
+					$selector .= "<input type='text' $disabled name='{$name}_text' id='{$name}_text' size='" . $opts['editable'] . "' maxlength='" . $opts['max'] . "' $rel value='$edit'>\n";
 				}
 				set_focus($name . '_text'); // prevent lost focus
-			}
-			else {
+			} else {
 				if (get_post($search_submit ? $search_submit : "_{$name}_button")) {
 					set_focus($name);
 				}
@@ -269,26 +253,22 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		if ($select_submit != false || $search_button) {
 			global $_select_button;
 			// button class selects form reload/ajax selector update
-			$selector .= sprintf($_select_button, $disabled, user_theme(), (fallback_mode() ? ''
-						: 'display:none;'), '_' . $name . '_update') . "\n";
+			$selector .= sprintf($_select_button, $disabled, user_theme(), (fallback_mode() ? '' : 'display:none;'), '_' . $name . '_update') . "\n";
 		}
 		// ------ make combo ----------
 		$edit_entry = '';
 		if ($search_box != false) {
-			$edit_entry = "<input $disabled type='text' name='$search_box' id='$search_box' size='" . $opts['size'] . "' maxlength='" .
-					$opts['max'] . "' value='$txt' class='$class' rel='$name' autocomplete='off' title='" . $opts['box_hint'] . "'" . (!fallback_mode() && !$by_id
+			$edit_entry = "<input $disabled type='text' name='$search_box' id='$search_box' size='" . $opts['size'] . "' maxlength='" . $opts['max'] . "' value='$txt' class='$class' rel='$name' autocomplete='off' title='" . $opts['box_hint'] . "'" . (!fallback_mode() && !$by_id
 					? " style=display:none;" : '') . ">\n";
 			if ($search_submit != false || $opts['editable']) {
 				global $_search_button;
-				$edit_entry .= sprintf($_search_button, $disabled, user_theme(), (fallback_mode() ? ''
-							: 'display:none;'), $search_submit ? $search_submit : "_{$name}_button") . "\n";
+				$edit_entry .= sprintf($_search_button, $disabled, user_theme(), (fallback_mode() ? '' : 'display:none;'), $search_submit ? $search_submit : "_{$name}_button") . "\n";
 			}
 		}
 		default_focus(($search_box && $by_id) ? $search_box : $name);
 		if ($search_box && $opts['cells']) {
 			$str = ($edit_entry != '' ? "<td>$edit_entry</td>" : '') . "<td>$selector</td>";
-		}
-		else {
+		} else {
 			$str = $edit_entry . $selector;
 		}
 		return $str;
@@ -336,8 +316,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		if (isset($_POST['_' . $name . '_update'])) {
 			if (!$opts['async']) {
 				$Ajax->activate('_page_body');
-			}
-			else {
+			} else {
 				$Ajax->activate($name);
 			}
 		}
@@ -348,7 +327,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		//if($name=='SelectStockFromList') display_error($sql);
 		foreach ($items as $value => $descr) {
 			$sel = '';
-			if (in_array((string) $value, $selected_id)) {
+			if (in_array((string)$value, $selected_id)) {
 				$sel = 'selected';
 				$found = $value;
 			}
@@ -369,15 +348,13 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 			$selected_id = array($first_id);
 		}
 		$_POST[$name] = $multi ? $selected_id : $selected_id[0];
-		$selector = "<select " . ($multi ? "multiple" : '') . ($opts['height'] !== false ? ' size="' . $opts['height'] . '"'
-				: '') . "$disabled name='$name" . ($multi ? '[]'
+		$selector = "<select " . ($multi ? "multiple" : '') . ($opts['height'] !== false ? ' size="' . $opts['height'] . '"' : '') . "$disabled name='$name" . ($multi ? '[]'
 				: '') . "' class='combo' title='" . $opts['sel_hint'] . "'>" . $selector . "</select>\n";
 		$Ajax->addUpdate($name, "_{$name}_sel", $selector);
 		$selector = "<span id='_{$name}_sel'>" . $selector . "</span>\n";
 		if ($select_submit != false) { // if submit on change is used - add select button
 			global $_select_button;
-			$selector .= sprintf($_select_button, $disabled, user_theme(), (fallback_mode() ? ''
-						: 'display:none;'), '_' . $name . '_update') . "\n";
+			$selector .= sprintf($_select_button, $disabled, user_theme(), (fallback_mode() ? '' : 'display:none;'), '_' . $name . '_update') . "\n";
 		}
 		default_focus($name);
 		return $selector;
@@ -400,11 +377,9 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 			set_editor('supplier', $name, $editkey);
 		}
 		return combo_input($name, $selected_id, $sql, 'supplier_id', 'supp_name',
-			array('format' => '_format_add_curr', 'order' => array('supp_ref'), 'search_box' => $mode != 0, 'type' => 1,
-				'spec_option' => $spec_option === true ? _("All Suppliers")
-						: $spec_option, 'spec_id' => $all_items, 'select_submit' => $submit_on_change,
-				'async' => false, 'sel_hint' => $mode ? _('Press Space tab to filter by name fragment')
-					: _('Select supplier'), 'show_inactive' => $all));
+		                   array('format' => '_format_add_curr', 'order' => array('supp_ref'), 'search_box' => $mode != 0, 'type' => 1,
+		                        'spec_option' => $spec_option === true ? _("All Suppliers") : $spec_option, 'spec_id' => $all_items, 'select_submit' => $submit_on_change, 'async' => false,
+		                        'sel_hint' => $mode ? _('Press Space tab to filter by name fragment') : _('Select supplier'), 'show_inactive' => $all));
 	}
 
 	function supplier_list_cells($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false, $all = false, $editkey = false) {
@@ -438,15 +413,11 @@ var val = $("#customer_id").val();
 if (val>0) {
 $("#customerBox").html("<iframe src='/contacts/customers.php?popup=1&id="+val+"' width='100%' height='710' scrolling='no' style='border:none' frameborder='0'></iframe>").dialog('open');}
 JS
-		);
+);
 		return combo_input($name, $selected_id, $sql, 'debtor_no', 'name',
-			array('format' => '_format_add_curr', 'order' => array('debtor_ref'), 'search_box' => $mode != 0, 'type' => 1, 'size' => 20,
-				'spec_option' => $spec_option === true ? _("All Customers")
-						: $spec_option, 'spec_id' => $all_items, 'select_submit' => $submit_on_change,
-				'async' => $async, 'sel_hint' => $mode
-					? _('Press Space tab to filter by name fragment; F2 - entry new customer')
-					: _('Select customer'),
-				'show_inactive' => $show_inactive));
+		                   array('format' => '_format_add_curr', 'order' => array('debtor_ref'), 'search_box' => $mode != 0, 'type' => 1, 'size' => 20,
+		                        'spec_option' => $spec_option === true ? _("All Customers") : $spec_option, 'spec_id' => $all_items, 'select_submit' => $submit_on_change, 'async' => $async,
+		                        'sel_hint' => $mode ? _('Press Space tab to filter by name fragment; F2 - entry new customer') : _('Select customer'), 'show_inactive' => $show_inactive));
 	}
 
 	function customer_list_cells($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false, $show_inactive = false, $editkey = false, $async = false) {
@@ -475,10 +446,8 @@ JS
 		}
 		$where = $enabled ? array("disable_trans = 0") : array();
 		return combo_input($name, $selected_id, $sql, 'branch_code', 'br_name',
-			array('where' => $where, 'order' => array('branch_ref'), 'spec_option' => $spec_option === true
-					? _('All branches') : $spec_option,
-				'spec_id' => $all_items,
-				'select_submit' => $submit_on_change, 'sel_hint' => _('Select customer branch')));
+		                   array('where' => $where, 'order' => array('branch_ref'), 'spec_option' => $spec_option === true ? _('All branches') : $spec_option, 'spec_id' => $all_items,
+		                        'select_submit' => $submit_on_change, 'sel_hint' => _('Select customer branch')));
 	}
 
 	//------------------------------------------------------------------------------------------------
@@ -502,8 +471,7 @@ JS
 		global $all_items;
 		$sql = "SELECT loc_code, location_name, inactive FROM locations";
 		return combo_input($name, $selected_id, $sql, 'loc_code', 'location_name',
-			array('spec_option' => $all_option === true ? _("All Locations")
-					: $all_option, 'spec_id' => $all_items, 'select_submit' => $submit_on_change));
+		                   array('spec_option' => $all_option === true ? _("All Locations") : $all_option, 'spec_id' => $all_items, 'select_submit' => $submit_on_change));
 	}
 
 	function locations_list_cells($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false) {
@@ -548,13 +516,11 @@ JS
 		$sql = "SELECT * FROM fiscal_year";
 		// default to the company current fiscal year
 		return combo_input($name, $selected_id, $sql, 'id', '',
-			array('order' => 'begin', 'default' => get_company_pref('f_year'), 'format' => '_format_fiscalyears', 'select_submit' => $submit_on_change,
-				'async' => false));
+		                   array('order' => 'begin', 'default' => get_company_pref('f_year'), 'format' => '_format_fiscalyears', 'select_submit' => $submit_on_change, 'async' => false));
 	}
 
 	function _format_fiscalyears($row) {
-		return sql2date($row[1]) . "&nbsp;-&nbsp;" . sql2date($row[2]) . "&nbsp;&nbsp;" . ($row[3] ? _('Closed')
-				: _('Active')) . "</option>\n";
+		return sql2date($row[1]) . "&nbsp;-&nbsp;" . sql2date($row[2]) . "&nbsp;&nbsp;" . ($row[3] ? _('Closed') : _('Active')) . "</option>\n";
 	}
 
 	function fiscalyears_list_cells($label, $name, $selected_id = null) {
@@ -575,8 +541,7 @@ JS
 	//------------------------------------------------------------------------------------
 	function dimensions_list($name, $selected_id = null, $no_option = false, $showname = ' ', $submit_on_change = false, $showclosed = false, $showtype = 1) {
 		$sql = "SELECT id, CONCAT(reference,'  ',name) as ref FROM dimensions";
-		$options = array('order' => 'reference', 'spec_option' => $no_option ? $showname
-				: false, 'spec_id' => 0, 'select_submit' => $submit_on_change, 'async' => false,);
+		$options = array('order' => 'reference', 'spec_option' => $no_option ? $showname : false, 'spec_id' => 0, 'select_submit' => $submit_on_change, 'async' => false);
 		if (!$showclosed) {
 			$options['where'][] = "closed=0";
 		}
@@ -602,7 +567,8 @@ JS
 	}
 
 	//---------------------------------------------------------------------------------------------------
-	function stock_items_list($name,$selected_id = null,$all_option = false,$submit_on_change = false,$opts = array(),$editkey = false) { global $all_items;
+	function stock_items_list($name, $selected_id = null, $all_option = false, $submit_on_change = false, $opts = array(), $editkey = false) {
+		global $all_items;
 		return Item::addSearchBox($name, array_merge(array('selected' => $selected_id, 'cell' => true), $opts));
 		$sql = "SELECT stock_id, s.description, c.description, s.inactive, s.editable, s.long_description
 			FROM stock_master s,stock_category c WHERE s.category_id=c.category_id";
@@ -611,19 +577,9 @@ JS
 		}
 
 		return combo_input($name, $selected_id, $sql, 'stock_id', 's.description',
-			array_merge(array('format' => '_format_stock_items',
-					'spec_option' => $all_option === true ? _("All Items") : $all_option,
-					'spec_id' => $all_items,
-					'search_box' => true,
-					'search' => array("stock_id", "c.description", "s.description"),
-					'search_submit' => get_company_pref('no_item_list') != 0,
-					'size' => 10,
-					'select_submit' => $submit_on_change,
-					'category' => 2,
-					'order' => array('c.description', 'stock_id'),
-					'editable' => 30,
-					'max' => 50),
-				$opts));
+		                   array_merge(array('format' => '_format_stock_items', 'spec_option' => $all_option === true ? _("All Items") : $all_option, 'spec_id' => $all_items, 'search_box' => true,
+		                                    'search' => array("stock_id", "c.description", "s.description"), 'search_submit' => get_company_pref('no_item_list') != 0, 'size' => 10,
+		                                    'select_submit' => $submit_on_change, 'category' => 2, 'order' => array('c.description', 'stock_id'), 'editable' => 30, 'max' => 50), $opts));
 
 	}
 
@@ -664,19 +620,9 @@ JS;
 			FROM stock_master s, item_codes i LEFT JOIN stock_category c ON i.category_id=c.category_id
 			WHERE i.stock_id=s.stock_id $where AND !i.inactive AND !s.inactive AND !s.no_sale GROUP BY i.item_code";
 		return combo_input($name, $selected_id, $sql, 'i.item_code', 'c.description',
-			array_merge(array('format' => '_format_stock_items',
-					'spec_option' => $all_option === true ? _("All Items") : $all_option,
-					'spec_id' => $all_items,
-					'search_box' => true,
-					'search' => array("i.item_code", "c.description", "i.description"),
-					'search_submit' => get_company_pref('no_item_list') != 0,
-					'size' => 15,
-					'select_submit' => $submit_on_change,
-					'category' => 2,
-					'order' => array('c.description', 'i.item_code'),
-					'editable' => 30,
-					'max' => 50),
-				$opts));
+		                   array_merge(array('format' => '_format_stock_items', 'spec_option' => $all_option === true ? _("All Items") : $all_option, 'spec_id' => $all_items, 'search_box' => true,
+		                                    'search' => array("i.item_code", "c.description", "i.description"), 'search_submit' => get_company_pref('no_item_list') != 0, 'size' => 15,
+		                                    'select_submit' => $submit_on_change, 'category' => 2, 'order' => array('c.description', 'i.item_code'), 'editable' => 30, 'max' => 50), $opts));
 
 	}
 
@@ -745,8 +691,7 @@ JS;
 
 	//------------------------------------------------------------------------------------
 	function stock_purchasable_items_list($name, $selected_id = null, $all_option = false, $submit_on_change = false, $all = false, $editkey = false) {
-		return stock_items_list($name, $selected_id, $all_option, $submit_on_change,
-			array('where' => "mb_flag!= 'M'", 'show_inactive' => $all, 'editable' => false));
+		return stock_items_list($name, $selected_id, $all_option, $submit_on_change, array('where' => "mb_flag!= 'M'", 'show_inactive' => $all, 'editable' => false));
 	}
 
 	function stock_purchasable_items_list_cells($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false, $editkey = false) {
@@ -791,8 +736,7 @@ JS;
 	//------------------------------------------------------------------------------------
 	function tax_types_list($name, $selected_id = null, $none_option = false, $submit_on_change = false) {
 		$sql = "SELECT id, CONCAT(name, ' (',rate,'%)') as name FROM tax_types";
-		return combo_input($name, $selected_id, $sql, 'id', 'name',
-			array('spec_option' => $none_option, 'spec_id' => ALL_NUMERIC, 'select_submit' => $submit_on_change, 'async' => false,));
+		return combo_input($name, $selected_id, $sql, 'id', 'name', array('spec_option' => $none_option, 'spec_id' => ALL_NUMERIC, 'select_submit' => $submit_on_change, 'async' => false,));
 	}
 
 	function tax_types_list_cells($label, $name, $selected_id = null, $none_option = false, $submit_on_change = false) {
@@ -814,7 +758,7 @@ JS;
 	function tax_groups_list($name, $selected_id = null, $none_option = false, $submit_on_change = false) {
 		$sql = "SELECT id, name FROM tax_groups";
 		return combo_input($name, $selected_id, $sql, 'id', 'name',
-			array('order' => 'id', 'spec_option' => $none_option, 'spec_id' => ALL_NUMERIC, 'select_submit' => $submit_on_change, 'async' => false,));
+		                   array('order' => 'id', 'spec_option' => $none_option, 'spec_id' => ALL_NUMERIC, 'select_submit' => $submit_on_change, 'async' => false,));
 	}
 
 	function tax_groups_list_cells($label, $name, $selected_id = null, $none_option = false, $submit_on_change = false) {
@@ -877,8 +821,7 @@ JS;
 	//-------------------------------------------------------------------------------------
 	function sales_persons_list($name, $selected_id = null, $spec_opt = false) {
 		$sql = "SELECT salesman_code, salesman_name, inactive FROM salesman";
-		return combo_input($name, $selected_id, $sql, 'salesman_code', 'salesman_name',
-			array('order' => array('salesman_name'), 'spec_option' => $spec_opt, 'spec_id' => ALL_NUMERIC));
+		return combo_input($name, $selected_id, $sql, 'salesman_code', 'salesman_name', array('order' => array('salesman_name'), 'spec_option' => $spec_opt, 'spec_id' => ALL_NUMERIC));
 	}
 
 	function sales_persons_list_cells($label, $name, $selected_id = null, $spec_opt = false) {
@@ -899,8 +842,7 @@ JS;
 	//-------------------------------------------------------------------------------------
 	function user_list($name, $selected_id = null, $spec_opt = false) {
 		$sql = "SELECT id, real_name, inactive FROM users";
-		return combo_input($name, $selected_id, $sql, 'id', 'real_name',
-			array('order' => array('real_name'), 'spec_option' => $spec_opt, 'spec_id' => ALL_NUMERIC));
+		return combo_input($name, $selected_id, $sql, 'id', 'real_name', array('order' => array('real_name'), 'spec_option' => $spec_opt, 'spec_id' => ALL_NUMERIC));
 	}
 
 	function user_list_cells($label, $name, $selected_id = null, $spec_opt = false) {
@@ -942,9 +884,7 @@ JS;
 	//------------------------------------------------------------------------------------
 	function sales_groups_list($name, $selected_id = null, $special_option = false) {
 		$sql = "SELECT id, description, inactive FROM groups";
-		return combo_input($name, $selected_id, $sql, 'id', 'description',
-			array('spec_option' => $special_option === true ? ' '
-					: $special_option, 'order' => 'description', 'spec_id' => 0,));
+		return combo_input($name, $selected_id, $sql, 'id', 'description', array('spec_option' => $special_option === true ? ' ' : $special_option, 'order' => 'description', 'spec_id' => 0,));
 	}
 
 	function sales_groups_list_cells($label, $name, $selected_id = null, $special_option = false) {
@@ -972,8 +912,7 @@ JS;
 		FROM sales_orders as sorder, sales_order_details as line
 		WHERE sorder.order_no = line.order_no AND sorder.type = 1 GROUP BY line.order_no";
 		return combo_input($name, $selected_id, $sql, 'order_no', 'OrderValue',
-			array('format' => '_format_template_items', 'spec_option' => $special_option === true ? ' '
-					: $special_option, 'order' => 'order_no', 'spec_id' => 0,));
+		                   array('format' => '_format_template_items', 'spec_option' => $special_option === true ? ' ' : $special_option, 'order' => 'order_no', 'spec_id' => 0,));
 	}
 
 	function templates_list_cells($label, $name, $selected_id = null, $special_option = false) {
@@ -1015,8 +954,7 @@ JS;
 	//------------------------------------------------------------------------------------
 	function payment_terms_list($name, $selected_id = null, $disabled = null) {
 		if ($disabled === null) {
-			$disabled = (!$_SESSION['wa_current_user']->can_access
-			('SA_CUSTOMER_CREDIT'));
+			$disabled = (!$_SESSION['wa_current_user']->can_access('SA_CUSTOMER_CREDIT'));
 		}
 		$sql = "SELECT terms_indicator, terms, inactive FROM payment_terms";
 		return combo_input($name, $selected_id, $sql, 'terms_indicator', 'terms_indicator', array('disabled' => $disabled));
@@ -1040,8 +978,7 @@ JS;
 	//------------------------------------------------------------------------------------
 	function credit_status_list($name, $selected_id = null, $disabled = null) {
 		if ($disabled === null) {
-			$disabled = (!$_SESSION['wa_current_user']->can_access
-			('SA_CUSTOMER_CREDIT'));
+			$disabled = (!$_SESSION['wa_current_user']->can_access('SA_CUSTOMER_CREDIT'));
 		}
 		$sql = "SELECT id, reason_description, inactive FROM credit_status";
 		return combo_input($name, $selected_id, $sql, 'id', 'reason_description', array('disabled' => $disabled));
@@ -1066,10 +1003,8 @@ JS;
 	function sales_types_list($name, $selected_id = null, $submit_on_change = false, $special_option = false) {
 		$sql = "SELECT id, sales_type, inactive FROM sales_types";
 		return combo_input($name, $selected_id, $sql, 'id', 'sales_type',
-			array('spec_option' => $special_option === true ? _("All Sales Types")
-					: $special_option, 'spec_id' => 0, 'select_submit' => $submit_on_change,
-				//	  'async' => false,
-			));
+		                   array('spec_option' => $special_option === true ? _("All Sales Types") : $special_option, 'spec_id' => 0, 'select_submit' => $submit_on_change,//	  'async' => false,
+		                   ));
 	}
 
 	function sales_types_list_cells($label, $name, $selected_id = null, $submit_on_change = false, $special_option = false) {
@@ -1117,8 +1052,7 @@ JS;
 		$sql = "SELECT reconciled, reconciled FROM bank_trans
 		WHERE bank_act=" . db_escape($account) . " AND reconciled IS NOT NULL
 		GROUP BY reconciled";
-		return combo_input($name, $selected_id, $sql, 'id', 'reconciled',
-			array('spec_option' => $special_option, 'format' => '_format_date', 'spec_id' => '', 'select_submit' => $submit_on_change));
+		return combo_input($name, $selected_id, $sql, 'id', 'reconciled', array('spec_option' => $special_option, 'format' => '_format_date', 'spec_id' => '', 'select_submit' => $submit_on_change));
 	}
 
 	function bank_reconciliation_list_cells($label, $account, $name, $selected_id = null, $submit_on_change = false, $special_option = false) {
@@ -1142,8 +1076,7 @@ JS;
 	function workcenter_list($name, $selected_id = null, $all_option = false) {
 		global $all_items;
 		$sql = "SELECT id, name, inactive FROM workcentres";
-		return combo_input($name, $selected_id, $sql, 'id', 'name', array('spec_option' => $all_option === true
-					? _("All Suppliers") : $all_option, 'spec_id' => $all_items,));
+		return combo_input($name, $selected_id, $sql, 'id', 'name', array('spec_option' => $all_option === true ? _("All Suppliers") : $all_option, 'spec_id' => $all_items,));
 	}
 
 	function workcenter_list_cells($label, $name, $selected_id = null, $all_option = false) {
@@ -1207,7 +1140,7 @@ JS;
 		}
 		echo "<td>";
 		echo combo_input($name, $selected_id, $sql, 'id', 'pos_name',
-			array('select_submit' => $submit_on_change, 'async' => true, 'spec_option' => $spec_option, 'spec_id' => -1, 'order' => array('pos_name')));
+		                 array('select_submit' => $submit_on_change, 'async' => true, 'spec_option' => $spec_option, 'spec_id' => -1, 'order' => array('pos_name')));
 		echo "</td></tr>\n";
 
 	}
@@ -1248,7 +1181,7 @@ JS;
 	function stock_categories_list($name, $selected_id = null, $spec_opt = false, $submit_on_change = false) {
 		$sql = "SELECT category_id, description, inactive FROM stock_category";
 		return combo_input($name, $selected_id, $sql, 'category_id', 'description',
-			array('order' => 'category_id', 'spec_option' => $spec_opt, 'spec_id' => -1, 'select_submit' => $submit_on_change, 'async' => true));
+		                   array('order' => 'category_id', 'spec_option' => $spec_opt, 'spec_id' => -1, 'select_submit' => $submit_on_change, 'async' => true));
 	}
 
 	function stock_categories_list_cells($label, $name, $selected_id = null, $spec_opt = false, $submit_on_change = false) {
@@ -1270,8 +1203,7 @@ JS;
 	function gl_account_types_list($name, $selected_id = null, $all_option = false, $all_option_numeric = true) {
 		global $all_items;
 		$sql = "SELECT id, name FROM chart_types";
-		return combo_input($name, $selected_id, $sql, 'id', 'name', array('order' => 'id', 'spec_option' => $all_option, 'spec_id' => $all_option_numeric
-					? 0 : $all_items));
+		return combo_input($name, $selected_id, $sql, 'id', 'name', array('order' => 'id', 'spec_option' => $all_option, 'spec_id' => $all_option_numeric ? 0 : $all_items));
 	}
 
 	function gl_account_types_list_cells($label, $name, $selected_id = null, $all_option = false, $all_option_numeric = false) {
@@ -1296,17 +1228,15 @@ JS;
 			FROM (chart_master chart,chart_types type) " . "LEFT JOIN bank_accounts acc " . "ON chart.account_code=acc.account_code
 				WHERE acc.account_code  IS NULL
 			AND chart.account_type=type.id";
-		}
-		else {
+		} else {
 			$sql = "SELECT chart.account_code, chart.account_name, type.name, chart.inactive, type.id
 			FROM chart_master chart,chart_types type
 			WHERE chart.account_type=type.id";
 		}
 		return combo_input($name, $selected_id, $sql, 'chart.account_code', 'chart.account_name',
-			array('format' => '_format_account', 'type' => 2, 'spec_option' => $all_option === true
-					? _("Use Item Sales Accounts") : $all_option, 'spec_id' => '',
-				'order' => array('type.id', 'account_code'), 'search_box' => $cells, 'search_submit' => false, 'size' => 12, 'max' => 10, 'cells' => true,
-				'select_submit' => $submit_on_change, 'async' => false, 'category' => 2, 'show_inactive' => $all));
+		                   array('format' => '_format_account', 'type' => 2, 'spec_option' => $all_option === true ? _("Use Item Sales Accounts") : $all_option, 'spec_id' => '',
+		                        'order' => array('type.id', 'account_code'), 'search_box' => $cells, 'search_submit' => false, 'size' => 12, 'max' => 10, 'cells' => true,
+		                        'select_submit' => $submit_on_change, 'async' => false, 'category' => 2, 'show_inactive' => $all));
 
 	}
 
@@ -1355,8 +1285,7 @@ JS;
 	function languages_list($name, $selected_id = null) {
 		global $installed_languages;
 		$items = array();
-		foreach ($installed_languages as $lang)
-			$items[$lang['code']] = $lang['name'];
+		foreach ($installed_languages as $lang) $items[$lang['code']] = $lang['name'];
 		return array_selector($name, $selected_id, $items);
 	}
 
@@ -1483,8 +1412,7 @@ JS;
 	function pagesizes_list_row($label, $name, $value = null) {
 		global $pagesizes;
 		$items = array();
-		foreach ($pagesizes as $pz)
-			$items[$pz] = $pz;
+		foreach ($pagesizes as $pz) $items[$pz] = $pz;
 		echo "<tr><td class='label'>$label</td>\n<td>";
 		echo array_selector($name, $value, $items);
 		echo "</td></tr>\n";
@@ -1518,8 +1446,7 @@ JS;
 		echo "<td>";
 		$items = $systypes_array;
 		// exclude quotes, orders and dimensions
-		foreach (array(ST_PURCHORDER, ST_WORKORDER, ST_SALESORDER, ST_DIMENSION, ST_SALESQUOTE) as $excl)
-			unset($items[$excl]);
+		foreach (array(ST_PURCHORDER, ST_WORKORDER, ST_SALESORDER, ST_DIMENSION, ST_SALESQUOTE) as $excl) unset($items[$excl]);
 		echo array_selector($name, $value, $items, array('spec_option' => _("All"), 'spec_id' => -1, 'select_submit' => $submit_on_change, 'async' => false));
 		echo "</td>\n";
 	}
@@ -1530,8 +1457,8 @@ JS;
 			label_cell($label);
 		}
 		echo "<td>\n";
-		$allocs = array($all_items => _("All Types"), '1' => _("Sales Invoices"), '2' => _("Overdue Invoices"), '3' => _("Payments"), '4' => _("Credit Notes"),
-			'5' => _("Delivery Notes"), '6' => _("Invoices Only"));
+		$allocs = array($all_items => _("All Types"), '1' => _("Sales Invoices"), '2' => _("Overdue Invoices"), '3' => _("Payments"), '4' => _("Credit Notes"), '5' => _("Delivery Notes"),
+		                '6' => _("Invoices Only"));
 		echo array_selector($name, $selected, $allocs);
 		echo "</td>\n";
 	}
@@ -1540,7 +1467,7 @@ JS;
 		global $all_items;
 		echo "<td>\n";
 		$allocs = array($all_items => _("All Types"), '1' => _("Invoices"), '2' => _("Overdue Invoices"), '6' => _("Unpaid Invoices"), '3' => _("Payments"), '4' => _("Credit Notes"),
-			'5' => _("Overdue Credit Notes"));
+		                '5' => _("Overdue Credit Notes"));
 		echo array_selector($name, $selected, $allocs);
 		echo "</td>\n";
 	}
@@ -1565,8 +1492,7 @@ JS;
 			label_cell($label);
 		}
 		echo "<td>\n";
-		echo array_selector($name, $selected, array('Return' => _("Items Returned to Inventory Location"), 'WriteOff' => _("Items Written Off")),
-			array('select_submit' => $submit_on_change));
+		echo array_selector($name, $selected, array('Return' => _("Items Returned to Inventory Location"), 'WriteOff' => _("Items Written Off")), array('select_submit' => $submit_on_change));
 		echo "</td>\n";
 	}
 
@@ -1684,8 +1610,7 @@ JS;
 		global $all_items;
 		$sql = "SELECT id, role, inactive FROM security_roles";
 		return combo_input($name, $selected_id, $sql, 'id', 'description',
-			array('spec_option' => $new_item ? _("New role")
-					: false, 'spec_id' => '', 'select_submit' => $submit_on_change, 'show_inactive' => $show_inactive));
+		                   array('spec_option' => $new_item ? _("New role") : false, 'spec_id' => '', 'select_submit' => $submit_on_change, 'show_inactive' => $show_inactive));
 	}
 
 	function security_roles_list_cells($label, $name, $selected_id = null, $new_item = false, $submit_on_change = false, $show_inactive = false) {
@@ -1760,8 +1685,7 @@ JS;
 	function extset_list($name, $value = null, $submit_on_change = false) {
 		global $db_connections;
 		$items = array();
-		foreach ($db_connections as $comp)
-			$items[] = sprintf(_("Activated for '%s'"), $comp['name']);
+		foreach ($db_connections as $comp) $items[] = sprintf(_("Activated for '%s'"), $comp['name']);
 		return array_selector($name, $value, $items, array('spec_option' => _("Installed on system"), 'spec_id' => -1, 'select_submit' => $submit_on_change, 'async' => true));
 	}
 

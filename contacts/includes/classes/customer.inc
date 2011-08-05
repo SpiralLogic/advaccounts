@@ -51,8 +51,7 @@
 			}
 			if ($this->id != 0) {
 				$previous = new Customer($this->id);
-				if (($this->credit_limit != $previous->credit_limit || $this->payment_terms != $previous->payment_terms) && !$_SESSION['wa_current_user']->can_access
-				('SA_CUSTOMER_CREDIT')
+				if (($this->credit_limit != $previous->credit_limit || $this->payment_terms != $previous->payment_terms) && !$_SESSION['wa_current_user']->can_access('SA_CUSTOMER_CREDIT')
 				) {
 					$this->_status(false, 'Processing', "You don't have access to alter credit limits", 'credit_limit');
 					return false;
@@ -295,15 +294,13 @@
 			$sql = "SELECT id, name  FROM contacts WHERE parent_id=" . $this->id;
 			$result = db_query($sql, 'Couldn\'t retrieve any contacts');
 			if (!db_num_rows($result)) {
-				$contact = new Contact(
-					array("parent_id" => $this->id, "name" => $this->branches[$this->defaultBranch]->contact_name, "phone1" => $this->branches[$this->defaultBranch]->phone));
+				$contact = new Contact(array("parent_id" => $this->id, "name" => $this->branches[$this->defaultBranch]->contact_name, "phone1" => $this->branches[$this->defaultBranch]->phone));
 				if (strlen($contact->name) == 0) {
 					$contact->name = $this->name;
 				}
 				$contact->save();
 				$this->contacts[$contact->id] = $contact;
-			}
-			else {
+			} else {
 				while ($row = db_fetch_assoc($result)) {
 					$this->contacts[$row['id']] = new Contact($row['id']);
 				}
@@ -323,16 +320,16 @@
 		public function getEmailAddresses() {
 			$emails = array();
 			if (!empty($this->accounts->email)) {
-				$emails['Accounts'][$this->accounts->id] = array('Accounts',$this->accounts->email);
+				$emails['Accounts'][$this->accounts->id] = array('Accounts', $this->accounts->email);
 			}
 			foreach ($this->contacts as $id => $contact) {
-				if ($id>0 && !empty($contact->email)) {
-					$emails['Contacts'][$id] = array($contact->name,$contact->email);
+				if ($id > 0 && !empty($contact->email)) {
+					$emails['Contacts'][$id] = array($contact->name, $contact->email);
 				}
 			}
 			foreach ($this->branches as $id => $branch) {
-				if ($id>0&& !empty($branch->email)) {
-					$emails['Branches'][$id] = array($branch->name,$branch->email);
+				if ($id > 0 && !empty($branch->email)) {
+					$emails['Branches'][$id] = array($branch->name, $branch->email);
 				}
 			}
 			return (count($emails) > 0) ? $emails : false;
@@ -357,14 +354,13 @@
 		}
 
 		static function searchOrder($term, $options = array()) {
-			$defaults = array('inactive' => false,
-				'selected' => '');
+			$defaults = array('inactive' => false, 'selected' => '');
 			$o = array_merge($defaults, $options);
 			$term = explode(' ', $term);
 			$term1 = db_escape(trim($term[0]) . '%');
 			$term2 = db_escape('%' . implode(' AND name LIKE ', array_map(function($v) {
-							return trim($v);
-						}, $term)) . '%');
+					                                                  return trim($v);
+				                                                  }, $term)) . '%');
 			$where = ($o['inactive'] ? '' : ' AND inactive = 0 ');
 			$sql = "(SELECT debtor_no as id, name as label, debtor_no as value, name as description FROM debtors_master WHERE name LIKE $term1 $where ORDER BY name LIMIT 20)
 						UNION (SELECT debtor_no as id, name as label, debtor_no as value, name as description FROM debtors_master

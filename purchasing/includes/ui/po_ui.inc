@@ -299,13 +299,13 @@ function po_item_controls(&$order, $stock_id = null)
 			$Ajax->activate('req_del_date');
 			$Ajax->activate('line_total');
 		}
-		$item_info = get_item_edit_info($_POST['stock_id']);
+			$item_info = get_item_edit_info(@$_POST['stock_id']);
 		$_POST['units'] = $item_info["units"];
 		$_POST['item_description'] = $item_info['item_description'];
 		$dec = $item_info["decimals"]; 
-		$_POST['qty'] = number_format2(get_purchase_conversion_factor($order->supplier_id, $_POST['stock_id']), $dec);
-		//$_POST['price'] = price_format(get_purchase_price ($order->supplier_id, $_POST['stock_id']));
-		$_POST['price'] = price_decimal_format(get_purchase_price($order->supplier_id, $_POST['stock_id']), $dec2);
+			$_POST['qty'] = number_format2(get_purchase_conversion_factor($order->supplier_id, @$_POST['stock_id']), $dec);
+			//$_POST['price'] = price_format(get_purchase_price ($order->supplier_id, $_POST['stock_id']));
+			$_POST['price'] = price_decimal_format(get_purchase_price($order->supplier_id, @$_POST['stock_id']), $dec2);
 		$_POST['req_del_date'] = add_days(Today(), 10);
 		$_POST['discount'] = percent_format(0);
 		$qty_rcvd = '';
@@ -331,6 +331,7 @@ function po_item_controls(&$order, $stock_id = null)
 		submit_cells('EnterLine', _("Add Item"), "colspan=2",
 					 _('Add new item to document'), true);
 	}
+
 	end_row();
 
 }

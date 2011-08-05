@@ -74,18 +74,9 @@
 		}
 
 		static function searchLine($id, $url = '#', $options = array()) {
-			$defaults = array('description' => false,
-				'disabled' => false,
-				'editable' => true,
-				'selected' => '',
-				'cell' => false,
-				'inactive' => false,
-				'js' => '',
-				'sales_type' => 1,
-				'no_sale' => false,
-				'select' => false,
-				'type' => 'local',
-				'where' => '');
+			$defaults =
+					array('description' => false, 'disabled' => false, 'editable' => true, 'selected' => '', 'cell' => false, 'inactive' => false, 'js' => '', 'sales_type' => 1, 'no_sale' => false,
+					      'select' => false, 'type' => 'local', 'where' => '');
 
 			$o = array_merge($defaults, $options);
 			$_SESSION['options'][$id] = $o;
@@ -147,7 +138,7 @@
                         }});
                      return  function () {return \$$id.catcomplete('destroy').focus() };
 JS
-			);
+);
 			return HTML::setReturn(false);
 		}
 

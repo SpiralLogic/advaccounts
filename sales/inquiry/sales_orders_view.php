@@ -121,73 +121,8 @@
 		return pager_link(_("Edit"), "/sales/sales_order_entry.php?$modify=" . $row['order_no'], ICON_EDIT);
 	}
 
-	$emailBoxEmails = array();
 	function email_link($row) {
-		static $first = true;
-		global $emailBoxEmails;
-		//if ($row['type'] != ST_CUSTPAYMENT && $row['type'] != ST_CUSTREFUND &&
-		//$row['type'] != ST_BANKDEPOSIT) // customer payment or bank deposit printout not defined yet.
-
-		$debtor = $row['debtor_no'];
-		$trans = $row['trans_no'];
-		$type = $row['type'];
-		$id = $debtor . '-' . $type . '-' . $trans;
-		if (empty($row['debtor_no']) || isset($emailBoxEmails [$id])) {
-			return;
-		}
-		$customer = new Customer($debtor);
-		$emails = $customer->getEmailAddresses();
-
-		if (!$emails) {
-			return $emailBoxEmails [$id] = '';
-		}
-		switch ($type) {
-			case ST_CUSTDELIVERY:
-				$text = "Delivery Notice";
-				break;
-			case ST_SALESINVOICE:
-				$text = "Tax Invoice";
-				break;
-			case ST_CUSTPAYMENT:
-				$text = "Payment Receipt";
-				break;
-			case ST_CUSTREFUND:
-				$text = "Refund Receipt";
-				break;
-			case ST_CUSTCREDIT:
-				$text = "Credit Note";
-				break;
-		}
-
-		$emailBoxEmails[$id] = submenu_email(_("Email This ") . $text, $type, $trans, null, $emails, 0, true);
-
-		if ($first) {
-			$emailBox = new Dialog('Select Email Address:', 'emailBox', '');
-			$emailBox->addButtons(array('Email' => '$("#EmailButton").trigger("click")', 'Close' => '$(this).dialog("close");'));
-			$emailBox->setOptions(array('autoopen' => false, 'modal' => true, 'width' => '"500"', 'height' => '"300"', 'resizeable' => false));
-			$emailBox->show();
-			$action = <<<JS
-	var emailID= $(this).data('emailid');
-	\$emailBox.html(emailBoxEmails[emailID]);
-	\$emailBox.dialog('open');
-	$('#EmailButton').button().click(function() {
-		Adv.loader.show();
-		var email = $("#EmailSelect").val();
-		$.get($(this).data('url') + "&Email="+email,function(responce) {
-			$('#msgbox').append(responce);
-			\$emailBox.dialog('close');
-			Adv.loader.hide();
-		});
-	});
-	return false;
-JS;
-			JS::addLiveEvent('.email-button', 'click', $action, '#wrapper');
-
-			$first = false;
-		}
-		ob_start();
-		UI::button(false, 'Email', array('class' => 'button email-button', 'data-emailid' => $id));
-		return ob_get_clean();
+		return UI::emailDialogue('c', $row['debtor_no'] . '-' . $row['trans_type'] . '-' . $row['order_no']);
 	}
 
 	function dispatch_link($row) {
@@ -297,9 +232,11 @@ JS;
 		sorder.order_no,
 		sorder.trans_type,
 		sorder.reference,
-		debtor.debtor_no,
 		debtor.name,
-		branch.br_name," . ($_POST['order_view_mode'] == 'InvoiceTemplates' || $_POST['order_view_mode'] == 'DeliveryTemplates' ? "sorder.comments, " : "sorder.customer_ref, ") . "sorder.ord_date,
+		debtor.debtor_no,
+		branch.br_name," . ($_POST['order_view_mode'] == 'InvoiceTemplates' ||
+			$_POST['order_view_mode'] == 'DeliveryTemplates' ? "sorder.comments, "
+			: "sorder.customer_ref, ") . "sorder.ord_date,
 		sorder.delivery_date,
 		sorder.deliver_to,
 		Sum(line.unit_price*line.quantity*(1-line.discount_percent))+freight_cost AS OrderValue,
@@ -357,7 +294,9 @@ JS;
 				sorder.deliver_to";
 	}
 	else { // ... or select inquiry constraints
-		if ($_POST['order_view_mode'] != 'DeliveryTemplates' && $_POST['order_view_mode'] != 'InvoiceTemplates' && !isset($_POST['ajaxsearch'])) {
+		if ($_POST['order_view_mode'] != 'DeliveryTemplates' && $_POST['order_view_mode'] != 'InvoiceTemplates' && !isset(
+		$_POST['ajaxsearch'])
+		) {
 			$date_after = date2sql($_POST['OrdersAfterDate']);
 			$date_before = date2sql($_POST['OrdersToDate']);
 			$sql .= " AND sorder.ord_date >= '$date_after'" . " AND sorder.ord_date <= '$date_before'";
@@ -391,8 +330,11 @@ JS;
 				sorder.deliver_to";
 	}
 	if ($trans_type == ST_SALESORDER) {
-		$cols = array(_("Order #") => array('fun' => 'view_link', 'ord' => 'desc'), array('type' => 'skip'),
-			_("Ref") => array('ord' => ''), _("Customer") => array('ord' => ''),
+		$cols = array(_("Order #") => array('fun' => 'view_link', 'ord' => 'desc'),
+			array('type' => 'skip'),
+			_("Ref") => array('ord' => ''),
+			_("Customer") => array('ord' => ''),
+			array('type' => 'skip'),
 			_("Branch") => array('ord' => ''),
 			_("Customer PO#") => array('ord' => ''),
 			_("Order Date") => array('type' => 'date', 'ord' => ''),
@@ -403,9 +345,12 @@ JS;
 			_("Currency") => array('align' => 'center'));
 	}
 	else {
-		$cols = array(_("Quote #") => array('fun' => 'view_link', 'ord' => 'desc'), array('type' => 'skip'),
+		$cols = array(
+			_("Quote #") => array('fun' => 'view_link', 'ord' => 'desc'),
+			array('type' => 'skip'),
 			_("Ref") => array('ord' => ''),
 			_("Customer") => array('ord' => ''),
+			array('type' => 'skip'),
 			_("Branch") => array('ord' => ''),
 			_("Customer PO#") => array('ord' => ''),
 			_("Quote Date") => array('type' => 'date', 'ord' => ''),
@@ -431,14 +376,18 @@ JS;
 		}
 		elseif ($trans_type == ST_SALESQUOTE) {
 			array_append($cols,
-				array(array('insert' => true, 'fun' => 'edit_link'),
+				array(array('insert' => true,'type' => 'skip'),
+					array('insert' => true,'type' => 'skip'),
+					array('insert' => true, 'fun' => 'edit_link'),
 					array('insert' => true, 'fun' => 'order_link'),
 					array('insert' => true, 'fun' => 'email_link'),
-					array('insert' => true, 'fun' => 'prt_link')));
+					array('insert' => true, 'fun' => 'prt_link'))
+			);
 		}
 		elseif ($trans_type == ST_SALESORDER) {
 			array_append($cols,
-				array(_("Tmpl") => array('insert' => true, 'fun' => 'tmpl_checkbox'),
+				array(
+					_("Tmpl") => array('type' => 'skip', 'insert' => true, 'fun' => 'tmpl_checkbox'),
 					array('insert' => true, 'fun' => 'edit_link'),
 					array('insert' => true, 'fun' => 'email_link'),
 					array('insert' => true, 'fun' => 'prt_link2'),
@@ -450,8 +399,6 @@ JS;
 	$table->set_marker('check_overdue', _("Marked items are overdue."));
 	$table->width = "80%";
 	display_db_pager($table);
-	JS::beforeload('var emailBoxEmails=' . json_encode($emailBoxEmails) . ';');
-
 	submit_center('Update', _("Update"), true, '', null);
 	end_form();
 	end_page();

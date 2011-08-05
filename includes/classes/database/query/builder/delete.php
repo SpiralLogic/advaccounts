@@ -10,74 +10,79 @@
  */
 
 
-	class Database_Query_Builder_Delete extends Database_Query_Builder_Where {
+class Database_Query_Builder_Delete extends Database_Query_Builder_Where
+{
 
-		// DELETE FROM ...
-		protected $_table;
+	// DELETE FROM ...
+	protected $_table;
 
-		/**
-		 * Set the table for a delete.
-		 *
-		 * @param   mixed  table name or array($table, $alias) or object
-		 * @return  void
-		 */
-		public function __construct($table = NULL) {
-			if ($table) {
-				// Set the inital table name
-				$this->_table = $table;
-			}
-
-			// Start the query with no SQL
-			return parent::__construct('', DB::DELETE);
-		}
-
-		/**
-		 * Sets the table to delete from.
-		 *
-		 * @param   mixed  table name or array($table, $alias) or object
-		 * @return  $this
-		 */
-		public function table($table) {
+	/**
+	 * Set the table for a delete.
+	 *
+	 * @param   mixed  table name or array($table, $alias) or object
+	 * @return  void
+	 */
+	public function __construct($table = NULL)
+	{
+		if ($table) {
+			// Set the inital table name
 			$this->_table = $table;
-
-			return $this;
 		}
 
-		/**
-		 * Compile the SQL query and return it.
-		 *
-		 * @param   object  Database instance
-		 * @return  string
-		 */
-		public function compile(Database_Connection$db) {
-			// Start a deletion query
-			$query = 'DELETE FROM ' . $db->quote_table($this->_table);
+		// Start the query with no SQL
+		return parent::__construct('', DB::DELETE);
+	}
 
-			if (!empty($this->_where)) {
-				// Add deletion conditions
-				$query .= ' WHERE ' . $this->_compile_conditions($db, $this->_where);
-			}
+	/**
+	 * Sets the table to delete from.
+	 *
+	 * @param   mixed  table name or array($table, $alias) or object
+	 * @return  $this
+	 */
+	public function table($table)
+	{
+		$this->_table = $table;
 
-			if (!empty($this->_order_by)) {
-				// Add sorting
-				$query .= ' ' . $this->_compile_order_by($db, $this->_order_by);
-			}
+		return $this;
+	}
 
-			if ($this->_limit !== NULL && substr($db->_db_type, 0, 6) !== 'sqlite') {
-				// Add limiting
-				$query .= ' LIMIT ' . $this->_limit;
-			}
+	/**
+	 * Compile the SQL query and return it.
+	 *
+	 * @param   object  Database instance
+	 * @return  string
+	 */
+	public function compile(Database_Connection$db)
+	{
+		// Start a deletion query
+		$query = 'DELETE FROM ' . $db->quote_table($this->_table);
 
-			return $query;
+		if (!empty($this->_where)) {
+			// Add deletion conditions
+			$query .= ' WHERE ' . $this->_compile_conditions($db, $this->_where);
 		}
 
-		public function reset() {
-			$this->_table = NULL;
-			$this->_where = array();
-
-			$this->_parameters = array();
-
-			return $this;
+		if (!empty($this->_order_by)) {
+			// Add sorting
+			$query .= ' ' . $this->_compile_order_by($db, $this->_order_by);
 		}
 
-	} // End Database_Query_Builder_Delete
+		if ($this->_limit !== NULL && substr($db->_db_type, 0, 6) !== 'sqlite') {
+			// Add limiting
+			$query .= ' LIMIT ' . $this->_limit;
+		}
+
+		return $query;
+	}
+
+	public function reset()
+	{
+		$this->_table = NULL;
+		$this->_where = array();
+
+		$this->_parameters = array();
+
+		return $this;
+	}
+
+} // End Database_Query_Builder_Delete

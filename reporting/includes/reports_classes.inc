@@ -38,32 +38,22 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 			$st_reports = "";
 			$st_params = "";
 			$st_classes = "<b>" . _("Report Classes:") . "</b><br>";
-			foreach ($this->ar_classes as $key => $value)
-			{
+			foreach ($this->ar_classes as $key => $value) {
 				$style = $class_counter == $_REQUEST['Class'] ? '' : "style='display:none'";
 				$acc = access_string($key);
-				$st_classes .= "<a href='"
-						. $_SERVER['PHP_SELF'] . "?Class=$class_counter'"
-						. " class='menu_option' id='" . default_focus() . "'"
-						. " onclick='return showClass($class_counter);'$acc[1]>$acc[0]</a> <br>";
+				$st_classes .= "<a href='" . $_SERVER['PHP_SELF'] . "?Class=$class_counter'" . " class='menu_option' id='" . default_focus() . "'" . " onclick='return showClass($class_counter);'$acc[1]>$acc[0]</a> <br>";
 				$st_reports .= "<table id='TAB_" . $class_counter . "' $style cellpadding=0 cellspacing=0 width='100%'><tr><td><b>" . _("Reports For Class: ") . "&nbsp;$key</b></td></tr>\n";
-				foreach ($value as $report)
-				{
+				foreach ($value as $report) {
 					$acc = access_string($report->name);
-					$st_reports .= "<tr><td><a class='printlink' href='"
-							. $_SERVER['PHP_SELF'] . "?Class=$class_counter&rep_id=$report->id'"
-							. " id='" . default_focus() . "'"
-							. "$acc[1]>$acc[0]</a><tr><td>\n";
+					$st_reports .= "<tr><td><a class='printlink' href='" . $_SERVER['PHP_SELF'] . "?Class=$class_counter&rep_id=$report->id'" . " id='" . default_focus() . "'" . "$acc[1]>$acc[0]</a><tr><td>\n";
 					if (isset($_REQUEST['rep_id']) && $_REQUEST['rep_id'] == $report->id) {
 
 						$action = $path_to_root . '/reporting/prn_redirect.php';
 
-						$st_params = "<table><tr><td>\n"
-								. "<form method='POST' action='$action' target='_blank'>\n";
-						$st_params .= submit('Rep' . $report->id,
-								_("Display: ") . access_string($report->name, true),
-							false, '', $pdf_debug ? false
-									: 'default process') . hidden('REP_ID', $report->id, false) . '<br><br>';
+						$st_params = "<table><tr><td>\n" . "<form method='POST' action='$action' target='_blank'>\n";
+						$st_params .= submit('Rep' . $report->id, _("Display: ") . access_string($report->name, true), false, '', $pdf_debug ? false : 'default process') . hidden('REP_ID',
+						                                                                                                                                                           $report->id,
+						                                                                                                                                                           false) . '<br><br>';
 						$st_params .= $this->getOptions($report->get_controls());
 						$st_params .= "\n</form></td></tr></table>\n";
 						set_focus('Rep' . $report->id);
@@ -74,8 +64,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 				$class_counter++;
 			}
 
-			$st_params = "<div id='rep_form'>" .
-					"$st_params</div>";
+			$st_params = "<div id='rep_form'>" . "$st_params</div>";
 
 			$st = "<script language='javascript'>
 					function showClass(pClass) {
@@ -111,8 +100,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 			}
 
 			$cnt = 0;
-			foreach ($controls as $title => $type)
-			{
+			foreach ($controls as $title => $type) {
 				$ctrl = '';
 				foreach ($this->ctrl_handlers as $fun) { // first check for non-standard controls
 					call_user_func($fun, 'PARAM_' . $cnt, $type);
@@ -150,13 +138,10 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 			global $path_to_root, $use_date_picker, $pdf_debug, $print_invoice_no, $def_print_destination;
 
 			$st = '';
-			switch ($type)
-			{
+			switch ($type) {
 				case 'CURRENCY':
 					$sql = "SELECT curr_abrev, concat(curr_abrev,' - ', currency) AS name FROM currencies";
-					return combo_input($name, '', $sql, 'curr_abrev', 'name',
-						array('spec_option' => _("No Currency Filter"), 'spec_id' => ALL_TEXT,
-							'order' => false));
+					return combo_input($name, '', $sql, 'curr_abrev', 'name', array('spec_option' => _("No Currency Filter"), 'spec_id' => ALL_TEXT, 'order' => false));
 
 				case 'DATE':
 				case 'DATEBEGIN':
@@ -165,44 +150,33 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 				case 'DATEENDM':
 				case 'DATEBEGINTAX':
 				case 'DATEENDTAX':
-				if ($type == 'DATEBEGIN') {
-					$date = begin_fiscalyear();
-				}
-				elseif ($type == 'DATEEND')
-				{
-					$date = end_fiscalyear();
-				}
-				else
-				{
-					$date = Today();
-				}
-				if ($type == 'DATEBEGINM') {
-					$date = begin_month($date);
-				}
-				elseif ($type == 'DATEENDM')
-				{
-					$date = end_month($date);
-				}
-				elseif ($type == 'DATEBEGINTAX' || $type == 'DATEENDTAX')
-				{
-					$row = get_company_prefs();
-					$edate = add_months($date, -$row['tax_last']);
-					$edate = end_month($edate);
-					if ($type == 'DATEENDTAX') {
-						$date = $edate;
+					if ($type == 'DATEBEGIN') {
+						$date = begin_fiscalyear();
+					} elseif ($type == 'DATEEND') {
+						$date = end_fiscalyear();
+					} else {
+						$date = Today();
 					}
-					else
-					{
-						$bdate = begin_month($edate);
-						$bdate = add_months($bdate, -$row['tax_prd'] + 1);
-						$date = $bdate;
+					if ($type == 'DATEBEGINM') {
+						$date = begin_month($date);
+					} elseif ($type == 'DATEENDM') {
+						$date = end_month($date);
+					} elseif ($type == 'DATEBEGINTAX' || $type == 'DATEENDTAX') {
+						$row = get_company_prefs();
+						$edate = add_months($date, -$row['tax_last']);
+						$edate = end_month($edate);
+						if ($type == 'DATEENDTAX') {
+							$date = $edate;
+						} else {
+							$bdate = begin_month($edate);
+							$bdate = add_months($bdate, -$row['tax_prd'] + 1);
+							$date = $bdate;
+						}
 					}
-				}
 
 					$st = "<input type='text' name='$name' value='$date'>";
 					if ($use_date_picker) {
-						$st .= "<a href=\"javascript:date_picker(document.forms[0].$name);\">"
-								. "	<img src='$path_to_root/themes/default/images/cal.gif' width='16' height='16' border='0' alt='" . _('Click Here to Pick up the date') . "'></a>\n";
+						$st .= "<a href=\"javascript:date_picker(document.forms[0].$name);\">" . "	<img src='$path_to_root/themes/default/images/cal.gif' width='16' height='16' border='0' alt='" . _('Click Here to Pick up the date') . "'></a>\n";
 					}
 					return $st;
 					break;
@@ -227,8 +201,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 					return array_selector($name, null, $sel);
 
 				case 'GRAPHIC':
-					$sel = array(_("No Graphics"), _("Vertical bars"), _("Horizontal bars"),
-						_("Dots"), _("Lines"), _("Pie"), _("Donut"));
+					$sel = array(_("No Graphics"), _("Vertical bars"), _("Horizontal bars"), _("Dots"), _("Lines"), _("Pie"), _("Donut"));
 					return array_selector($name, null, $sel);
 
 				case 'SYS_TYPES':
@@ -279,13 +252,10 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 				case 'CUSTOMERS':
 					$sql = "SELECT debtor_no, name FROM debtors_master";
 					if ($type == 'CUSTOMERS_NO_FILTER') {
-						return combo_input($name, '', $sql, 'debtor_no', 'name',
-							array('spec_option' => _("No Customer Filter"), 'spec_id' => ALL_NUMERIC));
-					}
-						// FIX allitems numeric!
+						return combo_input($name, '', $sql, 'debtor_no', 'name', array('spec_option' => _("No Customer Filter"), 'spec_id' => ALL_NUMERIC));
+					} // FIX allitems numeric!
 						//						return customer_list($name, null, _("No Customer Filter"));
-					else
-					{
+					else {
 						return combo_input($name, '', $sql, 'debtor_no', 'name', null);
 					}
 				//						return customer_list($name);
@@ -294,13 +264,10 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 				case 'SUPPLIERS':
 					$sql = "SELECT supplier_id, supp_name FROM suppliers";
 					if ($type == 'SUPPLIERS_NO_FILTER') {
-						return combo_input($name, '', $sql, 'supplier_id', 'supp_name',
-							array('spec_option' => _("No Supplier Filter"), 'spec_id' => ALL_NUMERIC));
-					}
-						// FIX allitems numeric!
+						return combo_input($name, '', $sql, 'supplier_id', 'supp_name', array('spec_option' => _("No Supplier Filter"), 'spec_id' => ALL_NUMERIC));
+					} // FIX allitems numeric!
 						//						return supplier_list($name, null, _("No Supplier Filter"));
-					else
-					{
+					else {
 						return combo_input($name, '', $sql, 'supplier_id', 'supp_name', null);
 					}
 				//						return supplier_list($name);
@@ -320,8 +287,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 					concat(debtor_trans.trans_no, '-', debtor_trans.type) AS TNO, concat(debtor_trans.trans_no, ' $DN ',
 					 debtors_master.name) as IName
 						FROM debtors_master, debtor_trans
-						WHERE type=" . ST_CUSTDELIVERY . " AND debtors_master.debtor_no=" .
-							"debtor_trans.debtor_no ORDER BY debtor_trans.trans_no DESC";
+						WHERE type=" . ST_CUSTDELIVERY . " AND debtors_master.debtor_no=" . "debtor_trans.debtor_no ORDER BY debtor_trans.trans_no DESC";
 					return combo_input($name, '', $sql, 'TNO', 'IName', array('order' => false));
 
 				case 'ORDERS':
@@ -374,8 +340,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 					$sql = "SELECT concat(debtor_trans.trans_no, '-',
 						debtor_trans.type) AS TNO, concat(debtor_trans.$ref, if (type=" . ST_BANKDEPOSIT . ", ' $BD ', if (type=" . ST_CUSTREFUND . ",
 						' $CP ', ' $CN ')), debtors_master.name) as IName
-						FROM debtors_master, debtor_trans WHERE (type=" . ST_CUSTREFUND . ") AND debtors_master.debtor_no=" .
-							"debtor_trans.debtor_no ORDER BY debtor_trans.trans_no DESC";
+						FROM debtors_master, debtor_trans WHERE (type=" . ST_CUSTREFUND . ") AND debtors_master.debtor_no=" . "debtor_trans.debtor_no ORDER BY debtor_trans.trans_no DESC";
 					return combo_input($name, '', $sql, 'TNO', 'IName', array('order' => false));
 				case 'ITEMS':
 					return stock_manufactured_items_list($name);
@@ -406,25 +371,21 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 
 				case 'USERS':
 					$sql = "SELECT id, user_id FROM users";
-					return combo_input($name, '', $sql, 'id', 'user_id',
-						array('spec_option' => _("No Users Filter"), 'spec_id' => ALL_NUMERIC));
+					return combo_input($name, '', $sql, 'id', 'user_id', array('spec_option' => _("No Users Filter"), 'spec_id' => ALL_NUMERIC));
 
 				case 'ACCOUNTTAGS':
 				case 'DIMENSIONTAGS':
-				if ($type == 'ACCOUNTTAGS') {
-					$tag_type = TAG_ACCOUNT;
-				}
-				else
-				{
-					$tag_type = TAG_DIMENSION;
-				}
+					if ($type == 'ACCOUNTTAGS') {
+						$tag_type = TAG_ACCOUNT;
+					} else {
+						$tag_type = TAG_DIMENSION;
+					}
 					return tag_list($name, 5, $tag_type, true, _("No tags"));
 
 			}
 			return '';
 		}
 	}
-
 
 
 	class Report {
@@ -454,24 +415,15 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	}
 
 
-
 	//------------------------------------------------------------------------------------------------
 	function gl_systypes_list($name, $value = null, $spec_opt = false) {
 		global $systypes_array;
 
 		$types = $systypes_array;
 
-		foreach (array(ST_LOCTRANSFER, ST_PURCHORDER, ST_SUPPRECEIVE, ST_MANUISSUE,
-			         ST_MANURECEIVE, ST_SALESORDER, ST_SALESQUOTE, ST_DIMENSION) as $type)
-			unset($types[$type]);
+		foreach (array(ST_LOCTRANSFER, ST_PURCHORDER, ST_SUPPRECEIVE, ST_MANUISSUE, ST_MANURECEIVE, ST_SALESORDER, ST_SALESQUOTE, ST_DIMENSION) as $type) unset($types[$type]);
 
-		return array_selector($name, $value, $types,
-			array(
-				'spec_option' => $spec_opt,
-				'spec_id' => ALL_NUMERIC,
-				'async' => false,
-			)
-		);
+		return array_selector($name, $value, $types, array('spec_option' => $spec_opt, 'spec_id' => ALL_NUMERIC, 'async' => false,));
 	}
 
 	function add_custom_reports(&$reports) {
@@ -480,13 +432,12 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		// include reports installed inside extension modules
 		if (count($installed_extensions) > 0) {
 			$extensions = $installed_extensions;
-			foreach ($extensions as $ext)
-				if (($ext['active'] && $ext['type'] == 'module')) {
-					$file = $path_to_root . '/' . $ext['path'] . "/reporting/reports_custom.php";
-					if (file_exists($file)) {
-						include_once($file);
-					}
+			foreach ($extensions as $ext) if (($ext['active'] && $ext['type'] == 'module')) {
+				$file = $path_to_root . '/' . $ext['path'] . "/reporting/reports_custom.php";
+				if (file_exists($file)) {
+					include_once($file);
 				}
+			}
 		}
 		$file = $comp_path . "/reporting/reports_custom.php";
 		if (file_exists($file)) {

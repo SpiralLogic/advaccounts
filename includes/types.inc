@@ -49,7 +49,7 @@ define('ST_DIMENSION', 40);
 define ('ST_STATEMENT', 91);
 define ('ST_CHEQUE', 92);
 
-$systypes_array = array(
+$systypes_array =Config::set('systypes_array',array(
 	ST_JOURNAL => _("Journal Entry"),
 	ST_BANKPAYMENT => _("Bank Payment"),
 	ST_BANKDEPOSIT => _("Bank Deposit"),
@@ -75,7 +75,7 @@ $systypes_array = array(
 	ST_PROFORMA => _("Sales Proforma Invoice"),
 	ST_COSTUPDATE => _("Cost Update"),
 	ST_DIMENSION => _("Dimension")
-);
+));
 
 //----------------------------------------------------------------------------------
 //		Bank transaction types
