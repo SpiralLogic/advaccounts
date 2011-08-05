@@ -14,15 +14,14 @@
    include_once(APP_PATH."reporting/includes/tcpdf.php");
    $_POST = $_GET;
    if (AJAX_REFERRER) {
-      if (isset($_GET['type']) && isset($_GET['id'])) {
-         if ($_GET['type']==='c') {
-            echo Customer::getEmailDialogue($_GET['id']);
+      if (isset($_POST['type']) && isset($_POST['id'])) {
+         if ($_POST['type']==='c') {
+            $content = Customer::getEmailDialogue($_POST['id']);
+	         if ($content===false) {
+	         echo HTML::h3(null,'No email addresses available.',array('class'=>'center bold top40 font15'),false);
+	         }
+	         echo $content;
          }
       }
-      exit();
-   }   page(_($help_context = "Customer Transactions"), false, false, "");
 
-   $row = array ('debtor_no'=>5901,'type'=>10,'trans_no'=>2442);
-   
-   UI::emailDialogue('c', $row['debtor_no'] . '-' . $row['type'] . '-' . $row['trans_no']);
-end_page();
+   }        exit();

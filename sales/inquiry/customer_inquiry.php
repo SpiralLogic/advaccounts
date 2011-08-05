@@ -307,7 +307,6 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
    $table->set_marker('check_overdue', _("Marked items are overdue."));
    $table->width = "80%";
    display_db_pager($table);
-   JS::beforeload('var emailBoxEmails=' . json_encode($emailBoxEmails) . ';');
    end_form();
    end_page();
 
