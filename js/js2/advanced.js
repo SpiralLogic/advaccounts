@@ -23,45 +23,37 @@ $.widget("custom.catcomplete", $.ui.autocomplete, {
 	};
 	(function() {
 		var extender = jQuery.extend, toInit = [];
-		Adv.loader.hide().prependTo(Adv.$content).ajaxStart(
-				function() {
-					$(this).show()
-				}).ajaxStop(function() {
-					            $(this).hide()
-				            });
-		this.extend = function(object) {
-			extender(Adv, object);
-		};
-
+		Adv.loader
+				.prependTo(Adv.$content).hide()
+				.ajaxStart(function() { $(this).show() })
+				.ajaxStop(function() { $(this).hide() });
+				this.extend = function(object) { extender(Adv, object)};
 	}).apply(Adv);
 	window.Adv = Adv;
 })(window);
 Adv.extend({
 	           msgbox: $('#msgbox').ajaxError(function(event, request, settings) {
 
-		           if (typeof request == 'String') {
 			           var status = {
 				           status: false,
-				           message: "Request failed: " + String(request) + "<br>"
+				           message: "Request failed: " + settings.url + "<br>"
 			           };
+			       console.log(settings);
+			       			               Adv.showStatus(status);
 
-			           Adv.showStatus(status);
-		           }
 	           }),
 	           showStatus:function (status) {
 		           Adv.msgbox.empty();
-		           if (status.status) {
-			           Adv.msgbox.attr('class', 'note_msg').html(status.message);
-		           } else {
-			           Adv.msgbox.attr('class', 'err_msg').html(status.message);
-		           }
+		           status.class =(status.status) ? 'note_msg':'err_msg';
+		           Adv.msgbox.attr('class', status.class).html(status.message);
 	           },
 	           setFormValue: function (id, value, disabled) {
 		           var el = $('[name="' + id + '"]');
 		           if (!el.length) {
 			           el = $('#' + id);
-		           }
-		           if (disabled === true || disabled === false) {
+		           };
+		           $.is
+		           if (typeof disabled === 'boolean') {
 			           el.prop('disabled', disabled);
 		           }
 		           if (el.is('select')) {
@@ -104,7 +96,7 @@ Adv.extend({
 					           }
 				           });
 			           },
-			        
+
 			           rebind: function() {
 				           $.each(toClean, function(k, v) {
 					           v();

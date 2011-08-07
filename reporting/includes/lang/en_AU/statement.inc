@@ -24,29 +24,26 @@ if (isset($header2type)) {
 	$this->title = "STATEMENT";
 	$this->headers = array('Trans Type', '#', 'Date', 'Due Date', 'Charges', 'Credits', 'Allocated', 'Outstanding');
 }
-if (isset($emailtype)) {
-	$doc_Dear_Sirs = "Dear";
-	$doc_AttachedFile = "Attached you will find ";
-	$doc_Kindest_regards = "Kindest regards";
-	$doc_Payment_Link = "You can pay through";
-}
-if (isset($header2type) || isset($linetype)) {
-	$doc_Invoice_no = ($doctype == ST_CUSTDELIVERY ? "Delivery Note No." : ($doctype == ST_CUSTPAYMENT ? "Receipt No."
-			: $doctype == ST_CUSTREFUND ? "Refund No." : ($doctype == ST_SUPPAYMENT ? "Remittance No."
-					: ($doctype == ST_PURCHORDER ? "Purchase Order #:" : ($doctype == ST_SALESORDER ? "Order No."
-							: ($doctype == ST_SALESQUOTE ? "Quotation No." : ($doctype == ST_SALESINVOICE
-									? "Invoice No." : ($doctype == ST_WORKORDER ? "Work Order No."
-											: "Credit No."))))))));
-	$doc_Delivery_no = "Delivery Note No.";
-	$doc_Order_no = "Order No.";
-}
-if (isset($linetype)) {
-	$doc_Outstanding = "Outstanding Transactions";
-	$doc_Current = "Current";
-	$doc_Total_Balance = "Total Balance";
-	$doc_Statement = "Statement";
-	$doc_as_of = "as of";
-	$doc_Days = "Days";
-	$doc_Over = "Over";
+	if (isset($emailtype)) {
+		$doc_Dear_Sirs = "Dear";
+		$doc_AttachedFile = "Attached you will find ";
+		$doc_Kindest_regards = "Kindest regards";
+		$doc_Payment_Link = "You can pay through";
+	}
+	if (isset($header2type) || isset($linetype)) {
+		$doc_Invoice_no = ($doctype == ST_CUSTDELIVERY ? "Delivery Note No." : ($doctype == ST_CUSTPAYMENT ? "Receipt No." : $doctype == ST_CUSTREFUND ? "Refund No." : ($doctype == ST_SUPPAYMENT
+				? "Remittance No." : ($doctype == ST_PURCHORDER ? "Purchase Order #:" : ($doctype == ST_SALESORDER ? "Order No." : ($doctype == ST_SALESQUOTE ? "Quotation No."
+						: ($doctype == ST_SALESINVOICE ? "Invoice No." : ($doctype == ST_WORKORDER ? "Work Order No." : "Credit No."))))))));
+		$doc_Delivery_no = "Delivery Note No.";
+		$doc_Order_no = "Order No.";
+	}
+	if (isset($linetype)) {
+		$doc_Outstanding = "Outstanding Transactions";
+		$doc_Current = "Current";
+		$doc_Total_Balance = "Total Balance";
+		$doc_Statement = "Statement";
+		$doc_as_of = "as of";
+		$doc_Days = "Days";
+		$doc_Over = "Over";
 
-}
+	}

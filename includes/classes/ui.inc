@@ -29,15 +29,14 @@
 		static function select($id = false, $options = array(), $params = array()) {
 			$content = '';
 			HTML::setReturn(true)->select($id, $params);
-			foreach ((array) $options as $label => $option) {
+			foreach ((array)$options as $label => $option) {
 				if (is_array($option)) {
 					HTML::optgroup(array('label' => $label));
 					foreach ($option as $data) {
 						HTML::option(null, $data[0] . ' (' . $data[1] . ')', array('value' => $data[1]), false);
 					}
 					HTML::optgroup();
-				}
-				else {
+				} else {
 					HTML::option(array('value' => $label), false);
 				}
 			}
@@ -75,22 +74,21 @@
 		}
 
 		static function searchLine($id, $url = '#', $options = array()) {
-			$defaults = array('description' => false,
-				'disabled' => false,
-				'editable' => true,
-				'selected' => '',
-				'cell' => false,
-				'stock_id' => ' stock_id ',
-				'inactive' => false,
-				'js' => '',
-				'purchase' => false,
-				'sale' => false,
-				'prices' => '',
-				'sales_type' => 1,
-				'no_sale' => false,
-				'select' => false,
-				'type' => 'local',
-				'where' => '');
+			$defaults =
+					array('description' => false,
+					      'disabled' => false,
+					      'editable' => true,
+					      'selected' => '',
+					      'cell' => false,
+					      'inactive' => false,
+						'purchase' => false,
+						'sale' => false,
+					      'js' => '',
+					      'sales_type' => 1,
+					      'no_sale' => false,
+					      'select' => false,
+					      'type' => 'local',
+					      'where' => '');
 
 			$o = array_merge($defaults, $options);
 			$_SESSION['options'][$id] = $o;
@@ -139,6 +137,7 @@
 						},
                         select: function( event, ui ) {
 							var value = ui.item.value;
+							
 							$(this).val(value.stock_id);
 							value.description = value.long_description
 							$.each(value,function(k,v) {
@@ -152,7 +151,33 @@
                         }});
                      return  function () {return \$$id.catcomplete('destroy').focus() };
 JS
-			);
+);
 			return HTML::setReturn(false);
+		}
+
+		public static function emailDialogue($contactType, $emailid) {
+			static $generated = false;
+			HTML::setReturn(true);
+			UI::button(false, 'Email', array('class' => 'button email-button', 'data-emailid' => $emailid));
+			$content = HTML::setReturn(false);
+			if ($generated) {
+				return $content;
+			}
+			$emailBox = new Dialog('Select Email Address:', 'emailBox', '');
+			$emailBox->addButtons(array('Email' => '$("#EmailButton").trigger("click")', 'Close' => '$(this).dialog("close");'));
+			$emailBox->setOptions(array('autoopen' => false, 'modal' => true, 'width' => '"500"', 'height' => '"350"', 'resizeable' => false));
+			$emailBox->show();
+
+			$action = <<<JS
+	      var emailID= $(this).data('emailid');
+	      $.post('/contacts/emails.php',{type: '$contactType', id: emailID}, function(data) {
+	         \$emailBox.html(data).dialog('open');
+	         
+	   },'html');
+	   return false;
+JS;
+			JS::addLiveEvent('.email-button', 'click', $action, '#wrapper');
+			$generated = true;
+			return $content;
 		}
 	}

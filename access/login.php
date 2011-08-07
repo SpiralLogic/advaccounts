@@ -133,7 +133,7 @@ echo "<td class='bottomBarCell'>$date</td>\n";
 echo "</tr></table>\n";
 echo "<table class='footer'>\n";
 echo "<tr>\n";
-echo "<td><a target='_blank' href='$power_url' tabindex='-1'>$app_title $version - " . _("Theme:") . " " . $def_theme . "</a></td>\n";
+echo "<td><a target='_blank' href='$power_url' tabindex='-1'>".$app_title.' '.$version." - " . _("Theme:") . " " . $def_theme . "</a></td>\n";
 echo "</tr>\n";
 echo "<tr>\n";
 echo "<td><a target='_blank' href='$power_url' tabindex='-1'>$power_by</a></td>\n";

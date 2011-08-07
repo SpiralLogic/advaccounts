@@ -37,7 +37,8 @@
 			HTML::input($state[0], array('maxlength' => 35, 'size' => 35, 'value' => $state[1], 'name' => $state[0]));
 			HTML::tr(true)->td(array('class' => 'label'))->label(array('content' => 'Postcode: ', 'for' => $postcode[0]), false)->td->td(true);
 
-			UI::search($postcode[0], array('url' => $url . '?postcode=1', 'nodiv' => true, 'name' => $postcode[0], 'size' => 35, 'max' => 40, 'callback' => 'Adv.postcode' . static::$count . '.fetch'));
+			UI::search($postcode[0],
+			           array('url' => $url . '?postcode=1', 'nodiv' => true, 'name' => $postcode[0], 'size' => 35, 'max' => 40, 'callback' => 'Adv.postcode' . static::$count . '.fetch'));
 			HTML::td()->tr;
 			static::registerJS("#" . $postcode[0], "#" . $city[0], "#" . $state[0]);
 		}
@@ -59,8 +60,7 @@ Adv.extend({
         }
     }())
 })
-JS
-			);
+JS);
 			static::$count++;
 		}
 	}

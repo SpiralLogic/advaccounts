@@ -663,10 +663,5 @@
 	end_form();
 
 	Item::addEditDialog();
-	JS::addLive(<<<JS
-window.onbeforeunload = function() {
-$.post('sales_order_entry.php',{ saveorder: true })};
-JS
-	);
 	end_page();
 	unset($_SESSION['order_no']);

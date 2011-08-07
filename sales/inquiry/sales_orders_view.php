@@ -108,12 +108,12 @@
 	}
 
 	function prt_link($row) {
-		
-		return print_document_link($row['order_no'], _("Print"), true, $row['trans_type'], ICON_PRINT,'button');
+
+		return print_document_link($row['order_no'], _("Print"), true, $row['trans_type'], ICON_PRINT, 'button');
 	}
 
 	function prt_link2($row) {
-		return print_document_link($row['order_no'], _("Proforma"), true, ST_PROFORMA, ICON_PRINT,'button');
+		return print_document_link($row['order_no'], _("Proforma"), true, ST_PROFORMA, ICON_PRINT, 'button');
 	}
 
 	function edit_link($row) {
@@ -122,8 +122,7 @@
 	}
 
 	function email_link($row) {
-		return print_document_link($row['order_no'], _("Email"), true, $row['trans_type'], false, "button", "", 1);
-
+		return UI::emailDialogue('c', $row['debtor_no'] . '-' . $row['trans_type'] . '-' . $row['order_no']);
 	}
 
 	function dispatch_link($row) {
@@ -234,6 +233,7 @@
 		sorder.trans_type,
 		sorder.reference,
 		debtor.name,
+		debtor.debtor_no,
 		branch.br_name," . ($_POST['order_view_mode'] == 'InvoiceTemplates' ||
 			$_POST['order_view_mode'] == 'DeliveryTemplates' ? "sorder.comments, "
 			: "sorder.customer_ref, ") . "sorder.ord_date,
@@ -330,8 +330,11 @@
 				sorder.deliver_to";
 	}
 	if ($trans_type == ST_SALESORDER) {
-		$cols = array(_("Order #") => array('fun' => 'view_link', 'ord' => 'desc'), array('type' => 'skip'),
-			_("Ref") => array('ord' => ''), _("Customer") => array('ord' => ''),
+		$cols = array(_("Order #") => array('fun' => 'view_link', 'ord' => 'desc'),
+			array('type' => 'skip'),
+			_("Ref") => array('ord' => ''),
+			_("Customer") => array('ord' => ''),
+			array('type' => 'skip'),
 			_("Branch") => array('ord' => ''),
 			_("Customer PO#") => array('ord' => ''),
 			_("Order Date") => array('type' => 'date', 'ord' => ''),
@@ -342,9 +345,12 @@
 			_("Currency") => array('align' => 'center'));
 	}
 	else {
-		$cols = array(_("Quote #") => array('fun' => 'view_link', 'ord' => 'desc'), array('type' => 'skip'),
+		$cols = array(
+			_("Quote #") => array('fun' => 'view_link', 'ord' => 'desc'),
+			array('type' => 'skip'),
 			_("Ref") => array('ord' => ''),
 			_("Customer") => array('ord' => ''),
+			array('type' => 'skip'),
 			_("Branch") => array('ord' => ''),
 			_("Customer PO#") => array('ord' => ''),
 			_("Quote Date") => array('type' => 'date', 'ord' => ''),
@@ -370,14 +376,18 @@
 		}
 		elseif ($trans_type == ST_SALESQUOTE) {
 			array_append($cols,
-				array(array('insert' => true, 'fun' => 'edit_link'),
+				array(array('insert' => true,'type' => 'skip'),
+					array('insert' => true,'type' => 'skip'),
+					array('insert' => true, 'fun' => 'edit_link'),
 					array('insert' => true, 'fun' => 'order_link'),
 					array('insert' => true, 'fun' => 'email_link'),
-					array('insert' => true, 'fun' => 'prt_link')));
+					array('insert' => true, 'fun' => 'prt_link'))
+			);
 		}
 		elseif ($trans_type == ST_SALESORDER) {
 			array_append($cols,
-				array(_("Tmpl") => array('insert' => true, 'fun' => 'tmpl_checkbox'),
+				array(
+					_("Tmpl") => array('type' => 'skip', 'insert' => true, 'fun' => 'tmpl_checkbox'),
 					array('insert' => true, 'fun' => 'edit_link'),
 					array('insert' => true, 'fun' => 'email_link'),
 					array('insert' => true, 'fun' => 'prt_link2'),

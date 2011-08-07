@@ -134,7 +134,8 @@ $start22 = $time;
 			APP_PATH . 'includes',
 			APP_PATH . 'includes/classes',
 			APP_PATH . 'contacts/includes/classes',
-			APP_PATH . 'items/includes/classes'));
+                         APP_PATH . 'items/includes/classes',
+                         APP_PATH . 'reporting/includes'));
 
 	if (preg_match('/Chrome/i', $_SERVER['HTTP_USER_AGENT'])) {
 		include(APP_PATH . 'includes/fb.php');
@@ -148,9 +149,12 @@ $start22 = $time;
 		die("Restricted access");
 	}
 	function __autoload($className) {
+      if (!@include(strtolower($className) . '.inc'))
+         if (!@include(strtolower($className) . '.php')) {
+            $className = str_ireplace('_',DIRECTORY_SEPARATOR,$className);
+            $file = APP_PATH . 'includes/classes/' . $className.'.php';
+                  include(strtolower($file));
 
-			if (!@include(strtolower($className) . '.inc')) {
-				@include(strtolower($className) . '.php');
 			}
 	
 

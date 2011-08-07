@@ -106,22 +106,19 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	}
 
 	function fmt_debit($row) {
-		$value = $row['type'] == ST_CUSTCREDIT || $row['type'] == ST_CUSTPAYMENT || $row['type'] == ST_CUSTREFUND ||
-				$row['type'] == ST_BANKDEPOSIT ? -$row["TotalAmount"] : $row["TotalAmount"];
+		$value = $row['type'] == ST_CUSTCREDIT || $row['type'] == ST_CUSTPAYMENT || $row['type'] == ST_CUSTREFUND || $row['type'] == ST_BANKDEPOSIT ? -$row["TotalAmount"] : $row["TotalAmount"];
 		return $value >= 0 ? price_format($value) : '';
 
 	}
 
 	function fmt_credit($row) {
-		$value = !($row['type'] == ST_CUSTCREDIT || $row['type'] == ST_CUSTREFUND || $row['type'] == ST_CUSTPAYMENT ||
-				$row['type'] == ST_BANKDEPOSIT) ? -$row["TotalAmount"] : $row["TotalAmount"];
+		$value = !($row['type'] == ST_CUSTCREDIT || $row['type'] == ST_CUSTREFUND || $row['type'] == ST_CUSTPAYMENT || $row['type'] == ST_BANKDEPOSIT) ? -$row["TotalAmount"] : $row["TotalAmount"];
 		return $value > 0 ? price_format($value) : '';
 	}
 
 	function credit_link($row) {
-		return $row['type'] == ST_SALESINVOICE && $row["TotalAmount"] - $row["Allocated"] > 0
-				? pager_link(_("Credit"), "/sales/customer_credit_invoice.php?InvoiceNumber=" .
-						$row['trans_no'], ICON_CREDIT) : '';
+		return $row['type'] == ST_SALESINVOICE && $row["TotalAmount"] - $row["Allocated"] > 0 ? pager_link(_("Credit"), "/sales/customer_credit_invoice.php?InvoiceNumber=" . $row['trans_no'],
+		                                                                                                   ICON_CREDIT) : '';
 	}
 
 	function edit_link($row) {
@@ -133,15 +130,13 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 				}
 				break;
 			case ST_CUSTCREDIT:
-				if (get_voided_entry(ST_CUSTCREDIT, $row["trans_no"]) === false &&
-						$row['Allocated'] == 0
+				if (get_voided_entry(ST_CUSTCREDIT, $row["trans_no"]) === false && $row['Allocated'] == 0
 				) // 2008-11-19 Joe Hunt
 				{
 					if ($row['order_'] == 0) // free-hand credit note
 					{
 						$str = "/sales/credit_note_entry.php?ModifyCredit=" . $row['trans_no'];
-					}
-					else // credit invoice
+					} else // credit invoice
 					{
 						$str = "/sales/customer_credit_invoice.php?ModifyCredit=" . $row['trans_no'];
 					}
@@ -160,81 +155,18 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	}
 
 	function prt_link($row) {
-		if ($row['type'] != ST_CUSTPAYMENT && $row['type'] != ST_CUSTREFUND &&
-				$row['type'] != ST_BANKDEPOSIT
+		if ($row['type'] != ST_CUSTPAYMENT && $row['type'] != ST_CUSTREFUND && $row['type'] != ST_BANKDEPOSIT
 		) // customer payment or bank deposit printout not defined yet.
 		{
 			return print_document_link($row['trans_no'] . "-" . $row['type'], _("Print"), true, $row['type'], ICON_PRINT, 'button');
-		}
-		else
-		{
-			return print_document_link(
-				$row['trans_no'] . "-" . $row['type'], _("Receipt"), true, $row['type'], ICON_PRINT, 'button');
+		} else {
+			return print_document_link($row['trans_no'] . "-" . $row['type'], _("Receipt"), true, $row['type'], ICON_PRINT, 'button');
 		}
 	}
 
-	$emailBoxEmails = array();
 	function email_link($row) {
-		static $first = true;
-		global $emailBoxEmails;
-		//if ($row['type'] != ST_CUSTPAYMENT && $row['type'] != ST_CUSTREFUND &&
-		//$row['type'] != ST_BANKDEPOSIT) // customer payment or bank deposit printout not defined yet.
-		$debtor = $row['debtor_no'];
-		$trans = $row['trans_no'];
-		$type = $row['type'];
-		$id = $debtor . '-' . $type . '-' . $trans;
-		if (empty($row['debtor_no']) || isset($emailBoxEmails [$id])) return;
-		$customer = new Customer($debtor);
-		$emails = $customer->getEmailAddresses();
-
-		if (!$emails) return $emailBoxEmails [$id]='';
-			switch ($type) {
-				case ST_CUSTDELIVERY:
-					$text = "Delivery Notice";
-					break;
-				case ST_SALESINVOICE:
-					$text = "Tax Invoice";
-					break;
-				case ST_CUSTPAYMENT:
-					$text = "Payment Receipt";
-					break;
-				case ST_CUSTREFUND:
-					$text = "Refund Receipt";
-					break;
-				case ST_CUSTCREDIT:
-					$text = "Credit Note";
-					break;
-			}
-
-			$emailBoxEmails[$id] = submenu_email(_("Email This ").$text, $type, $trans, null, $emails, 0, true);
-
-		if ($first) {
-			$emailBox = new Dialog('Select Email Address:', 'emailBox', '');
-			$emailBox->addButtons(array('Email' => '$("#EmailButton").trigger("click")', 'Close' => '$(this).dialog("close");'));
-			$emailBox->setOptions(array('autoopen' => false, 'modal' => true, 'width' => '"500"', 'height' => '"300"', 'resizeable' => false));
-			$emailBox->show();
-			$action = <<<JS
-	var emailID= $(this).data('emailid');
-	\$emailBox.html(emailBoxEmails[emailID]);
-	\$emailBox.dialog('open');
-	$('#EmailButton').button().click(function() {
-		Adv.loader.show();
-		var email = $("#EmailSelect").val();
-		$.get($(this).data('url') + "&Email="+email,function(responce) {
-			$('#msgbox').append(responce);
-			\$emailBox.dialog('close');
-			Adv.loader.hide();
-		});
-	});
-	return false;
-JS;
-			JS::addLiveEvent('.email-button', 'click', $action, '#wrapper');
-
-			$first = false;
-		}
-		ob_start();
-		UI::button(false, 'Email', array('class' => 'button email-button', 'data-emailid' => $id));
-		return ob_get_clean();
+		if ($row['type'] == ST_CUSTPAYMENT  || $row['type'] == ST_CUSTDELIVERY) return;
+		return UI::emailDialogue('c', $row['debtor_no'] . '-' . $row['type'] . '-' . $row['trans_no']);
 	}
 
 	function check_overdue($row) {
@@ -251,11 +183,9 @@ JS;
 		unset($_POST['filterType']);
 		if ($searchArray[0] == 'd') {
 			$filter = " AND type = " . ST_CUSTDELIVERY . " ";
-		}
-		elseif ($searchArray[0] == 'i') {
+		} elseif ($searchArray[0] == 'i') {
 			$filter = " AND (type = " . ST_SALESINVOICE . " OR type = " . ST_BANKPAYMENT . ") ";
-		}
-		elseif ($searchArray[0] == 'p') {
+		} elseif ($searchArray[0] == 'p') {
 			$filter = " AND (type = " . ST_CUSTPAYMENT . " OR type = " . ST_CUSTREFUND . " OR type = " . ST_BANKDEPOSIT . ") ";
 		}
 
@@ -307,8 +237,7 @@ JS;
 		if (isset($filter) && $filter) {
 			$sql .= $filter;
 		}
-	}
-	else {
+	} else {
 		$sql .= " AND trans.tran_date >= '$date_after'
 			AND trans.tran_date <= '$date_to'";
 	}
@@ -322,17 +251,13 @@ JS;
 	if (isset($_POST['filterType']) && $_POST['filterType'] != ALL_TEXT) {
 		if ($_POST['filterType'] == '1') {
 			$sql .= " AND (trans.type = " . ST_SALESINVOICE . " OR trans.type = " . ST_BANKPAYMENT . ") ";
-		}
-		elseif ($_POST['filterType'] == '2') {
+		} elseif ($_POST['filterType'] == '2') {
 			$sql .= " AND (trans.type = " . ST_SALESINVOICE . ") ";
-		}
-		elseif ($_POST['filterType'] == '3') {
+		} elseif ($_POST['filterType'] == '3') {
 			$sql .= " AND (trans.type = " . ST_CUSTPAYMENT . " OR trans.type = " . ST_CUSTREFUND . " OR trans.type = " . ST_BANKDEPOSIT . " OR trans.type = " . ST_BANKDEPOSIT . ") ";
-		}
-		elseif ($_POST['filterType'] == '4') {
+		} elseif ($_POST['filterType'] == '4') {
 			$sql .= " AND trans.type = " . ST_CUSTCREDIT . " ";
-		}
-		elseif ($_POST['filterType'] == '5') {
+		} elseif ($_POST['filterType'] == '5') {
 			$sql .= " AND trans.type = " . ST_CUSTDELIVERY . " ";
 		} elseif ($_POST['filterType'] == '6') {
 			$sql .= " AND trans.type = " . ST_SALESINVOICE . " ";
@@ -346,21 +271,13 @@ JS;
 	}
 	//------------------------------------------------------------------------------------------------
 	db_query("set @bal:=0");
-	$cols = array(_("Type") => array('fun' => 'systype_name', 'ord' => ''),
-		_("#") => array('fun' => 'trans_view', 'ord' => ''), _("Order") => array('fun' => 'order_view'),
-		_("Reference") => array('ord' => ''),
-		_("Date") => array('name' => 'tran_date', 'type' => 'date', 'ord' => 'desc'),
-		_("Due Date") => array('type' => 'date', 'fun' => 'due_date'),
-		_("Customer") => array('ord' => ''),
-		_("customer_id") => 'skip',
-		_("Branch") => array('ord' => ''), _("Currency") => array('align' => 'center'),
-		_("Debit") => array('align' => 'right', 'fun' => 'fmt_debit'),
-		_("Credit") => array('align' => 'right', 'insert' => true, 'fun' => 'fmt_credit'),
-		_("RB") => array('align' => 'right', 'type' => 'amount'), array('insert' => true, 'fun' => 'gl_view'),
-		array('insert' => true, 'align' => 'center', 'fun' => 'credit_link'),
-		array('insert' => true, 'align' => 'center', 'fun' => 'edit_link'),
-		array('insert' => true, 'align' => 'center', 'fun' => 'email_link'),
-		array('insert' => true, 'align' => 'center', 'fun' => 'prt_link'));
+	$cols = array(_("Type") => array('fun' => 'systype_name', 'ord' => ''), _("#") => array('fun' => 'trans_view', 'ord' => ''), _("Order") => array('fun' => 'order_view'),
+	              _("Reference") => array('ord' => ''), _("Date") => array('name' => 'tran_date', 'type' => 'date', 'ord' => 'desc'), _("Due Date") => array('type' => 'date', 'fun' => 'due_date'),
+	              _("Customer") => array('ord' => ''), _("customer_id") => 'skip', _("Branch") => array('ord' => ''), _("Currency") => array('align' => 'center'),
+	              _("Debit") => array('align' => 'right', 'fun' => 'fmt_debit'), _("Credit") => array('align' => 'right', 'insert' => true, 'fun' => 'fmt_credit'),
+	              _("RB") => array('align' => 'right', 'type' => 'amount'), array('insert' => true, 'fun' => 'gl_view'), array('insert' => true, 'align' => 'center', 'fun' => 'credit_link'),
+	              array('insert' => true, 'align' => 'center', 'fun' => 'edit_link'), array('insert' => true, 'align' => 'center', 'fun' => 'email_link'),
+	              array('insert' => true, 'align' => 'center', 'fun' => 'prt_link'));
 	if (isset($_POST['customer_id']) && $_POST['customer_id'] != ALL_TEXT) {
 		$cols[_("Customer")] = 'skip';
 		$cols[_("Currency")] = 'skip';
@@ -372,7 +289,6 @@ JS;
 	$table->set_marker('check_overdue', _("Marked items are overdue."));
 	$table->width = "80%";
 	display_db_pager($table);
-	JS::beforeload('var emailBoxEmails=' . json_encode($emailBoxEmails) . ';');
 	end_form();
 	end_page();
 

@@ -108,8 +108,7 @@
 			$sql = "SELECT * FROM purch_data WHERE stock_id = " . $this->id;
 			$result = db_query($sql, 'Could not get item pricing');
 			while ($row = db_fetch_assoc($result)) {
-				$this->prices[$row['supplier_id']] =
-						array("code" => $row['supplier_description'], "price" => $row['price'], "suppliers_uom" => $row['uom'], "conv" => $row['conversion_factor']);
+				$this->prices[$row['supplier_id']] = array("code" => $row['supplier_description'], "price" => $row['price'], "suppliers_uom" => $row['uom'], "conv" => $row['conversion_factor']);
 			}
 		}
 
@@ -117,16 +116,19 @@
 			if (!$this->id > 0) {
 				return;
 			}
+			$id = db_escape($this->id);
+			$today = date2sql(Today());
 			$sql = "SELECT l.loc_code, l.location_name, i.stock_id as id, r.reorder_level, o.demand, (qty-o.demand) as available, p.onorder, qty
 			FROM locations l
-			LEFT JOIN (SELECT stock_id, loc_code, SUM(qty) as qty FROM stock_moves WHERE stock_id=" . db_escape($this->id) . " AND tran_date <= '" . date2sql(Today()) . "' GROUP BY loc_code) i ON l.loc_code = i.loc_code
-					LEFT JOIN loc_stock r ON r.loc_code = l.loc_code AND r.stock_id = " . db_escape($this->id) . "
-					LEFT JOIN (SELECT SUM(sales_order_details.quantity - sales_order_details.qty_sent) AS demand , sales_orders.from_stk_loc AS loc_code FROM sales_order_details, sales_orders
-					WHERE sales_order_details.order_no= sales_orders.order_no AND sales_orders.trans_type=30 AND sales_orders.trans_type=sales_order_details.trans_type AND sales_order_details.stk_code = " . db_escape($this->id) . "
-					GROUP BY sales_orders.from_stk_loc) o ON o.loc_code=l.loc_code
-					LEFT JOIN (SELECT SUM(purch_order_details.quantity_ordered - purch_order_details.quantity_received) AS onorder , purch_orders.into_stock_location AS loc_code
-					FROM purch_order_details, purch_orders	WHERE purch_order_details.order_no= purch_orders.order_no AND purch_order_details.item_code = " . db_escape($this->id) . " GROUP BY purch_orders.into_stock_location) p ON p.loc_code=l.loc_code";
-
+			LEFT JOIN (SELECT stock_id, loc_code, SUM(qty) as qty FROM stock_moves WHERE stock_id=$id AND tran_date <= $today GROUP BY loc_code) i ON l.loc_code = i.loc_code
+			LEFT JOIN loc_stock r ON r.loc_code = l.loc_code AND r.stock_id = $id
+			LEFT JOIN (SELECT SUM(sales_order_details.quantity - sales_order_details.qty_sent) AS demand , sales_orders.from_stk_loc AS loc_code FROM sales_order_details, sales_orders
+				WHERE sales_order_details.order_no= sales_orders.order_no AND sales_orders.trans_type=30 AND sales_orders.trans_type=sales_order_details.trans_type
+				AND sales_order_details.stk_code = $id GROUP BY sales_orders.from_stk_loc) o ON o.loc_code=l.loc_code
+			LEFT JOIN (SELECT SUM(purch_order_details.quantity_ordered - purch_order_details.quantity_received) AS onorder , purch_orders.into_stock_location AS loc_code
+				FROM purch_order_details, purch_orders	WHERE purch_order_details.order_no= purch_orders.order_no AND purch_order_details.item_code = $id
+				GROUP BY purch_orders.into_stock_location) p ON p.loc_code=l.loc_code";
+print_r($sql);
 			$result = db_query($sql, 'Could not get item stock levels');
 			while ($row = db_fetch_assoc($result)) {
 				$this->stockLevels[] = $row;
@@ -164,9 +166,10 @@
 
 			$term = explode(' ', $term);
 			$term1 = db_escape(trim($term[0]) . '%');
+
 			$term2 = implode(' AND long_description LIKE ', array_map(function($v) {
-						return db_escape('%' . trim($v) . '%');
-					}, $term));
+					                                              return db_escape('%' . trim($v) . '%');
+				                                              }, $term));
 
 			$where = ($o['inactive'] ? '' : ' AND inactive = 0 ') . ($o['no_sale'] ? '' : ' AND no_sale =0 ');
 			$where2 = (!empty($o['where']) ? ' AND ' . $o['where'] : ' ');
@@ -177,6 +180,7 @@
 				$where2 .= " AND !i.is_foreign AND i.item_code!=i.stock_id ";
 			}
 			$where2 .= ' AND s.stock_id = i.stock_id ';
+			$order = '';
 			if ($o['purchase']) {
 				$sales_type = '';
 				if (isset($o['supplier_id']) && is_numeric($o['supplier_id'])) {
@@ -184,7 +188,7 @@
 				}
 				$stock_id = ' s.stock_id, p.supplier_description ';
 				$prices = ", purch_data p ";
-
+				$order .= ' ORDER BY stock_id, p.supplier_id DESC';
 			} else {
 				$stock_id = " s.stock_id ";
 				$prices = ", prices p";
@@ -193,13 +197,14 @@
 				}
 			}
 			$select = ($o['select']) ? $o['select'] : ' ';
-			$sql = "SELECT $select  $stock_id ,s.description, c.description as category, s.long_description , p.price, editable
+			$sql = "SELECT DISTINCT $select  $stock_id ,s.description, c.description as category, s.long_description , p.price, editable
 					FROM ((SELECT * FROM stock_master WHERE stock_id LIKE $term1 $where ORDER BY stock_id LIMIT 1)
                UNION (SELECT * FROM stock_master WHERE  long_description LIKE $term2 $where ORDER BY category_id, long_description LIMIT 30))
-               s, stock_category c, item_codes i $prices WHERE  s.stock_id = p.stock_id  AND s.category_id = c.category_id $where2 $sales_type";
+               s, stock_category c, item_codes i $prices WHERE  s.stock_id = p.stock_id  AND s.category_id = c.category_id $where2 $sales_type $order";
 
 			$result = db_query($sql, 'Couldn\'t Get Items');
 			$data = '';
+
 			while ($row = db_fetch_assoc($result)) {
 				foreach ($row as &$value) {
 					$value = htmlspecialchars_decode($value, ENT_QUOTES);

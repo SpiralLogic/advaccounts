@@ -64,8 +64,9 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 
 	function page_header($title, $no_menu = false, $is_index = false, $onload = "", $js = "") {
 		// titles and screen header
+
 		global $path_to_root, $def_app, $use_popup_windows, $help_base_url;
-		if (in_ajax())
+		if (in_ajax() || AJAX_REFERRER)
 			return; // just for speed up
 		$theme = user_theme();
 		$local_path_to_root = $path_to_root;
@@ -81,8 +82,6 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 			$no_menu = false;
 
 		}
-		//if (!isset($_SESSION["sel_app"]))
-		//	session_register("sel_app");
 		if (isset($_SESSION["App"]) && is_object($_SESSION["App"]) && isset($_SESSION["App"]->selected_application) && $_SESSION["App"]->selected_application != "")
 			$sel_app = $_SESSION["App"]->selected_application;
 		elseif (isset($_SESSION["sel_app"]) && $_SESSION["sel_app"] != "")
@@ -104,10 +103,10 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		echo "<meta http-equiv='Content-type' content='text/html; charset=$encoding'>";
 		echo "<link rel='apple-touch-icon' href='/company/images/advanced-icon.png'/>";
 
-      add_css('default.css,jquery-ui-1.8.7.css,jquery.calculator.css,jquery.fileupload-ui.css');
+        add_css('default.css,jquery-ui-1.8.7.css,jquery.calculator.css,jquery.fileupload-ui.css');
 
 		if (file_exists(APP_PATH."/themes/$theme/{$_SESSION['sel_app']}.css"))
-      add_css($_SESSION['sel_app'].'.css');
+        add_css($_SESSION['sel_app'].'.css');
 		send_css();
 		//if (!$_GET['frame'])
 		send_scripts($js);
@@ -116,7 +115,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 			echo "<body";
 		else
 			echo "body onload='$onload'";
-    echo  ($no_menu) ? ' class="lite">':'>';
+        echo  ($no_menu) ? ' class="lite">':'>';
 		include_once(APP_PATH."/themes/" . user_theme() . "/renderer.php");
 		$rend = new renderer();
 		$rend->menu_header($title, $no_menu, $is_index);
