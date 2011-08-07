@@ -2,7 +2,6 @@
 include(APP_PATH . 'modules/smartoptimizer/minifiers/js.php');
 	class JS {
 
-
 		private static $_beforeload = array();
 		private static $_onload = array();
 		private static $_onlive = array();
@@ -90,8 +89,8 @@ JS;
 		public static function render() {
 			if (AJAX_REFERRER) return HTML::script(null, 'Adv.Events.rebind()', false);
 			$files = $content = '';
-			foreach (self::$_footerFiles as $dir => $files) {
-				$files .= HTML::setReturn(true)->script(array('src' => $dir . '/' . implode(',', $files)), false)->setReturn(false);
+			foreach (self::$_footerFiles as $dir => $file) {
+				$files .= HTML::setReturn(true)->script(array('src' => $dir . '/' . implode(',', $file)), false)->setReturn(false);
 			}
 			if (count(self::$_beforeload)) {
 				$content .= implode(";\n", self::$_beforeload);
@@ -103,15 +102,14 @@ JS;
 			if (count(self::$_onload)) {
 				$content .= implode(";\n\n", self::$_onload);
 			}
-			$content .= '});
-	';
-		  echo $files;
-		  HTML::script(array('content' => $content))->script;
+			$content .= '});';
+			echo $files;
+			HTML::script(array('content' => $content))->script;
 
 		}
 
 		public static function arrayToOptions($options = array()) {
-			$options = (object) $options;
+			$options = (object)$options;
 			return json_encode($options);
 		}
 
@@ -168,20 +166,20 @@ JS;
 				foreach ($js as $j) self::register($j, $var);
 			} else {
 				array_unshift($var, str_replace(array('<script>', '</script>'), '', $js));
-	}
-	}
-
-	protected static function registerFile($file, &$var) {
-	if (is_array($file)) {
-		foreach ($file as $f) self::registerFile($f, $var);
-	} else {
-		$dir = dirname($file);
-		$file = basename($file);
-		if (!isset($var[$dir])) {
-			$var[$dir] = array();
+			}
 		}
-		array_push($var[$dir], $file);
-	}
-}
+
+		protected static function registerFile($file, &$var) {
+			if (is_array($file)) {
+				foreach ($file as $f) self::registerFile($f, $var);
+			} else {
+				$dir = dirname($file);
+				$file = basename($file);
+				if (!isset($var[$dir])) {
+					$var[$dir] = array();
+				}
+				array_push($var[$dir], $file);
+			}
+		}
 
 	}

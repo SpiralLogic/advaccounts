@@ -60,7 +60,8 @@ Adv.extend({
         }
     }())
 })
-JS);
+JS
+);
 			static::$count++;
 		}
 	}
