@@ -19,7 +19,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
       JS::beforeload("_focus = '" . get_post('_focus') . "';_validate = " . $Ajax->php2js($Validate) . ";var $edits");
       add_user_js_data();
       Messages::showNewMessages();
-      return JS::render();
+       JS::render();
       if (AJAX_REFERRER) return;
 
       global $start22;
