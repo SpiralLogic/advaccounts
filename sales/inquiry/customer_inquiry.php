@@ -165,6 +165,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	}
 
 	function email_link($row) {
+		if ($row['type'] == ST_CUSTPAYMENT  || $row['type'] == ST_CUSTDELIVERY) return;
 		return UI::emailDialogue('c', $row['debtor_no'] . '-' . $row['type'] . '-' . $row['trans_no']);
 	}
 

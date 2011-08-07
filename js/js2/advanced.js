@@ -23,8 +23,8 @@ $.widget("custom.catcomplete", $.ui.autocomplete, {
 	};
 	(function() {
 		var extender = jQuery.extend, toInit = [];
-		Adv.loader.hide()
-				.prependTo(Adv.$content)
+		Adv.loader
+				.prependTo(Adv.$content).hide()
 				.ajaxStart(function() { $(this).show() })
 				.ajaxStop(function() { $(this).hide() });
 				this.extend = function(object) { extender(Adv, object)};
@@ -32,19 +32,20 @@ $.widget("custom.catcomplete", $.ui.autocomplete, {
 	window.Adv = Adv;
 })(window);
 Adv.extend({
-	           msgbox: $('#msgbox').ajaxStop(function(event, request, settings) {
-		           console.log(request);
-		           if (typeof request == 'String') {
+	           msgbox: $('#msgbox').ajaxError(function(event, request, settings) {
+
 			           var status = {
 				           status: false,
-				           message: "Request failed: " + String(request) + "<br>"
+				           message: "Request failed: " + settings.url + "<br>"
 			           };
-			           Adv.showStatus(status);
-		           }
+			       console.log(settings);
+			       			               Adv.showStatus(status);
+
 	           }),
 	           showStatus:function (status) {
 		           Adv.msgbox.empty();
-		           status.class =(status.status) ? 'note_msg':'err_msg';Adv.msgbox.attr('class', status.class).html(status.message);
+		           status.class =(status.status) ? 'note_msg':'err_msg';
+		           Adv.msgbox.attr('class', status.class).html(status.message);
 	           },
 	           setFormValue: function (id, value, disabled) {
 		           var el = $('[name="' + id + '"]');

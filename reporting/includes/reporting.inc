@@ -82,6 +82,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 
 	function email_document_link($doc_no, $link_text, $link = true, $type_no, $class = 'EmailLink', $id = '', $emails = array(), $extra = 0, $return = false) {
 		global $pdf_debug;
+		if (empty($emails)) return false;
 		if ($return) {
 			ob_start();
 		}
@@ -102,21 +103,22 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		}
 		$ars = access_string($link_text);
 		HTML::br()->p(array('class' => 'center'));
-		UI::select('EmailSelect', $emails, array('style' => 'max-width:600px'))->br;
-		UI::button('EmailButton', $link_text, array('style' => 'margin:20px', 'data-url' => $url))->p;
+		UI::select('EmailSelect'.$type_no, $emails, array('style' => 'max-width:600px'))->br;
+		UI::button('EmailButton'.$type_no, $link_text, array('style' => 'margin:20px', 'data-url' => $url))->p;
+		$js = <<<JS
+		$('#EmailButton'+$type_no).button().click(function() {
+			var email = $("#EmailSelect"+$type_no).val();
+			$.get($(this).data('url') + "&Email="+email,function(response) {
+				Adv.msgbox.html(response);
+			});
+			$("#emailBox").dialog("close");
+		});
+JS;
 		if ($return) {
+			HTML::script('null', $js,false);
 			return ob_get_clean();
 		}
-		JS::onload(<<<JS
-		$('#EmailButton').button().click(function() {
-			
-			var email = $("#EmailSelect").val();
-			$.get($(this).data('url') + "&Email="+email,function(response) {
-				
-			})
-		});
-JS
-);
+		JS::onload($js);
 	}
 
 	//

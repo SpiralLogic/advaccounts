@@ -569,7 +569,7 @@ JS
 	//---------------------------------------------------------------------------------------------------
 	function stock_items_list($name, $selected_id = null, $all_option = false, $submit_on_change = false, $opts = array(), $editkey = false) {
 		global $all_items;
-		return Item::addSearchBox($name, array_merge(array('selected' => $selected_id, 'cell' => true), $opts));
+		return Item::addSearchBox($name, array_merge(array('selected' => $selected_id, 'purchase'=>true, 'cell' => true), $opts));
 		$sql = "SELECT stock_id, s.description, c.description, s.inactive, s.editable, s.long_description
 			FROM stock_master s,stock_category c WHERE s.category_id=c.category_id";
 		if ($editkey) {

@@ -37,13 +37,21 @@
 			$company = get_called_class();
 			$company = new $company($id);
 			$emails = $company->getEmailAddresses();
-			if (count($emails) == 0) {
-				return false;
+			if (count($emails) > 0) {
+
+				$types = Config::get('systypes_array');
+				$text = $types[$type];
+
+				$content = submenu_email(_("Email This ") . $text, $type, $trans, null, $emails, 0, true);
+				if ($type == ST_SALESQUOTE || $type == ST_SALESORDER) {
+					$type = ($type == ST_SALESORDER) ? ST_PROFORMA : ST_PROFORMAQ;				$text = $types[$type];
+
+					$content .= submenu_email(_("Email This ") . $text, $type, $trans, null, $emails, 0, true);
+				}
+
+				return $content;
 			}
-			$types = Config::get('systypes_array');
-			$text = $types[$type];
+			return false;
 
-			return submenu_email(_("Email This ") . $text, $type, $trans, null, $emails, 0, true);
 		}
-
 	}
