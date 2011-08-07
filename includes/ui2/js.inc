@@ -88,10 +88,10 @@ JS;
 		}
 
 		public static function render() {
-
-			$js = $content = '';
+			if (AJAX_REFERRER) return HTML::script(null, 'Adv.Events.rebind()', false);
+			$files = $content = '';
 			foreach (self::$_footerFiles as $dir => $files) {
-				$js .= HTML::setReturn(true)->script(array('src' => $dir . '/' . implode(',', $files)), false)->setReturn(false);
+				$files .= HTML::setReturn(true)->script(array('src' => $dir . '/' . implode(',', $files)), false)->setReturn(false);
 			}
 			if (count(self::$_beforeload)) {
 				$content .= implode(";\n", self::$_beforeload);
@@ -103,9 +103,10 @@ JS;
 			if (count(self::$_onload)) {
 				$content .= implode(";\n\n", self::$_onload);
 			}
-			$content .= '});';
-			echo $js;
-			HTML::script(array('content' => $content))->script;
+			$content .= '});
+	';
+		  echo $files;
+		  HTML::script(array('content' => $content))->script;
 
 		}
 
@@ -167,20 +168,20 @@ JS;
 				foreach ($js as $j) self::register($j, $var);
 			} else {
 				array_unshift($var, str_replace(array('<script>', '</script>'), '', $js));
-			}
-		}
+	}
+	}
 
-		protected static function registerFile($file, &$var) {
-			if (is_array($file)) {
-				foreach ($file as $f) self::registerFile($f, $var);
-			} else {
-				$dir = dirname($file);
-				$file = basename($file);
-				if (!isset($var[$dir])) {
-					$var[$dir] = array();
-				}
-				array_push($var[$dir], $file);
-			}
+	protected static function registerFile($file, &$var) {
+	if (is_array($file)) {
+		foreach ($file as $f) self::registerFile($f, $var);
+	} else {
+		$dir = dirname($file);
+		$file = basename($file);
+		if (!isset($var[$dir])) {
+			$var[$dir] = array();
 		}
+		array_push($var[$dir], $file);
+	}
+}
 
 	}

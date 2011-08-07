@@ -16,15 +16,11 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
       $rend->menu_footer($no_menu, $is_index);
       $edits = "editors = " . $Ajax->php2js($Editors) . ";";
       $Ajax->addScript('editors', $edits);
-
-      if (AJAX_REFERRER) return;
       JS::beforeload("_focus = '" . get_post('_focus') . "';_validate = " . $Ajax->php2js($Validate) . ";var $edits");
-
-
       add_user_js_data();
       Messages::showNewMessages();
-
       return JS::render();
+      if (AJAX_REFERRER) return;
 
       global $start22;
       $time = microtime();
