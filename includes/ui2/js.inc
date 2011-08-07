@@ -2,7 +2,6 @@
 include(APP_PATH . 'modules/smartoptimizer/minifiers/js.php');
 	class JS {
 
-
 		private static $_beforeload = array();
 		private static $_onload = array();
 		private static $_onlive = array();
@@ -88,29 +87,32 @@ JS;
 		}
 
 		public static function render() {
-
-			$js = $content = '';
-			foreach (self::$_footerFiles as $dir => $files) {
-				$js .= HTML::setReturn(true)->script(array('src' => $dir . '/' . implode(',', $files)), false)->setReturn(false);
+			if (AJAX_REFERRER) {
+				HTML::script(null, 'Adv.Events.rebind()', false);
+			} else {
+				$files = $content = '';
+				foreach (self::$_footerFiles as $dir => $files) {
+					$files .= HTML::setReturn(true)->script(array('src' => $dir . '/' . implode(',', $files)), false)->setReturn(false);
+				}
+				if (count(self::$_beforeload)) {
+					$content .= implode(";\n", self::$_beforeload);
+				}
+				$content .= ";\n$(function() { ";
+				if (count(self::$_onlive)) {
+					$content .= 'Adv.Events.onload([function() {' . implode("}, function() {", self::$_onlive) . '}]);';
+				}
+				if (count(self::$_onload)) {
+					$content .= implode(";\n\n", self::$_onload);
+				}
+				$content .= '});
+	';
+				echo $files;
+				HTML::script(array('content' => $content))->script;
 			}
-			if (count(self::$_beforeload)) {
-				$content .= implode(";\n", self::$_beforeload);
-			}
-			$content .= ";\n$(function() { ";
-			if (count(self::$_onlive)) {
-				$content .= 'Adv.Events.onload([function() {' . implode("}, function() {", self::$_onlive) . '}]);';
-			}
-			if (count(self::$_onload)) {
-				$content .= implode(";\n\n", self::$_onload);
-			}
-			$content .= '});';
-			echo $js;
-			HTML::script(array('content' => $content))->script;
-
 		}
 
 		public static function arrayToOptions($options = array()) {
-			$options = (object) $options;
+			$options = (object)$options;
 			return json_encode($options);
 		}
 

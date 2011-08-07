@@ -413,7 +413,7 @@ var val = $("#customer_id").val();
 if (val>0) {
 $("#customerBox").html("<iframe src='/contacts/customers.php?popup=1&id="+val+"' width='100%' height='710' scrolling='no' style='border:none' frameborder='0'></iframe>").dialog('open');}
 JS
-);
+		);
 		return combo_input($name, $selected_id, $sql, 'debtor_no', 'name',
 		                   array('format' => '_format_add_curr', 'order' => array('debtor_ref'), 'search_box' => $mode != 0, 'type' => 1, 'size' => 20,
 		                        'spec_option' => $spec_option === true ? _("All Customers") : $spec_option, 'spec_id' => $all_items, 'select_submit' => $submit_on_change, 'async' => $async,
@@ -569,7 +569,7 @@ JS
 	//---------------------------------------------------------------------------------------------------
 	function stock_items_list($name, $selected_id = null, $all_option = false, $submit_on_change = false, $opts = array(), $editkey = false) {
 		global $all_items;
-		return Item::addSearchBox($name, array_merge(array('selected' => $selected_id, 'purchase'=>true, 'cell' => true), $opts));
+		return Item::addSearchBox($name, array_merge(array('selected' => $selected_id, 'purchase' => true, 'cell' => true), $opts));
 		$sql = "SELECT stock_id, s.description, c.description, s.inactive, s.editable, s.long_description
 			FROM stock_master s,stock_category c WHERE s.category_id=c.category_id";
 		if ($editkey) {
@@ -610,7 +610,7 @@ JS;
 	function sales_items_list($name, $selected_id = null, $all_option = false, $submit_on_change = false, $type = '', $opts = array()) {
 		global $all_items;
 		// all sales codes
-		return Item::addSearchBox($name, array_merge(array('selected' => $selected_id, 'type' => $type, 'cell' => true), $opts));
+		return Item::addSearchBox($name, array_merge(array('selected' => $selected_id, 'type' => $type, 'cell' => true, 'sale' => true), $opts));
 		$where = ($type == 'local') ? " AND !i.is_foreign" : ' ';
 		if ($type == 'kits') {
 			$where .= " AND !i.is_foreign AND i.item_code!=i.stock_id ";
@@ -1003,7 +1003,7 @@ JS;
 	function sales_types_list($name, $selected_id = null, $submit_on_change = false, $special_option = false) {
 		$sql = "SELECT id, sales_type, inactive FROM sales_types";
 		return combo_input($name, $selected_id, $sql, 'id', 'sales_type',
-		                   array('spec_option' => $special_option === true ? _("All Sales Types") : $special_option, 'spec_id' => 0, 'select_submit' => $submit_on_change,//	  'async' => false,
+		                   array('spec_option' => $special_option === true ? _("All Sales Types") : $special_option, 'spec_id' => 0, 'select_submit' => $submit_on_change, //	  'async' => false,
 		                   ));
 	}
 

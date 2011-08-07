@@ -137,7 +137,7 @@
 						},
                         select: function( event, ui ) {
 							var value = ui.item.value;
-							
+
 							$(this).val(value.stock_id);
 							value.description = value.long_description
 							$.each(value,function(k,v) {
@@ -164,7 +164,7 @@ JS
 				return $content;
 			}
 			$emailBox = new Dialog('Select Email Address:', 'emailBox', '');
-			$emailBox->addButtons(array('Email' => '$("#EmailButton").trigger("click")', 'Close' => '$(this).dialog("close");'));
+			$emailBox->addButtons(array('Close' => '$("#emailBox").dialog("close");'));
 			$emailBox->setOptions(array('autoopen' => false, 'modal' => true, 'width' => '"500"', 'height' => '"350"', 'resizeable' => false));
 			$emailBox->show();
 
@@ -172,7 +172,7 @@ JS
 	      var emailID= $(this).data('emailid');
 	      $.post('/contacts/emails.php',{type: '$contactType', id: emailID}, function(data) {
 	         \$emailBox.html(data).dialog('open');
-	         
+
 	   },'html');
 	   return false;
 JS;
