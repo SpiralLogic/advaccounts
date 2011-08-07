@@ -257,9 +257,11 @@ function submit_return($name, $value, $title = false)
 function submit_js_confirm($name, $msg)
 {
 	add_js_source(
-		"_validate.$name=function(){ return confirm('"
-		. strtr($msg, array("\n" => '\\n')) . "');};");
+		"_validate.$name=function(){ return confirm('" . strtr($msg, array("\n" => '\\n')) . "');};");
 }
+	
+
+
 
 ;
 //-----------------------------------------------------------------------------------
