@@ -203,7 +203,8 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 				}
 				if ($allow_update) {
 					$myrow = db_fetch($result);
-					$_SESSION['PO']->add_to_order($_POST['line_no'], $_POST['stock_id'], input_num('qty'), $_POST['description'], input_num('price'), $myrow["units"], $_POST['req_del_date'], 0, 0, $_POST['discount'] / 100);
+					$_SESSION['PO']->add_to_order($_POST['line_no'], $_POST['stock_id'], input_num('qty'), $_POST['description'], input_num('price'), $myrow["units"], $_POST['req_del_date'], 0, 0,
+					                              $_POST['discount'] / 100);
 					unset_form_variables();
 					$_POST['stock_id'] = "";
 				}
@@ -339,7 +340,8 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 						$po_lines[$myrow[0]['supplier_id']] = 1;
 					}
 				}
-				$_SESSION['PO']->add_to_order($line_no, $line_item->stock_id, $line_item->quantity, $line_item->item_description, price_decimal_format($myrow[0]['price'], $dec2), $line_item->units, add_days(Today(), 10), 0, 0, 0);
+				$_SESSION['PO']->add_to_order($line_no, $line_item->stock_id, $line_item->quantity, $line_item->item_description, price_decimal_format($myrow[0]['price'], $dec2), $line_item->units,
+				                              add_days(Today(), 10), 0, 0, 0);
 
 			}
 			arsort($po_lines);
@@ -401,15 +403,15 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	if (isset($_SESSION['PO']->supplier_id)) {
 		$supplier_details = $_SESSION['PO']->supplier_details;
 		$content = '<div >' .
-				'<span class="bold">Shipping Address:</span><br>' . $supplier_details['supp_address'] . '</br></br>' .
-				'<span class="bold">Mailing Address:</span><br>' . $supplier_details['address'] . '</br></br>' .
-				'<span class="bold">Phone: </span>' . $supplier_details['phone'] . '</br></br>' .
-				'<span class="bold">Phone2: </span>' . $supplier_details['phone2'] . '</br></br>' .
-				'<span class="bold">Fax: </span>' . $supplier_details['fax'] . '</br></br>' .
-				'<span class="bold">Contact: </span>' . $supplier_details['contact'] . '</br></br>' .
-				'<span class="bold">Email: </span><a href="mailto:' . $supplier_details['email'] . '">' . $supplier_details['email'] . '</a></br></br>' .
-				'<span class="bold">Website: </span><a target="_new" href="http://' . $supplier_details['website'] . '">' . $supplier_details['website'] . '</a></br></br>' .
-				'<span class="bold">Account #: </span>' . $supplier_details['supp_account_no'] . '</br></br></div>';
+		           '<span class="bold">Shipping Address:</span><br>' . $supplier_details['supp_address'] . '</br></br>' .
+		           '<span class="bold">Mailing Address:</span><br>' . $supplier_details['address'] . '</br></br>' .
+		           '<span class="bold">Phone: </span>' . $supplier_details['phone'] . '</br></br>' .
+		           '<span class="bold">Phone2: </span>' . $supplier_details['phone2'] . '</br></br>' .
+		           '<span class="bold">Fax: </span>' . $supplier_details['fax'] . '</br></br>' .
+		           '<span class="bold">Contact: </span>' . $supplier_details['contact'] . '</br></br>' .
+		           '<span class="bold">Email: </span><a href="mailto:' . $supplier_details['email'] . '">' . $supplier_details['email'] . '</a></br></br>' .
+		           '<span class="bold">Website: </span><a target="_new" href="http://' . $supplier_details['website'] . '">' . $supplier_details['website'] . '</a></br></br>' .
+		           '<span class="bold">Account #: </span>' . $supplier_details['supp_account_no'] . '</br></br></div>';
 		$supp_details = new Dialog('Supplier Details:', 'supplier_details', $content);
 		$supp_details->addOpenEvent("td[name=\"supplier_name\"]", 'click');
 		$supp_details->addButton('Close', '$(this).dialog("close")');

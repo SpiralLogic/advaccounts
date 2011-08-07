@@ -23,35 +23,40 @@ $.widget("custom.catcomplete", $.ui.autocomplete, {
 	};
 	(function() {
 		var extender = jQuery.extend, toInit = [];
-		Adv.loader
-				.prependTo(Adv.$content).hide()
-				.ajaxStart(function() { $(this).show() })
-				.ajaxStop(function() { $(this).hide() });
-				this.extend = function(object) { extender(Adv, object)};
+		Adv.loader.prependTo(Adv.$content).hide().ajaxStart(
+				function() {
+					$(this).show()
+				}).ajaxStop(function() {
+					            $(this).hide()
+				            });
+		this.extend = function(object) {
+			extender(Adv, object)
+		};
 	}).apply(Adv);
 	window.Adv = Adv;
 })(window);
 Adv.extend({
 	           msgbox: $('#msgbox').ajaxError(function(event, request, settings) {
 
-			           var status = {
-				           status: false,
-				           message: "Request failed: " + settings.url + "<br>"
-			           };
-			       console.log(settings);
-			       			               Adv.showStatus(status);
+		           var status = {
+			           status: false,
+			           message: "Request failed: " + settings.url + "<br>"
+		           };
+		           console.log(settings);
+		           Adv.showStatus(status);
 
 	           }),
 	           showStatus:function (status) {
 		           Adv.msgbox.empty();
-		           status.class =(status.status) ? 'note_msg':'err_msg';
+		           status.class = (status.status) ? 'note_msg' : 'err_msg';
 		           Adv.msgbox.attr('class', status.class).html(status.message);
 	           },
 	           setFormValue: function (id, value, disabled) {
 		           var el = $('[name="' + id + '"]');
 		           if (!el.length) {
 			           el = $('#' + id);
-		           };
+		           }
+		           ;
 		           $.is
 		           if (typeof disabled === 'boolean') {
 			           el.prop('disabled', disabled);
@@ -107,7 +112,15 @@ Adv.extend({
 				           $.each(events, function(k, v) {
 					           firstBind(v.s, v.t, v.a);
 				           });
+			           },
+			           onLeave: function(msg) {
+				           window.onbeforeunload = (!msg) ? function() {
+					           return null;
+				           } : function () {
+					           return msg;
+				           };
 			           }
 		           }
 	           }())
+
            });
