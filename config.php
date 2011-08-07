@@ -26,9 +26,9 @@
    // Special value 'syslog' can be used for system logger usage (see php manual).
    //$error_logfile = '';
    $error_logfile = '';
-   $debug = 1;
+   $debug = 0;
    $show_sql = 0;
-   $go_debug = 1;
+   $go_debug = 0;
    $pdf_debug = 0;
    $app_title = "Advanced Accounting";
    $version = "2.2.11";
