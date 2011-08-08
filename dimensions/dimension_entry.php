@@ -22,8 +22,6 @@ include_once($path_to_root . "/dimensions/includes/dimensions_db.inc");
 include_once($path_to_root . "/dimensions/includes/dimensions_ui.inc");
 
 $js = "";
-if ($use_date_picker)
-	$js .= get_js_date_picker();
 page(_($help_context = "Dimension Entry"), false, false, "", $js);
 
 //---------------------------------------------------------------------------------------

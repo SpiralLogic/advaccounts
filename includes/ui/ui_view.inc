@@ -738,7 +738,7 @@ JS;
 	}
  
 
-	function get_js_date_picker() {
+/*	function get_js_date_picker() {
 		global $comp_path, $go_debug;
 		$fpath = $comp_path . '/js_cache/' . 'date_picker.js';
 		if (!file_exists($fpath) || $go_debug) {
@@ -1204,7 +1204,7 @@ document.write(\"<div id='CC'></div>\");";
 		}
 		add_js_ufile($fpath);
 		return '';
-	}
+	}*/
 
 	function alert($msg) {
 		echo "\n<script language=\"javascript\"  type=\"text/javascript\">\n" . "<!--\n" . "alert('$msg');\n" . "-->\n" . "</script>\n";

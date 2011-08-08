@@ -153,11 +153,11 @@ print_r($sql);
 			$result = db_query($sql, 'Couldn\'t Get Items');
 			$data = '';
 			while ($row = db_fetch_assoc($result)) {
-				foreach ($row as &$value) {
-					$value = htmlspecialchars_decode($value, ENT_QUOTES);
-				}
+			
 				$data[] = $row;
 			}
+			array_walk_recursive($data,function(&$v) {  $v = htmlspecialchars_decode($v, ENT_QUOTES); });
+
 			return $data;
 		}
 

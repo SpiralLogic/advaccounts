@@ -14,7 +14,9 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		header("Location: " . "/install/index.php");
 
 	$page_security = 'SA_OPEN';
-	
+	global $start22;
+
+
 	include_once("includes/session.inc");
 
 	add_access_extensions();

@@ -19,8 +19,6 @@ include_once($path_to_root . "/includes/faui.inc");
 include_once($path_to_root . "/sales/includes/db/cust_trans_db.inc");
 include_once($path_to_root . "/admin/db/maintenance_db.inc");
 $js = "";
-if ($use_date_picker)
-	$js .= get_js_date_picker();
 page(_($help_context = "Fiscal Years"), false, false, "", $js);
 
 simple_page_mode(true);
