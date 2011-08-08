@@ -19,7 +19,6 @@ include_once($path_to_root . "/includes/prefs/sysprefs.inc");
 include_once($path_to_root . "/includes/db/comments_db.inc");
 include_once($path_to_root . "/includes/db/sql_functions.inc");
 include_once($path_to_root . "/includes/db/audit_trail_db.inc");
-//include_once($path_to_root . "/includes/validation.inc");
 include_once($path_to_root . "/includes/ui2/menuui.inc");
 
 include_once($path_to_root . "/admin/db/users_db.inc");

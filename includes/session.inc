@@ -124,6 +124,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	/**
 	 * @ $_SERVER['DOCUMENT_ROOT'] = document root
 	 */
+	define("AJAX_REFERRER", (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest'));
 	define('APP_PATH', realpath(__DIR__ . '/..') . DIRECTORY_SEPARATOR);
 	add_include_path(array(
 	                      realpath('.') . '/includes/classes',
@@ -147,37 +148,23 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		die("Restricted access");
 	}
 	function __autoload($className) {
-
-		//$className = str_ireplace('_', DIRECTORY_SEPARATOR, $className);
-
-		add_include_path(array(pathinfo(APP_PATH . 'includes/classes/'.$className,PATHINFO_DIRNAME)));
-
-
-			if (!@include(strtolower($className) . '.inc'))
-				@include(strtolower($className) . '.php');
-
+		add_include_path(array(pathinfo(APP_PATH . 'includes/classes/' . $className, PATHINFO_DIRNAME)));
+		if (!@include(strtolower($className) . '.inc'))
+			@include(strtolower($className) . '.php');
 	}
 
 	include(APP_PATH . "includes/current_user.inc");
 	include(APP_PATH . "frontaccounting.php");
-
 	include(APP_PATH . "admin/db/security_db.inc");
 	include(APP_PATH . "includes/lang/language.php");
 	include(APP_PATH . "config_db.php");
 	include(APP_PATH . "includes/ajax.inc");
 	include(APP_PATH . "includes/faui.inc");
 
-	/*
-	Uncomment the setting below when using FA on shared hosting
-	to avoid unexpeced session timeouts.
-	Make sure this directory exists and is
-	   writable!
- */
 	//ini_set('session.save_path', dirname(__FILE__).'/../tmp/');
 	ini_set('session.gc_maxlifetime', 36000); // 10hrs
 	session_name('FA' . md5(dirname(__FILE__)));
 	session_start();
-	// this is to fix the "back-do-you-want-to-refresh" issue - thanx PHPFreaks
 	header("Cache-control: private");
 	get_text_init();
 	// Page Initialisation
@@ -186,11 +173,13 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		$_SESSION['language'] = new language($l['name'], $l['code'], $l['encoding'], isset($l['rtl']) ? 'rtl' : 'ltr');
 	}
 	$_SESSION['language']->set_language($_SESSION['language']->code);
+
 	// include $Hooks object if locale file exists
 	if (file_exists(APP_PATH . "lang/" . $_SESSION['language']->code . "/locale.inc")) {
 		include(APP_PATH . "lang/" . $_SESSION['language']->code . "/locale.inc");
 		$Hooks = new Hooks();
 	}
+
 	include(APP_PATH . "includes/access_levels.inc");
 	include(APP_PATH . "config.php");
 	include(APP_PATH . "includes/main.inc");
@@ -223,7 +212,6 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	if (!isset($_SESSION["wa_current_user"])) {
 		$_SESSION["wa_current_user"] = new current_user();
 	}
-	define("AJAX_REFERRER", (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest'));
 
 	// logout.php is the only page we should have always
 	// accessable regardless of access level and current login status.
@@ -234,20 +222,16 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 			if (!isset($_POST["user_name_entry_field"]) or $_POST["user_name_entry_field"] == "") {
 				// strip ajax marker from uri, to force synchronous page reload
 				$_SESSION['timeout'] = array('uri' => preg_replace('/JsHttpRequest=(?:(\d+)-)?([^&]+)/s', '', @$_SERVER['REQUEST_URI']), 'post' => $_POST);
-				if (AJAX_REFERRER) {
-					echo json_encode(array("LOGGED_OUT" => true));
-					exit;
-				}
 				include(APP_PATH . "access/login.php");
-				if (in_ajax()) {
+				if (in_ajax() || AJAX_REFERRER) {
 					$Ajax->activate('_page_body');
 				}
 				exit;
-			}
-			else {
-				$succeed = isset($db_connections[$_POST["company_login_name"]]) && $_SESSION["wa_current_user"]->login($_POST["company_login_name"],
-				                                                                                                       $_POST["user_name_entry_field"], md5($_POST["password"]));
+			} else {
+				$succeed = isset($db_connections[$_POST["company_login_name"]]) &&
+				           $_SESSION["wa_current_user"]->login($_POST["company_login_name"], $_POST["user_name_entry_field"], md5($_POST["password"]));
 				// select full vs fallback ui mode on login
+
 				$_SESSION["wa_current_user"]->ui_mode = $_POST['ui_mode'];
 				if (!$succeed) {
 					// Incorrect password
@@ -256,8 +240,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 				$lang = &$_SESSION['language'];
 				$lang->set_language($_SESSION['language']->code);
 			}
-		}
-		else {
+		} else {
 			set_global_connection();
 		}
 		if (!$_SESSION["wa_current_user"]->old_db) {
@@ -275,6 +258,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 			ini_set("display_errors", "On");
 		}
 	}
+
 	// POST vars cleanup needed for direct reuse.
 	// We quote all values later with db_escape() before db update.
 	array_walk($_POST, function(&$v) {
