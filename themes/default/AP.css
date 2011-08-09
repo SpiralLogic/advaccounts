@@ -40,7 +40,7 @@
 	border:      1px solid #7096AB;
 	box-shadow:  none;
 }
-#wrapper {
+#wrapper, #results {
 	width:      100%;
 	background: #fff url(images/wrapbg2.gif) repeat-x;
 

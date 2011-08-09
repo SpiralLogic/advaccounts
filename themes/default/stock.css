@@ -46,7 +46,7 @@
 	box-shadow:  none;
 }
 /* main wrapper */
-#wrapper {
+#wrapper, #results {
 	width:      100%;
 	background: #fff url(images/wrapbg3.gif) repeat-x;
 	
