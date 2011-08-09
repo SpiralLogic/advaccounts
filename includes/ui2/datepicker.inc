@@ -9,7 +9,6 @@
 
 	class DatePicker {
 
-
 		protected $options;
 		protected $name;
 
