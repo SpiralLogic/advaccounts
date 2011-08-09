@@ -28,9 +28,9 @@
 	include_once(APP_PATH . "sales/includes/db/sales_types_db.inc");
 	include_once(APP_PATH . "reporting/includes/reporting.inc");
 	set_page_security(@$_SESSION['Items']->trans_type,
-		array(ST_SALESORDER => 'SA_SALESORDER', ST_SALESQUOTE => 'SA_SALESQUOTE', ST_CUSTDELIVERY => 'SA_SALESDELIVERY', ST_SALESINVOICE => 'SA_SALESINVOICE'),
-		array('NewOrder' => 'SA_SALESORDER', 'ModifySalesOrder' => 'SA_SALESORDER', 'NewQuotation' => 'SA_SALESQUOTE', 'ModifyQuotationNumber' => 'SA_SALESQUOTE',
-			'NewDelivery' => 'SA_SALESDELIVERY', 'NewInvoice' => 'SA_SALESINVOICE'));
+	                  array(ST_SALESORDER => 'SA_SALESORDER', ST_SALESQUOTE => 'SA_SALESQUOTE', ST_CUSTDELIVERY => 'SA_SALESDELIVERY', ST_SALESINVOICE => 'SA_SALESINVOICE'),
+	                  array('NewOrder' => 'SA_SALESORDER', 'ModifySalesOrder' => 'SA_SALESORDER', 'NewQuotation' => 'SA_SALESQUOTE', 'ModifyQuotationNumber' => 'SA_SALESQUOTE',
+	                       'NewDelivery' => 'SA_SALESDELIVERY', 'NewInvoice' => 'SA_SALESINVOICE'));
 	$js = '';
 	if ($use_popup_windows) {
 		$js .= get_js_open_window(900, 500);
@@ -140,7 +140,7 @@
 		$customer = new Customer($_SESSION['Jobsboard']->customer_id);
 		$emails = $customer->getEmailAddresses();
 		display_notification_centered(sprintf(_($trans_name . " # %d has been " . ($update ? "updated!"
-							: "added!")), $order_no));
+				                                        : "added!")), $order_no));
 		submenu_view(_("&View This " . $trans_name), $trans_type, $order_no);
 		if ($edit) {
 			submenu_option(_("&Edit This " . $trans_name), "/sales/sales_order_entry.php?" . ($trans_type == ST_SALESORDER
@@ -435,7 +435,9 @@
 			set_focus('price');
 			return false;
 		}
-		elseif (!$_SESSION["wa_current_user"]->can_access('SA_SALESCREDIT') && isset($_POST['LineNo']) && isset($_SESSION['Items']->line_items[$_POST['LineNo']]) && !check_num('qty', $_SESSION['Items']->line_items[$_POST['LineNo']]->qty_done)) {
+		elseif (!$_SESSION["wa_current_user"]->can_access('SA_SALESCREDIT') && isset($_POST['LineNo']) && isset($_SESSION['Items']->line_items[$_POST['LineNo']]) && !check_num('qty',
+		                                                                                                                                                                        $_SESSION['Items']->line_items[$_POST['LineNo']]->qty_done)
+		) {
 			set_focus('qty');
 			display_error(_("You attempting to make the quantity ordered a quantity less than has already been delivered. The quantity delivered cannot be modified retrospectively."));
 			return false;
@@ -444,7 +446,8 @@
 			$qoh = get_qoh_on_date($_POST['stock_id'], $_POST['Location'], $_POST['OrderDate']);
 			if (input_num('qty') > $qoh) {
 				$stock = get_item($_POST['stock_id']);
-				display_error(_("The delivery cannot be processed because there is an insufficient quantity for item:") . " " . $stock['stock_id'] . " - " . $stock['description'] . " - " . _("Quantity On Hand") . " = " . number_format2($qoh, get_qty_dec($_POST['stock_id'])));
+				display_error(_("The delivery cannot be processed because there is an insufficient quantity for item:") . " " . $stock['stock_id'] . " - " . $stock['description'] . " - " . _("Quantity On Hand") . " = " . number_format2($qoh,
+				                                                                                                                                                                                                                            get_qty_dec($_POST['stock_id'])));
 				return false;
 			}
 			return true;

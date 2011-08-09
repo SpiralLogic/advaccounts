@@ -10,7 +10,6 @@
 
 	class UI extends HTML {
 
-
 		static function button($id = false, $content = false, $attr = array()) {
 			if ($id) {
 				$attr['id'] = $id;
@@ -81,8 +80,8 @@
 					      'selected' => '',
 					      'cell' => false,
 					      'inactive' => false,
-						'purchase' => false,
-						'sale' => false,
+					      'purchase' => false,
+					      'sale' => false,
 					      'js' => '',
 					      'sales_type' => 1,
 					      'no_sale' => false,
@@ -113,45 +112,41 @@
 				HTML::td();
 			}
 
-			JS::addLive(<<<JS
+			$js = <<<JS
 	\$$id = $("#$id").catcomplete({
-                        delay: 0,
-					    autoFocus: true,
-                        minLength: 0,
-                        source: function( request, response ) {
-							Adv.lastXhr = $.ajax({
+				delay: 0,
+				autoFocus: true,
+				minLength: 0,
+				source: function( request, response ) {
+						Adv.lastXhr = $.ajax({
 								url: "$url",
 								dataType: "json",
 								data: {id: '$id',term: request.term},
 								success: function( data,status,xhr ) {
 								if ( xhr === Adv.lastXhr ) {
-									response($.map( data, function( item ) {
-										return {
-											label: item.stock_id+": "+item.description,
-											value: item,
-											category: item.category
-										}
-									}))}
-								}
-							})
+										response($.map( data, function( item ) {
+												return {
+														label: item.stock_id+": "+item.description,
+														value: item,
+														category: item.category
+												}
+										}))
+								}}})
 						},
-                        select: function( event, ui ) {
-							var value = ui.item.value;
+            select: function( event, ui ) {
+								var value = ui.item.value;
+								$(this).val(value.stock_id);
+								value.description = value.long_description;
+								$.each(value,function(k,v) {Adv.setFormValue(k,v);});
+								$desc_js
+								return false;
+						},
+						focus: function(){return false;}}
+				);
+	return function () {return \$$id.catcomplete('destroy').focus() };
+JS;
+			JS::addLive($js);
 
-							$(this).val(value.stock_id);
-							value.description = value.long_description
-							$.each(value,function(k,v) {
-								Adv.setFormValue(k,v);
-                            });
-                            $desc_js
-                            return false;
-                        },
-                         focus: function(){
-							return false;
-                        }});
-                     return  function () {return \$$id.catcomplete('destroy').focus() };
-JS
-);
 			return HTML::setReturn(false);
 		}
 
