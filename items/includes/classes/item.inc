@@ -128,7 +128,6 @@
 			LEFT JOIN (SELECT SUM(purch_order_details.quantity_ordered - purch_order_details.quantity_received) AS onorder , purch_orders.into_stock_location AS loc_code
 				FROM purch_order_details, purch_orders	WHERE purch_order_details.order_no= purch_orders.order_no AND purch_order_details.item_code = $id
 				GROUP BY purch_orders.into_stock_location) p ON p.loc_code=l.loc_code";
-print_r($sql);
 			$result = db_query($sql, 'Could not get item stock levels');
 			while ($row = db_fetch_assoc($result)) {
 				$this->stockLevels[] = $row;
@@ -166,6 +165,7 @@ print_r($sql);
 
 			$term = explode(' ', $term);
 			$term1 = db_escape(trim($term[0]) . '%');
+			$term12=db_escape('%'.trim($term[0]));
 
 			$term2 = implode(' AND long_description LIKE ', array_map(function($v) {
 					                                              return db_escape('%' . trim($v) . '%');
@@ -198,8 +198,9 @@ print_r($sql);
 			}
 			$select = ($o['select']) ? $o['select'] : ' ';
 			$sql = "SELECT DISTINCT $select  $stock_id ,s.description, c.description as category, s.long_description , p.price, editable
-					FROM ((SELECT * FROM stock_master WHERE stock_id LIKE $term1 $where ORDER BY stock_id LIMIT 1)
-               UNION (SELECT * FROM stock_master WHERE  long_description LIKE $term2 $where ORDER BY category_id, long_description LIMIT 30))
+						FROM ((SELECT * FROM stock_master WHERE stock_id LIKE $term1 $where ORDER BY stock_id LIMIT 1)
+						UNION ((SELECT * FROM stock_master WHERE stock_id LIKE $term12 $where ORDER BY stock_id LIMIT 1))
+            UNION (SELECT * FROM stock_master WHERE  long_description LIKE $term2 $where ORDER BY category_id, long_description LIMIT 30))
                s, stock_category c, item_codes i $prices WHERE  s.stock_id = p.stock_id  AND s.category_id = c.category_id $where2 $sales_type $order";
 
 			$result = db_query($sql, 'Couldn\'t Get Items');
