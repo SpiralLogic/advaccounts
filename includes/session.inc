@@ -9,6 +9,7 @@ but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
  ***********************************************************************/
+
 	function output_html($text) {
 		global $before_box, $Ajax, $messages;
 		// Fatal errors are not send to error_handler,
@@ -58,10 +59,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 			exit;
 		}
 	}
-$time = microtime();
-$time = explode(' ', $time);
-$time = $time[1] + $time[0];
-$start22 = $time;
+
 	/*
 	Helper function for setting page security level depeding on
 	GET start variable and/or some value stored in session variable.
@@ -128,46 +126,46 @@ $start22 = $time;
 	 */
 	define('APP_PATH', realpath(__DIR__ . '/..') . DIRECTORY_SEPARATOR);
 	add_include_path(array(
-			realpath('.') . '/includes/classes',
-			APP_PATH . 'includes/ui2',
-			APP_PATH . 'includes/ui',
-			APP_PATH . 'includes',
-			APP_PATH . 'includes/classes',
-			APP_PATH . 'contacts/includes/classes',
-                         APP_PATH . 'items/includes/classes',
-                         APP_PATH . 'reporting/includes'));
+	                      realpath('.') . '/includes/classes',
+	                      APP_PATH . 'includes/ui2',
+	                      APP_PATH . 'includes/ui',
+	                      APP_PATH . 'includes',
+	                      APP_PATH . 'includes/classes',
+	                      APP_PATH . 'contacts/includes/classes',
+	                      APP_PATH . 'items/includes/classes',
+	                      APP_PATH . 'reporting/includes'));
 
 	if (preg_match('/Chrome/i', $_SERVER['HTTP_USER_AGENT'])) {
-		include(APP_PATH . 'includes/fb.php');
-		FB::useFile(APP_PATH . 'tmp/chromelogs', '/tmp/chromelogs');
+		//		include(APP_PATH . 'includes/fb.php');
+		//	FB::useFile(APP_PATH . 'tmp/chromelogs', '/tmp/chromelogs');
 	}
 	else {
-		include(APP_PATH . 'includes/FirePHP/FirePHP.class.php');
-		include(APP_PATH . 'includes/FirePHP/fb.php');
+		//	include(APP_PATH . 'includes/FirePHP/FirePHP.class.php');
+		//	include(APP_PATH . 'includes/FirePHP/fb.php');
 	}
 	if (isset($_GET['path_to_root']) || isset($_POST['path_to_root'])) {
 		die("Restricted access");
 	}
 	function __autoload($className) {
-      if (!@include(strtolower($className) . '.inc'))
-         if (!@include(strtolower($className) . '.php')) {
-            $className = str_ireplace('_',DIRECTORY_SEPARATOR,$className);
-            $file = APP_PATH . 'includes/classes/' . $className.'.php';
-                  include(strtolower($file));
 
-			}
+		//$className = str_ireplace('_', DIRECTORY_SEPARATOR, $className);
 
+		add_include_path(array(pathinfo(APP_PATH . 'includes/classes/'.$className,PATHINFO_DIRNAME)));
+
+
+			if (!@include(strtolower($className) . '.inc'))
+				@include(strtolower($className) . '.php');
 
 	}
 
 	include(APP_PATH . "includes/current_user.inc");
 	include(APP_PATH . "frontaccounting.php");
+
 	include(APP_PATH . "admin/db/security_db.inc");
 	include(APP_PATH . "includes/lang/language.php");
 	include(APP_PATH . "config_db.php");
 	include(APP_PATH . "includes/ajax.inc");
 	include(APP_PATH . "includes/faui.inc");
-
 
 	/*
 	Uncomment the setting below when using FA on shared hosting
@@ -248,7 +246,7 @@ $start22 = $time;
 			}
 			else {
 				$succeed = isset($db_connections[$_POST["company_login_name"]]) && $_SESSION["wa_current_user"]->login($_POST["company_login_name"],
-					$_POST["user_name_entry_field"], md5($_POST["password"]));
+				                                                                                                       $_POST["user_name_entry_field"], md5($_POST["password"]));
 				// select full vs fallback ui mode on login
 				$_SESSION["wa_current_user"]->ui_mode = $_POST['ui_mode'];
 				if (!$succeed) {

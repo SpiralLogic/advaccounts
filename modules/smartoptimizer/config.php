@@ -10,7 +10,7 @@
 	$settings['charSet'] = 'utf-8';
 
 	//Show error messages if any error occurs (true or false)
-	$settings['debug'] = true;
+	$settings['debug'] = false;
 
 	//use this to set gzip compression On or Off
 	$settings['gzip'] = true;
@@ -55,5 +55,5 @@
 	$settings['clientCache'] = true;
 
 	//Setting this to false will force the browser to use cached files without checking for changes.
-	$settings['clientCacheCheck'] = false;
+	$settings['clientCacheCheck'] = true;
 ?>

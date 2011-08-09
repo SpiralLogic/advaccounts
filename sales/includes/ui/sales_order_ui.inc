@@ -441,7 +441,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		else // prepare new line
 		{
 			sales_items_list_cells(null, 'stock_id', null, false, false, array('description' => ''));
-			
+
 			//Item::addSearchBox();
 			if (list_updated('stock_id')) {
 				$Ajax->activate('price');
@@ -520,7 +520,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 				$Ajax->activate('items_table');
 			}
 			date_row($delname, 'delivery_date', $order->trans_type == ST_SALESORDER ? _('Enter requested day of delivery') : $order->trans_type == ST_SALESQUOTE
-						? _('Enter Valid until Date') : '');
+					                 ? _('Enter Valid until Date') : '');
 			text_row(_("Deliver To:"), 'deliver_to', $order->deliver_to, 40, 40, _('Additional identifier for delivery e.g. name of receiving person'));
 			textarea_row("<a href='#'>Address:</a>", 'delivery_address', $order->delivery_address, 35, 5, _('Delivery address. Default is address of customer branch'), null, 'id="address_map"');
 			if (strlen($order->delivery_address) > 10) {

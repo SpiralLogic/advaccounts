@@ -15,8 +15,6 @@ $path_to_root = "../..";
 include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 
 $js = "";
-if ($use_date_picker)
-	$js .= get_js_date_picker();
 page(_($help_context = "View Dimension"), true, false, "", $js);
 
 include_once($path_to_root . "/includes/date_functions.inc");

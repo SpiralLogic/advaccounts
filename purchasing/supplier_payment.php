@@ -23,8 +23,7 @@ include_once($path_to_root . "/reporting/includes/reporting.inc");
 $js = "";
 if ($use_popup_windows)
 	$js .= get_js_open_window(900, 500);
-if ($use_date_picker)
-	$js .= get_js_date_picker();
+
 
 JS::headerFile('/js/payalloc.js');
 

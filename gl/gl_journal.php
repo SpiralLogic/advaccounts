@@ -25,8 +25,7 @@ include_once($path_to_root . "/gl/includes/gl_ui.inc");
 $js = '';
 if ($use_popup_windows)
 	$js .= get_js_open_window(800, 500);
-if ($use_date_picker)
-	$js .= get_js_date_picker();
+
 
 if (isset($_GET['ModifyGL'])) {
 	$_SESSION['page_title'] = sprintf(_("Modifying Journal Transaction # %d."),

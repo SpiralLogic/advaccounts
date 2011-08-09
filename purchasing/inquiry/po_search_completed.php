@@ -19,9 +19,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	if ($use_popup_windows) {
 		$js .= get_js_open_window(900, 500);
 	}
-	if ($use_date_picker) {
-		$js .= get_js_date_picker();
-	}
+
 
 	page(_($help_context = "Search Purchase Orders"), @$_REQUEST['frame'], false, "", $js);
 
