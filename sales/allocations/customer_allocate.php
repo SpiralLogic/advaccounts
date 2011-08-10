@@ -22,8 +22,8 @@ include_once($path_to_root . "/sales/includes/sales_db.inc");
 $js = "";
 if ($use_popup_windows)
 	$js .= get_js_open_window(900, 500);
-
-add_js_file('allocate.js');
+ 
+JS::footerFile('/js/allocate.js');
 
 page(_($help_context = "Allocate Customer Payment or Credit Note"), false, false, "", $js);
 

@@ -24,7 +24,7 @@ $js = "";
 if ($use_popup_windows)
 	$js .= get_js_open_window(900, 500);
 
-add_js_file('allocate.js');
+JS::footerFile('allocate.js');
 
 page(_($help_context = "Allocate Supplier Payment or Credit Note"), false, false, "", $js);
 

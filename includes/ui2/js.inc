@@ -115,12 +115,13 @@ JS;
 		self::onload("$('$selector').bind('$type',function(e){ {$action} });");
 	 }
 
-	 public static function addLiveEvent($selector, $type, $action, $delegate = false) {
+	 public static function addLiveEvent($selector, $type, $action, $delegate = false,$cached=false) {
 
 		if (!$delegate) {
 		  return self::addLive("$('$selector').bind('$type',function(e){ {$action} });");
 		}
-		self::register("$('$delegate').delegate('$selector','$type',function(e){ {$action} } )", self::$_onload);
+		$cached= (!$cached) ? "$('$delegate')":$delegate;
+		self::register($cached.".delegate('$selector','$type',function(e){ {$action} } )", self::$_onload);
 	 }
 
 	 public static function addLive($action) {
