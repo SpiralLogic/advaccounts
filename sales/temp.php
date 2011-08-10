@@ -30,12 +30,22 @@
   page(_($help_context = "Customer Payment Entry"), @$_REQUEST['frame'], false, "", $js);
 
 $_POST=$_GET;
-  $invoice = new Cart(ST_SALESINVOICE,0);
-  $invoice->document_date=$_POST['date'];
-  $invoice->comments = $_POST['memo'];
-  $invoice->post = get_sales_point(user_pos());
-  get_customer_details_to_order(&$invoice,$_POST['customer_id'],$_POST['branch_code']);
-  
+		  global $Refs;
+		  processing_start();
+		  $doc_type = $type = ST_SALESINVOICE;
+		  	 $doc_type = ST_SALESORDER;
+			 $doc = new Cart(ST_SALESINVOICE, 0);
+			 $doc->trans_type = $type;
+			 $doc->trans_no = 0;
+			 $doc->document_date = new_doc_date();
+				  $doc->pos = user_pos();
+				  $pos = get_sales_point($doc->pos);
+				  $doc->cash = $pos['cash_sale'];
+
+				  $doc->due_date = $doc->document_date;
+			 $doc->reference = $Refs->get_next($doc->trans_type);
+		  copy_from_cart();
+
   var_dump($invoice);
   //----------------------------------------------------------------------------------------------
 
