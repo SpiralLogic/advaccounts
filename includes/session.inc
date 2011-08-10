@@ -9,6 +9,8 @@ but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
  ***********************************************************************/
+  global $start22;
+$start22 = microtime();
 
 	function output_html($text) {
 		global $before_box, $Ajax, $messages;

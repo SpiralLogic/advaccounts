@@ -188,7 +188,6 @@
 				}
 				$stock_id = ' s.stock_id, p.supplier_description ';
 				$prices = ", purch_data p ";
-				$order .= ' ORDER BY stock_id, p.supplier_id DESC';
 			} else {
 				$stock_id = " s.stock_id ";
 				$prices = ", prices p";
@@ -201,7 +200,7 @@
 						FROM ((SELECT * FROM stock_master WHERE stock_id LIKE $term1 $where ORDER BY stock_id LIMIT 1)
 						UNION ((SELECT * FROM stock_master WHERE stock_id LIKE $term12 $where ORDER BY stock_id LIMIT 1))
             UNION (SELECT * FROM stock_master WHERE  long_description LIKE $term2 $where ORDER BY category_id, long_description LIMIT 30))
-               s, stock_category c, item_codes i $prices WHERE  s.stock_id = p.stock_id  AND s.category_id = c.category_id $where2 $sales_type $order";
+               s, stock_category c, item_codes i $prices WHERE  s.stock_id = p.stock_id  AND s.category_id = c.category_id $where2 $sales_type";
 
 			$result = db_query($sql, 'Couldn\'t Get Items');
 			$data = '';

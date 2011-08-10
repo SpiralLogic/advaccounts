@@ -95,7 +95,7 @@
          $js .= '});';
          if (!empty($js)) {
             JS::addEvents($this->events);
-	         JS::onload($js);
+	         JS::addLive($js);
          }
       }
 
