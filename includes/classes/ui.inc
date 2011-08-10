@@ -114,10 +114,11 @@
 
 			$js = <<<JS
 	\$$id = $("#$id").catcomplete({
-				delay: 0,
+				delay: 20,
 				autoFocus: true,
 				minLength: 0,
 				source: function( request, response ) {
+						if (Adv.lastXhr)  Adv.lastXhr.abort();
 						Adv.lastXhr = $.ajax({
 								url: "$url",
 								dataType: "json",
