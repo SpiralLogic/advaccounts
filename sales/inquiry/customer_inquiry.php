@@ -163,7 +163,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	}
 
 	function email_link($row) {
-		if ($row['type'] == ST_CUSTPAYMENT  || $row['type'] == ST_CUSTDELIVERY) return;
+		if ($row['type'] != ST_SALESINVOICE) return;
 		return UI::emailDialogue('c', $row['debtor_no'] . '-' . $row['type'] . '-' . $row['trans_no']);
 	}
 
@@ -269,9 +269,16 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	}
 	//------------------------------------------------------------------------------------------------
 	db_query("set @bal:=0");
-	$cols = array(_("Type") => array('fun' => 'systype_name', 'ord' => ''), _("#") => array('fun' => 'trans_view', 'ord' => ''), _("Order") => array('fun' => 'order_view'),
-	              _("Reference") => array('ord' => ''), _("Date") => array('name' => 'tran_date', 'type' => 'date', 'ord' => 'desc'), _("Due Date") => array('type' => 'date', 'fun' => 'due_date'),
-	              _("Customer") => array('ord' => ''), _("customer_id") => 'skip', _("Branch") => array('ord' => ''), _("Currency") => array('align' => 'center'),
+	$cols = array(_("Type") => array('fun' => 'systype_name', 'ord' => ''),
+					  _("#") => array('fun' => 'trans_view', 'ord' => ''),
+					  _("Order") => array('fun' => 'order_view'),
+	              _("Reference") => array('ord' => ''),
+					  _("Date") => array('name' => 'tran_date', 'type' => 'date', 'ord' => 'desc'),
+					  _("Due Date") => array('type' => 'date', 'fun' => 'due_date'),
+	              _("Customer") => array('ord' => ''),
+					  
+					  _("Branch") => array('ord' => ''),
+					  _("Currency") => array('align' => 'center'),
 	              _("Debit") => array('align' => 'right', 'fun' => 'fmt_debit'), _("Credit") => array('align' => 'right', 'insert' => true, 'fun' => 'fmt_credit'),
 	              _("RB") => array('align' => 'right', 'type' => 'amount'), array('insert' => true, 'fun' => 'gl_view'), array('insert' => true, 'align' => 'center', 'fun' => 'credit_link'),
 	              array('insert' => true, 'align' => 'center', 'fun' => 'edit_link'), array('insert' => true, 'align' => 'center', 'fun' => 'email_link'),

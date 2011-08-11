@@ -61,7 +61,7 @@
             Searchboxtimeout = window.setTimeout($this.doSearch, 1000);
          }
          if (event.type != 'keyup') {
-            searchInput.detach().val('');
+            searchInput.val('').detach();
             $current.show();
             $this.sidemenuOn();
          }

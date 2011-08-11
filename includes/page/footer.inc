@@ -21,16 +21,6 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
       Messages::showNewMessages();
        JS::render();
       if (AJAX_REFERRER) return;
-
-      global $start22,$mem22;
-      $time = microtime();
-      $time = explode(' ', $time);
-      $time = $time[1] + $time[0];
-      $finish = $time;
-      $total_time = getReadableTime($finish - $start22);
-      $generateinfo = 'Memory Usage: ' . convert($mem22) . "<br>\n" .
-                      'Memory Peak Usage: ' . convert(memory_get_peak_usage()) . "<br>" . 'Page generated in ' . $total_time . ' seconds.' . "\n";
-      HTML::div('generateinfo', $generateinfo, false);
       echo "</div></body>";
       get_websales();
       echo   "</html>\n";

@@ -13,7 +13,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
   Write/update customer payment.
 */
 function write_customer_payment($trans_no, $customer_id, $branch_id, $bank_account,
-	$date_, $ref, $amount, $discount, $memo_, $rate = 0, $charge = 0)
+	$date_, $ref, $amount, $discount, $memo_, $rate = 0, $charge = 0,$tax=0)
 {
 	global $Refs;
 
@@ -22,7 +22,7 @@ function write_customer_payment($trans_no, $customer_id, $branch_id, $bank_accou
 	$company_record = get_company_prefs();
 
 	$payment_no = write_customer_trans(ST_CUSTPAYMENT, $trans_no, $customer_id, $branch_id,
-									   $date_, $ref, $amount, $discount, 0, 0, 0, 0, 0, 0, 0, "", 0, $rate);
+									   $date_, $ref, $amount, $discount, $tax, 0, 0, 0, 0, 0, 0, "", 0, $rate);
 
 	$bank_gl_account = get_bank_gl_account($bank_account);
 
@@ -31,6 +31,7 @@ function write_customer_payment($trans_no, $customer_id, $branch_id, $bank_accou
 		void_bank_trans(ST_CUSTPAYMENT, $trans_no, true);
 		void_gl_trans(ST_CUSTPAYMENT, $trans_no, true);
 		void_cust_allocations(ST_CUSTPAYMENT, $trans_no, $date_);
+
 	}
 	$total = 0;
 	/* Bank account entry first */
@@ -44,6 +45,8 @@ function write_customer_payment($trans_no, $customer_id, $branch_id, $bank_accou
 
 		$debtors_account = $branch_data["receivables_account"];
 		$discount_account = $branch_data["payment_discount_account"];
+	  $tax_group = get_tax_group($branch_data["payment_discount_account"]);
+
 
 	} else {
 		$debtors_account = $company_record["debtors_act"];
@@ -70,6 +73,12 @@ function write_customer_payment($trans_no, $customer_id, $branch_id, $bank_accou
 										$charge_act, 0, 0, $charge, $customer_id,
 										"Cannot insert a GL transaction for the payment bank charge debit", $rate);
 	}
+	if ($tax !=0) {
+
+	  $taxes =  get_tax_group_items($tax_group);
+	  
+	}
+
 	/*Post a balance post if $total != 0 */
 	add_gl_balance(ST_CUSTPAYMENT, $payment_no, $date_, -$total, PT_CUSTOMER, $customer_id);
 
@@ -77,6 +86,7 @@ function write_customer_payment($trans_no, $customer_id, $branch_id, $bank_accou
 	add_bank_trans(ST_CUSTPAYMENT, $payment_no, $bank_account, $ref,
 				   $date_, $amount - $charge, PT_CUSTOMER, $customer_id,
 				   get_customer_currency($customer_id), "", $rate);
+
 
 	add_comments(ST_CUSTPAYMENT, $payment_no, $date_, $memo_);
 

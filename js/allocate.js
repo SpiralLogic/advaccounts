@@ -26,7 +26,6 @@ function blur_alloc(i)
 
 	var total = get_amount('total_allocated', 1) + change;
 	left -= change;
-
 	price_format('left_to_allocate', left, user.pdec, 1, 1);
 	price_format('total_allocated', total, user.pdec, 1, 1);
 }
@@ -45,6 +44,7 @@ function allocate_all(doc)
 		amount += left;
 		left = 0;
 	}
+
 	price_format('amount' + doc, amount, user.pdec);
 	price_format('left_to_allocate', left, user.pdec, 1, 1);
 	price_format('total_allocated', total, user.pdec, 1, 1);
@@ -65,6 +65,8 @@ var allocations = {
 	{
 		e.onblur = function()
 		{
+		  
+
 			blur_alloc(this);
 		};
 		e.onfocus = function()
