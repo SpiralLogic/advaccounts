@@ -21,29 +21,26 @@ $.widget("custom.catcomplete", $.ui.autocomplete, {
 	 fieldsChanged: 0,
 	 generateinfo: '',
 	 lastXhr:'',
-o:{}
+	 o:{}
   };
   (function() {
-	 var extender = jQuery.extend, toInit = [];this.o.wrapper = $("#wrapper");
-	 this.loader.prependTo(Adv.$content).hide().ajaxStart(
-	  function() {
-		 $(this).show()
-	  }).ajaxStop(function() {
-						 $(this).hide()
-					  });
-	 this.extend = function(object) {
-		extender(Adv, object)
-	 };
+	 var extender = jQuery.extend, toInit = [];
+	 this.o.wrapper = $("#wrapper");
+	 this.loader.prependTo(Adv.$content).hide()
+	  .ajaxStart(function() {$(this).show()})
+	  .ajaxStop(function() {$(this).hide()});
+	 this.extend = function(object) {extender(Adv, object)};
   }).apply(Adv);
   window.Adv = Adv;
 })(window);
 Adv.extend({
 				 msgbox: $('#msgbox').ajaxError(function(event, request, settings) {
+					if (request.statusText == "abort") return;
 					var status = {
 					  status: false,
 					  message: "Request failed: " + settings.url + "<br>"
 					};
-					console.log(settings);
+					console.log([event,request,settings]);
 					Adv.showStatus(status);
 
 				 }),
@@ -57,8 +54,6 @@ Adv.extend({
 					if (!el.length) {
 					  el = $('#' + id);
 					}
-					;
-					$.is
 					if (typeof disabled === 'boolean') {
 					  el.prop('disabled', disabled);
 					}
@@ -84,7 +79,8 @@ Adv.extend({
 				 Events: (function() {
 					var events = [],
 					 onload = [],
-					 toClean = [];
+					 toClean = [],
+					 toFocus;
 					var firstBind = function (s, t, a) {
 					  $(s).bind(t, a);
 					};
@@ -94,16 +90,18 @@ Adv.extend({
 						 firstBind(selector, types, action);
 					  },
 					  onload: function(actions) {
-						 onload = actions;
+						 var c = onload.length > 0;
 						 $.each(actions, function(k, v) {
+							onload[onload.length] = v;
+							if (c) return;
 							var result = v();
 							if (result !== undefined) {
 							  toClean[toClean.length] = result;
 							}
 						 });
 					  },
-
 					  rebind: function() {
+						 console.log(onload.length);
 						 $.each(toClean, function(k, v) {
 							v();
 						 });
@@ -113,6 +111,12 @@ Adv.extend({
 						 $.each(events, function(k, v) {
 							firstBind(v.s, v.t, v.a);
 						 });
+						 if (toFocus.el) $(toFocus.el).focus();
+						 if (toFocus.pos) scrollTo(toFocus.pos[0],toFocus.pos[1]);
+						 toFocus = undefined;
+					  },
+					  onFocus: function(el,pos) {
+						 toFocus = {el:el,pos:pos};
 					  },
 					  onLeave: function(msg) {
 						 window.onbeforeunload = (!msg) ? function() {
@@ -123,5 +127,4 @@ Adv.extend({
 					  }
 					}
 				 }())
-
 			  });
