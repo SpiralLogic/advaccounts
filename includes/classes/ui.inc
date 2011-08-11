@@ -119,6 +119,7 @@
 				minLength: 0,
 				source: function( request, response ) {
 						if (Adv.lastXhr)  Adv.lastXhr.abort();
+
 						Adv.lastXhr = $.ajax({
 								url: "$url",
 								dataType: "json",
