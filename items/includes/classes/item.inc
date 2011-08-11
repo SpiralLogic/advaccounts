@@ -183,30 +183,34 @@
 		  $where2 .= " AND !i.is_foreign AND i.item_code!=i.stock_id ";
 		}
 		$where2 .= ' AND s.stock_id = i.stock_id ';
+	$sales_type=	$prices = '';
+
 		if ($o['purchase']) {
-		  $sales_type = '';
 		  if (isset($o['supplier_id']) && is_numeric($o['supplier_id'])) {
 			 $terms[] = $o['supplier_id'];
 			 $where2 .= " AND p.supplier_id = ? ";
 		  }
-		  $stock_id = ' s.stock_id, p.supplier_description ';
+		  $stock_id = ' s.stock_id, p.supplier_description, p.price ';
+		  $where .=" AND s.stock_id = p.stock_id ";
 		  $prices = ", purch_data p ";
 		}
-		else {
-		  $stock_id = " s.stock_id ";
+		elseif ($o['sale']) {
+		  $stock_id = " s.stock_id, p.price ";
 		  $prices = ", prices p";
+		  $where .=" AND s.stock_id = p.stock_id ";
 		  if (isset($o['sales_type'])) {
 			 $sales_type = ' AND p.sales_type_id =' . $o['sales_type'];
 		  }
+		} else {
+		  $stock_id = " s.* ";
 		}
 		$select = ($o['select']) ? $o['select'] : ' ';
-		$sql = "SELECT DISTINCT $select  $stock_id ,s.description, c.description as category, s.long_description , p.price, editable,
-						IF(s.stock_id LIKE ?, 0,20) + IF(s.stock_id LIKE ?,0,5)as weight FROM stock_master s, stock_category c, item_codes i $prices
-						WHERE (s.stock_id LIKE ? OR s.stock_id LIKE ?) AND $termswhere $where AND s.stock_id = p.stock_id
+		$sql = "SELECT  $select  $stock_id ,s.description, c.description as category, s.long_description , editable,
+						IF(s.stock_id LIKE ?, 0,20) + IF(s.stock_id LIKE ?,0,5) as weight FROM stock_master s, stock_category c, item_codes i $prices
+						WHERE (s.stock_id LIKE ? OR s.stock_id LIKE ? OR $termswhere)  $where
 						AND s.category_id = c.category_id $where2 $sales_type
 						ORDER BY weight, s.category_id, s.long_description LIMIT 30";
 		DB::prepare($sql);
-		echo $sql;
 		return DB::execute($terms);
 	 }
 

@@ -19,6 +19,9 @@
   include_once($path_to_root . "/includes/banking.inc");
   include_once($path_to_root . "/includes/data_checks.inc");
   include_once($path_to_root . "/sales/includes/sales_db.inc");
+  include_once($path_to_root . "/sales/includes/ui/sales_order_ui.inc");
+  include_once($path_to_root . "/sales/includes/cart_class.inc");
+  include_once($path_to_root . "/sales/includes/sales_ui.inc");
   //include_once($path_to_root . "/sales/includes/ui/cust_alloc_ui.inc");
   include_once($path_to_root . "/reporting/includes/reporting.inc");
 
@@ -169,7 +172,6 @@
   //----------------------------------------------------------------------------------------------
   // validate inputs
   if (isset($_POST['AddPaymentItem'])) {
-
 	 if (!can_process()) {
 		unset($_POST['AddPaymentItem']);
 	 }
@@ -200,7 +202,10 @@
 	 }
 
 	 new_doc_date($_POST['DateBanked']);
+	 if (check_value('createinvoice')) {
+		create_miscorder($_POST['customer_id'], $_POST['BranchID'], $_POST['memo_'], $_POST['ref'], input_num('amount'), input_num('discount'));
 
+	 }
 	 $payment_no = write_customer_payment(0, $_POST['customer_id'], $_POST['BranchID'],
 													  $_POST['bank_account'], $_POST['DateBanked'], $_POST['ref'],
 													  input_num('amount'), input_num('discount'),
@@ -258,8 +263,6 @@
 		$_POST['bank_account'] = get_default_customer_bank_account($_POST['customer_id']);
 	 }
 	 bank_accounts_list_row(_("Into Bank Account:"), 'bank_account', null, true);
-
-
 	 text_row(_("Reference:"), 'ref', null, 20, 40);
 	 table_section(3);
 
@@ -289,7 +292,7 @@
 
 	 label_row(_("Customer prompt payment discount :"), $display_discount_percent);
 	 amount_row(_("Amount of Discount:"), 'discount');
-	 tax_groups_list_row("Tax Type:", 'tax_group');
+	 check_row(_("Create invoice and apply for this payment: "), 'createinvoice');
 	 amount_row(_("Amount:"), 'amount');
 
 	 textarea_row(_("Memo:"), 'memo_', null, 22, 4);
@@ -313,7 +316,7 @@ var tax = $("#tax_group"), tax_row = tax.closest('tr'),alloc_tbl = $('#alloc_tbl
   if (hasallocated) tax_row.hide(); else tax_row.show();
 JS;
 
-  JS::addLiveEvent('a, input','click change', $js,'Adv.o.wrapper',true);
+  JS::addLiveEvent('a, input', 'click change', $js, 'Adv.o.wrapper', true);
   (isset($_REQUEST['frame'])) ? end_page() : end_page(true, true, true);
 
 

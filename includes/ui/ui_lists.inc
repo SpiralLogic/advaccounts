@@ -600,7 +600,7 @@ details.append("<iframe src='/inventory/purchasing_data.php?frame=1&stock_id="+s
 
 JS;
 
-		echo stock_items_list($name, $selected_id, $all_option, $submit_on_change, array('cells' => true, 'show_inactive' => $all, 'js' => $js, 'editable' => $editkey));
+		echo stock_items_list($name, $selected_id, $all_option, $submit_on_change, array('cells' => true,'purchase' => false, 'show_inactive' => $all, 'js' => $js, 'editable' => $editkey));
 	}
 
 	//---------------------------------------------------------------------------------------------------

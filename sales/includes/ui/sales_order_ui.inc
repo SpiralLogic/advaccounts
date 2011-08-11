@@ -87,9 +87,11 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		}
 		$result = get_branch_to_order($customer_id, $branch_id);
 		if (db_num_rows($result) == 0) {
+
 			return _("The selected customer and branch are not valid, or the customer does not have any branches.");
 		}
 		$myrow = db_fetch($result);
+
 		$order->set_branch($branch_id, $myrow["tax_group_id"], $myrow["tax_group_name"], $myrow["phone"], $myrow["email"]);
 		//$address = trim($myrow["br_post_address"]) != '' ? $myrow["br_post_address"] : (trim($myrow["br_address"]) != '' ?		$myrow["br_address"] : $deliver);
 		$address = $myrow['br_address'] . "\n";
