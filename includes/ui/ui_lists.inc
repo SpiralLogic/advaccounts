@@ -600,7 +600,7 @@ details.append("<iframe src='/inventory/purchasing_data.php?frame=1&stock_id="+s
 
 JS;
 
-		echo stock_items_list($name, $selected_id, $all_option, $submit_on_change, array('cells' => true, 'show_inactive' => $all, 'select' => 's.*, ', 'js' => $js, 'editable' => $editkey));
+		echo stock_items_list($name, $selected_id, $all_option, $submit_on_change, array('cells' => true,'purchase' => false, 'show_inactive' => $all, 'js' => $js, 'editable' => $editkey));
 	}
 
 	//---------------------------------------------------------------------------------------------------
@@ -1052,7 +1052,9 @@ JS;
 		$sql = "SELECT reconciled, reconciled FROM bank_trans
 		WHERE bank_act=" . db_escape($account) . " AND reconciled IS NOT NULL
 		GROUP BY reconciled";
-		return combo_input($name, $selected_id, $sql, 'id', 'reconciled', array('spec_option' => $special_option, 'format' => '_format_date', 'spec_id' => '', 'select_submit' => $submit_on_change));
+	  
+		return combo_input($name, $selected_id, $sql, 'id', 'reconciled', array('spec_option' => $special_option, 'format' => '_format_date', 'spec_id' => '', 'select_submit' => $submit_on_change,
+								 'order'=>'reconciled DESC'));
 	}
 
 	function bank_reconciliation_list_cells($label, $account, $name, $selected_id = null, $submit_on_change = false, $special_option = false) {
