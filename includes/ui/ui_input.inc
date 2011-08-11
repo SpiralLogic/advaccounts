@@ -351,7 +351,7 @@ function checkbox($label, $name, $value = null, $submit_on_change = false, $titl
 
 	$str .= "<input"
 			. ($value == 1 ? ' checked' : '')
-			. " type='checkbox' name='$name' value='1'"
+			. " type='checkbox' name='$name' id='$name' value='1'"
 			. ($submit_on_change ? " onclick='$submit_on_change'" : '')
 			. ($title ? " title='$title'" : '')
 			. " >\n";

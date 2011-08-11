@@ -190,7 +190,7 @@
 			 $terms[] = $o['supplier_id'];
 			 $where2 .= " AND p.supplier_id = ? ";
 		  }
-		  $stock_id = ' s.stock_id, p.supplier_description, p.price ';
+		  $stock_id = ' s.stock_id, p.supplier_description, MAX(p.price) ';
 		  $where .=" AND s.stock_id = p.stock_id ";
 		  $prices = ", purch_data p ";
 		}
@@ -208,7 +208,7 @@
 		$sql = "SELECT  $select  $stock_id ,s.description, c.description as category, s.long_description , editable,
 						IF(s.stock_id LIKE ?, 0,20) + IF(s.stock_id LIKE ?,0,5) as weight FROM stock_master s, stock_category c, item_codes i $prices
 						WHERE (s.stock_id LIKE ? OR s.stock_id LIKE ? OR $termswhere)  $where
-						AND s.category_id = c.category_id $where2 $sales_type
+						AND s.category_id = c.category_id $where2 $sales_type GROUP BY s.stock_id
 						ORDER BY weight, s.category_id, s.long_description LIMIT 30";
 		DB::prepare($sql);
 		return DB::execute($terms);

@@ -149,7 +149,6 @@
 				);
 	return function () {return \$$id.catcomplete('destroy')};
 JS;
-		JS::onload('$("#customer_id").focus()');
 		JS::addLive($js);
 
 		return HTML::setReturn(false);

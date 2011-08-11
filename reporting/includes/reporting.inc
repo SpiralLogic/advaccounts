@@ -23,7 +23,9 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 
 	function print_document_option_array($type_no, $doc_no, $email = 0, $extra = 0) {
 		include_once(APP_PATH . "includes/types.inc");
-		switch ($type_no) {
+	  $ar=array();
+	$rep='';
+			switch ($type_no) {
 			case ST_SALESQUOTE :
 				$rep = 111;
 				// from, to, currency, bank acc, email, quote, comments

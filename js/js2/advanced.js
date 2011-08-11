@@ -80,7 +80,7 @@ Adv.extend({
 					var events = [],
 					 onload = [],
 					 toClean = [],
-					 toFocus;
+					 toFocus={};
 					var firstBind = function (s, t, a) {
 					  $(s).bind(t, a);
 					};
@@ -101,7 +101,6 @@ Adv.extend({
 						 });
 					  },
 					  rebind: function() {
-						 console.log(onload.length);
 						 $.each(toClean, function(k, v) {
 							v();
 						 });
@@ -113,7 +112,7 @@ Adv.extend({
 						 });
 						 if (toFocus.el) $(toFocus.el).focus();
 						 if (toFocus.pos) scrollTo(toFocus.pos[0],toFocus.pos[1]);
-						 toFocus = undefined;
+						 toFocus = {el:false,pos:false};
 					  },
 					  onFocus: function(el,pos) {
 						 toFocus = {el:el,pos:pos};

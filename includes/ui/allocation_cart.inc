@@ -361,7 +361,6 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 processing_end();
 
 	 $_SESSION['alloc']->add_or_update_item(ST_SALESINVOICE, key($doc->trans_no), $doc->document_date, $doc->due_date, $amount,0,$amount);
-	 var_dump($_SESSION['alloc']);
 
   }
 

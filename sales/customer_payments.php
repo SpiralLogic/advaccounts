@@ -311,12 +311,12 @@
 
   end_form();
   $js = <<<JS
-var tax = $("#tax_group"), tax_row = tax.closest('tr'),alloc_tbl = $('#alloc_tbl'),hasallocated = false;
+var ci = $("#createinvoice"), ci_row = ci.closest('tr'),alloc_tbl = $('#alloc_tbl'),hasallocated = false;
   alloc_tbl.find('.amount').each(function() { if (this.value != 0) hasallocated = true});
-  if (hasallocated) tax_row.hide(); else tax_row.show();
+  if (hasallocated) ci_row.hide(); else ci_row.show();
 JS;
 
-  JS::addLiveEvent('a, input', 'click change', $js, 'Adv.o.wrapper', true);
+  JS::addLiveEvent('a, :input', 'click change', $js, 'Adv.o.wrapper', true);
   (isset($_REQUEST['frame'])) ? end_page() : end_page(true, true, true);
 
 
