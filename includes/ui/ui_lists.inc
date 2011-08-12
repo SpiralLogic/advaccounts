@@ -567,8 +567,9 @@ JS
 	}
 
 	//---------------------------------------------------------------------------------------------------
-	function stock_items_list($name, $selected_id = null, $all_option = false, $submit_on_change = false, $opts = array(), $editkey = false) {
+	function stock_items_list($name, $selected_id = null, $all_option = false, $submit_on_change = false, $opts = array(), $editkey = false,$legacy=false) {
 		global $all_items;
+	  if (!$legacy)
 		return Item::addSearchBox($name, array_merge(array('selected' => $selected_id, 'purchase' => true, 'cell' => true), $opts));
 		$sql = "SELECT stock_id, s.description, c.description, s.inactive, s.editable, s.long_description
 			FROM stock_master s,stock_category c WHERE s.category_id=c.category_id";
@@ -587,7 +588,7 @@ JS
 		return (user_show_codes() ? ($row[0] . "&nbsp;-&nbsp;") : "") . $row[1];
 	}
 
-	function stock_items_list_cells($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false, $all = false, $editkey = false) {
+	function stock_items_list_cells($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false, $all = false, $editkey = false, $legacy=false) {
 		if ($label != null) {
 			echo "<td>$label</td>\n";
 		}
@@ -600,7 +601,7 @@ details.append("<iframe src='/inventory/purchasing_data.php?frame=1&stock_id="+s
 
 JS;
 
-		echo stock_items_list($name, $selected_id, $all_option, $submit_on_change, array('cells' => true,'purchase' => false, 'show_inactive' => $all, 'js' => $js, 'editable' => $editkey));
+		echo stock_items_list($name, $selected_id, $all_option, $submit_on_change, array('cells' => true,'purchase' => false, 'show_inactive' => $all, 'js' => $js, 'editable' => $editkey),$editkey,$legacy);
 	}
 
 	//---------------------------------------------------------------------------------------------------
