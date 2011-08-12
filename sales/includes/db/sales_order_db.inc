@@ -198,7 +198,8 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 
   //----------------------------------------------------------------------------------------
   function get_sales_order_header($order_no, $trans_type) {
-	 $sql = "SELECT sales_orders.*, debtors_master.name, debtors_master.curr_code, debtors_master.email AS master_email, locations.location_name, debtors_master.payment_terms, debtors_master.discount, sales_types.sales_type, sales_types.id AS sales_type_id, sales_types.tax_included, shippers.shipper_name, tax_groups.name AS tax_group_name , tax_groups.id AS tax_group_id
+	 $sql = "SELECT DISTINCT sales_orders.*, debtors_master.name, debtors_master.curr_code, debtors_master.email AS master_email, locations.location_name, debtors_master.payment_terms,
+	 debtors_master.discount, sales_types.sales_type, sales_types.id AS sales_type_id, sales_types.tax_included, shippers.shipper_name, tax_groups.name AS tax_group_name , tax_groups.id AS tax_group_id
 	FROM sales_orders, debtors_master, sales_types, tax_groups, cust_branch, locations, shippers
 	WHERE sales_orders.order_type=sales_types.id
 		AND cust_branch.branch_code = sales_orders.branch_code

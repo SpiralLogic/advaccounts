@@ -120,7 +120,7 @@ JS;
 		if (!$delegate) {
 		  return self::addLive("$('$selector').bind('$type',function(e){ {$action} });");
 		}
-		$cached= (!$cached) ? "$('$delegate')":$delegate;
+		$cached= (!$cached) ? "$('$delegate')":'Adv.o.'.$delegate;
 		self::register($cached.".delegate('$selector','$type',function(e){ {$action} } )", self::$_onload);
 	 }
 

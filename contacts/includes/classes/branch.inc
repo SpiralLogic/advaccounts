@@ -8,6 +8,7 @@
  */
 	class Branch extends DB_abstract {
 
+	  public $post_address = '';
 
 		public $branch_code = 0;
 		public $br_name = "New Address";
