@@ -227,7 +227,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		if ($center) {
 			echo "<br><center>";
 		}
-		echo "<a id='$id' href='$target?$link_params'$pars[1] >$pars[0]</a>\n";
+		echo "<a id='$id' href='$target?$link_params' $params $pars[1] >$pars[0]</a>\n";
 		if ($center) {
 			echo "</center>";
 		}
