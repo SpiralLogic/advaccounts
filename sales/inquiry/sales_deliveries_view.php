@@ -101,7 +101,7 @@ date_cells(_("to:"), 'DeliveryToDate', '', null, 1);
 
 locations_list_cells(_("Location:"), 'StockLocation', null, true);
 
-stock_items_list_cells(_("Item:"), 'SelectStockFromList', null, true);
+stock_items_list_cells(_("Item:"), 'SelectStockFromList', null, true,false,false,false,true);
 
 submit_cells('SearchOrders', _("Search"), '', _('Select documents'), 'default');
 
