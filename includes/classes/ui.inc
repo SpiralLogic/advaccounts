@@ -175,7 +175,7 @@ JS;
 	   },'html');
 	   return false;
 JS;
-		JS::addLiveEvent('.email-button', 'click', $action, '#wrapper');
+		JS::addLiveEvent('.email-button', 'click', $action, 'wrapper',true);
 		$generated = true;
 		return $content;
 	 }

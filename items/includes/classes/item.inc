@@ -226,7 +226,7 @@
 		$action = <<<JS
 		$('#stockbox').html("<iframe src='/items/quickitems.php?id="+$(this).data('stock_id')+"&page={$page}' width='100%' height='600' scrolling='no' style='border:none' frameborder='0'></iframe>").dialog('open');
 JS;
-		JS::addLiveEvent('.stock', 'click', $action, "#wrapper");
+		JS::addLiveEvent('.stock', 'click', $action, "wrapper",true);
 
 	 }
 
