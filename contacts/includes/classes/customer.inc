@@ -293,6 +293,10 @@
 		protected function _getContacts() {
 			$sql = "SELECT id, name  FROM contacts WHERE parent_id=" . $this->id;
 			$result = db_query($sql, 'Couldn\'t retrieve any contacts');
+
+
+
+
 			if (!db_num_rows($result)) {
 				$contact = new Contact(array("parent_id" => $this->id, "name" => $this->branches[$this->defaultBranch]->contact_name, "phone1" => $this->branches[$this->defaultBranch]->phone));
 				if (strlen($contact->name) == 0) {

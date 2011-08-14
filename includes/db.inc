@@ -6,101 +6,98 @@
  * Time: 4:41 AM
  * To change this template use File | Settings | File Templates.
  */
-  class DB {
+	class DB {
 
-	 protected $conn;
-	 protected $showsql = false;
-	 protected $debug = false;
-	 protected $result;
-	 protected $dbname;
-	 protected $dbpass;
-	 protected $dbuser;
-	 protected $dbhost = 'localhost';
-	 protected $dbport = 3306;
-	 protected $_prepared;
-	 protected static $_instance;
+		protected $conn;
+		protected $showsql = false;
+		protected $debug = false;
+		protected $result;
+		protected $dbname;
+		protected $dbpass;
+		protected $dbuser;
+		protected $dbhost = 'localhost';
+		protected $dbport = 3306;
+		protected $_prepared;
+		protected $query;
+		protected static $_instance;
 
-	 private static function getinstance() {
-		if (static::$_instance === null) static::$_instance = new static;
-		return static::$_instance;
-	 }
-
-	 public static function query($sql) {
-		$self = static::getinstance();
-		return $self->_query($sql);
-	 }
-
-	 public static function prepare($sql) {
-		$self = static::getinstance();
-		return $self->_prepare($sql);
-	 }
-
-	 public static function execute($data) {
-		$self = static::getinstance();
-		return $self->_execute($data);
-	 }
-
-	 public static function initConnect($name, $user, $password, $host = null, $port = null) {
-		$self = static::getinstance();
-		$self->_connect($name, $user, $password, $host, $port);
-	 }
-
-	 protected function __construct() {
-	 }
-
-	 protected function _query($sql) {
-		if ($this->showsql) echo "<pre style='size:2, color:000099'>" . $sql . "</pre>\n";
-		try {
-		  $query = $this->conn->query($sql);
-		  $results = array();
-		  while ($row = $query->fetch(PDO::FETCH_OBJ)) {
-			 $results[] = $row;
-		  }
+		static function __callStatic($func, $args = array()) {
+			if (static::$_instance === null) static::$_instance = new static;
+			return call_user_func_array(array(static::$_instance, '_' . $func), $args);
 		}
-		catch (PDOException $e) {
-		  return $this->_error($e);
-		}
-		return $results;
-	 }
 
-	 protected function _prepare($sql) {
-		if ($this->showsql) echo "<pre style='size:2, color:000099'>" . $sql . "</pre>\n";
-
-		$this->_prepared = $this->conn->prepare($sql);
-		return $this;
-	 }
-
-	 private function _execute($data = null) {
-		if (!$this->_prepared) return;
-		$this->_prepared->execute((array)$data);
-		return $this->_prepared->fetchAll();
-	 }
-
-	 protected function _connect($name, $user, $password, $host, $port) {
-		if (!empty($host)) $this->dbhost = $host;
-		$this->dbname = $name;
-		$this->dbuser = $user;
-		$this->dbpass = $password;
-		if (!empty($port)) $this->dbport = $port;
-		try {
-		  $this->conn = new PDO('mysql:host=' . $this->dbhost . ';dbname=' . $name, $user, $password,
-			 array(PDO::ATTR_PERSISTENT => true));
+		protected function _select($column = null, $orderby = false, $groupby = false) {
+			if (!$this->query) $this->query = new DBQuery();
+			return $this->query->select($column, $orderby, $groupby);
 		}
-		catch (PDOException $e) {
-		  $this->_error($e, true);
-		}
-	 }
 
-	 protected function _error(PDOException $e, $exit = false, $rollback = false) {
-		if (function_exists('xdebug_call_file')) {
-		  $error = '<p>DATABASE ERROR: <br>At file ' . xdebug_call_file() . ':' . xdebug_call_line() . ':<br>' . $e->getMessage() . '</p>';
+		protected function _exec() {
+			$this->_prepare($this->query->exec());
+			return $this->_execute($this->query->data);
 		}
-		else {
-		  $error = '<p>DATABASE ERROR: <pre>' . $e->getTraceAsString() . '</pre></p>';
+
+		protected function _init($name, $user, $password, $host = false, $port = false) {
+			$this->dbname = $name;
+			$this->dbuser = $user;
+			$this->dbpass = $password;
+			$this->dbhost = ($host) ? $host : 'localhost';
+			$this->dbport = ($port) ? $port : '3306';
+			$this->_connect();
 		}
-		if ($rollback) $this->conn->rollBack();
-		trigger_error($error, E_USER_ERROR);
-		if ($exit) exit;
-		return false;
-	 }
-  }
+
+		protected function __construct() {
+		}
+
+		protected function _query($sql) {
+			if ($this->showsql) echo "<pre style='size:2, color:000099'>" . $sql . "</pre>\n";
+			try {
+				$query = $this->conn->query($sql);
+				$results = array();
+				while ($row = $query->fetch(PDO::FETCH_OBJ)) {
+					$results[] = $row;
+				}
+			} catch (PDOException $e) {
+				return static::_error($e);
+			}
+			return $results;
+		}
+
+		protected function _prepare($sql) {
+			if ($this->showsql) echo "<pre style='size:2, color:000099'>" . $sql . "</pre>\n";
+			$this->_prepared = $this->conn->prepare($sql);
+	return $this;
+		}
+
+		protected function _execute($data = null) {
+			if (!$this->_prepared) return;
+			$this->_prepared->execute((array)$data);
+			return $this->_prepared->fetchAll();
+		}
+
+		protected function _fetchClass($data, $type) {
+			$this->_prepare($this->query->exec());
+			$this->_prepared->execute();
+			$this->_prepared->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE,$type);
+			return $this->_prepared->fetchAll();
+		}
+
+		protected function _connect() {
+			try {
+				$this->conn = $conn = new PDO('mysql:host=' . $this->dbhost . ';dbname=' . $this->dbname, $this->dbuser, $this->dbpass, array(PDO::ATTR_PERSISTENT => true));
+			} catch (PDOException $e) {
+				$this->_error($e, true);
+			}
+		}
+
+		protected function _error(PDOException $e, $exit = false, $rollback = false) {
+			if (function_exists('xdebug_call_file')) {
+				$error = '<p>DATABASE ERROR: <br>At file ' . xdebug_call_file() . ':' . xdebug_call_line() . ':<br>' . $e->getMessage() . '</p>';
+			} else {
+				$error = '<p>DATABASE ERROR: <pre>' . $e->getTraceAsString() . '</pre></p>';
+			}
+			if ($rollback) $this->conn->rollBack();
+			trigger_error($error, E_USER_ERROR);
+			if ($exit) exit;
+			return false;
+		}
+	}
