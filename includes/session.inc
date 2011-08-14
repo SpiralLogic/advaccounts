@@ -123,8 +123,16 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	$path_to_root = (!$path) ?'.':$path;
 
 	add_include_path(
-		array(realpath('.') . '/includes/classes', APP_PATH . 'includes/ui2', APP_PATH . 'includes/ui', APP_PATH . 'includes', APP_PATH . 'includes/classes', APP_PATH . 'contacts/includes/classes',
-		     APP_PATH . 'items/includes/classes', APP_PATH . 'reporting/includes'));
+		array(
+		     realpath('.') . '/includes/classes',
+		     APP_PATH . 'includes/ui2',
+		     APP_PATH . 'includes/ui',
+		     APP_PATH . 'includes',
+		     APP_PATH . 'includes/classes',
+				 APP_PATH . 'includes/classes/db',
+		     APP_PATH . 'contacts/includes/classes',
+		     APP_PATH . 'items/includes/classes',
+		     APP_PATH . 'reporting/includes'));
 
 	if (preg_match('/Chrome/i', $_SERVER['HTTP_USER_AGENT'])) {
 		//		include(APP_PATH . 'includes/fb.php');

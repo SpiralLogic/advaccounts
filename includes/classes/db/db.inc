@@ -26,16 +26,6 @@
 			return call_user_func_array(array(static::$_instance, '_' . $func), $args);
 		}
 
-		protected function _select($column = null, $orderby = false, $groupby = false) {
-			if (!$this->query) $this->query = new DBQuery();
-			return $this->query->select($column, $orderby, $groupby);
-		}
-
-		protected function _exec() {
-			$this->_prepare($this->query->exec());
-			return $this->_execute($this->query->data);
-		}
-
 		protected function _init($name, $user, $password, $host = false, $port = false) {
 			$this->dbname = $name;
 			$this->dbuser = $user;
@@ -65,7 +55,7 @@
 		protected function _prepare($sql) {
 			if ($this->showsql) echo "<pre style='size:2, color:000099'>" . $sql . "</pre>\n";
 			$this->_prepared = $this->conn->prepare($sql);
-	return $this;
+			return $this;
 		}
 
 		protected function _execute($data = null) {
@@ -74,10 +64,12 @@
 			return $this->_prepared->fetchAll();
 		}
 
-		protected function _fetchClass($data, $type) {
-			$this->_prepare($this->query->exec());
-			$this->_prepared->execute();
-			$this->_prepared->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE,$type);
+		protected function _fetchClass($type, $data = null) {
+			$sql = $this->query->exec($data);
+			$this->_prepare($sql);
+			$this->_prepared->execute($this->query->data);
+			$this->query=null;
+			$this->_prepared->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, $type);
 			return $this->_prepared->fetchAll();
 		}
 
@@ -99,5 +91,22 @@
 			trigger_error($error, E_USER_ERROR);
 			if ($exit) exit;
 			return false;
+		}
+
+		protected function _select($column = null, $orderby = false, $groupby = false) {
+			if (!$this->query) $this->query = new Select();
+			return $this->query->select($column, $orderby, $groupby);
+		}
+
+		protected function _update($into) {
+			if (!$this->query) return $this->query = new Update($into);
+		}
+		protected function _insert($into) {
+			if (!$this->query) return $this->query = new Insert($into);
+		}
+
+		protected function _exec($data = null) {
+			$this->_prepare($this->query->exec($data));
+			return $this->_execute($this->query->data);
 		}
 	}
