@@ -198,9 +198,26 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 
   //----------------------------------------------------------------------------------------
   function get_sales_order_header($order_no, $trans_type) {
-	 $sql = "SELECT DISTINCT sales_orders.*, debtors_master.name, debtors_master.curr_code, debtors_master.email AS master_email, locations.location_name, debtors_master.payment_terms,
-	 debtors_master.discount, sales_types.sales_type, sales_types.id AS sales_type_id, sales_types.tax_included, shippers.shipper_name, tax_groups.name AS tax_group_name , tax_groups.id AS tax_group_id
-	FROM sales_orders, debtors_master, sales_types, tax_groups, cust_branch, locations, shippers
+	 $sql = "SELECT DISTINCT sales_orders.*,
+	  debtors_master.name,
+	  debtors_master.curr_code,
+	  debtors_master.email AS master_email,
+	  locations.location_name,
+	  debtors_master.payment_terms,
+	 debtors_master.discount,
+	 sales_types.sales_type,
+	 sales_types.id AS sales_type_id,
+	 sales_types.tax_included,
+	 shippers.shipper_name,
+	 tax_groups.name AS tax_group_name ,
+	 tax_groups.id AS tax_group_id
+	FROM sales_orders,
+	debtors_master,
+	sales_types,
+	tax_groups,
+	cust_branch,
+	locations,
+	shippers
 	WHERE sales_orders.order_type=sales_types.id
 		AND cust_branch.branch_code = sales_orders.branch_code
 		AND cust_branch.tax_group_id = tax_groups.id
@@ -239,8 +256,9 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 $order->trans_type = $myrow['trans_type'];
 	 $order->so_type = $myrow["type"];
 	 $order->trans_no = array($order_no => $myrow["version"]);
-	 $order->set_customer($myrow["debtor_no"], $myrow["name"], $myrow["curr_code"], $myrow["discount"]);
-	 $order->set_branch($myrow["branch_code"], $myrow["tax_group_id"], $myrow["tax_group_name"], $myrow["contact_phone"], $myrow["contact_email"], $myrow["contact_name"]);
+	$order->set_customer($myrow["debtor_no"], $myrow["name"],
+	  $myrow["curr_code"], $myrow["discount"], $myrow["payment_terms"]);
+	$order->set_branch($myrow["branch_code"], $myrow["tax_group_id"], $myrow["tax_group_name"], $myrow["contact_phone"], $myrow["contact_email"], $myrow["contact_name"]);
 	 $order->set_sales_type($myrow["sales_type_id"], $myrow["sales_type"], $myrow["tax_included"], 0); // no default price calculations on edit
 	 $order->set_location($myrow["from_stk_loc"], $myrow["location_name"]);
 	 $order->set_delivery($myrow["ship_via"], $myrow["deliver_to"], $myrow["delivery_address"], $myrow["freight_cost"]);
