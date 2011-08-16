@@ -176,7 +176,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		  }
 		  label_cell($stock_item->stock_id, "class='stock' data-stock_id='{$stock_item->stock_id}'");
 		  //label_cell($stock_item->description, "nowrap" );
-		  label_cell($stock_item->description);
+		  description_cell($stock_item->description);
 		  $dec = get_qty_dec($stock_item->stock_id);
 		  qty_cell($stock_item->qty_dispatched, false, $dec);
 		  if ($order->trans_no != 0) {

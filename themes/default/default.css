@@ -729,7 +729,9 @@ input.amount, input.freight {
 	padding-right: 0px;
 / / border-right : none;
 }
-
+.desc {
+  white-space: pre;
+}
 input.hasDatepicker {
 	max-width: 70px;
 	min-width: inherit;
