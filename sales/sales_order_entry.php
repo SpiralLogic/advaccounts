@@ -80,7 +80,7 @@
 	 $_SESSION['page_title'] = _($help_context = "Sales Order Entry");
 	 if (isset($_GET['remotecombine']) && isset($_SESSION['Items'])) {
 		foreach ($_SESSION['remote_order']->line_items as $item) {
-		  add_to_order($_SESSION['Items'], $item->stock_id, $item->quantity, $item->price, $item->discount_percent, $item->item_description);
+		  add_to_order($_SESSION['Items'], $item->stock_id, $item->quantity, $item->price, $item->discount_percent, $item->description);
 		}
 	 }
 	 else {
@@ -459,7 +459,7 @@
   //--------------------------------------------------------------------------------
   function handle_update_item() {
 	 if ($_POST['UpdateItem'] != '' && check_item_data()) {
-		$_SESSION['Items']->update_cart_item($_POST['LineNo'], input_num('qty'), input_num('price'), input_num('Disc') / 100, $_POST['item_description']);
+		$_SESSION['Items']->update_cart_item($_POST['LineNo'], input_num('qty'), input_num('price'), input_num('Disc') / 100, $_POST['description']);
 	 }
 	 line_start_focus();
   }

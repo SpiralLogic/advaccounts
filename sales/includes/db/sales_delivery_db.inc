@@ -69,7 +69,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 
 		/* add delivery details for all lines */
 		write_customer_trans_detail_item(ST_CUSTDELIVERY, $delivery_no, $delivery_line->stock_id,
-													$delivery_line->item_description, $delivery_line->qty_dispatched,
+													$delivery_line->description, $delivery_line->qty_dispatched,
 													$delivery_line->line_price(), $line_tax,
 													$delivery_line->discount_percent, $delivery_line->standard_cost,
 													$trans_no ? $delivery_line->id : 0);

@@ -71,7 +71,7 @@ function display_transfer_items($title, &$order)
 			alt_table_row_color($k);
 
 			view_stock_status_cell($stock_item->stock_id);
-			label_cell($stock_item->item_description);
+			label_cell($stock_item->description);
 			qty_cell($stock_item->quantity, false, get_qty_dec($stock_item->stock_id));
 			label_cell($stock_item->units);
 
@@ -109,7 +109,7 @@ function transfer_edit_item_controls(&$order, $line_no = -1)
 
 		hidden('stock_id', $_POST['stock_id']);
 		label_cell($_POST['stock_id']);
-		label_cell($order->line_items[$id]->item_description);
+		label_cell($order->line_items[$id]->description);
 		$Ajax->activate('items_table');
 	}
 	else

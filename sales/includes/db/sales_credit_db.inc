@@ -126,7 +126,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 														0, $credit_note->tax_included, $credit_note->tax_group_array) - $line_taxfree_price;
 
 		write_customer_trans_detail_item(ST_CUSTCREDIT, $credit_no, $credit_line->stock_id,
-													$credit_line->item_description, $credit_line->qty_dispatched,
+													$credit_line->description, $credit_line->qty_dispatched,
 													$credit_line->line_price(), $line_tax, $credit_line->discount_percent,
 													$credit_line->standard_cost, $trans_no == 0 ? 0 : $credit_line->id);
 

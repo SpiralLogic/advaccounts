@@ -50,7 +50,7 @@ function add_po(&$po_obj)
 		if ($po_line->Deleted == false) {
 			$sql = "INSERT INTO purch_order_details (order_no, item_code, description, delivery_date, unit_price, quantity_ordered, discount) VALUES (";
 			$sql .= $po_obj->order_no . ", " . db_escape($po_line->stock_id) . "," .
-					db_escape($po_line->item_description) . ",'" .
+					db_escape($po_line->description) . ",'" .
 					date2sql($po_line->req_del_date) . "'," .
 					db_escape($po_line->price) . ", " .
 					db_escape($po_line->quantity) . ", " .
@@ -102,7 +102,7 @@ function update_po(&$po_obj)
 			$sql = "INSERT INTO purch_order_details (order_no, item_code, description, delivery_date, unit_price, quantity_ordered, discount) VALUES (";
 			$sql .= $po_obj->order_no . "," .
 					db_escape($po_line->stock_id) . "," .
-					db_escape($po_line->item_description) . ",'" .
+					db_escape($po_line->description) . ",'" .
 					date2sql($po_line->req_del_date) . "'," .
 					db_escape($po_line->price) . ", " .
 					db_escape($po_line->quantity) . ", " .
@@ -112,7 +112,7 @@ function update_po(&$po_obj)
 		else
 		{
 			$sql = "UPDATE purch_order_details SET item_code=" . db_escape($po_line->stock_id) . ",
-				description =" . db_escape($po_line->item_description) . ",
+				description =" . db_escape($po_line->description) . ",
 				delivery_date ='" . date2sql($po_line->req_del_date) . "',
 				unit_price=" . db_escape($po_line->price) . ",
 				quantity_ordered=" . db_escape($po_line->quantity) . ",

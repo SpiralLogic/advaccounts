@@ -184,7 +184,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		  alt_table_row_color($k);
 
 		  label_cell("<a target='_blank' href='$path_to_root/inventory/inquiry/stock_status.php?stock_id=" . $line->stock_id . "'>$line->stock_id</a>");
-		  label_cell($line->item_description, "nowrap");
+		  label_cell($line->description, "nowrap");
 		  qty_cell($line->qty_dispatched, false, get_qty_dec($line->stock_id));
 		  label_cell($line->units);
 		  amount_cell($line->price);
@@ -249,7 +249,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		$_POST['units'] = $order->line_items[$id]->units;
 		hidden('stock_id', $_POST['stock_id']);
 		label_cell($_POST['stock_id']);
-		label_cell($order->line_items[$id]->item_description, "nowrap");
+		label_cell($order->line_items[$id]->description, "nowrap");
 		$Ajax->activate('items_table');
 	 }
 	 else

@@ -173,7 +173,7 @@
 		if (isset($_POST['Line' . $line_no . 'Desc'])) {
 		  $line_desc = $_POST['Line' . $line_no . 'Desc'];
 		  if (strlen($line_desc) > 0) {
-			 $_SESSION['Items']->line_items[$line_no]->item_description = $line_desc;
+			 $_SESSION['Items']->line_items[$line_no]->description = $line_desc;
 		  }
 		}
 	 }
@@ -370,7 +370,7 @@
 	 }
 	 alt_table_row_color($k);
 	 view_stock_status_cell($ln_itm->stock_id);
-	 text_cells(null, 'Line' . $line . 'Desc', $ln_itm->item_description, 30, 50);
+	 text_cells(null, 'Line' . $line . 'Desc', $ln_itm->description, 30, 50);
 	 $dec = get_qty_dec($ln_itm->stock_id);
 	 qty_cell($ln_itm->quantity, false, $dec);
 	 label_cell($ln_itm->units);
