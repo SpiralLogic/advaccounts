@@ -158,7 +158,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 $line_total = round2($stock_item->quantity * $stock_item->price * (1 - $stock_item->discount_percent), user_price_dec());
 	 alt_table_row_color($k);
 	 label_cell($stock_item->stock_id);
-	 label_cell($stock_item->item_description);
+	 label_cell($stock_item->description);
 	 $dec = get_qty_dec($stock_item->stock_id);
 	 qty_cell($stock_item->quantity, false, $dec);
 	 label_cell($stock_item->units);

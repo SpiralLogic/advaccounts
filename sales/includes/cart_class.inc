@@ -250,7 +250,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		$this->Comments = @html_entity_decode($this->Comments, ENT_QUOTES);
 		foreach ($this->line_items as $lineno => $line) {
 		  $this->line_items[$lineno]->stock_id = @html_entity_decode($line->stock_id, ENT_QUOTES);
-		  $this->line_items[$lineno]->item_description = @html_entity_decode($line->item_description, ENT_QUOTES);
+		  $this->line_items[$lineno]->description = @html_entity_decode($line->description, ENT_QUOTES);
 		}
 		switch ($this->trans_type) {
 		  case ST_SALESINVOICE:
@@ -356,7 +356,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 
 	 function update_cart_item($line_no, $qty, $price, $disc, $description = "") {
 		if ($description != "") {
-		  $this->line_items[$line_no]->item_description = $description;
+		  $this->line_items[$line_no]->description = $description;
 		}
 		$this->line_items[$line_no]->quantity = $qty;
 		$this->line_items[$line_no]->qty_dispatched = $qty;
@@ -505,7 +505,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 
 	 var $id;
 	 var $stock_id;
-	 var $item_description;
+	 var $description;
 	 var $units;
 	 var $mb_flag;
 	 var $tax_type;
@@ -531,10 +531,10 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		$this->mb_flag = $item_row["mb_flag"];
 		$this->units = $item_row["units"];
 		if ($description == null) {
-		  $this->item_description = $item_row["long_description"];
+		  $this->description = $item_row["long_description"];
 		}
 		else {
-		  $this->item_description = $description;
+		  $this->description = $description;
 		}
 		//$this->standard_cost = $item_row["material_cost"] + $item_row["labour_cost"] + $item_row["overhead_cost"];
 		$this->tax_type = $item_row["tax_type_id"];

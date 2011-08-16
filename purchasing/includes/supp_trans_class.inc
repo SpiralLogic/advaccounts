@@ -48,9 +48,9 @@ class supp_trans
 		$this->gl_codes = array();
 	}
 
-	function add_grn_to_trans($grn_item_id, $po_detail_item, $item_code, $item_description, $qty_recd, $prev_quantity_inv, $this_quantity_inv, $order_price, $chg_price, $Complete, $std_cost_unit, $gl_code, $discount = 0, $exp_price = null)
+	function add_grn_to_trans($grn_item_id, $po_detail_item, $item_code, $description, $qty_recd, $prev_quantity_inv, $this_quantity_inv, $order_price, $chg_price, $Complete, $std_cost_unit, $gl_code, $discount = 0, $exp_price = null)
 	{
-		$this->grn_items[$grn_item_id] = new grn_item($grn_item_id, $po_detail_item, $item_code, $item_description, $qty_recd, $prev_quantity_inv, $this_quantity_inv, $order_price, $chg_price, $Complete, $std_cost_unit, $gl_code, $discount, $exp_price);
+		$this->grn_items[$grn_item_id] = new grn_item($grn_item_id, $po_detail_item, $item_code, $description, $qty_recd, $prev_quantity_inv, $this_quantity_inv, $order_price, $chg_price, $Complete, $std_cost_unit, $gl_code, $discount, $exp_price);
 		return 1;
 	}
 
@@ -155,7 +155,7 @@ class grn_item
 	var $id;
 	var $po_detail_item;
 	var $item_code;
-	var $item_description;
+	var $description;
 	var $qty_recd;
 	var $prev_quantity_inv;
 	var $this_quantity_inv;
@@ -169,13 +169,13 @@ class grn_item
 	var $freight;
 
 
-	function grn_item($id, $po_detail_item, $item_code, $item_description, $qty_recd, $prev_quantity_inv, $this_quantity_inv, $order_price, $chg_price, $Complete, $std_cost_unit, $gl_code, $discount = 0, $exp_price = null)
+	function grn_item($id, $po_detail_item, $item_code, $description, $qty_recd, $prev_quantity_inv, $this_quantity_inv, $order_price, $chg_price, $Complete, $std_cost_unit, $gl_code, $discount = 0, $exp_price = null)
 	{
 
 		$this->id = $id;
 		$this->po_detail_item = $po_detail_item;
 		$this->item_code = $item_code;
-		$this->item_description = $item_description;
+		$this->description = $description;
 		$this->qty_recd = $qty_recd;
 		$this->prev_quantity_inv = $prev_quantity_inv;
 		$this->this_quantity_inv = $this_quantity_inv;

@@ -175,7 +175,7 @@ function display_po_items(&$order, $editable = true)
 			if (!$editable || ($id != $line_no)) {
 				alt_table_row_color($k);
 				label_cell($po_line->stock_id," class='stock'  data-stock_id='{$po_line->stock_id}'");
-				label_cell($po_line->item_description);
+				label_cell($po_line->description);
 				qty_cell($po_line->quantity, false, get_qty_dec($po_line->stock_id));
 				qty_cell($po_line->qty_received, false, get_qty_dec($po_line->stock_id));
 				label_cell($po_line->units);
@@ -280,11 +280,11 @@ function po_item_controls(&$order, $stock_id = null)
 		$_POST['price'] = price_decimal_format($order->line_items[$id]->price, $dec2);
 		$_POST['discount'] = percent_format($order->line_items[$id]->discount * 100);
 		$_POST['req_del_date'] = $order->line_items[$id]->req_del_date;
-		$_POST['item_description'] = $order->line_items[$id]->item_description;
+		$_POST['description'] = $order->line_items[$id]->description;
 		$_POST['units'] = $order->line_items[$id]->units;
 		hidden('stock_id', $_POST['stock_id']);
 		label_cell($_POST['stock_id']," class='stock'   data-stock_id='{$_POST['stock_id']}'");
-		textarea_cells(null, 'item_description', null, 50, 5);
+		textarea_cells(null, 'description', null, 50, 5);
 		$Ajax->activate('items_table');
 		$qty_rcvd = $order->line_items[$id]->qty_received;
 	} else {
@@ -293,7 +293,7 @@ function po_item_controls(&$order, $stock_id = null)
 		if (list_updated('stock_id')) {
 			$Ajax->activate('price');
 			$Ajax->activate('units');
-			$Ajax->activate('item_description');
+			$Ajax->activate('description');
 			$Ajax->activate('qty');
 			$Ajax->activate('discount');
 			$Ajax->activate('req_del_date');
@@ -301,7 +301,7 @@ function po_item_controls(&$order, $stock_id = null)
 		}
 			$item_info = get_item_edit_info(@$_POST['stock_id']);
 		$_POST['units'] = $item_info["units"];
-		$_POST['item_description'] = $item_info['item_description'];
+		$_POST['description'] = $item_info['description'];
 		$dec = $item_info["decimals"]; 
 			$_POST['qty'] = number_format2(get_purchase_conversion_factor($order->supplier_id, @$_POST['stock_id']), $dec);
 			//$_POST['price'] = price_format(get_purchase_price ($order->supplier_id, $_POST['stock_id']));

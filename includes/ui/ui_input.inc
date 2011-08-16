@@ -259,7 +259,7 @@ function submit_js_confirm($name, $msg)
 	add_js_source(
 		"_validate.$name=function(){ return confirm('" . strtr($msg, array("\n" => '\\n')) . "');};");
 }
-	
+
 
 
 
@@ -388,7 +388,9 @@ function labelheader_cell($label, $params = "")
 {
 	echo "<th  $params>$label</th>\n";
 }
-
+function description_cell($label, $params = "",$id=null) {
+  label_cell($label,$params." class='desc'",$id);
+}
 function label_cell($label, $params = "", $id = null)
 {
 	global $Ajax;
@@ -587,10 +589,10 @@ function link_row_ex($label, $name, $size, $max = null, $title = null, $value = 
 
 //-----------------------------------------------------------------------------------
 //
-//	Since FA 2.2  $init parameter is superseded by $check. 
-//  When $check!=null current date is displayed in red when set to other 
+//	Since FA 2.2  $init parameter is superseded by $check.
+//  When $check!=null current date is displayed in red when set to other
 //	than current date.
-//	
+//
 function date_cells($label, $name, $title = null, $check = null, $inc_days = 0,
 	$inc_months = 0, $inc_years = 0, $params = null, $submit_on_change = false)
 {
@@ -861,7 +863,7 @@ function text_row_with_submit($label, $name, $value, $size, $max, $input_name, $
 */
 //-----------------------------------------------------------------------------------
 //
-//	When show_inactive page option is set 
+//	When show_inactive page option is set
 //  displays value of inactive field as checkbox cell.
 //  Also updates database record after status change.
 //

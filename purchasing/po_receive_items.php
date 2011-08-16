@@ -74,8 +74,8 @@ function display_po_receive_items()
 			$total += $line_total;
 			label_cell($ln_itm->stock_id);
 			if ($qty_outstanding > 0)
-				text_cells(null, $ln_itm->stock_id . "Desc", $ln_itm->item_description, 30, 50); else
-				label_cell($ln_itm->item_description);
+				text_cells(null, $ln_itm->stock_id . "Desc", $ln_itm->description, 30, 50); else
+				label_cell($ln_itm->description);
 			$dec = get_qty_dec($ln_itm->stock_id);
 			qty_cell($ln_itm->quantity, false, $dec);
 			label_cell($ln_itm->units);
@@ -253,7 +253,7 @@ if (isset($_POST['Update']) || isset($_POST['ProcessGoodsReceived'])) {
 			$_SESSION['PO']->line_items[$line->line_no]->receive_qty = input_num($line->line_no);
 
 			if (isset($_POST[$line->stock_id . "Desc"]) && strlen($_POST[$line->stock_id . "Desc"]) > 0) {
-				$_SESSION['PO']->line_items[$line->line_no]->item_description = $_POST[$line->stock_id . "Desc"];
+				$_SESSION['PO']->line_items[$line->line_no]->description = $_POST[$line->stock_id . "Desc"];
 			}
 		}
 	}

@@ -69,7 +69,7 @@ class purch_order
 		$this->line_items[$line_no]->price = $price;
 		$this->line_items[$line_no]->discount = $discount;
 		if (!empty($item_descr)) {
-			$this->line_items[$line_no]->item_description = $item_descr;
+			$this->line_items[$line_no]->description = $item_descr;
 		}
 		$this->line_items[$line_no]->req_del_date = $req_del_date;
 		$this->line_items[$line_no]->price = $price;
@@ -136,7 +136,7 @@ class line_details
 	Var $line_no;
 	Var $po_detail_rec;
 	Var $stock_id;
-	Var $item_description;
+	Var $description;
 	Var $quantity;
 	Var $price;
 	Var $units;
@@ -154,7 +154,7 @@ class line_details
 		/* Constructor function to add a new LineDetail object with passed params */
 		$this->line_no = $line_no;
 		$this->stock_id = $stock_item;
-		$this->item_description = $item_descr;
+		$this->description = $item_descr;
 		$this->quantity = $qty;
 		$this->req_del_date = $req_del_date;
 		$this->price = $prc;

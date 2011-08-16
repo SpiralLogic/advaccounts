@@ -97,7 +97,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 														$invoice->tax_group_array) - $line_taxfree_price;
 
 		write_customer_trans_detail_item(ST_SALESINVOICE, $invoice_no, $invoice_line->stock_id,
-													$invoice_line->item_description, $invoice_line->qty_dispatched,
+													$invoice_line->description, $invoice_line->qty_dispatched,
 													$invoice_line->line_price(), $line_tax, $invoice_line->discount_percent,
 													$invoice_line->standard_cost,
 													$trans_no ? $invoice_line->id : 0);

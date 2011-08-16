@@ -164,7 +164,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 			 if ($stock_item->qty_dispatched > $qoh) {
 				// oops, we don't have enough of one of the component items
 				start_row("class='stockmankobg'");
-				$qoh_msg .= $stock_item->stock_id . " - " . $stock_item->item_description . ": " . _("Quantity On Hand") . " = " . number_format2($qoh, get_qty_dec($stock_item->stock_id)) . '<br>';
+				$qoh_msg .= $stock_item->stock_id . " - " . $stock_item->description . ": " . _("Quantity On Hand") . " = " . number_format2($qoh, get_qty_dec($stock_item->stock_id)) . '<br>';
 				$has_marked = true;
 			 }
 			 else {
@@ -175,8 +175,8 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 			 alt_table_row_color($k);
 		  }
 		  label_cell($stock_item->stock_id, "class='stock' data-stock_id='{$stock_item->stock_id}'");
-		  //label_cell($stock_item->item_description, "nowrap" );
-		  label_cell($stock_item->item_description);
+		  //label_cell($stock_item->description, "nowrap" );
+		  description_cell($stock_item->description);
 		  $dec = get_qty_dec($stock_item->stock_id);
 		  qty_cell($stock_item->qty_dispatched, false, $dec);
 		  if ($order->trans_no != 0) {
@@ -433,12 +433,12 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		$_POST['qty'] = number_format2($order->line_items[$id]->qty_dispatched, $dec);
 		$_POST['price'] = price_format($order->line_items[$id]->price);
 		$_POST['Disc'] = percent_format($order->line_items[$id]->discount_percent * 100);
-		$_POST['item_description'] = $order->line_items[$id]->item_description;
+		$_POST['description'] = $order->line_items[$id]->description;
 		$units = $order->line_items[$id]->units;
 		hidden('stock_id', $_POST['stock_id']);
 		label_cell($_POST['stock_id'], 'class=".stock"');
-		textarea_cells(null, 'item_description', null, 50, 5);
-		//label_cell($order->line_items[$line_no]->item_description, "nowrap");
+		textarea_cells(null, 'description', null, 50, 5);
+		//label_cell($order->line_items[$line_no]->description, "nowrap");
 		$Ajax->activate('items_table');
 	 }
 	 else // prepare new line
@@ -448,7 +448,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		//Item::addSearchBox();
 		if (list_updated('stock_id')) {
 		  $Ajax->activate('price');
-		  $Ajax->activate('item_description');
+		  $Ajax->activate('description');
 		  $Ajax->activate('units');
 		  $Ajax->activate('qty');
 		  $Ajax->activate('line_total');

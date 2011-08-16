@@ -249,7 +249,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 				$complete = false;
 			}
 			$_SESSION['err_over_charge'] = false;
-			$_SESSION['supp_trans']->add_grn_to_trans($n, $_POST['po_detail_item' . $n], $_POST['item_code' . $n], $_POST['item_description' . $n], $_POST['qty_recd' . $n],
+			$_SESSION['supp_trans']->add_grn_to_trans($n, $_POST['po_detail_item' . $n], $_POST['item_code' . $n], $_POST['description' . $n], $_POST['qty_recd' . $n],
 				$_POST['prev_quantity_inv' . $n], input_num('this_quantity_inv' . $n), $_POST['order_price' . $n], input_num('ChgPrice' . $n),
 				$complete, $_POST['std_cost_unit' . $n], "", input_num('ChgDiscount' . $n), input_num('ExpPrice' . $n));
 		}

@@ -176,7 +176,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		if (isset($_POST['Line' . $line_no . 'Desc'])) {
 		  $line_desc = $_POST['Line' . $line_no . 'Desc'];
 		  if (strlen($line_desc) > 0) {
-			 $_SESSION['Items']->line_items[$line_no]->item_description = $line_desc;
+			 $_SESSION['Items']->line_items[$line_no]->description = $line_desc;
 		  }
 		}
 	 }
@@ -314,7 +314,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		//	view_stock_status_cell($ln_itm->stock_id); alternative view
 		label_cell($ln_itm->stock_id);
 
-		text_cells(null, 'Line' . $line_no . 'Desc', $ln_itm->item_description, 30, 50);
+		text_cells(null, 'Line' . $line_no . 'Desc', $ln_itm->description, 30, 50);
 		$dec = get_qty_dec($ln_itm->stock_id);
 		qty_cell($ln_itm->quantity, false, $dec);
 		label_cell($ln_itm->units);

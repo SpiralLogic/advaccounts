@@ -304,7 +304,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 					label_cell($myrow["id"] .
 								hidden('qty_recd' . $n, $myrow["qty_recd"], false) .
 								hidden('item_code' . $n, $myrow["item_code"], false) .
-								hidden('item_description' . $n, $myrow["description"], false) .
+								hidden('description' . $n, $myrow["description"], false) .
 								hidden('prev_quantity_inv' . $n, $myrow['quantity_inv'], false) .
 								hidden('order_price' . $n, $myrow['unit_price'], false) .
 								hidden('std_cost_unit' . $n, $myrow['std_cost_unit'], false) .
@@ -445,7 +445,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 					label_cell(""); // PO
 				}
 				label_cell($entered_grn->item_code, "class='stock' data-stock_id='{$entered_grn->item_code}'");
-				label_cell($entered_grn->item_description);
+				label_cell($entered_grn->description);
 				$dec = get_qty_dec($entered_grn->item_code);
 				if ($mode == 1) {
 					label_cell("");
