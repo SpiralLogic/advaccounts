@@ -179,12 +179,11 @@ if (isset($_POST['addupdate'])) {
 				check_value('no_sale'), check_value('editable'));
 
 			display_notification(_("A new item has been added."));
-			$_POST['stock_id'] = $_POST['NewStockID'] =
-			$_POST['description'] = $_POST['long_description'] = '';
-			$_POST['no_sale'] = $_POST['editable'] = 0;
+
 			set_focus('NewStockID');
 		}
-		$_POST['stock_id'] = get_global_stock_item();
+		set_global_stock_item($_POST['NewStockID']);
+	  $_POST['stock_id']=$_POST['NewStockID'];
 		$Ajax->activate('_page_body');
 	}
 }
