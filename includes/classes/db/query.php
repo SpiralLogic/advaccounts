@@ -14,7 +14,11 @@
 		public $data = array();
 
 		protected function _where($condition, $type = 'AND', $uservar) {
-			if ($uservar !== null) {
+		if (is_array($condition)) {
+		  foreach ($condition as $condition=>$uservar) $this->_where($condition,$type,$uservar);
+		  return $this;
+		}
+		  if ($uservar !== null) {
 				$name = ':dbcondition'.count($this->data);
 				$this->data[$name] = $uservar;
 				$condition = $condition .' '. $name;
