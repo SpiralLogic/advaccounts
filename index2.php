@@ -4,9 +4,6 @@
 	ini_set('display_errors', 'On');
 	error_reporting(E_ALL);
 	echo "<pre>";
-	DB::select()->from('contacts')->where('parent_id =', 5901);
-	$test = DB::fetchClass('Contact');
-	$test = $test[0];
-
-	$test2 = DB::insert('contacts');
-	DB::exec($test);
+	DB::select()->from('debtors_master')->where('debtor_no =', 5901);
+	$test = DB::execute('Customer');
+var_dump($test);

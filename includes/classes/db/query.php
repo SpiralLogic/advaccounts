@@ -56,8 +56,6 @@
 		protected function _buildQuery() {
 			$sql = '';
 			if (!empty($this->where)) $sql .= ' WHERE ' . implode(' ', $this->where);
-			if (!empty($this->orderby)) $sql .= ' ORDER BY ' . implode(', ', $this->orderby);
-			if (!empty($this->groupby)) $sql .= ' GROUP BY ' . implode(', ', $this->groupby);
 			return $sql;
 		}
 

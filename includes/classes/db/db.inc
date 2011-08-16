@@ -69,6 +69,14 @@
 			$this->_prepare($sql);
 			$this->_prepared->execute($this->query->data);
 			$this->query=null;
+			$this->_prepared->setFetchMode(PDO::FETCH_CLASS, $type);
+			return $this->_prepared->fetchAll();
+		}
+		protected function _fetchIntoClass($type, $data = null) {
+			$sql = $this->query->exec($data);
+			$this->_prepare($sql);
+			$this->_prepared->execute($this->query->data);
+			$this->query=null;
 			$this->_prepared->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, $type);
 			return $this->_prepared->fetchAll();
 		}

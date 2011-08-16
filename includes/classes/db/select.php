@@ -52,6 +52,9 @@
 			$sql .= (empty($this->select)) ? '*' : implode(', ', $this->select);
 			$sql .= " FROM " . implode(', ', $this->from);
 			$sql .= parent::_buildQuery();
+
+			if (!empty($this->orderby)) $sql .= ' ORDER BY ' . implode(', ', $this->orderby);
+			if (!empty($this->groupby)) $sql .= ' GROUP BY ' . implode(', ', $this->groupby);
 			return $sql;
 		}
 
