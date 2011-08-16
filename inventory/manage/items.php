@@ -278,7 +278,7 @@ if (db_has_stock_items()) {
 	start_table("class='tablestyle_noborder'");
 	start_row();
 	stock_items_list_cells(_("Select an item:"), 'stock_id', null,
-						   _('New item'), true, check_value('show_inactive'));
+						   _('New item'), true, check_value('show_inactive'),false,true);
 	$new_item = get_post('stock_id') == '';
 	check_cells(_("Show inactive:"), 'show_inactive', null, true);
 	end_row();
