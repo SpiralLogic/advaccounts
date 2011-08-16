@@ -22,7 +22,7 @@
 	 $past1 = get_company_pref('past_due_days');
 	 $past2 = 2 * $past1;
 	 // removed - debtor_trans.alloc from all summations
- 
+
 	 $value = "IF(debtor_trans.type=11 OR debtor_trans.type=1 OR debtor_trans.type=12 OR debtor_trans.type=2,
 	-1, 1) *" .
 				 "(debtor_trans.ov_amount + debtor_trans.ov_gst + "

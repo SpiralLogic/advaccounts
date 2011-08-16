@@ -256,9 +256,9 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 $order->trans_type = $myrow['trans_type'];
 	 $order->so_type = $myrow["type"];
 	 $order->trans_no = array($order_no => $myrow["version"]);
-	$order->set_customer($myrow["debtor_no"], $myrow["name"],
-	  $myrow["curr_code"], $myrow["discount"], $myrow["payment_terms"]);
-	$order->set_branch($myrow["branch_code"], $myrow["tax_group_id"], $myrow["tax_group_name"], $myrow["contact_phone"], $myrow["contact_email"], $myrow["contact_name"]);
+	 $order->set_customer($myrow["debtor_no"], $myrow["name"],
+								 $myrow["curr_code"], $myrow["discount"], $myrow["payment_terms"]);
+	 $order->set_branch($myrow["branch_code"], $myrow["tax_group_id"], $myrow["tax_group_name"], $myrow["contact_phone"], $myrow["contact_email"], $myrow["contact_name"]);
 	 $order->set_sales_type($myrow["sales_type_id"], $myrow["sales_type"], $myrow["tax_included"], 0); // no default price calculations on edit
 	 $order->set_location($myrow["from_stk_loc"], $myrow["location_name"]);
 	 $order->set_delivery($myrow["ship_via"], $myrow["deliver_to"], $myrow["delivery_address"], $myrow["freight_cost"]);
@@ -323,7 +323,19 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 
   function get_customer_to_order($customer_id) {
 	 // Now check to ensure this account is not on hold */
-	 $sql = "SELECT debtors_master.name, debtors_master.address, credit_status.dissallow_invoices, debtors_master.sales_type AS salestype, debtors_master.dimension_id, debtors_master.dimension2_id, sales_types.sales_type, sales_types.tax_included, sales_types.factor, debtors_master.curr_code, debtors_master.discount,debtors_master.pymt_discount
+	 $sql = "SELECT debtors_master.name,
+	 debtors_master.address,
+	 credit_status.dissallow_invoices,
+	 debtors_master.sales_type AS salestype,
+	 debtors_master.dimension_id,
+	 debtors_master.dimension2_id,
+	 sales_types.sales_type,
+	 sales_types.tax_included,
+	 sales_types.factor,
+	 debtors_master.curr_code,
+	 debtors_master.discount,
+	 debtors_master.pymt_discount,
+	 debtors_master.payment_terms
 		FROM debtors_master, credit_status, sales_types
 		WHERE debtors_master.sales_type=sales_types.id
 		AND debtors_master.credit_status=credit_status.id

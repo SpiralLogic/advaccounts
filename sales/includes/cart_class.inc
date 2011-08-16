@@ -286,13 +286,13 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		$this->default_discount = $discount;
 		$this->cash_discount = $cdiscount;
 		$this->customer_currency = $currency;
-			$this->payment = $payment;
+		$this->payment = $payment;
 		$this->payment_terms = get_payment_terms($payment);
 		$this->cash_discount = $cdiscount;
 
 		if ($this->payment_terms['cash_sale']) {
-			$this->Location = $this->pos['pos_location'];
-			$this->location_name = $this->pos['location_name'];
+		  $this->Location = $this->pos['pos_location'];
+		  $this->location_name = $this->pos['location_name'];
 		}
 		$this->credit = get_current_cust_credit($customer_id);
 
