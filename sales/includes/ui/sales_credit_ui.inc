@@ -84,7 +84,7 @@ function display_credit_header(&$order)
 	if ($order->trans_no == 0)
 		ref_row(_("Reference") . ':', 'ref');
 	else
-		label_row(_("Reference") . ':', $_POST['ref']);
+	  label_row(_("Reference").':', $order->reference);
 
 
 	if (!is_company_currency($order->customer_currency)) {

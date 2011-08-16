@@ -78,8 +78,8 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 			$ret_error = _("The selected customer account is currently on hold. Please contact the credit control personnel to discuss.");
 		}
 		$deliver = $myrow['address']; // in case no branch address use company address
-		$order->set_customer($customer_id, $name, $myrow['curr_code'], $myrow['discount'], $myrow['pymt_discount']);
-		// the sales type determines the price list to be used by default
+	$order->set_customer($customer_id, $name, $myrow['curr_code'],
+		$myrow['discount'], $myrow['payment_terms'], $myrow['pymt_discount']);		// the sales type determines the price list to be used by default
 		$order->set_sales_type($myrow['salestype'], $myrow['sales_type'], $myrow['tax_included'], $myrow['factor']);
 		if ($order->trans_type != ST_SALESORDER && $order->trans_type != ST_SALESQUOTE) {
 			$order->dimension_id = $myrow['dimension_id'];
@@ -350,6 +350,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 			label_row(_('Payment:'), _("Cash up front"));
 			hidden('cash', $order->cash);
 		}
+		customer_credit_row($_POST['customer_id'], $order->credit);
 		if ($editable) {
 			$str = sales_types_list_row(_("Price List"), 'sales_type', null, true);
 		}

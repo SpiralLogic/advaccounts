@@ -155,4 +155,95 @@ function get_company_extensions($id = -1)
 	return $installed_extensions;
 }
 
+function add_payment_terms($daysOrFoll, $terms, $dayNumber)
+{
+	if ($daysOrFoll)
+	{
+		$sql = "INSERT INTO  payment_terms (terms,
+			days_before_due, day_in_following_month)
+			VALUES (" .
+			db_escape($terms) . ", " . db_escape($dayNumber) . ", 0)";
+	}
+	else
+	{
+		$sql = "INSERT INTO  payment_terms (terms,
+			days_before_due, day_in_following_month)
+			VALUES (" . db_escape($terms) . ",
+			0, " . db_escape($dayNumber) . ")";
+	}
+   	db_query($sql,"The payment term could not be added");
+}
+
+function update_payment_terms($selected_id, $daysOrFoll, $terms, $dayNumber)
+{
+	if ($daysOrFoll)
+	{
+		$sql = "UPDATE  payment_terms SET terms=" . db_escape($terms) . ",
+			day_in_following_month=0,
+			days_before_due=" . db_escape($dayNumber) . "
+			WHERE terms_indicator = " .db_escape($selected_id);
+	}
+	else
+	{
+		$sql = "UPDATE payment_terms SET terms=" . db_escape($terms) . ",
+			day_in_following_month=" . db_escape($dayNumber) . ",
+			days_before_due=0
+			WHERE terms_indicator = " .db_escape($selected_id);
+	}
+   	db_query($sql,"The payment term could not be updated");
+}
+
+function delete_payment_terms($selected_id)
+{
+	$sql="DELETE FROM payment_terms WHERE terms_indicator=".db_escape($selected_id);
+	db_query($sql,"could not delete a payment terms");
+}
+
+function get_payment_terms($selected_id)
+{
+	$sql = "SELECT *, (t.days_before_due=0) AND (t.day_in_following_month=0) as cash_sale
+	 FROM payment_terms t WHERE terms_indicator=".db_escape($selected_id);
+
+	$result = db_query($sql,"could not get payment term");
+
+	return db_fetch($result);
+}
+
+function get_payment_terms_all($show_inactive)
+{
+	$sql = "SELECT * FROM payment_terms";
+	if (!$show_inactive) $sql .= " WHERE !inactive";
+	return db_query($sql,"could not get payment terms");
+}
+/*
+	Return number of records in tables, where some foreign key $id is used.
+	$id - searched key value
+	$tables - array of table names (without prefix); when table name is used as a key, then
+		value is name of foreign key field. For numeric keys $stdkey field name is used.
+	$stdkey - standard name of foreign key.
+*/
+function key_in_foreign_table($id, $tables, $stdkey, $escaped=false)
+{
+	if (!$escaped)
+		$id = db_escape($id);
+
+	if (!is_array($tables))
+		$tables = array($tables);
+
+	$sqls = array();
+	foreach ($tables as $tbl => $key) {
+		if (is_numeric($tbl)) {
+			$tbl = $key;
+			$key = $stdkey;
+		}
+		$sqls[] = "(SELECT COUNT(*) as cnt FROM `$tbl` WHERE `$key`=".db_escape($id).")\n";
+	}
+
+	$sql = "SELECT sum(cnt) FROM (". implode(' UNION ', $sqls).") as counts";
+
+	$result = db_query($sql, "check relations for ".implode(',',$tables)." failed");
+	$count =  db_fetch($result);
+
+	return $count[0];
+}
 ?>

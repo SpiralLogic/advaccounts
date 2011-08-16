@@ -21,7 +21,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		$js .= get_js_open_window(900, 500);
 	}
 
-	page(_($help_context = "Customer Transactions"), false, false, "", $js);
+	page(_($help_context = "Customer Transactions"),isset($_GET['customer_id']),false, "", $js);
 	if (isset($_GET['customer_id'])) {
 		$_POST['customer_id'] = $_GET['customer_id'];
 	}

@@ -908,5 +908,41 @@ function inactive_control_column(&$th)
 		$Ajax->activate('_page_body');
 	}
 }
+function customer_credit_row($customer, $credit, $parms='')
+{
+	global $path_to_root;
 
+	label_row( _("Current Credit:"),
+		"<a target='_blank' " . ($credit<0 ? 'class="redfg"' : '')
+		."href='$path_to_root/sales/inquiry/customer_inquiry.php?frame=1&customer_id=".$customer."'"
+		." onclick=\"javascript:openWindow(this.href,this.target); return false;\" >"
+		. price_format($credit)
+		."</a>", $parms);
+}
+
+function supplier_credit_row($supplier, $credit, $parms='')
+{
+	global $path_to_root;
+
+	label_row( _("Current Credit:"),
+		"<a target='_blank' " . ($credit<0 ? 'class="redfg"' : '')
+		."href='$path_to_root/purchasing/inquiry/supplier_inquiry.php?supplier_id=".$supplier."'"
+		." onclick=\"javascript:openWindow(this.href,this.target); return false;\" >"
+		. price_format($credit)
+		."</a>", $parms);
+}
+
+function bank_balance_row($bank_acc, $parms='')
+{
+	global $path_to_root;
+
+	$to = add_days(Today(), 1);
+	$bal = get_balance_before_for_bank_account($bank_acc, $to);
+	label_row( _("Bank Balance:"),
+		"<a target='_blank' " . ($bal<0 ? 'class="redfg"' : '')
+		."href='$path_to_root/gl/inquiry/bank_inquiry.php?bank_account=".$bank_acc."'"
+		." onclick=\"javascript:openWindow(this.href,this.target); return false;\" >&nbsp;"
+		. price_format($bal)
+		."</a>", $parms);
+}
 ?>
