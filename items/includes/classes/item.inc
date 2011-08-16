@@ -190,7 +190,7 @@
 			 $terms[] = $o['supplier_id'];
 			 $where2 .= " AND p.supplier_id = ? ";
 		  }
-		  $stock_id = ' s.stock_id, p.supplier_description, MAX(p.price) ';
+		  $stock_id = ' s.stock_id, p.supplier_description, MAX(p.price) as price ';
 		  $where .=" AND s.stock_id = p.stock_id ";
 		  $prices = ", purch_data p ";
 		}
