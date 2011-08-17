@@ -255,7 +255,7 @@ function add_supp_invoice($supp_trans, $invoice_no = 0) // do not receive as ref
 		// ----------------------------------------------------------------------
 
 		add_supp_invoice_item($trans_type, $invoice_id, $entered_grn->item_code,
-							  $entered_grn->item_description, 0, $line_taxfree, $line_tax,
+							  $entered_grn->description, 0, $line_taxfree, $line_tax,
 							  $entered_grn->this_quantity_inv, $entered_grn->id, $entered_grn->po_detail_item, "", "", $entered_grn->discount, $entered_grn->exp_price);
 	} /* end of GRN postings */
 	/* Now the TAX account */

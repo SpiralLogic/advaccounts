@@ -9,110 +9,110 @@ but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
  ***********************************************************************/
-$page_security = 'SA_SALESGROUP';
-$path_to_root = "../..";
-include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+  $page_security = 'SA_SALESGROUP';
+  $path_to_root = "../..";
+  include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 
-page(_($help_context = "Sales Groups"));
+  page(_($help_context = "Sales Groups"));
 
-include($path_to_root . "/includes/faui.inc");
+  include($path_to_root . "/includes/faui.inc");
 
-simple_page_mode(true);
+  simple_page_mode(true);
 
-if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
+  if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 
-	$input_error = 0;
+	 $input_error = 0;
 
-	if (strlen($_POST['description']) == 0) {
+	 if (strlen($_POST['description']) == 0) {
 		$input_error = 1;
 		display_error(_("The area description cannot be empty."));
 		set_focus('description');
-	}
+	 }
 
-	if ($input_error != 1) {
+	 if ($input_error != 1) {
 		if ($selected_id != -1) {
-			$sql = "UPDATE groups SET description=" . db_escape(
-				$_POST['description']) . " WHERE id = " . db_escape($selected_id);
-			$note = _('Selected sales group has been updated');
+		  $sql = "UPDATE groups SET description=" . db_escape(
+			 $_POST['description']) . " WHERE id = " . db_escape($selected_id);
+		  $note = _('Selected sales group has been updated');
 		}
 		else
 		{
-			$sql = "INSERT INTO groups (description) VALUES (" . db_escape($_POST['description']) . ")";
-			$note = _('New sales group has been added');
+		  $sql = "INSERT INTO groups (description) VALUES (" . db_escape($_POST['description']) . ")";
+		  $note = _('New sales group has been added');
 		}
 
 		db_query($sql, "The sales group could not be updated or added");
 		display_notification($note);
 		$Mode = 'RESET';
-	}
-}
+	 }
+  }
 
-if ($Mode == 'Delete') {
+  if ($Mode == 'Delete') {
 
-	$cancel_delete = 0;
+	 $cancel_delete = 0;
 
-	// PREVENT DELETES IF DEPENDENT RECORDS IN 'debtors_master'
+	 // PREVENT DELETES IF DEPENDENT RECORDS IN 'debtors_master'
 
-	$sql = "SELECT COUNT(*) FROM cust_branch WHERE group_no=" . db_escape($selected_id);
-	$result = db_query($sql, "check failed");
-	$myrow = db_fetch_row($result);
-	if ($myrow[0] > 0) {
+	 $sql = "SELECT COUNT(*) FROM cust_branch WHERE group_no=" . db_escape($selected_id);
+	 $result = db_query($sql, "check failed");
+	 $myrow = db_fetch_row($result);
+	 if ($myrow[0] > 0) {
 		$cancel_delete = 1;
 		display_error(_("Cannot delete this group because customers have been created using this group."));
-	}
-	if ($cancel_delete == 0) {
+	 }
+	 if ($cancel_delete == 0) {
 		$sql = "DELETE FROM groups WHERE id=" . db_escape($selected_id);
 		db_query($sql, "could not delete sales group");
 
 		display_notification(_('Selected sales group has been deleted'));
-	} //end if Delete area
-	$Mode = 'RESET';
-}
+	 } //end if Delete area
+	 $Mode = 'RESET';
+  }
 
-if ($Mode == 'RESET') {
-	$selected_id = -1;
-	$sav = get_post('show_inactive');
-	unset($_POST);
-	if ($sav) $_POST['show_inactive'] = 1;
-}
-//-------------------------------------------------------------------------------------------------
+  if ($Mode == 'RESET') {
+	 $selected_id = -1;
+	 $sav = get_post('show_inactive');
+	 unset($_POST);
+	 if ($sav) $_POST['show_inactive'] = 1;
+  }
+  //-------------------------------------------------------------------------------------------------
 
-$sql = "SELECT * FROM groups";
-if (!check_value('show_inactive')) $sql .= " WHERE !inactive";
-$sql .= " ORDER BY description";
-$result = db_query($sql, "could not get groups");
+  $sql = "SELECT * FROM groups";
+  if (!check_value('show_inactive')) $sql .= " WHERE !inactive";
+  $sql .= " ORDER BY description";
+  $result = db_query($sql, "could not get groups");
 
-start_form();
-start_table("$table_style width=30%");
-$th = array(_("Group Name"), "", "");
-inactive_control_column($th);
+  start_form();
+  start_table("$table_style width=30%");
+  $th = array(_("Group Name"), "", "");
+  inactive_control_column($th);
 
-table_header($th);
-$k = 0;
+  table_header($th);
+  $k = 0;
 
-while ($myrow = db_fetch($result))
-{
+  while ($myrow = db_fetch($result))
+  {
 
-	alt_table_row_color($k);
+	 alt_table_row_color($k);
 
-	label_cell($myrow["description"]);
-	inactive_control_cell($myrow["id"], $myrow["inactive"], 'groups', 'id');
-	edit_button_cell("Edit" . $myrow["id"], _("Edit"));
-	delete_button_cell("Delete" . $myrow["id"], _("Delete"));
-	end_row();
-}
+	 label_cell($myrow["description"]);
+	 inactive_control_cell($myrow["id"], $myrow["inactive"], 'groups', 'id');
+	 edit_button_cell("Edit" . $myrow["id"], _("Edit"));
+	 delete_button_cell("Delete" . $myrow["id"], _("Delete"));
+	 end_row();
+  }
 
-inactive_control_row($th);
-end_table();
+  inactive_control_row($th);
+  end_table();
 
-echo '<br>';
+  echo '<br>';
 
-//-------------------------------------------------------------------------------------------------
+  //-------------------------------------------------------------------------------------------------
 
-start_table($table_style2);
+  start_table($table_style2);
 
-if ($selected_id != -1) {
-	if ($Mode == 'Edit') {
+  if ($selected_id != -1) {
+	 if ($Mode == 'Edit') {
 		//editing an existing area
 		$sql = "SELECT * FROM groups WHERE id=" . db_escape($selected_id);
 
@@ -120,17 +120,17 @@ if ($selected_id != -1) {
 		$myrow = db_fetch($result);
 
 		$_POST['description'] = $myrow["description"];
-	}
-	hidden("selected_id", $selected_id);
-}
+	 }
+	 hidden("selected_id", $selected_id);
+  }
 
-text_row_ex(_("Group Name:"), 'description', 30);
+  text_row_ex(_("Group Name:"), 'description', 30);
 
-end_table(1);
+  end_table(1);
 
-submit_add_or_update_center($selected_id == -1, '', 'both');
+  submit_add_or_update_center($selected_id == -1, '', 'both');
 
-end_form();
+  end_form();
 
-end_page();
+  end_page();
 ?>

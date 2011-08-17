@@ -183,7 +183,7 @@ class items_cart
 class line_item
 {
 	var $stock_id;
-	var $item_description;
+	var $description;
 	var $units;
 	var $mb_flag;
 
@@ -202,9 +202,9 @@ class line_item
 		$this->units = $item_row["units"];
 
 		if ($description == null)
-			$this->item_description = $item_row["description"];
+			$this->description = $item_row["description"];
 		else
-			$this->item_description = $description;
+			$this->description = $description;
 
 		if ($standard_cost == null)
 			$this->standard_cost = $item_row["actual_cost"];

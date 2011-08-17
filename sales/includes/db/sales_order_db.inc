@@ -45,14 +45,14 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 			 $qoh -= $line->quantity;
 			 if ($qoh < $loc['reorder_level']) {
 				$st_ids[] = $line->stock_id;
-				$st_names[] = $line->item_description;
+				$st_names[] = $line->description;
 				$st_num[] = $qoh - $loc['reorder_level'];
 				$st_reorder[] = $loc['reorder_level'];
 			 }
 		  }
 		}
 		$sql = "INSERT INTO sales_order_details (order_no, trans_type, stk_code, description, unit_price, quantity, discount_percent) VALUES (";
-		$sql .= $order_no . "," . $order->trans_type . "," . db_escape($line->stock_id) . ", " . db_escape($line->item_description) . ", $line->price,
+		$sql .= $order_no . "," . $order->trans_type . "," . db_escape($line->stock_id) . ", " . db_escape($line->description) . ", $line->price,
 				$line->quantity,
 				$line->discount_percent)";
 		db_query($sql, "order Details Cannot be Added");
@@ -158,7 +158,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 			 $qoh -= $line->quantity;
 			 if ($qoh < $loc['reorder_level']) {
 				$st_ids[] = $line->stock_id;
-				$st_names[] = $line->item_description;
+				$st_names[] = $line->description;
 				$st_num[] = $qoh - $loc['reorder_level'];
 				$st_reorder[] = $loc['reorder_level'];
 			 }
@@ -169,7 +169,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		  discount_percent, qty_sent)
 		 VALUES (";
 		$sql .= db_escape($line->id ? $line->id
-								 : 0) . "," . $order_no . "," . $order->trans_type . "," . db_escape($line->stock_id) . "," . db_escape($line->item_description) . ", " . db_escape($line->price) . ", " . db_escape($line->quantity) . ", " . db_escape($line->discount_percent) . ", " . db_escape($line->qty_done) . " )";
+								 : 0) . "," . $order_no . "," . $order->trans_type . "," . db_escape($line->stock_id) . "," . db_escape($line->description) . ", " . db_escape($line->price) . ", " . db_escape($line->quantity) . ", " . db_escape($line->discount_percent) . ", " . db_escape($line->qty_done) . " )";
 		db_query($sql, "Old order Cannot be Inserted");
 
 	 } /* inserted line items into sales order details */
@@ -198,9 +198,26 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 
   //----------------------------------------------------------------------------------------
   function get_sales_order_header($order_no, $trans_type) {
-	 $sql = "SELECT DISTINCT sales_orders.*, debtors_master.name, debtors_master.curr_code, debtors_master.email AS master_email, locations.location_name, debtors_master.payment_terms,
-	 debtors_master.discount, sales_types.sales_type, sales_types.id AS sales_type_id, sales_types.tax_included, shippers.shipper_name, tax_groups.name AS tax_group_name , tax_groups.id AS tax_group_id
-	FROM sales_orders, debtors_master, sales_types, tax_groups, cust_branch, locations, shippers
+	 $sql = "SELECT DISTINCT sales_orders.*,
+	  debtors_master.name,
+	  debtors_master.curr_code,
+	  debtors_master.email AS master_email,
+	  locations.location_name,
+	  debtors_master.payment_terms,
+	 debtors_master.discount,
+	 sales_types.sales_type,
+	 sales_types.id AS sales_type_id,
+	 sales_types.tax_included,
+	 shippers.shipper_name,
+	 tax_groups.name AS tax_group_name ,
+	 tax_groups.id AS tax_group_id
+	FROM sales_orders,
+	debtors_master,
+	sales_types,
+	tax_groups,
+	cust_branch,
+	locations,
+	shippers
 	WHERE sales_orders.order_type=sales_types.id
 		AND cust_branch.branch_code = sales_orders.branch_code
 		AND cust_branch.tax_group_id = tax_groups.id
@@ -239,7 +256,8 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 $order->trans_type = $myrow['trans_type'];
 	 $order->so_type = $myrow["type"];
 	 $order->trans_no = array($order_no => $myrow["version"]);
-	 $order->set_customer($myrow["debtor_no"], $myrow["name"], $myrow["curr_code"], $myrow["discount"]);
+	 $order->set_customer($myrow["debtor_no"], $myrow["name"],
+								 $myrow["curr_code"], $myrow["discount"], $myrow["payment_terms"]);
 	 $order->set_branch($myrow["branch_code"], $myrow["tax_group_id"], $myrow["tax_group_name"], $myrow["contact_phone"], $myrow["contact_email"], $myrow["contact_name"]);
 	 $order->set_sales_type($myrow["sales_type_id"], $myrow["sales_type"], $myrow["tax_included"], 0); // no default price calculations on edit
 	 $order->set_location($myrow["from_stk_loc"], $myrow["location_name"]);
@@ -305,7 +323,19 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 
   function get_customer_to_order($customer_id) {
 	 // Now check to ensure this account is not on hold */
-	 $sql = "SELECT debtors_master.name, debtors_master.address, credit_status.dissallow_invoices, debtors_master.sales_type AS salestype, debtors_master.dimension_id, debtors_master.dimension2_id, sales_types.sales_type, sales_types.tax_included, sales_types.factor, debtors_master.curr_code, debtors_master.discount,debtors_master.pymt_discount
+	 $sql = "SELECT debtors_master.name,
+	 debtors_master.address,
+	 credit_status.dissallow_invoices,
+	 debtors_master.sales_type AS salestype,
+	 debtors_master.dimension_id,
+	 debtors_master.dimension2_id,
+	 sales_types.sales_type,
+	 sales_types.tax_included,
+	 sales_types.factor,
+	 debtors_master.curr_code,
+	 debtors_master.discount,
+	 debtors_master.pymt_discount,
+	 debtors_master.payment_terms
 		FROM debtors_master, credit_status, sales_types
 		WHERE debtors_master.sales_type=sales_types.id
 		AND debtors_master.credit_status=credit_status.id

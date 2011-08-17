@@ -338,7 +338,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 						$po_lines[$myrow[0]['supplier_id']] = 1;
 					}
 				}
-				$_SESSION['PO']->add_to_order($line_no, $line_item->stock_id, $line_item->quantity, $line_item->item_description, price_decimal_format($myrow[0]['price'], $dec2), $line_item->units,
+				$_SESSION['PO']->add_to_order($line_no, $line_item->stock_id, $line_item->quantity, $line_item->description, price_decimal_format($myrow[0]['price'], $dec2), $line_item->units,
 				                              add_days(Today(), 10), 0, 0, 0);
 
 			}
