@@ -8,7 +8,7 @@
  */
 	class Customer extends Company {
 
-public $debtor_no;
+		public $debtor_no;
 		public $name = 'New Customer';
 		public $sales_type;
 		public $debtor_ref = '';
@@ -22,8 +22,8 @@ public $debtor_no;
 		public $transactions;
 
 		function __construct($id = null) {
-		if ($this->debtor_no!=null) $id = $this->debtor_no;
-		  parent::__construct($id);
+			if ($this->debtor_no != null) $this->$id = $id = $this->debtor_no;
+			parent::__construct($id);
 			$this->pymt_discount =& $this->payment_discount;
 			$this->debtor_ref = substr($this->name, 0, 60);
 			return $this;
@@ -177,15 +177,8 @@ public $debtor_no;
 				return $this->_status(false, 'read', 'No customer ID to read');
 			}
 			$this->_defaults();
-			$this->id = $id;
-			$sql = "SELECT * FROM debtors_master WHERE debtor_no = " . db_escape($id);
-			$result = db_query($sql, "check failed");
-			if (db_num_rows($result) != 1) {
-				$this->_status(false, 'read', "Customer could not be found!");
-				return false;
-			}
-			$result = db_fetch_assoc($result);
-			$this->setFromArray($result);
+			DB::select()->from('debtors_master')->where('debtor_no =', $id);
+			DB::fetchIntoClass($this);
 			$this->_getBranches();
 			$this->_getAccounts();
 			$this->_getContacts();
@@ -195,10 +188,9 @@ public $debtor_no;
 			return $this->id;
 		}
 
-		protected function _countTransactions() {
-			$sql = "SELECT COUNT(*) FROM debtor_trans WHERE debtor_no=" . $this->id;
-			$result = db_query($sql, "check failed");
-			return db_fetch_row($result);
+		function _countTransactions() {
+			DB::select('COUNT(*)')->from('debtor_trans')->where('debtor_no=', $this->id);
+			return DB::rowCount();
 		}
 
 		public function getTransactions() {
@@ -223,21 +215,18 @@ public $debtor_no;
 		}
 
 		protected function _countOrders() {
-			$sql = "SELECT COUNT(*) FROM sales_orders WHERE debtor_no=" . $this->id;
-			$result = db_query($sql, "check failed");
-			return db_fetch_row($result);
+			DB::select('COUNT(*)')->from('sales_orders')->where('debtor_no=', $this->id);
+			return DB::rowCount();
 		}
 
 		protected function _countBranches() {
-			$sql = "SELECT COUNT(*) FROM cust_branch WHERE debtor_no=" . $this->id;
-			$result = db_query($sql, "check failed");
-			return db_fetch_row($result);
+			DB::select('COUNT(*)')->from('cust_branch')->where('debtor_no=', $this->id);
+			return DB::rowCount();
 		}
 
 		protected function _countContacts() {
-			$sql = "SELECT COUNT(*) FROM contacts WHERE parent_id=" . $this->id;
-			$result = db_query($sql, "check failed");
-			return db_fetch_row($result);
+			DB::select('COUNT(*)')->from('contacts')->where('debtor_no=', $this->id);
+			return DB::rowCount();
 		}
 
 		public function delete() {
@@ -261,12 +250,9 @@ public $debtor_no;
 		}
 
 		protected function _getAccounts() {
-			$sql = "SELECT branch_code FROM cust_branch WHERE debtor_no=" . $this->id . " AND branch_ref = 'accounts'";
-			$result = db_query($sql, 'Couldn\'t retrieve any accounts');
-			$result = db_fetch_assoc($result);
-			$this->accounts = new Accounts($result['branch_code']);
-			$this->accounts->debtor_no = $this->id;
-			if ($this->accounts->accounts_id == 0 && $this->id > 0 && $this->defaultBranch > 0) {
+			DB::select()->from('cust_branch')->where('debtor_no=', $this->debtor_no)->and_where('branch_ref=', 'accounts');
+
+			if (DB::rowCount() == 0 && $this->id > 0 && $this->defaultBranch > 0) {
 				$this->accounts->debtor_no = $this->id;
 				$this->accounts->email = $this->email;
 				$this->accounts->br_address = $this->address;
@@ -276,40 +262,26 @@ public $debtor_no;
 				$this->accounts->contact_name = $this->branches[$this->defaultBranch]->contact_name;
 				$this->accounts->br_name = 'Accounts Department';
 				$this->accounts->save();
+			} else {
+				$this->accounts = DB::fetchClass('Accounts');
 			}
 		}
 
 		protected function _getBranches() {
-			$sql = "SELECT branch_code, br_name, branch_ref FROM cust_branch WHERE debtor_no=" . $this->id . " AND branch_ref != 'accounts' AND disable_trans =0";
-			$result = db_query($sql, 'Couldn\'t retrieve any branches');
-			if (!db_num_rows($result)) {
-				return;
-			}
-			while ($row = db_fetch_assoc($result)) {
-				$this->branches[$row['branch_code']] = new Branch($row['branch_code']);
+			DB::select()->from('cust_branch')->where('debtor_no=', $this->debtor_no)->and_where('branch_ref !=', 'accounts')->and_where('disable_trans =', 0);
+			if (DB::rowCount() == 0) return;
+			while ($branch = DB::fetchClass('Branch')) {
+				$this->branches[$branch->branch_code] = $branch;
 			}
 			$this->defaultBranch = reset($this->branches)->branch_code;
 		}
 
 		protected function _getContacts() {
-			$sql = "SELECT id, name  FROM contacts WHERE parent_id=" . $this->id;
-			$result = db_query($sql, 'Couldn\'t retrieve any contacts');
-
-
-
-
-			if (!db_num_rows($result)) {
-				$contact = new Contact(array("parent_id" => $this->id, "name" => $this->branches[$this->defaultBranch]->contact_name, "phone1" => $this->branches[$this->defaultBranch]->phone));
-				if (strlen($contact->name) == 0) {
-					$contact->name = $this->name;
+			DB::select()->from('contacts')->where('parent_id=', $this->debtor_no);
+			if (DB::rowCount() > 0)
+				while ($contact = DB::fetchClass('Contact')) {
+					$this->contacts[$contact->id] = $contact;
 				}
-				$contact->save();
-				$this->contacts[$contact->id] = $contact;
-			} else {
-				while ($row = db_fetch_assoc($result)) {
-					$this->contacts[$row['id']] = new Contact($row['id']);
-				}
-			}
 			$this->defaultContact = reset($this->contacts)->id;
 			$this->contacts[0] = new Contact(array('parent_id' => $this->id));
 
@@ -341,20 +313,16 @@ public $debtor_no;
 		}
 
 		public static function search($terms) {
-			$term = db_escape("$terms%");
-			$terms = db_escape("%$terms%");
-			$terms2 = db_escape("%" . str_replace(' ', "%' AND name LIKE '%", trim($terms)) . "%");
-			$sql = "(SELECT debtor_no as id, name as label, name as value FROM debtors_master WHERE name LIKE $term ORDER BY name LIMIT 20)
-			UNION (SELECT debtor_no as id, name as label, name as value FROM debtors_master
-			WHERE debtor_ref LIKE $terms OR name LIKE $terms2 OR debtor_no LIKE $terms  ORDER BY debtor_no, name LIMIT 20)";
-			$result = db_query($sql, 'Couldn\'t Get Customers');
-			$data = '';
-			while ($row = db_fetch_assoc($result)) {
-				foreach ($row as &$value) {
-					$value = htmlspecialchars_decode($value);
-				}
-				$data[] = $row;
-			}
+			$data = array();
+			DB::select(array('debtor_no as id', array('name as label', true), 'name as value'))
+			 ->from('debtors_master')->where('name LIKE ', "$terms%")->limit(20)
+			 ->union()
+			 ->select(array('debtor_no as id', 'name as label', 'name as value'))
+			 ->from('debtors_master')->where('debtor_ref LIKE', "%$terms%")
+			 ->or_where('name LIKE', "%" . str_replace(' ', "%' AND name LIKE '%", trim($terms)) . "%")
+			 ->or_where('debtor_no LIKE', "%$terms%")->limit(20)->union();
+
+			while ($row = DB::fetch()) $data[] = array_map('htmlspecialchars_decode', $row);
 			return $data;
 		}
 
@@ -364,8 +332,8 @@ public $debtor_no;
 			$term = explode(' ', $term);
 			$term1 = db_escape(trim($term[0]) . '%');
 			$term2 = db_escape('%' . implode(' AND name LIKE ', array_map(function($v) {
-					                                                  return trim($v);
-				                                                  }, $term)) . '%');
+																														return trim($v);
+																													}, $term)) . '%');
 			$where = ($o['inactive'] ? '' : ' AND inactive = 0 ');
 			$sql = "(SELECT debtor_no as id, name as label, debtor_no as value, name as description FROM debtors_master WHERE name LIKE $term1 $where ORDER BY name LIMIT 20)
 						UNION (SELECT debtor_no as id, name as label, debtor_no as value, name as description FROM debtors_master

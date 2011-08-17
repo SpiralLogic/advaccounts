@@ -12,16 +12,18 @@
 		protected $insert = array();
 		protected $where = array();
 		public $data = array();
+		protected $count = 0;
 
 		protected function _where($condition, $type = 'AND', $uservar) {
-		if (is_array($condition)) {
-		  foreach ($condition as $condition=>$uservar) $this->_where($condition,$type,$uservar);
-		  return $this;
-		}
-		  if ($uservar !== null) {
-				$name = ':dbcondition'.count($this->data);
+			if (is_array($condition)) {
+				foreach ($condition as $condition => $uservar) $this->_where($condition, $type, $uservar);
+				return $this;
+			}
+			if ($uservar !== null) {
+				$name = ':dbcondition' . $this->count;
+				$this->count++;
 				$this->data[$name] = $uservar;
-				$condition = $condition .' '. $name;
+				$condition = $condition . ' ' . $name;
 			}
 			$this->where[] = (empty($this->where)) ? $condition : $type . ' ' . $condition;
 			return $this;
@@ -60,6 +62,7 @@
 		protected function _buildQuery() {
 			$sql = '';
 			if (!empty($this->where)) $sql .= ' WHERE ' . implode(' ', $this->where);
+			$this->where=array();
 			return $sql;
 		}
 
