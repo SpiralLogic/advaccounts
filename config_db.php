@@ -35,6 +35,6 @@ The scripts for MySQL provided use the name logicworks */
                  'caching' => false,
                  'profiling' => false,)
    );
-  DB::initConnect($db_connections[0]['dbname'], $db_connections[0]['dbuser'], $db_connections[0]['dbpassword']);
+  DB::init($db_connections[0]['dbname'], $db_connections[0]['dbuser'], $db_connections[0]['dbpassword']);
 
 ?>

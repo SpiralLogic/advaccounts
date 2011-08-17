@@ -8,7 +8,7 @@
  */
 	class Customer extends Company {
 
-
+public $debtor_no;
 		public $name = 'New Customer';
 		public $sales_type;
 		public $debtor_ref = '';
@@ -22,7 +22,8 @@
 		public $transactions;
 
 		function __construct($id = null) {
-			parent::__construct($id);
+		if ($this->debtor_no!=null) $id = $this->debtor_no;
+		  parent::__construct($id);
 			$this->pymt_discount =& $this->payment_discount;
 			$this->debtor_ref = substr($this->name, 0, 60);
 			return $this;

@@ -17,7 +17,6 @@
 
 	 function __construct($id = null) {
 		parent::__construct($id);
-
 	 }
 
 	 protected function _canProcess() {

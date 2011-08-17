@@ -79,14 +79,21 @@
 		}
 
 	 }
+protected function _fetch($data=null) {
+  $sql = $this->query->exec($data);
+  $this->_prepare($sql);
+  $this->_prepared->execute($this->query->data);
+  $this->query = null;
+  return $this->_prepared->fetchAll();
 
+}
 	 protected function _fetchClass($type, $data = null) {
 		$sql = $this->query->exec($data);
 		$this->_prepare($sql);
 		$this->_prepared->execute($this->query->data);
 		$this->query = null;
 		$this->_prepared->setFetchMode(PDO::FETCH_CLASS, $type);
-		$this->_prepared->fetchAll();
+		return $this->_prepared->fetchAll();
 	 }
 
 	 protected function _fetchIntoClass($type, $data = null) {
@@ -132,18 +139,18 @@
 
 	 protected function _select($column = null, $orderby = false, $groupby = false) {
 		if (!$this->query) $this->query = new Select();
-		$this->type = SELECT;
+		$this->type = DB::SELECT;
 		return $this->query->select($column, $orderby, $groupby);
 	 }
 
 	 protected function _update($into) {
 		if (!$this->query) return $this->query = new Update($into);
-	 $this->type = UPDATE;
+	 $this->type = DB::UPDATE;
 	 }
 
 	 protected function _insert($into) {
 		if (!$this->query) return $this->query = new Insert($into);
-	 $this->type = INSERT;
+	 $this->type = DB::INSERT;
 	 }
 
 	 protected function _exec($data = null) {
