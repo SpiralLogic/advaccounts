@@ -115,7 +115,7 @@ function can_process()
 		if ($failed_item >= 0) {
 			$line = $adj->line_items[$failed_item];
 			display_error(_("The adjustment cannot be processed because an adjustment item would cause a negative inventory balance :") .
-						  " " . $line->stock_id . " - " . $line->item_description);
+						  " " . $line->stock_id . " - " . $line->description);
 			$_POST['Edit' . $failed_item] = 1; // enter edit mode
 			unset($_POST['Process']);
 			return false;

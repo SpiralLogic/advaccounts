@@ -52,7 +52,7 @@ foreach ($purchase_order->line_items as $stock_item)
 	alt_table_row_color($k);
 
 	label_cell($stock_item->stock_id);
-	label_cell($stock_item->item_description);
+	label_cell($stock_item->description);
 	label_cell($stock_item->req_del_date, "nowrap align=right");
 	$dec = get_qty_dec($stock_item->stock_id);
 	qty_cell($stock_item->qty_received, false, $dec);

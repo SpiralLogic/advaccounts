@@ -25,6 +25,7 @@
 	 const INSERT = 1;
 	 const UPDATE = 2;
 
+
 	 static function __callStatic($func, $args = array()) {
 		if (static::$_instance === null) static::$_instance = new static;
 		return call_user_func_array(array(static::$_instance, '_' . $func), $args);
@@ -64,7 +65,7 @@
 	 }
 
 	 protected function _execute($data = null) {
-			if (!$this->_prepared) return;
+		if (!$this->_prepared) return;
 		$this->_prepared->execute((array)$data);
 		switch ($this->type) {
 		  case DB::INSERT:
@@ -78,22 +79,20 @@
 		}
 
 	 }
+protected function _fetch($data=null) {
+  $sql = $this->query->exec($data);
+  $this->_prepare($sql);
+  $this->_prepared->execute($this->query->data);
+  $this->query = null;
+  return $this->_prepared->fetchAll();
 
-	 protected function _fetchAll($data = null) {
-		$sql = $this->query->exec($data);
-		$this->_prepare($sql);
-		$this->_prepared->execute($this->query->data);
-		$this->_prepared->setFetchMode(PDO::FETCH_OBJ);
-		$this->query = null;
-		return $this->_prepared->fetchAll();
-	 }
-
+}
 	 protected function _fetchClass($type, $data = null) {
 		$sql = $this->query->exec($data);
 		$this->_prepare($sql);
 		$this->_prepared->execute($this->query->data);
-		$this->_prepared->setFetchMode(PDO::FETCH_CLASS, $type);
 		$this->query = null;
+		$this->_prepared->setFetchMode(PDO::FETCH_CLASS, $type);
 		return $this->_prepared->fetchAll();
 	 }
 
@@ -146,12 +145,12 @@
 
 	 protected function _update($into) {
 		if (!$this->query) return $this->query = new Update($into);
-		$this->type = DB::UPDATE;
+	 $this->type = DB::UPDATE;
 	 }
 
 	 protected function _insert($into) {
 		if (!$this->query) return $this->query = new Insert($into);
-		$this->type = DB::INSERT;
+	 $this->type = DB::INSERT;
 	 }
 
 	 protected function _exec($data = null) {

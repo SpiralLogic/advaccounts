@@ -121,7 +121,7 @@ if (isset($_POST['Process'])) {
 		if ($failed_item >= 0) {
 			$line = $tr->line_items[$failed_item];
 			display_error(_("The quantity entered is greater than the available quantity for this item at the source location :") .
-						  " " . $line->stock_id . " - " . $line->item_description);
+						  " " . $line->stock_id . " - " . $line->description);
 			echo "<br>";
 			$_POST['Edit' . $failed_item] = 1; // enter edit mode
 			$input_error = 1;

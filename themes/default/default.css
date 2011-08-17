@@ -461,8 +461,8 @@ div.banner a + a { border-top: 2px groove #999 }
 }
 
 .tableheader, tr.tableheader2, .menu_group, th {
-	font-size:        1.3em;
-	line-height:      1.3em;
+	font-size:        1.2em;
+	line-height:      1.2em;
 	font-weight:      bold;
 	box-shadow:       0 1px 0 rgba(255, 255, 255, 0.6) inset;
 	background-image: -moz-linear-gradient(center top, #B9E0F5, #5F83B9);
@@ -729,7 +729,9 @@ input.amount, input.freight {
 	padding-right: 0px;
 / / border-right : none;
 }
-
+.desc {
+  white-space: pre;
+}
 input.hasDatepicker {
 	max-width: 70px;
 	min-width: inherit;
