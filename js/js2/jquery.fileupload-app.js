@@ -47,7 +47,8 @@ $(function () {
 			};
 
 	$.getJSON('/upload/upload.php?order=' + order_id, function (files) {
-		$.each(files, function (index, file) {
+	if (files)	
+	  $.each(files, function (index, file) {
 			fileUploadOptions.buildDownloadRow(file).appendTo(filesTable).fadeIn();
 		});
 	});
