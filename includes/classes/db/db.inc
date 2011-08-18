@@ -21,22 +21,34 @@
 	 protected $query;
 	 protected $type;
 	 protected static $_instance;
+	 protected static $_instances = array();
+
 	 const SELECT = 0;
 	 const INSERT = 1;
 	 const UPDATE = 2;
 
 	 static function __callStatic($func, $args = array()) {
 		if (static::$_instance === null) static::$_instance = new static;
-		return call_user_func_array(array(static::$_instance, '_' . $func), $args);
+		$func = (method_exists(static::$_instance, $func)) ? $func : '_' . $func;
+		return call_user_func_array(array(static::$_instance, $func), $args);
 	 }
 
-	 protected function _init($name, $user, $password, $host = false, $port = false) {
-		$this->dbname = $name;
-		$this->dbuser = $user;
-		$this->dbpass = $password;
-		$this->dbhost = ($host) ? $host : 'localhost';
-		$this->dbport = ($port) ? $port : '3306';
-		$this->_connect();
+	 static function init($name, $user, $password, $host = false, $port = false) {
+
+		if (static::$_instance === null) {
+		  static::$_instance = new static;
+		  $self = static::$_instance;
+		} else {
+		  static::$_instances[$name] = new static;
+		  $self = static::$_instances[$name];
+		}
+		$self->dbname = $name;
+		$self->dbuser = $user;
+		$self->dbpass = $password;
+		$self->dbhost = ($host) ? $host : 'localhost';
+		$self->dbport = ($port) ? $port : '3306';
+		$self->_connect();
+		return $self;
 	 }
 
 	 protected function __construct() {
@@ -79,41 +91,41 @@
 
 	 }
 
-	 protected function _fetch($data = null) {
+	 public function fetch($data = null) {
+
 		if ($this->query) $this->_exec($data);
 		$this->_prepared->setFetchMode(PDO::FETCH_ASSOC);
-
 		return $this->_prepared->fetch();
 	 }
 
-	 protected function _fetchAll($data = null) {
+	 public function fetchAll($data = null) {
 		$this->_exec($data);
 		return $this->_prepared->fetchAll();
 	 }
 
-	 protected function _fetchClass($type, $data = null) {
+	 public function fetchClass($type, $data = null) {
 		if ($this->query) $this->_exec($data);
 		$this->_prepared->setFetchMode(PDO::FETCH_CLASS, $type);
 		return $this->_prepared->fetch();
 	 }
 
-	 protected function _fetchIntoClass($type, $data = null) {
+	 public function fetchIntoClass($type, $data = null) {
 		if ($this->query) $this->_exec($data);
 		$this->_prepared->setFetchMode(PDO::FETCH_INTO, $type);
 		return $this->_prepared->fetchAll();
 	 }
 
-	 protected function _begin() {
+	 public function begin() {
 		$this->conn->beginTransaction();
 		return $this;
 	 }
 
-	 protected function _commit() {
+	 public function commit() {
 		$this->conn->commit();
 		return $this;
 	 }
 
-	 protected function _rowCount() {
+	 public function rowCount() {
 		if ($this->query) $this->_exec(null);
 
 		return $this->_prepared->rowCount();
@@ -141,24 +153,25 @@
 		return false;
 	 }
 
-	 protected function _select($column = null, $orderby = false, $groupby = false) {
+	 public function select($column = null, $orderby = false, $groupby = false) {
 		if (!$this->query) $this->query = new Select();
 		$this->type = DB::SELECT;
 		return $this->query->select($column, $orderby, $groupby);
 	 }
 
-	 protected function _update($into) {
+	 public function update($into) {
 		if (!$this->query) return $this->query = new Update($into);
 		$this->type = DB::UPDATE;
 	 }
 
-	 protected function _insert($into) {
+	 public function insert($into) {
 		if (!$this->query) return $this->query = new Insert($into);
 		$this->type = DB::INSERT;
 	 }
 
 	 protected function _exec($data = null) {
 		$sql = $this->query->exec($data);
+		var_dump($sql);
 		$this->_prepare($sql);
 		$this->_prepared->execute($this->query->data);
 		$this->query = null;
