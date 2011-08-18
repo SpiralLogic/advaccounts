@@ -22,8 +22,8 @@
 		public $transactions;
 
 		function __construct($id = null) {
-			if ($this->debtor_no != null) $this->$id = $id = $this->debtor_no;
 			parent::__construct($id);
+		  $this->id = &$this->debtor_no;
 			$this->pymt_discount =& $this->payment_discount;
 			$this->debtor_ref = substr($this->name, 0, 60);
 			return $this;
@@ -163,7 +163,7 @@
 
 		protected function _defaults() {
 			global $SysPrefs;
-			$this->id = $this->dimension_id = $this->dimension2_id = $this->inactive = 0;
+			$this->dimension_id = $this->dimension2_id = $this->inactive = 0;
 			$this->sales_type = $this->credit_status = 1;
 			$this->name = $this->address = $this->email = $this->tax_id = $this->payment_terms = $this->notes = $this->debtor_ref = '';
 			$this->curr_code = get_company_currency();
