@@ -20,11 +20,17 @@
 					'host' => 'localhost',
 					'dbuser' => 'fa',
 					'dbpassword' => '1willenberg',
-					'dbname' => 'fa',
+//					'dbname' => 'fa',
+					'dbname' => 'fadev',
+
 					'type' => 'pdo',
 					'connection' => array(
-					  'dsn' => 'mysql:host=localhost;dbname=fa',
-					  'username' => 'fa',
+					  //'dsn' => 'mysql:host=localhost;dbname=fa',
+					  'dsn' => 'mysql:host=localhost;dbname=fadev',
+
+					  //'username' => 'fa',
+					  'username' => 'fadev',
+
 					  'password' => '1willenberg',
 					  'persistent' => false,
 					),
