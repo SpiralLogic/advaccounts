@@ -1,4 +1,4 @@
-<?
+<?php
 class HTML
 {
 	protected static $_instance = null;

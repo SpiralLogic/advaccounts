@@ -6,7 +6,6 @@
  * Time: 5:47 PM
  * To change this template use File | Settings | File Templates.
  */
-  HTML::load();
 
   class UI extends HTML {
 
