@@ -135,8 +135,8 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		     APP_PATH . 'reporting/includes'));
 
 	if (preg_match('/Chrome/i', $_SERVER['HTTP_USER_AGENT'])) {
-		//		include(APP_PATH . 'includes/fb.php');
-		//	FB::useFile(APP_PATH . 'tmp/chromelogs', '/tmp/chromelogs');
+				include(APP_PATH . 'includes/fb.php');
+			FB::useFile(APP_PATH . 'tmp/chromelogs', '/tmp/chromelogs');
 	} else {
 		//	include(APP_PATH . 'includes/FirePHP/FirePHP.class.php');
 		//	include(APP_PATH . 'includes/FirePHP/fb.php');

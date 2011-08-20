@@ -1,31 +1,34 @@
 <?php
 include(APP_PATH . 'modules/smartoptimizer/minifiers/js.php');
-  class JS {
+	class JS {
 
-	 private static $_beforeload = array();
-	 private static $_onload = array();
-	 private static $_onlive = array();
+		private static $_beforeload = array();
+		private static $_onload = array();
+		private static $_onlive = array();
 
-	 private static $_headerFiles = array();
-	 private static $_footerFiles = array();
-	 private static $_focus = false;
+		private static $_headerFiles = array();
+		private static $_footerFiles = array();
+		private static $_focus = false;
 
-	 private function __construct() {
-	 }
-
-	 public static function autocomplete($id, $callback, $url = false, $options = array()) {
-		$afterSource = (isset($options['afterSource'])) ? $options['afterSource'] . '(data,request);' : '';
-		if (!$url) {
-		  $url = $_SERVER['PHP_SELF'];
+		private function __construct() {
 		}
-		self::$_onload[] = <<< JS
-      var autocomplete{$id},\${$id} =$('#{$id}').autocomplete({
+
+		public static function autocomplete($id, $callback, $url = false, $options = array()) {
+
+
+
+								$afterSource = (isset($options['afterSource'])) ? $options['afterSource'] . '(data,request);' : '';
+			if (!$url) {
+				$url = $_SERVER['PHP_SELF'];
+			}
+			self::$_onload[] = <<< JS
+      var \${$id};
+      Adv.o.autocomplete{$id} = \${$id} =$('#{$id}').autocomplete({
          autoFocus:true,
 	      source: function(request, response) {
 		      var lastXhr = $.getJSON('{$url}', request, function(data, status, xhr) {
 			   	if (xhr === lastXhr) {
 				   	response(data);
-
 				   	{$afterSource}
 				   }
 			   });
@@ -35,13 +38,12 @@ include(APP_PATH . 'modules/smartoptimizer/minifiers/js.php');
    	   }
       }).css({'z-index' : '2'});
 JS;
-	 }
+			if (isset($options['focus'])) self::setFocus("autocomplete{$id}",true);
+		}
 
-
-
-	 public static function gmap($selector, $address, $title) {
-		$address = str_replace("\r\t\n\v", ", ", $address);
-		self::$_onload[] = <<<JS
+		public static function gmap($selector, $address, $title) {
+			$address = str_replace("\r\t\n\v", ", ", $address);
+			self::$_onload[] = <<<JS
 
 	var map = $("<div/>").gMap({
 	address:"{$address}",
@@ -55,131 +57,130 @@ ${$selector} = $("{$selector}").click(function() {
     return false; });
 JS;
 
-	 }
-
-	 public static function tabs($id, $options = array(), $page) {
-		$defaults = array('noajax' => false);
-		extract(array_merge($defaults, $options));
-		$content = "$('" . $id . "').tabs()";
-		if ($page) {
-		  $content .= ".tabs('select'," . $page . ")";
-		}
-		$content .= ";";
-
-		self::onload($content);
-	 }
-
-	 public static function renderHeader() {
-
-		foreach (self::$_headerFiles as $dir => $files) {
-		  HTML::script(array('src' => $dir . '/' . implode(',', $files)), false);
 		}
 
-	 }
+		public static function tabs($id, $options = array(), $page) {
+			$defaults = array('noajax' => false);
+			extract(array_merge($defaults, $options));
+			$content = "$('" . $id . "').tabs()";
+			if ($page) {
+				$content .= ".tabs('select'," . $page . ")";
+			}
+			$content .= ";";
 
-	 public static function render() {
-		if (AJAX_REFERRER) return HTML::script(null, 'Adv.Events.rebind()', false);
-		$files = $content = '';
-		foreach (self::$_footerFiles as $dir => $file) {
-		  $files .= HTML::setReturn(true)->script(array('src' => $dir . '/' . implode(',', $file)), false)->setReturn(false);
+			self::onload($content);
 		}
-		if (count(self::$_beforeload)) {
-		  $content .= implode(";\n", self::$_beforeload);
+
+		public static function renderHeader() {
+
+			foreach (self::$_headerFiles as $dir => $files) {
+				HTML::script(array('src' => $dir . '/' . implode(',', $files)), false);
+			}
+
 		}
-		$content .= ";\n$(function() { ";
-		if (count(self::$_onlive)) {
-		  $content .= 'Adv.Events.onload([function() {' . implode("}, function() {", self::$_onlive) . '}]);';
+
+		public static function render() {
+			if (AJAX_REFERRER) return HTML::script(null, 'Adv.Events.rebind()', false);
+			$files = $content = '';
+			foreach (self::$_footerFiles as $dir => $file) {
+				$files .= HTML::setReturn(true)->script(array('src' => $dir . '/' . implode(',', $file)), false)->setReturn(false);
+			}
+			if (count(self::$_beforeload)) {
+				$content .= implode(";\n", self::$_beforeload);
+			}
+			$content .= ";\n$(function() { ";
+			if (count(self::$_onlive)) {
+				$content .= 'Adv.Events.onload([function() {' . implode("}, function() {", self::$_onlive) . '}]);';
+			}
+			if (count(self::$_onload)) {
+				$content .= implode(";\n\n", self::$_onload);
+			}
+			if (!empty(self::$_focus)) {
+				$content .= self::$_focus . '.focus();';
+			}
+			$content .= '});';
+			echo $files;
+			HTML::script(array('content' => $content))->script;
 		}
-		if (count(self::$_onload)) {
-		  $content .= implode(";\n\n", self::$_onload);
+
+		public static function setFocus($selector, $cached = false) {
+			$_POST['_focus'] = self::$_focus = ($selector) ? (!$cached) ? "$('$selector')" : 'Adv.o.' . $selector : false;
 		}
-		if (!empty(self::$_focus)) {
-		  $content .= '$("' . self::$_focus . '").focus();';
+
+		public static function arrayToOptions($options = array()) {
+			$options = (object)$options;
+			return json_encode($options);
 		}
-		$content .= '});';
-		echo $files;
-		HTML::script(array('content' => $content))->script;
-	 }
 
-	 public static function setFocus($selector) {
-		self::$_focus = ($selector) ? $selector : false;
-	 }
+		public static function addEvent($selector, $type, $action) {
 
-	 public static function arrayToOptions($options = array()) {
-		$options = (object)$options;
-		return json_encode($options);
-	 }
-
-	 public static function addEvent($selector, $type, $action) {
-
-		self::onload("$('$selector').bind('$type',function(e){ {$action} });");
-	 }
-
-	 public static function addLiveEvent($selector, $type, $action, $delegate = false,$cached=false) {
-
-		if (!$delegate) {
-		  return self::addLive("$('$selector').bind('$type',function(e){ {$action} });");
+			self::onload("$('$selector').bind('$type',function(e){ {$action} });");
 		}
-		$cached= (!$cached) ? "$('$delegate')":'Adv.o.'.$delegate;
-		self::register($cached.".delegate('$selector','$type',function(e){ {$action} } )", self::$_onload);
-	 }
 
-	 public static function addLive($action) {
-		self::register($action, self::$_onlive);
-	 }
-
-	 public static function addEvents($events = array()) {
-		if (is_array($events)) {
-		  foreach ($events as $event) {
-			 if (count($event == 3)) {
-				call_user_func_array('JS::addEvent', $event);
-			 }
-		  }
+		public static function addLiveEvent($selector, $type, $action, $delegate = false, $cached = false) {
+			if (!$delegate) {
+				return self::addLive("$('$selector').bind('$type',function(e){ {$action} });");
+			}
+			$cached = (!$cached) ? "$('$delegate')" : 'Adv.o.' . $delegate;
+			self::register($cached . ".delegate('$selector','$type',function(e){ {$action} } )", self::$_onload);
 		}
-	 }
 
-	 public static function onload($js = false) {
-		if ($js) {
-		  self::register($js, self::$_onload);
+		public static function addLive($action) {
+			self::register($action, self::$_onlive);
 		}
-	 }
 
-	 public static function beforeload($js = false) {
-		if ($js) {
-		  self::register($js, self::$_beforeload);
+		public static function addEvents($events = array()) {
+			if (is_array($events)) {
+				foreach ($events as $event) {
+					if (count($event == 3)) {
+						call_user_func_array('JS::addEvent', $event);
+					}
+				}
+			}
 		}
-	 }
 
-	 public static function headerFile($file) {
-		self::registerFile($file, self::$_headerFiles);
-
-	 }
-
-	 public static function footerFile($file) {
-		self::registerFile($file, self::$_footerFiles);
-	 }
-
-	 protected static function register($js = false, &$var) {
-		if (is_array($js)) {
-		  foreach ($js as $j) self::register($j, $var);
+		public static function onload($js = false) {
+			if ($js) {
+				self::register($js, self::$_onload);
+			}
 		}
-		else {
-		  array_unshift($var, str_replace(array('<script>', '</script>'), '', $js));
-		}
-	 }
 
-	 protected static function registerFile($file, &$var) {
-		if (is_array($file)) {
-		  foreach ($file as $f) self::registerFile($f, $var);
+		public static function beforeload($js = false) {
+			if ($js) {
+				self::register($js, self::$_beforeload);
+			}
 		}
-		else {
-		  $dir = dirname($file);
-		  $file = basename($file);
-		  if (!isset($var[$dir])) {
-			 $var[$dir] = array();
-		  }
-		  array_push($var[$dir], $file);
-		}
-	 }
 
-  }
+		public static function headerFile($file) {
+			self::registerFile($file, self::$_headerFiles);
+
+		}
+
+		public static function footerFile($file) {
+			self::registerFile($file, self::$_footerFiles);
+		}
+
+		protected static function register($js = false, &$var) {
+			if (is_array($js)) {
+				foreach ($js as $j) self::register($j, $var);
+			}
+			else {
+				array_unshift($var, str_replace(array('<script>', '</script>'), '', $js));
+			}
+		}
+
+		protected static function registerFile($file, &$var) {
+			if (is_array($file)) {
+				foreach ($file as $f) self::registerFile($f, $var);
+			}
+			else {
+				$dir = dirname($file);
+				$file = basename($file);
+				if (!isset($var[$dir])) {
+					$var[$dir] = array();
+				}
+				array_push($var[$dir], $file);
+			}
+		}
+
+	}

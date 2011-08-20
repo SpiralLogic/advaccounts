@@ -15,7 +15,6 @@ $.widget("custom.catcomplete", $.ui.autocomplete, {
 (function(window, undefined) {
 
   var Adv = {
-
 	 $content: $("#content"),
 	 loader: $("<div/>").attr('id', 'loader'),
 	 fieldsChanged: 0,
