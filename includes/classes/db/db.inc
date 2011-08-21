@@ -35,7 +35,4 @@
 		public static function fetch($db=null) {
 			return Query::fetch($db);
 		}
-		public static function rowCount($db=null) {
-			return Query::rowCount($db);
-		}
 	}

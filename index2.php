@@ -5,5 +5,10 @@
 	error_reporting(E_ALL);
 	echo "<pre>";
 
-$test =new Customer(4689);
-	var_dump($test);
+DB::select()->from('contacts');
+
+	$test = DB::fetch();
+
+var_dump(current($test));
+var_dump(next($test));
+var_dump(current($test));var_dump(next($test));var_dump(current($test));

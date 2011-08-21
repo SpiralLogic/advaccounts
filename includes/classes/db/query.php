@@ -11,7 +11,6 @@
 
 		protected static $query;
 		protected static $results = null;
-		protected static $rows = 0;
 		public $type;
 
 		protected function __construct($type) {
@@ -19,24 +18,12 @@
 			$this->type = $type;
 		}
 
-		protected static function _getResults($db) {
+		public static function fetch($db) {
 			if (static::$results === null) {
 				static::$results = new Result(static::$query, $db);
-				static::$rows = static::$results->rowCount();
+
 			}
 			return static::$results;
 		}
 
-		public static function fetch($db) {
-
-			$results = static::_getResults($db);
-			if (static::$rows > 1) return $results->fetch();
-
-			return static::$results;
-		}
-
-		public static function rowCount($db) {
-			static::_getResults($db);
-			return static::$rows;
-		}
 	}
