@@ -13,6 +13,10 @@
 		protected $table;
 		protected $values = array();
 
+		public function __construct() {
+			parent::__construct(DB::UPDATE);
+		}
+
 		public function update($into) {
 			$this->table = $into;
 			return $this;
@@ -41,7 +45,7 @@
 				$this->columns = array_keys($data);
 			}
 			if ($data !== null) $this->data = array_merge((array)$data, $this->data);
-						return $this->_buildQuery();
+			return $this->_buildQuery();
 		}
 
 		protected function _buildQuery() {

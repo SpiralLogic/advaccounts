@@ -178,7 +178,7 @@
 			}
 			$this->_defaults();
 			DB::select()->from('debtors_master')->where('debtor_no =', $id);
-			DB::fetchIntoClass($this);
+			DB::fetch()->intoClass($this);
 			$this->_getBranches();
 			$this->_getAccounts();
 			$this->_getContacts();
@@ -263,25 +263,30 @@
 				$this->accounts->br_name = 'Accounts Department';
 				$this->accounts->save();
 			} else {
-				$this->accounts = DB::fetchClass('Accounts');
+				$this->accounts = DB::fetch()->asClass('Accounts');
 			}
 		}
 
 		protected function _getBranches() {
 			DB::select()->from('cust_branch')->where('debtor_no=', $this->debtor_no)->and_where('branch_ref !=', 'accounts')->and_where('disable_trans =', 0);
 			if (DB::rowCount() == 0) return;
-			while ($branch = DB::fetchClass('Branch')) {
+			$branches = DB::fetch()->asClass('Branch');
+			foreach ($branches as $branch) {
 				$this->branches[$branch->branch_code] = $branch;
 			}
+
 			$this->defaultBranch = reset($this->branches)->branch_code;
 		}
 
 		protected function _getContacts() {
 			DB::select()->from('contacts')->where('parent_id=', $this->debtor_no);
-			if (DB::rowCount() > 0)
-				while ($contact = DB::fetchClass('Contact')) {
+			if (DB::rowCount() > 0) {
+				$contacts = DB::fetch()->asClass('Contact');
+			foreach ($contacts as  $contact) {
 					$this->contacts[$contact->id] = $contact;
 				}
+			}
+
 			$this->defaultContact = reset($this->contacts)->id;
 			$this->contacts[0] = new Contact(array('parent_id' => $this->id));
 
@@ -314,15 +319,17 @@
 
 		public static function search($terms) {
 			$data = array();
-			DB::select(array('debtor_no as id', array('name as label', true), 'name as value'))
+			DB::select('debtor_no as id', 'name as label', 'name as value')
 			 ->from('debtors_master')->where('name LIKE ', "$terms%")->limit(20)
 			 ->union()
-			 ->select(array('debtor_no as id', 'name as label', 'name as value'))
+			 ->select('debtor_no as id', 'name as label', 'name as value')
 			 ->from('debtors_master')->where('debtor_ref LIKE', "%$terms%")
 			 ->or_where('name LIKE', "%" . str_replace(' ', "%' AND name LIKE '%", trim($terms)) . "%")
 			 ->or_where('debtor_no LIKE', "%$terms%")->limit(20)->union();
 
-			while ($row = DB::fetch()) $data[] = array_map('htmlspecialchars_decode', $row);
+			
+			while ($row = DB::fetch()) $data[] = @array_map('htmlspecialchars_decode', $row);
+			array_shift($data);
 			return $data;
 		}
 

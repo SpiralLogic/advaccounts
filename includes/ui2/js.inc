@@ -15,9 +15,7 @@ include(APP_PATH . 'modules/smartoptimizer/minifiers/js.php');
 
 		public static function autocomplete($id, $callback, $url = false, $options = array()) {
 
-
-
-								$afterSource = (isset($options['afterSource'])) ? $options['afterSource'] . '(data,request);' : '';
+			$afterSource = (isset($options['afterSource'])) ? $options['afterSource'] . '(data,request);' : '';
 			if (!$url) {
 				$url = $_SERVER['PHP_SELF'];
 			}
@@ -38,7 +36,7 @@ include(APP_PATH . 'modules/smartoptimizer/minifiers/js.php');
    	   }
       }).css({'z-index' : '2'});
 JS;
-			if (isset($options['focus'])) self::setFocus("autocomplete{$id}",true);
+			if (isset($options['focus'])) self::setFocus("autocomplete{$id}", true);
 		}
 
 		public static function gmap($selector, $address, $title) {
@@ -183,4 +181,10 @@ JS;
 			}
 		}
 
+		static function onUnload($message = false) {
+			if ($message) {
+				self::addLiveEvent(':input', 'change', "Adv.Events.onLeave('$message')", 'wrapper', true);
+				self::addLiveEvent('form', 'submit', "Adv.Events.onLeave()", 'wrapper', true);
+			}
+		}
 	}

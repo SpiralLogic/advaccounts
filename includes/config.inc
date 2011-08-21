@@ -6,10 +6,8 @@
  * Time: 1:53 PM
  * To change this template use File | Settings | File Templates.
  */
- 
 
-class Config {
-
+	class Config {
 
 		protected static $_vars = array();
 

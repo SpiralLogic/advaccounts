@@ -44,7 +44,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	function check_page_security($page_security) {
 		if (!$_SESSION["wa_current_user"]->check_user_access()) {
 			$msg = $_SESSION["wa_current_user"]->old_db ? _("Security settings have not been defined for your user account.") . "<br>" . _("Please contact your system administrator.")
-				: _("Please remove \$security_groups and \$security_headings arrays from config.php file!");
+			 : _("Please remove \$security_groups and \$security_headings arrays from config.php file!");
 			display_error($msg);
 			end_page();
 			kill_login();
@@ -119,27 +119,27 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	define("AJAX_REFERRER", (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest'));
 	define('APP_PATH', realpath(__DIR__ . '/..') . DIRECTORY_SEPARATOR);
 	define('BASE_URL', str_ireplace(realpath(__DIR__ . '/..'), '', APP_PATH));
-	$path = substr(str_repeat('../',substr_count(str_replace(APP_PATH,'',realpath('.').DIRECTORY_SEPARATOR),'/')),0,-1);
-	$path_to_root = (!$path) ?'.':$path;
+	$path = substr(str_repeat('../', substr_count(str_replace(APP_PATH, '', realpath('.') . DIRECTORY_SEPARATOR), '/')), 0, -1);
+	$path_to_root = (!$path) ? '.' : $path;
 
 	add_include_path(
 		array(
-		     realpath('.') . '/includes/classes',
-		     APP_PATH . 'includes/ui2',
-		     APP_PATH . 'includes/ui',
-		     APP_PATH . 'includes',
-		     APP_PATH . 'includes/classes',
+				 realpath('.') . '/includes/classes',
+				 APP_PATH . 'includes/ui2',
+				 APP_PATH . 'includes/ui',
+				 APP_PATH . 'includes',
+				 APP_PATH . 'includes/classes',
 				 APP_PATH . 'includes/classes/db',
-		     APP_PATH . 'contacts/includes/classes',
-		     APP_PATH . 'items/includes/classes',
-		     APP_PATH . 'reporting/includes'));
+				 APP_PATH . 'contacts/includes/classes',
+				 APP_PATH . 'items/includes/classes',
+				 APP_PATH . 'reporting/includes'));
 
 	if (preg_match('/Chrome/i', $_SERVER['HTTP_USER_AGENT'])) {
-				include(APP_PATH . 'includes/fb.php');
-			FB::useFile(APP_PATH . 'tmp/chromelogs', '/tmp/chromelogs');
+		//		include(APP_PATH . 'includes/fb.php');
+		//	FB::useFile(APP_PATH . 'tmp/chromelogs', '/tmp/chromelogs');
 	} else {
-		//	include(APP_PATH . 'includes/FirePHP/FirePHP.class.php');
-		//	include(APP_PATH . 'includes/FirePHP/fb.php');
+			include(APP_PATH . 'includes/FirePHP/FirePHP.class.php');
+			include(APP_PATH . 'includes/FirePHP/fb.php');
 	}
 	if (isset($_GET['path_to_root']) || isset($_POST['path_to_root'])) {
 		die("Restricted access");

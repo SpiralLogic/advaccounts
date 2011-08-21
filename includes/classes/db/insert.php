@@ -11,7 +11,11 @@
 
 		protected $columns = array();
 		protected $table;
-		public $data=array();
+		public $data = array();
+
+		public function __construct() {
+			parent::__construct(DB::INSERT);
+		}
 
 		public function insert($into) {
 			$this->table = $into;
@@ -36,11 +40,11 @@
 		}
 
 		public function exec($data) {
-			if (count($this->columns==0) && is_object($data)) {
+			if (count($this->columns == 0) && is_object($data)) {
 				$data = get_object_vars($data);
-				$this->columns=array_keys($data);
+				$this->columns = array_keys($data);
 			}
-			if ($data!==null) $this->data = array_merge((array)$data,$this->data);
+			if ($data !== null) $this->data = array_merge((array)$data, $this->data);
 			return $this->_buildQuery();
 		}
 
@@ -49,6 +53,6 @@
 			$sql .= implode(', ', $this->columns) . ") VALUES (";
 			$sql .= ':' . implode(', :', str_replace('-', '_', $this->columns));
 			$sql .= ') ';
-			var_dump($sql);
+			return $sql;
 		}
 	}

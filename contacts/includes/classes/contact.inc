@@ -46,16 +46,17 @@
 			if (!is_array($params)) {
 				$params = array('id=' => $params);
 			}
-			/*		DB::select()->from('contacts')->where($params);
-					DB::fetchIntoClass($this);
-					return true;*/
+			DB::select()->from('contacts')->where($params);
+			DB::fetch()->intoClass($this);
+			return true;
 		}
 
 		protected function _saveNew() {
-			DB::begin();
+
 			DB::insert('contacts')->exec($this);
+			DB::fetch();
 			$this->id = db_insert_id();
-			commit_transaction();
+
 			$this->_status(true, 'Saving', "New contact has been added");
 		}
 

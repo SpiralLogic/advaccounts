@@ -59,7 +59,6 @@
 			  debtors_master.credit_limit,
 			  credit_status.dissallow_invoices,
 			  credit_status.reason_description";
-	 FB::info($sql);
 	 $result = db_query($sql, "The customer details could not be retrieved");
 
 	 if (db_num_rows($result) == 0) {
@@ -149,7 +148,7 @@
   function get_current_cust_credit($customer_id) {
 	 $custdet = get_customer_details($customer_id);
 
-	 return $custdet['credit_limit'] - $custdet['Balance'];
+	 return ($customer_id>0) ? $custdet['credit_limit'] - $custdet['Balance'] : 0 ;
 
   }
 

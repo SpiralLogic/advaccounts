@@ -33,6 +33,7 @@
 							 'caching' => false,
 							 'profiling' => false,)
 	);
-	DB::init($db_connections[0]['dbname'], $db_connections[0]['dbuser'], $db_connections[0]['dbpassword']);
+	Config::set('db.default', array('name' => $db_connections[0]['dbname'], 'user' => $db_connections[0]['dbuser'], 'pass' => $db_connections[0]['dbpassword'], 'host' => 'localhost', 'port' => 3306,
+																 'debug' => false));
 
 ?>

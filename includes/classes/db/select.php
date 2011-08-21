@@ -16,14 +16,15 @@
 		protected $groupby = array();
 		protected $union = array();
 
-		public function select($column = null, $orderby = false, $groupby = false) {
-			if (is_array($column)) foreach ($column as $c) call_user_func_array(array($this, 'select'), (array)$c);
-			else {
-				$order = explode('as', $column);
-				if ($column) $this->select[] = $column;
-				if ($orderby) $this->orderby($order[0], ($orderby != 'desc') ? false : true);
-				if ($groupby) $this->groupby($order[0]);
-			}
+		public function __construct($columns) {
+			parent::__construct(DB::SELECT);
+		 call_user_func_array(array($this,'select'),$columns);
+		}
+
+		public function select($columns = null) {
+			$columns = func_get_args();
+			$this->select = array_merge($this->select, $columns);
+			
 			return $this;
 		}
 
@@ -51,11 +52,12 @@
 		public function union() {
 			$this->union[] = '(' . $this->_buildQuery() . ')';
 			$this->select = $this->from = $this->orderby = $this->groupby = array();
-			$this->limit = '';
-			return $this;
+				$this->limit = '';
+
+				return $this;
 		}
 
-		public function exec($data) {
+		public function execute() {
 			if ($this->union) return implode(' UNION ', $this->union);
 			return $this->_buildQuery();
 		}
@@ -65,7 +67,7 @@
 			$sql = "SELECT ";
 			$sql .= (empty($this->select)) ? '*' : implode(', ', $this->select);
 			$sql .= " FROM " . implode(', ', $this->from);
-			$sql .= parent::_buildQuery();
+			$sql .= parent::_buildWhere();
 
 			if (!empty($this->orderby)) $sql .= ' ORDER BY ' . implode(', ', $this->orderby);
 			if (!empty($this->groupby)) $sql .= ' GROUP BY ' . implode(', ', $this->groupby);

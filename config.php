@@ -27,7 +27,7 @@
    //$error_logfile = '';
    $error_logfile = '';
    $debug = 1;
-   $show_sql = 0;
+   $show_sql = 1;
    $go_debug = 1;
    $pdf_debug = 0;
    $app_title = "Advanced Accounting";
