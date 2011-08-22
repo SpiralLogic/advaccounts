@@ -5,10 +5,15 @@
 	error_reporting(E_ALL);
 	echo "<pre>";
 
-DB::select()->from('contacts');
+	DB::select()->from('debtors_master');
 
 	$test = DB::fetch();
 
-var_dump(current($test));
-var_dump(next($test));
-var_dump(current($test));var_dump(next($test));var_dump(current($test));
+
+	
+foreach($test as $t) {
+
+	var_dump($t);
+}
+	
+

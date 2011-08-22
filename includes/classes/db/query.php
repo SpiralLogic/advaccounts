@@ -11,6 +11,8 @@
 
 		protected static $query;
 		protected static $results = null;
+		protected $compiled_query=false;
+
 		public $type;
 
 		protected function __construct($type) {
@@ -18,10 +20,14 @@
 			$this->type = $type;
 		}
 
+		public function getQuery() {
+			if (!$this->compiled_query) $this->compiled_query = $this->execute();
+			return $this->compiled_query;
+		}
+
 		public static function fetch($db) {
 			if (static::$results === null) {
 				static::$results = new Result(static::$query, $db);
-
 			}
 			return static::$results;
 		}

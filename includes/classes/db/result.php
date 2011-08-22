@@ -9,57 +9,47 @@
 
 	class Result implements \Countable, \Iterator {
 
-		protected $_prepared;
-		protected $_current_row;
-		protected $_row_count;
+		protected $prepared;
+		protected $current;
+		protected $count;
+		protected $cursor = -1;
+		protected $query;
+		protected $valid;
 
 		public function __construct($query, $db) {
-			$this->_prepared = DBconnection::instance($db)->prepare($query->execute());
-			$this->_prepared->execute($query->data);
-			$this->rowCount();
-			$this->fetch();
-			switch ($query->type) {
-				case DB::SELECT:
-					break;
-				case DB::INSERT:
-					return DBconnection::instance($db)->lastInsertId();
-					break;
-				case DB::UPDATE:
-					return DBconnection::instance($db)->lastInsertId();
-			}
-
+			$this->query = $query;
+			$this->prepared = DBconnection::instance($db)->prepare($query->getQuery());
+			$this->rewind();
 		}
 
 		protected function fetch() {
-			$this->_current_row = $this->_prepared->fetch();
-			return $this->_current_row;
+			++$this->cursor;
+			$this->current = $this->prepared->fetch();
+
 		}
 
-		protected function rowCount() {
-			$this->_row_count = $this->_prepared->rowCount();
-		}
-
-		public function execute($data = null) {
-			$this->_prepared->execute((array)$data);
+		protected function execute() {
+			$this->cursor = 0;
+			$this->valid = $this->prepared->execute($this->query->data);
+			$this->count = $this->prepared->rowCount();
 		}
 
 		public function assoc() {
-			$this->_prepared->setFetchMode(PDO::FETCH_ASSOC);
-			return $this->_prepared->fetch();
+			$this->prepared->setFetchMode(PDO::FETCH_ASSOC);
 		}
 
 		public function all() {
-			return $this->_prepared->fetchAll();
+			return $this->prepared->fetchAll();
 		}
 
 		public function asClass($type) {
-			$this->_prepared->setFetchMode(PDO::FETCH_CLASS, $type);
-			return $this->_prepared->fetchAll();
+			$this->prepared->setFetchMode(PDO::FETCH_CLASS, $type);
+			return $this->prepared->fetchAll();
 		}
 
 		public function intoClass($type) {
-			$this->_prepared->setFetchMode(PDO::FETCH_INTO, $type);
-			return $this->_prepared->fetchAll();
+			$this->prepared->setFetchMode(PDO::FETCH_INTO, $type);
+			return $this->prepared->fetchAll();
 		}
 
 		/**
@@ -69,7 +59,7 @@
 		 * @return mixed Can return any type.
 		 */
 		public function current() {
-			return $this->_current_row;
+			return $this->current;
 		}
 
 		/**
@@ -79,7 +69,7 @@
 		 * @return void Any returned value is ignored.
 		 */
 		public function next() {
-			return $this->fetch();
+			$this->fetch();
 		}
 
 		/**
@@ -90,18 +80,12 @@
 		 * 0 on failure.
 		 */
 		public function key() {
-			return $this->_current_row;
+			return $this->cursor;
 		}
 
-		/**
-		 * (PHP 5 &gt;= 5.1.0)<br/>
-		 * Checks if current position is valid
-		 * @link http://php.net/manual/en/iterator.valid.php
-		 * @return boolean The return value will be casted to boolean and then evaluated.
-		 * Returns true on success or false on failure.
-		 */
 		public function valid() {
-			// TODO: Implement valid() method.
+			if (!$this->current) $this->valid = false;
+			return $this->valid;
 		}
 
 		/**
@@ -111,7 +95,13 @@
 		 * @return void Any returned value is ignored.
 		 */
 		public function rewind() {
-			// TODO: Implement rewind() method.
+			if ($this->cursor > -1) {
+				$this->prepared->closeCursor();
+			} else {
+				$this->assoc();
+			}
+			$this->execute();
+			$this->next();
 		}
 
 		/**
@@ -124,6 +114,6 @@
 		 * The return value is cast to an integer.
 		 */
 		public function count() {
-			return $this->_row_count;
+			return $this->count;
 		}
 	}
