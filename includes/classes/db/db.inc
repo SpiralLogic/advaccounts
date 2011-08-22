@@ -35,4 +35,5 @@
 		public static function fetch($db=null) {
 			return Query::fetch($db);
 		}
+		
 	}

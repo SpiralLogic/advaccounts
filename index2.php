@@ -5,15 +5,12 @@
 	error_reporting(E_ALL);
 	echo "<pre>";
 
-	DB::select()->from('debtors_master');
+	DB::select()->from('contacts')->where('parent_id=',4689);
+			$contacts = DB::fetch()->asClass('Contact')->all();
 
-	$test = DB::fetch();
 
 
-	
-foreach($test as $t) {
+	var_dump($contacts[1]->id);
 
-	var_dump($t);
-}
-	
+
 

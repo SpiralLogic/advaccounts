@@ -15,17 +15,12 @@
 		protected $cursor = -1;
 		protected $query;
 		protected $valid;
+		protected $as_object = false;
 
 		public function __construct($query, $db) {
 			$this->query = $query;
 			$this->prepared = DBconnection::instance($db)->prepare($query->getQuery());
-			$this->rewind();
-		}
-
-		protected function fetch() {
-			++$this->cursor;
-			$this->current = $this->prepared->fetch();
-
+			$this->prepared->setFetchMode(PDO::FETCH_ASSOC);
 		}
 
 		protected function execute() {
@@ -34,22 +29,30 @@
 			$this->count = $this->prepared->rowCount();
 		}
 
-		public function assoc() {
-			$this->prepared->setFetchMode(PDO::FETCH_ASSOC);
-		}
-
 		public function all() {
+			$this->execute();
 			return $this->prepared->fetchAll();
 		}
 
-		public function asClass($type) {
-			$this->prepared->setFetchMode(PDO::FETCH_CLASS, $type);
+		public function asClassLate($class) {
+			$this->prepared->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, $class);
+			return $this;
+		}
+
+		public function asClass($class) {
+			$this->prepared->setFetchMode(PDO::FETCH_CLASS, $class);
+			return $this;
+		}
+
+		public function intoClass($object) {
+			$this->prepared->setFetchMode(PDO::FETCH_INTO, $object);
+			$this->execute();
 			return $this->prepared->fetchAll();
 		}
 
-		public function intoClass($type) {
-			$this->prepared->setFetchMode(PDO::FETCH_INTO, $type);
-			return $this->prepared->fetchAll();
+		public function asObject() {
+			$this->prepared->setFetchMode(PDO::FETCH_OBJ);
+			return $this;
 		}
 
 		/**
@@ -69,7 +72,8 @@
 		 * @return void Any returned value is ignored.
 		 */
 		public function next() {
-			$this->fetch();
+			$this->current = $this->prepared->fetch();
+			++$this->cursor;
 		}
 
 		/**
@@ -97,8 +101,6 @@
 		public function rewind() {
 			if ($this->cursor > -1) {
 				$this->prepared->closeCursor();
-			} else {
-				$this->assoc();
 			}
 			$this->execute();
 			$this->next();

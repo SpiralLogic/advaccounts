@@ -23,7 +23,7 @@
 
 		function __construct($id = null) {
 			parent::__construct($id);
-		  $this->id = &$this->debtor_no;
+			$this->id = &$this->debtor_no;
 			$this->pymt_discount =& $this->payment_discount;
 			$this->debtor_ref = substr($this->name, 0, 60);
 			return $this;
@@ -251,8 +251,9 @@
 
 		protected function _getAccounts() {
 			DB::select()->from('cust_branch')->where('debtor_no=', $this->debtor_no)->and_where('branch_ref=', 'accounts');
+			$this->accounts = DB::fetch()->asClassLate('Accounts')->all();
 
-			if (DB::rowCount() == 0 && $this->id > 0 && $this->defaultBranch > 0) {
+			if (!$this->accounts && $this->id > 0 && $this->defaultBranch > 0) {
 				$this->accounts->debtor_no = $this->id;
 				$this->accounts->email = $this->email;
 				$this->accounts->br_address = $this->address;
@@ -262,15 +263,15 @@
 				$this->accounts->contact_name = $this->branches[$this->defaultBranch]->contact_name;
 				$this->accounts->br_name = 'Accounts Department';
 				$this->accounts->save();
-			} else {
-				$this->accounts = DB::fetch()->asClass('Accounts');
+			}else{
+				$this->accounts=$this->accounts[0];
 			}
 		}
 
 		protected function _getBranches() {
 			DB::select()->from('cust_branch')->where('debtor_no=', $this->debtor_no)->and_where('branch_ref !=', 'accounts')->and_where('disable_trans =', 0);
-			if (DB::rowCount() == 0) return;
-			$branches = DB::fetch()->asClass('Branch');
+			$branches = DB::fetch()->asClassLate('Branch');
+			if (count($branches) == 0) return;
 			foreach ($branches as $branch) {
 				$this->branches[$branch->branch_code] = $branch;
 			}
@@ -280,13 +281,12 @@
 
 		protected function _getContacts() {
 			DB::select()->from('contacts')->where('parent_id=', $this->debtor_no);
-			if (DB::rowCount() > 0) {
-				$contacts = DB::fetch()->asClass('Contact');
-			foreach ($contacts as  $contact) {
+			$contacts = DB::fetch()->asClass('Contact')->all();
+			if (count($contacts)) {
+				foreach ($contacts as $contact) {
 					$this->contacts[$contact->id] = $contact;
 				}
 			}
-
 			$this->defaultContact = reset($this->contacts)->id;
 			$this->contacts[0] = new Contact(array('parent_id' => $this->id));
 
@@ -326,9 +326,8 @@
 			 ->from('debtors_master')->where('debtor_ref LIKE', "%$terms%")
 			 ->or_where('name LIKE', "%" . str_replace(' ', "%' AND name LIKE '%", trim($terms)) . "%")
 			 ->or_where('debtor_no LIKE', "%$terms%")->limit(20)->union();
-
-			
-			while ($row = DB::fetch()) $data[] = @array_map('htmlspecialchars_decode', $row);
+			$results = DB::fetch();
+			foreach ($results as $result) $data[] = @array_map('htmlspecialchars_decode', $result);
 			array_shift($data);
 			return $data;
 		}
