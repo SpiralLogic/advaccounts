@@ -27,6 +27,7 @@
 		protected $host;
 		protected $port;
 		protected $conn;
+		protected $last_query;
 
 		protected function __construct($name, array $config) {
 			$this->name = $name;
@@ -43,7 +44,9 @@
 			if ($this->debug) {
 				(class_exists('FB')) ? FB::info($sql) : var_dump($sql);
 			}
-			return $this->conn->prepare($sql);
+			unset($this->last_query);
+			$this->last_query = $this->conn->prepare($sql);
+			return $this->last_query;
 		}
 
 		public function begin() {
@@ -73,6 +76,9 @@
 		protected function _connect() {
 			try {
 				$this->conn = new PDO('mysql:host=' . $this->host . ';dbname=' . $this->name, $this->user, $this->pass, array(PDO::ATTR_PERSISTENT => true));
+				$this->conn->setAttribute(PDO::ATTR_ERRMODE,
+																	PDO::ERRMODE_EXCEPTION);
+
 			}
 			catch (PDOException $e) {
 				$this->_error($e, true);

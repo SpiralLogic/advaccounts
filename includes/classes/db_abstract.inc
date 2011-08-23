@@ -38,16 +38,20 @@
 		}
 
 		protected function __construct($id = false) {
+
 			if (!$id || empty($id)) {
+
 				$this->_new();
 				return $this->_status(true, 'initalise', 'Created new ' . get_class($this) . "!");
 			} elseif (is_array($id)) {
+
 				$this->_defaults();
 				$this->setFromArray($id);
 				return $this->_status(true, 'initalise', get_class($this) . " details contructed!");
 			}
 
 			$this->_read($id);
+
 			return $this->_status(true, 'initalise', get_class($this) . " details loaded from DB!");
 		}
 

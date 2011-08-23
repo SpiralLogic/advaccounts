@@ -5,15 +5,14 @@
 	error_reporting(E_ALL);
 	echo "<pre>";
 
-		DB::select()
-			 ->from('cust_branch')
-			 ->where('debtor_no=', 4689)
-			 ->where('branch_ref !=', 'accounts')
-			 ->where('disable_trans=', 0);
-			$branch = new Branch();
-			$results = DB::fetch()->all();
-			echo count($results);
 
-///var_dump($branch);
+DB::select()->from('cust_branch')->where('debtor_no =', 4689);
+	$result = DB::fetch()->asClassLate('Branch')->all();
 
-0401351605
+echo	count($result);
+
+	DB::select()->from('debtors_master')->where('debtor_no =', 4689);
+	$result = DB::fetch()->asClassLate('Customer')->all();
+
+echo	count($result);
+

@@ -20,7 +20,7 @@
 		public function __construct($query, $db) {
 			$this->query = $query;
 			$this->prepared = DBconnection::instance($db)->prepare($query->getQuery());
-		
+
 			$this->prepared->setFetchMode(PDO::FETCH_ASSOC);
 		}
 
@@ -32,11 +32,13 @@
 
 		public function all() {
 			$this->execute();
-			return $this->prepared->fetchAll();
+			$result = $this->prepared->fetchAll();
+			$this->prepared->closeCursor();
+			return $result;
 		}
 
 		public function asClassLate($class) {
-			$this->prepared->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE,  $class);
+			$this->prepared->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, $class);
 			return $this;
 		}
 
@@ -47,8 +49,7 @@
 
 		public function intoClass($object) {
 			$this->prepared->setFetchMode(PDO::FETCH_INTO, $object);
-			$this->execute();
-			return $this->prepared->fetch();
+			return $this;
 		}
 
 		public function asObject() {
@@ -118,5 +119,10 @@
 		 */
 		public function count() {
 			return $this->count;
+		}
+
+		public function __destroy() {
+			$this->prepared = null;
+
 		}
 	}
