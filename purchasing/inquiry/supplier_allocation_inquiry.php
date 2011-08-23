@@ -156,7 +156,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
    $table =& new_db_pager('doc_tbl', $sql, $cols);
    $table->set_marker('check_overdue', _("Marked items are overdue."));
    $table->width = "90%";
-   db_pager_view::display_db_pager($table);
+   display_db_pager($table);
    end_form();
    end_page();
 ?>

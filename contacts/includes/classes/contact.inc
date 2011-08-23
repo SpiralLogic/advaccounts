@@ -3,7 +3,7 @@
  * User: Sorijen
  * Date: 15/04/11 - 4:08 PM
  */
-	class contact extends DB_abstract {
+	class Contact extends DB_abstract {
 
 		public $id = 0;
 		public $parent_id;
@@ -14,6 +14,7 @@
 		public $department = '';
 
 		function __construct($id = null) {
+			$this->id = $id;
 			parent::__construct($id);
 		}
 
@@ -42,11 +43,9 @@
 			return $this->_status(true, 'Initialize new Contact', 'Now working with a new Contact');
 		}
 
-		protected function _read($params = array()) {
-			if (!is_array($params)) {
-				$params = array('id=' => $params);
-			}
-			DB::select()->from('contacts')->where($params);
+		protected function _read($id=false) {
+			if (!$id) return;
+			DB::select()->from('contacts')->where('id=',$id);
 			DB::fetch()->intoClass($this);
 			return true;
 		}

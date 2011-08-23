@@ -9,7 +9,7 @@
 
 	class Result implements \Countable, \Iterator {
 
-		protected $prepared;
+		public $prepared;
 		protected $current;
 		protected $count;
 		protected $cursor = -1;
@@ -20,6 +20,7 @@
 		public function __construct($query, $db) {
 			$this->query = $query;
 			$this->prepared = DBconnection::instance($db)->prepare($query->getQuery());
+		
 			$this->prepared->setFetchMode(PDO::FETCH_ASSOC);
 		}
 
@@ -35,7 +36,7 @@
 		}
 
 		public function asClassLate($class) {
-			$this->prepared->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, $class);
+			$this->prepared->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE,  $class);
 			return $this;
 		}
 
@@ -47,7 +48,7 @@
 		public function intoClass($object) {
 			$this->prepared->setFetchMode(PDO::FETCH_INTO, $object);
 			$this->execute();
-			return $this->prepared->fetchAll();
+			return $this->prepared->fetch();
 		}
 
 		public function asObject() {

@@ -22,11 +22,11 @@
 		public $transactions;
 
 		function __construct($id = null) {
-			parent::__construct($id);
+			$this->debtor_no = $id;
 			$this->id = &$this->debtor_no;
+			parent::__construct($id);
 			$this->pymt_discount =& $this->payment_discount;
 			$this->debtor_ref = substr($this->name, 0, 60);
-			return $this;
 		}
 
 		protected function _canProcess() {
@@ -172,20 +172,19 @@
 
 		}
 
-		protected function _read($id = null) {
-			if ($id == null || empty($id)) {
+		protected function _read($id = false) {
+			if (!$id) {
 				return $this->_status(false, 'read', 'No customer ID to read');
 			}
 			$this->_defaults();
 			DB::select()->from('debtors_master')->where('debtor_no =', $id);
 			DB::fetch()->intoClass($this);
 			$this->_getBranches();
-			$this->_getAccounts();
-			$this->_getContacts();
-			$this->discount = $this->discount * 100;
+			//$this->_getAccounts();
+			//$this->_getContacts();
+ 			$this->discount = $this->discount * 100;
 			$this->pymt_discount = $this->pymt_discount * 100;
 			$this->credit_limit = price_format($this->credit_limit);
-			return $this->id;
 		}
 
 		function _countTransactions() {
@@ -252,7 +251,6 @@
 		protected function _getAccounts() {
 			DB::select()->from('cust_branch')->where('debtor_no=', $this->debtor_no)->and_where('branch_ref=', 'accounts');
 			$this->accounts = DB::fetch()->asClassLate('Accounts')->all();
-
 			if (!$this->accounts && $this->id > 0 && $this->defaultBranch > 0) {
 				$this->accounts->debtor_no = $this->id;
 				$this->accounts->email = $this->email;
@@ -263,20 +261,28 @@
 				$this->accounts->contact_name = $this->branches[$this->defaultBranch]->contact_name;
 				$this->accounts->br_name = 'Accounts Department';
 				$this->accounts->save();
-			}else{
-				$this->accounts=$this->accounts[0];
+			} else {
+				$this->accounts = $this->accounts[0];
 			}
 		}
 
 		protected function _getBranches() {
-			DB::select()->from('cust_branch')->where('debtor_no=', $this->debtor_no)->and_where('branch_ref !=', 'accounts')->and_where('disable_trans =', 0);
-			$branches = DB::fetch()->asClassLate('Branch');
-			if (count($branches) == 0) return;
-			foreach ($branches as $branch) {
-				$this->branches[$branch->branch_code] = $branch;
+
+			DB::select()
+			 ->from('cust_branch')
+			 ->where('debtor_no=', 4689)
+			 ->where('branch_ref !=', 'accounts')
+			 ->where('disable_trans=', 0);
+			//$branch = new Branch();
+			$results = DB::fetch()->all();
+			echo count($results);
+			//foreach($branches as $branch)
+			{
+				//var_dump($branch);
+				//	$this->branches[$branch->branch_code] = $branch;
 			}
 
-			$this->defaultBranch = reset($this->branches)->branch_code;
+			//	$this->defaultBranch = reset($this->branches)->branch_code;
 		}
 
 		protected function _getContacts() {

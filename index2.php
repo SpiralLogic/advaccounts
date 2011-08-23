@@ -5,12 +5,15 @@
 	error_reporting(E_ALL);
 	echo "<pre>";
 
-	DB::select()->from('contacts')->where('parent_id=',4689);
-			$contacts = DB::fetch()->asClass('Contact')->all();
+		DB::select()
+			 ->from('cust_branch')
+			 ->where('debtor_no=', 4689)
+			 ->where('branch_ref !=', 'accounts')
+			 ->where('disable_trans=', 0);
+			$branch = new Branch();
+			$results = DB::fetch()->all();
+			echo count($results);
 
+///var_dump($branch);
 
-
-	var_dump($contacts[1]->id);
-
-
-
+0401351605

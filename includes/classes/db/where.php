@@ -14,23 +14,29 @@
 		protected $where = array();
 		protected $count = 0;
 
-		protected function _where($condition, $type = 'AND', $uservar) {
-			if (is_array($condition)) {
-				foreach ($condition as $condition => $uservar) $this->_where($condition, $type, $uservar);
+		protected function _where($conditions, $type = 'AND', $uservar=null) {
+			if (is_array($conditions)) {
+				foreach ($conditions as $condition) {
+					if (is_array($condition)) {
+						$this->_where($condition[0], $type, $condition[1]);
+					} else {
+						$this->_where($condition);
+					}
+				}
 				return $this;
 			}
 			if ($uservar !== null) {
 				$name = ':dbcondition' . $this->count;
 				$this->count++;
 				$this->data[$name] = $uservar;
-				$condition = $condition . ' ' . $name;
+				$conditions = $conditions . ' ' . $name;
 			}
-			$this->where[] = (empty($this->where)) ? $condition : $type . ' ' . $condition;
+			$this->where[] = (empty($this->where)) ? $conditions : $type . ' ' . $conditions;
 			return $this;
 		}
 
 		public function where($condition, $uservar = null) {
-			return $this->_where($condition, '', $uservar);
+			return $this->_where($condition, 'AND', $uservar);
 		}
 
 		public function or_where($condition, $uservar = null) {
