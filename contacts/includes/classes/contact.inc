@@ -3,8 +3,7 @@
  * User: Sorijen
  * Date: 15/04/11 - 4:08 PM
  */
-	class contact extends DB_abstract {
-
+	class Contact extends DB_abstract {
 
 		public $id = 0;
 		public $parent_id;
@@ -14,10 +13,9 @@
 		public $email = '';
 		public $department = '';
 
-
 		function __construct($id = null) {
+			$this->id = $id;
 			parent::__construct($id);
-
 		}
 
 		protected function _canProcess() {
@@ -37,7 +35,7 @@
 		}
 
 		protected function _defaults() {
-			$this->id = 0;
+
 		}
 
 		protected function _new() {
@@ -45,38 +43,19 @@
 			return $this->_status(true, 'Initialize new Contact', 'Now working with a new Contact');
 		}
 
-		protected function _read($params = array()) {
-			$where = array();
-			if (!is_array($params)) {
-				$params = array('id' => $params);
-			} elseif (empty($params)) {
-				$this->_status(false, 'Retrieving contact', 'No parameters provided');
-				return false;
-			}
-			$sql = "SELECT *
-		FROM contacts WHERE ";
-			foreach ($params as $key => $value) {
-				$where[] = "$key =" . db_escape($value);
-			}
-			$sql .= join(" AND ", $where);
-			$result = db_query($sql, 'Could not get contact.');
-			if (db_num_rows($result) < 1) {
-				$this->_new();
-			} else {
-				$result = db_fetch_assoc($result);
-				$this->setFromArray($result);
-			}
+		protected function _read($id=false) {
+			if (!$id) return;
+			DB::select()->from('contacts')->where('id=',$id);
+			DB::fetch()->intoClass($this);
 			return true;
-
 		}
 
 		protected function _saveNew() {
-			begin_transaction();
-			$sql = "INSERT INTO contacts (parent_id, name, phone1, phone2, email, department)
-				VALUES (" . db_escape($this->parent_id) . "," . db_escape($this->name) . ", " . db_escape($this->phone1) . ", " . db_escape($this->phone2) . ", " . db_escape($this->email) . ", " . db_escape($this->department) . ")";
-			db_query($sql, "The contact could not be added");
+
+			DB::insert('contacts')->exec($this);
+			DB::fetch();
 			$this->id = db_insert_id();
-			commit_transaction();
+
 			$this->_status(true, 'Saving', "New contact has been added");
 		}
 

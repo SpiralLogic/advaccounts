@@ -9,11 +9,11 @@ but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
  ***********************************************************************/
-$page_security = 'SA_SOFTWAREUPGRADE';
+$page_security = 'SA_SETUPCOMPANY';
 $path_to_root = "..";
 
 include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
-
+FB::info($_SESSION);
 page(_($help_context = "System Diagnostics"));
 
 include($path_to_root . "/includes/faui.inc");
@@ -178,7 +178,7 @@ function tst_subdirs()
 	}
 	;
 	foreach ($db_connections as $n => $comp) {
-		$path = "$comp_path/$n";
+		$path = "$comp_path/";
 		if (!is_dir($path) || !is_writable($path)) {
 			$test['result'] = false;
 			$test['comments'][] = sprintf(_("'%s' is not writeable"), $path);
@@ -233,7 +233,7 @@ function tst_langs()
 
 	foreach ($installed_languages as $lang) {
 		$langs[] = $lang['code'];
-		if ($lang['code'] == 'en_GB') continue; // native FA language
+		if ($lang['code'] == 'en_AU') continue; // native FA language
 
 		$file = $path_to_root . '/lang/' . $lang['code'] . '/LC_MESSAGES/' . $lang['code'];
 		$file .= function_exists('gettext') ? '.mo' : '.po';

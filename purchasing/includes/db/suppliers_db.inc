@@ -86,7 +86,6 @@ function get_supplier_details($supplier_id, $to = null)
  */
 function get_supplier_oweing($supplier_id, $date_from, $date_to)
 {
-	global $show_sql;
 	$date_from = date2sql($date_from);
 	$date_to = date2sql($date_to);
 	// Sherifoz 22.06.03 Also get the description

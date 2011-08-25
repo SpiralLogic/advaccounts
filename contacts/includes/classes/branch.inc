@@ -8,8 +8,7 @@
  */
 	class Branch extends DB_abstract {
 
-	  public $post_address = '';
-
+		public $post_address = '';
 		public $branch_code = 0;
 		public $br_name = "New Address";
 		public $br_address = '';
@@ -42,8 +41,9 @@
 		public $tax_group_id = DEFAULT_TAX_GROUP;
 
 		function __construct($id = null) {
-			parent::__construct($id);
+			$this->branch_code = $id;
 			$this->id = &$this->branch_code;
+			parent::__construct($id);
 			$this->name = &$this->br_name;
 			$this->address = &$this->br_address;
 		}
@@ -65,23 +65,26 @@
 			if (!is_array($params)) {
 				$params = array('branch_code' => $params);
 			}
-			$sql = "SELECT " . "b.*, a.description, s.salesman_name, t.name AS tax_group_name
+			$sql = DB::select('b.*', 'a.description', 's.salesman_name', 't.name AS tax_group_name')
+			 ->from('cust_branch b, debtors_master c, areas a, salesman s, tax_groups t')
+			 ->where(array('b.debtor_no=c.debtor_no', 'b.tax_group_id=t.id', 'b.area=a.area_code', 'b.salesman=s.salesman_code'));
+			$sql2 = "SELECT " . "b.*, a.description, s.salesman_name, t.name AS tax_group_name
 		FROM cust_branch b, debtors_master c, areas a, salesman s, tax_groups t
 		WHERE b.debtor_no=c.debtor_no
 		AND b.tax_group_id=t.id
 		AND b.area=a.area_code
 		AND b.salesman=s.salesman_code";
 			foreach ($params as $key => $value) {
-				$sql .= " AND b.$key =" . db_escape($value);
+				$sql->where("b.$key=", $value);
 			}
-			$result = db_query($sql, 'Could not get customer branch.');
-			if (db_num_rows($result) < 1) {
-				$this->_status(false, 'Retrieving  Branch', 'No results from query');
-				return false;
-			}
-			$result = db_fetch_assoc($result);
-			$this->setFromArray($result);
+			 DB::fetch()->intoClass($this);
 			return $this->branch_code;
+			/*
+		 if (!DB::fetch()->intoClass($this)) {
+			 $this->_status(false, 'Retrieving  Branch', 'No results from query');
+			 return false;
+		 }*/
+			//return $this->branch_code;
 		}
 
 		public function getAddress() {
@@ -162,6 +165,7 @@
 
 		protected function _defaults() {
 			$company_record = get_company_prefs();
+			$this->branch_code=0;
 			$this->sales_discount_account = $company_record['default_sales_discount_act'];
 			$this->receivables_account = $company_record['debtors_act'];
 			$this->payment_discount_account = $company_record['default_prompt_payment_act'];

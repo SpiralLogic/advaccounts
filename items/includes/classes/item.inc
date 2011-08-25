@@ -8,7 +8,6 @@
  */
   class Item extends DB_abstract {
 
-
 	 public $id;
 	 public $name;
 	 public $category_id;
@@ -166,9 +165,9 @@
 
 		$term = explode(' ', $term);
 		$terms = array(trim($term[0]) . '%');
-		$terms[] = '%' . trim($term[0]);
-		$terms = array($terms[0],$terms[1],$terms[0],$terms[1],'%'.array_pop($term).'%');
-		$termswhere=' s.long_description LIKE ? ';
+		$terms[] = '%' . trim($term[0]).'%';
+		$terms = array($terms[0], $terms[1], $terms[0], $terms[1], '%' . array_pop($term) . '%');
+		$termswhere = ' s.long_description LIKE ? ';
 		foreach ($term as $t) {
 		  $termswhere .= ' AND s.long_description LIKE ? ';
 		  $terms[] = '%' . trim($t) . '%';
@@ -183,21 +182,26 @@
 		  $where2 .= " AND !i.is_foreign AND i.item_code!=i.stock_id ";
 		}
 		$where2 .= ' AND s.stock_id = i.stock_id ';
-	$sales_type=	$prices = '';
+		$sales_type = $prices = '';
 
 		if ($o['purchase']) {
+		  $terms[] = trim($terms[0]);
+		  array_unshift($terms,$term[0]);
+		  $weight = 'IF(s.stock_id LIKE ?, 0,20) + IF(p.supplier_description LIKE ?, 0,15) + IF(s.stock_id LIKE ?,0,5) as weight';
+		  $termswhere .= ' OR p.supplier_description LIKE ? ';
 		  if (isset($o['supplier_id']) && is_numeric($o['supplier_id'])) {
 			 $terms[] = $o['supplier_id'];
 			 $where2 .= " AND p.supplier_id = ? ";
 		  }
 		  $stock_id = ' s.stock_id, p.supplier_description, MAX(p.price) as price ';
-		  $where .=" AND s.stock_id = p.stock_id ";
+		  $where .= " AND s.stock_id = p.stock_id ";
 		  $prices = ", purch_data p ";
 		}
 		elseif ($o['sale']) {
+		  $weight = 'IF(s.stock_id LIKE ?, 0,20) + IF(s.stock_id LIKE ?,0,5) as weight';
 		  $stock_id = " s.stock_id, p.price ";
 		  $prices = ", prices p";
-		  $where .=" AND s.stock_id = p.stock_id ";
+		  $where .= " AND s.stock_id = p.stock_id ";
 		  if (isset($o['sales_type'])) {
 			 $sales_type = ' AND p.sales_type_id =' . $o['sales_type'];
 		  }
@@ -206,11 +210,12 @@
 		}
 		$select = ($o['select']) ? $o['select'] : ' ';
 		$sql = "SELECT  $select  $stock_id ,s.description, c.description as category, s.long_description , editable,
-						IF(s.stock_id LIKE ?, 0,20) + IF(s.stock_id LIKE ?,0,5) as weight FROM stock_master s, stock_category c, item_codes i $prices
+						$weight FROM stock_master s, stock_category c, item_codes i $prices
 						WHERE (s.stock_id LIKE ? OR s.stock_id LIKE ? OR $termswhere)  $where
 						AND s.category_id = c.category_id $where2 $sales_type GROUP BY s.stock_id
 						ORDER BY weight, s.category_id, s.long_description LIMIT 30";
 		DB::prepare($sql);
+
 		return DB::execute($terms);
 	 }
 
@@ -226,7 +231,7 @@
 		$action = <<<JS
 		$('#stockbox').html("<iframe src='/items/quickitems.php?id="+$(this).data('stock_id')+"&page={$page}' width='100%' height='600' scrolling='no' style='border:none' frameborder='0'></iframe>").dialog('open');
 JS;
-		JS::addLiveEvent('.stock', 'click', $action, "wrapper",true);
+		JS::addLiveEvent('.stock', 'click', $action, "wrapper", true);
 
 	 }
 

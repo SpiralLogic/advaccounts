@@ -17,7 +17,7 @@
    (function() {
       var $this = this,
          $wrapper = $("#_page_body");
-      this.menu = $("#sidemenu").accordion({autoHeight: false,active: false, event: "mouseover"}).fadeTo("slow", .75);
+      this.menu = $("#sidemenu").accordion({autoHeight: false,active: false, event: "mouseover"}).fadeTo("slow", .75).draggable();
       this.sidemenuOn = function() {
          $this.menu.accordion("enable").hover(function() {
             $(this).fadeTo("fast", 1).accordion({collapsible:false,active:false});

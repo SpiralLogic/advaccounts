@@ -36,11 +36,12 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		$supplier = new Supplier($_SESSION['wa_global_supplier_id']);
 
 		if (!isset($_GET['Updated'])) {
-			display_notification_centered(_("Purchase Order has been entered"));
+			display_notification_centered(_("Purchase Order: ".$_SESSION['PO']->reference." has been entered"));
 		}
 		else {
-			display_notification_centered(_("Purchase Order has been updated") . " #$order_no");
+			display_notification_centered(_("Purchase Order: ".$_SESSION['PO']->reference." has been updated") . " #$order_no");
 		}
+	  unset($_SESSION['PO']);
 		display_note(get_trans_view_str($trans_type, $order_no, _("&View this order")), 0, 1);
 		display_note(print_document_link($order_no, _("&Print This Order"), true, $trans_type), 0, 1);
 		submenu_option(_("&Edit This Order"), "/purchasing/po_entry_items.php?ModifyOrderNumber=$order_no");
@@ -278,7 +279,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 			else {
 				/*its an existing order need to update the old order info */
 				$order_no = update_po($_SESSION['PO']);
-				unset($_SESSION['PO']);
+				
 				meta_forward($_SERVER['PHP_SELF'], "AddedID=$order_no&Updated=1");
 			}
 		}
