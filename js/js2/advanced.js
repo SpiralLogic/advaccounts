@@ -11,6 +11,7 @@ $.widget("custom.catcomplete", $.ui.autocomplete, {
 			self._renderItem(ul, item);
 		});
 	}
+
 });
 (function(window, undefined) {
 

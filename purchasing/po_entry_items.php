@@ -397,6 +397,8 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	div_end();
 	//---------------------------------------------------------------------------------------------------
 	end_form();
+	JS::onUnload('Are you sure you want to leave without commiting changes?');
+
 	Item::addEditDialog();
 
 	if (isset($_SESSION['PO']->supplier_id)) {
@@ -415,6 +417,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		$supp_details->addButton('Close', '$(this).dialog("close")');
 		$supp_details->show();
 	}
+
 	end_page();
 
 ?>

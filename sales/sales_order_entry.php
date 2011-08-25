@@ -118,11 +118,10 @@
 		page_complete($_GET['AddedDN'], ST_CUSTDELIVERY, "Delivery");
 	}
 	elseif (isset($_GET['AddedDI'])) {
-		submenu_view(_("&View This Invoice"), ST_SALESINVOICE, $_GET['AddedDI']);
-		$order_no = $_GET['AddedDI'] . "-" . ST_SALESINVOICE;
 		page_complete($order_no, ST_SALESINVOICE, "Invoice");
 	}
-	elseif (isset($_GET['RemovedID'])) {
+	elseif (isset($_GET['RemovedID'])) {		submenu_view(_("&View This Invoice"), ST_SALESINVOICE, $_GET['AddedDI']);
+
 		if ($_GET['Type'] == ST_SALESQUOTE) {
 			display_notification(_("This sales quotation has been cancelled as requested."), 1);
 			submenu_option(_("Enter a New Sales Quotation"), "/sales/sales_order_entry.php?NewQuotation=Yes");
