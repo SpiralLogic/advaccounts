@@ -124,11 +124,13 @@
 
 		if ($_GET['Type'] == ST_SALESQUOTE) {
 			display_notification(_("This sales quotation has been cancelled as requested."), 1);
-			submenu_option(_("Enter a New Sales Quotation"), "/sales/sales_order_entry.php?NewQuotation=Yes");
+			submenu_option(_("Enter a New Sales Quotation"), "/sales/sales_order_entry.php?NewQuotation=Yes");			submenu_option(_("Select A Different &Quotation to edit"), "/sales/inquiry/sales_orders_view.php?type=" . ST_SALESQUOTE);
+
 		}
 		else {
 			display_notification(_("This sales order has been cancelled as requested."), 1);
-			submenu_option(_("Enter a New Sales Order"), "/sales/sales_order_entry.php?NewOrder=Yes");
+			submenu_option(_("Enter a New Sales Order"), "/sales/sales_order_entry.php?NewOrder=Yes");			submenu_option(_("Select A Different Order to edit"), "/sales/inquiry/sales_orders_view.php?type=" . ST_SALESORDER);
+
 		}
 		display_footer_exit();
 
@@ -395,9 +397,10 @@
 		$_SESSION['order_no'] = $trans_no = key($_SESSION['Items']->trans_no);
 		$trans_type = $_SESSION['Items']->trans_type;
 		new_doc_date($_SESSION['Items']->document_date);
-		$_SESSION['Jobsboard'] = clone($_SESSION['Items']);
 		$_SESSION['wa_global_customer_id'] = $_SESSION['Items']->customer_id;
 		processing_end();
+		$_SESSION['Jobsboard'] =new Cart($trans_type,$_SESSION['order_no']);
+
 		if ($modified) {
 			if ($trans_type == ST_SALESQUOTE) {
 				meta_forward($_SERVER['PHP_SELF'], "UpdatedQU=$trans_no");

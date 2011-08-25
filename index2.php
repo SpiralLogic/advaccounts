@@ -5,8 +5,4 @@
 	error_reporting(E_ALL);
 	echo "<pre>";
 
-$t = new Customer(4689);
-
-
-
-var_dump($t);
+phpinfo();
