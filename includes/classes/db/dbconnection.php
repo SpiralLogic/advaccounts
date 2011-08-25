@@ -52,6 +52,9 @@
 			return $this;
 		}
 
+		public function lastInsertId() {
+			return $this->conn->lastInsertId();
+		}
 
 		public function commit() {
 			$this->conn->commit();

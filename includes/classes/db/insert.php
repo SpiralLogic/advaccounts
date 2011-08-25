@@ -7,51 +7,56 @@
  *
  */
 
-	Class Insert {
+	Class Insert extends Query {
 
-		protected $columns = array();
 		protected $table;
+		protected $values = array();
+		protected $feilds = array();
 		public $data = array();
 
-		public function __construct() {
+		public function __construct($into = false) {
+			if ($into) $this->into($into);
 			parent::__construct(DB::INSERT);
+
+			return $this;
 		}
 
-		public function insert($into) {
-			$this->table = $into;
+		public function into($table) {
+			$this->table = $table;
 			return $this;
 		}
 
 		public function values($values) {
-			$this->data = array_merge($this->data, (array)$values);
+			$this->data = (array)$values + $this->data;
 			return $this;
 		}
 
-		public function columns($columns) {
-			$this->columns = array_merge($this->columns, (array)$columns);
-			return $this;
-		}
-
-		public function data($data) {
-			if (!is_array($data)) return;
-			$this->columns = array_merge($this->columns, array_keys($data));
-			$this->data = array_merge($this->data, array_values($data));
-			return $this;
-		}
-
-		public function exec($data) {
-			if (count($this->columns == 0) && is_object($data)) {
-				$data = get_object_vars($data);
-				$this->columns = array_keys($data);
+		public function value($feild, $value) {
+			if (is_array($feild) && is_array($value)) {
+				if (count($feild) != count($value)) {
+					throw new Adv_Exception('Feild count and Value count unequal');
+				} else {
+					$this->values(array_combine($feild, $value));
+				}
+			} elseif (is_array($feild) && !is_array($value)) {
+				$values = array_fill(0, count($feild), $value);
+				$this->values(array_combine($feild, $values));
+			} else {
+				$this->values(array($feild => $value));
 			}
-			if ($data !== null) $this->data = array_merge((array)$data, $this->data);
+			return $this;
+		}
+
+		public function execute() {
+			$this->feilds = array_keys($this->data);
 			return $this->_buildQuery();
 		}
 
-		protected function _buildQuery() {
+		protected
+		function _buildQuery() {
 			$sql = "INSERT INTO " . $this->table . " (";
-			$sql .= implode(', ', $this->columns) . ") VALUES (";
-			$sql .= ':' . implode(', :', str_replace('-', '_', $this->columns));
+			$sql .= implode(', ', $this->feilds) . ") VALUES (";
+			$sql .= ':' . implode(', :', str_replace('-', '_', $this->feilds));
 			$sql .= ') ';
 			return $sql;
 		}

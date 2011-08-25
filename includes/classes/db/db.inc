@@ -49,7 +49,7 @@
 		}
 
 		public static function fetch($db = null) {
-			return Query::fetch($db);
+			return Query::_fetch($db);
 		}
 
 	}
