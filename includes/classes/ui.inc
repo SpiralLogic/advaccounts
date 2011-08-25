@@ -145,7 +145,9 @@ Adv.loader.off();
 								$desc_js
 								return false;
 						},
-						focus: function(){return false;}}
+						focus: function(){return false;},
+						open: function() { console.log(this); $('.ui-autocomplete').unbind('mouseover');}
+						}
 				);
 	return function () {return \$$id.catcomplete('destroy')};
 JS;

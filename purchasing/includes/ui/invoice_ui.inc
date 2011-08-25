@@ -79,7 +79,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		else {
 			ref_row(_("Reference:"), 'reference', '', $Refs->get_next(ST_SUPPCREDIT));
 		}
-		if (isset($_POST['invoice_no'])) {
+		if ($supp_trans->is_invoice && isset($_POST['invoice_no'])) {
 			label_row(_("Supplier's Ref.:"),
 					$_POST['invoice_no'] . hidden('invoice_no', $_POST['invoice_no'], false) . hidden('supp_reference',
 						$_POST['invoice_no'], false));
