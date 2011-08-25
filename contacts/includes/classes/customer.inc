@@ -336,7 +336,6 @@
 			 ->or_where('debtor_no LIKE', "%$terms%")->limit(20)->union();
 			$results = DB::fetch();
 			foreach ($results as $result) $data[] = @array_map('htmlspecialchars_decode', $result);
-			array_shift($data);
 			return $data;
 		}
 
