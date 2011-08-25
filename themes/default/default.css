@@ -228,7 +228,7 @@ div.banner a + a { border-top: 2px groove #999 }
 	float:      right;
 	color:      #808080;
 	background: #fff;
-    margin: 16px 5px 10px 5px;
+	margin:     16px 5px 0 0;
 	text-align: right;
 }
 
@@ -269,7 +269,7 @@ div.banner a + a { border-top: 2px groove #999 }
 	background: #fff url(images/wrapbg.gif) repeat-x;
 	border:     1px solid #8ab9f2;
 	padding:    8px 5px;
-    margin: 20px 0 15px 0;
+	margin:     0 0 5px 0;
 	color:      #000;
 }
 
@@ -311,18 +311,14 @@ div.banner a + a { border-top: 2px groove #999 }
 
 #_tabs2 {
 	text-align:       left;
-    width: 120px;
-    height: 416px;
+	width:            100%;
+	height:           40px;
 	background:       #464646;
-    background: -webkit-gradient(linear, 100% 100%, 70% 70%, from(rgba(133, 133, 133, 1)), to(rgba(158, 158, 158, 1)), color-stop(0, #C7C7C7));
+	background:       -webkit-gradient(linear, 100% 19%, 100% 71%, from(rgba(133, 133, 133, 1)), to(rgba(158, 158, 158, 1)), color-stop(0, #C7C7C7));
 	background-image: -moz-linear-gradient(19% 100% 90deg, rgba(133, 133, 133, 1), rgba(158, 158, 158, 1), rgba(199, 199, 199, 1) 71%);
 	border-top:       2px solid #939393;
-    position: fixed;
-    margin-bottom: 4px;
-border-radius: 10px;
-left:15px;
-	top:55px;
-
+	position:         relative;
+	margin-bottom:    4px;
 }
 
 #_tabs2 .title {
@@ -346,8 +342,8 @@ left:15px;
 	height:       40px;
 	border-left:  1px solid rgba(0, 0, 0, 0.3);
 	border-right: 1px solid rgba(255, 255, 255, 0.3);
-    margin: 20px 0;
-width: 120px;}
+	margin:       0 20px;
+}
 
 #_tabs2 a {
 	text-decoration: none;
@@ -363,8 +359,8 @@ width: 120px;}
 
 #_tabs2 ul.menu li {
 	list-style: none;
-
-    height: 40px;
+	float:      left;
+	height:     39px;
 	text-align: left;
 }
 
@@ -375,11 +371,11 @@ width: 120px;}
 	-moz-transition-duration:           0.5s;
 	-moz-transition-timing-function:    linear;
 	display:                            block;
-    padding: 0 0;
+	padding:                            0 10px;
 	border-left:                        1px solid rgba(255, 255, 255, 0.1);
 	border-right:                       1px solid rgba(0, 0, 0, 0.1);
 	text-align:                         center;
-    line-height: 40px;
+	line-height:                        39px;
 	-webkit-transition-duration:        0.5s;
 	-webkit-transition-timing-function: linear;
 }
