@@ -182,7 +182,7 @@
 			}
 
 			$this->_defaults();
-			DB::select()->from('debtors_master')->where('debtor_no=', 4689);
+			DB::select()->from('debtors_master')->where('debtor_no=', $id);
 			DB::fetch()->intoClass($this);
 
 			$this->_getBranches();
@@ -276,7 +276,7 @@
 
 			DB::select()
 			 ->from('cust_branch')
-			 ->where('debtor_no=', 4689)
+			 ->where('debtor_no=', $this->debtor_no)
 			 ->where('branch_ref !=', 'accounts')
 			 ->where('disable_trans=', 0);
 			$branches = DB::fetch()->asClassLate('Branch');
