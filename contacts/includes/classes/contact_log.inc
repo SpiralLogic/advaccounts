@@ -23,7 +23,7 @@
 		}
 
 		static function read($contact_id, $type) {
-			if (!isset($contact_id)) return false;
+			if (!isset($contact_id) || $contact_id==0) return false;
 			if (!isset($type)) return false;
 			$sql = "SELECT * FROM " . self::$dbTable . " WHERE contact_id=" . $contact_id . " AND type=" . db_escape($type) . " ORDER BY date DESC";
 			$result = db_query($sql, "Couldn't get contact log entries");

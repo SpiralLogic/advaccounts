@@ -1,27 +1,23 @@
-<?
-class HTML
-{
+<?php
+class HTML {
+
 	protected static $_instance = null;
 	protected static $_return = false;
 
-	function __call($func, $args)
-	{
+	function __call($func, $args) {
 		static::__callStatic($func, $args);
 		return static::$_instance;
 	}
 
-	function __get($func)
-	{
+	function __get($func) {
 		static::__callStatic($func);
 		return static::$_instance;
 	}
 
-	static function setReturn($state = null)
-	{
+	static function setReturn($state = null) {
 		if (static::$_instance === null) {
 			static::$_instance = new static;
 		}
-		;
 		static::$_return = ($state === null) ? !(static::$_return) : $state;
 		if (!static::$_return) {
 
@@ -34,31 +30,26 @@ class HTML
 		return static::$_instance;
 	}
 
-	static function __callStatic($func, $args = array())
-	{
+	static function __callStatic($func, $args = array()) {
 		if (static::$_instance === null) {
 			static::$_instance = new static;
 		}
-		;
 		(count($args) == 0) ? static::$_instance->_closeTag(($func[0] == '_') ? substr($func, 1) : $func)
-				: static::$_instance->_Builder($func, $args);
+		 : static::$_instance->_Builder($func, $args);
 		return static::$_instance;
 	}
 
-	protected function _openTag($type, $attr = array(), $content = '')
-	{
+	protected function _openTag($type, $attr = array(), $content = '') {
 		$attrs = '';
 		foreach ($attr as $key => $value) $attrs .= (empty($value) || $key == 'content') ? '' : " $key='$value'";
-		echo  '<' . $type . ' ' . $attrs . '>' . (isset($attr['content']) ? $attr['content'] : $content);
+		echo	'<' . $type . ' ' . $attrs . '>' . (isset($attr['content']) ? $attr['content'] : $content);
 	}
 
-	protected function _closeTag($type)
-	{
+	protected function _closeTag($type) {
 		echo '</' . $type . '>';
 	}
 
-	protected function _Builder($func, $args, $attr = array(), $content = '')
-	{
+	protected function _Builder($func, $args, $attr = array(), $content = '') {
 		$open = (is_bool(end($args))) ? array_pop($args) : true;
 		foreach ($args as $key => $val) {
 			if ($key == 0 && is_string($val)) {

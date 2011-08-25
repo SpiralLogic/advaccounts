@@ -294,7 +294,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		  $this->Location = $this->pos['pos_location'];
 		  $this->location_name = $this->pos['location_name'];
 		}
-		$this->credit = get_current_cust_credit($customer_id);
+		if ($customer_id>0) $this->credit = get_current_cust_credit($customer_id);
 
 	 }
 

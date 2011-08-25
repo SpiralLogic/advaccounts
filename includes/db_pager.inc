@@ -20,7 +20,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 
 //require_once('FirePHPCore/fb.php');
 //require_once($path_to_root . "/includes/firephp.php"); 
-include_once($path_to_root . "/includes/ui/db_pager_view.inc");
+include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/ui/db_pager_view.inc");
 
 class db_pager
 {
