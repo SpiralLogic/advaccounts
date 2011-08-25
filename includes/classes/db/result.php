@@ -20,8 +20,9 @@
 		public function __construct($query, $db) {
 			$this->query = $query;
 			$this->prepared = DBconnection::instance($db)->prepare($query->getQuery());
-		
+
 			$this->prepared->setFetchMode(PDO::FETCH_ASSOC);
+			$this->rewind();
 		}
 
 		protected function execute() {
@@ -48,7 +49,9 @@
 		public function intoClass($object) {
 			$this->prepared->setFetchMode(PDO::FETCH_INTO, $object);
 			$this->execute();
-			return $this->prepared->fetch();
+			 $this->prepared->fetch();
+		$this->prepared=null;
+			$this->query=null;
 		}
 
 		public function asObject() {

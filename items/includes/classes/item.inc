@@ -165,7 +165,7 @@
 
 		$term = explode(' ', $term);
 		$terms = array(trim($term[0]) . '%');
-		$terms[] = '%' . trim($term[0]);
+		$terms[] = '%' . trim($term[0]).'%';
 		$terms = array($terms[0], $terms[1], $terms[0], $terms[1], '%' . array_pop($term) . '%');
 		$termswhere = ' s.long_description LIKE ? ';
 		foreach ($term as $t) {
@@ -215,6 +215,7 @@
 						AND s.category_id = c.category_id $where2 $sales_type GROUP BY s.stock_id
 						ORDER BY weight, s.category_id, s.long_description LIMIT 30";
 		DB::prepare($sql);
+
 		return DB::execute($terms);
 	 }
 

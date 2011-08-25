@@ -11,11 +11,12 @@
 
 		protected static $query;
 		protected static $results = null;
-		protected $compiled_query=false;
+		protected $compiled_query = false;
 
 		public $type;
 
 		protected function __construct($type) {
+			static::$results=null;
 			static::$query = $this;
 			$this->type = $type;
 		}

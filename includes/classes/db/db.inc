@@ -11,12 +11,28 @@
 		const SELECT = 0;
 		const INSERT = 1;
 		const UPDATE = 2;
+		protected static $_prepared = false;
 
 		final function __construct() {
 		}
 
 		public static function query($sql, $db) {
 			return DBConnection::instance($db)->query($sql);
+		}
+
+		public static function prepare($sql, $db = null) {
+
+			static::$_prepared = DBconnection::instance($db)->prepare($sql);
+
+		}
+
+		public static function execute($data) {
+			if (static::$_prepared) {
+
+				static::$_prepared->execute($data);
+				return static::$_prepared->fetchAll();
+			}
+
 		}
 
 		public static function select() {
@@ -32,8 +48,8 @@
 			return new Insert($into);
 		}
 
-		public static function fetch($db=null) {
+		public static function fetch($db = null) {
 			return Query::fetch($db);
 		}
-		
+
 	}

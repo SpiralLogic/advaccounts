@@ -55,7 +55,7 @@
 		HTML::div('custsearch');
 		HTML::table(array("style" => "margin:0 auto; padding-bottom:5px; font-weight:bold"));
 		HTML::tr(true)->td(array("style" => "width:750px"));
-		UI::search('customer', array('label' => 'Search Customer:', 'size' => 80, 'callback' => 'Customer.fetch'),array('focus'=>true));
+		UI::search('customer', array('label' => 'Search Customer:', 'size' => 80, 'callback' => 'Customer.fetch'), array('focus' => true));
 		HTML::td()->tr->table->div;
 	}
 	start_form();
@@ -74,8 +74,8 @@
 	/** @noinspection PhpUndefinedMethodInspection */
 	HTML::tr(true)->td('branchSelect', array('colspan' => 2, 'style' => "text-align:center; margin:0 auto; "));
 	UI::select('branchList', array_map(function($v) {
-			                       return $v->name;
-		                       }, $customer->branches), array('name' => 'branchList'));
+														 return $v->name;
+													 }, $customer->branches), array('name' => 'branchList'));
 	UI::button('addBranch', 'Add new address', array('name' => 'addBranch'));
 	HTML::td()->tr;
 	text_row(_("Contact:"), 'br_contact_name', $currentBranch->contact_name, 35, 40);

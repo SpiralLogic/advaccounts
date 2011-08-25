@@ -14,19 +14,22 @@
 		public $debtor_ref = '';
 		public $credit_status;
 		public $payment_discount = '0';
-		public $defaultBranch;
-		public $defaultContact;
+		public $defaultBranch =0;
+		public $defaultContact=0;
 		public $branches = array();
 		public $contacts = array();
 		public $accounts;
 		public $transactions;
 
 		function __construct($id = null) {
+
 			$this->debtor_no = $id;
 			$this->id = &$this->debtor_no;
+
 			parent::__construct($id);
 			$this->pymt_discount =& $this->payment_discount;
 			$this->debtor_ref = substr($this->name, 0, 60);
+
 		}
 
 		protected function _canProcess() {
@@ -173,16 +176,19 @@
 		}
 
 		protected function _read($id = false) {
-			if (!$id) {
+
+			if ($id===false) {
 				return $this->_status(false, 'read', 'No customer ID to read');
 			}
+
 			$this->_defaults();
-			DB::select()->from('debtors_master')->where('debtor_no =', $id);
+			DB::select()->from('debtors_master')->where('debtor_no=', 4689);
 			DB::fetch()->intoClass($this);
+
 			$this->_getBranches();
-			//$this->_getAccounts();
-			//$this->_getContacts();
- 			$this->discount = $this->discount * 100;
+			$this->_getAccounts();
+			$this->_getContacts();
+			$this->discount = $this->discount * 100;
 			$this->pymt_discount = $this->pymt_discount * 100;
 			$this->credit_limit = price_format($this->credit_limit);
 		}
@@ -273,16 +279,12 @@
 			 ->where('debtor_no=', 4689)
 			 ->where('branch_ref !=', 'accounts')
 			 ->where('disable_trans=', 0);
-			//$branch = new Branch();
-			$results = DB::fetch()->all();
-			echo count($results);
-			//foreach($branches as $branch)
-			{
-				//var_dump($branch);
-				//	$this->branches[$branch->branch_code] = $branch;
+			$branches = DB::fetch()->asClassLate('Branch');
+			foreach ($branches as $branch) {
+				$this->branches[$branch->branch_code] = $branch;
 			}
+			$this->defaultBranch = reset($this->branches)->id;
 
-			//	$this->defaultBranch = reset($this->branches)->branch_code;
 		}
 
 		protected function _getContacts() {

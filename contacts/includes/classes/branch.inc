@@ -9,7 +9,6 @@
 	class Branch extends DB_abstract {
 
 		public $post_address = '';
-
 		public $branch_code = 0;
 		public $br_name = "New Address";
 		public $br_address = '';
@@ -166,6 +165,7 @@
 
 		protected function _defaults() {
 			$company_record = get_company_prefs();
+			$this->branch_code=0;
 			$this->sales_discount_account = $company_record['default_sales_discount_act'];
 			$this->receivables_account = $company_record['debtors_act'];
 			$this->payment_discount_account = $company_record['default_prompt_payment_act'];

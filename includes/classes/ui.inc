@@ -114,12 +114,12 @@
 
 			$js = <<<JS
 	Adv.o.stock_id = \$$id = $("#$id").catcomplete({
-				delay: 20,
+				delay: 0,
 				autoFocus: true,
 				minLength: 0,
 				source: function( request, response ) {
 						if (Adv.lastXhr)  Adv.lastXhr.abort();
-
+Adv.loader.off();
 						Adv.lastXhr = $.ajax({
 								url: "$url",
 								dataType: "json",
@@ -132,12 +132,13 @@
 														value: item,
 														category: item.category
 												}
-										}))
+										}));
+										Adv.loader.on();
 								}}})
 						},
             select: function( event, ui ) {
 								var value = ui.item.value;
-								$(this).val(value.stock_id);
+						//		$(this).val(value.stock_id);
 								value.description = value.long_description;
 								Adv.Events.onFocus("#stock_id",[0,$(this).position().top]);
 								$.each(value,function(k,v) {Adv.setFormValue(k,v);});

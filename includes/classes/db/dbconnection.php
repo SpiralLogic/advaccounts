@@ -43,6 +43,7 @@
 			if ($this->debug) {
 				(class_exists('FB')) ? FB::info($sql) : var_dump($sql);
 			}
+
 			return $this->conn->prepare($sql);
 		}
 
@@ -50,6 +51,7 @@
 			$this->conn->beginTransaction();
 			return $this;
 		}
+
 
 		public function commit() {
 			$this->conn->commit();
