@@ -7,6 +7,14 @@
 	echo "<pre>";
 
 
-echo DB::delete('tags')->where('id=',2)->exec();
+$c = new Customer(4689);
 
+$c->name = 'test test';
 
+$c = json_encode($c);
+
+$_POST = (array)json_decode($c);
+
+$n = new Customer($_POST);
+var_dump($n);
+	$n->save($_POST);
