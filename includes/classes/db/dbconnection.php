@@ -58,11 +58,10 @@
 					case DB::INSERT:
 						$prepared->execute($data);
 						return $this->lastInsertId();
-					case DB::UPDATE:
+					case DB::UPDATE or DB::DELETE:
 						$prepared->execute($data);
 						return $prepared->rowCount();
 				}
-
 			}
 			catch (PDOException $e) {
 				$this->_error($e);

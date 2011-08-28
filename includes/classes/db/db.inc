@@ -11,6 +11,7 @@
 		const SELECT = 0;
 		const INSERT = 1;
 		const UPDATE = 2;
+		const DELETE = 4;
 		protected static $_prepared = false;
 
 		final function __construct() {
@@ -42,6 +43,10 @@
 
 		public static function insert($into) {
 			return new Insert($into);
+		}
+
+		public static function delete($into) {
+			return new Delete($into);
 		}
 
 		public static function fetch($db = null) {
