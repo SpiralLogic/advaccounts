@@ -69,7 +69,6 @@
 		}
 
 		public function begin() {
-			$this->intransaction = true;
 			$this->conn->beginTransaction();
 			return $this;
 		}
@@ -84,11 +83,12 @@
 			return $this;
 		}
 
-		public function query($sql) {
+		public function query($sql,$fetchas = PDO::FETCH_OBJ) {
 			try {
 				$query = $this->conn->query($sql);
+				if ($fetchas == false) return $query;
 				$results = array();
-				while ($row = $query->fetch(PDO::FETCH_OBJ)) {
+				while ($row = $query->fetch($fetchas)) {
 					$results[] = $row;
 				}
 			}
@@ -97,10 +97,12 @@
 			}
 			return $results;
 		}
-
+public  function quote($value) {
+			return $this->conn->quote($value);
+		}
 		protected function _connect() {
 			try {
-				$this->conn = new PDO('mysql:host=' . $this->host . ';dbname=' . $this->name, $this->user, $this->pass, array(PDO::ATTR_PERSISTENT => true));
+				$this->conn = new PDO('mysql:host=' . $this->host . ';dbname=' . $this->name, $this->user, $this->pass);
 				$this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			}
 			catch (PDOException $e) {

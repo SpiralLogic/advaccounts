@@ -17,10 +17,12 @@
 		final function __construct() {
 		}
 
-		public static function query($sql, $db) {
-			return DBConnection::instance($db)->query($sql);
+		public static function query($sql, $db = null, $fetchas=PDO::FETCH_OBJ) {
+			return DBConnection::instance($db)->query($sql,$fetchas);
 		}
-
+public static function quote($value, $db = null) {
+			return DBConnection::instance($db)->quote($value);
+		}
 		public static function prepare($sql, $db = null) {
 			static::$_prepared = DBconnection::instance($db)->prepare($sql);
 		}

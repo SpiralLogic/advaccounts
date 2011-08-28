@@ -12,12 +12,17 @@
 		protected $table;
 		protected $values = array();
 		protected $feilds = array();
+		protected $hasFeilds = array();
 		public $data = array();
 
-		public function __construct($table= false) {
+		public function __construct($table = false) {
 			parent::__construct();
 			if ($table) $this->into($table);
 			$this->type = DB::INSERT;
+			$query = DB::query('SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = ' . DB::quote($table), null,false);
+			while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+				$this->hasFeilds[] = $row['COLUMN_NAME'];
+			}
 			return $this;
 		}
 
@@ -47,8 +52,9 @@
 			return $this;
 		}
 
-		public function execute($data=null) {
-			if ($this->data!==null) $this->values($data);
+		public function execute($data = null) {
+			if ($this->data !== null) $this->values((array)$data);
+			$this->data = array_intersect_key($this->data, array_flip($this->hasFeilds));
 			$this->feilds = array_keys($this->data);
 			return $this->_buildQuery();
 		}
