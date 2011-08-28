@@ -17,7 +17,8 @@
 		protected $union = array();
 
 		public function __construct($columns) {
-			parent::__construct(DB::SELECT);
+			parent::__construct();
+			$this->type = DB::SELECT;
 			call_user_func_array(array($this, 'select'), $columns);
 		}
 

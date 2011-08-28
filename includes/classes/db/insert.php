@@ -14,10 +14,10 @@
 		protected $feilds = array();
 		public $data = array();
 
-		public function __construct($into = false) {
-			if ($into) $this->into($into);
-			parent::__construct(DB::INSERT);
-
+		public function __construct($table= false) {
+			parent::__construct();
+			if ($table) $this->into($table);
+			$this->type = DB::INSERT;
 			return $this;
 		}
 
@@ -47,13 +47,13 @@
 			return $this;
 		}
 
-		public function execute() {
+		public function execute($data=null) {
+			if ($this->data!==null) $this->values($data);
 			$this->feilds = array_keys($this->data);
 			return $this->_buildQuery();
 		}
 
-		protected
-		function _buildQuery() {
+		protected function _buildQuery() {
 			$sql = "INSERT INTO " . $this->table . " (";
 			$sql .= implode(', ', $this->feilds) . ") VALUES (";
 			$sql .= ':' . implode(', :', str_replace('-', '_', $this->feilds));

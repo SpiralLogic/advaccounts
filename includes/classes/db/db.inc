@@ -21,18 +21,14 @@
 		}
 
 		public static function prepare($sql, $db = null) {
-
 			static::$_prepared = DBconnection::instance($db)->prepare($sql);
-
 		}
 
 		public static function execute($data) {
 			if (static::$_prepared) {
-
 				static::$_prepared->execute($data);
 				return static::$_prepared->fetchAll();
 			}
-
 		}
 
 		public static function select() {
@@ -51,5 +47,4 @@
 		public static function fetch($db = null) {
 			return Query::_fetch($db);
 		}
-
 	}
