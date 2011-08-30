@@ -392,9 +392,9 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 
   function amount_cell($label, $bold = false, $params = "", $id = null) {
 	 if ($bold)
-		label_cell("<b>" . price_format($label) . "</b>", "nowrap align=right " . $params, $id);
+		label_cell("<b>" . price_format($label) . "</b>", "class='amount'" . $params, $id);
 	 else
-		label_cell(price_format($label), "nowrap align=right " . $params, $id);
+		label_cell(price_format($label), "class='amount'" . $params, $id);
   }
 
   //JAM  Allow entered unit prices to be fractional
@@ -675,7 +675,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		echo "class='freight' ";
 	 else
 		echo "class='amount' ";
-	 echo "type=\"text\" name=\"$name\" size=\"$size\" maxlength=\"$max\" dec=\"$dec\" value=\"" .
+	 echo "type=\"text\" name=\"$name\"  maxlength=\"$max\" dec=\"$dec\" value=\"" .
 			$_POST[$name] . "\">";
 
 	 if ($post_label) {

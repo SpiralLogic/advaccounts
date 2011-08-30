@@ -95,13 +95,13 @@
 
 			HTML::setReturn(true);
 			if ($o['cell']) {
-				HTML::td((is_string($o['cell']) ? array('class' => $o['cell']) : true),array('style'=>'width:250px'));
+				HTML::td(true);
 			}
 
-			HTML::input($id, $o['selected'], array('name' => $id,'style'=>'width:180px'));
+			HTML::input($id, $o['selected'], array('name' => $id));
 			if ($o['editable']) {
-				HTML::a('lineedit', 'edit',array('class'=>'stock button','style'=>'display:none'));
-				$desc_js .='$("#lineedit").data("stock_id",value.stock_id).show(); ';
+				HTML::label('lineedit', 'edit',array('for'=>'stock_id','class'=>'stock button','style'=>'display:none'));
+				$desc_js .='$("#lineedit").data("stock_id",value.stock_id).show().parent().css("white-space","nowrap"); ';
 			}
 			if ($o['cell']) {
 				HTML::td()->td(true);
