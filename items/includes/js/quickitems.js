@@ -95,7 +95,7 @@ var Items = function() {
 		onload: function(data) {
 			$Items.empty();
 
-			item = data.item;
+			item = data.item; 
 			initItem = $.extend(true, {}, item);
 			$.tmpl('items', data.item).appendTo("#Items");
 			$stockLevels.find('tbody').html($.tmpl('stockrow', data.stockLevels));
