@@ -235,7 +235,6 @@
 		.dialog('open');
 JS;
 			JS::addLiveEvent('.stock', 'click', $action, "wrapper", true);
-
 		}
 
 		static function addSearchBox($id, $options = array()) {
