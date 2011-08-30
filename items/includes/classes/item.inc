@@ -225,7 +225,7 @@
 			$options = array_merge($default, $options);
 			extract($options);
 			$stockbox = new Dialog('Item Edit', 'stockbox', '');
-			$stockbox->addButtons(array('Save' => 'var item =$("#stockframe")[0].contentWindow.Items; item.save(); if (item.get().id==$("#stock_id").val()){ Adv.setFormValue("description",
+			$stockbox->addButtons(array('Save' => 'var item =; $("#stockframe")[0].contentWindow.Items.save(); if (item.get().id==$("#stock_id").val()){ Adv.setFormValue("description",
 			item.get().description)} $(this).dialog("close")', 'Close' => '$(this).dialog("close");'));
 
 			$stockbox->setOptions(array('autoopen' => false, 'modal' => true, 'width' => '"75%"', 'resizeable' => true));
