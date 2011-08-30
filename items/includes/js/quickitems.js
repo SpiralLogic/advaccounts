@@ -132,5 +132,5 @@ $(function() {
 		}
 		Adv.stateModified($(this));
 	})
-})
+});
 
