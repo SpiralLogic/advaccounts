@@ -31,9 +31,9 @@
 		echo json_encode($data);
 		exit();
 	}
-	add_js_ffile("includes/js/items.js");
-	$js_fstatic[] = 'jquery.jeditable.js';
-	$js_fstatic[] = 'jquery.dataTables.min.js';
+	JS::footerFile("includes/js/items.js");
+	JS::footerFile('/js/js2/jquery.jeditable.js');
+	JS::footerFile('/js/js2/jquery.dataTables.min.js');
 	page(_($help_context = "Items"), @$_REQUEST['popup']);
 ?>
 <div id="dynamic" style="margin:0 auto;text-align:center;width:80%">

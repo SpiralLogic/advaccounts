@@ -91,17 +91,22 @@
 
 			$o = array_merge($defaults, $options);
 			$_SESSION['options'][$id] = $o;
+			$desc_js = $o['js'];
+
 			HTML::setReturn(true);
 			if ($o['cell']) {
-				HTML::td(true);
+				HTML::td((is_string($o['cell']) ? array('class' => $o['cell']) : true),array('style'=>'width:250px'));
 			}
 
-			HTML::input($id, $o['selected'], array('name' => $id, 'size' => 50));
+			HTML::input($id, $o['selected'], array('name' => $id,'style'=>'width:180px'));
+			if ($o['editable']) {
+				HTML::a('lineedit', 'edit',array('class'=>'stock button','style'=>'display:none'));
+				$desc_js .='$("#lineedit").data("stock_id",value.stock_id).show(); ';
+			}
 			if ($o['cell']) {
 				HTML::td()->td(true);
 			}
 
-			$desc_js = $o['js'];
 
 			if ($o['description'] !== false) {
 				HTML::textarea('description', $o['description'], array('style' => 'height:15px;', 'name' => 'description', 'rows' => 2, 'cols' => 45), false);
@@ -119,7 +124,7 @@
 				minLength: 0,
 				source: function( request, response ) {
 						if (Adv.lastXhr)  Adv.lastXhr.abort();
-Adv.loader.off();
+						Adv.loader.off();
 						Adv.lastXhr = $.ajax({
 								url: "$url",
 								dataType: "json",
@@ -138,15 +143,14 @@ Adv.loader.off();
 						},
             select: function( event, ui ) {
 								var value = ui.item.value;
-						//		$(this).val(value.stock_id);
 								value.description = value.long_description;
 								Adv.Events.onFocus("#stock_id",[0,$(this).position().top]);
 								$.each(value,function(k,v) {Adv.setFormValue(k,v);});
-								$desc_js
+									$desc_js
 								return false;
 						},
 						focus: function(){return false;},
-						open: function() { console.log(this); $('.ui-autocomplete').unbind('mouseover');}
+						open: function() { $('.ui-autocomplete').unbind('mouseover');}
 						}
 				);
 	return function () {return \$$id.catcomplete('destroy')};

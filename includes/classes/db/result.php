@@ -13,31 +13,34 @@
 		protected $current;
 		protected $count;
 		protected $cursor = -1;
-		protected $query;
+		protected $data;
 		protected $valid;
-		protected $as_object = false;
 
-		public function __construct($query, $db) {
-			$this->query = $query;
-			$this->prepared = DBconnection::instance($db)->prepare($query->getQuery());
-
+		public function __construct($prepared, $data) {
+			$this->data = $data;
+			$this->prepared = $prepared;
 			$this->prepared->setFetchMode(PDO::FETCH_ASSOC);
-			$this->rewind();
+			$this->execute();
 		}
 
 		protected function execute() {
-			$this->cursor = 0;
-			$this->valid = $this->prepared->execute($this->query->data);
-			$this->count = $this->prepared->rowCount();
+			try {
+				$this->cursor = 0;
+				$this->valid = $this->prepared->execute($this->data);
+				$this->count = $this->prepared->rowCount();
+			}
+			catch (PDOException $e) {
+			}
 		}
 
 		public function all() {
-			$this->execute();
-			return $this->prepared->fetchAll();
+			$result = $this->prepared->fetchAll();
+			$this->prepared = null;
+			return $result;
 		}
 
 		public function asClassLate($class) {
-			$this->prepared->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE,  $class);
+			$this->prepared->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, $class);
 			return $this;
 		}
 
@@ -47,11 +50,13 @@
 		}
 
 		public function intoClass($object) {
+			return $this->intoObject($object);
+		}
+
+		public function intoObject($object) {
 			$this->prepared->setFetchMode(PDO::FETCH_INTO, $object);
-			$this->execute();
-			 $this->prepared->fetch();
-		$this->prepared=null;
-			$this->query=null;
+			$this->prepared->fetch();
+			$this->prepared = null;
 		}
 
 		public function asObject() {
@@ -121,5 +126,10 @@
 		 */
 		public function count() {
 			return $this->count;
+		}
+
+		public function __toString() {
+			if ($this->cursor === 0) $this->next();
+			return var_export($this->current(), true);
 		}
 	}

@@ -9,28 +9,31 @@
 
 	abstract class Query extends Where {
 
-		protected static $query;
-		protected static $results = null;
+		protected static $query = null;
 		protected $compiled_query = false;
+		protected $type;
 
-		public $type;
-
-		protected function __construct($type) {
-			static::$results=null;
+		protected function __construct() {
 			static::$query = $this;
-			$this->type = $type;
 		}
 
-		public function getQuery() {
-			if (!$this->compiled_query) $this->compiled_query = $this->execute();
+		protected function getQuery($data) {
+			if (!$this->compiled_query) $this->compiled_query = $this->execute($data);
 			return $this->compiled_query;
 		}
 
-		public static function fetch($db) {
-			if (static::$results === null) {
-				static::$results = new Result(static::$query, $db);
-			}
-			return static::$results;
+		public function exec($data = null, $db = null) {
+
+			return DBconnection::instance($db)->exec($this->getQuery($data), $this->type, $this->data);
 		}
 
+		public function fetch($db = null) {
+			return $this->exec(null, $db);
+		}
+
+		public static function _fetch($db = null) {
+			$result = static::$query->fetch($db);
+			static::$query = null;
+			return $result;
+		}
 	}

@@ -436,7 +436,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		$_POST['description'] = $order->line_items[$id]->description;
 		$units = $order->line_items[$id]->units;
 		hidden('stock_id', $_POST['stock_id']);
-		label_cell($_POST['stock_id'], 'class=".stock"');
+		label_cell($_POST['stock_id'], 'class="stock"');
 		textarea_cells(null, 'description', null, 50, 5);
 		//label_cell($order->line_items[$line_no]->description, "nowrap");
 		$Ajax->activate('items_table');

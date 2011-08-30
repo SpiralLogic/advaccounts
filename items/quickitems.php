@@ -49,7 +49,7 @@ JS
 	echo <<<HTML
 <div id="Items" class="aligncenter">
 <table class="tableinfo marginauto" style="width:80%">
-<tr><td ><label for="id">Code:</label></td><td><input id="id" type="text" value="\${id}" maxlength="10"></td></tr>
+<tr><td><label for="id">Code:</label></td><td><input id="id" type="text" value="\${id}" maxlength="10"></td></tr>
 <tr><td ><label for="name">Name:</label><br></td><td><input id="name" type="text" value="\${name}" maxlength="10"></td></tr>
 <tr><td ><label for="description">Description:</label></td><td><textarea id="description" rows="6" cols="36">\${description} </textarea></td></tr>
 <tr><td ><label for="category_id">Category:</label></td><td>$stock_cats</td></tr>

@@ -11,28 +11,27 @@
 		const SELECT = 0;
 		const INSERT = 1;
 		const UPDATE = 2;
+		const DELETE = 4;
 		protected static $_prepared = false;
 
 		final function __construct() {
 		}
 
-		public static function query($sql, $db) {
-			return DBConnection::instance($db)->query($sql);
+		public static function query($sql, $db = null, $fetchas=PDO::FETCH_OBJ) {
+			return DBConnection::instance($db)->query($sql,$fetchas);
 		}
-
+public static function quote($value, $db = null) {
+			return DBConnection::instance($db)->quote($value);
+		}
 		public static function prepare($sql, $db = null) {
-
 			static::$_prepared = DBconnection::instance($db)->prepare($sql);
-
 		}
 
 		public static function execute($data) {
 			if (static::$_prepared) {
-
 				static::$_prepared->execute($data);
 				return static::$_prepared->fetchAll();
 			}
-
 		}
 
 		public static function select() {
@@ -48,8 +47,11 @@
 			return new Insert($into);
 		}
 
-		public static function fetch($db = null) {
-			return Query::fetch($db);
+		public static function delete($into) {
+			return new Delete($into);
 		}
 
+		public static function fetch($db = null) {
+			return Query::_fetch($db);
+		}
 	}

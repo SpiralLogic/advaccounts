@@ -53,7 +53,7 @@ textarea {
 input, select, textarea {
 	font-size: 11px;
 	padding:   1px;
-	min-width: 100px
+	min-width: 50px
 }
 
 input[type="checkbox"] {

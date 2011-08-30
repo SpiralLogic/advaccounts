@@ -10,8 +10,8 @@
 	abstract class Where {
 
 		public $data = array();
-		protected $insert = array();
 		protected $where = array();
+		private $wheredata =array();
 		protected $count = 0;
 
 		protected function _where($conditions, $type = 'AND', $uservar=null) {
@@ -28,7 +28,7 @@
 			if ($uservar !== null) {
 				$name = ':dbcondition' . $this->count;
 				$this->count++;
-				$this->data[$name] = $uservar;
+				$this->wheredata[$name] = $uservar;
 				$conditions = $conditions . ' ' . $name;
 			}
 			$this->where[] = (empty($this->where)) ? $conditions : $type . ' ' . $conditions;
@@ -66,8 +66,7 @@
 		protected function _buildWhere() {
 			$sql = '';
 			if (!empty($this->where)) $sql .= ' WHERE ' . implode(' ', $this->where);
-			$this->where = array();
+			$this->data = $this->data + $this->wheredata;
 			return $sql;
 		}
-
 	}

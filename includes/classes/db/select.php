@@ -17,14 +17,15 @@
 		protected $union = array();
 
 		public function __construct($columns) {
-			parent::__construct(DB::SELECT);
-		 call_user_func_array(array($this,'select'),$columns);
+			parent::__construct();
+			$this->type = DB::SELECT;
+			call_user_func_array(array($this, 'select'), $columns);
 		}
 
 		public function select($columns = null) {
 			$columns = func_get_args();
 			$this->select = array_merge($this->select, $columns);
-			
+
 			return $this;
 		}
 
@@ -52,9 +53,9 @@
 		public function union() {
 			$this->union[] = '(' . $this->_buildQuery() . ')';
 			$this->select = $this->from = $this->orderby = $this->groupby = array();
-				$this->limit = '';
+			$this->limit = '';
 
-				return $this;
+			return $this;
 		}
 
 		public function execute() {
