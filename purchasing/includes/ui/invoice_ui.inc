@@ -81,8 +81,8 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		}
 		if ($supp_trans->is_invoice && isset($_POST['invoice_no'])) {
 			label_row(_("Supplier's Ref.:"),
-					$_POST['invoice_no'] . hidden('invoice_no', $_POST['invoice_no'], false) . hidden('supp_reference',
-						$_POST['invoice_no'], false));
+								$_POST['invoice_no'] . hidden('invoice_no', $_POST['invoice_no'], false) . hidden('supp_reference',
+																																																	$_POST['invoice_no'], false));
 		}
 		else
 		{
@@ -260,7 +260,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		}
 		$colspan = ($dim == 2 ? 5 : ($dim == 1 ? 4 : 3));
 		label_row(_("Total"), price_format($total_gl_value), "colspan=" . $colspan . " align=right", "nowrap align=right", ($mode == 1
-					? 3 : 0));
+			 ? 3 : 0));
 		end_table(1);
 		div_end();
 		return $total_gl_value;
@@ -274,7 +274,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		else {
 			if (isset($_POST['receive_begin']) && isset($_POST['receive_end'])) {
 				$result = get_grn_items(0, $supp_trans->supplier_id, false, true, 0, $_POST['receive_begin'],
-					$_POST['receive_end']);
+																$_POST['receive_end']);
 			}
 			else {
 				if (isset($_POST['invoice_no'])) {
@@ -302,13 +302,13 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 					$n = $myrow["id"];
 					label_cell(get_trans_view_str(25, $myrow["grn_batch_id"]));
 					label_cell($myrow["id"] .
-								hidden('qty_recd' . $n, $myrow["qty_recd"], false) .
-								hidden('item_code' . $n, $myrow["item_code"], false) .
-								hidden('description' . $n, $myrow["description"], false) .
-								hidden('prev_quantity_inv' . $n, $myrow['quantity_inv'], false) .
-								hidden('order_price' . $n, $myrow['unit_price'], false) .
-								hidden('std_cost_unit' . $n, $myrow['std_cost_unit'], false) .
-								hidden('po_detail_item' . $n, $myrow['po_detail_item'], false));
+										 hidden('qty_recd' . $n, $myrow["qty_recd"], false) .
+										 hidden('item_code' . $n, $myrow["item_code"], false) .
+										 hidden('description' . $n, $myrow["description"], false) .
+										 hidden('prev_quantity_inv' . $n, $myrow['quantity_inv'], false) .
+										 hidden('order_price' . $n, $myrow['unit_price'], false) .
+										 hidden('std_cost_unit' . $n, $myrow['std_cost_unit'], false) .
+										 hidden('po_detail_item' . $n, $myrow['po_detail_item'], false));
 					label_cell(get_trans_view_str(ST_PURCHORDER, $myrow["purch_order_no"]));
 					label_cell($myrow["item_code"], "class='stock' data-stock_id='" . $myrow['item_code'] . "'");
 					label_cell($myrow["description"]);
@@ -318,7 +318,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 					qty_cell($myrow["quantity_inv"], false, $dec);
 					if ($supp_trans->is_invoice) {
 						qty_cells(null, 'this_quantity_inv' . $n, number_format2(
-								$myrow["qty_recd"] - $myrow["quantity_inv"], $dec), null, null, $dec);
+														$myrow["qty_recd"] - $myrow["quantity_inv"], $dec), null, null, $dec);
 					}
 					else
 					{
@@ -326,16 +326,17 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 					}
 					$dec2 = 0;
 					amount_cells(null, 'ChgPrice' . $n, price_decimal_format(
-							$myrow["unit_price"], $dec2), null, null, $dec2, 'ChgPriceCalc' . $n);
+														 $myrow["unit_price"], $dec2), null, null, $dec2, 'ChgPriceCalc' . $n);
 					amount_cells(null, 'ExpPrice' . $n, price_decimal_format(
-							$myrow["unit_price"], $dec2), null, null, $dec2, 'ExpPriceCalc' . $n);
+														 $myrow["unit_price"], $dec2), null, null, $dec2, 'ExpPriceCalc' . $n);
 					small_amount_cells(null, 'ChgDiscount' . $n, percent_format(
-							$myrow['discount'] * 100), null, null, user_percent_dec());
+																	 $myrow['discount'] * 100), null, null, user_percent_dec());
 					qty_cell(price_decimal_format(($myrow["unit_price"] * ($myrow["qty_recd"] - $myrow["quantity_inv"]) * (1 - $myrow['discount'])) / $myrow["qty_recd"], $dec2), false,
-						$dec2, 'Ea' . $n);
+									 $dec2, 'Ea' . $n);
 					if ($supp_trans->is_invoice) {
 						amount_cells(null, 'ChgTotal' . $n, price_decimal_format($myrow["unit_price"] * ($myrow["qty_recd"] - $myrow["quantity_inv"]) * (1 -
-										$myrow['discount']), $dec2), null, null, $dec2, 'ChgTotalCalc' . $n);
+																																																																						 $myrow['discount']), $dec2), null, null, $dec2,
+												 'ChgTotalCalc' . $n);
 					}
 					else {
 						amount_cell(round2($myrow["unit_price"] * max($myrow['quantity_inv'], 0) * (1 - $myrow['discount']), user_price_dec()));
@@ -348,10 +349,12 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 					}
 					if ($supp_trans->is_invoice && $_SESSION["wa_current_user"]->can_access('SA_GRNDELETE')) { // Added 2008-10-18 by Joe Hunt. Special access rights needed.
 						submit_cells('void_item_id' . $n, _("Remove"), '', _("WARNING! Be careful with removal. The operation is executed immediately and cannot be undone !!!"), true);
-						submit_js_confirm('void_item_id' . $n, sprintf(_('You are about to remove all yet non-invoiced items from delivery line #%d. This operation also irreversibly changes related order line. Do you want to continue ?'), $n));
+						submit_js_confirm('void_item_id' . $n,
+															sprintf(_('You are about to remove all yet non-invoiced items from delivery line #%d. This operation also irreversibly changes related order line. Do you want to continue ?'),
+																			$n));
 					}
 					hyperlink_params_td("/purchasing/po_entry_items.php", _("Modify"), "ModifyOrderNumber=" .
-							$myrow["purch_order_no"], ' class="button"') . end_row();
+																																						 $myrow["purch_order_no"], ' class="button"') . end_row();
 
 				}
 			}
@@ -419,8 +422,8 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		start_table("$table_style width=80%");
 		if ($mode == 1) {
 			$th = array(_("Delivery"), _("Sequence #"), _("P.O."), _("Item"), _("Description"), _("Received"),
-				_("Received"), _("Invoiced"), _("Yet To Invoice"), _("Order Price"),
-				_("Expected Price"), _('Discount %'), _('Ea Price'), _("Total"), "", "", "");
+									_("Received"), _("Invoiced"), _("Yet To Invoice"), _("Order Price"),
+									_("Expected Price"), _('Discount %'), _('Ea Price'), _("Total"), "", "", "");
 			//      if ($supp_trans->is_invoice && $_SESSION["wa_current_user"]->can_access('SA_GRNDELETE')) // Added 2008-10-18 by Joe Hunt. Only admins can remove GRNs
 			//         $th[] = "";
 			if (!$supp_trans->is_invoice) {
@@ -430,7 +433,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		}
 		else {
 			$th = array(_("Delivery"), _("Item"), _("Description"), _("Quantity"), _("Price"), _("Expected Price"),
-				_("Discount %"), _("Line Value"));
+									_("Discount %"), _("Line Value"));
 		}
 		table_header($th);
 		$total_grn_value = 0;
@@ -457,7 +460,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 				amount_decimal_cell($entered_grn->exp_price);
 				percent_cell($entered_grn->discount);
 				amount_decimal_cell(round2(($entered_grn->chg_price * abs($entered_grn->this_quantity_inv) * (1 - $entered_grn->discount / 100)) / abs($entered_grn->this_quantity_inv)
-					), user_price_dec());
+														), user_price_dec());
 				amount_cell(round2($entered_grn->chg_price * abs($entered_grn->this_quantity_inv) * (1 - $entered_grn->discount / 100), user_price_dec()));
 				if ($mode == 1) {
 					if ($supp_trans->is_invoice && $_SESSION["wa_current_user"]->can_access('SA_GRNDELETE')) {
@@ -508,10 +511,10 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 			$supp_trans->tran_date = Today();
 		}
 		if (substr($supp_trans->terms, 0, 1) == "1") { /*Its a day in the following month when due */
-			$supp_trans->due_date = add_days(end_month($supp_trans->tran_date), (int) substr($supp_trans->terms, 1));
+			$supp_trans->due_date = add_days(end_month($supp_trans->tran_date), (int)substr($supp_trans->terms, 1));
 		}
 		else { /*Use the Days Before Due to add to the invoice date */
-			$supp_trans->due_date = add_days($supp_trans->tran_date, (int) substr($supp_trans->terms, 1));
+			$supp_trans->due_date = add_days($supp_trans->tran_date, (int)substr($supp_trans->terms, 1));
 		}
 	}
 //--------------------------------------------------------------------------------------------------
