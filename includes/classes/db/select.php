@@ -15,6 +15,7 @@
 		protected $orderby = array();
 		protected $groupby = array();
 		protected $union = array();
+		protected $union_or = array();
 
 		public function __construct($columns) {
 			parent::__construct();
@@ -29,19 +30,21 @@
 			return $this;
 		}
 
-		public function from($table) {
-			$this->from[] = $table;
+		public function from($tables = null) {
+			$tables = func_get_args();
+			$this->from = array_merge($this->from, $tables);
 			return $this;
 		}
 
-		function orderby($by, $asc = true) {
-			if (!$asc) $by = $by . ' DESC';
-			$this->orderby[] = $by;
+		function orderby($by = null) {
+			$by = func_get_args();
+			$this->orderby = array_merge($this->orderby, $by);
 			return $this;
 		}
 
-		function groupby($by) {
-			$this->groupby[] = $by;
+		function groupby($by = null) {
+			$by = func_get_args();
+			$this->groupby = array_merge($this->groupby, $by);
 			return $this;
 		}
 
@@ -54,8 +57,11 @@
 			$this->union[] = '(' . $this->_buildQuery() . ')';
 			$this->select = $this->from = $this->orderby = $this->groupby = array();
 			$this->limit = '';
-
 			return $this;
+		}
+
+		public function union_or($condition, $var) {
+			$this->union_or[$condition] = $var;
 		}
 
 		public function execute() {
@@ -69,9 +75,18 @@
 			$sql .= (empty($this->select)) ? '*' : implode(', ', $this->select);
 			$sql .= " FROM " . implode(', ', $this->from);
 			$sql .= parent::_buildWhere();
+			if (!empty($this->union_or)) {
+				$data = $this->data;
+				$finalsql = array();
+				foreach ($this->union_or as $k => $v) {
+				 $finalsql[] = $sql . ' AND '.$k.' '.$v;
 
-			if (!empty($this->orderby)) $sql .= ' ORDER BY ' . implode(', ', $this->orderby);
+				}
+
+			}
 			if (!empty($this->groupby)) $sql .= ' GROUP BY ' . implode(', ', $this->groupby);
+			if (!empty($this->orderby)) $sql .= ' ORDER BY ' . implode(', ', $this->orderby);
+
 			if (!empty($this->limit)) $sql .= ' LIMIT ' . $this->limit;
 			return $sql;
 		}

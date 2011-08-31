@@ -208,6 +208,7 @@
 				}
 			} else {
 				$stock_id = " s.* ";
+				$weight = '';
 			}
 			$select = ($o['select']) ? $o['select'] : ' ';
 			$sql = "SELECT  $select  $stock_id ,s.description, c.description as category, s.long_description , editable,
@@ -220,10 +221,45 @@
 			return DB::execute($terms);
 		}
 
+		static function searchOrder2($term, $id) {
+			$o = $_SESSION['options'][$id];
+			$term = explode(' ', $term);
+			$stock_id = $term[0];
+
+
+
+			$q = DB::select('s.stock_id', 's.description', 'c.description as category', 's.long_description', 's.editable')->from('stock_master s', 'stock_category c', 'item_codes i');
+			$q->open('s.stock_id LIKE ', $stock_id)->or_where('s.long_description LIKE ', '%' . $stock_id . '%');
+			if ($o['purchase']) {
+				$q->select('s.stock_id', 'p.supplier_description', 'MAX(p.price) as price')->from('purch_data p');
+				$q->or_where('p.supplier_description LIKE ', '%' . $stock_id . '%')->close_and('s.stock_id = p.stock_id');
+				if (isset($o['supplier_id']) && is_numeric($o['supplier_id'])) $q->and_where('p.supplier_id=', $o['supplier_id']);
+			} elseif ($o['sale']) {
+				$q->select('s.stock_id', 'p.price')->from('prices p');
+				$q->close_and('s.stock_id = p.stock_id');
+				if (isset($o['sales_type'])) $q->and_where('p.sales_type_id=', $o['sales_type']);
+			} else {
+				$q->select('s.*')->close();
+			}
+			foreach ($term as $t) {
+				$q->and_where('s.long_description LIKE ', '%' . $t . '%');
+			}
+			if ($o['inactive']) $q->and_where('s.inactive=0');
+			if ($o['no_sale']) $q->and_where('s.no_sale=0');
+			if (!empty($o['where'])) $q->and_where($o['where']);
+			if ($o['type'] == 'local') $q->and_where('!i.is_foreign');
+			if ($o['type'] == 'kits') $q->and_where('!i.is_foreign')->and_where('i.item_code!=i.stock_id');
+			$q->and_where('s.stock_id = i.stock_id ')->groupby('s.stock_id')->orderby('s.stock_id')->orderby('s.category_id')->orderby('s.long_description');
+			$q->limit(30);
+			$result = DB::fetch()->all();
+			return ($result);
+
+		}
+
 		static function addEditDialog($options = array()) {
 			$default = array('page' => 0);
-			$options = array_merge($default, $options);
-			extract($options);
+			$o = array_merge($default, $options);
+
 			$stockbox = new Dialog('Item Edit', 'stockbox', '');
 			$stockbox->addButtons(array('Save' => 'var item =$("#stockframe")[0].contentWindow.Items; item.save(); if (item.get().id==$("#stock_id").val()){ Adv.setFormValue("description",
 			item.get().description)} $(this).dialog("close")', 'Close' => '$(this).dialog("close");'));
@@ -231,7 +267,7 @@
 			$stockbox->setOptions(array('autoopen' => false, 'modal' => true, 'width' => '"75%"', 'resizeable' => true));
 			$stockbox->show();
 			$action = <<<JS
-		$('#stockbox').html("<iframe src='/items/quickitems.php?id="+$(this).data('stock_id')+"&page={$page}' id='stockframe' width='100%' height='600' scrolling='no' style='border:none' frameborder='0'></iframe>")
+		$('#stockbox').html("<iframe src='/items/quickitems.php?id="+$(this).data('stock_id')+"&page={$o['page']}' id='stockframe' width='100%' height='600' scrolling='no' style='border:none' frameborder='0'></iframe>")
 		.dialog('open');
 JS;
 			JS::addLiveEvent('.stock', 'click', $action, "wrapper", true);

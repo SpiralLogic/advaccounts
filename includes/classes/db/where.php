@@ -11,10 +11,10 @@
 
 		public $data = array();
 		protected $where = array();
-		private $wheredata =array();
+		private $wheredata = array();
 		protected $count = 0;
 
-		protected function _where($conditions, $type = 'AND', $uservar=null) {
+		protected function _where($conditions, $type = 'AND', $uservar = null) {
 			if (is_array($conditions)) {
 				foreach ($conditions as $condition) {
 					if (is_array($condition)) {
@@ -34,7 +34,6 @@
 			$this->where[] = (empty($this->where)) ? $conditions : $type . ' ' . $conditions;
 			return $this;
 		}
-
 		public function where($condition, $uservar = null) {
 			return $this->_where($condition, 'AND', $uservar);
 		}
@@ -61,6 +60,16 @@
 
 		public function close_or($condition, $uservar = null) {
 			return $this->_where($condition, ') OR', $uservar);
+		}
+
+		public function open($condition, $uservar = null) {
+			if (empty($this->where)) $condition='('.$condition;
+			return $this->_where($condition, ' AND ', $uservar);
+		}
+
+		public function close() {
+			array_push($this->where, array_pop($this->where) . ') ');
+			return $this;
 		}
 
 		protected function _buildWhere() {
