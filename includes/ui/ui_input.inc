@@ -582,7 +582,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 if ($check && (get_post($name) != Today()))
 		$aspect .= ' style="color:#FF0000"';
 
-	 default_focus($name);
+//	 default_focus($name);
 
 	 echo "<input id='$name' type=\"text\" name=\"$name\" $class $aspect size=\"9\" maxlength=\"12\" value=\""
 			. $_POST[$name] . "\""

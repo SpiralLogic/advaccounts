@@ -391,7 +391,7 @@
 				$this->fontSize = FOOTER_FONT_SIZE;
 				$this->TextWrap($footerCol, $footerRow - ($this->fontSize + 1), $pageNumCol - $footerCol, $this->footerText, $align = 'center', $border = 0, $fill = 0, $link = NULL, $stretch = 1);
 				$this->TextWrap($pageNumCol, $footerRow - ($this->fontSize + 1), PAGE_NUM_WIDTH, _("Page") . ' ' . $this->pageNumber . '/' . $this->getAliasNbPages(), $align = 'right', $border = 0,
-				                $fill = 0, $link = NULL, $stretch = 1);
+												$fill = 0, $link = NULL, $stretch = 1);
 				$this->fontSize = $prevFontSize;
 			}
 			//
@@ -527,8 +527,8 @@
 		 * Format a numeric string date into something nicer looking.
 		 *
 		 * @param string $date Date string to be formatted.
-		 * @param int $input_format Format of the input string.  Possible values are:<ul><li>0: user's default (default)</li></ul>
-		 * @param int $output_format Format of the output string.  Possible values are:<ul><li>0: Month (word) Day (numeric), 4-digit Year - Example: January 1, 2000 (default)</li><li>1: Month 4-digit Year - Example: January 2000</li><li>2: Month Abbreviation 4-digit Year - Example: Jan 2000</li></ul>
+		 * @param int $input_format Format of the input string.	Possible values are:<ul><li>0: user's default (default)</li></ul>
+		 * @param int $output_format Format of the output string.	Possible values are:<ul><li>0: Month (word) Day (numeric), 4-digit Year - Example: January 1, 2000 (default)</li><li>1: Month 4-digit Year - Example: January 2000</li><li>2: Month Abbreviation 4-digit Year - Example: Jan 2000</li></ul>
 		 * @access public
 		 */
 		function DatePrettyPrint($date, $input_format = 0, $output_format = 0) {
@@ -538,14 +538,14 @@
 				$month = (int)(substr($date, 5, 2));
 				$day = (int)(substr($date, 8, 2));
 				if ($output_format == 0) return (date('F j, Y', mktime(12, 0, 0, $month, $day, $year))); elseif ($output_format == 1) return (date('F Y',
-				                                                                                                                                   mktime(12, 0, 0, $month, $day,
-				                                                                                                                                          $year))); elseif ($output_format == 2) return (date('M Y',
-				                                                                                                                                                                                              mktime(12,
-				                                                                                                                                                                                                     0,
-				                                                                                                                                                                                                     0,
-				                                                                                                                                                                                                     $month,
-				                                                                                                                                                                                                     $day,
-				                                                                                                                                                                                                     $year)));
+																																																																					 mktime(12, 0, 0, $month, $day,
+																																																																									$year))); elseif ($output_format == 2) return (date('M Y',
+																																																																																																			mktime(12,
+																																																																																																						 0,
+																																																																																																						 0,
+																																																																																																						 $month,
+																																																																																																						 $day,
+																																																																																																						 $year)));
 			} else return $date;
 		}
 
@@ -690,7 +690,7 @@
 		 *		lengths of the on and off dashes. For example: "2" represents 2 on, 2 off, 2 on, 2 off, ...;
 		 *		"2,1" is 2 on, 1 off, 2 on, 1 off, ...
 		 * phase (integer) - a modifier on the dash pattern which is used to shift the point at which the pattern starts.
-		 * color (array) - draw color.  Format: array(GREY), or array(R,G,B) or array(C,M,Y,K).
+		 * color (array) - draw color.	Format: array(GREY), or array(R,G,B) or array(C,M,Y,K).
 		 */
 		function SetLineStyle($style) {
 			parent::SetLineStyle($style);
@@ -718,9 +718,9 @@
 		 * Underlines the contents of a cell, but not the cell padding area.
 		 * Primarily useful for the last line before a "totals" line.
 		 * @param int $c Column number to underline.
-		 * @param int $r Print the underline(s) this number of rows below the current position.  Can be negative in order to go up.
-		 * @param int $type Type of underlining to draw.  Possible values are:<ul><li>1: single underline (default)</li><li>2: double underline</li></ul>
-		 * @param int $linewidth Thickness of the line to draw.  Default value of zero will use the current line width defined for this document.
+		 * @param int $r Print the underline(s) this number of rows below the current position.	Can be negative in order to go up.
+		 * @param int $type Type of underlining to draw.	Possible values are:<ul><li>1: single underline (default)</li><li>2: double underline</li></ul>
+		 * @param int $linewidth Thickness of the line to draw.	Default value of zero will use the current line width defined for this document.
 		 * @param array $style Line style. Array like for {@link SetLineStyle SetLineStyle}. Default value: default line style (empty array).
 		 * @access public
 		 * @see SetLineWidth(), SetDrawColor(), SetLineStyle()
@@ -745,7 +745,7 @@
 			// the first underline (depends on current line thickness (aka "line width")
 			if ($type == 2) {
 				parent::line($this->cols[$c] + $this->cMargin, $this->row - $r - $y_adj - ($this->GetLineWidth() + 2), $this->cols[$c + 1] - $this->cMargin,
-				             $this->row - $r - $y_adj - ($this->GetLineWidth() + 2), $style);
+										 $this->row - $r - $y_adj - ($this->GetLineWidth() + 2), $style);
 			}
 			// If line width was specified, reset it back to the original setting
 			if ($linewidth != 0) {
@@ -826,7 +826,7 @@
 					$ret = $mail->send();
 					if (!$ret) display_error('Error: ' . $emailAddress . ': ' . $mail->toerror); else
 						display_notification($this->title . " " . $myrow['reference'] . " " . _("has been sent by email to: ") . str_replace(",", "",
-						                                                                                                                     $myrow['DebtorName']) . "  &lt;" . $emailAddress . "&gt;");
+																																																																 $myrow['DebtorName']) . "  &lt;" . $emailAddress . "&gt;");
 					unlink($fname);
 				} else {
 					$printer = get_report_printer(user_print_profile(), $_POST['REP_ID']);

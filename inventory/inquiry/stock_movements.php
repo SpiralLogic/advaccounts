@@ -43,7 +43,7 @@ if (!isset($_POST['stock_id']))
 
 start_table("class='tablestyle_noborder'");
 
-stock_items_list_cells(_("Item:"), 'stock_id', $_POST['stock_id']);
+stock_items_list_cells(_("Item:"), 'stock_id', $_POST['stock_id'],false,false,false,false,true);
 
 locations_list_cells(_("From Location:"), 'StockLocation', null);
 
