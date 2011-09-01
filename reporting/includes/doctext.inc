@@ -98,7 +98,7 @@
 
 			}
 			if ($doctype == ST_PURCHORDER) $this->headers = array(_("Item Code"), _("Item Description"), '', _("Quantity"), _("Unit"), _("Price"), _("Total")); elseif ($doctype == ST_WORKORDER) $this->headers = array(_("Item Code"), _("Item Description"), _("From Location"), _("Work Centre"), _("Unit Quantity"), _("Total Quantity"), _("Units Issued")); elseif ($doctype == ST_SUPPAYMENT || $doctype == ST_CUSTPAYMENT || $doctype == ST_CUSTREFUND) $this->headers = array(_("Trans Type"), _("#"), _("Date"), _("Due Date"), _("Total Amount"), _("Left to Allocate"), _("This Allocation")); elseif ($doctype == ST_CUSTDELIVERY) $this->headers = array(_("Item Code"), _("Item Description"), _("Qty"),); else
-				$this->headers = array(_("Item Code"), _("Item Description"), _("Qty"), _("Unit"), _("Price"), _("Disc.%"), _("Tax"), _("Total"));
+				$this->headers = array(_("Item Code"), _("Item Description"), _("Qty"), _("Unit"), _("Price"), _("Disc.%"), _("Total"),_("Tax"));
 		} else if ($doctype == ST_STATEMENT) {
 			$this->title = _("STATEMENT");
 			$this->headers = array(_("Trans Type"), _("#"), _("PO#"), _("Date"), _("DueDate"), _("Charges"), _("Credits"), _("Allocated"), _("Outstanding"));

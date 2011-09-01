@@ -55,7 +55,7 @@
 		create_cart(ST_SALESINVOICE, $_GET['NewInvoice']);
 	}
 	elseif (isset($_GET['ModifyOrderNumber']) && is_numeric($_GET['ModifyOrderNumber'])) {
-		$help_context = 'Modifying Sales Order';
+	$help_context = 'Modifying Sales Order';
 		$_SESSION['page_title'] = sprintf(_("Modifying Sales Order # %d"), $_GET['ModifyOrderNumber']);
 		create_cart(ST_SALESORDER, $_GET['ModifyOrderNumber']);
 	}
@@ -120,16 +120,19 @@
 	elseif (isset($_GET['AddedDI'])) {
 		page_complete($order_no, ST_SALESINVOICE, "Invoice");
 	}
-	elseif (isset($_GET['RemovedID'])) {		submenu_view(_("&View This Invoice"), ST_SALESINVOICE, $_GET['AddedDI']);
+	elseif (isset($_GET['RemovedID'])) {
+		submenu_view(_("&View This Invoice"), ST_SALESINVOICE, $_GET['AddedDI']);
 
 		if ($_GET['Type'] == ST_SALESQUOTE) {
 			display_notification(_("This sales quotation has been cancelled as requested."), 1);
-			submenu_option(_("Enter a New Sales Quotation"), "/sales/sales_order_entry.php?NewQuotation=Yes");			submenu_option(_("Select A Different &Quotation to edit"), "/sales/inquiry/sales_orders_view.php?type=" . ST_SALESQUOTE);
+			submenu_option(_("Enter a New Sales Quotation"), "/sales/sales_order_entry.php?NewQuotation=Yes");
+			submenu_option(_("Select A Different &Quotation to edit"), "/sales/inquiry/sales_orders_view.php?type=" . ST_SALESQUOTE);
 
 		}
 		else {
 			display_notification(_("This sales order has been cancelled as requested."), 1);
-			submenu_option(_("Enter a New Sales Order"), "/sales/sales_order_entry.php?NewOrder=Yes");			submenu_option(_("Select A Different Order to edit"), "/sales/inquiry/sales_orders_view.php?type=" . ST_SALESORDER);
+			submenu_option(_("Enter a New Sales Order"), "/sales/sales_order_entry.php?NewOrder=Yes");
+			submenu_option(_("Select A Different Order to edit"), "/sales/inquiry/sales_orders_view.php?type=" . ST_SALESORDER);
 
 		}
 		display_footer_exit();
@@ -399,7 +402,7 @@
 		new_doc_date($_SESSION['Items']->document_date);
 		$_SESSION['wa_global_customer_id'] = $_SESSION['Items']->customer_id;
 		processing_end();
-		$_SESSION['Jobsboard'] =new Cart($trans_type,$_SESSION['order_no']);
+		$_SESSION['Jobsboard'] = new Cart($trans_type, $_SESSION['order_no']);
 
 		if ($modified) {
 			if ($trans_type == ST_SALESQUOTE) {
@@ -587,6 +590,17 @@
 	}
 	if (isset($_POST['UpdateItem'])) {
 		handle_update_item();
+	}
+	if (isset($_POST['discountall'])) {
+		if (!is_numeric($_POST['_discountall'])) {
+			display_error(_("Discount must be a number"));
+		} elseif($_POST['_discountall']<0 || $_POST['_discountall']>100){
+						display_error(_("Discount percentage must be between 0-100"));
+		} else {
+			$_SESSION['Items']->discount_all($_POST['_discountall'] / 100);
+		}
+
+		$Ajax->activate('_page_body');
 	}
 	if (isset($_POST['AddItem'])) {
 		handle_new_item();

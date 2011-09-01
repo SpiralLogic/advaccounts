@@ -207,16 +207,17 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
   date_cells("", "deposit_date", _('Date of funds to deposit'), get_post('deposit_date') == '', 0, 0, 0, null, true);
   amount_cell($_POST['deposited'], false, '', "deposited");
   hidden("to_deposit", $_POST['to_deposit'], true);
+
   end_row();
-  end_table();
+  end_table(); submit_center('Deposit', _("Deposit"), true, '', false);
   div_end();
   echo "<hr>";
-  $date = $_POST['deposit_date'];
+  $date = add_days($_POST['deposit_date'],10);
   $sql = "SELECT	type, trans_no, ref, trans_date,
 				amount,	person_id, person_type_id, reconciled, id
 		FROM bank_trans
 		WHERE undeposited=1 AND trans_date <= '" . date2sql($date) . "' AND reconciled IS NULL
-		ORDER BY trans_date,bank_trans.id";
+		ORDER BY trans_date DESC,bank_trans.id ";
   $cols = array(_("Type") => array('fun' => 'systype_name', 'ord' => ''), _("#") => array('fun' => 'trans_view', 'ord' => ''), _("Reference"), _("Date") => 'date',
 					 _("Debit") => array('align' => 'right', 'fun' => 'fmt_debit'), _("Credit") => array('align' => 'right', 'insert' => true, 'fun' => 'fmt_credit'),
 					 _("Person/Item") => array('fun' => 'fmt_person'), array('insert' => true, 'fun' => 'gl_view'), "X" => array('insert' => true, 'fun' => 'dep_checkbox'));
@@ -228,6 +229,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
   end_form();
   $js= <<<JS
 Adv.Events.onFocus('#'+\$(this).attr('id'),[0,$(this).position().top]);
+
 JS;
 JS::addLiveEvent(':checkbox','change',$js,'wrapper',true);
 

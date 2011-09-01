@@ -363,7 +363,12 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		$this->line_items[$line_no]->price = $price;
 		$this->line_items[$line_no]->discount_percent = $disc;
 	 }
-
+ function discount_all($discount) {
+	foreach($this->line_items as $line) {
+		$line->discount_percent = $discount;
+	}
+	 
+	 }
 	 function update_add_cart_item_qty($line_no, $qty) {
 		$this->line_items[$line_no]->quantity += $qty;
 	 }

@@ -334,7 +334,7 @@ div.banner a + a { border-top: 2px groove #999 }
 }
 
 #_tabs2 .menu_container {
-	margin:  0 ;
+	margin:  0;
 	display: inline-block;
 }
 
@@ -493,7 +493,8 @@ table.tablestyle td {
 	border-collapse:     collapse;
 	border:              1px solid #e1e1e1;
 	border-top-color:    #dcdcdc;
-	border-bottom-color: #dcdcdc;	padding-left: 5px;
+	border-bottom-color: #dcdcdc;
+	padding-left:        5px;
 
 }
 
@@ -530,18 +531,22 @@ table.tablestyle_inner td {
 }
 
 .td.tableheader2, .tableheader2 td, .tableinfo td:first-child, td + input, .grid td:first-child, .tablestyle td:first-child {
-	text-indent:   10px;
+	text-indent:   5px;
 	border:        1px solid #cccccc;
 	color:         black;
 	padding-right: 7px;
 }
 
+
+
 .tableinfo input, .tableinfo textarea, .tableinfo select {
 	min-width: 300px;
 }
 
-.tableinfo input.amount {
-	min-width: 100px;
+input.amount, td.amount {
+	max-width:   8.5em;
+	white-space: nowrap;
+	text-align:  right;
 }
 
 .oddrow, .grid tr:nth-child(odd) {
@@ -694,7 +699,7 @@ button.navibutton {
 	filter:           progid:DXImageTransform.Microsoft.gradient(enabled = 'true', startColorstr = #EDEDED, endColorstr = #C4C4C4, GradientType = 1);
 	border:           1px solid #7096AB;
 	box-shadow:       none;
-}
+} 
 
 .navibar span {
 	font-family:      Tahoma, Arial, sans-serif;
@@ -727,11 +732,14 @@ button.navibutton {
 
 input.amount, input.freight {
 	padding-right: 0px;
-/ / border-right : none;
+	border-right:  none;
 }
+
 .desc {
-  white-space: pre;
+	white-space: pre-wrap;
+
 }
+
 input.hasDatepicker {
 	max-width: 70px;
 	min-width: inherit;
@@ -961,12 +969,15 @@ td.tableheader3 {
 
 	margin: 0 auto;
 }
+
 .top20 {
-	margin-top:20px;
+	margin-top: 20px;
 }
+
 .top40 {
-	margin-top:40px;
+	margin-top: 40px;
 }
+
 .aligncenter {
 	text-align: center;
 }
