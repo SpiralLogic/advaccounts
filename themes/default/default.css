@@ -699,7 +699,7 @@ button.navibutton {
 	filter:           progid:DXImageTransform.Microsoft.gradient(enabled = 'true', startColorstr = #EDEDED, endColorstr = #C4C4C4, GradientType = 1);
 	border:           1px solid #7096AB;
 	box-shadow:       none;
-}
+} 
 
 .navibar span {
 	font-family:      Tahoma, Arial, sans-serif;
@@ -736,7 +736,8 @@ input.amount, input.freight {
 }
 
 .desc {
-	white-space: pre;
+	white-space: pre-wrap;
+
 }
 
 input.hasDatepicker {
