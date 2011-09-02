@@ -211,12 +211,12 @@
 	$this->TextWrapLines($ccol + 60, $icol - $ccol, $addr);
 	$this->row = $temp;
 	unset($name);
-	if ($doctype != ST_SUPPAYMENT && $doctype != ST_PURCHORDER && isset($sales_order['deliver_to'])) {
+	if ($doctype != ST_SUPPAYMENT  && $doctype != ST_STATEMENT&& $doctype != ST_PURCHORDER && isset($sales_order['deliver_to'])) {
 		$name = $sales_order['deliver_to'];
 	} elseif (isset($customer->name)) {
 		$name = $customer->name;
 	}
-	if ($doctype != ST_SUPPAYMENT && isset($sales_order['delivery_address'])) {
+	if ($doctype != ST_SUPPAYMENT && $doctype != ST_STATEMENT && isset($sales_order['delivery_address'])) {
 		$addr = $sales_order['delivery_address'];
 	} elseif (($doctype == ST_STATEMENT) && (!empty($currentBranch->br_address))) {
 		$addr = $currentBranch->getAddress();

@@ -289,7 +289,7 @@
 
 		protected function _getContacts() {
 			DB::select()->from('contacts')->where('parent_id=', $this->debtor_no);
-			$contacts = DB::fetch()->asClass('Contact')->all();
+			$contacts = DB::fetch()->asClassLate('Contact');
 			if (count($contacts)) {
 				foreach ($contacts as $contact) {
 					$this->contacts[$contact->id] = $contact;
