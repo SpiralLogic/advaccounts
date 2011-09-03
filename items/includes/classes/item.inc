@@ -28,7 +28,6 @@
 
 		protected function _read($id = 0) {
 			$sql = "SELECT * FROM stock_master WHERE stock_id = " . db_escape($id);
-
 			$result = db_query($sql, 'Could not retrieve stock information');
 			if (db_num_rows($result) == 1) {
 				$myrow = db_fetch_assoc($result);
@@ -118,7 +117,7 @@
 			$id = db_escape($this->id);
 			$today = date2sql(Today());
 			$sql = "SELECT l.loc_code, l.location_name, i.stock_id as id, r.reorder_level, o.demand, (qty-o.demand) as available, p.onorder, qty FROM locations l
-			LEFT JOIN (SELECT stock_id, loc_code, SUM(qty) as qty FROM stock_moves WHERE stock_id=$id AND tran_date <= $today GROUP BY loc_code) i ON l.loc_code = i.loc_code
+			LEFT JOIN (SELECT stock_id, loc_code, SUM(qty) as qty FROM stock_moves WHERE stock_id=$id AND tran_date <= now() GROUP BY loc_code, stock_id) i ON l.loc_code = i.loc_code
 			LEFT JOIN loc_stock r ON r.loc_code = l.loc_code AND r.stock_id = $id
 			LEFT JOIN (SELECT SUM(sales_order_details.quantity - sales_order_details.qty_sent) AS demand , sales_orders.from_stk_loc AS loc_code FROM sales_order_details, sales_orders
 				WHERE sales_order_details.order_no= sales_orders.order_no AND sales_orders.trans_type=30 AND sales_orders.trans_type=sales_order_details.trans_type

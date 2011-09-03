@@ -608,9 +608,10 @@ JS;
 	//
 	// Select item via foreign code.
 	//
-	function sales_items_list($name, $selected_id = null, $all_option = false, $submit_on_change = false, $type = '', $opts = array()) {
+	function sales_items_list($name, $selected_id = null, $all_option = false, $submit_on_change = false, $type = '', $opts = array(), $legacy=false) {
 		global $all_items;
 		// all sales codes
+		if (!$legacy)
 		return Item::addSearchBox($name, array_merge(array('selected' => $selected_id, 'type' => $type, 'cell' => true, 'sale' => true), $opts));
 		$where = ($type == 'local') ? " AND !i.is_foreign" : ' ';
 		if ($type == 'kits') {
@@ -691,8 +692,8 @@ JS;
 	}
 
 	//------------------------------------------------------------------------------------
-	function stock_purchasable_items_list($name, $selected_id = null, $all_option = false, $submit_on_change = false, $all = false, $editkey = false) {
-		return stock_items_list($name, $selected_id, $all_option, $submit_on_change, array('where' => "mb_flag!= 'M'", 'show_inactive' => $all, 'editable' => false));
+	function stock_purchasable_items_list($name, $selected_id = null, $all_option = false, $submit_on_change = false, $all = false, $editkey = false, $legacy=false) {
+		return stock_items_list($name, $selected_id, $all_option, $submit_on_change, array('where' => "mb_flag!= 'M'", 'show_inactive' => $all, 'editable' => false), $legacy=false);
 	}
 
 	function stock_purchasable_items_list_cells($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false, $editkey = false) {
