@@ -28,7 +28,7 @@
 	$debug = 0;
 	$show_sql = 0;
 	$go_debug = 0;
-	$pdf_debug = 1;
+	$pdf_debug = 0;
 	$app_title = "Advanced Accounting";
 	$version = "2.2.11";
 
