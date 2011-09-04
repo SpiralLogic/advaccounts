@@ -131,6 +131,14 @@
 								data: {id: '$id',term: request.term},
 								success: function( data,status,xhr ) {
 								if ( xhr === Adv.lastXhr ) {
+								if (!Adv.o.stock_id.data('active')) {
+								var value = data[0];
+								value.description = value.long_description;
+								Adv.Events.onFocus("#stock_id",[0,Adv.o.stock_id.position().top]);
+								$.each(value,function(k,v) {Adv.setFormValue(k,v);});
+									$desc_js
+								return false;
+								}
 										response($.map( data, function( item ) {
 												return {
 														label: item.stock_id+": "+item.description,
@@ -152,7 +160,7 @@
 						focus: function(){return false;},
 						open: function() { $('.ui-autocomplete').unbind('mouseover');}
 						}
-				);
+				).blur(function() { $(this).data('active',false)}).focus(function() { $(this).data('active',true)});
 	return function () {return \$$id.catcomplete('destroy')};
 JS;
 			JS::addLive($js);
