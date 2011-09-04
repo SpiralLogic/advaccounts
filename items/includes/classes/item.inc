@@ -216,7 +216,8 @@
 						AND s.category_id = c.category_id $where2 $sales_type GROUP BY s.stock_id
 						ORDER BY weight, s.category_id, s.long_description LIMIT 30";
 			DB::prepare($sql);
-
+FB::info($sql);
+			FB::info($terms);
 			return DB::execute($terms);
 		}
 
@@ -224,19 +225,23 @@
 			$o = $_SESSION['options'][$id];
 			$term = explode(' ', $term);
 			$stock_id = $term[0];
+			$q = DB::select('stock_id', 'description','long_description', 'editable')->from('stock_master');
+			$q->where('stock_id LIKE ', $stock_id);
+			$q->union();
+			$q->select('stock_id', 'description','long_description', 'editable')->from('stock_master');
+			 $q->where('long_description LIKE ', '%' . $stock_id . '%');
+			$q->union();
 
-
-
-			$q = DB::select('s.stock_id', 's.description', 'c.description as category', 's.long_description', 's.editable')->from('stock_master s', 'stock_category c', 'item_codes i');
-			$q->open('s.stock_id LIKE ', $stock_id)->or_where('s.long_description LIKE ', '%' . $stock_id . '%');
+			$q->select('c.description as category')->from('stock_category c', 'item_codes i');
 			if ($o['purchase']) {
-				$q->select('s.stock_id', 'p.supplier_description', 'MAX(p.price) as price')->from('purch_data p');
-				$q->or_where('p.supplier_description LIKE ', '%' . $stock_id . '%')->close_and('s.stock_id = p.stock_id');
-				if (isset($o['supplier_id']) && is_numeric($o['supplier_id'])) $q->and_where('p.supplier_id=', $o['supplier_id']);
-			} elseif ($o['sale']) {
-				$q->select('s.stock_id', 'p.price')->from('prices p');
+				$q->select('MAX(p.price) as price')->from('purch_data p'); //'p.supplier_description',
+				//$q->or_where('p.supplier_description LIKE ', '%' . $stock_id . '%')
 				$q->close_and('s.stock_id = p.stock_id');
-				if (isset($o['sales_type'])) $q->and_where('p.sales_type_id=', $o['sales_type']);
+				if (is_numeric($o['supplier_id'])) $q->and_where('p.supplier_id=', $o['supplier_id']);
+			} elseif ($o['sale']) {
+				$q->select('p.price')->from('prices p');
+				$q->close_and('s.stock_id = p.stock_id');
+				$q->and_where('p.sales_type_id=', $o['sales_type']);
 			} else {
 				$q->select('s.*')->close();
 			}
@@ -248,11 +253,11 @@
 			if (!empty($o['where'])) $q->and_where($o['where']);
 			if ($o['type'] == 'local') $q->and_where('!i.is_foreign');
 			if ($o['type'] == 'kits') $q->and_where('!i.is_foreign')->and_where('i.item_code!=i.stock_id');
-			$q->and_where('s.stock_id = i.stock_id ')->groupby('s.stock_id')->orderby('s.stock_id')->orderby('s.category_id')->orderby('s.long_description');
+			$q->and_where('s.stock_id = i.stock_id ');
+			$q->groupby('s.stock_id')->orderby('s.stock_id')->orderby('s.category_id')->orderby('s.long_description');
 			$q->limit(30);
 			$result = DB::fetch()->all();
 			return ($result);
-
 		}
 
 		static function addEditDialog($options = array()) {

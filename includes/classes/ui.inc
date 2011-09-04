@@ -80,6 +80,7 @@
 						 'selected' => '',
 						 'cell' => false,
 						 'inactive' => false,
+				 		 'supplier_id'=>false,
 						 'purchase' => false,
 						 'sale' => false,
 						 'js' => '',

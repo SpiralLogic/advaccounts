@@ -1,2 +1,23 @@
 <?php
  $page_security = 'SA_ITEM';
+	include('includes/session.inc');
+	echo '<pre>';
+	$stock_id = 'test';
+	$o['sales_type'] = '1';
+	$q = DB::select('stock_id', 'description', 'category_id', 'long_description', 'editable')->from('stock_master');
+	$q->where('stock_id LIKE ', $stock_id);
+	$q->union();
+	$q->select('stock_id', 'description', 'category_id', 'long_description', 'editable')->from('stock_master');
+	$q->where('long_description LIKE ', '%' . $stock_id . '%');
+	$q->union();
+	$q->select('c.description as category')->from('stock_category c', 'item_codes i');
+	$q->select('p.price')->from('prices p');
+	$q->and_where('s.stock_id = p.stock_id');
+	$q->and_where('c.category_id = s.category_id');
+	$q->and_where('p.sales_type_id=', $o['sales_type']);
+	$q->orderby('s.stock_id')->orderby('s.category_id');
+	$q->limit(30);
+	$q->exec();
+	var_dump($q);
+	$result = $q->fetch()->all();
+	var_dump($result);

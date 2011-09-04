@@ -75,7 +75,8 @@
 		protected function _buildWhere() {
 			$sql = '';
 			if (!empty($this->where)) $sql .= ' WHERE ' . implode(' ', $this->where);
-			$this->data = $this->data + $this->wheredata;
+			$this->data += $this->wheredata;
+			$this->where = $this->wheredata = array();
 			return $sql;
 		}
 	}
