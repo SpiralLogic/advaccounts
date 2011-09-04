@@ -35,7 +35,7 @@ public static function quote($value, $db = null) {
 		}
 
 		public static function select() {
-			$columns = func_get_args();
+			$columns = func_get_args(); 
 			return new Select($columns);
 		}
 

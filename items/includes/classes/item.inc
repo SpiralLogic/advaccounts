@@ -28,7 +28,6 @@
 
 		protected function _read($id = 0) {
 			$sql = "SELECT * FROM stock_master WHERE stock_id = " . db_escape($id);
-
 			$result = db_query($sql, 'Could not retrieve stock information');
 			if (db_num_rows($result) == 1) {
 				$myrow = db_fetch_assoc($result);
@@ -118,7 +117,7 @@
 			$id = db_escape($this->id);
 			$today = date2sql(Today());
 			$sql = "SELECT l.loc_code, l.location_name, i.stock_id as id, r.reorder_level, o.demand, (qty-o.demand) as available, p.onorder, qty FROM locations l
-			LEFT JOIN (SELECT stock_id, loc_code, SUM(qty) as qty FROM stock_moves WHERE stock_id=$id AND tran_date <= $today GROUP BY loc_code) i ON l.loc_code = i.loc_code
+			LEFT JOIN (SELECT stock_id, loc_code, SUM(qty) as qty FROM stock_moves WHERE stock_id=$id AND tran_date <= now() GROUP BY loc_code, stock_id) i ON l.loc_code = i.loc_code
 			LEFT JOIN loc_stock r ON r.loc_code = l.loc_code AND r.stock_id = $id
 			LEFT JOIN (SELECT SUM(sales_order_details.quantity - sales_order_details.qty_sent) AS demand , sales_orders.from_stk_loc AS loc_code FROM sales_order_details, sales_orders
 				WHERE sales_order_details.order_no= sales_orders.order_no AND sales_orders.trans_type=30 AND sales_orders.trans_type=sales_order_details.trans_type
@@ -208,6 +207,7 @@
 				}
 			} else {
 				$stock_id = " s.* ";
+				$weight = '';
 			}
 			$select = ($o['select']) ? $o['select'] : ' ';
 			$sql = "SELECT  $select  $stock_id ,s.description, c.description as category, s.long_description , editable,
@@ -220,10 +220,45 @@
 			return DB::execute($terms);
 		}
 
+		static function searchOrder2($term, $id) {
+			$o = $_SESSION['options'][$id];
+			$term = explode(' ', $term);
+			$stock_id = $term[0];
+
+
+
+			$q = DB::select('s.stock_id', 's.description', 'c.description as category', 's.long_description', 's.editable')->from('stock_master s', 'stock_category c', 'item_codes i');
+			$q->open('s.stock_id LIKE ', $stock_id)->or_where('s.long_description LIKE ', '%' . $stock_id . '%');
+			if ($o['purchase']) {
+				$q->select('s.stock_id', 'p.supplier_description', 'MAX(p.price) as price')->from('purch_data p');
+				$q->or_where('p.supplier_description LIKE ', '%' . $stock_id . '%')->close_and('s.stock_id = p.stock_id');
+				if (isset($o['supplier_id']) && is_numeric($o['supplier_id'])) $q->and_where('p.supplier_id=', $o['supplier_id']);
+			} elseif ($o['sale']) {
+				$q->select('s.stock_id', 'p.price')->from('prices p');
+				$q->close_and('s.stock_id = p.stock_id');
+				if (isset($o['sales_type'])) $q->and_where('p.sales_type_id=', $o['sales_type']);
+			} else {
+				$q->select('s.*')->close();
+			}
+			foreach ($term as $t) {
+				$q->and_where('s.long_description LIKE ', '%' . $t . '%');
+			}
+			if ($o['inactive']) $q->and_where('s.inactive=0');
+			if ($o['no_sale']) $q->and_where('s.no_sale=0');
+			if (!empty($o['where'])) $q->and_where($o['where']);
+			if ($o['type'] == 'local') $q->and_where('!i.is_foreign');
+			if ($o['type'] == 'kits') $q->and_where('!i.is_foreign')->and_where('i.item_code!=i.stock_id');
+			$q->and_where('s.stock_id = i.stock_id ')->groupby('s.stock_id')->orderby('s.stock_id')->orderby('s.category_id')->orderby('s.long_description');
+			$q->limit(30);
+			$result = DB::fetch()->all();
+			return ($result);
+
+		}
+
 		static function addEditDialog($options = array()) {
 			$default = array('page' => 0);
-			$options = array_merge($default, $options);
-			extract($options);
+			$o = array_merge($default, $options);
+
 			$stockbox = new Dialog('Item Edit', 'stockbox', '');
 			$stockbox->addButtons(array('Save' => 'var item =$("#stockframe")[0].contentWindow.Items; item.save(); if (item.get().id==$("#stock_id").val()){ Adv.setFormValue("description",
 			item.get().description)} $(this).dialog("close")', 'Close' => '$(this).dialog("close");'));
@@ -231,7 +266,7 @@
 			$stockbox->setOptions(array('autoopen' => false, 'modal' => true, 'width' => '"75%"', 'resizeable' => true));
 			$stockbox->show();
 			$action = <<<JS
-		$('#stockbox').html("<iframe src='/items/quickitems.php?id="+$(this).data('stock_id')+"&page={$page}' id='stockframe' width='100%' height='600' scrolling='no' style='border:none' frameborder='0'></iframe>")
+		$('#stockbox').html("<iframe src='/items/quickitems.php?id="+$(this).data('stock_id')+"&page={$o['page']}' id='stockframe' width='100%' height='600' scrolling='no' style='border:none' frameborder='0'></iframe>")
 		.dialog('open');
 JS;
 			JS::addLiveEvent('.stock', 'click', $action, "wrapper", true);

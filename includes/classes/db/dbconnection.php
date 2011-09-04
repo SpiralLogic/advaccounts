@@ -35,7 +35,7 @@
 			$this->pass = $config['pass'];
 			$this->host = $config['host'];
 			$this->port = $config['port'];
-			$this->debug = $config['debug'];
+			$this->debug = false;
 			$this->_connect();
 			static::$instances[$name] = $this;
 		}
@@ -51,7 +51,9 @@
 		public function exec($sql, $type, $data) {
 			try {
 				$prepared = $this->prepare($sql);
-
+				if ($this->debug) {
+					(class_exists('FB')) ? FB::info($data) : var_dump($data);
+				}
 				switch ($type) {
 					case DB::SELECT:
 						return new Result($prepared, $data);
@@ -83,7 +85,7 @@
 			return $this;
 		}
 
-		public function query($sql,$fetchas = PDO::FETCH_OBJ) {
+		public function query($sql, $fetchas = PDO::FETCH_OBJ) {
 			try {
 				$query = $this->conn->query($sql);
 				if ($fetchas == false) return $query;
@@ -97,9 +99,11 @@
 			}
 			return $results;
 		}
-public  function quote($value) {
+
+		public function quote($value) {
 			return $this->conn->quote($value);
 		}
+
 		protected function _connect() {
 			try {
 				$this->conn = new PDO('mysql:host=' . $this->host . ';dbname=' . $this->name, $this->user, $this->pass);

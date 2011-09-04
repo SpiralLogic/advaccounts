@@ -6,7 +6,7 @@
 	class Contact extends DB_abstract {
 
 		public $id = 0;
-		public $parent_id;
+		public $parent_id=0;
 		public $name = "New Contact";
 		public $phone1 = '';
 		public $phone2 = '';
