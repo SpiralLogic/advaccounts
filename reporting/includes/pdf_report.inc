@@ -537,15 +537,16 @@
 				$year = (int)(substr($date, 0, 4));
 				$month = (int)(substr($date, 5, 2));
 				$day = (int)(substr($date, 8, 2));
-				if ($output_format == 0) return (date('F j, Y', mktime(12, 0, 0, $month, $day, $year))); elseif ($output_format == 1) return (date('F Y',
-																																																																					 mktime(12, 0, 0, $month, $day,
-																																																																									$year))); elseif ($output_format == 2) return (date('M Y',
-																																																																																																			mktime(12,
-																																																																																																						 0,
-																																																																																																						 0,
-																																																																																																						 $month,
-																																																																																																						 $day,
-																																																																																																						 $year)));
+				if ($output_format == 0) {
+					return (date('F j, Y', mktime(12, 0, 0, $month, $day, $year)));
+				} elseif ($output_format == 1) {
+					return (date('F Y',
+											 mktime(12, 0, 0, $month, $day,
+															$year)));
+				} elseif ($output_format == 2) {
+					return (date('M Y', mktime(12, 0, 0, $month, $day, $year)));
+				}
+
 			} else return $date;
 		}
 
