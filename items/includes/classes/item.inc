@@ -163,17 +163,17 @@
 			$o = $_SESSION['options'][$id];
 
 			$term = explode(' ', $term);
-			$stock_id = $term[0];
-			$terms = array(trim($term[0]) . '%');
-			$terms[] = trim($term[0]) . '%';
-			$terms = array($stock_id, $terms[0], $terms[1], $terms[0], $terms[1], '%' . $terms[0], '%' . array_pop($term) . '%');
-			$termswhere = ' s.stock_id LIKE ? OR s.long_description LIKE ? ';
+			$stock_id = trim(array_shift($term));
+			$terms =array($stock_id, '%' . $stock_id . '%');
+			$terms = array($stock_id,$stock_id.'%',  $terms[1], $terms[1], $terms[1]);
+			$termswhere = ' OR s.long_description LIKE ? ';
+			$where='';
 			foreach ($term as $t) {
-				$termswhere .= ' AND s.long_description LIKE ? ';
+				$where .= ' AND s.long_description LIKE ? ';
 				$terms[] = '%' . trim($t) . '%';
 			}
 
-			$where = ($o['inactive'] ? '' : ' AND s.inactive = 0 ') . ($o['no_sale'] ? '' : ' AND s.no_sale =0 ');
+			$where .= ($o['inactive'] ? '' : ' AND s.inactive = 0 ') . ($o['no_sale'] ? '' : ' AND s.no_sale =0 ');
 			$where2 = (!empty($o['where']) ? ' AND ' . $o['where'] : ' ');
 			if ($o['type'] == 'local') {
 				$where2 .= " AND !i.is_foreign ";
@@ -185,12 +185,11 @@
 			$sales_type = $prices = '';
 
 			if ($o['purchase']) {
-				$terms[] = trim($terms[0]);
-				array_unshift($terms, $term[0]);
-				$weight = 'IF(s.stock_id LIKE ?, 0,20) + IF(s.stock_id LIKE ?, 0,20) + IF(p.supplier_description LIKE ?, 0,15) + IF(s.stock_id LIKE ?,0,5) as weight';
+				array_unshift($terms, $stock_id);
+				$weight = 'IF(s.stock_id LIKE ?, 0,20) + IF(p.supplier_description LIKE ?, 0,15) + IF(s.stock_id LIKE ?,0,5) as weight';
 				$termswhere .= ' OR p.supplier_description LIKE ? ';
-				if (isset($o['supplier_id']) && is_numeric($o['supplier_id'])) {
-					$terms[] = $o['supplier_id'];
+				if (isset($_SESSION['wa_global_supplier_id']) && is_numeric($_SESSION['wa_global_supplier_id'])) {
+					$terms[] = $_SESSION['wa_global_supplier_id'];
 					$where2 .= " AND p.supplier_id = ? ";
 				}
 				$stock_id = ' s.stock_id, p.supplier_description, MAX(p.price) as price ';
@@ -198,7 +197,7 @@
 				$prices = ", purch_data p ";
 			}
 			elseif ($o['sale']) {
-				$weight = 'IF(s.stock_id LIKE ?, 0,20) + IF(s.stock_id LIKE ?, 0,20) + IF(s.stock_id LIKE ?,0,5) as weight';
+				$weight = 'IF(s.stock_id LIKE ?, 0,20) + IF(s.stock_id LIKE ?,0,5)  + IF(s.stock_id LIKE ?,0,5) as weight';
 				$stock_id = " s.stock_id, p.price ";
 				$prices = ", prices p";
 				$where .= " AND s.stock_id = p.stock_id ";
@@ -212,11 +211,10 @@
 			$select = ($o['select']) ? $o['select'] : ' ';
 			$sql = "SELECT  $select  $stock_id ,s.description, c.description as category, s.long_description , editable,
 						$weight FROM stock_master s, stock_category c, item_codes i $prices
-						WHERE (s.stock_id LIKE ? OR s.stock_id LIKE ? OR $termswhere)  $where
+						WHERE (s.stock_id LIKE ? $termswhere)  $where
 						AND s.category_id = c.category_id $where2 $sales_type GROUP BY s.stock_id
-						ORDER BY weight, s.category_id, s.long_description LIMIT 30";
+						ORDER BY weight, s.category_id, s.stock_id LIMIT 30";
 			DB::prepare($sql);
-
 			return DB::execute($terms);
 		}
 
