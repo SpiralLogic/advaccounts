@@ -128,7 +128,7 @@
 		ini_set("log_errors", "On");
 	}
 
-	JS::headerFile(array('/js/JsHttpRequest.js', '/js/behaviour.js', '/js/utils.js', '/js/inserts.js', '/js/js2/jquery-1.6.2.min.js', '/js/js2/jquery-ui-1.8.14.min.js'));
+	JS::headerFile(array('/js/JsHttpRequest.js', '/js/behaviour.js', '/js/utils.js', '/js/inserts.js', '/js/js2/jquery-1.6.3.min.js', '/js/js2/jquery-ui-1.8.14.min.js'));
 	JS::footerFile(array('/js/js2/advanced.js', '/js/js2/shortmenu.js', '/js/js2/jquery.calculator.pack.js', '/js/js2/calc.js'));
 
 	if (!defined('ICON_EDIT')) {

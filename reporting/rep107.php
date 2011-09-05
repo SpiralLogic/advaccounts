@@ -40,9 +40,9 @@
       $dec = user_price_dec();
       $fno = explode("-", $from);
       $tno = explode("-", $to);
-      $cols = array(4, 60, 330, 355, 380, 410, 450, 495);
+      $cols = array(4, 60, 330, 355, 380, 410, 450, 470, 495);
       // $headers in doctext.inc
-      $aligns = array('left', 'left', 'center', 'left', 'right', 'right', 'right', 'right');
+      $aligns = array('left', 'left', 'center', 'left', 'right', 'right', 'center', 'right', 'right');
       $params = array('comments' => $comments);
       $cur = get_company_Pref('curr_default');
       if ($email == 0) {
@@ -107,8 +107,9 @@
                $rep->TextCol(3, 4, $myrow2['units'], -2);
                $rep->TextCol(4, 5, $DisplayPrice, -2);
                $rep->TextCol(5, 6, $DisplayDiscount, -2);
-               $rep->TextCol(6, 7, $DisplayNet, -2);
-               $rep->TextCol(7, 8, $TaxType[1], -2);
+							 $rep->TextCol(6, 7, $TaxType[1], -2);
+
+               $rep->TextCol(7, 8, $DisplayNet, -2);
                $rep->row = $newrow;
                //$rep->NewLine(1);
                if ($rep->row < $rep->bottomMargin + (15 * $rep->lineHeight))
@@ -133,11 +134,11 @@
             else {
                include(APP_PATH . "/reporting/includes/doctext.inc");
             }
-            $rep->TextCol(3, 6, $doc_Sub_total, -2);
-            $rep->TextCol(6, 7, $DisplaySubTot, -2);
+            $rep->TextCol(3, 7, $doc_Sub_total, -2);
+            $rep->TextCol(7,8, $DisplaySubTot, -2);
             $rep->NewLine();
-            $rep->TextCol(3, 6, $doc_Shipping, -2);
-            $rep->TextCol(6, 7, $DisplayFreight, -2);
+            $rep->TextCol(3, 7, $doc_Shipping, -2);
+            $rep->TextCol(7,8, $DisplayFreight, -2);
             $rep->NewLine();
             $tax_items = get_trans_tax_details($j, $i);
             while ($tax_item = db_fetch($tax_items)) {
@@ -147,26 +148,26 @@
                                       " (" . $tax_item['rate'] . "%) " . $doc_Amount . ": " . $DisplayTax, -2);
                }
                else {
-                  $rep->TextCol(3, 6, $tax_item['tax_type_name'] . " (" .
+                  $rep->TextCol(3, 7, $tax_item['tax_type_name'] . " (" .
                                       $tax_item['rate'] . "%)", -2);
-                  $rep->TextCol(6, 7, $DisplayTax, -2);
+                  $rep->TextCol(7,8, $DisplayTax, -2);
                }
             }
             $rep->NewLine();
             $DisplayTotal = number_format2($sign * ($myrow["ov_freight"] + $myrow["ov_gst"] +
                                                     $myrow["ov_amount"] + $myrow["ov_freight_tax"]), $dec);
             $rep->Font('bold');
-            $rep->TextCol(3, 6, $doc_TOTAL_INVOICE, -2);
-            $rep->TextCol(6, 7, $DisplayTotal, -2);
+            $rep->TextCol(3, 7, $doc_TOTAL_INVOICE, -2);
+            $rep->TextCol(7,8, $DisplayTotal, -2);
             $words = price_in_words($myrow['Total'], $j);
             $rep->NewLine();
             $rep->NewLine();
             $invBalance = get_DebtorTrans_allocation_balance($myrow['type'], $myrow['trans_no']);
-            $rep->TextCol(3, 6, 'Total Received', -2);
-            $rep->AmountCol(6, 7, $myrow['Total'] - $invBalance, $dec, -2);
+            $rep->TextCol(3, 7, 'Total Received', -2);
+            $rep->AmountCol(7,8,$myrow['Total'] - $invBalance, $dec, -2);
             $rep->NewLine();
-            $rep->TextCol(3, 6, 'Outstanding Balance', -2);
-            $rep->AmountCol(6, 7, $invBalance, $dec, -2);
+            $rep->TextCol(3, 7,  'Outstanding Balance', -2);
+            $rep->AmountCol(7,8, $invBalance, $dec, -2);
             $rep->NewLine();
             if ($words != "") {
                $rep->NewLine(1);
