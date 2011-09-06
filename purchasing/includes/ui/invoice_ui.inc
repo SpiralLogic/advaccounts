@@ -117,7 +117,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		copy_to_trans($supp_trans);
 		$dim = get_company_pref('use_dimension');
 		$colspan = ($dim == 2 ? 7 : ($dim == 1 ? 6 : 5));
-		start_table("$table_style width=80r%");
+		start_table("$table_style width=80%");
 		label_row(_("Sub-total:"), price_format($supp_trans->ov_amount), "colspan=$colspan align=right", "align=right");
 		$taxes = $supp_trans->get_taxes($supp_trans->tax_group_id);
 		$tax_total = display_edit_tax_items($taxes, $colspan, 0, null, true); // tax_included==0 (we are the company)
@@ -331,31 +331,19 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 														 $myrow["unit_price"], $dec2), null, null, $dec2, 'ExpPriceCalc' . $n);
 					small_amount_cells(null, 'ChgDiscount' . $n, percent_format(
 																	 $myrow['discount'] * 100), null, null, user_percent_dec());
-					qty_cell(price_decimal_format(($myrow["unit_price"] * ($myrow["qty_recd"] - $myrow["quantity_inv"]) * (1 - $myrow['discount'])) / $myrow["qty_recd"], $dec2), false,
-									 $dec2, 'Ea' . $n);
+					amount_cell(price_decimal_format(($myrow["unit_price"] * ($myrow["qty_recd"] - $myrow["quantity_inv"]) * (1 - $myrow['discount'])) / $myrow["qty_recd"], $dec2), false,$dec2, 'Ea' . $n);
 					if ($supp_trans->is_invoice) {
-						amount_cells(null, 'ChgTotal' . $n, price_decimal_format($myrow["unit_price"] * ($myrow["qty_recd"] - $myrow["quantity_inv"]) * (1 -
-																																																																						 $myrow['discount']), $dec2), null, null, $dec2,
-												 'ChgTotalCalc' . $n);
+						amount_cells(null, 'ChgTotal' . $n, price_decimal_format($myrow["unit_price"] * ($myrow["qty_recd"] - $myrow["quantity_inv"]) * (1 -$myrow['discount']), $dec2), null, null, $dec2,'ChgTotalCalc' . $n);
 					}
 					else {
 						amount_cell(round2($myrow["unit_price"] * max($myrow['quantity_inv'], 0) * (1 - $myrow['discount']), user_price_dec()));
 					}
-					if ($supp_trans->is_invoice) {
-						submit_cells('grn_item_id' . $n, _("Add"), '', _("Add to Invoice"), true);
-					}
-					else {
-						submit_cells('grn_item_id' . $n, _("Add"), '', _("Add to Credit Note"), true);
-					}
+					submit_cells('grn_item_id' . $n, _("Add"), '', ($supp_trans->is_invoice ? _("Add to Invoice") : _("Add to Credit Note")) , true);
 					if ($supp_trans->is_invoice && $_SESSION["wa_current_user"]->can_access('SA_GRNDELETE')) { // Added 2008-10-18 by Joe Hunt. Special access rights needed.
 						submit_cells('void_item_id' . $n, _("Remove"), '', _("WARNING! Be careful with removal. The operation is executed immediately and cannot be undone !!!"), true);
-						submit_js_confirm('void_item_id' . $n,
-															sprintf(_('You are about to remove all yet non-invoiced items from delivery line #%d. This operation also irreversibly changes related order line. Do you want to continue ?'),
-																			$n));
+						submit_js_confirm('void_item_id' . $n,sprintf(_('You are about to remove all yet non-invoiced items from delivery line #%d. This operation also irreversibly changes related order line. Do you want to continue ?'),$n));
 					}
-					hyperlink_params_td("/purchasing/po_entry_items.php", _("Modify"), "ModifyOrderNumber=" .
-																																						 $myrow["purch_order_no"], ' class="button"') . end_row();
-
+					hyperlink_params_td("/purchasing/po_entry_items.php", _("Modify"), "ModifyOrderNumber=" . $myrow["purch_order_no"], ' class="button"') . end_row();
 				}
 			}
 
@@ -459,6 +447,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 				amount_decimal_cell($entered_grn->chg_price);
 				amount_decimal_cell($entered_grn->exp_price);
 				percent_cell($entered_grn->discount);
+			
 				amount_decimal_cell(round2(($entered_grn->chg_price * abs($entered_grn->this_quantity_inv) * (1 - $entered_grn->discount / 100)) / abs($entered_grn->this_quantity_inv)
 														), user_price_dec());
 				amount_cell(round2($entered_grn->chg_price * abs($entered_grn->this_quantity_inv) * (1 - $entered_grn->discount / 100), user_price_dec()));
@@ -480,7 +469,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		}
 		if ($mode == 1) {
 			$ret = display_grn_items_for_selection($supp_trans, $k);
-			$colspan = 12;
+			$colspan = 13;
 		}
 		else
 		{
