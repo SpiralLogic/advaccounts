@@ -371,6 +371,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		if ($mode == 1) {
 			if ($supp_trans->is_invoice) {
 				$heading = _("Items Received Yet to be Invoiced");
+				
 				if ($_SESSION["wa_current_user"]->can_access('SA_GRNDELETE')) // Added 2008-10-18 by Joe Hunt. Only admins can remove GRNs
 				{
 					$heading2 = _("WARNING! Be careful with removal. The operation is executed immediately and cannot be undone !!!");
@@ -404,6 +405,14 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 			}
 			echo "</td><td width=10% align='right'>";
 			submit('InvGRNAll', _("Add All Items"), true, false, 'button-large');
+			end_outer_table(0, false);
+			start_outer_table();
+			start_row();
+			date_cells(_("Received between"), 'receive_begin', "", null, -30, 0, 0, "valign=middle");
+						date_cells(_("and"), 'receive_end', '', null, 1, 0, 0, "valign=middle");
+						submit_cells('RefreshInquiry', _("Search"), '', _('Refresh Inquiry'), true);
+						end_row();
+
 		}
 		end_outer_table(0, false);
 		div_start('grn_items');
