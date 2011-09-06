@@ -199,14 +199,15 @@
 			elseif ($o['sale']) {
 				$weight = 'IF(s.stock_id LIKE ?, 0,20) + IF(s.stock_id LIKE ?,0,5)  + IF(s.stock_id LIKE ?,0,5) as weight';
 				$stock_id = " s.stock_id, p.price ";
-				$prices = ", prices p";
+				$prices = ", prices p"; 
 				$where .= " AND s.stock_id = p.stock_id ";
 				if (isset($o['sales_type'])) {
 					$sales_type = ' AND p.sales_type_id =' . $o['sales_type'];
 				}
 			} else {
 				$stock_id = " s.* ";
-				$weight = '';
+				$weight = 'IF(s.stock_id LIKE ?, 0,20) + IF(s.stock_id LIKE ?,0,5)  + IF(s.stock_id LIKE ?,0,5) as weight';
+
 			}
 			$select = ($o['select']) ? $o['select'] : ' ';
 			$sql = "SELECT  $select  $stock_id ,s.description, c.description as category, s.long_description , editable,
@@ -215,7 +216,8 @@
 						AND s.category_id = c.category_id $where2 $sales_type GROUP BY s.stock_id
 						ORDER BY weight, s.category_id, s.stock_id LIMIT 30";
 			DB::prepare($sql);
-			return DB::execute($terms);
+			FB::info($terms);
+			return DB::execute($terms,true);
 		}
 
 
