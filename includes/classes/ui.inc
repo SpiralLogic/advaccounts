@@ -112,15 +112,7 @@
 				HTML::textarea('description', $o['description'], array('style' => 'height:15px;', 'name' => 'description', 'rows' => 2, 'cols' => 45), false);
 				$desc_js .= "$('#description').css('height','auto').attr('rows',4);";
 			} else {
-				$selectjs = <<<JS
-    var update = $('<input />').attr({type:'hidden','name':'_stock_id_edit'}).val(ui.item.value);
-    $('form').eq(1).submit();
-    if (update) {
-                JsHttpRequest.request(update);
-
-            return false;
-            }
-JS;
+				
 
 			}
 

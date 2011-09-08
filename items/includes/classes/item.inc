@@ -164,10 +164,10 @@
 
 			$term = explode(' ', $term);
 			$stock_id = trim(array_shift($term));
-			$terms =array($stock_id, '%' . $stock_id . '%');
-			$terms = array($stock_id,$stock_id.'%',  $terms[1], $terms[1], $terms[1]);
+			$terms = array($stock_id, '%' . $stock_id . '%');
+			$terms = array($stock_id, $stock_id . '%', $terms[1], $terms[1], $terms[1]);
 			$termswhere = ' OR s.long_description LIKE ? ';
-			$where='';
+			$where = '';
 			foreach ($term as $t) {
 				$where .= ' AND s.long_description LIKE ? ';
 				$terms[] = '%' . trim($t) . '%';
@@ -189,8 +189,9 @@
 				$weight = 'IF(s.stock_id LIKE ?, 0,20) + IF(p.supplier_description LIKE ?, 0,15) + IF(s.stock_id LIKE ?,0,5) as weight';
 				$termswhere .= ' OR p.supplier_description LIKE ? ';
 				if (isset($_SESSION['wa_global_supplier_id']) && is_numeric($_SESSION['wa_global_supplier_id'])) {
-					$terms[] = $_SESSION['wa_global_supplier_id'];
-					$where2 .= " AND p.supplier_id = ? ";
+					array_unshift($terms, $_SESSION['wa_global_supplier_id']);
+					$weight = ' IF(p.supplier_id = ?,0,30) + '.$weight;
+					
 				}
 				$stock_id = ' s.stock_id, p.supplier_description, MAX(p.price) as price ';
 				$where .= " AND s.stock_id = p.stock_id ";
@@ -199,7 +200,7 @@
 			elseif ($o['sale']) {
 				$weight = 'IF(s.stock_id LIKE ?, 0,20) + IF(s.stock_id LIKE ?,0,5)  + IF(s.stock_id LIKE ?,0,5) as weight';
 				$stock_id = " s.stock_id, p.price ";
-				$prices = ", prices p"; 
+				$prices = ", prices p";
 				$where .= " AND s.stock_id = p.stock_id ";
 				if (isset($o['sales_type'])) {
 					$sales_type = ' AND p.sales_type_id =' . $o['sales_type'];
@@ -216,7 +217,7 @@
 						AND s.category_id = c.category_id $where2 $sales_type GROUP BY s.stock_id
 						ORDER BY weight, s.category_id, s.stock_id LIMIT 30";
 			DB::prepare($sql);
-			FB::info($terms);
+
 			return DB::execute($terms,true);
 		}
 
