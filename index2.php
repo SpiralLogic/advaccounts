@@ -1,2 +1,2 @@
 <?php
- $page_security = 'SA_ITEM';
+	$page_security = 'SA_ITEM';

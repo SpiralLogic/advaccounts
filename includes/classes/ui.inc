@@ -100,17 +100,20 @@
 
 			HTML::input($id, $o['selected'], array('name' => $id));
 			if ($o['editable']) {
-				HTML::label('lineedit', 'edit',array('for'=>'stock_id','class'=>'stock button','style'=>'display:none'));
-				$desc_js .='$("#lineedit").data("stock_id",value.stock_id).show().parent().css("white-space","nowrap"); ';
+				HTML::label('lineedit', 'edit', array('for' => 'stock_id', 'class' => 'stock button', 'style' => 'display:none'));
+				$desc_js .= '$("#lineedit").data("stock_id",value.stock_id).show().parent().css("white-space","nowrap"); ';
 			}
 			if ($o['cell']) {
 				HTML::td()->td(true);
 			}
 
-
+			$selectjs = '';
 			if ($o['description'] !== false) {
 				HTML::textarea('description', $o['description'], array('style' => 'height:15px;', 'name' => 'description', 'rows' => 2, 'cols' => 45), false);
 				$desc_js .= "$('#description').css('height','auto').attr('rows',4);";
+			} else {
+				
+
 			}
 
 			if ($o['cell']) {
@@ -150,6 +153,7 @@
 								}}})
 						},
             select: function( event, ui ) {
+            $selectjs
 								var value = ui.item.value;
 								value.description = value.long_description;
 								Adv.Events.onFocus("#stock_id",[0,$(this).position().top]);
@@ -160,11 +164,10 @@
 						focus: function(){return false;},
 						open: function() { $('.ui-autocomplete').unbind('mouseover');}
 						}
-				).blur(function() { $(this).data('active',false)}).focus(function() { $(this).data('active',true)});
-	return function () {return \$$id.catcomplete('destroy')};
+				).blur(function() { $(this).data('active',false)}).focus(function() { $(this).data('active',true)});return function () {return \$$id.catcomplete('destroy')};
+
 JS;
 			JS::addLive($js);
-
 			return HTML::setReturn(false);
 		}
 

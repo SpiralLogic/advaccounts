@@ -250,8 +250,8 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 			}
 			$_SESSION['err_over_charge'] = false;
 			$_SESSION['supp_trans']->add_grn_to_trans($n, $_POST['po_detail_item' . $n], $_POST['item_code' . $n], $_POST['description' . $n], $_POST['qty_recd' . $n],
-				$_POST['prev_quantity_inv' . $n], input_num('this_quantity_inv' . $n), $_POST['order_price' . $n], input_num('ChgPrice' . $n),
-				$complete, $_POST['std_cost_unit' . $n], "", input_num('ChgDiscount' . $n), input_num('ExpPrice' . $n));
+																								$_POST['prev_quantity_inv' . $n], input_num('this_quantity_inv' . $n), $_POST['order_price' . $n], input_num('ChgPrice' . $n),
+																								$complete, $_POST['std_cost_unit' . $n], "", input_num('ChgDiscount' . $n), input_num('ExpPrice' . $n));
 		}
 	}
 
@@ -264,7 +264,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		foreach ($_POST as $postkey => $postval) {
 			if (strpos($postkey, "qty_recd") === 0) {
 				$id = substr($postkey, strlen("qty_recd"));
-				$id = (int) $id;
+				$id = (int)$id;
 				commit_item_data($id);
 			}
 		}
@@ -311,7 +311,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 			db_query($sql, "The quantity invoiced off the items received record could not be updated");
 			update_average_material_cost($grn["supplier_id"], $myrow["item_code"], $myrow["unit_price"], -$myrow["QtyOstdg"], Today());
 			add_stock_move(ST_SUPPRECEIVE, $myrow["item_code"], $myrow['grn_batch_id'], $grn['loc_code'], sql2date($grn["delivery_date"]), "", -$myrow["QtyOstdg"],
-				$myrow['std_cost_unit'], $grn["supplier_id"], 1, $myrow['unit_price']);
+										 $myrow['std_cost_unit'], $grn["supplier_id"], 1, $myrow['unit_price']);
 			commit_transaction();
 			display_notification(sprintf(_('All yet non-invoiced items on delivery line # %d has been removed.'), $id2));
 		}
@@ -364,7 +364,8 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
          qty: $('[name^="this_quantity"]',feilds),
          price: $('[name^="ChgPrice"]',feilds),
          discount: $('[name^="ChgDiscount"]',feilds),
-         total: $('[id^="ChgTotal"]',feilds)
+         total: $('[id^="ChgTotal"]',feilds),
+					eachprice: $('[id^="Ea"]',feilds)
       };
       $.each(nodes,function(k,v) {
          fv[k] = Number(v.val().replace(',',''));
@@ -380,9 +381,9 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
       } else if (fv.qty > 0 && fv.price > 0) {
          fv.total = fv.qty*fv.price*((100-fv.discount)/100);
          nodes.total.val(Math.round(fv.total*100)/100 );
-       }
-       var each = Math.round((fv.total/fv.qty)*100)/100;
-       $('[id^="Ea"]',feilds).text(each);
+       };
+       console.log(nodes);
+       price_format(nodes.eachprice.attr('id'),(fv.total/fv.qty),2,true);
 
 });
 JS
