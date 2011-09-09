@@ -241,7 +241,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 
   //----------------------------------------------------------------------------------------
   function get_sales_order_details($order_no, $trans_type) {
-	 $sql = "SELECT id, stk_code, unit_price, sales_order_details.description,sales_order_details.quantity,
+	 $sql = "SELECT sales_order_details.id, stk_code, unit_price, sales_order_details.description,sales_order_details.quantity,
 		  discount_percent,
 		  qty_sent as qty_done, stock_master.units,stock_master.tax_type_id,stock_master.material_cost + stock_master.labour_cost + stock_master.overhead_cost AS standard_cost
 	FROM sales_order_details, stock_master

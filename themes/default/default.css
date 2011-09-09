@@ -74,7 +74,7 @@ input.small {
 
 a {
 	color:           #2F637A;
-	background:      inherit;
+	/*background:      inherit;*/
 	text-decoration: none;
 }
 
@@ -228,7 +228,6 @@ div.banner a + a { border-top: 2px groove #999 }
 	float:      right;
 	color:      #808080;
 	background: #fff;
-	margin:     16px 5px 0 0;
 	text-align: right;
 }
 
@@ -540,7 +539,7 @@ table.tablestyle_inner td {
 
 
 .tableinfo input, .tableinfo textarea, .tableinfo select {
-	min-width: 300px;
+	max-width: 300px;
 }
 
 input.amount, td.amount {

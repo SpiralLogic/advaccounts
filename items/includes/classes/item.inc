@@ -181,7 +181,7 @@
 			if ($o['type'] == 'kits') {
 				$where2 .= " AND !i.is_foreign AND i.item_code!=i.stock_id ";
 			}
-			$where2 .= ' AND s.stock_id = i.stock_id ';
+			$where2 .= ' AND s.id = i.stockid ';
 			$sales_type = $prices = '';
 
 			if ($o['purchase']) {
@@ -194,19 +194,19 @@
 					
 				}
 				$stock_id = ' s.stock_id, p.supplier_description, MAX(p.price) as price ';
-				$where .= " AND s.stock_id = p.stock_id ";
+				$where .= " AND s.id = p.stockid ";
 				$prices = ", purch_data p ";
 			}
 			elseif ($o['sale']) {
 				$weight = 'IF(s.stock_id LIKE ?, 0,20) + IF(s.stock_id LIKE ?,0,5)  + IF(s.stock_id LIKE ?,0,5) as weight';
 				$stock_id = " s.stock_id, p.price ";
 				$prices = ", prices p";
-				$where .= " AND s.stock_id = p.stock_id ";
+				$where .= " AND s.id = p.stockid ";
 				if (isset($o['sales_type'])) {
 					$sales_type = ' AND p.sales_type_id =' . $o['sales_type'];
 				}
 			} else {
-				$stock_id = " s.* ";
+				$stock_id = " s.stock_id";
 				$weight = 'IF(s.stock_id LIKE ?, 0,20) + IF(s.stock_id LIKE ?,0,5)  + IF(s.stock_id LIKE ?,0,5) as weight';
 
 			}
