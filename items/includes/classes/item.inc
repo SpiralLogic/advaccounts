@@ -206,7 +206,7 @@
 					$sales_type = ' AND p.sales_type_id =' . $o['sales_type'];
 				}
 			} else {
-				$stock_id = " s.* ";
+				$stock_id = " s.stock_id";
 				$weight = 'IF(s.stock_id LIKE ?, 0,20) + IF(s.stock_id LIKE ?,0,5)  + IF(s.stock_id LIKE ?,0,5) as weight';
 
 			}

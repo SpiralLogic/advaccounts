@@ -40,6 +40,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		$Ajax->addDisable(true, 'StockLocation', $disable);
 		$Ajax->addDisable(true, '_SelectStockFromList_edit', $disable);
 		$Ajax->addDisable(true, 'SelectStockFromList', $disable);
+	 $Ajax->addDisable(true, 'SelectStockFromList', $disable);
 
 		if ($disable) {
 			$Ajax->addFocus(true, 'order_number');
