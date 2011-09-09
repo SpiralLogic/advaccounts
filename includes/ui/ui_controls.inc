@@ -143,7 +143,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		echo "<br>";
 	}
 
-	function hyperlink_no_params($target, $label, $center = true) {
+	function hyperlink_no_params($target, $label, $center = true,$button=false) {
 		$id = default_focus();
 		$pars = access_string($label);
 		if ($target == '') {
@@ -152,7 +152,10 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		if ($center) {
 			echo "<br><center>";
 		}
-		echo "<a href='$target' id='$id' $pars[1]>$pars[0]</a>\n";
+		if ($button) {
+			$pars[1] .= " class='button'";
+		}
+		echo "<a href='$target' id='$id' $pars[1] >$pars[0]</a>\n";
 		if ($center) {
 			echo "</center>";
 		}
@@ -196,14 +199,22 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		$pars = access_string($label);
 		return "<a href='$url' class='menu_option' id='$id' $pars[1]>$pars[0]</a>";
 	}
+	function menu_button($url, $label, $id = null) {
 
+		$id = default_focus($id);
+		$pars = access_string($label);
+		return "<a href='$url' class='button' id='$id' $pars[1]>$pars[0]</a>";
+	}
 	function submenu_option($title, $url, $id = null) {
 		global $path_to_root;
 		display_note(menu_link($path_to_root . $url, $title, $id), 0, 1);
 	}
-
+function submenu_button($title, $url, $id = null) {
+		global $path_to_root;
+		display_note(menu_button($path_to_root . $url, $title, $id), 0, 1);
+	}
 	function submenu_view($title, $type, $number, $id = null) {
-		display_note(get_trans_view_str($type, $number, $title, false, 'menu_option', $id), 0, 1);
+		display_note(get_trans_view_str($type, $number, $title, false, 'menu_option', $id), 0, 1,false,'button');
 	}
 
 	function submenu_print($title, $type, $number, $id = null, $email = 0, $extra = 0) {
@@ -232,7 +243,21 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 			echo "</center>";
 		}
 	}
+	function hyperlink_button($target, $label, $link_params = '', $center = true, $params = '') {
+		$id = default_focus();
 
+		$pars = access_string($label);
+		if ($target == '') {
+			$target = $_SERVER['PHP_SELF'];
+		}
+		if ($center) {
+			echo "<br><center>";
+		}
+		echo "<a id='$id' class='button' href='$target?$link_params' $params $pars[1] >$pars[0]</a>\n";
+		if ($center) {
+			echo "</center>";
+		}
+	}
 	function hyperlink_params_td($target, $label, $link_params, $params = '') {
 		echo "<td>";
 		hyperlink_params($target, $label, $link_params, false, $params);

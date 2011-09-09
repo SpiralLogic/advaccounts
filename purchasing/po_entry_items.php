@@ -42,15 +42,15 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 			display_notification_centered(_("Purchase Order: ".$_SESSION['PO']->reference." has been updated") . " #$order_no");
 		}
 	  unset($_SESSION['PO']);
-		display_note(get_trans_view_str($trans_type, $order_no, _("&View this order")), 0, 1);
+		display_note(get_trans_view_str($trans_type, $order_no, _("&View this order"),false,'button'), 0, 1);
 		display_note(print_document_link($order_no, _("&Print This Order"), true, $trans_type), 0, 1);
-		submenu_option(_("&Edit This Order"), "/purchasing/po_entry_items.php?ModifyOrderNumber=$order_no");
+		submenu_button(_("&Edit This Order"), "/purchasing/po_entry_items.php?ModifyOrderNumber=$order_no");
 
 		submenu_email(_("Email This Order"), $trans_type, $order_no, null, $supplier->getEmailAddresses(), 1);
 
-		hyperlink_params("/purchasing/po_receive_items.php", _("&Receive Items on this Purchase Order"), "PONumber=$order_no");
-		hyperlink_params($_SERVER['PHP_SELF'], _("Enter &Another Purchase Order"), "NewOrder=yes");
-		hyperlink_no_params("/purchasing/inquiry/po_search.php", _("Select An &Outstanding Purchase Order"));
+		hyperlink_button("/purchasing/po_receive_items.php", _("&Receive Items on this PO"), "PONumber=$order_no");
+		hyperlink_button($_SERVER['PHP_SELF'], _("&New Purchase Order"), "NewOrder=yes");
+		hyperlink_no_params("/purchasing/inquiry/po_search.php", _("&Outstanding Purchase Orders"),true,true);
 		display_footer_exit();
 	}
 	//--------------------------------------------------------------------------------------------------

@@ -112,7 +112,10 @@
 				HTML::textarea('description', $o['description'], array('style' => 'height:15px;', 'name' => 'description', 'rows' => 2, 'cols' => 45), false);
 				$desc_js .= "$('#description').css('height','auto').attr('rows',4);";
 			} else {
-				
+<<<JS
+			$(this).val(ui.item.value);
+$('form').trigger('submit'); return false;
+JS;
 
 			}
 
@@ -154,7 +157,7 @@
 						},
             select: function( event, ui ) {
             $selectjs
-								var value = ui.item.value;
+            var value = ui.item.value;
 								value.description = value.long_description;
 								Adv.Events.onFocus("#stock_id",[0,$(this).position().top]);
 								$.each(value,function(k,v) {Adv.setFormValue(k,v);});
