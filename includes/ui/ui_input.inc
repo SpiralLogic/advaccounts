@@ -551,7 +551,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
   //
   function date_cells($label, $name, $title = null, $check = null, $inc_days = 0,
 							 $inc_months = 0, $inc_years = 0, $params = null, $submit_on_change = false) {
-	 global $use_date_picker, $path_to_root, $Ajax;
+	 global $Ajax;
 
 	 if (!isset($_POST[$name]) || $_POST[$name] == "") {
 		if ($inc_years == 1001)
@@ -568,14 +568,10 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		  $_POST[$name] = $dd;
 		}
 	 }
-
 	 $post_label = "";
-
 	 if ($label != null)
 		label_cell($label, $params);
-
 	 echo "<td>";
-
 	 $class = $submit_on_change ? 'class="searchbox"' : '';
 
 	 $aspect = $check ? 'aspect="cdate"' : '';

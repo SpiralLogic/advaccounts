@@ -13,8 +13,8 @@
 		protected $name;
 		protected static $_count = 0;
 
-		static function add($name, $options = array()) {
-			$js = '$("#' . $name . '").one("click",function() { $(this).datepicker(' . JS::arrayToOptions($options) . ').focus() }); ';
+		static function add	($name, $options = array()) {
+			$js = '$("#' . $name . '").one("focus",function() { $(this).datepicker(' . JS::arrayToOptions($options) . ').focus() }); ';
 			JS::addLive($js);
 			self::$_count++;
 		}

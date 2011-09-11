@@ -87,8 +87,8 @@ Adv.extend({
 Adv.extend({
 						 Events: (function() {
 							 var events = [],
-								onload = [],
-								toClean = [],
+								onload = false,
+								toClean = false,
 								toFocus = {};
 							 var firstBind = function (s, t, a) {
 								 $(s).bind(t, a);
@@ -98,25 +98,19 @@ Adv.extend({
 									 events[events.length] = {s:selector,t:types,a:action};
 									 firstBind(selector, types, action);
 								 },
-								 onload: function(actions) {
-									 var c = onload.length > 0;
-									 $.each(actions, function(k, v) {
-										 onload[onload.length] = v;
+								 onload: function(actions,clean) {
+									var c = !!onload;
+										 	 onload  = actions;
 										 if (c) return;
-										 var result = v();
-										 if (result !== undefined) {
-											 toClean[toClean.length] = result;
+										 onload();
+										 if (clean !== undefined) {
+											 toClean=clean;
 										 }
-									 });
+									 
 								 },
 								 rebind: function() {
-
-									 $.each(toClean, function(k, v) {
-										 v();
-									 });
-									 $.each(onload, function(k, v) {
-										 v();
-									 });
+										if (toClean) toClean();
+										if (onload)  onload();
 									 $.each(events, function(k, v) {
 										 firstBind(v.s, v.t, v.a);
 									 });
