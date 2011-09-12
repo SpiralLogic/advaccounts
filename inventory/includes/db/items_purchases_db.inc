@@ -11,11 +11,14 @@
 ***********************************************************************/
 
 function add_item_purchasing_data($supplier_id, $stock_id, $price,
-	$suppliers_uom, $conversion_factor, $supplier_description)
+	$suppliers_uom, $conversion_factor, $supplier_description,$stockid=null)
 {
-	$sql = "INSERT INTO ".TB_PREF."purch_data (supplier_id, stock_id, price, suppliers_uom,
+
+	if ($stockid==null) $stockid=get_stockid($stock_id);
+
+	$sql = "INSERT INTO ".TB_PREF."purch_data (supplier_id, stockid, stock_id, price, suppliers_uom,
 		conversion_factor, supplier_description) VALUES (";
-	$sql .= db_escape($supplier_id).", ".db_escape($stock_id). ", "
+	$sql .= db_escape($supplier_id).", ".db_escape($stock_id).", ".db_escape($stockid). ", "
 		.$price . ", ".db_escape($suppliers_uom ). ", "
 		.$conversion_factor . ", "
 		.db_escape($supplier_description) . ")";

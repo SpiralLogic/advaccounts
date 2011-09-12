@@ -28,5 +28,9 @@ function item_img_name($stock_id)
 {
 	return strtr($stock_id, "><\\/:|*?", '________');
 }
-
+	function get_stockid($stock_id) {
+		$result = current(DB::select('id')->from('stock_master')->where('stock_id LIKE ', $stock_id)->fetch()->all());
+	FB::info($result);
+			return $result['id'];
+	}
 ?>

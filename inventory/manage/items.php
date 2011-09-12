@@ -268,6 +268,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	} else { // Must be modifying an existing item
 		if (get_post('NewStockID') != get_post('stock_id') || get_post('addupdate')) { // first item display
 			$_POST['NewStockID'] = $_POST['stock_id'];
+			
 			$myrow = get_item($_POST['NewStockID']);
 			$_POST['long_description'] = $myrow["long_description"];
 			$_POST['description'] = $myrow["description"];

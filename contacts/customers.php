@@ -25,7 +25,6 @@
 			}
 			$data['status'] = $customer->getStatus();
 		}
-		FB::info($data);
 		echo json_encode($data, JSON_NUMERIC_CHECK);
 
 		exit();
