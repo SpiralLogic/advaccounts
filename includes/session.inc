@@ -11,6 +11,8 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
  ***********************************************************************/
 	global $start22;
 	$start22 = microtime();
+$go_debug=1;
+
 	function output_html($text) {
 		global $before_box, $Ajax, $messages;
 		// Fatal errors are not send to error_handler,
@@ -134,12 +136,12 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 				 APP_PATH . 'items/includes/classes',
 				 APP_PATH . 'reporting/includes'));
 
-	if (preg_match('/Chrome/i', $_SERVER['HTTP_USER_AGENT'])) {
-		//include(APP_PATH . 'includes/fb.php');
-		//FB::useFile(APP_PATH . 'tmp/chromelogs', '/tmp/chromelogs');
-	} else {
-		//include(APP_PATH . 'includes/FirePHP/FirePHP.class.php');
-		//include(APP_PATH . 'includes/FirePHP/fb.php');
+	if ($go_debug && preg_match('/Chrome/i', $_SERVER['HTTP_USER_AGENT'])) {
+		include(APP_PATH . 'includes/fb.php');
+		FB::useFile(APP_PATH . 'tmp/chromelogs', '/tmp/chromelogs');
+	} elseif ($go_debug) {
+		include(APP_PATH . 'includes/FirePHP/FirePHP.class.php');
+		include(APP_PATH . 'includes/FirePHP/fb.php');
 	}
 	if (isset($_GET['path_to_root']) || isset($_POST['path_to_root'])) {
 		die("Restricted access");

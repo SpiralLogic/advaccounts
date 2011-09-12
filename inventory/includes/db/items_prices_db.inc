@@ -9,16 +9,16 @@ but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
  ***********************************************************************/
-function add_item_price($stock_id, $sales_type_id, $curr_abrev, $price)
+function add_item_price($stock_id, $sales_type_id, $curr_abrev, $price, $stockid=0)
 {
-	$sql = "INSERT INTO prices (stock_id, sales_type_id, curr_abrev, price)
-		VALUES (" . db_escape($stock_id) . ", " . db_escape($sales_type_id)
+	$sql = "INSERT INTO prices (stockid, stock_id, sales_type_id, curr_abrev, price)
+		VALUES (" . db_escape($stockid) . ", " . db_escape($stock_id) . ", " . db_escape($sales_type_id)
 		   . ", " . db_escape($curr_abrev) . ", " . db_escape($price) . ")";
 
 	db_query($sql, "an item price could not be added");
 }
 
-function update_item_price($price_id, $sales_type_id, $curr_abrev, $price)
+function update_item_price($price_id, $sales_type_id, $curr_abrev, $price,$stockid=null)
 {
 	$sql = "UPDATE prices SET sales_type_id=" . db_escape($sales_type_id) . ",
 		curr_abrev=" . db_escape($curr_abrev) . ",
