@@ -29,9 +29,10 @@
 	 static::$_prepared = DBconnection::instance($db)->prepare($sql);
 	}
 
-	public static function execute($data, $debug = false) {
+	public static function execute($data) {
+	 global $go_debug;
 	 if (static::$_prepared) {
-		if ($debug) {
+		if ($go_debug) {
 		 $sql = static::$_prepared->queryString;
 		 foreach ($data as $k=>$v) {
 			$sql =  preg_replace('/\?/i', " '$v' ", $sql, 1); // outputs '123def abcdef abcdef' str_replace(,,$sql);

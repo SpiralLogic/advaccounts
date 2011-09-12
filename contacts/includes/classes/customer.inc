@@ -14,8 +14,8 @@
 		public $debtor_ref = '';
 		public $credit_status;
 		public $payment_discount = '0';
-		public $defaultBranch =0;
-		public $defaultContact=0;
+		public $defaultBranch = 0;
+		public $defaultContact = 0;
 		public $branches = array();
 		public $contacts = array();
 		public $accounts;
@@ -120,24 +120,23 @@
 					unset($this->branches[0]);
 				}
 			}
-			foreach ($this->contacts as $id => $contact) {
+			foreach ($this->contacts as $id => &$contact) {
 				$contact->save(array('parent_id' => $this->id));
-				if ($id == 0) {
-					$this->contacts[$contact->id] = $contact;
-					unset($this->contacts[0]);
-				}
+				$this->contacts[$contact->id] = $contact;
 			}
 			$this->_setDefaults();
 			return $this->_status(true, 'Processing', "Customer has been updated.");
 		}
 
-		protected function _setDefaults() {
+		protected
+		function _setDefaults() {
 			$this->defaultBranch = reset($this->branches)->branch_code;
 			$this->defaultContact = (count($this->contacts) > 0) ? reset($this->contacts)->id : 0;
 			$this->contacts[0] = new Contact(array('parent_id' => $this->id));
 		}
 
-		protected function _saveNew() {
+		protected
+		function _saveNew() {
 			begin_transaction();
 			$sql = "INSERT INTO debtors_master (name, debtor_ref, address, tax_id, email, dimension_id, dimension2_id,
 			curr_code, credit_status, payment_terms, discount, pymt_discount,credit_limit,
@@ -154,7 +153,8 @@
 			$this->_status(true, 'Saving', "A Customer has been added.");
 		}
 
-		protected function _new() {
+		protected
+		function _new() {
 			$this->_defaults();
 			$this->accounts = new Accounts();
 			$this->branches[0] = new Branch();
@@ -164,7 +164,8 @@
 			return $this->_status(true, 'Initialize new customer', 'Now working with a new customer');
 		}
 
-		protected function _defaults() {
+		protected
+		function _defaults() {
 			global $SysPrefs;
 			$this->dimension_id = $this->dimension2_id = $this->inactive = 0;
 			$this->sales_type = $this->credit_status = 1;
@@ -175,16 +176,16 @@
 
 		}
 
-		protected function _read($id = false) {
+		protected
+		function _read($id = false) {
 
-			if ($id===false) {
+			if ($id === false) {
 				return $this->_status(false, 'read', 'No customer ID to read');
 			}
 
 			$this->_defaults();
 			DB::select()->from('debtors_master')->where('debtor_no=', $id);
 			DB::fetch()->intoClass($this);
-
 			$this->_getBranches();
 			$this->_getAccounts();
 			$this->_getContacts();
@@ -198,7 +199,8 @@
 			return DB::rowCount();
 		}
 
-		public function getTransactions() {
+		public
+		function getTransactions() {
 			$sql = "SELECT debtor_trans.*, sales_orders.customer_ref,
 				(debtor_trans.ov_amount + debtor_trans.ov_gst + debtor_trans.ov_freight +
 				debtor_trans.ov_freight_tax + debtor_trans.ov_discount)
@@ -219,22 +221,26 @@
 
 		}
 
-		protected function _countOrders() {
+		protected
+		function _countOrders() {
 			DB::select('COUNT(*)')->from('sales_orders')->where('debtor_no=', $this->id);
 			return DB::rowCount();
 		}
 
-		protected function _countBranches() {
+		protected
+		function _countBranches() {
 			DB::select('COUNT(*)')->from('cust_branch')->where('debtor_no=', $this->id);
 			return DB::rowCount();
 		}
 
-		protected function _countContacts() {
+		protected
+		function _countContacts() {
 			DB::select('COUNT(*)')->from('contacts')->where('debtor_no=', $this->id);
 			return DB::rowCount();
 		}
 
-		public function delete() {
+		public
+		function delete() {
 			if ($this->_countTransactions() > 0) {
 				return $this->_status(false, 'delete', "This customer cannot be deleted because there are transactions that refer to it.");
 			}
@@ -254,7 +260,8 @@
 			return $this->_status(true, 'delete', "Customer deleted.");
 		}
 
-		protected function _getAccounts() {
+		protected
+		function _getAccounts() {
 			DB::select()->from('cust_branch')->where('debtor_no=', $this->debtor_no)->and_where('branch_ref=', 'accounts');
 			$this->accounts = DB::fetch()->asClassLate('Accounts')->all();
 			if (!$this->accounts && $this->id > 0 && $this->defaultBranch > 0) {
@@ -272,7 +279,8 @@
 			}
 		}
 
-		protected function _getBranches() {
+		protected
+		function _getBranches() {
 
 			DB::select()
 			 ->from('cust_branch')
@@ -287,27 +295,30 @@
 
 		}
 
-		protected function _getContacts() {
+		protected
+		function _getContacts() {
 			DB::select()->from('contacts')->where('parent_id=', $this->debtor_no);
 			$contacts = DB::fetch()->asClassLate('Contact');
 			if (count($contacts)) {
 				foreach ($contacts as $contact) {
 					$this->contacts[$contact->id] = $contact;
 				}
-			}
+
 			$this->defaultContact = reset($this->contacts)->id;
-			$this->contacts[0] = new Contact(array('parent_id' => $this->id));
+			}$this->contacts[0] = new Contact(array('parent_id' => $this->id));
 
 		}
 
-		public function addBranch($details = null) {
+		public
+		function addBranch($details = null) {
 			$branch = new Branch($details);
 			$branch->debtor_no = $this->id;
 			$branch->save();
 			$this->branches[$branch->branch_code] = $branch;
 		}
 
-		public function getEmailAddresses() {
+		public
+		function getEmailAddresses() {
 			$emails = array();
 			if (!empty($this->accounts->email)) {
 				$emails['Accounts'][$this->accounts->id] = array('Accounts', $this->accounts->email);

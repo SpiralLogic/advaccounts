@@ -110,7 +110,7 @@
 
 	 $selectjs = '';
 	 if ($o['description'] !== false) {
-		HTML::textarea('description', $o['description'], array('style' => 'height:15px;', 'name' => 'description', 'rows' => 2, 'cols' => 45), false);
+		HTML::textarea('description', $o['description'], array('name' => 'description', 'rows' =>1, 'cols' => 45), false);
 		$desc_js .= "$('#description').css('height','auto').attr('rows',4);";
 	 } elseif ($o['submitonselect']) {
 		$selectjs = <<<JS
@@ -172,10 +172,10 @@ JS;
 						focus: function(){return false;},
 						open: function() { $('.ui-autocomplete').unbind('mouseover');}
 						}
-				).blur(function() { $(this).data('active',false)}).focus(function() { $(this).data('active',true)});return function () {return \$$id.catcomplete('destroy')};
-
+				).blur(function() { $(this).data('active',false)}).focus(function() { $(this).data('active',true)});
 JS;
-	 JS::addLive($js);
+	 $clean="\$$id.catcomplete('destroy');";
+	 JS::addLive($js,$clean);
 	 return HTML::setReturn(false);
 	}
 

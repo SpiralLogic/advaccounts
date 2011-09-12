@@ -25,9 +25,9 @@
 	// Special value 'syslog' can be used for system logger usage (see php manual).
 	//$error_logfile = '';
 	$error_logfile = '';
-	$debug = 0;
+	$debug = 1;
 	$show_sql = 0;
-	$go_debug = 0;
+	$go_debug = 1;
 	$pdf_debug = 0;
 	$app_title = "Advanced Accounting";
 	$version = "2.2.11";
@@ -38,7 +38,7 @@
 	$build_version = date("d.m.Y", filemtime(__FILE__));
 	// Powered by
 	$power_by = "Advanced Accounting";
-	$power_url = "http://www.advancedroadsigns.com.au";
+	$power_url = "http://www.advancedroadsigns.com.au"; 
 	/* use popup windows for views */
 	$use_popup_windows = 1;
 	/* use date picker for all date fields */
@@ -128,7 +128,7 @@
 		ini_set("log_errors", "On");
 	}
 
-	JS::headerFile(array('/js/JsHttpRequest.js', '/js/behaviour.js', '/js/utils.js', '/js/inserts.js', '/js/js2/jquery-1.6.3.min.js', '/js/js2/jquery-ui-1.8.14.min.js'));
+	JS::headerFile(array('/js/JsHttpRequest.js', '/js/behaviour.js', '/js/utils.js', '/js/inserts.js', '/js/js2/jquery-1.6.4.min.js', '/js/js2/jquery-ui-1.8.14.min.js'));
 	JS::footerFile(array('/js/js2/advanced.js', '/js/js2/shortmenu.js', '/js/js2/jquery.calculator.pack.js', '/js/js2/calc.js'));
 
 	if (!defined('ICON_EDIT')) {

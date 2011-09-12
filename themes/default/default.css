@@ -548,11 +548,11 @@ input.amount, td.amount {
 	text-align:  right;
 }
 
-.oddrow, .grid tr:nth-child(odd) {
+.oddrow, .grid tr:nth-child(odd),tr.grid:nth-child(odd) {
 	background-color: #f3f9fe;
 }
 
-.evenrow, .grid tr:nth-child(even) {
+.evenrow, .grid tr:nth-child(even), tr.grid:nth-child(even) {
 	background: none repeat scroll 0 0 #D2DBF4;
 	border:     1px solid #D2DBF4;
 }

@@ -14,7 +14,7 @@
 		public $department = '';
 
 		function __construct($id = null) {
-			$this->id = $id;
+			if (is_numeric($id)) $this->id = $id;
 			parent::__construct($id);
 		}
 

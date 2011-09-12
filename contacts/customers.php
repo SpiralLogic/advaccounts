@@ -12,6 +12,7 @@
 				if (isset($_POST['name'])) {
 					$data['customer'] = $customer = new Customer($_POST);
 					$data['customer']->save();
+
 				} elseif (!isset($_POST['name'])) {
 					$data['customer'] = $customer = new Customer($_POST['id']);
 				}
@@ -24,7 +25,9 @@
 			}
 			$data['status'] = $customer->getStatus();
 		}
-		echo json_encode($data);
+		FB::info($data);
+		echo json_encode($data, JSON_NUMERIC_CHECK);
+
 		exit();
 	}
 	JS::footerFile("/js/js2/jquery-tmpl.min.js");

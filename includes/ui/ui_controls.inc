@@ -292,12 +292,12 @@ function submenu_button($title, $url, $id = null) {
 
 	function alt_table_row_color(&$k) {
 		if ($k == 1) {
-			echo "<tr class='oddrow'>\n";
+			echo "<tr class='oddrow grid'>\n";
 			$k = 0;
 		}
 		else
 		{
-			echo "<tr class='evenrow'>\n";
+			echo "<tr class='evenrow grid'>\n";
 			$k++;
 		}
 	}
