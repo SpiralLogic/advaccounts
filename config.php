@@ -25,9 +25,9 @@
 	// Special value 'syslog' can be used for system logger usage (see php manual).
 	//$error_logfile = '';
 	$error_logfile = '';
-	$debug = 0;
+	$debug = 1;
 	$show_sql = 0;
-	$go_debug = 0;
+	$go_debug = 1;
 	$pdf_debug = 0;
 	$app_title = "Advanced Accounting";
 	$version = "2.2.11";
@@ -38,7 +38,7 @@
 	$build_version = date("d.m.Y", filemtime(__FILE__));
 	// Powered by
 	$power_by = "Advanced Accounting";
-	$power_url = "http://www.advancedroadsigns.com.au";
+	$power_url = "http://www.advancedroadsigns.com.au"; 
 	/* use popup windows for views */
 	$use_popup_windows = 1;
 	/* use date picker for all date fields */

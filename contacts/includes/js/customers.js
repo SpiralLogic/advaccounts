@@ -73,12 +73,10 @@ var Contacts = function() {
 		},
 		init: function(data) {
 			Contacts.empty();
-
 			Contacts.addMany(data);
 			Contacts.New();
 		},
 		add:function(data) {
-
 			Contacts.addMany(data);
 		},
 		addMany:function(data) {
@@ -86,7 +84,7 @@ var Contacts = function() {
 			$.each(data, function($k, $v) {
 				contacts[contacts.length] = $v;
 			});
-			if (contacts[0].id == 0) blank = contacts.shift();
+			if (!blank && contacts[0].id == 0) blank = contacts.shift();
 			$.tmpl('contact', contacts).appendTo($Contacts);
 		},
 		setval: function (key, value) {
@@ -166,13 +164,12 @@ var Branches = function() {
 		btnBranchAdd : function() {
 			btn.unbind('click');
 			if (!adding && current.branch_code > 0 && Customer.get().id > 0) {
-				btn.button('option', 'label', 'Add New Branch').one('click',
-				                                                    function(event) {
-					                                                    event.stopImmediatePropagation();
-					                                                    Branches.New();
-					                                                    adding = true;
-					                                                    return false
-				                                                    }).show();
+				btn.button('option', 'label', 'Add New Branch').one('click',function(event) {
+					event.stopImmediatePropagation();
+					Branches.New();
+					adding = true;
+					return false
+				}).show();
 			} else {
 				(current.branch_code > 0) ? btn.show() : btn.hide();
 			}
