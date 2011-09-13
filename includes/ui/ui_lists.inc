@@ -576,7 +576,7 @@ JS
 		if ($editkey) {
 			set_editor('item', $name, $editkey);
 		}
-
+ 
 		return combo_input($name, $selected_id, $sql, 'stock_id', 's.description',
 		                   array_merge(array('format' => '_format_stock_items', 'spec_option' => $all_option === true ? _("All Items") : $all_option, 'spec_id' => $all_items, 'search_box' => false,
 		                                    'search' => array("stock_id", "c.description", "s.description"), 'search_submit' => get_company_pref('no_item_list') != 0, 'size' => 10,
