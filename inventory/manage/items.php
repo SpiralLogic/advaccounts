@@ -165,8 +165,8 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 				clear_data();
 				$new_item = true;
 				set_focus('stock_id');
-		meta_forward($_SERVER['PHP_SELF']);
-				} else {
+				meta_forward($_SERVER['PHP_SELF']);
+			} else {
 				set_global_stock_item($_POST['NewStockID']);
 				$_POST['stock_id'] = $_POST['NewStockID'];
 			}
@@ -250,6 +250,8 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		end_row();
 		end_table();
 		if (get_post('_show_inactive_update')) {
+			$_SESSION['options']['stock_id']['inactive'] = check_value('show_inactive');
+			FB::info($_SESSION['options']);
 			$Ajax->activate('stock_id');
 			set_focus('stock_id');
 		}
@@ -266,6 +268,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	} else { // Must be modifying an existing item
 		if (get_post('NewStockID') != get_post('stock_id') || get_post('addupdate')) { // first item display
 			$_POST['NewStockID'] = $_POST['stock_id'];
+			
 			$myrow = get_item($_POST['NewStockID']);
 			$_POST['long_description'] = $myrow["long_description"];
 			$_POST['description'] = $myrow["description"];

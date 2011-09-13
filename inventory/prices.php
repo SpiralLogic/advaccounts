@@ -57,7 +57,7 @@ if (!isset($_POST['stock_id']))
 
 if (!$_REQUEST['frame']) {
 	echo "<center>" . _("Item:") . "&nbsp;";
-	echo sales_items_list('stock_id', $_POST['stock_id'], false, true);
+	echo sales_items_list('stock_id', $_POST['stock_id'], false, true,'',array(),true);
 	echo "<hr></center>";
 }
 

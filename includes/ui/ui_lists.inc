@@ -687,7 +687,7 @@ JS
 
 	//------------------------------------------------------------------------------------
 	function stock_purchasable_items_list($name, $selected_id = null, $all_option = false, $submit_on_change = false, $all = false, $editkey = false, $legacy=false) {
-		return stock_items_list($name, $selected_id, $all_option, $submit_on_change, array('where' => "mb_flag!= 'M'", 'show_inactive' => $all, 'editable' => false), $legacy=false);
+		return stock_items_list($name, $selected_id, $all_option, $submit_on_change, array('where' => "mb_flag!= 'M'", 'show_inactive' => $all, 'editable' => false), false,$legacy);
 	}
 
 	function stock_purchasable_items_list_cells($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false, $editkey = false) {

@@ -115,7 +115,7 @@ if (!isset($_POST['stock_id']))
 
 if (!$_REQUEST['frame']) {
 	echo "<center>" . _("Item:") . "&nbsp;";
-	echo stock_purchasable_items_list('stock_id', $_POST['stock_id'], false, true);
+	echo stock_purchasable_items_list('stock_id', $_POST['stock_id'], false, true,false,false,true);
 
 	echo "<hr></center>";
 	set_global_stock_item($_POST['stock_id']);
