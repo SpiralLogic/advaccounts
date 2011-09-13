@@ -194,14 +194,14 @@
 					
 				}
 				$stock_id = ' s.stock_id, p.supplier_description, MAX(p.price) as price ';
-				$where .= " AND s.id = p.stockid ";
+				$where .= " AND s.stock_id = p.stock_id ";
 				$prices = ", purch_data p ";
 			}
 			elseif ($o['sale']) {
 				$weight = 'IF(s.stock_id LIKE ?, 0,20) + IF(s.stock_id LIKE ?,0,5)  + IF(s.stock_id LIKE ?,0,5) as weight';
 				$stock_id = " s.stock_id, p.price ";
 				$prices = ", prices p";
-				$where .= " AND s.id = p.stockid ";
+				$where .= " AND s.stock_id = p.stock_id ";
 				if (isset($o['sales_type'])) {
 					$sales_type = ' AND p.sales_type_id =' . $o['sales_type'];
 				}
