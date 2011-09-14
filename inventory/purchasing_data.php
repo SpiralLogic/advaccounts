@@ -72,56 +72,42 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 				WHERE stock_id=" . db_escape($_POST['stock_id']) . " AND
 				supplier_id=" . db_escape($selected_id);
 				db_query($sql, "The supplier purchasing details could not be updated");
-
 				display_notification(_("Supplier purchasing data has been updated."));
 			}
 			$Mode = 'RESET';
 		}
 	}
-
 	//--------------------------------------------------------------------------------------------------
-
 	if ($Mode == 'Delete') {
-
 		$sql = "DELETE FROM purch_data WHERE supplier_id=" . db_escape($selected_id) . "
 		AND stock_id=" . db_escape($_POST['stock_id']);
 		db_query($sql, "could not delete purchasing data");
-
 		display_notification(_("The purchasing data item has been sucessfully deleted."));
 		$Mode = 'RESET';
 	}
-
 	if ($Mode == 'RESET') {
 		$selected_id = -1;
 	}
-
 	if (isset($_POST['_selected_id_update'])) {
 		$selected_id = $_POST['selected_id'];
 		$Ajax->activate('_page_body');
 	}
-
 	if (list_updated('stock_id'))
 		$Ajax->activate('price_table');
 	//--------------------------------------------------------------------------------------------------
-
 	if ($_REQUEST['frame']) {
 		start_form(false, false, $_SERVER['PHP_SELF'] . '?frame=1');
 	} else {
 		start_form();
 	}
-
 	if (!isset($_POST['stock_id']))
 		$_POST['stock_id'] = get_global_stock_item();
-
 	if (!$_REQUEST['frame']) {
 		echo "<center>" . _("Item:") . "&nbsp;";
 		echo stock_purchasable_items_list('stock_id', $_POST['stock_id'], false, true, false, false, true);
-
 		echo "<hr></center>";
 		set_global_stock_item($_POST['stock_id']);
 	}
-
-
 	$mb_flag = get_mb_flag($_POST['stock_id']);
 
 	if ($mb_flag == -1) {
@@ -149,8 +135,8 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 			} else {
 				start_table("$table_style width=65%");
 			}
-			$th = array(_("Supplier"), _("Price"), _("Currency"),
-									_("Supplier's Unit"), _("Conversion Factor"), _("Supplier's Product Code"), "", "");
+			$th = array(_( "Updated"),_("Supplier"), _("Price"), _("Currency"),
+									_("Unit"), _("Conversion Factor"), _("Supplier's Code"), "", "");
 
 			table_header($th);
 
@@ -159,6 +145,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 			while ($myrow = db_fetch($result))
 			{
 				alt_table_row_color($k);
+				label_cell(sql2date($myrow['last_update']),"style='white-space:nowrap;'");
 
 				label_cell($myrow["supp_name"]);
 				amount_decimal_cell($myrow["price"]);

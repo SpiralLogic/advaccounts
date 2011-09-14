@@ -189,7 +189,6 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 }
 	 foreach ($supp_trans->grn_items as $entered_grn)
 	 {
-
 		if (!$supp_trans->is_invoice) {
 		  $entered_grn->this_quantity_inv = -$entered_grn->this_quantity_inv;
 		  set_grn_item_credited($entered_grn, $supp_trans->supplier_id, $invoice_id, $date_);
@@ -227,8 +226,12 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		  $mat_cost = update_average_material_cost(null, $entered_grn->item_code,
 																 $diff, $entered_grn->this_quantity_inv, $old_date, true);
 		  // added 2008-12-08 Joe Hunt. Update the purchase data table
-		  $current_purchase_price = get_purchase_price($entered_grn->supplier_id, $entered_grn->stock_id);
-		  if ($current_purchase_price[0] > $entered_grn->chg_price)
+		  $current_purchase_price = get_purchase_price($entered_grn->supplier_id, $entered_grn->item_code);
+			FB::info($entered_grn);
+FB::info($current_purchase_price);
+
+
+		  if ($current_purchase_price> $entered_grn->chg_price)
 			 add_or_update_purchase_data($supp_trans->supplier_id, $entered_grn->item_code, $entered_grn->chg_price);
 		  $deliveries = get_deliveries_between($entered_grn->item_code, $old_date, Today()); // extend the period, if invoice is before any deliveries.
 		  if ($deliveries[0] != 0) // have deliveries been done during the period?
