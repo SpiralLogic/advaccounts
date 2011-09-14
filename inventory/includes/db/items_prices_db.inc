@@ -22,11 +22,9 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 
 	function update_item_price($price_id, $sales_type_id, $curr_abrev, $price) {
 
-
-		$sql = "UPDATE prices SET sales_type_id=" . db_escape($sales_type_id) . ",
+	 $sql = "UPDATE prices SET sales_type_id=" . db_escape($sales_type_id) . ",
 		curr_abrev=" . db_escape($curr_abrev) . ",
 		price=" . db_escape($price) . " WHERE id=" . db_escape($price_id);
-
 		db_query($sql, "an item price could not be updated");
 	}
 

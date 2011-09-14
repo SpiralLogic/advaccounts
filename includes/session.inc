@@ -11,7 +11,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
  ***********************************************************************/
 	global $start22;
 	$start22 = microtime();
-$go_debug=0;
+$go_debug=1;
 
 	function output_html($text) {
 		global $before_box, $Ajax, $messages;
