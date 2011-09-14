@@ -273,8 +273,8 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 }
 
 	 function check_cust_ref($cust_ref) {
-
-		$sql = "SELECT customer_ref FROM sales_orders WHERE debtor_no=" . db_escape($this->customer_id) . " AND customer_ref=" . db_escape($cust_ref);
+if (!is_int($this->trans_type)) return false;
+		$sql = "SELECT customer_ref,type FROM sales_orders WHERE debtor_no=" . db_escape($this->customer_id) . " AND customer_ref=" . db_escape($cust_ref) ." AND type != ".$this->trans_type;
 		$result = db_query($sql);
 
 		return (db_num_rows($result) > 0) ? false : true;

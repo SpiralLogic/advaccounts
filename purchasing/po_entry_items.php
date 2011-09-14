@@ -36,10 +36,10 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		$supplier = new Supplier($_SESSION['wa_global_supplier_id']);
 
 		if (!isset($_GET['Updated'])) {
-			display_notification_centered(_("Purchase Order: ".$_SESSION['PO']->reference." has been entered"));
+			display_notification_centered(_("Purchase Order: ".$_SESSION['history'][ST_PURCHORDER]." has been entered"));
 		}
 		else {
-			display_notification_centered(_("Purchase Order: ".$_SESSION['PO']->reference." has been updated") . " #$order_no");
+			display_notification_centered(_("Purchase Order: ".$_SESSION['history'][ST_PURCHORDER]." has been updated") . " #$order_no");
 		}
 	  unset($_SESSION['PO']);
 		display_note(get_trans_view_str($trans_type, $order_no, _("&View this order"),false,'button'), 0, 1);
@@ -273,13 +273,15 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 				/*its a new order to be inserted */
 				$order_no = add_po($_SESSION['PO']);
 				new_doc_date($_SESSION['PO']->orig_order_date);
+				$_SESSION['history'][ST_PURCHORDER] = $_SESSION['PO']->reference;
 				unset($_SESSION['PO']);
 				meta_forward($_SERVER['PHP_SELF'], "AddedID=$order_no");
 			}
 			else {
 				/*its an existing order need to update the old order info */
 				$order_no = update_po($_SESSION['PO']);
-				
+				$_SESSION['history'][ST_PURCHORDER] = $_SESSION['PO']->reference;
+
 				meta_forward($_SERVER['PHP_SELF'], "AddedID=$order_no&Updated=1");
 			}
 		}
