@@ -90,13 +90,13 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 				/*Need to insert a grn item */
 				$grn_item = add_grn_detail_item($grn, $order_line->po_detail_rec, $order_line->stock_id, $order_line->description, $order_line->standard_cost, $order_line->receive_qty, $order_line->price,
 																				$order_line->discount);
-																								/* Update location stock records - NB  a po cannot be entered for a service/kit parts */
+				/* Update location stock records - NB  a po cannot be entered for a service/kit parts */
 				add_stock_move(ST_SUPPRECEIVE, $order_line->stock_id, $grn, $location, $date_, "", $order_line->receive_qty, $order_line->standard_cost, $po->supplier_id, 1, $order_line->price);
 
 			} /*quantity received is != 0 */
 		} /*end of order_line loop */
 
-		if ($po->freight > 0) $grn_item = add_grn_detail_item($grn, add_freight_to_po($po, $date_), 'Freight', 'Freight Charges', 0, 1, $po->freight, 0);
+		$grn_item = add_grn_detail_item($grn, add_freight_to_po($po, $date_), 'Freight', 'Freight Charges', 0, 1, $po->freight, 0);
 		$Refs->save(ST_SUPPRECEIVE, $grn, $reference);
 
 		add_audit_trail(ST_SUPPRECEIVE, $grn, $date_);

@@ -234,12 +234,9 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 				$_POST[$line->line_no] = max($_POST[$line->line_no], 0);
 				if (!check_num($line->line_no))
 					$_POST[$line->line_no] = number_format2(0, get_qty_dec($line->stock_id));
-
 				if (!isset($_POST['DefaultReceivedDate']) || $_POST['DefaultReceivedDate'] == "")
 					$_POST['DefaultReceivedDate'] = new_doc_date();
-
 				$_SESSION['PO']->line_items[$line->line_no]->receive_qty = input_num($line->line_no);
-
 				if (isset($_POST[$line->stock_id . "Desc"]) && strlen($_POST[$line->stock_id . "Desc"]) > 0) {
 					$_SESSION['PO']->line_items[$line->line_no]->description = $_POST[$line->stock_id . "Desc"];
 				}
@@ -247,32 +244,22 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		}
 		$Ajax->activate('grn_items');
 	}
-
 	//--------------------------------------------------------------------------------------------------
-
 	if (isset($_POST['ProcessGoodsReceived'])) {
 		process_receive_po();
 	}
-
 	//--------------------------------------------------------------------------------------------------
 	start_form();
-
 	display_grn_summary($_SESSION['PO'], true);
 	display_heading(_("Items to Receive"));
 	display_po_receive_items();
 	hyperlink_params("/purchasing/po_entry_items.php", _("Edit This Purchase Order"), "ModifyOrderNumber=" .
 																																										$_SESSION['PO']->order_no);
-
 	echo '<br>';
-
 	submit_center_first('Update', _("Update Totals"), '', true);
-
 	submit_center_last('ProcessGoodsReceived', _("Process Receive Items"), _("Clear all GL entry fields"), 'default');
-
 	end_form();
-
 	//--------------------------------------------------------------------------------------------------
-
 	end_page();
 ?>
 
