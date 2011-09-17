@@ -20,7 +20,7 @@
 						  array('OutstandingOnly' => 'SA_SALESDELIVERY', 'InvoiceTemplates' => 'SA_SALESINVOICE'),
 						  array('OutstandingOnly' => 'SA_SALESDELIVERY', 'InvoiceTemplates' => 'SA_SALESINVOICE'));
   $js = "";
-  if ($use_popup_windows) {
+  if (Config::get('ui.windows.popups')) {
 	 $js .= get_js_open_window(900, 600);
   }
 

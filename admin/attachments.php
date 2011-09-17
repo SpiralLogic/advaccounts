@@ -62,7 +62,7 @@ if ($download_id != -1) {
 }
 
 $js = "";
-if ($use_popup_windows)
+if (Config::get('ui.windows.popups'))
 	$js .= get_js_open_window(800, 500);
 page(_($help_context = "Attach Documents"), false, false, "", $js);
 

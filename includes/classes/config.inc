@@ -7,16 +7,17 @@
  * To change this template use File | Settings | File Templates.
  */
 
-	class Config {
+ class Config {
 
-		protected static $_vars = array();
+	protected static $_vars = array();
 
-		public static function set($var, $value) {
-			static::$_vars[$var] = $value;
-			return $value;
-		}
-
-		public static function get($var) {
-			return static::$_vars[$var];
-		}
+	public static function set($var, $value) {
+	 static::$_vars[$var] = $value;
+	 return $value;
 	}
+
+	public static function get($var) {
+	 if (!isset(static::$_vars[$var])) return false;
+	 return static::$_vars[$var];
+	}
+ }

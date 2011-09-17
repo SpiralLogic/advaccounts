@@ -19,7 +19,7 @@ include_once($path_to_root . "/sales/includes/sales_db.inc");
 
 include_once($path_to_root . "/includes/faui.inc");
 $js = "";
-if ($use_popup_windows)
+if (Config::get('ui.windows.popups'))
 	$js .= get_js_open_window(800, 500);
 
 

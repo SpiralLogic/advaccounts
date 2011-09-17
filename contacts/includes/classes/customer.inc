@@ -8,7 +8,7 @@
  */
 	class Customer extends Company {
 
-		public $debtor_no;
+		public $debtor_no=0;
 		public $name = 'New Customer';
 		public $sales_type;
 		public $debtor_ref = '';
@@ -159,7 +159,7 @@
 			$this->accounts = new Accounts();
 			$this->branches[0] = new Branch();
 			$this->contacts[0] = new Contact();
-			$this->branches[0]->debtor_no = $this->accounts->debtor_no = $this->contacts[0]->parent_id = $this->id;
+			$this->branches[0]->debtor_no = $this->accounts->debtor_no = $this->contacts[0]->parent_id = $this->id = 0;
 			$this->_setDefaults();
 			return $this->_status(true, 'Initialize new customer', 'Now working with a new customer');
 		}

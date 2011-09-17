@@ -18,7 +18,7 @@ $before_box = ''; // temporary container for output html data before error box
 
 function error_handler($errno, $errstr, $file, $line)
 {
-	global $messages, $go_debug;
+	global $messages;
 
 	// skip well known warnings we don't care about.
 	// Please use restrainedly to not risk loss of important messages
@@ -111,7 +111,7 @@ function end_flush()
 
 function display_db_error($msg, $sql_statement = null, $exit = true)
 {
-	global $db, $debug;
+	global $db;
 
 	$warning = $msg == null;
 	$db_error = db_error_no();
@@ -127,7 +127,7 @@ function display_db_error($msg, $sql_statement = null, $exit = true)
 		$str .= "error message : " . db_error_msg($db) . "<br>";
 	}
 
-	if ($debug == 1) {
+	if (Config::get('debug')) {
 		$str .= "sql that failed was : " . $sql_statement . "<br>";
 	}
 
@@ -154,12 +154,11 @@ function frindly_db_error($db_error)
 
 function check_db_error($msg, $sql_statement, $exit_if_error = true, $rollback_if_error = true)
 {
-	global $db, $go_debug;
 	$db_error = db_error_no();
 
 	if ($db_error != 0) {
 
-		if (	 (isset($_SESSION["wa_current_user"]) && $_SESSION["wa_current_user"]->user == 1) && ($go_debug || !frindly_db_error($db_error))) {
+		if ((isset($_SESSION["wa_current_user"]) && $_SESSION["wa_current_user"]->user == 1) && (Config::get('debug') || !frindly_db_error($db_error))) {
 			display_db_error($msg, $sql_statement, false);
 		}
 

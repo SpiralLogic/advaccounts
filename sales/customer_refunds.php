@@ -24,7 +24,7 @@
   include_once($path_to_root . "reporting/includes/reporting.inc");
   $path_to_root = '..';
   $js = "";
-  if ($use_popup_windows) {
+  if (Config::get('ui.windows.popups')) {
 	 $js .= get_js_open_window(900, 500);
   }
   $js_lib[] = <<< JS

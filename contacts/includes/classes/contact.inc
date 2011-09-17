@@ -52,9 +52,8 @@
 
 		protected function _saveNew() {
 
-			DB::insert('contacts')->exec($this);
-			DB::fetch();
-			$this->id = db_insert_id();
+		$this->id =	DB::insert('contacts')->exec($this);
+		
 
 			$this->_status(true, 'Saving', "New contact has been added");
 		}

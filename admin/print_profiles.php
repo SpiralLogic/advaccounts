@@ -24,9 +24,9 @@ $selected_id = get_post('profile_id', '');
 //
 function get_reports()
 {
-	global $path_to_root, $comp_path, $go_debug;
+	global $path_to_root, $comp_path;
 
-	if ($go_debug || !isset($_SESSION['reports'])) {
+	if (Config::get('debug') || !isset($_SESSION['reports'])) {
 		// to save time, store in session.
 		$paths = array(
 			$path_to_root . '/reporting/',

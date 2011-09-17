@@ -27,7 +27,7 @@ echo "<table width='100%' border='0'>
     <td><div align='center'><font size=2>";
 echo _("Thank you for using") . " ";
 
-echo "<strong>$app_title $version</strong>";
+echo "<strong>".APP_TITLE.' '.VERSION."</strong>";
 
 echo "</font></div></td>
   </tr>

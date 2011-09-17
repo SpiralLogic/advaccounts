@@ -188,7 +188,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		}
 
 		function Info($params, $cols, $headers, $aligns, $cols2 = null, $headers2 = null, $aligns2 = null) {
-			global $app_title, $version, $power_by, $power_url;
+
 			$this->company = get_company_prefs();
 			$year = get_current_fiscalyear();
 			if ($year['closed'] == 0) $how = _("Active"); else

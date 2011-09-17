@@ -79,9 +79,8 @@ function flush_dir($path, $wipe = false)
 
 function cache_js_file($fpath, $text)
 {
-	global $go_debug;
 
-	if (!$go_debug) {
+	if (!Config::get('debug')) {
 		$text = js_compress($text);
 	}
 

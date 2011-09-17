@@ -30,9 +30,8 @@
 	}
 
 	public static function execute($data) {
-	 global $go_debug;
 	 if (static::$_prepared) {
-		if ($go_debug) {
+		if (Config::get('debug.sql')) {
 		 $sql = static::$_prepared->queryString;
 		 foreach ($data as $k=>$v) {
 			$sql =  preg_replace('/\?/i', " '$v' ", $sql, 1); // outputs '123def abcdef abcdef' str_replace(,,$sql);

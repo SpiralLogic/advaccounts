@@ -32,7 +32,7 @@
 										array('NewOrder' => 'SA_SALESORDER', 'ModifySalesOrder' => 'SA_SALESORDER', 'NewQuotation' => 'SA_SALESQUOTE', 'ModifyQuotationNumber' => 'SA_SALESQUOTE',
 												 'NewDelivery' => 'SA_SALESDELIVERY', 'NewInvoice' => 'SA_SALESINVOICE'));
 	$js = '';
-	if ($use_popup_windows) {
+	if (Config::get('ui.windows.popups')) {
 		$js .= get_js_open_window(900, 500);
 	}
 

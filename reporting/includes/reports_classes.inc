@@ -29,7 +29,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		}
 
 		function getDisplay($class = null) {
-			global $table_style, $comp_path, $path_to_root, $pdf_debug, $Ajax;
+			global $table_style, $comp_path, $path_to_root,  $Ajax;
 
 			$temp = array_values($this->ar_classes);
 			$display_class = $class == null ? $temp[0] : $this->ar_classes[$class];
@@ -51,7 +51,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 						$action = $path_to_root . '/reporting/prn_redirect.php';
 
 						$st_params = "<table><tr><td>\n" . "<form method='POST' action='$action' target='_blank'>\n";
-						$st_params .= submit('Rep' . $report->id, _("Display: ") . access_string($report->name, true), false, '', $pdf_debug ? false : 'default process') . hidden('REP_ID',
+						$st_params .= submit('Rep' . $report->id, _("Display: ") . access_string($report->name, true), false, '', Config::get('debug.pdf') ? false : 'default process') . hidden('REP_ID',
 						                                                                                                                                                           $report->id,
 						                                                                                                                                                           false) . '<br><br>';
 						$st_params .= $this->getOptions($report->get_controls());
@@ -135,7 +135,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		//	Returns html code for input control $name of type $type
 		//
 		function get_ctrl($name, $type) {
-			global $path_to_root, $use_date_picker, $pdf_debug, $print_invoice_no, $def_print_destination;
+			global $path_to_root,  $print_invoice_no, $def_print_destination;
 
 			$st = '';
 			switch ($type) {
@@ -175,7 +175,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 					}
 
 					$st = "<input type='text' name='$name' value='$date'>";
-					if ($use_date_picker) {
+					if (Config::get('ui.forms.datepicker')) {
 						$st .= "<a href=\"javascript:date_picker(document.forms[0].$name);\">" . "	<img src='$path_to_root/themes/default/images/cal.gif' width='16' height='16' border='0' alt='" . _('Click Here to Pick up the date') . "'></a>\n";
 					}
 					return $st;

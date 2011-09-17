@@ -15,7 +15,7 @@ $path_to_root = "../..";
 include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 
 $js = "";
-if ($use_popup_windows)
+if (Config::get('ui.windows.popups'))
 	$js .= get_js_open_window(900, 500);
 page(_($help_context = "View Work Order Production"), true, false, "", $js);
 

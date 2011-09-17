@@ -167,9 +167,8 @@ function check_user_activity($id)
 //-----------------------------------------------------------------------------------------------
 function show_users_online()
 {
-	global $show_users_online;
 
-	if (!isset($show_users_online) || $show_users_online == 0 || !isset($_SESSION['get_text']))
+	if (!Config::get('ui.users.showonline')|| !isset($_SESSION['get_text']))
 		return "";
 	$result = db_query("SHOW TABLES LIKE 'useronline'");
 	if (db_num_rows($result) == 1) {

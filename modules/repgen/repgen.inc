@@ -1544,9 +1544,6 @@ class report
 function create_report($id, $file)
 	//   $id is the id-number of the report in the database
 {
-	global $go_debug;
-	//$d = true;  // switch for debug
-	$d = $go_debug; // from FA config.php
 	// create report-instantiation
 	$rep = new report();
 	// read data for report
@@ -1572,7 +1569,7 @@ function create_report($id, $file)
 	$rep->pdf->addInfo("Subject", $rep->get_name());
 	$rep->pdf->addInfo("Keywords", $rep->get_name());
 	$rep->create_page();
-	if (isset($d) && $d) {
+	if (Config::get('debug')) {
 		$pdfcode = $rep->pdf->Output('', 'S');
 		$pdfcode = str_replace("\n", "\n<br>", htmlspecialchars($pdfcode));
 		echo '<html><body>';

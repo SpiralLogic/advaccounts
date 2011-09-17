@@ -39,7 +39,7 @@ if (!isset($def_coy)) {
 }
 $def_theme = "default";
 $login_timeout = $_SESSION["wa_current_user"]->last_act;
-$title = $login_timeout ? _('Authorization timeout') : $app_title . " " . $version . " - " . _("Login");
+$title = $login_timeout ? _('Authorization timeout') : APP_TITLE . " " . VERSION . " - " . _("Login");
 $encoding = isset($_SESSION['language']->encoding) ? $_SESSION['language']->encoding : "iso-8859-1";
 $rtl = isset($_SESSION['language']->dir) ? $_SESSION['language']->dir : "ltr";
 $onload = !$login_timeout ? "onload='defaultCompany()'" : "";
@@ -64,7 +64,7 @@ start_table("class='login'");
 start_row();
 echo "<td align='center' colspan=2>";
 if (!$login_timeout) { // FA logo
-	echo "<a target='_blank' href='$power_url'><img src='/themes/$def_theme/images/logo_frontaccounting.png' alt='FrontAccounting' height='50' onload='fixPNG(this)' border='0' /></a>";
+	echo "<a target='_blank' href='".POWERED_URL."'><img src='/themes/$def_theme/images/logo_frontaccounting.png' alt='FrontAccounting' height='50' onload='fixPNG(this)' border='0' /></a>";
 } else {
 	echo "<font size=5>" . _('Authorization timeout') . "</font><br>You were idle for: " . (
 			$_SESSION["wa_current_user"]->last_act + $tout - time());
@@ -73,7 +73,7 @@ echo "</td>\n";
 end_row();
 echo "<input type='hidden' id=ui_mode name='ui_mode' value='" . $_SESSION["wa_current_user"]->ui_mode . "' />\n";
 if (!$login_timeout) {
-	table_section_title(_("Version") . " $version   Build $build_version - " . _("Login"));
+	table_section_title(_("Version") . VERSION ."   Build ".BUILD_VERSION." - " . _("Login"));
 }
 $value = $login_timeout ? $_SESSION['wa_current_user']->loginname : ($allow_demo_mode ? "demouser" : "");
 text_row(_("User name"), "user_name_entry_field", $value, 20, 30);
@@ -133,10 +133,10 @@ echo "<td class='bottomBarCell'>$date</td>\n";
 echo "</tr></table>\n";
 echo "<table class='footer'>\n";
 echo "<tr>\n";
-echo "<td><a target='_blank' href='$power_url' tabindex='-1'>".$app_title.' '.$version." - " . _("Theme:") . " " . $def_theme . "</a></td>\n";
+echo "<td><a target='_blank' href='".POWERED_URL."' tabindex='-1'>".APP_TITLE.' '.VERSION." - " . _("Theme:") . " " . $def_theme . "</a></td>\n";
 echo "</tr>\n";
 echo "<tr>\n";
-echo "<td><a target='_blank' href='$power_url' tabindex='-1'>$power_by</a></td>\n";
+echo "<td><a target='_blank' href='".POWERED_URL."' tabindex='-1'>".POWERED_BY."</a></td>\n";
 echo "</tr>\n";
 echo "</table><br><br>\n";
 echo "</body></html>\n";

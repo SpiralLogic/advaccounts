@@ -289,7 +289,7 @@ function db_drop_db($connection)
 
 function db_import($filename, $connection, $force = true)
 {
-	global $db, $go_debug;
+	global $db;
 
 	$allowed_commands = array(
 		"create" => 'table_queries',
@@ -473,7 +473,7 @@ function db_backup($conn, $ext = 'no', $comm = '')
 function db_export($conn, $filename, $zip = 'no', $comment = '')
 {
 
-	global $app_title, $version, $power_url, $path_to_root;
+	global   $path_to_root;
 
 	$error = false;
 	// set max string size before writing to file
@@ -494,8 +494,8 @@ function db_export($conn, $filename, $zip = 'no', $comment = '')
 	//create comment
 	$out = "# MySQL dump of database '" . $conn["dbname"] . "' on host '" . $conn["host"] . "'\n";
 	$out .= "# Backup Date and Time: " . date("Y-m-d H:i") . "\n";
-	$out .= "# Built by " . $app_title . " " . $version . "\n";
-	$out .= "# " . $power_url . "\n";
+	$out .= "# Built by " . APP_TITLE . " " . VERSION . "\n";
+	$out .= "# " . POWERED_URL . "\n";
 	$out .= "# Company: " . @html_entity_decode($company, ENT_QUOTES, $_SESSION['language']->encoding) . "\n";
 	$out .= "# User: " . $_SESSION["wa_current_user"]->name . "\n\n";
 

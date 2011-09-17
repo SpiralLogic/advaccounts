@@ -16,7 +16,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	include_once($path_to_root . "/reporting/includes/reporting.inc");
 	include($path_to_root . "/purchasing/includes/purchasing_ui.inc");
 	$js = "";
-	if ($use_popup_windows)
+	if (Config::get('ui.windows.popups'))
 		$js .= get_js_open_window(900, 500);
 	page(_($help_context = "View Purchase Order"), true, false, "", $js);
 	if (!isset($_GET['trans_no'])) {

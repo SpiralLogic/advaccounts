@@ -210,11 +210,11 @@
 		}
 
 		function Info($params, $cols, $headers, $aligns, $cols2 = null, $headers2 = null, $aligns2 = null, $companylogoenable = false, $footerenable = false, $footertext = '') {
-			global $app_title, $version, $power_by, $power_url;
+
 			$this->addinfo('Title', $this->title);
 			$this->addinfo('Subject', $this->title);
-			$this->addinfo('Author', $app_title . ' ' . $version);
-			$this->addinfo('Creator', $power_by . ' - ' . $power_url);
+			$this->addinfo('Author', APP_TITLE . ' ' . VERSION);
+			$this->addinfo('Creator', POWERED_BY . ' - ' . POWERED_URL);
 			$year = get_current_fiscalyear();
 			if ($year['closed'] == 0) {
 				$how = _("Active");
@@ -772,8 +772,8 @@
 		}
 
 		function End($email = 0, $subject = null, $myrow = null, $doctype = 0) {
-			global $pdf_debug, $path_to_root, $comp_path;
-			if ($pdf_debug == 1) {
+			global $path_to_root, $comp_path;
+			if (Config::get('debug.pdf') == 1) {
 				$pdfcode = $this->Output('', 'S');
 				$pdfcode = str_replace("\n", "\n<br>", htmlspecialchars($pdfcode));
 				echo '<html><body>';

@@ -83,8 +83,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	}
 
 	function email_document_link($doc_no, $link_text, $link = true, $type_no, $class = 'EmailLink', $id = '', $emails = array(), $extra = 0, $return = false) {
-		global $pdf_debug;
-		if (empty($emails)) return false;
+				if (empty($emails)) return false;
 		if ($return) {
 			ob_start();
 		}
@@ -98,7 +97,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		$ars[] = 'REP_ID=' . urlencode($rep);
 		$url .= implode('&', $ars);
 		if ($class != '') {
-			$class = $pdf_debug ? '' : " class='$class'";
+			$class = Config::get('debug.pdf') ? '' : " class='$class'";
 		}
 		if ($id != '') {
 			$id = " id='$id'";
@@ -127,7 +126,7 @@ JS;
 	//	Universal link to any kind of report.
 	//
 	function print_link($link_text, $rep, $pars = array(), $dir = '', $icon = false, $class = 'printlink', $id = '') {
-		global $path_to_root, $pdf_debug;
+		global $path_to_root;
 		$url = $dir == '' ? $path_to_root . '/reporting/prn_redirect.php?' : $dir;
 		$id = default_focus($id);
 		foreach ($pars as $par => $val) {
@@ -136,7 +135,7 @@ JS;
 		$pars[] = 'REP_ID=' . urlencode($rep);
 		$url .= implode('&', $pars);
 		if ($class != '') {
-			$class = $pdf_debug ? '' : " class='$class'";
+			$class = Config::get('debug.pdf') ? '' : " class='$class'";
 		}
 		if ($id != '') {
 			$id = " id='$id'";

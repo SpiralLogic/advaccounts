@@ -109,33 +109,31 @@ function tst_gettext()
 
 function tst_debug()
 {
-	global $go_debug;
 	$test['descr'] = _('Debugging mode');
 	$test['type'] = 0;
-	$test['test'] = $go_debug ? _("Yes") : _("No");
-	$test['result'] = $go_debug != 0;
-	$test['comments'] = _('To switch debugging on set $go_debug=1 in config.php file');
+	$test['test'] = Config::get('debug') ? _("Yes") : _("No");
+	$test['result'] = Config::get('debug') != 0;
+	$test['comments'] = _('To switch debugging on set true in config.php file');
 
 	return $test;
 }
 
 function tst_logging()
 {
-	global $error_logfile;
 
 	$test['descr'] = _('Error logging');
 	$test['type'] = 2;
 	// if error lgging is on, but log file does not exists try write
-	if ($error_logfile && !is_file($error_logfile)) {
-		@fclose(@fopen($error_logfile, 'w'));
+	if (Config::get('logs.error.file') && !is_file(Config::get('logs.error.file'))) {
+		@fclose(@fopen(Config::get('logs.error.file'), 'w'));
 	}
-	$test['result'] = @$error_logfile != '' && is_writable($error_logfile);
-	$test['test'] = @$error_logfile == '' ? _("Disabled") : $error_logfile;
+	$test['result'] = @Config::get('logs.error.file') != '' && is_writable(Config::get('logs.error.file'));
+	$test['test'] = @Config::get('logs.error.file') == '' ? _("Disabled") : Config::get('logs.error.file');
 
-	if (@$error_logfile == '')
+	if (@Config::get('logs.error.file') == '')
 		$test['comments'] = _('To switch error logging set $error_logging in config.php file');
 	else
-		if (!is_writable($error_logfile))
+		if (!is_writable(Config::get('logs.error.file')))
 			$test['comments'] = _('Log file is not writeable');
 
 	return $test;

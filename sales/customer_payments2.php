@@ -23,7 +23,7 @@
   include_once($path_to_root . "/reporting/includes/reporting.inc");
 
   $js = "";
-  if ($use_popup_windows) {
+  if (Config::get('ui.windows.popups')) {
 	 $js .= get_js_open_window(900, 500);
   }
   JS::headerFile('/js/payalloc.js');

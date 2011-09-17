@@ -19,7 +19,6 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 function add_gl_trans($type, $trans_id, $date_, $account, $dimension, $dimension2, $memo_,
 	$amount, $currency = null, $person_type_id = null, $person_id = null, $err_msg = "", $rate = 0)
 {
-	global $use_audit_trail;
 
 	$date = date2sql($date_);
 	if ($currency != null) {
@@ -34,7 +33,7 @@ function add_gl_trans($type, $trans_id, $date_, $account, $dimension, $dimension
 		$dimension = 0;
 	if ($dimension2 == null || $dimension2 < 0)
 		$dimension2 = 0;
-	if (isset($use_audit_trail) && $use_audit_trail) {
+	if (Config::get('logs.audits')) {
 		if ($memo_ == "" || $memo_ == null)
 			$memo_ = $_SESSION["wa_current_user"]->username;
 		else

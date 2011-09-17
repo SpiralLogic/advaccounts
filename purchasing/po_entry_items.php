@@ -16,7 +16,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 	include_once(APP_PATH . "/purchasing/includes/purchasing_ui.inc");
 	include_once(APP_PATH . "/reporting/includes/reporting.inc");
-	if ($use_popup_windows) {
+	if (Config::get('ui.windows.popups')) {
 		$js .= get_js_open_window(900, 500);
 	}
 

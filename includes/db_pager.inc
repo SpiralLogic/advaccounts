@@ -329,8 +329,6 @@ class db_pager
 	//
 	function _init()
 	{
-		global $go_debug;
-
 		if ($this->ready == false) {
 			$sql = $this->_sql_gen(true);
 			$result = db_query($sql, 'Error reading record set');
@@ -342,7 +340,7 @@ class db_pager
 			$this->max_page = $this->page_len ?
 					ceil($this->rec_count / $this->page_len) : 0;
 
-			if ($go_debug) { // FIX - need column name parsing, but for now:
+			if (Config::get('debug')) { // FIX - need column name parsing, but for now:
 				// check if field names are set explicite in col def
 				// for all initially ordered columns
 				foreach ($this->columns as $col) {

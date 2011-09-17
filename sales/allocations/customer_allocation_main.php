@@ -17,7 +17,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
   include_once($path_to_root . "/sales/includes/sales_ui.inc");
   include_once($path_to_root . "/sales/includes/sales_db.inc");
   $js = "";
-  if ($use_popup_windows)
+  if (Config::get('ui.windows.popups'))
 	 $js .= get_js_open_window(900, 500);
   page(_($help_context = "Customer Allocations"), false, false, "", $js);
 

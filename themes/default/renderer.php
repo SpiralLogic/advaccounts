@@ -25,7 +25,7 @@
 		}
 
 		function menu_header($title, $no_menu, $is_index) {
-			global $path_to_root, $help_base_url, $db_connections, $app_title, $version;
+			global $path_to_root, $help_base_url, $db_connections;
 			$sel_app = $_SESSION['sel_app'];
 			echo "<div id='content'>\n";
 			if (!$no_menu || AJAX_REFERRER) {
@@ -48,7 +48,7 @@
 				echo "</div>\n";
 				echo "<div id='logo'>\n";
 				$indicator = "$path_to_root/themes/" . user_theme() . "/images/ajax-loader.gif";
-				echo "<h1>$app_title $version<span style='padding-left:280px;'><img id='ajaxmark' src='$indicator' align='center' style='visibility:hidden;'></span></h1>\n";
+				echo "<h1>".APP_TITLE." " .VERSION."<span style='padding-left:280px;'><img id='ajaxmark' src='$indicator' align='center' style='visibility:hidden;'></span></h1>\n";
 				echo "</div>\n";
 				$local_path_to_root = $path_to_root;
 				echo '<div id="_tabs2"><div class="menu_container">';
@@ -81,13 +81,13 @@
 		}
 
 		function menu_footer($no_menu, $is_index) {
-			global $path_to_root, $power_url, $power_by;
+			global $path_to_root;
 			include_once($path_to_root . "/includes/date_functions.inc");
 
 			if ($no_menu == false && !AJAX_REFERRER) {
 				echo "<div id='footer'>\n";
 				if (isset($_SESSION['wa_current_user'])) {
-					echo "<span class='power'><a target='_blank' href='{$power_url}'>{$power_by}</a></span>\n";
+					echo "<span class='power'><a target='_blank' href='".POWERED_URL."'>".POWERED_BY."</a></span>\n";
 					echo "<span class='date'>" . Today() . " | " . Now() . "</span>\n";
 					echo "<span class='date'>" . show_users_online() . "</span>\n";
 				}
