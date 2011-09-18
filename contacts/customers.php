@@ -1,7 +1,6 @@
 <?php
 
 	$page_security = 'SA_CUSTOMER';
-	$path_to_root = "..";
 	include_once("includes/contacts.inc");
 	if (AJAX_REFERRER) {
 		if (isset($_GET['term'])) {
@@ -67,7 +66,7 @@
 	HTML::td()->td(array('content' => _("Customer ID: "), "style" => "width:90px"), false)->td(true);
 	HTML::input('id', array('value' => '0', 'name' => 'id', 'size' => 10, 'maxlength' => '7'));
 	HTML::td()->tr->table->div;
-	start_outer_table($table_style2, 5);
+	start_outer_table(Config::get('tables.style2'), 5);
 	table_section(1);
 	table_section_title(_("Shipping Details"), 2);
 	/** @noinspection PhpUndefinedMethodInspection */
@@ -105,7 +104,7 @@
 	record_status_list_row(_("Customer status:"), 'inactive');
 	end_outer_table(1);
 	$menu->endTab()->startTab('Accounts', 'Accounts');
-	start_outer_table($table_style2, 5);
+	start_outer_table(Config::get('tables.style2'), 5);
 	table_section(1);
 	hidden('accounts_id', $customer->accounts->accounts_id);
 	table_section_title(_("Accounts Details:"), 2);
@@ -148,7 +147,7 @@
 	start_row();
 	HTML::td(array('class' => 'ui-widget-content center-content', 'colspan' => 2));
 	UI::button('addLog', "Add log entry")->td->tr->tr(true)->td(array('colspan' => 2))->textarea('messageLog', array('cols' => 50, 'rows' => 25));
-	contact_log::read($customer->id, 'C');
+	ContactLog::read($customer->id, 'C');
 	/** @noinspection PhpUndefinedMethodInspection */
 	HTML::textarea()->td->td;
 	payment_terms_list_row(_("Pament Terms:"), 'payment_terms', $customer->payment_terms);
@@ -168,7 +167,7 @@
 	HTML::td()->tr->table->script->div->div;
 
 	$menu->endTab()->startTab('Extra Shipping Info', 'Extra Shipping Info');
-	start_outer_table($table_style2, 5);
+	start_outer_table(Config::get('tables.style2'), 5);
 	table_section(1);
 	hidden('branch_code', $currentBranch->branch_code);
 	table_section_title(_("Name and Contact"));

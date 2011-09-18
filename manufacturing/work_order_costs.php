@@ -127,7 +127,7 @@ start_form();
 hidden('selected_id', $_POST['selected_id']);
 //hidden('WOReqQuantity', $_POST['WOReqQuantity']);
 
-start_table($table_style2);
+start_table(Config::get('tables.style2'));
 
 br();
 

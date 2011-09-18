@@ -83,7 +83,7 @@ $_POST['released'] = $myrow["released"];
 $_POST['memo_'] = "";
 
 if (can_process($myrow)) {
-	start_table($table_style2);
+	start_table(Config::get('tables.style2'));
 
 	label_row(_("Work Order #:"), $selected_id);
 	label_row(_("Work Order Reference:"), $myrow["wo_ref"]);

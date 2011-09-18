@@ -46,12 +46,12 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 
 	//--------------------------------------------------------------------------------------------------
 	function invoice_header(&$supp_trans) {
-		global $Ajax, $table_style2, $Refs;
+		global $Ajax,  $Refs;
 		// if vars have been lost, recopy
 		if (!isset($_POST['tran_date'])) {
 			copy_from_trans($supp_trans);
 		}
-		start_outer_table("width=95% $table_style2");
+		start_outer_table("width=95% ".Config::get('tables.style2'));
 		table_section(1);
 		if (isset($_POST['invoice_no'])) {
 			$trans = get_supp_trans($_POST['invoice_no'], ST_SUPPINVOICE);
@@ -113,11 +113,10 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 
 	//--------------------------------------------------------------------------------------------------
 	function invoice_totals(&$supp_trans) {
-		global $table_style, $table_style2;
 		copy_to_trans($supp_trans);
 		$dim = get_company_pref('use_dimension');
 		$colspan = ($dim == 2 ? 7 : ($dim == 1 ? 6 : 5));
-		start_table("$table_style width=80%");
+		start_table(Config::get('tables.style2')." width=80%");
 		label_row(_("Sub-total:"), price_format($supp_trans->ov_amount), "colspan=$colspan align=right", "align=right");
 		$taxes = $supp_trans->get_taxes($supp_trans->tax_group_id);
 		$tax_total = display_edit_tax_items($taxes, $colspan, 0, null, true); // tax_included==0 (we are the company)
@@ -131,7 +130,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 			label_row(_("Credit Note Total"), $display_total, "colspan=$colspan align=right style='font-weight:bold;color:red;'", "nowrap align=right style='font-weight:bold;color:red;'");
 		}
 		end_table(1);
-		start_table($table_style2);
+		start_table(Config::get('tables.style2'));
 		textarea_row(_("Memo:"), "Comments", null, 50, 3);
 		end_table(1);
 	}
@@ -163,7 +162,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	//		 = 2 display on view invoice
 	//		 = 3 display on view credit
 	function display_gl_items(&$supp_trans, $mode = 0) {
-		global $table_style, $Ajax;
+		global  $Ajax;
 		// if displaying in form, and no items, exit
 		if (($mode == 2 || $mode == 3) && count($supp_trans->gl_codes) == 0) {
 			return 0;
@@ -174,7 +173,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		else {
 			$heading = _("GL Items for this Credit Note");
 		}
-		start_outer_table("$table_style width=80%");
+		start_outer_table(Config::get('tables.style')."  width=80%");
 		if ($mode == 1) {
 			$qes = has_quick_entries(QE_SUPPINV);
 			if ($qes !== false) {
@@ -198,7 +197,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		display_heading($heading);
 		end_outer_table(0, false);
 		div_start('gl_items');
-		start_table("$table_style width=80%");
+		start_table(Config::get('tables.style')."  width=80%");
 		$dim = get_company_pref('use_dimension');
 		if ($dim == 2) {
 			$th = array(_("Account"), _("Name"), _("Dimension") . " 1", _("Dimension") . " 2", _("Memo"), _("Amount"));
@@ -360,7 +359,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	//		 = 2 display on view invoice
 	//		 = 3 display on view credit
 	function display_grn_items(&$supp_trans, $mode = 0) {
-		global $table_style, $path_to_root;
+		global  $path_to_root;
 		$ret = true;
 		// if displaying in form, and no items, exit
 		if (($mode == 2 || $mode == 3) && count($supp_trans->grn_items) == 0) {
@@ -416,7 +415,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		}
 		end_outer_table(0, false);
 		div_start('grn_items');
-		start_table("$table_style width=80%");
+		start_table(Config::get('tables.style')."  width=80%");
 		if ($mode == 1) {
 			$th = array(_("Delivery"), _("Sequence #"), _("P.O."), _("Item"), _("Description"), _("Received"),
 									_("Received"), _("Invoiced"), _("Yet To Invoice"), _("Order Price"),

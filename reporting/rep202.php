@@ -65,7 +65,7 @@ function get_invoices($supplier_id, $to)
 
 function print_aged_supplier_analysis()
 {
-	global $comp_path, $path_to_root, $systypes_array;
+	global  $path_to_root, $systypes_array;
 
 	$to = $_POST['PARAM_0'];
 	$fromsupp = $_POST['PARAM_1'];
@@ -220,18 +220,19 @@ function print_aged_supplier_analysis()
 	$rep->Line($rep->row - 8);
 	$rep->NewLine();
 	if ($graphics) {
-		global $decseps, $graph_skin;
+
 		$pg->x = array(_('Current'), $nowdue, $pastdue1, $pastdue2);
 		$pg->title = $rep->title;
 		$pg->axis_x = _("Days");
 		$pg->axis_y = _("Amount");
 		$pg->graphic_1 = $to;
 		$pg->type = $graphics;
-		$pg->skin = $graph_skin;
+		$pg->skin = Config::get('graphs.skin') ;
 		$pg->built_in = false;
 		$pg->fontfile = $path_to_root . "/reporting/fonts/Vera.ttf";
-		$pg->latin_notation = ($decseps[$_SESSION["wa_current_user"]->prefs->dec_sep()] != ".");
-		$filename = $comp_path . "/pdf_files/test.png";
+		$pg->latin_notation = (Config::get('seperators.decimal',$_SESSION["wa_current_user"]->prefs->dec_sep()) != ".");
+
+		$filename = COMPANY_PATH . "/pdf_files/test.png";
 		$pg->display($filename, true);
 		$w = $pg->width / 1.5;
 		$h = $pg->height / 1.5;

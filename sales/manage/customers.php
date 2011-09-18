@@ -236,7 +236,7 @@
 	 $_POST['inactive'] = $myrow["inactive"];
   }
 
-  start_outer_table($table_style2, 5);
+  start_outer_table(Config::get('tables.style2'), 5);
   table_section(1);
   table_section_title(_("Name and Address"));
 

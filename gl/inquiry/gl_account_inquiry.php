@@ -59,7 +59,6 @@ if (!isset($_POST["amount_max"]))
 
 function gl_inquiry_controls()
 {
-	global $table_style2;
 
 	$dim = get_company_pref('use_dimension');
 	start_form();
@@ -93,7 +92,7 @@ function gl_inquiry_controls()
 
 function show_results()
 {
-	global $path_to_root, $table_style, $systypes_array;
+	global $path_to_root,  $systypes_array;
 
 	if (!isset($_POST["account"]))
 		$_POST["account"] = null;
@@ -120,7 +119,7 @@ function show_results()
 					 input_num("amount_min") == 0 &&
 					 input_num("amount_max") == 0;
 
-	start_table($table_style);
+	start_table( Config::get('tables.style') );
 
 	$first_cols = array(_("Type"), _("#"), _("Date"));
 

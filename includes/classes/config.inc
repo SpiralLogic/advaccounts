@@ -7,17 +7,24 @@
  * To change this template use File | Settings | File Templates.
  */
 
- class Config {
+	class Config {
 
-	protected static $_vars = array();
+		protected static $_vars = array();
 
-	public static function set($var, $value) {
-	 static::$_vars[$var] = $value;
-	 return $value;
+		public static function load() {
+			static::$_vars = include(APP_PATH . '/config/config.php');
+		}
+
+		public static function set($var, $value) {
+			static::$_vars[$var] = $value;
+			return $value;
+		}
+
+		public static function get($var, $array_key = null) {
+			if (!isset(static::$_vars[$var])) return false;
+			return ($array_key !== null && is_array(static::$_vars[$var])) ?
+			 static::$_vars[$var][$array_key] :
+			 static::$_vars[$var];
+
+		}
 	}
-
-	public static function get($var) {
-	 if (!isset(static::$_vars[$var])) return false;
-	 return static::$_vars[$var];
-	}
- }

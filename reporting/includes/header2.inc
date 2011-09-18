@@ -54,7 +54,7 @@
 	$this->LineTo($right, $iline5, $right, $iline7);
 	$this->NewLine();
 	if ($this->company['coy_logo'] != '') {
-		$logo = $comp_path . "/images/" . $this->company['coy_logo'];
+		$logo = COMPANY_PATH . "/images/" . $this->company['coy_logo'];
 		$this->AddImage($logo, $ccol, $this->row, 0, 40);
 	} else {
 		$this->fontSize += 4;
@@ -129,14 +129,14 @@
 	$this->NewLine();
 	$this->Text($mcol + 100, $doc_Invoice_no);
 	if ($doctype == ST_SALESQUOTE || $doctype == ST_PURCHORDER || $doctype == ST_SALESORDER) { // QUOTE, PO or SO
-		if ($print_invoice_no == 1) {
+		if (Config::get('print.useinvoicenumber') == 1) {
 			$this->Text($mcol + 180, $myrow['order_no']);
 		} else {
 			$this->Text($mcol + 180, $myrow['reference']);
 		}
 	}
 	if ($doctype == ST_SALESQUOTE || $doctype == ST_PURCHORDER || $doctype == ST_SALESORDER) { // QUOTE, PO or SO
-		if ($print_invoice_no == 1) {
+		if (Config::get('print.useinvoicenumber') == 1) {
 			$this->Text($mcol + 180, $myrow['order_no']);
 		} else {
 			$this->Text($mcol + 180, $myrow['reference']);
@@ -145,7 +145,7 @@
 		$this->Text($mcol + 180, $myrow['id']);
 	} else {
 		if (isset($myrow['trans_no']) && isset($myrow['reference'])) { // INV/CRE/STA
-			if ($print_invoice_no == 1) {
+			if (Config::get('print.useinvoicenumber') == 1) {
 				$this->Text($mcol + 180, $myrow['trans_no']);
 			} else {
 				$this->Text($mcol + 180, $myrow['reference']);
@@ -282,7 +282,7 @@
 	 $line = "";	#  __ADVANCEDEDIT__ END # }
 
 	 foreach ($deliveries as $delivery) {
-		 if ($print_invoice_no == 0) {
+		 if (Config::get('print.useinvoicenumber') == 0) {
 			 $ref = get_reference(ST_CUSTDELIVERY, $delivery);
 			 if ($ref) $delivery = $ref;
 		 }
@@ -294,7 +294,7 @@
  else*/
 	if ($doctype == ST_CUSTDELIVERY) {
 		$ref = $myrow['order_'];
-		if ($print_invoice_no == 0) {
+		if (Config::get('print.useinvoicenumber') == 0) {
 			$ref = get_reference(ST_SALESORDER, $myrow['order_']);
 			if (!$ref) {
 				$ref = $myrow['order_'];

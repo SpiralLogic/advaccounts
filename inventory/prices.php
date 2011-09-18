@@ -125,9 +125,9 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 
  div_start('price_table');
  if ($_REQUEST['frame']) {
-	start_table("$table_style width=90%");
+	start_table(Config::get('tables.style')."  width=90%");
  } else {
-	start_table("$table_style width=30%");
+	start_table(Config::get('tables.style')."  width=30%");
  }
 
  $th = array(_("Currency"), _("Sales Type"), _("Price"), "", "");

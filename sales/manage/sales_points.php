@@ -81,7 +81,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
   $result = get_all_sales_points(check_value('show_inactive'));
 
   start_form();
-  start_table("$table_style");
+  start_table(Config::get('tables.style'));
 
   $th = array(_('POS Name'), _('Credit sale'), _('Cash sale'), _('Location'), _('Default account'),
 				  '', '');
@@ -111,7 +111,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 
   if (!$cash) display_note(_("To have cash POS first define at least one cash bank account."));
 
-  start_table($table_style2);
+  start_table(Config::get('tables.style2'));
 
   if ($selected_id != -1) {
 

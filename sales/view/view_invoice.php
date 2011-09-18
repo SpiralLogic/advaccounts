@@ -42,11 +42,11 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
   display_heading(sprintf(_("SALES INVOICE #%d"), $trans_id));
 
   echo "<br>";
-  start_table("$table_style2 width=95%");
+  start_table(Config::get('tables.style2')." width=95%");
   echo "<tr valign=top><td>"; // outer table
 
   /*Now the customer charged to details in a sub table*/
-  start_table("$table_style width=100%");
+  start_table(Config::get('tables.style')."  width=100%");
   $th = array(_("Charge To"));
   table_header($th);
 
@@ -60,7 +60,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 
   /*end of the main table showing the company name and charge to details */
 
-  start_table("$table_style width=100%");
+  start_table(Config::get('tables.style')."  width=100%");
   $th = array(_("Charge Branch"));
   table_header($th);
 
@@ -69,7 +69,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 
   echo "</td><td>"; // outer table
 
-  start_table("$table_style width=100%");
+  start_table(Config::get('tables.style')."  width=100%");
   $th = array(_("Delivered To"));
   table_header($th);
 
@@ -79,7 +79,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 
   echo "</td><td>"; // outer table
 
-  start_table("$table_style width=100%");
+  start_table(Config::get('tables.style')."  width=100%");
   start_row();
   label_cells(_("Reference"), $myrow["reference"], "class='label'");
   label_cells(_("Currency"), $sales_order["curr_code"], "class='label'");
@@ -106,7 +106,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 
   $result = get_customer_trans_details(ST_SALESINVOICE, $trans_id);
 
-  start_table("$table_style width=95%");
+  start_table(Config::get('tables.style')."  width=95%");
 
   if (db_num_rows($result) > 0) {
 	 $th = array(_("Item Code"), _("Item Description"), _("Quantity"),

@@ -179,13 +179,12 @@ function check_can_delete($selected_id)
 //---------------------------------------------------------------------------------------------
 function delete_attachments_and_comments($type_no, $trans_no)
 {
-	global $comp_path;
 
 	$sql = "SELECT * FROM attachments WHERE type_no = $type_no AND trans_no = $trans_no";
 	$result = db_query($sql, "Could not retrieve attachments");
 	while ($row = db_fetch($result))
 	{
-		$dir = $comp_path . "/attachments";
+		$dir = COMPANY_PATH . "/attachments";
 		if (file_exists($dir . "/" . $row['unique_name']))
 			unlink($dir . "/" . $row['unique_name']);
 		$sql = "DELETE FROM attachments WHERE  type_no = $type_no AND trans_no = $trans_no";
@@ -402,7 +401,6 @@ function handle_delete()
 
 function display_fiscalyears()
 {
-	global $table_style;
 
 	$company_year = get_company_pref('f_year');
 
@@ -411,7 +409,7 @@ function display_fiscalyears()
 	display_note(_("Warning: Deleting a fiscal year all transactions 
 		are removed and converted into relevant balances. This process is irreversible!"),
 				 0, 0, "class='currentfg'");
-	start_table($table_style);
+	start_table( Config::get('tables.style') );
 
 	$th = array(_("Fiscal Year Begin"), _("Fiscal Year End"), _("Closed"), "", "");
 	table_header($th);
@@ -456,10 +454,10 @@ function display_fiscalyears()
 
 function display_fiscalyear_edit($selected_id)
 {
-	global $table_style2, $Mode;
+	global  $Mode;
 
 	start_form();
-	start_table($table_style2);
+	start_table(Config::get('tables.style2'));
 
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {

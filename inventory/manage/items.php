@@ -47,7 +47,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		$stock_id = $_POST['NewStockID'];
 		$result = $_FILES['pic']['error'];
 		$upload_file = 'Yes'; //Assume all is well to start off with
-		$filename = $comp_path . "/$user_comp/images";
+		$filename = COMPANY_PATH . "/$user_comp/images";
 		if (!file_exists($filename)) {
 			mkdir($filename);
 		}
@@ -58,9 +58,9 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 			display_warning(_('Only jpg files are supported - a file extension of .jpg is expected'));
 			$upload_file = 'No';
 		}
-		elseif ($_FILES['pic']['size'] > ($max_image_size * 1024))
+		elseif ($_FILES['pic']['size'] > (Config::get('item.images.max_size')  * 1024))
 		{ //File Size Check
-			display_warning(_('The file size is over the maximum allowed. The maximum size allowed in KB is') . ' ' . $max_image_size);
+			display_warning(_('The file size is over the maximum allowed. The maximum size allowed in KB is') . ' ' . Config::get('item.images.max_size') );
 			$upload_file = 'No';
 		}
 		elseif ($_FILES['pic']['type'] == "text/plain")
@@ -129,7 +129,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		}
 		if ($input_error != 1) {
 			if (check_value('del_image')) {
-				$filename = $comp_path . "/$user_comp/images/" . item_img_name($_POST['NewStockID']) . ".jpg";
+				$filename = COMPANY_PATH . "/$user_comp/images/" . item_img_name($_POST['NewStockID']) . ".jpg";
 				if (file_exists($filename))
 					unlink($filename);
 			}
@@ -224,7 +224,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		if (check_usage($_POST['NewStockID'])) {
 			$stock_id = $_POST['NewStockID'];
 			delete_item($stock_id);
-			$filename = $comp_path . "/$user_comp/images/" . item_img_name($stock_id) . ".jpg";
+			$filename = COMPANY_PATH . "/$user_comp/images/" . item_img_name($stock_id) . ".jpg";
 			if (file_exists($filename)) unlink($filename);
 			display_notification(_("Selected item has been deleted."));
 			$_POST['stock_id'] = '';
@@ -258,7 +258,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	}
 
 	div_start('details');
-	start_outer_table($table_style2, 5);
+	start_outer_table(Config::get('tables.style2'), 5);
 	table_section(1);
 	table_section_title(_("Item"));
 	//------------------------------------------------------------------------------------
@@ -349,10 +349,10 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	// Add Image upload for New Item  - by Joe
 	$stock_img_link = "";
 	$check_remove_image = false;
-	if (isset($_POST['NewStockID']) && file_exists("$comp_path/$user_comp/images/" . item_img_name($_POST['NewStockID']) . ".jpg")) {
+	if (isset($_POST['NewStockID']) && file_exists(COMPANY_PATH."/$user_comp/images/" . item_img_name($_POST['NewStockID']) . ".jpg")) {
 		// 31/08/08 - rand() call is necessary here to avoid caching problems. Thanks to Peter D.
-		$stock_img_link .= "<img id='item_img' alt = '[" . $_POST['NewStockID'] . ".jpg" . "]' src='$comp_path/$user_comp/images/"
-											 . item_img_name($_POST['NewStockID']) . ".jpg?nocache=" . rand() . "'" . " height='$pic_height' border='0'>";
+		$stock_img_link .= "<img id='item_img' alt = '[" . $_POST['NewStockID'] . ".jpg" . "]' src='".COMPANY_PATH."/$user_comp/images/"
+											 . item_img_name($_POST['NewStockID']) . ".jpg?nocache=" . rand() . "'" . " height='".Config::get('item.images.height')."' border='0'>";
 		$check_remove_image = true;
 	} else {
 		$stock_img_link .= _("No image");

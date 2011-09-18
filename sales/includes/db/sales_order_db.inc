@@ -11,7 +11,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
  ***********************************************************************/
   //----------------------------------------------------------------------------------------
   function add_sales_order(&$order) {
-	 global $loc_notification, $path_to_root, $Refs;
+	 global  $path_to_root, $Refs;
 	 begin_transaction();
 	 $order_no = get_next_trans_no($order->trans_type);
 	 $del_date = date2sql($order->due_date);
@@ -22,7 +22,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		VALUES (" . db_escape($order_no) . "," . db_escape($order_type) . "," . db_escape($order->customer_id) . ", " . db_escape($order->trans_type) . "," . db_escape($order->Branch) . ", " . db_escape($order->cust_ref) . "," . db_escape($order->reference) . "," . db_escape($order->salesman) . "," . db_escape($order->Comments) . ",'" . date2sql($order->document_date) . "', " . db_escape($order->sales_type) . ", " . db_escape($order->ship_via) . "," . db_escape($order->deliver_to) . "," . db_escape($order->delivery_address) . ", " . db_escape($order->name) . ", " . db_escape($order->phone) . ", " . db_escape($order->email) . ", " . db_escape($order->freight_cost) . ", " . db_escape($order->Location) . ", " . db_escape($del_date) . ")";
 	 db_query($sql, "order Cannot be Added");
 	 $order->trans_no = array($order_no => 0);
-	 if ($loc_notification == 1) {
+	 if (Config::get('accounts.stock.emailnotify') == 1) {
 		include_once($path_to_root . "/inventory/includes/inventory_db.inc");
 		$st_ids = array();
 		$st_names = array();
@@ -30,7 +30,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		$st_reorder = array();
 	 }
 	 foreach ($order->line_items as $line) {
-		if ($loc_notification == 1 && is_inventory_item($line->stock_id)) {
+		if (Config::get('accounts.stock.emailnotify') == 1 && is_inventory_item($line->stock_id)) {
 		  $sql = "SELECT loc_stock.*, locations.location_name, locations.email
 				FROM loc_stock, locations
 				WHERE loc_stock.loc_code=locations.loc_code
@@ -61,7 +61,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 add_audit_trail($order->trans_type, $order_no, $order->document_date);
 	 $Refs->save($order->trans_type, $order_no, $order->reference);
 	 commit_transaction();
-	 if ($loc_notification == 1 && count($st_ids) > 0) {
+	 if (Config::get('accounts.stock.emailnotify') == 1 && count($st_ids) > 0) {
 		require_once($path_to_root . "/reporting/includes/class.mail.inc");
 		$company = get_company_prefs();
 		$mail = new email($company['coy_name'], $company['email']);
@@ -105,7 +105,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 
   //----------------------------------------------------------------------------------------
   function update_sales_order($order) {
-	 global $loc_notification, $path_to_root, $Refs;
+	 global  $path_to_root, $Refs;
 	 $del_date = date2sql($order->due_date);
 	 $ord_date = date2sql($order->document_date);
 	 $order_no = key($order->trans_no);
@@ -135,7 +135,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 db_query($sql, "order Cannot be Updated, this can be concurrent edition conflict");
 	 $sql = "DELETE FROM sales_order_details WHERE order_no =" . $order_no . " AND trans_type=" . $order->trans_type;
 	 db_query($sql, "Old order Cannot be Deleted");
-	 if ($loc_notification == 1) {
+	 if (Config::get('accounts.stock.emailnotify') == 1) {
 		include_once($path_to_root . "/inventory/includes/inventory_db.inc");
 		$st_ids = array();
 		$st_names = array();
@@ -143,7 +143,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		$st_reorder = array();
 	 }
 	 foreach ($order->line_items as $line) {
-		if ($loc_notification == 1 && is_inventory_item($line->stock_id)) {
+		if (Config::get('accounts.stock.emailnotify') == 1 && is_inventory_item($line->stock_id)) {
 		  $sql = "SELECT loc_stock.*, locations.location_name, locations.email
 				FROM loc_stock, locations
 				WHERE loc_stock.loc_code=locations.loc_code
@@ -177,7 +177,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 $Refs->delete($order->trans_type, $order_no);
 	 $Refs->save($order->trans_type, $order_no, $order->reference);
 	 commit_transaction();
-	 if ($loc_notification == 1 && count($st_ids) > 0) {
+	 if (Config::get('accounts.stock.emailnotify') == 1 && count($st_ids) > 0) {
 		require_once($path_to_root . "/reporting/includes/class.mail.inc");
 		$company = get_company_prefs();
 		$mail = new email($company['coy_name'], $company['email']);

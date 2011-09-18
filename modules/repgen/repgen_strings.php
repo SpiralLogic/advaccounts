@@ -367,7 +367,7 @@ if (!empty($error))
 
 start_form(false, false, "repgen_strings.php?report_type=" . $report_type, "strings");
 
-start_table("$table_style2 width=70%");
+start_table(Config::get('tables.style2')." width=70%");
 
 // <!--   Table 1 -->
 start_row();
@@ -431,7 +431,7 @@ $txt .= "</select></td>";
 echo $txt;
 echo "<td>\n";
 // <!--   Table2 in the table1 -->
-start_table($table_style2);
+start_table(Config::get('tables.style2'));
 start_row();
 $txt = "<td nowrap colspan=4>X <input type='text' name='x1' size='4' maxlength='4' value='" . (isset($x1) ? $x1
 		: "") . "' onBlur='num_test(this);'>\n";
@@ -445,7 +445,7 @@ if ($report_type != "single") {
 	// <!--   3. Line -->
 	//start_row();
 	//echo "<td>\n";
-	//start_table($table_style);
+	//start_table(Config::get('tables.style')) ;
 	// <!--   Third table in Table2 -->
 	start_row();
 	text_cells(NUMBER, "number", (isset($number) ? $number : ""), 2, 2, "onblur='num_test(this);'");
@@ -468,7 +468,7 @@ end_table();
 echo "</td>\n";
 end_row();
 end_table();
-start_table("$table_style width=70%");
+start_table(Config::get('tables.style')."  width=70%");
 $th = array(ELEMENT, VALUE_);
 table_header($th);
 start_row();
@@ -583,7 +583,7 @@ end_form();
 
 display_heading(ITEM_HEAD);
 
-start_table("$table_style width=70%");
+start_table(Config::get('tables.style')."  width=70%");
 $th = array(IT_TYP, IT_ART, IT_FONT, IT_FONT_SIZE, IT_ORD, IT_LEN, IT_X1, IT_Y1, "Total", IT_STRING, "Action", "");
 table_header($th);
 ## Traverse the result set

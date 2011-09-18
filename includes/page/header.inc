@@ -13,7 +13,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 If no context is set current page/menu screen is selected.
  */
 	function help_url($context = null) {
-		global $help_base_url, $help_context, $old_style_help;
+		global  $help_context, $old_style_help;
 		$country = $_SESSION['language']->code;
 		$clean = 0;
 		if ($context != null) {
@@ -32,7 +32,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 			$help_page_url = _($help_page_url);
 		if ($clean)
 			$help_page_url = access_string($help_page_url, true);
-		return $help_base_url . urlencode(strtr(ucwords($help_page_url), array(' ' => '', '/' => '', '&' => 'And'))) . '&ctxhelp=1&lang=' . $country;
+		return Config::get('help.baseurl')  . urlencode(strtr(ucwords($help_page_url), array(' ' => '', '/' => '', '&' => 'And'))) . '&ctxhelp=1&lang=' . $country;
 	}
 
 	function add_css($file = false) {
@@ -65,12 +65,12 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	function page_header($title, $no_menu = false, $is_index = false, $onload = "", $js = "") {
 		// titles and screen header
 
-		global $path_to_root, $def_app,  $help_base_url;
+		global $path_to_root, $def_app;
 		if (in_ajax() || AJAX_REFERRER)
 			return; // just for speed up
 		$theme = user_theme();
 		$local_path_to_root = $path_to_root;
-		if ($help_base_url != null && Config::get('ui.windows.popups') && $js == '') {
+		if (Config::get('help.baseurl')  != null && Config::get('ui.windows.popups') && $js == '') {
 			if (!function_exists('get_js_open_window')) {
 				include_once($path_to_root . '/includes/ui/ui_view.inc');
 			}

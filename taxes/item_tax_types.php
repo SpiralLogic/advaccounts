@@ -102,7 +102,7 @@ if ($Mode == 'RESET') {
 $result2 = $result = get_all_item_tax_types(check_value('show_inactive'));
 
 start_form();
-start_table("$table_style width=30%");
+start_table(Config::get('tables.style')."  width=30%");
 $th = array(_("Name"), _("Tax exempt"), '', '');
 inactive_control_column($th);
 table_header($th);
@@ -133,7 +133,7 @@ inactive_control_row($th);
 end_table(1);
 //-----------------------------------------------------------------------------------
 
-start_table($table_style2);
+start_table(Config::get('tables.style2'));
 
 if ($selected_id != -1) {
 	if ($Mode == 'Edit') {
@@ -166,7 +166,7 @@ if (!isset($_POST['exempt']) || $_POST['exempt'] == 0) {
 
 	display_note(_("Select which taxes this item tax type is exempt from."), 0, 1);
 
-	start_table($table_style2);
+	start_table(Config::get('tables.style2'));
 	$th = array(_("Tax Name"), _("Rate"), _("Is exempt"));
 	table_header($th);
 

@@ -46,7 +46,7 @@ function navi_button_cell($name, $value, $enabled = true, $align = 'left')
 //
 function display_db_pager(&$pager)
 {
-	global $table_style,$path_to_root;
+	global $path_to_root;
 
 	$pager->select_records();
 
@@ -67,7 +67,7 @@ function display_db_pager(&$pager)
 		}
 	}
 	/* show a table of records returned by the sql */
-	start_table("$table_style width=$pager->width");
+	start_table(Config::get('tables.style')."  width=$pager->width");
 	table_header($headers);
 
 	if ($pager->header_fun) { // if set header handler

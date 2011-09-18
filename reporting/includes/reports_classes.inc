@@ -29,7 +29,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		}
 
 		function getDisplay($class = null) {
-			global $table_style, $comp_path, $path_to_root,  $Ajax;
+			global   $path_to_root,  $Ajax;
 
 			$temp = array_values($this->ar_classes);
 			$display_class = $class == null ? $temp[0] : $this->ar_classes[$class];
@@ -135,7 +135,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		//	Returns html code for input control $name of type $type
 		//
 		function get_ctrl($name, $type) {
-			global $path_to_root,  $print_invoice_no, $def_print_destination;
+			global $path_to_root;
 
 			$st = '';
 			switch ($type) {
@@ -191,7 +191,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 				case 'DESTINATION':
 					$sel = array(_("PDF/Printer"), "Excel");
 					$def = 0;
-					if (isset($def_print_destination) && $def_print_destination == 1) {
+					if (Config::get('print.default.excel')== 1) {
 						$def = 1;
 					}
 					return array_selector($name, $def, $sel);
@@ -275,7 +275,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 				case 'INVOICE':
 					$IV = _("IV");
 					$CN = _("CN");
-					$ref = ($print_invoice_no == 1 ? "trans_no" : "reference");
+					$ref = (Config::get('print.useinvoicenumber') == 1 ? "trans_no" : "reference");
 					$sql = "SELECT concat(debtor_trans.trans_no, '-',
 						debtor_trans.type) AS TNO, concat(debtor_trans.$ref, if (type=" . ST_SALESINVOICE . ", ' $IV ', ' $CN '), debtors_master.name) as IName
 						FROM debtors_master, debtor_trans WHERE (type=" . ST_SALESINVOICE . " OR type=" . ST_CUSTCREDIT . ") AND debtors_master.debtor_no=debtor_trans.debtor_no ORDER BY debtor_trans.trans_no DESC";
@@ -291,7 +291,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 					return combo_input($name, '', $sql, 'TNO', 'IName', array('order' => false));
 
 				case 'ORDERS':
-					$ref = ($print_invoice_no == 1 ? "order_no" : "reference");
+					$ref = (Config::get('print.useinvoicenumber') == 1 ? "order_no" : "reference");
 					$sql = "SELECT sales_orders.order_no, concat(sales_orders.$ref, '-',
 						debtors_master.name) as IName
 						FROM debtors_master, sales_orders WHERE debtors_master.debtor_no=sales_orders.debtor_no
@@ -299,7 +299,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 					return combo_input($name, '', $sql, 'order_no', 'IName', array('order' => false));
 
 				case 'QUOTATIONS':
-					$ref = ($print_invoice_no == 1 ? "order_no" : "reference");
+					$ref = (Config::get('print.useinvoicenumber') == 1 ? "order_no" : "reference");
 					$sql = "SELECT sales_orders.order_no, concat(sales_orders.$ref, '-',
 						debtors_master.name) as IName
 						FROM debtors_master, sales_orders WHERE debtors_master.debtor_no=sales_orders.debtor_no
@@ -307,7 +307,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 					return combo_input($name, '', $sql, 'order_no', 'IName', array('order' => false));
 
 				case 'PO':
-					$ref = ($print_invoice_no == 1 ? "order_no" : "reference");
+					$ref = (Config::get('print.useinvoicenumber') == 1 ? "order_no" : "reference");
 					$sql = "SELECT purch_orders.order_no, concat(purch_orders.$ref, '-',
 						suppliers.supp_name) as IName
 						FROM suppliers, purch_orders WHERE suppliers.supplier_id=purch_orders.supplier_id ORDER BY purch_orders.order_no DESC";
@@ -317,7 +317,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 					$BP = _("BP");
 					$SP = _("SP");
 					$CN = _("CN");
-					$ref = ($print_invoice_no == 1 ? "trans_no" : "reference");
+					$ref = (Config::get('print.useinvoicenumber') == 1 ? "trans_no" : "reference");
 					$sql = "SELECT concat(supp_trans.trans_no, '-',
 						supp_trans.type) AS TNO, concat(supp_trans.$ref, if (type=" . ST_BANKPAYMENT . ", ' $BP ', if (type=" . ST_SUPPAYMENT . ", ' $SP ', ' $CN ')), suppliers.supp_name) as IName
 						FROM suppliers, supp_trans WHERE (type=" . ST_BANKPAYMENT . " OR type=" . ST_SUPPAYMENT . " OR type=" . ST_SUPPCREDIT . ") AND suppliers.supplier_id=supp_trans.supplier_id ORDER BY supp_trans.trans_no DESC";
@@ -327,7 +327,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 					$BD = _("BD");
 					$CP = _("CP");
 					$CN = _("CN");
-					$ref = ($print_invoice_no == 1 ? "trans_no" : "reference");
+					$ref = (Config::get('print.useinvoicenumber') == 1 ? "trans_no" : "reference");
 					$sql = "SELECT concat(debtor_trans.trans_no, '-',
 						debtor_trans.type) AS TNO, concat(debtor_trans.$ref, if (type=" . ST_BANKDEPOSIT . ", ' $BD ', if (type=" . ST_CUSTPAYMENT . ", ' $CP ', ' $CN ')), debtors_master.name) as IName
 						FROM debtors_master, debtor_trans WHERE (type=" . ST_BANKDEPOSIT . " OR type=" . ST_CUSTPAYMENT . " OR type=" . ST_CUSTCREDIT . ") AND debtors_master.debtor_no=debtor_trans.debtor_no ORDER BY debtor_trans.trans_no DESC";
@@ -336,7 +336,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 					$BD = _("BD");
 					$CP = _("CP");
 					$CN = _("CN");
-					$ref = ($print_invoice_no == 1 ? "trans_no" : "reference");
+					$ref = (Config::get('print.useinvoicenumber') == 1 ? "trans_no" : "reference");
 					$sql = "SELECT concat(debtor_trans.trans_no, '-',
 						debtor_trans.type) AS TNO, concat(debtor_trans.$ref, if (type=" . ST_BANKDEPOSIT . ", ' $BD ', if (type=" . ST_CUSTREFUND . ",
 						' $CP ', ' $CN ')), debtors_master.name) as IName
@@ -427,7 +427,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	}
 
 	function add_custom_reports(&$reports) {
-		global $installed_extensions, $path_to_root, $comp_path;
+		global $installed_extensions, $path_to_root;
 
 		// include reports installed inside extension modules
 		if (count($installed_extensions) > 0) {
@@ -439,7 +439,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 				}
 			}
 		}
-		$file = $comp_path . "/reporting/reports_custom.php";
+		$file = COMPANY_PATH . "/reporting/reports_custom.php";
 		if (file_exists($file)) {
 			include_once($file);
 		}

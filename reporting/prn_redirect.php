@@ -53,7 +53,7 @@ function find_report_file($rep)
 if (isset($_GET['xls'])) {
 	$filename = $_GET['filename'];
 	$unique_name = $_GET['unique'];
-	$path = $comp_path . '/pdf_files/';
+	$path = COMPANY_PATH . '/pdf_files/';
 	header("Content-type: application/vnd.ms-excel");
 	header("Content-Disposition: attachment; filename=$filename");
 	header("Expires: 0");
@@ -66,7 +66,7 @@ elseif (isset($_GET['xml']))
 {
 	$filename = $_GET['filename'];
 	$unique_name = $_GET['unique'];
-	$path = $comp_path . '/pdf_files/';
+	$path = COMPANY_PATH . '/pdf_files/';
 	header("content-type: text/xml");
 	header("Content-Disposition: attachment; filename=$filename");
 	header("Expires: 0");

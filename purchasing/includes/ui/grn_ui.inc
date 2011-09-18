@@ -13,8 +13,8 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 
 function display_grn_summary(&$po, $editable = false)
 {
-	global $table_style2, $Refs;
-	start_table("$table_style2 width=90%");
+	global  $Refs;
+	start_table(Config::get('tables.style2')." width=90%");
 
 	start_row();
 	label_cells(_("Supplier"), $po->supplier_name, "class='label'");

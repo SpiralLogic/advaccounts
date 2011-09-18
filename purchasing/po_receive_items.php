@@ -49,9 +49,8 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	//--------------------------------------------------------------------------------------------------
 
 	function display_po_receive_items() {
-		global $table_style;
 		div_start('grn_items');
-		start_table("colspan=7 $table_style width=90%");
+		start_table("colspan=7 ".Config::get('tables.style') ." width=90%");
 		$th = array(_("Item Code"), _("Description"), _("Ordered"), _("Units"), _("Received"), _("Outstanding"),
 								_("This Delivery"), _("Price"), _('Discount %'), _("Total"));
 		table_header($th);

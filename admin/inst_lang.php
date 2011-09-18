@@ -119,7 +119,7 @@ function handle_delete()
 
 function display_languages()
 {
-	global $table_style, $installed_languages, $dflt_lang;
+	global  $installed_languages, $dflt_lang;
 
 	$lang = $_SESSION["language"]->code;
 
@@ -131,7 +131,7 @@ function display_languages()
 			document.location.replace('inst_lang.php?c=df&id='+id)
 		}
 		</script>";
-	start_table($table_style);
+	start_table( Config::get('tables.style') );
 	$th = array(_("Language"), _("Name"), _("Encoding"), _("Right To Left"), _("Default"), "", "");
 	table_header($th);
 
@@ -174,7 +174,7 @@ function display_languages()
 
 function display_language_edit($selected_id)
 {
-	global $installed_languages, $table_style2, $dflt_lang;
+	global $installed_languages,  $dflt_lang;
 
 	if ($selected_id != -1)
 		$n = $selected_id;
@@ -191,7 +191,7 @@ function display_language_edit($selected_id)
 		}
 		</script>";
 
-	start_table($table_style2);
+	start_table(Config::get('tables.style2'));
 
 	if ($selected_id != -1) {
 		$conn = $installed_languages[$selected_id];

@@ -93,7 +93,7 @@ if (!check_value('show_inactive')) $sql .= " AND !c.inactive";
 $result = db_query($sql, "could not get stock categories");
 
 start_form();
-start_table("$table_style width=80%");
+start_table(Config::get('tables.style')."  width=80%");
 $th = array(_("Name"), _("Tax type"), _("Units"), _("Type"), _("Sales Act"),
 			_("Inventory Account"), _("COGS Account"), _("Adjustment Account"),
 			_("Assembly Account"), "", "");
@@ -128,7 +128,7 @@ echo '<br>';
 //----------------------------------------------------------------------------------
 
 div_start('details');
-start_table($table_style2);
+start_table(Config::get('tables.style2'));
 
 if ($selected_id != -1) {
 	if ($Mode == 'Edit') {

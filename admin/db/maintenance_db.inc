@@ -56,66 +56,6 @@ function array_natsort($aryData, $strIndex, $strSortBy, $strSortType = false)
 }
 
 
-function write_config_db($new = false)
-{
-	global $path_to_root, $def_coy, $db_connections;
-
-
-	$n = count($db_connections);
-	$msg = "<?php\n\n";
-	$msg .= "/*Connection Information for the database\n";
-	$msg .= "- \$def_coy is the default company that is pre-selected on login\n\n";
-	$msg .= "- host is the computer ip address or name where the database is the default is localhost assuming that the web server is also the sql server\n\n";
-	$msg .= "- user is the user name under which the database should be accessed - need to change to the mysql (or other DB) user set up for purpose\n";
-	$msg .= "  NB it is not secure to use root as the user with no password - a user with appropriate privileges must be set up\n\n";
-	$msg .= "- password is the password the user of the database requires to be sent to authorise the above database user\n\n";
-	$msg .= "- DatabaseName is the name of the database as defined in the RDMS being used. Typically RDMS allow many databases to be maintained under the same server.\n";
-	$msg .= "  The scripts for MySQL provided use the name logicworks */\n\n\n";
-
-	$msg .= "\$def_coy = " . $def_coy . ";\n\n";
-	$msg .= "\$db_connections = array (\n";
-	$msg .= "\t0 => ";
-	for ($i = 0; $i < $n; $i++)
-	{
-		if ($i > 0)
-			$msg .= "\tarray ";
-		else
-			$msg .= "array ";
-		$msg .= "('name' => '" . $db_connections[$i]['name'] . "',\n";
-		$msg .= "\t\t'host' => '" . $db_connections[$i]['host'] . "',\n";
-		$msg .= "\t\t'dbuser' => '" . $db_connections[$i]['dbuser'] . "',\n";
-		$msg .= "\t\t'dbpassword' => '" . $db_connections[$i]['dbpassword'] . "',\n";
-		$msg .= "\t\t'dbname' => '" . $db_connections[$i]['dbname'] . "',\n";
-
-		if ($i != $n - 1)
-			$msg .= ",";
-		$msg .= "\n\n";
-	}
-	$msg .= "\t);\n?>";
-
-	$filename = $path_to_root . "/config_db.php";
-	// Check if the file exists and is writable first.
-	if ((!file_exists($filename) && is_writable($path_to_root)) || is_writable($filename)) {
-		if (!$zp = fopen($filename, 'w')) {
-			return -1;
-		}
-		else
-		{
-			if (!fwrite($zp, $msg)) {
-				fclose($zp);
-				return -2;
-			}
-			// Close file
-			fclose($zp);
-		}
-	}
-	else
-	{
-		return -3;
-	}
-	return 0;
-}
-
 function write_extensions($extensions = null, $company = -1)
 {
 	global $path_to_root, $installed_extensions, $next_extension_id;
@@ -801,10 +741,10 @@ function save_to_file($backupfile, $zip, $fileData)
 	}
 }
 
-function create_comp_dirs($comp_path, $comp_subdirs)
+function create_comp_dirs($path, $comp_subdirs)
 {
 	$index = "<?php\nheader(\"Location: ../index.php\");\n?>";
-	$cdir = $comp_path;
+	$cdir = $path;
 	@mkdir($cdir);
 	$f = @fopen("$cdir/index.php", "wb");
 	@fwrite($f, $index);

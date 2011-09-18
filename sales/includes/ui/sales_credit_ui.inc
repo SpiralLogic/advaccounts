@@ -14,9 +14,9 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
   // ------------------------------------------------------------------------------
 
   function display_credit_header(&$order) {
-	 global $table_style, $Ajax, $Refs;
+	 global  $Ajax, $Refs;
 
-	 start_outer_table("width=80% $table_style");
+	 start_outer_table("width=80%  ".Config::get('tables.style'));
 	 table_section(1);
 
 	 $customer_error = "";
@@ -158,11 +158,11 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
   //---------------------------------------------------------------------------------
 
   function display_credit_items($title, &$order) {
-	 global $table_style, $path_to_root;
+	 global  $path_to_root;
 
 	 display_heading($title);
 	 div_start('items_table');
-	 start_table("$table_style width=90%");
+	 start_table(Config::get('tables.style')."  width=90%");
 	 $th = array(_("Item Code"), _("Item Description"), _("Quantity"), _("Unit"),
 					 _("Price"), _("Discount %"), _("Total"), '');
 
@@ -302,14 +302,14 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
   //---------------------------------------------------------------------------------
 
   function credit_options_controls($credit) {
-	 global $table_style2, $Ajax;
+	 global  $Ajax;
 	 echo "<br>";
 
 	 if (isset($_POST['_CreditType_update']))
 		$Ajax->activate('options');
 
 	 div_start('options');
-	 start_table("$table_style2");
+	 start_table(Config::get('tables.style2'));
 
 	 credit_type_list_row(_("Credit Note Type"), 'CreditType', null, true);
 

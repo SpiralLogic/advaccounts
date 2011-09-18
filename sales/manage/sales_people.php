@@ -109,7 +109,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
   $result = db_query($sql, "could not get sales persons");
 
   start_form();
-  start_table("$table_style width=60%");
+  start_table(Config::get('tables.style')."  width=60%");
   $th = array(_("Name"), _("Phone"), _("Fax"), _("Email"), _("Provision"), _("Break Pt."), _("Provision") . " 2", "", "");
   inactive_control_column($th);
   table_header($th);
@@ -167,7 +167,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 $_POST['provision2'] = percent_format(0);
   }
 
-  start_table($table_style2);
+  start_table(Config::get('tables.style2'));
 
   text_row_ex(_("Sales person name:"), 'salesman_name', 30);
   text_row_ex(_("Telephone number:"), 'salesman_phone', 20);

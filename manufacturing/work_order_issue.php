@@ -199,7 +199,7 @@ echo "<br>";
 
 start_form();
 
-start_table("$table_style width=90%", 10);
+start_table(Config::get('tables.style')."  width=90%", 10);
 echo "<tr><td>";
 display_issue_items(_("Items to Issue"), $_SESSION['issue_items']);
 issue_options_controls();

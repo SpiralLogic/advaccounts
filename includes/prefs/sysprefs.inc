@@ -60,8 +60,7 @@ class sys_prefs
 
 	function allocation_settled_allowance()
 	{
-		global $config_allocation_settled_allowance;
-		return $config_allocation_settled_allowance;
+		return Config::get('accounts.allocation_allowance') ;
 	}
 
 }

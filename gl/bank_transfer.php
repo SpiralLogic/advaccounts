@@ -51,13 +51,13 @@ if (isset($_POST['_DatePaid_changed'])) {
 
 function gl_payment_controls()
 {
-	global $table_style2, $Refs;
+	global  $Refs;
 
 	$home_currency = get_company_currency();
 
 	start_form();
 
-	start_outer_table($table_style2, 5);
+	start_outer_table(Config::get('tables.style2'), 5);
 
 	table_section(1);
 

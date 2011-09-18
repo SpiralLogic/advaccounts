@@ -297,7 +297,7 @@ if (get_post('_type_update')) {
 
 start_form();
 
-start_table($table_style2);
+start_table(Config::get('tables.style2'));
 
 $existing_comments = "";
 

@@ -67,7 +67,6 @@ class db_pager
 	//	$name is base name for pager controls
 	function db_pager($sql, $name, $table = null, $page_len = 0)
 	{
-		global $table_style;
 		$this->width = "80%";
 		if ($page_len == 0) $page_len = user_query_size();
 		$this->name = $name;

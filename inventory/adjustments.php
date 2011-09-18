@@ -214,7 +214,7 @@ start_form();
 
 display_order_header($_SESSION['adj_items']);
 
-start_outer_table("$table_style width=70%", 10);
+start_outer_table(Config::get('tables.style')."  width=70%", 10);
 
 display_adjustment_items(_("Adjustment Items"), $_SESSION['adj_items']);
 adjustment_options_controls();

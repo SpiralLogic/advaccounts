@@ -29,7 +29,7 @@ $test_level = array(
 $system_tests = array('tst_mysql', 'tst_php', 'tst_server', 'tst_system', 'tst_browser',
 					  'tst_gettext', 'tst_debug', 'tst_logging',
 					  'tst_dbversion', 'tst_subdirs', 'tst_langs', 'tst_tmpdir', 'tst_sessionpath',
-					  'tst_dbconfig', 'tst_config', 'tst_extconfig'
+					   'tst_config', 'tst_extconfig'
 );
 
 function tst_mysql()
@@ -157,26 +157,26 @@ function tst_dbversion()
 
 function tst_subdirs()
 {
-	global $db_connections, $comp_path;
+	global $db_connections;
 
 	$comp_subdirs = array('images', 'pdf_files', 'backup', 'js_cache');
 
 	$test['descr'] = _('Company subdirectories consistency');
 	$test['type'] = 3;
-	$test['test'] = array($comp_path . '/*');
+	$test['test'] = array(COMPANY_PATH. '/*');
 	foreach ($comp_subdirs as $sub) {
-		$test['test'][] = $comp_path . '/*/' . $sub;
+		$test['test'][] = COMPANY_PATH. '/*/' . $sub;
 	}
 	$test['result'] = true;
 
-	if (!is_dir($comp_path) || !is_writable($comp_path)) {
+	if (!is_dir(COMPANY_PATH) || !is_writable(COMPANY_PATH)) {
 		$test['result'] = false;
-		$test['comments'][] = sprintf(_("'%s' is not writeable"), $comp_path);
+		$test['comments'][] = sprintf(_("'%s' is not writeable"), COMPANY_PATH);
 		return $test;
 	}
 	;
 	foreach ($db_connections as $n => $comp) {
-		$path = "$comp_path/";
+		$path = COMPANY_PATH."/";
 		if (!is_dir($path) || !is_writable($path)) {
 			$test['result'] = false;
 			$test['comments'][] = sprintf(_("'%s' is not writeable"), $path);
@@ -266,33 +266,21 @@ function tst_config()
 	return $test;
 }
 
-function tst_dbconfig()
-{
-	global $path_to_root;
 
-	$test['descr'] = _('Database auth file');
-	$test['type'] = 2;
-	$test['test'] = $path_to_root . '/config_db.php';
-	$test['result'] = is_file($test['test']) && !is_writable($test['test']);
-	$test['comments'][] = sprintf(_("'%s' file should be read-only if you do not plan to add or change companies"),
-								  $test['test']);
-
-	return $test;
-}
 
 function tst_extconfig()
 {
-	global $path_to_root, $db_connections, $comp_path;
+	global $path_to_root, $db_connections;
 
 	$test['descr'] = _('Extensions configuration files');
 	$test['type'] = 3;
 	$test['test'] = $path_to_root . '/installed_extensions.php';
 	$test['result'] = is_file($test['test']) && is_writable($test['test']);
-	$test['test'] . ',' . $comp_path . '/*/installed_extensions.php';
+	$test['test'] . ',' . COMPANY_PATH . '/*/installed_extensions.php';
 	$test['comments'][] = sprintf(_("'%s' file should be writeable"), $test['test']);
 
 	foreach ($db_connections as $n => $comp) {
-		$path = "$comp_path/$n";
+		$path = COMPANY_PATH."/$n";
 		if (!is_dir($path)) continue;
 
 		$path .= "/installed_extensions.php";
@@ -308,7 +296,7 @@ function tst_extconfig()
 
 //-------------------------------------------------------------------------------------------------
 
-start_table("$table_style width=80%");
+start_table(Config::get('tables.style')." width=80%");
 $th = array(_("Test"), _('Test type'), _("Value"), _("Comments"));
 table_header($th);
 

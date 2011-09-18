@@ -116,7 +116,7 @@ if ($Mode == 'RESET') {
 $result = get_account_types(check_value('show_inactive'));
 
 start_form();
-start_table($table_style);
+start_table(Config::get('tables.style') );
 $th = array(_("ID"), _("Name"), _("Subgroup Of"), _("Class Type"), "", "");
 inactive_control_column($th);
 table_header($th);
@@ -151,7 +151,7 @@ inactive_control_row($th);
 end_table(1);
 //-----------------------------------------------------------------------------------
 
-start_table($table_style2);
+start_table(Config::get('tables.style2'));
 
 if ($selected_id != -1) {
 	if ($Mode == 'Edit') {

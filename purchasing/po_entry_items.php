@@ -378,7 +378,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	display_po_header($_SESSION['PO']);
 	echo "<br>";
 	display_po_items($_SESSION['PO']);
-	start_table($table_style2);
+	start_table(Config::get('tables.style2'));
 	textarea_row(_("Memo:"), 'Comments', null, 70, 4);
 	end_table(1);
 	div_start('controls', 'items_table');

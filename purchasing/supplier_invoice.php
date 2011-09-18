@@ -197,7 +197,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		handle_commit_invoice();
 	}
 	function check_item_data($n) {
-		global $check_price_charged_vs_order_price, $check_qty_charged_vs_del_qty, $SysPrefs;
+		global  $SysPrefs;
 		if (!check_num('this_quantity_inv' . $n, 0) || input_num('this_quantity_inv' . $n) == 0) {
 			display_error(_("The quantity to invoice must be numeric and greater than zero."));
 			set_focus('this_quantity_inv' . $n);
@@ -214,7 +214,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 			return false;
 		}
 		$margin = $SysPrefs->over_charge_allowance();
-		if ($check_price_charged_vs_order_price == True && $margin != 0) {
+		if (Config::get('valid.charged_to_delivered.price')  == True && $margin != 0) {
 			if ($_POST['order_price' . $n] != input_num('ChgPrice' . $n)) {
 				if ($_POST['order_price' . $n] == 0 || input_num('ChgPrice' . $n) / $_POST['order_price' . $n] > (1 + ($margin / 100))) {
 					if ($_SESSION['err_over_charge'] != true) {
@@ -230,7 +230,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 				}
 			}
 		}
-		if ($check_qty_charged_vs_del_qty == True) {
+		if (Config::get('valid.charged_to_delivered.qty')  == True) {
 			if (input_num('this_quantity_inv' . $n) / ($_POST['qty_recd' . $n] - $_POST['prev_quantity_inv' . $n]) > (1 + ($margin / 100))) {
 				display_error(_("The quantity being invoiced is more than the outstanding quantity by more than the allowed over-charge percentage. The system is set up to prohibit this. See the system administrator to modify the set up parameters if necessary.") . _("The over-charge percentage allowance is :") . $margin . "%");
 				set_focus('this_quantity_inv' . $n);

@@ -44,7 +44,7 @@ if ($from_trans['bank_curr_code'] != $company_currency) {
 display_heading(_("GL Payment") . " #$trans_no");
 
 echo "<br>";
-start_table("$table_style width=80%");
+start_table(Config::get('tables.style')."  width=80%");
 
 if ($show_currencies) {
 	$colspan1 = 5;
@@ -90,7 +90,7 @@ else
 		display_heading2(_("Item Amounts are Shown in :") . " " . $company_currency);
 
 	echo "<br>";
-	start_table("$table_style width=80%");
+	start_table(Config::get('tables.style')."  width=80%");
 	$dim = get_company_pref('use_dimension');
 	if ($dim == 2)
 		$th = array(_("Account Code"), _("Account Description"), _("Dimension") . " 1", _("Dimension") . " 2",

@@ -25,7 +25,7 @@
 		}
 
 		function menu_header($title, $no_menu, $is_index) {
-			global $path_to_root, $help_base_url, $db_connections;
+			global $path_to_root,  $db_connections;
 			$sel_app = $_SESSION['sel_app'];
 			echo "<div id='content'>\n";
 			if (!$no_menu || AJAX_REFERRER) {
@@ -40,7 +40,7 @@
 				echo "  <li><a href='$path_to_root/admin/display_prefs.php?'>" . _("Preferences") . "</a></li>\n";
 				echo "  <li><a href='$path_to_root/admin/change_current_user_password.php?selected_id=" .
 						$_SESSION["wa_current_user"]->username . "'>" . _("Change password") . "</a></li>\n";
-				if ($help_base_url != null) {
+				if (Config::get('help.baseurl')  != null) {
 					echo "  <li><a target = '_blank' onclick=" . '"' . "javascript:openWindow(this.href,this.target); return false;" . '" ' . "href='" . help_url() . "'>" . _("Help") . "</a></li>";
 				}
 				echo "  <li><a href='$path_to_root/access/logout.php?'>" . _("Logout") . "</a></li>";

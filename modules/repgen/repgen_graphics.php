@@ -163,7 +163,7 @@ display_note(IT_HELP, 0, 1);
 
 start_form(false, false, REPGENDIR . "/repgen_graphics.php", "graphics");
 
-start_table("$table_style2 width=80%");
+start_table(Config::get('tables.style2')." width=80%");
 
 start_row();
 
@@ -231,7 +231,7 @@ end_form();
 
 display_heading(ITEM_HEAD);
 
-start_table("$table_style width=80%");
+start_table(Config::get('tables.style')."  width=80%");
 $th = array(IT_TYP, IT_ART, IT_FONT, IT_FONT_SIZE, IT_LEN, IT_STRING, IT_X1, IT_Y1, IT_X2, IT_Y2, IT_WIDTH, "Action",
 			"");
 table_header($th);

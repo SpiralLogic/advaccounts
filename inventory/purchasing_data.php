@@ -131,9 +131,9 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		else
 		{
 			if ($_REQUEST['frame']) {
-				start_table("$table_style width=90%");
+				start_table(Config::get('tables.style')."  width=90%");
 			} else {
-				start_table("$table_style width=65%");
+				start_table(Config::get('tables.style')."  width=65%");
 			}
 			$th = array(_( "Updated"),_("Supplier"), _("Price"), _("Currency"),
 									_("Unit"), _("Conversion Factor"), _("Supplier's Code"), "", "");

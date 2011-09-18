@@ -334,11 +334,11 @@
 						_("Customer") => array('ord' => ''),
 						array('type' => 'skip'),
 						_("Branch") => array('ord' => ''),
-						_("Customer PO#") => array('ord' => ''),
-						_("Order Date") => array('type' => 'date', 'ord' => ''),
+						_("PO#") => array('ord' => ''),
+						_("Date") => array('type' => 'date', 'ord' => ''),
 						_("Required By") => array('type' => 'date', 'ord' => ''),
 						_("Delivery To"),
-						_("Order Total") => array('type' => 'amount', 'ord' => ''),
+						_("Total") => array('type' => 'amount', 'ord' => ''),
 						'type' => 'skip',
 						_("Currency") => array('align' => 'center'));
   }
@@ -350,11 +350,11 @@
 		_("Customer") => array('ord' => ''),
 		array('type' => 'skip'),
 		_("Branch") => array('ord' => ''),
-		_("Customer PO#") => array('ord' => ''),
-		_("Quote Date") => array('type' => 'date', 'ord' => ''),
+		_("PO#") => array('ord' => ''),
+		_("Date") => array('type' => 'date', 'ord' => ''),
 		_("Valid until") => array('type' => 'date', 'ord' => ''),
 		_("Delivery To"),
-		_("Quote Total") => array('type' => 'amount', 'ord' => ''),
+		_("Total") => array('type' => 'amount', 'ord' => ''),
 		'type' => 'skip',
 		_("Currency") => array('align' => 'center'));
 

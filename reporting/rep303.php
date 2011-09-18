@@ -61,7 +61,7 @@ function getTransactions($category, $location)
 
 function print_stock_check()
 {
-	global $comp_path, $path_to_root, $pic_height;
+	global  $path_to_root;
 
 	$category = $_POST['PARAM_0'];
 	$location = $_POST['PARAM_1'];
@@ -174,14 +174,14 @@ function print_stock_check()
 			$rep->AmountCol(5, 6, $onorder, $dec);
 		}
 		if ($pictures) {
-			$image = $comp_path . '/images/'
+			$image = COMPANY_PATH . '/images/'
 					 . item_img_name($trans['stock_id']) . '.jpg';
 			if (file_exists($image)) {
 				$rep->NewLine();
-				if ($rep->row - $pic_height < $rep->bottomMargin)
+				if ($rep->row - Config::get('item.images.height')  < $rep->bottomMargin)
 					$rep->Header();
-				$rep->AddImage($image, $rep->cols[1], $rep->row - $pic_height, 0, $pic_height);
-				$rep->row -= $pic_height;
+				$rep->AddImage($image, $rep->cols[1], $rep->row - Config::get('item.images.height') , 0, Config::get('item.images.height') );
+				$rep->row -= Config::get('item.images.height') ;
 				$rep->NewLine();
 			}
 		}

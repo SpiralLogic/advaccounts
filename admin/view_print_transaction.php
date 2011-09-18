@@ -89,7 +89,6 @@ function check_valid_entries()
 
 function handle_search()
 {
-	global $table_style;
 	if (check_valid_entries() == true) {
 		$db_info = get_systype_db_info($_POST['filterType']);
 
