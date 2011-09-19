@@ -113,9 +113,10 @@
 	$this->Text($mcol + 100, $doc_Invoice_no);
 	if (isset($myrow['trans_no']) && isset($myrow['reference'])) { // INV/CRE/STA
 		if (Config::get('print.useinvoicenumber') == 1) {
-			$this->Text($mcol + 180, $myrow['reference']);
-		} else {
+
 			$this->Text($mcol + 180, $myrow['trans_no']);
+		} else {
+			$this->Text($mcol + 180, $myrow['reference']);
 		}
 	}
 	if ($this->pageNumber > 1 && !strstr($this->filename, "Bulk")) {
