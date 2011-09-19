@@ -44,7 +44,7 @@ if (strlen($myrow[0]) == 0) {
 	exit;
 }
 
-start_table($table_style);
+start_table( Config::get('tables.style') );
 
 $th = array(_("#"), _("Reference"), _("Name"), _("Type"), _("Date"), _("Due Date"));
 table_header($th);

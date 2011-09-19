@@ -37,7 +37,7 @@ if (isset($_POST['update']) && $_POST['update'] != "") {
 	}
 	if (isset($_FILES['pic']) && $_FILES['pic']['name'] != '') {
 		$result = $_FILES['pic']['error'];
-		$filename = $comp_path . "/images";
+		$filename = COMPANY_PATH . "/images";
 		if (!file_exists($filename)) {
 			mkdir($filename);
 		}
@@ -49,9 +49,9 @@ if (isset($_POST['update']) && $_POST['update'] != "") {
 			display_error(_('Only jpg and png files are supported - a file extension of .jpg or .png is expected'));
 			$input_error = 1;
 		}
-		elseif ($_FILES['pic']['size'] > ($max_image_size * 1024))
+		elseif ($_FILES['pic']['size'] > (Config::get('item.images.max_size')  * 1024))
 		{ //File Size Check
-			display_error(_('The file size is over the maximum allowed. The maximum size allowed in KB is') . ' ' . $max_image_size);
+			display_error(_('The file size is over the maximum allowed. The maximum size allowed in KB is') . ' ' . Config::get('item.images.max_size') );
 			$input_error = 1;
 		}
 		elseif ($_FILES['pic']['type'] == "text/plain")
@@ -76,7 +76,7 @@ if (isset($_POST['update']) && $_POST['update'] != "") {
 		}
 	}
 	if (check_value('del_coy_logo')) {
-		$filename = $comp_path . "/images/" . $_POST['coy_logo'];
+		$filename = COMPANY_PATH . "/images/" . $_POST['coy_logo'];
 		if (file_exists($filename)) {
 			$result = unlink($filename);
 			if (!$result) {
@@ -141,7 +141,7 @@ if ($_POST['add_pct'] == -1)
 $_POST['round_to'] = $myrow['round_to'];
 $_POST['del_coy_logo'] = 0;
 
-start_outer_table($table_style2);
+start_outer_table(Config::get('tables.style2'));
 
 table_section(1);
 

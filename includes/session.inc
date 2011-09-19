@@ -9,9 +9,20 @@ but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
  ***********************************************************************/
-	global $start22;
-	$start22 = microtime();
-$go_debug=0;
+
+	function formatBytes($bytes, $precision = 2) {
+		$units = array('B', 'KB', 'MB', 'GB', 'TB');
+
+		$bytes = max($bytes, 0);
+		$pow = floor(($bytes ? log($bytes) : 0) / log(1024));
+		$pow = min($pow, count($units) - 1);
+
+		// Uncomment one of the following alternatives
+		$bytes /= pow(1024, $pow);
+		// $bytes /= (1 << (10 * $pow));
+
+		return round($bytes, $precision) . ' ' . $units[$pow];
+	}
 
 	function output_html($text) {
 		global $before_box, $Ajax, $messages;
@@ -63,10 +74,10 @@ $go_debug=0;
 	}
 
 	/*
-		Helper function for setting page security level depeding on
-		GET start variable and/or some value stored in session variable.
-		Before the call $page_security should be set to default page_security value.
-	*/
+		 Helper function for setting page security level depeding on
+		 GET start variable and/or some value stored in session variable.
+		 Before the call $page_security should be set to default page_security value.
+	 */
 	function set_page_security($value = null, $trans = array(), $gtrans = array()) {
 		global $page_security;
 		// first check is this is not start page call
@@ -110,20 +121,23 @@ $go_debug=0;
 	}
 
 	function add_include_path($path = array()) {
-		if (!is_array($path)) {
-			$path = array($path);
-		}
+		$path = (array)$path;
 		$path[] .= get_include_path();
 		set_include_path(implode(PATH_SEPARATOR, $path));
 	}
 
 	//============================================================================
-	define("AJAX_REFERRER", (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest'));
+
+	function class_autoloader($className) {
+		spl_autoload(strtolower($className));
+	}
+
 	define('APP_PATH', realpath(__DIR__ . '/..') . DIRECTORY_SEPARATOR);
-	define('BASE_URL', str_ireplace(realpath(__DIR__ . '/..'), '', APP_PATH));
 	$path = substr(str_repeat('../', substr_count(str_replace(APP_PATH, '', realpath('.') . DIRECTORY_SEPARATOR), '/')), 0, -1);
 	$path_to_root = (!$path) ? '.' : $path;
 
+	spl_autoload_extensions('.php,.inc');
+	spl_autoload_register('class_autoloader');
 	add_include_path(
 		array(
 				 realpath('.') . '/includes/classes',
@@ -136,27 +150,39 @@ $go_debug=0;
 				 APP_PATH . 'items/includes/classes',
 				 APP_PATH . 'reporting/includes'));
 
-	if ($go_debug && preg_match('/Chrome/i', $_SERVER['HTTP_USER_AGENT'])) {
+	if (Config::get('debug') && preg_match('/Chrome/i', $_SERVER['HTTP_USER_AGENT'])) {
 		include(APP_PATH . 'includes/fb.php');
 		FB::useFile(APP_PATH . 'tmp/chromelogs', '/tmp/chromelogs');
-	} elseif ($go_debug) {
+	} elseif (Config::get('debug')) {
 		include(APP_PATH . 'includes/FirePHP/FirePHP.class.php');
 		include(APP_PATH . 'includes/FirePHP/fb.php');
 	}
-	if (isset($_GET['path_to_root']) || isset($_POST['path_to_root'])) {
-		die("Restricted access");
+
+	if (Config::get('debug') && isset($_SESSION["wa_current_user"]) && $_SESSION["wa_current_user"]->user == 1) {
+		error_reporting(E_ALL);
+		ini_set("display_errors", "On");
 	}
-	function __autoload($className) {
-		add_include_path(array(pathinfo(APP_PATH . 'includes/classes/' . $className, PATHINFO_DIRNAME)));
-		if (!@include(strtolower($className) . '.inc')) @include(strtolower($className) . '.php');
+	else {
+		Config::set('debug', false);
+		error_reporting(E_USER_WARNING | E_USER_ERROR | E_USER_NOTICE);
+		ini_set("display_errors", "On");
+	}
+
+	include(APP_PATH . "config.php");
+
+	if (Config::get('logs.error.file') != '') {
+		ini_set("error_log", Config::get('logs.error.file'));
+		ini_set("ignore_repeated_errors", "On");
+		ini_set("log_errors", "On");
 	}
 
 	include(APP_PATH . "includes/current_user.inc");
 	include(APP_PATH . "frontaccounting.php");
 	include(APP_PATH . "admin/db/security_db.inc");
 	include(APP_PATH . "includes/lang/language.php");
-	include(APP_PATH . "config_db.php");
+
 	include(APP_PATH . "includes/ajax.inc");
+
 	include(APP_PATH . "includes/faui.inc");
 
 	//ini_set('session.save_path', dirname(__FILE__).'/../tmp/');
@@ -179,7 +205,7 @@ $go_debug=0;
 	}
 
 	include(APP_PATH . "includes/access_levels.inc");
-	include(APP_PATH . "config.php");
+
 	include(APP_PATH . "includes/main.inc");
 
 	// Ajax communication object
@@ -224,9 +250,10 @@ $go_debug=0;
 				if (in_ajax() || AJAX_REFERRER) {
 					$Ajax->activate('_page_body');
 				}
+
 				exit;
 			} else {
-				$succeed = isset($db_connections[$_POST["company_login_name"]]) && $_SESSION["wa_current_user"]->login($_POST["company_login_name"], $_POST["user_name_entry_field"], md5($_POST["password"]));
+				$succeed = isset($db_connections[$_POST["company_login_name"]]) && $_SESSION["wa_current_user"]->login($_POST["company_login_name"], $_POST["user_name_entry_field"], $_POST["password"]);
 				// select full vs fallback ui mode on login
 
 				$_SESSION["wa_current_user"]->ui_mode = $_POST['ui_mode'];
@@ -250,7 +277,7 @@ $go_debug=0;
 	}
 
 	if (isset($_SESSION["wa_current_user"]) && $_SESSION["wa_current_user"]->user == 1) {
-		if ($go_debug == 1) {
+		if (Config::get('debug') == 1) {
 			error_reporting(E_ALL);
 			ini_set("display_errors", "On");
 		}

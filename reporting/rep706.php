@@ -118,7 +118,7 @@ print_balance_sheet();
 
 function print_balance_sheet()
 {
-	global $comp_path, $path_to_root;
+	global  $path_to_root;
 
 	$dim = get_company_pref('use_dimension');
 	$dimension = $dimension2 = 0;
@@ -274,18 +274,19 @@ function print_balance_sheet()
 		$pg->x[] = _('Calculated Return');
 		$pg->y[] = abs($calc_open);
 		$pg->z[] = abs($calc_period);
-		global $decseps, $graph_skin;
 		$pg->title = $rep->title;
 		$pg->axis_x = _("Group");
 		$pg->axis_y = _("Amount");
 		$pg->graphic_1 = $headers[2];
 		$pg->graphic_2 = $headers[3];
 		$pg->type = $graphics;
-		$pg->skin = $graph_skin;
+		$pg->skin = Config::get('graphs.skin') ;
 		$pg->built_in = false;
 		$pg->fontfile = $path_to_root . "/reporting/fonts/Vera.ttf";
-		$pg->latin_notation = ($decseps[$_SESSION["wa_current_user"]->prefs->dec_sep()] != ".");
-		$filename = $comp_path . "/pdf_files/test.png";
+		$pg->latin_notation = (Config::get('seperators.decimal',$_SESSION["wa_current_user"]->prefs->dec_sep()) != ".");
+
+
+		$filename = COMPANY_PATH . "/pdf_files/test.png";
 		$pg->display($filename, true);
 		$w = $pg->width / 1.5;
 		$h = $pg->height / 1.5;

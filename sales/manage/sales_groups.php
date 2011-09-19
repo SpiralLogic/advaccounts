@@ -83,7 +83,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
   $result = db_query($sql, "could not get groups");
 
   start_form();
-  start_table("$table_style width=30%");
+  start_table(Config::get('tables.style')."  width=30%");
   $th = array(_("Group Name"), "", "");
   inactive_control_column($th);
 
@@ -109,7 +109,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 
   //-------------------------------------------------------------------------------------------------
 
-  start_table($table_style2);
+  start_table(Config::get('tables.style2'));
 
   if ($selected_id != -1) {
 	 if ($Mode == 'Edit') {

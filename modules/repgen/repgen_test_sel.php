@@ -56,7 +56,7 @@ while ($i < $num)
 */
 display_heading(SQL_ERG);
 
-start_table($table_style);
+start_table(Config::get('tables.style')) ;
 table_header($th);
 $k = 0;
 for ($j = 0; $j < 10; $j++)

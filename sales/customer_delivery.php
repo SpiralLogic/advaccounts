@@ -26,7 +26,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
   include_once($path_to_root . "/taxes/tax_calc.inc");
 
   $js = "";
-  if ($use_popup_windows) {
+  if (Config::get('ui.windows.popups')) {
 	 $js .= get_js_open_window(900, 500);
   }
 
@@ -329,10 +329,10 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
   start_form();
   hidden('cart_id');
 
-  start_table("$table_style2 width=80%", 5);
+  start_table(Config::get('tables.style2')." width=80%", 5);
   echo "<tr><td>"; // outer table
 
-  start_table("$table_style width=100%");
+  start_table(Config::get('tables.style')."  width=100%");
   start_row();
   label_cells(_("Customer"), $_SESSION['Items']->customer_name, "class='tableheader2'");
   label_cells(_("Branch"), get_branch_name($_SESSION['Items']->Branch), "class='tableheader2'");
@@ -383,7 +383,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 
   echo "</td><td>"; // outer table
 
-  start_table("$table_style width=90%");
+  start_table(Config::get('tables.style')."  width=90%");
 
   if (!isset($_POST['due_date']) || !is_date($_POST['due_date'])) {
 	 $_POST['due_date'] = get_invoice_duedate($_SESSION['Items']->customer_id, $_POST['DispatchDate']);
@@ -405,7 +405,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
   }
   display_heading(_("Delivery Items"));
   div_start('Items');
-  start_table("$table_style width=80%");
+  start_table(Config::get('tables.style')."  width=80%");
 
   $new = $_SESSION['Items']->trans_no == 0;
   $th = array(_("Item Code"), _("Item Description"),
@@ -490,7 +490,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
   if ($has_marked) {
 	 display_note(_("Marked items have insufficient quantities in stock as on day of delivery."), 0, 1, "class='red'");
   }
-  start_table($table_style2);
+  start_table(Config::get('tables.style2'));
 
   policy_list_row(_("Action For Balance"), "bo_policy", null);
 

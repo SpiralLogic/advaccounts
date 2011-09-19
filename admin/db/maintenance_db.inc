@@ -56,66 +56,6 @@ function array_natsort($aryData, $strIndex, $strSortBy, $strSortType = false)
 }
 
 
-function write_config_db($new = false)
-{
-	global $path_to_root, $def_coy, $db_connections;
-
-
-	$n = count($db_connections);
-	$msg = "<?php\n\n";
-	$msg .= "/*Connection Information for the database\n";
-	$msg .= "- \$def_coy is the default company that is pre-selected on login\n\n";
-	$msg .= "- host is the computer ip address or name where the database is the default is localhost assuming that the web server is also the sql server\n\n";
-	$msg .= "- user is the user name under which the database should be accessed - need to change to the mysql (or other DB) user set up for purpose\n";
-	$msg .= "  NB it is not secure to use root as the user with no password - a user with appropriate privileges must be set up\n\n";
-	$msg .= "- password is the password the user of the database requires to be sent to authorise the above database user\n\n";
-	$msg .= "- DatabaseName is the name of the database as defined in the RDMS being used. Typically RDMS allow many databases to be maintained under the same server.\n";
-	$msg .= "  The scripts for MySQL provided use the name logicworks */\n\n\n";
-
-	$msg .= "\$def_coy = " . $def_coy . ";\n\n";
-	$msg .= "\$db_connections = array (\n";
-	$msg .= "\t0 => ";
-	for ($i = 0; $i < $n; $i++)
-	{
-		if ($i > 0)
-			$msg .= "\tarray ";
-		else
-			$msg .= "array ";
-		$msg .= "('name' => '" . $db_connections[$i]['name'] . "',\n";
-		$msg .= "\t\t'host' => '" . $db_connections[$i]['host'] . "',\n";
-		$msg .= "\t\t'dbuser' => '" . $db_connections[$i]['dbuser'] . "',\n";
-		$msg .= "\t\t'dbpassword' => '" . $db_connections[$i]['dbpassword'] . "',\n";
-		$msg .= "\t\t'dbname' => '" . $db_connections[$i]['dbname'] . "',\n";
-
-		if ($i != $n - 1)
-			$msg .= ",";
-		$msg .= "\n\n";
-	}
-	$msg .= "\t);\n?>";
-
-	$filename = $path_to_root . "/config_db.php";
-	// Check if the file exists and is writable first.
-	if ((!file_exists($filename) && is_writable($path_to_root)) || is_writable($filename)) {
-		if (!$zp = fopen($filename, 'w')) {
-			return -1;
-		}
-		else
-		{
-			if (!fwrite($zp, $msg)) {
-				fclose($zp);
-				return -2;
-			}
-			// Close file
-			fclose($zp);
-		}
-	}
-	else
-	{
-		return -3;
-	}
-	return 0;
-}
-
 function write_extensions($extensions = null, $company = -1)
 {
 	global $path_to_root, $installed_extensions, $next_extension_id;
@@ -289,7 +229,7 @@ function db_drop_db($connection)
 
 function db_import($filename, $connection, $force = true)
 {
-	global $db, $go_debug;
+	global $db;
 
 	$allowed_commands = array(
 		"create" => 'table_queries',
@@ -473,7 +413,7 @@ function db_backup($conn, $ext = 'no', $comm = '')
 function db_export($conn, $filename, $zip = 'no', $comment = '')
 {
 
-	global $app_title, $version, $power_url, $path_to_root;
+	global   $path_to_root;
 
 	$error = false;
 	// set max string size before writing to file
@@ -494,8 +434,8 @@ function db_export($conn, $filename, $zip = 'no', $comment = '')
 	//create comment
 	$out = "# MySQL dump of database '" . $conn["dbname"] . "' on host '" . $conn["host"] . "'\n";
 	$out .= "# Backup Date and Time: " . date("Y-m-d H:i") . "\n";
-	$out .= "# Built by " . $app_title . " " . $version . "\n";
-	$out .= "# " . $power_url . "\n";
+	$out .= "# Built by " . APP_TITLE . " " . VERSION . "\n";
+	$out .= "# " . POWERED_URL . "\n";
 	$out .= "# Company: " . @html_entity_decode($company, ENT_QUOTES, $_SESSION['language']->encoding) . "\n";
 	$out .= "# User: " . $_SESSION["wa_current_user"]->name . "\n\n";
 
@@ -801,10 +741,10 @@ function save_to_file($backupfile, $zip, $fileData)
 	}
 }
 
-function create_comp_dirs($comp_path, $comp_subdirs)
+function create_comp_dirs($path, $comp_subdirs)
 {
 	$index = "<?php\nheader(\"Location: ../index.php\");\n?>";
-	$cdir = $comp_path;
+	$cdir = $path;
 	@mkdir($cdir);
 	$f = @fopen("$cdir/index.php", "wb");
 	@fwrite($f, $index);

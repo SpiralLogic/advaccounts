@@ -21,7 +21,7 @@ include_once($path_to_root . "/gl/includes/gl_db.inc");
 include_once($path_to_root . "/gl/includes/gl_ui.inc");
 
 $js = "";
-if ($use_popup_windows)
+if (Config::get('ui.windows.popups'))
 	$js .= get_js_open_window(800, 500);
 
 page(_($help_context = "Transfer between Bank Accounts"), false, false, "", $js);
@@ -51,13 +51,13 @@ if (isset($_POST['_DatePaid_changed'])) {
 
 function gl_payment_controls()
 {
-	global $table_style2, $Refs;
+	global  $Refs;
 
 	$home_currency = get_company_currency();
 
 	start_form();
 
-	start_outer_table($table_style2, 5);
+	start_outer_table(Config::get('tables.style2'), 5);
 
 	table_section(1);
 

@@ -18,7 +18,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
   include_once($path_to_root . "/sales/includes/sales_db.inc");
   include_once("$path_to_root/reporting/includes/reporting.inc");
   $js = "";
-  if ($use_popup_windows)
+  if (Config::get('ui.windows.popups'))
 	 $js .= get_js_open_window(900, 600);
   if ($_GET['trans_type'] == ST_SALESQUOTE) {
 	 page(_($help_context = "View Sales Quotation"), true, false, "", $js);
@@ -32,7 +32,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 unset ($_SESSION['View']);
   }
   $_SESSION['View'] = new Cart($_GET['trans_type'], $_GET['trans_no'], true);
-  start_table("$table_style2 width=95%", 5);
+  start_table(Config::get('tables.style2')." width=95%", 5);
   echo "<tr valign=top class='tableheader2'><td >";
   display_heading2(_("Order Information"));
   if ($_GET['trans_type'] != ST_SALESQUOTE) {
@@ -43,7 +43,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
   }
   echo "</td></tr>";
   echo "<tr valign=top><td>";
-  start_table("$table_style width=95%");
+  start_table(Config::get('tables.style')."  width=95%");
   label_row(_("Customer Name"), $_SESSION['View']->customer_name, "class='label'", "colspan=3");
   start_row();
   label_cells(_("Customer Purchase Order #"), $_SESSION['View']->cust_ref, "class='label'");
@@ -69,7 +69,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
   end_table();
   if ($_GET['trans_type'] != ST_SALESQUOTE) {
 	 echo "</td><td valign='top'>";
-	 start_table($table_style);
+	 start_table(Config::get('tables.style')) ;
 	 display_heading2(_("Delivery Notes"));
 	 $th = array(_("#"), _("Ref"), _("Date"), _("Total"));
 	 table_header($th);
@@ -93,7 +93,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 label_row(null, price_format($delivery_total), " ", "colspan=4 align=right");
 	 end_table();
 	 echo "</td><td valign='top'>";
-	 start_table($table_style);
+	 start_table(Config::get('tables.style')) ;
 	 display_heading2(_("Sales Invoices"));
 	 $th = array(_("#"), _("Ref"), _("Date"), _("Total"));
 	 table_header($th);
@@ -119,7 +119,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 label_row(null, price_format($invoices_total), " ", "colspan=4 align=right");
 	 end_table();
 	 display_heading2(_("Credit Notes"));
-	 start_table($table_style);
+	 start_table(Config::get('tables.style')) ;
 	 $th = array(_("#"), _("Ref"), _("Date"), _("Total"));
 	 table_header($th);
 	 $credits_total = 0;
@@ -150,7 +150,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
   if ($_SESSION['View']->so_type == 1)
 	 display_note(_("This Sales Order is used as a Template."), 0, 0, "class='currentfg'");
   display_heading2(_("Line Details"));
-  start_table("colspan=9 width=95% $table_style");
+  start_table("colspan=9 width=95%  ".Config::get('tables.style'));
   $th = array(_("Item Code"), _("Item Description"), _("Quantity"), _("Unit"), _("Price"), _("Discount"), _("Total"), _("Quantity Delivered"));
   table_header($th);
   $k = 0; //row colour counter
@@ -183,7 +183,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
   if ($qty_remaining > 0)
 	 submenu_option(_("Make &Delivery Against This Order"), "/sales/customer_delivery.php?OrderNumber={$_GET['trans_no']}'  target='_top' ");
   submenu_option(_("Enter a &New Order"), "/sales/sales_order_entry.php?NewOrder=0'  target='_top' ");
-  UploadHandler::insert($_GET['trans_no']);
+  //UploadHandler::insert($_GET['trans_no']);
   end_page(true);
 
 ?>

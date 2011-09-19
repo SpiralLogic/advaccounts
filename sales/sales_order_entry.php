@@ -32,7 +32,7 @@
 										array('NewOrder' => 'SA_SALESORDER', 'ModifySalesOrder' => 'SA_SALESORDER', 'NewQuotation' => 'SA_SALESQUOTE', 'ModifyQuotationNumber' => 'SA_SALESQUOTE',
 												 'NewDelivery' => 'SA_SALESDELIVERY', 'NewInvoice' => 'SA_SALESINVOICE'));
 	$js = '';
-	if ($use_popup_windows) {
+	if (Config::get('ui.windows.popups')) {
 		$js .= get_js_open_window(900, 500);
 	}
 
@@ -200,7 +200,7 @@
 			}
 		}
 		set_focus('prtopt');
-		UploadHandler::insert($order_no);
+	//	UploadHandler::insert($order_no);
 		display_footer_exit();
 	}
 
@@ -645,7 +645,7 @@
 	hidden('cart_id');
 	$customer_error = display_order_header($_SESSION['Items'], ($_SESSION['Items']->any_already_delivered() == 0), $idate);
 	if ($customer_error == "") {
-		start_table("$table_style width=100%", 10);
+		start_table(Config::get('tables.style')."  width=100%", 10);
 		echo "
 <tr>
     <td>";
@@ -672,7 +672,7 @@
 		submit_js_confirm('CancelOrder', _('You are about to void this Document.\nDo you want to continue?'));
 		submit_center_last('CancelOrder', $cancelorder, _('Cancels document entry or removes sales order when editing an old document'));
 		if (isset($_GET['ModifyOrderNumber']) && is_numeric($_GET['ModifyOrderNumber'])) {
-			UploadHandler::insert($_GET['ModifyOrderNumber']);
+			//UploadHandler::insert($_GET['ModifyOrderNumber']);
 		}
 	}
 	else {

@@ -21,7 +21,7 @@ include_once($path_to_root . "/includes/data_checks.inc");
 
 include_once($path_to_root . "/reporting/includes/reporting.inc");
 $js = "";
-if ($use_popup_windows)
+if (Config::get('ui.windows.popups'))
 	$js .= get_js_open_window(800, 500);
 page(_($help_context = "View or Print Transactions"), false, false, "", $js);
 
@@ -89,7 +89,6 @@ function check_valid_entries()
 
 function handle_search()
 {
-	global $table_style;
 	if (check_valid_entries() == true) {
 		$db_info = get_systype_db_info($_POST['filterType']);
 

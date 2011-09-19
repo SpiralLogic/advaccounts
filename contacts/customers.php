@@ -1,32 +1,28 @@
 <?php
 
 	$page_security = 'SA_CUSTOMER';
-	$path_to_root = "..";
 	include_once("includes/contacts.inc");
 	if (AJAX_REFERRER) {
-
 		if (isset($_GET['term'])) {
 			$data = Customer::search($_GET['term']);
 		} else {
-			if (isset($_POST['id']) && isset($_POST['id']) > 0) {
+		 if (!isset($_POST['id']) && isset($_GET['id'])) $_POST['id'] = $_GET['id'];
+			if (isset($_POST['id']) && $_POST['id'] > 0) {
 				if (isset($_POST['name'])) {
 					$data['customer'] = $customer = new Customer($_POST);
 					$data['customer']->save();
-
 				} elseif (!isset($_POST['name'])) {
 					$data['customer'] = $customer = new Customer($_POST['id']);
 				}
-				$data['contact_log'] = contact_log::read($customer->id, 'C');
+				$data['contact_log'] = ContactLog::read($customer->id, 'C');
 				$data['transactions'] = '<pre>' . print_r($customer->getTransactions(), true) . '</pre>';
 				$_SESSION['wa_global_customer_id'] = $customer->id;
-
 			} else {
 				$data['customer'] = $customer = new Customer();
 			}
 			$data['status'] = $customer->getStatus();
 		}
 		echo json_encode($data, JSON_NUMERIC_CHECK);
-
 		exit();
 	}
 	JS::footerFile("/js/js2/jquery-tmpl.min.js");
@@ -68,9 +64,9 @@
 	HTML::label(array('for' => 'name', 'content' => 'Customer name:'), false);
 	HTML::input('name', array('value' => $customer->name, 'name' => 'name', 'size' => 50));
 	HTML::td()->td(array('content' => _("Customer ID: "), "style" => "width:90px"), false)->td(true);
-	HTML::input('id', array('value' => $customer->id, 'name' => 'id', 'size' => 10, 'maxlength' => '7'));
+	HTML::input('id', array('value' => '0', 'name' => 'id', 'size' => 10, 'maxlength' => '7'));
 	HTML::td()->tr->table->div;
-	start_outer_table($table_style2, 5);
+	start_outer_table(Config::get('tables.style2'), 5);
 	table_section(1);
 	table_section_title(_("Shipping Details"), 2);
 	/** @noinspection PhpUndefinedMethodInspection */
@@ -108,7 +104,7 @@
 	record_status_list_row(_("Customer status:"), 'inactive');
 	end_outer_table(1);
 	$menu->endTab()->startTab('Accounts', 'Accounts');
-	start_outer_table($table_style2, 5);
+	start_outer_table(Config::get('tables.style2'), 5);
 	table_section(1);
 	hidden('accounts_id', $customer->accounts->accounts_id);
 	table_section_title(_("Accounts Details:"), 2);
@@ -151,7 +147,7 @@
 	start_row();
 	HTML::td(array('class' => 'ui-widget-content center-content', 'colspan' => 2));
 	UI::button('addLog', "Add log entry")->td->tr->tr(true)->td(array('colspan' => 2))->textarea('messageLog', array('cols' => 50, 'rows' => 25));
-	contact_log::read($customer->id, 'C');
+	ContactLog::read($customer->id, 'C');
 	/** @noinspection PhpUndefinedMethodInspection */
 	HTML::textarea()->td->td;
 	payment_terms_list_row(_("Pament Terms:"), 'payment_terms', $customer->payment_terms);
@@ -171,7 +167,7 @@
 	HTML::td()->tr->table->script->div->div;
 
 	$menu->endTab()->startTab('Extra Shipping Info', 'Extra Shipping Info');
-	start_outer_table($table_style2, 5);
+	start_outer_table(Config::get('tables.style2'), 5);
 	table_section(1);
 	hidden('branch_code', $currentBranch->branch_code);
 	table_section_title(_("Name and Contact"));
@@ -221,7 +217,6 @@
 	/** @noinspection PhpUndefinedMethodInspection */
 	HTML::_div();
 	if (!isset($_GET['popup']) && !isset($_GET['id'])) {
-
 		HTML::_div()->div('shortcuts', array('style' => 'width:50%;display:block;margin:0 auto;'));
 		$shortcuts = new MenuUI(array('noajax' => true));
 		$shortcuts->startTab('Create Order', 'Create Order for this customer!', '/sales/sales_order_entry.php?NewOrder=Yes&customer_id=');

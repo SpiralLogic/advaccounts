@@ -40,10 +40,10 @@ class user_prefs
 	{
 		if ($user == null) {
 			// set default values, used before login
-			global $dflt_lang, $dflt_date_sep, $dflt_date_fmt;
+			global $dflt_lang;
 
-			$this->date_sep = $dflt_date_sep;
-			$this->date_format = $dflt_date_fmt;
+			$this->date_sep = Config::get('ui.date.seperator');
+			$this->date_format = Config::get('ui.date.format');
 			$this->tho_sep = 0;
 			$this->dec_sep = 0;
 			$this->price_dec = 2;
@@ -131,8 +131,8 @@ class user_prefs
 
 	function date_display()
 	{
-		global $dateseps;
-		$sep = $dateseps[$this->date_sep];
+
+		$sep = Config::get('seperators.date',$this->date_sep);
 		if ($this->date_format == 0)
 			return "m" . $sep . "d" . $sep . "Y";
 		elseif ($this->date_format == 1)

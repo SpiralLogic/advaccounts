@@ -15,7 +15,6 @@ include_once($path_to_root . "/includes/faui.inc");
 
 function display_bom($item_check)
 {
-	global $table_style;
 
 	$result = get_bom($item_check);
 
@@ -25,7 +24,7 @@ function display_bom($item_check)
 	else
 	{
 
-		start_table($table_style);
+		start_table(Config::get('tables.style')) ;
 		$th = array(_("Component"), _("Description"), _("Work Centre"),
 					_("From Location"), _("Quantity"), _("Unit Cost"), _("Total Cost"));
 
@@ -70,7 +69,7 @@ function display_bom($item_check)
 
 function display_wo_requirements($woid, $quantity, $show_qoh = false, $date = null)
 {
-	global $table_style, $SysPrefs;
+	global  $SysPrefs;
 
 	$result = get_wo_requirements($woid);
 
@@ -80,7 +79,7 @@ function display_wo_requirements($woid, $quantity, $show_qoh = false, $date = nu
 	else
 	{
 
-		start_table("$table_style width=80%");
+		start_table(Config::get('tables.style')."  width=80%");
 		$th = array(_("Component"), _("From Location"), _("Work Centre"),
 					_("Unit Quantity"), _("Total Quantity"), _("Units Issued"), _("On Hand"));
 
@@ -143,7 +142,7 @@ function display_wo_requirements($woid, $quantity, $show_qoh = false, $date = nu
 
 function display_wo_productions($woid)
 {
-	global $path_to_root, $table_style;
+	global $path_to_root;
 
 	$result = get_work_order_productions($woid);
 
@@ -152,7 +151,7 @@ function display_wo_productions($woid)
 	}
 	else
 	{
-		start_table($table_style);
+		start_table(Config::get('tables.style')) ;
 		$th = array(_("#"), _("Reference"), _("Date"), _("Quantity"));
 
 		table_header($th);
@@ -186,7 +185,7 @@ function display_wo_productions($woid)
 
 function display_wo_issues($woid)
 {
-	global $path_to_root, $table_style;
+	global $path_to_root;
 
 	$result = get_work_order_issues($woid);
 
@@ -195,7 +194,7 @@ function display_wo_issues($woid)
 	}
 	else
 	{
-		start_table($table_style);
+		start_table(Config::get('tables.style')) ;
 		$th = array(_("#"), _("Reference"), _("Date"));
 
 		table_header($th);
@@ -221,7 +220,7 @@ function display_wo_issues($woid)
 
 function display_wo_payments($woid)
 {
-	global $path_to_root, $table_style, $wo_cost_types;
+	global $path_to_root,  $wo_cost_types;
 
 	//$result = get_bank_trans(null, null, PT_WORKORDER, $woid);
 	$result = get_gl_wo_cost_trans($woid);
@@ -231,7 +230,7 @@ function display_wo_payments($woid)
 	}
 	else
 	{
-		start_table($table_style);
+		start_table(Config::get('tables.style')) ;
 		$th = array(_("#"), _("Type"), _("Date"), _("Amount"));
 
 		table_header($th);
@@ -259,7 +258,7 @@ function display_wo_payments($woid)
 
 function display_wo_details($woid, $suppress_view_link = false)
 {
-	global $table_style, $wo_types_array;
+	global  $wo_types_array;
 
 	$myrow = get_work_order($woid);
 
@@ -268,7 +267,7 @@ function display_wo_details($woid, $suppress_view_link = false)
 		exit;
 	}
 
-	start_table("$table_style width=80%");
+	start_table(Config::get('tables.style')."  width=80%");
 
 	if ($myrow["released"] == true)
 		$th = array(_("#"), _("Reference"), _("Type"), _("Manufactured Item"),
@@ -312,7 +311,7 @@ function display_wo_details($woid, $suppress_view_link = false)
 
 function display_wo_details_quick($woid, $suppress_view_link = false)
 {
-	global $table_style, $wo_types_array;
+	global  $wo_types_array;
 
 	$myrow = get_work_order($woid);
 
@@ -321,7 +320,7 @@ function display_wo_details_quick($woid, $suppress_view_link = false)
 		exit;
 	}
 
-	start_table("$table_style width=80%");
+	start_table(Config::get('tables.style')."  width=80%");
 
 	$th = array(_("#"), _("Reference"), _("Type"), _("Manufactured Item"),
 				_("Into Location"), _("Date"), _("Quantity"));

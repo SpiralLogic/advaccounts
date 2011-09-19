@@ -53,7 +53,7 @@ div_end();
 set_global_stock_item($_POST['stock_id']);
 
 div_start('reorders');
-start_table("$table_style width=30%");
+start_table(Config::get('tables.style')."  width=30%");
 
 $th = array(_("Location"), _("Quantity On Hand"), _("Re-Order Level"));
 table_header($th);

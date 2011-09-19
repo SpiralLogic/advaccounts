@@ -23,7 +23,7 @@ include_once($path_to_root . "/gl/includes/ui/gl_bank_ui.inc");
 include_once($path_to_root . "/gl/includes/gl_db.inc");
 include_once($path_to_root . "/gl/includes/gl_ui.inc");
 $js = '';
-if ($use_popup_windows)
+if (Config::get('ui.windows.popups'))
 	$js .= get_js_open_window(800, 500);
 
 
@@ -264,7 +264,7 @@ start_form();
 
 display_bank_header($_SESSION['pay_items']);
 
-start_table("$table_style2 width=90%", 10);
+start_table(Config::get('tables.style2')." width=90%", 10);
 start_row();
 echo "<td>";
 display_gl_items($_SESSION['pay_items']->trans_type == ST_BANKPAYMENT ?

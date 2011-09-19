@@ -19,7 +19,7 @@ include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/faui.inc");
 $js = "";
-if ($use_popup_windows)
+if (Config::get('ui.windows.popups'))
 	$js .= get_js_open_window(800, 500);
 
 

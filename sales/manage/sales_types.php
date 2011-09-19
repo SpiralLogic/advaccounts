@@ -100,7 +100,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
   $result = get_all_sales_types(check_value('show_inactive'));
 
   start_form();
-  start_table("$table_style width=30%");
+  start_table(Config::get('tables.style')."  width=30%");
 
   $th = array(_('Type Name'), _('Factor'), _('Tax Incl'), '', '');
   inactive_control_column($th);
@@ -136,7 +136,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
   if (!isset($_POST['base']))
 	 $_POST['base'] = 0;
 
-  start_table($table_style2);
+  start_table(Config::get('tables.style2'));
 
   if ($selected_id != -1) {
 

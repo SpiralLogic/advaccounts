@@ -25,7 +25,7 @@
 		}
 
 		function menu_header($title, $no_menu, $is_index) {
-			global $path_to_root, $help_base_url, $db_connections, $app_title, $version;
+			global $path_to_root,  $db_connections;
 			$sel_app = $_SESSION['sel_app'];
 			echo "<div id='content'>\n";
 			if (!$no_menu || AJAX_REFERRER) {
@@ -40,7 +40,7 @@
 				echo "  <li><a href='$path_to_root/admin/display_prefs.php?'>" . _("Preferences") . "</a></li>\n";
 				echo "  <li><a href='$path_to_root/admin/change_current_user_password.php?selected_id=" .
 						$_SESSION["wa_current_user"]->username . "'>" . _("Change password") . "</a></li>\n";
-				if ($help_base_url != null) {
+				if (Config::get('help.baseurl')  != null) {
 					echo "  <li><a target = '_blank' onclick=" . '"' . "javascript:openWindow(this.href,this.target); return false;" . '" ' . "href='" . help_url() . "'>" . _("Help") . "</a></li>";
 				}
 				echo "  <li><a href='$path_to_root/access/logout.php?'>" . _("Logout") . "</a></li>";
@@ -48,7 +48,7 @@
 				echo "</div>\n";
 				echo "<div id='logo'>\n";
 				$indicator = "$path_to_root/themes/" . user_theme() . "/images/ajax-loader.gif";
-				echo "<h1>$app_title $version<span style='padding-left:280px;'><img id='ajaxmark' src='$indicator' align='center' style='visibility:hidden;'></span></h1>\n";
+				echo "<h1>".APP_TITLE." " .VERSION."<span style='padding-left:280px;'><img id='ajaxmark' src='$indicator' align='center' style='visibility:hidden;'></span></h1>\n";
 				echo "</div>\n";
 				$local_path_to_root = $path_to_root;
 				echo '<div id="_tabs2"><div class="menu_container">';
@@ -81,13 +81,13 @@
 		}
 
 		function menu_footer($no_menu, $is_index) {
-			global $path_to_root, $power_url, $power_by;
+			global $path_to_root;
 			include_once($path_to_root . "/includes/date_functions.inc");
 
 			if ($no_menu == false && !AJAX_REFERRER) {
 				echo "<div id='footer'>\n";
 				if (isset($_SESSION['wa_current_user'])) {
-					echo "<span class='power'><a target='_blank' href='{$power_url}'>{$power_by}</a></span>\n";
+					echo "<span class='power'><a target='_blank' href='".POWERED_URL."'>".POWERED_BY."</a></span>\n";
 					echo "<span class='date'>" . Today() . " | " . Now() . "</span>\n";
 					echo "<span class='date'>" . show_users_online() . "</span>\n";
 				}

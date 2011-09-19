@@ -22,7 +22,7 @@ include_once($path_to_root . "/manufacturing/includes/manufacturing_db.inc");
 include_once($path_to_root . "/manufacturing/includes/manufacturing_ui.inc");
 
 $js = "";
-if ($use_popup_windows)
+if (Config::get('ui.windows.popups'))
 	$js .= get_js_open_window(900, 500);
 
 page(_($help_context = "Produce or Unassemble Finished Items From Work Order"), false, false, "", $js);
@@ -171,7 +171,7 @@ if (!isset($_POST['quantity']) || $_POST['quantity'] == '')
 	$_POST['quantity'] = qty_format(max($wo_details["units_reqd"] - $wo_details["units_issued"], 0),
 									$wo_details["stock_id"], $dec);
 
-start_table($table_style2);
+start_table(Config::get('tables.style2'));
 br();
 
 ref_row(_("Reference:"), 'ref', '', $Refs->get_next(29));

@@ -394,7 +394,7 @@ return array(
 	'Native gettext' => '',
 	'In case of no getext support, php emulation is used' => '',
 	'Debugging mode' => '',
-	'To switch debugging on set $go_debug=1 in config.php file' => '',
+	'To switch debugging on set to true in config.php file' => '',
 	'Error logging' => '',
 	'Disabled' => '',
 	'To switch error logging set $error_logging in config.php file' => '',

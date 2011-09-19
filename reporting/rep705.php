@@ -9,28 +9,27 @@ but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
  ***********************************************************************/
-$page_security = 'SA_GLANALYTIC';
-// ----------------------------------------------------------------
-// $ Revision:	2.0 $
-// Creator:	Joe Hunt, Chaitanya for the recursive version 2009-02-05.
-// date_:	2005-05-19
-// Title:	Annual expense breakdown
-// ----------------------------------------------------------------
-$path_to_root = "..";
+ $page_security = 'SA_GLANALYTIC';
+ // ----------------------------------------------------------------
+ // $ Revision:	2.0 $
+ // Creator:	Joe Hunt, Chaitanya for the recursive version 2009-02-05.
+ // date_:	2005-05-19
+ // Title:	Annual expense breakdown
+ // ----------------------------------------------------------------
+ $path_to_root = "..";
 
-include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
-include_once($path_to_root . "/includes/date_functions.inc");
-include_once($path_to_root . "/includes/data_checks.inc");
-include_once($path_to_root . "/gl/includes/gl_db.inc");
+ include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+ include_once($path_to_root . "/includes/date_functions.inc");
+ include_once($path_to_root . "/includes/data_checks.inc");
+ include_once($path_to_root . "/gl/includes/gl_db.inc");
 
-//----------------------------------------------------------------------------------------------------
+ //----------------------------------------------------------------------------------------------------
 
-print_annual_expense_breakdown();
+ print_annual_expense_breakdown();
 
-//----------------------------------------------------------------------------------------------------
+ //----------------------------------------------------------------------------------------------------
 
-function getPeriods($yr, $mo, $account, $dimension, $dimension2)
-{
+ function getPeriods($yr, $mo, $account, $dimension, $dimension2) {
 	$date13 = date('Y-m-d', mktime(0, 0, 0, $mo + 1, 1, $yr));
 	$date12 = date('Y-m-d', mktime(0, 0, 0, $mo, 1, $yr));
 	$date11 = date('Y-m-d', mktime(0, 0, 0, $mo - 1, 1, $yr));
@@ -60,19 +59,18 @@ function getPeriods($yr, $mo, $account, $dimension, $dimension2)
     			FROM gl_trans
 				WHERE account='$account'";
 	if ($dimension != 0)
-		$sql .= " AND dimension_id = " . ($dimension < 0 ? 0 : db_escape($dimension));
+	 $sql .= " AND dimension_id = " . ($dimension < 0 ? 0 : db_escape($dimension));
 	if ($dimension2 != 0)
-		$sql .= " AND dimension2_id = " . ($dimension2 < 0 ? 0 : db_escape($dimension2));
+	 $sql .= " AND dimension2_id = " . ($dimension2 < 0 ? 0 : db_escape($dimension2));
 
 	$result = db_query($sql, "Transactions for account $account could not be calculated");
 
 	return db_fetch($result);
-}
+ }
 
-//----------------------------------------------------------------------------------------------------
+ //----------------------------------------------------------------------------------------------------
 
-function display_type($type, $typename, $yr, $mo, $convert, &$dec, &$rep, $dimension, $dimension2)
-{
+ function display_type($type, $typename, $yr, $mo, $convert, &$dec, &$rep, $dimension, $dimension2) {
 	$ctotal = array(1 => 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 	$total = array(1 => 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 	$totals_arr = array();
@@ -83,106 +81,106 @@ function display_type($type, $typename, $yr, $mo, $convert, &$dec, &$rep, $dimen
 	$result = get_gl_accounts(null, null, $type);
 	while ($account = db_fetch($result))
 	{
-		$bal = getPeriods($yr, $mo, $account["account_code"], $dimension, $dimension2);
-		if (!$bal['per01'] && !$bal['per02'] && !$bal['per03'] && !$bal['per04'] && !$bal['per05'] &&
-			!$bal['per06'] && !$bal['per07'] && !$bal['per08'] && !$bal['per09'] && !$bal['per10'] &&
-			!$bal['per11'] && !$bal['per12'])
-			continue;
+	 $bal = getPeriods($yr, $mo, $account["account_code"], $dimension, $dimension2);
+	 if (!$bal['per01'] && !$bal['per02'] && !$bal['per03'] && !$bal['per04'] && !$bal['per05'] &&
+			 !$bal['per06'] && !$bal['per07'] && !$bal['per08'] && !$bal['per09'] && !$bal['per10'] &&
+			 !$bal['per11'] && !$bal['per12']
+	 )
+		continue;
 
-		//Print Type Title if it has atleast one non-zero account	
-		if (!$printtitle) {
-			$printtitle = 1;
-			$rep->row -= 4;
-			$rep->TextCol(0, 5, $typename);
-			$rep->row -= 4;
-			$rep->Line($rep->row);
-			$rep->NewLine();
-		}
-
-		$balance = array(1 => $bal['per01'], $bal['per02'], $bal['per03'], $bal['per04'],
-						 $bal['per05'], $bal['per06'], $bal['per07'], $bal['per08'],
-						 $bal['per09'], $bal['per10'], $bal['per11'], $bal['per12']);
-		$rep->TextCol(0, 1, $account['account_code']);
-		$rep->TextCol(1, 2, $account['account_name']);
-
-		for ($i = 1; $i <= 12; $i++)
-		{
-			$rep->AmountCol($i + 1, $i + 2, $balance[$i] * $convert, $dec);
-			$ctotal[$i] += $balance[$i];
-		}
-
+	 //Print Type Title if it has atleast one non-zero account
+	 if (!$printtitle) {
+		$printtitle = 1;
+		$rep->row -= 4;
+		$rep->TextCol(0, 5, $typename);
+		$rep->row -= 4;
+		$rep->Line($rep->row);
 		$rep->NewLine();
+	 }
+
+	 $balance = array(1 => $bal['per01'], $bal['per02'], $bal['per03'], $bal['per04'],
+										$bal['per05'], $bal['per06'], $bal['per07'], $bal['per08'],
+										$bal['per09'], $bal['per10'], $bal['per11'], $bal['per12']);
+	 $rep->TextCol(0, 1, $account['account_code']);
+	 $rep->TextCol(1, 2, $account['account_name']);
+
+	 for ($i = 1; $i <= 12; $i++)
+	 {
+		$rep->AmountCol($i + 1, $i + 2, $balance[$i] * $convert, $dec);
+		$ctotal[$i] += $balance[$i];
+	 }
+
+	 $rep->NewLine();
 	}
 
 	//Get Account groups/types under this group/type
 	$result = get_account_types(false, false, $type);
 	while ($accounttype = db_fetch($result))
 	{
-		//Print Type Title if has sub types and not previously printed
-		if (!$printtitle) {
-			$printtitle = 1;
-			$rep->row -= 4;
-			$rep->TextCol(0, 5, $typename);
-			$rep->row -= 4;
-			$rep->Line($rep->row);
-			$rep->NewLine();
-		}
+	 //Print Type Title if has sub types and not previously printed
+	 if (!$printtitle) {
+		$printtitle = 1;
+		$rep->row -= 4;
+		$rep->TextCol(0, 5, $typename);
+		$rep->row -= 4;
+		$rep->Line($rep->row);
+		$rep->NewLine();
+	 }
 
-		$totals_arr = display_type(
-			$accounttype["id"], $accounttype["name"], $yr, $mo, $convert, $dec, $rep, $dimension, $dimension2);
-		for ($i = 1; $i <= 12; $i++)
-		{
-			$total[$i] += $totals_arr[$i];
-		}
+	 $totals_arr = display_type(
+		$accounttype["id"], $accounttype["name"], $yr, $mo, $convert, $dec, $rep, $dimension, $dimension2);
+	 for ($i = 1; $i <= 12; $i++)
+	 {
+		$total[$i] += $totals_arr[$i];
+	 }
 	}
 
 	//Display Type Summary if total is != 0 OR head is printed (Needed in case of unused hierarchical COA) 
 	if ($printtitle) {
-		$rep->row += 6;
-		$rep->Line($rep->row);
-		$rep->NewLine();
-		$rep->TextCol(0, 2, _('Total') . " " . $typename);
-		for ($i = 1; $i <= 12; $i++)
-			$rep->AmountCol($i + 1, $i + 2, ($total[$i] + $ctotal[$i]) * $convert, $dec);
-		$rep->NewLine();
+	 $rep->row += 6;
+	 $rep->Line($rep->row);
+	 $rep->NewLine();
+	 $rep->TextCol(0, 2, _('Total') . " " . $typename);
+	 for ($i = 1; $i <= 12; $i++)
+		$rep->AmountCol($i + 1, $i + 2, ($total[$i] + $ctotal[$i]) * $convert, $dec);
+	 $rep->NewLine();
 	}
 	for ($i = 1; $i <= 12; $i++)
-		$totals_arr[$i] = $total[$i] + $ctotal[$i];
+	 $totals_arr[$i] = $total[$i] + $ctotal[$i];
 	return $totals_arr;
-}
+ }
 
-//----------------------------------------------------------------------------------------------------
+ //----------------------------------------------------------------------------------------------------
 
-function print_annual_expense_breakdown()
-{
-	global $path_to_root, $date_system;
+ function print_annual_expense_breakdown() {
+	global $path_to_root;
 
 	$dim = get_company_pref('use_dimension');
 	$dimension = $dimension2 = 0;
 
 	if ($dim == 2) {
-		$year = $_POST['PARAM_0'];
-		$dimension = $_POST['PARAM_1'];
-		$dimension2 = $_POST['PARAM_2'];
-		$comments = $_POST['PARAM_3'];
-		$destination = $_POST['PARAM_4'];
+	 $year = $_POST['PARAM_0'];
+	 $dimension = $_POST['PARAM_1'];
+	 $dimension2 = $_POST['PARAM_2'];
+	 $comments = $_POST['PARAM_3'];
+	 $destination = $_POST['PARAM_4'];
 	}
 	else if ($dim == 1) {
-		$year = $_POST['PARAM_0'];
-		$dimension = $_POST['PARAM_1'];
-		$comments = $_POST['PARAM_2'];
-		$destination = $_POST['PARAM_3'];
+	 $year = $_POST['PARAM_0'];
+	 $dimension = $_POST['PARAM_1'];
+	 $comments = $_POST['PARAM_2'];
+	 $destination = $_POST['PARAM_3'];
 	}
 	else
 	{
-		$year = $_POST['PARAM_0'];
-		$comments = $_POST['PARAM_1'];
-		$destination = $_POST['PARAM_2'];
+	 $year = $_POST['PARAM_0'];
+	 $comments = $_POST['PARAM_1'];
+	 $destination = $_POST['PARAM_2'];
 	}
 	if ($destination)
-		include_once($path_to_root . "/reporting/includes/excel_report.inc");
+	 include_once($path_to_root . "/reporting/includes/excel_report.inc");
 	else
-		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
+	 include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 
 	$dec = 1;
 	//$pdec = user_percent_dec();
@@ -201,10 +199,10 @@ function print_annual_expense_breakdown()
 	$yr = $row['yr'];
 	$mo = $row['mo'];
 	$da = 1;
-	if ($date_system == 1)
-		list($yr, $mo, $da) = jalali_to_gregorian($yr, $mo, $da);
-	elseif ($date_system == 2)
-		list($yr, $mo, $da) = islamic_to_gregorian($yr, $mo, $da);
+	if (Config::get('accounts.datesystem') == 1)
+	 list($yr, $mo, $da) = jalali_to_gregorian($yr, $mo, $da);
+	elseif (Config::get('accounts.datesystem') == 2)
+	 list($yr, $mo, $da) = islamic_to_gregorian($yr, $mo, $da);
 	$per12 = strftime('%b', mktime(0, 0, 0, $mo, $da, $yr));
 	$per11 = strftime('%b', mktime(0, 0, 0, $mo - 1, $da, $yr));
 	$per10 = strftime('%b', mktime(0, 0, 0, $mo - 2, $da, $yr));
@@ -219,38 +217,38 @@ function print_annual_expense_breakdown()
 	$per01 = strftime('%b', mktime(0, 0, 0, $mo - 11, $da, $yr));
 
 	$headers = array(_('Account'), _('Account Name'), $per01, $per02, $per03, $per04,
-					 $per05, $per06, $per07, $per08, $per09, $per10, $per11, $per12);
+									 $per05, $per06, $per07, $per08, $per09, $per10, $per11, $per12);
 
 	$aligns = array('left', 'left', 'right', 'right', 'right', 'right', 'right', 'right',
-					'right', 'right', 'right', 'right', 'right', 'right');
+									'right', 'right', 'right', 'right', 'right', 'right');
 
 	if ($dim == 2) {
-		$params = array(0 => $comments,
-						1 => array('text' => _("Year"),
-								   'from' => $year, 'to' => ''),
-						2 => array('text' => _("Dimension") . " 1",
-								   'from' => get_dimension_string($dimension), 'to' => ''),
-						3 => array('text' => _("Dimension") . " 2",
-								   'from' => get_dimension_string($dimension2), 'to' => ''),
-						4 => array('text' => _('Info'), 'from' => _('Amounts in thousands'),
-								   'to' => ''));
+	 $params = array(0 => $comments,
+									 1 => array('text' => _("Year"),
+															'from' => $year, 'to' => ''),
+									 2 => array('text' => _("Dimension") . " 1",
+															'from' => get_dimension_string($dimension), 'to' => ''),
+									 3 => array('text' => _("Dimension") . " 2",
+															'from' => get_dimension_string($dimension2), 'to' => ''),
+									 4 => array('text' => _('Info'), 'from' => _('Amounts in thousands'),
+															'to' => ''));
 	}
 	else if ($dim == 1) {
-		$params = array(0 => $comments,
-						1 => array('text' => _("Year"),
-								   'from' => $year, 'to' => ''),
-						2 => array('text' => _('Dimension'),
-								   'from' => get_dimension_string($dimension), 'to' => ''),
-						3 => array('text' => _('Info'), 'from' => _('Amounts in thousands'),
-								   'to' => ''));
+	 $params = array(0 => $comments,
+									 1 => array('text' => _("Year"),
+															'from' => $year, 'to' => ''),
+									 2 => array('text' => _('Dimension'),
+															'from' => get_dimension_string($dimension), 'to' => ''),
+									 3 => array('text' => _('Info'), 'from' => _('Amounts in thousands'),
+															'to' => ''));
 	}
 	else
 	{
-		$params = array(0 => $comments,
-						1 => array('text' => _("Year"),
-								   'from' => $year, 'to' => ''),
-						2 => array('text' => _('Info'), 'from' => _('Amounts in thousands'),
-								   'to' => ''));
+	 $params = array(0 => $comments,
+									 1 => array('text' => _("Year"),
+															'from' => $year, 'to' => ''),
+									 2 => array('text' => _('Info'), 'from' => _('Amounts in thousands'),
+															'to' => ''));
 	}
 
 	$rep = new FrontReport(_('Annual Expense Breakdown'), "AnnualBreakDown", user_pagesize());
@@ -264,48 +262,48 @@ function print_annual_expense_breakdown()
 	$classresult = get_account_classes(false, 0);
 	while ($class = db_fetch($classresult))
 	{
-		$ctotal = Array(1 => 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-		$convert = get_class_type_convert($class["ctype"]);
+	 $ctotal = Array(1 => 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+	 $convert = get_class_type_convert($class["ctype"]);
 
-		//Print Class Name	
-		$rep->Font('bold');
-		$rep->TextCol(0, 5, $class["class_name"]);
-		$rep->Font();
-		$rep->NewLine();
+	 //Print Class Name
+	 $rep->Font('bold');
+	 $rep->TextCol(0, 5, $class["class_name"]);
+	 $rep->Font();
+	 $rep->NewLine();
 
-		//Get Account groups/types under this group/type with no parents
-		$typeresult = get_account_types(false, $class['cid'], -1);
-		while ($accounttype = db_fetch($typeresult))
-		{
-			$classtotal = display_type(
-				$accounttype["id"], $accounttype["name"], $yr, $mo, $convert, $dec, $rep, $dimension, $dimension2);
-			for ($i = 1; $i <= 12; $i++)
-				$ctotal[$i] += $classtotal[$i];
-		}
-
-		//Print Class Summary	
-		$rep->row += 6;
-		$rep->Line($rep->row);
-		$rep->NewLine();
-		$rep->Font('bold');
-		$rep->TextCol(0, 2, _('Total') . " " . $class["class_name"]);
+	 //Get Account groups/types under this group/type with no parents
+	 $typeresult = get_account_types(false, $class['cid'], -1);
+	 while ($accounttype = db_fetch($typeresult))
+	 {
+		$classtotal = display_type(
+		 $accounttype["id"], $accounttype["name"], $yr, $mo, $convert, $dec, $rep, $dimension, $dimension2);
 		for ($i = 1; $i <= 12; $i++)
-		{
-			$rep->AmountCol($i + 1, $i + 2, $ctotal[$i] * $convert, $dec);
-			$sales[$i] += $ctotal[$i];
-		}
-		$rep->Font();
-		$rep->NewLine(2);
+		 $ctotal[$i] += $classtotal[$i];
+	 }
+
+	 //Print Class Summary
+	 $rep->row += 6;
+	 $rep->Line($rep->row);
+	 $rep->NewLine();
+	 $rep->Font('bold');
+	 $rep->TextCol(0, 2, _('Total') . " " . $class["class_name"]);
+	 for ($i = 1; $i <= 12; $i++)
+	 {
+		$rep->AmountCol($i + 1, $i + 2, $ctotal[$i] * $convert, $dec);
+		$sales[$i] += $ctotal[$i];
+	 }
+	 $rep->Font();
+	 $rep->NewLine(2);
 	}
 	$rep->Font('bold');
 	$rep->TextCol(0, 2, _("Calculated Return"));
 	for ($i = 1; $i <= 12; $i++)
-		$rep->AmountCol($i + 1, $i + 2, $sales[$i] * -1, $dec);
+	 $rep->AmountCol($i + 1, $i + 2, $sales[$i] * -1, $dec);
 	$rep->Font();
 	$rep->NewLine();
 	$rep->Line($rep->row);
 	$rep->NewLine(2);
 	$rep->End();
-}
+ }
 
 ?>

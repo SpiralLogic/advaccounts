@@ -15,7 +15,7 @@ include_once($path_to_root . "/includes/faui.inc");
 
 function display_dimension_balance($id, $from, $to)
 {
-	global $path_to_root, $table_style;
+	global $path_to_root;
 
 	$from = date2sql($from);
 	$to = date2sql($to);
@@ -33,7 +33,7 @@ function display_dimension_balance($id, $from, $to)
 	{
 		display_heading2(_("Balance for this Dimension"));
 		br();
-		start_table($table_style);
+		start_table( Config::get('tables.style') );
 		$th = array(_("Account"), _("Debit"), _("Credit"));
 		table_header($th);
 

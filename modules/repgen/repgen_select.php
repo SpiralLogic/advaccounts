@@ -230,7 +230,7 @@ display_heading(DESCRIPT);
 
 start_form(false, false, "repgen_select.php", "navigate");
 
-start_table($table_style2);
+start_table(Config::get('tables.style2'));
 
 start_row();
 
@@ -258,7 +258,7 @@ function displayReport(f, id)
 //--></script>
 <?php
 
-start_table($table_style);
+start_table(Config::get('tables.style')) ;
 $th = array(LONG, SHORT, AUTHOR, CREATIONDATE, "Action", "", "", "");
 
 table_header($th);

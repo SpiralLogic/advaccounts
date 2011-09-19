@@ -21,7 +21,7 @@ include_once($path_to_root . "/includes/data_checks.inc");
 include_once($path_to_root . "/inventory/includes/stock_transfers_ui.inc");
 include_once($path_to_root . "/inventory/includes/inventory_db.inc");
 $js = "";
-if ($use_popup_windows)
+if (Config::get('ui.windows.popups'))
 	$js .= get_js_open_window(800, 500);
 
 page(_($help_context = "Inventory Location Transfers"), false, false, "", $js);
@@ -216,7 +216,7 @@ start_form();
 
 display_order_header($_SESSION['transfer_items']);
 
-start_table("$table_style width=70%", 10);
+start_table(Config::get('tables.style')."  width=70%", 10);
 start_row();
 echo "<td>";
 display_transfer_items(_("Items"), $_SESSION['transfer_items']);

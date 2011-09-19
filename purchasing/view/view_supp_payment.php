@@ -17,7 +17,7 @@ include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 include_once($path_to_root . "/includes/faui.inc");
 include_once($path_to_root . "/purchasing/includes/purchasing_db.inc");
 $js = "";
-if ($use_popup_windows)
+if (Config::get('ui.windows.popups'))
 	$js .= get_js_open_window(900, 500);
 page(_($help_context = "View Payment to Supplier"), true, false, "", $js);
 
@@ -45,7 +45,7 @@ echo "<center>";
 display_heading(_("Payment to Supplier") . " #$trans_no");
 
 echo "<br>";
-start_table("$table_style2 width=80%");
+start_table(Config::get('tables.style2')." width=80%");
 
 start_row();
 label_cells(_("To Supplier"), $receipt['supplier_name'], "class='tableheader2'");

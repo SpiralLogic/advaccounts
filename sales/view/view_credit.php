@@ -19,7 +19,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
   include_once($path_to_root . "/sales/includes/sales_db.inc");
   include_once("$path_to_root/reporting/includes/reporting.inc");
   $js = "";
-  if ($use_popup_windows)
+  if (Config::get('ui.windows.popups'))
 	 $js .= get_js_open_window(900, 500);
   page(_($help_context = "View Credit Note"), true, false, "", $js);
 
@@ -38,11 +38,11 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
   display_heading("<font color=red>" . sprintf(_("CREDIT NOTE #%d"), $trans_id) . "</font>");
   echo "<br>";
 
-  start_table("$table_style2 width=95%");
+  start_table(Config::get('tables.style2')." width=95%");
   echo "<tr valign=top><td>"; // outer table
 
   /*Now the customer charged to details in a sub table*/
-  start_table("$table_style width=100%");
+  start_table(Config::get('tables.style')."  width=100%");
   $th = array(_("Customer"));
   table_header($th);
 
@@ -53,7 +53,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 
   echo "</td><td>"; // outer table
 
-  start_table("$table_style width=100%");
+  start_table(Config::get('tables.style')."  width=100%");
   $th = array(_("Branch"));
   table_header($th);
 
@@ -62,7 +62,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 
   echo "</td><td>"; // outer table
 
-  start_table("$table_style width=100%");
+  start_table(Config::get('tables.style')."  width=100%");
   start_row();
   label_cells(_("Ref"), $myrow["reference"], "class='tableheader2'");
   label_cells(_("Date"), sql2date($myrow["tran_date"]), "class='tableheader2'");
@@ -82,7 +82,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 
   $result = get_customer_trans_details(ST_CUSTCREDIT, $trans_id);
 
-  start_table("$table_style width=95%");
+  start_table(Config::get('tables.style')."  width=95%");
 
   if (db_num_rows($result) > 0) {
 	 $th = array(_("Item Code"), _("Item Description"), _("Quantity"),

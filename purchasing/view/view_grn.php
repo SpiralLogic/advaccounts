@@ -16,7 +16,7 @@ include($path_to_root . "/purchasing/includes/po_class.inc");
 include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 
 $js = "";
-if ($use_popup_windows)
+if (Config::get('ui.windows.popups'))
 	$js .= get_js_open_window(900, 500);
 page(_($help_context = "View Purchase Order Delivery"), true, false, "", $js);
 
@@ -35,7 +35,7 @@ display_grn_summary($purchase_order);
 
 display_heading2(_("Line Details"));
 
-start_table("colspan=9 $table_style width=90%");
+start_table("colspan=9 ".Config::get('tables.style') ." width=90%");
 $th = array(_("Item Code"), _("Item Description"), _("Delivery Date"), _("Quantity"),
 			_("Unit"), _("Price"), _("Line Total"), _("Quantity Invoiced"));
 

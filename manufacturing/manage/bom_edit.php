@@ -91,11 +91,10 @@ function check_for_recursive_bom($ultimate_parent, $component_to_check)
 
 function display_bom_items($selected_parent)
 {
-	global $table_style;
 
 	$result = get_bom($selected_parent);
 	div_start('bom');
-	start_table("$table_style width=60%");
+	start_table(Config::get('tables.style')."  width=60%");
 	$th = array(_("Code"), _("Description"), _("Location"),
 				_("Work Centre"), _("Quantity"), _("Units"), '', '');
 	table_header($th);
@@ -227,7 +226,7 @@ if (get_post('stock_id') != '') { //Parent Item selected so display bom or edit 
 	//--------------------------------------------------------------------------------------
 	echo '<br>';
 
-	start_table($table_style2);
+	start_table(Config::get('tables.style2'));
 
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {

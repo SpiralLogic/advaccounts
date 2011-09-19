@@ -181,7 +181,7 @@ else
 	hidden('supplier_id', get_post('supplier_id'));
 }
 
-start_outer_table($table_style2, 5);
+start_outer_table(Config::get('tables.style2'), 5);
 
 table_section(1);
 

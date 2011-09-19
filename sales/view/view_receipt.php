@@ -18,7 +18,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
   include_once($path_to_root . "/sales/includes/sales_db.inc");
   include_once("$path_to_root/reporting/includes/reporting.inc");
   $help_context = $js = "";
-  if ($use_popup_windows)
+  if (Config::get('ui.windows.popups'))
 	 $js .= get_js_open_window(900, 600);
   $trans_type = $_GET['trans_type'];
   page(_($help_context), true, false, "", $js);
@@ -41,7 +41,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 
 
   echo "<br>";
-  start_table("$table_style width=80%");
+  start_table(Config::get('tables.style')."  width=80%");
   start_row();
   start_form();
 

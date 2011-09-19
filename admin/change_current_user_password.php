@@ -9,75 +9,80 @@ but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
  ***********************************************************************/
-$page_security = 'SA_CHGPASSWD';
-$path_to_root = "..";
-include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	$page_security = 'SA_CHGPASSWD';
+	$path_to_root = "..";
+	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 
-page(_($help_context = "Change password"));
+	page(_($help_context = "Change password"));
 
-include_once($path_to_root . "/includes/date_functions.inc");
-include_once($path_to_root . "/includes/faui.inc");
+	include_once($path_to_root . "/includes/date_functions.inc");
+	include_once($path_to_root . "/includes/faui.inc");
 
-include_once($path_to_root . "/admin/db/users_db.inc");
+	include_once($path_to_root . "/admin/db/users_db.inc");
 
-function can_process()
-{
+	function can_process() {
 
-	if (strlen($_POST['password']) < 4) {
-		display_error(_("The password entered must be at least 4 characters long."));
-		set_focus('password');
-		return false;
-	}
-
-	if (strstr($_POST['password'], $_SESSION["wa_current_user"]->username) != false) {
-		display_error(_("The password cannot contain the user login."));
-		set_focus('password');
-		return false;
-	}
-
-	if ($_POST['password'] != $_POST['passwordConfirm']) {
-		display_error(_("The passwords entered are not the same."));
-		set_focus('password');
-		return false;
-	}
-
-	return true;
-}
-
-if (isset($_POST['UPDATE_ITEM'])) {
-
-	if (can_process()) {
-		if ($allow_demo_mode) {
-			display_warning(_("Password cannot be changed in demo mode."));
-		} else {
-			update_user_password($_SESSION["wa_current_user"]->user,
-								 $_SESSION["wa_current_user"]->username,
-								 md5($_POST['password']));
-			display_notification(_("Your password has been updated."));
+		if (strlen($_POST['password']) < 4) {
+			display_error(_("The password entered must be at least 4 characters long."));
+			set_focus('password');
+			return false;
 		}
-		$Ajax->activate('_page_body');
+
+		if (strstr($_POST['password'], $_SESSION["wa_current_user"]->username) != false) {
+			display_error(_("The password cannot contain the user login."));
+			set_focus('password');
+			return false;
+		}
+
+		if ($_POST['password'] != $_POST['passwordConfirm']) {
+			display_error(_("The passwords entered are not the same."));
+			set_focus('password');
+			return false;
+		}
+
+		return true;
 	}
-}
 
-start_form();
+	if (isset($_POST['UPDATE_ITEM'])) {
 
-start_table($table_style);
+		if (can_process()) {
+			if (Config::get('demo_mode') ) {
+				display_warning(_("Password cannot be changed in demo mode."));
+			} else {
+				$auth = new Auth($_SESSION["wa_current_user"]->username);
+				$check = $auth->checkPasswordStrength($_POST['password']);
+				if ($check['error'] > 0)
+					display_error($check['text']);
+				elseif ($check['strength'] < 3)
+					display_error(_("Password Too Weeak!"));
+				else {
+					$auth->update_password($_SESSION['wa_current_user']->user,$_POST['password']);
+					display_notification(_("Password Changed"));
+				}
+			}
+			$Ajax->activate('_page_body');
+		}
+	}
 
-$myrow = get_user($_SESSION["wa_current_user"]->user);
+	start_form();
 
-label_row(_("User login:"), $myrow['user_id']);
+	start_table( Config::get('tables.style') );
 
-$_POST['password'] = "";
-$_POST['passwordConfirm'] = "";
+	$myrow = get_user($_SESSION["wa_current_user"]->user);
 
-password_row(_("Password:"), 'password', $_POST['password']);
-password_row(_("Repeat password:"), 'passwordConfirm', $_POST['passwordConfirm']);
+	label_row(_("User login:"), $myrow['user_id']);
 
-table_section_title(_("Enter your new password in the fields."));
+	$_POST['password'] = "";
+	$_POST['passwordConfirm'] = "";
 
-end_table(1);
+	password_row(_("Password:"), 'password', $_POST['password']);
+	password_row(_("Repeat password:"), 'passwordConfirm', $_POST['passwordConfirm']);
 
-submit_center('UPDATE_ITEM', _('Change password'), true, '', 'default');
-end_form();
-end_page();
+	table_section_title(_("Enter your new password in the fields."));
+
+	end_table(1);
+
+	submit_center('UPDATE_ITEM', _('Change password'), true, '', 'default');
+	end_form();
+	end_page();
 ?>

@@ -24,7 +24,6 @@ simple_page_mode(true);
 
 function can_process()
 {
-	global $use_oldstyle_convert;
 	if (!is_numeric($_POST['id'])) {
 		display_error(_("The account class ID must be numeric."));
 		set_focus('id');
@@ -35,7 +34,7 @@ function can_process()
 		set_focus('name');
 		return false;
 	}
-	if (isset($use_oldstyle_convert) && $use_oldstyle_convert == 1)
+	if (Config::get('accounts.gl.oldconvertstyle') == 1)
 		$_POST['Balance'] = check_value('Balance');
 	return true;
 }
@@ -100,9 +99,9 @@ if ($Mode == 'RESET') {
 $result = get_account_classes(check_value('show_inactive'));
 
 start_form();
-start_table($table_style);
+start_table(Config::get('tables.style') );
 $th = array(_("Class ID"), _("Class Name"), _("Class Type"), "", "");
-if (isset($use_oldstyle_convert) && $use_oldstyle_convert == 1)
+if (Config::get('accounts.gl.oldconvertstyle') == 1)
 	$th[2] = _("Balance Sheet");
 inactive_control_column($th);
 table_header($th);
@@ -115,7 +114,7 @@ while ($myrow = db_fetch($result))
 
 	label_cell($myrow["cid"]);
 	label_cell($myrow['class_name']);
-	if (isset($use_oldstyle_convert) && $use_oldstyle_convert == 1) {
+	if (Config::get('accounts.gl.oldconvertstyle') == 1) {
 		$myrow['ctype'] = ($myrow["ctype"] >= CL_ASSETS && $myrow["ctype"] < CL_INCOME ? 1 : 0);
 		label_cell(($myrow['ctype'] == 1 ? _("Yes") : _("No")));
 	}
@@ -130,7 +129,7 @@ inactive_control_row($th);
 end_table(1);
 //-----------------------------------------------------------------------------------
 
-start_table($table_style2);
+start_table(Config::get('tables.style2'));
 
 if ($selected_id != -1) {
 	if ($Mode == 'Edit') {
@@ -139,7 +138,7 @@ if ($selected_id != -1) {
 
 		$_POST['id'] = $myrow["cid"];
 		$_POST['name'] = $myrow["class_name"];
-		if (isset($use_oldstyle_convert) && $use_oldstyle_convert == 1)
+		if (Config::get('accounts.gl.oldconvertstyle') == 1)
 			$_POST['ctype'] = ($myrow["ctype"] >= CL_ASSETS && $myrow["ctype"] < CL_INCOME ? 1 : 0);
 		else
 			$_POST['ctype'] = $myrow["ctype"];
@@ -157,7 +156,7 @@ else
 
 text_row_ex(_("Class Name:"), 'name', 50, 60);
 
-if (isset($use_oldstyle_convert) && $use_oldstyle_convert == 1)
+if (Config::get('accounts.gl.oldconvertstyle') == 1)
 	check_row(_("Balance Sheet"), 'ctype', null);
 else
 	class_types_list_row(_("Class Type:"), 'ctype', null);

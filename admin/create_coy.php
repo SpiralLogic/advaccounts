@@ -74,8 +74,8 @@ function remove_connection($id)
 
 function handle_submit()
 {
-	global $db_connections, $def_coy, $db,
-$comp_path, $comp_subdirs, $path_to_root;
+	global $db_connections,  $db,
+$comp_subdirs, $path_to_root;
 
 	$error = false;
 	if (!check_data())
@@ -91,7 +91,8 @@ $comp_path, $comp_subdirs, $path_to_root;
 	$db_connections[$id]['dbname'] = $_POST['dbname'];
 
 	if ((bool) $_POST['def'] == true)
-		$def_coy = $id;
+		Config::set('company.default',$id);
+
 	if (isset($_GET['ul']) && $_GET['ul'] == 1) {
 		$conn = $db_connections[$id];
 		if (($db = db_create_db($conn)) == 0) {
@@ -125,26 +126,15 @@ $comp_path, $comp_subdirs, $path_to_root;
 			$conn = $db_connections[$id];
 			if (($db = db_create_db($conn)) == 0) {
 				display_error(_("Error connecting to Database: ") . $conn['dbname'] . _(", Please correct it"));
-				$error = true;
 			} elseif ($_POST['admpassword'] != "") {
 				db_query("UPDATE users set password = '" . md5(
 					$_POST['admpassword']) . "' WHERE user_id = 'admin'");
 			}
 		}
 	}
-	$error = write_config_db($new);
-	if ($error == -1)
-		display_error(_("Cannot open the configuration file - ") . $path_to_root . "/config_db.php");
-	else if ($error == -2)
-		display_error(_("Cannot write to the configuration file - ") . $path_to_root . "/config_db.php");
-	else if ($error == -3)
-		display_error(_("The configuration file ") . $path_to_root . "/config_db.php" . _(" is not writable. Change its permissions so it is, then re-run the operation."));
-	if ($error != 0) {
-		return false;
-	}
 
 	if ($new) {
-		create_comp_dirs("$comp_path/$id", $comp_subdirs);
+		create_comp_dirs(COMPANY_PATH."/$id", $comp_subdirs);
 	}
 	$exts = get_company_extensions();
 	write_extensions($exts, $id);
@@ -156,56 +146,43 @@ $comp_path, $comp_subdirs, $path_to_root;
 
 function handle_delete()
 {
-	global $comp_path, $def_coy, $db_connections, $comp_subdirs, $path_to_root;
+	global  $db_connections,  $path_to_root;
 
 	$id = $_GET['id'];
 
 	// First make sure all company directories from the one under removal are writable. 
 	// Without this after operation we end up with changed per-company owners!
 	for ($i = $id; $i < count($db_connections); $i++) {
-		if (!is_dir($comp_path . '/' . $i) || !is_writable($comp_path . '/' . $i)) {
+		if (!is_dir(COMPANY_PATH . '/' . $i) || !is_writable(COMPANY_PATH . '/' . $i)) {
 			display_error(_('Broken company subdirectories system. You have to remove this company manually.'));
 			return;
 		}
 	}
 	// make sure config file is writable
-	if (!is_writeable($path_to_root . "/config_db.php")) {
-		display_error(_("The configuration file ") . $path_to_root . "/config_db.php" . _(" is not writable. Change its permissions so it is, then re-run the operation."));
-		return;
-	}
+
 	// rename directory to temporary name to ensure all
 	// other subdirectories will have right owners even after
 	// unsuccessfull removal.
-	$cdir = $comp_path . '/' . $id;
-	$tmpname = $comp_path . '/old_' . $id;
+	$cdir = COMPANY_PATH . '/' . $id;
+	$tmpname = COMPANY_PATH . '/old_' . $id;
 	if (!@rename($cdir, $tmpname)) {
 		display_error(_('Cannot rename subdirectory to temporary name.'));
 		return;
 	}
 	// 'shift' company directories names
 	for ($i = $id + 1; $i < count($db_connections); $i++) {
-		if (!rename($comp_path . '/' . $i, $comp_path . '/' . ($i - 1))) {
+		if (!rename(COMPANY_PATH . '/' . $i, COMPANY_PATH . '/' . ($i - 1))) {
 			display_error(_("Cannot rename company subdirectory"));
 			return;
 		}
 	}
 	$err = remove_connection($id);
 	if ($err == 0)
-		display_error(_("Error removing Database: ") . $dbase . _(", please remove it manually"));
+		display_error(_("Error removing Database: ") .  _(", please remove it manually"));
 
-	if ($def_coy == $id)
-		$def_coy = 0;
-	$error = write_config_db();
-	if ($error == -1)
-		display_error(_("Cannot open the configuration file - ") . $path_to_root . "/config_db.php");
-	else if ($error == -2)
-		display_error(_("Cannot write to the configuration file - ") . $path_to_root . "/config_db.php");
-	else if ($error == -3)
-		display_error(_("The configuration file ") . $path_to_root . "/config_db.php" . _(" is not writable. Change its permissions so it is, then re-run the operation."));
-	if ($error != 0) {
-		@rename($tmpname, $cdir);
-		return;
-	}
+	if (Config::get('company.default')  == $id)
+		Config::set('company.default',0);
+
 	// finally remove renamed company directory
 	@flush_dir($tmpname, true);
 	if (!@rmdir($tmpname)) {
@@ -219,7 +196,7 @@ function handle_delete()
 
 function display_companies()
 {
-	global $table_style, $def_coy, $db_connections;
+	global   $db_connections;
 
 	$coyno = $_SESSION["wa_current_user"]->company;
 
@@ -231,7 +208,7 @@ function display_companies()
 			document.location.replace('create_coy.php?c=df&id='+id)
 		}
 		</script>";
-	start_table($table_style);
+	start_table( Config::get('tables.style') );
 
 	$th = array(_("Company"), _("Database Host"), _("Database User"),
 				_("Database Name"), _("Table Pref"), _("Default"), "", "");
@@ -242,7 +219,7 @@ function display_companies()
 	$n = count($conn);
 	for ($i = 0; $i < $n; $i++)
 	{
-		if ($i == $def_coy)
+		if ($i == Config::get('company.default') )
 			$what = _("Yes");
 		else
 			$what = _("No");
@@ -277,7 +254,7 @@ function display_companies()
 
 function display_company_edit($selected_id)
 {
-	global $def_coy, $db_connections, $table_style2;
+	global  $db_connections;
 
 	if ($selected_id != -1)
 		$n = $selected_id;
@@ -299,7 +276,7 @@ function display_company_edit($selected_id)
 		}
 		</script>";
 
-	start_table($table_style2);
+	start_table(Config::get('tables.style2'));
 
 	if ($selected_id != -1) {
 		$conn = $db_connections[$selected_id];
@@ -309,7 +286,7 @@ function display_company_edit($selected_id)
 		$_POST['dbpassword'] = $conn['dbpassword'];
 		$_POST['dbname'] = $conn['dbname'];
 
-		if ($selected_id == $def_coy)
+		if ($selected_id == Config::get('company.default') )
 			$_POST['def'] = true;
 		else
 			$_POST['def'] = false;

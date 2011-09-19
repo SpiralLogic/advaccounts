@@ -20,7 +20,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
   //include_once($path_to_root . "/sales/includes/ui/cust_alloc_ui.inc");
 
   $js = "";
-  if ($use_popup_windows)
+  if (Config::get('ui.windows.popups'))
 	 $js .= get_js_open_window(900, 500);
 
   JS::footerFile('/js/allocate.js');

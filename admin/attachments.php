@@ -35,7 +35,7 @@ if ($view_id != -1) {
 				header('Content-Disposition: attachment; filename=' . $row['filename']);
 			else
 				header("Content-Disposition: inline");
-			echo file_get_contents($comp_path . "/attachments/" . $row['unique_name']);
+			echo file_get_contents(COMPANY_PATH . "/attachments/" . $row['unique_name']);
 			exit();
 		}
 	}
@@ -55,14 +55,14 @@ if ($download_id != -1) {
 			header("Content-type: " . $type);
 			header('Content-Length: ' . $row['filesize']);
 			header('Content-Disposition: attachment; filename=' . $row['filename']);
-			echo file_get_contents($comp_path . "/attachments/" . $row['unique_name']);
+			echo file_get_contents(COMPANY_PATH . "/attachments/" . $row['unique_name']);
 			exit();
 		}
 	}
 }
 
 $js = "";
-if ($use_popup_windows)
+if (Config::get('ui.windows.popups'))
 	$js .= get_js_open_window(800, 500);
 page(_($help_context = "Attach Documents"), false, false, "", $js);
 
@@ -78,7 +78,7 @@ if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 		//$content = base64_encode(file_get_contents($_FILES['filename']['tmp_name']));
 		$tmpname = $_FILES['filename']['tmp_name'];
 
-		$dir = $comp_path . "/attachments";
+		$dir = COMPANY_PATH . "/attachments";
 		if (!file_exists($dir)) {
 			mkdir($dir, 0777);
 			$index_file = "<?php\nheader(\"Location: ../index.php\");\n?>";
@@ -132,7 +132,7 @@ if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 
 if ($Mode == 'Delete') {
 	$row = get_attachment($selected_id);
-	$dir = $comp_path . "/attachments";
+	$dir = COMPANY_PATH . "/attachments";
 	if (file_exists($dir . "/" . $row['unique_name']))
 		unlink($dir . "/" . $row['unique_name']);
 	$sql = "DELETE FROM attachments WHERE id = " . db_escape($selected_id);
@@ -178,14 +178,13 @@ function get_attachment($id)
 
 function display_rows($type)
 {
-	global $table_style;
 
 	$rows = get_attached_documents($type);
 	$th = array(_("#"), _("Description"), _("Filename"), _("Size"), _("Filetype"), _("Date Uploaded"), "", "", "", "");
 
 	div_start('transactions');
 	start_form();
-	start_table($table_style);
+	start_table( Config::get('tables.style') );
 	table_header($th);
 	$k = 0;
 	while ($row = db_fetch($rows))
@@ -219,7 +218,7 @@ if (isset($_POST['filterType']))
 
 start_form(true);
 
-start_table($table_style2);
+start_table(Config::get('tables.style2'));
 
 if ($selected_id != -1) {
 	if ($Mode == 'Edit') {

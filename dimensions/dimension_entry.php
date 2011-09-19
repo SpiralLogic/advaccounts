@@ -203,7 +203,7 @@ if (isset($_POST['reopen'])) {
 
 start_form();
 
-start_table($table_style2);
+start_table(Config::get('tables.style2'));
 
 if ($selected_id != -1) {
 	$myrow = get_dimension($selected_id);

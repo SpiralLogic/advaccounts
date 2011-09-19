@@ -19,7 +19,7 @@ include_once($path_to_root . "/includes/data_checks.inc");
 
 include_once($path_to_root . "/admin/db/voiding_db.inc");
 $js = "";
-if ($use_popup_windows)
+if (Config::get('ui.windows.popups'))
 	$js .= get_js_open_window(800, 500);
 
 page(_($help_context = "Void a Transaction"), false, false, "", $js);
@@ -103,11 +103,10 @@ function exist_transaction($type, $type_no)
 
 function voiding_controls()
 {
-	global $table_style2;
 
 	start_form();
 
-	start_table($table_style2);
+	start_table(Config::get('tables.style2'));
 
 	systypes_list_row(_("Transaction Type:"), "filterType", null, true);
 

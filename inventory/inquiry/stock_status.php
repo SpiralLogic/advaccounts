@@ -57,7 +57,7 @@ if (is_service($mb_flag)) {
 
 $loc_details = get_loc_details($_POST['stock_id']);
 
-start_table($table_style);
+start_table(Config::get('tables.style')) ;
 
 if ($kitset_or_service == true) {
 	$th = array(_("Location"), _("Demand"));

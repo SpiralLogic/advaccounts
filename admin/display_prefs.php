@@ -46,16 +46,16 @@ if (isset($_POST['setprefs'])) {
 			$_SESSION['language']->set_language($_POST['language']);
 		// refresh main menu
 
-		flush_dir($comp_path . '/js_cache');
+		flush_dir(COMPANY_PATH . '/js_cache');
 
-		if ($chg_theme && $allow_demo_mode)
+		if ($chg_theme && Config::get('demo_mode') )
 			$_SESSION["wa_current_user"]->prefs->theme = $_POST['theme'];
 
 		if ($chg_theme || $chg_lang)
 			meta_forward($_SERVER['PHP_SELF']);
 
 
-		if ($allow_demo_mode)
+		if (Config::get('demo_mode') )
 			display_warning(_("Display settings have been updated. Keep in mind that changed settings are restored on every login in demo mode."));
 		else
 			display_notification_centered(_("Display settings have been updated."));
@@ -64,7 +64,7 @@ if (isset($_POST['setprefs'])) {
 
 start_form();
 
-start_outer_table($table_style2);
+start_outer_table(Config::get('tables.style2'));
 
 table_section(1);
 table_section_title(_("Decimal Places"));
@@ -85,12 +85,12 @@ possible separators can be added by modifying the array definition by editing th
 
 thoseps_list_row(_("Thousand Separator:"), "tho_sep", user_tho_sep());
 
-/* The array $thoseps is set up in config.php for modifications
+/* The array Config::get('seperators.thousands') is set up in config.php for modifications
 possible separators can be added by modifying the array definition by editing that file */
 
 decseps_list_row(_("Decimal Separator:"), "dec_sep", user_dec_sep());
 
-/* The array $decseps is set up in config.php for modifications
+/* The array Config::get('seperators.thousands',user_tho_sep()); is set up in config.php for modifications
 possible separators can be added by modifying the array definition by editing that file */
 if (!isset($_POST['language']))
 	$_POST['language'] = $_SESSION['language']->code;
@@ -117,7 +117,7 @@ pagesizes_list_row(_("Page Size:"), "page_size", user_pagesize());
 
 tab_list_row(_("Start-up Tab"), 'startup_tab', user_startup_tab());
 
-/* The array $pagesizes is set up in config.php for modifications
+/* The array Config::get('formats.paper_size') is set up in config.php for modifications
 possible separators can be added by modifying the array definition by editing that file */
 
 if (!isset($_POST['profile']))

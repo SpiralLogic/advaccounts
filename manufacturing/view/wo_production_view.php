@@ -15,7 +15,7 @@ $path_to_root = "../..";
 include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 
 $js = "";
-if ($use_popup_windows)
+if (Config::get('ui.windows.popups'))
 	$js .= get_js_open_window(900, 500);
 page(_($help_context = "View Work Order Production"), true, false, "", $js);
 
@@ -36,12 +36,11 @@ if ($_GET['trans_no'] != "") {
 
 function display_wo_production($prod_id)
 {
-	global $table_style;
 
 	$myrow = get_work_order_produce($prod_id);
 
 	br(1);
-	start_table($table_style);
+	start_table(Config::get('tables.style')) ;
 	$th = array(_("Production #"), _("Reference"), _("For Work Order #"),
 				_("Item"), _("Quantity Manufactured"), _("Date"));
 	table_header($th);

@@ -55,7 +55,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		var $sheet;
 
 		function FrontReport($title, $filename, $size = 'A4', $fontsize = 9, $orientation = 'P', $margins = NULL, $excelColWidthFactor = 6.5) {
-			global $comp_path, $dateseps, $page_security;
+			global   $page_security;
 			if (!$_SESSION["wa_current_user"]->can_access_page($page_security)) {
 				display_error(_("The security settings on your account do not permit you to print this report"));
 				end_page();
@@ -74,7 +74,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 			$this->code = strtolower($_SESSION['language']->encoding);
 			$this->filename = $filename . ".xls";
 			$this->unique_name = uniqid('') . ".xls";
-			$this->path = $comp_path . '/pdf_files';
+			$this->path = COMPANY_PATH . '/pdf_files';
 			$this->Spreadsheet_Excel_Writer_Workbook($this->path . "/" . $this->unique_name);
 			//$this->setCountry(48);
 			if ($this->code != "iso-8859-1") $this->setVersion(8); // set biff version to 8 (0x0006 internal)
@@ -89,7 +89,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 			$this->formatTitle->setTopColor('gray');
 
 			$how = user_date_format();
-			$sep = $dateseps[user_date_sep()];
+			$sep = Config::get('seperators.date',user_date_sep());
 			if ($sep == '.') $sep = "\\.";
 			if ($how == 0) {
 				$dateformat_long = "mm{$sep}dd{$sep}yyyy\ \ hh:mm\ am/pm";
@@ -169,10 +169,10 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 
 		function NumFormat($dec) {
 			if (!isset($this->formatAmount[$dec])) {
-				//global $thoseps,$decseps;
+
 				$dec = (int)$dec;
-				//$tsep = $thoseps[user_tho_sep()];
-				//$dsep = $decseps[user_dec_sep()];
+				//$tsep = Config::get('seperators.thousands',user_tho_sep());
+				//$dsep = Config::get('seperators.decimal',user_dec_sep());
 				$tsep = ',';
 				$dsep = '.';
 				$format = "###{$tsep}###{$tsep}###{$tsep}##0";
@@ -188,7 +188,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		}
 
 		function Info($params, $cols, $headers, $aligns, $cols2 = null, $headers2 = null, $aligns2 = null) {
-			global $app_title, $version, $power_by, $power_url;
+
 			$this->company = get_company_prefs();
 			$year = get_current_fiscalyear();
 			if ($year['closed'] == 0) $how = _("Active"); else

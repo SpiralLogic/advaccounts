@@ -29,7 +29,7 @@ $test_level = array(
 $system_tests = array('tst_mysql', 'tst_php', 'tst_server', 'tst_system', 'tst_browser',
 					  'tst_gettext', 'tst_debug', 'tst_logging',
 					  'tst_dbversion', 'tst_subdirs', 'tst_langs', 'tst_tmpdir', 'tst_sessionpath',
-					  'tst_dbconfig', 'tst_config', 'tst_extconfig'
+					   'tst_config', 'tst_extconfig'
 );
 
 function tst_mysql()
@@ -109,33 +109,31 @@ function tst_gettext()
 
 function tst_debug()
 {
-	global $go_debug;
 	$test['descr'] = _('Debugging mode');
 	$test['type'] = 0;
-	$test['test'] = $go_debug ? _("Yes") : _("No");
-	$test['result'] = $go_debug != 0;
-	$test['comments'] = _('To switch debugging on set $go_debug=1 in config.php file');
+	$test['test'] = Config::get('debug') ? _("Yes") : _("No");
+	$test['result'] = Config::get('debug') != 0;
+	$test['comments'] = _('To switch debugging on set true in config.php file');
 
 	return $test;
 }
 
 function tst_logging()
 {
-	global $error_logfile;
 
 	$test['descr'] = _('Error logging');
 	$test['type'] = 2;
 	// if error lgging is on, but log file does not exists try write
-	if ($error_logfile && !is_file($error_logfile)) {
-		@fclose(@fopen($error_logfile, 'w'));
+	if (Config::get('logs.error.file') && !is_file(Config::get('logs.error.file'))) {
+		@fclose(@fopen(Config::get('logs.error.file'), 'w'));
 	}
-	$test['result'] = @$error_logfile != '' && is_writable($error_logfile);
-	$test['test'] = @$error_logfile == '' ? _("Disabled") : $error_logfile;
+	$test['result'] = @Config::get('logs.error.file') != '' && is_writable(Config::get('logs.error.file'));
+	$test['test'] = @Config::get('logs.error.file') == '' ? _("Disabled") : Config::get('logs.error.file');
 
-	if (@$error_logfile == '')
+	if (@Config::get('logs.error.file') == '')
 		$test['comments'] = _('To switch error logging set $error_logging in config.php file');
 	else
-		if (!is_writable($error_logfile))
+		if (!is_writable(Config::get('logs.error.file')))
 			$test['comments'] = _('Log file is not writeable');
 
 	return $test;
@@ -159,26 +157,26 @@ function tst_dbversion()
 
 function tst_subdirs()
 {
-	global $db_connections, $comp_path;
+	global $db_connections;
 
 	$comp_subdirs = array('images', 'pdf_files', 'backup', 'js_cache');
 
 	$test['descr'] = _('Company subdirectories consistency');
 	$test['type'] = 3;
-	$test['test'] = array($comp_path . '/*');
+	$test['test'] = array(COMPANY_PATH. '/*');
 	foreach ($comp_subdirs as $sub) {
-		$test['test'][] = $comp_path . '/*/' . $sub;
+		$test['test'][] = COMPANY_PATH. '/*/' . $sub;
 	}
 	$test['result'] = true;
 
-	if (!is_dir($comp_path) || !is_writable($comp_path)) {
+	if (!is_dir(COMPANY_PATH) || !is_writable(COMPANY_PATH)) {
 		$test['result'] = false;
-		$test['comments'][] = sprintf(_("'%s' is not writeable"), $comp_path);
+		$test['comments'][] = sprintf(_("'%s' is not writeable"), COMPANY_PATH);
 		return $test;
 	}
 	;
 	foreach ($db_connections as $n => $comp) {
-		$path = "$comp_path/";
+		$path = COMPANY_PATH."/";
 		if (!is_dir($path) || !is_writable($path)) {
 			$test['result'] = false;
 			$test['comments'][] = sprintf(_("'%s' is not writeable"), $path);
@@ -268,33 +266,21 @@ function tst_config()
 	return $test;
 }
 
-function tst_dbconfig()
-{
-	global $path_to_root;
 
-	$test['descr'] = _('Database auth file');
-	$test['type'] = 2;
-	$test['test'] = $path_to_root . '/config_db.php';
-	$test['result'] = is_file($test['test']) && !is_writable($test['test']);
-	$test['comments'][] = sprintf(_("'%s' file should be read-only if you do not plan to add or change companies"),
-								  $test['test']);
-
-	return $test;
-}
 
 function tst_extconfig()
 {
-	global $path_to_root, $db_connections, $comp_path;
+	global $path_to_root, $db_connections;
 
 	$test['descr'] = _('Extensions configuration files');
 	$test['type'] = 3;
 	$test['test'] = $path_to_root . '/installed_extensions.php';
 	$test['result'] = is_file($test['test']) && is_writable($test['test']);
-	$test['test'] . ',' . $comp_path . '/*/installed_extensions.php';
+	$test['test'] . ',' . COMPANY_PATH . '/*/installed_extensions.php';
 	$test['comments'][] = sprintf(_("'%s' file should be writeable"), $test['test']);
 
 	foreach ($db_connections as $n => $comp) {
-		$path = "$comp_path/$n";
+		$path = COMPANY_PATH."/$n";
 		if (!is_dir($path)) continue;
 
 		$path .= "/installed_extensions.php";
@@ -310,7 +296,7 @@ function tst_extconfig()
 
 //-------------------------------------------------------------------------------------------------
 
-start_table("$table_style width=80%");
+start_table(Config::get('tables.style')." width=80%");
 $th = array(_("Test"), _('Test type'), _("Value"), _("Comments"));
 table_header($th);
 

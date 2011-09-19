@@ -238,12 +238,12 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 
   function show_allocatable($show_totals) {
 
-	 global $table_style, $systypes_array;
+	 global  $systypes_array;
 
 	 $k = $counter = $total_allocated = 0;
 
 	 if (count($_SESSION['alloc']->allocs)) {
-		start_table("$table_style width=60%");
+		start_table(Config::get('tables.style')."  width=60%");
 		$th = array(_("Transaction Type"), _("#"), _("Date"), _("Due Date"), _("Amount"),
 						_("Other Allocations"), _("This Allocation"), _("Left to Allocate"), '', '');
 		table_header($th);

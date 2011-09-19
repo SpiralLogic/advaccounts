@@ -18,8 +18,8 @@
 	$db_duplicate_error_code = 1062;
 	//DB wrapper functions to change only once for whole application
 	function db_query($sql, $err_msg = null) {
-		global $db, $show_sql, $sql_trail, $select_trail, $go_debug;
-		if ($show_sql) {
+		global $db;
+		if (Config::get('debug.sql')) {
 			if (class_exists('FB')) {
 				FB::info($sql);
 			} else {
@@ -30,16 +30,16 @@
 			}
 		}
 		$result = mysql_query($sql, $db);
-		if ($sql_trail) {
+		if (Config::get('debug.query.log')) {
 			db_set_info();
-			if ($select_trail || (strstr($sql, 'SELECT') === false)) {
+			if (Config::get('debug.select.log') || (strstr($sql, 'SELECT') === false)) {
 				mysql_query("INSERT INTO sql_trail
 				(`sql`, `result`, `msg`)
 				VALUES(" . db_escape($sql) . "," . ($result ? 1 : 0) . ",
 				" . db_escape($err_msg) . ")", $db);
 			}
 		}
-		if ($err_msg != null || $go_debug) {
+		if ($err_msg != null || Config::get('debug')) {
 			$exit = $err_msg != null;
 			if (function_exists('xdebug_call_file')) check_db_error('<br>At file ' . xdebug_call_file() . ':' . xdebug_call_line() . ':<br>' . $err_msg, $sql, $exit); else check_db_error($err_msg, $sql,
 																																																																																										 $exit);

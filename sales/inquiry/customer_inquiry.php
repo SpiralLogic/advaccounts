@@ -17,7 +17,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/sales/includes/sales_db.inc");
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/reporting/includes/reporting.inc");
 	$js = "";
-	if ($use_popup_windows) {
+	if (Config::get('ui.windows.popups')) {
 		$js .= get_js_open_window(900, 500);
 	}
 
@@ -46,7 +46,6 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	set_global_customer($_POST['customer_id']);
 	//------------------------------------------------------------------------------------------------
 	function display_customer_summary($customer_record) {
-		global $table_style;
 		$past1 = get_company_pref('past_due_days');
 		$past2 = 2 * $past1;
 		if ($customer_record["dissallow_invoices"] != 0) {
@@ -55,7 +54,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		$nowdue = "1-" . $past1 . " " . _('Days');
 		$pastdue1 = $past1 + 1 . "-" . $past2 . " " . _('Days');
 		$pastdue2 = _('Over') . " " . $past2 . " " . _('Days');
-		start_table("width=80% $table_style");
+		start_table("width=80%  ".Config::get('tables.style'));
 		$th = array(_("Currency"), _("Terms"), _("Current"), $nowdue, $pastdue1, $pastdue2, _("Total Balance"));
 		table_header($th);
 		start_row();

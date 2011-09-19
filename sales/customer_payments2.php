@@ -23,7 +23,7 @@
   include_once($path_to_root . "/reporting/includes/reporting.inc");
 
   $js = "";
-  if ($use_popup_windows) {
+  if (Config::get('ui.windows.popups')) {
 	 $js .= get_js_open_window(900, 500);
   }
   JS::headerFile('/js/payalloc.js');
@@ -229,7 +229,7 @@
 
   start_form();
 
-  start_outer_table("$table_style2 width=60%", 5);
+  start_outer_table(Config::get('tables.style2')." width=60%", 5);
   table_section(1);
 
   customer_list_row(_("From Customer:"), 'customer_id', null, false, true);
@@ -275,7 +275,7 @@
 		div_end();
 	 }
 
-	 start_table("$table_style width=60%");
+	 start_table(Config::get('tables.style')."  width=60%");
 
 	 label_row(_("Customer prompt payment discount :"), $display_discount_percent);
 	 amount_row(_("Amount of Discount:"), 'discount');

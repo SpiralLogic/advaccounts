@@ -53,10 +53,10 @@ function gl_inquiry_controls()
 
 function display_trial_balance()
 {
-	global $table_style, $path_to_root;
+	global  $path_to_root;
 
 	div_start('balance_tbl');
-	start_table($table_style);
+	start_table( Config::get('tables.style') );
 	$tableheader = "<tr>
         <td rowspan=2 class='tableheader'>" . _("Account") . "</td>
         <td rowspan=2 class='tableheader'>" . _("Account Name") . "</td>

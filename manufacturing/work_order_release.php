@@ -20,7 +20,7 @@ include_once($path_to_root . "/manufacturing/includes/manufacturing_db.inc");
 include_once($path_to_root . "/manufacturing/includes/manufacturing_ui.inc");
 
 $js = "";
-if ($use_popup_windows)
+if (Config::get('ui.windows.popups'))
 	$js .= get_js_open_window(800, 500);
 
 page(_($help_context = "Work Order Release to Manufacturing"), false, false, "", $js);
@@ -83,7 +83,7 @@ $_POST['released'] = $myrow["released"];
 $_POST['memo_'] = "";
 
 if (can_process($myrow)) {
-	start_table($table_style2);
+	start_table(Config::get('tables.style2'));
 
 	label_row(_("Work Order #:"), $selected_id);
 	label_row(_("Work Order Reference:"), $myrow["wo_ref"]);

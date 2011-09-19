@@ -24,13 +24,13 @@ $selected_id = get_post('profile_id', '');
 //
 function get_reports()
 {
-	global $path_to_root, $comp_path, $go_debug;
+	global $path_to_root;
 
-	if ($go_debug || !isset($_SESSION['reports'])) {
+	if (Config::get('debug') || !isset($_SESSION['reports'])) {
 		// to save time, store in session.
 		$paths = array(
 			$path_to_root . '/reporting/',
-			$comp_path . '/reporting/');
+			COMPANY_PATH . '/reporting/');
 		$reports = array('' => _('Default printing destination'));
 
 		foreach ($paths as $dirno => $path) {
@@ -143,7 +143,7 @@ while ($myrow = db_fetch($result)) {
 	$prints[$myrow['report']] = $myrow['printer'];
 }
 
-start_table($table_style);
+start_table( Config::get('tables.style') );
 $th = array(_("Report Id"), _("Description"), _("Printer"));
 table_header($th);
 

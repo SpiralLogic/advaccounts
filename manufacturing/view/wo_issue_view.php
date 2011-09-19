@@ -14,7 +14,7 @@ $path_to_root = "../..";
 include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 
 $js = "";
-if ($use_popup_windows)
+if (Config::get('ui.windows.popups'))
 	$js .= get_js_open_window(900, 500);
 page(_($help_context = "View Work Order Issue"), true, false, "", $js);
 
@@ -35,12 +35,11 @@ if ($_GET['trans_no'] != "") {
 
 function display_wo_issue($issue_no)
 {
-	global $table_style;
 
 	$myrow = get_work_order_issue($issue_no);
 
 	br(1);
-	start_table($table_style);
+	start_table(Config::get('tables.style')) ;
 	$th = array(_("Issue #"), _("Reference"), _("For Work Order #"),
 				_("Item"), _("From Location"), _("To Work Centre"), _("Date of Issue"));
 	table_header($th);
@@ -66,7 +65,6 @@ function display_wo_issue($issue_no)
 
 function display_wo_issue_details($issue_no)
 {
-	global $table_style;
 
 	$result = get_work_order_issue_details($issue_no);
 
@@ -75,7 +73,7 @@ function display_wo_issue_details($issue_no)
 	}
 	else
 	{
-		start_table($table_style);
+		start_table(Config::get('tables.style')) ;
 		$th = array(_("Component"), _("Quantity"), _("Units"));
 
 		table_header($th);

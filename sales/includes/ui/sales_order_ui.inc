@@ -129,7 +129,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 
  //---------------------------------------------------------------------------------
  function display_order_summary($title, &$order, $editable_items = false) {
-	global $table_style, $path_to_root, $SysPrefs;
+	global  $path_to_root, $SysPrefs;
 	display_heading($title);
 	div_start('items_table');
 	if (count($_SESSION['Items']->line_items) > 0) {
@@ -142,7 +142,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 end_outer_table(1);
 
 	}
-	start_table("$table_style colspan=7 width=90%");
+	start_table(Config::get('tables.style')."  colspan=7 width=90%");
 	$th = array(_("Item Code"), _("Item Description"), _("Quantity"), _("Delivered"), _("Unit"), _("Price"), _("Discount %"), _("Total"), "");
 	if ($order->trans_no == 0) {
 	 unset($th[3]);
@@ -246,8 +246,8 @@ JS;
 
  // ------------------------------------------------------------------------------
  function display_order_header(&$order, $editable, $date_text, $display_tax_group = false) {
-	global $table_style2, $Ajax, $SysPrefs;
-	start_outer_table("width=80% $table_style2");
+	global  $Ajax, $SysPrefs;
+	start_outer_table("width=80% ".Config::get('tables.style2'));
 	table_section(1);
 	$customer_error = "";
 	$change_prices = 0;
@@ -502,12 +502,12 @@ JS;
 
  //--------------------------------------------------------------------------------
  function display_delivery_details(&$order) {
-	global $table_style2, $Ajax;
+	global  $Ajax;
 	div_start('delivery');
 	if (get_post('cash', 0)) { // Direct payment sale
 	 $Ajax->activate('items_table');
 	 display_heading(_('Cash payment'));
-	 start_table("$table_style2 width=60%");
+	 start_table(Config::get('tables.style2')." width=60%");
 	 label_row(_("Deliver from Location:"), $order->location_name);
 	 hidden('Location', $order->Location);
 	 label_row(_("Cash account:"), $order->account_name);
@@ -532,7 +532,7 @@ JS;
 		$delname = _("Required Delivery Date") . ':';
 	 }
 	 display_heading($title);
-	 start_outer_table("$table_style2 width=90%");
+	 start_outer_table(Config::get('tables.style2')." width=90%");
 	 table_section(1);
 	 locations_list_row(_("Deliver from Location:"), 'Location', null, false, true);
 	 if (list_updated('Location')) {

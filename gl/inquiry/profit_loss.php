@@ -170,7 +170,7 @@ function inquiry_controls()
 
 function display_profit_and_loss()
 {
-	global $comp_path, $path_to_root, $table_style, $sel;
+	global  $path_to_root,  $sel;
 
 	$dim = get_company_pref('use_dimension');
 	$dimension = $dimension2 = 0;
@@ -203,7 +203,7 @@ function display_profit_and_loss()
 
 	div_start('pl_tbl');
 
-	start_table("width=50% $table_style");
+	start_table("width=50%  ".Config::get('tables.style'));
 
 	$tableheader = "<tr>
         <td class='tableheader'>" . _("Group/Account Name") . "</td>

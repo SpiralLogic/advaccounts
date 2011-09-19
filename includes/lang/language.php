@@ -45,14 +45,14 @@ class language
 
 	function set_language($code)
 	{
-		global $comp_path, $path_to_root, $installed_languages;
+		global  $path_to_root, $installed_languages;
 
 		$changed = $this->code != $code;
 		$lang = array_search_value($code, $installed_languages, 'code');
 
 		if ($lang && $changed) {
 			// flush cache as we can use several languages in one account
-			flush_dir($comp_path . '/js_cache');
+			flush_dir(COMPANY_PATH . '/js_cache');
 
 			$this->name = $lang['name'];
 			$this->code = $lang['code'];

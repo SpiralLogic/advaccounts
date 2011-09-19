@@ -26,7 +26,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
   include_once($path_to_root . "/reporting/includes/reporting.inc");
 
   $js = "";
-  if ($use_popup_windows) {
+  if (Config::get('ui.windows.popups')) {
 	 $js .= get_js_open_window(900, 500);
   }
 
@@ -240,15 +240,14 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
   //-----------------------------------------------------------------------------
 
   function display_credit_items() {
-	 global $table_style, $table_style2;
 
 	 start_form();
 	 hidden('cart_id');
 
-	 start_table("$table_style2 width=80%", 5);
+	 start_table(Config::get('tables.style2')." width=80%", 5);
 	 echo "<tr><td>"; // outer table
 
-	 start_table("$table_style width=100%");
+	 start_table(Config::get('tables.style')."  width=100%");
 	 start_row();
 	 label_cells(_("Customer"), $_SESSION['Items']->customer_name, "class='tableheader2'");
 	 label_cells(_("Branch"), get_branch_name($_SESSION['Items']->Branch), "class='tableheader2'");
@@ -283,7 +282,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 
 	 echo "</td><td>"; // outer table
 
-	 start_table("$table_style width=100%");
+	 start_table(Config::get('tables.style')."  width=100%");
 
 	 label_row(_("Invoice Date"), $_SESSION['Items']->src_date, "class='tableheader2'");
 
@@ -297,7 +296,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 end_table(1); // outer table
 
 	 div_start('credit_items');
-	 start_table("$table_style width=80%");
+	 start_table(Config::get('tables.style')."  width=80%");
 	 $th = array(_("Item Code"), _("Item Description"), _("Invoiced Quantity"), _("Units"),
 					 _("Credit Quantity"), _("Price"), _("Discount %"), _("Total"));
 	 table_header($th);
@@ -356,14 +355,14 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 
   //-----------------------------------------------------------------------------
   function display_credit_options() {
-	 global $table_style2, $Ajax;
+	 global  $Ajax;
 	 echo "<br>";
 
 	 if (isset($_POST['_CreditType_update']))
 		$Ajax->activate('options');
 
 	 div_start('options');
-	 start_table("$table_style2");
+	 start_table(Config::get('tables.style2'));
 
 	 credit_type_list_row(_("Credit Note Type"), 'CreditType', null, true);
 

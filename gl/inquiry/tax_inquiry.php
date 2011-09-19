@@ -22,7 +22,7 @@ include_once($path_to_root . "/gl/includes/gl_db.inc");
 
 $js = '';
 set_focus('account');
-if ($use_popup_windows)
+if (Config::get('ui.windows.popups'))
 	$js .= get_js_open_window(800, 500);
 
 
@@ -50,11 +50,10 @@ if (get_post('TransFromDate') == "" && get_post('TransToDate') == "") {
 
 function tax_inquiry_controls()
 {
-	global $table_style2;
 
 	start_form();
 
-	//start_table($table_style2);
+	//start_table(Config::get('tables.style2'));
 	start_table("class='tablestyle_noborder'");
 	start_row();
 
@@ -73,11 +72,11 @@ function tax_inquiry_controls()
 
 function show_results()
 {
-	global $path_to_root, $table_style;
+	global $path_to_root;
 
 	/*Now get the transactions  */
 	div_start('trans_tbl');
-	start_table($table_style);
+	start_table( Config::get('tables.style') );
 
 	$th = array(_("Type"), _("Description"), _("Amount"), _("Outputs") . "/" . _("Inputs"));
 	table_header($th);

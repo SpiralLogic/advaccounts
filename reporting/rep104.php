@@ -66,7 +66,7 @@ function get_kits($category = 0)
 
 function print_price_listing()
 {
-	global $comp_path, $path_to_root, $pic_height, $pic_width;
+	global  $path_to_root;
 
 	$currency = $_POST['PARAM_0'];
 	$category = $_POST['PARAM_1'];
@@ -153,14 +153,14 @@ function print_price_listing()
 			$rep->TextCol(3, 4, number_format2($disp, user_percent_dec()) . " %");
 		}
 		if ($pictures) {
-			$image = $comp_path . "/images/"
+			$image = COMPANY_PATH . "/images/"
 					 . item_img_name($myrow['stock_id']) . ".jpg";
 			if (file_exists($image)) {
 				$rep->NewLine();
-				if ($rep->row - $pic_height < $rep->bottomMargin)
+				if ($rep->row - Config::get('item.images.height')  < $rep->bottomMargin)
 					$rep->Header();
-				$rep->AddImage($image, $rep->cols[1], $rep->row - $pic_height, 0, $pic_height);
-				$rep->row -= $pic_height;
+				$rep->AddImage($image, $rep->cols[1], $rep->row - Config::get('item.images.height') , 0, Config::get('item.images.height') );
+				$rep->row -= Config::get('item.images.height') ;
 				$rep->NewLine();
 			}
 		}

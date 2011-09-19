@@ -32,7 +32,7 @@ $to_trans = $transfer_items[1];
 display_heading($systypes_array[ST_LOCTRANSFER] . " #$trans_no");
 
 echo "<br>";
-start_table("$table_style2 width=90%");
+start_table(Config::get('tables.style2')." width=90%");
 
 start_row();
 label_cells(_("Item"), $from_trans['stock_id'] . " - " . $from_trans['description'], "class='tableheader2'");
@@ -51,7 +51,7 @@ comments_display_row(ST_LOCTRANSFER, $trans_no);
 end_table(1);
 
 echo "<br>";
-start_table("$table_style width=90%");
+start_table(Config::get('tables.style')."  width=90%");
 
 $th = array(_("Item"), _("Description"), _("Quantity"), _("Units"));
 table_header($th);

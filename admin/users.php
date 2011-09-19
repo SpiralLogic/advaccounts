@@ -102,7 +102,7 @@ if ($Mode == 'RESET') {
 
 $result = get_users(check_value('show_inactive'));
 start_form();
-start_table($table_style);
+start_table( Config::get('tables.style') );
 
 $th = array(_("User login"), _("Full Name"), _("Phone"),
 			_("E-mail"), _("Last Visit"), _("Access Level"), "", "");
@@ -146,7 +146,7 @@ while ($myrow = db_fetch($result))
 inactive_control_row($th);
 end_table(1);
 //-------------------------------------------------------------------------------------------------
-start_table($table_style2);
+start_table(Config::get('tables.style2'));
 
 $_POST['email'] = "";
 if ($selected_id != -1) {

@@ -21,6 +21,8 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
       Messages::showNewMessages();
        JS::render();
       if (AJAX_REFERRER) return;
+
+
       echo "</div></body>";
       get_websales();
       echo   "</html>\n";

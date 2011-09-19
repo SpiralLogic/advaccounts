@@ -12,6 +12,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 //----------------------------------------------------------------------------------
 //	FrontAccounting system transaction types
 //
+
 define('ST_JOURNAL', 0);
 
 define('ST_BANKPAYMENT', 1);
@@ -231,7 +232,7 @@ $class_types = array(
 function get_class_type_convert($ctype)
 {
 	global $use_oldstyle_convert;
-	if (isset($use_oldstyle_convert) && $use_oldstyle_convert == 1)
+	if (Config::get('accounts.gl.oldconvertstyle') == 1)
 		return (($ctype >= CL_INCOME || $ctype == CL_NONE) ? -1 : 1);
 	else
 		return ((($ctype >= CL_LIABILITIES && $ctype <= CL_INCOME) || $ctype == CL_NONE) ? -1 : 1);

@@ -55,7 +55,7 @@ if (isset($_POST['add']) || isset($_POST['update'])) {
 		display_error(_("The account name cannot be empty."));
 		set_focus('account_name');
 	}
-	elseif (!$accounts_alpha && !is_numeric($_POST['account_code']))
+	elseif (! Config::get('accounts.allowcharacters') && !is_numeric($_POST['account_code']))
 	{
 		$input_error = 1;
 		display_error(_("The account code must be numeric."));
@@ -63,7 +63,7 @@ if (isset($_POST['add']) || isset($_POST['update'])) {
 	}
 
 	if ($input_error != 1) {
-		if ($accounts_alpha == 2)
+		if ( Config::get('accounts.allowcharacters') == 2)
 			$_POST['account_code'] = strtoupper($_POST['account_code']);
 
 		if (!isset($_POST['account_tags']))
@@ -237,7 +237,7 @@ if (db_has_gl_accounts()) {
 }
 
 br(1);
-start_table($table_style2);
+start_table(Config::get('tables.style2'));
 
 if ($selected_account != "") {
 	//editing an existing account

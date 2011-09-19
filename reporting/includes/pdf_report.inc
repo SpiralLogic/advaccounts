@@ -210,11 +210,11 @@
 		}
 
 		function Info($params, $cols, $headers, $aligns, $cols2 = null, $headers2 = null, $aligns2 = null, $companylogoenable = false, $footerenable = false, $footertext = '') {
-			global $app_title, $version, $power_by, $power_url;
+
 			$this->addinfo('Title', $this->title);
 			$this->addinfo('Subject', $this->title);
-			$this->addinfo('Author', $app_title . ' ' . $version);
-			$this->addinfo('Creator', $power_by . ' - ' . $power_url);
+			$this->addinfo('Author', APP_TITLE . ' ' . VERSION);
+			$this->addinfo('Creator', POWERED_BY . ' - ' . POWERED_URL);
 			$year = get_current_fiscalyear();
 			if ($year['closed'] == 0) {
 				$how = _("Active");
@@ -311,7 +311,7 @@
 		}
 
 		function Header2($myrow, $branch, $sales_order, $bankaccount, $doctype) {
-			global $comp_path, $path_to_root, $print_as_quote, $print_invoice_no, $packing_slip;
+			global  $path_to_root, $print_as_quote, $packing_slip;
 			$this->pageNumber++;
 			if ($this->pageNumber > 1) {
 				$this->newPage();
@@ -342,7 +342,7 @@
 
 		// Alternate header style which also supports a simple footer
 		function Header3() {
-			global $comp_path;
+
 			// Make this header the default for the current report ( used by NewLine() )
 			$this->headerFunc = 'Header3';
 			// Turn off cell padding for the main report header, restoring the current setting later
@@ -409,7 +409,7 @@
 			// Print company logo if present and requested, or else just print company name
 			if ($this->companyLogoEnable && ($this->company['coy_logo'] != '')) {
 				// Build a string specifying the location of the company logo file
-				$logo = $comp_path . "/images/" . $this->company['coy_logo'];
+				$logo = COMPANY_PATH. "/images/" . $this->company['coy_logo'];
 				// Width being zero means that the image will be scaled to the specified height
 				// keeping its aspect ratio intact.
 				if ($this->scaleLogoWidth) $this->AddImage($logo, $companyCol, $this->row, COMPANY_WIDTH, 0); else
@@ -772,8 +772,8 @@
 		}
 
 		function End($email = 0, $subject = null, $myrow = null, $doctype = 0) {
-			global $pdf_debug, $path_to_root, $comp_path;
-			if ($pdf_debug == 1) {
+			global $path_to_root;
+			if (Config::get('debug.pdf') == 1) {
 				$pdfcode = $this->Output('', 'S');
 				$pdfcode = str_replace("\n", "\n<br>", htmlspecialchars($pdfcode));
 				echo '<html><body>';
@@ -786,7 +786,7 @@
 				//header('Pragma: public');
 				//$this->pdf->stream();
 			} else {
-				$dir = $comp_path . '/pdf_files';
+				$dir = COMPANY_PATH . '/pdf_files';
 				//save the file
 				if (!file_exists($dir)) {
 					mkdir($dir, 0777);

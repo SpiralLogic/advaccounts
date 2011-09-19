@@ -773,26 +773,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 echo "</tr>\n";
   }
 
-  //-----------------------------------------------------------------------------------
-  /*
-function text_row_with_submit($label, $name, $value, $size, $max, $input_name, $input_value)
-{
-	  global $Ajax;
 
-	default_focus($name);
-	echo "<tr><td>$label</td>\n";
-	echo "<td>";
-
-	if ($value == null)
-		$value = (!isset($_POST[$name]) ? "" : $_POST[$name]);
-	echo "<input type=\"text\" name=\"$name\" size=\"$size\" maxlength=\"$max\" value=\"$value\">   ";
-
-	submit($input_name, $input_value);
-
-	echo "</td></tr>\n";
-	$Ajax->addUpdate($name, $name, $value);
-}
-*/
   //-----------------------------------------------------------------------------------
   //
   //	When show_inactive page option is set

@@ -18,7 +18,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
   include_once($path_to_root . "/reporting/includes/reporting.inc");
 
   $js = "";
-  if ($use_popup_windows)
+  if (Config::get('ui.windows.popups'))
 	 $js .= get_js_open_window(900, 600);
 
   page(_($help_context = "Create and Print Recurrent Invoices"), false, false, "", $js);
@@ -109,7 +109,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
   $sql = "SELECT * FROM recurrent_invoices ORDER BY description, group_no, debtor_no";
   $result = db_query($sql, "could not get recurrent invoices");
 
-  start_table("$table_style width=70%");
+  start_table(Config::get('tables.style')."  width=70%");
   $th = array(_("Description"), _("Template No"), _("Customer"), _("Branch") . "/" . _("Group"), _("Days"),
 				  _("Monthly"), _("Begin"), _("End"), _("Last Created"), "");
   table_header($th);
