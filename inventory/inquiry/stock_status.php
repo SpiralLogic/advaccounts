@@ -27,7 +27,7 @@ include_once($path_to_root . "/includes/data_checks.inc");
 
 include_once($path_to_root . "/inventory/includes/inventory_db.inc");
 
-if (list_updated('stock_id'))
+if ($_POST['stock_id'])
 	$Ajax->activate('status_tbl');
 //----------------------------------------------------------------------------------------------------
 
@@ -38,8 +38,10 @@ start_form();
 if (!isset($_POST['stock_id']))
 	$_POST['stock_id'] = get_global_stock_item();
 
-echo "<center> " . _("Item:") . " ";
-echo stock_items_list('stock_id', $_POST['stock_id'], false, true,array(),false,true);
+echo "<center> " ;
+
+	echo stock_items_list_cells(_("Select an item:"), 'stock_id', $_POST['stock_id'], false, true, false, false);
+
 echo "<br>";
 
 echo "<hr></center>";
