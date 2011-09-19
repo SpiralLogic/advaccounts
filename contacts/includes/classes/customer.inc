@@ -201,6 +201,7 @@
 
 		public
 		function getTransactions() {
+			if ($this->id==0) return;
 			$sql = "SELECT debtor_trans.*, sales_orders.customer_ref,
 				(debtor_trans.ov_amount + debtor_trans.ov_gst + debtor_trans.ov_freight +
 				debtor_trans.ov_freight_tax + debtor_trans.ov_discount)

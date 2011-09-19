@@ -2,18 +2,17 @@
 
 	$page_security = 'SA_CUSTOMER';
 	include_once("includes/contacts.inc");
+
 	if (AJAX_REFERRER) {
 		if (isset($_GET['term'])) {
 			$data = Customer::search($_GET['term']);
 		} else {
-		 if (!isset($_POST['id']) && isset($_GET['id'])) $_POST['id'] = $_GET['id'];
-			if (isset($_POST['id']) && $_POST['id'] > 0) {
-				if (isset($_POST['name'])) {
-					$data['customer'] = $customer = new Customer($_POST);
-					$data['customer']->save();
-				} elseif (!isset($_POST['name'])) {
-					$data['customer'] = $customer = new Customer($_POST['id']);
-				}
+			if (!isset($_POST['id']) && isset($_GET['id'])) $_POST['id'] = $_GET['id'];
+			if (isset($_POST['name'])) {
+				$data['customer'] = $customer = new Customer($_POST);
+				$data['customer']->save();
+			}elseif (isset($_POST['id']) && $_POST['id'] > 0) {
+				if (!isset($customer)) $data['customer'] = $customer = new Customer($_POST['id']);
 				$data['contact_log'] = ContactLog::read($customer->id, 'C');
 				$data['transactions'] = '<pre>' . print_r($customer->getTransactions(), true) . '</pre>';
 				$_SESSION['wa_global_customer_id'] = $customer->id;
@@ -64,7 +63,7 @@
 	HTML::label(array('for' => 'name', 'content' => 'Customer name:'), false);
 	HTML::input('name', array('value' => $customer->name, 'name' => 'name', 'size' => 50));
 	HTML::td()->td(array('content' => _("Customer ID: "), "style" => "width:90px"), false)->td(true);
-	HTML::input('id', array('value' => '0', 'name' => 'id', 'size' => 10, 'maxlength' => '7'));
+	HTML::input('id', array('value' => $customer->id, 'name' => 'id', 'size' => 10, 'maxlength' => '7'));
 	HTML::td()->tr->table->div;
 	start_outer_table(Config::get('tables.style2'), 5);
 	table_section(1);
@@ -88,7 +87,6 @@
 	table_section_title(_("Accounts Details"), 2);
 	/** @noinspection PhpUndefinedMethodInspection */
 	HTML::tr(true)->td(array('style' => "text-align:center; margin:0 auto", 'colspan' => 2));
-	hidden('id', $customer->id);
 	UI::button('useShipAddress', _("Use shipping details"), array('name' => 'useShipAddress'));
 	text_row(_("Accounts Contact:"), 'acc_contact_name', $customer->accounts->contact_name, 40, 40);
 	HTML::td()->tr;

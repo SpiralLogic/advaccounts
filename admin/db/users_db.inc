@@ -130,9 +130,9 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		$user = new Auth($user_id);
 		$md5password = md5($password);
 
-		$password = $user->hash_password($password);
+$password = $user->hash_password($password);
 		$sql = "SELECT * FROM users WHERE user_id = " . db_escape($user_id) . " AND"
-					 . " (password=" . db_escape($password) . " OR password=" . db_escape($md5password) . ")";
+					 . " (password=" . db_escape($password) . " OR password=".db_escape($md5password).")";
 		return db_query($sql, "could not get validate user login for $user_id");
 	}
 
