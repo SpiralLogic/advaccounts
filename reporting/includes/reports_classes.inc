@@ -291,7 +291,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 					return combo_input($name, '', $sql, 'TNO', 'IName', array('order' => false));
 
 				case 'ORDERS':
-					$ref = (Config::get('print.useinvoicenumber') == 0 "order_no" : "reference");
+					$ref = (Config::get('print.useinvoicenumber') == 0)? "order_no" : "reference";
 					$sql = "SELECT sales_orders.order_no, concat(sales_orders.$ref, '-',
 						debtors_master.name) as IName
 						FROM debtors_master, sales_orders WHERE debtors_master.debtor_no=sales_orders.debtor_no
