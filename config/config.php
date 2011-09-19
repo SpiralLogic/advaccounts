@@ -51,7 +51,7 @@
 		/* email stock location if order below reorder-level */
 		'accounts.stock.emailnotify' => false,
 		/* print_invoice_no. 0 = print reference number, 1 = print invoice number */
-		'print.useinvoicenumber' => true,
+		'print.useinvoicenumber' => 1,
 		'ui.date.format' => 1,
 		'auth.salt' => '342342134sdfgsgdf',
 

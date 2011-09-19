@@ -130,13 +130,14 @@
 	$this->Text($mcol + 100, $doc_Invoice_no);
 	if ($doctype == ST_SALESQUOTE || $doctype == ST_PURCHORDER || $doctype == ST_SALESORDER) { // QUOTE, PO or SO
 		if (Config::get('print.useinvoicenumber') == 1) {
-			$this->Text($mcol + 180, $myrow['order_no']);
-		} else {
+
 			$this->Text($mcol + 180, $myrow['reference']);
+		} else {
+			$this->Text($mcol + 180, $myrow['order_no']);
 		}
 	}
 	if ($doctype == ST_SALESQUOTE || $doctype == ST_PURCHORDER || $doctype == ST_SALESORDER) { // QUOTE, PO or SO
-		if (Config::get('print.useinvoicenumber') == 1) {
+			if (Config::get('print.useinvoicenumber') == 1) {
 			$this->Text($mcol + 180, $myrow['order_no']);
 		} else {
 			$this->Text($mcol + 180, $myrow['reference']);
@@ -145,11 +146,11 @@
 		$this->Text($mcol + 180, $myrow['id']);
 	} else {
 		if (isset($myrow['trans_no']) && isset($myrow['reference'])) { // INV/CRE/STA
-			if (Config::get('print.useinvoicenumber') == 1) {
-				$this->Text($mcol + 180, $myrow['trans_no']);
-			} else {
-				$this->Text($mcol + 180, $myrow['reference']);
-			}
+		if (Config::get('print.useinvoicenumber') == 1) {
+			$this->Text($mcol + 180, $myrow['order_no']);
+		} else {
+			$this->Text($mcol + 180, $myrow['reference']);
+		}
 		}
 	}
 	if ($doctype != ST_STATEMENT) {
