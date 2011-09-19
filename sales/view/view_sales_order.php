@@ -183,7 +183,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
   if ($qty_remaining > 0)
 	 submenu_option(_("Make &Delivery Against This Order"), "/sales/customer_delivery.php?OrderNumber={$_GET['trans_no']}'  target='_top' ");
   submenu_option(_("Enter a &New Order"), "/sales/sales_order_entry.php?NewOrder=0'  target='_top' ");
-  UploadHandler::insert($_GET['trans_no']);
+  //UploadHandler::insert($_GET['trans_no']);
   end_page(true);
 
 ?>

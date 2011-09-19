@@ -14,7 +14,7 @@
 				} elseif (!isset($_POST['name'])) {
 					$data['customer'] = $customer = new Customer($_POST['id']);
 				}
-				$data['contact_log'] = contact_log::read($customer->id, 'C');
+				$data['contact_log'] = ContactLog::read($customer->id, 'C');
 				$data['transactions'] = '<pre>' . print_r($customer->getTransactions(), true) . '</pre>';
 				$_SESSION['wa_global_customer_id'] = $customer->id;
 			} else {

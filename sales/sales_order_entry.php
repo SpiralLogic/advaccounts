@@ -200,7 +200,7 @@
 			}
 		}
 		set_focus('prtopt');
-		UploadHandler::insert($order_no);
+	//	UploadHandler::insert($order_no);
 		display_footer_exit();
 	}
 
@@ -672,7 +672,7 @@
 		submit_js_confirm('CancelOrder', _('You are about to void this Document.\nDo you want to continue?'));
 		submit_center_last('CancelOrder', $cancelorder, _('Cancels document entry or removes sales order when editing an old document'));
 		if (isset($_GET['ModifyOrderNumber']) && is_numeric($_GET['ModifyOrderNumber'])) {
-			UploadHandler::insert($_GET['ModifyOrderNumber']);
+			//UploadHandler::insert($_GET['ModifyOrderNumber']);
 		}
 	}
 	else {
