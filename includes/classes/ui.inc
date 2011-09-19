@@ -99,7 +99,7 @@
 		HTML::td(true);
 	 }
 
-	 HTML::input($id, $o['selected'], array('name' => $id));
+	 HTML::input($id, array('value'=>$o['selected'],'name' => $id));
 	 if ($o['editable']) {
 		HTML::label('lineedit', 'edit', array('for' => 'stock_id', 'class' => 'stock button', 'style' => 'display:none'));
 		$desc_js .= '$("#lineedit").data("stock_id",value.stock_id).show().parent().css("white-space","nowrap"); ';
