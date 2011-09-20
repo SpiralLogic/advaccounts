@@ -247,7 +247,7 @@ JS;
  // ------------------------------------------------------------------------------
  function display_order_header(&$order, $editable, $date_text, $display_tax_group = false) {
 	global  $Ajax, $SysPrefs;
-	start_outer_table("width=80% ".Config::get('tables.style2'));
+	start_outer_table("width=90% ".Config::get('tables.style2'));
 	table_section(1);
 	$customer_error = "";
 	$change_prices = 0;

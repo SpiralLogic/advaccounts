@@ -52,7 +52,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		$nowdue = "1-" . $past1 . " " . _('Days');
 		$pastdue1 = $past1 + 1 . "-" . $past2 . " " . _('Days');
 		$pastdue2 = _('Over') . " " . $past2 . " " . _('Days');
-		start_table("width=80%  ".Config::get('tables.style'));
+		start_table("width=90%  ".Config::get('tables.style'));
 		$th = array(_("Currency"), _("Terms"), _("Current"), $nowdue,
 			$pastdue1, $pastdue2, _("Total Balance"), _("Total For Search Period"));
 		table_header($th);

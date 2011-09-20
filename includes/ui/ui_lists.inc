@@ -683,7 +683,7 @@ JS
 		if ($label != null) {
 			echo "<td>$label</td>\n";
 		}
-		echo stock_items_list($name, $selected_id, $all_option, $submit_on_change, array('where' => "mb_flag!='D'", 'cell' => true));
+		echo stock_items_list($name, $selected_id, $all_option, $submit_on_change, array('where' => "mb_flag!='D'", 'cell' => true,'description'=>''));
 	}
 
 	//------------------------------------------------------------------------------------

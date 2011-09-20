@@ -24,7 +24,7 @@
 	Config::load();
 
 	define("AJAX_REFERRER", (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest'));
-	define('BASE_URL', str_ireplace(realpath(__DIR__ . '/..'), '', APP_PATH));
+	define('BASE_URL', str_ireplace(realpath(__DIR__ ), '', APP_PATH));
 
 	if (!defined('ICON_EDIT')) {
 		define("ICON_EDIT", "edit.gif");

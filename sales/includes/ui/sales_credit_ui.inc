@@ -16,7 +16,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
   function display_credit_header(&$order) {
 	 global  $Ajax, $Refs;
 
-	 start_outer_table("width=80%  ".Config::get('tables.style'));
+	 start_outer_table("width=90%  ".Config::get('tables.style'));
 	 table_section(1);
 
 	 $customer_error = "";

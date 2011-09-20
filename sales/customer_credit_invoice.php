@@ -244,7 +244,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 start_form();
 	 hidden('cart_id');
 
-	 start_table(Config::get('tables.style2')." width=80%", 5);
+	 start_table(Config::get('tables.style2')." width=90%", 5);
 	 echo "<tr><td>"; // outer table
 
 	 start_table(Config::get('tables.style')."  width=100%");
@@ -296,7 +296,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 end_table(1); // outer table
 
 	 div_start('credit_items');
-	 start_table(Config::get('tables.style')."  width=80%");
+	 start_table(Config::get('tables.style')."  width=90%");
 	 $th = array(_("Item Code"), _("Item Description"), _("Invoiced Quantity"), _("Units"),
 					 _("Credit Quantity"), _("Price"), _("Discount %"), _("Total"));
 	 table_header($th);

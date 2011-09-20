@@ -116,7 +116,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		copy_to_trans($supp_trans);
 		$dim = get_company_pref('use_dimension');
 		$colspan = ($dim == 2 ? 7 : ($dim == 1 ? 6 : 5));
-		start_table(Config::get('tables.style2')." width=80%");
+		start_table(Config::get('tables.style2')." width=90%");
 		label_row(_("Sub-total:"), price_format($supp_trans->ov_amount), "colspan=$colspan align=right", "align=right");
 		$taxes = $supp_trans->get_taxes($supp_trans->tax_group_id);
 		$tax_total = display_edit_tax_items($taxes, $colspan, 0, null, true); // tax_included==0 (we are the company)
@@ -173,7 +173,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		else {
 			$heading = _("GL Items for this Credit Note");
 		}
-		start_outer_table(Config::get('tables.style')."  width=80%");
+		start_outer_table(Config::get('tables.style')."  width=90%");
 		if ($mode == 1) {
 			$qes = has_quick_entries(QE_SUPPINV);
 			if ($qes !== false) {
@@ -197,7 +197,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		display_heading($heading);
 		end_outer_table(0, false);
 		div_start('gl_items');
-		start_table(Config::get('tables.style')."  width=80%");
+		start_table(Config::get('tables.style')."  width=90%");
 		$dim = get_company_pref('use_dimension');
 		if ($dim == 2) {
 			$th = array(_("Account"), _("Name"), _("Dimension") . " 1", _("Dimension") . " 2", _("Memo"), _("Amount"));
@@ -365,7 +365,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		if (($mode == 2 || $mode == 3) && count($supp_trans->grn_items) == 0) {
 			return 0;
 		}
-		start_outer_table("style='border:1px solid #cccccc;' width=80%");
+		start_outer_table("style='border:1px solid #cccccc;' width=90%");
 		$heading2 = "";
 		if ($mode == 1) {
 			if ($supp_trans->is_invoice) {
@@ -415,7 +415,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		}
 		end_outer_table(0, false);
 		div_start('grn_items');
-		start_table(Config::get('tables.style')."  width=80%");
+		start_table(Config::get('tables.style')."  width=90%");
 		if ($mode == 1) {
 			$th = array(_("Delivery"), _("Sequence #"), _("P.O."), _("Item"), _("Description"), _("Received"),
 									_("Received"), _("Invoiced"), _("Yet To Invoice"), _("Order Price"),

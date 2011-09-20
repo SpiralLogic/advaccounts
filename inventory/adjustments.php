@@ -40,7 +40,6 @@ if (isset($_GET['AddedID'])) {
 
 	display_notification_centered(_("Items adjustment has been processed"));
 	display_note(get_trans_view_str($trans_type, $trans_no, _("&View this adjustment")));
-
 	display_note(get_gl_view_str($trans_type, $trans_no, _("View the GL &Postings for this Adjustment")), 1, 0);
 
 	hyperlink_no_params($_SERVER['PHP_SELF'], _("Enter &Another Adjustment"));
@@ -214,7 +213,7 @@ start_form();
 
 display_order_header($_SESSION['adj_items']);
 
-start_outer_table(Config::get('tables.style')."  width=70%", 10);
+start_outer_table(Config::get('tables.style')."  width=80%", 10);
 
 display_adjustment_items(_("Adjustment Items"), $_SESSION['adj_items']);
 adjustment_options_controls();

@@ -418,7 +418,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 			return;
 		}
 		display_heading2(_("Allocations"));
-		start_table(Config::get('tables.style')."  width=80%");
+		start_table(Config::get('tables.style')."  width=90%");
 		$th = array(_("Type"), _("Number"), _("Date"), _("Total Amount"), _("Left to Allocate"), _("This Allocation"));
 		table_header($th);
 		$k = $total_allocated = 0;
