@@ -50,9 +50,12 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		FROM stock_master,item_units
 		WHERE stock_id=" . db_escape($stock_id)
 				. " AND stock_master.units=item_units.abbr";
-		$result = db_query($sql, "The standard cost cannot be retrieved");
-
-		return db_fetch($result);
+		$query = db_query($sql, "The standard cost cannot be retrieved");
+		$result = array('standard_cost'=>0,'units'=>'ea','decimals'=>user_price_dec());
+		if (db_num_rows($query)==0) {
+	$result = db_fetch($query);
+}
+		return $result;
 	}
 
 	//--------------------------------------------------------------------------------------

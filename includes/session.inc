@@ -107,8 +107,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	}
 
 	//============================================================================
-	//
-	//
+
 	function login_timeout() {
 		// skip timeout on logout page
 		if ($_SESSION["wa_current_user"]->logged) {
@@ -129,13 +128,13 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	//============================================================================
 
 	function class_autoloader($className) {
+
 		spl_autoload(strtolower($className));
 	}
 
 	define('APP_PATH', realpath(__DIR__ . '/..') . DIRECTORY_SEPARATOR);
 	$path = substr(str_repeat('../', substr_count(str_replace(APP_PATH, '', realpath('.') . DIRECTORY_SEPARATOR), '/')), 0, -1);
 	$path_to_root = (!$path) ? '.' : $path;
-
 	spl_autoload_extensions('.php,.inc');
 	spl_autoload_register('class_autoloader');
 	add_include_path(
@@ -169,7 +168,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	}
 
 	include(APP_PATH . "config.php");
-
+FB::info(BASE_URL);
 	if (Config::get('logs.error.file') != '') {
 		ini_set("error_log", Config::get('logs.error.file'));
 		ini_set("ignore_repeated_errors", "On");

@@ -315,7 +315,7 @@
 	$is_edition = $_SESSION['Items']->trans_type == ST_SALESINVOICE && $_SESSION['Items']->trans_no != 0;
 	start_form();
 	hidden('cart_id');
-	start_table(Config::get('tables.style2')." width=80%", 5);
+	start_table(Config::get('tables.style2')." width=90%", 5);
 	start_row();
 	label_cells(_("Customer"), $_SESSION['Items']->customer_name, "class='tableheader2'");
 	label_cells(_("Branch"), get_branch_name($_SESSION['Items']->Branch), "class='tableheader2'");
@@ -362,7 +362,7 @@
 	}
 	display_heading(_("Invoice Items"));
 	div_start('Items');
-	start_table(Config::get('tables.style')."  width=80%");
+	start_table(Config::get('tables.style')."  width=90%");
 	$th = array(_("Item Code"), _("Item Description"), _("Delivered"), _("Units"), _("Invoiced"), _("This Invoice"), _("Price"), _("Tax Type"), _("Discount"), _("Total"));
 	if ($is_batch_invoice) {
 		$th[] = _("DN");
@@ -383,7 +383,7 @@
 		}
 		alt_table_row_color($k);
 		view_stock_status_cell($ln_itm->stock_id);
-		if (!$viewing) text_cells(null, 'Line' . $line . 'Desc', $ln_itm->description, 30, 50); else
+		if (!$viewing) textarea_cells(null, 'Line' . $line . 'Desc', $ln_itm->description, 30, 3); else
 			label_cell($ln_itm->description);
 		$dec = get_qty_dec($ln_itm->stock_id);
 		qty_cell($ln_itm->quantity, false, $dec);

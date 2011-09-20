@@ -8,7 +8,7 @@
  */
 	class Customer extends Company {
 
-		public $debtor_no=0;
+		public $debtor_no = 0;
 		public $name = 'New Customer';
 		public $sales_type;
 		public $debtor_ref = '';
@@ -90,10 +90,10 @@
 				return false;
 			}
 			if ($this->id == 0) {
-				$this->_saveNew();
-			}
-			begin_transaction();
-			$sql = "UPDATE debtors_master SET name=" . db_escape($this->name) . ",
+				$status = $this->_saveNew();
+			} else {
+				begin_transaction();
+				$sql = "UPDATE debtors_master SET name=" . db_escape($this->name) . ",
 			debtor_ref=" . db_escape(substr($this->name, 0, 29)) . ",
 			address=" . db_escape($this->address) . ",
 			tax_id=" . db_escape($this->tax_id) . ",
@@ -109,9 +109,11 @@
             sales_type = " . db_escape($this->sales_type) . ",
             notes=" . db_escape($this->notes) . "
             WHERE debtor_no = " . db_escape($this->id);
-			db_query($sql, "The customer could not be updated");
-			update_record_status($this->id, $this->inactive, 'debtors_master', 'debtor_no');
-			commit_transaction();
+				db_query($sql, "The customer could not be updated");
+				update_record_status($this->id, $this->inactive, 'debtors_master', 'debtor_no');
+				commit_transaction();
+				$status = "Customer has been updated.";
+			}
 			$this->accounts->save(array('debtor_no' => $this->id));
 			foreach ($this->branches as $branch_code => $branch) {
 				$branch->save(array('debtor_no' => $this->id));
@@ -125,7 +127,8 @@
 				$this->contacts[$contact->id] = $contact;
 			}
 			$this->_setDefaults();
-			return $this->_status(true, 'Processing', "Customer has been updated.");
+
+			return $this->_status(true, 'Processing', $status);
 		}
 
 		protected
@@ -150,7 +153,7 @@
 					$branch->name = $this->name;
 				}
 			}
-			$this->_status(true, 'Saving', "A Customer has been added.");
+			return "A Customer has been added.";
 		}
 
 		protected
@@ -201,7 +204,7 @@
 
 		public
 		function getTransactions() {
-			if ($this->id==0) return;
+			if ($this->id == 0) return;
 			$sql = "SELECT debtor_trans.*, sales_orders.customer_ref,
 				(debtor_trans.ov_amount + debtor_trans.ov_gst + debtor_trans.ov_freight +
 				debtor_trans.ov_freight_tax + debtor_trans.ov_discount)
@@ -266,13 +269,7 @@
 			DB::select()->from('cust_branch')->where('debtor_no=', $this->debtor_no)->and_where('branch_ref=', 'accounts');
 			$this->accounts = DB::fetch()->asClassLate('Accounts')->all();
 			if (!$this->accounts && $this->id > 0 && $this->defaultBranch > 0) {
-				$this->accounts->debtor_no = $this->id;
-				$this->accounts->email = $this->email;
-				$this->accounts->br_address = $this->address;
-				$this->accounts->phone = $this->branches[$this->defaultBranch]->phone;
-				$this->accounts->phone2 = $this->branches[$this->defaultBranch]->phone2;
-				$this->accounts->fax = $this->branches[$this->defaultBranch]->fax;
-				$this->accounts->contact_name = $this->branches[$this->defaultBranch]->contact_name;
+				$this->accounts = clone($this->branches[$this->defaultBranch]);
 				$this->accounts->br_name = 'Accounts Department';
 				$this->accounts->save();
 			} else {
@@ -305,8 +302,9 @@
 					$this->contacts[$contact->id] = $contact;
 				}
 
-			$this->defaultContact = reset($this->contacts)->id;
-			}$this->contacts[0] = new Contact(array('parent_id' => $this->id));
+				$this->defaultContact = reset($this->contacts)->id;
+			}
+			$this->contacts[0] = new Contact(array('parent_id' => $this->id));
 
 		}
 

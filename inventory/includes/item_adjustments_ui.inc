@@ -58,7 +58,7 @@ function display_adjustment_items($title, &$order)
 
 	display_heading($title);
 	div_start('items_table');
-	start_table(Config::get('tables.style')."  width=80%");
+	start_table(Config::get('tables.style')."  width=90%");
 	$th = array(_("Item Code"), _("Item Description"), _("Quantity"),
 				_("Unit"), _("Unit Cost"), _("Total"), "");
 	if (count($order->line_items)) $th[] = '';
@@ -133,9 +133,10 @@ function adjustment_edit_item_controls(&$order, $line_no = -1)
 			$Ajax->activate('units');
 			$Ajax->activate('qty');
 			$Ajax->activate('std_cost');
+
 		}
 
-		$item_info = get_item_edit_info($_POST['stock_id']);
+		$item_info = get_item_edit_info((isset($_POST['stock_id'])?$_POST['stock_id']:''));
 		$dec = $item_info['decimals'];
 		$_POST['qty'] = number_format2(0, $dec);
 		//$_POST['std_cost'] = price_format($item_info["standard_cost"]);

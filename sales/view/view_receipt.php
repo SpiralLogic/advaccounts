@@ -41,7 +41,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 
 
   echo "<br>";
-  start_table(Config::get('tables.style')."  width=80%");
+  start_table(Config::get('tables.style')."  width=90%");
   start_row();
   start_form();
 

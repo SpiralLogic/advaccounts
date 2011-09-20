@@ -266,7 +266,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
   $customer_error = display_credit_header($_SESSION['Items']);
 
   if ($customer_error == "") {
-	 start_table(TABLESTYLE, "width=80%", 10);
+	 start_table(TABLESTYLE, "width=90%", 10);
 	 echo "<tr><td>";
 	 display_credit_items(_("Credit Note Items"), $_SESSION['Items']);
 	 credit_options_controls($_SESSION['Items']);

@@ -12,7 +12,7 @@
 				$data['customer'] = $customer = new Customer($_POST);
 				$data['customer']->save();
 			}elseif (isset($_POST['id']) && $_POST['id'] > 0) {
-				if (!isset($customer)) $data['customer'] = $customer = new Customer($_POST['id']);
+				$data['customer'] = $customer = new Customer($_POST['id']);
 				$data['contact_log'] = ContactLog::read($customer->id, 'C');
 				$data['transactions'] = '<pre>' . print_r($customer->getTransactions(), true) . '</pre>';
 				$_SESSION['wa_global_customer_id'] = $customer->id;

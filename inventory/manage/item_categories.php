@@ -93,7 +93,7 @@ if (!check_value('show_inactive')) $sql .= " AND !c.inactive";
 $result = db_query($sql, "could not get stock categories");
 
 start_form();
-start_table(Config::get('tables.style')."  width=80%");
+start_table(Config::get('tables.style')."  width=90%");
 $th = array(_("Name"), _("Tax type"), _("Units"), _("Type"), _("Sales Act"),
 			_("Inventory Account"), _("COGS Account"), _("Adjustment Account"),
 			_("Assembly Account"), "", "");

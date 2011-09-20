@@ -55,7 +55,7 @@ function display_po_header(&$order)
 
 	$editable = ($order->order_no == 0);
 
-	start_outer_table("width=80% ".Config::get('tables.style2'));
+	start_outer_table("width=90% ".Config::get('tables.style2'));
 
 	table_section(1);
 	if ($editable) {
@@ -155,7 +155,7 @@ function display_po_items(&$order, $editable = true)
 	display_heading(_("Order Items"));
 
 	div_start('items_table');
-	start_table(Config::get('tables.style')."  width=80%");
+	start_table(Config::get('tables.style')."  width=90%");
 
 	$th = array(_("Item Code"), _("Description"), _("Quantity"),
 				_("Received"), _("Unit"),

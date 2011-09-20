@@ -329,7 +329,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
   start_form();
   hidden('cart_id');
 
-  start_table(Config::get('tables.style2')." width=80%", 5);
+  start_table(Config::get('tables.style2')." width=90%", 5);
   echo "<tr><td>"; // outer table
 
   start_table(Config::get('tables.style')."  width=100%");
@@ -405,7 +405,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
   }
   display_heading(_("Delivery Items"));
   div_start('Items');
-  start_table(Config::get('tables.style')."  width=80%");
+  start_table(Config::get('tables.style')."  width=90%");
 
   $new = $_SESSION['Items']->trans_no == 0;
   $th = array(_("Item Code"), _("Item Description"),

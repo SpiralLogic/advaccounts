@@ -296,7 +296,7 @@ function tst_extconfig()
 
 //-------------------------------------------------------------------------------------------------
 
-start_table(Config::get('tables.style')." width=80%");
+start_table(Config::get('tables.style')." width=90%");
 $th = array(_("Test"), _('Test type'), _("Value"), _("Comments"));
 table_header($th);
 

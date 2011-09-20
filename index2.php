@@ -8,5 +8,4 @@
 
 
 	include_once("includes/session.inc");
-;
-echo md5('password');
+phpinfo();
