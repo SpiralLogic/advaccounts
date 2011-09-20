@@ -264,8 +264,13 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 				$lang = &$_SESSION['language'];
 				$lang->set_language($_SESSION['language']->code);
 			}
-		} else {
+		}
+		else
+		{	if ($_SESSION['change_password'] && strstr($_SERVER['PHP_SELF'], 'change_current_user_password.php') == false) {
+				meta_forward('/admin/change_current_user_password.php','selected_id=' . $_SESSION["wa_current_user"]->username);
+			}
 			set_global_connection();
+
 		}
 		if (!$_SESSION["wa_current_user"]->old_db) {
 			include(APP_PATH . 'company/installed_extensions.php');

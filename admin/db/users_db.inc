@@ -129,7 +129,10 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		// on sites using pre 2.2 database
 		$user = new Auth($user_id);
 		$md5password = md5($password);
-
+$result = DB::select('user_id')->from('users')->where('password=',$md5password)->fetch();
+		if (count($result)>0) {
+			$_SESSION['change_password']=true;
+		}
 $password = $user->hash_password($password);
 		$sql = "SELECT * FROM users WHERE user_id = " . db_escape($user_id) . " AND"
 					 . " (password=" . db_escape($password) . " OR password=".db_escape($md5password).")";
