@@ -1,6 +1,12 @@
 <?php
 
-echo "<pre>";
-			
+	$path_to_root = ".";
+	if (!file_exists($path_to_root . '/config.php'))
+		header("Location: " . "/install/index.php");
 
-			echo memory_get_peak_usage(true)."<br>";
+	$page_security = 'SA_OPEN';
+
+
+	include_once("includes/session.inc");
+;
+echo md5('password');

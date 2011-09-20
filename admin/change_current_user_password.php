@@ -57,16 +57,20 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 					display_error(_("Password Too Weeak!"));
 				else {
 					$auth->update_password($_SESSION['wa_current_user']->user,$_POST['password']);
+					unset($_SESSION['change_password']);
 					display_notification(_("Password Changed"));
 				}
 			}
 			$Ajax->activate('_page_body');
 		}
-	}
+	} elseif ($_SESSION['change_password']) {
+	display_warning('You are required to change your password!');
+}
 
 	start_form();
 
 	start_table( Config::get('tables.style') );
+	table_section_title(_("Enter your new password in the fields."));
 
 	$myrow = get_user($_SESSION["wa_current_user"]->user);
 
@@ -78,7 +82,6 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	password_row(_("Password:"), 'password', $_POST['password']);
 	password_row(_("Repeat password:"), 'passwordConfirm', $_POST['passwordConfirm']);
 
-	table_section_title(_("Enter your new password in the fields."));
 
 	end_table(1);
 
