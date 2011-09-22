@@ -221,7 +221,7 @@
 						ORDER BY weight, s.category_id, s.stock_id LIMIT 30";
 			DB::prepare($sql);
 
-			return DB::execute($term);
+			return DB::execute($terms);
 		}
 
 		static function addEditDialog($options = array()) {
