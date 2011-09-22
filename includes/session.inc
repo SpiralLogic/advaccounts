@@ -168,7 +168,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	}
 
 	include(APP_PATH . "config.php");
-FB::info(BASE_URL);
+
 	if (Config::get('logs.error.file') != '') {
 		ini_set("error_log", Config::get('logs.error.file'));
 		ini_set("ignore_repeated_errors", "On");
