@@ -341,7 +341,7 @@ div.banner a + a { border-top: 2px groove #999 }
 	height:       40px;
 	border-left:  1px solid rgba(0, 0, 0, 0.3);
 	border-right: 1px solid rgba(255, 255, 255, 0.3);
-	
+
 }
 
 #_tabs2 a {
@@ -536,8 +536,6 @@ table.tablestyle_inner td {
 	padding-right: 7px;
 }
 
-
-
 .tableinfo input, .tableinfo textarea, .tableinfo select {
 	max-width: 300px;
 }
@@ -548,7 +546,7 @@ input.amount, td.amount {
 	text-align:  right;
 }
 
-.oddrow, .grid tr:nth-child(odd),tr.grid:nth-child(odd) {
+.oddrow, .grid tr:nth-child(odd), tr.grid:nth-child(odd) {
 	background-color: #f3f9fe;
 }
 
@@ -698,7 +696,7 @@ button.navibutton {
 	filter:           progid:DXImageTransform.Microsoft.gradient(enabled = 'true', startColorstr = #EDEDED, endColorstr = #C4C4C4, GradientType = 1);
 	border:           1px solid #7096AB;
 	box-shadow:       none;
-} 
+}
 
 .navibar span {
 	font-family:      Tahoma, Arial, sans-serif;
@@ -939,10 +937,6 @@ td.tableheader3 {
 	font-size:        1em;
 }
 
-.center-content {
-	text-align: center;
-}
-
 .dialog-confirm {
 	display: none;
 }
@@ -965,7 +959,6 @@ td.tableheader3 {
 }
 
 .marginauto {
-
 	margin: 0 auto;
 }
 
@@ -977,13 +970,17 @@ td.tableheader3 {
 	margin-top: 40px;
 }
 
-.aligncenter {
-	text-align: center;
-}
-
 .aligncentertop {
 	text-align:     center;
 	vertical-align: top;
+}
+
+.invis {
+	visibility: hidden;
+}
+
+.hidden {
+	display: none;
 }
 
 .floatright {

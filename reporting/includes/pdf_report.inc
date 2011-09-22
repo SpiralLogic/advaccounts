@@ -181,7 +181,11 @@
 			$code = $_SESSION['language']->code;
 			$enc = strtoupper($_SESSION['language']->encoding);
 			// for the language array in class.pdf.inc
-			$l = array('a_meta_charset' => $enc, 'a_meta_dir' => $rtl, 'a_meta_language' => $code, 'w_page' => 'page');
+			$l = array('a_meta_charset'  => $enc,
+								 'a_meta_dir'      => $rtl,
+								 'a_meta_language' => $code,
+								 'w_page'          => 'page'
+			);
 			$this->Cpdf($size, $l, $orientation);
 		}
 
@@ -311,7 +315,7 @@
 		}
 
 		function Header2($myrow, $branch, $sales_order, $bankaccount, $doctype) {
-			global  $path_to_root, $print_as_quote, $packing_slip;
+			global $path_to_root, $print_as_quote, $packing_slip;
 			$this->pageNumber++;
 			if ($this->pageNumber > 1) {
 				$this->newPage();
@@ -324,7 +328,6 @@
 
 			if ($doctype == ST_STATEMENT) {
 				$customer = new Customer($myrow['debtor_no']);
-
 				//      include("includes/lang/en_AU/statement.inc");
 				//    include("includes/lang/en_AU/statement_head.inc");
 				//} else
@@ -409,7 +412,8 @@
 			// Print company logo if present and requested, or else just print company name
 			if ($this->companyLogoEnable && ($this->company['coy_logo'] != '')) {
 				// Build a string specifying the location of the company logo file
-				$logo = COMPANY_PATH. "/images/" . $this->company['coy_logo'];
+
+				$logo = COMPANY_PATH . "/images/" . $this->company['coy_logo'];
 				// Width being zero means that the image will be scaled to the specified height
 				// keeping its aspect ratio intact.
 				if ($this->scaleLogoWidth) $this->AddImage($logo, $companyCol, $this->row, COMPANY_WIDTH, 0); else
@@ -526,9 +530,10 @@
 		/**
 		 * Format a numeric string date into something nicer looking.
 		 *
-		 * @param string $date Date string to be formatted.
-		 * @param int $input_format Format of the input string.	Possible values are:<ul><li>0: user's default (default)</li></ul>
-		 * @param int $output_format Format of the output string.	Possible values are:<ul><li>0: Month (word) Day (numeric), 4-digit Year - Example: January 1, 2000 (default)</li><li>1: Month 4-digit Year - Example: January 2000</li><li>2: Month Abbreviation 4-digit Year - Example: Jan 2000</li></ul>
+		 * @param string $date          Date string to be formatted.
+		 * @param int    $input_format  Format of the input string.	Possible values are:<ul><li>0: user's default (default)</li></ul>
+		 * @param int    $output_format Format of the output string.	Possible values are:<ul><li>0: Month (word) Day (numeric), 4-digit Year - Example: January 1, 2000 (default)</li><li>1: Month 4-digit Year - Example: January 2000</li><li>2: Month Abbreviation 4-digit Year - Example: Jan 2000</li></ul>
+		 *
 		 * @access public
 		 */
 		function DatePrettyPrint($date, $input_format = 0, $output_format = 0) {
@@ -546,7 +551,6 @@
 				} elseif ($output_format == 2) {
 					return (date('M Y', mktime(12, 0, 0, $month, $day, $year)));
 				}
-
 			} else return $date;
 		}
 
@@ -718,13 +722,15 @@
 		/**
 		 * Underlines the contents of a cell, but not the cell padding area.
 		 * Primarily useful for the last line before a "totals" line.
-		 * @param int $c Column number to underline.
-		 * @param int $r Print the underline(s) this number of rows below the current position.	Can be negative in order to go up.
-		 * @param int $type Type of underlining to draw.	Possible values are:<ul><li>1: single underline (default)</li><li>2: double underline</li></ul>
-		 * @param int $linewidth Thickness of the line to draw.	Default value of zero will use the current line width defined for this document.
-		 * @param array $style Line style. Array like for {@link SetLineStyle SetLineStyle}. Default value: default line style (empty array).
+		 *
+		 * @param int   $c         Column number to underline.
+		 * @param int   $r         Print the underline(s) this number of rows below the current position.	Can be negative in order to go up.
+		 * @param int   $type      Type of underlining to draw.	Possible values are:<ul><li>1: single underline (default)</li><li>2: double underline</li></ul>
+		 * @param int   $linewidth Thickness of the line to draw.	Default value of zero will use the current line width defined for this document.
+		 * @param array $style     Line style. Array like for {@link SetLineStyle SetLineStyle}. Default value: default line style (empty array).
+		 *
 		 * @access public
-		 * @see SetLineWidth(), SetDrawColor(), SetLineStyle()
+		 * @see    SetLineWidth(), SetDrawColor(), SetLineStyle()
 		 */
 		function UnderlineCell($c, $r = 0, $type = 1, $linewidth = 0, $style = array()) {
 			// If line width was specified, save current setting so we can reset it
@@ -878,7 +884,6 @@
 				}
 			}
 		}
-
 	}
 
 ?>

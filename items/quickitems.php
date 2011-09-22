@@ -16,7 +16,6 @@
 			}
 			$data['item'] = $item;
 			$data['stockLevels'] = $item->getStockLevels();
-
 		}
 		if (isset($_GET['page'])) {
 			$data['page'] = $_GET['page'];
@@ -32,7 +31,11 @@
 	$stock_cats = stock_categories_list('category_id');
 	if (!isset($_GET['id'])) {
 		HTML::div('itemSearch');
-		UI::search('item', array('label' => 'Search Item', 'size' => 80, 'url' => 'search.php', 'callback' => 'Items.fetch'));
+		UI::search('item', array('label'   => 'Search Item',
+														'size'     => 80,
+														'url'      => 'search.php',
+														'callback' => 'Items.fetch'
+											 ));
 		HTML::div();
 	} else {
 		$data['item'] = $item = new item($_GET['id']);
@@ -47,14 +50,14 @@ JS
 	$menu->startTab("Items", "Items");
 
 	echo <<<HTML
-<div id="Items" class="aligncenter">
+<div id="Items" class="center">
 <table class="tableinfo marginauto" style="width:80%">
 <tr><td><label for="id">Code:</label></td><td><input id="id" type="text" value="\${id}" maxlength="10"></td></tr>
 <tr><td ><label for="name">Name:</label><br></td><td><input id="name" type="text" value="\${name}" maxlength="10"></td></tr>
 <tr><td ><label for="description">Description:</label></td><td><textarea id="description" rows="6" cols="36">\${description} </textarea></td></tr>
 <tr><td ><label for="category_id">Category:</label></td><td>$stock_cats</td></tr>
 <tr><td ><label for="uom">Units of Mesasure:</label><br></td><td><input id="uom" type="text" value="\${uom}" maxlength="10"></td></tr>
-</table></div><div class="aligncenter">
+</table></div><div class="center">
 <table id="stockLevels" class="marginauto grid" style="width:80%">
 <thead><th>Location</th><th>QOH</th><th>Reorder Level</th><th>On SalesOrder</th><th>Available</th><th>On PurchaseOrder</th></thead><tbody>
 <script id="stockRow" type="text/x-jquery-tmpl"><tr><td>\${location_name}</td><td>\${qty}</td><td>\${reorder_level}</td><td>\${demand}</td><td>\${available}</td><td>\${onorder}</td></tr></script></tbody>
