@@ -1,11 +1,11 @@
 <?php
-/**
- * Created by JetBrains PhpStorm.
- * User: Complex
- * Date: 21/08/11
- * Time: 11:15 PM
- * To change this template use File | Settings | File Templates.
- */
+	/**
+	 * Created by JetBrains PhpStorm.
+	 * User: Complex
+	 * Date: 21/08/11
+	 * Time: 11:15 PM
+	 * To change this template use File | Settings | File Templates.
+	 */
 
 	class DBconnection {
 
@@ -41,7 +41,7 @@
 		}
 
 		public function prepare($sql) {
-			if ($this->debug) {
+			if (Config::get('debug.sql')) {
 				(class_exists('FB')) ? FB::info($sql) : var_dump($sql);
 			}
 
@@ -51,7 +51,7 @@
 		public function exec($sql, $type, $data) {
 			try {
 				$prepared = $this->prepare($sql);
-				if ($this->debug) {
+				if (Config::get('debug.sql')) {
 					(class_exists('FB')) ? FB::info($data) : var_dump($data);
 				}
 				switch ($type) {
