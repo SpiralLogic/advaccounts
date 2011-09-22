@@ -1,11 +1,11 @@
 <?php
-/**
- * Created by JetBrains PhpStorm.
- * User: advanced
- * Date: 12/4/10
- * Time: 6:28 PM
- * To change this template use File | Settings | File Templates.
- */
+	/**
+	 * Created by JetBrains PhpStorm.
+	 * User: advanced
+	 * Date: 12/4/10
+	 * Time: 6:28 PM
+	 * To change this template use File | Settings | File Templates.
+	 */
 	/**********************************************************************
 	Copyright (C) FrontAccounting, LLC.
 	Released under the terms of the GNU General Public License, GPL,
@@ -26,7 +26,6 @@
 		elseif (isset ($_POST['id'])) {
 
 			$data = new Item($_POST['id']);
-
 		}
 		echo json_encode($data);
 		exit();
