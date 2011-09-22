@@ -57,7 +57,7 @@
 	define('BUILD_VERSION', date("d.m.Y", filemtime(__FILE__)));
 	define('POWERED_BY', "Advanced Accounting");
 	define('POWERED_URL', "http://www.advancedgroup.com.au");
-	define('COMPANY_PATH', '/company');
+	define('COMPANY_PATH', $path_to_root . '/company');
 	define("BACKUP_PATH", COMPANY_PATH . "/backup/");
 	JS::headerFile(array('/js/JsHttpRequest.js', '/js/behaviour.js', '/js/utils.js', '/js/inserts.js', '/js/js2/jquery-1.6.4.min.js', '/js/js2/jquery-ui-1.8.14.min.js'));
 	JS::footerFile(array('/js/js2/advanced.js', '/js/js2/shortmenu.js', '/js/js2/jquery.calculator.pack.js', '/js/js2/calc.js'));
