@@ -9,7 +9,10 @@ but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
  ***********************************************************************/
-function db_has_customers()
+
+
+
+	function db_has_customers()
 {
 	return check_empty_result("SELECT COUNT(*) FROM debtors_master");
 }
@@ -254,7 +257,7 @@ function check_db_has_stock_items($msg)
 
 function db_has_bom_stock_items()
 {
-	return check_empty_result("SELECT COUNT(*) FROM stock_master WHERE mb_flag='M'");
+	return check_empty_result("SELECT COUNT(*) FROM stock_master WHERE mb_flag='".STOCK_MANUFACTURE."'");
 }
 
 function check_db_has_bom_stock_items($msg)
@@ -269,7 +272,7 @@ function check_db_has_bom_stock_items($msg)
 
 function db_has_manufacturable_items()
 {
-	return check_empty_result("SELECT COUNT(*) FROM stock_master WHERE (mb_flag='M')");
+	return check_empty_result("SELECT COUNT(*) FROM stock_master WHERE (mb_flag='".STOCK_MANUFACTURE."')");
 }
 
 function check_db_has_manufacturable_items($msg)
@@ -284,7 +287,7 @@ function check_db_has_manufacturable_items($msg)
 
 function db_has_purchasable_items()
 {
-	return check_empty_result("SELECT COUNT(*) FROM stock_master WHERE mb_flag!='M'");
+	return check_empty_result("SELECT COUNT(*) FROM stock_master WHERE mb_flag='".STOCK_MANUFACTURE."'");
 }
 
 function check_db_has_purchasable_items($msg)
@@ -299,7 +302,7 @@ function check_db_has_purchasable_items($msg)
 
 function db_has_costable_items()
 {
-	return check_empty_result("SELECT COUNT(*) FROM stock_master WHERE mb_flag!='D'");
+	return check_empty_result("SELECT COUNT(*) FROM stock_master WHERE mb_flag!='".STOCK_SERVICE."'");
 }
 
 function check_db_has_costable_items($msg)

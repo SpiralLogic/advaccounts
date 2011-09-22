@@ -112,7 +112,7 @@ define('PT_WORKORDER', 1);
 define('PT_CUSTOMER', 2);
 define('PT_SUPPLIER', 3);
 define('PT_QUICKENTRY', 4);
-define('PT_DIMESION', 5);
+define('PT_DIMENSION', 5);
 
 
 $payment_person_types = array(
@@ -280,22 +280,24 @@ define('ALL_NUMERIC', -1);
 
 //----------------------------------------------------------------------------------
 // Types of stock items
+	define('STOCK_MANUFACTURE','M');
+	define('STOCK_PURCHASED','B');
+	define('STOCK_SERVICE','D');
+	define('STOCK_INFO','I');
+
 $stock_types = array(
-	'M' => _("Manufactured"),
-	'B' => _("Purchased"),
-	'D' => _("Service")
+	STOCK_MANUFACTURE => _("Manufactured"),
+	STOCK_PURCHASED => _("Purchased"),
+	STOCK_SERVICE => _("Service"),
+	STOCK_INFO => _("Information")
 );
 
 //----------------------------------------------------------------------------------
 
 define('TAG_ACCOUNT', 1);
 define('TAG_DIMENSION', 2);
-define('TABLESTYLE_NOBORDER','tablestyle_noborder');
-define('TABLESTYLE2','tablestyle2');
-define('TABLESTYLE','tablestyle');
+
 $tag_types = array(
 	TAG_ACCOUNT => _("Account"),
 	TAG_DIMENSION => _("Dimension")
 );
-
-?>
