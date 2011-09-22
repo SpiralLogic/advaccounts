@@ -8,7 +8,7 @@
 	 */
 	return array(
 		'debug'														=> false,
-		'debug.sql'												=> false,
+		'debug.sql'												=> true,
 		'debug.pdf'												=> false,
 		'debug.query.log'									=> false,
 		'debug.select.log'								 => false,
