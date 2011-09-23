@@ -43,7 +43,7 @@ class customers_app extends application
 		$this->add_lapp_function(1, _("&Template Delivery"),
 								 "sales/inquiry/sales_orders_view.php?DeliveryTemplates=Yes", 'SA_SALESDELIVERY');
 		$this->add_rapp_function(1, '', '');
-		if ($_SESSION['wa_current_user']->username != 'mike' && $_SESSION['wa_current_user']->username != 'samj')
+	
 			$this->add_rapp_function(1, _("Direct &Invoice"),
 									 "sales/sales_order_entry.php?NewInvoice=0", 'SA_SALESINVOICE');
 

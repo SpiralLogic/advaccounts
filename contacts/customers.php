@@ -20,6 +20,7 @@
 				$data['customer'] = $customer = new Customer();
 			}
 			$data['status'] = $customer->getStatus();
+			FB::info($data['customer']);
 		}
 		echo json_encode($data, JSON_NUMERIC_CHECK);
 		exit();

@@ -25,7 +25,7 @@ Adv.extend({
 							 Adv.btnCancel.button('option', 'label', 'Cancel Changes').show();
 							 var fieldname = feild.addClass("ui-state-highlight").attr('name');
 							 $("[name='" + fieldname + "']").each(function() {
-								 $(this).val(feild.val()).addClass("ui-state-highlight");
+								 $(this).addClass("ui-state-highlight");
 							 });
 							 if (Customer.get().id == null || Customer.get().id == 0) {
 								 Adv.btnCustomer.button("option", "label", "Save New Customer").show();
@@ -79,11 +79,9 @@ var Contacts = function() {
 		addMany:function(data) {
 			var contacts = [];
 			$.each(data, function($k, $v) {
-
 				if (!blank && $v.id == 0) blank = $v;
 				if ($v.id != 0)	contacts[contacts.length] = $v;
 			});
-
 			$.tmpl('contact', contacts).appendTo($Contacts);
 		},
 		setval: function (key, value) {

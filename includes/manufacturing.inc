@@ -14,17 +14,17 @@ include_once($path_to_root . "/includes/db/manufacturing_db.inc");
 
 function is_manufactured($mb_flag)
 {
-	return ($mb_flag == 'M');
+	return ($mb_flag == STOCK_MANUFACTURE);
 }
 
 function is_purchased($mb_flag)
 {
-	return ($mb_flag == 'B');
+	return ($mb_flag == STOCK_PURCHASED);
 }
 
 function is_service($mb_flag)
 {
-	return ($mb_flag == 'D');
+	return ($mb_flag == STOCK_SERVICE);
 }
 
 function has_stock_holding($mb_flag)

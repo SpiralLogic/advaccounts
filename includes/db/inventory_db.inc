@@ -61,7 +61,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	//--------------------------------------------------------------------------------------
 
 	function get_standard_cost($stock_id) {
-		$sql = "SELECT IF(s.mb_flag='D', 0, material_cost + labour_cost + overhead_cost) AS std_cost
+		$sql = "SELECT IF(s.mb_flag='".STOCK_SERVICE."', 0, material_cost + labour_cost + overhead_cost) AS std_cost
 		FROM stock_master s WHERE stock_id=" . db_escape($stock_id);
 		$result = db_query($sql, "The standard cost cannot be retrieved");
 

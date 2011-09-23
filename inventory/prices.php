@@ -87,7 +87,6 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 
 		$msg = _("The new price has been added.");
 	 }
-	 Item::updateID($_POST['stock_id']);
 	 display_notification($msg);
 	 $Mode = 'RESET';
 	}
