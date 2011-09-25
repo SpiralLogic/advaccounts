@@ -261,6 +261,7 @@ var Customer = function () {
 			$customerID.autocomplete('enable');
 		},
 		fetch: function(item) {
+			if (typeof(item) === "number") item = {id:item};
 			$.post("customers.php", {"id": item.id}, function(data) {
 				Customer.setValues(data);
 			}, 'json')

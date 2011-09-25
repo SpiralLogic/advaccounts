@@ -25,7 +25,7 @@
 		}
 
 		static function select($id = false, $options = array(), $params = array()) {
-			$content = '';
+			
 			HTML::setReturn(true)->select($id, $params);
 			foreach ((array)$options as $label => $option) {
 				if (is_array($option)) {
@@ -36,7 +36,7 @@
 					HTML::optgroup();
 				}
 				else {
-					HTML::option(array('value' => $label), false);
+					HTML::option(null, $option, array('value' => $label), false);
 				}
 			}
 

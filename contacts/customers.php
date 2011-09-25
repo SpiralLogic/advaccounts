@@ -20,7 +20,6 @@
 				$data['customer'] = $customer = new Customer();
 			}
 			$data['status'] = $customer->getStatus();
-			FB::info($data['customer']);
 		}
 		echo json_encode($data, JSON_NUMERIC_CHECK);
 		exit();
@@ -36,6 +35,7 @@
 	check_db_has_tax_groups(_("There are no tax groups defined in the system. At least one tax group is required before proceeding."));
 	if (isset($_GET['id'])) {
 		$customer = new Customer($_GET['id']);
+		FB::info($customer);
 	} elseif (isset($_POST['id']) && !empty($_POST['id'])) {
 		$customer = new Customer($_POST['id']);
 	} else {
@@ -88,7 +88,7 @@
 																					'class'    => "center"
 																		 ));
 	UI::select('branchList', array_map(function($v) {
-														 return $v->name;
+														 return $v->br_name;
 													 }, $customer->branches), array('name' => 'branchList'));
 	UI::button('addBranch', 'Add new address', array('class' => 'invis',
 																									'name'   => 'addBranch'
@@ -114,7 +114,7 @@
 	text_row(_("Phone Number:"), 'acc_phone', $customer->accounts->phone, 40, 30);
 	text_row(_("Secondary Phone Number:"), 'acc_phone2', $customer->accounts->phone2, 40, 30);
 	text_row(_("Fax Number:"), 'acc_fax', $customer->accounts->fax, 40, 30);
-	email_row(_("E-mail:"), 'acc_email', $customer->email, 35, 40);
+	email_row(_("E-mail:"), 'acc_email', $customer->accounts->email, 35, 40);
 	textarea_row(_("Street:"), 'acc_br_address', $customer->accounts->br_address, 35, 2);
 	postcode::render(array('acc_postcode', $customer->accounts->postcode), array('acc_city', $customer->accounts->city), array('acc_state', $customer->accounts->state));
 	sales_types_list_row(_("Sales Type/Price List:"), 'sales_type', $customer->sales_type);
@@ -131,9 +131,7 @@
 	text_row(_("2nd Phone Number:"), 'acc_phone2', $customer->accounts->phone2, 40, 30);
 	text_row(_("Fax Number:"), 'acc_fax', $customer->accounts->fax, 40, 30);
 	textarea_row(_("Street:"), 'acc_br_address', $customer->accounts->br_address, 35, 2);
-	email_row(_("City"), 'acc_city', $customer->accounts->city, 35, 40);
-	email_row(_("postcode"), 'acc_postcode', $customer->accounts->postcode, 35, 40);
-	email_row(_("State:"), 'acc_state', $customer->accounts->state, 35, 40);
+	postcode::render(array('acc_postcode', $customer->accounts->postcode), array('acc_city', $customer->accounts->city), array('acc_state', $customer->accounts->state));
 	textarea_row(_("Postal Address:"), 'acc_br_post_address', $customer->accounts->br_address, 35, 2);
 	percent_row(_("Discount Percent:"), 'discount', $customer->discount, ($_SESSION['wa_current_user']->can_access('SA_CUSTOMER_CREDIT')) ? "" : " disabled=\"\"");
 	percent_row(_("Prompt Payment Discount Percent:"), 'pymt_discount', $customer->pymt_discount, ($_SESSION['wa_current_user']->can_access('SA_CUSTOMER_CREDIT')) ? "" : " disabled=\"\"");
