@@ -36,7 +36,15 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		$Ajax->run();
 		return in_ajax() ? fmt_errors() : ($before_box . fmt_errors() . $text);
 	}
-
+	function fb_errors() {
+		$error = func_get_args();
+		error_handler($error[0], $error[1], $error[2], $error[3]);
+		if (!(error_reporting() & $error[0])) {
+			// This error code is not included in error_reporting
+			return;
+		}
+		return true;
+	}
 	function kill_login() {
 		session_unset();
 		session_destroy();
@@ -81,9 +89,11 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	function set_page_security($value = null, $trans = array(), $gtrans = array()) {
 		global $page_security;
 		// first check is this is not start page call
-		foreach ($gtrans as $key => $area) if (isset($_GET[$key])) {
-			$page_security = $area;
-			return;
+		foreach ($gtrans as $key => $area) {
+			if (isset($_GET[$key])) {
+				$page_security = $area;
+				return;
+			}
 		}
 		// then check session value
 		if (isset($trans[$value])) {
@@ -147,27 +157,26 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 				 APP_PATH . 'includes/classes/db',
 				 APP_PATH . 'contacts/includes/classes',
 				 APP_PATH . 'items/includes/classes',
-				 APP_PATH . 'reporting/includes'));
-
-	if (Config::get('debug') && preg_match('/Chrome/i', $_SERVER['HTTP_USER_AGENT'])) {
-		include(APP_PATH . 'includes/fb.php');
-		FB::useFile(APP_PATH . 'tmp/chromelogs', '/tmp/chromelogs');
-	} elseif (Config::get('debug')) {
-		include(APP_PATH . 'includes/FirePHP/FirePHP.class.php');
-		include(APP_PATH . 'includes/FirePHP/fb.php');
-	}
+				 APP_PATH . 'reporting/includes'
+		));
+	include(APP_PATH . "config.php");
+	ini_set("display_errors", "On");
 
 	if (Config::get('debug') && isset($_SESSION["wa_current_user"]) && $_SESSION["wa_current_user"]->user == 1) {
 		error_reporting(E_ALL);
-		ini_set("display_errors", "On");
+		if (preg_match('/Chrome/i', $_SERVER['HTTP_USER_AGENT'])) {
+			include(APP_PATH . 'includes/fb.php');
+			FB::useFile(APP_PATH . 'tmp/chromelogs', '/tmp/chromelogs');
+		} else {
+			include(APP_PATH . 'includes/FirePHP/FirePHP.class.php');
+			include(APP_PATH . 'includes/FirePHP/fb.php');
+		}
 	}
 	else {
 		Config::set('debug', false);
 		error_reporting(E_USER_WARNING | E_USER_ERROR | E_USER_NOTICE);
-		ini_set("display_errors", "On");
 	}
 
-	include(APP_PATH . "config.php");
 
 	if (Config::get('logs.error.file') != '') {
 		ini_set("error_log", Config::get('logs.error.file'));
@@ -179,12 +188,9 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	include(APP_PATH . "frontaccounting.php");
 	include(APP_PATH . "admin/db/security_db.inc");
 	include(APP_PATH . "includes/lang/language.php");
-
 	include(APP_PATH . "includes/ajax.inc");
-
 	include(APP_PATH . "includes/faui.inc");
 
-	//ini_set('session.save_path', dirname(__FILE__).'/../tmp/');
 	ini_set('session.gc_maxlifetime', 36000); // 10hrs
 	session_name('FA' . md5(dirname(__FILE__)));
 	session_start();
@@ -204,7 +210,6 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	}
 
 	include(APP_PATH . "includes/access_levels.inc");
-
 	include(APP_PATH . "includes/main.inc");
 
 	// Ajax communication object
@@ -222,15 +227,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	ob_start('output_html', 0);
 	// colect all error msgs
 	set_error_handler('fb_errors');
-	function fb_errors() {
-		$error = func_get_args();
-		error_handler($error[0], $error[1], $error[2], $error[3]);
-		if (!(error_reporting() & $error[0])) {
-			// This error code is not included in error_reporting
-			return;
-		}
-		return true;
-	}
+
 
 	if (!isset($_SESSION["wa_current_user"])) {
 		$_SESSION["wa_current_user"] = new current_user();
@@ -265,11 +262,11 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 			}
 		}
 		else
-		{	if ($_SESSION['change_password'] && strstr($_SERVER['PHP_SELF'], 'change_current_user_password.php') == false) {
-				meta_forward('/admin/change_current_user_password.php','selected_id=' . $_SESSION["wa_current_user"]->username);
+		{
+			if ($_SESSION['change_password'] && strstr($_SERVER['PHP_SELF'], 'change_current_user_password.php') == false) {
+				meta_forward('/admin/change_current_user_password.php', 'selected_id=' . $_SESSION["wa_current_user"]->username);
 			}
 			set_global_connection();
-
 		}
 		if (!$_SESSION["wa_current_user"]->old_db) {
 			include(APP_PATH . 'company/installed_extensions.php');
@@ -280,12 +277,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		}
 	}
 
-	if (isset($_SESSION["wa_current_user"]) && $_SESSION["wa_current_user"]->user == 1) {
-		if (Config::get('debug') == 1) {
-			error_reporting(E_ALL);
-			ini_set("display_errors", "On");
-		}
-	}
+
 
 	// POST vars cleanup needed for direct reuse.
 	// We quote all values later with db_escape() before db update.
@@ -293,3 +285,4 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 			$v = is_string($v) ? trim($v) : $v;
 		});
 	$_POST = strip_quotes($_POST);
+

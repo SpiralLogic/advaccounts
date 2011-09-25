@@ -68,7 +68,7 @@ function generate_backup($conn, $ext = 'no', $comm = '')
 
 function get_backup_file_combo()
 {
-	global $path_to_root, $Ajax;
+	global  $Ajax;
 
 	$ar_files = array();
 	default_focus('backups');

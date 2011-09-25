@@ -57,10 +57,10 @@
 					$acc = access_string($app->name);
 					if ($app->direct) {
 						echo "<li " . ($sel_app == $app->id ? "class='active' "
-								: "") . "><a href='$local_path_to_root/{$app->direct}'$acc[1]>" . $acc[0] . "</a></li>\n";
+								: "") . "><a href='/{$app->direct}'$acc[1]>" . $acc[0] . "</a></li>\n";
 					} else {
 						echo "<li " . ($sel_app == $app->id ? "class='active' "
-								: "") . "><a href='$local_path_to_root/index.php?application=" . $app->id . "'$acc[1]>" .
+								: "") . "><a href='/index.php?application=" . $app->id . "'$acc[1]>" .
 								$acc[0] . "</a></li>\n";
 					}
 				}

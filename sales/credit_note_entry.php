@@ -29,9 +29,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
   if (Config::get('ui.windows.popups')) {
 	 $js .= get_js_open_window(900, 500);
   }
-  if (Config::get('ui.forms.datepicker')) {
-	 $js .= get_js_date_picker();
-  }
+
 
   if (isset($_GET['NewCredit'])) {
 	 $_SESSION['page_title'] = _($help_context = "Customer Credit Note");
@@ -266,7 +264,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
   $customer_error = display_credit_header($_SESSION['Items']);
 
   if ($customer_error == "") {
-	 start_table(TABLESTYLE, "width=90%", 10);
+	 start_table(Config::get('tables.style2'), "width=90%", 10);
 	 echo "<tr><td>";
 	 display_credit_items(_("Credit Note Items"), $_SESSION['Items']);
 	 credit_options_controls($_SESSION['Items']);

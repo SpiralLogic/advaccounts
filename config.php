@@ -18,11 +18,10 @@
 				 if $debug=1 show debugging info, dont show if $debug=0 */
 	if (!class_exists('Config', false)) include(APP_PATH . 'includes/classes/config.inc');
 	if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_to_root'])) {
-		//die("Restricted Access");
-	}
+}
 
 	Config::load();
-
+  
 	define("AJAX_REFERRER", (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest'));
 	define('BASE_URL', str_ireplace(realpath(__DIR__), '', APP_PATH));
 

@@ -676,26 +676,26 @@ JS
 
 	//------------------------------------------------------------------------------------
 	function stock_costable_items_list($name, $selected_id = null, $all_option = false, $submit_on_change = false) {
-		return stock_items_list($name, $selected_id, $all_option, $submit_on_change, array('where' => "mb_flag!='D'"));
+		return stock_items_list($name, $selected_id, $all_option, $submit_on_change, array('where' => "mb_flag!='".STOCK_SERVICE."'"));
 	}
 
 	function stock_costable_items_list_cells($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false) {
 		if ($label != null) {
 			echo "<td>$label</td>\n";
 		}
-		echo stock_items_list($name, $selected_id, $all_option, $submit_on_change, array('where' => "mb_flag!='D'", 'cell' => true,'description'=>''));
+		echo stock_items_list($name, $selected_id, $all_option, $submit_on_change, array('where' => "mb_flag!='".STOCK_SERVICE."'", 'cell' => true,'description'=>''));
 	}
 
 	//------------------------------------------------------------------------------------
 	function stock_purchasable_items_list($name, $selected_id = null, $all_option = false, $submit_on_change = false, $all = false, $editkey = false, $legacy = false) {
-		return stock_items_list($name, $selected_id, $all_option, $submit_on_change, array('where' => "mb_flag!= 'M'", 'show_inactive' => $all, 'editable' => false), false, $legacy);
+		return stock_items_list($name, $selected_id, $all_option, $submit_on_change, array('where' => "mb_flag!= '".STOCK_MANUFACTURE."'", 'show_inactive' => $all, 'editable' => false), false, $legacy);
 	}
 
 	function stock_purchasable_items_list_cells($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false, $editkey = false) {
 		if ($label != null) {
 			echo "<td>$label</td>\n";
 		}
-		echo stock_items_list($name, $selected_id, $all_option, $submit_on_change, array('where' => "mb_flag!= 'M'", 'editable' => 30, 'cell' => true, 'description' => ''));
+		echo stock_items_list($name, $selected_id, $all_option, $submit_on_change, array('where' => "mb_flag!= '".STOCK_MANUFACTURE."'", 'editable' => 30, 'cell' => true, 'description' => ''));
 	}
 
 	function stock_purchasable_items_list_row($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false, $editkey = false) {

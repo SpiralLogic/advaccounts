@@ -25,7 +25,7 @@ Adv.extend({
 							 Adv.btnCancel.button('option', 'label', 'Cancel Changes').show();
 							 var fieldname = feild.addClass("ui-state-highlight").attr('name');
 							 $("[name='" + fieldname + "']").each(function() {
-								 $(this).val(feild.val()).addClass("ui-state-highlight");
+								 $(this).addClass("ui-state-highlight");
 							 });
 							 if (Customer.get().id == null || Customer.get().id == 0) {
 								 Adv.btnCustomer.button("option", "label", "Save New Customer").show();
@@ -79,11 +79,9 @@ var Contacts = function() {
 		addMany:function(data) {
 			var contacts = [];
 			$.each(data, function($k, $v) {
-
 				if (!blank && $v.id == 0) blank = $v;
 				if ($v.id != 0)	contacts[contacts.length] = $v;
 			});
-
 			$.tmpl('contact', contacts).appendTo($Contacts);
 		},
 		setval: function (key, value) {
@@ -151,7 +149,6 @@ var Branches = function() {
 				console.log(data);
 				Branches.add(data).change(data);
 				Customer.get().branches[data.branch_code] = data;
-				console.log(Customer.get());
 				btn.hide();
 				adding = true;
 			}, 'json');
@@ -204,11 +201,6 @@ var Customer = function () {
 	return {
 		init: function() {
 
-			if (!$('#id').val()) return Customer.fetch(0);
-			$.post('customers.php', {id:$('#id').val()}, function(data) {
-				Customer.setValues(data, true);
-				Branches.change(Customer.get().defaultBranch);
-			}, 'json');
 			$customerID.autocomplete({
 																 source: function(request, response) {
 																	 var lastXhr = $.getJSON('#', request, function(data, status, xhr) {
@@ -234,7 +226,7 @@ var Customer = function () {
 															 });
 
 		},
-		setValues: function(content, quiet) {
+		setValues: function(content) {
 			customer = data = content.customer;
 			if (content.contact_log !== undefined) {
 				Adv.setContactLog(content.contact_log);
@@ -243,9 +235,6 @@ var Customer = function () {
 				transactions.empty().append(content.transactions);
 			}
 			Contacts.init(data.contacts);
-			if (quiet === true) {
-				return;
-			}
 			Branches.empty().add(data.branches).change(data.branches[data.defaultBranch]);
 			Accounts.change(data.accounts);
 			(!customer.id) ? Customer.showSearch() : Customer.hideSearch();
@@ -263,6 +252,7 @@ var Customer = function () {
 			$customerID.autocomplete('enable');
 		},
 		fetch: function(item) {
+			if (typeof(item) === "number") item = {id:item};
 			$.post("customers.php", {"id": item.id}, function(data) {
 				Customer.setValues(data);
 			}, 'json')
@@ -385,5 +375,4 @@ $(function() {
 	$("#id").prop('disabled', true);
 	Branches.init();
 	Customer.init();
-
 });

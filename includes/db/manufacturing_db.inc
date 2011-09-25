@@ -109,7 +109,7 @@ function get_demand_asm_qty($stock_id, $location)
 		$sql .=  "sales_orders.from_stk_loc =" . db_escape($location) . " AND ";
 	$sql .=  "sales_order_details.quantity-sales_order_details.qty_sent > 0 AND
 				   stock_master.stock_id=sales_order_details.stk_code AND
-				   (stock_master.mb_flag='M' OR stock_master.mb_flag='A')
+				   (stock_master.mb_flag='".STOCK_MANUFACTURE."' OR stock_master.mb_flag='A')
 				   GROUP BY sales_order_details.stk_code";
 	$result = db_query($sql, "No transactions were returned");
 	while ($row = db_fetch_row($result)) {

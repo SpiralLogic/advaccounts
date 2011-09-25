@@ -42,7 +42,7 @@ function getTransactions($category, $location)
 		LEFT JOIN stock_moves ON
 			(stock_master.stock_id=stock_moves.stock_id OR stock_master.stock_id IS NULL)
 		WHERE stock_master.category_id=stock_category.category_id
-		AND (stock_master.mb_flag='B' OR stock_master.mb_flag='M')";
+		AND (stock_master.mb_flag='".STOCK_PURCHASED."' OR stock_master.mb_flag='".STOCK_MANUFACTURE."')";
 	if ($category != 0)
 		$sql .= " AND stock_master.category_id = " . db_escape($category);
 	if ($location != 'all')

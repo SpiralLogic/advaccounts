@@ -57,7 +57,7 @@ function getTransactions($category, $location, $fromcust, $from, $to)
 		AND stock_moves.tran_date>='$from'
 		AND stock_moves.tran_date<='$to'
 		AND ((debtor_trans.type=" . ST_CUSTDELIVERY . " AND debtor_trans.version=1) OR stock_moves.type=" . ST_CUSTCREDIT . ")
-		AND (stock_master.mb_flag='B' OR stock_master.mb_flag='M')";
+		AND (stock_master.mb_flag='".STOCK_PURCHASED."' OR stock_master.mb_flag='".STOCK_MANUFACTURE."')";
 	if ($category != 0)
 		$sql .= " AND stock_master.category_id = " . db_escape($category);
 	if ($location != 'all')
