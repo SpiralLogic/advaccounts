@@ -149,7 +149,6 @@ var Branches = function() {
 				console.log(data);
 				Branches.add(data).change(data);
 				Customer.get().branches[data.branch_code] = data;
-				console.log(Customer.get());
 				btn.hide();
 				adding = true;
 			}, 'json');
@@ -202,11 +201,6 @@ var Customer = function () {
 	return {
 		init: function() {
 
-			if (!$('#id').val()) return Customer.fetch(0);
-			$.post('customers.php', {id:$('#id').val()}, function(data) {
-				Customer.setValues(data, true);
-				Branches.change(Customer.get().defaultBranch);
-			}, 'json');
 			$customerID.autocomplete({
 																 source: function(request, response) {
 																	 var lastXhr = $.getJSON('#', request, function(data, status, xhr) {
@@ -232,7 +226,7 @@ var Customer = function () {
 															 });
 
 		},
-		setValues: function(content, quiet) {
+		setValues: function(content) {
 			customer = data = content.customer;
 			if (content.contact_log !== undefined) {
 				Adv.setContactLog(content.contact_log);
@@ -241,9 +235,6 @@ var Customer = function () {
 				transactions.empty().append(content.transactions);
 			}
 			Contacts.init(data.contacts);
-			if (quiet === true) {
-				return;
-			}
 			Branches.empty().add(data.branches).change(data.branches[data.defaultBranch]);
 			Accounts.change(data.accounts);
 			(!customer.id) ? Customer.showSearch() : Customer.hideSearch();
@@ -384,5 +375,4 @@ $(function() {
 	$("#id").prop('disabled', true);
 	Branches.init();
 	Customer.init();
-
 });

@@ -160,10 +160,10 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 				 APP_PATH . 'reporting/includes'
 		));
 	include(APP_PATH . "config.php");
+	ini_set("display_errors", "On");
 
 	if (Config::get('debug') && isset($_SESSION["wa_current_user"]) && $_SESSION["wa_current_user"]->user == 1) {
 		error_reporting(E_ALL);
-		ini_set("display_errors", "On");
 		if (preg_match('/Chrome/i', $_SERVER['HTTP_USER_AGENT'])) {
 			include(APP_PATH . 'includes/fb.php');
 			FB::useFile(APP_PATH . 'tmp/chromelogs', '/tmp/chromelogs');
@@ -175,7 +175,6 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	else {
 		Config::set('debug', false);
 		error_reporting(E_USER_WARNING | E_USER_ERROR | E_USER_NOTICE);
-		ini_set("display_errors", "On");
 	}
 
 

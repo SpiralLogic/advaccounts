@@ -43,7 +43,7 @@
 			echo HTML::_select()->setReturn(false);
 			return static::$_instance;
 		}
-
+ 
 		static function search($id = false, $attr = array(), $options = array()) {
 			if ($id) {
 				$attr['id'] = $id;
