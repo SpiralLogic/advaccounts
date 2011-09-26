@@ -104,7 +104,7 @@ $_POST['labour_cost'] = price_decimal_format($myrow["labour_cost"], $dec2);
 $_POST['overhead_cost'] = price_decimal_format($myrow["overhead_cost"], $dec3);
 
 amount_row(_("Standard Material Cost Per Unit"), "material_cost", null, "class='tableheader2'", null, $dec1);
-if ($myrow["mb_flag"] == 'M') {
+if ($myrow["mb_flag"] == STOCK_MANUFACTURE) {
 	amount_row(_("Standard Labour Cost Per Unit"), "labour_cost", null, "class='tableheader2'", null, $dec2);
 	amount_row(_("Standard Overhead Cost Per Unit"), "overhead_cost", null, "class='tableheader2'", null, $dec3);
 }

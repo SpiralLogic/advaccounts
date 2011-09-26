@@ -237,7 +237,6 @@
 	}
 
 	function check_db_has_manufacturable_items($msg) {
-		global $path_to_root;
 		if (!db_has_manufacturable_items()) {
 			display_error($msg, true);
 			end_page();

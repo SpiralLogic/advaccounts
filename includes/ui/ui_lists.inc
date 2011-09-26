@@ -645,7 +645,7 @@ JS
 
 	//------------------------------------------------------------------------------------
 	function stock_manufactured_items_list($name, $selected_id = null, $all_option = false, $submit_on_change = false) {
-		return stock_items_list($name, $selected_id, $all_option, $submit_on_change, array('where' => array("mb_flag= 'M'")));
+		return stock_items_list($name, $selected_id, $all_option, $submit_on_change, array('where' => array("mb_flag= '".STOCK_MANUFACTURE."'")));
 	}
 
 	function stock_manufactured_items_list_cells($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false) {

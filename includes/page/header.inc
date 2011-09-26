@@ -65,11 +65,11 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	function page_header($title, $no_menu = false, $is_index = false, $onload = "", $js = "") {
 		// titles and screen header
 
-		global $path_to_root, $def_app;
+		global $path_to_root;
 		if (in_ajax() || AJAX_REFERRER)
 			return; // just for speed up
 		$theme = user_theme();
-		$local_path_to_root = $path_to_root;
+
 		if (Config::get('help.baseurl')  != null && Config::get('ui.windows.popups') && $js == '') {
 			if (!function_exists('get_js_open_window')) {
 				include_once($path_to_root . '/includes/ui/ui_view.inc');

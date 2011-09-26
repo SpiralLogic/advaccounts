@@ -2540,7 +2540,7 @@
 				} else {
 					// CMYK
 					$this->FillColor = sprintf('%.3f %.3f %.3f %.3f k', $col1 / 100, $col2 / 100, $col3 / 100, $col4 / 100);
-					$this->bgcolor = array('C' => $col1, 'M' => $col2, 'Y' => $col3, 'K' => $col4);
+					$this->bgcolor = array('C' => $col1, STOCK_MANUFACTURE => $col2, 'Y' => $col3, 'K' => $col4);
 				}
 				$this->ColorFlag = ($this->FillColor != $this->TextColor);
 				if ($this->page > 0) {
@@ -2621,7 +2621,7 @@
 				} else {
 					// CMYK
 					$this->TextColor = sprintf('%.3f %.3f %.3f %.3f k', $col1 / 100, $col2 / 100, $col3 / 100, $col4 / 100);
-					$this->fgcolor = array('C' => $col1, 'M' => $col2, 'Y' => $col3, 'K' => $col4);
+					$this->fgcolor = array('C' => $col1, STOCK_MANUFACTURE => $col2, 'Y' => $col3, 'K' => $col4);
 				}
 				$this->ColorFlag = ($this->FillColor != $this->TextColor);
 			}
@@ -3891,7 +3891,7 @@
 						$this->x = $this->img_rb_x;
 						break;
 						}
-					case 'M':
+					case STOCK_MANUFACTURE:
 						{
 						$this->y = $y + round($h / 2);
 						$this->x = $this->img_rb_x;
@@ -8973,7 +8973,7 @@
 						case 'J':
 						case 'j':
 						case 'w':
-						case 'M':
+						case STOCK_MANUFACTURE:
 						case 'd':
 						case 'n':
 						case 'v':
@@ -9049,7 +9049,7 @@
 						$this->x = $this->img_rb_x;
 						break;
 						}
-					case 'M':
+					case STOCK_MANUFACTURE:
 						{
 						$this->y = $y + round($h / 2);
 						$this->x = $this->img_rb_x;
@@ -9298,7 +9298,7 @@
 						$this->x = $this->img_rb_x;
 						break;
 						}
-					case 'M':
+					case STOCK_MANUFACTURE:
 						{
 						$this->y = $y + round($h / 2);
 						$this->x = $this->img_rb_x;
@@ -10357,7 +10357,7 @@
 									}
 								case 'middle':
 									{
-									$align = 'M';
+									$align = STOCK_MANUFACTURE;
 									break;
 									}
 								case 'bottom':
@@ -10389,7 +10389,7 @@
 									$this->y = $prevy;
 									break;
 									}
-								case 'M':
+								case STOCK_MANUFACTURE:
 									{
 									$this->y = (($this->img_rb_y + $prevy - ($tag['fontsize'] / $this->k)) / 2);
 									break;
