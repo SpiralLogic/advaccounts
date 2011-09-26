@@ -3,13 +3,13 @@
 	$page_security = 'SA_CUSTOMER';
 	include_once("includes/contacts.inc");
 
-	if (!isset($_POST['id']) && isset($_GET['id'])) $_POST['id'] = $_GET['id'];
+
 	if (isset($_POST['name'])) {
 		$data['customer'] = $customer = new Customer($_POST);
 		$data['customer']->save();
-	} elseif (isset($_POST['id']) && $_POST['id'] > 0) {
-		$data['customer'] = $customer = new Customer($_POST['id']);
-		$data['contact_log'] = ContactLog::read($customer->id, 'C');
+	} elseif (Input::post_get('id',Input::NUMERIC) > 0) {
+		$data['customer'] = $customer = new Customer(Input::post_get('id'));
+		$data['contact_log'] = ContactLog::read($customer->id, ContactLog::CUSTOMER);
 		$data['transactions'] = '<pre>' . print_r($customer->getTransactions(), true) . '</pre>';
 		$_SESSION['wa_global_customer_id'] = $customer->id;
 	} else {
@@ -224,7 +224,7 @@
 	HTML::p('New log entry:', array('class' => 'validateTips'));
 	start_table();
 	label_row('Date:', date('Y-m-d H:i:s'));
-	hidden('type', 'C');
+	hidden('type', ContactLog::CUSTOMER);
 	text_row('Contact:', 'contact_name', $customer->accounts->contact_name, 40, 40);
 	textarea_row('Entry:', 'message', '', 100, 10);
 	end_table();

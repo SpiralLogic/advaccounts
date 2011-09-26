@@ -6,9 +6,6 @@
 
 	$page_security = 'SA_OPEN';
 
-
+$_POST['test']=3;
 	include_once("includes/session.inc");
-$item = new Item('test');
-$stock = $item->getStockLevels('MEL');
-	echo "<pre>";
-print_r($stock);
+print_r(Input::has('id','test'));
