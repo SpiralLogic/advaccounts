@@ -274,7 +274,7 @@
 
 	//----------------------------------------------------------------------------------
 	// Types of stock items
-	define('STOCK_MANUFACTURE', STOCK_MANUFACTURE);
+	define('STOCK_MANUFACTURE', 'M');
 	define('STOCK_PURCHASED', 'B');
 	define('STOCK_SERVICE', 'D');
 	define('STOCK_INFO', 'I');
