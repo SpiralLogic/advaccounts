@@ -195,9 +195,7 @@
 				array_unshift($terms, $stock_id);
 				$weight = 'IF(s.stock_id LIKE ?, 0,20) + IF(p.supplier_description LIKE ?, 0,15) + IF(s.stock_id LIKE ?,0,5) as weight';
 				$termswhere .= ' OR p.supplier_description LIKE ? ';
-				FB:info($_SESSION['wa_global_supplier_id']);
 				if (Input::session('wa_global_supplier_id', Input::NUMERIC)) {
-
 					array_unshift($terms, $_SESSION['wa_global_supplier_id']);
 					$weight = ' IF(p.supplier_id = ?,0,30) + ' . $weight;
 				}
