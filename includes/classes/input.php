@@ -27,7 +27,9 @@
 		public static function post_get($var, $type = null) {
 			return static::_get_post($_POST, $_GET, $var, $type);
 		}
-
+public static function session($var,$type=null) {
+	return static::_isset($_SESSION,$var,$type);
+}
 		public static function has_post($vars) {
 			$vars = func_get_args();
 			foreach ($vars as $var) {

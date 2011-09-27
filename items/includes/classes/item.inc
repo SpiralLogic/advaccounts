@@ -96,9 +96,9 @@
 			$sql = "SELECT * FROM prices WHERE stock_id = " . $this->id;
 			$result = db_query($sql, 'Could not get item pricing');
 			while ($row = db_fetch_assoc($result)) {
-				$this->prices[$row['id']] = array("curr"	=> $row['curr_abrev'],
-																					"type"	=> $row['type'],
-																					"price" => $row['price']
+				$this->prices[$row['id']] = array("curr" => $row['curr_abrev'],
+					"type" => $row['type'],
+					"price" => $row['price']
 				);
 			}
 		}
@@ -107,10 +107,10 @@
 			$sql = "SELECT * FROM purch_data WHERE stock_id = " . $this->id;
 			$result = db_query($sql, 'Could not get item pricing');
 			while ($row = db_fetch_assoc($result)) {
-				$this->prices[$row['supplier_id']] = array("code"					=> $row['supplier_description'],
-																									 "price"				 => $row['price'],
-																									 "suppliers_uom" => $row['uom'],
-																									 "conv"					=> $row['conversion_factor']
+				$this->prices[$row['supplier_id']] = array("code" => $row['supplier_description'],
+					"price" => $row['price'],
+					"suppliers_uom" => $row['uom'],
+					"conv" => $row['conversion_factor']
 				);
 			}
 		}
@@ -130,9 +130,9 @@
 			LEFT JOIN (SELECT SUM(purch_order_details.quantity_ordered - purch_order_details.quantity_received) AS onorder , purch_orders.into_stock_location AS loc_code
 				FROM purch_order_details, purch_orders	WHERE purch_order_details.order_no= purch_orders.order_no AND purch_order_details.item_code = $id
 				GROUP BY purch_orders.into_stock_location) p ON p.loc_code=l.loc_code";
-			if ($location!==null) $sql.=" WHERE l.loc_code=".db_escape($location);
+			if ($location !== null) $sql .= " WHERE l.loc_code=" . db_escape($location);
 			$result = db_query($sql, 'Could not get item stock levels');
-			if ($location!==null) return db_fetch_assoc($result);
+			if ($location !== null) return db_fetch_assoc($result);
 			while ($row = db_fetch_assoc($result)) {
 				$this->stockLevels[] = $row;
 			}
@@ -195,11 +195,13 @@
 				array_unshift($terms, $stock_id);
 				$weight = 'IF(s.stock_id LIKE ?, 0,20) + IF(p.supplier_description LIKE ?, 0,15) + IF(s.stock_id LIKE ?,0,5) as weight';
 				$termswhere .= ' OR p.supplier_description LIKE ? ';
-				if (isset($_SESSION['wa_global_supplier_id']) && is_numeric($_SESSION['wa_global_supplier_id'])) {
+				FB:info($_SESSION['wa_global_supplier_id']);
+				if (Input::session('wa_global_supplier_id', Input::NUMERIC)) {
+
 					array_unshift($terms, $_SESSION['wa_global_supplier_id']);
 					$weight = ' IF(p.supplier_id = ?,0,30) + ' . $weight;
 				}
-				$stock_id = ' s.stock_id, p.supplier_description, MAX(p.price) as price ';
+				$stock_id = ' s.stock_id, p.supplier_description, MIN(p.price) as price ';
 				$where .= " AND s.id = p.stockid ";
 				$prices = ", purch_data p ";
 			}
@@ -233,14 +235,14 @@
 			$stockbox = new Dialog('Item Edit', 'stockbox', '');
 			$stockbox->addButtons(array('Save' => 'var item =$("#stockframe")[0].contentWindow.Items; item.save(); if (item.get().id==$("#stock_id").val()){ Adv.setFormValue("description",
 			item.get().description)} $(this).dialog("close")',
-																 'Close' => '$(this).dialog("close");'
-														));
+				'Close' => '$(this).dialog("close");'
+			));
 
-			$stockbox->setOptions(array('autoopen'	=> false,
-																 'modal'			=> true,
-																 'width'			=> '"75%"',
-																 'resizeable' => true
-														));
+			$stockbox->setOptions(array('autoopen' => false,
+				'modal' => true,
+				'width' => '"75%"',
+				'resizeable' => true
+			));
 			$stockbox->show();
 			$action = <<<JS
 		$('#stockbox').html("<iframe src='/items/quickitems.php?id="+$(this).data('stock_id')+"&page={$o['page']}' id='stockframe' width='100%' height='600' scrolling='no' style='border:none' frameborder='0'></iframe>")
