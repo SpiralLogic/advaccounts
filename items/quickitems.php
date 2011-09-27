@@ -38,7 +38,7 @@
 											 ));
 		HTML::div();
 	} else {
-		$data['item'] = $item = new item($_GET['id']);
+		$data['item'] = $item = new Item($_GET['id']);
 		$data['stockLevels'] = $item->getStockLevels();
 		$data = json_encode($data, JSON_NUMERIC_CHECK);
 		JS::onload(<<<JS

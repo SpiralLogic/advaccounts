@@ -28,17 +28,17 @@
 	include_once(APP_PATH . "sales/includes/db/sales_types_db.inc");
 	include_once(APP_PATH . "reporting/includes/reporting.inc");
 	set_page_security(@$_SESSION['Items']->trans_type,
-										array(ST_SALESORDER  => 'SA_SALESORDER',
-												 ST_SALESQUOTE   => 'SA_SALESQUOTE',
+										array(ST_SALESORDER => 'SA_SALESORDER',
+												 ST_SALESQUOTE => 'SA_SALESQUOTE',
 												 ST_CUSTDELIVERY => 'SA_SALESDELIVERY',
 												 ST_SALESINVOICE => 'SA_SALESINVOICE'
 										),
-										array('NewOrder'             => 'SA_SALESORDER',
-												 'ModifySalesOrder'      => 'SA_SALESORDER',
-												 'NewQuotation'          => 'SA_SALESQUOTE',
+										array('NewOrder' => 'SA_SALESORDER',
+												 'ModifySalesOrder' => 'SA_SALESORDER',
+												 'NewQuotation' => 'SA_SALESQUOTE',
 												 'ModifyQuotationNumber' => 'SA_SALESQUOTE',
-												 'NewDelivery'           => 'SA_SALESDELIVERY',
-												 'NewInvoice'            => 'SA_SALESINVOICE'
+												 'NewDelivery' => 'SA_SALESDELIVERY',
+												 'NewInvoice' => 'SA_SALESINVOICE'
 										));
 	$js = '';
 	if (Config::get('ui.windows.popups')) {
@@ -46,48 +46,48 @@
 	}
 
 	//   $js .= get_jquery_gmaps();
-	if (isset($_POST['saveorder'])) {
+	if (Input::post('saveorder')) {
 		$_SESSION['Items']->store();
 		echo $_POST['saveorder'];
 		exit();
 	}
-	if (isset($_GET['customer_id']) && is_numeric($_GET['customer_id'])) {
+	if (Input::get('customer_id', Input::NUMERIC)) {
 		$_POST['customer_id'] = $_GET['customer_id'];
 		$Ajax->activate('customer_id');
 	}
-	if (isset($_GET['NewDelivery']) && is_numeric($_GET['NewDelivery'])) {
+	if (Input::get('NewDelivery', Input::NUMERIC)) {
 		$_SESSION['page_title'] = _($help_context = "Direct Sales Delivery");
 		create_cart(ST_CUSTDELIVERY, $_GET['NewDelivery']);
 	}
-	elseif (isset($_GET['NewInvoice']) && is_numeric($_GET['NewInvoice'])) {
+	elseif (Input::get('NewInvoice', Input::NUMERIC)) {
 		$_SESSION['page_title'] = _($help_context = "Direct Sales Invoice");
 		create_cart(ST_SALESINVOICE, $_GET['NewInvoice']);
 	}
-	elseif (isset($_GET['ModifyOrderNumber']) && is_numeric($_GET['ModifyOrderNumber'])) {
+	elseif (Input::get('ModifyOrderNumber', Input::NUMERIC)) {
 		$help_context = 'Modifying Sales Order';
 		$_SESSION['page_title'] = sprintf(_("Modifying Sales Order # %d"), $_GET['ModifyOrderNumber']);
 		create_cart(ST_SALESORDER, $_GET['ModifyOrderNumber']);
 	}
-	elseif (isset($_GET['ModifyQuotationNumber']) && is_numeric($_GET['ModifyQuotationNumber'])) {
+	elseif (Input::get('ModifyQuotationNumber', Input::NUMERIC)) {
 		$help_context = 'Modifying Sales Quotation';
 		$_SESSION['page_title'] = sprintf(_("Modifying Sales Quotation # %d"), $_GET['ModifyQuotationNumber']);
 		create_cart(ST_SALESQUOTE, $_GET['ModifyQuotationNumber']);
 	}
-	elseif (isset($_GET['NewOrder'])) {
+	elseif (Input::get('NewOrder')) {
 		$_SESSION['page_title'] = _($help_context = "New Sales Order Entry");
 		create_cart(ST_SALESORDER, 0);
 	}
-	elseif (isset($_GET['NewQuotation'])) {
+	elseif (Input::get('NewQuotation')) {
 		$_SESSION['page_title'] = _($help_context = "New Sales Quotation Entry");
 		create_cart(ST_SALESQUOTE, 0);
 	}
-	elseif (isset($_GET['NewQuoteToSalesOrder'])) {
+	elseif (Input::get('NewQuoteToSalesOrder')) {
 		$_SESSION['page_title'] = _($help_context = "Sales Order Entry");
 		create_cart(ST_SALESQUOTE, $_GET['NewQuoteToSalesOrder']);
 	}
-	elseif (isset($_GET['NewRemoteToSalesOrder']) || isset($_GET['remotecombine'])) {
+	elseif (Input::get('NewRemoteToSalesOrder') || Input::get('remotecombine')) {
 		$_SESSION['page_title'] = _($help_context = "Sales Order Entry");
-		if (isset($_GET['remotecombine']) && isset($_SESSION['Items'])) {
+		if (Input::get('remotecombine') && isset($_SESSION['Items'])) {
 			foreach ($_SESSION['remote_order']->line_items as $item) {
 				add_to_order($_SESSION['Items'], $item->stock_id, $item->quantity, $item->price, $item->discount_percent, $item->description);
 			}

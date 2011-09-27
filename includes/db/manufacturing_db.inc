@@ -159,7 +159,7 @@ function get_on_worder_qty($stock_id, $location)
 	else
 		$qoo = 0.0;
 	$flag = get_mb_flag($stock_id);
-	if ($flag == 'A' || $flag == 'M') {
+	if ($flag == 'A' || $flag == STOCK_MANUFACTURE) {
 		$sql = "SELECT SUM((workorders.units_reqd-workorders.units_issued)) AS qoo
 			FROM workorders
 			WHERE workorders.stock_id=" . db_escape($stock_id) . " ";

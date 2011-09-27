@@ -13,7 +13,7 @@
 	include_once(APP_PATH . "reporting/includes/reporting.inc");
 	include_once(APP_PATH . "reporting/includes/tcpdf.php");
 	if (AJAX_REFERRER) {
-		if (isset($_POST['type']) && isset($_POST['id'])) {
+		if (Input::has_post('type','id')) {
 			if ($_POST['type'] === 'c') {
 				$content = Customer::getEmailDialogue($_POST['id']);
 

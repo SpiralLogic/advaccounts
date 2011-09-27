@@ -1,14 +1,14 @@
 <?php
-/**********************************************************************
-Copyright (C) FrontAccounting, LLC.
-Released under the terms of the GNU General Public License, GPL,
-as published by the Free Software Foundation, either version 3
-of the License, or (at your option) any later version.
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
- ***********************************************************************/
+	/**********************************************************************
+	Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL,
+	as published by the Free Software Foundation, either version 3
+	of the License, or (at your option) any later version.
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+	 ***********************************************************************/
 	$page_security = 'SA_PURCHASEORDER';
 	$path_to_root = "..";
 	$js = '';
@@ -36,13 +36,13 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		$supplier = new Supplier($_SESSION['wa_global_supplier_id']);
 
 		if (!isset($_GET['Updated'])) {
-			display_notification_centered(_("Purchase Order: ".$_SESSION['history'][ST_PURCHORDER]." has been entered"));
+			display_notification_centered(_("Purchase Order: " . $_SESSION['history'][ST_PURCHORDER] . " has been entered"));
 		}
 		else {
-			display_notification_centered(_("Purchase Order: ".$_SESSION['history'][ST_PURCHORDER]." has been updated") . " #$order_no");
+			display_notification_centered(_("Purchase Order: " . $_SESSION['history'][ST_PURCHORDER] . " has been updated") . " #$order_no");
 		}
-	  unset($_SESSION['PO']);
-		display_note(get_trans_view_str($trans_type, $order_no, _("&View this order"),false,'button'), 0, 1);
+		unset($_SESSION['PO']);
+		display_note(get_trans_view_str($trans_type, $order_no, _("&View this order"), false, 'button'), 0, 1);
 		display_note(print_document_link($order_no, _("&Print This Order"), true, $trans_type), 0, 1);
 		submenu_button(_("&Edit This Order"), "/purchasing/po_entry_items.php?ModifyOrderNumber=$order_no");
 
@@ -50,7 +50,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 
 		hyperlink_button("/purchasing/po_receive_items.php", _("&Receive Items on this PO"), "PONumber=$order_no");
 		hyperlink_button($_SERVER['PHP_SELF'], _("&New Purchase Order"), "NewOrder=yes");
-		hyperlink_no_params("/purchasing/inquiry/po_search.php", _("&Outstanding Purchase Orders"),true,true);
+		hyperlink_no_params("/purchasing/inquiry/po_search.php", _("&Outstanding Purchase Orders"), true, true);
 		display_footer_exit();
 	}
 	//--------------------------------------------------------------------------------------------------
@@ -203,14 +203,13 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 				if ($allow_update) {
 					$myrow = db_fetch($result);
 					$_SESSION['PO']->add_to_order($_POST['line_no'], $_POST['stock_id'], input_num('qty'), $_POST['description'], input_num('price'), $myrow["units"], $_POST['req_del_date'], 0, 0,
-					                              $_POST['discount'] / 100);
+					 $_POST['discount'] / 100);
 					unset_form_variables();
 					$_POST['stock_id'] = "";
 				}
 				else {
 					display_error(_("The selected item does not exist or it is a kit part and therefore cannot be purchased."));
 				}
-
 			} /* end of if not already on the order and allow input was true*/
 		}
 		line_start_focus();
@@ -342,8 +341,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 					}
 				}
 				$_SESSION['PO']->add_to_order($line_no, $line_item->stock_id, $line_item->quantity, $line_item->description, price_decimal_format($myrow[0]['price'], $dec2), $line_item->units,
-				                              add_days(Today(), 10), 0, 0, 0);
-
+					add_days(Today(), 10), 0, 0, 0);
 			}
 			arsort($po_lines);
 			$_SESSION['wa_global_supplier_id'] = key($po_lines);
@@ -365,7 +363,6 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 				$_POST['delivery_address'] = $_SESSION['PO']->delivery_address = $address;
 			}
 		}
-
 	}
 	//---------------------------------------------------------------------------------------------------
 	start_form();
@@ -390,7 +387,6 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		else {
 			submit_center_last('Commit', _("Place Order"), '', 'default');
 		}
-
 	}
 	else {
 		submit_js_confirm('CancelOrder', _('You are about to void this Document.\nDo you want to continue?'));
