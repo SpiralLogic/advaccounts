@@ -18,10 +18,10 @@
 				 if $debug=1 show debugging info, dont show if $debug=0 */
 	if (!class_exists('Config', false)) include(APP_PATH . 'includes/classes/config.inc');
 	if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_to_root'])) {
-}
-
+	}
+	include_once($path_to_root . "/lang/installed_languages.inc");
 	Config::load();
-  
+
 	define("AJAX_REFERRER", (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest'));
 	define('BASE_URL', str_ireplace(realpath(__DIR__), '', APP_PATH));
 
@@ -62,22 +62,22 @@
 	JS::footerFile(array('/js/js2/advanced.js', '/js/js2/shortmenu.js', '/js/js2/jquery.calculator.pack.js', '/js/js2/calc.js'));
 
 	$db_connections = array(
-		0 => array('name'				 => 'Advanced Group PTY LTD',
-							 'host'				 => 'localhost',
-							 'dbuser'			 => 'fa',
-							 'dbpassword'	 => '1willenberg',
-							 'dbname'			 => 'fa',
-							 'type'				 => 'pdo',
-							 'connection'	 => array(
-								 'dsn'				=> 'mysql:host=localhost;dbname=fa',
-								 'username'	 => 'fa',
-								 'password'	 => '1willenberg',
-								 'persistent' => false,
-							 ),
-							 'table_prefix' => '',
-							 'charset'			=> 'utf8',
-							 'caching'			=> false,
-							 'profiling'		=> false,
+		0 => array('name' => 'Advanced Group PTY LTD',
+			'host' => 'localhost',
+			'dbuser' => 'fa',
+			'dbpassword' => '1willenberg',
+			'dbname' => 'fa',
+			'type' => 'pdo',
+			'connection' => array(
+				'dsn' => 'mysql:host=localhost;dbname=fa',
+				'username' => 'fa',
+				'password' => '1willenberg',
+				'persistent' => false,
+			),
+			'table_prefix' => '',
+			'charset' => 'utf8',
+			'caching' => false,
+			'profiling' => false,
 		)
 	);
 

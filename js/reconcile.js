@@ -8,33 +8,29 @@
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
  ***********************************************************************/
-function focus_amount(i)
-{
+function focus_amount(i) {
 	save_focus(i);
 	i.setAttribute('_last', get_amount(i.name));
 }
 
-function blur_amount(i)
-{
+function blur_amount(i) {
 	var change = get_amount(i.name);
 
 	price_format(i.name, change, user.pdec);
 	change = change - i.getAttribute('_last');
-	if (i.name == 'beg_balance')
+	if (i.name == 'beg_balance') {
 		change = -change;
+	}
 
 	price_format('difference', get_amount('difference', 1, 1) + change, user.pdec);
 }
 
 var balances = {
-	'.amount': function(e)
-	{
-		e.onblur = function()
-		{
+	'.amount':function(e) {
+		e.onblur = function() {
 			blur_amount(this);
 		};
-		e.onfocus = function()
-		{
+		e.onfocus = function() {
 			focus_amount(this);
 		};
 	}

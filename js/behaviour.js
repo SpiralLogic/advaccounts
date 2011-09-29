@@ -38,19 +38,19 @@
  */
 
 var Behaviour = {
-	list : new Array,
+	list:new Array,
 
-	register : function(sheet) {
+	register:function(sheet) {
 		Behaviour.list.push(sheet);
 	},
 
-	start : function() {
+	start:function() {
 		Behaviour.addLoadEvent(function() {
 			Behaviour.apply();
 		});
 	},
 
-	apply : function() {
+	apply:function() {
 		for (h = 0; sheet = Behaviour.list[h]; h++) {
 			for (selector in sheet) {
 				var sels = selector.split(',');
@@ -69,7 +69,7 @@ var Behaviour = {
 		}
 	},
 
-	addLoadEvent : function(func) {
+	addLoadEvent:function(func) {
 		var oldonload = window.onload;
 
 		if (typeof window.onload != 'function') {

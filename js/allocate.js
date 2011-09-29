@@ -8,14 +8,12 @@
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
  ***********************************************************************/
-function focus_alloc(i)
-{
+function focus_alloc(i) {
 	save_focus(i);
 	i.setAttribute('_last', get_amount(i.name));
 }
 
-function blur_alloc(i)
-{
+function blur_alloc(i) {
 
 	var last = +i.getAttribute('_last')
 	var left = get_amount('left_to_allocate', 1);
@@ -30,8 +28,7 @@ function blur_alloc(i)
 	price_format('total_allocated', total, user.pdec, 1, 1);
 }
 
-function allocate_all(doc)
-{
+function allocate_all(doc) {
 	var amount = get_amount('amount' + doc);
 	var unallocated = get_amount('un_allocated' + doc);
 	var total = get_amount('total_allocated', 1);
@@ -50,8 +47,7 @@ function allocate_all(doc)
 	price_format('total_allocated', total, user.pdec, 1, 1);
 }
 
-function allocate_none(doc)
-{
+function allocate_none(doc) {
 	amount = get_amount('amount' + doc);
 	left = get_amount('left_to_allocate', 1);
 	total = get_amount('total_allocated', 1);
@@ -61,16 +57,13 @@ function allocate_none(doc)
 }
 
 var allocations = {
-	'.amount': function(e)
-	{
-		e.onblur = function()
-		{
-		  
+	'.amount':function(e) {
+		e.onblur = function() {
+
 
 			blur_alloc(this);
 		};
-		e.onfocus = function()
-		{
+		e.onfocus = function() {
 			focus_alloc(this);
 		};
 	}

@@ -145,10 +145,11 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	define('APP_PATH', realpath(__DIR__ . '/..') . DIRECTORY_SEPARATOR);
 	$path = substr(str_repeat('../', substr_count(str_replace(APP_PATH, '', realpath('.') . DIRECTORY_SEPARATOR), '/')), 0, -1);
 	$path_to_root = (!$path) ? '.' : $path;
+	ini_set('unserialize_callback_func', 'class_autoloader'); // set your callback_function
 	spl_autoload_extensions('.php,.inc');
 	spl_autoload_register('class_autoloader');
 	add_include_path(
-		array(
+		array(  
 				 realpath('.') . '/includes/classes',
 				 APP_PATH . 'includes/ui2',
 				 APP_PATH . 'includes/ui',
@@ -184,7 +185,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		ini_set("log_errors", "On");
 	}
 
-	include(APP_PATH . "includes/current_user.inc");
+	
 	include(APP_PATH . "frontaccounting.php");
 	include(APP_PATH . "admin/db/security_db.inc");
 	include(APP_PATH . "includes/lang/language.php");
@@ -193,6 +194,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 
 	ini_set('session.gc_maxlifetime', 36000); // 10hrs
 	session_name('FA' . md5(dirname(__FILE__)));
+	echo dirname(__FILE__);
 	session_start();
 	header("Cache-control: private");
 	get_text_init();

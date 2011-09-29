@@ -198,12 +198,12 @@ class gettext_native_support
  */
 class gettext_php_support extends gettext_native_support
 {
-	var $_path = 'locale/';
+	var $_path = 'locale/'; 
 	var $_lang_code = false;
 	var $_domains = array();
 	var $_end = -1;
 	var $_jobs = array();
-
+ 
 	/**
 	 * Set the translation domain.
 	 *
