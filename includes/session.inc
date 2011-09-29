@@ -9,7 +9,7 @@ but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
  ***********************************************************************/
-
+	ini_set("display_errors", "On");
 	function formatBytes($bytes, $precision = 2) {
 		$units = array('B', 'KB', 'MB', 'GB', 'TB');
 
@@ -36,6 +36,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		$Ajax->run();
 		return in_ajax() ? fmt_errors() : ($before_box . fmt_errors() . $text);
 	}
+
 	function fb_errors() {
 		$error = func_get_args();
 		error_handler($error[0], $error[1], $error[2], $error[3]);
@@ -45,6 +46,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		}
 		return true;
 	}
+
 	function kill_login() {
 		session_unset();
 		session_destroy();
@@ -125,6 +127,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 			if ($tout && (time() > $_SESSION["wa_current_user"]->last_act + $tout)) {
 				$_SESSION["wa_current_user"]->logged = false;
 			}
+
 			$_SESSION["wa_current_user"]->last_act = time();
 		}
 	}
@@ -149,7 +152,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	spl_autoload_extensions('.php,.inc');
 	spl_autoload_register('class_autoloader');
 	add_include_path(
-		array(  
+		array(
 				 realpath('.') . '/includes/classes',
 				 APP_PATH . 'includes/ui2',
 				 APP_PATH . 'includes/ui',
@@ -158,6 +161,8 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 				 APP_PATH . 'includes/classes/db',
 				 APP_PATH . 'contacts/includes/classes',
 				 APP_PATH . 'items/includes/classes',
+				 APP_PATH . 'sales/includes',
+				 APP_PATH . 'purchasing/includes',
 				 APP_PATH . 'reporting/includes'
 		));
 	include(APP_PATH . "config.php");
@@ -177,17 +182,14 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		error_reporting(E_USER_WARNING | E_USER_ERROR | E_USER_NOTICE);
 	}
 
-
 	if (Config::get('logs.error.file') != '') {
 		ini_set("error_log", Config::get('logs.error.file'));
 		ini_set("ignore_repeated_errors", "On");
 		ini_set("log_errors", "On");
 	}
 
-	
 	include(APP_PATH . "frontaccounting.php");
 	include(APP_PATH . "admin/db/security_db.inc");
-	include(APP_PATH . "includes/lang/language.php");
 	include(APP_PATH . "includes/ajax.inc");
 	include(APP_PATH . "includes/faui.inc");
 
@@ -195,7 +197,8 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	session_name('FA' . md5(dirname(__FILE__)));
 	session_start();
 	header("Cache-control: private");
-	get_text_init();
+	gettext_native_support::get_text_init();
+
 	// Page Initialisation
 	if (!isset($_SESSION['language']) || !method_exists($_SESSION['language'], 'set_language')) {
 		$l = array_search_value($dflt_lang, $installed_languages, 'code');
@@ -227,7 +230,6 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	ob_start('output_html', 0);
 	// colect all error msgs
 	set_error_handler('fb_errors');
-
 
 	if (!isset($_SESSION["wa_current_user"])) {
 		$_SESSION["wa_current_user"] = new current_user();
@@ -276,8 +278,6 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 			$_SESSION["App"]->init();
 		}
 	}
-
-
 
 	// POST vars cleanup needed for direct reuse.
 	// We quote all values later with db_escape() before db update.

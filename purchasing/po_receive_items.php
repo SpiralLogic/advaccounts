@@ -11,7 +11,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
  ***********************************************************************/
 	$page_security = 'SA_GRN';
 	$path_to_root = "..";
-	include_once($path_to_root . "/purchasing/includes/po_class.inc");
+	include_once($path_to_root . "/purchasing/includes/purch_order.inc");
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 	include_once($path_to_root . "/purchasing/includes/purchasing_db.inc");
 	include_once($path_to_root . "/purchasing/includes/purchasing_ui.inc");

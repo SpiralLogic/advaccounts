@@ -8,7 +8,7 @@
  */
   $path_to_root = "..";
   $page_security = 'SA_SALESORDER';
-  include_once("$path_to_root/sales/includes/cart_class.inc");
+  include_once("$path_to_root/sales/includes/cart.inc");
   include_once("$path_to_root/includes/session.inc");
   include_once("$path_to_root/sales/includes/sales_ui.inc");
   include_once("$path_to_root/sales/includes/ui/sales_order_ui.inc");

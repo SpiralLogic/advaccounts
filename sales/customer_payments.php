@@ -12,7 +12,7 @@
 		* ********************************************************************* */
   $page_security = 'SA_SALESPAYMNT';
   $path_to_root = "..";
-  include_once($path_to_root . "/includes/ui/allocation_cart.inc");
+  include_once($path_to_root . "/includes/ui/allocation.inc");
   include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
   include_once($path_to_root . "/includes/date_functions.inc");
   include_once($path_to_root . "/includes/faui.inc");
@@ -20,7 +20,7 @@
   include_once($path_to_root . "/includes/data_checks.inc");
   include_once($path_to_root . "/sales/includes/sales_db.inc");
   include_once($path_to_root . "/sales/includes/ui/sales_order_ui.inc");
-  include_once($path_to_root . "/sales/includes/cart_class.inc");
+  include_once($path_to_root . "/sales/includes/cart.inc");
   include_once($path_to_root . "/sales/includes/sales_ui.inc");
   //include_once($path_to_root . "/sales/includes/ui/cust_alloc_ui.inc");
   include_once($path_to_root . "/reporting/includes/reporting.inc");

@@ -12,7 +12,6 @@
 	$page_security = 'SA_PURCHASEORDER';
 	$path_to_root = "..";
 	$js = '';
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/purchasing/includes/po_class.inc");
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 	include_once(APP_PATH . "/purchasing/includes/purchasing_ui.inc");
 	include_once(APP_PATH . "/reporting/includes/reporting.inc");

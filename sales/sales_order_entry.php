@@ -19,7 +19,6 @@
 	//
 	$path_to_root = "..";
 	$page_security = 'SA_SALESORDER';
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/sales/includes/cart_class.inc");
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 
 	include_once(APP_PATH . "sales/includes/sales_ui.inc");

@@ -15,7 +15,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
   //
   $page_security = 'SA_SALESCREDIT';
   $path_to_root = "..";
-  include_once($path_to_root . "/sales/includes/cart_class.inc");
+  include_once($path_to_root . "/sales/includes/cart.inc");
   include_once($path_to_root . "/includes/session.inc");
   include_once($path_to_root . "/includes/data_checks.inc");
   include_once($path_to_root . "/sales/includes/sales_db.inc");
