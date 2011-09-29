@@ -79,7 +79,7 @@
 		}
 		$deliver = $myrow['address']; // in case no branch address use company address
 		$order->set_customer($customer_id, $name, $myrow['curr_code'],
-												 $myrow['discount'], $myrow['payment_terms'], $myrow['pymt_discount']); // the sales type determines the price list to be used by default
+			$myrow['discount'], $myrow['payment_terms'], $myrow['pymt_discount']); // the sales type determines the price list to be used by default
 		$order->set_sales_type($myrow['salestype'], $myrow['sales_type'], $myrow['tax_included'], $myrow['factor']);
 		if ($order->trans_type != ST_SALESORDER && $order->trans_type != ST_SALESQUOTE) {
 			$order->dimension_id = $myrow['dimension_id'];
@@ -255,8 +255,7 @@ JS;
 			hidden('dimension_id', $order->dimension_id); // 2008-11-12 Joe Hunt
 			hidden('dimension2_id', $order->dimension2_id);
 			//		}
-		}
-		else {
+		} else {
 			customer_list_row(_("Customer:"), 'customer_id', null, false, true, false, true);
 			if ($order->customer_id != get_post('customer_id', -1)) {
 				// customer has changed
@@ -394,7 +393,7 @@ JS;
 			label_row(_("Tax Group:"), $order->tax_group_name);
 			hidden('tax_group_id', $order->tax_group_id);
 		}
-		sales_persons_list_row(_("Sales Person:"), 'salesman', null);
+		sales_persons_list_row(_("Sales Person:"), 'salesman', $_SESSION['wa_current_user']->salesmanid);
 		end_outer_table(1); // outer table
 		if ($change_prices != 0) {
 			foreach ($order->line_items as $line_no => $item) {
@@ -504,7 +503,7 @@ JS;
 				$Ajax->activate('items_table');
 			}
 			date_row($delname, 'delivery_date', $order->trans_type == ST_SALESORDER ? _('Enter requested day of delivery') : $order->trans_type == ST_SALESQUOTE
-												? _('Enter Valid until Date') : '');
+				 ? _('Enter Valid until Date') : '');
 			text_row(_("Deliver To:"), 'deliver_to', $order->deliver_to, 40, 40, _('Additional identifier for delivery e.g. name of receiving person'));
 			textarea_row("<a href='#'>Address:</a>", 'delivery_address', $order->delivery_address, 35, 5, _('Delivery address. Default is address of customer branch'), null, 'id="address_map"');
 			if (strlen($order->delivery_address) > 10) {
