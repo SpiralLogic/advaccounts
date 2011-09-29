@@ -161,7 +161,6 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 				 APP_PATH . 'reporting/includes'
 		));
 	include(APP_PATH . "config.php");
-	ini_set("display_errors", "On");
 
 	if (Config::get('debug') && isset($_SESSION["wa_current_user"]) && $_SESSION["wa_current_user"]->user == 1) {
 		error_reporting(E_ALL);
@@ -194,7 +193,6 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 
 	ini_set('session.gc_maxlifetime', 36000); // 10hrs
 	session_name('FA' . md5(dirname(__FILE__)));
-	echo dirname(__FILE__);
 	session_start();
 	header("Cache-control: private");
 	get_text_init();
