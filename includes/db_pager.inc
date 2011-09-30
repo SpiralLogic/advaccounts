@@ -153,7 +153,7 @@ class db_pager
 	// Query database
 	//
 	function query()
-	{
+				{
 		global $Ajax;
 
 		$Ajax->activate("_{$this->name}_span");

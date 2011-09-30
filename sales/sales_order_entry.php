@@ -27,23 +27,24 @@
 	include_once(APP_PATH . "sales/includes/db/sales_types_db.inc");
 	include_once(APP_PATH . "reporting/includes/reporting.inc");
 	set_page_security(@$_SESSION['Items']->trans_type,
-										array(ST_SALESORDER => 'SA_SALESORDER',
-												 ST_SALESQUOTE => 'SA_SALESQUOTE',
-												 ST_CUSTDELIVERY => 'SA_SALESDELIVERY',
-												 ST_SALESINVOICE => 'SA_SALESINVOICE'
-										),
-										array('NewOrder' => 'SA_SALESORDER',
-												 'ModifySalesOrder' => 'SA_SALESORDER',
-												 'NewQuotation' => 'SA_SALESQUOTE',
-												 'ModifyQuotationNumber' => 'SA_SALESQUOTE',
-												 'NewDelivery' => 'SA_SALESDELIVERY',
-												 'NewInvoice' => 'SA_SALESINVOICE'
-										));
+		array(ST_SALESORDER => 'SA_SALESORDER',
+			ST_SALESQUOTE => 'SA_SALESQUOTE',
+			ST_CUSTDELIVERY => 'SA_SALESDELIVERY',
+			ST_SALESINVOICE => 'SA_SALESINVOICE'
+		),
+		array('NewOrder' => 'SA_SALESORDER',
+			'ModifySalesOrder' => 'SA_SALESORDER',
+			'NewQuotation' => 'SA_SALESQUOTE',
+			'ModifyQuotationNumber' => 'SA_SALESQUOTE',
+			'NewDelivery' => 'SA_SALESDELIVERY',
+			'NewInvoice' => 'SA_SALESINVOICE'
+		)); 
 	$js = '';
+
 	if (Config::get('ui.windows.popups')) {
 		$js .= get_js_open_window(900, 500);
 	}
-
+	$_SESSION['page_title'] = _($help_context = "Sales Order Entry");
 	//   $js .= get_jquery_gmaps();
 	if (Input::post('saveorder')) {
 		$_SESSION['Items']->store();
@@ -58,7 +59,8 @@
 		$_SESSION['page_title'] = _($help_context = "Direct Sales Delivery");
 		create_cart(ST_CUSTDELIVERY, $_GET['NewDelivery']);
 	}
-	elseif (Input::get('NewInvoice', Input::NUMERIC)) {
+	
+	if (Input::get('NewInvoice', Input::NUMERIC)) {
 		$_SESSION['page_title'] = _($help_context = "Direct Sales Invoice");
 		create_cart(ST_SALESINVOICE, $_GET['NewInvoice']);
 	}
@@ -73,7 +75,6 @@
 		create_cart(ST_SALESQUOTE, $_GET['ModifyQuotationNumber']);
 	}
 	elseif (Input::get('NewOrder')) {
-		$_SESSION['page_title'] = _($help_context = "New Sales Order Entry");
 		create_cart(ST_SALESORDER, 0);
 	}
 	elseif (Input::get('NewQuotation')) {
@@ -81,27 +82,23 @@
 		create_cart(ST_SALESQUOTE, 0);
 	}
 	elseif (Input::get('NewQuoteToSalesOrder')) {
-		$_SESSION['page_title'] = _($help_context = "Sales Order Entry");
 		create_cart(ST_SALESQUOTE, $_GET['NewQuoteToSalesOrder']);
 	}
-	elseif (Input::get('NewRemoteToSalesOrder') || Input::get('remotecombine')) {
-		$_SESSION['page_title'] = _($help_context = "Sales Order Entry");
-		if (Input::get('remotecombine') && isset($_SESSION['Items'])) {
+	elseif (Input::get('remotecombine')) {
+		if (isset($_SESSION['Items'])) {
 			foreach ($_SESSION['remote_order']->line_items as $item) {
 				add_to_order($_SESSION['Items'], $item->stock_id, $item->quantity, $item->price, $item->discount_percent, $item->description);
 			}
+			unset($_SESSION['remote_order']);
 		}
-		else {
-			create_cart(ST_SALESORDER, $_GET['NewRemoteToSalesOrder']);
-		}
-		unset($_SESSION['remote_order']);
+	} elseif (Input::get('NewRemoteToSalesOrder')) {
+		create_cart(ST_SALESORDER, $_GET['NewRemoteToSalesOrder']);
+	} elseif (isset($_GET['restoreorder'])) {
+		$serial = Cart::restore();
+		create_cart($serial, 0);
 	}
-	else {
-		if (isset($_GET['restoreorder'])) {
-			$serial = Cart::restore();
-			create_cart($serial, 0);
-		}
-	}
+
+	 
 	page($_SESSION['page_title'], false, false, "", $js);
 	//-----------------------------------------------------------------------------
 	if (list_updated('branch_id')) {
@@ -150,7 +147,7 @@
 		$customer = new Customer($_SESSION['Jobsboard']->customer_id);
 		$emails = $customer->getEmailAddresses();
 		display_notification_centered(sprintf(_($trans_name . " # %d has been " . ($update ? "updated!"
-																						 : "added!")), $order_no));
+					 : "added!")), $order_no));
 		submenu_view(_("&View This " . $trans_name), $trans_type, $order_no);
 		if ($edit) {
 			submenu_option(_("&Edit This " . $trans_name), "/sales/sales_order_entry.php?" . ($trans_type == ST_SALESORDER
@@ -426,7 +423,7 @@
 			return false;
 		}
 		elseif (!$_SESSION["wa_current_user"]->can_access('SA_SALESCREDIT') && isset($_POST['LineNo']) && isset($_SESSION['Items']->line_items[$_POST['LineNo']]) && !check_num('qty',
-																																																																																						$_SESSION['Items']->line_items[$_POST['LineNo']]->qty_done)
+			$_SESSION['Items']->line_items[$_POST['LineNo']]->qty_done)
 		) {
 			set_focus('qty');
 			display_error(_("You attempting to make the quantity ordered a quantity less than has already been delivered. The quantity delivered cannot be modified retrospectively."));
@@ -437,7 +434,7 @@
 			if (input_num('qty') > $qoh) {
 				$stock = get_item($_POST['stock_id']);
 				display_error(_("The delivery cannot be processed because there is an insufficient quantity for item:") . " " . $stock['stock_id'] . " - " . $stock['description'] . " - " . _("Quantity On Hand") . " = " . number_format2($qoh,
-																																																																																																																		get_qty_dec($_POST['stock_id'])));
+						get_qty_dec($_POST['stock_id'])));
 				return false;
 			}
 			return true;
@@ -587,21 +584,20 @@
 	//--------------------------------------------------------------------------------
 	check_db_has_stock_items(_("There are no inventory items defined in the system."));
 	check_db_has_customer_branches(_("There are no customers, or there are no customers with branches. Please define customers and customer branches."));
-	if ($_SESSION['Items']->trans_type == ST_SALESINVOICE) {
+	if (Input::session('Items', Input::OBJECT) && Input::session('Items')->trans_type == ST_SALESINVOICE) {
 		$idate = _("Invoice Date:");
 		$orderitems = _("Sales Invoice Items");
 		$deliverydetails = _("Enter Delivery Details and Confirm Invoice");
 		$cancelorder = _("Cancel Invoice");
 		$porder = _("Place Invoice");
-	}
-	elseif ($_SESSION['Items']->trans_type == ST_CUSTDELIVERY) {
+	} elseif (Input::session('Items', Input::OBJECT) && $_SESSION['Items']->trans_type == ST_CUSTDELIVERY) {
 		$idate = _("Delivery Date:");
 		$orderitems = _("Delivery Note Items");
 		$deliverydetails = _("Enter Delivery Details and Confirm Dispatch");
 		$cancelorder = _("Cancel Delivery");
 		$porder = _("Place Delivery");
 	}
-	elseif ($_SESSION['Items']->trans_type == ST_SALESQUOTE) {
+	elseif (Input::session('Items', Input::OBJECT) && $_SESSION['Items']->trans_type == ST_SALESQUOTE) {
 		$idate = _("Quotation Date:");
 		$orderitems = _("Sales Quotation Items");
 		$deliverydetails = _("Enter Delivery Details and Confirm Quotation");

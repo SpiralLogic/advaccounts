@@ -9,7 +9,8 @@
 
 	class Input {
 
-		const NUMERIC = '1';
+		const NUMERIC = 1;
+		const OBJECT = 2;
 
 
 		public static function post($var, $type = null) {
@@ -63,11 +64,13 @@
 		}
 
 		protected static function _isset($array, $var, $type) {
+
 			if (!isset($array[$var])) return false;
 			$value = $array[$var];
 			switch ($type) {
 				case static::NUMERIC:
 					if (!is_numeric($value)) return false;
+					return ($value == 0) ? true : $value;
 					break;
 			}
 			return $value;

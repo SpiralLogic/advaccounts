@@ -1,14 +1,14 @@
 <?php
-/**********************************************************************
-Copyright (C) FrontAccounting, LLC.
-Released under the terms of the GNU General Public License, GPL,
-as published by the Free Software Foundation, either version 3
-of the License, or (at your option) any later version.
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
- ***********************************************************************/
+	/**********************************************************************
+	Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL,
+	as published by the Free Software Foundation, either version 3
+	of the License, or (at your option) any later version.
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+	 ***********************************************************************/
 	ini_set("display_errors", "On");
 	function formatBytes($bytes, $precision = 2) {
 		$units = array('B', 'KB', 'MB', 'GB', 'TB');
@@ -153,35 +153,19 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	spl_autoload_register('class_autoloader');
 	add_include_path(
 		array(
-				 realpath('.') . '/includes/classes',
-				 APP_PATH . 'includes/ui2',
-				 APP_PATH . 'includes/ui',
-				 APP_PATH . 'includes',
-				 APP_PATH . 'includes/classes',
-				 APP_PATH . 'includes/classes/db',
-				 APP_PATH . 'contacts/includes/classes',
-				 APP_PATH . 'items/includes/classes',
-				 APP_PATH . 'sales/includes',
-				 APP_PATH . 'purchasing/includes',
-				 APP_PATH . 'reporting/includes'
+			realpath('.') . '/includes/classes',
+			APP_PATH . 'includes/ui2',
+			APP_PATH . 'includes/ui',
+			APP_PATH . 'includes',
+			APP_PATH . 'includes/classes',
+			APP_PATH . 'includes/classes/db',
+			APP_PATH . 'contacts/includes/classes',
+			APP_PATH . 'items/includes/classes',
+			APP_PATH . 'sales/includes',
+			APP_PATH . 'purchasing/includes',
+			APP_PATH . 'reporting/includes'
 		));
 	include(APP_PATH . "config.php");
-
-	if (Config::get('debug') && isset($_SESSION["wa_current_user"]) && $_SESSION["wa_current_user"]->user == 1) {
-		error_reporting(E_ALL);
-		if (preg_match('/Chrome/i', $_SERVER['HTTP_USER_AGENT'])) {
-			include(APP_PATH . 'includes/fb.php');
-			FB::useFile(APP_PATH . 'tmp/chromelogs', '/tmp/chromelogs');
-		} else {
-			include(APP_PATH . 'includes/FirePHP/FirePHP.class.php');
-			include(APP_PATH . 'includes/FirePHP/fb.php');
-		}
-	}
-	else {
-		Config::set('debug', false);
-		error_reporting(E_USER_WARNING | E_USER_ERROR | E_USER_NOTICE);
-	}
-
 	if (Config::get('logs.error.file') != '') {
 		ini_set("error_log", Config::get('logs.error.file'));
 		ini_set("ignore_repeated_errors", "On");
@@ -198,7 +182,20 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	session_start();
 	header("Cache-control: private");
 	gettext_native_support::get_text_init();
-
+	if (Config::get('debug') && isset($_SESSION["wa_current_user"]) && $_SESSION["wa_current_user"]->user == 1) {
+		error_reporting(E_ALL);
+		if (preg_match('/Chrome/i', $_SERVER['HTTP_USER_AGENT'])) { 
+			include(APP_PATH . 'includes/fb.php');
+			FB::useFile(APP_PATH . 'tmp/chromelogs', '/tmp/chromelogs');
+		} else {
+			include(APP_PATH . 'includes/FirePHP/FirePHP.class.php');
+			include(APP_PATH . 'includes/FirePHP/fb.php');
+		}
+	}
+	else {
+		Config::set('debug', false);
+		error_reporting(E_USER_WARNING | E_USER_ERROR | E_USER_NOTICE);
+	}
 	// Page Initialisation
 	if (!isset($_SESSION['language']) || !method_exists($_SESSION['language'], 'set_language')) {
 		$l = array_search_value($dflt_lang, $installed_languages, 'code');
@@ -265,7 +262,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		}
 		else
 		{
-			if ($_SESSION['change_password'] && strstr($_SERVER['PHP_SELF'], 'change_current_user_password.php') == false) {
+			if (Input::session('change_password') && strstr($_SERVER['PHP_SELF'], 'change_current_user_password.php') == false) {
 				meta_forward('/admin/change_current_user_password.php', 'selected_id=' . $_SESSION["wa_current_user"]->username);
 			}
 			set_global_connection();

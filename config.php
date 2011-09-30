@@ -19,7 +19,7 @@
 	if (!class_exists('Config', false)) include(APP_PATH . 'includes/classes/config.inc');
 	if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_to_root'])) {
 	}
-	include_once($path_to_root . "/lang/installed_languages.inc");
+	include_once(APP_PATH . "includes/installed_languages.inc");
 	Config::load();
 
 	define("AJAX_REFERRER", (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest'));
@@ -44,7 +44,7 @@
 		define("ICON_REPORT", "report.png");
 		define("ICON_VIEW", "view.gif");
 		define("ICON_SUBMIT", "ok.gif");
-		define("ICON_ESCAPE", "escape.png");
+		define("ICON_ESCAPE", "escape.png"); 
 	}
 
 	define('DEFAULT_LOCATION', 'MEL');
@@ -56,6 +56,8 @@
 	define('BUILD_VERSION', date("d.m.Y", filemtime(__FILE__)));
 	define('POWERED_BY', "Advanced Accounting");
 	define('POWERED_URL', "http://www.advancedgroup.com.au");
+	define('STORE_PRODUCT_URL', 'http://www.advancedroadsigns.com.au/-p/');
+	define('STORE_URL_EXTENSION', '.htm');
 	define('COMPANY_PATH', $path_to_root . '/company');
 	define("BACKUP_PATH", COMPANY_PATH . "/backup/");
 	JS::headerFile(array('/js/JsHttpRequest.js', '/js/behaviour.js', '/js/utils.js', '/js/inserts.js', '/js/js2/jquery-1.6.4.min.js', '/js/js2/jquery-ui-1.8.14.min.js'));
