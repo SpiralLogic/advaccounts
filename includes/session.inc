@@ -39,6 +39,7 @@
 
 	function fb_errors() {
 		$error = func_get_args();
+		FB::info($error);
 		error_handler($error[0], $error[1], $error[2], $error[3]);
 		if (!(error_reporting() & $error[0])) {
 			// This error code is not included in error_reporting

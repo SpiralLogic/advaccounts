@@ -16,7 +16,7 @@
 	include_once(APP_PATH . "includes/date_functions.inc");
 	include_once(APP_PATH . "includes/data_checks.inc");
 	include_once(APP_PATH . "sales/includes/sales_db.inc");
-
+	include_once(APP_PATH . "taxes/tax_calc.inc");
 	//----------------------------------------------------------------------------------------------------
 
 	print_sales_orders();
