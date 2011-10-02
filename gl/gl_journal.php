@@ -79,7 +79,7 @@
 	{
 		if (!isset($_GET['trans_type']) || $_GET['trans_type'] != 0) {
 			display_error(_("You can edit directly only journal entries created via Journal Entry page."));
-			hyperlink_params("$path_to_root/gl/gl_journal.php", _("Entry &New Journal Entry"), "NewJournal=Yes");
+			hyperlink_params("/gl/gl_journal.php", _("Entry &New Journal Entry"), "NewJournal=Yes");
 			display_footer_exit();
 		}
 		create_cart($_GET['trans_type'], $_GET['trans_no']);

@@ -42,7 +42,7 @@
 	//----------------------------------------------------------------------------------------------------
 
 	function display_type($type, $typename, $from, $to, $begin, $end, $compare, $convert,
-												&$dec, &$pdec, &$rep, $dimension = 0, $dimension2 = 0, $drilldown, $path_to_root) {
+												&$dec, &$pdec, &$rep, $dimension = 0, $dimension2 = 0, $drilldown, $path_to_root=PATH_TO_ROOT) {
 		global $levelptr, $k;
 
 		$code_per_balance = 0;
@@ -91,7 +91,7 @@
 		while ($accounttype = db_fetch($result))
 		{
 			$totals_arr = display_type($accounttype["id"], $accounttype["name"], $from, $to, $begin, $end,
-				$compare, $convert, $dec, $pdec, $rep, $dimension, $dimension2, $drilldown, $path_to_root);
+				$compare, $convert, $dec, $pdec, $rep, $dimension, $dimension2, $drilldown);
 			$per_balance_total += $totals_arr[0];
 			$acc_balance_total += $totals_arr[1];
 		}

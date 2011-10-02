@@ -32,9 +32,9 @@
 
 		display_note(get_trans_view_str($trans_type, $grn, _("&View this Delivery")));
 
-		hyperlink_params("$path_to_root/purchasing/supplier_invoice.php", _("Entry purchase &invoice for this receival"), "New=1");
+		hyperlink_params("/purchasing/supplier_invoice.php", _("Entry purchase &invoice for this receival"), "New=1");
 
-		hyperlink_no_params("$path_to_root/purchasing/inquiry/po_search.php", _("Select a different &purchase order for receiving items against"));
+		hyperlink_no_params("/purchasing/inquiry/po_search.php", _("Select a different &purchase order for receiving items against"));
 
 		display_footer_exit();
 	}
@@ -197,8 +197,8 @@
 
 		if (check_po_changed()) {
 			display_error(_("This order has been changed or invoiced since this delivery was started to be actioned. Processing halted. To enter a delivery against this purchase order, it must be re-selected and re-read again to update the changes made by the other user."));
-			hyperlink_no_params("$path_to_root/purchasing/inquiry/po_search.php", _("Select a different purchase order for receiving goods against"));
-			hyperlink_params("$path_to_root/purchasing/po_receive_items.php", _("Re-Read the updated purchase order for receiving goods against"), "PONumber=" .
+			hyperlink_no_params("/purchasing/inquiry/po_search.php", _("Select a different purchase order for receiving goods against"));
+			hyperlink_params("/purchasing/po_receive_items.php", _("Re-Read the updated purchase order for receiving goods against"), "PONumber=" .
 			 $_SESSION
 			 ['PO']->order_no);
 			unset($_SESSION['PO']->line_items);

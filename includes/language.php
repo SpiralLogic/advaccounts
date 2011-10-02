@@ -49,12 +49,12 @@
 				$this->code = $lang['code'];
 				$this->encoding = $lang['encoding'];
 				$this->dir = isset($lang['rtl']) ? 'rtl' : 'ltr';
-				$locale = $path_to_root . "/lang/" . $this->code . "/locale.inc";
+				$locale = PATH_TO_ROOT . "/lang/" . $this->code . "/locale.inc";
 				$this->is_locale_file = file_exists($locale);
 			}
 
 			$_SESSION['get_text']->set_language($this->code, $this->encoding);
-			$_SESSION['get_text']->add_domain($this->code, $path_to_root . "/lang");
+			$_SESSION['get_text']->add_domain($this->code, PATH_TO_ROOT . "/lang");
 
 			// Necessary for ajax calls. Due to bug in php 4.3.10 for this
 			// version set globally in php.ini

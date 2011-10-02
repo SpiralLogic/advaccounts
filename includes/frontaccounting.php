@@ -105,7 +105,7 @@
 						if (class_exists($class))
 							$this->add_application(new $class());
 						$_SESSION['get_text']->add_domain($_SESSION['language']->code,
-						 $path_to_root . "/lang");
+						 PATH_TO_ROOT . "/lang");
 					}
 				}
 			}

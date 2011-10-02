@@ -67,7 +67,7 @@
 
 		if (Config::get('help.baseurl') != null && Config::get('ui.windows.popups') && $js == '') {
 			if (!function_exists('get_js_open_window')) {
-				include_once($path_to_root . '/includes/ui/ui_view.inc');
+				include_once(APP_PATH . 'includes/ui/ui_view.inc');
 			}
 			JS::beforeload(get_js_open_window(900, 500));
 		}

@@ -92,7 +92,7 @@
 		$id = $_GET['id'];
 
 		$lang = $installed_languages[$id]['code'];
-		$filename = "$path_to_root/lang/$lang/LC_MESSAGES";
+		$filename =PATH_TO_ROOT. "/lang/$lang/LC_MESSAGES";
 
 		if ($lang == $dflt_lang) {
 			// on delete set default to current.
@@ -105,7 +105,7 @@
 		if (!write_lang())
 			return;
 
-		$filename = "$path_to_root/lang/$lang";
+		$filename = PATH_TO_ROOT."/lang/$lang";
 		flush_dir($filename);
 		rmdir($filename);
 

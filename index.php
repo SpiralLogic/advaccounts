@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 
 	$path_to_root = ".";
-	if (!file_exists($path_to_root . '/config.php'))
+	if (!file_exists( 'config.php'))
 		header("Location: " . "/install/index.php");
 
 	$page_security = 'SA_OPEN';
