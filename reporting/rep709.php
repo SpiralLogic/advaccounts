@@ -65,7 +65,7 @@
 	//----------------------------------------------------------------------------------------------------
 
 	function print_tax_report() {
-		global $path_to_root, $trans_dir, $Hooks, $systypes_array;
+		global $trans_dir, $Hooks, $systypes_array;
 
 		$from = $_POST['PARAM_0'];
 		$to = $_POST['PARAM_1'];

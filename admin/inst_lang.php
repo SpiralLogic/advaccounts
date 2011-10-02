@@ -45,7 +45,7 @@
 	//---------------------------------------------------------------------------------------------
 
 	function handle_submit() {
-		global $path_to_root, $installed_languages, $dflt_lang;
+		global $installed_languages, $dflt_lang;
 
 		if (!check_data())
 			return false;
@@ -87,7 +87,7 @@
 	//---------------------------------------------------------------------------------------------
 
 	function handle_delete() {
-		global $path_to_root, $installed_languages, $dflt_lang;
+		global $installed_languages, $dflt_lang;
 
 		$id = $_GET['id'];
 

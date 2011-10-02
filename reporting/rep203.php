@@ -52,7 +52,7 @@
 	//----------------------------------------------------------------------------------------------------
 
 	function print_payment_report() {
-		global $path_to_root, $systypes_array;
+		global $systypes_array;
 
 		$to = $_POST['PARAM_0'];
 		$fromsupp = $_POST['PARAM_1'];

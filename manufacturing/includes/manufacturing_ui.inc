@@ -215,7 +215,7 @@
 	//--------------------------------------------------------------------------------------
 
 	function display_wo_payments($woid) {
-		global $path_to_root, $wo_cost_types;
+		global $wo_cost_types;
 
 		//$result = get_bank_trans(null, null, PT_WORKORDER, $woid);
 		$result = get_gl_wo_cost_trans($woid);

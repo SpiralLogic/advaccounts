@@ -29,7 +29,7 @@
 		}
 
 		function getDisplay($class = null) {
-			global $path_to_root, $Ajax;
+			global $Ajax;
 
 			$temp = array_values($this->ar_classes);
 			$display_class = $class == null ? $temp[0] : $this->ar_classes[$class];

@@ -50,7 +50,7 @@
 	}
 
 	function print_bank_transactions() {
-		global $path_to_root, $systypes_array;
+		global $systypes_array;
 
 		$acc = $_POST['PARAM_0'];
 		$from = $_POST['PARAM_1'];

@@ -57,7 +57,7 @@
 	}
 
 	function print_receipts() {
-		global $path_to_root, $systypes_array;
+		global $systypes_array;
 
 		include_once(APP_PATH . "reporting/includes/pdf_report.inc");
 

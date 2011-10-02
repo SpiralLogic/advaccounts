@@ -202,7 +202,7 @@
 	}
 
 	function tst_langs() {
-		global $installed_languages, $path_to_root;
+		global $installed_languages;
 
 		$test['descr'] = _('Language configuration consistency');
 		$test['type'] = 3;
@@ -249,7 +249,7 @@
 	}
 
 	function tst_extconfig() {
-		global $path_to_root, $db_connections;
+		global $db_connections;
 
 		$test['descr'] = _('Extensions configuration files');
 		$test['type'] = 3;

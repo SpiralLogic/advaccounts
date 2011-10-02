@@ -64,7 +64,7 @@
 	}
 
 	function write_extensions($extensions = null, $company = -1) {
-		global $path_to_root, $installed_extensions, $next_extension_id;
+		global $installed_extensions, $next_extension_id;
 
 		if (!isset($extensions)) {
 			$extensions = $installed_extensions;
@@ -139,7 +139,7 @@
 	}
 
 	function write_lang() {
-		global $path_to_root, $installed_languages, $dflt_lang;
+		global $installed_languages, $dflt_lang;
 
 		$conn = array_natsort($installed_languages, 'code', 'code');
 		$installed_languages = $conn;
@@ -415,7 +415,7 @@
 	// $drop and $zip tell if to include the drop table statement or dry to pack
 	function db_export($conn, $filename, $zip = 'no', $comment = '') {
 
-		global $path_to_root;
+
 
 		$error = false;
 		// set max string size before writing to file

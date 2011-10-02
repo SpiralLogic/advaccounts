@@ -53,7 +53,7 @@
 	//----------------------------------------------------------------------------------------------------
 
 	function print_audit_trail() {
-		global $path_to_root, $systypes_array;
+		global $systypes_array;
 
 		$from = $_POST['PARAM_0'];
 		$to = $_POST['PARAM_1'];

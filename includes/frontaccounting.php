@@ -78,7 +78,7 @@
 		}
 
 		function init() {
-			global $installed_extensions, $path_to_root;
+			global $installed_extensions;
 			$this->menu = new menu(_("Main  Menu"));
 			$this->menu->add_item(_("Main  Menu"), "index.php");
 			$this->menu->add_item(_("Logout"), "/account/access/logout.php");

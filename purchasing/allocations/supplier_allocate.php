@@ -88,7 +88,7 @@
 
 	if (isset($_POST['Cancel'])) {
 		clear_allocations();
-		meta_forward($path_to_root . "/purchasing/allocations/supplier_allocation_main.php");
+		meta_forward( "/purchasing/allocations/supplier_allocation_main.php");
 	}
 
 	//--------------------------------------------------------------------------------

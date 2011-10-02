@@ -57,7 +57,7 @@
 		}
 
 		function login($company, $loginname, $password) {
-			global $security_areas, $security_groups, $security_headings, $path_to_root;
+			global $security_areas, $security_groups, $security_headings;
 			$this->set_company($company);
 			$this->logged = false;
 

@@ -315,7 +315,7 @@
 		}
 
 		function Header2($myrow, $branch, $sales_order, $bankaccount, $doctype) {
-			global $path_to_root, $print_as_quote, $packing_slip;
+			global $print_as_quote, $packing_slip;
 			$this->pageNumber++;
 			if ($this->pageNumber > 1) {
 				$this->newPage();

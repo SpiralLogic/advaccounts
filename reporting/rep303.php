@@ -58,7 +58,7 @@
 	//----------------------------------------------------------------------------------------------------
 
 	function print_stock_check() {
-		global $path_to_root;
+
 
 		$category = $_POST['PARAM_0'];
 		$location = $_POST['PARAM_1'];

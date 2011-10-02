@@ -88,7 +88,7 @@
 	//----------------------------------------------------------------------------------------------------
 
 	function show_results() {
-		global $path_to_root, $systypes_array;
+		global $systypes_array;
 
 		if (!isset($_POST["account"]))
 			$_POST["account"] = null;

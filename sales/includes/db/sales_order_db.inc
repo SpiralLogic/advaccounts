@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 	//----------------------------------------------------------------------------------------
 	function add_sales_order(&$order) {
-		global $path_to_root, $Refs;
+		global $Refs;
 		begin_transaction();
 		$order_no = get_next_trans_no($order->trans_type);
 		$del_date = date2sql($order->due_date);
@@ -61,7 +61,7 @@
 		$Refs->save($order->trans_type, $order_no, $order->reference);
 		commit_transaction();
 		if (Config::get('accounts.stock.emailnotify') == 1 && count($st_ids) > 0) {
-			require_once($path_to_root . "/reporting/includes/class.mail.inc");
+			require_once(APP_PATH . "/reporting/includes/class.mail.inc");
 			$company = get_company_prefs();
 			$mail = new email($company['coy_name'], $company['email']);
 			$from = $company['coy_name'] . " <" . $company['email'] . ">";
@@ -106,7 +106,7 @@
 
 	//----------------------------------------------------------------------------------------
 	function update_sales_order($order) {
-		global $path_to_root, $Refs;
+		global $Refs;
 		$del_date = date2sql($order->due_date);
 		$ord_date = date2sql($order->document_date);
 		$order_no = key($order->trans_no);
@@ -178,7 +178,7 @@
 		$Refs->save($order->trans_type, $order_no, $order->reference);
 		commit_transaction();
 		if (Config::get('accounts.stock.emailnotify') == 1 && count($st_ids) > 0) {
-			require_once($path_to_root . "/reporting/includes/class.mail.inc");
+			require_once(APP_PATH . "/reporting/includes/class.mail.inc");
 			$company = get_company_prefs();
 			$mail = new email($company['coy_name'], $company['email']);
 			$from = $company['coy_name'] . " <" . $company['email'] . ">";

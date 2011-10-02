@@ -16,7 +16,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 //
 //	View definition you will find in the following file:
 //require_once("$path_to_root/includes/ChromePHP.php");
-//CP::useFile('/tmp/chromelogs', $path_to_root.'/chromelogs');
+//CP::useFile('/tmp/chromelogs'.'/chromelogs');
 
 //require_once('FirePHPCore/fb.php');
 //require_once($path_to_root . "/includes/firephp.php"); 

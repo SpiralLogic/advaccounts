@@ -57,7 +57,7 @@
 	//---------------------------------------------------------------------------------
 
 	function display_gl_items($title, &$order) {
-		global $path_to_root;
+
 
 		display_heading($title);
 

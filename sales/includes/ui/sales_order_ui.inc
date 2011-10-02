@@ -128,15 +128,15 @@
 
 	//---------------------------------------------------------------------------------
 	function display_order_summary($title, &$order, $editable_items = false) {
-		global $path_to_root, $SysPrefs;
+		global $SysPrefs;
 		display_heading($title);
 		div_start('items_table');
 		if (count($_SESSION['Items']->line_items) > 0) {
 			start_outer_table(" width=90%");
 			table_section(1);
-			hyperlink_params_separate("$path_to_root/purchasing/po_entry_items.php", _("Create PO from this order"), "NewOrder=Yes&UseOrder=1' class='button'", true, true);
+			hyperlink_params_separate("/purchasing/po_entry_items.php", _("Create PO from this order"), "NewOrder=Yes&UseOrder=1' class='button'", true, true);
 			table_section(2);
-			hyperlink_params_separate("$path_to_root/purchasing/po_entry_items.php", _("Dropship this order"), "NewOrder=Yes&UseOrder=1&DS=1' class='button'", true, true);
+			hyperlink_params_separate("/purchasing/po_entry_items.php", _("Dropship this order"), "NewOrder=Yes&UseOrder=1&DS=1' class='button'", true, true);
 			end_outer_table(1);
 		}
 		start_table(Config::get('tables.style') . "  colspan=7 width=90%");

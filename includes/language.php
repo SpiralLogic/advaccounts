@@ -36,7 +36,7 @@
 		}
 
 		function set_language($code) {
-			global $path_to_root, $installed_languages;
+			global $installed_languages;
 
 			$changed = $this->code != $code;
 			$lang = array_search_value($code, $installed_languages, 'code');

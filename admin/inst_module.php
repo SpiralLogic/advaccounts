@@ -82,7 +82,7 @@
 	//---------------------------------------------------------------------------------------------
 
 	function handle_submit() {
-		global $path_to_root, $db_connections, $selected_id, $next_extension_id;
+		global $db_connections, $selected_id, $next_extension_id;
 
 		$extensions = get_company_extensions();
 		if (!check_data($selected_id, $extensions))
@@ -157,7 +157,7 @@
 	}
 
 	function handle_delete() {
-		global $path_to_root, $db_connections, $selected_id;
+		global $db_connections, $selected_id;
 
 		$extensions = get_company_extensions();
 

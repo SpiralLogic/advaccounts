@@ -31,7 +31,7 @@
 	//----------------------------------------------------------------------------------------------------
 
 	function print_workorders() {
-		global $path_to_root, $SysPrefs;
+		global $SysPrefs;
 
 		include_once(APP_PATH . "reporting/includes/pdf_report.inc");
 

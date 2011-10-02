@@ -31,7 +31,7 @@
 	print_sales_quotations();
 
 	function print_sales_quotations() {
-		global $path_to_root, $print_as_quote;
+		global $print_as_quote;
 
 		include_once(APP_PATH . "reporting/includes/pdf_report.inc");
 

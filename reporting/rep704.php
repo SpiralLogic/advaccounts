@@ -29,7 +29,7 @@
 	//----------------------------------------------------------------------------------------------------
 
 	function print_GL_transactions() {
-		global $path_to_root, $systypes_array;
+		global $systypes_array;
 
 		$dim = get_company_pref('use_dimension');
 		$dimension = $dimension2 = 0;

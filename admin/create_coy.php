@@ -72,7 +72,7 @@
 
 	function handle_submit() {
 		global $db_connections, $db,
-					 $comp_subdirs, $path_to_root;
+					 $comp_subdirs;
 
 		$error = false;
 		if (!check_data())
@@ -142,7 +142,7 @@
 	//---------------------------------------------------------------------------------------------
 
 	function handle_delete() {
-		global $db_connections, $path_to_root;
+		global $db_connections;
 
 		$id = $_GET['id'];
 

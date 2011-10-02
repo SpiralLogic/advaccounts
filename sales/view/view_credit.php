@@ -17,7 +17,7 @@
 	include_once(APP_PATH . "includes/faui.inc");
 
 	include_once(APP_PATH . "sales/includes/sales_db.inc");
-	include_once("$path_to_root/reporting/includes/reporting.inc");
+	include_once(APP_PATH . "reporting/includes/reporting.inc");
 	$js = "";
 	if (Config::get('ui.windows.popups'))
 		$js .= get_js_open_window(900, 500);

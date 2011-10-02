@@ -18,7 +18,7 @@
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 
 	function find_report_file($rep) {
-		global $installed_extensions, $path_to_root;
+		global $installed_extensions;
 
 		// customized per company versions
 		$path = "/company/reporting";

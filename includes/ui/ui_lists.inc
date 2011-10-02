@@ -13,8 +13,8 @@
 	include_once(APP_PATH . "includes/types.inc");
 	include_once(APP_PATH . "includes/current_user.inc");
 
-	$_search_button = "<input %s type='submit' class='combo_submit' style='border:0;background:url($path_to_root/themes/" . "%s/images/locate.png) no-repeat;%s' aspect='fallback' name='%s' value=' ' title='" . _("Set filter") . "'> ";
-	$_select_button = "<input %s type='submit' class='combo_select' style='border:0;background:url($path_to_root/themes/" . "%s/images/button_ok.png) no-repeat;%s' aspect='fallback' name='%s' value=' ' title='" . _("Select") . "'> ";
+	$_search_button = "<input %s type='submit' class='combo_submit' style='border:0;background:url(/themes/" . "%s/images/locate.png) no-repeat;%s' aspect='fallback' name='%s' value=' ' title='" . _("Set filter") . "'> ";
+	$_select_button = "<input %s type='submit' class='combo_select' style='border:0;background:url(/themes/" . "%s/images/button_ok.png) no-repeat;%s' aspect='fallback' name='%s' value=' ' title='" . _("Select") . "'> ";
 	$all_items = ALL_TEXT;
 	//----------------------------------------------------------------------------
 	//	Universal sql combo generator

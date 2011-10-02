@@ -136,7 +136,7 @@
 	//----------------------------------------------------------------------------------------------------
 
 	function print_profit_and_loss_statement() {
-		global $path_to_root;
+
 
 		$dim = get_company_pref('use_dimension');
 		$dimension = $dimension2 = 0;
@@ -302,7 +302,7 @@
 			$pg->type = $graphics;
 			$pg->skin = Config::get('graphs.skin');
 			$pg->built_in = false;
-			$pg->fontfile = $path_to_root . "/reporting/fonts/Vera.ttf";
+			$pg->fontfile = PATH_TO_ROOT . "/reporting/fonts/Vera.ttf";
 			$pg->latin_notation = (Config::get('seperators.decimal', $_SESSION["wa_current_user"]->prefs->dec_sep()) != ".");
 			$filename = COMPANY_PATH . "/pdf_files/test.png";
 			$pg->display($filename, true);

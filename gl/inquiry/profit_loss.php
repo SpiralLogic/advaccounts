@@ -165,7 +165,7 @@
 	//----------------------------------------------------------------------------------------------------
 
 	function display_profit_and_loss() {
-		global $path_to_root, $sel;
+		global $sel;
 
 		$dim = get_company_pref('use_dimension');
 		$dimension = $dimension2 = 0;
@@ -233,7 +233,7 @@
 				{
 					$TypeTotal = display_type(
 						$accounttype["id"], $accounttype["name"], $from, $to, $begin, $end, $compare, $convert,
-						$dec, $pdec, $rep, $dimension, $dimension2, $drilldown, $path_to_root);
+						$dec, $pdec, $rep, $dimension, $dimension2, $drilldown);
 					$class_per_total += $TypeTotal[0];
 					$class_acc_total += $TypeTotal[1];
 
@@ -288,7 +288,7 @@
 
 			$classtotal = display_type(
 				$accounttype["id"], $accounttype["name"], $from, $to, $begin, $end, $compare, $convert,
-				$dec, $pdec, $rep, $dimension, $dimension2, $drilldown, $path_to_root);
+				$dec, $pdec, $rep, $dimension, $dimension2, $drilldown);
 		}
 
 		end_table(1); // outer table

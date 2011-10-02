@@ -55,7 +55,7 @@
 	}
 
 	function print_statements() {
-		global $path_to_root, $systypes_array;
+		global $systypes_array;
 		include_once(APP_PATH . "reporting/includes/pdf_report.inc");
 		$customer = $_POST['PARAM_0'];
 		$currency = $_POST['PARAM_1'];

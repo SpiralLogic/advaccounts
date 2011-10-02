@@ -359,7 +359,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	//		 = 2 display on view invoice
 	//		 = 3 display on view credit
 	function display_grn_items(&$supp_trans, $mode = 0) {
-		global  $path_to_root;
+
 		$ret = true;
 		// if displaying in form, and no items, exit
 		if (($mode == 2 || $mode == 3) && count($supp_trans->grn_items) == 0) {

@@ -397,11 +397,11 @@
 		 true: default)
  */
 	function set_editor($type, $input, $caller = true) {
-		global $path_to_root, $Editors, $popup_editors, $Pagehelp;
+		global $Editors, $popup_editors, $Pagehelp;
 
 		$key = $caller === true ? $popup_editors[$type][1] : $caller;
 
-		$Editors[$key] = array($path_to_root . $popup_editors[$type][0], $input);
+		$Editors[$key] = array(PATH_TO_ROOT . $popup_editors[$type][0], $input);
 
 		$help = 'F' . ($key - 111) . ' - ';
 		$help .= $popup_editors[$type][2];

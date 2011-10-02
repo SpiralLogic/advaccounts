@@ -32,7 +32,7 @@
 	//----------------------------------------------------------------------------------------------------
 
 	function print_deliveries() {
-		global $path_to_root, $packing_slip;
+		global $packing_slip;
 
 		include_once($_SERVER['DOCUMENT_ROOT'] . "/reporting/includes/pdf_report.inc");
 

@@ -83,7 +83,7 @@
 	//	Apply one differential data set.
 	//
 	function upgrade_step($index, $conn) {
-		global $path_to_root, $installers;
+		global $installers;
 
 		$inst = $installers[$index];
 

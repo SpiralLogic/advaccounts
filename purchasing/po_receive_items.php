@@ -189,7 +189,7 @@
 	//--------------------------------------------------------------------------------------------------
 
 	function process_receive_po() {
-		global $path_to_root, $Ajax;
+		global $Ajax;
 
 		if (!can_process()) {
 			return;

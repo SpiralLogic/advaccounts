@@ -61,7 +61,7 @@
 	//----------------------------------------------------------------------------------------------------
 
 	function print_aged_supplier_analysis() {
-		global $path_to_root, $systypes_array;
+		global $systypes_array;
 
 		$to = $_POST['PARAM_0'];
 		$fromsupp = $_POST['PARAM_1'];
@@ -237,7 +237,7 @@
 			$pg->type = $graphics;
 			$pg->skin = Config::get('graphs.skin');
 			$pg->built_in = false;
-			$pg->fontfile = $path_to_root . "/reporting/fonts/Vera.ttf";
+			$pg->fontfile = PATH_TO_ROOT . "/reporting/fonts/Vera.ttf";
 			$pg->latin_notation = (Config::get('seperators.decimal', $_SESSION["wa_current_user"]->prefs->dec_sep()) != ".");
 
 			$filename = COMPANY_PATH . "/pdf_files/test.png";

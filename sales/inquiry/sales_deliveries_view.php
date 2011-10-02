@@ -67,7 +67,7 @@
 		}
 		else {
 			$_SESSION['DeliveryBatch'] = $selected;
-			meta_forward($path_to_root . '/sales/customer_invoice.php', 'BatchInvoice=Yes');
+			meta_forward( '/sales/customer_invoice.php', 'BatchInvoice=Yes');
 		}
 	}
 

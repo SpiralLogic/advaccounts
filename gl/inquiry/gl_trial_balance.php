@@ -48,7 +48,7 @@
 	//----------------------------------------------------------------------------------------------------
 
 	function display_trial_balance() {
-		global $path_to_root;
+
 
 		div_start('balance_tbl');
 		start_table(Config::get('tables.style'));

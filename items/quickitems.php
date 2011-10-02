@@ -66,11 +66,11 @@ JS
 HTML;
 	$menu->endTab();
 	$menu->startTab("Selling", "Sales Prices");
-	echo "<iframe id='sellFrame' src='{$path_to_root}/inventory/prices.php?frame=1&stock_id=" . $_GET['id'] . "' width='90%' height='500' frameborder='0'></iframe> ";
+	echo "<iframe id='sellFrame' src='".PATH_TO_ROOT."/inventory/prices.php?frame=1&stock_id=" . $_GET['id'] . "' width='90%' height='500' frameborder='0'></iframe> ";
 
 	$menu->endTab();
 	$menu->startTab("Purchasing", "Purchasing Prices");
-	echo "<iframe id='buyFrame' src='{$path_to_root}/inventory/purchasing_data.php?frame=1&stock_id=" . $_GET['id'] . "' width='90%' height='500'  frameborder='0'></iframe> ";
+	echo "<iframe id='buyFrame' src='".PATH_TO_ROOT."/inventory/purchasing_data.php?frame=1&stock_id=" . $_GET['id'] . "' width='90%' height='500'  frameborder='0'></iframe> ";
 
 	$menu->endTab();
 	$menu->startTab("Website", "Website page for product");

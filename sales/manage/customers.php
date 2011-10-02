@@ -63,7 +63,7 @@
 	//--------------------------------------------------------------------------------------------
 
 	function handle_submit() {
-		global $path_to_root, $new_customer, $Ajax;
+		global $new_customer, $Ajax;
 
 		if (!can_process()) return;
 

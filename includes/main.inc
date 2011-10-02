@@ -33,7 +33,7 @@
 
 	function page($title, $no_menu = false, $is_index = false, $onload = "", $js = "", $script_only = false) {
 
-		global $path_to_root, $page_security;
+		global $page_security;
 
 		$hide_menu = $no_menu;
 

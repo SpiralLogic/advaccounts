@@ -49,7 +49,7 @@
 	//---------------------------------------------------------------------------------
 
 	function display_transfer_items($title, &$order) {
-		global $path_to_root;
+
 
 		display_heading($title);
 		div_start('items_table');
