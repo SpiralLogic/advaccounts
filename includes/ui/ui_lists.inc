@@ -193,7 +193,7 @@
 					}
 				}
 				// show selected option even if inactive
-				if (!$opts['show_inactive'] && @$contact_row['inactive'] && $sel === '') {
+				if (isset($opts['show_inactive']) && !$opts['show_inactive'] && @$contact_row['inactive'] && $sel === '') {
 					continue;
 				} else {
 					$optclass = @$contact_row['inactive'] ? "class='inactive'" : '';
