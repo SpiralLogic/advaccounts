@@ -1,17 +1,15 @@
 <?php
-/**********************************************************************
-Copyright (C) FrontAccounting, LLC.
-Released under the terms of the GNU General Public License, GPL,
-as published by the Free Software Foundation, either version 3
-of the License, or (at your option) any later version.
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
- ***********************************************************************/
-	if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_to_root'])) {
-		die(_("Restricted access"));
-	}
+	/**********************************************************************
+	Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL,
+	as published by the Free Software Foundation, either version 3
+	of the License, or (at your option) any later version.
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+	 ***********************************************************************/
+
 	include_once(APP_PATH . "includes/faui.inc");
 	$js = "<script language='JavaScript' type='text/javascript'>
 function defaultCompany()
@@ -34,8 +32,8 @@ function set_fullmode() {
 	{
 		$demo_text = _("Please login here");
 	}
-	if (!Config::get('company.default')===false) {
-		Config::set('company.default',0);
+	if (!Config::get('company.default') === false) {
+		Config::set('company.default', 0);
 	}
 	$def_theme = "default";
 	$login_timeout = $_SESSION["wa_current_user"]->last_act;
@@ -102,11 +100,12 @@ function set_fullmode() {
 	;
 	end_table(1);
 	echo "<center><input type='submit' value='&nbsp;&nbsp;" . _("Login -->") . "&nbsp;&nbsp;' name='SubmitUser'"
-			 . ($login_timeout ? '' : " onclick='set_fullmode();'") . " /></center>\n";
+	 . ($login_timeout ? '' : " onclick='set_fullmode();'") . " /></center>\n";
 	foreach ($_SESSION['timeout']['post'] as $p => $val) {
 		// add all request variables to be resend together with login data
 		if (!in_array($p, array('ui_mode', 'user_name_entry_field',
-													 'password', 'SubmitUser', 'company_login_name'))
+			'password', 'SubmitUser', 'company_login_name'
+		))
 		) {
 			echo "<input type='hidden' name='$p' value='$val'>";
 		}

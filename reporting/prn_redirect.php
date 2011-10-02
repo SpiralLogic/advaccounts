@@ -13,7 +13,7 @@
 	 Print request redirector. This file is fired via print link or
 	 print button in reporting module.
  */
-	$path_to_root = "..";
+
 	$page_security = 'SA_OPEN'; // this level is later overriden in rep file
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 

@@ -1,21 +1,21 @@
 <?php
-/**********************************************************************
-Copyright (C) FrontAccounting, LLC.
-Released under the terms of the GNU General Public License, GPL,
-as published by the Free Software Foundation, either version 3
-of the License, or (at your option) any later version.
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
- ***********************************************************************/
+	/**********************************************************************
+	Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL,
+	as published by the Free Software Foundation, either version 3
+	of the License, or (at your option) any later version.
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+	 ***********************************************************************/
 	$page_security = 'SA_SUPPLIERINVOICE';
-	$path_to_root = "..";
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/purchasing/includes/purchasing_db.inc");
+
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
-	include_once(APP_PATH . "/includes/banking.inc");
-	include_once(APP_PATH . "/includes/data_checks.inc");
-	include_once(APP_PATH . "/purchasing/includes/purchasing_ui.inc");
+	include_once(APP_PATH . "/purchasing/includes/purchasing_db.inc");
+	include_once(APP_PATH . "includes/banking.inc");
+	include_once(APP_PATH . "includes/data_checks.inc");
+	include_once(APP_PATH . "purchasing/includes/purchasing_ui.inc");
 	$js = "";
 	if (Config::get('ui.windows.popups')) {
 		$js .= get_js_open_window(900, 500);
@@ -52,7 +52,6 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		if (isset($_GET['SuppID'])) {
 			$_SESSION['wa_global_supplier_id'] = $_GET['SuppID'];
 		}
-
 	}
 	//--------------------------------------------------------------------------------------------------
 	function clear_fields() {
@@ -107,7 +106,6 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 					$gl_item->amount += input_num('amount') * .1;
 					break;
 				}
-
 			}
 			if (!$taxexists) {
 				$_SESSION['supp_trans']->add_gl_codes_to_trans(2430, 'GST Paid', 0, 0, input_num('amount') * .1, 'GST TAX Paid');
@@ -184,7 +182,6 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		}
 		if (get_post('ChgTotal', 0) != 0) {
 			$_SESSION['supp_trans']->add_gl_codes_to_trans(get_company_pref('default_cogs_act'), 'Cost of Goods Sold', 0, 0, get_post('ChgTotal'), 'Rounding Correction');
-
 		}
 		$invoice_no = add_supp_invoice($_SESSION['supp_trans']);
 		$_SESSION['supp_trans']->clear_items();
@@ -197,7 +194,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		handle_commit_invoice();
 	}
 	function check_item_data($n) {
-		global  $SysPrefs;
+		global $SysPrefs;
 		if (!check_num('this_quantity_inv' . $n, 0) || input_num('this_quantity_inv' . $n) == 0) {
 			display_error(_("The quantity to invoice must be numeric and greater than zero."));
 			set_focus('this_quantity_inv' . $n);
@@ -214,7 +211,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 			return false;
 		}
 		$margin = $SysPrefs->over_charge_allowance();
-		if (Config::get('valid.charged_to_delivered.price')  == True && $margin != 0) {
+		if (Config::get('valid.charged_to_delivered.price') == True && $margin != 0) {
 			if ($_POST['order_price' . $n] != input_num('ChgPrice' . $n)) {
 				if ($_POST['order_price' . $n] == 0 || input_num('ChgPrice' . $n) / $_POST['order_price' . $n] > (1 + ($margin / 100))) {
 					if ($_SESSION['err_over_charge'] != true) {
@@ -225,12 +222,11 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 					}
 					else {
 						$_SESSION['err_over_charge'] = false;
-
 					}
 				}
 			}
 		}
-		if (Config::get('valid.charged_to_delivered.qty')  == True) {
+		if (Config::get('valid.charged_to_delivered.qty') == True) {
 			if (input_num('this_quantity_inv' . $n) / ($_POST['qty_recd' . $n] - $_POST['prev_quantity_inv' . $n]) > (1 + ($margin / 100))) {
 				display_error(_("The quantity being invoiced is more than the outstanding quantity by more than the allowed over-charge percentage. The system is set up to prohibit this. See the system administrator to modify the set up parameters if necessary.") . _("The over-charge percentage allowance is :") . $margin . "%");
 				set_focus('this_quantity_inv' . $n);
@@ -250,8 +246,8 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 			}
 			$_SESSION['err_over_charge'] = false;
 			$_SESSION['supp_trans']->add_grn_to_trans($n, $_POST['po_detail_item' . $n], $_POST['item_code' . $n], $_POST['description' . $n], $_POST['qty_recd' . $n],
-																								$_POST['prev_quantity_inv' . $n], input_num('this_quantity_inv' . $n), $_POST['order_price' . $n], input_num('ChgPrice' . $n),
-																								$complete, $_POST['std_cost_unit' . $n], "", input_num('ChgDiscount' . $n), input_num('ExpPrice' . $n));
+				$_POST['prev_quantity_inv' . $n], input_num('this_quantity_inv' . $n), $_POST['order_price' . $n], input_num('ChgPrice' . $n),
+				$complete, $_POST['std_cost_unit' . $n], "", input_num('ChgDiscount' . $n), input_num('ExpPrice' . $n));
 		}
 	}
 
@@ -311,7 +307,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 			db_query($sql, "The quantity invoiced off the items received record could not be updated");
 			update_average_material_cost($grn["supplier_id"], $myrow["item_code"], $myrow["unit_price"], -$myrow["QtyOstdg"], Today());
 			add_stock_move(ST_SUPPRECEIVE, $myrow["item_code"], $myrow['grn_batch_id'], $grn['loc_code'], sql2date($grn["delivery_date"]), "", -$myrow["QtyOstdg"],
-										 $myrow['std_cost_unit'], $grn["supplier_id"], 1, $myrow['unit_price']);
+				$myrow['std_cost_unit'], $grn["supplier_id"], 1, $myrow['unit_price']);
 			commit_transaction();
 			display_notification(sprintf(_('All yet non-invoiced items on delivery line # %d has been removed.'), $id2));
 		}
@@ -341,7 +337,6 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		div_start('inv_tot');
 		invoice_totals($_SESSION['supp_trans']);
 		div_end();
-
 	}
 	//-----------------------------------------------------------------------------------------
 	if ($id != -1 || $id2 != -1) {

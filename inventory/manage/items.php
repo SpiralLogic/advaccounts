@@ -1,23 +1,23 @@
 <?php
-/**********************************************************************
-Copyright (C) FrontAccounting, LLC.
-Released under the terms of the GNU General Public License, GPL,
-as published by the Free Software Foundation, either version 3
-of the License, or (at your option) any later version.
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
- ***********************************************************************/
+	/**********************************************************************
+	Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL,
+	as published by the Free Software Foundation, either version 3
+	of the License, or (at your option) any later version.
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+	 ***********************************************************************/
 	$page_security = 'SA_ITEM';
-	$path_to_root = "../..";
+
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 
 	page(_($help_context = "Items"), @$_REQUEST['popup']);
-	include_once($path_to_root . "/includes/date_functions.inc");
-	include_once($path_to_root . "/includes/faui.inc");
-	include_once($path_to_root . "/includes/data_checks.inc");
-	include_once($path_to_root . "/inventory/includes/inventory_db.inc");
+	include_once(APP_PATH . "includes/date_functions.inc");
+	include_once(APP_PATH . "includes/faui.inc");
+	include_once(APP_PATH . "includes/data_checks.inc");
+	include_once(APP_PATH . "inventory/includes/inventory_db.inc");
 
 	$user_comp = '';
 	$new_item = get_post('stock_id') == '' || get_post('cancel') || get_post('clone');
@@ -58,9 +58,9 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 			display_warning(_('Only jpg files are supported - a file extension of .jpg is expected'));
 			$upload_file = 'No';
 		}
-		elseif ($_FILES['pic']['size'] > (Config::get('item.images.max_size')  * 1024))
+		elseif ($_FILES['pic']['size'] > (Config::get('item.images.max_size') * 1024))
 		{ //File Size Check
-			display_warning(_('The file size is over the maximum allowed. The maximum size allowed in KB is') . ' ' . Config::get('item.images.max_size') );
+			display_warning(_('The file size is over the maximum allowed. The maximum size allowed in KB is') . ' ' . Config::get('item.images.max_size'));
 			$upload_file = 'No';
 		}
 		elseif ($_FILES['pic']['type'] == "text/plain")
@@ -115,13 +115,12 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 			display_error(_('The item code cannot be empty'));
 			set_focus('NewStockID');
 		} elseif (strstr($_POST['NewStockID'], " ") || strstr($_POST['NewStockID'], "'") ||
-							strstr($_POST['NewStockID'], "+") || strstr($_POST['NewStockID'], "\"") ||
-							strstr($_POST['NewStockID'], "&") || strstr($_POST['NewStockID'], "\t")
+		 strstr($_POST['NewStockID'], "+") || strstr($_POST['NewStockID'], "\"") ||
+		 strstr($_POST['NewStockID'], "&") || strstr($_POST['NewStockID'], "\t")
 		) {
 			$input_error = 1;
 			display_error(_('The item code cannot contain any of the following characters -  & + OR a space OR quotes'));
 			set_focus('NewStockID');
-
 		} elseif ($new_item && db_num_rows(get_item_kit($_POST['NewStockID']))) {
 			$input_error = 1;
 			display_error(_("This item code is already assigned to stock item or sale kit."));
@@ -135,13 +134,13 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 			}
 			if (!$new_item) { /*so its an existing one */
 				update_item($_POST['NewStockID'], $_POST['description'],
-										$_POST['long_description'], $_POST['category_id'],
-										$_POST['tax_type_id'], get_post('units'),
-										get_post('mb_flag'), $_POST['sales_account'],
-										$_POST['inventory_account'], $_POST['cogs_account'],
-										$_POST['adjustment_account'], $_POST['assembly_account'],
-										$_POST['dimension_id'], $_POST['dimension2_id'],
-										check_value('no_sale'), check_value('editable'));
+					$_POST['long_description'], $_POST['category_id'],
+					$_POST['tax_type_id'], get_post('units'),
+					get_post('mb_flag'), $_POST['sales_account'],
+					$_POST['inventory_account'], $_POST['cogs_account'],
+					$_POST['adjustment_account'], $_POST['assembly_account'],
+					$_POST['dimension_id'], $_POST['dimension2_id'],
+					check_value('no_sale'), check_value('editable'));
 
 				update_record_status($_POST['NewStockID'], $_POST['inactive'], 'stock_master', 'stock_id');
 				update_record_status($_POST['NewStockID'], $_POST['inactive'], 'item_codes', 'item_code');
@@ -150,12 +149,12 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 				display_notification(_("Item has been updated."));
 			} else { //it is a NEW part
 				add_item($_POST['NewStockID'], $_POST['description'],
-								 $_POST['long_description'], $_POST['category_id'], $_POST['tax_type_id'],
-								 $_POST['units'], $_POST['mb_flag'], $_POST['sales_account'],
-								 $_POST['inventory_account'], $_POST['cogs_account'],
-								 $_POST['adjustment_account'], $_POST['assembly_account'],
-								 $_POST['dimension_id'], $_POST['dimension2_id'],
-								 check_value('no_sale'), check_value('editable'));
+					$_POST['long_description'], $_POST['category_id'], $_POST['tax_type_id'],
+					$_POST['units'], $_POST['mb_flag'], $_POST['sales_account'],
+					$_POST['inventory_account'], $_POST['cogs_account'],
+					$_POST['adjustment_account'], $_POST['assembly_account'],
+					$_POST['dimension_id'], $_POST['dimension2_id'],
+					check_value('no_sale'), check_value('editable'));
 
 				display_notification(_("A new item has been added."));
 				set_focus('NewStockID');
@@ -185,9 +184,9 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 
 	function check_usage($stock_id, $dispmsg = true) {
 		$sqls = array("SELECT COUNT(*) FROM stock_moves WHERE stock_id=" . db_escape($stock_id) => _('Cannot delete this item because there are stock movements that refer to this item.'),
-									"SELECT COUNT(*) FROM bom WHERE component=" . db_escape($stock_id) => _('Cannot delete this item record because there are bills of material that require this part as a component.'),
-									"SELECT COUNT(*) FROM sales_order_details WHERE stk_code=" . db_escape($stock_id) => _('Cannot delete this item because there are existing purchase order items for it.'),
-									"SELECT COUNT(*) FROM purch_order_details WHERE item_code=" . db_escape($stock_id) => _('Cannot delete this item because there are existing purchase order items for it.')
+			"SELECT COUNT(*) FROM bom WHERE component=" . db_escape($stock_id) => _('Cannot delete this item record because there are bills of material that require this part as a component.'),
+			"SELECT COUNT(*) FROM sales_order_details WHERE stk_code=" . db_escape($stock_id) => _('Cannot delete this item because there are existing purchase order items for it.'),
+			"SELECT COUNT(*) FROM purch_order_details WHERE item_code=" . db_escape($stock_id) => _('Cannot delete this item because there are existing purchase order items for it.')
 		);
 		$msg = '';
 		foreach ($sqls as $sql => $err) {
@@ -268,7 +267,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	} else { // Must be modifying an existing item
 		if (get_post('NewStockID') != get_post('stock_id') || get_post('addupdate')) { // first item display
 			$_POST['NewStockID'] = $_POST['stock_id'];
-			
+
 			$myrow = get_item($_POST['NewStockID']);
 			$_POST['long_description'] = $myrow["long_description"];
 			$_POST['description'] = $myrow["description"];
@@ -349,10 +348,10 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	// Add Image upload for New Item  - by Joe
 	$stock_img_link = "";
 	$check_remove_image = false;
-	if (isset($_POST['NewStockID']) && file_exists(COMPANY_PATH."/$user_comp/images/" . item_img_name($_POST['NewStockID']) . ".jpg")) {
+	if (isset($_POST['NewStockID']) && file_exists(COMPANY_PATH . "/$user_comp/images/" . item_img_name($_POST['NewStockID']) . ".jpg")) {
 		// 31/08/08 - rand() call is necessary here to avoid caching problems. Thanks to Peter D.
-		$stock_img_link .= "<img id='item_img' alt = '[" . $_POST['NewStockID'] . ".jpg" . "]' src='".COMPANY_PATH."/$user_comp/images/"
-											 . item_img_name($_POST['NewStockID']) . ".jpg?nocache=" . rand() . "'" . " height='".Config::get('item.images.height')."' border='0'>";
+		$stock_img_link .= "<img id='item_img' alt = '[" . $_POST['NewStockID'] . ".jpg" . "]' src='" . COMPANY_PATH . "/$user_comp/images/"
+		 . item_img_name($_POST['NewStockID']) . ".jpg?nocache=" . rand() . "'" . " height='" . Config::get('item.images.height') . "' border='0'>";
 		$check_remove_image = true;
 	} else {
 		$stock_img_link .= _("No image");
@@ -373,7 +372,6 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		submit('delete', _("Delete This Item"), true, '', true);
 		submit('addupdatenew', _("Save & New"), true, '', true);
 		submit_center_last('cancel', _("Cancel"), _("Cancel Edition"), 'cancel');
-
 	}
 	if (get_post('stock_id')) {
 		set_global_stock_item(get_post('stock_id'));

@@ -1,24 +1,24 @@
 <?php
-/**********************************************************************
-Copyright (C) FrontAccounting, LLC.
-Released under the terms of the GNU General Public License, GPL,
-as published by the Free Software Foundation, either version 3
-of the License, or (at your option) any later version.
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
- ***********************************************************************/
+	/**********************************************************************
+	Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL,
+	as published by the Free Software Foundation, either version 3
+	of the License, or (at your option) any later version.
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+	 ***********************************************************************/
 	$page_security = 'SA_FORITEMCODE';
-	$path_to_root = "../..";
+
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 
 	page(_($help_context = "Foreign Item Codes"));
 
-	include_once($path_to_root . "/includes/date_functions.inc");
-	include_once($path_to_root . "/includes/faui.inc");
-	include_once($path_to_root . "/includes/manufacturing.inc");
-	include_once($path_to_root . "/includes/data_checks.inc");
+	include_once(APP_PATH . "includes/date_functions.inc");
+	include_once(APP_PATH . "includes/faui.inc");
+	include_once(APP_PATH . "includes/manufacturing.inc");
+	include_once(APP_PATH . "includes/data_checks.inc");
 
 	check_db_has_purchasable_items(_("There are no inventory items defined in the system."));
 
@@ -58,13 +58,13 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		if ($input_error == 0) {
 			if ($Mode == 'ADD_ITEM') {
 				add_item_code($_POST['item_code'], $_POST['stock_id'],
-											$_POST['description'], $_POST['category_id'], $_POST['quantity'], 1);
+					$_POST['description'], $_POST['category_id'], $_POST['quantity'], 1);
 
 				display_notification(_("New item code has been added."));
 			} else
 			{
 				update_item_code($selected_id, $_POST['item_code'], $_POST['stock_id'],
-												 $_POST['description'], $_POST['category_id'], $_POST['quantity'], 1);
+					$_POST['description'], $_POST['category_id'], $_POST['quantity'], 1);
 
 				display_notification(_("Item code has been updated."));
 			}
@@ -114,7 +114,8 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	start_table(Config::get('tables.style') . "  width=60%");
 
 	$th = array(_("EAN/UPC Code"), _("Quantity"), _("Units"),
-							_("Description"), _("Category"), "", "");
+		_("Description"), _("Category"), "", ""
+	);
 
 	table_header($th);
 

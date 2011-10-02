@@ -34,7 +34,7 @@
 			$messages[] = array(E_ERROR, $m[2], null, null);
 		}
 		$Ajax->run();
-		return in_ajax() ? fmt_errors() : ($before_box . fmt_errors() . $text);
+		return Ajax::in_ajax() ? fmt_errors() : ($before_box . fmt_errors() . $text);
 	}
 
 	function fb_errors() {
@@ -148,6 +148,7 @@
 	define('APP_PATH', realpath(__DIR__ . '/..') . DIRECTORY_SEPARATOR);
 	$path = substr(str_repeat('../', substr_count(str_replace(APP_PATH, '', realpath('.') . DIRECTORY_SEPARATOR), '/')), 0, -1);
 	$path_to_root = (!$path) ? '.' : $path;
+	define('PATH_TO_ROOT', (!$path) ? '.' : $path);
 	ini_set('unserialize_callback_func', 'class_autoloader'); // set your callback_function
 	spl_autoload_extensions('.php,.inc');
 	spl_autoload_register('class_autoloader');
@@ -172,10 +173,7 @@
 		ini_set("log_errors", "On");
 	}
 
-	include(APP_PATH . "frontaccounting.php");
-	include(APP_PATH . "admin/db/security_db.inc");
-	include(APP_PATH . "includes/ajax.inc");
-	include(APP_PATH . "includes/faui.inc");
+	include(APP_PATH . "includes/main.inc");
 
 	ini_set('session.gc_maxlifetime', 36000); // 10hrs
 	session_name('FA' . md5(dirname(__FILE__)));
@@ -184,7 +182,7 @@
 	gettext_native_support::get_text_init();
 	if (Config::get('debug') && isset($_SESSION["wa_current_user"]) && $_SESSION["wa_current_user"]->user == 1) {
 		error_reporting(E_ALL);
-		if (preg_match('/Chrome/i', $_SERVER['HTTP_USER_AGENT'])) { 
+		if (preg_match('/Chrome/i', $_SERVER['HTTP_USER_AGENT'])) {
 			include(APP_PATH . 'includes/fb.php');
 			FB::useFile(APP_PATH . 'tmp/chromelogs', '/tmp/chromelogs');
 		} else {
@@ -208,9 +206,6 @@
 		include(APP_PATH . "lang/" . $_SESSION['language']->code . "/locale.inc");
 		$Hooks = new Hooks();
 	}
-
-	include(APP_PATH . "includes/access_levels.inc");
-	include(APP_PATH . "includes/main.inc");
 
 	// Ajax communication object
 	$Ajax = new Ajax();
@@ -242,7 +237,7 @@
 				// strip ajax marker from uri, to force synchronous page reload
 				$_SESSION['timeout'] = array('uri' => preg_replace('/JsHttpRequest=(?:(\d+)-)?([^&]+)/s', '', @$_SERVER['REQUEST_URI']), 'post' => $_POST);
 				include(APP_PATH . "access/login.php");
-				if (in_ajax() || AJAX_REFERRER) {
+				if (Ajax::in_ajax() || AJAX_REFERRER) {
 					$Ajax->activate('_page_body');
 				}
 
@@ -271,7 +266,7 @@
 			include(APP_PATH . 'company/installed_extensions.php');
 		}
 		if (!isset($_SESSION["App"])) {
-			$_SESSION["App"] = new front_accounting();
+			$_SESSION["App"] = new frontaccounting();
 			$_SESSION["App"]->init();
 		}
 	}

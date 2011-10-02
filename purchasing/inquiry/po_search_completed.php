@@ -1,25 +1,23 @@
 <?php
-/**********************************************************************
-Copyright (C) FrontAccounting, LLC.
-Released under the terms of the GNU General Public License, GPL,
-as published by the Free Software Foundation, either version 3
-of the License, or (at your option) any later version.
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
- ***********************************************************************/
+	/**********************************************************************
+	Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL,
+	as published by the Free Software Foundation, either version 3
+	of the License, or (at your option) any later version.
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+	 ***********************************************************************/
 	$page_security = 'SA_SUPPTRANSVIEW';
-	$path_to_root = "../..";
-	include($path_to_root . "/includes/db_pager.inc");
+
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
-	include($path_to_root . "/purchasing/includes/purchasing_ui.inc");
-	include_once($path_to_root . "/reporting/includes/reporting.inc");
+	include(APP_PATH . "purchasing/includes/purchasing_ui.inc");
+	include_once(APP_PATH . "reporting/includes/reporting.inc");
 	$js = "";
 	if (Config::get('ui.windows.popups')) {
 		$js .= get_js_open_window(900, 500);
 	}
-
 
 	page(_($help_context = "Search Purchase Orders"), @$_REQUEST['frame'], false, "", $js);
 
@@ -40,7 +38,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		$Ajax->addDisable(true, 'StockLocation', $disable);
 		$Ajax->addDisable(true, '_SelectStockFromList_edit', $disable);
 		$Ajax->addDisable(true, 'SelectStockFromList', $disable);
-	 $Ajax->addDisable(true, 'SelectStockFromList', $disable);
+		$Ajax->addDisable(true, 'SelectStockFromList', $disable);
 
 		if ($disable) {
 			$Ajax->addFocus(true, 'order_number');
@@ -73,7 +71,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	}
 
 	if (isset($_POST['SelectStockFromList']) && ($_POST['SelectStockFromList'] != "") && (
-			$_POST['SelectStockFromList'] != ALL_TEXT)
+	 $_POST['SelectStockFromList'] != ALL_TEXT)
 	) {
 		$selected_stock_item = $_POST['SelectStockFromList'];
 	} else {
@@ -87,7 +85,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 
 	function edit_link($row) {
 		return pager_link(_("Edit"), "/purchasing/po_entry_items.php?" . SID . "ModifyOrderNumber=" .
-				$row["order_no"], ICON_EDIT);
+		 $row["order_no"], ICON_EDIT);
 	}
 
 	function prt_link($row) {
@@ -101,7 +99,6 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		elseif ($row['Invoiced'] > 0) {
 			return pager_link(_("Invoice"), "/purchasing/supplier_invoice.php?New=1&SuppID=" . $row['supplier_id'] . "&PONumber=" . $row["order_no"], ICON_RECEIVE);
 		}
-
 		//advaccounts/purchasing/supplier_invoice.php?New=1
 	}
 
@@ -157,7 +154,6 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		if (isset($selected_stock_item)) {
 			$sql .= " AND line.item_code=" . db_escape($selected_stock_item);
 		}
-
 	} //end not order number selected
 
 	$sql .= " GROUP BY porder.order_no";

@@ -1,33 +1,33 @@
 <?php
 
-   /*     * ********************************************************************
- Copyright (C) FrontAccounting, LLC.
- Released under the terms of the GNU General Public License, GPL,
- as published by the Free Software Foundation, either version 3
- of the License, or (at your option) any later version.
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
- * ********************************************************************* */
-   $page_security = 'SA_CUSTSTATREP';
-   // ----------------------------------------------------------------
-   // $ Revision:	2.0 $
-   // Creator:	Joe Hunt
-   // date_:	2005-05-19
-   // Title:	Print Statements
-   // ----------------------------------------------------------------
-   $path_to_root = "..";
-   include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
-   include_once($path_to_root . "/includes/date_functions.inc");
-   include_once($path_to_root . "/includes/data_checks.inc");
-   include_once($path_to_root . "/sales/includes/sales_db.inc");
-   //----------------------------------------------------------------------------------------------------
-   print_statements();
-   //----------------------------------------------------------------------------------------------------
-   function
-   getTransactions($debtorno, $date) {
-      $sql = "SELECT debtor_trans.*,
+	/*     * ********************************************************************
+	 Copyright (C) FrontAccounting, LLC.
+	 Released under the terms of the GNU General Public License, GPL,
+	 as published by the Free Software Foundation, either version 3
+	 of the License, or (at your option) any later version.
+	 This program is distributed in the hope that it will be useful,
+	 but WITHOUT ANY WARRANTY; without even the implied warranty of
+	 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+	 See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+	 * ********************************************************************* */
+	$page_security = 'SA_CUSTSTATREP';
+	// ----------------------------------------------------------------
+	// $ Revision:	2.0 $
+	// Creator:	Joe Hunt
+	// date_:	2005-05-19
+	// Title:	Print Statements
+	// ----------------------------------------------------------------
+
+	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	include_once(APP_PATH . "includes/date_functions.inc");
+	include_once(APP_PATH . "includes/data_checks.inc");
+	include_once(APP_PATH . "sales/includes/sales_db.inc");
+	//----------------------------------------------------------------------------------------------------
+	print_statements();
+	//----------------------------------------------------------------------------------------------------
+	function
+	getTransactions($debtorno, $date) {
+		$sql = "SELECT debtor_trans.*,
 				(debtor_trans.ov_amount + debtor_trans.ov_gst + debtor_trans.ov_freight +
 				debtor_trans.ov_freight_tax + debtor_trans.ov_discount)
 				AS TotalAmount, debtor_trans.alloc AS Allocated,
@@ -41,151 +41,157 @@
 				 AND (debtor_trans.ov_amount + debtor_trans.ov_gst + debtor_trans.ov_freight +
 				debtor_trans.ov_freight_tax + debtor_trans.ov_discount - " . '' . "debtor_trans.alloc) != 0
     				ORDER BY debtor_trans.branch_code, debtor_trans.tran_date";
-      return db_query($sql, "No transactions were returned");
-   }
+		return db_query($sql, "No transactions were returned");
+	}
 
-   //----------------------------------------------------------------------------------------------------
-   function getTransactionPO($no) {
-      $sql = "SELECT customer_ref
+	//----------------------------------------------------------------------------------------------------
+	function getTransactionPO($no) {
+		$sql = "SELECT customer_ref
         FROM sales_orders
         WHERE order_no=$no";
-      $result = db_query($sql, "Could not retrieve any branches");
-      $myrow = db_fetch_assoc($result);
-      return $myrow['customer_ref'];
-   }
+		$result = db_query($sql, "Could not retrieve any branches");
+		$myrow = db_fetch_assoc($result);
+		return $myrow['customer_ref'];
+	}
 
-   function print_statements() {
-      global $path_to_root, $systypes_array;
-      include_once($path_to_root . "/reporting/includes/pdf_report.inc");
-      $customer = $_POST['PARAM_0'];
-      $currency = $_POST['PARAM_1'];
-      $email = $_POST['PARAM_2'];
-      $comments = $_POST['PARAM_3'];
-      $incPayments = $_POST['PARAM_4'];
-      $incNegatives = $_POST['PARAM_5'];
-      $doc_Outstanding = $doc_Over = $doc_Days = $doc_Current = $doc_Total_Balance = null;
-      $dec = user_price_dec();
-      $cols = array(4, 80, 120, 180, 230, 280, 320, 385, 450, 515);
-      //$headers in doctext.inc
-      $aligns = array('left', 'left', 'left', 'left', 'left', 'right', 'right', 'right', 'right');
-      $params = array('comments' => $comments);
-      $cur = get_company_pref('curr_default');
-      $PastDueDays1 = get_company_pref('past_due_days');
-      $PastDueDays2 = 2 * $PastDueDays1;
-      if ($email == 0) {
-         $rep = new FrontReport(_('STATEMENT'), "StatementBulk", user_pagesize());
-         $rep->currency = $cur;
-         $rep->Font();
-         $rep->Info($params, $cols, null, $aligns);
-      }
-      $sql = "SELECT debtor_no, name AS DebtorName, address, tax_id, email,  curr_code, curdate() AS tran_date, payment_terms FROM debtors_master";
-      if ($customer != ALL_NUMERIC) {
-         $sql .= " WHERE debtor_no = " . db_escape($customer);
-      }
-      else {
-         $sql .= " ORDER by name";
-      }
-      $result = db_query($sql, "The customers could not be retrieved");
-      while ($myrow = db_fetch($result)) {
-         $date = date('Y-m-d');
-         $myrow['order_'] = "";
-         $TransResult = getTransactions($myrow['debtor_no'], $date);
-         $CustomerRecord = get_customer_details($myrow['debtor_no']);
-         if (round($CustomerRecord["Balance"], 2) == 0)
-            continue;
-         if ($CustomerRecord["Balance"] < 0 && !$incNegatives)
-            continue;
-         $baccount = get_default_bank_account($myrow['curr_code']);
-         $params['bankaccount'] = $baccount['id'];
-         if ((db_num_rows($TransResult) == 0)) { //|| ($CustomerRecord['Balance'] == 0)
-            continue;
-         }
-         if ($email == 1) {
-            $rep = new FrontReport("", "", user_pagesize());
-            $rep->currency = $cur;
-            $rep->Font();
-            $rep->title = _('STATEMENT');
-            $rep->filename = "Statement" . $myrow['debtor_no'] . ".pdf";
-            $rep->Info($params, $cols, null, $aligns);
-         }
-         $transactions = array();
-         while ($transaction = db_fetch_assoc($TransResult)) {
-            $transactions[] = $transaction;
-         }
-         $prev_branch = 0;
-         for ($i = 0; $i < count($transactions); $i++) {
-            $myrow2 = $transactions[$i];
-            $DisplayTotal = number_format2(Abs($myrow2["TotalAmount"]), $dec);
-            if ($myrow2["Allocated"] > 0) {
-               $DisplayAlloc = number_format2($myrow2["Allocated"], $dec);
-               $DisplayNet = number_format2($DisplayTotal - $DisplayAlloc, $dec);
-            }
-            else {
-               $DisplayAlloc = '0.00';
-               $DisplayNet = $DisplayTotal;
-            }
-            if ($DisplayNet == 0)
-               continue;
-            if (($myrow2['type'] == ST_CUSTPAYMENT || $myrow2['type'] == ST_BANKPAYMENT) && !$incPayments)
-               continue;
-            if ($prev_branch != $transactions[$i]['branch_code']) {
-               $rep->Header2($myrow, get_branch($transactions[$i]['branch_code']), null, $baccount, ST_STATEMENT);
-               $rep->NewLine();
-               if ($rep->currency != $myrow['curr_code']) {
-                  include($path_to_root . "/reporting/includes/doctext2.inc");
-               }
-               else {
-                  include($path_to_root . "/reporting/includes/doctext.inc");
-               }
-               $rep->fontSize += 2;
-               $rep->TextCol(0, 8, $doc_Outstanding);
-               $rep->fontSize -= 2;
-               $rep->NewLine(2);
-               $prev_branch = $transactions[$i]['branch_code'];
-            }
-            $rep->TextCol(0, 1, $systypes_array[$myrow2['type']], -2);
-            if ($myrow2['type'] == '10')
-               $rep->TextCol(2, 3, getTransactionPO($myrow2['order_']), -2);
-            else $rep->TextCol(2, 3, '', -2);
-            $rep->TextCol(1, 2, $myrow2['reference'], -2);
-            $rep->TextCol(3, 4, sql2date($myrow2['tran_date']), -2);
-            if ($myrow2['type'] == ST_SALESINVOICE)
-               $rep->TextCol(4, 5, sql2date($myrow2['due_date']), -2);
-            if ($myrow2['type'] == ST_SALESINVOICE)
-               $rep->TextCol(5, 6, $DisplayTotal, -2);
-            else $rep->TextCol(6, 7, $DisplayTotal, -2);
-            $rep->TextCol(7, 8, $DisplayAlloc, -2);
-            if ($myrow2['type'] == ST_SALESINVOICE || $DisplayNet == 0)
-               $rep->TextCol(8, 9, $DisplayNet, -2);
-            else $rep->TextCol(8, 9,
-                               number_format2($DisplayNet * -1,
-                                              $dec), -2);
-            $rep->NewLine();
-            if ($rep->row < $rep->bottomMargin + (10 * $rep->lineHeight))
-               $rep->Header2($myrow, null, null, $baccount, ST_STATEMENT);
-         }
-         $doc_Current = _("Current");
-         $nowdue = "1-" . $PastDueDays1 . " " . $doc_Days;
-         $pastdue1 = $PastDueDays1 + 1 . "-" . $PastDueDays2 . " " . $doc_Days;
-         $pastdue2 = $doc_Over . " " . $PastDueDays2 . " " . $doc_Days;
-         $str = array($doc_Current, $nowdue, $pastdue1, $pastdue2, $doc_Total_Balance);
-         $str2 = array(number_format2(($CustomerRecord["Balance"] - $CustomerRecord["Due"]), $dec),
-                       number_format2(($CustomerRecord["Due"] - $CustomerRecord["Overdue1"]), $dec),
-                       number_format2(($CustomerRecord["Overdue1"] - $CustomerRecord["Overdue2"]), $dec),
-                       number_format2($CustomerRecord["Overdue2"], $dec),
-                       number_format2($CustomerRecord["Balance"], $dec));
-         $col = array($rep->cols[0], $rep->cols[0] + 110, $rep->cols[0] + 210, $rep->cols[0] + 310, $rep->cols[0] + 410,
-                      $rep->cols[0] + 510);
-         $rep->row = $rep->bottomMargin + (10 * $rep->lineHeight - 6);
-         for ($i = 0; $i < 5; $i++)
-            $rep->TextWrap($col[$i], $rep->row, $col[$i + 1] - $col[$i], $str[$i], 'right');
-         $rep->NewLine();
-         for ($i = 0; $i < 5; $i++)
-            $rep->TextWrap($col[$i], $rep->row, $col[$i + 1] - $col[$i], $str2[$i], 'right');
-         if ($email == 1)
-            $rep->End($email, $doc_Statement . " " . $doc_as_of . " " . sql2date($date), $myrow, ST_STATEMENT);
-      }
-      if ($email == 0) {
-         $rep->End();
-      }
-   }
+	function print_statements() {
+		global $path_to_root, $systypes_array;
+		include_once(APP_PATH . "reporting/includes/pdf_report.inc");
+		$customer = $_POST['PARAM_0'];
+		$currency = $_POST['PARAM_1'];
+		$email = $_POST['PARAM_2'];
+		$comments = $_POST['PARAM_3'];
+		$incPayments = $_POST['PARAM_4'];
+		$incNegatives = $_POST['PARAM_5'];
+		$doc_Outstanding = $doc_Over = $doc_Days = $doc_Current = $doc_Total_Balance = null;
+		$dec = user_price_dec();
+		$cols = array(4, 80, 120, 180, 230, 280, 320, 385, 450, 515);
+		//$headers in doctext.inc
+		$aligns = array('left', 'left', 'left', 'left', 'left', 'right', 'right', 'right', 'right');
+		$params = array('comments' => $comments);
+		$cur = get_company_pref('curr_default');
+		$PastDueDays1 = get_company_pref('past_due_days');
+		$PastDueDays2 = 2 * $PastDueDays1;
+		if ($email == 0) {
+			$rep = new FrontReport(_('STATEMENT'), "StatementBulk", user_pagesize());
+			$rep->currency = $cur;
+			$rep->Font();
+			$rep->Info($params, $cols, null, $aligns);
+		}
+		$sql = "SELECT debtor_no, name AS DebtorName, address, tax_id, email,  curr_code, curdate() AS tran_date, payment_terms FROM debtors_master";
+		if ($customer != ALL_NUMERIC) {
+			$sql .= " WHERE debtor_no = " . db_escape($customer);
+		}
+		else {
+			$sql .= " ORDER by name";
+		}
+		$result = db_query($sql, "The customers could not be retrieved");
+		while ($myrow = db_fetch($result)) {
+			$date = date('Y-m-d');
+			$myrow['order_'] = "";
+			$TransResult = getTransactions($myrow['debtor_no'], $date);
+			$CustomerRecord = get_customer_details($myrow['debtor_no']);
+			if (round($CustomerRecord["Balance"], 2) == 0)
+				continue;
+			if ($CustomerRecord["Balance"] < 0 && !$incNegatives)
+				continue;
+			$baccount = get_default_bank_account($myrow['curr_code']);
+			$params['bankaccount'] = $baccount['id'];
+			if ((db_num_rows($TransResult) == 0)) { //|| ($CustomerRecord['Balance'] == 0)
+				continue;
+			}
+			if ($email == 1) {
+				$rep = new FrontReport("", "", user_pagesize());
+				$rep->currency = $cur;
+				$rep->Font();
+				$rep->title = _('STATEMENT');
+				$rep->filename = "Statement" . $myrow['debtor_no'] . ".pdf";
+				$rep->Info($params, $cols, null, $aligns);
+			}
+			$transactions = array();
+			while ($transaction = db_fetch_assoc($TransResult)) {
+				$transactions[] = $transaction;
+			}
+			$prev_branch = 0;
+			for ($i = 0; $i < count($transactions); $i++) {
+				$myrow2 = $transactions[$i];
+				$DisplayTotal = number_format2(Abs($myrow2["TotalAmount"]), $dec);
+				if ($myrow2["Allocated"] > 0) {
+					$DisplayAlloc = number_format2($myrow2["Allocated"], $dec);
+					$DisplayNet = number_format2($DisplayTotal - $DisplayAlloc, $dec);
+				}
+				else {
+					$DisplayAlloc = '0.00';
+					$DisplayNet = $DisplayTotal;
+				}
+				if ($DisplayNet == 0)
+					continue;
+				if (($myrow2['type'] == ST_CUSTPAYMENT || $myrow2['type'] == ST_BANKPAYMENT) && !$incPayments)
+					continue;
+				if ($prev_branch != $transactions[$i]['branch_code']) {
+					$rep->Header2($myrow, get_branch($transactions[$i]['branch_code']), null, $baccount, ST_STATEMENT);
+					$rep->NewLine();
+					if ($rep->currency != $myrow['curr_code']) {
+						include(APP_PATH . "reporting/includes/doctext2.inc");
+					}
+					else {
+						include(APP_PATH . "reporting/includes/doctext.inc");
+					}
+					$rep->fontSize += 2;
+					$rep->TextCol(0, 8, $doc_Outstanding);
+					$rep->fontSize -= 2;
+					$rep->NewLine(2);
+					$prev_branch = $transactions[$i]['branch_code'];
+				}
+				$rep->TextCol(0, 1, $systypes_array[$myrow2['type']], -2);
+				if ($myrow2['type'] == '10')
+					$rep->TextCol(2, 3, getTransactionPO($myrow2['order_']), -2);
+				else $rep->TextCol(2, 3, '', -2);
+				$rep->TextCol(1, 2, $myrow2['reference'], -2);
+				$rep->TextCol(3, 4, sql2date($myrow2['tran_date']), -2);
+				if ($myrow2['type'] == ST_SALESINVOICE)
+					$rep->TextCol(4, 5, sql2date($myrow2['due_date']), -2);
+				if ($myrow2['type'] == ST_SALESINVOICE)
+					$rep->TextCol(5, 6, $DisplayTotal, -2);
+				else $rep->TextCol(6, 7, $DisplayTotal, -2);
+				$rep->TextCol(7, 8, $DisplayAlloc, -2);
+				if ($myrow2['type'] == ST_SALESINVOICE || $DisplayNet == 0)
+					$rep->TextCol(8, 9, $DisplayNet, -2);
+				else $rep->TextCol(8, 9,
+					number_format2($DisplayNet * -1,
+						$dec), -2);
+				$rep->NewLine();
+				if ($rep->row < $rep->bottomMargin + (10 * $rep->lineHeight))
+					$rep->Header2($myrow, null, null, $baccount, ST_STATEMENT);
+			}
+			$doc_Current = _("Current");
+			$nowdue = "1-" . $PastDueDays1 . " " . $doc_Days;
+			$pastdue1 = $PastDueDays1 + 1 . "-" . $PastDueDays2 . " " . $doc_Days;
+			$pastdue2 = $doc_Over . " " . $PastDueDays2 . " " . $doc_Days;
+			$str = array($doc_Current, $nowdue, $pastdue1, $pastdue2, $doc_Total_Balance);
+			$str2 = array(number_format2(($CustomerRecord["Balance"] - $CustomerRecord["Due"]), $dec),
+				number_format2(($CustomerRecord["Due"] - $CustomerRecord["Overdue1"]), $dec),
+				number_format2(($CustomerRecord["Overdue1"] - $CustomerRecord["Overdue2"]), $dec),
+				number_format2($CustomerRecord["Overdue2"], $dec),
+				number_format2($CustomerRecord["Balance"], $dec)
+			);
+			$col = array($rep->cols[0], $rep->cols[0] + 110, $rep->cols[0] + 210, $rep->cols[0] + 310, $rep->cols[0] + 410,
+				$rep->cols[0] + 510
+			);
+			$rep->row = $rep->bottomMargin + (10 * $rep->lineHeight - 6);
+			for ($i = 0; $i < 5; $i++)
+			{
+				$rep->TextWrap($col[$i], $rep->row, $col[$i + 1] - $col[$i], $str[$i], 'right');
+			}
+			$rep->NewLine();
+			for ($i = 0; $i < 5; $i++)
+			{
+				$rep->TextWrap($col[$i], $rep->row, $col[$i + 1] - $col[$i], $str2[$i], 'right');
+			}
+			if ($email == 1)
+				$rep->End($email, $doc_Statement . " " . $doc_as_of . " " . sql2date($date), $myrow, ST_STATEMENT);
+		}
+		if ($email == 0) {
+			$rep->End();
+		}
+	}

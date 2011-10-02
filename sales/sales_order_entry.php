@@ -17,7 +17,7 @@
 	//	Entry Direct Delivery
 	//	Entry Direct Invoice
 	//
-	$path_to_root = "..";
+
 	$page_security = 'SA_SALESORDER';
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 
@@ -38,7 +38,7 @@
 			'ModifyQuotationNumber' => 'SA_SALESQUOTE',
 			'NewDelivery' => 'SA_SALESDELIVERY',
 			'NewInvoice' => 'SA_SALESINVOICE'
-		)); 
+		));
 	$js = '';
 
 	if (Config::get('ui.windows.popups')) {
@@ -59,7 +59,7 @@
 		$_SESSION['page_title'] = _($help_context = "Direct Sales Delivery");
 		create_cart(ST_CUSTDELIVERY, $_GET['NewDelivery']);
 	}
-	
+
 	if (Input::get('NewInvoice', Input::NUMERIC)) {
 		$_SESSION['page_title'] = _($help_context = "Direct Sales Invoice");
 		create_cart(ST_SALESINVOICE, $_GET['NewInvoice']);
@@ -98,7 +98,6 @@
 		create_cart($serial, 0);
 	}
 
-	 
 	page($_SESSION['page_title'], false, false, "", $js);
 	//-----------------------------------------------------------------------------
 	if (list_updated('branch_id')) {

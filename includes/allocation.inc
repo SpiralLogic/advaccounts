@@ -67,11 +67,11 @@
 				$item = $this->allocs[$i];
 				if (($item->type == $type) && ($item->type_no == $type_no)) {
 					return $this->update_item($i, $type, $type_no, $date_, $due_date,
-																		$amount, $amount_allocated, $current_allocated);
+						$amount, $amount_allocated, $current_allocated);
 				}
 			}
 			return $this->add_item($type, $type_no, $date_, $due_date,
-														 $amount, $amount_allocated, $current_allocated);
+				$amount, $amount_allocated, $current_allocated);
 		}
 
 		//
@@ -116,11 +116,11 @@
 			while ($myrow = db_fetch($trans_items))
 			{
 				$this->add_item($myrow["type"], $myrow["trans_no"],
-												sql2date($myrow["tran_date"]),
-												sql2date($myrow["due_date"]),
-												$myrow["Total"], // trans total
-												$myrow["alloc"], // trans total allocated
-												0); // this allocation
+					sql2date($myrow["tran_date"]),
+					sql2date($myrow["due_date"]),
+					$myrow["Total"], // trans total
+					$myrow["alloc"], // trans total allocated
+					0); // this allocation
 			}
 
 			if ($trans_no == 0) return; // this is new payment
@@ -131,18 +131,18 @@
 
 			if ($this->person_type)
 				$trans_items = get_allocatable_to_supp_transactions($this->person_id,
-																														$trans_no, $type);
+					$trans_no, $type);
 			else
 				$trans_items = get_allocatable_to_cust_transactions($this->person_id,
-																														$trans_no, $type);
+					$trans_no, $type);
 
 			while ($myrow = db_fetch($trans_items))
 			{
 				$this->add_or_update_item($myrow["type"], $myrow["trans_no"],
-																	sql2date($myrow["tran_date"]),
-																	sql2date($myrow["due_date"]),
-																	$myrow["Total"],
-																	$myrow["alloc"] - $myrow["amt"], $myrow["amt"]);
+					sql2date($myrow["tran_date"]),
+					sql2date($myrow["due_date"]),
+					$myrow["Total"],
+				 $myrow["alloc"] - $myrow["amt"], $myrow["amt"]);
 			}
 		}
 
@@ -164,26 +164,26 @@
 				if ($alloc_item->current_allocated > 0) {
 					if ($this->person_type) {
 						add_supp_allocation($alloc_item->current_allocated,
-																$this->type, $this->trans_no,
-																$alloc_item->type, $alloc_item->type_no, $this->date_);
+							$this->type, $this->trans_no,
+							$alloc_item->type, $alloc_item->type_no, $this->date_);
 
 						update_supp_trans_allocation($alloc_item->type,
-																				 $alloc_item->type_no, $alloc_item->current_allocated);
+							$alloc_item->type_no, $alloc_item->current_allocated);
 					}
 					else {
 						add_cust_allocation($alloc_item->current_allocated,
-																$this->type, $this->trans_no,
-																$alloc_item->type, $alloc_item->type_no, $this->date_);
+							$this->type, $this->trans_no,
+							$alloc_item->type, $alloc_item->type_no, $this->date_);
 
 						update_debtor_trans_allocation($alloc_item->type,
-																					 $alloc_item->type_no, $alloc_item->current_allocated);
+							$alloc_item->type_no, $alloc_item->current_allocated);
 					}
 					// Exchange Variations Joe Hunt 2008-09-20 ////////////////////
 
 					exchange_variation($this->type, $this->trans_no,
-														 $alloc_item->type, $alloc_item->type_no, $this->date_,
-														 $alloc_item->current_allocated,
-														 $this->person_type ? PT_SUPPLIER : PT_CUSTOMER);
+						$alloc_item->type, $alloc_item->type_no, $this->date_,
+						$alloc_item->current_allocated,
+						$this->person_type ? PT_SUPPLIER : PT_CUSTOMER);
 
 					//////////////////////////////////////////////////////////////
 					$total_allocated += $alloc_item->current_allocated;
@@ -191,10 +191,10 @@
 			} /*end of the loop through the array of allocations made */
 			if ($this->person_type)
 				update_supp_trans_allocation($this->type, $this->trans_no,
-																		 $total_allocated);
+					$total_allocated);
 			else
 				update_debtor_trans_allocation($this->type, $this->trans_no,
-																			 $total_allocated);
+					$total_allocated);
 
 			commit_transaction();
 		}
@@ -241,7 +241,7 @@
 		if (count($_SESSION['alloc']->allocs)) {
 			start_table(Config::get('tables.style') . "  width=60%");
 			$th = array(_("Transaction Type"), _("#"), _("Date"), _("Due Date"), _("Amount"),
-									_("Other Allocations"), _("This Allocation"), _("Left to Allocate"), '', ''
+				_("Other Allocations"), _("This Allocation"), _("Left to Allocate"), '', ''
 			);
 			table_header($th);
 
@@ -261,10 +261,10 @@
 				$un_allocated = round($alloc_item->amount - $alloc_item->amount_allocated, 6);
 				amount_cell($un_allocated, false, '', 'maxval' . $counter);
 				label_cell("<a href='javascript:' name=Alloc$counter onclick='allocate_all(this.name.substr(5));return true;'>"
-									 . _("All") . "</a>");
+					 . _("All") . "</a>");
 				label_cell("<a href='javascript:' name=DeAll$counter onclick='allocate_none(this.name.substr(5));return true;'>"
-									 . _("None") . "</a>" . hidden("un_allocated" . $counter,
-																								 price_format($un_allocated), false));
+					 . _("None") . "</a>" . hidden("un_allocated" . $counter,
+						price_format($un_allocated), false));
 				end_row();
 
 				$total_allocated += input_num('amount' . $counter);
@@ -272,12 +272,12 @@
 			}
 			if ($show_totals) {
 				label_row(_("Total Allocated"), price_format($total_allocated),
-									"colspan=6 align=right", "align=right id='total_allocated'", 3);
+					"colspan=6 align=right", "align=right id='total_allocated'", 3);
 				$amount = $_SESSION['alloc']->amount;
 
 				if ($_SESSION['alloc']->type == ST_SUPPCREDIT
-						|| $_SESSION['alloc']->type == ST_SUPPAYMENT
-						|| $_SESSION['alloc']->type == ST_BANKPAYMENT
+				 || $_SESSION['alloc']->type == ST_SUPPAYMENT
+				 || $_SESSION['alloc']->type == ST_BANKPAYMENT
 				)
 					$amount = -$amount;
 
@@ -289,8 +289,8 @@
 					$font1 = $font2 = "";
 				$left_to_allocate = price_format($amount - $total_allocated);
 				label_row(_("Left to Allocate"), $font1 . $left_to_allocate . $font2,
-									"colspan=6 align=right", "nowrap align=right id='left_to_allocate'",
-									3);
+					"colspan=6 align=right", "nowrap align=right id='left_to_allocate'",
+					3);
 			}
 			end_table(1);
 		}

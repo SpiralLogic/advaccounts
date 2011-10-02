@@ -1,20 +1,19 @@
 <?php
-/**********************************************************************
-Copyright (C) FrontAccounting, LLC.
-Released under the terms of the GNU General Public License, GPL,
-as published by the Free Software Foundation, either version 3
-of the License, or (at your option) any later version.
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
- ***********************************************************************/
+	/**********************************************************************
+	Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL,
+	as published by the Free Software Foundation, either version 3
+	of the License, or (at your option) any later version.
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+	 ***********************************************************************/
 	$page_security = 'SA_GRN';
-	$path_to_root = "..";
-	include_once($path_to_root . "/purchasing/includes/purch_order.inc");
+
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
-	include_once($path_to_root . "/purchasing/includes/purchasing_db.inc");
-	include_once($path_to_root . "/purchasing/includes/purchasing_ui.inc");
+	include_once(APP_PATH . "purchasing/includes/purchasing_db.inc");
+	include_once(APP_PATH . "purchasing/includes/purchasing_ui.inc");
 
 	$js = "";
 	if (Config::get('ui.windows.popups')) {
@@ -50,9 +49,10 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 
 	function display_po_receive_items() {
 		div_start('grn_items');
-		start_table("colspan=7 ".Config::get('tables.style') ." width=90%");
+		start_table("colspan=7 " . Config::get('tables.style') . " width=90%");
 		$th = array(_("Item Code"), _("Description"), _("Ordered"), _("Units"), _("Received"), _("Outstanding"),
-								_("This Delivery"), _("Price"), _('Discount %'), _("Total"));
+			_("This Delivery"), _("Price"), _('Discount %'), _("Total")
+		);
 		table_header($th);
 		/*show the line items on the order with the quantity being received for modification */
 		$total = 0;
@@ -113,9 +113,9 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 			$qty_outstanding = $ln_item->quantity - $ln_item->qty_received;
 			if ($qty_outstanding > 0) {
 				if ($ln_item->qty_inv != $myrow["qty_invoiced"] || $ln_item->stock_id !=
-																													 $myrow["item_code"] || $ln_item->quantity !=
-																																									$myrow["quantity_ordered"] || $ln_item->qty_received !=
-																																																								$myrow["quantity_received"]
+				 $myrow["item_code"] || $ln_item->quantity !=
+				 $myrow["quantity_ordered"] || $ln_item->qty_received !=
+				 $myrow["quantity_received"]
 				) {
 					return true;
 				}
@@ -199,8 +199,8 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 			display_error(_("This order has been changed or invoiced since this delivery was started to be actioned. Processing halted. To enter a delivery against this purchase order, it must be re-selected and re-read again to update the changes made by the other user."));
 			hyperlink_no_params("$path_to_root/purchasing/inquiry/po_search.php", _("Select a different purchase order for receiving goods against"));
 			hyperlink_params("$path_to_root/purchasing/po_receive_items.php", _("Re-Read the updated purchase order for receiving goods against"), "PONumber=" .
-																																																																						 $_SESSION
-																																																																						 ['PO']->order_no);
+			 $_SESSION
+			 ['PO']->order_no);
 			unset($_SESSION['PO']->line_items);
 			unset($_SESSION['PO']);
 			unset($_POST['ProcessGoodsReceived']);
@@ -253,7 +253,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	display_heading(_("Items to Receive"));
 	display_po_receive_items();
 	hyperlink_params("/purchasing/po_entry_items.php", _("Edit This Purchase Order"), "ModifyOrderNumber=" .
-																																										$_SESSION['PO']->order_no);
+	 $_SESSION['PO']->order_no);
 	echo '<br>';
 	submit_center_first('Update', _("Update Totals"), '', true);
 	submit_center_last('ProcessGoodsReceived', _("Process Receive Items"), _("Clear all GL entry fields"), 'default');

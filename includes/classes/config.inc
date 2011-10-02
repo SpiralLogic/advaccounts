@@ -1,12 +1,12 @@
 <?php
-/**
- * Created by JetBrains PhpStorm.
- * User: advanced
- * Date: 5/08/11
- * Time: 1:53 PM
- * To change this template use File | Settings | File Templates.
- */
-
+	/**
+	 * Created by JetBrains PhpStorm.
+	 * User: advanced
+	 * Date: 5/08/11
+	 * Time: 1:53 PM
+	 * To change this template use File | Settings | File Templates.
+	 */
+	include_once(APP_PATH . "includes/installed_languages.inc");
 	class Config {
 
 		protected static $_vars = array();
@@ -25,6 +25,5 @@
 			return ($array_key !== null && is_array(static::$_vars[$var])) ?
 			 static::$_vars[$var][$array_key] :
 			 static::$_vars[$var];
-
 		}
-	}
+	} 

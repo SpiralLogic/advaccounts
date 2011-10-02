@@ -10,28 +10,27 @@
 			MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 			See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		 * ********************************************************************* */
-	if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_to_root']))
-		die("Restricted access");
-	include_once($path_to_root . '/applications/application.php');
-	include_once($path_to_root . '/applications/customers.php');
-	include_once($path_to_root . '/applications/contacts.php');
-	include_once($path_to_root . '/applications/suppliers.php');
-	include_once($path_to_root . '/applications/inventory.php');
-	include_once($path_to_root . '/applications/items.php');
-	include_once($path_to_root . '/applications/advanced.php');
-	include_once($path_to_root . '/applications/manufacturing.php');
-	include_once($path_to_root . '/applications/dimensions.php');
-	include_once($path_to_root . '/applications/generalledger.php');
-	include_once($path_to_root . '/applications/setup.php');
-	include_once($path_to_root . '/installed_extensions.php');
+
+	include_once(APP_PATH . 'applications/application.php');
+	include_once(APP_PATH . 'applications/customers.php');
+	include_once(APP_PATH . 'applications/contacts.php');
+	include_once(APP_PATH . 'applications/suppliers.php');
+	include_once(APP_PATH . 'applications/inventory.php');
+	include_once(APP_PATH . 'applications/items.php');
+	include_once(APP_PATH . 'applications/advanced.php');
+	include_once(APP_PATH . 'applications/manufacturing.php');
+	include_once(APP_PATH . 'applications/dimensions.php');
+	include_once(APP_PATH . 'applications/generalledger.php');
+	include_once(APP_PATH . 'applications/setup.php');
+	include_once(APP_PATH . 'installed_extensions.php');
 	if (count($installed_extensions) > 0) {
 		foreach ($installed_extensions as $ext) {
 			if ($ext['type'] == 'module')
-				include_once($path_to_root . "/" . $ext['path'] . "/" . $ext['filename']);
+				include_once(APP_PATH . "" . $ext['path'] . "/" . $ext['filename']);
 		}
 	}
 
-	class front_accounting {
+	class frontaccounting {
 
 		var $user;
 		var $settings;
@@ -41,7 +40,7 @@
 		var $menu;
 
 		//var $renderer;
-		function front_accounting() {
+		function frontaccounting() {
 			//$this->renderer =& new renderer();
 		}
 
@@ -67,8 +66,8 @@
 		}
 
 		function display() {
-			global $path_to_root;
-			include($path_to_root . "/themes/" . user_theme() . "/renderer.php");
+
+			include(APP_PATH . "themes/" . user_theme() . "/renderer.php");
 			$this->init();
 			$rend = new renderer();
 			$rend->wa_header();

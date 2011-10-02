@@ -1,16 +1,16 @@
 <?php
-/**********************************************************************
-Copyright (C) FrontAccounting, LLC.
-Released under the terms of the GNU General Public License, GPL,
-as published by the Free Software Foundation, either version 3
-of the License, or (at your option) any later version.
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
- ***********************************************************************/
+	/**********************************************************************
+	Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL,
+	as published by the Free Software Foundation, either version 3
+	of the License, or (at your option) any later version.
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+	 ***********************************************************************/
 	$page_security = 'SA_SALESTRANSVIEW';
-	$path_to_root = "../..";
+
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/db_pager.inc");
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/sales/includes/sales_ui.inc");
@@ -54,7 +54,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		$nowdue = "1-" . $past1 . " " . _('Days');
 		$pastdue1 = $past1 + 1 . "-" . $past2 . " " . _('Days');
 		$pastdue2 = _('Over') . " " . $past2 . " " . _('Days');
-		start_table("width=90%  ".Config::get('tables.style'));
+		start_table("width=90%  " . Config::get('tables.style'));
 		$th = array(_("Currency"), _("Terms"), _("Current"), $nowdue, $pastdue1, $pastdue2, _("Total Balance"));
 		table_header($th);
 		start_row();
@@ -105,7 +105,6 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	function fmt_debit($row) {
 		$value = $row['type'] == ST_CUSTCREDIT || $row['type'] == ST_CUSTPAYMENT || $row['type'] == ST_CUSTREFUND || $row['type'] == ST_BANKDEPOSIT ? -$row["TotalAmount"] : $row["TotalAmount"];
 		return $value >= 0 ? price_format($value) : '';
-
 	}
 
 	function fmt_credit($row) {
@@ -115,7 +114,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 
 	function credit_link($row) {
 		return $row['type'] == ST_SALESINVOICE && $row["TotalAmount"] - $row["Allocated"] > 0 ? pager_link(_("Credit"), "/sales/customer_credit_invoice.php?InvoiceNumber=" . $row['trans_no'],
-																																																			 ICON_CREDIT) : '';
+			ICON_CREDIT) : '';
 	}
 
 	function edit_link($row) {
@@ -188,7 +187,6 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		elseif ($searchArray[0] == 'p') {
 			$filter = " AND (type = " . ST_CUSTPAYMENT . " OR type = " . ST_CUSTREFUND . " OR type = " . ST_BANKDEPOSIT . ") ";
 		}
-
 	}
 	$sql = "SELECT
   		trans.type, 
@@ -278,23 +276,24 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	//------------------------------------------------------------------------------------------------
 	db_query("set @bal:=0");
 	$cols = array(_("Type") => array('fun' => 'systype_name', 'ord' => ''),
-								_("#") => array('fun' => 'trans_view', 'ord' => ''),
-								_("Order") => array('fun' => 'order_view'),
-								_("Reference") => array('ord' => ''),
-								_("Date") => array('name' => 'tran_date', 'type' => 'date', 'ord' => 'desc'),
-								_("Due Date") => array('type' => 'date', 'fun' => 'due_date'),
-								_("Customer") => array('ord' => ''),
+		_("#") => array('fun' => 'trans_view', 'ord' => ''),
+		_("Order") => array('fun' => 'order_view'),
+		_("Reference") => array('ord' => ''),
+		_("Date") => array('name' => 'tran_date', 'type' => 'date', 'ord' => 'desc'),
+		_("Due Date") => array('type' => 'date', 'fun' => 'due_date'),
+		_("Customer") => array('ord' => ''),
 
-								_("Branch") => array('ord' => ''),
-								_("Currency") => array('align' => 'center'),
-								_("Debit") => array('align' => 'right', 'fun' => 'fmt_debit'),
-								_("Credit") => array('align' => 'right', 'insert' => true, 'fun' => 'fmt_credit'),
-								_("RB") => array('align' => 'right', 'type' => 'amount'),
-								array('insert' => true, 'fun' => 'gl_view'),
-								array('insert' => true, 'align' => 'center', 'fun' => 'credit_link'),
-								array('insert' => true, 'align' => 'center', 'fun' => 'edit_link'),
-								array('insert' => true, 'align' => 'center', 'fun' => 'email_link'),
-								array('insert' => true, 'align' => 'center', 'fun' => 'prt_link'));
+		_("Branch") => array('ord' => ''),
+		_("Currency") => array('align' => 'center'),
+		_("Debit") => array('align' => 'right', 'fun' => 'fmt_debit'),
+		_("Credit") => array('align' => 'right', 'insert' => true, 'fun' => 'fmt_credit'),
+		_("RB") => array('align' => 'right', 'type' => 'amount'),
+		array('insert' => true, 'fun' => 'gl_view'),
+		array('insert' => true, 'align' => 'center', 'fun' => 'credit_link'),
+		array('insert' => true, 'align' => 'center', 'fun' => 'edit_link'),
+		array('insert' => true, 'align' => 'center', 'fun' => 'email_link'),
+		array('insert' => true, 'align' => 'center', 'fun' => 'prt_link')
+	);
 	if (isset($_POST['customer_id']) && $_POST['customer_id'] != ALL_TEXT) {
 		$cols[_("Customer")] = 'skip';
 		$cols[_("Currency")] = 'skip';

@@ -19,14 +19,14 @@
 	// Title:	Print Invoices
 	// ----------------------------------------------------------------
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
-	include_once(APP_PATH . "/includes/date_functions.inc");
-	include_once(APP_PATH . "/includes/data_checks.inc");
-	include_once(APP_PATH . "/sales/includes/sales_db.inc");
+	include_once(APP_PATH . "includes/date_functions.inc");
+	include_once(APP_PATH . "includes/data_checks.inc");
+	include_once(APP_PATH . "sales/includes/sales_db.inc");
 	//----------------------------------------------------------------------------------------------------
 	print_invoices();
 	//----------------------------------------------------------------------------------------------------
 	function print_invoices() {
-		include_once(APP_PATH . "/reporting/includes/pdf_report.inc");
+		include_once(APP_PATH . "reporting/includes/pdf_report.inc");
 		$from = $_POST['PARAM_0'];
 		$to = $_POST['PARAM_1'];
 		$currency = $_POST['PARAM_2'];
@@ -88,7 +88,7 @@
 					if ($myrow2["quantity"] == 0)
 						continue;
 					$Net = round2($sign * ((1 - $myrow2["discount_percent"]) * $myrow2["unit_price"] * $myrow2["quantity"]),
-												user_price_dec());
+						user_price_dec());
 					$SubTotal += $Net;
 					$TaxType = get_item_tax_type_for_item($myrow2['stock_id']);
 					$DisplayPrice = number_format2($myrow2["unit_price"], $dec);
@@ -145,17 +145,17 @@
 					$DisplayTax = number_format2($sign * $tax_item['amount'], $dec);
 					if ($tax_item['included_in_price']) {
 						$rep->TextCol(3, 7, $doc_Included . " " . $tax_item['tax_type_name'] .
-																" (" . $tax_item['rate'] . "%) " . $doc_Amount . ": " . $DisplayTax, -2);
+						 " (" . $tax_item['rate'] . "%) " . $doc_Amount . ": " . $DisplayTax, -2);
 					}
 					else {
 						$rep->TextCol(3, 7, $tax_item['tax_type_name'] . " (" .
-																$tax_item['rate'] . "%)", -2);
+						 $tax_item['rate'] . "%)", -2);
 						$rep->TextCol(7, 8, $DisplayTax, -2);
 					}
 				}
 				$rep->NewLine();
 				$DisplayTotal = number_format2($sign * ($myrow["ov_freight"] + $myrow["ov_gst"] +
-																								$myrow["ov_amount"] + $myrow["ov_freight_tax"]), $dec);
+					 $myrow["ov_amount"] + $myrow["ov_freight_tax"]), $dec);
 				$rep->Font('bold');
 				$rep->TextCol(3, 7, $doc_TOTAL_INVOICE, -2);
 				$rep->TextCol(7, 8, $DisplayTotal, -2);
