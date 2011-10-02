@@ -10,7 +10,7 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	include_once(APP_PATH . "includes/faui.inc");
-	include_once(APP_PATH . "includes/ui/items_cart.inc");
+
 
 	//--------------------------------------------------------------------------------
 
@@ -116,7 +116,7 @@
 				$Ajax->activate('qty');
 			}
 
-			$item_info = get_item_edit_info($_POST['stock_id']);
+			$item_info = get_item_edit_info(Input::post('stock_id'));
 
 			$dec = $item_info['decimals'];
 			$_POST['qty'] = number_format2(0, $dec);

@@ -9,7 +9,7 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	include_once(APP_PATH . "sales/includes/cart.inc");
+
 	include_once(APP_PATH . "includes/manufacturing.inc");
 	//--------------------------------------------------------------------------------
 	function add_to_order(&$order, $new_item, $new_item_qty, $price, $discount, $description, $no_errors = false) {
@@ -435,11 +435,11 @@ JS;
 				$Ajax->activate('qty');
 				$Ajax->activate('line_total');
 			}
-			$item_info = get_item_edit_info(@$_POST['stock_id']);
+			$item_info = get_item_edit_info(Input::post('stock_id'));
 			$units = $item_info["units"];
 			$dec = $item_info['decimals'];
 			$_POST['qty'] = number_format2(1, $dec);
-			$price = get_kit_price(@$_POST['stock_id'], $order->customer_currency, $order->sales_type, $order->price_factor, get_post('OrderDate'));
+			$price = get_kit_price(Input::post('stock_id'), $order->customer_currency, $order->sales_type, $order->price_factor, get_post('OrderDate'));
 			$_POST['price'] = price_format($price);
 			$_POST['Disc'] = percent_format($order->default_discount * 100);
 		}

@@ -54,7 +54,7 @@
 		_("Quantity Required")
 	);
 
-	$table =& new_db_pager('usage_table', $sql, $cols);
+	$table =& db_pager::new_db_pager('usage_table', $sql, $cols);
 
 	$table->width = "80%";
 	display_db_pager($table);

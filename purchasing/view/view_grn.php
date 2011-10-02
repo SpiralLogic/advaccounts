@@ -11,7 +11,6 @@
 	 ***********************************************************************/
 	$page_security = 'SA_SUPPTRANSVIEW';
 
-	include(APP_PATH . "purchasing/includes/purch_order.inc");
 
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 

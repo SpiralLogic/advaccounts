@@ -166,7 +166,7 @@
 		$cols[_("Closed")] = 'skip';
 	}
 
-	$table =& new_db_pager('dim_tbl', $sql, $cols);
+	$table =& db_pager::new_db_pager('dim_tbl', $sql, $cols);
 	$table->set_marker('is_overdue', _("Marked dimensions are overdue."));
 
 	$table->width = "80%";

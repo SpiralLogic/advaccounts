@@ -11,9 +11,9 @@
 	 ***********************************************************************/
 	$page_security = 'SA_SUPPTRANSVIEW';
 
-	include_once(APP_PATH . "purchasing/includes/purchasing_db.inc");
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 
+	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	include_once(APP_PATH . "purchasing/includes/purchasing_db.inc");
 	include_once(APP_PATH . "purchasing/includes/purchasing_ui.inc");
 
 	$js = "";

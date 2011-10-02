@@ -291,13 +291,13 @@
 				$Ajax->activate('req_del_date');
 				$Ajax->activate('line_total');
 			}
-			$item_info = get_item_edit_info(@$_POST['stock_id']);
+			$item_info = get_item_edit_info(Input::post('stock_id'));
 			$_POST['units'] = $item_info["units"];
 			$_POST['description'] = $item_info['description'];
 			$dec = $item_info["decimals"];
-			$_POST['qty'] = number_format2(get_purchase_conversion_factor($order->supplier_id, @$_POST['stock_id']), $dec);
+			$_POST['qty'] = number_format2(get_purchase_conversion_factor($order->supplier_id, Input::post('stock_id')), $dec);
 			//$_POST['price'] = price_format(get_purchase_price ($order->supplier_id, $_POST['stock_id']));
-			$_POST['price'] = price_decimal_format(get_purchase_price($order->supplier_id, @$_POST['stock_id']), $dec2);
+			$_POST['price'] = price_decimal_format(get_purchase_price($order->supplier_id, Input::post('stock_id')), $dec2);
 			$_POST['req_del_date'] = add_days(Today(), 10);
 			$_POST['discount'] = percent_format(0);
 			$qty_rcvd = '';

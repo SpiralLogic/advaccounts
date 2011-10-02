@@ -13,7 +13,7 @@
 	$page_security = 'SA_CUSTOMER';
 	//$page_security = 3;
 
-	include_once(APP_PATH . "includes/db_pager.inc");
+
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 
 	page(_($help_context = "Customer Branches"), @$_REQUEST['popup']);
@@ -241,7 +241,7 @@
 			$cols[' '] = 'skip';
 		}
 
-		$table = & new_db_pager('branch_tbl', $sql, $cols, 'cust_branch');
+		$table = & db_pager::new_db_pager('branch_tbl', $sql, $cols, 'cust_branch');
 		$table->set_inactive_ctrl('cust_branch', 'branch_code');
 
 		//$table->width = "85%";

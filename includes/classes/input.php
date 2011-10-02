@@ -20,7 +20,9 @@
 		public static function get($var, $type = null) {
 			return static::_isset($_GET, $var, $type);
 		}
-
+		public static function request($var, $type = null) {
+			return static::_isset($_REQUEST, $var, $type);
+		}
 		public static function get_post($var, $type = null) {
 			return static::_get_post($_GET, $_POST, $var, $type);
 		}

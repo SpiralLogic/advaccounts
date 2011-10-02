@@ -10,7 +10,7 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	include_once(APP_PATH . "includes/faui.inc");
-	include_once(APP_PATH . "includes/ui/items_cart.inc");
+
 
 	//--------------------------------------------------------------------------------
 

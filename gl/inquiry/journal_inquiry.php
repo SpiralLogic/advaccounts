@@ -12,7 +12,7 @@
 
 	$page_security = 'SA_GLANALYTIC';
 
-	include(APP_PATH . "/includes/db_pager.inc");
+
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 
 	include_once(APP_PATH . "includes/date_functions.inc");
@@ -197,7 +197,7 @@
 		$cols[_("#")] = 'skip';
 	}
 
-	$table =& new_db_pager('journal_tbl', $sql, $cols);
+	$table =& db_pager::new_db_pager('journal_tbl', $sql, $cols);
 
 	$table->width = "80%";
 

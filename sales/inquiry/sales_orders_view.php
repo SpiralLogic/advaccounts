@@ -11,12 +11,12 @@
 			See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 			* ********************************************************************* */
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/db_pager.inc");
+
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 	include_once(APP_PATH . "sales/includes/sales_ui.inc");
 	include_once(APP_PATH . "reporting/includes/reporting.inc");
 	$page_security = 'SA_SALESTRANSVIEW';
-	set_page_security(@$_POST['order_view_mode'],
+	set_page_security(Input::post('order_view_mode'),
 		array('OutstandingOnly' => 'SA_SALESDELIVERY', 'InvoiceTemplates' => 'SA_SALESINVOICE'),
 		array('OutstandingOnly' => 'SA_SALESDELIVERY', 'InvoiceTemplates' => 'SA_SALESINVOICE'));
 	$js = "";
@@ -46,7 +46,7 @@
 		$trans_type = ST_SALESORDER;
 	}
 	if ($trans_type == ST_SALESORDER) {
-		if (isset($_GET['OutstandingOnly']) && ($_GET['OutstandingOnly'] == true)) {
+		if (Input::get('OutstandingOnly')) {
 			$_POST['order_view_mode'] = 'OutstandingOnly';
 			$_SESSION['page_title'] = _($help_context = "Search Outstanding Sales Orders");
 		}
@@ -398,7 +398,7 @@
 		}
 	}
 	;
-	$table = & new_db_pager('orders_tbl', $sql, $cols, null, null, 0, _("Order #"));
+	$table = & db_pager::new_db_pager('orders_tbl', $sql, $cols, null, null, 0, _("Order #"));
 	$table->set_marker('check_overdue', _("Marked items are overdue."));
 	$table->width = "80%";
 	display_db_pager($table);

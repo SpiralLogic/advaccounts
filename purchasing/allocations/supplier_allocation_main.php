@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 	$page_security = 'SA_SUPPLIERALLOC';
 
-	include($_SERVER['DOCUMENT_ROOT'] . "/includes/db_pager.inc");
+
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 
 	include_once(APP_PATH . "includes/date_functions.inc");
@@ -99,7 +99,7 @@
 		$cols[_("Currency")] = 'skip';
 	}
 
-	$table =& new_db_pager('alloc_tbl', $sql, $cols);
+	$table =& db_pager::new_db_pager('alloc_tbl', $sql, $cols);
 	$table->set_marker('check_settled', _("Marked items are settled."), 'settledbg', 'settledfg');
 
 	$table->width = "80%";

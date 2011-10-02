@@ -15,7 +15,7 @@
 	//
 	$page_security = 'SA_SALESDELIVERY';
 
-	include_once(APP_PATH . "sales/includes/cart.inc");
+
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 	include_once(APP_PATH . "includes/data_checks.inc");
 	include_once(APP_PATH . "includes/manufacturing.inc");

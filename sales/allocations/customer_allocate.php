@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 	$page_security = 'SA_SALESALLOC';
 
-	include(APP_PATH . "includes/ui/allocation.inc");
+
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 	include_once(APP_PATH . "includes/data_checks.inc");
 	include_once(APP_PATH . "sales/includes/sales_ui.inc");

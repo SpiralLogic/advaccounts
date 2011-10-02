@@ -8,7 +8,7 @@
 	 */
 
 	$page_security = 'SA_SALESORDER';
-	include_once(APP_PATH . "sales/includes/cart.inc");
+
 	include_once(APP_PATH . "includes/session.inc");
 	include_once(APP_PATH . "sales/includes/sales_ui.inc");
 	include_once(APP_PATH . "sales/includes/ui/sales_order_ui.inc");

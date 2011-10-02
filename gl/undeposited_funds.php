@@ -221,7 +221,7 @@
 		_("Debit") => array('align' => 'right', 'fun' => 'fmt_debit'), _("Credit") => array('align' => 'right', 'insert' => true, 'fun' => 'fmt_credit'),
 		_("Person/Item") => array('fun' => 'fmt_person'), array('insert' => true, 'fun' => 'gl_view'), "X" => array('insert' => true, 'fun' => 'dep_checkbox')
 	);
-	$table =& new_db_pager('trans_tbl', $sql, $cols);
+	$table =& db_pager::new_db_pager('trans_tbl', $sql, $cols);
 	$table->width = "80%";
 	display_db_pager($table);
 	br(1);

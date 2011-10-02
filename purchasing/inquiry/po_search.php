@@ -168,7 +168,7 @@
 		$cols[_("Location")] = 'skip';
 	}
 
-	$table =& new_db_pager('orders_tbl', $sql, $cols);
+	$table =& db_pager::new_db_pager('orders_tbl', $sql, $cols);
 	$table->set_marker('check_overdue', _("Marked orders have overdue items."));
 
 	$table->width = "80%";

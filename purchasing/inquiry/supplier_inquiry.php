@@ -173,7 +173,7 @@
 		$sql .= " AND trans . tran_date >= '$date_after'
 	            AND trans . tran_date <= '$date_to'";
 	}
-	if ($_POST['supplier_id'] != ALL_TEXT) {
+	if (Input::post('supplier_id') != ALL_TEXT) {
 		$sql .= " AND trans.supplier_id = " . db_escape($_POST['supplier_id']);
 	}
 	if (isset($_POST['filterType']) && $_POST['filterType'] != ALL_TEXT) {
@@ -214,13 +214,13 @@
 		array('insert' => true, 'fun' => 'credit_link'),
 		array('insert' => true, 'fun' => 'prt_link')
 	);
-	if ($_POST['supplier_id'] != ALL_TEXT) {
+	if (Input::post('supplier_id') != ALL_TEXT) {
 		$cols[_("Supplier")] = 'skip';
 		$cols[_("Currency")] = 'skip';
 	}
 	//------------------------------------------------------------------------------------------------
 	/*show a table of the transactions returned by the sql */
-	$table =& new_db_pager('trans_tbl', $sql, $cols);
+	$table =& db_pager::new_db_pager('trans_tbl', $sql, $cols);
 	$table->set_marker('check_overdue', _("Marked items are overdue."));
 	$table->width = "85%";
 	display_db_pager($table);

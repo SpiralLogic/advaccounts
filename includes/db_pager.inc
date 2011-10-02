@@ -449,7 +449,24 @@ class db_pager
 		} else
 			return '';
 	}
+	static function &new_db_pager($name, $sql, $coldef, $table = null, $key = null, $page_len = 0, $sort = null)
+	{
 
+		if (isset($_SESSION[$name]) &&
+			($_SERVER['REQUEST_METHOD'] == 'GET' || $_SESSION[$name]->sql != $sql)) {
+			unset($_SESSION[$name]); // kill pager if sql has changed
+		}
+
+		if (!isset($_SESSION[$name])) {
+			$_SESSION[$name] = new db_pager($sql, $name, $table, $page_len);
+			$_SESSION[$name]->main_tbl = $table;
+			$_SESSION[$name]->key = $key;
+			$_SESSION[$name]->set_sql($sql);
+			$_SESSION[$name]->set_columns($coldef);
+			$_SESSION[$name]->sort_table($sort);
+		}
+		return $_SESSION[$name];
+	}
 }
 
 ;
@@ -479,24 +496,7 @@ class db_pager
 //  during display, but can be used in format handlers for 'spec' and 'insert' 
 //	type columns.
 
-function &new_db_pager($name, $sql, $coldef, $table = null, $key = null, $page_len = 0, $sort = null)
-{
 
-	if (isset($_SESSION[$name]) &&
-		($_SERVER['REQUEST_METHOD'] == 'GET' || $_SESSION[$name]->sql != $sql)) {
-		unset($_SESSION[$name]); // kill pager if sql has changed
-	}
-
-	if (!isset($_SESSION[$name])) {
-		$_SESSION[$name] = new db_pager($sql, $name, $table, $page_len);
-		$_SESSION[$name]->main_tbl = $table;
-		$_SESSION[$name]->key = $key;
-		$_SESSION[$name]->set_sql($sql);
-		$_SESSION[$name]->set_columns($coldef);
-		$_SESSION[$name]->sort_table($sort);
-	}
-	return $_SESSION[$name];
-}
 
 //
 //	Force pager initialization.

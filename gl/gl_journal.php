@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 	$page_security = 'SA_JOURNALENTRY';
 
-	include_once(APP_PATH . "includes/ui/items_cart.inc");
+
 
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 

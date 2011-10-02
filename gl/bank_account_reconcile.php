@@ -226,7 +226,7 @@
 		_("Person/Item") => array('fun' => 'fmt_person'), array('insert' => true, 'fun' => 'gl_view'), "X" => array('insert' => true, 'fun' => 'rec_checkbox'),
 		array('insert' => true, 'fun' => 'ungroup')
 	);
-	$table =& new_db_pager('trans_tbl', $sql, $cols);
+	$table =& db_pager::new_db_pager('trans_tbl', $sql, $cols);
 	$table->width = "80%";
 	display_db_pager($table);
 	br(1);

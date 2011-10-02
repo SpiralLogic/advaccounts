@@ -142,7 +142,7 @@
 		}
 		// only check bom and quantites if quick assembly
 		if (!($_POST['type'] == WO_ADVANCED)) {
-			if (!has_bom($_POST['stock_id'])) {
+			if (!has_bom(Input::post('stock_id'))) {
 				display_error(_("The selected item to manufacture does not have a bom."));
 				set_focus('stock_id');
 				return false;
@@ -166,7 +166,7 @@
 			if (!$SysPrefs->allow_negative_stock()) {
 				if ($_POST['type'] == WO_ASSEMBLY) {
 					// check bom if assembling
-					$result = get_bom($_POST['stock_id']);
+					$result = get_bom(Input::post('stock_id'));
 
 					while ($bom_item = db_fetch($result))
 					{
@@ -190,7 +190,7 @@
 				elseif ($_POST['type'] == WO_UNASSEMBLY)
 				{
 					// if unassembling, check item to unassemble
-					$qoh = get_qoh_on_date($_POST['stock_id'], $_POST['StockLocation'], $_POST['date_']);
+					$qoh = get_qoh_on_date(Input::post('stock_id'), $_POST['StockLocation'], $_POST['date_']);
 					if (-input_num('quantity') + $qoh < 0) {
 						display_error(_("The selected item cannot be unassembled because there is insufficient stock."));
 						return false;
@@ -232,7 +232,7 @@
 		if (!isset($_POST['cr_lab_acc']))
 			$_POST['cr_lab_acc'] = "";
 		$id = add_work_order($_POST['wo_ref'], $_POST['StockLocation'], input_num('quantity'),
-			$_POST['stock_id'], $_POST['type'], $_POST['date_'],
+			Input::post('stock_id'), $_POST['type'], $_POST['date_'],
 			$_POST['RequDate'], $_POST['memo_'], input_num('Costs'), $_POST['cr_acc'], input_num('Labour'),
 			$_POST['cr_lab_acc']);
 
@@ -245,7 +245,7 @@
 	if (isset($_POST['UPDATE_ITEM']) && can_process()) {
 
 		update_work_order($selected_id, $_POST['StockLocation'], input_num('quantity'),
-			$_POST['stock_id'], $_POST['date_'], $_POST['RequDate'], $_POST['memo_']);
+			Input::post('stock_id'), $_POST['date_'], $_POST['RequDate'], $_POST['memo_']);
 		new_doc_date($_POST['date_']);
 		meta_forward($_SERVER['PHP_SELF'], "UpdatedID=$selected_id");
 	}
@@ -313,7 +313,7 @@
 
 		$_POST['wo_ref'] = $myrow["wo_ref"];
 		$_POST['stock_id'] = $myrow["stock_id"];
-		$_POST['quantity'] = qty_format($myrow["units_reqd"], $_POST['stock_id'], $dec);
+		$_POST['quantity'] = qty_format($myrow["units_reqd"], Input::post('stock_id'), $dec);
 		$_POST['StockLocation'] = $myrow["loc_code"];
 		$_POST['released'] = $myrow["released"];
 		$_POST['closed'] = $myrow["closed"];
@@ -348,7 +348,7 @@
 	}
 
 	if (get_post('released')) {
-		hidden('stock_id', $_POST['stock_id']);
+		hidden('stock_id', Input::post('stock_id'));
 		hidden('StockLocation', $_POST['StockLocation']);
 		hidden('type', $_POST['type']);
 
@@ -365,14 +365,14 @@
 	}
 
 	if (!isset($_POST['quantity']))
-		$_POST['quantity'] = qty_format(1, $_POST['stock_id'], $dec);
+		$_POST['quantity'] = qty_format(1, Input::post('stock_id'), $dec);
 	else
-		$_POST['quantity'] = qty_format($_POST['quantity'], $_POST['stock_id'], $dec);
+		$_POST['quantity'] = qty_format($_POST['quantity'], Input::post('stock_id'), $dec);
 
 	if (get_post('type') == WO_ADVANCED) {
 		qty_row(_("Quantity Required:"), 'quantity', null, null, null, $dec);
 		if ($_POST['released'])
-			label_row(_("Quantity Manufactured:"), number_format($_POST['units_issued'], get_qty_dec($_POST['stock_id'])));
+			label_row(_("Quantity Manufactured:"), number_format($_POST['units_issued'], get_qty_dec(Input::post('stock_id'))));
 		date_row(_("Date") . ":", 'date_', '', true);
 		date_row(_("Date Required By") . ":", 'RequDate', '', null, $SysPrefs->default_wo_required_by());
 	}

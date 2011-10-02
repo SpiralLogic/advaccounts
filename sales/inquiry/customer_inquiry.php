@@ -11,11 +11,11 @@
 	 ***********************************************************************/
 	$page_security = 'SA_SALESTRANSVIEW';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/db_pager.inc");
+
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/sales/includes/sales_ui.inc");
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/sales/includes/sales_db.inc");
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/reporting/includes/reporting.inc");
+	include_once(APP_PATH . "sales/includes/sales_ui.inc");
+	include_once(APP_PATH . "sales/includes/sales_db.inc");
+	include_once(APP_PATH . "reporting/includes/reporting.inc");
 	$js = "";
 	if (Config::get('ui.windows.popups')) {
 		$js .= get_js_open_window(900, 500);
@@ -301,7 +301,7 @@
 	if (isset($_POST['filterType']) && $_POST['filterType'] == ALL_TEXT || !empty($_POST['ajaxsearch'])) {
 		$cols[_("RB")] = 'skip';
 	}
-	$table =& new_db_pager('trans_tbl', $sql, $cols);
+	$table =& db_pager::new_db_pager('trans_tbl', $sql, $cols);
 	$table->set_marker('check_overdue', _("Marked items are overdue."));
 	$table->width = "80%";
 	display_db_pager($table);

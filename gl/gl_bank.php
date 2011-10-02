@@ -10,7 +10,7 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 
-	include_once(APP_PATH . "includes/ui/items_cart.inc");
+
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 	$page_security = isset($_GET['NewPayment']) ||
 	 @($_SESSION['pay_items']->trans_type == ST_BANKPAYMENT)

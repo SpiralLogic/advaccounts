@@ -181,7 +181,7 @@
 		array('insert' => true, 'fun' => 'edit_link'),
 		array('insert' => true, 'fun' => 'del_link'),
 	);
-	$table =& new_db_pager('orders_tbl', $sql, $cols);
+	$table =& db_pager::new_db_pager('orders_tbl', $sql, $cols);
 
 	if (is_company_currency($_POST['curr_abrev'])) {
 

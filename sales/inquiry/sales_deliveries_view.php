@@ -237,7 +237,7 @@
 		unset($_SESSION['Batch']);
 	}
 
-	$table =& new_db_pager('deliveries_tbl', $sql, $cols);
+	$table =& db_pager::new_db_pager('deliveries_tbl', $sql, $cols);
 	$table->set_marker('check_overdue', _("Marked items are overdue."));
 
 	//$table->width = "92%";

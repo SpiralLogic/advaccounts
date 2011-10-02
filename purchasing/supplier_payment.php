@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 	$page_security = 'SA_SUPPLIERPAYMNT';
 
-	include_once(APP_PATH . "includes/ui/allocation.inc");
+
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 	include_once(APP_PATH . "includes/date_functions.inc");
 	include_once(APP_PATH . "includes/faui.inc");

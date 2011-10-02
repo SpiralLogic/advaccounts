@@ -358,7 +358,7 @@
 		$_SESSION['alloc']->add_or_update_item(ST_SALESINVOICE, key($doc->trans_no), $doc->document_date, $doc->due_date, $amount, 0, $amount);
 	}
 
-	function copy_from_cart($cart) {
+	if (!function_exists('copy_from_cart')){ function copy_from_cart($cart) {
 
 		$_POST['Comments'] = $cart->Comments;
 		$_POST['OrderDate'] = $cart->document_date;
@@ -378,5 +378,5 @@
 		$_POST['dimension2_id'] = $cart->dimension2_id;
 		$_POST['cart_id'] = $cart->cart_id;
 	}
-
+}
 ?>

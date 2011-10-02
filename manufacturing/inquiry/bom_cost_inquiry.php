@@ -35,7 +35,7 @@
 	end_table();
 	br();
 	display_heading(_("All Costs Are In:") . " " . get_company_currency());
-	display_bom($_POST['stock_id']);
+	display_bom(Input::post('stock_id'));
 
 	end_form();
 

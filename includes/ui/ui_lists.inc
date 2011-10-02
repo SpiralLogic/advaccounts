@@ -193,10 +193,10 @@
 					}
 				}
 				// show selected option even if inactive
-				if (isset($opts['show_inactive']) && !$opts['show_inactive'] && @$contact_row['inactive'] && $sel === '') {
+				if (isset($opts['show_inactive']) && isset($opts['inactive']) && !$opts['show_inactive'] && @$contact_row['inactive'] && $sel === '') {
 					continue;
 				} else {
-					$optclass = @$contact_row['inactive'] ? "class='inactive'" : '';
+					$optclass = (isset($contact_row['inactive']) && $contact_row['inactive']) ? "class='inactive'" : '';
 				}
 				if ($first_id === false) {
 					$first_id = $value;

@@ -19,7 +19,7 @@
 		$js .= get_js_open_window(900, 500);
 	}
 
-	page(_($help_context = "Search Purchase Orders"), @$_REQUEST['frame'], false, "", $js);
+	page(_($help_context = "Search Purchase Orders"), Input::request('frame'), false, "", $js);
 
 	if (isset($_GET['order_number'])) {
 		$order_number = $_GET['order_number'];
@@ -50,7 +50,7 @@
 	}
 	//---------------------------------------------------------------------------------------------
 	start_form();
-	if (@$_REQUEST['frame']) {
+	if (Input::request('frame')) {
 		start_table("class='tablestyle_noborder' style='display:none;'");
 	} else {
 		start_table("class='tablestyle_noborder'");
@@ -176,7 +176,7 @@
 	}
 	//---------------------------------------------------------------------------------------------------
 
-	$table =& new_db_pager('orders_tbl', $sql, $cols);
+	$table =& db_pager::new_db_pager('orders_tbl', $sql, $cols);
 
 	$table->width = "80%";
 
