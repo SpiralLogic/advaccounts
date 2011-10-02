@@ -220,7 +220,6 @@
 		$_POST['cart_id'] = $cart->cart_id;
 
 		$_POST['Comments'] = $cart->Comments;
-
 	}
 
 	//-----------------------------------------------------------------------------
@@ -315,7 +314,7 @@
 	$is_edition = $_SESSION['Items']->trans_type == ST_SALESINVOICE && $_SESSION['Items']->trans_no != 0;
 	start_form();
 	hidden('cart_id');
-	start_table(Config::get('tables.style2')." width=90%", 5);
+	start_table(Config::get('tables.style2') . " width=90%", 5);
 	start_row();
 	label_cells(_("Customer"), $_SESSION['Items']->customer_name, "class='tableheader2'");
 	label_cells(_("Branch"), get_branch_name($_SESSION['Items']->Branch), "class='tableheader2'");
@@ -345,7 +344,6 @@
 		}
 	}
 
-
 	if (!$viewing) date_cells(_("Date"), 'InvoiceDate', '', $_SESSION['Items']->trans_no == 0, 0, 0, 0, "class='tableheader2'", true); else label_cell($_POST['InvoiceDate']);
 	if (!isset($_POST['due_date']) || !is_date($_POST['due_date'])) {
 		$_POST['due_date'] = get_invoice_duedate($_SESSION['Items']->customer_id, $_POST['InvoiceDate']);
@@ -362,7 +360,7 @@
 	}
 	display_heading(_("Invoice Items"));
 	div_start('Items');
-	start_table(Config::get('tables.style')."  width=90%");
+	start_table(Config::get('tables.style') . "  width=90%");
 	$th = array(_("Item Code"), _("Item Description"), _("Delivered"), _("Units"), _("Invoiced"), _("This Invoice"), _("Price"), _("Tax Type"), _("Discount"), _("Total"));
 	if ($is_batch_invoice) {
 		$th[] = _("DN");

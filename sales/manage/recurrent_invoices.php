@@ -162,8 +162,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
   text_row_ex(_("Description:"), 'description', 50);
 
   templates_list_row(_("Template:"), 'order_no');
-
-  customer_list_row(_("Customer:"), 'debtor_no', null, " ", true);
++st_row(_("Customer:"), 'debtor_no', null, " ", true);
 
   if ($_POST['debtor_no'] > 0)
 	 customer_branches_list_row(_("Branch:"), $_POST['debtor_no'], 'group_no', null, false);

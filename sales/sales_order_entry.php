@@ -473,7 +473,7 @@
 
 	//--------------------------------------------------------------------------------
 	function handle_cancel_order() {
-		global $path_to_root, $Ajax;
+		global  $Ajax;
 		if ($_SESSION['Items']->trans_type == ST_CUSTDELIVERY) {
 			display_notification(_("Direct delivery entry has been cancelled as requested."), 1);
 			submenu_option(_("Enter a New Sales Delivery"), "/sales/sales_order_entry.php?NewDelivery=1");

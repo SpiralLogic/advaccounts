@@ -12,15 +12,12 @@
 	ini_set("display_errors", "On");
 	function formatBytes($bytes, $precision = 2) {
 		$units = array('B', 'KB', 'MB', 'GB', 'TB');
-
 		$bytes = max($bytes, 0);
 		$pow = floor(($bytes ? log($bytes) : 0) / log(1024));
 		$pow = min($pow, count($units) - 1);
-
 		// Uncomment one of the following alternatives
 		$bytes /= pow(1024, $pow);
 		// $bytes /= (1 << (10 * $pow));
-
 		return round($bytes, $precision) . ' ' . $units[$pow];
 	}
 
@@ -53,7 +50,6 @@
 	}
 
 	function login_fail() {
-
 		header("HTTP/1.1 401 Authorization Required");
 		echo "<center><br><br><font size='5' color='red'><b>" . _("Incorrect Password") . "<b></font><br><br>";
 		echo "<b>" . _("The user and password combination is not valid for the system.") . "<b><br><br>";
@@ -66,8 +62,7 @@
 
 	function check_page_security($page_security) {
 		if (!$_SESSION["wa_current_user"]->check_user_access()) {
-			$msg = $_SESSION["wa_current_user"]->old_db ? _("Security settings have not been defined for your user account.") . "<br>" . _("Please contact your system administrator.")
-			 : _("Please remove \$security_groups and \$security_headings arrays from config.php file!");
+			$msg = _("Please remove \$security_groups and \$security_headings arrays from config.php file!");
 			display_error($msg);
 			end_page();
 			kill_login();
@@ -127,7 +122,6 @@
 			if ($tout && (time() > $_SESSION["wa_current_user"]->last_act + $tout)) {
 				$_SESSION["wa_current_user"]->logged = false;
 			}
-
 			$_SESSION["wa_current_user"]->last_act = time();
 		}
 	}
@@ -141,13 +135,13 @@
 	//============================================================================
 
 	function class_autoloader($className) {
-
 		spl_autoload(strtolower($className));
 	}
 
 	define('APP_PATH', realpath(__DIR__ . '/..') . DIRECTORY_SEPARATOR);
 	$path = substr(str_repeat('../', substr_count(str_replace(APP_PATH, '', realpath('.') . DIRECTORY_SEPARATOR), '/')), 0, -1);
 	$path_to_root = (!$path) ? '.' : $path;
+
 	ini_set('unserialize_callback_func', 'class_autoloader'); // set your callback_function
 	spl_autoload_extensions('.php,.inc');
 	spl_autoload_register('class_autoloader');
@@ -184,7 +178,7 @@
 	gettext_native_support::get_text_init();
 	if (Config::get('debug') && isset($_SESSION["wa_current_user"]) && $_SESSION["wa_current_user"]->user == 1) {
 		error_reporting(E_ALL);
-		if (preg_match('/Chrome/i', $_SERVER['HTTP_USER_AGENT'])) { 
+		if (preg_match('/Chrome/i', $_SERVER['HTTP_USER_AGENT'])) {
 			include(APP_PATH . 'includes/fb.php');
 			FB::useFile(APP_PATH . 'tmp/chromelogs', '/tmp/chromelogs');
 		} else {
@@ -202,16 +196,13 @@
 		$_SESSION['language'] = new language($l['name'], $l['code'], $l['encoding'], isset($l['rtl']) ? 'rtl' : 'ltr');
 	}
 	$_SESSION['language']->set_language($_SESSION['language']->code);
-
 	// include $Hooks object if locale file exists
 	if (file_exists(APP_PATH . "lang/" . $_SESSION['language']->code . "/locale.inc")) {
 		include(APP_PATH . "lang/" . $_SESSION['language']->code . "/locale.inc");
 		$Hooks = new Hooks();
 	}
-
 	include(APP_PATH . "includes/access_levels.inc");
 	include(APP_PATH . "includes/main.inc");
-
 	// Ajax communication object
 	$Ajax = new Ajax();
 	// js/php validation rules container
@@ -227,11 +218,9 @@
 	ob_start('output_html', 0);
 	// colect all error msgs
 	set_error_handler('fb_errors');
-
 	if (!isset($_SESSION["wa_current_user"])) {
 		$_SESSION["wa_current_user"] = new current_user();
 	}
-
 	// logout.php is the only page we should have always
 	// accessable regardless of access level and current login status.
 	if (strstr($_SERVER['PHP_SELF'], 'logout.php') == false) {
@@ -245,12 +234,10 @@
 				if (in_ajax() || AJAX_REFERRER) {
 					$Ajax->activate('_page_body');
 				}
-
 				exit;
 			} else {
 				$succeed = isset($db_connections[$_POST["company_login_name"]]) && $_SESSION["wa_current_user"]->login($_POST["company_login_name"], $_POST["user_name_entry_field"], $_POST["password"]);
 				// select full vs fallback ui mode on login
-
 				$_SESSION["wa_current_user"]->ui_mode = $_POST['ui_mode'];
 				if (!$succeed) {
 					// Incorrect password
@@ -259,9 +246,7 @@
 				$lang = &$_SESSION['language'];
 				$lang->set_language($_SESSION['language']->code);
 			}
-		}
-		else
-		{
+		} else {
 			if (Input::session('change_password') && strstr($_SERVER['PHP_SELF'], 'change_current_user_password.php') == false) {
 				meta_forward('/admin/change_current_user_password.php', 'selected_id=' . $_SESSION["wa_current_user"]->username);
 			}
@@ -282,4 +267,3 @@
 			$v = is_string($v) ? trim($v) : $v;
 		});
 	$_POST = strip_quotes($_POST);
-

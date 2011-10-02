@@ -1,14 +1,14 @@
 <?php
-/**********************************************************************
-Copyright (C) FrontAccounting, LLC.
-Released under the terms of the GNU General Public License, GPL,
-as published by the Free Software Foundation, either version 3
-of the License, or (at your option) any later version.
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
- ***********************************************************************/
+	/**********************************************************************
+	Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL,
+	as published by the Free Software Foundation, either version 3
+	of the License, or (at your option) any later version.
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+	 ***********************************************************************/
 	//-----------------------------------------------------------------------------------------
 	//	Returns next transaction number.
 	//	Used only for transactions stored in tables without autoincremented key.
@@ -21,8 +21,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 			return 0;
 		}
 		$sql = "SELECT MAX(`$st[2]`) FROM $st[0]";
-		if ($st[1] != null)
-			$sql .= " WHERE `$st[1]`=$trans_type";
+		if ($st[1] != null) $sql .= " WHERE `$st[1]`=$trans_type";
 		$unique = false;
 		$result = db_query($sql, "The next transaction number for $trans_type could not be retrieved");
 		$myrow = db_fetch_row($result);
@@ -39,55 +38,55 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	//-----------------------------------------------------------------------------
 	function get_systype_db_info($type) {
 		switch ($type) {
-			case   ST_JOURNAL    :
+			case	 ST_JOURNAL		:
 				return array("gl_trans", "type", "type_no", null, "tran_date");
-			case   ST_BANKPAYMENT  :
+			case	 ST_BANKPAYMENT	:
 				return array("bank_trans", "type", "trans_no", "ref", "trans_date");
-			case   ST_BANKDEPOSIT  :
+			case	 ST_BANKDEPOSIT	:
 				return array("bank_trans", "type", "trans_no", "ref", "trans_date");
-			case   3         :
+			case	 3				 :
 				return null;
-			case   ST_BANKTRANSFER :
+			case	 ST_BANKTRANSFER :
 				return array("bank_trans", "type", "trans_no", "ref", "trans_date");
-			case   ST_SALESINVOICE :
+			case	 ST_SALESINVOICE :
 				return array("debtor_trans", "type", "trans_no", "reference", "tran_date");
-			case   ST_CUSTCREDIT   :
+			case	 ST_CUSTCREDIT	 :
 				return array("debtor_trans", "type", "trans_no", "reference", "tran_date");
-			case   ST_CUSTPAYMENT  :
+			case	 ST_CUSTPAYMENT	:
 				return array("debtor_trans", "type", "trans_no", "reference", "tran_date");
-			case   ST_CUSTREFUND  :
+			case	 ST_CUSTREFUND	:
 				return array("debtor_trans", "type", "trans_no", "reference", "tran_date");
-			case   ST_CUSTDELIVERY :
+			case	 ST_CUSTDELIVERY :
 				return array("debtor_trans", "type", "trans_no", "reference", "tran_date");
-			case   ST_LOCTRANSFER  :
+			case	 ST_LOCTRANSFER	:
 				return array("stock_moves", "type", "trans_no", "reference", "tran_date");
-			case   ST_INVADJUST  :
+			case	 ST_INVADJUST	:
 				return array("stock_moves", "type", "trans_no", "reference", "tran_date");
-			case   ST_PURCHORDER   :
+			case	 ST_PURCHORDER	 :
 				return array("purch_orders", null, "order_no", "reference", "tran_date");
-			case   ST_SUPPINVOICE  :
+			case	 ST_SUPPINVOICE	:
 				return array("supp_trans", "type", "trans_no", "reference", "tran_date");
-			case   ST_SUPPCREDIT   :
+			case	 ST_SUPPCREDIT	 :
 				return array("supp_trans", "type", "trans_no", "reference", "tran_date");
-			case   ST_SUPPAYMENT   :
+			case	 ST_SUPPAYMENT	 :
 				return array("supp_trans", "type", "trans_no", "reference", "tran_date");
-			case   ST_SUPPRECEIVE  :
+			case	 ST_SUPPRECEIVE	:
 				return array("grn_batch", null, "id", "reference", "delivery_date");
-			case   ST_WORKORDER  :
+			case	 ST_WORKORDER	:
 				return array("workorders", null, "id", "wo_ref", "released_date");
-			case   ST_MANUISSUE  :
+			case	 ST_MANUISSUE	:
 				return array("wo_issues", null, "issue_no", "reference", "issue_date");
-			case   ST_MANURECEIVE  :
+			case	 ST_MANURECEIVE	:
 				return array("wo_manufacture", null, "id", "reference", "date_");
-			case   ST_SALESORDER   :
+			case	 ST_SALESORDER	 :
 				return array("sales_orders", "trans_type", "order_no", "reference", "ord_date");
-			case   31        :
+			case	 31				:
 				return array("service_orders", null, "order_no", "cust_ref", "date");
-			case   ST_SALESQUOTE   :
+			case	 ST_SALESQUOTE	 :
 				return array("sales_orders", "trans_type", "order_no", "reference", "ord_date");
-			case   ST_DIMENSION  :
+			case	 ST_DIMENSION	:
 				return array("dimensions", null, "id", "reference", "date_");
-			case   ST_COSTUPDATE   :
+			case	 ST_COSTUPDATE	 :
 				return array("gl_trans", "type", "type_no", null, "tran_date");
 		}
 		display_db_error("invalid type ($type) sent to get_systype_db_info", "", true);
