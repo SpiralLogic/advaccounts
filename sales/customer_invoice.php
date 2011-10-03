@@ -16,15 +16,14 @@
 	//	Entry/Modify Batch Sales Invoice against batch of deliveries
 	//
 	$page_security = 'SA_SALESINVOICE';
-	$path_to_root = "..";
-	include_once($path_to_root . "/sales/includes/cart_class.inc");
+
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
-	include_once($path_to_root . "/includes/data_checks.inc");
-	include_once($path_to_root . "/includes/manufacturing.inc");
-	include_once($path_to_root . "/sales/includes/sales_db.inc");
-	include_once($path_to_root . "/sales/includes/sales_ui.inc");
-	include_once($path_to_root . "/reporting/includes/reporting.inc");
-	include_once($path_to_root . "/taxes/tax_calc.inc");
+	include_once(APP_PATH . "includes/data_checks.inc");
+	include_once(APP_PATH . "includes/manufacturing.inc");
+	include_once(APP_PATH . "sales/includes/sales_db.inc");
+	include_once(APP_PATH . "sales/includes/sales_ui.inc");
+	include_once(APP_PATH . "reporting/includes/reporting.inc");
+	include_once(APP_PATH . "taxes/tax_calc.inc");
 	$js = "";
 	if (Config::get('ui.windows.popups')) {
 		$js .= get_js_open_window(900, 500);
@@ -59,9 +58,9 @@
 		display_note(print_document_link($invoice_no, _("&Print This Invoice"), true, ST_SALESINVOICE));
 
 		submenu_email(_("Email This Invoice"), ST_SALESINVOICE, $invoice_no, null, $emails, 1);
-		hyperlink_params("$path_to_root/sales/customer_payments.php", _("Apply a customer payment"));
+		hyperlink_params("/sales/customer_payments.php", _("Apply a customer payment"));
 		display_note(get_gl_view_str($trans_type, $invoice_no, _("View the GL &Journal Entries for this Invoice")), 1);
-		hyperlink_params("$path_to_root/sales/inquiry/sales_deliveries_view.php", _("Select Another &Delivery For Invoicing"), "OutstandingOnly=1");
+		hyperlink_params("/sales/inquiry/sales_deliveries_view.php", _("Select Another &Delivery For Invoicing"), "OutstandingOnly=1");
 		display_footer_exit();
 	}
 	elseif (isset($_GET['UpdatedID'])) {
@@ -77,7 +76,7 @@
 		display_note(print_document_link($invoice_no, _("&Print This Invoice"), true, ST_SALESINVOICE));
 		submenu_email(_("Email This Invoice"), ST_SALESINVOICE, $invoice_no, null, $emails, 1);
 
-		hyperlink_no_params($path_to_root . "/sales/inquiry/customer_inquiry.php", _("Select A Different &Invoice to Modify"));
+		hyperlink_no_params("/sales/inquiry/customer_inquiry.php", _("Select A Different &Invoice to Modify"));
 		display_footer_exit();
 	}
 	elseif (isset($_GET['RemoveDN'])) {
@@ -106,7 +105,7 @@
 		/* read in all the selected deliveries into the Items cart  */
 		$dn = new Cart(ST_CUSTDELIVERY, $src, true);
 		if ($dn->count_items() == 0) {
-			hyperlink_params($path_to_root . "/sales/inquiry/sales_deliveries_view.php", _("Select a different delivery to invoice"), "OutstandingOnly=1");
+			hyperlink_params("/sales/inquiry/sales_deliveries_view.php", _("Select a different delivery to invoice"), "OutstandingOnly=1");
 			die("<br><b>" . _("There are no delivered items with a quantity left to invoice. There is nothing left to invoice.") . "</b>");
 		}
 		$dn->trans_type = ST_SALESINVOICE;
@@ -137,7 +136,7 @@
 	} elseif (!processing_active()) {
 		/* This page can only be called with a delivery for invoicing or invoice no for edit */
 		display_error(_("This page can only be opened after delivery selection. Please select delivery to invoicing first."));
-		hyperlink_no_params("$path_to_root/sales/inquiry/sales_deliveries_view.php", _("Select Delivery to Invoice"));
+		hyperlink_no_params("/sales/inquiry/sales_deliveries_view.php", _("Select Delivery to Invoice"));
 		end_page();
 		exit;
 	}
@@ -220,7 +219,6 @@
 		$_POST['cart_id'] = $cart->cart_id;
 
 		$_POST['Comments'] = $cart->Comments;
-
 	}
 
 	//-----------------------------------------------------------------------------
@@ -315,7 +313,7 @@
 	$is_edition = $_SESSION['Items']->trans_type == ST_SALESINVOICE && $_SESSION['Items']->trans_no != 0;
 	start_form();
 	hidden('cart_id');
-	start_table(Config::get('tables.style2')." width=90%", 5);
+	start_table(Config::get('tables.style2') . " width=90%", 5);
 	start_row();
 	label_cells(_("Customer"), $_SESSION['Items']->customer_name, "class='tableheader2'");
 	label_cells(_("Branch"), get_branch_name($_SESSION['Items']->Branch), "class='tableheader2'");
@@ -345,7 +343,6 @@
 		}
 	}
 
-
 	if (!$viewing) date_cells(_("Date"), 'InvoiceDate', '', $_SESSION['Items']->trans_no == 0, 0, 0, 0, "class='tableheader2'", true); else label_cell($_POST['InvoiceDate']);
 	if (!isset($_POST['due_date']) || !is_date($_POST['due_date'])) {
 		$_POST['due_date'] = get_invoice_duedate($_SESSION['Items']->customer_id, $_POST['InvoiceDate']);
@@ -362,7 +359,7 @@
 	}
 	display_heading(_("Invoice Items"));
 	div_start('Items');
-	start_table(Config::get('tables.style')."  width=90%");
+	start_table(Config::get('tables.style') . "  width=90%");
 	$th = array(_("Item Code"), _("Item Description"), _("Delivered"), _("Units"), _("Invoiced"), _("This Invoice"), _("Price"), _("Tax Type"), _("Discount"), _("Total"));
 	if ($is_batch_invoice) {
 		$th[] = _("DN");

@@ -1,14 +1,14 @@
 <?php
-/**********************************************************************
-Copyright (C) FrontAccounting, LLC.
-Released under the terms of the GNU General Public License, GPL,
-as published by the Free Software Foundation, either version 3
-of the License, or (at your option) any later version.
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
- ***********************************************************************/
+	/**********************************************************************
+	Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL,
+	as published by the Free Software Foundation, either version 3
+	of the License, or (at your option) any later version.
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+	 ***********************************************************************/
 	class BoxReports {
 
 
@@ -29,7 +29,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		}
 
 		function getDisplay($class = null) {
-			global   $path_to_root,  $Ajax;
+			global $Ajax;
 
 			$temp = array_values($this->ar_classes);
 			$display_class = $class == null ? $temp[0] : $this->ar_classes[$class];
@@ -48,12 +48,12 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 					$st_reports .= "<tr><td><a class='printlink' href='" . $_SERVER['PHP_SELF'] . "?Class=$class_counter&rep_id=$report->id'" . " id='" . default_focus() . "'" . "$acc[1]>$acc[0]</a><tr><td>\n";
 					if (isset($_REQUEST['rep_id']) && $_REQUEST['rep_id'] == $report->id) {
 
-						$action = $path_to_root . '/reporting/prn_redirect.php';
+						$action = PATH_TO_ROOT . '/reporting/prn_redirect.php';
 
 						$st_params = "<table><tr><td>\n" . "<form method='POST' action='$action' target='_blank'>\n";
 						$st_params .= submit('Rep' . $report->id, _("Display: ") . access_string($report->name, true), false, '', Config::get('debug.pdf') ? false : 'default process') . hidden('REP_ID',
-						                                                                                                                                                           $report->id,
-						                                                                                                                                                           false) . '<br><br>';
+							$report->id,
+							false) . '<br><br>';
 						$st_params .= $this->getOptions($report->get_controls());
 						$st_params .= "\n</form></td></tr></table>\n";
 						set_focus('Rep' . $report->id);
@@ -135,7 +135,6 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		//	Returns html code for input control $name of type $type
 		//
 		function get_ctrl($name, $type) {
-			global $path_to_root;
 
 			$st = '';
 			switch ($type) {
@@ -176,7 +175,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 
 					$st = "<input type='text' name='$name' value='$date'>";
 					if (Config::get('ui.forms.datepicker')) {
-						$st .= "<a href=\"javascript:date_picker(document.forms[0].$name);\">" . "	<img src='$path_to_root/themes/default/images/cal.gif' width='16' height='16' border='0' alt='" . _('Click Here to Pick up the date') . "'></a>\n";
+						$st .= "<a href=\"javascript:date_picker(document.forms[0].$name);\">" . "	<img src='/themes/default/images/cal.gif' width='16' height='16' border='0' alt='" . _('Click Here to Pick up the date') . "'></a>\n";
 					}
 					return $st;
 					break;
@@ -191,7 +190,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 				case 'DESTINATION':
 					$sel = array(_("PDF/Printer"), "Excel");
 					$def = 0;
-					if (Config::get('print.default.excel')== 1) {
+					if (Config::get('print.default.excel') == 1) {
 						$def = 1;
 					}
 					return array_selector($name, $def, $sel);
@@ -291,7 +290,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 					return combo_input($name, '', $sql, 'TNO', 'IName', array('order' => false));
 
 				case 'ORDERS':
-					$ref = (Config::get('print.useinvoicenumber') == 0)? "order_no" : "reference";
+					$ref = (Config::get('print.useinvoicenumber') == 0) ? "order_no" : "reference";
 					$sql = "SELECT sales_orders.order_no, concat(sales_orders.$ref, '-',
 						debtors_master.name) as IName
 						FROM debtors_master, sales_orders WHERE debtors_master.debtor_no=sales_orders.debtor_no
@@ -381,7 +380,6 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 						$tag_type = TAG_DIMENSION;
 					}
 					return tag_list($name, 5, $tag_type, true, _("No tags"));
-
 			}
 			return '';
 		}
@@ -411,7 +409,6 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		function get_controls() {
 			return $this->controls;
 		}
-
 	}
 
 
@@ -427,15 +424,17 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	}
 
 	function add_custom_reports(&$reports) {
-		global $installed_extensions, $path_to_root;
+		global $installed_extensions;
 
 		// include reports installed inside extension modules
 		if (count($installed_extensions) > 0) {
 			$extensions = $installed_extensions;
-			foreach ($extensions as $ext) if (($ext['active'] && $ext['type'] == 'module')) {
-				$file = $path_to_root . '/' . $ext['path'] . "/reporting/reports_custom.php";
-				if (file_exists($file)) {
-					include_once($file);
+			foreach ($extensions as $ext) {
+				if (($ext['active'] && $ext['type'] == 'module')) {
+					$file = PATH_TO_ROOT . '/' . $ext['path'] . "/reporting/reports_custom.php";
+					if (file_exists($file)) {
+						include_once($file);
+					}
 				}
 			}
 		}

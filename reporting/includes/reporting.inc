@@ -1,14 +1,14 @@
 <?php
-/**********************************************************************
-Copyright (C) FrontAccounting, LLC.
-Released under the terms of the GNU General Public License, GPL,
-as published by the Free Software Foundation, either version 3
-of the License, or (at your option) any later version.
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
- ***********************************************************************/
+	/**********************************************************************
+	Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL,
+	as published by the Free Software Foundation, either version 3
+	of the License, or (at your option) any later version.
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+	 ***********************************************************************/
 	// Link to printing single document with bulk report template file.
 	// Ex. label_cell(print_document_link($myrow['order_no'], _("Print")), $type);
 	// or display_note(print_document_link($order_no, _("Print this order")));
@@ -23,9 +23,9 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 
 	function print_document_option_array($type_no, $doc_no, $email = 0, $extra = 0) {
 		include_once(APP_PATH . "includes/types.inc");
-	  $ar=array();
-	$rep='';
-			switch ($type_no) {
+		$ar = array();
+		$rep = '';
+		switch ($type_no) {
 			case ST_SALESQUOTE :
 				$rep = 111;
 				// from, to, currency, bank acc, email, quote, comments
@@ -83,7 +83,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	}
 
 	function email_document_link($doc_no, $link_text, $link = true, $type_no, $class = 'EmailLink', $id = '', $emails = array(), $extra = 0, $return = false) {
-				if (empty($emails)) return false;
+		if (empty($emails)) return false;
 		if ($return) {
 			ob_start();
 		}
@@ -104,8 +104,8 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		}
 		$ars = access_string($link_text);
 		HTML::br()->p(array('class' => 'center'));
-		UI::select('EmailSelect'.$type_no, $emails, array('style' => 'max-width:600px'))->br;
-		UI::button('EmailButton'.$type_no, $link_text, array('style' => 'margin:20px', 'data-url' => $url))->p;
+		UI::select('EmailSelect' . $type_no, $emails, array('style' => 'max-width:600px'))->br;
+		UI::button('EmailButton' . $type_no, $link_text, array('style' => 'margin:20px', 'data-url' => $url))->p;
 		$js = <<<JS
 		$('#EmailButton$type_no').button().click(function() {
 			var email = $("#EmailSelect$type_no").val();
@@ -116,7 +116,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		});
 JS;
 		if ($return) {
-			HTML::script('null', $js,false);
+			HTML::script('null', $js, false);
 			return ob_get_clean();
 		}
 		JS::onload($js);
@@ -126,8 +126,8 @@ JS;
 	//	Universal link to any kind of report.
 	//
 	function print_link($link_text, $rep, $pars = array(), $dir = '', $icon = false, $class = 'printlink', $id = '') {
-		global $path_to_root;
-		$url = $dir == '' ? $path_to_root . '/reporting/prn_redirect.php?' : $dir;
+
+		$url = $dir == '' ? PATH_TO_ROOT . '/reporting/prn_redirect.php?' : $dir;
 		$id = default_focus($id);
 		foreach ($pars as $par => $val) {
 			$pars[$par] = "$par=" . urlencode($val);

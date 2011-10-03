@@ -13,12 +13,12 @@
 	 Print request redirector. This file is fired via print link or
 	 print button in reporting module.
  */
-	$path_to_root = "..";
+
 	$page_security = 'SA_OPEN'; // this level is later overriden in rep file
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 
 	function find_report_file($rep) {
-		global $installed_extensions, $path_to_root;
+		global $installed_extensions;
 
 		// customized per company versions
 		$path = "/company/reporting";
@@ -34,7 +34,7 @@
 			foreach ($extensions as $ext)
 			{
 				if (($ext['active'] && $ext['type'] == 'module')) {
-					$path = $path_to_root . '/' . $ext['path'] . "/reporting";
+					$path = PATH_TO_ROOT . '/' . $ext['path'] . "/reporting";
 					$rep_file = $path . "/rep$rep.php";
 					if (file_exists($rep_file)) {
 						set_include_path($path . PATH_SEPARATOR . get_include_path());
@@ -44,7 +44,7 @@
 			}
 		}
 		// standard reports
-		$rep_file = $path_to_root . "/reporting/rep$rep.php";
+		$rep_file = PATH_TO_ROOT . "/reporting/rep$rep.php";
 		if (file_exists($rep_file))
 			return $rep_file;
 

@@ -8,14 +8,12 @@
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
  ***********************************************************************/
-function focus_budget(i)
-{
+function focus_budget(i) {
 	save_focus(i);
 	i.setAttribute('_last', get_amount(i.name));
 }
 
-function blur_budget(i)
-{
+function blur_budget(i) {
 	var amount = get_amount(i.name);
 	var total = get_amount('Total', 1);
 
@@ -25,14 +23,11 @@ function blur_budget(i)
 
 
 var budget_calc = {
-	'.amount': function(e)
-	{
-		e.onblur = function()
-		{
+	'.amount':function(e) {
+		e.onblur = function() {
 			blur_budget(this);
 		};
-		e.onfocus = function()
-		{
+		e.onfocus = function() {
 			focus_budget(this);
 		};
 	}

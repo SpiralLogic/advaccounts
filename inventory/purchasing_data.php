@@ -1,24 +1,24 @@
 <?php
-/**********************************************************************
-Copyright (C) FrontAccounting, LLC.
-Released under the terms of the GNU General Public License, GPL,
-as published by the Free Software Foundation, either version 3
-of the License, or (at your option) any later version.
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
- ***********************************************************************/
+	/**********************************************************************
+	Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL,
+	as published by the Free Software Foundation, either version 3
+	of the License, or (at your option) any later version.
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+	 ***********************************************************************/
 	$page_security = 'SA_PURCHASEPRICING';
-	$path_to_root = "..";
+
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 
 	page(_($help_context = "Supplier Purchasing Data"), @$_REQUEST['frame']);
 
-	include_once($path_to_root . "/includes/date_functions.inc");
-	include_once($path_to_root . "/includes/faui.inc");
-	include_once($path_to_root . "/includes/manufacturing.inc");
-	include_once($path_to_root . "/includes/data_checks.inc");
+	include_once(APP_PATH . "includes/date_functions.inc");
+	include_once(APP_PATH . "includes/faui.inc");
+	include_once(APP_PATH . "includes/manufacturing.inc");
+	include_once(APP_PATH . "includes/data_checks.inc");
 
 	check_db_has_purchasable_items(_("There are no purchasable inventory items defined in the system."));
 	check_db_has_suppliers(_("There are no suppliers defined in the system."));
@@ -57,9 +57,9 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 				$sql = "INSERT INTO purch_data (supplier_id, stock_id, price, suppliers_uom,
     			conversion_factor, supplier_description) VALUES (";
 				$sql .= db_escape($_POST['supplier_id']) . ", " . db_escape($_POST['stock_id']) . ", "
-								. input_num('price', 0) . ", " . db_escape($_POST['suppliers_uom']) . ", "
-								. input_num('conversion_factor') . ", "
-								. db_escape($_POST['supplier_description']) . ")";
+				 . input_num('price', 0) . ", " . db_escape($_POST['suppliers_uom']) . ", "
+				 . input_num('conversion_factor') . ", "
+				 . db_escape($_POST['supplier_description']) . ")";
 
 				db_query($sql, "The supplier purchasing details could not be added");
 				display_notification(_("This supplier purchasing data has been added."));
@@ -118,7 +118,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	{
 
 		$sql = "SELECT purch_data.*,suppliers.supp_name,"
-					 . "suppliers.curr_code
+		 . "suppliers.curr_code
 		FROM purch_data INNER JOIN suppliers
 		ON purch_data.supplier_id=suppliers.supplier_id
 		WHERE stock_id = " . db_escape($_POST['stock_id']);
@@ -131,12 +131,13 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		else
 		{
 			if ($_REQUEST['frame']) {
-				start_table(Config::get('tables.style')."  width=90%");
+				start_table(Config::get('tables.style') . "  width=90%");
 			} else {
-				start_table(Config::get('tables.style')."  width=65%");
+				start_table(Config::get('tables.style') . "  width=65%");
 			}
-			$th = array(_( "Updated"),_("Supplier"), _("Price"), _("Currency"),
-									_("Unit"), _("Conversion Factor"), _("Supplier's Code"), "", "");
+			$th = array(_("Updated"), _("Supplier"), _("Price"), _("Currency"),
+				_("Unit"), _("Conversion Factor"), _("Supplier's Code"), "", ""
+			);
 
 			table_header($th);
 
@@ -145,7 +146,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 			while ($myrow = db_fetch($result))
 			{
 				alt_table_row_color($k);
-				label_cell(sql2date($myrow['last_update']),"style='white-space:nowrap;'");
+				label_cell(sql2date($myrow['last_update']), "style='white-space:nowrap;'");
 
 				label_cell($myrow["supp_name"]);
 				amount_decimal_cell($myrow["price"]);
@@ -206,7 +207,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		$_POST['conversion_factor'] = exrate_format(1);
 	}
 	amount_row(_("Conversion Factor (to our UOM):"), 'conversion_factor',
-						 exrate_format($_POST['conversion_factor']), null, null, user_exrate_dec());
+		exrate_format($_POST['conversion_factor']), null, null, user_exrate_dec());
 	text_row(_("Supplier's Product Code:"), 'supplier_description', null, 50, 51);
 
 	end_table(1);
@@ -215,7 +216,6 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	end_form();
 	if ($_REQUEST['frame']) {
 		end_page(true, true, true);
-
 	} else {
 		end_page();
 	}

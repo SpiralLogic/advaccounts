@@ -1,138 +1,138 @@
 <?php
-/**********************************************************************
-Copyright (C) FrontAccounting, LLC.
-Released under the terms of the GNU General Public License, GPL,
-as published by the Free Software Foundation, either version 3
-of the License, or (at your option) any later version.
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
- ***********************************************************************/
-  $page_security = 'SA_SALESAREA';
-  $path_to_root = "../..";
-  include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	/**********************************************************************
+	Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL,
+	as published by the Free Software Foundation, either version 3
+	of the License, or (at your option) any later version.
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+	 ***********************************************************************/
+	$page_security = 'SA_SALESAREA';
 
-  page(_($help_context = "Sales Areas"));
+	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 
-  include($path_to_root . "/includes/faui.inc");
+	page(_($help_context = "Sales Areas"));
 
-  simple_page_mode(true);
+	include(APP_PATH . "includes/faui.inc");
 
-  if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
+	simple_page_mode(true);
 
-	 $input_error = 0;
+	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 
-	 if (strlen($_POST['description']) == 0) {
-		$input_error = 1;
-		display_error(_("The area description cannot be empty."));
-		set_focus('description');
-	 }
+		$input_error = 0;
 
-	 if ($input_error != 1) {
-		if ($selected_id != -1) {
-		  $sql = "UPDATE areas SET description=" . db_escape(
-			 $_POST['description']) . " WHERE area_code = " . db_escape($selected_id);
-		  $note = _('Selected sales area has been updated');
-		}
-		else
-		{
-		  $sql = "INSERT INTO areas (description) VALUES (" . db_escape($_POST['description']) . ")";
-		  $note = _('New sales area has been added');
+		if (strlen($_POST['description']) == 0) {
+			$input_error = 1;
+			display_error(_("The area description cannot be empty."));
+			set_focus('description');
 		}
 
-		db_query($sql, "The sales area could not be updated or added");
-		display_notification($note);
+		if ($input_error != 1) {
+			if ($selected_id != -1) {
+				$sql = "UPDATE areas SET description=" . db_escape(
+					$_POST['description']) . " WHERE area_code = " . db_escape($selected_id);
+				$note = _('Selected sales area has been updated');
+			}
+			else
+			{
+				$sql = "INSERT INTO areas (description) VALUES (" . db_escape($_POST['description']) . ")";
+				$note = _('New sales area has been added');
+			}
+
+			db_query($sql, "The sales area could not be updated or added");
+			display_notification($note);
+			$Mode = 'RESET';
+		}
+	}
+
+	if ($Mode == 'Delete') {
+
+		$cancel_delete = 0;
+
+		// PREVENT DELETES IF DEPENDENT RECORDS IN 'debtors_master'
+
+		$sql = "SELECT COUNT(*) FROM cust_branch WHERE area=" . db_escape($selected_id);
+		$result = db_query($sql, "check failed");
+		$myrow = db_fetch_row($result);
+		if ($myrow[0] > 0) {
+			$cancel_delete = 1;
+			display_error(_("Cannot delete this area because customer branches have been created using this area."));
+		}
+		if ($cancel_delete == 0) {
+			$sql = "DELETE FROM areas WHERE area_code=" . db_escape($selected_id);
+			db_query($sql, "could not delete sales area");
+
+			display_notification(_('Selected sales area has been deleted'));
+		} //end if Delete area
 		$Mode = 'RESET';
-	 }
-  }
+	}
 
-  if ($Mode == 'Delete') {
+	if ($Mode == 'RESET') {
+		$selected_id = -1;
+		$sav = get_post('show_inactive');
+		unset($_POST);
+		$_POST['show_inactive'] = $sav;
+	}
 
-	 $cancel_delete = 0;
+	//-------------------------------------------------------------------------------------------------
 
-	 // PREVENT DELETES IF DEPENDENT RECORDS IN 'debtors_master'
+	$sql = "SELECT * FROM areas";
+	if (!check_value('show_inactive')) $sql .= " WHERE !inactive";
+	$result = db_query($sql, "could not get areas");
 
-	 $sql = "SELECT COUNT(*) FROM cust_branch WHERE area=" . db_escape($selected_id);
-	 $result = db_query($sql, "check failed");
-	 $myrow = db_fetch_row($result);
-	 if ($myrow[0] > 0) {
-		$cancel_delete = 1;
-		display_error(_("Cannot delete this area because customer branches have been created using this area."));
-	 }
-	 if ($cancel_delete == 0) {
-		$sql = "DELETE FROM areas WHERE area_code=" . db_escape($selected_id);
-		db_query($sql, "could not delete sales area");
+	start_form();
+	start_table(Config::get('tables.style') . "  width=30%");
 
-		display_notification(_('Selected sales area has been deleted'));
-	 } //end if Delete area
-	 $Mode = 'RESET';
-  }
+	$th = array(_("Area Name"), "", "");
+	inactive_control_column($th);
 
-  if ($Mode == 'RESET') {
-	 $selected_id = -1;
-	 $sav = get_post('show_inactive');
-	 unset($_POST);
-	 $_POST['show_inactive'] = $sav;
-  }
+	table_header($th);
+	$k = 0;
 
-  //-------------------------------------------------------------------------------------------------
+	while ($myrow = db_fetch($result))
+	{
 
-  $sql = "SELECT * FROM areas";
-  if (!check_value('show_inactive')) $sql .= " WHERE !inactive";
-  $result = db_query($sql, "could not get areas");
+		alt_table_row_color($k);
 
-  start_form();
-  start_table(Config::get('tables.style')."  width=30%");
+		label_cell($myrow["description"]);
 
-  $th = array(_("Area Name"), "", "");
-  inactive_control_column($th);
+		inactive_control_cell($myrow["area_code"], $myrow["inactive"], 'areas', 'area_code');
 
-  table_header($th);
-  $k = 0;
+		edit_button_cell("Edit" . $myrow["area_code"], _("Edit"));
+		delete_button_cell("Delete" . $myrow["area_code"], _("Delete"));
+		end_row();
+	}
 
-  while ($myrow = db_fetch($result))
-  {
+	inactive_control_row($th);
+	end_table();
+	echo '<br>';
 
-	 alt_table_row_color($k);
+	//-------------------------------------------------------------------------------------------------
 
-	 label_cell($myrow["description"]);
+	start_table(Config::get('tables.style2'));
 
-	 inactive_control_cell($myrow["area_code"], $myrow["inactive"], 'areas', 'area_code');
+	if ($selected_id != -1) {
+		if ($Mode == 'Edit') {
+			//editing an existing area
+			$sql = "SELECT * FROM areas WHERE area_code=" . db_escape($selected_id);
 
-	 edit_button_cell("Edit" . $myrow["area_code"], _("Edit"));
-	 delete_button_cell("Delete" . $myrow["area_code"], _("Delete"));
-	 end_row();
-  }
+			$result = db_query($sql, "could not get area");
+			$myrow = db_fetch($result);
 
-  inactive_control_row($th);
-  end_table();
-  echo '<br>';
+			$_POST['description'] = $myrow["description"];
+		}
+		hidden("selected_id", $selected_id);
+	}
 
-  //-------------------------------------------------------------------------------------------------
+	text_row_ex(_("Area Name:"), 'description', 30);
 
-  start_table(Config::get('tables.style2'));
+	end_table(1);
 
-  if ($selected_id != -1) {
-	 if ($Mode == 'Edit') {
-		//editing an existing area
-		$sql = "SELECT * FROM areas WHERE area_code=" . db_escape($selected_id);
+	submit_add_or_update_center($selected_id == -1, '', 'both');
 
-		$result = db_query($sql, "could not get area");
-		$myrow = db_fetch($result);
+	end_form();
 
-		$_POST['description'] = $myrow["description"];
-	 }
-	 hidden("selected_id", $selected_id);
-  }
-
-  text_row_ex(_("Area Name:"), 'description', 30);
-
-  end_table(1);
-
-  submit_add_or_update_center($selected_id == -1, '', 'both');
-
-  end_form();
-
-  end_page();
+	end_page();
 ?>

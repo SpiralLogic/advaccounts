@@ -44,7 +44,7 @@ function error_handler($errno, $errstr, $file, $line)
 // FIX center is unused now
 function fmt_errors($center = false)
 {
-	global $messages, $path_to_root;
+	global $messages;
 
 	$msg_class = array(
 		E_USER_ERROR => 'err_msg',
@@ -76,7 +76,7 @@ function fmt_errors($center = false)
 		$class = $msg_class[$type];
 		$content = "<div class='$class'>$content</div>";
 	} else
-		if ($path_to_root == '.')
+		if (PATH_TO_ROOT == '.')
 			return '';
 	return $content;
 }

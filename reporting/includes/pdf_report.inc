@@ -10,7 +10,7 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	* ********************************************************************* */
-	//include_once($path_to_root . "reporting/includes/class.pdf.inc");
+	//include_once(APP_PATH . "reporting/includes/class.pdf.inc");
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/reporting/includes/class.pdf.inc");
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/reporting/includes/printer_class.inc");
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/admin/db/company_db.inc");
@@ -181,10 +181,10 @@
 			$code = $_SESSION['language']->code;
 			$enc = strtoupper($_SESSION['language']->encoding);
 			// for the language array in class.pdf.inc
-			$l = array('a_meta_charset'  => $enc,
-								 'a_meta_dir'      => $rtl,
-								 'a_meta_language' => $code,
-								 'w_page'          => 'page'
+			$l = array('a_meta_charset' => $enc,
+				'a_meta_dir' => $rtl,
+				'a_meta_language' => $code,
+				'w_page' => 'page'
 			);
 			$this->Cpdf($size, $l, $orientation);
 		}
@@ -315,7 +315,7 @@
 		}
 
 		function Header2($myrow, $branch, $sales_order, $bankaccount, $doctype) {
-			global $path_to_root, $print_as_quote, $packing_slip;
+			global $print_as_quote, $packing_slip;
 			$this->pageNumber++;
 			if ($this->pageNumber > 1) {
 				$this->newPage();
@@ -394,7 +394,7 @@
 				$this->fontSize = FOOTER_FONT_SIZE;
 				$this->TextWrap($footerCol, $footerRow - ($this->fontSize + 1), $pageNumCol - $footerCol, $this->footerText, $align = 'center', $border = 0, $fill = 0, $link = NULL, $stretch = 1);
 				$this->TextWrap($pageNumCol, $footerRow - ($this->fontSize + 1), PAGE_NUM_WIDTH, _("Page") . ' ' . $this->pageNumber . '/' . $this->getAliasNbPages(), $align = 'right', $border = 0,
-												$fill = 0, $link = NULL, $stretch = 1);
+					$fill = 0, $link = NULL, $stretch = 1);
 				$this->fontSize = $prevFontSize;
 			}
 			//
@@ -530,9 +530,9 @@
 		/**
 		 * Format a numeric string date into something nicer looking.
 		 *
-		 * @param string $date          Date string to be formatted.
-		 * @param int    $input_format  Format of the input string.	Possible values are:<ul><li>0: user's default (default)</li></ul>
-		 * @param int    $output_format Format of the output string.	Possible values are:<ul><li>0: Month (word) Day (numeric), 4-digit Year - Example: January 1, 2000 (default)</li><li>1: Month 4-digit Year - Example: January 2000</li><li>2: Month Abbreviation 4-digit Year - Example: Jan 2000</li></ul>
+		 * @param string $date					Date string to be formatted.
+		 * @param int		$input_format	Format of the input string.	Possible values are:<ul><li>0: user's default (default)</li></ul>
+		 * @param int		$output_format Format of the output string.	Possible values are:<ul><li>0: Month (word) Day (numeric), 4-digit Year - Example: January 1, 2000 (default)</li><li>1: Month 4-digit Year - Example: January 2000</li><li>2: Month Abbreviation 4-digit Year - Example: Jan 2000</li></ul>
 		 *
 		 * @access public
 		 */
@@ -546,8 +546,8 @@
 					return (date('F j, Y', mktime(12, 0, 0, $month, $day, $year)));
 				} elseif ($output_format == 1) {
 					return (date('F Y',
-											 mktime(12, 0, 0, $month, $day,
-															$year)));
+						mktime(12, 0, 0, $month, $day,
+							$year)));
 				} elseif ($output_format == 2) {
 					return (date('M Y', mktime(12, 0, 0, $month, $day, $year)));
 				}
@@ -723,14 +723,14 @@
 		 * Underlines the contents of a cell, but not the cell padding area.
 		 * Primarily useful for the last line before a "totals" line.
 		 *
-		 * @param int   $c         Column number to underline.
-		 * @param int   $r         Print the underline(s) this number of rows below the current position.	Can be negative in order to go up.
-		 * @param int   $type      Type of underlining to draw.	Possible values are:<ul><li>1: single underline (default)</li><li>2: double underline</li></ul>
-		 * @param int   $linewidth Thickness of the line to draw.	Default value of zero will use the current line width defined for this document.
-		 * @param array $style     Line style. Array like for {@link SetLineStyle SetLineStyle}. Default value: default line style (empty array).
+		 * @param int	 $c				 Column number to underline.
+		 * @param int	 $r				 Print the underline(s) this number of rows below the current position.	Can be negative in order to go up.
+		 * @param int	 $type			Type of underlining to draw.	Possible values are:<ul><li>1: single underline (default)</li><li>2: double underline</li></ul>
+		 * @param int	 $linewidth Thickness of the line to draw.	Default value of zero will use the current line width defined for this document.
+		 * @param array $style		 Line style. Array like for {@link SetLineStyle SetLineStyle}. Default value: default line style (empty array).
 		 *
 		 * @access public
-		 * @see    SetLineWidth(), SetDrawColor(), SetLineStyle()
+		 * @see		SetLineWidth(), SetDrawColor(), SetLineStyle()
 		 */
 		function UnderlineCell($c, $r = 0, $type = 1, $linewidth = 0, $style = array()) {
 			// If line width was specified, save current setting so we can reset it
@@ -752,7 +752,7 @@
 			// the first underline (depends on current line thickness (aka "line width")
 			if ($type == 2) {
 				parent::line($this->cols[$c] + $this->cMargin, $this->row - $r - $y_adj - ($this->GetLineWidth() + 2), $this->cols[$c + 1] - $this->cMargin,
-										 $this->row - $r - $y_adj - ($this->GetLineWidth() + 2), $style);
+				 $this->row - $r - $y_adj - ($this->GetLineWidth() + 2), $style);
 			}
 			// If line width was specified, reset it back to the original setting
 			if ($linewidth != 0) {
@@ -778,7 +778,7 @@
 		}
 
 		function End($email = 0, $subject = null, $myrow = null, $doctype = 0) {
-			global $path_to_root;
+
 			if (Config::get('debug.pdf') == 1) {
 				$pdfcode = $this->Output('', 'S');
 				$pdfcode = str_replace("\n", "\n<br>", htmlspecialchars($pdfcode));
@@ -808,7 +808,7 @@
 					} else {
 						include("includes/doctext.inc");
 					}
-					require_once($path_to_root . "/reporting/includes/class.mail.inc");
+					require_once(APP_PATH . "reporting/includes/class.mail.inc");
 					$mail = new email(str_replace(",", "", $this->company['coy_name']), $this->company['email']);
 					if (!isset($myrow['email']) || $myrow['email'] == '') $myrow['email'] = isset($myrow['contact_email']) ? $myrow['contact_email'] : '';
 					// $to = str_replace(",", "", $myrow['DebtorName']) . " <" . $myrow['email'] . ">";
@@ -833,12 +833,12 @@
 					$ret = $mail->send();
 					if (!$ret) display_error('Error: ' . $emailAddress . ': ' . $mail->toerror); else
 						display_notification($this->title . " " . $myrow['reference'] . " " . _("has been sent by email to: ") . str_replace(",", "",
-																																																																 $myrow['DebtorName']) . "  &lt;" . $emailAddress . "&gt;");
+								$myrow['DebtorName']) . "  &lt;" . $emailAddress . "&gt;");
 					unlink($fname);
 				} else {
 					$printer = get_report_printer(user_print_profile(), $_POST['REP_ID']);
 					if ($printer == false) {
-						if (in_ajax()) {
+						if (Ajax::in_ajax()) {
 							global $Ajax;
 							if (user_rep_popup()) $Ajax->popup($fname); // when embeded pdf viewer used
 							else

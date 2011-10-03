@@ -10,12 +10,11 @@
  ***********************************************************************/
 var _focus;
 var _hotkeys = {
-	'alt': false,	// whether is the Alt key pressed
-	'focus': -1		// currently selected indeks of document.links
+	'alt':false, // whether is the Alt key pressed
+	'focus':-1		// currently selected indeks of document.links
 };
 
-function save_focus(e)
-{
+function save_focus(e) {
 	_focus = e.name || e.id;
 	var h = document.getElementById('hints');
 	if (h) {
@@ -24,8 +23,7 @@ function save_focus(e)
 	}
 }
 
-function _expand(tabobj)
-{
+function _expand(tabobj) {
 
 	var ul = tabobj.parentNode.parentNode;
 	var alltabs = ul.getElementsByTagName("input");
@@ -41,16 +39,13 @@ function _expand(tabobj)
 }
 
 //interface for selecting a tab (plus expand corresponding content)
-function expandtab(tabcontentid, tabnumber)
-{
+function expandtab(tabcontentid, tabnumber) {
 	var tabs = document.getElementById(tabcontentid);
 	_expand(tabs.getElementsByTagName("input")[tabnumber]);
 }
-function _set_combo_input(e)
-{
+function _set_combo_input(e) {
 	e.setAttribute('_last', e.value);
-	e.onblur = function()
-	{
+	e.onblur = function() {
 		var but_name = this.name.substring(0, this.name.length - 4) + 'button';
 		var button = document.getElementsByName(but_name)[0];
 		var select = document.getElementsByName(this.getAttribute('rel'))[0];
@@ -69,8 +64,7 @@ function _set_combo_input(e)
 		}
 		return false;
 	};
-	e.onkeyup = function(ev)
-	{
+	e.onkeyup = function(ev) {
 		var select = document.getElementsByName(this.getAttribute('rel'))[0];
 		if (select && select.selectedIndex >= 0) {
 			var len = select.length;
@@ -86,8 +80,7 @@ function _set_combo_input(e)
 			}
 		}
 	};
-	e.onkeydown = function(ev)
-	{
+	e.onkeydown = function(ev) {
 		ev = ev || window.event;
 		key = ev.keyCode || ev.which;
 		if (key == 13) {
@@ -97,8 +90,7 @@ function _set_combo_input(e)
 	}
 }
 
-function _update_box(s)
-{
+function _update_box(s) {
 	var byid = s.className == 'combo';
 	var rel = s.getAttribute('rel');
 	var box = document.getElementsByName(rel)[0];
@@ -113,14 +105,12 @@ function _update_box(s)
 	}
 }
 
-function _set_combo_select(e)
-{
+function _set_combo_select(e) {
 	// When combo position is changed via js (eg from searchbox)
 	// no onchange event is generated. To ensure proper change
 	// signaling we must track selectedIndex in onblur handler.
 	e.setAttribute('_last', e.selectedIndex);
-	e.onblur = function()
-	{
+	e.onblur = function() {
 		var box = document.getElementsByName(this.getAttribute('rel'))[0];
 //			if(this.className=='combo')
 //			    _update_box(this);
@@ -128,8 +118,7 @@ function _set_combo_select(e)
 			this.onchange();
 		}
 	}
-	e.onchange = function()
-	{
+	e.onchange = function() {
 		var s = this;
 		this.setAttribute('_last', this.selectedIndex);
 		if (s.className == 'combo') {
@@ -144,8 +133,7 @@ function _set_combo_select(e)
 		}
 		return true;
 	}
-	e.onkeydown = function(event)
-	{
+	e.onkeydown = function(event) {
 		event = event || window.event;
 		key = event.keyCode || event.which;
 		var box = document.getElementsByName(this.getAttribute('rel'))[0];
@@ -162,8 +150,7 @@ function _set_combo_select(e)
 
 var _w;
 
-function callEditor(key)
-{
+function callEditor(key) {
 	var el = document.getElementsByName(editors[key][1])[0];
 	if (_w) {
 		_w.close();
@@ -176,8 +163,7 @@ function callEditor(key)
 	_w.focus();
 }
 
-function passBack(value)
-{
+function passBack(value) {
 	var o = opener;
 	if (value != false) {
 		var back = o.editors[o.editors._call]; // form input bindings
@@ -199,11 +185,9 @@ function passBack(value)
  Behaviour definitions
  */
 var inserts = {
-	'input': function(e)
-	{
+	'input':function(e) {
 		if (e.onfocus == undefined) {
-			e.onfocus = function()
-			{
+			e.onfocus = function() {
 				save_focus(this);
 				if (this.className == 'combo') {
 					this.select();
@@ -214,8 +198,7 @@ var inserts = {
 			_set_combo_input(e);
 		} else {
 			if (e.type == 'text') {
-				e.onkeydown = function(ev)
-				{
+				e.onkeydown = function(ev) {
 					ev = ev || window.event;
 					key = ev.keyCode || ev.which;
 					if (key == 13) {
@@ -229,36 +212,28 @@ var inserts = {
 			}
 		}
 	},
-	'input.combo2,input[aspect="fallback"]':
-			function(e)
-			{
-				// this hides search button for js enabled browsers
-				e.style.display = 'none';
-			},
-	'div.js_only':
-			function(e)
-			{
-				// this shows divs for js enabled browsers only
-				e.style.display = 'block';
-			},
+	'input.combo2,input[aspect="fallback"]':function(e) {
+		// this hides search button for js enabled browsers
+		e.style.display = 'none';
+	},
+	'div.js_only':function(e) {
+		// this shows divs for js enabled browsers only
+		e.style.display = 'block';
+	},
 //	'.ajaxsubmit,.editbutton,.navibutton': // much slower on IE7
-	'button.ajaxsubmit,input.ajaxsubmit,input.editbutton,button.editbutton,button.navibutton':
-			function(e)
-			{
-				e.onclick = function()
-				{
-					save_focus(e);
-					var asp = e.getAttribute('aspect')
-					if (asp && asp.indexOf('process') !== -1) {
-						JsHttpRequest.request(this, null, 60000);
-					} else {
-						JsHttpRequest.request(this);
-					}
-					return false;
-				}
-			},
-	'button': function(e)
-	{
+	'button.ajaxsubmit,input.ajaxsubmit,input.editbutton,button.editbutton,button.navibutton':function(e) {
+		e.onclick = function() {
+			save_focus(e);
+			var asp = e.getAttribute('aspect')
+			if (asp && asp.indexOf('process') !== -1) {
+				JsHttpRequest.request(this, null, 60000);
+			} else {
+				JsHttpRequest.request(this);
+			}
+			return false;
+		}
+	},
+	'button':function(e) {
 		if (e.name) {
 			var func = _validate[e.name];
 			var old = e.onclick;
@@ -266,8 +241,7 @@ var inserts = {
 				if (typeof old != 'function' || old == func) { // prevent multiply binding on ajax update
 					e.onclick = func;
 				} else {
-					e.onclick = function()
-					{
+					e.onclick = function() {
 						if (func()) {
 							old();
 							return true;
@@ -279,53 +253,43 @@ var inserts = {
 			}
 		}
 	},
-	'.amount': function(e)
-	{
+	'.amount':function(e) {
 		if (e.onblur == undefined) {
-			e.onblur = function()
-			{
+			e.onblur = function() {
 				var dec = this.getAttribute("dec");
 				price_format(this.name, get_amount(this.name), dec);
 			};
 		}
 	},
-	'.freight': function(e)
-	{
+	'.freight':function(e) {
 		if (e.onblur == undefined) {
-			e.onblur = function()
-			{
+			e.onblur = function() {
 				var dec = this.getAttribute("dec");
 				price_format(this.name, get_amount(this.name), dec, '2');
 			};
 		}
 	},
-	'.searchbox': // emulated onchange event handling for text inputs
-			function(e)
-			{
-				e.setAttribute('_last_val', e.value);
-				e.setAttribute('autocomplete', 'off'); //must be off when calling onblur
-				e.onblur = function()
-				{
-					var val = this.getAttribute('_last_val');
-					if (val != this.value) {
-						this.setAttribute('_last_val', this.value);
-						JsHttpRequest.request('_' + this.name + '_changed', this.form);
-					}
-				}
-			},
-	'button[aspect*selector], input[aspect*selector]': function(e)
-	{
-		e.onclick = function()
-		{
+	'.searchbox':// emulated onchange event handling for text inputs
+	 function(e) {
+		 e.setAttribute('_last_val', e.value);
+		 e.setAttribute('autocomplete', 'off'); //must be off when calling onblur
+		 e.onblur = function() {
+			 var val = this.getAttribute('_last_val');
+			 if (val != this.value) {
+				 this.setAttribute('_last_val', this.value);
+				 JsHttpRequest.request('_' + this.name + '_changed', this.form);
+			 }
+		 }
+	 },
+	'button[aspect*selector], input[aspect*selector]':function(e) {
+		e.onclick = function() {
 			passBack(this.getAttribute('rel'));
 			return false;
 		}
 	},
-	'select': function(e)
-	{
+	'select':function(e) {
 		if (e.onfocus == undefined) {
-			e.onfocus = function()
-			{
+			e.onfocus = function() {
 				save_focus(this);
 			};
 			var c = e.className;
@@ -334,19 +298,15 @@ var inserts = {
 			}
 		}
 	},
-	'a.printlink':	 function(l)
-	{
-		l.onclick = function()
-		{
+	'a.printlink':function(l) {
+		l.onclick = function() {
 			save_focus(this);
 			JsHttpRequest.request(this, null, 60000);
 			return false;
 		}
 	},
-	'a': function(e)
-	{ // traverse menu
-		e.onkeydown = function(ev)
-		{
+	'a':function(e) { // traverse menu
+		e.onkeydown = function(ev) {
 			ev = ev || window.event;
 			key = ev.keyCode || ev.which;
 			if (key == 37 || key == 38 || key == 39 || key == 40) {
@@ -356,16 +316,14 @@ var inserts = {
 			}
 		}
 	},
-	'ul.ajaxtabs':	function(ul)
-	{
+	'ul.ajaxtabs':function(ul) {
 		var ulist = ul.getElementsByTagName("li");
 		for (var x = 0; x < ulist.length; x++) { //loop through each LI e
 			var ulistlink = ulist[x].getElementsByTagName("input")[0];
 			if (ulistlink.onclick == undefined) {
 // ?  var modifiedurl=ulistlink.getAttribute("href").replace(/^http:\/\/[^\/]+\//i, "http://"+window.location.hostname+"/")
 				var url = ulistlink.form.action
-				ulistlink.onclick = function()
-				{
+				ulistlink.onclick = function() {
 					_expand(this);
 					return false;
 				}
@@ -399,8 +357,7 @@ var inserts = {
 	 */
 };
 
-function stopEv(ev)
-{
+function stopEv(ev) {
 	if (ev.preventDefault) {
 		ev.preventDefault();
 		ev.stopPropagation();
@@ -415,10 +372,8 @@ function stopEv(ev)
  Modified accesskey system. While Alt key is pressed letter keys moves
  focus to next marked link. Alt key release activates focused link.
  */
-function setHotKeys()
-{
-	document.onkeydown = function(ev)
-	{
+function setHotKeys() {
+	document.onkeydown = function(ev) {
 		ev = ev || window.event;
 		key = ev.keyCode || ev.which;
 		if (key == 18 && !ev.ctrlKey) {	// start selection, skip Win AltGr
@@ -437,8 +392,7 @@ function setHotKeys()
 					if (l[n].accessKey == key && l[n].scrollWidth) {
 						_hotkeys.focus = n;
 						// The timeout is needed to prevent unpredictable behaviour on IE.
-						var tmp = function()
-						{
+						var tmp = function() {
 							document.links[_hotkeys.focus].focus();
 						};
 						setTimeout(tmp, 0);
@@ -489,8 +443,7 @@ function setHotKeys()
 		}
 		return true;
 	};
-	document.onkeyup = function(ev)
-	{
+	document.onkeyup = function(ev) {
 		ev = ev || window.event;
 		key = ev.keyCode || ev.which;
 
