@@ -195,6 +195,7 @@
 		Config::set('debug', false);
 		error_reporting(E_USER_WARNING | E_USER_ERROR | E_USER_NOTICE);
 	}
+
 	// Page Initialisation
 	if (!isset($_SESSION['language']) || !method_exists($_SESSION['language'], 'set_language')) {
 		$l = array_search_value($dflt_lang, $installed_languages, 'code');
@@ -216,6 +217,7 @@
 	$Editors = array();
 	// page help. Currently help for function keys.
 	$Pagehelp = array();
+
 	$SysPrefs = new sys_prefs();
 	$Refs = new references();
 	// intercept all output to destroy it in case of ajax call
