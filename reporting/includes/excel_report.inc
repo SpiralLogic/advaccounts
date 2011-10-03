@@ -1,17 +1,17 @@
 <?php
-/**********************************************************************
-Copyright (C) FrontAccounting, LLC.
-Released under the terms of the GNU General Public License, GPL,
-as published by the Free Software Foundation, either version 3
-of the License, or (at your option) any later version.
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
- ***********************************************************************/
-	include_once($path_to_root . "/reporting/includes/Workbook.php");
-	include_once($path_to_root . "/admin/db/company_db.inc");
-	include_once($path_to_root . "/config.php");
+	/**********************************************************************
+	Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL,
+	as published by the Free Software Foundation, either version 3
+	of the License, or (at your option) any later version.
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+	 ***********************************************************************/
+	include_once(APP_PATH . "reporting/includes/Workbook.php");
+	include_once(APP_PATH . "admin/db/company_db.inc");
+	include_once(APP_PATH . "config.php");
 	// xls version
 	class FrontReport extends Spreadsheet_Excel_Writer_Workbook {
 		var $size;
@@ -55,7 +55,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		var $sheet;
 
 		function FrontReport($title, $filename, $size = 'A4', $fontsize = 9, $orientation = 'P', $margins = NULL, $excelColWidthFactor = 6.5) {
-			global   $page_security;
+			global $page_security;
 			if (!$_SESSION["wa_current_user"]->can_access_page($page_security)) {
 				display_error(_("The security settings on your account do not permit you to print this report"));
 				end_page();
@@ -89,7 +89,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 			$this->formatTitle->setTopColor('gray');
 
 			$how = user_date_format();
-			$sep = Config::get('seperators.date',user_date_sep());
+			$sep = Config::get('seperators.date', user_date_sep());
 			if ($sep == '.') $sep = "\\.";
 			if ($how == 0) {
 				$dateformat_long = "mm{$sep}dd{$sep}yyyy\ \ hh:mm\ am/pm";
@@ -303,7 +303,6 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 				}
 			}
 
-
 			// Dimension 2 - optional
 			// - only print if available and not blank
 			if (count($this->params) > 4) if ($this->params[4]['from'] != '') {
@@ -388,8 +387,8 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		 * Format a numeric string date into something nicer looking.
 		 *
 		 * @param string $date Date string to be formatted.
-		 * @param int $input_format Format of the input string.  Possible values are:<ul><li>0: user's default (default)</li></ul>
-		 * @param int $output_format Format of the output string.  Possible values are:<ul><li>0: Month (word) Day (numeric), 4-digit Year - Example: January 1, 2000 (default)</li><li>1: Month 4-digit Year - Example: January 2000</li><li>2: Month Abbreviation 4-digit Year - Example: Jan 2000</li></ul>
+		 * @param int $input_format Format of the input string.	Possible values are:<ul><li>0: user's default (default)</li></ul>
+		 * @param int $output_format Format of the output string.	Possible values are:<ul><li>0: Month (word) Day (numeric), 4-digit Year - Example: January 1, 2000 (default)</li><li>1: Month 4-digit Year - Example: January 2000</li><li>2: Month Abbreviation 4-digit Year - Example: Jan 2000</li></ul>
 		 * @access public
 		 */
 		function DatePrettyPrint($date, $input_format = 0, $output_format = 0) {
@@ -399,14 +398,14 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 				$month = (int)(substr($date, 5, 2));
 				$day = (int)(substr($date, 8, 2));
 				if ($output_format == 0) return (date('F j, Y', mktime(12, 0, 0, $month, $day, $year))); elseif ($output_format == 1) return (date('F Y',
-				                                                                                                                                   mktime(12, 0, 0, $month, $day,
-				                                                                                                                                          $year))); elseif ($output_format == 2) return (date('M Y',
-				                                                                                                                                                                                              mktime(12,
-				                                                                                                                                                                                                     0,
-				                                                                                                                                                                                                     0,
-				                                                                                                                                                                                                     $month,
-				                                                                                                                                                                                                     $day,
-				                                                                                                                                                                                                     $year)));
+					mktime(12, 0, 0, $month, $day,
+						$year))); elseif ($output_format == 2) return (date('M Y',
+					mktime(12,
+						0,
+						0,
+						$month,
+						$day,
+						$year)));
 			} else
 				return $date;
 		}

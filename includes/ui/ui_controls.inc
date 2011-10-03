@@ -1,14 +1,14 @@
 <?php
-/**********************************************************************
-Copyright (C) FrontAccounting, LLC.
-Released under the terms of the GNU General Public License, GPL,
-as published by the Free Software Foundation, either version 3
-of the License, or (at your option) any later version.
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
- ***********************************************************************/
+	/**********************************************************************
+	Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL,
+	as published by the Free Software Foundation, either version 3
+	of the License, or (at your option) any later version.
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+	 ***********************************************************************/
 	function get_post($name, $dflt = '') {
 		return ((!isset($_POST[$name]) || $_POST[$name] === '') ? $dflt : $_POST[$name]);
 	}
@@ -32,7 +32,6 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		{
 			echo "<form method='post' action='$action' $name>\n";
 		}
-
 	}
 
 	//---------------------------------------------------------------------------------
@@ -117,7 +116,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 
 		if (preg_match('/(.*)&([a-zA-Z0-9])(.*)/', $label, $slices)) {
 			$label = $clean ? $slices[1] . $slices[2] . $slices[3] :
-					$slices[1] . '<u>' . $slices[2] . '</u>' . $slices[3];
+			 $slices[1] . '<u>' . $slices[2] . '</u>' . $slices[3];
 			$access = " accesskey='" . strtoupper($slices[2]) . "'";
 		}
 
@@ -143,7 +142,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		echo "<br>";
 	}
 
-	function hyperlink_no_params($target, $label, $center = true,$button=false) {
+	function hyperlink_no_params($target, $label, $center = true, $button = false) {
 		$id = default_focus();
 		$pars = access_string($label);
 		if ($target == '') {
@@ -168,7 +167,6 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	}
 
 	function viewer_link($label, $url = '', $class = '', $id = '', $icon = null) {
-		global $path_to_root;
 
 		if ($class != '') {
 			$class = " class='$class'";
@@ -183,7 +181,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 			if (user_graphic_links() && $icon) {
 				$pars[0] = set_icon($icon, $pars[0]);
 			}
-			$preview_str = "<a target='_blank' $class $id href='$path_to_root/$url' onclick=\"javascript:openWindow(this.href,this.target); return false;\"$pars[1]>$pars[0]</a>";
+			$preview_str = "<a target='_blank' $class $id href='" . PATH_TO_ROOT . "/$url' onclick=\"javascript:openWindow(this.href,this.target); return false;\"$pars[1]>$pars[0]</a>";
 		}
 		else
 		{
@@ -199,22 +197,26 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		$pars = access_string($label);
 		return "<a href='$url' class='menu_option' id='$id' $pars[1]>$pars[0]</a>";
 	}
+
 	function menu_button($url, $label, $id = null) {
 
 		$id = default_focus($id);
 		$pars = access_string($label);
 		return "<a href='$url' class='button' id='$id' $pars[1]>$pars[0]</a>";
 	}
+
 	function submenu_option($title, $url, $id = null) {
-		global $path_to_root;
-		display_note(menu_link($path_to_root . $url, $title, $id), 0, 1);
+
+		display_note(menu_link(PATH_TO_ROOT . $url, $title, $id), 0, 1);
 	}
-function submenu_button($title, $url, $id = null) {
-		global $path_to_root;
-		display_note(menu_button($path_to_root . $url, $title, $id), 0, 1);
+
+	function submenu_button($title, $url, $id = null) {
+
+		display_note(menu_button(PATH_TO_ROOT . $url, $title, $id), 0, 1);
 	}
+
 	function submenu_view($title, $type, $number, $id = null) {
-		display_note(get_trans_view_str($type, $number, $title, false, 'menu_option', $id), 0, 1,false,'button');
+		display_note(get_trans_view_str($type, $number, $title, false, 'menu_option', $id), 0, 1, false, 'button');
 	}
 
 	function submenu_print($title, $type, $number, $id = null, $email = 0, $extra = 0) {
@@ -243,6 +245,7 @@ function submenu_button($title, $url, $id = null) {
 			echo "</center>";
 		}
 	}
+
 	function hyperlink_button($target, $label, $link_params = '', $center = true, $params = '') {
 		$id = default_focus();
 
@@ -258,6 +261,7 @@ function submenu_button($title, $url, $id = null) {
 			echo "</center>";
 		}
 	}
+
 	function hyperlink_params_td($target, $label, $link_params, $params = '') {
 		echo "<td>";
 		hyperlink_params($target, $label, $link_params, false, $params);
@@ -310,7 +314,9 @@ function submenu_button($title, $url, $id = null) {
 	function table_header($labels, $params = '') {
 		echo '<thead>';
 		foreach ($labels as $label)
+		{
 			labelheader_cell($label, $params);
+		}
 		echo '</thead>';
 	}
 
@@ -332,7 +338,9 @@ function submenu_button($title, $url, $id = null) {
 
 	function br($num = 1) {
 		for ($i = 0; $i < $num; $i++)
+		{
 			echo "<br>";
+		}
 	}
 
 	$ajax_divs = array();
@@ -369,13 +377,17 @@ function submenu_button($title, $url, $id = null) {
  */
 	$popup_editors = array(
 		'customer' => array('/sales/manage/customers.php?debtor_no=',
-			113, _("Customers")),
+			113, _("Customers")
+		),
 		'branch' => array('/sales/manage/customer_branches.php?SelectedBranch=',
-			114, _("Branches")),
+			114, _("Branches")
+		),
 		'supplier' => array('/purchasing/manage/suppliers.php?supplier_id=',
-			113, _("Suppliers")),
+			113, _("Suppliers")
+		),
 		'item' => array('/inventory/manage/items.php?stock_id=',
-			115, _("Items"))
+			115, _("Items")
+		)
 	);
 	/*
 	 Bind editors for various selectors.
@@ -385,11 +397,11 @@ function submenu_button($title, $url, $id = null) {
 		 true: default)
  */
 	function set_editor($type, $input, $caller = true) {
-		global $path_to_root, $Editors, $popup_editors, $Pagehelp;
+		global $Editors, $popup_editors, $Pagehelp;
 
 		$key = $caller === true ? $popup_editors[$type][1] : $caller;
 
-		$Editors[$key] = array($path_to_root . $popup_editors[$type][0], $input);
+		$Editors[$key] = array(PATH_TO_ROOT . $popup_editors[$type][0], $input);
 
 		$help = 'F' . ($key - 111) . ' - ';
 		$help .= $popup_editors[$type][2];
@@ -417,9 +429,10 @@ function submenu_button($title, $url, $id = null) {
 		}
 
 		array_unshift($_SESSION['Context'], array('name' => $ctx,
-				'ctx' => $context,
-				'caller' => $_SERVER['PHP_SELF'],
-				'ret' => array()));
+			'ctx' => $context,
+			'caller' => $_SERVER['PHP_SELF'],
+			'ret' => array()
+		));
 		meta_forward($call);
 	}
 
@@ -480,6 +493,7 @@ function submenu_button($title, $url, $id = null) {
  */
 	function editor_redirect($sel_editors, $save_fun = '') {
 		foreach ($sel_editors as $selname => $editor)
+		{
 			if (isset($_POST['_' . $selname . '_editor'])) {
 				if (function_exists($save_fun)) {
 					$save_fun();
@@ -487,6 +501,7 @@ function submenu_button($title, $url, $id = null) {
 				unset($_POST['_' . $selname . '_editor']);
 				context_call($editor, array_keys($_POST));
 			}
+		}
 	}
 
 	/*
@@ -499,10 +514,12 @@ function submenu_button($title, $url, $id = null) {
 
 		if ($ret = context_restore()) {
 			foreach ($vars as $postname => $retname)
+			{
 				if (isset($ret[$retname])) {
 					$_POST[$postname] = $ret[$retname];
 					set_focus($postname);
 				}
+			}
 		}
 	}
 

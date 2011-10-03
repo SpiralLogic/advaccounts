@@ -424,9 +424,12 @@ div.banner a + a { border-top: 2px groove #999 }
 }
 
 .headingtext {
-	font-weight: bold;
-	font-size:   13px;
+	font-weight: bolder;
+	font-size:   15px;
+
 	color:       #333;
+	display:     block;
+	padding:     5px;
 }
 
 .headingtext2 {
@@ -486,6 +489,7 @@ div.banner a + a { border-top: 2px groove #999 }
 table.tablestyle {
 	border-collapse: collapse;
 	border:          2px solid #e1e1e1;
+	width:           90%;
 }
 
 table.tablestyle td {
@@ -843,7 +847,7 @@ div#file_upload_div {
 }
 
 .file_upload_progress .ui-progressbar-value {
-	
+
 }
 
 .file_upload_progress div {

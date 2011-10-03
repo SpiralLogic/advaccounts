@@ -1,19 +1,19 @@
 <?php
-/**********************************************************************
-Copyright (C) FrontAccounting, LLC.
-Released under the terms of the GNU General Public License, GPL,
-as published by the Free Software Foundation, either version 3
-of the License, or (at your option) any later version.
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
- ***********************************************************************/
+	/**********************************************************************
+	Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL,
+	as published by the Free Software Foundation, either version 3
+	of the License, or (at your option) any later version.
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+	 ***********************************************************************/
 	/*
 	 If no context is set current page/menu screen is selected.
  */
 	function help_url($context = null) {
-		global  $help_context, $old_style_help;
+		global $help_context, $old_style_help;
 		$country = $_SESSION['language']->code;
 		$clean = 0;
 		if ($context != null) {
@@ -32,7 +32,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 			$help_page_url = _($help_page_url);
 		if ($clean)
 			$help_page_url = access_string($help_page_url, true);
-		return Config::get('help.baseurl')  . urlencode(strtr(ucwords($help_page_url), array(' ' => '', '/' => '', '&' => 'And'))) . '&ctxhelp=1&lang=' . $country;
+		return Config::get('help.baseurl') . urlencode(strtr(ucwords($help_page_url), array(' ' => '', '/' => '', '&' => 'And'))) . '&ctxhelp=1&lang=' . $country;
 	}
 
 	function add_css($file = false) {
@@ -41,11 +41,10 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 			return $css;
 		}
 		$css[] = $file;
-
 	}
- 
+
 	function send_css() {
-		global $path_to_root;
+
 		$theme = user_theme();
 		$path = "/themes/$theme/";
 		$css = implode(',', add_css());
@@ -57,30 +56,25 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	}
 
 	function send_fscripts() {
-
-
-
 	}
 
 	function page_header($title, $no_menu = false, $is_index = false, $onload = "", $js = "") {
 		// titles and screen header
 
-		global $path_to_root;
-		if (in_ajax() || AJAX_REFERRER)
+		if (Ajax::in_ajax() || AJAX_REFERRER)
 			return; // just for speed up
 		$theme = user_theme();
 
-		if (Config::get('help.baseurl')  != null && Config::get('ui.windows.popups') && $js == '') {
+		if (Config::get('help.baseurl') != null && Config::get('ui.windows.popups') && $js == '') {
 			if (!function_exists('get_js_open_window')) {
-				include_once($path_to_root . '/includes/ui/ui_view.inc');
+				include_once(APP_PATH . 'includes/ui/ui_view.inc');
 			}
-			add_js_source(get_js_open_window(900, 500));
+			JS::beforeload(get_js_open_window(900, 500));
 		}
 		if ($js != '')
-			add_js_source($js);
+			JS::beforeload($js);
 		if (!isset($no_menu)) {
 			$no_menu = false;
-
 		}
 		if (isset($_SESSION["App"]) && is_object($_SESSION["App"]) && isset($_SESSION["App"]->selected_application) && $_SESSION["App"]->selected_application != "")
 			$sel_app = $_SESSION["App"]->selected_application;
@@ -103,10 +97,10 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		echo "<meta http-equiv='Content-type' content='text/html; charset=$encoding'>";
 		echo "<link rel='apple-touch-icon' href='/company/images/advanced-icon.png'/>";
 
-        add_css('default.css,jquery-ui-1.8.7.css,jquery.calculator.css,jquery.fileupload-ui.css');
+		add_css('default.css,jquery-ui-1.8.7.css,jquery.calculator.css,jquery.fileupload-ui.css');
 
-		if (file_exists(APP_PATH."/themes/$theme/{$_SESSION['sel_app']}.css"))
-        add_css($_SESSION['sel_app'].'.css');
+		if (file_exists(APP_PATH . "/themes/$theme/{$_SESSION['sel_app']}.css"))
+			add_css($_SESSION['sel_app'] . '.css');
 		send_css();
 		//if (!$_GET['frame'])
 		send_scripts($js);
@@ -115,8 +109,8 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 			echo "<body";
 		else
 			echo "body onload='$onload'";
-        echo  ($no_menu) ? ' class="lite">':'>';
-		include_once(APP_PATH."/themes/" . user_theme() . "/renderer.php");
+		echo	($no_menu) ? ' class="lite">' : '>';
+		include_once(APP_PATH . "/themes/" . user_theme() . "/renderer.php");
 		$rend = new renderer();
 		$rend->menu_header($title, $no_menu, $is_index);
 		error_box();

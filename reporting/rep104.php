@@ -1,204 +1,198 @@
 <?php
-/**********************************************************************
-Copyright (C) FrontAccounting, LLC.
-Released under the terms of the GNU General Public License, GPL,
-as published by the Free Software Foundation, either version 3
-of the License, or (at your option) any later version.
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
- ***********************************************************************/
-$page_security = 'SA_PRICEREP';
-// ----------------------------------------------------------------
-// $ Revision:	2.0 $
-// Creator:	Joe Hunt
-// date_:	2005-05-19
-// Title:	price Listing
-// ----------------------------------------------------------------
-$path_to_root = "..";
+	/**********************************************************************
+	Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL,
+	as published by the Free Software Foundation, either version 3
+	of the License, or (at your option) any later version.
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+	 ***********************************************************************/
+	$page_security = 'SA_PRICEREP';
+	// ----------------------------------------------------------------
+	// $ Revision:	2.0 $
+	// Creator:	Joe Hunt
+	// date_:	2005-05-19
+	// Title:	price Listing
+	// ----------------------------------------------------------------
 
-include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
-include_once($path_to_root . "/includes/date_functions.inc");
-include_once($path_to_root . "/includes/ui/ui_input.inc");
-include_once($path_to_root . "/includes/data_checks.inc");
-include_once($path_to_root . "/gl/includes/gl_db.inc");
-include_once($path_to_root . "/sales/includes/db/sales_types_db.inc");
-include_once($path_to_root . "/inventory/includes/inventory_db.inc");
+	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	include_once(APP_PATH . "includes/date_functions.inc");
+	include_once(APP_PATH . "includes/ui/ui_input.inc");
+	include_once(APP_PATH . "includes/data_checks.inc");
+	include_once(APP_PATH . "gl/includes/gl_db.inc");
+	include_once(APP_PATH . "sales/includes/db/sales_types_db.inc");
+	include_once(APP_PATH . "inventory/includes/inventory_db.inc");
 
-//----------------------------------------------------------------------------------------------------
+	//----------------------------------------------------------------------------------------------------
 
-print_price_listing();
+	print_price_listing();
 
-function fetch_items($category = 0)
-{
-	$sql = "SELECT stock_master.stock_id, stock_master.description AS name,
+	function fetch_items($category = 0) {
+		$sql = "SELECT stock_master.stock_id, stock_master.description AS name,
 				stock_master.material_cost+stock_master.labour_cost+stock_master.overhead_cost AS Standardcost,
 				stock_master.category_id,
 				stock_category.description
 			FROM stock_master,
 				stock_category
 			WHERE stock_master.category_id=stock_category.category_id AND NOT stock_master.inactive";
-	if ($category != 0)
-		$sql .= " AND stock_category.category_id = " . db_escape($category);
-	$sql .= " ORDER BY stock_master.category_id,
+		if ($category != 0)
+			$sql .= " AND stock_category.category_id = " . db_escape($category);
+		$sql .= " ORDER BY stock_master.category_id,
 				stock_master.stock_id";
 
-	return db_query($sql, "No transactions were returned");
-}
+		return db_query($sql, "No transactions were returned");
+	}
 
-function get_kits($category = 0)
-{
-	$sql = "SELECT i.item_code AS kit_code, i.description AS kit_name, c.category_id AS cat_id, c.description AS cat_name, count(*)>1 AS kit
+	function get_kits($category = 0) {
+		$sql = "SELECT i.item_code AS kit_code, i.description AS kit_name, c.category_id AS cat_id, c.description AS cat_name, count(*)>1 AS kit
 			FROM
 			item_codes i
 			LEFT JOIN
 			stock_category c
 			ON i.category_id=c.category_id";
-	$sql .= " WHERE !i.is_foreign AND i.item_code!=i.stock_id";
-	if ($category != 0)
-		$sql .= " AND c.category_id = " . db_escape($category);
-	$sql .= " GROUP BY i.item_code";
-	return db_query($sql, "No kits were returned");
-}
-
-//----------------------------------------------------------------------------------------------------
-
-function print_price_listing()
-{
-	global  $path_to_root;
-
-	$currency = $_POST['PARAM_0'];
-	$category = $_POST['PARAM_1'];
-	$salestype = $_POST['PARAM_2'];
-	$pictures = $_POST['PARAM_3'];
-	$showGP = $_POST['PARAM_4'];
-	$comments = $_POST['PARAM_5'];
-	$destination = $_POST['PARAM_6'];
-	if ($destination)
-		include_once($path_to_root . "/reporting/includes/excel_report.inc");
-	else
-		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
-
-	$dec = user_price_dec();
-
-	$home_curr = get_company_pref('curr_default');
-	if ($currency == ALL_TEXT)
-		$currency = $home_curr;
-	$curr = get_currency($currency);
-	$curr_sel = $currency . " - " . $curr['currency'];
-	if ($category == ALL_NUMERIC)
-		$category = 0;
-	if ($salestype == ALL_NUMERIC)
-		$salestype = 0;
-	if ($category == 0)
-		$cat = _('All');
-	else
-		$cat = get_category_name($category);
-	if ($salestype == 0)
-		$stype = _('All');
-	else
-		$stype = get_sales_type_name($salestype);
-	if ($showGP == 0)
-		$GP = _('No');
-	else
-		$GP = _('Yes');
-
-	$cols = array(0, 100, 385, 450, 515);
-
-	$headers = array(_('Category/Items'), _('Description'), _('Price'), _('GP %'));
-
-	$aligns = array('left', 'left', 'right', 'right');
-
-	$params = array(0 => $comments,
-					1 => array('text' => _('Currency'), 'from' => $curr_sel, 'to' => ''),
-					2 => array('text' => _('Category'), 'from' => $cat, 'to' => ''),
-					3 => array('text' => _('Sales Type'), 'from' => $stype, 'to' => ''),
-					4 => array('text' => _('Show GP %'), 'from' => $GP, 'to' => ''));
-
-
-
-	$rep = new FrontReport(_('Price Listing'), "PriceListing", user_pagesize());
-
-	$rep->Font();
-	$rep->Info($params, $cols, $headers, $aligns);
-	$rep->Header();
-
-	$result = fetch_items($category);
-
-	$catgor = '';
-	$_POST['sales_type_id'] = $salestype;
-	while ($myrow = db_fetch($result))
-	{
-		if ($catgor != $myrow['description']) {
-			$rep->Line($rep->row - $rep->lineHeight);
-			$rep->NewLine(2);
-			$rep->fontSize += 2;
-			$rep->TextCol(0, 3, $myrow['category_id'] . " - " . $myrow['description']);
-			$catgor = $myrow['description'];
-			$rep->fontSize -= 2;
-			$rep->NewLine();
-		}
-		$rep->NewLine();
-		$rep->TextCol(0, 1, $myrow['stock_id']);
-		$rep->TextCol(1, 2, $myrow['name']);
-		$price = get_price($myrow['stock_id'], $currency, $salestype);
-		$rep->AmountCol(2, 3, $price, $dec);
-		if ($showGP) {
-			$price2 = get_price($myrow['stock_id'], $home_curr, $salestype);
-			if ($price2 != 0.0)
-				$disp = ($price2 - $myrow['Standardcost']) * 100 / $price2;
-			else
-				$disp = 0.0;
-			$rep->TextCol(3, 4, number_format2($disp, user_percent_dec()) . " %");
-		}
-		if ($pictures) {
-			$image = COMPANY_PATH . "/images/"
-					 . item_img_name($myrow['stock_id']) . ".jpg";
-			if (file_exists($image)) {
-				$rep->NewLine();
-				if ($rep->row - Config::get('item.images.height')  < $rep->bottomMargin)
-					$rep->Header();
-				$rep->AddImage($image, $rep->cols[1], $rep->row - Config::get('item.images.height') , 0, Config::get('item.images.height') );
-				$rep->row -= Config::get('item.images.height') ;
-				$rep->NewLine();
-			}
-		}
-		else
-			$rep->NewLine(0, 1);
+		$sql .= " WHERE !i.is_foreign AND i.item_code!=i.stock_id";
+		if ($category != 0)
+			$sql .= " AND c.category_id = " . db_escape($category);
+		$sql .= " GROUP BY i.item_code";
+		return db_query($sql, "No kits were returned");
 	}
-	$rep->Line($rep->row - 4);
 
-	$result = get_kits($category);
+	//----------------------------------------------------------------------------------------------------
 
-	$catgor = '';
-	while ($myrow = db_fetch($result))
-	{
-		if ($catgor != $myrow['cat_name']) {
-			if ($catgor == '') {
+	function print_price_listing() {
+
+		$currency = $_POST['PARAM_0'];
+		$category = $_POST['PARAM_1'];
+		$salestype = $_POST['PARAM_2'];
+		$pictures = $_POST['PARAM_3'];
+		$showGP = $_POST['PARAM_4'];
+		$comments = $_POST['PARAM_5'];
+		$destination = $_POST['PARAM_6'];
+		if ($destination)
+			include_once(APP_PATH . "reporting/includes/excel_report.inc");
+		else
+			include_once(APP_PATH . "reporting/includes/pdf_report.inc");
+
+		$dec = user_price_dec();
+
+		$home_curr = get_company_pref('curr_default');
+		if ($currency == ALL_TEXT)
+			$currency = $home_curr;
+		$curr = get_currency($currency);
+		$curr_sel = $currency . " - " . $curr['currency'];
+		if ($category == ALL_NUMERIC)
+			$category = 0;
+		if ($salestype == ALL_NUMERIC)
+			$salestype = 0;
+		if ($category == 0)
+			$cat = _('All');
+		else
+			$cat = get_category_name($category);
+		if ($salestype == 0)
+			$stype = _('All');
+		else
+			$stype = get_sales_type_name($salestype);
+		if ($showGP == 0)
+			$GP = _('No');
+		else
+			$GP = _('Yes');
+
+		$cols = array(0, 100, 385, 450, 515);
+
+		$headers = array(_('Category/Items'), _('Description'), _('Price'), _('GP %'));
+
+		$aligns = array('left', 'left', 'right', 'right');
+
+		$params = array(0 => $comments,
+			1 => array('text' => _('Currency'), 'from' => $curr_sel, 'to' => ''),
+			2 => array('text' => _('Category'), 'from' => $cat, 'to' => ''),
+			3 => array('text' => _('Sales Type'), 'from' => $stype, 'to' => ''),
+			4 => array('text' => _('Show GP %'), 'from' => $GP, 'to' => '')
+		);
+
+		$rep = new FrontReport(_('Price Listing'), "PriceListing", user_pagesize());
+
+		$rep->Font();
+		$rep->Info($params, $cols, $headers, $aligns);
+		$rep->Header();
+
+		$result = fetch_items($category);
+
+		$catgor = '';
+		$_POST['sales_type_id'] = $salestype;
+		while ($myrow = db_fetch($result))
+		{
+			if ($catgor != $myrow['description']) {
+				$rep->Line($rep->row - $rep->lineHeight);
 				$rep->NewLine(2);
 				$rep->fontSize += 2;
-				$rep->TextCol(0, 3, _("Sales Kits"));
+				$rep->TextCol(0, 3, $myrow['category_id'] . " - " . $myrow['description']);
+				$catgor = $myrow['description'];
 				$rep->fontSize -= 2;
+				$rep->NewLine();
 			}
-			$rep->Line($rep->row - $rep->lineHeight);
-			$rep->NewLine(2);
-			$rep->fontSize += 2;
-			$rep->TextCol(0, 3, $myrow['cat_id'] . " - " . $myrow['cat_name']);
-			$catgor = $myrow['cat_name'];
-			$rep->fontSize -= 2;
 			$rep->NewLine();
+			$rep->TextCol(0, 1, $myrow['stock_id']);
+			$rep->TextCol(1, 2, $myrow['name']);
+			$price = get_price($myrow['stock_id'], $currency, $salestype);
+			$rep->AmountCol(2, 3, $price, $dec);
+			if ($showGP) {
+				$price2 = get_price($myrow['stock_id'], $home_curr, $salestype);
+				if ($price2 != 0.0)
+					$disp = ($price2 - $myrow['Standardcost']) * 100 / $price2;
+				else
+					$disp = 0.0;
+				$rep->TextCol(3, 4, number_format2($disp, user_percent_dec()) . " %");
+			}
+			if ($pictures) {
+				$image = COMPANY_PATH . "/images/"
+				 . item_img_name($myrow['stock_id']) . ".jpg";
+				if (file_exists($image)) {
+					$rep->NewLine();
+					if ($rep->row - Config::get('item.images.height') < $rep->bottomMargin)
+						$rep->Header();
+					$rep->AddImage($image, $rep->cols[1], $rep->row - Config::get('item.images.height'), 0, Config::get('item.images.height'));
+					$rep->row -= Config::get('item.images.height');
+					$rep->NewLine();
+				}
+			}
+			else
+				$rep->NewLine(0, 1);
 		}
+		$rep->Line($rep->row - 4);
+
+		$result = get_kits($category);
+
+		$catgor = '';
+		while ($myrow = db_fetch($result))
+		{
+			if ($catgor != $myrow['cat_name']) {
+				if ($catgor == '') {
+					$rep->NewLine(2);
+					$rep->fontSize += 2;
+					$rep->TextCol(0, 3, _("Sales Kits"));
+					$rep->fontSize -= 2;
+				}
+				$rep->Line($rep->row - $rep->lineHeight);
+				$rep->NewLine(2);
+				$rep->fontSize += 2;
+				$rep->TextCol(0, 3, $myrow['cat_id'] . " - " . $myrow['cat_name']);
+				$catgor = $myrow['cat_name'];
+				$rep->fontSize -= 2;
+				$rep->NewLine();
+			}
+			$rep->NewLine();
+			$rep->TextCol(0, 1, $myrow['kit_code']);
+			$rep->TextCol(1, 2, $myrow['kit_name']);
+			$price = get_kit_price($myrow['kit_code'], $currency, $salestype);
+			$rep->AmountCol(2, 3, $price, $dec);
+			$rep->NewLine(0, 1);
+		}
+		$rep->Line($rep->row - 4);
 		$rep->NewLine();
-		$rep->TextCol(0, 1, $myrow['kit_code']);
-		$rep->TextCol(1, 2, $myrow['kit_name']);
-		$price = get_kit_price($myrow['kit_code'], $currency, $salestype);
-		$rep->AmountCol(2, 3, $price, $dec);
-		$rep->NewLine(0, 1);
+		$rep->End();
 	}
-	$rep->Line($rep->row - 4);
-	$rep->NewLine();
-	$rep->End();
-}
 
 ?>

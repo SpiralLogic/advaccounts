@@ -110,7 +110,7 @@ function display_bank_header(&$order)
 
 function display_gl_items($title, &$order)
 {
-	global  $path_to_root;
+
 
 	$dim = get_company_pref('use_dimension');
 	$colspan = ($dim == 2 ? 4 : ($dim == 1 ? 3 : 2));

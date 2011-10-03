@@ -25,7 +25,7 @@
 		}
 
 		function menu_header($title, $no_menu, $is_index) {
-			global $path_to_root,  $db_connections;
+			global $db_connections;
 			$sel_app = $_SESSION['sel_app'];
 			echo "<div id='content'>\n";
 			if (!$no_menu || AJAX_REFERRER) {
@@ -35,39 +35,37 @@
 				$applications = $_SESSION['App']->applications;
 				echo "<div id='top'>\n";
 				echo "<p>" . $db_connections[$_SESSION["wa_current_user"]->company]["name"] . " | " .
-						$_SERVER['SERVER_NAME'] . " | " . $_SESSION["wa_current_user"]->name . "</p>\n";
+				 $_SERVER['SERVER_NAME'] . " | " . $_SESSION["wa_current_user"]->name . "</p>\n";
 				echo "<ul>\n";
-				echo "  <li><a href='$path_to_root/admin/display_prefs.php?'>" . _("Preferences") . "</a></li>\n";
-				echo "  <li><a href='$path_to_root/admin/change_current_user_password.php?selected_id=" .
-						$_SESSION["wa_current_user"]->username . "'>" . _("Change password") . "</a></li>\n";
-				if (Config::get('help.baseurl')  != null) {
+				echo "  <li><a hre'" . PATH_TO_ROOT . "/admin/display_prefs.php?'>" . _("Preferences") . "</a></li>\n";
+				echo "  <li><a hre'" . PATH_TO_ROOT . "/admin/change_current_user_password.php?selected_id=" .
+				 $_SESSION["wa_current_user"]->username . "'>" . _("Change password") . "</a></li>\n";
+				if (Config::get('help.baseurl') != null) {
 					echo "  <li><a target = '_blank' onclick=" . '"' . "javascript:openWindow(this.href,this.target); return false;" . '" ' . "href='" . help_url() . "'>" . _("Help") . "</a></li>";
 				}
-				echo "  <li><a href='$path_to_root/access/logout.php?'>" . _("Logout") . "</a></li>";
+				echo "  <li><a hre'" . PATH_TO_ROOT . "/access/logout.php?'>" . _("Logout") . "</a></li>";
 				echo "</ul>\n";
 				echo "</div>\n";
 				echo "<div id='logo'>\n";
-				$indicator = "$path_to_root/themes/" . user_theme() . "/images/ajax-loader.gif";
-				echo "<h1>".APP_TITLE." " .VERSION."<span style='padding-left:280px;'><img id='ajaxmark' src='$indicator' align='center' style='visibility:hidden;'></span></h1>\n";
+				$indicator = "/themes/" . user_theme() . "/images/ajax-loader.gif";
+				echo "<h1>" . APP_TITLE . " " . VERSION . "<span style='padding-left:280px;'><img id='ajaxmark' src='$indicator' align='center' style='visibility:hidden;'></span></h1>\n";
 				echo "</div>\n";
-				$local_path_to_root = $path_to_root;
+
 				echo '<div id="_tabs2"><div class="menu_container">';
 				echo "<ul class='menu'>\n";
 				foreach ($applications as $app) {
 					$acc = access_string($app->name);
 					if ($app->direct) {
 						echo "<li " . ($sel_app == $app->id ? "class='active' "
-								: "") . "><a href='/{$app->direct}'$acc[1]>" . $acc[0] . "</a></li>\n";
+						 : "") . "><a href='/{$app->direct}'$acc[1]>" . $acc[0] . "</a></li>\n";
 					} else {
 						echo "<li " . ($sel_app == $app->id ? "class='active' "
-								: "") . "><a href='/index.php?application=" . $app->id . "'$acc[1]>" .
-								$acc[0] . "</a></li>\n";
+						 : "") . "><a href='/index.php?application=" . $app->id . "'$acc[1]>" .
+						 $acc[0] . "</a></li>\n";
 					}
 				}
 				echo "</ul></div></div>\n";
 			}
-
-
 
 			echo "<div id='wrapper'>\n";
 			if ($no_menu) {
@@ -76,27 +74,25 @@
 			} elseif ($title && !$is_index) {
 
 				echo "<center><table id='title'><tr><td width='100%' class='titletext'>$title</td>" . "<td align=right>" . (user_hints()
-						? "<span id='hints'></span>" : '') . "</td>" . "</tr></table></center>";
+				 ? "<span id='hints'></span>" : '') . "</td>" . "</tr></table></center>";
 			}
 		}
 
 		function menu_footer($no_menu, $is_index) {
-			global $path_to_root;
-			include_once($path_to_root . "/includes/date_functions.inc");
+
+			include_once(APP_PATH . "includes/date_functions.inc");
 
 			if ($no_menu == false && !AJAX_REFERRER) {
 				echo "<div id='footer'>\n";
 				if (isset($_SESSION['wa_current_user'])) {
-					echo "<span class='power'><a target='_blank' href='".POWERED_URL."'>".POWERED_BY."</a></span>\n";
+					echo "<span class='power'><a target='_blank' href='" . POWERED_URL . "'>" . POWERED_BY . "</a></span>\n";
 					echo "<span class='date'>" . Today() . " | " . Now() . "</span>\n";
 					echo "<span class='date'>" . show_users_online() . "</span>\n";
 				}
 				echo "</div>\n";
-
 			}
 			echo "</div>\n";
 			echo "</div>\n";
-
 		}
 
 		function display_applications(&$waapp) {
@@ -149,5 +145,4 @@
 				echo "</tr></table></td></tr></table>\n";
 			}
 		}
-
 	}

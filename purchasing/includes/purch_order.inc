@@ -40,7 +40,7 @@
 
 		function add_to_order($line_no, $stock_id, $qty, $item_descr, $price, $uom, $req_del_date, $qty_inv, $qty_recd, $discount) {
 			if ($qty != 0 && isset($qty)) {
-				$this->line_items[$line_no] = new line_details($line_no, $stock_id, $item_descr, $qty, $price, $uom, $req_del_date, $qty_inv, $qty_recd, $discount);
+				$this->line_items[$line_no] = new purch_line_details($line_no, $stock_id, $item_descr, $qty, $price, $uom, $req_del_date, $qty_inv, $qty_recd, $discount);
 				$this->lines_on_order++;
 				Return 1;
 			}
@@ -112,7 +112,7 @@
 			/* Checks if there have been deliveries or amounts invoiced against a specific line item */
 			if (count($this->line_items) > 0) {
 				if ($this->line_items[$line_no]->qty_received != 0 ||
-						$this->line_items[$line_no]->qty_inv != 0
+				 $this->line_items[$line_no]->qty_inv != 0
 				) {
 					return 1;
 				}
@@ -121,7 +121,7 @@
 		}
 	} /* end of class defintion */
 
-	class line_details {
+	class purch_line_details {
 
 		Var $line_no;
 		Var $po_detail_rec;
@@ -138,7 +138,7 @@
 		Var $receive_qty;
 		Var $Deleted;
 
-		function line_details($line_no, $stock_item, $item_descr, $qty, $prc, $uom, $req_del_date, $qty_inv, $qty_recd, $discount) {
+		function purch_line_details($line_no, $stock_item, $item_descr, $qty, $prc, $uom, $req_del_date, $qty_inv, $qty_recd, $discount) {
 
 			/* Constructor function to add a new LineDetail object with passed params */
 			$this->line_no = $line_no;
@@ -157,53 +157,4 @@
 		}
 	}
 
-	class cart {
-		var $trans_type; // invoice, order, quotation, delivery note ...
-		var $trans_no = array(); // array (num1=>ver1,..) or 0 for new
-		var $so_type = 0; // for sales order: simple=0 template=1
-		var $cart_id; // used to detect multi-tab edition conflits
-		var $line_items; //array of objects of class line_details
 
-		var $src_docs = array(); // array of arrays(num1=>ver1,...) or 0 for no src
-		var $src_date; // src document date (for info only)
-
-		var $document_date;
-		var $due_date;
-		var $salesman;
-		var $sales_type; // set to the customer's sales type
-		var $sales_type_name; // set to customer's sales type name
-		var $tax_included;
-		var $customer_currency; // set to the customer's currency
-		var $default_discount; // set to the customer's discount %
-		var $customer_name;
-		var $customer_id;
-		var $Branch;
-		var $email;
-
-		var $deliver_to;
-		var $delivery_address;
-		var $phone;
-
-		var $cust_ref;
-		var $reference;
-		var $Comments;
-		var $Location;
-		var $location_name;
-		var $order_no; // the original order number
-		var $trans_link = 0;
-
-		var $ship_via;
-		var $freight_cost = 0;
-
-		var $tax_group_id;
-		var $tax_group_name;
-		var $tax_group_array = null; // saves db queries
-		var $price_factor; // ditto for price calculations
-
-		var $pos; // user assigned POS
-		var $cash; // cash transaction
-		var $cash_account;
-		var $account_name;
-		var $dimension_id;
-		var $dimension2_id;
-	}

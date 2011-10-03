@@ -1,15 +1,15 @@
 <?php
-/**********************************************************************
-Copyright (C) FrontAccounting, LLC.
-Released under the terms of the GNU General Public License, GPL,
-as published by the Free Software Foundation, either version 3
-of the License, or (at your option) any later version.
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
- ***********************************************************************/
-
+	/**********************************************************************
+	Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL,
+	as published by the Free Software Foundation, either version 3
+	of the License, or (at your option) any later version.
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+	 ***********************************************************************/
+	ini_set("display_errors", "On");
 	function formatBytes($bytes, $precision = 2) {
 		$units = array('B', 'KB', 'MB', 'GB', 'TB');
 
@@ -34,10 +34,12 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 			$messages[] = array(E_ERROR, $m[2], null, null);
 		}
 		$Ajax->run();
-		return in_ajax() ? fmt_errors() : ($before_box . fmt_errors() . $text);
+		return Ajax::in_ajax() ? fmt_errors() : ($before_box . fmt_errors() . $text);
 	}
+
 	function fb_errors() {
 		$error = func_get_args();
+		FB::info($error);
 		error_handler($error[0], $error[1], $error[2], $error[3]);
 		if (!(error_reporting() & $error[0])) {
 			// This error code is not included in error_reporting
@@ -45,6 +47,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		}
 		return true;
 	}
+
 	function kill_login() {
 		session_unset();
 		session_destroy();
@@ -125,6 +128,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 			if ($tout && (time() > $_SESSION["wa_current_user"]->last_act + $tout)) {
 				$_SESSION["wa_current_user"]->logged = false;
 			}
+
 			$_SESSION["wa_current_user"]->last_act = time();
 		}
 	}
@@ -145,23 +149,38 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	define('APP_PATH', realpath(__DIR__ . '/..') . DIRECTORY_SEPARATOR);
 	$path = substr(str_repeat('../', substr_count(str_replace(APP_PATH, '', realpath('.') . DIRECTORY_SEPARATOR), '/')), 0, -1);
 	$path_to_root = (!$path) ? '.' : $path;
+	define('PATH_TO_ROOT', (!$path) ? '.' : $path);
+	ini_set('unserialize_callback_func', 'class_autoloader'); // set your callback_function
 	spl_autoload_extensions('.php,.inc');
 	spl_autoload_register('class_autoloader');
 	add_include_path(
 		array(
-				 realpath('.') . '/includes/classes',
-				 APP_PATH . 'includes/ui2',
-				 APP_PATH . 'includes/ui',
-				 APP_PATH . 'includes',
-				 APP_PATH . 'includes/classes',
-				 APP_PATH . 'includes/classes/db',
-				 APP_PATH . 'contacts/includes/classes',
-				 APP_PATH . 'items/includes/classes',
-				 APP_PATH . 'reporting/includes'
+			realpath('.') . '/includes/classes',
+			APP_PATH . 'includes/ui2',
+			APP_PATH . 'includes/ui',
+			APP_PATH . 'includes',
+			APP_PATH . 'includes/classes',
+			APP_PATH . 'includes/classes/db',
+			APP_PATH . 'contacts/includes/classes',
+			APP_PATH . 'items/includes/classes',
+			APP_PATH . 'sales/includes',
+			APP_PATH . 'purchasing/includes',
+			APP_PATH . 'reporting/includes'
 		));
 	include(APP_PATH . "config.php");
-	ini_set("display_errors", "On");
+	if (Config::get('logs.error.file') != '') {
+		ini_set("error_log", Config::get('logs.error.file'));
+		ini_set("ignore_repeated_errors", "On");
+		ini_set("log_errors", "On");
+	}
 
+	include(APP_PATH . "includes/main.inc");
+
+	ini_set('session.gc_maxlifetime', 36000); // 10hrs
+	session_name('FA' . md5(dirname(__FILE__)));
+	session_start();
+	header("Cache-control: private");
+	gettext_native_support::get_text_init();
 	if (Config::get('debug') && isset($_SESSION["wa_current_user"]) && $_SESSION["wa_current_user"]->user == 1) {
 		error_reporting(E_ALL);
 		if (preg_match('/Chrome/i', $_SERVER['HTTP_USER_AGENT'])) {
@@ -177,25 +196,6 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		error_reporting(E_USER_WARNING | E_USER_ERROR | E_USER_NOTICE);
 	}
 
-
-	if (Config::get('logs.error.file') != '') {
-		ini_set("error_log", Config::get('logs.error.file'));
-		ini_set("ignore_repeated_errors", "On");
-		ini_set("log_errors", "On");
-	}
-
-	include(APP_PATH . "includes/current_user.inc");
-	include(APP_PATH . "frontaccounting.php");
-	include(APP_PATH . "admin/db/security_db.inc");
-	include(APP_PATH . "includes/lang/language.php");
-	include(APP_PATH . "includes/ajax.inc");
-	include(APP_PATH . "includes/faui.inc");
-
-	ini_set('session.gc_maxlifetime', 36000); // 10hrs
-	session_name('FA' . md5(dirname(__FILE__)));
-	session_start();
-	header("Cache-control: private");
-	get_text_init();
 	// Page Initialisation
 	if (!isset($_SESSION['language']) || !method_exists($_SESSION['language'], 'set_language')) {
 		$l = array_search_value($dflt_lang, $installed_languages, 'code');
@@ -209,9 +209,6 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		$Hooks = new Hooks();
 	}
 
-	include(APP_PATH . "includes/access_levels.inc");
-	include(APP_PATH . "includes/main.inc");
-
 	// Ajax communication object
 	$Ajax = new Ajax();
 	// js/php validation rules container
@@ -220,6 +217,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	$Editors = array();
 	// page help. Currently help for function keys.
 	$Pagehelp = array();
+
 	$SysPrefs = new sys_prefs();
 	$Refs = new references();
 	// intercept all output to destroy it in case of ajax call
@@ -227,7 +225,6 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	ob_start('output_html', 0);
 	// colect all error msgs
 	set_error_handler('fb_errors');
-
 
 	if (!isset($_SESSION["wa_current_user"])) {
 		$_SESSION["wa_current_user"] = new current_user();
@@ -243,7 +240,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 				// strip ajax marker from uri, to force synchronous page reload
 				$_SESSION['timeout'] = array('uri' => preg_replace('/JsHttpRequest=(?:(\d+)-)?([^&]+)/s', '', @$_SERVER['REQUEST_URI']), 'post' => $_POST);
 				include(APP_PATH . "access/login.php");
-				if (in_ajax() || AJAX_REFERRER) {
+				if (Ajax::in_ajax() || AJAX_REFERRER) {
 					$Ajax->activate('_page_body');
 				}
 
@@ -263,7 +260,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		}
 		else
 		{
-			if ($_SESSION['change_password'] && strstr($_SERVER['PHP_SELF'], 'change_current_user_password.php') == false) {
+			if (Input::session('change_password') && strstr($_SERVER['PHP_SELF'], 'change_current_user_password.php') == false) {
 				meta_forward('/admin/change_current_user_password.php', 'selected_id=' . $_SESSION["wa_current_user"]->username);
 			}
 			set_global_connection();
@@ -272,12 +269,10 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 			include(APP_PATH . 'company/installed_extensions.php');
 		}
 		if (!isset($_SESSION["App"])) {
-			$_SESSION["App"] = new front_accounting();
+			$_SESSION["App"] = new frontaccounting();
 			$_SESSION["App"]->init();
 		}
 	}
-
-
 
 	// POST vars cleanup needed for direct reuse.
 	// We quote all values later with db_escape() before db update.

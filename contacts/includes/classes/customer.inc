@@ -1,11 +1,11 @@
 <?php
-/**
- * Created by JetBrains PhpStorm.
- * User: advanced
- * Date: 15/11/10
- * Time: 4:07 PM
- * To change this template use File | Settings | File Templates.
- */
+	/**
+	 * Created by JetBrains PhpStorm.
+	 * User: advanced
+	 * Date: 15/11/10
+	 * Time: 4:07 PM
+	 * To change this template use File | Settings | File Templates.
+	 */
 	class Customer extends Company {
 
 		public $debtor_no = 0;
@@ -29,7 +29,6 @@
 			parent::__construct($id);
 			$this->pymt_discount =& $this->payment_discount;
 			$this->debtor_ref = substr($this->name, 0, 60);
-
 		}
 
 		protected function _canProcess() {
@@ -64,7 +63,7 @@
 			return true;
 		}
 
-		protected function setFromArray($changes) {
+		protected function setFromArray($changes = NULL) {
 			parent::setFromArray($changes);
 			if (isset($changes['accounts']) && is_array($changes['accounts'])) {
 				$this->accounts = new Accounts($changes['accounts']);
@@ -77,7 +76,6 @@
 			if (isset($changes['contacts']) && is_array($changes['contacts'])) {
 				foreach ($changes['contacts'] as $id => $contact) {
 					$this->contacts[$id] = new Contact($contact);
-
 				}
 			}
 		}
@@ -176,7 +174,6 @@
 			$this->curr_code = get_company_currency();
 			$this->discount = $this->pymt_discount = percent_format(0);
 			$this->credit_limit = price_format($SysPrefs->default_credit_limit());
-
 		}
 
 		protected
@@ -222,7 +219,6 @@
 				$results[] = $row;
 			}
 			return $results;
-
 		}
 
 		protected
@@ -290,7 +286,6 @@
 				$this->branches[$branch->branch_code] = $branch;
 			}
 			$this->defaultBranch = reset($this->branches)->id;
-
 		}
 
 		protected
@@ -305,7 +300,6 @@
 				$this->defaultContact = reset($this->contacts)->id;
 			}
 			$this->contacts[0] = new Contact(array('parent_id' => $this->id));
-
 		}
 
 		public
@@ -355,8 +349,8 @@
 			$term = explode(' ', $term);
 			$term1 = db_escape(trim($term[0]) . '%');
 			$term2 = db_escape('%' . implode(' AND name LIKE ', array_map(function($v) {
-																														return trim($v);
-																													}, $term)) . '%');
+							return trim($v);
+						}, $term)) . '%');
 			$where = ($o['inactive'] ? '' : ' AND inactive = 0 ');
 			$sql = "(SELECT debtor_no as id, name as label, debtor_no as value, name as description FROM debtors_master WHERE name LIKE $term1 $where ORDER BY name LIMIT 20)
 						UNION (SELECT debtor_no as id, name as label, debtor_no as value, name as description FROM debtors_master
@@ -370,12 +364,10 @@
 				$data[] = $row;
 			}
 			return $data;
-
 		}
 
 		static function addSearchBox($id, $options = array()) {
 
 			echo UI::searchLine($id, '/contacts/search.php', $options);
-
 		}
 	}

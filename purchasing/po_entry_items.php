@@ -10,12 +10,11 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	$page_security = 'SA_PURCHASEORDER';
-	$path_to_root = "..";
+
 	$js = '';
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/purchasing/includes/po_class.inc");
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
-	include_once(APP_PATH . "/purchasing/includes/purchasing_ui.inc");
-	include_once(APP_PATH . "/reporting/includes/reporting.inc");
+	include_once(APP_PATH . "purchasing/includes/purchasing_ui.inc");
+	include_once(APP_PATH . "reporting/includes/reporting.inc");
 	if (Config::get('ui.windows.popups')) {
 		$js .= get_js_open_window(900, 500);
 	}
@@ -107,7 +106,7 @@
 
 	//---------------------------------------------------------------------------------------------------
 	function handle_cancel_po() {
-		global $path_to_root;
+
 		//need to check that not already dispatched or invoiced by the supplier
 		if (($_SESSION['PO']->order_no != 0) && $_SESSION['PO']->any_already_received() == 1) {
 			display_error(_("This order cannot be cancelled because some of it has already been received.") . "<br>" . _("The line item quantities may be modified to quantities more than already received. prices cannot be altered for lines that have already been received and quantities cannot be reduced below the quantity already received."));
@@ -118,7 +117,7 @@
 		}
 		else {
 			unset($_SESSION['PO']);
-			meta_forward($path_to_root . '/index.php', 'application=AP');
+			meta_forward('/index.php', 'application=AP');
 		}
 		$_SESSION['PO']->clear_items();
 		$_SESSION['PO'] = new purch_order;

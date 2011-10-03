@@ -9,7 +9,8 @@
 
 	class Input {
 
-		const NUMERIC = '1';
+		const NUMERIC = 1;
+		const OBJECT = 2;
 
 
 		public static function post($var, $type = null) {
@@ -19,7 +20,9 @@
 		public static function get($var, $type = null) {
 			return static::_isset($_GET, $var, $type);
 		}
-
+		public static function request($var, $type = null) {
+			return static::_isset($_REQUEST, $var, $type);
+		}
 		public static function get_post($var, $type = null) {
 			return static::_get_post($_GET, $_POST, $var, $type);
 		}
@@ -63,11 +66,13 @@
 		}
 
 		protected static function _isset($array, $var, $type) {
+
 			if (!isset($array[$var])) return false;
 			$value = $array[$var];
 			switch ($type) {
 				case static::NUMERIC:
 					if (!is_numeric($value)) return false;
+					return ($value == 0) ? true : $value;
 					break;
 			}
 			return $value;

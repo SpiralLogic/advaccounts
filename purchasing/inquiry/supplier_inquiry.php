@@ -1,20 +1,19 @@
 <?php
-/**********************************************************************
-Copyright (C) FrontAccounting, LLC.
-Released under the terms of the GNU General Public License, GPL,
-as published by the Free Software Foundation, either version 3
-of the License, or (at your option) any later version.
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
- ***********************************************************************/
+	/**********************************************************************
+	Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL,
+	as published by the Free Software Foundation, either version 3
+	of the License, or (at your option) any later version.
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+	 ***********************************************************************/
 	$page_security = 'SA_SUPPTRANSVIEW';
-	$path_to_root = "../..";
-	include($path_to_root . "/includes/db_pager.inc");
+
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
-	include($path_to_root . "/purchasing/includes/purchasing_ui.inc");
-	include($path_to_root . "/reporting/includes/reporting.inc");
+	include(APP_PATH . "purchasing/includes/purchasing_ui.inc");
+	include(APP_PATH . "reporting/includes/reporting.inc");
 	$js = "";
 	if (Config::get('ui.windows.popups')) {
 		$js .= get_js_open_window(900, 500);
@@ -52,9 +51,10 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		$nowdue = "1-" . $past1 . " " . _('Days');
 		$pastdue1 = $past1 + 1 . "-" . $past2 . " " . _('Days');
 		$pastdue2 = _('Over') . " " . $past2 . " " . _('Days');
-		start_table("width=90%  ".Config::get('tables.style'));
+		start_table("width=90%  " . Config::get('tables.style'));
 		$th = array(_("Currency"), _("Terms"), _("Current"), $nowdue,
-			$pastdue1, $pastdue2, _("Total Balance"), _("Total For Search Period"));
+			$pastdue1, $pastdue2, _("Total Balance"), _("Total For Search Period")
+		);
 		table_header($th);
 		start_row();
 		label_cell($supplier_record["curr_code"]);
@@ -99,16 +99,15 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 
 	function credit_link($row) {
 		return $row['type'] == ST_SUPPINVOICE && $row["TotalAmount"] - $row["Allocated"] > 0 ?
-				pager_link(_("Credit This"),
-						"/purchasing/supplier_credit.php?New=1&invoice_no=" .
-								$row['trans_no'], ICON_CREDIT)
-				: '';
+		 pager_link(_("Credit This"),
+			"/purchasing/supplier_credit.php?New=1&invoice_no=" .
+			 $row['trans_no'], ICON_CREDIT)
+		 : '';
 	}
 
 	function fmt_debit($row) {
 		$value = $row["TotalAmount"];
 		return $value >= 0 ? price_format($value) : '';
-
 	}
 
 	function fmt_credit($row) {
@@ -125,7 +124,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 
 	function check_overdue($row) {
 		return $row['OverDue'] == 1
-				&& (abs($row["TotalAmount"]) - $row["Allocated"] != 0);
+		 && (abs($row["TotalAmount"]) - $row["Allocated"] != 0);
 	}
 
 	//------------------------------------------------------------------------------------------------
@@ -173,9 +172,8 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	} else {
 		$sql .= " AND trans . tran_date >= '$date_after'
 	            AND trans . tran_date <= '$date_to'";
-
 	}
-	if ($_POST['supplier_id'] != ALL_TEXT) {
+	if (Input::post('supplier_id') != ALL_TEXT) {
 		$sql .= " AND trans.supplier_id = " . db_escape($_POST['supplier_id']);
 	}
 	if (isset($_POST['filterType']) && $_POST['filterType'] != ALL_TEXT) {
@@ -216,13 +214,13 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		array('insert' => true, 'fun' => 'credit_link'),
 		array('insert' => true, 'fun' => 'prt_link')
 	);
-	if ($_POST['supplier_id'] != ALL_TEXT) {
+	if (Input::post('supplier_id') != ALL_TEXT) {
 		$cols[_("Supplier")] = 'skip';
 		$cols[_("Currency")] = 'skip';
 	}
 	//------------------------------------------------------------------------------------------------
 	/*show a table of the transactions returned by the sql */
-	$table =& new_db_pager('trans_tbl', $sql, $cols);
+	$table =& db_pager::new_db_pager('trans_tbl', $sql, $cols);
 	$table->set_marker('check_overdue', _("Marked items are overdue."));
 	$table->width = "85%";
 	display_db_pager($table);

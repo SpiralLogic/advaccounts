@@ -1,16 +1,16 @@
 <?php
-/**********************************************************************
-Copyright (C) FrontAccounting, LLC.
-Released under the terms of the GNU General Public License, GPL,
-as published by the Free Software Foundation, either version 3
-of the License, or (at your option) any later version.
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
- ***********************************************************************/
-	include_once($path_to_root . "/admin/db/voiding_db.inc");
-	include_once($path_to_root . "/includes/types.inc");
+	/**********************************************************************
+	Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL,
+	as published by the Free Software Foundation, either version 3
+	of the License, or (at your option) any later version.
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+	 ***********************************************************************/
+	include_once(APP_PATH . "admin/db/voiding_db.inc");
+	include_once(APP_PATH . "includes/types.inc");
 	//--------------------------------------------------------------------------------------
 	function get_supplier_trans_view_str($type, $trans_no, $label = "", $icon = false, $class = '', $id = '') {
 		$viewer = "purchasing/view/";
@@ -97,7 +97,6 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 				$preview_str .= ',';
 			}
 			$preview_str .= viewer_link($lbl, $viewer . "?trans_no=$trans&trans_type=$type", $class, $id, $icon);
-
 		}
 		return $preview_str;
 	}
@@ -277,7 +276,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		if ($void_entry == null) {
 			return false;
 		}
-		start_table("width=50%  ".Config::get('tables.style'));
+		start_table("width=50%  " . Config::get('tables.style'));
 		echo "<tr><td align=center><font color=red>$label</font><br>";
 		echo "<font color=red>" . _("Date Voided:") . " " . sql2date($void_entry["date_"]) . "</font><br>";
 		if (strlen($void_entry["memo_"]) > 0) {
@@ -315,15 +314,15 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 
 	//--------------------------------------------------------------------------------------
 	function view_stock_status($stock_id, $description = null, $echo = true) {
-		global $path_to_root;
-		if ($description) //hyperlink_params_separate($path_to_root . "/inventory/inquiry/stock_status.php", (user_show_codes()?$stock_id . " - ":"") . $description, "stock_id=$stock_id");
+
+		if ($description) //hyperlink_params_separate( "/inventory/inquiry/stock_status.php", (user_show_codes()?$stock_id . " - ":"") . $description, "stock_id=$stock_id");
 		{
-			$preview_str = "<a target='_blank' href='$path_to_root/inventory/inquiry/stock_status.php?stock_id=$stock_id' onclick=\"javascript:openWindow(this.href,this.target); return false;\" >" . (user_show_codes()
-					? $stock_id . " - " : "") . $description . "</a>";
+			$preview_str = "<a target='_blank' href='/inventory/inquiry/stock_status.php?stock_id=$stock_id' onclick=\"javascript:openWindow(this.href,this.target); return false;\" >" . (user_show_codes()
+			 ? $stock_id . " - " : "") . $description . "</a>";
 		}
-		else //hyperlink_params_separate($path_to_root . "/inventory/inquiry/stock_status.php", $stock_id, "stock_id=$stock_id");
+		else //hyperlink_params_separate( "/inventory/inquiry/stock_status.php", $stock_id, "stock_id=$stock_id");
 		{
-			$preview_str = "<a target='_blank' href='$path_to_root/inventory/inquiry/stock_status.php?stock_id=$stock_id' onclick=\"javascript:openWindow(this.href,this.target); return false;\" >$stock_id</a>";
+			$preview_str = "<a target='_blank' href='/inventory/inquiry/stock_status.php?stock_id=$stock_id' onclick=\"javascript:openWindow(this.href,this.target); return false;\" >$stock_id</a>";
 		}
 		if ($echo) {
 			echo $preview_str;
@@ -379,7 +378,6 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		if ($tax_recorded != 0) {
 			$tax_correction = number_format2($tax_recorded - $tax_total, user_price_dec());
 			label_row("Tax Correction" . " ", $tax_correction, "colspan=$columns align=right", "align=right");
-
 		}
 	}
 
@@ -413,12 +411,12 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 
 	//--------------------------------------------------------------------------------------
 	function display_allocations($alloc_result, $total) {
-		global  $systypes_array;
+		global $systypes_array;
 		if (!$alloc_result || db_num_rows($alloc_result) == 0) {
 			return;
 		}
 		display_heading2(_("Allocations"));
-		start_table(Config::get('tables.style')."  width=90%");
+		start_table(Config::get('tables.style') . "  width=90%");
 		$th = array(_("Type"), _("Number"), _("Date"), _("Total Amount"), _("Left to Allocate"), _("This Allocation"));
 		table_header($th);
 		$k = $total_allocated = 0;
@@ -618,7 +616,8 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 			$res .= (empty($res) ? "" : " ") . _number_to_words($Hn) . " Hundred";
 		}
 		$ones = array("", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen",
-		              "Eightteen", "Nineteen");
+			"Eightteen", "Nineteen"
+		);
 		$tens = array("", "", "Twenty", "Thirty", "Fourty", "Fifty", "Sixty", "Seventy", "Eigthy", "Ninety");
 		if ($Dn || $n) {
 			if (!empty($res)) {
@@ -714,28 +713,27 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		static $inserted;
 		if ($_SERVER['SERVER_NAME'] == 'advaccounts' && !$inserted && !isset($_SESSION['getWebsales'])) {
 			$_SESSION['getWebsales'] = true;
-echo "<script>";
+			echo "<script>";
 			echo <<<JS
 $(function() {
 if ($("#websaleGet").length>0) return;
 $('<iframe\>').attr({'id':'websaleGet',src:'//{$_SERVER['SERVER_NAME']}/jobsboard/websales/'}).css({width:0,height:0}).appendTo('body')});
 JS;
 			echo "</script>";
-			$inserted = true;  
+			$inserted = true;
 		}
 	}
 
 	function get_jquery_gmaps() {
 		static $inserted;
-		if (!$inserted && $_SERVER['SERVER_NAME']=='advaccounts') {
+		if (!$inserted && $_SERVER['SERVER_NAME'] == 'advaccounts') {
 
 			//TODO: api key this shouldn't be hardcoded
-			
-			add_js_ffile('/js/js2/jquery.gmap-1.1.0-min.js');
+
+			JS::footerFile('/js/js2/jquery.gmap-1.1.0-min.js');
 			$inserted = true;
 		}
 	}
- 
 
 	function alert($msg) {
 		echo "\n<script language=\"javascript\"  type=\"text/javascript\">\n" . "<!--\n" . "alert('$msg');\n" . "-->\n" . "</script>\n";

@@ -9,8 +9,8 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	include_once($path_to_root . "/sales/includes/cart_class.inc");
-	include_once($path_to_root . "/includes/manufacturing.inc");
+
+	include_once(APP_PATH . "includes/manufacturing.inc");
 	//--------------------------------------------------------------------------------
 	function add_to_order(&$order, $new_item, $new_item_qty, $price, $discount, $description, $no_errors = false) {
 		// calculate item price to sum of kit element prices factor for
@@ -79,7 +79,7 @@
 		}
 		$deliver = $myrow['address']; // in case no branch address use company address
 		$order->set_customer($customer_id, $name, $myrow['curr_code'],
-												 $myrow['discount'], $myrow['payment_terms'], $myrow['pymt_discount']); // the sales type determines the price list to be used by default
+			$myrow['discount'], $myrow['payment_terms'], $myrow['pymt_discount']); // the sales type determines the price list to be used by default
 		$order->set_sales_type($myrow['salestype'], $myrow['sales_type'], $myrow['tax_included'], $myrow['factor']);
 		if ($order->trans_type != ST_SALESORDER && $order->trans_type != ST_SALESQUOTE) {
 			$order->dimension_id = $myrow['dimension_id'];
@@ -128,15 +128,15 @@
 
 	//---------------------------------------------------------------------------------
 	function display_order_summary($title, &$order, $editable_items = false) {
-		global $path_to_root, $SysPrefs;
+		global $SysPrefs;
 		display_heading($title);
 		div_start('items_table');
 		if (count($_SESSION['Items']->line_items) > 0) {
 			start_outer_table(" width=90%");
 			table_section(1);
-			hyperlink_params_separate("$path_to_root/purchasing/po_entry_items.php", _("Create PO from this order"), "NewOrder=Yes&UseOrder=1' class='button'", true, true);
+			hyperlink_params_separate("/purchasing/po_entry_items.php", _("Create PO from this order"), "NewOrder=Yes&UseOrder=1' class='button'", true, true);
 			table_section(2);
-			hyperlink_params_separate("$path_to_root/purchasing/po_entry_items.php", _("Dropship this order"), "NewOrder=Yes&UseOrder=1&DS=1' class='button'", true, true);
+			hyperlink_params_separate("/purchasing/po_entry_items.php", _("Dropship this order"), "NewOrder=Yes&UseOrder=1&DS=1' class='button'", true, true);
 			end_outer_table(1);
 		}
 		start_table(Config::get('tables.style') . "  colspan=7 width=90%");
@@ -255,8 +255,7 @@ JS;
 			hidden('dimension_id', $order->dimension_id); // 2008-11-12 Joe Hunt
 			hidden('dimension2_id', $order->dimension2_id);
 			//		}
-		}
-		else {
+		} else {
 			customer_list_row(_("Customer:"), 'customer_id', null, false, true, false, true);
 			if ($order->customer_id != get_post('customer_id', -1)) {
 				// customer has changed
@@ -394,7 +393,8 @@ JS;
 			label_row(_("Tax Group:"), $order->tax_group_name);
 			hidden('tax_group_id', $order->tax_group_id);
 		}
-		sales_persons_list_row(_("Sales Person:"), 'salesman', null);
+
+		sales_persons_list_row(_("Sales Person:"), 'salesman', (isset($order->salesman)) ? $order->salesman : $_SESSION['wa_current_user']->salesmanid);
 		end_outer_table(1); // outer table
 		if ($change_prices != 0) {
 			foreach ($order->line_items as $line_no => $item) {
@@ -436,11 +436,11 @@ JS;
 				$Ajax->activate('qty');
 				$Ajax->activate('line_total');
 			}
-			$item_info = get_item_edit_info(@$_POST['stock_id']);
+			$item_info = get_item_edit_info(Input::post('stock_id'));
 			$units = $item_info["units"];
 			$dec = $item_info['decimals'];
 			$_POST['qty'] = number_format2(1, $dec);
-			$price = get_kit_price(@$_POST['stock_id'], $order->customer_currency, $order->sales_type, $order->price_factor, get_post('OrderDate'));
+			$price = get_kit_price(Input::post('stock_id'), $order->customer_currency, $order->sales_type, $order->price_factor, get_post('OrderDate'));
 			$_POST['price'] = price_format($price);
 			$_POST['Disc'] = percent_format($order->default_discount * 100);
 		}
@@ -504,7 +504,7 @@ JS;
 				$Ajax->activate('items_table');
 			}
 			date_row($delname, 'delivery_date', $order->trans_type == ST_SALESORDER ? _('Enter requested day of delivery') : $order->trans_type == ST_SALESQUOTE
-												? _('Enter Valid until Date') : '');
+				 ? _('Enter Valid until Date') : '');
 			text_row(_("Deliver To:"), 'deliver_to', $order->deliver_to, 40, 40, _('Additional identifier for delivery e.g. name of receiving person'));
 			textarea_row("<a href='#'>Address:</a>", 'delivery_address', $order->delivery_address, 35, 5, _('Delivery address. Default is address of customer branch'), null, 'id="address_map"');
 			if (strlen($order->delivery_address) > 10) {

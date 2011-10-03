@@ -27,7 +27,7 @@
 	JS::footerFile("/js/js2/jquery-tmpl.min.js");
 	JS::footerFile("includes/js/customers.js");
 
-	page(_($help_context = "Customers"), @$_REQUEST['popup']);
+	page(_($help_context = "Customers"), Input::request('popup') );
 	check_db_has_sales_types(_("There are no sales types defined. Please define at least one sales type before adding a customer."));
 	check_db_has_sales_people(_("There are no sales people defined in the system. At least one sales person is required before proceeding."));
 	check_db_has_sales_areas(_("There are no sales areas defined in the system. At least one sales area is required before proceeding."));
@@ -42,7 +42,7 @@
 		$status = $customer->getStatus();
 		display_notification($status['message']);
 	}
-	if ( !isset($_GET['popup']) && !isset($_GET['id'])) {
+	if ( !Input::get('popup') && !Input::get('id')) {
 		/** @noinspection PhpUndefinedMethodInspection */
 		HTML::div('custsearch');
 		HTML::table(array('class' => 'marginauto bold'));
@@ -214,7 +214,7 @@
 	HTML::div('transactions');
 	$menu->endTab()->render();
 
-	hidden('popup', @$_REQUEST['popup']);
+	hidden('popup', Input::request('popup') );
 	end_form();
 
 	HTML::div('contactLog', array('title' => 'New contact log entry',
@@ -240,7 +240,7 @@
 																		));
 	/** @noinspection PhpUndefinedMethodInspection */
 	HTML::_div();
-	if (!isset($_GET['popup']) && !isset($_GET['id'])) {
+	if ( !Input::get('popup') && !Input::get('id')) {
 		HTML::_div()->div('shortcuts', array('class' => 'width50 center'));
 		$shortcuts = new MenuUI(array('noajax' => true));
 		$shortcuts->startTab('Create Order', 'Create Order for this customer!', '/sales/sales_order_entry.php?NewOrder=Yes&customer_id=');

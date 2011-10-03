@@ -1,15 +1,15 @@
 <?php
-/**********************************************************************
-Copyright (C) FrontAccounting, LLC.
-Released under the terms of the GNU General Public License, GPL,
-as published by the Free Software Foundation, either version 3
-of the License, or (at your option) any later version.
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
- ***********************************************************************/
-	include_once($path_to_root . "/includes/prefs/userprefs.inc");
+	/**********************************************************************
+	Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL,
+	as published by the Free Software Foundation, either version 3
+	of the License, or (at your option) any later version.
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+	 ***********************************************************************/
+
 	//--------------------------------------------------------------------------
 	class current_user {
 
@@ -57,7 +57,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		}
 
 		function login($company, $loginname, $password) {
-			global $security_areas, $security_groups, $security_headings, $path_to_root;
+			global $security_areas, $security_groups, $security_headings;
 			$this->set_company($company);
 			$this->logged = false;
 
@@ -73,7 +73,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 						if (!isset($security_groups) || !isset($security_headings)) {
 							echo "<center><br><br><font size='5' color='red'><b>";
 							echo _('Before software upgrade you have to include old $security_groups and $security_headings arrays from old config.php file to the new one.');
-							echo '<br>' . "<a href=$path_to_root/index.php>" . _("Back") . "</a>";
+							echo '<br>' . "<a href=/index.php>" . _("Back") . "</a>";
 							echo "</b></font><br><br></center>";
 							exit;
 						}
@@ -92,7 +92,9 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 						$role = get_security_role($this->access);
 						if (!$role) return false;
 						foreach ($role['areas'] as $code) // filter only area codes for enabled security sections
+						{
 							if (in_array($code & ~0xff, $role['sections'])) $this->role_set[] = $code;
+						}
 					}
 					$this->name = $myrow["real_name"];
 					$this->pos = $myrow["pos"];
@@ -105,7 +107,6 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 					$this->last_act = time();
 					$this->timeout = session_timeout();
 					$this->set_salesman();
-
 				}
 			}
 			return $this->logged;
@@ -149,15 +150,16 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		function update_prefs($price_dec, $qty_dec, $exrate_dec, $percent_dec, $showgl, $showcodes, $date_format, $date_sep, $tho_sep, $dec_sep, $theme, $pagesize, $show_hints, $profile, $rep_popup,
 													$query_size, $graphic_links, $lang, $stickydate, $startup_tab) {
 			$user = array('prices_dec' => $price_dec, 'qty_dec' => $qty_dec, 'rates_dec' => $exrate_dec,
-										'percent_dec' => $percent_dec, 'show_gl' => $showgl, 'show_codes' => $showcodes,
-										'date_format' => $date_format, 'date_sep' => $date_sep, 'tho_sep' => $tho_sep,
-										'dec_sep' => $dec_sep, 'theme' => $theme, 'page_size' => $pagesize, 'show_hints' => $show_hints,
-										'print_profile' => $profile, 'rep_popup' => $rep_popup, 'query_size' => $query_size,
-										'graphic_links' => $graphic_links, 'language' => $lang, 'sticky_doc_date' => $stickydate,
-										'startup_tab' => $startup_tab);
+				'percent_dec' => $percent_dec, 'show_gl' => $showgl, 'show_codes' => $showcodes,
+				'date_format' => $date_format, 'date_sep' => $date_sep, 'tho_sep' => $tho_sep,
+				'dec_sep' => $dec_sep, 'theme' => $theme, 'page_size' => $pagesize, 'show_hints' => $show_hints,
+				'print_profile' => $profile, 'rep_popup' => $rep_popup, 'query_size' => $query_size,
+				'graphic_links' => $graphic_links, 'language' => $lang, 'sticky_doc_date' => $stickydate,
+				'startup_tab' => $startup_tab
+			);
 			if (!Config::get('demo_mode')) {
 				update_user_display_prefs($this->user, $price_dec, $qty_dec, $exrate_dec, $percent_dec, $showgl, $showcodes, $date_format, $date_sep, $tho_sep, $dec_sep, $theme, $pagesize, $show_hints,
-																	$profile, $rep_popup, $query_size, $graphic_links, $lang, $stickydate, $startup_tab);
+					$profile, $rep_popup, $query_size, $graphic_links, $lang, $stickydate, $startup_tab);
 			}
 			$this->prefs = new user_prefs(get_user($this->user));
 		}
@@ -172,8 +174,8 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	}
 
 	function number_format2($number, $decimals = 0) {
-		$tsep = Config::get('seperators.thousands',$_SESSION["wa_current_user"]->prefs->tho_sep());
-		$dsep = Config::get('seperators.decimal',$_SESSION["wa_current_user"]->prefs->dec_sep());
+		$tsep = Config::get('seperators.thousands', $_SESSION["wa_current_user"]->prefs->tho_sep());
+		$dsep = Config::get('seperators.decimal', $_SESSION["wa_current_user"]->prefs->dec_sep());
 		//return number_format($number, $decimals, $dsep,	$tsep);
 		$delta = ($number < 0 ? -.0000000001 : .0000000001);
 		$number = number_format($number + $delta, $decimals, $dsep, $tsep);
@@ -217,8 +219,8 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 
 	// and get_qty_dec
 	function get_qty_dec($stock_id = null) {
-		global $path_to_root;
-		include_once($path_to_root . "/inventory/includes/db/items_units_db.inc");
+
+		include_once(APP_PATH . "inventory/includes/db/items_units_db.inc");
 		if ($stock_id != null) $dec = get_unit_dec($stock_id);
 		if ($stock_id == null || $dec == -1 || $dec == null) $dec = $_SESSION["wa_current_user"]->prefs->qty_dec();
 		return $dec;
@@ -235,9 +237,9 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 
 	function user_numeric($input) {
 		$num = trim($input);
-		$sep = Config::get('seperators.thousands',user_tho_sep());
+		$sep = Config::get('seperators.thousands', user_tho_sep());
 		if ($sep != '') $num = str_replace($sep, '', $num);
-		$sep = Config::get('seperators.decimal',user_dec_sep());
+		$sep = Config::get('seperators.decimal', user_dec_sep());
 		if ($sep != '.') $num = str_replace($sep, '.', $num);
 		if (!is_numeric($num)) return false;
 		$num = (float)$num;
@@ -341,17 +343,17 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	function set_user_prefs($price_dec, $qty_dec, $exrate_dec, $percent_dec, $showgl, $showcodes, $date_format, $date_sep, $tho_sep, $dec_sep, $theme, $pagesize, $show_hints, $print_profile, $rep_popup,
 													$query_size, $graphic_links, $lang, $stickydate, $startup_tab) {
 		$_SESSION["wa_current_user"]->update_prefs($price_dec, $qty_dec, $exrate_dec, $percent_dec, $showgl, $showcodes, $date_format, $date_sep, $tho_sep, $dec_sep, $theme, $pagesize, $show_hints,
-																							 $print_profile, $rep_popup, $query_size, $graphic_links, $lang, $stickydate, $startup_tab);
+			$print_profile, $rep_popup, $query_size, $graphic_links, $lang, $stickydate, $startup_tab);
 	}
 
 	function add_user_js_data() {
-		global $path_to_root;
-		$ts = Config::get('seperators.thousands',user_tho_sep());
-		$ds = Config::get('seperators.decimal',user_dec_sep());
-		$js = "\n" . "var user = {\n" . "theme: '" . $path_to_root . '/themes/' . user_theme() . '/' . "',
+
+		$ts = Config::get('seperators.thousands', user_tho_sep());
+		$ds = Config::get('seperators.decimal', user_dec_sep());
+		$js = "\n" . "var user = {\n" . "theme: '" . '/themes/' . user_theme() . '/' . "',
 		\n" . "loadtxt: '" . _('Requesting data...') . "',\n" . "date: '" . Today() . "',\n" // server date
-					. "datesys: " . Config::get('accounts.datesystem') . ",\n" . "datefmt: " . user_date_format() . ",\n" . "datesep: '" .
-					Config::get('seperators.date',user_date_sep()) . "',\n" . "ts: '$ts',\n" . "ds: '$ds',\n" . "pdec : " . user_price_dec() . "}\n";
+		 . "datesys: " . Config::get('accounts.datesystem') . ",\n" . "datefmt: " . user_date_format() . ",\n" . "datesep: '" .
+		 Config::get('seperators.date', user_date_sep()) . "',\n" . "ts: '$ts',\n" . "ds: '$ds',\n" . "pdec : " . user_price_dec() . "}\n";
 		JS::beforeload($js);
 	}
 

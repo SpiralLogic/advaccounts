@@ -10,15 +10,15 @@
 			MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 			See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 			* ********************************************************************* */
-	$path_to_root = "../..";
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/db_pager.inc");
+
+
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
-	include_once(APP_PATH . "/sales/includes/sales_ui.inc");
-	include_once(APP_PATH . "/reporting/includes/reporting.inc");
+	include_once(APP_PATH . "sales/includes/sales_ui.inc");
+	include_once(APP_PATH . "reporting/includes/reporting.inc");
 	$page_security = 'SA_SALESTRANSVIEW';
-	set_page_security(@$_POST['order_view_mode'],
-										array('OutstandingOnly' => 'SA_SALESDELIVERY', 'InvoiceTemplates' => 'SA_SALESINVOICE'),
-										array('OutstandingOnly' => 'SA_SALESDELIVERY', 'InvoiceTemplates' => 'SA_SALESINVOICE'));
+	set_page_security(Input::post('order_view_mode'),
+		array('OutstandingOnly' => 'SA_SALESDELIVERY', 'InvoiceTemplates' => 'SA_SALESINVOICE'),
+		array('OutstandingOnly' => 'SA_SALESDELIVERY', 'InvoiceTemplates' => 'SA_SALESINVOICE'));
 	$js = "";
 	if (Config::get('ui.windows.popups')) {
 		$js .= get_js_open_window(900, 600);
@@ -46,7 +46,7 @@
 		$trans_type = ST_SALESORDER;
 	}
 	if ($trans_type == ST_SALESORDER) {
-		if (isset($_GET['OutstandingOnly']) && ($_GET['OutstandingOnly'] == true)) {
+		if (Input::get('OutstandingOnly')) {
 			$_POST['order_view_mode'] = 'OutstandingOnly';
 			$_SESSION['page_title'] = _($help_context = "Search Outstanding Sales Orders");
 		}
@@ -147,7 +147,7 @@
 
 	function order_link($row) {
 		return pager_link(_("Create Order"), "/sales/sales_order_entry.php?NewQuoteToSalesOrder=" .
-																				 $row['order_no'], ICON_DOC);
+		 $row['order_no'], ICON_DOC);
 	}
 
 	function tmpl_checkbox($row) {
@@ -159,8 +159,8 @@
 		$value = $row['type'] ? 1 : 0;
 		// save also in hidden field for testing during 'Update'
 		return checkbox(null, $name, $value, true, _('Set this order as a template for direct deliveries/invoices')) . hidden('last[' .
-																																																													$row
-																																																													['order_no'] . ']', $value, false);
+			 $row
+			 ['order_no'] . ']', $value, false);
 	}
 
 	//---------------------------------------------------------------------------------------------
@@ -179,9 +179,11 @@
 	}
 	if (isset($_POST['Update']) && isset($_POST['last'])) {
 		foreach ($_POST['last'] as $id => $value)
+		{
 			if ($value != check_value('chgtpl' . $id)) {
 				change_tpl_flag($id);
 			}
+		}
 	}
 	//---------------------------------------------------------------------------------------------
 	//	Order range form
@@ -233,7 +235,7 @@
 		debtor.name,
 		debtor.debtor_no,
 		branch.br_name," . ($_POST['order_view_mode'] == 'InvoiceTemplates' ||
-												$_POST['order_view_mode'] == 'DeliveryTemplates' ? "sorder.comments, "
+	 $_POST['order_view_mode'] == 'DeliveryTemplates' ? "sorder.comments, "
 	 : "sorder.customer_ref, ") . "sorder.ord_date,
 		sorder.delivery_date,
 		sorder.deliver_to,
@@ -329,18 +331,19 @@
 	}
 	if ($trans_type == ST_SALESORDER) {
 		$cols = array(_("Order #") => array('fun' => 'view_link', 'ord' => 'desc'),
-									array('type' => 'skip'),
-									_("Ref") => array('ord' => ''),
-									_("Customer") => array('ord' => ''),
-									array('type' => 'skip'),
-									_("Branch") => array('ord' => ''),
-									_("PO#") => array('ord' => ''),
-									_("Date") => array('type' => 'date', 'ord' => ''),
-									_("Required By") => array('type' => 'date', 'ord' => ''),
-									_("Delivery To"),
-									_("Total") => array('type' => 'amount', 'ord' => ''),
-									'type' => 'skip',
-									_("Currency") => array('align' => 'center'));
+			array('type' => 'skip'),
+			_("Ref") => array('ord' => ''),
+			_("Customer") => array('ord' => ''),
+			array('type' => 'skip'),
+			_("Branch") => array('ord' => ''),
+			_("PO#") => array('ord' => ''),
+			_("Date") => array('type' => 'date', 'ord' => ''),
+			_("Required By") => array('type' => 'date', 'ord' => ''),
+			_("Delivery To"),
+			_("Total") => array('type' => 'amount', 'ord' => ''),
+			'type' => 'skip',
+			_("Currency") => array('align' => 'center')
+		);
 	}
 	else {
 		$cols = array(
@@ -356,8 +359,8 @@
 			_("Delivery To"),
 			_("Total") => array('type' => 'amount', 'ord' => ''),
 			'type' => 'skip',
-			_("Currency") => array('align' => 'center'));
-
+			_("Currency") => array('align' => 'center')
+		);
 	}
 	if ($_POST['order_view_mode'] == 'OutstandingOnly') {
 		//array_substitute($cols, 3, 1, _("Cust Order Ref"));
@@ -374,26 +377,28 @@
 		}
 		elseif ($trans_type == ST_SALESQUOTE) {
 			array_append($cols,
-									 array(array('insert' => true, 'type' => 'skip'),
-												array('insert' => true, 'type' => 'skip'),
-												array('insert' => true, 'fun' => 'edit_link'),
-												array('insert' => true, 'fun' => 'order_link'),
-												array('insert' => true, 'fun' => 'email_link'),
-												array('insert' => true, 'fun' => 'prt_link'))
+				array(array('insert' => true, 'type' => 'skip'),
+					array('insert' => true, 'type' => 'skip'),
+					array('insert' => true, 'fun' => 'edit_link'),
+					array('insert' => true, 'fun' => 'order_link'),
+					array('insert' => true, 'fun' => 'email_link'),
+					array('insert' => true, 'fun' => 'prt_link')
+				)
 			);
 		}
 		elseif ($trans_type == ST_SALESORDER) {
 			array_append($cols,
-									 array(
-												_("Tmpl") => array('type' => 'skip', 'insert' => true, 'fun' => 'tmpl_checkbox'),
-												array('insert' => true, 'fun' => 'edit_link'),
-												array('insert' => true, 'fun' => 'email_link'),
-												array('insert' => true, 'fun' => 'prt_link2'),
-												array('insert' => true, 'fun' => 'prt_link')));
+				array(
+					_("Tmpl") => array('type' => 'skip', 'insert' => true, 'fun' => 'tmpl_checkbox'),
+					array('insert' => true, 'fun' => 'edit_link'),
+					array('insert' => true, 'fun' => 'email_link'),
+					array('insert' => true, 'fun' => 'prt_link2'),
+					array('insert' => true, 'fun' => 'prt_link')
+				));
 		}
 	}
 	;
-	$table = & new_db_pager('orders_tbl', $sql, $cols, null, null, 0, _("Order #"));
+	$table = & db_pager::new_db_pager('orders_tbl', $sql, $cols, null, null, 0, _("Order #"));
 	$table->set_marker('check_overdue', _("Marked items are overdue."));
 	$table->width = "80%";
 	display_db_pager($table);
