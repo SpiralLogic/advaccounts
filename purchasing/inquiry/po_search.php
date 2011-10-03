@@ -54,7 +54,7 @@
 
 	start_table("class='tablestyle_noborder'");
 	start_row();
-	supplier_list_cells(_("Select a supplier: "), 'supplier_id', $_POST['supplier_id'], true);
+	supplier_list_cells(_("Select a supplier: "), 'supplier_id', Input::post('supplier_id'), true);
 	ref_cells(_("#:"), 'order_number', '', null, '', true);
 
 	date_cells(_("from:"), 'OrdersAfterDate', '', null, -30);
