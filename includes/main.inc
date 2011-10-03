@@ -23,7 +23,7 @@
 	include_once(APP_PATH . "includes/types.inc");
 	include_once(APP_PATH . "includes/systypes.inc");
 	include_once(APP_PATH . "includes/references.inc");
-	include_once(APP_PATH . "includes/prefs/sysprefs.inc");
+
 	include_once(APP_PATH . "includes/db/comments_db.inc");
 	include_once(APP_PATH . "includes/db/sql_functions.inc");
 	include_once(APP_PATH . "includes/db/audit_trail_db.inc");
