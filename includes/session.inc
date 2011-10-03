@@ -54,7 +54,6 @@
 	}
 
 	function login_fail() {
-
 		header("HTTP/1.1 401 Authorization Required");
 		echo "<center><br><br><font size='5' color='red'><b>" . _("Incorrect Password") . "<b></font><br><br>";
 		echo "<b>" . _("The user and password combination is not valid for the system.") . "<b><br><br>";
@@ -82,7 +81,7 @@
 			end_page();
 			exit;
 		}
-	}
+}
 
 	/*
 		 Helper function for setting page security level depeding on
