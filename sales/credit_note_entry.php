@@ -147,12 +147,12 @@
 				$input_error = 1;
 			}
 		}
-		if (!is_date($_POST['OrderDate'])) {
+		if (!Dates::is_date($_POST['OrderDate'])) {
 			ui_msgs::display_error(_("The entered date for the credit note is invalid."));
 			ui_view::set_focus('OrderDate');
 			$input_error = 1;
 		}
-		elseif (!is_date_in_fiscalyear($_POST['OrderDate'])) {
+		elseif (!Dates::is_date_in_fiscalyear($_POST['OrderDate'])) {
 			ui_msgs::display_error(_("The entered date is not in fiscal year."));
 			ui_view::set_focus('OrderDate');
 			$input_error = 1;
@@ -176,7 +176,7 @@
 		}
 		copy_to_cn();
 		$credit_no = $_SESSION['Items']->write($_POST['WriteOffGLCode']);
-		new_doc_date($_SESSION['Items']->document_date);
+		Dates::new_doc_date($_SESSION['Items']->document_date);
 		processing_end();
 		meta_forward($_SERVER['PHP_SELF'], "AddedID=$credit_no");
 	} /*end of process credit note */

@@ -146,18 +146,18 @@
 			return false;
 		}
 
-		if (!is_date($_SESSION['supp_trans']->tran_date)) {
+		if (!Dates::is_date($_SESSION['supp_trans']->tran_date)) {
 			ui_msgs::display_error(_("The credit note as entered cannot be processed because the date entered is not valid."));
 			ui_view::set_focus('tran_date');
 			return false;
 		}
-		elseif (!is_date_in_fiscalyear($_SESSION['supp_trans']->tran_date))
+		elseif (!Dates::is_date_in_fiscalyear($_SESSION['supp_trans']->tran_date))
 		{
 			ui_msgs::display_error(_("The entered date is not in fiscal year."));
 			ui_view::set_focus('tran_date');
 			return false;
 		}
-		if (!is_date($_SESSION['supp_trans']->due_date)) {
+		if (!Dates::is_date($_SESSION['supp_trans']->due_date)) {
 			ui_msgs::display_error(_("The invoice as entered cannot be processed because the due date is in an incorrect format."));
 			ui_view::set_focus('due_date');
 			return false;

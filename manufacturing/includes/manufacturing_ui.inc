@@ -88,7 +88,7 @@
 			$has_marked = false;
 
 			if ($date == null)
-				$date = Today();
+				$date = Dates::Today();
 
 			while ($myrow = db_fetch($result))
 			{
@@ -165,7 +165,7 @@
 
 				label_cell(ui_view::get_trans_view_str(29, $myrow["id"]));
 				label_cell($myrow['reference']);
-				label_cell(sql2date($myrow["date_"]));
+				label_cell(Dates::sql2date($myrow["date_"]));
 				qty_cell($myrow['quantity'], false, get_qty_dec($myrow['reference']));
 				end_row();
 			}
@@ -203,7 +203,7 @@
 
 				label_cell(ui_view::get_trans_view_str(28, $myrow["issue_no"]));
 				label_cell($myrow['reference']);
-				label_cell(sql2date($myrow["issue_date"]));
+				label_cell(Dates::sql2date($myrow["issue_date"]));
 				end_row();
 			}
 
@@ -238,7 +238,7 @@
 
 				label_cell(ui_view::get_gl_view_str(ST_WORKORDER, $myrow["type_no"], $myrow["type_no"]));
 				label_cell($wo_cost_types[$myrow['person_id']]);
-				$date = sql2date($myrow["tran_date"]);
+				$date = Dates::sql2date($myrow["tran_date"]);
 				label_cell($date);
 				amount_cell(-($myrow['amount']));
 				end_row();
@@ -282,13 +282,13 @@
 		label_cell($wo_types_array[$myrow["type"]]);
 		ui_view::view_stock_status_cell($myrow["stock_id"], $myrow["StockItemName"]);
 		label_cell($myrow["location_name"]);
-		label_cell(sql2date($myrow["date_"]));
-		label_cell(sql2date($myrow["required_by"]));
+		label_cell(Dates::sql2date($myrow["date_"]));
+		label_cell(Dates::sql2date($myrow["required_by"]));
 		$dec = get_qty_dec($myrow["stock_id"]);
 		qty_cell($myrow["units_reqd"], false, $dec);
 
 		if ($myrow["released"] == true) {
-			label_cell(sql2date($myrow["released_date"]));
+			label_cell(Dates::sql2date($myrow["released_date"]));
 			qty_cell($myrow["units_issued"], false, $dec);
 		}
 		end_row();
@@ -330,7 +330,7 @@
 		label_cell($wo_types_array[$myrow["type"]]);
 		ui_view::view_stock_status_cell($myrow["stock_id"], $myrow["StockItemName"]);
 		label_cell($myrow["location_name"]);
-		label_cell(sql2date($myrow["date_"]));
+		label_cell(Dates::sql2date($myrow["date_"]));
 
 		qty_cell($myrow["units_issued"], false, get_qty_dec($myrow["stock_id"]));
 

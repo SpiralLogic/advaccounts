@@ -195,14 +195,14 @@
 		$result = db_query($sql, "could not get fiscal year");
 		$row = db_fetch($result);
 
-		$year = sql2date($row['begin']) . " - " . sql2date($row['end']);
+		$year = Dates::sql2date($row['begin']) . " - " . Dates::sql2date($row['end']);
 		$yr = $row['yr'];
 		$mo = $row['mo'];
 		$da = 1;
 		if (Config::get('accounts.datesystem') == 1)
-			list($yr, $mo, $da) = jalali_to_gregorian($yr, $mo, $da);
+			list($yr, $mo, $da) = Dates::jalali_to_gregorian($yr, $mo, $da);
 		elseif (Config::get('accounts.datesystem') == 2)
-			list($yr, $mo, $da) = islamic_to_gregorian($yr, $mo, $da);
+			list($yr, $mo, $da) = Dates::islamic_to_gregorian($yr, $mo, $da);
 		$per12 = strftime('%b', mktime(0, 0, 0, $mo, $da, $yr));
 		$per11 = strftime('%b', mktime(0, 0, 0, $mo - 1, $da, $yr));
 		$per10 = strftime('%b', mktime(0, 0, 0, $mo - 2, $da, $yr));

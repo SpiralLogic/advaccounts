@@ -49,8 +49,8 @@
 	label_cell($myrow["reference"]);
 	label_cell($myrow["name"]);
 	label_cell($myrow["type_"]);
-	label_cell(sql2date($myrow["date_"]));
-	label_cell(sql2date($myrow["due_date"]));
+	label_cell(Dates::sql2date($myrow["date_"]));
+	label_cell(Dates::sql2date($myrow["due_date"]));
 	end_row();
 
 	ui_view::comments_display_row(ST_DIMENSION, $id);
@@ -67,9 +67,9 @@
 	start_row();
 
 	if (!isset($_POST['TransFromDate']))
-		$_POST['TransFromDate'] = begin_fiscalyear();
+		$_POST['TransFromDate'] = Dates::begin_fiscalyear();
 	if (!isset($_POST['TransToDate']))
-		$_POST['TransToDate'] = Today();
+		$_POST['TransToDate'] = Dates::Today();
 	date_cells(_("from:"), 'TransFromDate');
 	date_cells(_("to:"), 'TransToDate');
 	submit_cells('Show', _("Show"), '', false, 'default');

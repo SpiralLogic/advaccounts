@@ -225,7 +225,7 @@
 			} else {
 				$how = _("Closed");
 			}
-			$this->fiscal_year = sql2date($year['begin']) . " - " . sql2date($year['end']) . "  " . "(" . $how . ")";
+			$this->fiscal_year = Dates::sql2date($year['begin']) . " - " . Dates::sql2date($year['end']) . "  " . "(" . $how . ")";
 			$this->company = get_company_prefs();
 			$this->user = $_SESSION["wa_current_user"]->name;
 			$this->host = $_SERVER['SERVER_NAME'];
@@ -267,7 +267,7 @@
 			$this->row -= ($this->lineHeight + 4);
 			$str = _("Print Out Date") . ':';
 			$this->Text($this->leftMargin, $str, $titleCol);
-			$str = Today() . '   ' . Now();
+			$str = Dates::Today() . '   ' . Dates::Now();
 			if ($this->company['time_zone']) {
 				$str .= ' ' . date('O') . ' GMT';
 			}
@@ -476,7 +476,7 @@
 			// Timestamp of when this copy of the report was generated
 			$str = _("Generated At") . ':';
 			$this->Text($this->leftMargin, $str, $headerFieldCol);
-			$str = Today() . '   ' . Now();
+			$str = Dates::Today() . '   ' . Dates::Now();
 			if ($this->company['time_zone']) {
 				$str .= ' ' . date('O') . ' GMT';
 			}
@@ -538,7 +538,7 @@
 		 */
 		function DatePrettyPrint($date, $input_format = 0, $output_format = 0) {
 			if ($date != '') {
-				$date = date2sql($date);
+				$date = Dates::date2sql($date);
 				$year = (int)(substr($date, 0, 4));
 				$month = (int)(substr($date, 5, 2));
 				$day = (int)(substr($date, 8, 2));
@@ -648,7 +648,7 @@
 
 		function DateCol($c, $n, $txt, $conv = false, $corr = 0, $r = 0, $border = 0, $fill = 0, $link = NULL, $stretch = 1) {
 			if ($conv) {
-				$txt = sql2date($txt);
+				$txt = Dates::sql2date($txt);
 			}
 			return $this->TextCol($c, $n, $txt, $corr, $r, $border, $fill, $link, $stretch);
 		}

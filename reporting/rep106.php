@@ -28,8 +28,8 @@
 	//----------------------------------------------------------------------------------------------------
 
 	function GetSalesmanTrans($from, $to) {
-		$fromdate = date2sql($from);
-		$todate = date2sql($to);
+		$fromdate = Dates::date2sql($from);
+		$todate = Dates::date2sql($to);
 
 		$sql = "SELECT DISTINCT debtor_trans.*,
 		ov_amount+ov_discount AS InvoiceTotal,

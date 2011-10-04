@@ -97,7 +97,7 @@
 			$unique_name = $filename = $filetype = "";
 			$filesize = 0;
 		}
-		$date = date2sql(Today());
+		$date = Dates::date2sql(Dates::Today());
 		if ($Mode == 'ADD_ITEM') {
 			$sql = "INSERT INTO attachments (type_no, trans_no, description, filename, unique_name,
 			filesize, filetype, tran_date) VALUES (" . db_escape($_POST['filterType']) . ","
@@ -188,7 +188,7 @@
 			label_cell($row['filename']);
 			label_cell($row['filesize']);
 			label_cell($row['filetype']);
-			label_cell(sql2date($row['tran_date']));
+			label_cell(Dates::sql2date($row['tran_date']));
 			edit_button_cell("Edit" . $row['id'], _("Edit"));
 			button_cell("view" . $row['id'], _("View"), false, ICON_VIEW);
 			button_cell("download" . $row['id'], _("Download"), false, ICON_DOWN);

@@ -17,7 +17,7 @@
 
 	function add_bank_trans($type, $trans_no, $bank_act, $ref, $date_,
 													$amount, $person_type_id, $person_id, $currency = "", $err_msg = "", $rate = 0) {
-		$sqlDate = date2sql($date_);
+		$sqlDate = Dates::date2sql($date_);
 
 		// convert $amount to the bank's currency
 		if ($currency != "") {

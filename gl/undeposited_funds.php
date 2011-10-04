@@ -23,7 +23,7 @@
 	page(_($help_context = "Undeposited Funds"), @$_REQUEST['frame'], false, "", $js);
 	check_db_has_bank_accounts(_("There are no bank accounts defined in the system."));
 	function check_date() {
-		if (!is_date(get_post('deposit_date'))) {
+		if (!Dates::is_date(get_post('deposit_date'))) {
 			ui_msgs::display_error(_("Invalid deposit date format"));
 			JS::setFocus('deposit_date');
 			return false;
@@ -102,7 +102,7 @@
 		{
 			$Ajax->activate('bank_date');
 		}
-		$_POST['bank_date'] = date2sql(get_post('deposited_date'));
+		$_POST['bank_date'] = Dates::date2sql(get_post('deposited_date'));
 		/*	$sql = "UPDATE ".''."bank_trans SET undeposited=0"
 							 ." WHERE id=".db_escape($deposit_id);
 
@@ -120,7 +120,7 @@
 	}
 
 	if (list_updated('deposit_date')) {
-		$_POST['deposit_date'] = get_post('deposit_date') == '' ? Today() : ($_POST['deposit_date']);
+		$_POST['deposit_date'] = get_post('deposit_date') == '' ? Dates::Today() : ($_POST['deposit_date']);
 		update_data();
 	}
 	if (get_post('_deposit_date_changed')) {
@@ -139,7 +139,7 @@
 		change_tpl_flag($id);
 	}
 	if (isset($_POST['Deposit'])) {
-		$sql = "SELECT * FROM bank_trans WHERE undeposited=1 AND trans_date <= '" . date2sql($_POST['deposit_date']) . "' AND reconciled IS NULL";
+		$sql = "SELECT * FROM bank_trans WHERE undeposited=1 AND trans_date <= '" . Dates::date2sql($_POST['deposit_date']) . "' AND reconciled IS NULL";
 		$query = db_query($sql);
 		$undeposited = array();
 		while ($row = db_fetch($query)) {
@@ -159,7 +159,7 @@
 			$ref[] = $row['ref'];
 		}
 		$sql = "INSERT INTO bank_trans (type, bank_act, amount, ref, trans_date, person_type_id, person_id, undeposited) VALUES (15, 5, $total_amount,"
-		 . db_escape(implode($ref, ',')) . ",'" . date2sql($_POST['deposit_date']) . "', 6, '" . $_SESSION['wa_current_user']->user . "',0)";
+		 . db_escape(implode($ref, ',')) . ",'" . Dates::date2sql($_POST['deposit_date']) . "', 6, '" . $_SESSION['wa_current_user']->user . "',0)";
 		$query = db_query($sql, "Undeposited Cannot be Added");
 		$order_no = db_insert_id($query);
 		if (!isset($order_no) || !empty($order_no) || $order_no == 127) {
@@ -207,11 +207,11 @@
 	submit_center('Deposit', _("Deposit"), true, '', false);
 	div_end();
 	echo "<hr>";
-	$date = add_days($_POST['deposit_date'], 10);
+	$date = Dates::add_days($_POST['deposit_date'], 10);
 	$sql = "SELECT	type, trans_no, ref, trans_date,
 				amount,	person_id, person_type_id, reconciled, id
 		FROM bank_trans
-		WHERE undeposited=1 AND trans_date <= '" . date2sql($date) . "' AND reconciled IS NULL
+		WHERE undeposited=1 AND trans_date <= '" . Dates::date2sql($date) . "' AND reconciled IS NULL
 		ORDER BY trans_date DESC,bank_trans.id ";
 	$cols = array(_("Type") => array('fun' => 'systype_name', 'ord' => ''), _("#") => array('fun' => 'trans_view', 'ord' => ''), _("Reference"), _("Date") => 'date',
 		_("Debit") => array('align' => 'right', 'fun' => 'fmt_debit'), _("Credit") => array('align' => 'right', 'insert' => true, 'fun' => 'fmt_credit'),

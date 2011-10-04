@@ -20,8 +20,7 @@
 	// ----------------------------------------------------------------
 
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/date_functions.inc");
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/data_checks.inc");
+
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/sales/includes/sales_db.inc");
 
 	$packing_slip = 0;

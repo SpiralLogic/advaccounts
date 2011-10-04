@@ -40,7 +40,7 @@
 			locations_list_cells(null, "Location", $_POST['Location']);
 
 			if (!isset($_POST['DefaultReceivedDate']))
-				$_POST['DefaultReceivedDate'] = new_doc_date();
+				$_POST['DefaultReceivedDate'] = Dates::new_doc_date();
 
 			date_cells(_("Date Items Received"), 'DefaultReceivedDate', '', true, 0, 0, 0, "class='label'");
 		}

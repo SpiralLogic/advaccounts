@@ -14,7 +14,7 @@
 		if (Banking::is_company_currency($currency))
 			return;
 		if ($date_ == null)
-			$date_ = Today();
+			$date_ = Dates::Today();
 		$for_amount = 0;
 
 		// We have to calculate all the currency accounts belonging to the GL account
@@ -22,7 +22,7 @@
 		// 2010-02-23 Joe Hunt with help of Ary Wibowo
 		$sql = "SELECT SUM(bt.amount) AS for_amount, ba.bank_curr_code
 		FROM bank_trans bt, bank_accounts ba
-		WHERE ba.id = bt.bank_act AND ba.account_code = " . db_escape($account) . " AND bt.trans_date<='" . date2sql($date_) . "'
+		WHERE ba.id = bt.bank_act AND ba.account_code = " . db_escape($account) . " AND bt.trans_date<='" . Dates::date2sql($date_) . "'
 		GROUP BY ba.bank_curr_code";
 		$result = db_query($sql, "Transactions for bank account $acc_id could not be calculated");
 		while ($row = db_fetch($result))

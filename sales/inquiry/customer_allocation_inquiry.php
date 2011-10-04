@@ -122,8 +122,8 @@
 
 	//------------------------------------------------------------------------------------------------
 
-	$data_after = date2sql($_POST['TransAfterDate']);
-	$date_to = date2sql($_POST['TransToDate']);
+	$data_after = Dates::date2sql($_POST['TransAfterDate']);
+	$date_to = Dates::date2sql($_POST['TransToDate']);
 
 	$sql = "SELECT
   		trans.type,
@@ -138,7 +138,7 @@
 			+ trans.ov_freight_tax + trans.ov_discount)	AS TotalAmount,
 		trans.alloc AS Allocated,
 		((trans.type = " . ST_SALESINVOICE . ")
-			AND trans.due_date < '" . date2sql(Today()) . "') AS OverDue
+			AND trans.due_date < '" . Dates::date2sql(Dates::Today()) . "') AS OverDue
     	FROM debtor_trans as trans, debtors_master as debtor
     	WHERE debtor.debtor_no = trans.debtor_no
 			AND (trans.ov_amount + trans.ov_gst + trans.ov_freight 
@@ -163,7 +163,7 @@
 		}
 
 		if ($_POST['filterType'] == '2') {
-			$today = date2sql(Today());
+			$today = Dates::date2sql(Dates::Today());
 			$sql .= " AND trans.due_date < '$today'
 				AND (round(abs(trans.ov_amount + "
 			 . "trans.ov_gst + trans.ov_freight + "

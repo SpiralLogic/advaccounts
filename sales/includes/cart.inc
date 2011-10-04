@@ -166,9 +166,9 @@
 				{
 					$this->customer_id = '';
 				}
-				$this->document_date = new_doc_date();
-				if (!is_date_in_fiscalyear($this->document_date)) {
-					$this->document_date = end_fiscalyear();
+				$this->document_date = Dates::new_doc_date();
+				if (!Dates::is_date_in_fiscalyear($this->document_date)) {
+					$this->document_date = Dates::end_fiscalyear();
 				}
 				$this->reference = $Refs->get_next($this->trans_type);
 				$this->set_salesman();
@@ -199,12 +199,12 @@
 					$this->pos = user_pos();
 					$pos = get_sales_point($this->pos);
 					$this->cash = !$pos['credit_sale'];
-					if (!$pos['cash_sale'] || !$pos['credit_sale'] || $this->due_date == Today()) {
+					if (!$pos['cash_sale'] || !$pos['credit_sale'] || $this->due_date == Dates::Today()) {
 						$this->pos = -1;
 					} // mark not editable payment type
 					else
 					{
-						$this->cash = date_diff2($this->due_date, Today(), 'd') < 2;
+						$this->cash = Dates::date_diff2($this->due_date, Dates::Today(), 'd') < 2;
 					}
 					if ($this->cash) {
 						$this->Location = $pos['pos_location'];
@@ -215,7 +215,7 @@
 				}
 				else
 				{
-					$this->due_date = add_days($this->document_date, $SysPrefs->default_delivery_required_by());
+					$this->due_date = Dates::add_days($this->document_date, $SysPrefs->default_delivery_required_by());
 				}
 			}
 			$this->credit = get_current_cust_credit($this->customer_id);

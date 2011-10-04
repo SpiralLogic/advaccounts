@@ -82,18 +82,18 @@
 			return false;
 		}
 
-		if (!is_date($_POST['date_'])) {
+		if (!Dates::is_date($_POST['date_'])) {
 			ui_msgs::display_error(_("The entered date is invalid."));
 			ui_view::set_focus('date_');
 			return false;
 		}
-		elseif (!is_date_in_fiscalyear($_POST['date_']))
+		elseif (!Dates::is_date_in_fiscalyear($_POST['date_']))
 		{
 			ui_msgs::display_error(_("The entered date is not in fiscal year."));
 			ui_view::set_focus('date_');
 			return false;
 		}
-		if (date_diff2(sql2date($wo_details["released_date"]), $_POST['date_'], "d") > 0) {
+		if (Dates::date_diff2(Dates::sql2date($wo_details["released_date"]), $_POST['date_'], "d") > 0) {
 			ui_msgs::display_error(_("The production date cannot be before the release date of the work order."));
 			ui_view::set_focus('date_');
 			return false;

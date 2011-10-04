@@ -348,12 +348,16 @@
 
 	function add_user_js_data() {
 
-		$ts = Config::get('seperators.thousands', user_tho_sep());
-		$ds = Config::get('seperators.decimal', user_dec_sep());
-		$js = "\n" . "var user = {\n" . "theme: '" . '/themes/' . user_theme() . '/' . "',
-		\n" . "loadtxt: '" . _('Requesting data...') . "',\n" . "date: '" . Today() . "',\n" // server date
-		 . "datesys: " . Config::get('accounts.datesystem') . ",\n" . "datefmt: " . user_date_format() . ",\n" . "datesep: '" .
-		 Config::get('ui.date.format') . "',\n" . "ts: '$ts',\n" . "ds: '$ds',\n" . "pdec : " . user_price_dec() . "}\n";
+		$js = "\nvar user = {
+					 \n theme: '/themes/" . user_theme() . "/',
+					 \nloadtxt: '" . _('Requesting data...') . "',
+					 \ndate: '" . Dates::Today() . "',
+					 \ndatesys: " . Config::get('accounts.datesystem') . ",
+					 \ndatefmt: " . user_date_format() . ",
+					 \ndatesep: '" . Config::get('ui.date.format') . "',
+					 \nts: '" . Config::get('seperators.thousands', user_tho_sep()) . "',
+					 \nds: '" . Config::get('seperators.decimal', user_dec_sep()) . "',
+					 \npdec: " . user_price_dec() . "}\n";
 		JS::beforeload($js);
 	}
 

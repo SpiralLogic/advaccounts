@@ -13,7 +13,7 @@
 
 	function add_supp_allocation($amount, $trans_type_from, $trans_no_from,
 															 $trans_type_to, $trans_no_to, $date_) {
-		$date = date2sql($date_);
+		$date = Dates::date2sql($date_);
 		$sql = "INSERT INTO supp_allocations (
 		amt, date_alloc,
 		trans_type_from, trans_no_from, trans_no_to, trans_type_to)

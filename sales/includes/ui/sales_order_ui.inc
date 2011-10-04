@@ -108,9 +108,9 @@
 		if ($order->trans_type == ST_SALESINVOICE) {
 			$order->due_date = get_invoice_duedate($customer_id, $order->document_date);
 			if ($order->pos != -1) {
-				$order->cash = date_diff2($order->due_date, Today(), 'd') < 2;
+				$order->cash = Dates::date_diff2($order->due_date, Dates::Today(), 'd') < 2;
 			}
-			if ($order->due_date == Today()) {
+			if ($order->due_date == Dates::Today()) {
 				$order->pos == -1;
 			}
 		}
@@ -364,7 +364,7 @@ JS;
 					$_POST['delivery_date'] = get_invoice_duedate(get_post('customer_id'), get_post('OrderDate'));
 				}
 				else {
-					$_POST['delivery_date'] = add_days(get_post('OrderDate'), $SysPrefs->default_delivery_required_by());
+					$_POST['delivery_date'] = Dates::add_days(get_post('OrderDate'), $SysPrefs->default_delivery_required_by());
 				}
 				$Ajax->activate('items_table');
 				$Ajax->activate('delivery_date');

@@ -34,7 +34,7 @@
 		// insert the actual issue
 		$sql = "INSERT INTO wo_issues (workorder_id, reference, issue_date, loc_code, workcentre_id)
 		VALUES (" . db_escape($woid) . ", " . db_escape($ref) . ", '" .
-		 date2sql($date_) . "', " . db_escape($location) . ", " . db_escape($workcentre) . ")";
+		 Dates::date2sql($date_) . "', " . db_escape($location) . ", " . db_escape($workcentre) . ")";
 		db_query($sql, "The work order issue could not be added");
 
 		$number = db_insert_id();

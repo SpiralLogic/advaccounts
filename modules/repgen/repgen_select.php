@@ -49,7 +49,7 @@
 
 	function get_create_date($str) { // get date_ out of str
 		$h = explode("|", $str);
-		return sql2date($h[1]);
+		return Dates::sql2date($h[1]);
 	}
 
 	function get_short($str) { // get short out of str

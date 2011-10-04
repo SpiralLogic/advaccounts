@@ -146,9 +146,9 @@
 					$rep->TextCol(2, 3, getTransactionPO($myrow2['order_']), -2);
 				else $rep->TextCol(2, 3, '', -2);
 				$rep->TextCol(1, 2, $myrow2['reference'], -2);
-				$rep->TextCol(3, 4, sql2date($myrow2['tran_date']), -2);
+				$rep->TextCol(3, 4, Dates::sql2date($myrow2['tran_date']), -2);
 				if ($myrow2['type'] == ST_SALESINVOICE)
-					$rep->TextCol(4, 5, sql2date($myrow2['due_date']), -2);
+					$rep->TextCol(4, 5, Dates::sql2date($myrow2['due_date']), -2);
 				if ($myrow2['type'] == ST_SALESINVOICE)
 					$rep->TextCol(5, 6, $DisplayTotal, -2);
 				else $rep->TextCol(6, 7, $DisplayTotal, -2);
@@ -187,7 +187,7 @@
 				$rep->TextWrap($col[$i], $rep->row, $col[$i + 1] - $col[$i], $str2[$i], 'right');
 			}
 			if ($email == 1)
-				$rep->End($email, $doc_Statement . " " . $doc_as_of . " " . sql2date($date), $myrow, ST_STATEMENT);
+				$rep->End($email, $doc_Statement . " " . $doc_as_of . " " . Dates::sql2date($date), $myrow, ST_STATEMENT);
 		}
 		if ($email == 0) {
 			$rep->End();

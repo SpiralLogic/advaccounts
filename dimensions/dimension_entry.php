@@ -116,13 +116,13 @@
 			return false;
 		}
 
-		if (!is_date($_POST['date_'])) {
+		if (!Dates::is_date($_POST['date_'])) {
 			ui_msgs::display_error(_("The date entered is in an invalid format."));
 			ui_view::set_focus('date_');
 			return false;
 		}
 
-		if (!is_date($_POST['due_date'])) {
+		if (!Dates::is_date($_POST['due_date'])) {
 			ui_msgs::display_error(_("The required by date entered is in an invalid format."));
 			ui_view::set_focus('due_date');
 			return false;
@@ -219,8 +219,8 @@
 		$_POST['closed'] = $myrow["closed"];
 		$_POST['name'] = $myrow["name"];
 		$_POST['type_'] = $myrow["type_"];
-		$_POST['date_'] = sql2date($myrow["date_"]);
-		$_POST['due_date'] = sql2date($myrow["due_date"]);
+		$_POST['date_'] = Dates::sql2date($myrow["date_"]);
+		$_POST['due_date'] = Dates::sql2date($myrow["due_date"]);
 		$_POST['memo_'] = ui_view::get_comments_string(ST_DIMENSION, $selected_id);
 
 		$tags_result = get_tags_associated_with_record(TAG_DIMENSION, $selected_id);

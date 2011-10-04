@@ -84,7 +84,7 @@
 				echo "<div id='footer'>\n";
 				if (isset($_SESSION['wa_current_user'])) {
 					echo "<span class='power'><a target='_blank' href='" . POWERED_URL . "'>" . POWERED_BY . "</a></span>\n";
-					echo "<span class='date'>" . Today() . " | " . Now() . "</span>\n";
+					echo "<span class='date'>" . Dates::Today() . " | " . Dates::Now() . "</span>\n";
 					if ($_SESSION['wa_current_user']->logged_in()) echo "<span class='date'>" . show_users_online() . "</span>\n";
 				}
 				echo "</div>\n";

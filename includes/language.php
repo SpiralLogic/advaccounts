@@ -65,10 +65,6 @@
 		}
 	}
 
-	function _set($key, $value) {
-		$_SESSION['get_text']->set_var($key, $value);
-	}
-
 	if (!function_exists("_")) {
 		function _($text) {
 			$retVal = $_SESSION['get_text']->gettext($text);

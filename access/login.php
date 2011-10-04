@@ -122,7 +122,7 @@ function set_fullmode() {
 	echo "<table class='bottomBar'>\n";
 	echo "<tr>";
 	if (isset($_SESSION['wa_current_user'])) {
-		$date = Today() . " | " . Now();
+		$date = Dates::Today() . " | " . Dates::Now();
 	}
 	else
 	{

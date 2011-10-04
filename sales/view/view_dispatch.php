@@ -90,8 +90,8 @@
 	label_cells(_("Sales Type"), $myrow["sales_type"], "class='tableheader2'");
 	end_row();
 	start_row();
-	label_cells(_("Dispatch Date"), sql2date($myrow["tran_date"]), "class='tableheader2'", "nowrap");
-	label_cells(_("Due Date"), sql2date($myrow["due_date"]), "class='tableheader2'", "nowrap");
+	label_cells(_("Dispatch Date"), Dates::sql2date($myrow["tran_date"]), "class='tableheader2'", "nowrap");
+	label_cells(_("Due Date"), Dates::sql2date($myrow["due_date"]), "class='tableheader2'", "nowrap");
 	end_row();
 	ui_view::comments_display_row(ST_CUSTDELIVERY, $trans_id);
 	end_table();

@@ -309,7 +309,7 @@
 					label_cell(ui_view::get_trans_view_str(ST_PURCHORDER, $myrow["purch_order_no"]));
 					label_cell($myrow["item_code"], "class='stock' data-stock_id='" . $myrow['item_code'] . "'");
 					label_cell($myrow["description"]);
-					label_cell(sql2date($myrow["delivery_date"]));
+					label_cell(Dates::sql2date($myrow["delivery_date"]));
 					$dec = get_qty_dec($myrow["item_code"]);
 					qty_cell($myrow["qty_recd"], false, $dec);
 					qty_cell($myrow["quantity_inv"], false, $dec);
@@ -502,14 +502,14 @@
 
 	//--------------------------------------------------------------------------------------------------
 	function get_duedate_from_terms(&$supp_trans) {
-		if (!is_date($supp_trans->tran_date)) {
-			$supp_trans->tran_date = Today();
+		if (!Dates::is_date($supp_trans->tran_date)) {
+			$supp_trans->tran_date = Dates::Today();
 		}
 		if (substr($supp_trans->terms, 0, 1) == "1") { /*Its a day in the following month when due */
-			$supp_trans->due_date = add_days(end_month($supp_trans->tran_date), (int)substr($supp_trans->terms, 1));
+			$supp_trans->due_date = Dates::add_days(Dates::end_month($supp_trans->tran_date), (int)substr($supp_trans->terms, 1));
 		}
 		else { /*Use the Days Before Due to add to the invoice date */
-			$supp_trans->due_date = add_days($supp_trans->tran_date, (int)substr($supp_trans->terms, 1));
+			$supp_trans->due_date = Dates::add_days($supp_trans->tran_date, (int)substr($supp_trans->terms, 1));
 		}
 	}
 //--------------------------------------------------------------------------------------------------

@@ -61,9 +61,9 @@
 		//session_register("adj_items");
 
 		$_SESSION['adj_items'] = new items_cart(ST_INVADJUST);
-		$_POST['AdjDate'] = new_doc_date();
-		if (!is_date_in_fiscalyear($_POST['AdjDate']))
-			$_POST['AdjDate'] = end_fiscalyear();
+		$_POST['AdjDate'] = Dates::new_doc_date();
+		if (!Dates::is_date_in_fiscalyear($_POST['AdjDate']))
+			$_POST['AdjDate'] = Dates::end_fiscalyear();
 		$_SESSION['adj_items']->tran_date = $_POST['AdjDate'];
 	}
 
@@ -91,12 +91,12 @@
 			return false;
 		}
 
-		if (!is_date($_POST['AdjDate'])) {
+		if (!Dates::is_date($_POST['AdjDate'])) {
 			ui_msgs::display_error(_("The entered date for the adjustment is invalid."));
 			ui_view::set_focus('AdjDate');
 			return false;
 		}
-		elseif (!is_date_in_fiscalyear($_POST['AdjDate']))
+		elseif (!Dates::is_date_in_fiscalyear($_POST['AdjDate']))
 		{
 			ui_msgs::display_error(_("The entered date is not in fiscal year."));
 			ui_view::set_focus('AdjDate');
@@ -118,7 +118,7 @@
 		$trans_no = add_stock_adjustment($_SESSION['adj_items']->line_items,
 			$_POST['StockLocation'], $_POST['AdjDate'], $_POST['type'], $_POST['Increase'],
 			$_POST['ref'], $_POST['memo_']);
-		new_doc_date($_POST['AdjDate']);
+		Dates::new_doc_date($_POST['AdjDate']);
 		$_SESSION['adj_items']->clear_items();
 		unset($_SESSION['adj_items']);
 		meta_forward($_SERVER['PHP_SELF'], "AddedID=$trans_no");

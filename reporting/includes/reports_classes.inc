@@ -150,25 +150,25 @@
 				case 'DATEBEGINTAX':
 				case 'DATEENDTAX':
 					if ($type == 'DATEBEGIN') {
-						$date = begin_fiscalyear();
+						$date = Dates::begin_fiscalyear();
 					} elseif ($type == 'DATEEND') {
-						$date = end_fiscalyear();
+						$date = Dates::end_fiscalyear();
 					} else {
-						$date = Today();
+						$date = Dates::Today();
 					}
 					if ($type == 'DATEBEGINM') {
-						$date = begin_month($date);
+						$date = Dates::begin_month($date);
 					} elseif ($type == 'DATEENDM') {
-						$date = end_month($date);
+						$date = Dates::end_month($date);
 					} elseif ($type == 'DATEBEGINTAX' || $type == 'DATEENDTAX') {
 						$row = get_company_prefs();
-						$edate = add_months($date, -$row['tax_last']);
-						$edate = end_month($edate);
+						$edate = Dates::add_months($date, -$row['tax_last']);
+						$edate = Dates::end_month($edate);
 						if ($type == 'DATEENDTAX') {
 							$date = $edate;
 						} else {
-							$bdate = begin_month($edate);
-							$bdate = add_months($bdate, -$row['tax_prd'] + 1);
+							$bdate = Dates::begin_month($edate);
+							$bdate = Dates::add_months($bdate, -$row['tax_prd'] + 1);
 							$date = $bdate;
 						}
 					}

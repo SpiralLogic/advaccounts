@@ -521,7 +521,7 @@ JS
 	}
 
 	function _format_fiscalyears($row) {
-		return sql2date($row[1]) . "&nbsp;-&nbsp;" . sql2date($row[2]) . "&nbsp;&nbsp;" . ($row[3] ? _('Closed') : _('Active')) . "</option>\n";
+		return Dates::sql2date($row[1]) . "&nbsp;-&nbsp;" . Dates::sql2date($row[2]) . "&nbsp;&nbsp;" . ($row[3] ? _('Closed') : _('Active')) . "</option>\n";
 	}
 
 	function fiscalyears_list_cells($label, $name, $selected_id = null) {
@@ -1042,7 +1042,7 @@ JS
 
 	//-----------------------------------------------------------------------------------------------
 	function _format_date($row) {
-		return sql2date($row['reconciled']);
+		return Dates::sql2date($row['reconciled']);
 	}
 
 	function bank_reconciliation_list($account, $name, $selected_id = null, $submit_on_change = false, $special_option = false) {

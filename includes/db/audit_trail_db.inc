@@ -16,7 +16,7 @@
 			VALUES(" . db_escape($trans_type) . ", " . db_escape($trans_no) . ","
 		 . $_SESSION["wa_current_user"]->user . ","
 		 . get_company_pref('f_year') . ","
-		 . "'" . date2sql($trans_date) . "',"
+		 . "'" . Dates::date2sql($trans_date) . "',"
 		 . db_escape($descr) . ", 0)";
 
 		db_query($sql, "Cannot add audit info");
@@ -60,7 +60,7 @@
 		 . " FROM gl_trans gl"
 		 . " LEFT JOIN audit_trail a ON
 			(gl.type=a.type AND gl.type_no=a.trans_no)"
-		 . " WHERE gl_date<='" . date2sql($todate) . "'"
+		 . " WHERE gl_date<='" . Dates::date2sql($todate) . "'"
 		 . " AND NOT ISNULL(gl_seq)"
 		 . " ORDER BY a.fiscal_year, a.gl_date, a.id";
 
@@ -100,7 +100,7 @@
 		 . " FROM gl_trans gl"
 		 . " LEFT JOIN audit_trail a ON
 			(gl.type=a.type AND gl.type_no=a.trans_no)"
-		 . " WHERE gl_date>='" . date2sql($fromdate) . "'"
+		 . " WHERE gl_date>='" . Dates::date2sql($fromdate) . "'"
 		 . " AND !ISNULL(gl_seq)"
 		 . " ORDER BY a.fiscal_year, a.gl_date, a.id";
 

@@ -93,9 +93,9 @@
 
 		$_SESSION['pay_items'] = new items_cart($type);
 
-		$_POST['date_'] = new_doc_date();
-		if (!is_date_in_fiscalyear($_POST['date_']))
-			$_POST['date_'] = end_fiscalyear();
+		$_POST['date_'] = Dates::new_doc_date();
+		if (!Dates::is_date_in_fiscalyear($_POST['date_']))
+			$_POST['date_'] = Dates::end_fiscalyear();
 		$_SESSION['pay_items']->tran_date = $_POST['date_'];
 	}
 
@@ -128,12 +128,12 @@
 			ui_view::set_focus('ref');
 			$input_error = 1;
 		}
-		if (!is_date($_POST['date_'])) {
+		if (!Dates::is_date($_POST['date_'])) {
 			ui_msgs::display_error(_("The entered date for the payment is invalid."));
 			ui_view::set_focus('date_');
 			$input_error = 1;
 		}
-		elseif (!is_date_in_fiscalyear($_POST['date_']))
+		elseif (!Dates::is_date_in_fiscalyear($_POST['date_']))
 		{
 			//	ui_msgs::display_error(_("The entered date is not in fiscal year."));
 			//	ui_view::set_focus('date_');
@@ -154,7 +154,7 @@
 
 		$trans_type = $trans[0];
 		$trans_no = $trans[1];
-		new_doc_date($_POST['date_']);
+		Dates::new_doc_date($_POST['date_']);
 
 		$_SESSION['pay_items']->clear_items();
 		unset($_SESSION['pay_items']);
@@ -179,7 +179,7 @@
 			return false;
 		}
 
-		//if (Banking::Banking::is_bank_account($_POST['code_id']))
+		//if (Banking::is_bank_account($_POST['code_id']))
 		//{
 		//	if ($_SESSION['pay_items']->trans_type == ST_BANKPAYMENT)
 		//		ui_msgs::display_error( _("You cannot make a payment to a bank account. Please use the transfer funds facility for this."));
@@ -187,7 +187,7 @@
 		//		ui_msgs::display_error( _("You cannot make a deposit from a bank account. Please use the transfer funds facility for this."));
 		//	ui_view::set_focus('code_id');
 		//	return false;
-		//}
+		//} 
 
 		return true;
 	}

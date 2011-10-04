@@ -66,7 +66,7 @@
 	}
 
 	function getTransactions($debtorno, $branchcode, $date) {
-		$date = date2sql($date);
+		$date = Dates::date2sql($date);
 
 		$sql = "SELECT SUM((ov_amount+ov_freight+ov_discount)*rate) AS Turnover
 		FROM debtor_trans

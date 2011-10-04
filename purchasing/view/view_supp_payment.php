@@ -47,7 +47,7 @@
 	start_row();
 	label_cells(_("To Supplier"), $receipt['supplier_name'], "class='tableheader2'");
 	label_cells(_("From Bank Account"), $receipt['bank_account_name'], "class='tableheader2'");
-	label_cells(_("Date Paid"), sql2date($receipt['tran_date']), "class='tableheader2'");
+	label_cells(_("Date Paid"), Dates::sql2date($receipt['tran_date']), "class='tableheader2'");
 	end_row();
 	start_row();
 	if ($show_currencies)

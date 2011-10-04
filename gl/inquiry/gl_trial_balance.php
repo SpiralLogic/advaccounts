@@ -66,10 +66,10 @@
 
 		$accounts = get_gl_accounts();
 		$pdeb = $pcre = $cdeb = $ccre = $tdeb = $tcre = $pbal = $cbal = $tbal = 0;
-		$begin = begin_fiscalyear();
-		if (date1_greater_date2($begin, $_POST['TransFromDate']))
+		$begin = Dates::begin_fiscalyear();
+		if (Dates::date1_greater_date2($begin, $_POST['TransFromDate']))
 			$begin = $_POST['TransFromDate'];
-		$begin = add_days($begin, -1);
+		$begin = Dates::add_days($begin, -1);
 
 		while ($account = db_fetch($accounts))
 		{

@@ -40,8 +40,8 @@
     			group_no=" . db_escape($_POST['group_no']) . ",
     			days=" . input_num('days', 0) . ",
     			monthly=" . input_num('monthly', 0) . ",
-    			begin='" . date2sql($_POST['begin']) . "',
-    			end='" . date2sql($_POST['end']) . "'
+    			begin='" . Dates::date2sql($_POST['begin']) . "',
+    			end='" . Dates::date2sql($_POST['end']) . "'
     			WHERE id = " . db_escape($selected_id);
 				$note = _('Selected recurrent invoice has been updated');
 			}
@@ -52,7 +52,7 @@
 				 . db_escape($_POST['order_no']) . ", " . db_escape($_POST['debtor_no']) . ", "
 				 . db_escape(
 					 $_POST['group_no']) . ", " . input_num('days', 0) . ", " . input_num('monthly', 0) . ", '"
-				 . date2sql($_POST['begin']) . "', '" . date2sql($_POST['end']) . "', '" . date2sql(Add_Years(
+				 . Dates::date2sql($_POST['begin']) . "', '" . Dates::date2sql($_POST['end']) . "', '" . Dates::date2sql(Add_Years(
 						$_POST['begin'], -5)) . "')";
 				$note = _('New recurrent invoice has been added');
 			}
@@ -100,9 +100,9 @@
 	$k = 0;
 	while ($myrow = db_fetch($result))
 	{
-		$begin = sql2date($myrow["begin"]);
-		$end = sql2date($myrow["end"]);
-		$last_sent = sql2date($myrow["last_sent"]);
+		$begin = Dates::sql2date($myrow["begin"]);
+		$end = Dates::sql2date($myrow["end"]);
+		$last_sent = Dates::sql2date($myrow["last_sent"]);
 
 		alt_table_row_color($k);
 
@@ -151,8 +151,8 @@
 			$_POST['group_no'] = $myrow["group_no"];
 			$_POST['days'] = $myrow["days"];
 			$_POST['monthly'] = $myrow["monthly"];
-			$_POST['begin'] = sql2date($myrow["begin"]);
-			$_POST['end'] = sql2date($myrow["end"]);
+			$_POST['begin'] = Dates::sql2date($myrow["begin"]);
+			$_POST['end'] = Dates::sql2date($myrow["end"]);
 		}
 		hidden("selected_id", $selected_id);
 	}

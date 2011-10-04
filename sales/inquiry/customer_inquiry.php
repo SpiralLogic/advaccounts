@@ -170,8 +170,8 @@
 	}
 
 	//------------------------------------------------------------------------------------------------
-	$date_after = date2sql($_POST['TransAfterDate']);
-	$date_to = date2sql($_POST['TransToDate']);
+	$date_after = Dates::date2sql($_POST['TransAfterDate']);
+	$date_to = Dates::date2sql($_POST['TransToDate']);
 	if (AJAX_REFERRER && isset($_POST['ajaxsearch'])) {
 		$searchArray = trim($_POST['ajaxsearch']);
 		$searchArray = explode(' ', $searchArray);
@@ -205,7 +205,7 @@
 	}
 	$sql .= "trans.alloc AS Allocated,
 		((trans.type = " . ST_SALESINVOICE . ")
-			AND trans.due_date < '" . date2sql(Today()) . "') AS OverDue
+			AND trans.due_date < '" . Dates::date2sql(Dates::Today()) . "') AS OverDue
 		FROM debtor_trans as trans, debtors_master as debtor, cust_branch as branch
 		WHERE debtor.debtor_no = trans.debtor_no
 		AND trans.branch_code = branch.branch_code";
@@ -225,7 +225,7 @@
 			}
 			;
 			if (stripos($ajaxsearch, '/') > 0) {
-				$sql .= " tran_date LIKE '%" . date2sql($ajaxsearch, false) . "%' OR";
+				$sql .= " tran_date LIKE '%" . Dates::date2sql($ajaxsearch, false) . "%' OR";
 			}
 			$ajaxsearch = db_escape("%" . $ajaxsearch . "%");
 			$sql .= " name LIKE $ajaxsearch OR trans_no LIKE $ajaxsearch OR reference LIKE $ajaxsearch
@@ -266,7 +266,7 @@
 			$sql .= " AND trans.type = " . ST_SALESINVOICE . " ";
 		}
 		if ($_POST['filterType'] == '2') {
-			$today = date2sql(Today());
+			$today = Dates::date2sql(Dates::Today());
 			$sql .= " AND trans.due_date < '$today'
 				AND (trans.ov_amount + trans.ov_gst + trans.ov_freight_tax + 
 				trans.ov_freight + trans.ov_discount - trans.alloc > 0) ";

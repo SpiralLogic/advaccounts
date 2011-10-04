@@ -39,7 +39,7 @@
 	foreach ($purchase_order->line_items as $stock_item) {
 		$line_total = $stock_item->quantity * $stock_item->price * (1 - $stock_item->discount);
 		// if overdue and outstanding quantities, then highlight as so
-		if (($stock_item->quantity - $stock_item->qty_received > 0) && date1_greater_date2(Today(), $stock_item->req_del_date)) {
+		if (($stock_item->quantity - $stock_item->qty_received > 0) && Dates::date1_greater_date2(Dates::Today(), $stock_item->req_del_date)) {
 			start_row("class='overduebg'");
 			$overdue_items = true;
 		}
@@ -78,7 +78,7 @@
 			alt_table_row_color($k);
 			label_cell(ui_view::get_trans_view_str(ST_SUPPRECEIVE, $myrow["id"]));
 			label_cell($myrow["reference"]);
-			label_cell(sql2date($myrow["delivery_date"]));
+			label_cell(Dates::sql2date($myrow["delivery_date"]));
 			end_row();
 		}
 		end_table();
@@ -94,7 +94,7 @@
 		while ($myrow = db_fetch($invoice_result)) {
 			alt_table_row_color($k);
 			label_cell(ui_view::get_trans_view_str($myrow["type"], $myrow["trans_no"]));
-			label_cell(sql2date($myrow["tran_date"]));
+			label_cell(Dates::sql2date($myrow["tran_date"]));
 			amount_cell($myrow["Total"]);
 			end_row();
 		}

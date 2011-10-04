@@ -112,7 +112,7 @@
 		$sql .= $po->order_no . "," .
 		 db_escape('freight') . "," .
 		 db_escape('Freight Charges') . ",'" .
-		 date2sql($date_) . "'," .
+		 Dates::date2sql($date_) . "'," .
 		 db_escape($po->freight) . ", " .
 		 db_escape(1) . ", " .
 		 db_escape(0) .
@@ -122,7 +122,7 @@
 	}
 
 	function add_grn_batch($po_number, $supplier_id, $reference, $location, $date_) {
-		$date = date2sql($date_);
+		$date = Dates::date2sql($date_);
 
 		$sql = "INSERT INTO grn_batch (purch_order_no, delivery_date, supplier_id, reference, loc_code)
 			VALUES (" . db_escape($po_number) . ", " . db_escape($date) . ", " . db_escape($supplier_id) . ", " . db_escape($reference) . ", " . db_escape($location) . ")";
@@ -223,10 +223,10 @@
 		 . "grn_items.item_code ";
 
 		if ($begin != "") {
-			$sql .= " AND grn_batch.delivery_date>='" . date2sql($begin) . "'";
+			$sql .= " AND grn_batch.delivery_date>='" . Dates::date2sql($begin) . "'";
 		}
 		if ($end != "") {
-			$sql .= " AND grn_batch.delivery_date<='" . date2sql($end) . "'";
+			$sql .= " AND grn_batch.delivery_date<='" . Dates::date2sql($end) . "'";
 		}
 		if ($grn_batch_id != 0) {
 			$sql .= " AND grn_batch.id=" . db_escape($grn_batch_id) . " AND grn_items.grn_batch_id=" . db_escape($grn_batch_id);
@@ -277,7 +277,7 @@
 				}
 
 				$order->add_to_order($order->lines_on_order + 1, $myrow["item_code"], 1, $myrow["description"],
-					$myrow["unit_price"], $units, sql2date($myrow["delivery_date"]),
+					$myrow["unit_price"], $units, Dates::sql2date($myrow["delivery_date"]),
 					$myrow["quantity_inv"], $myrow["qty_recd"], $myrow['discount']);
 
 				$order->line_items[$order->lines_on_order]->po_detail_rec = $myrow["po_detail_item"];
@@ -301,7 +301,7 @@
 
 		if ($result) {
 
-			$order->orig_order_date = sql2date($row["delivery_date"]);
+			$order->orig_order_date = Dates::sql2date($row["delivery_date"]);
 			$order->location = $row["loc_code"];
 			$order->reference = $row["reference"];
 

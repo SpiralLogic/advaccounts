@@ -24,7 +24,7 @@
 	print_aged_customer_analysis();
 
 	function get_invoices($customer_id, $to) {
-		$todate = date2sql($to);
+		$todate = Dates::date2sql($to);
 		$PastDueDays1 = get_company_pref('past_due_days');
 		$PastDueDays2 = 2 * $PastDueDays1;
 

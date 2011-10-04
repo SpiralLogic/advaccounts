@@ -100,14 +100,14 @@
 				}
 			}
 			$cart->memo_ = ui_view::get_comments_string($type, $trans_no);
-			$cart->tran_date = sql2date($date);
+			$cart->tran_date = Dates::sql2date($date);
 			$cart->reference = $Refs->get($type, $trans_no);
 			$_POST['ref_original'] = $cart->reference; // Store for comparison when updating
 		} else {
 			$cart->reference = $Refs->get_next(0);
-			$cart->tran_date = new_doc_date();
-			if (!is_date_in_fiscalyear($cart->tran_date))
-				$cart->tran_date = end_fiscalyear();
+			$cart->tran_date = Dates::new_doc_date();
+			if (!Dates::is_date_in_fiscalyear($cart->tran_date))
+				$cart->tran_date = Dates::end_fiscalyear();
 			$_POST['ref_original'] = -1;
 		}
 
@@ -135,12 +135,12 @@
 			$input_error = 1;
 		}
 
-		if (!is_date($_POST['date_'])) {
+		if (!Dates::is_date($_POST['date_'])) {
 			ui_msgs::display_error(_("The entered date is invalid."));
 			ui_view::set_focus('date_');
 			$input_error = 1;
 		}
-		elseif (!is_date_in_fiscalyear($_POST['date_']))
+		elseif (!Dates::is_date_in_fiscalyear($_POST['date_']))
 		{
 			ui_msgs::display_error(_("The entered date is not in fiscal year."));
 			ui_view::set_focus('date_');
@@ -175,7 +175,7 @@
 		$trans_no = write_journal_entries($cart, check_value('Reverse'));
 
 		$cart->clear_items();
-		new_doc_date($_POST['date_']);
+		Dates::new_doc_date($_POST['date_']);
 		unset($_SESSION['journal_items']);
 		if ($new)
 			meta_forward($_SERVER['PHP_SELF'], "AddedID=$trans_no");
@@ -223,7 +223,7 @@
 			return false;
 		}
 
-		if (!$_SESSION["wa_current_user"]->can_access('SA_BANKJOURNAL') && Banking::Banking::is_bank_account($_POST['code_id'])) {
+		if (!$_SESSION["wa_current_user"]->can_access('SA_BANKJOURNAL') && Banking::is_bank_account($_POST['code_id'])) {
 			ui_msgs::display_error(_("You cannot make a journal entry for a bank account. Please use one of the banking functions for bank transactions."));
 			ui_view::set_focus('code_id');
 			return false;

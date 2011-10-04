@@ -39,9 +39,9 @@
 		$_POST['supplier_id'] = ui_globals::get_global_supplier(false);
 
 	if (!isset($_POST['DatePaid'])) {
-		$_POST['DatePaid'] = new_doc_date();
-		if (!is_date_in_fiscalyear($_POST['DatePaid']))
-			$_POST['DatePaid'] = end_fiscalyear();
+		$_POST['DatePaid'] = Dates::new_doc_date();
+		if (!Dates::is_date_in_fiscalyear($_POST['DatePaid']))
+			$_POST['DatePaid'] = Dates::end_fiscalyear();
 	}
 
 	if (isset($_POST['_DatePaid_changed'])) {
@@ -131,12 +131,12 @@
 			return false;
 		}
 
-		if (!is_date($_POST['DatePaid'])) {
+		if (!Dates::is_date($_POST['DatePaid'])) {
 			ui_msgs::display_error(_("The entered date is invalid."));
 			ui_view::set_focus('DatePaid');
 			return false;
 		}
-		elseif (!is_date_in_fiscalyear($_POST['DatePaid']))
+		elseif (!Dates::is_date_in_fiscalyear($_POST['DatePaid']))
 		{
 			ui_msgs::display_error(_("The entered date is not in fiscal year."));
 			ui_view::set_focus('DatePaid');
@@ -176,7 +176,7 @@
 		$payment_id = add_supp_payment($_POST['supplier_id'], $_POST['DatePaid'],
 			$_POST['bank_account'], input_num('amount'), input_num('discount'),
 			$_POST['ref'], $_POST['memo_'], $rate, input_num('charge'));
-		new_doc_date($_POST['DatePaid']);
+		Dates::new_doc_date($_POST['DatePaid']);
 
 		$_SESSION['alloc']->trans_no = $payment_id;
 		$_SESSION['alloc']->write();

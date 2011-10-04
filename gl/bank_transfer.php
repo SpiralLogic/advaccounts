@@ -91,12 +91,12 @@
 	function check_valid_entries() {
 		global $Refs;
 
-		if (!is_date($_POST['DatePaid'])) {
+		if (!Dates::is_date($_POST['DatePaid'])) {
 			ui_msgs::display_error(_("The entered date is invalid."));
 			ui_view::set_focus('DatePaid');
 			return false;
 		}
-		if (!is_date_in_fiscalyear($_POST['DatePaid'])) {
+		if (!Dates::is_date_in_fiscalyear($_POST['DatePaid'])) {
 			ui_msgs::display_error(_("The entered date is not in fiscal year."));
 			ui_view::set_focus('DatePaid');
 			return false;

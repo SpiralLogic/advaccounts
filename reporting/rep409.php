@@ -67,7 +67,7 @@
 			$myrow = get_work_order($i);
 			if ($myrow === false)
 				continue;
-			$date_ = sql2date($myrow["date_"]);
+			$date_ = Dates::sql2date($myrow["date_"]);
 			if ($email == 1) {
 				$rep = new FrontReport("", "", user_pagesize());
 				$rep->currency = $cur;

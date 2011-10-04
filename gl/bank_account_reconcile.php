@@ -23,7 +23,7 @@
 	page(_($help_context = "Reconcile Bank Account"), false, false, "", $js);
 	check_db_has_bank_accounts(_("There are no bank accounts defined in the system."));
 	function check_date() {
-		if (!is_date(get_post('reconcile_date'))) {
+		if (!Dates::is_date(get_post('reconcile_date'))) {
 			ui_msgs::display_error(_("Invalid reconcile date format"));
 			ui_view::set_focus('reconcile_date');
 			return false;
@@ -100,7 +100,7 @@
 		{
 			$Ajax->activate('bank_date');
 		}
-		$_POST['bank_date'] = date2sql(get_post('reconcile_date'));
+		$_POST['bank_date'] = Dates::date2sql(get_post('reconcile_date'));
 		$reconcile_value = check_value("rec_" . $reconcile_id) ? ("'" . $_POST['bank_date'] . "'") : 'NULL';
 		update_reconciled_values($reconcile_id, $reconcile_value, $_POST['reconcile_date'], input_num('end_balance'), $_POST['bank_account']);
 		$Ajax->activate('reconciled');
@@ -121,7 +121,7 @@
 			$sql = "UPDATE bank_trans SET undeposited=1, reconciled=NULL WHERE ref=" . db_escape($tran);
 			db_query($sql, 'Couldn\'t update undesposited status');
 		}
-		$sql = "UPDATE bank_trans SET ref=" . db_escape('Removed group: ' . $grouprefs) . ", amount=0, reconciled='" . date2sql(Today()) . "',
+		$sql = "UPDATE bank_trans SET ref=" . db_escape('Removed group: ' . $grouprefs) . ", amount=0, reconciled='" . Dates::date2sql(Dates::Today()) . "',
     undeposited=" . $groupid . " WHERE id=" . $groupid;
 		db_query($sql, "Couldn't update removed group data");
 		update_data();
@@ -134,19 +134,19 @@
 		}
 	}
 	if (!isset($_POST['reconcile_date'])) { // init page
-		$_POST['reconcile_date'] = new_doc_date();
-		//	$_POST['bank_date'] = date2sql(Today());
+		$_POST['reconcile_date'] = Dates::new_doc_date();
+		//	$_POST['bank_date'] = Dates::date2sql(Dates::Today());
 	}
 	if (list_updated('bank_account')) {
 		$Ajax->activate('bank_date');
 		update_data();
 	}
 	if (list_updated('bank_date')) {
-		$_POST['reconcile_date'] = get_post('bank_date') == '' ? Today() : sql2date($_POST['bank_date']);
+		$_POST['reconcile_date'] = get_post('bank_date') == '' ? Dates::Today() : Dates::sql2date($_POST['bank_date']);
 		update_data();
 	}
 	if (get_post('_reconcile_date_changed')) {
-		$_POST['bank_date'] = check_date() ? date2sql(get_post('reconcile_date')) : '';
+		$_POST['bank_date'] = check_date() ? Dates::date2sql(get_post('reconcile_date')) : '';
 		$Ajax->activate('bank_date');
 		update_data();
 	}
@@ -180,7 +180,7 @@
 		$_POST["reconciled"] = price_format($row["end_balance"] - $row["beg_balance"]);
 		$total = $row["total"];
 		if (!isset($_POST["beg_balance"])) { // new selected account/statement
-			$_POST["last_date"] = sql2date($row["last_date"]);
+			$_POST["last_date"] = Dates::sql2date($row["last_date"]);
 			$_POST["beg_balance"] = price_format($row["beg_balance"]);
 			$_POST["end_balance"] = price_format($row["end_balance"]);
 			if (get_post('bank_date')) {

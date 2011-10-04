@@ -128,8 +128,8 @@
 		 a.user=u.id
 		LEFT JOIN ".''."bank_trans as bank_trans ON
 		 (gl.type=bank_trans.type AND gl.type_no=bank_trans.trans_no)
-	 WHERE gl.tran_date >= '" . date2sql($_POST['FromDate']) . "'
-	 AND gl.tran_date <= '" . date2sql($_POST['ToDate']) . "'
+	 WHERE gl.tran_date >= '" . Dates::date2sql($_POST['FromDate']) . "'
+	 AND gl.tran_date <= '" . Dates::date2sql($_POST['ToDate']) . "'
 	 AND gl.amount!=0";
  if (isset($_POST['Ref']) && $_POST['Ref'] != "") {
 	 $sql .= " AND reference LIKE '%". $_POST['Ref'] . "%'";
@@ -160,8 +160,8 @@
  		(gl.type=refs.type AND gl.type_no=refs.id)
  	 LEFT JOIN users as u ON
  		a.user=u.id
- 	WHERE gl.tran_date >= '" . date2sql($_POST['FromDate']) . "'
- 	AND gl.tran_date <= '" . date2sql($_POST['ToDate']) . "'
+ 	WHERE gl.tran_date >= '" . Dates::date2sql($_POST['FromDate']) . "'
+ 	AND gl.tran_date <= '" . Dates::date2sql($_POST['ToDate']) . "'
  	AND gl.amount!=0";
 	if (isset($_POST['Ref']) && $_POST['Ref'] != "") {
 		$sql .= " AND reference LIKE '%" . $_POST['Ref'] . "%'";

@@ -1,152 +1,141 @@
 <?php
-/**********************************************************************
-Copyright (C) FrontAccounting, LLC.
-Released under the terms of the GNU General Public License, GPL,
-as published by the Free Software Foundation, either version 3
-of the License, or (at your option) any later version.
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
- ***********************************************************************/
-function add_dimension($reference, $name, $type_, $date_, $due_date, $memo_)
-{
-	global $Refs;
+	/**********************************************************************
+	Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL,
+	as published by the Free Software Foundation, either version 3
+	of the License, or (at your option) any later version.
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+	 ***********************************************************************/
+	function add_dimension($reference, $name, $type_, $date_, $due_date, $memo_) {
+		global $Refs;
 
-	begin_transaction();
+		begin_transaction();
 
-	$date = date2sql($date_);
-	$duedate = date2sql($due_date);
+		$date = Dates::date2sql($date_);
+		$duedate = Dates::date2sql($due_date);
 
-	$sql = "INSERT INTO dimensions (reference, name, type_, date_, due_date)
+		$sql = "INSERT INTO dimensions (reference, name, type_, date_, due_date)
 		VALUES (" . db_escape($reference) . ", " . db_escape($name) . ", " . db_escape($type_)
-		   . ", '$date', '$duedate')";
-	db_query($sql, "could not add dimension");
-	$id = db_insert_id();
+		 . ", '$date', '$duedate')";
+		db_query($sql, "could not add dimension");
+		$id = db_insert_id();
 
-	add_comments(ST_DIMENSION, $id, $date_, $memo_);
+		add_comments(ST_DIMENSION, $id, $date_, $memo_);
 
-	$Refs->save(ST_DIMENSION, $id, $reference);
+		$Refs->save(ST_DIMENSION, $id, $reference);
 
-	commit_transaction();
+		commit_transaction();
 
-	return $id;
-}
+		return $id;
+	}
 
-function update_dimension($id, $name, $type_, $date_, $due_date, $memo_)
-{
-	begin_transaction();
+	function update_dimension($id, $name, $type_, $date_, $due_date, $memo_) {
+		begin_transaction();
 
-	$date = date2sql($date_);
-	$duedate = date2sql($due_date);
+		$date = Dates::date2sql($date_);
+		$duedate = Dates::date2sql($due_date);
 
-	$sql = "UPDATE dimensions SET name=" . db_escape($name) . ",
+		$sql = "UPDATE dimensions SET name=" . db_escape($name) . ",
 		type_ = " . db_escape($type_) . ",
 		date_='$date',
 		due_date='$duedate'
 		WHERE id = " . db_escape($id);
 
-	db_query($sql, "could not update dimension");
+		db_query($sql, "could not update dimension");
 
-	update_comments(ST_DIMENSION, $id, null, $memo_);
+		update_comments(ST_DIMENSION, $id, null, $memo_);
 
-	commit_transaction();
+		commit_transaction();
 
-	return $id;
-}
+		return $id;
+	}
 
-function delete_dimension($id)
-{
-	begin_transaction();
+	function delete_dimension($id) {
+		begin_transaction();
 
-	// delete the actual dimension
-	$sql = "DELETE FROM dimensions WHERE id=" . db_escape($id);
-	db_query($sql, "The dimension could not be deleted");
+		// delete the actual dimension
+		$sql = "DELETE FROM dimensions WHERE id=" . db_escape($id);
+		db_query($sql, "The dimension could not be deleted");
 
-	delete_comments(ST_DIMENSION, $id);
+		delete_comments(ST_DIMENSION, $id);
 
-	commit_transaction();
-}
+		commit_transaction();
+	}
 
-//--------------------------------------------------------------------------------------
+	//--------------------------------------------------------------------------------------
 
-function get_dimension($id, $allow_null = false)
-{
-	$sql = "SELECT * FROM dimensions	WHERE id=" . db_escape($id);
+	function get_dimension($id, $allow_null = false) {
+		$sql = "SELECT * FROM dimensions	WHERE id=" . db_escape($id);
 
-	$result = db_query($sql, "The dimension could not be retrieved");
+		$result = db_query($sql, "The dimension could not be retrieved");
 
-	if (!$allow_null && db_num_rows($result) == 0)
-		display_db_error("Could not find dimension $id", $sql);
+		if (!$allow_null && db_num_rows($result) == 0)
+			display_db_error("Could not find dimension $id", $sql);
 
-	return db_fetch($result);
-}
+		return db_fetch($result);
+	}
 
-//--------------------------------------------------------------------------------------
+	//--------------------------------------------------------------------------------------
 
-function get_dimension_string($id, $html = false, $space = ' ')
-{
-	if ($id <= 0) {
-		if ($html)
-			$dim = "&nbsp;";
+	function get_dimension_string($id, $html = false, $space = ' ') {
+		if ($id <= 0) {
+			if ($html)
+				$dim = "&nbsp;";
+			else
+				$dim = "";
+		}
 		else
-			$dim = "";
+		{
+			$row = get_dimension($id, true);
+			$dim = $row['reference'] . $space . $row['name'];
+		}
+
+		return $dim;
 	}
-	else
-	{
-		$row = get_dimension($id, true);
-		$dim = $row['reference'] . $space . $row['name'];
+
+	//--------------------------------------------------------------------------------------
+
+	function get_dimensions() {
+		$sql = "SELECT * FROM dimensions ORDER BY date_";
+
+		return db_query($sql, "The dimensions could not be retrieved");
 	}
 
-	return $dim;
-}
+	//--------------------------------------------------------------------------------------
 
-//--------------------------------------------------------------------------------------
+	function dimension_has_deposits($id) {
+		return dimension_has_payments($id);
+	}
 
-function get_dimensions()
-{
-	$sql = "SELECT * FROM dimensions ORDER BY date_";
+	//--------------------------------------------------------------------------------------
 
-	return db_query($sql, "The dimensions could not be retrieved");
-}
+	function dimension_has_payments($id) {
+		$sql = "SELECT SUM(amount) FROM gl_trans WHERE dimension_id = " . db_escape($id);
+		$res = db_query($sql, "Transactions could not be calculated");
+		$row = db_fetch_row($res);
+		return ($row[0] != 0.0);
+	}
 
-//--------------------------------------------------------------------------------------
+	function dimension_is_closed($id) {
+		$result = get_dimension($id);
+		return ($result['closed'] == '1');
+	}
 
-function dimension_has_deposits($id)
-{
-	return dimension_has_payments($id);
-}
+	//--------------------------------------------------------------------------------------
 
-//--------------------------------------------------------------------------------------
+	function close_dimension($id) {
+		$sql = "UPDATE dimensions SET closed='1' WHERE id = " . db_escape($id);
+		db_query($sql, "could not close dimension");
+	}
 
-function dimension_has_payments($id)
-{
-	$sql = "SELECT SUM(amount) FROM gl_trans WHERE dimension_id = " . db_escape($id);
-	$res = db_query($sql, "Transactions could not be calculated");
-	$row = db_fetch_row($res);
-	return ($row[0] != 0.0);
-}
+	//--------------------------------------------------------------------------------------
 
-function dimension_is_closed($id)
-{
-	$result = get_dimension($id);
-	return ($result['closed'] == '1');
-}
-
-//--------------------------------------------------------------------------------------
-
-function close_dimension($id)
-{
-	$sql = "UPDATE dimensions SET closed='1' WHERE id = " . db_escape($id);
-	db_query($sql, "could not close dimension");
-}
-
-//--------------------------------------------------------------------------------------
-
-function reopen_dimension($id)
-{
-	$sql = "UPDATE dimensions SET closed='0' WHERE id = $id";
-	db_query($sql, "could not reopen dimension");
-}
+	function reopen_dimension($id) {
+		$sql = "UPDATE dimensions SET closed='0' WHERE id = $id";
+		db_query($sql, "could not reopen dimension");
+	}
 
 ?>

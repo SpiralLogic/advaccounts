@@ -60,9 +60,9 @@
 		//session_register("transfer_items");
 
 		$_SESSION['transfer_items'] = new items_cart(ST_LOCTRANSFER);
-		$_POST['AdjDate'] = new_doc_date();
-		if (!is_date_in_fiscalyear($_POST['AdjDate']))
-			$_POST['AdjDate'] = end_fiscalyear();
+		$_POST['AdjDate'] = Dates::new_doc_date();
+		if (!Dates::is_date_in_fiscalyear($_POST['AdjDate']))
+			$_POST['AdjDate'] = Dates::end_fiscalyear();
 		$_SESSION['transfer_items']->tran_date = $_POST['AdjDate'];
 	}
 
@@ -90,13 +90,13 @@
 			ui_view::set_focus('ref');
 			$input_error = 1;
 		}
-		elseif (!is_date($_POST['AdjDate']))
+		elseif (!Dates::is_date($_POST['AdjDate']))
 		{
 			ui_msgs::display_error(_("The entered date for the adjustment is invalid."));
 			ui_view::set_focus('AdjDate');
 			$input_error = 1;
 		}
-		elseif (!is_date_in_fiscalyear($_POST['AdjDate']))
+		elseif (!Dates::is_date_in_fiscalyear($_POST['AdjDate']))
 		{
 			ui_msgs::display_error(_("The entered date is not in fiscal year."));
 			ui_view::set_focus('AdjDate');
@@ -132,7 +132,7 @@
 		$trans_no = add_stock_transfer($_SESSION['transfer_items']->line_items,
 			$_POST['FromStockLocation'], $_POST['ToStockLocation'],
 			$_POST['AdjDate'], $_POST['type'], $_POST['ref'], $_POST['memo_']);
-		new_doc_date($_POST['AdjDate']);
+		Dates::new_doc_date($_POST['AdjDate']);
 		$_SESSION['transfer_items']->clear_items();
 		unset($_SESSION['transfer_items']);
 

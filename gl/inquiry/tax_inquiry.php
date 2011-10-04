@@ -28,12 +28,12 @@
 	}
 
 	if (get_post('TransFromDate') == "" && get_post('TransToDate') == "") {
-		$date = Today();
+		$date = Dates::Today();
 		$row = get_company_prefs();
-		$edate = add_months($date, -$row['tax_last']);
-		$edate = end_month($edate);
-		$bdate = begin_month($edate);
-		$bdate = add_months($bdate, -$row['tax_prd'] + 1);
+		$edate = Dates::add_months($date, -$row['tax_last']);
+		$edate = Dates::end_month($edate);
+		$bdate = Dates::begin_month($edate);
+		$bdate = Dates::add_months($bdate, -$row['tax_prd'] + 1);
 		$_POST["TransFromDate"] = $bdate;
 		$_POST["TransToDate"] = $edate;
 	}
@@ -71,8 +71,8 @@
 		table_header($th);
 		$k = 0;
 		$total = 0;
-		$bdate = date2sql($_POST['TransFromDate']);
-		$edate = date2sql($_POST['TransToDate']);
+		$bdate = Dates::date2sql($_POST['TransFromDate']);
+		$edate = Dates::date2sql($_POST['TransToDate']);
 
 		$taxes = get_tax_summary($_POST['TransFromDate'], $_POST['TransToDate']);
 

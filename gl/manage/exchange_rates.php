@@ -21,7 +21,7 @@
 
 	//---------------------------------------------------------------------------------------------
 	function check_data() {
-		if (!is_date($_POST['date_'])) {
+		if (!Dates::is_date($_POST['date_'])) {
 			ui_msgs::display_error(_("The entered date is invalid."));
 			ui_view::set_focus('date_');
 			return false;
@@ -99,7 +99,7 @@
 
 			$myrow = get_exchange_rate($selected_id);
 
-			$_POST['date_'] = sql2date($myrow["date_"]);
+			$_POST['date_'] = Dates::sql2date($myrow["date_"]);
 			$_POST['BuyRate'] = exrate_format($myrow["rate_buy"]);
 
 			hidden('selected_id', $selected_id);
@@ -109,7 +109,7 @@
 		}
 		else
 		{
-			$_POST['date_'] = Today();
+			$_POST['date_'] = Dates::Today();
 			$_POST['BuyRate'] = '';
 			date_row(_("Date to Use From:"), 'date_');
 		}

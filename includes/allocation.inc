@@ -97,11 +97,11 @@
 				$this->person_id = $trans[$this->person_type ? 'supplier_id' : 'debtor_no'];
 				$this->person_name = $trans[$this->person_type ? "supplier_name" : "DebtorName"];
 				$this->amount = $trans["Total"];
-				$this->date_ = sql2date($trans["tran_date"]);
+				$this->date_ = Dates::sql2date($trans["tran_date"]);
 			}
 			else {
 				$this->person_id = get_post($this->person_type ? 'supplier_id' : 'customer_id');
-				$this->date_ = get_post($this->person_type ? 'DatePaid' : 'DateBanked', Today());
+				$this->date_ = get_post($this->person_type ? 'DatePaid' : 'DateBanked', Dates::Today());
 			}
 
 			/* Now populate the array of possible (and previous actual) allocations
@@ -116,8 +116,8 @@
 			while ($myrow = db_fetch($trans_items))
 			{
 				$this->add_item($myrow["type"], $myrow["trans_no"],
-					sql2date($myrow["tran_date"]),
-					sql2date($myrow["due_date"]),
+					Dates::sql2date($myrow["tran_date"]),
+					Dates::sql2date($myrow["due_date"]),
 					$myrow["Total"], // trans total
 					$myrow["alloc"], // trans total allocated
 					0); // this allocation
@@ -139,8 +139,8 @@
 			while ($myrow = db_fetch($trans_items))
 			{
 				$this->add_or_update_item($myrow["type"], $myrow["trans_no"],
-					sql2date($myrow["tran_date"]),
-					sql2date($myrow["due_date"]),
+					Dates::sql2date($myrow["tran_date"]),
+					Dates::sql2date($myrow["due_date"]),
 					$myrow["Total"],
 				 $myrow["alloc"] - $myrow["amt"], $myrow["amt"]);
 			}
@@ -345,7 +345,7 @@
 		$doc = new Cart(ST_SALESINVOICE, 0);
 		$customer_error = get_customer_details_to_order($doc, $customer, $branch);
 		$doc->trans_type = $type;
-		$doc->document_date = new_doc_date();
+		$doc->document_date = Dates::new_doc_date();
 		$doc->pos = user_pos();
 		$pos = get_sales_point($doc->pos);
 		$doc->due_date = $doc->document_date;

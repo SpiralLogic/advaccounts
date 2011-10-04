@@ -193,7 +193,7 @@
 			$year = get_current_fiscalyear();
 			if ($year['closed'] == 0) $how = _("Active"); else
 				$how = _("Closed");
-			$this->fiscal_year = sql2date($year['begin']) . " - " . sql2date($year['end']) . "  " . "(" . $how . ")";
+			$this->fiscal_year = Dates::sql2date($year['begin']) . " - " . Dates::sql2date($year['end']) . "  " . "(" . $how . ")";
 			$this->user = $_SESSION["wa_current_user"]->name;
 			$this->host = $_SERVER['SERVER_NAME'];
 			$this->params = $params;
@@ -218,7 +218,7 @@
 			$this->NewLine();
 			$str = _("Print Out Date") . ':';
 			$this->sheet->writeString($this->y, 0, $str, $this->formatLeft);
-			$this->sheet->writeString($this->y, 1, Today() . "  " . Now(), $this->formatLeft);
+			$this->sheet->writeString($this->y, 1, Dates::Today() . "  " . Dates::Now(), $this->formatLeft);
 			$this->sheet->writeString($this->y, $tcol - 1, $this->company['coy_name'], $this->formatLeft);
 			$this->sheet->mergeCells($this->y, $tcol - 1, $this->y, $tcol);
 			$this->NewLine();
@@ -342,7 +342,7 @@
 			$this->NewLine();
 			$str = _("Generated At") . ':';
 			$this->sheet->writeString($this->y, 0, $str, $this->formatLeft);
-			$this->sheet->writeString($this->y, 1, Today() . "  " . Now(), $this->formatLeft);
+			$this->sheet->writeString($this->y, 1, Dates::Today() . "  " . Dates::Now(), $this->formatLeft);
 
 			// Name of the user that generated this copy of the report
 			$this->NewLine();
@@ -393,7 +393,7 @@
 		 */
 		function DatePrettyPrint($date, $input_format = 0, $output_format = 0) {
 			if ($date != '') {
-				$date = date2sql($date);
+				$date = Dates::date2sql($date);
 				$year = (int)(substr($date, 0, 4));
 				$month = (int)(substr($date, 5, 2));
 				$day = (int)(substr($date, 8, 2));
@@ -460,7 +460,7 @@
 		}
 
 		function DateCol($c, $n, $txt, $conv = false, $corr = 0, $r = 0, $border = 0, $fill = 0, $link = NULL, $stretch = 0) {
-			if (!$conv) $txt = date2sql($txt);
+			if (!$conv) $txt = Dates::date2sql($txt);
 			list($year, $mo, $day) = explode("-", $txt);
 			$date = $this->ymd2date((int)$year, (int)$mo, (int)$day);
 			$this->sheet->writeNumber($this->y, $c, $date, $this->formatDate);
