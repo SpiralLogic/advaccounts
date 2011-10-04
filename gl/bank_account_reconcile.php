@@ -13,14 +13,10 @@
 	$page_security = 'SA_RECONCILE';
 
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
-	include_once(APP_PATH . "includes/date_functions.inc");
-	include_once(APP_PATH . "includes/faui.inc");
-	include_once(APP_PATH . "includes/data_checks.inc");
-	include_once(APP_PATH . "gl/includes/gl_db.inc");
-	include_once(APP_PATH . "includes/banking.inc");
+
 	$js = "";
 	if (Config::get('ui.windows.popups')) {
-		$js .= get_js_open_window(800, 500);
+		$js .= ui_view::get_js_open_window(800, 500);
 	}
 
 	JS::headerFile('reconcile.js');
@@ -28,8 +24,8 @@
 	check_db_has_bank_accounts(_("There are no bank accounts defined in the system."));
 	function check_date() {
 		if (!is_date(get_post('reconcile_date'))) {
-			display_error(_("Invalid reconcile date format"));
-			set_focus('reconcile_date');
+			ui_msgs::display_error(_("Invalid reconcile date format"));
+			ui_view::set_focus('reconcile_date');
 			return false;
 		}
 		return true;
@@ -61,11 +57,11 @@
 	}
 
 	function trans_view($trans) {
-		return get_trans_view_str($trans["type"], $trans["trans_no"]);
+		return ui_view::get_trans_view_str($trans["type"], $trans["trans_no"]);
 	}
 
 	function gl_view($row) {
-		return get_gl_view_str($row["type"], $row["trans_no"]);
+		return ui_view::get_gl_view_str($row["type"], $row["trans_no"]);
 	}
 
 	function fmt_debit($row) {
@@ -159,7 +155,7 @@
 		change_tpl_flag($id);
 	}
 	if (isset($_POST['Reconcile'])) {
-		set_focus('bank_date');
+		ui_view::set_focus('bank_date');
 		foreach ($_POST['last'] as $id => $value) {
 			if ($value != check_value('rec_' . $id)) {
 				if (!change_tpl_flag($id)) {
@@ -220,7 +216,7 @@
 	}
 	$sql = get_sql_for_bank_account_reconcile($_POST['bank_account'], get_post('reconcile_date'));
 	$act = get_bank_account($_POST["bank_account"]);
-	display_heading($act['bank_account_name'] . " - " . $act['bank_curr_code']);
+	ui_msgs::display_heading($act['bank_account_name'] . " - " . $act['bank_curr_code']);
 	$cols = array(_("Type") => array('fun' => 'systype_name', 'ord' => ''), _("#") => array('fun' => 'trans_view', 'ord' => ''), _("Reference"), _("Date") => 'date',
 		_("Debit") => array('align' => 'right', 'fun' => 'fmt_debit'), _("Credit") => array('align' => 'right', 'insert' => true, 'fun' => 'fmt_credit'),
 		_("Person/Item") => array('fun' => 'fmt_person'), array('insert' => true, 'fun' => 'gl_view'), "X" => array('insert' => true, 'fun' => 'rec_checkbox'),

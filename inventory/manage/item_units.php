@@ -15,8 +15,6 @@
 
 	page(_($help_context = "Units of Measure"));
 
-	include_once(APP_PATH . "includes/faui.inc");
-
 	include_once(APP_PATH . "inventory/includes/db/items_units_db.inc");
 
 	simple_page_mode(false);
@@ -29,26 +27,26 @@
 
 		if (strlen($_POST['abbr']) == 0) {
 			$input_error = 1;
-			display_error(_("The unit of measure code cannot be empty."));
-			set_focus('abbr');
+			ui_msgs::display_error(_("The unit of measure code cannot be empty."));
+			ui_view::set_focus('abbr');
 		}
 		if (strlen(db_escape($_POST['abbr'])) > (20 + 2)) {
 			$input_error = 1;
-			display_error(_("The unit of measure code is too long."));
-			set_focus('abbr');
+			ui_msgs::display_error(_("The unit of measure code is too long."));
+			ui_view::set_focus('abbr');
 		}
 		if (strlen($_POST['description']) == 0) {
 			$input_error = 1;
-			display_error(_("The unit of measure description cannot be empty."));
-			set_focus('description');
+			ui_msgs::display_error(_("The unit of measure description cannot be empty."));
+			ui_view::set_focus('description');
 		}
 
 		if ($input_error != 1) {
 			write_item_unit(htmlentities($selected_id), $_POST['abbr'], $_POST['description'], $_POST['decimals']);
 			if ($selected_id != '')
-				display_notification(_('Selected unit has been updated'));
+				ui_msgs::display_notification(_('Selected unit has been updated'));
 			else
-				display_notification(_('New unit has been added'));
+				ui_msgs::display_notification(_('New unit has been added'));
 			$Mode = 'RESET';
 		}
 	}
@@ -60,12 +58,12 @@
 		// PREVENT DELETES IF DEPENDENT RECORDS IN 'stock_master'
 
 		if (item_unit_used($selected_id)) {
-			display_error(_("Cannot delete this unit of measure because items have been created using this unit."));
+			ui_msgs::display_error(_("Cannot delete this unit of measure because items have been created using this unit."));
 		}
 		else
 		{
 			delete_item_unit($selected_id);
-			display_notification(_('Selected unit has been deleted'));
+			ui_msgs::display_notification(_('Selected unit has been deleted'));
 		}
 		$Mode = 'RESET';
 	}

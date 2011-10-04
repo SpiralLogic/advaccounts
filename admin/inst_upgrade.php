@@ -15,10 +15,8 @@
 
 	page(_($help_context = "Software Upgrade"));
 
-	include_once(APP_PATH . "includes/date_functions.inc");
 	include_once(APP_PATH . "admin/db/company_db.inc");
 	include_once(APP_PATH . "admin/db/maintenance_db.inc");
-	include_once(APP_PATH . "includes/faui.inc");
 
 	//
 	//	Checks $field existence in $table with given field $properties
@@ -102,7 +100,7 @@
 				$ret &= $inst->install($force);
 			} else
 				if ($state !== true) {
-					display_error(_("Upgrade cannot be done because database has been already partially upgraded. Please downgrade database to clean previous version or try forced upgrade."));
+					ui_msgs::display_error(_("Upgrade cannot be done because database has been already partially upgraded. Please downgrade database to clean previous version or try forced upgrade."));
 					$ret = false;
 				}
 		}
@@ -127,7 +125,7 @@
 		{
 			// connect to database
 			if (!($db = db_open($conn))) {
-				display_error(_("Cannot connect to database for company")
+				ui_msgs::display_error(_("Cannot connect to database for company")
 					 . " '" . $conn['name'] . "'");
 				continue;
 			}
@@ -138,7 +136,7 @@
 			{
 				$ret = upgrade_step($i, $conn);
 				if (!$ret)
-					display_error(
+					ui_msgs::display_error(
 						sprintf(_("Database upgrade to version %s failed for company '%s'."),
 							$inst->version, $conn['name'])
 						 . '<br>'
@@ -149,10 +147,9 @@
 		}
 		if ($ret) { // re-read the prefs
 
-			include_once(APP_PATH . "admin/db/users_db.inc");
 			$user = get_user_by_login($_SESSION["wa_current_user"]->username);
 			$_SESSION["wa_current_user"]->prefs = new user_prefs($user);
-			display_notification(_('All companies data has been successfully updated'));
+			ui_msgs::display_notification(_('All companies data has been successfully updated'));
 		}
 		$Ajax->activate('_page_body');
 	}
@@ -193,7 +190,7 @@
 	}
 	end_table(1);
 	if ($partial != 0) {
-		display_note(_("Database upgrades marked as partially installed cannot be installed automatically.
+		ui_msgs::display_note(_("Database upgrades marked as partially installed cannot be installed automatically.
 You have to clean database manually to enable them, or try to perform forced upgrade."));
 		br();
 	}

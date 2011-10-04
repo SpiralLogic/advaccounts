@@ -15,15 +15,11 @@
 
 	page(_($help_context = "View Inventory Adjustment"), true);
 
-	include_once(APP_PATH . "includes/date_functions.inc");
-	include_once(APP_PATH . "includes/faui.inc");
-	include_once(APP_PATH . "inventory/includes/inventory_db.inc");
-
 	if (isset($_GET["trans_no"])) {
 		$trans_no = $_GET["trans_no"];
 	}
 
-	display_heading($systypes_array[ST_INVADJUST] . " #$trans_no");
+	ui_msgs::display_heading($systypes_array[ST_INVADJUST] . " #$trans_no");
 
 	br(1);
 	$adjustment_items = get_stock_adjustment_items($trans_no);
@@ -42,7 +38,7 @@
 			label_cells(_("Date"), sql2date($adjustment['tran_date']), "class='tableheader2'");
 			label_cells(_("Adjustment Type"), $adjustment_type['name'], "class='tableheader2'");
 			end_row();
-			comments_display_row(ST_INVADJUST, $trans_no);
+			ui_view::comments_display_row(ST_INVADJUST, $trans_no);
 
 			end_table();
 			$header_shown = true;
@@ -68,7 +64,7 @@
 
 	end_table(1);
 
-	is_voided_display(ST_INVADJUST, $trans_no, _("This adjustment has been voided."));
+	ui_view::is_voided_display(ST_INVADJUST, $trans_no, _("This adjustment has been voided."));
 
 	end_page(true);
 ?>

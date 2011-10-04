@@ -15,10 +15,7 @@
 
 	page(_($help_context = "Foreign Item Codes"));
 
-	include_once(APP_PATH . "includes/date_functions.inc");
-	include_once(APP_PATH . "includes/faui.inc");
 	include_once(APP_PATH . "includes/manufacturing.inc");
-	include_once(APP_PATH . "includes/data_checks.inc");
 
 	check_db_has_purchasable_items(_("There are no inventory items defined in the system."));
 
@@ -30,28 +27,28 @@
 		$input_error = 0;
 		if ($_POST['stock_id'] == "" || !isset($_POST['stock_id'])) {
 			$input_error = 1;
-			display_error(_("There is no item selected."));
-			set_focus('stock_id');
+			ui_msgs::display_error(_("There is no item selected."));
+			ui_view::set_focus('stock_id');
 		}
 		elseif (!input_num('quantity'))
 		{
 			$input_error = 1;
-			display_error(_("The price entered was not positive number."));
-			set_focus('quantity');
+			ui_msgs::display_error(_("The price entered was not positive number."));
+			ui_view::set_focus('quantity');
 		}
 		elseif ($_POST['description'] == '')
 		{
 			$input_error = 1;
-			display_error(_("Item code description cannot be empty."));
-			set_focus('description');
+			ui_msgs::display_error(_("Item code description cannot be empty."));
+			ui_view::set_focus('description');
 		}
 		elseif ($selected_id == -1)
 		{
 			$kit = get_item_kit($_POST['item_code']);
 			if (db_num_rows($kit)) {
 				$input_error = 1;
-				display_error(_("This item code is already assigned to stock item or sale kit."));
-				set_focus('item_code');
+				ui_msgs::display_error(_("This item code is already assigned to stock item or sale kit."));
+				ui_view::set_focus('item_code');
 			}
 		}
 
@@ -60,13 +57,13 @@
 				add_item_code($_POST['item_code'], $_POST['stock_id'],
 					$_POST['description'], $_POST['category_id'], $_POST['quantity'], 1);
 
-				display_notification(_("New item code has been added."));
+				ui_msgs::display_notification(_("New item code has been added."));
 			} else
 			{
 				update_item_code($selected_id, $_POST['item_code'], $_POST['stock_id'],
 					$_POST['description'], $_POST['category_id'], $_POST['quantity'], 1);
 
-				display_notification(_("Item code has been updated."));
+				ui_msgs::display_notification(_("Item code has been updated."));
 			}
 			$Mode = 'RESET';
 		}
@@ -77,7 +74,7 @@
 	if ($Mode == 'Delete') {
 		delete_item_code($selected_id);
 
-		display_notification(_("Item code has been sucessfully deleted."));
+		ui_msgs::display_notification(_("Item code has been sucessfully deleted."));
 		$Mode = 'RESET';
 	}
 
@@ -94,14 +91,14 @@
 	start_form();
 
 	if (!isset($_POST['stock_id']))
-		$_POST['stock_id'] = get_global_stock_item();
+		$_POST['stock_id'] = ui_globals::get_global_stock_item();
 
 	echo "<center>" . _("Item:") . "&nbsp;";
 	echo stock_purchasable_items_list('stock_id', $_POST['stock_id'], false, true, false, false);
 
 	echo "<hr></center>";
 
-	set_global_stock_item($_POST['stock_id']);
+	ui_globals::set_global_stock_item($_POST['stock_id']);
 
 	$result = get_item_code_dflts($_POST['stock_id']);
 	$dec = $result['decimals'];

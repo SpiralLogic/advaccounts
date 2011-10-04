@@ -15,10 +15,6 @@
 
 	page(_($help_context = "Suppliers"), @$_REQUEST['popup']);
 
-	//include(APP_PATH . "includes/date_functions.inc");
-
-	include("../../includes/faui.inc");
-
 	check_db_has_tax_groups(_("There are no tax groups defined in the system. At least one tax group is required before proceeding."));
 
 	if (isset($_GET['supplier_id'])) {
@@ -38,14 +34,14 @@
 
 		if (strlen($_POST['supp_name']) == 0 || $_POST['supp_name'] == "") {
 			$input_error = 1;
-			display_error(_("The supplier name must be entered."));
-			set_focus('supp_name');
+			ui_msgs::display_error(_("The supplier name must be entered."));
+			ui_view::set_focus('supp_name');
 		}
 
 		if (strlen($_POST['supp_ref']) == 0 || $_POST['supp_ref'] == "") {
 			$input_error = 1;
-			display_error(_("The supplier short name must be entered."));
-			set_focus('supp_ref');
+			ui_msgs::display_error(_("The supplier short name must be entered."));
+			ui_view::set_focus('supp_ref');
 		}
 
 		if ($input_error != 1) {
@@ -82,7 +78,7 @@
 					'suppliers', 'supplier_id');
 
 				$Ajax->activate('supplier_id'); // in case of status change
-				display_notification(_("Supplier has been updated."));
+				ui_msgs::display_notification(_("Supplier has been updated."));
 			}
 			else
 			{
@@ -117,7 +113,7 @@
 				db_query($sql, "The supplier could not be added");
 				$_POST['supplier_id'] = db_insert_id();
 				$new_supplier = false;
-				display_notification(_("A new supplier has been added."));
+				ui_msgs::display_notification(_("A new supplier has been added."));
 				$Ajax->activate('_page_body');
 			}
 		}
@@ -135,7 +131,7 @@
 		$myrow = db_fetch_row($result);
 		if ($myrow[0] > 0) {
 			$cancel_delete = 1;
-			display_error(_("Cannot delete this supplier because there are transactions that refer to this supplier."));
+			ui_msgs::display_error(_("Cannot delete this supplier because there are transactions that refer to this supplier."));
 		}
 		else
 		{
@@ -144,7 +140,7 @@
 			$myrow = db_fetch_row($result);
 			if ($myrow[0] > 0) {
 				$cancel_delete = 1;
-				display_error(_("Cannot delete the supplier record because purchase orders have been created against this supplier."));
+				ui_msgs::display_error(_("Cannot delete the supplier record because purchase orders have been created against this supplier."));
 			}
 		}
 		if ($cancel_delete == 0) {
@@ -170,7 +166,7 @@
 		end_table();
 		if (get_post('_show_inactive_update')) {
 			$Ajax->activate('supplier_id');
-			set_focus('supplier_id');
+			ui_view::set_focus('supplier_id');
 		}
 	}
 	else

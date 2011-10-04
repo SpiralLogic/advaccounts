@@ -15,9 +15,6 @@
 
 	page(_($help_context = "Company Setup"));
 
-	include_once(APP_PATH . "includes/date_functions.inc");
-	include_once(APP_PATH . "includes/faui.inc");
-
 	include_once(APP_PATH . "admin/db/company_db.inc");
 	//-------------------------------------------------------------------------------------------------
 
@@ -26,14 +23,14 @@
 		$input_error = 0;
 
 		if (!check_num('login_tout', 10)) {
-			display_error(_("Login timeout must be positive number not less than 10."));
-			set_focus('login_tout');
+			ui_msgs::display_error(_("Login timeout must be positive number not less than 10."));
+			ui_view::set_focus('login_tout');
 			$input_error = 1;
 		}
 		if (strlen($_POST['coy_name']) == 0) {
 			$input_error = 1;
-			display_error(_("The company name must be entered."));
-			set_focus('coy_name');
+			ui_msgs::display_error(_("The company name must be entered."));
+			ui_view::set_focus('coy_name');
 		}
 		if (isset($_FILES['pic']) && $_FILES['pic']['name'] != '') {
 			$result = $_FILES['pic']['error'];
@@ -47,24 +44,24 @@
 			if (!in_array((substr(trim($_FILES['pic']['name']), -3)),
 				array('jpg', 'JPG', 'png', 'PNG'))
 			) {
-				display_error(_('Only jpg and png files are supported - a file extension of .jpg or .png is expected'));
+				ui_msgs::display_error(_('Only jpg and png files are supported - a file extension of .jpg or .png is expected'));
 				$input_error = 1;
 			}
 			elseif ($_FILES['pic']['size'] > (Config::get('item.images.max_size') * 1024))
 			{ //File Size Check
-				display_error(_('The file size is over the maximum allowed. The maximum size allowed in KB is') . ' ' . Config::get('item.images.max_size'));
+				ui_msgs::display_error(_('The file size is over the maximum allowed. The maximum size allowed in KB is') . ' ' . Config::get('item.images.max_size'));
 				$input_error = 1;
 			}
 			elseif ($_FILES['pic']['type'] == "text/plain")
 			{ //File type Check
-				display_error(_('Only graphics files can be uploaded'));
+				ui_msgs::display_error(_('Only graphics files can be uploaded'));
 				$input_error = 1;
 			}
 			elseif (file_exists($filename))
 			{
 				$result = unlink($filename);
 				if (!$result) {
-					display_error(_('The existing image could not be removed'));
+					ui_msgs::display_error(_('The existing image could not be removed'));
 					$input_error = 1;
 				}
 			}
@@ -73,7 +70,7 @@
 				$result = move_uploaded_file($_FILES['pic']['tmp_name'], $filename);
 				$_POST['coy_logo'] = $_FILES['pic']['name'];
 				if (!$result)
-					display_error(_('Error uploading logo file'));
+					ui_msgs::display_error(_('Error uploading logo file'));
 			}
 		}
 		if (check_value('del_coy_logo')) {
@@ -81,7 +78,7 @@
 			if (file_exists($filename)) {
 				$result = unlink($filename);
 				if (!$result) {
-					display_error(_('The existing image could not be removed'));
+					ui_msgs::display_error(_('The existing image could not be removed'));
 					$input_error = 1;
 				}
 				else
@@ -103,9 +100,9 @@
 				check_value('time_zone'), $_POST['add_pct'], $_POST['round_to'],
 				$_POST['login_tout']);
 			$_SESSION['wa_current_user']->timeout = $_POST['login_tout'];
-			display_notification_centered(_("Company setup has been updated."));
+			ui_msgs::display_notification_centered(_("Company setup has been updated."));
 		}
-		set_focus('coy_name');
+		ui_view::set_focus('coy_name');
 		$Ajax->activate('_page_body');
 	} /* end of if submit */
 

@@ -14,10 +14,6 @@
 
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 
-	include_once(APP_PATH . "includes/date_functions.inc");
-	include_once(APP_PATH . "includes/faui.inc");
-	include_once(APP_PATH . "includes/data_checks.inc");
-
 	if (isset($_GET['vw']))
 		$view_id = $_GET['vw'];
 	else
@@ -63,7 +59,7 @@
 
 	$js = "";
 	if (Config::get('ui.windows.popups'))
-		$js .= get_js_open_window(800, 500);
+		$js .= ui_view::get_js_open_window(800, 500);
 	page(_($help_context = "Attach Documents"), false, false, "", $js);
 
 	simple_page_mode(true);
@@ -109,7 +105,7 @@
 			 . db_escape($filename) . ", " . db_escape($unique_name) . ", " . db_escape($filesize)
 			 . ", " . db_escape($filetype) . ", '$date')";
 			db_query($sql, "Attachment could not be inserted");
-			display_notification(_("Attachment has been inserted."));
+			ui_msgs::display_notification(_("Attachment has been inserted."));
 		}
 		else
 		{
@@ -125,7 +121,7 @@
 			}
 			$sql .= "tran_date='$date' WHERE id=" . db_escape($selected_id);
 			db_query($sql, "Attachment could not be updated");
-			display_notification(_("Attachment has been updated."));
+			ui_msgs::display_notification(_("Attachment has been updated."));
 		}
 		$Mode = 'RESET';
 	}
@@ -137,7 +133,7 @@
 			unlink($dir . "/" . $row['unique_name']);
 		$sql = "DELETE FROM attachments WHERE id = " . db_escape($selected_id);
 		db_query($sql, "Could not delete attachment");
-		display_notification(_("Attachment has been deleted."));
+		ui_msgs::display_notification(_("Attachment has been deleted."));
 		$Mode = 'RESET';
 	}
 
@@ -187,7 +183,7 @@
 		{
 			alt_table_row_color($k);
 
-			label_cell(get_trans_view_str($type, $row['trans_no']));
+			label_cell(ui_view::get_trans_view_str($type, $row['trans_no']));
 			label_cell($row['description']);
 			label_cell($row['filename']);
 			label_cell($row['filesize']);

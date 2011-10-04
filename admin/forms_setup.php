@@ -15,8 +15,6 @@
 
 	page(_($help_context = "Forms Setup"));
 
-	include(APP_PATH . "includes/faui.inc");
-
 	//-------------------------------------------------------------------------------------------------
 
 	if (isset($_POST['setprefs'])) {
@@ -32,7 +30,7 @@
 
 		commit_transaction();
 
-		display_notification_centered(_("Forms settings have been updated."));
+		ui_msgs::display_notification_centered(_("Forms settings have been updated."));
 	}
 
 	start_form();

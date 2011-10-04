@@ -15,7 +15,7 @@
 
 	include_once(APP_PATH . "/includes/date_functions.inc");
 	include_once(APP_PATH . "/includes/data_checks.inc");
-	include_once(APP_PATH . "/includes/faui.inc");
+
 	include_once(APP_PATH . "/reporting/includes/reports_classes.inc");
 	$js = "";
 	page(_($help_context = "Reports and Analysis"), false, false, "", $js);

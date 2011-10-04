@@ -15,7 +15,6 @@
 
 	page(_($help_context = "POS settings"));
 
-	include_once(APP_PATH . "includes/faui.inc");
 	include_once(APP_PATH . "sales/includes/db/sales_points_db.inc");
 
 	simple_page_mode(true);
@@ -23,13 +22,13 @@
 
 	function can_process() {
 		if (strlen($_POST['name']) == 0) {
-			display_error(_("The POS name cannot be empty."));
-			set_focus('pos_name');
+			ui_msgs::display_error(_("The POS name cannot be empty."));
+			ui_view::set_focus('pos_name');
 			return false;
 		}
 		if (!check_value('cash') && !check_value('credit')) {
-			display_error(_("You must allow cash or credit sale."));
-			set_focus('credit');
+			ui_msgs::display_error(_("You must allow cash or credit sale."));
+			ui_view::set_focus('credit');
 			return false;
 		}
 
@@ -41,7 +40,7 @@
 	if ($Mode == 'ADD_ITEM' && can_process()) {
 		add_sales_point($_POST['name'], $_POST['location'], $_POST['account'],
 			check_value('cash'), check_value('credit'));
-		display_notification(_('New point of sale has been added'));
+		ui_msgs::display_notification(_('New point of sale has been added'));
 		$Mode = 'RESET';
 	}
 
@@ -51,7 +50,7 @@
 
 		update_sales_point($selected_id, $_POST['name'], $_POST['location'],
 			$_POST['account'], check_value('cash'), check_value('credit'));
-		display_notification(_('Selected point of sale has been updated'));
+		ui_msgs::display_notification(_('Selected point of sale has been updated'));
 		$Mode = 'RESET';
 	}
 
@@ -61,11 +60,11 @@
 		$sql = "SELECT * FROM users WHERE pos=" . db_escape($selected_id);
 		$res = db_query($sql, "canot check pos usage");
 		if (db_num_rows($res)) {
-			display_error(_("Cannot delete this POS because it is used in users setup."));
+			ui_msgs::display_error(_("Cannot delete this POS because it is used in users setup."));
 		}
 		else {
 			delete_sales_point($selected_id);
-			display_notification(_('Selected point of sale has been deleted'));
+			ui_msgs::display_notification(_('Selected point of sale has been deleted'));
 			$Mode = 'RESET';
 		}
 	}
@@ -110,7 +109,7 @@
 
 	$cash = db_has_cash_accounts();
 
-	if (!$cash) display_note(_("To have cash POS first define at least one cash bank account."));
+	if (!$cash) ui_msgs::display_note(_("To have cash POS first define at least one cash bank account."));
 
 	start_table(Config::get('tables.style2'));
 

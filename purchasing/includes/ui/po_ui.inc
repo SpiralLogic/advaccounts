@@ -10,7 +10,6 @@
 		MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 		See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 * ********************************************************************* */
-	include_once(APP_PATH . "purchasing/includes/purchasing_db.inc");
 
 	// ------------------------------------------------------------------------------
 
@@ -56,8 +55,8 @@
 
 		table_section(1);
 		if ($editable) {
-			if (!isset($_POST['supplier_id']) && (get_global_supplier() != ALL_TEXT))
-				$_POST['supplier_id'] = get_global_supplier();
+			if (!isset($_POST['supplier_id']) && (ui_globals::get_global_supplier() != ALL_TEXT))
+				$_POST['supplier_id'] = ui_globals::get_global_supplier();
 
 			supplier_list_row(_("Supplier:"), 'supplier_id', null, false, true, false, true);
 		}
@@ -81,11 +80,11 @@
 			}
 			$Ajax->activate('items_table');
 		}
-		set_global_supplier($_POST['supplier_id']);
+		ui_globals::set_global_supplier($_POST['supplier_id']);
 
-		if (!is_company_currency($order->curr_code)) {
+		if (!Banking::is_company_currency($order->curr_code)) {
 			label_row(_("Supplier Currency:"), $order->curr_code);
-			exchange_rate_display($order->curr_code, get_company_currency(),
+			ui_view::exchange_rate_display($order->curr_code, Banking::get_company_currency(),
 				$_POST['OrderDate']);
 		}
 
@@ -135,7 +134,7 @@
 				$_SESSION['PO']->Location = $_POST['StkLocation'];
 				$_SESSION['PO']->delivery_address = $_POST['delivery_address'];
 			} else { /* The default location of the user is crook */
-				display_error(_("The default stock location set up for this user is not a currently defined stock location. Your system administrator needs to amend your user record."));
+				ui_msgs::display_error(_("The default stock location set up for this user is not a currently defined stock location. Your system administrator needs to amend your user record."));
 			}
 		}
 
@@ -149,7 +148,7 @@
 	function display_po_items(&$order, $editable = true) {
 		global $Ajax;
 
-		display_heading(_("Order Items"));
+		ui_msgs::display_heading(_("Order Items"));
 
 		div_start('items_table');
 		start_table(Config::get('tables.style') . "  width=90%");
@@ -220,11 +219,11 @@
 
 		label_cells(_("Supplier"), $po->supplier_name, "class='tableheader2'");
 
-		if (!is_company_currency($po->curr_code))
+		if (!Banking::is_company_currency($po->curr_code))
 			label_cells(_("Order Currency"), $po->curr_code, "class='tableheader2'");
 
 		if (!$is_self) {
-			label_cells(_("Purchase Order"), get_trans_view_str(ST_PURCHORDER, $po->order_no),
+			label_cells(_("Purchase Order"), ui_view::get_trans_view_str(ST_PURCHORDER, $po->order_no),
 				"class='tableheader2'");
 		}
 		end_row();
@@ -318,7 +317,7 @@
 				_('Confirm changes'), ICON_UPDATE);
 			button_cell('CancelUpdate', _("Cancel"),
 				_('Cancel changes'), ICON_CANCEL);
-			set_focus('qty');
+			ui_view::set_focus('qty');
 		} else {
 			submit_cells('EnterLine', _("Add Item"), "colspan=2",
 				_('Add new item to document'), true);

@@ -16,7 +16,7 @@
 	include(APP_PATH . "purchasing/includes/purchasing_ui.inc");
 	$js = "";
 	if (Config::get('ui.windows.popups'))
-		$js .= get_js_open_window(900, 500);
+		$js .= ui_view::get_js_open_window(900, 500);
 
 	page(_($help_context = "Supplier Allocation Inquiry"), false, false, "", $js);
 	if (isset($_GET['supplier_id'])) {
@@ -31,7 +31,7 @@
 	//------------------------------------------------------------------------------------------------
 	start_form();
 	if (!isset($_POST['supplier_id']))
-		$_POST['supplier_id'] = get_global_supplier();
+		$_POST['supplier_id'] = ui_globals::get_global_supplier();
 	start_table("class='tablestyle_noborder'");
 	start_row();
 	supplier_list_cells(_("Select a supplier: "), 'supplier_id', $_POST['supplier_id'], true);
@@ -40,7 +40,7 @@
 	supp_allocations_list_cell("filterType", null);
 	check_cells(_("show settled:"), 'showSettled', null);
 	submit_cells('RefreshInquiry', _("Search"), '', _('Refresh Inquiry'), 'default');
-	set_global_supplier($_POST['supplier_id']);
+	ui_globals::set_global_supplier($_POST['supplier_id']);
 	end_row();
 	end_table();
 	//------------------------------------------------------------------------------------------------
@@ -55,7 +55,7 @@
 	}
 
 	function view_link($trans) {
-		return get_trans_view_str($trans["type"], $trans["trans_no"]);
+		return ui_view::get_trans_view_str($trans["type"], $trans["trans_no"]);
 	}
 
 	function due_date($row) {

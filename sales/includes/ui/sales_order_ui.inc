@@ -21,7 +21,7 @@
 			if (!$item['is_foreign'] && $item['item_code'] == $item['stock_id']) {
 				foreach ($order->line_items as $order_item) {
 					if (strcasecmp($order_item->stock_id, $item['stock_id']) == 0 && !$no_errors) {
-						display_warning(_("For Part :") . $item['stock_id'] . " " . _("This item is already on this document. You have been warned."));
+						ui_msgs::display_warning(_("For Part :") . $item['stock_id'] . " " . _("This item is already on this document. You have been warned."));
 						break;
 					}
 				}
@@ -60,7 +60,7 @@
 				// check duplicate stock item
 				foreach ($order->line_items as $order_item) {
 					if (strcasecmp($order_item->stock_id, $item['stock_id']) == 0) {
-						display_warning(_("For Part :") . $item['stock_id'] . " " . _("This item is already on this document. You have been warned."));
+						ui_msgs::display_warning(_("For Part :") . $item['stock_id'] . " " . _("This item is already on this document. You have been warned."));
 						break;
 					}
 				}
@@ -129,7 +129,7 @@
 	//---------------------------------------------------------------------------------
 	function display_order_summary($title, &$order, $editable_items = false) {
 		global $SysPrefs;
-		display_heading($title);
+		ui_msgs::display_heading($title);
 		div_start('items_table');
 		if (count($_SESSION['Items']->line_items) > 0) {
 			start_outer_table(" width=90%");
@@ -221,7 +221,7 @@ JS;
 		end_row();
 		label_row(_("Sub-total"), $display_sub_total, "colspan=$colspan align=right", "align=right", 2);
 		$taxes = $order->get_taxes(input_num('freight_cost'));
-		$tax_total = display_edit_tax_items($taxes, $colspan, $order->tax_included, 2);
+		$tax_total = ui_view::display_edit_tax_items($taxes, $colspan, $order->tax_included, 2);
 		$display_total = price_format(($total + input_num('freight_cost') + $tax_total));
 		start_row();
 		label_cells(_("Amount Total"), $display_total, "colspan=$colspan align=right", "align=right");
@@ -229,9 +229,9 @@ JS;
 		end_row();
 		end_table();
 		if ($has_marked) {
-			display_note(_("Marked items have insufficient quantities in stock as on day of delivery."), 0, 1, "class='stockmankofg'");
+			ui_msgs::display_note(_("Marked items have insufficient quantities in stock as on day of delivery."), 0, 1, "class='stockmankofg'");
 			if ($order->trans_type != 30 && !$SysPrefs->allow_negative_stock()) {
-				display_error(_("The delivery cannot be processed because there is an insufficient quantity for item:") . '<br>' . $qoh_msg);
+				ui_msgs::display_error(_("The delivery cannot be processed because there is an insufficient quantity for item:") . '<br>' . $qoh_msg);
 			}
 		}
 		div_end();
@@ -319,7 +319,7 @@ JS;
 					}
 					unset($old_order);
 				}
-				set_global_customer($_POST['customer_id']);
+				ui_globals::set_global_customer($_POST['customer_id']);
 			} // changed branch
 			else {
 				$row = get_customer_to_order($_POST['customer_id']);
@@ -329,10 +329,10 @@ JS;
 			}
 		}
 		ref_row(_("Reference") . ':', 'ref', _('Reference number unique for this document type'), null, '');
-		if (!is_company_currency($order->customer_currency)) {
+		if (!Banking::is_company_currency($order->customer_currency)) {
 			table_section(2);
 			label_row(_("Customer Currency:"), $order->customer_currency);
-			exchange_rate_display($order->customer_currency, get_company_currency(), ($editable ? $_POST['OrderDate'] : $order->document_date));
+			ui_view::exchange_rate_display($order->customer_currency, Banking::get_company_currency(), ($editable ? $_POST['OrderDate'] : $order->document_date));
 		}
 		table_section(3);
 		customer_credit_row($_POST['customer_id'], $order->credit);
@@ -356,7 +356,7 @@ JS;
 			}
 			date_row($date_text, 'OrderDate', null, $order->trans_no == 0, 0, 0, 0, null, true);
 			if (isset($_POST['_OrderDate_changed'])) {
-				if (!is_company_currency($order->customer_currency) && (get_base_sales_type() > 0)) {
+				if (!Banking::is_company_currency($order->customer_currency) && (get_base_sales_type() > 0)) {
 					$change_prices = 1;
 				}
 				$Ajax->activate('_ex_rate');
@@ -456,7 +456,7 @@ JS;
 			button_cell('UpdateItem', _("Update"), _('Confirm changes'), ICON_UPDATE);
 			button_cell('CancelItemChanges', _("Cancel"), _('Cancel changes'), ICON_CANCEL);
 			hidden('LineNo', $line_no);
-			set_focus('qty');
+			ui_view::set_focus('qty');
 		}
 		else {
 			submit_cells('AddItem', _("Add Item"), "colspan=2", _('Add new item to document'), true);
@@ -470,7 +470,7 @@ JS;
 		div_start('delivery');
 		if (get_post('cash', 0)) { // Direct payment sale
 			$Ajax->activate('items_table');
-			display_heading(_('Cash payment'));
+			ui_msgs::display_heading(_('Cash payment'));
 			start_table(Config::get('tables.style2') . " width=60%");
 			label_row(_("Deliver from Location:"), $order->location_name);
 			hidden('Location', $order->Location);
@@ -495,7 +495,7 @@ JS;
 				$title = _("Order Delivery Details");
 				$delname = _("Required Delivery Date") . ':';
 			}
-			display_heading($title);
+			ui_msgs::display_heading($title);
 			start_outer_table(Config::get('tables.style2') . " width=90%");
 			table_section(1);
 			locations_list_row(_("Deliver from Location:"), 'Location', null, false, true);

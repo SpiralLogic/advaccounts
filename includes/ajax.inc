@@ -104,7 +104,7 @@
 		//
 		function _addCommand($trigger, $aAttributes, $mData) {
 			if ($this->isActive() && ($trigger !== false)) {
-				//		display_error('adding '.$trigger.':'.htmlentities($mData));
+				//		ui_msgs::display_error('adding '.$trigger.':'.htmlentities($mData));
 
 				$aAttributes['why'] = $trigger;
 				$aAttributes['data'] = $mData;
@@ -132,7 +132,7 @@
 				// This is page repost equivalent, although header and footer are not reloaded.
 				if ($com['why'] !== true && !isset($this->triggers[$com['why']])) {
 					unset($this->aCommands[$idx]);
-					//			display_error('unset '.$com['t']);
+					//			ui_msgs::display_error('unset '.$com['t']);
 				}
 				else
 					if ($com['n'] == 'up' && $com['t'] == '_page_body') {
@@ -147,8 +147,8 @@
 						break;
 					}
 			}
-			//		display_error('Activate:'.htmlentities(print_r($this->triggers, true)));
-			//		display_error('Commands :'.htmlentities(print_r($this->aCommands, true)));
+			//		ui_msgs::display_error('Activate:'.htmlentities(print_r($this->triggers, true)));
+			//		ui_msgs::display_error('Commands :'.htmlentities(print_r($this->aCommands, true)));
 			$GLOBALS['_RESULT'] = $this->aCommands;
 			//	    exit();
 		}

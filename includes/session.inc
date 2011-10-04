@@ -9,7 +9,11 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
+	error_reporting(E_ALL);
 	ini_set("display_errors", "On");
+	ini_set("ignore_repeated_errors", "On");
+	ini_set("log_errors", "On");
+
 	function formatBytes($bytes, $precision = 2) {
 		$units = array('B', 'KB', 'MB', 'GB', 'TB');
 
@@ -40,6 +44,7 @@
 	function fb_errors() {
 		$error = func_get_args();
 		FB::info($error);
+		FB::info(debug_backtrace());
 		error_handler($error[0], $error[1], $error[2], $error[3]);
 		if (!(error_reporting() & $error[0])) {
 			// This error code is not included in error_reporting
@@ -69,7 +74,7 @@
 		if (!$_SESSION["wa_current_user"]->check_user_access()) {
 			$msg = $_SESSION["wa_current_user"]->old_db ? _("Security settings have not been defined for your user account.") . "<br>" . _("Please contact your system administrator.")
 			 : _("Please remove \$security_groups and \$security_headings arrays from config.php file!");
-			display_error($msg);
+			ui_msgs::display_error($msg);
 			end_page();
 			kill_login();
 			exit;
@@ -142,7 +147,6 @@
 	//============================================================================
 
 	function class_autoloader($className) {
-
 		spl_autoload(strtolower($className));
 	}
 
@@ -182,7 +186,7 @@
 	header("Cache-control: private");
 	gettext_native_support::get_text_init();
 	if (Config::get('debug') && isset($_SESSION["wa_current_user"]) && $_SESSION["wa_current_user"]->user == 1) {
-		error_reporting(E_ALL);
+
 		if (preg_match('/Chrome/i', $_SERVER['HTTP_USER_AGENT'])) {
 			include(APP_PATH . 'includes/fb.php');
 			FB::useFile(APP_PATH . 'tmp/chromelogs', '/tmp/chromelogs');
@@ -195,6 +199,7 @@
 		Config::set('debug', false);
 		error_reporting(E_USER_WARNING | E_USER_ERROR | E_USER_NOTICE);
 	}
+
 	// Page Initialisation
 	if (!isset($_SESSION['language']) || !method_exists($_SESSION['language'], 'set_language')) {
 		$l = array_search_value($dflt_lang, $installed_languages, 'code');

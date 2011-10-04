@@ -16,7 +16,6 @@
 	page(_($help_context = "Printer Locations"));
 
 	include(APP_PATH . "admin/db/printers_db.inc");
-	include(APP_PATH . "includes/faui.inc");
 
 	simple_page_mode(true);
 	//-------------------------------------------------------------------------------------------
@@ -26,18 +25,18 @@
 
 		if (empty($_POST['name'])) {
 			$error = 1;
-			display_error(_("Printer name cannot be empty."));
-			set_focus('name');
+			ui_msgs::display_error(_("Printer name cannot be empty."));
+			ui_view::set_focus('name');
 		}
 		elseif (empty($_POST['host']))
 		{
-			display_notification_centered(_("You have selected printing to server at user IP."));
+			ui_msgs::display_notification_centered(_("You have selected printing to server at user IP."));
 		}
 		elseif (!check_num('tout', 0, 60))
 		{
 			$error = 1;
-			display_error(_("Timeout cannot be less than zero nor longer than 60 (sec)."));
-			set_focus('tout');
+			ui_msgs::display_error(_("Timeout cannot be less than zero nor longer than 60 (sec)."));
+			ui_view::set_focus('tout');
 		}
 
 		if ($error != 1) {
@@ -45,7 +44,7 @@
 				get_post('queue'), get_post('host'), input_num('port', 0),
 				input_num('tout', 0));
 
-			display_notification_centered($selected_id == -1 ?
+			ui_msgs::display_notification_centered($selected_id == -1 ?
 				 _('New printer definition has been created')
 				 : _('Selected printer definition has been updated'));
 			$Mode = 'RESET';
@@ -59,13 +58,13 @@
 		$result = db_query($sql, "check printers relations failed");
 		$myrow = db_fetch_row($result);
 		if ($myrow[0] > 0) {
-			display_error(_("Cannot delete this printer definition, because print profile have been created using it."));
+			ui_msgs::display_error(_("Cannot delete this printer definition, because print profile have been created using it."));
 		}
 		else
 		{
 			$sql = "DELETE FROM printers WHERE id=" . db_escape($selected_id);
 			db_query($sql, "could not delete printer definition");
-			display_notification(_('Selected printer definition has been deleted'));
+			ui_msgs::display_notification(_('Selected printer definition has been deleted'));
 		}
 		$Mode = 'RESET';
 	}

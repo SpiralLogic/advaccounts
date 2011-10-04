@@ -13,14 +13,10 @@
 	$page_security = 'SA_RECONCILE';
 
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
-	include_once(APP_PATH . "includes/date_functions.inc");
-	include_once(APP_PATH . "includes/faui.inc");
-	include_once(APP_PATH . "includes/data_checks.inc");
-	include_once(APP_PATH . "gl/includes/gl_db.inc");
-	include_once(APP_PATH . "includes/banking.inc");
+
 	$js = "";
 	if (Config::get('ui.windows.popups')) {
-		$js .= get_js_open_window(800, 500);
+		$js .= ui_view::get_js_open_window(800, 500);
 	}
 
 	JS::footerFile('/js/reconcile.js');
@@ -28,7 +24,7 @@
 	check_db_has_bank_accounts(_("There are no bank accounts defined in the system."));
 	function check_date() {
 		if (!is_date(get_post('deposit_date'))) {
-			display_error(_("Invalid deposit date format"));
+			ui_msgs::display_error(_("Invalid deposit date format"));
 			JS::setFocus('deposit_date');
 			return false;
 		}
@@ -65,11 +61,11 @@
 	}
 
 	function trans_view($trans) {
-		return get_trans_view_str($trans["type"], $trans["trans_no"]);
+		return ui_view::get_trans_view_str($trans["type"], $trans["trans_no"]);
 	}
 
 	function gl_view($row) {
-		return get_gl_view_str($row["type"], $row["trans_no"]);
+		return ui_view::get_gl_view_str($row["type"], $row["trans_no"]);
 	}
 
 	function fmt_debit($row) {

@@ -11,15 +11,13 @@
 	 ***********************************************************************/
 	$page_security = 'SA_INVENTORYADJUSTMENT';
 
-
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
-	include_once(APP_PATH . "includes/date_functions.inc");
-	include_once(APP_PATH . "includes/data_checks.inc");
+
 	include_once(APP_PATH . "inventory/includes/item_adjustments_ui.inc");
-	include_once(APP_PATH . "inventory/includes/inventory_db.inc");
+
 	$js = "";
 	if (Config::get('ui.windows.popups'))
-		$js .= get_js_open_window(800, 500);
+		$js .= ui_view::get_js_open_window(800, 500);
 
 	page(_($help_context = "Item Stocktake Note"), false, false, "", $js);
 
@@ -35,13 +33,13 @@
 		$trans_no = $_GET['AddedID'];
 		$trans_type = ST_INVADJUST;
 
-		display_notification_centered(_("Items adjustment has been processed"));
-		display_note(get_trans_view_str($trans_type, $trans_no, _("&View this adjustment")));
-		display_note(get_gl_view_str($trans_type, $trans_no, _("View the GL &Postings for this Adjustment")), 1, 0);
+		ui_msgs::display_notification_centered(_("Items adjustment has been processed"));
+		ui_msgs::display_note(ui_view::get_trans_view_str($trans_type, $trans_no, _("&View this adjustment")));
+		ui_msgs::display_note(ui_view::get_gl_view_str($trans_type, $trans_no, _("View the GL &Postings for this Adjustment")), 1, 0);
 
 		hyperlink_no_params($_SERVER['PHP_SELF'], _("Enter &Another Adjustment"));
 
-		display_footer_exit();
+		ui_view::display_footer_exit();
 	}
 	//--------------------------------------------------------------------------------------------------
 
@@ -49,7 +47,7 @@
 		global $Ajax;
 
 		$Ajax->activate('items_table');
-		set_focus('_stock_id_edit');
+		ui_view::set_focus('_stock_id_edit');
 	}
 
 	//-----------------------------------------------------------------------------------------------
@@ -77,31 +75,31 @@
 		$adj = &$_SESSION['adj_items'];
 
 		if (count($adj->line_items) == 0) {
-			display_error(_("You must enter at least one non empty item line."));
-			set_focus('stock_id');
+			ui_msgs::display_error(_("You must enter at least one non empty item line."));
+			ui_view::set_focus('stock_id');
 			return false;
 		}
 		if (!$Refs->is_valid($_POST['ref'])) {
-			display_error(_("You must enter a reference."));
-			set_focus('ref');
+			ui_msgs::display_error(_("You must enter a reference."));
+			ui_view::set_focus('ref');
 			return false;
 		}
 
 		if (!is_new_reference($_POST['ref'], ST_INVADJUST)) {
-			display_error(_("The entered reference is already in use."));
-			set_focus('ref');
+			ui_msgs::display_error(_("The entered reference is already in use."));
+			ui_view::set_focus('ref');
 			return false;
 		}
 
 		if (!is_date($_POST['AdjDate'])) {
-			display_error(_("The entered date for the adjustment is invalid."));
-			set_focus('AdjDate');
+			ui_msgs::display_error(_("The entered date for the adjustment is invalid."));
+			ui_view::set_focus('AdjDate');
 			return false;
 		}
 		elseif (!is_date_in_fiscalyear($_POST['AdjDate']))
 		{
-			display_error(_("The entered date is not in fiscal year."));
-			set_focus('AdjDate');
+			ui_msgs::display_error(_("The entered date is not in fiscal year."));
+			ui_view::set_focus('AdjDate');
 			return false;
 		}
 		return true;
@@ -130,14 +128,14 @@
 
 	function check_item_data() {
 		if (!check_num('qty', 0)) {
-			display_error(_("The quantity entered is negative or invalid."));
-			set_focus('qty');
+			ui_msgs::display_error(_("The quantity entered is negative or invalid."));
+			ui_view::set_focus('qty');
 			return false;
 		}
 
 		if (!check_num('std_cost', 0)) {
-			display_error(_("The entered standard cost is negative or invalid."));
-			set_focus('std_cost');
+			ui_msgs::display_error(_("The entered standard cost is negative or invalid."));
+			ui_view::set_focus('std_cost');
 			return false;
 		}
 

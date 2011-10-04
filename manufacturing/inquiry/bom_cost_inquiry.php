@@ -17,9 +17,6 @@
 
 	include_once(APP_PATH . "manufacturing/includes/manufacturing_ui.inc");
 	include_once(APP_PATH . "includes/manufacturing.inc");
-	include_once(APP_PATH . "includes/faui.inc");
-	include_once(APP_PATH . "includes/banking.inc");
-	include_once(APP_PATH . "includes/data_checks.inc");
 
 	check_db_has_bom_stock_items(_("There are no manufactured or kit items defined in the system."));
 
@@ -34,7 +31,7 @@
 	stock_manufactured_items_list_row(_("Select a manufacturable item:"), 'stock_id', null, false, true);
 	end_table();
 	br();
-	display_heading(_("All Costs Are In:") . " " . get_company_currency());
+	ui_msgs::display_heading(_("All Costs Are In:") . " " . Banking::get_company_currency());
 	display_bom(Input::post('stock_id'));
 
 	end_form();

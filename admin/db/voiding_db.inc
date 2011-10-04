@@ -9,10 +9,6 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	include_once(APP_PATH . "sales/includes/sales_db.inc");
-	include_once(APP_PATH . "purchasing/includes/purchasing_db.inc");
-	include_once(APP_PATH . "inventory/includes/inventory_db.inc");
-	include_once(APP_PATH . "manufacturing/includes/manufacturing_db.inc");
 
 	function void_transaction($type, $type_no, $date_, $memo_) {
 		$void_entry = get_voided_entry($type, $type_no);

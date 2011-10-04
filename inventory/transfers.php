@@ -11,17 +11,13 @@
 	 ***********************************************************************/
 	$page_security = 'SA_LOCATIONTRANSFER';
 
-
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 
-	include_once(APP_PATH . "includes/date_functions.inc");
-	include_once(APP_PATH . "includes/data_checks.inc");
-
 	include_once(APP_PATH . "inventory/includes/stock_transfers_ui.inc");
-	include_once(APP_PATH . "inventory/includes/inventory_db.inc");
+
 	$js = "";
 	if (Config::get('ui.windows.popups'))
-		$js .= get_js_open_window(800, 500);
+		$js .= ui_view::get_js_open_window(800, 500);
 
 	page(_($help_context = "Inventory Location Transfers"), false, false, "", $js);
 
@@ -37,12 +33,12 @@
 		$trans_no = $_GET['AddedID'];
 		$trans_type = ST_LOCTRANSFER;
 
-		display_notification_centered(_("Inventory transfer has been processed"));
-		display_note(get_trans_view_str($trans_type, $trans_no, _("&View this transfer")));
+		ui_msgs::display_notification_centered(_("Inventory transfer has been processed"));
+		ui_msgs::display_note(ui_view::get_trans_view_str($trans_type, $trans_no, _("&View this transfer")));
 
 		hyperlink_no_params($_SERVER['PHP_SELF'], _("Enter &Another Inventory Transfer"));
 
-		display_footer_exit();
+		ui_view::display_footer_exit();
 	}
 	//--------------------------------------------------------------------------------------------------
 
@@ -50,7 +46,7 @@
 		global $Ajax;
 
 		$Ajax->activate('items_table');
-		set_focus('_stock_id_edit');
+		ui_view::set_focus('_stock_id_edit');
 	}
 
 	//-----------------------------------------------------------------------------------------------
@@ -79,37 +75,37 @@
 		$input_error = 0;
 
 		if (count($tr->line_items) == 0) {
-			display_error(_("You must enter at least one non empty item line."));
-			set_focus('stock_id');
+			ui_msgs::display_error(_("You must enter at least one non empty item line."));
+			ui_view::set_focus('stock_id');
 			return false;
 		}
 		if (!$Refs->is_valid($_POST['ref'])) {
-			display_error(_("You must enter a reference."));
-			set_focus('ref');
+			ui_msgs::display_error(_("You must enter a reference."));
+			ui_view::set_focus('ref');
 			$input_error = 1;
 		}
 		elseif (!is_new_reference($_POST['ref'], ST_LOCTRANSFER))
 		{
-			display_error(_("The entered reference is already in use."));
-			set_focus('ref');
+			ui_msgs::display_error(_("The entered reference is already in use."));
+			ui_view::set_focus('ref');
 			$input_error = 1;
 		}
 		elseif (!is_date($_POST['AdjDate']))
 		{
-			display_error(_("The entered date for the adjustment is invalid."));
-			set_focus('AdjDate');
+			ui_msgs::display_error(_("The entered date for the adjustment is invalid."));
+			ui_view::set_focus('AdjDate');
 			$input_error = 1;
 		}
 		elseif (!is_date_in_fiscalyear($_POST['AdjDate']))
 		{
-			display_error(_("The entered date is not in fiscal year."));
-			set_focus('AdjDate');
+			ui_msgs::display_error(_("The entered date is not in fiscal year."));
+			ui_view::set_focus('AdjDate');
 			$input_error = 1;
 		}
 		elseif ($_POST['FromStockLocation'] == $_POST['ToStockLocation'])
 		{
-			display_error(_("The locations to transfer from and to must be different."));
-			set_focus('FromStockLocation');
+			ui_msgs::display_error(_("The locations to transfer from and to must be different."));
+			ui_view::set_focus('FromStockLocation');
 			$input_error = 1;
 		}
 		else
@@ -117,7 +113,7 @@
 			$failed_item = $tr->check_qoh($_POST['FromStockLocation'], $_POST['AdjDate'], true);
 			if ($failed_item >= 0) {
 				$line = $tr->line_items[$failed_item];
-				display_error(_("The quantity entered is greater than the available quantity for this item at the source location :") .
+				ui_msgs::display_error(_("The quantity entered is greater than the available quantity for this item at the source location :") .
 					 " " . $line->stock_id . " - " . $line->description);
 				echo "<br>";
 				$_POST['Edit' . $failed_item] = 1; // enter edit mode
@@ -147,8 +143,8 @@
 
 	function check_item_data() {
 		if (!check_num('qty', 0)) {
-			display_error(_("The quantity entered must be a positive number."));
-			set_focus('qty');
+			ui_msgs::display_error(_("The quantity entered must be a positive number."));
+			ui_view::set_focus('qty');
 			return false;
 		}
 		return true;

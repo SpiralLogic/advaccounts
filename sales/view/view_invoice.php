@@ -15,11 +15,10 @@
 
 	include_once(APP_PATH . "sales/includes/sales_ui.inc");
 
-	include_once(APP_PATH . "sales/includes/sales_db.inc");
 	include_once(APP_PATH . "reporting/includes/reporting.inc");
 	$js = "";
 	if (Config::get('ui.windows.popups'))
-		$js .= get_js_open_window(900, 600);
+		$js .= ui_view::get_js_open_window(900, 600);
 	page(_($help_context = "View Sales Invoice"), true, false, "", $js);
 
 	if (isset($_GET["trans_no"])) {
@@ -38,7 +37,7 @@
 
 	$sales_order = get_sales_order_header($myrow["order_"], ST_SALESORDER);
 
-	display_heading(sprintf(_("SALES INVOICE #%d"), $trans_id));
+	ui_msgs::display_heading(sprintf(_("SALES INVOICE #%d"), $trans_id));
 
 	echo "<br>";
 	start_table(Config::get('tables.style2') . " width=95%");
@@ -83,7 +82,7 @@
 	label_cells(_("Reference"), $myrow["reference"], "class='label'");
 	label_cells(_("Currency"), $sales_order["curr_code"], "class='label'");
 	label_cells(_("Our Order No"),
-		get_customer_trans_view_str(ST_SALESORDER, $sales_order["order_no"]), "class='label'");
+		ui_view::get_customer_trans_view_str(ST_SALESORDER, $sales_order["order_no"]), "class='label'");
 	end_row();
 	start_row();
 	label_cells(_("Customer Purchase Order #"), $sales_order["customer_ref"], "class='label'");
@@ -93,10 +92,10 @@
 	start_row();
 	label_cells(_("Invoice Date"), sql2date($myrow["tran_date"]), "class='label'", "nowrap");
 	label_cells(_("Due Date"), sql2date($myrow["due_date"]), "class='label'", "nowrap");
-	label_cells(_("Deliveries"), get_customer_trans_view_str(ST_CUSTDELIVERY,
+	label_cells(_("Deliveries"), ui_view::get_customer_trans_view_str(ST_CUSTDELIVERY,
 			get_parent_trans(ST_SALESINVOICE, $trans_id)), "class='label'");
 	end_row();
-	comments_display_row(ST_SALESINVOICE, $trans_id);
+	ui_view::comments_display_row(ST_SALESINVOICE, $trans_id);
 	end_table();
 
 	echo "</td></tr>";
@@ -143,7 +142,7 @@
 
 	}
 	else
-		display_note(_("There are no line items on this invoice."), 1, 2);
+		ui_msgs::display_note(_("There are no line items on this invoice."), 1, 2);
 
 	$display_sub_tot = price_format($sub_total);
 	$display_freight = price_format($myrow["ov_freight"]);
@@ -154,7 +153,7 @@
 	label_row(_("Shipping"), $display_freight, "colspan=6 align=right", "nowrap align=right");
 
 	$tax_items = get_trans_tax_details(ST_SALESINVOICE, $trans_id);
-	display_customer_trans_tax_details($tax_items, 6);
+	ui_view::display_customer_trans_tax_details($tax_items, 6);
 
 	$display_total = price_format($myrow["ov_freight"] + $myrow["ov_gst"] + $myrow["ov_amount"] + $myrow["ov_freight_tax"]);
 
@@ -162,7 +161,7 @@
 		"nowrap align=right");
 	end_table(1);
 
-	is_voided_display(ST_SALESINVOICE, $trans_id, _("This invoice has been voided."));
+	ui_view::is_voided_display(ST_SALESINVOICE, $trans_id, _("This invoice has been voided."));
 
 	submenu_print(_("&Print This Invoice"), ST_SALESINVOICE, $_GET['trans_no'], 'prtopt');
 	end_page(true);

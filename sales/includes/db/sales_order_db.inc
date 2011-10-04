@@ -23,7 +23,7 @@
 		db_query($sql, "order Cannot be Added");
 		$order->trans_no = array($order_no => 0);
 		if (Config::get('accounts.stock.emailnotify') == 1) {
-			include_once(APP_PATH . "inventory/includes/inventory_db.inc");
+
 			$st_ids = array();
 			$st_names = array();
 			$st_num = array();
@@ -137,7 +137,7 @@
 		$sql = "DELETE FROM sales_order_details WHERE order_no =" . $order_no . " AND trans_type=" . $order->trans_type;
 		db_query($sql, "Old order Cannot be Deleted");
 		if (Config::get('accounts.stock.emailnotify') == 1) {
-			include_once(APP_PATH . "inventory/includes/inventory_db.inc");
+
 			$st_ids = array();
 			$st_names = array();
 			$st_num = array();

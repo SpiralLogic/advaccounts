@@ -80,8 +80,6 @@
 
 		function menu_footer($no_menu, $is_index) {
 
-			include_once(APP_PATH . "includes/date_functions.inc");
-
 			if ($no_menu == false && !AJAX_REFERRER) {
 				echo "<div id='footer'>\n";
 				if (isset($_SESSION['wa_current_user'])) {

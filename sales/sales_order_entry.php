@@ -19,15 +19,15 @@
 	//
 
 	$page_security = 'SA_SALESORDER';
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 
+	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 	include_once(APP_PATH . "sales/includes/sales_ui.inc");
 	include_once(APP_PATH . "sales/includes/ui/sales_order_ui.inc");
-	include_once(APP_PATH . "sales/includes/sales_db.inc");
+
 	include_once(APP_PATH . "sales/includes/db/sales_types_db.inc");
 	include_once(APP_PATH . "reporting/includes/reporting.inc");
 
-	set_page_security((!Input::session('Items') ?:$_SESSION['Items']->trans_type),
+	set_page_security((!Input::session('Items') ? : $_SESSION['Items']->trans_type),
 		array(ST_SALESORDER => 'SA_SALESORDER',
 			ST_SALESQUOTE => 'SA_SALESQUOTE',
 			ST_CUSTDELIVERY => 'SA_SALESDELIVERY',
@@ -43,7 +43,7 @@
 	$js = '';
 
 	if (Config::get('ui.windows.popups')) {
-		$js .= get_js_open_window(900, 500);
+		$js .= ui_view::get_js_open_window(900, 500);
 	}
 	$_SESSION['page_title'] = _($help_context = "Sales Order Entry");
 	//   $js .= get_jquery_gmaps();
@@ -129,16 +129,16 @@
 		submenu_view(_("&View This Invoice"), ST_SALESINVOICE, $_GET['AddedDI']);
 
 		if ($_GET['Type'] == ST_SALESQUOTE) {
-			display_notification(_("This sales quotation has been cancelled as requested."), 1);
+			ui_msgs::display_notification(_("This sales quotation has been cancelled as requested."), 1);
 			submenu_option(_("Enter a New Sales Quotation"), "/sales/sales_order_entry.php?NewQuotation=Yes");
 			submenu_option(_("Select A Different &Quotation to edit"), "/sales/inquiry/sales_orders_view.php?type=" . ST_SALESQUOTE);
 		}
 		else {
-			display_notification(_("This sales order has been cancelled as requested."), 1);
+			ui_msgs::display_notification(_("This sales order has been cancelled as requested."), 1);
 			submenu_option(_("Enter a New Sales Order"), "/sales/sales_order_entry.php?NewOrder=Yes");
 			submenu_option(_("Select A Different Order to edit"), "/sales/inquiry/sales_orders_view.php?type=" . ST_SALESORDER);
 		}
-		display_footer_exit();
+		ui_view::display_footer_exit();
 	}
 	else {
 		check_edit_conflicts();
@@ -146,7 +146,7 @@
 	function page_complete($order_no, $trans_type, $trans_name = 'Transaction', $edit = false, $update = false) {
 		$customer = new Customer($_SESSION['Jobsboard']->customer_id);
 		$emails = $customer->getEmailAddresses();
-		display_notification_centered(sprintf(_($trans_name . " # %d has been " . ($update ? "updated!"
+		ui_msgs::display_notification_centered(sprintf(_($trans_name . " # %d has been " . ($update ? "updated!"
 					 : "added!")), $order_no));
 		submenu_view(_("&View This " . $trans_name), $trans_type, $order_no);
 		if ($edit) {
@@ -175,7 +175,7 @@
 		elseif ($trans_type == ST_CUSTDELIVERY) {
 			submenu_print(_("&Print Delivery Note"), ST_CUSTDELIVERY, $order_no, 'prtopt');
 			submenu_print(_("P&rint as Packing Slip"), ST_CUSTDELIVERY, $order_no, 'prtopt', null, 1);
-			display_note(get_gl_view_str(ST_CUSTDELIVERY, $order_no, _("View the GL Journal Entries for this Dispatch")), 0, 1);
+			ui_msgs::display_note(ui_view::get_gl_view_str(ST_CUSTDELIVERY, $order_no, _("View the GL Journal Entries for this Dispatch")), 0, 1);
 			submenu_option(_("Make &Invoice Against This Delivery"), "/sales/customer_invoice.php?DeliveryNumber=$order_no");
 			((isset($_GET['Type']) && $_GET['Type'] == 1))
 			 ? submenu_option(_("Enter a New Template &Delivery"), "/sales/inquiry/sales_orders_view.php?DeliveryTemplates=Yes")
@@ -188,7 +188,7 @@
 			if ($row !== false) {
 				submenu_print(_("Print &Receipt"), $row['trans_type_from'], $row['trans_no_from'] . "-" . $row['trans_type_from'], 'prtopt');
 			}
-			display_note(get_gl_view_str(ST_SALESINVOICE, $order_no, _("View the GL &Journal Entries for this Invoice")), 0, 1);
+			ui_msgs::display_note(ui_view::get_gl_view_str(ST_SALESINVOICE, $order_no, _("View the GL &Journal Entries for this Invoice")), 0, 1);
 			if ((isset($_GET['Type']) && $_GET['Type'] == 1)) {
 				submenu_option(_("Enter a &New Template Invoice"), "/sales/inquiry/sales_orders_view.php?InvoiceTemplates=Yes");
 			}
@@ -200,9 +200,9 @@
 				echo "<div style='text-align:center;'><iframe  style='margin:0 auto; border-width:0;' src='/sales/customer_payments.php?frame=1' width='80%' height='475' scrolling='no' frameborder='0'></iframe> </div>";
 			}
 		}
-		set_focus('prtopt');
+		ui_view::set_focus('prtopt');
 		//	UploadHandler::insert($order_no);
-		display_footer_exit();
+		ui_view::display_footer_exit();
 	}
 
 	//-----------------------------------------------------------------------------
@@ -272,95 +272,95 @@
 	function line_start_focus() {
 		global $Ajax;
 		$Ajax->activate('items_table');
-		set_focus('_stock_id_edit');
+		ui_view::set_focus('_stock_id_edit');
 	}
 
 	//--------------------------------------------------------------------------------
 	function can_process() {
 		global $Refs;
 		if (!get_post('customer_id')) {
-			display_error(_("There is no customer selected."));
-			set_focus('customer_id');
+			ui_msgs::display_error(_("There is no customer selected."));
+			ui_view::set_focus('customer_id');
 			return false;
 		}
 		if (!get_post('branch_id')) {
-			display_error(_("This customer has no branch defined."));
-			set_focus('branch_id');
+			ui_msgs::display_error(_("This customer has no branch defined."));
+			ui_view::set_focus('branch_id');
 			return false;
 		}
 		if (!is_date($_POST['OrderDate'])) {
-			display_error(_("The entered date is invalid."));
-			set_focus('OrderDate');
+			ui_msgs::display_error(_("The entered date is invalid."));
+			ui_view::set_focus('OrderDate');
 			return false;
 		}
 		if ($_SESSION['Items']->trans_type != ST_SALESORDER && $_SESSION['Items']->trans_type != ST_SALESQUOTE && !is_date_in_fiscalyear($_POST['OrderDate'])) {
-			display_error(_("The entered date is not in fiscal year"));
-			set_focus('OrderDate');
+			ui_msgs::display_error(_("The entered date is not in fiscal year"));
+			ui_view::set_focus('OrderDate');
 			return false;
 		}
 		if (count($_SESSION['Items']->line_items) == 0) {
-			display_error(_("You must enter at least one non empty item line."));
-			set_focus('AddItem');
+			ui_msgs::display_error(_("You must enter at least one non empty item line."));
+			ui_view::set_focus('AddItem');
 			return false;
 		}
 		if ($_SESSION['Items']->trans_no == 0 && !empty($_POST['cust_ref']) && !$_SESSION['Items']->check_cust_ref($_POST['cust_ref'])) {
-			display_error(_("This customer already has a purchase order with this number."));
-			set_focus('cust_ref');
+			ui_msgs::display_error(_("This customer already has a purchase order with this number."));
+			ui_view::set_focus('cust_ref');
 			return false;
 		}
 		if (strlen($_POST['deliver_to']) <= 1) {
-			display_error(_("You must enter the person or company to whom delivery should be made to."));
-			set_focus('deliver_to');
+			ui_msgs::display_error(_("You must enter the person or company to whom delivery should be made to."));
+			ui_view::set_focus('deliver_to');
 			return false;
 		}
 		if (strlen($_POST['delivery_address']) <= 1) {
-			display_error(_("You should enter the street address in the box provided. Orders cannot be accepted without a valid street address."));
-			set_focus('delivery_address');
+			ui_msgs::display_error(_("You should enter the street address in the box provided. Orders cannot be accepted without a valid street address."));
+			ui_view::set_focus('delivery_address');
 			return false;
 		}
 		if ($_POST['freight_cost'] == "") {
 			$_POST['freight_cost'] = price_format(0);
 		}
 		if (!check_num('freight_cost', 0)) {
-			display_error(_("The shipping cost entered is expected to be numeric."));
-			set_focus('freight_cost');
+			ui_msgs::display_error(_("The shipping cost entered is expected to be numeric."));
+			ui_view::set_focus('freight_cost');
 			return false;
 		}
 		if (!is_date($_POST['delivery_date'])) {
 			if ($_SESSION['Items']->trans_type == ST_SALESQUOTE) {
-				display_error(_("The Valid date is invalid."));
+				ui_msgs::display_error(_("The Valid date is invalid."));
 			}
 			else {
-				display_error(_("The delivery date is invalid."));
+				ui_msgs::display_error(_("The delivery date is invalid."));
 			}
-			set_focus('delivery_date');
+			ui_view::set_focus('delivery_date');
 			return false;
 		}
 		//if (date1_greater_date2($_SESSION['Items']->document_date, $_POST['delivery_date'])) {
 		if (date1_greater_date2($_POST['OrderDate'], $_POST['delivery_date'])) {
 			if ($_SESSION['Items']->trans_type == ST_SALESQUOTE) {
-				display_error(_("The requested valid date is before the date of the quotation."));
+				ui_msgs::display_error(_("The requested valid date is before the date of the quotation."));
 			}
 			else {
-				display_error(_("The requested delivery date is before the date of the order."));
+				ui_msgs::display_error(_("The requested delivery date is before the date of the order."));
 			}
-			set_focus('delivery_date');
+			ui_view::set_focus('delivery_date');
 			return false;
 		}
 
 		if ($_SESSION['Items']->trans_type == ST_SALESORDER && strlen($_POST['name']) < 1) {
-			display_error(_("You must enter a Person Ordering name."));
-			set_focus('name');
+			ui_msgs::display_error(_("You must enter a Person Ordering name."));
+			ui_view::set_focus('name');
 			return false;
 		}
 		if (!$Refs->is_valid($_POST['ref'])) {
-			display_error(_("You must enter a reference."));
-			set_focus('ref');
+			ui_msgs::display_error(_("You must enter a reference."));
+			ui_view::set_focus('ref');
 			return false;
 		}
 		while ($_SESSION['Items']->trans_no == 0 && !is_new_reference($_POST['ref'], $_SESSION['Items']->trans_type)) {
-			//display_error(_("The entered reference is already in use."));
-			//set_focus('ref');
+			//ui_msgs::display_error(_("The entered reference is already in use."));
+			//ui_view::set_focus('ref');
 			//return false;
 			$_POST['ref'] = $Refs->get_next($_SESSION['Items']->trans_type);
 		}
@@ -376,7 +376,7 @@
 		$_SESSION['Items']->write(1);
 		if (count($messages)) { // abort on failure or error messages are lost
 			$Ajax->activate('_page_body');
-			display_footer_exit();
+			ui_view::display_footer_exit();
 		}
 		$_SESSION['order_no'] = $trans_no = key($_SESSION['Items']->trans_no);
 		$trans_type = $_SESSION['Items']->trans_type;
@@ -413,27 +413,27 @@
 	function check_item_data() {
 		global $SysPrefs;
 		if (!$_SESSION["wa_current_user"]->can_access('SA_SALESCREDIT') && (!check_num('qty', 0) || !check_num('Disc', 0, 100))) {
-			display_error(_("The item could not be updated because you are attempting to set the quantity ordered to less than 0, or the discount percent to more than 100."));
-			set_focus('qty');
+			ui_msgs::display_error(_("The item could not be updated because you are attempting to set the quantity ordered to less than 0, or the discount percent to more than 100."));
+			ui_view::set_focus('qty');
 			return false;
 		}
 		elseif (!check_num('price', 0)) {
-			display_error(_("Price for item must be entered and can not be less than 0"));
-			set_focus('price');
+			ui_msgs::display_error(_("Price for item must be entered and can not be less than 0"));
+			ui_view::set_focus('price');
 			return false;
 		}
 		elseif (!$_SESSION["wa_current_user"]->can_access('SA_SALESCREDIT') && isset($_POST['LineNo']) && isset($_SESSION['Items']->line_items[$_POST['LineNo']]) && !check_num('qty',
 			$_SESSION['Items']->line_items[$_POST['LineNo']]->qty_done)
 		) {
-			set_focus('qty');
-			display_error(_("You attempting to make the quantity ordered a quantity less than has already been delivered. The quantity delivered cannot be modified retrospectively."));
+			ui_view::set_focus('qty');
+			ui_msgs::display_error(_("You attempting to make the quantity ordered a quantity less than has already been delivered. The quantity delivered cannot be modified retrospectively."));
 			return false;
 		} // Joe Hunt added 2008-09-22 -------------------------
 		elseif ($_SESSION['Items']->trans_type != ST_SALESORDER && $_SESSION['Items']->trans_type != ST_SALESQUOTE && !$SysPrefs->allow_negative_stock() && is_inventory_item($_POST['stock_id'])) {
 			$qoh = get_qoh_on_date($_POST['stock_id'], $_POST['Location'], $_POST['OrderDate']);
 			if (input_num('qty') > $qoh) {
 				$stock = get_item($_POST['stock_id']);
-				display_error(_("The delivery cannot be processed because there is an insufficient quantity for item:") . " " . $stock['stock_id'] . " - " . $stock['description'] . " - " . _("Quantity On Hand") . " = " . number_format2($qoh,
+				ui_msgs::display_error(_("The delivery cannot be processed because there is an insufficient quantity for item:") . " " . $stock['stock_id'] . " - " . $stock['description'] . " - " . _("Quantity On Hand") . " = " . number_format2($qoh,
 						get_qty_dec($_POST['stock_id'])));
 				return false;
 			}
@@ -456,7 +456,7 @@
 			$_SESSION['Items']->remove_from_cart($line_no);
 		}
 		else {
-			display_error(_("This item cannot be deleted because some of it has already been delivered."));
+			ui_msgs::display_error(_("This item cannot be deleted because some of it has already been delivered."));
 		}
 		line_start_focus();
 	}
@@ -475,17 +475,17 @@
 	function handle_cancel_order() {
 		global $Ajax;
 		if ($_SESSION['Items']->trans_type == ST_CUSTDELIVERY) {
-			display_notification(_("Direct delivery entry has been cancelled as requested."), 1);
+			ui_msgs::display_notification(_("Direct delivery entry has been cancelled as requested."), 1);
 			submenu_option(_("Enter a New Sales Delivery"), "/sales/sales_order_entry.php?NewDelivery=1");
 		}
 		elseif ($_SESSION['Items']->trans_type == ST_SALESINVOICE) {
-			display_notification(_("Direct invoice entry has been cancelled as requested."), 1);
+			ui_msgs::display_notification(_("Direct invoice entry has been cancelled as requested."), 1);
 			submenu_option(_("Enter a New Sales Invoice"), "/sales/sales_order_entry.php?NewInvoice=1");
 		}
 		else {
 			if ($_SESSION['Items']->trans_no != 0) {
 				if ($_SESSION['Items']->trans_type == ST_SALESORDER && sales_order_has_deliveries(key($_SESSION['Items']->trans_no))) {
-					display_error(_("This order cannot be cancelled because some of it has already been invoiced or dispatched. However, the line item quantities may be modified."));
+					ui_msgs::display_error(_("This order cannot be cancelled because some of it has already been invoiced or dispatched. However, the line item quantities may be modified."));
 				}
 				else {
 					$trans_no = key($_SESSION['Items']->trans_no);
@@ -503,7 +503,7 @@
 		}
 		$Ajax->activate('_page_body');
 		processing_end();
-		display_footer_exit();
+		ui_view::display_footer_exit();
 	}
 
 	//--------------------------------------------------------------------------------
@@ -566,9 +566,9 @@
 	}
 	if (isset($_POST['discountall'])) {
 		if (!is_numeric($_POST['_discountall'])) {
-			display_error(_("Discount must be a number"));
+			ui_msgs::display_error(_("Discount must be a number"));
 		} elseif ($_POST['_discountall'] < 0 || $_POST['_discountall'] > 100) {
-			display_error(_("Discount percentage must be between 0-100"));
+			ui_msgs::display_error(_("Discount percentage must be between 0-100"));
 		} else {
 			$_SESSION['Items']->discount_all($_POST['_discountall'] / 100);
 		}
@@ -647,7 +647,7 @@
 		}
 	}
 	else {
-		display_error($customer_error);
+		ui_msgs::display_error($customer_error);
 	}
 	end_form();
 	JS::onUnload('Are you sure you want to leave without commiting changes?');

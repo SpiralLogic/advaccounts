@@ -647,7 +647,7 @@
 			$res = db_query($query, "EXIT!!!");
 			if (db_num_rows($res) == 0) {
 				// report is not declared
-				display_error("<BR> Report does not exist !! id=" . $id);
+				ui_msgs::display_error("<BR> Report does not exist !! id=" . $id);
 				exit;
 			}
 			while ($f = db_fetch($res))
@@ -1414,7 +1414,7 @@
 
 			$this->res = db_query($sql, "EXIT3 !!!");
 			if (db_num_rows($this->res) == 0) {
-				display_error("$sql No Data Records found !!!");
+				ui_msgs::display_error("$sql No Data Records found !!!");
 				exit;
 			}
 			$this->f = db_fetch($this->res);

@@ -13,16 +13,10 @@
 
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 
-	include_once(APP_PATH . "includes/date_functions.inc");
-	include_once(APP_PATH . "includes/faui.inc");
-	include_once(APP_PATH . "includes/data_checks.inc");
-
-	include_once(APP_PATH . "gl/includes/gl_db.inc");
-
 	$js = '';
-	set_focus('account');
+	ui_view::set_focus('account');
 	if (Config::get('ui.windows.popups'))
-		$js .= get_js_open_window(800, 500);
+		$js .= ui_view::get_js_open_window(800, 500);
 
 	page(_($help_context = "Tax Inquiry"), false, false, '', $js);
 

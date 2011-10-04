@@ -9,8 +9,6 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	include_once(APP_PATH . "includes/prefs/sysprefs.inc");
-	include_once(APP_PATH . "inventory/includes/inventory_db.inc");
 
 	class items_cart {
 		var $trans_type;
@@ -88,14 +86,10 @@
 		// ----------- GL item functions
 
 		function add_gl_item($code_id, $dimension_id, $dimension2_id, $amount, $reference, $description = null) {
-			if (isset($code_id) && $code_id != "" && isset($amount) && isset($dimension_id) &&
-			 isset($dimension2_id)
-			) {
+			if (isset($code_id) && $code_id != "" && isset($amount) && isset($dimension_id) && isset($dimension2_id)) {
 				$this->gl_items[] = new gl_item($code_id, $dimension_id, $dimension2_id, $amount, $reference, $description);
 				return true;
-			}
-			else
-			{
+			} else {
 				// shouldn't come here under normal circumstances
 				display_db_error("unexpected - invalid parameters in add_gl_item($code_id, $dimension_id, $dimension2_id, $amount,...)", "", true);
 			}

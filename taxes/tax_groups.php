@@ -15,9 +15,6 @@
 
 	page(_($help_context = "Tax Groups"));
 
-	include_once(APP_PATH . "includes/data_checks.inc");
-	include_once(APP_PATH . "includes/faui.inc");
-
 	include_once(APP_PATH . "taxes/db/tax_groups_db.inc");
 	include_once(APP_PATH . "taxes/db/tax_types_db.inc");
 
@@ -34,8 +31,8 @@
 
 		if (strlen($_POST['name']) == 0) {
 			$input_error = 1;
-			display_error(_("The tax group name cannot be empty."));
-			set_focus('name');
+			ui_msgs::display_error(_("The tax group name cannot be empty."));
+			ui_view::set_focus('name');
 		}
 		/* Editable rate has been removed 090920 Joe Hunt
 	 else
@@ -47,9 +44,9 @@
 				 $_POST['tax_type_id' . $i] != ALL_NUMERIC	&&
 				 !check_num('rate' . $i, 0))
 			 {
-			 display_error( _("An entered tax rate is invalid or less than zero."));
+			 ui_msgs::display_error( _("An entered tax rate is invalid or less than zero."));
 				 $input_error = 1;
-			 set_focus('rate');
+			 ui_view::set_focus('rate');
 			 break;
 			 }
 		 }
@@ -76,12 +73,12 @@
 			if ($selected_id != -1) {
 				update_tax_group($selected_id, $_POST['name'], $_POST['tax_shipping'], $taxes,
 					$rates);
-				display_notification(_('Selected tax group has been updated'));
+				ui_msgs::display_notification(_('Selected tax group has been updated'));
 			}
 			else
 			{
 				add_tax_group($_POST['name'], $_POST['tax_shipping'], $taxes, $rates);
-				display_notification(_('New tax group has been added'));
+				ui_msgs::display_notification(_('New tax group has been added'));
 			}
 
 			$Mode = 'RESET';
@@ -97,7 +94,7 @@
 		$result = db_query($sql, "could not query customers");
 		$myrow = db_fetch_row($result);
 		if ($myrow[0] > 0) {
-			display_note(_("Cannot delete this tax group because customer branches been created referring to it."));
+			ui_msgs::display_note(_("Cannot delete this tax group because customer branches been created referring to it."));
 			return false;
 		}
 
@@ -105,7 +102,7 @@
 		$result = db_query($sql, "could not query suppliers");
 		$myrow = db_fetch_row($result);
 		if ($myrow[0] > 0) {
-			display_note(_("Cannot delete this tax group because suppliers been created referring to it."));
+			ui_msgs::display_note(_("Cannot delete this tax group because suppliers been created referring to it."));
 			return false;
 		}
 
@@ -118,7 +115,7 @@
 
 		if (can_delete($selected_id)) {
 			delete_tax_group($selected_id);
-			display_notification(_('Selected tax group has been deleted'));
+			ui_msgs::display_notification(_('Selected tax group has been deleted'));
 		}
 		$Mode = 'RESET';
 	}
@@ -197,7 +194,7 @@
 
 	end_table();
 
-	display_note(_("Select the taxes that are included in this group."), 1);
+	ui_msgs::display_note(_("Select the taxes that are included in this group."), 1);
 
 	start_table(Config::get('tables.style2'));
 	//$th = array(_("Tax"), _("Default Rate (%)"), _("Rate (%)"));

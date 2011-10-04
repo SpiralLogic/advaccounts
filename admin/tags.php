@@ -11,9 +11,8 @@
 	 ***********************************************************************/
 
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
-	include_once(APP_PATH . "includes/types.inc"); // For tag constants
+	// For tag constants
 	include_once(APP_PATH . "admin/db/tags_db.inc");
-	include(APP_PATH . "includes/faui.inc");
 
 	// Set up page security based on what type of tags we're working with
 	if (@$_GET['type'] == "account" || get_post('type') == TAG_ACCOUNT) {
@@ -52,8 +51,8 @@
 
 	function can_process() {
 		if (strlen($_POST['name']) == 0) {
-			display_error(_("The tag name cannot be empty."));
-			set_focus('name');
+			ui_msgs::display_error(_("The tag name cannot be empty."));
+			ui_view::set_focus('name');
 			return false;
 		}
 		return true;
@@ -65,12 +64,12 @@
 		if (can_process()) {
 			if ($selected_id != -1) {
 				if ($ret = update_tag($selected_id, $_POST['name'], $_POST['description']))
-					display_notification(_('Selected tag settings have been updated'));
+					ui_msgs::display_notification(_('Selected tag settings have been updated'));
 			}
 			else
 			{
 				if ($ret = add_tag($_POST['type'], $_POST['name'], $_POST['description']))
-					display_notification(_('New tag has been added'));
+					ui_msgs::display_notification(_('New tag has been added'));
 			}
 			if ($ret) $Mode = 'RESET';
 		}
@@ -84,7 +83,7 @@
 		$result = get_records_associated_with_tag($selected_id);
 
 		if (db_num_rows($result) > 0) {
-			display_error(_("Cannot delete this tag because records have been created referring to it."));
+			ui_msgs::display_error(_("Cannot delete this tag because records have been created referring to it."));
 			return false;
 		}
 
@@ -96,7 +95,7 @@
 	if ($Mode == 'Delete') {
 		if (can_delete($selected_id)) {
 			delete_tag($selected_id);
-			display_notification(_('Selected tag has been deleted'));
+			ui_msgs::display_notification(_('Selected tag has been deleted'));
 		}
 		$Mode = 'RESET';
 	}

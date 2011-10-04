@@ -11,25 +11,24 @@
 	 ***********************************************************************/
 	$page_security = 'SA_SUPPTRANSVIEW';
 
-
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 	include_once(APP_PATH . "reporting/includes/reporting.inc");
 	include(APP_PATH . "purchasing/includes/purchasing_ui.inc");
 	$js = "";
 	if (Config::get('ui.windows.popups'))
-		$js .= get_js_open_window(900, 500);
+		$js .= ui_view::get_js_open_window(900, 500);
 	page(_($help_context = "View Purchase Order"), true, false, "", $js);
 	if (!isset($_GET['trans_no'])) {
 		die ("<br>" . _("This page must be called with a purchase order number to review."));
 	}
-	display_heading(_("Purchase Order") . " #" . $_GET['trans_no']);
+	ui_msgs::display_heading(_("Purchase Order") . " #" . $_GET['trans_no']);
 	$purchase_order = new purch_order;
 	read_po($_GET['trans_no'], $purchase_order);
 	echo "<br>";
 	display_po_summary($purchase_order, true);
 	start_table(Config::get('tables.style') . "  width=90%", 6);
 	echo "<tr><td valign=top>"; // outer table
-	display_heading2(_("Line Details"));
+	ui_msgs::display_heading2(_("Line Details"));
 	start_table("colspan=9 " . Config::get('tables.style') . " width=100%");
 	$th = array(_("Item Code"), _("Item Description"), _("Quantity"), _("Unit"), _("Price"), _("Discount"), _("Line Total"), _("Requested By"), _("Quantity Received"),
 		_("Quantity Invoiced")
@@ -65,19 +64,19 @@
 	label_row(_("Total Excluding Tax/Shipping"), $display_total, "align=right colspan=6", "nowrap align=right", 3);
 	end_table();
 	if ($overdue_items)
-		display_note(_("Marked items are overdue."), 0, 0, "class='overduefg'");
+		ui_msgs::display_note(_("Marked items are overdue."), 0, 0, "class='overduefg'");
 	//----------------------------------------------------------------------------------------------------
 	$k = 0;
 	$grns_result = get_po_grns($_GET['trans_no']);
 	if (db_num_rows($grns_result) > 0) {
 		echo "</td><td valign=top>"; // outer table
-		display_heading2(_("Deliveries"));
+		ui_msgs::display_heading2(_("Deliveries"));
 		start_table(Config::get('tables.style'));
 		$th = array(_("#"), _("Reference"), _("Delivered On"));
 		table_header($th);
 		while ($myrow = db_fetch($grns_result)) {
 			alt_table_row_color($k);
-			label_cell(get_trans_view_str(ST_SUPPRECEIVE, $myrow["id"]));
+			label_cell(ui_view::get_trans_view_str(ST_SUPPRECEIVE, $myrow["id"]));
 			label_cell($myrow["reference"]);
 			label_cell(sql2date($myrow["delivery_date"]));
 			end_row();
@@ -88,13 +87,13 @@
 	$k = 0;
 	if (db_num_rows($invoice_result) > 0) {
 		echo "</td><td valign=top>"; // outer table
-		display_heading2(_("Invoices/Credits"));
+		ui_msgs::display_heading2(_("Invoices/Credits"));
 		start_table(Config::get('tables.style'));
 		$th = array(_("#"), _("Date"), _("Total"));
 		table_header($th);
 		while ($myrow = db_fetch($invoice_result)) {
 			alt_table_row_color($k);
-			label_cell(get_trans_view_str($myrow["type"], $myrow["trans_no"]));
+			label_cell(ui_view::get_trans_view_str($myrow["type"], $myrow["trans_no"]));
 			label_cell(sql2date($myrow["tran_date"]));
 			amount_cell($myrow["Total"]);
 			end_row();

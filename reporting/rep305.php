@@ -18,10 +18,7 @@
 	// ----------------------------------------------------------------
 
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
-	include_once(APP_PATH . "includes/date_functions.inc");
-	include_once(APP_PATH . "includes/data_checks.inc");
-	include_once(APP_PATH . "includes/banking.inc");
-	include_once(APP_PATH . "gl/includes/gl_db.inc");
+
 	include_once(APP_PATH . "inventory/includes/db/items_category_db.inc");
 
 	//----------------------------------------------------------------------------------------------------
@@ -97,8 +94,8 @@
 				}
 				$stock_id = $trans['item_code'];
 			}
-			$curr = get_supplier_currency($trans['supplier_id']);
-			$rate = get_exchange_rate_from_home_currency($curr, sql2date($trans['delivery_date']));
+			$curr = Banking::get_supplier_currency($trans['supplier_id']);
+			$rate = Banking::get_exchange_rate_from_home_currency($curr, sql2date($trans['delivery_date']));
 			$trans['unit_price'] *= $rate;
 			$trans['act_price'] *= $rate;
 

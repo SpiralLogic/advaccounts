@@ -13,11 +13,9 @@
 
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 
-	include_once(APP_PATH . "includes/date_functions.inc");
-	include_once(APP_PATH . "includes/faui.inc");
 	$js = "";
 	if (Config::get('ui.windows.popups'))
-		$js .= get_js_open_window(800, 500);
+		$js .= ui_view::get_js_open_window(800, 500);
 
 	if (isset($_GET['outstanding_only']) && $_GET['outstanding_only']) {
 		$outstanding_only = 1;
@@ -45,9 +43,9 @@
 
 		if ($disable) {
 			//		$Ajax->addFocus(true, 'OrderNumber');
-			set_focus('OrderNumber');
+			ui_view::set_focus('OrderNumber');
 		} else
-			set_focus('type_');
+			ui_view::set_focus('type_');
 
 		$Ajax->activate('dim_table');
 	}
@@ -86,7 +84,7 @@
 	$dim = get_company_pref('use_dimension');
 
 	function view_link($row) {
-		return get_dimensions_trans_view_str(ST_DIMENSION, $row["id"]);
+		return ui_view::get_dimensions_trans_view_str(ST_DIMENSION, $row["id"]);
 	}
 
 	function is_closed($row) {

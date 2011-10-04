@@ -14,10 +14,6 @@
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 
 	page(_($help_context = "Items"), @$_REQUEST['popup']);
-	include_once(APP_PATH . "includes/date_functions.inc");
-	include_once(APP_PATH . "includes/faui.inc");
-	include_once(APP_PATH . "includes/data_checks.inc");
-	include_once(APP_PATH . "inventory/includes/inventory_db.inc");
 
 	$user_comp = '';
 	$new_item = get_post('stock_id') == '' || get_post('cancel') || get_post('clone');
@@ -36,7 +32,7 @@
 	if (get_post('cancel')) {
 		$_POST['NewStockID'] = $_POST['stock_id'] = '';
 		clear_data();
-		set_focus('stock_id');
+		ui_view::set_focus('stock_id');
 		$Ajax->activate('_page_body');
 	}
 	if (list_updated('category_id') || list_updated('mb_flag')) {
@@ -55,24 +51,24 @@
 
 		//But check for the worst
 		if (strtoupper(substr(trim($_FILES['pic']['name']), strlen($_FILES['pic']['name']) - 3)) != 'JPG') {
-			display_warning(_('Only jpg files are supported - a file extension of .jpg is expected'));
+			ui_msgs::display_warning(_('Only jpg files are supported - a file extension of .jpg is expected'));
 			$upload_file = 'No';
 		}
 		elseif ($_FILES['pic']['size'] > (Config::get('item.images.max_size') * 1024))
 		{ //File Size Check
-			display_warning(_('The file size is over the maximum allowed. The maximum size allowed in KB is') . ' ' . Config::get('item.images.max_size'));
+			ui_msgs::display_warning(_('The file size is over the maximum allowed. The maximum size allowed in KB is') . ' ' . Config::get('item.images.max_size'));
 			$upload_file = 'No';
 		}
 		elseif ($_FILES['pic']['type'] == "text/plain")
 		{ //File type Check
-			display_warning(_('Only graphics files can be uploaded'));
+			ui_msgs::display_warning(_('Only graphics files can be uploaded'));
 			$upload_file = 'No';
 		}
 		elseif (file_exists($filename))
 		{
 			$result = unlink($filename);
 			if (!$result) {
-				display_error(_('The existing image could not be removed'));
+				ui_msgs::display_error(_('The existing image could not be removed'));
 				$upload_file = 'No';
 			}
 		}
@@ -108,23 +104,23 @@
 			$input_error = 1;
 		if (strlen($_POST['description']) == 0) {
 			$input_error = 1;
-			display_error(_('The item name must be entered.'));
-			set_focus('description');
+			ui_msgs::display_error(_('The item name must be entered.'));
+			ui_view::set_focus('description');
 		} elseif (empty($_POST['NewStockID'])) {
 			$input_error = 1;
-			display_error(_('The item code cannot be empty'));
-			set_focus('NewStockID');
+			ui_msgs::display_error(_('The item code cannot be empty'));
+			ui_view::set_focus('NewStockID');
 		} elseif (strstr($_POST['NewStockID'], " ") || strstr($_POST['NewStockID'], "'") ||
 		 strstr($_POST['NewStockID'], "+") || strstr($_POST['NewStockID'], "\"") ||
 		 strstr($_POST['NewStockID'], "&") || strstr($_POST['NewStockID'], "\t")
 		) {
 			$input_error = 1;
-			display_error(_('The item code cannot contain any of the following characters -  & + OR a space OR quotes'));
-			set_focus('NewStockID');
+			ui_msgs::display_error(_('The item code cannot contain any of the following characters -  & + OR a space OR quotes'));
+			ui_view::set_focus('NewStockID');
 		} elseif ($new_item && db_num_rows(get_item_kit($_POST['NewStockID']))) {
 			$input_error = 1;
-			display_error(_("This item code is already assigned to stock item or sale kit."));
-			set_focus('NewStockID');
+			ui_msgs::display_error(_("This item code is already assigned to stock item or sale kit."));
+			ui_view::set_focus('NewStockID');
 		}
 		if ($input_error != 1) {
 			if (check_value('del_image')) {
@@ -144,9 +140,9 @@
 
 				update_record_status($_POST['NewStockID'], $_POST['inactive'], 'stock_master', 'stock_id');
 				update_record_status($_POST['NewStockID'], $_POST['inactive'], 'item_codes', 'item_code');
-				set_focus('stock_id');
+				ui_view::set_focus('stock_id');
 				$Ajax->activate('stock_id'); // in case of status change
-				display_notification(_("Item has been updated."));
+				ui_msgs::display_notification(_("Item has been updated."));
 			} else { //it is a NEW part
 				add_item($_POST['NewStockID'], $_POST['description'],
 					$_POST['long_description'], $_POST['category_id'], $_POST['tax_type_id'],
@@ -156,17 +152,17 @@
 					$_POST['dimension_id'], $_POST['dimension2_id'],
 					check_value('no_sale'), check_value('editable'));
 
-				display_notification(_("A new item has been added."));
-				set_focus('NewStockID');
+				ui_msgs::display_notification(_("A new item has been added."));
+				ui_view::set_focus('NewStockID');
 			}
 			if (isset($_POST['addupdatenew'])) {
 				$_POST['NewStockID'] = $_POST['stock_id'] = '';
 				clear_data();
 				$new_item = true;
-				set_focus('stock_id');
+				ui_view::set_focus('stock_id');
 				meta_forward($_SERVER['PHP_SELF']);
 			} else {
-				set_global_stock_item($_POST['NewStockID']);
+				ui_globals::set_global_stock_item($_POST['NewStockID']);
 				$_POST['stock_id'] = $_POST['NewStockID'];
 			}
 			$Ajax->activate('_page_body');
@@ -176,7 +172,7 @@
 	if (get_post('clone')) {
 		unset($_POST['stock_id']);
 		unset($_POST['inactive']);
-		set_focus('NewStockID');
+		ui_view::set_focus('NewStockID');
 		$Ajax->activate('_page_body');
 	}
 
@@ -211,7 +207,7 @@
 			}
 		}
 		if ($msg != '') {
-			if ($dispmsg) display_error($msg);
+			if ($dispmsg) ui_msgs::display_error($msg);
 			return false;
 		}
 		return true;
@@ -225,10 +221,10 @@
 			delete_item($stock_id);
 			$filename = COMPANY_PATH . "/$user_comp/images/" . item_img_name($stock_id) . ".jpg";
 			if (file_exists($filename)) unlink($filename);
-			display_notification(_("Selected item has been deleted."));
+			ui_msgs::display_notification(_("Selected item has been deleted."));
 			$_POST['stock_id'] = '';
 			clear_data();
-			set_focus('stock_id');
+			ui_view::set_focus('stock_id');
 			$new_item = true;
 			$Ajax->activate('_page_body');
 		}
@@ -252,7 +248,7 @@
 			$_SESSION['options']['stock_id']['inactive'] = check_value('show_inactive');
 			FB::info($_SESSION['options']);
 			$Ajax->activate('stock_id');
-			set_focus('stock_id');
+			ui_view::set_focus('stock_id');
 		}
 	}
 
@@ -289,7 +285,7 @@
 		}
 		label_row(_("Item Code:"), $_POST['NewStockID']);
 		hidden('NewStockID', $_POST['NewStockID']);
-		set_focus('description');
+		ui_view::set_focus('description');
 	}
 	text_row(_("Name:"), 'description', null, 52, 200);
 	textarea_row(_('Description:'), 'long_description', null, 42, 3);
@@ -374,11 +370,11 @@
 		submit_center_last('cancel', _("Cancel"), _("Cancel Edition"), 'cancel');
 	}
 	if (get_post('stock_id')) {
-		set_global_stock_item(get_post('stock_id'));
+		ui_globals::set_global_stock_item(get_post('stock_id'));
 		echo "<iframe src='/inventory/purchasing_data.php?frame=1' width='48%' height='450' style='overflow-x: hidden; overflow-y: scroll; ' frameborder='0'></iframe> ";
 	}
 	if (get_post('stock_id')) {
-		set_global_stock_item(get_post('stock_id'));
+		ui_globals::set_global_stock_item(get_post('stock_id'));
 		echo "<iframe style='float:right;' src='/inventory/prices.php?frame=1' width='48%' height='450' style='overflow-x: hidden; overflow-y: scroll; ' frameborder='0'></iframe> ";
 	}
 	div_end();

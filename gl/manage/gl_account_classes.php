@@ -15,22 +15,18 @@
 
 	page(_($help_context = "GL Account Classes"));
 
-	include(APP_PATH . "gl/includes/gl_db.inc");
-
-	include(APP_PATH . "includes/faui.inc");
-
 	simple_page_mode(true);
 	//-----------------------------------------------------------------------------------
 
 	function can_process() {
 		if (!is_numeric($_POST['id'])) {
-			display_error(_("The account class ID must be numeric."));
-			set_focus('id');
+			ui_msgs::display_error(_("The account class ID must be numeric."));
+			ui_view::set_focus('id');
 			return false;
 		}
 		if (strlen($_POST['name']) == 0) {
-			display_error(_("The account class name cannot be empty."));
-			set_focus('name');
+			ui_msgs::display_error(_("The account class name cannot be empty."));
+			ui_view::set_focus('name');
 			return false;
 		}
 		if (Config::get('accounts.gl.oldconvertstyle') == 1)
@@ -46,12 +42,12 @@
 
 			if ($selected_id != -1) {
 				if (update_account_class($selected_id, $_POST['name'], $_POST['ctype']))
-					display_notification(_('Selected account class settings has been updated'));
+					ui_msgs::display_notification(_('Selected account class settings has been updated'));
 			}
 			else
 			{
 				if (add_account_class($_POST['id'], $_POST['name'], $_POST['ctype'])) {
-					display_notification(_('New account class has been added'));
+					ui_msgs::display_notification(_('New account class has been added'));
 					$Mode = 'RESET';
 				}
 			}
@@ -68,7 +64,7 @@
 		$result = db_query($sql, "could not query chart master");
 		$myrow = db_fetch_row($result);
 		if ($myrow[0] > 0) {
-			display_error(_("Cannot delete this account class because GL account types have been created referring to it."));
+			ui_msgs::display_error(_("Cannot delete this account class because GL account types have been created referring to it."));
 			return false;
 		}
 
@@ -81,7 +77,7 @@
 
 		if (can_delete($selected_id)) {
 			delete_account_class($selected_id);
-			display_notification(_('Selected account class has been deleted'));
+			ui_msgs::display_notification(_('Selected account class has been deleted'));
 		}
 		$Mode = 'RESET';
 	}

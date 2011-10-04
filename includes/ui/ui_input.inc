@@ -443,7 +443,7 @@
 											$labparams = "", $post_label = "", $inparams = "") {
 		global $Ajax;
 
-		default_focus($name);
+		ui_view::default_focus($name);
 		if ($label != null)
 			label_cell($label, $labparams);
 		echo "<td>";
@@ -465,7 +465,7 @@
 												 $labparams = null, $post_label = null, $submit_on_change = false) {
 		global $Ajax;
 
-		default_focus($name);
+		ui_view::default_focus($name);
 		if (!isset($_POST[$name]) || $_POST[$name] == "") {
 			if ($init)
 				$_POST[$name] = $init;
@@ -574,7 +574,7 @@
 		if ($check && (get_post($name) != Today()))
 			$aspect .= ' style="color:#FF0000"';
 
-		//	 default_focus($name);
+		//	 ui_view::default_focus($name);
 
 		echo "<input id='$name' type=\"text\" name=\"$name\" $class $aspect size=\"9\" maxlength=\"12\" value=\""
 		 . $_POST[$name] . "\""
@@ -751,7 +751,7 @@
 	function textarea_cells($label, $name, $value, $cols, $rows, $title = null, $params = "") {
 		global $Ajax;
 
-		default_focus($name);
+		ui_view::default_focus($name);
 		if ($label != null)
 			echo "<td $params>$label</td>\n";
 		if ($value === null)

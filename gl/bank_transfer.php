@@ -13,15 +13,9 @@
 
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 
-	include_once(APP_PATH . "includes/date_functions.inc");
-	include_once(APP_PATH . "includes/data_checks.inc");
-
-	include_once(APP_PATH . "gl/includes/gl_db.inc");
-	include_once(APP_PATH . "gl/includes/gl_ui.inc");
-
 	$js = "";
 	if (Config::get('ui.windows.popups'))
-		$js .= get_js_open_window(800, 500);
+		$js .= ui_view::get_js_open_window(800, 500);
 
 	page(_($help_context = "Transfer between Bank Accounts"), false, false, "", $js);
 
@@ -33,13 +27,13 @@
 		$trans_no = $_GET['AddedID'];
 		$trans_type = ST_BANKTRANSFER;
 
-		display_notification_centered(_("Transfer has been entered"));
+		ui_msgs::display_notification_centered(_("Transfer has been entered"));
 
-		display_note(get_gl_view_str($trans_type, $trans_no, _("&View the GL Journal Entries for this Transfer")));
+		ui_msgs::display_note(ui_view::get_gl_view_str($trans_type, $trans_no, _("&View the GL Journal Entries for this Transfer")));
 
 		hyperlink_no_params($_SERVER['PHP_SELF'], _("Enter &Another Transfer"));
 
-		display_footer_exit();
+		ui_view::display_footer_exit();
 	}
 
 	if (isset($_POST['_DatePaid_changed'])) {
@@ -51,7 +45,7 @@
 	function gl_payment_controls() {
 		global $Refs;
 
-		$home_currency = get_company_currency();
+		$home_currency = Banking::get_company_currency();
 
 		start_form();
 
@@ -65,13 +59,13 @@
 
 		date_row(_("Transfer Date:"), 'DatePaid', '', null, 0, 0, 0, null, true);
 
-		$from_currency = get_bank_account_currency($_POST['FromBankAccount']);
-		$to_currency = get_bank_account_currency($_POST['ToBankAccount']);
+		$from_currency = Banking::get_bank_account_currency($_POST['FromBankAccount']);
+		$to_currency = Banking::get_bank_account_currency($_POST['ToBankAccount']);
 		if ($from_currency != "" && $to_currency != "" && $from_currency != $to_currency) {
 			amount_row(_("Amount:"), 'amount', null, null, $from_currency);
 			amount_row(_("Bank Charge:"), 'charge', null, null, $from_currency);
 
-			exchange_rate_display($from_currency, $to_currency, $_POST['DatePaid']);
+			ui_view::exchange_rate_display($from_currency, $to_currency, $_POST['DatePaid']);
 		}
 		else
 		{
@@ -98,47 +92,47 @@
 		global $Refs;
 
 		if (!is_date($_POST['DatePaid'])) {
-			display_error(_("The entered date is invalid."));
-			set_focus('DatePaid');
+			ui_msgs::display_error(_("The entered date is invalid."));
+			ui_view::set_focus('DatePaid');
 			return false;
 		}
 		if (!is_date_in_fiscalyear($_POST['DatePaid'])) {
-			display_error(_("The entered date is not in fiscal year."));
-			set_focus('DatePaid');
+			ui_msgs::display_error(_("The entered date is not in fiscal year."));
+			ui_view::set_focus('DatePaid');
 			return false;
 		}
 
 		if (!check_num('amount', 0)) {
-			display_error(_("The entered amount is invalid or less than zero."));
-			set_focus('amount');
+			ui_msgs::display_error(_("The entered amount is invalid or less than zero."));
+			ui_view::set_focus('amount');
 			return false;
 		}
 
 		if (isset($_POST['charge']) && !check_num('charge', 0)) {
-			display_error(_("The entered amount is invalid or less than zero."));
-			set_focus('charge');
+			ui_msgs::display_error(_("The entered amount is invalid or less than zero."));
+			ui_view::set_focus('charge');
 			return false;
 		}
 		if (isset($_POST['charge']) && input_num('charge') > 0 && get_company_pref('bank_charge_act') == '') {
-			display_error(_("The Bank Charge Account has not been set in System and General GL Setup."));
-			set_focus('charge');
+			ui_msgs::display_error(_("The Bank Charge Account has not been set in System and General GL Setup."));
+			ui_view::set_focus('charge');
 			return false;
 		}
 		if (!$Refs->is_valid($_POST['ref'])) {
-			display_error(_("You must enter a reference."));
-			set_focus('ref');
+			ui_msgs::display_error(_("You must enter a reference."));
+			ui_view::set_focus('ref');
 			return false;
 		}
 
 		if (!is_new_reference($_POST['ref'], ST_BANKTRANSFER)) {
-			display_error(_("The entered reference is already in use."));
-			set_focus('ref');
+			ui_msgs::display_error(_("The entered reference is already in use."));
+			ui_view::set_focus('ref');
 			return false;
 		}
 
 		if ($_POST['FromBankAccount'] == $_POST['ToBankAccount']) {
-			display_error(_("The source and destination bank accouts cannot be the same."));
-			set_focus('ToBankAccount');
+			ui_msgs::display_error(_("The source and destination bank accouts cannot be the same."));
+			ui_view::set_focus('ToBankAccount');
 			return false;
 		}
 

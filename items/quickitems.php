@@ -7,12 +7,13 @@
 
 		if (isset($_GET['term'])) {
 			$data = Item::search($_GET['term']);
-		} elseif (isset($_POST['id'])) {
+		} elseif (isset($_POST['stock_id'])) {
 			if (isset($_POST['name'])) {
 				$item = new Item($_POST);
 				$item->save($_POST);
 			} else {
-				$item = new Item($_POST['id']);
+				$id = Item::getStockId($_POST['stock_id']);
+				$item = new Item($id);
 			}
 			$data['item'] = $item;
 			$data['stockLevels'] = $item->getStockLevels();
@@ -29,7 +30,7 @@
 	page(_($help_context = "Items"), true);
 
 	$stock_cats = stock_categories_list('category_id');
-	if (!isset($_GET['id'])) {
+	if (!isset($_GET['stock_id'])) {
 		HTML::div('itemSearch');
 		UI::search('item', array('label' => 'Search Item',
 			'size' => 80,
@@ -37,22 +38,26 @@
 			'callback' => 'Items.fetch'
 		));
 		HTML::div();
+		$id = 0;
 	} else {
-		$data['item'] = $item = new Item($_GET['id']);
-		$data['stockLevels'] = $item->getStockLevels();
-		$data = json_encode($data, JSON_NUMERIC_CHECK);
-		JS::onload(<<<JS
+		$id = Item::getStockId($_GET['stock_id']);
+	}
+	$data['item'] = $item = new Item($id);
+	$data['stockLevels'] = $item->getStockLevels();
+	$data = json_encode($data, JSON_NUMERIC_CHECK);
+	JS::onload(<<<JS
 Items.onload($data);
 JS
-		);
-	}
+	);
+
 	$menu = new MenuUI();
 	$menu->startTab("Items", "Items");
 
 	echo <<<HTML
 <div id="Items" class="center">
+<hidden value="\${id}" id="id"></hidden>
 <table class="tableinfo marginauto" style="width:80%">
-<tr><td><label for="id">Code:</label></td><td><input id="id" type="text" value="\${id}" maxlength="10"></td></tr>
+<tr><td><label for="stock_id">Code:</label></td><td><input id="stock_id" type="text" value="\${stock_id}" maxlength="10"></td></tr>
 <tr><td ><label for="name">Name:</label><br></td><td><input id="name" type="text" value="\${name}" maxlength="10"></td></tr>
 <tr><td ><label for="description">Description:</label></td><td><textarea id="description" rows="6" cols="36">\${description} </textarea></td></tr>
 <tr><td ><label for="category_id">Category:</label></td><td>$stock_cats</td></tr>
@@ -66,15 +71,15 @@ JS
 HTML;
 	$menu->endTab();
 	$menu->startTab("Selling", "Sales Prices");
-	echo "<iframe id='sellFrame' src='".PATH_TO_ROOT."/inventory/prices.php?frame=1&stock_id=" . $_GET['id'] . "' width='90%' height='500' frameborder='0'></iframe> ";
+	echo "<iframe id='sellFrame' src='" . PATH_TO_ROOT . "/inventory/prices.php?frame=1&stock_id=" . $item->stock_id . "' width='90%' height='500' frameborder='0'></iframe> ";
 
 	$menu->endTab();
 	$menu->startTab("Purchasing", "Purchasing Prices");
-	echo "<iframe id='buyFrame' src='".PATH_TO_ROOT."/inventory/purchasing_data.php?frame=1&stock_id=" . $_GET['id'] . "' width='90%' height='500'  frameborder='0'></iframe> ";
+	echo "<iframe id='buyFrame' src='" . PATH_TO_ROOT . "/inventory/purchasing_data.php?frame=1&stock_id=" . $item->stock_id . "' width='90%' height='500'  frameborder='0'></iframe> ";
 
 	$menu->endTab();
 	$menu->startTab("Website", "Website page for product");
-	echo "<iframe id='webFrame' src='" . STORE_PRODUCT_URL . $_GET['id'] . STORE_URL_EXTENSION . "' width='90%' height='500'  frameborder='0'></iframe> ";
+	echo "<iframe id='webFrame' src='" . STORE_PRODUCT_URL . $item->stock_id . STORE_URL_EXTENSION . "' width='90%' height='500'  frameborder='0'></iframe> ";
 
 	$menu->endTab();
 

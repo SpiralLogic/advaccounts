@@ -19,9 +19,7 @@
 	// ----------------------------------------------------------------
 
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
-	include_once(APP_PATH . "includes/date_functions.inc");
-	include_once(APP_PATH . "includes/data_checks.inc");
-	include_once(APP_PATH . "sales/includes/sales_db.inc");
+
 	//----------------------------------------------------------------------------------------------------
 	print_statements();
 	//----------------------------------------------------------------------------------------------------

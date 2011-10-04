@@ -17,10 +17,6 @@
 
 	page(_($help_context = "Budget Entry"));
 
-	include(APP_PATH . "/includes/faui.inc");
-	include(APP_PATH . "/gl/includes/gl_db.inc");
-	include_once(APP_PATH . "includes/data_checks.inc");
-
 	check_db_has_gl_account_groups(_("There are no account groups defined. Please define at least one account group before entering accounts."));
 
 	//-------------------------------------------------------------------------------------
@@ -95,9 +91,9 @@
 		commit_transaction();
 
 		if (isset($_POST['add']))
-			display_notification_centered(_("The Budget has been saved."));
+			ui_msgs::display_notification_centered(_("The Budget has been saved."));
 		else
-			display_notification_centered(_("The Budget has been deleted."));
+			ui_msgs::display_notification_centered(_("The Budget has been deleted."));
 
 		//meta_forward($_SERVER['PHP_SELF']);
 		$Ajax->activate('budget_tbl');

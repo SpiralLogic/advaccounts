@@ -15,11 +15,6 @@
 
 	page(_($help_context = "View Bank Payment"), true);
 
-	include_once(APP_PATH . "includes/date_functions.inc");
-	include_once(APP_PATH . "includes/faui.inc");
-
-	include_once(APP_PATH . "gl/includes/gl_db.inc");
-
 	if (isset($_GET["trans_no"])) {
 		$trans_no = $_GET["trans_no"];
 	}
@@ -32,7 +27,7 @@
 
 	$from_trans = db_fetch($result);
 
-	$company_currency = get_company_currency();
+	$company_currency = Banking::get_company_currency();
 
 	$show_currencies = false;
 
@@ -40,7 +35,7 @@
 		$show_currencies = true;
 	}
 
-	display_heading(_("GL Payment") . " #$trans_no");
+	ui_msgs::display_heading(_("GL Payment") . " #$trans_no");
 
 	echo "<br>";
 	start_table(Config::get('tables.style') . "  width=90%");
@@ -70,23 +65,23 @@
 	start_row();
 	label_cells(_("Reference"), $from_trans['ref'], "class='tableheader2'", "colspan=$colspan2");
 	end_row();
-	comments_display_row(ST_BANKPAYMENT, $trans_no);
+	ui_view::comments_display_row(ST_BANKPAYMENT, $trans_no);
 
 	end_table(1);
 
-	$voided = is_voided_display(ST_BANKPAYMENT, $trans_no, _("This payment has been voided."));
+	$voided = ui_view::is_voided_display(ST_BANKPAYMENT, $trans_no, _("This payment has been voided."));
 
 	$items = get_gl_trans(ST_BANKPAYMENT, $trans_no);
 
 	if (db_num_rows($items) == 0) {
-		display_note(_("There are no items for this payment."));
+		ui_msgs::display_note(_("There are no items for this payment."));
 	}
 	else
 	{
 
-		display_heading2(_("Items for this Payment"));
+		ui_msgs::display_heading2(_("Items for this Payment"));
 		if ($show_currencies)
-			display_heading2(_("Item Amounts are Shown in :") . " " . $company_currency);
+			ui_msgs::display_heading2(_("Item Amounts are Shown in :") . " " . $company_currency);
 
 		echo "<br>";
 		start_table(Config::get('tables.style') . "  width=90%");
@@ -132,7 +127,7 @@
 		end_table(1);
 
 		if (!$voided)
-			display_allocations_from(
+			ui_view::display_allocations_from(
 				$from_trans['person_type_id'], $from_trans['person_id'], 1, $trans_no, -$from_trans['amount']);
 	}
 

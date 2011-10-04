@@ -15,8 +15,6 @@
 
 	page(_($help_context = "Sales Persons"));
 
-	include(APP_PATH . "includes/faui.inc");
-
 	simple_page_mode(true);
 	//------------------------------------------------------------------------------------------------
 
@@ -27,19 +25,19 @@
 
 		if (strlen($_POST['salesman_name']) == 0) {
 			$input_error = 1;
-			display_error(_("The sales person name cannot be empty."));
-			set_focus('salesman_name');
+			ui_msgs::display_error(_("The sales person name cannot be empty."));
+			ui_view::set_focus('salesman_name');
 		}
 		$pr1 = check_num('provision', 0, 100);
 		if (!$pr1 || !check_num('provision2', 0, 100)) {
 			$input_error = 1;
-			display_error(_("Salesman provision cannot be less than 0 or more than 100%."));
-			set_focus(!$pr1 ? 'provision' : 'provision2');
+			ui_msgs::display_error(_("Salesman provision cannot be less than 0 or more than 100%."));
+			ui_view::set_focus(!$pr1 ? 'provision' : 'provision2');
 		}
 		if (!check_num('break_pt', 0)) {
 			$input_error = 1;
-			display_error(_("Salesman provision breakpoint must be numeric and not less than 0."));
-			set_focus('break_pt');
+			ui_msgs::display_error(_("Salesman provision breakpoint must be numeric and not less than 0."));
+			ui_view::set_focus('break_pt');
 		}
 		if ($input_error != 1) {
 			if ($selected_id != -1) {
@@ -70,9 +68,9 @@
 			//run the sql from either of the above possibilites
 			db_query($sql, "The insert or update of the sales person failed");
 			if ($selected_id != -1)
-				display_notification(_('Selected sales person data have been updated'));
+				ui_msgs::display_notification(_('Selected sales person data have been updated'));
 			else
-				display_notification(_('New sales person data have been added'));
+				ui_msgs::display_notification(_('New sales person data have been added'));
 			$Mode = 'RESET';
 		}
 	}
@@ -85,13 +83,13 @@
 		$result = db_query($sql, "check failed");
 		$myrow = db_fetch_row($result);
 		if ($myrow[0] > 0) {
-			display_error("Cannot delete this sales-person because branches are set up referring to this sales-person - first alter the branches concerned.");
+			ui_msgs::display_error("Cannot delete this sales-person because branches are set up referring to this sales-person - first alter the branches concerned.");
 		}
 		else
 		{
 			$sql = "DELETE FROM salesman WHERE salesman_code=" . db_escape($selected_id);
 			db_query($sql, "The sales-person could not be deleted");
-			display_notification(_('Selected sales person data have been deleted'));
+			ui_msgs::display_notification(_('Selected sales person data have been deleted'));
 		}
 		$Mode = 'RESET';
 	}

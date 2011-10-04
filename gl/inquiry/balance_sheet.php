@@ -13,12 +13,6 @@
 
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 
-	include_once(APP_PATH . "includes/date_functions.inc");
-	include_once(APP_PATH . "includes/faui.inc");
-	include_once(APP_PATH . "includes/data_checks.inc");
-
-	include_once(APP_PATH . "gl/includes/gl_db.inc");
-
 	$js = "";
 
 	page(_($help_context = "Balance Sheet Drilldown"), false, false, "", $js);

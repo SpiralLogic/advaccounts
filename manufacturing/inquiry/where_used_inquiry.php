@@ -15,20 +15,18 @@
 
 	page(_($help_context = "Inventory Item Where Used Inquiry"));
 
-	include(APP_PATH . "includes/faui.inc");
-
 	check_db_has_stock_items(_("There are no items defined in the system."));
 
 	start_form(false, true);
 
 	if (!isset($_POST['stock_id']))
-		$_POST['stock_id'] = get_global_stock_item();
+		$_POST['stock_id'] = ui_globals::get_global_stock_item();
 
 	echo "<center>" . _("Select an item to display its parent item(s).") . "&nbsp;";
 	echo stock_items_list('stock_id', $_POST['stock_id'], false, true);
 	echo "<hr></center>";
 
-	set_global_stock_item($_POST['stock_id']);
+	ui_globals::set_global_stock_item($_POST['stock_id']);
 	//-----------------------------------------------------------------------------
 	function select_link($row) {
 		return pager_link($row["parent"] . " - " . $row["description"],

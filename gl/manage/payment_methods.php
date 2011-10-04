@@ -15,8 +15,6 @@
 
 	page(_($help_context = "Bank Accounts"));
 
-	include(APP_PATH . "includes/faui.inc");
-
 	simple_page_mode();
 	//-----------------------------------------------------------------------------------
 
@@ -28,8 +26,8 @@
 		//first off validate inputs sensible
 		if (strlen($_POST['bank_account_name']) == 0) {
 			$input_error = 1;
-			display_error(_("The bank account name cannot be empty."));
-			set_focus('bank_account_name');
+			ui_msgs::display_error(_("The bank account name cannot be empty."));
+			ui_view::set_focus('bank_account_name');
 		}
 
 		if ($input_error != 1) {
@@ -40,7 +38,7 @@
 					$_POST['bank_name'], $_POST['bank_account_number'],
 					$_POST['bank_address'], $_POST['BankAccountCurrency'],
 					$_POST['dflt_curr_act']);
-				display_notification(_('Bank account has been updated'));
+				ui_msgs::display_notification(_('Bank account has been updated'));
 			}
 			else
 			{
@@ -49,7 +47,7 @@
 					$_POST['bank_account_name'], $_POST['bank_name'],
 					$_POST['bank_account_number'], $_POST['bank_address'],
 					$_POST['BankAccountCurrency'], $_POST['dflt_curr_act']);
-				display_notification(_('New bank account has been added'));
+				ui_msgs::display_notification(_('New bank account has been added'));
 			}
 			$Mode = 'RESET';
 		}
@@ -67,18 +65,18 @@
 		$myrow = db_fetch_row($result);
 		if ($myrow[0] > 0) {
 			$cancel_delete = 1;
-			display_error(_("Cannot delete this bank account because transactions have been created using this account."));
+			ui_msgs::display_error(_("Cannot delete this bank account because transactions have been created using this account."));
 		}
 		$sql = "SELECT COUNT(*) FROM sales_pos WHERE pos_account=$acc";
 		$result = db_query($sql, "check failed");
 		$myrow = db_fetch_row($result);
 		if ($myrow[0] > 0) {
 			$cancel_delete = 1;
-			display_error(_("Cannot delete this bank account because POS definitions have been created using this account."));
+			ui_msgs::display_error(_("Cannot delete this bank account because POS definitions have been created using this account."));
 		}
 		if (!$cancel_delete) {
 			delete_bank_account($selected_id);
-			display_notification(_('Selected bank account has been deleted'));
+			ui_msgs::display_notification(_('Selected bank account has been deleted'));
 		} //end if Delete bank account
 		$Mode = 'RESET';
 	}
@@ -158,7 +156,7 @@
 		hidden('account_code');
 		hidden('account_type');
 		hidden('BankAccountCurrency', $_POST['BankAccountCurrency']);
-		set_focus('bank_account_name');
+		ui_view::set_focus('bank_account_name');
 	}
 
 	text_row(_("Bank Account Name:"), 'bank_account_name', null, 50, 100);

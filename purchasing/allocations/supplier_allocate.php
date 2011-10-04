@@ -11,17 +11,13 @@
 	 ***********************************************************************/
 	$page_security = 'SA_SUPPLIERALLOC';
 
-
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
-	include_once(APP_PATH . "includes/date_functions.inc");
-	include_once(APP_PATH . "includes/faui.inc");
-	include_once(APP_PATH . "includes/banking.inc");
-	include_once(APP_PATH . "sales/includes/sales_db.inc");
+
 	//include_once(APP_PATH . "purchasing/includes/ui/supp_alloc_ui.inc");
 
 	$js = "";
 	if (Config::get('ui.windows.popups'))
-		$js .= get_js_open_window(900, 500);
+		$js .= ui_view::get_js_open_window(900, 500);
 
 	JS::footerFile('/js/allocate.js');
 
@@ -44,13 +40,13 @@
 
 		start_form();
 
-		display_heading(_("Allocation of") . " " . $systypes_array[$_SESSION['alloc']->type] . " # " .
+		ui_msgs::display_heading(_("Allocation of") . " " . $systypes_array[$_SESSION['alloc']->type] . " # " .
 			 $_SESSION['alloc']->trans_no);
 
-		display_heading($_SESSION['alloc']->person_name);
+		ui_msgs::display_heading($_SESSION['alloc']->person_name);
 
-		display_heading2(_("Date:") . " <b>" . $_SESSION['alloc']->date_ . "</b>");
-		display_heading2(_("Total:") . " <b>" . price_format(-$_SESSION['alloc']->amount) . "</b>");
+		ui_msgs::display_heading2(_("Date:") . " <b>" . $_SESSION['alloc']->date_ . "</b>");
+		ui_msgs::display_heading2(_("Total:") . " <b>" . price_format(-$_SESSION['alloc']->amount) . "</b>");
 
 		echo "<br>";
 
@@ -65,7 +61,7 @@
 		}
 		else
 		{
-			display_note(_("There are no unsettled transactions to allocate."), 0, 1);
+			ui_msgs::display_note(_("There are no unsettled transactions to allocate."), 0, 1);
 			submit_center('Cancel', _("Back to Allocations"), true,
 				_('Abandon allocations and return to selection of allocatable amounts'), 'cancel');
 		}
@@ -88,7 +84,7 @@
 
 	if (isset($_POST['Cancel'])) {
 		clear_allocations();
-		meta_forward( "/purchasing/allocations/supplier_allocation_main.php");
+		meta_forward("/purchasing/allocations/supplier_allocation_main.php");
 	}
 
 	//--------------------------------------------------------------------------------

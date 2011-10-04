@@ -13,16 +13,11 @@
 
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 
-	include_once(APP_PATH . "includes/date_functions.inc");
-	include_once(APP_PATH . "includes/faui.inc");
-	include_once(APP_PATH . "includes/banking.inc");
 	include_once(APP_PATH . "includes/manufacturing.inc");
-	include_once(APP_PATH . "includes/data_checks.inc");
 
-	include_once(APP_PATH . "inventory/includes/inventory_db.inc");
 	$js = "";
 	if (Config::get('ui.windows.popups'))
-		$js .= get_js_open_window(900, 500);
+		$js .= ui_view::get_js_open_window(900, 500);
 	page(_($help_context = "Inventory Item Cost Update"), false, false, "", $js);
 
 	//--------------------------------------------------------------------------------------
@@ -46,13 +41,13 @@
 		if (!check_num('material_cost') || !check_num('labour_cost') ||
 		 !check_num('overhead_cost')
 		) {
-			display_error(_("The entered cost is not numeric."));
-			set_focus('material_cost');
+			ui_msgs::display_error(_("The entered cost is not numeric."));
+			ui_view::set_focus('material_cost');
 			$should_update = false;
 		}
 		elseif ($old_cost == $new_cost)
 		{
-			display_error(_("The new cost is the same as the old cost. Cost was not updated."));
+			ui_msgs::display_error(_("The new cost is the same as the old cost. Cost was not updated."));
 			$should_update = false;
 		}
 
@@ -61,10 +56,10 @@
 				input_num('material_cost'), input_num('labour_cost'),
 				input_num('overhead_cost'), $old_cost);
 
-			display_notification(_("Cost has been updated."));
+			ui_msgs::display_notification(_("Cost has been updated."));
 
 			if ($update_no > 0) {
-				display_note(get_gl_view_str(ST_COSTUPDATE, $update_no, _("View the GL Journal Entries for this Cost Update")), 0, 1);
+				ui_msgs::display_note(ui_view::get_gl_view_str(ST_COSTUPDATE, $update_no, _("View the GL Journal Entries for this Cost Update")), 0, 1);
 			}
 		}
 	}
@@ -76,13 +71,13 @@
 	start_form();
 
 	if (!isset($_POST['stock_id']))
-		$_POST['stock_id'] = get_global_stock_item();
+		$_POST['stock_id'] = ui_globals::get_global_stock_item();
 
 	echo "<center>" . _("Item:") . "&nbsp;";
 	echo stock_costable_items_list('stock_id', $_POST['stock_id'], false, true);
 
 	echo "</center><hr>";
-	set_global_stock_item($_POST['stock_id']);
+	ui_globals::set_global_stock_item($_POST['stock_id']);
 
 	$sql = "SELECT description, units, material_cost, labour_cost,
 	overhead_cost, mb_flag

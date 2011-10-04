@@ -31,9 +31,8 @@
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 	add_access_extensions();
 
-	include_once(APP_PATH . "includes/date_functions.inc");
 	include_once(APP_PATH . "admin/db/company_db.inc");
-	include_once(APP_PATH . "includes/faui.inc");
+
 	require_once("repgen_const.inc");
 	require_once("repgen_def.inc");
 
@@ -61,7 +60,7 @@
 	### Output key administration forms, including all updated
 	### information, if we come here after a submission...
 
-	display_heading(DESCRIPT);
+	ui_msgs::display_heading(DESCRIPT);
 
 	$note = DEL_REALLY;
 	switch (substr($id, 0, 1))
@@ -81,7 +80,7 @@
 	$note .= "  " . $h[3] . "  "; /* longname of report*/
 	$note .= DEL_DELETE;
 
-	display_notification($note);
+	ui_msgs::display_notification($note);
 
 	start_form(false, false, "repgen_del.php", "edit");
 

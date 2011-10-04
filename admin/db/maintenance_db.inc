@@ -120,14 +120,14 @@
 
 		// Check if the file is writable first.
 		if (!$zp = @fopen($filename, 'w')) {
-			display_error(sprintf(_("Cannot open the extension setup file '%s' for writing."),
+			ui_msgs::display_error(sprintf(_("Cannot open the extension setup file '%s' for writing."),
 					$filename));
 			return false;
 		}
 		else
 		{
 			if (!fwrite($zp, $msg)) {
-				display_error(sprintf(_("Cannot write to the extensions setup file '%s'."),
+				ui_msgs::display_error(sprintf(_("Cannot write to the extensions setup file '%s'."),
 						$filename));
 				fclose($zp);
 				return false;
@@ -180,13 +180,13 @@
 		// Check if directory exists and is writable first.
 		if (file_exists($path) && is_writable($path)) {
 			if (!$zp = fopen($filename, 'w')) {
-				display_error(_("Cannot open the languages file - ") . $filename);
+				ui_msgs::display_error(_("Cannot open the languages file - ") . $filename);
 				return false;
 			}
 			else
 			{
 				if (!fwrite($zp, $msg)) {
-					display_error(_("Cannot write to the language file - ") . $filename);
+					ui_msgs::display_error(_("Cannot write to the language file - ") . $filename);
 					fclose($zp);
 					return false;
 				}
@@ -196,7 +196,7 @@
 		}
 		else
 		{
-			display_error(_("The language files folder ") . $path . _(" is not writable. Change its permissions so it is, then re-run the operation."));
+			ui_msgs::display_error(_("The language files folder ") . $path . _(" is not writable. Change its permissions so it is, then re-run the operation."));
 			return false;
 		}
 		return true;
@@ -342,7 +342,7 @@
 		if (count($sql_errors)) {
 			// display first failure message; the rest are probably derivative
 			$err = $sql_errors[0];
-			display_error(sprintf(_("SQL script execution failed in line %d: %s"),
+			ui_msgs::display_error(sprintf(_("SQL script execution failed in line %d: %s"),
 					$err[1], $err[0]));
 			return false;
 		} else
@@ -414,8 +414,6 @@
 	// generates a dump of $db database
 	// $drop and $zip tell if to include the drop table statement or dry to pack
 	function db_export($conn, $filename, $zip = 'no', $comment = '') {
-
-
 
 		$error = false;
 		// set max string size before writing to file

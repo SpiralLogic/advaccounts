@@ -15,10 +15,7 @@
 
 	page(_($help_context = "Chart of Accounts"));
 
-	include(APP_PATH . "includes/faui.inc");
-	include(APP_PATH . "gl/includes/gl_db.inc");
 	include(APP_PATH . "admin/db/tags_db.inc");
-	include_once(APP_PATH . "includes/data_checks.inc");
 
 	check_db_has_gl_account_groups(_("There are no account groups defined. Please define at least one account group before entering accounts."));
 
@@ -46,20 +43,20 @@
 
 		if (strlen($_POST['account_code']) == 0) {
 			$input_error = 1;
-			display_error(_("The account code must be entered."));
-			set_focus('account_code');
+			ui_msgs::display_error(_("The account code must be entered."));
+			ui_view::set_focus('account_code');
 		}
 		elseif (strlen($_POST['account_name']) == 0)
 		{
 			$input_error = 1;
-			display_error(_("The account name cannot be empty."));
-			set_focus('account_name');
+			ui_msgs::display_error(_("The account name cannot be empty."));
+			ui_view::set_focus('account_name');
 		}
 		elseif (!Config::get('accounts.allowcharacters') && !is_numeric($_POST['account_code']))
 		{
 			$input_error = 1;
-			display_error(_("The account code must be numeric."));
-			set_focus('account_code');
+			ui_msgs::display_error(_("The account code must be numeric."));
+			ui_view::set_focus('account_code');
 		}
 
 		if ($input_error != 1) {
@@ -78,7 +75,7 @@
 					update_tag_associations(TAG_ACCOUNT, $_POST['account_code'],
 						$_POST['account_tags']);
 					$Ajax->activate('account_code'); // in case of status change
-					display_notification(_("Account data has been updated."));
+					ui_msgs::display_notification(_("Account data has been updated."));
 				}
 			}
 			else
@@ -87,7 +84,7 @@
 					$_POST['account_type'], $_POST['account_code2'])
 				) {
 					add_tag_associations($_POST['account_code'], $_POST['account_tags']);
-					display_notification(_("New account has been added."));
+					ui_msgs::display_notification(_("New account has been added."));
 					$selected_account = $_POST['AccountList'] = $_POST['account_code'];
 				}
 			}
@@ -107,7 +104,7 @@
 
 		$myrow = db_fetch_row($result);
 		if ($myrow[0] > 0) {
-			display_error(_("Cannot delete this account because transactions have been created using this account."));
+			ui_msgs::display_error(_("Cannot delete this account because transactions have been created using this account."));
 			return false;
 		}
 
@@ -131,7 +128,7 @@
 
 		$myrow = db_fetch_row($result);
 		if ($myrow[0] > 0) {
-			display_error(_("Cannot delete this account because it is used as one of the company default GL accounts."));
+			ui_msgs::display_error(_("Cannot delete this account because it is used as one of the company default GL accounts."));
 			return false;
 		}
 
@@ -140,7 +137,7 @@
 
 		$myrow = db_fetch_row($result);
 		if ($myrow[0] > 0) {
-			display_error(_("Cannot delete this account because it is used by a bank account."));
+			ui_msgs::display_error(_("Cannot delete this account because it is used by a bank account."));
 			return false;
 		}
 
@@ -153,7 +150,7 @@
 
 		$myrow = db_fetch_row($result);
 		if ($myrow[0] > 0) {
-			display_error(_("Cannot delete this account because it is used by one or more Items."));
+			ui_msgs::display_error(_("Cannot delete this account because it is used by one or more Items."));
 			return false;
 		}
 
@@ -162,7 +159,7 @@
 
 		$myrow = db_fetch_row($result);
 		if ($myrow[0] > 0) {
-			display_error(_("Cannot delete this account because it is used by one or more Taxes."));
+			ui_msgs::display_error(_("Cannot delete this account because it is used by one or more Taxes."));
 			return false;
 		}
 
@@ -175,7 +172,7 @@
 
 		$myrow = db_fetch_row($result);
 		if ($myrow[0] > 0) {
-			display_error(_("Cannot delete this account because it is used by one or more Customer Branches."));
+			ui_msgs::display_error(_("Cannot delete this account because it is used by one or more Customer Branches."));
 			return false;
 		}
 
@@ -187,7 +184,7 @@
 
 		$myrow = db_fetch_row($result);
 		if ($myrow[0] > 0) {
-			display_error(_("Cannot delete this account because it is used by one or more suppliers."));
+			ui_msgs::display_error(_("Cannot delete this account because it is used by one or more suppliers."));
 			return false;
 		}
 
@@ -197,7 +194,7 @@
 
 		$myrow = db_fetch_row($result);
 		if ($myrow[0] > 0) {
-			display_error(_("Cannot delete this account because it is used by one or more Quick Entry Lines."));
+			ui_msgs::display_error(_("Cannot delete this account because it is used by one or more Quick Entry Lines."));
 			return false;
 		}
 
@@ -213,7 +210,7 @@
 			$selected_account = $_POST['AccountList'] = '';
 			delete_tag_associations(TAG_ACCOUNT, $selected_account, true);
 			$selected_account = $_POST['AccountList'] = '';
-			display_notification(_("Selected account has been deleted"));
+			ui_msgs::display_notification(_("Selected account has been deleted"));
 			unset($_POST['account_code']);
 			$Ajax->activate('_page_body');
 		}
@@ -233,7 +230,7 @@
 		end_table();
 		if (get_post('_show_inactive_update')) {
 			$Ajax->activate('AccountList');
-			set_focus('AccountList');
+			ui_view::set_focus('AccountList');
 		}
 	}
 

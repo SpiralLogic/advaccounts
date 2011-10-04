@@ -9,10 +9,8 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	include_once(APP_PATH . "includes/date_functions.inc");
-	include_once(APP_PATH . "includes/banking.inc");
-	include_once(APP_PATH . "includes/manufacturing.inc");
 
+	include_once(APP_PATH . "includes/manufacturing.inc");
 	include_once(APP_PATH . "inventory/includes/db/items_category_db.inc");
 	include_once(APP_PATH . "inventory/includes/db/items_trans_db.inc");
 	include_once(APP_PATH . "inventory/includes/db/items_prices_db.inc");

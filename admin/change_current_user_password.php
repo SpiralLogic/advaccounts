@@ -15,28 +15,23 @@
 
 	page(_($help_context = "Change password"));
 
-	include_once(APP_PATH . "includes/date_functions.inc");
-	include_once(APP_PATH . "includes/faui.inc");
-
-	include_once(APP_PATH . "admin/db/users_db.inc");
-
 	function can_process() {
 
 		if (strlen($_POST['password']) < 4) {
-			display_error(_("The password entered must be at least 4 characters long."));
-			set_focus('password');
+			ui_msgs::display_error(_("The password entered must be at least 4 characters long."));
+			ui_view::set_focus('password');
 			return false;
 		}
 
 		if (strstr($_POST['password'], $_SESSION["wa_current_user"]->username) != false) {
-			display_error(_("The password cannot contain the user login."));
-			set_focus('password');
+			ui_msgs::display_error(_("The password cannot contain the user login."));
+			ui_view::set_focus('password');
 			return false;
 		}
 
 		if ($_POST['password'] != $_POST['passwordConfirm']) {
-			display_error(_("The passwords entered are not the same."));
-			set_focus('password');
+			ui_msgs::display_error(_("The passwords entered are not the same."));
+			ui_view::set_focus('password');
 			return false;
 		}
 
@@ -47,24 +42,24 @@
 
 		if (can_process()) {
 			if (Config::get('demo_mode')) {
-				display_warning(_("Password cannot be changed in demo mode."));
+				ui_msgs::display_warning(_("Password cannot be changed in demo mode."));
 			} else {
 				$auth = new Auth($_SESSION["wa_current_user"]->username);
 				$check = $auth->checkPasswordStrength($_POST['password']);
 				if ($check['error'] > 0)
-					display_error($check['text']);
+					ui_msgs::display_error($check['text']);
 				elseif ($check['strength'] < 3)
-					display_error(_("Password Too Weeak!"));
+					ui_msgs::display_error(_("Password Too Weeak!"));
 				else {
 					$auth->update_password($_SESSION['wa_current_user']->user, $_POST['password']);
 					unset($_SESSION['change_password']);
-					display_notification(_("Password Changed"));
+					ui_msgs::display_notification(_("Password Changed"));
 				}
 			}
 			$Ajax->activate('_page_body');
 		}
 	} elseif ($_SESSION['change_password']) {
-		display_warning('You are required to change your password!');
+		ui_msgs::display_warning('You are required to change your password!');
 	}
 
 	start_form();

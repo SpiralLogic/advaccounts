@@ -1,5 +1,5 @@
 <?php
-//============================================================+
+	//============================================================+
 	// File name   : tcpdf.php
 	// Begin       : 2002-08-03
 	// Last Update : 2008-09-19
@@ -126,7 +126,7 @@
 	/**
 	 * main configuration file
 	 */
-	/** -------------------------------FrontAccounting 2.0  ---------------------------
+	/** -------------------------------FrontAccounting 2.0	---------------------------
 	 * following changes are done for FrontAccounting 2.0 - Joe Hunt 06.08.2008
 	 * 1. /config/tcpdf_config.php is not included, commented out
 	 * 2. Following 3 defines instead:
@@ -1158,7 +1158,9 @@
 				$this->last_rc4_key = '';
 				$this->padding = "\x28\xBF\x4E\x5E\x4E\x75\x8A\x41\x64\x00\x4E\x56\xFF\xFA\x01\x08\x2E\x2E\x00\xB6\xD0\x68\x3E\x80\x2F\x0C\xA9\xFE\x64\x53\x69\x7A";
 				//Standard Unicode fonts
-				$this->CoreFonts = array('courier' => 'Courier', 'courierB' => 'Courier-Bold', 'courierI' => 'Courier-Oblique', 'courierBI' => 'Courier-BoldOblique', 'helvetica' => 'Helvetica', 'helveticaB' => 'Helvetica-Bold', 'helveticaI' => 'Helvetica-Oblique', 'helveticaBI' => 'Helvetica-BoldOblique', 'times' => 'Times-Roman', 'timesB' => 'Times-Bold', 'timesI' => 'Times-Italic', 'timesBI' => 'Times-BoldItalic', 'symbol' => 'Symbol', 'zapfdingbats' => 'ZapfDingbats');
+				$this->CoreFonts = array('courier' => 'Courier', 'courierB' => 'Courier-Bold', 'courierI' => 'Courier-Oblique', 'courierBI' => 'Courier-BoldOblique', 'helvetica' => 'Helvetica', 'helveticaB' => 'Helvetica-Bold', 'helveticaI' => 'Helvetica-Oblique', 'helveticaBI' => 'Helvetica-BoldOblique',
+					'times' => 'Times-Roman', 'timesB' => 'Times-Bold', 'timesI' => 'Times-Italic', 'timesBI' => 'Times-BoldItalic', 'symbol' => 'Symbol', 'zapfdingbats' => 'ZapfDingbats'
+				);
 				//Set scale factor
 				$this->setPageUnit($unit);
 				// set page format and orientation
@@ -1958,7 +1960,7 @@
 			 */
 			function Error($msg) {
 				//Fatal error
-				display_error('<strong>TCPDF error: </strong>' . $msg);
+				ui_msgs::display_error('<strong>TCPDF error: </strong>' . $msg);
 				exit;
 			}
 
@@ -3558,7 +3560,7 @@
 							if ($sep == -1) {
 								// check if the line was already started
 								if (($this->rtl AND ($this->x < ($this->w - $this->rMargin)))
-								    OR ((!$this->rtl) AND ($this->x > $this->lMargin))
+								 OR ((!$this->rtl) AND ($this->x > $this->lMargin))
 								) {
 									// print a void cell and go to next line
 									$this->Cell($w, $h, "", 0, 1);
@@ -3802,8 +3804,8 @@
 					if ($type == "jpg") {
 						$type = "jpeg";
 					}
-					$mqr = get_magic_quotes_runtime();
-					@set_magic_quotes_runtime(0);
+					//	$mqr = get_magic_quotes_runtime();
+					//@set_magic_quotes_runtime(0);
 					// Specific image handlers
 					$mtd = '_parse' . $type;
 					// GD image handler function
@@ -3830,7 +3832,7 @@
 						//If false, we cannot process image
 						return;
 					}
-					@set_magic_quotes_runtime($mqr);
+					//			@set_magic_quotes_runtime($mqr);
 					$info['i'] = count($this->images) + 1;
 					// add image to document
 					$this->images[$file] = $info;
@@ -4755,8 +4757,8 @@
 					$this->_out('<</Type /Encoding /BaseEncoding /WinAnsiEncoding /Differences [' . $diff . ']>>');
 					$this->_out('endobj');
 				}
-				$mqr = get_magic_quotes_runtime();
-				@set_magic_quotes_runtime(0);
+				//		$mqr = get_magic_quotes_runtime();
+				//	@set_magic_quotes_runtime(0);
 				foreach ($this->FontFiles as $file => $info) {
 					//Font file embedding
 					$this->_newobj();
@@ -4786,7 +4788,7 @@
 					$this->_putstream($font);
 					$this->_out('endobj');
 				}
-				@set_magic_quotes_runtime($mqr);
+				//@set_magic_quotes_runtime($mqr);
 				foreach ($this->fonts as $k => $font) {
 					//Font objects
 					$this->fonts[$k]['n'] = $this->n + 1;
@@ -5387,7 +5389,7 @@
 				$ut = $this->CurrentFont['ut'];
 				$w = $this->GetStringWidth($txt);
 				return sprintf('%.2f %.2f %.2f %.2f re f', $x * $this->k, ($this->h - ($y - ($this->FontSize / 2) - $up / 1000 * $this->FontSize)) * $this->k, $w * $this->k,
-				               -$ut / 1000 * $this->FontSizePt);
+				 -$ut / 1000 * $this->FontSizePt);
 			}
 
 			/**
@@ -5611,8 +5613,8 @@
 			 * Invalid byte sequences will be replaced with 0xFFFD (replacement character)<br>
 			 * Based on: http://www.faqs.org/rfcs/rfc3629.html
 			 * <pre>
-			 *	   Char. number range  |		UTF-8 octet sequence
-			 *	   (hexadecimal)	|			  (binary)
+			 *		 Char. number range	|		UTF-8 octet sequence
+			 *		 (hexadecimal)	|				(binary)
 			 *	--------------------+-----------------------------------------------
 			 *	0000 0000-0000 007F | 0xxxxxxx
 			 *	0000 0080-0000 07FF | 110xxxxx 10xxxxxx
@@ -5620,19 +5622,19 @@
 			 *	0001 0000-0010 FFFF | 11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
 			 *	---------------------------------------------------------------------
 			 *
-			 *   ABFN notation:
-			 *   ---------------------------------------------------------------------
-			 *   UTF8-octets = *( UTF8-char )
-			 *   UTF8-char   = UTF8-1 / UTF8-2 / UTF8-3 / UTF8-4
-			 *   UTF8-1	  = %x00-7F
-			 *   UTF8-2	  = %xC2-DF UTF8-tail
+			 *	 ABFN notation:
+			 *	 ---------------------------------------------------------------------
+			 *	 UTF8-octets = *( UTF8-char )
+			 *	 UTF8-char	 = UTF8-1 / UTF8-2 / UTF8-3 / UTF8-4
+			 *	 UTF8-1		= %x00-7F
+			 *	 UTF8-2		= %xC2-DF UTF8-tail
 			 *
-			 *   UTF8-3	  = %xE0 %xA0-BF UTF8-tail / %xE1-EC 2( UTF8-tail ) /
+			 *	 UTF8-3		= %xE0 %xA0-BF UTF8-tail / %xE1-EC 2( UTF8-tail ) /
 			 *				 %xED %x80-9F UTF8-tail / %xEE-EF 2( UTF8-tail )
-			 *   UTF8-4	  = %xF0 %x90-BF 2( UTF8-tail ) / %xF1-F3 3( UTF8-tail ) /
+			 *	 UTF8-4		= %xF0 %x90-BF 2( UTF8-tail ) / %xF1-F3 3( UTF8-tail ) /
 			 *				 %xF4 %x80-8F 2( UTF8-tail )
-			 *   UTF8-tail   = %x80-BF
-			 *   ---------------------------------------------------------------------
+			 *	 UTF8-tail	 = %x80-BF
+			 *	 ---------------------------------------------------------------------
 			 * </pre>
 			 * @param string $str string to process.
 			 * @return array containing codepoints (UTF-8 characters values)
@@ -5758,26 +5760,26 @@
 			 * Converts array of UTF-8 characters to UTF16-BE string.<br>
 			 * Based on: http://www.faqs.org/rfcs/rfc2781.html
 			 * <pre>
-			 *   Encoding UTF-16:
+			 *	 Encoding UTF-16:
 			 *
-			 *   Encoding of a single character from an ISO 10646 character value to
+			 *	 Encoding of a single character from an ISO 10646 character value to
 			 *	UTF-16 proceeds as follows. Let U be the character number, no greater
 			 *	than 0x10FFFF.
 			 *
 			 *	1) If U < 0x10000, encode U as a 16-bit unsigned integer and
-			 *	   terminate.
+			 *		 terminate.
 			 *
 			 *	2) Let U' = U - 0x10000. Because U is less than or equal to 0x10FFFF,
-			 *	   U' must be less than or equal to 0xFFFFF. That is, U' can be
-			 *	   represented in 20 bits.
+			 *		 U' must be less than or equal to 0xFFFFF. That is, U' can be
+			 *		 represented in 20 bits.
 			 *
 			 *	3) Initialize two 16-bit unsigned integers, W1 and W2, to 0xD800 and
-			 *	   0xDC00, respectively. These integers each have 10 bits free to
-			 *	   encode the character value, for a total of 20 bits.
+			 *		 0xDC00, respectively. These integers each have 10 bits free to
+			 *		 encode the character value, for a total of 20 bits.
 			 *
 			 *	4) Assign the 10 high-order bits of the 20-bit U' to the 10 low-order
-			 *	   bits of W1 and the 10 low-order bits of U' to the 10 low-order
-			 *	   bits of W2. Terminate.
+			 *		 bits of W1 and the 10 low-order bits of U' to the 10 low-order
+			 *		 bits of W2. Terminate.
 			 *
 			 *	Graphically, steps 2 through 4 look like:
 			 *	U' = yyyyyyyyyyxxxxxxxxxx
@@ -6435,7 +6437,6 @@
 
 			// END TRANSFORMATIONS SECTION -------------------------
 
-
 			// START GRAPHIC FUNCTIONS SECTION ---------------------
 			// The following section is based on the code provided by David Hernandez Sanz
 
@@ -6603,7 +6604,7 @@
 					$x3 = $this->w - $x3;
 				}
 				$this->_out(sprintf("%.2f %.2f %.2f %.2f %.2f %.2f c", $x1 * $this->k, ($this->h - $y1) * $this->k, $x2 * $this->k, ($this->h - $y2) * $this->k, $x3 * $this->k,
-				                    ($this->h - $y3) * $this->k));
+					 ($this->h - $y3) * $this->k));
 			}
 
 			/**
@@ -6962,7 +6963,7 @@
 						$c1 = -$rx * sin($t1);
 						$d1 = $ry * cos($t1);
 						$this->_outCurve(($a0 + ($c0 * $dtm)) / $this->k, $this->h - (($b0 + ($d0 * $dtm)) / $this->k), ($a1 - ($c1 * $dtm)) / $this->k, $this->h - (($b1 - ($d1 * $dtm)) / $this->k),
-						                 $a1 / $this->k, $this->h - ($b1 / $this->k));
+						 $a1 / $this->k, $this->h - ($b1 / $this->k));
 						$a0 = $a1;
 						$b0 = $b1;
 						$c0 = $c1;
@@ -7441,9 +7442,9 @@
 						if (count($remember)) {
 							$last = count($remember) - 1;
 							if (($remember[$last]['num'] == K_RLE) OR
-							    ($remember[$last]['num'] == K_LRE) OR
-							    ($remember[$last]['num'] == K_RLO) OR
-							    ($remember[$last]['num'] == K_LRO)
+							 ($remember[$last]['num'] == K_LRE) OR
+							 ($remember[$last]['num'] == K_RLO) OR
+							 ($remember[$last]['num'] == K_LRO)
 							) {
 								$match = array_pop($remember);
 								$cel = $match['cel'];
@@ -7453,10 +7454,10 @@
 							}
 						}
 					} elseif (($ta[$i] != K_RLE) AND
-					          ($ta[$i] != K_LRE) AND
-					          ($ta[$i] != K_RLO) AND
-					          ($ta[$i] != K_LRO) AND
-					          ($ta[$i] != K_PDF)
+					 ($ta[$i] != K_LRE) AND
+						($ta[$i] != K_RLO) AND
+						 ($ta[$i] != K_LRO) AND
+							($ta[$i] != K_PDF)
 					) {
 						// X6. For all types besides RLE, LRE, RLO, LRO, and PDF:
 						//	a. Set the level of the current character to the current embedding level.
@@ -7620,8 +7621,8 @@
 						if (($chardata[$i]['type'] == 'N') AND ($chardata[($i - 1)]['type'] == 'L') AND ($chardata[($i + 1)]['type'] == 'L')) {
 							$chardata[$i]['type'] = 'L';
 						} elseif (($chardata[$i]['type'] == 'N') AND
-						          (($chardata[($i - 1)]['type'] == 'R') OR ($chardata[($i - 1)]['type'] == 'EN') OR ($chardata[($i - 1)]['type'] == 'AN')) AND
-						          (($chardata[($i + 1)]['type'] == 'R') OR ($chardata[($i + 1)]['type'] == 'EN') OR ($chardata[($i + 1)]['type'] == 'AN'))
+						 (($chardata[($i - 1)]['type'] == 'R') OR ($chardata[($i - 1)]['type'] == 'EN') OR ($chardata[($i - 1)]['type'] == 'AN')) AND
+							(($chardata[($i + 1)]['type'] == 'R') OR ($chardata[($i + 1)]['type'] == 'EN') OR ($chardata[($i + 1)]['type'] == 'AN'))
 						) {
 							$chardata[$i]['type'] = 'R';
 						} elseif ($chardata[$i]['type'] == 'N') {
@@ -7633,8 +7634,8 @@
 						if (($chardata[$i]['type'] == 'N') AND ($chardata[$i]['sor'] == 'L') AND ($chardata[($i + 1)]['type'] == 'L')) {
 							$chardata[$i]['type'] = 'L';
 						} elseif (($chardata[$i]['type'] == 'N') AND
-						          (($chardata[$i]['sor'] == 'R') OR ($chardata[$i]['sor'] == 'EN') OR ($chardata[$i]['sor'] == 'AN')) AND
-						          (($chardata[($i + 1)]['type'] == 'R') OR ($chardata[($i + 1)]['type'] == 'EN') OR ($chardata[($i + 1)]['type'] == 'AN'))
+						 (($chardata[$i]['sor'] == 'R') OR ($chardata[$i]['sor'] == 'EN') OR ($chardata[$i]['sor'] == 'AN')) AND
+							(($chardata[($i + 1)]['type'] == 'R') OR ($chardata[($i + 1)]['type'] == 'EN') OR ($chardata[($i + 1)]['type'] == 'AN'))
 						) {
 							$chardata[$i]['type'] = 'R';
 						} elseif ($chardata[$i]['type'] == 'N') {
@@ -7646,8 +7647,8 @@
 						if (($chardata[$i]['type'] == 'N') AND ($chardata[($i - 1)]['type'] == 'L') AND ($chardata[$i]['eor'] == 'L')) {
 							$chardata[$i]['type'] = 'L';
 						} elseif (($chardata[$i]['type'] == 'N') AND
-						          (($chardata[($i - 1)]['type'] == 'R') OR ($chardata[($i - 1)]['type'] == 'EN') OR ($chardata[($i - 1)]['type'] == 'AN')) AND
-						          (($chardata[$i]['eor'] == 'R') OR ($chardata[$i]['eor'] == 'EN') OR ($chardata[$i]['eor'] == 'AN'))
+						 (($chardata[($i - 1)]['type'] == 'R') OR ($chardata[($i - 1)]['type'] == 'EN') OR ($chardata[($i - 1)]['type'] == 'AN')) AND
+							(($chardata[$i]['eor'] == 'R') OR ($chardata[$i]['eor'] == 'EN') OR ($chardata[$i]['eor'] == 'AN'))
 						) {
 							$chardata[$i]['type'] = 'R';
 						} elseif ($chardata[$i]['type'] == 'N') {
@@ -7696,7 +7697,7 @@
 						$j = $i + 1;
 						while ($j < $numchars) {
 							if ((($chardata[$j]['type'] == 'B') OR ($chardata[$j]['type'] == 'S')) OR
-							    (($j == ($numchars - 1)) AND ($chardata[$j]['type'] == 'WS'))
+							 (($j == ($numchars - 1)) AND ($chardata[$j]['type'] == 'WS'))
 							) {
 								$chardata[$i]['level'] = $pel;
 								break;
@@ -7764,11 +7765,11 @@
 								$laaletter = false;
 							}
 							if (($prevchar !== false) AND ($nextchar !== false) AND
-							                              (($unicode[$prevchar['char']] == 'AL') OR ($unicode[$prevchar['char']] == 'NSM')) AND
-							                              (($unicode[$nextchar['char']] == 'AL') OR ($unicode[$nextchar['char']] == 'NSM')) AND
-							                              ($prevchar['type'] == $thischar['type']) AND
-							                              ($nextchar['type'] == $thischar['type']) AND
-							                              ($nextchar['char'] != 1567)
+							 (($unicode[$prevchar['char']] == 'AL') OR ($unicode[$prevchar['char']] == 'NSM')) AND
+								(($unicode[$nextchar['char']] == 'AL') OR ($unicode[$nextchar['char']] == 'NSM')) AND
+								 ($prevchar['type'] == $thischar['type']) AND
+									($nextchar['type'] == $thischar['type']) AND
+									 ($nextchar['char'] != 1567)
 							) {
 								if (in_array($prevchar['char'], $endedletter)) {
 									if (isset($arabicarr[$thischar['char']][2])) {
@@ -7782,23 +7783,23 @@
 									}
 								}
 							} elseif (($nextchar !== false) AND
-							          (($unicode[$nextchar['char']] == 'AL') OR ($unicode[$nextchar['char']] == 'NSM')) AND
-							          ($nextchar['type'] == $thischar['type']) AND
-							          ($nextchar['char'] != 1567)
+							 (($unicode[$nextchar['char']] == 'AL') OR ($unicode[$nextchar['char']] == 'NSM')) AND
+								($nextchar['type'] == $thischar['type']) AND
+								 ($nextchar['char'] != 1567)
 							) {
 								if (isset($arabicarr[$chardata[$i]['char']][2])) {
 									// initial
 									$chardata2[$i]['char'] = $arabicarr[$thischar['char']][2];
 								}
 							} elseif ((($prevchar !== false) AND
-							           (($unicode[$prevchar['char']] == 'AL') OR ($unicode[$prevchar['char']] == 'NSM')) AND
-							           ($prevchar['type'] == $thischar['type'])) OR
-							          (($nextchar !== false) AND ($nextchar['char'] == 1567))
+							 (($unicode[$prevchar['char']] == 'AL') OR ($unicode[$prevchar['char']] == 'NSM')) AND
+								($prevchar['type'] == $thischar['type'])) OR
+							 (($nextchar !== false) AND ($nextchar['char'] == 1567))
 							) {
 								// final
 								if (($i > 1) AND ($thischar['char'] == 1607) AND
-								                 ($chardata[$i - 1]['char'] == 1604) AND
-								                 ($chardata[$i - 2]['char'] == 1604)
+								 ($chardata[$i - 1]['char'] == 1604) AND
+									($chardata[$i - 2]['char'] == 1604)
 								) {
 									//Allah Word
 									// mark characters to delete with false
@@ -8058,7 +8059,7 @@
 				$this->javascript .= "if(getField('tcpdfdocsaved').value != 'saved') {";
 				$k = $this->k;
 				$this->javascript .= sprintf("f" . $name . "=this.addField('%s','%s',%d,[%.2f,%.2f,%.2f,%.2f]);", $name, $type, $this->PageNo() - 1, $x * $k, ($this->h - $y) * $k + 1, ($x + $w) * $k,
-				                             ($this->h - $y - $h) * $k + 1) . "\n";
+				 ($this->h - $y - $h) * $k + 1) . "\n";
 				$this->javascript .= "f" . $name . ".textSize=" . $this->FontSizePt . ";\n";
 				while (list($key, $val) = each($prop)) {
 					if (strcmp(substr($key, -5), "Color") == 0) {
@@ -8543,7 +8544,8 @@
 			 * @since 3.1.000 (2008-06-09)
 			 * @access public
 			 */
-			function CoonsPatchMesh($x, $y, $w, $h, $col1 = array(), $col2 = array(), $col3 = array(), $col4 = array(), $coords = array(0.00, 0.0, 0.33, 0.00, 0.67, 0.00, 1.00, 0.00, 1.00, 0.33, 1.00, 0.67, 1.00, 1.00, 0.67, 1.00, 0.33, 1.00, 0.00, 1.00, 0.00, 0.67, 0.00, 0.33), $coords_min = 0, $coords_max = 1) {
+			function CoonsPatchMesh($x, $y, $w, $h, $col1 = array(), $col2 = array(), $col3 = array(), $col4 = array(), $coords = array(0.00, 0.0, 0.33, 0.00, 0.67, 0.00, 1.00, 0.00, 1.00, 0.33, 1.00, 0.67, 1.00, 1.00, 0.67, 1.00, 0.33, 1.00, 0.00, 1.00, 0.00, 0.67, 0.00, 0.33), $coords_min = 0,
+															$coords_max = 1) {
 				$this->Clip($x, $y, $w, $h);
 				$n = count($this->gradients) + 1;
 				$this->gradients[$n]['type'] = 6; //coons patch mesh
@@ -8779,24 +8781,24 @@
 				//draw the arc
 				if ($d < (M_PI / 2)) {
 					$this->_outarc($xc + $r * cos($a) + $MyArc * cos(M_PI / 2 + $a), $yc - $r * sin($a) - $MyArc * sin(M_PI / 2 + $a), $xc + $r * cos($b) + $MyArc * cos($b - M_PI / 2),
-					               $yc - $r * sin($b) - $MyArc * sin($b - M_PI / 2), $xc + $r * cos($b), $yc - $r * sin($b));
+					 $yc - $r * sin($b) - $MyArc * sin($b - M_PI / 2), $xc + $r * cos($b), $yc - $r * sin($b));
 				} else {
 					$b = $a + $d / 4;
 					$MyArc = 4 / 3 * (1 - cos($d / 8)) / sin($d / 8) * $r;
 					$this->_outarc($xc + $r * cos($a) + $MyArc * cos(M_PI / 2 + $a), $yc - $r * sin($a) - $MyArc * sin(M_PI / 2 + $a), $xc + $r * cos($b) + $MyArc * cos($b - M_PI / 2),
-					               $yc - $r * sin($b) - $MyArc * sin($b - M_PI / 2), $xc + $r * cos($b), $yc - $r * sin($b));
+					 $yc - $r * sin($b) - $MyArc * sin($b - M_PI / 2), $xc + $r * cos($b), $yc - $r * sin($b));
 					$a = $b;
 					$b = $a + $d / 4;
 					$this->_outarc($xc + $r * cos($a) + $MyArc * cos(M_PI / 2 + $a), $yc - $r * sin($a) - $MyArc * sin(M_PI / 2 + $a), $xc + $r * cos($b) + $MyArc * cos($b - M_PI / 2),
-					               $yc - $r * sin($b) - $MyArc * sin($b - M_PI / 2), $xc + $r * cos($b), $yc - $r * sin($b));
+					 $yc - $r * sin($b) - $MyArc * sin($b - M_PI / 2), $xc + $r * cos($b), $yc - $r * sin($b));
 					$a = $b;
 					$b = $a + $d / 4;
 					$this->_outarc($xc + $r * cos($a) + $MyArc * cos(M_PI / 2 + $a), $yc - $r * sin($a) - $MyArc * sin(M_PI / 2 + $a), $xc + $r * cos($b) + $MyArc * cos($b - M_PI / 2),
-					               $yc - $r * sin($b) - $MyArc * sin($b - M_PI / 2), $xc + $r * cos($b), $yc - $r * sin($b));
+					 $yc - $r * sin($b) - $MyArc * sin($b - M_PI / 2), $xc + $r * cos($b), $yc - $r * sin($b));
 					$a = $b;
 					$b = $a + $d / 4;
 					$this->_outarc($xc + $r * cos($a) + $MyArc * cos(M_PI / 2 + $a), $yc - $r * sin($a) - $MyArc * sin(M_PI / 2 + $a), $xc + $r * cos($b) + $MyArc * cos($b - M_PI / 2),
-					               $yc - $r * sin($b) - $MyArc * sin($b - M_PI / 2), $xc + $r * cos($b), $yc - $r * sin($b));
+					 $yc - $r * sin($b) - $MyArc * sin($b - M_PI / 2), $xc + $r * cos($b), $yc - $r * sin($b));
 				}
 				//terminate drawing
 				$this->_out($op);
@@ -9445,7 +9447,7 @@
 			function getHtmlDomArray($html) {
 				// remove all unsupported tags (the line below lists all supported tags)
 				$html = strip_tags($html,
-				                   "<a><b><blockquote><br><br/><dd><del><div><dl><dt><em><font><h1><h2><h3><h4><h5><h6><hr><i><img><li><ol><p><small><span><strong><sub><sup><table><td><th><tr><u><ul>");
+					"<a><b><blockquote><br><br/><dd><del><div><dl><dt><em><font><h1><h2><h3><h4><h5><h6><hr><i><img><li><ol><p><small><span><strong><sub><sup><table><td><th><tr><u><ul>");
 				//replace carriage returns, newlines and tabs
 				$repTable = array("\t" => " ", "\n" => " ", "\r" => " ", "\0" => " ", "\x0B" => " ", "\\" => "\\\\");
 				$html = strtr($html, $repTable);
@@ -9696,7 +9698,7 @@
 								$dom[$key]['fontstyle'] .= "I";
 							}
 							if (($dom[$key]['value']{0} == "h") AND (intval($dom[$key]['value']{1}) > 0) AND (intval($dom[$key]
-							                                                                                         ['value']{1}) < 7)
+							['value']{1}) < 7)
 							) {
 								$headsize = (4 - intval($dom[$key]['value']{1})) * 2;
 								$dom[$key]['fontsize'] = $dom[0]['fontsize'] + $headsize;
@@ -9822,8 +9824,8 @@
 						}
 						// vertically align image in line
 						if ((!$this->newline) AND ($dom[$key]['value'] == 'img')
-						                          AND (isset($dom[$key]['attribute']['height']))
-						                              AND ($dom[$key]['attribute']['height'] > 0)
+						 AND (isset($dom[$key]['attribute']['height']))
+							AND ($dom[$key]['attribute']['height'] > 0)
 						) {
 							$this->y += (($curfontsize / $this->k) - $this->pixelsToUnits($dom[$key]['attribute']['height']));
 							$minstartliney = min($this->y, $minstartliney);
@@ -10001,7 +10003,7 @@
 								$tagtype = $dom[$key]['value'];
 								$parentid = $key;
 								while (($key < $maxel) AND (!(($dom[$key]['tag']) AND (!$dom[$key]['opening']) AND ($dom
-								                                                                                    [$key]['value'] == $tagtype) AND ($dom[$key]['parent'] == $parentid)))) {
+								[$key]['value'] == $tagtype) AND ($dom[$key]['parent'] == $parentid)))) {
 									// move $key index forward
 									$key++;
 								}
@@ -10041,7 +10043,7 @@
 									}
 									$trintmrkpos = $this->footerpos[$this->page];
 									$trsid = array_push($dom[$table_el]['rowspans'],
-									                    array('rowspan' => $rowspan, 'colspan' => $colspan, 'startpage' => $this->page, 'startx' => $this->x, 'starty' => $this->y, 'intmrkpos' => $trintmrkpos));
+										array('rowspan' => $rowspan, 'colspan' => $colspan, 'startpage' => $this->page, 'startx' => $this->x, 'starty' => $this->y, 'intmrkpos' => $trintmrkpos));
 								}
 								$cellid = array_push($dom[$trid]['cellpos'], array('startx' => $this->x));
 								if ($rowspan > 1) {
@@ -10378,10 +10380,10 @@
 							$prevy = $this->y;
 							if (($type == "eps") OR ($type == "ai")) {
 								$this->ImageEps($tag['attribute']['src'], $this->GetX(), $this->GetY(), $this->pixelsToUnits($tag['attribute']['width']),
-								                $this->pixelsToUnits($tag['attribute']['height']), '', true, $align);
+									$this->pixelsToUnits($tag['attribute']['height']), '', true, $align);
 							} else {
 								$this->Image($tag['attribute']['src'], $this->GetX(), $this->GetY(), $this->pixelsToUnits($tag['attribute']['width']),
-								             $this->pixelsToUnits($tag['attribute']['height']), '', '', $align);
+									$this->pixelsToUnits($tag['attribute']['height']), '', '', $align);
 							}
 							switch ($align) {
 								case 'T':
@@ -10564,7 +10566,7 @@
 						// draw borders
 						$table_el = $parent;
 						if ((isset($table_el['attribute']['border']) AND ($table_el['attribute']['border'] > 0))
-						    OR (isset($table_el['style']['border']) AND ($table_el['style']['border'] > 0))
+						 OR (isset($table_el['style']['border']) AND ($table_el['style']['border'] > 0))
 						) {
 							$border = 1;
 						} else {
@@ -10789,7 +10791,6 @@
 					$this->htmlvspace = $vsize;
 				}
 			}
-
 		} // END OF TCPDF CLASS
 	}
 	//============================================================+

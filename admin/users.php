@@ -15,32 +15,27 @@
 
 	page(_($help_context = "Users"));
 
-	include_once(APP_PATH . "includes/date_functions.inc");
-	include_once(APP_PATH . "includes/faui.inc");
-
-	include_once(APP_PATH . "admin/db/users_db.inc");
-
 	simple_page_mode(true);
 	//-------------------------------------------------------------------------------------------------
 
 	function can_process() {
 
 		if (strlen($_POST['user_id']) < 4) {
-			display_error(_("The user login entered must be at least 4 characters long."));
-			set_focus('user_id');
+			ui_msgs::display_error(_("The user login entered must be at least 4 characters long."));
+			ui_view::set_focus('user_id');
 			return false;
 		}
 
 		if ($_POST['password'] != "") {
 			if (strlen($_POST['password']) < 4) {
-				display_error(_("The password entered must be at least 4 characters long."));
-				set_focus('password');
+				ui_msgs::display_error(_("The password entered must be at least 4 characters long."));
+				ui_view::set_focus('password');
 				return false;
 			}
 
 			if (strstr($_POST['password'], $_POST['user_id']) != false) {
-				display_error(_("The password cannot contain the user login."));
-				set_focus('password');
+				ui_msgs::display_error(_("The password cannot contain the user login."));
+				ui_view::set_focus('password');
 				return false;
 			}
 		}
@@ -61,7 +56,7 @@
 				if ($_POST['password'] != "")
 					update_user_password($selected_id, $_POST['user_id'], md5($_POST['password']));
 
-				display_notification_centered(_("The selected user has been updated."));
+				ui_msgs::display_notification_centered(_("The selected user has been updated."));
 			}
 			else
 			{
@@ -77,7 +72,7 @@
 					$_POST['profile'], check_value('rep_popup'), user_query_size(),
 					user_graphic_links(), $_POST['language'], sticky_doc_date(), user_startup_tab());
 
-				display_notification_centered(_("A new user has been added."));
+				ui_msgs::display_notification_centered(_("A new user has been added."));
 			}
 			$Mode = 'RESET';
 		}
@@ -87,7 +82,7 @@
 
 	if ($Mode == 'Delete') {
 		delete_user($selected_id);
-		display_notification_centered(_("User has been deleted."));
+		ui_msgs::display_notification_centered(_("User has been deleted."));
 		$Mode = 'RESET';
 	}
 

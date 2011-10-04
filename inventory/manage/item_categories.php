@@ -15,10 +15,6 @@
 
 	page(_($help_context = "Item Categories"));
 
-	include_once(APP_PATH . "includes/faui.inc");
-
-	include_once(APP_PATH . "inventory/includes/inventory_db.inc");
-
 	simple_page_mode(true);
 	//----------------------------------------------------------------------------------
 
@@ -29,8 +25,8 @@
 
 		if (strlen($_POST['description']) == 0) {
 			$input_error = 1;
-			display_error(_("The item category description cannot be empty."));
-			set_focus('description');
+			ui_msgs::display_error(_("The item category description cannot be empty."));
+			ui_view::set_focus('description');
 		}
 
 		if ($input_error != 1) {
@@ -41,7 +37,7 @@
 					$_POST['adjustment_account'], $_POST['assembly_account'],
 					$_POST['units'], $_POST['mb_flag'], $_POST['dim1'], $_POST['dim2'],
 					check_value('no_sale'));
-				display_notification(_('Selected item category has been updated'));
+				ui_msgs::display_notification(_('Selected item category has been updated'));
 			}
 			else
 			{
@@ -51,7 +47,7 @@
 					$_POST['adjustment_account'], $_POST['assembly_account'],
 					$_POST['units'], $_POST['mb_flag'], $_POST['dim1'],
 					$_POST['dim2'], check_value('no_sale'));
-				display_notification(_('New item category has been added'));
+				ui_msgs::display_notification(_('New item category has been added'));
 			}
 			$Mode = 'RESET';
 		}
@@ -66,12 +62,12 @@
 		$result = db_query($sql, "could not query stock master");
 		$myrow = db_fetch_row($result);
 		if ($myrow[0] > 0) {
-			display_error(_("Cannot delete this item category because items have been created using this item category."));
+			ui_msgs::display_error(_("Cannot delete this item category because items have been created using this item category."));
 		}
 		else
 		{
 			delete_item_category($selected_id);
-			display_notification(_('Selected item category has been deleted'));
+			ui_msgs::display_notification(_('Selected item category has been deleted'));
 		}
 		$Mode = 'RESET';
 	}

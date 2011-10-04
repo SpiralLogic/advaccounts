@@ -18,9 +18,6 @@
 	// ----------------------------------------------------------------
 
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
-	include_once(APP_PATH . "includes/date_functions.inc");
-	include_once(APP_PATH . "includes/data_checks.inc");
-	include_once(APP_PATH . "gl/includes/gl_db.inc");
 
 	//----------------------------------------------------------------------------------------------------
 
@@ -115,7 +112,6 @@
 	//----------------------------------------------------------------------------------------------------
 
 	function print_balance_sheet() {
-
 
 		$dim = get_company_pref('use_dimension');
 		$dimension = $dimension2 = 0;

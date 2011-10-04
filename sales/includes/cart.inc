@@ -17,7 +17,7 @@
 				iii) a credit note
 				iv)  a delivery note
 				*/
-	include_once(APP_PATH . "inventory/includes/inventory_db.inc");
+
 	include_once(APP_PATH . "taxes/tax_calc.inc");
 	class cart {
 
@@ -157,10 +157,10 @@
 			else { // new document
 				$this->trans_type = $type;
 				$this->trans_no = 0;
-				$this->customer_currency = get_company_currency();
+				$this->customer_currency = Banking::get_company_currency();
 				// set new sales document defaults here
-				if (get_global_customer() != ALL_TEXT) {
-					$this->customer_id = get_global_customer();
+				if (ui_globals::get_global_customer() != ALL_TEXT) {
+					$this->customer_id = ui_globals::get_global_customer();
 				}
 				else
 				{

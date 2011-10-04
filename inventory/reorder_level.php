@@ -15,12 +15,6 @@
 
 	page(_($help_context = "Reorder Levels"));
 
-	include_once(APP_PATH . "includes/date_functions.inc");
-	include_once(APP_PATH . "includes/faui.inc");
-	include_once(APP_PATH . "includes/data_checks.inc");
-
-	include_once(APP_PATH . "inventory/includes/inventory_db.inc");
-
 	check_db_has_costable_items(_("There are no inventory items defined in the system (Purchased or manufactured items)."));
 
 	//------------------------------------------------------------------------------------
@@ -38,7 +32,7 @@
 	start_form();
 
 	if (!isset($_POST['stock_id'])) {
-		$_POST['stock_id'] = get_global_stock_item();
+		$_POST['stock_id'] = ui_globals::get_global_stock_item();
 	}
 
 	echo "<center>" . _("Item:") . "&nbsp;";
@@ -47,10 +41,10 @@
 	echo "<hr></center>";
 
 	div_start('show_heading');
-	stock_item_heading($_POST['stock_id']);
+	ui_msgs::stock_item_heading($_POST['stock_id']);
 	br();
 	div_end();
-	set_global_stock_item($_POST['stock_id']);
+	ui_globals::set_global_stock_item($_POST['stock_id']);
 
 	div_start('reorders');
 	start_table(Config::get('tables.style') . "  width=30%");
@@ -72,7 +66,7 @@
 
 			$myrow["reorder_level"] = input_num($myrow["loc_code"]);
 			set_reorder_level($_POST['stock_id'], $myrow["loc_code"], input_num($myrow["loc_code"]));
-			display_notification(_("Reorder levels has been updated."));
+			ui_msgs::display_notification(_("Reorder levels has been updated."));
 		}
 
 		$qoh = get_qoh_on_date($_POST['stock_id'], $myrow["loc_code"]);
