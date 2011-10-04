@@ -362,20 +362,20 @@
 		);
 	}
 	if ($_POST['order_view_mode'] == 'OutstandingOnly') {
-		//array_substitute($cols, 3, 1, _("Cust Order Ref"));
-		array_append($cols, array(array('insert' => true, 'fun' => 'dispatch_link')));
+		//Arr::substitute($cols, 3, 1, _("Cust Order Ref"));
+		Arr::append($cols, array(array('insert' => true, 'fun' => 'dispatch_link')));
 	}
 	elseif ($_POST['order_view_mode'] == 'InvoiceTemplates') {
-		array_substitute($cols, 3, 1, _("Description"));
-		array_append($cols, array(array('insert' => true, 'fun' => 'invoice_link')));
+		Arr::substitute($cols, 3, 1, _("Description"));
+		Arr::append($cols, array(array('insert' => true, 'fun' => 'invoice_link')));
 	}
 	else {
 		if ($_POST['order_view_mode'] == 'DeliveryTemplates') {
-			array_substitute($cols, 3, 1, _("Description"));
-			array_append($cols, array(array('insert' => true, 'fun' => 'delivery_link')));
+			Arr::substitute($cols, 3, 1, _("Description"));
+			Arr::append($cols, array(array('insert' => true, 'fun' => 'delivery_link')));
 		}
 		elseif ($trans_type == ST_SALESQUOTE) {
-			array_append($cols,
+			Arr::append($cols,
 				array(array('insert' => true, 'type' => 'skip'),
 					array('insert' => true, 'type' => 'skip'),
 					array('insert' => true, 'fun' => 'edit_link'),
@@ -386,7 +386,7 @@
 			);
 		}
 		elseif ($trans_type == ST_SALESORDER) {
-			array_append($cols,
+			Arr::append($cols,
 				array(
 					_("Tmpl") => array('type' => 'skip', 'insert' => true, 'fun' => 'tmpl_checkbox'),
 					array('insert' => true, 'fun' => 'edit_link'),

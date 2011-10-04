@@ -23,7 +23,7 @@
 	function __date($year, $month, $day) {
 
 		$how = user_date_format();
-		$sep = Config::get('seperators.date', user_date_sep());
+		$sep = Config::get('seperators.date', 0);
 		$day = (int)$day;
 		$month = (int)$month;
 		if ($day < 10)
@@ -43,7 +43,7 @@
 		if ($date_ == null || $date_ == "")
 			return 0;
 		$how = user_date_format();
-		$sep = Config::get('seperators.date', user_date_sep());
+		$sep = Config::get('seperators.date', 0);
 		$date_ = trim($date_);
 		$date_ = str_replace($sep, "", $date_);
 		if (strlen($date_) == 6) {

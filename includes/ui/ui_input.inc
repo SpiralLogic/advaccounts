@@ -810,7 +810,7 @@
 		global $Ajax;
 
 		if (check_value('show_inactive'))
-			array_insert($th, count($th) - 2, _("Inactive"));
+			Arr::insert($th, count($th) - 2, _("Inactive"));
 		if (get_post('_show_inactive_update')) {
 			$Ajax->activate('_page_body');
 		}
