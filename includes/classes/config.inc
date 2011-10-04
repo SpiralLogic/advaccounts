@@ -7,11 +7,9 @@
 	 * To change this template use File | Settings | File Templates.
 	 */
 
-	include_once(APP_PATH . "config/installed_languages.inc");
-
-	include_once(APP_PATH . "config/access_levels.inc");
-
 	include_once(APP_PATH . "config/types.inc");
+	include_once(APP_PATH . "config/access_levels.inc");
+	include_once(APP_PATH . "config/installed_languages.inc");
 
 	class Config {
 

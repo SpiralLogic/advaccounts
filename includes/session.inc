@@ -199,10 +199,11 @@
 		Config::set('debug', false);
 		error_reporting(E_USER_WARNING | E_USER_ERROR | E_USER_NOTICE);
 	}
-
 	// Page Initialisation
+
 	if (!isset($_SESSION['language']) || !method_exists($_SESSION['language'], 'set_language')) {
-		$l = array_search_value($dflt_lang, $installed_languages, 'code');
+		$l = Arr::search_value($dflt_lang, $installed_languages, 'code');
+
 		$_SESSION['language'] = new language($l['name'], $l['code'], $l['encoding'], isset($l['rtl']) ? 'rtl' : 'ltr');
 	}
 	$_SESSION['language']->set_language($_SESSION['language']->code);
@@ -210,7 +211,7 @@
 	// include $Hooks object if locale file exists
 	if (file_exists(APP_PATH . "lang/" . $_SESSION['language']->code . "/locale.inc")) {
 		include(APP_PATH . "lang/" . $_SESSION['language']->code . "/locale.inc");
-		$Hooks = new Hooks();
+		if (class_exists('Hooks')) $Hooks = new Hooks();
 	}
 
 	// Ajax communication object

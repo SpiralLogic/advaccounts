@@ -31,6 +31,7 @@
 	include_once(APP_PATH . "includes/date_functions.inc");
 
 	include_once(APP_PATH . "includes/db/connect_db.inc");
+
 	include_once(APP_PATH . "includes/errors.inc");
 	include_once(APP_PATH . "includes/systypes.inc");
 	//include_once(APP_PATH . "includes/references.inc");

@@ -43,7 +43,7 @@
 				if (Config::get('help.baseurl') != null) {
 					echo "  <li><a target = '_blank' onclick=" . '"' . "javascript:openWindow(this.href,this.target); return false;" . '" ' . "href='" . help_url() . "'>" . _("Help") . "</a></li>";
 				}
-				echo "  <li><a hre'" . PATH_TO_ROOT . "/access/logout.php?'>" . _("Logout") . "</a></li>";
+				echo "  <li><a href='" . PATH_TO_ROOT . "/access/logout.php?'>" . _("Logout") . "</a></li>";
 				echo "</ul>\n";
 				echo "</div>\n";
 				echo "<div id='logo'>\n";
@@ -85,7 +85,7 @@
 				if (isset($_SESSION['wa_current_user'])) {
 					echo "<span class='power'><a target='_blank' href='" . POWERED_URL . "'>" . POWERED_BY . "</a></span>\n";
 					echo "<span class='date'>" . Today() . " | " . Now() . "</span>\n";
-					echo "<span class='date'>" . show_users_online() . "</span>\n";
+					if ($_SESSION['wa_current_user']->logged_in()) echo "<span class='date'>" . show_users_online() . "</span>\n";
 				}
 				echo "</div>\n";
 			}

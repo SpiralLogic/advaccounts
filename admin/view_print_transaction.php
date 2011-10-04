@@ -114,10 +114,10 @@
 				_("GL") => array('insert' => true, 'fun' => 'gl_view')
 			);
 			if (!$print_out) {
-				array_remove($cols, 3);
+				Arr::remove($cols, 3);
 			}
 			if (!$trans_ref) {
-				array_remove($cols, 1);
+				Arr::remove($cols, 1);
 			}
 
 			$table =& db_pager::new_db_pager('transactions', $sql, $cols);

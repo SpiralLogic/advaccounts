@@ -25,7 +25,7 @@
 		}
 
 		static function select($id = false, $options = array(), $params = array()) {
-			
+
 			HTML::setReturn(true)->select($id, $params);
 			foreach ((array)$options as $label => $option) {
 				if (is_array($option)) {
@@ -43,7 +43,7 @@
 			echo HTML::_select()->setReturn(false);
 			return static::$_instance;
 		}
- 
+
 		static function search($id = false, $attr = array(), $options = array()) {
 			if ($id) {
 				$attr['id'] = $id;
@@ -74,21 +74,21 @@
 
 		static function searchLine($id, $url = '#', $options = array()) {
 			$defaults =
-			 array('description'    => false,
-						 'disabled'       => false,
-						 'editable'       => true,
-						 'selected'       => '',
-						 'cell'           => false,
-						 'inactive'       => false,
-						 'purchase'       => false,
-						 'sale'           => false,
-						 'js'             => '',
-						 'submitonselect' => '',
-						 'sales_type'     => 1,
-						 'no_sale'        => false,
-						 'select'         => false,
-						 'type'           => 'local',
-						 'where'          => ''
+			 array('description' => false,
+				 'disabled' => false,
+				 'editable' => true,
+				 'selected' => '',
+				 'cell' => false,
+				 'inactive' => false,
+				 'purchase' => false,
+				 'sale' => false,
+				 'js' => '',
+				 'submitonselect' => '',
+				 'sales_type' => 1,
+				 'no_sale' => false,
+				 'select' => false,
+				 'type' => 'local',
+				 'where' => ''
 			 );
 
 			$o = array_merge($defaults, $options);
@@ -100,14 +100,14 @@
 				HTML::td(true);
 			}
 
-			HTML::input($id, array('value'=> $o['selected'],
-														'name'  => $id
-											 ));
+			HTML::input($id, array('value' => $o['selected'],
+				'name' => $id
+			));
 			if ($o['editable']) {
-				HTML::label('lineedit', 'edit', array('for'  => 'stock_id',
-																						 'class' => 'stock button',
-																						 'style' => 'display:none'
-																				));
+				HTML::label('lineedit', 'edit', array('for' => 'stock_id',
+					'class' => 'stock button',
+					'style' => 'display:none'
+				));
 				$desc_js .= '$("#lineedit").data("stock_id",value.stock_id).show().parent().css("white-space","nowrap"); ';
 			}
 			if ($o['cell']) {
@@ -117,9 +117,9 @@
 			$selectjs = '';
 			if ($o['description'] !== false) {
 				HTML::textarea('description', $o['description'], array('name' => 'description',
-																															'rows'  => 1,
-																															'cols'  => 45
-																												 ), false);
+					'rows' => 1,
+					'cols' => 45
+				), false);
 				$desc_js .= "$('#description').css('height','auto').attr('rows',4);";
 			} elseif ($o['submitonselect']) {
 				$selectjs = <<<JS
@@ -149,6 +149,7 @@ JS;
 								dataType: "json",
 								data: {id: '$id',term: request.term},
 								success: function( data,status,xhr ) {
+
 								if ( xhr === Adv.lastXhr ) {
 								if (!Adv.o.stock_id.data('active')) {
 								var value = data[0];
@@ -190,21 +191,21 @@ JS;
 		public static function emailDialogue($contactType, $emailid) {
 			static $generated = false;
 			HTML::setReturn(true);
-			UI::button(false, 'Email', array('class'       => 'button email-button',
-																			'data-emailid' => $emailid
-																 ));
+			UI::button(false, 'Email', array('class' => 'button email-button',
+				'data-emailid' => $emailid
+			));
 			$content = HTML::setReturn(false);
 			if ($generated) {
 				return $content;
 			}
 			$emailBox = new Dialog('Select Email Address:', 'emailBox', '');
 			$emailBox->addButtons(array('Close' => '$(this).dialog("close");'));
-			$emailBox->setOptions(array('autoopen'  => false,
-																 'modal'      => true,
-																 'width'      => '"500"',
-																 'height'     => '"350"',
-																 'resizeable' => false
-														));
+			$emailBox->setOptions(array('autoopen' => false,
+				'modal' => true,
+				'width' => '"500"',
+				'height' => '"350"',
+				'resizeable' => false
+			));
 			$emailBox->show();
 
 			$action = <<<JS
