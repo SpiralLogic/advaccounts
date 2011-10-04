@@ -182,12 +182,12 @@
 				$begin = $from;
 			}
 			else
-				$begin = begin_fiscalyear();
+				$begin = Dates::begin_fiscalyear();
 		}
 		elseif ($compare == 1)
 		{
-			$begin = add_months($from, -12);
-			$end = add_months($to, -12);
+			$begin = Dates::add_months($from, -12);
+			$end = Dates::add_months($to, -12);
 		}
 
 		div_start('pl_tbl');

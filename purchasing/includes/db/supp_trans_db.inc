@@ -13,11 +13,11 @@
 
 	function add_supp_trans($type, $supplier_id, $date_, $due_date, $reference, $supp_reference,
 													$amount, $amount_tax, $discount, $err_msg = "", $rate = 0) {
-		$date = date2sql($date_);
+		$date = Dates::date2sql($date_);
 		if ($due_date == "")
 			$due_date = "0000-00-00";
 		else
-			$due_date = date2sql($due_date);
+			$due_date = Dates::date2sql($due_date);
 
 		$trans_no = get_next_trans_no($type);
 

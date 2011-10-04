@@ -153,7 +153,7 @@
 	}
 
 	function check_overdue($row) {
-		return date1_greater_date2(Today(), sql2date($row["due_date"])) &&
+		return Dates::date1_greater_date2(Dates::Today(), Dates::sql2date($row["due_date"])) &&
 		 $row["Outstanding"] != 0;
 	}
 
@@ -194,8 +194,8 @@
 	}
 	else
 	{
-		$sql .= " AND trans.tran_date >= '" . date2sql($_POST['DeliveryAfterDate']) . "'";
-		$sql .= " AND trans.tran_date <= '" . date2sql($_POST['DeliveryToDate']) . "'";
+		$sql .= " AND trans.tran_date >= '" . Dates::date2sql($_POST['DeliveryAfterDate']) . "'";
+		$sql .= " AND trans.tran_date <= '" . Dates::date2sql($_POST['DeliveryToDate']) . "'";
 
 		if ($selected_customer != -1)
 			$sql .= " AND trans.debtor_no=" . db_escape($selected_customer) . " ";

@@ -108,7 +108,7 @@
 	$this->row = $adrline;
 	$this->NewLine(3);
 	$this->Text($mcol + 100, $doc_Date);
-	$this->Text($mcol + 180, sql2date($myrow['tran_date']));
+	$this->Text($mcol + 180, Dates::sql2date($myrow['tran_date']));
 	$this->NewLine();
 	$this->Text($mcol + 100, $doc_Invoice_no);
 	if (isset($myrow['trans_no']) && isset($myrow['reference'])) { // INV/CRE/STA

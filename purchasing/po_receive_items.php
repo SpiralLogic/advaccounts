@@ -135,7 +135,7 @@
 			return false;
 		}
 
-		if (!is_date($_POST['DefaultReceivedDate'])) {
+		if (!Dates::is_date($_POST['DefaultReceivedDate'])) {
 			ui_msgs::display_error(_("The entered date is invalid."));
 			ui_view::set_focus('DefaultReceivedDate');
 			return false;
@@ -210,7 +210,7 @@
 		$_SESSION['wa_global_supplier_id'] = $_SESSION['PO']->supplier_id;
 		$grn = add_grn($_SESSION['PO'], $_POST['DefaultReceivedDate'], $_POST['ref'], $_POST['Location']);
 		$_SESSION['delivery_po'] = $_SESSION['PO']->order_no;
-		new_doc_date($_POST['DefaultReceivedDate']);
+		Dates::new_doc_date($_POST['DefaultReceivedDate']);
 		unset($_SESSION['PO']->line_items);
 		unset($_SESSION['PO']);
 		meta_forward($_SERVER['PHP_SELF'], "AddedID=$grn");
@@ -234,7 +234,7 @@
 				if (!check_num($line->line_no))
 					$_POST[$line->line_no] = number_format2(0, get_qty_dec($line->stock_id));
 				if (!isset($_POST['DefaultReceivedDate']) || $_POST['DefaultReceivedDate'] == "")
-					$_POST['DefaultReceivedDate'] = new_doc_date();
+					$_POST['DefaultReceivedDate'] = Dates::new_doc_date();
 				$_SESSION['PO']->line_items[$line->line_no]->receive_qty = input_num($line->line_no);
 				if (isset($_POST[$line->stock_id . "Desc"]) && strlen($_POST[$line->stock_id . "Desc"]) > 0) {
 					$_SESSION['PO']->line_items[$line->line_no]->description = $_POST[$line->stock_id . "Desc"];

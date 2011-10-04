@@ -77,13 +77,13 @@
 	function can_process() {
 		global $Refs;
 
-		if (!is_date($_POST['CreditDate'])) {
+		if (!Dates::is_date($_POST['CreditDate'])) {
 			ui_msgs::display_error(_("The entered date is invalid."));
 			;
 			ui_view::set_focus('CreditDate');
 			return false;
 		}
-		elseif (!is_date_in_fiscalyear($_POST['CreditDate'])) {
+		elseif (!Dates::is_date_in_fiscalyear($_POST['CreditDate'])) {
 			ui_msgs::display_error(_("The entered date is not in fiscal year."));
 			ui_view::set_focus('CreditDate');
 			return false;
@@ -127,7 +127,7 @@
 		$ci->src_docs = $ci->trans_no;
 		$ci->src_date = $ci->document_date;
 		$ci->trans_no = 0;
-		$ci->document_date = new_doc_date();
+		$ci->document_date = Dates::new_doc_date();
 		$ci->reference = $Refs->get_next(ST_CUSTCREDIT);
 
 		for ($line_no = 0; $line_no < count($ci->line_items); $line_no++) {
@@ -212,7 +212,7 @@
 			$_POST['WriteOffGLCode'] = 0;
 
 		copy_to_cart();
-		if ($new_credit) new_doc_date($_SESSION['Items']->document_date);
+		if ($new_credit) Dates::new_doc_date($_SESSION['Items']->document_date);
 		$credit_no = $_SESSION['Items']->write($_POST['WriteOffGLCode']);
 
 		processing_end();

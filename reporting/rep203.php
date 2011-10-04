@@ -24,7 +24,7 @@
 	print_payment_report();
 
 	function getTransactions($supplier, $date) {
-		$date = date2sql($date);
+		$date = Dates::date2sql($date);
 		$dec = user_price_dec();
 
 		$sql = "SELECT supp_trans.supp_reference,

@@ -56,7 +56,7 @@
 	if ($show_currencies)
 		label_cells(_("Currency"), $to_trans['bank_curr_code'], "class='tableheader2'");
 	label_cells(_("Amount"), number_format2($to_trans['amount'], user_price_dec()), "class='tableheader2'", "align=right");
-	label_cells(_("Date"), sql2date($to_trans['trans_date']), "class='tableheader2'");
+	label_cells(_("Date"), Dates::sql2date($to_trans['trans_date']), "class='tableheader2'");
 	end_row();
 	start_row();
 	label_cells(_("From"), payment_person_name(

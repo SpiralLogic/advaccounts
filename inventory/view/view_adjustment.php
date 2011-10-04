@@ -35,7 +35,7 @@
 			start_row();
 			label_cells(_("At Location"), $adjustment['location_name'], "class='tableheader2'");
 			label_cells(_("Reference"), $adjustment['reference'], "class='tableheader2'", "colspan=6");
-			label_cells(_("Date"), sql2date($adjustment['tran_date']), "class='tableheader2'");
+			label_cells(_("Date"), Dates::sql2date($adjustment['tran_date']), "class='tableheader2'");
 			label_cells(_("Adjustment Type"), $adjustment_type['name'], "class='tableheader2'");
 			end_row();
 			ui_view::comments_display_row(ST_INVADJUST, $trans_no);

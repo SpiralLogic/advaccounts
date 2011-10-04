@@ -48,7 +48,7 @@
 		label_cell($myrow["stock_id"] . " - " . $myrow["description"]);
 		label_cell($myrow["location_name"]);
 		label_cell($myrow["WorkCentreName"]);
-		label_cell(sql2date($myrow["issue_date"]));
+		label_cell(Dates::sql2date($myrow["issue_date"]));
 		end_row();
 
 		ui_view::comments_display_row(28, $issue_no);

@@ -78,7 +78,7 @@
 	//-----------------------------------------------------------------------------
 	function check_overdue($row) {
 		return (!$row["closed"]
-		 && date_diff2(Today(), sql2date($row["required_by"]), "d") > 0);
+		 && Dates::date_diff2(Dates::Today(), Dates::sql2date($row["required_by"]), "d") > 0);
 	}
 
 	function view_link($dummy, $order_no) {
@@ -179,7 +179,7 @@
 	}
 
 	if (check_value('OverdueOnly')) {
-		$Today = date2sql(Today());
+		$Today = Dates::date2sql(Dates::Today());
 
 		$sql .= " AND workorder.required_by < '$Today' ";
 	}

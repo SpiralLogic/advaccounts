@@ -137,10 +137,10 @@
 			$begin = "";
 		else
 		{
-			$begin = begin_fiscalyear();
-			if (date1_greater_date2($begin, $_POST['TransFromDate']))
+			$begin = Dates::begin_fiscalyear();
+			if (Dates::date1_greater_date2($begin, $_POST['TransFromDate']))
 				$begin = $_POST['TransFromDate'];
-			$begin = add_days($begin, -1);
+			$begin = Dates::add_days($begin, -1);
 		}
 
 		$bfw = 0;
@@ -166,7 +166,7 @@
 
 			$running_total += $myrow["amount"];
 
-			$trandate = sql2date($myrow["tran_date"]);
+			$trandate = Dates::sql2date($myrow["tran_date"]);
 
 			label_cell($systypes_array[$myrow["type"]]);
 			label_cell(ui_view::get_gl_view_str($myrow["type"], $myrow["type_no"], $myrow["type_no"], true));

@@ -19,7 +19,7 @@
 
 	// Retrieves buy exchange rate for given currency/date, zero if no result
 	function get_date_exchange_rate($curr_code, $date_) {
-		$date = date2sql($date_);
+		$date = Dates::date2sql($date_);
 		$sql = "SELECT rate_buy FROM exchange_rates WHERE curr_code=" . db_escape($curr_code)
 		 . " AND date_='$date'";
 		$result = db_query($sql, "could not get exchange rate for $curr_code - $date_");
@@ -36,7 +36,7 @@
 		if (Banking::is_company_currency($curr_code))
 			display_db_error("Exchange rates cannot be set for company currency", "", true);
 
-		$date = date2sql($date_);
+		$date = Dates::date2sql($date_);
 
 		$sql = "UPDATE exchange_rates SET rate_buy=$buy_rate, rate_sell=" . db_escape($sell_rate)
 		 . " WHERE curr_code=" . db_escape($curr_code) . " AND date_='$date'";
@@ -50,7 +50,7 @@
 		if (Banking::is_company_currency($curr_code))
 			display_db_error("Exchange rates cannot be set for company currency", "", true);
 
-		$date = date2sql($date_);
+		$date = Dates::date2sql($date_);
 
 		$sql = "INSERT INTO exchange_rates (curr_code, date_, rate_buy, rate_sell)
 		VALUES (" . db_escape($curr_code) . ", '$date', " . db_escape($buy_rate)

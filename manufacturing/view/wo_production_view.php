@@ -47,7 +47,7 @@
 		label_cell(ui_view::get_trans_view_str(ST_WORKORDER, $myrow["workorder_id"]));
 		label_cell($myrow["stock_id"] . " - " . $myrow["StockDescription"]);
 		qty_cell($myrow["quantity"], false, get_qty_dec($myrow["stock_id"]));
-		label_cell(sql2date($myrow["date_"]));
+		label_cell(Dates::sql2date($myrow["date_"]));
 		end_row();
 
 		ui_view::comments_display_row(ST_MANURECEIVE, $prod_id);

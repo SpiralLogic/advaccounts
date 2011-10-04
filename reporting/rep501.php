@@ -36,9 +36,9 @@
 	}
 
 	function getYTD($dim) {
-		$date = Today();
-		$date = begin_fiscalyear($date);
-		date2sql($date);
+		$date = Dates::Today();
+		$date = Dates::begin_fiscalyear($date);
+		Dates::date2sql($date);
 
 		$sql = "SELECT SUM(amount) AS Balance
 		FROM

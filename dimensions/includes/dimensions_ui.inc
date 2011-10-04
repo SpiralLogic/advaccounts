@@ -14,8 +14,8 @@
 
 	function display_dimension_balance($id, $from, $to) {
 
-		$from = date2sql($from);
-		$to = date2sql($to);
+		$from = Dates::date2sql($from);
+		$to = Dates::date2sql($to);
 		$sql = "SELECT account, chart_master.account_name, sum(amount) AS amt FROM
 		gl_trans,chart_master WHERE
 		gl_trans.account = chart_master.account_code AND

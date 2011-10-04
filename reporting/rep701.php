@@ -39,7 +39,7 @@
 				$rep->NewLine();
 			}
 			if ($showbalance == 1) {
-				$begin = begin_fiscalyear();
+				$begin = Dates::begin_fiscalyear();
 				if (is_account_balancesheet($account["account_code"]))
 					$begin = "";
 				$balance = get_gl_trans_from_to($begin, ToDay(), $account["account_code"], 0);

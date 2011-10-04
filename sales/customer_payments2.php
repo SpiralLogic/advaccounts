@@ -43,9 +43,9 @@
 	if (!isset($_POST['customer_id']))
 		$_POST['customer_id'] = ui_globals::get_global_customer(false);
 	if (!isset($_POST['DateBanked'])) {
-		$_POST['DateBanked'] = new_doc_date();
-		if (!is_date_in_fiscalyear($_POST['DateBanked'])) {
-			$_POST['DateBanked'] = end_fiscalyear();
+		$_POST['DateBanked'] = Dates::new_doc_date();
+		if (!Dates::is_date_in_fiscalyear($_POST['DateBanked'])) {
+			$_POST['DateBanked'] = Dates::end_fiscalyear();
 		}
 	}
 
@@ -82,12 +82,12 @@
 			return false;
 		}
 
-		if (!isset($_POST['DateBanked']) || !is_date($_POST['DateBanked'])) {
+		if (!isset($_POST['DateBanked']) || !Dates::is_date($_POST['DateBanked'])) {
 			ui_msgs::display_error(_("The entered date is invalid. Please enter a valid date for the payment."));
 			ui_view::set_focus('DateBanked');
 			return false;
 		}
-		elseif (!is_date_in_fiscalyear($_POST['DateBanked'])) {
+		elseif (!Dates::is_date_in_fiscalyear($_POST['DateBanked'])) {
 			ui_msgs::display_error(_("The entered date is not in fiscal year."));
 			ui_view::set_focus('DateBanked');
 			return false;
@@ -187,7 +187,7 @@
 		else
 			$rate = input_num('_ex_rate');
 
-		new_doc_date($_POST['DateBanked']);
+		Dates::new_doc_date($_POST['DateBanked']);
 
 		$payment_no = write_customer_payment2(0, $_POST['customer_id'], $_POST['BranchID'],
 			$_POST['bank_account'], $_POST['DateBanked'], $_POST['ref'],

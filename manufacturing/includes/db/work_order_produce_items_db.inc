@@ -27,7 +27,7 @@
 			exit;
 		}
 
-		$date = date2sql($date_);
+		$date = Dates::date2sql($date_);
 
 		$sql = "INSERT INTO wo_manufacture (workorder_id, reference, quantity, date_)
 		VALUES (" . db_escape($woid) . ", " . db_escape($ref) . ", " . db_escape($quantity)
@@ -100,7 +100,7 @@
 		work_order_update_finished_quantity($row["workorder_id"], -$row["quantity"]);
 
 		work_order_quick_costs(
-			$row['workorder_id'], $row['stock_id'], -$row['quantity'], sql2date($row['date_']), $type_no);
+			$row['workorder_id'], $row['stock_id'], -$row['quantity'], Dates::sql2date($row['date_']), $type_no);
 
 		// clear the production record
 		$sql = "UPDATE wo_manufacture SET quantity=0 WHERE id=" . db_escape($type_no);

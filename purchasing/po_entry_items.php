@@ -149,7 +149,7 @@
 			ui_view::set_focus('discount');
 			return false;
 		}
-		if (!is_date($_POST['req_del_date'])) {
+		if (!Dates::is_date($_POST['req_del_date'])) {
 			ui_msgs::display_error(_("The date entered is in an invalid format."));
 			ui_view::set_focus('req_del_date');
 			return false;
@@ -222,7 +222,7 @@
 			ui_view::set_focus('supplier_id');
 			return false;
 		}
-		if (!is_date($_POST['OrderDate'])) {
+		if (!Dates::is_date($_POST['OrderDate'])) {
 			ui_msgs::display_error(_("The entered order date is invalid."));
 			ui_view::set_focus('OrderDate');
 			return false;
@@ -270,7 +270,7 @@
 			if ($_SESSION['PO']->order_no == 0) {
 				/*its a new order to be inserted */
 				$order_no = add_po($_SESSION['PO']);
-				new_doc_date($_SESSION['PO']->orig_order_date);
+				Dates::new_doc_date($_SESSION['PO']->orig_order_date);
 				$_SESSION['history'][ST_PURCHORDER] = $_SESSION['PO']->reference;
 				unset($_SESSION['PO']);
 				meta_forward($_SERVER['PHP_SELF'], "AddedID=$order_no");
@@ -340,14 +340,14 @@
 					}
 				}
 				$_SESSION['PO']->add_to_order($line_no, $line_item->stock_id, $line_item->quantity, $line_item->description, price_decimal_format($myrow[0]['price'], $dec2), $line_item->units,
-					add_days(Today(), 10), 0, 0, 0);
+					Dates::add_days(Dates::Today(), 10), 0, 0, 0);
 			}
 			arsort($po_lines);
 			$_SESSION['wa_global_supplier_id'] = key($po_lines);
 			if ($_GET['DS']) {
 				$item_info = get_item('DS');
 				$_POST['StkLocation'] = 'DRP';
-				$_SESSION['PO']->add_to_order(count($_SESSION['PO']->line_items), 'DS', 1, $item_info['long_description'], 0, '', add_days(Today(), 10), 0, 0, 0);
+				$_SESSION['PO']->add_to_order(count($_SESSION['PO']->line_items), 'DS', 1, $item_info['long_description'], 0, '', Dates::add_days(Dates::Today(), 10), 0, 0, 0);
 				$address = $_SESSION['Items']->customer_name . "\n";
 				if (!empty($_SESSION['Items']->name) && $_SESSION['Items']->deliver_to == $_SESSION['Items']->customer_name) {
 					$address .= $_SESSION['Items']->name . "\n";

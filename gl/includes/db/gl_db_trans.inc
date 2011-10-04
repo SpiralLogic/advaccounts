@@ -19,7 +19,7 @@
 	function add_gl_trans($type, $trans_id, $date_, $account, $dimension, $dimension2, $memo_,
 												$amount, $currency = null, $person_type_id = null, $person_id = null, $err_msg = "", $rate = 0) {
 
-		$date = date2sql($date_);
+		$date = Dates::date2sql($date_);
 		if ($currency != null) {
 			if ($rate == 0)
 				$amount_in_home_currency = Banking::to_home_currency($amount, $currency, $date_);
@@ -93,8 +93,8 @@
 	function get_gl_transactions($from_date, $to_date, $trans_no = 0,
 															 $account = null, $dimension = 0, $dimension2 = 0, $filter_type = null,
 															 $amount_min = null, $amount_max = null) {
-		$from = date2sql($from_date);
-		$to = date2sql($to_date);
+		$from = Dates::date2sql($from_date);
+		$to = Dates::date2sql($to_date);
 
 		$sql = "SELECT gl_trans.*, "
 		 . "chart_master.account_name FROM gl_trans, "
@@ -158,8 +158,8 @@
 	}
 
 	function get_gl_balance_from_to($from_date, $to_date, $account, $dimension = 0, $dimension2 = 0) {
-		$from = date2sql($from_date);
-		$to = date2sql($to_date);
+		$from = Dates::date2sql($from_date);
+		$to = Dates::date2sql($to_date);
 
 		$sql = "SELECT SUM(amount) FROM gl_trans
 		WHERE account='$account'";
@@ -181,8 +181,8 @@
 	//--------------------------------------------------------------------------------
 
 	function get_gl_trans_from_to($from_date, $to_date, $account, $dimension = 0, $dimension2 = 0) {
-		$from = date2sql($from_date);
-		$to = date2sql($to_date);
+		$from = Dates::date2sql($from_date);
+		$to = Dates::date2sql($to_date);
 
 		$sql = "SELECT SUM(amount) FROM gl_trans
 		WHERE account='$account'";
@@ -217,12 +217,12 @@
 			$sql .= " dimension_id = " . ($dimension < 0 ? 0 : db_escape($dimension)) . " AND";
 		if ($dimension2 != 0)
 			$sql .= " dimension2_id = " . ($dimension2 < 0 ? 0 : db_escape($dimension2)) . " AND";
-		$from_date = date2sql($from);
+		$from_date = Dates::date2sql($from);
 		if ($from_incl)
 			$sql .= " tran_date >= '$from_date'  AND";
 		else
 			$sql .= " tran_date > IF(ctype>0 AND ctype<" . CL_INCOME . ", '0000-00-00', '$from_date') AND";
-		$to_date = date2sql($to);
+		$to_date = Dates::date2sql($to);
 		if ($to_incl)
 			$sql .= " tran_date <= '$to_date' ";
 		else
@@ -237,8 +237,8 @@
 
 	function get_budget_trans_from_to($from_date, $to_date, $account, $dimension = 0, $dimension2 = 0) {
 
-		$from = date2sql($from_date);
-		$to = date2sql($to_date);
+		$from = Dates::date2sql($from_date);
+		$to = Dates::date2sql($to_date);
 
 		$sql = "SELECT SUM(amount) FROM budget_trans
 		WHERE account=" . db_escape($account);
@@ -292,7 +292,7 @@
 		(trans_type, trans_no, tran_date, tax_type_id, rate, ex_rate,
 			included_in_price, net_amount, amount, memo)
 		VALUES (" . db_escape($trans_type) . "," . db_escape($trans_no) . ",'"
-		 . date2sql($tran_date) . "'," . db_escape($tax_id) . ","
+		 . Dates::date2sql($tran_date) . "'," . db_escape($tax_id) . ","
 		 . db_escape($rate) . "," . db_escape($ex_rate) . "," . ($included ? 1 : 0) . ","
 		 . db_escape($net_amount) . ","
 		 . db_escape($amount) . "," . db_escape($memo) . ")";
@@ -325,8 +325,8 @@
 	}
 
 	function get_tax_summary($from, $to) {
-		$fromdate = date2sql($from);
-		$todate = date2sql($to);
+		$fromdate = Dates::date2sql($from);
+		$todate = Dates::date2sql($to);
 
 		$sql = "SELECT
 				SUM(IF(trans_type=" . ST_CUSTCREDIT . " || trans_type=" . ST_SUPPINVOICE
@@ -418,7 +418,7 @@
 		if ($reverse) {
 			//$reversingDate = date(user_date_display(),
 			//	Mktime(0,0,0,get_month($date_)+1,1,get_year($date_)));
-			$reversingDate = begin_month(add_months($date_, 1));
+			$reversingDate = Dates::begin_month(Dates::add_months($date_, 1));
 
 			$trans_id_reverse = get_next_trans_no($trans_type);
 

@@ -90,8 +90,8 @@
 
 	// fiscal year routines
 	function add_fiscalyear($from_date, $to_date, $closed) {
-		$from = date2sql($from_date);
-		$to = date2sql($to_date);
+		$from = Dates::date2sql($from_date);
+		$to = Dates::date2sql($to_date);
 		$sql = "INSERT INTO fiscal_year (begin, end, closed)
 		VALUES (" . db_escape($from) . "," . db_escape($to) . ", " . db_escape($closed) . ")";
 		db_query($sql, "could not add fiscal year");

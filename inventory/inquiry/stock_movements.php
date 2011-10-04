@@ -50,8 +50,8 @@
 
 	ui_globals::set_global_stock_item($_POST['stock_id']);
 
-	$before_date = date2sql($_POST['BeforeDate']);
-	$after_date = date2sql($_POST['AfterDate']);
+	$before_date = Dates::date2sql($_POST['BeforeDate']);
+	$after_date = Dates::date2sql($_POST['AfterDate']);
 
 	$sql = "SELECT type, trans_no, tran_date, person_id, qty, reference
 	FROM stock_moves
@@ -101,7 +101,7 @@
 
 		alt_table_row_color($k);
 
-		$trandate = sql2date($myrow["tran_date"]);
+		$trandate = Dates::sql2date($myrow["tran_date"]);
 
 		$type_name = $systypes_array[$myrow["type"]];
 

@@ -456,7 +456,6 @@
 		}
 	}
 
-	;
 	//-----------------------------------------------------------------------------
 	//	Creates new db_pager $_SESSION object on first page call.
 	//  Retrieves from $_SESSION var on subsequent $_POST calls

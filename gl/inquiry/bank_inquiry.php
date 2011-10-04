@@ -44,8 +44,8 @@
 
 	//------------------------------------------------------------------------------------------------
 
-	$date_after = date2sql($_POST['TransAfterDate']);
-	$date_to = date2sql($_POST['TransToDate']);
+	$date_after = Dates::date2sql($_POST['TransAfterDate']);
+	$date_to = Dates::date2sql($_POST['TransToDate']);
 	if (!isset($_POST['bank_account']))
 		$_POST['bank_account'] = "";
 	$sql = "SELECT bank_trans.* FROM bank_trans
@@ -91,7 +91,7 @@
 
 		$running_total += $myrow["amount"];
 
-		$trandate = sql2date($myrow["trans_date"]);
+		$trandate = Dates::sql2date($myrow["trans_date"]);
 		label_cell($systypes_array[$myrow["type"]]);
 		label_cell(ui_view::get_trans_view_str($myrow["type"], $myrow["trans_no"]));
 		label_cell(ui_view::get_trans_view_str($myrow["type"], $myrow["trans_no"], $myrow['ref']));

@@ -554,13 +554,13 @@
 				$_POST[$name] = null;
 			else
 			{
-				$dd = Today();
+				$dd = Dates::Today();
 				if ($inc_days != 0)
-					$dd = add_days($dd, $inc_days);
+					$dd = Dates::add_days($dd, $inc_days);
 				if ($inc_months != 0)
-					$dd = add_months($dd, $inc_months);
+					$dd = Dates::add_months($dd, $inc_months);
 				if ($inc_years != 0)
-					$dd = add_years($dd, $inc_years);
+					$dd = Dates::add_years($dd, $inc_years);
 				$_POST[$name] = $dd;
 			}
 		}
@@ -571,7 +571,7 @@
 		$class = $submit_on_change ? 'class="searchbox"' : '';
 
 		$aspect = $check ? 'aspect="cdate"' : '';
-		if ($check && (get_post($name) != Today()))
+		if ($check && (get_post($name) != Dates::Today()))
 			$aspect .= ' style="color:#FF0000"';
 
 		//	 ui_view::default_focus($name);
@@ -838,7 +838,7 @@
 
 	function bank_balance_row($bank_acc, $parms = '') {
 
-		$to = add_days(Today(), 1);
+		$to = Dates::add_days(Dates::Today(), 1);
 		$bal = get_balance_before_for_bank_account($bank_acc, $to);
 		label_row(_("Bank Balance:"),
 		 "<a target='_blank' " . ($bal < 0 ? 'class="redfg"' : '')

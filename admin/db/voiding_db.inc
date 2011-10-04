@@ -121,7 +121,7 @@
 	//--------------------------------------------------------------------------------------------------
 
 	function add_voided_entry($type, $type_no, $date_, $memo_) {
-		$date = date2sql($date_);
+		$date = Dates::date2sql($date_);
 		$sql = "INSERT INTO voided (type, id, date_, memo_)
 		VALUES (" . db_escape($type) . ", " . db_escape($type_no) . ", "
 		 . db_escape($date) . ", " . db_escape($memo_) . ")";

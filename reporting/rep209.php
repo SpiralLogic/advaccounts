@@ -130,7 +130,7 @@
 					$rep->TextColLines(1, 2, $myrow2['description'], -2);
 					$newrow = $rep->row;
 					$rep->row = $oldrow;
-					//$rep->TextCol(2, 3,	sql2date($myrow2['delivery_date']), -2);
+					//$rep->TextCol(2, 3,	Dates::sql2date($myrow2['delivery_date']), -2);
 					$rep->TextCol(2, 3, '', -2);
 					$rep->TextCol(3, 4, $DisplayQty, -2);
 					$rep->TextCol(4, 5, $myrow2['units'], -2);

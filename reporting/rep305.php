@@ -26,8 +26,8 @@
 	print_grn_valuation();
 
 	function getTransactions($from, $to) {
-		$from = date2sql($from);
-		$to = date2sql($to);
+		$from = Dates::date2sql($from);
+		$to = Dates::date2sql($to);
 
 		$sql = "SELECT DISTINCT grn_batch.supplier_id,
             purch_order_details.*,
@@ -95,7 +95,7 @@
 				$stock_id = $trans['item_code'];
 			}
 			$curr = Banking::get_supplier_currency($trans['supplier_id']);
-			$rate = Banking::get_exchange_rate_from_home_currency($curr, sql2date($trans['delivery_date']));
+			$rate = Banking::get_exchange_rate_from_home_currency($curr, Dates::sql2date($trans['delivery_date']));
 			$trans['unit_price'] *= $rate;
 			$trans['act_price'] *= $rate;
 

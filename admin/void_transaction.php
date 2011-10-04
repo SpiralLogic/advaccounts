@@ -147,12 +147,12 @@
 			ui_view::set_focus('trans_no');
 			return;
 		}
-		if (!is_date($_POST['date_'])) {
+		if (!Dates::is_date($_POST['date_'])) {
 			ui_msgs::display_error(_("The entered date is invalid."));
 			ui_view::set_focus('date_');
 			return false;
 		}
-		if (!is_date_in_fiscalyear($_POST['date_'])) {
+		if (!Dates::is_date_in_fiscalyear($_POST['date_'])) {
 			ui_msgs::display_error(_("The entered date is not in fiscal year."));
 			ui_view::set_focus('date_');
 			return false;
@@ -200,9 +200,9 @@
 	//----------------------------------------------------------------------------------------
 
 	if (!isset($_POST['date_'])) {
-		$_POST['date_'] = Today();
-		if (!is_date_in_fiscalyear($_POST['date_']))
-			$_POST['date_'] = end_fiscalyear();
+		$_POST['date_'] = Dates::Today();
+		if (!Dates::is_date_in_fiscalyear($_POST['date_']))
+			$_POST['date_'] = Dates::end_fiscalyear();
 	}
 
 	if (isset($_POST['ProcessVoiding'])) {

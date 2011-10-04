@@ -288,12 +288,12 @@
 			ui_view::set_focus('branch_id');
 			return false;
 		}
-		if (!is_date($_POST['OrderDate'])) {
+		if (!Dates::is_date($_POST['OrderDate'])) {
 			ui_msgs::display_error(_("The entered date is invalid."));
 			ui_view::set_focus('OrderDate');
 			return false;
 		}
-		if ($_SESSION['Items']->trans_type != ST_SALESORDER && $_SESSION['Items']->trans_type != ST_SALESQUOTE && !is_date_in_fiscalyear($_POST['OrderDate'])) {
+		if ($_SESSION['Items']->trans_type != ST_SALESORDER && $_SESSION['Items']->trans_type != ST_SALESQUOTE && !Dates::is_date_in_fiscalyear($_POST['OrderDate'])) {
 			ui_msgs::display_error(_("The entered date is not in fiscal year"));
 			ui_view::set_focus('OrderDate');
 			return false;
@@ -326,7 +326,7 @@
 			ui_view::set_focus('freight_cost');
 			return false;
 		}
-		if (!is_date($_POST['delivery_date'])) {
+		if (!Dates::is_date($_POST['delivery_date'])) {
 			if ($_SESSION['Items']->trans_type == ST_SALESQUOTE) {
 				ui_msgs::display_error(_("The Valid date is invalid."));
 			}
@@ -336,8 +336,8 @@
 			ui_view::set_focus('delivery_date');
 			return false;
 		}
-		//if (date1_greater_date2($_SESSION['Items']->document_date, $_POST['delivery_date'])) {
-		if (date1_greater_date2($_POST['OrderDate'], $_POST['delivery_date'])) {
+		//if (Dates::date1_greater_date2($_SESSION['Items']->document_date, $_POST['delivery_date'])) {
+		if (Dates::date1_greater_date2($_POST['OrderDate'], $_POST['delivery_date'])) {
 			if ($_SESSION['Items']->trans_type == ST_SALESQUOTE) {
 				ui_msgs::display_error(_("The requested valid date is before the date of the quotation."));
 			}
@@ -380,7 +380,7 @@
 		}
 		$_SESSION['order_no'] = $trans_no = key($_SESSION['Items']->trans_no);
 		$trans_type = $_SESSION['Items']->trans_type;
-		new_doc_date($_SESSION['Items']->document_date);
+		Dates::new_doc_date($_SESSION['Items']->document_date);
 		$_SESSION['wa_global_customer_id'] = $_SESSION['Items']->customer_id;
 		processing_end();
 		$_SESSION['Jobsboard'] = new Cart($trans_type, $_SESSION['order_no']);
@@ -517,7 +517,7 @@
 			$doc->trans_no = 0;
 			$doc->trans_type = ST_SALESORDER;
 			$doc->reference = $Refs->get_next($doc->trans_type);
-			$doc->document_date = $doc->due_date = new_doc_date();
+			$doc->document_date = $doc->due_date = Dates::new_doc_date();
 			$doc->Comments = _("Sales Quotation") . " # " . $trans_no;
 			$_SESSION['Items'] = $doc;
 		}
@@ -530,7 +530,7 @@
 			$doc = new Cart(ST_SALESORDER, array($trans_no));
 			$doc->trans_type = $type;
 			$doc->trans_no = 0;
-			$doc->document_date = new_doc_date();
+			$doc->document_date = Dates::new_doc_date();
 			if ($type == ST_SALESINVOICE) {
 				$doc->due_date = get_invoice_duedate($doc->customer_id, $doc->document_date);
 				$doc->pos = user_pos();

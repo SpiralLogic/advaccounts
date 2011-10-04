@@ -115,7 +115,7 @@
 
 	function display_balance_sheet() {
 
-		$from = begin_fiscalyear();
+		$from = Dates::begin_fiscalyear();
 		$to = $_POST['TransToDate'];
 
 		$dim = get_company_pref('use_dimension');

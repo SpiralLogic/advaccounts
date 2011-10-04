@@ -38,9 +38,9 @@
 
 		$_SESSION['PO'] = new purch_order;
 
-		$_POST['OrderDate'] = new_doc_date();
-		if (!is_date_in_fiscalyear($_POST['OrderDate']))
-			$_POST['OrderDate'] = end_fiscalyear();
+		$_POST['OrderDate'] = Dates::new_doc_date();
+		if (!Dates::is_date_in_fiscalyear($_POST['OrderDate']))
+			$_POST['OrderDate'] = Dates::end_fiscalyear();
 		$_SESSION['PO']->orig_order_date = $_POST['OrderDate'];
 	}
 
@@ -102,9 +102,9 @@
 		//	$_POST['OrderDate'] = $order->orig_order_date;
 		//if (!isset($_POST['OrderDate']) || $_POST['OrderDate'] == "")
 		//{
-		//	$_POST['OrderDate'] = Today();
-		//	if (!is_date_in_fiscalyear($_POST['OrderDate']))
-		//		$_POST['OrderDate'] = end_fiscalyear();
+		//	$_POST['OrderDate'] = Dates::Today();
+		//	if (!Dates::is_date_in_fiscalyear($_POST['OrderDate']))
+		//		$_POST['OrderDate'] = Dates::end_fiscalyear();
 		//}
 		date_row(_("Order Date:"), 'OrderDate', '', true, 0, 0, 0, null, true);
 		if (isset($_POST['_OrderDate_changed'])) {
@@ -297,7 +297,7 @@
 			$_POST['qty'] = number_format2(get_purchase_conversion_factor($order->supplier_id, Input::post('stock_id')), $dec);
 			//$_POST['price'] = price_format(get_purchase_price ($order->supplier_id, $_POST['stock_id']));
 			$_POST['price'] = price_decimal_format(get_purchase_price($order->supplier_id, Input::post('stock_id')), $dec2);
-			$_POST['req_del_date'] = add_days(Today(), 10);
+			$_POST['req_del_date'] = Dates::add_days(Dates::Today(), 10);
 			$_POST['discount'] = percent_format(0);
 			$qty_rcvd = '';
 		}

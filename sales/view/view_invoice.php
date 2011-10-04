@@ -90,8 +90,8 @@
 	label_cells(_("Sales Type"), $myrow["sales_type"], "class='label'");
 	end_row();
 	start_row();
-	label_cells(_("Invoice Date"), sql2date($myrow["tran_date"]), "class='label'", "nowrap");
-	label_cells(_("Due Date"), sql2date($myrow["due_date"]), "class='label'", "nowrap");
+	label_cells(_("Invoice Date"), Dates::sql2date($myrow["tran_date"]), "class='label'", "nowrap");
+	label_cells(_("Due Date"), Dates::sql2date($myrow["due_date"]), "class='label'", "nowrap");
 	label_cells(_("Deliveries"), ui_view::get_customer_trans_view_str(ST_CUSTDELIVERY,
 			get_parent_trans(ST_SALESINVOICE, $trans_id)), "class='label'");
 	end_row();

@@ -100,9 +100,9 @@
 
 	//-------------------------------------------------------------------------------------
 	if (!isset($_POST['date_'])) {
-		$_POST['date_'] = new_doc_date();
-		if (!is_date_in_fiscalyear($_POST['date_']))
-			$_POST['date_'] = end_fiscalyear();
+		$_POST['date_'] = Dates::new_doc_date();
+		if (!Dates::is_date_in_fiscalyear($_POST['date_']))
+			$_POST['date_'] = Dates::end_fiscalyear();
 	}
 
 	function can_process() {
@@ -128,12 +128,12 @@
 			return false;
 		}
 
-		if (!is_date($_POST['date_'])) {
+		if (!Dates::is_date($_POST['date_'])) {
 			ui_msgs::display_error(_("The date entered is in an invalid format."));
 			ui_view::set_focus('date_');
 			return false;
 		}
-		elseif (!is_date_in_fiscalyear($_POST['date_']))
+		elseif (!Dates::is_date_in_fiscalyear($_POST['date_']))
 		{
 			ui_msgs::display_error(_("The entered date is not in fiscal year."));
 			ui_view::set_focus('date_');
@@ -199,12 +199,12 @@
 		}
 		else
 		{
-			if (!is_date($_POST['RequDate'])) {
+			if (!Dates::is_date($_POST['RequDate'])) {
 				ui_view::set_focus('RequDate');
 				ui_msgs::display_error(_("The date entered is in an invalid format."));
 				return false;
 			}
-			//elseif (!is_date_in_fiscalyear($_POST['RequDate']))
+			//elseif (!Dates::is_date_in_fiscalyear($_POST['RequDate']))
 			//{
 			//	ui_msgs::display_error(_("The entered date is not in fiscal year."));
 			//	return false;
@@ -235,7 +235,7 @@
 			$_POST['RequDate'], $_POST['memo_'], input_num('Costs'), $_POST['cr_acc'], input_num('Labour'),
 			$_POST['cr_lab_acc']);
 
-		new_doc_date($_POST['date_']);
+		Dates::new_doc_date($_POST['date_']);
 		meta_forward($_SERVER['PHP_SELF'], "AddedID=$id&type=" . $_POST['type'] . "&date=" . $_POST['date_']);
 	}
 
@@ -245,7 +245,7 @@
 
 		update_work_order($selected_id, $_POST['StockLocation'], input_num('quantity'),
 			Input::post('stock_id'), $_POST['date_'], $_POST['RequDate'], $_POST['memo_']);
-		new_doc_date($_POST['date_']);
+		Dates::new_doc_date($_POST['date_']);
 		meta_forward($_SERVER['PHP_SELF'], "UpdatedID=$selected_id");
 	}
 
@@ -317,9 +317,9 @@
 		$_POST['released'] = $myrow["released"];
 		$_POST['closed'] = $myrow["closed"];
 		$_POST['type'] = $myrow["type"];
-		$_POST['date_'] = sql2date($myrow["date_"]);
-		$_POST['RequDate'] = sql2date($myrow["required_by"]);
-		$_POST['released_date'] = sql2date($myrow["released_date"]);
+		$_POST['date_'] = Dates::sql2date($myrow["date_"]);
+		$_POST['RequDate'] = Dates::sql2date($myrow["required_by"]);
+		$_POST['released_date'] = Dates::sql2date($myrow["released_date"]);
 		$_POST['memo_'] = "";
 		$_POST['units_issued'] = $myrow["units_issued"];
 		$_POST['Costs'] = price_format($myrow["additional_costs"]);

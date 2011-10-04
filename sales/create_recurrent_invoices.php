@@ -11,7 +11,6 @@
 	 ***********************************************************************/
 	$page_security = 'SA_SALESINVOICE';
 
-	include_once("includes/cart.inc");
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 	include_once(APP_PATH . "sales/includes/ui/sales_order_ui.inc");
 
@@ -24,7 +23,7 @@
 	page(_($help_context = "Create and Print Recurrent Invoices"), false, false, "", $js);
 
 	function set_last_sent($id, $date) {
-		$date = date2sql($date);
+		$date = Dates::date2sql($date);
 		$sql = "UPDATE recurrent_invoices SET last_sent='$date' WHERE id=" . db_escape($id);
 		db_query($sql, "The recurrent invoice could not be updated or added");
 	}
@@ -38,7 +37,7 @@
 
 		$doc->trans_type = ST_SALESORDER;
 		$doc->trans_no = 0;
-		$doc->document_date = Today(); // 2006-06-15. Added so Invoices and Deliveries get current day
+		$doc->document_date = Dates::Today(); // 2006-06-15. Added so Invoices and Deliveries get current day
 
 		$doc->due_date = get_invoice_duedate($doc->customer_id, $doc->document_date);
 		$doc->reference = $Refs->get_next($doc->trans_type);
@@ -58,8 +57,8 @@
 	}
 
 	if (isset($_GET['recurrent'])) {
-		$date = Today();
-		if (is_date_in_fiscalyear($date)) {
+		$date = Dates::Today();
+		if (Dates::is_date_in_fiscalyear($date)) {
 			$invs = array();
 			$sql = "SELECT * FROM recurrent_invoices WHERE id=" . db_escape($_GET['recurrent']);
 
@@ -116,21 +115,21 @@
 	);
 	table_header($th);
 	$k = 0;
-	$today = add_days(Today(), 1);
+	$today = Dates::add_days(Dates::Today(), 1);
 	$due = false;
 	while ($myrow = db_fetch($result))
 	{
-		$begin = sql2date($myrow["begin"]);
-		$end = sql2date($myrow["end"]);
-		$last_sent = sql2date($myrow["last_sent"]);
+		$begin = Dates::sql2date($myrow["begin"]);
+		$end = Dates::sql2date($myrow["end"]);
+		$last_sent = Dates::sql2date($myrow["last_sent"]);
 		if ($myrow['monthly'] > 0)
-			$due_date = begin_month($last_sent);
+			$due_date = Dates::begin_month($last_sent);
 		else
 			$due_date = $last_sent;
-		$due_date = add_months($due_date, $myrow['monthly']);
-		$due_date = add_days($due_date, $myrow['days']);
-		$overdue = date1_greater_date2($today, $due_date) && date1_greater_date2($today, $begin)
-		 && date1_greater_date2($end, $today);
+		$due_date = Dates::add_months($due_date, $myrow['monthly']);
+		$due_date = Dates::add_days($due_date, $myrow['days']);
+		$overdue = Dates::date1_greater_date2($today, $due_date) && Dates::date1_greater_date2($today, $begin)
+		 && Dates::date1_greater_date2($end, $today);
 		if ($overdue) {
 			start_row("class='overduebg'");
 			$due = true;

@@ -24,8 +24,8 @@
 	print_audit_trail();
 
 	function getTransactions($from, $to, $type, $user) {
-		$fromdate = date2sql($from) . " 00:00:00";
-		$todate = date2sql($to) . " 23:59.59";
+		$fromdate = Dates::date2sql($from) . " 00:00:00";
+		$todate = Dates::date2sql($to) . " 23:59.59";
 
 		$sql = "SELECT a.*,
 		SUM(IF(ISNULL(g.amount), NULL, IF(g.amount > 0, g.amount, 0))) AS amount,
@@ -92,13 +92,13 @@
 
 		while ($myrow = db_fetch($trans))
 		{
-			$rep->TextCol(0, 1, sql2date(date("Y-m-d", $myrow['unix_stamp'])));
+			$rep->TextCol(0, 1, Dates::sql2date(date("Y-m-d", $myrow['unix_stamp'])));
 			if (user_date_format() == 0)
 				$rep->TextCol(1, 2, date("h:i:s a", $myrow['unix_stamp']));
 			else
 				$rep->TextCol(1, 2, date("H:i:s", $myrow['unix_stamp']));
 			$rep->TextCol(2, 3, $myrow['user_id']);
-			$rep->TextCol(3, 4, sql2date($myrow['gl_date']));
+			$rep->TextCol(3, 4, Dates::sql2date($myrow['gl_date']));
 			$rep->TextCol(4, 5, $systypes_array[$myrow['type']]);
 			$rep->TextCol(5, 6, $myrow['trans_no']);
 			if ($myrow['gl_seq'] == null)

@@ -28,7 +28,7 @@
 	include_once(APP_PATH . "admin/db/voiding_db.inc");
 	//	include_once(APP_PATH . "includes/ui/ui_view.inc");
 	include_once(APP_PATH . "includes/data_checks.inc");
-	include_once(APP_PATH . "includes/date_functions.inc");
+	//include_once(APP_PATH . "includes/dates.inc");
 
 	include_once(APP_PATH . "includes/db/connect_db.inc");
 

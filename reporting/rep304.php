@@ -26,8 +26,8 @@
 	print_inventory_sales();
 
 	function getTransactions($category, $location, $fromcust, $from, $to) {
-		$from = date2sql($from);
-		$to = date2sql($to);
+		$from = Dates::date2sql($from);
+		$to = Dates::date2sql($to);
 		$sql = "SELECT stock_master.category_id,
 			stock_category.description AS cat_description,
 			stock_master.stock_id,
@@ -149,7 +149,7 @@
 			}
 
 			$curr = Banking::get_customer_currency($trans['debtor_no']);
-			$rate = Banking::get_exchange_rate_from_home_currency($curr, sql2date($trans['tran_date']));
+			$rate = Banking::get_exchange_rate_from_home_currency($curr, Dates::sql2date($trans['tran_date']));
 			$trans['amt'] *= $rate;
 			$cb = $trans['amt'] - $trans['cost'];
 			$rep->NewLine();

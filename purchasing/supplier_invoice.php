@@ -135,17 +135,17 @@
 			ui_view::set_focus('supp_reference');
 			return false;
 		}
-		if (!is_date($_SESSION['supp_trans']->tran_date)) {
+		if (!Dates::is_date($_SESSION['supp_trans']->tran_date)) {
 			ui_msgs::display_error(_("The invoice as entered cannot be processed because the invoice date is in an incorrect format."));
 			ui_view::set_focus('trans_date');
 			return false;
 		}
-		elseif (!is_date_in_fiscalyear($_SESSION['supp_trans']->tran_date)) {
+		elseif (!Dates::is_date_in_fiscalyear($_SESSION['supp_trans']->tran_date)) {
 			ui_msgs::display_error(_("The entered date is not in fiscal year."));
 			ui_view::set_focus('trans_date');
 			return false;
 		}
-		if (!is_date($_SESSION['supp_trans']->due_date)) {
+		if (!Dates::is_date($_SESSION['supp_trans']->due_date)) {
 			ui_msgs::display_error(_("The invoice as entered cannot be processed because the due date is in an incorrect format."));
 			ui_view::set_focus('due_date');
 			return false;
@@ -304,8 +304,8 @@
 			$sql = "UPDATE grn_items
 	    	SET qty_recd = quantity_inv WHERE id = " . $myrow["id"];
 			db_query($sql, "The quantity invoiced off the items received record could not be updated");
-			update_average_material_cost($grn["supplier_id"], $myrow["item_code"], $myrow["unit_price"], -$myrow["QtyOstdg"], Today());
-			add_stock_move(ST_SUPPRECEIVE, $myrow["item_code"], $myrow['grn_batch_id'], $grn['loc_code'], sql2date($grn["delivery_date"]), "", -$myrow["QtyOstdg"],
+			update_average_material_cost($grn["supplier_id"], $myrow["item_code"], $myrow["unit_price"], -$myrow["QtyOstdg"], Dates::Today());
+			add_stock_move(ST_SUPPRECEIVE, $myrow["item_code"], $myrow['grn_batch_id'], $grn['loc_code'], Dates::sql2date($grn["delivery_date"]), "", -$myrow["QtyOstdg"],
 				$myrow['std_cost_unit'], $grn["supplier_id"], 1, $myrow['unit_price']);
 			commit_transaction();
 			ui_msgs::display_notification(sprintf(_('All yet non-invoiced items on delivery line # %d has been removed.'), $id2));

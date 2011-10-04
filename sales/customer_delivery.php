@@ -98,7 +98,7 @@
 		$ord->order_no = key($ord->trans_no);
 		$ord->trans_no = 0;
 		$ord->reference = $Refs->get_next(ST_CUSTDELIVERY);
-		$ord->document_date = new_doc_date();
+		$ord->document_date = Dates::new_doc_date();
 		$_SESSION['Items'] = $ord;
 		copy_from_cart();
 	}
@@ -143,19 +143,19 @@
 	function check_data() {
 		global $Refs;
 
-		if (!isset($_POST['DispatchDate']) || !is_date($_POST['DispatchDate'])) {
+		if (!isset($_POST['DispatchDate']) || !Dates::is_date($_POST['DispatchDate'])) {
 			ui_msgs::display_error(_("The entered date of delivery is invalid."));
 			ui_view::set_focus('DispatchDate');
 			return false;
 		}
 
-		if (!is_date_in_fiscalyear($_POST['DispatchDate'])) {
+		if (!Dates::is_date_in_fiscalyear($_POST['DispatchDate'])) {
 			ui_msgs::display_error(_("The entered date of delivery is not in fiscal year."));
 			ui_view::set_focus('DispatchDate');
 			return false;
 		}
 
-		if (!isset($_POST['due_date']) || !is_date($_POST['due_date'])) {
+		if (!isset($_POST['due_date']) || !Dates::is_date($_POST['due_date'])) {
 			ui_msgs::display_error(_("The entered dead-line for invoice is invalid."));
 			ui_view::set_focus('due_date');
 			return false;
@@ -301,7 +301,7 @@
 		$newdelivery = ($dn->trans_no == 0);
 
 		copy_to_cart();
-		if ($newdelivery) new_doc_date($dn->document_date);
+		if ($newdelivery) Dates::new_doc_date($dn->document_date);
 		$delivery_no = $dn->write($bo_policy);
 
 		processing_end();
@@ -360,10 +360,10 @@
 	shippers_list_cells(null, 'ship_via', $_POST['ship_via']);
 
 	// set this up here cuz it's used to calc qoh
-	if (!isset($_POST['DispatchDate']) || !is_date($_POST['DispatchDate'])) {
-		$_POST['DispatchDate'] = new_doc_date();
-		if (!is_date_in_fiscalyear($_POST['DispatchDate'])) {
-			$_POST['DispatchDate'] = end_fiscalyear();
+	if (!isset($_POST['DispatchDate']) || !Dates::is_date($_POST['DispatchDate'])) {
+		$_POST['DispatchDate'] = Dates::new_doc_date();
+		if (!Dates::is_date_in_fiscalyear($_POST['DispatchDate'])) {
+			$_POST['DispatchDate'] = Dates::end_fiscalyear();
 		}
 	}
 	date_cells(_("Date"), 'DispatchDate', '', $_SESSION['Items']->trans_no == 0, 0, 0, 0, "class='tableheader2'");
@@ -375,7 +375,7 @@
 
 	start_table(Config::get('tables.style') . "  width=90%");
 
-	if (!isset($_POST['due_date']) || !is_date($_POST['due_date'])) {
+	if (!isset($_POST['due_date']) || !Dates::is_date($_POST['due_date'])) {
 		$_POST['due_date'] = get_invoice_duedate($_SESSION['Items']->customer_id, $_POST['DispatchDate']);
 	}
 	start_row();

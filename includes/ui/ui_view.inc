@@ -241,7 +241,7 @@
 					$currency = $from_currency;
 				}
 				$rate = 0;
-				if ($date_ == Today()) {
+				if ($date_ == Dates::Today()) {
 					$rate = get_date_exchange_rate($currency, $date_);
 					if (!$rate) {
 						$row = get_currency($currency);
@@ -278,7 +278,7 @@
 			}
 			start_table("width=50%  " . Config::get('tables.style'));
 			echo "<tr><td align=center><font color=red>$label</font><br>";
-			echo "<font color=red>" . _("Date Voided:") . " " . sql2date($void_entry["date_"]) . "</font><br>";
+			echo "<font color=red>" . _("Date Voided:") . " " . Dates::sql2date($void_entry["date_"]) . "</font><br>";
 			if (strlen($void_entry["memo_"]) > 0) {
 				echo "<center><font color=red>" . _("Memo:") . " " . $void_entry["memo_"] . "</font></center><br>";
 			}
@@ -424,7 +424,7 @@
 				alt_table_row_color($k);
 				label_cell($systypes_array[$alloc_row['type']]);
 				label_cell(ui_view::get_trans_view_str($alloc_row['type'], $alloc_row['trans_no']));
-				label_cell(sql2date($alloc_row['tran_date']));
+				label_cell(Dates::sql2date($alloc_row['tran_date']));
 				$alloc_row['Total'] = round2($alloc_row['Total'], user_price_dec());
 				$alloc_row['amt'] = round2($alloc_row['amt'], user_price_dec());
 				amount_cell($alloc_row['Total']);

@@ -99,11 +99,11 @@
 		if ($rate == 0)
 			$rate = Banking::get_exchange_rate_from_home_currency($curr, $date_);
 
-		$SQLDate = date2sql($date_);
+		$SQLDate = Dates::date2sql($date_);
 		if ($due_date == "")
 			$SQLDueDate = "0000-00-00";
 		else
-			$SQLDueDate = date2sql($due_date);
+			$SQLDueDate = Dates::date2sql($due_date);
 
 		if ($trans_type == ST_BANKPAYMENT)
 			$Total = -$Total;

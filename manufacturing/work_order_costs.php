@@ -69,18 +69,18 @@
 			return false;
 		}
 
-		if (!is_date($_POST['date_'])) {
+		if (!Dates::is_date($_POST['date_'])) {
 			ui_msgs::display_error(_("The entered date is invalid."));
 			ui_view::set_focus('date_');
 			return false;
 		}
-		elseif (!is_date_in_fiscalyear($_POST['date_']))
+		elseif (!Dates::is_date_in_fiscalyear($_POST['date_']))
 		{
 			ui_msgs::display_error(_("The entered date is not in fiscal year."));
 			ui_view::set_focus('date_');
 			return false;
 		}
-		if (date_diff2(sql2date($wo_details["released_date"]), $_POST['date_'], "d") > 0) {
+		if (Dates::date_diff2(Dates::sql2date($wo_details["released_date"]), $_POST['date_'], "d") > 0) {
 			ui_msgs::display_error(_("The additional cost date cannot be before the release date of the work order."));
 			ui_view::set_focus('date_');
 			return false;
@@ -96,7 +96,7 @@
 		add_gl_trans_std_cost(ST_WORKORDER, $_POST['selected_id'], $_POST['date_'], $_POST['cr_acc'],
 			0, 0, $wo_cost_types[$_POST['PaymentType']], -input_num('costs'), PT_WORKORDER,
 			$_POST['PaymentType']);
-		$is_bank_to = Banking::Banking::is_bank_account($_POST['cr_acc']);
+		$is_bank_to = Banking::is_bank_account($_POST['cr_acc']);
 		if ($is_bank_to) {
 			add_bank_trans(ST_WORKORDER, $_POST['selected_id'], $is_bank_to, "",
 				$_POST['date_'], -input_num('costs'), PT_WORKORDER,

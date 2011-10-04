@@ -141,8 +141,8 @@
 		$sql .= "AND porder.reference LIKE " . db_escape('%' . $order_number . '%');
 	} else {
 
-		$data_after = date2sql($_POST['OrdersAfterDate']);
-		$date_before = date2sql($_POST['OrdersToDate']);
+		$data_after = Dates::date2sql($_POST['OrdersAfterDate']);
+		$date_before = Dates::date2sql($_POST['OrdersToDate']);
 
 		$sql .= " AND porder.ord_date >= '$data_after'";
 		$sql .= " AND porder.ord_date <= '$date_before'";

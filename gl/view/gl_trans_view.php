@@ -32,7 +32,7 @@
 		start_row();
 		label_cell("$trans_name #" . $_GET['trans_no']);
 		label_cell($myrow["reference"]);
-		label_cell(sql2date($myrow["tran_date"]));
+		label_cell(Dates::sql2date($myrow["tran_date"]));
 		label_cell(payment_person_name($myrow["person_type_id"], $myrow["person_id"]));
 
 		end_row();

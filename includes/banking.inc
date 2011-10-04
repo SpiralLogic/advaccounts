@@ -87,7 +87,7 @@
 			if ($currency_code == Banking::get_company_currency() || $currency_code == null)
 				return 1.0000;
 
-			$date = date2sql($date_);
+			$date = Dates::date2sql($date_);
 
 			$sql = "SELECT rate_buy, max(date_) as date_ FROM exchange_rates WHERE curr_code = '$currency_code'
 				AND date_ <= '$date' GROUP BY rate_buy ORDER BY date_ Desc LIMIT 1";
@@ -158,7 +158,7 @@
 				$ar_ap_act = $trans['receivables_account'];
 				$person_id = $trans['debtor_no'];
 				$curr = $trans['curr_code'];
-				$date = sql2date($trans['tran_date']);
+				$date = Dates::sql2date($trans['tran_date']);
 			}
 			else
 			{
@@ -168,7 +168,7 @@
 				$ar_ap_act = $supp_accs['payable_account'];
 				$person_id = $trans['supplier_id'];
 				$curr = $trans['SupplierCurrCode'];
-				$date = sql2date($trans['tran_date']);
+				$date = Dates::sql2date($trans['tran_date']);
 			}
 			if (Banking::is_company_currency($curr))
 				return;
@@ -181,7 +181,7 @@
 				if ($neg)
 					$diff = -$diff;
 				$exc_var_act = get_company_pref('exchange_diff_act');
-				if (date1_greater_date2($date, $pyt_date)) {
+				if (Dates::date1_greater_date2($date, $pyt_date)) {
 					$memo = $systypes_array[$pyt_type] . " " . $pyt_no;
 					add_gl_trans($type, $trans_no, $date, $ar_ap_act, 0, 0, $memo, -$diff, null, $person_type, $person_id);
 					add_gl_trans($type, $trans_no, $date, $exc_var_act, 0, 0, $memo, $diff, null, $person_type, $person_id);

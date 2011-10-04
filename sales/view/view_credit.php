@@ -61,7 +61,7 @@
 	start_table(Config::get('tables.style') . "  width=100%");
 	start_row();
 	label_cells(_("Ref"), $myrow["reference"], "class='tableheader2'");
-	label_cells(_("Date"), sql2date($myrow["tran_date"]), "class='tableheader2'");
+	label_cells(_("Date"), Dates::sql2date($myrow["tran_date"]), "class='tableheader2'");
 	label_cells(_("Currency"), $myrow["curr_code"], "class='tableheader2'");
 	end_row();
 	start_row();

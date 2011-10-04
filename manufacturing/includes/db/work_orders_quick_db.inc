@@ -22,7 +22,7 @@
 
 		add_material_cost($stock_id, $units_reqd, $date_);
 
-		$date = date2sql($date_);
+		$date = Dates::date2sql($date_);
 		if (!isset($costs) || ($costs == ""))
 			$costs = 0;
 		add_overhead_cost($stock_id, $units_reqd, $date_, $costs);

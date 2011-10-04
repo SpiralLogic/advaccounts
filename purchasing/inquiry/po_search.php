@@ -116,7 +116,7 @@
 	porder.ord_date,
 	supplier.curr_code,
 	Sum(line.unit_price*line.quantity_ordered) AS OrderValue,
-	Sum(line.delivery_date < '" . date2sql(Today()) . "'
+	Sum(line.delivery_date < '" . Dates::date2sql(Dates::Today()) . "'
 	AND (line.quantity_ordered > line.quantity_received)) As OverDue
 	FROM purch_orders as porder, purch_order_details as line, suppliers as supplier, locations as location
 	WHERE porder.order_no = line.order_no
@@ -130,8 +130,8 @@
 	}
 	else
 	{
-		$data_after = date2sql($_POST['OrdersAfterDate']);
-		$data_before = date2sql($_POST['OrdersToDate']);
+		$data_after = Dates::date2sql($_POST['OrdersAfterDate']);
+		$data_before = Dates::date2sql($_POST['OrdersToDate']);
 
 		$sql .= "  AND porder.ord_date >= '$data_after'";
 		$sql .= "  AND porder.ord_date <= '$data_before'";

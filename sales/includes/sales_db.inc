@@ -78,7 +78,7 @@
 
 	function get_price($stock_id, $currency, $sales_type_id, $factor = null, $date = null) {
 		if ($date == null)
-			$date = new_doc_date();
+			$date = Dates::new_doc_date();
 
 		if ($factor === null) {
 			$myrow = get_sales_type($sales_type_id);
@@ -306,8 +306,8 @@
 			$cart->reference = $myrow["reference"];
 			$cart->order_no = $myrow["order_"];
 			$cart->trans_link = $myrow["trans_link"];
-			$cart->due_date = sql2date($myrow["due_date"]);
-			$cart->document_date = sql2date($myrow["tran_date"]);
+			$cart->due_date = Dates::sql2date($myrow["due_date"]);
+			$cart->document_date = Dates::sql2date($myrow["tran_date"]);
 			$cart->dimension_id = $myrow['dimension_id']; // added 2.1 Joe Hunt 2008-11-12
 			$cart->dimension2_id = $myrow['dimension2_id'];
 			$cart->Comments = '';
