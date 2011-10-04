@@ -1,4 +1,4 @@
 <?php
 
 
-	phpinfo(); 
+	phpinfo(); new storm, new config and shit
