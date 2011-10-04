@@ -15,10 +15,6 @@
 
 	page(_($help_context = "Quick Entries"));
 
-	include(APP_PATH . "gl/includes/gl_db.inc");
-
-	include(APP_PATH . "includes/faui.inc");
-
 	simple_page_mode(true);
 	simple_page_mode2(true);
 
@@ -67,13 +63,13 @@
 	function can_process() {
 
 		if (strlen($_POST['description']) == 0) {
-			display_error(_("The Quick Entry description cannot be empty."));
-			set_focus('description');
+			ui_msgs::display_error(_("The Quick Entry description cannot be empty."));
+			ui_view::set_focus('description');
 			return false;
 		}
 		if (strlen($_POST['base_desc']) == 0) {
-			display_error(_("The base amount description cannot be empty."));
-			set_focus('base_desc');
+			ui_msgs::display_error(_("The base amount description cannot be empty."));
+			ui_view::set_focus('base_desc');
 			return false;
 		}
 
@@ -89,13 +85,13 @@
 			if ($selected_id != -1) {
 				update_quick_entry($selected_id, $_POST['description'], $_POST['type'],
 					input_num('base_amount'), $_POST['base_desc']);
-				display_notification(_('Selected quick entry has been updated'));
+				ui_msgs::display_notification(_('Selected quick entry has been updated'));
 			}
 			else
 			{
 				add_quick_entry($_POST['description'], $_POST['type'],
 					input_num('base_amount'), $_POST['base_desc']);
-				display_notification(_('New quick entry has been added'));
+				ui_msgs::display_notification(_('New quick entry has been added'));
 			}
 			$Mode = 'RESET';
 		}
@@ -105,13 +101,13 @@
 		if ($selected_id2 != -1) {
 			update_quick_entry_line($selected_id2, $selected_id, $_POST['actn'], $_POST['dest_id'], input_num('amount', 0),
 				$_POST['dimension_id'], $_POST['dimension2_id']);
-			display_notification(_('Selected quick entry line has been updated'));
+			ui_msgs::display_notification(_('Selected quick entry line has been updated'));
 		}
 		else
 		{
 			add_quick_entry_line($selected_id, $_POST['actn'], $_POST['dest_id'], input_num('amount', 0),
 				$_POST['dimension_id'], $_POST['dimension2_id']);
-			display_notification(_('New quick entry line has been added'));
+			ui_msgs::display_notification(_('New quick entry line has been added'));
 		}
 		$Mode2 = 'RESET2';
 	}
@@ -121,19 +117,19 @@
 	if ($Mode == 'Delete') {
 		if (!has_quick_entry_lines($selected_id)) {
 			delete_quick_entry($selected_id);
-			display_notification(_('Selected quick entry has been deleted'));
+			ui_msgs::display_notification(_('Selected quick entry has been deleted'));
 			$Mode = 'RESET';
 		}
 		else
 		{
-			display_error(_("The Quick Entry has Quick Entry Lines. Cannot be deleted."));
-			set_focus('description');
+			ui_msgs::display_error(_("The Quick Entry has Quick Entry Lines. Cannot be deleted."));
+			ui_view::set_focus('description');
 		}
 	}
 
 	if ($Mode2 == 'BDel') {
 		delete_quick_entry_line($selected_id2);
-		display_notification(_('Selected quick entry line has been deleted'));
+		ui_msgs::display_notification(_('Selected quick entry line has been deleted'));
 		$Mode2 = 'RESET2';
 	}
 	//-----------------------------------------------------------------------------------
@@ -206,7 +202,7 @@
 	end_form();
 
 	if ($selected_id != -1) {
-		display_heading(_("Quick Entry Lines") . " - " . $_POST['description']);
+		ui_msgs::display_heading(_("Quick Entry Lines") . " - " . $_POST['description']);
 		$result = get_quick_entry_lines($selected_id);
 		start_form();
 		start_table(Config::get('tables.style2'));

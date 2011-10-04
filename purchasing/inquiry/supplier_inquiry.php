@@ -16,7 +16,7 @@
 	include(APP_PATH . "reporting/includes/reporting.inc");
 	$js = "";
 	if (Config::get('ui.windows.popups')) {
-		$js .= get_js_open_window(900, 500);
+		$js .= ui_view::get_js_open_window(900, 500);
 	}
 
 	page(_($help_context = "Supplier Inquiry"), false, false, "", $js);
@@ -32,7 +32,7 @@
 	//------------------------------------------------------------------------------------------------
 	start_form();
 	if (!isset($_POST['supplier_id'])) {
-		$_POST['supplier_id'] = get_global_supplier();
+		$_POST['supplier_id'] = ui_globals::get_global_supplier();
 	}
 	start_table("class='tablestyle_noborder'");
 	start_row();
@@ -43,7 +43,7 @@
 	submit_cells('RefreshInquiry', _("Search"), '', _('Refresh Inquiry'), 'default');
 	end_row();
 	end_table();
-	set_global_supplier($_POST['supplier_id']);
+	ui_globals::set_global_supplier($_POST['supplier_id']);
 	//------------------------------------------------------------------------------------------------
 	function display_supplier_summary($supplier_record) {
 		$past1 = get_company_pref('past_due_days');
@@ -86,7 +86,7 @@
 	}
 
 	function trans_view($trans) {
-		return get_trans_view_str($trans["type"], $trans["trans_no"]);
+		return ui_view::get_trans_view_str($trans["type"], $trans["trans_no"]);
 	}
 
 	function due_date($row) {
@@ -94,7 +94,7 @@
 	}
 
 	function gl_view($row) {
-		return get_gl_view_str($row["type"], $row["trans_no"]);
+		return ui_view::get_gl_view_str($row["type"], $row["trans_no"]);
 	}
 
 	function credit_link($row) {

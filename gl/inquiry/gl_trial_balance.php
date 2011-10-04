@@ -13,12 +13,6 @@
 
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 
-	include_once(APP_PATH . "includes/date_functions.inc");
-	include_once(APP_PATH . "includes/faui.inc");
-	include_once(APP_PATH . "includes/data_checks.inc");
-
-	include_once(APP_PATH . "gl/includes/gl_db.inc");
-
 	$js = "";
 
 	page(_($help_context = "Trial Balance"), false, false, "", $js);
@@ -48,7 +42,6 @@
 	//----------------------------------------------------------------------------------------------------
 
 	function display_trial_balance() {
-
 
 		div_start('balance_tbl');
 		start_table(Config::get('tables.style'));
@@ -94,9 +87,9 @@
 			label_cell($url);
 			label_cell($account["account_name"]);
 			if (check_value('Balance')) {
-				display_debit_or_credit_cells($prev['balance']);
-				display_debit_or_credit_cells($curr['balance']);
-				display_debit_or_credit_cells($tot['balance']);
+				ui_view::display_debit_or_credit_cells($prev['balance']);
+				ui_view::display_debit_or_credit_cells($curr['balance']);
+				ui_view::display_debit_or_credit_cells($tot['balance']);
 			}
 			else
 			{
@@ -135,9 +128,9 @@
 		}
 		start_row("class='inquirybg' style='font-weight:bold'");
 		label_cell(_("Ending Balance") . " - " . $_POST['TransToDate'], "colspan=2");
-		display_debit_or_credit_cells($pbal);
-		display_debit_or_credit_cells($cbal);
-		display_debit_or_credit_cells($tbal);
+		ui_view::display_debit_or_credit_cells($pbal);
+		ui_view::display_debit_or_credit_cells($cbal);
+		ui_view::display_debit_or_credit_cells($tbal);
 		end_row();
 
 		end_table(1);

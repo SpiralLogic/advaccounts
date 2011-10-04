@@ -18,10 +18,6 @@
 	// ----------------------------------------------------------------
 
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
-	include_once(APP_PATH . "includes/date_functions.inc");
-	include_once(APP_PATH . "includes/data_checks.inc");
-	include_once(APP_PATH . "gl/includes/gl_db.inc");
-	include_once(APP_PATH . "includes/ui/ui_view.inc");
 
 	//----------------------------------------------------------------------------------------------------
 
@@ -86,7 +82,7 @@
 				$rep->TextCol(1, 2, get_reference($myrow['type'], $myrow['type_no']));
 				$rep->DateCol(2, 3, $myrow['tran_date'], true);
 				$coms = payment_person_name($myrow["person_type_id"], $myrow["person_id"]);
-				$memo = get_comments_string($myrow['type'], $myrow['type_no']);
+				$memo = ui_view::get_comments_string($myrow['type'], $myrow['type_no']);
 				if ($memo != '') {
 					if ($coms == "")
 						$coms = $memo;

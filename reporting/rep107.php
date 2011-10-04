@@ -19,9 +19,7 @@
 	// Title:	Print Invoices
 	// ----------------------------------------------------------------
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
-	include_once(APP_PATH . "includes/date_functions.inc");
-	include_once(APP_PATH . "includes/data_checks.inc");
-	include_once(APP_PATH . "sales/includes/sales_db.inc");
+
 	include_once(APP_PATH . "taxes/tax_calc.inc");
 	//----------------------------------------------------------------------------------------------------
 	print_invoices();
@@ -160,7 +158,7 @@
 				$rep->Font('bold');
 				$rep->TextCol(3, 7, $doc_TOTAL_INVOICE, -2);
 				$rep->TextCol(7, 8, $DisplayTotal, -2);
-				$words = price_in_words($myrow['Total'], $j);
+				$words = ui_view::price_in_words($myrow['Total'], $j);
 				$rep->NewLine();
 				$rep->NewLine();
 				$invBalance = get_DebtorTrans_allocation_balance($myrow['type'], $myrow['trans_no']);

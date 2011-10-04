@@ -11,22 +11,21 @@
 	 ***********************************************************************/
 	$page_security = 'SA_SALESTRANSVIEW';
 
-
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
-	include_once(APP_PATH . "includes/date_functions.inc");
+
 	include_once(APP_PATH . "sales/includes/sales_ui.inc");
-	include_once(APP_PATH . "sales/includes/sales_db.inc");
-	include_once(APP_PATH . "/reporting/includes/reporting.inc");
+
+	include_once(APP_PATH . "reporting/includes/reporting.inc");
 	$js = "";
 	if (Config::get('ui.windows.popups'))
-		$js .= get_js_open_window(900, 600);
+		$js .= ui_view::get_js_open_window(900, 600);
 	if ($_GET['trans_type'] == ST_SALESQUOTE) {
 		page(_($help_context = "View Sales Quotation"), true, false, "", $js);
-		display_heading(sprintf(_("Sales Quotation #%d"), $_GET['trans_no']));
+		ui_msgs::display_heading(sprintf(_("Sales Quotation #%d"), $_GET['trans_no']));
 	}
 	else {
 		page(_($help_context = "View Sales Order"), true, false, "", $js);
-		display_heading(sprintf(_("Sales Order #%d"), $_GET['trans_no']));
+		ui_msgs::display_heading(sprintf(_("Sales Order #%d"), $_GET['trans_no']));
 	}
 	if (isset($_SESSION['View'])) {
 		unset ($_SESSION['View']);
@@ -34,12 +33,15 @@
 	$_SESSION['View'] = new Cart($_GET['trans_type'], $_GET['trans_no'], true);
 	start_table(Config::get('tables.style2') . " width=95%", 5);
 	echo "<tr valign=top class='tableheader2'><td >";
-	display_heading2(_("Order Information"));
+
 	if ($_GET['trans_type'] != ST_SALESQUOTE) {
+		ui_msgs::display_heading2(_("Order Information"));
 		echo "</td><td>";
-		display_heading2(_("Deliveries"));
+		ui_msgs::display_heading2(_("Deliveries"));
 		echo "</td><td>";
-		display_heading2(_("Invoices/Credits"));
+		ui_msgs::display_heading2(_("Invoices/Credits"));
+	} else {
+		ui_msgs::display_heading2(_("Quote Information"));
 	}
 	echo "</td></tr>";
 	echo "<tr valign=top><td>";
@@ -70,7 +72,7 @@
 	if ($_GET['trans_type'] != ST_SALESQUOTE) {
 		echo "</td><td valign='top'>";
 		start_table(Config::get('tables.style'));
-		display_heading2(_("Delivery Notes"));
+		ui_msgs::display_heading2(_("Delivery Notes"));
 		$th = array(_("#"), _("Ref"), _("Date"), _("Total"));
 		table_header($th);
 		$sql = "SELECT * FROM debtor_trans WHERE type=" . ST_CUSTDELIVERY . " AND order_=" . db_escape($_GET['trans_no']);
@@ -83,7 +85,7 @@
 			$dn_numbers[] = $del_row["trans_link"];
 			$this_total = $del_row["ov_freight"] + $del_row["ov_amount"] + $del_row["ov_freight_tax"] + $del_row["ov_gst"];
 			$delivery_total += $this_total;
-			label_cell(get_customer_trans_view_str($del_row["type"], $del_row["trans_no"]));
+			label_cell(ui_view::get_customer_trans_view_str($del_row["type"], $del_row["trans_no"]));
 			label_cell($del_row["reference"]);
 			label_cell(sql2date($del_row["tran_date"]));
 			amount_cell($this_total);
@@ -93,7 +95,7 @@
 		end_table();
 		echo "</td><td valign='top'>";
 		start_table(Config::get('tables.style'));
-		display_heading2(_("Sales Invoices"));
+		ui_msgs::display_heading2(_("Sales Invoices"));
 		$th = array(_("#"), _("Ref"), _("Date"), _("Total"));
 		table_header($th);
 		$inv_numbers = array();
@@ -107,7 +109,7 @@
 				$this_total = $inv_row["ov_freight"] + $inv_row["ov_freight_tax"] + $inv_row["ov_gst"] + $inv_row["ov_amount"];
 				$invoices_total += $this_total;
 				$inv_numbers[] = $inv_row["trans_no"];
-				label_cell(get_customer_trans_view_str($inv_row["type"], $inv_row["trans_no"]));
+				label_cell(ui_view::get_customer_trans_view_str($inv_row["type"], $inv_row["trans_no"]));
 				label_cell($inv_row["reference"]);
 				label_cell(sql2date($inv_row["tran_date"]));
 				amount_cell($this_total);
@@ -116,7 +118,7 @@
 		}
 		label_row(null, price_format($invoices_total), " ", "colspan=4 align=right");
 		end_table();
-		display_heading2(_("Credit Notes"));
+		ui_msgs::display_heading2(_("Credit Notes"));
 		start_table(Config::get('tables.style'));
 		$th = array(_("#"), _("Ref"), _("Date"), _("Total"));
 		table_header($th);
@@ -131,7 +133,7 @@
 				alt_table_row_color($k);
 				$this_total = $credits_row["ov_freight"] + $credits_row["ov_freight_tax"] + $credits_row["ov_gst"] + $credits_row["ov_amount"];
 				$credits_total += $this_total;
-				label_cell(get_customer_trans_view_str($credits_row["type"], $credits_row["trans_no"]));
+				label_cell(ui_view::get_customer_trans_view_str($credits_row["type"], $credits_row["trans_no"]));
 				label_cell($credits_row["reference"]);
 				label_cell(sql2date($credits_row["tran_date"]));
 				amount_cell(-$this_total);
@@ -145,8 +147,8 @@
 	}
 	echo "<center>";
 	if ($_SESSION['View']->so_type == 1)
-		display_note(_("This Sales Order is used as a Template."), 0, 0, "class='currentfg'");
-	display_heading2(_("Line Details"));
+		ui_msgs::display_note(_("This Sales Order is used as a Template."), 0, 0, "class='currentfg'");
+	ui_msgs::display_heading2(_("Line Details"));
 	start_table("colspan=9 width=95%  " . Config::get('tables.style'));
 	$th = array(_("Item Code"), _("Item Description"), _("Quantity"), _("Unit"), _("Price"), _("Discount"), _("Total"), _("Quantity Delivered"));
 	table_header($th);
@@ -177,8 +179,11 @@
 	submenu_option(_('Edit This Order'), "/sales/sales_order_entry.php?{$modify}={$_GET['trans_no']}' target='_top' ");
 	submenu_print(_("&Print This Order"), ST_SALESORDER, $_GET['trans_no'], 'prtopt');
 	submenu_print(_("Print Proforma Invoice"), ST_PROFORMA, $_GET['trans_no'], 'prtopt');
-	if ($qty_remaining > 0)
+	if ($qty_remaining > 0) {
 		submenu_option(_("Make &Delivery Against This Order"), "/sales/customer_delivery.php?OrderNumber={$_GET['trans_no']}'  target='_top' ");
+	} else {
+		submenu_option(_("Invoice Items On This Order"), "/sales/customer_delivery.php?OrderNumber={$_GET['trans_no']}'  target='_top' ");
+	}
 	submenu_option(_("Enter a &New Order"), "/sales/sales_order_entry.php?NewOrder=0'  target='_top' ");
 	//UploadHandler::insert($_GET['trans_no']);
 	end_page(true);

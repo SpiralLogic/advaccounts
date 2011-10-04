@@ -15,10 +15,7 @@
 
 	page(_($help_context = "Supplier Purchasing Data"), @$_REQUEST['frame']);
 
-	include_once(APP_PATH . "includes/date_functions.inc");
-	include_once(APP_PATH . "includes/faui.inc");
 	include_once(APP_PATH . "includes/manufacturing.inc");
-	include_once(APP_PATH . "includes/data_checks.inc");
 
 	check_db_has_purchasable_items(_("There are no purchasable inventory items defined in the system."));
 	check_db_has_suppliers(_("There are no suppliers defined in the system."));
@@ -30,25 +27,25 @@
 
 	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 		if ($_REQUEST['frame']) {
-			$_POST['stock_id'] = get_global_stock_item();
+			$_POST['stock_id'] = ui_globals::get_global_stock_item();
 		}
 		$input_error = 0;
 		if ($_POST['stock_id'] == "" || !isset($_POST['stock_id'])) {
 			$input_error = 1;
-			display_error(_("There is no item selected."));
-			set_focus('stock_id');
+			ui_msgs::display_error(_("There is no item selected."));
+			ui_view::set_focus('stock_id');
 		}
 		elseif (!check_num('price', 0))
 		{
 			$input_error = 1;
-			display_error(_("The price entered was not numeric."));
-			set_focus('price');
+			ui_msgs::display_error(_("The price entered was not numeric."));
+			ui_view::set_focus('price');
 		}
 		elseif (!check_num('conversion_factor'))
 		{
 			$input_error = 1;
-			display_error(_("The conversion factor entered was not numeric. The conversion factor is the number by which the price must be divided by to get the unit price in our unit of measure."));
-			set_focus('conversion_factor');
+			ui_msgs::display_error(_("The conversion factor entered was not numeric. The conversion factor is the number by which the price must be divided by to get the unit price in our unit of measure."));
+			ui_view::set_focus('conversion_factor');
 		}
 
 		if ($input_error == 0) {
@@ -62,7 +59,7 @@
 				 . db_escape($_POST['supplier_description']) . ")";
 
 				db_query($sql, "The supplier purchasing details could not be added");
-				display_notification(_("This supplier purchasing data has been added."));
+				ui_msgs::display_notification(_("This supplier purchasing data has been added."));
 			} else
 			{
 				$sql = "UPDATE purch_data SET price=" . input_num('price', 0) . ",
@@ -72,7 +69,7 @@
 				WHERE stock_id=" . db_escape($_POST['stock_id']) . " AND
 				supplier_id=" . db_escape($selected_id);
 				db_query($sql, "The supplier purchasing details could not be updated");
-				display_notification(_("Supplier purchasing data has been updated."));
+				ui_msgs::display_notification(_("Supplier purchasing data has been updated."));
 			}
 			$Mode = 'RESET';
 		}
@@ -82,7 +79,7 @@
 		$sql = "DELETE FROM purch_data WHERE supplier_id=" . db_escape($selected_id) . "
 		AND stock_id=" . db_escape($_POST['stock_id']);
 		db_query($sql, "could not delete purchasing data");
-		display_notification(_("The purchasing data item has been sucessfully deleted."));
+		ui_msgs::display_notification(_("The purchasing data item has been sucessfully deleted."));
 		$Mode = 'RESET';
 	}
 	if ($Mode == 'RESET') {
@@ -101,18 +98,18 @@
 		start_form();
 	}
 	if (!isset($_POST['stock_id']))
-		$_POST['stock_id'] = get_global_stock_item();
+		$_POST['stock_id'] = ui_globals::get_global_stock_item();
 	if (!$_REQUEST['frame']) {
 		echo "<center>" . _("Item:") . "&nbsp;";
 		echo stock_purchasable_items_list('stock_id', $_POST['stock_id'], false, true, false, false, true);
 		echo "<hr></center>";
-		set_global_stock_item($_POST['stock_id']);
+		ui_globals::set_global_stock_item($_POST['stock_id']);
 	}
 	$mb_flag = get_mb_flag($_POST['stock_id']);
 
 	if ($mb_flag == -1) {
-		display_error(_("Entered item is not defined. Please re-enter."));
-		set_focus('stock_id');
+		ui_msgs::display_error(_("Entered item is not defined. Please re-enter."));
+		ui_view::set_focus('stock_id');
 	}
 	else
 	{
@@ -126,7 +123,7 @@
 		$result = db_query($sql, "The supplier purchasing details for the selected part could not be retrieved");
 		div_start('price_table');
 		if (db_num_rows($result) == 0) {
-			display_note(_("There is no supplier prices set up for the product selected"));
+			ui_msgs::display_note(_("There is no supplier prices set up for the product selected"));
 		}
 		else
 		{
@@ -200,7 +197,7 @@
 		supplier_list_row(_("Supplier:"), 'supplier_id', null, false, true);
 		$_POST['price'] = $_POST['suppliers_uom'] = $_POST['conversion_factor'] = $_POST['supplier_description'] = "";
 	}
-	amount_row(_("Price:"), 'price', null, '', get_supplier_currency($selected_id), $dec2);
+	amount_row(_("Price:"), 'price', null, '', Banking::get_supplier_currency($selected_id), $dec2);
 	text_row(_("Suppliers Unit of Measure:"), 'suppliers_uom', null, false, 51);
 
 	if (!isset($_POST['conversion_factor']) || $_POST['conversion_factor'] == "") {

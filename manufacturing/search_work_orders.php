@@ -13,11 +13,10 @@
 
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 
-	include_once(APP_PATH . "includes/date_functions.inc");
 	include_once(APP_PATH . "manufacturing/includes/manufacturing_ui.inc");
 	$js = "";
 	if (Config::get('ui.windows.popups'))
-		$js .= get_js_open_window(800, 500);
+		$js .= ui_view::get_js_open_window(800, 500);
 	if (isset($_GET['outstanding_only']) && ($_GET['outstanding_only'] == true)) {
 		// curently outstanding simply means not closed
 		$outstanding_only = 1;
@@ -43,9 +42,9 @@
 		$Ajax->addDisable(true, 'SelectedStockItem', $disable);
 
 		if ($disable) {
-			set_focus('OrderNumber');
+			ui_view::set_focus('OrderNumber');
 		} else
-			set_focus('StockLocation');
+			ui_view::set_focus('StockLocation');
 
 		$Ajax->activate('orders_tbl');
 	}
@@ -83,11 +82,11 @@
 	}
 
 	function view_link($dummy, $order_no) {
-		return get_trans_view_str(ST_WORKORDER, $order_no);
+		return ui_view::get_trans_view_str(ST_WORKORDER, $order_no);
 	}
 
 	function view_stock($row) {
-		return view_stock_status($row["stock_id"], $row["description"], false);
+		return ui_view::view_stock_status($row["stock_id"], $row["description"], false);
 	}
 
 	function wo_type_name($dummy, $type) {
@@ -133,7 +132,7 @@
 	function view_gl_link($row) {
 		if ($row['closed'] == 0)
 			return '';
-		return get_gl_view_str(ST_WORKORDER, $row['id']);
+		return ui_view::get_gl_view_str(ST_WORKORDER, $row['id']);
 	}
 
 	function dec_amount($row, $amount) {

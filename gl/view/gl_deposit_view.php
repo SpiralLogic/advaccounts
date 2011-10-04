@@ -15,11 +15,6 @@
 
 	page(_($help_context = "View Bank Deposit"), true);
 
-	include_once(APP_PATH . "includes/date_functions.inc");
-	include_once(APP_PATH . "includes/faui.inc");
-
-	include_once(APP_PATH . "gl/includes/gl_db.inc");
-
 	if (isset($_GET["trans_no"])) {
 		$trans_no = $_GET["trans_no"];
 	}
@@ -32,7 +27,7 @@
 
 	$to_trans = db_fetch($result);
 
-	$company_currency = get_company_currency();
+	$company_currency = Banking::get_company_currency();
 
 	$show_currencies = false;
 
@@ -42,7 +37,7 @@
 
 	echo "<center>";
 
-	display_heading(_("GL Deposit") . " #$trans_no");
+	ui_msgs::display_heading(_("GL Deposit") . " #$trans_no");
 
 	echo "<br>";
 	start_table(Config::get('tables.style') . "  width=90%");
@@ -71,23 +66,23 @@
 	start_row();
 	label_cells(_("Reference"), $to_trans['ref'], "class='tableheader2'", "colspan=$colspan2");
 	end_row();
-	comments_display_row(ST_BANKDEPOSIT, $trans_no);
+	ui_view::comments_display_row(ST_BANKDEPOSIT, $trans_no);
 
 	end_table(1);
 
-	is_voided_display(ST_BANKDEPOSIT, $trans_no, _("This deposit has been voided."));
+	ui_view::is_voided_display(ST_BANKDEPOSIT, $trans_no, _("This deposit has been voided."));
 
 	$items = get_gl_trans(ST_BANKDEPOSIT, $trans_no);
 
 	if (db_num_rows($items) == 0) {
-		display_note(_("There are no items for this deposit."));
+		ui_msgs::display_note(_("There are no items for this deposit."));
 	}
 	else
 	{
 
-		display_heading2(_("Items for this Deposit"));
+		ui_msgs::display_heading2(_("Items for this Deposit"));
 		if ($show_currencies)
-			display_heading2(_("Item Amounts are Shown in :") . " " . $company_currency);
+			ui_msgs::display_heading2(_("Item Amounts are Shown in :") . " " . $company_currency);
 
 		start_table(Config::get('tables.style') . "  width=90%");
 		$dim = get_company_pref('use_dimension');
@@ -131,7 +126,7 @@
 
 		end_table(1);
 
-		display_allocations_from($to_trans['person_type_id'], $to_trans['person_id'], 2, $trans_no, $to_trans['amount']);
+		ui_view::display_allocations_from($to_trans['person_type_id'], $to_trans['person_id'], 2, $trans_no, $to_trans['amount']);
 	}
 
 	end_page(true);

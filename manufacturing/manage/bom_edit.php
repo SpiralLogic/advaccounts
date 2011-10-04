@@ -15,10 +15,6 @@
 
 	page(_($help_context = "Bill Of Materials"));
 
-	include_once(APP_PATH . "includes/date_functions.inc");
-	include_once(APP_PATH . "includes/faui.inc");
-	include_once(APP_PATH . "includes/data_checks.inc");
-
 	include_once(APP_PATH . "includes/manufacturing.inc");
 
 	check_db_has_bom_stock_items(_("There are no manufactured or kit items defined in the system."));
@@ -121,8 +117,8 @@
 
 	function on_submit($selected_parent, $selected_component = -1) {
 		if (!check_num('quantity', 0)) {
-			display_error(_("The quantity entered must be numeric and greater than zero."));
-			set_focus('quantity');
+			ui_msgs::display_error(_("The quantity entered must be numeric and greater than zero."));
+			ui_view::set_focus('quantity');
 			return;
 		}
 
@@ -136,7 +132,7 @@
 			check_db_error("Could not update this bom component", $sql);
 
 			db_query($sql, "could not update bom");
-			display_notification(_('Selected component has been updated'));
+			ui_msgs::display_notification(_('Selected component has been updated'));
 			$Mode = 'RESET';
 		}
 		else
@@ -164,18 +160,18 @@
 					 . input_num('quantity') . ")";
 
 					db_query($sql, "check failed");
-					display_notification(_("A new component part has been added to the bill of material for this item."));
+					ui_msgs::display_notification(_("A new component part has been added to the bill of material for this item."));
 					$Mode = 'RESET';
 				}
 				else
 				{
 					/*The component must already be on the bom */
-					display_error(_("The selected component is already on this bom. You can modify it's quantity but it cannot appear more than once on the same bom."));
+					ui_msgs::display_error(_("The selected component is already on this bom. You can modify it's quantity but it cannot appear more than once on the same bom."));
 				}
 			} //end of if its not a recursive bom
 			else
 			{
-				display_error(_("The selected component is a parent of the current item. Recursive BOMs are not allowed."));
+				ui_msgs::display_error(_("The selected component is a parent of the current item. Recursive BOMs are not allowed."));
 			}
 		}
 	}
@@ -186,7 +182,7 @@
 		$sql = "DELETE FROM bom WHERE id=" . db_escape($selected_id);
 		db_query($sql, "Could not delete this bom components");
 
-		display_notification(_("The component item has been deleted from this bom"));
+		ui_msgs::display_notification(_("The component item has been deleted from this bom"));
 		$Mode = 'RESET';
 	}
 

@@ -18,9 +18,6 @@
 	// ----------------------------------------------------------------
 
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
-	include_once(APP_PATH . "includes/date_functions.inc");
-	include_once(APP_PATH . "includes/data_checks.inc");
-	include_once(APP_PATH . "gl/includes/gl_db.inc");
 
 	//------------------------------------------------------------------
 
@@ -47,7 +44,7 @@
 			AND taxrec.tran_date >= '$fromdate'
 			AND taxrec.tran_date <= '$todate'
 		ORDER BY taxrec.tran_date";
-		//display_error($sql);
+		//ui_msgs::display_error($sql);
 		return db_query($sql, "No transactions were returned");
 	}
 

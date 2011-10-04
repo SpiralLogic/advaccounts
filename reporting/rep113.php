@@ -20,8 +20,6 @@
 	// ----------------------------------------------------------------
 
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
-	include_once(APP_PATH . "includes/date_functions.inc");
-	include_once(APP_PATH . "includes/data_checks.inc");
 
 	//----------------------------------------------------------------------------------------------------
 
@@ -148,7 +146,7 @@
 				$rep->Font('bold');
 				$rep->TextCol(3, 6, $doc_Total_Payment, -2);
 				$rep->AmountCol(6, 7, $myrow['Total'], $dec, -2);
-				$words = price_in_words($myrow['Total'], ST_CUSTPAYMENT);
+				$words = ui_view::price_in_words($myrow['Total'], ST_CUSTPAYMENT);
 				if ($words != "") {
 					$rep->NewLine(1);
 					$rep->TextCol(0, 7, $myrow['curr_code'] . ": " . $words, -2);

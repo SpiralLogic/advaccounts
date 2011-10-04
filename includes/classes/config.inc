@@ -6,13 +6,19 @@
 	 * Time: 1:53 PM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	include_once(APP_PATH . "includes/installed_languages.inc");
+
+	include_once(APP_PATH . "config/installed_languages.inc");
+
+	include_once(APP_PATH . "config/access_levels.inc");
+
+	include_once(APP_PATH . "config/types.inc");
+
 	class Config {
 
 		protected static $_vars = array();
 
 		public static function load() {
-			static::$_vars = include(APP_PATH . '/config/config.php');
+			static::$_vars = include(APP_PATH . 'config/config.php');
 		}
 
 		public static function set($var, $value) {
@@ -26,4 +32,6 @@
 			 static::$_vars[$var][$array_key] :
 			 static::$_vars[$var];
 		}
-	} 
+	}
+
+?>

@@ -204,7 +204,7 @@
 		end_table();
 
 		if (isset($pager->marker_txt))
-			display_note($pager->marker_txt, 0, 1, "class='$pager->notice_class'");
+			ui_msgs::display_note($pager->marker_txt, 0, 1, "class='$pager->notice_class'");
 
 		div_end();
 		return true;

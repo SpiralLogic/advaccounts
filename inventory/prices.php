@@ -15,12 +15,7 @@
 
 	page(_($help_context = "Inventory Item Sales prices"), @$_REQUEST['frame']);
 
-	include_once(APP_PATH . "sales/includes/sales_db.inc");
 	include_once(APP_PATH . "sales/includes/db/sales_types_db.inc");
-	include_once(APP_PATH . "includes/faui.inc");
-	include_once(APP_PATH . "includes/data_checks.inc");
-
-	include_once(APP_PATH . "inventory/includes/inventory_db.inc");
 
 	//---------------------------------------------------------------------------------------------------
 
@@ -40,7 +35,7 @@
 	}
 
 	if (!isset($_POST['curr_abrev'])) {
-		$_POST['curr_abrev'] = get_company_currency();
+		$_POST['curr_abrev'] = Banking::get_company_currency();
 	}
 
 	//---------------------------------------------------------------------------------------------------
@@ -52,7 +47,7 @@
 	}
 
 	if (!isset($_POST['stock_id']))
-		$_POST['stock_id'] = get_global_stock_item();
+		$_POST['stock_id'] = ui_globals::get_global_stock_item();
 
 	if (!$_REQUEST['frame']) {
 		echo "<center>" . _("Item:") . "&nbsp;";
@@ -60,7 +55,7 @@
 		echo "<hr></center>";
 	}
 
-	set_global_stock_item($_POST['stock_id']);
+	ui_globals::set_global_stock_item($_POST['stock_id']);
 
 	//----------------------------------------------------------------------------------------------------
 
@@ -68,8 +63,8 @@
 
 		if (!check_num('price', 0)) {
 			$input_error = 1;
-			display_error(_("The price entered must be numeric."));
-			set_focus('price');
+			ui_msgs::display_error(_("The price entered must be numeric."));
+			ui_view::set_focus('price');
 		}
 
 		if ($input_error != 1) {
@@ -87,7 +82,7 @@
 
 				$msg = _("The new price has been added.");
 			}
-			display_notification($msg);
+			ui_msgs::display_notification($msg);
 			$Mode = 'RESET';
 		}
 	}
@@ -97,7 +92,7 @@
 	if ($Mode == 'Delete') {
 		//the link to delete a selected record was clicked
 		delete_item_price($selected_id);
-		display_notification(_("The selected price has been deleted."));
+		ui_msgs::display_notification(_("The selected price has been deleted."));
 		$Mode = 'RESET';
 	}
 
@@ -148,7 +143,7 @@
 	if (db_num_rows($prices_list) == 0) {
 		if (get_company_pref('add_pct') != -1)
 			$calculated = true;
-		display_note(_("There are no prices set up for this part."), 1);
+		ui_msgs::display_note(_("There are no prices set up for this part."), 1);
 	}
 	div_end();
 	//------------------------------------------------------------------------------------------------
@@ -180,7 +175,7 @@
 
 	end_table(1);
 	if ($calculated)
-		display_note(_("The price is calculated."), 0, 1);
+		ui_msgs::display_note(_("The price is calculated."), 0, 1);
 
 	submit_add_or_update_center($selected_id == -1, '', 'both');
 	div_end();

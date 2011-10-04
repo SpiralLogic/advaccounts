@@ -15,8 +15,6 @@
 	FB::info($_SESSION);
 	page(_($help_context = "System Diagnostics"));
 
-	include(APP_PATH . "includes/faui.inc");
-
 	// Type of requirement for positive test result
 	$test_level = array(
 		0 => _('Info'),

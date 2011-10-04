@@ -50,7 +50,7 @@
 		global $bom_list, $qoh_stock;
 		$demand = 0.0;
 		if ($level > 10) {
-			display_warning("BOM Too many Manufacturing levels deep $level");
+			ui_msgs::display_warning("BOM Too many Manufacturing levels deep $level");
 			return $demand;
 		}
 		// Load all stock levels (stock moves) into $qoh_stock

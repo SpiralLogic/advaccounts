@@ -13,16 +13,10 @@
 
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 
-	include_once(APP_PATH . "includes/date_functions.inc");
-	include_once(APP_PATH . "includes/faui.inc");
-	include_once(APP_PATH . "includes/data_checks.inc");
-
-	include_once(APP_PATH . "gl/includes/gl_db.inc");
-
 	$js = '';
-	set_focus('account');
+	ui_view::set_focus('account');
 	if (Config::get('ui.windows.popups'))
-		$js .= get_js_open_window(800, 500);
+		$js .= ui_view::get_js_open_window(800, 500);
 
 	page(_($help_context = "General Ledger Inquiry"), false, false, '', $js);
 
@@ -108,7 +102,7 @@
 		$colspan = ($dim == 2 ? "6" : ($dim == 1 ? "5" : "4"));
 
 		if ($_POST["account"] != null)
-			display_heading($_POST["account"] . "&nbsp;&nbsp;&nbsp;" . $act_name);
+			ui_msgs::display_heading($_POST["account"] . "&nbsp;&nbsp;&nbsp;" . $act_name);
 
 		// Only show balances if an account is specified AND we're not filtering by amounts
 		$show_balances = $_POST["account"] != null &&
@@ -155,7 +149,7 @@
 				$_POST['Dimension2']);
 			start_row("class='inquirybg'");
 			label_cell("<b>" . _("Opening Balance") . " - " . $_POST['TransFromDate'] . "</b>", "colspan=$colspan");
-			display_debit_or_credit_cells($bfw);
+			ui_view::display_debit_or_credit_cells($bfw);
 			label_cell("");
 			label_cell("");
 			end_row();
@@ -175,7 +169,7 @@
 			$trandate = sql2date($myrow["tran_date"]);
 
 			label_cell($systypes_array[$myrow["type"]]);
-			label_cell(get_gl_view_str($myrow["type"], $myrow["type_no"], $myrow["type_no"], true));
+			label_cell(ui_view::get_gl_view_str($myrow["type"], $myrow["type_no"], $myrow["type_no"], true));
 			label_cell($trandate);
 
 			if ($_POST["account"] == null)
@@ -186,7 +180,7 @@
 			if ($dim > 1)
 				label_cell(get_dimension_string($myrow['dimension2_id'], true));
 			label_cell(payment_person_name($myrow["person_type_id"], $myrow["person_id"]));
-			display_debit_or_credit_cells($myrow["amount"]);
+			ui_view::display_debit_or_credit_cells($myrow["amount"]);
 			if ($show_balances)
 				amount_cell($running_total);
 			label_cell($myrow['memo_']);
@@ -203,7 +197,7 @@
 		if ($show_balances) {
 			start_row("class='inquirybg'");
 			label_cell("<b>" . _("Ending Balance") . " - " . $_POST['TransToDate'] . "</b>", "colspan=$colspan");
-			display_debit_or_credit_cells($running_total);
+			ui_view::display_debit_or_credit_cells($running_total);
 			label_cell("");
 			label_cell("");
 			end_row();
@@ -211,7 +205,7 @@
 
 		end_table(2);
 		if (db_num_rows($result) == 0)
-			display_note(_("No general ledger transactions have been created for the specified criteria."), 0, 1);
+			ui_msgs::display_note(_("No general ledger transactions have been created for the specified criteria."), 0, 1);
 	}
 
 	//----------------------------------------------------------------------------------------------------

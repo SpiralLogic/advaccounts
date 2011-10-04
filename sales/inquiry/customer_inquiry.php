@@ -11,14 +11,13 @@
 	 ***********************************************************************/
 	$page_security = 'SA_SALESTRANSVIEW';
 
-
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 	include_once(APP_PATH . "sales/includes/sales_ui.inc");
-	include_once(APP_PATH . "sales/includes/sales_db.inc");
+
 	include_once(APP_PATH . "reporting/includes/reporting.inc");
 	$js = "";
 	if (Config::get('ui.windows.popups')) {
-		$js .= get_js_open_window(900, 500);
+		$js .= ui_view::get_js_open_window(900, 500);
 	}
 
 	page(_($help_context = "Customer Transactions"), isset($_GET['customer_id']), false, "", $js);
@@ -28,7 +27,7 @@
 	//------------------------------------------------------------------------------------------------
 	start_form();
 	if (!isset($_POST['customer_id'])) {
-		$_POST['customer_id'] = get_global_customer();
+		$_POST['customer_id'] = ui_globals::get_global_customer();
 	}
 	start_table("class='tablestyle_noborder'");
 	start_row();
@@ -43,7 +42,7 @@
 	submit_cells('RefreshInquiry', _("Search"), '', _('Refresh Inquiry'), 'default');
 	end_row();
 	end_table();
-	set_global_customer($_POST['customer_id']);
+	ui_globals::set_global_customer($_POST['customer_id']);
 	//------------------------------------------------------------------------------------------------
 	function display_customer_summary($customer_record) {
 		$past1 = get_company_pref('past_due_days');
@@ -87,11 +86,11 @@
 	}
 
 	function order_view($row) {
-		return $row['order_'] > 0 ? get_customer_trans_view_str(ST_SALESORDER, $row['order_']) : "";
+		return $row['order_'] > 0 ? ui_view::get_customer_trans_view_str(ST_SALESORDER, $row['order_']) : "";
 	}
 
 	function trans_view($trans) {
-		return get_trans_view_str($trans["type"], $trans["trans_no"]);
+		return ui_view::get_trans_view_str($trans["type"], $trans["trans_no"]);
 	}
 
 	function due_date($row) {
@@ -99,7 +98,7 @@
 	}
 
 	function gl_view($row) {
-		return get_gl_view_str($row["type"], $row["trans_no"]);
+		return ui_view::get_gl_view_str($row["type"], $row["trans_no"]);
 	}
 
 	function fmt_debit($row) {

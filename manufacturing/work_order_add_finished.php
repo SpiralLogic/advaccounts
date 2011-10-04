@@ -13,17 +13,15 @@
 
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 
-	include_once(APP_PATH . "includes/date_functions.inc");
 	include_once(APP_PATH . "gl/includes/db/gl_db_bank_trans.inc");
-	include_once(APP_PATH . "includes/db/inventory_db.inc");
+
 	include_once(APP_PATH . "includes/manufacturing.inc");
 
-	include_once(APP_PATH . "manufacturing/includes/manufacturing_db.inc");
 	include_once(APP_PATH . "manufacturing/includes/manufacturing_ui.inc");
 
 	$js = "";
 	if (Config::get('ui.windows.popups'))
-		$js .= get_js_open_window(900, 500);
+		$js .= ui_view::get_js_open_window(900, 500);
 
 	page(_($help_context = "Produce or Unassemble Finished Items From Work Order"), false, false, "", $js);
 
@@ -38,13 +36,13 @@
 		$id = $_GET['AddedID'];
 		$stype = ST_WORKORDER;
 
-		display_notification(_("The manufacturing process has been entered."));
+		ui_msgs::display_notification(_("The manufacturing process has been entered."));
 
-		display_note(get_trans_view_str($stype, $id, _("View this Work Order")));
+		ui_msgs::display_note(ui_view::get_trans_view_str($stype, $id, _("View this Work Order")));
 
-		display_note(get_gl_view_str($stype, $id, _("View the GL Journal Entries for this Work Order")), 1);
+		ui_msgs::display_note(ui_view::get_gl_view_str($stype, $id, _("View the GL Journal Entries for this Work Order")), 1);
 		$ar = array('PARAM_0' => $_GET['date'], 'PARAM_1' => $_GET['date'], 'PARAM_2' => $stype);
-		display_note(print_link(_("Print the GL Journal Entries for this Work Order"), 702, $ar), 1);
+		ui_msgs::display_note(print_link(_("Print the GL Journal Entries for this Work Order"), 702, $ar), 1);
 
 		hyperlink_no_params("search_work_orders.php", _("Select another &Work Order to Process"));
 
@@ -57,7 +55,7 @@
 	$wo_details = get_work_order($_POST['selected_id']);
 
 	if (strlen($wo_details[0]) == 0) {
-		display_error(_("The order number sent is not valid."));
+		ui_msgs::display_error(_("The order number sent is not valid."));
 		exit;
 	}
 
@@ -67,37 +65,37 @@
 		global $wo_details, $SysPrefs, $Refs;
 
 		if (!$Refs->is_valid($_POST['ref'])) {
-			display_error(_("You must enter a reference."));
-			set_focus('ref');
+			ui_msgs::display_error(_("You must enter a reference."));
+			ui_view::set_focus('ref');
 			return false;
 		}
 
 		if (!is_new_reference($_POST['ref'], 29)) {
-			display_error(_("The entered reference is already in use."));
-			set_focus('ref');
+			ui_msgs::display_error(_("The entered reference is already in use."));
+			ui_view::set_focus('ref');
 			return false;
 		}
 
 		if (!check_num('quantity', 0)) {
-			display_error(_("The quantity entered is not a valid number or less then zero."));
-			set_focus('quantity');
+			ui_msgs::display_error(_("The quantity entered is not a valid number or less then zero."));
+			ui_view::set_focus('quantity');
 			return false;
 		}
 
 		if (!is_date($_POST['date_'])) {
-			display_error(_("The entered date is invalid."));
-			set_focus('date_');
+			ui_msgs::display_error(_("The entered date is invalid."));
+			ui_view::set_focus('date_');
 			return false;
 		}
 		elseif (!is_date_in_fiscalyear($_POST['date_']))
 		{
-			display_error(_("The entered date is not in fiscal year."));
-			set_focus('date_');
+			ui_msgs::display_error(_("The entered date is not in fiscal year."));
+			ui_view::set_focus('date_');
 			return false;
 		}
 		if (date_diff2(sql2date($wo_details["released_date"]), $_POST['date_'], "d") > 0) {
-			display_error(_("The production date cannot be before the release date of the work order."));
-			set_focus('date_');
+			ui_msgs::display_error(_("The production date cannot be before the release date of the work order."));
+			ui_view::set_focus('date_');
 			return false;
 		}
 
@@ -107,8 +105,8 @@
 
 			$qoh = get_qoh_on_date($wo_details["stock_id"], $wo_details["loc_code"], $_POST['date_']);
 			if (-input_num('quantity') + $qoh < 0) {
-				display_error(_("The unassembling cannot be processed because there is insufficient stock."));
-				set_focus('quantity');
+				ui_msgs::display_error(_("The unassembling cannot be processed because there is insufficient stock."));
+				ui_view::set_focus('quantity');
 				return false;
 			}
 		}
@@ -123,13 +121,13 @@
 					continue;
 				$qoh = get_qoh_on_date($row["stock_id"], $row["loc_code"], $_POST['date_']);
 				if ($qoh - $row['units_req'] * input_num('quantity') < 0) {
-					display_error(_("The production cannot be processed because a required item would cause a negative inventory balance :") .
+					ui_msgs::display_error(_("The production cannot be processed because a required item would cause a negative inventory balance :") .
 						 " " . $row['stock_id'] . " - " . $row['description']);
 					$err = true;
 				}
 			}
 			if ($err) {
-				set_focus('quantity');
+				ui_view::set_focus('quantity');
 				return false;
 			}
 		}

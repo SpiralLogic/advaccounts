@@ -19,9 +19,7 @@
 	// ----------------------------------------------------------------
 
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
-	include_once(APP_PATH . "includes/date_functions.inc");
-	include_once(APP_PATH . "includes/data_checks.inc");
-	include_once(APP_PATH . "sales/includes/sales_db.inc");
+
 	include_once(APP_PATH . "taxes/tax_calc.inc");
 	include_once(APP_PATH . "taxes/db/tax_groups_db.inc");
 
@@ -154,7 +152,7 @@
 			#		else
 			$rep->TextCol(4, 7, $doc_TOTAL_ORDER2, -2);
 			$rep->TextCol(7, 8, $DisplayTotal, -2);
-			$words = price_in_words($myrow["freight_cost"] + $SubTotal, ST_SALESQUOTE);
+			$words = ui_view::price_in_words($myrow["freight_cost"] + $SubTotal, ST_SALESQUOTE);
 			if ($words != "") {
 				$rep->NewLine(1);
 				$rep->TextCol(1, 7, $myrow['curr_code'] . ": " . $words, -2);

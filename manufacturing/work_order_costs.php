@@ -13,17 +13,15 @@
 
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 
-	include_once(APP_PATH . "includes/date_functions.inc");
 	include_once(APP_PATH . "gl/includes/db/gl_db_bank_trans.inc");
-	include_once(APP_PATH . "includes/db/inventory_db.inc");
+
 	include_once(APP_PATH . "includes/manufacturing.inc");
 
-	include_once(APP_PATH . "manufacturing/includes/manufacturing_db.inc");
 	include_once(APP_PATH . "manufacturing/includes/manufacturing_ui.inc");
 
 	$js = "";
 	if (Config::get('ui.windows.popups'))
-		$js .= get_js_open_window(900, 500);
+		$js .= ui_view::get_js_open_window(900, 500);
 
 	page(_($help_context = "Work Order Additional Costs"), false, false, "", $js);
 
@@ -37,11 +35,11 @@
 		$id = $_GET['AddedID'];
 		$stype = ST_WORKORDER;
 
-		display_notification(_("The additional cost has been entered."));
+		ui_msgs::display_notification(_("The additional cost has been entered."));
 
-		display_note(get_trans_view_str($stype, $id, _("View this Work Order")));
+		ui_msgs::display_note(ui_view::get_trans_view_str($stype, $id, _("View this Work Order")));
 
-		display_note(get_gl_view_str($stype, $id, _("View the GL Journal Entries for this Work Order")), 1);
+		ui_msgs::display_note(ui_view::get_gl_view_str($stype, $id, _("View the GL Journal Entries for this Work Order")), 1);
 
 		hyperlink_params("work_order_costs.php", _("Enter another additional cost."), "trans_no=$id");
 
@@ -56,7 +54,7 @@
 	$wo_details = get_work_order($_POST['selected_id']);
 
 	if (strlen($wo_details[0]) == 0) {
-		display_error(_("The order number sent is not valid."));
+		ui_msgs::display_error(_("The order number sent is not valid."));
 		exit;
 	}
 
@@ -66,25 +64,25 @@
 		global $wo_details;
 
 		if (!check_num('costs', 0)) {
-			display_error(_("The amount entered is not a valid number or less then zero."));
-			set_focus('costs');
+			ui_msgs::display_error(_("The amount entered is not a valid number or less then zero."));
+			ui_view::set_focus('costs');
 			return false;
 		}
 
 		if (!is_date($_POST['date_'])) {
-			display_error(_("The entered date is invalid."));
-			set_focus('date_');
+			ui_msgs::display_error(_("The entered date is invalid."));
+			ui_view::set_focus('date_');
 			return false;
 		}
 		elseif (!is_date_in_fiscalyear($_POST['date_']))
 		{
-			display_error(_("The entered date is not in fiscal year."));
-			set_focus('date_');
+			ui_msgs::display_error(_("The entered date is not in fiscal year."));
+			ui_view::set_focus('date_');
 			return false;
 		}
 		if (date_diff2(sql2date($wo_details["released_date"]), $_POST['date_'], "d") > 0) {
-			display_error(_("The additional cost date cannot be before the release date of the work order."));
-			set_focus('date_');
+			ui_msgs::display_error(_("The additional cost date cannot be before the release date of the work order."));
+			ui_view::set_focus('date_');
 			return false;
 		}
 
@@ -98,11 +96,11 @@
 		add_gl_trans_std_cost(ST_WORKORDER, $_POST['selected_id'], $_POST['date_'], $_POST['cr_acc'],
 			0, 0, $wo_cost_types[$_POST['PaymentType']], -input_num('costs'), PT_WORKORDER,
 			$_POST['PaymentType']);
-		$is_bank_to = is_bank_account($_POST['cr_acc']);
+		$is_bank_to = Banking::Banking::is_bank_account($_POST['cr_acc']);
 		if ($is_bank_to) {
 			add_bank_trans(ST_WORKORDER, $_POST['selected_id'], $is_bank_to, "",
 				$_POST['date_'], -input_num('costs'), PT_WORKORDER,
-				$_POST['PaymentType'], get_company_currency(),
+				$_POST['PaymentType'], Banking::get_company_currency(),
 				"Cannot insert a destination bank transaction");
 		}
 

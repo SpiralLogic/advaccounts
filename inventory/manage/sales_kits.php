@@ -15,10 +15,6 @@
 
 	page(_($help_context = "Sales Kits & Alias Codes"));
 
-	include_once(APP_PATH . "includes/date_functions.inc");
-	include_once(APP_PATH . "includes/faui.inc");
-	include_once(APP_PATH . "includes/data_checks.inc");
-
 	include_once(APP_PATH . "includes/manufacturing.inc");
 
 	check_db_has_stock_items(_("There are no items defined in the system."));
@@ -67,14 +63,14 @@
 		global $Mode, $Ajax, $selected_kit;
 
 		if (!check_num('quantity', 0)) {
-			display_error(_("The quantity entered must be numeric and greater than zero."));
-			set_focus('quantity');
+			ui_msgs::display_error(_("The quantity entered must be numeric and greater than zero."));
+			ui_view::set_focus('quantity');
 			return;
 		}
 		elseif ($_POST['description'] == '')
 		{
-			display_error(_("Item code description cannot be empty."));
-			set_focus('description');
+			ui_msgs::display_error(_("Item code description cannot be empty."));
+			ui_view::set_focus('description');
 			return;
 		}
 		elseif ($selected_item == -1) // adding new item or new alias/kit
@@ -83,28 +79,28 @@
 				$kit = get_item_kit($_POST['kit_code']);
 				if (db_num_rows($kit)) {
 					$input_error = 1;
-					display_error(_("This item code is already assigned to stock item or sale kit."));
-					set_focus('kit_code');
+					ui_msgs::display_error(_("This item code is already assigned to stock item or sale kit."));
+					ui_view::set_focus('kit_code');
 					return;
 				}
 				if (get_post('kit_code') == '') {
-					display_error(_("Kit/alias code cannot be empty."));
-					set_focus('kit_code');
+					ui_msgs::display_error(_("Kit/alias code cannot be empty."));
+					ui_view::set_focus('kit_code');
 					return;
 				}
 			}
 		}
 
 		if (check_item_in_kit($selected_item, $kit_code, $_POST['component'], true)) {
-			display_error(_("The selected component contains directly or on any lower level the kit under edition. Recursive kits are not allowed."));
-			set_focus('component');
+			ui_msgs::display_error(_("The selected component contains directly or on any lower level the kit under edition. Recursive kits are not allowed."));
+			ui_view::set_focus('component');
 			return;
 		}
 
 		/*Now check to see that the component is not already in the kit */
 		if (check_item_in_kit($selected_item, $kit_code, $_POST['component'])) {
-			display_error(_("The selected component is already in this kit. You can modify it's quantity but it cannot appear more than once in the same kit."));
-			set_focus('component');
+			ui_msgs::display_error(_("The selected component is already in this kit. You can modify it's quantity but it cannot appear more than once in the same kit."));
+			ui_view::set_focus('component');
 			return;
 		}
 		if ($selected_item == -1) { // new item alias/kit
@@ -118,12 +114,12 @@
 
 			add_item_code($kit_code, get_post('component'), get_post('description'),
 				get_post('category'), input_num('quantity'), 0);
-			display_notification($msg);
+			ui_msgs::display_notification($msg);
 		} else {
 			$props = get_kit_props($_POST['item_code']);
 			update_item_code($selected_item, $kit_code, get_post('component'),
 				$props['description'], $props['category_id'], input_num('quantity'), 0);
-			display_notification(_("Component of selected kit has been updated."));
+			ui_msgs::display_notification(_("Component of selected kit has been updated."));
 		}
 		$Mode = 'RESET';
 		$Ajax->activate('_page_body');
@@ -133,7 +129,7 @@
 
 	if (get_post('update_name')) {
 		update_kit_props(get_post('item_code'), get_post('description'), get_post('category'));
-		display_notification(_('Kit common properties has been updated'));
+		ui_msgs::display_notification(_('Kit common properties has been updated'));
 		$Ajax->activate('_page_body');
 	}
 
@@ -158,10 +154,10 @@
 				$msg .= "'" . $kit[0] . "'";
 				if ($num_kits) $msg .= ',';
 			}
-			display_error($msg);
+			ui_msgs::display_error($msg);
 		} else {
 			delete_item_code($selected_id);
-			display_notification(_("The component item has been deleted from this bom"));
+			ui_msgs::display_notification(_("The component item has been deleted from this bom"));
 			$Mode = 'RESET';
 		}
 	}

@@ -13,9 +13,7 @@
 	$page_security = $_POST['PARAM_0'] == $_POST['PARAM_1'] ? 'SA_SALESTRANSVIEW' : 'SA_SALESBULKREP';
 
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
-	include_once(APP_PATH . "includes/date_functions.inc");
-	include_once(APP_PATH . "includes/data_checks.inc");
-	include_once(APP_PATH . "sales/includes/sales_db.inc");
+
 	include_once(APP_PATH . "taxes/tax_calc.inc");
 	//----------------------------------------------------------------------------------------------------
 
@@ -189,9 +187,9 @@
 			$rep->TextCol(4, 7, $doc_TOTAL_ORDER2, -2);
 			$rep->TextCol(7, 8, $DisplayTotal, -2);
 			if ($print_as_quote < 3) {
-				$words = price_in_words($myrow["freight_cost"] + $SubTotal, ST_SALESORDER);
+				$words = ui_view::price_in_words($myrow["freight_cost"] + $SubTotal, ST_SALESORDER);
 			} else {
-				$words = price_in_words($myrow["freight_cost"] + $SubTotal, ST_SALESQUOTE);
+				$words = ui_view::price_in_words($myrow["freight_cost"] + $SubTotal, ST_SALESQUOTE);
 			}
 
 			if ($words != "") {

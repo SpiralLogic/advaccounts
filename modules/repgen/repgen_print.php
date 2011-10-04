@@ -11,9 +11,8 @@
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 	add_access_extensions();
 
-	include_once(APP_PATH . "includes/date_functions.inc");
 	include_once(APP_PATH . "admin/db/company_db.inc");
-	include_once(APP_PATH . "includes/faui.inc");
+
 	require_once("repgen.inc");
 	$id = $_GET['id'];
 	$file = COMPANY_PATH . '/pdf_files/' . $id . '.pdf';

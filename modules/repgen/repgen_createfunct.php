@@ -27,9 +27,8 @@
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 	add_access_extensions();
 
-	include_once(APP_PATH . "includes/date_functions.inc");
 	include_once(APP_PATH . "admin/db/company_db.inc");
-	include_once(APP_PATH . "includes/faui.inc");
+
 	require_once("repgen_const.inc");
 	require_once("repgen_def.inc");
 	require_once("repgen.inc");
@@ -124,15 +123,15 @@
 	### information, if we come here after a submission...
 
 	if (!empty($long))
-		display_heading(ALTER_FUNCT . ":   " . $long);
+		ui_msgs::display_heading(ALTER_FUNCT . ":   " . $long);
 	else
-		display_heading(CREATE_FUNCT);
+		ui_msgs::display_heading(CREATE_FUNCT);
 	if (!empty($error)) {
-		display_error($error);
+		ui_msgs::display_error($error);
 		$error = NULL;
 	}
 	else if (!empty($funct))
-		display_notification(PHP_OK . $field);
+		ui_msgs::display_notification(PHP_OK . $field);
 
 	if (empty($funct)) {
 		$res = db_query("SELECT attrib FROM xx_reports WHERE id = '$id_new'");
@@ -154,7 +153,7 @@
 	textarea_row(ALTER_FUNCT, "funct", $funct, 50, 10);
 	end_table(1);
 
-	display_note(FUNC_DECL, 0, 1);
+	ui_msgs::display_note(FUNC_DECL, 0, 1);
 
 	start_table(Config::get('tables.style'));
 	start_row();

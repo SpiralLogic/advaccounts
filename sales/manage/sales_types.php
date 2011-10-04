@@ -15,7 +15,6 @@
 
 	page(_($help_context = "Sales Types"));
 
-	include_once(APP_PATH . "includes/faui.inc");
 	include_once(APP_PATH . "sales/includes/db/sales_types_db.inc");
 
 	simple_page_mode(true);
@@ -23,14 +22,14 @@
 
 	function can_process() {
 		if (strlen($_POST['sales_type']) == 0) {
-			display_error(_("The sales type description cannot be empty."));
-			set_focus('sales_type');
+			ui_msgs::display_error(_("The sales type description cannot be empty."));
+			ui_view::set_focus('sales_type');
 			return false;
 		}
 
 		if (!check_num('factor', 0)) {
-			display_error(_("Calculation factor must be valid positive number."));
-			set_focus('factor');
+			ui_msgs::display_error(_("Calculation factor must be valid positive number."));
+			ui_view::set_focus('factor');
 			return false;
 		}
 		return true;
@@ -41,7 +40,7 @@
 	if ($Mode == 'ADD_ITEM' && can_process()) {
 		add_sales_type($_POST['sales_type'], isset($_POST['tax_included']) ? 1 : 0,
 			input_num('factor'));
-		display_notification(_('New sales type has been added'));
+		ui_msgs::display_notification(_('New sales type has been added'));
 		$Mode = 'RESET';
 	}
 
@@ -51,7 +50,7 @@
 
 		update_sales_type($selected_id, $_POST['sales_type'], isset($_POST['tax_included']) ? 1 : 0,
 			input_num('factor'));
-		display_notification(_('Selected sales type has been updated'));
+		ui_msgs::display_notification(_('Selected sales type has been updated'));
 		$Mode = 'RESET';
 	}
 
@@ -66,7 +65,7 @@
 
 		$myrow = db_fetch_row($result);
 		if ($myrow[0] > 0) {
-			display_error(_("Cannot delete this sale type because customer transactions have been created using this sales type."));
+			ui_msgs::display_error(_("Cannot delete this sale type because customer transactions have been created using this sales type."));
 		}
 		else
 		{
@@ -77,12 +76,12 @@
 
 			$myrow = db_fetch_row($result);
 			if ($myrow[0] > 0) {
-				display_error(_("Cannot delete this sale type because customers are currently set up to use this sales type."));
+				ui_msgs::display_error(_("Cannot delete this sale type because customers are currently set up to use this sales type."));
 			}
 			else
 			{
 				delete_sales_type($selected_id);
-				display_notification(_('Selected sales type has been deleted'));
+				ui_msgs::display_notification(_('Selected sales type has been deleted'));
 			}
 		} //end if sales type used in debtor transactions or in customers set up
 		$Mode = 'RESET';
@@ -126,7 +125,7 @@
 	inactive_control_row($th);
 	end_table();
 
-	display_note(_("Marked sales type is the company base pricelist for prices calculations."), 0, 0, "class='overduefg'");
+	ui_msgs::display_note(_("Marked sales type is the company base pricelist for prices calculations."), 0, 0, "class='overduefg'");
 
 	//----------------------------------------------------------------------------------------------------
 

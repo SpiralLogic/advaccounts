@@ -15,10 +15,8 @@
 	//
 	$page_security = 'SA_SALESCREDIT';
 
-
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
-	include_once(APP_PATH . "includes/data_checks.inc");
-	include_once(APP_PATH . "sales/includes/sales_db.inc");
+
 	include_once(APP_PATH . "sales/includes/sales_ui.inc");
 	include_once(APP_PATH . "sales/includes/db/sales_types_db.inc");
 	include_once(APP_PATH . "sales/includes/ui/sales_credit_ui.inc");
@@ -27,7 +25,7 @@
 
 	$js = "";
 	if (Config::get('ui.windows.popups')) {
-		$js .= get_js_open_window(900, 500);
+		$js .= ui_view::get_js_open_window(900, 500);
 	}
 
 	if (isset($_GET['NewCredit'])) {
@@ -61,20 +59,20 @@
 		$credit_no = $_GET['AddedID'];
 		$trans_type = ST_CUSTCREDIT;
 
-		display_notification_centered(sprintf(_("Credit Note # %d has been processed"), $credit_no));
+		ui_msgs::display_notification_centered(sprintf(_("Credit Note # %d has been processed"), $credit_no));
 
-		display_note(get_customer_trans_view_str($trans_type, $credit_no, _("&View this credit note")), 0, 1);
+		ui_msgs::display_note(ui_view::get_customer_trans_view_str($trans_type, $credit_no, _("&View this credit note")), 0, 1);
 
-		display_note(print_document_link($credit_no . "-" . $trans_type, _("&Print This Credit Invoice"), true, ST_CUSTCREDIT), 0, 1);
-		display_note(print_document_link($credit_no . "-" . $trans_type, _("&Email This Credit Invoice"), true, ST_CUSTCREDIT, false, "printlink", "", 1), 0, 1);
+		ui_msgs::display_note(print_document_link($credit_no . "-" . $trans_type, _("&Print This Credit Invoice"), true, ST_CUSTCREDIT), 0, 1);
+		ui_msgs::display_note(print_document_link($credit_no . "-" . $trans_type, _("&Email This Credit Invoice"), true, ST_CUSTCREDIT, false, "printlink", "", 1), 0, 1);
 
-		display_note(get_gl_view_str($trans_type, $credit_no, _("View the GL &Journal Entries for this Credit Note")));
+		ui_msgs::display_note(ui_view::get_gl_view_str($trans_type, $credit_no, _("View the GL &Journal Entries for this Credit Note")));
 
 		hyperlink_params($_SERVER['PHP_SELF'], _("Enter Another &Credit Note"), "NewCredit=yes");
 
 		hyperlink_params("/admin/attachments.php", _("Add an Attachment"), "filterType=$trans_type&trans_no=$credit_no");
 
-		display_footer_exit();
+		ui_view::display_footer_exit();
 	}
 	else
 		check_edit_conflicts();
@@ -84,7 +82,7 @@
 	function line_start_focus() {
 		global $Ajax;
 		$Ajax->activate('items_table');
-		set_focus('_stock_id_edit');
+		ui_view::set_focus('_stock_id_edit');
 	}
 
 	//-----------------------------------------------------------------------------
@@ -139,24 +137,24 @@
 			return false;
 		if ($_SESSION['Items']->trans_no == 0) {
 			if (!$Refs->is_valid($_POST['ref'])) {
-				display_error(_("You must enter a reference."));
-				set_focus('ref');
+				ui_msgs::display_error(_("You must enter a reference."));
+				ui_view::set_focus('ref');
 				$input_error = 1;
 			}
 			elseif (!is_new_reference($_POST['ref'], ST_CUSTCREDIT)) {
-				display_error(_("The entered reference is already in use."));
-				set_focus('ref');
+				ui_msgs::display_error(_("The entered reference is already in use."));
+				ui_view::set_focus('ref');
 				$input_error = 1;
 			}
 		}
 		if (!is_date($_POST['OrderDate'])) {
-			display_error(_("The entered date for the credit note is invalid."));
-			set_focus('OrderDate');
+			ui_msgs::display_error(_("The entered date for the credit note is invalid."));
+			ui_view::set_focus('OrderDate');
 			$input_error = 1;
 		}
 		elseif (!is_date_in_fiscalyear($_POST['OrderDate'])) {
-			display_error(_("The entered date is not in fiscal year."));
-			set_focus('OrderDate');
+			ui_msgs::display_error(_("The entered date is not in fiscal year."));
+			ui_view::set_focus('OrderDate');
 			$input_error = 1;
 		}
 		return ($input_error == 0);
@@ -169,8 +167,8 @@
 		if ($_POST['CreditType'] == "WriteOff" && (!isset($_POST['WriteOffGLCode']) ||
 		 $_POST['WriteOffGLCode'] == '')
 		) {
-			display_note(_("For credit notes created to write off the stock, a general ledger account is required to be selected."), 1, 0);
-			display_note(_("Please select an account to write the cost of the stock off to, then click on Process again."), 1, 0);
+			ui_msgs::display_note(_("For credit notes created to write off the stock, a general ledger account is required to be selected."), 1, 0);
+			ui_msgs::display_note(_("Please select an account to write the cost of the stock off to, then click on Process again."), 1, 0);
 			exit;
 		}
 		if (!isset($_POST['WriteOffGLCode'])) {
@@ -187,18 +185,18 @@
 
 	function check_item_data() {
 		if (!check_num('qty', 0)) {
-			display_error(_("The quantity must be greater than zero."));
-			set_focus('qty');
+			ui_msgs::display_error(_("The quantity must be greater than zero."));
+			ui_view::set_focus('qty');
 			return false;
 		}
 		if (!check_num('price', 0)) {
-			display_error(_("The entered price is negative or invalid."));
-			set_focus('price');
+			ui_msgs::display_error(_("The entered price is negative or invalid."));
+			ui_view::set_focus('price');
 			return false;
 		}
 		if (!check_num('Disc', 0, 100)) {
-			display_error(_("The entered discount percent is negative, greater than 100 or invalid."));
-			set_focus('Disc');
+			ui_msgs::display_error(_("The entered discount percent is negative, greater than 100 or invalid."));
+			ui_view::set_focus('Disc');
 			return false;
 		}
 		return true;
@@ -269,7 +267,7 @@
 		end_table();
 	}
 	else {
-		display_error($customer_error);
+		ui_msgs::display_error($customer_error);
 	}
 
 	echo "<br><center><table><tr>";

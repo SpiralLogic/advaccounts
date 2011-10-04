@@ -9,8 +9,6 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	include_once(APP_PATH . "includes/faui.inc");
-
 
 	//--------------------------------------------------------------------------------
 
@@ -58,8 +56,7 @@
 
 	function display_gl_items($title, &$order) {
 
-
-		display_heading($title);
+		ui_msgs::display_heading($title);
 
 		$dim = get_company_pref('use_dimension');
 
@@ -204,7 +201,7 @@
 				_('Confirm changes'), ICON_UPDATE);
 			button_cell('CancelItemChanges', _("Cancel"),
 				_('Cancel changes'), ICON_CANCEL);
-			set_focus('amount');
+			ui_view::set_focus('amount');
 		}
 		else
 			submit_cells('AddItem', _("Add Item"), "colspan=2",

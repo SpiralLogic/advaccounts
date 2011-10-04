@@ -88,7 +88,7 @@
 		}
 
 		if ($errors)
-			display_warning(_("Some transactions journal GL postings were not indexed due to lack of audit trail record."));
+			ui_msgs::display_warning(_("Some transactions journal GL postings were not indexed due to lack of audit trail record."));
 	}
 
 	/*

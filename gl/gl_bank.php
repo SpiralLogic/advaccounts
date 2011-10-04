@@ -10,21 +10,16 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 
-
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 	$page_security = isset($_GET['NewPayment']) ||
 	 @($_SESSION['pay_items']->trans_type == ST_BANKPAYMENT)
 		? 'SA_PAYMENT' : 'SA_DEPOSIT';
 
-	include_once(APP_PATH . "includes/date_functions.inc");
-	include_once(APP_PATH . "includes/data_checks.inc");
-
 	include_once(APP_PATH . "gl/includes/ui/gl_bank_ui.inc");
-	include_once(APP_PATH . "gl/includes/gl_db.inc");
-	include_once(APP_PATH . "gl/includes/gl_ui.inc");
+
 	$js = '';
 	if (Config::get('ui.windows.popups'))
-		$js .= get_js_open_window(800, 500);
+		$js .= ui_view::get_js_open_window(800, 500);
 
 	if (isset($_GET['NewPayment'])) {
 		$_SESSION['page_title'] = _($help_context = "Bank Account Payment Entry");
@@ -50,7 +45,7 @@
 		global $Ajax;
 
 		$Ajax->activate('items_table');
-		set_focus('_code_id_edit');
+		ui_view::set_focus('_code_id_edit');
 	}
 
 	//-----------------------------------------------------------------------------------------------
@@ -59,30 +54,30 @@
 		$trans_no = $_GET['AddedID'];
 		$trans_type = ST_BANKPAYMENT;
 
-		display_notification_centered(_("Payment $trans_no has been entered"));
+		ui_msgs::display_notification_centered(_("Payment $trans_no has been entered"));
 
-		display_note(get_gl_view_str($trans_type, $trans_no, _("&View the GL Postings for this Payment")));
+		ui_msgs::display_note(ui_view::get_gl_view_str($trans_type, $trans_no, _("&View the GL Postings for this Payment")));
 
 		hyperlink_params($_SERVER['PHP_SELF'], _("Enter Another &Payment"), "NewPayment=yes");
 
 		hyperlink_params($_SERVER['PHP_SELF'], _("Enter A &Deposit"), "NewDeposit=yes");
 
-		display_footer_exit();
+		ui_view::display_footer_exit();
 	}
 
 	if (isset($_GET['AddedDep'])) {
 		$trans_no = $_GET['AddedDep'];
 		$trans_type = ST_BANKDEPOSIT;
 
-		display_notification_centered(_("Deposit $trans_no has been entered"));
+		ui_msgs::display_notification_centered(_("Deposit $trans_no has been entered"));
 
-		display_note(get_gl_view_str($trans_type, $trans_no, _("View the GL Postings for this Deposit")));
+		ui_msgs::display_note(ui_view::get_gl_view_str($trans_type, $trans_no, _("View the GL Postings for this Deposit")));
 
 		hyperlink_params($_SERVER['PHP_SELF'], _("Enter Another Deposit"), "NewDeposit=yes");
 
 		hyperlink_params($_SERVER['PHP_SELF'], _("Enter A Payment"), "NewPayment=yes");
 
-		display_footer_exit();
+		ui_view::display_footer_exit();
 	}
 	if (isset($_POST['_date__changed'])) {
 		$Ajax->activate('_ex_rate');
@@ -111,37 +106,37 @@
 		$input_error = 0;
 
 		if ($_SESSION['pay_items']->count_gl_items() < 1) {
-			display_error(_("You must enter at least one payment line."));
-			set_focus('code_id');
+			ui_msgs::display_error(_("You must enter at least one payment line."));
+			ui_view::set_focus('code_id');
 			$input_error = 1;
 		}
 
 		if ($_SESSION['pay_items']->gl_items_total() == 0.0) {
-			display_error(_("The total bank amount cannot be 0."));
-			set_focus('code_id');
+			ui_msgs::display_error(_("The total bank amount cannot be 0."));
+			ui_view::set_focus('code_id');
 			$input_error = 1;
 		}
 
 		if (!$Refs->is_valid($_POST['ref'])) {
-			display_error(_("You must enter a reference."));
-			set_focus('ref');
+			ui_msgs::display_error(_("You must enter a reference."));
+			ui_view::set_focus('ref');
 			$input_error = 1;
 		}
 		elseif (!is_new_reference($_POST['ref'], $_SESSION['pay_items']->trans_type))
 		{
-			display_error(_("The entered reference is already in use."));
-			set_focus('ref');
+			ui_msgs::display_error(_("The entered reference is already in use."));
+			ui_view::set_focus('ref');
 			$input_error = 1;
 		}
 		if (!is_date($_POST['date_'])) {
-			display_error(_("The entered date for the payment is invalid."));
-			set_focus('date_');
+			ui_msgs::display_error(_("The entered date for the payment is invalid."));
+			ui_view::set_focus('date_');
 			$input_error = 1;
 		}
 		elseif (!is_date_in_fiscalyear($_POST['date_']))
 		{
-			//	display_error(_("The entered date is not in fiscal year."));
-			//	set_focus('date_');
+			//	ui_msgs::display_error(_("The entered date is not in fiscal year."));
+			//	ui_view::set_focus('date_');
 			//	$input_error = 1;
 		}
 
@@ -173,24 +168,24 @@
 	function check_item_data() {
 		//if (!check_num('amount', 0))
 		//{
-		//	display_error( _("The amount entered is not a valid number or is less than zero."));
-		//	set_focus('amount');
+		//	ui_msgs::display_error( _("The amount entered is not a valid number or is less than zero."));
+		//	ui_view::set_focus('amount');
 		//	return false;
 		//}
 
 		if ($_POST['code_id'] == $_POST['bank_account']) {
-			display_error(_("The source and destination accouts cannot be the same."));
-			set_focus('code_id');
+			ui_msgs::display_error(_("The source and destination accouts cannot be the same."));
+			ui_view::set_focus('code_id');
 			return false;
 		}
 
-		//if (is_bank_account($_POST['code_id']))
+		//if (Banking::Banking::is_bank_account($_POST['code_id']))
 		//{
 		//	if ($_SESSION['pay_items']->trans_type == ST_BANKPAYMENT)
-		//		display_error( _("You cannot make a payment to a bank account. Please use the transfer funds facility for this."));
+		//		ui_msgs::display_error( _("You cannot make a payment to a bank account. Please use the transfer funds facility for this."));
 		//	else
-		//		display_error( _("You cannot make a deposit from a bank account. Please use the transfer funds facility for this."));
-		//	set_focus('code_id');
+		//		ui_msgs::display_error( _("You cannot make a deposit from a bank account. Please use the transfer funds facility for this."));
+		//	ui_view::set_focus('code_id');
 		//	return false;
 		//}
 
@@ -243,7 +238,7 @@
 		line_start_focus();
 
 	if (isset($_POST['go'])) {
-		display_quick_entries($_SESSION['pay_items'], $_POST['person_id'], input_num('totamount'),
+		ui_view::display_quick_entries($_SESSION['pay_items'], $_POST['person_id'], input_num('totamount'),
 			$_SESSION['pay_items']->trans_type == ST_BANKPAYMENT ? QE_PAYMENT : QE_DEPOSIT);
 		$_POST['totamount'] = price_format(0);
 		$Ajax->activate('totamount');

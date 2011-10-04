@@ -57,7 +57,7 @@
 		function FrontReport($title, $filename, $size = 'A4', $fontsize = 9, $orientation = 'P', $margins = NULL, $excelColWidthFactor = 6.5) {
 			global $page_security;
 			if (!$_SESSION["wa_current_user"]->can_access_page($page_security)) {
-				display_error(_("The security settings on your account do not permit you to print this report"));
+				ui_msgs::display_error(_("The security settings on your account do not permit you to print this report"));
 				end_page();
 				exit;
 			}

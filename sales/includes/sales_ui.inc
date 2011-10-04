@@ -9,10 +9,6 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	include_once(APP_PATH . "includes/date_functions.inc");
-
-	include_once(APP_PATH . "includes/faui.inc");
-	include_once(APP_PATH . "includes/banking.inc");
 
 	//----------------------------------------------------------------------------
 	// helper functions for script execution control
@@ -42,9 +38,9 @@
 		global $Ajax;
 
 		if (isset($_POST['cart_id']) && $_POST['cart_id'] != $_SESSION[$cartname]->cart_id) {
-			display_error(_('This edit session has been abandoned by opening sales document in another browser tab. You cannot edit more than one sales document at once.'));
+			ui_msgs::display_error(_('This edit session has been abandoned by opening sales document in another browser tab. You cannot edit more than one sales document at once.'));
 			$Ajax->activate('_page_body');
-			display_footer_exit();
+			ui_view::display_footer_exit();
 		}
 	}
 

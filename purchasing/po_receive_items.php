@@ -12,12 +12,12 @@
 	$page_security = 'SA_GRN';
 
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
-	include_once(APP_PATH . "purchasing/includes/purchasing_db.inc");
+
 	include_once(APP_PATH . "purchasing/includes/purchasing_ui.inc");
 
 	$js = "";
 	if (Config::get('ui.windows.popups')) {
-		$js .= get_js_open_window(900, 500);
+		$js .= ui_view::get_js_open_window(900, 500);
 	}
 
 	page(_($help_context = "Receive Purchase Order Items"), false, false, "", $js);
@@ -28,15 +28,15 @@
 		$grn = $_GET['AddedID'];
 		$trans_type = ST_SUPPRECEIVE;
 
-		display_notification_centered(_("Purchase Order Delivery has been processed"));
+		ui_msgs::display_notification_centered(_("Purchase Order Delivery has been processed"));
 
-		display_note(get_trans_view_str($trans_type, $grn, _("&View this Delivery")));
+		ui_msgs::display_note(ui_view::get_trans_view_str($trans_type, $grn, _("&View this Delivery")));
 
 		hyperlink_params("/purchasing/supplier_invoice.php", _("Entry purchase &invoice for this receival"), "New=1");
 
 		hyperlink_no_params("/purchasing/inquiry/po_search.php", _("Select a different &purchase order for receiving items against"));
 
-		display_footer_exit();
+		ui_view::display_footer_exit();
 	}
 
 	//--------------------------------------------------------------------------------------------------
@@ -131,29 +131,29 @@
 		global $SysPrefs, $Refs;
 
 		if (count($_SESSION['PO']->line_items) <= 0) {
-			display_error(_("There is nothing to process. Please enter valid quantities greater than zero."));
+			ui_msgs::display_error(_("There is nothing to process. Please enter valid quantities greater than zero."));
 			return false;
 		}
 
 		if (!is_date($_POST['DefaultReceivedDate'])) {
-			display_error(_("The entered date is invalid."));
-			set_focus('DefaultReceivedDate');
+			ui_msgs::display_error(_("The entered date is invalid."));
+			ui_view::set_focus('DefaultReceivedDate');
 			return false;
 		}
 		if (!check_num('freight', 0)) {
-			display_error(_("The freight entered must be numeric and not less than zero."));
-			set_focus('freight');
+			ui_msgs::display_error(_("The freight entered must be numeric and not less than zero."));
+			ui_view::set_focus('freight');
 			return false;
 		}
 		if (!$Refs->is_valid($_POST['ref'])) {
-			display_error(_("You must enter a reference."));
-			set_focus('ref');
+			ui_msgs::display_error(_("You must enter a reference."));
+			ui_view::set_focus('ref');
 			return false;
 		}
 
 		while (!is_new_reference($_POST['ref'], ST_SUPPRECEIVE)) {
-			//		display_error(_("The entered reference is already in use."));
-			//		set_focus('ref');
+			//		ui_msgs::display_error(_("The entered reference is already in use."));
+			//		ui_view::set_focus('ref');
 			//		return false;
 			$_POST['ref'] = $Refs->get_next(ST_SUPPRECEIVE);
 		}
@@ -176,10 +176,10 @@
 		}
 
 		if ($something_received == 0) { /*Then dont bother proceeding cos nothing to do ! */
-			display_error(_("There is nothing to process. Please enter valid quantities greater than zero."));
+			ui_msgs::display_error(_("There is nothing to process. Please enter valid quantities greater than zero."));
 			return false;
 		} elseif ($delivery_qty_too_large == 1) {
-			display_error(_("Entered quantities cannot be greater than the quantity entered on the purchase order including the allowed over-receive percentage") . " (" . $SysPrefs->over_receive_allowance() . "%)." . "<br>" . _("Modify the ordered items on the purchase order if you wish to increase the quantities."));
+			ui_msgs::display_error(_("Entered quantities cannot be greater than the quantity entered on the purchase order including the allowed over-receive percentage") . " (" . $SysPrefs->over_receive_allowance() . "%)." . "<br>" . _("Modify the ordered items on the purchase order if you wish to increase the quantities."));
 			return false;
 		}
 
@@ -196,7 +196,7 @@
 		}
 
 		if (check_po_changed()) {
-			display_error(_("This order has been changed or invoiced since this delivery was started to be actioned. Processing halted. To enter a delivery against this purchase order, it must be re-selected and re-read again to update the changes made by the other user."));
+			ui_msgs::display_error(_("This order has been changed or invoiced since this delivery was started to be actioned. Processing halted. To enter a delivery against this purchase order, it must be re-selected and re-read again to update the changes made by the other user."));
 			hyperlink_no_params("/purchasing/inquiry/po_search.php", _("Select a different purchase order for receiving goods against"));
 			hyperlink_params("/purchasing/po_receive_items.php", _("Re-Read the updated purchase order for receiving goods against"), "PONumber=" .
 			 $_SESSION
@@ -205,7 +205,7 @@
 			unset($_SESSION['PO']);
 			unset($_POST['ProcessGoodsReceived']);
 			$Ajax->activate('_page_body');
-			display_footer_exit();
+			ui_view::display_footer_exit();
 		}
 		$_SESSION['wa_global_supplier_id'] = $_SESSION['PO']->supplier_id;
 		$grn = add_grn($_SESSION['PO'], $_POST['DefaultReceivedDate'], $_POST['ref'], $_POST['Location']);
@@ -250,7 +250,7 @@
 	//--------------------------------------------------------------------------------------------------
 	start_form();
 	display_grn_summary($_SESSION['PO'], true);
-	display_heading(_("Items to Receive"));
+	ui_msgs::display_heading(_("Items to Receive"));
 	display_po_receive_items();
 	hyperlink_params("/purchasing/po_entry_items.php", _("Edit This Purchase Order"), "ModifyOrderNumber=" .
 	 $_SESSION['PO']->order_no);

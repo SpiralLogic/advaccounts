@@ -32,9 +32,8 @@
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 	add_access_extensions();
 
-	include_once(APP_PATH . "includes/date_functions.inc");
 	include_once(APP_PATH . "admin/db/company_db.inc");
-	include_once(APP_PATH . "includes/faui.inc");
+
 	require_once("repgen_const.inc");
 	require_once("repgen_def.inc");
 
@@ -219,7 +218,7 @@
 	}
 	page("Report Generator REPGEN");
 
-	display_heading(DESCRIPT);
+	ui_msgs::display_heading(DESCRIPT);
 
 	start_form(false, false, "repgen_select.php", "navigate");
 
@@ -235,8 +234,8 @@
 
 	end_table(1);
 
-	display_note(SEL_SELECT);
-	display_note(SEL_COLOR);
+	ui_msgs::display_note(SEL_SELECT);
+	ui_msgs::display_note(SEL_COLOR);
 
 	end_form();
 ?>

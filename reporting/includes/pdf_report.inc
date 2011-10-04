@@ -56,7 +56,7 @@
 		function FrontReport($title, $filename, $size = 'A4', $fontsize = 9, $orientation = 'P', $margins = NULL, $excelColWidthFactor = NULL) {
 			global $page_security;
 			if (!$_SESSION["wa_current_user"]->can_access_page($page_security)) {
-				display_error(_("The security settings on your account do not permit you to print this report"));
+				ui_msgs::display_error(_("The security settings on your account do not permit you to print this report"));
 				end_page();
 				exit;
 			}
@@ -831,8 +831,8 @@
 					$mail->text($msg . $sender);
 					$mail->attachment($fname);
 					$ret = $mail->send();
-					if (!$ret) display_error('Error: ' . $emailAddress . ': ' . $mail->toerror); else
-						display_notification($this->title . " " . $myrow['reference'] . " " . _("has been sent by email to: ") . str_replace(",", "",
+					if (!$ret) ui_msgs::display_error('Error: ' . $emailAddress . ': ' . $mail->toerror); else
+						ui_msgs::display_notification($this->title . " " . $myrow['reference'] . " " . _("has been sent by email to: ") . str_replace(",", "",
 								$myrow['DebtorName']) . "  &lt;" . $emailAddress . "&gt;");
 					unlink($fname);
 				} else {
@@ -864,8 +864,8 @@
 					} else { // send report to network printer
 						$prn = new remote_printer($printer['queue'], $printer['host'], $printer['port'], $printer['timeout']);
 						$error = $prn->print_file($fname);
-						if ($error) display_error($error); else
-							display_notification(_('Report has been sent to network printer ') . $printer['name']);
+						if ($error) ui_msgs::display_error($error); else
+							ui_msgs::display_notification(_('Report has been sent to network printer ') . $printer['name']);
 					}
 				}
 				// first have a look through the directory,

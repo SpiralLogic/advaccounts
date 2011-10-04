@@ -10,9 +10,7 @@
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 	add_access_extensions();
 
-	include_once(APP_PATH . "includes/date_functions.inc");
 	include_once(APP_PATH . "admin/db/company_db.inc");
-	include_once(APP_PATH . "includes/faui.inc");
 
 	require_once("repgen_const.inc");
 	require_once("repgen_def.inc");
@@ -22,19 +20,19 @@
 
 	if ($sql == "") {
 		$error = SQL_ERROR1;
-		display_error($error);
+		ui_msgs::display_error($error);
 		exit;
 	}
 
 	page("Report Generator REPGEN", true);
 
-	display_heading(SQL_STATEMENT);
+	ui_msgs::display_heading(SQL_STATEMENT);
 
 	$sql = stripslashes($sql);
 	$sqle = urldecode($sql);
 	//   print the SQL-Command
 
-	display_notification($sqle);
+	ui_msgs::display_notification($sqle);
 
 	$sql = str_replace("", '', $sql);
 
@@ -54,7 +52,7 @@
 	*
 	*
  */
-	display_heading(SQL_ERG);
+	ui_msgs::display_heading(SQL_ERG);
 
 	start_table(Config::get('tables.style'));
 	table_header($th);

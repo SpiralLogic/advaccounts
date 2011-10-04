@@ -15,8 +15,6 @@
 
 	page(_($help_context = "Payment Terms"));
 
-	include(APP_PATH . "includes/faui.inc");
-
 	simple_page_mode(true);
 	//-------------------------------------------------------------------------------------------
 
@@ -26,27 +24,27 @@
 
 		if (!is_numeric($_POST['DayNumber'])) {
 			$inpug_error = 1;
-			display_error(_("The number of days or the day in the following month must be numeric."));
-			set_focus('DayNumber');
+			ui_msgs::display_error(_("The number of days or the day in the following month must be numeric."));
+			ui_view::set_focus('DayNumber');
 		}
 		elseif (strlen($_POST['terms']) == 0)
 		{
 			$inpug_error = 1;
-			display_error(_("The Terms description must be entered."));
-			set_focus('terms');
+			ui_msgs::display_error(_("The Terms description must be entered."));
+			ui_view::set_focus('terms');
 		} // there should be no limits by 30 here if they want longer payment terms. Joe Hunt 2010-05-31
 		//elseif ($_POST['DayNumber'] > 30 && !check_value('DaysOrFoll'))
 		//{
 		//	$inpug_error = 1;
-		//	display_error( _("When the check box to indicate a day in the following month is the due date, the due date cannot be a day after the 30th. A number between 1 and 30 is expected."));
-		//	set_focus('DayNumber');
+		//	ui_msgs::display_error( _("When the check box to indicate a day in the following month is the due date, the due date cannot be a day after the 30th. A number between 1 and 30 is expected."));
+		//	ui_view::set_focus('DayNumber');
 		//}
 		// No constrain on day values, Joe Hunt 2010-06-18.
 		//elseif ($_POST['DayNumber'] > 500 && check_value('DaysOrFoll'))
 		//{
 		//	$inpug_error = 1;
-		//	display_error( _("When the check box is not checked to indicate that the term expects a number of days after which accounts are due, the number entered should be less than 500 days."));
-		//	set_focus('DayNumber');
+		//	ui_msgs::display_error( _("When the check box is not checked to indicate that the term expects a number of days after which accounts are due, the number entered should be less than 500 days."));
+		//	ui_view::set_focus('DayNumber');
 		//}
 
 		if ($_POST['DayNumber'] == '')
@@ -89,7 +87,7 @@
 			}
 			//run the sql from either of the above possibilites
 			db_query($sql, "The payment term could not be added or updated");
-			display_notification($note);
+			ui_msgs::display_notification($note);
 			$Mode = 'RESET';
 		}
 	}
@@ -101,7 +99,7 @@
 		$result = db_query($sql, "check failed");
 		$myrow = db_fetch_row($result);
 		if ($myrow[0] > 0) {
-			display_error(_("Cannot delete this payment term, because customer accounts have been created referring to this term."));
+			ui_msgs::display_error(_("Cannot delete this payment term, because customer accounts have been created referring to this term."));
 		}
 		else
 		{
@@ -109,7 +107,7 @@
 			$result = db_query($sql, "check failed");
 			$myrow = db_fetch_row($result);
 			if ($myrow[0] > 0) {
-				display_error(_("Cannot delete this payment term, because supplier accounts have been created referring to this term"));
+				ui_msgs::display_error(_("Cannot delete this payment term, because supplier accounts have been created referring to this term"));
 			}
 			else
 			{
@@ -117,7 +115,7 @@
 
 				$sql = "DELETE FROM payment_terms WHERE terms_indicator=" . db_escape($selected_id);
 				db_query($sql, "could not delete a payment terms");
-				display_notification(_('Selected payment terms have been deleted'));
+				ui_msgs::display_notification(_('Selected payment terms have been deleted'));
 			}
 		}
 		//end if payment terms used in customer or supplier accounts

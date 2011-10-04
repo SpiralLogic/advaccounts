@@ -15,30 +15,26 @@
 
 	page(_($help_context = "System and General GL Setup"));
 
-	include_once(APP_PATH . "includes/date_functions.inc");
-	include_once(APP_PATH . "includes/faui.inc");
-	include_once(APP_PATH . "includes/data_checks.inc");
-
 	include_once(APP_PATH . "admin/db/company_db.inc");
 
 	//-------------------------------------------------------------------------------------------------
 
 	function can_process() {
 		if (!check_num('po_over_receive', 0, 100)) {
-			display_error(_("The delivery over-receive allowance must be between 0 and 100."));
-			set_focus('po_over_receive');
+			ui_msgs::display_error(_("The delivery over-receive allowance must be between 0 and 100."));
+			ui_view::set_focus('po_over_receive');
 			return false;
 		}
 
 		if (!check_num('po_over_charge', 0, 100)) {
-			display_error(_("The invoice over-charge allowance must be between 0 and 100."));
-			set_focus('po_over_charge');
+			ui_msgs::display_error(_("The invoice over-charge allowance must be between 0 and 100."));
+			ui_view::set_focus('po_over_charge');
 			return false;
 		}
 
 		if (!check_num('past_due_days', 0, 100)) {
-			display_error(_("The past due days interval allowance must be between 0 and 100."));
-			set_focus('past_due_days');
+			ui_msgs::display_error(_("The past due days interval allowance must be between 0 and 100."));
+			ui_view::set_focus('past_due_days');
 			return false;
 		}
 		return true;
@@ -70,7 +66,7 @@
 			$_POST['default_dim_required'],
 			$_POST['default_delivery_required']);
 
-		display_notification(_("The general GL setup has been updated."));
+		ui_msgs::display_notification(_("The general GL setup has been updated."));
 	} /* end of if submit */
 
 	//-------------------------------------------------------------------------------------------------

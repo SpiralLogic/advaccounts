@@ -131,9 +131,7 @@
 		}
 		start_table("width=20%");
 		start_row();
-		//	if ($no_menu)
-		//		echo "<td align=center><a href='javascript:window.print();'>"._("Print")."</a></td>\n";
-		echo "<td align=center><a href='javascript:goBack();'>" . ($no_menu ? _("Close") : _("Back")) . "</a></td>\n";
+		echo "<td align=center><a class='button' href='javascript:goBack();'>" . ($no_menu ? _("Close") : _("Back")) . "</a></td>\n";
 		end_row();
 		end_table();
 		if ($center) {
@@ -143,7 +141,7 @@
 	}
 
 	function hyperlink_no_params($target, $label, $center = true, $button = false) {
-		$id = default_focus();
+		$id = ui_view::default_focus();
 		$pars = access_string($label);
 		if ($target == '') {
 			$target = $_SERVER['PHP_SELF'];
@@ -193,34 +191,34 @@
 
 	function menu_link($url, $label, $id = null) {
 
-		$id = default_focus($id);
+		$id = ui_view::default_focus($id);
 		$pars = access_string($label);
 		return "<a href='$url' class='menu_option' id='$id' $pars[1]>$pars[0]</a>";
 	}
 
 	function menu_button($url, $label, $id = null) {
 
-		$id = default_focus($id);
+		$id = ui_view::default_focus($id);
 		$pars = access_string($label);
 		return "<a href='$url' class='button' id='$id' $pars[1]>$pars[0]</a>";
 	}
 
 	function submenu_option($title, $url, $id = null) {
 
-		display_note(menu_link(PATH_TO_ROOT . $url, $title, $id), 0, 1);
+		ui_msgs::display_note(menu_link(PATH_TO_ROOT . $url, $title, $id), 0, 1);
 	}
 
 	function submenu_button($title, $url, $id = null) {
 
-		display_note(menu_button(PATH_TO_ROOT . $url, $title, $id), 0, 1);
+		ui_msgs::display_note(menu_button(PATH_TO_ROOT . $url, $title, $id), 0, 1);
 	}
 
 	function submenu_view($title, $type, $number, $id = null) {
-		display_note(get_trans_view_str($type, $number, $title, false, 'menu_option', $id), 0, 1, false, 'button');
+		ui_msgs::display_note(ui_view::get_trans_view_str($type, $number, $title, false, 'menu_option', $id), 0, 1, false, 'button');
 	}
 
 	function submenu_print($title, $type, $number, $id = null, $email = 0, $extra = 0) {
-		display_note(print_document_link($number, $title, true, $type, false, 'menu_option', $id, $email, $extra), 0, 1);
+		ui_msgs::display_note(print_document_link($number, $title, true, $type, false, 'menu_option', $id, $email, $extra), 0, 1);
 	}
 
 	function submenu_email($title, $type, $number, $id = null, $emails, $extra = 0, $return = false) {
@@ -231,7 +229,7 @@
 	//-----------------------------------------------------------------------------------
 
 	function hyperlink_params($target, $label, $link_params = '', $center = true, $params = '') {
-		$id = default_focus();
+		$id = ui_view::default_focus();
 
 		$pars = access_string($label);
 		if ($target == '') {
@@ -247,7 +245,7 @@
 	}
 
 	function hyperlink_button($target, $label, $link_params = '', $center = true, $params = '') {
-		$id = default_focus();
+		$id = ui_view::default_focus();
 
 		$pars = access_string($label);
 		if ($target == '') {
@@ -271,7 +269,7 @@
 	//-----------------------------------------------------------------------------------
 
 	function hyperlink_params_separate($target, $label, $params, $center = false, $nobr = false) {
-		$id = default_focus();
+		$id = ui_view::default_focus();
 
 		$pars = access_string($label);
 		if (!$nobr) {
@@ -517,7 +515,7 @@
 			{
 				if (isset($ret[$retname])) {
 					$_POST[$postname] = $ret[$retname];
-					set_focus($postname);
+					ui_view::set_focus($postname);
 				}
 			}
 		}

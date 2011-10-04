@@ -18,12 +18,8 @@
 	// ----------------------------------------------------------------
 
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
-	include_once(APP_PATH . "includes/date_functions.inc");
-	include_once(APP_PATH . "includes/ui/ui_input.inc");
-	include_once(APP_PATH . "includes/data_checks.inc");
-	include_once(APP_PATH . "gl/includes/gl_db.inc");
+
 	include_once(APP_PATH . "sales/includes/db/sales_types_db.inc");
-	include_once(APP_PATH . "inventory/includes/inventory_db.inc");
 
 	//----------------------------------------------------------------------------------------------------
 

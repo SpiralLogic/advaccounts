@@ -17,16 +17,14 @@
 
 	include(APP_PATH . "sales/includes/db/credit_status_db.inc");
 
-	include(APP_PATH . "includes/faui.inc");
-
 	simple_page_mode(true);
 	//-----------------------------------------------------------------------------------
 
 	function can_process() {
 
 		if (strlen($_POST['reason_description']) == 0) {
-			display_error(_("The credit status description cannot be empty."));
-			set_focus('reason_description');
+			ui_msgs::display_error(_("The credit status description cannot be empty."));
+			ui_view::set_focus('reason_description');
 			return false;
 		}
 
@@ -38,14 +36,14 @@
 	if ($Mode == 'ADD_ITEM' && can_process()) {
 
 		add_credit_status($_POST['reason_description'], $_POST['DisallowInvoices']);
-		display_notification(_('New credit status has been added'));
+		ui_msgs::display_notification(_('New credit status has been added'));
 		$Mode = 'RESET';
 	}
 
 	//-----------------------------------------------------------------------------------
 
 	if ($Mode == 'UPDATE_ITEM' && can_process()) {
-		display_notification(_('Selected credit status has been updated'));
+		ui_msgs::display_notification(_('Selected credit status has been updated'));
 		update_credit_status($selected_id, $_POST['reason_description'], $_POST['DisallowInvoices']);
 		$Mode = 'RESET';
 	}
@@ -58,7 +56,7 @@
 		$result = db_query($sql, "could not query customers");
 		$myrow = db_fetch_row($result);
 		if ($myrow[0] > 0) {
-			display_error(_("Cannot delete this credit status because customer accounts have been created referring to it."));
+			ui_msgs::display_error(_("Cannot delete this credit status because customer accounts have been created referring to it."));
 			return false;
 		}
 
@@ -71,7 +69,7 @@
 
 		if (can_delete($selected_id)) {
 			delete_credit_status($selected_id);
-			display_notification(_('Selected credit status has been deleted'));
+			ui_msgs::display_notification(_('Selected credit status has been deleted'));
 		}
 		$Mode = 'RESET';
 	}

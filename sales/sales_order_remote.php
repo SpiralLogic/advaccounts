@@ -12,7 +12,7 @@
 	include_once(APP_PATH . "includes/session.inc");
 	include_once(APP_PATH . "sales/includes/sales_ui.inc");
 	include_once(APP_PATH . "sales/includes/ui/sales_order_ui.inc");
-	include_once(APP_PATH . "sales/includes/sales_db.inc");
+
 	include_once(APP_PATH . "sales/includes/db/sales_types_db.inc");
 	include_once(APP_PATH . "reporting/includes/reporting.inc");
 	if (!isset($_SESSION['remote_order'])) {

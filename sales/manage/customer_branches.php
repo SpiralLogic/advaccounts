@@ -13,12 +13,9 @@
 	$page_security = 'SA_CUSTOMER';
 	//$page_security = 3;
 
-
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 
 	page(_($help_context = "Customer Branches"), @$_REQUEST['popup']);
-
-	include_once(APP_PATH . "includes/faui.inc");
 
 	//-----------------------------------------------------------------------------------------------
 
@@ -57,14 +54,14 @@
 
 		if (strlen($_POST['br_name']) == 0) {
 			$input_error = 1;
-			display_error(_("The Branch name cannot be empty."));
-			set_focus('br_name');
+			ui_msgs::display_error(_("The Branch name cannot be empty."));
+			ui_view::set_focus('br_name');
 		}
 
 		if (strlen($_POST['br_ref']) == 0) {
 			$input_error = 1;
-			display_error(_("The Branch short name cannot be empty."));
-			set_focus('br_ref');
+			ui_msgs::display_error(_("The Branch short name cannot be empty."));
+			ui_view::set_focus('br_ref');
 		}
 
 		if ($input_error != 1) {
@@ -126,10 +123,10 @@
 			}
 			//run the sql from either of the above possibilites
 			db_query($sql, "The branch record could not be inserted or updated");
-			display_notification($note);
+			ui_msgs::display_notification($note);
 			$Mode = 'RESET';
 			if (@$_REQUEST['popup']) {
-				set_focus("Select" . ($_POST['branch_code'] == -1 ? db_insert_id() : $_POST['branch_code']));
+				ui_view::set_focus("Select" . ($_POST['branch_code'] == -1 ? db_insert_id() : $_POST['branch_code']));
 			}
 		}
 	}
@@ -142,7 +139,7 @@
 		$result = db_query($sql, "could not query debtortrans");
 		$myrow = db_fetch_row($result);
 		if ($myrow[0] > 0) {
-			display_error(_("Cannot delete this branch because customer transactions have been created to this branch."));
+			ui_msgs::display_error(_("Cannot delete this branch because customer transactions have been created to this branch."));
 		}
 		else {
 			$sql = "SELECT COUNT(*) FROM sales_orders WHERE branch_code=" . db_escape(
@@ -151,13 +148,13 @@
 
 			$myrow = db_fetch_row($result);
 			if ($myrow[0] > 0) {
-				display_error(_("Cannot delete this branch because sales orders exist for it. Purge old sales orders first."));
+				ui_msgs::display_error(_("Cannot delete this branch because sales orders exist for it. Purge old sales orders first."));
 			}
 			else {
 				$sql = "DELETE FROM cust_branch WHERE branch_code=" . db_escape(
 					$_POST['branch_code']) . " AND debtor_no=" . db_escape($_POST['customer_id']);
 				db_query($sql, "could not delete branch");
-				display_notification(_('Selected customer branch has been deleted'));
+				ui_msgs::display_notification(_('Selected customer branch has been deleted'));
 			}
 		} //end ifs to test if the branch can be deleted
 		$Mode = 'RESET';
@@ -248,7 +245,7 @@
 		display_db_pager($table);
 	}
 	else
-		display_note(_("The selected customer does not have any branches. Please create at least one branch."));
+		ui_msgs::display_note(_("The selected customer does not have any branches. Please create at least one branch."));
 
 	start_outer_table(Config::get('tables.style2'), 5);
 
@@ -264,7 +261,7 @@
 			AND debtor_no=" . db_escape($_POST['customer_id']);
 			$result = db_query($sql, "check failed");
 			$myrow = db_fetch($result);
-			set_focus('br_name');
+			ui_view::set_focus('br_name');
 			$_POST['branch_code'] = $myrow["branch_code"];
 			$_POST['br_name'] = $myrow["br_name"];
 			$_POST['br_ref'] = $myrow["branch_ref"];

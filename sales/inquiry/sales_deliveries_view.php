@@ -18,7 +18,7 @@
 
 	$js = "";
 	if (Config::get('ui.windows.popups'))
-		$js .= get_js_open_window(900, 600);
+		$js .= ui_view::get_js_open_window(900, 600);
 
 	if (isset($_GET['OutstandingOnly']) && ($_GET['OutstandingOnly'] == true)) {
 		$_POST['OutstandingOnly'] = true;
@@ -61,13 +61,13 @@
 		}
 
 		if (!$del_count) {
-			display_error(_('For batch invoicing you should
+			ui_msgs::display_error(_('For batch invoicing you should
 		    select at least one delivery. All items must be dispatched to
 		    the same customer branch.'));
 		}
 		else {
 			$_SESSION['DeliveryBatch'] = $selected;
-			meta_forward( '/sales/customer_invoice.php', 'BatchInvoice=Yes');
+			meta_forward('/sales/customer_invoice.php', 'BatchInvoice=Yes');
 		}
 	}
 
@@ -101,7 +101,7 @@
 
 	locations_list_cells(_("Location:"), 'StockLocation', null, true);
 
-	stock_items_list_cells(_("Item:"), 'SelectStockFromList', null, true, false, false, false, true);
+	stock_items_list_cells(_("Item:"), 'SelectStockFromList', null, true, false, false, false, false);
 
 	submit_cells('SearchOrders', _("Search"), '', _('Select documents'), 'default');
 
@@ -124,7 +124,7 @@
 
 	//---------------------------------------------------------------------------------------------
 	function trans_view($trans, $trans_no) {
-		return get_customer_trans_view_str(ST_CUSTDELIVERY, $trans['trans_no']);
+		return ui_view::get_customer_trans_view_str(ST_CUSTDELIVERY, $trans['trans_no']);
 	}
 
 	function batch_checkbox($row) {
@@ -215,7 +215,7 @@
 		'branch_code' => 'skip',
 		_("Branch") => array('ord' => ''),
 		_("Contact"),
-		_("Reference"),
+		_("Reference") => array('skip'),
 		_("Cust Ref"),
 		_("Delivery Date") => array('type' => 'date', 'ord' => ''),
 		_("Due By") => 'date',

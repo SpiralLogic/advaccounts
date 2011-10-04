@@ -20,12 +20,7 @@
 		page(_($help_context = "Inventory Item Status"));
 	}
 
-	include_once(APP_PATH . "includes/date_functions.inc");
-	include_once(APP_PATH . "includes/faui.inc");
 	include_once(APP_PATH . "includes/manufacturing.inc");
-	include_once(APP_PATH . "includes/data_checks.inc");
-
-	include_once(APP_PATH . "inventory/includes/inventory_db.inc");
 
 	if ($_POST['stock_id'])
 		$Ajax->activate('status_tbl');
@@ -36,7 +31,7 @@
 	start_form();
 
 	if (!isset($_POST['stock_id']))
-		$_POST['stock_id'] = get_global_stock_item();
+		$_POST['stock_id'] = ui_globals::get_global_stock_item();
 
 	echo "<center> ";
 
@@ -46,14 +41,14 @@
 
 	echo "<hr></center>";
 
-	set_global_stock_item($_POST['stock_id']);
+	ui_globals::set_global_stock_item($_POST['stock_id']);
 
 	$mb_flag = get_mb_flag($_POST['stock_id']);
 	$kitset_or_service = false;
 
 	div_start('status_tbl');
 	if (is_service($mb_flag)) {
-		display_note(_("This is a service and cannot have a stock holding, only the total quantity on outstanding sales orders is shown."), 0, 1);
+		ui_msgs::display_note(_("This is a service and cannot have a stock holding, only the total quantity on outstanding sales orders is shown."), 0, 1);
 		$kitset_or_service = true;
 	}
 

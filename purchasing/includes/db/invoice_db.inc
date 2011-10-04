@@ -96,10 +96,10 @@
 	function get_diff_in_home_currency($supplier, $old_date, $date, $amount1, $amount2) {
 		$dec = user_price_dec();
 		price_decimal_format($amount2, $dec);
-		$currency = get_supplier_currency($supplier);
-		$ex_rate = get_exchange_rate_to_home_currency($currency, $old_date);
+		$currency = Banking::get_supplier_currency($supplier);
+		$ex_rate = Banking::get_exchange_rate_to_home_currency($currency, $old_date);
 		$amount1 = $amount1 / $ex_rate;
-		$ex_rate = get_exchange_rate_to_home_currency($currency, $date);
+		$ex_rate = Banking::get_exchange_rate_to_home_currency($currency, $date);
 		$amount2 = $amount2 / $ex_rate;
 		$diff = $amount2 - $amount1;
 		return round2($diff, $dec);
@@ -111,7 +111,7 @@
 	{
 		global $Refs;
 
-		//$company_currency = get_company_currency();
+		//$company_currency = Banking::get_company_currency();
 		/*Start an sql transaction */
 		begin_transaction();
 
@@ -138,7 +138,7 @@
 		}
 
 		$date_ = $supp_trans->tran_date;
-		$ex_rate = get_exchange_rate_from_home_currency(get_supplier_currency($supp_trans->supplier_id), $date_);
+		$ex_rate = Banking::get_exchange_rate_from_home_currency(Banking::get_supplier_currency($supp_trans->supplier_id), $date_);
 
 		/*First insert the invoice into the supp_trans table*/
 		$invoice_id = add_supp_trans($trans_type, $supp_trans->supplier_id, $date_, $supp_trans->due_date,
@@ -303,7 +303,7 @@
 						$date_);
 					// Exchange Variations Joe Hunt 2008-09-20 ////////////////////////////////////////
 
-					exchange_variation(ST_SUPPCREDIT, $invoice_id, ST_SUPPINVOICE, $invoice_no, $date_,
+					Banking::exchange_variation(ST_SUPPCREDIT, $invoice_id, ST_SUPPINVOICE, $invoice_no, $date_,
 						$allocate_amount, PT_SUPPLIER);
 					///////////////////////////////////////////////////////////////////////////
 				}

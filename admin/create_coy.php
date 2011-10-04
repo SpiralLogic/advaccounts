@@ -13,10 +13,8 @@
 
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 
-	include_once(APP_PATH . "includes/date_functions.inc");
 	include_once(APP_PATH . "admin/db/company_db.inc");
 	include_once(APP_PATH . "admin/db/maintenance_db.inc");
-	include_once(APP_PATH . "includes/faui.inc");
 
 	page(_($help_context = "Create/Update Company"));
 
@@ -41,7 +39,7 @@
 		if ($_POST['name'] == "" || $_POST['host'] == "" || $_POST['dbuser'] == "" || $_POST['dbname'] == "")
 			return false;
 		if ($selected_id == -1 && (!isset($_GET['ul']) || $_GET['ul'] != 1)) {
-			display_error(_("When creating a new company, you must provide a Database script file."));
+			ui_msgs::display_error(_("When creating a new company, you must provide a Database script file."));
 			return false;
 		}
 		foreach ($db_connections as $id => $con)
@@ -93,14 +91,14 @@
 		if (isset($_GET['ul']) && $_GET['ul'] == 1) {
 			$conn = $db_connections[$id];
 			if (($db = db_create_db($conn)) == 0) {
-				display_error(_("Error creating Database: ") . $conn['dbname'] . _(", Please create it manually"));
+				ui_msgs::display_error(_("Error creating Database: ") . $conn['dbname'] . _(", Please create it manually"));
 				$error = true;
 			} else {
 
 				$filename = $_FILES['uploadfile']['tmp_name'];
 				if (is_uploaded_file($filename)) {
 					if (!db_import($filename, $conn, $id)) {
-						display_error(_('Cannot create new company due to bugs in sql file.'));
+						ui_msgs::display_error(_('Cannot create new company due to bugs in sql file.'));
 						$error = true;
 					} else
 						if (isset($_POST['admpassword']) && $_POST['admpassword'] != "")
@@ -109,7 +107,7 @@
 				}
 				else
 				{
-					display_error(_("Error uploading Database Script, please upload it manually"));
+					ui_msgs::display_error(_("Error uploading Database Script, please upload it manually"));
 					$error = true;
 				}
 			}
@@ -122,7 +120,7 @@
 			if ($_GET['c'] = 'u') {
 				$conn = $db_connections[$id];
 				if (($db = db_create_db($conn)) == 0) {
-					display_error(_("Error connecting to Database: ") . $conn['dbname'] . _(", Please correct it"));
+					ui_msgs::display_error(_("Error connecting to Database: ") . $conn['dbname'] . _(", Please correct it"));
 				} elseif ($_POST['admpassword'] != "") {
 					db_query("UPDATE users set password = '" . md5(
 							$_POST['admpassword']) . "' WHERE user_id = 'admin'");
@@ -135,7 +133,7 @@
 		}
 		$exts = get_company_extensions();
 		write_extensions($exts, $id);
-		display_notification($new ? _('New company has been created.') : _('Company has been updated.'));
+		ui_msgs::display_notification($new ? _('New company has been created.') : _('Company has been updated.'));
 		return true;
 	}
 
@@ -150,7 +148,7 @@
 		// Without this after operation we end up with changed per-company owners!
 		for ($i = $id; $i < count($db_connections); $i++) {
 			if (!is_dir(COMPANY_PATH . '/' . $i) || !is_writable(COMPANY_PATH . '/' . $i)) {
-				display_error(_('Broken company subdirectories system. You have to remove this company manually.'));
+				ui_msgs::display_error(_('Broken company subdirectories system. You have to remove this company manually.'));
 				return;
 			}
 		}
@@ -162,19 +160,19 @@
 		$cdir = COMPANY_PATH . '/' . $id;
 		$tmpname = COMPANY_PATH . '/old_' . $id;
 		if (!@rename($cdir, $tmpname)) {
-			display_error(_('Cannot rename subdirectory to temporary name.'));
+			ui_msgs::display_error(_('Cannot rename subdirectory to temporary name.'));
 			return;
 		}
 		// 'shift' company directories names
 		for ($i = $id + 1; $i < count($db_connections); $i++) {
 			if (!rename(COMPANY_PATH . '/' . $i, COMPANY_PATH . '/' . ($i - 1))) {
-				display_error(_("Cannot rename company subdirectory"));
+				ui_msgs::display_error(_("Cannot rename company subdirectory"));
 				return;
 			}
 		}
 		$err = remove_connection($id);
 		if ($err == 0)
-			display_error(_("Error removing Database: ") . _(", please remove it manually"));
+			ui_msgs::display_error(_("Error removing Database: ") . _(", please remove it manually"));
 
 		if (Config::get('company.default') == $id)
 			Config::set('company.default', 0);
@@ -182,10 +180,10 @@
 		// finally remove renamed company directory
 		@flush_dir($tmpname, true);
 		if (!@rmdir($tmpname)) {
-			display_error(_("Cannot remove temporary renamed company data directory ") . $tmpname);
+			ui_msgs::display_error(_("Cannot remove temporary renamed company data directory ") . $tmpname);
 			return;
 		}
-		display_notification(_("Selected company as been deleted"));
+		ui_msgs::display_notification(_("Selected company as been deleted"));
 	}
 
 	//---------------------------------------------------------------------------------------------
@@ -243,7 +241,7 @@
 		}
 
 		end_table();
-		display_note(_("The marked company is the current company which cannot be deleted."), 0, 0, "class='currentfg'");
+		ui_msgs::display_note(_("The marked company is the current company which cannot be deleted."), 0, 0, "class='currentfg'");
 	}
 
 	//---------------------------------------------------------------------------------------------
@@ -303,7 +301,7 @@
 		text_row_ex(_("New script Admin Password"), 'admpassword', 20);
 
 		end_table();
-		display_note(_("Choose from Database scripts in SQL folder. No Database is created without a script."), 0, 1);
+		ui_msgs::display_note(_("Choose from Database scripts in SQL folder. No Database is created without a script."), 0, 1);
 		echo "<center><input onclick='javascript:updateCompany()' type='button' style='width:150px' value='" . _("Save") . "'></center>";
 
 		end_form();

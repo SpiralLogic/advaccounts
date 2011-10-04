@@ -13,13 +13,10 @@
 
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 
-	include_once(APP_PATH . "includes/data_checks.inc");
-
-	include_once(APP_PATH . "purchasing/includes/purchasing_db.inc");
 	include_once(APP_PATH . "purchasing/includes/purchasing_ui.inc");
 	$js = "";
 	if (Config::get('ui.windows.popups'))
-		$js .= get_js_open_window(900, 500);
+		$js .= ui_view::get_js_open_window(900, 500);
 
 	page(_($help_context = "Supplier Credit Note"), false, false, "", $js);
 
@@ -34,15 +31,15 @@
 		$trans_type = ST_SUPPCREDIT;
 
 		echo "<center>";
-		display_notification_centered(_("Supplier credit note has been processed."));
-		display_note(get_trans_view_str($trans_type, $invoice_no, _("View this Credit Note")));
+		ui_msgs::display_notification_centered(_("Supplier credit note has been processed."));
+		ui_msgs::display_note(ui_view::get_trans_view_str($trans_type, $invoice_no, _("View this Credit Note")));
 
-		display_note(get_gl_view_str($trans_type, $invoice_no, _("View the GL Journal Entries for this Credit Note")), 1);
+		ui_msgs::display_note(ui_view::get_gl_view_str($trans_type, $invoice_no, _("View the GL Journal Entries for this Credit Note")), 1);
 
 		hyperlink_params($_SERVER['PHP_SELF'], _("Enter Another Credit Note"), "New=1");
 		hyperlink_params("/admin/attachments.php", _("Add an Attachment"), "filterType=$trans_type&trans_no=$invoice_no");
 
-		display_footer_exit();
+		ui_view::display_footer_exit();
 	}
 
 	//---------------------------------------------------------------------------------------------------
@@ -71,7 +68,7 @@
 		unset($_POST['memo_']);
 		unset($_POST['AddGLCodeToTrans']);
 		$Ajax->activate('gl_items');
-		set_focus('gl_code');
+		ui_view::set_focus('gl_code');
 	}
 
 	//------------------------------------------------------------------------------------------------
@@ -91,8 +88,8 @@
 			$_POST['gl_code']);
 		$result = db_query($sql, "get account information");
 		if (db_num_rows($result) == 0) {
-			display_error(_("The account code entered is not a valid code, this line cannot be added to the transaction."));
-			set_focus('gl_code');
+			ui_msgs::display_error(_("The account code entered is not a valid code, this line cannot be added to the transaction."));
+			ui_view::set_focus('gl_code');
 			$input_error = true;
 		}
 		else
@@ -100,15 +97,15 @@
 			$myrow = db_fetch_row($result);
 			$gl_act_name = $myrow[1];
 			if (!check_num('amount')) {
-				display_error(_("The amount entered is not numeric. This line cannot be added to the transaction."));
-				set_focus('amount');
+				ui_msgs::display_error(_("The amount entered is not numeric. This line cannot be added to the transaction."));
+				ui_view::set_focus('amount');
 				$input_error = true;
 			}
 		}
 
 		if (!is_tax_gl_unique(get_post('gl_code'))) {
-			display_error(_("Cannot post to GL account used by more than one tax type."));
-			set_focus('gl_code');
+			ui_msgs::display_error(_("Cannot post to GL account used by more than one tax type."));
+			ui_view::set_focus('gl_code');
 			$input_error = true;
 		}
 
@@ -116,7 +113,7 @@
 			$_SESSION['supp_trans']->add_gl_codes_to_trans($_POST['gl_code'], $gl_act_name,
 				$_POST['dimension_id'], $_POST['dimension2_id'],
 				input_num('amount'), $_POST['memo_']);
-			set_focus('gl_code');
+			ui_view::set_focus('gl_code');
 		}
 	}
 
@@ -126,48 +123,48 @@
 		global $total_grn_value, $total_gl_value, $Refs;
 
 		if (!$_SESSION['supp_trans']->is_valid_trans_to_post()) {
-			display_error(_("The credit note cannot be processed because the there are no items or values on the invoice.  Credit notes are expected to have a charge."));
-			set_focus('');
+			ui_msgs::display_error(_("The credit note cannot be processed because the there are no items or values on the invoice.  Credit notes are expected to have a charge."));
+			ui_view::set_focus('');
 			return false;
 		}
 
 		if (!$Refs->is_valid($_SESSION['supp_trans']->reference)) {
-			display_error(_("You must enter an credit note reference."));
-			set_focus('reference');
+			ui_msgs::display_error(_("You must enter an credit note reference."));
+			ui_view::set_focus('reference');
 			return false;
 		}
 
 		if (!is_new_reference($_SESSION['supp_trans']->reference, ST_SUPPCREDIT)) {
-			display_error(_("The entered reference is already in use."));
-			set_focus('reference');
+			ui_msgs::display_error(_("The entered reference is already in use."));
+			ui_view::set_focus('reference');
 			return false;
 		}
 
 		if (!$Refs->is_valid($_SESSION['supp_trans']->supp_reference)) {
-			display_error(_("You must enter a supplier's credit note reference."));
-			set_focus('supp_reference');
+			ui_msgs::display_error(_("You must enter a supplier's credit note reference."));
+			ui_view::set_focus('supp_reference');
 			return false;
 		}
 
 		if (!is_date($_SESSION['supp_trans']->tran_date)) {
-			display_error(_("The credit note as entered cannot be processed because the date entered is not valid."));
-			set_focus('tran_date');
+			ui_msgs::display_error(_("The credit note as entered cannot be processed because the date entered is not valid."));
+			ui_view::set_focus('tran_date');
 			return false;
 		}
 		elseif (!is_date_in_fiscalyear($_SESSION['supp_trans']->tran_date))
 		{
-			display_error(_("The entered date is not in fiscal year."));
-			set_focus('tran_date');
+			ui_msgs::display_error(_("The entered date is not in fiscal year."));
+			ui_view::set_focus('tran_date');
 			return false;
 		}
 		if (!is_date($_SESSION['supp_trans']->due_date)) {
-			display_error(_("The invoice as entered cannot be processed because the due date is in an incorrect format."));
-			set_focus('due_date');
+			ui_msgs::display_error(_("The invoice as entered cannot be processed because the due date is in an incorrect format."));
+			ui_view::set_focus('due_date');
 			return false;
 		}
 
 		if ($_SESSION['supp_trans']->ov_amount < ($total_gl_value + $total_grn_value)) {
-			display_error(_("The credit note total as entered is less than the sum of the the general ledger entires (if any) and the charges for goods received. There must be a mistake somewhere, the credit note as entered will not be processed."));
+			ui_msgs::display_error(_("The credit note total as entered is less than the sum of the the general ledger entires (if any) and the charges for goods received. There must be a mistake somewhere, the credit note as entered will not be processed."));
 			return false;
 		}
 
@@ -201,14 +198,14 @@
 
 	function check_item_data($n) {
 		if (!check_num('This_QuantityCredited' . $n, 0)) {
-			display_error(_("The quantity to credit must be numeric and greater than zero."));
-			set_focus('This_QuantityCredited' . $n);
+			ui_msgs::display_error(_("The quantity to credit must be numeric and greater than zero."));
+			ui_view::set_focus('This_QuantityCredited' . $n);
 			return false;
 		}
 
 		if (!check_num('ChgPrice' . $n, 0)) {
-			display_error(_("The price is either not numeric or negative."));
-			set_focus('ChgPrice' . $n);
+			ui_msgs::display_error(_("The price is either not numeric or negative."));
+			ui_view::set_focus('ChgPrice' . $n);
 			return false;
 		}
 
@@ -268,7 +265,7 @@
 
 	if (isset($_POST['go'])) {
 		$Ajax->activate('gl_items');
-		display_quick_entries($_SESSION['supp_trans'], $_POST['qid'], input_num('totamount'), QE_SUPPINV);
+		ui_view::display_quick_entries($_SESSION['supp_trans'], $_POST['qid'], input_num('totamount'), QE_SUPPINV);
 		$_POST['totamount'] = price_format(0);
 		$Ajax->activate('totamount');
 		$Ajax->activate('inv_tot');
@@ -280,7 +277,7 @@
 
 	invoice_header($_SESSION['supp_trans']);
 	if ($_POST['supplier_id'] == '')
-		display_error('No supplier found for entered search text');
+		ui_msgs::display_error('No supplier found for entered search text');
 	else {
 		$total_grn_value = display_grn_items($_SESSION['supp_trans'], 1);
 

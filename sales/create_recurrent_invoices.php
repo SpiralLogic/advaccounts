@@ -14,12 +14,12 @@
 	include_once("includes/cart.inc");
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 	include_once(APP_PATH . "sales/includes/ui/sales_order_ui.inc");
-	include_once(APP_PATH . "includes/faui.inc");
+
 	include_once(APP_PATH . "reporting/includes/reporting.inc");
 
 	$js = "";
 	if (Config::get('ui.windows.popups'))
-		$js .= get_js_open_window(900, 600);
+		$js .= ui_view::get_js_open_window(900, 600);
 
 	page(_($help_context = "Create and Print Recurrent Invoices"), false, false, "", $js);
 
@@ -84,19 +84,19 @@
 			}
 			else
 				$min = $max = 0;
-			display_notification(sprintf(_("%s recurrent invoice(s) created, # $min - # $max."), count($invs)));
+			ui_msgs::display_notification(sprintf(_("%s recurrent invoice(s) created, # $min - # $max."), count($invs)));
 			if (count($invs) > 0) {
 				$ar = array('PARAM_0' => $min . "-" . ST_SALESINVOICE, 'PARAM_1' => $max . "-" . ST_SALESINVOICE,
 					'PARAM_2' => "",
 					'PARAM_3' => 0, 'PARAM_4' => 0, 'PARAM_5' => "", 'PARAM_6' => ST_SALESINVOICE
 				);
-				display_note(print_link(_("&Print Recurrent Invoices # $min - # $max"), 107, $ar), 0, 1);
+				ui_msgs::display_note(print_link(_("&Print Recurrent Invoices # $min - # $max"), 107, $ar), 0, 1);
 				$ar['PARAM_3'] = 1;
-				display_note(print_link(_("&Email Recurrent Invoices # $min - # $max"), 107, $ar), 0, 1);
+				ui_msgs::display_note(print_link(_("&Email Recurrent Invoices # $min - # $max"), 107, $ar), 0, 1);
 			}
 		}
 		else
-			display_error(_("The entered date is not in fiscal year."));
+			ui_msgs::display_error(_("The entered date is not in fiscal year."));
 	}
 
 	//-------------------------------------------------------------------------------------------------
@@ -139,7 +139,7 @@
 			alt_table_row_color($k);
 
 		label_cell($myrow["description"]);
-		label_cell(get_customer_trans_view_str(30, $myrow["order_no"]));
+		label_cell(ui_view::get_customer_trans_view_str(30, $myrow["order_no"]));
 		if ($myrow["debtor_no"] == 0) {
 			label_cell("");
 			label_cell(get_sales_group_name($myrow["group_no"]));
@@ -163,9 +163,9 @@
 	}
 	end_table();
 	if ($due)
-		display_note(_("Marked items are due."), 1, 0, "class='overduefg'");
+		ui_msgs::display_note(_("Marked items are due."), 1, 0, "class='overduefg'");
 	else
-		display_note(_("No recurrent invoices are due."), 1, 0);
+		ui_msgs::display_note(_("No recurrent invoices are due."), 1, 0);
 
 	echo '<br>';
 

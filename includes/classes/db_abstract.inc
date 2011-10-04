@@ -1,11 +1,11 @@
 <?php
-/**
- * Created by JetBrains PhpStorm.
- * User: Complex
- * Date: 8/01/11
- * Time: 2:53 AM
- * To change this template use File | Settings | File Templates.
- */
+	/**
+	 * Created by JetBrains PhpStorm.
+	 * User: Complex
+	 * Date: 8/01/11
+	 * Time: 2:53 AM
+	 * To change this template use File | Settings | File Templates.
+	 */
 	abstract class DB_abstract {
 
 		abstract protected function _canProcess();
@@ -83,7 +83,7 @@
 			} else {
 				if (!is_numeric($value)) {
 					//value is not a string nor numeric
-					display_error("ERROR: incorrect data type send to sql query");
+					ui_msgs::display_error("ERROR: incorrect data type send to sql query");
 					echo '<br><br>';
 					exit();
 				}

@@ -1,4 +1,4 @@
- <?php
+<?php
 	/**********************************************************************
 	Copyright (C) FrontAccounting, LLC.
 	Released under the terms of the GNU General Public License, GPL,
@@ -13,11 +13,9 @@
 
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 
-	include_once(APP_PATH . "includes/faui.inc");
-	include_once(APP_PATH . "purchasing/includes/purchasing_db.inc");
 	$js = "";
 	if (Config::get('ui.windows.popups'))
-		$js .= get_js_open_window(900, 500);
+		$js .= ui_view::get_js_open_window(900, 500);
 	page(_($help_context = "View Payment to Supplier"), true, false, "", $js);
 
 	if (isset($_GET["trans_no"])) {
@@ -26,7 +24,7 @@
 
 	$receipt = get_supp_trans($trans_no, ST_SUPPAYMENT);
 
-	$company_currency = get_company_currency();
+	$company_currency = Banking::get_company_currency();
 
 	$show_currencies = false;
 	$show_both_amounts = false;
@@ -41,7 +39,7 @@
 
 	echo "<center>";
 
-	display_heading(_("Payment to Supplier") . " #$trans_no");
+	ui_msgs::display_heading(_("Payment to Supplier") . " #$trans_no");
 
 	echo "<br>";
 	start_table(Config::get('tables.style2') . " width=90%");
@@ -65,15 +63,15 @@
 		label_cells(_("Amount"), number_format2(-$receipt['Total'], user_price_dec()), "class='tableheader2'");
 	label_cells(_("Reference"), $receipt['ref'], "class='tableheader2'");
 	end_row();
-	comments_display_row(ST_SUPPAYMENT, $trans_no);
+	ui_view::comments_display_row(ST_SUPPAYMENT, $trans_no);
 
 	end_table(1);
 
-	$voided = is_voided_display(ST_SUPPAYMENT, $trans_no, _("This payment has been voided."));
+	$voided = ui_view::is_voided_display(ST_SUPPAYMENT, $trans_no, _("This payment has been voided."));
 
 	// now display the allocations for this payment
 	if (!$voided) {
-		display_allocations_from(PT_SUPPLIER, $receipt['supplier_id'], ST_SUPPAYMENT, $trans_no, -$receipt['Total']);
+		ui_view::display_allocations_from(PT_SUPPLIER, $receipt['supplier_id'], ST_SUPPAYMENT, $trans_no, -$receipt['Total']);
 	}
 
 	end_page(true);

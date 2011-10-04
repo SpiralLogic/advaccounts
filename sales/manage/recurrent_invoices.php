@@ -12,11 +12,10 @@
 	$page_security = 'SA_SRECURRENT';
 
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
-	include(APP_PATH . "includes/faui.inc");
 
 	$js = "";
 	if (Config::get('ui.windows.popups'))
-		$js .= get_js_open_window(900, 600);
+		$js .= ui_view::get_js_open_window(900, 600);
 
 	page(_($help_context = "Recurrent Invoices"), false, false, "", $js);
 
@@ -28,8 +27,8 @@
 
 		if (strlen($_POST['description']) == 0) {
 			$input_error = 1;
-			display_error(_("The area description cannot be empty."));
-			set_focus('description');
+			ui_msgs::display_error(_("The area description cannot be empty."));
+			ui_view::set_focus('description');
 		}
 
 		if ($input_error != 1) {
@@ -59,7 +58,7 @@
 			}
 
 			db_query($sql, "The recurrent invoice could not be updated or added");
-			display_notification($note);
+			ui_msgs::display_notification($note);
 			$Mode = 'RESET';
 		}
 	}
@@ -72,7 +71,7 @@
 			$sql = "DELETE FROM recurrent_invoices WHERE id=" . db_escape($selected_id);
 			db_query($sql, "could not delete recurrent invoice");
 
-			display_notification(_('Selected recurrent invoice has been deleted'));
+			ui_msgs::display_notification(_('Selected recurrent invoice has been deleted'));
 		} //end if Delete area
 		$Mode = 'RESET';
 	}
@@ -108,7 +107,7 @@
 		alt_table_row_color($k);
 
 		label_cell($myrow["description"]);
-		label_cell(get_customer_trans_view_str(ST_SALESORDER, $myrow["order_no"]));
+		label_cell(ui_view::get_customer_trans_view_str(ST_SALESORDER, $myrow["order_no"]));
 		if ($myrow["debtor_no"] == 0) {
 			label_cell("");
 			label_cell(get_sales_group_name($myrow["group_no"]));
