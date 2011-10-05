@@ -123,7 +123,7 @@
 		page_complete($_GET['AddedDN'], ST_CUSTDELIVERY, "Delivery");
 	}
 	elseif (isset($_GET['AddedDI'])) {
-		page_complete($order_no, ST_SALESINVOICE, "Invoice");
+		page_complete($_GET['AddedDI'], ST_SALESINVOICE, "Invoice");
 	}
 	elseif (isset($_GET['RemovedID'])) {
 		submenu_view(_("&View This Invoice"), ST_SALESINVOICE, $_GET['AddedDI']);
@@ -197,7 +197,7 @@
 			}
 			hyperlink_params("/sales/customer_payments.php", _("Apply a customer payment"));
 			if ($_GET['AddedDI'] && isset($_SESSION['wa_global_customer_id']) && $row == false) {
-				echo "<div style='text-align:center;'><iframe  style='margin:0 auto; border-width:0;' src='/sales/customer_payments.php?frame=1' width='80%' height='475' scrolling='no' frameborder='0'></iframe> </div>";
+				echo "<div style='text-align:center;'><iframe  style='margin:0 auto; border-width:0;' src='/sales/customer_payments.php?frame=1' width='80%' height='475' scrolling='auto' frameborder='0'></iframe> </div>";
 			}
 		}
 		ui_view::set_focus('prtopt');
@@ -400,7 +400,7 @@
 			meta_forward($_SERVER['PHP_SELF'], "AddedQU=$trans_no");
 		}
 		elseif ($trans_type == ST_SALESINVOICE) {
-			meta_forward($_SERVER['PHP_SELF'], "AddedDI=$trans_no&Type=$so_type");
+			meta_forward($_SERVER['PHP_SELF'], "AddedDI=$trans_no&Type=" . ST_SALESINVOICE);
 		}
 		else {
 			meta_forward($_SERVER['PHP_SELF'], "AddedDN=$trans_no&Type=$so_type");

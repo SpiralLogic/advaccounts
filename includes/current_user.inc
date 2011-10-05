@@ -96,6 +96,7 @@
 							if (in_array($code & ~0xff, $role['sections'])) $this->role_set[] = $code;
 						}
 					}
+					if ($myrow['change_password']) $_SESSION['change_password'] = true;
 					$this->name = $myrow["real_name"];
 					$this->pos = $myrow["pos"];
 					$this->loginname = $loginname;
