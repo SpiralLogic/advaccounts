@@ -301,7 +301,7 @@
 	 Helper function to retrieve extension access definitions in isolated environment.
  */
 	function get_access_extensions($id) {
-		global $installed_extensions;
+		global  $installed_extensions;
 
 		$ext = $installed_extensions[$id];
 
