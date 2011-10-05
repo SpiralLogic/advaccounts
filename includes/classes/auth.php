@@ -1,11 +1,11 @@
 <?php
-/**
- * Created by JetBrains PhpStorm.
- * User: Complex
- * Date: 19/09/11
- * Time: 2:22 AM
- * To change this template use File | Settings | File Templates.
- */
+	/**
+	 * Created by JetBrains PhpStorm.
+	 * User: Complex
+	 * Date: 19/09/11
+	 * Time: 2:22 AM
+	 * To change this template use File | Settings | File Templates.
+	 */
 
 	class Auth {
 
@@ -14,12 +14,11 @@
 		private $hasher;
 
 		public function __construct($username) {
-			$this->username= $username;
-
+			$this->username = $username;
 		}
 
-		public function update_password($id,$password) {
-			DB::update('users')->value('password', $this->hash_password($password))->value('user_id', $this->username)->where('id=',$id)->exec();
+		public function update_password($id, $password) {
+			DB::update('users')->value('password', $this->hash_password($password))->value('user_id', $this->username)->value('change_password', 0)->where('id=', $id)->exec();
 		}
 
 		public function hash_password($password) {
@@ -78,27 +77,22 @@
 					if ($consecutives > 0) {
 						$returns['error'] = 2;
 						$returns['text'] = 'Too many consecutive characters';
-
 					} elseif ($others > 1 || ($uppers > 1 && $numbers > 1)) {
 						//bulletproof
 						$returns['strength'] = 5;
 						$returns['text'] = 'Virtually Bulletproof';
-
 					} elseif (($uppers > 0 && $numbers > 0) || $length > 14) {
 						//very strong
 						$returns['strength'] = 4;
 						$returns['text'] = 'Very Strong';
-
 					} else if ($uppers > 0 || $numbers > 2 || $length > 9) {
 						//strong
 						$returns['strength'] = 3;
 						$returns['text'] = 'Strong';
-
 					} else if ($numbers > 1) {
 						//fair
 						$returns['strength'] = 2;
 						$returns['text'] = 'Fair';
-
 					} else {
 						//weak
 						$returns['strength'] = 1;
