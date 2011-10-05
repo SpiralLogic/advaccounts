@@ -13,13 +13,10 @@
 
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 
-	include_once(APP_PATH . "includes/date_functions.inc");
-	include_once(APP_PATH . "includes/faui.inc");
-	include_once(APP_PATH . "sales/includes/sales_db.inc");
 	include_once(APP_PATH . "reporting/includes/reporting.inc");
 	$help_context = $js = "";
 	if (Config::get('ui.windows.popups'))
-		$js .= get_js_open_window(900, 600);
+		$js .= ui_view::get_js_open_window(900, 600);
 	$trans_type = $_GET['trans_type'];
 	page(_($help_context), true, false, "", $js);
 
@@ -32,10 +29,10 @@
 	}
 	$receipt = get_customer_trans($trans_id, $trans_type);
 	if ($trans_type == ST_CUSTPAYMENT) {
-		display_heading(sprintf(_("Customer Payment #%d"), $trans_id));
+		ui_msgs::display_heading(sprintf(_("Customer Payment #%d"), $trans_id));
 	}
 	else {
-		display_heading(sprintf(_("Customer Refund #%d"), $trans_id));
+		ui_msgs::display_heading(sprintf(_("Customer Refund #%d"), $trans_id));
 	}
 
 	echo "<br>";
@@ -47,7 +44,7 @@
 
 	label_cells(_("Into Bank Account"), $receipt['bank_account_name'], "class='tableheader2'");
 
-	label_cells(_("Date of Deposit"), sql2date($receipt['tran_date']), "class='tableheader2'");
+	label_cells(_("Date of Deposit"), Dates::sql2date($receipt['tran_date']), "class='tableheader2'");
 	end_row();
 	start_row();
 	label_cells(_("Payment Currency"), $receipt['curr_code'], "class='tableheader2'");
@@ -60,14 +57,14 @@
 	label_cells(_("Reference"), $receipt['reference'], "class='tableheader2'", "colspan=4");
 	end_form();
 	end_row();
-	comments_display_row($trans_type, $trans_id);
+	ui_view::comments_display_row($trans_type, $trans_id);
 
 	end_table(1);
 
-	$voided = is_voided_display($trans_type, $trans_id, _("This customer payment has been voided."));
+	$voided = ui_view::is_voided_display($trans_type, $trans_id, _("This customer payment has been voided."));
 
 	if (!$voided && ($trans_type != ST_CUSTREFUND)) {
-		display_allocations_from(PT_CUSTOMER, $receipt['debtor_no'], ST_CUSTPAYMENT, $trans_id, $receipt['Total']);
+		ui_view::display_allocations_from(PT_CUSTOMER, $receipt['debtor_no'], ST_CUSTPAYMENT, $trans_id, $receipt['Total']);
 	}
 	submenu_print(_("&Print This Receipt"), $trans_type, $_GET['trans_no'], 'prtopt');
 	end_page(true);

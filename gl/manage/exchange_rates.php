@@ -13,10 +13,6 @@
 
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 
-	include_once(APP_PATH . "includes/date_functions.inc");
-	include_once(APP_PATH . "includes/faui.inc");
-	include_once(APP_PATH . "includes/banking.inc");
-
 	$js = "";
 
 	page(_($help_context = "Exchange Rates"), false, false, "", $js);
@@ -25,19 +21,19 @@
 
 	//---------------------------------------------------------------------------------------------
 	function check_data() {
-		if (!is_date($_POST['date_'])) {
-			display_error(_("The entered date is invalid."));
-			set_focus('date_');
+		if (!Dates::is_date($_POST['date_'])) {
+			ui_msgs::display_error(_("The entered date is invalid."));
+			ui_view::set_focus('date_');
 			return false;
 		}
 		if (input_num('BuyRate') <= 0) {
-			display_error(_("The exchange rate cannot be zero or a negative number."));
-			set_focus('BuyRate');
+			ui_msgs::display_error(_("The exchange rate cannot be zero or a negative number."));
+			ui_view::set_focus('BuyRate');
 			return false;
 		}
 		if (get_date_exchange_rate($_POST['curr_abrev'], $_POST['date_'])) {
-			display_error(_("The exchange rate for the date is already there."));
-			set_focus('date_');
+			ui_msgs::display_error(_("The exchange rate for the date is already there."));
+			ui_view::set_focus('date_');
 			return false;
 		}
 		return true;
@@ -103,7 +99,7 @@
 
 			$myrow = get_exchange_rate($selected_id);
 
-			$_POST['date_'] = sql2date($myrow["date_"]);
+			$_POST['date_'] = Dates::sql2date($myrow["date_"]);
 			$_POST['BuyRate'] = exrate_format($myrow["rate_buy"]);
 
 			hidden('selected_id', $selected_id);
@@ -113,7 +109,7 @@
 		}
 		else
 		{
-			$_POST['date_'] = Today();
+			$_POST['date_'] = Dates::Today();
 			$_POST['BuyRate'] = '';
 			date_row(_("Date to Use From:"), 'date_');
 		}
@@ -130,7 +126,7 @@
 
 		submit_add_or_update_center($selected_id == '', '', 'both');
 
-		display_note(_("Exchange rates are entered against the company currency."), 1);
+		ui_msgs::display_note(_("Exchange rates are entered against the company currency."), 1);
 	}
 
 	//---------------------------------------------------------------------------------------------
@@ -156,7 +152,7 @@
 	start_form();
 
 	if (!isset($_POST['curr_abrev']))
-		$_POST['curr_abrev'] = get_global_curr_code();
+		$_POST['curr_abrev'] = ui_globals::get_global_curr_code();
 
 	echo "<center>";
 	echo _("Select a currency :") . "  ";
@@ -164,12 +160,12 @@
 	echo "</center>";
 
 	// if currency sel has changed, clear the form
-	if ($_POST['curr_abrev'] != get_global_curr_code()) {
+	if ($_POST['curr_abrev'] != ui_globals::get_global_curr_code()) {
 		clear_data();
 		$selected_id = "";
 	}
 
-	set_global_curr_code($_POST['curr_abrev']);
+	ui_globals::set_global_curr_code($_POST['curr_abrev']);
 
 	$sql = "SELECT date_, rate_buy, id FROM exchange_rates "
 	 . "WHERE curr_code=" . db_escape($_POST['curr_abrev']) . "
@@ -183,10 +179,10 @@
 	);
 	$table =& db_pager::new_db_pager('orders_tbl', $sql, $cols);
 
-	if (is_company_currency($_POST['curr_abrev'])) {
+	if (Banking::is_company_currency($_POST['curr_abrev'])) {
 
-		display_note(_("The selected currency is the company currency."), 2);
-		display_note(_("The company currency is the base currency so exchange rates cannot be set for it."), 1);
+		ui_msgs::display_note(_("The selected currency is the company currency."), 2);
+		ui_msgs::display_note(_("The company currency is the base currency so exchange rates cannot be set for it."), 1);
 	}
 	else
 	{

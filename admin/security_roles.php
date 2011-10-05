@@ -17,10 +17,6 @@
 
 	page(_($help_context = "Access setup"));
 
-	include_once(APP_PATH . "includes/faui.inc");
-	include_once(APP_PATH . "includes/access_levels.inc");
-	include_once(APP_PATH . "admin/db/security_db.inc");
-
 	$new_role = get_post('role') == '' || get_post('cancel') || get_post('clone');
 	//--------------------------------------------------------------------------------------------------
 	// Following compare function is used for sorting areas
@@ -56,23 +52,23 @@
 		$input_error = 0;
 		if ($_POST['description'] == '') {
 			$input_error = 1;
-			display_error(_("Role description cannot be empty."));
-			set_focus('description');
+			ui_msgs::display_error(_("Role description cannot be empty."));
+			ui_view::set_focus('description');
 		}
 		elseif ($_POST['name'] == '')
 		{
 			$input_error = 1;
-			display_error(_("Role name cannot be empty."));
-			set_focus('name');
+			ui_msgs::display_error(_("Role name cannot be empty."));
+			ui_view::set_focus('name');
 		}
 		// prevent accidental editor lockup by removing SA_SECROLES
 		if (get_post('role') == $_SESSION['wa_current_user']->access) {
 			if (!isset($_POST['Area' . $security_areas['SA_SECROLES'][0]])
 			 || !isset($_POST['Section' . SS_SETUP])
 			) {
-				display_error(_("Access level edition in Company setup section have to be enabled for your account."));
+				ui_msgs::display_error(_("Access level edition in Company setup section have to be enabled for your account."));
 				$input_error = 1;
-				set_focus(!isset($_POST['Section' . SS_SETUP])
+				ui_view::set_focus(!isset($_POST['Section' . SS_SETUP])
 					 ? 'Section' . SS_SETUP : 'Area' . $security_areas['SA_SECROLES'][0]);
 			}
 		}
@@ -97,7 +93,7 @@
 
 			if ($new_role) {
 				add_security_role($_POST['name'], $_POST['description'], $sections, $areas);
-				display_notification(_("New security role has been added."));
+				ui_msgs::display_notification(_("New security role has been added."));
 			} else
 			{
 				update_security_role($_POST['role'], $_POST['name'], $_POST['description'],
@@ -105,7 +101,7 @@
 				update_record_status($_POST['role'], get_post('inactive'),
 					'security_roles', 'id');
 
-				display_notification(_("Security role has been updated."));
+				ui_msgs::display_notification(_("Security role has been updated."));
 			}
 			$new_role = true;
 			clear_data();
@@ -117,10 +113,10 @@
 
 	if (get_post('delete')) {
 		if (check_role_used(get_post('role'))) {
-			display_error(_("This role is currently assigned to some users and cannot be deleted"));
+			ui_msgs::display_error(_("This role is currently assigned to some users and cannot be deleted"));
 		} else {
 			delete_security_role(get_post('role'));
-			display_notification(_("Security role has been sucessfully deleted."));
+			ui_msgs::display_notification(_("Security role has been sucessfully deleted."));
 			unset($_POST['role']);
 		}
 		$Ajax->activate('_page_body');
@@ -156,7 +152,7 @@
 		foreach ($sections as $s) $_POST['Section' . $s] = 1;
 
 		if ($clone) {
-			set_focus('name');
+			ui_view::set_focus('name');
 			$Ajax->activate('_page_body');
 		} else
 			$_POST['role'] = $id;
@@ -177,7 +173,7 @@
 
 	if (get_post('_show_inactive_update')) {
 		$Ajax->activate('role');
-		set_focus('role');
+		ui_view::set_focus('role');
 	}
 	if (find_submit('_Section')) {
 		$Ajax->activate('details');
@@ -207,7 +203,7 @@
 			$sec = $newsec;
 			$m = $parms[0] & ~0xff;
 			//			if(!isset($security_sections[$m]))
-			//			 display_error(sprintf("Bad section %X:", $m));
+			//			 ui_msgs::display_error(sprintf("Bad section %X:", $m));
 			label_row($security_sections[$m] . ':',
 				checkbox(null, 'Section' . $m, null, true,
 					_("On/off set of features")),

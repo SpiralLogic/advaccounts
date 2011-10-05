@@ -9,14 +9,12 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	include_once(APP_PATH . "includes/faui.inc");
-
 
 	//--------------------------------------------------------------------------------
 
 	function add_to_issue(&$order, $new_item, $new_item_qty, $standard_cost) {
 		if ($order->find_cart_item($new_item))
-			display_error(_("For Part :") . $new_item . " " . "This item is already on this issue.  You can change the quantity issued of the existing line if necessary.");
+			ui_msgs::display_error(_("For Part :") . $new_item . " " . "This item is already on this issue.  You can change the quantity issued of the existing line if necessary.");
 		else
 			$order->add_to_cart(count($order->line_items), $new_item, $new_item_qty, $standard_cost);
 	}
@@ -25,8 +23,7 @@
 
 	function display_issue_items($title, &$order) {
 
-
-		display_heading($title);
+		ui_msgs::display_heading($title);
 		div_start('items_table');
 		start_table(Config::get('tables.style') . "  width=90% colspan=7");
 		$th = array(_("Item Code"), _("Item Description"), _("Quantity"),
@@ -47,7 +44,7 @@
 			if ($id != $line_no) {
 				alt_table_row_color($k);
 
-				view_stock_status_cell($stock_item->stock_id);
+				ui_view::view_stock_status_cell($stock_item->stock_id);
 				label_cell($stock_item->description);
 				qty_cell($stock_item->quantity, false, get_qty_dec($stock_item->stock_id));
 				label_cell($stock_item->units);
@@ -125,7 +122,7 @@
 			button_cell('CancelItemChanges', _("Cancel"),
 				_('Cancel changes'), ICON_CANCEL);
 			hidden('LineNo', $line_no);
-			set_focus('qty');
+			ui_view::set_focus('qty');
 		}
 		else
 		{

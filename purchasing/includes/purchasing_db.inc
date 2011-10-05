@@ -10,12 +10,6 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 
-	include_once(APP_PATH . "includes/banking.inc");
-
-	include_once(APP_PATH . "includes/date_functions.inc");
-
-	include_once(APP_PATH . "includes/db/inventory_db.inc");
-
 	include_once(APP_PATH . "purchasing/includes/db/supp_trans_db.inc");
 	include_once(APP_PATH . "purchasing/includes/db/po_db.inc");
 	include_once(APP_PATH . "purchasing/includes/db/grn_db.inc");
@@ -36,7 +30,7 @@
 			$err_msg = "The supplier GL transaction could not be inserted";
 
 		return add_gl_trans($type, $type_no, $date_, $account, $dimension, $dimension2, $memo,
-			$amount, get_supplier_currency($supplier_id),
+			$amount, Banking::get_supplier_currency($supplier_id),
 			PT_SUPPLIER, $supplier_id, $err_msg, $rate);
 	}
 

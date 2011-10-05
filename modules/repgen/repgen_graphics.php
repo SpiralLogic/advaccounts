@@ -28,9 +28,8 @@
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 	add_access_extensions();
 
-	include_once(APP_PATH . "includes/date_functions.inc");
 	include_once(APP_PATH . "admin/db/company_db.inc");
-	include_once(APP_PATH . "includes/faui.inc");
+
 	require_once("repgen_const.inc");
 	require_once("repgen_def.inc");
 	require_once("repgen.inc");
@@ -145,16 +144,16 @@ function displayReport(id) {
 
 <?php
 	if (!empty($long))
-		display_heading(ITEM_DEF . ": " . $long);
+		ui_msgs::display_heading(ITEM_DEF . ": " . $long);
 	else
-		display_heading(ITEM_DEF);
+		ui_msgs::display_heading(ITEM_DEF);
 
-	display_heading(ITEM_LINE);
+	ui_msgs::display_heading(ITEM_LINE);
 
 	if (!empty($error))
-		display_error($error);
+		ui_msgs::display_error($error);
 
-	display_note(IT_HELP, 0, 1);
+	ui_msgs::display_note(IT_HELP, 0, 1);
 
 	start_form(false, false, REPGENDIR . "/repgen_graphics.php", "graphics");
 
@@ -224,7 +223,7 @@ function displayReport(id) {
 	// <!--        End of input item form   -->
 	// <!--------------------------------------------------------------------->
 
-	display_heading(ITEM_HEAD);
+	ui_msgs::display_heading(ITEM_HEAD);
 
 	start_table(Config::get('tables.style') . "  width=90%");
 	$th = array(IT_TYP, IT_ART, IT_FONT, IT_FONT_SIZE, IT_LEN, IT_STRING, IT_X1, IT_Y1, IT_X2, IT_Y2, IT_WIDTH, "Action",

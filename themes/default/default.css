@@ -426,16 +426,17 @@ div.banner a + a { border-top: 2px groove #999 }
 .headingtext {
 	font-weight: bolder;
 	font-size:   15px;
-
 	color:       #333;
 	display:     block;
 	padding:     5px;
 }
 
 .headingtext2 {
-	font-size:   13px;
+	font-size:   14px;
 	color:       black;
+	padding:     3px;
 	font-weight: bold;
+	display:     block;
 }
 
 .headingtext3 {
@@ -875,7 +876,7 @@ body.lite {
 	padding:          1px 4px;
 }
 
-.lite button img, .lite span {
+.lite button img {
 	padding: 0 2px;
 }
 

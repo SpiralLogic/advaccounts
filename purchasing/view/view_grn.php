@@ -11,12 +11,11 @@
 	 ***********************************************************************/
 	$page_security = 'SA_SUPPTRANSVIEW';
 
-
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 
 	$js = "";
 	if (Config::get('ui.windows.popups'))
-		$js .= get_js_open_window(900, 500);
+		$js .= ui_view::get_js_open_window(900, 500);
 	page(_($help_context = "View Purchase Order Delivery"), true, false, "", $js);
 
 	include(APP_PATH . "purchasing/includes/purchasing_ui.inc");
@@ -28,11 +27,11 @@
 	$purchase_order = new purch_order;
 	read_grn($_GET["trans_no"], $purchase_order);
 
-	display_heading(_("Purchase Order Delivery") . " #" . $_GET['trans_no']);
+	ui_msgs::display_heading(_("Purchase Order Delivery") . " #" . $_GET['trans_no']);
 	echo "<BR>";
 	display_grn_summary($purchase_order);
 
-	display_heading2(_("Line Details"));
+	ui_msgs::display_heading2(_("Line Details"));
 
 	start_table("colspan=9 " . Config::get('tables.style') . " width=90%");
 	$th = array(_("Item Code"), _("Item Description"), _("Delivery Date"), _("Quantity"),
@@ -71,7 +70,7 @@
 
 	end_table(1);
 
-	is_voided_display(ST_SUPPRECEIVE, $_GET['trans_no'], _("This delivery has been voided."));
+	ui_view::is_voided_display(ST_SUPPRECEIVE, $_GET['trans_no'], _("This delivery has been voided."));
 
 	end_page(true);
 

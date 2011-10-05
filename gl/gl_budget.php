@@ -17,10 +17,6 @@
 
 	page(_($help_context = "Budget Entry"));
 
-	include(APP_PATH . "/includes/faui.inc");
-	include(APP_PATH . "/gl/includes/gl_db.inc");
-	include_once(APP_PATH . "includes/data_checks.inc");
-
 	check_db_has_gl_account_groups(_("There are no account groups defined. Please define at least one account group before entering accounts."));
 
 	//-------------------------------------------------------------------------------------
@@ -35,7 +31,7 @@
 	}
 
 	function add_update_gl_budget_trans($date_, $account, $dimension, $dimension2, $amount) {
-		$date = date2sql($date_);
+		$date = Dates::date2sql($date_);
 
 		if (exists_gl_budget($date, $account, $dimension, $dimension2))
 			$sql = "UPDATE budget_trans SET amount=" . db_escape($amount)
@@ -53,7 +49,7 @@
 	}
 
 	function delete_gl_budget_trans($date_, $account, $dimension, $dimension2) {
-		$date = date2sql($date_);
+		$date = Dates::date2sql($date_);
 
 		$sql = "DELETE FROM budget_trans WHERE account=" . db_escape($account)
 		 . " AND dimension_id=" . db_escape($dimension)
@@ -64,8 +60,8 @@
 
 	function get_only_budget_trans_from_to($from_date, $to_date, $account, $dimension = 0, $dimension2 = 0) {
 
-		$from = date2sql($from_date);
-		$to = date2sql($to_date);
+		$from = Dates::date2sql($from_date);
+		$to = Dates::date2sql($to_date);
 
 		$sql = "SELECT SUM(amount) FROM budget_trans
 		WHERE account=" . db_escape($account)
@@ -83,21 +79,21 @@
 	if (isset($_POST['add']) || isset($_POST['delete'])) {
 		begin_transaction();
 
-		for ($i = 0, $da = $_POST['begin']; date1_greater_date2($_POST['end'], $da); $i++)
+		for ($i = 0, $da = $_POST['begin']; Dates::date1_greater_date2($_POST['end'], $da); $i++)
 		{
 			if (isset($_POST['add']))
 				add_update_gl_budget_trans($da, $_POST['account'], $_POST['dim1'],
 					$_POST['dim2'], input_num('amount' . $i));
 			else
 				delete_gl_budget_trans($da, $_POST['account'], $_POST['dim1'], $_POST['dim2']);
-			$da = add_months($da, 1);
+			$da = Dates::add_months($da, 1);
 		}
 		commit_transaction();
 
 		if (isset($_POST['add']))
-			display_notification_centered(_("The Budget has been saved."));
+			ui_msgs::display_notification_centered(_("The Budget has been saved."));
 		else
-			display_notification_centered(_("The Budget has been deleted."));
+			ui_msgs::display_notification_centered(_("The Budget has been deleted."));
 
 		//meta_forward($_SERVER['PHP_SELF']);
 		$Ajax->activate('budget_tbl');
@@ -149,13 +145,13 @@
 			$result = db_query($sql, "could not get current fiscal year");
 
 			$fyear = db_fetch($result);
-			$_POST['begin'] = sql2date($fyear['begin']);
-			$_POST['end'] = sql2date($fyear['end']);
+			$_POST['begin'] = Dates::sql2date($fyear['begin']);
+			$_POST['end'] = Dates::sql2date($fyear['end']);
 		}
 		hidden('begin');
 		hidden('end');
 		$total = $btotal = $ltotal = 0;
-		for ($i = 0, $date_ = $_POST['begin']; date1_greater_date2($_POST['end'], $date_); $i++)
+		for ($i = 0, $date_ = $_POST['begin']; Dates::date1_greater_date2($_POST['end'], $date_); $i++)
 		{
 			start_row();
 			if (get_post('update') == '')
@@ -170,12 +166,12 @@
 				label_cell(number_format2($d, 0), "nowrap align=right");
 				$btotal += $d;
 			}
-			$lamount = get_gl_trans_from_to(add_years($date_, -1), add_years(end_month($date_), -1), $_POST['account'],
+			$lamount = get_gl_trans_from_to(Dates::add_years($date_, -1), Dates::add_years(Dates::end_month($date_), -1), $_POST['account'],
 				$_POST['dim1'], $_POST['dim2']);
 			$total += input_num('amount' . $i);
 			$ltotal += $lamount;
 			label_cell(number_format2($lamount, 0), "nowrap align=right");
-			$date_ = add_months($date_, 1);
+			$date_ = Dates::add_months($date_, 1);
 			end_row();
 		}
 		start_row();

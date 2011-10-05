@@ -23,7 +23,7 @@
 		if (AJAX_REFERRER) return;
 
 		echo "</div></body>";
-		get_websales();
+		ui_view::get_websales();
 		echo	 "</html>\n";
 	}
 

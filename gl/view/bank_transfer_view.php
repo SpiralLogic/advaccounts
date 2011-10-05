@@ -15,10 +15,6 @@
 
 	page(_($help_context = "View Bank Transfer"), true);
 
-	include_once(APP_PATH . "includes/date_functions.inc");
-	include_once(APP_PATH . "includes/faui.inc");
-	include_once(APP_PATH . "gl/includes/gl_db.inc");
-
 	if (isset($_GET["trans_no"])) {
 
 		$trans_no = $_GET["trans_no"];
@@ -42,7 +38,7 @@
 		$to_trans = $trans1;
 	}
 
-	$company_currency = get_company_currency();
+	$company_currency = Banking::get_company_currency();
 
 	$show_currencies = false;
 	$show_both_amounts = false;
@@ -55,7 +51,7 @@
 		$show_both_amounts = true;
 	}
 
-	display_heading($systypes_array[ST_BANKTRANSFER] . " #$trans_no");
+	ui_msgs::display_heading($systypes_array[ST_BANKTRANSFER] . " #$trans_no");
 
 	echo "<br>";
 	start_table(Config::get('tables.style') . "  width=90%");
@@ -77,16 +73,16 @@
 				$to_trans['amount'], user_price_dec()), "class='tableheader2'", "align=right");
 	end_row();
 	start_row();
-	label_cells(_("Date"), sql2date($from_trans['trans_date']), "class='tableheader2'");
+	label_cells(_("Date"), Dates::sql2date($from_trans['trans_date']), "class='tableheader2'");
 	label_cells(_("Transfer Type"), $bank_transfer_types[$from_trans['account_type']],
 		"class='tableheader2'");
 	label_cells(_("Reference"), $from_trans['ref'], "class='tableheader2'");
 	end_row();
-	comments_display_row(ST_BANKTRANSFER, $trans_no);
+	ui_view::comments_display_row(ST_BANKTRANSFER, $trans_no);
 
 	end_table(1);
 
-	is_voided_display(ST_BANKTRANSFER, $trans_no, _("This transfer has been voided."));
+	ui_view::is_voided_display(ST_BANKTRANSFER, $trans_no, _("This transfer has been voided."));
 
 	end_page(true);
 ?>

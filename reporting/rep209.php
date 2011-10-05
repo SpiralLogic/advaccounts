@@ -20,8 +20,6 @@
 	// ----------------------------------------------------------------
 
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
-	include_once(APP_PATH . "includes/date_functions.inc");
-	include_once(APP_PATH . "includes/data_checks.inc");
 
 	//----------------------------------------------------------------------------------------------------
 
@@ -132,7 +130,7 @@
 					$rep->TextColLines(1, 2, $myrow2['description'], -2);
 					$newrow = $rep->row;
 					$rep->row = $oldrow;
-					//$rep->TextCol(2, 3,	sql2date($myrow2['delivery_date']), -2);
+					//$rep->TextCol(2, 3,	Dates::sql2date($myrow2['delivery_date']), -2);
 					$rep->TextCol(2, 3, '', -2);
 					$rep->TextCol(3, 4, $DisplayQty, -2);
 					$rep->TextCol(4, 5, $myrow2['units'], -2);
@@ -172,7 +170,7 @@
 			$rep->Font('bold');
 			$rep->TextCol(3, 6, $doc_TOTAL_PO, -2);
 			$rep->TextCol(6, 7, $DisplayTotal, -2);
-			$words = price_in_words($SubTotal, ST_PURCHORDER);
+			$words = ui_view::price_in_words($SubTotal, ST_PURCHORDER);
 			if ($words != "") {
 				$rep->NewLine(1);
 				$rep->TextCol(1, 7, $myrow['curr_code'] . ": " . $words, -2);

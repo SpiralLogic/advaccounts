@@ -18,10 +18,7 @@
 	// ----------------------------------------------------------------
 
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
-	include_once(APP_PATH . "includes/date_functions.inc");
-	include_once(APP_PATH . "includes/data_checks.inc");
-	include_once(APP_PATH . "includes/banking.inc");
-	include_once(APP_PATH . "gl/includes/gl_db.inc");
+
 	include_once(APP_PATH . "inventory/includes/db/items_category_db.inc");
 
 	//----------------------------------------------------------------------------------------------------
@@ -29,8 +26,8 @@
 	print_grn_valuation();
 
 	function getTransactions($from, $to) {
-		$from = date2sql($from);
-		$to = date2sql($to);
+		$from = Dates::date2sql($from);
+		$to = Dates::date2sql($to);
 
 		$sql = "SELECT DISTINCT grn_batch.supplier_id,
             purch_order_details.*,
@@ -97,8 +94,8 @@
 				}
 				$stock_id = $trans['item_code'];
 			}
-			$curr = get_supplier_currency($trans['supplier_id']);
-			$rate = get_exchange_rate_from_home_currency($curr, sql2date($trans['delivery_date']));
+			$curr = Banking::get_supplier_currency($trans['supplier_id']);
+			$rate = Banking::get_exchange_rate_from_home_currency($curr, Dates::sql2date($trans['delivery_date']));
 			$trans['unit_price'] *= $rate;
 			$trans['act_price'] *= $rate;
 

@@ -13,14 +13,10 @@
 
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 
-	include_once(APP_PATH . "includes/date_functions.inc");
-	include_once(APP_PATH . "includes/faui.inc");
-
-	include_once(APP_PATH . "sales/includes/sales_db.inc");
 	include_once(APP_PATH . "reporting/includes/reporting.inc");
 	$js = "";
 	if (Config::get('ui.windows.popups'))
-		$js .= get_js_open_window(900, 500);
+		$js .= ui_view::get_js_open_window(900, 500);
 	page(_($help_context = "View Credit Note"), true, false, "", $js);
 
 	if (isset($_GET["trans_no"])) {
@@ -35,7 +31,7 @@
 
 	$branch = get_branch($myrow["branch_code"]);
 
-	display_heading("<font color=red>" . sprintf(_("CREDIT NOTE #%d"), $trans_id) . "</font>");
+	ui_msgs::display_heading("<font color=red>" . sprintf(_("CREDIT NOTE #%d"), $trans_id) . "</font>");
 	echo "<br>";
 
 	start_table(Config::get('tables.style2') . " width=95%");
@@ -65,14 +61,14 @@
 	start_table(Config::get('tables.style') . "  width=100%");
 	start_row();
 	label_cells(_("Ref"), $myrow["reference"], "class='tableheader2'");
-	label_cells(_("Date"), sql2date($myrow["tran_date"]), "class='tableheader2'");
+	label_cells(_("Date"), Dates::sql2date($myrow["tran_date"]), "class='tableheader2'");
 	label_cells(_("Currency"), $myrow["curr_code"], "class='tableheader2'");
 	end_row();
 	start_row();
 	label_cells(_("Sales Type"), $myrow["sales_type"], "class='tableheader2'");
 	label_cells(_("Shipping Company"), $myrow["shipper_name"], "class='tableheader2'");
 	end_row();
-	comments_display_row(ST_CUSTCREDIT, $trans_id);
+	ui_view::comments_display_row(ST_CUSTCREDIT, $trans_id);
 	end_table();
 
 	echo "</td></tr>";
@@ -121,7 +117,7 @@
 		} //end while there are line items to print out
 	}
 	else
-		display_note(_("There are no line items on this credit note."), 1, 2);
+		ui_msgs::display_note(_("There are no line items on this credit note."), 1, 2);
 
 	$display_sub_tot = price_format($sub_total);
 	$display_freight = price_format($myrow["ov_freight"]);
@@ -136,16 +132,16 @@
 	label_row(_("Shipping"), $display_freight, "colspan=6 align=right", "nowrap align=right");
 
 	$tax_items = get_trans_tax_details(ST_CUSTCREDIT, $trans_id);
-	display_customer_trans_tax_details($tax_items, 6);
+	ui_view::display_customer_trans_tax_details($tax_items, 6);
 
 	label_row("<font color=red>" . _("TOTAL CREDIT") . "</font",
 		"<font color=red>$display_total</font>", "colspan=6 align=right", "nowrap align=right");
 	end_table(1);
 
-	$voided = is_voided_display(ST_CUSTCREDIT, $trans_id, _("This credit note has been voided."));
+	$voided = ui_view::is_voided_display(ST_CUSTCREDIT, $trans_id, _("This credit note has been voided."));
 
 	if (!$voided)
-		display_allocations_from(PT_CUSTOMER,
+		ui_view::display_allocations_from(PT_CUSTOMER,
 			$myrow['debtor_no'], ST_CUSTCREDIT, $trans_id, $credit_total);
 
 	/* end of check to see that there was an invoice record to print */

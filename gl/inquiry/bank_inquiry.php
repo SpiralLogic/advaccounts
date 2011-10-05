@@ -13,16 +13,9 @@
 
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 
-	include_once(APP_PATH . "includes/date_functions.inc");
-	include_once(APP_PATH . "includes/faui.inc");
-	include_once(APP_PATH . "includes/data_checks.inc");
-
-	include_once(APP_PATH . "gl/includes/gl_db.inc");
-	include_once(APP_PATH . "includes/banking.inc");
-
 	$js = "";
 	if (Config::get('ui.windows.popups'))
-		$js .= get_js_open_window(800, 500);
+		$js .= ui_view::get_js_open_window(800, 500);
 
 	page(_($help_context = "Bank Statement"), false, false, "", $js);
 
@@ -51,8 +44,8 @@
 
 	//------------------------------------------------------------------------------------------------
 
-	$date_after = date2sql($_POST['TransAfterDate']);
-	$date_to = date2sql($_POST['TransToDate']);
+	$date_after = Dates::date2sql($_POST['TransAfterDate']);
+	$date_to = Dates::date2sql($_POST['TransToDate']);
 	if (!isset($_POST['bank_account']))
 		$_POST['bank_account'] = "";
 	$sql = "SELECT bank_trans.* FROM bank_trans
@@ -65,7 +58,7 @@
 
 	div_start('trans_tbl');
 	$act = get_bank_account($_POST["bank_account"]);
-	display_heading($act['bank_account_name'] . " - " . $act['bank_curr_code']);
+	ui_msgs::display_heading($act['bank_account_name'] . " - " . $act['bank_curr_code']);
 
 	start_table(Config::get('tables.style'));
 
@@ -83,7 +76,7 @@
 	label_cell("<b>" . _("Opening Balance") . " - " . $_POST['TransAfterDate'] . "</b>", "colspan=4");
 	$bfw_row = db_fetch_row($before_qty);
 	$bfw = $bfw_row[0];
-	display_debit_or_credit_cells($bfw);
+	ui_view::display_debit_or_credit_cells($bfw);
 	label_cell("");
 	label_cell("", "colspan=2");
 
@@ -98,15 +91,15 @@
 
 		$running_total += $myrow["amount"];
 
-		$trandate = sql2date($myrow["trans_date"]);
+		$trandate = Dates::sql2date($myrow["trans_date"]);
 		label_cell($systypes_array[$myrow["type"]]);
-		label_cell(get_trans_view_str($myrow["type"], $myrow["trans_no"]));
-		label_cell(get_trans_view_str($myrow["type"], $myrow["trans_no"], $myrow['ref']));
+		label_cell(ui_view::get_trans_view_str($myrow["type"], $myrow["trans_no"]));
+		label_cell(ui_view::get_trans_view_str($myrow["type"], $myrow["trans_no"], $myrow['ref']));
 		label_cell($trandate);
-		display_debit_or_credit_cells($myrow["amount"]);
+		ui_view::display_debit_or_credit_cells($myrow["amount"]);
 		amount_cell($running_total);
 		label_cell(payment_person_name($myrow["person_type_id"], $myrow["person_id"]));
-		label_cell(get_gl_view_str($myrow["type"], $myrow["trans_no"]));
+		label_cell(ui_view::get_gl_view_str($myrow["type"], $myrow["trans_no"]));
 		end_row();
 
 		if ($j == 12) {
@@ -119,7 +112,7 @@
 
 	start_row("class='inquirybg'");
 	label_cell("<b>" . _("Ending Balance") . " - " . $_POST['TransToDate'] . "</b>", "colspan=4");
-	display_debit_or_credit_cells($running_total);
+	ui_view::display_debit_or_credit_cells($running_total);
 	label_cell("");
 	label_cell("", "colspan=2");
 	end_row();

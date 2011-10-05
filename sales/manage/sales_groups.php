@@ -15,8 +15,6 @@
 
 	page(_($help_context = "Sales Groups"));
 
-	include(APP_PATH . "includes/faui.inc");
-
 	simple_page_mode(true);
 
 	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
@@ -25,8 +23,8 @@
 
 		if (strlen($_POST['description']) == 0) {
 			$input_error = 1;
-			display_error(_("The area description cannot be empty."));
-			set_focus('description');
+			ui_msgs::display_error(_("The area description cannot be empty."));
+			ui_view::set_focus('description');
 		}
 
 		if ($input_error != 1) {
@@ -42,7 +40,7 @@
 			}
 
 			db_query($sql, "The sales group could not be updated or added");
-			display_notification($note);
+			ui_msgs::display_notification($note);
 			$Mode = 'RESET';
 		}
 	}
@@ -58,13 +56,13 @@
 		$myrow = db_fetch_row($result);
 		if ($myrow[0] > 0) {
 			$cancel_delete = 1;
-			display_error(_("Cannot delete this group because customers have been created using this group."));
+			ui_msgs::display_error(_("Cannot delete this group because customers have been created using this group."));
 		}
 		if ($cancel_delete == 0) {
 			$sql = "DELETE FROM groups WHERE id=" . db_escape($selected_id);
 			db_query($sql, "could not delete sales group");
 
-			display_notification(_('Selected sales group has been deleted'));
+			ui_msgs::display_notification(_('Selected sales group has been deleted'));
 		} //end if Delete area
 		$Mode = 'RESET';
 	}

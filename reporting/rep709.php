@@ -18,17 +18,14 @@
 	// ----------------------------------------------------------------
 
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
-	include_once(APP_PATH . "includes/date_functions.inc");
-	include_once(APP_PATH . "includes/data_checks.inc");
-	include_once(APP_PATH . "gl/includes/gl_db.inc");
 
 	//------------------------------------------------------------------
 
 	print_tax_report();
 
 	function getTaxTransactions($from, $to) {
-		$fromdate = date2sql($from);
-		$todate = date2sql($to);
+		$fromdate = Dates::date2sql($from);
+		$todate = Dates::date2sql($to);
 
 		$sql = "SELECT taxrec.*, taxrec.amount*ex_rate AS amount,
 	            taxrec.net_amount*ex_rate AS net_amount,
@@ -47,7 +44,7 @@
 			AND taxrec.tran_date >= '$fromdate'
 			AND taxrec.tran_date <= '$todate'
 		ORDER BY taxrec.tran_date";
-		//display_error($sql);
+		//ui_msgs::display_error($sql);
 		return db_query($sql, "No transactions were returned");
 	}
 

@@ -18,9 +18,6 @@
 	// ----------------------------------------------------------------
 
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
-	include_once(APP_PATH . "includes/date_functions.inc");
-	include_once(APP_PATH . "includes/data_checks.inc");
-	include_once(APP_PATH . "gl/includes/gl_db.inc");
 
 	//----------------------------------------------------------------------------------------------------
 
@@ -39,9 +36,9 @@
 	}
 
 	function getYTD($dim) {
-		$date = Today();
-		$date = begin_fiscalyear($date);
-		date2sql($date);
+		$date = Dates::Today();
+		$date = Dates::begin_fiscalyear($date);
+		Dates::date2sql($date);
 
 		$sql = "SELECT SUM(amount) AS Balance
 		FROM

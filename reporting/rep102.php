@@ -18,16 +18,13 @@
 	// ----------------------------------------------------------------
 
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
-	include_once(APP_PATH . "includes/date_functions.inc");
-	include_once(APP_PATH . "includes/data_checks.inc");
-	include_once(APP_PATH . "gl/includes/gl_db.inc");
 
 	//----------------------------------------------------------------------------------------------------
 
 	print_aged_customer_analysis();
 
 	function get_invoices($customer_id, $to) {
-		$todate = date2sql($to);
+		$todate = Dates::date2sql($to);
 		$PastDueDays1 = get_company_pref('past_due_days');
 		$PastDueDays2 = 2 * $PastDueDays1;
 
@@ -142,7 +139,7 @@
 			if (!$convert && $currency != $myrow['curr_code'])
 				continue;
 
-			if ($convert) $rate = get_exchange_rate_from_home_currency($myrow['curr_code'], $to);
+			if ($convert) $rate = Banking::get_exchange_rate_from_home_currency($myrow['curr_code'], $to);
 			else $rate = 1.0;
 			$custrec = get_customer_details($myrow['debtor_no'], $to);
 			foreach ($custrec as $i => $value)

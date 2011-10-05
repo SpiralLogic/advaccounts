@@ -14,7 +14,7 @@
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 
 	include(APP_PATH . "includes/page/header.inc");
-	page_header(_("Logout"), true, false, '', get_js_png_fix());
+	page_header(_("Logout"), true, false, '', ui_view::get_js_png_fix());
 
 	echo "<table width='100%' border='0'>
   <tr>

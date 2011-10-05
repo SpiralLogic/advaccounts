@@ -15,14 +15,11 @@
 
 	$js = "";
 	if (Config::get('ui.windows.popups'))
-		$js .= get_js_open_window(900, 500);
+		$js .= ui_view::get_js_open_window(900, 500);
 	page(_($help_context = "View Work Order Production"), true, false, "", $js);
 
-	include_once(APP_PATH . "includes/date_functions.inc");
 	include_once(APP_PATH . "includes/manufacturing.inc");
-	include_once(APP_PATH . "includes/data_checks.inc");
 
-	include_once(APP_PATH . "manufacturing/includes/manufacturing_db.inc");
 	include_once(APP_PATH . "manufacturing/includes/manufacturing_ui.inc");
 
 	//-------------------------------------------------------------------------------------------------
@@ -47,22 +44,22 @@
 		start_row();
 		label_cell($myrow["id"]);
 		label_cell($myrow["reference"]);
-		label_cell(get_trans_view_str(ST_WORKORDER, $myrow["workorder_id"]));
+		label_cell(ui_view::get_trans_view_str(ST_WORKORDER, $myrow["workorder_id"]));
 		label_cell($myrow["stock_id"] . " - " . $myrow["StockDescription"]);
 		qty_cell($myrow["quantity"], false, get_qty_dec($myrow["stock_id"]));
-		label_cell(sql2date($myrow["date_"]));
+		label_cell(Dates::sql2date($myrow["date_"]));
 		end_row();
 
-		comments_display_row(ST_MANURECEIVE, $prod_id);
+		ui_view::comments_display_row(ST_MANURECEIVE, $prod_id);
 
 		end_table(1);
 
-		is_voided_display(ST_MANURECEIVE, $prod_id, _("This production has been voided."));
+		ui_view::is_voided_display(ST_MANURECEIVE, $prod_id, _("This production has been voided."));
 	}
 
 	//-------------------------------------------------------------------------------------------------
 
-	display_heading($systypes_array[ST_MANURECEIVE] . " # " . $wo_production);
+	ui_msgs::display_heading($systypes_array[ST_MANURECEIVE] . " # " . $wo_production);
 
 	display_wo_production($wo_production);
 

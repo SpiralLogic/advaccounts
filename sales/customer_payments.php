@@ -12,13 +12,8 @@
 			* ********************************************************************* */
 	$page_security = 'SA_SALESPAYMNT';
 
-
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
-	include_once(APP_PATH . "includes/date_functions.inc");
-	include_once(APP_PATH . "includes/faui.inc");
-	include_once(APP_PATH . "includes/banking.inc");
-	include_once(APP_PATH . "includes/data_checks.inc");
-	include_once(APP_PATH . "sales/includes/sales_db.inc");
+
 	include_once(APP_PATH . "sales/includes/ui/sales_order_ui.inc");
 
 	include_once(APP_PATH . "sales/includes/sales_ui.inc");
@@ -27,7 +22,7 @@
 
 	$js = "";
 	if (Config::get('ui.windows.popups')) {
-		$js .= get_js_open_window(900, 500);
+		$js .= ui_view::get_js_open_window(900, 500);
 	}
 	JS::headerFile('/js/payalloc.js');
 
@@ -49,30 +44,30 @@
 	}
 
 	if (!isset($_POST['customer_id'])) {
-		$_POST['customer_id'] = get_global_customer(false);
+		$_POST['customer_id'] = ui_globals::get_global_customer(false);
 	}
 	if (!isset($_POST['DateBanked'])) {
-		$_POST['DateBanked'] = new_doc_date();
-		if (!is_date_in_fiscalyear($_POST['DateBanked'])) {
-			$_POST['DateBanked'] = end_fiscalyear();
+		$_POST['DateBanked'] = Dates::new_doc_date();
+		if (!Dates::is_date_in_fiscalyear($_POST['DateBanked'])) {
+			$_POST['DateBanked'] = Dates::end_fiscalyear();
 		}
 	}
 
 	if (isset($_GET['AddedID'])) {
 		$payment_no = $_GET['AddedID'];
 
-		display_notification_centered(_("The customer payment has been successfully entered."));
+		ui_msgs::display_notification_centered(_("The customer payment has been successfully entered."));
 
 		submenu_print(_("&Print This Receipt"), ST_CUSTPAYMENT, $payment_no . "-" . ST_CUSTPAYMENT, 'prtopt');
 		hyperlink_no_params("/sales/inquiry/customer_inquiry.php", _("Show Invoices"));
 
-		display_note(get_gl_view_str(ST_CUSTPAYMENT, $payment_no, _("&View the GL Journal Entries for this Customer Payment")));
+		ui_msgs::display_note(ui_view::get_gl_view_str(ST_CUSTPAYMENT, $payment_no, _("&View the GL Journal Entries for this Customer Payment")));
 
 		//	hyperlink_params( "/sales/allocations/customer_allocate.php", _("&Allocate this Customer Payment"), "trans_no=$payment_no&trans_type=12");
 
 		hyperlink_no_params("/sales/customer_payments.php", _("Enter Another &Customer Payment"));
 
-		display_footer_exit();
+		ui_view::display_footer_exit();
 	}
 
 	//----------------------------------------------------------------------------------------------
@@ -81,63 +76,63 @@
 		global $Refs;
 
 		if (!get_post('customer_id')) {
-			display_error(_("There is no customer selected."));
-			set_focus('customer_id');
+			ui_msgs::display_error(_("There is no customer selected."));
+			ui_view::set_focus('customer_id');
 			return false;
 		}
 
 		if (!get_post('BranchID')) {
-			display_error(_("This customer has no branch defined."));
-			set_focus('BranchID');
+			ui_msgs::display_error(_("This customer has no branch defined."));
+			ui_view::set_focus('BranchID');
 			return false;
 		}
 
-		if (!isset($_POST['DateBanked']) || !is_date($_POST['DateBanked'])) {
-			display_error(_("The entered date is invalid. Please enter a valid date for the payment."));
-			set_focus('DateBanked');
+		if (!isset($_POST['DateBanked']) || !Dates::is_date($_POST['DateBanked'])) {
+			ui_msgs::display_error(_("The entered date is invalid. Please enter a valid date for the payment."));
+			ui_view::set_focus('DateBanked');
 			return false;
 		}
-		elseif (!is_date_in_fiscalyear($_POST['DateBanked'])) {
-			display_error(_("The entered date is not in fiscal year."));
-			set_focus('DateBanked');
+		elseif (!Dates::is_date_in_fiscalyear($_POST['DateBanked'])) {
+			ui_msgs::display_error(_("The entered date is not in fiscal year."));
+			ui_view::set_focus('DateBanked');
 			return false;
 		}
 
 		if (!$Refs->is_valid($_POST['ref'])) {
-			display_error(_("You must enter a reference."));
-			set_focus('ref');
+			ui_msgs::display_error(_("You must enter a reference."));
+			ui_view::set_focus('ref');
 			return false;
 		}
 
 		if (!is_new_reference($_POST['ref'], ST_CUSTPAYMENT)) {
-			display_error(_("The entered reference is already in use."));
-			set_focus('ref');
+			ui_msgs::display_error(_("The entered reference is already in use."));
+			ui_view::set_focus('ref');
 			return false;
 		}
 
 		if (!check_num('amount', 0)) {
-			display_error(_("The entered amount is invalid or negative and cannot be processed."));
-			set_focus('amount');
+			ui_msgs::display_error(_("The entered amount is invalid or negative and cannot be processed."));
+			ui_view::set_focus('amount');
 			return false;
 		}
 
 		if (isset($_POST['charge']) && !check_num('charge', 0)) {
-			display_error(_("The entered amount is invalid or negative and cannot be processed."));
-			set_focus('charge');
+			ui_msgs::display_error(_("The entered amount is invalid or negative and cannot be processed."));
+			ui_view::set_focus('charge');
 			return false;
 		}
 		if (isset($_POST['charge']) && input_num('charge') > 0) {
 			$charge_acct = get_company_pref('bank_charge_act');
 			if (get_gl_account($charge_acct) == false) {
-				display_error(_("The Bank Charge Account has not been set in System and General GL Setup."));
-				set_focus('charge');
+				ui_msgs::display_error(_("The Bank Charge Account has not been set in System and General GL Setup."));
+				ui_view::set_focus('charge');
 				return false;
 			}
 		}
 
 		if (isset($_POST['_ex_rate']) && !check_num('_ex_rate', 0.000001)) {
-			display_error(_("The exchange rate must be numeric and greater than zero."));
-			set_focus('_ex_rate');
+			ui_msgs::display_error(_("The exchange rate must be numeric and greater than zero."));
+			ui_view::set_focus('_ex_rate');
 			return false;
 		}
 
@@ -146,15 +141,15 @@
 		}
 
 		if (!check_num('discount')) {
-			display_error(_("The entered discount is not a valid number."));
-			set_focus('discount');
+			ui_msgs::display_error(_("The entered discount is not a valid number."));
+			ui_view::set_focus('discount');
 			return false;
 		}
 
 		//if ((input_num('amount') - input_num('discount') <= 0)) {
 		if (input_num('amount') <= 0) {
-			display_error(_("The balance of the amount and discout is zero or negative. Please enter valid amounts."));
-			set_focus('discount');
+			ui_msgs::display_error(_("The balance of the amount and discout is zero or negative. Please enter valid amounts."));
+			ui_view::set_focus('discount');
 			return false;
 		}
 
@@ -190,9 +185,9 @@
 
 	if (isset($_POST['AddPaymentItem'])) {
 
-		$cust_currency = get_customer_currency($_POST['customer_id']);
-		$bank_currency = get_bank_account_currency($_POST['bank_account']);
-		$comp_currency = get_company_currency();
+		$cust_currency = Banking::get_customer_currency($_POST['customer_id']);
+		$bank_currency = Banking::get_bank_account_currency($_POST['bank_account']);
+		$comp_currency = Banking::get_company_currency();
 		if ($comp_currency != $bank_currency && $bank_currency != $cust_currency) {
 			$rate = 0;
 		}
@@ -201,7 +196,7 @@
 			$rate = input_num('_ex_rate');
 		}
 
-		new_doc_date($_POST['DateBanked']);
+		Dates::new_doc_date($_POST['DateBanked']);
 		if (check_value('createinvoice')) {
 			create_miscorder($_POST['customer_id'], $_POST['BranchID'], $_POST['memo_'], $_POST['ref'], input_num('amount'), input_num('discount'));
 		}
@@ -250,10 +245,10 @@
 
 	read_customer_data();
 
-	set_global_customer($_POST['customer_id']);
+	ui_globals::set_global_customer($_POST['customer_id']);
 	if (isset($_POST['HoldAccount']) && $_POST['HoldAccount'] != 0) {
 		end_outer_table();
-		display_error(_("This customer account is on hold."));
+		ui_msgs::display_error(_("This customer account is on hold."));
 	}
 	else {
 		$display_discount_percent = percent_format($_POST['pymt_discount'] * 100) . "%";
@@ -267,12 +262,12 @@
 
 		date_row(_("Date of Deposit:"), 'DateBanked', '', true, 0, 0, 0, null, true);
 
-		$comp_currency = get_company_currency();
-		$cust_currency = get_customer_currency($_POST['customer_id']);
-		$bank_currency = get_bank_account_currency($_POST['bank_account']);
+		$comp_currency = Banking::get_company_currency();
+		$cust_currency = Banking::get_customer_currency($_POST['customer_id']);
+		$bank_currency = Banking::get_bank_account_currency($_POST['bank_account']);
 
 		if ($cust_currency != $bank_currency) {
-			exchange_rate_display($bank_currency, $cust_currency, $_POST['DateBanked'], ($bank_currency == $comp_currency));
+			ui_view::exchange_rate_display($bank_currency, $cust_currency, $_POST['DateBanked'], ($bank_currency == $comp_currency));
 		}
 
 		amount_row(_("Bank Charge:"), 'charge');
@@ -297,7 +292,7 @@
 		end_table(1);
 
 		if ($cust_currency != $bank_currency) {
-			display_note(_("Amount and discount are in customer's currency."));
+			ui_msgs::display_note(_("Amount and discount are in customer's currency."));
 		}
 
 		br();

@@ -18,10 +18,7 @@
 	// ----------------------------------------------------------------
 
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
-	include_once(APP_PATH . "includes/date_functions.inc");
-	include_once(APP_PATH . "includes/data_checks.inc");
-	include_once(APP_PATH . "includes/banking.inc");
-	include_once(APP_PATH . "gl/includes/gl_db.inc");
+
 	include_once(APP_PATH . "inventory/includes/db/items_category_db.inc");
 
 	//----------------------------------------------------------------------------------------------------
@@ -29,8 +26,8 @@
 	print_inventory_sales();
 
 	function getTransactions($category, $location, $fromcust, $from, $to) {
-		$from = date2sql($from);
-		$to = date2sql($to);
+		$from = Dates::date2sql($from);
+		$to = Dates::date2sql($to);
 		$sql = "SELECT stock_master.category_id,
 			stock_category.description AS cat_description,
 			stock_master.stock_id,
@@ -151,8 +148,8 @@
 				$rep->NewLine();
 			}
 
-			$curr = get_customer_currency($trans['debtor_no']);
-			$rate = get_exchange_rate_from_home_currency($curr, sql2date($trans['tran_date']));
+			$curr = Banking::get_customer_currency($trans['debtor_no']);
+			$rate = Banking::get_exchange_rate_from_home_currency($curr, Dates::sql2date($trans['tran_date']));
 			$trans['amt'] *= $rate;
 			$cb = $trans['amt'] - $trans['cost'];
 			$rep->NewLine();

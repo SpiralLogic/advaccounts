@@ -9,7 +9,6 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	include_once(APP_PATH . "includes/faui.inc");
 
 	// ------------------------------------------------------------------------------
 
@@ -22,8 +21,8 @@
 		$customer_error = "";
 		$change_prices = 0;
 
-		if (!isset($_POST['customer_id']) && (get_global_customer() != ALL_TEXT))
-			$_POST['customer_id'] = get_global_customer();
+		if (!isset($_POST['customer_id']) && (ui_globals::get_global_customer() != ALL_TEXT))
+			$_POST['customer_id'] = ui_globals::get_global_customer();
 
 		customer_list_row(_("Customer:"), 'customer_id', null, false, true, false, true);
 
@@ -77,7 +76,7 @@
 			}
 			unset($old_order);
 		}
-		set_global_customer($_POST['customer_id']);
+		ui_globals::set_global_customer($_POST['customer_id']);
 
 		if (!isset($_POST['ref']))
 			$_POST['ref'] = $Refs->get_next(11);
@@ -86,11 +85,11 @@
 		else
 			label_row(_("Reference") . ':', $order->reference);
 
-		if (!is_company_currency($order->customer_currency)) {
+		if (!Banking::is_company_currency($order->customer_currency)) {
 			table_section(2);
 
 			label_row(_("Customer Currency:"), $order->customer_currency);
-			exchange_rate_display($order->customer_currency, get_company_currency(),
+			ui_view::exchange_rate_display($order->customer_currency, Banking::get_company_currency(),
 				$_POST['OrderDate']);
 		}
 		table_section(3);
@@ -118,7 +117,7 @@
 
 		date_row(_("Date:"), 'OrderDate', '', $order->trans_no == 0, 0, 0, 0, null, true);
 		if (isset($_POST['_OrderDate_changed'])) {
-			if (!is_company_currency($order->customer_currency)
+			if (!Banking::is_company_currency($order->customer_currency)
 			 && (get_base_sales_type() > 0)
 			) {
 				$change_prices = 1;
@@ -157,8 +156,7 @@
 
 	function display_credit_items($title, &$order) {
 
-
-		display_heading($title);
+		ui_msgs::display_heading($title);
 		div_start('items_table');
 		start_table(Config::get('tables.style') . "  width=90%");
 		$th = array(_("Item Code"), _("Item Description"), _("Quantity"), _("Unit"),
@@ -223,7 +221,7 @@
 
 		$taxes = $order->get_taxes($_POST['ChargeFreightCost']);
 
-		$tax_total = display_edit_tax_items($taxes, $colspan, $order->tax_included, 2);
+		$tax_total = ui_view::display_edit_tax_items($taxes, $colspan, $order->tax_included, 2);
 
 		$display_total = price_format(($subtotal + $_POST['ChargeFreightCost'] + $tax_total));
 
@@ -286,7 +284,7 @@
 			button_cell('CancelItemChanges', _("Cancel"),
 				_('Cancel changes'), ICON_CANCEL);
 			hidden('line_no', $line_no);
-			set_focus('qty');
+			ui_view::set_focus('qty');
 		}
 		else
 		{

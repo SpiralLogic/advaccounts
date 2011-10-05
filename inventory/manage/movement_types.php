@@ -15,10 +15,6 @@
 
 	page(_($help_context = "Inventory Movement Types"));
 
-	include_once(APP_PATH . "inventory/includes/inventory_db.inc");
-
-	include_once(APP_PATH . "includes/faui.inc");
-
 	simple_page_mode(true);
 	//-----------------------------------------------------------------------------------
 
@@ -29,19 +25,19 @@
 
 		if (strlen($_POST['name']) == 0) {
 			$input_error = 1;
-			display_error(_("The inventory movement type name cannot be empty."));
-			set_focus('name');
+			ui_msgs::display_error(_("The inventory movement type name cannot be empty."));
+			ui_view::set_focus('name');
 		}
 
 		if ($input_error != 1) {
 			if ($selected_id != -1) {
 				update_movement_type($selected_id, $_POST['name']);
-				display_notification(_('Selected movement type has been updated'));
+				ui_msgs::display_notification(_('Selected movement type has been updated'));
 			}
 			else
 			{
 				add_movement_type($_POST['name']);
-				display_notification(_('New movement type has been added'));
+				ui_msgs::display_notification(_('New movement type has been added'));
 			}
 
 			$Mode = 'RESET';
@@ -57,7 +53,7 @@
 		$result = db_query($sql, "could not query stock moves");
 		$myrow = db_fetch_row($result);
 		if ($myrow[0] > 0) {
-			display_error(_("Cannot delete this inventory movement type because item transactions have been created referring to it."));
+			ui_msgs::display_error(_("Cannot delete this inventory movement type because item transactions have been created referring to it."));
 			return false;
 		}
 
@@ -69,7 +65,7 @@
 	if ($Mode == 'Delete') {
 		if (can_delete($selected_id)) {
 			delete_movement_type($selected_id);
-			display_notification(_('Selected movement type has been deleted'));
+			ui_msgs::display_notification(_('Selected movement type has been deleted'));
 		}
 		$Mode = 'RESET';
 	}

@@ -14,11 +14,10 @@
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 
 	include_once(APP_PATH . "sales/includes/sales_ui.inc");
-	include_once(APP_PATH . "sales/includes/sales_db.inc");
 
 	$js = "";
 	if (Config::get('ui.windows.popups'))
-		$js .= get_js_open_window(900, 500);
+		$js .= ui_view::get_js_open_window(900, 500);
 
 	page(_($help_context = "Customer Allocation Inquiry"), false, false, "", $js);
 
@@ -29,7 +28,7 @@
 	//------------------------------------------------------------------------------------------------
 
 	if (!isset($_POST['customer_id']))
-		$_POST['customer_id'] = get_global_customer();
+		$_POST['customer_id'] = ui_globals::get_global_customer();
 
 	start_form();
 
@@ -47,7 +46,7 @@
 
 	submit_cells('RefreshInquiry', _("Search"), '', _('Refresh Inquiry'), 'default');
 
-	set_global_customer($_POST['customer_id']);
+	ui_globals::set_global_customer($_POST['customer_id']);
 
 	end_row();
 	end_table();
@@ -59,7 +58,7 @@
 
 	function order_link($row) {
 		return $row['order_'] > 0 ?
-		 get_customer_trans_view_str(ST_SALESORDER, $row['order_'])
+		 ui_view::get_customer_trans_view_str(ST_SALESORDER, $row['order_'])
 		 : "";
 	}
 
@@ -70,7 +69,7 @@
 	}
 
 	function view_link($trans) {
-		return get_trans_view_str($trans["type"], $trans["trans_no"]);
+		return ui_view::get_trans_view_str($trans["type"], $trans["trans_no"]);
 	}
 
 	function due_date($row) {
@@ -123,8 +122,8 @@
 
 	//------------------------------------------------------------------------------------------------
 
-	$data_after = date2sql($_POST['TransAfterDate']);
-	$date_to = date2sql($_POST['TransToDate']);
+	$data_after = Dates::date2sql($_POST['TransAfterDate']);
+	$date_to = Dates::date2sql($_POST['TransToDate']);
 
 	$sql = "SELECT
   		trans.type,
@@ -139,7 +138,7 @@
 			+ trans.ov_freight_tax + trans.ov_discount)	AS TotalAmount,
 		trans.alloc AS Allocated,
 		((trans.type = " . ST_SALESINVOICE . ")
-			AND trans.due_date < '" . date2sql(Today()) . "') AS OverDue
+			AND trans.due_date < '" . Dates::date2sql(Dates::Today()) . "') AS OverDue
     	FROM debtor_trans as trans, debtors_master as debtor
     	WHERE debtor.debtor_no = trans.debtor_no
 			AND (trans.ov_amount + trans.ov_gst + trans.ov_freight 
@@ -164,7 +163,7 @@
 		}
 
 		if ($_POST['filterType'] == '2') {
-			$today = date2sql(Today());
+			$today = Dates::date2sql(Dates::Today());
 			$sql .= " AND trans.due_date < '$today'
 				AND (round(abs(trans.ov_amount + "
 			 . "trans.ov_gst + trans.ov_freight + "

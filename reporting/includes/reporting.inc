@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 	// Link to printing single document with bulk report template file.
 	// Ex. label_cell(print_document_link($myrow['order_no'], _("Print")), $type);
-	// or display_note(print_document_link($order_no, _("Print this order")));
+	// or ui_msgs::display_note(print_document_link($order_no, _("Print this order")));
 	// You only need full parameter list for invoices/credit notes
 	function print_document_link($doc_no, $link_text, $link = true, $type_no, $icon = false, $class = 'button printlink', $id = '', $email = 0, $extra = 0) {
 		$url = '/reporting/prn_redirect.php?';
@@ -22,7 +22,7 @@
 	}
 
 	function print_document_option_array($type_no, $doc_no, $email = 0, $extra = 0) {
-		include_once(APP_PATH . "includes/types.inc");
+
 		$ar = array();
 		$rep = '';
 		switch ($type_no) {
@@ -128,7 +128,7 @@ JS;
 	function print_link($link_text, $rep, $pars = array(), $dir = '', $icon = false, $class = 'printlink', $id = '') {
 
 		$url = $dir == '' ? PATH_TO_ROOT . '/reporting/prn_redirect.php?' : $dir;
-		$id = default_focus($id);
+		$id = ui_view::default_focus($id);
 		foreach ($pars as $par => $val) {
 			$pars[$par] = "$par=" . urlencode($val);
 		}

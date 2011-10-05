@@ -42,7 +42,7 @@
 		if ($err_msg != null || Config::get('debug')) {
 			$exit = $err_msg != null;
 			if (function_exists('xdebug_call_file')) check_db_error('<br>At file ' . xdebug_call_file() . ':' . xdebug_call_line() . ':<br>' . $err_msg, $sql, $exit); else check_db_error($err_msg, $sql,
-																																																																																										 $exit);
+				$exit);
 		}
 		return $result;
 	}
@@ -94,7 +94,7 @@
 				}
 			} else if (!is_numeric($value)) {
 				//value is not a string nor numeric
-				display_error("ERROR: incorrect data type send to sql query");
+				ui_msgs::display_error("ERROR: incorrect data type send to sql query");
 				echo '<br><br>';
 				exit();
 			}
@@ -123,7 +123,6 @@
 		global $db;
 		$_SESSION['db_info']['insert_id'] = mysql_insert_id($db);
 		$_SESSION['db_info']['affected_rows'] = mysql_affected_rows($db);
-
 	}
 
 	function db_num_affected_rows() {

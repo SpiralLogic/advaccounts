@@ -15,10 +15,6 @@
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 	page(_($help_context = "Customers"), @$_REQUEST['popup']);
 
-	include_once(APP_PATH . "includes/date_functions.inc");
-	include_once(APP_PATH . "includes/banking.inc");
-	include_once(APP_PATH . "includes/faui.inc");
-
 	if (isset($_GET['debtor_no'])) {
 		$_POST['customer_id'] = $_GET['debtor_no'];
 	}
@@ -28,32 +24,32 @@
 
 	function can_process() {
 		if (strlen($_POST['CustName']) == 0) {
-			display_error(_("The customer name cannot be empty."));
-			set_focus('CustName');
+			ui_msgs::display_error(_("The customer name cannot be empty."));
+			ui_view::set_focus('CustName');
 			return false;
 		}
 
 		if (strlen($_POST['cust_ref']) == 0) {
-			display_error(_("The customer short name cannot be empty."));
-			set_focus('cust_ref');
+			ui_msgs::display_error(_("The customer short name cannot be empty."));
+			ui_view::set_focus('cust_ref');
 			return false;
 		}
 
 		if (!check_num('credit_limit', 0)) {
-			display_error(_("The credit limit must be numeric and not less than zero."));
-			set_focus('credit_limit');
+			ui_msgs::display_error(_("The credit limit must be numeric and not less than zero."));
+			ui_view::set_focus('credit_limit');
 			return false;
 		}
 
 		if (!check_num('pymt_discount', 0, 100)) {
-			display_error(_("The payment discount must be numeric and is expected to be less than 100% and greater than or equal to 0."));
-			set_focus('pymt_discount');
+			ui_msgs::display_error(_("The payment discount must be numeric and is expected to be less than 100% and greater than or equal to 0."));
+			ui_view::set_focus('pymt_discount');
 			return false;
 		}
 
 		if (!check_num('discount', 0, 100)) {
-			display_error(_("The discount percentage must be numeric and is expected to be less than 100% and greater than or equal to 0."));
-			set_focus('discount');
+			ui_msgs::display_error(_("The discount percentage must be numeric and is expected to be less than 100% and greater than or equal to 0."));
+			ui_view::set_focus('discount');
 			return false;
 		}
 
@@ -92,7 +88,7 @@
 				'debtors_master', 'debtor_no');
 
 			$Ajax->activate('customer_id'); // in case of status change
-			display_notification(_("Customer has been updated."));
+			ui_msgs::display_notification(_("Customer has been updated."));
 		}
 		else { //it is a new customer
 			begin_transaction();
@@ -114,7 +110,7 @@
 			$new_customer = false;
 			commit_transaction();
 
-			display_notification(_("A new customer has been added."));
+			ui_msgs::display_notification(_("A new customer has been added."));
 
 			$Ajax->activate('_page_body');
 		}
@@ -140,7 +136,7 @@
 		$myrow = db_fetch_row($result);
 		if ($myrow[0] > 0) {
 			$cancel_delete = 1;
-			display_error(_("This customer cannot be deleted because there are transactions that refer to it."));
+			ui_msgs::display_error(_("This customer cannot be deleted because there are transactions that refer to it."));
 		}
 		else {
 			$sql = "SELECT COUNT(*) FROM sales_orders WHERE debtor_no=$sel_id";
@@ -148,7 +144,7 @@
 			$myrow = db_fetch_row($result);
 			if ($myrow[0] > 0) {
 				$cancel_delete = 1;
-				display_error(_("Cannot delete the customer record because orders have been created against it."));
+				ui_msgs::display_error(_("Cannot delete the customer record because orders have been created against it."));
 			}
 			else {
 				$sql = "SELECT COUNT(*) FROM cust_branch WHERE debtor_no=$sel_id";
@@ -156,7 +152,7 @@
 				$myrow = db_fetch_row($result);
 				if ($myrow[0] > 0) {
 					$cancel_delete = 1;
-					display_error(_("Cannot delete this customer because there are branch records set up against it."));
+					ui_msgs::display_error(_("Cannot delete this customer because there are branch records set up against it."));
 					//echo "<br> There are " . $myrow[0] . " branch records relating to this customer";
 				}
 			}
@@ -166,7 +162,7 @@
 			$sql = "DELETE FROM debtors_master WHERE debtor_no=$sel_id";
 			db_query($sql, "cannot delete customer");
 
-			display_notification(_("Selected customer has been deleted."));
+			ui_msgs::display_notification(_("Selected customer has been deleted."));
 			unset($_POST['customer_id']);
 			$new_customer = true;
 			$Ajax->activate('_page_body');
@@ -187,7 +183,7 @@
 		end_table();
 		if (get_post('_show_inactive_update')) {
 			$Ajax->activate('customer_id');
-			set_focus('customer_id');
+			ui_view::set_focus('customer_id');
 		}
 	}
 	else {
@@ -200,7 +196,7 @@
 		$_POST['dimension2_id'] = 0;
 		$_POST['sales_type'] = -1;
 		$_POST['email'] = '';
-		$_POST['curr_code'] = get_company_currency();
+		$_POST['curr_code'] = Banking::get_company_currency();
 		$_POST['credit_status'] = -1;
 		$_POST['payment_terms'] = $_POST['notes'] = '';
 

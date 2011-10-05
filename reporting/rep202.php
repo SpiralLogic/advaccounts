@@ -18,9 +18,6 @@
 	// ----------------------------------------------------------------
 
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
-	include_once(APP_PATH . "includes/date_functions.inc");
-	include_once(APP_PATH . "includes/data_checks.inc");
-	include_once(APP_PATH . "gl/includes/gl_db.inc");
 
 	//----------------------------------------------------------------------------------------------------
 
@@ -29,7 +26,7 @@
 	//----------------------------------------------------------------------------------------------------
 
 	function get_invoices($supplier_id, $to) {
-		$todate = date2sql($to);
+		$todate = Dates::date2sql($to);
 		$PastDueDays1 = get_company_pref('past_due_days');
 		$PastDueDays2 = 2 * $PastDueDays1;
 
@@ -149,7 +146,7 @@
 		{
 			if (!$convert && $currency != $myrow['curr_code']) continue;
 
-			if ($convert) $rate = get_exchange_rate_from_home_currency($myrow['curr_code'], $to);
+			if ($convert) $rate = Banking::get_exchange_rate_from_home_currency($myrow['curr_code'], $to);
 			else $rate = 1.0;
 
 			$supprec = get_supplier_details($myrow['supplier_id'], $to);
@@ -191,7 +188,7 @@
 					$rep->NewLine(1, 2);
 					$rep->TextCol(0, 1, $systypes_array[$trans['type']], -2);
 					$rep->TextCol(1, 2, $trans['reference'], -2);
-					$rep->TextCol(2, 3, sql2date($trans['tran_date']), -2);
+					$rep->TextCol(2, 3, Dates::sql2date($trans['tran_date']), -2);
 					foreach ($trans as $i => $value)
 					{
 						$trans[$i] *= $rate;

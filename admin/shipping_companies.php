@@ -13,15 +13,14 @@
 
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 	page(_($help_context = "Shipping Company"));
-	include(APP_PATH . "includes/faui.inc");
 
 	simple_page_mode(true);
 	//----------------------------------------------------------------------------------------------
 
 	function can_process() {
 		if (strlen($_POST['shipper_name']) == 0) {
-			display_error(_("The shipping company name cannot be empty."));
-			set_focus('shipper_name');
+			ui_msgs::display_error(_("The shipping company name cannot be empty."));
+			ui_view::set_focus('shipper_name');
 			return false;
 		}
 		return true;
@@ -38,7 +37,7 @@
 		 db_escape($_POST['address']) . ")";
 
 		db_query($sql, "The Shipping Company could not be added");
-		display_notification(_('New shipping company has been added'));
+		ui_msgs::display_notification(_('New shipping company has been added'));
 		$Mode = 'RESET';
 	}
 
@@ -54,7 +53,7 @@
 		WHERE shipper_id = " . db_escape($selected_id);
 
 		db_query($sql, "The shipping company could not be updated");
-		display_notification(_('Selected shipping company has been updated'));
+		ui_msgs::display_notification(_('Selected shipping company has been updated'));
 		$Mode = 'RESET';
 	}
 
@@ -68,7 +67,7 @@
 		$myrow = db_fetch_row($result);
 		if ($myrow[0] > 0) {
 			$cancel_delete = 1;
-			display_error(_("Cannot delete this shipping company because sales orders have been created using this shipper."));
+			ui_msgs::display_error(_("Cannot delete this shipping company because sales orders have been created using this shipper."));
 		}
 		else
 		{
@@ -79,13 +78,13 @@
 			$myrow = db_fetch_row($result);
 			if ($myrow[0] > 0) {
 				$cancel_delete = 1;
-				display_error(_("Cannot delete this shipping company because invoices have been created using this shipping company."));
+				ui_msgs::display_error(_("Cannot delete this shipping company because invoices have been created using this shipping company."));
 			}
 			else
 			{
 				$sql = "DELETE FROM shippers WHERE shipper_id=" . db_escape($selected_id);
 				db_query($sql, "could not delete shipper");
-				display_notification(_('Selected shipping company has been deleted'));
+				ui_msgs::display_notification(_('Selected shipping company has been deleted'));
 			}
 		}
 		$Mode = 'RESET';

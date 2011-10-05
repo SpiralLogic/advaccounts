@@ -13,12 +13,6 @@
 
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 
-	include_once(APP_PATH . "includes/date_functions.inc");
-	include_once(APP_PATH . "includes/faui.inc");
-	include_once(APP_PATH . "includes/data_checks.inc");
-
-	include_once(APP_PATH . "gl/includes/gl_db.inc");
-
 	$js = "";
 
 	page(_($help_context = "Profit & Loss Drilldown"), false, false, "", $js);
@@ -42,7 +36,7 @@
 	//----------------------------------------------------------------------------------------------------
 
 	function display_type($type, $typename, $from, $to, $begin, $end, $compare, $convert,
-												&$dec, &$pdec, &$rep, $dimension = 0, $dimension2 = 0, $drilldown, $path_to_root=PATH_TO_ROOT) {
+												&$dec, &$pdec, &$rep, $dimension = 0, $dimension2 = 0, $drilldown, $path_to_root = PATH_TO_ROOT) {
 		global $levelptr, $k;
 
 		$code_per_balance = 0;
@@ -188,12 +182,12 @@
 				$begin = $from;
 			}
 			else
-				$begin = begin_fiscalyear();
+				$begin = Dates::begin_fiscalyear();
 		}
 		elseif ($compare == 1)
 		{
-			$begin = add_months($from, -12);
-			$end = add_months($to, -12);
+			$begin = Dates::add_months($from, -12);
+			$end = Dates::add_months($to, -12);
 		}
 
 		div_start('pl_tbl');

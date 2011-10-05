@@ -69,7 +69,7 @@
 			if (!function_exists('get_js_open_window')) {
 				include_once(APP_PATH . 'includes/ui/ui_view.inc');
 			}
-			JS::beforeload(get_js_open_window(900, 500));
+			JS::beforeload(ui_view::get_js_open_window(900, 500));
 		}
 		if ($js != '')
 			JS::beforeload($js);

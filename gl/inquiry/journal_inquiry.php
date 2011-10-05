@@ -12,14 +12,11 @@
 
 	$page_security = 'SA_GLANALYTIC';
 
-
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 
-	include_once(APP_PATH . "includes/date_functions.inc");
-	include_once(APP_PATH . "includes/faui.inc");
 	$js = "";
 	if (Config::get('ui.windows.popups'))
-		$js .= get_js_open_window(800, 500);
+		$js .= ui_view::get_js_open_window(800, 500);
 
 	page(_($help_context = "Journal Inquiry"), false, false, "", $js);
 
@@ -64,11 +61,11 @@
 	}
 
 	function view_link($row) {
-		return get_trans_view_str($row["type"], $row["type_no"]);
+		return ui_view::get_trans_view_str($row["type"], $row["type_no"]);
 	}
 
 	function gl_link($row) {
-		return get_gl_view_str($row["type"], $row["type_no"]);
+		return ui_view::get_gl_view_str($row["type"], $row["type_no"]);
 	}
 
 	$editors = array(
@@ -131,8 +128,8 @@
 		 a.user=u.id
 		LEFT JOIN ".''."bank_trans as bank_trans ON
 		 (gl.type=bank_trans.type AND gl.type_no=bank_trans.trans_no)
-	 WHERE gl.tran_date >= '" . date2sql($_POST['FromDate']) . "'
-	 AND gl.tran_date <= '" . date2sql($_POST['ToDate']) . "'
+	 WHERE gl.tran_date >= '" . Dates::date2sql($_POST['FromDate']) . "'
+	 AND gl.tran_date <= '" . Dates::date2sql($_POST['ToDate']) . "'
 	 AND gl.amount!=0";
  if (isset($_POST['Ref']) && $_POST['Ref'] != "") {
 	 $sql .= " AND reference LIKE '%". $_POST['Ref'] . "%'";
@@ -163,8 +160,8 @@
  		(gl.type=refs.type AND gl.type_no=refs.id)
  	 LEFT JOIN users as u ON
  		a.user=u.id
- 	WHERE gl.tran_date >= '" . date2sql($_POST['FromDate']) . "'
- 	AND gl.tran_date <= '" . date2sql($_POST['ToDate']) . "'
+ 	WHERE gl.tran_date >= '" . Dates::date2sql($_POST['FromDate']) . "'
+ 	AND gl.tran_date <= '" . Dates::date2sql($_POST['ToDate']) . "'
  	AND gl.amount!=0";
 	if (isset($_POST['Ref']) && $_POST['Ref'] != "") {
 		$sql .= " AND reference LIKE '%" . $_POST['Ref'] . "%'";

@@ -16,7 +16,7 @@
 	include_once(APP_PATH . "reporting/includes/reporting.inc");
 	$js = "";
 	if (Config::get('ui.windows.popups')) {
-		$js .= get_js_open_window(900, 500);
+		$js .= ui_view::get_js_open_window(900, 500);
 	}
 
 	page(_($help_context = "Search Purchase Orders"), Input::request('frame'), false, "", $js);
@@ -80,7 +80,7 @@
 
 	//---------------------------------------------------------------------------------------------
 	function trans_view($trans) {
-		return get_trans_view_str(ST_PURCHORDER, $trans["order_no"]);
+		return ui_view::get_trans_view_str(ST_PURCHORDER, $trans["order_no"]);
 	}
 
 	function edit_link($row) {
@@ -141,8 +141,8 @@
 		$sql .= "AND porder.reference LIKE " . db_escape('%' . $order_number . '%');
 	} else {
 
-		$data_after = date2sql($_POST['OrdersAfterDate']);
-		$date_before = date2sql($_POST['OrdersToDate']);
+		$data_after = Dates::date2sql($_POST['OrdersAfterDate']);
+		$date_before = Dates::date2sql($_POST['OrdersToDate']);
 
 		$sql .= " AND porder.ord_date >= '$data_after'";
 		$sql .= " AND porder.ord_date <= '$date_before'";

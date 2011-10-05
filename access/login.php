@@ -10,13 +10,12 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 
-	include_once(APP_PATH . "includes/faui.inc");
 	$js = "<script language='JavaScript' type='text/javascript'>
 function defaultCompany()
 {
 	document.forms[0].company_login_name.options[" . $_SESSION["wa_current_user"]->company . "].selected = true;
 }
-" . get_js_png_fix() . "</script>";
+" . ui_view::get_js_png_fix() . "</script>";
 	$js2 = "<script language='JavaScript' type='text/javascript'>
 function set_fullmode() {
 	document.getElementById('ui_mode').value = 1;
@@ -123,7 +122,7 @@ function set_fullmode() {
 	echo "<table class='bottomBar'>\n";
 	echo "<tr>";
 	if (isset($_SESSION['wa_current_user'])) {
-		$date = Today() . " | " . Now();
+		$date = Dates::Today() . " | " . Dates::Now();
 	}
 	else
 	{

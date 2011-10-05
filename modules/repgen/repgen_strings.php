@@ -28,9 +28,8 @@
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 	add_access_extensions();
 
-	include_once(APP_PATH . "includes/date_functions.inc");
 	include_once(APP_PATH . "admin/db/company_db.inc");
-	include_once(APP_PATH . "includes/faui.inc");
+
 	require_once("repgen_const.inc");
 	require_once("repgen_def.inc");
 	require_once("repgen.inc");
@@ -350,14 +349,14 @@ function displayReport(id) {
 
 <?php
 	if (!empty($long))
-		display_heading(ITEM_DEF . ": " . $long);
+		ui_msgs::display_heading(ITEM_DEF . ": " . $long);
 	else
-		display_heading(ITEM_DEF);
+		ui_msgs::display_heading(ITEM_DEF);
 
-	display_heading(ITEM_CHAR);
+	ui_msgs::display_heading(ITEM_CHAR);
 
 	if (!empty($error))
-		display_error($error);
+		ui_msgs::display_error($error);
 
 	start_form(false, false, "repgen_strings.php?report_type=" . $report_type, "strings");
 
@@ -575,7 +574,7 @@ function displayReport(id) {
 	// <!--        End of input item form   -->
 	// <!--------------------------------------------------------------------->
 
-	display_heading(ITEM_HEAD);
+	ui_msgs::display_heading(ITEM_HEAD);
 
 	start_table(Config::get('tables.style') . "  width=70%");
 	$th = array(IT_TYP, IT_ART, IT_FONT, IT_FONT_SIZE, IT_ORD, IT_LEN, IT_X1, IT_Y1, "Total", IT_STRING, "Action", "");

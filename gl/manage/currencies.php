@@ -15,35 +15,32 @@
 
 	page(_($help_context = "Currencies"));
 
-	include_once(APP_PATH . "includes/faui.inc");
-	include_once(APP_PATH . "includes/banking.inc");
-
 	simple_page_mode(false);
 
 	//---------------------------------------------------------------------------------------------
 
 	function check_data() {
 		if (strlen($_POST['Abbreviation']) == 0) {
-			display_error(_("The currency abbreviation must be entered."));
-			set_focus('Abbreviation');
+			ui_msgs::display_error(_("The currency abbreviation must be entered."));
+			ui_view::set_focus('Abbreviation');
 			return false;
 		}
 		elseif (strlen($_POST['CurrencyName']) == 0)
 		{
-			display_error(_("The currency name must be entered."));
-			set_focus('CurrencyName');
+			ui_msgs::display_error(_("The currency name must be entered."));
+			ui_view::set_focus('CurrencyName');
 			return false;
 		}
 		elseif (strlen($_POST['Symbol']) == 0)
 		{
-			display_error(_("The currency symbol must be entered."));
-			set_focus('Symbol');
+			ui_msgs::display_error(_("The currency symbol must be entered."));
+			ui_view::set_focus('Symbol');
 			return false;
 		}
 		elseif (strlen($_POST['hundreds_name']) == 0)
 		{
-			display_error(_("The hundredths name must be entered."));
-			set_focus('hundreds_name');
+			ui_msgs::display_error(_("The hundredths name must be entered."));
+			ui_view::set_focus('hundreds_name');
 			return false;
 		}
 
@@ -62,14 +59,14 @@
 
 			update_currency($_POST['Abbreviation'], $_POST['Symbol'], $_POST['CurrencyName'],
 				$_POST['country'], $_POST['hundreds_name'], check_value('auto_update'));
-			display_notification(_('Selected currency settings has been updated'));
+			ui_msgs::display_notification(_('Selected currency settings has been updated'));
 		}
 		else
 		{
 
 			add_currency($_POST['Abbreviation'], $_POST['Symbol'], $_POST['CurrencyName'],
 				$_POST['country'], $_POST['hundreds_name'], check_value('auto_update'));
-			display_notification(_('New currency has been added'));
+			ui_msgs::display_notification(_('New currency has been added'));
 		}
 		$Mode = 'RESET';
 	}
@@ -88,7 +85,7 @@
 		$result = db_query($sql);
 		$myrow = db_fetch_row($result);
 		if ($myrow[0] > 0) {
-			display_error(_("Cannot delete this currency, because customer accounts have been created referring to this currency."));
+			ui_msgs::display_error(_("Cannot delete this currency, because customer accounts have been created referring to this currency."));
 			return false;
 		}
 
@@ -96,7 +93,7 @@
 		$result = db_query($sql);
 		$myrow = db_fetch_row($result);
 		if ($myrow[0] > 0) {
-			display_error(_("Cannot delete this currency, because supplier accounts have been created referring to this currency."));
+			ui_msgs::display_error(_("Cannot delete this currency, because supplier accounts have been created referring to this currency."));
 			return false;
 		}
 
@@ -104,7 +101,7 @@
 		$result = db_query($sql);
 		$myrow = db_fetch_row($result);
 		if ($myrow[0] > 0) {
-			display_error(_("Cannot delete this currency, because the company preferences uses this currency."));
+			ui_msgs::display_error(_("Cannot delete this currency, because the company preferences uses this currency."));
 			return false;
 		}
 
@@ -113,7 +110,7 @@
 		$result = db_query($sql);
 		$myrow = db_fetch_row($result);
 		if ($myrow[0] > 0) {
-			display_error(_("Cannot delete this currency, because thre are bank accounts that use this currency."));
+			ui_msgs::display_error(_("Cannot delete this currency, because thre are bank accounts that use this currency."));
 			return false;
 		}
 
@@ -127,7 +124,7 @@
 		if (check_can_delete()) {
 			//only delete if used in neither customer or supplier, comp prefs, bank trans accounts
 			delete_currency($selected_id);
-			display_notification(_('Selected currency has been deleted'));
+			ui_msgs::display_notification(_('Selected currency has been deleted'));
 		}
 		$Mode = 'RESET';
 	}
@@ -136,7 +133,7 @@
 
 	function display_currencies() {
 
-		$company_currency = get_company_currency();
+		$company_currency = Banking::get_company_currency();
 
 		$result = get_currencies(check_value('show_inactive'));
 		start_table(Config::get('tables.style'));
@@ -175,7 +172,7 @@
 
 		inactive_control_row($th);
 		end_table();
-		display_note(_("The marked currency is the home currency which cannot be deleted."), 0, 0, "class='currentfg'");
+		ui_msgs::display_note(_("The marked currency is the home currency which cannot be deleted."), 0, 0, "class='currentfg'");
 	}
 
 	//---------------------------------------------------------------------------------------------

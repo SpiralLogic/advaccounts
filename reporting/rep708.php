@@ -18,9 +18,6 @@
 	// ----------------------------------------------------------------
 
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
-	include_once(APP_PATH . "includes/date_functions.inc");
-	include_once(APP_PATH . "includes/data_checks.inc");
-	include_once(APP_PATH . "gl/includes/gl_db.inc");
 
 	//----------------------------------------------------------------------------------------------------
 
@@ -112,10 +109,10 @@
 		$accounts = get_gl_accounts();
 
 		$pdeb = $pcre = $cdeb = $ccre = $tdeb = $tcre = $pbal = $cbal = $tbal = 0;
-		$begin = begin_fiscalyear();
-		if (date1_greater_date2($begin, $from))
+		$begin = Dates::begin_fiscalyear();
+		if (Dates::date1_greater_date2($begin, $from))
 			$begin = $from;
-		$begin = add_days($begin, -1);
+		$begin = Dates::add_days($begin, -1);
 		while ($account = db_fetch($accounts))
 		{
 			$prev = get_balance($account["account_code"], $dimension, $dimension2, $begin, $from, false, false);

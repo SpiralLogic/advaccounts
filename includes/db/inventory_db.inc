@@ -1,20 +1,20 @@
 <?php
-/**********************************************************************
-Copyright (C) FrontAccounting, LLC.
-Released under the terms of the GNU General Public License, GPL,
-as published by the Free Software Foundation, either version 3
-of the License, or (at your option) any later version.
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
- ***********************************************************************/
+	/**********************************************************************
+	Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL,
+	as published by the Free Software Foundation, either version 3
+	of the License, or (at your option) any later version.
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+	 ***********************************************************************/
 	function get_qoh_on_date($stock_id, $location = null, $date_ = null, $exclude = 0) {
 		if ($date_ == null) {
-			$date_ = Today();
+			$date_ = Dates::Today();
 		}
 
-		$date = date2sql($date_);
+		$date = Dates::date2sql($date_);
 
 		$sql = "SELECT SUM(qty) FROM stock_moves
 		WHERE stock_id=" . db_escape($stock_id) . "
@@ -30,8 +30,8 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		if ($exclude > 0) {
 			$sql = "SELECT SUM(qty) FROM stock_moves
 			WHERE stock_id=" . db_escape($stock_id)
-					. " AND type=" . db_escape($exclude)
-					. " AND tran_date = '$date'";
+			 . " AND type=" . db_escape($exclude)
+			 . " AND tran_date = '$date'";
 
 			$result = db_query($sql, "QOH calulcation failed");
 			$myrow2 = db_fetch_row($result);
@@ -49,19 +49,19 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		$sql = "SELECT material_cost + labour_cost + overhead_cost AS standard_cost, units, decimals
 		FROM stock_master,item_units
 		WHERE stock_id=" . db_escape($stock_id)
-				. " AND stock_master.units=item_units.abbr";
+		 . " AND stock_master.units=item_units.abbr";
 		$query = db_query($sql, "The standard cost cannot be retrieved");
-		$result = array('standard_cost'=>0,'units'=>'ea','decimals'=>user_price_dec());
-		if (db_num_rows($query)==0) {
-	$result = db_fetch($query);
-}
+		$result = array('standard_cost' => 0, 'units' => 'ea', 'decimals' => user_price_dec());
+		if (db_num_rows($query) == 0) {
+			$result = db_fetch($query);
+		}
 		return $result;
 	}
 
 	//--------------------------------------------------------------------------------------
 
 	function get_standard_cost($stock_id) {
-		$sql = "SELECT IF(s.mb_flag='".STOCK_SERVICE."', 0, material_cost + labour_cost + overhead_cost) AS std_cost
+		$sql = "SELECT IF(s.mb_flag='" . STOCK_SERVICE . "', 0, material_cost + labour_cost + overhead_cost) AS std_cost
 		FROM stock_master s WHERE stock_id=" . db_escape($stock_id);
 		$result = db_query($sql, "The standard cost cannot be retrieved");
 
@@ -83,7 +83,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	//-------------------------------------------------------------------
 
 	function last_negative_stock_begin_date($stock_id, $to) {
-		$to = date2sql($to);
+		$to = Dates::date2sql($to);
 		$sql = "SET @q = 0";
 		db_query($sql);
 		$sql = "SET @flag = 0";
@@ -102,8 +102,8 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	//-------------------------------------------------------------------
 
 	function get_deliveries_between($stock_id, $from, $to) {
-		$from = date2sql($from);
-		$to = date2sql($to);
+		$from = Dates::date2sql($from);
+		$to = Dates::date2sql($to);
 		$sql = "SELECT SUM(-qty), SUM(-qty*standard_cost) FROM stock_moves
 		WHERE type=" . ST_CUSTDELIVERY . " AND stock_id=" . db_escape($stock_id) . " AND
 			tran_date>='$from' AND tran_date<='$to' GROUP BY stock_id";
@@ -122,7 +122,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		if ($from == false || $from == "") {
 			return;
 		}
-		$from = sql2date($from);
+		$from = Dates::sql2date($from);
 		$row = get_deliveries_between($stock_id, $from, $to);
 		if ($row == false) {
 			return;
@@ -132,8 +132,8 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		$diff = $new_cost - $old_cost;
 		if ($diff != 0) {
 			$update_no = get_next_trans_no(ST_COSTUPDATE);
-			if (!is_date_in_fiscalyear($to)) {
-				$to = end_fiscalyear();
+			if (!Dates::is_date_in_fiscalyear($to)) {
+				$to = Dates::end_fiscalyear();
 			}
 
 			$stock_gl_code = get_stock_gl_code($stock_id);
@@ -167,24 +167,24 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	// $price - in $person_id's currency
 
 	function add_stock_move($type, $stock_id, $trans_no, $location,
-	                        $date_, $reference, $quantity, $std_cost, $person_id = 0, $show_or_hide = 1,
-	                        $price = 0, $discount_percent = 0, $error_msg = "") {
+													$date_, $reference, $quantity, $std_cost, $person_id = 0, $show_or_hide = 1,
+													$price = 0, $discount_percent = 0, $error_msg = "") {
 		// do not add a stock move if it's a non-inventory item
 		if (!is_inventory_item($stock_id)) {
 			return null;
 		}
 
-		$date = date2sql($date_);
+		$date = Dates::date2sql($date_);
 
 		$sql = "INSERT INTO stock_moves (stock_id, trans_no, type, loc_code,
 		tran_date, person_id, reference, qty, standard_cost, visible, price,
 		discount_percent) VALUES (" . db_escape($stock_id)
-				. ", " . db_escape($trans_no) . ", " . db_escape($type)
-				. ",	" . db_escape($location) . ", '$date', "
-				. db_escape($person_id) . ", " . db_escape($reference) . ", "
-				. db_escape($quantity) . ", " . db_escape($std_cost) . ","
-				. db_escape($show_or_hide) . ", " . db_escape($price) . ", "
-				. db_escape($discount_percent) . ")";
+		 . ", " . db_escape($trans_no) . ", " . db_escape($type)
+		 . ",	" . db_escape($location) . ", '$date', "
+		 . db_escape($person_id) . ", " . db_escape($reference) . ", "
+		 . db_escape($quantity) . ", " . db_escape($std_cost) . ","
+		 . db_escape($show_or_hide) . ", " . db_escape($price) . ", "
+		 . db_escape($discount_percent) . ")";
 
 		if ($error_msg == "") {
 			$error_msg = "The stock movement record cannot be inserted";
@@ -196,12 +196,12 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	}
 
 	function update_stock_move_pid($type, $stock_id, $from, $to, $pid, $cost) {
-		$from = date2sql($from);
-		$to = date2sql($to);
+		$from = Dates::date2sql($from);
+		$to = Dates::date2sql($to);
 		$sql = "UPDATE stock_moves SET standard_cost=" . db_escape($cost)
-				. " WHERE type=" . db_escape($type)
-				. "	AND stock_id=" . db_escape($stock_id)
-				. "  AND tran_date>='$from' AND tran_date<='$to'
+		 . " WHERE type=" . db_escape($type)
+		 . "	AND stock_id=" . db_escape($stock_id)
+		 . "  AND tran_date>='$from' AND tran_date<='$to'
 			AND person_id = " . db_escape($pid);
 		db_query($sql, "The stock movement standard_cost cannot be updated");
 	}
@@ -210,10 +210,10 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 
 	function get_stock_moves($type, $type_no, $visible = false) {
 		$sql = "SELECT stock_moves.*, stock_master.description, "
-				. "stock_master.units,locations.location_name,"
-				. "stock_master.material_cost + "
-				. "stock_master.labour_cost + "
-				. "stock_master.overhead_cost AS FixedStandardCost
+		 . "stock_master.units,locations.location_name,"
+		 . "stock_master.material_cost + "
+		 . "stock_master.labour_cost + "
+		 . "stock_master.overhead_cost AS FixedStandardCost
 		FROM stock_moves,locations,stock_master
 		WHERE stock_moves.stock_id = stock_master.stock_id
 		AND locations.loc_code=stock_moves.loc_code
@@ -238,7 +238,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 
 	function get_location_name($loc_code) {
 		$sql = "SELECT location_name FROM locations WHERE loc_code="
-				. db_escape($loc_code);
+		 . db_escape($loc_code);
 
 		$result = db_query($sql, "could not retreive the location name for $loc_code");
 

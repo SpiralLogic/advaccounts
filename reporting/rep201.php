@@ -18,16 +18,13 @@
 	// ----------------------------------------------------------------
 
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
-	include_once(APP_PATH . "includes/date_functions.inc");
-	include_once(APP_PATH . "includes/data_checks.inc");
-	include_once(APP_PATH . "gl/includes/gl_db.inc");
 
 	//----------------------------------------------------------------------------------------------------
 
 	print_supplier_balances();
 
 	function get_open_balance($supplier_id, $to, $convert) {
-		$to = date2sql($to);
+		$to = Dates::date2sql($to);
 
 		$sql = "SELECT SUM(IF(supp_trans.type = " . ST_SUPPINVOICE . ", (supp_trans.ov_amount + supp_trans.ov_gst +
     	supp_trans.ov_discount)";
@@ -57,8 +54,8 @@
 	}
 
 	function getTransactions($supplier_id, $from, $to) {
-		$from = date2sql($from);
-		$to = date2sql($to);
+		$from = Dates::date2sql($from);
+		$to = Dates::date2sql($to);
 
 		$sql = "SELECT supp_trans.*,
 				(supp_trans.ov_amount + supp_trans.ov_gst + supp_trans.ov_discount)

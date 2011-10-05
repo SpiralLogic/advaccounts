@@ -16,7 +16,7 @@
 	include(APP_PATH . "purchasing/includes/purchasing_ui.inc");
 	$js = "";
 	if (Config::get('ui.windows.popups'))
-		$js .= get_js_open_window(900, 500);
+		$js .= ui_view::get_js_open_window(900, 500);
 
 	page(_($help_context = "Supplier Allocation Inquiry"), false, false, "", $js);
 	if (isset($_GET['supplier_id'])) {
@@ -31,7 +31,7 @@
 	//------------------------------------------------------------------------------------------------
 	start_form();
 	if (!isset($_POST['supplier_id']))
-		$_POST['supplier_id'] = get_global_supplier();
+		$_POST['supplier_id'] = ui_globals::get_global_supplier();
 	start_table("class='tablestyle_noborder'");
 	start_row();
 	supplier_list_cells(_("Select a supplier: "), 'supplier_id', $_POST['supplier_id'], true);
@@ -40,7 +40,7 @@
 	supp_allocations_list_cell("filterType", null);
 	check_cells(_("show settled:"), 'showSettled', null);
 	submit_cells('RefreshInquiry', _("Search"), '', _('Refresh Inquiry'), 'default');
-	set_global_supplier($_POST['supplier_id']);
+	ui_globals::set_global_supplier($_POST['supplier_id']);
 	end_row();
 	end_table();
 	//------------------------------------------------------------------------------------------------
@@ -55,7 +55,7 @@
 	}
 
 	function view_link($trans) {
-		return get_trans_view_str($trans["type"], $trans["trans_no"]);
+		return ui_view::get_trans_view_str($trans["type"], $trans["trans_no"]);
 	}
 
 	function due_date($row) {
@@ -91,8 +91,8 @@
 	}
 
 	//------------------------------------------------------------------------------------------------
-	$date_after = date2sql($_POST['TransAfterDate']);
-	$date_to = date2sql($_POST['TransToDate']);
+	$date_after = Dates::date2sql($_POST['TransAfterDate']);
+	$date_to = Dates::date2sql($_POST['TransToDate']);
 	// Sherifoz 22.06.03 Also get the description
 	$sql = "SELECT
 		trans.type, 
@@ -105,7 +105,7 @@
 		supplier.curr_code, 
     	(trans.ov_amount + trans.ov_gst  + trans.ov_discount) AS TotalAmount, 
 		trans.alloc AS Allocated,
-		((trans.type = " . ST_SUPPINVOICE . " OR trans.type = " . ST_SUPPCREDIT . ") AND trans.due_date < '" . date2sql(Today()) . "') AS OverDue
+		((trans.type = " . ST_SUPPINVOICE . " OR trans.type = " . ST_SUPPCREDIT . ") AND trans.due_date < '" . Dates::date2sql(Dates::Today()) . "') AS OverDue
     	FROM supp_trans as trans, suppliers as supplier
     	WHERE supplier.supplier_id = trans.supplier_id
      	AND trans.tran_date >= '$date_after'
@@ -125,7 +125,7 @@
 			$sql .= " AND trans.type = " . ST_SUPPCREDIT . " ";
 		}
 		if (($_POST['filterType'] == '2') || ($_POST['filterType'] == '5')) {
-			$today = date2sql(Today());
+			$today = Dates::date2sql(Dates::Today());
 			$sql .= " AND trans.due_date < '$today' ";
 		}
 	}

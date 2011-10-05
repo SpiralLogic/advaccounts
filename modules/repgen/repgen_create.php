@@ -26,9 +26,8 @@
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 	add_access_extensions();
 
-	include_once(APP_PATH . "includes/date_functions.inc");
 	include_once(APP_PATH . "admin/db/company_db.inc");
-	include_once(APP_PATH . "includes/faui.inc");
+
 	require_once("repgen_const.inc");
 	require_once("repgen_def.inc");
 	require_once("repgen.inc");
@@ -166,11 +165,11 @@ function openWindow2(url, title) {
 
 <?php
 	if (!empty($long))
-		display_heading(ALTER_HEAD . ":   " . $long);
+		ui_msgs::display_heading(ALTER_HEAD . ":   " . $long);
 	else
-		display_heading(CREATE_HEAD);
+		ui_msgs::display_heading(CREATE_HEAD);
 	if (!empty($error)) {
-		display_error($error);
+		ui_msgs::display_error($error);
 		$error = NULL;
 	}
 	start_form(false, false, "repgen_create.php", "edit");

@@ -11,14 +11,13 @@
 	 ***********************************************************************/
 	$page_security = 'SA_SUPPTRANSVIEW';
 
-
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
-	include_once(APP_PATH . "purchasing/includes/purchasing_db.inc");
+
 	include_once(APP_PATH . "purchasing/includes/purchasing_ui.inc");
 
 	$js = "";
 	if (Config::get('ui.windows.popups'))
-		$js .= get_js_open_window(900, 500);
+		$js .= ui_view::get_js_open_window(900, 500);
 	page(_($help_context = "View Supplier Invoice"), true, false, "", $js);
 
 	if (isset($_GET["trans_no"])) {
@@ -34,9 +33,9 @@
 
 	read_supp_invoice($trans_no, ST_SUPPINVOICE, $supp_trans);
 
-	$supplier_curr_code = get_supplier_currency($supp_trans->supplier_id);
+	$supplier_curr_code = Banking::get_supplier_currency($supp_trans->supplier_id);
 
-	display_heading(_("SUPPLIER INVOICE") . " # " . $trans_no);
+	ui_msgs::display_heading(_("SUPPLIER INVOICE") . " # " . $trans_no);
 	echo "<br>";
 
 	start_table(Config::get('tables.style') . "  width=95%");
@@ -48,10 +47,10 @@
 	start_row();
 	label_cells(_("Invoice Date"), $supp_trans->tran_date, "class='tableheader2'");
 	label_cells(_("Due Date"), $supp_trans->due_date, "class='tableheader2'");
-	if (!is_company_currency($supplier_curr_code))
+	if (!Banking::is_company_currency($supplier_curr_code))
 		label_cells(_("Currency"), $supplier_curr_code, "class='tableheader2'");
 	end_row();
-	comments_display_row(ST_SUPPINVOICE, $trans_no);
+	ui_view::comments_display_row(ST_SUPPINVOICE, $trans_no);
 
 	end_table(1);
 
@@ -64,7 +63,7 @@
 	label_row(_("Sub Total"), $display_sub_tot, "align=right", "nowrap align=right width=15%");
 
 	$tax_items = get_trans_tax_details(ST_SUPPINVOICE, $trans_no);
-	$tax_total = display_supp_trans_tax_details($tax_items, 1, $supp_trans->ov_gst);
+	$tax_total = ui_view::display_supp_trans_tax_details($tax_items, 1, $supp_trans->ov_gst);
 
 	$display_total = number_format2($supp_trans->ov_amount + $supp_trans->ov_gst, user_price_dec());
 
@@ -72,7 +71,7 @@
 
 	end_table(1);
 
-	is_voided_display(ST_SUPPINVOICE, $trans_no, _("This invoice has been voided."));
+	ui_view::is_voided_display(ST_SUPPINVOICE, $trans_no, _("This invoice has been voided."));
 
 	end_page(true);
 

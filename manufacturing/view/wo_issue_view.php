@@ -15,14 +15,11 @@
 
 	$js = "";
 	if (Config::get('ui.windows.popups'))
-		$js .= get_js_open_window(900, 500);
+		$js .= ui_view::get_js_open_window(900, 500);
 	page(_($help_context = "View Work Order Issue"), true, false, "", $js);
 
-	include_once(APP_PATH . "includes/date_functions.inc");
 	include_once(APP_PATH . "includes/manufacturing.inc");
-	include_once(APP_PATH . "includes/data_checks.inc");
 
-	include_once(APP_PATH . "manufacturing/includes/manufacturing_db.inc");
 	include_once(APP_PATH . "manufacturing/includes/manufacturing_ui.inc");
 
 	//-------------------------------------------------------------------------------------------------
@@ -47,18 +44,18 @@
 		start_row();
 		label_cell($myrow["issue_no"]);
 		label_cell($myrow["reference"]);
-		label_cell(get_trans_view_str(ST_WORKORDER, $myrow["workorder_id"]));
+		label_cell(ui_view::get_trans_view_str(ST_WORKORDER, $myrow["workorder_id"]));
 		label_cell($myrow["stock_id"] . " - " . $myrow["description"]);
 		label_cell($myrow["location_name"]);
 		label_cell($myrow["WorkCentreName"]);
-		label_cell(sql2date($myrow["issue_date"]));
+		label_cell(Dates::sql2date($myrow["issue_date"]));
 		end_row();
 
-		comments_display_row(28, $issue_no);
+		ui_view::comments_display_row(28, $issue_no);
 
 		end_table(1);
 
-		is_voided_display(28, $issue_no, _("This issue has been voided."));
+		ui_view::is_voided_display(28, $issue_no, _("This issue has been voided."));
 	}
 
 	//-------------------------------------------------------------------------------------------------
@@ -68,7 +65,7 @@
 		$result = get_work_order_issue_details($issue_no);
 
 		if (db_num_rows($result) == 0) {
-			display_note(_("There are no items for this issue."));
+			ui_msgs::display_note(_("There are no items for this issue."));
 		}
 		else
 		{
@@ -108,11 +105,11 @@
 
 	//-------------------------------------------------------------------------------------------------
 
-	display_heading($systypes_array[ST_MANUISSUE] . " # " . $wo_issue_no);
+	ui_msgs::display_heading($systypes_array[ST_MANUISSUE] . " # " . $wo_issue_no);
 
 	display_wo_issue($wo_issue_no);
 
-	display_heading2(_("Items for this Issue"));
+	ui_msgs::display_heading2(_("Items for this Issue"));
 
 	display_wo_issue_details($wo_issue_no);
 

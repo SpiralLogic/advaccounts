@@ -15,18 +15,15 @@
 
 	page(_($help_context = "Display Setup"));
 
-	include_once(APP_PATH . "includes/date_functions.inc");
-	include_once(APP_PATH . "includes/faui.inc");
-
 	include_once(APP_PATH . "admin/db/company_db.inc");
 
 	//-------------------------------------------------------------------------------------------------
 
 	if (isset($_POST['setprefs'])) {
 		if (!is_numeric($_POST['query_size']) || ($_POST['query_size'] < 1)) {
-			display_error($_POST['query_size']);
-			display_error(_("Query size must be integer and greater than zero."));
-			set_focus('query_size');
+			ui_msgs::display_error($_POST['query_size']);
+			ui_msgs::display_error(_("Query size must be integer and greater than zero."));
+			ui_view::set_focus('query_size');
 		} else {
 			$chg_theme = user_theme() != $_POST['theme'];
 			$chg_lang = $_SESSION['language']->code != $_POST['language'];
@@ -55,9 +52,9 @@
 				meta_forward($_SERVER['PHP_SELF']);
 
 			if (Config::get('demo_mode'))
-				display_warning(_("Display settings have been updated. Keep in mind that changed settings are restored on every login in demo mode."));
+				ui_msgs::display_warning(_("Display settings have been updated. Keep in mind that changed settings are restored on every login in demo mode."));
 			else
-				display_notification_centered(_("Display settings have been updated."));
+				ui_msgs::display_notification_centered(_("Display settings have been updated."));
 		}
 	}
 

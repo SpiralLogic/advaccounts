@@ -9,14 +9,13 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	include_once(APP_PATH . "includes/faui.inc");
 
 	//--------------------------------------------------------------------------------------
 
 	function display_dimension_balance($id, $from, $to) {
 
-		$from = date2sql($from);
-		$to = date2sql($to);
+		$from = Dates::date2sql($from);
+		$to = Dates::date2sql($to);
 		$sql = "SELECT account, chart_master.account_name, sum(amount) AS amt FROM
 		gl_trans,chart_master WHERE
 		gl_trans.account = chart_master.account_code AND
@@ -25,11 +24,11 @@
 		$result = db_query($sql, "Transactions could not be calculated");
 
 		if (db_num_rows($result) == 0) {
-			display_note(_("There are no transactions for this dimension for the selected period."));
+			ui_msgs::display_note(_("There are no transactions for this dimension for the selected period."));
 		}
 		else
 		{
-			display_heading2(_("Balance for this Dimension"));
+			ui_msgs::display_heading2(_("Balance for this Dimension"));
 			br();
 			start_table(Config::get('tables.style'));
 			$th = array(_("Account"), _("Debit"), _("Credit"));
@@ -41,7 +40,7 @@
 				alt_table_row_color($k);
 
 				label_cell($myrow["account"] . " " . $myrow['account_name']);
-				display_debit_or_credit_cells($myrow["amt"]);
+				ui_view::display_debit_or_credit_cells($myrow["amt"]);
 				$total += $myrow["amt"];
 				end_row();
 			}

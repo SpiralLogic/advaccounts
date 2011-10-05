@@ -15,10 +15,8 @@
 
 	page(_($help_context = "Install/Update Languages"));
 
-	include_once(APP_PATH . "includes/date_functions.inc");
 	include_once(APP_PATH . "admin/db/company_db.inc");
 	include_once(APP_PATH . "admin/db/maintenance_db.inc");
-	include_once(APP_PATH . "includes/faui.inc");
 
 	//---------------------------------------------------------------------------------------------
 
@@ -36,7 +34,7 @@
 
 	function check_data() {
 		if ($_POST['code'] == "" || $_POST['name'] == "" || $_POST['encoding'] == "") {
-			display_error(_("Language name, code nor encoding cannot be empty"));
+			ui_msgs::display_error(_("Language name, code nor encoding cannot be empty"));
 			return false;
 		}
 		return true;
@@ -92,7 +90,7 @@
 		$id = $_GET['id'];
 
 		$lang = $installed_languages[$id]['code'];
-		$filename =PATH_TO_ROOT. "/lang/$lang/LC_MESSAGES";
+		$filename = PATH_TO_ROOT . "/lang/$lang/LC_MESSAGES";
 
 		if ($lang == $dflt_lang) {
 			// on delete set default to current.
@@ -105,7 +103,7 @@
 		if (!write_lang())
 			return;
 
-		$filename = PATH_TO_ROOT."/lang/$lang";
+		$filename = PATH_TO_ROOT . "/lang/$lang";
 		flush_dir($filename);
 		rmdir($filename);
 
@@ -163,7 +161,7 @@
 		}
 
 		end_table();
-		display_note(_("The marked language is the current language which cannot be deleted."), 0, 0, "class='currentfg'");
+		ui_msgs::display_note(_("The marked language is the current language which cannot be deleted."), 0, 0, "class='currentfg'");
 	}
 
 	//---------------------------------------------------------------------------------------------
@@ -211,7 +209,7 @@
 		file_row(_("Language File") . " (MO)", 'uploadfile2');
 
 		end_table(0);
-		display_note(_("Select your language files from your local harddisk."), 0, 1);
+		ui_msgs::display_note(_("Select your language files from your local harddisk."), 0, 1);
 		echo "<center><input onclick='javascript:updateLanguage()' type='button' style='width:150px' value='" . _("Save") . "'></center>";
 
 		end_form();

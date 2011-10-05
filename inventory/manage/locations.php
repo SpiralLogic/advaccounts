@@ -15,10 +15,6 @@
 
 	page(_($help_context = "Inventory Locations"));
 
-	include_once(APP_PATH . "includes/faui.inc");
-
-	include_once(APP_PATH . "inventory/includes/inventory_db.inc");
-
 	simple_page_mode(true);
 
 	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
@@ -35,14 +31,14 @@
 		if (strlen(db_escape($_POST['loc_code'])) > 7) //check length after conversion
 		{
 			$input_error = 1;
-			display_error(_("The location code must be five characters or less long (including converted special chars)."));
-			set_focus('loc_code');
+			ui_msgs::display_error(_("The location code must be five characters or less long (including converted special chars)."));
+			ui_view::set_focus('loc_code');
 		}
 		elseif (strlen($_POST['location_name']) == 0)
 		{
 			$input_error = 1;
-			display_error(_("The location name must be entered."));
-			set_focus('location_name');
+			ui_msgs::display_error(_("The location name must be entered."));
+			ui_view::set_focus('location_name');
 		}
 
 		if ($input_error != 1) {
@@ -50,7 +46,7 @@
 
 				update_item_location($selected_id, $_POST['location_name'], $_POST['delivery_address'],
 					$_POST['phone'], $_POST['phone2'], $_POST['fax'], $_POST['email'], $_POST['contact']);
-				display_notification(_('Selected location has been updated'));
+				ui_msgs::display_notification(_('Selected location has been updated'));
 			}
 			else
 			{
@@ -59,7 +55,7 @@
 
 				add_item_location($_POST['loc_code'], $_POST['location_name'], $_POST['delivery_address'],
 					$_POST['phone'], $_POST['phone2'], $_POST['fax'], $_POST['email'], $_POST['contact']);
-				display_notification(_('New location has been added'));
+				ui_msgs::display_notification(_('New location has been added'));
 			}
 
 			$Mode = 'RESET';
@@ -71,7 +67,7 @@
 		$result = db_query($sql, "could not query stock moves");
 		$myrow = db_fetch_row($result);
 		if ($myrow[0] > 0) {
-			display_error(_("Cannot delete this location because item movements have been created using this location."));
+			ui_msgs::display_error(_("Cannot delete this location because item movements have been created using this location."));
 			return false;
 		}
 
@@ -79,7 +75,7 @@
 		$result = db_query($sql, "could not query work orders");
 		$myrow = db_fetch_row($result);
 		if ($myrow[0] > 0) {
-			display_error(_("Cannot delete this location because it is used by some work orders records."));
+			ui_msgs::display_error(_("Cannot delete this location because it is used by some work orders records."));
 			return false;
 		}
 
@@ -87,7 +83,7 @@
 		$result = db_query($sql, "could not query customer branches");
 		$myrow = db_fetch_row($result);
 		if ($myrow[0] > 0) {
-			display_error(_("Cannot delete this location because it is used by some branch records as the default location to deliver from."));
+			ui_msgs::display_error(_("Cannot delete this location because it is used by some branch records as the default location to deliver from."));
 			return false;
 		}
 
@@ -95,35 +91,35 @@
 		$result = db_query($sql, "could not query bom");
 		$myrow = db_fetch_row($result);
 		if ($myrow[0] > 0) {
-			display_error(_("Cannot delete this location because it is used by some related records in other tables."));
+			ui_msgs::display_error(_("Cannot delete this location because it is used by some related records in other tables."));
 			return false;
 		}
 		$sql = "SELECT COUNT(*) FROM grn_batch WHERE loc_code=" . db_escape($selected_id);
 		$result = db_query($sql, "could not query grn batch");
 		$myrow = db_fetch_row($result);
 		if ($myrow[0] > 0) {
-			display_error(_("Cannot delete this location because it is used by some related records in other tables."));
+			ui_msgs::display_error(_("Cannot delete this location because it is used by some related records in other tables."));
 			return false;
 		}
 		$sql = "SELECT COUNT(*) FROM purch_orders WHERE into_stock_location=" . db_escape($selected_id);
 		$result = db_query($sql, "could not query purch orders");
 		$myrow = db_fetch_row($result);
 		if ($myrow[0] > 0) {
-			display_error(_("Cannot delete this location because it is used by some related records in other tables."));
+			ui_msgs::display_error(_("Cannot delete this location because it is used by some related records in other tables."));
 			return false;
 		}
 		$sql = "SELECT COUNT(*) FROM sales_orders WHERE from_stk_loc=" . db_escape($selected_id);
 		$result = db_query($sql, "could not query sales orders");
 		$myrow = db_fetch_row($result);
 		if ($myrow[0] > 0) {
-			display_error(_("Cannot delete this location because it is used by some related records in other tables."));
+			ui_msgs::display_error(_("Cannot delete this location because it is used by some related records in other tables."));
 			return false;
 		}
 		$sql = "SELECT COUNT(*) FROM sales_pos WHERE pos_location=" . db_escape($selected_id);
 		$result = db_query($sql, "could not query sales pos");
 		$myrow = db_fetch_row($result);
 		if ($myrow[0] > 0) {
-			display_error(_("Cannot delete this location because it is used by some related records in other tables."));
+			ui_msgs::display_error(_("Cannot delete this location because it is used by some related records in other tables."));
 			return false;
 		}
 		return true;
@@ -135,7 +131,7 @@
 
 		if (can_delete($selected_id)) {
 			delete_item_location($selected_id);
-			display_notification(_('Selected location has been deleted'));
+			ui_msgs::display_notification(_('Selected location has been deleted'));
 		} //end if Delete Location
 		$Mode = 'RESET';
 	}

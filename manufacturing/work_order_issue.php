@@ -11,32 +11,26 @@
 	 ***********************************************************************/
 	$page_security = 'SA_MANUFISSUE';
 
-
-
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 
-	include_once(APP_PATH . "includes/date_functions.inc");
-	include_once(APP_PATH . "includes/data_checks.inc");
-
-	include_once(APP_PATH . "manufacturing/includes/manufacturing_db.inc");
 	include_once(APP_PATH . "manufacturing/includes/manufacturing_ui.inc");
 	include_once(APP_PATH . "manufacturing/includes/work_order_issue_ui.inc");
 	$js = "";
 	if (Config::get('ui.windows.popups'))
-		$js .= get_js_open_window(800, 500);
+		$js .= ui_view::get_js_open_window(800, 500);
 
 	page(_($help_context = "Issue Items to Work Order"), false, false, "", $js);
 
 	//-----------------------------------------------------------------------------------------------
 
 	if (isset($_GET['AddedID'])) {
-		display_notification(_("The work order issue has been entered."));
+		ui_msgs::display_notification(_("The work order issue has been entered."));
 
-		display_note(get_trans_view_str(ST_WORKORDER, $_GET['AddedID'], _("View this Work Order")));
+		ui_msgs::display_note(ui_view::get_trans_view_str(ST_WORKORDER, $_GET['AddedID'], _("View this Work Order")));
 
 		hyperlink_no_params("search_work_orders.php", _("Select another &Work Order to Process"));
 
-		display_footer_exit();
+		ui_view::display_footer_exit();
 	}
 	//--------------------------------------------------------------------------------------------------
 
@@ -44,7 +38,7 @@
 		global $Ajax;
 
 		$Ajax->activate('items_table');
-		set_focus('_stock_id_edit');
+		ui_view::set_focus('_stock_id_edit');
 	}
 
 	//--------------------------------------------------------------------------------------------------
@@ -66,32 +60,32 @@
 	function can_process() {
 		global $Refs;
 
-		if (!is_date($_POST['date_'])) {
-			display_error(_("The entered date for the issue is invalid."));
-			set_focus('date_');
+		if (!Dates::is_date($_POST['date_'])) {
+			ui_msgs::display_error(_("The entered date for the issue is invalid."));
+			ui_view::set_focus('date_');
 			return false;
 		}
-		elseif (!is_date_in_fiscalyear($_POST['date_']))
+		elseif (!Dates::is_date_in_fiscalyear($_POST['date_']))
 		{
-			display_error(_("The entered date is not in fiscal year."));
-			set_focus('date_');
+			ui_msgs::display_error(_("The entered date is not in fiscal year."));
+			ui_view::set_focus('date_');
 			return false;
 		}
 		if (!$Refs->is_valid($_POST['ref'])) {
-			display_error(_("You must enter a reference."));
-			set_focus('ref');
+			ui_msgs::display_error(_("You must enter a reference."));
+			ui_view::set_focus('ref');
 			return false;
 		}
 
 		if (!is_new_reference($_POST['ref'], 28)) {
-			display_error(_("The entered reference is already in use."));
-			set_focus('ref');
+			ui_msgs::display_error(_("The entered reference is already in use."));
+			ui_view::set_focus('ref');
 			return false;
 		}
 
 		$failed_item = $_SESSION['issue_items']->check_qoh($_POST['Location'], $_POST['date_'], !$_POST['IssueType']);
 		if ($failed_item != -1) {
-			display_error(_("The issue cannot be processed because an entered item would cause a negative inventory balance :") .
+			ui_msgs::display_error(_("The issue cannot be processed because an entered item would cause a negative inventory balance :") .
 				 " " . $failed_item->stock_id . " - " . $failed_item->description);
 			return false;
 		}
@@ -107,7 +101,7 @@
 			$_POST['Location'], $_POST['WorkCentre'], $_POST['date_'], $_POST['memo_']);
 
 		if ($failed_data != null) {
-			display_error(_("The process cannot be completed because there is an insufficient total quantity for a component.") . "<br>"
+			ui_msgs::display_error(_("The process cannot be completed because there is an insufficient total quantity for a component.") . "<br>"
 				 . _("Component is :") . $failed_data[0] . "<br>"
 				 . _("From location :") . $failed_data[1] . "<br>");
 		}
@@ -121,14 +115,14 @@
 
 	function check_item_data() {
 		if (!check_num('qty', 0)) {
-			display_error(_("The quantity entered is negative or invalid."));
-			set_focus('qty');
+			ui_msgs::display_error(_("The quantity entered is negative or invalid."));
+			ui_view::set_focus('qty');
 			return false;
 		}
 
 		if (!check_num('std_cost', 0)) {
-			display_error(_("The entered standard cost is negative or invalid."));
-			set_focus('std_cost');
+			ui_msgs::display_error(_("The entered standard cost is negative or invalid."));
+			ui_view::set_focus('std_cost');
 			return false;
 		}
 

@@ -1,14 +1,14 @@
 <?php
-/**********************************************************************
-Copyright (C) FrontAccounting, LLC.
-Released under the terms of the GNU General Public License, GPL,
-as published by the Free Software Foundation, either version 3
-of the License, or (at your option) any later version.
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
- ***********************************************************************/
+	/**********************************************************************
+	Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL,
+	as published by the Free Software Foundation, either version 3
+	of the License, or (at your option) any later version.
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+	 ***********************************************************************/
 	//--------------------------------------------------------------------------------------------------
 	function copy_from_trans(&$supp_trans) {
 		$_POST['Comments'] = $supp_trans->Comments;
@@ -46,12 +46,12 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 
 	//--------------------------------------------------------------------------------------------------
 	function invoice_header(&$supp_trans) {
-		global $Ajax,  $Refs;
+		global $Ajax, $Refs;
 		// if vars have been lost, recopy
 		if (!isset($_POST['tran_date'])) {
 			copy_from_trans($supp_trans);
 		}
-		start_outer_table("width=95% ".Config::get('tables.style2'));
+		start_outer_table("width=95% " . Config::get('tables.style2'));
 		table_section(1);
 		if (isset($_POST['invoice_no'])) {
 			$trans = get_supp_trans($_POST['invoice_no'], ST_SUPPINVOICE);
@@ -60,8 +60,8 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 			label_row(_("Supplier:"), $supp . hidden('supplier_id', $_POST['supplier_id'], false));
 		}
 		else {
-			if (!isset($_POST['supplier_id']) && (get_global_supplier() != ALL_TEXT)) {
-				$_POST['supplier_id'] = get_global_supplier();
+			if (!isset($_POST['supplier_id']) && (ui_globals::get_global_supplier() != ALL_TEXT)) {
+				$_POST['supplier_id'] = ui_globals::get_global_supplier();
 			}
 			supplier_list_row(_("Supplier:"), 'supplier_id', $_POST['supplier_id'], false, true);
 		}
@@ -81,8 +81,8 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		}
 		if ($supp_trans->is_invoice && isset($_POST['invoice_no'])) {
 			label_row(_("Supplier's Ref.:"),
-								$_POST['invoice_no'] . hidden('invoice_no', $_POST['invoice_no'], false) . hidden('supp_reference',
-																																																	$_POST['invoice_no'], false));
+			 $_POST['invoice_no'] . hidden('invoice_no', $_POST['invoice_no'], false) . hidden('supp_reference',
+				 $_POST['invoice_no'], false));
 		}
 		else
 		{
@@ -100,12 +100,12 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		date_row(_("Due Date") . ":", 'due_date');
 		label_row(_("Terms:"), $supp_trans->terms_description);
 		table_section(3, "33%");
-		set_global_supplier($_POST['supplier_id']);
-		$supplier_currency = get_supplier_currency($supp_trans->supplier_id);
-		$company_currency = get_company_currency();
+		ui_globals::set_global_supplier($_POST['supplier_id']);
+		$supplier_currency = Banking::get_supplier_currency($supp_trans->supplier_id);
+		$company_currency = Banking::get_company_currency();
 		if ($supplier_currency != $company_currency) {
 			label_row(_("Supplier's Currency:"), "<b>" . $supplier_currency . "</b>");
-			exchange_rate_display($supplier_currency, $company_currency, $_POST['tran_date']);
+			ui_view::exchange_rate_display($supplier_currency, $company_currency, $_POST['tran_date']);
 		}
 		label_row(_("Tax Group:"), $supp_trans->tax_description);
 		end_outer_table(1);
@@ -116,10 +116,10 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		copy_to_trans($supp_trans);
 		$dim = get_company_pref('use_dimension');
 		$colspan = ($dim == 2 ? 7 : ($dim == 1 ? 6 : 5));
-		start_table(Config::get('tables.style2')." width=90%");
+		start_table(Config::get('tables.style2') . " width=90%");
 		label_row(_("Sub-total:"), price_format($supp_trans->ov_amount), "colspan=$colspan align=right", "align=right");
 		$taxes = $supp_trans->get_taxes($supp_trans->tax_group_id);
-		$tax_total = display_edit_tax_items($taxes, $colspan, 0, null, true); // tax_included==0 (we are the company)
+		$tax_total = ui_view::display_edit_tax_items($taxes, $colspan, 0, null, true); // tax_included==0 (we are the company)
 		label_cell(_("Total Correction"), "colspan=$colspan align=right width='90%'");
 		small_amount_cells(null, 'ChgTotal', price_format(get_post('ChgTotal'), 2));
 		$display_total = price_format($supp_trans->ov_amount + $tax_total + get_post('ChgTotal'));
@@ -162,7 +162,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	//		 = 2 display on view invoice
 	//		 = 3 display on view credit
 	function display_gl_items(&$supp_trans, $mode = 0) {
-		global  $Ajax;
+		global $Ajax;
 		// if displaying in form, and no items, exit
 		if (($mode == 2 || $mode == 3) && count($supp_trans->gl_codes) == 0) {
 			return 0;
@@ -173,7 +173,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		else {
 			$heading = _("GL Items for this Credit Note");
 		}
-		start_outer_table(Config::get('tables.style')."  width=90%");
+		start_outer_table(Config::get('tables.style') . "  width=90%");
 		if ($mode == 1) {
 			$qes = has_quick_entries(QE_SUPPINV);
 			if ($qes !== false) {
@@ -191,13 +191,12 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 				echo "<input class='amount' type='text' name='totamount' size='7' maxlength='12' dec='$dec' value='$amount'>&nbsp;";
 				submit('go', _("Go"), true, false, true);
 				echo "</div>";
-
 			}
 		}
-		display_heading($heading);
+		ui_msgs::display_heading($heading);
 		end_outer_table(0, false);
 		div_start('gl_items');
-		start_table(Config::get('tables.style')."  width=90%");
+		start_table(Config::get('tables.style') . "  width=90%");
 		$dim = get_company_pref('use_dimension');
 		if ($dim == 2) {
 			$th = array(_("Account"), _("Name"), _("Dimension") . " 1", _("Dimension") . " 2", _("Memo"), _("Amount"));
@@ -252,7 +251,6 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 					table_header($th);
 				}
 			}
-
 		}
 		if ($mode == 1) {
 			display_gl_controls($supp_trans, $k);
@@ -273,7 +271,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		else {
 			if (isset($_POST['receive_begin']) && isset($_POST['receive_end'])) {
 				$result = get_grn_items(0, $supp_trans->supplier_id, false, true, 0, $_POST['receive_begin'],
-																$_POST['receive_end']);
+					$_POST['receive_end']);
 			}
 			else {
 				if (isset($_POST['invoice_no'])) {
@@ -299,25 +297,25 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 				if (!isset($_SESSION['delivery_po']) || $myrow["purch_order_no"] == $_SESSION['delivery_po']) {
 					alt_table_row_color($k);
 					$n = $myrow["id"];
-					label_cell(get_trans_view_str(25, $myrow["grn_batch_id"]));
+					label_cell(ui_view::get_trans_view_str(25, $myrow["grn_batch_id"]));
 					label_cell($myrow["id"] .
-										 hidden('qty_recd' . $n, $myrow["qty_recd"], false) .
-										 hidden('item_code' . $n, $myrow["item_code"], false) .
-										 hidden('description' . $n, $myrow["description"], false) .
-										 hidden('prev_quantity_inv' . $n, $myrow['quantity_inv'], false) .
-										 hidden('order_price' . $n, $myrow['unit_price'], false) .
-										 hidden('std_cost_unit' . $n, $myrow['std_cost_unit'], false) .
-										 hidden('po_detail_item' . $n, $myrow['po_detail_item'], false));
-					label_cell(get_trans_view_str(ST_PURCHORDER, $myrow["purch_order_no"]));
+						 hidden('qty_recd' . $n, $myrow["qty_recd"], false) .
+						 hidden('item_code' . $n, $myrow["item_code"], false) .
+						 hidden('description' . $n, $myrow["description"], false) .
+						 hidden('prev_quantity_inv' . $n, $myrow['quantity_inv'], false) .
+						 hidden('order_price' . $n, $myrow['unit_price'], false) .
+						 hidden('std_cost_unit' . $n, $myrow['std_cost_unit'], false) .
+						 hidden('po_detail_item' . $n, $myrow['po_detail_item'], false));
+					label_cell(ui_view::get_trans_view_str(ST_PURCHORDER, $myrow["purch_order_no"]));
 					label_cell($myrow["item_code"], "class='stock' data-stock_id='" . $myrow['item_code'] . "'");
 					label_cell($myrow["description"]);
-					label_cell(sql2date($myrow["delivery_date"]));
+					label_cell(Dates::sql2date($myrow["delivery_date"]));
 					$dec = get_qty_dec($myrow["item_code"]);
 					qty_cell($myrow["qty_recd"], false, $dec);
 					qty_cell($myrow["quantity_inv"], false, $dec);
 					if ($supp_trans->is_invoice) {
 						qty_cells(null, 'this_quantity_inv' . $n, number_format2(
-														$myrow["qty_recd"] - $myrow["quantity_inv"], $dec), null, null, $dec);
+								$myrow["qty_recd"] - $myrow["quantity_inv"], $dec), null, null, $dec);
 					}
 					else
 					{
@@ -325,27 +323,26 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 					}
 					$dec2 = 0;
 					amount_cells(null, 'ChgPrice' . $n, price_decimal_format(
-														 $myrow["unit_price"], $dec2), null, null, $dec2, 'ChgPriceCalc' . $n);
+							$myrow["unit_price"], $dec2), null, null, $dec2, 'ChgPriceCalc' . $n);
 					amount_cells(null, 'ExpPrice' . $n, price_decimal_format(
-														 $myrow["unit_price"], $dec2), null, null, $dec2, 'ExpPriceCalc' . $n);
+							$myrow["unit_price"], $dec2), null, null, $dec2, 'ExpPriceCalc' . $n);
 					small_amount_cells(null, 'ChgDiscount' . $n, percent_format(
-																	 $myrow['discount'] * 100), null, null, user_percent_dec());
-					amount_cell(price_decimal_format(($myrow["unit_price"] * ($myrow["qty_recd"] - $myrow["quantity_inv"]) * (1 - $myrow['discount'])) / $myrow["qty_recd"], $dec2), false,$dec2, 'Ea' . $n);
+							$myrow['discount'] * 100), null, null, user_percent_dec());
+					amount_cell(price_decimal_format(($myrow["unit_price"] * ($myrow["qty_recd"] - $myrow["quantity_inv"]) * (1 - $myrow['discount'])) / $myrow["qty_recd"], $dec2), false, $dec2, 'Ea' . $n);
 					if ($supp_trans->is_invoice) {
-						amount_cells(null, 'ChgTotal' . $n, price_decimal_format($myrow["unit_price"] * ($myrow["qty_recd"] - $myrow["quantity_inv"]) * (1 -$myrow['discount']), $dec2), null, null, $dec2,'ChgTotalCalc' . $n);
+						amount_cells(null, 'ChgTotal' . $n, price_decimal_format($myrow["unit_price"] * ($myrow["qty_recd"] - $myrow["quantity_inv"]) * (1 - $myrow['discount']), $dec2), null, null, $dec2, 'ChgTotalCalc' . $n);
 					}
 					else {
 						amount_cell(round2($myrow["unit_price"] * max($myrow['quantity_inv'], 0) * (1 - $myrow['discount']), user_price_dec()));
 					}
-					submit_cells('grn_item_id' . $n, _("Add"), '', ($supp_trans->is_invoice ? _("Add to Invoice") : _("Add to Credit Note")) , true);
+					submit_cells('grn_item_id' . $n, _("Add"), '', ($supp_trans->is_invoice ? _("Add to Invoice") : _("Add to Credit Note")), true);
 					if ($supp_trans->is_invoice && $_SESSION["wa_current_user"]->can_access('SA_GRNDELETE')) { // Added 2008-10-18 by Joe Hunt. Special access rights needed.
 						submit_cells('void_item_id' . $n, _("Remove"), '', _("WARNING! Be careful with removal. The operation is executed immediately and cannot be undone !!!"), true);
-						submit_js_confirm('void_item_id' . $n,sprintf(_('You are about to remove all yet non-invoiced items from delivery line #%d. This operation also irreversibly changes related order line. Do you want to continue ?'),$n));
+						submit_js_confirm('void_item_id' . $n, sprintf(_('You are about to remove all yet non-invoiced items from delivery line #%d. This operation also irreversibly changes related order line. Do you want to continue ?'), $n));
 					}
 					hyperlink_params_td("/purchasing/po_entry_items.php", _("Modify"), "ModifyOrderNumber=" . $myrow["purch_order_no"], ' class="button"') . end_row();
 				}
 			}
-
 		}
 		if (isset($_SESSION['delivery_grn'])) {
 			unset($_SESSION['delivery_grn']);
@@ -370,7 +367,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		if ($mode == 1) {
 			if ($supp_trans->is_invoice) {
 				$heading = _("Items Received Yet to be Invoiced");
-				
+
 				if ($_SESSION["wa_current_user"]->can_access('SA_GRNDELETE')) // Added 2008-10-18 by Joe Hunt. Only admins can remove GRNs
 				{
 					$heading2 = _("WARNING! Be careful with removal. The operation is executed immediately and cannot be undone !!!");
@@ -390,7 +387,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 				$heading = _("Received Items Credited on this Note");
 			}
 		}
-		display_heading($heading);
+		ui_msgs::display_heading($heading);
 		if ($mode == 1) {
 			if (!$supp_trans->is_invoice && !isset($_POST['invoice_no'])) {
 				echo "</td>";
@@ -400,7 +397,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 				echo "<td>";
 			}
 			if ($heading2 != "") {
-				display_note($heading2, 0, 0, "class='overduefg'");
+				ui_msgs::display_note($heading2, 0, 0, "class='overduefg'");
 			}
 			echo "</td><td width=10% align='right'>";
 			submit('InvGRNAll', _("Add All Items"), true, false, 'button-large');
@@ -408,18 +405,18 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 			start_outer_table();
 			start_row();
 			date_cells(_("Received between"), 'receive_begin', "", null, -30, 0, 0, "valign=middle");
-						date_cells(_("and"), 'receive_end', '', null, 1, 0, 0, "valign=middle");
-						submit_cells('RefreshInquiry', _("Search"), '', _('Refresh Inquiry'), true);
-						end_row();
-
+			date_cells(_("and"), 'receive_end', '', null, 1, 0, 0, "valign=middle");
+			submit_cells('RefreshInquiry', _("Search"), '', _('Refresh Inquiry'), true);
+			end_row();
 		}
 		end_outer_table(0, false);
 		div_start('grn_items');
-		start_table(Config::get('tables.style')."  width=90%");
+		start_table(Config::get('tables.style') . "  width=90%");
 		if ($mode == 1) {
 			$th = array(_("Delivery"), _("Sequence #"), _("P.O."), _("Item"), _("Description"), _("Received"),
-									_("Received"), _("Invoiced"), _("Yet To Invoice"), _("Order Price"),
-									_("Expected Price"), _('Discount %'), _('Ea Price'), _("Total"), "", "", "");
+				_("Received"), _("Invoiced"), _("Yet To Invoice"), _("Order Price"),
+				_("Expected Price"), _('Discount %'), _('Ea Price'), _("Total"), "", "", ""
+			);
 			//      if ($supp_trans->is_invoice && $_SESSION["wa_current_user"]->can_access('SA_GRNDELETE')) // Added 2008-10-18 by Joe Hunt. Only admins can remove GRNs
 			//         $th[] = "";
 			if (!$supp_trans->is_invoice) {
@@ -429,7 +426,8 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		}
 		else {
 			$th = array(_("Delivery"), _("Item"), _("Description"), _("Quantity"), _("Price"), _("Expected Price"),
-									_("Discount %"), _("Line Value"));
+				_("Discount %"), _("Line Value")
+			);
 		}
 		table_header($th);
 		$total_grn_value = 0;
@@ -438,7 +436,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 			foreach ($supp_trans->grn_items as $entered_grn) {
 				alt_table_row_color($k);
 				$grn_batch = get_grn_batch_from_item($entered_grn->id);
-				label_cell(get_trans_view_str(ST_SUPPRECEIVE, $grn_batch));
+				label_cell(ui_view::get_trans_view_str(ST_SUPPRECEIVE, $grn_batch));
 				if ($mode == 1) {
 					label_cell($entered_grn->id);
 					label_cell(""); // PO
@@ -455,9 +453,9 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 				amount_decimal_cell($entered_grn->chg_price);
 				amount_decimal_cell($entered_grn->exp_price);
 				percent_cell($entered_grn->discount);
-			
+
 				amount_decimal_cell(round2(($entered_grn->chg_price * abs($entered_grn->this_quantity_inv) * (1 - $entered_grn->discount / 100)) / abs($entered_grn->this_quantity_inv)
-														), user_price_dec());
+					), user_price_dec());
 				amount_cell(round2($entered_grn->chg_price * abs($entered_grn->this_quantity_inv) * (1 - $entered_grn->discount / 100), user_price_dec()));
 				if ($mode == 1) {
 					if ($supp_trans->is_invoice && $_SESSION["wa_current_user"]->can_access('SA_GRNDELETE')) {
@@ -488,11 +486,11 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 			start_row();
 			echo "<td colspan=" . ($colspan + 1) . ">";
 			if ($supp_trans->is_invoice) {
-				display_note(_("There are no outstanding items received from this supplier that have not been invoiced by them."), 0, 0);
+				ui_msgs::display_note(_("There are no outstanding items received from this supplier that have not been invoiced by them."), 0, 0);
 			}
 			else {
-				display_note(_("There are no received items for the selected supplier that have been invoiced."));
-				display_note(_("Credits can only be applied to invoiced items."), 0, 0);
+				ui_msgs::display_note(_("There are no received items for the selected supplier that have been invoiced."));
+				ui_msgs::display_note(_("Credits can only be applied to invoiced items."), 0, 0);
 			}
 			echo "</td>";
 			end_row();
@@ -504,14 +502,14 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 
 	//--------------------------------------------------------------------------------------------------
 	function get_duedate_from_terms(&$supp_trans) {
-		if (!is_date($supp_trans->tran_date)) {
-			$supp_trans->tran_date = Today();
+		if (!Dates::is_date($supp_trans->tran_date)) {
+			$supp_trans->tran_date = Dates::Today();
 		}
 		if (substr($supp_trans->terms, 0, 1) == "1") { /*Its a day in the following month when due */
-			$supp_trans->due_date = add_days(end_month($supp_trans->tran_date), (int)substr($supp_trans->terms, 1));
+			$supp_trans->due_date = Dates::add_days(Dates::end_month($supp_trans->tran_date), (int)substr($supp_trans->terms, 1));
 		}
 		else { /*Use the Days Before Due to add to the invoice date */
-			$supp_trans->due_date = add_days($supp_trans->tran_date, (int)substr($supp_trans->terms, 1));
+			$supp_trans->due_date = Dates::add_days($supp_trans->tran_date, (int)substr($supp_trans->terms, 1));
 		}
 	}
 //--------------------------------------------------------------------------------------------------

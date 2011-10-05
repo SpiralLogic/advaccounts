@@ -20,9 +20,6 @@
 	// ----------------------------------------------------------------
 
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
-	include_once(APP_PATH . "includes/date_functions.inc");
-	include_once(APP_PATH . "includes/data_checks.inc");
-	include_once(APP_PATH . "manufacturing/includes/manufacturing_db.inc");
 
 	//----------------------------------------------------------------------------------------------------
 
@@ -70,7 +67,7 @@
 			$myrow = get_work_order($i);
 			if ($myrow === false)
 				continue;
-			$date_ = sql2date($myrow["date_"]);
+			$date_ = Dates::sql2date($myrow["date_"]);
 			if ($email == 1) {
 				$rep = new FrontReport("", "", user_pagesize());
 				$rep->currency = $cur;

@@ -11,18 +11,11 @@
 	 ***********************************************************************/
 	$page_security = 'SA_SUPPLIERALLOC';
 
-
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 
-	include_once(APP_PATH . "includes/date_functions.inc");
-
-	include_once(APP_PATH . "includes/faui.inc");
-	include_once(APP_PATH . "includes/banking.inc");
-
-	include_once(APP_PATH . "sales/includes/sales_db.inc");
 	$js = "";
 	if (Config::get('ui.windows.popups'))
-		$js .= get_js_open_window(900, 500);
+		$js .= ui_view::get_js_open_window(900, 500);
 	page(_($help_context = "Supplier Allocations"), false, false, "", $js);
 
 	//--------------------------------------------------------------------------------
@@ -31,14 +24,14 @@
 
 	/* show all outstanding receipts and credits to be allocated */
 	if (!isset($_POST['supplier_id']))
-		$_POST['supplier_id'] = get_global_supplier();
+		$_POST['supplier_id'] = ui_globals::get_global_supplier();
 
 	echo "<center>" . _("Select a Supplier: ") . "&nbsp;&nbsp;";
 	echo supplier_list('supplier_id', $_POST['supplier_id'], true, true);
 	echo "<br>";
 	check(_("Show Settled Items:"), 'ShowSettled', null, true);
 	echo "</center><br><br>";
-	set_global_supplier($_POST['supplier_id']);
+	ui_globals::set_global_supplier($_POST['supplier_id']);
 
 	if (isset($_POST['supplier_id']) && ($_POST['supplier_id'] == ALL_TEXT)) {
 		unset($_POST['supplier_id']);
@@ -59,7 +52,7 @@
 	}
 
 	function trans_view($trans) {
-		return get_trans_view_str($trans["type"], $trans["trans_no"]);
+		return ui_view::get_trans_view_str($trans["type"], $trans["trans_no"]);
 	}
 
 	function alloc_link($row) {

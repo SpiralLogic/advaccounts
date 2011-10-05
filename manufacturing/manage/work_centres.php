@@ -17,8 +17,6 @@
 
 	include(APP_PATH . "manufacturing/includes/manufacturing_db.inc");
 
-	include(APP_PATH . "includes/faui.inc");
-
 	simple_page_mode(true);
 	//-----------------------------------------------------------------------------------
 
@@ -29,20 +27,20 @@
 
 		if (strlen($_POST['name']) == 0) {
 			$input_error = 1;
-			display_error(_("The work centre name cannot be empty."));
-			set_focus('name');
+			ui_msgs::display_error(_("The work centre name cannot be empty."));
+			ui_view::set_focus('name');
 		}
 
 		if ($input_error != 1) {
 
 			if ($selected_id != -1) {
 				update_work_centre($selected_id, $_POST['name'], $_POST['description']);
-				display_notification(_('Selected work center has been updated'));
+				ui_msgs::display_notification(_('Selected work center has been updated'));
 			}
 			else
 			{
 				add_work_centre($_POST['name'], $_POST['description']);
-				display_notification(_('New work center has been added'));
+				ui_msgs::display_notification(_('New work center has been added'));
 			}
 			$Mode = 'RESET';
 		}
@@ -55,7 +53,7 @@
 		$result = db_query($sql, "check can delete work centre");
 		$myrow = db_fetch_row($result);
 		if ($myrow[0] > 0) {
-			display_error(_("Cannot delete this work centre because BOMs have been created referring to it."));
+			ui_msgs::display_error(_("Cannot delete this work centre because BOMs have been created referring to it."));
 			return false;
 		}
 
@@ -63,7 +61,7 @@
 		$result = db_query($sql, "check can delete work centre");
 		$myrow = db_fetch_row($result);
 		if ($myrow[0] > 0) {
-			display_error(_("Cannot delete this work centre because work order requirements have been created referring to it."));
+			ui_msgs::display_error(_("Cannot delete this work centre because work order requirements have been created referring to it."));
 			return false;
 		}
 
@@ -76,7 +74,7 @@
 
 		if (can_delete($selected_id)) {
 			delete_work_centre($selected_id);
-			display_notification(_('Selected work center has been deleted'));
+			ui_msgs::display_notification(_('Selected work center has been deleted'));
 		}
 		$Mode = 'RESET';
 	}

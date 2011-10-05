@@ -97,11 +97,11 @@
 				$this->person_id = $trans[$this->person_type ? 'supplier_id' : 'debtor_no'];
 				$this->person_name = $trans[$this->person_type ? "supplier_name" : "DebtorName"];
 				$this->amount = $trans["Total"];
-				$this->date_ = sql2date($trans["tran_date"]);
+				$this->date_ = Dates::sql2date($trans["tran_date"]);
 			}
 			else {
 				$this->person_id = get_post($this->person_type ? 'supplier_id' : 'customer_id');
-				$this->date_ = get_post($this->person_type ? 'DatePaid' : 'DateBanked', Today());
+				$this->date_ = get_post($this->person_type ? 'DatePaid' : 'DateBanked', Dates::Today());
 			}
 
 			/* Now populate the array of possible (and previous actual) allocations
@@ -116,8 +116,8 @@
 			while ($myrow = db_fetch($trans_items))
 			{
 				$this->add_item($myrow["type"], $myrow["trans_no"],
-					sql2date($myrow["tran_date"]),
-					sql2date($myrow["due_date"]),
+					Dates::sql2date($myrow["tran_date"]),
+					Dates::sql2date($myrow["due_date"]),
 					$myrow["Total"], // trans total
 					$myrow["alloc"], // trans total allocated
 					0); // this allocation
@@ -139,8 +139,8 @@
 			while ($myrow = db_fetch($trans_items))
 			{
 				$this->add_or_update_item($myrow["type"], $myrow["trans_no"],
-					sql2date($myrow["tran_date"]),
-					sql2date($myrow["due_date"]),
+					Dates::sql2date($myrow["tran_date"]),
+					Dates::sql2date($myrow["due_date"]),
 					$myrow["Total"],
 				 $myrow["alloc"] - $myrow["amt"], $myrow["amt"]);
 			}
@@ -180,7 +180,7 @@
 					}
 					// Exchange Variations Joe Hunt 2008-09-20 ////////////////////
 
-					exchange_variation($this->type, $this->trans_no,
+					Banking::exchange_variation($this->type, $this->trans_no,
 						$alloc_item->type, $alloc_item->type_no, $this->date_,
 						$alloc_item->current_allocated,
 						$this->person_type ? PT_SUPPLIER : PT_CUSTOMER);
@@ -249,7 +249,7 @@
 			{
 				alt_table_row_color($k);
 				label_cell($systypes_array[$alloc_item->type]);
-				label_cell(get_trans_view_str($alloc_item->type, $alloc_item->type_no));
+				label_cell(ui_view::get_trans_view_str($alloc_item->type, $alloc_item->type_no));
 				label_cell($alloc_item->date_, "align=right");
 				label_cell($alloc_item->due_date, "align=right");
 				amount_cell($alloc_item->amount);
@@ -307,16 +307,16 @@
 		for ($counter = 0; $counter < $_POST["TotalNumberOfAllocs"]; $counter++)
 		{
 			if (!check_num('amount' . $counter, 0)) {
-				display_error(_("The entry for one or more amounts is invalid or negative."));
-				set_focus('amount' . $counter);
+				ui_msgs::display_error(_("The entry for one or more amounts is invalid or negative."));
+				ui_view::set_focus('amount' . $counter);
 				return false;
 			}
 
 			/*Now check to see that the AllocAmt is no greater than the
 							 amount left to be allocated against the transaction under review */
 			if (input_num('amount' . $counter) > input_num('un_allocated' . $counter)) {
-				display_error(_("At least one transaction is overallocated."));
-				set_focus('amount' . $counter);
+				ui_msgs::display_error(_("At least one transaction is overallocated."));
+				ui_view::set_focus('amount' . $counter);
 				return false;
 			}
 
@@ -331,7 +331,7 @@
 			$amount = -$amount;
 
 		if ($total_allocated - ($amount + input_num('discount')) > $SysPrefs->allocation_settled_allowance()) {
-			display_error(_("These allocations cannot be processed because the amount allocated is more than the total amount left to allocate."));
+			ui_msgs::display_error(_("These allocations cannot be processed because the amount allocated is more than the total amount left to allocate."));
 			return false;
 		}
 
@@ -345,7 +345,7 @@
 		$doc = new Cart(ST_SALESINVOICE, 0);
 		$customer_error = get_customer_details_to_order($doc, $customer, $branch);
 		$doc->trans_type = $type;
-		$doc->document_date = new_doc_date();
+		$doc->document_date = Dates::new_doc_date();
 		$doc->pos = user_pos();
 		$pos = get_sales_point($doc->pos);
 		$doc->due_date = $doc->document_date;
@@ -358,25 +358,26 @@
 		$_SESSION['alloc']->add_or_update_item(ST_SALESINVOICE, key($doc->trans_no), $doc->document_date, $doc->due_date, $amount, 0, $amount);
 	}
 
-	if (!function_exists('copy_from_cart')){ function copy_from_cart($cart) {
+	if (!function_exists('copy_from_cart')) {
+		function copy_from_cart($cart) {
 
-		$_POST['Comments'] = $cart->Comments;
-		$_POST['OrderDate'] = $cart->document_date;
-		$_POST['delivery_date'] = $cart->due_date;
-		$_POST['cust_ref'] = $cart->cust_ref;
-		$_POST['freight_cost'] = price_format($cart->freight_cost);
-		$_POST['deliver_to'] = $cart->deliver_to;
-		$_POST['delivery_address'] = $cart->delivery_address;
-		$_POST['name'] = $cart->name;
-		$_POST['phone'] = $cart->phone;
-		$_POST['Location'] = $cart->Location;
-		$_POST['ship_via'] = $cart->ship_via;
-		$_POST['sales_type'] = $cart->sales_type;
-		$_POST['salesman'] = $cart->salesman;
+			$_POST['Comments'] = $cart->Comments;
+			$_POST['OrderDate'] = $cart->document_date;
+			$_POST['delivery_date'] = $cart->due_date;
+			$_POST['cust_ref'] = $cart->cust_ref;
+			$_POST['freight_cost'] = price_format($cart->freight_cost);
+			$_POST['deliver_to'] = $cart->deliver_to;
+			$_POST['delivery_address'] = $cart->delivery_address;
+			$_POST['name'] = $cart->name;
+			$_POST['phone'] = $cart->phone;
+			$_POST['Location'] = $cart->Location;
+			$_POST['ship_via'] = $cart->ship_via;
+			$_POST['sales_type'] = $cart->sales_type;
+			$_POST['salesman'] = $cart->salesman;
 
-		$_POST['dimension_id'] = $cart->dimension_id;
-		$_POST['dimension2_id'] = $cart->dimension2_id;
-		$_POST['cart_id'] = $cart->cart_id;
+			$_POST['dimension_id'] = $cart->dimension_id;
+			$_POST['dimension2_id'] = $cart->dimension2_id;
+			$_POST['cart_id'] = $cart->cart_id;
+		}
 	}
-}
 ?>

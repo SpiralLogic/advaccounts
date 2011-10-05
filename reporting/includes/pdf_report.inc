@@ -56,7 +56,7 @@
 		function FrontReport($title, $filename, $size = 'A4', $fontsize = 9, $orientation = 'P', $margins = NULL, $excelColWidthFactor = NULL) {
 			global $page_security;
 			if (!$_SESSION["wa_current_user"]->can_access_page($page_security)) {
-				display_error(_("The security settings on your account do not permit you to print this report"));
+				ui_msgs::display_error(_("The security settings on your account do not permit you to print this report"));
 				end_page();
 				exit;
 			}
@@ -225,7 +225,7 @@
 			} else {
 				$how = _("Closed");
 			}
-			$this->fiscal_year = sql2date($year['begin']) . " - " . sql2date($year['end']) . "  " . "(" . $how . ")";
+			$this->fiscal_year = Dates::sql2date($year['begin']) . " - " . Dates::sql2date($year['end']) . "  " . "(" . $how . ")";
 			$this->company = get_company_prefs();
 			$this->user = $_SESSION["wa_current_user"]->name;
 			$this->host = $_SERVER['SERVER_NAME'];
@@ -267,7 +267,7 @@
 			$this->row -= ($this->lineHeight + 4);
 			$str = _("Print Out Date") . ':';
 			$this->Text($this->leftMargin, $str, $titleCol);
-			$str = Today() . '   ' . Now();
+			$str = Dates::Today() . '   ' . Dates::Now();
 			if ($this->company['time_zone']) {
 				$str .= ' ' . date('O') . ' GMT';
 			}
@@ -476,7 +476,7 @@
 			// Timestamp of when this copy of the report was generated
 			$str = _("Generated At") . ':';
 			$this->Text($this->leftMargin, $str, $headerFieldCol);
-			$str = Today() . '   ' . Now();
+			$str = Dates::Today() . '   ' . Dates::Now();
 			if ($this->company['time_zone']) {
 				$str .= ' ' . date('O') . ' GMT';
 			}
@@ -538,7 +538,7 @@
 		 */
 		function DatePrettyPrint($date, $input_format = 0, $output_format = 0) {
 			if ($date != '') {
-				$date = date2sql($date);
+				$date = Dates::date2sql($date);
 				$year = (int)(substr($date, 0, 4));
 				$month = (int)(substr($date, 5, 2));
 				$day = (int)(substr($date, 8, 2));
@@ -648,7 +648,7 @@
 
 		function DateCol($c, $n, $txt, $conv = false, $corr = 0, $r = 0, $border = 0, $fill = 0, $link = NULL, $stretch = 1) {
 			if ($conv) {
-				$txt = sql2date($txt);
+				$txt = Dates::sql2date($txt);
 			}
 			return $this->TextCol($c, $n, $txt, $corr, $r, $border, $fill, $link, $stretch);
 		}
@@ -831,8 +831,8 @@
 					$mail->text($msg . $sender);
 					$mail->attachment($fname);
 					$ret = $mail->send();
-					if (!$ret) display_error('Error: ' . $emailAddress . ': ' . $mail->toerror); else
-						display_notification($this->title . " " . $myrow['reference'] . " " . _("has been sent by email to: ") . str_replace(",", "",
+					if (!$ret) ui_msgs::display_error('Error: ' . $emailAddress . ': ' . $mail->toerror); else
+						ui_msgs::display_notification($this->title . " " . $myrow['reference'] . " " . _("has been sent by email to: ") . str_replace(",", "",
 								$myrow['DebtorName']) . "  &lt;" . $emailAddress . "&gt;");
 					unlink($fname);
 				} else {
@@ -864,8 +864,8 @@
 					} else { // send report to network printer
 						$prn = new remote_printer($printer['queue'], $printer['host'], $printer['port'], $printer['timeout']);
 						$error = $prn->print_file($fname);
-						if ($error) display_error($error); else
-							display_notification(_('Report has been sent to network printer ') . $printer['name']);
+						if ($error) ui_msgs::display_error($error); else
+							ui_msgs::display_notification(_('Report has been sent to network printer ') . $printer['name']);
 					}
 				}
 				// first have a look through the directory,

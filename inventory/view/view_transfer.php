@@ -15,10 +15,6 @@
 
 	page(_($help_context = "View Inventory Transfer"), true);
 
-	include_once(APP_PATH . "includes/date_functions.inc");
-	include_once(APP_PATH . "includes/faui.inc");
-	include_once(APP_PATH . "gl/includes/gl_db.inc");
-
 	if (isset($_GET["trans_no"])) {
 		$trans_no = $_GET["trans_no"];
 	}
@@ -28,7 +24,7 @@
 	$from_trans = $transfer_items[0];
 	$to_trans = $transfer_items[1];
 
-	display_heading($systypes_array[ST_LOCTRANSFER] . " #$trans_no");
+	ui_msgs::display_heading($systypes_array[ST_LOCTRANSFER] . " #$trans_no");
 
 	echo "<br>";
 	start_table(Config::get('tables.style2') . " width=90%");
@@ -42,10 +38,10 @@
 	label_cells(_("Reference"), $from_trans['reference'], "class='tableheader2'");
 	$adjustment_type = get_movement_type($from_trans['person_id']);
 	label_cells(_("Adjustment Type"), $adjustment_type['name'], "class='tableheader2'");
-	label_cells(_("Date"), sql2date($from_trans['tran_date']), "class='tableheader2'");
+	label_cells(_("Date"), Dates::sql2date($from_trans['tran_date']), "class='tableheader2'");
 	end_row();
 
-	comments_display_row(ST_LOCTRANSFER, $trans_no);
+	ui_view::comments_display_row(ST_LOCTRANSFER, $trans_no);
 
 	end_table(1);
 
@@ -72,7 +68,7 @@
 
 	end_table(1);
 
-	is_voided_display(ST_LOCTRANSFER, $trans_no, _("This transfer has been voided."));
+	ui_view::is_voided_display(ST_LOCTRANSFER, $trans_no, _("This transfer has been voided."));
 
 	end_page(true);
 ?>

@@ -13,9 +13,7 @@
 
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 
-	include_once(APP_PATH . "includes/date_functions.inc");
 	include_once(APP_PATH . "includes/manufacturing.inc");
-	include_once(APP_PATH . "includes/data_checks.inc");
 
 	include_once(APP_PATH . "admin/db/tags_db.inc");
 	include_once(APP_PATH . "dimensions/includes/dimensions_db.inc");
@@ -40,7 +38,7 @@
 	if (isset($_GET['AddedID'])) {
 		$id = $_GET['AddedID'];
 
-		display_notification_centered(_("The dimension has been entered."));
+		ui_msgs::display_notification_centered(_("The dimension has been entered."));
 
 		safe_exit();
 	}
@@ -50,7 +48,7 @@
 	if (isset($_GET['UpdatedID'])) {
 		$id = $_GET['UpdatedID'];
 
-		display_notification_centered(_("The dimension has been updated."));
+		ui_msgs::display_notification_centered(_("The dimension has been updated."));
 		safe_exit();
 	}
 
@@ -59,7 +57,7 @@
 	if (isset($_GET['DeletedID'])) {
 		$id = $_GET['DeletedID'];
 
-		display_notification_centered(_("The dimension has been deleted."));
+		ui_msgs::display_notification_centered(_("The dimension has been deleted."));
 		safe_exit();
 	}
 
@@ -68,7 +66,7 @@
 	if (isset($_GET['ClosedID'])) {
 		$id = $_GET['ClosedID'];
 
-		display_notification_centered(_("The dimension has been closed. There can be no more changes to it.") . " #$id");
+		ui_msgs::display_notification_centered(_("The dimension has been closed. There can be no more changes to it.") . " #$id");
 		safe_exit();
 	}
 
@@ -77,7 +75,7 @@
 	if (isset($_GET['ReopenedID'])) {
 		$id = $_GET['ReopenedID'];
 
-		display_notification_centered(_("The dimension has been re-opened. ") . " #$id");
+		ui_msgs::display_notification_centered(_("The dimension has been re-opened. ") . " #$id");
 		safe_exit();
 	}
 
@@ -89,7 +87,7 @@
 		echo "<br>";
 		hyperlink_no_params(PATH_TO_ROOT . "/dimensions/inquiry/search_dimensions.php", _("&Select an existing dimension"));
 
-		display_footer_exit();
+		ui_view::display_footer_exit();
 	}
 
 	//-------------------------------------------------------------------------------------
@@ -100,33 +98,33 @@
 		if ($selected_id == -1) {
 
 			if (!$Refs->is_valid($_POST['ref'])) {
-				display_error(_("The dimension reference must be entered."));
-				set_focus('ref');
+				ui_msgs::display_error(_("The dimension reference must be entered."));
+				ui_view::set_focus('ref');
 				return false;
 			}
 
 			if (!is_new_reference($_POST['ref'], ST_DIMENSION)) {
-				display_error(_("The entered reference is already in use."));
-				set_focus('ref');
+				ui_msgs::display_error(_("The entered reference is already in use."));
+				ui_view::set_focus('ref');
 				return false;
 			}
 		}
 
 		if (strlen($_POST['name']) == 0) {
-			display_error(_("The dimension name must be entered."));
-			set_focus('name');
+			ui_msgs::display_error(_("The dimension name must be entered."));
+			ui_view::set_focus('name');
 			return false;
 		}
 
-		if (!is_date($_POST['date_'])) {
-			display_error(_("The date entered is in an invalid format."));
-			set_focus('date_');
+		if (!Dates::is_date($_POST['date_'])) {
+			ui_msgs::display_error(_("The date entered is in an invalid format."));
+			ui_view::set_focus('date_');
 			return false;
 		}
 
-		if (!is_date($_POST['due_date'])) {
-			display_error(_("The required by date entered is in an invalid format."));
-			set_focus('due_date');
+		if (!Dates::is_date($_POST['due_date'])) {
+			ui_msgs::display_error(_("The required by date entered is in an invalid format."));
+			ui_view::set_focus('due_date');
 			return false;
 		}
 
@@ -167,8 +165,8 @@
 
 		// can't delete it there are productions or issues
 		if (dimension_has_payments($selected_id) || dimension_has_deposits($selected_id)) {
-			display_error(_("This dimension cannot be deleted because it has already been processed."));
-			set_focus('ref');
+			ui_msgs::display_error(_("This dimension cannot be deleted because it has already been processed."));
+			ui_view::set_focus('ref');
 			$cancel_delete = true;
 		}
 
@@ -206,24 +204,24 @@
 		$myrow = get_dimension($selected_id);
 
 		if (strlen($myrow[0]) == 0) {
-			display_error(_("The dimension sent is not valid."));
-			display_footer_exit();
+			ui_msgs::display_error(_("The dimension sent is not valid."));
+			ui_view::display_footer_exit();
 		}
 
 		// if it's a closed dimension can't edit it
 		//if ($myrow["closed"] == 1)
 		//{
-		//	display_error(_("This dimension is closed and cannot be edited."));
-		//	display_footer_exit();
+		//	ui_msgs::display_error(_("This dimension is closed and cannot be edited."));
+		//	ui_view::display_footer_exit();
 		//}
 
 		$_POST['ref'] = $myrow["reference"];
 		$_POST['closed'] = $myrow["closed"];
 		$_POST['name'] = $myrow["name"];
 		$_POST['type_'] = $myrow["type_"];
-		$_POST['date_'] = sql2date($myrow["date_"]);
-		$_POST['due_date'] = sql2date($myrow["due_date"]);
-		$_POST['memo_'] = get_comments_string(ST_DIMENSION, $selected_id);
+		$_POST['date_'] = Dates::sql2date($myrow["date_"]);
+		$_POST['due_date'] = Dates::sql2date($myrow["due_date"]);
+		$_POST['memo_'] = ui_view::get_comments_string(ST_DIMENSION, $selected_id);
 
 		$tags_result = get_tags_associated_with_record(TAG_DIMENSION, $selected_id);
 		$tagids = array();
@@ -262,7 +260,7 @@
 	end_table(1);
 
 	if (isset($_POST['closed']) && $_POST['closed'] == 1)
-		display_note(_("This Dimension is closed."), 0, 0, "class='currentfg'");
+		ui_msgs::display_note(_("This Dimension is closed."), 0, 0, "class='currentfg'");
 
 	if ($selected_id != -1) {
 		echo "<br>";

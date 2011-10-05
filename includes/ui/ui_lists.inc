@@ -9,9 +9,6 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	include_once(APP_PATH . "includes/banking.inc");
-	include_once(APP_PATH . "includes/types.inc");
-	include_once(APP_PATH . "includes/current_user.inc");
 
 	$_search_button = "<input %s type='submit' class='combo_submit' style='border:0;background:url(/themes/" . "%s/images/locate.png) no-repeat;%s' aspect='fallback' name='%s' value=' ' title='" . _("Set filter") . "'> ";
 	$_select_button = "<input %s type='submit' class='combo_select' style='border:0;background:url(/themes/" . "%s/images/button_ok.png) no-repeat;%s' aspect='fallback' name='%s' value=' ' title='" . _("Select") . "'> ";
@@ -174,8 +171,8 @@
 		$found = false;
 		$lastcat = null;
 		$edit = false;
-		//if($name=='stock_id')	display_notification('<pre>'.print_r($_POST, true).'</pre>');
-		//if($name=='curr_default') display_notification($opts['search_submit']);
+		//if($name=='stock_id')	ui_msgs::display_notification('<pre>'.print_r($_POST, true).'</pre>');
+		//if($name=='curr_default') ui_msgs::display_notification($opts['search_submit']);
 		if ($result = db_query($sql)) {
 			while ($contact_row = db_fetch($result)) {
 				$value = $contact_row[0];
@@ -236,10 +233,10 @@
 				} else {
 					$selector .= "<input type='text' $disabled name='{$name}_text' id='{$name}_text' size='" . $opts['editable'] . "' maxlength='" . $opts['max'] . "' $rel value='$edit'>\n";
 				}
-				set_focus($name . '_text'); // prevent lost focus
+				ui_view::set_focus($name . '_text'); // prevent lost focus
 			} else {
 				if (get_post($search_submit ? $search_submit : "_{$name}_button")) {
-					set_focus($name);
+					ui_view::set_focus($name);
 				}
 			} // prevent lost focus
 			if (!$opts['editable']) {
@@ -266,7 +263,7 @@
 				$edit_entry .= sprintf($_search_button, $disabled, user_theme(), (fallback_mode() ? '' : 'display:none;'), $search_submit ? $search_submit : "_{$name}_button") . "\n";
 			}
 		}
-		default_focus(($search_box && $by_id) ? $search_box : $name);
+		ui_view::default_focus(($search_box && $by_id) ? $search_box : $name);
 		if ($search_box && $opts['cells']) {
 			$str = ($edit_entry != '' ? "<td>$edit_entry</td>" : '') . "<td>$selector</td>";
 		} else {
@@ -326,7 +323,7 @@
 		$selector = $first_opt = '';
 		$first_id = false;
 		$found = false;
-		//if($name=='SelectStockFromList') display_error($sql);
+		//if($name=='SelectStockFromList') ui_msgs::display_error($sql);
 		foreach ($items as $value => $descr) {
 			$sel = '';
 			if (in_array((string)$value, $selected_id)) {
@@ -358,7 +355,7 @@
 			global $_select_button;
 			$selector .= sprintf($_select_button, $disabled, user_theme(), (fallback_mode() ? '' : 'display:none;'), '_' . $name . '_update') . "\n";
 		}
-		default_focus($name);
+		ui_view::default_focus($name);
 		return $selector;
 	}
 
@@ -366,7 +363,7 @@
 	function _format_add_curr($row) {
 		static $company_currency;
 		if ($company_currency == null) {
-			$company_currency = get_company_currency();
+			$company_currency = Banking::get_company_currency();
 		}
 		return $row[1] . ($row[2] == $company_currency ? '' : ("&nbsp;-&nbsp;" . $row[2]));
 	}
@@ -497,7 +494,7 @@ JS
 	function currencies_list($name, $selected_id = null, $submit_on_change = false) {
 		$sql = "SELECT curr_abrev, currency, inactive FROM currencies";
 		// default to the company currency
-		return combo_input($name, $selected_id, $sql, 'curr_abrev', 'currency', array('select_submit' => $submit_on_change, 'default' => get_company_currency(), 'async' => false));
+		return combo_input($name, $selected_id, $sql, 'curr_abrev', 'currency', array('select_submit' => $submit_on_change, 'default' => Banking::get_company_currency(), 'async' => false));
 	}
 
 	function currencies_list_cells($label, $name, $selected_id = null, $submit_on_change = false) {
@@ -524,7 +521,7 @@ JS
 	}
 
 	function _format_fiscalyears($row) {
-		return sql2date($row[1]) . "&nbsp;-&nbsp;" . sql2date($row[2]) . "&nbsp;&nbsp;" . ($row[3] ? _('Closed') : _('Active')) . "</option>\n";
+		return Dates::sql2date($row[1]) . "&nbsp;-&nbsp;" . Dates::sql2date($row[2]) . "&nbsp;&nbsp;" . ($row[3] ? _('Closed') : _('Active')) . "</option>\n";
 	}
 
 	function fiscalyears_list_cells($label, $name, $selected_id = null) {
@@ -1045,7 +1042,7 @@ JS
 
 	//-----------------------------------------------------------------------------------------------
 	function _format_date($row) {
-		return sql2date($row['reconciled']);
+		return Dates::sql2date($row['reconciled']);
 	}
 
 	function bank_reconciliation_list($account, $name, $selected_id = null, $submit_on_change = false, $special_option = false) {
@@ -1083,7 +1080,7 @@ JS
 	}
 
 	function workcenter_list_cells($label, $name, $selected_id = null, $all_option = false) {
-		default_focus($name);
+		ui_view::default_focus($name);
 		if ($label != null) {
 			echo "<td>$label</td>\n";
 		}
@@ -1136,7 +1133,7 @@ JS
 	//-----------------------------------------------------------------------------------------------
 	function pos_list_row($label, $name, $selected_id = null, $spec_option = false, $submit_on_change = false) {
 		$sql = "SELECT id, pos_name, inactive FROM sales_pos";
-		default_focus($name);
+		ui_view::default_focus($name);
 		echo '<tr>';
 		if ($label != null) {
 			echo "<td class='label'>$label</td>\n";

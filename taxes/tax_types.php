@@ -14,7 +14,6 @@
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 	page(_($help_context = "Tax Types"));
 
-	include_once(APP_PATH . "includes/faui.inc");
 	include_once(APP_PATH . "taxes/db/tax_types_db.inc");
 
 	simple_page_mode(true);
@@ -24,20 +23,20 @@
 		global $selected_id;
 
 		if (strlen($_POST['name']) == 0) {
-			display_error(_("The tax type name cannot be empty."));
-			set_focus('name');
+			ui_msgs::display_error(_("The tax type name cannot be empty."));
+			ui_view::set_focus('name');
 			return false;
 		}
 		elseif (!check_num('rate', 0))
 		{
-			display_error(_("The default tax rate must be numeric and not less than zero."));
-			set_focus('rate');
+			ui_msgs::display_error(_("The default tax rate must be numeric and not less than zero."));
+			ui_view::set_focus('rate');
 			return false;
 		}
 
 		if (!is_tax_gl_unique(get_post('sales_gl_code'), get_post('purchasing_gl_code'), $selected_id)) {
-			display_error(_("Selected GL Accounts cannot be used by another tax type."));
-			set_focus('sales_gl_code');
+			ui_msgs::display_error(_("Selected GL Accounts cannot be used by another tax type."));
+			ui_view::set_focus('sales_gl_code');
 			return false;
 		}
 		return true;
@@ -49,7 +48,7 @@
 
 		add_tax_type($_POST['name'], $_POST['sales_gl_code'],
 			$_POST['purchasing_gl_code'], input_num('rate', 0));
-		display_notification(_('New tax type has been added'));
+		ui_msgs::display_notification(_('New tax type has been added'));
 		$Mode = 'RESET';
 	}
 
@@ -59,7 +58,7 @@
 
 		update_tax_type($selected_id, $_POST['name'],
 			$_POST['sales_gl_code'], $_POST['purchasing_gl_code'], input_num('rate'));
-		display_notification(_('Selected tax type has been updated'));
+		ui_msgs::display_notification(_('Selected tax type has been updated'));
 		$Mode = 'RESET';
 	}
 
@@ -70,7 +69,7 @@
 		$result = db_query($sql, "could not query tax groups");
 		$myrow = db_fetch_row($result);
 		if ($myrow[0] > 0) {
-			display_error(_("Cannot delete this tax type because tax groups been created referring to it."));
+			ui_msgs::display_error(_("Cannot delete this tax type because tax groups been created referring to it."));
 
 			return false;
 		}
@@ -84,7 +83,7 @@
 
 		if (can_delete($selected_id)) {
 			delete_tax_type($selected_id);
-			display_notification(_('Selected tax type has been deleted'));
+			ui_msgs::display_notification(_('Selected tax type has been deleted'));
 		}
 		$Mode = 'RESET';
 	}
@@ -101,7 +100,7 @@
 
 	start_form();
 
-	display_note(_("To avoid problems with manual journal entry all tax types should have unique Sales/Purchasing GL accounts."));
+	ui_msgs::display_note(_("To avoid problems with manual journal entry all tax types should have unique Sales/Purchasing GL accounts."));
 	start_table(Config::get('tables.style'));
 
 	$th = array(_("Description"), _("Default Rate (%)"),

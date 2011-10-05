@@ -39,7 +39,7 @@
 			global $installed_languages;
 
 			$changed = $this->code != $code;
-			$lang = array_search_value($code, $installed_languages, 'code');
+			$lang = Arr::search_value($code, $installed_languages, 'code');
 
 			if ($lang && $changed) {
 				// flush cache as we can use several languages in one account
@@ -49,7 +49,7 @@
 				$this->code = $lang['code'];
 				$this->encoding = $lang['encoding'];
 				$this->dir = isset($lang['rtl']) ? 'rtl' : 'ltr';
-				$locale = PATH_TO_ROOT . "/lang/" . $this->code . "/locale.inc";
+				$locale = APP_PATH . "lang/" . $this->code . "/locale.inc";
 				$this->is_locale_file = file_exists($locale);
 			}
 
@@ -63,10 +63,6 @@
 			if (isset($_SESSION['App']) && $changed)
 				$_SESSION['App']->init(); // refresh menu
 		}
-	}
-
-	function _set($key, $value) {
-		$_SESSION['get_text']->set_var($key, $value);
 	}
 
 	if (!function_exists("_")) {

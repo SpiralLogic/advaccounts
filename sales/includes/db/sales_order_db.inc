@@ -14,16 +14,16 @@
 		global $Refs;
 		begin_transaction();
 		$order_no = get_next_trans_no($order->trans_type);
-		$del_date = date2sql($order->due_date);
+		$del_date = Dates::date2sql($order->due_date);
 		$order_type = 0; // this is default on new order
 		$sql = "INSERT INTO sales_orders (order_no, type, debtor_no, trans_type, branch_code, customer_ref, reference, salesman, comments, ord_date,
 		order_type, ship_via, deliver_to, delivery_address, contact_name, contact_phone,
 		contact_email, freight_cost, from_stk_loc, delivery_date)
-		VALUES (" . db_escape($order_no) . "," . db_escape($order_type) . "," . db_escape($order->customer_id) . ", " . db_escape($order->trans_type) . "," . db_escape($order->Branch) . ", " . db_escape($order->cust_ref) . "," . db_escape($order->reference) . "," . db_escape($order->salesman) . "," . db_escape($order->Comments) . ",'" . date2sql($order->document_date) . "', " . db_escape($order->sales_type) . ", " . db_escape($order->ship_via) . "," . db_escape($order->deliver_to) . "," . db_escape($order->delivery_address) . ", " . db_escape($order->name) . ", " . db_escape($order->phone) . ", " . db_escape($order->email) . ", " . db_escape($order->freight_cost) . ", " . db_escape($order->Location) . ", " . db_escape($del_date) . ")";
+		VALUES (" . db_escape($order_no) . "," . db_escape($order_type) . "," . db_escape($order->customer_id) . ", " . db_escape($order->trans_type) . "," . db_escape($order->Branch) . ", " . db_escape($order->cust_ref) . "," . db_escape($order->reference) . "," . db_escape($order->salesman) . "," . db_escape($order->Comments) . ",'" . Dates::date2sql($order->document_date) . "', " . db_escape($order->sales_type) . ", " . db_escape($order->ship_via) . "," . db_escape($order->deliver_to) . "," . db_escape($order->delivery_address) . ", " . db_escape($order->name) . ", " . db_escape($order->phone) . ", " . db_escape($order->email) . ", " . db_escape($order->freight_cost) . ", " . db_escape($order->Location) . ", " . db_escape($del_date) . ")";
 		db_query($sql, "order Cannot be Added");
 		$order->trans_no = array($order_no => 0);
 		if (Config::get('accounts.stock.emailnotify') == 1) {
-			include_once(APP_PATH . "inventory/includes/inventory_db.inc");
+
 			$st_ids = array();
 			$st_names = array();
 			$st_num = array();
@@ -90,7 +90,7 @@
 		$sql = "DELETE FROM sales_order_details WHERE order_no =" . db_escape($order_no) . " AND trans_type=" . db_escape($trans_type);
 		db_query($sql, "order Detail Delete");
 		delete_reference($trans_type, $order_no);
-		add_audit_trail($trans_type, $order_no, Today(), _("Deleted."));
+		add_audit_trail($trans_type, $order_no, Dates::Today(), _("Deleted."));
 		commit_transaction();
 	}
 
@@ -107,8 +107,8 @@
 	//----------------------------------------------------------------------------------------
 	function update_sales_order($order) {
 		global $Refs;
-		$del_date = date2sql($order->due_date);
-		$ord_date = date2sql($order->document_date);
+		$del_date = Dates::date2sql($order->due_date);
+		$ord_date = Dates::date2sql($order->document_date);
 		$order_no = key($order->trans_no);
 		$version = current($order->trans_no);
 		begin_transaction();
@@ -137,7 +137,7 @@
 		$sql = "DELETE FROM sales_order_details WHERE order_no =" . $order_no . " AND trans_type=" . $order->trans_type;
 		db_query($sql, "Old order Cannot be Deleted");
 		if (Config::get('accounts.stock.emailnotify') == 1) {
-			include_once(APP_PATH . "inventory/includes/inventory_db.inc");
+
 			$st_ids = array();
 			$st_names = array();
 			$st_num = array();
@@ -269,8 +269,8 @@
 		$order->reference = $myrow["reference"];
 		$order->salesman = $myrow["salesman"];
 		$order->Comments = $myrow["comments"];
-		$order->due_date = sql2date($myrow["delivery_date"]);
-		$order->document_date = sql2date($myrow["ord_date"]);
+		$order->due_date = Dates::sql2date($myrow["delivery_date"]);
+		$order->document_date = Dates::sql2date($myrow["ord_date"]);
 		$result = get_sales_order_details($order_no, $order->trans_type);
 		if (db_num_rows($result) > 0) {
 			$line_no = 0;
@@ -305,8 +305,8 @@
 
 	//---------------------------------------------------------------------------------------------------------------
 	function get_invoice_duedate($debtorno, $invdate) {
-		if (!is_date($invdate)) {
-			return new_doc_date();
+		if (!Dates::is_date($invdate)) {
+			return Dates::new_doc_date();
 		}
 		$sql = "SELECT debtors_master.debtor_no, debtors_master.payment_terms, payment_terms.* FROM debtors_master,
 		payment_terms WHERE debtors_master.payment_terms = payment_terms.terms_indicator AND
@@ -316,9 +316,9 @@
 		if (db_num_rows($result) == 0)
 			return $invdate;
 		if ($myrow['day_in_following_month'] > 0)
-			$duedate = add_days(end_month($invdate), $myrow['day_in_following_month']);
+			$duedate = Dates::add_days(Dates::end_month($invdate), $myrow['day_in_following_month']);
 		else
-			$duedate = add_days($invdate, $myrow['days_before_due']);
+			$duedate = Dates::add_days($invdate, $myrow['days_before_due']);
 		return $duedate;
 	}
 

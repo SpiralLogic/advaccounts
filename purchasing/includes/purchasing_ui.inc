@@ -9,9 +9,6 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	include_once(APP_PATH . "includes/date_functions.inc");
-
-	include_once(APP_PATH . "includes/faui.inc");
 
 	include_once(APP_PATH . "purchasing/includes/ui/invoice_ui.inc");
 	include_once(APP_PATH . "purchasing/includes/ui/po_ui.inc");

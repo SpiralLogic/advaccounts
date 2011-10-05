@@ -18,9 +18,6 @@
 	// ----------------------------------------------------------------
 
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
-	include_once(APP_PATH . "includes/date_functions.inc");
-	include_once(APP_PATH . "includes/data_checks.inc");
-	include_once(APP_PATH . "gl/includes/gl_db.inc");
 
 	//----------------------------------------------------------------------------------------------------
 
@@ -29,7 +26,7 @@
 	//----------------------------------------------------------------------------------------------------
 
 	function get_bank_balance_to($to, $account) {
-		$to = date2sql($to);
+		$to = Dates::date2sql($to);
 		$sql = "SELECT SUM(amount) FROM bank_trans WHERE bank_act='$account'
 	AND trans_date < '$to'";
 		$result = db_query($sql, "The starting balance on hand could not be calculated");
@@ -38,8 +35,8 @@
 	}
 
 	function get_bank_transactions($from, $to, $account) {
-		$from = date2sql($from);
-		$to = date2sql($to);
+		$from = Dates::date2sql($from);
+		$to = Dates::date2sql($to);
 		$sql = "SELECT bank_trans.* FROM bank_trans
 		WHERE bank_trans.bank_act = '$account'
 		AND trans_date >= '$from'

@@ -18,9 +18,6 @@
 	// ----------------------------------------------------------------
 
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
-	include_once(APP_PATH . "includes/date_functions.inc");
-	include_once(APP_PATH . "includes/data_checks.inc");
-	include_once(APP_PATH . "gl/includes/gl_db.inc");
 
 	//----------------------------------------------------------------------------------------------------
 
@@ -42,7 +39,7 @@
 				$rep->NewLine();
 			}
 			if ($showbalance == 1) {
-				$begin = begin_fiscalyear();
+				$begin = Dates::begin_fiscalyear();
 				if (is_account_balancesheet($account["account_code"]))
 					$begin = "";
 				$balance = get_gl_trans_from_to($begin, ToDay(), $account["account_code"], 0);

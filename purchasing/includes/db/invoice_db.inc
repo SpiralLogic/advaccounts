@@ -42,9 +42,9 @@
 		$supp_trans->tax_group_id = $myrow['tax_group_id'];
 
 		if ($supp_trans->tran_date == "") {
-			$supp_trans->tran_date = Today();
-			if (!is_date_in_fiscalyear($supp_trans->tran_date))
-				$supp_trans->tran_date = end_fiscalyear();
+			$supp_trans->tran_date = Dates::Today();
+			if (!Dates::is_date_in_fiscalyear($supp_trans->tran_date))
+				$supp_trans->tran_date = Dates::end_fiscalyear();
 		}
 		//if ($supp_trans->due_date=="") {
 		//	get_duedate_from_terms($supp_trans);
@@ -96,10 +96,10 @@
 	function get_diff_in_home_currency($supplier, $old_date, $date, $amount1, $amount2) {
 		$dec = user_price_dec();
 		price_decimal_format($amount2, $dec);
-		$currency = get_supplier_currency($supplier);
-		$ex_rate = get_exchange_rate_to_home_currency($currency, $old_date);
+		$currency = Banking::get_supplier_currency($supplier);
+		$ex_rate = Banking::get_exchange_rate_to_home_currency($currency, $old_date);
 		$amount1 = $amount1 / $ex_rate;
-		$ex_rate = get_exchange_rate_to_home_currency($currency, $date);
+		$ex_rate = Banking::get_exchange_rate_to_home_currency($currency, $date);
 		$amount2 = $amount2 / $ex_rate;
 		$diff = $amount2 - $amount1;
 		return round2($diff, $dec);
@@ -111,7 +111,7 @@
 	{
 		global $Refs;
 
-		//$company_currency = get_company_currency();
+		//$company_currency = Banking::get_company_currency();
 		/*Start an sql transaction */
 		begin_transaction();
 
@@ -138,7 +138,7 @@
 		}
 
 		$date_ = $supp_trans->tran_date;
-		$ex_rate = get_exchange_rate_from_home_currency(get_supplier_currency($supp_trans->supplier_id), $date_);
+		$ex_rate = Banking::get_exchange_rate_from_home_currency(Banking::get_supplier_currency($supp_trans->supplier_id), $date_);
 
 		/*First insert the invoice into the supp_trans table*/
 		$invoice_id = add_supp_trans($trans_type, $supp_trans->supplier_id, $date_, $supp_trans->due_date,
@@ -219,7 +219,7 @@
 				//if ($old_price != $entered_grn->chg_price) // price-change, so update
 				//{
 				//$diff = $entered_grn->chg_price - $old_price;
-				$old_date = sql2date($old[1]);
+				$old_date = Dates::sql2date($old[1]);
 				$diff = get_diff_in_home_currency($supp_trans->supplier_id, $old_date, $date_, $old_price,
 					$entered_grn->chg_price);
 				// always return due to change in currency.
@@ -231,7 +231,7 @@
 				if ($current_purchase_price == 0 || $current_purchase_price > $entered_grn->chg_price)
 					add_or_update_purchase_data($supp_trans->supplier_id, $entered_grn->item_code, $entered_grn->chg_price);
 
-				$deliveries = get_deliveries_between($entered_grn->item_code, $old_date, Today()); // extend the period, if invoice is before any deliveries.
+				$deliveries = get_deliveries_between($entered_grn->item_code, $old_date, Dates::Today()); // extend the period, if invoice is before any deliveries.
 				if ($deliveries[0] != 0) // have deliveries been done during the period?
 				{
 					$deliveries[1] /= $deliveries[0];
@@ -303,7 +303,7 @@
 						$date_);
 					// Exchange Variations Joe Hunt 2008-09-20 ////////////////////////////////////////
 
-					exchange_variation(ST_SUPPCREDIT, $invoice_id, ST_SUPPINVOICE, $invoice_no, $date_,
+					Banking::exchange_variation(ST_SUPPCREDIT, $invoice_id, ST_SUPPINVOICE, $invoice_no, $date_,
 						$allocate_amount, PT_SUPPLIER);
 					///////////////////////////////////////////////////////////////////////////
 				}
@@ -346,8 +346,8 @@
 
 			$supp_trans->supplier_id = $trans_row["supplier_id"];
 			$supp_trans->supplier_name = $trans_row["supp_name"];
-			$supp_trans->tran_date = sql2date($trans_row["tran_date"]);
-			$supp_trans->due_date = sql2date($trans_row["due_date"]);
+			$supp_trans->tran_date = Dates::sql2date($trans_row["tran_date"]);
+			$supp_trans->due_date = Dates::sql2date($trans_row["due_date"]);
 			//$supp_trans->Comments = $trans_row["TransText"];
 			$supp_trans->Comments = "";
 			$supp_trans->reference = $trans_row["reference"];
@@ -418,7 +418,7 @@
 
 		// now remove this invoice/credit from any GRNs/POs that it's related to
 		if (db_num_rows($result) > 0) {
-			$date_ = Today();
+			$date_ = Dates::Today();
 			while ($details_row = db_fetch($result))
 			{
 				if ((int)$details_row["grn_item_id"] > 0) // it can be empty for GL items
@@ -429,7 +429,7 @@
 						$details_row["quantity"], $details_row["FullUnitPrice"]);
 
 					//$diff = $details_row["FullUnitPrice"] - $old[2];
-					$old_date = sql2date($old[1]);
+					$old_date = Dates::sql2date($old[1]);
 
 					$batch = get_grn_batch_from_item($details_row["grn_item_id"]);
 					$grn = get_grn_batch($batch);
@@ -439,7 +439,7 @@
 						if ($match !== false)
 							$mat_cost = update_average_material_cost($grn["supplier_id"], $details_row["stock_id"],
 								$match["unit_price"], -
-								$details_row["quantity"], sql2date($match['tran_date']),
+								$details_row["quantity"], Dates::sql2date($match['tran_date']),
 							 $match['tran_date'] !== $trans['tran_date']);
 						else
 							$mat_cost = update_average_material_cost($grn["supplier_id"], $details_row["stock_id"],
@@ -459,7 +459,7 @@
 					else
 					{
 						$diff = get_diff_in_home_currency(
-							$grn["supplier_id"], $old_date, sql2date($trans['tran_date']), $old[2],
+							$grn["supplier_id"], $old_date, Dates::sql2date($trans['tran_date']), $old[2],
 							$details_row["FullUnitPrice"]);
 						// Only adjust the avg for the diff
 						$mat_cost = update_average_material_cost(null, $details_row["stock_id"],

@@ -18,9 +18,7 @@
 	// ----------------------------------------------------------------
 
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
-	include_once(APP_PATH . "includes/date_functions.inc");
-	include_once(APP_PATH . "includes/data_checks.inc");
-	include_once(APP_PATH . "sales/includes/sales_db.inc");
+
 	include_once(APP_PATH . "inventory/includes/db/items_category_db.inc");
 
 	//----------------------------------------------------------------------------------------------------
@@ -30,8 +28,8 @@
 	//----------------------------------------------------------------------------------------------------
 
 	function GetSalesOrders($from, $to, $category = 0, $location = null, $backorder = 0) {
-		$fromdate = date2sql($from);
-		$todate = date2sql($to);
+		$fromdate = Dates::date2sql($from);
+		$todate = Dates::date2sql($to);
 
 		$sql = "SELECT sales_orders.order_no,
 				sales_orders.debtor_no,

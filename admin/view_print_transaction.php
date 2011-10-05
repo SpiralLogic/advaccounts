@@ -13,19 +13,15 @@
 
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 
-	include_once(APP_PATH . "includes/date_functions.inc");
-	include_once(APP_PATH . "includes/faui.inc");
-	include_once(APP_PATH . "includes/data_checks.inc");
-
 	include_once(APP_PATH . "reporting/includes/reporting.inc");
 	$js = "";
 	if (Config::get('ui.windows.popups'))
-		$js .= get_js_open_window(800, 500);
+		$js .= ui_view::get_js_open_window(800, 500);
 	page(_($help_context = "View or Print Transactions"), false, false, "", $js);
 
 	//----------------------------------------------------------------------------------------
 	function view_link($trans) {
-		return get_trans_view_str($trans["type"], $trans["trans_no"]);
+		return ui_view::get_trans_view_str($trans["type"], $trans["trans_no"]);
 	}
 
 	function prt_link($row) {
@@ -36,11 +32,11 @@
 	}
 
 	function gl_view($row) {
-		return get_gl_view_str($row["type"], $row["trans_no"]);
+		return ui_view::get_gl_view_str($row["type"], $row["trans_no"]);
 	}
 
 	function viewing_controls() {
-		display_note(_("Only documents can be printed."));
+		ui_msgs::display_note(_("Only documents can be printed."));
 
 		start_table("class='tablestyle_noborder'");
 		start_row();
@@ -66,12 +62,12 @@
 
 	function check_valid_entries() {
 		if (!is_numeric($_POST['FromTransNo']) OR $_POST['FromTransNo'] <= 0) {
-			display_error(_("The starting transaction number is expected to be numeric and greater than zero."));
+			ui_msgs::display_error(_("The starting transaction number is expected to be numeric and greater than zero."));
 			return false;
 		}
 
 		if (!is_numeric($_POST['ToTransNo']) OR $_POST['ToTransNo'] <= 0) {
-			display_error(_("The ending transaction number is expected to be numeric and greater than zero."));
+			ui_msgs::display_error(_("The ending transaction number is expected to be numeric and greater than zero."));
 			return false;
 		}
 
@@ -118,10 +114,10 @@
 				_("GL") => array('insert' => true, 'fun' => 'gl_view')
 			);
 			if (!$print_out) {
-				array_remove($cols, 3);
+				Arr::remove($cols, 3);
 			}
 			if (!$trans_ref) {
-				array_remove($cols, 1);
+				Arr::remove($cols, 1);
 			}
 
 			$table =& db_pager::new_db_pager('transactions', $sql, $cols);

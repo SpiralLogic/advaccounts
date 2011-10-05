@@ -120,26 +120,27 @@
 	$this->NewLine(3);
 	$this->Text($mcol + 100, $doc_Date);
 	if ($doctype == ST_SALESQUOTE || $doctype == ST_PURCHORDER || $doctype == ST_SALESORDER) {
-		$this->Text($mcol + 180, sql2date($myrow['ord_date']));
+		$this->Text($mcol + 180, Dates::sql2date($myrow['ord_date']));
 	} elseif ($doctype == ST_WORKORDER) {
-		$this->Text($mcol + 180, sql2date($myrow['date_']));
+		$this->Text($mcol + 180, Dates::sql2date($myrow['date_']));
 	} else {
-		$this->Text($mcol + 180, sql2date($myrow['tran_date']));
+		$this->Text($mcol + 180, Dates::sql2date($myrow['tran_date']));
 	}
 	$this->NewLine();
 	$this->Text($mcol + 100, $doc_Invoice_no);
 	if ($doctype == ST_SALESQUOTE || $doctype == ST_PURCHORDER || $doctype == ST_SALESORDER) { // QUOTE, PO or SO
 		if (Config::get('print.useinvoicenumber') == 1) {
 
-		$this->Text($mcol + 180, $myrow['reference']);
-			} else {
-				$this->Text($mcol + 180, $myrow['order_no']);}
+			$this->Text($mcol + 180, $myrow['reference']);
+		} else {
+			$this->Text($mcol + 180, $myrow['order_no']);
+		}
 	}
 	if ($doctype == ST_SALESQUOTE || $doctype == ST_PURCHORDER || $doctype == ST_SALESORDER) { // QUOTE, PO or SO
 		if (Config::get('print.useinvoicenumber') == 1) {
 			$this->Text($mcol + 180, $myrow['reference']);
-			} else {
-				$this->Text($mcol + 180, $myrow['order_no']);
+		} else {
+			$this->Text($mcol + 180, $myrow['order_no']);
 		}
 	} elseif ($doctype == ST_WORKORDER) {
 		$this->Text($mcol + 180, $myrow['id']);
@@ -320,13 +321,13 @@
 	#  __ADVANCEDEDIT__ END #
 	$col += $width;
 	if ($doctype == ST_SALESORDER || $doctype == ST_SALESQUOTE) {
-		$this->TextWrap($col, $this->row, $width, sql2date($myrow['delivery_date']), 'C');
+		$this->TextWrap($col, $this->row, $width, Dates::sql2date($myrow['delivery_date']), 'C');
 	} elseif ($doctype == ST_WORKORDER) {
 		$this->TextWrap($col, $this->row, $width, $myrow["units_issued"], 'C');
 	} elseif ($doctype != ST_PURCHORDER && $doctype != ST_CUSTCREDIT && $doctype != ST_CUSTPAYMENT && $doctype != ST_CUSTREFUND && $doctype != ST_SUPPAYMENT && isset
 	($myrow['due_date'])
 	) {
-		$this->TextWrap($col, $this->row, $width, sql2date($myrow['due_date']), 'C');
+		$this->TextWrap($col, $this->row, $width, Dates::sql2date($myrow['due_date']), 'C');
 	}
 	#  __ADVANCEDEDIT__ BEGIN # remove payment terms from purchase order
 	if ($doctype == ST_STATEMENT && isset($currentBranch)) {
@@ -342,7 +343,7 @@
 			$this->row -= (2 * $this->lineHeight);
 		}
 		if ($doctype == ST_WORKORDER) {
-			$str = sql2date($myrow["required_by"]);
+			$str = Dates::sql2date($myrow["required_by"]);
 		} else {
 			$id = $myrow['payment_terms'];
 			$sql = "SELECT terms FROM payment_terms WHERE terms_indicator='$id'";

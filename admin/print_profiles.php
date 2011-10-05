@@ -13,7 +13,6 @@
 
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 	include(APP_PATH . "admin/db/printers_db.inc");
-	include(APP_PATH . "includes/faui.inc");
 
 	page(_($help_context = "Printing Profiles"));
 
@@ -87,8 +86,8 @@
 
 		if ($_POST['profile_id'] == '' && empty($_POST['name'])) {
 			$error = 1;
-			display_error(_("Printing profile name cannot be empty."));
-			set_focus('name');
+			ui_msgs::display_error(_("Printing profile name cannot be empty."));
+			ui_view::set_focus('name');
 		}
 
 		if (!$error) {
@@ -102,10 +101,10 @@
 
 			update_printer_profile($_POST['profile_id'], $prof);
 			if ($selected_id == '') {
-				display_notification_centered(_('New printing profile has been created'));
+				ui_msgs::display_notification_centered(_('New printing profile has been created'));
 				clear_form();
 			} else {
-				display_notification_centered(_('Printing profile has been updated'));
+				ui_msgs::display_notification_centered(_('Printing profile has been updated'));
 			}
 		}
 	}
@@ -113,7 +112,7 @@
 	if (get_post('delete')) {
 		if (!check_delete(get_post('name'))) {
 			delete_printer_profile($selected_id);
-			display_notification(_('Selected printing profile has been deleted'));
+			ui_msgs::display_notification(_('Selected printing profile has been deleted'));
 			clear_form();
 		}
 	}
@@ -163,7 +162,7 @@
 	}
 	end_table();
 	if ($unkn)
-		display_note('<sup>1)</sup>&nbsp;-&nbsp;' . _("no title was found in this report definition file."), 0, 1, '');
+		ui_msgs::display_note('<sup>1)</sup>&nbsp;-&nbsp;' . _("no title was found in this report definition file."), 0, 1, '');
 	else
 		echo '<br>';
 

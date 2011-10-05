@@ -13,14 +13,9 @@
 
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 
-	include_once(APP_PATH . "includes/date_functions.inc");
-	include_once(APP_PATH . "includes/banking.inc");
-	include_once(APP_PATH . "sales/includes/sales_db.inc");
-
-	include_once(APP_PATH . "includes/faui.inc");
 	$js = "";
 	if (Config::get('ui.windows.popups'))
-		$js .= get_js_open_window(800, 500);
+		$js .= ui_view::get_js_open_window(800, 500);
 
 	page(_($help_context = "Inventory Item Movement"), false, false, "", $js);
 	//------------------------------------------------------------------------------------------------
@@ -38,7 +33,7 @@
 	start_form();
 
 	if (!isset($_POST['stock_id']))
-		$_POST['stock_id'] = get_global_stock_item();
+		$_POST['stock_id'] = ui_globals::get_global_stock_item();
 
 	start_table("class='tablestyle_noborder'");
 
@@ -53,10 +48,10 @@
 	end_table();
 	end_form();
 
-	set_global_stock_item($_POST['stock_id']);
+	ui_globals::set_global_stock_item($_POST['stock_id']);
 
-	$before_date = date2sql($_POST['BeforeDate']);
-	$after_date = date2sql($_POST['AfterDate']);
+	$before_date = Dates::date2sql($_POST['BeforeDate']);
+	$after_date = Dates::date2sql($_POST['AfterDate']);
 
 	$sql = "SELECT type, trans_no, tran_date, person_id, qty, reference
 	FROM stock_moves
@@ -106,7 +101,7 @@
 
 		alt_table_row_color($k);
 
-		$trandate = sql2date($myrow["tran_date"]);
+		$trandate = Dates::sql2date($myrow["tran_date"]);
 
 		$type_name = $systypes_array[$myrow["type"]];
 
@@ -123,9 +118,9 @@
 
 		label_cell($type_name);
 
-		label_cell(get_trans_view_str($myrow["type"], $myrow["trans_no"]));
+		label_cell(ui_view::get_trans_view_str($myrow["type"], $myrow["trans_no"]));
 
-		label_cell(get_trans_view_str($myrow["type"], $myrow["trans_no"], $myrow["reference"]));
+		label_cell(ui_view::get_trans_view_str($myrow["type"], $myrow["trans_no"], $myrow["reference"]));
 		label_cell($trandate);
 
 		$person = $myrow["person_id"];

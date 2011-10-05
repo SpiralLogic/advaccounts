@@ -11,18 +11,13 @@
 	 ***********************************************************************/
 	$page_security = 'SA_SUPPLIERPAYMNT';
 
-
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
-	include_once(APP_PATH . "includes/date_functions.inc");
-	include_once(APP_PATH . "includes/faui.inc");
-	include_once(APP_PATH . "includes/banking.inc");
-	include_once(APP_PATH . "includes/data_checks.inc");
-	include_once(APP_PATH . "purchasing/includes/purchasing_db.inc");
+
 	include_once(APP_PATH . "reporting/includes/reporting.inc");
 
 	$js = "";
 	if (Config::get('ui.windows.popups'))
-		$js .= get_js_open_window(900, 500);
+		$js .= ui_view::get_js_open_window(900, 500);
 
 	JS::headerFile('/js/payalloc.js');
 
@@ -41,12 +36,12 @@
 	//----------------------------------------------------------------------------------------
 
 	if (!isset($_POST['supplier_id']))
-		$_POST['supplier_id'] = get_global_supplier(false);
+		$_POST['supplier_id'] = ui_globals::get_global_supplier(false);
 
 	if (!isset($_POST['DatePaid'])) {
-		$_POST['DatePaid'] = new_doc_date();
-		if (!is_date_in_fiscalyear($_POST['DatePaid']))
-			$_POST['DatePaid'] = end_fiscalyear();
+		$_POST['DatePaid'] = Dates::new_doc_date();
+		if (!Dates::is_date_in_fiscalyear($_POST['DatePaid']))
+			$_POST['DatePaid'] = Dates::end_fiscalyear();
 	}
 
 	if (isset($_POST['_DatePaid_changed'])) {
@@ -62,19 +57,19 @@
 	if (isset($_GET['AddedID'])) {
 		$payment_id = $_GET['AddedID'];
 
-		display_notification_centered(_("Payment has been sucessfully entered"));
+		ui_msgs::display_notification_centered(_("Payment has been sucessfully entered"));
 
 		submenu_print(_("&Print This Remittance"), ST_SUPPAYMENT, $payment_id . "-" . ST_SUPPAYMENT, 'prtopt');
 		submenu_print(_("&Email This Remittance"), ST_SUPPAYMENT, $payment_id . "-" . ST_SUPPAYMENT, null, 1);
 
-		display_note(get_gl_view_str(ST_SUPPAYMENT, $payment_id, _("View the GL &Journal Entries for this Payment")));
+		ui_msgs::display_note(ui_view::get_gl_view_str(ST_SUPPAYMENT, $payment_id, _("View the GL &Journal Entries for this Payment")));
 
 		//    hyperlink_params($path_to_root . "/purchasing/allocations/supplier_allocate.php", _("&Allocate this Payment"), "trans_no=$payment_id&trans_type=22");
 
 		hyperlink_params(
 			$_SERVER['PHP_SELF'], _("Enter another supplier &payment"), "supplier_id=" . $_POST['supplier_id']);
 
-		display_footer_exit();
+		ui_view::display_footer_exit();
 	}
 
 	//----------------------------------------------------------------------------------------
@@ -83,8 +78,8 @@
 		global $Refs;
 
 		if (!get_post('supplier_id')) {
-			display_error(_("There is no supplier selected."));
-			set_focus('supplier_id');
+			ui_msgs::display_error(_("There is no supplier selected."));
+			ui_view::set_focus('supplier_id');
 			return false;
 		}
 
@@ -93,29 +88,29 @@
 		}
 
 		if (!check_num('amount', 0)) {
-			display_error(_("The entered amount is invalid or less than zero."));
-			set_focus('amount');
+			ui_msgs::display_error(_("The entered amount is invalid or less than zero."));
+			ui_view::set_focus('amount');
 			return false;
 		}
 
 		if (isset($_POST['charge']) && !check_num('charge', 0)) {
-			display_error(_("The entered amount is invalid or less than zero."));
-			set_focus('charge');
+			ui_msgs::display_error(_("The entered amount is invalid or less than zero."));
+			ui_view::set_focus('charge');
 			return false;
 		}
 
 		if (isset($_POST['charge']) && input_num('charge') > 0) {
 			$charge_acct = get_company_pref('bank_charge_act');
 			if (get_gl_account($charge_acct) == false) {
-				display_error(_("The Bank Charge Account has not been set in System and General GL Setup."));
-				set_focus('charge');
+				ui_msgs::display_error(_("The Bank Charge Account has not been set in System and General GL Setup."));
+				ui_view::set_focus('charge');
 				return false;
 			}
 		}
 
 		if (isset($_POST['_ex_rate']) && !check_num('_ex_rate', 0.000001)) {
-			display_error(_("The exchange rate must be numeric and greater than zero."));
-			set_focus('_ex_rate');
+			ui_msgs::display_error(_("The exchange rate must be numeric and greater than zero."));
+			ui_view::set_focus('_ex_rate');
 			return false;
 		}
 
@@ -124,38 +119,38 @@
 		}
 
 		if (!check_num('discount', 0)) {
-			display_error(_("The entered discount is invalid or less than zero."));
-			set_focus('amount');
+			ui_msgs::display_error(_("The entered discount is invalid or less than zero."));
+			ui_view::set_focus('amount');
 			return false;
 		}
 
 		//if (input_num('amount') - input_num('discount') <= 0)
 		if (input_num('amount') <= 0) {
-			display_error(_("The total of the amount and the discount is zero or negative. Please enter positive values."));
-			set_focus('amount');
+			ui_msgs::display_error(_("The total of the amount and the discount is zero or negative. Please enter positive values."));
+			ui_view::set_focus('amount');
 			return false;
 		}
 
-		if (!is_date($_POST['DatePaid'])) {
-			display_error(_("The entered date is invalid."));
-			set_focus('DatePaid');
+		if (!Dates::is_date($_POST['DatePaid'])) {
+			ui_msgs::display_error(_("The entered date is invalid."));
+			ui_view::set_focus('DatePaid');
 			return false;
 		}
-		elseif (!is_date_in_fiscalyear($_POST['DatePaid']))
+		elseif (!Dates::is_date_in_fiscalyear($_POST['DatePaid']))
 		{
-			display_error(_("The entered date is not in fiscal year."));
-			set_focus('DatePaid');
+			ui_msgs::display_error(_("The entered date is not in fiscal year."));
+			ui_view::set_focus('DatePaid');
 			return false;
 		}
 		if (!$Refs->is_valid($_POST['ref'])) {
-			display_error(_("You must enter a reference."));
-			set_focus('ref');
+			ui_msgs::display_error(_("You must enter a reference."));
+			ui_view::set_focus('ref');
 			return false;
 		}
 
 		if (!is_new_reference($_POST['ref'], ST_SUPPAYMENT)) {
-			display_error(_("The entered reference is already in use."));
-			set_focus('ref');
+			ui_msgs::display_error(_("The entered reference is already in use."));
+			ui_view::set_focus('ref');
 			return false;
 		}
 
@@ -170,9 +165,9 @@
 	//----------------------------------------------------------------------------------------
 
 	function handle_add_payment() {
-		$supp_currency = get_supplier_currency($_POST['supplier_id']);
-		$bank_currency = get_bank_account_currency($_POST['bank_account']);
-		$comp_currency = get_company_currency();
+		$supp_currency = Banking::get_supplier_currency($_POST['supplier_id']);
+		$bank_currency = Banking::get_bank_account_currency($_POST['bank_account']);
+		$comp_currency = Banking::get_company_currency();
 		if ($comp_currency != $bank_currency && $bank_currency != $supp_currency)
 			$rate = 0;
 		else
@@ -181,7 +176,7 @@
 		$payment_id = add_supp_payment($_POST['supplier_id'], $_POST['DatePaid'],
 			$_POST['bank_account'], input_num('amount'), input_num('discount'),
 			$_POST['ref'], $_POST['memo_'], $rate, input_num('charge'));
-		new_doc_date($_POST['DatePaid']);
+		Dates::new_doc_date($_POST['DatePaid']);
 
 		$_SESSION['alloc']->trans_no = $payment_id;
 		$_SESSION['alloc']->write();
@@ -221,7 +216,7 @@
 	if (!isset($_POST['bank_account'])) // first page call
 		$_SESSION['alloc'] = new allocation(ST_SUPPAYMENT, 0);
 
-	set_global_supplier($_POST['supplier_id']);
+	ui_globals::set_global_supplier($_POST['supplier_id']);
 
 	bank_accounts_list_row(_("From Bank Account:"), 'bank_account', null, true);
 
@@ -233,10 +228,10 @@
 
 	table_section(3);
 
-	$supplier_currency = get_supplier_currency($_POST['supplier_id']);
-	$bank_currency = get_bank_account_currency($_POST['bank_account']);
+	$supplier_currency = Banking::get_supplier_currency($_POST['supplier_id']);
+	$bank_currency = Banking::get_bank_account_currency($_POST['bank_account']);
 	if ($bank_currency != $supplier_currency) {
-		exchange_rate_display($bank_currency, $supplier_currency, $_POST['DatePaid'], true);
+		ui_view::exchange_rate_display($bank_currency, $supplier_currency, $_POST['DatePaid'], true);
 	}
 
 	amount_row(_("Bank Charge:"), 'charge');
@@ -256,7 +251,7 @@
 	end_table(1);
 
 	if ($bank_currency != $supplier_currency) {
-		display_note(_("The amount and discount are in the bank account's currency."), 0, 1);
+		ui_msgs::display_note(_("The amount and discount are in the bank account's currency."), 0, 1);
 	}
 
 	submit_center('ProcessSuppPayment', _("Enter Payment"), true, '', 'default');

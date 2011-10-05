@@ -12,12 +12,12 @@
 	$page_security = 'SA_BACKUP';
 
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
-	include_once(APP_PATH . "includes/faui.inc");
+
 	include_once(APP_PATH . "admin/db/maintenance_db.inc");
 
 	if (get_post('view')) {
 		if (!get_post('backups')) {
-			display_error(_('Select backup file first.'));
+			ui_msgs::display_error(_('Select backup file first.'));
 		} else {
 			$filename = BACKUP_PATH . get_post('backups');
 			if (Ajax::in_ajax())
@@ -43,7 +43,7 @@
 
 	function check_paths() {
 		if (!file_exists(BACKUP_PATH)) {
-			display_error(_("Backup paths have not been set correctly.")
+			ui_msgs::display_error(_("Backup paths have not been set correctly.")
 				 . _("Please contact System Administrator.") . "<br>"
 				 . _("cannot find backup directory") . " - " . BACKUP_PATH . "<br>");
 			end_page();
@@ -54,10 +54,10 @@
 	function generate_backup($conn, $ext = 'no', $comm = '') {
 		$filename = db_backup($conn, $ext, $comm);
 		if ($filename)
-			display_notification(_("Backup successfully generated.") . ' '
+			ui_msgs::display_notification(_("Backup successfully generated.") . ' '
 				 . _("Filename") . ": " . $filename);
 		else
-			display_error(_("Database backup failed."));
+			ui_msgs::display_error(_("Database backup failed."));
 
 		return $filename;
 	}
@@ -66,7 +66,7 @@
 		global $Ajax;
 
 		$ar_files = array();
-		default_focus('backups');
+		ui_view::default_focus('backups');
 		$dh = opendir(BACKUP_PATH);
 		while (($file = readdir($dh)) !== false)
 		{
@@ -105,7 +105,7 @@
 
 	function download_file($filename) {
 		if (empty($filename) || !file_exists($filename)) {
-			display_error(_('Select backup file first.'));
+			ui_msgs::display_error(_('Select backup file first.'));
 			return false;
 		}
 		$saveasname = basename($filename);
@@ -128,17 +128,17 @@
 
 	if (get_post('restore')) {
 		if (db_import(BACKUP_PATH . get_post('backups'), $conn))
-			display_notification(_("Restore backup completed."));
+			ui_msgs::display_notification(_("Restore backup completed."));
 	}
 
 	if (get_post('deldump')) {
 		if (unlink(BACKUP_PATH . get_post('backups'))) {
-			display_notification(_("File successfully deleted.") . " "
+			ui_msgs::display_notification(_("File successfully deleted.") . " "
 				 . _("Filename") . ": " . get_post('backups'));
 			$Ajax->activate('backups');
 		}
 		else
-			display_error(_("Can't delete backup file."));
+			ui_msgs::display_error(_("Can't delete backup file."));
 	}
 	;
 
@@ -147,13 +147,13 @@
 		$fname = $_FILES['uploadfile']['name'];
 
 		if (!preg_match("/.sql(.zip|.gz)?$/", $fname))
-			display_error(_("You can only upload *.sql backup files"));
+			ui_msgs::display_error(_("You can only upload *.sql backup files"));
 		elseif (is_uploaded_file($tmpname)) {
 			rename($tmpname, BACKUP_PATH . $fname);
-			display_notification("File uploaded to backup directory");
+			ui_msgs::display_notification("File uploaded to backup directory");
 			$Ajax->activate('backups');
 		} else
-			display_error(_("File was not uploaded into the system."));
+			ui_msgs::display_error(_("File was not uploaded into the system."));
 	}
 	//-------------------------------------------------------------------------------
 	start_form(true, true);

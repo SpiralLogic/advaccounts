@@ -1,19 +1,19 @@
 <?php
-/**********************************************************************
-Copyright (C) FrontAccounting, LLC.
-Released under the terms of the GNU General Public License, GPL,
-as published by the Free Software Foundation, either version 3
-of the License, or (at your option) any later version.
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
- ***********************************************************************/
+	/**********************************************************************
+	Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL,
+	as published by the Free Software Foundation, either version 3
+	of the License, or (at your option) any later version.
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+	 ***********************************************************************/
 	//------------------- update average material cost ------------------------------------------ Joe Hunt Mar-03-2008
 
 	function update_average_material_cost($supplier, $stock_id, $price, $qty, $date, $adj_only = false) {
 		if ($supplier != null) {
-			$currency = get_supplier_currency($supplier);
+			$currency = Banking::get_supplier_currency($supplier);
 		} else {
 			$currency = null;
 		}
@@ -21,7 +21,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		price_decimal_format($price, $dec);
 		$price = round2($price, $dec);
 		if ($currency != null) {
-			$ex_rate = get_exchange_rate_to_home_currency($currency, $date);
+			$ex_rate = Banking::get_exchange_rate_to_home_currency($currency, $date);
 			$price_in_home_currency = $price / $ex_rate;
 		} else
 			$price_in_home_currency = $price;
@@ -89,10 +89,9 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 				}
 				/*Need to insert a grn item */
 				$grn_item = add_grn_detail_item($grn, $order_line->po_detail_rec, $order_line->stock_id, $order_line->description, $order_line->standard_cost, $order_line->receive_qty, $order_line->price,
-																				$order_line->discount);
+					$order_line->discount);
 				/* Update location stock records - NB  a po cannot be entered for a service/kit parts */
 				add_stock_move(ST_SUPPRECEIVE, $order_line->stock_id, $grn, $location, $date_, "", $order_line->receive_qty, $order_line->standard_cost, $po->supplier_id, 1, $order_line->price);
-
 			} /*quantity received is != 0 */
 		} /*end of order_line loop */
 
@@ -111,19 +110,19 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		$sql = "INSERT INTO purch_order_details (order_no, item_code, description, delivery_date, unit_price, quantity_ordered, discount) VALUES (";
 
 		$sql .= $po->order_no . "," .
-						db_escape('freight') . "," .
-						db_escape('Freight Charges') . ",'" .
-						date2sql($date_) . "'," .
-						db_escape($po->freight) . ", " .
-						db_escape(1) . ", " .
-						db_escape(0) .
-						")";
+		 db_escape('freight') . "," .
+		 db_escape('Freight Charges') . ",'" .
+		 Dates::date2sql($date_) . "'," .
+		 db_escape($po->freight) . ", " .
+		 db_escape(1) . ", " .
+		 db_escape(0) .
+		 ")";
 		db_query($sql, "One of the purchase order detail records could not be updated");
 		return db_insert_id();
 	}
 
 	function add_grn_batch($po_number, $supplier_id, $reference, $location, $date_) {
-		$date = date2sql($date_);
+		$date = Dates::date2sql($date_);
 
 		$sql = "INSERT INTO grn_batch (purch_order_no, delivery_date, supplier_id, reference, loc_code)
 			VALUES (" . db_escape($po_number) . ", " . db_escape($date) . ", " . db_escape($supplier_id) . ", " . db_escape($reference) . ", " . db_escape($location) . ")";
@@ -192,42 +191,42 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 
 	function get_grn_items($grn_batch_id = 0, $supplier_id = "", $outstanding_only = false, $is_invoiced_only = false, $invoice_no = 0, $begin = "", $end = "") {
 		$sql = "SELECT "
-					 . "grn_batch.*, "
-					 . "grn_items.*, "
-					 . "purch_order_details.unit_price, "
-					 . "purch_order_details.std_cost_unit, units
+		 . "grn_batch.*, "
+		 . "grn_items.*, "
+		 . "purch_order_details.unit_price, "
+		 . "purch_order_details.std_cost_unit, units
     	    FROM "
-					 . "grn_batch, "
-					 . "grn_items, "
-					 . "purch_order_details, "
-					 . "stock_master";
+		 . "grn_batch, "
+		 . "grn_items, "
+		 . "purch_order_details, "
+		 . "stock_master";
 
 		if ($invoice_no != 0) {
 			$sql .= ", supp_invoice_items";
 		}
 		$sql .= " WHERE "
-						. "grn_items.grn_batch_id="
-						. "grn_batch.id AND "
-						. "grn_items.po_detail_item="
-						. "purch_order_details.po_detail_item";
+		 . "grn_items.grn_batch_id="
+		 . "grn_batch.id AND "
+		 . "grn_items.po_detail_item="
+		 . "purch_order_details.po_detail_item";
 
 		if ($invoice_no != 0) {
 			$sql .= " AND "
-							. "supp_invoice_items.supp_trans_type="
-							. ST_SUPPINVOICE . " AND "
-							. "supp_invoice_items.supp_trans_no=$invoice_no AND "
-							. "grn_items.id="
-							. "supp_invoice_items.grn_item_id";
+			 . "supp_invoice_items.supp_trans_type="
+			 . ST_SUPPINVOICE . " AND "
+			 . "supp_invoice_items.supp_trans_no=$invoice_no AND "
+			 . "grn_items.id="
+			 . "supp_invoice_items.grn_item_id";
 		}
 		$sql .= " AND "
-						. "stock_master.stock_id="
-						. "grn_items.item_code ";
+		 . "stock_master.stock_id="
+		 . "grn_items.item_code ";
 
 		if ($begin != "") {
-			$sql .= " AND grn_batch.delivery_date>='" . date2sql($begin) . "'";
+			$sql .= " AND grn_batch.delivery_date>='" . Dates::date2sql($begin) . "'";
 		}
 		if ($end != "") {
-			$sql .= " AND grn_batch.delivery_date<='" . date2sql($end) . "'";
+			$sql .= " AND grn_batch.delivery_date<='" . Dates::date2sql($end) . "'";
 		}
 		if ($grn_batch_id != 0) {
 			$sql .= " AND grn_batch.id=" . db_escape($grn_batch_id) . " AND grn_items.grn_batch_id=" . db_escape($grn_batch_id);
@@ -278,8 +277,8 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 				}
 
 				$order->add_to_order($order->lines_on_order + 1, $myrow["item_code"], 1, $myrow["description"],
-														 $myrow["unit_price"], $units, sql2date($myrow["delivery_date"]),
-														 $myrow["quantity_inv"], $myrow["qty_recd"], $myrow['discount']);
+					$myrow["unit_price"], $units, Dates::sql2date($myrow["delivery_date"]),
+					$myrow["quantity_inv"], $myrow["qty_recd"], $myrow['discount']);
 
 				$order->line_items[$order->lines_on_order]->po_detail_rec = $myrow["po_detail_item"];
 			} /* line po from purchase order details */
@@ -302,7 +301,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 
 		if ($result) {
 
-			$order->orig_order_date = sql2date($row["delivery_date"]);
+			$order->orig_order_date = Dates::sql2date($row["delivery_date"]);
 			$order->location = $row["loc_code"];
 			$order->reference = $row["reference"];
 

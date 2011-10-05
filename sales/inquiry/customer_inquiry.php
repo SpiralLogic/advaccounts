@@ -11,14 +11,13 @@
 	 ***********************************************************************/
 	$page_security = 'SA_SALESTRANSVIEW';
 
-
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 	include_once(APP_PATH . "sales/includes/sales_ui.inc");
-	include_once(APP_PATH . "sales/includes/sales_db.inc");
+
 	include_once(APP_PATH . "reporting/includes/reporting.inc");
 	$js = "";
 	if (Config::get('ui.windows.popups')) {
-		$js .= get_js_open_window(900, 500);
+		$js .= ui_view::get_js_open_window(900, 500);
 	}
 
 	page(_($help_context = "Customer Transactions"), isset($_GET['customer_id']), false, "", $js);
@@ -28,7 +27,7 @@
 	//------------------------------------------------------------------------------------------------
 	start_form();
 	if (!isset($_POST['customer_id'])) {
-		$_POST['customer_id'] = get_global_customer();
+		$_POST['customer_id'] = ui_globals::get_global_customer();
 	}
 	start_table("class='tablestyle_noborder'");
 	start_row();
@@ -43,7 +42,7 @@
 	submit_cells('RefreshInquiry', _("Search"), '', _('Refresh Inquiry'), 'default');
 	end_row();
 	end_table();
-	set_global_customer($_POST['customer_id']);
+	ui_globals::set_global_customer($_POST['customer_id']);
 	//------------------------------------------------------------------------------------------------
 	function display_customer_summary($customer_record) {
 		$past1 = get_company_pref('past_due_days');
@@ -87,11 +86,11 @@
 	}
 
 	function order_view($row) {
-		return $row['order_'] > 0 ? get_customer_trans_view_str(ST_SALESORDER, $row['order_']) : "";
+		return $row['order_'] > 0 ? ui_view::get_customer_trans_view_str(ST_SALESORDER, $row['order_']) : "";
 	}
 
 	function trans_view($trans) {
-		return get_trans_view_str($trans["type"], $trans["trans_no"]);
+		return ui_view::get_trans_view_str($trans["type"], $trans["trans_no"]);
 	}
 
 	function due_date($row) {
@@ -99,7 +98,7 @@
 	}
 
 	function gl_view($row) {
-		return get_gl_view_str($row["type"], $row["trans_no"]);
+		return ui_view::get_gl_view_str($row["type"], $row["trans_no"]);
 	}
 
 	function fmt_debit($row) {
@@ -171,8 +170,8 @@
 	}
 
 	//------------------------------------------------------------------------------------------------
-	$date_after = date2sql($_POST['TransAfterDate']);
-	$date_to = date2sql($_POST['TransToDate']);
+	$date_after = Dates::date2sql($_POST['TransAfterDate']);
+	$date_to = Dates::date2sql($_POST['TransToDate']);
 	if (AJAX_REFERRER && isset($_POST['ajaxsearch'])) {
 		$searchArray = trim($_POST['ajaxsearch']);
 		$searchArray = explode(' ', $searchArray);
@@ -206,7 +205,7 @@
 	}
 	$sql .= "trans.alloc AS Allocated,
 		((trans.type = " . ST_SALESINVOICE . ")
-			AND trans.due_date < '" . date2sql(Today()) . "') AS OverDue
+			AND trans.due_date < '" . Dates::date2sql(Dates::Today()) . "') AS OverDue
 		FROM debtor_trans as trans, debtors_master as debtor, cust_branch as branch
 		WHERE debtor.debtor_no = trans.debtor_no
 		AND trans.branch_code = branch.branch_code";
@@ -226,7 +225,7 @@
 			}
 			;
 			if (stripos($ajaxsearch, '/') > 0) {
-				$sql .= " tran_date LIKE '%" . date2sql($ajaxsearch, false) . "%' OR";
+				$sql .= " tran_date LIKE '%" . Dates::date2sql($ajaxsearch, false) . "%' OR";
 			}
 			$ajaxsearch = db_escape("%" . $ajaxsearch . "%");
 			$sql .= " name LIKE $ajaxsearch OR trans_no LIKE $ajaxsearch OR reference LIKE $ajaxsearch
@@ -267,7 +266,7 @@
 			$sql .= " AND trans.type = " . ST_SALESINVOICE . " ";
 		}
 		if ($_POST['filterType'] == '2') {
-			$today = date2sql(Today());
+			$today = Dates::date2sql(Dates::Today());
 			$sql .= " AND trans.due_date < '$today'
 				AND (trans.ov_amount + trans.ov_gst + trans.ov_freight_tax + 
 				trans.ov_freight + trans.ov_discount - trans.alloc > 0) ";

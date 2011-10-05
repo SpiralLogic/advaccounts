@@ -13,23 +13,19 @@
 	$page_security = 'SA_RECONCILE';
 
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
-	include_once(APP_PATH . "includes/date_functions.inc");
-	include_once(APP_PATH . "includes/faui.inc");
-	include_once(APP_PATH . "includes/data_checks.inc");
-	include_once(APP_PATH . "gl/includes/gl_db.inc");
-	include_once(APP_PATH . "includes/banking.inc");
+
 	$js = "";
 	if (Config::get('ui.windows.popups')) {
-		$js .= get_js_open_window(800, 500);
+		$js .= ui_view::get_js_open_window(800, 500);
 	}
 
 	JS::headerFile('reconcile.js');
 	page(_($help_context = "Reconcile Bank Account"), false, false, "", $js);
 	check_db_has_bank_accounts(_("There are no bank accounts defined in the system."));
 	function check_date() {
-		if (!is_date(get_post('reconcile_date'))) {
-			display_error(_("Invalid reconcile date format"));
-			set_focus('reconcile_date');
+		if (!Dates::is_date(get_post('reconcile_date'))) {
+			ui_msgs::display_error(_("Invalid reconcile date format"));
+			ui_view::set_focus('reconcile_date');
 			return false;
 		}
 		return true;
@@ -61,11 +57,11 @@
 	}
 
 	function trans_view($trans) {
-		return get_trans_view_str($trans["type"], $trans["trans_no"]);
+		return ui_view::get_trans_view_str($trans["type"], $trans["trans_no"]);
 	}
 
 	function gl_view($row) {
-		return get_gl_view_str($row["type"], $row["trans_no"]);
+		return ui_view::get_gl_view_str($row["type"], $row["trans_no"]);
 	}
 
 	function fmt_debit($row) {
@@ -104,7 +100,7 @@
 		{
 			$Ajax->activate('bank_date');
 		}
-		$_POST['bank_date'] = date2sql(get_post('reconcile_date'));
+		$_POST['bank_date'] = Dates::date2sql(get_post('reconcile_date'));
 		$reconcile_value = check_value("rec_" . $reconcile_id) ? ("'" . $_POST['bank_date'] . "'") : 'NULL';
 		update_reconciled_values($reconcile_id, $reconcile_value, $_POST['reconcile_date'], input_num('end_balance'), $_POST['bank_account']);
 		$Ajax->activate('reconciled');
@@ -125,7 +121,7 @@
 			$sql = "UPDATE bank_trans SET undeposited=1, reconciled=NULL WHERE ref=" . db_escape($tran);
 			db_query($sql, 'Couldn\'t update undesposited status');
 		}
-		$sql = "UPDATE bank_trans SET ref=" . db_escape('Removed group: ' . $grouprefs) . ", amount=0, reconciled='" . date2sql(Today()) . "',
+		$sql = "UPDATE bank_trans SET ref=" . db_escape('Removed group: ' . $grouprefs) . ", amount=0, reconciled='" . Dates::date2sql(Dates::Today()) . "',
     undeposited=" . $groupid . " WHERE id=" . $groupid;
 		db_query($sql, "Couldn't update removed group data");
 		update_data();
@@ -138,19 +134,19 @@
 		}
 	}
 	if (!isset($_POST['reconcile_date'])) { // init page
-		$_POST['reconcile_date'] = new_doc_date();
-		//	$_POST['bank_date'] = date2sql(Today());
+		$_POST['reconcile_date'] = Dates::new_doc_date();
+		//	$_POST['bank_date'] = Dates::date2sql(Dates::Today());
 	}
 	if (list_updated('bank_account')) {
 		$Ajax->activate('bank_date');
 		update_data();
 	}
 	if (list_updated('bank_date')) {
-		$_POST['reconcile_date'] = get_post('bank_date') == '' ? Today() : sql2date($_POST['bank_date']);
+		$_POST['reconcile_date'] = get_post('bank_date') == '' ? Dates::Today() : Dates::sql2date($_POST['bank_date']);
 		update_data();
 	}
 	if (get_post('_reconcile_date_changed')) {
-		$_POST['bank_date'] = check_date() ? date2sql(get_post('reconcile_date')) : '';
+		$_POST['bank_date'] = check_date() ? Dates::date2sql(get_post('reconcile_date')) : '';
 		$Ajax->activate('bank_date');
 		update_data();
 	}
@@ -159,7 +155,7 @@
 		change_tpl_flag($id);
 	}
 	if (isset($_POST['Reconcile'])) {
-		set_focus('bank_date');
+		ui_view::set_focus('bank_date');
 		foreach ($_POST['last'] as $id => $value) {
 			if ($value != check_value('rec_' . $id)) {
 				if (!change_tpl_flag($id)) {
@@ -184,7 +180,7 @@
 		$_POST["reconciled"] = price_format($row["end_balance"] - $row["beg_balance"]);
 		$total = $row["total"];
 		if (!isset($_POST["beg_balance"])) { // new selected account/statement
-			$_POST["last_date"] = sql2date($row["last_date"]);
+			$_POST["last_date"] = Dates::sql2date($row["last_date"]);
 			$_POST["beg_balance"] = price_format($row["beg_balance"]);
 			$_POST["end_balance"] = price_format($row["end_balance"]);
 			if (get_post('bank_date')) {
@@ -220,7 +216,7 @@
 	}
 	$sql = get_sql_for_bank_account_reconcile($_POST['bank_account'], get_post('reconcile_date'));
 	$act = get_bank_account($_POST["bank_account"]);
-	display_heading($act['bank_account_name'] . " - " . $act['bank_curr_code']);
+	ui_msgs::display_heading($act['bank_account_name'] . " - " . $act['bank_curr_code']);
 	$cols = array(_("Type") => array('fun' => 'systype_name', 'ord' => ''), _("#") => array('fun' => 'trans_view', 'ord' => ''), _("Reference"), _("Date") => 'date',
 		_("Debit") => array('align' => 'right', 'fun' => 'fmt_debit'), _("Credit") => array('align' => 'right', 'insert' => true, 'fun' => 'fmt_credit'),
 		_("Person/Item") => array('fun' => 'fmt_person'), array('insert' => true, 'fun' => 'gl_view'), "X" => array('insert' => true, 'fun' => 'rec_checkbox'),

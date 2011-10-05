@@ -100,9 +100,6 @@
 		_("Cash")
 	);
 
-	include_once(APP_PATH . "manufacturing/includes/manufacturing_db.inc");
-	include_once(APP_PATH . "purchasing/includes/purchasing_db.inc");
-	include_once(APP_PATH . "sales/includes/sales_db.inc");
 	include_once(APP_PATH . "dimensions/includes/dimensions_db.inc");
 	//----------------------------------------------------------------------------------
 	//	Payment types
@@ -128,16 +125,16 @@
 			case PT_MISC :
 			case PT_QUICKENTRY :
 			case PT_WORKORDER :
-				return get_company_currency();
+				return Banking::get_company_currency();
 
 			case PT_CUSTOMER :
-				return get_customer_currency($person_id);
+				return Banking::get_customer_currency($person_id);
 
 			case PT_SUPPLIER :
-				return get_supplier_currency($person_id);
+				return Banking::get_supplier_currency($person_id);
 
 			default :
-				return get_company_currency();
+				return Banking::get_company_currency();
 		}
 	}
 

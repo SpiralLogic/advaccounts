@@ -13,15 +13,12 @@
 
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 
-	include_once(APP_PATH . "includes/date_functions.inc");
 	include_once(APP_PATH . "includes/manufacturing.inc");
-	include_once(APP_PATH . "includes/data_checks.inc");
 
-	include_once(APP_PATH . "manufacturing/includes/manufacturing_db.inc");
 	include_once(APP_PATH . "manufacturing/includes/manufacturing_ui.inc");
 	$js = "";
 	if (Config::get('ui.windows.popups'))
-		$js .= get_js_open_window(800, 500);
+		$js .= ui_view::get_js_open_window(800, 500);
 	page(_($help_context = "View Work Order"), true, false, "", $js);
 
 	//-------------------------------------------------------------------------------------------------
@@ -30,7 +27,7 @@
 		$woid = $_GET['trans_no'];
 	}
 
-	display_heading($systypes_array[ST_WORKORDER] . " # " . $woid);
+	ui_msgs::display_heading($systypes_array[ST_WORKORDER] . " # " . $woid);
 
 	br(1);
 	$myrow = get_work_order($woid);
@@ -45,29 +42,29 @@
 	// display the WO requirements
 	br(1);
 	if ($myrow["released"] == false) {
-		display_heading2(_("BOM for item:") . " " . $myrow["StockItemName"]);
+		ui_msgs::display_heading2(_("BOM for item:") . " " . $myrow["StockItemName"]);
 		display_bom($myrow["stock_id"]);
 	}
 	else
 	{
-		display_heading2(_("Work Order Requirements"));
+		ui_msgs::display_heading2(_("Work Order Requirements"));
 		display_wo_requirements($woid, $myrow["units_reqd"]);
 		if ($myrow["type"] == WO_ADVANCED) {
 			echo "<br><table cellspacing=7><tr valign=top><td>";
-			display_heading2(_("Issues"));
+			ui_msgs::display_heading2(_("Issues"));
 			display_wo_issues($woid);
 			echo "</td><td>";
-			display_heading2(_("Productions"));
+			ui_msgs::display_heading2(_("Productions"));
 			display_wo_productions($woid);
 			echo "</td><td>";
-			display_heading2(_("Additional Costs"));
+			ui_msgs::display_heading2(_("Additional Costs"));
 			display_wo_payments($woid);
 			echo "</td></tr></table>";
 		}
 		else
 		{
 			echo "<br><table cellspacing=7><tr valign=top><td>";
-			display_heading2(_("Additional Costs"));
+			ui_msgs::display_heading2(_("Additional Costs"));
 			display_wo_payments($woid);
 			echo "</td></tr></table>";
 		}
@@ -75,7 +72,7 @@
 
 	echo "<br></center>";
 
-	is_voided_display(ST_WORKORDER, $woid, _("This work order has been voided."));
+	ui_view::is_voided_display(ST_WORKORDER, $woid, _("This work order has been voided."));
 
 	end_page(true);
 

@@ -16,9 +16,6 @@
 	$js = "";
 	page(_($help_context = "View Dimension"), true, false, "", $js);
 
-	include_once(APP_PATH . "includes/date_functions.inc");
-	include_once(APP_PATH . "includes/data_checks.inc");
-
 	include_once(APP_PATH . "dimensions/includes/dimensions_db.inc");
 	include_once(APP_PATH . "dimensions/includes/dimensions_ui.inc");
 
@@ -32,7 +29,7 @@
 		$id = $_POST['trans_no'];
 	}
 
-	display_heading($systypes_array[ST_DIMENSION] . " # " . $id);
+	ui_msgs::display_heading($systypes_array[ST_DIMENSION] . " # " . $id);
 
 	br(1);
 	$myrow = get_dimension($id);
@@ -52,16 +49,16 @@
 	label_cell($myrow["reference"]);
 	label_cell($myrow["name"]);
 	label_cell($myrow["type_"]);
-	label_cell(sql2date($myrow["date_"]));
-	label_cell(sql2date($myrow["due_date"]));
+	label_cell(Dates::sql2date($myrow["date_"]));
+	label_cell(Dates::sql2date($myrow["due_date"]));
 	end_row();
 
-	comments_display_row(ST_DIMENSION, $id);
+	ui_view::comments_display_row(ST_DIMENSION, $id);
 
 	end_table();
 
 	if ($myrow["closed"] == true) {
-		display_note(_("This dimension is closed."));
+		ui_msgs::display_note(_("This dimension is closed."));
 	}
 
 	start_form();
@@ -70,9 +67,9 @@
 	start_row();
 
 	if (!isset($_POST['TransFromDate']))
-		$_POST['TransFromDate'] = begin_fiscalyear();
+		$_POST['TransFromDate'] = Dates::begin_fiscalyear();
 	if (!isset($_POST['TransToDate']))
-		$_POST['TransToDate'] = Today();
+		$_POST['TransToDate'] = Dates::Today();
 	date_cells(_("from:"), 'TransFromDate');
 	date_cells(_("to:"), 'TransToDate');
 	submit_cells('Show', _("Show"), '', false, 'default');

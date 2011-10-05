@@ -15,11 +15,6 @@
 
 	page(_($help_context = "General Ledger Transaction Details"), true);
 
-	include_once(APP_PATH . "includes/date_functions.inc");
-	include_once(APP_PATH . "includes/faui.inc");
-
-	include_once(APP_PATH . "gl/includes/gl_db.inc");
-
 	if (!isset($_GET['type_id']) || !isset($_GET['trans_no'])) { /*Script was not passed the correct parameters */
 
 		echo "<p>" . _("The script must be called with a valid transaction type and transaction number to review the general ledger postings for.") . "</p>";
@@ -37,12 +32,12 @@
 		start_row();
 		label_cell("$trans_name #" . $_GET['trans_no']);
 		label_cell($myrow["reference"]);
-		label_cell(sql2date($myrow["tran_date"]));
+		label_cell(Dates::sql2date($myrow["tran_date"]));
 		label_cell(payment_person_name($myrow["person_type_id"], $myrow["person_id"]));
 
 		end_row();
 
-		comments_display_row($_GET['type_id'], $_GET['trans_no']);
+		ui_view::comments_display_row($_GET['type_id'], $_GET['trans_no']);
 
 		end_table(1);
 	}
@@ -100,7 +95,7 @@
 		if ($dim > 1)
 			label_cell(get_dimension_string($myrow['dimension2_id'], true));
 
-		display_debit_or_credit_cells($myrow['amount']);
+		ui_view::display_debit_or_credit_cells($myrow['amount']);
 		label_cell($myrow['memo_']);
 		end_row();
 	}
@@ -108,7 +103,7 @@
 	if ($heading_shown)
 		end_table(1);
 
-	is_voided_display($_GET['type_id'], $_GET['trans_no'], _("This transaction has been voided."));
+	ui_view::is_voided_display($_GET['type_id'], $_GET['trans_no'], _("This transaction has been voided."));
 
 	end_page(true);
 

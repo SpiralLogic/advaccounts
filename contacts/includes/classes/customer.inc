@@ -171,7 +171,7 @@
 			$this->dimension_id = $this->dimension2_id = $this->inactive = 0;
 			$this->sales_type = $this->credit_status = 1;
 			$this->name = $this->address = $this->email = $this->tax_id = $this->payment_terms = $this->notes = $this->debtor_ref = '';
-			$this->curr_code = get_company_currency();
+			$this->curr_code = Banking::get_company_currency();
 			$this->discount = $this->pymt_discount = percent_format(0);
 			$this->credit_limit = price_format($SysPrefs->default_credit_limit());
 		}

@@ -18,16 +18,13 @@
 	// ----------------------------------------------------------------
 
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
-	include_once(APP_PATH . "includes/date_functions.inc");
-	include_once(APP_PATH . "includes/data_checks.inc");
-	include_once(APP_PATH . "gl/includes/gl_db.inc");
 
 	//----------------------------------------------------------------------------------------------------
 
 	print_payment_report();
 
 	function getTransactions($supplier, $date) {
-		$date = date2sql($date);
+		$date = Dates::date2sql($date);
 		$dec = user_price_dec();
 
 		$sql = "SELECT supp_trans.supp_reference,

@@ -13,15 +13,13 @@
 
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 
-	include_once(APP_PATH . "includes/date_functions.inc");
 	include_once(APP_PATH . "includes/manufacturing.inc");
 
-	include_once(APP_PATH . "manufacturing/includes/manufacturing_db.inc");
 	include_once(APP_PATH . "manufacturing/includes/manufacturing_ui.inc");
 
 	$js = "";
 	if (Config::get('ui.windows.popups'))
-		$js .= get_js_open_window(800, 500);
+		$js .= ui_view::get_js_open_window(800, 500);
 
 	page(_($help_context = "Work Order Release to Manufacturing"), false, false, "", $js);
 
@@ -34,7 +32,7 @@
 	}
 	else
 	{
-		display_note("This page must be called with a work order reference");
+		ui_msgs::display_note("This page must be called with a work order reference");
 		exit;
 	}
 
@@ -42,15 +40,15 @@
 
 	function can_process($myrow) {
 		if ($myrow['released']) {
-			display_error(_("This work order has already been released."));
-			set_focus('released');
+			ui_msgs::display_error(_("This work order has already been released."));
+			ui_view::set_focus('released');
 			return false;
 		}
 
 		// make sure item has components
 		if (!has_bom($myrow['stock_id'])) {
-			display_error(_("This Work Order cannot be released. The selected item to manufacture does not have a bom."));
-			set_focus('stock_id');
+			ui_msgs::display_error(_("This Work Order cannot be released. The selected item to manufacture does not have a bom."));
+			ui_view::set_focus('stock_id');
 			return false;
 		}
 
@@ -61,9 +59,9 @@
 	if (isset($_POST['release'])) {
 		release_work_order($selected_id, $_POST['released_date'], $_POST['memo_']);
 
-		display_notification(_("The work order has been released to manufacturing."));
+		ui_msgs::display_notification(_("The work order has been released to manufacturing."));
 
-		display_note(get_trans_view_str(ST_WORKORDER, $selected_id, _("View this Work Order")));
+		ui_msgs::display_note(ui_view::get_trans_view_str(ST_WORKORDER, $selected_id, _("View this Work Order")));
 
 		hyperlink_no_params("search_work_orders.php", _("Select another &work order"));
 

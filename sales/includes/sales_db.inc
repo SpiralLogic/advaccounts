@@ -9,8 +9,7 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	include_once(APP_PATH . "includes/banking.inc");
-	include_once(APP_PATH . "includes/db/inventory_db.inc");
+
 	include_once(APP_PATH . "sales/includes/db/sales_order_db.inc");
 	include_once(APP_PATH . "sales/includes/db/sales_credit_db.inc");
 	include_once(APP_PATH . "sales/includes/db/sales_invoice_db.inc");
@@ -49,7 +48,7 @@
 			$err_msg = "The customer GL transaction could not be inserted";
 
 		return add_gl_trans($type, $type_no, $date_, $account, $dimension, $dimension2, "", $amount,
-			get_customer_currency($customer_id),
+			Banking::get_customer_currency($customer_id),
 			PT_CUSTOMER, $customer_id, $err_msg, $rate);
 	}
 
@@ -79,7 +78,7 @@
 
 	function get_price($stock_id, $currency, $sales_type_id, $factor = null, $date = null) {
 		if ($date == null)
-			$date = new_doc_date();
+			$date = Dates::new_doc_date();
 
 		if ($factor === null) {
 			$myrow = get_sales_type($sales_type_id);
@@ -88,7 +87,7 @@
 
 		$add_pct = get_company_pref('add_pct');
 		$base_id = get_base_sales_type();
-		$home_curr = get_company_currency();
+		$home_curr = Banking::get_company_currency();
 		//	AND (sales_type_id = $sales_type_id	OR sales_type_id = $base_id)
 		$sql = "SELECT price, curr_abrev, sales_type_id
 		FROM prices
@@ -97,7 +96,7 @@
 
 		$result = db_query($sql, "There was a problem retrieving the pricing information for the part $stock_id for customer");
 		$num_rows = db_num_rows($result);
-		$rate = round2(get_exchange_rate_from_home_currency($currency, $date),
+		$rate = round2(Banking::get_exchange_rate_from_home_currency($currency, $date),
 			user_exrate_dec());
 		$round_to = get_company_pref('round_to');
 		$prices = array();
@@ -307,13 +306,13 @@
 			$cart->reference = $myrow["reference"];
 			$cart->order_no = $myrow["order_"];
 			$cart->trans_link = $myrow["trans_link"];
-			$cart->due_date = sql2date($myrow["due_date"]);
-			$cart->document_date = sql2date($myrow["tran_date"]);
+			$cart->due_date = Dates::sql2date($myrow["due_date"]);
+			$cart->document_date = Dates::sql2date($myrow["tran_date"]);
 			$cart->dimension_id = $myrow['dimension_id']; // added 2.1 Joe Hunt 2008-11-12
 			$cart->dimension2_id = $myrow['dimension2_id'];
 			$cart->Comments = '';
 			foreach ($trans_no as $trans) {
-				$cart->Comments .= get_comments_string($doc_type, $trans);
+				$cart->Comments .= ui_view::get_comments_string($doc_type, $trans);
 			}
 
 			// FIX this should be calculated sum() for multiply parents
