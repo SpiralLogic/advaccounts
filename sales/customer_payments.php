@@ -13,11 +13,11 @@
 	$page_security = 'SA_SALESPAYMNT';
 
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
-
+	include_once(APP_PATH . "taxes/db/tax_groups_db.inc");
 	include_once(APP_PATH . "sales/includes/ui/sales_order_ui.inc");
 
 	include_once(APP_PATH . "sales/includes/sales_ui.inc");
-	//include_once(APP_PATH . "sales/includes/ui/cust_alloc_ui.inc");
+
 	include_once(APP_PATH . "reporting/includes/reporting.inc");
 
 	$js = "";

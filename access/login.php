@@ -64,7 +64,7 @@ function set_fullmode() {
 		echo "<a target='_blank' href='" . POWERED_URL . "'><img src='/themes/$def_theme/images/logo_frontaccounting.png' alt='FrontAccounting' height='50' onload='fixPNG(this)' border='0' /></a>";
 	} else {
 		echo "<font size=5>" . _('Authorization timeout') . "</font><br>You were idle for: " . (
-		 $_SESSION["wa_current_user"]->last_act + $tout - time());
+		 $_SESSION["wa_current_user"]->last_act + $_SESSION['wa_current_user']->timeout - time());
 	}
 	echo "</td>\n";
 	end_row();

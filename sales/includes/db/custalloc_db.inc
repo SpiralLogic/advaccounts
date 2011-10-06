@@ -16,7 +16,7 @@
 		$sql = "INSERT INTO cust_allocations (
 		amt, date_alloc,
 		trans_type_from, trans_no_from, trans_no_to, trans_type_to)
-		VALUES ($amount, " . Dates::Now() . ", " . db_escape($trans_type_from) . ", " . db_escape($trans_no_from) . ", " . db_escape($trans_no_to)
+		VALUES ($amount, Now() ," . db_escape($trans_type_from) . ", " . db_escape($trans_no_from) . ", " . db_escape($trans_no_to)
 		 . ", " . db_escape($trans_type_to) . ")";
 
 		db_query($sql, "A customer allocation could not be added to the database");
