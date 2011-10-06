@@ -50,6 +50,7 @@
 			// This error code is not included in error_reporting
 			return;
 		}
+
 		return true;
 	}
 
@@ -86,7 +87,7 @@
 			end_page();
 			exit;
 		}
-}
+	}
 
 	/*
 		 Helper function for setting page security level depeding on
