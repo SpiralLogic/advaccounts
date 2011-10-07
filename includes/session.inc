@@ -42,15 +42,20 @@
 	}
 
 	function fb_errors() {
+		static $firsterror = 0;
 		$error = func_get_args();
-		FB::info($error);
-		FB::info(debug_backtrace());
+
+		if ($firsterror < 2) {
+			FB::log(array('Line' => $error[3], 'Message' => $error[1], 'File' => $error[2]), 'ERROR');
+			//FB::info(debug_backtrace()); 
+			$firsterror++;
+		}
 		error_handler($error[0], $error[1], $error[2], $error[3]);
+
 		if (!(error_reporting() & $error[0])) {
 			// This error code is not included in error_reporting
 			return;
 		}
-
 		return true;
 	}
 

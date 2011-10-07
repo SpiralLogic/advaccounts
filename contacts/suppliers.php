@@ -40,7 +40,7 @@
 		exit();
 	}
 	JS::footerFile("includes/js/suppliers.js");
-	page(_($help_context = "Suppliers"), @$_REQUEST['popup']);
+	page(_($help_context = "Suppliers"), Input::request('popup'));
 	if (isset($_GET['id'])) {
 		$supplier = new Supplier($_GET['id']);
 	}

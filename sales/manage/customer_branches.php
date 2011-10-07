@@ -15,7 +15,7 @@
 
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 
-	page(_($help_context = "Customer Branches"), @$_REQUEST['popup']);
+	page(_($help_context = "Customer Branches"), Input::request('popup'));
 
 	//-----------------------------------------------------------------------------------------------
 
@@ -125,7 +125,7 @@
 			db_query($sql, "The branch record could not be inserted or updated");
 			ui_msgs::display_notification($note);
 			$Mode = 'RESET';
-			if (@$_REQUEST['popup']) {
+			if (Input::request('popup')) {
 				ui_view::set_focus("Select" . ($_POST['branch_code'] == -1 ? db_insert_id() : $_POST['branch_code']));
 			}
 		}
@@ -234,7 +234,7 @@
 			array('insert' => true, 'fun' => 'del_link')
 		);
 
-		if (!@$_REQUEST['popup']) {
+		if (!Input::request('popup')) {
 			$cols[' '] = 'skip';
 		}
 
@@ -312,7 +312,7 @@
 	}
 	hidden('selected_id', $selected_id);
 	hidden('branch_code');
-	hidden('popup', @$_REQUEST['popup']);
+	hidden('popup', Input::request('popup'));
 
 	table_section_title(_("Name and Contact"));
 

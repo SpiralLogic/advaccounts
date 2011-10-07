@@ -171,6 +171,7 @@
 		public static function log() {
 			$args = func_get_args();
 			$severity = count($args) == 3 ? array_pop($args) : '';
+			$args = array_reverse($args);
 			// save precious bytes in the cookie
 			if ($severity == self::LOG) {
 				$severity = '';
