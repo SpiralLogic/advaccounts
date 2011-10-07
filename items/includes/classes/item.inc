@@ -196,14 +196,13 @@
 				array_unshift($terms, $stock_id);
 				$weight = 'IF(s.stock_id LIKE ?, 0,20) + IF(p.supplier_description LIKE ?, 0,15) + IF(s.stock_id LIKE ?,0,5) as weight';
 				$termswhere .= ' OR p.supplier_description LIKE ? ';
-				if (Input::session('wa_global_supplier_id', Input::NUMERIC)) {
+				if (Input::session('wa_global_supplier_id', Input::NUMERIC)) { 
 					array_unshift($terms, $_SESSION['wa_global_supplier_id']);
 					$weight = ' IF(p.supplier_id = ?,0,30) + ' . $weight;
 				}
 				$stock_id = ' s.stock_id, p.supplier_description, MIN(p.price) as price ';
-				$where .= " AND s.id = p.stockid ";
-				$prices = ", purch_data p ";
-			}
+				$prices = " LEFT OUTER JOIN purch_data p ON  s.id = p.stockid ";
+			} 
 			elseif ($o['sale']) {
 				$weight = 'IF(s.stock_id LIKE ?, 0,20) + IF(s.stock_id LIKE ?,0,5)  + IF(s.stock_id LIKE ?,0,5) as weight';
 				$stock_id = " s.stock_id, p.price ";
@@ -218,7 +217,7 @@
 			}
 			$select = ($o['select']) ? $o['select'] : ' ';
 			$sql = "SELECT  $select  $stock_id ,s.description, c.description as category, s.long_description , editable,
-						$weight FROM stock_master s, stock_category c, item_codes i $prices
+						$weight FROM stock_category c, item_codes i, stock_master s  $prices
 						WHERE (s.stock_id LIKE ? $termswhere)  $where
 						AND s.category_id = c.category_id $where2 $sales_type GROUP BY s.stock_id
 						ORDER BY weight, s.category_id, s.stock_id LIMIT 30";
