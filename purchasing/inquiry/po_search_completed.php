@@ -87,7 +87,6 @@
 		return pager_link(_("Edit"), "/purchasing/po_entry_items.php?" . SID . "ModifyOrderNumber=" .
 		 $row["order_no"], ICON_EDIT);
 	}
-
 	function prt_link($row) {
 		return print_document_link($row['order_no'], _("Print"), true, 18, ICON_PRINT, 'button');
 	}
@@ -111,7 +110,8 @@
 	$sql = "SELECT
 	porder.order_no, 
 	porder.reference, 
-	supplier.supp_name, 
+	supplier.supp_name,
+	supplier.supplier_id as id,
 	location.location_name,
 	porder.requisition_no, 
 	porder.ord_date, 
@@ -160,8 +160,9 @@
 
 	$cols = array(_("#") => array('fun' => 'trans_view', 'ord' => ''),
 		_("Reference"),
-		_("Supplier") => array('ord' => ''),
-		_("Location"),
+		_("Supplier") => array('ord' => '','type'=>'id'),
+        _("Supplier ID")=>'skip',
+        _("Location"),
 		_("Supplier's Reference"),
 		_("Order Date") => array('name' => 'ord_date', 'type' => 'date', 'ord' => 'desc'),
 		_("Currency") => array('align' => 'center'),
@@ -181,6 +182,7 @@
 	$table->width = "80%";
 
 	display_db_pager($table);
+    Supplier::addSupplierInfo('.pagerclick');
 
 	end_form();
 	end_page();
