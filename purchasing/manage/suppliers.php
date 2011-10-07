@@ -13,7 +13,7 @@
 
 	include("../../includes/session.inc");
 
-	page(_($help_context = "Suppliers"), @$_REQUEST['popup']);
+	page(_($help_context = "Suppliers"), Input::request('popup'));
 
 	check_db_has_tax_groups(_("There are no tax groups defined in the system. At least one tax group is required before proceeding."));
 
@@ -294,7 +294,7 @@
 	div_start('controls');
 	if (!$new_supplier) {
 		submit_center_first('submit', _("Update Supplier"),
-			_('Update supplier data'), @$_REQUEST['popup'] ? true : 'default');
+			_('Update supplier data'), Input::request('popup') ? true : 'default');
 		submit_return('select', get_post('supplier_id'), _("Select this supplier and return to document entry."));
 		submit_center_last('delete', _("Delete Supplier"),
 			_('Delete supplier data if have been never used'), true);
@@ -304,7 +304,7 @@
 		submit_center('submit', _("Add New Supplier Details"), true, '', 'default');
 	}
 	div_end();
-	hidden('popup', @$_REQUEST['popup']);
+	hidden('popup', Input::request('popup'));
 	end_form();
 
 	end_page();

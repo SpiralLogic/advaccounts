@@ -234,7 +234,7 @@
 	}
 
 	function submit_return($name, $value, $title = false) {
-		if (@$_REQUEST['popup']) {
+		if (Input::request('popup')) {
 			submit($name, $value, true, $title, 'selector');
 		}
 	}

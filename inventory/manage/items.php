@@ -13,7 +13,7 @@
 
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
 
-	page(_($help_context = "Items"), @$_REQUEST['popup']);
+	page(_($help_context = "Items"), Input::request('popup'));
 
 	$user_comp = '';
 	$new_item = get_post('stock_id') == '' || get_post('cancel') || get_post('clone');
@@ -362,7 +362,7 @@
 	if (!isset($_POST['NewStockID']) || $new_item) {
 		submit_center('addupdate', _("Insert New Item"), true, '', 'default');
 	} else {
-		submit_center_first('addupdate', _("Update Item"), '', @$_REQUEST['popup'] ? true : 'default');
+		submit_center_first('addupdate', _("Update Item"), '', Input::request('popup') ? true : 'default');
 		submit_return('select', get_post('stock_id'), _("Select this items and return to document entry."), 'default');
 		submit('clone', _("Clone This Item"), true, '', true);
 		submit('delete', _("Delete This Item"), true, '', true);
@@ -378,7 +378,7 @@
 		echo "<iframe style='float:right;' src='/inventory/prices.php?frame=1' width='48%' height='450' style='overflow-x: hidden; overflow-y: scroll; ' frameborder='0'></iframe> ";
 	}
 	div_end();
-	hidden('popup', @$_REQUEST['popup']);
+	hidden('popup', Input::request('popup'));
 	end_form();
 	//------------------------------------------------------------------------------------
 	end_page();

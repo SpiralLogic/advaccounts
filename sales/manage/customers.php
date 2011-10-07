@@ -13,7 +13,7 @@
 	$page_security = 'SA_CUSTOMER';
 
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
-	page(_($help_context = "Customers"), @$_REQUEST['popup']);
+	page(_($help_context = "Customers"), Input::request('popup'));
 
 	if (isset($_GET['debtor_no'])) {
 		$_POST['customer_id'] = $_GET['debtor_no'];
@@ -271,8 +271,8 @@
 		start_row();
 		echo '<td>' . _('Customer branches') . ':</td>';
 		hyperlink_params_td("/sales/manage/customer_branches.php",
-		 '<b>' . (@$_REQUEST['popup'] ? _("Select or &Add") : _("&Add or Edit ")) . '</b>',
-		 "debtor_no=" . $_POST['customer_id'] . (@$_REQUEST['popup'] ? '&popup=1' : ''));
+		 '<b>' . (Input::request('popup') ? _("Select or &Add") : _("&Add or Edit ")) . '</b>',
+		 "debtor_no=" . $_POST['customer_id'] . (Input::request('popup') ? '&popup=1' : ''));
 		end_row();
 	}
 
@@ -286,13 +286,13 @@
 	}
 	else {
 		submit_center_first('submit', _("Update Customer"),
-			_('Update customer data'), @$_REQUEST['popup'] ? true : 'default');
+			_('Update customer data'), Input::request('popup') ? true : 'default');
 		submit_return('select', get_post('customer_id'), _("Select this customer and return to document entry."));
 		submit_center_last('delete', _("Delete Customer"),
 			_('Delete customer data if have been never used'), true);
 	}
 	div_end();
-	hidden('popup', @$_REQUEST['popup']);
+	hidden('popup', Input::request('popup'));
 	end_form();
 	end_page();
 ?>

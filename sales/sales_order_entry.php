@@ -506,7 +506,7 @@
 		ui_view::display_footer_exit();
 	}
 
-	//--------------------------------------------------------------------------------
+	//------------------------------------------------------- -------------------------
 	function create_cart($type, $trans_no) {
 		global $Refs;
 		processing_start();
@@ -518,7 +518,7 @@
 			$doc->trans_type = ST_SALESORDER;
 			$doc->reference = $Refs->get_next($doc->trans_type);
 			$doc->document_date = $doc->due_date = Dates::new_doc_date();
-			$doc->Comments = _("Sales Quotation") . " # " . $trans_no;
+			$doc->Comments = $doc->Comments . "\n\n" . _("Sales Quotation") . " # " . $trans_no;
 			$_SESSION['Items'] = $doc;
 		}
 		elseif (isset($_GET['NewRemoteToSalesOrder'])) {
