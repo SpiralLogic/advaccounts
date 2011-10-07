@@ -11,7 +11,8 @@
 	 ***********************************************************************/
 	$page_security = 'SA_SALESALLOC';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+
+	include_once($_SERVER['DOCUMENT_ROOT'] . "includes/session.inc");
 
 	include_once(APP_PATH . "sales/includes/sales_ui.inc");
 
@@ -85,7 +86,7 @@
 		_("Transaction Type") => array('fun' => 'systype_name'),
 		_("#") => array('fun' => 'trans_view'),
 		_("Reference"),
-		_("Date") => array('name' => 'tran_date', 'type' => 'date', 'ord' => 'asc'),
+		_("Date") => array('name' => 'tran_date', 'type' => 'date', 'ord' => 'desc'),
 		_("Customer") => array('ord' => ''),
 		_("Currency") => array('align' => 'center'),
 		_("Total") => 'amount',

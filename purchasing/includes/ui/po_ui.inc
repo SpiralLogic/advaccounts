@@ -62,7 +62,7 @@
 		}
 		else {
 			if (isset($_POST['supplier_id'])) get_supplier_details_to_order($order, $_POST['supplier_id']);
-			;
+
 			hidden('supplier_id', $order->supplier_id);
 			label_row(_("Supplier:"), $order->supplier_name, 'class="label" name="supplier_name"');
 		}
@@ -97,15 +97,7 @@
 		sales_persons_list_row(_("Sales Person:"), 'salesman', $order->salesman);
 		table_section(2);
 
-		// check this out?????????
-		//if (!isset($_POST['OrderDate']) || $_POST['OrderDate'] == "")
-		//	$_POST['OrderDate'] = $order->orig_order_date;
-		//if (!isset($_POST['OrderDate']) || $_POST['OrderDate'] == "")
-		//{
-		//	$_POST['OrderDate'] = Dates::Today();
-		//	if (!Dates::is_date_in_fiscalyear($_POST['OrderDate']))
-		//		$_POST['OrderDate'] = Dates::end_fiscalyear();
-		//}
+
 		date_row(_("Order Date:"), 'OrderDate', '', true, 0, 0, 0, null, true);
 		if (isset($_POST['_OrderDate_changed'])) {
 			$Ajax->activate('_ex_rate');
@@ -120,9 +112,7 @@
 		 isset($_POST['_StkLocation_update']) || !isset($_POST['delivery_address']) ||
 		 $_POST['delivery_address'] == ""
 		) {
-			/* If this is the first time the form loaded set up defaults */
 
-			//$_POST['StkLocation'] = $_SESSION['UserStockLocation'];
 			$sql = "SELECT delivery_address, phone FROM locations WHERE loc_code='" .
 			 $_POST['StkLocation'] . "'";
 			$result = db_query($sql, "could not get location info");
