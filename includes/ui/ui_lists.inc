@@ -1281,9 +1281,8 @@ JS
 
 	//------------------------------------------------------------------------------------------------
 	function languages_list($name, $selected_id = null) {
-		global $installed_languages;
 		$items = array();
-		foreach ($installed_languages as $lang) $items[$lang['code']] = $lang['name'];
+		foreach (Config::get('installed_languages') as $lang) $items[$lang['code']] = $lang['name'];
 		return array_selector($name, $selected_id, $items);
 	}
 
@@ -1677,9 +1676,9 @@ JS
 	//	List of sets of active extensions
 	//
 	function extset_list($name, $value = null, $submit_on_change = false) {
-		global $db_connections;
+
 		$items = array();
-		foreach ($db_connections as $comp) $items[] = sprintf(_("Activated for '%s'"), $comp['name']);
+		foreach (Config::get(null, null, 'db') as $comp) $items[] = sprintf(_("Activated for '%s'"), $comp['name']);
 		return array_selector($name, $value, $items, array('spec_option' => _("Installed on system"), 'spec_id' => -1, 'select_submit' => $submit_on_change, 'async' => true));
 	}
 

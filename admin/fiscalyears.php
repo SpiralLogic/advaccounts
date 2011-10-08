@@ -187,9 +187,8 @@
 	}
 
 	function delete_this_fiscalyear($selected_id) {
-		global $db_connections;
 
-		db_backup($db_connections[$_SESSION["wa_current_user"]->company], 'Security backup before Fiscal Year Removal');
+		db_backup(Config::get($_SESSION["wa_current_user"]->company, null, 'db'), 'Security backup before Fiscal Year Removal');
 		begin_transaction();
 		$ref = _("Open Balance");
 		$myrow = get_fiscalyear($selected_id);

@@ -143,7 +143,7 @@
 			return $row[0];
 		}
 
-		display_db_error("could not retreive the account name for $code", $sql, true);
+		Errors::show_db_error("could not retreive the account name for $code", $sql, true);
 	}
 
 ?>

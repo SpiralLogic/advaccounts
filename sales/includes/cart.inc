@@ -344,7 +344,7 @@
 			}
 			else {
 				// shouldn't come here under normal circumstances
-				display_db_error("unexpected - adding an invalid item or null quantity", "", true);
+				Errors::show_db_error("unexpected - adding an invalid item or null quantity", "", true);
 			}
 			return 0;
 		}
@@ -526,7 +526,7 @@
 			$this->src_no = $src_no;
 			$item_row = get_item($stock_id);
 			if ($item_row == null) {
-				display_db_error("invalid item added to order : $stock_id", "");
+				Errors::show_db_error("invalid item added to order : $stock_id", "");
 			}
 			$this->mb_flag = $item_row["mb_flag"];
 			$this->units = $item_row["units"];

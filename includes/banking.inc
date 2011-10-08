@@ -43,7 +43,7 @@
 			$result = db_query($sql, "retreive company currency");
 
 			if (db_num_rows($result) == 0)
-				display_db_error("Could not find the requested currency. Fatal.", $sql);
+				Errors::show_db_error("Could not find the requested currency. Fatal.", $sql);
 
 			$myrow = db_fetch_row($result);
 			return $myrow[0];

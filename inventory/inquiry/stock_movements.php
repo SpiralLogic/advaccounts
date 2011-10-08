@@ -61,7 +61,7 @@
 	AND stock_id = " . db_escape($_POST['stock_id']) . " ORDER BY tran_date,trans_id";
 	$result = db_query($sql, "could not query stock moves");
 
-	check_db_error("The stock movements for the selected criteria could not be retrieved", $sql);
+	Errors::check_db_error("The stock movements for the selected criteria could not be retrieved", $sql);
 
 	div_start('doc_tbl');
 	start_table(Config::get('tables.style'));

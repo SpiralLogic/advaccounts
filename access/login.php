@@ -87,9 +87,9 @@ function set_fullmode() {
 			$coy = Config::get('company.default');
 		}
 		echo "<tr><td>" . _("Company") . "</td><td><select name='company_login_name'>\n";
-		for ($i = 0; $i < count($db_connections); $i++)
+		for ($i = 0; $i < count(Config::get(null, null, 'db')); $i++)
 		{
-			echo "<option value=$i " . ($i == $coy ? 'selected' : '') . ">" . $db_connections[$i]["name"] . "</option>";
+			echo "<option value=$i " . ($i == $coy ? 'selected' : '') . ">" . Config::get($i, "name", 'db') . "</option>";
 		}
 		echo "</select>\n";
 		start_row();

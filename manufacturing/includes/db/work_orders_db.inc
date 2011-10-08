@@ -192,7 +192,7 @@
 		$result = db_query($sql, "The work order issues could not be retrieved");
 
 		if (!$allow_null && db_num_rows($result) == 0)
-			display_db_error("Could not find work order $woid", $sql);
+			Errors::show_db_error("Could not find work order $woid", $sql);
 
 		return db_fetch($result);
 	}

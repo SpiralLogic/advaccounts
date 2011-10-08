@@ -73,7 +73,7 @@
 		$result = db_query($sql, "The dimension could not be retrieved");
 
 		if (!$allow_null && db_num_rows($result) == 0)
-			display_db_error("Could not find dimension $id", $sql);
+			Errors::show_db_error("Could not find dimension $id", $sql);
 
 		return db_fetch($result);
 	}

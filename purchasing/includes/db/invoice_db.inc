@@ -381,12 +381,12 @@
 			}
 			else
 			{
-				return display_db_error("Invalid supptrans details for supptrans number : $trans_no and type : $trans_type", $sql, true);
+				return Errors::show_db_error("Invalid supptrans details for supptrans number : $trans_no and type : $trans_type", $sql, true);
 			}
 		}
 		else
 		{
-			return display_db_error("Invalid supptrans number : $trans_no and type : $trans_type", $sql, true);
+			return Errors::show_db_error("Invalid supptrans number : $trans_no and type : $trans_type", $sql, true);
 		}
 	}
 

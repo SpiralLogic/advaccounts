@@ -89,7 +89,7 @@
 			case	 ST_COSTUPDATE	 :
 				return array("gl_trans", "type", "type_no", null, "tran_date");
 		}
-		display_db_error("invalid type ($type) sent to get_systype_db_info", "", true);
+		Errors::show_db_error("invalid type ($type) sent to get_systype_db_info", "", true);
 	}
 
 	function get_systypes() {

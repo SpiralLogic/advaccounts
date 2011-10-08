@@ -9,11 +9,9 @@
 
  */
 
-	$installed_languages = array(
+	return array(
 		0 => array('code' => 'en_AU', 'name' => 'Australia', 'encoding' => 'iso-8859-1'),
 
 		array('code' => 'en_GB', 'name' => 'English', 'encoding' => 'iso-8859-1'),
 	);
 
-	$dflt_lang = 'en_AU';
-?>

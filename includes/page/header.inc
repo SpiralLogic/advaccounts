@@ -113,7 +113,7 @@
 		include_once(APP_PATH . "/themes/" . user_theme() . "/renderer.php");
 		$rend = new renderer();
 		$rend->menu_header($title, $no_menu, $is_index);
-		error_box();
+		Errors::error_box();
 	}
 
 ?>

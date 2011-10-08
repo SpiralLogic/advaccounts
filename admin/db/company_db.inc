@@ -76,7 +76,7 @@
 			$sql = "SELECT * FROM company WHERE coy_code=1";
 			$result = db_query($sql, "The company preferences could not be retrieved");
 			if (db_num_rows($result) == 0) {
-				display_db_error("FATAL : Could not find company prefs", $sql);
+				Errors::show_db_error("FATAL : Could not find company prefs", $sql);
 			}
 			$_SESSION['company_prefs'] = db_fetch($result);
 		}

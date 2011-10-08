@@ -139,9 +139,7 @@
 		}
 
 		function get_db_connection($id = -1) {
-			global $db_connections;
-			$connection = $db_connections[$id == -1 ? $this->company : $id];
-			//print_r($connection);
+			$connection = Config::get($id == -1 ? $this->company : $id, null, 'db');
 			$db = mysql_connect($connection["host"], $connection["dbuser"], $connection["dbpassword"]);
 			mysql_select_db($connection["dbname"], $db);
 			if (!defined('TB_PREF')) define('TB_PREF', '');

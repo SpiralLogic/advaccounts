@@ -97,7 +97,7 @@
 
 	$result = db_query($sql, "could not get bank accounts");
 
-	check_db_error("The bank accounts set up could not be retreived", $sql);
+	Errors::check_db_error("The bank accounts set up could not be retreived", $sql);
 
 	start_form();
 	start_table(Config::get('tables.style') . "  width='80%'");

@@ -157,7 +157,7 @@
 			return true;
 		}
 
-		display_db_error("FATAL : duplicate purchase order found", "", true);
+		Errors::show_db_error("FATAL : duplicate purchase order found", "", true);
 		return false;
 	}
 

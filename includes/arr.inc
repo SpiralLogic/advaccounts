@@ -34,6 +34,7 @@
 		}
 
 		static function	search_value($needle, $haystack, $valuekey = null) {
+
 			foreach ($haystack as $key => $value) {
 				$val = isset($valuekey) ? $value[$valuekey] : $value;
 				if ($needle == $val) {

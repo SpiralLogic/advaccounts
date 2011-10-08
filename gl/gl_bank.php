@@ -185,7 +185,7 @@
 		//		ui_msgs::display_error( _("You cannot make a payment to a bank account. Please use the transfer funds facility for this."));
 		//	else
 		//		ui_msgs::display_error( _("You cannot make a deposit from a bank account. Please use the transfer funds facility for this."));
-		//	ui_view::set_focus('code_id');
+		//	ui_view::set_focus('code_id') ;
 		//	return false;
 		//} 
 

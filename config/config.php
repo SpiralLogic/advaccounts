@@ -90,7 +90,10 @@
 		'seperators.thousands' => array(",", ".", " "),
 		'seperators.decimal' => array(".", ","),
 		'seperators.date' => array('/', ".", "-", " "),
-		'formats.paper_size' => array("Letter", "A4")
+		'formats.paper_size' => array("Letter", "A4"),
+
+		'config.onload' => array('db', 'js', 'installed_languages'),
+		'default_lang' => 'en_AU',
 	);
 /* Whether to display the demo login and password or not */
 /* for uploaded item pictures */

@@ -142,7 +142,6 @@
 	}
 
 	function tst_subdirs() {
-		global $db_connections;
 
 		$comp_subdirs = array('images', 'pdf_files', 'backup', 'js_cache');
 
@@ -160,7 +159,7 @@
 			return $test;
 		}
 		;
-		foreach ($db_connections as $n => $comp) {
+		foreach (Config::get(null, null, 'db') as $n => $comp) {
 			$path = COMPANY_PATH . "/";
 			if (!is_dir($path) || !is_writable($path)) {
 				$test['result'] = false;
@@ -200,7 +199,6 @@
 	}
 
 	function tst_langs() {
-		global $installed_languages;
 
 		$test['descr'] = _('Language configuration consistency');
 		$test['type'] = 3;
@@ -211,7 +209,7 @@
 
 		$langs = array();
 
-		foreach ($installed_languages as $lang) {
+		foreach (Config::get('installed_languages') as $lang) {
 			$langs[] = $lang['code'];
 			if ($lang['code'] == 'en_AU') continue; // native FA language
 
@@ -247,7 +245,6 @@
 	}
 
 	function tst_extconfig() {
-		global $db_connections;
 
 		$test['descr'] = _('Extensions configuration files');
 		$test['type'] = 3;
@@ -256,7 +253,7 @@
 		$test['test'] . ',' . COMPANY_PATH . '/*/installed_extensions.php';
 		$test['comments'][] = sprintf(_("'%s' file should be writeable"), $test['test']);
 
-		foreach ($db_connections as $n => $comp) {
+		foreach (Config::get(null, null, 'db') as $n => $comp) {
 			$path = COMPANY_PATH . "/$n";
 			if (!is_dir($path)) continue;
 

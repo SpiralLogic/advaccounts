@@ -25,7 +25,7 @@
 		}
 
 		function menu_header($title, $no_menu, $is_index) {
-			global $db_connections;
+
 			$sel_app = $_SESSION['sel_app'];
 			echo "<div id='content'>\n";
 			if (!$no_menu || AJAX_REFERRER) {
@@ -34,7 +34,7 @@
 				}
 				$applications = $_SESSION['App']->applications;
 				echo "<div id='top'>\n";
-				echo "<p>" . $db_connections[$_SESSION["wa_current_user"]->company]["name"] . " | " .
+				echo "<p>" . Config::get($_SESSION["wa_current_user"]->company, 'name', 'db') . " | " .
 				 $_SERVER['SERVER_NAME'] . " | " . $_SESSION["wa_current_user"]->name . "</p>\n";
 				echo "<ul>\n";
 				echo "  <li><a href='" . PATH_TO_ROOT . "/admin/display_prefs.php?'>" . _("Preferences") . "</a></li>\n";

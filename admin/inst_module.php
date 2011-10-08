@@ -22,7 +22,6 @@
 
 	//---------------------------------------------------------------------------------------------
 	function update_extensions($extensions) {
-		global $db_connections;
 
 		if (!write_extensions($extensions)) {
 			ui_msgs::display_notification(_("Cannot update system extensions list."));
@@ -30,7 +29,7 @@
 		}
 
 		// update per company files
-		$cnt = count($db_connections);
+		$cnt = count(Config::get(null, null, 'db'));
 		for ($i = 0; $i < $cnt; $i++)
 		{
 			$newexts = $extensions;
@@ -43,7 +42,7 @@
 			}
 			if (!write_extensions($newexts, $i)) {
 				ui_msgs::display_notification(sprintf(_("Cannot update extensions list for company '%s'."),
-						$db_connections[$i]['name']));
+						Config::get($i, 'name', 'db')));
 				return false;
 			}
 		}
@@ -80,7 +79,7 @@
 	//---------------------------------------------------------------------------------------------
 
 	function handle_submit() {
-		global $db_connections, $selected_id, $next_extension_id;
+		global $selected_id, $next_extension_id;
 
 		$extensions = get_company_extensions();
 		if (!check_data($selected_id, $extensions))
@@ -121,7 +120,7 @@
 				unlink($file2);
 			move_uploaded_file($file1, $file2);
 			$db_name = $_SESSION["wa_current_user"]->company;
-			db_import($file2, $db_connections[$db_name]);
+			db_import($file2, Config::get($db_name, null, 'db'));
 		}
 
 		if (is_uploaded_file($_FILES['uploadfile3']['tmp_name'])) {
@@ -155,7 +154,7 @@
 	}
 
 	function handle_delete() {
-		global $db_connections, $selected_id;
+		global $selected_id;
 
 		$extensions = get_company_extensions();
 

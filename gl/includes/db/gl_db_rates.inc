@@ -34,7 +34,7 @@
 
 	function update_exchange_rate($curr_code, $date_, $buy_rate, $sell_rate) {
 		if (Banking::is_company_currency($curr_code))
-			display_db_error("Exchange rates cannot be set for company currency", "", true);
+			Errors::show_db_error("Exchange rates cannot be set for company currency", "", true);
 
 		$date = Dates::date2sql($date_);
 
@@ -48,7 +48,7 @@
 
 	function add_exchange_rate($curr_code, $date_, $buy_rate, $sell_rate) {
 		if (Banking::is_company_currency($curr_code))
-			display_db_error("Exchange rates cannot be set for company currency", "", true);
+			Errors::show_db_error("Exchange rates cannot be set for company currency", "", true);
 
 		$date = Dates::date2sql($date_);
 

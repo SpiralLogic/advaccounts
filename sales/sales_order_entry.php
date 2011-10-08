@@ -27,7 +27,7 @@
 	include_once(APP_PATH . "sales/includes/db/sales_types_db.inc");
 	include_once(APP_PATH . "reporting/includes/reporting.inc");
 
-	set_page_security((!Input::session('Items') ? : $_SESSION['Items']->trans_type),
+	Security::set_page((!Input::session('Items') ? : $_SESSION['Items']->trans_type),
 		array(ST_SALESORDER => 'SA_SALESORDER',
 			ST_SALESQUOTE => 'SA_SALESQUOTE',
 			ST_CUSTDELIVERY => 'SA_SALESDELIVERY',

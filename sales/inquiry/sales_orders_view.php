@@ -15,7 +15,7 @@
 	include_once(APP_PATH . "sales/includes/sales_ui.inc");
 	include_once(APP_PATH . "reporting/includes/reporting.inc");
 	$page_security = 'SA_SALESTRANSVIEW';
-	set_page_security(Input::post('order_view_mode'),
+	Security::set_page(Input::post('order_view_mode'),
 		array('OutstandingOnly' => 'SA_SALESDELIVERY', 'InvoiceTemplates' => 'SA_SALESINVOICE'),
 		array('OutstandingOnly' => 'SA_SALESDELIVERY', 'InvoiceTemplates' => 'SA_SALESINVOICE'));
 	$js = "";

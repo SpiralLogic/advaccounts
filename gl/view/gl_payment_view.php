@@ -23,7 +23,7 @@
 	$result = get_bank_trans(ST_BANKPAYMENT, $trans_no);
 
 	if (db_num_rows($result) != 1)
-		display_db_error("duplicate payment bank transaction found", "");
+		Errors::show_db_error("duplicate payment bank transaction found", "");
 
 	$from_trans = db_fetch($result);
 

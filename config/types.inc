@@ -176,7 +176,7 @@
 			case PT_SUPPLIER :
 				return db_has_suppliers();
 			default :
-				display_db_error("Invalid type sent to has_items", "");
+				Errors::show_db_error("Invalid type sent to has_items", "");
 				return false;
 		}
 	}

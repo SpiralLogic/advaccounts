@@ -16,7 +16,7 @@
 		$mb_flag = get_mb_flag($stock_id);
 
 		if (is_service($mb_flag)) {
-			display_db_error("Cannot do cost update for Service item : $stock_id", "");
+			Errors::show_db_error("Cannot do cost update for Service item : $stock_id", "");
 		}
 
 		$update_no = -1;

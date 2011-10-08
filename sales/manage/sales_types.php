@@ -61,7 +61,7 @@
 
 		$sql = "SELECT COUNT(*) FROM debtor_trans WHERE tpe=" . db_escape($selected_id);
 		$result = db_query($sql, "check failed");
-		check_db_error("The number of transactions using this Sales type record could not be retrieved", $sql);
+		Errors::check_db_error("The number of transactions using this Sales type record could not be retrieved", $sql);
 
 		$myrow = db_fetch_row($result);
 		if ($myrow[0] > 0) {
@@ -72,7 +72,7 @@
 
 			$sql = "SELECT COUNT(*) FROM debtors_master WHERE sales_type=" . db_escape($selected_id);
 			$result = db_query($sql, "check failed");
-			check_db_error("The number of customers using this Sales type record could not be retrieved", $sql);
+			Errors::check_db_error("The number of customers using this Sales type record could not be retrieved", $sql);
 
 			$myrow = db_fetch_row($result);
 			if ($myrow[0] > 0) {

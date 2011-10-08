@@ -41,7 +41,7 @@
 		}
 		if ($err_msg != null || Config::get('debug')) {
 			$exit = $err_msg != null;
-			if (function_exists('xdebug_call_file')) check_db_error('<br>At file ' . xdebug_call_file() . ':' . xdebug_call_line() . ':<br>' . $err_msg, $sql, $exit); else check_db_error($err_msg, $sql,
+			if (function_exists('xdebug_call_file')) Errors::check_db_error('<br>At file ' . xdebug_call_file() . ':' . xdebug_call_line() . ':<br>' . $err_msg, $sql, $exit); else Errors::check_db_error($err_msg, $sql,
 				$exit);
 		}
 		return $result;

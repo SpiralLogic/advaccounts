@@ -15,7 +15,7 @@
 		global $Refs;
 		begin_transaction();
 		$adj_id = get_next_trans_no(ST_INVADJUST);
-		foreach ($items as $line_item)		{
+		foreach ($items as $line_item) {
 			if (!$increase)
 				$line_item->quantity = -$line_item->quantity;
 			add_stock_adjustment_item($adj_id, $line_item->stock_id, $location, $date_, $type, $reference,
@@ -54,7 +54,7 @@
 		$mb_flag = get_mb_flag($stock_id);
 
 		if (is_service($mb_flag)) {
-			display_db_error("Cannot do inventory adjustment for Service item : $stock_id", "");
+			Errors::show_db_error("Cannot do inventory adjustment for Service item : $stock_id", "");
 		}
 
 		update_average_material_cost(null, $stock_id, $standard_cost, $quantity, $date_);

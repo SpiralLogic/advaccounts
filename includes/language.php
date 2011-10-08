@@ -36,10 +36,9 @@
 		}
 
 		function set_language($code) {
-			global $installed_languages;
 
 			$changed = $this->code != $code;
-			$lang = Arr::search_value($code, $installed_languages, 'code');
+			$lang = Arr::search_value($code, Config::get(null, null, 'installed_languages'), 'code');
 
 			if ($lang && $changed) {
 				// flush cache as we can use several languages in one account

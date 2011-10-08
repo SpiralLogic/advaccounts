@@ -129,7 +129,7 @@
 			quantity= " . input_num('quantity') . "
 			WHERE parent=" . db_escape($selected_parent) . "
 			AND id=" . db_escape($selected_component);
-			check_db_error("Could not update this bom component", $sql);
+			Errors::check_db_error("Could not update this bom component", $sql);
 
 			db_query($sql, "could not update bom");
 			ui_msgs::display_notification(_('Selected component has been updated'));

@@ -139,11 +139,10 @@
 	}
 
 	function write_lang() {
-		global $installed_languages, $dflt_lang;
 
-		$conn = array_natsort($installed_languages, 'code', 'code');
-		$installed_languages = $conn;
-		//reset($installed_languages);
+		$conn = array_natsort(Config::get('installed_languages'), 'code', 'code');
+		Config::set('installed_languages', $conn);
+		$installed_languages = Config::get('installed_languages');
 		$n = count($installed_languages);
 		$msg = "<?php\n\n";
 
@@ -154,7 +153,7 @@
 		$msg .= "-- 'rtl' only needs to be set for right-to-left languages like Arabic and Hebrew\n\n";
 		$msg .= "*/\n\n\n";
 
-		$msg .= "\$installed_languages = array (\n";
+		$msg .= "\return array (\n";
 		if ($n > 0)
 			$msg .= "\t0 => ";
 		for ($i = 0; $i < $n; $i++)
@@ -173,10 +172,9 @@
 		}
 
 		$msg .= "\t);\n";
-		$msg .= "\n\$dflt_lang = '$dflt_lang';\n?>\n";
 
 		$path = APP_PATH . "lang";
-		$filename = $path . '/installed_languages.inc';
+		$filename = $path . '/installed_languages.php';
 		// Check if directory exists and is writable first.
 		if (file_exists($path) && is_writable($path)) {
 			if (!$zp = fopen($filename, 'w')) {

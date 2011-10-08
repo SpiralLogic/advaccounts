@@ -34,7 +34,7 @@
 	//---------------------------------------------------------------------------------------------
 
 	function check_data() {
-		global $db_connections, $selected_id;
+		global $selected_id;
 
 		if ($_POST['name'] == "" || $_POST['host'] == "" || $_POST['dbuser'] == "" || $_POST['dbname'] == "")
 			return false;
@@ -42,7 +42,7 @@
 			ui_msgs::display_error(_("When creating a new company, you must provide a Database script file."));
 			return false;
 		}
-		foreach ($db_connections as $id => $con)
+		foreach (Config::get(null, null, 'db') as $id => $con)
 		{
 			if ($id != $selected_id && $_POST['host'] == $con['host']
 			 && $_POST['dbname'] == $con['dbname']
@@ -55,21 +55,18 @@
 	//---------------------------------------------------------------------------------------------
 
 	function remove_connection($id) {
-		global $db_connections;
 
-		$err = db_drop_db($db_connections[$id]);
+		$err = db_drop_db(Config::get('0', null, 'db'));
 
-		unset($db_connections[$id]);
-		$conn = array_values($db_connections);
-		$db_connections = $conn;
-		//$$db_connections = array_values($db_connections);
+		Config::remove($id, null, 'db');
+
 		return $err;
 	}
 
 	//---------------------------------------------------------------------------------------------
 
 	function handle_submit() {
-		global $db_connections, $db,
+		global $db,
 					 $comp_subdirs;
 
 		$error = false;
@@ -77,19 +74,18 @@
 			return false;
 
 		$id = $_GET['id'];
-		$new = !isset($db_connections[$id]);
-
-		$db_connections[$id]['name'] = $_POST['name'];
-		$db_connections[$id]['host'] = $_POST['host'];
-		$db_connections[$id]['dbuser'] = $_POST['dbuser'];
-		$db_connections[$id]['dbpassword'] = $_POST['dbpassword'];
-		$db_connections[$id]['dbname'] = $_POST['dbname'];
-
+		$new = !Config::get($id, null, 'db');
+		$db_connection['name'] = $_POST['name'];
+		$db_connection['host'] = $_POST['host'];
+		$db_connection['dbuser'] = $_POST['dbuser'];
+		$db_connection['dbpassword'] = $_POST['dbpassword'];
+		$db_connection['dbname'] = $_POST['dbname'];
+		Config::set($id, $db_connection, 'db');
 		if ((bool)$_POST['def'] == true)
 			Config::set('company.default', $id);
 
 		if (isset($_GET['ul']) && $_GET['ul'] == 1) {
-			$conn = $db_connections[$id];
+			$conn = Config::get($id, null, 'db');
 			if (($db = db_create_db($conn)) == 0) {
 				ui_msgs::display_error(_("Error creating Database: ") . $conn['dbname'] . _(", Please create it manually"));
 				$error = true;
@@ -118,7 +114,7 @@
 			}
 		} else {
 			if ($_GET['c'] = 'u') {
-				$conn = $db_connections[$id];
+				$conn = Config::get($id, null, 'db');
 				if (($db = db_create_db($conn)) == 0) {
 					ui_msgs::display_error(_("Error connecting to Database: ") . $conn['dbname'] . _(", Please correct it"));
 				} elseif ($_POST['admpassword'] != "") {
@@ -140,13 +136,12 @@
 	//---------------------------------------------------------------------------------------------
 
 	function handle_delete() {
-		global $db_connections;
 
 		$id = $_GET['id'];
 
 		// First make sure all company directories from the one under removal are writable.
 		// Without this after operation we end up with changed per-company owners!
-		for ($i = $id; $i < count($db_connections); $i++) {
+		for ($i = $id; $i < count(Config::get(null, null, 'db')); $i++) {
 			if (!is_dir(COMPANY_PATH . '/' . $i) || !is_writable(COMPANY_PATH . '/' . $i)) {
 				ui_msgs::display_error(_('Broken company subdirectories system. You have to remove this company manually.'));
 				return;
@@ -164,7 +159,7 @@
 			return;
 		}
 		// 'shift' company directories names
-		for ($i = $id + 1; $i < count($db_connections); $i++) {
+		for ($i = $id + 1; $i < count(Config::get(null, null, 'db')); $i++) {
 			if (!rename(COMPANY_PATH . '/' . $i, COMPANY_PATH . '/' . ($i - 1))) {
 				ui_msgs::display_error(_("Cannot rename company subdirectory"));
 				return;
@@ -189,7 +184,6 @@
 	//---------------------------------------------------------------------------------------------
 
 	function display_companies() {
-		global $db_connections;
 
 		$coyno = $_SESSION["wa_current_user"]->company;
 
@@ -209,7 +203,7 @@
 		table_header($th);
 
 		$k = 0;
-		$conn = $db_connections;
+		$conn = Config::get(null, null, 'db');
 		$n = count($conn);
 		for ($i = 0; $i < $n; $i++)
 		{
@@ -247,12 +241,11 @@
 	//---------------------------------------------------------------------------------------------
 
 	function display_company_edit($selected_id) {
-		global $db_connections;
 
 		if ($selected_id != -1)
 			$n = $selected_id;
 		else
-			$n = count($db_connections);
+			$n = count(Config::get(null, null, 'db'));
 
 		start_form(true);
 
@@ -272,7 +265,7 @@
 		start_table(Config::get('tables.style2'));
 
 		if ($selected_id != -1) {
-			$conn = $db_connections[$selected_id];
+			$conn = Config::get($selected_id, null, 'db');
 			$_POST['name'] = $conn['name'];
 			$_POST['host'] = $conn['host'];
 			$_POST['dbuser'] = $conn['dbuser'];

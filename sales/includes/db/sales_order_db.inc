@@ -231,13 +231,13 @@
 		$result = db_query($sql, "order Retreival");
 		$num = db_num_rows($result);
 		if ($num > 1) {
-			display_db_error("FATAL : sales order query returned a duplicate - " . db_num_rows($result), $sql, true);
+			Errors::show_db_error("FATAL : sales order query returned a duplicate - " . db_num_rows($result), $sql, true);
 		}
 		else if ($num == 1) {
 			return db_fetch($result);
 		}
 		else
-			display_db_error("FATAL : sales order return nothing - " . db_num_rows($result), $sql, true);
+			Errors::show_db_error("FATAL : sales order return nothing - " . db_num_rows($result), $sql, true);
 	}
 
 	//----------------------------------------------------------------------------------------

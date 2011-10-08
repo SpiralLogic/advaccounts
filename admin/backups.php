@@ -118,7 +118,7 @@
 	}
 
 	$db_name = $_SESSION["wa_current_user"]->company;
-	$conn = $db_connections[$db_name];
+	$conn = Config::get($db_name, null, 'db');
 
 	if (get_post('creat')) {
 		generate_backup($conn, get_post('comp'), get_post('comments'));

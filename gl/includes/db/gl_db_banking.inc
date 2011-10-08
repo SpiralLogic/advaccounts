@@ -143,7 +143,7 @@
 
 		// we can only handle type 1 (payment)and type 2 (deposit)
 		if ($trans_type != ST_BANKPAYMENT && $trans_type != ST_BANKDEPOSIT)
-			display_db_error("Invalid type ($trans_type) sent to add_bank_transaction");
+			Errors::show_db_error("Invalid type ($trans_type) sent to add_bank_transaction");
 
 		$do_exchange_variance = false;
 
@@ -199,7 +199,7 @@
 
 			if ($trans_type == ST_BANKPAYMENT AND $is_bank_to) {
 				// we don't allow payments to go to a bank account. use transfer for this !
-				display_db_error("invalid payment entered. Cannot pay to another bank account", "");
+				Errors::show_db_error("invalid payment entered. Cannot pay to another bank account", "");
 			}
 
 			// do the destination account postings

@@ -49,8 +49,8 @@
 		include(APP_PATH . "includes/page/header.inc");
 
 		page_header($title, $no_menu, $is_index, $onload, $js);
-		check_page_security($page_security);
-		//	error_box();
+		Security::check_page($page_security);
+		//	Errors::error_box();
 		if ($script_only) {
 			echo '<noscript>';
 			echo ui_msgs::display_heading(_('This page is usable only with javascript enabled browsers.'));

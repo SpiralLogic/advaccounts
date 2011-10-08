@@ -121,7 +121,7 @@
 	if (get_post('Upgrade')) {
 
 		$ret = true;
-		foreach ($db_connections as $conn)
+		foreach (Config::get(null, null, 'db') as $conn)
 		{
 			// connect to database
 			if (!($db = db_open($conn))) {
