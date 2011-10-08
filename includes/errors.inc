@@ -12,8 +12,8 @@
 	class Errors {
 
 
-		public $messages = array(); // container for system messages
-		public $before_box = ''; // temporary container for output html data before error box
+		public static $messages = array(); // container for system messages
+		public static $before_box = ''; // temporary container for output html data before error box
 
 		//-----------------------------------------------------------------------------
 		//    Error handler - collects all php/user messages for

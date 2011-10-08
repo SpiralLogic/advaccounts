@@ -25,7 +25,7 @@
 		}
 		$Ajax->run();
 
-		return Ajax::in_ajax() ? Errors::format() : (Errors::$before_box . Errors::format() . $text);
+		return Ajax::in_ajax() ? Errors::format() : Errors::$before_box . Errors::format() . $text;
 	}
 
 	function adv_shutdown_function_handler() {
@@ -52,7 +52,6 @@
 			// This error code is not included in error_reporting
 			return;
 		}
-		ob_flush();
 		return true;
 	}
 
