@@ -140,9 +140,9 @@
 
 	function write_lang() {
 
-		$conn = array_natsort(Config::get('installed_languages'), 'code', 'code');
+		$conn = array_natsort(Config::get(null, null, 'installed_languages'), 'code', 'code');
 		Config::set('installed_languages', $conn);
-		$installed_languages = Config::get('installed_languages');
+		$installed_languages = Config::get(null, null, 'installed_languages');
 		$n = count($installed_languages);
 		$msg = "<?php\n\n";
 

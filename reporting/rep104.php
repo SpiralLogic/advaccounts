@@ -17,7 +17,7 @@
 	// Title:	price Listing
 	// ----------------------------------------------------------------
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	include_once(APP_PATH . "sales/includes/db/sales_types_db.inc");
 

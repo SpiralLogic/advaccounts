@@ -107,7 +107,7 @@
 
 			// Necessary restart instead of get_contents/clean calls due to a bug in php 4.3.2
 			static::$before_box = ob_get_clean(); // save html content before error box
-			ob_start('adv_ob_start_handler');
+			ob_start('adv_ob_flush_handler');
 			echo "</div>";
 		}
 

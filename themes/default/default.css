@@ -308,6 +308,10 @@ div.banner a + a { border-top: 2px groove #999 }
 	white-space:      nowrap;
 }
 
+.js .tabs {
+	display: none;
+}
+
 #_tabs2 {
 	text-align:       left;
 	width:            100%;

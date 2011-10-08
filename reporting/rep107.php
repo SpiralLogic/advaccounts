@@ -18,7 +18,7 @@
 	// date_:	2005-05-19
 	// Title:	Print Invoices
 	// ----------------------------------------------------------------
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	include_once(APP_PATH . "taxes/tax_calc.inc");
 	//----------------------------------------------------------------------------------------------------

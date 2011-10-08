@@ -12,7 +12,7 @@
 	* ********************************************************************* */
 	$page_security = $_POST['PARAM_0'] == $_POST['PARAM_1'] ? 'SA_SALESTRANSVIEW' : 'SA_SALESBULKREP';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	include_once(APP_PATH . "taxes/tax_calc.inc");
 	//----------------------------------------------------------------------------------------------------

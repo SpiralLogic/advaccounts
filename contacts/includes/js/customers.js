@@ -132,7 +132,7 @@ var Branches = function() {
 				data = Customer.get().branches[data];
 			}
 			$.each(data, function(key, value) {
-				Adv.setFormValue('br_' + key, value);
+				Adv.Forms.setFormValue('br_' + key, value);
 			});
 			Adv.resetHighlights();
 			list.val(data.branch_code);
@@ -191,7 +191,7 @@ var Accounts = function() {
 	return {
 		change:function(data) {
 			$.each(data, function(id, value) {
-				Adv.setFormValue('acc_' + id, value);
+				Adv.Forms.setFormValue('acc_' + id, value);
 			})
 		}
 	}
@@ -240,7 +240,7 @@ var Customer = function() {
 			(!customer.id) ? Customer.showSearch() : Customer.hideSearch();
 			$.each(customer, function(i, data) {
 				if (i !== 'contacts' && i !== 'branches' && i !== 'accounts') {
-					Adv.setFormValue(i, data);
+					Adv.Forms.setFormValue(i, data);
 				}
 			});
 			Adv.resetHighlights();

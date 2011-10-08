@@ -196,13 +196,13 @@
 				array_unshift($terms, $stock_id);
 				$weight = 'IF(s.stock_id LIKE ?, 0,20) + IF(p.supplier_description LIKE ?, 0,15) + IF(s.stock_id LIKE ?,0,5) as weight';
 				$termswhere .= ' OR p.supplier_description LIKE ? ';
-				if (Input::session('wa_global_supplier_id', Input::NUMERIC)) { 
+				if (Input::session('wa_global_supplier_id', Input::NUMERIC)) {
 					array_unshift($terms, $_SESSION['wa_global_supplier_id']);
 					$weight = ' IF(p.supplier_id = ?,0,30) + ' . $weight;
 				}
 				$stock_id = ' s.stock_id, p.supplier_description, MIN(p.price) as price ';
 				$prices = " LEFT OUTER JOIN purch_data p ON  s.id = p.stockid ";
-			} 
+			}
 			elseif ($o['sale']) {
 				$weight = 'IF(s.stock_id LIKE ?, 0,20) + IF(s.stock_id LIKE ?,0,5)  + IF(s.stock_id LIKE ?,0,5) as weight';
 				$stock_id = " s.stock_id, p.price ";
@@ -231,7 +231,7 @@
 			$o = array_merge($default, $options);
 
 			$stockbox = new Dialog('Item Edit', 'stockbox', '');
-			$stockbox->addButtons(array('Save' => 'var item =$("#stockframe")[0].contentWindow.Items; item.save(); if (item.get().id==$("#stock_id").val()){ Adv.setFormValue("description",
+			$stockbox->addButtons(array('Save' => 'var item =$("#stockframe")[0].contentWindow.Items; item.save(); if (item.get().id==$("#stock_id").val()){ Adv.Forms.setFormValue("description",
 			item.get().description)} $(this).dialog("close")',
 				'Close' => '$(this).dialog("close");'
 			));

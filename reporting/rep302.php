@@ -17,7 +17,7 @@
 	// Title:	Inventory Planning
 	// ----------------------------------------------------------------
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	include_once(APP_PATH . "inventory/includes/db/items_category_db.inc");
 	include_once(APP_PATH . "includes/db/manufacturing_db.inc");

@@ -16,7 +16,7 @@
 
 	$page_security = 'SA_SALESCREDITINV';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	include_once(APP_PATH . "includes/manufacturing.inc");
 

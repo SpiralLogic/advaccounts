@@ -1,7 +1,7 @@
 <?php
 	$page_security = 'SA_ADVANCED';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	add_access_extensions();
 
 	// Turn these next two lines on for debugging

@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 	$page_security = 'SA_JOURNALENTRY';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	include_once(APP_PATH . "gl/includes/ui/gl_journal_ui.inc");
 

@@ -2,16 +2,8 @@
 
 	$page_security = 'SA_OPEN';
 
-	include_once("../../includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	page(_($help_context = "Websales to Accounting"), Input::request('popup'));
-	include('includes/session.inc');
-	ini_set('display_errors', 'On');
-	error_reporting(E_ALL);
-
-	DB::select()->from('WebOrders');
-
-	$result = DB::fetchAll();
-	var_dump($result);
 
 	end_page(true, true);
 ?>

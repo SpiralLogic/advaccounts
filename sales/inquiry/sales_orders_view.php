@@ -11,7 +11,7 @@
 			See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 			* ********************************************************************* */
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	include_once(APP_PATH . "sales/includes/sales_ui.inc");
 	include_once(APP_PATH . "reporting/includes/reporting.inc");
 	$page_security = 'SA_SALESTRANSVIEW';

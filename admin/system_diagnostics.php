@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 	$page_security = 'SA_SETUPCOMPANY';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	FB::info($_SESSION);
 	page(_($help_context = "System Diagnostics"));
 
@@ -209,7 +209,7 @@
 
 		$langs = array();
 
-		foreach (Config::get('installed_languages') as $lang) {
+		foreach (Config::get(null, null, 'installed_languages') as $lang) {
 			$langs[] = $lang['code'];
 			if ($lang['code'] == 'en_AU') continue; // native FA language
 
@@ -238,7 +238,7 @@
 
 		$test['descr'] = _('Main config file');
 		$test['type'] = 2;
-		$test['test'] = PATH_TO_ROOT . '/config.php';
+		$test['test'] = PATH_TO_ROOT . '/config/config.php';
 		$test['result'] = is_file($test['test']) && !is_writable($test['test']);
 		$test['comments'][] = sprintf(_("'%s' file should be read-only"), $test['test']);
 		return $test;
@@ -248,7 +248,7 @@
 
 		$test['descr'] = _('Extensions configuration files');
 		$test['type'] = 3;
-		$test['test'] = PATH_TO_ROOT . '/installed_extensions.php';
+		$test['test'] = PATH_TO_ROOT . '/config/installed_extensions.php';
 		$test['result'] = is_file($test['test']) && is_writable($test['test']);
 		$test['test'] . ',' . COMPANY_PATH . '/*/installed_extensions.php';
 		$test['comments'][] = sprintf(_("'%s' file should be writeable"), $test['test']);
@@ -257,7 +257,7 @@
 			$path = COMPANY_PATH . "/$n";
 			if (!is_dir($path)) continue;
 
-			$path .= "/installed_extensions.php";
+			$path .= "/config/installed_extensions.php";
 			if (!is_file($path) || !is_writable($path)) {
 				$test['result'] = false;
 				$test['comments'][] = sprintf(_("'%s' is not writeable"), $path);

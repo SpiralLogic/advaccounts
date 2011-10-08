@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 	$page_security = 'SA_SETUPDISPLAY';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	page(_($help_context = "Display Setup"));
 

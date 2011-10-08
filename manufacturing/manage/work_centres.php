@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 	$page_security = 'SA_WORKCENTRES';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	page(_($help_context = "Work Centres"));
 
