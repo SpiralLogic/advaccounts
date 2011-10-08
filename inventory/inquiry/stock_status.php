@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 	$page_security = 'SA_ITEMSSTATVIEW';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	if (isset($_GET['stock_id'])) {
 		$_POST['stock_id'] = $_GET['stock_id'];

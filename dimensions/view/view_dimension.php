@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 	$page_security = 'SA_DIMTRANSVIEW';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	$js = "";
 	page(_($help_context = "View Dimension"), true, false, "", $js);

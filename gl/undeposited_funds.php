@@ -12,7 +12,7 @@
 	/* Author Rob Mallon */
 	$page_security = 'SA_RECONCILE';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	$js = "";
 	if (Config::get('ui.windows.popups')) {

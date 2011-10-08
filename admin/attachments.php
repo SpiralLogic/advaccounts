@@ -12,7 +12,7 @@
 
 	$page_security = 'SA_ATTACHDOCUMENT';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	if (isset($_GET['vw']))
 		$view_id = $_GET['vw'];

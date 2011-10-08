@@ -1282,7 +1282,8 @@ JS
 	//------------------------------------------------------------------------------------------------
 	function languages_list($name, $selected_id = null) {
 		$items = array();
-		foreach (Config::get('installed_languages') as $lang) $items[$lang['code']] = $lang['name'];
+		$langs = Config::get(null, null, 'installed_languages');
+		foreach ($langs as $lang) $items[$lang['code']] = $lang['name'];
 		return array_selector($name, $selected_id, $items);
 	}
 

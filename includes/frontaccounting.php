@@ -22,7 +22,7 @@
 	include_once(APP_PATH . 'applications/dimensions.php');
 	include_once(APP_PATH . 'applications/generalledger.php');
 	include_once(APP_PATH . 'applications/setup.php');
-	include_once(APP_PATH . 'installed_extensions.php');
+	include_once(APP_PATH . 'config/installed_extensions.php');
 	if (count($installed_extensions) > 0) {
 		foreach ($installed_extensions as $ext) {
 			if ($ext['type'] == 'module')

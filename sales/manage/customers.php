@@ -12,7 +12,7 @@
 			* ********************************************************************* */
 	$page_security = 'SA_CUSTOMER';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	page(_($help_context = "Customers"), Input::request('popup'));
 
 	if (isset($_GET['debtor_no'])) {

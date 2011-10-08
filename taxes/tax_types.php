@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 	$page_security = 'SA_TAXRATES';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	page(_($help_context = "Tax Types"));
 
 	include_once(APP_PATH . "taxes/db/tax_types_db.inc");

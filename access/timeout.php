@@ -14,7 +14,7 @@
  */
 
 	$page_security = 'SA_OPEN';
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	include(APP_PATH . '/access/login.php');
 

@@ -155,7 +155,7 @@ JS;
 								var value = data[0];
 								value.description = value.long_description;
 								Adv.Events.onFocus("#stock_id",[0,Adv.o.stock_id.position().top]);
-								$.each(value,function(k,v) {Adv.setFormValue(k,v);});
+								$.each(value,function(k,v) {Adv.Forms.setFormValue(k,v);});
 									$desc_js
 								return false;
 								}
@@ -174,7 +174,7 @@ JS;
             $selectjs
 											 value.description = value.long_description;
 								Adv.Events.onFocus("#stock_id",[0,$(this).position().top]);
-								$.each(value,function(k,v) {Adv.setFormValue(k,v);});
+								$.each(value,function(k,v) {Adv.Forms.setFormValue(k,v);});
 									$desc_js
 								return false;
 						},

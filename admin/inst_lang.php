@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 	$page_security = 'SA_CREATELANGUAGE';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	page(_($help_context = "Install/Update Languages"));
 
@@ -43,7 +43,7 @@
 	//---------------------------------------------------------------------------------------------
 
 	function handle_submit() {
-		$installed_languages = Config::get('installed_languages');
+		$installed_languages = Config::get(null, null, 'installed_languages');
 		if (!check_data())
 			return false;
 
@@ -87,7 +87,7 @@
 	function handle_delete() {
 
 		$id = $_GET['id'];
-		$lang = Config::get('installed_languages');
+		$lang = Config::get(null, null, 'installed_languages');
 		$lang = $lang[$id]['code'];
 		$filename = PATH_TO_ROOT . "/lang/$lang/LC_MESSAGES";
 
@@ -127,7 +127,7 @@
 		table_header($th);
 
 		$k = 0;
-		$conn = Config::get('installed_languages');
+		$conn = Config::get(null, null, 'installed_languages');
 		$n = count($conn);
 		for ($i = 0; $i < $n; $i++)
 		{
@@ -168,7 +168,7 @@
 		if ($selected_id != -1)
 			$n = $selected_id;
 		else
-			$n = count(Config::get('installed_languages'));
+			$n = count(Config::get(null, null, 'installed_languages'));
 
 		start_form(true);
 

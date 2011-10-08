@@ -17,7 +17,7 @@
 	// Title:	Trial Balance
 	// ----------------------------------------------------------------
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	//----------------------------------------------------------------------------------------------------
 

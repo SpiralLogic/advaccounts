@@ -9,6 +9,7 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
+
 	include_once(APP_PATH . "admin/db/security_db.inc");
 
 	include_once(APP_PATH . "gl/includes/gl_db.inc");
@@ -16,8 +17,7 @@
 	include_once(APP_PATH . "includes/ui/ui_lists.inc");
 	include_once(APP_PATH . "includes/ui/ui_controls.inc");
 	include_once(APP_PATH . "includes/ui/ui_input.inc");
-	//	include_once(APP_PATH . "includes/ui/ui_msgs.inc");
-	//	include_once(APP_PATH . "includes/ui/ui_globals.inc");
+
 	include_once(APP_PATH . "includes/db/inventory_db.inc");
 
 	include_once(APP_PATH . "sales/includes/sales_db.inc");
@@ -32,14 +32,13 @@
 
 	include_once(APP_PATH . "includes/db/connect_db.inc");
 
-	include_once(APP_PATH . "includes/errors.inc");
 	include_once(APP_PATH . "includes/systypes.inc");
 	//include_once(APP_PATH . "includes/references.inc");
 	include_once(APP_PATH . "includes/db/comments_db.inc");
 	include_once(APP_PATH . "includes/db/sql_functions.inc");
 	include_once(APP_PATH . "includes/db/audit_trail_db.inc");
 	include_once(APP_PATH . "admin/db/users_db.inc");
-
+	include_once(APP_PATH . "includes/session.inc");
 	function page($title, $no_menu = false, $is_index = false, $onload = "", $js = "", $script_only = false) {
 
 		global $page_security;

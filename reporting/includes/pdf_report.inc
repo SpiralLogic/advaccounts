@@ -15,7 +15,6 @@
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/reporting/includes/printer_class.inc");
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/admin/db/company_db.inc");
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/admin/db/printers_db.inc");
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/config.php");
 	class FrontReport extends Cpdf {
 
 		var $size;
