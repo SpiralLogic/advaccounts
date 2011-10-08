@@ -374,7 +374,7 @@
 		$modified = ($_SESSION['Items']->trans_no != 0);
 		$so_type = $_SESSION['Items']->so_type;
 		$_SESSION['Items']->write(1);
-		if (count($messages)) { // abort on failure or error messages are lost
+		if (count(Errors::$messages)) { // abort on failure or error messages are lost
 			$Ajax->activate('_page_body');
 			ui_view::display_footer_exit();
 		}
