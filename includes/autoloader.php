@@ -15,7 +15,6 @@
 			self::add_path(
 				array(
 					realpath('.') . '/includes/classes',
-					APP_PATH . 'includes/ui2',
 					APP_PATH . 'includes/ui',
 					APP_PATH . 'includes',
 					APP_PATH . 'includes/classes',
