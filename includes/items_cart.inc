@@ -86,14 +86,10 @@
 		// ----------- GL item functions
 
 		function add_gl_item($code_id, $dimension_id, $dimension2_id, $amount, $reference, $description = null) {
-			if (isset($code_id) && $code_id != "" && isset($amount) && isset($dimension_id) &&
-			 isset($dimension2_id)
-			) {
+			if (isset($code_id) && $code_id != "" && isset($amount) && isset($dimension_id) && isset($dimension2_id)) {
 				$this->gl_items[] = new gl_item($code_id, $dimension_id, $dimension2_id, $amount, $reference, $description);
 				return true;
-			}
-			else
-			{
+			} else {
 				// shouldn't come here under normal circumstances
 				Errors::show_db_error("unexpected - invalid parameters in add_gl_item($code_id, $dimension_id, $dimension2_id, $amount,...)", "", true);
 			}
