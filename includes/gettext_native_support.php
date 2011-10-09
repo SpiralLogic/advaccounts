@@ -46,7 +46,7 @@
 
 			if (!isset($_SESSION['get_text'])) {
 
-				if ($managerType == GETTEXT_NATIVE) {
+				if ($managerType == self::GETTEXT_NATIVE) {
 					if (function_exists('gettext')) {
 						$_SESSION['get_text'] = new gettext_native_support();
 						return;
@@ -426,6 +426,11 @@
 		/**
 		 * Write hash in an includable php file.
 		 */
+		public function raise_error($str) {
+			//	echo "$str";
+			return 1;
+		}
+
 		function compile(&$hash, $source_path) {
 			$dest_path = preg_replace('/\.po$/', '.php', $source_path);
 			$fp = @fopen($dest_path, "w");
