@@ -26,9 +26,9 @@
 	Autoloader::init();
 	!class_exists('Config', false) and require(APP_PATH . 'includes/classes/config.inc');
 	Config::init();
-	Errors::init();
-	require APP_PATH . "includes/main.inc";
 
+	require APP_PATH . "includes/main.inc";
+	Errors::init();
 	// intercept all output to destroy it in case of ajax call
 	register_shutdown_function('adv_shutdown_function_handler');
 	ob_start('adv_ob_flush_handler', 0);

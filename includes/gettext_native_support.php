@@ -42,7 +42,7 @@
 			return $err > 0;
 		}
 
-		public static function get_text_init($managerType = static::GETTEXT_NATIVE) {
+		public static function get_text_init($managerType = self::GETTEXT_NATIVE) {
 
 			if (!isset($_SESSION['get_text'])) {
 
