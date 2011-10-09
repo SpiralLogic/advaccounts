@@ -131,7 +131,7 @@
 		$new_cost = $row[0] * $material_cost;
 		$diff = $new_cost - $old_cost;
 		if ($diff != 0) {
-			$update_no = get_next_trans_no(ST_COSTUPDATE);
+			$update_no = SysTypes::get_next_trans_no(ST_COSTUPDATE);
 			if (!Dates::is_date_in_fiscalyear($to)) {
 				$to = Dates::end_fiscalyear();
 			}

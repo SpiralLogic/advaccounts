@@ -1,5 +1,5 @@
 var Adv;
-$.widget("custom.catcomplete", $.ui.autocomplete, {
+jQuery.widget("custom.catcomplete", $.ui.autocomplete, {
 	_renderMenu:function(ul, items) {
 		var self = this, currentCategory = "";
 		$.each(items, function(index, item) {
@@ -10,26 +10,30 @@ $.widget("custom.catcomplete", $.ui.autocomplete, {
 			self._renderItem(ul, item);
 		});
 	}
-
 });
-(function(window, undefined) {
-
+(function(window, $, undefined) {
 	var Adv = {
 		$content:$("#content"),
 		loader:$("<div/>").attr('id', 'loader'),
 		fieldsChanged:0,
-		generateinfo:'',
+		debug:{ ajax:true},
 		lastXhr:'',
 		o:{}
 	};
 	(function() {
-		var extender = jQuery.extend, toInit = [];
+		var extender = jQuery.extend;
 		this.o.wrapper = $("#wrapper");
 		this.loader.prependTo(Adv.$content).hide()
-		 .ajaxStart(function() { if (!Adv.loader.disabled) $(this).show()})
-		 .ajaxStop(function() {$(this).hide()});
+		 .ajaxStart(function() {
+									if (!Adv.loader.disabled) $(this).show();
+									if (Adv.debug.ajax) console.time('ajax')
+								})
+		 .ajaxStop(function() {
+								 if (Adv.debug.ajax) console.timeEnd('ajax');
+								 $(this).hide()
+							 });
 		this.extend = function(object) {extender(Adv, object)};
-		jQuery.extend(Adv.loader, {
+		extender(Adv.loader, {
 			disabled:false,
 			off:function() {
 				this.disabled = true;
@@ -40,7 +44,7 @@ $.widget("custom.catcomplete", $.ui.autocomplete, {
 		})
 	}).apply(Adv);
 	window.Adv = Adv;
-})(window);
+})(window, jQuery);
 Adv.extend({
 						 msgbox:$('#msgbox').ajaxError(function(event, request, settings) {
 							 if (request.statusText == "abort") return;
@@ -50,7 +54,6 @@ Adv.extend({
 							 };
 							 console.log([event, request, settings]);
 							 Adv.showStatus(status);
-
 						 }),
 						 showStatus:function(status) {
 							 Adv.msgbox.empty();
@@ -83,15 +86,12 @@ Adv.extend({Forms:(function() {
 				value = '';
 			}
 			el.val(value).data('init', value);
-
 		}
 	}
-})()
-					 })
+})()});
 Adv.extend({
 						 Events:(function() {
-							 var events = [], onload = false, toClean = false, toFocus = {};
-							 var firstBind = function(s, t, a) {
+							 var events = [], onload = false, toClean = false, toFocus = {}, firstBind = function(s, t, a) {
 								 $(s).bind(t, a);
 							 };
 							 return {
@@ -107,7 +107,6 @@ Adv.extend({
 									 if (clean !== undefined) {
 										 toClean = clean;
 									 }
-
 								 },
 								 rebind:function() {
 									 if (toClean) toClean();

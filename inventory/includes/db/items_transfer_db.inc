@@ -15,7 +15,7 @@
 
 		begin_transaction();
 
-		$transfer_id = get_next_trans_no(ST_LOCTRANSFER);
+		$transfer_id = SysTypes::get_next_trans_no(ST_LOCTRANSFER);
 
 		foreach ($Items as $line_item)
 		{

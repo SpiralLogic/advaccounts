@@ -166,7 +166,7 @@
 		$sql .= " AND workorder.closed=0";
 	}
 
-	if (isset($_POST['StockLocation']) && $_POST['StockLocation'] != $all_items) {
+	if (isset($_POST['StockLocation']) && $_POST['StockLocation'] != ALL_TEXT) {
 		$sql .= " AND workorder.loc_code=" . db_escape($_POST['StockLocation']);
 	}
 
@@ -174,7 +174,7 @@
 		$sql .= " AND workorder.wo_ref LIKE " . db_escape('%' . $_POST['OrderNumber'] . '%');
 	}
 
-	if (isset($_POST['SelectedStockItem']) && $_POST['SelectedStockItem'] != $all_items) {
+	if (isset($_POST['SelectedStockItem']) && $_POST['SelectedStockItem'] != ALL_TEXT) {
 		$sql .= " AND workorder.stock_id=" . db_escape($_POST['SelectedStockItem']);
 	}
 

@@ -15,7 +15,6 @@
 		$db = $_SESSION["wa_current_user"]->get_db_connection();
 	}
 
-	$db_duplicate_error_code = 1062;
 	//DB wrapper functions to change only once for whole application
 	function db_query($sql, $err_msg = null) {
 		global $db;
@@ -128,6 +127,28 @@
 	function db_num_affected_rows() {
 		global $db;
 		return mysql_affected_rows($db);
+	}
+
+	function begin_transaction() {
+		db_query("BEGIN", "could not start a transaction");
+	}
+
+	function commit_transaction() {
+		db_query("COMMIT", "could not commit a transaction");
+	}
+
+	function cancel_transaction() {
+		db_query("ROLLBACK", "could not cancel a transaction");
+	}
+
+	//-----------------------------------------------------------------------------
+	//	Update record activity status.
+	//
+	function update_record_status($id, $status, $table, $key) {
+		$sql = "UPDATE " . $table . " SET inactive = "
+		 . db_escape($status) . " WHERE $key=" . db_escape($id);
+
+		db_query($sql, "Can't update record status");
 	}
 
 ?>

@@ -28,7 +28,6 @@
 	// include $Hooks object if locale file exists
 	if (file_exists(APP_PATH . "lang/" . $_SESSION['language']->code . "/locale.inc")) {
 		include(APP_PATH . "lang/" . $_SESSION['language']->code . "/locale.inc");
-		if (class_exists('Hooks')) $Hooks = new Hooks();
 	}
 
 	if (!isset($_SESSION["wa_current_user"])) {
@@ -40,11 +39,10 @@
 	// Ajax communication object
 	$Ajax = Ajax::instance();
 	// js/php validation rules container
-	$Validate = array();
+
 	// bindings for editors
-	$Editors = array();
+
 	// page help. Currently help for function keys.
-	$Pagehelp = array();
 
 	if (strstr($_SERVER['PHP_SELF'], 'logout.php') == false) {
 		Login::timeout();
@@ -78,9 +76,9 @@
 			}
 			set_global_connection();
 		}
-		if (!$_SESSION["wa_current_user"]->old_db) {
-			include(APP_PATH . 'company/installed_extensions.php');
-		}
+
+		include(APP_PATH . 'company/installed_extensions.php');
+
 		if (!isset($_SESSION["App"])) {
 			$_SESSION["App"] = new frontaccounting();
 			$_SESSION["App"]->init();

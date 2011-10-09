@@ -99,7 +99,7 @@
 
 		if ($balance != 0.0) {
 			$trans_type = ST_JOURNAL;
-			$trans_id = get_next_trans_no($trans_type);
+			$trans_id = SysTypes::get_next_trans_no($trans_type);
 
 			add_gl_trans($trans_type, $trans_id, $to, $co['retained_earnings_act'],
 				0, 0, _("Closing Year"), -$balance);
@@ -321,7 +321,7 @@
 			$sql = "DELETE FROM gl_trans WHERE tran_date <= '$to' AND account = '{$row['account']}'";
 			db_query($sql, "Could not delete gl trans");
 			if (is_account_balancesheet($row['account'])) {
-				$trans_no = get_next_trans_no(ST_JOURNAL);
+				$trans_no = SysTypes::get_next_trans_no(ST_JOURNAL);
 				$sql = "INSERT INTO gl_trans (type, type_no, tran_date, account, memo_, amount) VALUES
 				(" . ST_JOURNAL . ", $trans_no, '$to', '{$row['account']}', '$ref', {$row['amount']})";
 				db_query($sql, "Could not insert gl trans");

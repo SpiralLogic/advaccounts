@@ -13,7 +13,7 @@
 	include_once(APP_PATH . "admin/db/security_db.inc");
 
 	include_once(APP_PATH . "gl/includes/gl_db.inc");
-	//	include_once(APP_PATH . "includes/banking.inc");
+
 	include_once(APP_PATH . "includes/ui/ui_lists.inc");
 	include_once(APP_PATH . "includes/ui/ui_controls.inc");
 	include_once(APP_PATH . "includes/ui/ui_input.inc");
@@ -26,19 +26,11 @@
 	include_once(APP_PATH . "manufacturing/includes/manufacturing_db.inc");
 
 	include_once(APP_PATH . "admin/db/voiding_db.inc");
-	//	include_once(APP_PATH . "includes/ui/ui_view.inc");
 	include_once(APP_PATH . "includes/data_checks.inc");
-	//include_once(APP_PATH . "includes/dates.inc");
-
 	include_once(APP_PATH . "includes/db/connect_db.inc");
-
-	include_once(APP_PATH . "includes/systypes.inc");
-	//include_once(APP_PATH . "includes/references.inc");
 	include_once(APP_PATH . "includes/db/comments_db.inc");
-	include_once(APP_PATH . "includes/db/sql_functions.inc");
 	include_once(APP_PATH . "includes/db/audit_trail_db.inc");
 	include_once(APP_PATH . "admin/db/users_db.inc");
 	include_once(APP_PATH . "admin/db/company_db.inc");
-	include_once(APP_PATH . "includes/db/references_db.inc");
 	include_once(APP_PATH . "includes/session.inc");
 

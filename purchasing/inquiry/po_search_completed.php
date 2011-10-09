@@ -173,7 +173,7 @@
 		array('insert' => true, 'fun' => 'receive_link'),
 	);
 
-	if (get_post('StockLocation') != $all_items) {
+	if (get_post('StockLocation') != ALL_TEXT) {
 		$cols[_("Location")] = 'skip';
 	}
 	//---------------------------------------------------------------------------------------------------

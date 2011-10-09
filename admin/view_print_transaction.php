@@ -78,7 +78,7 @@
 
 	function handle_search() {
 		if (check_valid_entries() == true) {
-			$db_info = get_systype_db_info($_POST['filterType']);
+			$db_info = SysTypes::get_systype_db_info($_POST['filterType']);
 
 			if ($db_info == null)
 				return;

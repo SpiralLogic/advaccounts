@@ -97,7 +97,7 @@
 	}
 
 	if (isset($_POST['SelectStockFromList']) && ($_POST['SelectStockFromList'] != "") &&
-	 ($_POST['SelectStockFromList'] != $all_items)
+	 ($_POST['SelectStockFromList'] != ALL_TEXT)
 	) {
 		$selected_stock_item = $_POST['SelectStockFromList'];
 	}
@@ -136,7 +136,7 @@
 		$sql .= "  AND porder.ord_date >= '$data_after'";
 		$sql .= "  AND porder.ord_date <= '$data_before'";
 
-		if (isset($_POST['StockLocation']) && $_POST['StockLocation'] != $all_items) {
+		if (isset($_POST['StockLocation']) && $_POST['StockLocation'] != ALL_TEXT) {
 			$sql .= " AND porder.into_stock_location = " . db_escape($_POST['StockLocation']);
 		}
 
@@ -164,7 +164,7 @@
 		array('insert' => true, 'fun' => 'receive_link')
 	);
 
-	if (get_post('StockLocation') != $all_items) {
+	if (get_post('StockLocation') != ALL_TEXT) {
 		$cols[_("Location")] = 'skip';
 	}
 

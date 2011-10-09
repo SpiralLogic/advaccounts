@@ -162,7 +162,7 @@
 	table_section_title(_("Create backup"));
 	textarea_row(_("Comments:"), 'comments', null, 30, 8);
 	compress_list_row(_("Compression:"), 'comp');
-	vertical_space("height='20px'");
+
 	submit_row('creat', _("Create Backup"), false, "colspan=2 align='center'", '', 'process');
 	table_section(2);
 	table_section_title(_("Backup scripts maintenance"));

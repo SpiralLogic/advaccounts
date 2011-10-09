@@ -376,7 +376,7 @@
 		$new = $cart->order_id == 0;
 
 		if ($new)
-			$cart->order_id = get_next_trans_no($trans_type);
+			$cart->order_id = SysTypes::get_next_trans_no($trans_type);
 
 		$trans_id = $cart->order_id;
 
@@ -419,7 +419,7 @@
 			//	Mktime(0,0,0,get_month($date_)+1,1,get_year($date_)));
 			$reversingDate = Dates::begin_month(Dates::add_months($date_, 1));
 
-			$trans_id_reverse = get_next_trans_no($trans_type);
+			$trans_id_reverse = SysTypes::get_next_trans_no($trans_type);
 
 			foreach ($cart->gl_items as $journal_item)
 			{

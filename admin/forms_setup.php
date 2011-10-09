@@ -19,13 +19,13 @@
 
 	if (isset($_POST['setprefs'])) {
 
-		$systypes = get_systypes();
+		$systypes = SysTypes::get_systypes();
 
 		begin_transaction();
 
 		while ($type = db_fetch($systypes))
 		{
-			save_next_reference($type["type_id"], $_POST['id' . $type["type_id"]]);
+			Refs::save_next_reference($type["type_id"], $_POST['id' . $type["type_id"]]);
 		}
 
 		commit_transaction();
@@ -37,7 +37,7 @@
 
 	start_outer_table(Config::get('tables.style2'));
 
-	$systypes = get_systypes();
+	$systypes = SysTypes::get_systypes();
 	table_section(1);
 
 	$th = array(_("Form"), _("Next Reference"));

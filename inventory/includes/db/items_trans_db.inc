@@ -35,7 +35,7 @@
 		$date_ = Dates::Today();
 		if ($qoh > 0) {
 
-			$update_no = get_next_trans_no(ST_COSTUPDATE);
+			$update_no = SysTypes::get_next_trans_no(ST_COSTUPDATE);
 			if (!Dates::is_date_in_fiscalyear($date_))
 				$date_ = Dates::end_fiscalyear();
 

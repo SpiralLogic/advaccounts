@@ -1,5 +1,5 @@
 <?php
-/* vim: set expandtab tabstop=4 shiftwidth=4: */
+	/* vim: set expandtab tabstop=4 shiftwidth=4: */
 	//
 	//  Copyright (c) 2003 Laurent Bedubourg
 	//
@@ -22,18 +22,6 @@
 
 	//require_once "PEAR.php";
 
-	define('GETTEXT_NATIVE', 1);
-	define('GETTEXT_PHP', 2);
-
-	function raise_error($str) {
-		//	echo "$str";
-		return 1;
-	}
-
-	function is_error($err) {
-		return $err > 0;
-	}
-
 	/**
 	 * Interface to gettext native support.
 	 *
@@ -42,8 +30,19 @@
 	 */
 	class gettext_native_support {
 		var $_interpolation_vars = array();
+		const GETTEXT_NATIVE = 1;
+		const GETTEXT_PHP = 2;
 
-		public static function get_text_init($managerType = GETTEXT_NATIVE) {
+		public function raise_error($str) {
+			//	echo "$str";
+			return 1;
+		}
+
+		public function is_error($err) {
+			return $err > 0;
+		}
+
+		public static function get_text_init($managerType = static::GETTEXT_NATIVE) {
 
 			if (!isset($_SESSION['get_text'])) {
 
@@ -73,10 +72,10 @@
 			setlocale(LC_NUMERIC, 'C'); // important for numeric presentation etc.
 			if ($set === false) {
 				$str = sprintf('language code "%s", encoding "%s" not supported by your system',
-											 $lang_code, $encoding);
+					$lang_code, $encoding);
 				//$err = new GetText_Error($str);
 				//return PEAR::raise_error($err);
-				return raise_error("1 " . $str);
+				return $this->raise_error("1 " . $str);
 			}
 			//return 0;
 		}
@@ -125,7 +124,7 @@
 		 */
 		function set_vars($hash) {
 			$this->_interpolation_vars = array_merge($this->_interpolation_vars,
-																							 $hash);
+				$hash);
 		}
 
 		/**
@@ -140,7 +139,7 @@
 				$str = sprintf('Unable to locate gettext key "%s"', $key);
 				//$err = new GetText_Error($str);
 				//return PEAR::raise_error($err);
-				return raise_error("2 " . $str);
+				return $this->raise_error("2 " . $str);
 			}
 
 			while (preg_match('/\$\{(.*?)\}/sm', $value, $m)) {
@@ -153,7 +152,7 @@
 					$str = sprintf('Interpolation error, var "%s" not set', $var);
 					//$err = new GetText_Error($str);
 					//return PEAR::raise_error($err);
-					return raise_error("3 " . $str);
+					return $this->raise_error("3 " . $str);
 				}
 				$value = str_replace($src, $var2, $value);
 			}
@@ -220,7 +219,7 @@
 				/*if (PEAR::is_error($err)) {
 						return $err;
 					}*/
-				if (is_error($err)) {
+				if ($this->is_error($err)) {
 					return $err;
 				}
 			}
@@ -270,7 +269,7 @@
 				$str = sprintf('Domain file "%s" not found.', $src_domain);
 				//$err = new GetText_Error($str);
 				//return PEAR::raise_error($err);
-				return raise_error("4 " . $str);
+				return $this->raise_error("4 " . $str);
 			}
 
 			$d = new gettext_domain();
@@ -288,7 +287,7 @@
 					/*if (PEAR::is_error($err)) {
 							 return $err;
 						 }*/
-					if (is_error($err)) {
+					if ($this->is_error($err)) {
 						return $err;
 					}
 				}
@@ -362,7 +361,7 @@
 				$str = sprintf('Unable to locate file "%s"', $file);
 				//$err = new GetText_Error($str);
 				//return PEAR::raise_error($err);
-				return raise_error($str);
+				return $this->raise_error($str);
 			}
 			$i = 0;
 			$lines = file($file);
@@ -434,7 +433,7 @@
 				$str = sprintf('Unable to open "%s" in write mode.', $dest_path);
 				//$err = new GetText_Error($str);
 				//return PEAR::raise_error($err);
-				return raise_error($str);
+				return $this->raise_error($str);
 			}
 			fwrite($fp, '<?php' . "\n");
 			fwrite($fp, 'return array(' . "\n");

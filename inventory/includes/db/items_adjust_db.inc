@@ -14,7 +14,7 @@
 	function add_stock_adjustment($items, $location, $date_, $type, $increase, $reference, $memo_) {
 
 		begin_transaction();
-		$adj_id = get_next_trans_no(ST_INVADJUST);
+		$adj_id = SysTypes::get_next_trans_no(ST_INVADJUST);
 		foreach ($items as $line_item) {
 			if (!$increase)
 				$line_item->quantity = -$line_item->quantity;

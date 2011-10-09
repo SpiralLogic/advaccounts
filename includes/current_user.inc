@@ -57,76 +57,44 @@
 		}
 
 		function login($company, $loginname, $password) {
-			global $security_areas, $security_groups, $security_headings;
 			$this->set_company($company);
 			$this->logged = false;
 
 			$Auth_Result = get_user_for_login($loginname, $password);
 			if (db_num_rows($Auth_Result) > 0) {
 				$myrow = db_fetch($Auth_Result);
-				$this->old_db = isset($myrow["full_access"]);
+
 				if (!@$myrow["inactive"]) {
-					if ($this->old_db) {
-						// Transition code:
-						// db was not yet upgraded after source update to v.2.2
-						// give enough access for admin user to continue upgrade
-						if (!isset($security_groups) || !isset($security_headings)) {
-							echo "<center><br><br><font size='5' color='red'><b>";
-							echo _('Before software upgrade you have to include old $security_groups and $security_headings arrays from old config.php file to the new one.');
-							echo '<br>' . "<a href=/index.php>" . _("Back") . "</a>";
-							echo "</b></font><br><br></center>";
-							exit;
-						}
-						$this->access = $myrow["full_access"];
-						if (in_array(20, $security_groups[$this->access])) // temporary access for admin users
-							$this->role_set[] = $security_areas['SA_SOFTWAREUPGRADE'][0]; else {
-							echo "<center><br><br><font size='5' color='red'><b>";
-							echo _('System is available for site admin only until full database upgrade');
-							echo "</b></font><br><br></center>";
-							exit;
-						}
-					} else {
-						$this->role_set = array();
-						$this->access = $myrow["role_id"];
-						// store area codes available for current user role
-						$role = get_security_role($this->access);
-						if (!$role) return false;
-						foreach ($role['areas'] as $code) // filter only area codes for enabled security sections
-						{
-							if (in_array($code & ~0xff, $role['sections'])) $this->role_set[] = $code;
-						}
+					$this->role_set = array();
+					$this->access = $myrow["role_id"];
+					// store area codes available for current user role
+					$role = get_security_role($this->access);
+					if (!$role) return false;
+					foreach ($role['areas'] as $code) // filter only area codes for enabled security sections
+					{
+						if (in_array($code & ~0xff, $role['sections'])) $this->role_set[] = $code;
 					}
-					if ($myrow['change_password']) $_SESSION['change_password'] = true;
-					$this->name = $myrow["real_name"];
-					$this->pos = $myrow["pos"];
-					$this->loginname = $loginname;
-					$this->username = $this->loginname;
-					$this->prefs = new user_prefs($myrow);
-					$this->user = @$myrow["id"];
-					update_user_visitdate($this->username);
-					$this->logged = true;
-					$this->last_act = time();
-					$this->timeout = session_timeout();
-					$this->set_salesman();
 				}
+				if ($myrow['change_password']) $_SESSION['change_password'] = true;
+				$this->name = $myrow["real_name"];
+				$this->pos = $myrow["pos"];
+				$this->loginname = $loginname;
+				$this->username = $this->loginname;
+				$this->prefs = new user_prefs($myrow);
+				$this->user = @$myrow["id"];
+				update_user_visitdate($this->username);
+				$this->logged = true;
+				$this->last_act = time();
+				$this->timeout = session_timeout();
+				$this->set_salesman();
 			}
 			return $this->logged;
 		}
 
-		function check_user_access() {
-			global $security_groups;
-			if ($this->old_db) {
-				// notification after upgrade from pre-2.2 version
-				return isset($security_groups) && is_array(@$security_groups[$this->access]);
-			} else
-				return !isset($security_groups) && is_array($this->role_set);
-		}
 
 		function can_access($page_level) {
-			global $security_groups, $security_areas;
-			if (isset($security_groups)) {
-				return $this->company == 0 && in_array(20, $security_groups[$this->access]);
-			}
+			global $security_areas;
+
 			if ($page_level === 'SA_OPEN') return true;
 			if ($page_level === 'SA_DENIED' || $page_level === '') return false;
 			$code = $security_areas[$page_level][0];

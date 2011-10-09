@@ -38,7 +38,7 @@
 			if ($trans_type == null)
 				$trans_type = ST_JOURNAL;
 			if ($trans_no == null)
-				$trans_no = get_next_trans_no($trans_type);
+				$trans_no = SysTypes::get_next_trans_no($trans_type);
 			if ($person_type_id == null)
 				$person_type_id = PT_MISC;
 			add_gl_trans($trans_type, $trans_no, $date_, $account, 0, 0, _("Exchange Variance"),
@@ -49,7 +49,7 @@
 	}
 
 	function add_exchange_variation_all() {
-		$trans_no = get_next_trans_no(ST_JOURNAL);
+		$trans_no = SysTypes::get_next_trans_no(ST_JOURNAL);
 		$sql = "SELECT * FROM bank_accounts";
 		$result = db_query($sql, "could not retreive bank accounts");
 		while ($myrow = db_fetch($result))
@@ -75,7 +75,7 @@
 
 		$currency = Banking::get_bank_account_currency($from_account);
 
-		$trans_no = get_next_trans_no($trans_type);
+		$trans_no = SysTypes::get_next_trans_no($trans_type);
 
 		$from_gl_account = get_bank_gl_account($from_account);
 		$to_gl_account = get_bank_gl_account($to_account);
@@ -179,7 +179,7 @@
 		}
 		else
 		{
-			$trans_no = get_next_trans_no($trans_type);
+			$trans_no = SysTypes::get_next_trans_no($trans_type);
 			$do_exchange_variance = true;
 		}
 

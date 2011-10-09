@@ -10,7 +10,7 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	class Errors {
-
+		const DB_DUPLICATE_ERROR_CODE = 1062;
 
 		public static $messages = array(); // container for system messages
 		public static $before_box = ''; // temporary container for output html data before error box
@@ -74,7 +74,6 @@
 			if (count(static::$messages)) {
 				foreach (static::$messages as $cnt => $msg) {
 					if ($msg[0] > $type) continue;
-
 					if ($msg[0] < $type) {
 						if ($msg[0] == E_USER_WARNING) {
 							$type = E_USER_WARNING; // user warnings
@@ -146,9 +145,8 @@
 		}
 
 		static function nice_db_error($db_error) {
-			global $db_duplicate_error_code;
 
-			if ($db_error == $db_duplicate_error_code) {
+			if ($db_error == static::DB_DUPLICATE_ERROR_CODE) {
 				ui_msgs::display_error(_("The entered information is a duplicate. Please go back and enter different values."));
 				return true;
 			}

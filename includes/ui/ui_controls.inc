@@ -368,42 +368,42 @@
 		}
 	}
 
-	/* Table editor interfaces. Key is editor type
-	 0 => url of editor page
-	 1 => hotkey code
-	 2 => context help
- */
-	$popup_editors = array(
-		'customer' => array('/sales/manage/customers.php?debtor_no=',
-			113, _("Customers")
-		),
-		'branch' => array('/sales/manage/customer_branches.php?SelectedBranch=',
-			114, _("Branches")
-		),
-		'supplier' => array('/purchasing/manage/suppliers.php?supplier_id=',
-			113, _("Suppliers")
-		),
-		'item' => array('/inventory/manage/items.php?stock_id=',
-			115, _("Items")
-		)
-	);
 	/*
-	 Bind editors for various selectors.
-	 $type - type of editor
-	 $input - name of related input field
-	 $caller - optional function key code (available values F1-F12: 112-123,
-		 true: default)
- */
+		 Bind editors for various selectors.
+		 $type - type of editor
+		 $input - name of related input field
+		 $caller - optional function key code (available values F1-F12: 112-123,
+			 true: default)
+	 */
+	//$Pagehelp = array();
 	function set_editor($type, $input, $caller = true) {
-		global $Editors, $popup_editors, $Pagehelp;
-
+		static $Editors = array();
+		/* Table editor interfaces. Key is editor type
+		 0 => url of editor page
+		 1 => hotkey code
+		 2 => context help
+	 */
+		if ($type === false && $input === false) return $Editors;
+		$popup_editors = array(
+			'customer' => array('/sales/manage/customers.php?debtor_no=',
+				113, _("Customers")
+			),
+			'branch' => array('/sales/manage/customer_branches.php?SelectedBranch=',
+				114, _("Branches")
+			),
+			'supplier' => array('/purchasing/manage/suppliers.php?supplier_id=',
+				113, _("Suppliers")
+			),
+			'item' => array('/inventory/manage/items.php?stock_id=',
+				115, _("Items")
+			)
+		);
 		$key = $caller === true ? $popup_editors[$type][1] : $caller;
 
 		$Editors[$key] = array(PATH_TO_ROOT . $popup_editors[$type][0], $input);
-
-		$help = 'F' . ($key - 111) . ' - ';
-		$help .= $popup_editors[$type][2];
-		$Pagehelp[] = $help;
+		/*	$help = 'F' . ($key - 111) . ' - ';
+				$help .= $popup_editors[$type][2];
+				$Pagehelp[] = $help;*/
 	}
 
 	//------------------------------------------------------------------------------

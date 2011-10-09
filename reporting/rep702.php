@@ -79,7 +79,7 @@
 				$type = $myrow['type'];
 				$TransName = $systypes_array[$myrow['type']];
 				$rep->TextCol(0, 1, $TransName . " # " . $myrow['type_no']);
-				$rep->TextCol(1, 2, get_reference($myrow['type'], $myrow['type_no']));
+				$rep->TextCol(1, 2, Refs::get_reference($myrow['type'], $myrow['type_no']));
 				$rep->DateCol(2, 3, $myrow['tran_date'], true);
 				$coms = payment_person_name($myrow["person_type_id"], $myrow["person_id"]);
 				$memo = ui_view::get_comments_string($myrow['type'], $myrow['type_no']);

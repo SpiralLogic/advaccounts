@@ -22,11 +22,6 @@
 	if (Config::get('ui.windows.popups')) {
 		$js .= ui_view::get_js_open_window(900, 500);
 	}
-	$js_lib[] = <<< JS
-function Customer() {
-
-}
-JS;
 
 	JS::headerFile('/js/payalloc.js');
 	page(_($help_context = "Customer Refund Entry"), @$_REQUEST['frame'], false, "", $js);

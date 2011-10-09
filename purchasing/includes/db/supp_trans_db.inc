@@ -19,7 +19,7 @@
 		else
 			$due_date = Dates::date2sql($due_date);
 
-		$trans_no = get_next_trans_no($type);
+		$trans_no = SysTypes::get_next_trans_no($type);
 
 		$curr = Banking::get_supplier_currency($supplier_id);
 

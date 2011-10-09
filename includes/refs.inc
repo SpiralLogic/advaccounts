@@ -9,44 +9,106 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-
 	class Refs {
 
+		public static function get_reference($type, $id) {
+			$sql = "SELECT * FROM refs WHERE type=" . db_escape($type) . " AND id=" . db_escape($id);
+			$result = db_query($sql, "could not query reference table");
+			$row = db_fetch($result);
+			return $row['reference'];
+		}
+
+		//--------------------------------------------------------------------------------------------------
+
+		public static function add_reference($type, $id, $reference) {
+			$sql = "INSERT INTO refs (type, id, reference)
+			VALUES (" . db_escape($type) . ", " . db_escape($id) . ", "
+			 . db_escape(trim($reference)) . ")";
+
+			db_query($sql, "could not add reference entry");
+		}
+
+		//--------------------------------------------------------------------------------------------------
+
+		public static function update_reference($type, $id, $reference) {
+			$sql = "UPDATE refs SET reference=" . db_escape($reference)
+			 . " WHERE type=" . db_escape($type) . " AND id=" . db_escape($id);
+			db_query($sql, "could not update reference entry");
+		}
+
+		//--------------------------------------------------------------------------------------------------
+
+		public static function delete_reference($type, $id) {
+			$sql = "DELETE FROM refs WHERE type=$type AND id=" . db_escape($id);
+
+			return db_query($sql, "could not delete from reference table");
+		}
+
+		//--------------------------------------------------------------------------------------------------
+
+		public static function find_reference($type, $reference) {
+			$sql = "SELECT id FROM refs WHERE type=" . db_escape($type)
+			 . " AND reference=" . db_escape($reference);
+
+			$result = db_query($sql, "could not query reference table");
+
+			return (db_num_rows($result) > 0);
+		}
+
+		//--------------------------------------------------------------------------------------------------
+
+		public static function save_next_reference($type, $reference) {
+			$sql = "UPDATE sys_types SET next_reference=" . db_escape(trim($reference))
+			 . " WHERE type_id = " . db_escape($type);
+
+			db_query($sql, "The next transaction ref for $type could not be updated");
+		}
+
+		//--------------------------------------------------------------------------------------------------
+
+		public static function get_next_reference($type) {
+			$sql = "SELECT next_reference FROM sys_types WHERE type_id = " . db_escape($type);
+
+			$result = db_query($sql, "The last transaction ref for $type could not be retreived");
+
+			$row = db_fetch_row($result);
+			return $row[0];
+		}
 
 		public static function save($type, $id, $reference) {
 
-			add_reference($type, $id, $reference);
+			static::add_reference($type, $id, $reference);
 			if ($reference != 'auto') {
 				static::save_last($reference, $type);
 			}
 		}
 
 		public static function get($type, $id) {
-			return get_reference($type, $id);
+			return static::get_reference($type, $id);
 		}
 
 		public static function delete($type, $id) {
-			delete_reference($type, $id);
+			static::delete_reference($type, $id);
 		}
 
 		public static function update($type, $id, $reference) {
-			update_reference($type, $id, $reference);
+			static::update_reference($type, $id, $reference);
 			if ($reference != 'auto') {
 				static::save_last($reference, $type);
 			}
 		}
 
 		public static function exists($type, $reference) {
-			return (find_reference($type, $reference) != null);
+			return (static::find_reference($type, $reference) != null);
 		}
 
 		public static function save_last($reference, $type) {
-			$next = static::increment(get_next_reference($type));
-			save_next_reference($type, $next);
+			$next = static::increment(Refs::get_next_reference($type));
+			static::save_next_reference($type, $next);
 		}
 
 		public static function get_next($type) {
-			return get_next_reference($type);
+			return static::get_next_reference($type);
 		}
 
 		//------------------------------------
@@ -80,7 +142,7 @@
 
 	function is_new_reference(&$ref, $type) {
 
-		$db_info = get_systype_db_info($type);
+		$db_info = SysTypes::get_systype_db_info($type);
 		$db_name = $db_info[0];
 		$db_type = $db_info[1];
 		$db_ref = $db_info[3];

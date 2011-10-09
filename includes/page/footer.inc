@@ -10,12 +10,13 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	function page_footer($no_menu = false, $is_index = false, $hide_back_link = false) {
-		global $Validate, $Editors;
+		global $Editors;
+		$Validate = array();
 		$Ajax = Ajax::instance();
 		include_once(APP_PATH . "themes/" . user_theme() . "/renderer.php");
 		$rend = new renderer();
 		$rend->menu_footer($no_menu, $is_index);
-		$edits = "editors = " . $Ajax->php2js($Editors) . ";";
+		$edits = "editors = " . $Ajax->php2js(set_editor(false, false)) . ";";
 		$Ajax->addScript('editors', $edits);
 		JS::beforeload("_focus = '" . get_post('_focus') . "';_validate = " . $Ajax->php2js($Validate) . ";var $edits");
 		add_user_js_data();

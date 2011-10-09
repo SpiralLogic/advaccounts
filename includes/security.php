@@ -9,14 +9,7 @@
 	class Security {
 
 		static function check_page($page_security) {
-			if (!$_SESSION["wa_current_user"]->check_user_access()) {
-				$msg = $_SESSION["wa_current_user"]->old_db ? _("Security settings have not been defined for your user account.") . "<br>" . _("Please contact your system administrator.")
-				 : _("Please remove \$security_groups and \$security_headings arrays from config.php file!");
-				ui_msgs::display_error($msg);
-				end_page();
-				Login::kill();
-				exit;
-			}
+
 			if (!$_SESSION["wa_current_user"]->can_access_page($page_security)) {
 				echo "<center><br><br><br><b>";
 				echo _("The security settings on your account do not permit you to access this function");

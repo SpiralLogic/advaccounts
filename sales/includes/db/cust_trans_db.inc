@@ -110,7 +110,7 @@
 		if ($trans_type == ST_CUSTPAYMENT)
 			$AllocAmt = abs($AllocAmt);
 		if ($new) {
-			$trans_no = get_next_trans_no($trans_type);
+			$trans_no = SysTypes::get_next_trans_no($trans_type);
 
 			$sql = "INSERT INTO debtor_trans (
 		trans_no, type,

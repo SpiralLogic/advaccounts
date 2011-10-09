@@ -24,10 +24,9 @@
 	require APP_PATH . 'includes/autoloader.php';
 
 	Autoloader::init();
-
 	!class_exists('Config', false) and require(APP_PATH . 'includes/classes/config.inc');
 	Config::init();
-
+	Errors::init();
 	require APP_PATH . "includes/main.inc";
 
 	// intercept all output to destroy it in case of ajax call

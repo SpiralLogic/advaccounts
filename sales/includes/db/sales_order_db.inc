@@ -13,7 +13,7 @@
 	function add_sales_order(&$order) {
 
 		begin_transaction();
-		$order_no = get_next_trans_no($order->trans_type);
+		$order_no = SysTypes::get_next_trans_no($order->trans_type);
 		$del_date = Dates::date2sql($order->due_date);
 		$order_type = 0; // this is default on new order
 		$sql = "INSERT INTO sales_orders (order_no, type, debtor_no, trans_type, branch_code, customer_ref, reference, salesman, comments, ord_date,
@@ -89,7 +89,7 @@
 		db_query($sql, "order Header Delete");
 		$sql = "DELETE FROM sales_order_details WHERE order_no =" . db_escape($order_no) . " AND trans_type=" . db_escape($trans_type);
 		db_query($sql, "order Detail Delete");
-		delete_reference($trans_type, $order_no);
+		Refs::delete_reference($trans_type, $order_no);
 		add_audit_trail($trans_type, $order_no, Dates::Today(), _("Deleted."));
 		commit_transaction();
 	}
