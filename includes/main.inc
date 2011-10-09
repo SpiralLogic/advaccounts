@@ -38,5 +38,7 @@
 	include_once(APP_PATH . "includes/db/sql_functions.inc");
 	include_once(APP_PATH . "includes/db/audit_trail_db.inc");
 	include_once(APP_PATH . "admin/db/users_db.inc");
+	include_once(APP_PATH . "admin/db/company_db.inc");
+	include_once(APP_PATH . "includes/db/references_db.inc");
 	include_once(APP_PATH . "includes/session.inc");
 

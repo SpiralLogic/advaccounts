@@ -9,15 +9,9 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	include_once(APP_PATH . "includes/db/references_db.inc");
 
 	class Refs {
-		protected static $_instance = null;
 
-		public static function instance() {
-			if (static::$_instance === null) static::$_instance = new static;
-			return static::$_instance;
-		}
 
 		public static function save($type, $id, $reference) {
 

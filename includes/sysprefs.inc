@@ -9,15 +9,9 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	include_once(APP_PATH . "admin/db/company_db.inc");
 
 	class SysPrefs {
-		protected static $_instance = null;
 
-		public static function instance() {
-			if (static::$_instance === null) static::$_instance = new static;
-			return static::$_instance;
-		}
 
 		public static function allow_negative_stock() {
 			return get_company_pref('allow_negative_stock');
