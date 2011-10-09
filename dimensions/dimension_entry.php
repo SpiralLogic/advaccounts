@@ -93,11 +93,11 @@
 	//-------------------------------------------------------------------------------------
 
 	function can_process() {
-		global $selected_id, $Refs;
+		global $selected_id;
 
 		if ($selected_id == -1) {
 
-			if (!$Refs->is_valid($_POST['ref'])) {
+			if (!Refs::is_valid($_POST['ref'])) {
 				ui_msgs::display_error(_("The dimension reference must be entered."));
 				ui_view::set_focus('ref');
 				return false;
@@ -240,7 +240,7 @@
 	else
 	{
 		$_POST['dimension_tags'] = array();
-		ref_row(_("Dimension Reference:"), 'ref', '', $Refs->get_next(ST_DIMENSION));
+		ref_row(_("Dimension Reference:"), 'ref', '', Refs::get_next(ST_DIMENSION));
 	}
 
 	text_row_ex(_("Name") . ":", 'name', 50, 75);
@@ -251,7 +251,7 @@
 
 	date_row(_("Start Date") . ":", 'date_');
 
-	date_row(_("Date Required By") . ":", 'due_date', '', null, $SysPrefs->default_dimension_required_by());
+	date_row(_("Date Required By") . ":", 'due_date', '', null, SysPrefs::default_dimension_required_by());
 
 	tag_list_row(_("Tags:"), 'dimension_tags', 5, TAG_DIMENSION, true);
 

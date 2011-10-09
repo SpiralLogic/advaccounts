@@ -54,7 +54,7 @@ JS;
 
 	//----------------------------------------------------------------------------------------------
 	function can_process() {
-		global $Refs;
+
 		if (!get_post('customer_id')) {
 			ui_msgs::display_error(_("There is no customer selected."));
 			JS::setfocus('[name="customer_id"]');
@@ -75,7 +75,7 @@ JS;
 			JS::setfocus('[name="DateBanked"]');
 			return false;
 		}
-		if (!$Refs->is_valid($_POST['ref'])) {
+		if (!Refs::is_valid($_POST['ref'])) {
 			ui_msgs::display_error(_("You must enter a reference."));
 			JS::setfocus('[name="ref"]');
 			return false;
@@ -164,7 +164,7 @@ JS;
 	//----------------------------------------------------------------------------------------------
 
 	function read_customer_data() {
-		global $Refs, $customer;
+		global $customer;
 		$sql = "SELECT debtors_master.pymt_discount,
 		credit_status.dissallow_invoices
 		FROM debtors_master, credit_status
@@ -174,7 +174,7 @@ JS;
 		$myrow = db_fetch($result);
 		$_POST['HoldAccount'] = $myrow["dissallow_invoices"];
 		$_POST['pymt_discount'] = 0;
-		$_POST['ref'] = $Refs->get_next(12);
+		$_POST['ref'] = Refs::get_next(12);
 	}
 
 	//----------------------------------------------------------------------------------------------

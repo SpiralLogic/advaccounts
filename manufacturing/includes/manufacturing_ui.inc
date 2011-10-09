@@ -67,7 +67,6 @@
 	//--------------------------------------------------------------------------------------
 
 	function display_wo_requirements($woid, $quantity, $show_qoh = false, $date = null) {
-		global $SysPrefs;
 
 		$result = get_wo_requirements($woid);
 
@@ -103,7 +102,7 @@
 					$qoh = get_qoh_on_date($myrow["stock_id"], $myrow["loc_code"], $date);
 
 				if ($show_qoh && ($myrow["units_req"] * $quantity > $qoh) &&
-				 !$SysPrefs->allow_negative_stock()
+				 !SysPrefs::allow_negative_stock()
 				) {
 					// oops, we don't have enough of one of the component items
 					start_row("class='stockmankobg'");

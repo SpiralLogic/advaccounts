@@ -14,7 +14,6 @@
 	// if src_docs!=0 => credit invoice else credit note
 	//
 	function write_credit_note($credit_note, $write_off_acc) {
-		global $Refs;
 
 		$credit_invoice = is_array($credit_note->src_docs) ?
 		 reset(array_keys($credit_note->src_docs)) : $credit_note->src_docs;
@@ -174,7 +173,7 @@
 		add_comments(ST_CUSTCREDIT, $credit_no, $credit_date, $credit_note->Comments);
 
 		if ($trans_no == 0) {
-			$Refs->save(ST_CUSTCREDIT, $credit_no, $credit_note->reference);
+			Refs::save(ST_CUSTCREDIT, $credit_no, $credit_note->reference);
 		}
 
 		commit_transaction();

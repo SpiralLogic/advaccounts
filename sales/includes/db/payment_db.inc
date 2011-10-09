@@ -14,7 +14,6 @@
  */
 	function write_customer_payment($trans_no, $customer_id, $branch_id, $bank_account,
 																	$date_, $ref, $amount, $discount, $memo_, $rate = 0, $charge = 0, $tax = 0) {
-		global $Refs;
 
 		begin_transaction();
 
@@ -85,7 +84,7 @@
 
 		add_comments(ST_CUSTPAYMENT, $payment_no, $date_, $memo_);
 
-		$Refs->save(ST_CUSTPAYMENT, $payment_no, $ref);
+		Refs::save(ST_CUSTPAYMENT, $payment_no, $ref);
 
 		commit_transaction();
 

@@ -47,8 +47,8 @@
 	//---------------------------------------------------------------------------------------------------
 
 	function display_po_header(&$order) {
-		global $Ajax, $Refs;
 
+		$Ajax = Ajax::instance();
 		$editable = ($order->order_no == 0);
 
 		start_outer_table("width=90% " . Config::get('tables.style2'));
@@ -89,14 +89,13 @@
 		}
 
 		if ($editable) {
-			ref_row(_("Purchase Order #:"), 'ref', '', $Refs->get_next(ST_PURCHORDER));
+			ref_row(_("Purchase Order #:"), 'ref', '', Refs::get_next(ST_PURCHORDER));
 		} else {
 			hidden('ref', $order->reference);
 			label_row(_("Purchase Order #:"), $order->reference);
 		}
 		sales_persons_list_row(_("Sales Person:"), 'salesman', $order->salesman);
 		table_section(2);
-
 
 		date_row(_("Order Date:"), 'OrderDate', '', true, 0, 0, 0, null, true);
 		if (isset($_POST['_OrderDate_changed'])) {
@@ -136,7 +135,7 @@
 	//---------------------------------------------------------------------------------------------------
 
 	function display_po_items(&$order, $editable = true) {
-		global $Ajax;
+		$Ajax = Ajax::instance();
 
 		ui_msgs::display_heading(_("Order Items"));
 
@@ -248,7 +247,7 @@
 	//--------------------------------------------------------------------------------
 
 	function po_item_controls(&$order, $stock_id = null) {
-		global $Ajax;
+		$Ajax = Ajax::instance();
 		start_row();
 		$dec2 = 0;
 		$id = find_submit('Edit');

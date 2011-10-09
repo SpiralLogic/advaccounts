@@ -13,7 +13,6 @@
 	//	Add or update Sales Invoice
 	//
 	function write_sales_invoice(&$invoice) {
-		global $Refs;
 
 		$trans_no = $invoice->trans_no;
 		if (is_array($trans_no))
@@ -170,7 +169,7 @@
 		add_comments(10, $invoice_no, $date_, $invoice->Comments);
 
 		if ($trans_no == 0) {
-			$Refs->save(ST_SALESINVOICE, $invoice_no, $invoice->reference);
+			Refs::save(ST_SALESINVOICE, $invoice_no, $invoice->reference);
 		}
 		commit_transaction();
 

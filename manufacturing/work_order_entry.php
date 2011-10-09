@@ -106,10 +106,10 @@
 	}
 
 	function can_process() {
-		global $selected_id, $SysPrefs, $Refs;
+		global $selected_id;
 
 		if (!isset($selected_id)) {
-			if (!$Refs->is_valid($_POST['wo_ref'])) {
+			if (!Refs::is_valid($_POST['wo_ref'])) {
 				ui_msgs::display_error(_("You must enter a reference."));
 				ui_view::set_focus('wo_ref');
 				return false;
@@ -162,7 +162,7 @@
 				return false;
 			}
 
-			if (!$SysPrefs->allow_negative_stock()) {
+			if (!SysPrefs::allow_negative_stock()) {
 				if ($_POST['type'] == WO_ASSEMBLY) {
 					// check bom if assembling
 					$result = get_bom(Input::post('stock_id'));
@@ -341,7 +341,7 @@
 	else
 	{
 		$_POST['units_issued'] = $_POST['released'] = 0;
-		ref_row(_("Reference:"), 'wo_ref', '', $Refs->get_next(ST_WORKORDER));
+		ref_row(_("Reference:"), 'wo_ref', '', Refs::get_next(ST_WORKORDER));
 
 		wo_types_list_row(_("Type:"), 'type', null);
 	}
@@ -373,7 +373,7 @@
 		if ($_POST['released'])
 			label_row(_("Quantity Manufactured:"), number_format($_POST['units_issued'], get_qty_dec(Input::post('stock_id'))));
 		date_row(_("Date") . ":", 'date_', '', true);
-		date_row(_("Date Required By") . ":", 'RequDate', '', null, $SysPrefs->default_wo_required_by());
+		date_row(_("Date Required By") . ":", 'RequDate', '', null, SysPrefs::default_wo_required_by());
 	}
 	else
 	{

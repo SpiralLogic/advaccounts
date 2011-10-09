@@ -12,7 +12,7 @@
 	//---------------------------------------------------------------------------------------------------
 
 	function display_grn_summary(&$po, $editable = false) {
-		global $Refs;
+
 		start_table(Config::get('tables.style2') . " width=90%");
 
 		start_row();
@@ -31,7 +31,7 @@
 		start_row();
 		if ($editable) {
 			if (!isset($_POST['ref']))
-				$_POST['ref'] = $Refs->get_next(ST_SUPPRECEIVE);
+				$_POST['ref'] = Refs::get_next(ST_SUPPRECEIVE);
 			ref_cells(_("Reference"), 'ref', '', null, "class='label'");
 
 			if (!isset($_POST['Location']))

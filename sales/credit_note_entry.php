@@ -80,7 +80,7 @@
 	//--------------------------------------------------------------------------------
 
 	function line_start_focus() {
-		global $Ajax;
+		$Ajax = Ajax::instance();
 		$Ajax->activate('items_table');
 		ui_view::set_focus('_stock_id_edit');
 	}
@@ -129,14 +129,13 @@
 	//-----------------------------------------------------------------------------
 
 	function can_process() {
-		global $Refs;
 
 		$input_error = 0;
 
 		if ($_SESSION['Items']->count_items() == 0 && (!check_num('ChargeFreightCost', 0)))
 			return false;
 		if ($_SESSION['Items']->trans_no == 0) {
-			if (!$Refs->is_valid($_POST['ref'])) {
+			if (!Refs::is_valid($_POST['ref'])) {
 				ui_msgs::display_error(_("You must enter a reference."));
 				ui_view::set_focus('ref');
 				$input_error = 1;

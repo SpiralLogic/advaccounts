@@ -16,7 +16,7 @@
 	include_once(APP_PATH . "sales/includes/db/sales_types_db.inc");
 	include_once(APP_PATH . "reporting/includes/reporting.inc");
 	if (!isset($_SESSION['remote_order'])) {
-		global $Refs;
+
 		processing_start();
 		$_SESSION['remote_order'] = new Cart(ST_SALESORDER, array(0));
 		copy_from_cart($_SESSION['remote_order']);

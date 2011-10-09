@@ -17,8 +17,14 @@
 
 		var $aCommands = array();
 		var $triggers = array();
+		protected static $_instance = null;
 
-		function Ajax() {
+		public static function instance() {
+			if (static::$_instance === null) static::$_instance = new static;
+			return static::$_instance;
+		}
+
+		function __construct() {
 			$this->JsHttpRequest($_SESSION['language']->encoding);
 		}
 
@@ -153,7 +159,7 @@
 		}
 
 		static function in_ajax() {
-			global $Ajax;
+			$Ajax = Ajax::instance();
 			return $Ajax->isActive();
 		}
 

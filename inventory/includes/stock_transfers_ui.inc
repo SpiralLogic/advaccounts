@@ -22,7 +22,6 @@
 	//--------------------------------------------------------------------------------
 
 	function display_order_header(&$order) {
-		global $Refs;
 
 		start_outer_table("width=70%  " . Config::get('tables.style'));
 
@@ -33,7 +32,7 @@
 
 		table_section(2, "33%");
 
-		ref_row(_("Reference:"), 'ref', '', $Refs->get_next(ST_LOCTRANSFER));
+		ref_row(_("Reference:"), 'ref', '', Refs::get_next(ST_LOCTRANSFER));
 
 		date_row(_("Date:"), 'AdjDate', '', true);
 
@@ -91,7 +90,7 @@
 	//---------------------------------------------------------------------------------
 
 	function transfer_edit_item_controls(&$order, $line_no = -1) {
-		global $Ajax;
+		$Ajax = Ajax::instance();
 		start_row();
 
 		$id = find_submit('Edit');

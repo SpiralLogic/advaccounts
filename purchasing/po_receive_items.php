@@ -128,7 +128,6 @@
 	//--------------------------------------------------------------------------------------------------
 
 	function can_process() {
-		global $SysPrefs, $Refs;
 
 		if (count($_SESSION['PO']->line_items) <= 0) {
 			ui_msgs::display_error(_("There is nothing to process. Please enter valid quantities greater than zero."));
@@ -145,7 +144,7 @@
 			ui_view::set_focus('freight');
 			return false;
 		}
-		if (!$Refs->is_valid($_POST['ref'])) {
+		if (!Refs::is_valid($_POST['ref'])) {
 			ui_msgs::display_error(_("You must enter a reference."));
 			ui_view::set_focus('ref');
 			return false;
@@ -155,7 +154,7 @@
 			//		ui_msgs::display_error(_("The entered reference is already in use."));
 			//		ui_view::set_focus('ref');
 			//		return false;
-			$_POST['ref'] = $Refs->get_next(ST_SUPPRECEIVE);
+			$_POST['ref'] = Refs::get_next(ST_SUPPRECEIVE);
 		}
 
 		$something_received = 0;
@@ -169,7 +168,7 @@
 		// Check whether trying to deliver more items than are recorded on the actual purchase order (+ overreceive allowance)
 		$delivery_qty_too_large = 0;
 		foreach ($_SESSION['PO']->line_items as $order_line) {
-			if ($order_line->receive_qty + $order_line->qty_received > $order_line->quantity * (1 + ($SysPrefs->over_receive_allowance() / 100))) {
+			if ($order_line->receive_qty + $order_line->qty_received > $order_line->quantity * (1 + (SysPrefs::over_receive_allowance() / 100))) {
 				$delivery_qty_too_large = 1;
 				break;
 			}
@@ -179,7 +178,7 @@
 			ui_msgs::display_error(_("There is nothing to process. Please enter valid quantities greater than zero."));
 			return false;
 		} elseif ($delivery_qty_too_large == 1) {
-			ui_msgs::display_error(_("Entered quantities cannot be greater than the quantity entered on the purchase order including the allowed over-receive percentage") . " (" . $SysPrefs->over_receive_allowance() . "%)." . "<br>" . _("Modify the ordered items on the purchase order if you wish to increase the quantities."));
+			ui_msgs::display_error(_("Entered quantities cannot be greater than the quantity entered on the purchase order including the allowed over-receive percentage") . " (" . SysPrefs::over_receive_allowance() . "%)." . "<br>" . _("Modify the ordered items on the purchase order if you wish to increase the quantities."));
 			return false;
 		}
 
@@ -189,7 +188,7 @@
 	//--------------------------------------------------------------------------------------------------
 
 	function process_receive_po() {
-		global $Ajax;
+		$Ajax = Ajax::instance();
 
 		if (!can_process()) {
 			return;

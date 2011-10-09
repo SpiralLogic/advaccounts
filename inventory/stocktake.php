@@ -44,7 +44,7 @@
 	//--------------------------------------------------------------------------------------------------
 
 	function line_start_focus() {
-		global $Ajax;
+		$Ajax = Ajax::instance();
 
 		$Ajax->activate('items_table');
 		ui_view::set_focus('_stock_id_edit');
@@ -70,7 +70,6 @@
 	//-----------------------------------------------------------------------------------------------
 
 	function can_process() {
-		global $Refs;
 
 		$adj = &$_SESSION['adj_items'];
 
@@ -79,7 +78,7 @@
 			ui_view::set_focus('stock_id');
 			return false;
 		}
-		if (!$Refs->is_valid($_POST['ref'])) {
+		if (!Refs::is_valid($_POST['ref'])) {
 			ui_msgs::display_error(_("You must enter a reference."));
 			ui_view::set_focus('ref');
 			return false;

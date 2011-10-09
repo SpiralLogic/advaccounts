@@ -13,7 +13,6 @@
 	// insert/update sales delivery
 	//
 	function write_sales_delivery(&$delivery, $bo_policy) {
-		global $Refs;
 
 		$trans_no = $delivery->trans_no;
 		if (is_array($trans_no)) $trans_no = key($trans_no);
@@ -134,7 +133,7 @@
 		add_comments(ST_CUSTDELIVERY, $delivery_no, $delivery->document_date, $delivery->Comments);
 
 		if ($trans_no == 0) {
-			$Refs->save(ST_CUSTDELIVERY, $delivery_no, $delivery->reference);
+			Refs::save(ST_CUSTDELIVERY, $delivery_no, $delivery->reference);
 		}
 
 		commit_transaction();

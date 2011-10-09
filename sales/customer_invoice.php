@@ -111,7 +111,7 @@
 		$dn->trans_type = ST_SALESINVOICE;
 		$dn->src_docs = $dn->trans_no;
 		$dn->trans_no = 0;
-		$dn->reference = $Refs->get_next(ST_SALESINVOICE);
+		$dn->reference = Refs::get_next(ST_SALESINVOICE);
 		$dn->due_date = get_invoice_duedate($dn->customer_id, $dn->document_date);
 		$_SESSION['Items'] = $dn;
 		copy_from_cart();
@@ -223,7 +223,7 @@
 
 	//-----------------------------------------------------------------------------
 	function check_data() {
-		global $Refs;
+
 		if (!isset($_POST['InvoiceDate']) || !Dates::is_date($_POST['InvoiceDate'])) {
 			ui_msgs::display_error(_("The entered invoice date is invalid."));
 			ui_view::set_focus('InvoiceDate');
@@ -240,7 +240,7 @@
 			return false;
 		}
 		if ($_SESSION['Items']->trans_no == 0) {
-			if (!$Refs->is_valid($_POST['ref'])) {
+			if (!Refs::is_valid($_POST['ref'])) {
 				ui_msgs::display_error(_("You must enter a reference."));
 				ui_view::set_focus('ref');
 				return false;

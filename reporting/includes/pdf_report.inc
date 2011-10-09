@@ -838,7 +838,7 @@
 					$printer = get_report_printer(user_print_profile(), $_POST['REP_ID']);
 					if ($printer == false) {
 						if (Ajax::in_ajax()) {
-							global $Ajax;
+							$Ajax = Ajax::instance();
 							if (user_rep_popup()) $Ajax->popup($fname); // when embeded pdf viewer used
 							else
 								$Ajax->redirect($fname); // otherwise use faster method

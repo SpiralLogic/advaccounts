@@ -54,7 +54,7 @@
 	}
 	//--------------------------------------------------------------------------------------------------
 	function clear_fields() {
-		global $Ajax;
+		$Ajax = Ajax::instance();
 		unset($_POST['gl_code']);
 		unset($_POST['dimension_id']);
 		unset($_POST['dimension2_id']);
@@ -114,12 +114,12 @@
 	}
 	//------------------------------------------------------------------------------------------------
 	function check_data() {
-		global $Refs;
+
 		if (!$_SESSION['supp_trans']->is_valid_trans_to_post()) {
 			ui_msgs::display_error(_("The invoice cannot be processed because the there are no items or values on the invoice.  Invoices are expected to have a charge."));
 			return false;
 		}
-		if (!$Refs->is_valid($_SESSION['supp_trans']->reference)) {
+		if (!Refs::is_valid($_SESSION['supp_trans']->reference)) {
 			ui_msgs::display_error(_("You must enter an invoice reference."));
 			ui_view::set_focus('reference');
 			return false;
@@ -128,9 +128,9 @@
 			//ui_msgs::display_error(_("The entered reference is already in use."));
 			//ui_view::set_focus('reference');
 			//return false;
-			$_SESSION['supp_trans']->reference = $Refs->get_next(ST_SUPPINVOICE);
+			$_SESSION['supp_trans']->reference = Refs::get_next(ST_SUPPINVOICE);
 		}
-		if (!$Refs->is_valid($_SESSION['supp_trans']->supp_reference)) {
+		if (!Refs::is_valid($_SESSION['supp_trans']->supp_reference)) {
 			ui_msgs::display_error(_("You must enter a supplier's invoice reference."));
 			ui_view::set_focus('supp_reference');
 			return false;
@@ -193,7 +193,7 @@
 		handle_commit_invoice();
 	}
 	function check_item_data($n) {
-		global $SysPrefs;
+
 		if (!check_num('this_quantity_inv' . $n, 0) || input_num('this_quantity_inv' . $n) == 0) {
 			ui_msgs::display_error(_("The quantity to invoice must be numeric and greater than zero."));
 			ui_view::set_focus('this_quantity_inv' . $n);
@@ -209,7 +209,7 @@
 			ui_view::set_focus('ExpPrice' . $n);
 			return false;
 		}
-		$margin = $SysPrefs->over_charge_allowance();
+		$margin = SysPrefs::over_charge_allowance();
 		if (Config::get('valid.charged_to_delivered.price') == True && $margin != 0) {
 			if ($_POST['order_price' . $n] != input_num('ChgPrice' . $n)) {
 				if ($_POST['order_price' . $n] == 0 || input_num('ChgPrice' . $n) / $_POST['order_price' . $n] > (1 + ($margin / 100))) {

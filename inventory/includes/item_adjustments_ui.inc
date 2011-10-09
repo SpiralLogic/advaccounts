@@ -22,13 +22,12 @@
 	//--------------------------------------------------------------------------------
 
 	function display_order_header(&$order) {
-		global $Refs;
 
 		start_outer_table("width=70% " . Config::get('tables.style2')); // outer table
 		table_section(1);
 
 		locations_list_row(_("Location:"), 'StockLocation', null);
-		ref_row(_("Reference:"), 'ref', '', $Refs->get_next(ST_INVADJUST));
+		ref_row(_("Reference:"), 'ref', '', Refs::get_next(ST_INVADJUST));
 
 		table_section(2, "33%");
 
@@ -102,7 +101,7 @@
 	//---------------------------------------------------------------------------------
 
 	function adjustment_edit_item_controls(&$order, $line_no = -1) {
-		global $Ajax;
+		$Ajax = Ajax::instance();
 		start_row();
 
 		$dec2 = 0;

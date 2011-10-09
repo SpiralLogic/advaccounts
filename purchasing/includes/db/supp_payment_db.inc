@@ -11,7 +11,6 @@
 	 ***********************************************************************/
 	function add_supp_payment($supplier_id, $date_, $bank_account,
 														$amount, $discount, $ref, $memo_, $rate = 0, $charge = 0) {
-		global $Refs;
 
 		begin_transaction();
 
@@ -74,7 +73,7 @@
 
 		add_comments($trans_type, $payment_id, $date_, $memo_);
 
-		$Refs->save($trans_type, $payment_id, $ref);
+		Refs::save($trans_type, $payment_id, $ref);
 
 		commit_transaction();
 

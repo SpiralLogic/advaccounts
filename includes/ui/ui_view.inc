@@ -231,7 +231,7 @@
 		// gets it form ECB and stores in local database.
 		//
 		static function exchange_rate_display($from_currency, $to_currency, $date_, $edit_rate = false) {
-			global $Ajax;
+			$Ajax = Ajax::instance();
 			if ($from_currency != $to_currency) {
 				$comp_currency = Banking::get_company_currency();
 				if ($from_currency == $comp_currency) {
@@ -676,7 +676,7 @@
 			 If $form<0 $name is element id.
 		 */
 		static function set_focus($name, $form_no = 0) {
-			global $Ajax;
+			$Ajax = Ajax::instance();
 			$Ajax->addFocus(true, $name);
 			$_POST['_focus'] = $name;
 		}

@@ -19,7 +19,8 @@
 	simple_page_mode2(true);
 
 	function simple_page_mode2($numeric_id = true) {
-		global $Ajax, $Mode2, $selected_id2;
+		global $Mode2, $selected_id2;
+		$Ajax = Ajax::instance();
 
 		$default = $numeric_id ? -1 : '';
 		$selected_id2 = get_post('selected_id2', $default);

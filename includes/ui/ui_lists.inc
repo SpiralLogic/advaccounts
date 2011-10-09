@@ -29,7 +29,7 @@
 	 */
 
 	function combo_input($name, $selected_id = null, $sql, $valfield, $namefield, $options = null) {
-		global $Ajax;
+		$Ajax = Ajax::instance();
 		$opts = array( // default options
 			'where' => array(), // additional constraints
 			'order' => $namefield, // list sort order
@@ -285,7 +285,7 @@
 	//	$items is array of options 'value' => 'description'
 	//	Options is reduced set of combo_selector options and is merged with defaults.
 	function array_selector($name, $selected_id, $items, $options = null) {
-		global $Ajax;
+		$Ajax = Ajax::instance();
 		$opts = array( // default options
 			'spec_option' => false, // option text or false
 			'spec_id' => 0, // option id

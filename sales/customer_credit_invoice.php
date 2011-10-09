@@ -75,7 +75,6 @@
 	//-----------------------------------------------------------------------------
 
 	function can_process() {
-		global $Refs;
 
 		if (!Dates::is_date($_POST['CreditDate'])) {
 			ui_msgs::display_error(_("The entered date is invalid."));
@@ -90,7 +89,7 @@
 		}
 
 		if ($_SESSION['Items']->trans_no == 0) {
-			if (!$Refs->is_valid($_POST['ref'])) {
+			if (!Refs::is_valid($_POST['ref'])) {
 				ui_msgs::display_error(_("You must enter a reference."));
 				;
 				ui_view::set_focus('ref');
@@ -128,7 +127,7 @@
 		$ci->src_date = $ci->document_date;
 		$ci->trans_no = 0;
 		$ci->document_date = Dates::new_doc_date();
-		$ci->reference = $Refs->get_next(ST_CUSTCREDIT);
+		$ci->reference = Refs::get_next(ST_CUSTCREDIT);
 
 		for ($line_no = 0; $line_no < count($ci->line_items); $line_no++) {
 			$ci->line_items[$line_no]->qty_dispatched = '0';
@@ -249,7 +248,7 @@
 		start_row();
 
 		//	if (!isset($_POST['ref']))
-		//		$_POST['ref'] = $Refs->get_next(11);
+		//		$_POST['ref'] = Refs::get_next(11);
 
 		if ($_SESSION['Items']->trans_no == 0) {
 			ref_cells(_("Reference"), 'ref', '', null, "class='tableheader2'");
@@ -348,7 +347,7 @@
 
 	//-----------------------------------------------------------------------------
 	function display_credit_options() {
-		global $Ajax;
+		$Ajax = Ajax::instance();
 		echo "<br>";
 
 		if (isset($_POST['_CreditType_update']))

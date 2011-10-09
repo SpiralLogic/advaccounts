@@ -14,7 +14,7 @@
  */
 	function write_customer_refund($trans_no, $customer_id, $branch_id, $bank_account,
 																 $date_, $ref, $amount, $discount, $memo_, $rate = 0, $charge = 0) {
-		global $Refs;
+
 		$amount = $amount * -1;
 		begin_transaction();
 
@@ -73,7 +73,7 @@
 
 		add_comments(ST_CUSTREFUND, $refund_no, $date_, $memo_);
 
-		$Refs->save(ST_CUSTREFUND, $refund_no, $ref);
+		Refs::save(ST_CUSTREFUND, $refund_no, $ref);
 
 		commit_transaction();
 

@@ -270,14 +270,14 @@
 
 	//--------------------------------------------------------------------------------
 	function line_start_focus() {
-		global $Ajax;
+		$Ajax = Ajax::instance();
 		$Ajax->activate('items_table');
 		ui_view::set_focus('_stock_id_edit');
 	}
 
 	//--------------------------------------------------------------------------------
 	function can_process() {
-		global $Refs;
+
 		if (!get_post('customer_id')) {
 			ui_msgs::display_error(_("There is no customer selected."));
 			ui_view::set_focus('customer_id');
@@ -353,7 +353,7 @@
 			ui_view::set_focus('name');
 			return false;
 		}
-		if (!$Refs->is_valid($_POST['ref'])) {
+		if (!Refs::is_valid($_POST['ref'])) {
 			ui_msgs::display_error(_("You must enter a reference."));
 			ui_view::set_focus('ref');
 			return false;
@@ -362,7 +362,7 @@
 			//ui_msgs::display_error(_("The entered reference is already in use."));
 			//ui_view::set_focus('ref');
 			//return false;
-			$_POST['ref'] = $Refs->get_next($_SESSION['Items']->trans_type);
+			$_POST['ref'] = Refs::get_next($_SESSION['Items']->trans_type);
 		}
 
 		return true;
@@ -411,7 +411,7 @@
 	}
 	//--------------------------------------------------------------------------------
 	function check_item_data() {
-		global $SysPrefs;
+
 		if (!$_SESSION["wa_current_user"]->can_access('SA_SALESCREDIT') && (!check_num('qty', 0) || !check_num('Disc', 0, 100))) {
 			ui_msgs::display_error(_("The item could not be updated because you are attempting to set the quantity ordered to less than 0, or the discount percent to more than 100."));
 			ui_view::set_focus('qty');
@@ -429,7 +429,7 @@
 			ui_msgs::display_error(_("You attempting to make the quantity ordered a quantity less than has already been delivered. The quantity delivered cannot be modified retrospectively."));
 			return false;
 		} // Joe Hunt added 2008-09-22 -------------------------
-		elseif ($_SESSION['Items']->trans_type != ST_SALESORDER && $_SESSION['Items']->trans_type != ST_SALESQUOTE && !$SysPrefs->allow_negative_stock() && is_inventory_item($_POST['stock_id'])) {
+		elseif ($_SESSION['Items']->trans_type != ST_SALESORDER && $_SESSION['Items']->trans_type != ST_SALESQUOTE && !SysPrefs::allow_negative_stock() && is_inventory_item($_POST['stock_id'])) {
 			$qoh = get_qoh_on_date($_POST['stock_id'], $_POST['Location'], $_POST['OrderDate']);
 			if (input_num('qty') > $qoh) {
 				$stock = get_item($_POST['stock_id']);
@@ -473,7 +473,7 @@
 
 	//--------------------------------------------------------------------------------
 	function handle_cancel_order() {
-		global $Ajax;
+		$Ajax = Ajax::instance();
 		if ($_SESSION['Items']->trans_type == ST_CUSTDELIVERY) {
 			ui_msgs::display_notification(_("Direct delivery entry has been cancelled as requested."), 1);
 			submenu_option(_("Enter a New Sales Delivery"), "/sales/sales_order_entry.php?NewDelivery=1");
@@ -508,7 +508,7 @@
 
 	//------------------------------------------------------- -------------------------
 	function create_cart($type, $trans_no) {
-		global $Refs;
+
 		processing_start();
 		$doc_type = $type;
 		if (isset($_GET['NewQuoteToSalesOrder'])) {
@@ -516,7 +516,7 @@
 			$doc = new Cart(ST_SALESQUOTE, $trans_no);
 			$doc->trans_no = 0;
 			$doc->trans_type = ST_SALESORDER;
-			$doc->reference = $Refs->get_next($doc->trans_type);
+			$doc->reference = Refs::get_next($doc->trans_type);
 			$doc->document_date = $doc->due_date = Dates::new_doc_date();
 			$doc->Comments = $doc->Comments . "\n\n" . _("Sales Quotation") . " # " . $trans_no;
 			$_SESSION['Items'] = $doc;
@@ -540,7 +540,7 @@
 			else {
 				$doc->due_date = $doc->document_date;
 			}
-			$doc->reference = $Refs->get_next($doc->trans_type);
+			$doc->reference = Refs::get_next($doc->trans_type);
 			//$doc->Comments='';
 			foreach ($doc->line_items as $line_no => $line) {
 				$doc->line_items[$line]->qty_done = 0;

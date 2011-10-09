@@ -13,7 +13,7 @@
 	// Sets local POST value and adds Value to ajax posting if needed
 	//
 	/*function set_post($name, $value, $ajax_trigger=true) {
-		global $Ajax;
+		$Ajax = Ajax::instance();
 
 		$_POST[$name] = $value;
 		if ($ajax_trigger) $Ajax->activate($name);
@@ -41,7 +41,8 @@
 	// Helper function for simple db table editor pages
 	//
 	function simple_page_mode($numeric_id = true) {
-		global $Ajax, $Mode, $selected_id;
+		global $Mode, $selected_id;
+		$Ajax = Ajax::instance();
 
 		$default = $numeric_id ? -1 : '';
 		$selected_id = get_post('selected_id', $default);
@@ -84,7 +85,7 @@
 	//---------------------------------------------------------------------------------
 
 	function hidden($name, $value = null, $echo = true) {
-		global $Ajax;
+		$Ajax = Ajax::instance();
 
 		if ($value === null)
 			$value = get_post($name);
@@ -308,7 +309,7 @@
 	}
 
 	function checkbox($label, $name, $value = null, $submit_on_change = false, $title = false) {
-		global $Ajax;
+		$Ajax = Ajax::instance();
 
 		$str = '';
 
@@ -363,7 +364,7 @@
 	}
 
 	function label_cell($label, $params = "", $id = null) {
-		global $Ajax;
+		$Ajax = Ajax::instance();
 
 		if (!empty($id)) {
 			$params .= " id='$id'";
@@ -441,7 +442,7 @@
 
 	function text_cells($label, $name, $value = null, $size = "", $max = "", $title = false,
 											$labparams = "", $post_label = "", $inparams = "") {
-		global $Ajax;
+		$Ajax = Ajax::instance();
 
 		ui_view::default_focus($name);
 		if ($label != null)
@@ -463,7 +464,7 @@
 
 	function text_cells_ex($label, $name, $size, $max = null, $init = null, $title = null,
 												 $labparams = null, $post_label = null, $submit_on_change = false) {
-		global $Ajax;
+		$Ajax = Ajax::instance();
 
 		ui_view::default_focus($name);
 		if (!isset($_POST[$name]) || $_POST[$name] == "") {
@@ -547,7 +548,7 @@
 	//
 	function date_cells($label, $name, $title = null, $check = null, $inc_days = 0,
 											$inc_months = 0, $inc_years = 0, $params = null, $submit_on_change = false) {
-		global $Ajax;
+		$Ajax = Ajax::instance();
 
 		if (!isset($_POST[$name]) || $_POST[$name] == "") {
 			if ($inc_years == 1001)
@@ -637,7 +638,7 @@
 	}
 
 	function amount_cells_ex($label, $name, $size, $max = null, $init = null, $params = null, $post_label = null, $dec = null, $id = null) {
-		global $Ajax;
+		$Ajax = Ajax::instance();
 
 		if (!isset($dec))
 			$dec = user_price_dec();
@@ -749,7 +750,7 @@
 	//-----------------------------------------------------------------------------------
 
 	function textarea_cells($label, $name, $value, $cols, $rows, $title = null, $params = "") {
-		global $Ajax;
+		$Ajax = Ajax::instance();
 
 		ui_view::default_focus($name);
 		if ($label != null)
@@ -775,7 +776,7 @@
 	//  Also updates database record after status change.
 	//
 	function inactive_control_cell($id, $value, $table, $key) {
-		global $Ajax;
+		$Ajax = Ajax::instance();
 
 		$name = "Inactive" . $id;
 		$value = $value ? 1 : 0;
@@ -807,7 +808,7 @@
 	//	Inserts additional column header when display of inactive records is on.
 	//
 	function inactive_control_column(&$th) {
-		global $Ajax;
+		$Ajax = Ajax::instance();
 
 		if (check_value('show_inactive'))
 			Arr::insert($th, count($th) - 2, _("Inactive"));

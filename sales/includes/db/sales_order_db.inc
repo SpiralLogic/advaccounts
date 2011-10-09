@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 	//----------------------------------------------------------------------------------------
 	function add_sales_order(&$order) {
-		global $Refs;
+
 		begin_transaction();
 		$order_no = get_next_trans_no($order->trans_type);
 		$del_date = Dates::date2sql($order->due_date);
@@ -58,7 +58,7 @@
 			db_query($sql, "order Details Cannot be Added");
 		} /* inserted line items into sales order details */
 		add_audit_trail($order->trans_type, $order_no, $order->document_date);
-		$Refs->save($order->trans_type, $order_no, $order->reference);
+		Refs::save($order->trans_type, $order_no, $order->reference);
 		commit_transaction();
 		if (Config::get('accounts.stock.emailnotify') == 1 && count($st_ids) > 0) {
 			require_once(APP_PATH . "/reporting/includes/class.mail.inc");
@@ -106,7 +106,7 @@
 
 	//----------------------------------------------------------------------------------------
 	function update_sales_order($order) {
-		global $Refs;
+
 		$del_date = Dates::date2sql($order->due_date);
 		$ord_date = Dates::date2sql($order->document_date);
 		$order_no = key($order->trans_no);
@@ -174,8 +174,8 @@
 			db_query($sql, "Old order Cannot be Inserted");
 		} /* inserted line items into sales order details */
 		add_audit_trail($order->trans_type, $order_no, $order->document_date, _("Updated."));
-		$Refs->delete($order->trans_type, $order_no);
-		$Refs->save($order->trans_type, $order_no, $order->reference);
+		Refs::delete($order->trans_type, $order_no);
+		Refs::save($order->trans_type, $order_no, $order->reference);
 		commit_transaction();
 		if (Config::get('accounts.stock.emailnotify') == 1 && count($st_ids) > 0) {
 			require_once(APP_PATH . "/reporting/includes/class.mail.inc");

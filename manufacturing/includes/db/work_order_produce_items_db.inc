@@ -10,7 +10,6 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	function work_order_produce($woid, $ref, $quantity, $date_, $memo_, $close_wo) {
-		global $Refs;
 
 		begin_transaction();
 
@@ -52,7 +51,7 @@
 		if ($memo_)
 			add_comments(ST_MANURECEIVE, $id, $date_, $memo_);
 
-		$Refs->save(ST_MANURECEIVE, $id, $ref);
+		Refs::save(ST_MANURECEIVE, $id, $ref);
 		add_audit_trail(ST_MANURECEIVE, $id, $date_, _("Production."));
 
 		commit_transaction();

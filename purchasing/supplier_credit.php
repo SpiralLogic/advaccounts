@@ -59,7 +59,7 @@
 	}
 
 	function clear_fields() {
-		global $Ajax;
+		$Ajax = Ajax::instance();
 
 		unset($_POST['gl_code']);
 		unset($_POST['dimension_id']);
@@ -120,7 +120,7 @@
 	//---------------------------------------------------------------------------------------------------
 
 	function check_data() {
-		global $total_grn_value, $total_gl_value, $Refs;
+		global $total_grn_value, $total_gl_value;
 
 		if (!$_SESSION['supp_trans']->is_valid_trans_to_post()) {
 			ui_msgs::display_error(_("The credit note cannot be processed because the there are no items or values on the invoice.  Credit notes are expected to have a charge."));
@@ -128,7 +128,7 @@
 			return false;
 		}
 
-		if (!$Refs->is_valid($_SESSION['supp_trans']->reference)) {
+		if (!Refs::is_valid($_SESSION['supp_trans']->reference)) {
 			ui_msgs::display_error(_("You must enter an credit note reference."));
 			ui_view::set_focus('reference');
 			return false;
@@ -140,7 +140,7 @@
 			return false;
 		}
 
-		if (!$Refs->is_valid($_SESSION['supp_trans']->supp_reference)) {
+		if (!Refs::is_valid($_SESSION['supp_trans']->supp_reference)) {
 			ui_msgs::display_error(_("You must enter a supplier's credit note reference."));
 			ui_view::set_focus('supp_reference');
 			return false;

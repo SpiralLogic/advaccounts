@@ -42,7 +42,7 @@
 
 	//--------------------------------------------------------------------------------------------------
 	function line_start_focus() {
-		global $Ajax;
+		$Ajax = Ajax::instance();
 
 		$Ajax->activate('items_table');
 		ui_view::set_focus('_code_id_edit');
@@ -117,7 +117,7 @@
 			$input_error = 1;
 		}
 
-		if (!$Refs->is_valid($_POST['ref'])) {
+		if (!Refs::is_valid($_POST['ref'])) {
 			ui_msgs::display_error(_("You must enter a reference."));
 			ui_view::set_focus('ref');
 			$input_error = 1;

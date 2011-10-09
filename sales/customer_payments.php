@@ -73,7 +73,6 @@
 	//----------------------------------------------------------------------------------------------
 
 	function can_process() {
-		global $Refs;
 
 		if (!get_post('customer_id')) {
 			ui_msgs::display_error(_("There is no customer selected."));
@@ -98,7 +97,7 @@
 			return false;
 		}
 
-		if (!$Refs->is_valid($_POST['ref'])) {
+		if (!Refs::is_valid($_POST['ref'])) {
 			ui_msgs::display_error(_("You must enter a reference."));
 			ui_view::set_focus('ref');
 			return false;
@@ -214,13 +213,12 @@
 	//----------------------------------------------------------------------------------------------
 
 	function read_customer_data() {
-		global $Refs;
 
 		$myrow = get_customer_habit($_POST['customer_id']);
 
 		$_POST['HoldAccount'] = $myrow["dissallow_invoices"];
 		$_POST['pymt_discount'] = $myrow["pymt_discount"];
-		$_POST['ref'] = $Refs->get_next(ST_CUSTPAYMENT);
+		$_POST['ref'] = Refs::get_next(ST_CUSTPAYMENT);
 	}
 
 	//----------------------------------------------------------------------------------------------

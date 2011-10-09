@@ -300,7 +300,6 @@
 	//--------------------------------------------------------------------------------
 
 	function check_allocations() {
-		global $SysPrefs;
 
 		$total_allocated = 0;
 
@@ -330,7 +329,7 @@
 		if (in_array($_SESSION['alloc']->type, array(ST_BANKPAYMENT, ST_SUPPCREDIT, ST_SUPPAYMENT)))
 			$amount = -$amount;
 
-		if ($total_allocated - ($amount + input_num('discount')) > $SysPrefs->allocation_settled_allowance()) {
+		if ($total_allocated - ($amount + input_num('discount')) > SysPrefs::allocation_settled_allowance()) {
 			ui_msgs::display_error(_("These allocations cannot be processed because the amount allocated is more than the total amount left to allocate."));
 			return false;
 		}
@@ -339,7 +338,7 @@
 	}
 
 	function create_miscorder($customer, $branch, $memo, $ref, $amount, $discount = 0) {
-		global $Refs;
+
 		processing_start();
 		$type = ST_SALESINVOICE;
 		$doc = new Cart(ST_SALESINVOICE, 0);

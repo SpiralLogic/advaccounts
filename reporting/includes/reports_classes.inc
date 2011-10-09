@@ -29,7 +29,7 @@
 		}
 
 		function getDisplay($class = null) {
-			global $Ajax;
+			$Ajax = Ajax::instance();
 
 			$temp = array_values($this->ar_classes);
 			$display_class = $class == null ? $temp[0] : $this->ar_classes[$class];

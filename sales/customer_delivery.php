@@ -97,7 +97,7 @@
 		$ord->src_docs = $ord->trans_no;
 		$ord->order_no = key($ord->trans_no);
 		$ord->trans_no = 0;
-		$ord->reference = $Refs->get_next(ST_CUSTDELIVERY);
+		$ord->reference = Refs::get_next(ST_CUSTDELIVERY);
 		$ord->document_date = Dates::new_doc_date();
 		$_SESSION['Items'] = $ord;
 		copy_from_cart();
@@ -141,7 +141,6 @@
 	//-----------------------------------------------------------------------------
 
 	function check_data() {
-		global $Refs;
 
 		if (!isset($_POST['DispatchDate']) || !Dates::is_date($_POST['DispatchDate'])) {
 			ui_msgs::display_error(_("The entered date of delivery is invalid."));
@@ -162,7 +161,7 @@
 		}
 
 		if ($_SESSION['Items']->trans_no == 0) {
-			if (!$Refs->is_valid($_POST['ref'])) {
+			if (!Refs::is_valid($_POST['ref'])) {
 				ui_msgs::display_error(_("You must enter a reference."));
 				ui_view::set_focus('ref');
 				return false;
@@ -267,9 +266,8 @@
 	//------------------------------------------------------------------------------
 
 	function check_qoh() {
-		global $SysPrefs;
 
-		if (!$SysPrefs->allow_negative_stock()) {
+		if (!SysPrefs::allow_negative_stock()) {
 			foreach ($_SESSION['Items']->line_items as $itm) {
 
 				if ($itm->qty_dispatched && has_stock_holding($itm->mb_flag)) {
@@ -331,7 +329,7 @@
 	start_row();
 
 	//if (!isset($_POST['ref']))
-	//	$_POST['ref'] = $Refs->get_next(ST_CUSTDELIVERY);
+	//	$_POST['ref'] = Refs::get_next(ST_CUSTDELIVERY);
 
 	if ($_SESSION['Items']->trans_no == 0) {
 		ref_cells(_("Reference"), 'ref', '', null, "class='tableheader2'");
@@ -413,7 +411,7 @@
 		}
 		// if it's a non-stock item (eg. service) don't show qoh
 		$show_qoh = true;
-		if ($SysPrefs->allow_negative_stock() || !has_stock_holding($ln_itm->mb_flag) ||
+		if (SysPrefs::allow_negative_stock() || !has_stock_holding($ln_itm->mb_flag) ||
 		 $ln_itm->qty_dispatched == 0
 		) {
 			$show_qoh = false;

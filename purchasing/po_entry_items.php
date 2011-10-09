@@ -79,7 +79,7 @@
 
 	//--------------------------------------------------------------------------------------------------
 	function line_start_focus() {
-		global $Ajax;
+		$Ajax = Ajax::instance();
 		$Ajax->activate('items_table');
 		ui_view::set_focus('_stock_id_edit');
 	}
@@ -216,7 +216,7 @@
 
 	//---------------------------------------------------------------------------------------------------
 	function can_commit() {
-		global $Refs;
+
 		if (!get_post('supplier_id')) {
 			ui_msgs::display_error(_("There is no supplier selected."));
 			ui_view::set_focus('supplier_id');
@@ -247,7 +247,7 @@
 			return false;
 		}
 		if (!$_SESSION['PO']->order_no) {
-			if (!$Refs->is_valid(get_post('ref'))) {
+			if (!Refs::is_valid(get_post('ref'))) {
 				ui_msgs::display_error(_("There is no reference entered for this purchase order."));
 				ui_view::set_focus('ref');
 				return false;
@@ -257,7 +257,7 @@
 				//ui_msgs::display_error(_("The entered reference is already in use."));
 				//ui_view::set_focus('ref');
 				//return false;
-				$_POST['ref'] = $Refs->get_next(ST_PURCHORDER);
+				$_POST['ref'] = Refs::get_next(ST_PURCHORDER);
 			}
 		}
 		return true;

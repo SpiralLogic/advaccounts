@@ -35,7 +35,7 @@
 	 another browser tab.
  */
 	function check_edit_conflicts($cartname = 'Items') {
-		global $Ajax;
+		$Ajax = Ajax::instance();
 
 		if (isset($_POST['cart_id']) && $_POST['cart_id'] != $_SESSION[$cartname]->cart_id) {
 			ui_msgs::display_error(_('This edit session has been abandoned by opening sales document in another browser tab. You cannot edit more than one sales document at once.'));

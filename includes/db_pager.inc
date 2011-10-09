@@ -148,7 +148,7 @@
 		// Query database
 		//
 		function query() {
-			global $Ajax;
+			$Ajax = Ajax::instance();
 
 			$Ajax->activate("_{$this->name}_span");
 			$this->data = array();
@@ -349,7 +349,7 @@
 		//	Set current page in response to user control.
 		//
 		function select_records() {
-			global $Ajax;
+			$Ajax = Ajax::instance();
 
 			$page = find_submit($this->name . '_page_', false);
 			$sort = find_submit($this->name . '_sort_', true);
@@ -413,7 +413,7 @@
 				//				 $row['inactive'], $this->inactive_ctrl['table'],
 				//				 $this->inactive_ctrl['key']);
 
-				global $Ajax;
+				$Ajax = Ajax::instance();
 
 				$key = $this->key ?
 				 $this->key : $this->columns[0]['name']; // TODO - support for complex keys

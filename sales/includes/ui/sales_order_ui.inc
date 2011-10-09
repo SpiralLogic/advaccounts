@@ -128,7 +128,7 @@
 
 	//---------------------------------------------------------------------------------
 	function display_order_summary($title, &$order, $editable_items = false) {
-		global $SysPrefs;
+
 		ui_msgs::display_heading($title);
 		div_start('items_table');
 		if (count($_SESSION['Items']->line_items) > 0) {
@@ -157,7 +157,7 @@
 			$line_discount = round($stock_item->qty_dispatched * $stock_item->price, user_price_dec()) - $line_total;
 			$qoh_msg = '';
 			if (!$editable_items || $id != $line_no) {
-				if (!$SysPrefs->allow_negative_stock() && is_inventory_item($stock_item->stock_id)) {
+				if (!SysPrefs::allow_negative_stock() && is_inventory_item($stock_item->stock_id)) {
 					$qoh = get_qoh_on_date($stock_item->stock_id, $_POST['Location'], $_POST['OrderDate']);
 					if ($stock_item->qty_dispatched > $qoh) {
 						// oops, we don't have enough of one of the component items
@@ -230,7 +230,7 @@ JS;
 		end_table();
 		if ($has_marked) {
 			ui_msgs::display_note(_("Marked items have insufficient quantities in stock as on day of delivery."), 0, 1, "class='stockmankofg'");
-			if ($order->trans_type != 30 && !$SysPrefs->allow_negative_stock()) {
+			if ($order->trans_type != 30 && !SysPrefs::allow_negative_stock()) {
 				ui_msgs::display_error(_("The delivery cannot be processed because there is an insufficient quantity for item:") . '<br>' . $qoh_msg);
 			}
 		}
@@ -239,7 +239,8 @@ JS;
 
 	// ------------------------------------------------------------------------------
 	function display_order_header(&$order, $editable, $date_text, $display_tax_group = false) {
-		global $Ajax, $SysPrefs;
+
+		$Ajax = Ajax::instance();
 		start_outer_table("width=90% " . Config::get('tables.style2'));
 		table_section(1);
 		$customer_error = "";
@@ -364,7 +365,7 @@ JS;
 					$_POST['delivery_date'] = get_invoice_duedate(get_post('customer_id'), get_post('OrderDate'));
 				}
 				else {
-					$_POST['delivery_date'] = Dates::add_days(get_post('OrderDate'), $SysPrefs->default_delivery_required_by());
+					$_POST['delivery_date'] = Dates::add_days(get_post('OrderDate'), SysPrefs::default_delivery_required_by());
 				}
 				$Ajax->activate('items_table');
 				$Ajax->activate('delivery_date');
@@ -409,7 +410,7 @@ JS;
 
 	//--------------------------------------------------------------------------------
 	function sales_order_item_controls(&$order, &$rowcounter, $line_no = -1) {
-		global $Ajax;
+		$Ajax = Ajax::instance();
 		alt_table_row_color($rowcounter);
 		$id = find_submit('Edit');
 		if ($line_no != -1 && $line_no == $id) // edit old line
@@ -467,7 +468,7 @@ JS;
 
 	//--------------------------------------------------------------------------------
 	function display_delivery_details(&$order) {
-		global $Ajax;
+		$Ajax = Ajax::instance();
 		div_start('delivery');
 		if (get_post('cash', 0)) { // Direct payment sale
 			$Ajax->activate('items_table');

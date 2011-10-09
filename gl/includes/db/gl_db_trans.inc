@@ -368,7 +368,6 @@
 	// Write/update journal entries.
 	//
 	function write_journal_entries(&$cart, $reverse, $use_transaction = true) {
-		global $Refs;
 
 		$date_ = $cart->tran_date;
 		$ref = $cart->reference;
@@ -407,10 +406,10 @@
 
 		if ($new) {
 			add_comments($trans_type, $trans_id, $date_, $memo_);
-			$Refs->save($trans_type, $trans_id, $ref);
+			Refs::save($trans_type, $trans_id, $ref);
 		} else {
 			update_comments($trans_type, $trans_id, null, $memo_);
-			$Refs->update($trans_type, $trans_id, $ref);
+			Refs::update($trans_type, $trans_id, $ref);
 		}
 
 		add_audit_trail($trans_type, $trans_id, $date_);
@@ -442,7 +441,7 @@
 
 			add_comments($trans_type, $trans_id_reverse, $reversingDate, $memo_);
 
-			$Refs->save($trans_type, $trans_id_reverse, $ref);
+			Refs::save($trans_type, $trans_id_reverse, $ref);
 			add_audit_trail($trans_type, $trans_id_reverse, $reversingDate);
 		}
 

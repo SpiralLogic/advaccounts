@@ -62,9 +62,9 @@
 	//--------------------------------------------------------------------------------------------------
 
 	function can_process() {
-		global $wo_details, $SysPrefs, $Refs;
+		global $wo_details;
 
-		if (!$Refs->is_valid($_POST['ref'])) {
+		if (!Refs::is_valid($_POST['ref'])) {
 			ui_msgs::display_error(_("You must enter a reference."));
 			ui_view::set_focus('ref');
 			return false;
@@ -100,7 +100,7 @@
 		}
 
 		// if unassembling we need to check the qoh
-		if (($_POST['ProductionType'] == 0) && !$SysPrefs->allow_negative_stock()) {
+		if (($_POST['ProductionType'] == 0) && !SysPrefs::allow_negative_stock()) {
 			$wo_details = get_work_order($_POST['selected_id']);
 
 			$qoh = get_qoh_on_date($wo_details["stock_id"], $wo_details["loc_code"], $_POST['date_']);
@@ -112,7 +112,7 @@
 		}
 
 		// if production we need to check the qoh of the wo requirements
-		if (($_POST['ProductionType'] == 1) && !$SysPrefs->allow_negative_stock()) {
+		if (($_POST['ProductionType'] == 1) && !SysPrefs::allow_negative_stock()) {
 			$err = false;
 			$result = get_wo_requirements($_POST['selected_id']);
 			while ($row = db_fetch($result))
@@ -171,7 +171,7 @@
 	start_table(Config::get('tables.style2'));
 	br();
 
-	ref_row(_("Reference:"), 'ref', '', $Refs->get_next(29));
+	ref_row(_("Reference:"), 'ref', '', Refs::get_next(29));
 
 	if (!isset($_POST['ProductionType']))
 		$_POST['ProductionType'] = 1;

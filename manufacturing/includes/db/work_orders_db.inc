@@ -103,7 +103,6 @@
 
 	function add_work_order($wo_ref, $loc_code, $units_reqd, $stock_id,
 													$type, $date_, $required_by, $memo_, $costs, $cr_acc, $labour, $cr_lab_acc) {
-		global $Refs;
 
 		if (!($type == WO_ADVANCED))
 			return add_work_order_quick($wo_ref, $loc_code, $units_reqd, $stock_id, $type, $date_, $memo_, $costs, $cr_acc, $labour, $cr_lab_acc);
@@ -126,7 +125,7 @@
 
 		add_comments(ST_WORKORDER, $woid, $required_by, $memo_);
 
-		$Refs->save(ST_WORKORDER, $woid, $wo_ref);
+		Refs::save(ST_WORKORDER, $woid, $wo_ref);
 		add_audit_trail(ST_WORKORDER, $woid, $date_);
 
 		commit_transaction();

@@ -46,7 +46,7 @@
 
 	//--------------------------------------------------------------------------------------------------
 	function invoice_header(&$supp_trans) {
-		global $Ajax, $Refs;
+
 		// if vars have been lost, recopy
 		if (!isset($_POST['tran_date'])) {
 			copy_from_trans($supp_trans);
@@ -74,10 +74,10 @@
 			copy_from_trans($supp_trans);
 		}
 		if ($supp_trans->is_invoice) {
-			ref_row(_("Reference:"), 'reference', '', $Refs->get_next(ST_SUPPINVOICE));
+			ref_row(_("Reference:"), 'reference', '', Refs::get_next(ST_SUPPINVOICE));
 		}
 		else {
-			ref_row(_("Reference:"), 'reference', '', $Refs->get_next(ST_SUPPCREDIT));
+			ref_row(_("Reference:"), 'reference', '', Refs::get_next(ST_SUPPCREDIT));
 		}
 		if ($supp_trans->is_invoice && isset($_POST['invoice_no'])) {
 			label_row(_("Supplier's Ref.:"),
@@ -162,7 +162,7 @@
 	//		 = 2 display on view invoice
 	//		 = 3 display on view credit
 	function display_gl_items(&$supp_trans, $mode = 0) {
-		global $Ajax;
+		$Ajax = Ajax::instance();
 		// if displaying in form, and no items, exit
 		if (($mode == 2 || $mode == 3) && count($supp_trans->gl_codes) == 0) {
 			return 0;

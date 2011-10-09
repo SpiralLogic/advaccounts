@@ -60,8 +60,8 @@
 	//--------------------------------------------------------------------------------------------------
 
 	function update_component($kit_code, $selected_item) {
-		global $Mode, $Ajax, $selected_kit;
-
+		global $Mode, $selected_kit;
+		$Ajax = Ajax::instance();
 		if (!check_num('quantity', 0)) {
 			ui_msgs::display_error(_("The quantity entered must be numeric and greater than zero."));
 			ui_view::set_focus('quantity');

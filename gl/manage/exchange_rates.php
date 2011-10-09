@@ -90,8 +90,8 @@
 	//---------------------------------------------------------------------------------------------
 
 	function display_rate_edit() {
-		global $selected_id, $Ajax;
-
+		global $selected_id;
+		$Ajax = Ajax::instance();
 		start_table(Config::get('tables.style2'));
 
 		if ($selected_id != "") {

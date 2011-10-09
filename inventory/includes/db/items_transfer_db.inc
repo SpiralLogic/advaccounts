@@ -12,7 +12,6 @@
 	//-------------------------------------------------------------------------------------------------------------
 
 	function add_stock_transfer($Items, $location_from, $location_to, $date_, $type, $reference, $memo_) {
-		global $Refs;
 
 		begin_transaction();
 
@@ -26,7 +25,7 @@
 
 		add_comments(ST_LOCTRANSFER, $transfer_id, $date_, $memo_);
 
-		$Refs->save(ST_LOCTRANSFER, $transfer_id, $reference);
+		Refs::save(ST_LOCTRANSFER, $transfer_id, $reference);
 		add_audit_trail(ST_LOCTRANSFER, $transfer_id, $date_);
 
 		commit_transaction();

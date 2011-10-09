@@ -166,7 +166,7 @@
 	// Update db record if respective checkbox value has changed.
 	//
 	function change_tpl_flag($id) {
-		global $Ajax;
+		$Ajax = Ajax::instance();
 		$sql = "UPDATE sales_orders SET type = !type WHERE order_no=$id";
 		db_query($sql, "Can't change sales order type");
 		$Ajax->activate('orders_tbl');

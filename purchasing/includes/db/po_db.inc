@@ -22,7 +22,6 @@
 	//----------------------------------------------------------------------------------------
 
 	function add_po(&$po_obj) {
-		global $Refs;
 
 		begin_transaction();
 
@@ -57,7 +56,7 @@
 			}
 		}
 
-		$Refs->save(ST_PURCHORDER, $po_obj->order_no, $po_obj->reference);
+		Refs::save(ST_PURCHORDER, $po_obj->order_no, $po_obj->reference);
 
 		//add_comments(ST_PURCHORDER, $po_obj->order_no, $po_obj->orig_order_date, $po_obj->Comments);
 

@@ -13,7 +13,6 @@
 
 	function add_work_order_issue($woid, $ref, $to_work_order, $items, $location, $workcentre,
 																$date_, $memo_) {
-		global $Refs;
 
 		begin_transaction();
 
@@ -58,7 +57,7 @@
 		if ($memo_)
 			add_comments(ST_MANUISSUE, $number, $date_, $memo_);
 
-		$Refs->save(ST_MANUISSUE, $number, $ref);
+		Refs::save(ST_MANUISSUE, $number, $ref);
 		add_audit_trail(ST_MANUISSUE, $number, $date_);
 
 		commit_transaction();

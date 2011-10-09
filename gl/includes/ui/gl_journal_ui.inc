@@ -13,7 +13,7 @@
 	//--------------------------------------------------------------------------------
 
 	function display_order_header(&$Order) {
-		global $Ajax;
+		$Ajax = Ajax::instance();
 
 		$qes = has_quick_entries(QE_JOURNAL);
 		$new = $Order->order_id == 0;
@@ -135,7 +135,7 @@
 	//---------------------------------------------------------------------------------
 
 	function gl_edit_item_controls(&$order, $dim, $Index = null) {
-		global $Ajax;
+		$Ajax = Ajax::instance();
 		start_row();
 
 		$id = find_submit('Edit');

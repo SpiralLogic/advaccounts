@@ -10,7 +10,8 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	function display_bank_header(&$order) {
-		global $Ajax, $Refs;
+
+		$Ajax = Ajax::instance();
 		$payment = $order->trans_type == ST_BANKPAYMENT;
 
 		div_start('pmt_header');
@@ -96,9 +97,9 @@
 		table_section(3, "33%");
 
 		if (isset($_GET['NewPayment']))
-			ref_row(_("Reference:"), 'ref', '', $Refs->get_next(ST_BANKPAYMENT));
+			ref_row(_("Reference:"), 'ref', '', Refs::get_next(ST_BANKPAYMENT));
 		else
-			ref_row(_("Reference:"), 'ref', '', $Refs->get_next(ST_BANKDEPOSIT));
+			ref_row(_("Reference:"), 'ref', '', Refs::get_next(ST_BANKDEPOSIT));
 
 		end_outer_table(1); // outer table
 
@@ -178,7 +179,7 @@
 	//---------------------------------------------------------------------------------
 
 	function gl_edit_item_controls(&$order, $dim, $Index = null) {
-		global $Ajax;
+		$Ajax = Ajax::instance();
 		$payment = $order->trans_type == ST_BANKPAYMENT;
 
 		start_row();

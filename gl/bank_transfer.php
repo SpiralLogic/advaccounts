@@ -43,7 +43,6 @@
 	//----------------------------------------------------------------------------------------
 
 	function gl_payment_controls() {
-		global $Refs;
 
 		$home_currency = Banking::get_company_currency();
 
@@ -75,7 +74,7 @@
 
 		table_section(2);
 
-		ref_row(_("Reference:"), 'ref', '', $Refs->get_next(ST_BANKTRANSFER));
+		ref_row(_("Reference:"), 'ref', '', Refs::get_next(ST_BANKTRANSFER));
 
 		textarea_row(_("Memo:"), 'memo_', null, 40, 4);
 
@@ -89,7 +88,6 @@
 	//----------------------------------------------------------------------------------------
 
 	function check_valid_entries() {
-		global $Refs;
 
 		if (!Dates::is_date($_POST['DatePaid'])) {
 			ui_msgs::display_error(_("The entered date is invalid."));
@@ -118,7 +116,7 @@
 			ui_view::set_focus('charge');
 			return false;
 		}
-		if (!$Refs->is_valid($_POST['ref'])) {
+		if (!Refs::is_valid($_POST['ref'])) {
 			ui_msgs::display_error(_("You must enter a reference."));
 			ui_view::set_focus('ref');
 			return false;

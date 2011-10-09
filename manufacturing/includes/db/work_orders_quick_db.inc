@@ -12,7 +12,6 @@
 	//--------------------------------------------------------------------------------------
 
 	function add_work_order_quick($wo_ref, $loc_code, $units_reqd, $stock_id, $type, $date_, $memo_, $costs, $cr_acc, $labour, $cr_lab_acc) {
-		global $Refs;
 
 		begin_transaction();
 
@@ -76,7 +75,7 @@
 
 		add_comments(ST_WORKORDER, $woid, $date_, $memo_);
 
-		$Refs->save(ST_WORKORDER, $woid, $wo_ref);
+		Refs::save(ST_WORKORDER, $woid, $wo_ref);
 		add_audit_trail(ST_WORKORDER, $woid, $date_, _("Quick production."));
 		commit_transaction();
 		return $woid;

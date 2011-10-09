@@ -13,7 +13,8 @@
 	// ------------------------------------------------------------------------------
 
 	function display_credit_header(&$order) {
-		global $Ajax, $Refs;
+
+		$Ajax = Ajax::instance();
 
 		start_outer_table("width=90%  " . Config::get('tables.style'));
 		table_section(1);
@@ -79,7 +80,7 @@
 		ui_globals::set_global_customer($_POST['customer_id']);
 
 		if (!isset($_POST['ref']))
-			$_POST['ref'] = $Refs->get_next(11);
+			$_POST['ref'] = Refs::get_next(11);
 		if ($order->trans_no == 0)
 			ref_row(_("Reference") . ':', 'ref');
 		else
@@ -234,7 +235,7 @@
 	//---------------------------------------------------------------------------------
 
 	function credit_edit_item_controls(&$order, $rowcounter, $line_no = -1) {
-		global $Ajax;
+		$Ajax = Ajax::instance();
 		alt_table_row_color($rowcounter);
 		$id = find_submit('Edit');
 
@@ -298,7 +299,7 @@
 	//---------------------------------------------------------------------------------
 
 	function credit_options_controls($credit) {
-		global $Ajax;
+		$Ajax = Ajax::instance();
 		echo "<br>";
 
 		if (isset($_POST['_CreditType_update']))

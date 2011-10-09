@@ -75,7 +75,6 @@
 	//----------------------------------------------------------------------------------------
 
 	function check_inputs() {
-		global $Refs;
 
 		if (!get_post('supplier_id')) {
 			ui_msgs::display_error(_("There is no supplier selected."));
@@ -142,7 +141,7 @@
 			ui_view::set_focus('DatePaid');
 			return false;
 		}
-		if (!$Refs->is_valid($_POST['ref'])) {
+		if (!Refs::is_valid($_POST['ref'])) {
 			ui_msgs::display_error(_("You must enter a reference."));
 			ui_view::set_focus('ref');
 			return false;
@@ -222,7 +221,7 @@
 
 	table_section(2);
 
-	ref_row(_("Reference:"), 'ref', '', $Refs->get_next(ST_SUPPAYMENT));
+	ref_row(_("Reference:"), 'ref', '', Refs::get_next(ST_SUPPAYMENT));
 
 	date_row(_("Date Paid") . ":", 'DatePaid', '', true, 0, 0, 0, null, true);
 

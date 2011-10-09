@@ -38,7 +38,7 @@
 	// logout.php is the only page we should have always
 	// accessable regardless of access level and current login status.
 	// Ajax communication object
-	$Ajax = new Ajax();
+	$Ajax = Ajax::instance();
 	// js/php validation rules container
 	$Validate = array();
 	// bindings for editors
@@ -46,8 +46,6 @@
 	// page help. Currently help for function keys.
 	$Pagehelp = array();
 
-	$SysPrefs = new sys_prefs();
-	$Refs = new references();
 	if (strstr($_SERVER['PHP_SELF'], 'logout.php') == false) {
 		Login::timeout();
 		if (!$_SESSION["wa_current_user"]->logged_in()) {

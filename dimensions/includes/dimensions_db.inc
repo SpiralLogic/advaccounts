@@ -10,7 +10,6 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	function add_dimension($reference, $name, $type_, $date_, $due_date, $memo_) {
-		global $Refs;
 
 		begin_transaction();
 
@@ -25,7 +24,7 @@
 
 		add_comments(ST_DIMENSION, $id, $date_, $memo_);
 
-		$Refs->save(ST_DIMENSION, $id, $reference);
+		Refs::save(ST_DIMENSION, $id, $reference);
 
 		commit_transaction();
 

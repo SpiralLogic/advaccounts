@@ -64,8 +64,8 @@
 	}
 
 	function clear_form() {
-		global $selected_id, $Ajax;
-
+		global $selected_id;
+		$Ajax = Ajax::instance();
 		$selected_id = '';
 		$_POST['name'] = '';
 		$Ajax->activate('_page_body');

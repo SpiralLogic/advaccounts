@@ -65,7 +65,6 @@
 	//-------------------------------------------------------------------------------------------------------------
 
 	function add_grn(&$po, $date_, $reference, $location) {
-		global $Refs;
 
 		begin_transaction();
 
@@ -96,7 +95,7 @@
 		} /*end of order_line loop */
 
 		$grn_item = add_grn_detail_item($grn, add_freight_to_po($po, $date_), 'Freight', 'Freight Charges', 0, 1, $po->freight, 0);
-		$Refs->save(ST_SUPPRECEIVE, $grn, $reference);
+		Refs::save(ST_SUPPRECEIVE, $grn, $reference);
 
 		add_audit_trail(ST_SUPPRECEIVE, $grn, $date_);
 

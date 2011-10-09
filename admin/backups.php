@@ -63,7 +63,7 @@
 	}
 
 	function get_backup_file_combo() {
-		global $Ajax;
+		$Ajax = Ajax::instance();
 
 		$ar_files = array();
 		ui_view::default_focus('backups');

@@ -68,7 +68,6 @@
 
 	function add_bank_transfer($from_account, $to_account, $date_,
 														 $amount, $ref, $memo_, $charge = 0) {
-		global $Refs;
 
 		begin_transaction();
 
@@ -118,7 +117,7 @@
 
 		add_comments($trans_type, $trans_no, $date_, $memo_);
 
-		$Refs->save($trans_type, $trans_no, $ref);
+		Refs::save($trans_type, $trans_no, $ref);
 		add_audit_trail($trans_type, $trans_no, $date_);
 
 		commit_transaction();
@@ -139,7 +138,6 @@
 
 	function add_bank_transaction($trans_type, $from_account, $items, $date_,
 																$person_type_id, $person_id, $person_detail_id, $ref, $memo_, $use_transaction = true) {
-		global $Refs;
 
 		// we can only handle type 1 (payment)and type 2 (deposit)
 		if ($trans_type != ST_BANKPAYMENT && $trans_type != ST_BANKDEPOSIT)
@@ -235,7 +233,7 @@
 
 		add_comments($trans_type, $trans_no, $date_, $memo_);
 
-		$Refs->save($trans_type, $trans_no, $ref);
+		Refs::save($trans_type, $trans_no, $ref);
 		add_audit_trail($trans_type, $trans_no, $date_);
 
 		if ($use_transaction)

@@ -109,7 +109,6 @@
 
 	function add_supp_invoice($supp_trans, $invoice_no = 0) // do not receive as ref because we change locally
 	{
-		global $Refs;
 
 		//$company_currency = Banking::get_company_currency();
 		/*Start an sql transaction */
@@ -285,7 +284,7 @@
 
 		add_comments($trans_type, $invoice_id, $date_, $supp_trans->Comments);
 
-		$Refs->save($trans_type, $invoice_id, $supp_trans->reference);
+		Refs::save($trans_type, $invoice_id, $supp_trans->reference);
 
 		if ($invoice_no != 0) {
 			$invoice_alloc_balance = get_supp_trans_allocation_balance(ST_SUPPINVOICE, $invoice_no);

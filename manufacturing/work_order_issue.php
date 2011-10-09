@@ -35,7 +35,7 @@
 	//--------------------------------------------------------------------------------------------------
 
 	function line_start_focus() {
-		global $Ajax;
+		$Ajax = Ajax::instance();
 
 		$Ajax->activate('items_table');
 		ui_view::set_focus('_stock_id_edit');
@@ -58,7 +58,6 @@
 	//-----------------------------------------------------------------------------------------------
 
 	function can_process() {
-		global $Refs;
 
 		if (!Dates::is_date($_POST['date_'])) {
 			ui_msgs::display_error(_("The entered date for the issue is invalid."));
@@ -71,7 +70,7 @@
 			ui_view::set_focus('date_');
 			return false;
 		}
-		if (!$Refs->is_valid($_POST['ref'])) {
+		if (!Refs::is_valid($_POST['ref'])) {
 			ui_msgs::display_error(_("You must enter a reference."));
 			ui_view::set_focus('ref');
 			return false;
