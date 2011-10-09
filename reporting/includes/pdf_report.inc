@@ -810,7 +810,6 @@
 					require_once(APP_PATH . "reporting/includes/class.mail.inc");
 					$mail = new email(str_replace(",", "", $this->company['coy_name']), $this->company['email']);
 					if (!isset($myrow['email']) || $myrow['email'] == '') $myrow['email'] = isset($myrow['contact_email']) ? $myrow['contact_email'] : '';
-					// $to = str_replace(",", "", $myrow['DebtorName']) . " <" . $myrow['email'] . ">";
 					$msg = $doc_Dear_Sirs . " " . $myrow['DebtorName'] . ",\n\n" . $doc_AttachedFile . " " . $subject . "\n\n";
 					if (isset($myrow['dimension_id']) && $myrow['dimension_id'] > 0 && $doctype == ST_SALESINVOICE) { // helper for payment links
 						if ($myrow['dimension_id'] == 1) {

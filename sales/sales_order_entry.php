@@ -169,7 +169,7 @@
 		}
 		elseif ($trans_type == ST_SALESQUOTE) {
 			submenu_option(_("Make &Sales Order Against This Quotation"), "/sales/sales_order_entry.php?NewQuoteToSalesOrder=$order_no");
-			submenu_option(_("Enter a New &Quotation"), "/sales/sales_order_entry.php?NewQuotation=0");
+			submenu_option(_("Enter a New &Quotation"), "/sales/sales_order_entry.php?NewQuotation=1");
 			submenu_option(_("Select A Different &Quotation to edit"), "/sales/inquiry/sales_orders_view.php?type=" . ST_SALESQUOTE);
 		}
 		elseif ($trans_type == ST_CUSTDELIVERY) {

@@ -247,6 +247,7 @@
 			//for MySQL dates are in the format YYYY-mm-dd
 			if ($date_ == null || strlen($date_) == 0)
 				return "";
+
 			if (strpos($date_, "/")) { // In MySQL it could be either / or -
 				list($year, $month, $day) = explode("/", $date_);
 			}

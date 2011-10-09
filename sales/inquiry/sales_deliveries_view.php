@@ -161,7 +161,7 @@
 	$sql = "SELECT trans.trans_no,
 		debtor.name,
 		branch.branch_code,
-		branch.br_name,
+		
 		sorder.contact_name,
 		sorder.deliver_to,
 		trans.reference,
@@ -212,13 +212,13 @@
 	$cols = array(
 		_("Delivery #") => array('fun' => 'trans_view'),
 		_("Customer"),
-		'branch_code' => 'skip',
-		_("Branch") => array('ord' => ''),
+		_("branch_code") => 'skip',
 		_("Contact"),
-		_("Reference") => array('skip'),
+		_("Address"),
+		_("Reference"),
 		_("Cust Ref"),
 		_("Delivery Date") => array('type' => 'date', 'ord' => ''),
-		_("Due By") => 'date',
+		_("Due By") => array('type' => 'date'),
 		_("Delivery Total") => array('type' => 'amount', 'ord' => ''),
 		_("Currency") => array('align' => 'center'),
 		submit('BatchInvoice', _("Batch"), false, _("Batch Invoicing"))

@@ -110,26 +110,18 @@
 	email_row(_("E-mail:"), 'acc_email', $customer->accounts->email, 35, 40);
 	textarea_row(_("Street:"), 'acc_br_address', $customer->accounts->br_address, 35, 2);
 	postcode::render(array('acc_postcode', $customer->accounts->postcode), array('acc_city', $customer->accounts->city), array('acc_state', $customer->accounts->state));
-	sales_types_list_row(_("Sales Type/Price List:"), 'sales_type', $customer->sales_type);
-	record_status_list_row(_("Customer status:"), 'inactive');
+
 	end_outer_table(1);
 	$menu->endTab()->startTab('Accounts', 'Accounts');
 	start_outer_table(Config::get('tables.style2'), 5);
 	table_section(1);
 	hidden('accounts_id', $customer->accounts->accounts_id);
 	table_section_title(_("Accounts Details:"), 2);
-	text_row(_("Accounts Contact:"), 'acc_contact_name', $customer->accounts->contact_name, 40, 40);
-	email_row(_("E-mail:"), 'acc_email', $customer->email, 40, 40);
-	text_row(_("Phone Number:"), 'acc_phone', $customer->accounts->phone, 40, 30);
-	text_row(_("2nd Phone Number:"), 'acc_phone2', $customer->accounts->phone2, 40, 30);
-	text_row(_("Fax Number:"), 'acc_fax', $customer->accounts->fax, 40, 30);
-	textarea_row(_("Street:"), 'acc_br_address', $customer->accounts->br_address, 35, 2);
-	postcode::render(array('acc_postcode', $customer->accounts->postcode), array('acc_city', $customer->accounts->city), array('acc_state', $customer->accounts->state));
-	textarea_row(_("Postal Address:"), 'acc_br_post_address', $customer->accounts->br_address, 35, 2);
 	percent_row(_("Discount Percent:"), 'discount', $customer->discount, ($_SESSION['wa_current_user']->can_access('SA_CUSTOMER_CREDIT')) ? "" : " disabled=\"\"");
 	percent_row(_("Prompt Payment Discount Percent:"), 'pymt_discount', $customer->pymt_discount, ($_SESSION['wa_current_user']->can_access('SA_CUSTOMER_CREDIT')) ? "" : " disabled=\"\"");
 	amount_row(_("Credit Limit:"), 'credit_limit', $customer->credit_limit, ($_SESSION['wa_current_user']->can_access('SA_CUSTOMER_CREDIT')) ? "" : " disabled=\"\"");
-
+	sales_types_list_row(_("Sales Type/Price List:"), 'sales_type', $customer->sales_type);
+	record_status_list_row(_("Customer status:"), 'inactive');
 	text_row(_("GSTNo:"), 'tax_id', $customer->tax_id, 35, 40);
 	if (!$customer->id) {
 		currencies_list_row(_("Customer's Currency:"), 'curr_code', $customer->curr_code);
@@ -137,6 +129,9 @@
 		label_row(_("Customer's Currency:"), $customer->curr_code);
 		hidden('curr_code', $customer->curr_code);
 	}
+	payment_terms_list_row(_("Pament Terms:"), 'payment_terms', $customer->payment_terms);
+	credit_status_list_row(_("Credit Status:"), 'credit_status', $customer->credit_status);
+
 	$dim = get_company_pref('use_dimension');
 	if ($dim >= 1) {
 		dimensions_list_row(_("Dimension") . " 1:", 'dimension_id', $customer->dimension_id, true, " ", false, 1);
@@ -162,8 +157,6 @@
 	ContactLog::read($customer->id, 'C');
 	/** @noinspection PhpUndefinedMethodInspection */
 	HTML::textarea()->td->td;
-	payment_terms_list_row(_("Pament Terms:"), 'payment_terms', $customer->payment_terms);
-	credit_status_list_row(_("Credit Status:"), 'credit_status', $customer->credit_status);
 	end_outer_table(1);
 
 	$menu->endTab()->startTab('Customer Contacts', 'Customer Contacts');
@@ -187,10 +180,6 @@
 	start_outer_table(Config::get('tables.style2'), 5);
 	table_section(1);
 	hidden('branch_code', $currentBranch->branch_code);
-	table_section_title(_("Name and Contact"));
-	text_row(_("Address Name:"), 'br_br_name', $currentBranch->br_name, 35, 40);
-	text_row(_("Contact:"), 'br_contact_name', $currentBranch->contact_name, 35, 40);
-	textarea_row(_("General Notes:"), 'br_notes', $currentBranch->notes, 35, 4);
 	table_section_title(_("Sales"));
 	sales_persons_list_row(_("Sales Person:"), 'br_salesman', $currentBranch->salesman);
 	sales_areas_list_row(_("Sales Area:"), 'br_area', $currentBranch->area);
@@ -205,9 +194,9 @@
 	gl_all_accounts_list_row(_("Sales Discount Account:"), 'br_sales_discount_account', $currentBranch->sales_discount_account);
 	gl_all_accounts_list_row(_("Accounts Receivable Account:"), 'br_receivables_account', $currentBranch->receivables_account);
 	gl_all_accounts_list_row(_("Prompt Payment Discount Account:"), 'br_payment_discount_account', $currentBranch->payment_discount_account);
-	table_section_title(_("Addresses"));
-	textarea_row(_("Address:"), 'br_br_address', $currentBranch->br_address, 35, 2);
-	textarea_row(_("Branch Mailing Address:"), 'br_br_post_address', $currentBranch->br_post_address, 35, 4);
+	table_section_title(_("Notes"));
+	textarea_row(_("General Notes:"), 'br_notes', $currentBranch->notes, 35, 4);
+
 	end_outer_table(1);
 	$menu->endTab()->startTab('Invoices', 'Invoices');
 	HTML::div('transactions');
