@@ -14,7 +14,13 @@
 	class renderer {
 
 
-		protected $has_header = true;
+		public $has_header = true;
+		protected static $_instance = null;
+
+		public static function getInstance() {
+			if (static::$_instance === null) static::$_instance = new static;
+			return static::$_instance;
+		}
 
 		function wa_header() {
 			page(_($help_context = "Main Menu"), false, true);
@@ -29,9 +35,7 @@
 			$sel_app = $_SESSION['sel_app'];
 			echo "<div id='content'>\n";
 			if (!$no_menu || AJAX_REFERRER) {
-				if ($this->has_header) {
-					Sidemenu::render();
-				}
+
 				$applications = $_SESSION['App']->applications;
 				echo "<div id='top'>\n";
 				echo "<p>" . Config::get($_SESSION["wa_current_user"]->company, 'name', 'db') . " | " .

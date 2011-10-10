@@ -138,11 +138,13 @@
 	$sql = "SELECT trans.type,
 		trans.trans_no,
 		trans.reference, 
-		supplier.supp_name, 
+		supplier.supp_name,
+		supplier.supplier_id as id,
 		trans.supp_reference,
     	trans.tran_date, 
 		trans.due_date,
-		supplier.curr_code, 
+		supplier.curr_code,
+
     	(trans.ov_amount + trans.ov_gst  + trans.ov_discount) AS TotalAmount, 
 		trans.alloc AS Allocated,
 		((trans.type = " . ST_SUPPINVOICE . " OR trans.type = " . ST_SUPPCREDIT . ") AND trans.due_date < '" . Dates::date2sql(Dates::Today()) . "') AS OverDue,
@@ -158,13 +160,13 @@
 			$ajaxsearch = "%" . $ajaxsearch . "%";
 			$sql .= " AND (";
 			$sql .= " supplier.supp_name LIKE " . db_escape($ajaxsearch);
-			if (countFilter('supp_trans', 'trans_no', $ajaxsearch) > 0) {
+			if (db_pager::countFilter('supp_trans', 'trans_no', $ajaxsearch) > 0) {
 				$sql .= " OR trans.trans_no LIKE " . db_escape($ajaxsearch);
 			}
-			if (countFilter('supp_trans', 'reference', $ajaxsearch) > 0) {
+			if (db_pager::countFilter('supp_trans', 'reference', $ajaxsearch) > 0) {
 				$sql .= " OR trans.reference LIKE " . db_escape($ajaxsearch);
 			}
-			if (countFilter('supp_trans', 'supp_reference', $ajaxsearch) > 0) {
+			if (db_pager::countFilter('supp_trans', 'supp_reference', $ajaxsearch) > 0) {
 				$sql .= " OR trans.supp_reference LIKE " . db_escape($ajaxsearch);
 			}
 			$sql .= ")";
@@ -203,7 +205,8 @@
 		_("Type") => array('fun' => 'systype_name', 'ord' => ''),
 		_("#") => array('fun' => 'trans_view', 'ord' => ''),
 		_("Reference"),
-		_("Supplier"),
+		_("Supplier") => array('type' => 'id'),
+		_("Supplier ID") => 'skip',
 		_("Supplier's Reference"),
 		_("Date") => array('name' => 'tran_date', 'type' => 'date', 'ord' => 'desc'),
 		_("Due Date") => array('type' => 'date', 'fun' => 'due_date'),
@@ -224,6 +227,8 @@
 	$table->set_marker('check_overdue', _("Marked items are overdue."));
 	$table->width = "85%";
 	display_db_pager($table);
+	Supplier::addSupplierInfo('.pagerclick');
+
 	end_form();
 	end_page();
 

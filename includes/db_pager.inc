@@ -454,46 +454,46 @@
 			}
 			return $_SESSION[$name];
 		}
-	}
 
-	//-----------------------------------------------------------------------------
-	//	Creates new db_pager $_SESSION object on first page call.
-	//  Retrieves from $_SESSION var on subsequent $_POST calls
-	//
-	//  $name - base name for pager controls and $_SESSION object name
-	//  $sql  - base sql for data inquiry. Order of fields implies
-	//		pager columns order.
-	//	$coldef - array of column definitions. Example definitions
-	//		Column with title 'User name' and default text format:
-	//				'User name'
-	//		Skipped field from sql query. Data for the field is not displayed:
-	//				'dummy' => 'skip'
-	//		Column without title, data retrieved form row data with function func():
-	//	 			array('fun'=>'func')
-	// 		Inserted column with title 'Some', formated with function rowfun().
-	//  	formated as date:
-	//				'Some' => array('type'=>'date, 'insert'=>true, 'fun'=>'rowfun')
-	// 		Column with name 'Another', formatted as date,
-	// sortable with ascending start order (available orders: asc,desc, '').
-	//				'Another' => array('type'=>'date', 'ord'=>'asc')
-	//
-	//	All available column format types you will find in db_pager_view.inc file.
-	//		If query result has more fields than count($coldef), rest of data is ignored
-	//  during display, but can be used in format handlers for 'spec' and 'insert'
-	//	type columns.
+		static function countFilter($table = false, $feild = false, $where = false) {
+			if ($table && $where && $feild) {
+				$sql = "SELECT * FROM " . $table . " WHERE " . $feild . " LIKE " . db_escape($where) . " LIMIT 1";
+				$result = db_query($sql, 'Couldnt do shit');
+				return db_num_rows($result);
+			}
+		}
 
-	//
-	//	Force pager initialization.
-	//
-	function refresh_pager($name) {
-		if (isset($_SESSION[$name]))
-			$_SESSION[$name]->ready = false;
-	}
+		//-----------------------------------------------------------------------------
+		//	Creates new db_pager $_SESSION object on first page call.
+		//  Retrieves from $_SESSION var on subsequent $_POST calls
+		//
+		//  $name - base name for pager controls and $_SESSION object name
+		//  $sql  - base sql for data inquiry. Order of fields implies
+		//		pager columns order.
+		//	$coldef - array of column definitions. Example definitions
+		//		Column with title 'User name' and default text format:
+		//				'User name'
+		//		Skipped field from sql query. Data for the field is not displayed:
+		//				'dummy' => 'skip'
+		//		Column without title, data retrieved form row data with function func():
+		//	 			array('fun'=>'func')
+		// 		Inserted column with title 'Some', formated with function rowfun().
+		//  	formated as date:
+		//				'Some' => array('type'=>'date, 'insert'=>true, 'fun'=>'rowfun')
+		// 		Column with name 'Another', formatted as date,
+		// sortable with ascending start order (available orders: asc,desc, '').
+		//				'Another' => array('type'=>'date', 'ord'=>'asc')
+		//
+		//	All available column format types you will find in db_pager_view.inc file.
+		//		If query result has more fields than count($coldef), rest of data is ignored
+		//  during display, but can be used in format handlers for 'spec' and 'insert'
+		//	type columns.
 
-	function countFilter($table = false, $feild = false, $where = false) {
-		if ($table && $where && $feild) {
-			$sql = "SELECT * FROM " . $table . " WHERE " . $feild . " LIKE " . db_escape($where) . " LIMIT 1";
-			$result = db_query($sql, 'Couldnt do shit');
-			return db_num_rows($result);
+		//
+		//	Force pager initialization.
+		//
+		function refresh_pager($name) {
+			if (isset($_SESSION[$name]))
+				$_SESSION[$name]->ready = false;
 		}
 	}

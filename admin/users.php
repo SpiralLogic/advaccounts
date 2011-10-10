@@ -156,6 +156,7 @@
 	start_table(Config::get('tables.style2'));
 
 	$_POST['email'] = "";
+
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {
 			//editing an existing User
@@ -176,7 +177,7 @@
 		hidden('user_id');
 
 		start_row();
-		label_row(_("User login:"), $_POST['user_id']);
+		label_row(_("User login:"), Input::post('user_id'));
 	}
 	else
 	{ //end of if $selected_id only do the else when a new record is being entered
@@ -208,7 +209,7 @@
 	print_profiles_list_row(_("Printing profile") . ':', 'profile', null,
 		_('Browser printing support'));
 
-	check_row(_("Use popup window for reports:"), 'rep_popup', $_POST['rep_popup'],
+	check_row(_("Use popup window for reports:"), 'rep_popup', Input::post('rep_popup'),
 		false, _('Set this option to on if your browser directly supports pdf files'));
 
 	end_table(1);

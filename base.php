@@ -51,7 +51,7 @@
 	function page($title, $no_menu = false, $is_index = false, $onload = "", $js = "", $script_only = false) {
 
 		global $page_security;
-
+		if (empty($page_security)) $page_security = 'SA_OPEN';
 		$hide_menu = $no_menu;
 
 		include(APP_PATH . "includes/page/header.inc");

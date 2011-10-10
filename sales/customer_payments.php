@@ -26,7 +26,7 @@
 	}
 	JS::headerFile('/js/payalloc.js');
 
-	page(_($help_context = "Customer Payment Entry"), @$_REQUEST['frame'], false, "", $js);
+	page(_($help_context = "Customer Payment Entry"), Input::request('frame'), false, "", $js);
 
 	//----------------------------------------------------------------------------------------------
 
@@ -308,7 +308,7 @@ var ci = $("#createinvoice"), ci_row = ci.closest('tr'),alloc_tbl = $('#alloc_tb
 JS;
 
 	JS::addLiveEvent('a, :input', 'click change', $js, 'wrapper', true);
-	(isset($_REQUEST['frame'])) ? end_page() : end_page(true, true, true);
+	(Input::request('frame')) ? end_page() : end_page(true, true, true);
 
 
 ?>

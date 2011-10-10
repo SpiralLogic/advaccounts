@@ -13,7 +13,7 @@
 
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	page(_($help_context = "Supplier Purchasing Data"), @$_REQUEST['frame']);
+	page(_($help_context = "Supplier Purchasing Data"), Input::request('frame'));
 
 	include_once(APP_PATH . "includes/manufacturing.inc");
 
@@ -26,7 +26,7 @@
 	//--------------------------------------------------------------------------------------------------
 
 	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
-		if ($_REQUEST['frame']) {
+		if (Input::request('frame')) {
 			$_POST['stock_id'] = ui_globals::get_global_stock_item();
 		}
 		$input_error = 0;
@@ -76,6 +76,7 @@
 	}
 	//--------------------------------------------------------------------------------------------------
 	if ($Mode == 'Delete') {
+		if (!Input::post('stock_id')) $_POST['stock_id'] = ui_globals::get_global_stock_item();
 		$sql = "DELETE FROM purch_data WHERE supplier_id=" . db_escape($selected_id) . "
 		AND stock_id=" . db_escape($_POST['stock_id']);
 		db_query($sql, "could not delete purchasing data");
@@ -92,19 +93,19 @@
 	if (list_updated('stock_id'))
 		$Ajax->activate('price_table');
 	//--------------------------------------------------------------------------------------------------
-	if ($_REQUEST['frame']) {
+	if (Input::request('frame')) {
 		start_form(false, false, $_SERVER['PHP_SELF'] . '?frame=1');
 	} else {
 		start_form();
 	}
 	if (!isset($_POST['stock_id']))
 		$_POST['stock_id'] = ui_globals::get_global_stock_item();
-	if (!$_REQUEST['frame']) {
+	if (!Input::request('frame')) {
 		echo "<center>" . _("Item:") . "&nbsp;";
-		echo stock_purchasable_items_list('stock_id', $_POST['stock_id'], false, true, false, false, true);
+		echo stock_purchasable_items_list('stock_id', $_POST['stock_id'], false, true, false, false);
 		echo "<hr></center>";
-		ui_globals::set_global_stock_item($_POST['stock_id']);
 	}
+	ui_globals::set_global_stock_item($_POST['stock_id']);
 	$mb_flag = get_mb_flag($_POST['stock_id']);
 
 	if ($mb_flag == -1) {
@@ -127,7 +128,7 @@
 		}
 		else
 		{
-			if ($_REQUEST['frame']) {
+			if (Input::request('frame')) {
 				start_table(Config::get('tables.style') . "  width=90%");
 			} else {
 				start_table(Config::get('tables.style') . "  width=65%");
@@ -211,7 +212,7 @@
 
 	submit_add_or_update_center($selected_id == -1, '', 'both');
 	end_form();
-	if ($_REQUEST['frame']) {
+	if (Input::request('frame')) {
 		end_page(true, true, true);
 	} else {
 		end_page();

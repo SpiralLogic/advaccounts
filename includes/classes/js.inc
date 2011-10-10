@@ -34,7 +34,7 @@
 		   select: function(event, ui) {
 	   	 if ({$callback}(ui.item)===false) return false;
    	   }
-      }).css({'z-index' : '2'});
+      }).css({'z-index' : '2'}).bind('paste',function() { console.log(\${$id}.val());\${$id}.autocomplete('search',\${$id}.val())});
 JS;
 			if (isset($options['focus'])) self::setFocus("autocomplete{$id}", true);
 		}
@@ -79,26 +79,26 @@ JS;
 
 		public static function render() {
 			if (AJAX_REFERRER) return HTML::script(null, 'Adv.Events.rebind()', false);
-			$files = $content = '';
+			$files = $content = $onReady = '';
 			foreach (self::$_footerFiles as $dir => $file) {
 				$files .= HTML::setReturn(true)->script(array('src' => $dir . '/' . implode(',', $file)), false)->setReturn(false);
 			}
 			if (count(self::$_beforeload)) {
 				$content .= implode(";\n", self::$_beforeload);
 			}
-			$content .= ";\n$(function() { ";
+
 			if (count(self::$_onlive)) {
-				$content .= 'Adv.Events.onload(function() {' . implode(";", self::$_onlive) . '}';
-				if (count(self::$_toclean)) $content .= ',function() {' . implode(";", self::$_toclean) . '}';
-				$content .= ');';
+				$onReady .= 'Adv.Events.onload(function() {' . implode(";", self::$_onlive) . '}';
+				if (count(self::$_toclean)) $onReady .= ',function() {' . implode(";", self::$_toclean) . '}';
+				$onReady .= ');';
 			}
 			if (count(self::$_onload)) {
-				$content .= implode(";\n\n", self::$_onload);
+				$onReady .= implode(";\n\n", self::$_onload);
 			}
 			if (!empty(self::$_focus)) {
-				$content .= self::$_focus . '.focus();';
+				$onReady .= self::$_focus . '.focus();';
 			}
-			$content .= '});';
+			if ($onReady != '') $content .= ";\n$(function() { " . $onReady . '});';
 			echo $files;
 			HTML::script(array('content' => $content))->script;
 		}

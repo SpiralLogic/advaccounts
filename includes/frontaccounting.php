@@ -41,7 +41,7 @@
 
 		//var $renderer;
 		function frontaccounting() {
-			//$this->renderer =& new renderer();
+			//$this->renderer =& renderer::getInstance();
 		}
 
 		function add_application(&$app) {
@@ -69,7 +69,7 @@
 
 			include(APP_PATH . "themes/" . user_theme() . "/renderer.php");
 			$this->init();
-			$rend = new renderer();
+			$rend = renderer::getInstance();
 			$rend->wa_header();
 			//$rend->menu_header($this->menu);
 			$rend->display_applications($this);

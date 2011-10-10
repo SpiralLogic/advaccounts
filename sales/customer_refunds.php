@@ -24,7 +24,7 @@
 	}
 
 	JS::headerFile('/js/payalloc.js');
-	page(_($help_context = "Customer Refund Entry"), @$_REQUEST['frame'], false, "", $js);
+	page(_($help_context = "Customer Refund Entry"), Input::request('frame'), false, "", $js);
 	//----------------------------------------------------------------------------------------------
 	check_db_has_customers(_("There are no customers defined in the system."));
 	check_db_has_bank_accounts(_("There are no bank accounts defined in the system."));
@@ -227,7 +227,7 @@
 	}
 	br();
 	end_form();
-	if (@$_REQUEST['frame']) {
+	if (Input::request('frame')) {
 		end_page(true, true, true);
 	}
 	else {

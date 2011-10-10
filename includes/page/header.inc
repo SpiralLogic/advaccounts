@@ -111,7 +111,7 @@
 			echo "body onload='$onload'";
 		echo	($no_menu) ? ' class="lite">' : '>';
 		include_once(APP_PATH . "/themes/" . user_theme() . "/renderer.php");
-		$rend = new renderer();
+		$rend = renderer::getInstance();
 		$rend->menu_header($title, $no_menu, $is_index);
 		Errors::error_box();
 	}

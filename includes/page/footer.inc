@@ -14,14 +14,18 @@
 		$Validate = array();
 		$Ajax = Ajax::instance();
 		include_once(APP_PATH . "themes/" . user_theme() . "/renderer.php");
-		$rend = new renderer();
+		$rend = renderer::getInstance();
 		$rend->menu_footer($no_menu, $is_index);
 		$edits = "editors = " . $Ajax->php2js(set_editor(false, false)) . ";";
 		$Ajax->addScript('editors', $edits);
 		JS::beforeload("_focus = '" . get_post('_focus') . "';_validate = " . $Ajax->php2js($Validate) . ";var $edits");
 		add_user_js_data();
+		if ($rend->has_header) {
+			Sidemenu::render();
+		}
 		Messages::showNewMessages();
 		JS::render();
+
 		if (AJAX_REFERRER) return;
 
 		echo "</div></body>";

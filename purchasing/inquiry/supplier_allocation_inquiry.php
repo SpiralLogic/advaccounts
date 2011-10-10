@@ -98,7 +98,8 @@
 		trans.type, 
 		trans.trans_no,
 		trans.reference, 
-		supplier.supp_name, 
+		supplier.supp_name,
+		supplier.supplier_id as id,
 		trans.supp_reference,
     	trans.tran_date, 
 		trans.due_date,
@@ -136,7 +137,8 @@
 		_("Type") => array('fun' => 'systype_name'),
 		_("#") => array('fun' => 'view_link', 'ord' => ''),
 		_("Reference"),
-		_("Supplier") => array('ord' => ''),
+		_("Supplier") => array('ord' => '', 'type' => 'id'),
+		_("Supplier ID") => array('skip'),
 		_("Supp Reference"),
 		_("Date") => array('name' => 'tran_date', 'type' => 'date', 'ord' => 'asc'),
 		_("Due Date") => array('fun' => 'due_date'),
@@ -156,6 +158,7 @@
 	$table->set_marker('check_overdue', _("Marked items are overdue."));
 	$table->width = "90%";
 	display_db_pager($table);
+	Supplier::addSupplierInfo('.pagerclick');
 	end_form();
 	end_page();
 ?>

@@ -43,7 +43,7 @@
 			if ($extra != "")
 				echo "<center><span $extra>$msg</span></center>\n";
 			else
-				echo "<center><span>$msg</span></center>\n";
+				echo "<center><span class='note_msg'>$msg</span></center>\n";
 			for ($i = 0; $i < $br2; $i++)
 			{
 				echo "<br>";

@@ -13,7 +13,7 @@
 
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	page(_($help_context = "Inventory Item Sales prices"), @$_REQUEST['frame']);
+	page(_($help_context = "Inventory Item Sales prices"), Input::request('frame'));
 
 	include_once(APP_PATH . "sales/includes/db/sales_types_db.inc");
 
@@ -40,7 +40,7 @@
 
 	//---------------------------------------------------------------------------------------------------
 
-	if ($_REQUEST['frame']) {
+	if (Input::request('frame')) {
 		start_form(false, false, $_SERVER['PHP_SELF'] . '?frame=1');
 	} else {
 		start_form();
@@ -49,7 +49,7 @@
 	if (!isset($_POST['stock_id']))
 		$_POST['stock_id'] = ui_globals::get_global_stock_item();
 
-	if (!$_REQUEST['frame']) {
+	if (!Input::request('frame')) {
 		echo "<center>" . _("Item:") . "&nbsp;";
 		echo sales_items_list('stock_id', $_POST['stock_id'], false, true, '', array(), true);
 		echo "<hr></center>";
@@ -117,7 +117,7 @@
 	$prices_list = get_prices($_POST['stock_id']);
 
 	div_start('price_table');
-	if ($_REQUEST['frame']) {
+	if (Input::request('frame')) {
 		start_table(Config::get('tables.style') . "  width=90%");
 	} else {
 		start_table(Config::get('tables.style') . "  width=30%");
@@ -181,7 +181,7 @@
 	div_end();
 
 	end_form();
-	if ($_REQUEST['frame']) {
+	if (Input::request('frame')) {
 		end_page(true, true, true);
 	} else {
 		end_page();

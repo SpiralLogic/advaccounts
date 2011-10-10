@@ -110,7 +110,8 @@
 	$sql = "SELECT
 	porder.order_no, 
 	porder.reference,
-	supplier.supp_name, 
+	supplier.supp_name,
+	 supplier.supplier_id as id,
 	location.location_name,
 	porder.requisition_no, 
 	porder.ord_date,
@@ -153,7 +154,8 @@
 	$cols = array(
 		_("#") => array('fun' => 'trans_view', 'ord' => ''),
 		_("Reference"),
-		_("Supplier") => array('ord' => ''),
+		_("Supplier") => array('ord' => '', 'type' => 'id'),
+		_("Supplier ID") => array('skip'),
 		_("Location"),
 		_("Supplier's Reference"),
 		_("Order Date") => array('name' => 'ord_date', 'type' => 'date', 'ord' => 'desc'),
@@ -174,6 +176,7 @@
 	$table->width = "80%";
 
 	display_db_pager($table);
+	Supplier::addSupplierInfo('.pagerclick');
 
 	end_form();
 	end_page();
