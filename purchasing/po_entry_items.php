@@ -399,7 +399,7 @@
 	Item::addEditDialog();
 
 	if (isset($_SESSION['PO']->supplier_id)) {
-		Supplier::addSupplierInfo("td[name=\"supplier_name\"]", $_SESSION['PO']->supplier_details['supplier_id']);
+		Supplier::addInfoDialog("td[name=\"supplier_name\"]", $_SESSION['PO']->supplier_details['supplier_id']);
 	}
 
 	end_page();

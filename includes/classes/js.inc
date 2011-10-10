@@ -78,15 +78,16 @@ JS;
 		}
 
 		public static function render() {
-			if (AJAX_REFERRER) return HTML::script(null, 'Adv.Events.rebind()', false);
 			$files = $content = $onReady = '';
-			foreach (self::$_footerFiles as $dir => $file) {
-				$files .= HTML::setReturn(true)->script(array('src' => $dir . '/' . implode(',', $file)), false)->setReturn(false);
+			if (!AJAX_REFERRER) {
+				foreach (self::$_footerFiles as $dir => $file) {
+					$files .= HTML::setReturn(true)->script(array('src' => $dir . '/' . implode(',', $file)), false)->setReturn(false);
+				}
+				echo $files;
 			}
 			if (count(self::$_beforeload)) {
 				$content .= implode(";\n", self::$_beforeload);
 			}
-
 			if (count(self::$_onlive)) {
 				$onReady .= 'Adv.Events.onload(function() {' . implode(";", self::$_onlive) . '}';
 				if (count(self::$_toclean)) $onReady .= ',function() {' . implode(";", self::$_toclean) . '}';
@@ -99,7 +100,7 @@ JS;
 				$onReady .= self::$_focus . '.focus();';
 			}
 			if ($onReady != '') $content .= ";\n$(function() { " . $onReady . '});';
-			echo $files;
+
 			HTML::script(array('content' => $content))->script;
 		}
 
@@ -114,7 +115,7 @@ JS;
 
 		public static function addEvent($selector, $type, $action) {
 
-			self::onload("$('$selector').bind('$type',function(e){ {$action} });");
+			self::onload("$('$selector').bind('$type',function(e){ {$action} }).css('cursor','pointer');");
 		}
 
 		public static function addLiveEvent($selector, $type, $action, $delegate = false, $cached = false) {

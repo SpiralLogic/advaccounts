@@ -13,10 +13,6 @@
 	 * http://creativecommons.org/licenses/MIT/
 	 */
 
-	error_reporting(E_ALL | E_STRICT);
-	ini_set('post_max_size', '3M');
-	ini_set('upload_max_filesize', '3M');
-
 	class UploadHandler {
 
 		private $options;
@@ -26,6 +22,9 @@
 
 		function __construct($order_no, $options) {
 			$this->order_no = $order_no;
+			error_reporting(E_ALL | E_STRICT);
+			ini_set('post_max_size', '3M');
+			ini_set('upload_max_filesize', '3M');
 
 			$this->options = array(
 				'script_url' => $_SERVER['PHP_SELF'],

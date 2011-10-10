@@ -183,7 +183,7 @@
 	$table->width = "80%";
 
 	display_db_pager($table);
-	Supplier::addSupplierInfo('.pagerclick');
+	Supplier::addInfoDialog('.pagerclick');
 
 	end_form();
 	end_page();

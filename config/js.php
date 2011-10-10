@@ -14,10 +14,12 @@
 			'/js/utils.js',
 			'/js/inserts.js',
 			'/js/js2/jquery-1.6.4.min.js',
-			'/js/js2/jquery-ui-1.8.14.min.js'
+			'/js/js2/jquery-ui-1.8.14.min.js',
+
 		),
 
 		'footer' => array(
+			'/js/js2/jquery-tmpl.min.js',
 			'/js/js2/advanced.js',
 			'/js/js2/shortmenu.js',
 			'/js/js2/jquery.calculator.pack.js',

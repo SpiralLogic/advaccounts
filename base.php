@@ -43,6 +43,11 @@
 			return true;
 		}
 	}
+	if (!function_exists('adv_exception_handler')) {
+		function adv_exception_handler() {
+			var_dump(func_get_args());
+		}
+	}
 	if (!function_exists('adv_autoload_handler')) {
 		function adv_autoload_handler($className) {
 			spl_autoload(strtolower($className));

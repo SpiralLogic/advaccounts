@@ -162,32 +162,6 @@
 		}
 
 		public function getEmailAddresses() {
-
 			return array('Accounts' => array($this->id => array($this->name, $this->email)));
-		}
-
-		public static function addSupplierInfo($selector, $id = false) {
-			if ($id) $supplier = new self($id);
-			$content = '<div><span class="bold">Shipping Address:</span><br>${address}</br></br>
-          		<span class="bold">Mailing Address:</span><br>${post_address}</br></br>
-          		<span class="bold">Phone: </span>${phone}</br></br>
-          		<span class="bold">Phone2: </span>${phone2}</br></br>
-          		<span class="bold">Fax: </span>${fax}</br></br>
-          		<span class="bold">Contact: </span>${contact}</br></br>
-          		<span class="bold">Email: </span><a href="mailto:${email}">${email}</a></br></br>
-          		<span class="bold">Website: </span><a target="_new" href="http://${website}">${website}</a></br></br>
-          		<span class="bold">Account #: </span>${supp_account_no}</br></br></div>';
-			$supp_details = new Dialog('Supplier Details:', 'supplier_details', $content);
-			$supp_details->setTemplateData(($id) ? $supplier : '');
-			if ($id) {
-				$supp_details->addOpenEvent($selector, 'click');
-			} else {
-				$action = <<<JS
-            $.post('/contacts/suppliers.php',{id:$(this).data('id')},function(data) {Adv.o.\$supplier_details.render(data.supplier); $('#supplier_details').dialog('open');},'json');
-JS;
-				JS::addLiveEvent($selector, 'click', $action, 'wrapper', true);
-			}
-			$supp_details->addButton('Close', '$(this).dialog("close")');
-			$supp_details->show();
 		}
 	}
