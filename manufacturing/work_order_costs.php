@@ -90,7 +90,7 @@
 	//--------------------------------------------------------------------------------------------------
 
 	if (isset($_POST['process']) && can_process() == true) {
-		begin_transaction();
+		DBOld::begin_transaction();
 		add_gl_trans_std_cost(ST_WORKORDER, $_POST['selected_id'], $_POST['date_'], $_POST['cr_acc'],
 			0, 0, $wo_cost_types[$_POST['PaymentType']], -input_num('costs'), PT_WORKORDER,
 			$_POST['PaymentType']);
@@ -106,7 +106,7 @@
 			$_POST['dim1'], $_POST['dim2'],
 			$wo_cost_types[$_POST['PaymentType']], input_num('costs'), PT_WORKORDER,
 			$_POST['PaymentType']);
-		commit_transaction();
+		DBOld::commit_transaction();
 
 		meta_forward($_SERVER['PHP_SELF'], "AddedID=" . $_POST['selected_id']);
 	}
@@ -133,8 +133,8 @@
 	$item_accounts = get_stock_gl_code($wo_details['stock_id']);
 	$_POST['db_acc'] = $item_accounts['assembly_account'];
 	$sql = "SELECT DISTINCT account_code FROM bank_accounts";
-	$rs = db_query($sql, "could not get bank accounts");
-	$r = db_fetch_row($rs);
+	$rs = DBOld::query($sql, "could not get bank accounts");
+	$r = DBOld::fetch_row($rs);
 	$_POST['cr_acc'] = $r[0];
 
 	amount_row(_("Additional Costs:"), 'costs');

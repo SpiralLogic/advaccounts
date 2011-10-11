@@ -143,7 +143,7 @@
 				}
 				break;
 		}
-		if ($str != "" && (!is_closed_trans($row['type'], $row["trans_no"]) || $row['type'] == ST_SALESINVOICE)) {
+		if ($str != "" && (!DB_AuditTrail::is_closed_trans($row['type'], $row["trans_no"]) || $row['type'] == ST_SALESINVOICE)) {
 			return pager_link(_('Edit'), $str, ICON_EDIT);
 		}
 		return '';
@@ -220,14 +220,14 @@
 				if (substr($ajaxsearch, -1) == 0 && substr($ajaxsearch, -3, 1) == '.') {
 					$ajaxsearch = (substr($ajaxsearch, 0, -1));
 				}
-				$sql .= "TotalAmount LIKE " . db_escape('%' . substr($ajaxsearch, 1) . '%') . ") ";
+				$sql .= "TotalAmount LIKE " . DBOld::escape('%' . substr($ajaxsearch, 1) . '%') . ") ";
 				continue;
 			}
 			;
 			if (stripos($ajaxsearch, '/') > 0) {
 				$sql .= " tran_date LIKE '%" . Dates::date2sql($ajaxsearch, false) . "%' OR";
 			}
-			$ajaxsearch = db_escape("%" . $ajaxsearch . "%");
+			$ajaxsearch = DBOld::escape("%" . $ajaxsearch . "%");
 			$sql .= " name LIKE $ajaxsearch OR trans_no LIKE $ajaxsearch OR reference LIKE $ajaxsearch
 			 OR order_ LIKE $ajaxsearch OR br_name LIKE $ajaxsearch) ";
 		}
@@ -241,10 +241,10 @@
 	}
 	if ($_POST['reference'] != ALL_TEXT) {
 		$number_like = "%" . $_POST['reference'] . "%";
-		$sql .= " AND trans.reference LIKE " . db_escape($number_like);
+		$sql .= " AND trans.reference LIKE " . DBOld::escape($number_like);
 	}
 	if (isset($_POST['customer_id']) && $_POST['customer_id'] != ALL_TEXT) {
-		$sql .= " AND trans.debtor_no = " . db_escape($_POST['customer_id']);
+		$sql .= " AND trans.debtor_no = " . DBOld::escape($_POST['customer_id']);
 	}
 	if (isset($_POST['filterType']) && $_POST['filterType'] != ALL_TEXT) {
 		if ($_POST['filterType'] == '1') {
@@ -273,7 +273,7 @@
 		}
 	}
 	//------------------------------------------------------------------------------------------------
-	db_query("set @bal:=0");
+	DBOld::query("set @bal:=0");
 	$cols = array(_("Type") => array('fun' => 'systype_name', 'ord' => ''),
 		_("#") => array('fun' => 'trans_view', 'ord' => ''),
 		_("Order") => array('fun' => 'order_view'),

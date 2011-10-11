@@ -62,7 +62,7 @@
 
 		$result = get_work_order_issue_details($issue_no);
 
-		if (db_num_rows($result) == 0) {
+		if (DBOld::num_rows($result) == 0) {
 			ui_msgs::display_note(_("There are no items for this issue."));
 		}
 		else
@@ -77,7 +77,7 @@
 
 			$total_cost = 0;
 
-			while ($myrow = db_fetch($result))
+			while ($myrow = DBOld::fetch($result))
 			{
 
 				alt_table_row_color($k);

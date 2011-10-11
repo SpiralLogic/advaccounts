@@ -57,7 +57,7 @@
 
 	$result = get_loc_details($_POST['stock_id']);
 
-	while ($myrow = db_fetch($result))
+	while ($myrow = DBOld::fetch($result))
 	{
 
 		alt_table_row_color($k);

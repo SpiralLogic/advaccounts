@@ -1,11 +1,11 @@
 <?php
-/**
- * Created by JetBrains PhpStorm.
- * User: Complex
- * Date: 15/08/11
- * Time: 5:46 AM
- *
- */
+	/**
+	 * Created by JetBrains PhpStorm.
+	 * User: Complex
+	 * Date: 15/08/11
+	 * Time: 5:46 AM
+	 *
+	 */
 
 	Class Insert extends Query {
 
@@ -19,7 +19,7 @@
 			parent::__construct();
 			if ($table) $this->into($table);
 			$this->type = DB::INSERT;
-			$query = DB::query('SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = ' . DB::quote($table), null,false);
+			$query = DB::query('SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = ' . DB::quote($table), null, false);
 			while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 				$this->hasFeilds[] = $row['COLUMN_NAME'];
 			}
@@ -31,6 +31,10 @@
 			return $this;
 		}
 
+		/**
+		 * @param $values array key pair
+		 * @return Insert
+		 */
 		public function values($values) {
 			$this->data = (array)$values + $this->data;
 			return $this;

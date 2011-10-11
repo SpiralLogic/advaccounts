@@ -16,7 +16,7 @@
 																 $date_, $ref, $amount, $discount, $memo_, $rate = 0, $charge = 0) {
 
 		$amount = $amount * -1;
-		begin_transaction();
+		DBOld::begin_transaction();
 
 		$company_record = get_company_prefs();
 
@@ -26,7 +26,7 @@
 		$bank_gl_account = get_bank_gl_account($bank_account);
 
 		if ($trans_no != 0) {
-			delete_comments(ST_CUSTREFUND, $trans_no);
+			DB_Comments::delete(ST_CUSTREFUND, $trans_no);
 			void_bank_trans(ST_CUSTREFUND, $trans_no, true);
 			void_gl_trans(ST_CUSTREFUND, $trans_no, true);
 			void_cust_allocations(ST_CUSTREFUND, $trans_no, $date_);
@@ -71,11 +71,11 @@
 			$date_, $amount - $charge, PT_CUSTOMER, $customer_id,
 			Banking::get_customer_currency($customer_id), "", $rate);
 
-		add_comments(ST_CUSTREFUND, $refund_no, $date_, $memo_);
+		DB_Comments::add(ST_CUSTREFUND, $refund_no, $date_, $memo_);
 
 		Refs::save(ST_CUSTREFUND, $refund_no, $ref);
 
-		commit_transaction();
+		DBOld::commit_transaction();
 
 		return $refund_no;
 	}
@@ -83,14 +83,14 @@
 	//-------------------------------------------------------------------------------------------------
 
 	function void_customer_refund($type, $type_no) {
-		begin_transaction();
+		DBOld::begin_transaction();
 
 		void_bank_trans($type, $type_no, true);
 		void_gl_trans($type, $type_no, true);
 		void_cust_allocations($type, $type_no);
 		void_customer_trans($type, $type_no);
 
-		commit_transaction();
+		DBOld::commit_transaction();
 	}
 
 ?>

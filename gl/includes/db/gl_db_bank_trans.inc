@@ -37,24 +37,24 @@
 		$sql = "INSERT INTO bank_trans (type, trans_no, bank_act, ref,
 		trans_date, amount, person_type_id, person_id, undeposited) ";
 		$undeposited = ($bank_act == 5 && $type == 12) ? 1 : 0;
-		$sql .= "VALUES ($type, $trans_no, '$bank_act', " . db_escape($ref) . ", '$sqlDate',
-		" . db_escape($amount_bank) . ", " . db_escape($person_type_id)
-		 . ", " . db_escape($person_id) . ", " . db_escape($undeposited) . ")";
+		$sql .= "VALUES ($type, $trans_no, '$bank_act', " . DBOld::escape($ref) . ", '$sqlDate',
+		" . DBOld::escape($amount_bank) . ", " . DBOld::escape($person_type_id)
+		 . ", " . DBOld::escape($person_id) . ", " . DBOld::escape($undeposited) . ")";
 
 		if ($err_msg == "")
 			$err_msg = "The bank transaction could not be inserted";
 
-		db_query($sql, $err_msg);
+		DBOld::query($sql, $err_msg);
 	}
 
 	//----------------------------------------------------------------------------------------
 
 	function exists_bank_trans($type, $type_no) {
-		$sql = "SELECT trans_no FROM bank_trans WHERE type=" . db_escape($type)
-		 . " AND trans_no=" . db_escape($type_no);
-		$result = db_query($sql, "Cannot retreive a bank transaction");
+		$sql = "SELECT trans_no FROM bank_trans WHERE type=" . DBOld::escape($type)
+		 . " AND trans_no=" . DBOld::escape($type_no);
+		$result = DBOld::query($sql, "Cannot retreive a bank transaction");
 
-		return (db_num_rows($result) > 0);
+		return (DBOld::num_rows($result) > 0);
 	}
 
 	//----------------------------------------------------------------------------------------
@@ -64,28 +64,28 @@
 		FROM bank_trans, bank_accounts
 		WHERE bank_accounts.id=bank_trans.bank_act ";
 		if ($type != null)
-			$sql .= " AND type=" . db_escape($type);
+			$sql .= " AND type=" . DBOld::escape($type);
 		if ($trans_no != null)
-			$sql .= " AND bank_trans.trans_no = " . db_escape($trans_no);
+			$sql .= " AND bank_trans.trans_no = " . DBOld::escape($trans_no);
 		if ($person_type_id != null)
-			$sql .= " AND bank_trans.person_type_id = " . db_escape($person_type_id);
+			$sql .= " AND bank_trans.person_type_id = " . DBOld::escape($person_type_id);
 		if ($person_id != null)
-			$sql .= " AND bank_trans.person_id = " . db_escape($person_id);
+			$sql .= " AND bank_trans.person_id = " . DBOld::escape($person_id);
 		$sql .= " ORDER BY trans_date, bank_trans.id";
 
-		return db_query($sql, "query for bank transaction");
+		return DBOld::query($sql, "query for bank transaction");
 	}
 
 	//----------------------------------------------------------------------------------------
 
 	function get_gl_trans_value($account, $type, $trans_no) {
 		$sql = "SELECT SUM(amount) FROM gl_trans WHERE account="
-		 . db_escape($account) . " AND type=" . db_escape($type)
-		 . " AND type_no=" . db_escape($trans_no);
+		 . DBOld::escape($account) . " AND type=" . DBOld::escape($type)
+		 . " AND type_no=" . DBOld::escape($trans_no);
 
-		$result = db_query($sql, "query for gl trans value");
+		$result = DBOld::query($sql, "query for gl trans value");
 
-		$row = db_fetch_row($result);
+		$row = DBOld::fetch_row($result);
 		return $row[0];
 	}
 
@@ -93,12 +93,12 @@
 
 	function void_bank_trans($type, $type_no, $nested = false) {
 		if (!$nested)
-			begin_transaction();
+			DBOld::begin_transaction();
 
 		$sql = "UPDATE bank_trans SET amount=0
-		WHERE type=" . db_escape($type) . " AND trans_no=" . db_escape($type_no);
+		WHERE type=" . DBOld::escape($type) . " AND trans_no=" . DBOld::escape($type_no);
 
-		$result = db_query($sql, "could not void bank transactions for type=$type and trans_no=$type_no");
+		$result = DBOld::query($sql, "could not void bank transactions for type=$type and trans_no=$type_no");
 
 		void_gl_trans($type, $type_no, true);
 
@@ -113,7 +113,7 @@
 		void_trans_tax_details($type, $type_no);
 
 		if (!$nested)
-			commit_transaction();
+			DBOld::commit_transaction();
 	}
 
 	//----------------------------------------------------------------------------------

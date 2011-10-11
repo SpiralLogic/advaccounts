@@ -33,7 +33,7 @@
 
 		//Get Accounts directly under this group/type
 		$result = get_gl_accounts(null, null, $type);
-		while ($account = db_fetch($result))
+		while ($account = DBOld::fetch($result))
 		{
 			$prev_balance = get_gl_balance_from_to("", $from, $account["account_code"], $dimension, $dimension2);
 
@@ -67,7 +67,7 @@
 
 		//Get Account groups/types under this group/type
 		$result = get_account_types(false, false, $type);
-		while ($accounttype = db_fetch($result))
+		while ($accounttype = DBOld::fetch($result))
 		{
 			//Print Type Title if has sub types and not previously printed
 			if (!$printtitle) {
@@ -199,7 +199,7 @@
 		$econvert = $lconvert = 0;
 
 		$classresult = get_account_classes(false, 1);
-		while ($class = db_fetch($classresult))
+		while ($class = DBOld::fetch($classresult))
 		{
 			$class_open_total = 0;
 			$class_period_total = 0;
@@ -213,7 +213,7 @@
 
 			//Get Account groups/types under this group/type with no parents
 			$typeresult = get_account_types(false, $class['cid'], -1);
-			while ($accounttype = db_fetch($typeresult))
+			while ($accounttype = DBOld::fetch($typeresult))
 			{
 				$classtotal = display_type($accounttype["id"], $accounttype["name"], $from, $to, $convert, $dec,
 					$rep, $dimension, $dimension2, $pg, $graphics);

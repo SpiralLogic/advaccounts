@@ -785,7 +785,7 @@
 			if (isset($_POST['LInact'][$id]) && (get_post('_Inactive' . $id . '_update') ||
 			 get_post('Update')) && (check_value('Inactive' . $id) != $value)
 			) {
-				update_record_status($id, !$value, $table, $key);
+				DBOld::update_record_status($id, !$value, $table, $key);
 			}
 			echo '<td align="center">' . checkbox(null, $name, $value, true, '', "align='center'")
 			 . hidden("LInact[$id]", $value, false) . '</td>';

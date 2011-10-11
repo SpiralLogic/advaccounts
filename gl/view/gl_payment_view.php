@@ -22,10 +22,10 @@
 	// get the pay-from bank payment info
 	$result = get_bank_trans(ST_BANKPAYMENT, $trans_no);
 
-	if (db_num_rows($result) != 1)
+	if (DBOld::num_rows($result) != 1)
 		Errors::show_db_error("duplicate payment bank transaction found", "");
 
-	$from_trans = db_fetch($result);
+	$from_trans = DBOld::fetch($result);
 
 	$company_currency = Banking::get_company_currency();
 
@@ -73,7 +73,7 @@
 
 	$items = get_gl_trans(ST_BANKPAYMENT, $trans_no);
 
-	if (db_num_rows($items) == 0) {
+	if (DBOld::num_rows($items) == 0) {
 		ui_msgs::display_note(_("There are no items for this payment."));
 	}
 	else
@@ -103,7 +103,7 @@
 		$k = 0; //row colour counter
 		$total_amount = 0;
 
-		while ($item = db_fetch($items))
+		while ($item = DBOld::fetch($items))
 		{
 
 			if ($item["account"] != $from_trans["account_code"]) {

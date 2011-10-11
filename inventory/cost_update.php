@@ -80,12 +80,12 @@
 	$sql = "SELECT description, units, material_cost, labour_cost,
 	overhead_cost, mb_flag
 	FROM stock_master
-	WHERE stock_id=" . db_escape($_POST['stock_id']) . "
+	WHERE stock_id=" . DBOld::escape($_POST['stock_id']) . "
 	GROUP BY description, units, material_cost, labour_cost, overhead_cost, mb_flag";
-	$result = db_query($sql);
+	$result = DBOld::query($sql);
 	Errors::check_db_error("The cost details for the item could not be retrieved", $sql);
 
-	$myrow = db_fetch($result);
+	$myrow = DBOld::fetch($result);
 	div_start('cost_table');
 	hidden("OldMaterialCost", $myrow["material_cost"]);
 	hidden("OldLabourCost", $myrow["labour_cost"]);

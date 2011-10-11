@@ -65,12 +65,12 @@
 	function can_delete($selected_id) {
 		if ($selected_id == -1)
 			return false;
-		$type = db_escape($selected_id);
+		$type = DBOld::escape($selected_id);
 
 		$sql = "SELECT COUNT(*) FROM chart_master
 		WHERE account_type=$type";
-		$result = db_query($sql, "could not query chart master");
-		$myrow = db_fetch_row($result);
+		$result = DBOld::query($sql, "could not query chart master");
+		$myrow = DBOld::fetch_row($result);
 		if ($myrow[0] > 0) {
 			ui_msgs::display_error(_("Cannot delete this account group because GL accounts have been created referring to it."));
 			return false;
@@ -78,8 +78,8 @@
 
 		$sql = "SELECT COUNT(*) FROM chart_types
 		WHERE parent=$type";
-		$result = db_query($sql, "could not query chart types");
-		$myrow = db_fetch_row($result);
+		$result = DBOld::query($sql, "could not query chart types");
+		$myrow = DBOld::fetch_row($result);
 		if ($myrow[0] > 0) {
 			ui_msgs::display_error(_("Cannot delete this account group because GL account groups have been created referring to it."));
 			return false;
@@ -115,7 +115,7 @@
 	table_header($th);
 
 	$k = 0;
-	while ($myrow = db_fetch($result))
+	while ($myrow = DBOld::fetch($result))
 	{
 
 		alt_table_row_color($k);

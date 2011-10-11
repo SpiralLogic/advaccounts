@@ -29,8 +29,8 @@
 		$to = Dates::date2sql($to);
 		$sql = "SELECT SUM(amount) FROM bank_trans WHERE bank_act='$account'
 	AND trans_date < '$to'";
-		$result = db_query($sql, "The starting balance on hand could not be calculated");
-		$row = db_fetch_row($result);
+		$result = DBOld::query($sql, "The starting balance on hand could not be calculated");
+		$row = DBOld::fetch_row($result);
 		return $row[0];
 	}
 
@@ -43,7 +43,7 @@
 		AND trans_date <= '$to'
 		ORDER BY trans_date,bank_trans.id";
 
-		return db_query($sql, "The transactions for '$account' could not be retrieved");
+		return DBOld::query($sql, "The transactions for '$account' could not be retrieved");
 	}
 
 	function print_bank_transactions() {
@@ -85,7 +85,7 @@
 
 		$trans = get_bank_transactions($from, $to, $account['id']);
 
-		$rows = db_num_rows($trans);
+		$rows = DBOld::num_rows($trans);
 		if ($prev_balance != 0.0 || $rows != 0) {
 			$rep->Font('bold');
 			$rep->TextCol(0, 3, $act);
@@ -102,7 +102,7 @@
 				// the transactions.
 				$total_debit = $total_credit = 0;
 
-				while ($myrow = db_fetch($trans))
+				while ($myrow = DBOld::fetch($trans))
 				{
 					$total += $myrow['amount'];
 

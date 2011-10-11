@@ -170,8 +170,8 @@
 		$edit = false;
 		//if($name=='stock_id')	ui_msgs::display_notification('<pre>'.print_r($_POST, true).'</pre>');
 		//if($name=='curr_default') ui_msgs::display_notification($opts['search_submit']);
-		if ($result = db_query($sql)) {
-			while ($contact_row = db_fetch($result)) {
+		if ($result = DBOld::query($sql)) {
+			while ($contact_row = DBOld::fetch($result)) {
 				$value = $contact_row[0];
 				$descr = $opts['format'] == null ? $contact_row[1] : call_user_func($opts['format'], $contact_row);
 				$sel = '';
@@ -203,7 +203,7 @@
 				}
 				$selector .= "<option $sel $optclass value='$value'>$descr</option>\n";
 			}
-			db_free_result($result);
+			DBOld::free_result($result);
 		}
 		// Prepend special option.
 		if ($spec_option !== false) { // if special option used - add it
@@ -719,7 +719,7 @@ JS
 			echo "<td class='label'>$label</td>\n";
 		}
 		echo "<td>";
-		while ($unit = db_fetch($result)) {
+		while ($unit = DBOld::fetch($result)) {
 			$units[$unit['abbr']] = $unit['name'];
 		}
 		echo array_selector($name, $value, $units, array('disabled' => !$enabled));
@@ -1043,7 +1043,7 @@ JS
 
 	function bank_reconciliation_list($account, $name, $selected_id = null, $submit_on_change = false, $special_option = false) {
 		$sql = "SELECT reconciled, reconciled FROM bank_trans
-		WHERE bank_act=" . db_escape($account) . " AND reconciled IS NOT NULL
+		WHERE bank_act=" . DBOld::escape($account) . " AND reconciled IS NOT NULL
 		GROUP BY reconciled";
 
 		return combo_input($name, $selected_id, $sql, 'id', 'reconciled', array('spec_option' => $special_option, 'format' => '_format_date', 'spec_id' => '', 'select_submit' => $submit_on_change,
@@ -1519,9 +1519,9 @@ JS
 
 	function print_profiles_list_row($label, $name, $selected_id = null, $spec_opt = false, $submit_on_change = true) {
 		$sql = "SELECT profile FROM print_profiles" . " GROUP BY profile";
-		$result = db_query($sql, 'cannot get all profile names');
+		$result = DBOld::query($sql, 'cannot get all profile names');
 		$profiles = array();
-		while ($myrow = db_fetch($result)) {
+		while ($myrow = DBOld::fetch($result)) {
 			$profiles[$myrow['profile']] = $myrow['profile'];
 		}
 		echo "<tr>";
@@ -1537,9 +1537,9 @@ JS
 		static $printers; // query only once for page display
 		if (!$printers) {
 			$sql = "SELECT id, name, description FROM printers";
-			$result = db_query($sql, 'cannot get all printers');
+			$result = DBOld::query($sql, 'cannot get all printers');
 			$printers = array();
-			while ($myrow = db_fetch($result)) {
+			while ($myrow = DBOld::fetch($result)) {
 				$printers[$myrow['id']] = $myrow['name'] . '&nbsp;-&nbsp;' . $myrow['description'];
 			}
 		}
@@ -1644,7 +1644,7 @@ JS
 
 		include_once(APP_PATH . "admin/db/tags_db.inc");
 		$results = get_tags($type, $all);
-		while ($tag = db_fetch($results)) {
+		while ($tag = DBOld::fetch($results)) {
 			$tags[$tag['id']] = $tag['name'];
 		}
 		if (!isset($tags)) {

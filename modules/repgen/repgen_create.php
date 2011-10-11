@@ -35,8 +35,8 @@
 		if (empty($short))
 			return false;
 		$query = "SELECT attrib,id FROM xx_reports WHERE typ='info'";
-		$res = db_query($query);
-		while ($f = db_fetch($res))
+		$res = DBOld::query($query);
+		while ($f = DBOld::fetch($res))
 		{
 			$h = explode("|", $f["attrib"]);
 			if (($h[0] == $short) && (trim($f["id"]) != $id_new))
@@ -53,24 +53,24 @@
 	}
 
 	function store($id, $info, $sql, $group, $group_type) { // stores the records info, select and group in the database
-		db_query("BEGIN");
+		DBOld::query("BEGIN");
 		$query = "DELETE FROM xx_reports WHERE (id ='" . $id . "' AND typ='info')";
-		db_query($query);
+		DBOld::query($query);
 		$sql = strtr($sql, "'", "^"); // translate ' into ^
 		$query = "INSERT INTO xx_reports VALUES ('" . $id . "','info','" . $info . "')";
-		db_query($query);
+		DBOld::query($query);
 
 		$query = "DELETE FROM xx_reports WHERE (id ='" . $id . "' AND typ='select')";
-		db_query($query);
+		DBOld::query($query);
 		$sql = strtr($sql, "'", "^"); // translate ' into !
 		$query = "INSERT INTO xx_reports VALUES ('" . $id . "','select','" . $sql . "')";
-		db_query($query);
+		DBOld::query($query);
 		$query = "DELETE FROM xx_reports WHERE (id ='" . $id . "' AND typ='group')";
-		db_query($query);
+		DBOld::query($query);
 		$g = $group . "|" . $group_type;
 		$query = "INSERT INTO xx_reports VALUES ('" . $id . "','group','" . $g . "')";
-		db_query($query);
-		db_query("COMMIT");
+		DBOld::query($query);
+		DBOld::query("COMMIT");
 	}
 
 	###
@@ -101,7 +101,7 @@
 			// test, if $sql is correct SQL Statement
 			$sql = urldecode(stripslashes($sql));
 			$sql1 = str_replace("", '', $sql);
-			db_query($sql1, "SQL-Statement : '" . $sql . "' " . SQL_ERROR . ":<BR>" . NOTSTORED);
+			DBOld::query($sql1, "SQL-Statement : '" . $sql . "' " . SQL_ERROR . ":<BR>" . NOTSTORED);
 			$info = $short . "|" . $date_ . "|" . $author . "|" . $long . "|" . $print_format . "|" . $print_size . "|" . $report_type;
 			store($id_new, $info, $sql, $group, $group_type);
 			$url = REPGENDIR . "/repgen_strings.php";
@@ -125,7 +125,7 @@
 			// test, if $sql is correct SQL Statement
 			$sql = urldecode(stripslashes($sql));
 			$sql1 = str_replace("", '', $sql);
-			db_query($sql1, "Entered values NOT saved!");
+			DBOld::query($sql1, "Entered values NOT saved!");
 			$info = $short . "|" . $date_ . "|" . $author . "|" . $long . "|" . $print_format . "|" . $print_size . "|" . $report_type;
 			store($id_new, $info, $sql, $group, $group_type);
 			$url = REPGENDIR . "/repgen_graphics.php?id_new=" . $id_new . "&long=" . urlencode($long);

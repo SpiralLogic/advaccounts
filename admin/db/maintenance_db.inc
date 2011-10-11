@@ -214,9 +214,9 @@
 
 	function db_drop_db($connection) {
 
-		$res = db_query("show table status");
+		$res = DBOld::query("show table status");
 		$all_tables = array();
-		while ($row = db_fetch($res))
+		while ($row = DBOld::fetch($res))
 		{
 			$all_tables[] = $row;
 		}
@@ -224,14 +224,14 @@
 		foreach ($all_tables as $table)
 		{
 
-			db_query("DROP TABLE `" . $table['Name'] . "`");
+			DBOld::query("DROP TABLE `" . $table['Name'] . "`");
 		}
 		//deleting the tables, how??
 		return true;
 	}
 
 	function db_import($filename, $connection, $force = true) {
-		global $db;
+		DBOld::getInstance();
 
 		$allowed_commands = array(
 			"create" => 'table_queries',
@@ -254,7 +254,7 @@
 		$sql_errors = array();
 
 		ini_set("max_execution_time", "180");
-		db_query("SET foreign_key_checks=0");
+		DBOld::query("SET foreign_key_checks=0");
 
 		// uncrompress gziped backup files
 		if (strpos($filename, ".gz") || strpos($filename, ".GZ"))
@@ -305,9 +305,9 @@
 		if (is_array($drop_queries)) {
 			foreach ($drop_queries as $drop_query)
 			{
-				if (!db_query($drop_query[0])) {
-					if (!in_array(db_error_no(), $ignored_mysql_errors) || !$force)
-						$sql_errors[] = array(db_error_msg($db), $drop_query[1]);
+				if (!DBOld::query($drop_query[0])) {
+					if (!in_array(DBOld::error_no(), $ignored_mysql_errors) || !$force)
+						$sql_errors[] = array(DBOld::error_msg($db), $drop_query[1]);
 				}
 			}
 		}
@@ -316,9 +316,9 @@
 		if (is_array($table_queries)) {
 			foreach ($table_queries as $table_query)
 			{
-				if (!db_query($table_query[0])) {
-					if (!in_array(db_error_no(), $ignored_mysql_errors) || !$force) {
-						$sql_errors[] = array(db_error_msg($db), $table_query[1]);
+				if (!DBOld::query($table_query[0])) {
+					if (!in_array(DBOld::error_no(), $ignored_mysql_errors) || !$force) {
+						$sql_errors[] = array(DBOld::error_msg($db), $table_query[1]);
 					}
 				}
 			}
@@ -328,14 +328,14 @@
 		if (is_array($data_queries)) {
 			foreach ($data_queries as $data_query)
 			{
-				if (!db_query($data_query[0])) {
-					if (!in_array(db_error_no(), $ignored_mysql_errors) || !$force)
-						$sql_errors[] = array(db_error_msg($db), $data_query[1]);
+				if (!DBOld::query($data_query[0])) {
+					if (!in_array(DBOld::error_no(), $ignored_mysql_errors) || !$force)
+						$sql_errors[] = array(DBOld::error_msg($db), $data_query[1]);
 				}
 			}
 		}
 
-		db_query("SET foreign_key_checks=1");
+		DBOld::query("SET foreign_key_checks=1");
 
 		if (count($sql_errors)) {
 			// display first failure message; the rest are probably derivative
@@ -452,9 +452,9 @@
 		//$out.="use ".$db.";\n"; we don't use this option.
 
 		// get auto_increment values and names of all tables
-		$res = db_query("show table status");
+		$res = DBOld::query("show table status");
 		$all_tables = array();
-		while ($row = db_fetch($res))
+		while ($row = DBOld::fetch($res))
 		{
 
 			$all_tables[] = $row;
@@ -462,8 +462,8 @@
 		// get table structures
 		foreach ($all_tables as $table)
 		{
-			$res1 = db_query("SHOW CREATE TABLE `" . $table['Name'] . "`");
-			$tmp = db_fetch($res1);
+			$res1 = DBOld::query("SHOW CREATE TABLE `" . $table['Name'] . "`");
+			$tmp = DBOld::fetch($res1);
 			$table_sql[$table['Name']] = $tmp["Create Table"];
 		}
 
@@ -511,24 +511,24 @@
 					$out .= "### Data of table `" . $tablename . "` ###\n\n";
 
 					// check if field types are NULL or NOT NULL
-					$res3 = db_query("SHOW COLUMNS FROM `" . $tablename . "`");
+					$res3 = DBOld::query("SHOW COLUMNS FROM `" . $tablename . "`");
 
 					$field_null = array();
-					for ($j = 0; $j < db_num_rows($res3); $j++)
+					for ($j = 0; $j < DBOld::num_rows($res3); $j++)
 					{
-						$row3 = db_fetch($res3);
+						$row3 = DBOld::fetch($res3);
 						$field_null[] = $row3[2] == 'YES' && $row3[4] === null;
 					}
 
-					$res2 = db_query("SELECT * FROM `" . $tablename . "`");
-					for ($j = 0; $j < db_num_rows($res2); $j++)
+					$res2 = DBOld::query("SELECT * FROM `" . $tablename . "`");
+					for ($j = 0; $j < DBOld::num_rows($res2); $j++)
 					{
 						$out .= "INSERT INTO `" . $tablename . "` VALUES (";
-						$row2 = db_fetch_row($res2);
+						$row2 = DBOld::fetch_row($res2);
 						// run through each field
-						for ($k = 0; $k < $nf = db_num_fields($res2); $k++)
+						for ($k = 0; $k < $nf = DBOld::num_fields($res2); $k++)
 						{
-							$out .= db_escape($row2[$k], $field_null[$k]);
+							$out .= DBOld::escape($row2[$k], $field_null[$k]);
 							if ($k < ($nf - 1))
 								$out .= ", ";
 						}

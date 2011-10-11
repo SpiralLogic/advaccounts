@@ -103,11 +103,11 @@
 		// Otherwise if you try to fullfill item quantities separately will give error.
 		$sql = "SELECT item_code, quantity_ordered, quantity_received, qty_invoiced
 		FROM purch_order_details
-		WHERE order_no=" . db_escape($_SESSION['PO']->order_no) . " ORDER BY po_detail_item";
-		$result = db_query($sql, "could not query purch order details");
+		WHERE order_no=" . DBOld::escape($_SESSION['PO']->order_no) . " ORDER BY po_detail_item";
+		$result = DBOld::query($sql, "could not query purch order details");
 		Errors::check_db_error("Could not check that the details of the purchase order had not been changed by another user ", $sql);
 		$line_no = 1;
-		while ($myrow = db_fetch($result)) {
+		while ($myrow = DBOld::fetch($result)) {
 			$ln_item = $_SESSION['PO']->line_items[$line_no];
 			// only compare against items that are outstanding
 			$qty_outstanding = $ln_item->quantity - $ln_item->qty_received;

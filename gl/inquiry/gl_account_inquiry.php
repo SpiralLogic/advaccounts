@@ -159,7 +159,7 @@
 		$j = 1;
 		$k = 0; //row colour counter
 
-		while ($myrow = db_fetch($result))
+		while ($myrow = DBOld::fetch($result))
 		{
 
 			alt_table_row_color($k);
@@ -204,7 +204,7 @@
 		}
 
 		end_table(2);
-		if (db_num_rows($result) == 0)
+		if (DBOld::num_rows($result) == 0)
 			ui_msgs::display_note(_("No general ledger transactions have been created for the specified criteria."), 0, 1);
 	}
 

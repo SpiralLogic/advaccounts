@@ -24,15 +24,15 @@
 	//		'Type', 'Null', 'Key', 'Default', 'Extra'
 	//
 	function check_table($pref, $table, $field = null, $properties = null) {
-		$tables = @db_query("SHOW TABLES LIKE '" . $pref . $table . "'");
-		if (!db_num_rows($tables))
+		$tables = @DBOld::query("SHOW TABLES LIKE '" . $pref . $table . "'");
+		if (!DBOld::num_rows($tables))
 			return 1; // no such table or error
 
-		$fields = @db_query("SHOW COLUMNS FROM " . $pref . $table);
+		$fields = @DBOld::query("SHOW COLUMNS FROM " . $pref . $table);
 		if (!isset($field))
 			return 0; // table exists
 
-		while ($row = db_fetch_assoc($fields))
+		while ($row = DBOld::fetch_assoc($fields))
 		{
 			if ($row['Field'] == $field) {
 				if (!isset($properties))

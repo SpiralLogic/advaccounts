@@ -45,7 +45,7 @@
 	$kitset_or_service = false;
 
 	div_start('status_tbl');
-	if (is_service($mb_flag)) {
+	if ($_POST['mb_flag'] == STOCK_SERVICE) {
 		ui_msgs::display_note(_("This is a service and cannot have a stock holding, only the total quantity on outstanding sales orders is shown."), 0, 1);
 		$kitset_or_service = true;
 	}
@@ -68,7 +68,7 @@
 	$j = 1;
 	$k = 0; //row colour counter
 
-	while ($myrow = db_fetch($loc_details))
+	while ($myrow = DBOld::fetch($loc_details))
 	{
 
 		alt_table_row_color($k);

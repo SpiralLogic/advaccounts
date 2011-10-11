@@ -91,7 +91,7 @@
 			$result = get_gl_trans($type, $trans_no);
 
 			if ($result) {
-				while ($row = db_fetch($result)) {
+				while ($row = DBOld::fetch($result)) {
 					if ($row['amount'] == 0) continue;
 					$date = $row['tran_date'];
 					$cart->add_gl_item($row['account'], $row['dimension_id'],

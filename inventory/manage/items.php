@@ -117,7 +117,7 @@
 			$input_error = 1;
 			ui_msgs::display_error(_('The item code cannot contain any of the following characters -  & + OR a space OR quotes'));
 			ui_view::set_focus('NewStockID');
-		} elseif ($new_item && db_num_rows(get_item_kit($_POST['NewStockID']))) {
+		} elseif ($new_item && DBOld::num_rows(get_item_kit($_POST['NewStockID']))) {
 			$input_error = 1;
 			ui_msgs::display_error(_("This item code is already assigned to stock item or sale kit."));
 			ui_view::set_focus('NewStockID');
@@ -138,8 +138,8 @@
 					$_POST['dimension_id'], $_POST['dimension2_id'],
 					check_value('no_sale'), check_value('editable'));
 
-				update_record_status($_POST['NewStockID'], $_POST['inactive'], 'stock_master', 'stock_id');
-				update_record_status($_POST['NewStockID'], $_POST['inactive'], 'item_codes', 'item_code');
+				DBOld::update_record_status($_POST['NewStockID'], $_POST['inactive'], 'stock_master', 'stock_id');
+				DBOld::update_record_status($_POST['NewStockID'], $_POST['inactive'], 'item_codes', 'item_code');
 				ui_view::set_focus('stock_id');
 				$Ajax->activate('stock_id'); // in case of status change
 				ui_msgs::display_notification(_("Item has been updated."));
@@ -179,15 +179,15 @@
 	//------------------------------------------------------------------------------------
 
 	function check_usage($stock_id, $dispmsg = true) {
-		$sqls = array("SELECT COUNT(*) FROM stock_moves WHERE stock_id=" . db_escape($stock_id) => _('Cannot delete this item because there are stock movements that refer to this item.'),
-			"SELECT COUNT(*) FROM bom WHERE component=" . db_escape($stock_id) => _('Cannot delete this item record because there are bills of material that require this part as a component.'),
-			"SELECT COUNT(*) FROM sales_order_details WHERE stk_code=" . db_escape($stock_id) => _('Cannot delete this item because there are existing purchase order items for it.'),
-			"SELECT COUNT(*) FROM purch_order_details WHERE item_code=" . db_escape($stock_id) => _('Cannot delete this item because there are existing purchase order items for it.')
+		$sqls = array("SELECT COUNT(*) FROM stock_moves WHERE stock_id=" . DBOld::escape($stock_id) => _('Cannot delete this item because there are stock movements that refer to this item.'),
+			"SELECT COUNT(*) FROM bom WHERE component=" . DBOld::escape($stock_id) => _('Cannot delete this item record because there are bills of material that require this part as a component.'),
+			"SELECT COUNT(*) FROM sales_order_details WHERE stk_code=" . DBOld::escape($stock_id) => _('Cannot delete this item because there are existing purchase order items for it.'),
+			"SELECT COUNT(*) FROM purch_order_details WHERE item_code=" . DBOld::escape($stock_id) => _('Cannot delete this item because there are existing purchase order items for it.')
 		);
 		$msg = '';
 		foreach ($sqls as $sql => $err) {
-			$result = db_query($sql, "could not query stock usage");
-			$myrow = db_fetch_row($result);
+			$result = DBOld::query($sql, "could not query stock usage");
+			$myrow = DBOld::fetch_row($result);
 			if ($myrow[0] > 0) {
 				$msg = $err;
 				break;
@@ -196,11 +196,11 @@
 
 		if ($msg == '') {
 			$kits = get_where_used($stock_id);
-			$num_kits = db_num_rows($kits);
+			$num_kits = DBOld::num_rows($kits);
 			if ($num_kits) {
 				$msg = _("This item cannot be deleted because some code aliases or foreign codes was entered for it, or there are kits defined using this item as component") . ':<br>';
 				while ($num_kits--) {
-					$kit = db_fetch($kits);
+					$kit = DBOld::fetch($kits);
 					$msg .= "'" . $kit[0] . "'";
 					if ($num_kits) $msg .= ',';
 				}
@@ -324,7 +324,7 @@
 	table_section(2);
 	table_section_title(_("GL Accounts"));
 	gl_all_accounts_list_row(_("Sales Account:"), 'sales_account', $_POST['sales_account']);
-	if (!is_service($_POST['mb_flag'])) {
+	if (!$_POST['mb_flag'] == STOCK_SERVICE) {
 		gl_all_accounts_list_row(_("Inventory Account:"), 'inventory_account', $_POST['inventory_account']);
 		gl_all_accounts_list_row(_("C.O.G.S. Account:"), 'cogs_account', $_POST['cogs_account']);
 		gl_all_accounts_list_row(_("Inventory Adjustments Account:"), 'adjustment_account', $_POST['adjustment_account']);

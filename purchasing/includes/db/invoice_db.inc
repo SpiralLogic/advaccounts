@@ -21,11 +21,11 @@
 		From suppliers, payment_terms, tax_groups
 		WHERE suppliers.tax_group_id = tax_groups.id
 		AND suppliers.payment_terms=payment_terms.terms_indicator
-		AND suppliers.supplier_id = " . db_escape($supplier_id);
+		AND suppliers.supplier_id = " . DBOld::escape($supplier_id);
 
-		$result = db_query($sql, "The supplier record selected: " . $supplier_id . " cannot be retrieved");
+		$result = DBOld::query($sql, "The supplier record selected: " . $supplier_id . " cannot be retrieved");
 
-		$myrow = db_fetch($result);
+		$myrow = DBOld::fetch($result);
 
 		$supp_trans->supplier_id = $supplier_id;
 		$supp_trans->supplier_name = $myrow['supp_name'];
@@ -57,18 +57,18 @@
 	function update_supp_received_items_for_invoice($id, $po_detail_item, $qty_invoiced, $chg_price = null) {
 		if ($chg_price != null) {
 			$sql = "SELECT act_price, unit_price FROM purch_order_details WHERE
-			po_detail_item = " . db_escape($po_detail_item);
-			$result = db_query($sql, "The old actual price of the purchase order line could not be retrieved");
-			$row = db_fetch_row($result);
+			po_detail_item = " . DBOld::escape($po_detail_item);
+			$result = DBOld::query($sql, "The old actual price of the purchase order line could not be retrieved");
+			$row = DBOld::fetch_row($result);
 			$ret = $row[0];
 
 			$unit_price = $row[1]; //Added by Rasmus
 
 			$sql = "SELECT delivery_date FROM grn_batch,grn_items WHERE
 			grn_batch.id = grn_items.grn_batch_id AND "
-			 . "grn_items.id=" . db_escape($id);
-			$result = db_query($sql, "The old delivery date from the received record cout not be retrieved");
-			$row = db_fetch_row($result);
+			 . "grn_items.id=" . DBOld::escape($id);
+			$result = DBOld::query($sql, "The old delivery date from the received record cout not be retrieved");
+			$row = DBOld::fetch_row($result);
 			$date = $row[0];
 		}
 		else
@@ -78,18 +78,18 @@
 			$unit_price = 0; // Added by Rasmus
 		}
 		$sql = "UPDATE purch_order_details
-		SET qty_invoiced = qty_invoiced + " . db_escape($qty_invoiced);
+		SET qty_invoiced = qty_invoiced + " . DBOld::escape($qty_invoiced);
 
 		if ($chg_price != null)
-			$sql .= " , act_price = " . db_escape($chg_price);
+			$sql .= " , act_price = " . DBOld::escape($chg_price);
 
-		$sql .= " WHERE po_detail_item = " . db_escape($po_detail_item);
-		db_query($sql, "The quantity invoiced of the purchase order line could not be updated");
+		$sql .= " WHERE po_detail_item = " . DBOld::escape($po_detail_item);
+		DBOld::query($sql, "The quantity invoiced of the purchase order line could not be updated");
 
 		$sql = "UPDATE grn_items
-        SET quantity_inv = quantity_inv + " . db_escape($qty_invoiced) . "
-        WHERE id = " . db_escape($id);
-		db_query($sql, "The quantity invoiced off the items received record could not be updated");
+        SET quantity_inv = quantity_inv + " . DBOld::escape($qty_invoiced) . "
+        WHERE id = " . DBOld::escape($id);
+		DBOld::query($sql, "The quantity invoiced off the items received record could not be updated");
 		return array($ret, $date, $unit_price);
 	}
 
@@ -112,7 +112,7 @@
 
 		//$company_currency = Banking::get_company_currency();
 		/*Start an sql transaction */
-		begin_transaction();
+		DBOld::begin_transaction();
 
 		$tax_total = 0;
 		$taxes = $supp_trans->get_taxes($supp_trans->tax_group_id);
@@ -282,7 +282,7 @@
 		/*Post a balance post if $total != 0 */
 		add_gl_balance($trans_type, $invoice_id, $date_, -$total, PT_SUPPLIER, $supp_trans->supplier_id);
 
-		add_comments($trans_type, $invoice_id, $date_, $supp_trans->Comments);
+		DB_Comments::add($trans_type, $invoice_id, $date_, $supp_trans->Comments);
 
 		Refs::save($trans_type, $invoice_id, $supp_trans->reference);
 
@@ -309,7 +309,7 @@
 			}
 		}
 
-		commit_transaction();
+		DBOld::commit_transaction();
 
 		return $invoice_id;
 	}
@@ -327,21 +327,21 @@
 		WHERE supp_invoice_items.supp_trans_no = supp_trans.trans_no
 		AND supp_invoice_items.po_detail_item_id = purch_order_details.po_detail_item
 		AND purch_orders.supplier_id = supp_trans.supplier_id
-		AND purch_order_details.order_no = " . db_escape($po_number);
+		AND purch_order_details.order_no = " . DBOld::escape($po_number);
 
-		return db_query($sql, "The invoices/credits for the po $po_number could not be retreived");
+		return DBOld::query($sql, "The invoices/credits for the po $po_number could not be retreived");
 	}
 
 	//----------------------------------------------------------------------------------------
 
 	function read_supp_invoice($trans_no, $trans_type, &$supp_trans) {
 		$sql = "SELECT supp_trans.*, supp_name FROM supp_trans,suppliers
-		WHERE trans_no = " . db_escape($trans_no) . " AND type = " . db_escape($trans_type) . "
+		WHERE trans_no = " . DBOld::escape($trans_no) . " AND type = " . DBOld::escape($trans_type) . "
 		AND suppliers.supplier_id=supp_trans.supplier_id";
-		$result = db_query($sql, "Cannot retreive a supplier transaction");
+		$result = DBOld::query($sql, "Cannot retreive a supplier transaction");
 
-		if (db_num_rows($result) == 1) {
-			$trans_row = db_fetch($result);
+		if (DBOld::num_rows($result) == 1) {
+			$trans_row = DBOld::fetch($result);
 
 			$supp_trans->supplier_id = $trans_row["supplier_id"];
 			$supp_trans->supplier_name = $trans_row["supp_name"];
@@ -359,9 +359,9 @@
 
 			$result = get_supp_invoice_items($trans_type, $id);
 
-			if (db_num_rows($result) > 0) {
+			if (DBOld::num_rows($result) > 0) {
 
-				while ($details_row = db_fetch($result))
+				while ($details_row = DBOld::fetch($result))
 				{
 
 					if ($details_row["gl_code"] == 0) {
@@ -394,14 +394,14 @@
 	function get_matching_invoice_item($stock_id, $po_item_id) {
 		$sql = "SELECT *, tran_date FROM supp_invoice_items, supp_trans
 		WHERE supp_trans_type = " . ST_SUPPINVOICE . " AND stock_id = "
-		 . db_escape($stock_id) . " AND po_detail_item_id = " . db_escape($po_item_id) . "
+		 . DBOld::escape($stock_id) . " AND po_detail_item_id = " . DBOld::escape($po_item_id) . "
 		AND supp_trans_no = trans_no";
-		$result = db_query($sql, "Cannot retreive supplier transaction detail records");
-		return db_fetch($result);
+		$result = DBOld::query($sql, "Cannot retreive supplier transaction detail records");
+		return DBOld::fetch($result);
 	}
 
 	function void_supp_invoice($type, $type_no) {
-		begin_transaction();
+		DBOld::begin_transaction();
 
 		$trans = get_supp_trans($type_no, $type);
 
@@ -416,9 +416,9 @@
 		$result = get_supp_invoice_items($type, $type_no);
 
 		// now remove this invoice/credit from any GRNs/POs that it's related to
-		if (db_num_rows($result) > 0) {
+		if (DBOld::num_rows($result) > 0) {
 			$date_ = Dates::Today();
-			while ($details_row = db_fetch($result))
+			while ($details_row = DBOld::fetch($result))
 			{
 				if ((int)$details_row["grn_item_id"] > 0) // it can be empty for GL items
 				{
@@ -450,10 +450,10 @@
 							$sql .= "act_price=" . $match['unit_price'] . ", ";
 						$sql .= "quantity_received = quantity_received + " . -$details_row["quantity"] . "
     				    WHERE po_detail_item = " . $details_row["po_detail_item_id"];
-						db_query($sql, "a purchase order details record could not be updated. This receipt of goods has not been processed ");
+						DBOld::query($sql, "a purchase order details record could not be updated. This receipt of goods has not been processed ");
 						$sql = "UPDATE grn_items SET qty_recd=qty_recd+" . -$details_row["quantity"] . "
 						WHERE id=" . $details_row["grn_item_id"];
-						db_query($sql);
+						DBOld::query($sql);
 					}
 					else
 					{
@@ -480,7 +480,7 @@
 		void_supp_invoice_items($type, $type_no);
 		void_trans_tax_details($type, $type_no);
 
-		commit_transaction();
+		DBOld::commit_transaction();
 	}
 
 	//----------------------------------------------------------------------------------------

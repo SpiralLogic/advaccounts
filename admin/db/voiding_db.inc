@@ -102,7 +102,7 @@
 		}
 
 		// only add an entry if it's actually been voided
-		add_audit_trail($type, $type_no, $date_, _("Voided.") . "\n" . $memo_);
+		DB_AuditTrail::add($type, $type_no, $date_, _("Voided.") . "\n" . $memo_);
 		add_voided_entry($type, $type_no, $date_, $memo_);
 		return true;
 	}
@@ -110,12 +110,12 @@
 	//--------------------------------------------------------------------------------------------------
 
 	function get_voided_entry($type, $type_no) {
-		$sql = "SELECT * FROM voided WHERE type=" . db_escape($type)
-		 . " AND id=" . db_escape($type_no);
+		$sql = "SELECT * FROM voided WHERE type=" . DBOld::escape($type)
+		 . " AND id=" . DBOld::escape($type_no);
 
-		$result = db_query($sql, "could not query voided transaction table");
+		$result = DBOld::query($sql, "could not query voided transaction table");
 
-		return db_fetch($result);
+		return DBOld::fetch($result);
 	}
 
 	//--------------------------------------------------------------------------------------------------
@@ -123,10 +123,10 @@
 	function add_voided_entry($type, $type_no, $date_, $memo_) {
 		$date = Dates::date2sql($date_);
 		$sql = "INSERT INTO voided (type, id, date_, memo_)
-		VALUES (" . db_escape($type) . ", " . db_escape($type_no) . ", "
-		 . db_escape($date) . ", " . db_escape($memo_) . ")";
+		VALUES (" . DBOld::escape($type) . ", " . DBOld::escape($type_no) . ", "
+		 . DBOld::escape($date) . ", " . DBOld::escape($memo_) . ")";
 
-		db_query($sql, "could not add voided transaction entry");
+		DBOld::query($sql, "could not add voided transaction entry");
 	}
 
 	//--------------------------------------------------------------------------------------------------

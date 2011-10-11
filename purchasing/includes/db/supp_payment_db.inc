@@ -12,7 +12,7 @@
 	function add_supp_payment($supplier_id, $date_, $bank_account,
 														$amount, $discount, $ref, $memo_, $rate = 0, $charge = 0) {
 
-		begin_transaction();
+		DBOld::begin_transaction();
 
 		$supplier_currency = Banking::get_supplier_currency($supplier_id);
 		$bank_account_currency = Banking::get_bank_account_currency($bank_account);
@@ -71,11 +71,11 @@
 			$supplier_id, $bank_account_currency,
 			"Could not add the supplier payment bank transaction");
 
-		add_comments($trans_type, $payment_id, $date_, $memo_);
+		DB_Comments::add($trans_type, $payment_id, $date_, $memo_);
 
 		Refs::save($trans_type, $payment_id, $ref);
 
-		commit_transaction();
+		DBOld::commit_transaction();
 
 		return $payment_id;
 	}
@@ -83,14 +83,14 @@
 	//------------------------------------------------------------------------------------------------
 
 	function void_supp_payment($type, $type_no) {
-		begin_transaction();
+		DBOld::begin_transaction();
 
 		void_bank_trans($type, $type_no, true);
 		void_gl_trans($type, $type_no, true);
 		void_supp_allocations($type, $type_no);
 		void_supp_trans($type, $type_no);
 
-		commit_transaction();
+		DBOld::commit_transaction();
 	}
 
 ?>

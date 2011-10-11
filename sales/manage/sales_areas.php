@@ -29,17 +29,17 @@
 
 		if ($input_error != 1) {
 			if ($selected_id != -1) {
-				$sql = "UPDATE areas SET description=" . db_escape(
-					$_POST['description']) . " WHERE area_code = " . db_escape($selected_id);
+				$sql = "UPDATE areas SET description=" . DBOld::escape(
+					$_POST['description']) . " WHERE area_code = " . DBOld::escape($selected_id);
 				$note = _('Selected sales area has been updated');
 			}
 			else
 			{
-				$sql = "INSERT INTO areas (description) VALUES (" . db_escape($_POST['description']) . ")";
+				$sql = "INSERT INTO areas (description) VALUES (" . DBOld::escape($_POST['description']) . ")";
 				$note = _('New sales area has been added');
 			}
 
-			db_query($sql, "The sales area could not be updated or added");
+			DBOld::query($sql, "The sales area could not be updated or added");
 			ui_msgs::display_notification($note);
 			$Mode = 'RESET';
 		}
@@ -51,16 +51,16 @@
 
 		// PREVENT DELETES IF DEPENDENT RECORDS IN 'debtors_master'
 
-		$sql = "SELECT COUNT(*) FROM cust_branch WHERE area=" . db_escape($selected_id);
-		$result = db_query($sql, "check failed");
-		$myrow = db_fetch_row($result);
+		$sql = "SELECT COUNT(*) FROM cust_branch WHERE area=" . DBOld::escape($selected_id);
+		$result = DBOld::query($sql, "check failed");
+		$myrow = DBOld::fetch_row($result);
 		if ($myrow[0] > 0) {
 			$cancel_delete = 1;
 			ui_msgs::display_error(_("Cannot delete this area because customer branches have been created using this area."));
 		}
 		if ($cancel_delete == 0) {
-			$sql = "DELETE FROM areas WHERE area_code=" . db_escape($selected_id);
-			db_query($sql, "could not delete sales area");
+			$sql = "DELETE FROM areas WHERE area_code=" . DBOld::escape($selected_id);
+			DBOld::query($sql, "could not delete sales area");
 
 			ui_msgs::display_notification(_('Selected sales area has been deleted'));
 		} //end if Delete area
@@ -78,7 +78,7 @@
 
 	$sql = "SELECT * FROM areas";
 	if (!check_value('show_inactive')) $sql .= " WHERE !inactive";
-	$result = db_query($sql, "could not get areas");
+	$result = DBOld::query($sql, "could not get areas");
 
 	start_form();
 	start_table(Config::get('tables.style') . "  width=30%");
@@ -89,7 +89,7 @@
 	table_header($th);
 	$k = 0;
 
-	while ($myrow = db_fetch($result))
+	while ($myrow = DBOld::fetch($result))
 	{
 
 		alt_table_row_color($k);
@@ -114,10 +114,10 @@
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {
 			//editing an existing area
-			$sql = "SELECT * FROM areas WHERE area_code=" . db_escape($selected_id);
+			$sql = "SELECT * FROM areas WHERE area_code=" . DBOld::escape($selected_id);
 
-			$result = db_query($sql, "could not get area");
-			$myrow = db_fetch($result);
+			$result = DBOld::query($sql, "could not get area");
+			$myrow = DBOld::fetch($result);
 
 			$_POST['description'] = $myrow["description"];
 		}

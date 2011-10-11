@@ -84,17 +84,17 @@
 		$Ajax->activate('gl_items');
 		$input_error = false;
 
-		$sql = "SELECT account_code, account_name FROM chart_master WHERE account_code=" . db_escape(
+		$sql = "SELECT account_code, account_name FROM chart_master WHERE account_code=" . DBOld::escape(
 			$_POST['gl_code']);
-		$result = db_query($sql, "get account information");
-		if (db_num_rows($result) == 0) {
+		$result = DBOld::query($sql, "get account information");
+		if (DBOld::num_rows($result) == 0) {
 			ui_msgs::display_error(_("The account code entered is not a valid code, this line cannot be added to the transaction."));
 			ui_view::set_focus('gl_code');
 			$input_error = true;
 		}
 		else
 		{
-			$myrow = db_fetch_row($result);
+			$myrow = DBOld::fetch_row($result);
 			$gl_act_name = $myrow[1];
 			if (!check_num('amount')) {
 				ui_msgs::display_error(_("The amount entered is not numeric. This line cannot be added to the transaction."));

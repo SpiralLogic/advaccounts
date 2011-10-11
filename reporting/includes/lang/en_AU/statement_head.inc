@@ -172,8 +172,8 @@
 	$this->NewLine();
 	$id = $myrow['payment_terms'];
 	$sql = "SELECT terms FROM payment_terms WHERE terms_indicator='$id'";
-	$result = db_query($sql, "could not get paymentterms");
-	$row = db_fetch($result);
+	$result = DBOld::query($sql, "could not get paymentterms");
+	$row = DBOld::fetch($result);
 	$str = $row["terms"];
 	$this->Font('italic');
 	$this->TextWrap($ccol, $this->row, $right - $ccol, $doc_Payment_Terms . ":  " . $str);

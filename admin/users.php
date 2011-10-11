@@ -76,7 +76,7 @@
 				add_user($_POST['user_id'], $_POST['real_name'], $password,
 					$_POST['phone'], $_POST['email'], $_POST['Access'], $_POST['language'],
 					$_POST['profile'], check_value('rep_popup'), $_POST['pos']);
-				$id = db_insert_id();
+				$id = DBOld::insert_id();
 				// use current user display preferences as start point for new user
 				update_user_display_prefs($id, user_price_dec(), user_qty_dec(), user_exrate_dec(),
 					user_percent_dec(), user_show_gl_info(), user_show_codes(),
@@ -120,7 +120,7 @@
 
 	$k = 0; //row colour counter
 
-	while ($myrow = db_fetch($result))
+	while ($myrow = DBOld::fetch($result))
 	{
 
 		alt_table_row_color($k);

@@ -12,85 +12,85 @@
 
 	function add_tag($type, $name, $description) {
 		$sql = "INSERT INTO tags (type, name, description)
-		VALUES (" . db_escape($type) . ", " . db_escape($name) . ", " . db_escape($description) . ")";
+		VALUES (" . DBOld::escape($type) . ", " . DBOld::escape($name) . ", " . DBOld::escape($description) . ")";
 
-		return db_query($sql);
+		return DBOld::query($sql);
 	}
 
 	//--------------------------------------------------------------------------------------
 
 	function update_tag($id, $name, $description, $type = null) {
-		$sql = "UPDATE tags SET name=" . db_escape($name) . ",
-                                       description=" . db_escape($description);
+		$sql = "UPDATE tags SET name=" . DBOld::escape($name) . ",
+                                       description=" . DBOld::escape($description);
 		if ($type != null)
-			$sql .= ", type=" . db_escape($type);
+			$sql .= ", type=" . DBOld::escape($type);
 
-		$sql .= " WHERE id = " . db_escape($id);
+		$sql .= " WHERE id = " . DBOld::escape($id);
 
-		return db_query($sql);
+		return DBOld::query($sql);
 	}
 
 	//--------------------------------------------------------------------------------------
 
 	function get_tags($type, $all = false) {
-		$sql = "SELECT * FROM tags WHERE type=" . db_escape($type);
+		$sql = "SELECT * FROM tags WHERE type=" . DBOld::escape($type);
 
 		if (!$all) $sql .= " AND !inactive";
 
 		$sql .= " ORDER BY name";
 
-		return db_query($sql, "could not get tags");
+		return DBOld::query($sql, "could not get tags");
 	}
 
 	//--------------------------------------------------------------------------------------
 
 	function get_tag($id) {
-		$sql = "SELECT * FROM tags WHERE id = " . db_escape($id);
+		$sql = "SELECT * FROM tags WHERE id = " . DBOld::escape($id);
 
-		$result = db_query($sql, "could not get tag");
+		$result = DBOld::query($sql, "could not get tag");
 
-		return db_fetch($result);
+		return DBOld::fetch($result);
 	}
 
 	//--------------------------------------------------------------------------------------
 
 	function get_tag_type($id) {
-		$sql = "SELECT type FROM tags WHERE id = " . db_escape($id);
+		$sql = "SELECT type FROM tags WHERE id = " . DBOld::escape($id);
 
-		$result = db_query($sql, "could not get tag type");
+		$result = DBOld::query($sql, "could not get tag type");
 
-		$row = db_fetch_row($result);
+		$row = DBOld::fetch_row($result);
 		return $row[0];
 	}
 
 	//--------------------------------------------------------------------------------------
 
 	function get_tag_name($id) {
-		$sql = "SELECT name FROM tags WHERE id = " . db_escape($id);
+		$sql = "SELECT name FROM tags WHERE id = " . DBOld::escape($id);
 
-		$result = db_query($sql, "could not get tag name");
+		$result = DBOld::query($sql, "could not get tag name");
 
-		$row = db_fetch_row($result);
+		$row = DBOld::fetch_row($result);
 		return $row[0];
 	}
 
 	//--------------------------------------------------------------------------------------
 
 	function get_tag_description($id) {
-		$sql = "SELECT description FROM tags WHERE id = " . db_escape($id);
+		$sql = "SELECT description FROM tags WHERE id = " . DBOld::escape($id);
 
-		$result = db_query($sql, "could not get tag description");
+		$result = DBOld::query($sql, "could not get tag description");
 
-		$row = db_fetch_row($result);
+		$row = DBOld::fetch_row($result);
 		return $row[0];
 	}
 
 	//--------------------------------------------------------------------------------------
 
 	function delete_tag($id) {
-		$sql = "DELETE FROM tags WHERE id = " . db_escape($id);
+		$sql = "DELETE FROM tags WHERE id = " . DBOld::escape($id);
 
-		db_query($sql, "could not delete tag");
+		DBOld::query($sql, "could not delete tag");
 	}
 
 	//--------------------------------------------------------------------------------------
@@ -99,9 +99,9 @@
 		foreach ($tagids as $tagid) {
 			if (!$tagid) continue;
 			$sql = "INSERT INTO tag_associations (record_id, tag_id)
-			VALUES (" . db_escape($recordid) . ", " . db_escape($tagid) . ")";
+			VALUES (" . DBOld::escape($recordid) . ", " . DBOld::escape($tagid) . ")";
 
-			db_query($sql, "could not add tag association");
+			DBOld::query($sql, "could not add tag association");
 		}
 	}
 
@@ -122,20 +122,20 @@
 		/* multiply table DELETE syntax available since MySQL 4.0.0:
 			 $sql = "DELETE ta FROM ".''."tag_associations ta
 						 INNER JOIN ".''."tags tags ON tags.id = ta.tag_id
-						 WHERE tags.type = ".db_escape($type)." AND ta.record_id = ".db_escape($recordid);
+						 WHERE tags.type = ".DBOld::escape($type)." AND ta.record_id = ".DBOld::escape($recordid);
 		 */
 		// To support MySQL 3.xx we have to use multiply queries
 		$sql = "SELECT * FROM tag_associations ta
 			INNER JOIN tags tags ON tags.id = ta.tag_id
-			WHERE tags.type = " . db_escape($type) . " AND ta.record_id = " . db_escape($recordid);
+			WHERE tags.type = " . DBOld::escape($type) . " AND ta.record_id = " . DBOld::escape($recordid);
 		if (!$all)
 			$sql .= " AND tags.inactive = 0";
-		$result = db_query($sql, "could not select tag associations");
+		$result = DBOld::query($sql, "could not select tag associations");
 
-		while ($ta = db_fetch($result)) {
+		while ($ta = DBOld::fetch($result)) {
 			$sql2 = "DELETE FROM tag_associations WHERE
 			record_id = '" . $ta['record_id'] . "' AND tag_id=" . $ta['tag_id'];
-			db_query($sql2, "could not delete tag associations");
+			DBOld::query($sql2, "could not delete tag associations");
 		}
 	}
 
@@ -160,9 +160,9 @@
 		$sql = "SELECT $table.* FROM $table
 		INNER JOIN tag_associations AS ta ON ta.record_id = $table.$key
 		INNER JOIN tags AS tags ON ta.tag_id = tags.id
-	        WHERE tags.id = " . db_escape($id);
+	        WHERE tags.id = " . DBOld::escape($id);
 
-		return db_query($sql, "could not get tag associations for tag");
+		return DBOld::query($sql, "could not get tag associations for tag");
 	}
 
 	//--------------------------------------------------------------------------------------
@@ -170,9 +170,9 @@
 	function get_tags_associated_with_record($type, $recordid) {
 		$sql = "SELECT tags.* FROM tag_associations AS ta
 				INNER JOIN tags AS tags ON tags.id = ta.tag_id
-				WHERE tags.type = $type	AND ta.record_id = " . db_escape($recordid);
+				WHERE tags.type = $type	AND ta.record_id = " . DBOld::escape($recordid);
 
-		return db_query($sql, "could not get tags associations for record");
+		return DBOld::query($sql, "could not get tags associations for record");
 	}
 
 	//--------------------------------------------------------------------------------------

@@ -28,7 +28,7 @@
 
 		$credit_type = $write_off_acc == 0 ? 'Return' : 'WriteOff';
 
-		begin_transaction();
+		DBOld::begin_transaction();
 
 		$company_data = get_company_prefs();
 		$branch_data = get_branch_accounts($credit_note->Branch);
@@ -80,7 +80,7 @@
 			set_document_parent($credit_note);
 		}
 		else {
-			delete_comments(ST_CUSTCREDIT, $credit_no);
+			DB_Comments::delete(ST_CUSTCREDIT, $credit_no);
 			void_cust_allocations(ST_CUSTCREDIT, $credit_no, $credit_date);
 			void_gl_trans(ST_CUSTCREDIT, $credit_no, true);
 			void_stock_move(ST_CUSTCREDIT, $credit_no);
@@ -170,13 +170,13 @@
 		/*Post a balance post if $total != 0 */
 		add_gl_balance(ST_CUSTCREDIT, $credit_no, $credit_date, -$total, PT_CUSTOMER, $credit_note->customer_id);
 
-		add_comments(ST_CUSTCREDIT, $credit_no, $credit_date, $credit_note->Comments);
+		DB_Comments::add(ST_CUSTCREDIT, $credit_no, $credit_date, $credit_note->Comments);
 
 		if ($trans_no == 0) {
 			Refs::save(ST_CUSTCREDIT, $credit_no, $credit_note->reference);
 		}
 
-		commit_transaction();
+		DBOld::commit_transaction();
 
 		return $credit_no;
 	}

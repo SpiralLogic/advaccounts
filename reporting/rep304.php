@@ -54,14 +54,14 @@
 		AND ((debtor_trans.type=" . ST_CUSTDELIVERY . " AND debtor_trans.version=1) OR stock_moves.type=" . ST_CUSTCREDIT . ")
 		AND (stock_master.mb_flag='" . STOCK_PURCHASED . "' OR stock_master.mb_flag='" . STOCK_MANUFACTURE . "')";
 		if ($category != 0)
-			$sql .= " AND stock_master.category_id = " . db_escape($category);
+			$sql .= " AND stock_master.category_id = " . DBOld::escape($category);
 		if ($location != 'all')
-			$sql .= " AND stock_moves.loc_code = " . db_escape($location);
+			$sql .= " AND stock_moves.loc_code = " . DBOld::escape($location);
 		if ($fromcust != -1)
-			$sql .= " AND debtors_master.debtor_no = " . db_escape($fromcust);
+			$sql .= " AND debtors_master.debtor_no = " . DBOld::escape($fromcust);
 		$sql .= " GROUP BY stock_master.stock_id, debtors_master.name ORDER BY stock_master.category_id,
 			stock_master.stock_id, debtors_master.name";
-		return db_query($sql, "No transactions were returned");
+		return DBOld::query($sql, "No transactions were returned");
 	}
 
 	//----------------------------------------------------------------------------------------------------
@@ -128,7 +128,7 @@
 		$total1 = $grandtotal1 = 0.0;
 		$total2 = $grandtotal2 = 0.0;
 		$catt = '';
-		while ($trans = db_fetch($res))
+		while ($trans = DBOld::fetch($res))
 		{
 			if ($catt != $trans['cat_description']) {
 				if ($catt != '') {

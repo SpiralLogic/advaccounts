@@ -10,7 +10,7 @@
 		static function init() {
 			ini_set('unserialize_callback_func', 'adv_autoload_handler'); // set your callback_function
 			spl_autoload_extensions('.php,.inc');
-			spl_autoload_register('adv_autoload_handler');
+			spl_autoload_register(array(__CLASS__, 'includeClass'));
 
 			self::add_path(
 				array(
@@ -31,5 +31,12 @@
 			$path = (array)$path;
 			$path[] .= get_include_path();
 			set_include_path(implode(PATH_SEPARATOR, $path));
+		}
+
+		public static function includeClass($class) {
+			$path = explode('_', strtolower($class));
+			$class = array_pop($path);
+			if (count($path) > 0) add_path(APP_PATH . 'includes/' . implode(DS, $path));
+			include $class . '.php';
 		}
 	}

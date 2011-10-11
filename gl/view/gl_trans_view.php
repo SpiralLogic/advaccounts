@@ -45,13 +45,13 @@
 	$sql = "SELECT gl.*, cm.account_name, IF(ISNULL(refs.reference), '', refs.reference) AS reference FROM gl_trans as gl
 	LEFT JOIN chart_master as cm ON gl.account = cm.account_code
 	LEFT JOIN refs as refs ON (gl.type=refs.type AND gl.type_no=refs.id)"
-	 . " WHERE gl.type= " . db_escape($_GET['type_id'])
-	 . " AND gl.type_no = " . db_escape($_GET['trans_no'])
+	 . " WHERE gl.type= " . DBOld::escape($_GET['type_id'])
+	 . " AND gl.type_no = " . DBOld::escape($_GET['trans_no'])
 	 . " ORDER BY counter";
-	$result = db_query($sql, "could not get transactions");
+	$result = DBOld::query($sql, "could not get transactions");
 	//alert("sql = ".$sql);
 
-	if (db_num_rows($result) == 0) {
+	if (DBOld::num_rows($result) == 0) {
 		echo "<p><center>" . _("No general ledger transactions have been created for") . " " .
 		 $systypes_array[$_GET['type_id']] . " " . _("number") . " " . $_GET['trans_no'] . "</center></p><br><br>";
 		end_page(true);
@@ -76,7 +76,7 @@
 	$k = 0; //row colour counter
 	$heading_shown = false;
 
-	while ($myrow = db_fetch($result))
+	while ($myrow = DBOld::fetch($result))
 	{
 		if ($myrow['amount'] == 0) continue;
 		if (!$heading_shown) {

@@ -74,9 +74,9 @@
 	function check_delete($name) {
 		// check if selected profile is used by any user
 		if ($name == '') return 0; // cannot delete system default profile
-		$sql = "SELECT * FROM users WHERE print_profile=" . db_escape($name);
-		$res = db_query($sql, 'cannot check printing profile usage');
-		return db_num_rows($res);
+		$sql = "SELECT * FROM users WHERE print_profile=" . DBOld::escape($name);
+		$res = DBOld::query($sql, 'cannot check printing profile usage');
+		return DBOld::num_rows($res);
 	}
 
 	//-------------------------------------------------------------------------------------------
@@ -136,7 +136,7 @@
 
 	$result = get_print_profile(get_post('profile_id'));
 	$prints = array();
-	while ($myrow = db_fetch($result)) {
+	while ($myrow = DBOld::fetch($result)) {
 		$prints[$myrow['report']] = $myrow['printer'];
 	}
 

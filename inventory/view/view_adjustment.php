@@ -25,7 +25,7 @@
 	$adjustment_items = get_stock_adjustment_items($trans_no);
 	$k = 0;
 	$header_shown = false;
-	while ($adjustment = db_fetch($adjustment_items))
+	while ($adjustment = DBOld::fetch($adjustment_items))
 	{
 
 		if (!$header_shown) {

@@ -34,11 +34,11 @@
 				stock_category
 			WHERE stock_master.category_id=stock_category.category_id AND NOT stock_master.inactive";
 		if ($category != 0)
-			$sql .= " AND stock_category.category_id = " . db_escape($category);
+			$sql .= " AND stock_category.category_id = " . DBOld::escape($category);
 		$sql .= " ORDER BY stock_master.category_id,
 				stock_master.stock_id";
 
-		return db_query($sql, "No transactions were returned");
+		return DBOld::query($sql, "No transactions were returned");
 	}
 
 	function get_kits($category = 0) {
@@ -50,9 +50,9 @@
 			ON i.category_id=c.category_id";
 		$sql .= " WHERE !i.is_foreign AND i.item_code!=i.stock_id";
 		if ($category != 0)
-			$sql .= " AND c.category_id = " . db_escape($category);
+			$sql .= " AND c.category_id = " . DBOld::escape($category);
 		$sql .= " GROUP BY i.item_code";
-		return db_query($sql, "No kits were returned");
+		return DBOld::query($sql, "No kits were returned");
 	}
 
 	//----------------------------------------------------------------------------------------------------
@@ -118,7 +118,7 @@
 
 		$catgor = '';
 		$_POST['sales_type_id'] = $salestype;
-		while ($myrow = db_fetch($result))
+		while ($myrow = DBOld::fetch($result))
 		{
 			if ($catgor != $myrow['description']) {
 				$rep->Line($rep->row - $rep->lineHeight);
@@ -162,7 +162,7 @@
 		$result = get_kits($category);
 
 		$catgor = '';
-		while ($myrow = db_fetch($result))
+		while ($myrow = DBOld::fetch($result))
 		{
 			if ($catgor != $myrow['cat_name']) {
 				if ($catgor == '') {

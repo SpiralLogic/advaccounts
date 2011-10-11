@@ -71,7 +71,7 @@
 			$begin = $_POST['TransFromDate'];
 		$begin = Dates::add_days($begin, -1);
 
-		while ($account = db_fetch($accounts))
+		while ($account = DBOld::fetch($accounts))
 		{
 			$prev = get_balance($account["account_code"], 0, 0, $begin, $_POST['TransFromDate'], false, false);
 			$curr = get_balance($account["account_code"], 0, 0, $_POST['TransFromDate'], $_POST['TransToDate'], true, true);

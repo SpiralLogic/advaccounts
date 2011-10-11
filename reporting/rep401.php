@@ -36,13 +36,13 @@
 			stock_master,
 			bom
 		WHERE stock_master.stock_id=bom.component
-		AND bom.parent >= " . db_escape($from) . "
-		AND bom.parent <= " . db_escape($to) . "
+		AND bom.parent >= " . DBOld::escape($from) . "
+		AND bom.parent <= " . DBOld::escape($to) . "
 		ORDER BY
 			bom.parent,
 			bom.component";
 
-		return db_query($sql, "No transactions were returned");
+		return DBOld::query($sql, "No transactions were returned");
 	}
 
 	//----------------------------------------------------------------------------------------------------
@@ -76,7 +76,7 @@
 
 		$res = getTransactions($frompart, $topart);
 		$parent = '';
-		while ($trans = db_fetch($res))
+		while ($trans = DBOld::fetch($res))
 		{
 			if ($parent != $trans['parent']) {
 				if ($parent != '') {

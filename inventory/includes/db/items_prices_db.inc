@@ -12,48 +12,48 @@
 	function add_item_price($stock_id, $sales_type_id, $curr_abrev, $price, $stockid = null) {
 		if ($stockid == null) $stockid = get_stockid($stock_id);
 		$sql = "INSERT INTO prices (stockid, stock_id, sales_type_id, curr_abrev, price)
-		VALUES (" . db_escape($stockid) . ", " . db_escape($stock_id) . ", " . db_escape($sales_type_id)
-		 . ", " . db_escape($curr_abrev) . ", " . db_escape($price) . ")";
+		VALUES (" . DBOld::escape($stockid) . ", " . DBOld::escape($stock_id) . ", " . DBOld::escape($sales_type_id)
+		 . ", " . DBOld::escape($curr_abrev) . ", " . DBOld::escape($price) . ")";
 
-		db_query($sql, "an item price could not be added");
+		DBOld::query($sql, "an item price could not be added");
 	}
 
 	function update_item_price($price_id, $sales_type_id, $curr_abrev, $price) {
 
-		$sql = "UPDATE prices SET sales_type_id=" . db_escape($sales_type_id) . ",
-		curr_abrev=" . db_escape($curr_abrev) . ",
-		price=" . db_escape($price) . " WHERE id=" . db_escape($price_id);
-		db_query($sql, "an item price could not be updated");
+		$sql = "UPDATE prices SET sales_type_id=" . DBOld::escape($sales_type_id) . ",
+		curr_abrev=" . DBOld::escape($curr_abrev) . ",
+		price=" . DBOld::escape($price) . " WHERE id=" . DBOld::escape($price_id);
+		DBOld::query($sql, "an item price could not be updated");
 	}
 
 	function delete_item_price($price_id) {
-		$sql = "DELETE FROM prices WHERE id= " . db_escape($price_id);
-		db_query($sql, "an item price could not be deleted");
+		$sql = "DELETE FROM prices WHERE id= " . DBOld::escape($price_id);
+		DBOld::query($sql, "an item price could not be deleted");
 	}
 
 	function get_prices($stock_id) {
 		$sql = "SELECT sales_types.sales_type, prices.*
 		FROM prices, sales_types
 		WHERE prices.sales_type_id = sales_types.id
-		AND stock_id=" . db_escape($stock_id)
+		AND stock_id=" . DBOld::escape($stock_id)
 		 . " ORDER BY curr_abrev, sales_type_id";
-		return db_query($sql, "item prices could not be retreived");
+		return DBOld::query($sql, "item prices could not be retreived");
 	}
 
 	function get_stock_price($price_id) {
-		$sql = "SELECT * FROM prices WHERE id=" . db_escape($price_id);
+		$sql = "SELECT * FROM prices WHERE id=" . DBOld::escape($price_id);
 
-		$result = db_query($sql, "price could not be retreived");
+		$result = DBOld::query($sql, "price could not be retreived");
 
-		return db_fetch($result);
+		return DBOld::fetch($result);
 	}
 
 	function get_standard_cost($stock_id) {
 		$sql = "SELECT IF(s.mb_flag='" . STOCK_SERVICE . "', 0, material_cost + labour_cost + overhead_cost) AS std_cost
-			FROM stock_master s WHERE stock_id=" . db_escape($stock_id);
-		$result = db_query($sql, "The standard cost cannot be retrieved");
+			FROM stock_master s WHERE stock_id=" . DBOld::escape($stock_id);
+		$result = DBOld::query($sql, "The standard cost cannot be retrieved");
 
-		$myrow = db_fetch_row($result);
+		$myrow = DBOld::fetch_row($result);
 
 		return $myrow[0];
 	}

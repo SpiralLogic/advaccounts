@@ -53,14 +53,14 @@
             WHERE sales_orders.ord_date >='$fromdate'
                 AND sales_orders.ord_date <='$todate'";
 		if ($category > 0)
-			$sql .= " AND stock_master.category_id=" . db_escape($category);
+			$sql .= " AND stock_master.category_id=" . DBOld::escape($category);
 		if ($location != null)
-			$sql .= " AND sales_orders.from_stk_loc=" . db_escape($location);
+			$sql .= " AND sales_orders.from_stk_loc=" . DBOld::escape($location);
 		if ($backorder)
 			$sql .= " AND sales_order_details.quantity - sales_order_details.qty_sent > 0";
 		$sql .= " ORDER BY sales_orders.order_no";
 
-		return db_query($sql, "Error getting order details");
+		return DBOld::query($sql, "Error getting order details");
 	}
 
 	//----------------------------------------------------------------------------------------------------
@@ -127,7 +127,7 @@
 
 		$result = GetSalesOrders($from, $to, $category, $location, $backorder);
 
-		while ($myrow = db_fetch($result))
+		while ($myrow = DBOld::fetch($result))
 		{
 			if ($rep->row < $rep->bottomMargin + (2 * $rep->lineHeight)) {
 				$orderno = 0;

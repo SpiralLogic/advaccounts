@@ -132,14 +132,14 @@
 			if (empty($ajaxsearch)) {
 				continue;
 			}
-			$ajaxsearch = db_escape("%" . $ajaxsearch . "%");
+			$ajaxsearch = DBOld::escape("%" . $ajaxsearch . "%");
 			$sql .= " AND (supplier.supp_name LIKE $ajaxsearch OR porder.order_no LIKE $ajaxsearch
 		 OR porder.reference LIKE $ajaxsearch
 		  OR porder.requisition_no LIKE $ajaxsearch
 		   OR location.location_name LIKE $ajaxsearch)";
 		}
 	} elseif (isset($order_number) && $order_number != "") {
-		$sql .= "AND porder.reference LIKE " . db_escape('%' . $order_number . '%');
+		$sql .= "AND porder.reference LIKE " . DBOld::escape('%' . $order_number . '%');
 	} else {
 
 		$data_after = Dates::date2sql($_POST['OrdersAfterDate']);
@@ -150,10 +150,10 @@
 
 		if ((isset($_POST['StockLocation']) && $_POST['StockLocation'] != ALL_TEXT) || isset($_GET['NFY'])) {
 			$sql .= " AND porder.into_stock_location = ";
-			$sql .= (!$_GET['NFY'] == 1) ? db_escape($_POST['StockLocation']) : db_escape('NFY');
+			$sql .= (!$_GET['NFY'] == 1) ? DBOld::escape($_POST['StockLocation']) : DBOld::escape('NFY');
 		}
 		if (isset($selected_stock_item)) {
-			$sql .= " AND line.item_code=" . db_escape($selected_stock_item);
+			$sql .= " AND line.item_code=" . DBOld::escape($selected_stock_item);
 		}
 	} //end not order number selected
 

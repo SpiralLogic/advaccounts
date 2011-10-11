@@ -119,12 +119,12 @@
 		$trans = explode(',', $grouprefs);
 		reset($trans);
 		foreach ($trans as $tran) {
-			$sql = "UPDATE bank_trans SET undeposited=1, reconciled=NULL WHERE ref=" . db_escape($tran);
-			db_query($sql, 'Couldn\'t update undesposited status');
+			$sql = "UPDATE bank_trans SET undeposited=1, reconciled=NULL WHERE ref=" . DBOld::escape($tran);
+			DBOld::query($sql, 'Couldn\'t update undesposited status');
 		}
-		$sql = "UPDATE bank_trans SET ref=" . db_escape('Removed group: ' . $grouprefs) . ", amount=0, reconciled='" . Dates::date2sql(Dates::Today()) . "',
+		$sql = "UPDATE bank_trans SET ref=" . DBOld::escape('Removed group: ' . $grouprefs) . ", amount=0, reconciled='" . Dates::date2sql(Dates::Today()) . "',
     undeposited=" . $groupid . " WHERE id=" . $groupid;
-		db_query($sql, "Couldn't update removed group data");
+		DBOld::query($sql, "Couldn't update removed group data");
 		update_data();
 	}
 	if (isset($_SESSION['wa_current_reconcile_date']) && count($_POST) < 1) {
@@ -177,7 +177,7 @@
 	end_table();
 	$_SESSION['wa_current_reconcile_date'] = $_POST['bank_date'];
 	$result = get_max_reconciled(get_post('reconcile_date'), $_POST['bank_account']);
-	if ($row = db_fetch($result)) {
+	if ($row = DBOld::fetch($result)) {
 		$_POST["reconciled"] = price_format($row["end_balance"] - $row["beg_balance"]);
 		$total = $row["total"];
 		if (!isset($_POST["beg_balance"])) { // new selected account/statement

@@ -11,20 +11,20 @@
 	 ***********************************************************************/
 	function add_tax_type($name, $sales_gl_code, $purchasing_gl_code, $rate) {
 		$sql = "INSERT INTO tax_types (name, sales_gl_code, purchasing_gl_code, rate)
-		VALUES (" . db_escape($name) . ", " . db_escape($sales_gl_code)
-		 . ", " . db_escape($purchasing_gl_code) . ", $rate)";
+		VALUES (" . DBOld::escape($name) . ", " . DBOld::escape($sales_gl_code)
+		 . ", " . DBOld::escape($purchasing_gl_code) . ", $rate)";
 
-		db_query($sql, "could not add tax type");
+		DBOld::query($sql, "could not add tax type");
 	}
 
 	function update_tax_type($type_id, $name, $sales_gl_code, $purchasing_gl_code, $rate) {
-		$sql = "UPDATE tax_types SET name=" . db_escape($name) . ",
-		sales_gl_code=" . db_escape($sales_gl_code) . ",
-		purchasing_gl_code=" . db_escape($purchasing_gl_code) . ",
+		$sql = "UPDATE tax_types SET name=" . DBOld::escape($name) . ",
+		sales_gl_code=" . DBOld::escape($sales_gl_code) . ",
+		purchasing_gl_code=" . DBOld::escape($purchasing_gl_code) . ",
 		rate=$rate
-		WHERE id=" . db_escape($type_id);
+		WHERE id=" . DBOld::escape($type_id);
 
-		db_query($sql, "could not update tax type");
+		DBOld::query($sql, "could not update tax type");
 	}
 
 	function get_all_tax_types($all = false) {
@@ -37,13 +37,13 @@
 		AND tax_types.purchasing_gl_code = Chart2.account_code";
 
 		if (!$all) $sql .= " AND !tax_types.inactive";
-		return db_query($sql, "could not get all tax types");
+		return DBOld::query($sql, "could not get all tax types");
 	}
 
 	function get_all_tax_types_simple() {
 		$sql = "SELECT * FROM tax_types";
 
-		return db_query($sql, "could not get all tax types");
+		return DBOld::query($sql, "could not get all tax types");
 	}
 
 	function get_tax_type($type_id) {
@@ -53,34 +53,34 @@
 		FROM tax_types, chart_master AS Chart1,
 		chart_master AS Chart2
 		WHERE tax_types.sales_gl_code = Chart1.account_code
-		AND tax_types.purchasing_gl_code = Chart2.account_code AND id=" . db_escape($type_id);
+		AND tax_types.purchasing_gl_code = Chart2.account_code AND id=" . DBOld::escape($type_id);
 
-		$result = db_query($sql, "could not get tax type");
-		return db_fetch($result);
+		$result = DBOld::query($sql, "could not get tax type");
+		return DBOld::fetch($result);
 	}
 
 	function get_tax_type_default_rate($type_id) {
-		$sql = "SELECT rate FROM tax_types WHERE id=" . db_escape($type_id);
+		$sql = "SELECT rate FROM tax_types WHERE id=" . DBOld::escape($type_id);
 
-		$result = db_query($sql, "could not get tax type rate");
+		$result = DBOld::query($sql, "could not get tax type rate");
 
-		$row = db_fetch_row($result);
+		$row = DBOld::fetch_row($result);
 		return $row[0];
 	}
 
 	function delete_tax_type($type_id) {
-		begin_transaction();
+		DBOld::begin_transaction();
 
-		$sql = "DELETE FROM tax_types WHERE id=" . db_escape($type_id);
+		$sql = "DELETE FROM tax_types WHERE id=" . DBOld::escape($type_id);
 
-		db_query($sql, "could not delete tax type");
+		DBOld::query($sql, "could not delete tax type");
 
 		// also delete any item tax exemptions associated with this type
 		$sql = "DELETE FROM item_tax_type_exemptions WHERE tax_type_id=$type_id";
 
-		db_query($sql, "could not delete item tax type exemptions");
+		DBOld::query($sql, "could not delete item tax type exemptions");
 
-		commit_transaction();
+		DBOld::commit_transaction();
 	}
 
 	/*
@@ -95,14 +95,14 @@
 
 		$sql = "SELECT count(*) FROM "
 		 . "tax_types
-		WHERE (sales_gl_code=" . db_escape($gl_code)
-		 . " OR purchasing_gl_code=" . db_escape($purch_code) . ")";
+		WHERE (sales_gl_code=" . DBOld::escape($gl_code)
+		 . " OR purchasing_gl_code=" . DBOld::escape($purch_code) . ")";
 
 		if ($selected_id != -1)
-			$sql .= " AND id!=" . db_escape($selected_id);
+			$sql .= " AND id!=" . DBOld::escape($selected_id);
 
-		$res = db_query($sql, "could not query gl account uniqueness");
-		$row = db_fetch($res);
+		$res = DBOld::query($sql, "could not query gl account uniqueness");
+		$row = DBOld::fetch($res);
 
 		return $gl_code2 == -1 ? ($row[0] <= 1) : ($row[0] == 0);
 	}

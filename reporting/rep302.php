@@ -20,7 +20,7 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	include_once(APP_PATH . "inventory/includes/db/items_category_db.inc");
-	include_once(APP_PATH . "includes/db/manufacturing_db.inc");
+	include_once(APP_PATH . "includes/manufacturing.inc");
 
 	//----------------------------------------------------------------------------------------------------
 
@@ -40,9 +40,9 @@
 		WHERE stock_master.category_id=stock_category.category_id
 		AND (stock_master.mb_flag='" . STOCK_PURCHASED . "' OR stock_master.mb_flag='" . STOCK_MANUFACTURE . "')";
 		if ($category != 0)
-			$sql .= " AND stock_master.category_id = " . db_escape($category);
+			$sql .= " AND stock_master.category_id = " . DBOld::escape($category);
 		if ($location != 'all')
-			$sql .= " AND IF(stock_moves.stock_id IS NULL, '1=1',stock_moves.loc_code = " . db_escape($location) . ")";
+			$sql .= " AND IF(stock_moves.stock_id IS NULL, '1=1',stock_moves.loc_code = " . DBOld::escape($location) . ")";
 		$sql .= " GROUP BY stock_master.category_id,
 		stock_category.description,
 		stock_master.stock_id,
@@ -50,7 +50,7 @@
 		ORDER BY stock_master.category_id,
 		stock_master.stock_id";
 
-		return db_query($sql, "No transactions were returned");
+		return DBOld::query($sql, "No transactions were returned");
 	}
 
 	function getPeriods($stockid, $location) {
@@ -72,8 +72,8 @@
 			AND (type=13 OR type=11)
 			AND visible=1";
 
-		$TransResult = db_query($sql, "No transactions were returned");
-		return db_fetch($TransResult);
+		$TransResult = DBOld::query($sql, "No transactions were returned");
+		return DBOld::fetch($TransResult);
 	}
 
 	//----------------------------------------------------------------------------------------------------
@@ -132,7 +132,7 @@
 
 		$res = getTransactions($category, $location);
 		$catt = '';
-		while ($trans = db_fetch($res))
+		while ($trans = DBOld::fetch($res))
 		{
 			if ($catt != $trans['cat_description']) {
 				if ($catt != '') {

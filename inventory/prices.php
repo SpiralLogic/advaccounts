@@ -127,7 +127,7 @@
 	table_header($th);
 	$k = 0; //row colour counter
 	$calculated = false;
-	while ($myrow = db_fetch($prices_list))
+	while ($myrow = DBOld::fetch($prices_list))
 	{
 
 		alt_table_row_color($k);
@@ -140,7 +140,7 @@
 		end_row();
 	}
 	end_table();
-	if (db_num_rows($prices_list) == 0) {
+	if (DBOld::num_rows($prices_list) == 0) {
 		if (get_company_pref('add_pct') != -1)
 			$calculated = true;
 		ui_msgs::display_note(_("There are no prices set up for this part."), 1);

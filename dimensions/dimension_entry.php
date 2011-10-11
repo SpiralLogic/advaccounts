@@ -223,7 +223,7 @@
 
 		$tags_result = get_tags_associated_with_record(TAG_DIMENSION, $selected_id);
 		$tagids = array();
-		while ($tag = db_fetch($tags_result))
+		while ($tag = DBOld::fetch($tags_result))
 		{
 			$tagids[] = $tag['id'];
 		}

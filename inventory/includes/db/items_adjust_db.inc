@@ -13,7 +13,7 @@
 
 	function add_stock_adjustment($items, $location, $date_, $type, $increase, $reference, $memo_) {
 
-		begin_transaction();
+		DBOld::begin_transaction();
 		$adj_id = SysTypes::get_next_trans_no(ST_INVADJUST);
 		foreach ($items as $line_item) {
 			if (!$increase)
@@ -21,10 +21,10 @@
 			add_stock_adjustment_item($adj_id, $line_item->stock_id, $location, $date_, $type, $reference,
 				$line_item->quantity, $line_item->standard_cost, $memo_);
 		}
-		add_comments(ST_INVADJUST, $adj_id, $date_, $memo_);
+		DB_Comments::add(ST_INVADJUST, $adj_id, $date_, $memo_);
 		Refs::save(ST_INVADJUST, $adj_id, $reference);
-		add_audit_trail(ST_INVADJUST, $adj_id, $date_);
-		commit_transaction();
+		DB_AuditTrail::add(ST_INVADJUST, $adj_id, $date_);
+		DBOld::commit_transaction();
 		return $adj_id;
 	}
 
@@ -40,7 +40,7 @@
 	function get_stock_adjustment_items($trans_no) {
 		$result = get_stock_moves(ST_INVADJUST, $trans_no);
 
-		if (db_num_rows($result) == 0) {
+		if (DBOld::num_rows($result) == 0) {
 			return null;
 		}
 
@@ -53,7 +53,7 @@
 																		 $quantity, $standard_cost, $memo_) {
 		$mb_flag = get_mb_flag($stock_id);
 
-		if (is_service($mb_flag)) {
+		if ($_POST['mb_flag'] == STOCK_SERVICE) {
 			Errors::show_db_error("Cannot do inventory adjustment for Service item : $stock_id", "");
 		}
 

@@ -52,7 +52,7 @@
 			AND ABS(supp_trans.ov_amount + supp_trans.ov_gst + supp_trans.ov_discount) > 0.004
 			ORDER BY supp_trans.tran_date";
 
-		return db_query($sql, "The supplier details could not be retrieved");
+		return DBOld::query($sql, "The supplier details could not be retrieved");
 	}
 
 	//----------------------------------------------------------------------------------------------------
@@ -138,11 +138,11 @@
 
 		$sql = "SELECT supplier_id, supp_name AS name, curr_code FROM suppliers";
 		if ($fromsupp != ALL_NUMERIC)
-			$sql .= " WHERE supplier_id=" . db_escape($fromsupp);
+			$sql .= " WHERE supplier_id=" . DBOld::escape($fromsupp);
 		$sql .= " ORDER BY supp_name";
-		$result = db_query($sql, "The suppliers could not be retrieved");
+		$result = DBOld::query($sql, "The suppliers could not be retrieved");
 
-		while ($myrow = db_fetch($result))
+		while ($myrow = DBOld::fetch($result))
 		{
 			if (!$convert && $currency != $myrow['curr_code']) continue;
 
@@ -180,10 +180,10 @@
 			$rep->NewLine(1, 2);
 			if (!$summaryOnly) {
 				$res = get_invoices($myrow['supplier_id'], $to);
-				if (db_num_rows($res) == 0)
+				if (DBOld::num_rows($res) == 0)
 					continue;
 				$rep->Line($rep->row + 4);
-				while ($trans = db_fetch($res))
+				while ($trans = DBOld::fetch($res))
 				{
 					$rep->NewLine(1, 2);
 					$rep->TextCol(0, 1, $systypes_array[$trans['type']], -2);

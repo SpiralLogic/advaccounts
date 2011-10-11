@@ -34,9 +34,9 @@
 
 	$sql = str_replace("", '', $sql);
 
-	$res = db_query($sql, SQL_ERROR); // test, if SQL-statement is correct
+	$res = DBOld::query($sql, SQL_ERROR); // test, if SQL-statement is correct
 	$th = array();
-	$num = db_num_fields($res);
+	$num = DBOld::num_fields($res);
 	$i = 0;
 	while ($i < $num)
 	{
@@ -58,7 +58,7 @@
 	for ($j = 0; $j < 10; $j++)
 	{
 		alt_table_row_color($k);
-		$f = db_fetch_row($res);
+		$f = DBOld::fetch_row($res);
 		for ($i = 0; $i < $num; $i++) // write column names
 		{
 			label_cell($f[$i]);

@@ -46,7 +46,7 @@
 		    AND debtor_trans.tran_date<='$todate'
 		ORDER BY salesman.salesman_code, debtor_trans.tran_date";
 
-		return db_query($sql, "Error getting order details");
+		return DBOld::query($sql, "Error getting order details");
 	}
 
 	//----------------------------------------------------------------------------------------------------
@@ -100,7 +100,7 @@
 
 		$result = GetSalesmanTrans($from, $to);
 
-		while ($myrow = db_fetch($result))
+		while ($myrow = DBOld::fetch($result))
 		{
 			if ($rep->row < $rep->bottomMargin + (2 * $rep->lineHeight)) {
 				$salesman = 0;

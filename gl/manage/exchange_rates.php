@@ -168,7 +168,7 @@
 	ui_globals::set_global_curr_code($_POST['curr_abrev']);
 
 	$sql = "SELECT date_, rate_buy, id FROM exchange_rates "
-	 . "WHERE curr_code=" . db_escape($_POST['curr_abrev']) . "
+	 . "WHERE curr_code=" . DBOld::escape($_POST['curr_abrev']) . "
 	 ORDER BY date_ DESC";
 
 	$cols = array(

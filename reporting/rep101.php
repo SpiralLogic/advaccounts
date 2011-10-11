@@ -54,11 +54,11 @@
 		$sql .= ")) AS OutStanding
 		FROM " . '' . "debtor_trans
     	WHERE " . '' . "debtor_trans.tran_date < '$to'
-		AND " . '' . "debtor_trans.debtor_no = " . db_escape($debtorno) . "
+		AND " . '' . "debtor_trans.debtor_no = " . DBOld::escape($debtorno) . "
 		AND " . '' . "debtor_trans.type <> " . ST_CUSTDELIVERY . " GROUP BY debtor_no";
 
-		$result = db_query($sql, "No transactions were returned");
-		return db_fetch($result);
+		$result = DBOld::query($sql, "No transactions were returned");
+		return DBOld::fetch($result);
 	}
 
 	function get_transactions($debtorno, $from, $to) {
@@ -74,11 +74,11 @@
     	FROM " . '' . "debtor_trans
     	WHERE " . '' . "debtor_trans.tran_date >= '$from'
 		AND " . '' . "debtor_trans.tran_date <= '$to'
-		AND " . '' . "debtor_trans.debtor_no = " . db_escape($debtorno) . "
+		AND " . '' . "debtor_trans.debtor_no = " . DBOld::escape($debtorno) . "
 		AND " . '' . "debtor_trans.type <> " . ST_CUSTDELIVERY . "
     	ORDER BY " . '' . "debtor_trans.tran_date";
 
-		return db_query($sql, "No transactions were returned");
+		return DBOld::query($sql, "No transactions were returned");
 	}
 
 	//----------------------------------------------------------------------------------------------------
@@ -139,12 +139,12 @@
 
 		$sql = "SELECT debtor_no, name, curr_code FROM " . '' . "debtors_master ";
 		if ($fromcust != ALL_NUMERIC)
-			$sql .= "WHERE debtor_no=" . db_escape($fromcust);
+			$sql .= "WHERE debtor_no=" . DBOld::escape($fromcust);
 		$sql .= " ORDER BY name";
-		$result = db_query($sql, "The customers could not be retrieved");
+		$result = DBOld::query($sql, "The customers could not be retrieved");
 		$num_lines = 0;
 
-		while ($myrow = db_fetch($result))
+		while ($myrow = DBOld::fetch($result))
 		{
 			if (!$convert && $currency != $myrow['curr_code']) continue;
 
@@ -157,7 +157,7 @@
 			;
 
 			$res = get_transactions($myrow['debtor_no'], $from, $to);
-			if ($no_zeros && db_num_rows($res) == 0) continue;
+			if ($no_zeros && DBOld::num_rows($res) == 0) continue;
 
 			$num_lines++;
 			$rep->fontSize += 2;
@@ -177,10 +177,10 @@
 				$grandtotal[$i] += $init[$i];
 			}
 			$rep->NewLine(1, 2);
-			if (db_num_rows($res) == 0)
+			if (DBOld::num_rows($res) == 0)
 				continue;
 			$rep->Line($rep->row + 4);
-			while ($trans = db_fetch($res))
+			while ($trans = DBOld::fetch($res))
 			{
 				if ($no_zeros && $trans['TotalAmount'] == 0 && $trans['Allocated'] == 0) continue;
 				//$rep->NewLine(1, 2);

@@ -105,9 +105,9 @@
 		}
 		$_POST['bank_date'] = Dates::date2sql(get_post('deposited_date'));
 		/*	$sql = "UPDATE ".''."bank_trans SET undeposited=0"
-							 ." WHERE id=".db_escape($deposit_id);
+							 ." WHERE id=".DBOld::escape($deposit_id);
 
-							db_query($sql, "Can't change undeposited status");*/
+							DBOld::query($sql, "Can't change undeposited status");*/
 		// save last reconcilation status (date, end balance)
 		if (check_value("dep_" . $deposit_id)) {
 			$_SESSION['undeposited']["dep_" . $deposit_id] = get_post('amount_' . $deposit_id);
@@ -141,9 +141,9 @@
 	}
 	if (isset($_POST['Deposit'])) {
 		$sql = "SELECT * FROM bank_trans WHERE undeposited=1 AND trans_date <= '" . Dates::date2sql($_POST['deposit_date']) . "' AND reconciled IS NULL";
-		$query = db_query($sql);
+		$query = DBOld::query($sql);
 		$undeposited = array();
-		while ($row = db_fetch($query)) {
+		while ($row = DBOld::fetch($query)) {
 			$undeposited[$row['id']] = $row;
 		}
 		$togroup = array();
@@ -160,18 +160,18 @@
 			$ref[] = $row['ref'];
 		}
 		$sql = "INSERT INTO bank_trans (type, bank_act, amount, ref, trans_date, person_type_id, person_id, undeposited) VALUES (15, 5, $total_amount,"
-		 . db_escape(implode($ref, ',')) . ",'" . Dates::date2sql($_POST['deposit_date']) . "', 6, '" . $_SESSION['wa_current_user']->user . "',0)";
-		$query = db_query($sql, "Undeposited Cannot be Added");
-		$order_no = db_insert_id($query);
+		 . DBOld::escape(implode($ref, ',')) . ",'" . Dates::date2sql($_POST['deposit_date']) . "', 6, '" . $_SESSION['wa_current_user']->user . "',0)";
+		$query = DBOld::query($sql, "Undeposited Cannot be Added");
+		$order_no = DBOld::insert_id($query);
 		if (!isset($order_no) || !empty($order_no) || $order_no == 127) {
 			$sql = "SELECT LAST_INSERT_ID()";
-			$order_no = db_query($sql);
-			$order_no = db_fetch_row($order_no);
+			$order_no = DBOld::query($sql);
+			$order_no = DBOld::fetch_row($order_no);
 			$order_no = $order_no[0];
 		}
 		foreach ($togroup as $row) {
-			$sql = "UPDATE bank_trans SET undeposited=" . $order_no . " WHERE id=" . db_escape($row['id']);
-			db_query($sql, "Can't change undeposited status");
+			$sql = "UPDATE bank_trans SET undeposited=" . $order_no . " WHERE id=" . DBOld::escape($row['id']);
+			DBOld::query($sql, "Can't change undeposited status");
 		}
 		unset($_POST);
 		unset($_SESSION['undeposited']);

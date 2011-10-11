@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 	function work_order_produce($woid, $ref, $quantity, $date_, $memo_, $close_wo) {
 
-		begin_transaction();
+		DBOld::begin_transaction();
 
 		$details = get_work_order($woid);
 
@@ -22,19 +22,19 @@
 
 		if (work_order_is_closed($woid)) {
 			ui_msgs::display_error("UNEXPECTED : Producing Items for a closed Work Order");
-			cancel_transaction();
+			DBOld::cancel_transaction();
 			exit;
 		}
 
 		$date = Dates::date2sql($date_);
 
 		$sql = "INSERT INTO wo_manufacture (workorder_id, reference, quantity, date_)
-		VALUES (" . db_escape($woid) . ", " . db_escape($ref) . ", " . db_escape($quantity)
+		VALUES (" . DBOld::escape($woid) . ", " . DBOld::escape($ref) . ", " . DBOld::escape($quantity)
 		 . ", '$date')";
 
-		db_query($sql, "A work order manufacture could not be added");
+		DBOld::query($sql, "A work order manufacture could not be added");
 
-		$id = db_insert_id();
+		$id = DBOld::insert_id();
 
 		// -------------------------------------------------------------------------
 
@@ -49,12 +49,12 @@
 		work_order_update_finished_quantity($woid, $quantity, $close_wo);
 
 		if ($memo_)
-			add_comments(ST_MANURECEIVE, $id, $date_, $memo_);
+			DB_Comments::add(ST_MANURECEIVE, $id, $date_, $memo_);
 
 		Refs::save(ST_MANURECEIVE, $id, $ref);
-		add_audit_trail(ST_MANURECEIVE, $id, $date_, _("Production."));
+		DB_AuditTrail::add(ST_MANURECEIVE, $id, $date_, _("Production."));
 
-		commit_transaction();
+		DBOld::commit_transaction();
 	}
 
 	//--------------------------------------------------------------------------------------------
@@ -65,33 +65,33 @@
 		FROM wo_manufacture, workorders, stock_master
 		WHERE wo_manufacture.workorder_id=workorders.id
 		AND stock_master.stock_id=workorders.stock_id
-		AND wo_manufacture.id=" . db_escape($id);
-		$result = db_query($sql, "The work order production could not be retrieved");
+		AND wo_manufacture.id=" . DBOld::escape($id);
+		$result = DBOld::query($sql, "The work order production could not be retrieved");
 
-		return db_fetch($result);
+		return DBOld::fetch($result);
 	}
 
 	//--------------------------------------------------------------------------------------
 
 	function get_work_order_productions($woid) {
 		$sql = "SELECT * FROM wo_manufacture WHERE workorder_id="
-		 . db_escape($woid) . " ORDER BY id";
-		return db_query($sql, "The work order issues could not be retrieved");
+		 . DBOld::escape($woid) . " ORDER BY id";
+		return DBOld::query($sql, "The work order issues could not be retrieved");
 	}
 
 	//--------------------------------------------------------------------------------------
 
 	function exists_work_order_produce($id) {
-		$sql = "SELECT id FROM wo_manufacture WHERE id=" . db_escape($id);
-		$result = db_query($sql, "Cannot retreive a wo production");
+		$sql = "SELECT id FROM wo_manufacture WHERE id=" . DBOld::escape($id);
+		$result = DBOld::query($sql, "Cannot retreive a wo production");
 
-		return (db_num_rows($result) > 0);
+		return (DBOld::num_rows($result) > 0);
 	}
 
 	//--------------------------------------------------------------------------------------------
 
 	function void_work_order_produce($type_no) {
-		begin_transaction();
+		DBOld::begin_transaction();
 
 		$row = get_work_order_produce($type_no);
 
@@ -102,8 +102,8 @@
 			$row['workorder_id'], $row['stock_id'], -$row['quantity'], Dates::sql2date($row['date_']), $type_no);
 
 		// clear the production record
-		$sql = "UPDATE wo_manufacture SET quantity=0 WHERE id=" . db_escape($type_no);
-		db_query($sql, "Cannot void a wo production");
+		$sql = "UPDATE wo_manufacture SET quantity=0 WHERE id=" . DBOld::escape($type_no);
+		DBOld::query($sql, "Cannot void a wo production");
 
 		// void all related stock moves
 		void_stock_move(ST_MANURECEIVE, $type_no);
@@ -111,7 +111,7 @@
 		// void any related gl trans
 		void_gl_trans(ST_MANURECEIVE, $type_no, true);
 
-		commit_transaction();
+		DBOld::commit_transaction();
 	}
 
 ?>

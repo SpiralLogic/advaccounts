@@ -82,7 +82,7 @@
 			return false;
 		$result = get_records_associated_with_tag($selected_id);
 
-		if (db_num_rows($result) > 0) {
+		if (DBOld::num_rows($result) > 0) {
 			ui_msgs::display_error(_("Cannot delete this tag because records have been created referring to it."));
 			return false;
 		}
@@ -118,7 +118,7 @@
 	table_header($th);
 
 	$k = 0;
-	while ($myrow = db_fetch($result))
+	while ($myrow = DBOld::fetch($result))
 	{
 		alt_table_row_color($k);
 

@@ -98,7 +98,7 @@
 			{
 				update_security_role($_POST['role'], $_POST['name'], $_POST['description'],
 					$sections, $areas);
-				update_record_status($_POST['role'], get_post('inactive'),
+				DBOld::update_record_status($_POST['role'], get_post('inactive'),
 					'security_roles', 'id');
 
 				ui_msgs::display_notification(_("Security role has been updated."));

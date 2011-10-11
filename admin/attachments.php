@@ -100,27 +100,27 @@
 		$date = Dates::date2sql(Dates::Today());
 		if ($Mode == 'ADD_ITEM') {
 			$sql = "INSERT INTO attachments (type_no, trans_no, description, filename, unique_name,
-			filesize, filetype, tran_date) VALUES (" . db_escape($_POST['filterType']) . ","
-			 . db_escape($_POST['trans_no']) . "," . db_escape($_POST['description']) . ", "
-			 . db_escape($filename) . ", " . db_escape($unique_name) . ", " . db_escape($filesize)
-			 . ", " . db_escape($filetype) . ", '$date')";
-			db_query($sql, "Attachment could not be inserted");
+			filesize, filetype, tran_date) VALUES (" . DBOld::escape($_POST['filterType']) . ","
+			 . DBOld::escape($_POST['trans_no']) . "," . DBOld::escape($_POST['description']) . ", "
+			 . DBOld::escape($filename) . ", " . DBOld::escape($unique_name) . ", " . DBOld::escape($filesize)
+			 . ", " . DBOld::escape($filetype) . ", '$date')";
+			DBOld::query($sql, "Attachment could not be inserted");
 			ui_msgs::display_notification(_("Attachment has been inserted."));
 		}
 		else
 		{
 			$sql = "UPDATE attachments SET
-			type_no=" . db_escape($_POST['filterType']) . ",
-			trans_no=" . db_escape($_POST['trans_no']) . ",
-			description=" . db_escape($_POST['description']) . ", ";
+			type_no=" . DBOld::escape($_POST['filterType']) . ",
+			trans_no=" . DBOld::escape($_POST['trans_no']) . ",
+			description=" . DBOld::escape($_POST['description']) . ", ";
 			if ($filename != "") {
-				$sql .= "filename=" . db_escape($filename) . ",
-			unique_name=" . db_escape($unique_name) . ",
-			filesize=" . db_escape($filesize) . ",
-			filetype=" . db_escape($filetype);
+				$sql .= "filename=" . DBOld::escape($filename) . ",
+			unique_name=" . DBOld::escape($unique_name) . ",
+			filesize=" . DBOld::escape($filesize) . ",
+			filetype=" . DBOld::escape($filetype);
 			}
-			$sql .= "tran_date='$date' WHERE id=" . db_escape($selected_id);
-			db_query($sql, "Attachment could not be updated");
+			$sql .= "tran_date='$date' WHERE id=" . DBOld::escape($selected_id);
+			DBOld::query($sql, "Attachment could not be updated");
 			ui_msgs::display_notification(_("Attachment has been updated."));
 		}
 		$Mode = 'RESET';
@@ -131,8 +131,8 @@
 		$dir = COMPANY_PATH . "/attachments";
 		if (file_exists($dir . "/" . $row['unique_name']))
 			unlink($dir . "/" . $row['unique_name']);
-		$sql = "DELETE FROM attachments WHERE id = " . db_escape($selected_id);
-		db_query($sql, "Could not delete attachment");
+		$sql = "DELETE FROM attachments WHERE id = " . DBOld::escape($selected_id);
+		DBOld::query($sql, "Could not delete attachment");
 		ui_msgs::display_notification(_("Attachment has been deleted."));
 		$Mode = 'RESET';
 	}
@@ -158,15 +158,15 @@
 	//----------------------------------------------------------------------------------------
 
 	function get_attached_documents($type) {
-		$sql = "SELECT * FROM attachments WHERE type_no=" . db_escape($type)
+		$sql = "SELECT * FROM attachments WHERE type_no=" . DBOld::escape($type)
 		 . " ORDER BY trans_no";
-		return db_query($sql, "Could not retrieve attachments");
+		return DBOld::query($sql, "Could not retrieve attachments");
 	}
 
 	function get_attachment($id) {
-		$sql = "SELECT * FROM attachments WHERE id=" . db_escape($id);
-		$result = db_query($sql, "Could not retrieve attachments");
-		return db_fetch($result);
+		$sql = "SELECT * FROM attachments WHERE id=" . DBOld::escape($id);
+		$result = DBOld::query($sql, "Could not retrieve attachments");
+		return DBOld::fetch($result);
 	}
 
 	function display_rows($type) {
@@ -179,7 +179,7 @@
 		start_table(Config::get('tables.style'));
 		table_header($th);
 		$k = 0;
-		while ($row = db_fetch($rows))
+		while ($row = DBOld::fetch($rows))
 		{
 			alt_table_row_color($k);
 

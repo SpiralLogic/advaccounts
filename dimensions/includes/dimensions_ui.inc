@@ -21,9 +21,9 @@
 		gl_trans.account = chart_master.account_code AND
 		(dimension_id = $id OR dimension2_id = $id) AND
 		tran_date >= '$from' AND tran_date <= '$to' GROUP BY account";
-		$result = db_query($sql, "Transactions could not be calculated");
+		$result = DBOld::query($sql, "Transactions could not be calculated");
 
-		if (db_num_rows($result) == 0) {
+		if (DBOld::num_rows($result) == 0) {
 			ui_msgs::display_note(_("There are no transactions for this dimension for the selected period."));
 		}
 		else
@@ -35,7 +35,7 @@
 			table_header($th);
 
 			$total = $k = 0;
-			while ($myrow = db_fetch($result))
+			while ($myrow = DBOld::fetch($result))
 			{
 				alt_table_row_color($k);
 

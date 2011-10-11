@@ -16,9 +16,9 @@
 	function get_supplier_details_to_order(&$order, $supplier_id) {
 		$sql = "SELECT * FROM suppliers
 		WHERE supplier_id = '$supplier_id'";
-		$result = db_query($sql, "The supplier details could not be retreived");
+		$result = DBOld::query($sql, "The supplier details could not be retreived");
 
-		$myrow = db_fetch_assoc($result);
+		$myrow = DBOld::fetch_assoc($result);
 		$order->supplier_details = $myrow;
 		$order->curr_code = $_POST['curr_code'] = $myrow["curr_code"];
 		$order->supplier_name = $_POST['supplier_name'] = $myrow["supp_name"];
@@ -114,10 +114,10 @@
 
 			$sql = "SELECT delivery_address, phone FROM locations WHERE loc_code='" .
 			 $_POST['StkLocation'] . "'";
-			$result = db_query($sql, "could not get location info");
+			$result = DBOld::query($sql, "could not get location info");
 
-			if (db_num_rows($result) == 1) {
-				$loc_row = db_fetch($result);
+			if (DBOld::num_rows($result) == 1) {
+				$loc_row = DBOld::fetch($result);
 				$_POST['delivery_address'] = $loc_row["delivery_address"];
 				$Ajax->activate('delivery_address');
 				$_SESSION['PO']->Location = $_POST['StkLocation'];

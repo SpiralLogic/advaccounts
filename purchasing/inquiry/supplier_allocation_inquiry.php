@@ -112,7 +112,7 @@
      	AND trans.tran_date >= '$date_after'
     	AND trans.tran_date <= '$date_to'";
 	if ($_POST['supplier_id'] != ALL_TEXT)
-		$sql .= " AND trans.supplier_id = " . db_escape($_POST['supplier_id']);
+		$sql .= " AND trans.supplier_id = " . DBOld::escape($_POST['supplier_id']);
 	if (isset($_POST['filterType']) && $_POST['filterType'] != ALL_TEXT) {
 		if (($_POST['filterType'] == '1') || ($_POST['filterType'] == '2')) {
 			$sql .= " AND trans.type = " . ST_SUPPINVOICE . " ";

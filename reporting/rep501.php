@@ -27,12 +27,12 @@
 		$sql = "SELECT *
 		FROM
 			dimensions
-		WHERE reference >= " . db_escape($from) . "
-		AND reference <= " . db_escape($to) . "
+		WHERE reference >= " . DBOld::escape($from) . "
+		AND reference <= " . DBOld::escape($to) . "
 		ORDER BY
 			reference";
 
-		return db_query($sql, "No transactions were returned");
+		return DBOld::query($sql, "No transactions were returned");
 	}
 
 	function getYTD($dim) {
@@ -46,9 +46,9 @@
 		WHERE (dimension_id = '$dim' OR dimension2_id = '$dim')
 		AND tran_date >= '$date'";
 
-		$TransResult = db_query($sql, "No transactions were returned");
-		if (db_num_rows($TransResult) == 1) {
-			$DemandRow = db_fetch_row($TransResult);
+		$TransResult = DBOld::query($sql, "No transactions were returned");
+		if (DBOld::num_rows($TransResult) == 1) {
+			$DemandRow = DBOld::fetch_row($TransResult);
 			$balance = $DemandRow[0];
 		}
 		else
@@ -88,7 +88,7 @@
 		$rep->Header();
 
 		$res = getTransactions($fromdim, $todim);
-		while ($trans = db_fetch($res))
+		while ($trans = DBOld::fetch($res))
 		{
 			$rep->TextCol(0, 1, $trans['reference']);
 			$rep->TextCol(1, 2, $trans['name']);

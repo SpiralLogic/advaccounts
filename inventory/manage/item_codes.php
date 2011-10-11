@@ -43,7 +43,7 @@
 		elseif ($selected_id == -1)
 		{
 			$kit = get_item_kit($_POST['item_code']);
-			if (db_num_rows($kit)) {
+			if (DBOld::num_rows($kit)) {
 				$input_error = 1;
 				ui_msgs::display_error(_("This item code is already assigned to stock item or sale kit."));
 				ui_view::set_focus('item_code');
@@ -116,7 +116,7 @@
 
 	$k = $j = 0; //row colour counter
 
-	while ($myrow = db_fetch($result))
+	while ($myrow = DBOld::fetch($result))
 	{
 		alt_table_row_color($k);
 

@@ -125,9 +125,9 @@
 	AND location.loc_code = porder.into_stock_location
 	AND (line.quantity_ordered > line.quantity_received) ";
 
-	if ($_POST['supplier_id'] != ALL_TEXT) $sql .= " AND supplier.supplier_id = " . db_escape($_POST['supplier_id']);
+	if ($_POST['supplier_id'] != ALL_TEXT) $sql .= " AND supplier.supplier_id = " . DBOld::escape($_POST['supplier_id']);
 	if (isset($order_number) && $order_number != "") {
-		$sql .= "AND porder.reference LIKE " . db_escape('%' . $order_number . '%');
+		$sql .= "AND porder.reference LIKE " . DBOld::escape('%' . $order_number . '%');
 	}
 	else
 	{
@@ -138,17 +138,17 @@
 		$sql .= "  AND porder.ord_date <= '$data_before'";
 
 		if (isset($_POST['StockLocation']) && $_POST['StockLocation'] != ALL_TEXT) {
-			$sql .= " AND porder.into_stock_location = " . db_escape($_POST['StockLocation']);
+			$sql .= " AND porder.into_stock_location = " . DBOld::escape($_POST['StockLocation']);
 		}
 
 		if (isset($selected_stock_item)) {
-			$sql .= " AND line.item_code=" . db_escape($selected_stock_item);
+			$sql .= " AND line.item_code=" . DBOld::escape($selected_stock_item);
 		}
 	} //end not order number selected
 
 	$sql .= " GROUP BY porder.order_no";
 
-	$result = db_query($sql, "No orders were returned");
+	$result = DBOld::query($sql, "No orders were returned");
 
 	/*show a table of the orders returned by the sql */
 	$cols = array(

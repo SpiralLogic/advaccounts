@@ -154,7 +154,7 @@
 	table_header($th);
 
 	$k = 0;
-	while ($myrow = db_fetch($result))
+	while ($myrow = DBOld::fetch($result))
 	{
 		alt_table_row_color($k);
 		$type_text = $quick_entry_types[$myrow["type"]];
@@ -217,7 +217,7 @@
 
 		table_header($th);
 		$k = 0;
-		while ($myrow = db_fetch($result))
+		while ($myrow = DBOld::fetch($result))
 		{
 			alt_table_row_color($k);
 

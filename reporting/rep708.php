@@ -113,7 +113,7 @@
 		if (Dates::date1_greater_date2($begin, $from))
 			$begin = $from;
 		$begin = Dates::add_days($begin, -1);
-		while ($account = db_fetch($accounts))
+		while ($account = DBOld::fetch($accounts))
 		{
 			$prev = get_balance($account["account_code"], $dimension, $dimension2, $begin, $from, false, false);
 			$curr = get_balance($account["account_code"], $dimension, $dimension2, $from, $to, true, true);

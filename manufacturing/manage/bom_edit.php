@@ -60,11 +60,11 @@
 		/* returns true ie 1 if the bom contains the parent part as a component
 			ie the bom is recursive otherwise false ie 0 */
 
-		$sql = "SELECT component FROM bom WHERE parent=" . db_escape($component_to_check);
-		$result = db_query($sql, "could not check recursive bom");
+		$sql = "SELECT component FROM bom WHERE parent=" . DBOld::escape($component_to_check);
+		$result = DBOld::query($sql, "could not check recursive bom");
 
 		if ($result != 0) {
-			while ($myrow = db_fetch_row($result))
+			while ($myrow = DBOld::fetch_row($result))
 			{
 				if ($myrow[0] == $ultimate_parent) {
 					return 1;
@@ -92,7 +92,7 @@
 		table_header($th);
 
 		$k = 0;
-		while ($myrow = db_fetch($result))
+		while ($myrow = DBOld::fetch($result))
 		{
 
 			alt_table_row_color($k);
@@ -122,14 +122,14 @@
 
 		if ($selected_component != -1) {
 
-			$sql = "UPDATE bom SET workcentre_added=" . db_escape($_POST['workcentre_added'])
-			 . ",loc_code=" . db_escape($_POST['loc_code']) . ",
+			$sql = "UPDATE bom SET workcentre_added=" . DBOld::escape($_POST['workcentre_added'])
+			 . ",loc_code=" . DBOld::escape($_POST['loc_code']) . ",
 			quantity= " . input_num('quantity') . "
-			WHERE parent=" . db_escape($selected_parent) . "
-			AND id=" . db_escape($selected_component);
+			WHERE parent=" . DBOld::escape($selected_parent) . "
+			AND id=" . DBOld::escape($selected_component);
 			Errors::check_db_error("Could not update this bom component", $sql);
 
-			db_query($sql, "could not update bom");
+			DBOld::query($sql, "could not update bom");
 			ui_msgs::display_notification(_('Selected component has been updated'));
 			$Mode = 'RESET';
 		}
@@ -145,19 +145,19 @@
 
 				/*Now check to see that the component is not already on the bom */
 				$sql = "SELECT component FROM bom
-				WHERE parent=" . db_escape($selected_parent) . "
-				AND component=" . db_escape($_POST['component']) . "
-				AND workcentre_added=" . db_escape($_POST['workcentre_added']) . "
-				AND loc_code=" . db_escape($_POST['loc_code']);
-				$result = db_query($sql, "check failed");
+				WHERE parent=" . DBOld::escape($selected_parent) . "
+				AND component=" . DBOld::escape($_POST['component']) . "
+				AND workcentre_added=" . DBOld::escape($_POST['workcentre_added']) . "
+				AND loc_code=" . DBOld::escape($_POST['loc_code']);
+				$result = DBOld::query($sql, "check failed");
 
-				if (db_num_rows($result) == 0) {
+				if (DBOld::num_rows($result) == 0) {
 					$sql = "INSERT INTO bom (parent, component, workcentre_added, loc_code, quantity)
-					VALUES (" . db_escape($selected_parent) . ", " . db_escape($_POST['component']) . ","
-					 . db_escape($_POST['workcentre_added']) . ", " . db_escape($_POST['loc_code']) . ", "
+					VALUES (" . DBOld::escape($selected_parent) . ", " . DBOld::escape($_POST['component']) . ","
+					 . DBOld::escape($_POST['workcentre_added']) . ", " . DBOld::escape($_POST['loc_code']) . ", "
 					 . input_num('quantity') . ")";
 
-					db_query($sql, "check failed");
+					DBOld::query($sql, "check failed");
 					ui_msgs::display_notification(_("A new component part has been added to the bill of material for this item."));
 					$Mode = 'RESET';
 				}
@@ -177,8 +177,8 @@
 	//--------------------------------------------------------------------------------------------------
 
 	if ($Mode == 'Delete') {
-		$sql = "DELETE FROM bom WHERE id=" . db_escape($selected_id);
-		db_query($sql, "Could not delete this bom components");
+		$sql = "DELETE FROM bom WHERE id=" . DBOld::escape($selected_id);
+		DBOld::query($sql, "Could not delete this bom components");
 
 		ui_msgs::display_notification(_("The component item has been deleted from this bom"));
 		$Mode = 'RESET';
@@ -222,11 +222,11 @@
 				//editing a selected component from the link to the line item
 				$sql = "SELECT bom.*,stock_master.description FROM "
 				 . "bom,stock_master
-				WHERE id=" . db_escape($selected_id) . "
+				WHERE id=" . DBOld::escape($selected_id) . "
 				AND stock_master.stock_id=bom.component";
 
-				$result = db_query($sql, "could not get bom");
-				$myrow = db_fetch($result);
+				$result = DBOld::query($sql, "could not get bom");
+				$myrow = DBOld::fetch($result);
 
 				$_POST['loc_code'] = $myrow["loc_code"];
 				$_POST['component'] = $myrow["component"]; // by Tom Moulton

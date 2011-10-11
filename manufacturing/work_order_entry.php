@@ -165,7 +165,7 @@
 					// check bom if assembling
 					$result = get_bom(Input::post('stock_id'));
 
-					while ($bom_item = db_fetch($result))
+					while ($bom_item = DBOld::fetch($result))
 					{
 
 						if (has_stock_holding($bom_item["ResourceType"])) {
@@ -380,8 +380,8 @@
 		hidden('RequDate', '');
 
 		$sql = "SELECT DISTINCT account_code FROM bank_accounts";
-		$rs = db_query($sql, "could not get bank accounts");
-		$r = db_fetch_row($rs);
+		$rs = DBOld::query($sql, "could not get bank accounts");
+		$r = DBOld::fetch_row($rs);
 		if (!isset($_POST['Labour'])) {
 			$_POST['Labour'] = price_format(0);
 			$_POST['cr_lab_acc'] = $r[0];

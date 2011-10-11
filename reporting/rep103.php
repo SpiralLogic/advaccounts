@@ -50,19 +50,19 @@
 			ON cust_branch.salesman=salesman.salesman_code";
 		if ($area != 0) {
 			if ($salesid != 0)
-				$sql .= " WHERE salesman.salesman_code=" . db_escape($salesid) . "
-				AND areas.area_code=" . db_escape($area);
+				$sql .= " WHERE salesman.salesman_code=" . DBOld::escape($salesid) . "
+				AND areas.area_code=" . DBOld::escape($area);
 			else
-				$sql .= " WHERE areas.area_code=" . db_escape($area);
+				$sql .= " WHERE areas.area_code=" . DBOld::escape($area);
 		}
 		elseif ($salesid != 0)
-			$sql .= " WHERE salesman.salesman_code=" . db_escape($salesid);
+			$sql .= " WHERE salesman.salesman_code=" . DBOld::escape($salesid);
 		$sql .= " ORDER BY description,
 			salesman.salesman_name,
 			debtors_master.debtor_no,
 			cust_branch.branch_code";
 
-		return db_query($sql, "No transactions were returned");
+		return DBOld::query($sql, "No transactions were returned");
 	}
 
 	function getTransactions($debtorno, $branchcode, $date) {
@@ -70,14 +70,14 @@
 
 		$sql = "SELECT SUM((ov_amount+ov_freight+ov_discount)*rate) AS Turnover
 		FROM debtor_trans
-		WHERE debtor_no=" . db_escape($debtorno) . "
-		AND branch_code=" . db_escape($branchcode) . "
+		WHERE debtor_no=" . DBOld::escape($debtorno) . "
+		AND branch_code=" . DBOld::escape($branchcode) . "
 		AND (type=" . ST_SALESINVOICE . " OR type=" . ST_CUSTCREDIT . ")
 		AND trandate >='$date'";
 
-		$result = db_query($sql, "No transactions were returned");
+		$result = DBOld::query($sql, "No transactions were returned");
 
-		$row = db_fetch_row($result);
+		$row = DBOld::fetch_row($result);
 		return $row[0];
 	}
 
@@ -149,7 +149,7 @@
 
 		$carea = '';
 		$sman = '';
-		while ($myrow = db_fetch($result))
+		while ($myrow = DBOld::fetch($result))
 		{
 			$printcustomer = true;
 			if ($more != '' || $less != '') {

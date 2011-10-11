@@ -21,7 +21,7 @@
 		$date_ = $invoice->document_date;
 		$charge_shipping = $invoice->freight_cost;
 
-		begin_transaction();
+		DBOld::begin_transaction();
 
 		$company_data = get_company_prefs();
 
@@ -79,7 +79,7 @@
 			set_document_parent($invoice);
 		}
 		else {
-			delete_comments(ST_SALESINVOICE, $invoice_no);
+			DB_Comments::delete(ST_SALESINVOICE, $invoice_no);
 			void_gl_trans(ST_SALESINVOICE, $invoice_no, true);
 			void_cust_allocations(ST_SALESINVOICE, $invoice_no); // ?
 			void_trans_tax_details(ST_SALESINVOICE, $invoice_no);
@@ -166,12 +166,12 @@
 		/*Post a balance post if $total != 0 */
 		add_gl_balance(ST_SALESINVOICE, $invoice_no, $date_, -$total, PT_CUSTOMER, $invoice->customer_id);
 
-		add_comments(10, $invoice_no, $date_, $invoice->Comments);
+		DB_Comments::add(10, $invoice_no, $date_, $invoice->Comments);
 
 		if ($trans_no == 0) {
 			Refs::save(ST_SALESINVOICE, $invoice_no, $invoice->reference);
 		}
-		commit_transaction();
+		DBOld::commit_transaction();
 
 		return $invoice_no;
 	}
@@ -179,7 +179,7 @@
 	//--------------------------------------------------------------------------------------------------
 
 	function void_sales_invoice($type, $type_no) {
-		begin_transaction();
+		DBOld::begin_transaction();
 
 		void_bank_trans($type, $type_no, true);
 		void_gl_trans($type, $type_no, true);
@@ -191,8 +191,8 @@
 
 		if ($deliveries !== 0) {
 			$srcdetails = get_customer_trans_details(get_parent_type($type), $deliveries);
-			while ($row = db_fetch($items_result)) {
-				$src_line = db_fetch($srcdetails);
+			while ($row = DBOld::fetch($items_result)) {
+				$src_line = DBOld::fetch($srcdetails);
 				update_parent_line($type, $src_line['id'], -$row['quantity']);
 			}
 		}
@@ -207,7 +207,7 @@
 		// DO NOT MOVE THIS ABOVE VOIDING or we can end up with trans with alloc < 0
 		void_customer_trans($type, $type_no);
 
-		commit_transaction();
+		DBOld::commit_transaction();
 	}
 
 ?>

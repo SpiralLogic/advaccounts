@@ -34,9 +34,9 @@
 		FROM purch_orders, suppliers, locations
 		WHERE purch_orders.supplier_id = suppliers.supplier_id
 		AND locations.loc_code = into_stock_location
-		AND purch_orders.order_no = " . db_escape($order_no);
-		$result = db_query($sql, "The order cannot be retrieved");
-		return db_fetch($result);
+		AND purch_orders.order_no = " . DBOld::escape($order_no);
+		$result = DBOld::query($sql, "The order cannot be retrieved");
+		return DBOld::fetch($result);
 	}
 
 	function get_po_details($order_no) {
@@ -44,9 +44,9 @@
 		FROM purch_order_details
 		LEFT JOIN stock_master
 		ON purch_order_details.item_code=stock_master.stock_id
-		WHERE order_no =" . db_escape($order_no) . " ";
+		WHERE order_no =" . DBOld::escape($order_no) . " ";
 		$sql .= " ORDER BY po_detail_item";
-		return db_query($sql, "Retreive order Line Items");
+		return DBOld::query($sql, "Retreive order Line Items");
 	}
 
 	function print_po() {
@@ -102,7 +102,7 @@
 
 			$result = get_po_details($i);
 			$SubTotal = 0;
-			while ($myrow2 = db_fetch($result))
+			while ($myrow2 = DBOld::fetch($result))
 			{
 				if ($myrow2['item_code'] != 'freight' || $myrow['freight'] != $myrow2['unit_price']) {
 					$data = get_purchase_data($myrow['supplier_id'], $myrow2['item_code']);

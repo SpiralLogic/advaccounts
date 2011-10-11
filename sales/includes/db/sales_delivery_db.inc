@@ -17,7 +17,7 @@
 		$trans_no = $delivery->trans_no;
 		if (is_array($trans_no)) $trans_no = key($trans_no);
 
-		begin_transaction();
+		DBOld::begin_transaction();
 
 		$customer = get_customer($delivery->customer_id);
 		$delivery_items_total = $delivery->get_items_total_dispatch();
@@ -50,7 +50,7 @@
 			void_gl_trans(ST_CUSTDELIVERY, $delivery_no, true);
 			void_stock_move(ST_CUSTDELIVERY, $delivery_no);
 			void_trans_tax_details(ST_CUSTDELIVERY, $delivery_no);
-			delete_comments(ST_CUSTDELIVERY, $delivery_no);
+			DB_Comments::delete(ST_CUSTDELIVERY, $delivery_no);
 		}
 
 		foreach ($delivery->line_items as $line_no => $delivery_line) {
@@ -130,13 +130,13 @@
 			}
 		}
 
-		add_comments(ST_CUSTDELIVERY, $delivery_no, $delivery->document_date, $delivery->Comments);
+		DB_Comments::add(ST_CUSTDELIVERY, $delivery_no, $delivery->document_date, $delivery->Comments);
 
 		if ($trans_no == 0) {
 			Refs::save(ST_CUSTDELIVERY, $delivery_no, $delivery->reference);
 		}
 
-		commit_transaction();
+		DBOld::commit_transaction();
 
 		return $delivery_no;
 	}
@@ -144,7 +144,7 @@
 	//--------------------------------------------------------------------------------------------------
 
 	function void_sales_delivery($type, $type_no) {
-		begin_transaction();
+		DBOld::begin_transaction();
 
 		void_gl_trans($type, $type_no, true);
 
@@ -155,8 +155,8 @@
 
 		if ($order) {
 			$order_items = get_sales_order_details($order, ST_SALESORDER);
-			while ($row = db_fetch($items_result)) {
-				$order_line = db_fetch($order_items);
+			while ($row = DBOld::fetch($items_result)) {
+				$order_line = DBOld::fetch($order_items);
 				update_parent_line(ST_CUSTDELIVERY, $order_line['id'], -$row['quantity']);
 			}
 		}
@@ -172,7 +172,7 @@
 		// DO NOT MOVE THIS ABOVE VOIDING or we can end up with trans with alloc < 0
 		void_customer_trans($type, $type_no);
 
-		commit_transaction();
+		DBOld::commit_transaction();
 	}
 
 ?>

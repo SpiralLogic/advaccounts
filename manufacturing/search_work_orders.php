@@ -167,15 +167,15 @@
 	}
 
 	if (isset($_POST['StockLocation']) && $_POST['StockLocation'] != ALL_TEXT) {
-		$sql .= " AND workorder.loc_code=" . db_escape($_POST['StockLocation']);
+		$sql .= " AND workorder.loc_code=" . DBOld::escape($_POST['StockLocation']);
 	}
 
 	if (isset($_POST['OrderNumber']) && $_POST['OrderNumber'] != "") {
-		$sql .= " AND workorder.wo_ref LIKE " . db_escape('%' . $_POST['OrderNumber'] . '%');
+		$sql .= " AND workorder.wo_ref LIKE " . DBOld::escape('%' . $_POST['OrderNumber'] . '%');
 	}
 
 	if (isset($_POST['SelectedStockItem']) && $_POST['SelectedStockItem'] != ALL_TEXT) {
-		$sql .= " AND workorder.stock_id=" . db_escape($_POST['SelectedStockItem']);
+		$sql .= " AND workorder.stock_id=" . DBOld::escape($_POST['SelectedStockItem']);
 	}
 
 	if (check_value('OverdueOnly')) {

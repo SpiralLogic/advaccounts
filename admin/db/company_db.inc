@@ -13,72 +13,72 @@
 																	 $default_adj_act, $default_inv_sales_act, $default_assembly_act, $allow_negative_stock, $po_over_receive, $po_over_charge, $accumulate_shipping, $legal_text, $past_due_days, $default_credit_limit, $default_workorder_required, $default_dim_required,
 																	 $default_delivery_required) {
 		$sql = "UPDATE company SET
-		retained_earnings_act=" . db_escape($retained_act) . ", profit_loss_year_act=" . db_escape($profit_loss_act) . ",
-		debtors_act=" . db_escape($debtors_act) . ", pyt_discount_act=" . db_escape($pyt_discount_act) . ",
-		creditors_act=" . db_escape($creditors_act) . ",
-		freight_act=" . db_escape($freight_act) . ",
-		exchange_diff_act=" . db_escape($exchange_diff_act) . ",
-		bank_charge_act=" . db_escape($bank_charge_act) . ",
-		default_sales_act=" . db_escape($default_sales_act) . ",
-		default_sales_discount_act=" . db_escape($default_sales_discount_act) . ",
-		default_prompt_payment_act=" . db_escape($default_prompt_payment_act) . ",
-		default_inventory_act=" . db_escape($default_inventory_act) . ",
-		default_cogs_act=" . db_escape($default_cogs_act) . ",
-		default_adj_act=" . db_escape($default_adj_act) . ",
-		default_inv_sales_act=" . db_escape($default_inv_sales_act) . ",
-		default_assembly_act=" . db_escape($default_assembly_act) . ",
+		retained_earnings_act=" . DBOld::escape($retained_act) . ", profit_loss_year_act=" . DBOld::escape($profit_loss_act) . ",
+		debtors_act=" . DBOld::escape($debtors_act) . ", pyt_discount_act=" . DBOld::escape($pyt_discount_act) . ",
+		creditors_act=" . DBOld::escape($creditors_act) . ",
+		freight_act=" . DBOld::escape($freight_act) . ",
+		exchange_diff_act=" . DBOld::escape($exchange_diff_act) . ",
+		bank_charge_act=" . DBOld::escape($bank_charge_act) . ",
+		default_sales_act=" . DBOld::escape($default_sales_act) . ",
+		default_sales_discount_act=" . DBOld::escape($default_sales_discount_act) . ",
+		default_prompt_payment_act=" . DBOld::escape($default_prompt_payment_act) . ",
+		default_inventory_act=" . DBOld::escape($default_inventory_act) . ",
+		default_cogs_act=" . DBOld::escape($default_cogs_act) . ",
+		default_adj_act=" . DBOld::escape($default_adj_act) . ",
+		default_inv_sales_act=" . DBOld::escape($default_inv_sales_act) . ",
+		default_assembly_act=" . DBOld::escape($default_assembly_act) . ",
 		allow_negative_stock=$allow_negative_stock,
 		po_over_receive=$po_over_receive,
 		po_over_charge=$po_over_charge,
 		accumulate_shipping=$accumulate_shipping,
-		legal_text=" . db_escape($legal_text) . ",
+		legal_text=" . DBOld::escape($legal_text) . ",
 		past_due_days=$past_due_days,
 		default_credit_limit=$default_credit_limit,
 		default_workorder_required=$default_workorder_required,
 		default_dim_required=$default_dim_required,
 		default_delivery_required=$default_delivery_required
 		WHERE coy_code=1";
-		db_query($sql, "The company gl setup could not be updated ");
+		DBOld::query($sql, "The company gl setup could not be updated ");
 	}
 
 	function update_company_setup($coy_name, $coy_no, $gst_no, $tax_prd, $tax_last, $postal_address, $phone, $fax, $email, $coy_logo, $domicile, $Dimension, $curr_default, $f_year, $no_item_list, $no_customer_list, $no_supplier_list, $base_sales, $time_zone, $add_pct, $round_to, $login_tout) {
 		if ($f_year == null) {
 			$f_year = 0;
 		}
-		$sql = "UPDATE company SET coy_name=" . db_escape($coy_name) . ",
-		coy_no = " . db_escape($coy_no) . ",
-		gst_no=" . db_escape($gst_no) . ",
+		$sql = "UPDATE company SET coy_name=" . DBOld::escape($coy_name) . ",
+		coy_no = " . DBOld::escape($coy_no) . ",
+		gst_no=" . DBOld::escape($gst_no) . ",
 		tax_prd=$tax_prd,
 		tax_last=$tax_last,
-		postal_address =" . db_escape($postal_address) . ",
-		phone=" . db_escape($phone) . ", fax=" . db_escape($fax) . ",
-		email=" . db_escape($email) . ",
-		coy_logo=" . db_escape($coy_logo) . ",
-		domicile=" . db_escape($domicile) . ",
+		postal_address =" . DBOld::escape($postal_address) . ",
+		phone=" . DBOld::escape($phone) . ", fax=" . DBOld::escape($fax) . ",
+		email=" . DBOld::escape($email) . ",
+		coy_logo=" . DBOld::escape($coy_logo) . ",
+		domicile=" . DBOld::escape($domicile) . ",
 		use_dimension=$Dimension,
 		no_item_list=$no_item_list,
 		no_customer_list=$no_customer_list,
 		no_supplier_list=$no_supplier_list,
-		curr_default=" . db_escape($curr_default) . ",
+		curr_default=" . DBOld::escape($curr_default) . ",
 		f_year=$f_year,
 		base_sales=$base_sales,
 		time_zone=$time_zone,
 		add_pct=$add_pct,
 		round_to=$round_to,
-		login_tout = " . db_escape($login_tout) . "
+		login_tout = " . DBOld::escape($login_tout) . "
 		WHERE coy_code=1";
-		db_query($sql, "The company setup could not be updated ");
+		DBOld::query($sql, "The company setup could not be updated ");
 		get_company_prefs();
 	}
 
 	function get_company_prefs() {
 		if (!isset($_SESSION['company_prefs'])) {
 			$sql = "SELECT * FROM company WHERE coy_code=1";
-			$result = db_query($sql, "The company preferences could not be retrieved");
-			if (db_num_rows($result) == 0) {
+			$result = DBOld::query($sql, "The company preferences could not be retrieved");
+			if (DBOld::num_rows($result) == 0) {
 				Errors::show_db_error("FATAL : Could not find company prefs", $sql);
 			}
-			$_SESSION['company_prefs'] = db_fetch($result);
+			$_SESSION['company_prefs'] = DBOld::fetch($result);
 		}
 		return $_SESSION['company_prefs'];
 	}
@@ -93,45 +93,45 @@
 		$from = Dates::date2sql($from_date);
 		$to = Dates::date2sql($to_date);
 		$sql = "INSERT INTO fiscal_year (begin, end, closed)
-		VALUES (" . db_escape($from) . "," . db_escape($to) . ", " . db_escape($closed) . ")";
-		db_query($sql, "could not add fiscal year");
+		VALUES (" . DBOld::escape($from) . "," . DBOld::escape($to) . ", " . DBOld::escape($closed) . ")";
+		DBOld::query($sql, "could not add fiscal year");
 	}
 
 	function update_fiscalyear($id, $closed) {
-		$sql = "UPDATE fiscal_year SET closed=" . db_escape($closed) . "
-		WHERE id=" . db_escape($id);
-		db_query($sql, "could not update fiscal year");
+		$sql = "UPDATE fiscal_year SET closed=" . DBOld::escape($closed) . "
+		WHERE id=" . DBOld::escape($id);
+		DBOld::query($sql, "could not update fiscal year");
 	}
 
 	function get_all_fiscalyears() {
 		$sql = "SELECT * FROM fiscal_year ORDER BY begin";
-		return db_query($sql, "could not get all fiscal years");
+		return DBOld::query($sql, "could not get all fiscal years");
 	}
 
 	function get_fiscalyear($id) {
-		$sql = "SELECT * FROM fiscal_year WHERE id=" . db_escape($id);
-		$result = db_query($sql, "could not get fiscal year");
-		return db_fetch($result);
+		$sql = "SELECT * FROM fiscal_year WHERE id=" . DBOld::escape($id);
+		$result = DBOld::query($sql, "could not get fiscal year");
+		return DBOld::fetch($result);
 	}
 
 	function get_current_fiscalyear() {
 		$year = get_company_pref('f_year');
-		$sql = "SELECT * FROM fiscal_year WHERE id=" . db_escape($year);
-		$result = db_query($sql, "could not get current fiscal year");
-		return db_fetch($result);
+		$sql = "SELECT * FROM fiscal_year WHERE id=" . DBOld::escape($year);
+		$result = DBOld::query($sql, "could not get current fiscal year");
+		return DBOld::fetch($result);
 	}
 
 	function delete_fiscalyear($id) {
-		begin_transaction();
-		$sql = "DELETE FROM fiscal_year WHERE id=" . db_escape($id);
-		db_query($sql, "could not delete fiscal year");
-		commit_transaction();
+		DBOld::begin_transaction();
+		$sql = "DELETE FROM fiscal_year WHERE id=" . DBOld::escape($id);
+		DBOld::query($sql, "could not delete fiscal year");
+		DBOld::commit_transaction();
 	}
 
 	function get_base_sales_type() {
 		$sql = "SELECT base_sales FROM company WHERE coy_code=1";
-		$result = db_query($sql, "could not get base sales type");
-		$myrow = db_fetch($result);
+		$result = DBOld::query($sql, "could not get base sales type");
+		$myrow = DBOld::fetch($result);
 		return $myrow[0];
 	}
 
@@ -150,53 +150,53 @@
 			$sql = "INSERT INTO  payment_terms (terms,
 			days_before_due, day_in_following_month)
 			VALUES (" .
-			 db_escape($terms) . ", " . db_escape($dayNumber) . ", 0)";
+			 DBOld::escape($terms) . ", " . DBOld::escape($dayNumber) . ", 0)";
 		}
 		else
 		{
 			$sql = "INSERT INTO  payment_terms (terms,
 			days_before_due, day_in_following_month)
-			VALUES (" . db_escape($terms) . ",
-			0, " . db_escape($dayNumber) . ")";
+			VALUES (" . DBOld::escape($terms) . ",
+			0, " . DBOld::escape($dayNumber) . ")";
 		}
-		db_query($sql, "The payment term could not be added");
+		DBOld::query($sql, "The payment term could not be added");
 	}
 
 	function update_payment_terms($selected_id, $daysOrFoll, $terms, $dayNumber) {
 		if ($daysOrFoll) {
-			$sql = "UPDATE  payment_terms SET terms=" . db_escape($terms) . ",
+			$sql = "UPDATE  payment_terms SET terms=" . DBOld::escape($terms) . ",
 			day_in_following_month=0,
-			days_before_due=" . db_escape($dayNumber) . "
-			WHERE terms_indicator = " . db_escape($selected_id);
+			days_before_due=" . DBOld::escape($dayNumber) . "
+			WHERE terms_indicator = " . DBOld::escape($selected_id);
 		}
 		else
 		{
-			$sql = "UPDATE payment_terms SET terms=" . db_escape($terms) . ",
-			day_in_following_month=" . db_escape($dayNumber) . ",
+			$sql = "UPDATE payment_terms SET terms=" . DBOld::escape($terms) . ",
+			day_in_following_month=" . DBOld::escape($dayNumber) . ",
 			days_before_due=0
-			WHERE terms_indicator = " . db_escape($selected_id);
+			WHERE terms_indicator = " . DBOld::escape($selected_id);
 		}
-		db_query($sql, "The payment term could not be updated");
+		DBOld::query($sql, "The payment term could not be updated");
 	}
 
 	function delete_payment_terms($selected_id) {
-		$sql = "DELETE FROM payment_terms WHERE terms_indicator=" . db_escape($selected_id);
-		db_query($sql, "could not delete a payment terms");
+		$sql = "DELETE FROM payment_terms WHERE terms_indicator=" . DBOld::escape($selected_id);
+		DBOld::query($sql, "could not delete a payment terms");
 	}
 
 	function get_payment_terms($selected_id) {
 		$sql = "SELECT *, (t.days_before_due=0) AND (t.day_in_following_month=0) as cash_sale
-	 FROM payment_terms t WHERE terms_indicator=" . db_escape($selected_id);
+	 FROM payment_terms t WHERE terms_indicator=" . DBOld::escape($selected_id);
 
-		$result = db_query($sql, "could not get payment term");
+		$result = DBOld::query($sql, "could not get payment term");
 
-		return db_fetch($result);
+		return DBOld::fetch($result);
 	}
 
 	function get_payment_terms_all($show_inactive) {
 		$sql = "SELECT * FROM payment_terms";
 		if (!$show_inactive) $sql .= " WHERE !inactive";
-		return db_query($sql, "could not get payment terms");
+		return DBOld::query($sql, "could not get payment terms");
 	}
 
 	/*
@@ -208,7 +208,7 @@
  */
 	function key_in_foreign_table($id, $tables, $stdkey, $escaped = false) {
 		if (!$escaped)
-			$id = db_escape($id);
+			$id = DBOld::escape($id);
 
 		if (!is_array($tables))
 			$tables = array($tables);
@@ -219,13 +219,13 @@
 				$tbl = $key;
 				$key = $stdkey;
 			}
-			$sqls[] = "(SELECT COUNT(*) as cnt FROM `$tbl` WHERE `$key`=" . db_escape($id) . ")\n";
+			$sqls[] = "(SELECT COUNT(*) as cnt FROM `$tbl` WHERE `$key`=" . DBOld::escape($id) . ")\n";
 		}
 
 		$sql = "SELECT sum(cnt) FROM (" . implode(' UNION ', $sqls) . ") as counts";
 
-		$result = db_query($sql, "check relations for " . implode(',', $tables) . " failed");
-		$count = db_fetch($result);
+		$result = DBOld::query($sql, "check relations for " . implode(',', $tables) . " failed");
+		$count = DBOld::fetch($result);
 
 		return $count[0];
 	}

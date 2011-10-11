@@ -115,7 +115,7 @@
 
 		$accounts = get_gl_accounts($fromacc, $toacc);
 
-		while ($account = db_fetch($accounts))
+		while ($account = DBOld::fetch($accounts))
 		{
 			if (is_account_balancesheet($account["account_code"]))
 				$begin = "";
@@ -129,7 +129,7 @@
 			$prev_balance = get_gl_balance_from_to($begin, $from, $account["account_code"], $dimension, $dimension2);
 
 			$trans = get_gl_transactions($from, $to, -1, $account['account_code'], $dimension, $dimension2);
-			$rows = db_num_rows($trans);
+			$rows = DBOld::num_rows($trans);
 			if ($prev_balance == 0.0 && $rows == 0)
 				continue;
 			$rep->Font('bold');
@@ -143,7 +143,7 @@
 			$total = $prev_balance;
 			$rep->NewLine(2);
 			if ($rows > 0) {
-				while ($myrow = db_fetch($trans))
+				while ($myrow = DBOld::fetch($trans))
 				{
 					$total += $myrow['amount'];
 

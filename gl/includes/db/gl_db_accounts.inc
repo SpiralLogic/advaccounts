@@ -11,34 +11,34 @@
 	 ***********************************************************************/
 	function add_gl_account($account_code, $account_name, $account_type, $account_code2) {
 		$sql = "INSERT INTO chart_master (account_code, account_code2, account_name, account_type)
-		VALUES (" . db_escape($account_code) . ", " . db_escape($account_code2) . ", "
-		 . db_escape($account_name) . ", " . db_escape($account_type) . ")";
+		VALUES (" . DBOld::escape($account_code) . ", " . DBOld::escape($account_code2) . ", "
+		 . DBOld::escape($account_name) . ", " . DBOld::escape($account_type) . ")";
 
-		return db_query($sql);
+		return DBOld::query($sql);
 	}
 
 	function update_gl_account($account_code, $account_name, $account_type, $account_code2) {
-		$sql = "UPDATE chart_master SET account_name=" . db_escape($account_name)
-		 . ",account_type=" . db_escape($account_type) . ", account_code2=" . db_escape($account_code2)
-		 . " WHERE account_code = " . db_escape($account_code);
+		$sql = "UPDATE chart_master SET account_name=" . DBOld::escape($account_name)
+		 . ",account_type=" . DBOld::escape($account_type) . ", account_code2=" . DBOld::escape($account_code2)
+		 . " WHERE account_code = " . DBOld::escape($account_code);
 
-		return db_query($sql);
+		return DBOld::query($sql);
 	}
 
 	//---------------------------------------------------------------------------------------------
 
 	function update_reconciled_values($reconcile_id, $reconcile_value, $reconcile_date, $end_balance, $bank_account) {
 		$sql = "UPDATE bank_trans SET reconciled=$reconcile_value"
-		 . " WHERE id=" . db_escape($reconcile_id);
+		 . " WHERE id=" . DBOld::escape($reconcile_id);
 
-		db_query($sql, "Can't change reconciliation status");
+		DBOld::query($sql, "Can't change reconciliation status");
 		// save last reconcilation status (date, end balance)
 		$sql2 = "UPDATE bank_accounts SET last_reconciled_date='"
 		 . Dates::date2sql($reconcile_date) . "',
     	    ending_reconcile_balance=$end_balance
-			WHERE id=" . db_escape($bank_account);
+			WHERE id=" . DBOld::escape($bank_account);
 
-		db_query($sql2, "Error updating reconciliation information");
+		DBOld::query($sql2, "Error updating reconciliation information");
 	}
 
 	//---------------------------------------------------------------------------------------------
@@ -53,20 +53,20 @@
 			 SUM(IF(reconciled<'$date', amount, 0)) as beg_balance,
 			 SUM(amount) as total
 		FROM bank_trans trans
-		WHERE undeposited=0 AND bank_act=" . db_escape($bank_account);
+		WHERE undeposited=0 AND bank_act=" . DBOld::escape($bank_account);
 		//	." AND trans.reconciled IS NOT NULL";
 
-		return db_query($sql, "Cannot retrieve reconciliation data");
+		return DBOld::query($sql, "Cannot retrieve reconciliation data");
 	}
 
 	//---------------------------------------------------------------------------------------------
 
 	function get_ending_reconciled($bank_account, $bank_date) {
 		$sql = "SELECT ending_reconcile_balance
-		FROM bank_accounts WHERE id=" . db_escape($bank_account)
-		 . " AND last_reconciled_date=" . db_escape($bank_date);
-		$result = db_query($sql, "Cannot retrieve last reconciliation");
-		return db_fetch($result);
+		FROM bank_accounts WHERE id=" . DBOld::escape($bank_account)
+		 . " AND last_reconciled_date=" . DBOld::escape($bank_date);
+		$result = DBOld::query($sql, "Cannot retrieve last reconciliation");
+		return DBOld::fetch($result);
 	}
 
 	//---------------------------------------------------------------------------------------------
@@ -75,7 +75,7 @@
 		$sql = "SELECT	type, trans_no, ref, trans_date,
 				amount,	person_id, person_type_id, reconciled, id
 		FROM bank_trans
-		WHERE bank_trans.bank_act = " . db_escape($bank_account) . "
+		WHERE bank_trans.bank_act = " . DBOld::escape($bank_account) . "
 			AND undeposited = 0 AND trans_date <= '" . Dates::date2sql($date) . "' AND (reconciled IS NULL OR reconciled='" . Dates::date2sql($date) . "')
 		ORDER BY trans_date,bank_trans.id";
 		// or	ORDER BY reconciled desc, trans_date,".''."bank_trans.id";
@@ -85,18 +85,18 @@
 	function reset_sql_for_bank_account_reconcile($bank_account, $date) {
 		$sql = "UPDATE	reconciled
 		FROM bank_trans
-		WHERE bank_trans.bank_act = " . db_escape($bank_account) . "
+		WHERE bank_trans.bank_act = " . DBOld::escape($bank_account) . "
 			AND undeposited = 0 AND reconciled = '" . Dates::date2sql($date) . "'";
 		// or	ORDER BY reconciled desc, trans_date,".''."bank_trans.id";
-		$result = db_query($sql);
+		$result = DBOld::query($sql);
 	}
 
 	//---------------------------------------------------------------------------------------------
 
 	function delete_gl_account($code) {
-		$sql = "DELETE FROM chart_master WHERE account_code=" . db_escape($code);
+		$sql = "DELETE FROM chart_master WHERE account_code=" . DBOld::escape($code);
 
-		db_query($sql, "could not delete gl account");
+		DBOld::query($sql, "could not delete gl account");
 	}
 
 	function get_gl_accounts($from = null, $to = null, $type = null) {
@@ -104,21 +104,21 @@
 		FROM chart_master,chart_types
 		WHERE chart_master.account_type=chart_types.id";
 		if ($from != null)
-			$sql .= " AND chart_master.account_code >= " . db_escape($from);
+			$sql .= " AND chart_master.account_code >= " . DBOld::escape($from);
 		if ($to != null)
-			$sql .= " AND chart_master.account_code <= " . db_escape($to);
+			$sql .= " AND chart_master.account_code <= " . DBOld::escape($to);
 		if ($type != null)
-			$sql .= " AND account_type=" . db_escape($type);
+			$sql .= " AND account_type=" . DBOld::escape($type);
 		$sql .= " ORDER BY account_code";
 
-		return db_query($sql, "could not get gl accounts");
+		return DBOld::query($sql, "could not get gl accounts");
 	}
 
 	function get_gl_account($code) {
-		$sql = "SELECT * FROM chart_master WHERE account_code=" . db_escape($code);
+		$sql = "SELECT * FROM chart_master WHERE account_code=" . DBOld::escape($code);
 
-		$result = db_query($sql, "could not get gl account");
-		return db_fetch($result);
+		$result = DBOld::query($sql, "could not get gl account");
+		return DBOld::fetch($result);
 	}
 
 	function is_account_balancesheet($code) {
@@ -126,20 +126,20 @@
 		 . "chart_types, chart_master
 		WHERE chart_master.account_type=chart_types.id AND
 		chart_types.class_id=chart_class.cid
-		AND chart_master.account_code=" . db_escape($code);
+		AND chart_master.account_code=" . DBOld::escape($code);
 
-		$result = db_query($sql, "could not retreive the account class for $code");
-		$row = db_fetch_row($result);
+		$result = DBOld::query($sql, "could not retreive the account class for $code");
+		$row = DBOld::fetch_row($result);
 		return $row[0] > 0 && $row[0] < CL_INCOME;
 	}
 
 	function get_gl_account_name($code) {
-		$sql = "SELECT account_name from chart_master WHERE account_code=" . db_escape($code);
+		$sql = "SELECT account_name from chart_master WHERE account_code=" . DBOld::escape($code);
 
-		$result = db_query($sql, "could not retreive the account name for $code");
+		$result = DBOld::query($sql, "could not retreive the account name for $code");
 
-		if (db_num_rows($result) == 1) {
-			$row = db_fetch_row($result);
+		if (DBOld::num_rows($result) == 1) {
+			$row = DBOld::fetch_row($result);
 			return $row[0];
 		}
 

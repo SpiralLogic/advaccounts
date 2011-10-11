@@ -11,90 +11,90 @@
 	 ***********************************************************************/
 	function clear_shipping_tax_group() {
 		$sql = "UPDATE tax_groups SET tax_shipping=0 WHERE 1";
-		db_query($sql, "could not update tax_shipping fields");
+		DBOld::query($sql, "could not update tax_shipping fields");
 	}
 
 	function add_tax_group($name, $tax_shipping, $taxes, $rates) {
-		begin_transaction();
+		DBOld::begin_transaction();
 
 		if ($tax_shipping) // only one tax group for shipping
 			clear_shipping_tax_group();
 
-		$sql = "INSERT INTO tax_groups (name, tax_shipping) VALUES (" . db_escape($name) . ", " . db_escape($tax_shipping) . ")";
-		db_query($sql, "could not add tax group");
+		$sql = "INSERT INTO tax_groups (name, tax_shipping) VALUES (" . DBOld::escape($name) . ", " . DBOld::escape($tax_shipping) . ")";
+		DBOld::query($sql, "could not add tax group");
 
-		$id = db_insert_id();
+		$id = DBOld::insert_id();
 
 		add_tax_group_items($id, $taxes, $rates);
 
-		commit_transaction();
+		DBOld::commit_transaction();
 	}
 
 	function update_tax_group($id, $name, $tax_shipping, $taxes, $rates) {
-		begin_transaction();
+		DBOld::begin_transaction();
 
 		if ($tax_shipping) // only one tax group for shipping
 			clear_shipping_tax_group();
 
-		$sql = "UPDATE tax_groups SET name=" . db_escape($name) . ",tax_shipping=" . db_escape($tax_shipping) . " WHERE id=" . db_escape($id);
-		db_query($sql, "could not update tax group");
+		$sql = "UPDATE tax_groups SET name=" . DBOld::escape($name) . ",tax_shipping=" . DBOld::escape($tax_shipping) . " WHERE id=" . DBOld::escape($id);
+		DBOld::query($sql, "could not update tax group");
 
 		delete_tax_group_items($id);
 		add_tax_group_items($id, $taxes, $rates);
 
-		commit_transaction();
+		DBOld::commit_transaction();
 	}
 
 	function get_all_tax_groups($all = false) {
 		$sql = "SELECT * FROM tax_groups";
 		if (!$all) $sql .= " WHERE !inactive";
 
-		return db_query($sql, "could not get all tax group");
+		return DBOld::query($sql, "could not get all tax group");
 	}
 
 	function get_tax_group($type_id) {
-		$sql = "SELECT * FROM tax_groups WHERE id=" . db_escape($type_id);
+		$sql = "SELECT * FROM tax_groups WHERE id=" . DBOld::escape($type_id);
 
-		$result = db_query($sql, "could not get tax group");
+		$result = DBOld::query($sql, "could not get tax group");
 
-		return db_fetch($result);
+		return DBOld::fetch($result);
 	}
 
 	function delete_tax_group($id) {
-		begin_transaction();
+		DBOld::begin_transaction();
 
-		$sql = "DELETE FROM tax_groups WHERE id=" . db_escape($id);
+		$sql = "DELETE FROM tax_groups WHERE id=" . DBOld::escape($id);
 
-		db_query($sql, "could not delete tax group");
+		DBOld::query($sql, "could not delete tax group");
 
 		delete_tax_group_items($id);
 
-		commit_transaction();
+		DBOld::commit_transaction();
 	}
 
 	function add_tax_group_items($id, $items, $rates) {
 		for ($i = 0; $i < count($items); $i++)
 		{
 			$sql = "INSERT INTO tax_group_items (tax_group_id, tax_type_id, rate)
-			VALUES (" . db_escape($id) . ",  " . db_escape($items[$i]) . ", " . $rates[$i] . ")";
-			db_query($sql, "could not add item tax group item");
+			VALUES (" . DBOld::escape($id) . ",  " . DBOld::escape($items[$i]) . ", " . $rates[$i] . ")";
+			DBOld::query($sql, "could not add item tax group item");
 		}
 	}
 
 	function delete_tax_group_items($id) {
-		$sql = "DELETE FROM tax_group_items WHERE tax_group_id=" . db_escape($id);
+		$sql = "DELETE FROM tax_group_items WHERE tax_group_id=" . DBOld::escape($id);
 
-		db_query($sql, "could not delete item tax group items");
+		DBOld::query($sql, "could not delete item tax group items");
 	}
 
 	function get_tax_group_items($id) {
 		$sql = "SELECT tax_group_items.*, tax_types.name AS tax_type_name, tax_types.rate,
 		tax_types.sales_gl_code, tax_types.purchasing_gl_code
 		FROM tax_group_items, tax_types
-		WHERE tax_group_id=" . db_escape($id) . "
+		WHERE tax_group_id=" . DBOld::escape($id) . "
 			AND tax_types.id=tax_type_id";
 
-		return db_query($sql, "could not get item tax type group items");
+		return DBOld::query($sql, "could not get item tax type group items");
 	}
 
 	function get_tax_group_items_as_array($id) {
@@ -102,7 +102,7 @@
 
 		$tax_group_items = get_tax_group_items($id);
 
-		while ($tax_group_item = db_fetch($tax_group_items))
+		while ($tax_group_item = DBOld::fetch($tax_group_items))
 		{
 			$index = $tax_group_item['tax_type_id'];
 			$ret_tax_array[$index]['tax_type_id'] = $tax_group_item['tax_type_id'];
@@ -124,7 +124,7 @@
 		WHERE tax_groups.tax_shipping=1
 		AND tax_groups.id=tax_group_id
 		AND tax_types.id=tax_type_id";
-		return db_query($sql, "could not get shipping tax group items");
+		return DBOld::query($sql, "could not get shipping tax group items");
 	}
 
 	function get_shipping_tax_as_array() {
@@ -132,7 +132,7 @@
 
 		$tax_group_items = get_shipping_tax_group_items();
 
-		while ($tax_group_item = db_fetch($tax_group_items))
+		while ($tax_group_item = DBOld::fetch($tax_group_items))
 		{
 			$index = $tax_group_item['tax_type_id'];
 			$ret_tax_array[$index]['tax_type_id'] = $tax_group_item['tax_type_id'];

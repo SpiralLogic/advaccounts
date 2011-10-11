@@ -16,7 +16,7 @@
 
 		$result = get_bom($item_check);
 
-		if (db_num_rows($result) == 0) {
+		if (DBOld::num_rows($result) == 0) {
 			ui_msgs::display_note(_("The bill of material for this item is empty."), 0, 1);
 		}
 		else
@@ -34,7 +34,7 @@
 
 			$total_cost = 0;
 
-			while ($myrow = db_fetch($result))
+			while ($myrow = DBOld::fetch($result))
 			{
 
 				alt_table_row_color($k);
@@ -70,7 +70,7 @@
 
 		$result = get_wo_requirements($woid);
 
-		if (db_num_rows($result) == 0) {
+		if (DBOld::num_rows($result) == 0) {
 			ui_msgs::display_note(_("There are no Requirements for this Order."), 1, 0);
 		}
 		else
@@ -89,7 +89,7 @@
 			if ($date == null)
 				$date = Dates::Today();
 
-			while ($myrow = db_fetch($result))
+			while ($myrow = DBOld::fetch($result))
 			{
 
 				$qoh = 0;
@@ -142,7 +142,7 @@
 
 		$result = get_work_order_productions($woid);
 
-		if (db_num_rows($result) == 0) {
+		if (DBOld::num_rows($result) == 0) {
 			ui_msgs::display_note(_("There are no Productions for this Order."), 1, 1);
 		}
 		else
@@ -155,7 +155,7 @@
 			$k = 0; //row colour counter
 			$total_qty = 0;
 
-			while ($myrow = db_fetch($result))
+			while ($myrow = DBOld::fetch($result))
 			{
 
 				alt_table_row_color($k);
@@ -183,7 +183,7 @@
 
 		$result = get_work_order_issues($woid);
 
-		if (db_num_rows($result) == 0) {
+		if (DBOld::num_rows($result) == 0) {
 			ui_msgs::display_note(_("There are no Issues for this Order."), 0, 1);
 		}
 		else
@@ -195,7 +195,7 @@
 
 			$k = 0; //row colour counter
 
-			while ($myrow = db_fetch($result))
+			while ($myrow = DBOld::fetch($result))
 			{
 
 				alt_table_row_color($k);
@@ -218,7 +218,7 @@
 		//$result = get_bank_trans(null, null, PT_WORKORDER, $woid);
 		$result = get_gl_wo_cost_trans($woid);
 
-		if (db_num_rows($result) == 0) {
+		if (DBOld::num_rows($result) == 0) {
 			ui_msgs::display_note(_("There are no additional costs for this Order."), 0, 1);
 		}
 		else
@@ -230,7 +230,7 @@
 
 			$k = 0; //row colour counter
 
-			while ($myrow = db_fetch($result))
+			while ($myrow = DBOld::fetch($result))
 			{
 
 				alt_table_row_color($k);

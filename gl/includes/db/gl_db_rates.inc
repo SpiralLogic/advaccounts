@@ -11,22 +11,22 @@
 	 ***********************************************************************/
 	//---------------------------------------------------------------------------------------------
 	function get_exchange_rate($rate_id) {
-		$sql = "SELECT * FROM exchange_rates WHERE id=" . db_escape($rate_id);
-		$result = db_query($sql, "could not get exchange rate for $rate_id");
+		$sql = "SELECT * FROM exchange_rates WHERE id=" . DBOld::escape($rate_id);
+		$result = DBOld::query($sql, "could not get exchange rate for $rate_id");
 
-		return db_fetch($result);
+		return DBOld::fetch($result);
 	}
 
 	// Retrieves buy exchange rate for given currency/date, zero if no result
 	function get_date_exchange_rate($curr_code, $date_) {
 		$date = Dates::date2sql($date_);
-		$sql = "SELECT rate_buy FROM exchange_rates WHERE curr_code=" . db_escape($curr_code)
+		$sql = "SELECT rate_buy FROM exchange_rates WHERE curr_code=" . DBOld::escape($curr_code)
 		 . " AND date_='$date'";
-		$result = db_query($sql, "could not get exchange rate for $curr_code - $date_");
+		$result = DBOld::query($sql, "could not get exchange rate for $curr_code - $date_");
 
-		if (db_num_rows($result) == 0)
+		if (DBOld::num_rows($result) == 0)
 			return 0;
-		$row = db_fetch($result);
+		$row = DBOld::fetch($result);
 		return $row[0];
 	}
 
@@ -38,10 +38,10 @@
 
 		$date = Dates::date2sql($date_);
 
-		$sql = "UPDATE exchange_rates SET rate_buy=$buy_rate, rate_sell=" . db_escape($sell_rate)
-		 . " WHERE curr_code=" . db_escape($curr_code) . " AND date_='$date'";
+		$sql = "UPDATE exchange_rates SET rate_buy=$buy_rate, rate_sell=" . DBOld::escape($sell_rate)
+		 . " WHERE curr_code=" . DBOld::escape($curr_code) . " AND date_='$date'";
 
-		db_query($sql, "could not add exchange rate for $curr_code");
+		DBOld::query($sql, "could not add exchange rate for $curr_code");
 	}
 
 	//---------------------------------------------------------------------------------------------
@@ -53,16 +53,16 @@
 		$date = Dates::date2sql($date_);
 
 		$sql = "INSERT INTO exchange_rates (curr_code, date_, rate_buy, rate_sell)
-		VALUES (" . db_escape($curr_code) . ", '$date', " . db_escape($buy_rate)
-		 . ", " . db_escape($sell_rate) . ")";
-		db_query($sql, "could not add exchange rate for $curr_code");
+		VALUES (" . DBOld::escape($curr_code) . ", '$date', " . DBOld::escape($buy_rate)
+		 . ", " . DBOld::escape($sell_rate) . ")";
+		DBOld::query($sql, "could not add exchange rate for $curr_code");
 	}
 
 	//---------------------------------------------------------------------------------------------
 
 	function delete_exchange_rate($rate_id) {
-		$sql = "DELETE FROM exchange_rates WHERE id=" . db_escape($rate_id);
-		db_query($sql, "could not delete exchange rate $rate_id");
+		$sql = "DELETE FROM exchange_rates WHERE id=" . DBOld::escape($rate_id);
+		DBOld::query($sql, "could not delete exchange rate $rate_id");
 	}
 
 	//-----------------------------------------------------------------------------

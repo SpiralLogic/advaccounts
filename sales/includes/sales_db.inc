@@ -91,16 +91,16 @@
 		//	AND (sales_type_id = $sales_type_id	OR sales_type_id = $base_id)
 		$sql = "SELECT price, curr_abrev, sales_type_id
 		FROM prices
-		WHERE stock_id = " . db_escape($stock_id) . "
-			AND (curr_abrev = " . db_escape($currency) . " OR curr_abrev = " . db_escape($home_curr) . ")";
+		WHERE stock_id = " . DBOld::escape($stock_id) . "
+			AND (curr_abrev = " . DBOld::escape($currency) . " OR curr_abrev = " . DBOld::escape($home_curr) . ")";
 
-		$result = db_query($sql, "There was a problem retrieving the pricing information for the part $stock_id for customer");
-		$num_rows = db_num_rows($result);
+		$result = DBOld::query($sql, "There was a problem retrieving the pricing information for the part $stock_id for customer");
+		$num_rows = DBOld::num_rows($result);
 		$rate = round2(Banking::get_exchange_rate_from_home_currency($currency, $date),
 			user_exrate_dec());
 		$round_to = get_company_pref('round_to');
 		$prices = array();
-		while ($myrow = db_fetch($result))
+		while ($myrow = DBOld::fetch($result))
 		{
 			$prices[$myrow['sales_type_id']][$myrow['curr_abrev']] = $myrow['price'];
 		}
@@ -170,7 +170,7 @@
 		// no price for kit found, get total value of all items
 		$kit = get_item_kit($item_code);
 
-		while ($item = db_fetch($kit)) {
+		while ($item = DBOld::fetch($kit)) {
 			if ($item['item_code'] != $item['stock_id']) {
 				// foreign/kit code
 				$kit_price += $item['quantity'] * get_kit_price($item['stock_id'],
@@ -197,8 +197,8 @@
 			$del_no = reset($src);
 
 			$sql = 'UPDATE debtor_trans SET trans_link = ' . $del_no .
-			 ' WHERE type=' . db_escape($cart->trans_type) . ' AND trans_no=' . $inv_no;
-			db_query($sql, 'UPDATE Child document link cannot be updated');
+			 ' WHERE type=' . DBOld::escape($cart->trans_type) . ' AND trans_no=' . $inv_no;
+			DBOld::query($sql, 'UPDATE Child document link cannot be updated');
 		}
 		if ($cart->trans_type != ST_SALESINVOICE)
 			return 0;
@@ -222,7 +222,7 @@
 		}
 
 		$sql .= implode(' OR ', $deliveries) . ')';
-		db_query($sql, 'Delivery links cannot be updated');
+		DBOld::query($sql, 'Delivery links cannot be updated');
 
 		return 0; // batch or complete invoice
 	}
@@ -246,13 +246,13 @@
 			if ($doc_type == ST_SALESORDER)
 				$sql = "UPDATE sales_order_details
 				SET qty_sent = qty_sent + $qty_dispatched
-				WHERE id=" . db_escape($line_id);
+				WHERE id=" . DBOld::escape($line_id);
 			else
 				$sql = "UPDATE debtor_trans_details
 				SET qty_done = qty_done + $qty_dispatched
-				WHERE id=" . db_escape($line_id);
+				WHERE id=" . DBOld::escape($line_id);
 		}
-		db_query($sql, "The parent document detail record could not be updated");
+		DBOld::query($sql, "The parent document detail record could not be updated");
 		return true;
 	}
 
@@ -262,14 +262,14 @@
 	function get_location(&$cart) {
 		$sql = "SELECT locations.* FROM stock_moves,"
 		 . "locations" .
-		 " WHERE type=" . db_escape($cart->trans_type) .
+		 " WHERE type=" . DBOld::escape($cart->trans_type) .
 		 " AND trans_no=" . key($cart->trans_no) .
 		 " AND qty!=0 " .
 		 " AND locations.loc_code=stock_moves.loc_code";
-		$result = db_query($sql, 'Retreiving inventory location');
+		$result = DBOld::query($sql, 'Retreiving inventory location');
 
-		if (db_num_rows($result)) {
-			return db_fetch($result);
+		if (DBOld::num_rows($result)) {
+			return DBOld::fetch($result);
 		}
 		return null;
 	}
@@ -328,8 +328,8 @@
 			}
 
 			$result = get_customer_trans_details($doc_type, $trans_no);
-			if (db_num_rows($result) > 0) {
-				for ($line_no = 0; $myrow = db_fetch($result); $line_no++) {
+			if (DBOld::num_rows($result) > 0) {
+				for ($line_no = 0; $myrow = DBOld::fetch($result); $line_no++) {
 					$cart->line_items[$line_no] = new line_details(
 						$myrow["stock_id"], $myrow["quantity"],
 						$myrow["unit_price"], $myrow["discount_percent"],

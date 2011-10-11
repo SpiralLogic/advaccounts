@@ -47,7 +47,7 @@
 	if (isset($delete)) {
 		// deletes all records with id from table reports
 		$query = "DELETE FROM xx_reports WHERE id = '" . $id . "'";
-		db_query($query);
+		DBOld::query($query);
 		$url = REPGENDIR . "/repgen_select.php?id=" . $id;
 		$url = "http://$HTTP_HOST" . $url;
 		header("Location: " . $url); // switches to repgen_select.php

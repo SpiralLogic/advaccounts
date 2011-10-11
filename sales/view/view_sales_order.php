@@ -75,12 +75,12 @@
 		ui_msgs::display_heading2(_("Delivery Notes"));
 		$th = array(_("#"), _("Ref"), _("Date"), _("Total"));
 		table_header($th);
-		$sql = "SELECT * FROM debtor_trans WHERE type=" . ST_CUSTDELIVERY . " AND order_=" . db_escape($_GET['trans_no']);
-		$result = db_query($sql, "The related delivery notes could not be retreived");
+		$sql = "SELECT * FROM debtor_trans WHERE type=" . ST_CUSTDELIVERY . " AND order_=" . DBOld::escape($_GET['trans_no']);
+		$result = DBOld::query($sql, "The related delivery notes could not be retreived");
 		$delivery_total = 0;
 		$k = 0;
 		$dn_numbers = array();
-		while ($del_row = db_fetch($result)) {
+		while ($del_row = DBOld::fetch($result)) {
 			alt_table_row_color($k);
 			$dn_numbers[] = $del_row["trans_link"];
 			$this_total = $del_row["ov_freight"] + $del_row["ov_amount"] + $del_row["ov_freight_tax"] + $del_row["ov_gst"];
@@ -102,9 +102,9 @@
 		$invoices_total = 0;
 		if (count($dn_numbers)) {
 			$sql = "SELECT * FROM debtor_trans WHERE type=" . ST_SALESINVOICE . " AND trans_no IN(" . implode(',', array_values($dn_numbers)) . ")";
-			$result = db_query($sql, "The related invoices could not be retreived");
+			$result = DBOld::query($sql, "The related invoices could not be retreived");
 			$k = 0;
-			while ($inv_row = db_fetch($result)) {
+			while ($inv_row = DBOld::fetch($result)) {
 				alt_table_row_color($k);
 				$this_total = $inv_row["ov_freight"] + $inv_row["ov_freight_tax"] + $inv_row["ov_gst"] + $inv_row["ov_amount"];
 				$invoices_total += $this_total;
@@ -127,9 +127,9 @@
 			// FIXME -  credit notes retrieved here should be those linked to invoices containing
 			// at least one line from this order
 			$sql = "SELECT * FROM debtor_trans WHERE type=" . ST_CUSTCREDIT . " AND trans_link IN(" . implode(',', array_values($inv_numbers)) . ")";
-			$result = db_query($sql, "The related credit notes could not be retreived");
+			$result = DBOld::query($sql, "The related credit notes could not be retreived");
 			$k = 0;
-			while ($credits_row = db_fetch($result)) {
+			while ($credits_row = DBOld::fetch($result)) {
 				alt_table_row_color($k);
 				$this_total = $credits_row["ov_freight"] + $credits_row["ov_freight_tax"] + $credits_row["ov_gst"] + $credits_row["ov_amount"];
 				$credits_total += $this_total;

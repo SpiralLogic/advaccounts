@@ -22,10 +22,10 @@
 		// 2010-02-23 Joe Hunt with help of Ary Wibowo
 		$sql = "SELECT SUM(bt.amount) AS for_amount, ba.bank_curr_code
 		FROM bank_trans bt, bank_accounts ba
-		WHERE ba.id = bt.bank_act AND ba.account_code = " . db_escape($account) . " AND bt.trans_date<='" . Dates::date2sql($date_) . "'
+		WHERE ba.id = bt.bank_act AND ba.account_code = " . DBOld::escape($account) . " AND bt.trans_date<='" . Dates::date2sql($date_) . "'
 		GROUP BY ba.bank_curr_code";
-		$result = db_query($sql, "Transactions for bank account $acc_id could not be calculated");
-		while ($row = db_fetch($result))
+		$result = DBOld::query($sql, "Transactions for bank account $acc_id could not be calculated");
+		while ($row = DBOld::fetch($result))
 		{
 			if ($row['for_amount'] == 0)
 				continue;
@@ -51,8 +51,8 @@
 	function add_exchange_variation_all() {
 		$trans_no = SysTypes::get_next_trans_no(ST_JOURNAL);
 		$sql = "SELECT * FROM bank_accounts";
-		$result = db_query($sql, "could not retreive bank accounts");
-		while ($myrow = db_fetch($result))
+		$result = DBOld::query($sql, "could not retreive bank accounts");
+		while ($myrow = DBOld::fetch($result))
 		{
 			add_exchange_variation(ST_JOURNAL, $trans_no, null, $myrow['id'], $myrow['account_code'],
 				$myrow['currency_code']);
@@ -69,7 +69,7 @@
 	function add_bank_transfer($from_account, $to_account, $date_,
 														 $amount, $ref, $memo_, $charge = 0) {
 
-		begin_transaction();
+		DBOld::begin_transaction();
 
 		$trans_type = ST_BANKTRANSFER;
 
@@ -115,12 +115,12 @@
 		add_exchange_variation($trans_type, $trans_no, $date_, $to_account, $to_gl_account,
 			$currency, PT_MISC, "");
 
-		add_comments($trans_type, $trans_no, $date_, $memo_);
+		DB_Comments::add($trans_type, $trans_no, $date_, $memo_);
 
 		Refs::save($trans_type, $trans_no, $ref);
-		add_audit_trail($trans_type, $trans_no, $date_);
+		DB_AuditTrail::add($trans_type, $trans_no, $date_);
 
-		commit_transaction();
+		DBOld::commit_transaction();
 
 		return $trans_no;
 	}
@@ -146,7 +146,7 @@
 		$do_exchange_variance = false;
 
 		if ($use_transaction)
-			begin_transaction();
+			DBOld::begin_transaction();
 
 		$currency = Banking::get_bank_account_currency($from_account);
 		$bank_gl_account = get_bank_gl_account($from_account);
@@ -231,13 +231,13 @@
 			add_exchange_variation($trans_type, $trans_no, $date_, $from_account, $bank_gl_account,
 				$currency, $person_type_id, $person_id);
 
-		add_comments($trans_type, $trans_no, $date_, $memo_);
+		DB_Comments::add($trans_type, $trans_no, $date_, $memo_);
 
 		Refs::save($trans_type, $trans_no, $ref);
-		add_audit_trail($trans_type, $trans_no, $date_);
+		DB_AuditTrail::add($trans_type, $trans_no, $date_);
 
 		if ($use_transaction)
-			commit_transaction();
+			DBOld::commit_transaction();
 
 		return array($trans_type, $trans_no);
 	}

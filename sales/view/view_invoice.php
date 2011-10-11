@@ -105,7 +105,7 @@
 
 	start_table(Config::get('tables.style') . "  width=95%");
 
-	if (db_num_rows($result) > 0) {
+	if (DBOld::num_rows($result) > 0) {
 		$th = array(_("Item Code"), _("Item Description"), _("Quantity"),
 			_("Unit"), _("Price"), _("Discount %"), _("Total")
 		);
@@ -113,7 +113,7 @@
 
 		$k = 0; //row colour counter
 		$sub_total = 0;
-		while ($myrow2 = db_fetch($result))
+		while ($myrow2 = DBOld::fetch($result))
 		{
 			if ($myrow2["quantity"] == 0) continue;
 			alt_table_row_color($k);

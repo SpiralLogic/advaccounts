@@ -76,7 +76,7 @@
 
 		$taxes = get_tax_summary($_POST['TransFromDate'], $_POST['TransToDate']);
 
-		while ($tx = db_fetch($taxes))
+		while ($tx = DBOld::fetch($taxes))
 		{
 
 			$payable = $tx['payable'];

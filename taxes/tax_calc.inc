@@ -89,7 +89,7 @@
 		$item_tax_type_exemptions_db = get_item_tax_type_exemptions($item_tax_type["id"]);
 		// read them all into an array to minimize db querying
 		$item_tax_type_exemptions = array();
-		while ($item_tax_type_exemp = db_fetch($item_tax_type_exemptions_db)) {
+		while ($item_tax_type_exemp = DBOld::fetch($item_tax_type_exemptions_db)) {
 			$item_tax_type_exemptions[] = $item_tax_type_exemp["tax_type_id"];
 		}
 		$ret_tax_array = array();
@@ -169,10 +169,10 @@
 
 	function is_tax_account($account_code) {
 		$sql = "SELECT id FROM tax_types WHERE
-		sales_gl_code=" . db_escape($account_code) . " OR purchasing_gl_code=" . db_escape($account_code);
-		$result = db_query($sql, "checking account is tax account");
-		if (db_num_rows($result) > 0) {
-			$acct = db_fetch($result);
+		sales_gl_code=" . DBOld::escape($account_code) . " OR purchasing_gl_code=" . DBOld::escape($account_code);
+		$result = DBOld::query($sql, "checking account is tax account");
+		if (DBOld::num_rows($result) > 0) {
+			$acct = DBOld::fetch($result);
 			return $acct['id'];
 		} else
 			return false;

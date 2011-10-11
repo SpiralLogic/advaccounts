@@ -55,11 +55,11 @@
 
 	$sql = "SELECT type, trans_no, tran_date, person_id, qty, reference
 	FROM stock_moves
-	WHERE loc_code=" . db_escape($_POST['StockLocation']) . "
+	WHERE loc_code=" . DBOld::escape($_POST['StockLocation']) . "
 	AND tran_date >= '" . $after_date . "'
 	AND tran_date <= '" . $before_date . "'
-	AND stock_id = " . db_escape($_POST['stock_id']) . " ORDER BY tran_date,trans_id";
-	$result = db_query($sql, "could not query stock moves");
+	AND stock_id = " . DBOld::escape($_POST['stock_id']) . " ORDER BY tran_date,trans_id";
+	$result = DBOld::query($sql, "could not query stock moves");
 
 	Errors::check_db_error("The stock movements for the selected criteria could not be retrieved", $sql);
 
@@ -71,12 +71,12 @@
 
 	table_header($th);
 
-	$sql = "SELECT SUM(qty) FROM stock_moves WHERE stock_id=" . db_escape($_POST['stock_id']) . "
-	AND loc_code=" . db_escape($_POST['StockLocation']) . "
+	$sql = "SELECT SUM(qty) FROM stock_moves WHERE stock_id=" . DBOld::escape($_POST['stock_id']) . "
+	AND loc_code=" . DBOld::escape($_POST['StockLocation']) . "
 	AND tran_date < '" . $after_date . "'";
-	$before_qty = db_query($sql, "The starting quantity on hand could not be calculated");
+	$before_qty = DBOld::query($sql, "The starting quantity on hand could not be calculated");
 
-	$before_qty_row = db_fetch_row($before_qty);
+	$before_qty_row = DBOld::fetch_row($before_qty);
 	$after_qty = $before_qty = $before_qty_row[0];
 
 	if (!isset($before_qty_row[0])) {
@@ -96,7 +96,7 @@
 	$total_in = 0;
 	$total_out = 0;
 
-	while ($myrow = db_fetch($result))
+	while ($myrow = DBOld::fetch($result))
 	{
 
 		alt_table_row_color($k);
@@ -136,9 +136,9 @@
 		{
 			// get the supplier name
 			$sql = "SELECT supp_name FROM suppliers WHERE supplier_id = '" . $myrow["person_id"] . "'";
-			$supp_result = db_query($sql, "check failed");
+			$supp_result = DBOld::query($sql, "check failed");
 
-			$supp_row = db_fetch($supp_result);
+			$supp_row = DBOld::fetch($supp_result);
 
 			if (strlen($supp_row['supp_name']) > 0)
 				$person = $supp_row['supp_name'];

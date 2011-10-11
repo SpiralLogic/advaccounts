@@ -52,7 +52,7 @@
 			AND ABS(debtor_trans.ov_amount + debtor_trans.ov_gst + debtor_trans.ov_freight + debtor_trans.ov_freight_tax + debtor_trans.ov_discount) > 0.004
 			ORDER BY debtor_trans.tran_date";
 
-		return db_query($sql, "The customer details could not be retrieved");
+		return DBOld::query($sql, "The customer details could not be retrieved");
 	}
 
 	//----------------------------------------------------------------------------------------------------
@@ -130,11 +130,11 @@
 
 		$sql = "SELECT debtor_no, name, curr_code FROM debtors_master";
 		if ($fromcust != ALL_NUMERIC)
-			$sql .= " WHERE debtor_no=" . db_escape($fromcust);
+			$sql .= " WHERE debtor_no=" . DBOld::escape($fromcust);
 		$sql .= " ORDER BY name";
-		$result = db_query($sql, "The customers could not be retrieved");
+		$result = DBOld::query($sql, "The customers could not be retrieved");
 
-		while ($myrow = db_fetch($result))
+		while ($myrow = DBOld::fetch($result))
 		{
 			if (!$convert && $currency != $myrow['curr_code'])
 				continue;
@@ -170,10 +170,10 @@
 			$rep->NewLine(1, 2);
 			if (!$summaryOnly) {
 				$res = get_invoices($myrow['debtor_no'], $to);
-				if (db_num_rows($res) == 0)
+				if (DBOld::num_rows($res) == 0)
 					continue;
 				$rep->Line($rep->row + 4);
-				while ($trans = db_fetch($res))
+				while ($trans = DBOld::fetch($res))
 				{
 					$rep->NewLine(1, 2);
 					$rep->TextCol(0, 1, $systypes_array[$trans['type']], -2);

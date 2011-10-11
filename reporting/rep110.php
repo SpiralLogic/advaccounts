@@ -95,7 +95,7 @@
 
 			$result = get_customer_trans_details(ST_CUSTDELIVERY, $i);
 			$SubTotal = 0;
-			while ($myrow2 = db_fetch($result))
+			while ($myrow2 = DBOld::fetch($result))
 			{
 				if ($myrow2["quantity"] == 0)
 					continue;
@@ -116,10 +116,10 @@
 					$rep->Header2($myrow, $branch, $sales_order, '', ST_CUSTDELIVERY);
 			}
 
-			$comments = get_comments(ST_CUSTDELIVERY, $i);
-			if ($comments && db_num_rows($comments)) {
+			$comments = DB_Comments::get(ST_CUSTDELIVERY, $i);
+			if ($comments && DBOld::num_rows($comments)) {
 				$rep->NewLine();
-				while ($comment = db_fetch($comments))
+				while ($comment = DBOld::fetch($comments))
 				{
 					$rep->TextColLines(0, 6, $comment['memo_'], -2);
 				}

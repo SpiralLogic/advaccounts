@@ -59,22 +59,22 @@
 	if ($Mode == 'Delete') {
 		// PREVENT DELETES IF DEPENDENT RECORDS IN 'debtor_trans'
 
-		$sql = "SELECT COUNT(*) FROM debtor_trans WHERE tpe=" . db_escape($selected_id);
-		$result = db_query($sql, "check failed");
+		$sql = "SELECT COUNT(*) FROM debtor_trans WHERE tpe=" . DBOld::escape($selected_id);
+		$result = DBOld::query($sql, "check failed");
 		Errors::check_db_error("The number of transactions using this Sales type record could not be retrieved", $sql);
 
-		$myrow = db_fetch_row($result);
+		$myrow = DBOld::fetch_row($result);
 		if ($myrow[0] > 0) {
 			ui_msgs::display_error(_("Cannot delete this sale type because customer transactions have been created using this sales type."));
 		}
 		else
 		{
 
-			$sql = "SELECT COUNT(*) FROM debtors_master WHERE sales_type=" . db_escape($selected_id);
-			$result = db_query($sql, "check failed");
+			$sql = "SELECT COUNT(*) FROM debtors_master WHERE sales_type=" . DBOld::escape($selected_id);
+			$result = DBOld::query($sql, "check failed");
 			Errors::check_db_error("The number of customers using this Sales type record could not be retrieved", $sql);
 
-			$myrow = db_fetch_row($result);
+			$myrow = DBOld::fetch_row($result);
 			if ($myrow[0] > 0) {
 				ui_msgs::display_error(_("Cannot delete this sale type because customers are currently set up to use this sales type."));
 			}
@@ -106,7 +106,7 @@
 	$k = 0;
 	$base_sales = get_base_sales_type();
 
-	while ($myrow = db_fetch($result))
+	while ($myrow = DBOld::fetch($result))
 	{
 		if ($myrow["id"] == $base_sales)
 			start_row("class='overduebg'");

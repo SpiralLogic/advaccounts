@@ -36,8 +36,8 @@
 		if (empty($short))
 			return false;
 		$query = "SELECT attrib,id FROM xx_reports WHERE typ='block'";
-		$res = db_query($query);
-		while ($f = db_fetch($res))
+		$res = DBOld::query($query);
+		while ($f = DBOld::fetch($res))
 		{
 			$h = explode("|", $f["attrib"]);
 			if (($h[0] == $short) && (trim($f["id"]) != $id_new))
@@ -54,12 +54,12 @@
 	}
 
 	function store($id, $info) { // stores the records 'block' in the database
-		db_query("BEGIN");
+		DBOld::query("BEGIN");
 		$query = "DELETE FROM xx_reports WHERE (id ='" . $id . "' AND typ='block')";
-		db_query($query);
+		DBOld::query($query);
 		$query = "INSERT INTO xx_reports VALUES ('" . $id . "','block','" . $info . "')";
-		db_query($query);
-		db_query("COMMIT");
+		DBOld::query($query);
+		DBOld::query("COMMIT");
 	}
 
 	###

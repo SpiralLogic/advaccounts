@@ -46,20 +46,20 @@
 
 		$sql .= ") ";
 
-		$sql .= "VALUES (" . db_escape($type) . ", " . db_escape($trans_id) . ", '$date',
-		" . db_escape($account) . ", " . db_escape($dimension) . ", "
-		 . db_escape($dimension2) . ", " . db_escape($memo_) . ", "
-		 . db_escape($amount_in_home_currency);
+		$sql .= "VALUES (" . DBOld::escape($type) . ", " . DBOld::escape($trans_id) . ", '$date',
+		" . DBOld::escape($account) . ", " . DBOld::escape($dimension) . ", "
+		 . DBOld::escape($dimension2) . ", " . DBOld::escape($memo_) . ", "
+		 . DBOld::escape($amount_in_home_currency);
 
 		if ($person_type_id != null)
-			$sql .= ", " . db_escape($person_type_id) . ", " . db_escape($person_id);
+			$sql .= ", " . DBOld::escape($person_type_id) . ", " . DBOld::escape($person_id);
 
 		$sql .= ") ";
 
 		if ($err_msg == "")
 			$err_msg = "The GL transaction could not be inserted";
 
-		db_query($sql, $err_msg);
+		DBOld::query($sql, $err_msg);
 		return $amount_in_home_currency;
 	}
 
@@ -103,29 +103,29 @@
 		AND tran_date >= '$from'
 		AND tran_date <= '$to'";
 		if ($trans_no > 0)
-			$sql .= " AND gl_trans.type_no LIKE " . db_escape('%' . $trans_no);
+			$sql .= " AND gl_trans.type_no LIKE " . DBOld::escape('%' . $trans_no);
 
 		if ($account != null)
-			$sql .= " AND gl_trans.account = " . db_escape($account);
+			$sql .= " AND gl_trans.account = " . DBOld::escape($account);
 
 		if ($dimension != 0)
-			$sql .= " AND gl_trans.dimension_id = " . ($dimension < 0 ? 0 : db_escape($dimension));
+			$sql .= " AND gl_trans.dimension_id = " . ($dimension < 0 ? 0 : DBOld::escape($dimension));
 
 		if ($dimension2 != 0)
-			$sql .= " AND gl_trans.dimension2_id = " . ($dimension2 < 0 ? 0 : db_escape($dimension2));
+			$sql .= " AND gl_trans.dimension2_id = " . ($dimension2 < 0 ? 0 : DBOld::escape($dimension2));
 
 		if ($filter_type != null AND is_numeric($filter_type))
-			$sql .= " AND gl_trans.type= " . db_escape($filter_type);
+			$sql .= " AND gl_trans.type= " . DBOld::escape($filter_type);
 
 		if ($amount_min != null)
-			$sql .= " AND ABS(gl_trans.amount) >= ABS(" . db_escape($amount_min) . ")";
+			$sql .= " AND ABS(gl_trans.amount) >= ABS(" . DBOld::escape($amount_min) . ")";
 
 		if ($amount_max != null)
-			$sql .= " AND ABS(gl_trans.amount) <= ABS(" . db_escape($amount_max) . ")";
+			$sql .= " AND ABS(gl_trans.amount) <= ABS(" . DBOld::escape($amount_max) . ")";
 
 		$sql .= " ORDER BY tran_date, counter";
 
-		return db_query($sql, "The transactions for could not be retrieved");
+		return DBOld::query($sql, "The transactions for could not be retrieved");
 	}
 
 	//--------------------------------------------------------------------------------
@@ -135,10 +135,10 @@
 		 . "chart_master.account_name FROM "
 		 . "gl_trans, chart_master
 		WHERE chart_master.account_code=gl_trans.account
-		AND gl_trans.type=" . db_escape($type)
-		 . " AND gl_trans.type_no=" . db_escape($trans_id);
+		AND gl_trans.type=" . DBOld::escape($type)
+		 . " AND gl_trans.type_no=" . DBOld::escape($trans_id);
 
-		return db_query($sql, "The gl transactions could not be retrieved");
+		return DBOld::query($sql, "The gl transactions could not be retrieved");
 	}
 
 	//--------------------------------------------------------------------------------
@@ -148,13 +148,13 @@
 		 . "gl_trans, chart_master
 		WHERE chart_master.account_code=gl_trans.account
 		AND gl_trans.type=" . ST_WORKORDER
-		 . " AND gl_trans.type_no=" . db_escape($trans_id) . "
+		 . " AND gl_trans.type_no=" . DBOld::escape($trans_id) . "
 		AND gl_trans.person_type_id=" . PT_WORKORDER;
 		if ($person_id != -1)
-			$sql .= " AND gl_trans.person_id=" . db_escape($person_id);
+			$sql .= " AND gl_trans.person_id=" . DBOld::escape($person_id);
 		$sql .= " AND amount < 0";
 
-		return db_query($sql, "The gl transactions could not be retrieved");
+		return DBOld::query($sql, "The gl transactions could not be retrieved");
 	}
 
 	function get_gl_balance_from_to($from_date, $to_date, $account, $dimension = 0, $dimension2 = 0) {
@@ -168,13 +168,13 @@
 		if ($to_date != "")
 			$sql .= "  AND tran_date < '$to'";
 		if ($dimension != 0)
-			$sql .= " AND dimension_id = " . ($dimension < 0 ? 0 : db_escape($dimension));
+			$sql .= " AND dimension_id = " . ($dimension < 0 ? 0 : DBOld::escape($dimension));
 		if ($dimension2 != 0)
-			$sql .= " AND dimension2_id = " . ($dimension2 < 0 ? 0 : db_escape($dimension2));
+			$sql .= " AND dimension2_id = " . ($dimension2 < 0 ? 0 : DBOld::escape($dimension2));
 
-		$result = db_query($sql, "The starting balance for account $account could not be calculated");
+		$result = DBOld::query($sql, "The starting balance for account $account could not be calculated");
 
-		$row = db_fetch_row($result);
+		$row = DBOld::fetch_row($result);
 		return $row[0];
 	}
 
@@ -191,13 +191,13 @@
 		if ($to_date != "")
 			$sql .= " AND tran_date <= '$to'";
 		if ($dimension != 0)
-			$sql .= " AND dimension_id = " . ($dimension < 0 ? 0 : db_escape($dimension));
+			$sql .= " AND dimension_id = " . ($dimension < 0 ? 0 : DBOld::escape($dimension));
 		if ($dimension2 != 0)
-			$sql .= " AND dimension2_id = " . ($dimension2 < 0 ? 0 : db_escape($dimension2));
+			$sql .= " AND dimension2_id = " . ($dimension2 < 0 ? 0 : DBOld::escape($dimension2));
 
-		$result = db_query($sql, "Transactions for account $account could not be calculated");
+		$result = DBOld::query($sql, "Transactions for account $account could not be calculated");
 
-		$row = db_fetch_row($result);
+		$row = DBOld::fetch_row($result);
 		return $row[0];
 	}
 
@@ -212,11 +212,11 @@
 		AND chart_types.class_id=chart_class.cid AND";
 
 		if ($account != null)
-			$sql .= " account=" . db_escape($account) . " AND";
+			$sql .= " account=" . DBOld::escape($account) . " AND";
 		if ($dimension != 0)
-			$sql .= " dimension_id = " . ($dimension < 0 ? 0 : db_escape($dimension)) . " AND";
+			$sql .= " dimension_id = " . ($dimension < 0 ? 0 : DBOld::escape($dimension)) . " AND";
 		if ($dimension2 != 0)
-			$sql .= " dimension2_id = " . ($dimension2 < 0 ? 0 : db_escape($dimension2)) . " AND";
+			$sql .= " dimension2_id = " . ($dimension2 < 0 ? 0 : DBOld::escape($dimension2)) . " AND";
 		$from_date = Dates::date2sql($from);
 		if ($from_incl)
 			$sql .= " tran_date >= '$from_date'  AND";
@@ -228,9 +228,9 @@
 		else
 			$sql .= " tran_date < '$to_date' ";
 
-		$result = db_query($sql, "No general ledger accounts were returned");
+		$result = DBOld::query($sql, "No general ledger accounts were returned");
 
-		return db_fetch($result);
+		return DBOld::fetch($result);
 	}
 
 	//--------------------------------------------------------------------------------
@@ -241,18 +241,18 @@
 		$to = Dates::date2sql($to_date);
 
 		$sql = "SELECT SUM(amount) FROM budget_trans
-		WHERE account=" . db_escape($account);
+		WHERE account=" . DBOld::escape($account);
 		if ($from_date != "")
 			$sql .= " AND tran_date >= '$from' ";
 		if ($to_date != "")
 			$sql .= " AND tran_date <= '$to' ";
 		if ($dimension != 0)
-			$sql .= " AND dimension_id = " . ($dimension < 0 ? 0 : db_escape($dimension));
+			$sql .= " AND dimension_id = " . ($dimension < 0 ? 0 : DBOld::escape($dimension));
 		if ($dimension2 != 0)
-			$sql .= " AND dimension2_id = " . ($dimension2 < 0 ? 0 : db_escape($dimension2));
-		$result = db_query($sql, "No budget accounts were returned");
+			$sql .= " AND dimension2_id = " . ($dimension2 < 0 ? 0 : DBOld::escape($dimension2));
+		$result = DBOld::query($sql, "No budget accounts were returned");
 
-		$row = db_fetch_row($result);
+		$row = DBOld::fetch_row($result);
 		return $row[0];
 	}
 
@@ -291,13 +291,13 @@
 		$sql = "INSERT INTO trans_tax_details
 		(trans_type, trans_no, tran_date, tax_type_id, rate, ex_rate,
 			included_in_price, net_amount, amount, memo)
-		VALUES (" . db_escape($trans_type) . "," . db_escape($trans_no) . ",'"
-		 . Dates::date2sql($tran_date) . "'," . db_escape($tax_id) . ","
-		 . db_escape($rate) . "," . db_escape($ex_rate) . "," . ($included ? 1 : 0) . ","
-		 . db_escape($net_amount) . ","
-		 . db_escape($amount) . "," . db_escape($memo) . ")";
+		VALUES (" . DBOld::escape($trans_type) . "," . DBOld::escape($trans_no) . ",'"
+		 . Dates::date2sql($tran_date) . "'," . DBOld::escape($tax_id) . ","
+		 . DBOld::escape($rate) . "," . DBOld::escape($ex_rate) . "," . ($included ? 1 : 0) . ","
+		 . DBOld::escape($net_amount) . ","
+		 . DBOld::escape($amount) . "," . DBOld::escape($memo) . ")";
 
-		db_query($sql, "Cannot save trans tax details");
+		DBOld::query($sql, "Cannot save trans tax details");
 	}
 
 	//----------------------------------------------------------------------------------------
@@ -306,22 +306,22 @@
 		$sql = "SELECT trans_tax_details.*, "
 		 . "tax_types.name AS tax_type_name
 		FROM trans_tax_details,tax_types
-		WHERE trans_type = " . db_escape($trans_type) . "
-		AND trans_no = " . db_escape($trans_no) . "
+		WHERE trans_type = " . DBOld::escape($trans_type) . "
+		AND trans_no = " . DBOld::escape($trans_no) . "
 		AND (net_amount != 0 OR amount != 0)
 		AND tax_types.id = trans_tax_details.tax_type_id";
 
-		return db_query($sql, "The transaction tax details could not be retrieved");
+		return DBOld::query($sql, "The transaction tax details could not be retrieved");
 	}
 
 	//----------------------------------------------------------------------------------------
 
 	function void_trans_tax_details($type, $type_no) {
 		$sql = "UPDATE trans_tax_details SET amount=0, net_amount=0
-		WHERE trans_no=" . db_escape($type_no)
-		 . " AND trans_type=" . db_escape($type);
+		WHERE trans_no=" . DBOld::escape($type_no)
+		 . " AND trans_type=" . DBOld::escape($type);
 
-		db_query($sql, "The transaction tax details could not be voided");
+		DBOld::query($sql, "The transaction tax details could not be voided");
 	}
 
 	function get_tax_summary($from, $to) {
@@ -361,7 +361,7 @@
 			AND taxrec.tran_date <= '$todate'
 		GROUP BY ttype.id";
 		//ui_msgs::display_error($sql);
-		return db_query($sql, "Cannot retrieve tax summary");
+		return DBOld::query($sql, "Cannot retrieve tax summary");
 	}
 
 	//--------------------------------------------------------------------------------
@@ -381,7 +381,7 @@
 		$trans_id = $cart->order_id;
 
 		if ($use_transaction)
-			begin_transaction();
+			DBOld::begin_transaction();
 
 		if (!$new)
 			void_journal_trans($trans_type, $trans_id, false);
@@ -405,14 +405,14 @@
 		}
 
 		if ($new) {
-			add_comments($trans_type, $trans_id, $date_, $memo_);
+			DB_Comments::add($trans_type, $trans_id, $date_, $memo_);
 			Refs::save($trans_type, $trans_id, $ref);
 		} else {
-			update_comments($trans_type, $trans_id, null, $memo_);
+			DB_Comments::update($trans_type, $trans_id, null, $memo_);
 			Refs::update($trans_type, $trans_id, $ref);
 		}
 
-		add_audit_trail($trans_type, $trans_id, $date_);
+		DB_AuditTrail::add($trans_type, $trans_id, $date_);
 
 		if ($reverse) {
 			//$reversingDate = date(user_date_display(),
@@ -439,14 +439,14 @@
 					ST_JOURNAL, $trans_id, $journal_item->amount, 1, $reversingDate, $memo_);
 			}
 
-			add_comments($trans_type, $trans_id_reverse, $reversingDate, $memo_);
+			DB_Comments::add($trans_type, $trans_id_reverse, $reversingDate, $memo_);
 
 			Refs::save($trans_type, $trans_id_reverse, $ref);
-			add_audit_trail($trans_type, $trans_id_reverse, $reversingDate);
+			DB_AuditTrail::add($trans_type, $trans_id_reverse, $reversingDate);
 		}
 
 		if ($use_transaction)
-			commit_transaction();
+			DBOld::commit_transaction();
 
 		return $trans_id;
 	}
@@ -454,40 +454,40 @@
 	//--------------------------------------------------------------------------------------------------
 
 	function exists_gl_trans($type, $trans_id) {
-		$sql = "SELECT type_no FROM gl_trans WHERE type=" . db_escape($type)
-		 . " AND type_no=" . db_escape($trans_id);
-		$result = db_query($sql, "Cannot retreive a gl transaction");
+		$sql = "SELECT type_no FROM gl_trans WHERE type=" . DBOld::escape($type)
+		 . " AND type_no=" . DBOld::escape($trans_id);
+		$result = DBOld::query($sql, "Cannot retreive a gl transaction");
 
-		return (db_num_rows($result) > 0);
+		return (DBOld::num_rows($result) > 0);
 	}
 
 	//--------------------------------------------------------------------------------------------------
 
 	function void_gl_trans($type, $trans_id, $nested = false) {
 		if (!$nested)
-			begin_transaction();
+			DBOld::begin_transaction();
 
-		$sql = "UPDATE gl_trans SET amount=0 WHERE type=" . db_escape($type)
-		 . " AND type_no=" . db_escape($trans_id);
+		$sql = "UPDATE gl_trans SET amount=0 WHERE type=" . DBOld::escape($type)
+		 . " AND type_no=" . DBOld::escape($trans_id);
 
-		db_query($sql, "could not void gl transactions for type=$type and trans_no=$trans_id");
+		DBOld::query($sql, "could not void gl transactions for type=$type and trans_no=$trans_id");
 
 		if (!$nested)
-			commit_transaction();
+			DBOld::commit_transaction();
 	}
 
 	//----------------------------------------------------------------------------------------
 
 	function void_journal_trans($type, $type_no, $use_transaction = true) {
 		if ($use_transaction)
-			begin_transaction();
+			DBOld::begin_transaction();
 
 		void_bank_trans($type, $type_no, true);
 		//	void_gl_trans($type, $type_no, true);	 // this is done above
 		//	void_trans_tax_details($type, $type_no); // ditto
 
 		if ($use_transaction)
-			commit_transaction();
+			DBOld::commit_transaction();
 	}
 
 ?>

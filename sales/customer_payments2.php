@@ -207,11 +207,11 @@
 		credit_status.dissallow_invoices
 		FROM debtors_master, credit_status
 		WHERE debtors_master.credit_status = credit_status.id
-			AND debtors_master.debtor_no = " . db_escape($_POST['customer_id']);
+			AND debtors_master.debtor_no = " . DBOld::escape($_POST['customer_id']);
 
-		$result = db_query($sql, "could not query customers");
+		$result = DBOld::query($sql, "could not query customers");
 
-		$myrow = db_fetch($result);
+		$myrow = DBOld::fetch($result);
 
 		$_POST['HoldAccount'] = $myrow["dissallow_invoices"];
 		$_POST['pymt_discount'] = $myrow["pymt_discount"];

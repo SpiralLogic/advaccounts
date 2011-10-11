@@ -74,7 +74,7 @@
 			case "delete":
 				// deletes item from table reports
 				$query = "DELETE FROM xx_reports WHERE (id ='$id1' AND attrib = '$attrib')";
-				db_query($query);
+				DBOld::query($query);
 				break;
 			case "insert":
 				//  inserts item into table reports
@@ -84,14 +84,14 @@
 					// does item exist already?
 					if ($alternate == "true") {
 						$query = "DELETE FROM xx_reports WHERE (id = '" . $id_new . "' AND attrib ='" . $attriba . "' AND typ='item')";
-						db_query($query);
+						DBOld::query($query);
 						$alternate = "false";
 					}
 					$query = "SELECT * FROM xx_reports WHERE (id = '" . $id_new . "' AND attrib ='" . $attrib1 . "' AND typ='item')";
-					$res = db_query($query);
-					if (db_num_rows($res) == 0) { // it is new item, store it
+					$res = DBOld::query($query);
+					if (DBOld::num_rows($res) == 0) { // it is new item, store it
 						$query = "INSERT INTO xx_reports VALUES('$id_new','item','$attrib1')";
-						db_query($query);
+						DBOld::query($query);
 						$error = NULL;
 					}
 				}
@@ -232,9 +232,9 @@ function displayReport(id) {
 	## Traverse the result set
 
 	$query = "SELECT  * FROM xx_reports WHERE (typ = 'item' AND id='" . $id_new . "') ORDER BY attrib";
-	$res = db_query($query);
+	$res = DBOld::query($query);
 	$k = 0; // line-number
-	while ($f = db_fetch($res))
+	while ($f = DBOld::fetch($res))
 	{
 		$h = explode("|", $f["attrib"]);
 		for ($i = 0; $i < 8; $i++)

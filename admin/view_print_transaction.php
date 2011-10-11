@@ -94,11 +94,11 @@
 				$sql .= " ,$trans_ref ";
 
 			$sql .= ", " . $_POST['filterType'] . " as type FROM $table_name
-			WHERE $trans_no_name >= " . db_escape($_POST['FromTransNo']) . "
-			AND  $trans_no_name <= " . db_escape($_POST['ToTransNo']);
+			WHERE $trans_no_name >= " . DBOld::escape($_POST['FromTransNo']) . "
+			AND  $trans_no_name <= " . DBOld::escape($_POST['ToTransNo']);
 
 			if ($type_name != null)
-				$sql .= " AND `$type_name` = " . db_escape($_POST['filterType']);
+				$sql .= " AND `$type_name` = " . DBOld::escape($_POST['filterType']);
 
 			$sql .= " ORDER BY $trans_no_name";
 

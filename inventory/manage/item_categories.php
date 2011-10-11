@@ -58,9 +58,9 @@
 	if ($Mode == 'Delete') {
 
 		// PREVENT DELETES IF DEPENDENT RECORDS IN 'stock_master'
-		$sql = "SELECT COUNT(*) FROM stock_master WHERE category_id=" . db_escape($selected_id);
-		$result = db_query($sql, "could not query stock master");
-		$myrow = db_fetch_row($result);
+		$sql = "SELECT COUNT(*) FROM stock_master WHERE category_id=" . DBOld::escape($selected_id);
+		$result = DBOld::query($sql, "could not query stock master");
+		$myrow = DBOld::fetch_row($result);
 		if ($myrow[0] > 0) {
 			ui_msgs::display_error(_("Cannot delete this item category because items have been created using this item category."));
 		}
@@ -86,7 +86,7 @@
 	$sql = "SELECT c.*, t.name as tax_name FROM stock_category c, item_tax_types t WHERE c.dflt_tax_type=t.id";
 	if (!check_value('show_inactive')) $sql .= " AND !c.inactive";
 
-	$result = db_query($sql, "could not get stock categories");
+	$result = DBOld::query($sql, "could not get stock categories");
 
 	start_form();
 	start_table(Config::get('tables.style') . "  width=90%");
@@ -99,7 +99,7 @@
 	table_header($th);
 	$k = 0; //row colour counter
 
-	while ($myrow = db_fetch($result))
+	while ($myrow = DBOld::fetch($result))
 	{
 
 		alt_table_row_color($k);
@@ -185,7 +185,7 @@
 
 	gl_all_accounts_list_row(_("Sales Account:"), 'sales_account', $_POST['sales_account']);
 
-	if (is_service($_POST['mb_flag'])) {
+	if ($_POST['mb_flag'] == STOCK_SERVICE) {
 		gl_all_accounts_list_row(_("C.O.G.S. Account:"), 'cogs_account', $_POST['cogs_account']);
 		hidden('inventory_account', $_POST['inventory_account']);
 		hidden('adjustment_account', $_POST['adjustment_account']);

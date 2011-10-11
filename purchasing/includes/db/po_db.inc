@@ -12,56 +12,56 @@
 	//----------------------------------------------------------------------------------------
 
 	function delete_po($po) {
-		$sql = "DELETE FROM purch_orders WHERE order_no=" . db_escape($po);
-		db_query($sql, "The order header could not be deleted");
+		$sql = "DELETE FROM purch_orders WHERE order_no=" . DBOld::escape($po);
+		DBOld::query($sql, "The order header could not be deleted");
 
-		$sql = "DELETE FROM purch_order_details WHERE order_no =" . db_escape($po);
-		db_query($sql, "The order detail lines could not be deleted");
+		$sql = "DELETE FROM purch_order_details WHERE order_no =" . DBOld::escape($po);
+		DBOld::query($sql, "The order detail lines could not be deleted");
 	}
 
 	//----------------------------------------------------------------------------------------
 
 	function add_po(&$po_obj) {
 
-		begin_transaction();
+		DBOld::begin_transaction();
 
 		/*Insert to purchase order header record */
 		$sql = "INSERT INTO purch_orders (supplier_id, Comments, ord_date, reference, requisition_no, into_stock_location, delivery_address, freight, salesman) VALUES(";
-		$sql .= db_escape($po_obj->supplier_id) . "," .
-		 db_escape($po_obj->Comments) . ",'" .
+		$sql .= DBOld::escape($po_obj->supplier_id) . "," .
+		 DBOld::escape($po_obj->Comments) . ",'" .
 		 Dates::date2sql($po_obj->orig_order_date) . "', " .
-		 db_escape($po_obj->reference) . ", " .
-		 db_escape($po_obj->requisition_no) . ", " .
-		 db_escape($po_obj->Location) . ", " .
-		 db_escape($po_obj->delivery_address) . ", " .
-		 db_escape($po_obj->freight) . ", " .
-		 db_escape($po_obj->salesman) . ")";
-		db_query($sql, "The purchase order header record could not be inserted");
+		 DBOld::escape($po_obj->reference) . ", " .
+		 DBOld::escape($po_obj->requisition_no) . ", " .
+		 DBOld::escape($po_obj->Location) . ", " .
+		 DBOld::escape($po_obj->delivery_address) . ", " .
+		 DBOld::escape($po_obj->freight) . ", " .
+		 DBOld::escape($po_obj->salesman) . ")";
+		DBOld::query($sql, "The purchase order header record could not be inserted");
 
 		/*Get the auto increment value of the order number created from the sql above */
-		$po_obj->order_no = db_insert_id();
+		$po_obj->order_no = DBOld::insert_id();
 
 		/*Insert the purchase order detail records */
 		foreach ($po_obj->line_items as $po_line)
 		{
 			if ($po_line->Deleted == false) {
 				$sql = "INSERT INTO purch_order_details (order_no, item_code, description, delivery_date, unit_price, quantity_ordered, discount) VALUES (";
-				$sql .= $po_obj->order_no . ", " . db_escape($po_line->stock_id) . "," .
-				 db_escape($po_line->description) . ",'" .
+				$sql .= $po_obj->order_no . ", " . DBOld::escape($po_line->stock_id) . "," .
+				 DBOld::escape($po_line->description) . ",'" .
 				 Dates::date2sql($po_line->req_del_date) . "'," .
-				 db_escape($po_line->price) . ", " .
-				 db_escape($po_line->quantity) . ", " .
-				 db_escape($po_line->discount) . ")";
-				db_query($sql, "One of the purchase order detail records could not be inserted");
+				 DBOld::escape($po_line->price) . ", " .
+				 DBOld::escape($po_line->quantity) . ", " .
+				 DBOld::escape($po_line->discount) . ")";
+				DBOld::query($sql, "One of the purchase order detail records could not be inserted");
 			}
 		}
 
 		Refs::save(ST_PURCHORDER, $po_obj->order_no, $po_obj->reference);
 
-		//add_comments(ST_PURCHORDER, $po_obj->order_no, $po_obj->orig_order_date, $po_obj->Comments);
+		//DB_Comments::add(ST_PURCHORDER, $po_obj->order_no, $po_obj->orig_order_date, $po_obj->Comments);
 
-		add_audit_trail(ST_PURCHORDER, $po_obj->order_no, $po_obj->orig_order_date);
-		commit_transaction();
+		DB_AuditTrail::add(ST_PURCHORDER, $po_obj->order_no, $po_obj->orig_order_date);
+		DBOld::commit_transaction();
 
 		return $po_obj->order_no;
 	}
@@ -69,18 +69,18 @@
 	//----------------------------------------------------------------------------------------
 
 	function update_po(&$po_obj) {
-		begin_transaction();
+		DBOld::begin_transaction();
 
 		/*Update the purchase order header with any changes */
-		$sql = "UPDATE purch_orders SET Comments=" . db_escape($po_obj->Comments) . ",
-		requisition_no= " . db_escape($po_obj->requisition_no) . ",
-		into_stock_location=" . db_escape($po_obj->Location) . ",
+		$sql = "UPDATE purch_orders SET Comments=" . DBOld::escape($po_obj->Comments) . ",
+		requisition_no= " . DBOld::escape($po_obj->requisition_no) . ",
+		into_stock_location=" . DBOld::escape($po_obj->Location) . ",
 		ord_date='" . Dates::date2sql($po_obj->orig_order_date) . "',
-		delivery_address=" . db_escape($po_obj->delivery_address) . ",
-		freight=" . db_escape($po_obj->freight) . ",
-		salesman=" . db_escape($po_obj->salesman);
+		delivery_address=" . DBOld::escape($po_obj->delivery_address) . ",
+		freight=" . DBOld::escape($po_obj->freight) . ",
+		salesman=" . DBOld::escape($po_obj->salesman);
 		$sql .= " WHERE order_no = " . $po_obj->order_no;
-		db_query($sql, "The purchase order could not be updated");
+		DBOld::query($sql, "The purchase order could not be updated");
 
 		/*Now Update the purchase order detail records */
 		foreach ($po_obj->line_items as $po_line)
@@ -89,38 +89,38 @@
 			if ($po_line->Deleted == True) {
 				// Sherifoz 21.06.03 Handle deleting existing lines
 				if ($po_line->po_detail_rec != '') {
-					$sql = "DELETE FROM purch_order_details WHERE po_detail_item=" . db_escape($po_line->po_detail_rec);
-					db_query($sql, "could not query purch order details");
+					$sql = "DELETE FROM purch_order_details WHERE po_detail_item=" . DBOld::escape($po_line->po_detail_rec);
+					DBOld::query($sql, "could not query purch order details");
 				}
 			}
 			else if ($po_line->po_detail_rec == '') {
 				// Sherifoz 21.06.03 Handle adding new lines vs. updating. if no key(po_detail_rec) then it's a new line
 				$sql = "INSERT INTO purch_order_details (order_no, item_code, description, delivery_date, unit_price, quantity_ordered, discount) VALUES (";
 				$sql .= $po_obj->order_no . "," .
-				 db_escape($po_line->stock_id) . "," .
-				 db_escape($po_line->description) . ",'" .
+				 DBOld::escape($po_line->stock_id) . "," .
+				 DBOld::escape($po_line->description) . ",'" .
 				 Dates::date2sql($po_line->req_del_date) . "'," .
-				 db_escape($po_line->price) . ", " .
-				 db_escape($po_line->quantity) . ", " .
-				 db_escape($po_line->discount) .
+				 DBOld::escape($po_line->price) . ", " .
+				 DBOld::escape($po_line->quantity) . ", " .
+				 DBOld::escape($po_line->discount) .
 				 ")";
 			}
 			else
 			{
-				$sql = "UPDATE purch_order_details SET item_code=" . db_escape($po_line->stock_id) . ",
-				description =" . db_escape($po_line->description) . ",
+				$sql = "UPDATE purch_order_details SET item_code=" . DBOld::escape($po_line->stock_id) . ",
+				description =" . DBOld::escape($po_line->description) . ",
 				delivery_date ='" . Dates::date2sql($po_line->req_del_date) . "',
-				unit_price=" . db_escape($po_line->price) . ",
-				quantity_ordered=" . db_escape($po_line->quantity) . ",
-				discount=" . db_escape($po_line->discount) . "
-				WHERE po_detail_item=" . db_escape($po_line->po_detail_rec);
+				unit_price=" . DBOld::escape($po_line->price) . ",
+				quantity_ordered=" . DBOld::escape($po_line->quantity) . ",
+				discount=" . DBOld::escape($po_line->discount) . "
+				WHERE po_detail_item=" . DBOld::escape($po_line->po_detail_rec);
 			}
-			db_query($sql, "One of the purchase order detail records could not be updated");
+			DBOld::query($sql, "One of the purchase order detail records could not be updated");
 		}
 
-		//add_comments(ST_PURCHORDER, $po_obj->order_no, $po_obj->orig_order_date, $po_obj->Comments);
+		//DB_Comments::add(ST_PURCHORDER, $po_obj->order_no, $po_obj->orig_order_date, $po_obj->Comments);
 
-		commit_transaction();
+		DBOld::commit_transaction();
 
 		return $po_obj->order_no;
 	}
@@ -133,13 +133,13 @@
 		FROM purch_orders, suppliers, locations
 		WHERE purch_orders.supplier_id = suppliers.supplier_id
 		AND locations.loc_code = into_stock_location
-		AND purch_orders.order_no = " . db_escape($order_no);
+		AND purch_orders.order_no = " . DBOld::escape($order_no);
 
-		$result = db_query($sql, "The order cannot be retrieved");
+		$result = DBOld::query($sql, "The order cannot be retrieved");
 
-		if (db_num_rows($result) == 1) {
+		if (DBOld::num_rows($result) == 1) {
 
-			$myrow = db_fetch($result);
+			$myrow = DBOld::fetch($result);
 
 			$order->order_no = $order_no;
 			$order->supplier_id = $myrow["supplier_id"];
@@ -169,18 +169,18 @@
 		FROM purch_order_details
 		LEFT JOIN stock_master
 		ON purch_order_details.item_code=stock_master.stock_id
-		WHERE order_no =" . db_escape($order_no);
+		WHERE order_no =" . DBOld::escape($order_no);
 
 		if ($open_items_only)
 			$sql .= " AND (purch_order_details.quantity_ordered > purch_order_details.quantity_received) ";
 
 		$sql .= " ORDER BY po_detail_item";
 
-		$result = db_query($sql, "The lines on the purchase order cannot be retrieved");
+		$result = DBOld::query($sql, "The lines on the purchase order cannot be retrieved");
 
-		if (db_num_rows($result) > 0) {
+		if (DBOld::num_rows($result) > 0) {
 
-			while ($myrow = db_fetch($result))
+			while ($myrow = DBOld::fetch($result))
 			{
 
 				$data = get_purchase_data($order->supplier_id, $myrow['item_code']);

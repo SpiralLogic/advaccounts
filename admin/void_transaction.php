@@ -142,7 +142,7 @@
 	//----------------------------------------------------------------------------------------
 
 	function check_valid_entries() {
-		if (is_closed_trans($_POST['filterType'], $_POST['trans_no'])) {
+		if (DB_AuditTrail::DB_AuditTrail::is_closed_trans($_POST['filterType'], $_POST['trans_no'])) {
 			ui_msgs::display_error(_("The selected transaction was closed for edition and cannot be voided."));
 			ui_view::set_focus('trans_no');
 			return;

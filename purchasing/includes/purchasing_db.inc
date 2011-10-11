@@ -38,12 +38,12 @@
 
 	function get_purchase_price($supplier_id, $stock_id) {
 		$sql = "SELECT price, conversion_factor FROM purch_data
-		WHERE supplier_id = " . db_escape($supplier_id) . "
-		AND stock_id = " . db_escape($stock_id);
-		$result = db_query($sql, "The supplier pricing details for " . $stock_id . " could not be retrieved");
+		WHERE supplier_id = " . DBOld::escape($supplier_id) . "
+		AND stock_id = " . DBOld::escape($stock_id);
+		$result = DBOld::query($sql, "The supplier pricing details for " . $stock_id . " could not be retrieved");
 
-		if (db_num_rows($result) == 1) {
-			$myrow = db_fetch($result);
+		if (DBOld::num_rows($result) == 1) {
+			$myrow = DBOld::fetch($result);
 			return $myrow["price"] / $myrow['conversion_factor'];
 		}
 		else
@@ -54,12 +54,12 @@
 
 	function get_purchase_conversion_factor($supplier_id, $stock_id) {
 		$sql = "SELECT conversion_factor FROM purch_data
-		WHERE supplier_id = " . db_escape($supplier_id) . "
-		AND stock_id = " . db_escape($stock_id);
-		$result = db_query($sql, "The supplier pricing details for " . $stock_id . " could not be retrieved");
+		WHERE supplier_id = " . DBOld::escape($supplier_id) . "
+		AND stock_id = " . DBOld::escape($stock_id);
+		$result = DBOld::query($sql, "The supplier pricing details for " . $stock_id . " could not be retrieved");
 
-		if (db_num_rows($result) == 1) {
-			$myrow = db_fetch($result);
+		if (DBOld::num_rows($result) == 1) {
+			$myrow = DBOld::fetch($result);
 			return $myrow['conversion_factor'];
 		}
 		else
@@ -72,11 +72,11 @@
 
 	function get_purchase_data($supplier_id, $stock_id) {
 		$sql = "SELECT * FROM purch_data
-		WHERE supplier_id = " . db_escape($supplier_id) . "
-		AND stock_id = " . db_escape($stock_id);
-		$result = db_query($sql, "The supplier pricing details for " . $stock_id . " could not be retrieved");
+		WHERE supplier_id = " . DBOld::escape($supplier_id) . "
+		AND stock_id = " . DBOld::escape($stock_id);
+		$result = DBOld::query($sql, "The supplier pricing details for " . $stock_id . " could not be retrieved");
 
-		return db_fetch($result);
+		return DBOld::fetch($result);
 	}
 
 	function add_or_update_purchase_data($supplier_id, $stock_id, $price, $supplier_code = "", $uom = "") {
@@ -84,20 +84,20 @@
 		if ($data === false) {
 			$supplier_code = $stock_id;
 			$sql = "INSERT INTO purch_data (supplier_id, stock_id, price, suppliers_uom,
-			conversion_factor, supplier_description) VALUES (" . db_escape($supplier_id)
-			 . ", " . db_escape($stock_id) . ", " . db_escape($price) . ", "
-			 . db_escape($uom) . ", 1, " . db_escape($supplier_code) . ")";
-			db_query($sql, "The supplier purchasing details could not be added");
+			conversion_factor, supplier_description) VALUES (" . DBOld::escape($supplier_id)
+			 . ", " . DBOld::escape($stock_id) . ", " . DBOld::escape($price) . ", "
+			 . DBOld::escape($uom) . ", 1, " . DBOld::escape($supplier_code) . ")";
+			DBOld::query($sql, "The supplier purchasing details could not be added");
 			return;
 		}
 		$price = round($price * $data['conversion_factor'], user_price_dec());
-		$sql = "UPDATE purch_data SET price=" . db_escape($price);
+		$sql = "UPDATE purch_data SET price=" . DBOld::escape($price);
 		if ($uom != "")
-			$sql .= ",suppliers_uom=" . db_escape($uom);
+			$sql .= ",suppliers_uom=" . DBOld::escape($uom);
 		if ($supplier_code != "")
-			$sql .= ",supplier_description=" . db_escape($supplier_code);
-		$sql .= " WHERE stock_id=" . db_escape($stock_id) . " AND supplier_id=" . db_escape($supplier_id);
-		db_query($sql, "The supplier purchasing details could not be updated");
+			$sql .= ",supplier_description=" . DBOld::escape($supplier_code);
+		$sql .= " WHERE stock_id=" . DBOld::escape($stock_id) . " AND supplier_id=" . DBOld::escape($supplier_id);
+		DBOld::query($sql, "The supplier purchasing details could not be updated");
 		return true;
 	}
 

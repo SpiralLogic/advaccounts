@@ -52,7 +52,7 @@
 	table_header($th);
 	$transfer_items = get_stock_moves(ST_LOCTRANSFER, $trans_no);
 	$k = 0;
-	while ($item = db_fetch($transfer_items))
+	while ($item = DBOld::fetch($transfer_items))
 	{
 		if ($item['loc_code'] == $to_trans['loc_code']) {
 			alt_table_row_color($k);

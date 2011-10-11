@@ -52,9 +52,9 @@
 
 	function can_delete($selected_id) {
 		$sql = "SELECT COUNT(*) FROM debtors_master
-		WHERE credit_status=" . db_escape($selected_id);
-		$result = db_query($sql, "could not query customers");
-		$myrow = db_fetch_row($result);
+		WHERE credit_status=" . DBOld::escape($selected_id);
+		$result = DBOld::query($sql, "could not query customers");
+		$myrow = DBOld::fetch_row($result);
 		if ($myrow[0] > 0) {
 			ui_msgs::display_error(_("Cannot delete this credit status because customer accounts have been created referring to it."));
 			return false;
@@ -91,7 +91,7 @@
 	table_header($th);
 
 	$k = 0;
-	while ($myrow = db_fetch($result))
+	while ($myrow = DBOld::fetch($result))
 	{
 
 		alt_table_row_color($k);

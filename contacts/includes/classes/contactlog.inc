@@ -1,11 +1,11 @@
 <?php
-/**
- * Created by JetBrains PhpStorm.
- * User: advanced
- * Date: 23/12/10
- * Time: 2:39 PM
- * To change this template use File | Settings | File Templates.
- */
+	/**
+	 * Created by JetBrains PhpStorm.
+	 * User: advanced
+	 * Date: 23/12/10
+	 * Time: 2:39 PM
+	 * To change this template use File | Settings | File Templates.
+	 */
 	class ContactLog {
 
 		private static $dbTable = 'contact_log';
@@ -18,19 +18,19 @@
 			if (!isset($type)) return false;
 			if (!isset($message)) return false;
 			$sql = "INSERT INTO " . self::$dbTable . " (contact_id, contact_name, type,
-        message) VALUES (" . db_escape($contact_id) . "," . db_escape($contact_name) . "," . db_escape($type) . ",
-        " . db_escape($message) . ")";
-			db_query($sql, "Couldn't insert contact log");
-			return db_insert_id();
+        message) VALUES (" . DBOld::escape($contact_id) . "," . DBOld::escape($contact_name) . "," . DBOld::escape($type) . ",
+        " . DBOld::escape($message) . ")";
+			DBOld::query($sql, "Couldn't insert contact log");
+			return DBOld::insert_id();
 		}
 
 		static function read($contact_id, $type) {
 			if (!isset($contact_id) || $contact_id == 0) return false;
 			if (!isset($type)) return false;
-			$sql = "SELECT * FROM " . self::$dbTable . " WHERE contact_id=" . $contact_id . " AND type=" . db_escape($type) . " ORDER BY date DESC";
-			$result = db_query($sql, "Couldn't get contact log entries");
+			$sql = "SELECT * FROM " . self::$dbTable . " WHERE contact_id=" . $contact_id . " AND type=" . DBOld::escape($type) . " ORDER BY date DESC";
+			$result = DBOld::query($sql, "Couldn't get contact log entries");
 			$results = array();
-			while ($row = db_fetch_assoc($result)) {
+			while ($row = DBOld::fetch_assoc($result)) {
 				$results[] = $row;
 			}
 			return $results;

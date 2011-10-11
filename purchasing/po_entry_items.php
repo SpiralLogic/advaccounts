@@ -194,13 +194,13 @@
 			}
 			if ($allow_update == true) {
 				$sql = "SELECT long_description as description , units, mb_flag
-				FROM stock_master WHERE stock_id = " . db_escape($_POST['stock_id']);
-				$result = db_query($sql, "The stock details for " . $_POST['stock_id'] . " could not be retrieved");
-				if (db_num_rows($result) == 0) {
+				FROM stock_master WHERE stock_id = " . DBOld::escape($_POST['stock_id']);
+				$result = DBOld::query($sql, "The stock details for " . $_POST['stock_id'] . " could not be retrieved");
+				if (DBOld::num_rows($result) == 0) {
 					$allow_update = false;
 				}
 				if ($allow_update) {
-					$myrow = db_fetch($result);
+					$myrow = DBOld::fetch($result);
 					$_SESSION['PO']->add_to_order($_POST['line_no'], $_POST['stock_id'], input_num('qty'), $_POST['description'], input_num('price'), $myrow["units"], $_POST['req_del_date'], 0, 0,
 					 $_POST['discount'] / 100);
 					unset_form_variables();
@@ -322,15 +322,15 @@
 				$sql = "SELECT purch_data.price,purch_data.supplier_id
 		FROM purch_data INNER JOIN suppliers
 		ON purch_data.supplier_id=suppliers.supplier_id
-		WHERE stock_id = " . db_escape($line_item->stock_id) . ' ORDER BY price';
-				$result = db_query($sql);
+		WHERE stock_id = " . DBOld::escape($line_item->stock_id) . ' ORDER BY price';
+				$result = DBOld::query($sql);
 				$myrow = array();
-				if (db_num_rows($result) > 0) {
-					if (db_num_rows($result) == 1) {
-						$myrow[] = db_fetch($result, 'pricing');
+				if (DBOld::num_rows($result) > 0) {
+					if (DBOld::num_rows($result) == 1) {
+						$myrow[] = DBOld::fetch($result, 'pricing');
 					}
 					else {
-						$myrow = db_fetch($result, 'pricing');
+						$myrow = DBOld::fetch($result, 'pricing');
 					}
 					if (isset($po_lines[$myrow[0]['supplier_id']])) {
 						$po_lines[$myrow[0]['supplier_id']]++;

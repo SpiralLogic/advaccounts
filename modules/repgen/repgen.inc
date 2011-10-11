@@ -564,8 +564,8 @@
 			$blocks = array();
 			// read all stored blocks and save id and attrib in $blocks
 			$query = "SELECT * FROM xx_reports WHERE typ = 'block'";
-			$res = db_query($query);
-			while ($f = db_fetch($res))
+			$res = DBOld::query($query);
+			while ($f = DBOld::fetch($res))
 			{
 				$h = explode("|", $f["attrib"]);
 				$blocks[$h[0]] = trim($f["id"]); // $h[0] is short name of block
@@ -578,8 +578,8 @@
 				$h = $item->get_string();
 				$id = $blocks[$h];
 				$query = "SELECT * FROM xx_reports WHERE id = '$id' AND typ <> 'block'";
-				$res = db_query($query);
-				while ($f = db_fetch($res))
+				$res = DBOld::query($query);
+				while ($f = DBOld::fetch($res))
 				{
 					// insert the read items into the appropriate array
 					$h = explode("|", $f["attrib"]);
@@ -623,8 +623,8 @@
 			$blocks = array();
 			// read all stored blocks and save $short and Code in $blocks
 			$query = "SELECT * FROM xx_reports WHERE typ = 'funct'";
-			$res = db_query($query);
-			while ($f = db_fetch($res))
+			$res = DBOld::query($query);
+			while ($f = DBOld::fetch($res))
 			{
 				$h = explode("|", $f["attrib"]);
 				$blocks[$h[0]] = $h[4]; // $h[0] is short name of block, $h[4] is function code
@@ -644,13 +644,13 @@
 			global $p_formate;
 			$this->count = 0; // number of records = 0
 			$query = "SELECT typ, attrib FROM xx_reports WHERE id = '" . $id . "'";
-			$res = db_query($query, "EXIT!!!");
-			if (db_num_rows($res) == 0) {
+			$res = DBOld::query($query, "EXIT!!!");
+			if (DBOld::num_rows($res) == 0) {
 				// report is not declared
 				ui_msgs::display_error("<BR> Report does not exist !! id=" . $id);
 				exit;
 			}
-			while ($f = db_fetch($res))
+			while ($f = DBOld::fetch($res))
 			{
 				// read the report, store values
 				$typ = trim($f["typ"]);
@@ -1253,7 +1253,7 @@
 				$this->print_record(true, $height);
 				$this->y_pos = $this->y_pos - $height - $this->y_dist + YDIST + 2;
 			}
-			while ($this->f = db_fetch($this->res));
+			while ($this->f = DBOld::fetch($this->res));
 			// of do
 		}
 
@@ -1267,7 +1267,7 @@
 				$this->pdf->newPage();
 				$this->y_pos = $this->get_height() - $this->y_top - DISTANCE;
 			}
-			while ($this->f = db_fetch($this->res));
+			while ($this->f = DBOld::fetch($this->res));
 		}
 
 		function print_totals($pos, $tot) {
@@ -1412,12 +1412,12 @@
 			$sql = $this->get_select();
 			$sql = str_replace("", '', $sql);
 
-			$this->res = db_query($sql, "EXIT3 !!!");
-			if (db_num_rows($this->res) == 0) {
+			$this->res = DBOld::query($sql, "EXIT3 !!!");
+			if (DBOld::num_rows($this->res) == 0) {
 				ui_msgs::display_error("$sql No Data Records found !!!");
 				exit;
 			}
-			$this->f = db_fetch($this->res);
+			$this->f = DBOld::fetch($this->res);
 			$this->y_pos = $this->get_height() - $this->y_top;
 			if ($this->is_set_group()) { // work with group
 				$this->set_group_new(trim($this->f[$this->get_group()]));

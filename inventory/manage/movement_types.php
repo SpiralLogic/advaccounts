@@ -48,10 +48,10 @@
 
 	function can_delete($selected_id) {
 		$sql = "SELECT COUNT(*) FROM stock_moves
-		WHERE type=" . ST_INVADJUST . " AND person_id=" . db_escape($selected_id);
+		WHERE type=" . ST_INVADJUST . " AND person_id=" . DBOld::escape($selected_id);
 
-		$result = db_query($sql, "could not query stock moves");
-		$myrow = db_fetch_row($result);
+		$result = DBOld::query($sql, "could not query stock moves");
+		$myrow = DBOld::fetch_row($result);
 		if ($myrow[0] > 0) {
 			ui_msgs::display_error(_("Cannot delete this inventory movement type because item transactions have been created referring to it."));
 			return false;
@@ -87,7 +87,7 @@
 	inactive_control_column($th);
 	table_header($th);
 	$k = 0;
-	while ($myrow = db_fetch($result))
+	while ($myrow = DBOld::fetch($result))
 	{
 
 		alt_table_row_color($k);

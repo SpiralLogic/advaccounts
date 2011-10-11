@@ -15,20 +15,20 @@
 														 $last_cost) {
 		$mb_flag = get_mb_flag($stock_id);
 
-		if (is_service($mb_flag)) {
+		if ($_POST['mb_flag'] == STOCK_SERVICE) {
 			Errors::show_db_error("Cannot do cost update for Service item : $stock_id", "");
 		}
 
 		$update_no = -1;
 
-		begin_transaction();
+		DBOld::begin_transaction();
 
-		$sql = "UPDATE stock_master SET material_cost=" . db_escape($material_cost) . ",
-		labour_cost=" . db_escape($labour_cost) . ",
-		overhead_cost=" . db_escape($overhead_cost) . ",
-		last_cost=" . db_escape($last_cost) . "
-		WHERE stock_id=" . db_escape($stock_id);
-		db_query($sql, "The cost details for the inventory item could not be updated");
+		$sql = "UPDATE stock_master SET material_cost=" . DBOld::escape($material_cost) . ",
+		labour_cost=" . DBOld::escape($labour_cost) . ",
+		overhead_cost=" . DBOld::escape($overhead_cost) . ",
+		last_cost=" . DBOld::escape($last_cost) . "
+		WHERE stock_id=" . DBOld::escape($stock_id);
+		DBOld::query($sql, "The cost details for the inventory item could not be updated");
 
 		$qoh = get_qoh_on_date($_POST['stock_id']);
 
@@ -54,8 +54,8 @@
 				$value_of_change);
 		}
 
-		add_audit_trail(ST_COSTUPDATE, $update_no, $date_);
-		commit_transaction();
+		DB_AuditTrail::add(ST_COSTUPDATE, $update_no, $date_);
+		DBOld::commit_transaction();
 
 		return $update_no;
 	}

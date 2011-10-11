@@ -30,7 +30,7 @@
 			ui_msgs::display_error(_("The unit of measure code cannot be empty."));
 			ui_view::set_focus('abbr');
 		}
-		if (strlen(db_escape($_POST['abbr'])) > (20 + 2)) {
+		if (strlen(DBOld::escape($_POST['abbr'])) > (20 + 2)) {
 			$input_error = 1;
 			ui_msgs::display_error(_("The unit of measure code is too long."));
 			ui_view::set_focus('abbr');
@@ -87,7 +87,7 @@
 	table_header($th);
 	$k = 0; //row colour counter
 
-	while ($myrow = db_fetch($result))
+	while ($myrow = DBOld::fetch($result))
 	{
 
 		alt_table_row_color($k);

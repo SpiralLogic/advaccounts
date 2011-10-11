@@ -65,7 +65,7 @@
 	//---------------------------------------------------------------------------------------------
 
 	function handle_submit() {
-		global $db,
+		DBOld::getInstance(),
 					 $comp_subdirs;
 
 		$error = false;
@@ -97,7 +97,7 @@
 						$error = true;
 					} else
 						if (isset($_POST['admpassword']) && $_POST['admpassword'] != "")
-							db_query("UPDATE users set password = '" . md5(
+							DBOld::query("UPDATE users set password = '" . md5(
 									$_POST['admpassword']) . "' WHERE user_id = 'admin'");
 				}
 				else
@@ -106,7 +106,7 @@
 					$error = true;
 				}
 			}
-			set_global_connection();
+			DBOld::getInstance();
 			if ($error) {
 				remove_connection($id);
 				return false;
@@ -117,7 +117,7 @@
 				if (($db = db_create_db($conn)) == 0) {
 					ui_msgs::display_error(_("Error connecting to Database: ") . $conn['dbname'] . _(", Please correct it"));
 				} elseif ($_POST['admpassword'] != "") {
-					db_query("UPDATE users set password = '" . md5(
+					DBOld::query("UPDATE users set password = '" . md5(
 							$_POST['admpassword']) . "' WHERE user_id = 'admin'");
 				}
 			}

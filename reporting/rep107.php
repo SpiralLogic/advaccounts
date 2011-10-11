@@ -83,7 +83,7 @@
 				$rep->Header2($myrow, $branch, $sales_order, $baccount, $j);
 				$result = get_customer_trans_details($j, $i);
 				$SubTotal = 0;
-				while ($myrow2 = db_fetch($result)) {
+				while ($myrow2 = DBOld::fetch($result)) {
 					if ($myrow2["quantity"] == 0)
 						continue;
 					$Net = round2($sign * ((1 - $myrow2["discount_percent"]) * $myrow2["unit_price"] * $myrow2["quantity"]),
@@ -114,10 +114,10 @@
 					if ($rep->row < $rep->bottomMargin + (15 * $rep->lineHeight))
 						$rep->Header2($myrow, $branch, $sales_order, $baccount, $j);
 				}
-				$comments = get_comments($j, $i);
-				if ($comments && db_num_rows($comments)) {
+				$comments = DB_Comments::get($j, $i);
+				if ($comments && DBOld::num_rows($comments)) {
 					$rep->NewLine();
-					while ($comment = db_fetch($comments))
+					while ($comment = DBOld::fetch($comments))
 					{
 						$rep->TextColLines(0, 6, $comment['memo_'], -2);
 					}
@@ -140,7 +140,7 @@
 				$rep->TextCol(7, 8, $DisplayFreight, -2);
 				$rep->NewLine();
 				$tax_items = get_trans_tax_details($j, $i);
-				while ($tax_item = db_fetch($tax_items)) {
+				while ($tax_item = DBOld::fetch($tax_items)) {
 					$DisplayTax = number_format2($sign * $tax_item['amount'], $dec);
 					if ($tax_item['included_in_price']) {
 						$rep->TextCol(3, 7, $doc_Included . " " . $tax_item['tax_type_name'] .

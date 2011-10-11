@@ -51,22 +51,22 @@
 
 				$sql = "INSERT INTO purch_data (supplier_id, stock_id, price, suppliers_uom,
     			conversion_factor, supplier_description) VALUES (";
-				$sql .= db_escape($_POST['supplier_id']) . ", " . db_escape($_POST['stock_id']) . ", "
-				 . input_num('price', 0) . ", " . db_escape($_POST['suppliers_uom']) . ", "
+				$sql .= DBOld::escape($_POST['supplier_id']) . ", " . DBOld::escape($_POST['stock_id']) . ", "
+				 . input_num('price', 0) . ", " . DBOld::escape($_POST['suppliers_uom']) . ", "
 				 . input_num('conversion_factor') . ", "
-				 . db_escape($_POST['supplier_description']) . ")";
+				 . DBOld::escape($_POST['supplier_description']) . ")";
 
-				db_query($sql, "The supplier purchasing details could not be added");
+				DBOld::query($sql, "The supplier purchasing details could not be added");
 				ui_msgs::display_notification(_("This supplier purchasing data has been added."));
 			} else
 			{
 				$sql = "UPDATE purch_data SET price=" . input_num('price', 0) . ",
-				suppliers_uom=" . db_escape($_POST['suppliers_uom']) . ",
+				suppliers_uom=" . DBOld::escape($_POST['suppliers_uom']) . ",
 				conversion_factor=" . input_num('conversion_factor') . ",
-				supplier_description=" . db_escape($_POST['supplier_description']) . "
-				WHERE stock_id=" . db_escape($_POST['stock_id']) . " AND
-				supplier_id=" . db_escape($selected_id);
-				db_query($sql, "The supplier purchasing details could not be updated");
+				supplier_description=" . DBOld::escape($_POST['supplier_description']) . "
+				WHERE stock_id=" . DBOld::escape($_POST['stock_id']) . " AND
+				supplier_id=" . DBOld::escape($selected_id);
+				DBOld::query($sql, "The supplier purchasing details could not be updated");
 				ui_msgs::display_notification(_("Supplier purchasing data has been updated."));
 			}
 			$Mode = 'RESET';
@@ -75,9 +75,9 @@
 	//--------------------------------------------------------------------------------------------------
 	if ($Mode == 'Delete') {
 		if (!Input::post('stock_id')) $_POST['stock_id'] = ui_globals::get_global_stock_item();
-		$sql = "DELETE FROM purch_data WHERE supplier_id=" . db_escape($selected_id) . "
-		AND stock_id=" . db_escape($_POST['stock_id']);
-		db_query($sql, "could not delete purchasing data");
+		$sql = "DELETE FROM purch_data WHERE supplier_id=" . DBOld::escape($selected_id) . "
+		AND stock_id=" . DBOld::escape($_POST['stock_id']);
+		DBOld::query($sql, "could not delete purchasing data");
 		ui_msgs::display_notification(_("The purchasing data item has been sucessfully deleted."));
 		$Mode = 'RESET';
 	}
@@ -117,11 +117,11 @@
 		 . "suppliers.curr_code
 		FROM purch_data INNER JOIN suppliers
 		ON purch_data.supplier_id=suppliers.supplier_id
-		WHERE stock_id = " . db_escape($_POST['stock_id']);
+		WHERE stock_id = " . DBOld::escape($_POST['stock_id']);
 
-		$result = db_query($sql, "The supplier purchasing details for the selected part could not be retrieved");
+		$result = DBOld::query($sql, "The supplier purchasing details for the selected part could not be retrieved");
 		div_start('price_table');
-		if (db_num_rows($result) == 0) {
+		if (DBOld::num_rows($result) == 0) {
 			ui_msgs::display_note(_("There is no supplier prices set up for the product selected"));
 		}
 		else
@@ -139,7 +139,7 @@
 
 			$k = $j = 0; //row colour counter
 
-			while ($myrow = db_fetch($result))
+			while ($myrow = DBOld::fetch($result))
 			{
 				alt_table_row_color($k);
 				label_cell(Dates::sql2date($myrow['last_update']), "style='white-space:nowrap;'");
@@ -173,10 +173,10 @@
 
 		$sql = "SELECT purch_data.*,suppliers.supp_name FROM purch_data
 		INNER JOIN suppliers ON purch_data.supplier_id=suppliers.supplier_id
-		WHERE purch_data.supplier_id=" . db_escape($selected_id) . "
-		AND purch_data.stock_id=" . db_escape($_POST['stock_id']);
-		$result = db_query($sql, "The supplier purchasing details for the selected supplier and item could not be retrieved");
-		$myrow = db_fetch($result);
+		WHERE purch_data.supplier_id=" . DBOld::escape($selected_id) . "
+		AND purch_data.stock_id=" . DBOld::escape($_POST['stock_id']);
+		$result = DBOld::query($sql, "The supplier purchasing details for the selected supplier and item could not be retrieved");
+		$myrow = DBOld::fetch($result);
 		$supp_name = $myrow["supp_name"];
 		$_POST['price'] = price_decimal_format($myrow["price"], $dec2);
 		$_POST['suppliers_uom'] = $myrow["suppliers_uom"];
