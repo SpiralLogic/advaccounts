@@ -14,7 +14,7 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	page(_($help_context = "Software Upgrade"));
-	include_once(APP_PATH . "admin/db/maintenance_db.inc");
+	include_once(APP_PATH . "admin/db/maintenance_db.php");
 
 	//
 	//	Checks $field existence in $table with given field $properties
@@ -146,7 +146,7 @@
 		if ($ret) { // re-read the prefs
 
 			$user = get_user_by_login($_SESSION["wa_current_user"]->username);
-			$_SESSION["wa_current_user"]->prefs = new user_prefs($user);
+			$_SESSION["wa_current_user"]->prefs = new userPrefs($user);
 			ui_msgs::display_notification(_('All companies data has been successfully updated'));
 		}
 		$Ajax->activate('_page_body');

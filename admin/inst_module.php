@@ -15,7 +15,7 @@
 
 	page(_($help_context = "Install/Activate extensions"));
 
-	include_once(APP_PATH . "admin/db/maintenance_db.inc");
+	include_once(APP_PATH . "admin/db/maintenance_db.php");
 
 	simple_page_mode(true);
 

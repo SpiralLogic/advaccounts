@@ -9,7 +9,7 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	class user_prefs {
+	class userPrefs {
 
 		var $language;
 
@@ -35,7 +35,7 @@
 		var $sticky_date; // save date on subsequent document entry
 		var $startup_tab; // default start-up menu tab
 
-		function user_prefs($user = null) {
+		function userPrefs($user = null) {
 			if ($user == null) {
 				// set default values, used before login
 

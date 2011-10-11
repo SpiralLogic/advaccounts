@@ -70,7 +70,7 @@
 			return $remainder;
 		}
 
-		protected function DBOld::escape($value) {
+		protected function escape($value) {
 			//reset default if second parameter is skipped
 			//check for null/unset/empty strings
 			if (is_string($value)) {
@@ -79,17 +79,17 @@
 					$value = "'" . mysql_real_escape_string($value) . "'";
 				}
 
-	else {
-	$value = "'" . mysql_escape_string($value) . "'";
-}
-	} else {
-	if (!is_numeric($value)) {
-		//value is not a string nor numeric
-		ui_msgs::display_error("ERROR: incorrect data type send to sql query");
-		echo '<br><br>';
-		exit();
-	}
-}
-	return $value;
-	}
+				else {
+					$value = "'" . mysql_escape_string($value) . "'";
+				}
+			} else {
+				if (!is_numeric($value)) {
+					//value is not a string nor numeric
+					ui_msgs::display_error("ERROR: incorrect data type send to sql query");
+					echo '<br><br>';
+					exit();
+				}
+			}
+			return $value;
+		}
 	}

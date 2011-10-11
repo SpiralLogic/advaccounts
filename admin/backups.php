@@ -13,7 +13,7 @@
 
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	include_once(APP_PATH . "admin/db/maintenance_db.inc");
+	include_once(APP_PATH . "admin/db/maintenance_db.php");
 
 	if (get_post('view')) {
 		if (!get_post('backups')) {

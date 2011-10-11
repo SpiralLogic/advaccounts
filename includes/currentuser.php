@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 
 	//--------------------------------------------------------------------------
-	class current_user {
+	class CurrentUser {
 
 		var $user;
 		var $loginname;
@@ -30,11 +30,11 @@
 
 		var $prefs;
 
-		function current_user() {
+		function CurrentUser() {
 			$this->loginname = $this->username = $this->name = "";
 			$this->company = Config::get('company.default') ? Config::get('company.default') : 0;
 			$this->logged = false;
-			$this->prefs = new user_prefs();
+			$this->prefs = new userPrefs();
 		}
 
 		function set_salesman($salesman_code = null) {
@@ -80,7 +80,7 @@
 				$this->pos = $myrow["pos"];
 				$this->loginname = $loginname;
 				$this->username = $this->loginname;
-				$this->prefs = new user_prefs($myrow);
+				$this->prefs = new userPrefs($myrow);
 				$this->user = @$myrow["id"];
 				update_user_visitdate($this->username);
 				$this->logged = true;
@@ -128,7 +128,7 @@
 				update_user_display_prefs($this->user, $price_dec, $qty_dec, $exrate_dec, $percent_dec, $showgl, $showcodes, $date_format, $date_sep, $tho_sep, $dec_sep, $theme, $pagesize, $show_hints,
 					$profile, $rep_popup, $query_size, $graphic_links, $lang, $stickydate, $startup_tab);
 			}
-			$this->prefs = new user_prefs(get_user($this->user));
+			$this->prefs = new userPrefs(get_user($this->user));
 		}
 	}
 

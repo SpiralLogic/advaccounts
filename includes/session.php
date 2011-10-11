@@ -14,10 +14,7 @@
 	session_name('FA' . md5(dirname(__FILE__)));
 	session_start();
 	header("Cache-control: private");
-	gettext_native_support::get_text_init();
-
-	// Page Initialisation
-
+	gettextNativeSupport::get_text_init();
 	if (!isset($_SESSION['language']) || !method_exists($_SESSION['language'], 'set_language')) {
 		$l = Arr::search_value(Config::get('default_lang'), Config::get(null, null, 'installed_languages'), 'code');
 
@@ -31,7 +28,7 @@
 	}
 
 	if (!isset($_SESSION["wa_current_user"])) {
-		$_SESSION["wa_current_user"] = new current_user();
+		$_SESSION["wa_current_user"] = new CurrentUser();
 	}
 
 	// logout.php is the only page we should have always

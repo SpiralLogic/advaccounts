@@ -66,9 +66,7 @@
 		$theme = user_theme();
 
 		if (Config::get('help.baseurl') != null && Config::get('ui.windows.popups') && $js == '') {
-			if (!function_exists('get_js_open_window')) {
-				include_once(APP_PATH . 'includes/ui/ui_view.php');
-			}
+
 			JS::beforeload(ui_view::get_js_open_window(900, 500));
 		}
 		if ($js != '')

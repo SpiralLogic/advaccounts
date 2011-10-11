@@ -12,7 +12,7 @@
 	$page_security = 'SA_SUPPLIERINVOICE';
 
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	include_once(APP_PATH . "/purchasing/includes/purchasing_db.inc");
+	include_once(APP_PATH . "/purchasing/includes/purchasing_db.php");
 
 	include_once(APP_PATH . "purchasing/includes/purchasing_ui.inc");
 	$js = "";

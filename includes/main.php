@@ -22,9 +22,9 @@
 	include_once(APP_PATH . "includes/manufacturing.php");
 
 	include_once(APP_PATH . "includes/data_checks.php");
-	include_once(APP_PATH . "includes/db/audit_trail_db.php");
+	include_once(APP_PATH . "includes/db/audittrail.php");
 
-	include_once(APP_PATH . "includes/db/connect_db.php");
+	include_once(APP_PATH . "includes/db/dbold.php");
 
 	include_once(APP_PATH . "includes/ui/ui_lists.php");
 	include_once(APP_PATH . "includes/ui/ui_controls.php");

@@ -13,7 +13,7 @@
 	//include_once(APP_PATH . "reporting/includes/class.pdf.inc");
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/reporting/includes/class.pdf.inc");
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/reporting/includes/printer_class.inc");
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/admin/db/company_db.inc");
+	include_once($_SERVER['DOCUMENT_ROOT'] . "/admin/db/company_db.php");
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/admin/db/printers_db.inc");
 	class FrontReport extends Cpdf {
 

@@ -15,7 +15,7 @@
 
 	page(_($help_context = "Install/Update Languages"));
 
-	include_once(APP_PATH . "admin/db/maintenance_db.inc");
+	include_once(APP_PATH . "admin/db/maintenance_db.php");
 
 	//---------------------------------------------------------------------------------------------
 

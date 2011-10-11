@@ -28,7 +28,7 @@
 	 * @author Laurent Bedubourg <laurent.bedubourg@free.fr>
 	 * @access private
 	 */
-	class gettext_native_support {
+	class gettextNativeSupport {
 		var $_interpolation_vars = array();
 		const GETTEXT_NATIVE = 1;
 		const GETTEXT_PHP = 2;
@@ -48,7 +48,7 @@
 
 				if ($managerType == self::GETTEXT_NATIVE) {
 					if (function_exists('gettext')) {
-						$_SESSION['get_text'] = new gettext_native_support();
+						$_SESSION['get_text'] = new gettextNativeSupport();
 						return;
 					}
 				}
@@ -183,7 +183,7 @@
 	 * @access private
 	 * @author Laurent Bedubourg <laurent.bedubourg@free.fr>
 	 */
-	class gettext_php_support extends gettext_native_support {
+	class gettext_php_support extends gettextNativeSupport {
 		var $_path = 'locale/';
 		var $_lang_code = false;
 		var $_domains = array();

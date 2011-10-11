@@ -165,7 +165,7 @@
 		$result = DBOld::query($sql, "could not get sales person");
 		$row = DBOld::fetch($result);
 		if (!isset($_SESSION["wa_current_user"]) || empty($row['salesman_name'])) {
-			$_SESSION["wa_current_user"] = new current_user();
+			$_SESSION["wa_current_user"] = new CurrentUser();
 		}
 		if (empty($row['salesman_name'])) {
 			$user = $_SESSION["wa_current_user"]->name;
