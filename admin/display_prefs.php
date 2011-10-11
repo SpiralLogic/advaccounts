@@ -15,8 +15,6 @@
 
 	page(_($help_context = "Display Setup"));
 
-	include_once(APP_PATH . "admin/db/company_db.inc");
-
 	//-------------------------------------------------------------------------------------------------
 
 	if (isset($_POST['setprefs'])) {

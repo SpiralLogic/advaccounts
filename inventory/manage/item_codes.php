@@ -15,8 +15,6 @@
 
 	page(_($help_context = "Foreign Item Codes"));
 
-	include_once(APP_PATH . "includes/manufacturing.inc");
-
 	check_db_has_purchasable_items(_("There are no inventory items defined in the system."));
 
 	simple_page_mode(true);

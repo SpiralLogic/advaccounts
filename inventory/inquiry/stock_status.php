@@ -20,8 +20,6 @@
 		page(_($help_context = "Inventory Item Status"));
 	}
 
-	include_once(APP_PATH . "includes/manufacturing.inc");
-
 	if ($_POST['stock_id'])
 		$Ajax->activate('status_tbl');
 	//----------------------------------------------------------------------------------------------------

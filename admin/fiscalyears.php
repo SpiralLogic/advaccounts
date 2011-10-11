@@ -13,8 +13,6 @@
 
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	include_once(APP_PATH . "admin/db/company_db.inc");
-
 	include_once(APP_PATH . "sales/includes/db/cust_trans_db.inc");
 	include_once(APP_PATH . "admin/db/maintenance_db.inc");
 	$js = "";

@@ -304,7 +304,7 @@
 	$js = <<<JS
 var ci = $("#createinvoice"), ci_row = ci.closest('tr'),alloc_tbl = $('#alloc_tbl'),hasallocated = false;
   alloc_tbl.find('.amount').each(function() { if (this.value != 0) hasallocated = true});
-  if (hasallocated) ci_row.hide(); else ci_row.show();
+  if (hasallocated && !ci.prop('checked')) ci_row.hide(); else ci_row.show();
 JS;
 
 	JS::addLiveEvent('a, :input', 'click change', $js, 'wrapper', true);

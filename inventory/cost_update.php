@@ -13,8 +13,6 @@
 
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	include_once(APP_PATH . "includes/manufacturing.inc");
-
 	$js = "";
 	if (Config::get('ui.windows.popups'))
 		$js .= ui_view::get_js_open_window(900, 500);

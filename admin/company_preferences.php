@@ -14,8 +14,6 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	page(_($help_context = "Company Setup"));
-
-	include_once(APP_PATH . "admin/db/company_db.inc");
 	//-------------------------------------------------------------------------------------------------
 
 	if (isset($_POST['update']) && $_POST['update'] != "") {

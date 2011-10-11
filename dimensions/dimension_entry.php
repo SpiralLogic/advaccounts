@@ -13,8 +13,6 @@
 
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	include_once(APP_PATH . "includes/manufacturing.inc");
-
 	include_once(APP_PATH . "admin/db/tags_db.inc");
 	include_once(APP_PATH . "dimensions/includes/dimensions_db.inc");
 	include_once(APP_PATH . "dimensions/includes/dimensions_ui.inc");

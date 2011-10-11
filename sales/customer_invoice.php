@@ -19,8 +19,6 @@
 
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	include_once(APP_PATH . "includes/manufacturing.inc");
-
 	include_once(APP_PATH . "sales/includes/sales_ui.inc");
 	include_once(APP_PATH . "reporting/includes/reporting.inc");
 	include_once(APP_PATH . "taxes/tax_calc.inc");

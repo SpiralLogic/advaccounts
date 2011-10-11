@@ -10,8 +10,6 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	include_once(APP_PATH . "reporting/includes/Workbook.php");
-	include_once(APP_PATH . "admin/db/company_db.inc");
-
 	// xls version
 	class FrontReport extends Spreadsheet_Excel_Writer_Workbook {
 		var $size;

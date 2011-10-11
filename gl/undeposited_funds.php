@@ -199,7 +199,7 @@
 	$th = array(_("Deposit Date"), _("Total Deposit<br>Amount"));
 	table_header($th);
 	start_row();
-	date_cells("", "deposit_date", _('Date of funds to deposit'), get_post('deposit_date') == '', 0, 0, 0, null, true);
+	date_cells("", "deposit_date", _('Date of funds to deposit'), get_post('deposit_date') == '', 0, 0, 0, null, true, array('rebind' => false));
 	amount_cell($_POST['deposited'], false, '', "deposited");
 	hidden("to_deposit", $_POST['to_deposit'], true);
 

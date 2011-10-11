@@ -15,8 +15,6 @@
 
 	page(_($help_context = "System and General GL Setup"));
 
-	include_once(APP_PATH . "admin/db/company_db.inc");
-
 	//-------------------------------------------------------------------------------------------------
 
 	function can_process() {

@@ -13,7 +13,6 @@
 
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	include_once(APP_PATH . "admin/db/company_db.inc");
 	include_once(APP_PATH . "admin/db/maintenance_db.inc");
 
 	page(_($help_context = "Create/Update Company"));

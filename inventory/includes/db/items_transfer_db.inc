@@ -88,4 +88,74 @@
 		void_stock_move(ST_LOCTRANSFER, $type_no);
 	}
 
+	function add_stock_move($type, $stock_id, $trans_no, $location,
+													$date_, $reference, $quantity, $std_cost, $person_id = 0, $show_or_hide = 1,
+													$price = 0, $discount_percent = 0, $error_msg = "") {
+		// do not add a stock move if it's a non-inventory item
+		if (!is_inventory_item($stock_id)) {
+			return null;
+		}
+
+		$date = Dates::date2sql($date_);
+
+		$sql = "INSERT INTO stock_moves (stock_id, trans_no, type, loc_code,
+			tran_date, person_id, reference, qty, standard_cost, visible, price,
+			discount_percent) VALUES (" . db_escape($stock_id)
+		 . ", " . db_escape($trans_no) . ", " . db_escape($type)
+		 . ",	" . db_escape($location) . ", '$date', "
+		 . db_escape($person_id) . ", " . db_escape($reference) . ", "
+		 . db_escape($quantity) . ", " . db_escape($std_cost) . ","
+		 . db_escape($show_or_hide) . ", " . db_escape($price) . ", "
+		 . db_escape($discount_percent) . ")";
+
+		if ($error_msg == "") {
+			$error_msg = "The stock movement record cannot be inserted";
+		}
+
+		db_query($sql, $error_msg);
+
+		return db_insert_id();
+	}
+
+	function update_stock_move_pid($type, $stock_id, $from, $to, $pid, $cost) {
+		$from = Dates::date2sql($from);
+		$to = Dates::date2sql($to);
+		$sql = "UPDATE stock_moves SET standard_cost=" . db_escape($cost)
+		 . " WHERE type=" . db_escape($type)
+		 . "	AND stock_id=" . db_escape($stock_id)
+		 . "  AND tran_date>='$from' AND tran_date<='$to'
+				AND person_id = " . db_escape($pid);
+		db_query($sql, "The stock movement standard_cost cannot be updated");
+	}
+
+	//--------------------------------------------------------------------------------------------------
+
+	function get_stock_moves($type, $type_no, $visible = false) {
+		$sql = "SELECT stock_moves.*, stock_master.description, "
+		 . "stock_master.units,locations.location_name,"
+		 . "stock_master.material_cost + "
+		 . "stock_master.labour_cost + "
+		 . "stock_master.overhead_cost AS FixedStandardCost
+			FROM stock_moves,locations,stock_master
+			WHERE stock_moves.stock_id = stock_master.stock_id
+			AND locations.loc_code=stock_moves.loc_code
+			AND type=" . db_escape($type) . " AND trans_no=" . db_escape($type_no) . " ORDER BY trans_id";
+		if ($visible) {
+			$sql .= " AND stock_moves.visible=1";
+		}
+
+		return db_query($sql, "Could not get stock moves");
+	}
+
+	//--------------------------------------------------------------------------------------------------
+
+	function void_stock_move($type, $type_no) {
+		$sql = "UPDATE stock_moves SET qty=0, price=0, discount_percent=0,
+			standard_cost=0	WHERE type=" . db_escape($type) . " AND trans_no=" . db_escape($type_no);
+
+		db_query($sql, "Could not void stock moves");
+	}
+
+	//--------------------------------------------------------------------------------------------------
+
 ?>

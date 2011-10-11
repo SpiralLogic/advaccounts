@@ -15,8 +15,6 @@
 
 	page(_($help_context = "Bill Of Materials"));
 
-	include_once(APP_PATH . "includes/manufacturing.inc");
-
 	check_db_has_bom_stock_items(_("There are no manufactured or kit items defined in the system."));
 
 	check_db_has_workcentres(_("There are no work centres defined in the system. BOMs require at least one work centre be defined."));

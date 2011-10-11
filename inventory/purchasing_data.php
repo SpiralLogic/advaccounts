@@ -15,8 +15,6 @@
 
 	page(_($help_context = "Supplier Purchasing Data"), Input::request('frame'));
 
-	include_once(APP_PATH . "includes/manufacturing.inc");
-
 	check_db_has_purchasable_items(_("There are no purchasable inventory items defined in the system."));
 	check_db_has_suppliers(_("There are no suppliers defined in the system."));
 

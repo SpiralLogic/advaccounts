@@ -14,8 +14,6 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	page(_($help_context = "Software Upgrade"));
-
-	include_once(APP_PATH . "admin/db/company_db.inc");
 	include_once(APP_PATH . "admin/db/maintenance_db.inc");
 
 	//

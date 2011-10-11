@@ -26,8 +26,6 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	add_access_extensions();
 
-	include_once(APP_PATH . "admin/db/company_db.inc");
-
 	require_once("repgen_const.inc");
 	require_once("repgen_def.inc");
 	require_once("repgen.inc");

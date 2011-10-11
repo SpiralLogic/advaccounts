@@ -15,8 +15,6 @@
 
 	include_once(APP_PATH . "gl/includes/db/gl_db_bank_trans.inc");
 
-	include_once(APP_PATH . "includes/manufacturing.inc");
-
 	include_once(APP_PATH . "manufacturing/includes/manufacturing_ui.inc");
 
 	$js = "";

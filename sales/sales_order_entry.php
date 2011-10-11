@@ -85,6 +85,9 @@
 	elseif (Input::get('NewQuoteToSalesOrder')) {
 		create_cart(ST_SALESQUOTE, $_GET['NewQuoteToSalesOrder']);
 	}
+	elseif (Input::get('CloneOrder')) {
+		create_cart(ST_SALESORDER, Input::get('CloneOrder'));
+	}
 	elseif (Input::get('remotecombine')) {
 		if (isset($_SESSION['Items'])) {
 			foreach ($_SESSION['remote_order']->line_items as $item) {
@@ -519,6 +522,18 @@
 			$doc->reference = Refs::get_next($doc->trans_type);
 			$doc->document_date = $doc->due_date = Dates::new_doc_date();
 			$doc->Comments = $doc->Comments . "\n\n" . _("Sales Quotation") . " # " . $trans_no;
+			$_SESSION['Items'] = $doc;
+		} elseif (isset($_Get['CloneOrder'])) {
+			$trans_no = $_GET['CloneOrder'];
+			$doc = new Cart(ST_SALESORDER, $trans_no);
+			$doc->trans_no = 0;
+			$doc->trans_type = ST_SALESORDER;
+			$doc->reference = Refs::get_next($doc->trans_type);
+			$doc->document_date = $doc->due_date = Dates::new_doc_date();
+			FB::info($doc);
+			foreach ($doc->line_items as $line_no => $line) {
+				$line->qty_done = $line->qty_dispatched = 0;
+			}
 			$_SESSION['Items'] = $doc;
 		}
 		elseif (isset($_GET['NewRemoteToSalesOrder'])) {

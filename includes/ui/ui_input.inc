@@ -547,7 +547,7 @@
 	//	than current date.
 	//
 	function date_cells($label, $name, $title = null, $check = null, $inc_days = 0,
-											$inc_months = 0, $inc_years = 0, $params = null, $submit_on_change = false) {
+											$inc_months = 0, $inc_years = 0, $params = null, $submit_on_change = false, $options = array()) {
 		$Ajax = Ajax::instance();
 
 		if (!isset($_POST[$name]) || $_POST[$name] == "") {
@@ -581,7 +581,7 @@
 		 . $_POST[$name] . "\""
 		 . ($title ? " title='$title'" : '') . " > $post_label";
 		echo "</td>\n";
-		DatePicker::add($name, array('numberOfMonths' => 3, 'showButtonPanel' => true, 'showCurrentAtPos' => 2, 'dateFormat' => 'dd/mm/yy'));
+		DatePicker::add($name, array('numberOfMonths' => 3, 'showButtonPanel' => true, 'showCurrentAtPos' => 2, 'dateFormat' => 'dd/mm/yy'), $options);
 		$Ajax->addUpdate($name, $name, $_POST[$name]);
 	}
 

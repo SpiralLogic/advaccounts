@@ -10,7 +10,6 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 
-	include_once(APP_PATH . "includes/manufacturing.inc");
 	include_once(APP_PATH . "inventory/includes/db/items_category_db.inc");
 	include_once(APP_PATH . "inventory/includes/db/items_trans_db.inc");
 	include_once(APP_PATH . "inventory/includes/db/items_prices_db.inc");
@@ -22,14 +21,6 @@
 	include_once(APP_PATH . "inventory/includes/db/items_transfer_db.inc");
 	include_once(APP_PATH . "inventory/includes/db/items_units_db.inc");
 
-	function item_img_name($stock_id) {
-		return strtr($stock_id, "><\\/:|*?", '________');
-	}
 
-	function get_stockid($stock_id) {
-		$result = current(DB::select('id')->from('stock_master')->where('stock_id LIKE ', $stock_id)->fetch()->all());
-		FB::info($result);
-		return $result['id'];
-	}
 
 ?>

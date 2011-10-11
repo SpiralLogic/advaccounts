@@ -16,7 +16,6 @@
 	page(_($help_context = "Costed Bill Of Material Inquiry"));
 
 	include_once(APP_PATH . "manufacturing/includes/manufacturing_ui.inc");
-	include_once(APP_PATH . "includes/manufacturing.inc");
 
 	check_db_has_bom_stock_items(_("There are no manufactured or kit items defined in the system."));
 

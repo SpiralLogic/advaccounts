@@ -21,8 +21,6 @@
 
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/sales/includes/sales_db.inc");
-
 	$packing_slip = 0;
 	//----------------------------------------------------------------------------------------------------
 

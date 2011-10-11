@@ -9,13 +9,19 @@
 
 	class DatePicker {
 
-		protected $options;
+		protected static $options = array('rebind' => true);
 		protected $name;
 		protected static $_count = 0;
 
 		static function add($name, $options = array()) {
+			$options = array_merge(static::$options, $options);
 			$js = '$("#' . $name . '").one("focus",function() { $(this).datepicker(' . JS::arrayToOptions($options) . ').focus() }); ';
-			JS::addLive($js);
+			if ($options['rebind']) {
+				JS::addLive($js);
+			} else {
+				JS::onload($js);
+			}
+
 			self::$_count++;
 		}
 	}

@@ -15,8 +15,6 @@
 
 	page(_($help_context = "Sales Kits & Alias Codes"));
 
-	include_once(APP_PATH . "includes/manufacturing.inc");
-
 	check_db_has_stock_items(_("There are no items defined in the system."));
 
 	simple_page_mode(true);
