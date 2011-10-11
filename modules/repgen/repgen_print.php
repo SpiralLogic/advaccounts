@@ -11,7 +11,7 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	add_access_extensions();
 
-	require_once("repgen.inc");
+	require_once("repgen.php");
 	$id = $_GET['id'];
 	$file = COMPANY_PATH . '/pdf_files/' . $id . '.pdf';
 	create_report($id, $file);

@@ -15,7 +15,7 @@
 
 	page(_($help_context = "Chart of Accounts"));
 
-	include(APP_PATH . "admin/db/tags_db.inc");
+	include(APP_PATH . "admin/db/tags_db.php");
 
 	check_db_has_gl_account_groups(_("There are no account groups defined. Please define at least one account group before entering accounts."));
 

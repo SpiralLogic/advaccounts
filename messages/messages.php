@@ -2,7 +2,7 @@
 
 	$page_security = 'SA_OPEN';
 
-	include_once("includes/messages.inc");
+	include_once("includes/messages.php");
 	if (AJAX_REFERRER) {
 		$data['post'] = $_POST;
 		if (isset($_POST['user_id'])) {

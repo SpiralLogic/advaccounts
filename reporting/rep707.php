@@ -163,11 +163,11 @@
 			$destination = $_POST['PARAM_6'];
 		}
 		if ($destination)
-			include_once(APP_PATH . "reporting/includes/excel_report.inc");
+			include_once(APP_PATH . "reporting/includes/excel_report.php");
 		else
-			include_once(APP_PATH . "reporting/includes/pdf_report.inc");
+			include_once(APP_PATH . "reporting/includes/pdf_report.php");
 		if ($graphics) {
-			include_once(APP_PATH . "reporting/includes/class.graphic.inc");
+			include_once(APP_PATH . "reporting/includes/class.graphic.php");
 			$pg = new graph();
 		}
 		if (!$decimals)

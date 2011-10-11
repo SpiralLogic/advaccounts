@@ -7,9 +7,9 @@
 	 * To change this template use File | Settings | File Templates.
 	 */
 
-	include_once(APP_PATH . "config/types.inc");
+	include_once(APP_PATH . "config/types.php");
 	include_once(APP_PATH . "config/defines.php");
-	include_once(APP_PATH . "config/access_levels.inc");
+	include_once(APP_PATH . "config/access_levels.php");
 
 	class Config {
 

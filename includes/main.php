@@ -24,7 +24,7 @@
 	include_once(APP_PATH . "includes/data_checks.php");
 	include_once(APP_PATH . "includes/db/audittrail.php");
 
-	include_once(APP_PATH . "includes/db/dbold.php");
+	include_once(APP_PATH . "includes/dbold.php");
 
 	include_once(APP_PATH . "includes/ui/ui_lists.php");
 	include_once(APP_PATH . "includes/ui/ui_controls.php");

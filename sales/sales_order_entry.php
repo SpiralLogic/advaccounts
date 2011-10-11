@@ -21,11 +21,11 @@
 	$page_security = 'SA_SALESORDER';
 
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	include_once(APP_PATH . "sales/includes/sales_ui.inc");
-	include_once(APP_PATH . "sales/includes/ui/sales_order_ui.inc");
+	include_once(APP_PATH . "sales/includes/sales_ui.php");
+	include_once(APP_PATH . "sales/includes/ui/sales_order_ui.php");
 
-	include_once(APP_PATH . "sales/includes/db/sales_types_db.inc");
-	include_once(APP_PATH . "reporting/includes/reporting.inc");
+	include_once(APP_PATH . "sales/includes/db/sales_types_db.php");
+	include_once(APP_PATH . "reporting/includes/reporting.php");
 
 	Security::set_page((!Input::session('Items') ? : $_SESSION['Items']->trans_type),
 		array(ST_SALESORDER => 'SA_SALESORDER',

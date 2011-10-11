@@ -15,7 +15,7 @@
 
 	page(_($help_context = "Work Centres"));
 
-	include(APP_PATH . "manufacturing/includes/manufacturing_db.inc");
+	include(APP_PATH . "manufacturing/includes/manufacturing_db.php");
 
 	simple_page_mode(true);
 	//-----------------------------------------------------------------------------------

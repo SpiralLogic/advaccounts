@@ -15,7 +15,7 @@
 
 	page(_($help_context = "Units of Measure"));
 
-	include_once(APP_PATH . "inventory/includes/db/items_units_db.inc");
+	include_once(APP_PATH . "inventory/includes/db/items_units_db.php");
 
 	simple_page_mode(false);
 	//----------------------------------------------------------------------------------

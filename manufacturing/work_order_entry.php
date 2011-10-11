@@ -13,7 +13,7 @@
 
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	include_once(APP_PATH . "manufacturing/includes/manufacturing_ui.inc");
+	include_once(APP_PATH . "manufacturing/includes/manufacturing_ui.php");
 
 	$js = "";
 	if (Config::get('ui.windows.popups'))
@@ -46,7 +46,7 @@
 		ui_msgs::display_note(ui_view::get_trans_view_str($stype, $id, _("View this Work Order")));
 
 		if ($_GET['type'] != WO_ADVANCED) {
-			include_once(APP_PATH . "reporting/includes/reporting.inc");
+			include_once(APP_PATH . "reporting/includes/reporting.php");
 			$ar = array('PARAM_0' => $id, 'PARAM_1' => $id, 'PARAM_2' => 0);
 			ui_msgs::display_note(print_link(_("Print this Work Order"), 409, $ar), 1);
 			$ar['PARAM_2'] = 1;

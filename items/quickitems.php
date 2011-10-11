@@ -2,7 +2,7 @@
 
 	$page_security = 'SA_CUSTOMER';
 
-	include_once("includes/items.inc");
+	include_once("includes/items.php");
 	if (AJAX_REFERRER) {
 
 		if (isset($_GET['term'])) {

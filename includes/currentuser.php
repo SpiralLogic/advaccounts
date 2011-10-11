@@ -187,7 +187,7 @@
 	// and get_qty_dec
 	function get_qty_dec($stock_id = null) {
 
-		include_once(APP_PATH . "inventory/includes/db/items_units_db.inc");
+		include_once(APP_PATH . "inventory/includes/db/items_units_db.php");
 		if ($stock_id != null) $dec = get_unit_dec($stock_id);
 		if ($stock_id == null || $dec == -1 || $dec == null) $dec = $_SESSION["wa_current_user"]->prefs->qty_dec();
 		return $dec;

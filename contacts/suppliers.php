@@ -18,7 +18,7 @@
 	 ***********************************************************************/
 	$page_security = 'SA_SUPPLIER';
 
-	include_once("includes/contacts.inc");
+	include_once("includes/contacts.php");
 	if (AJAX_REFERRER) {
 		if (isset($_GET['term'])) {
 			$data = Supplier::search($_GET['term']);

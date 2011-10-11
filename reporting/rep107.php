@@ -20,12 +20,12 @@
 	// ----------------------------------------------------------------
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	include_once(APP_PATH . "taxes/tax_calc.inc");
+	include_once(APP_PATH . "taxes/tax_calc.php");
 	//----------------------------------------------------------------------------------------------------
 	print_invoices();
 	//----------------------------------------------------------------------------------------------------
 	function print_invoices() {
-		include_once(APP_PATH . "reporting/includes/pdf_report.inc");
+		include_once(APP_PATH . "reporting/includes/pdf_report.php");
 		$from = $_POST['PARAM_0'];
 		$to = $_POST['PARAM_1'];
 		$currency = $_POST['PARAM_2'];
@@ -128,10 +128,10 @@
 				$linetype = true;
 				$doctype = $j;
 				if ($rep->currency != $myrow['curr_code']) {
-					include(APP_PATH . "/reporting/includes/doctext2.inc");
+					include(APP_PATH . "/reporting/includes/doctext2.php");
 				}
 				else {
-					include(APP_PATH . "/reporting/includes/doctext.inc");
+					include(APP_PATH . "/reporting/includes/doctext.php");
 				}
 				$rep->TextCol(3, 7, $doc_Sub_total, -2);
 				$rep->TextCol(7, 8, $DisplaySubTot, -2);

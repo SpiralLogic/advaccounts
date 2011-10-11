@@ -59,7 +59,7 @@
 		if (empty($page_security)) $page_security = 'SA_OPEN';
 		$hide_menu = $no_menu;
 
-		include(APP_PATH . "includes/page/header.inc");
+		include(APP_PATH . "includes/page/header.php");
 
 		page_header($title, $no_menu, $is_index, $onload, $js);
 		Security::check_page($page_security);
@@ -85,7 +85,7 @@
 		div_end(); // end of _page_body section
 
 		//if (!$_REQUEST['frame'])
-		include(APP_PATH . "includes/page/footer.inc");
+		include(APP_PATH . "includes/page/footer.php");
 		page_footer($no_menu, $is_index, $hide_back_link);
 	}
 

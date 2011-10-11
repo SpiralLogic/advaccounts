@@ -12,7 +12,7 @@
 	$page_security = 'SA_PRINTPROFILE';
 
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	include(APP_PATH . "admin/db/printers_db.inc");
+	include(APP_PATH . "admin/db/printers_db.php");
 
 	page(_($help_context = "Printing Profiles"));
 

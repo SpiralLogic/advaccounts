@@ -100,7 +100,7 @@
 		_("Cash")
 	);
 
-	include_once(APP_PATH . "dimensions/includes/dimensions_db.inc");
+	include_once(APP_PATH . "dimensions/includes/dimensions_db.php");
 	//----------------------------------------------------------------------------------
 	//	Payment types
 	//

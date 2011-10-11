@@ -1642,7 +1642,7 @@ JS
 	function tag_list($name, $height, $type, $multi = false, $all = false, $spec_opt = false) {
 		// Get tags
 
-		include_once(APP_PATH . "admin/db/tags_db.inc");
+		include_once(APP_PATH . "admin/db/tags_db.php");
 		$results = get_tags($type, $all);
 		while ($tag = DBOld::fetch($results)) {
 			$tags[$tag['id']] = $tag['name'];

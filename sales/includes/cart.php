@@ -18,7 +18,7 @@
 				iv)  a delivery note
 				*/
 
-	include_once(APP_PATH . "taxes/tax_calc.inc");
+	include_once(APP_PATH . "taxes/tax_calc.php");
 	class cart {
 
 

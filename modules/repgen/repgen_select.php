@@ -32,8 +32,8 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	add_access_extensions();
 
-	require_once("repgen_const.inc");
-	require_once("repgen_def.inc");
+	require_once("repgen_const.php");
+	require_once("repgen_def.php");
 
 	function get_name($str) { // get name out of str
 		$h = explode("|", $str);

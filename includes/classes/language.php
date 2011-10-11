@@ -48,7 +48,7 @@
 				$this->code = $lang['code'];
 				$this->encoding = $lang['encoding'];
 				$this->dir = isset($lang['rtl']) ? 'rtl' : 'ltr';
-				$locale = APP_PATH . "lang/" . $this->code . "/locale.inc";
+				$locale = APP_PATH . "lang/" . $this->code . "/locale.php";
 				$this->is_locale_file = file_exists($locale);
 			}
 

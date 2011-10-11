@@ -13,7 +13,7 @@
 
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	include_once(APP_PATH . "inventory/includes/item_adjustments_ui.inc");
+	include_once(APP_PATH . "inventory/includes/item_adjustments_ui.php");
 
 	$js = "";
 	if (Config::get('ui.windows.popups'))

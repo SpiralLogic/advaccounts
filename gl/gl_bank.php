@@ -15,7 +15,7 @@
 	 @($_SESSION['pay_items']->trans_type == ST_BANKPAYMENT)
 		? 'SA_PAYMENT' : 'SA_DEPOSIT';
 
-	include_once(APP_PATH . "gl/includes/ui/gl_bank_ui.inc");
+	include_once(APP_PATH . "gl/includes/ui/gl_bank_ui.php");
 
 	$js = '';
 	if (Config::get('ui.windows.popups'))

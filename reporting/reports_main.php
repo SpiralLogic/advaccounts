@@ -13,7 +13,7 @@
 	$page_security = 'SA_OPEN';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	include_once(APP_PATH . "/reporting/includes/reports_classes.inc");
+	include_once(APP_PATH . "/reporting/includes/reports_classes.php");
 	$js = "";
 	page(_($help_context = "Reports and Analysis"), false, false, "", $js);
 

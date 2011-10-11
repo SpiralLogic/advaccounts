@@ -13,7 +13,7 @@
 
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	include_once(APP_PATH . "sales/includes/db/cust_trans_db.inc");
+	include_once(APP_PATH . "sales/includes/db/cust_trans_db.php");
 	include_once(APP_PATH . "admin/db/maintenance_db.php");
 	$js = "";
 	page(_($help_context = "Fiscal Years"), false, false, "", $js);

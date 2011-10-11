@@ -15,7 +15,7 @@
 
 	page(_($help_context = "Printer Locations"));
 
-	include(APP_PATH . "admin/db/printers_db.inc");
+	include(APP_PATH . "admin/db/printers_db.php");
 
 	simple_page_mode(true);
 	//-------------------------------------------------------------------------------------------

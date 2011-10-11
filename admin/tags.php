@@ -12,7 +12,7 @@
 
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	// For tag constants
-	include_once(APP_PATH . "admin/db/tags_db.inc");
+	include_once(APP_PATH . "admin/db/tags_db.php");
 
 	// Set up page security based on what type of tags we're working with
 	if (@$_GET['type'] == "account" || get_post('type') == TAG_ACCOUNT) {

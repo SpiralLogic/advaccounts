@@ -15,8 +15,8 @@
 
 	page(_($help_context = "Item Tax Types"));
 
-	include_once(APP_PATH . "taxes/db/item_tax_types_db.inc");
-	include_once(APP_PATH . "taxes/db/tax_types_db.inc");
+	include_once(APP_PATH . "taxes/db/item_tax_types_db.php");
+	include_once(APP_PATH . "taxes/db/tax_types_db.php");
 
 	simple_page_mode(true);
 	//-----------------------------------------------------------------------------------

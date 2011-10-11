@@ -15,7 +15,7 @@
 
 	page(_($help_context = "Credit Status"));
 
-	include(APP_PATH . "sales/includes/db/credit_status_db.inc");
+	include(APP_PATH . "sales/includes/db/credit_status_db.php");
 
 	simple_page_mode(true);
 	//-----------------------------------------------------------------------------------

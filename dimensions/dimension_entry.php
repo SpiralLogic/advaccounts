@@ -13,9 +13,9 @@
 
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	include_once(APP_PATH . "admin/db/tags_db.inc");
-	include_once(APP_PATH . "dimensions/includes/dimensions_db.inc");
-	include_once(APP_PATH . "dimensions/includes/dimensions_ui.inc");
+	include_once(APP_PATH . "admin/db/tags_db.php");
+	include_once(APP_PATH . "dimensions/includes/dimensions_db.php");
+	include_once(APP_PATH . "dimensions/includes/dimensions_ui.php");
 
 	$js = "";
 	page(_($help_context = "Dimension Entry"), false, false, "", $js);

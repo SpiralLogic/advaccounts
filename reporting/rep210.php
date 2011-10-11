@@ -56,7 +56,7 @@
 	function print_remittances() {
 		global $systypes_array;
 
-		include_once(APP_PATH . "reporting/includes/pdf_report.inc");
+		include_once(APP_PATH . "reporting/includes/pdf_report.php");
 
 		$from = $_POST['PARAM_0'];
 		$to = $_POST['PARAM_1'];
@@ -119,11 +119,11 @@
 				$linetype = true;
 				$doctype = ST_SUPPAYMENT;
 				if ($rep->currency != $myrow['curr_code']) {
-					include(APP_PATH . "reporting/includes/doctext2.inc");
+					include(APP_PATH . "reporting/includes/doctext2.php");
 				}
 				else
 				{
-					include(APP_PATH . "reporting/includes/doctext.inc");
+					include(APP_PATH . "reporting/includes/doctext.php");
 				}
 
 				$total_allocated = 0;

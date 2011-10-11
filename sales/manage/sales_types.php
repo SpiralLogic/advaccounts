@@ -15,7 +15,7 @@
 
 	page(_($help_context = "Sales Types"));
 
-	include_once(APP_PATH . "sales/includes/db/sales_types_db.inc");
+	include_once(APP_PATH . "sales/includes/db/sales_types_db.php");
 
 	simple_page_mode(true);
 	//----------------------------------------------------------------------------------------------------

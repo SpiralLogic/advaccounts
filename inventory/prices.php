@@ -15,7 +15,7 @@
 
 	page(_($help_context = "Inventory Item Sales prices"), Input::request('frame'));
 
-	include_once(APP_PATH . "sales/includes/db/sales_types_db.inc");
+	include_once(APP_PATH . "sales/includes/db/sales_types_db.php");
 
 	//---------------------------------------------------------------------------------------------------
 

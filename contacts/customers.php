@@ -1,7 +1,7 @@
 <?php
 
 	$page_security = 'SA_CUSTOMER';
-	include_once("includes/contacts.inc");
+	include_once("includes/contacts.php");
 
 	if (isset($_POST['name'])) {
 		$data['customer'] = $customer = new Customer($_POST);

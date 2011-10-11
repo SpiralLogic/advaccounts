@@ -18,7 +18,7 @@
 		$js .= ui_view::get_js_open_window(900, 500);
 	page(_($help_context = "View Purchase Order Delivery"), true, false, "", $js);
 
-	include(APP_PATH . "purchasing/includes/purchasing_ui.inc");
+	include(APP_PATH . "purchasing/includes/purchasing_ui.php");
 
 	if (!isset($_GET['trans_no'])) {
 		die ("<BR>" . _("This page must be called with a Purchase Order Delivery number to review."));

@@ -54,7 +54,7 @@
 
 	function print_statements() {
 		global $systypes_array;
-		include_once(APP_PATH . "reporting/includes/pdf_report.inc");
+		include_once(APP_PATH . "reporting/includes/pdf_report.php");
 		$customer = $_POST['PARAM_0'];
 		$currency = $_POST['PARAM_1'];
 		$email = $_POST['PARAM_2'];
@@ -130,10 +130,10 @@
 					$rep->Header2($myrow, get_branch($transactions[$i]['branch_code']), null, $baccount, ST_STATEMENT);
 					$rep->NewLine();
 					if ($rep->currency != $myrow['curr_code']) {
-						include(APP_PATH . "reporting/includes/doctext2.inc");
+						include(APP_PATH . "reporting/includes/doctext2.php");
 					}
 					else {
-						include(APP_PATH . "reporting/includes/doctext.inc");
+						include(APP_PATH . "reporting/includes/doctext.php");
 					}
 					$rep->fontSize += 2;
 					$rep->TextCol(0, 8, $doc_Outstanding);

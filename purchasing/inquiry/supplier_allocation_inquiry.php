@@ -13,7 +13,7 @@
 
 	//
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	include(APP_PATH . "purchasing/includes/purchasing_ui.inc");
+	include(APP_PATH . "purchasing/includes/purchasing_ui.php");
 	$js = "";
 	if (Config::get('ui.windows.popups'))
 		$js .= ui_view::get_js_open_window(900, 500);

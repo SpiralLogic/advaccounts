@@ -10,18 +10,18 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 
-	include_once(APP_PATH . "sales/includes/db/sales_order_db.inc");
-	include_once(APP_PATH . "sales/includes/db/sales_credit_db.inc");
-	include_once(APP_PATH . "sales/includes/db/sales_invoice_db.inc");
-	include_once(APP_PATH . "sales/includes/db/sales_delivery_db.inc");
-	include_once(APP_PATH . "sales/includes/db/sales_types_db.inc");
-	include_once(APP_PATH . "sales/includes/db/sales_points_db.inc");
-	include_once(APP_PATH . "sales/includes/db/custalloc_db.inc");
-	include_once(APP_PATH . "sales/includes/db/cust_trans_db.inc");
-	include_once(APP_PATH . "sales/includes/db/cust_trans_details_db.inc");
-	include_once(APP_PATH . "sales/includes/db/payment_db.inc");
-	include_once(APP_PATH . "sales/includes/db/branches_db.inc");
-	include_once(APP_PATH . "sales/includes/db/customers_db.inc");
+	include_once(APP_PATH . "sales/includes/db/sales_order_db.php");
+	include_once(APP_PATH . "sales/includes/db/sales_credit_db.php");
+	include_once(APP_PATH . "sales/includes/db/sales_invoice_db.php");
+	include_once(APP_PATH . "sales/includes/db/sales_delivery_db.php");
+	include_once(APP_PATH . "sales/includes/db/sales_types_db.php");
+	include_once(APP_PATH . "sales/includes/db/sales_points_db.php");
+	include_once(APP_PATH . "sales/includes/db/custalloc_db.php");
+	include_once(APP_PATH . "sales/includes/db/cust_trans_db.php");
+	include_once(APP_PATH . "sales/includes/db/cust_trans_details_db.php");
+	include_once(APP_PATH . "sales/includes/db/payment_db.php");
+	include_once(APP_PATH . "sales/includes/db/branches_db.php");
+	include_once(APP_PATH . "sales/includes/db/customers_db.php");
 
 	//----------------------------------------------------------------------------------------
 	// $price in customer's currency

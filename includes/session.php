@@ -23,8 +23,8 @@
 	$_SESSION['language']->set_language($_SESSION['language']->code);
 
 	// include $Hooks object if locale file exists
-	if (file_exists(APP_PATH . "lang/" . $_SESSION['language']->code . "/locale.inc")) {
-		include(APP_PATH . "lang/" . $_SESSION['language']->code . "/locale.inc");
+	if (file_exists(APP_PATH . "lang/" . $_SESSION['language']->code . "/locale.php")) {
+		include(APP_PATH . "lang/" . $_SESSION['language']->code . "/locale.php");
 	}
 
 	if (!isset($_SESSION["wa_current_user"])) {

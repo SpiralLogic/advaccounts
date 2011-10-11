@@ -16,8 +16,8 @@
 	$js = "";
 	page(_($help_context = "View Dimension"), true, false, "", $js);
 
-	include_once(APP_PATH . "dimensions/includes/dimensions_db.inc");
-	include_once(APP_PATH . "dimensions/includes/dimensions_ui.inc");
+	include_once(APP_PATH . "dimensions/includes/dimensions_db.php");
+	include_once(APP_PATH . "dimensions/includes/dimensions_ui.php");
 
 	//-------------------------------------------------------------------------------------------------
 
