@@ -14,7 +14,7 @@
 
 
 		public static function allow_negative_stock() {
-			return get_company_pref('allow_negative_stock');
+			return DB_Company::get_pref('allow_negative_stock');
 		}
 
 		/* Sherifoz 26.06.03 Proportion by which items can be received over the quantity that is specified in a purchase
@@ -22,7 +22,7 @@
 		The figure entered is interpreted as a percentage ie 10 means 0.1 or 10% not 10 times
 		*/
 		public static function over_receive_allowance() {
-			return get_company_pref('po_over_receive');
+			return DB_Company::get_pref('po_over_receive');
 		}
 
 		/* Proportion by which a purchase invoice line is an overcharge for a purchase order item received
@@ -31,23 +31,23 @@
 		The figure entered is interpreted as a percentage ie 20 means 0.2 or 20% not 20 times
 		*/
 		public static function over_charge_allowance() {
-			return get_company_pref('po_over_charge');
+			return DB_Company::get_pref('po_over_charge');
 		}
 
 		public static function default_credit_limit() {
-			return get_company_pref('default_credit_limit');
+			return DB_Company::get_pref('default_credit_limit');
 		}
 
 		public static function default_wo_required_by() {
-			return get_company_pref('default_workorder_required');
+			return DB_Company::get_pref('default_workorder_required');
 		}
 
 		public static function default_delivery_required_by() {
-			return get_company_pref('default_delivery_required');
+			return DB_Company::get_pref('default_delivery_required');
 		}
 
 		public static function default_dimension_required_by() {
-			return get_company_pref('default_dim_required');
+			return DB_Company::get_pref('default_dim_required');
 		}
 
 		public static function allocation_settled_allowance() {

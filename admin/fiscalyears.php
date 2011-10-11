@@ -75,14 +75,14 @@
 
 	//---------------------------------------------------------------------------------------------
 	function close_year($year) {
-		$co = get_company_prefs();
+		$co = DB_Company::get_prefs();
 		if (get_gl_account($co['retained_earnings_act']) == false || get_gl_account($co['profit_loss_year_act']) == false) {
 			ui_msgs::display_error(_("The Retained Earnings Account or the Profit and Loss Year Account has not been set in System and General GL Setup"));
 			return false;
 		}
 		DBOld::begin_transaction();
 
-		$myrow = get_fiscalyear($year);
+		$myrow = DB_Company::get_fiscalyear($year);
 		$to = $myrow['end'];
 		// retrieve total balances from balance sheet accounts
 		$sql = "SELECT SUM(amount) FROM gl_trans INNER JOIN chart_master ON account=account_code
@@ -111,7 +111,7 @@
 	}
 
 	function open_year($year) {
-		$myrow = get_fiscalyear($year);
+		$myrow = DB_Company::get_fiscalyear($year);
 		$from = Dates::sql2date($myrow['begin']);
 
 		DBOld::begin_transaction();
@@ -135,7 +135,7 @@
 			else
 				open_year($selected_id);
 			if ($ok) {
-				update_fiscalyear($selected_id, $_POST['closed']);
+				DB_Company::update_fiscalyear($selected_id, $_POST['closed']);
 				ui_msgs::display_notification(_('Selected fiscal year has been updated'));
 			}
 		}
@@ -143,7 +143,7 @@
 		{
 			if (!check_data())
 				return false;
-			add_fiscalyear($_POST['from_date'], $_POST['to_date'], $_POST['closed']);
+			DB_Company::add_fiscalyear($_POST['from_date'], $_POST['to_date'], $_POST['closed']);
 			ui_msgs::display_notification(_('New fiscal year has been added'));
 		}
 		$Mode = 'RESET';
@@ -152,7 +152,7 @@
 	//---------------------------------------------------------------------------------------------
 
 	function check_can_delete($selected_id) {
-		$myrow = get_fiscalyear($selected_id);
+		$myrow = DB_Company::get_fiscalyear($selected_id);
 		// PREVENT DELETES IF DEPENDENT RECORDS IN gl_trans
 		if (check_years_before(Dates::sql2date($myrow['begin']), true)) {
 			ui_msgs::display_error(_("Cannot delete this fiscal year because thera are fiscal years before."));
@@ -189,7 +189,7 @@
 		db_backup(Config::get($_SESSION["wa_current_user"]->company, null, 'db'), 'Security backup before Fiscal Year Removal');
 		DBOld::begin_transaction();
 		$ref = _("Open Balance");
-		$myrow = get_fiscalyear($selected_id);
+		$myrow = DB_Company::get_fiscalyear($selected_id);
 		$to = $myrow['end'];
 		$sql = "SELECT order_no, trans_type FROM sales_orders WHERE ord_date <= '$to' AND type <> 1"; // don't take the templates
 		$result = DBOld::query($sql, "Could not retrieve sales orders");
@@ -367,7 +367,7 @@
 			}
 		}
 
-		delete_fiscalyear($selected_id);
+		DB_Company::delete_fiscalyear($selected_id);
 		DBOld::commit_transaction();
 	}
 
@@ -386,9 +386,9 @@
 
 	function display_fiscalyears() {
 
-		$company_year = get_company_pref('f_year');
+		$company_year = DB_Company::get_pref('f_year');
 
-		$result = get_all_fiscalyears();
+		$result = DB_Company::get_all_fiscalyears();
 		start_form();
 		ui_msgs::display_note(_("Warning: Deleting a fiscal year all transactions
 		are removed and converted into relevant balances. This process is irreversible!"),
@@ -444,7 +444,7 @@
 
 		if ($selected_id != -1) {
 			if ($Mode == 'Edit') {
-				$myrow = get_fiscalyear($selected_id);
+				$myrow = DB_Company::get_fiscalyear($selected_id);
 
 				$_POST['from_date'] = Dates::sql2date($myrow["begin"]);
 				$_POST['to_date'] = Dates::sql2date($myrow["end"]);

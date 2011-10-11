@@ -180,7 +180,7 @@
 					$diff = -$diff;
 				if ($neg)
 					$diff = -$diff;
-				$exc_var_act = get_company_pref('exchange_diff_act');
+				$exc_var_act = DB_Company::get_pref('exchange_diff_act');
 				if (Dates::date1_greater_date2($date, $pyt_date)) {
 					$memo = $systypes_array[$pyt_type] . " " . $pyt_no;
 					add_gl_trans($type, $trans_no, $date, $ar_ap_act, 0, 0, $memo, -$diff, null, $person_type, $person_id);

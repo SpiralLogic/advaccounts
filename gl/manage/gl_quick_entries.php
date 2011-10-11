@@ -207,7 +207,7 @@
 		$result = get_quick_entry_lines($selected_id);
 		start_form();
 		start_table(Config::get('tables.style2'));
-		$dim = get_company_pref('use_dimension');
+		$dim = DB_Company::get_pref('use_dimension');
 		if ($dim == 2)
 			$th = array(_("Post"), _("Account/Tax Type"), _("Amount"), _("Dimension"), _("Dimension") . " 2", "", "");
 		else if ($dim == 1)

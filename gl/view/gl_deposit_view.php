@@ -85,7 +85,7 @@
 			ui_msgs::display_heading2(_("Item Amounts are Shown in :") . " " . $company_currency);
 
 		start_table(Config::get('tables.style') . "  width=90%");
-		$dim = get_company_pref('use_dimension');
+		$dim = DB_Company::get_pref('use_dimension');
 		if ($dim == 2)
 			$th = array(_("Account Code"), _("Account Description"), _("Dimension") . " 1", _("Dimension") . " 2",
 				_("Amount"), _("Memo")

@@ -161,7 +161,7 @@
 	function display_profit_and_loss() {
 		global $sel;
 
-		$dim = get_company_pref('use_dimension');
+		$dim = DB_Company::get_pref('use_dimension');
 		$dimension = $dimension2 = 0;
 
 		$from = $_POST['TransFromDate'];

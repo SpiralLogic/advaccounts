@@ -134,7 +134,7 @@
 
 	function print_profit_and_loss_statement() {
 
-		$dim = get_company_pref('use_dimension');
+		$dim = DB_Company::get_pref('use_dimension');
 		$dimension = $dimension2 = 0;
 
 		$from = $_POST['PARAM_0'];

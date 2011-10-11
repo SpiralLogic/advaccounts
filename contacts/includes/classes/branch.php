@@ -164,7 +164,7 @@
 		}
 
 		protected function _defaults() {
-			$company_record = get_company_prefs();
+			$company_record = DB_Company::get_prefs();
 			$this->branch_code = 0;
 			$this->sales_discount_account = $company_record['default_sales_discount_act'];
 			$this->receivables_account = $company_record['debtors_act'];

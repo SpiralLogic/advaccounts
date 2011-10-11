@@ -73,7 +73,7 @@
 
 		$dec = user_price_dec();
 
-		$home_curr = get_company_pref('curr_default');
+		$home_curr = DB_Company::get_pref('curr_default');
 		if ($currency == ALL_TEXT)
 			$currency = $home_curr;
 		$curr = get_currency($currency);

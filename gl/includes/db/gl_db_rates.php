@@ -80,7 +80,7 @@
 	//-----------------------------------------------------------------------------
 
 	function get_extern_rate($curr_b, $provider = 'ECB', $date) {
-		$curr_a = get_company_pref('curr_default');
+		$curr_a = DB_Company::get_pref('curr_default');
 		if ($provider == 'ECB') {
 			$filename = "/stats/eurofxref/eurofxref-daily.xml";
 			$site = "www.ecb.int";

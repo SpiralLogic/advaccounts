@@ -67,8 +67,8 @@
 		//$headers in doctext.inc
 		$aligns = array('left', 'left', 'left', 'left', 'left', 'right', 'right', 'right', 'right');
 		$params = array('comments' => $comments);
-		$cur = get_company_pref('curr_default');
-		$PastDueDays1 = get_company_pref('past_due_days');
+		$cur = DB_Company::get_pref('curr_default');
+		$PastDueDays1 = DB_Company::get_pref('past_due_days');
 		$PastDueDays2 = 2 * $PastDueDays1;
 		if ($email == 0) {
 			$rep = new FrontReport(_('STATEMENT'), "StatementBulk", user_pagesize());

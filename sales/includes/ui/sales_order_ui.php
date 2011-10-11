@@ -356,7 +356,7 @@ JS;
 			}
 			date_row($date_text, 'OrderDate', null, $order->trans_no == 0, 0, 0, 0, null, true);
 			if (isset($_POST['_OrderDate_changed'])) {
-				if (!Banking::is_company_currency($order->customer_currency) && (get_base_sales_type() > 0)) {
+				if (!Banking::is_company_currency($order->customer_currency) && (DB_Company::get_base_sales_type() > 0)) {
 					$change_prices = 1;
 				}
 				$Ajax->activate('_ex_rate');
@@ -370,7 +370,7 @@ JS;
 				$Ajax->activate('delivery_date');
 			}
 			if ($order->trans_type != ST_SALESORDER && $order->trans_type != ST_SALESQUOTE) { // 2008-11-12 Joe Hunt added dimensions
-				$dim = get_company_pref('use_dimension');
+				$dim = DB_Company::get_pref('use_dimension');
 				if ($dim > 0) {
 					dimensions_list_row(_("Dimension") . ":", 'dimension_id', null, true, ' ', false, 1, false);
 				}

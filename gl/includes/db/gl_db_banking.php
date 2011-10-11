@@ -43,7 +43,7 @@
 				$person_type_id = PT_MISC;
 			add_gl_trans($trans_type, $trans_no, $date_, $account, 0, 0, _("Exchange Variance"),
 				-$diff, null, $person_type_id, $person_id);
-			add_gl_trans($trans_type, $trans_no, $date_, get_company_pref('exchange_diff_act'), 0, 0,
+			add_gl_trans($trans_type, $trans_no, $date_, DB_Company::get_pref('exchange_diff_act'), 0, 0,
 				_("Exchange Variance"), $diff, null, $person_type_id, $person_id);
 		}
 	}
@@ -95,7 +95,7 @@
 
 		if ($charge != 0) {
 			/* Now Debit bank charge account with charges */
-			$charge_act = get_company_pref('bank_charge_act');
+			$charge_act = DB_Company::get_pref('bank_charge_act');
 			$total += add_gl_trans($trans_type, $trans_no, $date_,
 				$charge_act, 0, 0, "", $charge, $currency);
 		}

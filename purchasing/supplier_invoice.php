@@ -180,7 +180,7 @@
 			}
 		}
 		if (get_post('ChgTotal', 0) != 0) {
-			$_SESSION['supp_trans']->add_gl_codes_to_trans(get_company_pref('default_cogs_act'), 'Cost of Goods Sold', 0, 0, get_post('ChgTotal'), 'Rounding Correction');
+			$_SESSION['supp_trans']->add_gl_codes_to_trans(DB_Company::get_pref('default_cogs_act'), 'Cost of Goods Sold', 0, 0, get_post('ChgTotal'), 'Rounding Correction');
 		}
 		$invoice_no = add_supp_invoice($_SESSION['supp_trans']);
 		$_SESSION['supp_trans']->clear_items();

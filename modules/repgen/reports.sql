@@ -83,6 +83,6 @@ INSERT INTO `xx_reports` VALUES('6', 'item', 'Term|RH|Helvetica|8|50l|400|-24|Ho
 INSERT INTO `xx_reports` VALUES('F13', 'funct', 'Host|2007-09-26|Hunt|Host name|function Host(){return $_SERVER[''SERVER_NAME''];}');
 INSERT INTO `xx_reports` VALUES('6', 'group', 'name|nopage');
 INSERT INTO `xx_reports` VALUES('6', 'item', 'Term|RH|Helvetica|8|50l|120|-24|FiscalYear||||||||');
-INSERT INTO `xx_reports` VALUES('F12', 'funct', 'FiscalYear|2007-09-26|Hunt|Get current Fiscal Year|function FiscalYear(){$y=get_current_fiscalyear();return Dates::sql2date($y[''begin'']) . " - " . Dates::sql2date($y[''end'']);}');
+INSERT INTO `xx_reports` VALUES('F12', 'funct', 'FiscalYear|2007-09-26|Hunt|Get current Fiscal Year|function FiscalYear(){$y=DB_Company::get_current_fiscalyear();return Dates::sql2date($y[''begin'']) . " - " . Dates::sql2date($y[''end'']);}');
 INSERT INTO `xx_reports` VALUES('F11', 'funct', 'Username|2007-09-26|Hunt|Get Username|function Username(){return $_SESSION["wa_current_user"]->name;}');
-INSERT INTO `xx_reports` VALUES('F10', 'funct', 'Company|2007-09-26|Hunt|Company Name|function Company(){ return get_company_pref(''coy_name''); }');
+INSERT INTO `xx_reports` VALUES('F10', 'funct', 'Company|2007-09-26|Hunt|Company Name|function Company(){ return DB_Company::get_pref(''coy_name''); }');

@@ -118,7 +118,7 @@
 		$from = Dates::begin_fiscalyear();
 		$to = $_POST['TransToDate'];
 
-		$dim = get_company_pref('use_dimension');
+		$dim = DB_Company::get_pref('use_dimension');
 		$dimension = $dimension2 = 0;
 		$lconvert = $econvert = 1;
 		if (isset($_POST["AccGrp"]) && (strlen($_POST['AccGrp']) > 0))

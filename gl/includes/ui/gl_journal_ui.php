@@ -58,7 +58,7 @@
 
 		ui_msgs::display_heading($title);
 
-		$dim = get_company_pref('use_dimension');
+		$dim = DB_Company::get_pref('use_dimension');
 
 		div_start('items_table');
 		start_table(Config::get('tables.style') . " colspan=7 width=95%");

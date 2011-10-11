@@ -88,7 +88,7 @@
 		if ($_POST['round_to'] <= 0)
 			$_POST['round_to'] = 1;
 		if ($input_error != 1) {
-			update_company_setup($_POST['coy_name'], $_POST['coy_no'],
+			DB_Company::update_setup($_POST['coy_name'], $_POST['coy_no'],
 				$_POST['gst_no'], $_POST['tax_prd'], $_POST['tax_last'],
 				$_POST['postal_address'], $_POST['phone'], $_POST['fax'],
 				$_POST['email'], $_POST['coy_logo'], $_POST['domicile'],
@@ -107,7 +107,7 @@
 	//---------------------------------------------------------------------------------------------
 
 	start_form(true);
-	$myrow = get_company_prefs();
+	$myrow = DB_Company::get_prefs();
 
 	$_POST['coy_name'] = $myrow["coy_name"];
 	$_POST['gst_no'] = $myrow["gst_no"];

@@ -19,7 +19,7 @@
 
 	$reports = new BoxReports;
 
-	$dim = get_company_pref('use_dimension');
+	$dim = DB_Company::get_pref('use_dimension');
 
 	$reports->addReportClass(_('Customer'));
 	$reports->addReport(_('Customer'), 101, _('Customer &Balances'),

@@ -62,7 +62,7 @@
 		DBOld::commit_transaction();
 		if (Config::get('accounts.stock.emailnotify') == 1 && count($st_ids) > 0) {
 			require_once(APP_PATH . "/reporting/includes/class.mail.php");
-			$company = get_company_prefs();
+			$company = DB_Company::get_prefs();
 			$mail = new email($company['coy_name'], $company['email']);
 			$from = $company['coy_name'] . " <" . $company['email'] . ">";
 			$to = $loc['location_name'] . " <" . $loc['email'] . ">";
@@ -179,7 +179,7 @@
 		DBOld::commit_transaction();
 		if (Config::get('accounts.stock.emailnotify') == 1 && count($st_ids) > 0) {
 			require_once(APP_PATH . "/reporting/includes/class.mail.php");
-			$company = get_company_prefs();
+			$company = DB_Company::get_prefs();
 			$mail = new email($company['coy_name'], $company['email']);
 			$from = $company['coy_name'] . " <" . $company['email'] . ">";
 			$to = $loc['location_name'] . " <" . $loc['email'] . ">";

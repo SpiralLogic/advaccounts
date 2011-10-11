@@ -19,7 +19,7 @@
 		else {
 			$todate = Dates::date2sql($to);
 		}
-		$past1 = get_company_pref('past_due_days');
+		$past1 = DB_Company::get_pref('past_due_days');
 		$past2 = 2 * $past1;
 		// removed - debtor_trans.alloc from all summations
 
@@ -153,5 +153,5 @@
 	function is_new_customer($id) {
 		$tables = array('cust_branch', 'debtor_trans', 'recurrent_invoices', 'sales_orders');
 
-		return !key_in_foreign_table($id, $tables, 'debtor_no');
+		return !DB_Company::key_in_foreign_table($id, $tables, 'debtor_no');
 	}

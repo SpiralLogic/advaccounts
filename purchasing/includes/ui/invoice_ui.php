@@ -114,7 +114,7 @@
 	//--------------------------------------------------------------------------------------------------
 	function invoice_totals(&$supp_trans) {
 		copy_to_trans($supp_trans);
-		$dim = get_company_pref('use_dimension');
+		$dim = DB_Company::get_pref('use_dimension');
 		$colspan = ($dim == 2 ? 7 : ($dim == 1 ? 6 : 5));
 		start_table(Config::get('tables.style2') . " width=90%");
 		label_row(_("Sub-total:"), price_format($supp_trans->ov_amount), "colspan=$colspan align=right", "align=right");
@@ -141,7 +141,7 @@
 		$_POST['gl_code'] = $accs['purchase_account'];
 		alt_table_row_color($k);
 		echo gl_all_accounts_list('gl_code', null, true, true);
-		$dim = get_company_pref('use_dimension');
+		$dim = DB_Company::get_pref('use_dimension');
 		if ($dim >= 1) {
 			dimensions_list_cells(null, 'dimension_id', null, true, " ", false, 1);
 			hidden('dimension_id', 0);
@@ -197,7 +197,7 @@
 		end_outer_table(0, false);
 		div_start('gl_items');
 		start_table(Config::get('tables.style') . "  width=90%");
-		$dim = get_company_pref('use_dimension');
+		$dim = DB_Company::get_pref('use_dimension');
 		if ($dim == 2) {
 			$th = array(_("Account"), _("Name"), _("Dimension") . " 1", _("Dimension") . " 2", _("Memo"), _("Amount"));
 		}

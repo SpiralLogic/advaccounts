@@ -51,7 +51,7 @@
 
 	function gl_inquiry_controls() {
 
-		$dim = get_company_pref('use_dimension');
+		$dim = DB_Company::get_pref('use_dimension');
 		start_form();
 
 		start_table("class='tablestyle_noborder'");
@@ -88,7 +88,7 @@
 			$_POST["account"] = null;
 
 		$act_name = $_POST["account"] ? get_gl_account_name($_POST["account"]) : "";
-		$dim = get_company_pref('use_dimension');
+		$dim = DB_Company::get_pref('use_dimension');
 
 		/*Now get the transactions  */
 		if (!isset($_POST['Dimension']))

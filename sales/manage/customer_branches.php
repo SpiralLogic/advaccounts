@@ -300,7 +300,7 @@
 		}
 		$_POST['branch_code'] = "";
 		if (!isset($_POST['sales_account']) || !isset($_POST['sales_discount_account'])) {
-			$company_record = get_company_prefs();
+			$company_record = DB_Company::get_prefs();
 
 			// We use the Item Sales Account as default!
 			// $_POST['sales_account'] = $company_record["default_sales_act"];

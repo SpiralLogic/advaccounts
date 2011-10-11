@@ -259,7 +259,7 @@
 
 	payment_terms_list_row(_("Payment Terms:"), 'payment_terms', $_POST['payment_terms']);
 	credit_status_list_row(_("Credit Status:"), 'credit_status', $_POST['credit_status']);
-	$dim = get_company_pref('use_dimension');
+	$dim = DB_Company::get_pref('use_dimension');
 	if ($dim >= 1)
 		dimensions_list_row(_("Dimension") . " 1:", 'dimension_id', $_POST['dimension_id'], true, " ", false, 1);
 	if ($dim > 1)

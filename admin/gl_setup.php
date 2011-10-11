@@ -41,7 +41,7 @@
 	//-------------------------------------------------------------------------------------------------
 
 	if (isset($_POST['submit']) && can_process()) {
-		update_company_gl_setup($_POST['retained_earnings_act'], $_POST['profit_loss_year_act'],
+		DB_Company::update_gl_setup($_POST['retained_earnings_act'], $_POST['profit_loss_year_act'],
 			$_POST['debtors_act'], $_POST['pyt_discount_act'],
 			$_POST['creditors_act'], $_POST['freight_act'],
 			$_POST['exchange_diff_act'], $_POST['bank_charge_act'],
@@ -76,7 +76,7 @@
 
 	table_section(1);
 
-	$myrow = get_company_prefs();
+	$myrow = DB_Company::get_prefs();
 
 	$_POST['retained_earnings_act'] = $myrow["retained_earnings_act"];
 	$_POST['profit_loss_year_act'] = $myrow["profit_loss_year_act"];

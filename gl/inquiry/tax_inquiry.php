@@ -29,7 +29,7 @@
 
 	if (get_post('TransFromDate') == "" && get_post('TransToDate') == "") {
 		$date = Dates::Today();
-		$row = get_company_prefs();
+		$row = DB_Company::get_prefs();
 		$edate = Dates::add_months($date, -$row['tax_last']);
 		$edate = Dates::end_month($edate);
 		$bdate = Dates::begin_month($edate);

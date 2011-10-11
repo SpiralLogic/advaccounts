@@ -161,7 +161,7 @@
 					} elseif ($type == 'DATEENDM') {
 						$date = Dates::end_month($date);
 					} elseif ($type == 'DATEBEGINTAX' || $type == 'DATEENDTAX') {
-						$row = get_company_prefs();
+						$row = DB_Company::get_prefs();
 						$edate = Dates::add_months($date, -$row['tax_last']);
 						$edate = Dates::end_month($edate);
 						if ($type == 'DATEENDTAX') {

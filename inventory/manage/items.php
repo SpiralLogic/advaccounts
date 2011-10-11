@@ -313,7 +313,7 @@
 	check_row(_("Editable description:"), 'editable');
 	check_row(_("Exclude from sales:"), 'no_sale');
 	table_section(2);
-	$dim = get_company_pref('use_dimension');
+	$dim = DB_Company::get_pref('use_dimension');
 	if ($dim >= 1) {
 		table_section_title(_("Dimensions"));
 		dimensions_list_row(_("Dimension") . " 1", 'dimension_id', null, true, " ", false, 1);

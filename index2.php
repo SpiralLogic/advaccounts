@@ -21,6 +21,4 @@
 $.get('#',function(data) { $('body').append(data)},'html')
 
 JS;
-	throw new Adv_Exception('ass');
-	JS::addEvent('#test', 'click', $action);
 	end_page(false, false, true);

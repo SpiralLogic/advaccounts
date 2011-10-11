@@ -36,7 +36,9 @@
 		public static function includeClass($class) {
 			$path = explode('_', strtolower($class));
 			$class = array_pop($path);
-			if (count($path) > 0) static::add_path(APP_PATH . 'includes/classes/' . implode(DS, $path));
-			include $class . '.php';
+
+			if (file_exists(APP_PATH . 'includes/classes/' . implode(DS, $path) . DS . $class . '.php'))
+				include APP_PATH . 'includes/classes/' . implode(DS, $path) . DS . $class . '.php';
+			else include $class . '.php';
 		}
 	}

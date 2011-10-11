@@ -219,7 +219,7 @@
 		$_POST['payment_terms'] = '';
 		$_POST['credit_limit'] = price_format(0);
 
-		$company_record = get_company_prefs();
+		$company_record = DB_Company::get_prefs();
 		$_POST['curr_code'] = $company_record["curr_default"];
 		$_POST['payable_account'] = $company_record["creditors_act"];
 		$_POST['purchase_account'] = $company_record["default_cogs_act"];
@@ -273,7 +273,7 @@
 	gl_all_accounts_list_row(_("Purchase Discount Account:"), 'payment_discount_account',
 		$_POST['payment_discount_account']);
 
-	$dim = get_company_pref('use_dimension');
+	$dim = DB_Company::get_pref('use_dimension');
 	if ($dim >= 1) {
 		table_section_title(_("Dimension"));
 

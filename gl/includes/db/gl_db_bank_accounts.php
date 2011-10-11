@@ -209,7 +209,7 @@
 		 . default account in home currency
 		 . first defined account in home currency
 	 */
-		$home_curr = get_company_pref('curr_default');
+		$home_curr = DB_Company::get_pref('curr_default');
 
 		$sql = "SELECT b.*, b.bank_curr_code='$home_curr' as fall_back FROM "
 		 . "bank_accounts b"

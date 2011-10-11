@@ -427,7 +427,7 @@
 			$_POST['ChargeFreightCost'] = price_format(0);
 		}
 	}
-	$accumulate_shipping = get_company_pref('accumulate_shipping');
+	$accumulate_shipping = DB_Company::get_pref('accumulate_shipping');
 	if ($is_batch_invoice && $accumulate_shipping)
 		set_delivery_shipping_sum(array_keys($_SESSION['Items']->src_docs));
 	$colspan = 9;

@@ -155,7 +155,7 @@
 
 	function print_annual_expense_breakdown() {
 
-		$dim = get_company_pref('use_dimension');
+		$dim = DB_Company::get_pref('use_dimension');
 		$dimension = $dimension2 = 0;
 
 		if ($dim == 2) {

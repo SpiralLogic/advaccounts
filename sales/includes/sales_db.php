@@ -85,8 +85,8 @@
 			$factor = $myrow['factor'];
 		}
 
-		$add_pct = get_company_pref('add_pct');
-		$base_id = get_base_sales_type();
+		$add_pct = DB_Company::get_pref('add_pct');
+		$base_id = DB_Company::get_base_sales_type();
 		$home_curr = Banking::get_company_currency();
 		//	AND (sales_type_id = $sales_type_id	OR sales_type_id = $base_id)
 		$sql = "SELECT price, curr_abrev, sales_type_id
@@ -98,7 +98,7 @@
 		$num_rows = DBOld::num_rows($result);
 		$rate = round2(Banking::get_exchange_rate_from_home_currency($currency, $date),
 			user_exrate_dec());
-		$round_to = get_company_pref('round_to');
+		$round_to = DB_Company::get_pref('round_to');
 		$prices = array();
 		while ($myrow = DBOld::fetch($result))
 		{

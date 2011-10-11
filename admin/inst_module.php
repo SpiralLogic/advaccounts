@@ -33,7 +33,7 @@
 		{
 			$newexts = $extensions;
 			// update 'active' status
-			$exts = get_company_extensions($i);
+			$exts = DB_Company::get_company_extensions($i);
 			foreach ($exts as $key => $ext)
 			{
 				if (isset($newexts[$key]))
@@ -80,7 +80,7 @@
 	function handle_submit() {
 		global $selected_id, $next_extension_id;
 
-		$extensions = get_company_extensions();
+		$extensions = DB_Company::get_company_extensions();
 		if (!check_data($selected_id, $extensions))
 			return false;
 		$id = $selected_id == -1 ? $next_extension_id : $selected_id;
@@ -155,7 +155,7 @@
 	function handle_delete() {
 		global $selected_id;
 
-		$extensions = get_company_extensions();
+		$extensions = DB_Company::get_company_extensions();
 
 		$id = $selected_id;
 
@@ -182,7 +182,7 @@
 		table_header($th);
 
 		$k = 0;
-		$mods = get_company_extensions();
+		$mods = DB_Company::get_company_extensions();
 		$mods = array_natsort($mods, null, 'name');
 
 		foreach ($mods as $i => $mod)
@@ -221,8 +221,8 @@
 		// get all available extensions and display
 		// with current status stored in company directory.
 
-		$mods = get_company_extensions();
-		$exts = get_company_extensions($id);
+		$mods = DB_Company::get_company_extensions();
+		$exts = DB_Company::get_company_extensions($id);
 		foreach ($mods as $key => $ins) {
 			foreach ($exts as $ext)
 			{
@@ -257,7 +257,7 @@
 	function display_ext_edit($selected_id) {
 		global $Mode;
 
-		$extensions = get_company_extensions();
+		$extensions = DB_Company::get_company_extensions();
 
 		start_table(Config::get('tables.style2'));
 
@@ -307,7 +307,7 @@
 		$Mode = 'RESET';
 	}
 	if (get_post('Update')) {
-		$exts = get_company_extensions();
+		$exts = DB_Company::get_company_extensions();
 		foreach ($exts as $i => $ext) {
 			$exts[$i]['active'] = check_value('Active' . $i);
 		}

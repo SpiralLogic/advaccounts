@@ -153,7 +153,7 @@
 		$_POST['description'] = '';
 		$_POST['no_sale'] = 0;
 
-		$company_record = get_company_prefs();
+		$company_record = DB_Company::get_prefs();
 
 		if (get_post('inventory_account') == "")
 			$_POST['inventory_account'] = $company_record["default_inventory_act"];
@@ -203,7 +203,7 @@
 	else
 		hidden('assembly_account', $_POST['assembly_account']);
 
-	$dim = get_company_pref('use_dimension');
+	$dim = DB_Company::get_pref('use_dimension');
 	if ($dim >= 1) {
 		dimensions_list_row(_("Dimension") . " 1", 'dim1', null, true, " ", false, 1);
 		if ($dim > 1)

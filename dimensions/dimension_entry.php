@@ -243,7 +243,7 @@
 
 	text_row_ex(_("Name") . ":", 'name', 50, 75);
 
-	$dim = get_company_pref('use_dimension');
+	$dim = DB_Company::get_pref('use_dimension');
 
 	number_list_row(_("Type"), 'type_', null, 1, $dim);
 

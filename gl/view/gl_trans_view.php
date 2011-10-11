@@ -59,7 +59,7 @@
 	}
 
 	/*show a table of the transactions returned by the sql */
-	$dim = get_company_pref('use_dimension');
+	$dim = DB_Company::get_pref('use_dimension');
 
 	if ($dim == 2)
 		$th = array(_("Account Code"), _("Account Name"), _("Dimension") . " 1", _("Dimension") . " 2",

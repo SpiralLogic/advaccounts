@@ -17,7 +17,7 @@
 
 		DBOld::begin_transaction();
 
-		$company_record = get_company_prefs();
+		$company_record = DB_Company::get_prefs();
 
 		$payment_no = write_customer_trans(ST_CUSTPAYMENT, $trans_no, $customer_id, $branch_id,
 			$date_, $ref, $amount, $discount, $tax, 0, 0, 0, 0, 0, 0, $date_, 0, $rate);
@@ -64,7 +64,7 @@
 
 		if ($charge != 0) {
 			/* Now Debit bank charge account with charges */
-			$charge_act = get_company_pref('bank_charge_act');
+			$charge_act = DB_Company::get_pref('bank_charge_act');
 			$total += add_gl_trans_customer(ST_CUSTPAYMENT, $payment_no, $date_,
 				$charge_act, 0, 0, $charge, $customer_id,
 				"Cannot insert a GL transaction for the payment bank charge debit", $rate);

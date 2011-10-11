@@ -84,6 +84,6 @@
 
 	//--------------------------------------------------------------------------
 	function session_timeout() {
-		$tout = @get_company_pref('login_tout'); // mask warning for db ver. 2.2
+		$tout = @DB_Company::get_pref('login_tout'); // mask warning for db ver. 2.2
 		return $tout ? $tout : ini_get('session.gc_maxlifetime');
 	}

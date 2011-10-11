@@ -136,7 +136,7 @@
 		static function is_date_in_fiscalyear($date, $convert = false) {
 			return 1;
 
-			$myrow = get_current_fiscalyear();
+			$myrow = DB_Company::get_current_fiscalyear();
 			if ($myrow['closed'] == 1)
 				return 0;
 			if ($convert)
@@ -153,13 +153,13 @@
 
 		static function begin_fiscalyear() {
 
-			$myrow = get_current_fiscalyear();
+			$myrow = DB_Company::get_current_fiscalyear();
 			return Dates::sql2date($myrow['begin']);
 		}
 
 		static function end_fiscalyear() {
 
-			$myrow = get_current_fiscalyear();
+			$myrow = DB_Company::get_current_fiscalyear();
 			return Dates::sql2date($myrow['end']);
 		}
 

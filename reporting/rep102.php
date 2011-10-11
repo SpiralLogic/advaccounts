@@ -25,7 +25,7 @@
 
 	function get_invoices($customer_id, $to) {
 		$todate = Dates::date2sql($to);
-		$PastDueDays1 = get_company_pref('past_due_days');
+		$PastDueDays1 = DB_Company::get_pref('past_due_days');
 		$PastDueDays2 = 2 * $PastDueDays1;
 
 		// Revomed allocated from sql
@@ -97,7 +97,7 @@
 		if ($no_zeros) $nozeros = _('Yes');
 		else $nozeros = _('No');
 
-		$PastDueDays1 = get_company_pref('past_due_days');
+		$PastDueDays1 = DB_Company::get_pref('past_due_days');
 		$PastDueDays2 = 2 * $PastDueDays1;
 		$nowdue = "1-" . $PastDueDays1 . " " . _('Days');
 		$pastdue1 = $PastDueDays1 + 1 . "-" . $PastDueDays2 . " " . _('Days');

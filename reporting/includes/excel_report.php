@@ -187,8 +187,8 @@
 
 		function Info($params, $cols, $headers, $aligns, $cols2 = null, $headers2 = null, $aligns2 = null) {
 
-			$this->company = get_company_prefs();
-			$year = get_current_fiscalyear();
+			$this->company = DB_Company::get_prefs();
+			$year = DB_Company::get_current_fiscalyear();
 			if ($year['closed'] == 0) $how = _("Active"); else
 				$how = _("Closed");
 			$this->fiscal_year = Dates::sql2date($year['begin']) . " - " . Dates::sql2date($year['end']) . "  " . "(" . $how . ")";

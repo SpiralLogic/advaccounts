@@ -23,7 +23,7 @@
 
 		DBOld::begin_transaction();
 
-		$company_data = get_company_prefs();
+		$company_data = DB_Company::get_prefs();
 
 		$branch_data = get_branch_accounts($invoice->Branch);
 

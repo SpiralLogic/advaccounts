@@ -10,7 +10,6 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 
-	include_once(APP_PATH . "admin/db/company_db.php");
 	include_once(APP_PATH . "admin/db/security_db.php");
 	include_once(APP_PATH . "admin/db/users_db.php");
 	include_once(APP_PATH . "admin/db/voiding_db.php");
@@ -22,9 +21,6 @@
 	include_once(APP_PATH . "includes/manufacturing.php");
 
 	include_once(APP_PATH . "includes/data_checks.php");
-	include_once(APP_PATH . "includes/db/audittrail.php");
-
-	include_once(APP_PATH . "includes/dbold.php");
 
 	include_once(APP_PATH . "includes/ui/ui_lists.php");
 	include_once(APP_PATH . "includes/ui/ui_controls.php");

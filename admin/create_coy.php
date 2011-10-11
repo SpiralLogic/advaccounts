@@ -126,7 +126,7 @@
 		if ($new) {
 			create_comp_dirs(COMPANY_PATH . "/$id", $comp_subdirs);
 		}
-		$exts = get_company_extensions();
+		$exts = DB_Company::DB_Company::get_company_extensions();
 		write_extensions($exts, $id);
 		ui_msgs::display_notification($new ? _('New company has been created.') : _('Company has been updated.'));
 		return true;

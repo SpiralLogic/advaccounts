@@ -81,7 +81,7 @@
 	end_row();
 	end_table();
 
-	$dim = get_company_pref('use_dimension');
+	$dim = DB_Company::get_pref('use_dimension');
 
 	function view_link($row) {
 		return ui_view::get_dimensions_trans_view_str(ST_DIMENSION, $row["id"]);

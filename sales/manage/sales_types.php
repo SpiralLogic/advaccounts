@@ -104,7 +104,7 @@
 	inactive_control_column($th);
 	table_header($th);
 	$k = 0;
-	$base_sales = get_base_sales_type();
+	$base_sales = DB_Company::get_base_sales_type();
 
 	while ($myrow = DBOld::fetch($result))
 	{

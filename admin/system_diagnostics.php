@@ -133,7 +133,7 @@
 	function tst_dbversion() {
 		$test['descr'] = _('Current database version');
 		$test['type'] = 3;
-		$test['test'] = get_company_pref('version_id');
+		$test['test'] = DB_Company::get_pref('version_id');
 		$test['result'] = $test['test'] == '2.2';
 		$test['comments'] = _('Database structure seems to be not upgraded to current version')
 		 . ' (2.2)';

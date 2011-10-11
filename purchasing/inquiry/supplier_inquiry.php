@@ -46,7 +46,7 @@
 	ui_globals::set_global_supplier($_POST['supplier_id']);
 	//------------------------------------------------------------------------------------------------
 	function display_supplier_summary($supplier_record) {
-		$past1 = get_company_pref('past_due_days');
+		$past1 = DB_Company::get_pref('past_due_days');
 		$past2 = 2 * $past1;
 		$nowdue = "1-" . $past1 . " " . _('Days');
 		$pastdue1 = $past1 + 1 . "-" . $past2 . " " . _('Days');

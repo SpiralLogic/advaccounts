@@ -13,7 +13,7 @@
 	//include_once(APP_PATH . "reporting/includes/class.pdf.php");
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/reporting/includes/class.pdf.php");
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/reporting/includes/printer_class.php");
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/admin/db/company_db.php");
+
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/admin/db/printers_db.php");
 	class FrontReport extends Cpdf {
 
@@ -218,14 +218,14 @@
 			$this->addinfo('Subject', $this->title);
 			$this->addinfo('Author', APP_TITLE . ' ' . VERSION);
 			$this->addinfo('Creator', POWERED_BY . ' - ' . POWERED_URL);
-			$year = get_current_fiscalyear();
+			$year = DB_Company::get_current_fiscalyear();
 			if ($year['closed'] == 0) {
 				$how = _("Active");
 			} else {
 				$how = _("Closed");
 			}
 			$this->fiscal_year = Dates::sql2date($year['begin']) . " - " . Dates::sql2date($year['end']) . "  " . "(" . $how . ")";
-			$this->company = get_company_prefs();
+			$this->company = DB_Company::get_prefs();
 			$this->user = $_SESSION["wa_current_user"]->name;
 			$this->host = $_SERVER['SERVER_NAME'];
 			$this->params = $params;

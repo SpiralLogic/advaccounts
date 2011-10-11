@@ -82,7 +82,7 @@
 	function add_gl_balance($type, $trans_id, $date_, $amount, $person_type_id = null, $person_id = null) {
 		$amount = round2($amount, user_price_dec());
 		if ($amount != 0)
-			return add_gl_trans($type, $trans_id, $date_, get_company_pref('exchange_diff_act'), 0, 0, "",
+			return add_gl_trans($type, $trans_id, $date_, DB_Company::get_pref('exchange_diff_act'), 0, 0, "",
 				$amount, null, $person_type_id, $person_id, "The balanced GL transaction could not be inserted");
 		else
 			return 0;

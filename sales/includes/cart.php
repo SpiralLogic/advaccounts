@@ -174,7 +174,7 @@
 				$this->set_salesman();
 				if ($type != ST_SALESORDER && $type != ST_SALESQUOTE) // Added 2.1 Joe Hunt 2008-11-12
 				{
-					$dim = get_company_pref('use_dimension');
+					$dim = DB_Company::get_pref('use_dimension');
 					if ($dim > 0) {
 						if ($this->customer_id == '') {
 							$this->dimension_id = 0;
@@ -284,7 +284,7 @@
 			$this->default_discount = $discount;
 			$this->customer_currency = $currency;
 			$this->payment = $payment;
-			$this->payment_terms = get_payment_terms($payment);
+			$this->payment_terms = DB_Company::get_payment_terms($payment);
 
 			if ($this->payment_terms['cash_sale']) {
 				$this->Location = $this->pos['pos_location'];

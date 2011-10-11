@@ -141,7 +141,7 @@
 	}
 	end_table();
 	if (DBOld::num_rows($prices_list) == 0) {
-		if (get_company_pref('add_pct') != -1)
+		if (DB_Company::get_pref('add_pct') != -1)
 			$calculated = true;
 		ui_msgs::display_note(_("There are no prices set up for this part."), 1);
 	}

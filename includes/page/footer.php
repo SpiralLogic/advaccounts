@@ -27,9 +27,10 @@
 		JS::render();
 
 		if (AJAX_REFERRER) return;
-
+		var_dump(convert(memory_get_usage(true)));
 		echo "</div></body>";
 		ui_view::get_websales();
+
 		echo	 "</html>\n";
 	}
 

@@ -62,7 +62,7 @@
 
 		protected function _defaults() {
 			$this->credit_limit = price_format(0);
-			$company_record = get_company_prefs();
+			$company_record = DB_Company::get_prefs();
 			$this->curr_code = $company_record["curr_default"];
 			$this->payable_account = $company_record["creditors_act"];
 			$this->purchase_account = $company_record["default_cogs_act"];

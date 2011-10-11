@@ -110,7 +110,7 @@
 
 	function display_gl_items($title, &$order) {
 
-		$dim = get_company_pref('use_dimension');
+		$dim = DB_Company::get_pref('use_dimension');
 		$colspan = ($dim == 2 ? 4 : ($dim == 1 ? 3 : 2));
 		ui_msgs::display_heading($title);
 
@@ -221,10 +221,10 @@
 				$_POST['code_id'] = $acc['payable_account'];
 			}
 				//elseif ($_POST['PayType'] == PT_WORKORDER)
-				//	$_POST['code_id'] = get_company_pref('default_assembly_act');
+				//	$_POST['code_id'] = DB_Company::get_pref('default_assembly_act');
 			else {
 				$_POST['code_id'] =
-				 get_company_pref($payment ? 'default_cogs_act' : 'default_inv_sales_act');
+				 DB_Company::get_pref($payment ? 'default_cogs_act' : 'default_inv_sales_act');
 			}
 			echo gl_all_accounts_list('code_id', null, true, true);
 			if ($dim >= 1)

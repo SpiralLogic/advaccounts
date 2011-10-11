@@ -13,7 +13,7 @@
 		public static function add($trans_type, $trans_no, $trans_date, $descr = '') {
 			$insertid = DB::insert('audit_trail')
 			 ->values(array('type' => $trans_type, 'trans_no' => $trans_no,
-				'user' => $_SESSION["wa_current_user"]->user, 'fiscal_year' => get_company_pref('f_year'),
+				'user' => $_SESSION["wa_current_user"]->user, 'fiscal_year' => DB_Company::get_pref('f_year'),
 				'gl_date' => Dates::date2sql($trans_date), 'description' => $descr, 'gl_seq' => 0
 			))->exec();
 

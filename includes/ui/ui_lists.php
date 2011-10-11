@@ -367,7 +367,7 @@
 	function supplier_list($name, $selected_id = null, $spec_option = false, $submit_on_change = false, $all = false, $editkey = false) {
 
 		$sql = "SELECT supplier_id, supp_ref, curr_code, inactive FROM suppliers ";
-		$mode = get_company_pref('no_supplier_list');
+		$mode = DB_Company::get_pref('no_supplier_list');
 		if ($editkey) {
 			set_editor('supplier', $name, $editkey);
 		}
@@ -396,7 +396,7 @@
 	function customer_list($name, $selected_id = null, $spec_option = false, $submit_on_change = false, $show_inactive = false, $editkey = false, $async = false) {
 
 		$sql = "SELECT debtor_no, debtor_ref, curr_code, inactive FROM debtors_master ";
-		$mode = get_company_pref('no_customer_list');
+		$mode = DB_Company::get_pref('no_customer_list');
 		if ($editkey) {
 			set_editor('customer', $name, $editkey);
 		}
@@ -513,7 +513,7 @@ JS
 		$sql = "SELECT * FROM fiscal_year";
 		// default to the company current fiscal year
 		return combo_input($name, $selected_id, $sql, 'id', '',
-			array('order' => 'begin', 'default' => get_company_pref('f_year'), 'format' => '_format_fiscalyears', 'select_submit' => $submit_on_change, 'async' => false));
+			array('order' => 'begin', 'default' => DB_Company::get_pref('f_year'), 'format' => '_format_fiscalyears', 'select_submit' => $submit_on_change, 'async' => false));
 	}
 
 	function _format_fiscalyears($row) {
@@ -575,7 +575,7 @@ JS
 
 		return combo_input($name, $selected_id, $sql, 'stock_id', 's.description',
 			array_merge(array('format' => '_format_stock_items', 'spec_option' => $all_option === true ? _("All Items") : $all_option, 'spec_id' => ALL_TEXT, 'search_box' => false,
-				'search' => array("stock_id", "c.description", "s.description"), 'search_submit' => get_company_pref('no_item_list') != 0, 'size' => 10,
+				'search' => array("stock_id", "c.description", "s.description"), 'search_submit' => DB_Company::get_pref('no_item_list') != 0, 'size' => 10,
 				'select_submit' => $submit_on_change, 'category' => 2, 'order' => array('c.description', 'stock_id'), 'editable' => 30, 'max' => 50
 			), $opts));
 	}
@@ -614,7 +614,7 @@ JS
 			WHERE i.stock_id=s.stock_id $where AND !i.inactive AND !s.inactive AND !s.no_sale GROUP BY i.item_code";
 		return combo_input($name, $selected_id, $sql, 'i.item_code', 'c.description',
 			array_merge(array('format' => '_format_stock_items', 'spec_option' => $all_option === true ? _("All Items") : $all_option, 'spec_id' => ALL_TEXT, 'search_box' => true,
-				'search' => array("i.item_code", "c.description", "i.description"), 'search_submit' => get_company_pref('no_item_list') != 0, 'size' => 15,
+				'search' => array("i.item_code", "c.description", "i.description"), 'search_submit' => DB_Company::get_pref('no_item_list') != 0, 'size' => 15,
 				'select_submit' => $submit_on_change, 'category' => 2, 'order' => array('c.description', 'i.item_code'), 'editable' => 30, 'max' => 50
 			), $opts));
 	}
