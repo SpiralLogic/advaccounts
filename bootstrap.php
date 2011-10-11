@@ -24,10 +24,10 @@
 	require APP_PATH . 'includes/classes/autoloader.php';
 
 	Autoloader::init();
-	!class_exists('Config', false) and require(APP_PATH . 'includes/classes/config.inc');
+	!class_exists('Config', false) and require(APP_PATH . 'includes/classes/config.php');
 	Config::init();
 
-	require APP_PATH . "includes/main.inc";
+	require APP_PATH . "includes/main.php";
 	Errors::init();
 	// intercept all output to destroy it in case of ajax call
 	register_shutdown_function('adv_shutdown_function_handler');
