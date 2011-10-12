@@ -40,8 +40,8 @@
 				$loc = DBOld::fetch($res);
 				if ($loc['email'] != "") {
 					$qoh = get_qoh_on_date($line->stock_id, $order->Location);
-					$qoh -= get_demand_qty($line->stock_id, $order->Location);
-					$qoh -= get_demand_asm_qty($line->stock_id, $order->Location);
+					$qoh -= Manufacturing::get_demand_qty($line->stock_id, $order->Location);
+					$qoh -= Manufacturing::get_demand_asm_qty($line->stock_id, $order->Location);
 					$qoh -= $line->quantity;
 					if ($qoh < $loc['reorder_level']) {
 						$st_ids[] = $line->stock_id;
@@ -154,8 +154,8 @@
 				$loc = DBOld::fetch($res);
 				if ($loc['email'] != "") {
 					$qoh = get_qoh_on_date($line->stock_id, $order->Location);
-					$qoh -= get_demand_qty($line->stock_id, $order->Location);
-					$qoh -= get_demand_asm_qty($line->stock_id, $order->Location);
+					$qoh -= Manufacturing::get_demand_qty($line->stock_id, $order->Location);
+					$qoh -= Manufacturing::get_demand_asm_qty($line->stock_id, $order->Location);
 					$qoh -= $line->quantity;
 					if ($qoh < $loc['reorder_level']) {
 						$st_ids[] = $line->stock_id;

@@ -104,7 +104,7 @@
 		echo "<hr></center>";
 	}
 	ui_globals::set_global_stock_item($_POST['stock_id']);
-	$mb_flag = get_mb_flag($_POST['stock_id']);
+	$mb_flag = Manufacturing::get_mb_flag($_POST['stock_id']);
 
 	if ($mb_flag == -1) {
 		ui_msgs::display_error(_("Entered item is not defined. Please re-enter."));

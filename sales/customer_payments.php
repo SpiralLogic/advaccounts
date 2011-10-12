@@ -155,7 +155,7 @@
 		$_SESSION['alloc']->amount = input_num('amount');
 
 		if (isset($_POST["TotalNumberOfAllocs"])) {
-			return check_allocations();
+			return Allocation::check_allocations();
 		}
 		else
 		{
@@ -197,7 +197,7 @@
 
 		Dates::new_doc_date($_POST['DateBanked']);
 		if (check_value('createinvoice')) {
-			create_miscorder($_POST['customer_id'], $_POST['BranchID'], $_POST['memo_'], $_POST['ref'], input_num('amount'), input_num('discount'));
+			Allocation::create_miscorder($_POST['customer_id'], $_POST['BranchID'], $_POST['memo_'], $_POST['ref'], input_num('amount'), input_num('discount'));
 		}
 		$payment_no = write_customer_payment(0, $_POST['customer_id'], $_POST['BranchID'],
 			$_POST['bank_account'], $_POST['DateBanked'], $_POST['ref'],
@@ -275,7 +275,7 @@
 		if ($cust_currency == $bank_currency) {
 			div_start('alloc_tbl');
 			$_SESSION['alloc']->read();
-			show_allocatable(false);
+			Allocation::show_allocatable(false);
 			div_end();
 		}
 

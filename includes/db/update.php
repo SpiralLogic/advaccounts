@@ -1,15 +1,15 @@
 <?php
-/**
- * Created by JetBrains PhpStorm.
- * User: Complex
- * Date: 15/08/11
- * Time: 5:46 AM
- *
- */
+	/**
+	 * Created by JetBrains PhpStorm.
+	 * User: Complex
+	 * Date: 15/08/11
+	 * Time: 5:46 AM
+	 *
+	 */
 
-	Class Update extends Insert {
+	Class DB_Update extends DB_Insert {
 
-		public function __construct($table=false) {
+		public function __construct($table = false) {
 			parent::__construct($table);
 			$this->type = DB::UPDATE;
 		}
@@ -22,6 +22,5 @@
 			$sql .= implode(', ', $this->feilds);
 			$sql .= $this->_buildWhere();
 			return $sql;
-
 		}
 	}

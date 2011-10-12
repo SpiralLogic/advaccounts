@@ -88,7 +88,7 @@
 				$qoh = 0;
 				$show_qoh = true;
 				// if it's a non-stock item (eg. service) don't show qoh
-				if (!has_stock_holding($myrow2["mb_flag"]))
+				if (!Manufacturing::has_stock_holding($myrow2["mb_flag"]))
 					$show_qoh = false;
 
 				if ($show_qoh)

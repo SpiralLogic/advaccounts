@@ -41,7 +41,7 @@
 
 	ui_globals::set_global_stock_item($_POST['stock_id']);
 
-	$mb_flag = get_mb_flag($_POST['stock_id']);
+	$mb_flag = Manufacturing::get_mb_flag($_POST['stock_id']);
 	$kitset_or_service = false;
 
 	div_start('status_tbl');
@@ -73,14 +73,14 @@
 
 		alt_table_row_color($k);
 
-		$demand_qty = get_demand_qty($_POST['stock_id'], $myrow["loc_code"]);
-		$demand_qty += get_demand_asm_qty($_POST['stock_id'], $myrow["loc_code"]);
+		$demand_qty = Manufacturing::get_demand_qty($_POST['stock_id'], $myrow["loc_code"]);
+		$demand_qty += Manufacturing::get_demand_asm_qty($_POST['stock_id'], $myrow["loc_code"]);
 
 		$qoh = get_qoh_on_date($_POST['stock_id'], $myrow["loc_code"]);
 
 		if ($kitset_or_service == false) {
-			$qoo = get_on_porder_qty($_POST['stock_id'], $myrow["loc_code"]);
-			$qoo += get_on_worder_qty($_POST['stock_id'], $myrow["loc_code"]);
+			$qoo = Manufacturing::get_on_porder_qty($_POST['stock_id'], $myrow["loc_code"]);
+			$qoo += Manufacturing::get_on_worder_qty($_POST['stock_id'], $myrow["loc_code"]);
 			label_cell($myrow["location_name"]);
 			qty_cell($qoh, false, $dec);
 			qty_cell($myrow["reorder_level"], false, $dec);

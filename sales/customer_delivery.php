@@ -268,7 +268,7 @@
 		if (!SysPrefs::allow_negative_stock()) {
 			foreach ($_SESSION['Items']->line_items as $itm) {
 
-				if ($itm->qty_dispatched && has_stock_holding($itm->mb_flag)) {
+				if ($itm->qty_dispatched && Manufacturing::has_stock_holding($itm->mb_flag)) {
 					$qoh = get_qoh_on_date($itm->stock_id, $_POST['Location'], $_POST['DispatchDate']);
 
 					if ($itm->qty_dispatched > $qoh) {
@@ -409,7 +409,7 @@
 		}
 		// if it's a non-stock item (eg. service) don't show qoh
 		$show_qoh = true;
-		if (SysPrefs::allow_negative_stock() || !has_stock_holding($ln_itm->mb_flag) ||
+		if (SysPrefs::allow_negative_stock() || !Manufacturing::has_stock_holding($ln_itm->mb_flag) ||
 		 $ln_itm->qty_dispatched == 0
 		) {
 			$show_qoh = false;

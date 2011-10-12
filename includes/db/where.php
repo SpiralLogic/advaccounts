@@ -1,13 +1,13 @@
 <?php
-/**
- * Created by JetBrains PhpStorm.
- * User: Complex
- * Date: 14/08/11
- * Time: 11:13 PM
- * To change this template use File | Settings | File Templates.
- */
+	/**
+	 * Created by JetBrains PhpStorm.
+	 * User: Complex
+	 * Date: 14/08/11
+	 * Time: 11:13 PM
+	 * To change this template use File | Settings | File Templates.
+	 */
 
-	abstract class Where {
+	abstract class DB_Where {
 
 		public $data = array();
 		protected $where = array();
@@ -34,6 +34,7 @@
 			$this->where[] = (empty($this->where)) ? $conditions : $type . ' ' . $conditions;
 			return $this;
 		}
+
 		public function where($condition, $uservar = null) {
 			return $this->_where($condition, 'AND', $uservar);
 		}
@@ -63,7 +64,7 @@
 		}
 
 		public function open($condition, $uservar = null) {
-			if (empty($this->where)) $condition='('.$condition;
+			if (empty($this->where)) $condition = '(' . $condition;
 			return $this->_where($condition, ' AND ', $uservar);
 		}
 

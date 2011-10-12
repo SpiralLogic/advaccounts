@@ -51,7 +51,7 @@
 
 	function add_stock_adjustment_item($adj_id, $stock_id, $location, $date_, $type, $reference,
 																		 $quantity, $standard_cost, $memo_) {
-		$mb_flag = get_mb_flag($stock_id);
+		$mb_flag = Manufacturing::get_mb_flag($stock_id);
 
 		if ($_POST['mb_flag'] == STOCK_SERVICE) {
 			Errors::show_db_error("Cannot do inventory adjustment for Service item : $stock_id", "");

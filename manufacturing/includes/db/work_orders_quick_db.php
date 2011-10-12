@@ -41,7 +41,7 @@
 		//--------------------------------------------------------------------------
 
 		// create Work Order Requirements based on the bom
-		$result = get_bom($stock_id);
+		$result = Manufacturing::get_bom($stock_id);
 
 		while ($bom_item = DBOld::fetch($result))
 		{
@@ -85,7 +85,7 @@
 
 	function work_order_quick_costs($woid, $stock_id, $units_reqd, $date_, $advanced = 0, $costs = 0, $cr_acc = "", $labour = 0, $cr_lab_acc = "") {
 		global $wo_cost_types;
-		$result = get_bom($stock_id);
+		$result = Manufacturing::get_bom($stock_id);
 
 		// credit all the components
 		$total_cost = 0;

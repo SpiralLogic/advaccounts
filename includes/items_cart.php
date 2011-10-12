@@ -197,7 +197,7 @@
 		function check_qoh($location, $date_, $reverse) {
 
 			if (!SysPrefs::allow_negative_stock()) {
-				if (has_stock_holding($this->mb_flag)) {
+				if (Manufacturing::has_stock_holding($this->mb_flag)) {
 					$quantity = $this->quantity;
 					if ($reverse)
 						$quantity = -$this->quantity;

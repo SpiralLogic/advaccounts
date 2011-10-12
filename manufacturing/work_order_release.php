@@ -44,7 +44,7 @@
 		}
 
 		// make sure item has components
-		if (!has_bom($myrow['stock_id'])) {
+		if (!Manufacturing::has_bom($myrow['stock_id'])) {
 			ui_msgs::display_error(_("This Work Order cannot be released. The selected item to manufacture does not have a bom."));
 			ui_view::set_focus('stock_id');
 			return false;

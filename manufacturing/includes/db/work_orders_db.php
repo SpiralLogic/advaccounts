@@ -13,7 +13,7 @@
 
 	function add_material_cost($stock_id, $qty, $date_) {
 		$m_cost = 0;
-		$result = get_bom($stock_id);
+		$result = Manufacturing::get_bom($stock_id);
 		while ($bom_item = DBOld::fetch($result))
 		{
 			$standard_cost = get_standard_cost($bom_item['component']);

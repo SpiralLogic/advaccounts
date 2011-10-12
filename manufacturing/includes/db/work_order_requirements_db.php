@@ -28,7 +28,7 @@
 
 	function create_wo_requirements($woid, $stock_id) {
 		// create Work Order Requirements based on the bom
-		$result = get_bom($stock_id);
+		$result = Manufacturing::get_bom($stock_id);
 
 		while ($myrow = DBOld::fetch($result))
 		{

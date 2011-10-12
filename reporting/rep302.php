@@ -148,10 +148,10 @@
 				$loc_code = "";
 			else
 				$loc_code = $location;
-			$custqty = get_demand_qty($trans['stock_id'], $loc_code);
-			$custqty += get_demand_asm_qty($trans['stock_id'], $loc_code);
-			$suppqty = get_on_porder_qty($trans['stock_id'], $loc_code);
-			$suppqty += get_on_worder_qty($trans['stock_id'], $loc_code);
+			$custqty = Manufacturing::get_demand_qty($trans['stock_id'], $loc_code);
+			$custqty += Manufacturing::get_demand_asm_qty($trans['stock_id'], $loc_code);
+			$suppqty = Manufacturing::get_on_porder_qty($trans['stock_id'], $loc_code);
+			$suppqty += Manufacturing::get_on_worder_qty($trans['stock_id'], $loc_code);
 			$period = getPeriods($trans['stock_id'], $trans['loc_code']);
 			$rep->NewLine();
 			$dec = get_qty_dec($trans['stock_id']);

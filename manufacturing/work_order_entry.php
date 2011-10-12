@@ -139,7 +139,7 @@
 		}
 		// only check bom and quantites if quick assembly
 		if (!($_POST['type'] == WO_ADVANCED)) {
-			if (!has_bom(Input::post('stock_id'))) {
+			if (!Manufacturing::has_bom(Input::post('stock_id'))) {
 				ui_msgs::display_error(_("The selected item to manufacture does not have a bom."));
 				ui_view::set_focus('stock_id');
 				return false;
@@ -163,12 +163,12 @@
 			if (!SysPrefs::allow_negative_stock()) {
 				if ($_POST['type'] == WO_ASSEMBLY) {
 					// check bom if assembling
-					$result = get_bom(Input::post('stock_id'));
+					$result = Manufacturing::get_bom(Input::post('stock_id'));
 
 					while ($bom_item = DBOld::fetch($result))
 					{
 
-						if (has_stock_holding($bom_item["ResourceType"])) {
+						if (Manufacturing::has_stock_holding($bom_item["ResourceType"])) {
 
 							$quantity = $bom_item["quantity"] * input_num('quantity');
 

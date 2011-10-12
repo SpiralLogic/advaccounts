@@ -83,7 +83,7 @@
 
 	function display_bom_items($selected_parent) {
 
-		$result = get_bom($selected_parent);
+		$result = Manufacturing::get_bom($selected_parent);
 		div_start('bom');
 		start_table(Config::get('tables.style') . "  width=60%");
 		$th = array(_("Code"), _("Description"), _("Location"),

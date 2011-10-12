@@ -14,7 +14,7 @@
 
 	function display_bom($item_check) {
 
-		$result = get_bom($item_check);
+		$result = Manufacturing::get_bom($item_check);
 
 		if (DBOld::num_rows($result) == 0) {
 			ui_msgs::display_note(_("The bill of material for this item is empty."), 0, 1);
@@ -95,7 +95,7 @@
 				$qoh = 0;
 				$show_qoh = true;
 				// if it's a non-stock item (eg. service) don't show qoh
-				if (!has_stock_holding($myrow["mb_flag"]))
+				if (!Manufacturing::has_stock_holding($myrow["mb_flag"]))
 					$show_qoh = false;
 
 				if ($show_qoh)

@@ -18,15 +18,15 @@
 		}
 
 		public static function query($sql, $db = null, $fetchas = PDO::FETCH_OBJ) {
-			return DBConnection::instance($db)->query($sql, $fetchas);
+			return DB_Connection::instance($db)->query($sql, $fetchas);
 		}
 
 		public static function quote($value, $db = null) {
-			return DBConnection::instance($db)->quote($value);
+			return DB_Connection::instance($db)->quote($value);
 		}
 
 		public static function prepare($sql, $db = null) {
-			static::$_prepared = DBconnection::instance($db)->prepare($sql);
+			static::$_prepared = DB_Connection::instance($db)->prepare($sql);
 		}
 
 		public static function execute($data) {
@@ -45,22 +45,22 @@
 
 		public static function select() {
 			$columns = func_get_args();
-			return new Select($columns);
+			return new DB_Select($columns);
 		}
 
 		public static function update($into) {
-			return new Update($into);
+			return new DB_Update($into);
 		}
 
 		public static function insert($into) {
-			return new Insert($into);
+			return new DB_Insert($into);
 		}
 
 		public static function delete($into) {
-			return new Delete($into);
+			return new DB_Delete($into);
 		}
 
 		public static function fetch($db = null) {
-			return Query::_fetch($db);
+			return DB_Query::_fetch($db);
 		}
 	}

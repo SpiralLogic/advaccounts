@@ -21,10 +21,10 @@
 	$path = substr(str_repeat('../', substr_count(str_replace(APP_PATH, '', realpath('.') . DS), DS)), 0, -1);
 	define('PATH_TO_ROOT', (!$path) ? '.' : $path);
 
-	require APP_PATH . 'includes/classes/autoloader.php';
+	require APP_PATH . 'includes/autoloader.php';
 
 	Autoloader::init();
-	!class_exists('Config', false) and require(APP_PATH . 'includes/classes/config.php');
+	!class_exists('Config', false) and require(APP_PATH . 'includes/config.php');
 	Config::init();
 
 	require APP_PATH . "includes/main.php";

@@ -1,13 +1,13 @@
 <?php
-/**
- * Created by JetBrains PhpStorm.
- * User: Complex
- * Date: 15/08/11
- * Time: 5:35 AM
- * To change this template use File | Settings | File Templates.
- */
+	/**
+	 * Created by JetBrains PhpStorm.
+	 * User: Complex
+	 * Date: 15/08/11
+	 * Time: 5:35 AM
+	 * To change this template use File | Settings | File Templates.
+	 */
 
-	class Select extends Query {
+	class DB_Select extends DB_Query {
 
 		protected $select = array();
 		protected $from = array();
@@ -79,10 +79,8 @@
 				$data = $this->data;
 				$finalsql = array();
 				foreach ($this->union_or as $k => $v) {
-				 $finalsql[] = $sql . ' AND '.$k.' '.$v;
-
+					$finalsql[] = $sql . ' AND ' . $k . ' ' . $v;
 				}
-
 			}
 			if (!empty($this->groupby)) $sql .= ' GROUP BY ' . implode(', ', $this->groupby);
 			if (!empty($this->orderby)) $sql .= ' ORDER BY ' . implode(', ', $this->orderby);
@@ -90,6 +88,5 @@
 			if (!empty($this->limit)) $sql .= ' LIMIT ' . $this->limit;
 			return $sql;
 		}
-
 	}
 

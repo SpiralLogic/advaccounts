@@ -13,7 +13,7 @@
 
 	function stock_cost_update($stock_id, $material_cost, $labour_cost, $overhead_cost,
 														 $last_cost) {
-		$mb_flag = get_mb_flag($stock_id);
+		$mb_flag = Manufacturing::get_mb_flag($stock_id);
 
 		if ($_POST['mb_flag'] == STOCK_SERVICE) {
 			Errors::show_db_error("Cannot do cost update for Service item : $stock_id", "");

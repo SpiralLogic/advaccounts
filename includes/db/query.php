@@ -1,13 +1,13 @@
 <?php
-/**
- * Created by JetBrains PhpStorm.
- * User: Complex
- * Date: 22/08/11
- * Time: 12:24 AM
- * To change this template use File | Settings | File Templates.
- */
+	/**
+	 * Created by JetBrains PhpStorm.
+	 * User: Complex
+	 * Date: 22/08/11
+	 * Time: 12:24 AM
+	 * To change this template use File | Settings | File Templates.
+	 */
 
-	abstract class Query extends Where {
+	abstract class DB_Query extends DB_Where {
 
 		protected static $query = null;
 		protected $compiled_query = false;
@@ -24,7 +24,7 @@
 
 		public function exec($data = null, $db = null) {
 
-			return DBconnection::instance($db)->exec($this->getQuery($data), $this->type, $this->data);
+			return DB_Connection::instance($db)->exec($this->getQuery($data), $this->type, $this->data);
 		}
 
 		public function fetch($db = null) {

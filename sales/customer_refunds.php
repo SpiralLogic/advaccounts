@@ -114,7 +114,7 @@
 		}
 		$_SESSION['alloc']->amount = -1 * input_num('amount');
 		if (isset($_POST["TotalNumberOfAllocs"])) {
-			return check_allocations();
+			return Allocation::check_allocations();
 		}
 		return true;
 	}
@@ -212,7 +212,7 @@
 		end_outer_table(1);
 		if ($cust_currency == $bank_currency) {
 			div_start('alloc_tbl');
-			show_allocatable(true);
+			Allocation::show_allocatable(true);
 			div_end();
 		}
 		start_table(Config::get('tables.style') . "  width=60%");

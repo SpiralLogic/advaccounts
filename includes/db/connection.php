@@ -7,7 +7,7 @@
 	 * To change this template use File | Settings | File Templates.
 	 */
 
-	class DBconnection {
+	class DB_Connection {
 
 		protected static $instances = array();
 
@@ -56,7 +56,7 @@
 				}
 				switch ($type) {
 					case DB::SELECT:
-						return new Result($prepared, $data);
+						return new DB_Result($prepared, $data);
 					case DB::INSERT:
 						$prepared->execute($data);
 						return $this->lastInsertId();

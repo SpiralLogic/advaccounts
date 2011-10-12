@@ -1,18 +1,18 @@
 <?php
-/**
- * Created by JetBrains PhpStorm.
- * User: Complex
- * Date: 28/08/11
- * Time: 4:23 PM
- * To change this template use File | Settings | File Templates.
- */
+	/**
+	 * Created by JetBrains PhpStorm.
+	 * User: Complex
+	 * Date: 28/08/11
+	 * Time: 4:23 PM
+	 * To change this template use File | Settings | File Templates.
+	 */
 
-	class Delete extends Query {
+	class DB_Delete extends DB_Query {
 
 		protected $table;
 
 		public function __construct($table = false) {
-			$this->table=$table;
+			$this->table = $table;
 			$this->type = DB::DELETE;
 			parent::__construct();
 		}

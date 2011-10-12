@@ -156,7 +156,7 @@
 		$_SESSION['alloc']->amount = -input_num('amount');
 
 		if (isset($_POST["TotalNumberOfAllocs"]))
-			return check_allocations();
+			return Allocation::check_allocations();
 		else
 			return true;
 	}
@@ -239,7 +239,7 @@
 
 	if ($bank_currency == $supplier_currency) {
 		div_start('alloc_tbl');
-		show_allocatable(false);
+		Allocation::show_allocatable(false);
 		div_end();
 	}
 

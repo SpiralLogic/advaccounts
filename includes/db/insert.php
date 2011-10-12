@@ -7,7 +7,7 @@
 	 *
 	 */
 
-	Class Insert extends Query {
+	Class DB_Insert extends DB_Query {
 
 		protected $table;
 		protected $values = array();

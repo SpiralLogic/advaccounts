@@ -14,7 +14,6 @@
 
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	//include_once(APP_PATH . "sales/includes/ui/cust_alloc_ui.php");
 	include_once(APP_PATH . "reporting/includes/reporting.php");
 
 	$js = "";
@@ -150,7 +149,7 @@
 		$_SESSION['alloc']->amount = input_num('amount');
 
 		if (isset($_POST["TotalNumberOfAllocs"]))
-			return check_allocations();
+			return Allocation::check_allocations();
 		else
 			return true;
 	}
@@ -264,7 +263,7 @@
 
 		if ($cust_currency == $bank_currency) {
 			div_start('alloc_tbl');
-			show_allocatable(false);
+			Allocation::show_allocatable(false);
 			div_end();
 		}
 

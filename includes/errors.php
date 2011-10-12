@@ -21,7 +21,7 @@
 		static function init() {
 			if (Config::get('debug') && isset($_SESSION["wa_current_user"]) && $_SESSION["wa_current_user"]->user == 1) {
 				if (preg_match('/Chrome/i', $_SERVER['HTTP_USER_AGENT'])) {
-					include(APP_PATH . 'includes/classes/fb.php');
+					include(APP_PATH . 'includes/fb.php');
 					FB::useFile(APP_PATH . 'tmp/chromelogs', '/tmp/chromelogs');
 				} else {
 					include(APP_PATH . 'includes/FirePHP/FirePHP.class.php');

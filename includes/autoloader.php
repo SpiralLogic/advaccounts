@@ -9,17 +9,14 @@
 	class Autoloader {
 		static function init() {
 			ini_set('unserialize_callback_func', 'adv_autoload_handler'); // set your callback_function
-			spl_autoload_extensions('.php,.inc');
+
 			spl_autoload_register(array(__CLASS__, 'includeClass'));
 
 			self::add_path(
 				array(
 					realpath('.') . '/includes/classes',
-					APP_PATH . 'includes/ui',
-					APP_PATH . 'includes',
-					APP_PATH . 'includes/classes',
-					APP_PATH . 'includes/classes/db',
 					APP_PATH . 'contacts/includes/classes',
+					APP_PATH . 'includes',
 					APP_PATH . 'items/includes/classes',
 					APP_PATH . 'sales/includes',
 					APP_PATH . 'purchasing/includes',
@@ -36,9 +33,10 @@
 		public static function includeClass($class) {
 			$path = explode('_', strtolower($class));
 			$class = array_pop($path);
+			$path = realpath(APP_PATH . 'includes/' . implode(DS, $path) . DS . $class . '.php');
 
-			if (file_exists(APP_PATH . 'includes/classes/' . implode(DS, $path) . DS . $class . '.php'))
-				include APP_PATH . 'includes/classes/' . implode(DS, $path) . DS . $class . '.php';
+			if (file_exists($path))
+				include $path;
 			else include $class . '.php';
 		}
 	}

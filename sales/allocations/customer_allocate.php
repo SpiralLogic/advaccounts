@@ -53,7 +53,7 @@
 		start_form();
 		div_start('alloc_tbl');
 		if (count($_SESSION['alloc']->allocs) > 0) {
-			show_allocatable(true);
+			Allocation::show_allocatable(true);
 			submit_center_first('UpdateDisplay', _("Refresh"), _('Start again allocation of selected amount'), true);
 			submit('Process', _("Process"), true, _('Process allocations'), 'default');
 			submit_center_last('Cancel', _("Back to Allocations"), _('Abandon allocations and return to selection of allocatable amounts'), 'cancel');
@@ -72,7 +72,7 @@
 	//--------------------------------------------------------------------------------
 
 	if (isset($_POST['Process'])) {
-		if (check_allocations()) {
+		if (Allocation::check_allocations()) {
 			$_SESSION['alloc']->write();
 			clear_allocations();
 			$_POST['Cancel'] = 1;
