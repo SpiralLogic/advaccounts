@@ -224,11 +224,6 @@
 	br(1);
 	submit_center('Deposit', _("Deposit"), true, '', false);
 	end_form();
-	$js = <<<JS
-Adv.Events.onFocus('#'+\$(this).attr('id'),[0,$(this).position().top]);
-
-JS;
-	JS::addLiveEvent(':checkbox', 'change', $js, 'wrapper', true);
 
 	end_page();
 

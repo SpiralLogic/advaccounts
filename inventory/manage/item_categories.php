@@ -198,7 +198,7 @@
 		gl_all_accounts_list_row(_("Inventory Adjustments Account:"), 'adjustment_account', $_POST['adjustment_account']);
 	}
 
-	if (is_manufactured($_POST['mb_flag']))
+	if (STOCK_MANUFACTURED == $_POST['mb_flag'])
 		gl_all_accounts_list_row(_("Item Assembly Costs Account:"), 'assembly_account', $_POST['assembly_account']);
 	else
 		hidden('assembly_account', $_POST['assembly_account']);
