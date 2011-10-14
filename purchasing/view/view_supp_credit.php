@@ -28,7 +28,7 @@
 		$trans_no = $_POST["trans_no"];
 	}
 
-	$supp_trans = new supp_trans();
+	$supp_trans = new suppTrans();
 	$supp_trans->is_invoice = false;
 
 	read_supp_invoice($trans_no, ST_SUPPCREDIT, $supp_trans);

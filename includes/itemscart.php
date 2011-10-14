@@ -10,7 +10,7 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 
-	class items_cart {
+	class itemsCart {
 		var $trans_type;
 		var $line_items;
 		var $gl_items;
@@ -29,7 +29,7 @@
 		var $branch_id;
 		var $reference;
 
-		function items_cart($type) {
+		function itemsCart($type) {
 			$this->trans_type = $type;
 			$this->clear_items();
 		}

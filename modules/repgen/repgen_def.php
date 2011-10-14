@@ -54,6 +54,6 @@
 
 	define("REPGENDIR", dirname($PHP_SELF)); // Directory of Repgen, should be altered if you use another directory
 	//////////////////////////////////////////////////////////////////////////
-	define("VERSION", "Version 2.0"); // Version Number
+	//	define("VERSION", "Version 2.0"); // Version Number
 
 ?>

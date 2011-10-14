@@ -84,7 +84,7 @@
 			unset ($_SESSION['journal_items']);
 		}
 
-		$cart = new items_cart($type);
+		$cart = new itemsCart($type);
 		$cart->order_id = $trans_no;
 
 		if ($trans_no) {

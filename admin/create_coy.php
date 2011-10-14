@@ -17,8 +17,6 @@
 
 	page(_($help_context = "Create/Update Company"));
 
-	$comp_subdirs = array('images', 'pdf_files', 'backup', 'js_cache', 'reporting', 'attachments');
-
 	//---------------------------------------------------------------------------------------------
 	if (isset($_GET['selected_id'])) {
 		$selected_id = $_GET['selected_id'];
@@ -65,8 +63,8 @@
 	//---------------------------------------------------------------------------------------------
 
 	function handle_submit() {
-		DBOld::getInstance(),
-					 $comp_subdirs;
+		DBOld::getInstance();
+		$comp_subdirs = Config::get('company_subdirs');
 
 		$error = false;
 		if (!check_data())
@@ -124,9 +122,9 @@
 		}
 
 		if ($new) {
-			create_comp_dirs(COMPANY_PATH . "/$id", $comp_subdirs);
+			create_comp_dirs(COMPANY_PATH . "/$id", $comp_subdirs = Config::get('company_subdirs'));
 		}
-		$exts = DB_Company::DB_Company::get_company_extensions();
+		$exts = DB_Company::get_company_extensions();
 		write_extensions($exts, $id);
 		ui_msgs::display_notification($new ? _('New company has been created.') : _('Company has been updated.'));
 		return true;

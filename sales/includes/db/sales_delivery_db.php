@@ -56,11 +56,11 @@
 		foreach ($delivery->line_items as $line_no => $delivery_line) {
 
 			$line_price = $delivery_line->line_price();
-			$line_taxfree_price = get_tax_free_price_for_item($delivery_line->stock_id,
+			$line_taxfree_price = Taxes::get_tax_free_price_for_item($delivery_line->stock_id,
 				$delivery_line->price, 0, $delivery->tax_included,
 				$delivery->tax_group_array);
 
-			$line_tax = get_full_price_for_item($delivery_line->stock_id, $delivery_line->price,
+			$line_tax = Taxes::get_full_price_for_item($delivery_line->stock_id, $delivery_line->price,
 				0, $delivery->tax_included, $delivery->tax_group_array) - $line_taxfree_price;
 
 			if ($trans_no != 0) // Inserted 2008-09-25 Joe Hunt

@@ -12,9 +12,7 @@
 	/* Definition of the Supplier Transactions class to hold all the information for an accounts payable invoice or credit note
  */
 
-	include_once(APP_PATH . "taxes/tax_calc.php");
-
-	class supp_trans {
+	class suppTrans {
 
 		var $grn_items; /*array of objects of class GRNDetails using the GRN No as the pointer */
 		var $gl_codes; /*array of objects of class gl_codes using a counter as the pointer */
@@ -40,7 +38,7 @@
 		var $total_correction = 0;
 		var $gl_codes_counter = 0;
 
-		function supp_trans() {
+		function suppTrans() {
 			/*Constructor function initialises a new Supplier Transaction object */
 			$this->grn_items = array();
 			$this->gl_codes = array();
@@ -95,13 +93,13 @@
 				$tax_group_id = $this->tax_group_id;
 			}
 
-			$taxes = get_tax_for_items($items, $prices, $shipping_cost, $tax_group_id);
+			$taxes = Taxes::get_tax_for_items($items, $prices, $shipping_cost, $tax_group_id);
 
 			///////////////// Joe Hunt 2009.08.18
 
 			if ($gl_codes) {
 				foreach ($this->gl_codes as $gl_code) {
-					$index = is_tax_account($gl_code->gl_code);
+					$index = Taxes::is_tax_account($gl_code->gl_code);
 					if ($index !== false) {
 						$taxes[$index]['Value'] += $gl_code->amount;
 					}
@@ -127,7 +125,7 @@
 			}
 
 			foreach ($this->gl_codes as $gl_line) { //////// 2009-08-18 Joe Hunt
-				if (!is_tax_account($gl_line->gl_code)) {
+				if (!Taxes::is_tax_account($gl_line->gl_code)) {
 					$total += $gl_line->amount;
 				}
 			}
@@ -180,13 +178,13 @@
 		}
 
 		function full_charge_price($tax_group_id, $tax_group = null) {
-			return get_full_price_for_item($this->item_code, $this->chg_price * (1 - $this->discount), $tax_group_id, 0, $tax_group);
+			return Taxes::get_full_price_for_item($this->item_code, $this->chg_price * (1 - $this->discount), $tax_group_id, 0, $tax_group);
 		}
 
 		function taxfree_charge_price($tax_group_id, $tax_group = null) {
 			//		if ($tax_group_id==null)
 			//			return $this->chg_price;
-			return get_tax_free_price_for_item($this->item_code, $this->chg_price * (1 - $this->discount / 100), $tax_group_id, 0, $tax_group);
+			return Taxes::get_tax_free_price_for_item($this->item_code, $this->chg_price * (1 - $this->discount / 100), $tax_group_id, 0, $tax_group);
 		}
 	}
 
