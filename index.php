@@ -9,7 +9,6 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-
 	if (!file_exists('config/config.php'))
 		header("Location: " . "/install/index.php");
 
