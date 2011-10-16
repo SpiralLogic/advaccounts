@@ -13,7 +13,7 @@
 
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	page(_($help_context = "View Inventory Adjustment"), true);
+	Renderer::page(_($help_context = "View Inventory Adjustment"), true);
 
 	if (isset($_GET["trans_no"])) {
 		$trans_no = $_GET["trans_no"];
@@ -66,5 +66,5 @@
 
 	ui_view::is_voided_display(ST_INVADJUST, $trans_no, _("This adjustment has been voided."));
 
-	end_page(true);
+	Renderer::end_page(true);
 ?>

@@ -13,7 +13,7 @@
 
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	page(_($help_context = "Foreign Item Codes"));
+	Renderer::page(_($help_context = "Foreign Item Codes"));
 
 	check_db_has_purchasable_items(_("There are no inventory items defined in the system."));
 
@@ -171,6 +171,6 @@
 	submit_add_or_update_center($selected_id == -1, '', 'both');
 
 	end_form();
-	end_page();
+	Renderer::end_page();
 
 ?>

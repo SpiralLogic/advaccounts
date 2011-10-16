@@ -18,7 +18,7 @@
 	$js = "";
 	if (Config::get('ui.windows.popups'))
 		$js .= ui_view::get_js_open_window(900, 500);
-	page(_($help_context = "View Supplier Invoice"), true, false, "", $js);
+	Renderer::page(_($help_context = "View Supplier Invoice"), true, false, "", $js);
 
 	if (isset($_GET["trans_no"])) {
 		$trans_no = $_GET["trans_no"];
@@ -73,6 +73,6 @@
 
 	ui_view::is_voided_display(ST_SUPPINVOICE, $trans_no, _("This invoice has been voided."));
 
-	end_page(true);
+	Renderer::end_page(true);
 
 ?>

@@ -13,10 +13,7 @@
 
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	page(_($help_context = "Item Tax Types"));
-
-	include_once(APP_PATH . "taxes/db/item_tax_types_db.php");
-	include_once(APP_PATH . "taxes/db/tax_types_db.php");
+	Renderer::page(_($help_context = "Item Tax Types"));
 
 	simple_page_mode(true);
 	//-----------------------------------------------------------------------------------
@@ -36,7 +33,7 @@
 			// create an array of the exemptions
 			$exempt_from = array();
 
-			$tax_types = get_all_tax_types_simple();
+			$tax_types = Tax_Types::get_all_simple();
 			$i = 0;
 
 			while ($myrow = DBOld::fetch($tax_types))
@@ -48,12 +45,12 @@
 			}
 
 			if ($selected_id != -1) {
-				update_item_tax_type($selected_id, $_POST['name'], $_POST['exempt'], $exempt_from);
+				Tax_ItemType::update($selected_id, $_POST['name'], $_POST['exempt'], $exempt_from);
 				ui_msgs::display_notification(_('Selected item tax type has been updated'));
 			}
 			else
 			{
-				add_item_tax_type($_POST['name'], $_POST['exempt'], $exempt_from);
+				Tax_Item_Type::add($_POST['name'], $_POST['exempt'], $exempt_from);
 				ui_msgs::display_notification(_('New item tax type has been added'));
 			}
 			$Mode = 'RESET';
@@ -79,7 +76,7 @@
 	if ($Mode == 'Delete') {
 
 		if (can_delete($selected_id)) {
-			delete_item_tax_type($selected_id);
+			Tax_ItemType::delete($selected_id);
 			ui_msgs::display_notification(_('Selected item tax type has been deleted'));
 		}
 		$Mode = 'RESET';
@@ -93,7 +90,7 @@
 	}
 	//-----------------------------------------------------------------------------------
 
-	$result2 = $result = get_all_item_tax_types(check_value('show_inactive'));
+	$result2 = $result = Tax_ItemType::get_all(check_value('show_inactive'));
 
 	start_form();
 	start_table(Config::get('tables.style') . "  width=30%");
@@ -131,13 +128,13 @@
 
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {
-			$myrow = get_item_tax_type($selected_id);
+			$myrow = Tax_ItemType::get($selected_id);
 			unset($_POST); // clear exemption checkboxes
 			$_POST['name'] = $myrow["name"];
 			$_POST['exempt'] = $myrow["exempt"];
 
 			// read the exemptions and check the ones that are on
-			$exemptions = get_item_tax_type_exemptions($selected_id);
+			$exemptions = Tax_ItemType::get_exemptions($selected_id);
 
 			if (DBOld::num_rows($exemptions) > 0) {
 				while ($exmp = DBOld::fetch($exemptions))
@@ -164,7 +161,7 @@
 		$th = array(_("Tax Name"), _("Rate"), _("Is exempt"));
 		table_header($th);
 
-		$tax_types = get_all_tax_types_simple();
+		$tax_types = Tax_Types::get_all_simple();
 
 		while ($myrow = DBOld::fetch($tax_types))
 		{
@@ -186,6 +183,6 @@
 
 	//------------------------------------------------------------------------------------
 
-	end_page();
+	Renderer::end_page();
 
 ?>

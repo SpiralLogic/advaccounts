@@ -12,7 +12,7 @@
 	class Session {
 		public static function init() {
 			ini_set('session.gc_maxlifetime', 36000); // 10hrs
-			session_name('FA' . md5(dirname(__FILE__)));
+			session_name('FA' . md5(__CLASS__));
 			session_start();
 			header("Cache-control: private");
 			Config::init();
@@ -41,7 +41,6 @@
 			// accessable regardless of access level and current login status.
 			// Ajax communication object
 
-			$_GLOBAL['Ajax'] = Ajax::instance();
 			// js/php validation rules container
 
 			// bindings for editors
@@ -114,11 +113,11 @@
 				$_SESSION["wa_current_user"]->last_act = time();
 			}
 		}
+
+		//--------------------------------------------------------------------------
+		static function session_timeout() {
+			$tout = @DB_Company::get_pref('login_tout'); // mask warning for db ver. 2.2
+			return $tout ? $tout : ini_get('session.gc_maxlifetime');
+		}
 	}
 
-
-	//--------------------------------------------------------------------------
-	function session_timeout() {
-		$tout = @DB_Company::get_pref('login_tout'); // mask warning for db ver. 2.2
-		return $tout ? $tout : ini_get('session.gc_maxlifetime');
-	}

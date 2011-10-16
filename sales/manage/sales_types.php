@@ -13,7 +13,7 @@
 
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	page(_($help_context = "Sales Types"));
+	Renderer::page(_($help_context = "Sales Types"));
 
 	include_once(APP_PATH . "sales/includes/db/sales_types_db.php");
 
@@ -161,6 +161,6 @@
 
 	end_form();
 
-	end_page();
+	Renderer::end_page();
 
 ?>

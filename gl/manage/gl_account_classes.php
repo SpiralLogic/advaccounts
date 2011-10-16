@@ -13,7 +13,7 @@
 
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	page(_($help_context = "GL Account Classes"));
+	Renderer::page(_($help_context = "GL Account Classes"));
 
 	simple_page_mode(true);
 	//-----------------------------------------------------------------------------------
@@ -161,6 +161,6 @@
 
 	//------------------------------------------------------------------------------------
 
-	end_page();
+	Renderer::end_page();
 
 ?>

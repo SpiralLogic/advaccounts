@@ -26,7 +26,7 @@
 	JS::footerFile("/js/js2/jquery-tmpl.min.js");
 	JS::footerFile("includes/js/customers.js");
 
-	page(_($help_context = "Customers"), Input::request('popup'));
+	Renderer::page(_($help_context = "Customers"), Input::request('popup'));
 	check_db_has_sales_types(_("There are no sales types defined. Please define at least one sales type before adding a customer."));
 	check_db_has_sales_people(_("There are no sales people defined in the system. At least one sales person is required before proceeding."));
 	check_db_has_sales_areas(_("There are no sales areas defined in the system. At least one sales area is required before proceeding."));
@@ -241,4 +241,4 @@
 	}
 	HTML::_div();
 
-	end_page(true, true);
+	Renderer::end_page(true, true);

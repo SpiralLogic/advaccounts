@@ -12,9 +12,7 @@
 	$page_security = 'SA_TAXRATES';
 
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	page(_($help_context = "Tax Types"));
-
-	include_once(APP_PATH . "taxes/db/tax_types_db.php");
+	Renderer::page(_($help_context = "Tax Types"));
 
 	simple_page_mode(true);
 	//-----------------------------------------------------------------------------------
@@ -34,7 +32,7 @@
 			return false;
 		}
 
-		if (!is_tax_gl_unique(get_post('sales_gl_code'), get_post('purchasing_gl_code'), $selected_id)) {
+		if (!Tax_Types::is_tax_gl_unique(get_post('sales_gl_code'), get_post('purchasing_gl_code'), $selected_id)) {
 			ui_msgs::display_error(_("Selected GL Accounts cannot be used by another tax type."));
 			ui_view::set_focus('sales_gl_code');
 			return false;
@@ -46,7 +44,7 @@
 
 	if ($Mode == 'ADD_ITEM' && can_process()) {
 
-		add_tax_type($_POST['name'], $_POST['sales_gl_code'],
+		Tax_Types::add($_POST['name'], $_POST['sales_gl_code'],
 			$_POST['purchasing_gl_code'], input_num('rate', 0));
 		ui_msgs::display_notification(_('New tax type has been added'));
 		$Mode = 'RESET';
@@ -56,7 +54,7 @@
 
 	if ($Mode == 'UPDATE_ITEM' && can_process()) {
 
-		update_tax_type($selected_id, $_POST['name'],
+		Tax_Types::update($selected_id, $_POST['name'],
 			$_POST['sales_gl_code'], $_POST['purchasing_gl_code'], input_num('rate'));
 		ui_msgs::display_notification(_('Selected tax type has been updated'));
 		$Mode = 'RESET';
@@ -82,7 +80,7 @@
 	if ($Mode == 'Delete') {
 
 		if (can_delete($selected_id)) {
-			delete_tax_type($selected_id);
+			Tax_Types::delete_tax_type($selected_id);
 			ui_msgs::display_notification(_('Selected tax type has been deleted'));
 		}
 		$Mode = 'RESET';
@@ -96,7 +94,7 @@
 	}
 	//-----------------------------------------------------------------------------------
 
-	$result = get_all_tax_types(check_value('show_inactive'));
+	$result = Tax_Types::get_all(check_value('show_inactive'));
 
 	start_form();
 
@@ -137,7 +135,7 @@
 		if ($Mode == 'Edit') {
 			//editing an existing status code
 
-			$myrow = get_tax_type($selected_id);
+			$myrow = Tax_Types::get($selected_id);
 
 			$_POST['name'] = $myrow["name"];
 			$_POST['rate'] = percent_format($myrow["rate"]);
@@ -158,6 +156,6 @@
 
 	end_form();
 
-	end_page();
+	Renderer::end_page();
 
 ?>

@@ -15,9 +15,9 @@
 
 	if (isset($_GET['stock_id'])) {
 		$_POST['stock_id'] = $_GET['stock_id'];
-		page(_($help_context = "Inventory Item Status"), true);
+		Renderer::page(_($help_context = "Inventory Item Status"), true);
 	} else {
-		page(_($help_context = "Inventory Item Status"));
+		Renderer::page(_($help_context = "Inventory Item Status"));
 	}
 
 	if ($_POST['stock_id'])
@@ -106,6 +106,6 @@
 	end_table();
 	div_end();
 	end_form();
-	end_page();
+	Renderer::end_page();
 
 ?>

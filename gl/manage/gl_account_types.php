@@ -13,7 +13,7 @@
 
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	page(_($help_context = "GL Account Groups"));
+	Renderer::page(_($help_context = "GL Account Groups"));
 
 	simple_page_mode(true);
 	//-----------------------------------------------------------------------------------
@@ -176,6 +176,6 @@
 
 	//------------------------------------------------------------------------------------
 
-	end_page();
+	Renderer::end_page();
 
 ?>

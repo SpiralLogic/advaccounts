@@ -8,7 +8,7 @@
 	$page_security = 'SA_REPORT_GENERATOR';
 
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	add_access_extensions();
+	Security::add_access_extensions();
 
 	require_once("repgen_const.php");
 	require_once("repgen_def.php");
@@ -22,7 +22,7 @@
 		exit;
 	}
 
-	page("Report Generator REPGEN", true);
+	Renderer::page("Report Generator REPGEN", true);
 
 	ui_msgs::display_heading(SQL_STATEMENT);
 
@@ -68,5 +68,5 @@
 
 	end_table(1);
 
-	end_page();
+	Renderer::end_page();
 ?>

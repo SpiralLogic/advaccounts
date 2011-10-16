@@ -12,7 +12,7 @@
 	$page_security = 'SA_SHIPPING';
 
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	page(_($help_context = "Shipping Company"));
+	Renderer::page(_($help_context = "Shipping Company"));
 
 	simple_page_mode(true);
 	//----------------------------------------------------------------------------------------------
@@ -165,5 +165,5 @@
 	submit_add_or_update_center($selected_id == -1, '', 'both');
 
 	end_form();
-	end_page();
+	Renderer::end_page();
 ?>

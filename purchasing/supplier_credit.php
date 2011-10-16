@@ -18,7 +18,7 @@
 	if (Config::get('ui.windows.popups'))
 		$js .= ui_view::get_js_open_window(900, 500);
 
-	page(_($help_context = "Supplier Credit Note"), false, false, "", $js);
+	Renderer::page(_($help_context = "Supplier Credit Note"), false, false, "", $js);
 
 	//----------------------------------------------------------------------------------------
 
@@ -103,7 +103,7 @@
 			}
 		}
 
-		if (!is_tax_gl_unique(get_post('gl_code'))) {
+		if (!Tax_Types::is_tax_gl_unique(get_post('gl_code'))) {
 			ui_msgs::display_error(_("Cannot post to GL account used by more than one tax type."));
 			ui_view::set_focus('gl_code');
 			$input_error = true;
@@ -301,5 +301,5 @@
 	br();
 
 	end_form();
-	end_page();
+	Renderer::end_page();
 ?>

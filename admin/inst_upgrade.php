@@ -13,7 +13,7 @@
 
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	page(_($help_context = "Software Upgrade"));
+	Renderer::page(_($help_context = "Software Upgrade"));
 	include_once(APP_PATH . "admin/db/maintenance_db.php");
 
 	//
@@ -195,6 +195,6 @@ You have to clean database manually to enable them, or try to perform forced upg
 	submit_center('Upgrade', _('Upgrade system'), true, _('Save database and perform upgrade'), 'process');
 	end_form();
 
-	end_page();
+	Renderer::end_page();
 
 ?>

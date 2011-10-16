@@ -54,41 +54,6 @@
 			spl_autoload(strtolower($className));
 		}
 	}
-	function page($title, $no_menu = false, $is_index = false, $onload = "", $js = "", $script_only = false) {
-
-		global $page_security;
-		if (empty($page_security)) $page_security = 'SA_OPEN';
-		$hide_menu = $no_menu;
-
-		include(APP_PATH . "includes/page/header.php");
-
-		page_header($title, $no_menu, $is_index, $onload, $js);
-		Security::check_page($page_security);
-		//	Errors::error_box();
-		if ($script_only) {
-			echo '<noscript>';
-			echo ui_msgs::display_heading(_('This page is usable only with javascript enabled browsers.'));
-			echo '</noscript>';
-			div_start('_page_body', null, true);
-		} else {
-			div_start('_page_body'); // whole page content for ajax reloading
-		}
-	}
-
-	function end_page($no_menu = false, $is_index = false, $hide_back_link = false) {
-
-		if (isset($_REQUEST['frame']) && $_REQUEST['frame']) {
-			$nomenu = $is_index = $hide_back_link = true;
-		}
-		if (!$is_index && !$hide_back_link && function_exists('hyperlink_back')) {
-			hyperlink_back(true, $no_menu);
-		}
-		div_end(); // end of _page_body section
-
-		//if (!$_REQUEST['frame'])
-		include(APP_PATH . "includes/page/footer.php");
-		page_footer($no_menu, $is_index, $hide_back_link);
-	}
 
 	function flush_dir($path, $wipe = false) {
 		$dir = opendir($path);

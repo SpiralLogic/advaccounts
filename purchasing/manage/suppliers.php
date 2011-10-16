@@ -13,7 +13,7 @@
 
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	page(_($help_context = "Suppliers"), Input::request('popup'));
+	Renderer::page(_($help_context = "Suppliers"), Input::request('popup'));
 
 	check_db_has_tax_groups(_("There are no tax groups defined in the system. At least one tax group is required before proceeding."));
 
@@ -307,6 +307,6 @@
 	hidden('popup', Input::request('popup'));
 	end_form();
 
-	end_page();
+	Renderer::end_page();
 
 ?>

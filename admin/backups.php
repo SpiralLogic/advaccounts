@@ -37,7 +37,7 @@
 		exit;
 	}
 
-	page(_($help_context = "Backup and Restore Database"), false, false, '', '');
+	Renderer::page(_($help_context = "Backup and Restore Database"), false, false, '', '');
 
 	check_paths();
 
@@ -46,7 +46,7 @@
 			ui_msgs::display_error(_("Backup paths have not been set correctly.")
 				 . _("Please contact System Administrator.") . "<br>"
 				 . _("cannot find backup directory") . " - " . BACKUP_PATH . "<br>");
-			end_page();
+			Renderer::end_page();
 			exit;
 		}
 	}
@@ -190,5 +190,5 @@
 
 	end_form();
 
-	end_page();
+	Renderer::end_page();
 ?>

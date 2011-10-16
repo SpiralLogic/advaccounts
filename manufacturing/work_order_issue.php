@@ -19,7 +19,7 @@
 	if (Config::get('ui.windows.popups'))
 		$js .= ui_view::get_js_open_window(800, 500);
 
-	page(_($help_context = "Issue Items to Work Order"), false, false, "", $js);
+	Renderer::page(_($help_context = "Issue Items to Work Order"), false, false, "", $js);
 
 	//-----------------------------------------------------------------------------------------------
 
@@ -198,6 +198,6 @@
 
 	//------------------------------------------------------------------------------------------------
 
-	end_page();
+	Renderer::end_page();
 
 ?>

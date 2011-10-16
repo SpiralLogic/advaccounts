@@ -15,9 +15,6 @@
 		 related to 'path'
 	 'access' - security area code in string form
  */
-
-	$next_extension_id = 4; // unique id for next installed extension
-
 	return array(
 		1 => array('tab' => 'system',
 			'name' => 'Report Generator ',

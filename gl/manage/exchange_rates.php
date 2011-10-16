@@ -15,7 +15,7 @@
 
 	$js = "";
 
-	page(_($help_context = "Exchange Rates"), false, false, "", $js);
+	Renderer::page(_($help_context = "Exchange Rates"), false, false, "", $js);
 
 	simple_page_mode(false);
 
@@ -198,6 +198,6 @@
 
 	end_form();
 
-	end_page();
+	Renderer::end_page();
 
 ?>

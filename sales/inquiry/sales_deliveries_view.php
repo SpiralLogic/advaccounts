@@ -22,12 +22,12 @@
 
 	if (isset($_GET['OutstandingOnly']) && ($_GET['OutstandingOnly'] == true)) {
 		$_POST['OutstandingOnly'] = true;
-		page(_($help_context = "Search Not Invoiced Deliveries"), false, false, "", $js);
+		Renderer::page(_($help_context = "Search Not Invoiced Deliveries"), false, false, "", $js);
 	}
 	else
 	{
 		$_POST['OutstandingOnly'] = false;
-		page(_($help_context = "Search All Deliveries"), false, false, "", $js);
+		Renderer::page(_($help_context = "Search All Deliveries"), false, false, "", $js);
 	}
 
 	if (isset($_GET['selected_customer'])) {
@@ -245,7 +245,7 @@
 	display_db_pager($table);
 
 	end_form();
-	end_page();
+	Renderer::end_page();
 
 ?>
 

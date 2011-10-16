@@ -21,7 +21,7 @@
 	if (Config::get('ui.windows.popups'))
 		$js .= ui_view::get_js_open_window(900, 500);
 
-	page(_($help_context = "Produce or Unassemble Finished Items From Work Order"), false, false, "", $js);
+	Renderer::page(_($help_context = "Produce or Unassemble Finished Items From Work Order"), false, false, "", $js);
 
 	if (isset($_GET['trans_no']) && $_GET['trans_no'] != "") {
 		$_POST['selected_id'] = $_GET['trans_no'];
@@ -44,7 +44,7 @@
 
 		hyperlink_no_params("search_work_orders.php", _("Select another &Work Order to Process"));
 
-		end_page();
+		Renderer::end_page();
 		exit;
 	}
 
@@ -190,6 +190,6 @@
 
 	end_form();
 
-	end_page();
+	Renderer::end_page();
 
 ?>

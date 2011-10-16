@@ -17,7 +17,7 @@
 	if (Config::get('ui.windows.popups'))
 		$js .= ui_view::get_js_open_window(800, 500);
 
-	page(_($help_context = "Transfer between Bank Accounts"), false, false, "", $js);
+	Renderer::page(_($help_context = "Transfer between Bank Accounts"), false, false, "", $js);
 
 	check_db_has_bank_accounts(_("There are no bank accounts defined in the system."));
 
@@ -157,5 +157,5 @@
 
 	gl_payment_controls();
 
-	end_page();
+	Renderer::end_page();
 ?>

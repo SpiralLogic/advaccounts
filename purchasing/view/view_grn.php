@@ -16,7 +16,7 @@
 	$js = "";
 	if (Config::get('ui.windows.popups'))
 		$js .= ui_view::get_js_open_window(900, 500);
-	page(_($help_context = "View Purchase Order Delivery"), true, false, "", $js);
+	Renderer::page(_($help_context = "View Purchase Order Delivery"), true, false, "", $js);
 
 	include(APP_PATH . "purchasing/includes/purchasing_ui.php");
 
@@ -72,6 +72,6 @@
 
 	ui_view::is_voided_display(ST_SUPPRECEIVE, $_GET['trans_no'], _("This delivery has been voided."));
 
-	end_page(true);
+	Renderer::end_page(true);
 
 ?>

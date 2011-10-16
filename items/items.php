@@ -33,7 +33,7 @@
 	JS::footerFile("includes/js/items.js");
 	JS::footerFile('/js/js2/jquery.jeditable.js');
 	JS::footerFile('/js/js2/jquery.dataTables.min.js');
-	page(_($help_context = "Items"), Input::request('popup'));
+	Renderer::page(_($help_context = "Items"), Input::request('popup'));
 ?>
 <div id="dynamic" style="margin:0 auto;text-align:center;width:80%">
 	<table width="100%" cellpadding="0" cellspacing="0" border="0" class="display" id="itemDetails">
@@ -70,4 +70,4 @@
 <div class="spacer"></div>
 <?
 
-	end_page(true, true);
+	Renderer::end_page(true, true);

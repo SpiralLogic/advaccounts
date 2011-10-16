@@ -20,8 +20,6 @@
 
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	include_once(APP_PATH . "taxes/db/tax_groups_db.php");
-
 	//----------------------------------------------------------------------------------------------------
 
 	print_sales_quotations();
@@ -84,7 +82,7 @@
 					user_price_dec());
 				$SubTotal += $Net;
 				#  __ADVANCEDEDIT__ BEGIN #
-				$TaxType = get_item_tax_type_for_item($myrow2['stk_code']);
+				$TaxType = Tax_ItemType::get_for_item($myrow2['stk_code']);
 				$TaxTotal += Taxes::get_tax_for_item($myrow2['stk_code'], $Net, $TaxType);
 
 				#  __ADVANCEDEDIT__ END #

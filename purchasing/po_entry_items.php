@@ -20,10 +20,10 @@
 	}
 
 	if (isset($_GET['ModifyOrderNumber'])) {
-		page(_($help_context = "Modify Purchase Order #") . $_GET['ModifyOrderNumber'], false, false, "", $js);
+		Renderer::page(_($help_context = "Modify Purchase Order #") . $_GET['ModifyOrderNumber'], false, false, "", $js);
 	}
 	else {
-		page(_($help_context = "Purchase Order Entry"), false, false, "", $js);
+		Renderer::page(_($help_context = "Purchase Order Entry"), false, false, "", $js);
 	}
 	//---------------------------------------------------------------------------------------------------
 	check_db_has_suppliers(_("There are no suppliers defined in the system."));
@@ -125,7 +125,7 @@
 		hyperlink_params("/purchasing/po_entry_items.php", _("Enter a new purchase order"), "NewOrder=Yes");
 
 		echo "<br>";
-		end_page();
+		Renderer::end_page();
 		exit;
 	}
 
@@ -402,6 +402,6 @@
 		Supplier::addInfoDialog("td[name=\"supplier_name\"]", $_SESSION['PO']->supplier_details['supplier_id']);
 	}
 
-	end_page();
+	Renderer::end_page();
 
 ?>

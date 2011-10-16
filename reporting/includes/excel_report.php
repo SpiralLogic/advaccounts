@@ -56,7 +56,7 @@
 			global $page_security;
 			if (!$_SESSION["wa_current_user"]->can_access_page($page_security)) {
 				ui_msgs::display_error(_("The security settings on your account do not permit you to print this report"));
-				end_page();
+				Renderer::end_page();
 				exit;
 			}
 			$this->size = $size;

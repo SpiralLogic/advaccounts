@@ -17,7 +17,7 @@
 	if (Config::get('ui.windows.popups'))
 		$js .= ui_view::get_js_open_window(800, 500);
 
-	page(_($help_context = "Void a Transaction"), false, false, "", $js);
+	Renderer::page(_($help_context = "Void a Transaction"), false, false, "", $js);
 
 	//----------------------------------------------------------------------------------------
 	function exist_transaction($type, $type_no) {
@@ -224,6 +224,6 @@
 
 	voiding_controls();
 
-	end_page();
+	Renderer::end_page();
 
 ?>

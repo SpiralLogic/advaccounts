@@ -13,7 +13,7 @@
 
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	FB::info($_SESSION);
-	page(_($help_context = "System Diagnostics"));
+	Renderer::page(_($help_context = "System Diagnostics"));
 
 	// Type of requirement for positive test result
 	$test_level = array(
@@ -298,6 +298,6 @@
 	}
 
 	end_table();
-	end_page();
+	Renderer::end_page();
 
 ?>

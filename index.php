@@ -18,7 +18,7 @@
 
 	require_once("bootstrap.php");
 
-	add_access_extensions();
+	Security::add_access_extensions();
 	$app = &$_SESSION["App"];
 	if (isset($_GET['application']))
 		$app->selected_application = $_GET['application'];

@@ -14,7 +14,7 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	include(APP_PATH . "admin/db/printers_db.php");
 
-	page(_($help_context = "Printing Profiles"));
+	Renderer::page(_($help_context = "Printing Profiles"));
 
 	$selected_id = get_post('profile_id', '');
 
@@ -178,6 +178,6 @@
 	div_end();
 
 	end_form();
-	end_page();
+	Renderer::end_page();
 
 ?>

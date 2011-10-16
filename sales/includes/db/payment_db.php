@@ -42,7 +42,7 @@
 
 			$debtors_account = $branch_data["receivables_account"];
 			$discount_account = $branch_data["payment_discount_account"];
-			$tax_group = get_tax_group($branch_data["payment_discount_account"]);
+			$tax_group = Tax_Groups::get_tax_group($branch_data["payment_discount_account"]);
 		}
 		else {
 			$debtors_account = $company_record["debtors_act"];
@@ -71,7 +71,7 @@
 		}
 		if ($tax != 0) {
 
-			$taxes = get_tax_group_items($tax_group);
+			$taxes = Tax_Groups::get_tax_group_items($tax_group);
 		}
 
 		/*Post a balance post if $total != 0 */

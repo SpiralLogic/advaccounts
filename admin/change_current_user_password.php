@@ -13,7 +13,7 @@
 
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	page(_($help_context = "Change password"));
+	Renderer::page(_($help_context = "Change password"));
 
 	function can_process() {
 
@@ -81,5 +81,5 @@
 
 	submit_center('UPDATE_ITEM', _('Change password'), true, '', 'default');
 	end_form();
-	end_page();
+	Renderer::end_page();
 ?>

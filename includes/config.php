@@ -44,7 +44,7 @@
 
 		public static function get($var, $array_key = null, $group = 'config') {
 			if (static::$_vars === null) static::init();
-			if ($var === null && $array_key === null) return static::$_vars[$group];
+			if ($var === null && $array_key === null) return static::_getGroup($group);
 			if (!isset(static::$_vars[$group][$var])) return false;
 			return ($array_key !== null && is_array(static::$_vars[$group][$var])) ?
 			 static::$_vars[$group][$var][$array_key] : static::$_vars[$group][$var];
@@ -58,6 +58,10 @@
 			$_SESSION['Config'] = static::$_vars;
 		}
 
+		protected static function _getGroup($group = 'config') {
+			static::load($group);
+			return static::$_vars[$group];
+		}
 
 		protected static function js() {
 			$files = static::$_vars['js'];

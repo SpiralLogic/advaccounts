@@ -102,7 +102,7 @@
 		create_cart($serial, 0);
 	}
 
-	page($_SESSION['page_title'], false, false, "", $js);
+	Renderer::page($_SESSION['page_title'], false, false, "", $js);
 	//-----------------------------------------------------------------------------
 	if (list_updated('branch_id')) {
 		// when branch is selected via external editor also customer can change
@@ -667,5 +667,5 @@
 	end_form();
 	JS::onUnload('Are you sure you want to leave without commiting changes?');
 	Item::addEditDialog();
-	end_page();
+	Renderer::end_page();
 	unset($_SESSION['order_no']);

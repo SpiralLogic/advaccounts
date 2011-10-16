@@ -20,11 +20,11 @@
 	if (Config::get('ui.windows.popups'))
 		$js .= ui_view::get_js_open_window(900, 600);
 	if ($_GET['trans_type'] == ST_SALESQUOTE) {
-		page(_($help_context = "View Sales Quotation"), true, false, "", $js);
+		Renderer::page(_($help_context = "View Sales Quotation"), true, false, "", $js);
 		ui_msgs::display_heading(sprintf(_("Sales Quotation #%d"), $_GET['trans_no']));
 	}
 	else {
-		page(_($help_context = "View Sales Order"), true, false, "", $js);
+		Renderer::page(_($help_context = "View Sales Order"), true, false, "", $js);
 		ui_msgs::display_heading(sprintf(_("Sales Order #%d"), $_GET['trans_no']));
 	}
 	if (isset($_SESSION['View'])) {
@@ -187,6 +187,6 @@
 	}
 	submenu_option(_("Enter a &New Order"), "/sales/sales_order_entry.php?NewOrder=0'  target='_top' ");
 	//UploadHandler::insert($_GET['trans_no']);
-	end_page(true);
+	Renderer::end_page(true);
 
 ?>

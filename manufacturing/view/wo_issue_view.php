@@ -16,7 +16,7 @@
 	$js = "";
 	if (Config::get('ui.windows.popups'))
 		$js .= ui_view::get_js_open_window(900, 500);
-	page(_($help_context = "View Work Order Issue"), true, false, "", $js);
+	Renderer::page(_($help_context = "View Work Order Issue"), true, false, "", $js);
 
 	include_once(APP_PATH . "manufacturing/includes/manufacturing_ui.php");
 
@@ -115,7 +115,7 @@
 
 	echo "<br>";
 
-	end_page(true);
+	Renderer::end_page(true);
 
 ?>
 

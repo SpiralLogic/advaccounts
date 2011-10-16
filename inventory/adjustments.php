@@ -19,7 +19,7 @@
 	if (Config::get('ui.windows.popups'))
 		$js .= ui_view::get_js_open_window(800, 500);
 
-	page(_($help_context = "Item Adjustments Note"), false, false, "", $js);
+	Renderer::page(_($help_context = "Item Adjustments Note"), false, false, "", $js);
 
 	//-----------------------------------------------------------------------------------------------
 
@@ -211,6 +211,6 @@
 	submit_center_last('Process', _("Process Adjustment"), '', 'default');
 
 	end_form();
-	end_page();
+	Renderer::end_page();
 
 ?>

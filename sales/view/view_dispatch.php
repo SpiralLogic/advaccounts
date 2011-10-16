@@ -19,7 +19,7 @@
 	$js = "";
 	if (Config::get('ui.windows.popups'))
 		$js .= ui_view::get_js_open_window(900, 600);
-	page(_($help_context = "View Sales Dispatch"), true, false, "", $js);
+	Renderer::page(_($help_context = "View Sales Dispatch"), true, false, "", $js);
 
 	if (isset($_GET["trans_no"])) {
 		$trans_id = $_GET["trans_no"];
@@ -161,4 +161,4 @@
 
 	ui_view::is_voided_display(ST_CUSTDELIVERY, $trans_id, _("This dispatch has been voided."));
 	submenu_print(_("&Print This Delivery Note"), ST_CUSTDELIVERY, $_GET['trans_no'], 'prtopt');
-	end_page(true);
+	Renderer::end_page(true);

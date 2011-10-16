@@ -18,7 +18,7 @@
 	$js = "";
 	if (Config::get('ui.windows.popups'))
 		$js .= ui_view::get_js_open_window(900, 500);
-	page(_($help_context = "View Supplier Credit Note"), true, false, "", $js);
+	Renderer::page(_($help_context = "View Supplier Credit Note"), true, false, "", $js);
 
 	if (isset($_GET["trans_no"])) {
 		$trans_no = $_GET["trans_no"];
@@ -71,6 +71,6 @@
 		ui_view::display_allocations_from(PT_SUPPLIER, $supp_trans->supplier_id, ST_SUPPCREDIT, $trans_no, -($supp_trans->ov_amount + $supp_trans->ov_gst));
 	}
 
-	end_page(true);
+	Renderer::end_page(true);
 
 ?>

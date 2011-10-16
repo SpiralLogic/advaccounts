@@ -19,7 +19,7 @@
 	if (Config::get('ui.windows.popups'))
 		$js .= ui_view::get_js_open_window(800, 500);
 
-	page(_($help_context = "Inventory Location Transfers"), false, false, "", $js);
+	Renderer::page(_($help_context = "Inventory Location Transfers"), false, false, "", $js);
 
 	//-----------------------------------------------------------------------------------------------
 
@@ -217,6 +217,6 @@
 	submit_center_last('Process', _("Process Transfer"), '', 'default');
 
 	end_form();
-	end_page();
+	Renderer::end_page();
 
 ?>

@@ -13,7 +13,7 @@
 
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	page(_($help_context = "Sales Kits & Alias Codes"));
+	Renderer::page(_($help_context = "Sales Kits & Alias Codes"));
 
 	check_db_has_stock_items(_("There are no items defined in the system."));
 
@@ -237,6 +237,6 @@
 	end_form();
 	//----------------------------------------------------------------------------------
 
-	end_page();
+	Renderer::end_page();
 
 ?>

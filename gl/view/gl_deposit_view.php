@@ -13,7 +13,7 @@
 
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	page(_($help_context = "View Bank Deposit"), true);
+	Renderer::page(_($help_context = "View Bank Deposit"), true);
 
 	if (isset($_GET["trans_no"])) {
 		$trans_no = $_GET["trans_no"];
@@ -129,5 +129,5 @@
 		ui_view::display_allocations_from($to_trans['person_type_id'], $to_trans['person_id'], 2, $trans_no, $to_trans['amount']);
 	}
 
-	end_page(true);
+	Renderer::end_page(true);
 ?>

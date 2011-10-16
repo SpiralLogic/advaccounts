@@ -18,7 +18,7 @@
 	if (Config::get('ui.windows.popups'))
 		$js .= ui_view::get_js_open_window(800, 500);
 
-	page(_($help_context = "General Ledger Inquiry"), false, false, '', $js);
+	Renderer::page(_($help_context = "General Ledger Inquiry"), false, false, '', $js);
 
 	//----------------------------------------------------------------------------------------------------
 	// Ajax updates
@@ -221,6 +221,6 @@
 
 	//----------------------------------------------------------------------------------------------------
 
-	end_page();
+	Renderer::end_page();
 
 ?>

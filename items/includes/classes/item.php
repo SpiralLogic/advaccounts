@@ -104,16 +104,19 @@
 			}
 		}
 
-		function	getPurchPrices() {
+		function	getPurchPrices($option = array()) {
 			$sql = "SELECT * FROM purch_data WHERE stockid = " . $this->id;
+			if ($option['min']) $sql .= " ORDER BY price LIMIT 1";
 			$result = DBOld::query($sql, 'Could not get item pricing');
+			if ($option['min']) return DBOld::fetch_assoc($result);
 			while ($row = DBOld::fetch_assoc($result)) {
 				$this->prices[$row['supplier_id']] = array("code" => $row['supplier_description'],
 					"price" => $row['price'],
-					"suppliers_uom" => $row['uom'],
+//					"suppliers_uom" => $row['uom'],
 					"conv" => $row['conversion_factor']
 				);
 			}
+			return $this->prices;
 		}
 
 		function	getStockLevels($location = null) {

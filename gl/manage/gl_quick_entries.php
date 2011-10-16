@@ -13,7 +13,7 @@
 
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	page(_($help_context = "Quick Entries"));
+	Renderer::page(_($help_context = "Quick Entries"));
 
 	simple_page_mode(true);
 	simple_page_mode2(true);
@@ -315,6 +315,6 @@
 	}
 	//------------------------------------------------------------------------------------
 
-	end_page();
+	Renderer::end_page();
 
 ?>

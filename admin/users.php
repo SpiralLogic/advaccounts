@@ -13,7 +13,7 @@
 
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	page(_($help_context = "Users"));
+	Renderer::page(_($help_context = "Users"));
 
 	simple_page_mode(true);
 	//-------------------------------------------------------------------------------------------------
@@ -54,10 +54,10 @@
 	//-------------------------------------------------------------------------------------------------
 
 	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
-		$user = null;
+		$password = $user = null;
 		if ($_POST['password'] != "") {
-			$user = new Auth($user_id);
-			$password = $user->hash_password($_POST['password']);
+			$user = new Auth(Input::post('user_id'));
+			$password = $user->hash_password(Input::post('password'));
 		}
 		if (can_process($user)) {
 
@@ -217,5 +217,5 @@
 	submit_add_or_update_center($selected_id == -1, '', 'both');
 
 	end_form();
-	end_page();
+	Renderer::end_page();
 ?>

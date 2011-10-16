@@ -13,7 +13,7 @@
 
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	page(_($help_context = "System and General GL Setup"));
+	Renderer::page(_($help_context = "System and General GL Setup"));
 
 	//-------------------------------------------------------------------------------------------------
 
@@ -213,6 +213,6 @@
 
 	//-------------------------------------------------------------------------------------------------
 
-	end_page();
+	Renderer::end_page();
 
 ?>

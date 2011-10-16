@@ -13,7 +13,7 @@
 
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	page(_($help_context = "Units of Measure"));
+	Renderer::page(_($help_context = "Units of Measure"));
 
 	include_once(APP_PATH . "inventory/includes/db/items_units_db.php");
 
@@ -136,6 +136,6 @@
 
 	end_form();
 
-	end_page();
+	Renderer::end_page();
 
 ?>

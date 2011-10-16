@@ -16,6 +16,7 @@
 
 	include_once(APP_PATH . "gl/includes/gl_db.php");
 	include_once(APP_PATH . "inventory/includes/inventory_db.php");
+	include_once(APP_PATH . "dimensions/includes/dimensions_db.php");
 	include_once(APP_PATH . "purchasing/includes/purchasing_db.php");
 	include_once(APP_PATH . "sales/includes/sales_db.php");
 

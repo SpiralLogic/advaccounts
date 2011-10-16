@@ -13,7 +13,7 @@
 
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	page(_($help_context = "Costed Bill Of Material Inquiry"));
+	Renderer::page(_($help_context = "Costed Bill Of Material Inquiry"));
 
 	include_once(APP_PATH . "manufacturing/includes/manufacturing_ui.php");
 
@@ -35,5 +35,5 @@
 
 	end_form();
 
-	end_page();
+	Renderer::end_page();
 ?>

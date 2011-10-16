@@ -13,7 +13,7 @@
 
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	page(_($help_context = "View Bank Transfer"), true);
+	Renderer::page(_($help_context = "View Bank Transfer"), true);
 
 	if (isset($_GET["trans_no"])) {
 
@@ -84,5 +84,5 @@
 
 	ui_view::is_voided_display(ST_BANKTRANSFER, $trans_no, _("This transfer has been voided."));
 
-	end_page(true);
+	Renderer::end_page(true);
 ?>

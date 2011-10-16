@@ -35,7 +35,7 @@
 		$_SESSION['page_title'] = _($help_context = "Credit all or part of an Invoice");
 		processing_start();
 	}
-	page($_SESSION['page_title'], false, false, "", $js);
+	Renderer::page($_SESSION['page_title'], false, false, "", $js);
 
 	//-----------------------------------------------------------------------------
 
@@ -391,6 +391,6 @@
 
 	end_form();
 
-	end_page();
+	Renderer::end_page();
 
 ?>

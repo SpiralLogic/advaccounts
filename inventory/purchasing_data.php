@@ -13,7 +13,7 @@
 
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	page(_($help_context = "Supplier Purchasing Data"), Input::request('frame'));
+	Renderer::page(_($help_context = "Supplier Purchasing Data"), Input::request('frame'));
 
 	check_db_has_purchasable_items(_("There are no purchasable inventory items defined in the system."));
 	check_db_has_suppliers(_("There are no suppliers defined in the system."));
@@ -211,7 +211,7 @@
 	submit_add_or_update_center($selected_id == -1, '', 'both');
 	end_form();
 	if (Input::request('frame')) {
-		end_page(true, true, true);
+		Renderer::end_page(true, true, true);
 	} else {
-		end_page();
+		Renderer::end_page();
 	}

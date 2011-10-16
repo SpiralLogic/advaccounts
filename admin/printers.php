@@ -13,7 +13,7 @@
 
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	page(_($help_context = "Printer Locations"));
+	Renderer::page(_($help_context = "Printer Locations"));
 
 	include(APP_PATH . "admin/db/printers_db.php");
 
@@ -136,6 +136,6 @@
 
 	end_form();
 
-	end_page();
+	Renderer::end_page();
 
 ?>

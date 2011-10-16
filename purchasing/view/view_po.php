@@ -17,7 +17,7 @@
 	$js = "";
 	if (Config::get('ui.windows.popups'))
 		$js .= ui_view::get_js_open_window(900, 500);
-	page(_($help_context = "View Purchase Order"), true, false, "", $js);
+	Renderer::page(_($help_context = "View Purchase Order"), true, false, "", $js);
 	if (!isset($_GET['trans_no'])) {
 		die ("<br>" . _("This page must be called with a purchase order number to review."));
 	}
@@ -105,6 +105,6 @@
 	submenu_print(_("Print This Order"), ST_PURCHORDER, $_GET['trans_no'], 'prtopt');
 	submenu_option(_("&Edit This Order"), "/purchasing/po_entry_items.php?ModifyOrderNumber=" . $_GET['trans_no']);
 	//----------------------------------------------------------------------------------------------------
-	end_page(true);
+	Renderer::end_page(true);
 
 ?>

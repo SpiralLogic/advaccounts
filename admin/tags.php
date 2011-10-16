@@ -43,7 +43,7 @@
 			$_SESSION['page_title'] = _($help_context = "Dimension Tags");
 	}
 
-	page($_SESSION['page_title']);
+	Renderer::page($_SESSION['page_title']);
 
 	simple_page_mode(true);
 
@@ -162,6 +162,6 @@
 
 	//------------------------------------------------------------------------------------
 
-	end_page();
+	Renderer::end_page();
 
 ?>

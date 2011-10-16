@@ -20,12 +20,12 @@
 	if (isset($_GET['outstanding_only']) && ($_GET['outstanding_only'] == true)) {
 		// curently outstanding simply means not closed
 		$outstanding_only = 1;
-		page(_($help_context = "Search Outstanding Work Orders"), false, false, "", $js);
+		Renderer::page(_($help_context = "Search Outstanding Work Orders"), false, false, "", $js);
 	}
 	else
 	{
 		$outstanding_only = 0;
-		page(_($help_context = "Search Work Orders"), false, false, "", $js);
+		Renderer::page(_($help_context = "Search Work Orders"), false, false, "", $js);
 	}
 	//-----------------------------------------------------------------------------------
 	// Ajax updates
@@ -209,5 +209,5 @@
 	display_db_pager($table);
 
 	end_form();
-	end_page();
+	Renderer::end_page();
 ?>

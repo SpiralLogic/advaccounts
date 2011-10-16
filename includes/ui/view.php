@@ -405,7 +405,7 @@
 		//--------------------------------------------------------------------------------------
 		static function display_footer_exit() {
 			br(2);
-			end_page(false, false, true);
+			Renderer::end_page(false, false, true);
 			exit;
 		}
 
@@ -492,7 +492,7 @@
 						case "t+": // ditto & increase base amount
 						case "t-": // ditto & reduce base amount
 							if (substr($row['action'], 0, 1) != 'T') {
-								$totrate += get_tax_type_default_rate($row['dest_id']);
+								$totrate += Tax_Types::get_default_rate($row['dest_id']);
 							}
 					}
 				}
@@ -538,12 +538,12 @@
 							else {
 								$part = $base / 100;
 							}
-							$item_tax = get_tax_type($qe_line['dest_id']);
+							$item_tax = Tax_Types::get($qe_line['dest_id']);
 							//if ($type == QE_SUPPINV && substr($qe_line['action'],0,1) != 'T')
 							if ($type == QE_SUPPINV) {
 								$taxgroup = $cart->tax_group_id;
 								$rates = 0;
-								$res = get_tax_group_items($cart->tax_group_id);
+								$res = Tax_Groups::get_tax_group_items($cart->tax_group_id);
 								while ($row = DBOld::fetch($res)) {
 									$rates += $row['rate'];
 								}
@@ -556,7 +556,7 @@
 								continue 2;
 							}
 							$gl_code = ($type == QE_DEPOSIT || ($type == QE_JOURNAL && $base < 0)) ? $item_tax['sales_gl_code'] : $item_tax['purchasing_gl_code'];
-							if (!is_tax_gl_unique($gl_code)) {
+							if (!Tax_Types::is_tax_gl_unique($gl_code)) {
 								ui_msgs::display_error(_("Cannot post to GL account used by more than one tax type."));
 								break 2;
 							}

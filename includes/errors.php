@@ -121,7 +121,7 @@
 		 */
 
 		static function show_db_error($msg, $sql_statement = null, $exit = true) {
-			DBOld::getInstance();
+			$db = DBOld::getInstance();
 
 			$warning = $msg == null;
 			$db_error = DBOld::error_no();
@@ -174,7 +174,7 @@
 				}
 
 				if ($exit_if_error) {
-					end_page();
+					Renderer::end_page();
 					exit;
 				}
 			}

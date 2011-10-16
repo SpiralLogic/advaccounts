@@ -13,7 +13,7 @@
 
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	page(_($help_context = "Install/Update Languages"));
+	Renderer::page(_($help_context = "Install/Update Languages"));
 
 	include_once(APP_PATH . "admin/db/maintenance_db.php");
 
@@ -234,6 +234,6 @@
 
 	//---------------------------------------------------------------------------------------------
 
-	end_page();
+	Renderer::end_page();
 
 ?>

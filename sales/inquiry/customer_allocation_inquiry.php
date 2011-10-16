@@ -19,7 +19,7 @@
 	if (Config::get('ui.windows.popups'))
 		$js .= ui_view::get_js_open_window(900, 500);
 
-	page(_($help_context = "Customer Allocation Inquiry"), false, false, "", $js);
+	Renderer::page(_($help_context = "Customer Allocation Inquiry"), false, false, "", $js);
 
 	if (isset($_GET['customer_id'])) {
 		$_POST['customer_id'] = $_GET['customer_id'];
@@ -211,5 +211,5 @@
 	display_db_pager($table);
 
 	end_form();
-	end_page();
+	Renderer::end_page();
 ?>

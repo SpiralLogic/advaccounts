@@ -13,7 +13,7 @@
 
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	page(_($help_context = "Inventory Item Sales prices"), Input::request('frame'));
+	Renderer::page(_($help_context = "Inventory Item Sales prices"), Input::request('frame'));
 
 	include_once(APP_PATH . "sales/includes/db/sales_types_db.php");
 
@@ -182,7 +182,7 @@
 
 	end_form();
 	if (Input::request('frame')) {
-		end_page(true, true, true);
+		Renderer::end_page(true, true, true);
 	} else {
-		end_page();
+		Renderer::end_page();
 	}

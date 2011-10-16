@@ -20,7 +20,7 @@
 	if (Config::get('ui.windows.popups'))
 		$js .= ui_view::get_js_open_window(900, 600);
 
-	page(_($help_context = "Create and Print Recurrent Invoices"), false, false, "", $js);
+	Renderer::page(_($help_context = "Create and Print Recurrent Invoices"), false, false, "", $js);
 
 	function set_last_sent($id, $date) {
 		$date = Dates::date2sql($date);
@@ -167,5 +167,5 @@
 
 	echo '<br>';
 
-	end_page();
+	Renderer::end_page();
 ?>

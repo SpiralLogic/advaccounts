@@ -15,7 +15,7 @@
 
 	$js = "";
 
-	page(_($help_context = "Profit & Loss Drilldown"), false, false, "", $js);
+	Renderer::page(_($help_context = "Profit & Loss Drilldown"), false, false, "", $js);
 
 	//----------------------------------------------------------------------------------------------------
 	// Ajax updates
@@ -299,6 +299,6 @@
 
 	end_form();
 
-	end_page();
+	Renderer::end_page();
 
 ?>

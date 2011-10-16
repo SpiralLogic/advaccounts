@@ -83,7 +83,7 @@
 			if ($tax_group_id == null) {
 				$tax_group_id = $this->tax_group_id;
 			}
-			$tax_group = get_tax_group_items_as_array($tax_group_id);
+			$tax_group = Tax_Groups::get_tax_group_items_as_array($tax_group_id);
 			foreach ($this->grn_items as $ln_itm) {
 				$items[] = $ln_itm->item_code;
 				$prices[] = round(($ln_itm->this_quantity_inv * $ln_itm->taxfree_charge_price($tax_group_id, $tax_group)), user_price_dec(), PHP_ROUND_HALF_EVEN);
@@ -115,7 +115,7 @@
 
 			// preload the taxgroup !
 			if ($tax_group_id != null) {
-				$tax_group = get_tax_group_items_as_array($tax_group_id);
+				$tax_group = Tax_Groups::get_tax_group_items_as_array($tax_group_id);
 			} else {
 				$tax_group = null;
 			}

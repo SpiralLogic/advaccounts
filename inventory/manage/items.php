@@ -13,7 +13,7 @@
 
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	page(_($help_context = "Items"), Input::request('popup'));
+	Renderer::page(_($help_context = "Items"), Input::request('popup'));
 
 	$user_comp = '';
 	$new_item = get_post('stock_id') == '' || get_post('cancel') || get_post('clone');
@@ -381,5 +381,5 @@
 	hidden('popup', Input::request('popup'));
 	end_form();
 	//------------------------------------------------------------------------------------
-	end_page();
+	Renderer::end_page();
 ?>

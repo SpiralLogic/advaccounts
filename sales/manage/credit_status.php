@@ -13,7 +13,7 @@
 
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	page(_($help_context = "Credit Status"));
+	Renderer::page(_($help_context = "Credit Status"));
 
 	include(APP_PATH . "sales/includes/db/credit_status_db.php");
 
@@ -144,6 +144,6 @@
 
 	//------------------------------------------------------------------------------------
 
-	end_page();
+	Renderer::end_page();
 
 ?>

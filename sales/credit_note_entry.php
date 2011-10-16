@@ -38,7 +38,7 @@
 		$help_context = "Modifying Customer Credit Note";
 	}
 
-	page($_SESSION['page_title'], false, false, "", $js);
+	Renderer::page($_SESSION['page_title'], false, false, "", $js);
 
 	//-----------------------------------------------------------------------------
 
@@ -275,6 +275,6 @@
 	echo "</tr></table></center>";
 
 	end_form();
-	end_page();
+	Renderer::end_page();
 
 ?>
