@@ -7,44 +7,43 @@
 	 * To change this template use File | Settings | File Templates.
 	 */
 
-	include_once(APP_PATH . "config/types.php");
 	include_once(APP_PATH . "config/defines.php");
-	include_once(APP_PATH . "config/access_levels.php");
-
 	class Config {
 
-		static $_vars = array();
-		protected static $_loaded_files = array();
+		static $_vars = null;
+		protected static $_intitalised = false;
 
 		public static function init() {
-
-			static::load();
-			if (count(static::$_vars['config']['config.onload']) > 0) call_user_func_array('Config::load', static::$_vars['config']['config.onload']);
-			static::js();
-			if (Config::get('logs.error.file') != '') {
-				ini_set("error_log", Config::get('logs.error.file'));
-				ini_set("ignore_repeated_errors", "On");
-				ini_set("log_errors", "On");
+			if (static::$_intitalised === true) return;
+			if (static::$_vars === null) {
+				static::$_vars = Input::session('Config');
 			}
+			if (static::$_vars === false) {
+				static::$_vars = array();
+				static::load();
+				if (count(static::$_vars['config']['config.onload']) > 0) call_user_func_array('Config::load', static::$_vars['config']['config.onload']);
+			}
+			static::js();
+			static::$_intitalised = true;
 		}
 
 		public static function load() {
 			$group = func_get_args();
-
 			if (count($group) == 0) $group = array('config');
 			foreach ($group as $file) {
-				if (array_key_exists($file, static::$_loaded_files)) continue;
+				if (array_key_exists($file, static::$_vars)) continue;
 				static::$_vars[$file] = include(APP_PATH . "config/{$file}.php");
-				static::$_loaded_files[$file] = true;
 			}
 		}
 
 		public static function set($var, $value, $group = 'config') {
+			if (static::$_vars === null) static::init();
 			static::$_vars[$group][$var] = $value;
 			return $value;
 		}
 
 		public static function get($var, $array_key = null, $group = 'config') {
+			if (static::$_vars === null) static::init();
 			if ($var === null && $array_key === null) return static::$_vars[$group];
 			if (!isset(static::$_vars[$group][$var])) return false;
 			return ($array_key !== null && is_array(static::$_vars[$group][$var])) ?
@@ -55,8 +54,13 @@
 			if (array_key_exists($var, static::$_vars[$group])) unset(static::$_vars[$group][$var]);
 		}
 
+		public static function store() {
+			$_SESSION['Config'] = static::$_vars;
+		}
+
+
 		protected static function js() {
-			$files = include(APP_PATH . "config/js.php");
+			$files = static::$_vars['js'];
 			JS::headerFile($files['header']);
 			JS::footerFile($files['footer']);
 		}

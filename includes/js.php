@@ -69,7 +69,7 @@ JS;
 		}
 
 		public static function renderHeader() {
-			HTML::script(null, "document.documentElement.className = 'js'", false);
+			HTML::script(null, "document.documentElement.className = document.documentElement.className +' js'", false);
 
 			foreach (self::$_headerFiles as $dir => $files) {
 

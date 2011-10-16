@@ -19,6 +19,11 @@
 		//    Error handler - collects all php/user messages for
 		//    display in message box.
 		static function init() {
+			if (Config::get('logs.error.file') != '') {
+				ini_set("error_log", Config::get('logs.error.file'));
+				ini_set("ignore_repeated_errors", "On");
+				ini_set("log_errors", "On");
+			}
 			if (Config::get('debug') && isset($_SESSION["wa_current_user"]) && $_SESSION["wa_current_user"]->user == 1) {
 				if (preg_match('/Chrome/i', $_SERVER['HTTP_USER_AGENT'])) {
 					include(APP_PATH . 'includes/fb.php');

@@ -263,8 +263,8 @@
 	 Up to 155 security sections and 155 security areas for any extension can be installed.
  */
 	function add_access_extensions() {
-		global $security_areas, $security_sections, $installed_extensions;
-
+		global $security_areas, $security_sections;
+		$installed_extensions = Config::get(null, null, 'installed_extensions');
 		foreach ($installed_extensions as $extid => $ext) {
 			$scode = 100;
 			$acode = 100;

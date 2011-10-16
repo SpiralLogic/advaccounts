@@ -18,7 +18,7 @@
 
 	$next_extension_id = 4; // unique id for next installed extension
 
-	$installed_extensions = array(
+	return array(
 		1 => array('tab' => 'system',
 			'name' => 'Report Generator ',
 			'path' => 'repgen',
