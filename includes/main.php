@@ -25,3 +25,6 @@
 	include_once(APP_PATH . "includes/ui/ui_input.php");
 	include_once(APP_PATH . "includes/session.php");
 
+	include_once(APP_PATH . "taxes/db/tax_groups_db.php");
+	include_once(APP_PATH . "taxes/db/tax_types_db.php");
+	include_once(APP_PATH . "taxes/db/item_tax_types_db.php");

@@ -153,24 +153,31 @@
 				$togroup[$key[1]] = $undeposited[$key[1]];
 			}
 		}
-		$total_amount = 0;
-		$ref = array();
-		foreach ($togroup as $row) {
-			$total_amount += $row['amount'];
-			$ref[] = $row['ref'];
-		}
-		$sql = "INSERT INTO bank_trans (type, bank_act, amount, ref, trans_date, person_type_id, person_id, undeposited) VALUES (15, 5, $total_amount,"
-		 . DBOld::escape(implode($ref, ',')) . ",'" . Dates::date2sql($_POST['deposit_date']) . "', 6, '" . $_SESSION['wa_current_user']->user . "',0)";
-		$query = DBOld::query($sql, "Undeposited Cannot be Added");
-		$order_no = DBOld::insert_id($query);
-		if (!isset($order_no) || !empty($order_no) || $order_no == 127) {
-			$sql = "SELECT LAST_INSERT_ID()";
-			$order_no = DBOld::query($sql);
-			$order_no = DBOld::fetch_row($order_no);
-			$order_no = $order_no[0];
-		}
-		foreach ($togroup as $row) {
-			$sql = "UPDATE bank_trans SET undeposited=" . $order_no . " WHERE id=" . DBOld::escape($row['id']);
+
+		if (count($togroup) > 1) {
+			$total_amount = 0;
+			$ref = array();
+			foreach ($togroup as $row) {
+				$total_amount += $row['amount'];
+				$ref[] = $row['ref'];
+			}
+			$sql = "INSERT INTO bank_trans (type, bank_act, amount, ref, trans_date, person_type_id, person_id, undeposited) VALUES (15, 5, $total_amount,"
+			 . DBOld::escape(implode($ref, ',')) . ",'" . Dates::date2sql($_POST['deposit_date']) . "', 6, '" . $_SESSION['wa_current_user']->user . "',0)";
+			$query = DBOld::query($sql, "Undeposited Cannot be Added");
+			$order_no = DBOld::insert_id($query);
+			if (!isset($order_no) || !empty($order_no) || $order_no == 127) {
+				$sql = "SELECT LAST_INSERT_ID()";
+				$order_no = DBOld::query($sql);
+				$order_no = DBOld::fetch_row($order_no);
+				$order_no = $order_no[0];
+			}
+			foreach ($togroup as $row) {
+				$sql = "UPDATE bank_trans SET undeposited=" . $order_no . " WHERE id=" . DBOld::escape($row['id']);
+				DBOld::query($sql, "Can't change undeposited status");
+			}
+		} else {
+			$row = end($togroup);
+			$sql = "UPDATE bank_trans SET undeposited=0, deposit_date= " . Dates::date2sql($_POST['deposit_date']) . "WHERE id=" . DBOld::escape($row['id']);
 			DBOld::query($sql, "Can't change undeposited status");
 		}
 		unset($_POST);
@@ -224,7 +231,6 @@
 	br(1);
 	submit_center('Deposit', _("Deposit"), true, '', false);
 	end_form();
-
 	end_page();
 
 ?>

@@ -9,9 +9,7 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	include_once(APP_PATH . "taxes/db/tax_groups_db.php");
-	include_once(APP_PATH . "taxes/db/tax_types_db.php");
-	include_once(APP_PATH . "taxes/db/item_tax_types_db.php");
+
 
 	class Taxes {
 		//---------------------------------------------------------------------------------
