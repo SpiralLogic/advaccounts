@@ -248,7 +248,6 @@
 		't+' => _('Taxes included, increase base'), // ditto & increase base amount
 		't-' => _('Taxes included, reduce base') // ditto & reduce base amount
 	);
-
 	define('QE_PAYMENT', '1');
 	define('QE_DEPOSIT', '2');
 	define('QE_JOURNAL', '3');

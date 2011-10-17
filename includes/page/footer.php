@@ -33,6 +33,7 @@
 		echo "<br>";
 		var_dump(getReadableTime(microtime(true) - FUEL_START_TIME));
 		echo "</div></body>";
+
 		ui_view::get_websales();
 
 		echo	 "</html>\n";
