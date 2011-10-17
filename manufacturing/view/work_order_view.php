@@ -17,7 +17,7 @@
 	$js = "";
 	if (Config::get('ui.windows.popups'))
 		$js .= ui_view::get_js_open_window(800, 500);
-	Renderer::page(_($help_context = "View Work Order"), true, false, "", $js);
+	page(_($help_context = "View Work Order"), true, false, "", $js);
 
 	//-------------------------------------------------------------------------------------------------
 	$woid = 0;
@@ -72,6 +72,6 @@
 
 	ui_view::is_voided_display(ST_WORKORDER, $woid, _("This work order has been voided."));
 
-	Renderer::end_page(true);
+	end_page(true);
 
 ?>

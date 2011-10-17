@@ -13,7 +13,7 @@
 
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	Renderer::page(_($help_context = "Currencies"));
+	page(_($help_context = "Currencies"));
 
 	simple_page_mode(false);
 
@@ -239,6 +239,6 @@
 	end_form();
 	//---------------------------------------------------------------------------------------------
 
-	Renderer::end_page();
+	end_page();
 
 ?>

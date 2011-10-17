@@ -13,7 +13,7 @@
 
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	Renderer::page(_($help_context = "Inventory Item Where Used Inquiry"));
+	page(_($help_context = "Inventory Item Where Used Inquiry"));
 
 	check_db_has_stock_items(_("There are no items defined in the system."));
 
@@ -58,6 +58,6 @@
 	display_db_pager($table);
 
 	end_form();
-	Renderer::end_page();
+	end_page();
 
 ?>

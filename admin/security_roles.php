@@ -13,9 +13,9 @@
 
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	Security::add_access_extensions();
+	add_access_extensions();
 
-	Renderer::page(_($help_context = "Access setup"));
+	page(_($help_context = "Access setup"));
 
 	$new_role = get_post('role') == '' || get_post('cancel') || get_post('clone');
 	//--------------------------------------------------------------------------------------------------
@@ -239,6 +239,6 @@
 	div_end();
 
 	end_form();
-	Renderer::end_page();
+	end_page();
 
 ?>

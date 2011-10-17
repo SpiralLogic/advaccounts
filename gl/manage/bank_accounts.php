@@ -13,7 +13,7 @@
 
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	Renderer::page(_($help_context = "Bank Accounts"));
+	page(_($help_context = "Bank Accounts"));
 
 	simple_page_mode();
 	//-----------------------------------------------------------------------------------
@@ -193,5 +193,5 @@
 
 	end_form();
 
-	Renderer::end_page();
+	end_page();
 ?>

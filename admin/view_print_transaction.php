@@ -17,7 +17,7 @@
 	$js = "";
 	if (Config::get('ui.windows.popups'))
 		$js .= ui_view::get_js_open_window(800, 500);
-	Renderer::page(_($help_context = "View or Print Transactions"), false, false, "", $js);
+	page(_($help_context = "View or Print Transactions"), false, false, "", $js);
 
 	//----------------------------------------------------------------------------------------
 	function view_link($trans) {
@@ -141,6 +141,6 @@
 	handle_search();
 	end_form(2);
 
-	Renderer::end_page();
+	end_page();
 
 ?>

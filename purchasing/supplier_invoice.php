@@ -20,7 +20,7 @@
 		$js .= ui_view::get_js_open_window(900, 500);
 	}
 
-	Renderer::page(_($help_context = "Enter Supplier Invoice"), false, false, "", $js);
+	page(_($help_context = "Enter Supplier Invoice"), false, false, "", $js);
 	//----------------------------------------------------------------------------------------
 	check_db_has_suppliers(_("There are no suppliers defined in the system."));
 	//---------------------------------------------------------------------------------------------------------------
@@ -91,7 +91,7 @@
 				$input_error = true;
 			}
 		}
-		if (!Tax_Types::is_tax_gl_unique(get_post('gl_code'))) {
+		if (!is_tax_gl_unique(get_post('gl_code'))) {
 			ui_msgs::display_error(_("Cannot post to GL account used by more than one tax type."));
 			ui_view::set_focus('gl_code');
 			$input_error = true;
@@ -383,5 +383,5 @@
 JS
 	);
 
-	Renderer::end_page();
+	end_page();
 ?>

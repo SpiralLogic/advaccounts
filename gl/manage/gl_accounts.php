@@ -13,7 +13,7 @@
 
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	Renderer::page(_($help_context = "Chart of Accounts"));
+	page(_($help_context = "Chart of Accounts"));
 
 	include(APP_PATH . "admin/db/tags_db.php");
 
@@ -292,6 +292,6 @@
 	}
 	end_form();
 
-	Renderer::end_page();
+	end_page();
 
 ?>

@@ -40,7 +40,7 @@
 		exit();
 	}
 	JS::footerFile("includes/js/suppliers.js");
-	Renderer::page(_($help_context = "Suppliers"), Input::request('popup'));
+	page(_($help_context = "Suppliers"), Input::request('popup'));
 	if (isset($_GET['id'])) {
 		$supplier = new Supplier($_GET['id']);
 	}
@@ -102,4 +102,4 @@
 	UI::button('btnCancel', 'Cancel', array('name' => 'cancel', 'type' => 'submit', 'class' => 'ui-helper-hidden',
 		'style' => 'margin:10px;'
 	))->div;
-	Renderer::end_page(true, true);
+	end_page(true, true);

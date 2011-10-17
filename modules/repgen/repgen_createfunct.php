@@ -25,7 +25,7 @@
 	$page_security = 'SA_REPORT_GENERATOR';
 
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	Security::add_access_extensions();
+	add_access_extensions();
 
 	require_once("repgen_const.php");
 	require_once("repgen_def.php");
@@ -115,7 +115,7 @@
 		}
 	}
 
-	Renderer::page("Report Generator REPGEN");
+	page("Report Generator REPGEN");
 
 	### Output key administration forms, including all updated
 	### information, if we come here after a submission...
@@ -162,5 +162,5 @@
 	end_table();
 	end_form();
 
-	Renderer::end_page();
+	end_page();
 ?>

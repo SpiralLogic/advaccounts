@@ -21,7 +21,7 @@
 
 	JS::headerFile('/js/payalloc.js');
 
-	Renderer::page(_($help_context = "Supplier Payment Entry"), false, false, "", $js);
+	page(_($help_context = "Supplier Payment Entry"), false, false, "", $js);
 
 	if (isset($_GET['supplier_id'])) {
 		$_POST['supplier_id'] = $_GET['supplier_id'];
@@ -197,7 +197,7 @@
 		/*First off  check for valid inputs */
 		if (check_inputs() == true) {
 			handle_add_payment();
-			Renderer::end_page();
+			end_page();
 			exit;
 		}
 	}
@@ -257,5 +257,5 @@
 
 	end_form();
 
-	Renderer::end_page();
+	end_page();
 ?>

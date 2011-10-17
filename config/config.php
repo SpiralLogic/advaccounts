@@ -94,7 +94,7 @@
 		'seperators.date' => array('/', ".", "-", " "),
 		'formats.paper_size' => array("Letter", "A4"),
 
-		'config.onload' => array('db', 'js', 'installed_languages', 'installed_extensions'),
+		'config.onload' => array('db', 'js', 'installed_languages'),
 		'default_lang' => 'en_AU',
 
 	);

@@ -13,7 +13,7 @@
 
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	Renderer::page(_($help_context = "POS settings"));
+	page(_($help_context = "POS settings"));
 
 	include_once(APP_PATH . "sales/includes/db/sales_points_db.php");
 
@@ -145,6 +145,6 @@
 
 	end_form();
 
-	Renderer::end_page();
+	end_page();
 
 ?>

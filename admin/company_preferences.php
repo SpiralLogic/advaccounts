@@ -13,7 +13,7 @@
 
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	Renderer::page(_($help_context = "Company Setup"));
+	page(_($help_context = "Company Setup"));
 	//-------------------------------------------------------------------------------------------------
 
 	if (isset($_POST['update']) && $_POST['update'] != "") {
@@ -186,6 +186,6 @@
 	end_form(2);
 	//-------------------------------------------------------------------------------------------------
 
-	Renderer::end_page();
+	end_page();
 
 ?>

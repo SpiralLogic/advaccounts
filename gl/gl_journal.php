@@ -26,7 +26,7 @@
 	} else
 		$_SESSION['page_title'] = _($help_context = "Journal Entry");
 
-	Renderer::page($_SESSION['page_title'], false, false, '', $js);
+	page($_SESSION['page_title'], false, false, '', $js);
 	//--------------------------------------------------------------------------------------------------
 
 	function line_start_focus() {
@@ -216,7 +216,7 @@
 			return false;
 		}
 
-		if (!Tax_Types::is_tax_gl_unique(get_post('code_id'))) {
+		if (!is_tax_gl_unique(get_post('code_id'))) {
 			ui_msgs::display_error(_("Cannot post to GL account used by more than one tax type."));
 			ui_view::set_focus('code_id');
 			return false;
@@ -311,6 +311,6 @@
 	end_form();
 	//------------------------------------------------------------------------------------------------
 
-	Renderer::end_page();
+	end_page();
 
 ?>

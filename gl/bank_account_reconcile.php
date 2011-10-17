@@ -20,7 +20,7 @@
 	}
 
 	JS::headerFile('reconcile.js');
-	Renderer::page(_($help_context = "Reconcile Bank Account"), false, false, "", $js);
+	page(_($help_context = "Reconcile Bank Account"), false, false, "", $js);
 	check_db_has_bank_accounts(_("There are no bank accounts defined in the system."));
 	function check_date() {
 		if (!Dates::is_date(get_post('reconcile_date'))) {
@@ -239,6 +239,6 @@ jQuery("#_trans_tbl_span").find("input").value("")
 })
 JS;
 
-	Renderer::end_page();
+	end_page();
 
 ?>

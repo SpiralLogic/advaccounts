@@ -13,7 +13,7 @@
 
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	Renderer::page(_($help_context = "View Inventory Transfer"), true);
+	page(_($help_context = "View Inventory Transfer"), true);
 
 	if (isset($_GET["trans_no"])) {
 		$trans_no = $_GET["trans_no"];
@@ -70,5 +70,5 @@
 
 	ui_view::is_voided_display(ST_LOCTRANSFER, $trans_no, _("This transfer has been voided."));
 
-	Renderer::end_page(true);
+	end_page(true);
 ?>

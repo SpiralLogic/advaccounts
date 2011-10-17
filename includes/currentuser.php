@@ -85,7 +85,7 @@
 				update_user_visitdate($this->username);
 				$this->logged = true;
 				$this->last_act = time();
-				$this->timeout = Session::session_timeout();
+				$this->timeout = session_timeout();
 				$this->set_salesman();
 			}
 			return $this->logged;
@@ -93,7 +93,7 @@
 
 
 		function can_access($page_level) {
-			$security_areas = Config::get('security_areas');
+			global $security_areas;
 
 			if ($page_level === 'SA_OPEN') return true;
 			if ($page_level === 'SA_DENIED' || $page_level === '') return false;

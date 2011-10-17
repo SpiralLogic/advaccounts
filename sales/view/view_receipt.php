@@ -18,7 +18,7 @@
 	if (Config::get('ui.windows.popups'))
 		$js .= ui_view::get_js_open_window(900, 600);
 	$trans_type = $_GET['trans_type'];
-	Renderer::page(_($help_context), true, false, "", $js);
+	page(_($help_context), true, false, "", $js);
 
 	if (isset($_GET["trans_no"])) {
 		$trans_id = $_GET["trans_no"];
@@ -67,5 +67,5 @@
 		ui_view::display_allocations_from(PT_CUSTOMER, $receipt['debtor_no'], ST_CUSTPAYMENT, $trans_id, $receipt['Total']);
 	}
 	submenu_print(_("&Print This Receipt"), $trans_type, $_GET['trans_no'], 'prtopt');
-	Renderer::end_page(true);
+	end_page(true);
 ?>

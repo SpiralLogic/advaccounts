@@ -13,7 +13,7 @@
 
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	Renderer::page(_($help_context = "General Ledger Transaction Details"), true);
+	page(_($help_context = "General Ledger Transaction Details"), true);
 
 	if (!isset($_GET['type_id']) || !isset($_GET['trans_no'])) { /*Script was not passed the correct parameters */
 
@@ -54,7 +54,7 @@
 	if (DBOld::num_rows($result) == 0) {
 		echo "<p><center>" . _("No general ledger transactions have been created for") . " " .
 		 $systypes_array[$_GET['type_id']] . " " . _("number") . " " . $_GET['trans_no'] . "</center></p><br><br>";
-		Renderer::end_page(true);
+		end_page(true);
 		exit;
 	}
 
@@ -105,6 +105,6 @@
 
 	ui_view::is_voided_display($_GET['type_id'], $_GET['trans_no'], _("This transaction has been voided."));
 
-	Renderer::end_page(true);
+	end_page(true);
 
 ?>

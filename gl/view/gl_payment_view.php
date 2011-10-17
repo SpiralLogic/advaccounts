@@ -13,7 +13,7 @@
 
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	Renderer::page(_($help_context = "View Bank Payment"), true);
+	page(_($help_context = "View Bank Payment"), true);
 
 	if (isset($_GET["trans_no"])) {
 		$trans_no = $_GET["trans_no"];
@@ -131,5 +131,5 @@
 				$from_trans['person_type_id'], $from_trans['person_id'], 1, $trans_no, -$from_trans['amount']);
 	}
 
-	Renderer::end_page(true);
+	end_page(true);
 ?>

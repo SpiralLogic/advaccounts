@@ -297,7 +297,7 @@
 			$this->phone = $phone;
 			$this->email = $email;
 			$this->tax_group_id = $tax_group_id;
-			$this->tax_group_array = Tax_Groups::get_tax_group_items_as_array($tax_group_id);
+			$this->tax_group_array = get_tax_group_items_as_array($tax_group_id);
 		}
 
 		function set_salesman($salesman_code = null) {
@@ -360,11 +360,6 @@
 
 		function discount_all($discount) {
 			foreach ($this->line_items as $line) {
-
-				$item = new Item(Item::getStockID($line->stock_id));
-
-				$price = $item->getPurchPrices(array('min' => true));
-				if ((1.1 * $price['price']) > (1 - $discount) * $line->price) $discount = 1.1 * $price['price'] / $line->price;
 				$line->discount_percent = $discount;
 			}
 		}
@@ -470,7 +465,7 @@
 		}
 
 		function get_shipping_tax() {
-			$tax_items = Tax_Groups::get_shipping_tax_as_array();
+			$tax_items = get_shipping_tax_as_array();
 			$tax_rate = 0;
 			if ($tax_items != null) {
 				foreach ($tax_items as $item_tax) {

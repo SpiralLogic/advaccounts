@@ -16,7 +16,7 @@
 	$js = "";
 	if (Config::get('ui.windows.popups'))
 		$js .= ui_view::get_js_open_window(900, 500);
-	Renderer::page(_($help_context = "Inventory Item Cost Update"), false, false, "", $js);
+	page(_($help_context = "Inventory Item Cost Update"), false, false, "", $js);
 
 	//--------------------------------------------------------------------------------------
 
@@ -113,6 +113,6 @@
 	submit_center('UpdateData', _("Update"), true, false, 'default');
 
 	end_form();
-	Renderer::end_page();
+	end_page();
 
 ?>

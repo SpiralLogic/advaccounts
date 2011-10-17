@@ -15,7 +15,7 @@
 
 	JS::headerFile('budget.js');
 
-	Renderer::page(_($help_context = "Budget Entry"));
+	page(_($help_context = "Budget Entry"));
 
 	check_db_has_gl_account_groups(_("There are no account groups defined. Please define at least one account group before entering accounts."));
 
@@ -189,6 +189,6 @@
 	}
 	end_form();
 
-	Renderer::end_page();
+	end_page();
 
 ?>

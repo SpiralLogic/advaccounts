@@ -66,7 +66,7 @@
 		$_POST['order_view_mode'] = "Quotations";
 		$_SESSION['page_title'] = _($help_context = "Search All Sales Quotations");
 	}
-	Renderer::page($_SESSION['page_title'], false, false, "", $js);
+	page($_SESSION['page_title'], false, false, "", $js);
 	if (isset($_GET['selected_customer'])) {
 		$selected_customer = $_GET['selected_customer'];
 	}
@@ -403,5 +403,5 @@
 	display_db_pager($table);
 	submit_center('Update', _("Update"), true, '', null);
 	end_form();
-	Renderer::end_page();
+	end_page();
 ?>

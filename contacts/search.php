@@ -26,7 +26,7 @@
 		exit();
 	}
 
-	Renderer::page(_($help_context = "Items"), Input::request('popup'));
+	page(_($help_context = "Items"), Input::request('popup'));
 	Customer::addSearchBox('customer_id', array('cell' => false, 'description' => ''));
 
-	Renderer::end_page();
+	end_page();

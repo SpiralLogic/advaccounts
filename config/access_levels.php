@@ -53,7 +53,7 @@
 	define('SS_GL_A', 63 << 8);
 
 	define('SS_ADV', 71 << 8);
-	$security_sections = Config::set('security_sections', array(
+	$security_sections = array(
 
 		SS_SADMIN => _("System administration"),
 		SS_SETUP => _("Company setup"),
@@ -76,8 +76,8 @@
 		SS_GL => _("Banking & GL transactions"),
 		SS_GL_A => _("Banking & GL analytics"),
 		SS_ADV => _("Advanced")
-	)
 	);
+
 	/*
 	 This table stores security areas available in FA.
 	 Key is area identifier used to check user rights, values are
@@ -89,7 +89,7 @@
 
 	 Special value 'SA_OPEN' is used for publicly available pages like login/logout.
  */
-	$security_areas = Config::set('security_areas', array(
+	$security_areas = array(
 //
 //	Advanced
 //
@@ -253,7 +253,64 @@
 		'SA_TAXREP' => array(SS_GL_A | 2, _("Tax reports and inquiries")),
 		'SA_BANKREP' => array(SS_GL_A | 3, _("Bank reports and inquiries")),
 		'SA_GLREP' => array(SS_GL_A | 4, _("GL reports and inquiries")),
-	));
+	);
+	/*
+	 This function should be called whenever we want to extend core access level system
+	 with new security areas and/or sections i.e.:
+	 . on any page with non-standard security areas
+	 . in security roles editor
+	 The call should be placed between session.inc inclusion and page() call.
+	 Up to 155 security sections and 155 security areas for any extension can be installed.
+ */
+	function add_access_extensions() {
+		global $security_areas, $security_sections, $installed_extensions;
 
+		foreach ($installed_extensions as $extid => $ext) {
+			$scode = 100;
+			$acode = 100;
+			$accext = get_access_extensions($extid);
+			$extsections = $accext[1];
+			$extareas = $accext[0];
+			$extcode = $extid << 16;
+
+			$trans = array();
+			foreach ($extsections as $code => $name) {
+				$trans[$code] = $scode << 8;
+				// reassign section codes
+				$security_sections[$trans[$code] | $extcode] = $name;
+				$scode++;
+			}
+			foreach ($extareas as $code => $area) {
+				$section = $area[0] & 0xff00;
+				// extension modules:
+				// if area belongs to nonstandard section
+				// use translated section codes and
+				// preserve lower part of area code
+				if (isset($trans[$section])) {
+					$section = $trans[$section];
+				}
+				// otherwise assign next available
+				// area code >99
+				$area[0] = $extcode | $section | ($acode++);
+				$security_areas[$code] = $area;
+			}
+		}
+	}
+
+	/*
+	 Helper function to retrieve extension access definitions in isolated environment.
+ */
+	function get_access_extensions($id) {
+		global $installed_extensions;
+
+		$ext = $installed_extensions[$id];
+
+		$security_sections = $security_areas = array();
+
+		if (isset($ext['acc_file']))
+			include(PATH_TO_ROOT . ($ext['type'] == 'plugin' ? '/modules/' : '/') . $ext['path'] . '/' . $ext['acc_file']);
+
+		return array($security_areas, $security_sections);
+	}
 
 ?>

@@ -9,8 +9,6 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	ini_set('display_errors', 'On');
-	error_reporting(E_ALL);
 	if (!file_exists('config/config.php'))
 		header("Location: " . "/install/index.php");
 
@@ -18,7 +16,7 @@
 
 	require_once("bootstrap.php");
 
-	Security::add_access_extensions();
+	add_access_extensions();
 	$app = &$_SESSION["App"];
 	if (isset($_GET['application']))
 		$app->selected_application = $_GET['application'];

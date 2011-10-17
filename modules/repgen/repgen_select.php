@@ -30,7 +30,7 @@
 	$page_security = 'SA_REPORT_GENERATOR';
 
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	Security::add_access_extensions();
+	add_access_extensions();
 
 	require_once("repgen_const.php");
 	require_once("repgen_def.php");
@@ -214,7 +214,7 @@
 		header("Location: http://$HTTP_HOST" . $url); // switches to repgen_createfunct.php
 		exit;
 	}
-	Renderer::page("Report Generator REPGEN");
+	page("Report Generator REPGEN");
 
 	ui_msgs::display_heading(DESCRIPT);
 
@@ -304,6 +304,6 @@ function displayReport(f, id) {
 
 	end_table(1);
 
-	Renderer::end_page();
+	end_page();
 
 ?>

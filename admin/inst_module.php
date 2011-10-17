@@ -13,7 +13,7 @@
 
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	Renderer::page(_($help_context = "Install/Activate extensions"));
+	page(_($help_context = "Install/Activate extensions"));
 
 	include_once(APP_PATH . "admin/db/maintenance_db.php");
 
@@ -341,6 +341,6 @@
 	//---------------------------------------------------------------------------------------------
 	end_form();
 
-	Renderer::end_page();
+	end_page();
 
 ?>

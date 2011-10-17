@@ -18,7 +18,7 @@
 
 		if (!db_has_customers()) {
 			ui_msgs::display_error($msg, true);
-			Renderer::end_page();
+			end_page();
 			exit;
 		}
 	}
@@ -31,7 +31,7 @@
 
 		if (!db_has_currencies()) {
 			ui_msgs::display_error($msg, true);
-			Renderer::end_page();
+			end_page();
 			exit;
 		}
 	}
@@ -44,7 +44,7 @@
 
 		if (!db_has_sales_types()) {
 			ui_msgs::display_error($msg, true);
-			Renderer::end_page();
+			end_page();
 			exit;
 		}
 	}
@@ -57,7 +57,7 @@
 
 		if (!db_has_item_tax_types()) {
 			ui_msgs::display_error($msg, true);
-			Renderer::end_page();
+			end_page();
 			exit;
 		}
 	}
@@ -70,7 +70,7 @@
 
 		if (!db_has_tax_types()) {
 			ui_msgs::display_error($msg, true);
-			Renderer::end_page();
+			end_page();
 			exit;
 		}
 	}
@@ -83,7 +83,7 @@
 
 		if (!db_has_tax_groups()) {
 			ui_msgs::display_error($msg, true);
-			Renderer::end_page();
+			end_page();
 			exit;
 		}
 	}
@@ -96,7 +96,7 @@
 
 		if (!db_has_movement_types()) {
 			ui_msgs::display_error($msg, true);
-			Renderer::end_page();
+			end_page();
 			exit;
 		}
 	}
@@ -115,7 +115,7 @@
 
 		if (!db_has_customer_branches()) {
 			ui_msgs::display_error($msg, true);
-			Renderer::end_page();
+			end_page();
 			exit;
 		}
 	}
@@ -128,7 +128,7 @@
 
 		if (!db_has_sales_people()) {
 			ui_msgs::display_error($msg, true);
-			Renderer::end_page();
+			end_page();
 			exit;
 		}
 	}
@@ -141,7 +141,7 @@
 
 		if (!db_has_sales_areas()) {
 			ui_msgs::display_error($msg, true);
-			Renderer::end_page();
+			end_page();
 			exit;
 		}
 	}
@@ -154,7 +154,7 @@
 
 		if (!db_has_shippers()) {
 			ui_msgs::display_error($msg, true);
-			Renderer::end_page();
+			end_page();
 			exit;
 		}
 	}
@@ -171,7 +171,7 @@
 
 		if (!db_has_workorders()) {
 			ui_msgs::display_error($msg, true);
-			Renderer::end_page();
+			end_page();
 			exit;
 		}
 	}
@@ -188,7 +188,7 @@
 
 		if (!db_has_dimensions()) {
 			ui_msgs::display_error($msg, true);
-			Renderer::end_page();
+			end_page();
 			exit;
 		}
 	}
@@ -200,7 +200,7 @@
 	function check_db_has_suppliers($msg) {
 		if (!db_has_suppliers()) {
 			ui_msgs::display_error($msg, true);
-			Renderer::end_page();
+			end_page();
 			exit;
 		}
 	}
@@ -213,7 +213,7 @@
 
 		if (!db_has_stock_items()) {
 			ui_msgs::display_error($msg, true);
-			Renderer::end_page();
+			end_page();
 			exit;
 		}
 	}
@@ -226,7 +226,7 @@
 
 		if (!db_has_bom_stock_items()) {
 			ui_msgs::display_error($msg, true);
-			Renderer::end_page();
+			end_page();
 			exit;
 		}
 	}
@@ -238,7 +238,7 @@
 	function check_db_has_manufacturable_items($msg) {
 		if (!db_has_manufacturable_items()) {
 			ui_msgs::display_error($msg, true);
-			Renderer::end_page();
+			end_page();
 			exit;
 		}
 	}
@@ -251,7 +251,7 @@
 
 		if (!db_has_purchasable_items()) {
 			ui_msgs::display_error($msg, true);
-			Renderer::end_page();
+			end_page();
 			exit;
 		}
 	}
@@ -264,7 +264,7 @@
 
 		if (!db_has_costable_items()) {
 			ui_msgs::display_error($msg, true);
-			Renderer::end_page();
+			end_page();
 			exit;
 		}
 	}
@@ -277,7 +277,7 @@
 
 		if (!db_has_stock_categories()) {
 			ui_msgs::display_error($msg, true);
-			Renderer::end_page();
+			end_page();
 			exit;
 		}
 	}
@@ -290,7 +290,7 @@
 
 		if (!db_has_workcentres()) {
 			ui_msgs::display_error($msg, true);
-			Renderer::end_page();
+			end_page();
 			exit;
 		}
 	}
@@ -303,7 +303,7 @@
 
 		if (!db_has_locations()) {
 			ui_msgs::display_error($msg, true);
-			Renderer::end_page();
+			end_page();
 			exit;
 		}
 	}
@@ -316,7 +316,7 @@
 
 		if (!db_has_bank_accounts()) {
 			ui_msgs::display_error($msg, true);
-			Renderer::end_page();
+			end_page();
 			exit;
 		}
 	}
@@ -337,7 +337,7 @@
 	function check_db_has_gl_account_groups($msg) {
 		if (!db_has_gl_account_groups()) {
 			ui_msgs::display_error($msg, true);
-			Renderer::end_page();
+			end_page();
 			exit;
 		}
 	}
@@ -353,7 +353,7 @@
 	function check_db_has_tags($type, $msg) {
 		if (!db_has_tags($type)) {
 			ui_msgs::display_error($msg, true);
-			Renderer::end_page();
+			end_page();
 			exit;
 		}
 	}

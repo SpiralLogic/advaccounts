@@ -13,7 +13,7 @@
 
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	Renderer::page(_($help_context = "Payment Terms"));
+	page(_($help_context = "Payment Terms"));
 
 	simple_page_mode(true);
 	//-------------------------------------------------------------------------------------------
@@ -213,6 +213,6 @@
 
 	end_form();
 
-	Renderer::end_page();
+	end_page();
 
 ?>

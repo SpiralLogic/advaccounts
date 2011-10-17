@@ -34,7 +34,7 @@
 		}
 
 		static function	search_value($needle, $haystack, $valuekey = null) {
-			if (!is_array($haystack)) throw new Adv_Exception('haystack needs to be an array');
+
 			foreach ($haystack as $key => $value) {
 				$val = isset($valuekey) ? $value[$valuekey] : $value;
 				if ($needle == $val) {

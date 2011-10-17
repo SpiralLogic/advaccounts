@@ -35,7 +35,7 @@
 		processing_start();
 	}
 
-	Renderer::page($_SESSION['page_title'], false, false, "", $js);
+	page($_SESSION['page_title'], false, false, "", $js);
 
 	if (isset($_GET['AddedID'])) {
 		$dispatch_no = $_GET['AddedID'];
@@ -120,7 +120,7 @@
 
 		hyperlink_params("/sales/inquiry/sales_orders_view.php", _("Select a Sales Order to Delivery"), "OutstandingOnly=1");
 
-		Renderer::end_page();
+		end_page();
 		exit;
 	}
 	else {
@@ -385,7 +385,7 @@
 	if ($row['dissallow_invoices'] == 1) {
 		ui_msgs::display_error(_("The selected customer account is currently on hold. Please contact the credit control personnel to discuss."));
 		end_form();
-		Renderer::end_page();
+		end_page();
 		exit();
 	}
 	ui_msgs::display_heading(_("Delivery Items"));
@@ -491,6 +491,6 @@
 
 	end_form();
 
-	Renderer::end_page();
+	end_page();
 
 ?>

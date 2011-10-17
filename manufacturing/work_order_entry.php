@@ -19,7 +19,7 @@
 	if (Config::get('ui.windows.popups'))
 		$js .= ui_view::get_js_open_window(900, 500);
 
-	Renderer::page(_($help_context = "Work Order Entry"), false, false, "", $js);
+	page(_($help_context = "Work Order Entry"), false, false, "", $js);
 
 	check_db_has_manufacturable_items(_("There are no manufacturable items defined in the system."));
 
@@ -420,6 +420,6 @@
 	}
 
 	end_form();
-	Renderer::end_page();
+	end_page();
 
 ?>

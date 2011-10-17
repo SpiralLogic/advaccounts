@@ -23,7 +23,7 @@
 
 	JS::footerFile('/js/allocate.js');
 
-	Renderer::page(_($help_context = "Allocate Customer Payment or Credit Note"), false, false, "", $js);
+	page(_($help_context = "Allocate Customer Payment or Credit Note"), false, false, "", $js);
 
 	//--------------------------------------------------------------------------------
 
@@ -104,6 +104,6 @@
 
 	//--------------------------------------------------------------------------------
 
-	Renderer::end_page();
+	end_page();
 
 ?>

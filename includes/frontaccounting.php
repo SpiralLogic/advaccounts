@@ -10,7 +10,6 @@
 			MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 			See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		 * ********************************************************************* */
-	$installed_extensions = Config::get(null, null, 'installed_extensions');
 
 	include_once(APP_PATH . 'applications/application.php');
 	include_once(APP_PATH . 'applications/customers.php');
@@ -23,7 +22,7 @@
 	include_once(APP_PATH . 'applications/dimensions.php');
 	include_once(APP_PATH . 'applications/generalledger.php');
 	include_once(APP_PATH . 'applications/setup.php');
-
+	include_once(APP_PATH . 'config/installed_extensions.php');
 	if (count($installed_extensions) > 0) {
 		foreach ($installed_extensions as $ext) {
 			if ($ext['type'] == 'module')
@@ -68,8 +67,9 @@
 
 		function display() {
 
+			include(APP_PATH . "themes/" . user_theme() . "/renderer.php");
 			$this->init();
-			$rend = Renderer::getInstance();
+			$rend = renderer::getInstance();
 			$rend->wa_header();
 			//$rend->menu_header($this->menu);
 			$rend->display_applications($this);

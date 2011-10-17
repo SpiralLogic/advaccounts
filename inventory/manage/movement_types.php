@@ -13,7 +13,7 @@
 
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	Renderer::page(_($help_context = "Inventory Movement Types"));
+	page(_($help_context = "Inventory Movement Types"));
 
 	simple_page_mode(true);
 	//-----------------------------------------------------------------------------------
@@ -126,6 +126,6 @@
 
 	//------------------------------------------------------------------------------------
 
-	Renderer::end_page();
+	end_page();
 
 ?>

@@ -13,6 +13,7 @@
 	$page_security = 'SA_SALESPAYMNT';
 
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
+	include_once(APP_PATH . "taxes/db/tax_groups_db.php");
 	include_once(APP_PATH . "sales/includes/ui/sales_order_ui.php");
 
 	include_once(APP_PATH . "sales/includes/sales_ui.php");
@@ -25,7 +26,7 @@
 	}
 	JS::headerFile('/js/payalloc.js');
 
-	Renderer::page(_($help_context = "Customer Payment Entry"), Input::request('frame'), false, "", $js);
+	page(_($help_context = "Customer Payment Entry"), Input::request('frame'), false, "", $js);
 
 	//----------------------------------------------------------------------------------------------
 
@@ -307,7 +308,7 @@ var ci = $("#createinvoice"), ci_row = ci.closest('tr'),alloc_tbl = $('#alloc_tb
 JS;
 
 	JS::addLiveEvent('a, :input', 'click change', $js, 'wrapper', true);
-	(Input::request('frame')) ? Renderer::end_page() : Renderer::end_page(true, true, true);
+	(Input::request('frame')) ? end_page() : end_page(true, true, true);
 
 
 ?>

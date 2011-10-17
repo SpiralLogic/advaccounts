@@ -15,7 +15,7 @@
 
 	include_once(APP_PATH . "/reporting/includes/reports_classes.php");
 	$js = "";
-	Renderer::page(_($help_context = "Reports and Analysis"), false, false, "", $js);
+	page(_($help_context = "Reports and Analysis"), false, false, "", $js);
 
 	$reports = new BoxReports;
 
@@ -429,5 +429,5 @@
 ";
 	echo $reports->getDisplay();
 
-	Renderer::end_page();
+	end_page();
 ?>

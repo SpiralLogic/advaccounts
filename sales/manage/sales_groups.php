@@ -13,7 +13,7 @@
 
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	Renderer::page(_($help_context = "Sales Groups"));
+	page(_($help_context = "Sales Groups"));
 
 	simple_page_mode(true);
 
@@ -130,5 +130,5 @@
 
 	end_form();
 
-	Renderer::end_page();
+	end_page();
 ?>

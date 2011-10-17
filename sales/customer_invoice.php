@@ -39,7 +39,7 @@
 	} elseif (isset($_GET['ViewInvoice'])) {
 		$_SESSION['page_title'] = sprintf(_("View Sales Invoice # %d."), $_GET['ViewInvoice']);
 	}
-	Renderer::page($_SESSION['page_title'], false, false, "", $js);
+	page($_SESSION['page_title'], false, false, "", $js);
 	//-----------------------------------------------------------------------------
 	check_edit_conflicts();
 	if (isset($_GET['AddedID'])) {
@@ -135,7 +135,7 @@
 		/* This page can only be called with a delivery for invoicing or invoice no for edit */
 		ui_msgs::display_error(_("This page can only be opened after delivery selection. Please select delivery to invoicing first."));
 		hyperlink_no_params("/sales/inquiry/sales_deliveries_view.php", _("Select Delivery to Invoice"));
-		Renderer::end_page();
+		end_page();
 		exit;
 	}
 	elseif (!check_quantities()) {
@@ -352,7 +352,7 @@
 	if ($row['dissallow_invoices'] == 1) {
 		ui_msgs::display_error(_("The selected customer account is currently on hold. Please contact the credit control personnel to discuss."));
 		end_form();
-		Renderer::end_page();
+		end_page();
 		exit();
 	}
 	ui_msgs::display_heading(_("Invoice Items"));
@@ -459,5 +459,5 @@
 	label_cell(_("DON'T FUCK THIS UP, YOU WON'T BE ABLE TO EDIT ANYTHING AFTER THIS. DON'T MAKE YOURSELF FEEL AND LOOK LIKE A DICK!"), 'center');
 	end_table();
 	end_form();
-	Renderer::end_page();
+	end_page();
 ?>

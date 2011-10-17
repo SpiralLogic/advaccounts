@@ -15,7 +15,7 @@
 
 	$js = "";
 
-	Renderer::page(_($help_context = "Balance Sheet Drilldown"), false, false, "", $js);
+	page(_($help_context = "Balance Sheet Drilldown"), false, false, "", $js);
 
 	//----------------------------------------------------------------------------------------------------
 	// Ajax updates
@@ -238,7 +238,7 @@
 
 	end_form();
 
-	Renderer::end_page();
+	end_page();
 
 ?>
 

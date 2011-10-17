@@ -13,7 +13,7 @@
 
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	Renderer::page(_($help_context = "Reorder Levels"));
+	page(_($help_context = "Reorder Levels"));
 
 	check_db_has_costable_items(_("There are no inventory items defined in the system (Purchased or manufactured items)."));
 
@@ -90,6 +90,6 @@
 	submit_center('UpdateData', _("Update"), true, false, 'default');
 
 	end_form();
-	Renderer::end_page();
+	end_page();
 
 ?>

@@ -17,7 +17,7 @@
 	if (Config::get('ui.windows.popups'))
 		$js .= ui_view::get_js_open_window(800, 500);
 
-	Renderer::page(_($help_context = "Inventory Item Movement"), false, false, "", $js);
+	page(_($help_context = "Inventory Item Movement"), false, false, "", $js);
 	//------------------------------------------------------------------------------------------------
 
 	check_db_has_stock_items(_("There are no items defined in the system."));
@@ -180,6 +180,6 @@
 
 	end_table(1);
 	div_end();
-	Renderer::end_page();
+	end_page();
 
 ?>

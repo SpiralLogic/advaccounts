@@ -18,7 +18,7 @@
 	include_once(APP_PATH . "dimensions/includes/dimensions_ui.php");
 
 	$js = "";
-	Renderer::page(_($help_context = "Dimension Entry"), false, false, "", $js);
+	page(_($help_context = "Dimension Entry"), false, false, "", $js);
 
 	//---------------------------------------------------------------------------------------
 
@@ -277,6 +277,6 @@
 
 	//--------------------------------------------------------------------------------------------
 
-	Renderer::end_page();
+	end_page();
 
 ?>

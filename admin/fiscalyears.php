@@ -16,7 +16,7 @@
 	include_once(APP_PATH . "sales/includes/db/cust_trans_db.php");
 	include_once(APP_PATH . "admin/db/maintenance_db.php");
 	$js = "";
-	Renderer::page(_($help_context = "Fiscal Years"), false, false, "", $js);
+	page(_($help_context = "Fiscal Years"), false, false, "", $js);
 
 	simple_page_mode(true);
 	//---------------------------------------------------------------------------------------------
@@ -497,6 +497,6 @@
 
 	//---------------------------------------------------------------------------------------------
 
-	Renderer::end_page();
+	end_page();
 
 ?>

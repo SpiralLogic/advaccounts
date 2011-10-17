@@ -13,7 +13,7 @@
 
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	Renderer::page(_($help_context = "Display Setup"));
+	page(_($help_context = "Display Setup"));
 
 	//-------------------------------------------------------------------------------------------------
 
@@ -139,6 +139,6 @@
 
 	//-------------------------------------------------------------------------------------------------
 
-	Renderer::end_page();
+	end_page();
 
 ?>

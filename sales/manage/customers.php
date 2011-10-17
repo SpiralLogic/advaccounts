@@ -13,7 +13,7 @@
 	$page_security = 'SA_CUSTOMER';
 
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	Renderer::page(_($help_context = "Customers"), Input::request('popup'));
+	page(_($help_context = "Customers"), Input::request('popup'));
 
 	if (isset($_GET['debtor_no'])) {
 		$_POST['customer_id'] = $_GET['debtor_no'];
@@ -294,5 +294,5 @@
 	div_end();
 	hidden('popup', Input::request('popup'));
 	end_form();
-	Renderer::end_page();
+	end_page();
 ?>

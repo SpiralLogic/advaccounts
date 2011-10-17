@@ -2,7 +2,7 @@
 	$page_security = 'SA_ADVANCED';
 
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	Security::add_access_extensions();
+	add_access_extensions();
 
 	// Turn these next two lines on for debugging
 	//error_reporting(E_ALL);
@@ -12,6 +12,6 @@
 
 	// Begin the UI
 
-	Renderer::page("Advanced");
+	page("Advanced");
 
-	Renderer::end_page();
+	end_page();

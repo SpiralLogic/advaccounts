@@ -244,7 +244,7 @@ JS;
 		table_section(1);
 		$customer_error = "";
 		$change_prices = 0;
-		if (!$editable) {
+		if (isset($order) && !$editable) {
 			// can't change the customer/branch if items already received on this order
 			//echo $order->customer_name . " - " . $order->deliver_to;
 			label_row(null, $order->customer_name . " - " . $order->deliver_to);

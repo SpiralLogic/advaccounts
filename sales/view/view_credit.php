@@ -17,7 +17,7 @@
 	$js = "";
 	if (Config::get('ui.windows.popups'))
 		$js .= ui_view::get_js_open_window(900, 500);
-	Renderer::page(_($help_context = "View Credit Note"), true, false, "", $js);
+	page(_($help_context = "View Credit Note"), true, false, "", $js);
 
 	if (isset($_GET["trans_no"])) {
 		$trans_id = $_GET["trans_no"];
@@ -146,6 +146,6 @@
 
 	/* end of check to see that there was an invoice record to print */
 	submenu_print(_("&Print This Credit Note"), ST_CUSTCREDIT, $_GET['trans_no'], 'prtopt');
-	Renderer::end_page(true);
+	end_page(true);
 
 ?>

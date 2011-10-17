@@ -18,7 +18,7 @@
 	if (Config::get('ui.windows.popups'))
 		$js .= ui_view::get_js_open_window(900, 500);
 
-	Renderer::page(_($help_context = "Supplier Allocation Inquiry"), false, false, "", $js);
+	page(_($help_context = "Supplier Allocation Inquiry"), false, false, "", $js);
 	if (isset($_GET['supplier_id'])) {
 		$_POST['supplier_id'] = $_GET['supplier_id'];
 	}
@@ -160,5 +160,5 @@
 	display_db_pager($table);
 	Supplier::addInfoDialog('.pagerclick');
 	end_form();
-	Renderer::end_page();
+	end_page();
 ?>

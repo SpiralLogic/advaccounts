@@ -10,7 +10,7 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 
-	defined('ADV_START_TIME') or define('ADV_START_TIME', microtime(true));
+	defined('FUEL_START_TIME') or define('FUEL_START_TIME', microtime(true));
 	define('APP_PATH', realpath(__DIR__) . DIRECTORY_SEPARATOR);
 
 	require APP_PATH . 'base.php';
@@ -23,11 +23,13 @@
 	define('PATH_TO_ROOT', (!$path) ? '.' : $path);
 
 	require APP_PATH . 'includes/autoloader.php';
+
 	Autoloader::init();
-	Session::init();
-	include_once(APP_PATH . "config/types.php");
-	include_once(APP_PATH . "config/access_levels.php");
+	!class_exists('Config', false) and require(APP_PATH . 'includes/config.php');
+	Config::init();
+
 	require APP_PATH . "includes/main.php";
+	Errors::init();
 	// intercept all output to destroy it in case of ajax call
 	register_shutdown_function('adv_shutdown_function_handler');
 	ob_start('adv_ob_flush_handler', 0);
@@ -37,5 +39,4 @@
 			$v = is_string($v) ? trim($v) : $v;
 		});
 	$_POST = Security::strip_quotes($_POST);
-	Session::start();
-	$Ajax = Ajax::instance();
+

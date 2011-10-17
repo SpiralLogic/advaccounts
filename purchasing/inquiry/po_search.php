@@ -20,7 +20,7 @@
 	if (Config::get('ui.windows.popups'))
 		$js .= ui_view::get_js_open_window(900, 500);
 
-	Renderer::page(_($help_context = "Search Outstanding Purchase Orders"), false, false, "", $js);
+	page(_($help_context = "Search Outstanding Purchase Orders"), false, false, "", $js);
 
 	if (isset($_GET['order_number'])) {
 		$_POST['order_number'] = $_GET['order_number'];
@@ -179,5 +179,5 @@
 	Supplier::addInfoDialog('.pagerclick');
 
 	end_form();
-	Renderer::end_page();
+	end_page();
 ?>

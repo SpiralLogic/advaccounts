@@ -13,7 +13,7 @@
 
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	Renderer::page(_($help_context = "Bill Of Materials"));
+	page(_($help_context = "Bill Of Materials"));
 
 	check_db_has_bom_stock_items(_("There are no manufactured or kit items defined in the system."));
 
@@ -263,6 +263,6 @@
 	}
 	// ----------------------------------------------------------------------------------
 
-	Renderer::end_page();
+	end_page();
 
 ?>

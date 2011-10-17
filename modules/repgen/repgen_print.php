@@ -9,7 +9,7 @@
 
 	$page_security = 'SA_REPORT_GENERATOR';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	Security::add_access_extensions();
+	add_access_extensions();
 
 	require_once("repgen.php");
 	$id = $_GET['id'];

@@ -3,7 +3,7 @@
 	$page_security = 'SA_OPEN';
 
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	Renderer::page(_($help_context = "Websales to Accounting"), Input::request('popup'));
+	page(_($help_context = "Websales to Accounting"), Input::request('popup'));
 
-	Renderer::end_page(true, true);
+	end_page(true, true);
 ?>

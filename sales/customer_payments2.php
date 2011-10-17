@@ -22,7 +22,7 @@
 	}
 	JS::headerFile('/js/payalloc.js');
 
-	Renderer::page(_($help_context = "Customer Payment Entry"), false, false, "", $js);
+	page(_($help_context = "Customer Payment Entry"), false, false, "", $js);
 
 	//----------------------------------------------------------------------------------------------
 
@@ -288,5 +288,5 @@
 	br();
 
 	end_form();
-	Renderer::end_page();
+	end_page();
 ?>

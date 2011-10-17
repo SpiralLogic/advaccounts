@@ -13,7 +13,10 @@
 
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	Renderer::page(_($help_context = "Tax Groups"));
+	page(_($help_context = "Tax Groups"));
+
+	include_once(APP_PATH . "taxes/db/tax_groups_db.php");
+	include_once(APP_PATH . "taxes/db/tax_types_db.php");
 
 	simple_page_mode(true);
 
@@ -61,20 +64,20 @@
 				 $_POST['tax_type_id' . $i] != ANY_NUMERIC
 				) {
 					$taxes[] = $_POST['tax_type_id' . $i];
-					$rates[] = Tax_Types::get_default_rate($_POST['tax_type_id' . $i]);
+					$rates[] = get_tax_type_default_rate($_POST['tax_type_id' . $i]);
 					//Editable rate has been removed 090920 Joe Hunt
 					//$rates[] = input_num('rate' . $i);
 				}
 			}
 
 			if ($selected_id != -1) {
-				Tax_Groups::update_tax_group($selected_id, $_POST['name'], $_POST['tax_shipping'], $taxes,
+				update_tax_group($selected_id, $_POST['name'], $_POST['tax_shipping'], $taxes,
 					$rates);
 				ui_msgs::display_notification(_('Selected tax group has been updated'));
 			}
 			else
 			{
-				Tax_Groups::add_tax_group($_POST['name'], $_POST['tax_shipping'], $taxes, $rates);
+				add_tax_group($_POST['name'], $_POST['tax_shipping'], $taxes, $rates);
 				ui_msgs::display_notification(_('New tax group has been added'));
 			}
 
@@ -111,7 +114,7 @@
 	if ($Mode == 'Delete') {
 
 		if (can_delete($selected_id)) {
-			Tax_Groups::delete_tax_group($selected_id);
+			delete_tax_group($selected_id);
 			ui_msgs::display_notification(_('Selected tax group has been deleted'));
 		}
 		$Mode = 'RESET';
@@ -125,7 +128,7 @@
 	}
 	//-----------------------------------------------------------------------------------
 
-	$result = Tax_Groups::get_all_tax_groups(check_value('show_inactive'));
+	$result = get_all_tax_groups(check_value('show_inactive'));
 
 	start_form();
 	start_table(Config::get('tables.style'));
@@ -167,12 +170,12 @@
 		//editing an existing status code
 
 		if ($Mode == 'Edit') {
-			$group = Tax_Groups::get_tax_group($selected_id);
+			$group = get_tax_group($selected_id);
 
 			$_POST['name'] = $group["name"];
 			$_POST['tax_shipping'] = $group["tax_shipping"];
 
-			$items = Tax_Groups::get_tax_group_items($selected_id);
+			$items = get_tax_group_items($selected_id);
 
 			$i = 0;
 			while ($tax_item = DBOld::fetch($items))
@@ -206,7 +209,7 @@
 		tax_types_list_cells(null, 'tax_type_id' . $i, $_POST['tax_type_id' . $i], _("None"), true);
 
 		if ($_POST['tax_type_id' . $i] != 0 && $_POST['tax_type_id' . $i] != ALL_NUMERIC) {
-			$default_rate = Tax_Types::get_default_rate($_POST['tax_type_id' . $i]);
+			$default_rate = get_tax_type_default_rate($_POST['tax_type_id' . $i]);
 			label_cell(percent_format($default_rate), "nowrap align=right");
 			//Editable rate has been removed 090920 Joe Hunt
 			//if (!isset($_POST['rate' . $i]) || $_POST['rate' . $i] == "")
@@ -225,6 +228,6 @@
 
 	//------------------------------------------------------------------------------------
 
-	Renderer::end_page();
+	end_page();
 
 ?>

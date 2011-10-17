@@ -27,7 +27,7 @@
 	}
 	JS::footerFile(array("/js/js2/jquery-tmpl.min.js", "includes/js/quickitems.js"));
 
-	Renderer::page(_($help_context = "Items"), true);
+	page(_($help_context = "Items"), true);
 
 	$stock_cats = stock_categories_list('category_id');
 	if (!isset($_GET['stock_id'])) {
@@ -88,4 +88,4 @@ HTML;
 	}
 	$menu->render();
 	UI::button('btnCancel', 'Cancel', array("style" => "display:none"));
-	Renderer::end_page(true, true);
+	end_page(true, true);

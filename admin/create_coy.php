@@ -15,7 +15,7 @@
 
 	include_once(APP_PATH . "admin/db/maintenance_db.php");
 
-	Renderer::page(_($help_context = "Create/Update Company"));
+	page(_($help_context = "Create/Update Company"));
 
 	//---------------------------------------------------------------------------------------------
 	if (isset($_GET['selected_id'])) {
@@ -317,6 +317,6 @@
 	display_company_edit($selected_id);
 
 	//---------------------------------------------------------------------------------------------
-	Renderer::end_page();
+	end_page();
 
 ?>

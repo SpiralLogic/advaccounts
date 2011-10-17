@@ -15,7 +15,7 @@
 
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	Renderer::page(_($help_context = "Customer Branches"), Input::request('popup'));
+	page(_($help_context = "Customer Branches"), Input::request('popup'));
 
 	//-----------------------------------------------------------------------------------------------
 
@@ -369,5 +369,5 @@
 
 	end_form();
 
-	Renderer::end_page();
+	end_page();
 ?>

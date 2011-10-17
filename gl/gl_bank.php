@@ -28,7 +28,7 @@
 		$_SESSION['page_title'] = _($help_context = "Bank Account Deposit Entry");
 		handle_new_order(ST_BANKDEPOSIT);
 	}
-	Renderer::page($_SESSION['page_title'], false, false, '', $js);
+	page($_SESSION['page_title'], false, false, '', $js);
 
 	//-----------------------------------------------------------------------------------------------
 	check_db_has_bank_accounts(_("There are no bank accounts defined in the system."));
@@ -268,6 +268,6 @@
 
 	//------------------------------------------------------------------------------------------------
 
-	Renderer::end_page();
+	end_page();
 
 ?>

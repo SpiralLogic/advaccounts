@@ -13,7 +13,7 @@
 
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	Renderer::page(_($help_context = "Work Centres"));
+	page(_($help_context = "Work Centres"));
 
 	include(APP_PATH . "manufacturing/includes/manufacturing_db.php");
 
@@ -137,6 +137,6 @@
 
 	//------------------------------------------------------------------------------------
 
-	Renderer::end_page();
+	end_page();
 
 ?>

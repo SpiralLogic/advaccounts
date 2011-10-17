@@ -60,7 +60,7 @@
 	$js = "";
 	if (Config::get('ui.windows.popups'))
 		$js .= ui_view::get_js_open_window(800, 500);
-	Renderer::page(_($help_context = "Attach Documents"), false, false, "", $js);
+	page(_($help_context = "Attach Documents"), false, false, "", $js);
 
 	simple_page_mode(true);
 	//----------------------------------------------------------------------------------------
@@ -236,6 +236,6 @@
 
 	end_form();
 
-	Renderer::end_page();
+	end_page();
 
 ?>
