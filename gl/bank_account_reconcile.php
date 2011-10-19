@@ -109,7 +109,8 @@
 		return true;
 	}
 
-	if ($_POST['reset']) {
+	if (Input::post('reset')) {
+
 		reset_sql_for_bank_account_reconcile($_POST['bank_account'], get_post('reconcile_date'));
 		update_data();
 	}

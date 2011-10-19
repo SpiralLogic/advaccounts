@@ -10,6 +10,7 @@
 		  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 		  See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		 * ********************************************************************* */
+	if (!isset($doctype)) $doctype = 0;
 	if (isset($header2type)) {
 		$doc_Cust_no = _("Cust no");
 		$doc_Date = _("Date");

@@ -20,7 +20,7 @@
 	}
 
 	JS::footerFile('/js/reconcile.js');
-	page(_($help_context = "Undeposited Funds"), @Input::request('frame'), false, "", $js);
+	page(_($help_context = "Undeposited Funds"), Input::request('frame'), false, "", $js);
 	check_db_has_bank_accounts(_("There are no bank accounts defined in the system."));
 	function check_date() {
 		if (!Dates::is_date(get_post('deposit_date'))) {
@@ -140,7 +140,7 @@
 		change_tpl_flag($id);
 	}
 	if (isset($_POST['Deposit'])) {
-		$sql = "SELECT * FROM bank_trans WHERE undeposited=1 AND trans_date <= '" . Dates::date2sql($_POST['deposit_date']) . "' AND reconciled IS NULL";
+		$sql = "SELECT * FROM bank_trans WHERE undeposited=1  AND reconciled IS NULL";
 		$query = DBOld::query($sql);
 		$undeposited = array();
 		while ($row = DBOld::fetch($query)) {
@@ -176,8 +176,9 @@
 				DBOld::query($sql, "Can't change undeposited status");
 			}
 		} else {
-			$row = end($togroup);
-			$sql = "UPDATE bank_trans SET undeposited=0, deposit_date= " . Dates::date2sql($_POST['deposit_date']) . "WHERE id=" . DBOld::escape($row['id']);
+			$row = reset($togroup);
+
+			$sql = "UPDATE bank_trans SET undeposited=0, trans_date='" . Dates::date2sql($_POST['deposit_date']) . "',deposit_date='" . Dates::date2sql($_POST['deposit_date']) . "'  WHERE id=" . DBOld::escape($row['id']);
 			DBOld::query($sql, "Can't change undeposited status");
 		}
 		unset($_POST);
