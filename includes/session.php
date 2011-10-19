@@ -72,13 +72,13 @@
 			}
 			DBOld::getInstance();
 		}
+	}
 
-		include(APP_PATH . 'company/installed_extensions.php');
+	include(APP_PATH . 'company/installed_extensions.php');
 
-		if (!isset($_SESSION["App"])) {
-			$_SESSION["App"] = new frontaccounting();
-			$_SESSION["App"]->init();
-		}
+	if (!isset($_SESSION["App"])) {
+		$_SESSION["App"] = new frontaccounting();
+		$_SESSION["App"]->init();
 	}
 
 	//--------------------------------------------------------------------------

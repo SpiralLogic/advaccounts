@@ -32,6 +32,9 @@
 		var_dump(convert(memory_get_peak_usage(true)));
 		echo "<br>";
 		var_dump(getReadableTime(microtime(true) - FUEL_START_TIME));
+		echo "<br>";
+		echo "<p></p>";
+
 		echo "</div></body>";
 
 		ui_view::get_websales();

@@ -90,15 +90,13 @@
 			header("Content-type: text/html; charset='$encoding'");
 		}
 		echo "<!DOCTYPE HTML>\n";
-		echo "<html dir='" . $_SESSION['language']->dir . "' >\n";
+		echo "<html class='" . $_SESSION['sel_app'] . "' dir='" . $_SESSION['language']->dir . "' >\n";
 		echo "<head><title>$title</title>";
 		echo "<meta http-equiv='Content-type' content='text/html; charset=$encoding'>";
 		echo "<link rel='apple-touch-icon' href='/company/images/advanced-icon.png'/>";
 
 		add_css('default.css,jquery-ui-1.8.7.css,jquery.calculator.css,jquery.fileupload-ui.css');
 
-		if (file_exists(APP_PATH . "/themes/$theme/{$_SESSION['sel_app']}.css"))
-			add_css($_SESSION['sel_app'] . '.css');
 		send_css();
 		//if (!$_GET['frame'])
 		send_scripts($js);
