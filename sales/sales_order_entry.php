@@ -129,7 +129,7 @@
 		page_complete($_GET['AddedDI'], ST_SALESINVOICE, "Invoice");
 	}
 	elseif (isset($_GET['RemovedID'])) {
-		submenu_view(_("&View This Invoice"), ST_SALESINVOICE, $_GET['AddedDI']);
+		submenu_view(_("&View This Order"), ST_SALESORDER, $_GET['RemovedID']);
 
 		if ($_GET['Type'] == ST_SALESQUOTE) {
 			ui_msgs::display_notification(_("This sales quotation has been cancelled as requested."), 1);
