@@ -36,7 +36,7 @@
 	}
 
 	function viewing_controls() {
-		ui_msgs::display_note(_("Only documents can be printed."));
+		ui_msgs::display_warning(_("Only documents can be printed."));
 
 		start_table("class='tablestyle_noborder'");
 		start_row();

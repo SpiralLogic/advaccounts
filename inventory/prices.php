@@ -46,7 +46,7 @@
 		start_form();
 	}
 
-	if (!isset($_POST['stock_id']))
+	if (!Input::post('stock_id'))
 		$_POST['stock_id'] = ui_globals::get_global_stock_item();
 
 	if (!Input::request('frame')) {

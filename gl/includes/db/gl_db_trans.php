@@ -263,7 +263,7 @@
 		$tax_type = Taxes::is_tax_account($gl_code);
 		if (!$tax_type) return; // $gl_code is not tax account
 
-		$tax = get_tax_type($tax_type);
+		$tax = Tax_Type::get($tax_type);
 		if ($gl_code == $tax['sales_gl_code'])
 			$amount = -$amount;
 		// we have to restore net amount as we cannot know the base amount

@@ -8,6 +8,8 @@
 	 */
 
 	include_once(APP_PATH . "config/defines.php");
+	include_once(APP_PATH . "config/access_levels.php");
+	include_once(APP_PATH . "config/types.php");
 	ini_set("ignore_repeated_errors", "On");
 	ini_set("log_errors", "On");
 	class Config {

@@ -40,4 +40,5 @@
 			'access' => 'SA_ADVANCED',
 		),
 	);
+	return $installed_extensions;
 ?>

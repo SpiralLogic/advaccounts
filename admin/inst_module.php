@@ -288,7 +288,7 @@
 		file_row(_("SQL File"), 'uploadfile2');
 
 		end_table(0);
-		ui_msgs::display_note(_("Select your module PHP file from your local harddisk."), 0, 1);
+		ui_msgs::display_warning(_("Select your module PHP file from your local harddisk."), 0, 1);
 		submit_add_or_update_center($selected_id == -1, '', 'both');
 	}
 

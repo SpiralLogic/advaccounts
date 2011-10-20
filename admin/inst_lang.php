@@ -204,7 +204,7 @@
 		file_row(_("Language File") . " (MO)", 'uploadfile2');
 
 		end_table(0);
-		ui_msgs::display_note(_("Select your language files from your local harddisk."), 0, 1);
+		ui_msgs::display_warning(_("Select your language files from your local harddisk."), 0, 1);
 		echo "<center><input onclick='javascript:updateLanguage()' type='button' style='width:150px' value='" . _("Save") . "'></center>";
 
 		end_form();

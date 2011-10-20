@@ -390,7 +390,7 @@
 
 		$result = DB_Company::get_all_fiscalyears();
 		start_form();
-		ui_msgs::display_note(_("Warning: Deleting a fiscal year all transactions
+		ui_msgs::display_warning(_("Warning: Deleting a fiscal year all transactions
 		are removed and converted into relevant balances. This process is irreversible!"),
 			0, 0, "class='currentfg'");
 		start_table(Config::get('tables.style'));

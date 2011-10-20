@@ -20,7 +20,7 @@
 		page(_($help_context = "Inventory Item Status"));
 	}
 
-	if ($_POST['stock_id'])
+	if (Input::post('stock_id'))
 		$Ajax->activate('status_tbl');
 	//----------------------------------------------------------------------------------------------------
 
@@ -28,7 +28,7 @@
 
 	start_form();
 
-	if (!isset($_POST['stock_id']))
+	if (!Input::post('stock_id'))
 		$_POST['stock_id'] = ui_globals::get_global_stock_item();
 
 	echo "<center> ";
@@ -45,7 +45,7 @@
 	$kitset_or_service = false;
 
 	div_start('status_tbl');
-	if ($_POST['mb_flag'] == STOCK_SERVICE) {
+	if (Input::post('mb_flag') == STOCK_SERVICE) {
 		ui_msgs::display_note(_("This is a service and cannot have a stock holding, only the total quantity on outstanding sales orders is shown."), 0, 1);
 		$kitset_or_service = true;
 	}

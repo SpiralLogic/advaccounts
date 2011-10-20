@@ -91,7 +91,7 @@
 				$input_error = true;
 			}
 		}
-		if (!is_tax_gl_unique(get_post('gl_code'))) {
+		if (!Tax_Type::is_tax_gl_unique(get_post('gl_code'))) {
 			ui_msgs::display_error(_("Cannot post to GL account used by more than one tax type."));
 			ui_view::set_focus('gl_code');
 			$input_error = true;

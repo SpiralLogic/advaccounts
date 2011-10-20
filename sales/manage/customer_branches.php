@@ -245,7 +245,7 @@
 		display_db_pager($table);
 	}
 	else
-		ui_msgs::display_note(_("The selected customer does not have any branches. Please create at least one branch."));
+		ui_msgs::display_warning(_("The selected customer does not have any branches. Please create at least one branch."));
 
 	start_outer_table(Config::get('tables.style2'), 5);
 

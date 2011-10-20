@@ -88,7 +88,7 @@
 					$Net = round2($sign * ((1 - $myrow2["discount_percent"]) * $myrow2["unit_price"] * $myrow2["quantity"]),
 						user_price_dec());
 					$SubTotal += $Net;
-					$TaxType = get_item_tax_type_for_item($myrow2['stock_id']);
+					$TaxType = Tax_Groups::get_for_item($myrow2['stock_id']);
 					$DisplayPrice = number_format2($myrow2["unit_price"], $dec);
 					$DisplayQty = number_format2($sign * $myrow2["quantity"], get_qty_dec($myrow2['stock_id']));
 					$DisplayNet = number_format2($Net, $dec);

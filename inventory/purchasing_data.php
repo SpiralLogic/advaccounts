@@ -96,7 +96,7 @@
 	} else {
 		start_form();
 	}
-	if (!isset($_POST['stock_id']))
+	if (!Input::post('stock_id'))
 		$_POST['stock_id'] = ui_globals::get_global_stock_item();
 	if (!Input::request('frame')) {
 		echo "<center>" . _("Item:") . "&nbsp;";
@@ -122,7 +122,7 @@
 		$result = DBOld::query($sql, "The supplier purchasing details for the selected part could not be retrieved");
 		div_start('price_table');
 		if (DBOld::num_rows($result) == 0) {
-			ui_msgs::display_note(_("There is no supplier prices set up for the product selected"));
+			ui_msgs::display_warning(_("There is no supplier prices set up for the product selected"));
 		}
 		else
 		{

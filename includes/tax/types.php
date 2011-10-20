@@ -69,7 +69,7 @@
 			return $row[0];
 		}
 
-		public static function delete_tax_type($type_id) {
+		public static function delete($type_id) {
 			DBOld::begin_transaction();
 
 			$sql = "DELETE FROM tax_types WHERE id=" . DBOld::escape($type_id);

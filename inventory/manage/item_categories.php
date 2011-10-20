@@ -185,7 +185,7 @@
 
 	gl_all_accounts_list_row(_("Sales Account:"), 'sales_account', $_POST['sales_account']);
 
-	if ($_POST['mb_flag'] == STOCK_SERVICE) {
+	if (Input::post('mb_flag') == STOCK_SERVICE) {
 		gl_all_accounts_list_row(_("C.O.G.S. Account:"), 'cogs_account', $_POST['cogs_account']);
 		hidden('inventory_account', $_POST['inventory_account']);
 		hidden('adjustment_account', $_POST['adjustment_account']);

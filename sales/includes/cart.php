@@ -297,7 +297,7 @@
 			$this->phone = $phone;
 			$this->email = $email;
 			$this->tax_group_id = $tax_group_id;
-			$this->tax_group_array = get_tax_group_items_as_array($tax_group_id);
+			$this->tax_group_array = Tax_Groups::get_tax_group_items_as_array($tax_group_id);
 		}
 
 		function set_salesman($salesman_code = null) {
@@ -465,7 +465,7 @@
 		}
 
 		function get_shipping_tax() {
-			$tax_items = get_shipping_tax_as_array();
+			$tax_items = Tax_Groups::get_shipping_tax_as_array();
 			$tax_rate = 0;
 			if ($tax_items != null) {
 				foreach ($tax_items as $item_tax) {

@@ -89,7 +89,7 @@
 			DBOld::query($sql, "could not delete item tax group items");
 		}
 
-		static function get_tax_group_items($id) {
+		static function get_for_item($id) {
 			$sql = "SELECT tax_group_items.*, tax_types.name AS tax_type_name, tax_types.rate,
 		tax_types.sales_gl_code, tax_types.purchasing_gl_code
 		FROM tax_group_items, tax_types
@@ -102,7 +102,7 @@
 		static function get_tax_group_items_as_array($id) {
 			$ret_tax_array = array();
 
-			$tax_group_items = static::get_tax_group_items($id);
+			$tax_group_items = static::get_for_item($id);
 
 			while ($tax_group_item = DBOld::fetch($tax_group_items))
 			{

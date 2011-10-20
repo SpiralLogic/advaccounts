@@ -53,7 +53,7 @@
 																		 $quantity, $standard_cost, $memo_) {
 		$mb_flag = Manufacturing::get_mb_flag($stock_id);
 
-		if ($_POST['mb_flag'] == STOCK_SERVICE) {
+		if (Input::post('mb_flag') == STOCK_SERVICE) {
 			Errors::show_db_error("Cannot do inventory adjustment for Service item : $stock_id", "");
 		}
 

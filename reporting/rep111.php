@@ -84,7 +84,7 @@
 					user_price_dec());
 				$SubTotal += $Net;
 				#  __ADVANCEDEDIT__ BEGIN #
-				$TaxType = get_item_tax_type_for_item($myrow2['stk_code']);
+				$TaxType = Tax_Groups::get_for_item($myrow2['stk_code']);
 				$TaxTotal += Taxes::get_tax_for_item($myrow2['stk_code'], $Net, $TaxType);
 
 				#  __ADVANCEDEDIT__ END #
