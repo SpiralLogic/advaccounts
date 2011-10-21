@@ -39,4 +39,5 @@
 	define('STORE_PRODUCT_URL', 'http://www.advancedroadsigns.com.au/-p/');
 	define('STORE_URL_EXTENSION', '.htm');
 	define('COMPANY_PATH', PATH_TO_ROOT . '/company');
+	define('THEME_PATH', PATH_TO_ROOT . '/themes/');
 	define("BACKUP_PATH", COMPANY_PATH . "/backup/");

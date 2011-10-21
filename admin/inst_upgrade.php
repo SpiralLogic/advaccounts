@@ -14,7 +14,6 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	page(_($help_context = "Software Upgrade"));
-	include_once(APP_PATH . "admin/db/maintenance_db.php");
 
 	//
 	//	Checks $field existence in $table with given field $properties
@@ -55,7 +54,7 @@
 
 		$patchdir = APP_PATH . "sql/";
 		$upgrades = array();
-		$datadir = @opendir($patchdir);
+		$datadir  = @opendir($patchdir);
 
 		if ($datadir) {
 			while (false !== ($fname = readdir($datadir)))
@@ -93,14 +92,13 @@
 				$sql = $inst->sql;
 
 				if ($sql != '')
-					$ret &= db_import(PATH_TO_ROOT . '/sql/' . $sql, $conn, $force);
+					$ret &= DB_Utils::import(PATH_TO_ROOT . '/sql/' . $sql, $conn, $force);
 
 				$ret &= $inst->install($force);
-			} else
-				if ($state !== true) {
-					ui_msgs::display_error(_("Upgrade cannot be done because database has been already partially upgraded. Please downgrade database to clean previous version or try forced upgrade."));
-					$ret = false;
-				}
+			} else if ($state !== true) {
+				ui_msgs::display_error(_("Upgrade cannot be done because database has been already partially upgraded. Please downgrade database to clean previous version or try forced upgrade."));
+				$ret = false;
+			}
 		}
 		return $ret;
 	}
@@ -128,7 +126,7 @@
 				continue;
 			}
 			// create security backup
-			db_backup($conn, 'no', 'Security backup before upgrade');
+			DB_Utils::backup($conn, 'no', 'Security backup before upgrade');
 			// apply all upgrade data
 			foreach ($installers as $i => $inst)
 			{
@@ -145,7 +143,7 @@
 		}
 		if ($ret) { // re-read the prefs
 
-			$user = get_user_by_login($_SESSION["wa_current_user"]->username);
+			$user                               = get_user_by_login($_SESSION["wa_current_user"]->username);
 			$_SESSION["wa_current_user"]->prefs = new userPrefs($user);
 			ui_msgs::display_notification(_('All companies data has been successfully updated'));
 		}
@@ -155,7 +153,7 @@
 	start_form();
 	start_table(Config::get('tables.style'));
 	$th = array(_("Version"), _("Description"), _("Sql file"), _("Install"),
-		_("Force upgrade")
+							_("Force upgrade")
 	);
 	table_header($th);
 
@@ -174,14 +172,13 @@
 		$check = $inst->installed('');
 		if ($check === true)
 			label_cell(_("Installed"));
-		else
-			if (!$check)
-				check_cells(null, 'install_' . $i, 0);
-			else {
-				label_cell("<span class=redfg>"
-					 . sprintf(_("Partially installed (%s)"), $check) . "</span>");
-				$partial++;
-			}
+		else if (!$check)
+			check_cells(null, 'install_' . $i, 0);
+		else {
+			label_cell("<span class=redfg>"
+				 . sprintf(_("Partially installed (%s)"), $check) . "</span>");
+			$partial++;
+		}
 
 		check_cells(null, 'force_' . $i, 0);
 		end_row();

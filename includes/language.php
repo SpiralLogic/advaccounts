@@ -20,10 +20,10 @@
 		var $is_locale_file;
 
 		function language($name, $code, $encoding, $dir = 'ltr') {
-			$this->name = $name;
-			$this->code = $code ? $code : 'en_GB';
+			$this->name     = $name;
+			$this->code     = $code ? $code : 'en_GB';
 			$this->encoding = $encoding;
-			$this->dir = $dir;
+			$this->dir      = $dir;
 		}
 
 		function get_language_dir() {
@@ -38,17 +38,17 @@
 		function set_language($code) {
 
 			$changed = $this->code != $code;
-			$lang = Arr::search_value($code, Config::get(null, null, 'installed_languages'), 'code');
+			$lang    = Arr::search_value($code, Config::get(null, null, 'installed_languages'), 'code');
 
 			if ($lang && $changed) {
 				// flush cache as we can use several languages in one account
 				flush_dir(COMPANY_PATH . '/js_cache');
 
-				$this->name = $lang['name'];
-				$this->code = $lang['code'];
-				$this->encoding = $lang['encoding'];
-				$this->dir = isset($lang['rtl']) ? 'rtl' : 'ltr';
-				$locale = APP_PATH . "lang/" . $this->code . "/locale.php";
+				$this->name           = $lang['name'];
+				$this->code           = $lang['code'];
+				$this->encoding       = $lang['encoding'];
+				$this->dir            = isset($lang['rtl']) ? 'rtl' : 'ltr';
+				$locale               = APP_PATH . "lang/" . $this->code . "/locale.php";
 				$this->is_locale_file = file_exists($locale);
 			}
 
@@ -61,6 +61,66 @@
 
 			if (isset($_SESSION['App']) && $changed)
 				$_SESSION['App']->init(); // refresh menu
+		}
+
+		static function write_lang() {
+
+			$conn = Arr::natsort(Config::get(null, null, 'installed_languages'), 'code', 'code');
+			Config::set('installed_languages', $conn);
+			$installed_languages = Config::get(null, null, 'installed_languages');
+			$n                   = count($installed_languages);
+			$msg                 = "<?php\n\n";
+
+			$msg .= "/* How to make new entries here\n\n";
+			$msg .= "-- if adding languages at the beginning of the list, make sure it's index is set to 0 (it has ' 0 => ')\n";
+			$msg .= "-- 'code' should match the name of the directory for the language under \\lang\n";
+			$msg .= "-- 'name' is the name that will be displayed in the language selection list (in Users and Display Setup)\n";
+			$msg .= "-- 'rtl' only needs to be set for right-to-left languages like Arabic and Hebrew\n\n";
+			$msg .= "*/\n\n\n";
+
+			$msg .= "\return array (\n";
+			if ($n > 0)
+				$msg .= "\t0 => ";
+			for ($i = 0; $i < $n; $i++)
+			{
+				if ($i > 0)
+					$msg .= "\t\tarray ";
+				else
+					$msg .= "array ";
+				$msg .= "('code' => '" . $installed_languages[$i]['code'] . "', ";
+				$msg .= "'name' => '" . $installed_languages[$i]['name'] . "', ";
+				$msg .= "'encoding' => '" . $installed_languages[$i]['encoding'] . "'";
+				if (isset($installed_languages[$i]['rtl']) && $installed_languages[$i]['rtl'])
+					$msg .= ", 'rtl' => true),\n";
+				else
+					$msg .= "),\n";
+			}
+
+			$msg .= "\t);\n";
+
+			$path     = APP_PATH . "lang";
+			$filename = $path . '/installed_languages.php';
+			// Check if directory exists and is writable first.
+			if (file_exists($path) && is_writable($path)) {
+				if (!$zp = fopen($filename, 'w')) {
+					ui_msgs::display_error(_("Cannot open the languages file - ") . $filename);
+					return false;
+				}
+				else
+				{
+					if (!fwrite($zp, $msg)) {
+						ui_msgs::display_error(_("Cannot write to the language file - ") . $filename);
+						fclose($zp);
+						return false;
+					}
+					// Close file
+					fclose($zp);
+				}
+			} else {
+				ui_msgs::display_error(_("The language files folder ") . $path . _(" is not writable. Change its permissions so it is, then re-run the operation."));
+				return false;
+			}
+			return true;
 		}
 	}
 

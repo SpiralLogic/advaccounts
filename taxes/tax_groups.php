@@ -15,9 +15,6 @@
 
 	page(_($help_context = "Tax Groups"));
 
-	include_once(APP_PATH . "taxes/db/tax_groups_db.php");
-	include_once(APP_PATH . "taxes/db/tax_types_db.php");
-
 	simple_page_mode(true);
 
 	check_db_has_tax_types(_("There are no tax types defined. Define tax types before defining tax groups."));
@@ -64,7 +61,7 @@
 				 $_POST['tax_type_id' . $i] != ANY_NUMERIC
 				) {
 					$taxes[] = $_POST['tax_type_id' . $i];
-					$rates[] = Tax_Type::get_default_rate($_POST['tax_type_id' . $i]);
+					$rates[] = Tax_Types::get_default_rate($_POST['tax_type_id' . $i]);
 					//Editable rate has been removed 090920 Joe Hunt
 					//$rates[] = input_num('rate' . $i);
 				}
@@ -90,17 +87,17 @@
 	function can_delete($selected_id) {
 		if ($selected_id == -1)
 			return false;
-		$sql = "SELECT COUNT(*) FROM cust_branch WHERE tax_group_id=" . DBOld::escape($selected_id);
+		$sql    = "SELECT COUNT(*) FROM cust_branch WHERE tax_group_id=" . DBOld::escape($selected_id);
 		$result = DBOld::query($sql, "could not query customers");
-		$myrow = DBOld::fetch_row($result);
+		$myrow  = DBOld::fetch_row($result);
 		if ($myrow[0] > 0) {
 			ui_msgs::display_note(_("Cannot delete this tax group because customer branches been created referring to it."));
 			return false;
 		}
 
-		$sql = "SELECT COUNT(*) FROM suppliers WHERE tax_group_id=" . DBOld::escape($selected_id);
+		$sql    = "SELECT COUNT(*) FROM suppliers WHERE tax_group_id=" . DBOld::escape($selected_id);
 		$result = DBOld::query($sql, "could not query suppliers");
-		$myrow = DBOld::fetch_row($result);
+		$myrow  = DBOld::fetch_row($result);
 		if ($myrow[0] > 0) {
 			ui_msgs::display_note(_("Cannot delete this tax group because suppliers been created referring to it."));
 			return false;
@@ -122,7 +119,7 @@
 
 	if ($Mode == 'RESET') {
 		$selected_id = -1;
-		$sav = get_post('show_inactive');
+		$sav         = get_post('show_inactive');
 		unset($_POST);
 		$_POST['show_inactive'] = $sav;
 	}
@@ -172,7 +169,7 @@
 		if ($Mode == 'Edit') {
 			$group = Tax_Groups::get_tax_group($selected_id);
 
-			$_POST['name'] = $group["name"];
+			$_POST['name']         = $group["name"];
 			$_POST['tax_shipping'] = $group["tax_shipping"];
 
 			$items = Tax_Groups::get_for_item($selected_id);
@@ -181,7 +178,7 @@
 			while ($tax_item = DBOld::fetch($items))
 			{
 				$_POST['tax_type_id' . $i] = $tax_item["tax_type_id"];
-				$_POST['rate' . $i] = percent_format($tax_item["rate"]);
+				$_POST['rate' . $i]        = percent_format($tax_item["rate"]);
 				$i++;
 			}
 			while ($i < 5) unset($_POST['tax_type_id' . $i++]);
@@ -209,7 +206,7 @@
 		tax_types_list_cells(null, 'tax_type_id' . $i, $_POST['tax_type_id' . $i], _("None"), true);
 
 		if ($_POST['tax_type_id' . $i] != 0 && $_POST['tax_type_id' . $i] != ALL_NUMERIC) {
-			$default_rate = Tax_Type::get_default_rate($_POST['tax_type_id' . $i]);
+			$default_rate = Tax_Types::get_default_rate($_POST['tax_type_id' . $i]);
 			label_cell(percent_format($default_rate), "nowrap align=right");
 			//Editable rate has been removed 090920 Joe Hunt
 			//if (!isset($_POST['rate' . $i]) || $_POST['rate' . $i] == "")

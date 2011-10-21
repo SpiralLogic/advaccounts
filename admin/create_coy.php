@@ -13,8 +13,6 @@
 
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	include_once(APP_PATH . "admin/db/maintenance_db.php");
-
 	page(_($help_context = "Create/Update Company"));
 
 	//---------------------------------------------------------------------------------------------
@@ -51,15 +49,6 @@
 
 	//---------------------------------------------------------------------------------------------
 
-	function remove_connection($id) {
-
-		$err = db_drop_db(Config::get('0', null, 'db'));
-
-		Config::remove($id, null, 'db');
-
-		return $err;
-	}
-
 	//---------------------------------------------------------------------------------------------
 
 	function handle_submit() {
@@ -70,33 +59,32 @@
 		if (!check_data())
 			return false;
 
-		$id = $_GET['id'];
-		$new = !Config::get($id, null, 'db');
-		$db_connection['name'] = $_POST['name'];
-		$db_connection['host'] = $_POST['host'];
-		$db_connection['dbuser'] = $_POST['dbuser'];
+		$id                          = $_GET['id'];
+		$new                         = !Config::get($id, null, 'db');
+		$db_connection['name']       = $_POST['name'];
+		$db_connection['host']       = $_POST['host'];
+		$db_connection['dbuser']     = $_POST['dbuser'];
 		$db_connection['dbpassword'] = $_POST['dbpassword'];
-		$db_connection['dbname'] = $_POST['dbname'];
+		$db_connection['dbname']     = $_POST['dbname'];
 		Config::set($id, $db_connection, 'db');
 		if ((bool)$_POST['def'] == true)
 			Config::set('company.default', $id);
 
 		if (isset($_GET['ul']) && $_GET['ul'] == 1) {
 			$conn = Config::get($id, null, 'db');
-			if (($db = db_create_db($conn)) == 0) {
+			if (($db = DB_Utils::create($conn)) == 0) {
 				ui_msgs::display_error(_("Error creating Database: ") . $conn['dbname'] . _(", Please create it manually"));
 				$error = true;
 			} else {
 
 				$filename = $_FILES['uploadfile']['tmp_name'];
 				if (is_uploaded_file($filename)) {
-					if (!db_import($filename, $conn, $id)) {
+					if (!DB_Utils::import($filename, $conn, $id)) {
 						ui_msgs::display_error(_('Cannot create new company due to bugs in sql file.'));
 						$error = true;
-					} else
-						if (isset($_POST['admpassword']) && $_POST['admpassword'] != "")
-							DBOld::query("UPDATE users set password = '" . md5(
-									$_POST['admpassword']) . "' WHERE user_id = 'admin'");
+					} else if (isset($_POST['admpassword']) && $_POST['admpassword'] != "")
+						DBOld::query("UPDATE users set password = '" . md5(
+								$_POST['admpassword']) . "' WHERE user_id = 'admin'");
 				}
 				else
 				{
@@ -112,7 +100,7 @@
 		} else {
 			if ($_GET['c'] = 'u') {
 				$conn = Config::get($id, null, 'db');
-				if (($db = db_create_db($conn)) == 0) {
+				if (($db = DB_Utils::create($conn)) == 0) {
 					ui_msgs::display_error(_("Error connecting to Database: ") . $conn['dbname'] . _(", Please correct it"));
 				} elseif ($_POST['admpassword'] != "") {
 					DBOld::query("UPDATE users set password = '" . md5(
@@ -125,7 +113,7 @@
 			create_comp_dirs(COMPANY_PATH . "/$id", $comp_subdirs = Config::get('company_subdirs'));
 		}
 		$exts = DB_Company::get_company_extensions();
-		write_extensions($exts, $id);
+		frontaccounting::write_extensions($exts, $id);
 		ui_msgs::display_notification($new ? _('New company has been created.') : _('Company has been updated.'));
 		return true;
 	}
@@ -149,7 +137,7 @@
 		// rename directory to temporary name to ensure all
 		// other subdirectories will have right owners even after
 		// unsuccessfull removal.
-		$cdir = COMPANY_PATH . '/' . $id;
+		$cdir    = COMPANY_PATH . '/' . $id;
 		$tmpname = COMPANY_PATH . '/old_' . $id;
 		if (!@rename($cdir, $tmpname)) {
 			ui_msgs::display_error(_('Cannot rename subdirectory to temporary name.'));
@@ -195,13 +183,13 @@
 		start_table(Config::get('tables.style'));
 
 		$th = array(_("Company"), _("Database Host"), _("Database User"),
-			_("Database Name"), _("Table Pref"), _("Default"), "", ""
+								_("Database Name"), _("Table Pref"), _("Default"), "", ""
 		);
 		table_header($th);
 
-		$k = 0;
+		$k    = 0;
 		$conn = Config::get(null, null, 'db');
-		$n = count($conn);
+		$n    = count($conn);
 		for ($i = 0; $i < $n; $i++)
 		{
 			if ($i == Config::get('company.default'))
@@ -219,10 +207,10 @@
 			label_cell($conn[$i]['dbname']);
 
 			label_cell($what);
-			$edit = _("Edit");
+			$edit   = _("Edit");
 			$delete = _("Delete");
 			if (user_graphic_links()) {
-				$edit = set_icon(ICON_EDIT, $edit);
+				$edit   = set_icon(ICON_EDIT, $edit);
 				$delete = set_icon(ICON_DELETE, $delete);
 			}
 			label_cell("<a href='" . $_SERVER['PHP_SELF'] . "?selected_id=$i'>$edit</a>");
@@ -262,12 +250,12 @@
 		start_table(Config::get('tables.style2'));
 
 		if ($selected_id != -1) {
-			$conn = Config::get($selected_id, null, 'db');
-			$_POST['name'] = $conn['name'];
-			$_POST['host'] = $conn['host'];
-			$_POST['dbuser'] = $conn['dbuser'];
+			$conn                = Config::get($selected_id, null, 'db');
+			$_POST['name']       = $conn['name'];
+			$_POST['host']       = $conn['host'];
+			$_POST['dbuser']     = $conn['dbuser'];
 			$_POST['dbpassword'] = $conn['dbpassword'];
-			$_POST['dbname'] = $conn['dbname'];
+			$_POST['dbname']     = $conn['dbname'];
 
 			if ($selected_id == Config::get('company.default'))
 				$_POST['def'] = true;

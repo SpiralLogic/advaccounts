@@ -25,7 +25,7 @@
 
 		if (Config::get('debug') || !isset($_SESSION['reports'])) {
 			// to save time, store in session.
-			$paths = array(
+			$paths   = array(
 				PATH_TO_ROOT . '/reporting/',
 				COMPANY_PATH . '/reporting/'
 			);
@@ -65,8 +65,8 @@
 
 	function clear_form() {
 		global $selected_id;
-		$Ajax = Ajax::instance();
-		$selected_id = '';
+		$Ajax          = Ajax::instance();
+		$selected_id   = '';
 		$_POST['name'] = '';
 		$Ajax->activate('_page_body');
 	}
@@ -93,13 +93,13 @@
 		if (!$error) {
 			$prof = array('' => get_post('Prn')); // store default value/profile name
 			foreach (get_reports() as $rep => $descr) {
-				$val = get_post('Prn' . $rep);
+				$val        = get_post('Prn' . $rep);
 				$prof[$rep] = $val;
 			}
 			if ($_POST['profile_id'] == '')
 				$_POST['profile_id'] = get_post('name');
 
-			update_printer_profile($_POST['profile_id'], $prof);
+			Printer::update_profile($_POST['profile_id'], $prof);
 			if ($selected_id == '') {
 				ui_msgs::display_notification_centered(_('New printing profile has been created'));
 				clear_form();
@@ -111,7 +111,7 @@
 
 	if (get_post('delete')) {
 		if (!check_delete(get_post('name'))) {
-			delete_printer_profile($selected_id);
+			Printer::delete_profile($selected_id);
 			ui_msgs::display_notification(_('Selected printing profile has been deleted'));
 			clear_form();
 		}
@@ -134,7 +134,7 @@
 		label_cells(_("Printing Profile Name") . ':', get_post('profile_id'));
 	end_table(1);
 
-	$result = get_print_profile(get_post('profile_id'));
+	$result = Printer::get_profile(get_post('profile_id'));
 	$prints = array();
 	while ($myrow = DBOld::fetch($result)) {
 		$prints[$myrow['report']] = $myrow['printer'];
@@ -144,7 +144,7 @@
 	$th = array(_("Report Id"), _("Description"), _("Printer"));
 	table_header($th);
 
-	$k = 0;
+	$k    = 0;
 	$unkn = 0;
 	foreach (get_reports() as $rep => $descr)
 	{

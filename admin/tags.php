@@ -21,19 +21,19 @@
 		$page_security = 'SA_DIMTAGS';
 	}
 
-	// We use $_POST['type'] throughout this script, so convert $_GET vars
-	// if $_POST['type'] is not set.
-	if (!isset($_POST['type'])) {
-		if ($_GET['type'] == "account")
+	// We use Input::post('type') throughout this script, so convert $_GET vars
+	// if Input::post('type') is not set.
+	if (!Input::post('type')) {
+		if (Input::get('type') == "account")
 			$_POST['type'] = TAG_ACCOUNT;
-		elseif ($_GET['type'] == "dimension")
+		elseif (Input::get('type') == "dimension")
 			$_POST['type'] = TAG_DIMENSION;
 		else
 			die(_("Unspecified tag type"));
 	}
 
 	// Set up page based on what type of tags we're working with
-	switch ($_POST['type']) {
+	switch (Input::post('type')) {
 		case TAG_ACCOUNT:
 			// Account tags
 			$_SESSION['page_title'] = _($help_context = "Account Tags");
@@ -68,7 +68,7 @@
 			}
 			else
 			{
-				if ($ret = add_tag($_POST['type'], $_POST['name'], $_POST['description']))
+				if ($ret = add_tag(Input::post('type'), $_POST['name'], $_POST['description']))
 					ui_msgs::display_notification(_('New tag has been added'));
 			}
 			if ($ret) $Mode = 'RESET';
@@ -103,13 +103,13 @@
 	//-----------------------------------------------------------------------------------
 
 	if ($Mode == 'RESET') {
-		$selected_id = -1;
+		$selected_id   = -1;
 		$_POST['name'] = $_POST['description'] = '';
 	}
 
 	//-----------------------------------------------------------------------------------
 
-	$result = get_tags($_POST['type'], check_value('show_inactive'));
+	$result = get_tags(Input::post('type'), check_value('show_inactive'));
 
 	start_form();
 	start_table(Config::get('tables.style'));
@@ -143,7 +143,7 @@
 			// Editing an existing tag
 			$myrow = get_tag($selected_id);
 
-			$_POST['name'] = $myrow["name"];
+			$_POST['name']        = $myrow["name"];
 			$_POST['description'] = $myrow["description"];
 		}
 		// Note the selected tag

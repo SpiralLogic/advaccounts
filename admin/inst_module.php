@@ -15,14 +15,12 @@
 
 	page(_($help_context = "Install/Activate extensions"));
 
-	include_once(APP_PATH . "admin/db/maintenance_db.php");
-
 	simple_page_mode(true);
 
 	//---------------------------------------------------------------------------------------------
 	function update_extensions($extensions) {
 
-		if (!write_extensions($extensions)) {
+		if (!frontaccounting::write_extensions($extensions)) {
 			ui_msgs::display_notification(_("Cannot update system extensions list."));
 			return false;
 		}
@@ -39,7 +37,7 @@
 				if (isset($newexts[$key]))
 					$newexts[$key]['active'] = $exts[$key]['active'];
 			}
-			if (!write_extensions($newexts, $i)) {
+			if (!frontaccounting::write_extensions($newexts, $i)) {
 				ui_msgs::display_notification(sprintf(_("Cannot update extensions list for company '%s'."),
 						Config::get($i, 'name', 'db')));
 				return false;
@@ -90,22 +88,22 @@
 			return;
 		}
 
-		$extensions[$id]['tab'] = $_POST['tab'];
-		$extensions[$id]['name'] = $_POST['name'];
-		$extensions[$id]['path'] = $_POST['path'];
-		$extensions[$id]['title'] = $_POST['title'];
+		$extensions[$id]['tab']    = $_POST['tab'];
+		$extensions[$id]['name']   = $_POST['name'];
+		$extensions[$id]['path']   = $_POST['path'];
+		$extensions[$id]['title']  = $_POST['title'];
 		$extensions[$id]['active'] = check_value('active');
 
 		// Currently we support only plugin extensions here.
 		$extensions[$id]['type'] = 'plugin';
-		$directory = APP_PATH . "modules/" . $_POST['path'];
+		$directory               = APP_PATH . "modules/" . $_POST['path'];
 		if (!file_exists($directory)) {
 			mkdir($directory);
 		}
 		if (is_uploaded_file($_FILES['uploadfile']['tmp_name'])) {
 			$extensions[$id]['filename'] = $_FILES['uploadfile']['name'];
-			$file1 = $_FILES['uploadfile']['tmp_name'];
-			$file2 = $directory . "/" . $_FILES['uploadfile']['name'];
+			$file1                       = $_FILES['uploadfile']['tmp_name'];
+			$file2                       = $directory . "/" . $_FILES['uploadfile']['name'];
 			if (file_exists($file2))
 				unlink($file2);
 			move_uploaded_file($file1, $file2);
@@ -119,13 +117,13 @@
 				unlink($file2);
 			move_uploaded_file($file1, $file2);
 			$db_name = $_SESSION["wa_current_user"]->company;
-			db_import($file2, Config::get($db_name, null, 'db'));
+			DB_Utils::import($file2, Config::get($db_name, null, 'db'));
 		}
 
 		if (is_uploaded_file($_FILES['uploadfile3']['tmp_name'])) {
 			$extensions[$id]['acc_file'] = $_FILES['uploadfile3']['name'];
-			$file1 = $_FILES['uploadfile3']['tmp_name'];
-			$file2 = $directory . "/" . $_FILES['uploadfile3']['name'];
+			$file1                       = $_FILES['uploadfile3']['tmp_name'];
+			$file2                       = $directory . "/" . $_FILES['uploadfile3']['name'];
 			if (file_exists($file2))
 				unlink($file2);
 			move_uploaded_file($file1, $file2);
@@ -137,7 +135,7 @@
 		if ($extensions[$id]['type'] == 'plugin') {
 			$exttext = file_get_contents(PATH_TO_ROOT . '/modules/'
 				 . $extensions[$id]['path'] . '/' . $extensions[$id]['filename']);
-			$area = 'SA_OPEN';
+			$area    = 'SA_OPEN';
 			if (preg_match('/.*\$page_security\s*=\s*[\'"]([^\'"]*)/', $exttext, $match)) {
 				$area = trim($match[1]);
 			}
@@ -177,13 +175,13 @@
 
 		start_table(Config::get('tables.style'));
 		$th = array(_("Name"), _("Tab"), _("Link text"), _("Folder"), _("Filename"),
-			_("Access extensions"), "", ""
+								_("Access extensions"), "", ""
 		);
 		table_header($th);
 
-		$k = 0;
+		$k    = 0;
 		$mods = DB_Company::get_company_extensions();
-		$mods = array_natsort($mods, null, 'name');
+		$mods = Arr::natsort($mods, null, 'name');
 
 		foreach ($mods as $i => $mod)
 		{
@@ -232,7 +230,7 @@
 				}
 			}
 		}
-		$mods = array_natsort($mods, null, 'name');
+		$mods = Arr::natsort($mods, null, 'name');
 		table_header($th);
 		$k = 0;
 		foreach ($mods as $i => $mod)
@@ -263,11 +261,11 @@
 
 		if ($selected_id != -1 && $extensions[$selected_id]['type'] == 'plugin') {
 			if ($Mode == 'Edit') {
-				$mod = $extensions[$selected_id];
-				$_POST['tab'] = $mod['tab'];
-				$_POST['name'] = $mod['name'];
-				$_POST['title'] = $mod['title'];
-				$_POST['path'] = $mod['path'];
+				$mod               = $extensions[$selected_id];
+				$_POST['tab']      = $mod['tab'];
+				$_POST['name']     = $mod['name'];
+				$_POST['title']    = $mod['title'];
+				$_POST['path']     = $mod['path'];
 				$_POST['filename'] = $mod['filename'];
 				$_POST['acc_file'] = @$mod['acc_file'];
 				hidden('filename', $_POST['filename']);
@@ -311,7 +309,7 @@
 		foreach ($exts as $i => $ext) {
 			$exts[$i]['active'] = check_value('Active' . $i);
 		}
-		write_extensions($exts, get_post('extset'));
+		frontaccounting::write_extensions($exts, get_post('extset'));
 		$installed_extensions = $exts;
 		ui_msgs::display_notification(_('Current active extensions set has been saved.'));
 	}

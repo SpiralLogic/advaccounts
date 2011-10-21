@@ -13,8 +13,6 @@
 
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	include_once(APP_PATH . "admin/db/maintenance_db.php");
-
 	if (get_post('view')) {
 		if (!get_post('backups')) {
 			ui_msgs::display_error(_('Select backup file first.'));
@@ -52,7 +50,7 @@
 	}
 
 	function generate_backup($conn, $ext = 'no', $comm = '') {
-		$filename = db_backup($conn, $ext, $comm);
+		$filename = DB_Utils::backup($conn, $ext, $comm);
 		if ($filename)
 			ui_msgs::display_notification(_("Backup successfully generated.") . ' '
 				 . _("Filename") . ": " . $filename);
@@ -118,7 +116,7 @@
 	}
 
 	$db_name = $_SESSION["wa_current_user"]->company;
-	$conn = Config::get($db_name, null, 'db');
+	$conn    = Config::get($db_name, null, 'db');
 
 	if (get_post('creat')) {
 		generate_backup($conn, get_post('comp'), get_post('comments'));
@@ -127,7 +125,7 @@
 	;
 
 	if (get_post('restore')) {
-		if (db_import(BACKUP_PATH . get_post('backups'), $conn))
+		if (DB_Utils::import(BACKUP_PATH . get_post('backups'), $conn))
 			ui_msgs::display_notification(_("Restore backup completed."));
 	}
 
@@ -144,7 +142,7 @@
 
 	if (get_post('upload')) {
 		$tmpname = $_FILES['uploadfile']['tmp_name'];
-		$fname = $_FILES['uploadfile']['name'];
+		$fname   = $_FILES['uploadfile']['name'];
 
 		if (!preg_match("/.sql(.zip|.gz)?$/", $fname))
 			ui_msgs::display_error(_("You can only upload *.sql backup files"));

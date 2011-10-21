@@ -15,9 +15,6 @@
 
 	page(_($help_context = "Item Tax Types"));
 
-	include_once(APP_PATH . "taxes/db/item_tax_types_db.php");
-	include_once(APP_PATH . "taxes/db/tax_types_db.php");
-
 	simple_page_mode(true);
 	//-----------------------------------------------------------------------------------
 
@@ -36,8 +33,8 @@
 			// create an array of the exemptions
 			$exempt_from = array();
 
-			$tax_types = Tax_Type::get_all_simple();
-			$i = 0;
+			$tax_types = Tax_Types::get_all_simple();
+			$i         = 0;
 
 			while ($myrow = DBOld::fetch($tax_types))
 			{
@@ -63,9 +60,9 @@
 	//-----------------------------------------------------------------------------------
 
 	function can_delete($selected_id) {
-		$sql = "SELECT COUNT(*) FROM stock_master WHERE tax_type_id=" . DBOld::escape($selected_id);
+		$sql    = "SELECT COUNT(*) FROM stock_master WHERE tax_type_id=" . DBOld::escape($selected_id);
 		$result = DBOld::query($sql, "could not query stock master");
-		$myrow = DBOld::fetch_row($result);
+		$myrow  = DBOld::fetch_row($result);
 		if ($myrow[0] > 0) {
 			ui_msgs::display_error(_("Cannot delete this item tax type because items have been created referring to it."));
 			return false;
@@ -87,7 +84,7 @@
 
 	if ($Mode == 'RESET') {
 		$selected_id = -1;
-		$sav = get_post('show_inactive');
+		$sav         = get_post('show_inactive');
 		unset($_POST);
 		$_POST['show_inactive'] = $sav;
 	}
@@ -133,7 +130,7 @@
 		if ($Mode == 'Edit') {
 			$myrow = get($selected_id);
 			unset($_POST); // clear exemption checkboxes
-			$_POST['name'] = $myrow["name"];
+			$_POST['name']   = $myrow["name"];
 			$_POST['exempt'] = $myrow["exempt"];
 
 			// read the exemptions and check the ones that are on
@@ -164,7 +161,7 @@
 		$th = array(_("Tax Name"), _("Rate"), _("Is exempt"));
 		table_header($th);
 
-		$tax_types = Tax_Type::get_all_simple();
+		$tax_types = Tax_Types::get_all_simple();
 
 		while ($myrow = DBOld::fetch($tax_types))
 		{

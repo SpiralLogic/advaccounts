@@ -13,11 +13,9 @@
 	$page_security = 'SA_SALESPAYMNT';
 
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	include_once(APP_PATH . "taxes/db/tax_groups_db.php");
+
 	include_once(APP_PATH . "sales/includes/ui/sales_order_ui.php");
-
 	include_once(APP_PATH . "sales/includes/sales_ui.php");
-
 	include_once(APP_PATH . "reporting/includes/reporting.php");
 
 	$js = "";
@@ -38,7 +36,7 @@
 
 	if (list_updated('BranchID')) {
 		// when branch is selected via external editor also customer can change
-		$br = get_branch(get_post('BranchID'));
+		$br                   = get_branch(get_post('BranchID'));
 		$_POST['customer_id'] = $br['debtor_no'];
 		$Ajax->activate('customer_id');
 	}
@@ -216,9 +214,9 @@
 
 		$myrow = get_customer_habit($_POST['customer_id']);
 
-		$_POST['HoldAccount'] = $myrow["dissallow_invoices"];
+		$_POST['HoldAccount']   = $myrow["dissallow_invoices"];
 		$_POST['pymt_discount'] = $myrow["pymt_discount"];
-		$_POST['ref'] = Refs::get_next(ST_CUSTPAYMENT);
+		$_POST['ref']           = Refs::get_next(ST_CUSTPAYMENT);
 	}
 
 	//----------------------------------------------------------------------------------------------

@@ -47,7 +47,7 @@
 			$icon = false;
 			if ($label == "") {
 				$label = _("GL");
-				$icon = ICON_GL;
+				$icon  = ICON_GL;
 			}
 			return viewer_link($label, "gl/view/gl_trans_view.php?type_id=$type&trans_no=$trans_no", $class, $id, $icon);
 		}
@@ -87,7 +87,7 @@
 			if (!is_array($trans_no)) {
 				$trans_no = array($trans_no);
 			}
-			$lbl = $label;
+			$lbl         = $label;
 			$preview_str = '';
 			foreach ($trans_no as $trans) {
 				if ($label == "") {
@@ -302,7 +302,7 @@
 		//--------------------------------------------------------------------------------------
 		static function get_comments_string($type, $type_no) {
 			$str_return = "";
-			$result = DB_Comments::get($type, $type_no);
+			$result     = DB_Comments::get($type, $type_no);
 			while ($comment = DBOld::fetch($result)) {
 				if (strlen($str_return)) {
 					$str_return = $str_return . " \n";
@@ -426,7 +426,7 @@
 				label_cell(ui_view::get_trans_view_str($alloc_row['type'], $alloc_row['trans_no']));
 				label_cell(Dates::sql2date($alloc_row['tran_date']));
 				$alloc_row['Total'] = round2($alloc_row['Total'], user_price_dec());
-				$alloc_row['amt'] = round2($alloc_row['amt'], user_price_dec());
+				$alloc_row['amt']   = round2($alloc_row['amt'], user_price_dec());
 				amount_cell($alloc_row['Total']);
 				//amount_cell($alloc_row['Total'] - $alloc_row['PrevAllocs'] - $alloc_row['amt']);
 				amount_cell($alloc_row['Total'] - $alloc_row['amt']);
@@ -483,7 +483,7 @@
 				if ($descr != '') {
 					$qe['description'] .= ': ' . $descr;
 				}
-				$result = get_quick_entry_lines($id);
+				$result  = get_quick_entry_lines($id);
 				$totrate = 0;
 				while ($row = DBOld::fetch($result)) {
 					$qe_lines[] = $row;
@@ -492,11 +492,11 @@
 						case "t+": // ditto & increase base amount
 						case "t-": // ditto & reduce base amount
 							if (substr($row['action'], 0, 1) != 'T') {
-								$totrate += Tax_Type::get_default_rate($row['dest_id']);
+								$totrate += Tax_Types::get_default_rate($row['dest_id']);
 							}
 					}
 				}
-				$first = true;
+				$first   = true;
 				$taxbase = 0;
 				foreach ($qe_lines as $qe_line) {
 					switch (strtolower($qe_line['action'])) {
@@ -530,7 +530,7 @@
 						case "t-": // ditto & reduce base amount
 							if ($first) {
 								$taxbase = $base / ($totrate + 100);
-								$first = false;
+								$first   = false;
 							}
 							if (substr($qe_line['action'], 0, 1) != 'T') {
 								$part = $taxbase;
@@ -538,12 +538,12 @@
 							else {
 								$part = $base / 100;
 							}
-							$item_tax = Tax_Type::get($qe_line['dest_id']);
+							$item_tax = Tax_Types::get($qe_line['dest_id']);
 							//if ($type == QE_SUPPINV && substr($qe_line['action'],0,1) != 'T')
 							if ($type == QE_SUPPINV) {
 								$taxgroup = $cart->tax_group_id;
-								$rates = 0;
-								$res = Tax_Groups::get_for_item($cart->tax_group_id);
+								$rates    = 0;
+								$res      = Tax_Groups::get_for_item($cart->tax_group_id);
 								while ($row = DBOld::fetch($res)) {
 									$rates += $row['rate'];
 								}
@@ -556,7 +556,7 @@
 								continue 2;
 							}
 							$gl_code = ($type == QE_DEPOSIT || ($type == QE_JOURNAL && $base < 0)) ? $item_tax['sales_gl_code'] : $item_tax['purchasing_gl_code'];
-							if (!Tax_Type::is_tax_gl_unique($gl_code)) {
+							if (!Tax_Types::is_tax_gl_unique($gl_code)) {
 								ui_msgs::display_error(_("Cannot post to GL account used by more than one tax type."));
 								break 2;
 							}
@@ -616,7 +616,7 @@
 				$res .= (empty($res) ? "" : " ") . ui_view::_number_to_words($Hn) . " Hundred";
 			}
 			$ones = array("", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen",
-				"Eightteen", "Nineteen"
+										"Eightteen", "Nineteen"
 			);
 			$tens = array("", "", "Twenty", "Thirty", "Fourty", "Fifty", "Sixty", "Seventy", "Eigthy", "Ninety");
 			if ($Dn || $n) {
@@ -655,10 +655,10 @@
 			$dec = user_price_dec();
 			if ($dec > 0) {
 				$divisor = pow(10, $dec);
-				$frac = round2($amount - floor($amount), $dec) * $divisor;
-				$frac = sprintf("%0{$dec}d", $frac);
-				$and = _("and");
-				$frac = " $and $frac/$divisor";
+				$frac    = round2($amount - floor($amount), $dec) * $divisor;
+				$frac    = sprintf("%0{$dec}d", $frac);
+				$and     = _("and");
+				$frac    = " $and $frac/$divisor";
 			}
 			else {
 				$frac = "";
@@ -738,7 +738,6 @@ JS;
 		static function alert($msg) {
 			echo "\n<script language=\"javascript\"  type=\"text/javascript\">\n" . "<!--\n" . "alert('$msg');\n" . "-->\n" . "</script>\n";
 		}
-
 
 		static function _vd($mixed, $title = '', $exit = false) {
 			// Only the site admin is able to proceed here.
