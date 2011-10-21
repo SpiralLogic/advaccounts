@@ -19,7 +19,6 @@
 		$js .= ui_view::get_js_open_window(800, 500);
 	}
 
-	JS::headerFile('reconcile.js');
 	page(_($help_context = "Reconcile Bank Account"), false, false, "", $js);
 	check_db_has_bank_accounts(_("There are no bank accounts defined in the system."));
 	function check_date() {

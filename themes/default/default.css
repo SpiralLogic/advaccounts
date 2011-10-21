@@ -303,6 +303,10 @@ div.banner a + a { border-top: 2px groove #999 }
 	white-space:      nowrap;
 }
 
+#summary {
+	position: fixed;
+}
+
 .js .tabs {
 	display: none;
 }
