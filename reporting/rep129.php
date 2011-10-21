@@ -15,7 +15,6 @@
 
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	include_once(APP_PATH . "taxes/tax_calc.php");
 	//----------------------------------------------------------------------------------------------------
 
 	print_sales_orders();
@@ -47,7 +46,7 @@
 
 		$params = array('comments' => $comments);
 
-		$cur = get_company_Pref('curr_default');
+		$cur = DB_Company::get_pref('curr_default');
 
 		if ($email == 0) {
 			if ($print_as_quote == 0)
@@ -90,7 +89,7 @@
 				$SubTotal += $Net;
 				#  __ADVANCEDEDIT__ BEGIN #
 				$TaxType = get_item_tax_type_for_item($myrow2['stk_code']);
-				$TaxTotal += get_tax_for_item($myrow2['stk_code'], $Net, $TaxType);
+				$TaxTotal += Taxes::get_tax_for_item($myrow2['stk_code'], $Net, $TaxType);
 
 				#  __ADVANCEDEDIT__ END #
 				$DisplayPrice = number_format2($myrow2["unit_price"], $dec);

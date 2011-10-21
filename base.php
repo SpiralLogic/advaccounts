@@ -21,6 +21,7 @@
 			if (isset($Ajax))
 				$Ajax->run();
 			// flush all output buffers (works also with exit inside any div levels)
+			Config::store();
 			while (ob_get_level()) ob_end_flush();
 		}
 	}

@@ -315,7 +315,7 @@
 			$doc->due_date = $doc->document_date;
 			$doc->cust_ref = $ref;
 			$doc->Comments = "Invoice for Customer Payment: " . $doc->cust_ref;
-			$doc->add_to_cart(0, 'MiscSale', '1', get_tax_free_price_for_item('MiscSale', $amount, 0, true, $doc->tax_group_array), $discount / 100, 1, 0, 'Order: ' . $memo);
+			$doc->add_to_cart(0, 'MiscSale', '1', Taxes::get_tax_free_price_for_item('MiscSale', $amount, 0, true, $doc->tax_group_array), $discount / 100, 1, 0, 'Order: ' . $memo);
 			$doc->write(1);
 			processing_end();
 

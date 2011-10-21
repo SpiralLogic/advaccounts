@@ -19,7 +19,6 @@
 
 	include_once(APP_PATH . "sales/includes/sales_ui.php");
 	include_once(APP_PATH . "reporting/includes/reporting.php");
-	include_once(APP_PATH . "taxes/tax_calc.php");
 
 	$js = "";
 	if (Config::get('ui.windows.popups')) {

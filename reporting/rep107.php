@@ -20,7 +20,6 @@
 	// ----------------------------------------------------------------
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	include_once(APP_PATH . "taxes/tax_calc.php");
 	//----------------------------------------------------------------------------------------------------
 	print_invoices();
 	//----------------------------------------------------------------------------------------------------
@@ -43,7 +42,7 @@
 		// $headers in doctext.inc
 		$aligns = array('left', 'left', 'center', 'left', 'right', 'right', 'center', 'right', 'right');
 		$params = array('comments' => $comments);
-		$cur = get_company_Pref('curr_default');
+		$cur = DB_Company::get_pref('curr_default');
 		if ($email == 0) {
 			$rep = new FrontReport(_('TAX INVOICE'), "InvoiceBulk", user_pagesize());
 			$rep->currency = $cur;

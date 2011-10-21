@@ -333,7 +333,7 @@
 		hidden('inventory_account', $_POST['inventory_account']);
 		hidden('adjustment_account', $_POST['adjustment_account']);
 	}
-	if (STOCK_MANUFACTURED == $_POST['mb_flag']) {
+	if (STOCK_MANUFACTURE == $_POST['mb_flag']) {
 		gl_all_accounts_list_row(_("Item Assembly Costs Account:"), 'assembly_account', $_POST['assembly_account']);
 	} else {
 		hidden('assembly_account', $_POST['assembly_account']);

@@ -260,7 +260,7 @@
 	//	Stores journal/bank transaction tax details if applicable
 	//
 	function add_gl_tax_details($gl_code, $trans_type, $trans_no, $amount, $ex_rate, $date, $memo) {
-		$tax_type = is_tax_account($gl_code);
+		$tax_type = Taxes::is_tax_account($gl_code);
 		if (!$tax_type) return; // $gl_code is not tax account
 
 		$tax = get_tax_type($tax_type);

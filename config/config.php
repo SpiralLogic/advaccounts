@@ -78,6 +78,8 @@
 		'item.images.height' => 50,
 		'item.images.max_size' => 500,
 		'company.default' => 0,
+		'company_subdirs' => array('images', 'pdf_files', 'backup', 'js_cache', 'reporting', 'attachments'),
+
 		'graphs.skin' => 1,
 		'db.default' => array('name' => 'fa',
 			'user' => 'fa',
@@ -94,6 +96,7 @@
 
 		'config.onload' => array('db', 'js', 'installed_languages'),
 		'default_lang' => 'en_AU',
+
 	);
 /* Whether to display the demo login and password or not */
 /* for uploaded item pictures */

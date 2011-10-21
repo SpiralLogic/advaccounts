@@ -80,7 +80,7 @@
 
 		$params = array('comments' => $comments);
 
-		$cur = get_company_Pref('curr_default');
+		$cur = DB_Company::get_pref('curr_default');
 
 		if ($email == 0) {
 			$rep = new FrontReport(_('REMITTANCE'), "RemittanceBulk", user_pagesize());

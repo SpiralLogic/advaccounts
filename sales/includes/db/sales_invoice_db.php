@@ -87,11 +87,11 @@
 		$total = 0;
 		foreach ($invoice->line_items as $line_no => $invoice_line) {
 
-			$line_taxfree_price = get_tax_free_price_for_item($invoice_line->stock_id,
+			$line_taxfree_price = Taxes::get_tax_free_price_for_item($invoice_line->stock_id,
 				$invoice_line->price, 0, $invoice->tax_included,
 				$invoice->tax_group_array);
 
-			$line_tax = get_full_price_for_item($invoice_line->stock_id,
+			$line_tax = Taxes::get_full_price_for_item($invoice_line->stock_id,
 				$invoice_line->price, 0, $invoice->tax_included,
 				$invoice->tax_group_array) - $line_taxfree_price;
 

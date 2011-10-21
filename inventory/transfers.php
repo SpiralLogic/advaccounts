@@ -59,7 +59,7 @@
 
 		//session_register("transfer_items");
 
-		$_SESSION['transfer_items'] = new items_cart(ST_LOCTRANSFER);
+		$_SESSION['transfer_items'] = new itemsCart(ST_LOCTRANSFER);
 		$_POST['AdjDate'] = Dates::new_doc_date();
 		if (!Dates::is_date_in_fiscalyear($_POST['AdjDate']))
 			$_POST['AdjDate'] = Dates::end_fiscalyear();

@@ -12,8 +12,8 @@
 	$page_security = 'SA_SALESINVOICE';
 
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	include_once(APP_PATH . "sales/includes/ui/sales_order_ui.php");
 
+	include_once(APP_PATH . "sales/includes/ui/sales_order_ui.php");
 	include_once(APP_PATH . "reporting/includes/reporting.php");
 
 	$js = "";

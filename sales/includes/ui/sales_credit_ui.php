@@ -259,12 +259,12 @@
 				$Ajax->activate('units');
 				$Ajax->activate('line_total');
 			}
-			$item_info = get_item_edit_info($_POST['stock_id']);
+			$item_info = get_item_edit_info(Input::post('stock_id'));
 
 			$dec = $item_info['decimals'];
 			$_POST['qty'] = number_format2(0, $dec);
 			$_POST['units'] = $item_info["units"];
-			$_POST['price'] = price_format(get_price($_POST['stock_id'], $order->customer_currency,
+			$_POST['price'] = price_format(get_price(Input::post('stock_id'), $order->customer_currency,
 					$order->sales_type, $order->price_factor, $order->document_date));
 
 			// default to the customer's discount %

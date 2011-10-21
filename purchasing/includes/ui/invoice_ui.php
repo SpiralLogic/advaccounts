@@ -37,7 +37,7 @@
 		if (count($supp_trans->gl_codes) > 0) {
 			foreach ($supp_trans->gl_codes as $gl_line) {
 				////////// 2009-08-18 Joe Hunt
-				if (!is_tax_account($gl_line->gl_code)) {
+				if (!Taxes::is_tax_account($gl_line->gl_code)) {
 					$supp_trans->ov_amount += $gl_line->amount;
 				}
 			}
@@ -238,7 +238,7 @@
 				}
 				end_row();
 				/////////// 2009-08-18 Joe Hunt
-				if ($mode > 1 && !is_tax_account($entered_gl_code->gl_code)) {
+				if ($mode > 1 && !Taxes::is_tax_account($entered_gl_code->gl_code)) {
 					$total_gl_value += $entered_gl_code->amount;
 				}
 				else

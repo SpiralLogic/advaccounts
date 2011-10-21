@@ -91,7 +91,7 @@
 
 		//session_register("pay_items");
 
-		$_SESSION['pay_items'] = new items_cart($type);
+		$_SESSION['pay_items'] = new itemsCart($type);
 
 		$_POST['date_'] = Dates::new_doc_date();
 		if (!Dates::is_date_in_fiscalyear($_POST['date_']))

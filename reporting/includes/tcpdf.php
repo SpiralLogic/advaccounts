@@ -148,8 +148,8 @@
 	 * -------------------------------------------------------------------------------
 	 */
 	if (!defined("K_PATH_FONTS")) define ("K_PATH_FONTS", '../reporting/fonts/');
-	define ("K_PATH_CACHE", '../reporting/fonts/');
-	define("K_CELL_HEIGHT_RATIO", 1.25);
+	if (!defined("K_PATH_CACHE")) define ("K_PATH_CACHE", '../reporting/fonts/');
+	if (!defined("K_CELL_HEIGHT_RATIO")) define("K_CELL_HEIGHT_RATIO", 1.25);
 
 	//require_once(dirname(__FILE__).'/config/tcpdf_config.php');
 

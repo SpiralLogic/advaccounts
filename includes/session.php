@@ -9,7 +9,6 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-
 	ini_set('session.gc_maxlifetime', 36000); // 10hrs
 	session_name('FA' . md5(dirname(__FILE__)));
 	session_start();
@@ -73,13 +72,13 @@
 			}
 			DBOld::getInstance();
 		}
+	}
 
-		include(APP_PATH . 'company/installed_extensions.php');
+	include(APP_PATH . 'company/installed_extensions.php');
 
-		if (!isset($_SESSION["App"])) {
-			$_SESSION["App"] = new frontaccounting();
-			$_SESSION["App"]->init();
-		}
+	if (!isset($_SESSION["App"])) {
+		$_SESSION["App"] = new frontaccounting();
+		$_SESSION["App"]->init();
 	}
 
 	//--------------------------------------------------------------------------

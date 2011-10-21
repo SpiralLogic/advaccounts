@@ -117,10 +117,10 @@
 					 - $credit_line->qty_old));
 			}
 
-			$line_taxfree_price = get_tax_free_price_for_item($credit_line->stock_id, $credit_line->price,
+			$line_taxfree_price = Taxes::get_tax_free_price_for_item($credit_line->stock_id, $credit_line->price,
 				0, $credit_note->tax_included, $credit_note->tax_group_array);
 
-			$line_tax = get_full_price_for_item($credit_line->stock_id, $credit_line->price,
+			$line_tax = Taxes::get_full_price_for_item($credit_line->stock_id, $credit_line->price,
 				0, $credit_note->tax_included, $credit_note->tax_group_array) - $line_taxfree_price;
 
 			write_customer_trans_detail_item(ST_CUSTCREDIT, $credit_no, $credit_line->stock_id,
@@ -256,10 +256,10 @@
 		if ($order_line->line_price() != 0) {
 
 			$line_taxfree_price =
-			 get_tax_free_price_for_item($order_line->stock_id, $order_line->price,
+			 Taxes::get_tax_free_price_for_item($order_line->stock_id, $order_line->price,
 				 0, $order->tax_included, $order->tax_group_array);
 
-			$line_tax = get_full_price_for_item($order_line->stock_id, $order_line->price,
+			$line_tax = Taxes::get_full_price_for_item($order_line->stock_id, $order_line->price,
 				0, $order->tax_included, $order->tax_group_array) - $line_taxfree_price;
 
 			//Post sales transaction to GL credit sales

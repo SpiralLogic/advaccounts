@@ -80,7 +80,7 @@
 
 		$params = array('comments' => $comments);
 
-		$cur = get_company_Pref('curr_default');
+		$cur = DB_Company::get_pref('curr_default');
 
 		$rep = new FrontReport(_('RECEIPT'), "ReceiptBulk", user_pagesize());
 		$rep->currency = $cur;

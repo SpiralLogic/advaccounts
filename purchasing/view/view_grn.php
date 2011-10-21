@@ -24,7 +24,7 @@
 		die ("<BR>" . _("This page must be called with a Purchase Order Delivery number to review."));
 	}
 
-	$purchase_order = new purch_order;
+	$purchase_order = new purchOrder;
 	read_grn($_GET["trans_no"], $purchase_order);
 
 	ui_msgs::display_heading(_("Purchase Order Delivery") . " #" . $_GET['trans_no']);

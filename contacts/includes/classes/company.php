@@ -40,8 +40,7 @@
 
 				$types = Config::get('systypes_array');
 				$text = $types[$type];
-
-				$content = submenu_email(_("Email This ") . $text, $type, $trans, null, $emails, 0, true);
+				$content = submenu_email(_("Email This $text"), $type, $trans, null, $emails, 0, true);
 				if ($type == ST_SALESQUOTE || $type == ST_SALESORDER) {
 					$type = ($type == ST_SALESORDER) ? ST_PROFORMA : ST_PROFORMAQ;
 					$text = $types[$type];

@@ -12,7 +12,7 @@
 	/* Definition of the purch_order class to hold all the information for a purchase order and delivery
  */
 
-	class purch_order {
+	class purchOrder {
 
 		var $supplier_id;
 		var $supplier_details;
@@ -31,7 +31,7 @@
 		var $salesman;
 		var $reference;
 
-		function purch_order() {
+		function purchOrder() {
 			/*Constructor function initialises a new purchase order object */
 			$this->line_items = array();
 			$this->lines_on_order = $this->order_no = $this->supplier_id = 0;

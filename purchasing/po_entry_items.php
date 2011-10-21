@@ -120,7 +120,7 @@
 			meta_forward('/index.php', 'application=AP');
 		}
 		$_SESSION['PO']->clear_items();
-		$_SESSION['PO'] = new purch_order;
+		$_SESSION['PO'] = new purchOrder;
 		ui_msgs::display_notification(_("This purchase order has been cancelled."));
 		hyperlink_params("/purchasing/po_entry_items.php", _("Enter a new purchase order"), "NewOrder=Yes");
 

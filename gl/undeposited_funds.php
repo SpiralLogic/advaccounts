@@ -9,7 +9,7 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	/* Author Rob Mallon */
+
 	$page_security = 'SA_RECONCILE';
 
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
@@ -20,7 +20,7 @@
 	}
 
 	JS::footerFile('/js/reconcile.js');
-	page(_($help_context = "Undeposited Funds"), @Input::request('frame'), false, "", $js);
+	page(_($help_context = "Undeposited Funds"), Input::request('frame'), false, "", $js);
 	check_db_has_bank_accounts(_("There are no bank accounts defined in the system."));
 	function check_date() {
 		if (!Dates::is_date(get_post('deposit_date'))) {
@@ -140,7 +140,7 @@
 		change_tpl_flag($id);
 	}
 	if (isset($_POST['Deposit'])) {
-		$sql = "SELECT * FROM bank_trans WHERE undeposited=1 AND trans_date <= '" . Dates::date2sql($_POST['deposit_date']) . "' AND reconciled IS NULL";
+		$sql = "SELECT * FROM bank_trans WHERE undeposited=1  AND reconciled IS NULL";
 		$query = DBOld::query($sql);
 		$undeposited = array();
 		while ($row = DBOld::fetch($query)) {
@@ -153,24 +153,32 @@
 				$togroup[$key[1]] = $undeposited[$key[1]];
 			}
 		}
-		$total_amount = 0;
-		$ref = array();
-		foreach ($togroup as $row) {
-			$total_amount += $row['amount'];
-			$ref[] = $row['ref'];
-		}
-		$sql = "INSERT INTO bank_trans (type, bank_act, amount, ref, trans_date, person_type_id, person_id, undeposited) VALUES (15, 5, $total_amount,"
-		 . DBOld::escape(implode($ref, ',')) . ",'" . Dates::date2sql($_POST['deposit_date']) . "', 6, '" . $_SESSION['wa_current_user']->user . "',0)";
-		$query = DBOld::query($sql, "Undeposited Cannot be Added");
-		$order_no = DBOld::insert_id($query);
-		if (!isset($order_no) || !empty($order_no) || $order_no == 127) {
-			$sql = "SELECT LAST_INSERT_ID()";
-			$order_no = DBOld::query($sql);
-			$order_no = DBOld::fetch_row($order_no);
-			$order_no = $order_no[0];
-		}
-		foreach ($togroup as $row) {
-			$sql = "UPDATE bank_trans SET undeposited=" . $order_no . " WHERE id=" . DBOld::escape($row['id']);
+
+		if (count($togroup) > 1) {
+			$total_amount = 0;
+			$ref = array();
+			foreach ($togroup as $row) {
+				$total_amount += $row['amount'];
+				$ref[] = $row['ref'];
+			}
+			$sql = "INSERT INTO bank_trans (type, bank_act, amount, ref, trans_date, person_type_id, person_id, undeposited) VALUES (15, 5, $total_amount,"
+			 . DBOld::escape(implode($ref, ',')) . ",'" . Dates::date2sql($_POST['deposit_date']) . "', 6, '" . $_SESSION['wa_current_user']->user . "',0)";
+			$query = DBOld::query($sql, "Undeposited Cannot be Added");
+			$order_no = DBOld::insert_id($query);
+			if (!isset($order_no) || !empty($order_no) || $order_no == 127) {
+				$sql = "SELECT LAST_INSERT_ID()";
+				$order_no = DBOld::query($sql);
+				$order_no = DBOld::fetch_row($order_no);
+				$order_no = $order_no[0];
+			}
+			foreach ($togroup as $row) {
+				$sql = "UPDATE bank_trans SET undeposited=" . $order_no . " WHERE id=" . DBOld::escape($row['id']);
+				DBOld::query($sql, "Can't change undeposited status");
+			}
+		} else {
+			$row = reset($togroup);
+
+			$sql = "UPDATE bank_trans SET undeposited=0, trans_date='" . Dates::date2sql($_POST['deposit_date']) . "',deposit_date='" . Dates::date2sql($_POST['deposit_date']) . "'  WHERE id=" . DBOld::escape($row['id']);
 			DBOld::query($sql, "Can't change undeposited status");
 		}
 		unset($_POST);
@@ -224,7 +232,6 @@
 	br(1);
 	submit_center('Deposit', _("Deposit"), true, '', false);
 	end_form();
-
 	end_page();
 
 ?>
