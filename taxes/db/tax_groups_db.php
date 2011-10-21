@@ -18,7 +18,7 @@
 		DBOld::begin_transaction();
 
 		if ($tax_shipping) // only one tax group for shipping
-			clear_shipping_tax_group();
+			Tax_Groups::clear_shipping_tax_group();
 
 		$sql = "INSERT INTO tax_groups (name, tax_shipping) VALUES (" . DBOld::escape($name) . ", " . DBOld::escape($tax_shipping) . ")";
 		DBOld::query($sql, "could not add tax group");
@@ -34,7 +34,7 @@
 		DBOld::begin_transaction();
 
 		if ($tax_shipping) // only one tax group for shipping
-			clear_shipping_tax_group();
+			Tax_Groups::clear_shipping_tax_group();
 
 		$sql = "UPDATE tax_groups SET name=" . DBOld::escape($name) . ",tax_shipping=" . DBOld::escape($tax_shipping) . " WHERE id=" . DBOld::escape($id);
 		DBOld::query($sql, "could not update tax group");
