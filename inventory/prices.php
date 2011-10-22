@@ -19,9 +19,9 @@
 
 	//---------------------------------------------------------------------------------------------------
 
-	check_db_has_stock_items(_("There are no items defined in the system."));
+	Validation::check(Validation::STOCK_ITEMS, _("There are no items defined in the system."));
 
-	check_db_has_sales_types(_("There are no sales types in the system. Please set up sales types befor entering pricing."));
+	Validation::check(Validation::SALES_TYPES, _("There are no sales types in the system. Please set up sales types befor entering pricing."));
 
 	simple_page_mode(true);
 	//---------------------------------------------------------------------------------------------------
@@ -151,10 +151,10 @@
 	echo "<br>";
 
 	if ($Mode == 'Edit') {
-		$myrow = get_stock_price($selected_id);
-		$_POST['curr_abrev'] = $myrow["curr_abrev"];
+		$myrow                  = get_stock_price($selected_id);
+		$_POST['curr_abrev']    = $myrow["curr_abrev"];
 		$_POST['sales_type_id'] = $myrow["sales_type_id"];
-		$_POST['price'] = price_format($myrow["price"]);
+		$_POST['price']         = price_format($myrow["price"]);
 	}
 
 	hidden('selected_id', $selected_id);

@@ -107,7 +107,7 @@
 			DBOld::query($sql, "The customer could not be added");
 
 			$_POST['customer_id'] = DBOld::insert_id();
-			$new_customer = false;
+			$new_customer         = false;
 			DBOld::commit_transaction();
 
 			ui_msgs::display_notification(_("A new customer has been added."));
@@ -131,25 +131,25 @@
 
 		// PREVENT DELETES IF DEPENDENT RECORDS IN 'debtor_trans'
 		$sel_id = DBOld::escape($_POST['customer_id']);
-		$sql = "SELECT COUNT(*) FROM debtor_trans WHERE debtor_no=$sel_id";
+		$sql    = "SELECT COUNT(*) FROM debtor_trans WHERE debtor_no=$sel_id";
 		$result = DBOld::query($sql, "check failed");
-		$myrow = DBOld::fetch_row($result);
+		$myrow  = DBOld::fetch_row($result);
 		if ($myrow[0] > 0) {
 			$cancel_delete = 1;
 			ui_msgs::display_error(_("This customer cannot be deleted because there are transactions that refer to it."));
 		}
 		else {
-			$sql = "SELECT COUNT(*) FROM sales_orders WHERE debtor_no=$sel_id";
+			$sql    = "SELECT COUNT(*) FROM sales_orders WHERE debtor_no=$sel_id";
 			$result = DBOld::query($sql, "check failed");
-			$myrow = DBOld::fetch_row($result);
+			$myrow  = DBOld::fetch_row($result);
 			if ($myrow[0] > 0) {
 				$cancel_delete = 1;
 				ui_msgs::display_error(_("Cannot delete the customer record because orders have been created against it."));
 			}
 			else {
-				$sql = "SELECT COUNT(*) FROM cust_branch WHERE debtor_no=$sel_id";
+				$sql    = "SELECT COUNT(*) FROM cust_branch WHERE debtor_no=$sel_id";
 				$result = DBOld::query($sql, "check failed");
-				$myrow = DBOld::fetch_row($result);
+				$myrow  = DBOld::fetch_row($result);
 				if ($myrow[0] > 0) {
 					$cancel_delete = 1;
 					ui_msgs::display_error(_("Cannot delete this customer because there are branch records set up against it."));
@@ -169,7 +169,7 @@
 		} //end if Delete Customer
 	}
 
-	check_db_has_sales_types(_("There are no sales types defined. Please define at least one sales type before adding a customer."));
+	Validation::check(Validation::SALES_TYPES, _("There are no sales types defined. Please define at least one sales type before adding a customer."));
 
 	start_form();
 
@@ -191,42 +191,42 @@
 	}
 
 	if ($new_customer) {
-		$_POST['CustName'] = $_POST['cust_ref'] = $_POST['address'] = $_POST['tax_id'] = '';
-		$_POST['dimension_id'] = 0;
+		$_POST['CustName']      = $_POST['cust_ref'] = $_POST['address'] = $_POST['tax_id'] = '';
+		$_POST['dimension_id']  = 0;
 		$_POST['dimension2_id'] = 0;
-		$_POST['sales_type'] = -1;
-		$_POST['email'] = '';
-		$_POST['curr_code'] = Banking::get_company_currency();
+		$_POST['sales_type']    = -1;
+		$_POST['email']         = '';
+		$_POST['curr_code']     = Banking::get_company_currency();
 		$_POST['credit_status'] = -1;
 		$_POST['payment_terms'] = $_POST['notes'] = '';
 
-		$_POST['discount'] = $_POST['pymt_discount'] = percent_format(0);
+		$_POST['discount']     = $_POST['pymt_discount'] = percent_format(0);
 		$_POST['credit_limit'] = price_format(SysPrefs::default_credit_limit());
-		$_POST['inactive'] = 0;
+		$_POST['inactive']     = 0;
 	}
 	else {
 
-		$sql = "SELECT * FROM debtors_master WHERE debtor_no = " . DBOld::escape($_POST['customer_id']);
+		$sql    = "SELECT * FROM debtors_master WHERE debtor_no = " . DBOld::escape($_POST['customer_id']);
 		$result = DBOld::query($sql, "check failed");
 
 		$myrow = DBOld::fetch($result);
 
-		$_POST['CustName'] = $myrow["name"];
-		$_POST['cust_ref'] = $myrow["debtor_ref"];
-		$_POST['address'] = $myrow["address"];
-		$_POST['tax_id'] = $myrow["tax_id"];
-		$_POST['email'] = $myrow["email"];
-		$_POST['dimension_id'] = $myrow["dimension_id"];
+		$_POST['CustName']      = $myrow["name"];
+		$_POST['cust_ref']      = $myrow["debtor_ref"];
+		$_POST['address']       = $myrow["address"];
+		$_POST['tax_id']        = $myrow["tax_id"];
+		$_POST['email']         = $myrow["email"];
+		$_POST['dimension_id']  = $myrow["dimension_id"];
 		$_POST['dimension2_id'] = $myrow["dimension2_id"];
-		$_POST['sales_type'] = $myrow["sales_type"];
-		$_POST['curr_code'] = $myrow["curr_code"];
+		$_POST['sales_type']    = $myrow["sales_type"];
+		$_POST['curr_code']     = $myrow["curr_code"];
 		$_POST['credit_status'] = $myrow["credit_status"];
 		$_POST['payment_terms'] = $myrow["payment_terms"];
-		$_POST['discount'] = percent_format($myrow["discount"] * 100);
+		$_POST['discount']      = percent_format($myrow["discount"] * 100);
 		$_POST['pymt_discount'] = percent_format($myrow["pymt_discount"] * 100);
-		$_POST['credit_limit'] = price_format($myrow["credit_limit"]);
-		$_POST['notes'] = $myrow["notes"];
-		$_POST['inactive'] = $myrow["inactive"];
+		$_POST['credit_limit']  = price_format($myrow["credit_limit"]);
+		$_POST['notes']         = $myrow["notes"];
+		$_POST['inactive']      = $myrow["inactive"];
 	}
 
 	start_outer_table(Config::get('tables.style2'), 5);

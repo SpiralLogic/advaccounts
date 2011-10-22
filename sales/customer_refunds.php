@@ -26,8 +26,8 @@
 	JS::headerFile('/js/payalloc.js');
 	page(_($help_context = "Customer Refund Entry"), Input::request('frame'), false, "", $js);
 	//----------------------------------------------------------------------------------------------
-	check_db_has_customers(_("There are no customers defined in the system."));
-	check_db_has_bank_accounts(_("There are no bank accounts defined in the system."));
+	Validation::check(Validation::CUSTOMERS, _("There are no customers defined in the system."));
+	Validation::check(Validation::BANK_ACCOUNTS, _("There are no bank accounts defined in the system."));
 	//----------------------------------------------------------------------------------------
 	if (!isset($_POST['customer_id'])) {
 		$customer = new Customer(ui_globals::get_global_customer(false));
@@ -147,7 +147,7 @@
 			$rate = input_num('_ex_rate');
 		}
 		Dates::new_doc_date($_POST['DateBanked']);
-		$refund_id = write_customer_refund(0, $_POST['customer_id'], $_POST['BranchID'],
+		$refund_id                   = write_customer_refund(0, $_POST['customer_id'], $_POST['BranchID'],
 			$_POST['bank_account'], $_POST['DateBanked'], $_POST['ref'],
 			input_num('amount'), input_num('discount'),
 			$_POST['memo_'], $rate, input_num('charge'));
@@ -160,16 +160,16 @@
 
 	function read_customer_data() {
 		global $customer;
-		$sql = "SELECT debtors_master.pymt_discount,
+		$sql                    = "SELECT debtors_master.pymt_discount,
 		credit_status.dissallow_invoices
 		FROM debtors_master, credit_status
 		WHERE debtors_master.credit_status = credit_status.id
 			AND debtors_master.debtor_no = " . $customer->id;
-		$result = DBOld::query($sql, "could not query customers");
-		$myrow = DBOld::fetch($result);
-		$_POST['HoldAccount'] = $myrow["dissallow_invoices"];
+		$result                 = DBOld::query($sql, "could not query customers");
+		$myrow                  = DBOld::fetch($result);
+		$_POST['HoldAccount']   = $myrow["dissallow_invoices"];
 		$_POST['pymt_discount'] = 0;
-		$_POST['ref'] = Refs::get_next(12);
+		$_POST['ref']           = Refs::get_next(12);
 	}
 
 	//----------------------------------------------------------------------------------------------
@@ -178,7 +178,10 @@
 
 	start_outer_table(Config::get('tables.style2') . " width=60%", 5);
 	table_section(1);
-	UI::search('customer', array('label' => 'Search Customer:', 'size' => 20, 'url' => '/contacts/search.php'));
+	UI::search('customer', array('label' => 'Search Customer:',
+															'size'   => 20,
+															'url'    => '/contacts/search.php'
+												 ));
 	if (!isset($_POST['bank_account'])) // first page call
 	{
 		$_SESSION['alloc'] = new allocation(ST_CUSTREFUND, 0);

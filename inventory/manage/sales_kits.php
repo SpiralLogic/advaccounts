@@ -15,7 +15,7 @@
 
 	page(_($help_context = "Sales Kits & Alias Codes"));
 
-	check_db_has_stock_items(_("There are no items defined in the system."));
+	Validation::check(Validation::STOCK_ITEMS, _("There are no items defined in the system."));
 
 	simple_page_mode(true);
 	/*
@@ -32,7 +32,7 @@
 		div_start('bom');
 		start_table(Config::get('tables.style') . "  width=60%");
 		$th = array(_("Stock Item"), _("Description"), _("Quantity"), _("Units"),
-			'', ''
+								'', ''
 		);
 		table_header($th);
 
@@ -103,9 +103,9 @@
 		}
 		if ($selected_item == -1) { // new item alias/kit
 			if ($_POST['item_code'] == '') {
-				$kit_code = $_POST['kit_code'];
+				$kit_code     = $_POST['kit_code'];
 				$selected_kit = $_POST['item_code'] = $kit_code;
-				$msg = _("New alias code has been created.");
+				$msg          = _("New alias code has been created.");
 			}
 			else
 				$msg = _("New component has been added to selected kit.");
@@ -139,7 +139,7 @@
 		// if selected kit is not included in any other kit.
 		//
 		$other_kits = get_where_used($_POST['item_code']);
-		$num_kits = DBOld::num_rows($other_kits);
+		$num_kits   = DBOld::num_rows($other_kits);
 
 		$kit = get_item_kit($_POST['item_code']);
 		if ((DBOld::num_rows($kit) == 1) && $num_kits) {
@@ -190,7 +190,7 @@
 	{
 		// Kit selected so display bom or edit component
 		$_POST['description'] = $props['description'];
-		$_POST['category'] = $props['category_id'];
+		$_POST['category']    = $props['category_id'];
 		start_table(Config::get('tables.style2'));
 		text_row(_("Description:"), 'description', null, 50, 200);
 		stock_categories_list_row(_("Category:"), 'category', null);
@@ -203,9 +203,9 @@
 	}
 
 	if ($Mode == 'Edit') {
-		$myrow = get_item_code($selected_id);
+		$myrow              = get_item_code($selected_id);
 		$_POST['component'] = $myrow["stock_id"];
-		$_POST['quantity'] = number_format2($myrow["quantity"], get_qty_dec($myrow["stock_id"]));
+		$_POST['quantity']  = number_format2($myrow["quantity"], get_qty_dec($myrow["stock_id"]));
 	}
 	hidden("selected_id", $selected_id);
 
@@ -216,13 +216,13 @@
 	if (get_post('item_code') == '') { // new kit/alias
 		if ($Mode != 'ADD_ITEM' && $Mode != 'UPDATE_ITEM') {
 			$_POST['description'] = $props['description'];
-			$_POST['category'] = $props['category_id'];
+			$_POST['category']    = $props['category_id'];
 		}
 		text_row(_("Description:"), 'description', null, 50, 200);
 		stock_categories_list_row(_("Category:"), 'category', null);
 	}
-	$res = get_item_edit_info(get_post('component'));
-	$dec = $res["decimals"] == '' ? 0 : $res["decimals"];
+	$res   = get_item_edit_info(get_post('component'));
+	$dec   = $res["decimals"] == '' ? 0 : $res["decimals"];
 	$units = $res["units"] == '' ? _('kits') : $res["units"];
 	if (list_updated('component')) {
 		$_POST['quantity'] = number_format2(1, $dec);

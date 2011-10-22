@@ -23,14 +23,14 @@
 
 	//-----------------------------------------------------------------------------------------------
 
-	check_db_has_costable_items(_("There are no inventory items defined in the system which can be adjusted (Purchased or Manufactured)."));
+	Validation::check(Validation::COST_ITEMS, _("There are no inventory items defined in the system which can be adjusted (Purchased or Manufactured)."), STOCK_SERVICE);
 
-	check_db_has_movement_types(_("There are no inventory movement types defined in the system. Please define at least one inventory adjustment type."));
+	Validation::check(Validation::MOVEMENT_TYPES, _("There are no inventory movement types defined in the system. Please define at least one inventory adjustment type."));
 
 	//-----------------------------------------------------------------------------------------------
 
 	if (isset($_GET['AddedID'])) {
-		$trans_no = $_GET['AddedID'];
+		$trans_no   = $_GET['AddedID'];
 		$trans_type = ST_INVADJUST;
 
 		ui_msgs::display_notification_centered(_("Items adjustment has been processed"));
@@ -61,7 +61,7 @@
 		//session_register("adj_items");
 
 		$_SESSION['adj_items'] = new itemsCart(ST_INVADJUST);
-		$_POST['AdjDate'] = Dates::new_doc_date();
+		$_POST['AdjDate']      = Dates::new_doc_date();
 		if (!Dates::is_date_in_fiscalyear($_POST['AdjDate']))
 			$_POST['AdjDate'] = Dates::end_fiscalyear();
 		$_SESSION['adj_items']->tran_date = $_POST['AdjDate'];

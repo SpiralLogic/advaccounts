@@ -26,13 +26,13 @@
 		page(_($help_context = "Purchase Order Entry"), false, false, "", $js);
 	}
 	//---------------------------------------------------------------------------------------------------
-	check_db_has_suppliers(_("There are no suppliers defined in the system."));
-	check_db_has_purchasable_items(_("There are no purchasable inventory items defined in the system."));
+	Validation::check(Validation::SUPPLIERS, _("There are no suppliers defined in the system."));
+	Validation::check(Validation::PURCHASE_ITEMS, _("There are no purchasable inventory items defined in the system."), STOCK_PURCHASED);
 	//---------------------------------------------------------------------------------------------------------------
 	if (isset($_GET['AddedID'])) {
-		$order_no = $_GET['AddedID'];
+		$order_no   = $_GET['AddedID'];
 		$trans_type = ST_PURCHORDER;
-		$supplier = new Supplier($_SESSION['wa_global_supplier_id']);
+		$supplier   = new Supplier($_SESSION['wa_global_supplier_id']);
 
 		if (!isset($_GET['Updated'])) {
 			ui_msgs::display_notification_centered(_("Purchase Order: " . $_SESSION['history'][ST_PURCHORDER] . " has been entered"));
@@ -54,27 +54,27 @@
 	}
 	//--------------------------------------------------------------------------------------------------
 	function copy_from_cart() {
-		$_POST['supplier_id'] = $_SESSION['PO']->supplier_id;
-		$_POST['OrderDate'] = $_SESSION['PO']->orig_order_date;
-		$_POST['Requisition'] = $_SESSION['PO']->requisition_no;
-		$_POST['ref'] = $_SESSION['PO']->reference;
-		$_POST['Comments'] = $_SESSION['PO']->Comments;
-		$_POST['StkLocation'] = $_SESSION['PO']->Location;
+		$_POST['supplier_id']      = $_SESSION['PO']->supplier_id;
+		$_POST['OrderDate']        = $_SESSION['PO']->orig_order_date;
+		$_POST['Requisition']      = $_SESSION['PO']->requisition_no;
+		$_POST['ref']              = $_SESSION['PO']->reference;
+		$_POST['Comments']         = $_SESSION['PO']->Comments;
+		$_POST['StkLocation']      = $_SESSION['PO']->Location;
 		$_POST['delivery_address'] = $_SESSION['PO']->delivery_address;
-		$_POST['freight'] = $_SESSION['PO']->freight;
-		$_POST['salesman'] = $_SESSION['PO']->salesman;
+		$_POST['freight']          = $_SESSION['PO']->freight;
+		$_POST['salesman']         = $_SESSION['PO']->salesman;
 	}
 
 	function copy_to_cart() {
-		$_SESSION['PO']->supplier_id = $_POST['supplier_id'];
-		$_SESSION['PO']->orig_order_date = $_POST['OrderDate'];
-		$_SESSION['PO']->reference = $_POST['ref'];
-		$_SESSION['PO']->requisition_no = $_POST['Requisition'];
-		$_SESSION['PO']->Comments = $_POST['Comments'];
-		$_SESSION['PO']->Location = $_POST['StkLocation'];
+		$_SESSION['PO']->supplier_id      = $_POST['supplier_id'];
+		$_SESSION['PO']->orig_order_date  = $_POST['OrderDate'];
+		$_SESSION['PO']->reference        = $_POST['ref'];
+		$_SESSION['PO']->requisition_no   = $_POST['Requisition'];
+		$_SESSION['PO']->Comments         = $_POST['Comments'];
+		$_SESSION['PO']->Location         = $_POST['StkLocation'];
 		$_SESSION['PO']->delivery_address = $_POST['delivery_address'];
-		$_SESSION['PO']->freight = $_POST['freight'];
-		$_SESSION['PO']->salesman = $_POST['salesman'];
+		$_SESSION['PO']->freight          = $_POST['freight'];
+		$_SESSION['PO']->salesman         = $_POST['salesman'];
 	}
 
 	//--------------------------------------------------------------------------------------------------
@@ -193,7 +193,7 @@
 																																 } /* end of the foreach loop to look for pre-existing items of the same code */
 			}
 			if ($allow_update == true) {
-				$sql = "SELECT long_description as description , units, mb_flag
+				$sql    = "SELECT long_description as description , units, mb_flag
 				FROM stock_master WHERE stock_id = " . DBOld::escape($_POST['stock_id']);
 				$result = DBOld::query($sql, "The stock details for " . $_POST['stock_id'] . " could not be retrieved");
 				if (DBOld::num_rows($result) == 0) {
@@ -277,7 +277,7 @@
 			}
 			else {
 				/*its an existing order need to update the old order info */
-				$order_no = update_po($_SESSION['PO']);
+				$order_no                           = update_po($_SESSION['PO']);
 				$_SESSION['history'][ST_PURCHORDER] = $_SESSION['PO']->reference;
 
 				meta_forward($_SERVER['PHP_SELF'], "AddedID=$order_no&Updated=1");
@@ -319,12 +319,12 @@
 		create_new_po();
 		if (isset($_GET['UseOrder']) && $_GET['UseOrder'] && isset($_SESSION['Items']->line_items)) {
 			foreach ($_SESSION['Items']->line_items as $line_no => $line_item) {
-				$sql = "SELECT purch_data.price,purch_data.supplier_id
+				$sql    = "SELECT purch_data.price,purch_data.supplier_id
 		FROM purch_data INNER JOIN suppliers
 		ON purch_data.supplier_id=suppliers.supplier_id
 		WHERE stock_id = " . DBOld::escape($line_item->stock_id) . ' ORDER BY price';
 				$result = DBOld::query($sql);
-				$myrow = array();
+				$myrow  = array();
 				if (DBOld::num_rows($result) > 0) {
 					if (DBOld::num_rows($result) == 1) {
 						$myrow[] = DBOld::fetch($result, 'pricing');
@@ -345,7 +345,7 @@
 			arsort($po_lines);
 			$_SESSION['wa_global_supplier_id'] = key($po_lines);
 			if ($_GET['DS']) {
-				$item_info = get_item('DS');
+				$item_info            = get_item('DS');
 				$_POST['StkLocation'] = 'DRP';
 				$_SESSION['PO']->add_to_order(count($_SESSION['PO']->line_items), 'DS', 1, $item_info['long_description'], 0, '', Dates::add_days(Dates::Today(), 10), 0, 0, 0);
 				$address = $_SESSION['Items']->customer_name . "\n";

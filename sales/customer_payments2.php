@@ -26,15 +26,15 @@
 
 	//----------------------------------------------------------------------------------------------
 
-	check_db_has_customers(_("There are no customers defined in the system."));
+	Validation::check(Validation::CUSTOMERS, _("There are no customers defined in the system."));
 
-	check_db_has_bank_accounts(_("There are no bank accounts defined in the system."));
+	Validation::check(Validation::BANK_ACCOUNTS, _("There are no bank accounts defined in the system."));
 
 	//----------------------------------------------------------------------------------------
 
 	if (list_updated('BranchID')) {
 		// when branch is selected via external editor also customer can change
-		$br = get_branch(get_post('BranchID'));
+		$br                   = get_branch(get_post('BranchID'));
 		$_POST['customer_id'] = $br['debtor_no'];
 		$Ajax->activate('customer_id');
 	}
@@ -212,9 +212,9 @@
 
 		$myrow = DBOld::fetch($result);
 
-		$_POST['HoldAccount'] = $myrow["dissallow_invoices"];
+		$_POST['HoldAccount']   = $myrow["dissallow_invoices"];
 		$_POST['pymt_discount'] = $myrow["pymt_discount"];
-		$_POST['ref'] = Refs::get_next(12);
+		$_POST['ref']           = Refs::get_next(12);
 	}
 
 	//----------------------------------------------------------------------------------------------
@@ -228,7 +228,7 @@
 	if (!isset($_POST['bank_account'])) // first page call
 		$_SESSION['alloc'] = new allocation(ST_CUSTPAYMENT, 0);
 
-	if (db_customer_has_branches($_POST['customer_id'])) {
+	if (Validation::check(Validation::BRANCHES, $_POST['customer_id'])) {
 		customer_branches_list_row(_("Branch:"), $_POST['customer_id'], 'BranchID', null, false, true, true);
 	}
 	else {

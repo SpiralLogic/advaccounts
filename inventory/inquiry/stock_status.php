@@ -24,7 +24,7 @@
 		$Ajax->activate('status_tbl');
 	//----------------------------------------------------------------------------------------------------
 
-	check_db_has_stock_items(_("There are no items defined in the system."));
+	Validation::check(Validation::STOCK_ITEMS, _("There are no items defined in the system."));
 
 	start_form();
 
@@ -41,7 +41,7 @@
 
 	ui_globals::set_global_stock_item($_POST['stock_id']);
 
-	$mb_flag = Manufacturing::get_mb_flag($_POST['stock_id']);
+	$mb_flag           = Manufacturing::get_mb_flag($_POST['stock_id']);
 	$kitset_or_service = false;
 
 	div_start('status_tbl');
@@ -60,13 +60,13 @@
 	else
 	{
 		$th = array(_("Location"), _("Quantity On Hand"), _("Re-Order Level"),
-			_("Demand"), _("Available"), _("On Order")
+								_("Demand"), _("Available"), _("On Order")
 		);
 	}
 	table_header($th);
 	$dec = get_qty_dec($_POST['stock_id']);
-	$j = 1;
-	$k = 0; //row colour counter
+	$j   = 1;
+	$k   = 0; //row colour counter
 
 	while ($myrow = DBOld::fetch($loc_details))
 	{

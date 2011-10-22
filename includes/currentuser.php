@@ -60,7 +60,7 @@
 			$this->set_company($company);
 			$this->logged = false;
 
-			$Auth_Result = get_user_for_login($loginname, $password);
+			$Auth_Result = User::get_for_login($loginname, $password);
 			if (DBOld::num_rows($Auth_Result) > 0) {
 				$myrow = DBOld::fetch($Auth_Result);
 
@@ -82,7 +82,7 @@
 				$this->username  = $this->loginname;
 				$this->prefs     = new userPrefs($myrow);
 				$this->user      = @$myrow["id"];
-				update_user_visitdate($this->username);
+				User::update_visitdate($this->username);
 				$this->logged   = true;
 				$this->last_act = time();
 				$this->timeout  = session_timeout();
@@ -115,32 +115,32 @@
 
 		function update_prefs($price_dec, $qty_dec, $exrate_dec, $percent_dec, $showgl, $showcodes, $date_format, $date_sep, $tho_sep, $dec_sep, $theme, $pagesize, $show_hints, $profile, $rep_popup,
 													$query_size, $graphic_links, $lang, $stickydate, $startup_tab) {
-			$user = array('prices_dec'      => $price_dec,
-										'qty_dec'         => $qty_dec,
-										'rates_dec'       => $exrate_dec,
-										'percent_dec'     => $percent_dec,
-										'show_gl'         => $showgl,
-										'show_codes'      => $showcodes,
-										'date_format'     => $date_format,
-										'date_sep'        => $date_sep,
-										'tho_sep'         => $tho_sep,
-										'dec_sep'         => $dec_sep,
-										'theme'           => $theme,
-										'page_size'       => $pagesize,
-										'show_hints'      => $show_hints,
-										'print_profile'   => $profile,
-										'rep_popup'       => $rep_popup,
-										'query_size'      => $query_size,
-										'graphic_links'   => $graphic_links,
-										'language'        => $lang,
+			$user = array('prices_dec'			=> $price_dec,
+										'qty_dec'				 => $qty_dec,
+										'rates_dec'			 => $exrate_dec,
+										'percent_dec'		 => $percent_dec,
+										'show_gl'				 => $showgl,
+										'show_codes'			=> $showcodes,
+										'date_format'		 => $date_format,
+										'date_sep'				=> $date_sep,
+										'tho_sep'				 => $tho_sep,
+										'dec_sep'				 => $dec_sep,
+										'theme'					 => $theme,
+										'page_size'			 => $pagesize,
+										'show_hints'			=> $show_hints,
+										'print_profile'	 => $profile,
+										'rep_popup'			 => $rep_popup,
+										'query_size'			=> $query_size,
+										'graphic_links'	 => $graphic_links,
+										'language'				=> $lang,
 										'sticky_doc_date' => $stickydate,
-										'startup_tab'     => $startup_tab
+										'startup_tab'		 => $startup_tab
 			);
 			if (!Config::get('demo_mode')) {
-				update_user_display_prefs($this->user, $price_dec, $qty_dec, $exrate_dec, $percent_dec, $showgl, $showcodes, $date_format, $date_sep, $tho_sep, $dec_sep, $theme, $pagesize, $show_hints,
+				User::update_display_prefs($this->user, $price_dec, $qty_dec, $exrate_dec, $percent_dec, $showgl, $showcodes, $date_format, $date_sep, $tho_sep, $dec_sep, $theme, $pagesize, $show_hints,
 					$profile, $rep_popup, $query_size, $graphic_links, $lang, $stickydate, $startup_tab);
 			}
-			$this->prefs = new userPrefs(get_user($this->user));
+			$this->prefs = new userPrefs(User::get($this->user));
 		}
 	}
 

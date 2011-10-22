@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 	function display_bank_header(&$order) {
 
-		$Ajax = Ajax::instance();
+		$Ajax    = Ajax::instance();
 		$payment = $order->trans_type == ST_BANKPAYMENT;
 
 		div_start('pmt_header');
@@ -63,7 +63,7 @@
 			case PT_CUSTOMER :
 				customer_list_row(_("Customer:"), 'person_id', null, false, true, false, true);
 
-				if (db_customer_has_branches($_POST['person_id'])) {
+				if (Validation::check(Validation::BRANCHES, $_POST['person_id'])) {
 					customer_branches_list_row(_("Branch:"), $_POST['person_id'],
 						'PersonDetailID', null, false, true, true, true);
 				}
@@ -90,7 +90,7 @@
 		}
 
 		$person_currency = payment_person_currency($_POST['PayType'], $_POST['person_id']);
-		$bank_currency = Banking::get_bank_account_currency($_POST['bank_account']);
+		$bank_currency   = Banking::get_bank_account_currency($_POST['bank_account']);
 
 		ui_view::exchange_rate_display($bank_currency, $person_currency, $_POST['date_']);
 
@@ -110,7 +110,7 @@
 
 	function display_gl_items($title, &$order) {
 
-		$dim = DB_Company::get_pref('use_dimension');
+		$dim     = DB_Company::get_pref('use_dimension');
 		$colspan = ($dim == 2 ? 4 : ($dim == 1 ? 3 : 2));
 		ui_msgs::display_heading($title);
 
@@ -119,15 +119,15 @@
 
 		if ($dim == 2)
 			$th = array(_("Account Code"), _("Account Description"), _("Dimension") . " 1",
-				_("Dimension") . " 2", _("Amount"), _("Memo"), ""
+									_("Dimension") . " 2", _("Amount"), _("Memo"), ""
 			);
 		else if ($dim == 1)
 			$th = array(_("Account Code"), _("Account Description"), _("Dimension"),
-				_("Amount"), _("Memo"), ""
+									_("Amount"), _("Memo"), ""
 			);
 		else
 			$th = array(_("Account Code"), _("Account Description"),
-				_("Amount"), _("Memo"), ""
+									_("Amount"), _("Memo"), ""
 			);
 
 		if (count($order->gl_items)) $th[] = '';
@@ -179,19 +179,19 @@
 	//---------------------------------------------------------------------------------
 
 	function gl_edit_item_controls(&$order, $dim, $Index = null) {
-		$Ajax = Ajax::instance();
+		$Ajax    = Ajax::instance();
 		$payment = $order->trans_type == ST_BANKPAYMENT;
 
 		start_row();
 		$id = find_submit('Edit');
 		if ($Index != -1 && $Index == $id) {
-			$item = $order->gl_items[$Index];
-			$_POST['code_id'] = $item->code_id;
-			$_POST['dimension_id'] = $item->dimension_id;
+			$item                   = $order->gl_items[$Index];
+			$_POST['code_id']       = $item->code_id;
+			$_POST['dimension_id']  = $item->dimension_id;
 			$_POST['dimension2_id'] = $item->dimension2_id;
-			$_POST['amount'] = price_format(abs($item->amount));
-			$_POST['description'] = $item->description;
-			$_POST['LineMemo'] = $item->reference;
+			$_POST['amount']        = price_format(abs($item->amount));
+			$_POST['description']   = $item->description;
+			$_POST['LineMemo']      = $item->reference;
 
 			hidden('Index', $id);
 			echo gl_all_accounts_list('code_id', null, true, true);
@@ -203,8 +203,8 @@
 		}
 		else
 		{
-			$_POST['amount'] = price_format(0);
-			$_POST['dimension_id'] = 0;
+			$_POST['amount']        = price_format(0);
+			$_POST['dimension_id']  = 0;
 			$_POST['dimension2_id'] = 0;
 			//$_POST['LineMemo'] = ""; // let memo go to next line Joe Hunt 2010-05-30
 			if (isset($_POST['_code_id_update'])) {
@@ -212,12 +212,12 @@
 			}
 
 			if ($_POST['PayType'] == PT_CUSTOMER) {
-				$acc = get_branch_accounts($_POST['PersonDetailID']);
+				$acc              = get_branch_accounts($_POST['PersonDetailID']);
 				$_POST['code_id'] = $acc['receivables_account'];
 			}
 			elseif ($_POST['PayType'] == PT_SUPPLIER)
 			{
-				$acc = get_supplier_accounts($_POST['person_id']);
+				$acc              = get_supplier_accounts($_POST['person_id']);
 				$_POST['code_id'] = $acc['payable_account'];
 			}
 				//elseif ($_POST['PayType'] == PT_WORKORDER)

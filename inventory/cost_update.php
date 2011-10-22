@@ -20,7 +20,7 @@
 
 	//--------------------------------------------------------------------------------------
 
-	check_db_has_costable_items(_("There are no costable inventory items defined in the system (Purchased or manufactured items)."));
+	Validation::check(Validation::COST_ITEMS, _("There are no costable inventory items defined in the system (Purchased or manufactured items)."), STOCK_SERVICE);
 
 	if (isset($_GET['stock_id'])) {
 		$_POST['stock_id'] = $_GET['stock_id'];
@@ -77,7 +77,7 @@
 	echo "</center><hr>";
 	ui_globals::set_global_stock_item($_POST['stock_id']);
 
-	$sql = "SELECT description, units, material_cost, labour_cost,
+	$sql    = "SELECT description, units, material_cost, labour_cost,
 	overhead_cost, mb_flag
 	FROM stock_master
 	WHERE stock_id=" . DBOld::escape($_POST['stock_id']) . "
@@ -92,9 +92,9 @@
 	hidden("OldOverheadCost", $myrow["overhead_cost"]);
 
 	start_table(Config::get('tables.style2'));
-	$dec1 = $dec2 = $dec3 = 0;
+	$dec1                   = $dec2 = $dec3 = 0;
 	$_POST['material_cost'] = price_decimal_format($myrow["material_cost"], $dec1);
-	$_POST['labour_cost'] = price_decimal_format($myrow["labour_cost"], $dec2);
+	$_POST['labour_cost']   = price_decimal_format($myrow["labour_cost"], $dec2);
 	$_POST['overhead_cost'] = price_decimal_format($myrow["overhead_cost"], $dec3);
 
 	amount_row(_("Standard Material Cost Per Unit"), "material_cost", null, "class='tableheader2'", null, $dec1);

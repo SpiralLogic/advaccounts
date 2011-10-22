@@ -15,7 +15,7 @@
 
 	page(_($help_context = "Foreign Item Codes"));
 
-	check_db_has_purchasable_items(_("There are no inventory items defined in the system."));
+	Validation::check(Validation::PURCHASE_ITEMS, _("There are no inventory items defined in the system."), STOCK_PURCHASED);
 
 	simple_page_mode(true);
 	//--------------------------------------------------------------------------------------------------
@@ -98,18 +98,18 @@
 
 	ui_globals::set_global_stock_item($_POST['stock_id']);
 
-	$result = get_item_code_dflts($_POST['stock_id']);
-	$dec = $result['decimals'];
-	$units = $result['units'];
+	$result    = get_item_code_dflts($_POST['stock_id']);
+	$dec       = $result['decimals'];
+	$units     = $result['units'];
 	$dflt_desc = $result['description'];
-	$dflt_cat = $result['category_id'];
+	$dflt_cat  = $result['category_id'];
 
 	$result = get_all_item_codes($_POST['stock_id']);
 	div_start('code_table');
 	start_table(Config::get('tables.style') . "  width=60%");
 
 	$th = array(_("EAN/UPC Code"), _("Quantity"), _("Units"),
-		_("Description"), _("Category"), "", ""
+							_("Description"), _("Category"), "", ""
 	);
 
 	table_header($th);
@@ -143,15 +143,15 @@
 
 	if ($selected_id != '') {
 		if ($Mode == 'Edit') {
-			$myrow = get_item_code($selected_id);
-			$_POST['item_code'] = $myrow["item_code"];
-			$_POST['quantity'] = $myrow["quantity"];
+			$myrow                = get_item_code($selected_id);
+			$_POST['item_code']   = $myrow["item_code"];
+			$_POST['quantity']    = $myrow["quantity"];
 			$_POST['description'] = $myrow["description"];
 			$_POST['category_id'] = $myrow["category_id"];
 		}
 		hidden('selected_id', $selected_id);
 	} else {
-		$_POST['quantity'] = 1;
+		$_POST['quantity']    = 1;
 		$_POST['description'] = $dflt_desc;
 		$_POST['category_id'] = $dflt_cat;
 	}

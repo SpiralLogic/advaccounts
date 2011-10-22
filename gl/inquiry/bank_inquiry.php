@@ -19,7 +19,7 @@
 
 	page(_($help_context = "Bank Statement"), false, false, "", $js);
 
-	check_db_has_bank_accounts(_("There are no bank accounts defined in the system."));
+	Validation::check(Validation::BANK_ACCOUNTS, _("There are no bank accounts defined in the system."));
 
 	//-----------------------------------------------------------------------------------
 	// Ajax updates
@@ -45,7 +45,7 @@
 	//------------------------------------------------------------------------------------------------
 
 	$date_after = Dates::date2sql($_POST['TransAfterDate']);
-	$date_to = Dates::date2sql($_POST['TransToDate']);
+	$date_to    = Dates::date2sql($_POST['TransToDate']);
 	if (!isset($_POST['bank_account']))
 		$_POST['bank_account'] = "";
 	$sql = "SELECT bank_trans.* FROM bank_trans
@@ -63,11 +63,11 @@
 	start_table(Config::get('tables.style'));
 
 	$th = array(_("Type"), _("#"), _("Reference"), _("Date"),
-		_("Debit"), _("Credit"), _("Balance"), _("Person/Item"), ""
+							_("Debit"), _("Credit"), _("Balance"), _("Person/Item"), ""
 	);
 	table_header($th);
 
-	$sql = "SELECT SUM(amount) FROM bank_trans WHERE bank_act="
+	$sql        = "SELECT SUM(amount) FROM bank_trans WHERE bank_act="
 	 . DBOld::escape($_POST['bank_account']) . "
 	AND trans_date < '$date_after'";
 	$before_qty = DBOld::query($sql, "The starting balance on hand could not be calculated");
@@ -75,15 +75,15 @@
 	start_row("class='inquirybg'");
 	label_cell("<b>" . _("Opening Balance") . " - " . $_POST['TransAfterDate'] . "</b>", "colspan=4");
 	$bfw_row = DBOld::fetch_row($before_qty);
-	$bfw = $bfw_row[0];
+	$bfw     = $bfw_row[0];
 	ui_view::display_debit_or_credit_cells($bfw);
 	label_cell("");
 	label_cell("", "colspan=2");
 
 	end_row();
 	$running_total = $bfw;
-	$j = 1;
-	$k = 0; //row colour counter
+	$j             = 1;
+	$k             = 0; //row colour counter
 	while ($myrow = DBOld::fetch($result))
 	{
 

@@ -17,7 +17,7 @@
 
 	include_once(APP_PATH . "manufacturing/includes/manufacturing_ui.php");
 
-	check_db_has_bom_stock_items(_("There are no manufactured or kit items defined in the system."));
+	Validation::check(Validation::BOM_ITEMS, _("There are no manufactured or kit items defined in the system."), BOM_ITEMS);
 
 	if (isset($_GET['stock_id'])) {
 		$_POST['stock_id'] = $_GET['stock_id'];

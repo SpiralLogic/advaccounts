@@ -50,7 +50,7 @@
 		if (isset($customer_record["dissallow_invoices"]) && $customer_record["dissallow_invoices"] != 0) {
 			echo "<center><font color=red size=4><b>" . _("CUSTOMER ACCOUNT IS ON HOLD") . "</font></b></center>";
 		}
-		$nowdue = "1-" . $past1 . " " . _('Days');
+		$nowdue   = "1-" . $past1 . " " . _('Days');
 		$pastdue1 = $past1 + 1 . "-" . $past2 . " " . _('Days');
 		$pastdue2 = _('Over') . " " . $past2 . " " . _('Days');
 		start_table("width=90%  " . Config::get('tables.style'));
@@ -120,7 +120,7 @@
 		$str = '';
 		switch ($row['type']) {
 			case ST_SALESINVOICE:
-				if (get_voided_entry(ST_SALESINVOICE, $row["trans_no"]) === false || AJAX_REFERRER) {
+				if (Voiding::get(ST_SALESINVOICE, $row["trans_no"]) === false || AJAX_REFERRER) {
 					if ($row['Allocated'] == 0) {
 						$str = "/sales/customer_invoice.php?ModifyInvoice=" . $row['trans_no'];
 					} else {
@@ -129,7 +129,7 @@
 				}
 				break;
 			case ST_CUSTCREDIT:
-				if (get_voided_entry(ST_CUSTCREDIT, $row["trans_no"]) === false && $row['Allocated'] == 0) {
+				if (Voiding::get(ST_CUSTCREDIT, $row["trans_no"]) === false && $row['Allocated'] == 0) {
 					if ($row['order_'] == 0) {
 						$str = "/sales/credit_note_entry.php?ModifyCredit=" . $row['trans_no'];
 					} else {
@@ -138,7 +138,7 @@
 				}
 				break;
 			case ST_CUSTDELIVERY:
-				if (get_voided_entry(ST_CUSTDELIVERY, $row["trans_no"]) === false) {
+				if (Voiding::get(ST_CUSTDELIVERY, $row["trans_no"]) === false) {
 					$str = "/sales/customer_delivery.php?ModifyDelivery=" . $row['trans_no'];
 				}
 				break;
@@ -171,7 +171,7 @@
 
 	//------------------------------------------------------------------------------------------------
 	$date_after = Dates::date2sql($_POST['TransAfterDate']);
-	$date_to = Dates::date2sql($_POST['TransToDate']);
+	$date_to    = Dates::date2sql($_POST['TransToDate']);
 	if (AJAX_REFERRER && isset($_POST['ajaxsearch'])) {
 		$searchArray = trim($_POST['ajaxsearch']);
 		$searchArray = explode(' ', $searchArray);
@@ -274,24 +274,54 @@
 	}
 	//------------------------------------------------------------------------------------------------
 	DBOld::query("set @bal:=0");
-	$cols = array(_("Type") => array('fun' => 'systype_name', 'ord' => ''),
-		_("#") => array('fun' => 'trans_view', 'ord' => ''),
-		_("Order") => array('fun' => 'order_view'),
-		_("Reference") => array('ord' => ''),
-		_("Date") => array('name' => 'tran_date', 'type' => 'date', 'ord' => 'desc'),
-		_("Due Date") => array('type' => 'date', 'fun' => 'due_date'),
-		_("Customer") => array('ord' => ''),
+	$cols = array(_("Type")      => array('fun' => 'systype_name',
+																				'ord' => ''
+	),
+								_("#")         => array('fun' => 'trans_view',
+																				'ord' => ''
+								),
+								_("Order")     => array('fun' => 'order_view'),
+								_("Reference") => array('ord' => ''),
+								_("Date")      => array('name' => 'tran_date',
+																				'type' => 'date',
+																				'ord'  => 'desc'
+								),
+								_("Due Date")  => array('type' => 'date',
+																				'fun'  => 'due_date'
+								),
+								_("Customer")  => array('ord' => ''),
 
-		_("Branch") => array('ord' => ''),
-		_("Currency") => array('align' => 'center'),
-		_("Debit") => array('align' => 'right', 'fun' => 'fmt_debit'),
-		_("Credit") => array('align' => 'right', 'insert' => true, 'fun' => 'fmt_credit'),
-		_("RB") => array('align' => 'right', 'type' => 'amount'),
-		array('insert' => true, 'fun' => 'gl_view'),
-		array('insert' => true, 'align' => 'center', 'fun' => 'credit_link'),
-		array('insert' => true, 'align' => 'center', 'fun' => 'edit_link'),
-		array('insert' => true, 'align' => 'center', 'fun' => 'email_link'),
-		array('insert' => true, 'align' => 'center', 'fun' => 'prt_link')
+								_("Branch")    => array('ord' => ''),
+								_("Currency")  => array('align' => 'center'),
+								_("Debit")     => array('align' => 'right',
+																				'fun'   => 'fmt_debit'
+								),
+								_("Credit")    => array('align'  => 'right',
+																				'insert' => true,
+																				'fun'    => 'fmt_credit'
+								),
+								_("RB")        => array('align' => 'right',
+																				'type'  => 'amount'
+								),
+								array('insert' => true,
+											'fun'    => 'gl_view'
+								),
+								array('insert' => true,
+											'align'  => 'center',
+											'fun'    => 'credit_link'
+								),
+								array('insert' => true,
+											'align'  => 'center',
+											'fun'    => 'edit_link'
+								),
+								array('insert' => true,
+											'align'  => 'center',
+											'fun'    => 'email_link'
+								),
+								array('insert' => true,
+											'align'  => 'center',
+											'fun'    => 'prt_link'
+								)
 	);
 	if (isset($_POST['customer_id']) && $_POST['customer_id'] != ALL_TEXT) {
 		$cols[_("Customer")] = 'skip';

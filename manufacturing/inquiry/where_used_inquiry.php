@@ -15,7 +15,7 @@
 
 	page(_($help_context = "Inventory Item Where Used Inquiry"));
 
-	check_db_has_stock_items(_("There are no items defined in the system."));
+	Validation::check(Validation::STOCK_ITEMS, _("There are no items defined in the system."));
 
 	start_form(false, true);
 

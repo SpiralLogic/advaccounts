@@ -17,7 +17,7 @@
 
 	include(APP_PATH . "admin/db/tags_db.php");
 
-	check_db_has_gl_account_groups(_("There are no account groups defined. Please define at least one account group before entering accounts."));
+	Validation::check(Validation::GL_ACCOUNT_GROUPS, _("There are no account groups defined. Please define at least one account group before entering accounts."));
 
 	//-------------------------------------------------------------------------------------
 
@@ -99,7 +99,7 @@
 			return false;
 		$acc = DBOld::escape($selected_account);
 
-		$sql = "SELECT COUNT(*) FROM gl_trans WHERE account=$acc";
+		$sql    = "SELECT COUNT(*) FROM gl_trans WHERE account=$acc";
 		$result = DBOld::query($sql, "Couldn't test for existing transactions");
 
 		$myrow = DBOld::fetch_row($result);
@@ -108,7 +108,7 @@
 			return false;
 		}
 
-		$sql = "SELECT COUNT(*) FROM company WHERE debtors_act=$acc
+		$sql    = "SELECT COUNT(*) FROM company WHERE debtors_act=$acc
 		OR pyt_discount_act=$acc
 		OR creditors_act=$acc 
 		OR bank_charge_act=$acc 
@@ -132,7 +132,7 @@
 			return false;
 		}
 
-		$sql = "SELECT COUNT(*) FROM bank_accounts WHERE account_code=$acc";
+		$sql    = "SELECT COUNT(*) FROM bank_accounts WHERE account_code=$acc";
 		$result = DBOld::query($sql, "Couldn't test for bank accounts");
 
 		$myrow = DBOld::fetch_row($result);
@@ -141,7 +141,7 @@
 			return false;
 		}
 
-		$sql = "SELECT COUNT(*) FROM stock_master WHERE
+		$sql    = "SELECT COUNT(*) FROM stock_master WHERE
 		inventory_account=$acc 
 		OR cogs_account=$acc
 		OR adjustment_account=$acc 
@@ -154,7 +154,7 @@
 			return false;
 		}
 
-		$sql = "SELECT COUNT(*) FROM tax_types WHERE sales_gl_code=$acc OR purchasing_gl_code=$acc";
+		$sql    = "SELECT COUNT(*) FROM tax_types WHERE sales_gl_code=$acc OR purchasing_gl_code=$acc";
 		$result = DBOld::query($sql, "Couldn't test for existing tax GL codes");
 
 		$myrow = DBOld::fetch_row($result);
@@ -163,7 +163,7 @@
 			return false;
 		}
 
-		$sql = "SELECT COUNT(*) FROM cust_branch WHERE
+		$sql    = "SELECT COUNT(*) FROM cust_branch WHERE
 		sales_account=$acc 
 		OR sales_discount_account=$acc
 		OR receivables_account=$acc
@@ -176,7 +176,7 @@
 			return false;
 		}
 
-		$sql = "SELECT COUNT(*) FROM suppliers WHERE
+		$sql    = "SELECT COUNT(*) FROM suppliers WHERE
 		purchase_account=$acc
 		OR payment_discount_account=$acc
 		OR payable_account=$acc";
@@ -188,7 +188,7 @@
 			return false;
 		}
 
-		$sql = "SELECT COUNT(*) FROM quick_entry_lines WHERE
+		$sql    = "SELECT COUNT(*) FROM quick_entry_lines WHERE
 		dest_id=$acc AND UPPER(LEFT(action, 1)) <> 'T'";
 		$result = DBOld::query($sql, "Couldn't test for existing suppliers GL codes");
 
@@ -220,7 +220,7 @@
 
 	start_form();
 
-	if (db_has_gl_accounts()) {
+	if (Validation::check(Validation::GL_ACCOUNTS,)) {
 		start_table("class = 'tablestyle_noborder'");
 		start_row();
 		gl_all_accounts_list_cells(null, 'AccountList', null, false, false,
@@ -241,14 +241,14 @@
 		//editing an existing account
 		$myrow = get_gl_account($selected_account);
 
-		$_POST['account_code'] = $myrow["account_code"];
+		$_POST['account_code']  = $myrow["account_code"];
 		$_POST['account_code2'] = $myrow["account_code2"];
-		$_POST['account_name'] = $myrow["account_name"];
-		$_POST['account_type'] = $myrow["account_type"];
-		$_POST['inactive'] = $myrow["inactive"];
+		$_POST['account_name']  = $myrow["account_name"];
+		$_POST['account_type']  = $myrow["account_type"];
+		$_POST['inactive']      = $myrow["inactive"];
 
 		$tags_result = get_tags_associated_with_record(TAG_ACCOUNT, $selected_account);
-		$tagids = array();
+		$tagids      = array();
 		while ($tag = DBOld::fetch($tags_result))
 		{
 			$tagids[] = $tag['id'];
@@ -266,7 +266,7 @@
 			$_POST['account_tags'] = array();
 			$_POST['account_code'] = $_POST['account_code2'] = '';
 			$_POST['account_name'] = $_POST['account_type'] = '';
-			$_POST['inactive'] = 0;
+			$_POST['inactive']     = 0;
 		}
 		text_row_ex(_("Account Code:"), 'account_code', 11);
 	}

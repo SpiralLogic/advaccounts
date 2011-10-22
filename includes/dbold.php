@@ -56,6 +56,7 @@
 		}
 
 		public static function fetch($result) {
+
 			return mysql_fetch_array($result);
 		}
 
@@ -74,7 +75,6 @@
 		public static function num_fields($result) {
 			return mysql_num_fields($result);
 		}
-
 
 		//DB wrapper functions to change only once for whole application
 
@@ -121,8 +121,8 @@
 		}
 
 		public static function set_info() {
-			$db = static::getInstance();
-			$_SESSION['db_info']['insert_id'] = mysql_insert_id($db);
+			$db                                   = static::getInstance();
+			$_SESSION['db_info']['insert_id']     = mysql_insert_id($db);
 			$_SESSION['db_info']['affected_rows'] = mysql_affected_rows($db);
 		}
 

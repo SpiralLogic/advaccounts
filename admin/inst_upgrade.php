@@ -143,7 +143,7 @@
 		}
 		if ($ret) { // re-read the prefs
 
-			$user                               = get_user_by_login($_SESSION["wa_current_user"]->username);
+			$user                               = User::get_by_login($_SESSION["wa_current_user"]->username);
 			$_SESSION["wa_current_user"]->prefs = new userPrefs($user);
 			ui_msgs::display_notification(_('All companies data has been successfully updated'));
 		}

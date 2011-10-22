@@ -28,9 +28,9 @@
 
 	//----------------------------------------------------------------------------------------------
 
-	check_db_has_customers(_("There are no customers defined in the system."));
+	Validation::check(Validation::CUSTOMERS, _("There are no customers defined in the system."));
 
-	check_db_has_bank_accounts(_("There are no bank accounts defined in the system."));
+	Validation::check(Validation::BANK_ACCOUNTS, _("There are no bank accounts defined in the system."));
 
 	//----------------------------------------------------------------------------------------
 
@@ -232,7 +232,7 @@
 		$_SESSION['alloc'] = new allocation(ST_CUSTPAYMENT, 0);
 	}
 
-	if (db_customer_has_branches($_POST['customer_id'])) {
+	if (Validation::check(Validation::BRANCHES, $_POST['customer_id'])) {
 		customer_branches_list_row(_("Branch:"), $_POST['customer_id'], 'BranchID', null, false, true, true);
 	}
 	else {

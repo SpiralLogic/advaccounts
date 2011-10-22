@@ -15,7 +15,7 @@
 
 	page(_($help_context = "Reorder Levels"));
 
-	check_db_has_costable_items(_("There are no inventory items defined in the system (Purchased or manufactured items)."));
+	Validation::check(Validation::COST_ITEMS, _("There are no inventory items defined in the system (Purchased or manufactured items)."), STOCK_SERVICE);
 
 	//------------------------------------------------------------------------------------
 

@@ -21,7 +21,7 @@
 
 	//----------------------------------------------------------------------------------------
 	function exist_transaction($type, $type_no) {
-		$void_entry = get_voided_entry($type, $type_no);
+		$void_entry = Voiding::get($type, $type_no);
 
 		if ($void_entry != null)
 			return false;
@@ -171,7 +171,7 @@
 
 	function handle_void_transaction() {
 		if (check_valid_entries() == true) {
-			$void_entry = get_voided_entry($_POST['filterType'], $_POST['trans_no']);
+			$void_entry = Voiding::get($_POST['filterType'], $_POST['trans_no']);
 			if ($void_entry != null) {
 				ui_msgs::display_error(_("The selected transaction has already been voided."), true);
 				unset($_POST['trans_no']);
@@ -181,7 +181,7 @@
 				return;
 			}
 
-			$ret = void_transaction($_POST['filterType'], $_POST['trans_no'],
+			$ret = Voiding::void($_POST['filterType'], $_POST['trans_no'],
 				$_POST['date_'], $_POST['memo_']);
 
 			if ($ret) {

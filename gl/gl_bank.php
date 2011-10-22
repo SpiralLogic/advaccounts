@@ -31,11 +31,11 @@
 	page($_SESSION['page_title'], false, false, '', $js);
 
 	//-----------------------------------------------------------------------------------------------
-	check_db_has_bank_accounts(_("There are no bank accounts defined in the system."));
+	Validation::check(Validation::BANK_ACCOUNTS, _("There are no bank accounts defined in the system."));
 
 	//----------------------------------------------------------------------------------------
 	if (list_updated('PersonDetailID')) {
-		$br = get_branch(get_post('PersonDetailID'));
+		$br                 = get_branch(get_post('PersonDetailID'));
 		$_POST['person_id'] = $br['debtor_no'];
 		$Ajax->activate('person_id');
 	}
@@ -51,7 +51,7 @@
 	//-----------------------------------------------------------------------------------------------
 
 	if (isset($_GET['AddedID'])) {
-		$trans_no = $_GET['AddedID'];
+		$trans_no   = $_GET['AddedID'];
 		$trans_type = ST_BANKPAYMENT;
 
 		ui_msgs::display_notification_centered(_("Payment $trans_no has been entered"));
@@ -66,7 +66,7 @@
 	}
 
 	if (isset($_GET['AddedDep'])) {
-		$trans_no = $_GET['AddedDep'];
+		$trans_no   = $_GET['AddedDep'];
 		$trans_type = ST_BANKDEPOSIT;
 
 		ui_msgs::display_notification_centered(_("Deposit $trans_no has been entered"));
@@ -153,7 +153,7 @@
 			$_POST['ref'], $_POST['memo_']);
 
 		$trans_type = $trans[0];
-		$trans_no = $trans[1];
+		$trans_no   = $trans[1];
 		Dates::new_doc_date($_POST['date_']);
 
 		$_SESSION['pay_items']->clear_items();

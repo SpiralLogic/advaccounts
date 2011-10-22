@@ -22,7 +22,7 @@
 
 	//----------------------------------------------------------------------------------------
 
-	check_db_has_suppliers(_("There are no suppliers defined in the system."));
+	Validation::check(Validation::SUPPLIERS, _("There are no suppliers defined in the system."));
 
 	//---------------------------------------------------------------------------------------------------------------
 

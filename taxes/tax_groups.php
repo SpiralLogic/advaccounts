@@ -17,7 +17,7 @@
 
 	simple_page_mode(true);
 
-	check_db_has_tax_types(_("There are no tax types defined. Define tax types before defining tax groups."));
+	Validation::check(Validation::TAX_TYPES, _("There are no tax types defined. Define tax types before defining tax groups."));
 
 	//-----------------------------------------------------------------------------------
 

@@ -64,12 +64,12 @@
 		static function format($center = false) {
 
 			$msg_class = array(
-				E_USER_ERROR => 'err_msg',
+				E_USER_ERROR   => 'err_msg',
 				E_USER_WARNING => 'warn_msg',
-				E_USER_NOTICE => 'note_msg'
+				E_USER_NOTICE  => 'note_msg'
 			);
 
-			$type = E_USER_NOTICE;
+			$type    = E_USER_NOTICE;
 			$content = '';
 			//  $class = 'no_msg';
 			if (count(static::$messages)) {
@@ -90,11 +90,10 @@
 						$str .= ' ' . _('in file') . ': ' . $msg[2] . ' ' . _('at line ') . $msg[3];
 					$content .= ($cnt ? '<hr>' : '') . $str;
 				}
-				$class = $msg_class[$type];
+				$class   = $msg_class[$type];
 				$content = "<div class='$class'>$content</div>";
-			} else
-				if (PATH_TO_ROOT == '.')
-					return '';
+			} else if (PATH_TO_ROOT == '.')
+				return '';
 			return $content;
 		}
 
@@ -116,9 +115,9 @@
 		 */
 
 		static function show_db_error($msg, $sql_statement = null, $exit = true) {
-			DBOld::getInstance();
+			$db = DBOld::getInstance();
 
-			$warning = $msg == null;
+			$warning  = $msg == null;
 			$db_error = DBOld::error_no();
 
 			//	$str = "<span class='errortext'><b>" . _("DATABASE ERROR :") . "</b> $msg</span><br>";

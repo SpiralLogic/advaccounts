@@ -71,7 +71,7 @@
 
 	if ($Mode == 'RESET') {
 		$selected_id = -1;
-		$sav = get_post('show_inactive');
+		$sav         = get_post('show_inactive');
 		unset($_POST);
 		$_POST['show_inactive'] = $sav;
 	}
@@ -83,7 +83,7 @@
 	start_table(Config::get('tables.style'));
 
 	$th = array(_('POS Name'), _('Credit sale'), _('Cash sale'), _('Location'), _('Default account'),
-		'', ''
+							'', ''
 	);
 	inactive_control_column($th);
 	table_header($th);
@@ -107,7 +107,7 @@
 	end_table(1);
 	//----------------------------------------------------------------------------------------------------
 
-	$cash = db_has_cash_accounts();
+	$cash = Validation::check(Validation::CASH_ACCOUNTS);
 
 	if (!$cash) ui_msgs::display_note(_("To have cash POS first define at least one cash bank account."));
 
@@ -118,9 +118,9 @@
 		if ($Mode == 'Edit') {
 			$myrow = get_sales_point($selected_id);
 
-			$_POST['name'] = $myrow["pos_name"];
+			$_POST['name']     = $myrow["pos_name"];
 			$_POST['location'] = $myrow["pos_location"];
-			$_POST['account'] = $myrow["pos_account"];
+			$_POST['account']  = $myrow["pos_account"];
 			if ($myrow["credit_sale"]) $_POST['credit_sale'] = 1;
 			if ($myrow["cash_sale"]) $_POST['cash_sale'] = 1;
 		}

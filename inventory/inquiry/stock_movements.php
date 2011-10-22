@@ -20,7 +20,7 @@
 	page(_($help_context = "Inventory Item Movement"), false, false, "", $js);
 	//------------------------------------------------------------------------------------------------
 
-	check_db_has_stock_items(_("There are no items defined in the system."));
+	Validation::check(Validation::STOCK_ITEMS, _("There are no items defined in the system."));
 
 	if (get_post('ShowMoves')) {
 		$Ajax->activate('doc_tbl');
@@ -51,9 +51,9 @@
 	ui_globals::set_global_stock_item($_POST['stock_id']);
 
 	$before_date = Dates::date2sql($_POST['BeforeDate']);
-	$after_date = Dates::date2sql($_POST['AfterDate']);
+	$after_date  = Dates::date2sql($_POST['AfterDate']);
 
-	$sql = "SELECT type, trans_no, tran_date, person_id, qty, reference
+	$sql    = "SELECT type, trans_no, tran_date, person_id, qty, reference
 	FROM stock_moves
 	WHERE loc_code=" . DBOld::escape($_POST['StockLocation']) . "
 	AND tran_date >= '" . $after_date . "'
@@ -66,18 +66,18 @@
 	div_start('doc_tbl');
 	start_table(Config::get('tables.style'));
 	$th = array(_("Type"), _("#"), _("Reference"), _("Date"), _("Detail"),
-		_("Quantity In"), _("Quantity Out"), _("Quantity On Hand")
+							_("Quantity In"), _("Quantity Out"), _("Quantity On Hand")
 	);
 
 	table_header($th);
 
-	$sql = "SELECT SUM(qty) FROM stock_moves WHERE stock_id=" . DBOld::escape($_POST['stock_id']) . "
+	$sql        = "SELECT SUM(qty) FROM stock_moves WHERE stock_id=" . DBOld::escape($_POST['stock_id']) . "
 	AND loc_code=" . DBOld::escape($_POST['StockLocation']) . "
 	AND tran_date < '" . $after_date . "'";
 	$before_qty = DBOld::query($sql, "The starting quantity on hand could not be calculated");
 
 	$before_qty_row = DBOld::fetch_row($before_qty);
-	$after_qty = $before_qty = $before_qty_row[0];
+	$after_qty      = $before_qty = $before_qty_row[0];
 
 	if (!isset($before_qty_row[0])) {
 		$after_qty = $before_qty = 0;
@@ -93,7 +93,7 @@
 	$j = 1;
 	$k = 0; //row colour counter
 
-	$total_in = 0;
+	$total_in  = 0;
 	$total_out = 0;
 
 	while ($myrow = DBOld::fetch($result))
@@ -123,7 +123,7 @@
 		label_cell(ui_view::get_trans_view_str($myrow["type"], $myrow["trans_no"], $myrow["reference"]));
 		label_cell($trandate);
 
-		$person = $myrow["person_id"];
+		$person     = $myrow["person_id"];
 		$gl_posting = "";
 
 		if (($myrow["type"] == ST_CUSTDELIVERY) || ($myrow["type"] == ST_CUSTCREDIT)) {
@@ -135,7 +135,7 @@
 		elseif ($myrow["type"] == ST_SUPPRECEIVE || $myrow['type'] == ST_SUPPCREDIT)
 		{
 			// get the supplier name
-			$sql = "SELECT supp_name FROM suppliers WHERE supplier_id = '" . $myrow["person_id"] . "'";
+			$sql         = "SELECT supp_name FROM suppliers WHERE supplier_id = '" . $myrow["person_id"] . "'";
 			$supp_result = DBOld::query($sql, "check failed");
 
 			$supp_row = DBOld::fetch($supp_result);
@@ -147,7 +147,7 @@
 		{
 			// get the adjustment type
 			$movement_type = get_movement_type($myrow["person_id"]);
-			$person = $movement_type["name"];
+			$person        = $movement_type["name"];
 		}
 		elseif ($myrow["type"] == ST_WORKORDER || $myrow["type"] == ST_MANUISSUE ||
 		 $myrow["type"] == ST_MANURECEIVE

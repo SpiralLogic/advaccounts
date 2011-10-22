@@ -29,9 +29,9 @@
 
 	//----------------------------------------------------------------------------------------
 
-	check_db_has_suppliers(_("There are no suppliers defined in the system."));
+	Validation::check(Validation::SUPPLIERS, _("There are no suppliers defined in the system."));
 
-	check_db_has_bank_accounts(_("There are no bank accounts defined in the system."));
+	Validation::check(Validation::BANK_ACCOUNTS, _("There are no bank accounts defined in the system."));
 
 	//----------------------------------------------------------------------------------------
 
@@ -228,7 +228,7 @@
 	table_section(3);
 
 	$supplier_currency = Banking::get_supplier_currency($_POST['supplier_id']);
-	$bank_currency = Banking::get_bank_account_currency($_POST['bank_account']);
+	$bank_currency     = Banking::get_bank_account_currency($_POST['bank_account']);
 	if ($bank_currency != $supplier_currency) {
 		ui_view::exchange_rate_display($bank_currency, $supplier_currency, $_POST['DatePaid'], true);
 	}

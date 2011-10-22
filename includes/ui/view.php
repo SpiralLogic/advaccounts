@@ -272,7 +272,7 @@
 
 		//--------------------------------------------------------------------------------------
 		static function is_voided_display($type, $id, $label) {
-			$void_entry = get_voided_entry($type, $id);
+			$void_entry = Voiding::get($type, $id);
 			if ($void_entry == null) {
 				return false;
 			}

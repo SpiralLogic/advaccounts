@@ -17,12 +17,12 @@
 
 	page(_($help_context = "Budget Entry"));
 
-	check_db_has_gl_account_groups(_("There are no account groups defined. Please define at least one account group before entering accounts."));
+	Validation::check(Validation::GL_ACCOUNT_GROUPS, _("There are no account groups defined. Please define at least one account group before entering accounts."));
 
 	//-------------------------------------------------------------------------------------
 
 	function exists_gl_budget($date_, $account, $dimension, $dimension2) {
-		$sql = "SELECT account FROM budget_trans WHERE account=" . DBOld::escape($account)
+		$sql    = "SELECT account FROM budget_trans WHERE account=" . DBOld::escape($account)
 		 . " AND tran_date='$date_' AND
 		dimension_id=" . DBOld::escape($dimension) . " AND dimension2_id=" . DBOld::escape($dimension2);
 		$result = DBOld::query($sql, "Cannot retreive a gl transaction");
@@ -61,9 +61,9 @@
 	function get_only_budget_trans_from_to($from_date, $to_date, $account, $dimension = 0, $dimension2 = 0) {
 
 		$from = Dates::date2sql($from_date);
-		$to = Dates::date2sql($to_date);
+		$to   = Dates::date2sql($to_date);
 
-		$sql = "SELECT SUM(amount) FROM budget_trans
+		$sql    = "SELECT SUM(amount) FROM budget_trans
 		WHERE account=" . DBOld::escape($account)
 		 . " AND tran_date >= '$from' AND tran_date <= '$to'
 		 AND dimension_id = " . DBOld::escape($dimension)
@@ -105,7 +105,7 @@
 
 	start_form();
 
-	if (db_has_gl_accounts()) {
+	if (Validation::check(Validation::GL_ACCOUNTS)) {
 		$dim = DB_Company::get_pref('use_dimension');
 		start_table(Config::get('tables.style2'));
 		fiscalyears_list_row(_("Fiscal Year:"), 'fyear', null);
@@ -144,9 +144,9 @@
 
 			$result = DBOld::query($sql, "could not get current fiscal year");
 
-			$fyear = DBOld::fetch($result);
+			$fyear          = DBOld::fetch($result);
 			$_POST['begin'] = Dates::sql2date($fyear['begin']);
-			$_POST['end'] = Dates::sql2date($fyear['end']);
+			$_POST['end']   = Dates::sql2date($fyear['end']);
 		}
 		hidden('begin');
 		hidden('end');

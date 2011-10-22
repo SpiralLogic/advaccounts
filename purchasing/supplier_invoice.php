@@ -22,7 +22,7 @@
 
 	page(_($help_context = "Enter Supplier Invoice"), false, false, "", $js);
 	//----------------------------------------------------------------------------------------
-	check_db_has_suppliers(_("There are no suppliers defined in the system."));
+	Validation::check(Validation::SUPPLIERS, _("There are no suppliers defined in the system."));
 	//---------------------------------------------------------------------------------------------------------------
 	if (isset($_GET['AddedID'])) {
 		$invoice_no = $_GET['AddedID'];

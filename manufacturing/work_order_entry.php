@@ -21,9 +21,9 @@
 
 	page(_($help_context = "Work Order Entry"), false, false, "", $js);
 
-	check_db_has_manufacturable_items(_("There are no manufacturable items defined in the system."));
+	Validation::check(Validation::MANUFACTURE_ITEMS, _("There are no manufacturable items defined in the system."), STOCK_MANUFACTURE);
 
-	check_db_has_locations(("There are no inventory locations defined in the system."));
+	Validation::check(Validation::LOCATIONS, ("There are no inventory locations defined in the system."));
 
 	//---------------------------------------------------------------------------------------
 
@@ -38,7 +38,7 @@
 	//---------------------------------------------------------------------------------------
 
 	if (isset($_GET['AddedID'])) {
-		$id = $_GET['AddedID'];
+		$id    = $_GET['AddedID'];
 		$stype = ST_WORKORDER;
 
 		ui_msgs::display_notification_centered(_("The work order been added."));
@@ -47,12 +47,18 @@
 
 		if ($_GET['type'] != WO_ADVANCED) {
 			include_once(APP_PATH . "reporting/includes/reporting.php");
-			$ar = array('PARAM_0' => $id, 'PARAM_1' => $id, 'PARAM_2' => 0);
+			$ar = array('PARAM_0' => $id,
+									'PARAM_1' => $id,
+									'PARAM_2' => 0
+			);
 			ui_msgs::display_note(print_link(_("Print this Work Order"), 409, $ar), 1);
 			$ar['PARAM_2'] = 1;
 			ui_msgs::display_note(print_link(_("Email this Work Order"), 409, $ar), 1);
 			ui_msgs::display_note(ui_view::get_gl_view_str($stype, $id, _("View the GL Journal Entries for this Work Order")), 1);
-			$ar = array('PARAM_0' => $_GET['date'], 'PARAM_1' => $_GET['date'], 'PARAM_2' => $stype);
+			$ar = array('PARAM_0' => $_GET['date'],
+									'PARAM_1' => $_GET['date'],
+									'PARAM_2' => $stype
+			);
 			ui_msgs::display_note(print_link(_("Print the GL Journal Entries for this Work Order"), 702, $ar), 1);
 		}
 
@@ -308,19 +314,19 @@
 			safe_exit();
 		}
 
-		$_POST['wo_ref'] = $myrow["wo_ref"];
-		$_POST['stock_id'] = $myrow["stock_id"];
-		$_POST['quantity'] = qty_format($myrow["units_reqd"], Input::post('stock_id'), $dec);
+		$_POST['wo_ref']        = $myrow["wo_ref"];
+		$_POST['stock_id']      = $myrow["stock_id"];
+		$_POST['quantity']      = qty_format($myrow["units_reqd"], Input::post('stock_id'), $dec);
 		$_POST['StockLocation'] = $myrow["loc_code"];
-		$_POST['released'] = $myrow["released"];
-		$_POST['closed'] = $myrow["closed"];
-		$_POST['type'] = $myrow["type"];
-		$_POST['date_'] = Dates::sql2date($myrow["date_"]);
-		$_POST['RequDate'] = Dates::sql2date($myrow["required_by"]);
+		$_POST['released']      = $myrow["released"];
+		$_POST['closed']        = $myrow["closed"];
+		$_POST['type']          = $myrow["type"];
+		$_POST['date_']         = Dates::sql2date($myrow["date_"]);
+		$_POST['RequDate']      = Dates::sql2date($myrow["required_by"]);
 		$_POST['released_date'] = Dates::sql2date($myrow["released_date"]);
-		$_POST['memo_'] = "";
-		$_POST['units_issued'] = $myrow["units_issued"];
-		$_POST['Costs'] = price_format($myrow["additional_costs"]);
+		$_POST['memo_']         = "";
+		$_POST['units_issued']  = $myrow["units_issued"];
+		$_POST['Costs']         = price_format($myrow["additional_costs"]);
 
 		$_POST['memo_'] = ui_view::get_comments_string(ST_WORKORDER, $selected_id);
 
@@ -380,16 +386,16 @@
 		hidden('RequDate', '');
 
 		$sql = "SELECT DISTINCT account_code FROM bank_accounts";
-		$rs = DBOld::query($sql, "could not get bank accounts");
-		$r = DBOld::fetch_row($rs);
+		$rs  = DBOld::query($sql, "could not get bank accounts");
+		$r   = DBOld::fetch_row($rs);
 		if (!isset($_POST['Labour'])) {
-			$_POST['Labour'] = price_format(0);
+			$_POST['Labour']     = price_format(0);
 			$_POST['cr_lab_acc'] = $r[0];
 		}
 		amount_row($wo_cost_types[WO_LABOUR], 'Labour');
 		gl_all_accounts_list_row(_("Credit Labour Account"), 'cr_lab_acc', null);
 		if (!isset($_POST['Costs'])) {
-			$_POST['Costs'] = price_format(0);
+			$_POST['Costs']  = price_format(0);
 			$_POST['cr_acc'] = $r[0];
 		}
 		amount_row($wo_cost_types[WO_OVERHEAD], 'Costs');

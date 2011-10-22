@@ -56,29 +56,29 @@
 	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 		$user = null;
 		if ($_POST['password'] != "") {
-			$user = new Auth($user_id);
+			$user     = new Auth($user_id);
 			$password = $user->hash_password($_POST['password']);
 		}
 		if (can_process($user)) {
 
 			if ($selected_id != -1) {
-				update_user($selected_id, $_POST['user_id'], $_POST['real_name'], $_POST['phone'],
+				User::update($selected_id, $_POST['user_id'], $_POST['real_name'], $_POST['phone'],
 					$_POST['email'], $_POST['Access'], $_POST['language'],
 					$_POST['profile'], check_value('rep_popup'), $_POST['pos']);
 
-				update_user_password($selected_id, $_POST['user_id'], $password);
+				User::update_password($selected_id, $_POST['user_id'], $password);
 
 				ui_msgs::display_notification_centered(_("The selected user has been updated."));
 			}
 			else
 			{
 
-				add_user($_POST['user_id'], $_POST['real_name'], $password,
+				User::add($_POST['user_id'], $_POST['real_name'], $password,
 					$_POST['phone'], $_POST['email'], $_POST['Access'], $_POST['language'],
 					$_POST['profile'], check_value('rep_popup'), $_POST['pos']);
 				$id = DBOld::insert_id();
 				// use current user display preferences as start point for new user
-				update_user_display_prefs($id, user_price_dec(), user_qty_dec(), user_exrate_dec(),
+				User::update_display_prefs($id, user_price_dec(), user_qty_dec(), user_exrate_dec(),
 					user_percent_dec(), user_show_gl_info(), user_show_codes(),
 					user_date_format(), user_date_sep(), user_tho_sep(),
 					user_dec_sep(), user_theme(), user_pagesize(), user_hints(),
@@ -94,7 +94,7 @@
 	//-------------------------------------------------------------------------------------------------
 
 	if ($Mode == 'Delete') {
-		delete_user($selected_id);
+		User::delete($selected_id);
 		ui_msgs::display_notification_centered(_("User has been deleted."));
 		$Mode = 'RESET';
 	}
@@ -102,17 +102,17 @@
 	//-------------------------------------------------------------------------------------------------
 	if ($Mode == 'RESET') {
 		$selected_id = -1;
-		$sav = get_post('show_inactive');
+		$sav         = get_post('show_inactive');
 		unset($_POST); // clean all input fields
 		$_POST['show_inactive'] = $sav;
 	}
 
-	$result = get_users(check_value('show_inactive'));
+	$result = User::get_all(check_value('show_inactive'));
 	start_form();
 	start_table(Config::get('tables.style'));
 
 	$th = array(_("User login"), _("Full Name"), _("Phone"),
-		_("E-mail"), _("Last Visit"), _("Access Level"), "", ""
+							_("E-mail"), _("Last Visit"), _("Access Level"), "", ""
 	);
 
 	inactive_control_column($th);
@@ -160,18 +160,18 @@
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {
 			//editing an existing User
-			$myrow = get_user($selected_id);
+			$myrow = User::get($selected_id);
 
-			$_POST['id'] = $myrow["id"];
-			$_POST['user_id'] = $myrow["user_id"];
+			$_POST['id']        = $myrow["id"];
+			$_POST['user_id']   = $myrow["user_id"];
 			$_POST['real_name'] = $myrow["real_name"];
-			$_POST['phone'] = $myrow["phone"];
-			$_POST['email'] = $myrow["email"];
-			$_POST['Access'] = $myrow["role_id"];
-			$_POST['language'] = $myrow["language"];
-			$_POST['profile'] = $myrow["print_profile"];
+			$_POST['phone']     = $myrow["phone"];
+			$_POST['email']     = $myrow["email"];
+			$_POST['Access']    = $myrow["role_id"];
+			$_POST['language']  = $myrow["language"];
+			$_POST['profile']   = $myrow["print_profile"];
 			$_POST['rep_popup'] = $myrow["rep_popup"];
-			$_POST['pos'] = $myrow["pos"];
+			$_POST['pos']       = $myrow["pos"];
 		}
 		hidden('selected_id', $selected_id);
 		hidden('user_id');
@@ -182,10 +182,10 @@
 	else
 	{ //end of if $selected_id only do the else when a new record is being entered
 		text_row(_("User Login:"), "user_id", null, 22, 20);
-		$_POST['language'] = user_language();
-		$_POST['profile'] = user_print_profile();
+		$_POST['language']  = user_language();
+		$_POST['profile']   = user_print_profile();
 		$_POST['rep_popup'] = user_rep_popup();
-		$_POST['pos'] = user_pos();
+		$_POST['pos']       = user_pos();
 	}
 	$_POST['password'] = "";
 	password_row(_("Password:"), 'password', $_POST['password']);

@@ -19,12 +19,12 @@
 
 	page(_($help_context = "Transfer between Bank Accounts"), false, false, "", $js);
 
-	check_db_has_bank_accounts(_("There are no bank accounts defined in the system."));
+	Validation::check(Validation::BANK_ACCOUNTS, _("There are no bank accounts defined in the system."));
 
 	//----------------------------------------------------------------------------------------
 
 	if (isset($_GET['AddedID'])) {
-		$trans_no = $_GET['AddedID'];
+		$trans_no   = $_GET['AddedID'];
 		$trans_type = ST_BANKTRANSFER;
 
 		ui_msgs::display_notification_centered(_("Transfer has been entered"));
@@ -59,7 +59,7 @@
 		date_row(_("Transfer Date:"), 'DatePaid', '', null, 0, 0, 0, null, true);
 
 		$from_currency = Banking::get_bank_account_currency($_POST['FromBankAccount']);
-		$to_currency = Banking::get_bank_account_currency($_POST['ToBankAccount']);
+		$to_currency   = Banking::get_bank_account_currency($_POST['ToBankAccount']);
 		if ($from_currency != "" && $to_currency != "" && $from_currency != $to_currency) {
 			amount_row(_("Amount:"), 'amount', null, null, $from_currency);
 			amount_row(_("Bank Charge:"), 'charge', null, null, $from_currency);
