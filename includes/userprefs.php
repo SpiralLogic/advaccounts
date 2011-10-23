@@ -117,7 +117,7 @@
 		}
 
 		function date_display() {
-			$sep = Config::get('seperators.date', $this->date_sep);
+			$sep = Config::get('separators.date', $this->date_sep);
 			if ($this->date_format == 0)
 				return "m" . $sep . "d" . $sep . "Y";
 			elseif ($this->date_format == 1)

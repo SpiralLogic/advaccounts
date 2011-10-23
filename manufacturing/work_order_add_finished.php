@@ -74,7 +74,7 @@
 			return false;
 		}
 
-		if (!check_num('quantity', 0)) {
+		if (!Validation::is_num('quantity', 0)) {
 			ui_msgs::display_error(_("The quantity entered is not a valid number or less then zero."));
 			ui_view::set_focus('quantity');
 			return false;

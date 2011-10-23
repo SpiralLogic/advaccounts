@@ -192,7 +192,7 @@
 	echo customer_list('customer_id', null, false, true);
 	echo "</center><br>";
 
-	$num_branches = Validation::check(Validation::BRANCHES, $_POST['customer_id']);
+	$num_branches = Validation::check(Validation::BRANCHES,'', Input::post('customer_id'));
 
 	$sql = "SELECT "
 	 . "b.branch_code, "

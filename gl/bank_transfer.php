@@ -100,13 +100,13 @@
 			return false;
 		}
 
-		if (!check_num('amount', 0)) {
+		if (!Validation::is_num('amount', 0)) {
 			ui_msgs::display_error(_("The entered amount is invalid or less than zero."));
 			ui_view::set_focus('amount');
 			return false;
 		}
 
-		if (isset($_POST['charge']) && !check_num('charge', 0)) {
+		if (isset($_POST['charge']) && !Validation::is_num('charge', 0)) {
 			ui_msgs::display_error(_("The entered amount is invalid or less than zero."));
 			ui_view::set_focus('charge');
 			return false;

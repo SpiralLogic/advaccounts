@@ -62,7 +62,7 @@
 
 		alt_table_row_color($k);
 
-		if (isset($_POST['UpdateData']) && check_num($myrow["loc_code"])) {
+		if (isset($_POST['UpdateData']) && Validation::is_num($myrow["loc_code"])) {
 
 			$myrow["reorder_level"] = input_num($myrow["loc_code"]);
 			set_reorder_level($_POST['stock_id'], $myrow["loc_code"], input_num($myrow["loc_code"]));

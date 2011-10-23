@@ -20,7 +20,7 @@
 
 		$input_error = 0;
 
-		if (!check_num('login_tout', 10)) {
+		if (!Validation::is_num('login_tout', 10)) {
 			ui_msgs::display_error(_("Login timeout must be positive number not less than 10."));
 			ui_view::set_focus('login_tout');
 			$input_error = 1;

@@ -36,6 +36,9 @@
 		$_SESSION['page_title'] = sprintf(_("Modifying Customer Credit Note #%d"), $_GET['ModifyCredit']);
 		handle_new_credit($_GET['ModifyCredit']);
 		$help_context = "Modifying Customer Credit Note";
+	}else {
+		$_SESSION['page_title'] = _($help_context = "Customer Credit Note");
+
 	}
 
 	page($_SESSION['page_title'], false, false, "", $js);
@@ -132,7 +135,7 @@
 
 		$input_error = 0;
 
-		if ($_SESSION['Items']->count_items() == 0 && (!check_num('ChargeFreightCost', 0)))
+		if ($_SESSION['Items']->count_items() == 0 && (!Validation::is_num('ChargeFreightCost', 0)))
 			return false;
 		if ($_SESSION['Items']->trans_no == 0) {
 			if (!Refs::is_valid($_POST['ref'])) {
@@ -183,17 +186,17 @@
 	//-----------------------------------------------------------------------------
 
 	function check_item_data() {
-		if (!check_num('qty', 0)) {
+		if (!Validation::is_num('qty', 0)) {
 			ui_msgs::display_error(_("The quantity must be greater than zero."));
 			ui_view::set_focus('qty');
 			return false;
 		}
-		if (!check_num('price', 0)) {
+		if (!Validation::is_num('price', 0)) {
 			ui_msgs::display_error(_("The entered price is negative or invalid."));
 			ui_view::set_focus('price');
 			return false;
 		}
-		if (!check_num('Disc', 0, 100)) {
+		if (!Validation::is_num('Disc', 0, 100)) {
 			ui_msgs::display_error(_("The entered discount percent is negative, greater than 100 or invalid."));
 			ui_view::set_focus('Disc');
 			return false;
@@ -225,8 +228,7 @@
 		if (!check_item_data())
 			return;
 
-		add_to_order($_SESSION['Items'], $_POST['stock_id'], input_num('qty'),
-			input_num('price'), input_num('Disc') / 100);
+		add_to_order($_SESSION['Items'], $_POST['stock_id'], input_num('qty'),	input_num('price'), input_num('Disc') / 100);
 		line_start_focus();
 	}
 

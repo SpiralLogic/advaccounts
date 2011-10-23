@@ -80,12 +80,12 @@
 			JS::setfocus('[name="ref"]');
 			return false;
 		}
-		if (!check_num('amount', 0, null)) {
+		if (!Validation::is_num('amount', 0, null)) {
 			ui_msgs::display_error(_("The entered amount is invalid or positive and cannot be processed."));
 			JS::setfocus('[name="amount"]');
 			return false;
 		}
-		if (isset($_POST['charge']) && !check_num('charge', 0)) {
+		if (isset($_POST['charge']) && !Validation::is_num('charge', 0)) {
 			ui_msgs::display_error(_("The entered amount is invalid or negative and cannot be processed."));
 			JS::setfocus('[name="charge"]');
 			return false;
@@ -98,7 +98,7 @@
 				return false;
 			}
 		}
-		if (isset($_POST['_ex_rate']) && !check_num('_ex_rate', 0.000001)) {
+		if (isset($_POST['_ex_rate']) && !Validation::is_num('_ex_rate', 0.000001)) {
 			ui_msgs::display_error(_("The exchange rate must be numeric and greater than zero."));
 			JS::setfocus('[name="ex_rate"]');
 			return false;

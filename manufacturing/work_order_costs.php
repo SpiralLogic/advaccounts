@@ -61,7 +61,7 @@
 	function can_process() {
 		global $wo_details;
 
-		if (!check_num('costs', 0)) {
+		if (!Validation::is_num('costs', 0)) {
 			ui_msgs::display_error(_("The amount entered is not a valid number or less then zero."));
 			ui_view::set_focus('costs');
 			return false;

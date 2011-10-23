@@ -36,8 +36,8 @@
 
 		$should_update = true;
 
-		if (!check_num('material_cost') || !check_num('labour_cost') ||
-		 !check_num('overhead_cost')
+		if (!Validation::is_num('material_cost') || !Validation::is_num('labour_cost') ||
+		 !Validation::is_num('overhead_cost')
 		) {
 			ui_msgs::display_error(_("The entered cost is not numeric."));
 			ui_view::set_focus('material_cost');

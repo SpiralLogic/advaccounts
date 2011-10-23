@@ -85,7 +85,7 @@
 		else {
 			$myrow       = DBOld::fetch_row($result);
 			$gl_act_name = $myrow[1];
-			if (!check_num('amount')) {
+			if (!Validation::is_num('amount')) {
 				ui_msgs::display_error(_("The amount entered is not numeric. This line cannot be added to the transaction."));
 				ui_view::set_focus('amount');
 				$input_error = true;
@@ -194,17 +194,17 @@
 	}
 	function check_item_data($n) {
 
-		if (!check_num('this_quantity_inv' . $n, 0) || input_num('this_quantity_inv' . $n) == 0) {
+		if (!Validation::is_num('this_quantity_inv' . $n, 0) || input_num('this_quantity_inv' . $n) == 0) {
 			ui_msgs::display_error(_("The quantity to invoice must be numeric and greater than zero."));
 			ui_view::set_focus('this_quantity_inv' . $n);
 			return false;
 		}
-		if (!check_num('ChgPrice' . $n)) {
+		if (!Validation::is_num('ChgPrice' . $n)) {
 			ui_msgs::display_error(_("The price is not numeric."));
 			ui_view::set_focus('ChgPrice' . $n);
 			return false;
 		}
-		if (!check_num('ExpPrice' . $n)) {
+		if (!Validation::is_num('ExpPrice' . $n)) {
 			ui_msgs::display_error(_("The price is not numeric."));
 			ui_view::set_focus('ExpPrice' . $n);
 			return false;

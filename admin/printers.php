@@ -32,7 +32,7 @@
 		{
 			ui_msgs::display_notification_centered(_("You have selected printing to server at user IP."));
 		}
-		elseif (!check_num('tout', 0, 60))
+		elseif (!Validation::is_num('tout', 0, 60))
 		{
 			$error = 1;
 			ui_msgs::display_error(_("Timeout cannot be less than zero nor longer than 60 (sec)."));

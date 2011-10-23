@@ -35,19 +35,19 @@
 			return false;
 		}
 
-		if (!check_num('credit_limit', 0)) {
+		if (!Validation::is_num('credit_limit', 0)) {
 			ui_msgs::display_error(_("The credit limit must be numeric and not less than zero."));
 			ui_view::set_focus('credit_limit');
 			return false;
 		}
 
-		if (!check_num('pymt_discount', 0, 100)) {
+		if (!Validation::is_num('pymt_discount', 0, 100)) {
 			ui_msgs::display_error(_("The payment discount must be numeric and is expected to be less than 100% and greater than or equal to 0."));
 			ui_view::set_focus('pymt_discount');
 			return false;
 		}
 
-		if (!check_num('discount', 0, 100)) {
+		if (!Validation::is_num('discount', 0, 100)) {
 			ui_msgs::display_error(_("The discount percentage must be numeric and is expected to be less than 100% and greater than or equal to 0."));
 			ui_view::set_focus('discount');
 			return false;

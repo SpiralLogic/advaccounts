@@ -7,7 +7,7 @@
 	 * To change this template use File | Settings | File Templates.
 	 */
 	class Tags {
-		function add_tag($type, $name, $description) {
+		public static function add($type, $name, $description) {
 			$sql = "INSERT INTO tags (type, name, description)
  		VALUES (" . DBOld::escape($type) . ", " . DBOld::escape($name) . ", " . DBOld::escape($description) . ")";
 
@@ -16,7 +16,7 @@
 
 		//--------------------------------------------------------------------------------------
 
-		function update_tag($id, $name, $description, $type = null) {
+		public static function update($id, $name, $description, $type = null) {
 			$sql = "UPDATE tags SET name=" . DBOld::escape($name) . ",
                                         description=" . DBOld::escape($description);
 			if ($type != null)
@@ -29,7 +29,7 @@
 
 		//--------------------------------------------------------------------------------------
 
-		function get_tags($type, $all = false) {
+		public static function get_all($type, $all = false) {
 			$sql = "SELECT * FROM tags WHERE type=" . DBOld::escape($type);
 
 			if (!$all) $sql .= " AND !inactive";
@@ -41,7 +41,7 @@
 
 		//--------------------------------------------------------------------------------------
 
-		function get_tag($id) {
+		public static function get($id) {
 			$sql = "SELECT * FROM tags WHERE id = " . DBOld::escape($id);
 
 			$result = DBOld::query($sql, "could not get tag");
@@ -51,7 +51,7 @@
 
 		//--------------------------------------------------------------------------------------
 
-		function get_tag_type($id) {
+		public static function get_type($id) {
 			$sql = "SELECT type FROM tags WHERE id = " . DBOld::escape($id);
 
 			$result = DBOld::query($sql, "could not get tag type");
@@ -62,7 +62,7 @@
 
 		//--------------------------------------------------------------------------------------
 
-		function get_tag_name($id) {
+		public static function get_name($id) {
 			$sql = "SELECT name FROM tags WHERE id = " . DBOld::escape($id);
 
 			$result = DBOld::query($sql, "could not get tag name");
@@ -73,7 +73,7 @@
 
 		//--------------------------------------------------------------------------------------
 
-		function get_tag_description($id) {
+		public static function get_description($id) {
 			$sql = "SELECT description FROM tags WHERE id = " . DBOld::escape($id);
 
 			$result = DBOld::query($sql, "could not get tag description");
@@ -84,7 +84,7 @@
 
 		//--------------------------------------------------------------------------------------
 
-		function delete_tag($id) {
+		public static function delete($id) {
 			$sql = "DELETE FROM tags WHERE id = " . DBOld::escape($id);
 
 			DBOld::query($sql, "could not delete tag");
@@ -92,7 +92,7 @@
 
 		//--------------------------------------------------------------------------------------
 
-		function add_tag_associations($recordid, $tagids) {
+		public static function add_associations($recordid, $tagids) {
 			foreach ($tagids as $tagid) {
 				if (!$tagid) continue;
 				$sql = "INSERT INTO tag_associations (record_id, tag_id)
@@ -104,18 +104,18 @@
 
 		//--------------------------------------------------------------------------------------
 
-		function update_tag_associations($type, $recordid, $tagids) {
+		public static function update_associations($type, $recordid, $tagids) {
 			// Delete the old associations
-			delete_tag_associations($type, $recordid, false);
+			Tags::delete_associations($type, $recordid, false);
 			// Add the new associations
-			add_tag_associations($recordid, $tagids);
+			Tags::add_associations($recordid, $tagids);
 		}
 
 		//--------------------------------------------------------------------------------------
 		// To delete tag associations, we need to specify the tag type.
 		// Otherwise we may inadvertantly delete records for another type of tag
 		//
-		function delete_tag_associations($type, $recordid, $all = false) {
+		public static function delete_associations($type, $recordid, $all = false) {
 			/* multiply table DELETE syntax available since MySQL 4.0.0:
 							$sql = "DELETE ta FROM ".''."tag_associations ta
 										INNER JOIN ".''."tags tags ON tags.id = ta.tag_id
@@ -138,9 +138,9 @@
 
 		//--------------------------------------------------------------------------------------
 
-		function get_records_associated_with_tag($id) {
+		public static function get_associated_records($id) {
 			// Which table we query is based on the tag type
-			$type = get_tag_type($id);
+			$type = Tags::get_type($id);
 
 			$table = $key = '';
 			switch ($type) {
@@ -164,7 +164,7 @@
 
 		//--------------------------------------------------------------------------------------
 
-		function get_tags_associated_with_record($type, $recordid) {
+		public static function get_all_associated_with_record($type, $recordid) {
 			$sql = "SELECT tags.* FROM tag_associations AS ta
  				INNER JOIN tags AS tags ON tags.id = ta.tag_id
  				WHERE tags.type = $type	AND ta.record_id = " . DBOld::escape($recordid);

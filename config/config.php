@@ -89,9 +89,9 @@
 																								'debug' => false
 		),
 		'formats.date'                     => array("MMDDYYYY", "DDMMYYYY", "YYYYMMDD"),
-		'seperators.thousands'             => array(",", ".", " "),
-		'seperators.decimal'               => array(".", ","),
-		'seperators.date'                  => array('/', ".", "-", " "),
+		'separators.thousands'             => array(",", ".", " "),
+		'separators.decimal'               => array(".", ","),
+		'separators.date'                  => array('/', ".", "-", " "),
 		'formats.paper_size'               => array("Letter", "A4"),
 
 		'config.onload'                    => array('db', 'js', 'installed_languages'),

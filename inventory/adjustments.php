@@ -131,13 +131,13 @@
 	//-----------------------------------------------------------------------------------------------
 
 	function check_item_data() {
-		if (!check_num('qty', 0)) {
+		if (!Validation::is_num('qty', 0)) {
 			ui_msgs::display_error(_("The quantity entered is negative or invalid."));
 			ui_view::set_focus('qty');
 			return false;
 		}
 
-		if (!check_num('std_cost', 0)) {
+		if (!Validation::is_num('std_cost', 0)) {
 			ui_msgs::display_error(_("The entered standard cost is negative or invalid."));
 			ui_view::set_focus('std_cost');
 			return false;

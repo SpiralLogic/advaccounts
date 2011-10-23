@@ -140,7 +140,7 @@
 			if ($selected_id == -1) {
 				$id = add_dimension(
 					$_POST['ref'], $_POST['name'], $_POST['type_'], $_POST['date_'], $_POST['due_date'], $_POST['memo_']);
-				add_tag_associations($id, $_POST['dimension_tags']);
+				Tags::add_associations($id, $_POST['dimension_tags']);
 				meta_forward($_SERVER['PHP_SELF'], "AddedID=$id");
 			}
 			else
@@ -148,7 +148,7 @@
 
 				update_dimension($selected_id, $_POST['name'], $_POST['type_'], $_POST['date_'], $_POST['due_date'],
 					$_POST['memo_']);
-				update_tag_associations(TAG_DIMENSION, $selected_id, $_POST['dimension_tags']);
+				Tags::update_associations(TAG_DIMENSION, $selected_id, $_POST['dimension_tags']);
 
 				meta_forward($_SERVER['PHP_SELF'], "UpdatedID=$selected_id");
 			}
@@ -172,7 +172,7 @@
 
 			// delete
 			delete_dimension($selected_id);
-			delete_tag_associations(TAG_DIMENSION, $selected_id, true);
+			Tags::delete_associations(TAG_DIMENSION, $selected_id, true);
 			meta_forward($_SERVER['PHP_SELF'], "DeletedID=$selected_id");
 		}
 	}
@@ -221,7 +221,7 @@
 		$_POST['due_date'] = Dates::sql2date($myrow["due_date"]);
 		$_POST['memo_'] = ui_view::get_comments_string(ST_DIMENSION, $selected_id);
 
-		$tags_result = get_tags_associated_with_record(TAG_DIMENSION, $selected_id);
+		$tags_result = Tags::get_all_associated_with_record(TAG_DIMENSION, $selected_id);
 		$tagids = array();
 		while ($tag = DBOld::fetch($tags_result))
 		{

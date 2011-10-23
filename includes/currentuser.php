@@ -68,7 +68,7 @@
 					$this->role_set = array();
 					$this->access   = $myrow["role_id"];
 					// store area codes available for current user role
-					$role = Printer::get_role($this->access);
+					$role = Security::get_role($this->access);
 					if (!$role) return false;
 					foreach ($role['areas'] as $code) // filter only area codes for enabled security sections
 					{
@@ -152,8 +152,8 @@
 	}
 
 	function number_format2($number, $decimals = 0) {
-		$tsep = Config::get('seperators.thousands', $_SESSION["wa_current_user"]->prefs->tho_sep());
-		$dsep = Config::get('seperators.decimal', $_SESSION["wa_current_user"]->prefs->dec_sep());
+		$tsep = Config::get('separators.thousands', $_SESSION["wa_current_user"]->prefs->tho_sep());
+		$dsep = Config::get('separators.decimal', $_SESSION["wa_current_user"]->prefs->dec_sep());
 		//return number_format($number, $decimals, $dsep,	$tsep);
 		$delta  = ($number < 0 ? -.0000000001 : .0000000001);
 		$number = number_format($number + $delta, $decimals, $dsep, $tsep);
@@ -215,9 +215,9 @@
 
 	function user_numeric($input) {
 		$num = trim($input);
-		$sep = Config::get('seperators.thousands', user_tho_sep());
+		$sep = Config::get('separators.thousands', user_tho_sep());
 		if ($sep != '') $num = str_replace($sep, '', $num);
-		$sep = Config::get('seperators.decimal', user_dec_sep());
+		$sep = Config::get('separators.decimal', user_dec_sep());
 		if ($sep != '.') $num = str_replace($sep, '.', $num);
 		if (!is_numeric($num)) return false;
 		$num = (float)$num;
@@ -333,8 +333,8 @@
 					 \ndatesys: " . Config::get('accounts.datesystem') . ",
 					 \ndatefmt: " . user_date_format() . ",
 					 \ndatesep: '" . Config::get('ui.date.format') . "',
-					 \nts: '" . Config::get('seperators.thousands', user_tho_sep()) . "',
-					 \nds: '" . Config::get('seperators.decimal', user_dec_sep()) . "',
+					 \nts: '" . Config::get('separators.thousands', user_tho_sep()) . "',
+					 \nds: '" . Config::get('separators.decimal', user_dec_sep()) . "',
 					 \npdec: " . user_price_dec() . "}\n";
 		JS::beforeload($js);
 	}

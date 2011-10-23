@@ -8,7 +8,7 @@
 	 */
 	class Printer {
 
-		function write_def($id, $name, $descr, $queue, $host, $port, $timeout) {
+		public static function write_def($id, $name, $descr, $queue, $host, $port, $timeout) {
 			if ($id > 0)
 				$sql = "UPDATE printers SET description=" . DBOld::escape($descr)
 				 . ",name=" . DBOld::escape($name) . ",queue=" . DBOld::escape($queue)
@@ -23,21 +23,21 @@
 			return DBOld::query($sql, "could not write printer definition");
 		}
 
-		function get_all() {
+		public static function get_all() {
 			$sql = "SELECT * FROM printers";
 			return DBOld::query($sql, "could not get printer definitions");
 		}
 
-		function get_printer($id) {
+		public static function get_printer($id) {
 			$sql    = "SELECT * FROM printers WHERE id=" . DBOld::escape($id);
 			$result = DBOld::query($sql, "could not get printer definition");
 			return DBOld::fetch($result);
 		}
 
 		//============================================================================
-		// printer profiles functions
+		// printer profiles public static functions
 		//
-		function update_profile($name, $dest) {
+		public static function update_profile($name, $dest) {
 			foreach ($dest as $rep => $printer) {
 				if ($printer != '' || $rep == '') {
 					$sql = "REPLACE INTO print_profiles "
@@ -61,7 +61,7 @@
 		//
 		//	Get destination for report defined in given printing profile.
 		//
-		function get_report($profile, $report) {
+		public static function get_report($profile, $report) {
 			$sql = "SELECT printer FROM print_profiles WHERE "
 			 . "profile=" . DBOld::escape($profile) . " AND report=";
 
@@ -79,7 +79,7 @@
 			return get_printer($ret['printer']);
 		}
 
-		function delete_profile($name) {
+		public static function delete_profile($name) {
 			$sql = "DELETE FROM print_profiles WHERE profile=" . DBOld::escape($name);
 			return DBOld::query($sql, "could not delete printing profile");
 		}
@@ -87,7 +87,7 @@
 		//
 		// Get all report destinations for given profile.
 		//
-		function get_profile($name) {
+		public static function get_profile($name) {
 			$sql = "SELECT	* FROM print_profiles WHERE profile=" . DBOld::escape($name);
 			return DBOld::query($sql, "could not get printing profile");
 		}

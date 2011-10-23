@@ -57,7 +57,7 @@
 			return $data;
 		}
 
-		function get_role($id) {
+		public static function get_role($id) {
 			$sql = "SELECT * FROM security_roles WHERE id='$id'";
 			$ret = DBOld::query($sql, "could not retrieve security roles");
 			$row = DBOld::fetch($ret);
@@ -70,7 +70,7 @@
 
 		//--------------------------------------------------------------------------------------------------
 
-		function add_role($name, $description, $sections, $areas) {
+		public static function add_role($name, $description, $sections, $areas) {
 			$sql = "INSERT INTO security_roles (role, description, sections, areas)
 			VALUES ("
 			 . DBOld::escape($name) . ","
@@ -83,7 +83,7 @@
 
 		//--------------------------------------------------------------------------------------------------
 
-		function update_role($id, $name, $description, $sections, $areas) {
+		public static function update_role($id, $name, $description, $sections, $areas) {
 			$sql = "UPDATE security_roles SET role=" . DBOld::escape($name)
 			 . ",description=" . DBOld::escape($description)
 			 . ",sections=" . DBOld::escape(implode(';', $sections))
@@ -94,7 +94,7 @@
 
 		//--------------------------------------------------------------------------------------------------
 
-		function get_profile($id) {
+		public static function get_profile($id) {
 			$sql = "DELETE FROM security_roles WHERE id=$id";
 
 			DBOld::query($sql, "could not delete role");
@@ -102,7 +102,7 @@
 
 		//--------------------------------------------------------------------------------------------------
 
-		function check_role_used($id) {
+		public static function check_role_used($id) {
 			$sql = "SELECT count(*) FROM users WHERE role_id=$id";
 			$ret = DBOld::query($sql, 'cannot check role usage');
 			$row = DBOld::fetch($ret);

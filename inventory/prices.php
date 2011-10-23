@@ -61,7 +61,7 @@
 
 	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 
-		if (!check_num('price', 0)) {
+		if (!Validation::is_num('price', 0)) {
 			$input_error = 1;
 			ui_msgs::display_error(_("The price entered must be numeric."));
 			ui_view::set_focus('price');

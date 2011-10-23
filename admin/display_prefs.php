@@ -79,12 +79,12 @@
 
 	thoseps_list_row(_("Thousand Separator:"), "tho_sep", user_tho_sep());
 
-	/* The array Config::get('seperators.thousands') is set up in config.php for modifications
+	/* The array Config::get('separators.thousands') is set up in config.php for modifications
 	possible separators can be added by modifying the array definition by editing that file */
 
 	decseps_list_row(_("Decimal Separator:"), "dec_sep", user_dec_sep());
 
-	/* The array Config::get('seperators.thousands',user_tho_sep()); is set up in config.php for modifications
+	/* The array Config::get('separators.thousands',user_tho_sep()); is set up in config.php for modifications
 	possible separators can be added by modifying the array definition by editing that file */
 	if (!isset($_POST['language']))
 		$_POST['language'] = $_SESSION['language']->code;

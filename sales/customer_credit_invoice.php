@@ -17,7 +17,6 @@
 	$page_security = 'SA_SALESCREDITINV';
 
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-
 	include_once(APP_PATH . "sales/includes/sales_ui.php");
 	include_once(APP_PATH . "reporting/includes/reporting.php");
 
@@ -32,10 +31,10 @@
 		processing_start();
 	}
 	elseif (isset($_GET['InvoiceNumber'])) {
-		$_SESSION['page_title'] = _($help_context = "Credit all or part of an Invoice");
+		$page_title = _($help_context = "Credit all or part of an Invoice");
 		processing_start();
 	}
-	page($_SESSION['page_title'], false, false, "", $js);
+	page($page_title, false, false, "", $js);
 
 	//-----------------------------------------------------------------------------
 
@@ -44,13 +43,9 @@
 		$trans_type = ST_CUSTCREDIT;
 
 		ui_msgs::display_notification_centered(_("Credit Note has been processed"));
-
 		ui_msgs::display_note(ui_view::get_customer_trans_view_str($trans_type, $credit_no, _("&View This Credit Note")), 0, 0);
-
 		ui_msgs::display_note(print_document_link($credit_no, _("&Print This Credit Note"), true, $trans_type), 1);
-
 		ui_msgs::display_note(ui_view::get_gl_view_str($trans_type, $credit_no, _("View the GL &Journal Entries for this Credit Note")), 1);
-
 		ui_view::display_footer_exit();
 	}
 	elseif (isset($_GET['UpdatedID'])) {
@@ -101,7 +96,7 @@
 				return false;
 			}
 		}
-		if (!check_num('ChargeFreightCost', 0)) {
+		if (!Validation::is_num('ChargeFreightCost', 0)) {
 			ui_msgs::display_error(_("The entered shipping cost is invalid or less than zero."));
 			;
 			ui_view::set_focus('ChargeFreightCost');
@@ -154,7 +149,7 @@
 				continue; // this line was fully credited/removed
 			}
 			if (isset($_POST['Line' . $line_no])) {
-				if (check_num('Line' . $line_no, 0, $itm->quantity)) {
+				if (Validation::is_num('Line' . $line_no, 0, $itm->quantity)) {
 					$_SESSION['Items']->line_items[$line_no]->qty_dispatched =
 					 input_num('Line' . $line_no);
 				}
@@ -317,7 +312,7 @@
 			end_row();
 		}
 
-		if (!check_num('ChargeFreightCost')) {
+		if (!Validation::is_num('ChargeFreightCost')) {
 			$_POST['ChargeFreightCost'] = price_format($_SESSION['Items']->freight_cost);
 		}
 		$colspan = 7;

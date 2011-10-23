@@ -27,7 +27,7 @@
 			return false;
 		}
 
-		if (!check_num('factor', 0)) {
+		if (!Validation::is_num('factor', 0)) {
 			ui_msgs::display_error(_("Calculation factor must be valid positive number."));
 			ui_view::set_focus('factor');
 			return false;

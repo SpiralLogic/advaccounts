@@ -78,7 +78,7 @@
 				 'disabled' => false,
 				 'editable' => true,
 				 'selected' => '',
-				 'cell' => false,
+				 'cells' => false,
 				 'inactive' => false,
 				 'purchase' => false,
 				 'sale' => false,
@@ -96,7 +96,7 @@
 			$desc_js = $o['js'];
 
 			HTML::setReturn(true);
-			if ($o['cell']) {
+			if ($o['cells']) {
 				HTML::td(true);
 			}
 
@@ -110,7 +110,7 @@
 				));
 				$desc_js .= '$("#lineedit").data("stock_id",value.stock_id).show().parent().css("white-space","nowrap"); ';
 			}
-			if ($o['cell']) {
+			if ($o['cells']) {
 				HTML::td()->td(true);
 			}
 
@@ -132,7 +132,7 @@ JS;
 JS;
 			}
 
-			if ($o['cell']) {
+			if ($o['cells']) {
 				HTML::td();
 			}
 

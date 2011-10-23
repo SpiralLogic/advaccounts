@@ -28,13 +28,13 @@
 			ui_msgs::display_error(_("The sales person name cannot be empty."));
 			ui_view::set_focus('salesman_name');
 		}
-		$pr1 = check_num('provision', 0, 100);
-		if (!$pr1 || !check_num('provision2', 0, 100)) {
+		$pr1 = Validation::is_num('provision', 0, 100);
+		if (!$pr1 || !Validation::is_num('provision2', 0, 100)) {
 			$input_error = 1;
 			ui_msgs::display_error(_("Salesman provision cannot be less than 0 or more than 100%."));
 			ui_view::set_focus(!$pr1 ? 'provision' : 'provision2');
 		}
-		if (!check_num('break_pt', 0)) {
+		if (!Validation::is_num('break_pt', 0)) {
 			$input_error = 1;
 			ui_msgs::display_error(_("Salesman provision breakpoint must be numeric and not less than 0."));
 			ui_view::set_focus('break_pt');

@@ -87,7 +87,7 @@
 			$this->formatTitle->setTopColor('gray');
 
 			$how = user_date_format();
-			$sep = Config::get('seperators.date', user_date_sep());
+			$sep = Config::get('separators.date', user_date_sep());
 			if ($sep == '.') $sep = "\\.";
 			if ($how == 0) {
 				$dateformat_long = "mm{$sep}dd{$sep}yyyy\ \ hh:mm\ am/pm";
@@ -169,8 +169,8 @@
 			if (!isset($this->formatAmount[$dec])) {
 
 				$dec = (int)$dec;
-				//$tsep = Config::get('seperators.thousands',user_tho_sep());
-				//$dsep = Config::get('seperators.decimal',user_dec_sep());
+				//$tsep = Config::get('separators.thousands',user_tho_sep());
+				//$dsep = Config::get('separators.decimal',user_dec_sep());
 				$tsep = ',';
 				$dsep = '.';
 				$format = "###{$tsep}###{$tsep}###{$tsep}##0";

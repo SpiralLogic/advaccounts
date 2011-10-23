@@ -63,12 +63,12 @@
 	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 		if (can_process()) {
 			if ($selected_id != -1) {
-				if ($ret = update_tag($selected_id, $_POST['name'], $_POST['description']))
+				if ($ret = Tags::update($selected_id, $_POST['name'], $_POST['description']))
 					ui_msgs::display_notification(_('Selected tag settings have been updated'));
 			}
 			else
 			{
-				if ($ret = add_tag(Input::post('type'), $_POST['name'], $_POST['description']))
+				if ($ret = Tags::add(Input::post('type'), $_POST['name'], $_POST['description']))
 					ui_msgs::display_notification(_('New tag has been added'));
 			}
 			if ($ret) $Mode = 'RESET';
@@ -80,7 +80,7 @@
 	function can_delete($selected_id) {
 		if ($selected_id == -1)
 			return false;
-		$result = get_records_associated_with_tag($selected_id);
+		$result = Tags::get_associated_records($selected_id);
 
 		if (DBOld::num_rows($result) > 0) {
 			ui_msgs::display_error(_("Cannot delete this tag because records have been created referring to it."));
@@ -94,7 +94,7 @@
 
 	if ($Mode == 'Delete') {
 		if (can_delete($selected_id)) {
-			delete_tag($selected_id);
+			Tags::delete($selected_id);
 			ui_msgs::display_notification(_('Selected tag has been deleted'));
 		}
 		$Mode = 'RESET';
@@ -109,7 +109,7 @@
 
 	//-----------------------------------------------------------------------------------
 
-	$result = get_tags(Input::post('type'), check_value('show_inactive'));
+	$result = Tags::get_all(Input::post('type'), check_value('show_inactive'));
 
 	start_form();
 	start_table(Config::get('tables.style'));
@@ -141,7 +141,7 @@
 	{
 		if ($Mode == 'Edit') {
 			// Editing an existing tag
-			$myrow = get_tag($selected_id);
+			$myrow = Tags::get($selected_id);
 
 			$_POST['name']        = $myrow["name"];
 			$_POST['description'] = $myrow["description"];

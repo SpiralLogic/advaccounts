@@ -665,7 +665,7 @@ JS
 		if (!$legacy)
 			return Item::addSearchBox($name, array_merge(array('selected' => $selected_id,
 																												'type'      => $type,
-																												'cell'      => true,
+																												'cells'      => true,
 																												'sale'      => true
 																									 ), $opts));
 		$where = ($type == 'local') ? " AND !i.is_foreign" : ' ';
@@ -696,7 +696,7 @@ JS
 		if ($label != null) {
 			echo "<td>$label</td>\n";
 		}
-		echo sales_items_list($name, $selected_id, $all_option, $submit_on_change, '', array_merge(array('cell'       => true,
+		echo sales_items_list($name, $selected_id, $all_option, $submit_on_change, '', array_merge(array('cells'       => true,
 																																																		'description' => ''
 																																															 ), $opts));
 	}
@@ -1522,19 +1522,19 @@ JS
 	function dateseps_list_row($label, $name, $value = null) {
 
 		echo "<tr><td class='label'>$label</td>\n<td>";
-		echo array_selector($name, $value, Config::get('seperators.date'));
+		echo array_selector($name, $value, Config::get('separators.date'));
 		echo "</td></tr>\n";
 	}
 
 	function thoseps_list_row($label, $name, $value = null) {
 		echo "<tr><td class='label'>$label</td>\n<td>";
-		echo array_selector($name, $value, Config::get('seperators.thousands'));
+		echo array_selector($name, $value, Config::get('separators.thousands'));
 		echo "</td></tr>\n";
 	}
 
 	function decseps_list_row($label, $name, $value = null) {
 		echo "<tr><td class='label'>$label</td>\n<td>";
-		echo array_selector($name, $value, Config::get('seperators.decimal'));
+		echo array_selector($name, $value, Config::get('separators.decimal'));
 		echo "</td></tr>\n";
 	}
 
@@ -1833,7 +1833,7 @@ JS
 		// Get tags
 
 		include_once(APP_PATH . "admin/db/tags_db.php");
-		$results = get_tags($type, $all);
+		$results = Tags::get_all($type, $all);
 		while ($tag = DBOld::fetch($results)) {
 			$tags[$tag['id']] = $tag['name'];
 		}

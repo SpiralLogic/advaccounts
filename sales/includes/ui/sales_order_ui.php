@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 
 	//--------------------------------------------------------------------------------
-	function add_to_order(&$order, $new_item, $new_item_qty, $price, $discount, $description, $no_errors = false) {
+	function add_to_order(&$order, $new_item, $new_item_qty, $price, $discount, $description=null, $no_errors = false) {
 		// calculate item price to sum of kit element prices factor for
 		// value distribution over all exploded kit items
 		$item = is_item_kit($new_item);

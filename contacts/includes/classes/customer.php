@@ -40,15 +40,15 @@
 				$this->_status(false, 'Processing', "The customer short name cannot be empty.", 'debtor_ref');
 				return false;
 			}
-			if (!check_num('credit_limit', 0)) {
+			if (!Validation::is_num('credit_limit', 0)) {
 				$this->_status(false, 'Processing', "The credit limit must be numeric and not less than zero.", 'credit_limit');
 				return false;
 			}
-			if (!check_num('pymt_discount', 0, 100)) {
+			if (!Validation::is_num('pymt_discount', 0, 100)) {
 				$this->_status(false, 'Processing', "The payment discount must be numeric and is expected to be less than 100% and greater than or equal to 0.", 'pymt_discount');
 				return false;
 			}
-			if (!check_num('discount', 0, 100)) {
+			if (!Validation::is_num('discount', 0, 100)) {
 				$this->_status(false, 'Processing', "The discount percentage must be numeric and is expected to be less than 100% and greater than or equal to 0.", 'discount');
 				return false;
 			}

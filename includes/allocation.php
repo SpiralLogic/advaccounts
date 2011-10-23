@@ -270,7 +270,7 @@
 
 			for ($counter = 0; $counter < $_POST["TotalNumberOfAllocs"]; $counter++)
 			{
-				if (!check_num('amount' . $counter, 0)) {
+				if (!Validation::is_num('amount' . $counter, 0)) {
 					ui_msgs::display_error(_("The entry for one or more amounts is invalid or negative."));
 					ui_view::set_focus('amount' . $counter);
 					return false;

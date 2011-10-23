@@ -114,7 +114,7 @@
 	//--------------------------------------------------------------------------------------------------
 
 	function on_submit($selected_parent, $selected_component = -1) {
-		if (!check_num('quantity', 0)) {
+		if (!Validation::is_num('quantity', 0)) {
 			ui_msgs::display_error(_("The quantity entered must be numeric and greater than zero."));
 			ui_view::set_focus('quantity');
 			return;

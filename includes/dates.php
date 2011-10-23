@@ -26,7 +26,7 @@
 		static function __date($year, $month, $day) {
 
 			$how = user_date_format();
-			$sep = Config::get('seperators.date', 0);
+			$sep = Config::get('separators.date', 0);
 			$day = (int)$day;
 			$month = (int)$month;
 			if ($day < 10)
@@ -46,7 +46,7 @@
 			if ($date_ == null || $date_ == "")
 				return 0;
 			$how = user_date_format();
-			$sep = Config::get('seperators.date', 0);
+			$sep = Config::get('separators.date', 0);
 			$date_ = trim($date_);
 			$date_ = str_replace($sep, "", $date_);
 			if (strlen($date_) == 6) {
@@ -265,7 +265,7 @@
 			/* takes a date in a the format specified in $DefaultDateFormat
 						and converts to a yyyy/mm/dd format */
 			$how = user_date_format();
-			$sep = Config::get('seperators.date', user_date_sep());
+			$sep = Config::get('separators.date', user_date_sep());
 			if ($date_ == null || strlen($date_) == 0)
 				return "";
 			$date_ = trim($date_);

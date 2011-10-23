@@ -166,7 +166,7 @@
 	//-----------------------------------------------------------------------------------------------
 
 	function check_item_data() {
-		//if (!check_num('amount', 0))
+		//if (!Validation::is_num('amount', 0))
 		//{
 		//	ui_msgs::display_error( _("The amount entered is not a valid number or is less than zero."));
 		//	ui_view::set_focus('amount');

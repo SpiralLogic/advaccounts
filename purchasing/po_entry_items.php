@@ -133,18 +133,18 @@
 	function check_data() {
 		$dec = get_qty_dec($_POST['stock_id']);
 		$min = 1 / pow(10, $dec);
-		if (!check_num('qty', $min)) {
+		if (!Validation::is_num('qty', $min)) {
 			$min = number_format2($min, $dec);
 			ui_msgs::display_error(_("The quantity of the order item must be numeric and not less than ") . $min);
 			ui_view::set_focus('qty');
 			return false;
 		}
-		if (!check_num('price', 0)) {
+		if (!Validation::is_num('price', 0)) {
 			ui_msgs::display_error(_("The price entered must be numeric and not less than zero."));
 			ui_view::set_focus('price');
 			return false;
 		}
-		if (!check_num('discount', 0, 100)) {
+		if (!Validation::is_num('discount', 0, 100)) {
 			ui_msgs::display_error(_("Discount percent can not be less than 0 or more than 100."));
 			ui_view::set_focus('discount');
 			return false;
@@ -232,7 +232,7 @@
 			ui_view::set_focus('delivery_address');
 			return false;
 		}
-		if (!check_num('freight', 0)) {
+		if (!Validation::is_num('freight', 0)) {
 			ui_msgs::display_error(_("The freight entered must be numeric and not less than zero."));
 			ui_view::set_focus('freight');
 			return false;

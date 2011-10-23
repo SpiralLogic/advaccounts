@@ -126,7 +126,7 @@
 			}
 		}
 
-		if (!check_num('quantity', 0)) {
+		if (!Validation::is_num('quantity', 0)) {
 			ui_msgs::display_error(_("The quantity entered is invalid or less than zero."));
 			ui_view::set_focus('quantity');
 			return false;
@@ -153,14 +153,14 @@
 
 			if ($_POST['Labour'] == "")
 				$_POST['Labour'] = price_format(0);
-			if (!check_num('Labour', 0)) {
+			if (!Validation::is_num('Labour', 0)) {
 				ui_msgs::display_error(_("The labour cost entered is invalid or less than zero."));
 				ui_view::set_focus('Labour');
 				return false;
 			}
 			if ($_POST['Costs'] == "")
 				$_POST['Costs'] = price_format(0);
-			if (!check_num('Costs', 0)) {
+			if (!Validation::is_num('Costs', 0)) {
 				ui_msgs::display_error(_("The cost entered is invalid or less than zero."));
 				ui_view::set_focus('Costs');
 				return false;

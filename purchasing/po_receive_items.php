@@ -139,7 +139,7 @@
 			ui_view::set_focus('DefaultReceivedDate');
 			return false;
 		}
-		if (!check_num('freight', 0)) {
+		if (!Validation::is_num('freight', 0)) {
 			ui_msgs::display_error(_("The freight entered must be numeric and not less than zero."));
 			ui_view::set_focus('freight');
 			return false;
@@ -230,7 +230,7 @@
 		foreach ($_SESSION['PO']->line_items as $line) {
 			if (($line->quantity - $line->qty_received) > 0) {
 				$_POST[$line->line_no] = max($_POST[$line->line_no], 0);
-				if (!check_num($line->line_no))
+				if (!Validation::is_num($line->line_no))
 					$_POST[$line->line_no] = number_format2(0, get_qty_dec($line->stock_id));
 				if (!isset($_POST['DefaultReceivedDate']) || $_POST['DefaultReceivedDate'] == "")
 					$_POST['DefaultReceivedDate'] = Dates::new_doc_date();

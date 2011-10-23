@@ -72,7 +72,7 @@
 				) {
 					DBOld::update_record_status($_POST['account_code'], $_POST['inactive'],
 						'chart_master', 'account_code');
-					update_tag_associations(TAG_ACCOUNT, $_POST['account_code'],
+					Tags::update_associations(TAG_ACCOUNT, $_POST['account_code'],
 						$_POST['account_tags']);
 					$Ajax->activate('account_code'); // in case of status change
 					ui_msgs::display_notification(_("Account data has been updated."));
@@ -83,7 +83,7 @@
 				if (add_gl_account($_POST['account_code'], $_POST['account_name'],
 					$_POST['account_type'], $_POST['account_code2'])
 				) {
-					add_tag_associations($_POST['account_code'], $_POST['account_tags']);
+					Tags::add_associations($_POST['account_code'], $_POST['account_tags']);
 					ui_msgs::display_notification(_("New account has been added."));
 					$selected_account = $_POST['AccountList'] = $_POST['account_code'];
 				}
@@ -208,7 +208,7 @@
 		if (can_delete($selected_account)) {
 			delete_gl_account($selected_account);
 			$selected_account = $_POST['AccountList'] = '';
-			delete_tag_associations(TAG_ACCOUNT, $selected_account, true);
+			Tags::delete_associations(TAG_ACCOUNT, $selected_account, true);
 			$selected_account = $_POST['AccountList'] = '';
 			ui_msgs::display_notification(_("Selected account has been deleted"));
 			unset($_POST['account_code']);
@@ -247,7 +247,7 @@
 		$_POST['account_type']  = $myrow["account_type"];
 		$_POST['inactive']      = $myrow["inactive"];
 
-		$tags_result = get_tags_associated_with_record(TAG_ACCOUNT, $selected_account);
+		$tags_result = Tags::get_all_associated_with_record(TAG_ACCOUNT, $selected_account);
 		$tagids      = array();
 		while ($tag = DBOld::fetch($tags_result))
 		{

@@ -133,7 +133,7 @@
 
 		unset($_POST);
 		if ($id) {
-			$row                  = Printer::get_role($id);
+			$row                  = Security::get_role($id);
 			$_POST['description'] = $row['description'];
 			$_POST['name']        = $row['role'];
 			//	if ($row['inactive']

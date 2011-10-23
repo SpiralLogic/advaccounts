@@ -23,7 +23,7 @@
 
 		//-----------------------------------------------------------------------------------------------
 
-		public static function	update_user_password($id, $user_id, $password) {
+		public static function	update_password($id, $user_id, $password) {
 			$sql = "UPDATE users SET password=" . DBOld::escape($password) . ",
 				user_id = " . DBOld::escape($user_id) . " WHERE id=" . DBOld::escape($id);
 
@@ -32,7 +32,7 @@
 
 		//-----------------------------------------------------------------------------------------------
 
-		public static function	update_user($id, $user_id, $real_name, $phone, $email, $role_id,
+		public static function	update($id, $user_id, $real_name, $phone, $email, $role_id,
 																				$language, $profile, $rep_popup, $pos) {
 			$sql = "UPDATE users SET real_name=" . DBOld::escape($real_name) .
 			 ", phone=" . DBOld::escape($phone) . ",
@@ -49,7 +49,7 @@
 
 		//-----------------------------------------------------------------------------------------------
 
-		public static function	update_user_display_prefs($id, $price_dec, $qty_dec, $exrate_dec,
+		public static function	update_display_prefs($id, $price_dec, $qty_dec, $exrate_dec,
 																											$percent_dec, $showgl, $showcodes, $date_format, $date_sep, $tho_sep,
 																											$dec_sep, $theme, $pagesize, $show_hints, $profile, $rep_popup, $query_size,
 																											$graphic_links, $lang, $stickydate, $startup_tab) {

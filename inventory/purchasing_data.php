@@ -33,13 +33,13 @@
 			ui_msgs::display_error(_("There is no item selected."));
 			ui_view::set_focus('stock_id');
 		}
-		elseif (!check_num('price', 0))
+		elseif (!Validation::is_num('price', 0))
 		{
 			$input_error = 1;
 			ui_msgs::display_error(_("The price entered was not numeric."));
 			ui_view::set_focus('price');
 		}
-		elseif (!check_num('conversion_factor'))
+		elseif (!Validation::is_num('conversion_factor'))
 		{
 			$input_error = 1;
 			ui_msgs::display_error(_("The conversion factor entered was not numeric. The conversion factor is the number by which the price must be divided by to get the unit price in our unit of measure."));

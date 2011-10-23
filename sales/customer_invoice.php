@@ -28,18 +28,18 @@
 	}
 
 	if (isset($_GET['ModifyInvoice'])) {
-		$_SESSION['page_title'] = sprintf(_("Modifying Sales Invoice # %d."), $_GET['ModifyInvoice']);
+		$page_title = sprintf(_("Modifying Sales Invoice # %d."), $_GET['ModifyInvoice']);
 		$help_context = "Modifying Sales Invoice";
 	}
 	elseif (isset($_GET['DeliveryNumber'])) {
-		$_SESSION['page_title'] = _($help_context = "Issue an Invoice for Delivery Note");
+		$page_title = _($help_context = "Issue an Invoice for Delivery Note");
 	}
 	elseif (isset($_GET['BatchInvoice'])) {
-		$_SESSION['page_title'] = _($help_context = "Issue Batch Invoice for Delivery Notes");
+		$page_title = _($help_context = "Issue Batch Invoice for Delivery Notes");
 	} elseif (isset($_GET['ViewInvoice'])) {
-		$_SESSION['page_title'] = sprintf(_("View Sales Invoice # %d."), $_GET['ViewInvoice']);
+		$page_title = sprintf(_("View Sales Invoice # %d."), $_GET['ViewInvoice']);
 	}
-	page($_SESSION['page_title'], false, false, "", $js);
+	page($page_title, false, false, "", $js);
 	//-----------------------------------------------------------------------------
 	check_edit_conflicts();
 	if (isset($_GET['AddedID'])) {
@@ -161,10 +161,10 @@
 					$min = 0;
 					$max = $itm->quantity - $itm->qty_done;
 				}
-				if ($itm->quantity > 0 && check_num('Line' . $line_no, $min, $max)) {
+				if ($itm->quantity > 0 && Validation::is_num('Line' . $line_no, $min, $max)) {
 					$_SESSION['Items']->line_items[$line_no]->qty_dispatched = input_num('Line' . $line_no);
 				}
-				elseif ($itm->quantity < 0 && check_num('Line' . $line_no, $max, $min)) {
+				elseif ($itm->quantity < 0 && Validation::is_num('Line' . $line_no, $max, $min)) {
 					$_SESSION['Items']->line_items[$line_no]->qty_dispatched = input_num('Line' . $line_no);
 				}
 				else {
@@ -252,7 +252,7 @@
 		if ($_POST['ChargeFreightCost'] == "") {
 			$_POST['ChargeFreightCost'] = price_format(0);
 		}
-		if (!check_num('ChargeFreightCost', 0)) {
+		if (!Validation::is_num('ChargeFreightCost', 0)) {
 			ui_msgs::display_error(_("The entered shipping value is not numeric."));
 			ui_view::set_focus('ChargeFreightCost');
 			return false;
@@ -423,7 +423,7 @@
 		else {
 			$_POST['ChargeFreightCost'] = price_format($_SESSION['Items']->freight_cost);
 		}
-		if (!check_num('ChargeFreightCost')) {
+		if (!Validation::is_num('ChargeFreightCost')) {
 			$_POST['ChargeFreightCost'] = price_format(0);
 		}
 	}

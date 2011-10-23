@@ -181,7 +181,7 @@
 			if ($id != $line_no) {
 				alt_table_row_color($k);
 
-				label_cell("<a target='_blank' hre'" . PATH_TO_ROOT . "/inventory/inquiry/stock_status.php?stock_id=" . $line->stock_id . "'>$line->stock_id</a>");
+				label_cell("<a target='_blank' href='" . PATH_TO_ROOT . "/inventory/inquiry/stock_status.php?stock_id=" . $line->stock_id . "'>$line->stock_id</a>");
 				label_cell($line->description, "nowrap");
 				qty_cell($line->qty_dispatched, false, get_qty_dec($line->stock_id));
 				label_cell($line->units);
@@ -252,7 +252,7 @@
 		}
 		else
 		{
-			stock_items_list_cells(null, 'stock_id', null, false, true);
+			sales_items_list_cells(null, 'stock_id', null, false, false, array('description' => ''));
 			if (list_updated('stock_id')) {
 				$Ajax->activate('price');
 				$Ajax->activate('qty');

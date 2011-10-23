@@ -43,15 +43,19 @@
 		const TAGS = "FROM tags WHERE type=";
 		const EMPTY_RESULT = "";
 
-		public static function check($validate, $msg = '', $extra = false) {
+		public static function check($validate, $msg = '', $extra = null) {
 			//if (!property_exists(__CLASS__, $validate)) return ui_msgs::display_error("TABLE $validate doesn't exist", true);
-			$extra  = ($extra) ? DBOld::escape($extra) : '';
-			$result = DBOld::query('SELECT COUNT(*) FROM ' . $validate . " " . $extra, "Could not do check empty query");
+			if ($extra===false) return 0;
+			$extra  = ($extra!==null) ? DBOld::escape($extra) : '';
+
+			$result = DBOld::query('SELECT COUNT(*) FROM ' . $validate . ' ' . $extra, 'Could not do check empty query');
 			$myrow  = DBOld::fetch_row($result);
 			if (!($myrow[0] > 0)) {
-				ui_msgs::display_error($msg, true);
+				throw new Adv_Exception($msg);
 				end_page();
 				exit;
+			}else {
+				return $myrow[0];
 			}
 		}
 
@@ -59,7 +63,7 @@
 		//	Integer input check
 		//	Return 1 if number has proper form and is within <min, max> range
 		//
-		public static function check_int($postname, $min = null, $max = null) {
+		public static function is_int($postname, $min = null, $max = null) {
 			if (!isset($_POST[$postname]))
 				return 0;
 			$num = input_num($postname);
@@ -77,7 +81,7 @@
 		//	Return 1 if number has proper form and is within <min, max> range
 		//	Empty/not defined fields are defaulted to $dflt value.
 		//
-		function check_num($postname, $min = null, $max = null, $dflt = 0) {
+		public static function is_num($postname, $min = null, $max = null, $dflt = 0) {
 			if (!isset($_POST[$postname]))
 				return 0;
 			$num = input_num($postname, $dflt);

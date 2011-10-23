@@ -164,7 +164,7 @@
 	}
 
 	if (isset($_POST['Process'])) {
-		$cart = &$_SESSION['journal_items'];
+		$cart = $_SESSION['journal_items'];
 		$new  = $cart->order_id == 0;
 
 		$cart->reference = $_POST['ref'];
@@ -205,11 +205,11 @@
 			return false;
 		}
 
-		if (strlen($_POST['AmountDebit']) && !check_num('AmountDebit', 0)) {
+		if (strlen($_POST['AmountDebit']) && !Validation::is_num('AmountDebit', 0)) {
 			ui_msgs::display_error(_("The debit amount entered is not a valid number or is less than zero."));
 			ui_view::set_focus('AmountDebit');
 			return false;
-		} elseif (strlen($_POST['AmountCredit']) && !check_num('AmountCredit', 0))
+		} elseif (strlen($_POST['AmountCredit']) && !Validation::is_num('AmountCredit', 0))
 		{
 			ui_msgs::display_error(_("The credit amount entered is not a valid number or is less than zero."));
 			ui_view::set_focus('AmountCredit');

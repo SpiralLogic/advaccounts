@@ -39,7 +39,7 @@
 		 {
 			 if (isset($_POST['tax_type_id' . $i]) &&
 				 $_POST['tax_type_id' . $i] != ALL_NUMERIC	&&
-				 !check_num('rate' . $i, 0))
+				 !Validation::is_num('rate' . $i, 0))
 			 {
 			 ui_msgs::display_error( _("An entered tax rate is invalid or less than zero."));
 				 $input_error = 1;

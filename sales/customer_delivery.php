@@ -26,16 +26,16 @@
 	}
 
 	if (isset($_GET['ModifyDelivery'])) {
-		$_SESSION['page_title'] = sprintf(_("Modifying Delivery Note # %d."), $_GET['ModifyDelivery']);
+		$page_title = sprintf(_("Modifying Delivery Note # %d."), $_GET['ModifyDelivery']);
 		$help_context = "Modifying Delivery Note";
 		processing_start();
 	}
 	elseif (isset($_GET['OrderNumber'])) {
-		$_SESSION['page_title'] = _($help_context = "Deliver Items for a Sales Order");
+		$page_title = _($help_context = "Deliver Items for a Sales Order");
 		processing_start();
 	}
 
-	page($_SESSION['page_title'], false, false, "", $js);
+	page($page_title, false, false, "", $js);
 
 	if (isset($_GET['AddedID'])) {
 		$dispatch_no = $_GET['AddedID'];
@@ -129,7 +129,7 @@
 		if (!check_quantities()) {
 			ui_msgs::display_error(_("Selected quantity cannot be less than quantity invoiced nor more than quantity	not dispatched on sales order."));
 		}
-		elseif (!check_num('ChargeFreightCost', 0)) {
+		elseif (!Validation::is_num('ChargeFreightCost', 0)) {
 			ui_msgs::display_error(_("Freight cost cannot be less than zero"));
 			ui_view::set_focus('ChargeFreightCost');
 		}
@@ -174,7 +174,7 @@
 			$_POST['ChargeFreightCost'] = price_format(0);
 		}
 
-		if (!check_num('ChargeFreightCost', 0)) {
+		if (!Validation::is_num('ChargeFreightCost', 0)) {
 			ui_msgs::display_error(_("The entered shipping value is not numeric."));
 			ui_view::set_focus('ChargeFreightCost');
 			return false;
@@ -235,10 +235,10 @@
 					$max = $itm->quantity - $itm->qty_done;
 				}
 
-				if ($itm->quantity > 0 && check_num('Line' . $line, $min, $max)) {
+				if ($itm->quantity > 0 && Validation::is_num('Line' . $line, $min, $max)) {
 					$_SESSION['Items']->line_items[$line]->qty_dispatched = input_num('Line' . $line);
 				}
-				elseif ($itm->quantity < 0 && check_num('Line' . $line, $max, $min)) {
+				elseif ($itm->quantity < 0 && Validation::is_num('Line' . $line, $max, $min)) {
 					$_SESSION['Items']->line_items[$line]->qty_dispatched = input_num('Line' . $line);
 				}
 				else {

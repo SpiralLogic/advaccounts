@@ -107,13 +107,13 @@
 			return false;
 		}
 
-		if (!check_num('amount', 0)) {
+		if (!Validation::is_num('amount', 0)) {
 			ui_msgs::display_error(_("The entered amount is invalid or negative and cannot be processed."));
 			ui_view::set_focus('amount');
 			return false;
 		}
 
-		if (isset($_POST['charge']) && !check_num('charge', 0)) {
+		if (isset($_POST['charge']) && !Validation::is_num('charge', 0)) {
 			ui_msgs::display_error(_("The entered amount is invalid or negative and cannot be processed."));
 			ui_view::set_focus('charge');
 			return false;
@@ -127,7 +127,7 @@
 			}
 		}
 
-		if (isset($_POST['_ex_rate']) && !check_num('_ex_rate', 0.000001)) {
+		if (isset($_POST['_ex_rate']) && !Validation::is_num('_ex_rate', 0.000001)) {
 			ui_msgs::display_error(_("The exchange rate must be numeric and greater than zero."));
 			ui_view::set_focus('_ex_rate');
 			return false;
@@ -137,7 +137,7 @@
 			$_POST['discount'] = 0;
 		}
 
-		if (!check_num('discount')) {
+		if (!Validation::is_num('discount')) {
 			ui_msgs::display_error(_("The entered discount is not a valid number."));
 			ui_view::set_focus('discount');
 			return false;
@@ -232,7 +232,7 @@
 		$_SESSION['alloc'] = new allocation(ST_CUSTPAYMENT, 0);
 	}
 
-	if (Validation::check(Validation::BRANCHES, $_POST['customer_id'])) {
+	if (Validation::check(Validation::BRANCHES,'', $_POST['customer_id'])) {
 		customer_branches_list_row(_("Branch:"), $_POST['customer_id'], 'BranchID', null, false, true, true);
 	}
 	else {

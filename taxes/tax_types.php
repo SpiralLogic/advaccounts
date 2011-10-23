@@ -25,7 +25,7 @@
 			ui_view::set_focus('name');
 			return false;
 		}
-		elseif (!check_num('rate', 0))
+		elseif (!Validation::is_num('rate', 0))
 		{
 			ui_msgs::display_error(_("The default tax rate must be numeric and not less than zero."));
 			ui_view::set_focus('rate');

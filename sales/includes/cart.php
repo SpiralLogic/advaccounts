@@ -18,7 +18,7 @@
 				iv)  a delivery note
 				*/
 
-	class cart {
+	class Cart {
 
 
 		var $trans_type; // invoice, order, quotation, delivery note ...

@@ -44,7 +44,7 @@
 	if (Config::get('ui.windows.popups')) {
 		$js .= ui_view::get_js_open_window(900, 500);
 	}
-	$_SESSION['page_title'] = _($help_context = "Sales Order Entry");
+	$page_title = _($help_context = "Sales Order Entry");
 	//   $js .= get_jquery_gmaps();
 	if (Input::post('saveorder')) {
 		$_SESSION['Items']->store();
@@ -56,29 +56,29 @@
 		$Ajax->activate('customer_id');
 	}
 	if (Input::get('NewDelivery', Input::NUMERIC)) {
-		$_SESSION['page_title'] = _($help_context = "Direct Sales Delivery");
+		$page_title = _($help_context = "Direct Sales Delivery");
 		create_cart(ST_CUSTDELIVERY, $_GET['NewDelivery']);
 	}
 
 	if (Input::get('NewInvoice', Input::NUMERIC)) {
-		$_SESSION['page_title'] = _($help_context = "Direct Sales Invoice");
+		$page_title = _($help_context = "Direct Sales Invoice");
 		create_cart(ST_SALESINVOICE, $_GET['NewInvoice']);
 	}
 	elseif (Input::get('ModifyOrderNumber', Input::NUMERIC)) {
 		$help_context           = 'Modifying Sales Order';
-		$_SESSION['page_title'] = sprintf(_("Modifying Sales Order # %d"), $_GET['ModifyOrderNumber']);
+		$page_title = sprintf(_("Modifying Sales Order # %d"), $_GET['ModifyOrderNumber']);
 		create_cart(ST_SALESORDER, $_GET['ModifyOrderNumber']);
 	}
 	elseif (Input::get('ModifyQuotationNumber', Input::NUMERIC)) {
 		$help_context           = 'Modifying Sales Quotation';
-		$_SESSION['page_title'] = sprintf(_("Modifying Sales Quotation # %d"), $_GET['ModifyQuotationNumber']);
+		$page_title = sprintf(_("Modifying Sales Quotation # %d"), $_GET['ModifyQuotationNumber']);
 		create_cart(ST_SALESQUOTE, $_GET['ModifyQuotationNumber']);
 	}
 	elseif (Input::get('NewOrder')) {
 		create_cart(ST_SALESORDER, 0);
 	}
 	elseif (Input::get('NewQuotation')) {
-		$_SESSION['page_title'] = _($help_context = "New Sales Quotation Entry");
+		$page_title = _($help_context = "New Sales Quotation Entry");
 		create_cart(ST_SALESQUOTE, 0);
 	}
 	elseif (Input::get('NewQuoteToSalesOrder')) {
@@ -101,7 +101,7 @@
 		create_cart($serial, 0);
 	}
 
-	page($_SESSION['page_title'], false, false, "", $js);
+	page($page_title, false, false, "", $js);
 	//-----------------------------------------------------------------------------
 	if (list_updated('branch_id')) {
 		// when branch is selected via external editor also customer can change
@@ -323,7 +323,7 @@
 		if ($_POST['freight_cost'] == "") {
 			$_POST['freight_cost'] = price_format(0);
 		}
-		if (!check_num('freight_cost', 0)) {
+		if (!Validation::is_num('freight_cost', 0)) {
 			ui_msgs::display_error(_("The shipping cost entered is expected to be numeric."));
 			ui_view::set_focus('freight_cost');
 			return false;
@@ -414,17 +414,17 @@
 	//--------------------------------------------------------------------------------
 	function check_item_data() {
 
-		if (!$_SESSION["wa_current_user"]->can_access('SA_SALESCREDIT') && (!check_num('qty', 0) || !check_num('Disc', 0, 100))) {
+		if (!$_SESSION["wa_current_user"]->can_access('SA_SALESCREDIT') && (!Validation::is_num('qty', 0) || !Validation::is_num('Disc', 0, 100))) {
 			ui_msgs::display_error(_("The item could not be updated because you are attempting to set the quantity ordered to less than 0, or the discount percent to more than 100."));
 			ui_view::set_focus('qty');
 			return false;
 		}
-		elseif (!check_num('price', 0)) {
+		elseif (!Validation::is_num('price', 0)) {
 			ui_msgs::display_error(_("Price for item must be entered and can not be less than 0"));
 			ui_view::set_focus('price');
 			return false;
 		}
-		elseif (!$_SESSION["wa_current_user"]->can_access('SA_SALESCREDIT') && isset($_POST['LineNo']) && isset($_SESSION['Items']->line_items[$_POST['LineNo']]) && !check_num('qty',
+		elseif (!$_SESSION["wa_current_user"]->can_access('SA_SALESCREDIT') && isset($_POST['LineNo']) && isset($_SESSION['Items']->line_items[$_POST['LineNo']]) && !Validation::is_num('qty',
 			$_SESSION['Items']->line_items[$_POST['LineNo']]->qty_done)
 		) {
 			ui_view::set_focus('qty');
