@@ -63,7 +63,7 @@
 		$result = get_work_order_issue_details($issue_no);
 
 		if (DBOld::num_rows($result) == 0) {
-			ui_msgs::display_note(_("There are no items for this issue."));
+			ui_msgs::display_warning(_("There are no items for this issue."));
 		}
 		else
 		{

@@ -74,7 +74,7 @@
 	$items = get_gl_trans(ST_BANKPAYMENT, $trans_no);
 
 	if (DBOld::num_rows($items) == 0) {
-		ui_msgs::display_note(_("There are no items for this payment."));
+		ui_msgs::display_warning(_("There are no items for this payment."));
 	}
 	else
 	{

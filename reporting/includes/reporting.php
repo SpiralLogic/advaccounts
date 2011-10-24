@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 	// Link to printing single document with bulk report template file.
 	// Ex. label_cell(print_document_link($myrow['order_no'], _("Print")), $type);
-	// or ui_msgs::display_note(print_document_link($order_no, _("Print this order")));
+	// or ui_msgs::display_warning(print_document_link($order_no, _("Print this order")));
 	// You only need full parameter list for invoices/credit notes
 
 	function print_document_link($doc_no, $link_text, $link = true, $type_no, $icon = false, $class = 'button printlink', $id = '', $email = 0, $extra = 0) {

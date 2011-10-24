@@ -205,7 +205,7 @@
 
 		end_table(2);
 		if (DBOld::num_rows($result) == 0)
-			ui_msgs::display_note(_("No general ledger transactions have been created for the specified criteria."), 0, 1);
+			ui_msgs::display_warning(_("No general ledger transactions have been created for the specified criteria."), 0, 1);
 	}
 
 	//----------------------------------------------------------------------------------------------------

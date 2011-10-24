@@ -58,7 +58,7 @@
 	end_table();
 
 	if ($myrow["closed"] == true) {
-		ui_msgs::display_note(_("This dimension is closed."));
+		ui_msgs::display_warning(_("This dimension is closed."));
 	}
 
 	start_form();

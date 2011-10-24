@@ -35,7 +35,7 @@
 
 	//----------------------------------------------------------------------------------------
 	if (list_updated('PersonDetailID')) {
-		$br                 = get_branch(get_post('PersonDetailID'));
+		$br = get_branch(get_post('PersonDetailID'));
 		$_POST['person_id'] = $br['debtor_no'];
 		$Ajax->activate('person_id');
 	}
@@ -51,12 +51,12 @@
 	//-----------------------------------------------------------------------------------------------
 
 	if (isset($_GET['AddedID'])) {
-		$trans_no   = $_GET['AddedID'];
+		$trans_no = $_GET['AddedID'];
 		$trans_type = ST_BANKPAYMENT;
 
 		ui_msgs::display_notification_centered(_("Payment $trans_no has been entered"));
 
-		ui_msgs::display_note(ui_view::get_gl_view_str($trans_type, $trans_no, _("&View the GL Postings for this Payment")));
+		ui_msgs::display_warning(ui_view::get_gl_view_str($trans_type, $trans_no, _("&View the GL Postings for this Payment")));
 
 		hyperlink_params($_SERVER['PHP_SELF'], _("Enter Another &Payment"), "NewPayment=yes");
 
@@ -66,12 +66,12 @@
 	}
 
 	if (isset($_GET['AddedDep'])) {
-		$trans_no   = $_GET['AddedDep'];
+		$trans_no = $_GET['AddedDep'];
 		$trans_type = ST_BANKDEPOSIT;
 
 		ui_msgs::display_notification_centered(_("Deposit $trans_no has been entered"));
 
-		ui_msgs::display_note(ui_view::get_gl_view_str($trans_type, $trans_no, _("View the GL Postings for this Deposit")));
+		ui_msgs::display_warning(ui_view::get_gl_view_str($trans_type, $trans_no, _("View the GL Postings for this Deposit")));
 
 		hyperlink_params($_SERVER['PHP_SELF'], _("Enter Another Deposit"), "NewDeposit=yes");
 
@@ -153,7 +153,7 @@
 			$_POST['ref'], $_POST['memo_']);
 
 		$trans_type = $trans[0];
-		$trans_no   = $trans[1];
+		$trans_no = $trans[1];
 		Dates::new_doc_date($_POST['date_']);
 
 		$_SESSION['pay_items']->clear_items();

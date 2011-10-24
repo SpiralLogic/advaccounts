@@ -30,7 +30,7 @@
 	}
 	else
 	{
-		ui_msgs::display_note("This page must be called with a work order reference");
+		ui_msgs::display_warning("This page must be called with a work order reference");
 		exit;
 	}
 
@@ -59,7 +59,7 @@
 
 		ui_msgs::display_notification(_("The work order has been released to manufacturing."));
 
-		ui_msgs::display_note(ui_view::get_trans_view_str(ST_WORKORDER, $selected_id, _("View this Work Order")));
+		ui_msgs::display_warning(ui_view::get_trans_view_str(ST_WORKORDER, $selected_id, _("View this Work Order")));
 
 		hyperlink_no_params("search_work_orders.php", _("Select another &work order"));
 

@@ -143,7 +143,7 @@
 	if (DBOld::num_rows($prices_list) == 0) {
 		if (DB_Company::get_pref('add_pct') != -1)
 			$calculated = true;
-		ui_msgs::display_note(_("There are no prices set up for this part."), 1);
+		ui_msgs::display_warning(_("There are no prices set up for this part."), 1);
 	}
 	div_end();
 	//------------------------------------------------------------------------------------------------
@@ -151,10 +151,10 @@
 	echo "<br>";
 
 	if ($Mode == 'Edit') {
-		$myrow                  = get_stock_price($selected_id);
-		$_POST['curr_abrev']    = $myrow["curr_abrev"];
+		$myrow = get_stock_price($selected_id);
+		$_POST['curr_abrev'] = $myrow["curr_abrev"];
 		$_POST['sales_type_id'] = $myrow["sales_type_id"];
-		$_POST['price']         = price_format($myrow["price"]);
+		$_POST['price'] = price_format($myrow["price"]);
 	}
 
 	hidden('selected_id', $selected_id);
@@ -175,7 +175,7 @@
 
 	end_table(1);
 	if ($calculated)
-		ui_msgs::display_note(_("The price is calculated."), 0, 1);
+		ui_msgs::display_warning(_("The price is calculated."), 0, 1);
 
 	submit_add_or_update_center($selected_id == -1, '', 'both');
 	div_end();

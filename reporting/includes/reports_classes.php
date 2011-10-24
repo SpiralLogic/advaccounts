@@ -117,7 +117,7 @@
 					$st .= $ctrl;
 					$st .= "<br><br>";
 				} else {
-					ui_msgs::display_error(_('Unknown report parameter type:') . $type);
+					throw new Adv_Exception(_('Unknown report parameter type:') . $type);
 				}
 				$cnt++;
 			}

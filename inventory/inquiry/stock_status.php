@@ -41,12 +41,12 @@
 
 	ui_globals::set_global_stock_item($_POST['stock_id']);
 
-	$mb_flag           = Manufacturing::get_mb_flag($_POST['stock_id']);
+	$mb_flag = Manufacturing::get_mb_flag($_POST['stock_id']);
 	$kitset_or_service = false;
 
 	div_start('status_tbl');
 	if (Input::post('mb_flag') == STOCK_SERVICE) {
-		ui_msgs::display_note(_("This is a service and cannot have a stock holding, only the total quantity on outstanding sales orders is shown."), 0, 1);
+		ui_msgs::display_warning(_("This is a service and cannot have a stock holding, only the total quantity on outstanding sales orders is shown."), 0, 1);
 		$kitset_or_service = true;
 	}
 
@@ -60,13 +60,13 @@
 	else
 	{
 		$th = array(_("Location"), _("Quantity On Hand"), _("Re-Order Level"),
-								_("Demand"), _("Available"), _("On Order")
+			_("Demand"), _("Available"), _("On Order")
 		);
 	}
 	table_header($th);
 	$dec = get_qty_dec($_POST['stock_id']);
-	$j   = 1;
-	$k   = 0; //row colour counter
+	$j = 1;
+	$k = 0; //row colour counter
 
 	while ($myrow = DBOld::fetch($loc_details))
 	{

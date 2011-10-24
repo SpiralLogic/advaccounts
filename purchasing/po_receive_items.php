@@ -30,7 +30,7 @@
 
 		ui_msgs::display_notification_centered(_("Purchase Order Delivery has been processed"));
 
-		ui_msgs::display_note(ui_view::get_trans_view_str($trans_type, $grn, _("&View this Delivery")));
+		ui_msgs::display_warning(ui_view::get_trans_view_str($trans_type, $grn, _("&View this Delivery")));
 
 		hyperlink_params("/purchasing/supplier_invoice.php", _("Entry purchase &invoice for this receival"), "New=1");
 

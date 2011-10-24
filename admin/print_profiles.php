@@ -25,7 +25,7 @@
 
 		if (Config::get('debug') || !isset($_SESSION['reports'])) {
 			// to save time, store in session.
-			$paths   = array(
+			$paths = array(
 				PATH_TO_ROOT . '/reporting/',
 				COMPANY_PATH . '/reporting/'
 			);
@@ -65,8 +65,8 @@
 
 	function clear_form() {
 		global $selected_id;
-		$Ajax          = Ajax::instance();
-		$selected_id   = '';
+		$Ajax = Ajax::instance();
+		$selected_id = '';
 		$_POST['name'] = '';
 		$Ajax->activate('_page_body');
 	}
@@ -93,7 +93,7 @@
 		if (!$error) {
 			$prof = array('' => get_post('Prn')); // store default value/profile name
 			foreach (get_reports() as $rep => $descr) {
-				$val        = get_post('Prn' . $rep);
+				$val = get_post('Prn' . $rep);
 				$prof[$rep] = $val;
 			}
 			if ($_POST['profile_id'] == '')
@@ -144,7 +144,7 @@
 	$th = array(_("Report Id"), _("Description"), _("Printer"));
 	table_header($th);
 
-	$k    = 0;
+	$k = 0;
 	$unkn = 0;
 	foreach (get_reports() as $rep => $descr)
 	{
@@ -162,7 +162,7 @@
 	}
 	end_table();
 	if ($unkn)
-		ui_msgs::display_note('<sup>1)</sup>&nbsp;-&nbsp;' . _("no title was found in this report definition file."), 0, 1, '');
+		ui_msgs::display_warning('<sup>1)</sup>&nbsp;-&nbsp;' . _("no title was found in this report definition file."), 0, 1, '');
 	else
 		echo '<br>';
 

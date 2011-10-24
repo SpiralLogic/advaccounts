@@ -32,9 +32,9 @@
 
 		echo "<center>";
 		ui_msgs::display_notification_centered(_("Supplier credit note has been processed."));
-		ui_msgs::display_note(ui_view::get_trans_view_str($trans_type, $invoice_no, _("View this Credit Note")));
+		ui_msgs::display_warning(ui_view::get_trans_view_str($trans_type, $invoice_no, _("View this Credit Note")));
 
-		ui_msgs::display_note(ui_view::get_gl_view_str($trans_type, $invoice_no, _("View the GL Journal Entries for this Credit Note")), 1);
+		ui_msgs::display_warning(ui_view::get_gl_view_str($trans_type, $invoice_no, _("View the GL Journal Entries for this Credit Note")), 1);
 
 		hyperlink_params($_SERVER['PHP_SELF'], _("Enter Another Credit Note"), "New=1");
 		hyperlink_params("/admin/attachments.php", _("Add an Attachment"), "filterType=$trans_type&trans_no=$invoice_no");
@@ -51,7 +51,7 @@
 			unset ($_SESSION['supp_trans']);
 		}
 
-		$_SESSION['supp_trans']             = new suppTrans;
+		$_SESSION['supp_trans'] = new suppTrans;
 		$_SESSION['supp_trans']->is_invoice = false;
 		if (isset($_GET['invoice_no'])) {
 			$_SESSION['supp_trans']->supp_reference = $_POST['invoice_no'] = $_GET['invoice_no'];
@@ -84,7 +84,7 @@
 		$Ajax->activate('gl_items');
 		$input_error = false;
 
-		$sql    = "SELECT account_code, account_name FROM chart_master WHERE account_code=" . DBOld::escape(
+		$sql = "SELECT account_code, account_name FROM chart_master WHERE account_code=" . DBOld::escape(
 			$_POST['gl_code']);
 		$result = DBOld::query($sql, "get account information");
 		if (DBOld::num_rows($result) == 0) {
@@ -94,7 +94,7 @@
 		}
 		else
 		{
-			$myrow       = DBOld::fetch_row($result);
+			$myrow = DBOld::fetch_row($result);
 			$gl_act_name = $myrow[1];
 			if (!Validation::is_num('amount')) {
 				ui_msgs::display_error(_("The amount entered is not numeric. This line cannot be added to the transaction."));

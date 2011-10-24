@@ -62,7 +62,7 @@
 		submenu_print(_("&Print This Remittance"), ST_SUPPAYMENT, $payment_id . "-" . ST_SUPPAYMENT, 'prtopt');
 		submenu_print(_("&Email This Remittance"), ST_SUPPAYMENT, $payment_id . "-" . ST_SUPPAYMENT, null, 1);
 
-		ui_msgs::display_note(ui_view::get_gl_view_str(ST_SUPPAYMENT, $payment_id, _("View the GL &Journal Entries for this Payment")));
+		ui_msgs::display_warning(ui_view::get_gl_view_str(ST_SUPPAYMENT, $payment_id, _("View the GL &Journal Entries for this Payment")));
 
 		//    hyperlink_params($path_to_root . "/purchasing/allocations/supplier_allocate.php", _("&Allocate this Payment"), "trans_no=$payment_id&trans_type=22");
 
@@ -228,7 +228,7 @@
 	table_section(3);
 
 	$supplier_currency = Banking::get_supplier_currency($_POST['supplier_id']);
-	$bank_currency     = Banking::get_bank_account_currency($_POST['bank_account']);
+	$bank_currency = Banking::get_bank_account_currency($_POST['bank_account']);
 	if ($bank_currency != $supplier_currency) {
 		ui_view::exchange_rate_display($bank_currency, $supplier_currency, $_POST['DatePaid'], true);
 	}
@@ -250,7 +250,7 @@
 	end_table(1);
 
 	if ($bank_currency != $supplier_currency) {
-		ui_msgs::display_note(_("The amount and discount are in the bank account's currency."), 0, 1);
+		ui_msgs::display_warning(_("The amount and discount are in the bank account's currency."), 0, 1);
 	}
 
 	submit_center('ProcessSuppPayment', _("Enter Payment"), true, '', 'default');

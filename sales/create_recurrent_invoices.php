@@ -88,9 +88,9 @@
 					'PARAM_2' => "",
 					'PARAM_3' => 0, 'PARAM_4' => 0, 'PARAM_5' => "", 'PARAM_6' => ST_SALESINVOICE
 				);
-				ui_msgs::display_note(print_link(_("&Print Recurrent Invoices # $min - # $max"), 107, $ar), 0, 1);
+				ui_msgs::display_warning(print_link(_("&Print Recurrent Invoices # $min - # $max"), 107, $ar), 0, 1);
 				$ar['PARAM_3'] = 1;
-				ui_msgs::display_note(print_link(_("&Email Recurrent Invoices # $min - # $max"), 107, $ar), 0, 1);
+				ui_msgs::display_warning(print_link(_("&Email Recurrent Invoices # $min - # $max"), 107, $ar), 0, 1);
 			}
 		}
 		else
@@ -161,9 +161,9 @@
 	}
 	end_table();
 	if ($due)
-		ui_msgs::display_note(_("Marked items are due."), 1, 0, "class='overduefg'");
+		ui_msgs::display_warning(_("Marked items are due."), 1, 0, "class='overduefg'");
 	else
-		ui_msgs::display_note(_("No recurrent invoices are due."), 1, 0);
+		ui_msgs::display_warning(_("No recurrent invoices are due."), 1, 0);
 
 	echo '<br>';
 

@@ -258,7 +258,7 @@
 	end_table(1);
 
 	if (isset($_POST['closed']) && $_POST['closed'] == 1)
-		ui_msgs::display_note(_("This Dimension is closed."), 0, 0, "class='currentfg'");
+		ui_msgs::display_warning(_("This Dimension is closed."), 0, 0, "class='currentfg'");
 
 	if ($selected_id != -1) {
 		echo "<br>";

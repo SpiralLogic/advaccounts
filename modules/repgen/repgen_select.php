@@ -232,8 +232,7 @@
 
 	end_table(1);
 
-	ui_msgs::display_note(SEL_SELECT);
-	ui_msgs::display_note(SEL_COLOR);
+	ui_msgs::display_warning(SEL_SELECT)ui_msgs::display_warning(te(SEL_COLOR);
 
 	end_form();
 ?>

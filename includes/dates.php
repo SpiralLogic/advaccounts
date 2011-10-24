@@ -244,14 +244,14 @@
 			//for MySQL dates are in the format YYYY-mm-dd
 			if ($date_ == null || strlen($date_) == 0)
 				return "";
-
+			$year = $month = $day = '';
 			if (strpos($date_, "/")) { // In MySQL it could be either / or -
 				list($year, $month, $day) = explode("/", $date_);
 			}
 			elseif (strpos($date_, "-")) {
 				list($year, $month, $day) = explode("-", $date_);
 			}
-			if (strlen($day) > 4) { /*chop off the time stuff */
+			if (!isset($date) && strlen($day) > 4) { /*chop off the time stuff */
 				$day = substr($day, 0, 2);
 			}
 			if (Config::get('accounts.datesystem') == 1)

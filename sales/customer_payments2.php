@@ -34,7 +34,7 @@
 
 	if (list_updated('BranchID')) {
 		// when branch is selected via external editor also customer can change
-		$br                   = get_branch(get_post('BranchID'));
+		$br = get_branch(get_post('BranchID'));
 		$_POST['customer_id'] = $br['debtor_no'];
 		$Ajax->activate('customer_id');
 	}
@@ -55,7 +55,7 @@
 
 		submenu_print(_("&Print This Receipt"), ST_CUSTPAYMENT, $payment_no . "-" . ST_CUSTPAYMENT, 'prtopt');
 
-		ui_msgs::display_note(ui_view::get_gl_view_str(ST_CUSTPAYMENT, $payment_no, _("&View the GL Journal Entries for this Customer Payment")));
+		ui_msgs::display_warning(ui_view::get_gl_view_str(ST_CUSTPAYMENT, $payment_no, _("&View the GL Journal Entries for this Customer Payment")));
 
 		//	hyperlink_params( "/sales/allocations/customer_allocate.php", _("&Allocate this Customer Payment"), "trans_no=$payment_no&trans_type=12");
 
@@ -212,9 +212,9 @@
 
 		$myrow = DBOld::fetch($result);
 
-		$_POST['HoldAccount']   = $myrow["dissallow_invoices"];
+		$_POST['HoldAccount'] = $myrow["dissallow_invoices"];
 		$_POST['pymt_discount'] = $myrow["pymt_discount"];
-		$_POST['ref']           = Refs::get_next(12);
+		$_POST['ref'] = Refs::get_next(12);
 	}
 
 	//----------------------------------------------------------------------------------------------
@@ -278,7 +278,7 @@
 		end_table(1);
 
 		if ($cust_currency != $bank_currency)
-			ui_msgs::display_note(_("Amount and discount are in customer's currency."));
+			ui_msgs::display_warning(_("Amount and discount are in customer's currency."));
 
 		br();
 

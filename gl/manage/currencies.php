@@ -172,7 +172,7 @@
 
 		inactive_control_row($th);
 		end_table();
-		ui_msgs::display_note(_("The marked currency is the home currency which cannot be deleted."), 0, 0, "class='currentfg'");
+		ui_msgs::display_warning(_("The marked currency is the home currency which cannot be deleted."), 0, 0, "class='currentfg'");
 	}
 
 	//---------------------------------------------------------------------------------------------

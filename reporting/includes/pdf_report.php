@@ -14,7 +14,6 @@
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/reporting/includes/class.pdf.php");
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/reporting/includes/printer_class.php");
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/admin/db/printers_db.php");
 	class FrontReport extends Cpdf {
 
 		var $size;
@@ -61,10 +60,10 @@
 			}
 			// Page margins - if user-specified, use those.  Otherwise, use defaults below.
 			if (isset($margins)) {
-				$this->topMargin    = $margins['top'];
+				$this->topMargin = $margins['top'];
 				$this->bottomMargin = $margins['bottom'];
-				$this->leftMargin   = $margins['left'];
-				$this->rightMargin  = $margins['right'];
+				$this->leftMargin = $margins['left'];
+				$this->rightMargin = $margins['right'];
 			}
 			// Page orientation - P: portrait, L: landscape
 			$orientation = strtoupper($orientation);
@@ -74,116 +73,116 @@
 				case 'A4':
 					// Portrait
 					if ($orientation == 'P') {
-						$this->pageWidth  = 595;
+						$this->pageWidth = 595;
 						$this->pageHeight = 842;
 						if (!isset($margins)) {
-							$this->topMargin    = 40;
+							$this->topMargin = 40;
 							$this->bottomMargin = 30;
-							$this->leftMargin   = 40;
-							$this->rightMargin  = 30;
+							$this->leftMargin = 40;
+							$this->rightMargin = 30;
 						}
 					} // Landscape
 					else {
-						$this->pageWidth  = 842;
+						$this->pageWidth = 842;
 						$this->pageHeight = 595;
 						if (!isset($margins)) {
-							$this->topMargin    = 30;
+							$this->topMargin = 30;
 							$this->bottomMargin = 30;
-							$this->leftMargin   = 40;
-							$this->rightMargin  = 30;
+							$this->leftMargin = 40;
+							$this->rightMargin = 30;
 						}
 					}
 					break;
 				case 'A3':
 					// Portrait
 					if ($orientation == 'P') {
-						$this->pageWidth  = 842;
+						$this->pageWidth = 842;
 						$this->pageHeight = 1190;
 						if (!isset($margins)) {
-							$this->topMargin    = 50;
+							$this->topMargin = 50;
 							$this->bottomMargin = 50;
-							$this->leftMargin   = 50;
-							$this->rightMargin  = 40;
+							$this->leftMargin = 50;
+							$this->rightMargin = 40;
 						}
 					} // Landscape
 					else {
-						$this->pageWidth  = 1190;
+						$this->pageWidth = 1190;
 						$this->pageHeight = 842;
 						if (!isset($margins)) {
-							$this->topMargin    = 50;
+							$this->topMargin = 50;
 							$this->bottomMargin = 50;
-							$this->leftMargin   = 50;
-							$this->rightMargin  = 40;
+							$this->leftMargin = 50;
+							$this->rightMargin = 40;
 						}
 					}
 					break;
 				case 'LETTER':
 					// Portrait
 					if ($orientation == 'P') {
-						$this->pageWidth  = 612;
+						$this->pageWidth = 612;
 						$this->pageHeight = 792;
 						if (!isset($margins)) {
-							$this->topMargin    = 30;
+							$this->topMargin = 30;
 							$this->bottomMargin = 30;
-							$this->leftMargin   = 30;
-							$this->rightMargin  = 25;
+							$this->leftMargin = 30;
+							$this->rightMargin = 25;
 						}
 					} // Landscape
 					else {
-						$this->pageWidth  = 792;
+						$this->pageWidth = 792;
 						$this->pageHeight = 612;
 						if (!isset($margins)) {
-							$this->topMargin    = 30;
+							$this->topMargin = 30;
 							$this->bottomMargin = 30;
-							$this->leftMargin   = 30;
-							$this->rightMargin  = 25;
+							$this->leftMargin = 30;
+							$this->rightMargin = 25;
 						}
 					}
 					break;
 				case 'LEGAL':
 					// Portrait
 					if ($orientation == 'P') {
-						$this->pageWidth  = 612;
+						$this->pageWidth = 612;
 						$this->pageHeight = 1008;
 						if (!isset($margins)) {
-							$this->topMargin    = 50;
+							$this->topMargin = 50;
 							$this->bottomMargin = 40;
-							$this->leftMargin   = 30;
-							$this->rightMargin  = 25;
+							$this->leftMargin = 30;
+							$this->rightMargin = 25;
 						}
 					} // Landscape
 					else {
-						$this->pageWidth  = 1008;
+						$this->pageWidth = 1008;
 						$this->pageHeight = 612;
 						if (!isset($margins)) {
-							$this->topMargin    = 50;
+							$this->topMargin = 50;
 							$this->bottomMargin = 40;
-							$this->leftMargin   = 30;
-							$this->rightMargin  = 25;
+							$this->leftMargin = 30;
+							$this->rightMargin = 25;
 						}
 					}
 					break;
 			}
-			$this->size           = array(0, 0, $this->pageWidth, $this->pageHeight);
-			$this->title          = $title;
-			$this->filename       = $filename . ".pdf";
-			$this->pageNumber     = 0;
-			$this->endLine        = $this->pageWidth - $this->rightMargin;
-			$this->lineHeight     = 12;
-			$this->fontSize       = $fontsize;
-			$this->oldFontSize    = 0;
-			$this->row            = $this->pageHeight - $this->topMargin;
-			$this->currency       = '';
+			$this->size = array(0, 0, $this->pageWidth, $this->pageHeight);
+			$this->title = $title;
+			$this->filename = $filename . ".pdf";
+			$this->pageNumber = 0;
+			$this->endLine = $this->pageWidth - $this->rightMargin;
+			$this->lineHeight = 12;
+			$this->fontSize = $fontsize;
+			$this->oldFontSize = 0;
+			$this->row = $this->pageHeight - $this->topMargin;
+			$this->currency = '';
 			$this->scaleLogoWidth = false; // if Logo, scale on width (else height).
 			$this->headerFunc = 'Header'; // default to the original header template
-			$rtl  = ($_SESSION['language']->dir === 'rtl' ? 'rtl' : 'ltr');
+			$rtl = ($_SESSION['language']->dir === 'rtl' ? 'rtl' : 'ltr');
 			$code = $_SESSION['language']->code;
-			$enc  = strtoupper($_SESSION['language']->encoding);
+			$enc = strtoupper($_SESSION['language']->encoding);
 			// for the language array in class.pdf.inc
-			$l = array('a_meta_charset'  => $enc,
-								 'a_meta_dir'      => $rtl,
-								 'a_meta_language' => $code,
-								 'w_page'          => 'page'
+			$l = array('a_meta_charset' => $enc,
+				'a_meta_dir' => $rtl,
+				'a_meta_language' => $code,
+				'w_page' => 'page'
 			);
 			$this->Cpdf($size, $l, $orientation);
 		}
@@ -225,30 +224,30 @@
 				$how = _("Closed");
 			}
 			$this->fiscal_year = Dates::sql2date($year['begin']) . " - " . Dates::sql2date($year['end']) . "  " . "(" . $how . ")";
-			$this->company     = DB_Company::get_prefs();
-			$this->user        = $_SESSION["wa_current_user"]->name;
-			$this->host        = $_SERVER['SERVER_NAME'];
-			$this->params      = $params;
-			$this->cols        = $cols;
+			$this->company = DB_Company::get_prefs();
+			$this->user = $_SESSION["wa_current_user"]->name;
+			$this->host = $_SERVER['SERVER_NAME'];
+			$this->params = $params;
+			$this->cols = $cols;
 			for ($i = 0; $i < count($this->cols); $i++) $this->cols[$i] += $this->leftMargin;
 			$this->headers = $headers;
-			$this->aligns  = $aligns;
-			$this->cols2   = $cols2;
+			$this->aligns = $aligns;
+			$this->cols2 = $cols2;
 			if ($this->cols2 != null) {
 				for ($i = 0; $i < count($this->cols2); $i++) $this->cols2[$i] += $this->leftMargin;
 			}
 			$this->headers2 = $headers2;
-			$this->aligns2  = $aligns2;
+			$this->aligns2 = $aligns2;
 			// Set whether to display company logo in some header templates
 			$this->companyLogoEnable = $companylogoenable;
 			// Store footer settings
 			$this->footerEnable = $footerenable;
-			$this->footerText   = $footertext;
+			$this->footerText = $footertext;
 		}
 
 		function Header() {
 			$companyCol = $this->endLine - 150;
-			$titleCol   = $this->leftMargin + 100;
+			$titleCol = $this->leftMargin + 100;
 			$this->pageNumber++;
 			if ($this->pageNumber > 1) {
 				$this->newPage();
@@ -322,7 +321,7 @@
 			$header2type = true;
 			if ($doctype == ST_PROFORMA || $doctype == ST_PROFORMAQ) {
 				$isproforma = true;
-				$doctype    = ($doctype == ST_PROFORMA) ? ST_SALESORDER : ST_SALESQUOTE;
+				$doctype = ($doctype == ST_PROFORMA) ? ST_SALESORDER : ST_SALESQUOTE;
 			}
 
 			if ($doctype == ST_STATEMENT) {
@@ -365,11 +364,11 @@
 				define('FOOTER_MARGIN', 4);
 			}
 			// Set some variables which control header item layout
-			$companyCol     = $this->endLine - COMPANY_WIDTH;
+			$companyCol = $this->endLine - COMPANY_WIDTH;
 			$headerFieldCol = $this->leftMargin + LABEL_WIDTH;
-			$pageNumCol     = $this->endLine - PAGE_NUM_WIDTH;
-			$footerCol      = $this->leftMargin + PAGE_NUM_WIDTH;
-			$footerRow      = $this->bottomMargin - FOOTER_MARGIN;
+			$pageNumCol = $this->endLine - PAGE_NUM_WIDTH;
+			$footerCol = $this->leftMargin + PAGE_NUM_WIDTH;
+			$footerRow = $this->bottomMargin - FOOTER_MARGIN;
 			// Calling this function generates a new PDF page after the first instance
 			$this->pageNumber++;
 			if ($this->pageNumber > 1) {
@@ -389,7 +388,7 @@
 			// Footer
 			if ($this->footerEnable) {
 				$this->Line($footerRow, 1);
-				$prevFontSize   = $this->fontSize;
+				$prevFontSize = $this->fontSize;
 				$this->fontSize = FOOTER_FONT_SIZE;
 				$this->TextWrap($footerCol, $footerRow - ($this->fontSize + 1), $pageNumCol - $footerCol, $this->footerText, $align = 'center', $border = 0, $fill = 0, $link = NULL, $stretch = 1);
 				$this->TextWrap($pageNumCol, $footerRow - ($this->fontSize + 1), PAGE_NUM_WIDTH, _("Page") . ' ' . $this->pageNumber . '/' . $this->getAliasNbPages(), $align = 'right', $border = 0,
@@ -403,7 +402,7 @@
 			$this->Line($this->row + 8, 1);
 			$this->NewLine();
 			// Print the report title nice and big
-			$oldFontSize    = $this->fontSize;
+			$oldFontSize = $this->fontSize;
 			$this->fontSize = TITLE_FONT_SIZE;
 			$this->Font('B');
 			$this->Text($this->leftMargin, $this->title, $companyCol);
@@ -507,7 +506,7 @@
 			// restore user-specified cell padding for column headers
 			$this->SetCellPadding($oldcMargin);
 			// scoot down the page a bit
-			$oldLineHeight    = $this->lineHeight;
+			$oldLineHeight = $this->lineHeight;
 			$this->lineHeight = $this->fontSize + 1;
 			$this->row -= ($this->lineHeight + 6);
 			$this->lineHeight = $oldLineHeight;
@@ -537,10 +536,10 @@
 		 */
 		function DatePrettyPrint($date, $input_format = 0, $output_format = 0) {
 			if ($date != '') {
-				$date  = Dates::date2sql($date);
-				$year  = (int)(substr($date, 0, 4));
+				$date = Dates::date2sql($date);
+				$year = (int)(substr($date, 0, 4));
 				$month = (int)(substr($date, 5, 2));
-				$day   = (int)(substr($date, 8, 2));
+				$day = (int)(substr($date, 8, 2));
 				if ($output_format == 0) {
 					return (date('F j, Y', mktime(12, 0, 0, $month, $day, $year)));
 				} elseif ($output_format == 1) {
@@ -815,7 +814,7 @@
 						if ($myrow['dimension_id'] == 1) {
 							$amt = number_format($myrow["ov_freight"] + $myrow["ov_gst"] + $myrow["ov_amount"], user_price_dec());
 							$txt = $doc_Payment_Link . " PayPal: ";
-							$nn  = urlencode($this->title . " " . $myrow['reference']);
+							$nn = urlencode($this->title . " " . $myrow['reference']);
 							$url = "https://www.paypal.com/xclick/business=" . $this->company['email'] . "&item_name=" . $nn . "&amount=" . $amt . "&currency_code=" . $myrow['curr_code'];
 							$msg .= $txt . $url . "\n\n";
 						}
@@ -860,7 +859,7 @@
 							$this->Stream();
 						}
 					} else { // send report to network printer
-						$prn   = new remote_printer($printer['queue'], $printer['host'], $printer['port'], $printer['timeout']);
+						$prn = new remote_printer($printer['queue'], $printer['host'], $printer['port'], $printer['timeout']);
 						$error = $prn->print_file($fname);
 						if ($error) ui_msgs::display_error($error); else
 							ui_msgs::display_notification(_('Report has been sent to network printer ') . $printer['name']);

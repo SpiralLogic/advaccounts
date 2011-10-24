@@ -29,11 +29,11 @@
 		$trans_type = ST_SUPPINVOICE;
 		echo "<center>";
 		ui_msgs::display_notification_centered(_("Supplier invoice has been processed."));
-		ui_msgs::display_note(ui_view::get_trans_view_str($trans_type, $invoice_no, _("View this Invoice")));
+		ui_msgs::display_warning(ui_view::get_trans_view_str($trans_type, $invoice_no, _("View this Invoice")));
 		hyperlink_no_params("/purchasing/inquiry/po_search.php", _("Purchase Order Maintainants"));
 		hyperlink_params($_SERVER['PHP_SELF'], _("Enter Another Invoice"), "New=1");
 		hyperlink_no_params("/purchasing/supplier_payment.php", _("Entry supplier &payment for this invoice"));
-		ui_msgs::display_note(ui_view::get_gl_view_str($trans_type, $invoice_no, _("View the GL Journal Entries for this Invoice")), 1);
+		ui_msgs::display_warning(ui_view::get_gl_view_str($trans_type, $invoice_no, _("View the GL Journal Entries for this Invoice")), 1);
 		hyperlink_params("/admin/attachments.php", _("Add an Attachment"), "filterType=$trans_type&trans_no=$invoice_no");
 		ui_view::display_footer_exit();
 	}
@@ -46,7 +46,7 @@
 		}
 		//session_register("SuppInv");
 		//session_register("supp_trans");
-		$_SESSION['supp_trans']             = new suppTrans;
+		$_SESSION['supp_trans'] = new suppTrans;
 		$_SESSION['supp_trans']->is_invoice = true;
 		if (isset($_GET['SuppID'])) {
 			$_SESSION['wa_global_supplier_id'] = $_GET['SuppID'];
@@ -75,15 +75,15 @@
 	if (isset($_POST['AddGLCodeToTrans'])) {
 		$Ajax->activate('gl_items');
 		$input_error = false;
-		$sql         = "SELECT account_code, account_name FROM chart_master WHERE account_code=" . DBOld::escape($_POST['gl_code']);
-		$result      = DBOld::query($sql, "get account information");
+		$sql = "SELECT account_code, account_name FROM chart_master WHERE account_code=" . DBOld::escape($_POST['gl_code']);
+		$result = DBOld::query($sql, "get account information");
 		if (DBOld::num_rows($result) == 0) {
 			ui_msgs::display_error(_("The account code entered is not a valid code, this line cannot be added to the transaction."));
 			ui_view::set_focus('gl_code');
 			$input_error = true;
 		}
 		else {
-			$myrow       = DBOld::fetch_row($result);
+			$myrow = DBOld::fetch_row($result);
 			$gl_act_name = $myrow[1];
 			if (!Validation::is_num('amount')) {
 				ui_msgs::display_error(_("The amount entered is not numeric. This line cannot be added to the transaction."));
@@ -152,7 +152,7 @@
 		}
 		$sql = "SELECT Count(*) FROM supp_trans WHERE supplier_id=" . DBOld::escape($_SESSION['supp_trans']->supplier_id) . " AND supp_reference=" . DBOld::escape($_POST['supp_reference']) . " AND ov_amount!=0"; // ignore voided invoice references
 		$result = DBOld::query($sql, "The sql to check for the previous entry of the same invoice failed");
-		$myrow  = DBOld::fetch_row($result);
+		$myrow = DBOld::fetch_row($result);
 		if ($myrow[0] == 1) { /*Transaction reference already entered */
 			ui_msgs::display_error(_("This invoice number has already been entered. It cannot be entered again." . " (" . $_POST['supp_reference'] . ")"));
 			return false;
@@ -297,8 +297,8 @@
 		if ($id2 != -1) {
 			DBOld::begin_transaction();
 			$myrow = get_grn_item_detail($id2);
-			$grn   = get_grn_batch($myrow['grn_batch_id']);
-			$sql   = "UPDATE purch_order_details
+			$grn = get_grn_batch($myrow['grn_batch_id']);
+			$sql = "UPDATE purch_order_details
 			SET quantity_received = qty_invoiced, quantity_ordered = qty_invoiced WHERE po_detail_item = " . $myrow["po_detail_item"];
 			DBOld::query($sql, "The quantity invoiced of the purchase order line could not be updated");
 			$sql = "UPDATE grn_items

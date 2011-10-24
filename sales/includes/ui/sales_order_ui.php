@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 
 	//--------------------------------------------------------------------------------
-	function add_to_order(&$order, $new_item, $new_item_qty, $price, $discount, $description=null, $no_errors = false) {
+	function add_to_order(&$order, $new_item, $new_item_qty, $price, $discount, $description = null, $no_errors = false) {
 		// calculate item price to sum of kit element prices factor for
 		// value distribution over all exploded kit items
 		$item = is_item_kit($new_item);
@@ -227,11 +227,9 @@ JS;
 		submit_cells('update', _("Update"), "colspan=2", _("Refresh"), true);
 		end_row();
 		end_table();
-		if ($has_marked) {
-			ui_msgs::display_note(_("Marked items have insufficient quantities in stock as on day of delivery."), 0, 1, "class='stockmankofg'");
-			if ($order->trans_type != 30 && !SysPrefs::allow_negative_stock()) {
-				ui_msgs::display_error(_("The delivery cannot be processed because there is an insufficient quantity for item:") . '<br>' . $qoh_msg);
-			}
+		if ($has_marked) ui_msgs::display_warning(note(_("Marked items have insufficient quantities in stock as on day of delivery."), 0, 1, "class='stockmankofg'"));
+		if ($order->trans_type != 30 && !SysPrefs::allow_negative_stock()) {
+			ui_msgs::display_error(_("The delivery cannot be processed because there is an insufficient quantity for item:") . '<br>' . $qoh_msg);
 		}
 		div_end();
 	}

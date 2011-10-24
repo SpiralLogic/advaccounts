@@ -59,13 +59,13 @@
 		if (!check_data())
 			return false;
 
-		$id                          = $_GET['id'];
-		$new                         = !Config::get($id, null, 'db');
-		$db_connection['name']       = $_POST['name'];
-		$db_connection['host']       = $_POST['host'];
-		$db_connection['dbuser']     = $_POST['dbuser'];
+		$id = $_GET['id'];
+		$new = !Config::get($id, null, 'db');
+		$db_connection['name'] = $_POST['name'];
+		$db_connection['host'] = $_POST['host'];
+		$db_connection['dbuser'] = $_POST['dbuser'];
 		$db_connection['dbpassword'] = $_POST['dbpassword'];
-		$db_connection['dbname']     = $_POST['dbname'];
+		$db_connection['dbname'] = $_POST['dbname'];
 		Config::set($id, $db_connection, 'db');
 		if ((bool)$_POST['def'] == true)
 			Config::set('company.default', $id);
@@ -137,7 +137,7 @@
 		// rename directory to temporary name to ensure all
 		// other subdirectories will have right owners even after
 		// unsuccessfull removal.
-		$cdir    = COMPANY_PATH . '/' . $id;
+		$cdir = COMPANY_PATH . '/' . $id;
 		$tmpname = COMPANY_PATH . '/old_' . $id;
 		if (!@rename($cdir, $tmpname)) {
 			ui_msgs::display_error(_('Cannot rename subdirectory to temporary name.'));
@@ -183,13 +183,13 @@
 		start_table(Config::get('tables.style'));
 
 		$th = array(_("Company"), _("Database Host"), _("Database User"),
-								_("Database Name"), _("Table Pref"), _("Default"), "", ""
+			_("Database Name"), _("Table Pref"), _("Default"), "", ""
 		);
 		table_header($th);
 
-		$k    = 0;
+		$k = 0;
 		$conn = Config::get(null, null, 'db');
-		$n    = count($conn);
+		$n = count($conn);
 		for ($i = 0; $i < $n; $i++)
 		{
 			if ($i == Config::get('company.default'))
@@ -207,10 +207,10 @@
 			label_cell($conn[$i]['dbname']);
 
 			label_cell($what);
-			$edit   = _("Edit");
+			$edit = _("Edit");
 			$delete = _("Delete");
 			if (user_graphic_links()) {
-				$edit   = set_icon(ICON_EDIT, $edit);
+				$edit = set_icon(ICON_EDIT, $edit);
 				$delete = set_icon(ICON_DELETE, $delete);
 			}
 			label_cell("<a href='" . $_SERVER['PHP_SELF'] . "?selected_id=$i'>$edit</a>");
@@ -220,7 +220,7 @@
 		}
 
 		end_table();
-		ui_msgs::display_note(_("The marked company is the current company which cannot be deleted."), 0, 0, "class='currentfg'");
+		ui_msgs::display_warning(_("The marked company is the current company which cannot be deleted."), 0, 0, "class='currentfg'");
 	}
 
 	//---------------------------------------------------------------------------------------------
@@ -250,12 +250,12 @@
 		start_table(Config::get('tables.style2'));
 
 		if ($selected_id != -1) {
-			$conn                = Config::get($selected_id, null, 'db');
-			$_POST['name']       = $conn['name'];
-			$_POST['host']       = $conn['host'];
-			$_POST['dbuser']     = $conn['dbuser'];
+			$conn = Config::get($selected_id, null, 'db');
+			$_POST['name'] = $conn['name'];
+			$_POST['host'] = $conn['host'];
+			$_POST['dbuser'] = $conn['dbuser'];
 			$_POST['dbpassword'] = $conn['dbpassword'];
-			$_POST['dbname']     = $conn['dbname'];
+			$_POST['dbname'] = $conn['dbname'];
 
 			if ($selected_id == Config::get('company.default'))
 				$_POST['def'] = true;
@@ -279,7 +279,7 @@
 		text_row_ex(_("New script Admin Password"), 'admpassword', 20);
 
 		end_table();
-		ui_msgs::display_note(_("Choose from Database scripts in SQL folder. No Database is created without a script."), 0, 1);
+		ui_msgs::display_warning(_("Choose from Database scripts in SQL folder. No Database is created without a script."), 0, 1);
 		echo "<center><input onclick='javascript:updateCompany()' type='button' style='width:150px' value='" . _("Save") . "'></center>";
 
 		end_form();

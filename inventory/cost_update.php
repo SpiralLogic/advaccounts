@@ -57,7 +57,7 @@
 			ui_msgs::display_notification(_("Cost has been updated."));
 
 			if ($update_no > 0) {
-				ui_msgs::display_note(ui_view::get_gl_view_str(ST_COSTUPDATE, $update_no, _("View the GL Journal Entries for this Cost Update")), 0, 1);
+				ui_msgs::display_warning(ui_view::get_gl_view_str(ST_COSTUPDATE, $update_no, _("View the GL Journal Entries for this Cost Update")), 0, 1);
 			}
 		}
 	}
@@ -77,7 +77,7 @@
 	echo "</center><hr>";
 	ui_globals::set_global_stock_item($_POST['stock_id']);
 
-	$sql    = "SELECT description, units, material_cost, labour_cost,
+	$sql = "SELECT description, units, material_cost, labour_cost,
 	overhead_cost, mb_flag
 	FROM stock_master
 	WHERE stock_id=" . DBOld::escape($_POST['stock_id']) . "
@@ -92,9 +92,9 @@
 	hidden("OldOverheadCost", $myrow["overhead_cost"]);
 
 	start_table(Config::get('tables.style2'));
-	$dec1                   = $dec2 = $dec3 = 0;
+	$dec1 = $dec2 = $dec3 = 0;
 	$_POST['material_cost'] = price_decimal_format($myrow["material_cost"], $dec1);
-	$_POST['labour_cost']   = price_decimal_format($myrow["labour_cost"], $dec2);
+	$_POST['labour_cost'] = price_decimal_format($myrow["labour_cost"], $dec2);
 	$_POST['overhead_cost'] = price_decimal_format($myrow["overhead_cost"], $dec3);
 
 	amount_row(_("Standard Material Cost Per Unit"), "material_cost", null, "class='tableheader2'", null, $dec1);

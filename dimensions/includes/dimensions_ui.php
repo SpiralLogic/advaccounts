@@ -24,7 +24,7 @@
 		$result = DBOld::query($sql, "Transactions could not be calculated");
 
 		if (DBOld::num_rows($result) == 0) {
-			ui_msgs::display_note(_("There are no transactions for this dimension for the selected period."));
+			ui_msgs::display_warning(_("There are no transactions for this dimension for the selected period."));
 		}
 		else
 		{

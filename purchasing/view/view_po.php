@@ -64,7 +64,7 @@
 	label_row(_("Total Excluding Tax/Shipping"), $display_total, "align=right colspan=6", "nowrap align=right", 3);
 	end_table();
 	if ($overdue_items)
-		ui_msgs::display_note(_("Marked items are overdue."), 0, 0, "class='overduefg'");
+		ui_msgs::display_warning(_("Marked items are overdue."), 0, 0, "class='overduefg'");
 	//----------------------------------------------------------------------------------------------------
 	$k = 0;
 	$grns_result = get_po_grns($_GET['trans_no']);

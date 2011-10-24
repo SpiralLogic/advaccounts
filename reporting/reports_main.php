@@ -76,8 +76,8 @@
 			_('Destination') => 'DESTINATION'
 		));
 	$reports->addReport(_('Customer'), 107, _('Print &Invoices/Credit Notes'),
-		array(_('From') => 'TAX INVOICE',
-			_('To') => 'TAX INVOICE',
+		array(_('From') => 'INVOICE',
+			_('To') => 'INVOICE',
 			_('Currency Filter') => 'CURRENCY',
 			_('email Customers') => 'YES_NO',
 			_('Payment Link') => 'PAYMENT_LINK',

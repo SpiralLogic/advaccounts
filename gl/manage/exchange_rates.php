@@ -126,7 +126,7 @@
 
 		submit_add_or_update_center($selected_id == '', '', 'both');
 
-		ui_msgs::display_note(_("Exchange rates are entered against the company currency."), 1);
+		ui_msgs::display_warning(_("Exchange rates are entered against the company currency."), 1);
 	}
 
 	//---------------------------------------------------------------------------------------------
@@ -181,8 +181,8 @@
 
 	if (Banking::is_company_currency($_POST['curr_abrev'])) {
 
-		ui_msgs::display_note(_("The selected currency is the company currency."), 2);
-		ui_msgs::display_note(_("The company currency is the base currency so exchange rates cannot be set for it."), 1);
+		ui_msgs::display_warning(_("The selected currency is the company currency."), 2);
+		ui_msgs::display_warning(_("The company currency is the base currency so exchange rates cannot be set for it."), 1);
 	}
 	else
 	{

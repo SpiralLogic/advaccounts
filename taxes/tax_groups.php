@@ -87,19 +87,19 @@
 	function can_delete($selected_id) {
 		if ($selected_id == -1)
 			return false;
-		$sql    = "SELECT COUNT(*) FROM cust_branch WHERE tax_group_id=" . DBOld::escape($selected_id);
+		$sql = "SELECT COUNT(*) FROM cust_branch WHERE tax_group_id=" . DBOld::escape($selected_id);
 		$result = DBOld::query($sql, "could not query customers");
-		$myrow  = DBOld::fetch_row($result);
+		$myrow = DBOld::fetch_row($result);
 		if ($myrow[0] > 0) {
-			ui_msgs::display_note(_("Cannot delete this tax group because customer branches been created referring to it."));
+			ui_msgs::display_warning(_("Cannot delete this tax group because customer branches been created referring to it."));
 			return false;
 		}
 
-		$sql    = "SELECT COUNT(*) FROM suppliers WHERE tax_group_id=" . DBOld::escape($selected_id);
+		$sql = "SELECT COUNT(*) FROM suppliers WHERE tax_group_id=" . DBOld::escape($selected_id);
 		$result = DBOld::query($sql, "could not query suppliers");
-		$myrow  = DBOld::fetch_row($result);
+		$myrow = DBOld::fetch_row($result);
 		if ($myrow[0] > 0) {
-			ui_msgs::display_note(_("Cannot delete this tax group because suppliers been created referring to it."));
+			ui_msgs::display_warning(_("Cannot delete this tax group because suppliers been created referring to it."));
 			return false;
 		}
 
@@ -119,7 +119,7 @@
 
 	if ($Mode == 'RESET') {
 		$selected_id = -1;
-		$sav         = get_post('show_inactive');
+		$sav = get_post('show_inactive');
 		unset($_POST);
 		$_POST['show_inactive'] = $sav;
 	}
@@ -169,7 +169,7 @@
 		if ($Mode == 'Edit') {
 			$group = Tax_Groups::get_tax_group($selected_id);
 
-			$_POST['name']         = $group["name"];
+			$_POST['name'] = $group["name"];
 			$_POST['tax_shipping'] = $group["tax_shipping"];
 
 			$items = Tax_Groups::get_for_item($selected_id);
@@ -178,7 +178,7 @@
 			while ($tax_item = DBOld::fetch($items))
 			{
 				$_POST['tax_type_id' . $i] = $tax_item["tax_type_id"];
-				$_POST['rate' . $i]        = percent_format($tax_item["rate"]);
+				$_POST['rate' . $i] = percent_format($tax_item["rate"]);
 				$i++;
 			}
 			while ($i < 5) unset($_POST['tax_type_id' . $i++]);
@@ -191,7 +191,7 @@
 
 	end_table();
 
-	ui_msgs::display_note(_("Select the taxes that are included in this group."), 1);
+	ui_msgs::display_warning(_("Select the taxes that are included in this group."), 1);
 
 	start_table(Config::get('tables.style2'));
 	//$th = array(_("Tax"), _("Default Rate (%)"), _("Rate (%)"));

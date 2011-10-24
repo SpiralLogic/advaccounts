@@ -24,14 +24,12 @@
 	//----------------------------------------------------------------------------------------
 
 	if (isset($_GET['AddedID'])) {
-		$trans_no   = $_GET['AddedID'];
+		$trans_no = $_GET['AddedID'];
 		$trans_type = ST_BANKTRANSFER;
 
-		ui_msgs::display_notification_centered(_("Transfer has been entered"));
+		ui_msgs::display_notification_centered(_("Transfer has ui_msgs::display_warning(_msgs::display_note(ui_view::get_gl_view_str($trans_type, $trans_no, _(" & View the GL Journal Entries for this Transfer")));
 
-		ui_msgs::display_note(ui_view::get_gl_view_str($trans_type, $trans_no, _("&View the GL Journal Entries for this Transfer")));
-
-		hyperlink_no_params($_SERVER['PHP_SELF'], _("Enter &Another Transfer"));
+		hyperlink_no_params($_SERVER['PHP_SELF'], _("Enter & Another Transfer"));
 
 		ui_view::display_footer_exit();
 	}
@@ -90,34 +88,34 @@
 	function check_valid_entries() {
 
 		if (!Dates::is_date($_POST['DatePaid'])) {
-			ui_msgs::display_error(_("The entered date is invalid."));
+			ui_msgs::display_error(_("The entered date is invalid ."));
 			ui_view::set_focus('DatePaid');
 			return false;
 		}
 		if (!Dates::is_date_in_fiscalyear($_POST['DatePaid'])) {
-			ui_msgs::display_error(_("The entered date is not in fiscal year."));
+			ui_msgs::display_error(_("The entered date is not in fiscal year . "));
 			ui_view::set_focus('DatePaid');
 			return false;
 		}
 
 		if (!Validation::is_num('amount', 0)) {
-			ui_msgs::display_error(_("The entered amount is invalid or less than zero."));
+			ui_msgs::display_error(_("The entered amount is invalid or less than zero ."));
 			ui_view::set_focus('amount');
 			return false;
 		}
 
 		if (isset($_POST['charge']) && !Validation::is_num('charge', 0)) {
-			ui_msgs::display_error(_("The entered amount is invalid or less than zero."));
+			ui_msgs::display_error(_("The entered amount is invalid or less than zero ."));
 			ui_view::set_focus('charge');
 			return false;
 		}
 		if (isset($_POST['charge']) && input_num('charge') > 0 && DB_Company::get_pref('bank_charge_act') == '') {
-			ui_msgs::display_error(_("The Bank Charge Account has not been set in System and General GL Setup."));
+			ui_msgs::display_error(_("The Bank Charge Account has not been set in System and General GL Setup ."));
 			ui_view::set_focus('charge');
 			return false;
 		}
 		if (!Refs::is_valid($_POST['ref'])) {
-			ui_msgs::display_error(_("You must enter a reference."));
+			ui_msgs::display_error(_("You must enter a reference ."));
 			ui_view::set_focus('ref');
 			return false;
 		}
@@ -129,7 +127,7 @@
 		}
 
 		if ($_POST['FromBankAccount'] == $_POST['ToBankAccount']) {
-			ui_msgs::display_error(_("The source and destination bank accouts cannot be the same."));
+			ui_msgs::display_error(_("The source and destination bank accouts cannot be the same ."));
 			ui_view::set_focus('ToBankAccount');
 			return false;
 		}
@@ -144,7 +142,7 @@
 			$_POST['DatePaid'], input_num('amount'), $_POST['ref'],
 			$_POST['memo_'], input_num('charge'));
 
-		meta_forward($_SERVER['PHP_SELF'], "AddedID=$trans_no");
+		meta_forward($_SERVER['PHP_SELF'], "AddedID = $trans_no");
 	}
 
 	//----------------------------------------------------------------------------------------

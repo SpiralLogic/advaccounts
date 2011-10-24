@@ -34,6 +34,9 @@
 		$page_title = _($help_context = "Deliver Items for a Sales Order");
 		processing_start();
 	}
+	else {
+		$page_title = _($help_context = "Deliver Items for a Sales Order");
+	}
 
 	page($page_title, false, false, "", $js);
 
@@ -42,14 +45,14 @@
 
 		ui_msgs::display_notification_centered(sprintf(_("Delivery # %d has been entered."), $dispatch_no));
 
-		ui_msgs::display_note(ui_view::get_customer_trans_view_str(ST_CUSTDELIVERY, $dispatch_no, _("&View This Delivery")), 0, 1);
+		ui_msgs::display_warning(ui_view::get_customer_trans_view_str(ST_CUSTDELIVERY, $dispatch_no, _("&View This Delivery")), 0, 1);
 
-		ui_msgs::display_note(print_document_link($dispatch_no, _("&Print Delivery Note"), true, ST_CUSTDELIVERY));
-		ui_msgs::display_note(print_document_link($dispatch_no, _("&Email Delivery Note"), true, ST_CUSTDELIVERY, false, "printlink", "", 1), 1, 1);
-		ui_msgs::display_note(print_document_link($dispatch_no, _("P&rint as Packing Slip"), true, ST_CUSTDELIVERY, false, "printlink", "", 0, 1));
-		ui_msgs::display_note(print_document_link($dispatch_no, _("E&mail as Packing Slip"), true, ST_CUSTDELIVERY, false, "printlink", "", 1, 1), 1);
+		ui_msgs::display_warning(print_document_link($dispatch_no, _("&Print Delivery Note"), true, ST_CUSTDELIVERY));
+		ui_msgs::display_warning(print_document_link($dispatch_no, _("&Email Delivery Note"), true, ST_CUSTDELIVERY, false, "printlink", "", 1), 1, 1);
+		ui_msgs::display_warning(print_document_link($dispatch_no, _("P&rint as Packing Slip"), true, ST_CUSTDELIVERY, false, "printlink", "", 0, 1));
+		ui_msgs::display_warning(print_document_link($dispatch_no, _("E&mail as Packing Slip"), true, ST_CUSTDELIVERY, false, "printlink", "", 1, 1), 1);
 
-		ui_msgs::display_note(ui_view::get_gl_view_str(13, $dispatch_no, _("View the GL Journal Entries for this Dispatch")), 1);
+		ui_msgs::display_warning(ui_view::get_gl_view_str(13, $dispatch_no, _("View the GL Journal Entries for this Dispatch")), 1);
 
 		hyperlink_params("/sales/customer_invoice.php", _("Invoice This Delivery"), "DeliveryNumber=$dispatch_no");
 
@@ -63,12 +66,12 @@
 
 		ui_msgs::display_notification_centered(sprintf(_('Delivery Note # %d has been updated.'), $delivery_no));
 
-		ui_msgs::display_note(ui_view::get_trans_view_str(ST_CUSTDELIVERY, $delivery_no, _("View this delivery")), 0, 1);
+		ui_msgs::display_warning(ui_view::get_trans_view_str(ST_CUSTDELIVERY, $delivery_no, _("View this delivery")), 0, 1);
 
-		ui_msgs::display_note(print_document_link($delivery_no, _("&Print Delivery Note"), true, ST_CUSTDELIVERY));
-		ui_msgs::display_note(print_document_link($delivery_no, _("&Email Delivery Note"), true, ST_CUSTDELIVERY, false, "printlink", "", 1), 1, 1);
-		ui_msgs::display_note(print_document_link($delivery_no, _("P&rint as Packing Slip"), true, ST_CUSTDELIVERY, false, "printlink", "", 0, 1));
-		ui_msgs::display_note(print_document_link($delivery_no, _("E&mail as Packing Slip"), true, ST_CUSTDELIVERY, false, "printlink", "", 1, 1), 1);
+		ui_msgs::display_warning(print_document_link($delivery_no, _("&Print Delivery Note"), true, ST_CUSTDELIVERY));
+		ui_msgs::display_warning(print_document_link($delivery_no, _("&Email Delivery Note"), true, ST_CUSTDELIVERY, false, "printlink", "", 1), 1, 1);
+		ui_msgs::display_warning(print_document_link($delivery_no, _("P&rint as Packing Slip"), true, ST_CUSTDELIVERY, false, "printlink", "", 0, 1));
+		ui_msgs::display_warning(print_document_link($delivery_no, _("E&mail as Packing Slip"), true, ST_CUSTDELIVERY, false, "printlink", "", 1, 1), 1);
 
 		hyperlink_params("/sales/customer_invoice.php", _("Confirm Delivery and Invoice"), "DeliveryNumber=$delivery_no");
 
@@ -474,7 +477,7 @@
 	end_table(1);
 
 	if ($has_marked) {
-		ui_msgs::display_note(_("Marked items have insufficient quantities in stock as on day of delivery."), 0, 1, "class='red'");
+		ui_msgs::display_warning(_("Marked items have insufficient quantities in stock as on day of delivery."), 0, 1, "class='red'");
 	}
 	start_table(Config::get('tables.style2'));
 

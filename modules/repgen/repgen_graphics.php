@@ -151,7 +151,7 @@ function displayReport(id) {
 	if (!empty($error))
 		ui_msgs::display_error($error);
 
-	ui_msgs::display_note(IT_HELP, 0, 1);
+	ui_msgs::display_warning(IT_HELP, 0, 1);
 
 	start_form(false, false, REPGENDIR . "/repgen_graphics.php", "graphics");
 

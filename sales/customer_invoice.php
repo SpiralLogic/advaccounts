@@ -26,7 +26,7 @@
 	if (Config::get('ui.windows.popups')) {
 		$js .= ui_view::get_js_open_window(900, 500);
 	}
-
+	$page_title = 'Sales Invoice Complete';
 	if (isset($_GET['ModifyInvoice'])) {
 		$page_title = sprintf(_("Modifying Sales Invoice # %d."), $_GET['ModifyInvoice']);
 		$help_context = "Modifying Sales Invoice";

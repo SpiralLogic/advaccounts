@@ -60,7 +60,7 @@
 		}
 		else
 		{
-			ui_msgs::display_note(_("There are no unsettled transactions to allocate."), 0, 1);
+			ui_msgs::display_warning(_("There are no unsettled transactions to allocate."), 0, 1);
 
 			submit_center('Cancel', _("Back to Allocations"), true,
 				_('Abandon allocations and return to selection of allocatable amounts'), 'cancel');

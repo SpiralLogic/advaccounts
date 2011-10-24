@@ -17,7 +17,7 @@
 		$result = Manufacturing::get_bom($item_check);
 
 		if (DBOld::num_rows($result) == 0) {
-			ui_msgs::display_note(_("The bill of material for this item is empty."), 0, 1);
+			ui_msgs::display_warning(_("The bill of material for this item is empty."), 0, 1);
 		}
 		else
 		{
@@ -71,7 +71,7 @@
 		$result = get_wo_requirements($woid);
 
 		if (DBOld::num_rows($result) == 0) {
-			ui_msgs::display_note(_("There are no Requirements for this Order."), 1, 0);
+			ui_msgs::display_warning(_("There are no Requirements for this Order."), 1, 0);
 		}
 		else
 		{
@@ -132,7 +132,7 @@
 			end_table();
 
 			if ($has_marked)
-				ui_msgs::display_note(_("Marked items have insufficient quantities in stock."), 0, 0, "class='red'");
+				ui_msgs::display_warning(_("Marked items have insufficient quantities in stock."), 0, 0, "class='red'");
 		}
 	}
 
@@ -143,7 +143,7 @@
 		$result = get_work_order_productions($woid);
 
 		if (DBOld::num_rows($result) == 0) {
-			ui_msgs::display_note(_("There are no Productions for this Order."), 1, 1);
+			ui_msgs::display_warning(_("There are no Productions for this Order."), 1, 1);
 		}
 		else
 		{
@@ -183,31 +183,31 @@
 
 		$result = get_work_order_issues($woid);
 
-		if (DBOld::num_rows($result) == 0) {
-			ui_msgs::display_note(_("There are no Issues for this Order."), 0, 1);
-		}
-		else
+		if (DBOld::num_rows($result) ==ui_msgs::display_warning(lay_note(_("There are no Issues for this Order."), 0, 1);
+	}
+
+	else
+	{
+		start_table(Config::get('tables.style'));
+		$th = array(_("#"), _("Reference"), _("Date"));
+
+		table_header($th);
+
+		$k = 0; //row colour counter
+
+		while ($myrow = DBOld::fetch($result))
 		{
-			start_table(Config::get('tables.style'));
-			$th = array(_("#"), _("Reference"), _("Date"));
 
-			table_header($th);
+			alt_table_row_color($k);
 
-			$k = 0; //row colour counter
-
-			while ($myrow = DBOld::fetch($result))
-			{
-
-				alt_table_row_color($k);
-
-				label_cell(ui_view::get_trans_view_str(28, $myrow["issue_no"]));
-				label_cell($myrow['reference']);
-				label_cell(Dates::sql2date($myrow["issue_date"]));
-				end_row();
-			}
-
-			end_table();
+			label_cell(ui_view::get_trans_view_str(28, $myrow["issue_no"]));
+			label_cell($myrow['reference']);
+			label_cell(Dates::sql2date($myrow["issue_date"]));
+			end_row();
 		}
+
+		end_table();
+	}
 	}
 
 	//--------------------------------------------------------------------------------------
@@ -218,33 +218,33 @@
 		//$result = get_bank_trans(null, null, PT_WORKORDER, $woid);
 		$result = get_gl_wo_cost_trans($woid);
 
-		if (DBOld::num_rows($result) == 0) {
-			ui_msgs::display_note(_("There are no additional costs for this Order."), 0, 1);
-		}
-		else
+		if (DBOld::num_rows($result) ==ui_msgs::display_warning(lay_note(_("There are no additional costs for this Order."), 0, 1);
+	}
+
+	else
+	{
+		start_table(Config::get('tables.style'));
+		$th = array(_("#"), _("Type"), _("Date"), _("Amount"));
+
+		table_header($th);
+
+		$k = 0; //row colour counter
+
+		while ($myrow = DBOld::fetch($result))
 		{
-			start_table(Config::get('tables.style'));
-			$th = array(_("#"), _("Type"), _("Date"), _("Amount"));
 
-			table_header($th);
+			alt_table_row_color($k);
 
-			$k = 0; //row colour counter
-
-			while ($myrow = DBOld::fetch($result))
-			{
-
-				alt_table_row_color($k);
-
-				label_cell(ui_view::get_gl_view_str(ST_WORKORDER, $myrow["type_no"], $myrow["type_no"]));
-				label_cell($wo_cost_types[$myrow['person_id']]);
-				$date = Dates::sql2date($myrow["tran_date"]);
-				label_cell($date);
-				amount_cell(-($myrow['amount']));
-				end_row();
-			}
-
-			end_table();
+			label_cell(ui_view::get_gl_view_str(ST_WORKORDER, $myrow["type_no"], $myrow["type_no"]));
+			label_cell($wo_cost_types[$myrow['person_id']]);
+			$date = Dates::sql2date($myrow["tran_date"]);
+			label_cell($date);
+			amount_cell(-($myrow['amount']));
+			end_row();
 		}
+
+		end_table();
+	}
 	}
 
 	//--------------------------------------------------------------------------------------
@@ -254,51 +254,49 @@
 
 		$myrow = get_work_order($woid);
 
-		if (strlen($myrow[0]) == 0) {
-			ui_msgs::display_note(_("The work order number sent is not valid."));
-			exit;
-		}
+		if (strlen($myrow[0])ui_msgs::display_warning(isplay_note(_("The work order number sent is not valid."));
+		exit;
+	}
 
-		start_table(Config::get('tables.style') . "  width=90%");
+	start_table(Config::get('tables.style') . "  width=90%");
 
-		if ($myrow["released"] == true)
-			$th = array(_("#"), _("Reference"), _("Type"), _("Manufactured Item"),
-				_("Into Location"), _("Date"), _("Required By"), _("Quantity Required"),
-				_("Released Date"), _("Manufactured")
-			);
-		else
-			$th = array(_("#"), _("Reference"), _("Type"), _("Manufactured Item"),
-				_("Into Location"), _("Date"), _("Required By"), _("Quantity Required")
-			);
+	if ($myrow["released"] == true)
+		$th = array(_("#"), _("Reference"), _("Type"), _("Manufactured Item"),
+			_("Into Location"), _("Date"), _("Required By"), _("Quantity Required"),
+			_("Released Date"), _("Manufactured")
+		);
+	else
+		$th = array(_("#"), _("Reference"), _("Type"), _("Manufactured Item"),
+			_("Into Location"), _("Date"), _("Required By"), _("Quantity Required")
+		);
 
-		table_header($th);
-		start_row();
-		if ($suppress_view_link)
-			label_cell($myrow["id"]);
-		else
-			label_cell(ui_view::get_trans_view_str(ST_WORKORDER, $myrow["id"]));
-		label_cell($myrow["wo_ref"]);
-		label_cell($wo_types_array[$myrow["type"]]);
-		ui_view::view_stock_status_cell($myrow["stock_id"], $myrow["StockItemName"]);
-		label_cell($myrow["location_name"]);
-		label_cell(Dates::sql2date($myrow["date_"]));
-		label_cell(Dates::sql2date($myrow["required_by"]));
-		$dec = get_qty_dec($myrow["stock_id"]);
-		qty_cell($myrow["units_reqd"], false, $dec);
+	table_header($th);
+	start_row();
+	if ($suppress_view_link)
+		label_cell($myrow["id"]);
+	else
+		label_cell(ui_view::get_trans_view_str(ST_WORKORDER, $myrow["id"]));
+	label_cell($myrow["wo_ref"]);
+	label_cell($wo_types_array[$myrow["type"]]);
+	ui_view::view_stock_status_cell($myrow["stock_id"], $myrow["StockItemName"]);
+	label_cell($myrow["location_name"]);
+	label_cell(Dates::sql2date($myrow["date_"]));
+	label_cell(Dates::sql2date($myrow["required_by"]));
+	$dec = get_qty_dec($myrow["stock_id"]);
+	qty_cell($myrow["units_reqd"], false, $dec);
 
-		if ($myrow["released"] == true) {
-			label_cell(Dates::sql2date($myrow["released_date"]));
-			qty_cell($myrow["units_issued"], false, $dec);
-		}
-		end_row();
+	if ($myrow["released"] == true) {
+		label_cell(Dates::sql2date($myrow["released_date"]));
+		qty_cell($myrow["units_issued"], false, $dec);
+	}
+	end_row();
 
-		ui_view::comments_display_row(ST_WORKORDER, $woid);
+	ui_view::comments_display_row(ST_WORKORDER, $woid);
 
-		end_table();
+	end_table();
 
-		if ($myrow["closed"] == true) {
-			ui_msgs::display_note(_("This work order is closed."));
-		}
+	if ($myrow["closed"]ui_msgs::display_warning(::display_note(_("This work order is closed."));
+	}
 	}
 
 	//--------------------------------------------------------------------------------------
@@ -308,40 +306,39 @@
 
 		$myrow = get_work_order($woid);
 
-		if (strlen($myrow[0]) == 0) {
-			ui_msgs::display_note(_("The work order number sent is not valid."));
-			exit;
-		}
+		if (strlen($ui_msgs::display_warning(i_msgs::display_note(_("The work order number sent is not valid."));
+		exit;
+	}
 
-		start_table(Config::get('tables.style') . "  width=90%");
+	start_table(Config::get('tables.style') . "  width=90%");
 
-		$th = array(_("#"), _("Reference"), _("Type"), _("Manufactured Item"),
-			_("Into Location"), _("Date"), _("Quantity")
-		);
-		table_header($th);
+	$th = array(_("#"), _("Reference"), _("Type"), _("Manufactured Item"),
+		_("Into Location"), _("Date"), _("Quantity")
+	);
+	table_header($th);
 
-		start_row();
-		if ($suppress_view_link)
-			label_cell($myrow["id"]);
-		else
-			label_cell(ui_view::get_trans_view_str(ST_WORKORDER, $myrow["id"]));
-		label_cell($myrow["wo_ref"]);
-		label_cell($wo_types_array[$myrow["type"]]);
-		ui_view::view_stock_status_cell($myrow["stock_id"], $myrow["StockItemName"]);
-		label_cell($myrow["location_name"]);
-		label_cell(Dates::sql2date($myrow["date_"]));
+	start_row();
+	if ($suppress_view_link)
+		label_cell($myrow["id"]);
+	else
+		label_cell(ui_view::get_trans_view_str(ST_WORKORDER, $myrow["id"]));
+	label_cell($myrow["wo_ref"]);
+	label_cell($wo_types_array[$myrow["type"]]);
+	ui_view::view_stock_status_cell($myrow["stock_id"], $myrow["StockItemName"]);
+	label_cell($myrow["location_name"]);
+	label_cell(Dates::sql2date($myrow["date_"]));
 
-		qty_cell($myrow["units_issued"], false, get_qty_dec($myrow["stock_id"]));
+	qty_cell($myrow["units_issued"], false, get_qty_dec($myrow["stock_id"]));
 
-		end_row();
+	end_row();
 
-		ui_view::comments_display_row(ST_WORKORDER, $woid);
+	ui_view::comments_display_row(ST_WORKORDER, $woid);
 
-		end_table();
+	end_table();
 
-		if ($myrow["closed"] == true) {
-			ui_msgs::display_note(_("This work order is closed."));
-		}
+	if ($myrow["closed"] == true) {
+		ui_msgs::display_warning(_("This work order is closed."));
+	}
 	}
 
 ?>

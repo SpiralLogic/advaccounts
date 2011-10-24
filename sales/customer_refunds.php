@@ -43,7 +43,7 @@
 		ui_msgs::display_notification_centered(_("The customer refund has been successfully entered."));
 		submenu_print(_("&Print This Receipt"), ST_CUSTREFUND, $refund_id . "-" . ST_CUSTREFUND, 'prtopt');
 		hyperlink_no_params("/sales/inquiry/customer_inquiry.php", _("Show Invoices"));
-		ui_msgs::display_note(ui_view::get_gl_view_str(ST_CUSTREFUND, $refund_id, _("&View the GL Journal Entries for this Customer Refund")));
+		ui_msgs::display_warning(ui_view::get_gl_view_str(ST_CUSTREFUND, $refund_id, _("&View the GL Journal Entries for this Customer Refund")));
 		ui_view::display_footer_exit();
 	}
 
@@ -147,7 +147,7 @@
 			$rate = input_num('_ex_rate');
 		}
 		Dates::new_doc_date($_POST['DateBanked']);
-		$refund_id                   = write_customer_refund(0, $_POST['customer_id'], $_POST['BranchID'],
+		$refund_id = write_customer_refund(0, $_POST['customer_id'], $_POST['BranchID'],
 			$_POST['bank_account'], $_POST['DateBanked'], $_POST['ref'],
 			input_num('amount'), input_num('discount'),
 			$_POST['memo_'], $rate, input_num('charge'));
@@ -160,16 +160,16 @@
 
 	function read_customer_data() {
 		global $customer;
-		$sql                    = "SELECT debtors_master.pymt_discount,
+		$sql = "SELECT debtors_master.pymt_discount,
 		credit_status.dissallow_invoices
 		FROM debtors_master, credit_status
 		WHERE debtors_master.credit_status = credit_status.id
 			AND debtors_master.debtor_no = " . $customer->id;
-		$result                 = DBOld::query($sql, "could not query customers");
-		$myrow                  = DBOld::fetch($result);
-		$_POST['HoldAccount']   = $myrow["dissallow_invoices"];
+		$result = DBOld::query($sql, "could not query customers");
+		$myrow = DBOld::fetch($result);
+		$_POST['HoldAccount'] = $myrow["dissallow_invoices"];
 		$_POST['pymt_discount'] = 0;
-		$_POST['ref']           = Refs::get_next(12);
+		$_POST['ref'] = Refs::get_next(12);
 	}
 
 	//----------------------------------------------------------------------------------------------
@@ -179,9 +179,9 @@
 	start_outer_table(Config::get('tables.style2') . " width=60%", 5);
 	table_section(1);
 	UI::search('customer', array('label' => 'Search Customer:',
-															'size'   => 20,
-															'url'    => '/contacts/search.php'
-												 ));
+		'size' => 20,
+		'url' => '/contacts/search.php'
+	));
 	if (!isset($_POST['bank_account'])) // first page call
 	{
 		$_SESSION['alloc'] = new allocation(ST_CUSTREFUND, 0);
@@ -223,7 +223,7 @@
 		textarea_row(_("Memo:"), 'memo_', null, 22, 4);
 		end_table(1);
 		if ($cust_currency != $bank_currency) {
-			ui_msgs::display_note(_("Amount and discount are in customer's currency."));
+			ui_msgs::display_warning(_("Amount and discount are in customer's currency."));
 		}
 		br();
 		submit_center('AddRefundItem', _("Add Refund"), true, '', 'default');

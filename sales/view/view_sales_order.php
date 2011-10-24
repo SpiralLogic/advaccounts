@@ -147,7 +147,7 @@
 	}
 	echo "<center>";
 	if ($_SESSION['View']->so_type == 1)
-		ui_msgs::display_note(_("This Sales Order is used as a Template."), 0, 0, "class='currentfg'");
+		ui_msgs::display_warning(_("This Sales Order is used as a Template."), 0, 0, "class='currentfg'");
 	ui_msgs::display_heading2(_("Line Details"));
 	start_table("colspan=9 width=95%  " . Config::get('tables.style'));
 	$th = array(_("Item Code"), _("Item Description"), _("Quantity"), _("Unit"), _("Price"), _("Discount"), _("Total"), _("Quantity Delivered"));

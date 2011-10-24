@@ -151,7 +151,7 @@
 	textarea_row(ALTER_FUNCT, "funct", $funct, 50, 10);
 	end_table(1);
 
-	ui_msgs::display_note(FUNC_DECL, 0, 1);
+	ui_msgs::display_warning(FUNC_DECL, 0, 1);
 
 	start_table(Config::get('tables.style'));
 	start_row();

@@ -125,7 +125,7 @@
 	inactive_control_row($th);
 	end_table();
 
-	ui_msgs::display_note(_("Marked sales type is the company base pricelist for prices calculations."), 0, 0, "class='overduefg'");
+	ui_msgs::display_warning(_("Marked sales type is the company base pricelist for prices calculations."), 0, 0, "class='overduefg'");
 
 	//----------------------------------------------------------------------------------------------------
 
