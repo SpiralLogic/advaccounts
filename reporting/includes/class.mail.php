@@ -5,7 +5,7 @@
 		 Version:        1.0
 		 last modified:  2004-05-14
 
-		 Autor:          Daniel Käfer
+		 Autor:          Daniel Kï¿½fer
 		 Homepage:       http://www.danielkaefer.de
 
 		 Leave this header in this file!
@@ -31,7 +31,7 @@
 			$this->mail->SMTPAuth = true;
 			$this->mail->WordWrap = 50;
 			$this->mail->Username = 'sales@advancedroadsigns.com.au';
-			$this->mail->Password = '1willenberg';
+			$this->mail->Password = '1w1llenberg';
 			$this->mail->From = "sales@advancedroadsigns.com.au";
 			$this->mail->FromName = 'Advanced Group Accounts';
 			$this->mail->AddBCC("sales@advancedroadsigns.com.au");

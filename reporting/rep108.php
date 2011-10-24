@@ -61,6 +61,7 @@
 		$comments = $_POST['PARAM_3'];
 		$incPayments = $_POST['PARAM_4'];
 		$incNegatives = $_POST['PARAM_5'];
+		$doctype = ST_STATEMENT;
 		$doc_Outstanding = $doc_Over = $doc_Days = $doc_Current = $doc_Total_Balance = null;
 		$dec = user_price_dec();
 		$cols = array(4, 80, 120, 180, 230, 280, 320, 385, 450, 515);
