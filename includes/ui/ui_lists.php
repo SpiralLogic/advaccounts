@@ -613,7 +613,7 @@ JS
 			return Item::addSearchBox($name, array_merge(array('submitonselect' => $submit_on_change,
 					'selected' => $selected_id,
 					'purchase' => true,
-					'cell' => true
+					'cells' => true
 				), $opts));
 		$sql = "SELECT stock_id, s.description, c.description, s.inactive, s.editable, s.long_description
 			FROM stock_master s,stock_category c WHERE s.category_id=c.category_id";
@@ -723,7 +723,7 @@ JS
 		if ($label != null) {
 			echo "<td>$label</td>\n";
 		}
-		echo stock_manufactured_items_list($name, $selected_id, $all_option, $submit_on_change, array('cell' => true));
+		echo stock_manufactured_items_list($name, $selected_id, $all_option, $submit_on_change, array('cells' => true));
 		echo "\n";
 	}
 
@@ -743,7 +743,7 @@ JS
 			echo "<td>$label</td>\n";
 		}
 		echo stock_items_list($name, $selected_id, $all_option, $submit_on_change, array('where' => "stock_id != '$parent_stock_id'",
-			'cell' => true
+			'cells' => true
 		));
 	}
 
@@ -757,7 +757,7 @@ JS
 			echo "<td>$label</td>\n";
 		}
 		echo stock_items_list($name, $selected_id, $all_option, $submit_on_change, array('where' => "mb_flag!='" . STOCK_SERVICE . "'",
-			'cell' => true,
+			'cells' => true,
 			'description' => ''
 		));
 	}
