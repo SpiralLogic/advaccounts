@@ -489,7 +489,8 @@
 				ui_msgs::display_warning(_("There are no outstanding items received from this supplier that have not been invoiced by them."), 0, 0);
 			}
 			else {
-				ui_msgs::display_warning(_("There are no received items for the selected supplier that have been invoiced."))ui_msgs::display_warning(_note(_("Credits can only be applied to invoiced items."), 0, 0);
+				ui_msgs::display_warning(_("There are no received items for the selected supplier that have been invoiced."));
+				ui_msgs::display_warning(_note(_("Credits can only be applied to invoiced items."), 0, 0));
 			}
 			echo "</td>";
 			end_row();
