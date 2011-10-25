@@ -53,7 +53,7 @@
 				}
 				exit();
 			} else {
-				$succeed = (Config::get($_POST["company_login_name"], null, 'db')) && $_SESSION["wa_current_user"]->login($_POST["company_login_name"], $_POST["user_name_entry_field"], $_POST["password"]);
+				$succeed = (Config::get('db.' . $_POST["company_login_name"])) && $_SESSION["wa_current_user"]->login($_POST["company_login_name"], $_POST["user_name_entry_field"], $_POST["password"]);
 				// select full vs fallback ui mode on login
 
 				$_SESSION["wa_current_user"]->ui_mode = $_POST['ui_mode'];

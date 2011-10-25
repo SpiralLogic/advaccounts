@@ -252,7 +252,7 @@
 		start_table(Config::get('tables.style2'));
 
 		if ($selected_id != -1) {
-			$conn = Config::get($selected_id, null, 'db');
+			$conn = Config::get('db' . $selected_id);
 			$_POST['name'] = $conn['name'];
 			$_POST['host'] = $conn['host'];
 			$_POST['dbuser'] = $conn['dbuser'];

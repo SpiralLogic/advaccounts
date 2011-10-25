@@ -39,7 +39,6 @@
 			$this->debug = false;
 			$this->_connect();
 			static::$instances[$name] = $this;
-			var_dump($this);
 		}
 
 		public function prepare($sql) {

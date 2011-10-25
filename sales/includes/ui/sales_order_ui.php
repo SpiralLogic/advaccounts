@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 
 	//--------------------------------------------------------------------------------
-	function add_to_order(&$order, $new_item, $new_item_qty, $price, $discount, $description=null, $no_errors = false) {
+	function add_to_order(&$order, $new_item, $new_item_qty, $price, $discount, $description = null, $no_errors = false) {
 		// calculate item price to sum of kit element prices factor for
 		// value distribution over all exploded kit items
 		$item = is_item_kit($new_item);
@@ -244,17 +244,19 @@ JS;
 		table_section(1);
 		$customer_error = "";
 		$change_prices = 0;
-		if (isset($order) && !$editable) {
-			// can't change the customer/branch if items already received on this order
-			//echo $order->customer_name . " - " . $order->deliver_to;
-			label_row(null, $order->customer_name . " - " . $order->deliver_to);
-			hidden('customer_id', $order->customer_id);
-			hidden('branch_id', $order->Branch);
-			hidden('sales_type', $order->sales_type);
-			//		if ($order->trans_type != ST_SALESORDER  && $order->trans_type != ST_SALESQUOTE) {
-			hidden('dimension_id', $order->dimension_id); // 2008-11-12 Joe Hunt
-			hidden('dimension2_id', $order->dimension2_id);
-			//		}
+		if (!$editable) {
+			if (isset($order)) {
+				// can't change the customer/branch if items already received on this order
+				//echo $order->customer_name . " - " . $order->deliver_to;
+				label_row(null, $order->customer_name . " - " . $order->deliver_to);
+				hidden('customer_id', $order->customer_id);
+				hidden('branch_id', $order->Branch);
+				hidden('sales_type', $order->sales_type);
+				//		if ($order->trans_type != ST_SALESORDER  && $order->trans_type != ST_SALESQUOTE) {
+				hidden('dimension_id', $order->dimension_id); // 2008-11-12 Joe Hunt
+				hidden('dimension2_id', $order->dimension2_id);
+				//		}
+			}
 		} else {
 			customer_list_row(_("Customer:"), 'customer_id', null, false, true, false, true);
 			if ($order->customer_id != get_post('customer_id', -1)) {

@@ -70,11 +70,10 @@
 		} else {
 			$coy = Config::get('company_default');
 		}
-		var_dump(Config::get('db.' . '1', "name"));
 		echo "<tr><td>" . _("Company") . "</td><td><select name='company_login_name'>\n";
 
 		for ($i = 1; $i < count(Config::get_all('db')) + 1; $i++) {
-			echo "<option value=$i " . ($i == $coy ? 'selected' : '') . ">" . Config::get('db.' . $i . "name") . "</option>";
+			echo "<option value=$i " . ($i == $coy ? 'selected' : '') . ">" . Config::get('db.' . $i, "name") . "</option>";
 		}
 		echo "</select>\n";
 		start_row();

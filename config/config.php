@@ -8,7 +8,7 @@
 	 */
 	return array(
 		'debug' => true,
-		'debug_sql' => true,
+		'debug_sql' => false,
 		'debug_pdf' => false,
 		'debug_query_log' => false,
 		'debug_select_log' => false,
@@ -17,7 +17,7 @@
 		// Special value 'syslog' can be used for system logger usage (see php manual).
 		//$error_logfile = '';
 
-		'logs_error_file' => APP_PATH . '/tmp/errors.log',
+		'logs_error_file' => APP_PATH . 'tmp/errors.log',
 
 /* use popup windows for views */
 		'ui_windows_popups' => true,
@@ -26,7 +26,7 @@
 		/* use Audit Trails in GL */
 		'logs_audits' => true,
 		/* use old style convert (income and expense in BS, PL) */
-		'accounts.gl.oldconvertstyle' => false,
+		'accounts_gl_oldconvertstyle' => false,
 		/* show users online discretely in the footer */
 		'ui_users_showonline' => true,
 		/* default print destination. false = PDF/Printer, true = Excel */

@@ -12,7 +12,6 @@
 	$page_security = 'SA_PRINTPROFILE';
 
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	include(APP_PATH . "admin/db/printers_db.php");
 
 	page(_($help_context = "Printing Profiles"));
 
@@ -25,7 +24,7 @@
 
 		if (Config::get('debug') || !isset($_SESSION['reports'])) {
 			// to save time, store in session.
-			$paths   = array(
+			$paths = array(
 				PATH_TO_ROOT . '/reporting/',
 				COMPANY_PATH . '/reporting/'
 			);
@@ -65,8 +64,8 @@
 
 	function clear_form() {
 		global $selected_id;
-		$Ajax          = Ajax::instance();
-		$selected_id   = '';
+		$Ajax = Ajax::instance();
+		$selected_id = '';
 		$_POST['name'] = '';
 		$Ajax->activate('_page_body');
 	}
@@ -93,7 +92,7 @@
 		if (!$error) {
 			$prof = array('' => get_post('Prn')); // store default value/profile name
 			foreach (get_reports() as $rep => $descr) {
-				$val        = get_post('Prn' . $rep);
+				$val = get_post('Prn' . $rep);
 				$prof[$rep] = $val;
 			}
 			if ($_POST['profile_id'] == '')
@@ -144,7 +143,7 @@
 	$th = array(_("Report Id"), _("Description"), _("Printer"));
 	table_header($th);
 
-	$k    = 0;
+	$k = 0;
 	$unkn = 0;
 	foreach (get_reports() as $rep => $descr)
 	{

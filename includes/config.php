@@ -34,18 +34,18 @@
 		protected static function load($group = 'config') {
 
 			$file = APP_PATH . "config" . DS . $group . '.php';
+			$groupname = $group;
 			if (is_array($group)) {
+				$groupname = implode('.', $group);
 				$groupfile = array_pop($group) . '.php';
+
 				$grouppath = implode(DS, $group);
 				$file = APP_PATH . "config" . $grouppath . DS . $groupfile;
-				$group = implode('.', $group);
 			}
 
-			if (!is_string($group)) return;
-
-			if (array_key_exists($group, static::$_vars)) return;
+			if (array_key_exists($groupname, static::$_vars)) return;
 			if (!file_exists($file)) throw new Adv_Exception("There is no file for config: " . $file);
-			static::$_vars[$group] = include($file);
+			static::$_vars[$groupname] = include($file);
 		}
 
 
@@ -62,8 +62,8 @@
 			$grouparray = explode('.', $var);
 			$var = array_pop($grouparray);
 			$group = implode('.', $grouparray);
-
 			if (!isset(static::$_vars[$group])) static::load($grouparray);
+
 			if ($var === null && $array_key === null) return static::get_all($group);
 
 			if (!isset(static::$_vars[$group][$var])) return false;

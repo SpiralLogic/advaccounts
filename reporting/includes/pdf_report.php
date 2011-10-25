@@ -14,7 +14,6 @@
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/reporting/includes/class.pdf.php");
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/reporting/includes/printer_class.php");
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/admin/db/printers_db.php");
 	class FrontReport extends Cpdf {
 
 		var $size;

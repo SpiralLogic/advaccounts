@@ -117,7 +117,7 @@
 				unlink($file2);
 			move_uploaded_file($file1, $file2);
 			$db_name = $_SESSION["wa_current_user"]->company;
-			DB_Utils::import($file2, Config::get($db_name, null, 'db'));
+			DB_Utils::import($file2, Config::get('db' . $db_name));
 		}
 
 		if (is_uploaded_file($_FILES['uploadfile3']['tmp_name'])) {

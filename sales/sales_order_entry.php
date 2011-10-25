@@ -529,7 +529,6 @@
 			$doc->trans_type = ST_SALESORDER;
 			$doc->reference = Refs::get_next($doc->trans_type);
 			$doc->document_date = $doc->due_date = Dates::new_doc_date();
-			FB::info($doc);
 			foreach ($doc->line_items as $line_no => $line) {
 				$line->qty_done = $line->qty_dispatched = 0;
 			}

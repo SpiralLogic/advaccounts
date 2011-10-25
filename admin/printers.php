@@ -15,8 +15,6 @@
 
 	page(_($help_context = "Printer Locations"));
 
-	include(APP_PATH . "admin/db/printers_db.php");
-
 	simple_page_mode(true);
 	//-------------------------------------------------------------------------------------------
 	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
@@ -54,9 +52,9 @@
 	if ($Mode == 'Delete') {
 		// PREVENT DELETES IF DEPENDENT RECORDS IN print_profiles
 
-		$sql    = "SELECT COUNT(*) FROM print_profiles WHERE printer = " . DBOld::escape($selected_id);
+		$sql = "SELECT COUNT(*) FROM print_profiles WHERE printer = " . DBOld::escape($selected_id);
 		$result = DBOld::query($sql, "check printers relations failed");
-		$myrow  = DBOld::fetch_row($result);
+		$myrow = DBOld::fetch_row($result);
 		if ($myrow[0] > 0) {
 			ui_msgs::display_error(_("Cannot delete this printer definition, because print profile have been created using it."));
 		}
@@ -107,13 +105,13 @@
 
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {
-			$myrow          = get_printer($selected_id);
-			$_POST['name']  = $myrow['name'];
+			$myrow = get_printer($selected_id);
+			$_POST['name'] = $myrow['name'];
 			$_POST['descr'] = $myrow['description'];
 			$_POST['queue'] = $myrow['queue'];
-			$_POST['tout']  = $myrow['timeout'];
-			$_POST['host']  = $myrow['host'];
-			$_POST['port']  = $myrow['port'];
+			$_POST['tout'] = $myrow['timeout'];
+			$_POST['host'] = $myrow['host'];
+			$_POST['port'] = $myrow['port'];
 		}
 		hidden('selected_id', $selected_id);
 	} else {

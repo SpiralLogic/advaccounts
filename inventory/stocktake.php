@@ -107,7 +107,6 @@
 	//-------------------------------------------------------------------------------
 
 	if (isset($_POST['Process']) && can_process()) {
-		FB::info($_SESSION['adj_items']);
 
 		foreach ($_SESSION['adj_items']->line_items as $line) {
 			$item = new Item($line->stock_id);

@@ -108,8 +108,7 @@
 		function get_db_connection($id = -1) {
 			$id = $id == -1 ? $this->company : 0;
 
-			$connection = Config::get($id, null, 'db');
-			var_dump($connection);
+			$connection = Config::get('db.' . $id);
 			$db = mysql_connect($connection["host"], $connection["dbuser"], $connection["dbpassword"]);
 			mysql_select_db($connection["dbname"], $db);
 			if (!defined('TB_PREF')) define('TB_PREF', '');

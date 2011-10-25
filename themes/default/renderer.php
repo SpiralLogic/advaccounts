@@ -37,7 +37,7 @@
 
 				$applications = $_SESSION['App']->applications;
 				echo "<div id='top'>\n";
-				echo "<p>" . Config::get($_SESSION["wa_current_user"]->company, 'name', 'db') . " | " .
+				echo "<p>" . Config::get('db.' . $_SESSION["wa_current_user"]->company, 'name') . " | " .
 				 $_SERVER['SERVER_NAME'] . " | " . $_SESSION["wa_current_user"]->name . "</p>\n";
 				echo "<ul>\n";
 				echo "  <li><a href='" . PATH_TO_ROOT . "/admin/display_prefs.php?'>" . _("Preferences") . "</a></li>\n";

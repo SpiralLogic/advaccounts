@@ -15,7 +15,7 @@
 
 	page(_($help_context = "Bill Of Materials"));
 
-	Validation::check(Validation::BOM_ITEMS, _("There are no manufactured or kit items defined in the system."), BOM_ITEMS);
+	Validation::check(Validation::BOM_ITEMS, _("There are no manufactured or kit items defined in the system."), STOCK_MANUFACTURE);
 
 	Validation::check(Validation::WORKCENTRES, _("There are no work centres defined in the system. BOMs require at least one work centre be defined."));
 
@@ -29,7 +29,7 @@
 	//}
 	if (isset($_GET['stock_id'])) {
 		$_POST['stock_id'] = $_GET['stock_id'];
-		$selected_parent   = $_GET['stock_id'];
+		$selected_parent = $_GET['stock_id'];
 	}
 
 	/* selected_parent could come from a post or a get */
@@ -60,7 +60,7 @@
 		/* returns true ie 1 if the bom contains the parent part as a component
 			ie the bom is recursive otherwise false ie 0 */
 
-		$sql    = "SELECT component FROM bom WHERE parent=" . DBOld::escape($component_to_check);
+		$sql = "SELECT component FROM bom WHERE parent=" . DBOld::escape($component_to_check);
 		$result = DBOld::query($sql, "could not check recursive bom");
 
 		if ($result != 0) {
@@ -87,7 +87,7 @@
 		div_start('bom');
 		start_table(Config::get('tables_style') . "  width=60%");
 		$th = array(_("Code"), _("Description"), _("Location"),
-								_("Work Centre"), _("Quantity"), _("Units"), '', ''
+			_("Work Centre"), _("Quantity"), _("Units"), '', ''
 		);
 		table_header($th);
 
@@ -144,7 +144,7 @@
 			if (!check_for_recursive_bom($selected_parent, $_POST['component'])) {
 
 				/*Now check to see that the component is not already on the bom */
-				$sql    = "SELECT component FROM bom
+				$sql = "SELECT component FROM bom
 				WHERE parent=" . DBOld::escape($selected_parent) . "
 				AND component=" . DBOld::escape($_POST['component']) . "
 				AND workcentre_added=" . DBOld::escape($_POST['workcentre_added']) . "
@@ -226,12 +226,12 @@
 				AND stock_master.stock_id=bom.component";
 
 				$result = DBOld::query($sql, "could not get bom");
-				$myrow  = DBOld::fetch($result);
+				$myrow = DBOld::fetch($result);
 
-				$_POST['loc_code']  = $myrow["loc_code"];
+				$_POST['loc_code'] = $myrow["loc_code"];
 				$_POST['component'] = $myrow["component"]; // by Tom Moulton
 				$_POST['workcentre_added'] = $myrow["workcentre_added"];
-				$_POST['quantity']         = number_format2($myrow["quantity"], get_qty_dec($myrow["component"]));
+				$_POST['quantity'] = number_format2($myrow["quantity"], get_qty_dec($myrow["component"]));
 				label_row(_("Component:"), $myrow["component"] . " - " . $myrow["description"]);
 			}
 			hidden('selected_id', $selected_id);
@@ -253,7 +253,7 @@
 
 		locations_list_row(_("Location to Draw From:"), 'loc_code', null);
 		workcenter_list_row(_("Work Centre Added:"), 'workcentre_added', null);
-		$dec               = get_qty_dec(get_post('component'));
+		$dec = get_qty_dec(get_post('component'));
 		$_POST['quantity'] = number_format2(input_num('quantity', 1), $dec);
 		qty_row(_("Quantity:"), 'quantity', null, null, null, $dec);
 
