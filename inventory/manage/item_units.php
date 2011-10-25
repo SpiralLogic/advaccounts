@@ -80,7 +80,7 @@
 	$result = get_all_item_units(check_value('show_inactive'));
 
 	start_form();
-	start_table(Config::get('tables.style') . "  width=40%");
+	start_table(Config::get('tables_style') . "  width=40%");
 	$th = array(_('Unit'), _('Description'), _('Decimals'), "", "");
 	inactive_control_column($th);
 
@@ -107,7 +107,7 @@
 
 	//----------------------------------------------------------------------------------
 
-	start_table(Config::get('tables.style2'));
+	start_table(Config::get('tables_style2'));
 
 	if ($selected_id != '') {
 		if ($Mode == 'Edit') {
