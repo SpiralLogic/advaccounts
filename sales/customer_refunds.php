@@ -176,7 +176,7 @@
 
 	start_form();
 
-	start_outer_table(Config::get('tables.style2') . " width=60%", 5);
+	start_outer_table(Config::get('tables_style2') . " width=60%", 5);
 	table_section(1);
 	UI::search('customer', array('label' => 'Search Customer:',
 															'size'   => 20,
@@ -218,7 +218,7 @@
 			Allocation::show_allocatable(true);
 			div_end();
 		}
-		start_table(Config::get('tables.style') . "  width=60%");
+		start_table(Config::get('tables_style') . "  width=60%");
 		amount_row(_("Amount:"), 'amount');
 		textarea_row(_("Memo:"), 'memo_', null, 22, 4);
 		end_table(1);

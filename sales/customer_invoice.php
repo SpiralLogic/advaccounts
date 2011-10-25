@@ -311,7 +311,7 @@
 	$is_edition = $_SESSION['Items']->trans_type == ST_SALESINVOICE && $_SESSION['Items']->trans_no != 0;
 	start_form();
 	hidden('cart_id');
-	start_table(Config::get('tables.style2') . " width=90%", 5);
+	start_table(Config::get('tables_style2') . " width=90%", 5);
 	start_row();
 	label_cells(_("Customer"), $_SESSION['Items']->customer_name, "class='tableheader2'");
 	label_cells(_("Branch"), get_branch_name($_SESSION['Items']->Branch), "class='tableheader2'");
@@ -357,7 +357,7 @@
 	}
 	ui_msgs::display_heading(_("Invoice Items"));
 	div_start('Items');
-	start_table(Config::get('tables.style') . "  width=90%");
+	start_table(Config::get('tables_style') . "  width=90%");
 	$th = array(_("Item Code"), _("Item Description"), _("Delivered"), _("Units"), _("Invoiced"), _("This Invoice"), _("Price"), _("Tax Type"), _("Discount"), _("Total"));
 	if ($is_batch_invoice) {
 		$th[] = _("DN");
@@ -447,7 +447,7 @@
 	label_row(_("Invoice Total"), $display_total, "colspan=$colspan align=right", "align=right", $is_batch_invoice ? 2 : 0);
 	end_table(1);
 	div_end();
-	start_table(Config::get('tables.style2'));
+	start_table(Config::get('tables_style2'));
 	textarea_row(_("Memo"), 'Comments', null, 50, 4);
 	end_table(1);
 	start_table('style="color:red; font-weight:bold;"');

@@ -85,7 +85,7 @@
 
 		$result = Manufacturing::get_bom($selected_parent);
 		div_start('bom');
-		start_table(Config::get('tables.style') . "  width=60%");
+		start_table(Config::get('tables_style') . "  width=60%");
 		$th = array(_("Code"), _("Description"), _("Location"),
 								_("Work Centre"), _("Quantity"), _("Units"), '', ''
 		);
@@ -215,7 +215,7 @@
 		//--------------------------------------------------------------------------------------
 		echo '<br>';
 
-		start_table(Config::get('tables.style2'));
+		start_table(Config::get('tables_style2'));
 
 		if ($selected_id != -1) {
 			if ($Mode == 'Edit') {

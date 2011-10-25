@@ -22,7 +22,7 @@
 		}
 
 		public function hash_password($password) {
-			return base64_encode($this->hasher()->pbkdf2($password, Config::get('auth.salt'), 10000, 32));
+			return base64_encode($this->hasher()->pbkdf2($password, Config::get('auth_salt'), 10000, 32));
 		}
 
 		/**

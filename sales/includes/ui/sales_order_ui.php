@@ -138,7 +138,7 @@
 			hyperlink_params_separate("/purchasing/po_entry_items.php", _("Dropship this order"), "NewOrder=Yes&UseOrder=1&DS=1' class='button'", true, true);
 			end_outer_table(1);
 		}
-		start_table(Config::get('tables.style') . "  colspan=7 width=90%");
+		start_table(Config::get('tables_style') . "  colspan=7 width=90%");
 		$th = array(_("Item Code"), _("Item Description"), _("Quantity"), _("Delivered"), _("Unit"), _("Price"), _("Discount %"), _("Total"), "");
 		if ($order->trans_no == 0) {
 			unset($th[3]);
@@ -240,7 +240,7 @@ JS;
 	function display_order_header(&$order, $editable, $date_text, $display_tax_group = false) {
 
 		$Ajax = Ajax::instance();
-		start_outer_table("width=90% " . Config::get('tables.style2'));
+		start_outer_table("width=90% " . Config::get('tables_style2'));
 		table_section(1);
 		$customer_error = "";
 		$change_prices = 0;
@@ -472,7 +472,7 @@ JS;
 		if (get_post('cash', 0)) { // Direct payment sale
 			$Ajax->activate('items_table');
 			ui_msgs::display_heading(_('Cash payment'));
-			start_table(Config::get('tables.style2') . " width=60%");
+			start_table(Config::get('tables_style2') . " width=60%");
 			label_row(_("Deliver from Location:"), $order->location_name);
 			hidden('Location', $order->Location);
 			label_row(_("Cash account:"), $order->account_name);
@@ -497,7 +497,7 @@ JS;
 				$delname = _("Required Delivery Date") . ':';
 			}
 			ui_msgs::display_heading($title);
-			start_outer_table(Config::get('tables.style2') . " width=90%");
+			start_outer_table(Config::get('tables_style2') . " width=90%");
 			table_section(1);
 			locations_list_row(_("Deliver from Location:"), 'Location', null, false, true);
 			if (list_updated('Location')) {

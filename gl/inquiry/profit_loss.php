@@ -192,7 +192,7 @@
 
 		div_start('pl_tbl');
 
-		start_table("width=50%  " . Config::get('tables.style'));
+		start_table("width=50%  " . Config::get('tables_style'));
 
 		$tableheader = "<tr>
         <td class='tableheader'>" . _("Group/Account Name") . "</td>

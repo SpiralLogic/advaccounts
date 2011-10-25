@@ -151,7 +151,7 @@
 	}
 
 	start_form();
-	start_table(Config::get('tables.style'));
+	start_table(Config::get('tables_style'));
 	$th = array(_("Version"), _("Description"), _("Sql file"), _("Install"),
 							_("Force upgrade")
 	);

@@ -314,10 +314,10 @@
 	start_form();
 	hidden('cart_id');
 
-	start_table(Config::get('tables.style2') . " width=90%", 5);
+	start_table(Config::get('tables_style2') . " width=90%", 5);
 	echo "<tr><td>"; // outer table
 
-	start_table(Config::get('tables.style') . "  width=100%");
+	start_table(Config::get('tables_style') . "  width=100%");
 	start_row();
 	label_cells(_("Customer"), $_SESSION['Items']->customer_name, "class='tableheader2'");
 	label_cells(_("Branch"), get_branch_name($_SESSION['Items']->Branch), "class='tableheader2'");
@@ -368,7 +368,7 @@
 
 	echo "</td><td>"; // outer table
 
-	start_table(Config::get('tables.style') . "  width=90%");
+	start_table(Config::get('tables_style') . "  width=90%");
 
 	if (!isset($_POST['due_date']) || !Dates::is_date($_POST['due_date'])) {
 		$_POST['due_date'] = get_invoice_duedate($_SESSION['Items']->customer_id, $_POST['DispatchDate']);
@@ -390,7 +390,7 @@
 	}
 	ui_msgs::display_heading(_("Delivery Items"));
 	div_start('Items');
-	start_table(Config::get('tables.style') . "  width=90%");
+	start_table(Config::get('tables_style') . "  width=90%");
 
 	$new = $_SESSION['Items']->trans_no == 0;
 	$th = array(_("Item Code"), _("Item Description"),
@@ -476,7 +476,7 @@
 	if ($has_marked) {
 		ui_msgs::display_note(_("Marked items have insufficient quantities in stock as on day of delivery."), 0, 1, "class='red'");
 	}
-	start_table(Config::get('tables.style2'));
+	start_table(Config::get('tables_style2'));
 
 	policy_list_row(_("Action For Balance"), "bo_policy", null);
 

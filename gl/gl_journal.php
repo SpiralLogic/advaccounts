@@ -296,7 +296,7 @@
 
 	display_order_header($_SESSION['journal_items']);
 
-	start_table(Config::get('tables.style2') . " width=90%", 10);
+	start_table(Config::get('tables_style2') . " width=90%", 10);
 	start_row();
 	echo "<td>";
 	display_gl_items(_("Rows"), $_SESSION['journal_items']);

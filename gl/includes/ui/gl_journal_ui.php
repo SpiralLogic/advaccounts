@@ -17,7 +17,7 @@
 
 		$qes = has_quick_entries(QE_JOURNAL);
 		$new = $Order->order_id == 0;
-		start_outer_table(Config::get('tables.style2') . " width=90%");
+		start_outer_table(Config::get('tables_style2') . " width=90%");
 		table_section(1);
 
 		start_row();
@@ -61,7 +61,7 @@
 		$dim = DB_Company::get_pref('use_dimension');
 
 		div_start('items_table');
-		start_table(Config::get('tables.style') . " colspan=7 width=95%");
+		start_table(Config::get('tables_style') . " colspan=7 width=95%");
 		if ($dim == 2)
 			$th = array(_("Account Code"), _("Account Description"), _("Dimension") . " 1",
 				_("Dimension") . " 2", _("Debit"), _("Credit"), _("Memo"), ""

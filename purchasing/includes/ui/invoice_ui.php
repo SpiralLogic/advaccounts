@@ -51,7 +51,7 @@
 		if (!isset($_POST['tran_date'])) {
 			copy_from_trans($supp_trans);
 		}
-		start_outer_table("width=95% " . Config::get('tables.style2'));
+		start_outer_table("width=95% " . Config::get('tables_style2'));
 		table_section(1);
 		if (isset($_POST['invoice_no'])) {
 			$trans = get_supp_trans($_POST['invoice_no'], ST_SUPPINVOICE);
@@ -116,7 +116,7 @@
 		copy_to_trans($supp_trans);
 		$dim = DB_Company::get_pref('use_dimension');
 		$colspan = ($dim == 2 ? 7 : ($dim == 1 ? 6 : 5));
-		start_table(Config::get('tables.style2') . " width=90%");
+		start_table(Config::get('tables_style2') . " width=90%");
 		label_row(_("Sub-total:"), price_format($supp_trans->ov_amount), "colspan=$colspan align=right", "align=right");
 		$taxes = $supp_trans->get_taxes($supp_trans->tax_group_id);
 		$tax_total = ui_view::display_edit_tax_items($taxes, $colspan, 0, null, true); // tax_included==0 (we are the company)
@@ -130,7 +130,7 @@
 			label_row(_("Credit Note Total"), $display_total, "colspan=$colspan align=right style='font-weight:bold;color:red;'", "nowrap align=right style='font-weight:bold;color:red;'");
 		}
 		end_table(1);
-		start_table(Config::get('tables.style2'));
+		start_table(Config::get('tables_style2'));
 		textarea_row(_("Memo:"), "Comments", null, 50, 3);
 		end_table(1);
 	}
@@ -173,7 +173,7 @@
 		else {
 			$heading = _("GL Items for this Credit Note");
 		}
-		start_outer_table(Config::get('tables.style') . "  width=90%");
+		start_outer_table(Config::get('tables_style') . "  width=90%");
 		if ($mode == 1) {
 			$qes = has_quick_entries(QE_SUPPINV);
 			if ($qes !== false) {
@@ -196,7 +196,7 @@
 		ui_msgs::display_heading($heading);
 		end_outer_table(0, false);
 		div_start('gl_items');
-		start_table(Config::get('tables.style') . "  width=90%");
+		start_table(Config::get('tables_style') . "  width=90%");
 		$dim = DB_Company::get_pref('use_dimension');
 		if ($dim == 2) {
 			$th = array(_("Account"), _("Name"), _("Dimension") . " 1", _("Dimension") . " 2", _("Memo"), _("Amount"));
@@ -411,7 +411,7 @@
 		}
 		end_outer_table(0, false);
 		div_start('grn_items');
-		start_table(Config::get('tables.style') . "  width=90%");
+		start_table(Config::get('tables_style') . "  width=90%");
 		if ($mode == 1) {
 			$th = array(_("Delivery"), _("Sequence #"), _("P.O."), _("Item"), _("Description"), _("Received"),
 				_("Received"), _("Invoiced"), _("Yet To Invoice"), _("Order Price"),

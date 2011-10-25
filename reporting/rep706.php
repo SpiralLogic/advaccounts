@@ -280,10 +280,10 @@
 			$pg->graphic_1 = $headers[2];
 			$pg->graphic_2 = $headers[3];
 			$pg->type = $graphics;
-			$pg->skin = Config::get('graphs.skin');
+			$pg->skin = Config::get('graphs_skin');
 			$pg->built_in = false;
 			$pg->fontfile = PATH_TO_ROOT . "/reporting/fonts/Vera.ttf";
-			$pg->latin_notation = (Config::get('separators.decimal', $_SESSION["wa_current_user"]->prefs->dec_sep()) != ".");
+			$pg->latin_notation = (Config::get('separators_decimal', $_SESSION["wa_current_user"]->prefs->dec_sep()) != ".");
 
 			$filename = COMPANY_PATH . "/pdf_files/test.png";
 			$pg->display($filename, true);

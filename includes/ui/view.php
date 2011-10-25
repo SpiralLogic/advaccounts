@@ -276,7 +276,7 @@
 			if ($void_entry == null) {
 				return false;
 			}
-			start_table("width=50%  " . Config::get('tables.style'));
+			start_table("width=50%  " . Config::get('tables_style'));
 			echo "<tr><td align=center><font color=red>$label</font><br>";
 			echo "<font color=red>" . _("Date Voided:") . " " . Dates::sql2date($void_entry["date_"]) . "</font><br>";
 			if (strlen($void_entry["memo_"]) > 0) {
@@ -416,7 +416,7 @@
 				return;
 			}
 			ui_msgs::display_heading2(_("Allocations"));
-			start_table(Config::get('tables.style') . "  width=90%");
+			start_table(Config::get('tables_style') . "  width=90%");
 			$th = array(_("Type"), _("Number"), _("Date"), _("Total Amount"), _("Left to Allocate"), _("This Allocation"));
 			table_header($th);
 			$k = $total_allocated = 0;

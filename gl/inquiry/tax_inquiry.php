@@ -44,7 +44,7 @@
 
 		start_form();
 
-		//start_table(Config::get('tables.style2'));
+		//start_table(Config::get('tables_style2'));
 		start_table("class='tablestyle_noborder'");
 		start_row();
 
@@ -65,7 +65,7 @@
 
 		/*Now get the transactions  */
 		div_start('trans_tbl');
-		start_table(Config::get('tables.style'));
+		start_table(Config::get('tables_style'));
 
 		$th = array(_("Type"), _("Description"), _("Amount"), _("Outputs") . "/" . _("Inputs"));
 		table_header($th);

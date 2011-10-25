@@ -39,7 +39,7 @@
 		exit;
 	}
 
-	start_table(Config::get('tables.style'));
+	start_table(Config::get('tables_style'));
 
 	$th = array(_("#"), _("Reference"), _("Name"), _("Type"), _("Date"), _("Due Date"));
 	table_header($th);

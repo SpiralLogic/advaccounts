@@ -51,7 +51,7 @@
 		$Ajax = Ajax::instance();
 		$editable = ($order->order_no == 0);
 
-		start_outer_table("width=90% " . Config::get('tables.style2'));
+		start_outer_table("width=90% " . Config::get('tables_style2'));
 
 		table_section(1);
 		if ($editable) {
@@ -140,7 +140,7 @@
 		ui_msgs::display_heading(_("Order Items"));
 
 		div_start('items_table');
-		start_table(Config::get('tables.style') . "  width=90%");
+		start_table(Config::get('tables_style') . "  width=90%");
 
 		$th = array(_("Item Code"), _("Description"), _("Quantity"),
 			_("Received"), _("Unit"),
@@ -201,7 +201,7 @@
 	//---------------------------------------------------------------------------------------------------
 
 	function display_po_summary(&$po, $is_self = false, $editable = false) {
-		start_table(Config::get('tables.style') . "  width=90%");
+		start_table(Config::get('tables_style') . "  width=90%");
 
 		start_row();
 		label_cells(_("Reference"), $po->reference, "class='tableheader2'");

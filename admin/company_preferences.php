@@ -45,9 +45,9 @@
 				ui_msgs::display_error(_('Only jpg and png files are supported - a file extension of .jpg or .png is expected'));
 				$input_error = 1;
 			}
-			elseif ($_FILES['pic']['size'] > (Config::get('item.images.max_size') * 1024))
+			elseif ($_FILES['pic']['size'] > (Config::get('item_images_max_size') * 1024))
 			{ //File Size Check
-				ui_msgs::display_error(_('The file size is over the maximum allowed. The maximum size allowed in KB is') . ' ' . Config::get('item.images.max_size'));
+				ui_msgs::display_error(_('The file size is over the maximum allowed. The maximum size allowed in KB is') . ' ' . Config::get('item_images_max_size'));
 				$input_error = 1;
 			}
 			elseif ($_FILES['pic']['type'] == "text/plain")
@@ -136,7 +136,7 @@
 	$_POST['round_to'] = $myrow['round_to'];
 	$_POST['del_coy_logo'] = 0;
 
-	start_outer_table(Config::get('tables.style2'));
+	start_outer_table(Config::get('tables_style2'));
 
 	table_section(1);
 

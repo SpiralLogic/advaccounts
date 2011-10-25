@@ -221,7 +221,7 @@
 
 	start_form();
 
-	start_outer_table(Config::get('tables.style2') . " width=60%", 5);
+	start_outer_table(Config::get('tables_style2') . " width=60%", 5);
 	table_section(1);
 
 	customer_list_row(_("From Customer:"), 'customer_id', null, false, true);
@@ -267,7 +267,7 @@
 			div_end();
 		}
 
-		start_table(Config::get('tables.style') . "  width=60%");
+		start_table(Config::get('tables_style') . "  width=60%");
 
 		label_row(_("Customer prompt payment discount :"), $display_discount_percent);
 		amount_row(_("Amount of Discount:"), 'discount');

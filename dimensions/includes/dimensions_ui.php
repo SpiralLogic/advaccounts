@@ -30,7 +30,7 @@
 		{
 			ui_msgs::display_heading2(_("Balance for this Dimension"));
 			br();
-			start_table(Config::get('tables.style'));
+			start_table(Config::get('tables_style'));
 			$th = array(_("Account"), _("Debit"), _("Credit"));
 			table_header($th);
 

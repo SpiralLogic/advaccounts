@@ -32,7 +32,7 @@
 			$help_page_url = _($help_page_url);
 		if ($clean)
 			$help_page_url = access_string($help_page_url, true);
-		return Config::get('help.baseurl') . urlencode(strtr(ucwords($help_page_url), array(' ' => '', '/' => '', '&' => 'And'))) . '&ctxhelp=1&lang=' . $country;
+		return Config::get('help_baseurl') . urlencode(strtr(ucwords($help_page_url), array(' ' => '', '/' => '', '&' => 'And'))) . '&ctxhelp=1&lang=' . $country;
 	}
 
 	function add_css($file = false) {
@@ -65,7 +65,11 @@
 			return; // just for speed up
 		$theme = user_theme();
 
+<<<<<<< HEAD
 		if (Config::get('help.baseurl') != null && Config::get('ui.windows.popups') && $js == '') {
+=======
+		if (Config::get('help_baseurl') != null && Config::get('ui_windows_popups') && $js == '') {
+>>>>>>> 60dd23e... cibfug cgabges
 
 			JS::beforeload(ui_view::get_js_open_window(900, 500));
 		}

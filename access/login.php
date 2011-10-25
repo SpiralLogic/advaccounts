@@ -17,8 +17,8 @@
 	} else {
 		$demo_text = _("Please login here");
 	}
-	if (!Config::get('company.default') === false) {
-		Config::set('company.default', 0);
+	if (!Config::get('company_default') === false) {
+		Config::set('company_default', 0);
 	}
 
 	$def_theme = "default";
@@ -67,7 +67,7 @@
 		if (isset($_SESSION['wa_current_user']->company)) {
 			$coy = $_SESSION['wa_current_user']->company;
 		} else {
-			$coy = Config::get('company.default');
+			$coy = Config::get('company_default');
 		}
 		echo "<tr><td>" . _("Company") . "</td><td><select name='company_login_name'>\n";
 		for ($i = 0; $i < count(Config::get(null, null, 'db')); $i++) {

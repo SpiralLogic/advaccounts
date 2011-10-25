@@ -109,7 +109,7 @@
 
 	$result = User::get_all(check_value('show_inactive'));
 	start_form();
-	start_table(Config::get('tables.style'));
+	start_table(Config::get('tables_style'));
 
 	$th = array(_("User login"), _("Full Name"), _("Phone"),
 							_("E-mail"), _("Last Visit"), _("Access Level"), "", ""
@@ -153,7 +153,7 @@
 	inactive_control_row($th);
 	end_table(1);
 	//-------------------------------------------------------------------------------------------------
-	start_table(Config::get('tables.style2'));
+	start_table(Config::get('tables_style2'));
 
 	$_POST['email'] = "";
 

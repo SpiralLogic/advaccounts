@@ -393,7 +393,7 @@
 		ui_msgs::display_warning(_("Warning: Deleting a fiscal year all transactions
 		are removed and converted into relevant balances. This process is irreversible!"),
 			0, 0, "class='currentfg'");
-		start_table(Config::get('tables.style'));
+		start_table(Config::get('tables_style'));
 
 		$th = array(_("Fiscal Year Begin"), _("Fiscal Year End"), _("Closed"), "", "");
 		table_header($th);
@@ -440,7 +440,7 @@
 		global $Mode;
 
 		start_form();
-		start_table(Config::get('tables.style2'));
+		start_table(Config::get('tables_style2'));
 
 		if ($selected_id != -1) {
 			if ($Mode == 'Edit') {

@@ -64,7 +64,7 @@
 
 	start_form();
 
-	start_table(Config::get('tables.style'));
+	start_table(Config::get('tables_style'));
 	table_section_title(_("Enter your new password in the fields."));
 
 	$myrow = User::get($_SESSION["wa_current_user"]->user);

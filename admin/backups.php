@@ -155,7 +155,7 @@
 	}
 	//-------------------------------------------------------------------------------
 	start_form(true, true);
-	start_outer_table(Config::get('tables.style2'));
+	start_outer_table(Config::get('tables_style2'));
 	table_section(1);
 	table_section_title(_("Create backup"));
 	textarea_row(_("Comments:"), 'comments', null, 30, 8);

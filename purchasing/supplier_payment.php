@@ -206,7 +206,7 @@
 
 	start_form();
 
-	start_outer_table(Config::get('tables.style2') . " width=60%", 5);
+	start_outer_table(Config::get('tables_style2') . " width=60%", 5);
 
 	table_section(1);
 
@@ -243,7 +243,7 @@
 		div_end();
 	}
 
-	start_table(Config::get('tables.style') . "  width=60%");
+	start_table(Config::get('tables_style') . "  width=60%");
 	amount_row(_("Amount of Discount:"), 'discount');
 	amount_row(_("Amount of Payment:"), 'amount');
 	textarea_row(_("Memo:"), 'memo_', null, 22, 4);

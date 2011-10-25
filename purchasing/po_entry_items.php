@@ -374,7 +374,7 @@
 	display_po_header($_SESSION['PO']);
 	echo "<br>";
 	display_po_items($_SESSION['PO']);
-	start_table(Config::get('tables.style2'));
+	start_table(Config::get('tables_style2'));
 	textarea_row(_("Memo:"), 'Comments', null, 70, 4);
 	end_table(1);
 	div_start('controls', 'items_table');

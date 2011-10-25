@@ -16,7 +16,7 @@
 
 		div_start('pmt_header');
 
-		start_outer_table("width=90% " . Config::get('tables.style2')); // outer table
+		start_outer_table("width=90% " . Config::get('tables_style2')); // outer table
 
 		table_section(1);
 
@@ -115,7 +115,7 @@
 		ui_msgs::display_heading($title);
 
 		div_start('items_table');
-		start_table(Config::get('tables.style') . " colspan=7 width=95%");
+		start_table(Config::get('tables_style') . " colspan=7 width=95%");
 
 		if ($dim == 2)
 			$th = array(_("Account Code"), _("Account Description"), _("Dimension") . " 1",

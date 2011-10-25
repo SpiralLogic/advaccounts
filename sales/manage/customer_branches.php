@@ -253,7 +253,7 @@
 	else
 		ui_msgs::display_warning(_("The selected customer does not have any branches. Please create at least one branch."));
 
-	start_outer_table(Config::get('tables.style2'), 5);
+	start_outer_table(Config::get('tables_style2'), 5);
 
 	table_section(1);
 

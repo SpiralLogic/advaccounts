@@ -173,7 +173,7 @@
 
 	function display_extensions() {
 
-		start_table(Config::get('tables.style'));
+		start_table(Config::get('tables_style'));
 		$th = array(_("Name"), _("Tab"), _("Link text"), _("Folder"), _("Filename"),
 								_("Access extensions"), "", ""
 		);
@@ -212,7 +212,7 @@
 
 	function company_extensions($id) {
 
-		start_table(Config::get('tables.style'));
+		start_table(Config::get('tables_style'));
 
 		$th = array(_("Name"), _("Tab"), _("Link text"), _("Active"));
 
@@ -257,7 +257,7 @@
 
 		$extensions = DB_Company::get_company_extensions();
 
-		start_table(Config::get('tables.style2'));
+		start_table(Config::get('tables_style2'));
 
 		if ($selected_id != -1 && $extensions[$selected_id]['type'] == 'plugin') {
 			if ($Mode == 'Edit') {
