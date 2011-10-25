@@ -17,7 +17,7 @@
 
 	include_once(APP_PATH . "reporting/includes/reporting.php");
 	$js = "";
-	if (Config::get('ui.windows.popups'))
+	if (Config::get('ui_windows_popups'))
 		$js .= ui_view::get_js_open_window(900, 600);
 	page(_($help_context = "View Sales Dispatch"), true, false, "", $js);
 
@@ -140,7 +140,7 @@
 
 	}
 	else
-		ui_msgs::display_note(_("There are no line items on this dispatch."), 1, 2);
+		ui_msgs::display_warning(_("There are no line items on this dispatch."), 1, 2);
 
 	$display_sub_tot = price_format($sub_total);
 	$display_freight = price_format($myrow["ov_freight"]);

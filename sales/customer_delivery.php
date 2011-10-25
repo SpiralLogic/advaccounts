@@ -21,7 +21,7 @@
 	include_once(APP_PATH . "reporting/includes/reporting.php");
 
 	$js = "";
-	if (Config::get('ui.windows.popups')) {
+	if (Config::get('ui_windows_popups')) {
 		$js .= ui_view::get_js_open_window(900, 500);
 	}
 
@@ -474,7 +474,7 @@
 	end_table(1);
 
 	if ($has_marked) {
-		ui_msgs::display_note(_("Marked items have insufficient quantities in stock as on day of delivery."), 0, 1, "class='red'");
+		ui_msgs::display_warning(_("Marked items have insufficient quantities in stock as on day of delivery."), 0, 1, "class='red'");
 	}
 	start_table(Config::get('tables_style2'));
 

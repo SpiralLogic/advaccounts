@@ -23,10 +23,10 @@
 	include_once(APP_PATH . "reporting/includes/reporting.php");
 
 	$js = "";
-	if (Config::get('ui.windows.popups')) {
+	if (Config::get('ui_windows_popups')) {
 		$js .= ui_view::get_js_open_window(900, 500);
 	}
-
+	$page_title = 'Sales Invoice Complete';
 	if (isset($_GET['ModifyInvoice'])) {
 		$page_title = sprintf(_("Modifying Sales Invoice # %d."), $_GET['ModifyInvoice']);
 		$help_context = "Modifying Sales Invoice";

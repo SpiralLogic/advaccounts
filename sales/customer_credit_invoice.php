@@ -21,7 +21,7 @@
 	include_once(APP_PATH . "reporting/includes/reporting.php");
 
 	$js = "";
-	if (Config::get('ui.windows.popups')) {
+	if (Config::get('ui_windows_popups')) {
 		$js .= ui_view::get_js_open_window(900, 500);
 	}
 
@@ -44,7 +44,7 @@
 
 		ui_msgs::display_notification_centered(_("Credit Note has been processed"));
 		ui_msgs::display_note(ui_view::get_customer_trans_view_str($trans_type, $credit_no, _("&View This Credit Note")), 0, 0);
-		ui_msgs::display_note(print_document_link($credit_no, _("&Print This Credit Note"), true, $trans_type), 1);
+		ui_msgs::display_warning(print_document_link($credit_no, _("&Print This Credit Note"), true, $trans_type), 1);
 		ui_msgs::display_note(ui_view::get_gl_view_str($trans_type, $credit_no, _("View the GL &Journal Entries for this Credit Note")), 1);
 		ui_view::display_footer_exit();
 	}
@@ -54,11 +54,11 @@
 
 		ui_msgs::display_notification_centered(_("Credit Note has been updated"));
 
-		ui_msgs::display_note(ui_view::get_customer_trans_view_str($trans_type, $credit_no, _("&View This Credit Note")), 0, 0);
+		ui_msgs::display_warning(ui_view::get_customer_trans_view_str($trans_type, $credit_no, _("&View This Credit Note")), 0, 0);
 
-		ui_msgs::display_note(print_document_link($credit_no, _("&Print This Credit Note"), true, $trans_type), 1);
+		ui_msgs::display_warning(print_document_link($credit_no, _("&Print This Credit Note"), true, $trans_type), 1);
 
-		ui_msgs::display_note(ui_view::get_gl_view_str($trans_type, $credit_no, _("View the GL &Journal Entries for this Credit Note")), 1);
+		ui_msgs::display_warning(ui_view::get_gl_view_str($trans_type, $credit_no, _("View the GL &Journal Entries for this Credit Note")), 1);
 
 		ui_view::display_footer_exit();
 	}

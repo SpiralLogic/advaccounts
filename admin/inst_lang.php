@@ -40,7 +40,7 @@
 	//---------------------------------------------------------------------------------------------
 
 	function handle_submit() {
-		$installed_languages = Config::get(null, null, 'installed_languages');
+		$installed_languages = Config::get_all('installed_languages');
 		if (!check_data())
 			return false;
 
@@ -50,10 +50,10 @@
 			Config::set('default_lang', $_POST['code']);
 		}
 
-		$installed_languages[$id]['code']     = $_POST['code'];
-		$installed_languages[$id]['name']     = $_POST['name'];
+		$installed_languages[$id]['code'] = $_POST['code'];
+		$installed_languages[$id]['name'] = $_POST['name'];
 		$installed_languages[$id]['encoding'] = $_POST['encoding'];
-		$installed_languages[$id]['rtl']      = (bool)$_POST['rtl'];
+		$installed_languages[$id]['rtl'] = (bool)$_POST['rtl'];
 		if (!Files::save_to_file())
 			return false;
 		$directory = APP_PATH . "lang/" . $_POST['code'];
@@ -83,9 +83,9 @@
 
 	function handle_delete() {
 
-		$id       = $_GET['id'];
-		$lang     = Config::get(null, null, 'installed_languages');
-		$lang     = $lang[$id]['code'];
+		$id = $_GET['id'];
+		$lang = Config::get_all('installed_languages');
+		$lang = $lang[$id]['code'];
 		$filename = PATH_TO_ROOT . "/lang/$lang/LC_MESSAGES";
 
 		if ($lang == Config::get('default_lang')) {
@@ -119,13 +119,13 @@
 			document.location.replace('inst_lang.php?c=df&id='+id)
 		}
 		</script>";
-		start_table(Config::get('tables_style'));
+		start_table(Config::get('tables.style'));
 		$th = array(_("Language"), _("Name"), _("Encoding"), _("Right To Left"), _("Default"), "", "");
 		table_header($th);
 
-		$k    = 0;
-		$conn = Config::get(null, null, 'installed_languages');
-		$n    = count($conn);
+		$k = 0;
+		$conn = Config::get_all('installed_languages');
+		$n = count($conn);
 		for ($i = 0; $i < $n; $i++)
 		{
 			if ($conn[$i]['code'] == $lang)
@@ -142,10 +142,10 @@
 				$rtl = _("No");
 			label_cell($rtl);
 			label_cell(Config::get('default_lang') == $conn[$i]['code'] ? _("Yes") : _("No"));
-			$edit   = _("Edit");
+			$edit = _("Edit");
 			$delete = _("Delete");
 			if (user_graphic_links()) {
-				$edit   = set_icon(ICON_EDIT, $edit);
+				$edit = set_icon(ICON_EDIT, $edit);
 				$delete = set_icon(ICON_DELETE, $delete);
 			}
 			label_cell("<a href='" . $_SERVER['PHP_SELF'] . "?selected_id=$i'>$edit</a>");
@@ -155,7 +155,7 @@
 		}
 
 		end_table();
-		ui_msgs::display_note(_("The marked language is the current language which cannot be deleted."), 0, 0, "class='currentfg'");
+		ui_msgs::display_warning(_("The marked language is the current language which cannot be deleted."), 0, 0, "class='currentfg'");
 	}
 
 	//---------------------------------------------------------------------------------------------
@@ -165,7 +165,7 @@
 		if ($selected_id != -1)
 			$n = $selected_id;
 		else
-			$n = count(Config::get(null, null, 'installed_languages'));
+			$n = count(Config::get_all('installed_languages'));
 
 		start_form(true);
 
@@ -177,12 +177,12 @@
 		}
 		</script>";
 
-		start_table(Config::get('tables_style2'));
+		start_table(Config::get('tables.style2'));
 
 		if ($selected_id != -1) {
-			$conn              = Config::get('installed_languages', $selected_id);
-			$_POST['code']     = $conn['code'];
-			$_POST['name']     = $conn['name'];
+			$conn = Config::get('installed_languages', $selected_id);
+			$_POST['code'] = $conn['code'];
+			$_POST['name'] = $conn['name'];
 			$_POST['encoding'] = $conn['encoding'];
 			if (isset($conn['rtl']))
 				$_POST['rtl'] = $conn['rtl'];

@@ -15,7 +15,7 @@
 
 	$js = '';
 	ui_view::set_focus('account');
-	if (Config::get('ui.windows.popups'))
+	if (Config::get('ui_windows_popups'))
 		$js .= ui_view::get_js_open_window(800, 500);
 
 	page(_($help_context = "General Ledger Inquiry"), false, false, '', $js);
@@ -205,7 +205,7 @@
 
 		end_table(2);
 		if (DBOld::num_rows($result) == 0)
-			ui_msgs::display_note(_("No general ledger transactions have been created for the specified criteria."), 0, 1);
+			ui_msgs::display_warning(_("No general ledger transactions have been created for the specified criteria."), 0, 1);
 	}
 
 	//----------------------------------------------------------------------------------------------------

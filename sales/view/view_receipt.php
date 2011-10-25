@@ -15,7 +15,7 @@
 
 	include_once(APP_PATH . "reporting/includes/reporting.php");
 	$help_context = $js = "";
-	if (Config::get('ui.windows.popups'))
+	if (Config::get('ui_windows_popups'))
 		$js .= ui_view::get_js_open_window(900, 600);
 	$trans_type = $_GET['trans_type'];
 	page(_($help_context), true, false, "", $js);

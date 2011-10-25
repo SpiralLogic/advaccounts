@@ -16,7 +16,7 @@
 	//include_once(APP_PATH . "purchasing/includes/ui/supp_alloc_ui.php");
 
 	$js = "";
-	if (Config::get('ui.windows.popups'))
+	if (Config::get('ui_windows_popups'))
 		$js .= ui_view::get_js_open_window(900, 500);
 
 	JS::footerFile('/js/allocate.js');
@@ -61,7 +61,7 @@
 		}
 		else
 		{
-			ui_msgs::display_note(_("There are no unsettled transactions to allocate."), 0, 1);
+			ui_msgs::display_warning(_("There are no unsettled transactions to allocate."), 0, 1);
 			submit_center('Cancel', _("Back to Allocations"), true,
 				_('Abandon allocations and return to selection of allocatable amounts'), 'cancel');
 		}

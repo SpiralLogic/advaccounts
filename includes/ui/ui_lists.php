@@ -1430,7 +1430,7 @@ JS
 	//------------------------------------------------------------------------------------------------
 	function languages_list($name, $selected_id = null) {
 		$items = array();
-		$langs = Config::get(null, null, 'installed_languages');
+		$langs = Config::get_all('installed_languages');
 		foreach ($langs as $lang) $items[$lang['code']] = $lang['name'];
 		return array_selector($name, $selected_id, $items);
 	}
@@ -1869,7 +1869,7 @@ JS
 	function extset_list($name, $value = null, $submit_on_change = false) {
 
 		$items = array();
-		foreach (Config::get(null, null, 'db') as $comp) $items[] = sprintf(_("Activated for '%s'"), $comp['name']);
+		foreach (Config::get_all('db') as $comp) $items[] = sprintf(_("Activated for '%s'"), $comp['name']);
 		return array_selector($name, $value, $items, array('spec_option' => _("Installed on system"),
 			'spec_id' => -1,
 			'select_submit' => $submit_on_change,

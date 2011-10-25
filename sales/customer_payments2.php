@@ -17,7 +17,7 @@
 	include_once(APP_PATH . "reporting/includes/reporting.php");
 
 	$js = "";
-	if (Config::get('ui.windows.popups')) {
+	if (Config::get('ui_windows_popups')) {
 		$js .= ui_view::get_js_open_window(900, 500);
 	}
 	JS::headerFile('/js/payalloc.js');
@@ -34,7 +34,7 @@
 
 	if (list_updated('BranchID')) {
 		// when branch is selected via external editor also customer can change
-		$br                   = get_branch(get_post('BranchID'));
+		$br = get_branch(get_post('BranchID'));
 		$_POST['customer_id'] = $br['debtor_no'];
 		$Ajax->activate('customer_id');
 	}
@@ -212,9 +212,9 @@
 
 		$myrow = DBOld::fetch($result);
 
-		$_POST['HoldAccount']   = $myrow["dissallow_invoices"];
+		$_POST['HoldAccount'] = $myrow["dissallow_invoices"];
 		$_POST['pymt_discount'] = $myrow["pymt_discount"];
-		$_POST['ref']           = Refs::get_next(12);
+		$_POST['ref'] = Refs::get_next(12);
 	}
 
 	//----------------------------------------------------------------------------------------------

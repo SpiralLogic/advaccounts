@@ -51,7 +51,7 @@
 						$action = PATH_TO_ROOT . '/reporting/prn_redirect.php';
 
 						$st_params = "<table><tr><td>\n" . "<form method='POST' action='$action' target='_blank'>\n";
-						$st_params .= submit('Rep' . $report->id, _("Display: ") . access_string($report->name, true), false, '', Config::get('debug.pdf') ? false : 'default process') . hidden('REP_ID',
+						$st_params .= submit('Rep' . $report->id, _("Display: ") . access_string($report->name, true), false, '', Config::get('debug_pdf') ? false : 'default process') . hidden('REP_ID',
 							$report->id,
 							false) . '<br><br>';
 						$st_params .= $this->getOptions($report->get_controls());
@@ -117,7 +117,7 @@
 					$st .= $ctrl;
 					$st .= "<br><br>";
 				} else {
-					ui_msgs::display_error(_('Unknown report parameter type:') . $type);
+					throw new Adv_Exception(_('Unknown report parameter type:') . $type);
 				}
 				$cnt++;
 			}
@@ -174,7 +174,7 @@
 					}
 
 					$st = "<input type='text' name='$name' value='$date'>";
-					if (Config::get('ui.forms.datepicker')) {
+					if (Config::get('ui_forms_datepicker')) {
 						$st .= "<a href=\"javascript:date_picker(document.forms[0].$name);\">" . "	<img src='/themes/default/images/cal.gif' width='16' height='16' border='0' alt='" . _('Click Here to Pick up the date') . "'></a>\n";
 					}
 					return $st;
@@ -190,7 +190,7 @@
 				case 'DESTINATION':
 					$sel = array(_("PDF/Printer"), "Excel");
 					$def = 0;
-					if (Config::get('print.default.excel') == 1) {
+					if (Config::get('print_default_excel') == 1) {
 						$def = 1;
 					}
 					return array_selector($name, $def, $sel);

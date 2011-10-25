@@ -16,13 +16,13 @@
 	include_once(APP_PATH . "gl/includes/ui/gl_journal_ui.php");
 
 	$js = '';
-	if (Config::get('ui.windows.popups'))
+	if (Config::get('ui_windows_popups'))
 		$js .= ui_view::get_js_open_window(800, 500);
 
 	if (isset($_GET['ModifyGL'])) {
 		$_SESSION['page_title'] = sprintf(_("Modifying Journal Transaction # %d."),
 			$_GET['trans_no']);
-		$help_context           = "Modifying Journal Entry";
+		$help_context = "Modifying Journal Entry";
 	} else
 		$_SESSION['page_title'] = _($help_context = "Journal Entry");
 
@@ -39,12 +39,12 @@
 	//-----------------------------------------------------------------------------------------------
 
 	if (isset($_GET['AddedID'])) {
-		$trans_no   = $_GET['AddedID'];
+		$trans_no = $_GET['AddedID'];
 		$trans_type = ST_JOURNAL;
 
 		ui_msgs::display_notification_centered(_("Journal entry has been entered") . " #$trans_no");
 
-		ui_msgs::display_note(ui_view::get_gl_view_str($trans_type, $trans_no, _("&View this Journal Entry")));
+		ui_msgs::display_warning(ui_view::get_gl_view_str($trans_type, $trans_no, _("&View this Journal Entry")));
 
 		ui_view::reset_focus();
 		hyperlink_params($_SERVER['PHP_SELF'], _("Enter &New Journal Entry"), "NewJournal=Yes");
@@ -52,12 +52,12 @@
 		ui_view::display_footer_exit();
 	} elseif (isset($_GET['UpdatedID']))
 	{
-		$trans_no   = $_GET['UpdatedID'];
+		$trans_no = $_GET['UpdatedID'];
 		$trans_type = ST_JOURNAL;
 
 		ui_msgs::display_notification_centered(_("Journal entry has been updated") . " #$trans_no");
 
-		ui_msgs::display_note(ui_view::get_gl_view_str($trans_type, $trans_no, _("&View this Journal Entry")));
+		ui_msgs::display_warning(ui_view::get_gl_view_str($trans_type, $trans_no, _("&View this Journal Entry")));
 
 		hyperlink_no_params(PATH_TO_ROOT . "/gl/inquiry/journal_inquiry.php", _("Return to Journal &Inquiry"));
 
@@ -84,7 +84,7 @@
 			unset ($_SESSION['journal_items']);
 		}
 
-		$cart           = new itemsCart($type);
+		$cart = new itemsCart($type);
 		$cart->order_id = $trans_no;
 
 		if ($trans_no) {
@@ -98,9 +98,9 @@
 						$row['dimension2_id'], $row['amount'], $row['memo_']);
 				}
 			}
-			$cart->memo_           = ui_view::get_comments_string($type, $trans_no);
-			$cart->tran_date       = Dates::sql2date($date);
-			$cart->reference       = Refs::get($type, $trans_no);
+			$cart->memo_ = ui_view::get_comments_string($type, $trans_no);
+			$cart->tran_date = Dates::sql2date($date);
+			$cart->reference = Refs::get($type, $trans_no);
 			$_POST['ref_original'] = $cart->reference; // Store for comparison when updating
 		} else {
 			$cart->reference = Refs::get_next(0);
@@ -111,7 +111,7 @@
 		}
 
 		$_POST['memo_'] = $cart->memo_;
-		$_POST['ref']   = $cart->reference;
+		$_POST['ref'] = $cart->reference;
 		$_POST['date_'] = $cart->tran_date;
 
 		$_SESSION['journal_items'] = &$cart;
@@ -165,10 +165,10 @@
 
 	if (isset($_POST['Process'])) {
 		$cart = $_SESSION['journal_items'];
-		$new  = $cart->order_id == 0;
+		$new = $cart->order_id == 0;
 
 		$cart->reference = $_POST['ref'];
-		$cart->memo_     = $_POST['memo_'];
+		$cart->memo_ = $_POST['memo_'];
 		$cart->tran_date = $_POST['date_'];
 
 		$trans_no = write_journal_entries($cart, check_value('Reverse'));

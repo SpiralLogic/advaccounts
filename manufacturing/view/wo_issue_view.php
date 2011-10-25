@@ -14,7 +14,7 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	$js = "";
-	if (Config::get('ui.windows.popups'))
+	if (Config::get('ui_windows_popups'))
 		$js .= ui_view::get_js_open_window(900, 500);
 	page(_($help_context = "View Work Order Issue"), true, false, "", $js);
 
@@ -63,7 +63,7 @@
 		$result = get_work_order_issue_details($issue_no);
 
 		if (DBOld::num_rows($result) == 0) {
-			ui_msgs::display_note(_("There are no items for this issue."));
+			ui_msgs::display_warning(_("There are no items for this issue."));
 		}
 		else
 		{

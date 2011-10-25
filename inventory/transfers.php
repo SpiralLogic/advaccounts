@@ -16,7 +16,7 @@
 	include_once(APP_PATH . "inventory/includes/stock_transfers_ui.php");
 
 	$js = "";
-	if (Config::get('ui.windows.popups'))
+	if (Config::get('ui_windows_popups'))
 		$js .= ui_view::get_js_open_window(800, 500);
 
 	page(_($help_context = "Inventory Location Transfers"), false, false, "", $js);
@@ -30,11 +30,11 @@
 	//-----------------------------------------------------------------------------------------------
 
 	if (isset($_GET['AddedID'])) {
-		$trans_no   = $_GET['AddedID'];
+		$trans_no = $_GET['AddedID'];
 		$trans_type = ST_LOCTRANSFER;
 
 		ui_msgs::display_notification_centered(_("Inventory transfer has been processed"));
-		ui_msgs::display_note(ui_view::get_trans_view_str($trans_type, $trans_no, _("&View this transfer")));
+		ui_msgs::display_warning(ui_view::get_trans_view_str($trans_type, $trans_no, _("&View this transfer")));
 
 		hyperlink_no_params($_SERVER['PHP_SELF'], _("Enter &Another Inventory Transfer"));
 
@@ -60,7 +60,7 @@
 		//session_register("transfer_items");
 
 		$_SESSION['transfer_items'] = new itemsCart(ST_LOCTRANSFER);
-		$_POST['AdjDate']           = Dates::new_doc_date();
+		$_POST['AdjDate'] = Dates::new_doc_date();
 		if (!Dates::is_date_in_fiscalyear($_POST['AdjDate']))
 			$_POST['AdjDate'] = Dates::end_fiscalyear();
 		$_SESSION['transfer_items']->tran_date = $_POST['AdjDate'];
@@ -70,7 +70,7 @@
 
 	if (isset($_POST['Process'])) {
 
-		$tr          = &$_SESSION['transfer_items'];
+		$tr = &$_SESSION['transfer_items'];
 		$input_error = 0;
 
 		if (count($tr->line_items) == 0) {

@@ -15,7 +15,7 @@
 
 	include_once(APP_PATH . "reporting/includes/reporting.php");
 	$js = "";
-	if (Config::get('ui.windows.popups'))
+	if (Config::get('ui_windows_popups'))
 		$js .= ui_view::get_js_open_window(800, 500);
 	page(_($help_context = "View or Print Transactions"), false, false, "", $js);
 

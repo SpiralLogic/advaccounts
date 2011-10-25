@@ -26,7 +26,7 @@
 		}
 
 		// update per company files
-		$cnt = count(Config::get(null, null, 'db'));
+		$cnt = count(Config::get_all('db'));
 		for ($i = 0; $i < $cnt; $i++)
 		{
 			$newexts = $extensions;
@@ -88,22 +88,22 @@
 			return;
 		}
 
-		$extensions[$id]['tab']    = $_POST['tab'];
-		$extensions[$id]['name']   = $_POST['name'];
-		$extensions[$id]['path']   = $_POST['path'];
-		$extensions[$id]['title']  = $_POST['title'];
+		$extensions[$id]['tab'] = $_POST['tab'];
+		$extensions[$id]['name'] = $_POST['name'];
+		$extensions[$id]['path'] = $_POST['path'];
+		$extensions[$id]['title'] = $_POST['title'];
 		$extensions[$id]['active'] = check_value('active');
 
 		// Currently we support only plugin extensions here.
 		$extensions[$id]['type'] = 'plugin';
-		$directory               = APP_PATH . "modules/" . $_POST['path'];
+		$directory = APP_PATH . "modules/" . $_POST['path'];
 		if (!file_exists($directory)) {
 			mkdir($directory);
 		}
 		if (is_uploaded_file($_FILES['uploadfile']['tmp_name'])) {
 			$extensions[$id]['filename'] = $_FILES['uploadfile']['name'];
-			$file1                       = $_FILES['uploadfile']['tmp_name'];
-			$file2                       = $directory . "/" . $_FILES['uploadfile']['name'];
+			$file1 = $_FILES['uploadfile']['tmp_name'];
+			$file2 = $directory . "/" . $_FILES['uploadfile']['name'];
 			if (file_exists($file2))
 				unlink($file2);
 			move_uploaded_file($file1, $file2);
@@ -122,8 +122,8 @@
 
 		if (is_uploaded_file($_FILES['uploadfile3']['tmp_name'])) {
 			$extensions[$id]['acc_file'] = $_FILES['uploadfile3']['name'];
-			$file1                       = $_FILES['uploadfile3']['tmp_name'];
-			$file2                       = $directory . "/" . $_FILES['uploadfile3']['name'];
+			$file1 = $_FILES['uploadfile3']['tmp_name'];
+			$file2 = $directory . "/" . $_FILES['uploadfile3']['name'];
 			if (file_exists($file2))
 				unlink($file2);
 			move_uploaded_file($file1, $file2);
@@ -135,7 +135,7 @@
 		if ($extensions[$id]['type'] == 'plugin') {
 			$exttext = file_get_contents(PATH_TO_ROOT . '/modules/'
 				 . $extensions[$id]['path'] . '/' . $extensions[$id]['filename']);
-			$area    = 'SA_OPEN';
+			$area = 'SA_OPEN';
 			if (preg_match('/.*\$page_security\s*=\s*[\'"]([^\'"]*)/', $exttext, $match)) {
 				$area = trim($match[1]);
 			}
@@ -173,13 +173,13 @@
 
 	function display_extensions() {
 
-		start_table(Config::get('tables_style'));
+		start_table(Config::get('tables.style'));
 		$th = array(_("Name"), _("Tab"), _("Link text"), _("Folder"), _("Filename"),
-								_("Access extensions"), "", ""
+			_("Access extensions"), "", ""
 		);
 		table_header($th);
 
-		$k    = 0;
+		$k = 0;
 		$mods = DB_Company::get_company_extensions();
 		$mods = Arr::natsort($mods, null, 'name');
 
@@ -212,7 +212,7 @@
 
 	function company_extensions($id) {
 
-		start_table(Config::get('tables_style'));
+		start_table(Config::get('tables.style'));
 
 		$th = array(_("Name"), _("Tab"), _("Link text"), _("Active"));
 
@@ -257,15 +257,15 @@
 
 		$extensions = DB_Company::get_company_extensions();
 
-		start_table(Config::get('tables_style2'));
+		start_table(Config::get('tables.style2'));
 
 		if ($selected_id != -1 && $extensions[$selected_id]['type'] == 'plugin') {
 			if ($Mode == 'Edit') {
-				$mod               = $extensions[$selected_id];
-				$_POST['tab']      = $mod['tab'];
-				$_POST['name']     = $mod['name'];
-				$_POST['title']    = $mod['title'];
-				$_POST['path']     = $mod['path'];
+				$mod = $extensions[$selected_id];
+				$_POST['tab'] = $mod['tab'];
+				$_POST['name'] = $mod['name'];
+				$_POST['title'] = $mod['title'];
+				$_POST['path'] = $mod['path'];
 				$_POST['filename'] = $mod['filename'];
 				$_POST['acc_file'] = @$mod['acc_file'];
 				hidden('filename', $_POST['filename']);

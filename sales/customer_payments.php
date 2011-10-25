@@ -19,7 +19,7 @@
 	include_once(APP_PATH . "reporting/includes/reporting.php");
 
 	$js = "";
-	if (Config::get('ui.windows.popups')) {
+	if (Config::get('ui_windows_popups')) {
 		$js .= ui_view::get_js_open_window(900, 500);
 	}
 	JS::headerFile('/js/payalloc.js');
@@ -36,7 +36,7 @@
 
 	if (list_updated('BranchID')) {
 		// when branch is selected via external editor also customer can change
-		$br                   = get_branch(get_post('BranchID'));
+		$br = get_branch(get_post('BranchID'));
 		$_POST['customer_id'] = $br['debtor_no'];
 		$Ajax->activate('customer_id');
 	}
@@ -214,9 +214,9 @@
 
 		$myrow = get_customer_habit($_POST['customer_id']);
 
-		$_POST['HoldAccount']   = $myrow["dissallow_invoices"];
+		$_POST['HoldAccount'] = $myrow["dissallow_invoices"];
 		$_POST['pymt_discount'] = $myrow["pymt_discount"];
-		$_POST['ref']           = Refs::get_next(ST_CUSTPAYMENT);
+		$_POST['ref'] = Refs::get_next(ST_CUSTPAYMENT);
 	}
 
 	//----------------------------------------------------------------------------------------------
@@ -232,7 +232,7 @@
 		$_SESSION['alloc'] = new allocation(ST_CUSTPAYMENT, 0);
 	}
 
-	if (Validation::check(Validation::BRANCHES,'', $_POST['customer_id'])) {
+	if (Validation::check(Validation::BRANCHES, '', $_POST['customer_id'])) {
 		customer_branches_list_row(_("Branch:"), $_POST['customer_id'], 'BranchID', null, false, true, true);
 	}
 	else {

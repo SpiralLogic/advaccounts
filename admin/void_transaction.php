@@ -14,7 +14,7 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	$js = "";
-	if (Config::get('ui.windows.popups'))
+	if (Config::get('ui_windows_popups'))
 		$js .= ui_view::get_js_open_window(800, 500);
 
 	page(_($help_context = "Void a Transaction"), false, false, "", $js);
@@ -99,7 +99,7 @@
 
 		start_form();
 
-		start_table(Config::get('tables_style2'));
+		start_table(Config::get('tables.style2'));
 
 		systypes_list_row(_("Transaction Type:"), "filterType", null, true);
 
@@ -129,7 +129,7 @@
 					$view_str = ui_view::get_gl_view_str($_POST['filterType'], $_POST['trans_no'], _("View Transaction"));
 				else
 					$view_str = ui_view::get_trans_view_str($_POST['filterType'], $_POST['trans_no'], _("View Transaction"));
-				ui_msgs::display_note($view_str);
+				ui_msgs::display_warning($view_str);
 				br();
 				submit_center_first('ConfirmVoiding', _("Proceed"), '', true);
 				submit_center_last('CancelVoiding', _("Cancel"), '', 'cancel');

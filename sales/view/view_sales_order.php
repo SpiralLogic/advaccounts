@@ -17,7 +17,7 @@
 
 	include_once(APP_PATH . "reporting/includes/reporting.php");
 	$js = "";
-	if (Config::get('ui.windows.popups'))
+	if (Config::get('ui_windows_popups'))
 		$js .= ui_view::get_js_open_window(900, 600);
 	if ($_GET['trans_type'] == ST_SALESQUOTE) {
 		page(_($help_context = "View Sales Quotation"), true, false, "", $js);
@@ -147,7 +147,7 @@
 	}
 	echo "<center>";
 	if ($_SESSION['View']->so_type == 1)
-		ui_msgs::display_note(_("This Sales Order is used as a Template."), 0, 0, "class='currentfg'");
+		ui_msgs::display_warning(_("This Sales Order is used as a Template."), 0, 0, "class='currentfg'");
 	ui_msgs::display_heading2(_("Line Details"));
 	start_table("colspan=9 width=95%  " . Config::get('tables_style'));
 	$th = array(_("Item Code"), _("Item Description"), _("Quantity"), _("Unit"), _("Price"), _("Discount"), _("Total"), _("Quantity Delivered"));

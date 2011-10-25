@@ -18,7 +18,7 @@
 	include_once(APP_PATH . "manufacturing/includes/manufacturing_ui.php");
 
 	$js = "";
-	if (Config::get('ui.windows.popups'))
+	if (Config::get('ui_windows_popups'))
 		$js .= ui_view::get_js_open_window(900, 500);
 
 	page(_($help_context = "Work Order Additional Costs"), false, false, "", $js);
@@ -35,9 +35,9 @@
 
 		ui_msgs::display_notification(_("The additional cost has been entered."));
 
-		ui_msgs::display_note(ui_view::get_trans_view_str($stype, $id, _("View this Work Order")));
+		ui_msgs::display_warning(ui_view::get_trans_view_str($stype, $id, _("View this Work Order")));
 
-		ui_msgs::display_note(ui_view::get_gl_view_str($stype, $id, _("View the GL Journal Entries for this Work Order")), 1);
+		ui_msgs::display_warning(ui_view::get_gl_view_str($stype, $id, _("View the GL Journal Entries for this Work Order")), 1);
 
 		hyperlink_params("work_order_costs.php", _("Enter another additional cost."), "trans_no=$id");
 

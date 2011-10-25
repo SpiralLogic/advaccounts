@@ -32,7 +32,7 @@
 			$dimension = 0;
 		if ($dimension2 == null || $dimension2 < 0)
 			$dimension2 = 0;
-		if (Config::get('logs.audits')) {
+		if (Config::get('logs_audits')) {
 			if ($memo_ == "" || $memo_ == null)
 				$memo_ = $_SESSION["wa_current_user"]->username;
 			else
@@ -94,7 +94,7 @@
 															 $account = null, $dimension = 0, $dimension2 = 0, $filter_type = null,
 															 $amount_min = null, $amount_max = null) {
 		$from = Dates::date2sql($from_date);
-		$to   = Dates::date2sql($to_date);
+		$to = Dates::date2sql($to_date);
 
 		$sql = "SELECT gl_trans.*, "
 		 . "chart_master.account_name FROM gl_trans, "
@@ -159,7 +159,7 @@
 
 	function get_gl_balance_from_to($from_date, $to_date, $account, $dimension = 0, $dimension2 = 0) {
 		$from = Dates::date2sql($from_date);
-		$to   = Dates::date2sql($to_date);
+		$to = Dates::date2sql($to_date);
 
 		$sql = "SELECT SUM(amount) FROM gl_trans
 		WHERE account='$account'";
@@ -182,7 +182,7 @@
 
 	function get_gl_trans_from_to($from_date, $to_date, $account, $dimension = 0, $dimension2 = 0) {
 		$from = Dates::date2sql($from_date);
-		$to   = Dates::date2sql($to_date);
+		$to = Dates::date2sql($to_date);
 
 		$sql = "SELECT SUM(amount) FROM gl_trans
 		WHERE account='$account'";
@@ -238,7 +238,7 @@
 	function get_budget_trans_from_to($from_date, $to_date, $account, $dimension = 0, $dimension2 = 0) {
 
 		$from = Dates::date2sql($from_date);
-		$to   = Dates::date2sql($to_date);
+		$to = Dates::date2sql($to_date);
 
 		$sql = "SELECT SUM(amount) FROM budget_trans
 		WHERE account=" . DBOld::escape($account);
@@ -326,7 +326,7 @@
 
 	function get_tax_summary($from, $to) {
 		$fromdate = Dates::date2sql($from);
-		$todate   = Dates::date2sql($to);
+		$todate = Dates::date2sql($to);
 
 		$sql = "SELECT
 				SUM(IF(trans_type=" . ST_CUSTCREDIT . " || trans_type=" . ST_SUPPINVOICE
@@ -369,11 +369,11 @@
 	//
 	function write_journal_entries(&$cart, $reverse, $use_transaction = true) {
 
-		$date_      = $cart->tran_date;
-		$ref        = $cart->reference;
-		$memo_      = $cart->memo_;
+		$date_ = $cart->tran_date;
+		$ref = $cart->reference;
+		$memo_ = $cart->memo_;
 		$trans_type = $cart->trans_type;
-		$new        = $cart->order_id == 0;
+		$new = $cart->order_id == 0;
 
 		if ($new)
 			$cart->order_id = SysTypes::get_next_trans_no($trans_type);
@@ -454,7 +454,7 @@
 	//--------------------------------------------------------------------------------------------------
 
 	function exists_gl_trans($type, $trans_id) {
-		$sql    = "SELECT type_no FROM gl_trans WHERE type=" . DBOld::escape($type)
+		$sql = "SELECT type_no FROM gl_trans WHERE type=" . DBOld::escape($type)
 		 . " AND type_no=" . DBOld::escape($trans_id);
 		$result = DBOld::query($sql, "Cannot retreive a gl transaction");
 

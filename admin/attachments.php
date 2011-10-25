@@ -58,7 +58,7 @@
 	}
 
 	$js = "";
-	if (Config::get('ui.windows.popups'))
+	if (Config::get('ui_windows_popups'))
 		$js .= ui_view::get_js_open_window(800, 500);
 	page(_($help_context = "Attach Documents"), false, false, "", $js);
 
@@ -176,7 +176,7 @@
 
 		div_start('transactions');
 		start_form();
-		start_table(Config::get('tables_style'));
+		start_table(Config::get('tables.style'));
 		table_header($th);
 		$k = 0;
 		while ($row = DBOld::fetch($rows))
@@ -210,7 +210,7 @@
 
 	start_form(true);
 
-	start_table(Config::get('tables_style2'));
+	start_table(Config::get('tables.style2'));
 
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {

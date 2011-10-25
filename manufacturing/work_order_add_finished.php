@@ -18,7 +18,7 @@
 	include_once(APP_PATH . "manufacturing/includes/manufacturing_ui.php");
 
 	$js = "";
-	if (Config::get('ui.windows.popups'))
+	if (Config::get('ui_windows_popups'))
 		$js .= ui_view::get_js_open_window(900, 500);
 
 	page(_($help_context = "Produce or Unassemble Finished Items From Work Order"), false, false, "", $js);
@@ -36,11 +36,11 @@
 
 		ui_msgs::display_notification(_("The manufacturing process has been entered."));
 
-		ui_msgs::display_note(ui_view::get_trans_view_str($stype, $id, _("View this Work Order")));
+		ui_msgs::display_warning(ui_view::get_trans_view_str($stype, $id, _("View this Work Order")));
 
-		ui_msgs::display_note(ui_view::get_gl_view_str($stype, $id, _("View the GL Journal Entries for this Work Order")), 1);
+		ui_msgs::display_warning(ui_view::get_gl_view_str($stype, $id, _("View the GL Journal Entries for this Work Order")), 1);
 		$ar = array('PARAM_0' => $_GET['date'], 'PARAM_1' => $_GET['date'], 'PARAM_2' => $stype);
-		ui_msgs::display_note(print_link(_("Print the GL Journal Entries for this Work Order"), 702, $ar), 1);
+		ui_msgs::display_warning(print_link(_("Print the GL Journal Entries for this Work Order"), 702, $ar), 1);
 
 		hyperlink_no_params("search_work_orders.php", _("Select another &Work Order to Process"));
 

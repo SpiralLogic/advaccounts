@@ -54,7 +54,7 @@
 
 		$patchdir = APP_PATH . "sql/";
 		$upgrades = array();
-		$datadir  = @opendir($patchdir);
+		$datadir = @opendir($patchdir);
 
 		if ($datadir) {
 			while (false !== ($fname = readdir($datadir)))
@@ -117,7 +117,7 @@
 	if (get_post('Upgrade')) {
 
 		$ret = true;
-		foreach (Config::get(null, null, 'db') as $conn)
+		foreach (Config::get_all('db') as $conn)
 		{
 			// connect to database
 			if (!($db = db_open($conn))) {
@@ -143,7 +143,7 @@
 		}
 		if ($ret) { // re-read the prefs
 
-			$user                               = User::get_by_login($_SESSION["wa_current_user"]->username);
+			$user = User::get_by_login($_SESSION["wa_current_user"]->username);
 			$_SESSION["wa_current_user"]->prefs = new userPrefs($user);
 			ui_msgs::display_notification(_('All companies data has been successfully updated'));
 		}
@@ -151,9 +151,9 @@
 	}
 
 	start_form();
-	start_table(Config::get('tables_style'));
+	start_table(Config::get('tables.style'));
 	$th = array(_("Version"), _("Description"), _("Sql file"), _("Install"),
-							_("Force upgrade")
+		_("Force upgrade")
 	);
 	table_header($th);
 
@@ -185,7 +185,7 @@
 	}
 	end_table(1);
 	if ($partial != 0) {
-		ui_msgs::display_note(_("Database upgrades marked as partially installed cannot be installed automatically.
+		ui_msgs::display_warning(_("Database upgrades marked as partially installed cannot be installed automatically.
 You have to clean database manually to enable them, or try to perform forced upgrade."));
 		br();
 	}

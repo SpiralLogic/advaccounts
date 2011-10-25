@@ -16,7 +16,7 @@
 	include_once(APP_PATH . "inventory/includes/item_adjustments_ui.php");
 
 	$js = "";
-	if (Config::get('ui.windows.popups'))
+	if (Config::get('ui_windows_popups'))
 		$js .= ui_view::get_js_open_window(800, 500);
 
 	page(_($help_context = "Item Adjustments Note"), false, false, "", $js);
@@ -30,7 +30,7 @@
 	//-----------------------------------------------------------------------------------------------
 
 	if (isset($_GET['AddedID'])) {
-		$trans_no   = $_GET['AddedID'];
+		$trans_no = $_GET['AddedID'];
 		$trans_type = ST_INVADJUST;
 
 		ui_msgs::display_notification_centered(_("Items adjustment has been processed"));
@@ -61,7 +61,7 @@
 		//session_register("adj_items");
 
 		$_SESSION['adj_items'] = new itemsCart(ST_INVADJUST);
-		$_POST['AdjDate']      = Dates::new_doc_date();
+		$_POST['AdjDate'] = Dates::new_doc_date();
 		if (!Dates::is_date_in_fiscalyear($_POST['AdjDate']))
 			$_POST['AdjDate'] = Dates::end_fiscalyear();
 		$_SESSION['adj_items']->tran_date = $_POST['AdjDate'];

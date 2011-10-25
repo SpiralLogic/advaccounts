@@ -14,7 +14,7 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	$js = "";
-	if (Config::get('ui.windows.popups'))
+	if (Config::get('ui_windows_popups'))
 		$js .= ui_view::get_js_open_window(900, 500);
 	page(_($help_context = "Inventory Item Cost Update"), false, false, "", $js);
 
@@ -57,7 +57,7 @@
 			ui_msgs::display_notification(_("Cost has been updated."));
 
 			if ($update_no > 0) {
-				ui_msgs::display_note(ui_view::get_gl_view_str(ST_COSTUPDATE, $update_no, _("View the GL Journal Entries for this Cost Update")), 0, 1);
+				ui_msgs::display_warning(ui_view::get_gl_view_str(ST_COSTUPDATE, $update_no, _("View the GL Journal Entries for this Cost Update")), 0, 1);
 			}
 		}
 	}
@@ -91,6 +91,7 @@
 	hidden("OldLabourCost", $myrow["labour_cost"]);
 	hidden("OldOverheadCost", $myrow["overhead_cost"]);
 
+	start_table(Config::get('tables.style2'));
 	$dec1 = $dec2 = $dec3 = 0;
 	$_POST['material_cost'] = price_decimal_format($myrow["material_cost"], $dec1);
 	$_POST['labour_cost'] = price_decimal_format($myrow["labour_cost"], $dec2);

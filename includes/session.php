@@ -15,7 +15,7 @@
 	header("Cache-control: private");
 	gettextNativeSupport::get_text_init();
 	if (!isset($_SESSION['language']) || !method_exists($_SESSION['language'], 'set_language')) {
-		$l = Arr::search_value(Config::get('default_lang'), Config::get(null, null, 'installed_languages'), 'code');
+		$l = Arr::search_value(Config::get('default_lang'), Config::get_all('installed_languages'), 'code');
 
 		$_SESSION['language'] = new language($l['name'], $l['code'], $l['encoding'], isset($l['rtl']) ? 'rtl' : 'ltr');
 	}
