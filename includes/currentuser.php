@@ -106,7 +106,7 @@
 		}
 
 		function get_db_connection($id = -1) {
-			$id = $id == -1 ? $this->company : 0;
+			$id = $id == -1 ? $this->company : 1;
 
 			$connection = Config::get('db.' . $id);
 			$db = mysql_connect($connection["host"], $connection["dbuser"], $connection["dbpassword"]);
