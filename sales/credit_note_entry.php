@@ -260,7 +260,7 @@
 	$customer_error = display_credit_header($_SESSION['Items']);
 
 	if ($customer_error == "") {
-		start_table(Config::get('tables.style2'), "width=90%", 10);
+		start_table(Config::get('tables_style2'), "width=90%", 10);
 		echo "<tr><td>";
 		display_credit_items(_("Credit Note Items"), $_SESSION['Items']);
 		credit_options_controls($_SESSION['Items']);

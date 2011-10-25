@@ -100,7 +100,7 @@
 	Errors::check_db_error("The bank accounts set up could not be retreived", $sql);
 
 	start_form();
-	start_table(Config::get('tables.style') . "  width='80%'");
+	start_table(Config::get('tables_style') . "  width='80%'");
 
 	$th = array(_("Account Name"), _("Type"), _("Currency"), _("GL Account"),
 		_("Bank"), _("Number"), _("Bank Address"), _("Dflt"), '', ''
@@ -137,7 +137,7 @@
 
 	$is_editing = $selected_id != -1;
 
-	start_table(Config::get('tables.style2'));
+	start_table(Config::get('tables_style2'));
 
 	if ($is_editing) {
 		if ($Mode == 'Edit') {

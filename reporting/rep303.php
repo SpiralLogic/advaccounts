@@ -170,10 +170,10 @@
 				 . item_img_name($trans['stock_id']) . '.jpg';
 				if (file_exists($image)) {
 					$rep->NewLine();
-					if ($rep->row - Config::get('item.images.height') < $rep->bottomMargin)
+					if ($rep->row - Config::get('item_images_height') < $rep->bottomMargin)
 						$rep->Header();
-					$rep->AddImage($image, $rep->cols[1], $rep->row - Config::get('item.images.height'), 0, Config::get('item.images.height'));
-					$rep->row -= Config::get('item.images.height');
+					$rep->AddImage($image, $rep->cols[1], $rep->row - Config::get('item_images_height'), 0, Config::get('item_images_height'));
+					$rep->row -= Config::get('item_images_height');
 					$rep->NewLine();
 				}
 			}

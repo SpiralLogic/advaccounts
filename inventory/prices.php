@@ -118,9 +118,9 @@
 
 	div_start('price_table');
 	if (Input::request('frame')) {
-		start_table(Config::get('tables.style') . "  width=90%");
+		start_table(Config::get('tables_style') . "  width=90%");
 	} else {
-		start_table(Config::get('tables.style') . "  width=30%");
+		start_table(Config::get('tables_style') . "  width=30%");
 	}
 
 	$th = array(_("Currency"), _("Sales Type"), _("Price"), "", "");

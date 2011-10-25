@@ -119,7 +119,7 @@
 			document.location.replace('inst_lang.php?c=df&id='+id)
 		}
 		</script>";
-		start_table(Config::get('tables.style'));
+		start_table(Config::get('tables_style'));
 		$th = array(_("Language"), _("Name"), _("Encoding"), _("Right To Left"), _("Default"), "", "");
 		table_header($th);
 
@@ -177,7 +177,7 @@
 		}
 		</script>";
 
-		start_table(Config::get('tables.style2'));
+		start_table(Config::get('tables_style2'));
 
 		if ($selected_id != -1) {
 			$conn              = Config::get('installed_languages', $selected_id);

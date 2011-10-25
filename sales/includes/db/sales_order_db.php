@@ -22,7 +22,7 @@
 		VALUES (" . DBOld::escape($order_no) . "," . DBOld::escape($order_type) . "," . DBOld::escape($order->customer_id) . ", " . DBOld::escape($order->trans_type) . "," . DBOld::escape($order->Branch) . ", " . DBOld::escape($order->cust_ref) . "," . DBOld::escape($order->reference) . "," . DBOld::escape($order->salesman) . "," . DBOld::escape($order->Comments) . ",'" . Dates::date2sql($order->document_date) . "', " . DBOld::escape($order->sales_type) . ", " . DBOld::escape($order->ship_via) . "," . DBOld::escape($order->deliver_to) . "," . DBOld::escape($order->delivery_address) . ", " . DBOld::escape($order->name) . ", " . DBOld::escape($order->phone) . ", " . DBOld::escape($order->email) . ", " . DBOld::escape($order->freight_cost) . ", " . DBOld::escape($order->Location) . ", " . DBOld::escape($del_date) . ")";
 		DBOld::query($sql, "order Cannot be Added");
 		$order->trans_no = array($order_no => 0);
-		if (Config::get('accounts.stock.emailnotify') == 1) {
+		if (Config::get('accounts_stock_emailnotify') == 1) {
 
 			$st_ids = array();
 			$st_names = array();
@@ -30,7 +30,7 @@
 			$st_reorder = array();
 		}
 		foreach ($order->line_items as $line) {
-			if (Config::get('accounts.stock.emailnotify') == 1 && is_inventory_item($line->stock_id)) {
+			if (Config::get('accounts_stock_emailnotify') == 1 && is_inventory_item($line->stock_id)) {
 				$sql = "SELECT loc_stock.*, locations.location_name, locations.email
 				FROM loc_stock, locations
 				WHERE loc_stock.loc_code=locations.loc_code
@@ -60,7 +60,7 @@
 		DB_AuditTrail::add($order->trans_type, $order_no, $order->document_date);
 		Refs::save($order->trans_type, $order_no, $order->reference);
 		DBOld::commit_transaction();
-		if (Config::get('accounts.stock.emailnotify') == 1 && count($st_ids) > 0) {
+		if (Config::get('accounts_stock_emailnotify') == 1 && count($st_ids) > 0) {
 			require_once(APP_PATH . "/reporting/includes/class.mail.php");
 			$company = DB_Company::get_prefs();
 			$mail = new email($company['coy_name'], $company['email']);
@@ -136,7 +136,7 @@
 		DBOld::query($sql, "order Cannot be Updated, this can be concurrent edition conflict");
 		$sql = "DELETE FROM sales_order_details WHERE order_no =" . $order_no . " AND trans_type=" . $order->trans_type;
 		DBOld::query($sql, "Old order Cannot be Deleted");
-		if (Config::get('accounts.stock.emailnotify') == 1) {
+		if (Config::get('accounts_stock_emailnotify') == 1) {
 
 			$st_ids = array();
 			$st_names = array();
@@ -144,7 +144,7 @@
 			$st_reorder = array();
 		}
 		foreach ($order->line_items as $line) {
-			if (Config::get('accounts.stock.emailnotify') == 1 && is_inventory_item($line->stock_id)) {
+			if (Config::get('accounts_stock_emailnotify') == 1 && is_inventory_item($line->stock_id)) {
 				$sql = "SELECT loc_stock.*, locations.location_name, locations.email
 				FROM loc_stock, locations
 				WHERE loc_stock.loc_code=locations.loc_code
@@ -177,7 +177,7 @@
 		Refs::delete($order->trans_type, $order_no);
 		Refs::save($order->trans_type, $order_no, $order->reference);
 		DBOld::commit_transaction();
-		if (Config::get('accounts.stock.emailnotify') == 1 && count($st_ids) > 0) {
+		if (Config::get('accounts_stock_emailnotify') == 1 && count($st_ids) > 0) {
 			require_once(APP_PATH . "/reporting/includes/class.mail.php");
 			$company = DB_Company::get_prefs();
 			$mail = new email($company['coy_name'], $company['email']);

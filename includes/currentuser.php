@@ -32,7 +32,7 @@
 
 		function CurrentUser() {
 			$this->loginname = $this->username = $this->name = "";
-			$this->company   = Config::get('company.default') ? Config::get('company.default') : 0;
+			$this->company   = Config::get('company_default') ? Config::get('company_default') : 0;
 			$this->logged    = false;
 			$this->prefs     = new userPrefs();
 		}
@@ -152,8 +152,8 @@
 	}
 
 	function number_format2($number, $decimals = 0) {
-		$tsep = Config::get('separators.thousands', $_SESSION["wa_current_user"]->prefs->tho_sep());
-		$dsep = Config::get('separators.decimal', $_SESSION["wa_current_user"]->prefs->dec_sep());
+		$tsep = Config::get('separators_thousands', $_SESSION["wa_current_user"]->prefs->tho_sep());
+		$dsep = Config::get('separators_decimal', $_SESSION["wa_current_user"]->prefs->dec_sep());
 		//return number_format($number, $decimals, $dsep,	$tsep);
 		$delta  = ($number < 0 ? -.0000000001 : .0000000001);
 		$number = number_format($number + $delta, $decimals, $dsep, $tsep);
@@ -215,9 +215,9 @@
 
 	function user_numeric($input) {
 		$num = trim($input);
-		$sep = Config::get('separators.thousands', user_tho_sep());
+		$sep = Config::get('separators_thousands', user_tho_sep());
 		if ($sep != '') $num = str_replace($sep, '', $num);
-		$sep = Config::get('separators.decimal', user_dec_sep());
+		$sep = Config::get('separators_decimal', user_dec_sep());
 		if ($sep != '.') $num = str_replace($sep, '.', $num);
 		if (!is_numeric($num)) return false;
 		$num = (float)$num;
@@ -330,11 +330,11 @@
 					 \n theme: '/themes/" . user_theme() . "/',
 					 \nloadtxt: '" . _('Requesting data...') . "',
 					 \ndate: '" . Dates::Today() . "',
-					 \ndatesys: " . Config::get('accounts.datesystem') . ",
+					 \ndatesys: " . Config::get('accounts_datesystem') . ",
 					 \ndatefmt: " . user_date_format() . ",
-					 \ndatesep: '" . Config::get('ui.date.format') . "',
-					 \nts: '" . Config::get('separators.thousands', user_tho_sep()) . "',
-					 \nds: '" . Config::get('separators.decimal', user_dec_sep()) . "',
+					 \ndatesep: '" . Config::get('ui_date_format') . "',
+					 \nts: '" . Config::get('separators_thousands', user_tho_sep()) . "',
+					 \nds: '" . Config::get('separators_decimal', user_dec_sep()) . "',
 					 \npdec: " . user_price_dec() . "}\n";
 		JS::beforeload($js);
 	}

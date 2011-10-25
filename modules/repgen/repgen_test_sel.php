@@ -52,7 +52,7 @@
  */
 	ui_msgs::display_heading(SQL_ERG);
 
-	start_table(Config::get('tables.style'));
+	start_table(Config::get('tables_style'));
 	table_header($th);
 	$k = 0;
 	for ($j = 0; $j < 10; $j++)

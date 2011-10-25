@@ -53,7 +53,7 @@
 		$nowdue   = "1-" . $past1 . " " . _('Days');
 		$pastdue1 = $past1 + 1 . "-" . $past2 . " " . _('Days');
 		$pastdue2 = _('Over') . " " . $past2 . " " . _('Days');
-		start_table("width=90%  " . Config::get('tables.style'));
+		start_table("width=90%  " . Config::get('tables_style'));
 		$th = array(_("Currency"), _("Terms"), _("Current"), $nowdue, $pastdue1, $pastdue2, _("Total Balance"));
 		table_header($th);
 		start_row();

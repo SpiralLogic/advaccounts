@@ -27,7 +27,7 @@
 	ui_msgs::display_heading($systypes_array[ST_LOCTRANSFER] . " #$trans_no");
 
 	echo "<br>";
-	start_table(Config::get('tables.style2') . " width=90%");
+	start_table(Config::get('tables_style2') . " width=90%");
 
 	start_row();
 	label_cells(_("Item"), $from_trans['stock_id'] . " - " . $from_trans['description'], "class='tableheader2'");
@@ -46,7 +46,7 @@
 	end_table(1);
 
 	echo "<br>";
-	start_table(Config::get('tables.style') . "  width=90%");
+	start_table(Config::get('tables_style') . "  width=90%");
 
 	$th = array(_("Item"), _("Description"), _("Quantity"), _("Units"));
 	table_header($th);

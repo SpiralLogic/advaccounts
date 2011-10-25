@@ -109,7 +109,7 @@
 		 input_num("amount_min") == 0 &&
 		 input_num("amount_max") == 0;
 
-		start_table(Config::get('tables.style'));
+		start_table(Config::get('tables_style'));
 
 		$first_cols = array(_("Type"), _("#"), _("Date"));
 

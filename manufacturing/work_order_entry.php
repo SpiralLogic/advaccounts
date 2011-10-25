@@ -294,7 +294,7 @@
 
 	start_form();
 
-	start_table(Config::get('tables.style2'));
+	start_table(Config::get('tables_style2'));
 
 	$existing_comments = "";
 

@@ -1515,26 +1515,26 @@ JS
 	//------------------------------------------------------------------------------------------------
 	function dateformats_list_row($label, $name, $value = null) {
 		echo "<tr><td class='label'>$label</td>\n<td>";
-		echo array_selector($name, $value, Config::get('formats.date'));
+		echo array_selector($name, $value, Config::get('formats_date'));
 		echo "</td></tr>\n";
 	}
 
 	function dateseps_list_row($label, $name, $value = null) {
 
 		echo "<tr><td class='label'>$label</td>\n<td>";
-		echo array_selector($name, $value, Config::get('separators.date'));
+		echo array_selector($name, $value, Config::get('separators_date'));
 		echo "</td></tr>\n";
 	}
 
 	function thoseps_list_row($label, $name, $value = null) {
 		echo "<tr><td class='label'>$label</td>\n<td>";
-		echo array_selector($name, $value, Config::get('separators.thousands'));
+		echo array_selector($name, $value, Config::get('separators_thousands'));
 		echo "</td></tr>\n";
 	}
 
 	function decseps_list_row($label, $name, $value = null) {
 		echo "<tr><td class='label'>$label</td>\n<td>";
-		echo array_selector($name, $value, Config::get('separators.decimal'));
+		echo array_selector($name, $value, Config::get('separators_decimal'));
 		echo "</td></tr>\n";
 	}
 
@@ -1554,7 +1554,7 @@ JS
 
 	function pagesizes_list_row($label, $name, $value = null) {
 		$items = array();
-		foreach (Config::get('formats.paper_size') as $pz) $items[$pz] = $pz;
+		foreach (Config::get('formats_paper_size') as $pz) $items[$pz] = $pz;
 		echo "<tr><td class='label'>$label</td>\n<td>";
 		echo array_selector($name, $value, $items);
 		echo "</td></tr>\n";

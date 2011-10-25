@@ -172,7 +172,7 @@ function openWindow2(url, title) {
 	}
 	start_form(false, false, "repgen_create.php", "edit");
 
-	start_table(Config::get('tables.style2'));
+	start_table(Config::get('tables_style2'));
 	label_row(ID, $id_new . hidden("id_new", $id_new, false));
 	text_row(SHORT, "short", $short, 10, 10);
 	text_row(LONG, "long", $long, 40, 40);
@@ -208,7 +208,7 @@ function openWindow2(url, title) {
 	</select>";
 	label_row(REPORT_TYPE, $txt . hidden("date_", date("Y-m-d"), false) . hidden("id", $id, false));
 	end_table(2);
-	start_table(Config::get('tables.style'));
+	start_table(Config::get('tables_style'));
 	start_row();
 	submit_cells("select", SELECT_CR);
 	submit_cells("page_strings", PAGE_STRINGS);

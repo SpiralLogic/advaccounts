@@ -60,7 +60,7 @@
 	$act = get_bank_account($_POST["bank_account"]);
 	ui_msgs::display_heading($act['bank_account_name'] . " - " . $act['bank_curr_code']);
 
-	start_table(Config::get('tables.style'));
+	start_table(Config::get('tables_style'));
 
 	$th = array(_("Type"), _("#"), _("Reference"), _("Date"),
 							_("Debit"), _("Credit"), _("Balance"), _("Person/Item"), ""

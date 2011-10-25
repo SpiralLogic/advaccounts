@@ -149,7 +149,7 @@
 
 	$result = get_quick_entries();
 	start_form();
-	start_table(Config::get('tables.style'));
+	start_table(Config::get('tables_style'));
 	$th = array(_("Description"), _("Type"), "", "");
 	table_header($th);
 
@@ -171,7 +171,7 @@
 
 	start_form();
 
-	start_table(Config::get('tables.style2'));
+	start_table(Config::get('tables_style2'));
 
 	if ($selected_id != -1) {
 		//if ($Mode == 'Edit')
@@ -206,7 +206,7 @@
 		ui_msgs::display_heading(_("Quick Entry Lines") . " - " . $_POST['description']);
 		$result = get_quick_entry_lines($selected_id);
 		start_form();
-		start_table(Config::get('tables.style2'));
+		start_table(Config::get('tables_style2'));
 		$dim = DB_Company::get_pref('use_dimension');
 		if ($dim == 2)
 			$th = array(_("Post"), _("Account/Tax Type"), _("Amount"), _("Dimension"), _("Dimension") . " 2", "", "");
@@ -255,7 +255,7 @@
 		start_form();
 
 		div_start('edit_line');
-		start_table(Config::get('tables.style2'));
+		start_table(Config::get('tables_style2'));
 
 		if ($selected_id2 != -1) {
 			if ($Mode2 == 'BEd') {

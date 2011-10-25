@@ -203,7 +203,7 @@
 	end_table();
 	echo "<hr>";
 	div_start('summary');
-	start_table(Config::get('tables.style'));
+	start_table(Config::get('tables_style'));
 	$th = array(_("Deposit Date"), _("Total Deposit<br>Amount"));
 	table_header($th);
 	start_row();

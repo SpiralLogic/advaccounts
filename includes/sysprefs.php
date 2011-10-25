@@ -51,7 +51,7 @@
 		}
 
 		public static function allocation_settled_allowance() {
-			return Config::get('accounts.allocation_allowance');
+			return Config::get('accounts_allocation_allowance');
 		}
 	}
 

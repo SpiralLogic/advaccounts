@@ -127,12 +127,12 @@
 		else
 		{
 			if (Input::request('frame')) {
-				start_table(Config::get('tables.style') . "  width=90%");
+				start_table(Config::get('tables_style') . "  width=90%");
 			} else {
-				start_table(Config::get('tables.style') . "  width=65%");
+				start_table(Config::get('tables_style') . "  width=65%");
 			}
 			$th = array(_("Updated"), _("Supplier"), _("Price"), _("Currency"),
-									_("Unit"), _("Conversion Factor"), _("Supplier's Code"), "", ""
+				_("Unit"), _("Conversion Factor"), _("Supplier's Code"), "", ""
 			);
 
 			table_header($th);
@@ -171,17 +171,17 @@
 	$dec2 = 6;
 	if ($Mode == 'Edit') {
 
-		$sql                           = "SELECT purch_data.*,suppliers.supp_name FROM purch_data
+		$sql = "SELECT purch_data.*,suppliers.supp_name FROM purch_data
 		INNER JOIN suppliers ON purch_data.supplier_id=suppliers.supplier_id
 		WHERE purch_data.supplier_id=" . DBOld::escape($selected_id) . "
 		AND purch_data.stock_id=" . DBOld::escape($_POST['stock_id']);
-		$result                        = DBOld::query($sql, "The supplier purchasing details for the selected supplier and item could not be retrieved");
-		$myrow                         = DBOld::fetch($result);
-		$supp_name                     = $myrow["supp_name"];
-		$_POST['price']                = price_decimal_format($myrow["price"], $dec2);
-		$_POST['suppliers_uom']        = $myrow["suppliers_uom"];
+		$result = DBOld::query($sql, "The supplier purchasing details for the selected supplier and item could not be retrieved");
+		$myrow = DBOld::fetch($result);
+		$supp_name = $myrow["supp_name"];
+		$_POST['price'] = price_decimal_format($myrow["price"], $dec2);
+		$_POST['suppliers_uom'] = $myrow["suppliers_uom"];
 		$_POST['supplier_description'] = $myrow["supplier_description"];
-		$_POST['conversion_factor']    = exrate_format($myrow["conversion_factor"]);
+		$_POST['conversion_factor'] = exrate_format($myrow["conversion_factor"]);
 	}
 	br();
 	hidden('selected_id', $selected_id);

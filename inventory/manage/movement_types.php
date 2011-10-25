@@ -81,7 +81,7 @@
 	$result = get_all_movement_type(check_value('show_inactive'));
 
 	start_form();
-	start_table(Config::get('tables.style') . "  width=30%");
+	start_table(Config::get('tables_style') . "  width=30%");
 
 	$th = array(_("Description"), "", "");
 	inactive_control_column($th);
@@ -103,7 +103,7 @@
 
 	//-----------------------------------------------------------------------------------
 
-	start_table(Config::get('tables.style2'));
+	start_table(Config::get('tables_style2'));
 
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {

@@ -92,7 +92,7 @@
 	$result = get_account_classes(check_value('show_inactive'));
 
 	start_form();
-	start_table(Config::get('tables.style'));
+	start_table(Config::get('tables_style'));
 	$th = array(_("Class ID"), _("Class Name"), _("Class Type"), "", "");
 	if (Config::get('accounts.gl.oldconvertstyle') == 1)
 		$th[2] = _("Balance Sheet");
@@ -122,7 +122,7 @@
 	end_table(1);
 	//-----------------------------------------------------------------------------------
 
-	start_table(Config::get('tables.style2'));
+	start_table(Config::get('tables_style2'));
 
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {

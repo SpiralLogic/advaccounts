@@ -140,7 +140,7 @@
 		$prints[$myrow['report']] = $myrow['printer'];
 	}
 
-	start_table(Config::get('tables.style'));
+	start_table(Config::get('tables_style'));
 	$th = array(_("Report Id"), _("Description"), _("Printer"));
 	table_header($th);
 

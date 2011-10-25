@@ -13,7 +13,7 @@
 
 	function display_grn_summary(&$po, $editable = false) {
 
-		start_table(Config::get('tables.style2') . " width=90%");
+		start_table(Config::get('tables_style2') . " width=90%");
 
 		start_row();
 		label_cells(_("Supplier"), $po->supplier_name, "class='label'");

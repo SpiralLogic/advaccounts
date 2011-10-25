@@ -22,7 +22,7 @@
 		else
 		{
 
-			start_table(Config::get('tables.style'));
+			start_table(Config::get('tables_style'));
 			$th = array(_("Component"), _("Description"), _("Work Centre"),
 				_("From Location"), _("Quantity"), _("Unit Cost"), _("Total Cost")
 			);
@@ -76,7 +76,7 @@
 		else
 		{
 
-			start_table(Config::get('tables.style') . "  width=90%");
+			start_table(Config::get('tables_style') . "  width=90%");
 			$th = array(_("Component"), _("From Location"), _("Work Centre"),
 				_("Unit Quantity"), _("Total Quantity"), _("Units Issued"), _("On Hand")
 			);
@@ -147,7 +147,7 @@
 		}
 		else
 		{
-			start_table(Config::get('tables.style'));
+			start_table(Config::get('tables_style'));
 			$th = array(_("#"), _("Reference"), _("Date"), _("Quantity"));
 
 			table_header($th);
@@ -313,7 +313,7 @@
 			exit;
 		}
 
-		start_table(Config::get('tables.style') . "  width=90%");
+	start_table(Config::get('tables_style') . "  width=90%");
 
 		$th = array(_("#"), _("Reference"), _("Type"), _("Manufactured Item"),
 			_("Into Location"), _("Date"), _("Quantity")

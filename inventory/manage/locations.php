@@ -149,7 +149,7 @@
 	;
 
 	start_form();
-	start_table(Config::get('tables.style'));
+	start_table(Config::get('tables_style'));
 	$th = array(_("Location Code"), _("Location Name"), _("Address"), _("Phone"), _("Secondary Phone"), "", "");
 	inactive_control_column($th);
 	table_header($th);
@@ -175,7 +175,7 @@
 
 	echo '<br>';
 
-	start_table(Config::get('tables.style2'));
+	start_table(Config::get('tables_style2'));
 
 	$_POST['email'] = "";
 	if ($selected_id != -1) {

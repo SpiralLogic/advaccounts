@@ -136,7 +136,7 @@ function num_test(feld) {
 
 	start_form(false, false, REPGENDIR . "/repgen_createblock.php", "edit");
 
-	start_table(Config::get('tables.style2'));
+	start_table(Config::get('tables_style2'));
 	label_row(ID_BLOCK, $id_new);
 	hidden("id_new", $id_new);
 	text_row(SHORT, "short", $short, 10, 10);
@@ -145,7 +145,7 @@ function num_test(feld) {
 	label_row(DATE, today() . hidden("date_", date("Y-m-d"), false) . hidden("id", $id_new, false));
 	end_table(1);
 
-	start_table(Config::get('tables.style'));
+	start_table(Config::get('tables_style'));
 	start_row();
 	submit_cells("select", SELECT_CR);
 	submit_cells("page_strings", PAGE_STRINGS);

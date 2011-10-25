@@ -82,7 +82,7 @@
 
 	start_form(false, false, "repgen_del.php", "edit");
 
-	start_table(Config::get('tables.style2'));
+	start_table(Config::get('tables_style2'));
 	start_row();
 	submit_cells("delete", DEL_BACK);
 	submit_cells("back", BACK);

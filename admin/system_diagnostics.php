@@ -269,7 +269,7 @@
 
 	//-------------------------------------------------------------------------------------------------
 
-	start_table(Config::get('tables.style') . " width=90%");
+	start_table(Config::get('tables_style') . " width=90%");
 	$th = array(_("Test"), _('Test type'), _("Value"), _("Comments"));
 	table_header($th);
 

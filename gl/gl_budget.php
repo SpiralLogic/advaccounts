@@ -107,7 +107,7 @@
 
 	if (Validation::check(Validation::GL_ACCOUNTS)) {
 		$dim = DB_Company::get_pref('use_dimension');
-		start_table(Config::get('tables.style2'));
+		start_table(Config::get('tables_style2'));
 		fiscalyears_list_row(_("Fiscal Year:"), 'fyear', null);
 		gl_all_accounts_list_row(_("Account Code:"), 'account', null);
 		if (!isset($_POST['dim1']))
@@ -130,7 +130,7 @@
 		submit_row('submit', _("Get"), true, '', '', true);
 		end_table(1);
 		div_start('budget_tbl');
-		start_table(Config::get('tables.style2'));
+		start_table(Config::get('tables_style2'));
 		$showdims = (($dim == 1 && $_POST['dim1'] == 0) ||
 		 ($dim == 2 && $_POST['dim1'] == 0 && $_POST['dim2'] == 0));
 		if ($showdims)

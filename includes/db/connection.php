@@ -13,7 +13,7 @@
 
 		static function instance($name = null, $config = array()) {
 			if (!isset(static::$instances[$name])) {
-				$default = Config::get('db.default');
+				$default = Config::get('db_default');
 				if ($name === null) $name = $default['name'];
 				$config = array_merge($default, $config);
 				new static($name, $config);

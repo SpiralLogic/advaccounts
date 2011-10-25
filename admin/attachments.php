@@ -176,7 +176,7 @@
 
 		div_start('transactions');
 		start_form();
-		start_table(Config::get('tables.style'));
+		start_table(Config::get('tables_style'));
 		table_header($th);
 		$k = 0;
 		while ($row = DBOld::fetch($rows))
@@ -210,7 +210,7 @@
 
 	start_form(true);
 
-	start_table(Config::get('tables.style2'));
+	start_table(Config::get('tables_style2'));
 
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {

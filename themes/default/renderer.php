@@ -43,7 +43,7 @@
 				echo "  <li><a href='" . PATH_TO_ROOT . "/admin/display_prefs.php?'>" . _("Preferences") . "</a></li>\n";
 				echo "  <li><a href='" . PATH_TO_ROOT . "/admin/change_current_user_password.php?selected_id=" .
 				 $_SESSION["wa_current_user"]->username . "'>" . _("Change password") . "</a></li>\n";
-				if (Config::get('help.baseurl') != null) {
+				if (Config::get('help_baseurl') != null) {
 					echo "  <li><a target = '_blank' onclick=" . '"' . "javascript:openWindow(this.href,this.target); return false;" . '" ' . "href='" . help_url() . "'>" . _("Help") . "</a></li>";
 				}
 				echo "  <li><a href='" . PATH_TO_ROOT . "/access/logout.php?'>" . _("Logout") . "</a></li>";

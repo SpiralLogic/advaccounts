@@ -42,7 +42,7 @@
 	ui_msgs::display_heading(_("Payment to Supplier") . " #$trans_no");
 
 	echo "<br>";
-	start_table(Config::get('tables.style2') . " width=90%");
+	start_table(Config::get('tables_style2') . " width=90%");
 
 	start_row();
 	label_cells(_("To Supplier"), $receipt['supplier_name'], "class='tableheader2'");

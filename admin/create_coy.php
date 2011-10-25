@@ -68,7 +68,7 @@
 		$db_connection['dbname']     = $_POST['dbname'];
 		Config::set($id, $db_connection, 'db');
 		if ((bool)$_POST['def'] == true)
-			Config::set('company.default', $id);
+			Config::set('company_default', $id);
 
 		if (isset($_GET['ul']) && $_GET['ul'] == 1) {
 			$conn = Config::get($id, null, 'db');
@@ -154,8 +154,8 @@
 		if ($err == 0)
 			ui_msgs::display_error(_("Error removing Database: ") . _(", please remove it manually"));
 
-		if (Config::get('company.default') == $id)
-			Config::set('company.default', 0);
+		if (Config::get('company_default') == $id)
+			Config::set('company_default', 0);
 
 		// finally remove renamed company directory
 		@flush_dir($tmpname, true);
@@ -180,7 +180,7 @@
 			document.location.replace('create_coy.php?c=df&id='+id)
 		}
 		</script>";
-		start_table(Config::get('tables.style'));
+		start_table(Config::get('tables_style'));
 
 		$th = array(_("Company"), _("Database Host"), _("Database User"),
 								_("Database Name"), _("Table Pref"), _("Default"), "", ""
@@ -192,7 +192,7 @@
 		$n    = count($conn);
 		for ($i = 0; $i < $n; $i++)
 		{
-			if ($i == Config::get('company.default'))
+			if ($i == Config::get('company_default'))
 				$what = _("Yes");
 			else
 				$what = _("No");
@@ -247,7 +247,7 @@
 		}
 		</script>";
 
-		start_table(Config::get('tables.style2'));
+		start_table(Config::get('tables_style2'));
 
 		if ($selected_id != -1) {
 			$conn                = Config::get($selected_id, null, 'db');
@@ -257,7 +257,7 @@
 			$_POST['dbpassword'] = $conn['dbpassword'];
 			$_POST['dbname']     = $conn['dbname'];
 
-			if ($selected_id == Config::get('company.default'))
+			if ($selected_id == Config::get('company_default'))
 				$_POST['def'] = true;
 			else
 				$_POST['def'] = false;

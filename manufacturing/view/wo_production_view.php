@@ -33,7 +33,7 @@
 		$myrow = get_work_order_produce($prod_id);
 
 		br(1);
-		start_table(Config::get('tables.style'));
+		start_table(Config::get('tables_style'));
 		$th = array(_("Production #"), _("Reference"), _("For Work Order #"),
 			_("Item"), _("Quantity Manufactured"), _("Date")
 		);

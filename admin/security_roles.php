@@ -180,13 +180,13 @@
 	}
 	//-----------------------------------------------------------------------------------------------
 	div_start('details');
-	start_table(Config::get('tables.style2'));
+	start_table(Config::get('tables_style2'));
 	text_row(_("Role name:"), 'name', null, 20, 22);
 	text_row(_("Role description:"), 'description', null, 50, 52);
 	record_status_list_row(_("Current status:"), 'inactive');
 	end_table(1);
 
-	start_table(Config::get('tables.style') . " width=40%");
+	start_table(Config::get('tables_style') . " width=40%");
 
 	$k = $j = 0; //row colour counter
 	$ext = $sec = $m = -1;

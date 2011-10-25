@@ -73,7 +73,7 @@
 												 'maxlength' => '7'
 										));
 	HTML::td()->tr->table->div;
-	start_outer_table(Config::get('tables.style2'), 5);
+	start_outer_table(Config::get('tables_style2'), 5);
 	table_section(1);
 	table_section_title(_("Shipping Details"), 2);
 	/** @noinspection PhpUndefinedMethodInspection */
@@ -113,7 +113,7 @@
 
 	end_outer_table(1);
 	$menu->endTab()->startTab('Accounts', 'Accounts');
-	start_outer_table(Config::get('tables.style2'), 5);
+	start_outer_table(Config::get('tables_style2'), 5);
 	table_section(1);
 	hidden('accounts_id', $customer->accounts->accounts_id);
 	table_section_title(_("Accounts Details:"), 2);
@@ -177,7 +177,7 @@
 	HTML::td()->tr->table->script->div->div;
 
 	$menu->endTab()->startTab('Extra Shipping Info', 'Extra Shipping Info');
-	start_outer_table(Config::get('tables.style2'), 5);
+	start_outer_table(Config::get('tables_style2'), 5);
 	table_section(1);
 	hidden('branch_code', $currentBranch->branch_code);
 	table_section_title(_("Sales"));

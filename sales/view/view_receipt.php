@@ -36,7 +36,7 @@
 	}
 
 	echo "<br>";
-	start_table(Config::get('tables.style') . "  width=90%");
+	start_table(Config::get('tables_style') . "  width=90%");
 	start_row();
 	start_form();
 

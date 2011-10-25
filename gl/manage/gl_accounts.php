@@ -52,7 +52,7 @@
 			ui_msgs::display_error(_("The account name cannot be empty."));
 			ui_view::set_focus('account_name');
 		}
-		elseif (!Config::get('accounts.allowcharacters') && !is_numeric($_POST['account_code']))
+		elseif (!Config::get('accounts_allowcharacters') && !is_numeric($_POST['account_code']))
 		{
 			$input_error = 1;
 			ui_msgs::display_error(_("The account code must be numeric."));
@@ -60,7 +60,7 @@
 		}
 
 		if ($input_error != 1) {
-			if (Config::get('accounts.allowcharacters') == 2)
+			if (Config::get('accounts_allowcharacters') == 2)
 				$_POST['account_code'] = strtoupper($_POST['account_code']);
 
 			if (!isset($_POST['account_tags']))
@@ -235,7 +235,7 @@
 	}
 
 	br(1);
-	start_table(Config::get('tables.style2'));
+	start_table(Config::get('tables_style2'));
 
 	if ($selected_account != "") {
 		//editing an existing account

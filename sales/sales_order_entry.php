@@ -631,7 +631,7 @@
 	hidden('cart_id');
 	$customer_error = display_order_header($_SESSION['Items'], ($_SESSION['Items']->any_already_delivered() == 0), $idate);
 	if ($customer_error == "") {
-		start_table(Config::get('tables.style'), 10);
+		start_table(Config::get('tables_style'), 10);
 		echo "
 <tr>
     <td>";

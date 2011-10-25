@@ -128,7 +128,7 @@
 
 		div_start('balance_tbl');
 
-		start_table("width=30%  " . Config::get('tables.style'));
+		start_table("width=30%  " . Config::get('tables_style'));
 
 		if (!$drilldown) //Root Level
 		{

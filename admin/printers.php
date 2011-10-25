@@ -77,7 +77,7 @@
 
 	$result = Printer::get_all();
 	start_form();
-	start_table(Config::get('tables.style'));
+	start_table(Config::get('tables_style'));
 	$th = array(_("Name"), _("Description"), _("Host"), _("Printer Queue"), '', '');
 	table_header($th);
 
@@ -103,7 +103,7 @@
 
 	start_form();
 
-	start_table(Config::get('tables.style2'));
+	start_table(Config::get('tables_style2'));
 
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {
