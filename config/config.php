@@ -7,8 +7,8 @@
 	 * To change this template use File | Settings | File Templates.
 	 */
 	return array(
-		'debug' => false,
-		'debug_sql' => false,
+		'debug' => true,
+		'debug_sql' => true,
 		'debug_pdf' => false,
 		'debug_query_log' => false,
 		'debug_select_log' => false,
@@ -79,7 +79,7 @@
 		'item_images_width' => 80,
 		'item_images_height' => 50,
 		'item_images_max_size' => 500,
-		'company_default' => 0,
+		'company_default' => 1,
 		'company_subdirs' => array('images', 'pdf_files', 'backup', 'js_cache', 'reporting', 'attachments'),
 
 		'graphs_skin' => 1,

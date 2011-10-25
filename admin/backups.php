@@ -116,7 +116,8 @@
 	}
 
 	$db_name = $_SESSION["wa_current_user"]->company;
-	$conn    = Config::get($db_name, null, 'db');
+	$connections = Config::get_all('db');
+	$conn = $conections[$db_name];
 
 	if (get_post('creat')) {
 		generate_backup($conn, get_post('comp'), get_post('comments'));
@@ -142,7 +143,7 @@
 
 	if (get_post('upload')) {
 		$tmpname = $_FILES['uploadfile']['tmp_name'];
-		$fname   = $_FILES['uploadfile']['name'];
+		$fname = $_FILES['uploadfile']['name'];
 
 		if (!preg_match("/.sql(.zip|.gz)?$/", $fname))
 			ui_msgs::display_error(_("You can only upload *.sql backup files"));

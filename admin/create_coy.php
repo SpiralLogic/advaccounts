@@ -60,7 +60,9 @@
 			return false;
 
 		$id = $_GET['id'];
-		$new = !Config::get($id, null, 'db');
+		$connections = Config::get_all('db');
+
+		$new = !isset($conections[$id]);
 		$db_connection['name'] = $_POST['name'];
 		$db_connection['host'] = $_POST['host'];
 		$db_connection['dbuser'] = $_POST['dbuser'];
@@ -68,7 +70,7 @@
 		$db_connection['dbname'] = $_POST['dbname'];
 		Config::set($id, $db_connection, 'db');
 		if ((bool)$_POST['def'] == true)
-			Config::set('company.default', $id);
+			Config::set('company_default', $id);
 
 		if (isset($_GET['ul']) && $_GET['ul'] == 1) {
 			$conn = Config::get($id, null, 'db');
@@ -154,8 +156,8 @@
 		if ($err == 0)
 			ui_msgs::display_error(_("Error removing Database: ") . _(", please remove it manually"));
 
-		if (Config::get('company.default') == $id)
-			Config::set('company.default', 0);
+		if (Config::get('company_default') == $id)
+			Config::set('company_default', 1);
 
 		// finally remove renamed company directory
 		@flush_dir($tmpname, true);
@@ -192,7 +194,7 @@
 		$n = count($conn);
 		for ($i = 0; $i < $n; $i++)
 		{
-			if ($i == Config::get('company.default'))
+			if ($i == Config::get('company_default'))
 				$what = _("Yes");
 			else
 				$what = _("No");
@@ -257,7 +259,7 @@
 			$_POST['dbpassword'] = $conn['dbpassword'];
 			$_POST['dbname'] = $conn['dbname'];
 
-			if ($selected_id == Config::get('company.default'))
+			if ($selected_id == Config::get('company_default'))
 				$_POST['def'] = true;
 			else
 				$_POST['def'] = false;

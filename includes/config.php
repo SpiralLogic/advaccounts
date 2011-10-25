@@ -31,29 +31,43 @@
 			static::js();
 		}
 
-		protected static function load() {
-			$group = func_get_args();
-			if (count($group) == 0) $group = array('config');
-			foreach ($group as $file) {
-				$filepath = APP_PATH . "config/{$file}.php";
-				if (!file_exists($filepath)) throw new Adv_Exception("There is no file for this config");
-				if (array_key_exists($file, static::$_vars)) continue;
-				static::$_vars[$file] = include($filepath);
+		protected static function load($group = 'config') {
+
+			$file = APP_PATH . "config" . DS . $group . '.php';
+			if (is_array($group)) {
+				$groupfile = array_pop($group) . '.php';
+				$grouppath = implode(DS, $group);
+				$file = APP_PATH . "config" . $grouppath . DS . $groupfile;
+				$group = implode('.', $group);
 			}
+
+			if (!is_string($group)) return;
+
+			if (array_key_exists($group, static::$_vars)) return;
+			if (!file_exists($file)) throw new Adv_Exception("There is no file for config: " . $file);
+			static::$_vars[$group] = include($file);
 		}
 
+
 		public static function set($var, $value, $group = 'config') {
-			static::init();
+
 			static::$_vars[$group][$var] = $value;
 			return $value;
 		}
 
-		public static function get($var, $array_key = null, $group = 'config') {
+		public static function get($var, $array_key = null, $group = null) {
 			static::init();
-			if (!isset(static::$_vars[$group])) static::load($group);
+			if (!strstr($var, '.')) $group = 'config';
+			if ($group != null) $var = $group . '.' . $var;
+			$grouparray = explode('.', $var);
+			$var = array_pop($grouparray);
+			$group = implode('.', $grouparray);
+
+			if (!isset(static::$_vars[$group])) static::load($grouparray);
 			if ($var === null && $array_key === null) return static::get_all($group);
 
 			if (!isset(static::$_vars[$group][$var])) return false;
+
 			return ($array_key !== null && is_array(static::$_vars[$group][$var])) ?
 			 static::$_vars[$group][$var][$array_key] : static::$_vars[$group][$var];
 		}
@@ -67,7 +81,9 @@
 		}
 
 		public static function get_all($group = 'config') {
+
 			static::init();
+
 			if (!isset(static::$_vars[$group])) static::load($group);
 			return static::$_vars[$group];
 		}

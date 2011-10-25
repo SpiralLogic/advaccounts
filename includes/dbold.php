@@ -21,7 +21,7 @@
 
 		public static function query($sql, $err_msg = null) {
 			$db = static::getInstance();
-			if (Config::get('debug.sql')) {
+			if (Config::get('debug_sql')) {
 				if (class_exists('FB')) {
 					FB::info($sql);
 				} else {

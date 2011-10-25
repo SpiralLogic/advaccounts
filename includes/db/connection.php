@@ -12,12 +12,13 @@
 		protected static $instances = array();
 
 		static function instance($name = null, $config = array()) {
+			$default = Config::get('db_default');
+			if ($name === null) $name = $default['name'];
 			if (!isset(static::$instances[$name])) {
-				$default = Config::get('db_default');
-				if ($name === null) $name = $default['name'];
 				$config = array_merge($default, $config);
 				new static($name, $config);
 			}
+
 			return static::$instances[$name];
 		}
 
@@ -38,10 +39,11 @@
 			$this->debug = false;
 			$this->_connect();
 			static::$instances[$name] = $this;
+			var_dump($this);
 		}
 
 		public function prepare($sql) {
-			if (Config::get('debug.sql')) {
+			if (Config::get('debug_sql')) {
 				(class_exists('FB')) ? FB::info($sql) : var_dump($sql);
 			}
 
@@ -51,7 +53,7 @@
 		public function exec($sql, $type, $data) {
 			try {
 				$prepared = $this->prepare($sql);
-				if (Config::get('debug.sql')) {
+				if (Config::get('debug_sql')) {
 					(class_exists('FB')) ? FB::info($data) : var_dump($data);
 				}
 				switch ($type) {
