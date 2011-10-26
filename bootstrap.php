@@ -33,6 +33,7 @@
 	// intercept all output to destroy it in case of ajax call
 	register_shutdown_function('adv_shutdown_function_handler');
 	ob_start('adv_ob_flush_handler', 0);
+
 	// POST vars cleanup needed for direct reuse.
 	// We quote all values later with DBOld::escape() before db update.
 	array_walk($_POST, function(&$v) {

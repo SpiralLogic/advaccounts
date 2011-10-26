@@ -56,7 +56,7 @@
 	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 		$user = null;
 		if ($_POST['password'] != "") {
-			$user     = new Auth($user_id);
+			$user     = new Auth($_POST['user_id']);
 			$password = $user->hash_password($_POST['password']);
 		}
 		if (can_process($user)) {

@@ -38,11 +38,9 @@
 			if (is_array($group)) {
 				$groupname = implode('.', $group);
 				$groupfile = array_pop($group) . '.php';
-
 				$grouppath = implode(DS, $group);
 				$file = APP_PATH . "config" . $grouppath . DS . $groupfile;
 			}
-
 			if (array_key_exists($groupname, static::$_vars)) return;
 			if (!file_exists($file)) throw new Adv_Exception("There is no file for config: " . $file);
 			static::$_vars[$groupname] = include($file);

@@ -14,9 +14,9 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	include(APP_PATH . "includes/page/header.php");
-	page_header(_("Logout"), true, false, '', ui_view::get_js_png_fix());
+	page_header(_("Logout"), true, false, '');
 
-	echo "<table width='100%' border='0'> <tr><td align='center'><img src='/themes/default/images/logo_frontaccounting.png' alt='FrontAccounting' width='250' height='50' onload='fixPNG(this)' /></td>
+	echo "<table width='100%' border='0'> <tr><td align='center'><img src='/themes/default/images/logo_frontaccounting.png' alt='FrontAccounting' width='250' height='50'' /></td>
   </tr>
   <tr>
     <td>&nbsp;</td>
@@ -41,6 +41,7 @@
 <br>\n";
 	session_unset();
 	session_destroy();
+	end_page(false,false,true);
 ?>
 
 

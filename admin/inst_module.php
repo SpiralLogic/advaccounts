@@ -39,7 +39,7 @@
 			}
 			if (!frontaccounting::write_extensions($newexts, $i)) {
 				ui_msgs::display_notification(sprintf(_("Cannot update extensions list for company '%s'."),
-						Config::get($i, 'name', 'db')));
+						Config::get('db.'.$i, 'name')));
 				return false;
 			}
 		}
@@ -117,7 +117,7 @@
 				unlink($file2);
 			move_uploaded_file($file1, $file2);
 			$db_name = $_SESSION["wa_current_user"]->company;
-			DB_Utils::import($file2, Config::get('db' . $db_name));
+			DB_Utils::import($file2, Config::get('db.' . $db_name));
 		}
 
 		if (is_uploaded_file($_FILES['uploadfile3']['tmp_name'])) {

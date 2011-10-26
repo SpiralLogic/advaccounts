@@ -705,7 +705,7 @@
 
 		static function get_js_png_fix() {
 			$js = "function fixPNG(myImage)\n" . "{\n" . " var arVersion = navigator.appVersion.split(\"MSIE\")\n" . " var version = parseFloat(arVersion[1])\n" . " if ((version >= 5.5) && (version < 7) && (document.body.filters))\n" . " {\n" . "  var imgID = (myImage.id) ? \"id='\" + myImage.id + \"' \" : \"\"\n" . "  var imgClass = (myImage.className) ? \"class='\" + myImage.className + \"' \" : \"\"\n" . "  var imgTitle = (myImage.title) ?\n" . "    \"title='\" + myImage.title  + \"' \" : \"title='\" + myImage.alt + \"' \"\n" . "  var imgStyle = \"display:inline-block;\" + myImage.style.cssText\n" . "  var strNewHTML = \"<span \" + imgID + imgClass + imgTitle\n" . "    + \" style=\\\"\" + \"width:\" + myImage.width\n" . "    + \"px; height:\" + myImage.height\n" . "    + \"px;\" + imgStyle + \";\"\n" . "    + \"filter:progid:DXImageTransform.Microsoft.AlphaImageLoader\"\n" . "    + \"(src=\'\" + myImage.src + \"\', sizingMethod='scale');\\\"></span>\"\n" . "  myImage.outerHTML = strNewHTML\n" . " }\n" . "}\n";
-			return $js;
+			JS::beforeload( $js);
 		}
 
 		static function get_websales() {

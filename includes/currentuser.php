@@ -17,7 +17,7 @@
 		var $loginname;
 		var $username;
 		var $name;
-		var $company = 0;
+		var $company = 1;
 		var $pos;
 		var $salesmanid = false;
 		var $access;
@@ -98,7 +98,7 @@
 			if ($page_level === 'SA_DENIED' || $page_level === '') return false;
 			$code = $security_areas[$page_level][0];
 			// only first registered company has site admin privileges
-			return $code && in_array($code, $this->role_set) && ($this->company == 0 || (($code & ~0xff) != SS_SADMIN));
+			return $code && in_array($code, $this->role_set) && ($this->company == 1 || (($code & ~0xff) != SS_SADMIN));
 		}
 
 		function can_access_page($page_level) {

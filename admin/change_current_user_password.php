@@ -58,7 +58,7 @@
 			}
 			$Ajax->activate('_page_body');
 		}
-	} elseif ($_SESSION['change_password']) {
+	} elseif (Input::session('change_password')) {
 		ui_msgs::display_warning('You are required to change your password!');
 	}
 
