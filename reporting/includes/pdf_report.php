@@ -822,15 +822,21 @@
 					$msg .= $doc_Kindest_regards . "\n\n";
 					$sender = $this->company['postal_address'] . "\n" . $this->company['email'] . "\n" . $this->company['phone'];
 					//$mail->to($to);
-					$emailAddress = (isset($_GET['Email'])) ? $_GET['Email'] : $myrow['email'];
+					$customer = new Customer($myrow['debtor_no']);
+					$emailAddress = $customer->accounts->email;
+					if (empty($emailAddress)) $emailAddress = (isset($_GET['Email'])) ? $_GET['Email'] : $myrow['email'];
 					$mail->to($emailAddress, str_replace(",", "", $myrow['DebtorName']));
 					$mail->subject($subject);
 					$mail->text($msg . $sender);
 					$mail->attachment($fname);
 					$ret = $mail->send();
-					if (!$ret) ui_msgs::display_error('Error: ' . $emailAddress . ': ' . $mail->toerror); else
+					if (!$ret) {
+						ui_msgs::display_error('Error: ' . $emailAddress . ': ' . $mail->toerror);
+					} else {
+						$myrow['reference'] = (isset($myrow['reference'])) ? $myrow['reference'] : '';
 						ui_msgs::display_notification($this->title . " " . $myrow['reference'] . " " . _("has been sent by email to: ") . str_replace(",", "",
 								$myrow['DebtorName']) . "  &lt;" . $emailAddress . "&gt;");
+					}
 					unlink($fname);
 				} else {
 					$printer = Printer::get_report(user_print_profile(), $_POST['REP_ID']);
