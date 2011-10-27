@@ -70,7 +70,7 @@
 		} else {
 			$coy = Config::get('company_default');
 		}
-		echo "<tr><td>" . _("Company") . "</td><td><select name='company_login_name'>\n";
+		echo "<tr><td class='label'>" . _("Company") . "</td><td><select name='company_login_name'>\n";
 
 		for ($i = 1; $i < count(Config::get_all('db')) + 1; $i++) {
 			echo "<option value=$i " . ($i == $coy ? 'selected' : '') . ">" . Config::get('db.' . $i, "name") . "</option>";
