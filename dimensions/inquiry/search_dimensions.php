@@ -11,10 +11,10 @@
 	 ***********************************************************************/
 	$page_security = 'SA_DIMTRANSVIEW';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	$js = "";
-	if (Config::get('ui.windows.popups'))
+	if (Config::get('ui_windows_popups'))
 		$js .= ui_view::get_js_open_window(800, 500);
 
 	if (isset($_GET['outstanding_only']) && $_GET['outstanding_only']) {
@@ -81,7 +81,7 @@
 	end_row();
 	end_table();
 
-	$dim = get_company_pref('use_dimension');
+	$dim = DB_Company::get_pref('use_dimension');
 
 	function view_link($row) {
 		return ui_view::get_dimensions_trans_view_str(ST_DIMENSION, $row["id"]);
@@ -96,8 +96,8 @@
 		 Dates::date2sql($_POST['FromDate']) . "' AND
 		tran_date <= '" . Dates::date2sql($_POST['ToDate']) . "' AND (dimension_id = " .
 		 $row['id'] . " OR dimension2_id = " . $row['id'] . ")";
-		$res = db_query($sql, "Sum of transactions could not be calculated");
-		$row = db_fetch_row($res);
+		$res = DBOld::query($sql, "Sum of transactions could not be calculated");
+		$row = DBOld::fetch_row($res);
 
 		return $row[0];
 	}
@@ -124,7 +124,7 @@
 	FROM dimensions as dim WHERE id > 0";
 
 	if (isset($_POST['OrderNumber']) && $_POST['OrderNumber'] != "") {
-		$sql .= " AND reference LIKE " . db_escape("%" . $_POST['OrderNumber'] . "%");
+		$sql .= " AND reference LIKE " . DBOld::escape("%" . $_POST['OrderNumber'] . "%");
 	} else {
 
 		if ($dim == 1)
@@ -135,7 +135,7 @@
 		}
 
 		if (isset($_POST['type_']) && ($_POST['type_'] > 0)) {
-			$sql .= " AND type_=" . db_escape($_POST['type_']);
+			$sql .= " AND type_=" . DBOld::escape($_POST['type_']);
 		}
 
 		if (isset($_POST['OverdueOnly'])) {

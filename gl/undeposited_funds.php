@@ -9,19 +9,19 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	/* Author Rob Mallon */
+
 	$page_security = 'SA_RECONCILE';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	$js = "";
-	if (Config::get('ui.windows.popups')) {
+	if (Config::get('ui_windows_popups')) {
 		$js .= ui_view::get_js_open_window(800, 500);
 	}
 
 	JS::footerFile('/js/reconcile.js');
-	page(_($help_context = "Undeposited Funds"), @$_REQUEST['frame'], false, "", $js);
-	check_db_has_bank_accounts(_("There are no bank accounts defined in the system."));
+	page(_($help_context = "Undeposited Funds"), Input::request('frame'), false, "", $js);
+	Validation::check(Validation::BANK_ACCOUNTS, _("There are no bank accounts defined in the system."));
 	function check_date() {
 		if (!Dates::is_date(get_post('deposit_date'))) {
 			ui_msgs::display_error(_("Invalid deposit date format"));
@@ -84,7 +84,8 @@
 
 	$update_pager = false;
 	function update_data() {
-		global $Ajax, $update_pager;
+		global $update_pager;
+		$Ajax = Ajax::instance();
 		$Ajax->activate('summary');
 		$update_pager = true;
 	}
@@ -93,7 +94,7 @@
 	// Update db record if respective checkbox value has changed.
 	//
 	function change_tpl_flag($deposit_id) {
-		global $Ajax;
+		$Ajax = Ajax::instance();
 		if (!check_date() && check_value("dep_" . $deposit_id)) // temporary fix
 		{
 			return false;
@@ -104,9 +105,9 @@
 		}
 		$_POST['bank_date'] = Dates::date2sql(get_post('deposited_date'));
 		/*	$sql = "UPDATE ".''."bank_trans SET undeposited=0"
-							 ." WHERE id=".db_escape($deposit_id);
+							 ." WHERE id=".DBOld::escape($deposit_id);
 
-							db_query($sql, "Can't change undeposited status");*/
+							DBOld::query($sql, "Can't change undeposited status");*/
 		// save last reconcilation status (date, end balance)
 		if (check_value("dep_" . $deposit_id)) {
 			$_SESSION['undeposited']["dep_" . $deposit_id] = get_post('amount_' . $deposit_id);
@@ -139,10 +140,10 @@
 		change_tpl_flag($id);
 	}
 	if (isset($_POST['Deposit'])) {
-		$sql = "SELECT * FROM bank_trans WHERE undeposited=1 AND trans_date <= '" . Dates::date2sql($_POST['deposit_date']) . "' AND reconciled IS NULL";
-		$query = db_query($sql);
+		$sql = "SELECT * FROM bank_trans WHERE undeposited=1  AND reconciled IS NULL";
+		$query = DBOld::query($sql);
 		$undeposited = array();
-		while ($row = db_fetch($query)) {
+		while ($row = DBOld::fetch($query)) {
 			$undeposited[$row['id']] = $row;
 		}
 		$togroup = array();
@@ -152,25 +153,33 @@
 				$togroup[$key[1]] = $undeposited[$key[1]];
 			}
 		}
-		$total_amount = 0;
-		$ref = array();
-		foreach ($togroup as $row) {
-			$total_amount += $row['amount'];
-			$ref[] = $row['ref'];
-		}
-		$sql = "INSERT INTO bank_trans (type, bank_act, amount, ref, trans_date, person_type_id, person_id, undeposited) VALUES (15, 5, $total_amount,"
-		 . db_escape(implode($ref, ',')) . ",'" . Dates::date2sql($_POST['deposit_date']) . "', 6, '" . $_SESSION['wa_current_user']->user . "',0)";
-		$query = db_query($sql, "Undeposited Cannot be Added");
-		$order_no = db_insert_id($query);
-		if (!isset($order_no) || !empty($order_no) || $order_no == 127) {
-			$sql = "SELECT LAST_INSERT_ID()";
-			$order_no = db_query($sql);
-			$order_no = db_fetch_row($order_no);
-			$order_no = $order_no[0];
-		}
-		foreach ($togroup as $row) {
-			$sql = "UPDATE bank_trans SET undeposited=" . $order_no . " WHERE id=" . db_escape($row['id']);
-			db_query($sql, "Can't change undeposited status");
+
+		if (count($togroup) > 1) {
+			$total_amount = 0;
+			$ref = array();
+			foreach ($togroup as $row) {
+				$total_amount += $row['amount'];
+				$ref[] = $row['ref'];
+			}
+			$sql = "INSERT INTO bank_trans (type, bank_act, amount, ref, trans_date, person_type_id, person_id, undeposited) VALUES (15, 5, $total_amount,"
+			 . DBOld::escape(implode($ref, ',')) . ",'" . Dates::date2sql($_POST['deposit_date']) . "', 6, '" . $_SESSION['wa_current_user']->user . "',0)";
+			$query = DBOld::query($sql, "Undeposited Cannot be Added");
+			$order_no = DBOld::insert_id($query);
+			if (!isset($order_no) || !empty($order_no) || $order_no == 127) {
+				$sql = "SELECT LAST_INSERT_ID()";
+				$order_no = DBOld::query($sql);
+				$order_no = DBOld::fetch_row($order_no);
+				$order_no = $order_no[0];
+			}
+			foreach ($togroup as $row) {
+				$sql = "UPDATE bank_trans SET undeposited=" . $order_no . " WHERE id=" . DBOld::escape($row['id']);
+				DBOld::query($sql, "Can't change undeposited status");
+			}
+		} else {
+			$row = reset($togroup);
+
+			$sql = "UPDATE bank_trans SET undeposited=0, trans_date='" . Dates::date2sql($_POST['deposit_date']) . "',deposit_date='" . Dates::date2sql($_POST['deposit_date']) . "'  WHERE id=" . DBOld::escape($row['id']);
+			DBOld::query($sql, "Can't change undeposited status");
 		}
 		unset($_POST);
 		unset($_SESSION['undeposited']);
@@ -198,7 +207,7 @@
 	$th = array(_("Deposit Date"), _("Total Deposit<br>Amount"));
 	table_header($th);
 	start_row();
-	date_cells("", "deposit_date", _('Date of funds to deposit'), get_post('deposit_date') == '', 0, 0, 0, null, true);
+	date_cells("", "deposit_date", _('Date of funds to deposit'), get_post('deposit_date') == '', 0, 0, 0, null, true, array('rebind' => false));
 	amount_cell($_POST['deposited'], false, '', "deposited");
 	hidden("to_deposit", $_POST['to_deposit'], true);
 
@@ -213,9 +222,26 @@
 		FROM bank_trans
 		WHERE undeposited=1 AND trans_date <= '" . Dates::date2sql($date) . "' AND reconciled IS NULL
 		ORDER BY trans_date DESC,bank_trans.id ";
-	$cols = array(_("Type") => array('fun' => 'systype_name', 'ord' => ''), _("#") => array('fun' => 'trans_view', 'ord' => ''), _("Reference"), _("Date") => 'date',
-		_("Debit") => array('align' => 'right', 'fun' => 'fmt_debit'), _("Credit") => array('align' => 'right', 'insert' => true, 'fun' => 'fmt_credit'),
-		_("Person/Item") => array('fun' => 'fmt_person'), array('insert' => true, 'fun' => 'gl_view'), "X" => array('insert' => true, 'fun' => 'dep_checkbox')
+	$cols = array(_("Type") => array('fun' => 'systype_name',
+		'ord' => ''
+	),
+		_("#") => array('fun' => 'trans_view',
+			'ord' => ''
+		), _("Reference"),
+		_("Date") => 'date',
+		_("Debit") => array('align' => 'right',
+			'fun' => 'fmt_debit'
+		),
+		_("Credit") => array('align' => 'right',
+			'insert' => true,
+			'fun' => 'fmt_credit'
+		),
+		_("Person/Item") => array('fun' => 'fmt_person'), array('insert' => true,
+			'fun' => 'gl_view'
+		),
+		"X" => array('insert' => true,
+			'fun' => 'dep_checkbox'
+		)
 	);
 	$table =& db_pager::new_db_pager('trans_tbl', $sql, $cols);
 	$table->width = "80%";
@@ -223,12 +249,6 @@
 	br(1);
 	submit_center('Deposit', _("Deposit"), true, '', false);
 	end_form();
-	$js = <<<JS
-Adv.Events.onFocus('#'+\$(this).attr('id'),[0,$(this).position().top]);
-
-JS;
-	JS::addLiveEvent(':checkbox', 'change', $js, 'wrapper', true);
-
 	end_page();
 
 ?>

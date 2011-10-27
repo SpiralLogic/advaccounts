@@ -11,28 +11,26 @@
 	 ***********************************************************************/
 	$page_security = 'SA_GLSETUP';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	page(_($help_context = "System and General GL Setup"));
-
-	include_once(APP_PATH . "admin/db/company_db.inc");
 
 	//-------------------------------------------------------------------------------------------------
 
 	function can_process() {
-		if (!check_num('po_over_receive', 0, 100)) {
+		if (!Validation::is_num('po_over_receive', 0, 100)) {
 			ui_msgs::display_error(_("The delivery over-receive allowance must be between 0 and 100."));
 			ui_view::set_focus('po_over_receive');
 			return false;
 		}
 
-		if (!check_num('po_over_charge', 0, 100)) {
+		if (!Validation::is_num('po_over_charge', 0, 100)) {
 			ui_msgs::display_error(_("The invoice over-charge allowance must be between 0 and 100."));
 			ui_view::set_focus('po_over_charge');
 			return false;
 		}
 
-		if (!check_num('past_due_days', 0, 100)) {
+		if (!Validation::is_num('past_due_days', 0, 100)) {
 			ui_msgs::display_error(_("The past due days interval allowance must be between 0 and 100."));
 			ui_view::set_focus('past_due_days');
 			return false;
@@ -43,7 +41,7 @@
 	//-------------------------------------------------------------------------------------------------
 
 	if (isset($_POST['submit']) && can_process()) {
-		update_company_gl_setup($_POST['retained_earnings_act'], $_POST['profit_loss_year_act'],
+		DB_Company::update_gl_setup($_POST['retained_earnings_act'], $_POST['profit_loss_year_act'],
 			$_POST['debtors_act'], $_POST['pyt_discount_act'],
 			$_POST['creditors_act'], $_POST['freight_act'],
 			$_POST['exchange_diff_act'], $_POST['bank_charge_act'],
@@ -74,11 +72,11 @@
 	start_form();
 
 	//start_outer_table("class='tablestyle'");
-	start_outer_table(Config::get('tables.style2'), 5);
+	start_outer_table(Config::get('tables_style2'), 5);
 
 	table_section(1);
 
-	$myrow = get_company_prefs();
+	$myrow = DB_Company::get_prefs();
 
 	$_POST['retained_earnings_act'] = $myrow["retained_earnings_act"];
 	$_POST['profit_loss_year_act'] = $myrow["profit_loss_year_act"];

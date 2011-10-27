@@ -24,22 +24,20 @@
  */
 	$page_security = 'SA_REPORT_GENERATOR';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	add_access_extensions();
 
-	include_once(APP_PATH . "admin/db/company_db.inc");
-
-	require_once("repgen_const.inc");
-	require_once("repgen_def.inc");
-	require_once("repgen.inc");
+	require_once("repgen_const.php");
+	require_once("repgen_def.php");
+	require_once("repgen.php");
 
 	function check_short($short) { // controls, that short-name of blocks does not be twice
 		global $id_new;
 		if (empty($short))
 			return false;
 		$query = "SELECT attrib,id FROM xx_reports WHERE typ='block'";
-		$res = db_query($query);
-		while ($f = db_fetch($res))
+		$res = DBOld::query($query);
+		while ($f = DBOld::fetch($res))
 		{
 			$h = explode("|", $f["attrib"]);
 			if (($h[0] == $short) && (trim($f["id"]) != $id_new))
@@ -56,12 +54,12 @@
 	}
 
 	function store($id, $info) { // stores the records 'block' in the database
-		db_query("BEGIN");
+		DBOld::query("BEGIN");
 		$query = "DELETE FROM xx_reports WHERE (id ='" . $id . "' AND typ='block')";
-		db_query($query);
+		DBOld::query($query);
 		$query = "INSERT INTO xx_reports VALUES ('" . $id . "','block','" . $info . "')";
-		db_query($query);
-		db_query("COMMIT");
+		DBOld::query($query);
+		DBOld::query("COMMIT");
 	}
 
 	###
@@ -138,7 +136,7 @@ function num_test(feld) {
 
 	start_form(false, false, REPGENDIR . "/repgen_createblock.php", "edit");
 
-	start_table(Config::get('tables.style2'));
+	start_table(Config::get('tables_style2'));
 	label_row(ID_BLOCK, $id_new);
 	hidden("id_new", $id_new);
 	text_row(SHORT, "short", $short, 10, 10);
@@ -147,7 +145,7 @@ function num_test(feld) {
 	label_row(DATE, today() . hidden("date_", date("Y-m-d"), false) . hidden("id", $id_new, false));
 	end_table(1);
 
-	start_table(Config::get('tables.style'));
+	start_table(Config::get('tables_style'));
 	start_row();
 	submit_cells("select", SELECT_CR);
 	submit_cells("page_strings", PAGE_STRINGS);

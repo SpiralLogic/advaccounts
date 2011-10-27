@@ -1,27 +1,26 @@
 <?php
-/**
- * Created by JetBrains PhpStorm.
- * User: advanced
- * Date: 11/07/11
- * Time: 4:29 PM
- * To change this template use File | Settings | File Templates.
- */
-
+	/**
+	 * Created by JetBrains PhpStorm.
+	 * User: advanced
+	 * Date: 11/07/11
+	 * Time: 4:29 PM
+	 * To change this template use File | Settings | File Templates.
+	 */
 	class postcode {
 
 
 		private static $count = 0;
 
-		static function         searchByPostcode($postcode = "*") {
-			$sql = "SELECT ID as id, CONCAT(Locality,', ',Pcode,', ',State) as label,  CONCAT(Locality,'|',Pcode,'|',State) as value FROM postcodes WHERE Pcode LIKE " . db_escape($postcode . '%') . " ORDER BY Pcode LIMIT 20";
-			$result = db_query($sql, "Could not find postcode");
+		static function				 searchByPostcode($postcode = "*") {
+			$sql = "SELECT ID as id, CONCAT(Locality,', ',Pcode,', ',State) as label,  CONCAT(Locality,'|',Pcode,'|',State) as value FROM postcodes WHERE Pcode LIKE " . DBOld::escape($postcode . '%') . " ORDER BY Pcode LIMIT 20";
+			$result = DBOld::query($sql, "Could not find postcode");
 			while (($resultArray[] = mysql_fetch_assoc($result)) || array_pop($resultArray)) ;
 			return $resultArray;
 		}
 
 		static function searchByCity($city = "*") {
-			$sql = "SELECT ID as id, CONCAT(Locality,', ',Pcode,', ',State) as label,  CONCAT(Locality,'|',Pcode,'|',State) as value FROM postcodes WHERE Locality LIKE " . db_escape('%' . $city . '%') . " ORDER BY Locality LIMIT 20";
-			$result = db_query($sql, "Could not find city");
+			$sql = "SELECT ID as id, CONCAT(Locality,', ',Pcode,', ',State) as label,  CONCAT(Locality,'|',Pcode,'|',State) as value FROM postcodes WHERE Locality LIKE " . DBOld::escape('%' . $city . '%') . " ORDER BY Locality LIMIT 20";
+			$result = DBOld::query($sql, "Could not find city");
 			while (($resultArray[] = mysql_fetch_assoc($result)) || array_pop($resultArray)) ;
 			return $resultArray;
 		}
@@ -38,7 +37,7 @@
 			HTML::tr(true)->td(array('class' => 'label'))->label(array('content' => 'Postcode: ', 'for' => $postcode[0]), false)->td->td(true);
 
 			UI::search($postcode[0],
-			           array('url' => $url . '?postcode=1', 'nodiv' => true, 'name' => $postcode[0], 'size' => 35, 'max' => 40, 'callback' => 'Adv.postcode' . static::$count . '.fetch'));
+				array('url' => $url . '?postcode=1', 'nodiv' => true, 'name' => $postcode[0], 'size' => 35, 'max' => 40, 'callback' => 'Adv.postcode' . static::$count . '.fetch'));
 			HTML::td()->tr;
 			static::registerJS("#" . $postcode[0], "#" . $city[0], "#" . $state[0]);
 		}
@@ -61,7 +60,7 @@ Adv.extend({
     }())
 })
 JS
-);
+			);
 			static::$count++;
 		}
 	}

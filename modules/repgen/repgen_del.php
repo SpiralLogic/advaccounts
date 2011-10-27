@@ -28,13 +28,11 @@
  */
 	$page_security = 'SA_REPORT_GENERATOR';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	add_access_extensions();
 
-	include_once(APP_PATH . "admin/db/company_db.inc");
-
-	require_once("repgen_const.inc");
-	require_once("repgen_def.inc");
+	require_once("repgen_const.php");
+	require_once("repgen_def.php");
 
 	###
 	### Submit Handler
@@ -49,7 +47,7 @@
 	if (isset($delete)) {
 		// deletes all records with id from table reports
 		$query = "DELETE FROM xx_reports WHERE id = '" . $id . "'";
-		db_query($query);
+		DBOld::query($query);
 		$url = REPGENDIR . "/repgen_select.php?id=" . $id;
 		$url = "http://$HTTP_HOST" . $url;
 		header("Location: " . $url); // switches to repgen_select.php
@@ -84,7 +82,7 @@
 
 	start_form(false, false, "repgen_del.php", "edit");
 
-	start_table(Config::get('tables.style2'));
+	start_table(Config::get('tables_style2'));
 	start_row();
 	submit_cells("delete", DEL_BACK);
 	submit_cells("back", BACK);

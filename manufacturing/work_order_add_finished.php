@@ -11,16 +11,14 @@
 	 ***********************************************************************/
 	$page_security = 'SA_MANUFRECEIVE';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	include_once(APP_PATH . "gl/includes/db/gl_db_bank_trans.inc");
+	include_once(APP_PATH . "gl/includes/db/gl_db_bank_trans.php");
 
-	include_once(APP_PATH . "includes/manufacturing.inc");
-
-	include_once(APP_PATH . "manufacturing/includes/manufacturing_ui.inc");
+	include_once(APP_PATH . "manufacturing/includes/manufacturing_ui.php");
 
 	$js = "";
-	if (Config::get('ui.windows.popups'))
+	if (Config::get('ui_windows_popups'))
 		$js .= ui_view::get_js_open_window(900, 500);
 
 	page(_($help_context = "Produce or Unassemble Finished Items From Work Order"), false, false, "", $js);
@@ -32,17 +30,17 @@
 	//--------------------------------------------------------------------------------------------------
 
 	if (isset($_GET['AddedID'])) {
-		include_once(APP_PATH . "reporting/includes/reporting.inc");
+		include_once(APP_PATH . "reporting/includes/reporting.php");
 		$id = $_GET['AddedID'];
 		$stype = ST_WORKORDER;
 
 		ui_msgs::display_notification(_("The manufacturing process has been entered."));
 
-		ui_msgs::display_note(ui_view::get_trans_view_str($stype, $id, _("View this Work Order")));
+		ui_msgs::display_warning(ui_view::get_trans_view_str($stype, $id, _("View this Work Order")));
 
-		ui_msgs::display_note(ui_view::get_gl_view_str($stype, $id, _("View the GL Journal Entries for this Work Order")), 1);
+		ui_msgs::display_warning(ui_view::get_gl_view_str($stype, $id, _("View the GL Journal Entries for this Work Order")), 1);
 		$ar = array('PARAM_0' => $_GET['date'], 'PARAM_1' => $_GET['date'], 'PARAM_2' => $stype);
-		ui_msgs::display_note(print_link(_("Print the GL Journal Entries for this Work Order"), 702, $ar), 1);
+		ui_msgs::display_warning(print_link(_("Print the GL Journal Entries for this Work Order"), 702, $ar), 1);
 
 		hyperlink_no_params("search_work_orders.php", _("Select another &Work Order to Process"));
 
@@ -62,9 +60,9 @@
 	//--------------------------------------------------------------------------------------------------
 
 	function can_process() {
-		global $wo_details, $SysPrefs, $Refs;
+		global $wo_details;
 
-		if (!$Refs->is_valid($_POST['ref'])) {
+		if (!Refs::is_valid($_POST['ref'])) {
 			ui_msgs::display_error(_("You must enter a reference."));
 			ui_view::set_focus('ref');
 			return false;
@@ -76,7 +74,7 @@
 			return false;
 		}
 
-		if (!check_num('quantity', 0)) {
+		if (!Validation::is_num('quantity', 0)) {
 			ui_msgs::display_error(_("The quantity entered is not a valid number or less then zero."));
 			ui_view::set_focus('quantity');
 			return false;
@@ -100,7 +98,7 @@
 		}
 
 		// if unassembling we need to check the qoh
-		if (($_POST['ProductionType'] == 0) && !$SysPrefs->allow_negative_stock()) {
+		if (($_POST['ProductionType'] == 0) && !SysPrefs::allow_negative_stock()) {
 			$wo_details = get_work_order($_POST['selected_id']);
 
 			$qoh = get_qoh_on_date($wo_details["stock_id"], $wo_details["loc_code"], $_POST['date_']);
@@ -112,10 +110,10 @@
 		}
 
 		// if production we need to check the qoh of the wo requirements
-		if (($_POST['ProductionType'] == 1) && !$SysPrefs->allow_negative_stock()) {
+		if (($_POST['ProductionType'] == 1) && !SysPrefs::allow_negative_stock()) {
 			$err = false;
 			$result = get_wo_requirements($_POST['selected_id']);
-			while ($row = db_fetch($result))
+			while ($row = DBOld::fetch($result))
 			{
 				if ($row['mb_flag'] == 'D') // service, non stock
 					continue;
@@ -168,10 +166,10 @@
 		$_POST['quantity'] = qty_format(max($wo_details["units_reqd"] - $wo_details["units_issued"], 0),
 			$wo_details["stock_id"], $dec);
 
-	start_table(Config::get('tables.style2'));
+	start_table(Config::get('tables_style2'));
 	br();
 
-	ref_row(_("Reference:"), 'ref', '', $Refs->get_next(29));
+	ref_row(_("Reference:"), 'ref', '', Refs::get_next(29));
 
 	if (!isset($_POST['ProductionType']))
 		$_POST['ProductionType'] = 1;

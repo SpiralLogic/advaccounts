@@ -21,7 +21,7 @@
  * as this file.
  *
  */
-	$system_path = "../../jobsboard/system";
+	$system_path = "/var/www/advaccounts/jobsboard/system";
 
 /*
  *---------------------------------------------------------------
@@ -37,7 +37,7 @@
  * NO TRAILING SLASH!
  *
  */
-	$application_folder = "../../jobsboard/application";
+	$application_folder = "/var/www/advaccounts/jobsboard/application";
 
 /*
  * --------------------------------------------------------------------

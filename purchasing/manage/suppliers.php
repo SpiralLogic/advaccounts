@@ -11,11 +11,11 @@
 	 ***********************************************************************/
 	$page_security = 'SA_SUPPLIER';
 
-	include("../../includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	page(_($help_context = "Suppliers"), Input::request('popup'));
 
-	check_db_has_tax_groups(_("There are no tax groups defined in the system. At least one tax group is required before proceeding."));
+	Validation::check(Validation::TAX_GROUP, _("There are no tax groups defined in the system. At least one tax group is required before proceeding."));
 
 	if (isset($_GET['supplier_id'])) {
 		$_POST['supplier_id'] = $_GET['supplier_id'];
@@ -48,33 +48,33 @@
 
 			if (!$new_supplier) {
 
-				$sql = "UPDATE suppliers SET supp_name=" . db_escape($_POST['supp_name']) . ",
-				supp_ref=" . db_escape($_POST['supp_ref']) . ",
-                address=" . db_escape($_POST['address']) . ",
-                supp_address=" . db_escape($_POST['supp_address']) . ",
-                phone=" . db_escape($_POST['phone']) . ",
-                phone2=" . db_escape($_POST['phone2']) . ",
-                fax=" . db_escape($_POST['fax']) . ",
-                gst_no=" . db_escape($_POST['gst_no']) . ",
-                email=" . db_escape($_POST['email']) . ",
-                website=" . db_escape($_POST['website']) . ",
-                contact=" . db_escape($_POST['contact']) . ",
-                supp_account_no=" . db_escape($_POST['supp_account_no']) . ",
-                bank_account=" . db_escape($_POST['bank_account']) . ",
+				$sql = "UPDATE suppliers SET supp_name=" . DBOld::escape($_POST['supp_name']) . ",
+				supp_ref=" . DBOld::escape($_POST['supp_ref']) . ",
+                address=" . DBOld::escape($_POST['address']) . ",
+                supp_address=" . DBOld::escape($_POST['supp_address']) . ",
+                phone=" . DBOld::escape($_POST['phone']) . ",
+                phone2=" . DBOld::escape($_POST['phone2']) . ",
+                fax=" . DBOld::escape($_POST['fax']) . ",
+                gst_no=" . DBOld::escape($_POST['gst_no']) . ",
+                email=" . DBOld::escape($_POST['email']) . ",
+                website=" . DBOld::escape($_POST['website']) . ",
+                contact=" . DBOld::escape($_POST['contact']) . ",
+                supp_account_no=" . DBOld::escape($_POST['supp_account_no']) . ",
+                bank_account=" . DBOld::escape($_POST['bank_account']) . ",
                 credit_limit=" . input_num('credit_limit', 0) . ",
-                dimension_id=" . db_escape($_POST['dimension_id']) . ",
-                dimension2_id=" . db_escape($_POST['dimension2_id']) . ",
-                curr_code=" . db_escape($_POST['curr_code']) . ",
-                payment_terms=" . db_escape($_POST['payment_terms']) . ",
-				payable_account=" . db_escape($_POST['payable_account']) . ",
-				purchase_account=" . db_escape($_POST['purchase_account']) . ",
-				payment_discount_account=" . db_escape($_POST['payment_discount_account']) . ",
-                notes=" . db_escape($_POST['notes']) . ",
-				tax_group_id=" . db_escape($_POST['tax_group_id']) . " WHERE supplier_id = " . db_escape(
+                dimension_id=" . DBOld::escape($_POST['dimension_id']) . ",
+                dimension2_id=" . DBOld::escape($_POST['dimension2_id']) . ",
+                curr_code=" . DBOld::escape($_POST['curr_code']) . ",
+                payment_terms=" . DBOld::escape($_POST['payment_terms']) . ",
+				payable_account=" . DBOld::escape($_POST['payable_account']) . ",
+				purchase_account=" . DBOld::escape($_POST['purchase_account']) . ",
+				payment_discount_account=" . DBOld::escape($_POST['payment_discount_account']) . ",
+                notes=" . DBOld::escape($_POST['notes']) . ",
+				tax_group_id=" . DBOld::escape($_POST['tax_group_id']) . " WHERE supplier_id = " . DBOld::escape(
 					$_POST['supplier_id']);
 
-				db_query($sql, "The supplier could not be updated");
-				update_record_status($_POST['supplier_id'], $_POST['inactive'],
+				DBOld::query($sql, "The supplier could not be updated");
+				DBOld::update_record_status($_POST['supplier_id'], $_POST['inactive'],
 					'suppliers', 'supplier_id');
 
 				$Ajax->activate('supplier_id'); // in case of status change
@@ -86,33 +86,33 @@
 				$sql = "INSERT INTO suppliers (supp_name, supp_ref, address, supp_address, phone, phone2, fax, gst_no, email, website,
 				contact, supp_account_no, bank_account, credit_limit, dimension_id, dimension2_id, curr_code,
 				payment_terms, payable_account, purchase_account, payment_discount_account, notes, tax_group_id)
-				VALUES (" . db_escape($_POST['supp_name']) . ", "
-				 . db_escape($_POST['supp_ref']) . ", "
-				 . db_escape($_POST['address']) . ", "
-				 . db_escape($_POST['supp_address']) . ", "
-				 . db_escape($_POST['phone']) . ", "
-				 . db_escape($_POST['phone2']) . ", "
-				 . db_escape($_POST['fax']) . ", "
-				 . db_escape($_POST['gst_no']) . ", "
-				 . db_escape($_POST['email']) . ", "
-				 . db_escape($_POST['website']) . ", "
-				 . db_escape($_POST['contact']) . ", "
-				 . db_escape($_POST['supp_account_no']) . ", "
-				 . db_escape($_POST['bank_account']) . ", "
+				VALUES (" . DBOld::escape($_POST['supp_name']) . ", "
+				 . DBOld::escape($_POST['supp_ref']) . ", "
+				 . DBOld::escape($_POST['address']) . ", "
+				 . DBOld::escape($_POST['supp_address']) . ", "
+				 . DBOld::escape($_POST['phone']) . ", "
+				 . DBOld::escape($_POST['phone2']) . ", "
+				 . DBOld::escape($_POST['fax']) . ", "
+				 . DBOld::escape($_POST['gst_no']) . ", "
+				 . DBOld::escape($_POST['email']) . ", "
+				 . DBOld::escape($_POST['website']) . ", "
+				 . DBOld::escape($_POST['contact']) . ", "
+				 . DBOld::escape($_POST['supp_account_no']) . ", "
+				 . DBOld::escape($_POST['bank_account']) . ", "
 				 . input_num('credit_limit', 0) . ", "
-				 . db_escape($_POST['dimension_id']) . ", "
-				 . db_escape($_POST['dimension2_id']) . ", "
-				 . db_escape($_POST['curr_code']) . ", "
-				 . db_escape($_POST['payment_terms']) . ", "
-				 . db_escape($_POST['payable_account']) . ", "
-				 . db_escape($_POST['purchase_account']) . ", "
-				 . db_escape($_POST['payment_discount_account']) . ", "
-				 . db_escape($_POST['notes']) . ", "
-				 . db_escape($_POST['tax_group_id']) . ")";
+				 . DBOld::escape($_POST['dimension_id']) . ", "
+				 . DBOld::escape($_POST['dimension2_id']) . ", "
+				 . DBOld::escape($_POST['curr_code']) . ", "
+				 . DBOld::escape($_POST['payment_terms']) . ", "
+				 . DBOld::escape($_POST['payable_account']) . ", "
+				 . DBOld::escape($_POST['purchase_account']) . ", "
+				 . DBOld::escape($_POST['payment_discount_account']) . ", "
+				 . DBOld::escape($_POST['notes']) . ", "
+				 . DBOld::escape($_POST['tax_group_id']) . ")";
 
-				db_query($sql, "The supplier could not be added");
-				$_POST['supplier_id'] = db_insert_id();
-				$new_supplier = false;
+				DBOld::query($sql, "The supplier could not be added");
+				$_POST['supplier_id'] = DBOld::insert_id();
+				$new_supplier         = false;
 				ui_msgs::display_notification(_("A new supplier has been added."));
 				$Ajax->activate('_page_body');
 			}
@@ -126,26 +126,26 @@
 
 		// PREVENT DELETES IF DEPENDENT RECORDS IN 'supp_trans' , purch_orders
 
-		$sql = "SELECT COUNT(*) FROM supp_trans WHERE supplier_id=" . db_escape($_POST['supplier_id']);
-		$result = db_query($sql, "check failed");
-		$myrow = db_fetch_row($result);
+		$sql    = "SELECT COUNT(*) FROM supp_trans WHERE supplier_id=" . DBOld::escape($_POST['supplier_id']);
+		$result = DBOld::query($sql, "check failed");
+		$myrow  = DBOld::fetch_row($result);
 		if ($myrow[0] > 0) {
 			$cancel_delete = 1;
 			ui_msgs::display_error(_("Cannot delete this supplier because there are transactions that refer to this supplier."));
 		}
 		else
 		{
-			$sql = "SELECT COUNT(*) FROM purch_orders WHERE supplier_id=" . db_escape($_POST['supplier_id']);
-			$result = db_query($sql, "check failed");
-			$myrow = db_fetch_row($result);
+			$sql    = "SELECT COUNT(*) FROM purch_orders WHERE supplier_id=" . DBOld::escape($_POST['supplier_id']);
+			$result = DBOld::query($sql, "check failed");
+			$myrow  = DBOld::fetch_row($result);
 			if ($myrow[0] > 0) {
 				$cancel_delete = 1;
 				ui_msgs::display_error(_("Cannot delete the supplier record because purchase orders have been created against this supplier."));
 			}
 		}
 		if ($cancel_delete == 0) {
-			$sql = "DELETE FROM suppliers WHERE supplier_id=" . db_escape($_POST['supplier_id']);
-			db_query($sql, "check failed");
+			$sql = "DELETE FROM suppliers WHERE supplier_id=" . DBOld::escape($_POST['supplier_id']);
+			DBOld::query($sql, "check failed");
 
 			unset($_SESSION['supplier_id']);
 			$new_supplier = true;
@@ -155,7 +155,7 @@
 
 	start_form();
 
-	if (db_has_suppliers()) {
+	if (Validation::check(Validation::SUPPLIERS,)) {
 		start_table("", 3);
 		//	start_table("class = 'tablestyle_noborder'");
 		start_row();
@@ -174,7 +174,7 @@
 		hidden('supplier_id', get_post('supplier_id'));
 	}
 
-	start_outer_table(Config::get('tables.style2'), 5);
+	start_outer_table(Config::get('tables_style2'), 5);
 
 	table_section(1);
 
@@ -182,49 +182,49 @@
 		//SupplierID exists - either passed when calling the form or from the form itself
 		$myrow = get_supplier($_POST['supplier_id']);
 
-		$_POST['supp_name'] = $myrow["supp_name"];
-		$_POST['supp_ref'] = $myrow["supp_ref"];
-		$_POST['address'] = $myrow["address"];
-		$_POST['supp_address'] = $myrow["supp_address"];
-		$_POST['phone'] = $myrow["phone"];
-		$_POST['phone2'] = $myrow["phone2"];
-		$_POST['fax'] = $myrow["fax"];
-		$_POST['gst_no'] = $myrow["gst_no"];
-		$_POST['email'] = $myrow["email"];
-		$_POST['website'] = $myrow["website"];
-		$_POST['contact'] = $myrow["contact"];
-		$_POST['supp_account_no'] = $myrow["supp_account_no"];
-		$_POST['bank_account'] = $myrow["bank_account"];
-		$_POST['dimension_id'] = $myrow["dimension_id"];
-		$_POST['dimension2_id'] = $myrow["dimension2_id"];
-		$_POST['curr_code'] = $myrow["curr_code"];
-		$_POST['payment_terms'] = $myrow["payment_terms"];
-		$_POST['credit_limit'] = price_format($myrow["credit_limit"]);
-		$_POST['tax_group_id'] = $myrow["tax_group_id"];
-		$_POST['payable_account'] = $myrow["payable_account"];
-		$_POST['purchase_account'] = $myrow["purchase_account"];
+		$_POST['supp_name']                = $myrow["supp_name"];
+		$_POST['supp_ref']                 = $myrow["supp_ref"];
+		$_POST['address']                  = $myrow["address"];
+		$_POST['supp_address']             = $myrow["supp_address"];
+		$_POST['phone']                    = $myrow["phone"];
+		$_POST['phone2']                   = $myrow["phone2"];
+		$_POST['fax']                      = $myrow["fax"];
+		$_POST['gst_no']                   = $myrow["gst_no"];
+		$_POST['email']                    = $myrow["email"];
+		$_POST['website']                  = $myrow["website"];
+		$_POST['contact']                  = $myrow["contact"];
+		$_POST['supp_account_no']          = $myrow["supp_account_no"];
+		$_POST['bank_account']             = $myrow["bank_account"];
+		$_POST['dimension_id']             = $myrow["dimension_id"];
+		$_POST['dimension2_id']            = $myrow["dimension2_id"];
+		$_POST['curr_code']                = $myrow["curr_code"];
+		$_POST['payment_terms']            = $myrow["payment_terms"];
+		$_POST['credit_limit']             = price_format($myrow["credit_limit"]);
+		$_POST['tax_group_id']             = $myrow["tax_group_id"];
+		$_POST['payable_account']          = $myrow["payable_account"];
+		$_POST['purchase_account']         = $myrow["purchase_account"];
 		$_POST['payment_discount_account'] = $myrow["payment_discount_account"];
-		$_POST['notes'] = $myrow["notes"];
-		$_POST['inactive'] = $myrow["inactive"];
+		$_POST['notes']                    = $myrow["notes"];
+		$_POST['inactive']                 = $myrow["inactive"];
 	}
 	else
 	{
-		$_POST['supp_name'] = $_POST['supp_ref'] = $_POST['address'] = $_POST['supp_address'] =
+		$_POST['supp_name']     = $_POST['supp_ref'] = $_POST['address'] = $_POST['supp_address'] =
 		$_POST['tax_group_id'] = $_POST['website'] = $_POST['supp_account_no'] = $_POST['notes'] = '';
-		$_POST['dimension_id'] = 0;
+		$_POST['dimension_id']  = 0;
 		$_POST['dimension2_id'] = 0;
-		$_POST['sales_type'] = -1;
-		$_POST['email'] = $_POST['phone'] = $_POST['phone2'] = $_POST['fax'] =
+		$_POST['sales_type']    = -1;
+		$_POST['email']         = $_POST['phone'] = $_POST['phone2'] = $_POST['fax'] =
 		$_POST['gst_no'] = $_POST['contact'] = $_POST['bank_account'] = '';
 		$_POST['payment_terms'] = '';
-		$_POST['credit_limit'] = price_format(0);
+		$_POST['credit_limit']  = price_format(0);
 
-		$company_record = get_company_prefs();
-		$_POST['curr_code'] = $company_record["curr_default"];
-		$_POST['payable_account'] = $company_record["creditors_act"];
-		$_POST['purchase_account'] = $company_record["default_cogs_act"];
+		$company_record                    = DB_Company::get_prefs();
+		$_POST['curr_code']                = $company_record["curr_default"];
+		$_POST['payable_account']          = $company_record["creditors_act"];
+		$_POST['purchase_account']         = $company_record["default_cogs_act"];
 		$_POST['payment_discount_account'] = $company_record['pyt_discount_act'];
-		$_POST['inactive'] = 0;
+		$_POST['inactive']                 = 0;
 	}
 
 	table_section_title(_("Name and Contact"));
@@ -273,7 +273,7 @@
 	gl_all_accounts_list_row(_("Purchase Discount Account:"), 'payment_discount_account',
 		$_POST['payment_discount_account']);
 
-	$dim = get_company_pref('use_dimension');
+	$dim = DB_Company::get_pref('use_dimension');
 	if ($dim >= 1) {
 		table_section_title(_("Dimension"));
 

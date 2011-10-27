@@ -11,8 +11,8 @@
 	 ***********************************************************************/
 	$page_security = 'SA_SETUPCOMPANY';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
-	FB::info($_SESSION);
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
+
 	page(_($help_context = "System Diagnostics"));
 
 	// Type of requirement for positive test result
@@ -112,17 +112,16 @@
 		$test['descr'] = _('Error logging');
 		$test['type'] = 2;
 		// if error lgging is on, but log file does not exists try write
-		if (Config::get('logs.error.file') && !is_file(Config::get('logs.error.file'))) {
-			@fclose(@fopen(Config::get('logs.error.file'), 'w'));
+		if (Config::get('logs_error_file') && !is_file(Config::get('logs_error_file'))) {
+			fclose(fopen(Config::get('logs_error_file'), 'w'));
 		}
-		$test['result'] = @Config::get('logs.error.file') != '' && is_writable(Config::get('logs.error.file'));
-		$test['test'] = @Config::get('logs.error.file') == '' ? _("Disabled") : Config::get('logs.error.file');
+		$test['result'] = Config::get('logs_error_file') != '' && is_writable(Config::get('logs_error_file'));
+		$test['test'] = Config::get('logs_error_file') == '' ? _("Disabled") : Config::get('logs_error_file');
 
-		if (@Config::get('logs.error.file') == '')
+		if (Config::get('logs_error_file') == '')
 			$test['comments'] = _('To switch error logging set $error_logging in config.php file');
-		else
-			if (!is_writable(Config::get('logs.error.file')))
-				$test['comments'] = _('Log file is not writeable');
+		else if (!is_writable(Config::get('logs_error_file')))
+			$test['comments'] = _('Log file is not writeable');
 
 		return $test;
 	}
@@ -133,7 +132,7 @@
 	function tst_dbversion() {
 		$test['descr'] = _('Current database version');
 		$test['type'] = 3;
-		$test['test'] = get_company_pref('version_id');
+		$test['test'] = DB_Company::get_pref('version_id');
 		$test['result'] = $test['test'] == '2.2';
 		$test['comments'] = _('Database structure seems to be not upgraded to current version')
 		 . ' (2.2)';
@@ -142,7 +141,6 @@
 	}
 
 	function tst_subdirs() {
-		global $db_connections;
 
 		$comp_subdirs = array('images', 'pdf_files', 'backup', 'js_cache');
 
@@ -160,7 +158,7 @@
 			return $test;
 		}
 		;
-		foreach ($db_connections as $n => $comp) {
+		foreach (Config::get_all('db') as $n => $comp) {
 			$path = COMPANY_PATH . "/";
 			if (!is_dir($path) || !is_writable($path)) {
 				$test['result'] = false;
@@ -200,7 +198,6 @@
 	}
 
 	function tst_langs() {
-		global $installed_languages;
 
 		$test['descr'] = _('Language configuration consistency');
 		$test['type'] = 3;
@@ -211,7 +208,7 @@
 
 		$langs = array();
 
-		foreach ($installed_languages as $lang) {
+		foreach (Config::get_all('installed_languages') as $lang) {
 			$langs[] = $lang['code'];
 			if ($lang['code'] == 'en_AU') continue; // native FA language
 
@@ -240,27 +237,26 @@
 
 		$test['descr'] = _('Main config file');
 		$test['type'] = 2;
-		$test['test'] = PATH_TO_ROOT . '/config.php';
+		$test['test'] = PATH_TO_ROOT . '/config/config.php';
 		$test['result'] = is_file($test['test']) && !is_writable($test['test']);
 		$test['comments'][] = sprintf(_("'%s' file should be read-only"), $test['test']);
 		return $test;
 	}
 
 	function tst_extconfig() {
-		global $db_connections;
 
 		$test['descr'] = _('Extensions configuration files');
 		$test['type'] = 3;
-		$test['test'] = PATH_TO_ROOT . '/installed_extensions.php';
+		$test['test'] = PATH_TO_ROOT . '/config/installed_extensions.php';
 		$test['result'] = is_file($test['test']) && is_writable($test['test']);
 		$test['test'] . ',' . COMPANY_PATH . '/*/installed_extensions.php';
 		$test['comments'][] = sprintf(_("'%s' file should be writeable"), $test['test']);
 
-		foreach ($db_connections as $n => $comp) {
+		foreach (Config::get_all('db') as $n => $comp) {
 			$path = COMPANY_PATH . "/$n";
 			if (!is_dir($path)) continue;
 
-			$path .= "/installed_extensions.php";
+			$path .= "/config/installed_extensions.php";
 			if (!is_file($path) || !is_writable($path)) {
 				$test['result'] = false;
 				$test['comments'][] = sprintf(_("'%s' is not writeable"), $path);

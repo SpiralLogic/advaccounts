@@ -17,9 +17,9 @@
 	// Title:	GRN Valuation Report
 	// ----------------------------------------------------------------
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	include_once(APP_PATH . "inventory/includes/db/items_category_db.inc");
+	include_once(APP_PATH . "inventory/includes/db/items_category_db.php");
 
 	//----------------------------------------------------------------------------------------------------
 
@@ -42,7 +42,7 @@
         AND grn_batch.delivery_date<='$to'
         ORDER BY stock_master.stock_id, grn_batch.delivery_date";
 
-		return db_query($sql, "No transactions were returned");
+		return DBOld::query($sql, "No transactions were returned");
 	}
 
 	//----------------------------------------------------------------------------------------------------
@@ -54,9 +54,9 @@
 		$comments = $_POST['PARAM_2'];
 		$destination = $_POST['PARAM_3'];
 		if ($destination)
-			include_once(APP_PATH . "reporting/includes/excel_report.inc");
+			include_once(APP_PATH . "reporting/includes/excel_report.php");
 		else
-			include_once(APP_PATH . "reporting/includes/pdf_report.inc");
+			include_once(APP_PATH . "reporting/includes/pdf_report.php");
 
 		$dec = user_price_dec();
 
@@ -80,7 +80,7 @@
 		$res = getTransactions($from, $to);
 		$total = $qtotal = $grandtotal = 0.0;
 		$stock_id = '';
-		while ($trans = db_fetch($res))
+		while ($trans = DBOld::fetch($res))
 		{
 			if ($stock_id != $trans['item_code']) {
 				if ($stock_id != '') {

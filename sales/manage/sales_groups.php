@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 	$page_security = 'SA_SALESGROUP';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	page(_($help_context = "Sales Groups"));
 
@@ -29,17 +29,17 @@
 
 		if ($input_error != 1) {
 			if ($selected_id != -1) {
-				$sql = "UPDATE groups SET description=" . db_escape(
-					$_POST['description']) . " WHERE id = " . db_escape($selected_id);
+				$sql = "UPDATE groups SET description=" . DBOld::escape(
+					$_POST['description']) . " WHERE id = " . DBOld::escape($selected_id);
 				$note = _('Selected sales group has been updated');
 			}
 			else
 			{
-				$sql = "INSERT INTO groups (description) VALUES (" . db_escape($_POST['description']) . ")";
+				$sql = "INSERT INTO groups (description) VALUES (" . DBOld::escape($_POST['description']) . ")";
 				$note = _('New sales group has been added');
 			}
 
-			db_query($sql, "The sales group could not be updated or added");
+			DBOld::query($sql, "The sales group could not be updated or added");
 			ui_msgs::display_notification($note);
 			$Mode = 'RESET';
 		}
@@ -51,16 +51,16 @@
 
 		// PREVENT DELETES IF DEPENDENT RECORDS IN 'debtors_master'
 
-		$sql = "SELECT COUNT(*) FROM cust_branch WHERE group_no=" . db_escape($selected_id);
-		$result = db_query($sql, "check failed");
-		$myrow = db_fetch_row($result);
+		$sql = "SELECT COUNT(*) FROM cust_branch WHERE group_no=" . DBOld::escape($selected_id);
+		$result = DBOld::query($sql, "check failed");
+		$myrow = DBOld::fetch_row($result);
 		if ($myrow[0] > 0) {
 			$cancel_delete = 1;
 			ui_msgs::display_error(_("Cannot delete this group because customers have been created using this group."));
 		}
 		if ($cancel_delete == 0) {
-			$sql = "DELETE FROM groups WHERE id=" . db_escape($selected_id);
-			db_query($sql, "could not delete sales group");
+			$sql = "DELETE FROM groups WHERE id=" . DBOld::escape($selected_id);
+			DBOld::query($sql, "could not delete sales group");
 
 			ui_msgs::display_notification(_('Selected sales group has been deleted'));
 		} //end if Delete area
@@ -78,17 +78,17 @@
 	$sql = "SELECT * FROM groups";
 	if (!check_value('show_inactive')) $sql .= " WHERE !inactive";
 	$sql .= " ORDER BY description";
-	$result = db_query($sql, "could not get groups");
+	$result = DBOld::query($sql, "could not get groups");
 
 	start_form();
-	start_table(Config::get('tables.style') . "  width=30%");
+	start_table(Config::get('tables_style') . "  width=30%");
 	$th = array(_("Group Name"), "", "");
 	inactive_control_column($th);
 
 	table_header($th);
 	$k = 0;
 
-	while ($myrow = db_fetch($result))
+	while ($myrow = DBOld::fetch($result))
 	{
 
 		alt_table_row_color($k);
@@ -107,15 +107,15 @@
 
 	//-------------------------------------------------------------------------------------------------
 
-	start_table(Config::get('tables.style2'));
+	start_table(Config::get('tables_style2'));
 
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {
 			//editing an existing area
-			$sql = "SELECT * FROM groups WHERE id=" . db_escape($selected_id);
+			$sql = "SELECT * FROM groups WHERE id=" . DBOld::escape($selected_id);
 
-			$result = db_query($sql, "could not get group");
-			$myrow = db_fetch($result);
+			$result = DBOld::query($sql, "could not get group");
+			$myrow = DBOld::fetch($result);
 
 			$_POST['description'] = $myrow["description"];
 		}

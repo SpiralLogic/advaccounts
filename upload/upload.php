@@ -1,7 +1,7 @@
 <?php
 	$page_security = 'SA_SALESMAN';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	//$upload_dir = APP_PATH.'sales/upload/';
 
 	$order = (isset($_SESSION['order_no'])) ? $_SESSION['order_no'] : (isset($_GET['order'])) ? $_GET['order'] : false;

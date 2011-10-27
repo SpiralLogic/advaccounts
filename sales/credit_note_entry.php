@@ -15,16 +15,16 @@
 	//
 	$page_security = 'SA_SALESCREDIT';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	include_once(APP_PATH . "sales/includes/sales_ui.inc");
-	include_once(APP_PATH . "sales/includes/db/sales_types_db.inc");
-	include_once(APP_PATH . "sales/includes/ui/sales_credit_ui.inc");
-	include_once(APP_PATH . "sales/includes/ui/sales_order_ui.inc");
-	include_once(APP_PATH . "reporting/includes/reporting.inc");
+	include_once(APP_PATH . "sales/includes/sales_ui.php");
+	include_once(APP_PATH . "sales/includes/db/sales_types_db.php");
+	include_once(APP_PATH . "sales/includes/ui/sales_credit_ui.php");
+	include_once(APP_PATH . "sales/includes/ui/sales_order_ui.php");
+	include_once(APP_PATH . "reporting/includes/reporting.php");
 
 	$js = "";
-	if (Config::get('ui.windows.popups')) {
+	if (Config::get('ui_windows_popups')) {
 		$js .= ui_view::get_js_open_window(900, 500);
 	}
 
@@ -36,15 +36,17 @@
 		$_SESSION['page_title'] = sprintf(_("Modifying Customer Credit Note #%d"), $_GET['ModifyCredit']);
 		handle_new_credit($_GET['ModifyCredit']);
 		$help_context = "Modifying Customer Credit Note";
+	} else {
+		$_SESSION['page_title'] = _($help_context = "Customer Credit Note");
 	}
 
 	page($_SESSION['page_title'], false, false, "", $js);
 
 	//-----------------------------------------------------------------------------
 
-	check_db_has_stock_items(_("There are no items defined in the system."));
+	Validation::check(Validation::STOCK_ITEMS, _("There are no items defined in the system."));
 
-	check_db_has_customer_branches(_("There are no customers, or there are no customers with branches. Please define customers and customer branches."));
+	Validation::check(Validation::BRANCHES_ACTIVE, _("There are no customers, or there are no customers with branches. Please define customers and customer branches."));
 
 	//-----------------------------------------------------------------------------
 
@@ -61,10 +63,10 @@
 
 		ui_msgs::display_notification_centered(sprintf(_("Credit Note # %d has been processed"), $credit_no));
 
-		ui_msgs::display_note(ui_view::get_customer_trans_view_str($trans_type, $credit_no, _("&View this credit note")), 0, 1);
+		ui_msgs::display_warning(ui_view::get_customer_trans_view_str($trans_type, $credit_no, _("&View this credit note")), 0, 1);
 
-		ui_msgs::display_note(print_document_link($credit_no . "-" . $trans_type, _("&Print This Credit Invoice"), true, ST_CUSTCREDIT), 0, 1);
-		ui_msgs::display_note(print_document_link($credit_no . "-" . $trans_type, _("&Email This Credit Invoice"), true, ST_CUSTCREDIT, false, "printlink", "", 1), 0, 1);
+		ui_msgs::display_warning(print_document_link($credit_no . "-" . $trans_type, _("&Print This Credit Invoice"), true, ST_CUSTCREDIT), 0, 1);
+		ui_msgs::display_warning(print_document_link($credit_no . "-" . $trans_type, _("&Email This Credit Invoice"), true, ST_CUSTCREDIT, false, "printlink", "", 1), 0, 1);
 
 		ui_msgs::display_note(ui_view::get_gl_view_str($trans_type, $credit_no, _("View the GL &Journal Entries for this Credit Note")));
 
@@ -80,7 +82,7 @@
 	//--------------------------------------------------------------------------------
 
 	function line_start_focus() {
-		global $Ajax;
+		$Ajax = Ajax::instance();
 		$Ajax->activate('items_table');
 		ui_view::set_focus('_stock_id_edit');
 	}
@@ -129,14 +131,13 @@
 	//-----------------------------------------------------------------------------
 
 	function can_process() {
-		global $Refs;
 
 		$input_error = 0;
 
-		if ($_SESSION['Items']->count_items() == 0 && (!check_num('ChargeFreightCost', 0)))
+		if ($_SESSION['Items']->count_items() == 0 && (!Validation::is_num('ChargeFreightCost', 0)))
 			return false;
 		if ($_SESSION['Items']->trans_no == 0) {
-			if (!$Refs->is_valid($_POST['ref'])) {
+			if (!Refs::is_valid($_POST['ref'])) {
 				ui_msgs::display_error(_("You must enter a reference."));
 				ui_view::set_focus('ref');
 				$input_error = 1;
@@ -167,8 +168,8 @@
 		if ($_POST['CreditType'] == "WriteOff" && (!isset($_POST['WriteOffGLCode']) ||
 		 $_POST['WriteOffGLCode'] == '')
 		) {
-			ui_msgs::display_note(_("For credit notes created to write off the stock, a general ledger account is required to be selected."), 1, 0);
-			ui_msgs::display_note(_("Please select an account to write the cost of the stock off to, then click on Process again."), 1, 0);
+			ui_msgs::display_warning(_("For credit notes created to write off the stock, a general ledger account is required to be selected."), 1, 0);
+			ui_msgs::display_warning(_("Please select an account to write the cost of the stock off to, then click on Process again."), 1, 0);
 			exit;
 		}
 		if (!isset($_POST['WriteOffGLCode'])) {
@@ -184,17 +185,17 @@
 	//-----------------------------------------------------------------------------
 
 	function check_item_data() {
-		if (!check_num('qty', 0)) {
+		if (!Validation::is_num('qty', 0)) {
 			ui_msgs::display_error(_("The quantity must be greater than zero."));
 			ui_view::set_focus('qty');
 			return false;
 		}
-		if (!check_num('price', 0)) {
+		if (!Validation::is_num('price', 0)) {
 			ui_msgs::display_error(_("The entered price is negative or invalid."));
 			ui_view::set_focus('price');
 			return false;
 		}
-		if (!check_num('Disc', 0, 100)) {
+		if (!Validation::is_num('Disc', 0, 100)) {
 			ui_msgs::display_error(_("The entered discount percent is negative, greater than 100 or invalid."));
 			ui_view::set_focus('Disc');
 			return false;
@@ -226,8 +227,7 @@
 		if (!check_item_data())
 			return;
 
-		add_to_order($_SESSION['Items'], $_POST['stock_id'], input_num('qty'),
-			input_num('price'), input_num('Disc') / 100);
+		add_to_order($_SESSION['Items'], $_POST['stock_id'], input_num('qty'), input_num('price'), input_num('Disc') / 100);
 		line_start_focus();
 	}
 
@@ -259,7 +259,7 @@
 	$customer_error = display_credit_header($_SESSION['Items']);
 
 	if ($customer_error == "") {
-		start_table(Config::get('tables.style2'), "width=90%", 10);
+		start_table(Config::get('tables_style2'), "width=90%", 10);
 		echo "<tr><td>";
 		display_credit_items(_("Credit Note Items"), $_SESSION['Items']);
 		credit_options_controls($_SESSION['Items']);

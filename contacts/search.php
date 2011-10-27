@@ -8,7 +8,7 @@
 	 */
 	$page_security = 'SA_CUSTOMER';
 
-	include_once("includes/contacts.inc");
+	include_once("includes/contacts.php");
 
 	if (AJAX_REFERRER) {
 		if (isset($_GET['postcode']) && isset($_GET['term'])) {

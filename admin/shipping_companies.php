@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 	$page_security = 'SA_SHIPPING';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	page(_($help_context = "Shipping Company"));
 
 	simple_page_mode(true);
@@ -30,13 +30,13 @@
 	if ($Mode == 'ADD_ITEM' && can_process()) {
 
 		$sql = "INSERT INTO shippers (shipper_name, contact, phone, phone2, address)
-		VALUES (" . db_escape($_POST['shipper_name']) . ", " .
-		 db_escape($_POST['contact']) . ", " .
-		 db_escape($_POST['phone']) . ", " .
-		 db_escape($_POST['phone2']) . ", " .
-		 db_escape($_POST['address']) . ")";
+		VALUES (" . DBOld::escape($_POST['shipper_name']) . ", " .
+		 DBOld::escape($_POST['contact']) . ", " .
+		 DBOld::escape($_POST['phone']) . ", " .
+		 DBOld::escape($_POST['phone2']) . ", " .
+		 DBOld::escape($_POST['address']) . ")";
 
-		db_query($sql, "The Shipping Company could not be added");
+		DBOld::query($sql, "The Shipping Company could not be added");
 		ui_msgs::display_notification(_('New shipping company has been added'));
 		$Mode = 'RESET';
 	}
@@ -45,14 +45,14 @@
 
 	if ($Mode == 'UPDATE_ITEM' && can_process()) {
 
-		$sql = "UPDATE shippers SET shipper_name=" . db_escape($_POST['shipper_name']) . " ,
-		contact =" . db_escape($_POST['contact']) . " ,
-		phone =" . db_escape($_POST['phone']) . " ,
-		phone2 =" . db_escape($_POST['phone2']) . " ,
-		address =" . db_escape($_POST['address']) . "
-		WHERE shipper_id = " . db_escape($selected_id);
+		$sql = "UPDATE shippers SET shipper_name=" . DBOld::escape($_POST['shipper_name']) . " ,
+		contact =" . DBOld::escape($_POST['contact']) . " ,
+		phone =" . DBOld::escape($_POST['phone']) . " ,
+		phone2 =" . DBOld::escape($_POST['phone2']) . " ,
+		address =" . DBOld::escape($_POST['address']) . "
+		WHERE shipper_id = " . DBOld::escape($selected_id);
 
-		db_query($sql, "The shipping company could not be updated");
+		DBOld::query($sql, "The shipping company could not be updated");
 		ui_msgs::display_notification(_('Selected shipping company has been updated'));
 		$Mode = 'RESET';
 	}
@@ -62,9 +62,9 @@
 	if ($Mode == 'Delete') {
 		// PREVENT DELETES IF DEPENDENT RECORDS IN 'sales_orders'
 
-		$sql = "SELECT COUNT(*) FROM sales_orders WHERE ship_via=" . db_escape($selected_id);
-		$result = db_query($sql, "check failed");
-		$myrow = db_fetch_row($result);
+		$sql = "SELECT COUNT(*) FROM sales_orders WHERE ship_via=" . DBOld::escape($selected_id);
+		$result = DBOld::query($sql, "check failed");
+		$myrow = DBOld::fetch_row($result);
 		if ($myrow[0] > 0) {
 			$cancel_delete = 1;
 			ui_msgs::display_error(_("Cannot delete this shipping company because sales orders have been created using this shipper."));
@@ -73,17 +73,17 @@
 		{
 			// PREVENT DELETES IF DEPENDENT RECORDS IN 'debtor_trans'
 
-			$sql = "SELECT COUNT(*) FROM debtor_trans WHERE ship_via=" . db_escape($selected_id);
-			$result = db_query($sql, "check failed");
-			$myrow = db_fetch_row($result);
+			$sql = "SELECT COUNT(*) FROM debtor_trans WHERE ship_via=" . DBOld::escape($selected_id);
+			$result = DBOld::query($sql, "check failed");
+			$myrow = DBOld::fetch_row($result);
 			if ($myrow[0] > 0) {
 				$cancel_delete = 1;
 				ui_msgs::display_error(_("Cannot delete this shipping company because invoices have been created using this shipping company."));
 			}
 			else
 			{
-				$sql = "DELETE FROM shippers WHERE shipper_id=" . db_escape($selected_id);
-				db_query($sql, "could not delete shipper");
+				$sql = "DELETE FROM shippers WHERE shipper_id=" . DBOld::escape($selected_id);
+				DBOld::query($sql, "could not delete shipper");
 				ui_msgs::display_notification(_('Selected shipping company has been deleted'));
 			}
 		}
@@ -101,17 +101,17 @@
 	$sql = "SELECT * FROM shippers";
 	if (!check_value('show_inactive')) $sql .= " WHERE !inactive";
 	$sql .= " ORDER BY shipper_id";
-	$result = db_query($sql, "could not get shippers");
+	$result = DBOld::query($sql, "could not get shippers");
 
 	start_form();
-	start_table(Config::get('tables.style'));
+	start_table(Config::get('tables_style'));
 	$th = array(_("Name"), _("Contact Person"), _("Phone Number"), _("Secondary Phone"), _("Address"), "", "");
 	inactive_control_column($th);
 	table_header($th);
 
 	$k = 0; //row colour counter
 
-	while ($myrow = db_fetch($result))
+	while ($myrow = DBOld::fetch($result))
 	{
 		alt_table_row_color($k);
 		label_cell($myrow["shipper_name"]);
@@ -130,16 +130,16 @@
 
 	//----------------------------------------------------------------------------------------------
 
-	start_table(Config::get('tables.style2'));
+	start_table(Config::get('tables_style2'));
 
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {
 			//editing an existing Shipper
 
-			$sql = "SELECT * FROM shippers WHERE shipper_id=" . db_escape($selected_id);
+			$sql = "SELECT * FROM shippers WHERE shipper_id=" . DBOld::escape($selected_id);
 
-			$result = db_query($sql, "could not get shipper");
-			$myrow = db_fetch($result);
+			$result = DBOld::query($sql, "could not get shipper");
+			$myrow = DBOld::fetch($result);
 
 			$_POST['shipper_name'] = $myrow["shipper_name"];
 			$_POST['contact'] = $myrow["contact"];

@@ -11,12 +11,12 @@
 	 ***********************************************************************/
 	$page_security = 'SA_SUPPLIERALLOC';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	//include_once(APP_PATH . "purchasing/includes/ui/supp_alloc_ui.inc");
+	//include_once(APP_PATH . "purchasing/includes/ui/supp_alloc_ui.php");
 
 	$js = "";
-	if (Config::get('ui.windows.popups'))
+	if (Config::get('ui_windows_popups'))
 		$js .= ui_view::get_js_open_window(900, 500);
 
 	JS::footerFile('/js/allocate.js');
@@ -52,7 +52,7 @@
 
 		div_start('alloc_tbl');
 		if (count($_SESSION['alloc']->allocs) > 0) {
-			show_allocatable(true);
+			Allocation::show_allocatable(true);
 
 			submit_center_first('UpdateDisplay', _("Refresh"), _('Start again allocation of selected amount'), true);
 			submit('Process', _("Process"), true, _('Process allocations'), 'default');
@@ -61,7 +61,7 @@
 		}
 		else
 		{
-			ui_msgs::display_note(_("There are no unsettled transactions to allocate."), 0, 1);
+			ui_msgs::display_warning(_("There are no unsettled transactions to allocate."), 0, 1);
 			submit_center('Cancel', _("Back to Allocations"), true,
 				_('Abandon allocations and return to selection of allocatable amounts'), 'cancel');
 		}
@@ -73,7 +73,7 @@
 	//--------------------------------------------------------------------------------
 
 	if (isset($_POST['Process'])) {
-		if (check_allocations()) {
+		if (Allocation::check_allocations()) {
 			$_SESSION['alloc']->write();
 			clear_allocations();
 			$_POST['Cancel'] = 1;

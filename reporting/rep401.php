@@ -17,9 +17,9 @@
 	// Title:	Bill Of Material
 	// ----------------------------------------------------------------
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	include_once(APP_PATH . "inventory/includes/db/items_db.inc");
+	include_once(APP_PATH . "inventory/includes/db/items_db.php");
 
 	//----------------------------------------------------------------------------------------------------
 
@@ -36,13 +36,13 @@
 			stock_master,
 			bom
 		WHERE stock_master.stock_id=bom.component
-		AND bom.parent >= " . db_escape($from) . "
-		AND bom.parent <= " . db_escape($to) . "
+		AND bom.parent >= " . DBOld::escape($from) . "
+		AND bom.parent <= " . DBOld::escape($to) . "
 		ORDER BY
 			bom.parent,
 			bom.component";
 
-		return db_query($sql, "No transactions were returned");
+		return DBOld::query($sql, "No transactions were returned");
 	}
 
 	//----------------------------------------------------------------------------------------------------
@@ -54,9 +54,9 @@
 		$comments = $_POST['PARAM_2'];
 		$destination = $_POST['PARAM_3'];
 		if ($destination)
-			include_once(APP_PATH . "reporting/includes/excel_report.inc");
+			include_once(APP_PATH . "reporting/includes/excel_report.php");
 		else
-			include_once(APP_PATH . "reporting/includes/pdf_report.inc");
+			include_once(APP_PATH . "reporting/includes/pdf_report.php");
 
 		$cols = array(0, 50, 305, 375, 445, 515);
 
@@ -76,7 +76,7 @@
 
 		$res = getTransactions($frompart, $topart);
 		$parent = '';
-		while ($trans = db_fetch($res))
+		while ($trans = DBOld::fetch($res))
 		{
 			if ($parent != $trans['parent']) {
 				if ($parent != '') {

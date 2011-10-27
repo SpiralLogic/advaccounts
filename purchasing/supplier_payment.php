@@ -11,12 +11,12 @@
 	 ***********************************************************************/
 	$page_security = 'SA_SUPPLIERPAYMNT';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	include_once(APP_PATH . "reporting/includes/reporting.inc");
+	include_once(APP_PATH . "reporting/includes/reporting.php");
 
 	$js = "";
-	if (Config::get('ui.windows.popups'))
+	if (Config::get('ui_windows_popups'))
 		$js .= ui_view::get_js_open_window(900, 500);
 
 	JS::headerFile('/js/payalloc.js');
@@ -29,9 +29,9 @@
 
 	//----------------------------------------------------------------------------------------
 
-	check_db_has_suppliers(_("There are no suppliers defined in the system."));
+	Validation::check(Validation::SUPPLIERS, _("There are no suppliers defined in the system."));
 
-	check_db_has_bank_accounts(_("There are no bank accounts defined in the system."));
+	Validation::check(Validation::BANK_ACCOUNTS, _("There are no bank accounts defined in the system."));
 
 	//----------------------------------------------------------------------------------------
 
@@ -62,7 +62,7 @@
 		submenu_print(_("&Print This Remittance"), ST_SUPPAYMENT, $payment_id . "-" . ST_SUPPAYMENT, 'prtopt');
 		submenu_print(_("&Email This Remittance"), ST_SUPPAYMENT, $payment_id . "-" . ST_SUPPAYMENT, null, 1);
 
-		ui_msgs::display_note(ui_view::get_gl_view_str(ST_SUPPAYMENT, $payment_id, _("View the GL &Journal Entries for this Payment")));
+		ui_msgs::display_warning(ui_view::get_gl_view_str(ST_SUPPAYMENT, $payment_id, _("View the GL &Journal Entries for this Payment")));
 
 		//    hyperlink_params($path_to_root . "/purchasing/allocations/supplier_allocate.php", _("&Allocate this Payment"), "trans_no=$payment_id&trans_type=22");
 
@@ -75,7 +75,6 @@
 	//----------------------------------------------------------------------------------------
 
 	function check_inputs() {
-		global $Refs;
 
 		if (!get_post('supplier_id')) {
 			ui_msgs::display_error(_("There is no supplier selected."));
@@ -87,20 +86,20 @@
 			$_POST['amount'] = price_format(0);
 		}
 
-		if (!check_num('amount', 0)) {
+		if (!Validation::is_num('amount', 0)) {
 			ui_msgs::display_error(_("The entered amount is invalid or less than zero."));
 			ui_view::set_focus('amount');
 			return false;
 		}
 
-		if (isset($_POST['charge']) && !check_num('charge', 0)) {
+		if (isset($_POST['charge']) && !Validation::is_num('charge', 0)) {
 			ui_msgs::display_error(_("The entered amount is invalid or less than zero."));
 			ui_view::set_focus('charge');
 			return false;
 		}
 
 		if (isset($_POST['charge']) && input_num('charge') > 0) {
-			$charge_acct = get_company_pref('bank_charge_act');
+			$charge_acct = DB_Company::get_pref('bank_charge_act');
 			if (get_gl_account($charge_acct) == false) {
 				ui_msgs::display_error(_("The Bank Charge Account has not been set in System and General GL Setup."));
 				ui_view::set_focus('charge');
@@ -108,7 +107,7 @@
 			}
 		}
 
-		if (isset($_POST['_ex_rate']) && !check_num('_ex_rate', 0.000001)) {
+		if (isset($_POST['_ex_rate']) && !Validation::is_num('_ex_rate', 0.000001)) {
 			ui_msgs::display_error(_("The exchange rate must be numeric and greater than zero."));
 			ui_view::set_focus('_ex_rate');
 			return false;
@@ -118,7 +117,7 @@
 			$_POST['discount'] = 0;
 		}
 
-		if (!check_num('discount', 0)) {
+		if (!Validation::is_num('discount', 0)) {
 			ui_msgs::display_error(_("The entered discount is invalid or less than zero."));
 			ui_view::set_focus('amount');
 			return false;
@@ -142,7 +141,7 @@
 			ui_view::set_focus('DatePaid');
 			return false;
 		}
-		if (!$Refs->is_valid($_POST['ref'])) {
+		if (!Refs::is_valid($_POST['ref'])) {
 			ui_msgs::display_error(_("You must enter a reference."));
 			ui_view::set_focus('ref');
 			return false;
@@ -157,7 +156,7 @@
 		$_SESSION['alloc']->amount = -input_num('amount');
 
 		if (isset($_POST["TotalNumberOfAllocs"]))
-			return check_allocations();
+			return Allocation::check_allocations();
 		else
 			return true;
 	}
@@ -207,7 +206,7 @@
 
 	start_form();
 
-	start_outer_table(Config::get('tables.style2') . " width=60%", 5);
+	start_outer_table(Config::get('tables_style2') . " width=60%", 5);
 
 	table_section(1);
 
@@ -222,7 +221,7 @@
 
 	table_section(2);
 
-	ref_row(_("Reference:"), 'ref', '', $Refs->get_next(ST_SUPPAYMENT));
+	ref_row(_("Reference:"), 'ref', '', Refs::get_next(ST_SUPPAYMENT));
 
 	date_row(_("Date Paid") . ":", 'DatePaid', '', true, 0, 0, 0, null, true);
 
@@ -240,18 +239,18 @@
 
 	if ($bank_currency == $supplier_currency) {
 		div_start('alloc_tbl');
-		show_allocatable(false);
+		Allocation::show_allocatable(false);
 		div_end();
 	}
 
-	start_table(Config::get('tables.style') . "  width=60%");
+	start_table(Config::get('tables_style') . "  width=60%");
 	amount_row(_("Amount of Discount:"), 'discount');
 	amount_row(_("Amount of Payment:"), 'amount');
 	textarea_row(_("Memo:"), 'memo_', null, 22, 4);
 	end_table(1);
 
 	if ($bank_currency != $supplier_currency) {
-		ui_msgs::display_note(_("The amount and discount are in the bank account's currency."), 0, 1);
+		ui_msgs::display_warning(_("The amount and discount are in the bank account's currency."), 0, 1);
 	}
 
 	submit_center('ProcessSuppPayment', _("Enter Payment"), true, '', 'default');

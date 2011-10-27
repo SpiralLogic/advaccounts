@@ -11,21 +11,19 @@
 	 ***********************************************************************/
 	$page_security = 'SA_WORKORDERENTRY';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	include_once(APP_PATH . "includes/manufacturing.inc");
-
-	include_once(APP_PATH . "manufacturing/includes/manufacturing_ui.inc");
+	include_once(APP_PATH . "manufacturing/includes/manufacturing_ui.php");
 
 	$js = "";
-	if (Config::get('ui.windows.popups'))
+	if (Config::get('ui_windows_popups'))
 		$js .= ui_view::get_js_open_window(900, 500);
 
 	page(_($help_context = "Work Order Entry"), false, false, "", $js);
 
-	check_db_has_manufacturable_items(_("There are no manufacturable items defined in the system."));
+	Validation::check(Validation::MANUFACTURE_ITEMS, _("There are no manufacturable items defined in the system."), STOCK_MANUFACTURE);
 
-	check_db_has_locations(("There are no inventory locations defined in the system."));
+	Validation::check(Validation::LOCATIONS, ("There are no inventory locations defined in the system."));
 
 	//---------------------------------------------------------------------------------------
 
@@ -48,14 +46,20 @@
 		ui_msgs::display_note(ui_view::get_trans_view_str($stype, $id, _("View this Work Order")));
 
 		if ($_GET['type'] != WO_ADVANCED) {
-			include_once(APP_PATH . "reporting/includes/reporting.inc");
-			$ar = array('PARAM_0' => $id, 'PARAM_1' => $id, 'PARAM_2' => 0);
+			include_once(APP_PATH . "reporting/includes/reporting.php");
+			$ar = array('PARAM_0' => $id,
+				'PARAM_1' => $id,
+				'PARAM_2' => 0
+			);
 			ui_msgs::display_note(print_link(_("Print this Work Order"), 409, $ar), 1);
 			$ar['PARAM_2'] = 1;
 			ui_msgs::display_note(print_link(_("Email this Work Order"), 409, $ar), 1);
-			ui_msgs::display_note(ui_view::get_gl_view_str($stype, $id, _("View the GL Journal Entries for this Work Order")), 1);
-			$ar = array('PARAM_0' => $_GET['date'], 'PARAM_1' => $_GET['date'], 'PARAM_2' => $stype);
-			ui_msgs::display_note(print_link(_("Print the GL Journal Entries for this Work Order"), 702, $ar), 1);
+			ui_msgs::display_warning(ui_view::get_gl_view_str($stype, $id, _("View the GL Journal Entries for this Work Order")), 1);
+			$ar = array('PARAM_0' => $_GET['date'],
+				'PARAM_1' => $_GET['date'],
+				'PARAM_2' => $stype
+			);
+			ui_msgs::display_warning(print_link(_("Print the GL Journal Entries for this Work Order"), 702, $ar), 1);
 		}
 
 		safe_exit();
@@ -106,10 +110,10 @@
 	}
 
 	function can_process() {
-		global $selected_id, $SysPrefs, $Refs;
+		global $selected_id;
 
 		if (!isset($selected_id)) {
-			if (!$Refs->is_valid($_POST['wo_ref'])) {
+			if (!Refs::is_valid($_POST['wo_ref'])) {
 				ui_msgs::display_error(_("You must enter a reference."));
 				ui_view::set_focus('wo_ref');
 				return false;
@@ -122,7 +126,7 @@
 			}
 		}
 
-		if (!check_num('quantity', 0)) {
+		if (!Validation::is_num('quantity', 0)) {
 			ui_msgs::display_error(_("The quantity entered is invalid or less than zero."));
 			ui_view::set_focus('quantity');
 			return false;
@@ -141,7 +145,7 @@
 		}
 		// only check bom and quantites if quick assembly
 		if (!($_POST['type'] == WO_ADVANCED)) {
-			if (!has_bom(Input::post('stock_id'))) {
+			if (!Manufacturing::has_bom(Input::post('stock_id'))) {
 				ui_msgs::display_error(_("The selected item to manufacture does not have a bom."));
 				ui_view::set_focus('stock_id');
 				return false;
@@ -149,28 +153,28 @@
 
 			if ($_POST['Labour'] == "")
 				$_POST['Labour'] = price_format(0);
-			if (!check_num('Labour', 0)) {
+			if (!Validation::is_num('Labour', 0)) {
 				ui_msgs::display_error(_("The labour cost entered is invalid or less than zero."));
 				ui_view::set_focus('Labour');
 				return false;
 			}
 			if ($_POST['Costs'] == "")
 				$_POST['Costs'] = price_format(0);
-			if (!check_num('Costs', 0)) {
+			if (!Validation::is_num('Costs', 0)) {
 				ui_msgs::display_error(_("The cost entered is invalid or less than zero."));
 				ui_view::set_focus('Costs');
 				return false;
 			}
 
-			if (!$SysPrefs->allow_negative_stock()) {
+			if (!SysPrefs::allow_negative_stock()) {
 				if ($_POST['type'] == WO_ASSEMBLY) {
 					// check bom if assembling
-					$result = get_bom(Input::post('stock_id'));
+					$result = Manufacturing::get_bom(Input::post('stock_id'));
 
-					while ($bom_item = db_fetch($result))
+					while ($bom_item = DBOld::fetch($result))
 					{
 
-						if (has_stock_holding($bom_item["ResourceType"])) {
+						if (Manufacturing::has_stock_holding($bom_item["ResourceType"])) {
 
 							$quantity = $bom_item["quantity"] * input_num('quantity');
 
@@ -341,7 +345,7 @@
 	else
 	{
 		$_POST['units_issued'] = $_POST['released'] = 0;
-		ref_row(_("Reference:"), 'wo_ref', '', $Refs->get_next(ST_WORKORDER));
+		ref_row(_("Reference:"), 'wo_ref', '', Refs::get_next(ST_WORKORDER));
 
 		wo_types_list_row(_("Type:"), 'type', null);
 	}
@@ -373,7 +377,7 @@
 		if ($_POST['released'])
 			label_row(_("Quantity Manufactured:"), number_format($_POST['units_issued'], get_qty_dec(Input::post('stock_id'))));
 		date_row(_("Date") . ":", 'date_', '', true);
-		date_row(_("Date Required By") . ":", 'RequDate', '', null, $SysPrefs->default_wo_required_by());
+		date_row(_("Date Required By") . ":", 'RequDate', '', null, SysPrefs::default_wo_required_by());
 	}
 	else
 	{
@@ -382,8 +386,8 @@
 		hidden('RequDate', '');
 
 		$sql = "SELECT DISTINCT account_code FROM bank_accounts";
-		$rs = db_query($sql, "could not get bank accounts");
-		$r = db_fetch_row($rs);
+		$rs = DBOld::query($sql, "could not get bank accounts");
+		$r = DBOld::fetch_row($rs);
 		if (!isset($_POST['Labour'])) {
 			$_POST['Labour'] = price_format(0);
 			$_POST['cr_lab_acc'] = $r[0];

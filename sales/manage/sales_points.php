@@ -11,11 +11,11 @@
 	 ***********************************************************************/
 	$page_security = 'SA_POSSETUP';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	page(_($help_context = "POS settings"));
 
-	include_once(APP_PATH . "sales/includes/db/sales_points_db.inc");
+	include_once(APP_PATH . "sales/includes/db/sales_points_db.php");
 
 	simple_page_mode(true);
 	//----------------------------------------------------------------------------------------------------
@@ -57,9 +57,9 @@
 	//----------------------------------------------------------------------------------------------------
 
 	if ($Mode == 'Delete') {
-		$sql = "SELECT * FROM users WHERE pos=" . db_escape($selected_id);
-		$res = db_query($sql, "canot check pos usage");
-		if (db_num_rows($res)) {
+		$sql = "SELECT * FROM users WHERE pos=" . DBOld::escape($selected_id);
+		$res = DBOld::query($sql, "canot check pos usage");
+		if (DBOld::num_rows($res)) {
 			ui_msgs::display_error(_("Cannot delete this POS because it is used in users setup."));
 		}
 		else {
@@ -71,7 +71,7 @@
 
 	if ($Mode == 'RESET') {
 		$selected_id = -1;
-		$sav = get_post('show_inactive');
+		$sav         = get_post('show_inactive');
 		unset($_POST);
 		$_POST['show_inactive'] = $sav;
 	}
@@ -80,16 +80,16 @@
 	$result = get_all_sales_points(check_value('show_inactive'));
 
 	start_form();
-	start_table(Config::get('tables.style'));
+	start_table(Config::get('tables_style'));
 
 	$th = array(_('POS Name'), _('Credit sale'), _('Cash sale'), _('Location'), _('Default account'),
-		'', ''
+							'', ''
 	);
 	inactive_control_column($th);
 	table_header($th);
 	$k = 0;
 
-	while ($myrow = db_fetch($result))
+	while ($myrow = DBOld::fetch($result))
 	{
 		alt_table_row_color($k);
 		label_cell($myrow["pos_name"], "nowrap");
@@ -107,20 +107,20 @@
 	end_table(1);
 	//----------------------------------------------------------------------------------------------------
 
-	$cash = db_has_cash_accounts();
+	$cash = Validation::check(Validation::CASH_ACCOUNTS);
 
 	if (!$cash) ui_msgs::display_note(_("To have cash POS first define at least one cash bank account."));
 
-	start_table(Config::get('tables.style2'));
+	start_table(Config::get('tables_style2'));
 
 	if ($selected_id != -1) {
 
 		if ($Mode == 'Edit') {
 			$myrow = get_sales_point($selected_id);
 
-			$_POST['name'] = $myrow["pos_name"];
+			$_POST['name']     = $myrow["pos_name"];
 			$_POST['location'] = $myrow["pos_location"];
-			$_POST['account'] = $myrow["pos_account"];
+			$_POST['account']  = $myrow["pos_account"];
 			if ($myrow["credit_sale"]) $_POST['credit_sale'] = 1;
 			if ($myrow["cash_sale"]) $_POST['cash_sale'] = 1;
 		}

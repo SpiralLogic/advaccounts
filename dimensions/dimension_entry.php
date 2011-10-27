@@ -11,13 +11,11 @@
 	 ***********************************************************************/
 	$page_security = 'SA_DIMENSION';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	include_once(APP_PATH . "includes/manufacturing.inc");
-
-	include_once(APP_PATH . "admin/db/tags_db.inc");
-	include_once(APP_PATH . "dimensions/includes/dimensions_db.inc");
-	include_once(APP_PATH . "dimensions/includes/dimensions_ui.inc");
+	include_once(APP_PATH . "admin/db/tags_db.php");
+	include_once(APP_PATH . "dimensions/includes/dimensions_db.php");
+	include_once(APP_PATH . "dimensions/includes/dimensions_ui.php");
 
 	$js = "";
 	page(_($help_context = "Dimension Entry"), false, false, "", $js);
@@ -93,11 +91,11 @@
 	//-------------------------------------------------------------------------------------
 
 	function can_process() {
-		global $selected_id, $Refs;
+		global $selected_id;
 
 		if ($selected_id == -1) {
 
-			if (!$Refs->is_valid($_POST['ref'])) {
+			if (!Refs::is_valid($_POST['ref'])) {
 				ui_msgs::display_error(_("The dimension reference must be entered."));
 				ui_view::set_focus('ref');
 				return false;
@@ -142,7 +140,7 @@
 			if ($selected_id == -1) {
 				$id = add_dimension(
 					$_POST['ref'], $_POST['name'], $_POST['type_'], $_POST['date_'], $_POST['due_date'], $_POST['memo_']);
-				add_tag_associations($id, $_POST['dimension_tags']);
+				Tags::add_associations($id, $_POST['dimension_tags']);
 				meta_forward($_SERVER['PHP_SELF'], "AddedID=$id");
 			}
 			else
@@ -150,7 +148,7 @@
 
 				update_dimension($selected_id, $_POST['name'], $_POST['type_'], $_POST['date_'], $_POST['due_date'],
 					$_POST['memo_']);
-				update_tag_associations(TAG_DIMENSION, $selected_id, $_POST['dimension_tags']);
+				Tags::update_associations(TAG_DIMENSION, $selected_id, $_POST['dimension_tags']);
 
 				meta_forward($_SERVER['PHP_SELF'], "UpdatedID=$selected_id");
 			}
@@ -174,7 +172,7 @@
 
 			// delete
 			delete_dimension($selected_id);
-			delete_tag_associations(TAG_DIMENSION, $selected_id, true);
+			Tags::delete_associations(TAG_DIMENSION, $selected_id, true);
 			meta_forward($_SERVER['PHP_SELF'], "DeletedID=$selected_id");
 		}
 	}
@@ -198,7 +196,7 @@
 
 	start_form();
 
-	start_table(Config::get('tables.style2'));
+	start_table(Config::get('tables_style2'));
 
 	if ($selected_id != -1) {
 		$myrow = get_dimension($selected_id);
@@ -223,9 +221,9 @@
 		$_POST['due_date'] = Dates::sql2date($myrow["due_date"]);
 		$_POST['memo_'] = ui_view::get_comments_string(ST_DIMENSION, $selected_id);
 
-		$tags_result = get_tags_associated_with_record(TAG_DIMENSION, $selected_id);
+		$tags_result = Tags::get_all_associated_with_record(TAG_DIMENSION, $selected_id);
 		$tagids = array();
-		while ($tag = db_fetch($tags_result))
+		while ($tag = DBOld::fetch($tags_result))
 		{
 			$tagids[] = $tag['id'];
 		}
@@ -240,18 +238,18 @@
 	else
 	{
 		$_POST['dimension_tags'] = array();
-		ref_row(_("Dimension Reference:"), 'ref', '', $Refs->get_next(ST_DIMENSION));
+		ref_row(_("Dimension Reference:"), 'ref', '', Refs::get_next(ST_DIMENSION));
 	}
 
 	text_row_ex(_("Name") . ":", 'name', 50, 75);
 
-	$dim = get_company_pref('use_dimension');
+	$dim = DB_Company::get_pref('use_dimension');
 
 	number_list_row(_("Type"), 'type_', null, 1, $dim);
 
 	date_row(_("Start Date") . ":", 'date_');
 
-	date_row(_("Date Required By") . ":", 'due_date', '', null, $SysPrefs->default_dimension_required_by());
+	date_row(_("Date Required By") . ":", 'due_date', '', null, SysPrefs::default_dimension_required_by());
 
 	tag_list_row(_("Tags:"), 'dimension_tags', 5, TAG_DIMENSION, true);
 

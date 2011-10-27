@@ -11,11 +11,9 @@
 	 ***********************************************************************/
 	$page_security = 'SA_PRINTERS';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	page(_($help_context = "Printer Locations"));
-
-	include(APP_PATH . "admin/db/printers_db.inc");
 
 	simple_page_mode(true);
 	//-------------------------------------------------------------------------------------------
@@ -32,7 +30,7 @@
 		{
 			ui_msgs::display_notification_centered(_("You have selected printing to server at user IP."));
 		}
-		elseif (!check_num('tout', 0, 60))
+		elseif (!Validation::is_num('tout', 0, 60))
 		{
 			$error = 1;
 			ui_msgs::display_error(_("Timeout cannot be less than zero nor longer than 60 (sec)."));
@@ -40,7 +38,7 @@
 		}
 
 		if ($error != 1) {
-			write_printer_def($selected_id, get_post('name'), get_post('descr'),
+			Printer::write_def($selected_id, get_post('name'), get_post('descr'),
 				get_post('queue'), get_post('host'), input_num('port', 0),
 				input_num('tout', 0));
 
@@ -54,16 +52,16 @@
 	if ($Mode == 'Delete') {
 		// PREVENT DELETES IF DEPENDENT RECORDS IN print_profiles
 
-		$sql = "SELECT COUNT(*) FROM print_profiles WHERE printer = " . db_escape($selected_id);
-		$result = db_query($sql, "check printers relations failed");
-		$myrow = db_fetch_row($result);
+		$sql = "SELECT COUNT(*) FROM print_profiles WHERE printer = " . DBOld::escape($selected_id);
+		$result = DBOld::query($sql, "check printers relations failed");
+		$myrow = DBOld::fetch_row($result);
 		if ($myrow[0] > 0) {
 			ui_msgs::display_error(_("Cannot delete this printer definition, because print profile have been created using it."));
 		}
 		else
 		{
-			$sql = "DELETE FROM printers WHERE id=" . db_escape($selected_id);
-			db_query($sql, "could not delete printer definition");
+			$sql = "DELETE FROM printers WHERE id=" . DBOld::escape($selected_id);
+			DBOld::query($sql, "could not delete printer definition");
 			ui_msgs::display_notification(_('Selected printer definition has been deleted'));
 		}
 		$Mode = 'RESET';
@@ -75,14 +73,14 @@
 	}
 	//-------------------------------------------------------------------------------------------------
 
-	$result = get_all_printers();
+	$result = Printer::get_all();
 	start_form();
-	start_table(Config::get('tables.style'));
+	start_table(Config::get('tables_style'));
 	$th = array(_("Name"), _("Description"), _("Host"), _("Printer Queue"), '', '');
 	table_header($th);
 
 	$k = 0; //row colour counter
-	while ($myrow = db_fetch($result))
+	while ($myrow = DBOld::fetch($result))
 	{
 		alt_table_row_color($k);
 
@@ -103,7 +101,7 @@
 
 	start_form();
 
-	start_table(Config::get('tables.style2'));
+	start_table(Config::get('tables_style2'));
 
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {

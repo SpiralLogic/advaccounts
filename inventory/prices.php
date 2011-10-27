@@ -11,17 +11,17 @@
 	 ***********************************************************************/
 	$page_security = 'SA_SALESPRICE';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	page(_($help_context = "Inventory Item Sales prices"), @$_REQUEST['frame']);
+	page(_($help_context = "Inventory Item Sales prices"), Input::request('frame'));
 
-	include_once(APP_PATH . "sales/includes/db/sales_types_db.inc");
+	include_once(APP_PATH . "sales/includes/db/sales_types_db.php");
 
 	//---------------------------------------------------------------------------------------------------
 
-	check_db_has_stock_items(_("There are no items defined in the system."));
+	Validation::check(Validation::STOCK_ITEMS, _("There are no items defined in the system."));
 
-	check_db_has_sales_types(_("There are no sales types in the system. Please set up sales types befor entering pricing."));
+	Validation::check(Validation::SALES_TYPES, _("There are no sales types in the system. Please set up sales types befor entering pricing."));
 
 	simple_page_mode(true);
 	//---------------------------------------------------------------------------------------------------
@@ -40,16 +40,16 @@
 
 	//---------------------------------------------------------------------------------------------------
 
-	if ($_REQUEST['frame']) {
+	if (Input::request('frame')) {
 		start_form(false, false, $_SERVER['PHP_SELF'] . '?frame=1');
 	} else {
 		start_form();
 	}
 
-	if (!isset($_POST['stock_id']))
+	if (!Input::post('stock_id'))
 		$_POST['stock_id'] = ui_globals::get_global_stock_item();
 
-	if (!$_REQUEST['frame']) {
+	if (!Input::request('frame')) {
 		echo "<center>" . _("Item:") . "&nbsp;";
 		echo sales_items_list('stock_id', $_POST['stock_id'], false, true, '', array(), true);
 		echo "<hr></center>";
@@ -61,7 +61,7 @@
 
 	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 
-		if (!check_num('price', 0)) {
+		if (!Validation::is_num('price', 0)) {
 			$input_error = 1;
 			ui_msgs::display_error(_("The price entered must be numeric."));
 			ui_view::set_focus('price');
@@ -117,17 +117,17 @@
 	$prices_list = get_prices($_POST['stock_id']);
 
 	div_start('price_table');
-	if ($_REQUEST['frame']) {
-		start_table(Config::get('tables.style') . "  width=90%");
+	if (Input::request('frame')) {
+		start_table(Config::get('tables_style') . "  width=90%");
 	} else {
-		start_table(Config::get('tables.style') . "  width=30%");
+		start_table(Config::get('tables_style') . "  width=30%");
 	}
 
 	$th = array(_("Currency"), _("Sales Type"), _("Price"), "", "");
 	table_header($th);
 	$k = 0; //row colour counter
 	$calculated = false;
-	while ($myrow = db_fetch($prices_list))
+	while ($myrow = DBOld::fetch($prices_list))
 	{
 
 		alt_table_row_color($k);
@@ -140,8 +140,8 @@
 		end_row();
 	}
 	end_table();
-	if (db_num_rows($prices_list) == 0) {
-		if (get_company_pref('add_pct') != -1)
+	if (DBOld::num_rows($prices_list) == 0) {
+		if (DB_Company::get_pref('add_pct') != -1)
 			$calculated = true;
 		ui_msgs::display_note(_("There are no prices set up for this part."), 1);
 	}
@@ -151,10 +151,10 @@
 	echo "<br>";
 
 	if ($Mode == 'Edit') {
-		$myrow = get_stock_price($selected_id);
-		$_POST['curr_abrev'] = $myrow["curr_abrev"];
+		$myrow                  = get_stock_price($selected_id);
+		$_POST['curr_abrev']    = $myrow["curr_abrev"];
 		$_POST['sales_type_id'] = $myrow["sales_type_id"];
-		$_POST['price'] = price_format($myrow["price"]);
+		$_POST['price']         = price_format($myrow["price"]);
 	}
 
 	hidden('selected_id', $selected_id);
@@ -181,7 +181,7 @@
 	div_end();
 
 	end_form();
-	if ($_REQUEST['frame']) {
+	if (Input::request('frame')) {
 		end_page(true, true, true);
 	} else {
 		end_page();

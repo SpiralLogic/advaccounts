@@ -11,13 +11,11 @@
 	 ***********************************************************************/
 	$page_security = 'SA_FORITEMCODE';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	page(_($help_context = "Foreign Item Codes"));
 
-	include_once(APP_PATH . "includes/manufacturing.inc");
-
-	check_db_has_purchasable_items(_("There are no inventory items defined in the system."));
+	Validation::check(Validation::PURCHASE_ITEMS, _("There are no inventory items defined in the system."), STOCK_PURCHASED);
 
 	simple_page_mode(true);
 	//--------------------------------------------------------------------------------------------------
@@ -45,7 +43,7 @@
 		elseif ($selected_id == -1)
 		{
 			$kit = get_item_kit($_POST['item_code']);
-			if (db_num_rows($kit)) {
+			if (DBOld::num_rows($kit)) {
 				$input_error = 1;
 				ui_msgs::display_error(_("This item code is already assigned to stock item or sale kit."));
 				ui_view::set_focus('item_code');
@@ -90,7 +88,7 @@
 
 	start_form();
 
-	if (!isset($_POST['stock_id']))
+	if (!Input::post('stock_id'))
 		$_POST['stock_id'] = ui_globals::get_global_stock_item();
 
 	echo "<center>" . _("Item:") . "&nbsp;";
@@ -108,7 +106,7 @@
 
 	$result = get_all_item_codes($_POST['stock_id']);
 	div_start('code_table');
-	start_table(Config::get('tables.style') . "  width=60%");
+	start_table(Config::get('tables_style') . "  width=60%");
 
 	$th = array(_("EAN/UPC Code"), _("Quantity"), _("Units"),
 		_("Description"), _("Category"), "", ""
@@ -118,7 +116,7 @@
 
 	$k = $j = 0; //row colour counter
 
-	while ($myrow = db_fetch($result))
+	while ($myrow = DBOld::fetch($result))
 	{
 		alt_table_row_color($k);
 
@@ -159,7 +157,7 @@
 	}
 
 	echo "<br>";
-	start_table(Config::get('tables.style2'));
+	start_table(Config::get('tables_style2'));
 
 	hidden('code_id', $selected_id);
 

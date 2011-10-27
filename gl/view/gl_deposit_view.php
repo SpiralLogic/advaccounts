@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 	$page_security = 'SA_BANKTRANSVIEW';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	page(_($help_context = "View Bank Deposit"), true);
 
@@ -22,10 +22,10 @@
 	// get the pay-to bank payment info
 	$result = get_bank_trans(ST_BANKDEPOSIT, $trans_no);
 
-	if (db_num_rows($result) != 1)
-		display_db_error("duplicate payment bank transaction found", "");
+	if (DBOld::num_rows($result) != 1)
+		Errors::show_db_error("duplicate payment bank transaction found", "");
 
-	$to_trans = db_fetch($result);
+	$to_trans = DBOld::fetch($result);
 
 	$company_currency = Banking::get_company_currency();
 
@@ -40,7 +40,7 @@
 	ui_msgs::display_heading(_("GL Deposit") . " #$trans_no");
 
 	echo "<br>";
-	start_table(Config::get('tables.style') . "  width=90%");
+	start_table(Config::get('tables_style') . "  width=90%");
 
 	if ($show_currencies) {
 		$colspan1 = 5;
@@ -74,7 +74,7 @@
 
 	$items = get_gl_trans(ST_BANKDEPOSIT, $trans_no);
 
-	if (db_num_rows($items) == 0) {
+	if (DBOld::num_rows($items) == 0) {
 		ui_msgs::display_note(_("There are no items for this deposit."));
 	}
 	else
@@ -84,8 +84,8 @@
 		if ($show_currencies)
 			ui_msgs::display_heading2(_("Item Amounts are Shown in :") . " " . $company_currency);
 
-		start_table(Config::get('tables.style') . "  width=90%");
-		$dim = get_company_pref('use_dimension');
+		start_table(Config::get('tables_style') . "  width=90%");
+		$dim = DB_Company::get_pref('use_dimension');
 		if ($dim == 2)
 			$th = array(_("Account Code"), _("Account Description"), _("Dimension") . " 1", _("Dimension") . " 2",
 				_("Amount"), _("Memo")
@@ -103,7 +103,7 @@
 		$k = 0; //row colour counter
 		$total_amount = 0;
 
-		while ($item = db_fetch($items))
+		while ($item = DBOld::fetch($items))
 		{
 
 			if ($item["account"] != $to_trans["account_code"]) {

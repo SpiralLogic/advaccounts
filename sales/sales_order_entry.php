@@ -20,14 +20,13 @@
 
 	$page_security = 'SA_SALESORDER';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
-	include_once(APP_PATH . "sales/includes/sales_ui.inc");
-	include_once(APP_PATH . "sales/includes/ui/sales_order_ui.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
+	include_once(APP_PATH . "sales/includes/sales_ui.php");
+	include_once(APP_PATH . "sales/includes/ui/sales_order_ui.php");
+	include_once(APP_PATH . "sales/includes/db/sales_types_db.php");
+	include_once(APP_PATH . "reporting/includes/reporting.php");
 
-	include_once(APP_PATH . "sales/includes/db/sales_types_db.inc");
-	include_once(APP_PATH . "reporting/includes/reporting.inc");
-
-	set_page_security((!Input::session('Items') ? : $_SESSION['Items']->trans_type),
+	Security::set_page((!Input::session('Items') ? : $_SESSION['Items']->trans_type),
 		array(ST_SALESORDER => 'SA_SALESORDER',
 			ST_SALESQUOTE => 'SA_SALESQUOTE',
 			ST_CUSTDELIVERY => 'SA_SALESDELIVERY',
@@ -42,10 +41,10 @@
 		));
 	$js = '';
 
-	if (Config::get('ui.windows.popups')) {
+	if (Config::get('ui_windows_popups')) {
 		$js .= ui_view::get_js_open_window(900, 500);
 	}
-	$_SESSION['page_title'] = _($help_context = "Sales Order Entry");
+	$page_title = _($help_context = "Sales Order Entry");
 	//   $js .= get_jquery_gmaps();
 	if (Input::post('saveorder')) {
 		$_SESSION['Items']->store();
@@ -57,33 +56,36 @@
 		$Ajax->activate('customer_id');
 	}
 	if (Input::get('NewDelivery', Input::NUMERIC)) {
-		$_SESSION['page_title'] = _($help_context = "Direct Sales Delivery");
+		$page_title = _($help_context = "Direct Sales Delivery");
 		create_cart(ST_CUSTDELIVERY, $_GET['NewDelivery']);
 	}
 
 	if (Input::get('NewInvoice', Input::NUMERIC)) {
-		$_SESSION['page_title'] = _($help_context = "Direct Sales Invoice");
+		$page_title = _($help_context = "Direct Sales Invoice");
 		create_cart(ST_SALESINVOICE, $_GET['NewInvoice']);
 	}
 	elseif (Input::get('ModifyOrderNumber', Input::NUMERIC)) {
 		$help_context = 'Modifying Sales Order';
-		$_SESSION['page_title'] = sprintf(_("Modifying Sales Order # %d"), $_GET['ModifyOrderNumber']);
+		$page_title = sprintf(_("Modifying Sales Order # %d"), $_GET['ModifyOrderNumber']);
 		create_cart(ST_SALESORDER, $_GET['ModifyOrderNumber']);
 	}
 	elseif (Input::get('ModifyQuotationNumber', Input::NUMERIC)) {
 		$help_context = 'Modifying Sales Quotation';
-		$_SESSION['page_title'] = sprintf(_("Modifying Sales Quotation # %d"), $_GET['ModifyQuotationNumber']);
+		$page_title = sprintf(_("Modifying Sales Quotation # %d"), $_GET['ModifyQuotationNumber']);
 		create_cart(ST_SALESQUOTE, $_GET['ModifyQuotationNumber']);
 	}
 	elseif (Input::get('NewOrder')) {
 		create_cart(ST_SALESORDER, 0);
 	}
 	elseif (Input::get('NewQuotation')) {
-		$_SESSION['page_title'] = _($help_context = "New Sales Quotation Entry");
+		$page_title = _($help_context = "New Sales Quotation Entry");
 		create_cart(ST_SALESQUOTE, 0);
 	}
 	elseif (Input::get('NewQuoteToSalesOrder')) {
 		create_cart(ST_SALESQUOTE, $_GET['NewQuoteToSalesOrder']);
+	}
+	elseif (Input::get('CloneOrder')) {
+		create_cart(ST_SALESORDER, Input::get('CloneOrder'));
 	}
 	elseif (Input::get('remotecombine')) {
 		if (isset($_SESSION['Items'])) {
@@ -99,7 +101,7 @@
 		create_cart($serial, 0);
 	}
 
-	page($_SESSION['page_title'], false, false, "", $js);
+	page($page_title, false, false, "", $js);
 	//-----------------------------------------------------------------------------
 	if (list_updated('branch_id')) {
 		// when branch is selected via external editor also customer can change
@@ -126,7 +128,7 @@
 		page_complete($_GET['AddedDI'], ST_SALESINVOICE, "Invoice");
 	}
 	elseif (isset($_GET['RemovedID'])) {
-		submenu_view(_("&View This Invoice"), ST_SALESINVOICE, $_GET['AddedDI']);
+		submenu_view(_("&View This Order"), ST_SALESORDER, $_GET['RemovedID']);
 
 		if ($_GET['Type'] == ST_SALESQUOTE) {
 			ui_msgs::display_notification(_("This sales quotation has been cancelled as requested."), 1);
@@ -169,7 +171,7 @@
 		}
 		elseif ($trans_type == ST_SALESQUOTE) {
 			submenu_option(_("Make &Sales Order Against This Quotation"), "/sales/sales_order_entry.php?NewQuoteToSalesOrder=$order_no");
-			submenu_option(_("Enter a New &Quotation"), "/sales/sales_order_entry.php?NewQuotation=0");
+			submenu_option(_("Enter a New &Quotation"), "/sales/sales_order_entry.php?NewQuotation=1");
 			submenu_option(_("Select A Different &Quotation to edit"), "/sales/inquiry/sales_orders_view.php?type=" . ST_SALESQUOTE);
 		}
 		elseif ($trans_type == ST_CUSTDELIVERY) {
@@ -182,9 +184,9 @@
 			 : submenu_option(_("Enter a &New Delivery"), "/sales/sales_order_entry.php?NewDelivery=0");
 		}
 		elseif ($trans_type == ST_SALESINVOICE) {
-			$sql = "SELECT trans_type_from, trans_no_from FROM cust_allocations WHERE trans_type_to=" . ST_SALESINVOICE . " AND trans_no_to=" . db_escape($order_no);
-			$result = db_query($sql, "could not retrieve customer allocation");
-			$row = db_fetch($result);
+			$sql = "SELECT trans_type_from, trans_no_from FROM cust_allocations WHERE trans_type_to=" . ST_SALESINVOICE . " AND trans_no_to=" . DBOld::escape($order_no);
+			$result = DBOld::query($sql, "could not retrieve customer allocation");
+			$row = DBOld::fetch($result);
 			if ($row !== false) {
 				submenu_print(_("Print &Receipt"), $row['trans_type_from'], $row['trans_no_from'] . "-" . $row['trans_type_from'], 'prtopt');
 			}
@@ -270,14 +272,14 @@
 
 	//--------------------------------------------------------------------------------
 	function line_start_focus() {
-		global $Ajax;
+		$Ajax = Ajax::instance();
 		$Ajax->activate('items_table');
 		ui_view::set_focus('_stock_id_edit');
 	}
 
 	//--------------------------------------------------------------------------------
 	function can_process() {
-		global $Refs;
+
 		if (!get_post('customer_id')) {
 			ui_msgs::display_error(_("There is no customer selected."));
 			ui_view::set_focus('customer_id');
@@ -321,7 +323,7 @@
 		if ($_POST['freight_cost'] == "") {
 			$_POST['freight_cost'] = price_format(0);
 		}
-		if (!check_num('freight_cost', 0)) {
+		if (!Validation::is_num('freight_cost', 0)) {
 			ui_msgs::display_error(_("The shipping cost entered is expected to be numeric."));
 			ui_view::set_focus('freight_cost');
 			return false;
@@ -353,7 +355,7 @@
 			ui_view::set_focus('name');
 			return false;
 		}
-		if (!$Refs->is_valid($_POST['ref'])) {
+		if (!Refs::is_valid($_POST['ref'])) {
 			ui_msgs::display_error(_("You must enter a reference."));
 			ui_view::set_focus('ref');
 			return false;
@@ -362,7 +364,7 @@
 			//ui_msgs::display_error(_("The entered reference is already in use."));
 			//ui_view::set_focus('ref');
 			//return false;
-			$_POST['ref'] = $Refs->get_next($_SESSION['Items']->trans_type);
+			$_POST['ref'] = Refs::get_next($_SESSION['Items']->trans_type);
 		}
 
 		return true;
@@ -374,7 +376,7 @@
 		$modified = ($_SESSION['Items']->trans_no != 0);
 		$so_type = $_SESSION['Items']->so_type;
 		$_SESSION['Items']->write(1);
-		if (count($messages)) { // abort on failure or error messages are lost
+		if (count(Errors::$messages)) { // abort on failure or error messages are lost
 			$Ajax->activate('_page_body');
 			ui_view::display_footer_exit();
 		}
@@ -411,25 +413,25 @@
 	}
 	//--------------------------------------------------------------------------------
 	function check_item_data() {
-		global $SysPrefs;
-		if (!$_SESSION["wa_current_user"]->can_access('SA_SALESCREDIT') && (!check_num('qty', 0) || !check_num('Disc', 0, 100))) {
+
+		if (!$_SESSION["wa_current_user"]->can_access('SA_SALESCREDIT') && (!Validation::is_num('qty', 0) || !Validation::is_num('Disc', 0, 100))) {
 			ui_msgs::display_error(_("The item could not be updated because you are attempting to set the quantity ordered to less than 0, or the discount percent to more than 100."));
 			ui_view::set_focus('qty');
 			return false;
 		}
-		elseif (!check_num('price', 0)) {
+		elseif (!Validation::is_num('price', 0)) {
 			ui_msgs::display_error(_("Price for item must be entered and can not be less than 0"));
 			ui_view::set_focus('price');
 			return false;
 		}
-		elseif (!$_SESSION["wa_current_user"]->can_access('SA_SALESCREDIT') && isset($_POST['LineNo']) && isset($_SESSION['Items']->line_items[$_POST['LineNo']]) && !check_num('qty',
+		elseif (!$_SESSION["wa_current_user"]->can_access('SA_SALESCREDIT') && isset($_POST['LineNo']) && isset($_SESSION['Items']->line_items[$_POST['LineNo']]) && !Validation::is_num('qty',
 			$_SESSION['Items']->line_items[$_POST['LineNo']]->qty_done)
 		) {
 			ui_view::set_focus('qty');
 			ui_msgs::display_error(_("You attempting to make the quantity ordered a quantity less than has already been delivered. The quantity delivered cannot be modified retrospectively."));
 			return false;
 		} // Joe Hunt added 2008-09-22 -------------------------
-		elseif ($_SESSION['Items']->trans_type != ST_SALESORDER && $_SESSION['Items']->trans_type != ST_SALESQUOTE && !$SysPrefs->allow_negative_stock() && is_inventory_item($_POST['stock_id'])) {
+		elseif ($_SESSION['Items']->trans_type != ST_SALESORDER && $_SESSION['Items']->trans_type != ST_SALESQUOTE && !SysPrefs::allow_negative_stock() && is_inventory_item($_POST['stock_id'])) {
 			$qoh = get_qoh_on_date($_POST['stock_id'], $_POST['Location'], $_POST['OrderDate']);
 			if (input_num('qty') > $qoh) {
 				$stock = get_item($_POST['stock_id']);
@@ -473,7 +475,7 @@
 
 	//--------------------------------------------------------------------------------
 	function handle_cancel_order() {
-		global $Ajax;
+		$Ajax = Ajax::instance();
 		if ($_SESSION['Items']->trans_type == ST_CUSTDELIVERY) {
 			ui_msgs::display_notification(_("Direct delivery entry has been cancelled as requested."), 1);
 			submenu_option(_("Enter a New Sales Delivery"), "/sales/sales_order_entry.php?NewDelivery=1");
@@ -508,7 +510,7 @@
 
 	//------------------------------------------------------- -------------------------
 	function create_cart($type, $trans_no) {
-		global $Refs;
+
 		processing_start();
 		$doc_type = $type;
 		if (isset($_GET['NewQuoteToSalesOrder'])) {
@@ -516,9 +518,20 @@
 			$doc = new Cart(ST_SALESQUOTE, $trans_no);
 			$doc->trans_no = 0;
 			$doc->trans_type = ST_SALESORDER;
-			$doc->reference = $Refs->get_next($doc->trans_type);
+			$doc->reference = Refs::get_next($doc->trans_type);
 			$doc->document_date = $doc->due_date = Dates::new_doc_date();
 			$doc->Comments = $doc->Comments . "\n\n" . _("Sales Quotation") . " # " . $trans_no;
+			$_SESSION['Items'] = $doc;
+		} elseif (isset($_Get['CloneOrder'])) {
+			$trans_no = $_GET['CloneOrder'];
+			$doc = new Cart(ST_SALESORDER, $trans_no);
+			$doc->trans_no = 0;
+			$doc->trans_type = ST_SALESORDER;
+			$doc->reference = Refs::get_next($doc->trans_type);
+			$doc->document_date = $doc->due_date = Dates::new_doc_date();
+			foreach ($doc->line_items as $line_no => $line) {
+				$line->qty_done = $line->qty_dispatched = 0;
+			}
 			$_SESSION['Items'] = $doc;
 		}
 		elseif (isset($_GET['NewRemoteToSalesOrder'])) {
@@ -540,7 +553,7 @@
 			else {
 				$doc->due_date = $doc->document_date;
 			}
-			$doc->reference = $Refs->get_next($doc->trans_type);
+			$doc->reference = Refs::get_next($doc->trans_type);
 			//$doc->Comments='';
 			foreach ($doc->line_items as $line_no => $line) {
 				$doc->line_items[$line]->qty_done = 0;
@@ -582,8 +595,8 @@
 		line_start_focus();
 	}
 	//--------------------------------------------------------------------------------
-	check_db_has_stock_items(_("There are no inventory items defined in the system."));
-	check_db_has_customer_branches(_("There are no customers, or there are no customers with branches. Please define customers and customer branches."));
+	Validation::check(Validation::STOCK_ITEMS, _("There are no inventory items defined in the system."));
+	Validation::check(Validation::BRANCHES_ACTIVE, _("There are no customers, or there are no customers with branches. Please define customers and customer branches."));
 	if (Input::session('Items', Input::OBJECT) && Input::session('Items')->trans_type == ST_SALESINVOICE) {
 		$idate = _("Invoice Date:");
 		$orderitems = _("Sales Invoice Items");
@@ -617,7 +630,7 @@
 	hidden('cart_id');
 	$customer_error = display_order_header($_SESSION['Items'], ($_SESSION['Items']->any_already_delivered() == 0), $idate);
 	if ($customer_error == "") {
-		start_table(Config::get('tables.style'), 10);
+		start_table(Config::get('tables_style'), 10);
 		echo "
 <tr>
     <td>";

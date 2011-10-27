@@ -19,7 +19,7 @@
 	// Title:	Purchase Orders
 	// ----------------------------------------------------------------
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	//----------------------------------------------------------------------------------------------------
 
@@ -34,29 +34,29 @@
    		suppliers.email, suppliers.address, suppliers.contact
 		FROM supp_trans, suppliers
 		WHERE supp_trans.supplier_id = suppliers.supplier_id
-		AND supp_trans.type = " . db_escape($type) . "
-		AND supp_trans.trans_no = " . db_escape($trans_no);
-		$result = db_query($sql, "The remittance cannot be retrieved");
-		if (db_num_rows($result) == 0)
+		AND supp_trans.type = " . DBOld::escape($type) . "
+		AND supp_trans.trans_no = " . DBOld::escape($trans_no);
+		$result = DBOld::query($sql, "The remittance cannot be retrieved");
+		if (DBOld::num_rows($result) == 0)
 			return false;
-		return db_fetch($result);
+		return DBOld::fetch($result);
 	}
 
 	function get_allocations_for_remittance($supplier_id, $type, $trans_no) {
 		$sql = get_alloc_supp_sql("amt, supp_reference, trans.alloc", "trans.trans_no = alloc.trans_no_to
 		AND trans.type = alloc.trans_type_to
-		AND alloc.trans_no_from=" . db_escape($trans_no) . "
-		AND alloc.trans_type_from=" . db_escape($type) . "
-		AND trans.supplier_id=" . db_escape($supplier_id),
+		AND alloc.trans_no_from=" . DBOld::escape($trans_no) . "
+		AND alloc.trans_type_from=" . DBOld::escape($type) . "
+		AND trans.supplier_id=" . DBOld::escape($supplier_id),
 			"supp_allocations as alloc");
 		$sql .= " ORDER BY trans_no";
-		return db_query($sql, "Cannot retreive alloc to transactions");
+		return DBOld::query($sql, "Cannot retreive alloc to transactions");
 	}
 
 	function print_remittances() {
 		global $systypes_array;
 
-		include_once(APP_PATH . "reporting/includes/pdf_report.inc");
+		include_once(APP_PATH . "reporting/includes/pdf_report.php");
 
 		$from = $_POST['PARAM_0'];
 		$to = $_POST['PARAM_1'];
@@ -80,7 +80,7 @@
 
 		$params = array('comments' => $comments);
 
-		$cur = get_company_Pref('curr_default');
+		$cur = DB_Company::get_pref('curr_default');
 
 		if ($email == 0) {
 			$rep = new FrontReport(_('REMITTANCE'), "RemittanceBulk", user_pagesize());
@@ -119,18 +119,18 @@
 				$linetype = true;
 				$doctype = ST_SUPPAYMENT;
 				if ($rep->currency != $myrow['curr_code']) {
-					include(APP_PATH . "reporting/includes/doctext2.inc");
+					include(APP_PATH . "reporting/includes/doctext2.php");
 				}
 				else
 				{
-					include(APP_PATH . "reporting/includes/doctext.inc");
+					include(APP_PATH . "reporting/includes/doctext.php");
 				}
 
 				$total_allocated = 0;
 				$rep->TextCol(0, 4, $doc_Towards, -2);
 				$rep->NewLine(2);
 
-				while ($myrow2 = db_fetch($result))
+				while ($myrow2 = DBOld::fetch($result))
 				{
 					$rep->TextCol(0, 1, $systypes_array[$myrow2['type']], -2);
 					$rep->TextCol(1, 2, $myrow2['supp_reference'], -2);

@@ -11,15 +11,15 @@
 	 ***********************************************************************/
 	$page_security = 'SA_WORKORDERANALYTIC';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	page(_($help_context = "Inventory Item Where Used Inquiry"));
 
-	check_db_has_stock_items(_("There are no items defined in the system."));
+	Validation::check(Validation::STOCK_ITEMS, _("There are no items defined in the system."));
 
 	start_form(false, true);
 
-	if (!isset($_POST['stock_id']))
+	if (!Input::post('stock_id'))
 		$_POST['stock_id'] = ui_globals::get_global_stock_item();
 
 	echo "<center>" . _("Select an item to display its parent item(s).") . "&nbsp;";
@@ -43,7 +43,7 @@
 		WHERE bom.parent = parent.stock_id 
 			AND bom.workcentre_added = workcentre.id
 			AND bom.loc_code = location.loc_code
-			AND bom.component=" . db_escape($_POST['stock_id']);
+			AND bom.component=" . DBOld::escape($_POST['stock_id']);
 
 	$cols = array(
 		_("Parent Item") => array('fun' => 'select_link'),

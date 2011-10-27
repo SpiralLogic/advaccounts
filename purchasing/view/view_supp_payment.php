@@ -11,10 +11,10 @@
 	 ***********************************************************************/
 	$page_security = 'SA_SUPPTRANSVIEW';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	$js = "";
-	if (Config::get('ui.windows.popups'))
+	if (Config::get('ui_windows_popups'))
 		$js .= ui_view::get_js_open_window(900, 500);
 	page(_($help_context = "View Payment to Supplier"), true, false, "", $js);
 
@@ -42,7 +42,7 @@
 	ui_msgs::display_heading(_("Payment to Supplier") . " #$trans_no");
 
 	echo "<br>";
-	start_table(Config::get('tables.style2') . " width=90%");
+	start_table(Config::get('tables_style2') . " width=90%");
 
 	start_row();
 	label_cells(_("To Supplier"), $receipt['supplier_name'], "class='tableheader2'");

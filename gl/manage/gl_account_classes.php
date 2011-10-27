@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 	$page_security = 'SA_GLACCOUNTCLASS';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	page(_($help_context = "GL Account Classes"));
 
@@ -29,7 +29,7 @@
 			ui_view::set_focus('name');
 			return false;
 		}
-		if (Config::get('accounts.gl.oldconvertstyle') == 1)
+		if (Config::get('accounts_gl_oldconvertstyle') == 1)
 			$_POST['Balance'] = check_value('Balance');
 		return true;
 	}
@@ -61,8 +61,8 @@
 			return false;
 		$sql = "SELECT COUNT(*) FROM chart_types
 		WHERE class_id=$selected_id";
-		$result = db_query($sql, "could not query chart master");
-		$myrow = db_fetch_row($result);
+		$result = DBOld::query($sql, "could not query chart master");
+		$myrow = DBOld::fetch_row($result);
 		if ($myrow[0] > 0) {
 			ui_msgs::display_error(_("Cannot delete this account class because GL account types have been created referring to it."));
 			return false;
@@ -92,22 +92,22 @@
 	$result = get_account_classes(check_value('show_inactive'));
 
 	start_form();
-	start_table(Config::get('tables.style'));
+	start_table(Config::get('tables_style'));
 	$th = array(_("Class ID"), _("Class Name"), _("Class Type"), "", "");
-	if (Config::get('accounts.gl.oldconvertstyle') == 1)
+	if (Config::get('accounts_gl_oldconvertstyle') == 1)
 		$th[2] = _("Balance Sheet");
 	inactive_control_column($th);
 	table_header($th);
 
 	$k = 0;
-	while ($myrow = db_fetch($result))
+	while ($myrow = DBOld::fetch($result))
 	{
 
 		alt_table_row_color($k);
 
 		label_cell($myrow["cid"]);
 		label_cell($myrow['class_name']);
-		if (Config::get('accounts.gl.oldconvertstyle') == 1) {
+		if (Config::get('accounts_gl_oldconvertstyle') == 1) {
 			$myrow['ctype'] = ($myrow["ctype"] >= CL_ASSETS && $myrow["ctype"] < CL_INCOME ? 1 : 0);
 			label_cell(($myrow['ctype'] == 1 ? _("Yes") : _("No")));
 		}
@@ -122,7 +122,7 @@
 	end_table(1);
 	//-----------------------------------------------------------------------------------
 
-	start_table(Config::get('tables.style2'));
+	start_table(Config::get('tables_style2'));
 
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {
@@ -131,7 +131,7 @@
 
 			$_POST['id'] = $myrow["cid"];
 			$_POST['name'] = $myrow["class_name"];
-			if (Config::get('accounts.gl.oldconvertstyle') == 1)
+			if (Config::get('accounts_gl_oldconvertstyle') == 1)
 				$_POST['ctype'] = ($myrow["ctype"] >= CL_ASSETS && $myrow["ctype"] < CL_INCOME ? 1 : 0);
 			else
 				$_POST['ctype'] = $myrow["ctype"];
@@ -148,7 +148,7 @@
 
 	text_row_ex(_("Class Name:"), 'name', 50, 60);
 
-	if (Config::get('accounts.gl.oldconvertstyle') == 1)
+	if (Config::get('accounts_gl_oldconvertstyle') == 1)
 		check_row(_("Balance Sheet"), 'ctype', null);
 	else
 		class_types_list_row(_("Class Type:"), 'ctype', null);

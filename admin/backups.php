@@ -11,9 +11,7 @@
 	 ***********************************************************************/
 	$page_security = 'SA_BACKUP';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
-
-	include_once(APP_PATH . "admin/db/maintenance_db.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	if (get_post('view')) {
 		if (!get_post('backups')) {
@@ -52,7 +50,7 @@
 	}
 
 	function generate_backup($conn, $ext = 'no', $comm = '') {
-		$filename = db_backup($conn, $ext, $comm);
+		$filename = DB_Utils::backup($conn, $ext, $comm);
 		if ($filename)
 			ui_msgs::display_notification(_("Backup successfully generated.") . ' '
 				 . _("Filename") . ": " . $filename);
@@ -63,7 +61,7 @@
 	}
 
 	function get_backup_file_combo() {
-		global $Ajax;
+		$Ajax = Ajax::instance();
 
 		$ar_files = array();
 		ui_view::default_focus('backups');
@@ -118,7 +116,8 @@
 	}
 
 	$db_name = $_SESSION["wa_current_user"]->company;
-	$conn = $db_connections[$db_name];
+	$connections = Config::get_all('db');
+	$conn = $conections[$db_name];
 
 	if (get_post('creat')) {
 		generate_backup($conn, get_post('comp'), get_post('comments'));
@@ -127,7 +126,7 @@
 	;
 
 	if (get_post('restore')) {
-		if (db_import(BACKUP_PATH . get_post('backups'), $conn))
+		if (DB_Utils::import(BACKUP_PATH . get_post('backups'), $conn))
 			ui_msgs::display_notification(_("Restore backup completed."));
 	}
 
@@ -157,12 +156,12 @@
 	}
 	//-------------------------------------------------------------------------------
 	start_form(true, true);
-	start_outer_table(Config::get('tables.style2'));
+	start_outer_table(Config::get('tables_style2'));
 	table_section(1);
 	table_section_title(_("Create backup"));
 	textarea_row(_("Comments:"), 'comments', null, 30, 8);
 	compress_list_row(_("Compression:"), 'comp');
-	vertical_space("height='20px'");
+
 	submit_row('creat', _("Create Backup"), false, "colspan=2 align='center'", '', 'process');
 	table_section(2);
 	table_section_title(_("Backup scripts maintenance"));

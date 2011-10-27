@@ -11,29 +11,29 @@
 	 ***********************************************************************/
 	$page_security = 'SA_SUPPLIERINVOICE';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
-	include_once(APP_PATH . "/purchasing/includes/purchasing_db.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
+	include_once(APP_PATH . "/purchasing/includes/purchasing_db.php");
 
-	include_once(APP_PATH . "purchasing/includes/purchasing_ui.inc");
+	include_once(APP_PATH . "purchasing/includes/purchasing_ui.php");
 	$js = "";
-	if (Config::get('ui.windows.popups')) {
+	if (Config::get('ui_windows_popups')) {
 		$js .= ui_view::get_js_open_window(900, 500);
 	}
 
 	page(_($help_context = "Enter Supplier Invoice"), false, false, "", $js);
 	//----------------------------------------------------------------------------------------
-	check_db_has_suppliers(_("There are no suppliers defined in the system."));
+	Validation::check(Validation::SUPPLIERS, _("There are no suppliers defined in the system."));
 	//---------------------------------------------------------------------------------------------------------------
 	if (isset($_GET['AddedID'])) {
 		$invoice_no = $_GET['AddedID'];
 		$trans_type = ST_SUPPINVOICE;
 		echo "<center>";
 		ui_msgs::display_notification_centered(_("Supplier invoice has been processed."));
-		ui_msgs::display_note(ui_view::get_trans_view_str($trans_type, $invoice_no, _("View this Invoice")));
+		ui_msgs::display_warning(ui_view::get_trans_view_str($trans_type, $invoice_no, _("View this Invoice")));
 		hyperlink_no_params("/purchasing/inquiry/po_search.php", _("Purchase Order Maintainants"));
 		hyperlink_params($_SERVER['PHP_SELF'], _("Enter Another Invoice"), "New=1");
 		hyperlink_no_params("/purchasing/supplier_payment.php", _("Entry supplier &payment for this invoice"));
-		ui_msgs::display_note(ui_view::get_gl_view_str($trans_type, $invoice_no, _("View the GL Journal Entries for this Invoice")), 1);
+		ui_msgs::display_warning(ui_view::get_gl_view_str($trans_type, $invoice_no, _("View the GL Journal Entries for this Invoice")), 1);
 		hyperlink_params("/admin/attachments.php", _("Add an Attachment"), "filterType=$trans_type&trans_no=$invoice_no");
 		ui_view::display_footer_exit();
 	}
@@ -46,7 +46,7 @@
 		}
 		//session_register("SuppInv");
 		//session_register("supp_trans");
-		$_SESSION['supp_trans'] = new supp_trans;
+		$_SESSION['supp_trans'] = new suppTrans;
 		$_SESSION['supp_trans']->is_invoice = true;
 		if (isset($_GET['SuppID'])) {
 			$_SESSION['wa_global_supplier_id'] = $_GET['SuppID'];
@@ -54,7 +54,7 @@
 	}
 	//--------------------------------------------------------------------------------------------------
 	function clear_fields() {
-		global $Ajax;
+		$Ajax = Ajax::instance();
 		unset($_POST['gl_code']);
 		unset($_POST['dimension_id']);
 		unset($_POST['dimension2_id']);
@@ -75,23 +75,23 @@
 	if (isset($_POST['AddGLCodeToTrans'])) {
 		$Ajax->activate('gl_items');
 		$input_error = false;
-		$sql = "SELECT account_code, account_name FROM chart_master WHERE account_code=" . db_escape($_POST['gl_code']);
-		$result = db_query($sql, "get account information");
-		if (db_num_rows($result) == 0) {
+		$sql = "SELECT account_code, account_name FROM chart_master WHERE account_code=" . DBOld::escape($_POST['gl_code']);
+		$result = DBOld::query($sql, "get account information");
+		if (DBOld::num_rows($result) == 0) {
 			ui_msgs::display_error(_("The account code entered is not a valid code, this line cannot be added to the transaction."));
 			ui_view::set_focus('gl_code');
 			$input_error = true;
 		}
 		else {
-			$myrow = db_fetch_row($result);
+			$myrow = DBOld::fetch_row($result);
 			$gl_act_name = $myrow[1];
-			if (!check_num('amount')) {
+			if (!Validation::is_num('amount')) {
 				ui_msgs::display_error(_("The amount entered is not numeric. This line cannot be added to the transaction."));
 				ui_view::set_focus('amount');
 				$input_error = true;
 			}
 		}
-		if (!is_tax_gl_unique(get_post('gl_code'))) {
+		if (!Tax_Types::is_tax_gl_unique(get_post('gl_code'))) {
 			ui_msgs::display_error(_("Cannot post to GL account used by more than one tax type."));
 			ui_view::set_focus('gl_code');
 			$input_error = true;
@@ -114,12 +114,12 @@
 	}
 	//------------------------------------------------------------------------------------------------
 	function check_data() {
-		global $Refs;
+
 		if (!$_SESSION['supp_trans']->is_valid_trans_to_post()) {
 			ui_msgs::display_error(_("The invoice cannot be processed because the there are no items or values on the invoice.  Invoices are expected to have a charge."));
 			return false;
 		}
-		if (!$Refs->is_valid($_SESSION['supp_trans']->reference)) {
+		if (!Refs::is_valid($_SESSION['supp_trans']->reference)) {
 			ui_msgs::display_error(_("You must enter an invoice reference."));
 			ui_view::set_focus('reference');
 			return false;
@@ -128,9 +128,9 @@
 			//ui_msgs::display_error(_("The entered reference is already in use."));
 			//ui_view::set_focus('reference');
 			//return false;
-			$_SESSION['supp_trans']->reference = $Refs->get_next(ST_SUPPINVOICE);
+			$_SESSION['supp_trans']->reference = Refs::get_next(ST_SUPPINVOICE);
 		}
-		if (!$Refs->is_valid($_SESSION['supp_trans']->supp_reference)) {
+		if (!Refs::is_valid($_SESSION['supp_trans']->supp_reference)) {
 			ui_msgs::display_error(_("You must enter a supplier's invoice reference."));
 			ui_view::set_focus('supp_reference');
 			return false;
@@ -150,9 +150,9 @@
 			ui_view::set_focus('due_date');
 			return false;
 		}
-		$sql = "SELECT Count(*) FROM supp_trans WHERE supplier_id=" . db_escape($_SESSION['supp_trans']->supplier_id) . " AND supp_reference=" . db_escape($_POST['supp_reference']) . " AND ov_amount!=0"; // ignore voided invoice references
-		$result = db_query($sql, "The sql to check for the previous entry of the same invoice failed");
-		$myrow = db_fetch_row($result);
+		$sql = "SELECT Count(*) FROM supp_trans WHERE supplier_id=" . DBOld::escape($_SESSION['supp_trans']->supplier_id) . " AND supp_reference=" . DBOld::escape($_POST['supp_reference']) . " AND ov_amount!=0"; // ignore voided invoice references
+		$result = DBOld::query($sql, "The sql to check for the previous entry of the same invoice failed");
+		$myrow = DBOld::fetch_row($result);
 		if ($myrow[0] == 1) { /*Transaction reference already entered */
 			ui_msgs::display_error(_("This invoice number has already been entered. It cannot be entered again." . " (" . $_POST['supp_reference'] . ")"));
 			return false;
@@ -180,7 +180,7 @@
 			}
 		}
 		if (get_post('ChgTotal', 0) != 0) {
-			$_SESSION['supp_trans']->add_gl_codes_to_trans(get_company_pref('default_cogs_act'), 'Cost of Goods Sold', 0, 0, get_post('ChgTotal'), 'Rounding Correction');
+			$_SESSION['supp_trans']->add_gl_codes_to_trans(DB_Company::get_pref('default_cogs_act'), 'Cost of Goods Sold', 0, 0, get_post('ChgTotal'), 'Rounding Correction');
 		}
 		$invoice_no = add_supp_invoice($_SESSION['supp_trans']);
 		$_SESSION['supp_trans']->clear_items();
@@ -193,24 +193,24 @@
 		handle_commit_invoice();
 	}
 	function check_item_data($n) {
-		global $SysPrefs;
-		if (!check_num('this_quantity_inv' . $n, 0) || input_num('this_quantity_inv' . $n) == 0) {
+
+		if (!Validation::is_num('this_quantity_inv' . $n, 0) || input_num('this_quantity_inv' . $n) == 0) {
 			ui_msgs::display_error(_("The quantity to invoice must be numeric and greater than zero."));
 			ui_view::set_focus('this_quantity_inv' . $n);
 			return false;
 		}
-		if (!check_num('ChgPrice' . $n)) {
+		if (!Validation::is_num('ChgPrice' . $n)) {
 			ui_msgs::display_error(_("The price is not numeric."));
 			ui_view::set_focus('ChgPrice' . $n);
 			return false;
 		}
-		if (!check_num('ExpPrice' . $n)) {
+		if (!Validation::is_num('ExpPrice' . $n)) {
 			ui_msgs::display_error(_("The price is not numeric."));
 			ui_view::set_focus('ExpPrice' . $n);
 			return false;
 		}
-		$margin = $SysPrefs->over_charge_allowance();
-		if (Config::get('valid.charged_to_delivered.price') == True && $margin != 0) {
+		$margin = SysPrefs::over_charge_allowance();
+		if (Config::get('valid_charged_to_delivered_price') == True && $margin != 0) {
 			if ($_POST['order_price' . $n] != input_num('ChgPrice' . $n)) {
 				if ($_POST['order_price' . $n] == 0 || input_num('ChgPrice' . $n) / $_POST['order_price' . $n] > (1 + ($margin / 100))) {
 					if ($_SESSION['err_over_charge'] != true) {
@@ -225,7 +225,7 @@
 				}
 			}
 		}
-		if (Config::get('valid.charged_to_delivered.qty') == True) {
+		if (Config::get('valid_charged_to_delivered_qty') == True) {
 			if (input_num('this_quantity_inv' . $n) / ($_POST['qty_recd' . $n] - $_POST['prev_quantity_inv' . $n]) > (1 + ($margin / 100))) {
 				ui_msgs::display_error(_("The quantity being invoiced is more than the outstanding quantity by more than the allowed over-charge percentage. The system is set up to prohibit this. See the system administrator to modify the set up parameters if necessary.") . _("The over-charge percentage allowance is :") . $margin . "%");
 				ui_view::set_focus('this_quantity_inv' . $n);
@@ -295,19 +295,19 @@
 	if ($_SESSION["wa_current_user"]->can_access('SA_GRNDELETE')) {
 		$id2 = find_submit('void_item_id');
 		if ($id2 != -1) {
-			begin_transaction();
+			DBOld::begin_transaction();
 			$myrow = get_grn_item_detail($id2);
 			$grn = get_grn_batch($myrow['grn_batch_id']);
 			$sql = "UPDATE purch_order_details
 			SET quantity_received = qty_invoiced, quantity_ordered = qty_invoiced WHERE po_detail_item = " . $myrow["po_detail_item"];
-			db_query($sql, "The quantity invoiced of the purchase order line could not be updated");
+			DBOld::query($sql, "The quantity invoiced of the purchase order line could not be updated");
 			$sql = "UPDATE grn_items
 	    	SET qty_recd = quantity_inv WHERE id = " . $myrow["id"];
-			db_query($sql, "The quantity invoiced off the items received record could not be updated");
+			DBOld::query($sql, "The quantity invoiced off the items received record could not be updated");
 			update_average_material_cost($grn["supplier_id"], $myrow["item_code"], $myrow["unit_price"], -$myrow["QtyOstdg"], Dates::Today());
 			add_stock_move(ST_SUPPRECEIVE, $myrow["item_code"], $myrow['grn_batch_id'], $grn['loc_code'], Dates::sql2date($grn["delivery_date"]), "", -$myrow["QtyOstdg"],
 				$myrow['std_cost_unit'], $grn["supplier_id"], 1, $myrow['unit_price']);
-			commit_transaction();
+			DBOld::commit_transaction();
 			ui_msgs::display_notification(sprintf(_('All yet non-invoiced items on delivery line # %d has been removed.'), $id2));
 		}
 	}

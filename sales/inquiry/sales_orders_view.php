@@ -11,15 +11,15 @@
 			See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 			* ********************************************************************* */
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
-	include_once(APP_PATH . "sales/includes/sales_ui.inc");
-	include_once(APP_PATH . "reporting/includes/reporting.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
+	include_once(APP_PATH . "sales/includes/sales_ui.php");
+	include_once(APP_PATH . "reporting/includes/reporting.php");
 	$page_security = 'SA_SALESTRANSVIEW';
-	set_page_security(Input::post('order_view_mode'),
+	Security::set_page(Input::post('order_view_mode'),
 		array('OutstandingOnly' => 'SA_SALESDELIVERY', 'InvoiceTemplates' => 'SA_SALESINVOICE'),
 		array('OutstandingOnly' => 'SA_SALESDELIVERY', 'InvoiceTemplates' => 'SA_SALESINVOICE'));
 	$js = "";
-	if (Config::get('ui.windows.popups')) {
+	if (Config::get('ui_windows_popups')) {
 		$js .= ui_view::get_js_open_window(900, 600);
 	}
 
@@ -47,26 +47,26 @@
 	if ($trans_type == ST_SALESORDER) {
 		if (Input::get('OutstandingOnly')) {
 			$_POST['order_view_mode'] = 'OutstandingOnly';
-			$_SESSION['page_title'] = _($help_context = "Search Outstanding Sales Orders");
+			$page_title = _($help_context = "Search Outstanding Sales Orders");
 		}
 		elseif (isset($_GET['InvoiceTemplates']) && ($_GET['InvoiceTemplates'] == true)) {
 			$_POST['order_view_mode'] = 'InvoiceTemplates';
-			$_SESSION['page_title'] = _($help_context = "Search Template for Invoicing");
+			$page_title = _($help_context = "Search Template for Invoicing");
 		}
 		elseif (isset($_GET['DeliveryTemplates']) && ($_GET['DeliveryTemplates'] == true)) {
 			$_POST['order_view_mode'] = 'DeliveryTemplates';
-			$_SESSION['page_title'] = _($help_context = "Select Template for Delivery");
+			$page_title = _($help_context = "Select Template for Delivery");
 		}
 		elseif (!isset($_POST['order_view_mode'])) {
 			$_POST['order_view_mode'] = false;
-			$_SESSION['page_title'] = _($help_context = "Search All Sales Orders");
+			$page_title = _($help_context = "Search All Sales Orders");
 		}
 	}
 	else {
 		$_POST['order_view_mode'] = "Quotations";
-		$_SESSION['page_title'] = _($help_context = "Search All Sales Quotations");
+		$page_title = _($help_context = "Search All Sales Quotations");
 	}
-	page($_SESSION['page_title'], false, false, "", $js);
+	page($page_title, false, false, "", $js);
 	if (isset($_GET['selected_customer'])) {
 		$selected_customer = $_GET['selected_customer'];
 	}
@@ -166,9 +166,9 @@
 	// Update db record if respective checkbox value has changed.
 	//
 	function change_tpl_flag($id) {
-		global $Ajax;
+		$Ajax = Ajax::instance();
 		$sql = "UPDATE sales_orders SET type = !type WHERE order_no=$id";
-		db_query($sql, "Can't change sales order type");
+		DBOld::query($sql, "Can't change sales order type");
 		$Ajax->activate('orders_tbl');
 	}
 
@@ -262,24 +262,24 @@
 		AND sorder.branch_code = branch.branch_code
 		AND debtor.debtor_no = branch.debtor_no";
 	if ($_POST['customer_id'] != ALL_TEXT) {
-		$sql .= " AND sorder.debtor_no = " . db_escape($_POST['customer_id']);
+		$sql .= " AND sorder.debtor_no = " . DBOld::escape($_POST['customer_id']);
 	}
 	if (isset($_POST['OrderNumber']) && $_POST['OrderNumber'] != "") {
 		// search orders with number like
 		$number_like = "%" . $_POST['OrderNumber'];
-		$sql .= " AND sorder.order_no LIKE " . db_escape($number_like) . " GROUP BY sorder.order_no";
+		$sql .= " AND sorder.order_no LIKE " . DBOld::escape($number_like) . " GROUP BY sorder.order_no";
 	}
 	elseif (isset($_POST['OrderReference']) && $_POST['OrderReference'] != "") {
 		// search orders with reference like
 		$number_like = "%" . $_POST['OrderReference'] . "%";
-		$sql .= " AND sorder.reference LIKE " . db_escape($number_like) . " GROUP BY sorder.order_no";
+		$sql .= " AND sorder.reference LIKE " . DBOld::escape($number_like) . " GROUP BY sorder.order_no";
 	}
 	elseif (AJAX_REFERRER && !empty($_POST['ajaxsearch'])) {
 		foreach ($searchArray as $ajaxsearch) {
 			if (empty($ajaxsearch)) {
 				continue;
 			}
-			$ajaxsearch = db_escape("%" . trim($ajaxsearch) . "%");
+			$ajaxsearch = DBOld::escape("%" . trim($ajaxsearch) . "%");
 			$sql .= " AND (debtor.name LIKE $ajaxsearch OR sorder.order_no LIKE $ajaxsearch
 			OR sorder.reference LIKE $ajaxsearch  OR sorder.contact_name LIKE $ajaxsearch
 			OR sorder.customer_ref LIKE $ajaxsearch
@@ -304,13 +304,13 @@
 			$sql .= " AND sorder.delivery_date >= '" . Dates::date2sql(Dates::Today()) . "'";
 		}
 		if ($selected_customer != -1) {
-			$sql .= " AND sorder.debtor_no=" . db_escape($selected_customer);
+			$sql .= " AND sorder.debtor_no=" . DBOld::escape($selected_customer);
 		}
 		if (isset($selected_stock_item)) {
-			$sql .= " AND line.stk_code=" . db_escape($selected_stock_item);
+			$sql .= " AND line.stk_code=" . DBOld::escape($selected_stock_item);
 		}
 		if (isset($_POST['StockLocation']) && $_POST['StockLocation'] != ALL_TEXT) {
-			$sql .= " AND sorder.from_stk_loc = " . db_escape($_POST['StockLocation']);
+			$sql .= " AND sorder.from_stk_loc = " . DBOld::escape($_POST['StockLocation']);
 		}
 		if ($_POST['order_view_mode'] == 'OutstandingOnly') {
 			$sql .= " AND line.qty_sent < line.quantity";

@@ -15,7 +15,7 @@
  */
 
 	$page_security = 'SA_OPEN'; // this level is later overriden in rep file
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	function find_report_file($rep) {
 		global $installed_extensions;

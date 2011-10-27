@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 	$page_security = 'SA_FORMSETUP';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	page(_($help_context = "Forms Setup"));
 
@@ -19,31 +19,31 @@
 
 	if (isset($_POST['setprefs'])) {
 
-		$systypes = get_systypes();
+		$systypes = SysTypes::get_systypes();
 
-		begin_transaction();
+		DBOld::begin_transaction();
 
-		while ($type = db_fetch($systypes))
+		while ($type = DBOld::fetch($systypes))
 		{
-			save_next_reference($type["type_id"], $_POST['id' . $type["type_id"]]);
+			Refs::save_next_reference($type["type_id"], $_POST['id' . $type["type_id"]]);
 		}
 
-		commit_transaction();
+		DBOld::commit_transaction();
 
 		ui_msgs::display_notification_centered(_("Forms settings have been updated."));
 	}
 
 	start_form();
 
-	start_outer_table(Config::get('tables.style2'));
+	start_outer_table(Config::get('tables_style2'));
 
-	$systypes = get_systypes();
+	$systypes = SysTypes::get_systypes();
 	table_section(1);
 
 	$th = array(_("Form"), _("Next Reference"));
 	table_header($th);
 	$i = 0;
-	while ($type = db_fetch($systypes))
+	while ($type = DBOld::fetch($systypes))
 	{
 		if ($i++ == ST_CUSTCREDIT) {
 			table_section(2);

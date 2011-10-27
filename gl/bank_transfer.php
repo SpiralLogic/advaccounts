@@ -11,15 +11,15 @@
 	 ***********************************************************************/
 	$page_security = 'SA_BANKTRANSFER';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	$js = "";
-	if (Config::get('ui.windows.popups'))
+	if (Config::get('ui_windows_popups'))
 		$js .= ui_view::get_js_open_window(800, 500);
 
 	page(_($help_context = "Transfer between Bank Accounts"), false, false, "", $js);
 
-	check_db_has_bank_accounts(_("There are no bank accounts defined in the system."));
+	Validation::check(Validation::BANK_ACCOUNTS, _("There are no bank accounts defined in the system."));
 
 	//----------------------------------------------------------------------------------------
 
@@ -43,7 +43,6 @@
 	//----------------------------------------------------------------------------------------
 
 	function gl_payment_controls() {
-		global $Refs;
 
 		$home_currency = Banking::get_company_currency();
 
@@ -75,7 +74,7 @@
 
 		table_section(2);
 
-		ref_row(_("Reference:"), 'ref', '', $Refs->get_next(ST_BANKTRANSFER));
+		ref_row(_("Reference:"), 'ref', '', Refs::get_next(ST_BANKTRANSFER));
 
 		textarea_row(_("Memo:"), 'memo_', null, 40, 4);
 
@@ -89,7 +88,6 @@
 	//----------------------------------------------------------------------------------------
 
 	function check_valid_entries() {
-		global $Refs;
 
 		if (!Dates::is_date($_POST['DatePaid'])) {
 			ui_msgs::display_error(_("The entered date is invalid."));
@@ -102,23 +100,23 @@
 			return false;
 		}
 
-		if (!check_num('amount', 0)) {
+		if (!Validation::is_num('amount', 0)) {
 			ui_msgs::display_error(_("The entered amount is invalid or less than zero."));
 			ui_view::set_focus('amount');
 			return false;
 		}
 
-		if (isset($_POST['charge']) && !check_num('charge', 0)) {
+		if (isset($_POST['charge']) && !Validation::is_num('charge', 0)) {
 			ui_msgs::display_error(_("The entered amount is invalid or less than zero."));
 			ui_view::set_focus('charge');
 			return false;
 		}
-		if (isset($_POST['charge']) && input_num('charge') > 0 && get_company_pref('bank_charge_act') == '') {
+		if (isset($_POST['charge']) && input_num('charge') > 0 && DB_Company::get_pref('bank_charge_act') == '') {
 			ui_msgs::display_error(_("The Bank Charge Account has not been set in System and General GL Setup."));
 			ui_view::set_focus('charge');
 			return false;
 		}
-		if (!$Refs->is_valid($_POST['ref'])) {
+		if (!Refs::is_valid($_POST['ref'])) {
 			ui_msgs::display_error(_("You must enter a reference."));
 			ui_view::set_focus('ref');
 			return false;

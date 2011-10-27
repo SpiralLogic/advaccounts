@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 	$page_security = 'SA_BANKTRANSVIEW';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	page(_($help_context = "View Bank Transfer"), true);
 
@@ -22,11 +22,11 @@
 
 	$result = get_bank_trans(ST_BANKTRANSFER, $trans_no);
 
-	if (db_num_rows($result) != 2)
-		display_db_error("Bank transfer does not contain two records");
+	if (DBOld::num_rows($result) != 2)
+		Errors::show_db_error("Bank transfer does not contain two records");
 
-	$trans1 = db_fetch($result);
-	$trans2 = db_fetch($result);
+	$trans1 = DBOld::fetch($result);
+	$trans2 = DBOld::fetch($result);
 
 	if ($trans1["amount"] < 0) {
 		$from_trans = $trans1; // from trans is the negative one
@@ -54,7 +54,7 @@
 	ui_msgs::display_heading($systypes_array[ST_BANKTRANSFER] . " #$trans_no");
 
 	echo "<br>";
-	start_table(Config::get('tables.style') . "  width=90%");
+	start_table(Config::get('tables_style') . "  width=90%");
 
 	start_row();
 	label_cells(_("From Bank Account"), $from_trans['bank_account_name'], "class='tableheader2'");

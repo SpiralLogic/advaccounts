@@ -11,14 +11,9 @@
 	 ***********************************************************************/
 	$page_security = 'SA_CREATECOMPANY';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
-
-	include_once(APP_PATH . "admin/db/company_db.inc");
-	include_once(APP_PATH . "admin/db/maintenance_db.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	page(_($help_context = "Create/Update Company"));
-
-	$comp_subdirs = array('images', 'pdf_files', 'backup', 'js_cache', 'reporting', 'attachments');
 
 	//---------------------------------------------------------------------------------------------
 	if (isset($_GET['selected_id'])) {
@@ -34,7 +29,7 @@
 	//---------------------------------------------------------------------------------------------
 
 	function check_data() {
-		global $db_connections, $selected_id;
+		global $selected_id;
 
 		if ($_POST['name'] == "" || $_POST['host'] == "" || $_POST['dbuser'] == "" || $_POST['dbname'] == "")
 			return false;
@@ -42,7 +37,7 @@
 			ui_msgs::display_error(_("When creating a new company, you must provide a Database script file."));
 			return false;
 		}
-		foreach ($db_connections as $id => $con)
+		foreach (Config::get_all('db') as $id => $con)
 		{
 			if ($id != $selected_id && $_POST['host'] == $con['host']
 			 && $_POST['dbname'] == $con['dbname']
@@ -54,56 +49,44 @@
 
 	//---------------------------------------------------------------------------------------------
 
-	function remove_connection($id) {
-		global $db_connections;
-
-		$err = db_drop_db($db_connections[$id]);
-
-		unset($db_connections[$id]);
-		$conn = array_values($db_connections);
-		$db_connections = $conn;
-		//$$db_connections = array_values($db_connections);
-		return $err;
-	}
-
 	//---------------------------------------------------------------------------------------------
 
 	function handle_submit() {
-		global $db_connections, $db,
-					 $comp_subdirs;
+		DBOld::getInstance();
+		$comp_subdirs = Config::get('company_subdirs');
 
 		$error = false;
 		if (!check_data())
 			return false;
 
 		$id = $_GET['id'];
-		$new = !isset($db_connections[$id]);
+		$connections = Config::get_all('db');
 
-		$db_connections[$id]['name'] = $_POST['name'];
-		$db_connections[$id]['host'] = $_POST['host'];
-		$db_connections[$id]['dbuser'] = $_POST['dbuser'];
-		$db_connections[$id]['dbpassword'] = $_POST['dbpassword'];
-		$db_connections[$id]['dbname'] = $_POST['dbname'];
-
+		$new = !isset($conections[$id]);
+		$db_connection['name'] = $_POST['name'];
+		$db_connection['host'] = $_POST['host'];
+		$db_connection['dbuser'] = $_POST['dbuser'];
+		$db_connection['dbpassword'] = $_POST['dbpassword'];
+		$db_connection['dbname'] = $_POST['dbname'];
+		Config::set($id, $db_connection, 'db');
 		if ((bool)$_POST['def'] == true)
-			Config::set('company.default', $id);
+			Config::set('company_default', $id);
 
 		if (isset($_GET['ul']) && $_GET['ul'] == 1) {
-			$conn = $db_connections[$id];
-			if (($db = db_create_db($conn)) == 0) {
+			$conn = Config::get($id, null, 'db');
+			if (($db = DB_Utils::create($conn)) == 0) {
 				ui_msgs::display_error(_("Error creating Database: ") . $conn['dbname'] . _(", Please create it manually"));
 				$error = true;
 			} else {
 
 				$filename = $_FILES['uploadfile']['tmp_name'];
 				if (is_uploaded_file($filename)) {
-					if (!db_import($filename, $conn, $id)) {
+					if (!DB_Utils::import($filename, $conn, $id)) {
 						ui_msgs::display_error(_('Cannot create new company due to bugs in sql file.'));
 						$error = true;
-					} else
-						if (isset($_POST['admpassword']) && $_POST['admpassword'] != "")
-							db_query("UPDATE users set password = '" . md5(
-									$_POST['admpassword']) . "' WHERE user_id = 'admin'");
+					} else if (isset($_POST['admpassword']) && $_POST['admpassword'] != "")
+						DBOld::query("UPDATE users set password = '" . md5(
+								$_POST['admpassword']) . "' WHERE user_id = 'admin'");
 				}
 				else
 				{
@@ -111,28 +94,28 @@
 					$error = true;
 				}
 			}
-			set_global_connection();
+			DBOld::getInstance();
 			if ($error) {
 				remove_connection($id);
 				return false;
 			}
 		} else {
 			if ($_GET['c'] = 'u') {
-				$conn = $db_connections[$id];
-				if (($db = db_create_db($conn)) == 0) {
+				$conn = Config::get($id, null, 'db');
+				if (($db = DB_Utils::create($conn)) == 0) {
 					ui_msgs::display_error(_("Error connecting to Database: ") . $conn['dbname'] . _(", Please correct it"));
 				} elseif ($_POST['admpassword'] != "") {
-					db_query("UPDATE users set password = '" . md5(
+					DBOld::query("UPDATE users set password = '" . md5(
 							$_POST['admpassword']) . "' WHERE user_id = 'admin'");
 				}
 			}
 		}
 
 		if ($new) {
-			create_comp_dirs(COMPANY_PATH . "/$id", $comp_subdirs);
+			create_comp_dirs(COMPANY_PATH . "/$id", $comp_subdirs = Config::get('company_subdirs'));
 		}
-		$exts = get_company_extensions();
-		write_extensions($exts, $id);
+		$exts = DB_Company::get_company_extensions();
+		frontaccounting::write_extensions($exts, $id);
 		ui_msgs::display_notification($new ? _('New company has been created.') : _('Company has been updated.'));
 		return true;
 	}
@@ -140,13 +123,12 @@
 	//---------------------------------------------------------------------------------------------
 
 	function handle_delete() {
-		global $db_connections;
 
 		$id = $_GET['id'];
 
 		// First make sure all company directories from the one under removal are writable.
 		// Without this after operation we end up with changed per-company owners!
-		for ($i = $id; $i < count($db_connections); $i++) {
+		for ($i = $id; $i < count(Config::get_all('db')); $i++) {
 			if (!is_dir(COMPANY_PATH . '/' . $i) || !is_writable(COMPANY_PATH . '/' . $i)) {
 				ui_msgs::display_error(_('Broken company subdirectories system. You have to remove this company manually.'));
 				return;
@@ -164,7 +146,7 @@
 			return;
 		}
 		// 'shift' company directories names
-		for ($i = $id + 1; $i < count($db_connections); $i++) {
+		for ($i = $id + 1; $i < count(Config::get_all('db')); $i++) {
 			if (!rename(COMPANY_PATH . '/' . $i, COMPANY_PATH . '/' . ($i - 1))) {
 				ui_msgs::display_error(_("Cannot rename company subdirectory"));
 				return;
@@ -174,8 +156,8 @@
 		if ($err == 0)
 			ui_msgs::display_error(_("Error removing Database: ") . _(", please remove it manually"));
 
-		if (Config::get('company.default') == $id)
-			Config::set('company.default', 0);
+		if (Config::get('company_default') == $id)
+			Config::set('company_default', 1);
 
 		// finally remove renamed company directory
 		@flush_dir($tmpname, true);
@@ -189,7 +171,6 @@
 	//---------------------------------------------------------------------------------------------
 
 	function display_companies() {
-		global $db_connections;
 
 		$coyno = $_SESSION["wa_current_user"]->company;
 
@@ -209,11 +190,11 @@
 		table_header($th);
 
 		$k = 0;
-		$conn = $db_connections;
+		$conn = Config::get_all('db');
 		$n = count($conn);
 		for ($i = 0; $i < $n; $i++)
 		{
-			if ($i == Config::get('company.default'))
+			if ($i == Config::get('company_default'))
 				$what = _("Yes");
 			else
 				$what = _("No");
@@ -241,18 +222,17 @@
 		}
 
 		end_table();
-		ui_msgs::display_note(_("The marked company is the current company which cannot be deleted."), 0, 0, "class='currentfg'");
+		ui_msgs::display_warning(_("The marked company is the current company which cannot be deleted."), 0, 0, "class='currentfg'");
 	}
 
 	//---------------------------------------------------------------------------------------------
 
 	function display_company_edit($selected_id) {
-		global $db_connections;
 
 		if ($selected_id != -1)
 			$n = $selected_id;
 		else
-			$n = count($db_connections);
+			$n = count(Config::get_all('db'));
 
 		start_form(true);
 
@@ -272,14 +252,14 @@
 		start_table(Config::get('tables.style2'));
 
 		if ($selected_id != -1) {
-			$conn = $db_connections[$selected_id];
+			$conn = Config::get('db.' . $selected_id);
 			$_POST['name'] = $conn['name'];
 			$_POST['host'] = $conn['host'];
 			$_POST['dbuser'] = $conn['dbuser'];
 			$_POST['dbpassword'] = $conn['dbpassword'];
 			$_POST['dbname'] = $conn['dbname'];
 
-			if ($selected_id == Config::get('company.default'))
+			if ($selected_id == Config::get('company_default'))
 				$_POST['def'] = true;
 			else
 				$_POST['def'] = false;
@@ -301,7 +281,7 @@
 		text_row_ex(_("New script Admin Password"), 'admpassword', 20);
 
 		end_table();
-		ui_msgs::display_note(_("Choose from Database scripts in SQL folder. No Database is created without a script."), 0, 1);
+		ui_msgs::display_warning(_("Choose from Database scripts in SQL folder. No Database is created without a script."), 0, 1);
 		echo "<center><input onclick='javascript:updateCompany()' type='button' style='width:150px' value='" . _("Save") . "'></center>";
 
 		end_form();

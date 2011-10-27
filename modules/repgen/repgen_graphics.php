@@ -25,14 +25,12 @@
 
 	$page_security = 'SA_REPORT_GENERATOR';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	add_access_extensions();
 
-	include_once(APP_PATH . "admin/db/company_db.inc");
-
-	require_once("repgen_const.inc");
-	require_once("repgen_def.inc");
-	require_once("repgen.inc");
+	require_once("repgen_const.php");
+	require_once("repgen_def.php");
+	require_once("repgen.php");
 
 	function m_s($a1, $a2) { // sets "selected" in select box when $a1 == $a2
 		if ($a1 == $a2)
@@ -76,7 +74,7 @@
 			case "delete":
 				// deletes item from table reports
 				$query = "DELETE FROM xx_reports WHERE (id ='$id1' AND attrib = '$attrib')";
-				db_query($query);
+				DBOld::query($query);
 				break;
 			case "insert":
 				//  inserts item into table reports
@@ -86,14 +84,14 @@
 					// does item exist already?
 					if ($alternate == "true") {
 						$query = "DELETE FROM xx_reports WHERE (id = '" . $id_new . "' AND attrib ='" . $attriba . "' AND typ='item')";
-						db_query($query);
+						DBOld::query($query);
 						$alternate = "false";
 					}
 					$query = "SELECT * FROM xx_reports WHERE (id = '" . $id_new . "' AND attrib ='" . $attrib1 . "' AND typ='item')";
-					$res = db_query($query);
-					if (db_num_rows($res) == 0) { // it is new item, store it
+					$res = DBOld::query($query);
+					if (DBOld::num_rows($res) == 0) { // it is new item, store it
 						$query = "INSERT INTO xx_reports VALUES('$id_new','item','$attrib1')";
-						db_query($query);
+						DBOld::query($query);
 						$error = NULL;
 					}
 				}
@@ -157,7 +155,7 @@ function displayReport(id) {
 
 	start_form(false, false, REPGENDIR . "/repgen_graphics.php", "graphics");
 
-	start_table(Config::get('tables.style2') . " width=90%");
+	start_table(Config::get('tables_style2') . " width=90%");
 
 	start_row();
 
@@ -225,7 +223,7 @@ function displayReport(id) {
 
 	ui_msgs::display_heading(ITEM_HEAD);
 
-	start_table(Config::get('tables.style') . "  width=90%");
+	start_table(Config::get('tables_style') . "  width=90%");
 	$th = array(IT_TYP, IT_ART, IT_FONT, IT_FONT_SIZE, IT_LEN, IT_STRING, IT_X1, IT_Y1, IT_X2, IT_Y2, IT_WIDTH, "Action",
 		""
 	);
@@ -234,9 +232,9 @@ function displayReport(id) {
 	## Traverse the result set
 
 	$query = "SELECT  * FROM xx_reports WHERE (typ = 'item' AND id='" . $id_new . "') ORDER BY attrib";
-	$res = db_query($query);
+	$res = DBOld::query($query);
 	$k = 0; // line-number
-	while ($f = db_fetch($res))
+	while ($f = DBOld::fetch($res))
 	{
 		$h = explode("|", $f["attrib"]);
 		for ($i = 0; $i < 8; $i++)

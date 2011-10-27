@@ -9,14 +9,12 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-
-
-	if (!file_exists( 'config.php'))
+	if (!file_exists('config/config.php'))
 		header("Location: " . "/install/index.php");
 
 	$page_security = 'SA_OPEN';
 
-	include_once("includes/session.inc");
+	require_once("bootstrap.php");
 
 	add_access_extensions();
 	$app = &$_SESSION["App"];

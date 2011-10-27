@@ -25,14 +25,12 @@
 
 	$page_security = 'SA_REPORT_GENERATOR';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	add_access_extensions();
 
-	include_once(APP_PATH . "admin/db/company_db.inc");
-
-	require_once("repgen_const.inc");
-	require_once("repgen_def.inc");
-	require_once("repgen.inc");
+	require_once("repgen_const.php");
+	require_once("repgen_def.php");
+	require_once("repgen.php");
 
 	if (!isset($sel_art))
 		$sel_art = "";
@@ -71,8 +69,8 @@
 
 	function de_read($id_new) { // read all item-records and returns all DE-Attributs
 		$ar = array();
-		$res = db_query("SELECT attrib FROM xx_reports WHERE (id = '" . $id_new . "' AND typ='item')");
-		while ($f = db_fetch($res))
+		$res = DBOld::query("SELECT attrib FROM xx_reports WHERE (id = '" . $id_new . "' AND typ='item')");
+		while ($f = DBOld::fetch($res))
 		{
 			$attr = $f["attrib"];
 			$attr_h = explode("|", $attr);
@@ -115,7 +113,7 @@
 			case "delete":
 				// deletes item from table reports
 				$query = "DELETE FROM xx_reports WHERE (id ='$id1' AND attrib = '$attrib')";
-				db_query($query);
+				DBOld::query($query);
 				break;
 			case "insert":
 				//  inserts item into table reports
@@ -193,7 +191,7 @@
 					}
 
 					$attrib1 = $sel_typ . "|" . $sel_art . "|" . $sel_font . "|" . $sel_fontsize . "|" . $number . $sel_center . "|" . $x1 . "|" . $y1 . "|";
-					db_query("BEGIN");
+					DBOld::query("BEGIN");
 					switch ($sel_typ)
 					{
 						case "DB":
@@ -220,16 +218,16 @@
 					$attrib1 .= "|" . $total . "|" . $o_score . "|" . $u_score . "|" . $bold; // total sum for this item
 					if ($alternate == "true") { // coming from change
 						$query = "DELETE FROM xx_reports WHERE (id = '" . $id_new . "' AND attrib ='" . $attriba . "' AND typ='item')";
-						db_query($query);
+						DBOld::query($query);
 						$alternate = "false";
 					}
 
 					$query = "SELECT * FROM xx_reports WHERE (id = '" . $id_new . "' AND attrib ='" . $attrib1 . "' AND typ='item')";
-					$res = db_query($query);
-					if (db_num_rows($res) == 0) { // it is new item, store it
+					$res = DBOld::query($query);
+					if (DBOld::num_rows($res) == 0) { // it is new item, store it
 						if (empty($ord)) { // store X/Y -item
 							$query = "INSERT INTO xx_reports VALUES('$id_new','item','$attrib1')";
-							db_query($query);
+							DBOld::query($query);
 							$error = NULL;
 						}
 						else
@@ -241,7 +239,7 @@
 								$attr_h[$h[8]] = $attr_ar[$i];
 								$query = "DELETE FROM xx_reports WHERE (id = '" . $id_new . "' AND attrib ='" .
 								 $attr_ar[$i] . "' AND typ='item')";
-								db_query($query);
+								DBOld::query($query);
 							}
 							ksort($attr_h, SORT_STRING); // sort old items
 							reset($attr_h);
@@ -255,14 +253,14 @@
 									$hi[8] = $li;
 									$attrib1 = implode("|", $hi);
 									$query = "INSERT INTO xx_reports VALUES('$id_new','item','$attrib1')";
-									db_query($query);
+									DBOld::query($query);
 									$entered = true;
 									$li++;
 								}
 								$h[8] = $li;
 								$attr = implode("|", $h);
 								$query = "INSERT INTO xx_reports VALUES('$id_new','item','$attr')";
-								db_query($query);
+								DBOld::query($query);
 								$li++;
 							}
 							if ($ord > $h[8]) { // the new item has the greatest ord-number $ord of all items
@@ -270,12 +268,12 @@
 								$hi[8] = $li;
 								$attrib1 = implode("|", $hi);
 								$query = "INSERT INTO xx_reports VALUES('$id_new','item','$attrib1')";
-								db_query($query);
+								DBOld::query($query);
 							}
 						}
 					}
 				}
-				db_query("COMMIT");
+				DBOld::query("COMMIT");
 				break;
 
 			case "alter":
@@ -360,7 +358,7 @@ function displayReport(id) {
 
 	start_form(false, false, "repgen_strings.php?report_type=" . $report_type, "strings");
 
-	start_table(Config::get('tables.style2') . " width=70%");
+	start_table(Config::get('tables_style2') . " width=70%");
 
 	// <!--   Table 1 -->
 	start_row();
@@ -424,7 +422,7 @@ function displayReport(id) {
 	echo $txt;
 	echo "<td>\n";
 	// <!--   Table2 in the table1 -->
-	start_table(Config::get('tables.style2'));
+	start_table(Config::get('tables_style2'));
 	start_row();
 	$txt = "<td nowrap colspan=4>X <input type='text' name='x1' size='4' maxlength='4' value='" . (isset($x1) ? $x1
 	 : "") . "' onBlur='num_test(this);'>\n";
@@ -438,7 +436,7 @@ function displayReport(id) {
 		// <!--   3. Line -->
 		//start_row();
 		//echo "<td>\n";
-		//start_table(Config::get('tables.style')) ;
+		//start_table(Config::get('tables_style')) ;
 		// <!--   Third table in Table2 -->
 		start_row();
 		text_cells(NUMBER, "number", (isset($number) ? $number : ""), 2, 2, "onblur='num_test(this);'");
@@ -461,7 +459,7 @@ function displayReport(id) {
 	echo "</td>\n";
 	end_row();
 	end_table();
-	start_table(Config::get('tables.style') . "  width=70%");
+	start_table(Config::get('tables_style') . "  width=70%");
 	$th = array(ELEMENT, VALUE_);
 	table_header($th);
 	start_row();
@@ -475,8 +473,8 @@ function displayReport(id) {
 	label_cell($txt);
 	if (substr($id_new, 0, 1) != 'B') { // This is a report
 		$sql1 = str_replace("", '', $sql);
-		$res = db_query($sql1);
-		$num = db_num_fields($res);
+		$res = DBOld::query($sql1);
+		$num = DBOld::num_fields($res);
 		$txt = "<td><select name = 'feld' size='1'>\n";
 		for ($i = 0; $i < $num; $i++)
 		{
@@ -512,8 +510,8 @@ function displayReport(id) {
 	$txt = "<input type='radio' name='sel_typ' value = 'Term' " . m_c("Term", $sel_typ) . ">Term\n";
 	label_cell($txt);
 	$txt = "<select name='term' size='1'>\n";
-	$res = db_query("SELECT attrib FROM xx_reports WHERE typ='funct'");
-	while ($f = db_fetch($res))
+	$res = DBOld::query("SELECT attrib FROM xx_reports WHERE typ='funct'");
+	while ($f = DBOld::fetch($res))
 	{
 		$a_h = explode("|", $f["attrib"]);
 		$txt .= "<option value=\"" . $a_h[0] . "\" " . m_s($a_h[0], $term) . " > " . $a_h[0] . "</option>\n";
@@ -527,8 +525,8 @@ function displayReport(id) {
 		$txt = "<input type='radio' name='sel_typ' value = 'Textarea' " . m_c("Textarea", $sel_typ) . ">Textarea\n";
 		label_cell($txt);
 		$txt = "<select name='textarea' size='1'>\n";
-		$res = db_query("SELECT attrib FROM xx_reports WHERE typ='funct'");
-		while ($f = db_fetch($res))
+		$res = DBOld::query("SELECT attrib FROM xx_reports WHERE typ='funct'");
+		while ($f = DBOld::fetch($res))
 		{
 			$a_h = explode("|", $f["attrib"]);
 			$txt .= "<option value=\"" . $a_h[0] . "\" " . m_s($a_h[0], $term) . " > " . $a_h[0] . "</option>\n";
@@ -544,8 +542,8 @@ function displayReport(id) {
 		$txt = "<input type='radio' name='sel_typ' value = 'Block' " . m_c("Block", $sel_typ) . ">Block\n";
 		label_cell($txt);
 		$txt = "<select name='block' size='1'>\n";
-		$res = db_query("SELECT * FROM xx_reports WHERE typ = 'block'");
-		while ($f = db_fetch($res))
+		$res = DBOld::query("SELECT * FROM xx_reports WHERE typ = 'block'");
+		while ($f = DBOld::fetch($res))
 		{
 			$h = explode("|", $f["attrib"]);
 			$txt .= "<option value=\"" . $h[0] . "\" " . m_s($h[0], $block) . " > " . $h[0] . "</option>\n";
@@ -576,15 +574,15 @@ function displayReport(id) {
 
 	ui_msgs::display_heading(ITEM_HEAD);
 
-	start_table(Config::get('tables.style') . "  width=70%");
+	start_table(Config::get('tables_style') . "  width=70%");
 	$th = array(IT_TYP, IT_ART, IT_FONT, IT_FONT_SIZE, IT_ORD, IT_LEN, IT_X1, IT_Y1, "Total", IT_STRING, "Action", "");
 	table_header($th);
 	## Traverse the result set
 	$rec_ar = array();
 	$sort_ar = array("RH" => "0", "PH" => "1", "GH" => "2", "DE" => "3", "GF" => "4", "PF" => "5", "RF" => "6");
 	$query = "SELECT  * FROM xx_reports WHERE (typ = 'item' AND id='" . $id_new . "')";
-	$res = db_query($query);
-	while ($f = db_fetch($res))
+	$res = DBOld::query($query);
+	while ($f = DBOld::fetch($res))
 	{
 		$in = $f["attrib"];
 		$ine = explode("|", $in);

@@ -11,8 +11,7 @@
 	 ***********************************************************************/
 	$page_security = 'SA_PRINTPROFILE';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
-	include(APP_PATH . "admin/db/printers_db.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	page(_($help_context = "Printing Profiles"));
 
@@ -64,8 +63,8 @@
 	}
 
 	function clear_form() {
-		global $selected_id, $Ajax;
-
+		global $selected_id;
+		$Ajax = Ajax::instance();
 		$selected_id = '';
 		$_POST['name'] = '';
 		$Ajax->activate('_page_body');
@@ -74,9 +73,9 @@
 	function check_delete($name) {
 		// check if selected profile is used by any user
 		if ($name == '') return 0; // cannot delete system default profile
-		$sql = "SELECT * FROM users WHERE print_profile=" . db_escape($name);
-		$res = db_query($sql, 'cannot check printing profile usage');
-		return db_num_rows($res);
+		$sql = "SELECT * FROM users WHERE print_profile=" . DBOld::escape($name);
+		$res = DBOld::query($sql, 'cannot check printing profile usage');
+		return DBOld::num_rows($res);
 	}
 
 	//-------------------------------------------------------------------------------------------
@@ -99,7 +98,7 @@
 			if ($_POST['profile_id'] == '')
 				$_POST['profile_id'] = get_post('name');
 
-			update_printer_profile($_POST['profile_id'], $prof);
+			Printer::update_profile($_POST['profile_id'], $prof);
 			if ($selected_id == '') {
 				ui_msgs::display_notification_centered(_('New printing profile has been created'));
 				clear_form();
@@ -111,7 +110,7 @@
 
 	if (get_post('delete')) {
 		if (!check_delete(get_post('name'))) {
-			delete_printer_profile($selected_id);
+			Printer::delete_profile($selected_id);
 			ui_msgs::display_notification(_('Selected printing profile has been deleted'));
 			clear_form();
 		}
@@ -134,13 +133,13 @@
 		label_cells(_("Printing Profile Name") . ':', get_post('profile_id'));
 	end_table(1);
 
-	$result = get_print_profile(get_post('profile_id'));
+	$result = Printer::get_profile(get_post('profile_id'));
 	$prints = array();
-	while ($myrow = db_fetch($result)) {
+	while ($myrow = DBOld::fetch($result)) {
 		$prints[$myrow['report']] = $myrow['printer'];
 	}
 
-	start_table(Config::get('tables.style'));
+	start_table(Config::get('tables_style'));
 	$th = array(_("Report Id"), _("Description"), _("Printer"));
 	table_header($th);
 

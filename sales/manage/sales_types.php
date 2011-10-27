@@ -11,11 +11,11 @@
 	 ***********************************************************************/
 	$page_security = 'SA_SALESTYPES';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	page(_($help_context = "Sales Types"));
 
-	include_once(APP_PATH . "sales/includes/db/sales_types_db.inc");
+	include_once(APP_PATH . "sales/includes/db/sales_types_db.php");
 
 	simple_page_mode(true);
 	//----------------------------------------------------------------------------------------------------
@@ -27,7 +27,7 @@
 			return false;
 		}
 
-		if (!check_num('factor', 0)) {
+		if (!Validation::is_num('factor', 0)) {
 			ui_msgs::display_error(_("Calculation factor must be valid positive number."));
 			ui_view::set_focus('factor');
 			return false;
@@ -59,22 +59,22 @@
 	if ($Mode == 'Delete') {
 		// PREVENT DELETES IF DEPENDENT RECORDS IN 'debtor_trans'
 
-		$sql = "SELECT COUNT(*) FROM debtor_trans WHERE tpe=" . db_escape($selected_id);
-		$result = db_query($sql, "check failed");
-		check_db_error("The number of transactions using this Sales type record could not be retrieved", $sql);
+		$sql = "SELECT COUNT(*) FROM debtor_trans WHERE tpe=" . DBOld::escape($selected_id);
+		$result = DBOld::query($sql, "check failed");
+		Errors::check_db_error("The number of transactions using this Sales type record could not be retrieved", $sql);
 
-		$myrow = db_fetch_row($result);
+		$myrow = DBOld::fetch_row($result);
 		if ($myrow[0] > 0) {
 			ui_msgs::display_error(_("Cannot delete this sale type because customer transactions have been created using this sales type."));
 		}
 		else
 		{
 
-			$sql = "SELECT COUNT(*) FROM debtors_master WHERE sales_type=" . db_escape($selected_id);
-			$result = db_query($sql, "check failed");
-			check_db_error("The number of customers using this Sales type record could not be retrieved", $sql);
+			$sql = "SELECT COUNT(*) FROM debtors_master WHERE sales_type=" . DBOld::escape($selected_id);
+			$result = DBOld::query($sql, "check failed");
+			Errors::check_db_error("The number of customers using this Sales type record could not be retrieved", $sql);
 
-			$myrow = db_fetch_row($result);
+			$myrow = DBOld::fetch_row($result);
 			if ($myrow[0] > 0) {
 				ui_msgs::display_error(_("Cannot delete this sale type because customers are currently set up to use this sales type."));
 			}
@@ -98,15 +98,15 @@
 	$result = get_all_sales_types(check_value('show_inactive'));
 
 	start_form();
-	start_table(Config::get('tables.style') . "  width=30%");
+	start_table(Config::get('tables_style') . "  width=30%");
 
 	$th = array(_('Type Name'), _('Factor'), _('Tax Incl'), '', '');
 	inactive_control_column($th);
 	table_header($th);
 	$k = 0;
-	$base_sales = get_base_sales_type();
+	$base_sales = DB_Company::get_base_sales_type();
 
-	while ($myrow = db_fetch($result))
+	while ($myrow = DBOld::fetch($result))
 	{
 		if ($myrow["id"] == $base_sales)
 			start_row("class='overduebg'");
@@ -134,7 +134,7 @@
 	if (!isset($_POST['base']))
 		$_POST['base'] = 0;
 
-	start_table(Config::get('tables.style2'));
+	start_table(Config::get('tables_style2'));
 
 	if ($selected_id != -1) {
 

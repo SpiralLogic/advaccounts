@@ -11,20 +11,20 @@
 	 ***********************************************************************/
 	$page_security = 'SA_SUPPTRANSVIEW';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	$js = "";
-	if (Config::get('ui.windows.popups'))
+	if (Config::get('ui_windows_popups'))
 		$js .= ui_view::get_js_open_window(900, 500);
 	page(_($help_context = "View Purchase Order Delivery"), true, false, "", $js);
 
-	include(APP_PATH . "purchasing/includes/purchasing_ui.inc");
+	include(APP_PATH . "purchasing/includes/purchasing_ui.php");
 
 	if (!isset($_GET['trans_no'])) {
 		die ("<BR>" . _("This page must be called with a Purchase Order Delivery number to review."));
 	}
 
-	$purchase_order = new purch_order;
+	$purchase_order = new purchOrder;
 	read_grn($_GET["trans_no"], $purchase_order);
 
 	ui_msgs::display_heading(_("Purchase Order Delivery") . " #" . $_GET['trans_no']);
@@ -33,7 +33,7 @@
 
 	ui_msgs::display_heading2(_("Line Details"));
 
-	start_table("colspan=9 " . Config::get('tables.style') . " width=90%");
+	start_table("colspan=9 " . Config::get('tables_style') . " width=90%");
 	$th = array(_("Item Code"), _("Item Description"), _("Delivery Date"), _("Quantity"),
 		_("Unit"), _("Price"), _("Line Total"), _("Quantity Invoiced")
 	);

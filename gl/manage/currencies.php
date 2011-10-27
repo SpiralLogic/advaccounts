@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 	$page_security = 'SA_CURRENCY';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	page(_($help_context = "Currencies"));
 
@@ -78,28 +78,28 @@
 
 		if ($selected_id == "")
 			return false;
-		$curr = db_escape($selected_id);
+		$curr = DBOld::escape($selected_id);
 
 		// PREVENT DELETES IF DEPENDENT RECORDS IN debtors_master
 		$sql = "SELECT COUNT(*) FROM debtors_master WHERE curr_code = $curr";
-		$result = db_query($sql);
-		$myrow = db_fetch_row($result);
+		$result = DBOld::query($sql);
+		$myrow = DBOld::fetch_row($result);
 		if ($myrow[0] > 0) {
 			ui_msgs::display_error(_("Cannot delete this currency, because customer accounts have been created referring to this currency."));
 			return false;
 		}
 
 		$sql = "SELECT COUNT(*) FROM suppliers WHERE curr_code = $curr";
-		$result = db_query($sql);
-		$myrow = db_fetch_row($result);
+		$result = DBOld::query($sql);
+		$myrow = DBOld::fetch_row($result);
 		if ($myrow[0] > 0) {
 			ui_msgs::display_error(_("Cannot delete this currency, because supplier accounts have been created referring to this currency."));
 			return false;
 		}
 
 		$sql = "SELECT COUNT(*) FROM company WHERE curr_default = $curr";
-		$result = db_query($sql);
-		$myrow = db_fetch_row($result);
+		$result = DBOld::query($sql);
+		$myrow = DBOld::fetch_row($result);
 		if ($myrow[0] > 0) {
 			ui_msgs::display_error(_("Cannot delete this currency, because the company preferences uses this currency."));
 			return false;
@@ -107,8 +107,8 @@
 
 		// see if there are any bank accounts that use this currency
 		$sql = "SELECT COUNT(*) FROM bank_accounts WHERE bank_curr_code = $curr";
-		$result = db_query($sql);
-		$myrow = db_fetch_row($result);
+		$result = DBOld::query($sql);
+		$myrow = DBOld::fetch_row($result);
 		if ($myrow[0] > 0) {
 			ui_msgs::display_error(_("Cannot delete this currency, because thre are bank accounts that use this currency."));
 			return false;
@@ -136,7 +136,7 @@
 		$company_currency = Banking::get_company_currency();
 
 		$result = get_currencies(check_value('show_inactive'));
-		start_table(Config::get('tables.style'));
+		start_table(Config::get('tables_style'));
 		$th = array(_("Abbreviation"), _("Symbol"), _("Currency Name"),
 			_("Hundredths name"), _("Country"), _("Auto update"), "", ""
 		);
@@ -145,7 +145,7 @@
 
 		$k = 0; //row colour counter
 
-		while ($myrow = db_fetch($result))
+		while ($myrow = DBOld::fetch($result))
 		{
 
 			if ($myrow[1] == $company_currency) {
@@ -180,7 +180,7 @@
 	function display_currency_edit($selected_id) {
 		global $Mode;
 
-		start_table(Config::get('tables.style2'));
+		start_table(Config::get('tables_style2'));
 
 		if ($selected_id != '') {
 			if ($Mode == 'Edit') {

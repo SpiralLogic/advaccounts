@@ -12,27 +12,22 @@
 		* ********************************************************************* */
 	$page_security = 'SA_SALESREFUND';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	include_once(APP_PATH . "contacts/includes/contacts.inc");
+	include_once(APP_PATH . "contacts/includes/contacts.php");
 
-	include_once(APP_PATH . "reporting/includes/reporting.inc");
+	include_once(APP_PATH . "reporting/includes/reporting.php");
 
 	$js = "";
-	if (Config::get('ui.windows.popups')) {
+	if (Config::get('ui_windows_popups')) {
 		$js .= ui_view::get_js_open_window(900, 500);
 	}
-	$js_lib[] = <<< JS
-function Customer() {
-
-}
-JS;
 
 	JS::headerFile('/js/payalloc.js');
-	page(_($help_context = "Customer Refund Entry"), @$_REQUEST['frame'], false, "", $js);
+	page(_($help_context = "Customer Refund Entry"), Input::request('frame'), false, "", $js);
 	//----------------------------------------------------------------------------------------------
-	check_db_has_customers(_("There are no customers defined in the system."));
-	check_db_has_bank_accounts(_("There are no bank accounts defined in the system."));
+	Validation::check(Validation::CUSTOMERS, _("There are no customers defined in the system."));
+	Validation::check(Validation::BANK_ACCOUNTS, _("There are no bank accounts defined in the system."));
 	//----------------------------------------------------------------------------------------
 	if (!isset($_POST['customer_id'])) {
 		$customer = new Customer(ui_globals::get_global_customer(false));
@@ -54,7 +49,7 @@ JS;
 
 	//----------------------------------------------------------------------------------------------
 	function can_process() {
-		global $Refs;
+
 		if (!get_post('customer_id')) {
 			ui_msgs::display_error(_("There is no customer selected."));
 			JS::setfocus('[name="customer_id"]');
@@ -75,7 +70,7 @@ JS;
 			JS::setfocus('[name="DateBanked"]');
 			return false;
 		}
-		if (!$Refs->is_valid($_POST['ref'])) {
+		if (!Refs::is_valid($_POST['ref'])) {
 			ui_msgs::display_error(_("You must enter a reference."));
 			JS::setfocus('[name="ref"]');
 			return false;
@@ -85,25 +80,25 @@ JS;
 			JS::setfocus('[name="ref"]');
 			return false;
 		}
-		if (!check_num('amount', 0, null)) {
+		if (!Validation::is_num('amount', 0, null)) {
 			ui_msgs::display_error(_("The entered amount is invalid or positive and cannot be processed."));
 			JS::setfocus('[name="amount"]');
 			return false;
 		}
-		if (isset($_POST['charge']) && !check_num('charge', 0)) {
+		if (isset($_POST['charge']) && !Validation::is_num('charge', 0)) {
 			ui_msgs::display_error(_("The entered amount is invalid or negative and cannot be processed."));
 			JS::setfocus('[name="charge"]');
 			return false;
 		}
 		if (isset($_POST['charge']) && input_num('charge') > 0) {
-			$charge_acct = get_company_pref('bank_charge_act');
+			$charge_acct = DB_Company::get_pref('bank_charge_act');
 			if (get_gl_account($charge_acct) == false) {
 				ui_msgs::display_error(_("The Bank Charge Account has not been set in System and General GL Setup."));
 				JS::setfocus('[name="charge"]');
 				return false;
 			}
 		}
-		if (isset($_POST['_ex_rate']) && !check_num('_ex_rate', 0.000001)) {
+		if (isset($_POST['_ex_rate']) && !Validation::is_num('_ex_rate', 0.000001)) {
 			ui_msgs::display_error(_("The exchange rate must be numeric and greater than zero."));
 			JS::setfocus('[name="ex_rate"]');
 			return false;
@@ -119,7 +114,7 @@ JS;
 		}
 		$_SESSION['alloc']->amount = -1 * input_num('amount');
 		if (isset($_POST["TotalNumberOfAllocs"])) {
-			return check_allocations();
+			return Allocation::check_allocations();
 		}
 		return true;
 	}
@@ -164,26 +159,29 @@ JS;
 	//----------------------------------------------------------------------------------------------
 
 	function read_customer_data() {
-		global $Refs, $customer;
+		global $customer;
 		$sql = "SELECT debtors_master.pymt_discount,
 		credit_status.dissallow_invoices
 		FROM debtors_master, credit_status
 		WHERE debtors_master.credit_status = credit_status.id
 			AND debtors_master.debtor_no = " . $customer->id;
-		$result = db_query($sql, "could not query customers");
-		$myrow = db_fetch($result);
+		$result = DBOld::query($sql, "could not query customers");
+		$myrow = DBOld::fetch($result);
 		$_POST['HoldAccount'] = $myrow["dissallow_invoices"];
 		$_POST['pymt_discount'] = 0;
-		$_POST['ref'] = $Refs->get_next(12);
+		$_POST['ref'] = Refs::get_next(12);
 	}
 
 	//----------------------------------------------------------------------------------------------
 
 	start_form();
 
-	start_outer_table(Config::get('tables.style2') . " width=60%", 5);
+	start_outer_table(Config::get('tables_style2') . " width=60%", 5);
 	table_section(1);
-	UI::search('customer', array('label' => 'Search Customer:', 'size' => 20, 'url' => '/contacts/search.php'));
+	UI::search('customer', array('label' => 'Search Customer:',
+		'size' => 20,
+		'url' => '/contacts/search.php'
+	));
 	if (!isset($_POST['bank_account'])) // first page call
 	{
 		$_SESSION['alloc'] = new allocation(ST_CUSTREFUND, 0);
@@ -217,10 +215,10 @@ JS;
 		end_outer_table(1);
 		if ($cust_currency == $bank_currency) {
 			div_start('alloc_tbl');
-			show_allocatable(true);
+			Allocation::show_allocatable(true);
 			div_end();
 		}
-		start_table(Config::get('tables.style') . "  width=60%");
+		start_table(Config::get('tables_style') . "  width=60%");
 		amount_row(_("Amount:"), 'amount');
 		textarea_row(_("Memo:"), 'memo_', null, 22, 4);
 		end_table(1);
@@ -232,7 +230,7 @@ JS;
 	}
 	br();
 	end_form();
-	if (@$_REQUEST['frame']) {
+	if (Input::request('frame')) {
 		end_page(true, true, true);
 	}
 	else {

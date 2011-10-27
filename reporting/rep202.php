@@ -17,7 +17,7 @@
 	// Title:	Ages Supplier Analysis
 	// ----------------------------------------------------------------
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	//----------------------------------------------------------------------------------------------------
 
@@ -27,7 +27,7 @@
 
 	function get_invoices($supplier_id, $to) {
 		$todate = Dates::date2sql($to);
-		$PastDueDays1 = get_company_pref('past_due_days');
+		$PastDueDays1 = DB_Company::get_pref('past_due_days');
 		$PastDueDays2 = 2 * $PastDueDays1;
 
 		// Revomed allocated from sql
@@ -52,7 +52,7 @@
 			AND ABS(supp_trans.ov_amount + supp_trans.ov_gst + supp_trans.ov_discount) > 0.004
 			ORDER BY supp_trans.tran_date";
 
-		return db_query($sql, "The supplier details could not be retrieved");
+		return DBOld::query($sql, "The supplier details could not be retrieved");
 	}
 
 	//----------------------------------------------------------------------------------------------------
@@ -69,11 +69,11 @@
 		$comments = $_POST['PARAM_6'];
 		$destination = $_POST['PARAM_7'];
 		if ($destination)
-			include_once(APP_PATH . "reporting/includes/excel_report.inc");
+			include_once(APP_PATH . "reporting/includes/excel_report.php");
 		else
-			include_once(APP_PATH . "reporting/includes/pdf_report.inc");
+			include_once(APP_PATH . "reporting/includes/pdf_report.php");
 		if ($graphics) {
-			include_once(APP_PATH . "reporting/includes/class.graphic.inc");
+			include_once(APP_PATH . "reporting/includes/class.graphic.php");
 			$pg = new graph();
 		}
 
@@ -97,7 +97,7 @@
 		if ($no_zeros) $nozeros = _('Yes');
 		else $nozeros = _('No');
 
-		$PastDueDays1 = get_company_pref('past_due_days');
+		$PastDueDays1 = DB_Company::get_pref('past_due_days');
 		$PastDueDays2 = 2 * $PastDueDays1;
 		$nowdue = "1-" . $PastDueDays1 . " " . _('Days');
 		$pastdue1 = $PastDueDays1 + 1 . "-" . $PastDueDays2 . " " . _('Days');
@@ -129,7 +129,7 @@
 
 		$total = array();
 		$total[0] = $total[1] = $total[2] = $total[3] = $total[4] = 0.0;
-		$PastDueDays1 = get_company_pref('past_due_days');
+		$PastDueDays1 = DB_Company::get_pref('past_due_days');
 		$PastDueDays2 = 2 * $PastDueDays1;
 
 		$nowdue = "1-" . $PastDueDays1 . " " . _('Days');
@@ -138,11 +138,11 @@
 
 		$sql = "SELECT supplier_id, supp_name AS name, curr_code FROM suppliers";
 		if ($fromsupp != ALL_NUMERIC)
-			$sql .= " WHERE supplier_id=" . db_escape($fromsupp);
+			$sql .= " WHERE supplier_id=" . DBOld::escape($fromsupp);
 		$sql .= " ORDER BY supp_name";
-		$result = db_query($sql, "The suppliers could not be retrieved");
+		$result = DBOld::query($sql, "The suppliers could not be retrieved");
 
-		while ($myrow = db_fetch($result))
+		while ($myrow = DBOld::fetch($result))
 		{
 			if (!$convert && $currency != $myrow['curr_code']) continue;
 
@@ -180,10 +180,10 @@
 			$rep->NewLine(1, 2);
 			if (!$summaryOnly) {
 				$res = get_invoices($myrow['supplier_id'], $to);
-				if (db_num_rows($res) == 0)
+				if (DBOld::num_rows($res) == 0)
 					continue;
 				$rep->Line($rep->row + 4);
-				while ($trans = db_fetch($res))
+				while ($trans = DBOld::fetch($res))
 				{
 					$rep->NewLine(1, 2);
 					$rep->TextCol(0, 1, $systypes_array[$trans['type']], -2);
@@ -232,10 +232,10 @@
 			$pg->axis_y = _("Amount");
 			$pg->graphic_1 = $to;
 			$pg->type = $graphics;
-			$pg->skin = Config::get('graphs.skin');
+			$pg->skin = Config::get('graphs_skin');
 			$pg->built_in = false;
 			$pg->fontfile = PATH_TO_ROOT . "/reporting/fonts/Vera.ttf";
-			$pg->latin_notation = (Config::get('seperators.decimal', $_SESSION["wa_current_user"]->prefs->dec_sep()) != ".");
+			$pg->latin_notation = (Config::get('separators_decimal', $_SESSION["wa_current_user"]->prefs->dec_sep()) != ".");
 
 			$filename = COMPANY_PATH . "/pdf_files/test.png";
 			$pg->display($filename, true);

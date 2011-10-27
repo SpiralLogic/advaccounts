@@ -11,18 +11,16 @@
 	 ***********************************************************************/
 	$page_security = 'SA_SETUPCOMPANY';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	page(_($help_context = "Company Setup"));
-
-	include_once(APP_PATH . "admin/db/company_db.inc");
 	//-------------------------------------------------------------------------------------------------
 
 	if (isset($_POST['update']) && $_POST['update'] != "") {
 
 		$input_error = 0;
 
-		if (!check_num('login_tout', 10)) {
+		if (!Validation::is_num('login_tout', 10)) {
 			ui_msgs::display_error(_("Login timeout must be positive number not less than 10."));
 			ui_view::set_focus('login_tout');
 			$input_error = 1;
@@ -47,9 +45,9 @@
 				ui_msgs::display_error(_('Only jpg and png files are supported - a file extension of .jpg or .png is expected'));
 				$input_error = 1;
 			}
-			elseif ($_FILES['pic']['size'] > (Config::get('item.images.max_size') * 1024))
+			elseif ($_FILES['pic']['size'] > (Config::get('item_images_max_size') * 1024))
 			{ //File Size Check
-				ui_msgs::display_error(_('The file size is over the maximum allowed. The maximum size allowed in KB is') . ' ' . Config::get('item.images.max_size'));
+				ui_msgs::display_error(_('The file size is over the maximum allowed. The maximum size allowed in KB is') . ' ' . Config::get('item_images_max_size'));
 				$input_error = 1;
 			}
 			elseif ($_FILES['pic']['type'] == "text/plain")
@@ -90,7 +88,7 @@
 		if ($_POST['round_to'] <= 0)
 			$_POST['round_to'] = 1;
 		if ($input_error != 1) {
-			update_company_setup($_POST['coy_name'], $_POST['coy_no'],
+			DB_Company::update_setup($_POST['coy_name'], $_POST['coy_no'],
 				$_POST['gst_no'], $_POST['tax_prd'], $_POST['tax_last'],
 				$_POST['postal_address'], $_POST['phone'], $_POST['fax'],
 				$_POST['email'], $_POST['coy_logo'], $_POST['domicile'],
@@ -109,7 +107,7 @@
 	//---------------------------------------------------------------------------------------------
 
 	start_form(true);
-	$myrow = get_company_prefs();
+	$myrow = DB_Company::get_prefs();
 
 	$_POST['coy_name'] = $myrow["coy_name"];
 	$_POST['gst_no'] = $myrow["gst_no"];
@@ -138,7 +136,7 @@
 	$_POST['round_to'] = $myrow['round_to'];
 	$_POST['del_coy_logo'] = 0;
 
-	start_outer_table(Config::get('tables.style2'));
+	start_outer_table(Config::get('tables_style2'));
 
 	table_section(1);
 

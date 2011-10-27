@@ -11,18 +11,16 @@
 	 ***********************************************************************/
 	$page_security = 'SA_STANDARDCOST';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
-
-	include_once(APP_PATH . "includes/manufacturing.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	$js = "";
-	if (Config::get('ui.windows.popups'))
+	if (Config::get('ui_windows_popups'))
 		$js .= ui_view::get_js_open_window(900, 500);
 	page(_($help_context = "Inventory Item Cost Update"), false, false, "", $js);
 
 	//--------------------------------------------------------------------------------------
 
-	check_db_has_costable_items(_("There are no costable inventory items defined in the system (Purchased or manufactured items)."));
+	Validation::check(Validation::COST_ITEMS, _("There are no costable inventory items defined in the system (Purchased or manufactured items)."), STOCK_SERVICE);
 
 	if (isset($_GET['stock_id'])) {
 		$_POST['stock_id'] = $_GET['stock_id'];
@@ -38,8 +36,8 @@
 
 		$should_update = true;
 
-		if (!check_num('material_cost') || !check_num('labour_cost') ||
-		 !check_num('overhead_cost')
+		if (!Validation::is_num('material_cost') || !Validation::is_num('labour_cost') ||
+		 !Validation::is_num('overhead_cost')
 		) {
 			ui_msgs::display_error(_("The entered cost is not numeric."));
 			ui_view::set_focus('material_cost');
@@ -59,7 +57,7 @@
 			ui_msgs::display_notification(_("Cost has been updated."));
 
 			if ($update_no > 0) {
-				ui_msgs::display_note(ui_view::get_gl_view_str(ST_COSTUPDATE, $update_no, _("View the GL Journal Entries for this Cost Update")), 0, 1);
+				ui_msgs::display_warning(ui_view::get_gl_view_str(ST_COSTUPDATE, $update_no, _("View the GL Journal Entries for this Cost Update")), 0, 1);
 			}
 		}
 	}
@@ -70,7 +68,7 @@
 
 	start_form();
 
-	if (!isset($_POST['stock_id']))
+	if (!Input::post('stock_id'))
 		$_POST['stock_id'] = ui_globals::get_global_stock_item();
 
 	echo "<center>" . _("Item:") . "&nbsp;";
@@ -82,12 +80,12 @@
 	$sql = "SELECT description, units, material_cost, labour_cost,
 	overhead_cost, mb_flag
 	FROM stock_master
-	WHERE stock_id=" . db_escape($_POST['stock_id']) . "
+	WHERE stock_id=" . DBOld::escape($_POST['stock_id']) . "
 	GROUP BY description, units, material_cost, labour_cost, overhead_cost, mb_flag";
-	$result = db_query($sql);
-	check_db_error("The cost details for the item could not be retrieved", $sql);
+	$result = DBOld::query($sql);
+	Errors::check_db_error("The cost details for the item could not be retrieved", $sql);
 
-	$myrow = db_fetch($result);
+	$myrow = DBOld::fetch($result);
 	div_start('cost_table');
 	hidden("OldMaterialCost", $myrow["material_cost"]);
 	hidden("OldLabourCost", $myrow["labour_cost"]);

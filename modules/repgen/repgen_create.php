@@ -23,22 +23,20 @@
  */
 	$page_security = 'SA_REPORT_GENERATOR';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	add_access_extensions();
 
-	include_once(APP_PATH . "admin/db/company_db.inc");
-
-	require_once("repgen_const.inc");
-	require_once("repgen_def.inc");
-	require_once("repgen.inc");
+	require_once("repgen_const.php");
+	require_once("repgen_def.php");
+	require_once("repgen.php");
 
 	function check_short($short) { // controls, that short-name of reports does not be twice
 		global $id_new;
 		if (empty($short))
 			return false;
 		$query = "SELECT attrib,id FROM xx_reports WHERE typ='info'";
-		$res = db_query($query);
-		while ($f = db_fetch($res))
+		$res = DBOld::query($query);
+		while ($f = DBOld::fetch($res))
 		{
 			$h = explode("|", $f["attrib"]);
 			if (($h[0] == $short) && (trim($f["id"]) != $id_new))
@@ -55,24 +53,24 @@
 	}
 
 	function store($id, $info, $sql, $group, $group_type) { // stores the records info, select and group in the database
-		db_query("BEGIN");
+		DBOld::query("BEGIN");
 		$query = "DELETE FROM xx_reports WHERE (id ='" . $id . "' AND typ='info')";
-		db_query($query);
+		DBOld::query($query);
 		$sql = strtr($sql, "'", "^"); // translate ' into ^
 		$query = "INSERT INTO xx_reports VALUES ('" . $id . "','info','" . $info . "')";
-		db_query($query);
+		DBOld::query($query);
 
 		$query = "DELETE FROM xx_reports WHERE (id ='" . $id . "' AND typ='select')";
-		db_query($query);
+		DBOld::query($query);
 		$sql = strtr($sql, "'", "^"); // translate ' into !
 		$query = "INSERT INTO xx_reports VALUES ('" . $id . "','select','" . $sql . "')";
-		db_query($query);
+		DBOld::query($query);
 		$query = "DELETE FROM xx_reports WHERE (id ='" . $id . "' AND typ='group')";
-		db_query($query);
+		DBOld::query($query);
 		$g = $group . "|" . $group_type;
 		$query = "INSERT INTO xx_reports VALUES ('" . $id . "','group','" . $g . "')";
-		db_query($query);
-		db_query("COMMIT");
+		DBOld::query($query);
+		DBOld::query("COMMIT");
 	}
 
 	###
@@ -103,7 +101,7 @@
 			// test, if $sql is correct SQL Statement
 			$sql = urldecode(stripslashes($sql));
 			$sql1 = str_replace("", '', $sql);
-			db_query($sql1, "SQL-Statement : '" . $sql . "' " . SQL_ERROR . ":<BR>" . NOTSTORED);
+			DBOld::query($sql1, "SQL-Statement : '" . $sql . "' " . SQL_ERROR . ":<BR>" . NOTSTORED);
 			$info = $short . "|" . $date_ . "|" . $author . "|" . $long . "|" . $print_format . "|" . $print_size . "|" . $report_type;
 			store($id_new, $info, $sql, $group, $group_type);
 			$url = REPGENDIR . "/repgen_strings.php";
@@ -127,7 +125,7 @@
 			// test, if $sql is correct SQL Statement
 			$sql = urldecode(stripslashes($sql));
 			$sql1 = str_replace("", '', $sql);
-			db_query($sql1, "Entered values NOT saved!");
+			DBOld::query($sql1, "Entered values NOT saved!");
 			$info = $short . "|" . $date_ . "|" . $author . "|" . $long . "|" . $print_format . "|" . $print_size . "|" . $report_type;
 			store($id_new, $info, $sql, $group, $group_type);
 			$url = REPGENDIR . "/repgen_graphics.php?id_new=" . $id_new . "&long=" . urlencode($long);
@@ -174,7 +172,7 @@ function openWindow2(url, title) {
 	}
 	start_form(false, false, "repgen_create.php", "edit");
 
-	start_table(Config::get('tables.style2'));
+	start_table(Config::get('tables_style2'));
 	label_row(ID, $id_new . hidden("id_new", $id_new, false));
 	text_row(SHORT, "short", $short, 10, 10);
 	text_row(LONG, "long", $long, 40, 40);
@@ -210,7 +208,7 @@ function openWindow2(url, title) {
 	</select>";
 	label_row(REPORT_TYPE, $txt . hidden("date_", date("Y-m-d"), false) . hidden("id", $id, false));
 	end_table(2);
-	start_table(Config::get('tables.style'));
+	start_table(Config::get('tables_style'));
 	start_row();
 	submit_cells("select", SELECT_CR);
 	submit_cells("page_strings", PAGE_STRINGS);

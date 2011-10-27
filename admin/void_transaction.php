@@ -11,17 +11,17 @@
 	 ***********************************************************************/
 	$page_security = 'SA_VOIDTRANSACTION';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	$js = "";
-	if (Config::get('ui.windows.popups'))
+	if (Config::get('ui_windows_popups'))
 		$js .= ui_view::get_js_open_window(800, 500);
 
 	page(_($help_context = "Void a Transaction"), false, false, "", $js);
 
 	//----------------------------------------------------------------------------------------
 	function exist_transaction($type, $type_no) {
-		$void_entry = get_voided_entry($type, $type_no);
+		$void_entry = Voiding::get($type, $type_no);
 
 		if ($void_entry != null)
 			return false;
@@ -129,7 +129,7 @@
 					$view_str = ui_view::get_gl_view_str($_POST['filterType'], $_POST['trans_no'], _("View Transaction"));
 				else
 					$view_str = ui_view::get_trans_view_str($_POST['filterType'], $_POST['trans_no'], _("View Transaction"));
-				ui_msgs::display_note($view_str);
+				ui_msgs::display_warning($view_str);
 				br();
 				submit_center_first('ConfirmVoiding', _("Proceed"), '', true);
 				submit_center_last('CancelVoiding', _("Cancel"), '', 'cancel');
@@ -142,7 +142,7 @@
 	//----------------------------------------------------------------------------------------
 
 	function check_valid_entries() {
-		if (is_closed_trans($_POST['filterType'], $_POST['trans_no'])) {
+		if (DB_AuditTrail::is_closed_trans($_POST['filterType'], $_POST['trans_no'])) {
 			ui_msgs::display_error(_("The selected transaction was closed for edition and cannot be voided."));
 			ui_view::set_focus('trans_no');
 			return;
@@ -171,7 +171,7 @@
 
 	function handle_void_transaction() {
 		if (check_valid_entries() == true) {
-			$void_entry = get_voided_entry($_POST['filterType'], $_POST['trans_no']);
+			$void_entry = Voiding::get($_POST['filterType'], $_POST['trans_no']);
 			if ($void_entry != null) {
 				ui_msgs::display_error(_("The selected transaction has already been voided."), true);
 				unset($_POST['trans_no']);
@@ -181,7 +181,7 @@
 				return;
 			}
 
-			$ret = void_transaction($_POST['filterType'], $_POST['trans_no'],
+			$ret = Voiding::void($_POST['filterType'], $_POST['trans_no'],
 				$_POST['date_'], $_POST['memo_']);
 
 			if ($ret) {

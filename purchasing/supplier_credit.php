@@ -11,18 +11,18 @@
 	 ***********************************************************************/
 	$page_security = 'SA_SUPPLIERCREDIT';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	include_once(APP_PATH . "purchasing/includes/purchasing_ui.inc");
+	include_once(APP_PATH . "purchasing/includes/purchasing_ui.php");
 	$js = "";
-	if (Config::get('ui.windows.popups'))
+	if (Config::get('ui_windows_popups'))
 		$js .= ui_view::get_js_open_window(900, 500);
 
 	page(_($help_context = "Supplier Credit Note"), false, false, "", $js);
 
 	//----------------------------------------------------------------------------------------
 
-	check_db_has_suppliers(_("There are no suppliers defined in the system."));
+	Validation::check(Validation::SUPPLIERS, _("There are no suppliers defined in the system."));
 
 	//---------------------------------------------------------------------------------------------------------------
 
@@ -32,9 +32,9 @@
 
 		echo "<center>";
 		ui_msgs::display_notification_centered(_("Supplier credit note has been processed."));
-		ui_msgs::display_note(ui_view::get_trans_view_str($trans_type, $invoice_no, _("View this Credit Note")));
+		ui_msgs::display_warning(ui_view::get_trans_view_str($trans_type, $invoice_no, _("View this Credit Note")));
 
-		ui_msgs::display_note(ui_view::get_gl_view_str($trans_type, $invoice_no, _("View the GL Journal Entries for this Credit Note")), 1);
+		ui_msgs::display_warning(ui_view::get_gl_view_str($trans_type, $invoice_no, _("View the GL Journal Entries for this Credit Note")), 1);
 
 		hyperlink_params($_SERVER['PHP_SELF'], _("Enter Another Credit Note"), "New=1");
 		hyperlink_params("/admin/attachments.php", _("Add an Attachment"), "filterType=$trans_type&trans_no=$invoice_no");
@@ -51,7 +51,7 @@
 			unset ($_SESSION['supp_trans']);
 		}
 
-		$_SESSION['supp_trans'] = new supp_trans;
+		$_SESSION['supp_trans'] = new suppTrans;
 		$_SESSION['supp_trans']->is_invoice = false;
 		if (isset($_GET['invoice_no'])) {
 			$_SESSION['supp_trans']->supp_reference = $_POST['invoice_no'] = $_GET['invoice_no'];
@@ -59,7 +59,7 @@
 	}
 
 	function clear_fields() {
-		global $Ajax;
+		$Ajax = Ajax::instance();
 
 		unset($_POST['gl_code']);
 		unset($_POST['dimension_id']);
@@ -84,26 +84,26 @@
 		$Ajax->activate('gl_items');
 		$input_error = false;
 
-		$sql = "SELECT account_code, account_name FROM chart_master WHERE account_code=" . db_escape(
+		$sql = "SELECT account_code, account_name FROM chart_master WHERE account_code=" . DBOld::escape(
 			$_POST['gl_code']);
-		$result = db_query($sql, "get account information");
-		if (db_num_rows($result) == 0) {
+		$result = DBOld::query($sql, "get account information");
+		if (DBOld::num_rows($result) == 0) {
 			ui_msgs::display_error(_("The account code entered is not a valid code, this line cannot be added to the transaction."));
 			ui_view::set_focus('gl_code');
 			$input_error = true;
 		}
 		else
 		{
-			$myrow = db_fetch_row($result);
+			$myrow = DBOld::fetch_row($result);
 			$gl_act_name = $myrow[1];
-			if (!check_num('amount')) {
+			if (!Validation::is_num('amount')) {
 				ui_msgs::display_error(_("The amount entered is not numeric. This line cannot be added to the transaction."));
 				ui_view::set_focus('amount');
 				$input_error = true;
 			}
 		}
 
-		if (!is_tax_gl_unique(get_post('gl_code'))) {
+		if (!Tax_Types::is_tax_gl_unique(get_post('gl_code'))) {
 			ui_msgs::display_error(_("Cannot post to GL account used by more than one tax type."));
 			ui_view::set_focus('gl_code');
 			$input_error = true;
@@ -120,7 +120,7 @@
 	//---------------------------------------------------------------------------------------------------
 
 	function check_data() {
-		global $total_grn_value, $total_gl_value, $Refs;
+		global $total_grn_value, $total_gl_value;
 
 		if (!$_SESSION['supp_trans']->is_valid_trans_to_post()) {
 			ui_msgs::display_error(_("The credit note cannot be processed because the there are no items or values on the invoice.  Credit notes are expected to have a charge."));
@@ -128,7 +128,7 @@
 			return false;
 		}
 
-		if (!$Refs->is_valid($_SESSION['supp_trans']->reference)) {
+		if (!Refs::is_valid($_SESSION['supp_trans']->reference)) {
 			ui_msgs::display_error(_("You must enter an credit note reference."));
 			ui_view::set_focus('reference');
 			return false;
@@ -140,7 +140,7 @@
 			return false;
 		}
 
-		if (!$Refs->is_valid($_SESSION['supp_trans']->supp_reference)) {
+		if (!Refs::is_valid($_SESSION['supp_trans']->supp_reference)) {
 			ui_msgs::display_error(_("You must enter a supplier's credit note reference."));
 			ui_view::set_focus('supp_reference');
 			return false;
@@ -197,13 +197,13 @@
 	}
 
 	function check_item_data($n) {
-		if (!check_num('This_QuantityCredited' . $n, 0)) {
+		if (!Validation::is_num('This_QuantityCredited' . $n, 0)) {
 			ui_msgs::display_error(_("The quantity to credit must be numeric and greater than zero."));
 			ui_view::set_focus('This_QuantityCredited' . $n);
 			return false;
 		}
 
-		if (!check_num('ChgPrice' . $n, 0)) {
+		if (!Validation::is_num('ChgPrice' . $n, 0)) {
 			ui_msgs::display_error(_("The price is either not numeric or negative."));
 			ui_view::set_focus('ChgPrice' . $n);
 			return false;

@@ -29,13 +29,11 @@
  */
 	$page_security = 'SA_REPORT_GENERATOR';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	add_access_extensions();
 
-	include_once(APP_PATH . "admin/db/company_db.inc");
-
-	require_once("repgen_const.inc");
-	require_once("repgen_def.inc");
+	require_once("repgen_const.php");
+	require_once("repgen_def.php");
 
 	function get_name($str) { // get name out of str
 		$h = explode("|", $str);
@@ -99,12 +97,12 @@
 				$url .= "&print_format=" . get_print_format($attr) . "&print_size=" . get_print_size($attr);
 				$url .= "&report_type=" . trim(get_report_type($attr)) . "&id=" . $id;
 				$query = "SELECT  * FROM xx_reports WHERE (typ = 'select' AND id = '" . $id . "' )";
-				$res = db_query($query);
-				$f = db_fetch($res);
+				$res = DBOld::query($query);
+				$f = DBOld::fetch($res);
 				$url .= "&sql=" . urlencode(trim($f["attrib"]));
 				$query = "SELECT  * FROM xx_reports WHERE (typ = 'group' AND id = '" . $id . "' )";
-				$res = db_query($query);
-				$f = db_fetch($res);
+				$res = DBOld::query($query);
+				$f = DBOld::fetch($res);
 				$h = explode("|", $f["attrib"]);
 				$url .= "&group=" . trim($h[0]) . "&group_type=" . trim($h[1]);
 		}
@@ -135,11 +133,11 @@
 				break;
 		}
 		$query = "SELECT * FROM xx_reports WHERE id ='$id'";
-		$res = db_query($query);
+		$res = DBOld::query($query);
 		$typ_ar = array();
 		$attrib_ar = array();
 		$l = 0;
-		while ($f = db_fetch($res))
+		while ($f = DBOld::fetch($res))
 		{
 			$typ_ar[$l] = $f["typ"];
 			$attrib_ar[$l] = $f["attrib"];
@@ -152,9 +150,9 @@
 			$l++;
 		}
 		// change  $id to a new value and $short to "COPY".$short
-		$res = db_query("SELECT typ,id FROM xx_reports WHERE typ = '$type'");
+		$res = DBOld::query("SELECT typ,id FROM xx_reports WHERE typ = '$type'");
 		$n = 0;
-		while ($f = db_fetch($res))
+		while ($f = DBOld::fetch($res))
 		{
 			$n = max($n, $f["id"]);
 		}
@@ -167,14 +165,14 @@
 		for ($k = 0; $k < $l; $k++)
 		{
 			$query = "INSERT INTO xx_reports VALUES('$n','$typ_ar[$k]','$attrib_ar[$k]')";
-			db_query($query);
+			DBOld::query($query);
 		}
 	}
 	if (isset($new_)) {
 		// create a new report Id
-		$res = db_query("SELECT typ,id FROM xx_reports WHERE typ = 'info' ORDER BY id");
+		$res = DBOld::query("SELECT typ,id FROM xx_reports WHERE typ = 'info' ORDER BY id");
 		$n = 0;
-		while ($f = db_fetch($res))
+		while ($f = DBOld::fetch($res))
 		{
 			$n = max($n, $f["id"]);
 		}
@@ -186,9 +184,9 @@
 	}
 	if (isset($newblock)) {
 		// create a new blockId, e.g. B3
-		$res = db_query("SELECT id,typ FROM xx_reports WHERE typ = 'block'");
+		$res = DBOld::query("SELECT id,typ FROM xx_reports WHERE typ = 'block'");
 		$max = 0;
-		while ($f = db_fetch($res))
+		while ($f = DBOld::fetch($res))
 		{
 			$n = trim($f["id"], "B");
 			$max = max($max, $n);
@@ -202,9 +200,9 @@
 	}
 	if (isset($newfunct)) {
 		// create a new funct e.g. F3
-		$res = db_query("SELECT id,typ FROM xx_reports WHERE typ = 'funct'");
+		$res = DBOld::query("SELECT id,typ FROM xx_reports WHERE typ = 'funct'");
 		$max = 0;
-		while ($f = db_fetch($res))
+		while ($f = DBOld::fetch($res))
 		{
 			$n = trim($f["id"], "F");
 			$max = max($max, $n);
@@ -222,7 +220,7 @@
 
 	start_form(false, false, "repgen_select.php", "navigate");
 
-	start_table(Config::get('tables.style2'));
+	start_table(Config::get('tables_style2'));
 
 	start_row();
 
@@ -249,7 +247,7 @@ function displayReport(f, id) {
 //--></script>
 <?php
 
-	start_table(Config::get('tables.style'));
+	start_table(Config::get('tables_style'));
 	$th = array(LONG, SHORT, AUTHOR, CREATIONDATE, "Action", "", "", "");
 
 	table_header($th);
@@ -259,8 +257,8 @@ function displayReport(f, id) {
 	## Traverse the result set
 	## Get a database connection
 	$query = "SELECT  * FROM xx_reports WHERE (typ = 'info' OR typ = 'block' OR typ = 'funct') ORDER BY id";
-	$res = db_query($query);
-	while ($f = db_fetch($res))
+	$res = DBOld::query($query);
+	while ($f = DBOld::fetch($res))
 	{
 		$attrib_h = $f["attrib"];
 		$act = false;

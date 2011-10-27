@@ -18,14 +18,13 @@
 	// date_:	2005-05-19
 	// Title:	Print Invoices
 	// ----------------------------------------------------------------
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	include_once(APP_PATH . "taxes/tax_calc.inc");
 	//----------------------------------------------------------------------------------------------------
 	print_invoices();
 	//----------------------------------------------------------------------------------------------------
 	function print_invoices() {
-		include_once(APP_PATH . "reporting/includes/pdf_report.inc");
+		include_once(APP_PATH . "reporting/includes/pdf_report.php");
 		$from = $_POST['PARAM_0'];
 		$to = $_POST['PARAM_1'];
 		$currency = $_POST['PARAM_2'];
@@ -43,7 +42,7 @@
 		// $headers in doctext.inc
 		$aligns = array('left', 'left', 'center', 'left', 'right', 'right', 'center', 'right', 'right');
 		$params = array('comments' => $comments);
-		$cur = get_company_Pref('curr_default');
+		$cur = DB_Company::get_pref('curr_default');
 		if ($email == 0) {
 			$rep = new FrontReport(_('TAX INVOICE'), "InvoiceBulk", user_pagesize());
 			$rep->currency = $cur;
@@ -83,13 +82,13 @@
 				$rep->Header2($myrow, $branch, $sales_order, $baccount, $j);
 				$result = get_customer_trans_details($j, $i);
 				$SubTotal = 0;
-				while ($myrow2 = db_fetch($result)) {
+				while ($myrow2 = DBOld::fetch($result)) {
 					if ($myrow2["quantity"] == 0)
 						continue;
 					$Net = round2($sign * ((1 - $myrow2["discount_percent"]) * $myrow2["unit_price"] * $myrow2["quantity"]),
 						user_price_dec());
 					$SubTotal += $Net;
-					$TaxType = get_item_tax_type_for_item($myrow2['stock_id']);
+					$TaxType = Tax_Groups::get_for_item($myrow2['stock_id']);
 					$DisplayPrice = number_format2($myrow2["unit_price"], $dec);
 					$DisplayQty = number_format2($sign * $myrow2["quantity"], get_qty_dec($myrow2['stock_id']));
 					$DisplayNet = number_format2($Net, $dec);
@@ -114,10 +113,10 @@
 					if ($rep->row < $rep->bottomMargin + (15 * $rep->lineHeight))
 						$rep->Header2($myrow, $branch, $sales_order, $baccount, $j);
 				}
-				$comments = get_comments($j, $i);
-				if ($comments && db_num_rows($comments)) {
+				$comments = DB_Comments::get($j, $i);
+				if ($comments && DBOld::num_rows($comments)) {
 					$rep->NewLine();
-					while ($comment = db_fetch($comments))
+					while ($comment = DBOld::fetch($comments))
 					{
 						$rep->TextColLines(0, 6, $comment['memo_'], -2);
 					}
@@ -128,10 +127,10 @@
 				$linetype = true;
 				$doctype = $j;
 				if ($rep->currency != $myrow['curr_code']) {
-					include(APP_PATH . "/reporting/includes/doctext2.inc");
+					include(APP_PATH . "/reporting/includes/doctext2.php");
 				}
 				else {
-					include(APP_PATH . "/reporting/includes/doctext.inc");
+					include(APP_PATH . "/reporting/includes/doctext.php");
 				}
 				$rep->TextCol(3, 7, $doc_Sub_total, -2);
 				$rep->TextCol(7, 8, $DisplaySubTot, -2);
@@ -140,7 +139,7 @@
 				$rep->TextCol(7, 8, $DisplayFreight, -2);
 				$rep->NewLine();
 				$tax_items = get_trans_tax_details($j, $i);
-				while ($tax_item = db_fetch($tax_items)) {
+				while ($tax_item = DBOld::fetch($tax_items)) {
 					$DisplayTax = number_format2($sign * $tax_item['amount'], $dec);
 					if ($tax_item['included_in_price']) {
 						$rep->TextCol(3, 7, $doc_Included . " " . $tax_item['tax_type_name'] .

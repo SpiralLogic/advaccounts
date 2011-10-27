@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 	$page_security = 'SA_ITEMSSTATVIEW';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	if (isset($_GET['stock_id'])) {
 		$_POST['stock_id'] = $_GET['stock_id'];
@@ -20,17 +20,15 @@
 		page(_($help_context = "Inventory Item Status"));
 	}
 
-	include_once(APP_PATH . "includes/manufacturing.inc");
-
-	if ($_POST['stock_id'])
+	if (Input::post('stock_id'))
 		$Ajax->activate('status_tbl');
 	//----------------------------------------------------------------------------------------------------
 
-	check_db_has_stock_items(_("There are no items defined in the system."));
+	Validation::check(Validation::STOCK_ITEMS, _("There are no items defined in the system."));
 
 	start_form();
 
-	if (!isset($_POST['stock_id']))
+	if (!Input::post('stock_id'))
 		$_POST['stock_id'] = ui_globals::get_global_stock_item();
 
 	echo "<center> ";
@@ -43,18 +41,18 @@
 
 	ui_globals::set_global_stock_item($_POST['stock_id']);
 
-	$mb_flag = get_mb_flag($_POST['stock_id']);
+	$mb_flag           = Manufacturing::get_mb_flag($_POST['stock_id']);
 	$kitset_or_service = false;
 
 	div_start('status_tbl');
-	if (is_service($mb_flag)) {
+	if (Input::post('mb_flag') == STOCK_SERVICE) {
 		ui_msgs::display_note(_("This is a service and cannot have a stock holding, only the total quantity on outstanding sales orders is shown."), 0, 1);
 		$kitset_or_service = true;
 	}
 
 	$loc_details = get_loc_details($_POST['stock_id']);
 
-	start_table(Config::get('tables.style'));
+	start_table(Config::get('tables_style'));
 
 	if ($kitset_or_service == true) {
 		$th = array(_("Location"), _("Demand"));
@@ -62,27 +60,27 @@
 	else
 	{
 		$th = array(_("Location"), _("Quantity On Hand"), _("Re-Order Level"),
-			_("Demand"), _("Available"), _("On Order")
+								_("Demand"), _("Available"), _("On Order")
 		);
 	}
 	table_header($th);
 	$dec = get_qty_dec($_POST['stock_id']);
-	$j = 1;
-	$k = 0; //row colour counter
+	$j   = 1;
+	$k   = 0; //row colour counter
 
-	while ($myrow = db_fetch($loc_details))
+	while ($myrow = DBOld::fetch($loc_details))
 	{
 
 		alt_table_row_color($k);
 
-		$demand_qty = get_demand_qty($_POST['stock_id'], $myrow["loc_code"]);
-		$demand_qty += get_demand_asm_qty($_POST['stock_id'], $myrow["loc_code"]);
+		$demand_qty = Manufacturing::get_demand_qty($_POST['stock_id'], $myrow["loc_code"]);
+		$demand_qty += Manufacturing::get_demand_asm_qty($_POST['stock_id'], $myrow["loc_code"]);
 
 		$qoh = get_qoh_on_date($_POST['stock_id'], $myrow["loc_code"]);
 
 		if ($kitset_or_service == false) {
-			$qoo = get_on_porder_qty($_POST['stock_id'], $myrow["loc_code"]);
-			$qoo += get_on_worder_qty($_POST['stock_id'], $myrow["loc_code"]);
+			$qoo = Manufacturing::get_on_porder_qty($_POST['stock_id'], $myrow["loc_code"]);
+			$qoo += Manufacturing::get_on_worder_qty($_POST['stock_id'], $myrow["loc_code"]);
 			label_cell($myrow["location_name"]);
 			qty_cell($qoh, false, $dec);
 			qty_cell($myrow["reorder_level"], false, $dec);

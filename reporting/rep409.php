@@ -19,7 +19,7 @@
 	// draft version!
 	// ----------------------------------------------------------------
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	//----------------------------------------------------------------------------------------------------
 
@@ -28,9 +28,8 @@
 	//----------------------------------------------------------------------------------------------------
 
 	function print_workorders() {
-		global $SysPrefs;
 
-		include_once(APP_PATH . "reporting/includes/pdf_report.inc");
+		include_once(APP_PATH . "reporting/includes/pdf_report.php");
 
 		$from = $_POST['PARAM_0'];
 		$to = $_POST['PARAM_1'];
@@ -53,7 +52,7 @@
 
 		$params = array('comments' => $comments);
 
-		$cur = get_company_Pref('curr_default');
+		$cur = DB_Company::get_pref('curr_default');
 
 		if ($email == 0) {
 			$rep = new FrontReport(_('WORK ORDER'), "WorkOrderBulk", user_pagesize());
@@ -84,19 +83,19 @@
 			$rep->TextCol(0, 5, _("Work Order Requirements"), -2);
 			$rep->NewLine(2);
 			$has_marked = false;
-			while ($myrow2 = db_fetch($result))
+			while ($myrow2 = DBOld::fetch($result))
 			{
 				$qoh = 0;
 				$show_qoh = true;
 				// if it's a non-stock item (eg. service) don't show qoh
-				if (!has_stock_holding($myrow2["mb_flag"]))
+				if (!Manufacturing::has_stock_holding($myrow2["mb_flag"]))
 					$show_qoh = false;
 
 				if ($show_qoh)
 					$qoh = get_qoh_on_date($myrow2["stock_id"], $myrow2["loc_code"], $date_);
 
 				if ($show_qoh && ($myrow2["units_req"] * $myrow["units_issued"] > $qoh) &&
-				 !$SysPrefs->allow_negative_stock()
+				 !SysPrefs::allow_negative_stock()
 				) {
 					// oops, we don't have enough of one of the component items
 					$has_marked = true;
@@ -124,10 +123,10 @@
 			$rep->NewLine(1);
 			$rep->TextCol(0, 5, " *** = " . _("Insufficient stock"), -2);
 
-			$comments = get_comments(ST_WORKORDER, $i);
-			if ($comments && db_num_rows($comments)) {
+			$comments = DB_Comments::get(ST_WORKORDER, $i);
+			if ($comments && DBOld::num_rows($comments)) {
 				$rep->NewLine();
-				while ($comment = db_fetch($comments))
+				while ($comment = DBOld::fetch($comments))
 				{
 					$rep->TextColLines(0, 6, $comment['memo_'], -2);
 				}

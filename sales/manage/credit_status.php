@@ -11,11 +11,11 @@
 	 ***********************************************************************/
 	$page_security = 'SA_CRSTATUS';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	page(_($help_context = "Credit Status"));
 
-	include(APP_PATH . "sales/includes/db/credit_status_db.inc");
+	include(APP_PATH . "sales/includes/db/credit_status_db.php");
 
 	simple_page_mode(true);
 	//-----------------------------------------------------------------------------------
@@ -52,9 +52,9 @@
 
 	function can_delete($selected_id) {
 		$sql = "SELECT COUNT(*) FROM debtors_master
-		WHERE credit_status=" . db_escape($selected_id);
-		$result = db_query($sql, "could not query customers");
-		$myrow = db_fetch_row($result);
+		WHERE credit_status=" . DBOld::escape($selected_id);
+		$result = DBOld::query($sql, "could not query customers");
+		$myrow = DBOld::fetch_row($result);
 		if ($myrow[0] > 0) {
 			ui_msgs::display_error(_("Cannot delete this credit status because customer accounts have been created referring to it."));
 			return false;
@@ -85,13 +85,13 @@
 	$result = get_all_credit_status(check_value('show_inactive'));
 
 	start_form();
-	start_table(Config::get('tables.style') . "  width=40%");
+	start_table(Config::get('tables_style') . "  width=40%");
 	$th = array(_("Description"), _("Dissallow Invoices"), '', '');
 	inactive_control_column($th);
 	table_header($th);
 
 	$k = 0;
-	while ($myrow = db_fetch($result))
+	while ($myrow = DBOld::fetch($result))
 	{
 
 		alt_table_row_color($k);
@@ -118,7 +118,7 @@
 
 	//-----------------------------------------------------------------------------------
 
-	start_table(Config::get('tables.style2'));
+	start_table(Config::get('tables_style2'));
 
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {

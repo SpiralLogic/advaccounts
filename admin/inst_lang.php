@@ -11,12 +11,9 @@
 	 ***********************************************************************/
 	$page_security = 'SA_CREATELANGUAGE';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	page(_($help_context = "Install/Update Languages"));
-
-	include_once(APP_PATH . "admin/db/company_db.inc");
-	include_once(APP_PATH . "admin/db/maintenance_db.inc");
 
 	//---------------------------------------------------------------------------------------------
 
@@ -43,22 +40,21 @@
 	//---------------------------------------------------------------------------------------------
 
 	function handle_submit() {
-		global $installed_languages, $dflt_lang;
-
+		$installed_languages = Config::get_all('installed_languages');
 		if (!check_data())
 			return false;
 
 		$id = $_GET['id'];
 
 		if ($_POST['dflt']) {
-			$dflt_lang = $_POST['code'];
+			Config::set('default_lang', $_POST['code']);
 		}
 
 		$installed_languages[$id]['code'] = $_POST['code'];
 		$installed_languages[$id]['name'] = $_POST['name'];
 		$installed_languages[$id]['encoding'] = $_POST['encoding'];
 		$installed_languages[$id]['rtl'] = (bool)$_POST['rtl'];
-		if (!write_lang())
+		if (!Files::save_to_file())
 			return false;
 		$directory = APP_PATH . "lang/" . $_POST['code'];
 		if (!file_exists($directory)) {
@@ -79,28 +75,27 @@
 				unlink($file2);
 			move_uploaded_file($file1, $file2);
 		}
+		Config::set('installed_languages', $installed_languages);
 		return true;
 	}
 
 	//---------------------------------------------------------------------------------------------
 
 	function handle_delete() {
-		global $installed_languages, $dflt_lang;
 
 		$id = $_GET['id'];
-
-		$lang = $installed_languages[$id]['code'];
+		$lang = Config::get_all('installed_languages');
+		$lang = $lang[$id]['code'];
 		$filename = PATH_TO_ROOT . "/lang/$lang/LC_MESSAGES";
 
-		if ($lang == $dflt_lang) {
+		if ($lang == Config::get('default_lang')) {
 			// on delete set default to current.
-			$dflt_lang = $_SESSION['language']->code;
+			Config::set('default_lang', $_SESSION['language']->code);
 		}
 
-		unset($installed_languages[$id]);
-		$installed_languages = array_values($installed_languages);
+		Config::remove('installed_languages', $id);
 
-		if (!write_lang())
+		if (!Files::save_to_file())
 			return;
 
 		$filename = PATH_TO_ROOT . "/lang/$lang";
@@ -113,7 +108,6 @@
 	//---------------------------------------------------------------------------------------------
 
 	function display_languages() {
-		global $installed_languages, $dflt_lang;
 
 		$lang = $_SESSION["language"]->code;
 
@@ -130,7 +124,7 @@
 		table_header($th);
 
 		$k = 0;
-		$conn = $installed_languages;
+		$conn = Config::get_all('installed_languages');
 		$n = count($conn);
 		for ($i = 0; $i < $n; $i++)
 		{
@@ -147,7 +141,7 @@
 			else
 				$rtl = _("No");
 			label_cell($rtl);
-			label_cell($dflt_lang == $conn[$i]['code'] ? _("Yes") : _("No"));
+			label_cell(Config::get('default_lang') == $conn[$i]['code'] ? _("Yes") : _("No"));
 			$edit = _("Edit");
 			$delete = _("Delete");
 			if (user_graphic_links()) {
@@ -161,18 +155,17 @@
 		}
 
 		end_table();
-		ui_msgs::display_note(_("The marked language is the current language which cannot be deleted."), 0, 0, "class='currentfg'");
+		ui_msgs::display_warning(_("The marked language is the current language which cannot be deleted."), 0, 0, "class='currentfg'");
 	}
 
 	//---------------------------------------------------------------------------------------------
 
 	function display_language_edit($selected_id) {
-		global $installed_languages, $dflt_lang;
 
 		if ($selected_id != -1)
 			$n = $selected_id;
 		else
-			$n = count($installed_languages);
+			$n = count(Config::get_all('installed_languages'));
 
 		start_form(true);
 
@@ -187,7 +180,7 @@
 		start_table(Config::get('tables.style2'));
 
 		if ($selected_id != -1) {
-			$conn = $installed_languages[$selected_id];
+			$conn = Config::get('installed_languages', $selected_id);
 			$_POST['code'] = $conn['code'];
 			$_POST['name'] = $conn['name'];
 			$_POST['encoding'] = $conn['encoding'];
@@ -195,7 +188,7 @@
 				$_POST['rtl'] = $conn['rtl'];
 			else
 				$_POST['rtl'] = false;
-			$_POST['dflt'] = $dflt_lang == $conn['code'];
+			$_POST['dflt'] = Config::set('default_lang', $conn['code']);
 			hidden('selected_id', $selected_id);
 		}
 		text_row_ex(_("Language Code"), 'code', 20);
@@ -209,7 +202,7 @@
 		file_row(_("Language File") . " (MO)", 'uploadfile2');
 
 		end_table(0);
-		ui_msgs::display_note(_("Select your language files from your local harddisk."), 0, 1);
+		ui_msgs::display_warning(_("Select your language files from your local harddisk."), 0, 1);
 		echo "<center><input onclick='javascript:updateLanguage()' type='button' style='width:150px' value='" . _("Save") . "'></center>";
 
 		end_form();

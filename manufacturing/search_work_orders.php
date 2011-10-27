@@ -11,11 +11,11 @@
 	 ***********************************************************************/
 	$page_security = 'SA_MANUFTRANSVIEW';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	include_once(APP_PATH . "manufacturing/includes/manufacturing_ui.inc");
+	include_once(APP_PATH . "manufacturing/includes/manufacturing_ui.php");
 	$js = "";
-	if (Config::get('ui.windows.popups'))
+	if (Config::get('ui_windows_popups'))
 		$js .= ui_view::get_js_open_window(800, 500);
 	if (isset($_GET['outstanding_only']) && ($_GET['outstanding_only'] == true)) {
 		// curently outstanding simply means not closed
@@ -166,16 +166,16 @@
 		$sql .= " AND workorder.closed=0";
 	}
 
-	if (isset($_POST['StockLocation']) && $_POST['StockLocation'] != $all_items) {
-		$sql .= " AND workorder.loc_code=" . db_escape($_POST['StockLocation']);
+	if (isset($_POST['StockLocation']) && $_POST['StockLocation'] != ALL_TEXT) {
+		$sql .= " AND workorder.loc_code=" . DBOld::escape($_POST['StockLocation']);
 	}
 
 	if (isset($_POST['OrderNumber']) && $_POST['OrderNumber'] != "") {
-		$sql .= " AND workorder.wo_ref LIKE " . db_escape('%' . $_POST['OrderNumber'] . '%');
+		$sql .= " AND workorder.wo_ref LIKE " . DBOld::escape('%' . $_POST['OrderNumber'] . '%');
 	}
 
-	if (isset($_POST['SelectedStockItem']) && $_POST['SelectedStockItem'] != $all_items) {
-		$sql .= " AND workorder.stock_id=" . db_escape($_POST['SelectedStockItem']);
+	if (isset($_POST['SelectedStockItem']) && $_POST['SelectedStockItem'] != ALL_TEXT) {
+		$sql .= " AND workorder.stock_id=" . DBOld::escape($_POST['SelectedStockItem']);
 	}
 
 	if (check_value('OverdueOnly')) {

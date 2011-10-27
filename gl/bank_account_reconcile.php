@@ -12,16 +12,15 @@
 	/* Author Rob Mallon */
 	$page_security = 'SA_RECONCILE';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	$js = "";
-	if (Config::get('ui.windows.popups')) {
+	if (Config::get('ui_windows_popups')) {
 		$js .= ui_view::get_js_open_window(800, 500);
 	}
 
-	JS::headerFile('reconcile.js');
 	page(_($help_context = "Reconcile Bank Account"), false, false, "", $js);
-	check_db_has_bank_accounts(_("There are no bank accounts defined in the system."));
+	Validation::check(Validation::BANK_ACCOUNTS, _("There are no bank accounts defined in the system."));
 	function check_date() {
 		if (!Dates::is_date(get_post('reconcile_date'))) {
 			ui_msgs::display_error(_("Invalid reconcile date format"));
@@ -80,7 +79,8 @@
 
 	$update_pager = false;
 	function update_data() {
-		global $Ajax, $update_pager;
+		global $update_pager;
+		$Ajax = Ajax::instance();
 		unset($_POST["beg_balance"]);
 		unset($_POST["end_balance"]);
 		$Ajax->activate('summary');
@@ -91,7 +91,7 @@
 	// Update db record if respective checkbox value has changed.
 	//
 	function change_tpl_flag($reconcile_id) {
-		global $Ajax;
+		$Ajax = Ajax::instance();
 		if (!check_date() && check_value("rec_" . $reconcile_id)) // temporary fix
 		{
 			return false;
@@ -108,7 +108,8 @@
 		return true;
 	}
 
-	if ($_POST['reset']) {
+	if (Input::post('reset')) {
+
 		reset_sql_for_bank_account_reconcile($_POST['bank_account'], get_post('reconcile_date'));
 		update_data();
 	}
@@ -118,12 +119,12 @@
 		$trans = explode(',', $grouprefs);
 		reset($trans);
 		foreach ($trans as $tran) {
-			$sql = "UPDATE bank_trans SET undeposited=1, reconciled=NULL WHERE ref=" . db_escape($tran);
-			db_query($sql, 'Couldn\'t update undesposited status');
+			$sql = "UPDATE bank_trans SET undeposited=1, reconciled=NULL WHERE ref=" . DBOld::escape($tran);
+			DBOld::query($sql, 'Couldn\'t update undesposited status');
 		}
-		$sql = "UPDATE bank_trans SET ref=" . db_escape('Removed group: ' . $grouprefs) . ", amount=0, reconciled='" . Dates::date2sql(Dates::Today()) . "',
+		$sql = "UPDATE bank_trans SET ref=" . DBOld::escape('Removed group: ' . $grouprefs) . ", amount=0, reconciled='" . Dates::date2sql(Dates::Today()) . "',
     undeposited=" . $groupid . " WHERE id=" . $groupid;
-		db_query($sql, "Couldn't update removed group data");
+		DBOld::query($sql, "Couldn't update removed group data");
 		update_data();
 	}
 	if (isset($_SESSION['wa_current_reconcile_date']) && count($_POST) < 1) {
@@ -176,7 +177,7 @@
 	end_table();
 	$_SESSION['wa_current_reconcile_date'] = $_POST['bank_date'];
 	$result = get_max_reconciled(get_post('reconcile_date'), $_POST['bank_account']);
-	if ($row = db_fetch($result)) {
+	if ($row = DBOld::fetch($result)) {
 		$_POST["reconciled"] = price_format($row["end_balance"] - $row["beg_balance"]);
 		$total = $row["total"];
 		if (!isset($_POST["beg_balance"])) { // new selected account/statement
@@ -217,10 +218,29 @@
 	$sql = get_sql_for_bank_account_reconcile($_POST['bank_account'], get_post('reconcile_date'));
 	$act = get_bank_account($_POST["bank_account"]);
 	ui_msgs::display_heading($act['bank_account_name'] . " - " . $act['bank_curr_code']);
-	$cols = array(_("Type") => array('fun' => 'systype_name', 'ord' => ''), _("#") => array('fun' => 'trans_view', 'ord' => ''), _("Reference"), _("Date") => 'date',
-		_("Debit") => array('align' => 'right', 'fun' => 'fmt_debit'), _("Credit") => array('align' => 'right', 'insert' => true, 'fun' => 'fmt_credit'),
-		_("Person/Item") => array('fun' => 'fmt_person'), array('insert' => true, 'fun' => 'gl_view'), "X" => array('insert' => true, 'fun' => 'rec_checkbox'),
-		array('insert' => true, 'fun' => 'ungroup')
+	$cols = array(_("Type") => array('fun' => 'systype_name',
+		'ord' => ''
+	),
+		_("#") => array('fun' => 'trans_view',
+			'ord' => ''
+		), _("Reference"),
+		_("Date") => 'date',
+		_("Debit") => array('align' => 'right',
+			'fun' => 'fmt_debit'
+		),
+		_("Credit") => array('align' => 'right',
+			'insert' => true,
+			'fun' => 'fmt_credit'
+		),
+		_("Person/Item") => array('fun' => 'fmt_person'), array('insert' => true,
+			'fun' => 'gl_view'
+		),
+		"X" => array('insert' => true,
+			'fun' => 'rec_checkbox'
+		),
+		array('insert' => true,
+			'fun' => 'ungroup'
+		)
 	);
 	$table =& db_pager::new_db_pager('trans_tbl', $sql, $cols);
 	$table->width = "80%";

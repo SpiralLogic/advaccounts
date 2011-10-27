@@ -7,13 +7,11 @@
 
 	$page_security = 'SA_REPORT_GENERATOR';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	add_access_extensions();
 
-	include_once(APP_PATH . "admin/db/company_db.inc");
-
-	require_once("repgen_const.inc");
-	require_once("repgen_def.inc");
+	require_once("repgen_const.php");
+	require_once("repgen_def.php");
 
 	/* If this page is called directly, switch to repgen_main.php
  */
@@ -36,9 +34,9 @@
 
 	$sql = str_replace("", '', $sql);
 
-	$res = db_query($sql, SQL_ERROR); // test, if SQL-statement is correct
+	$res = DBOld::query($sql, SQL_ERROR); // test, if SQL-statement is correct
 	$th = array();
-	$num = db_num_fields($res);
+	$num = DBOld::num_fields($res);
 	$i = 0;
 	while ($i < $num)
 	{
@@ -54,13 +52,13 @@
  */
 	ui_msgs::display_heading(SQL_ERG);
 
-	start_table(Config::get('tables.style'));
+	start_table(Config::get('tables_style'));
 	table_header($th);
 	$k = 0;
 	for ($j = 0; $j < 10; $j++)
 	{
 		alt_table_row_color($k);
-		$f = db_fetch_row($res);
+		$f = DBOld::fetch_row($res);
 		for ($i = 0; $i < $num; $i++) // write column names
 		{
 			label_cell($f[$i]);

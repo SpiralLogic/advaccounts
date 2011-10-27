@@ -17,9 +17,9 @@
 	// Title:	Inventory Valuation
 	// ----------------------------------------------------------------
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	include_once(APP_PATH . "inventory/includes/db/items_category_db.inc");
+	include_once(APP_PATH . "inventory/includes/db/items_category_db.php");
 
 	//----------------------------------------------------------------------------------------------------
 
@@ -48,13 +48,13 @@
 			stock_master.description
 		HAVING SUM(stock_moves.qty) != 0";
 		if ($category != 0)
-			$sql .= " AND stock_master.category_id = " . db_escape($category);
+			$sql .= " AND stock_master.category_id = " . DBOld::escape($category);
 		if ($location != 'all')
-			$sql .= " AND stock_moves.loc_code = " . db_escape($location);
+			$sql .= " AND stock_moves.loc_code = " . DBOld::escape($location);
 		$sql .= " ORDER BY stock_master.category_id,
 			stock_master.stock_id";
 
-		return db_query($sql, "No transactions were returned");
+		return DBOld::query($sql, "No transactions were returned");
 	}
 
 	//----------------------------------------------------------------------------------------------------
@@ -67,9 +67,9 @@
 		$comments = $_POST['PARAM_3'];
 		$destination = $_POST['PARAM_4'];
 		if ($destination)
-			include_once(APP_PATH . "reporting/includes/excel_report.inc");
+			include_once(APP_PATH . "reporting/includes/excel_report.php");
 		else
-			include_once(APP_PATH . "reporting/includes/pdf_report.inc");
+			include_once(APP_PATH . "reporting/includes/pdf_report.php");
 		$detail = !$detail;
 		$dec = user_price_dec();
 
@@ -107,7 +107,7 @@
 		$res = getTransactions($category, $location);
 		$total = $grandtotal = 0.0;
 		$catt = '';
-		while ($trans = db_fetch($res))
+		while ($trans = DBOld::fetch($res))
 		{
 			if ($catt != $trans['cat_description']) {
 				if ($catt != '') {

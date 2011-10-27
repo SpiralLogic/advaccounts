@@ -10,15 +10,15 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	$page_security = isset($_GET['NewPayment']) ||
 	 @($_SESSION['pay_items']->trans_type == ST_BANKPAYMENT)
 		? 'SA_PAYMENT' : 'SA_DEPOSIT';
 
-	include_once(APP_PATH . "gl/includes/ui/gl_bank_ui.inc");
+	include_once(APP_PATH . "gl/includes/ui/gl_bank_ui.php");
 
 	$js = '';
-	if (Config::get('ui.windows.popups'))
+	if (Config::get('ui_windows_popups'))
 		$js .= ui_view::get_js_open_window(800, 500);
 
 	if (isset($_GET['NewPayment'])) {
@@ -31,7 +31,7 @@
 	page($_SESSION['page_title'], false, false, '', $js);
 
 	//-----------------------------------------------------------------------------------------------
-	check_db_has_bank_accounts(_("There are no bank accounts defined in the system."));
+	Validation::check(Validation::BANK_ACCOUNTS, _("There are no bank accounts defined in the system."));
 
 	//----------------------------------------------------------------------------------------
 	if (list_updated('PersonDetailID')) {
@@ -42,7 +42,7 @@
 
 	//--------------------------------------------------------------------------------------------------
 	function line_start_focus() {
-		global $Ajax;
+		$Ajax = Ajax::instance();
 
 		$Ajax->activate('items_table');
 		ui_view::set_focus('_code_id_edit');
@@ -56,7 +56,7 @@
 
 		ui_msgs::display_notification_centered(_("Payment $trans_no has been entered"));
 
-		ui_msgs::display_note(ui_view::get_gl_view_str($trans_type, $trans_no, _("&View the GL Postings for this Payment")));
+		ui_msgs::display_warning(ui_view::get_gl_view_str($trans_type, $trans_no, _("&View the GL Postings for this Payment")));
 
 		hyperlink_params($_SERVER['PHP_SELF'], _("Enter Another &Payment"), "NewPayment=yes");
 
@@ -71,7 +71,7 @@
 
 		ui_msgs::display_notification_centered(_("Deposit $trans_no has been entered"));
 
-		ui_msgs::display_note(ui_view::get_gl_view_str($trans_type, $trans_no, _("View the GL Postings for this Deposit")));
+		ui_msgs::display_warning(ui_view::get_gl_view_str($trans_type, $trans_no, _("View the GL Postings for this Deposit")));
 
 		hyperlink_params($_SERVER['PHP_SELF'], _("Enter Another Deposit"), "NewDeposit=yes");
 
@@ -91,7 +91,7 @@
 
 		//session_register("pay_items");
 
-		$_SESSION['pay_items'] = new items_cart($type);
+		$_SESSION['pay_items'] = new itemsCart($type);
 
 		$_POST['date_'] = Dates::new_doc_date();
 		if (!Dates::is_date_in_fiscalyear($_POST['date_']))
@@ -117,7 +117,7 @@
 			$input_error = 1;
 		}
 
-		if (!$Refs->is_valid($_POST['ref'])) {
+		if (!Refs::is_valid($_POST['ref'])) {
 			ui_msgs::display_error(_("You must enter a reference."));
 			ui_view::set_focus('ref');
 			$input_error = 1;
@@ -166,7 +166,7 @@
 	//-----------------------------------------------------------------------------------------------
 
 	function check_item_data() {
-		//if (!check_num('amount', 0))
+		//if (!Validation::is_num('amount', 0))
 		//{
 		//	ui_msgs::display_error( _("The amount entered is not a valid number or is less than zero."));
 		//	ui_view::set_focus('amount');
@@ -185,7 +185,7 @@
 		//		ui_msgs::display_error( _("You cannot make a payment to a bank account. Please use the transfer funds facility for this."));
 		//	else
 		//		ui_msgs::display_error( _("You cannot make a deposit from a bank account. Please use the transfer funds facility for this."));
-		//	ui_view::set_focus('code_id');
+		//	ui_view::set_focus('code_id') ;
 		//	return false;
 		//} 
 
@@ -250,7 +250,7 @@
 
 	display_bank_header($_SESSION['pay_items']);
 
-	start_table(Config::get('tables.style2') . " width=90%", 10);
+	start_table(Config::get('tables_style2') . " width=90%", 10);
 	start_row();
 	echo "<td>";
 	display_gl_items($_SESSION['pay_items']->trans_type == ST_BANKPAYMENT ?

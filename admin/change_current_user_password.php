@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 	$page_security = 'SA_CHGPASSWD';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	page(_($help_context = "Change password"));
 
@@ -44,7 +44,7 @@
 			if (Config::get('demo_mode')) {
 				ui_msgs::display_warning(_("Password cannot be changed in demo mode."));
 			} else {
-				$auth = new Auth($_SESSION["wa_current_user"]->username);
+				$auth  = new Auth($_SESSION["wa_current_user"]->username);
 				$check = $auth->checkPasswordStrength($_POST['password']);
 				if ($check['error'] > 0)
 					ui_msgs::display_error($check['text']);
@@ -58,20 +58,20 @@
 			}
 			$Ajax->activate('_page_body');
 		}
-	} elseif ($_SESSION['change_password']) {
+	} elseif (Input::session('change_password')) {
 		ui_msgs::display_warning('You are required to change your password!');
 	}
 
 	start_form();
 
-	start_table(Config::get('tables.style'));
+	start_table(Config::get('tables_style'));
 	table_section_title(_("Enter your new password in the fields."));
 
-	$myrow = get_user($_SESSION["wa_current_user"]->user);
+	$myrow = User::get($_SESSION["wa_current_user"]->user);
 
 	label_row(_("User login:"), $myrow['user_id']);
 
-	$_POST['password'] = "";
+	$_POST['password']        = "";
 	$_POST['passwordConfirm'] = "";
 
 	password_row(_("Password:"), 'password', $_POST['password']);

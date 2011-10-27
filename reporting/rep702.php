@@ -17,7 +17,7 @@
 	// Title:	List of Journal Entries
 	// ----------------------------------------------------------------
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	//----------------------------------------------------------------------------------------------------
 
@@ -34,9 +34,9 @@
 		$comments = $_POST['PARAM_3'];
 		$destination = $_POST['PARAM_4'];
 		if ($destination)
-			include_once(APP_PATH . "reporting/includes/excel_report.inc");
+			include_once(APP_PATH . "reporting/includes/excel_report.php");
 		else
-			include_once(APP_PATH . "reporting/includes/pdf_report.inc");
+			include_once(APP_PATH . "reporting/includes/pdf_report.php");
 
 		$dec = user_price_dec();
 
@@ -68,7 +68,7 @@
 		$trans = get_gl_transactions($from, $to, -1, null, 0, 0, $systype);
 
 		$typeno = $type = 0;
-		while ($myrow = db_fetch($trans))
+		while ($myrow = DBOld::fetch($trans))
 		{
 			if ($type != $myrow['type'] || $typeno != $myrow['type_no']) {
 				if ($typeno != 0) {
@@ -79,7 +79,7 @@
 				$type = $myrow['type'];
 				$TransName = $systypes_array[$myrow['type']];
 				$rep->TextCol(0, 1, $TransName . " # " . $myrow['type_no']);
-				$rep->TextCol(1, 2, get_reference($myrow['type'], $myrow['type_no']));
+				$rep->TextCol(1, 2, Refs::get_reference($myrow['type'], $myrow['type_no']));
 				$rep->DateCol(2, 3, $myrow['tran_date'], true);
 				$coms = payment_person_name($myrow["person_type_id"], $myrow["person_id"]);
 				$memo = ui_view::get_comments_string($myrow['type'], $myrow['type_no']);

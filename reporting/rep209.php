@@ -19,7 +19,7 @@
 	// Title:	Purchase Orders
 	// ----------------------------------------------------------------
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	//----------------------------------------------------------------------------------------------------
 
@@ -34,9 +34,9 @@
 		FROM purch_orders, suppliers, locations
 		WHERE purch_orders.supplier_id = suppliers.supplier_id
 		AND locations.loc_code = into_stock_location
-		AND purch_orders.order_no = " . db_escape($order_no);
-		$result = db_query($sql, "The order cannot be retrieved");
-		return db_fetch($result);
+		AND purch_orders.order_no = " . DBOld::escape($order_no);
+		$result = DBOld::query($sql, "The order cannot be retrieved");
+		return DBOld::fetch($result);
 	}
 
 	function get_po_details($order_no) {
@@ -44,14 +44,14 @@
 		FROM purch_order_details
 		LEFT JOIN stock_master
 		ON purch_order_details.item_code=stock_master.stock_id
-		WHERE order_no =" . db_escape($order_no) . " ";
+		WHERE order_no =" . DBOld::escape($order_no) . " ";
 		$sql .= " ORDER BY po_detail_item";
-		return db_query($sql, "Retreive order Line Items");
+		return DBOld::query($sql, "Retreive order Line Items");
 	}
 
 	function print_po() {
 
-		include_once(APP_PATH . "reporting/includes/pdf_report.inc");
+		include_once(APP_PATH . "reporting/includes/pdf_report.php");
 
 		$from = $_POST['PARAM_0'];
 		$to = $_POST['PARAM_1'];
@@ -72,7 +72,7 @@
 
 		$params = array('comments' => $comments);
 
-		$cur = get_company_Pref('curr_default');
+		$cur = DB_Company::get_pref('curr_default');
 
 		if ($email == 0) {
 			$rep = new FrontReport(_('PURCHASE ORDER'), "PurchaseOrderBulk", user_pagesize());
@@ -102,7 +102,7 @@
 
 			$result = get_po_details($i);
 			$SubTotal = 0;
-			while ($myrow2 = db_fetch($result))
+			while ($myrow2 = DBOld::fetch($result))
 			{
 				if ($myrow2['item_code'] != 'freight' || $myrow['freight'] != $myrow2['unit_price']) {
 					$data = get_purchase_data($myrow['supplier_id'], $myrow2['item_code']);
@@ -152,11 +152,11 @@
 			$linetype = true;
 			$doctype = ST_PURCHORDER;
 			if ($rep->currency != $myrow['curr_code']) {
-				include(APP_PATH . "reporting/includes/doctext2.inc");
+				include(APP_PATH . "reporting/includes/doctext2.php");
 			}
 			else
 			{
-				include(APP_PATH . "reporting/includes/doctext.inc");
+				include(APP_PATH . "reporting/includes/doctext.php");
 			}
 
 			$rep->TextCol(3, 6, $doc_Sub_total, -2);

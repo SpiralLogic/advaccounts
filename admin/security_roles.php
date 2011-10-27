@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 	$page_security = 'SA_SECROLES';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	add_access_extensions();
 
@@ -75,7 +75,7 @@
 
 		if ($input_error == 0) {
 			$sections = array();
-			$areas = array();
+			$areas    = array();
 			foreach ($_POST as $p => $val) {
 				if (substr($p, 0, 4) == 'Area') {
 					$a = substr($p, 4);
@@ -92,13 +92,13 @@
 			$sections = array_values($sections);
 
 			if ($new_role) {
-				add_security_role($_POST['name'], $_POST['description'], $sections, $areas);
+				Printer::add_role($_POST['name'], $_POST['description'], $sections, $areas);
 				ui_msgs::display_notification(_("New security role has been added."));
 			} else
 			{
-				update_security_role($_POST['role'], $_POST['name'], $_POST['description'],
+				Printer::update_role($_POST['role'], $_POST['name'], $_POST['description'],
 					$sections, $areas);
-				update_record_status($_POST['role'], get_post('inactive'),
+				DBOld::update_record_status($_POST['role'], get_post('inactive'),
 					'security_roles', 'id');
 
 				ui_msgs::display_notification(_("Security role has been updated."));
@@ -115,7 +115,7 @@
 		if (check_role_used(get_post('role'))) {
 			ui_msgs::display_error(_("This role is currently assigned to some users and cannot be deleted"));
 		} else {
-			delete_security_role(get_post('role'));
+			Security::get_profile(get_post('role'));
 			ui_msgs::display_notification(_("Security role has been sucessfully deleted."));
 			unset($_POST['role']);
 		}
@@ -128,20 +128,20 @@
 	}
 
 	if (!isset($_POST['role']) || get_post('clone') || list_updated('role')) {
-		$id = get_post('role');
+		$id    = get_post('role');
 		$clone = get_post('clone');
 
 		unset($_POST);
 		if ($id) {
-			$row = get_security_role($id);
+			$row                  = Security::get_role($id);
 			$_POST['description'] = $row['description'];
-			$_POST['name'] = $row['role'];
+			$_POST['name']        = $row['role'];
 			//	if ($row['inactive']
 			//		$_POST['inactive'] = 1;
 
 			$_POST['inactive'] = $row['inactive'];
-			$access = $row['areas'];
-			$sections = $row['sections'];
+			$access            = $row['areas'];
+			$sections          = $row['sections'];
 		}
 		else {
 			$_POST['description'] = $_POST['name'] = '';
@@ -180,13 +180,13 @@
 	}
 	//-----------------------------------------------------------------------------------------------
 	div_start('details');
-	start_table(Config::get('tables.style2'));
+	start_table(Config::get('tables_style2'));
 	text_row(_("Role name:"), 'name', null, 20, 22);
 	text_row(_("Role description:"), 'description', null, 50, 52);
 	record_status_list_row(_("Current status:"), 'inactive');
 	end_table(1);
 
-	start_table(Config::get('tables.style') . " width=40%");
+	start_table(Config::get('tables_style') . " width=40%");
 
 	$k = $j = 0; //row colour counter
 	$ext = $sec = $m = -1;
@@ -201,7 +201,7 @@
 		if ($newsec != $sec || (($newext != $ext) && ($newsec > 99))) { // features set selection
 			$ext = $newext;
 			$sec = $newsec;
-			$m = $parms[0] & ~0xff;
+			$m   = $parms[0] & ~0xff;
 			//			if(!isset($security_sections[$m]))
 			//			 ui_msgs::display_error(sprintf("Bad section %X:", $m));
 			label_row($security_sections[$m] . ':',

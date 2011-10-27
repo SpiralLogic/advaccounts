@@ -1,13 +1,13 @@
 <?php
-/**
- * Created by JetBrains PhpStorm.
- * User: advanced
- * Date: 29/08/11
- * Time: 3:27 PM
- * To change this template use File | Settings | File Templates.
- */
+	/**
+	 * Created by JetBrains PhpStorm.
+	 * User: advanced
+	 * Date: 29/08/11
+	 * Time: 3:27 PM
+	 * To change this template use File | Settings | File Templates.
+	 */
 
-	include('../includes/session.inc');
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	ini_set('display_errors', 'On');
 	error_reporting(E_ALL);
@@ -28,6 +28,5 @@
 			break;
 	}
 	$item[$f] = $_POST['value'];
-
 
 	echo	$q->exec($item);

@@ -17,7 +17,7 @@
 	// Title:	Payment Report
 	// ----------------------------------------------------------------
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	//----------------------------------------------------------------------------------------------------
 
@@ -43,7 +43,7 @@
 		ORDER BY supp_trans.type,
 			supp_trans.trans_no";
 
-		return db_query($sql, "No transactions were returned");
+		return DBOld::query($sql, "No transactions were returned");
 	}
 
 	//----------------------------------------------------------------------------------------------------
@@ -58,9 +58,9 @@
 		$comments = $_POST['PARAM_4'];
 		$destination = $_POST['PARAM_5'];
 		if ($destination)
-			include_once(APP_PATH . "reporting/includes/excel_report.inc");
+			include_once(APP_PATH . "reporting/includes/excel_report.php");
 		else
-			include_once(APP_PATH . "reporting/includes/pdf_report.inc");
+			include_once(APP_PATH . "reporting/includes/pdf_report.php");
 
 		if ($fromsupp == ALL_NUMERIC)
 			$from = _('All');
@@ -106,17 +106,17 @@
 		$sql = "SELECT supplier_id, supp_name AS name, curr_code, payment_terms.terms FROM suppliers, payment_terms
 		WHERE ";
 		if ($fromsupp != ALL_NUMERIC)
-			$sql .= "supplier_id=" . db_escape($fromsupp) . " AND ";
+			$sql .= "supplier_id=" . DBOld::escape($fromsupp) . " AND ";
 		$sql .= "suppliers.payment_terms = payment_terms.terms_indicator
 		ORDER BY supp_name";
-		$result = db_query($sql, "The customers could not be retrieved");
+		$result = DBOld::query($sql, "The customers could not be retrieved");
 
-		while ($myrow = db_fetch($result))
+		while ($myrow = DBOld::fetch($result))
 		{
 			if (!$convert && $currency != $myrow['curr_code']) continue;
 
 			$res = getTransactions($myrow['supplier_id'], $to);
-			if ($no_zeros && db_num_rows($res) == 0) continue;
+			if ($no_zeros && DBOld::num_rows($res) == 0) continue;
 
 			$rep->fontSize += 2;
 			$rep->TextCol(0, 6, $myrow['name'] . " - " . $myrow['terms']);
@@ -124,11 +124,11 @@
 				$rep->TextCol(6, 7, $myrow['curr_code']);
 			$rep->fontSize -= 2;
 			$rep->NewLine(1, 2);
-			if (db_num_rows($res) == 0)
+			if (DBOld::num_rows($res) == 0)
 				continue;
 			$rep->Line($rep->row + 4);
 			$total[0] = $total[1] = 0.0;
-			while ($trans = db_fetch($res))
+			while ($trans = DBOld::fetch($res))
 			{
 				if ($no_zeros && $trans['TranTotal'] == 0 && $trans['Balance'] == 0) continue;
 

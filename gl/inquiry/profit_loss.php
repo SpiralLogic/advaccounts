@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 	$page_security = 'SA_GLANALYTIC';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	$js = "";
 
@@ -49,7 +49,7 @@
 		//Get Accounts directly under this group/type
 		$result = get_gl_accounts(null, null, $type);
 
-		while ($account = db_fetch($result))
+		while ($account = DBOld::fetch($result))
 		{
 			$per_balance = get_gl_trans_from_to($from, $to, $account["account_code"], $dimension, $dimension2);
 
@@ -82,7 +82,7 @@
 
 		//Get Account groups/types under this group/type
 		$result = get_account_types(false, false, $type);
-		while ($accounttype = db_fetch($result))
+		while ($accounttype = DBOld::fetch($result))
 		{
 			$totals_arr = display_type($accounttype["id"], $accounttype["name"], $from, $to, $begin, $end,
 				$compare, $convert, $dec, $pdec, $rep, $dimension, $dimension2, $drilldown);
@@ -161,7 +161,7 @@
 	function display_profit_and_loss() {
 		global $sel;
 
-		$dim = get_company_pref('use_dimension');
+		$dim = DB_Company::get_pref('use_dimension');
 		$dimension = $dimension2 = 0;
 
 		$from = $_POST['TransFromDate'];
@@ -192,7 +192,7 @@
 
 		div_start('pl_tbl');
 
-		start_table("width=50%  " . Config::get('tables.style'));
+		start_table("width=50%  " . Config::get('tables_style'));
 
 		$tableheader = "<tr>
         <td class='tableheader'>" . _("Group/Account Name") . "</td>
@@ -211,7 +211,7 @@
 
 			//Get classes for PL
 			$classresult = get_account_classes(false, 0);
-			while ($class = db_fetch($classresult))
+			while ($class = DBOld::fetch($classresult))
 			{
 				$class_per_total = 0;
 				$class_acc_total = 0;
@@ -223,7 +223,7 @@
 
 				//Get Account groups/types under this group/type
 				$typeresult = get_account_types(false, $class['cid'], -1);
-				while ($accounttype = db_fetch($typeresult))
+				while ($accounttype = DBOld::fetch($typeresult))
 				{
 					$TypeTotal = display_type(
 						$accounttype["id"], $accounttype["name"], $from, $to, $begin, $end, $compare, $convert,

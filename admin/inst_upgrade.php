@@ -11,12 +11,9 @@
 	 ***********************************************************************/
 	$page_security = 'SA_SOFTWAREUPGRADE';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	page(_($help_context = "Software Upgrade"));
-
-	include_once(APP_PATH . "admin/db/company_db.inc");
-	include_once(APP_PATH . "admin/db/maintenance_db.inc");
 
 	//
 	//	Checks $field existence in $table with given field $properties
@@ -26,15 +23,15 @@
 	//		'Type', 'Null', 'Key', 'Default', 'Extra'
 	//
 	function check_table($pref, $table, $field = null, $properties = null) {
-		$tables = @db_query("SHOW TABLES LIKE '" . $pref . $table . "'");
-		if (!db_num_rows($tables))
+		$tables = @DBOld::query("SHOW TABLES LIKE '" . $pref . $table . "'");
+		if (!DBOld::num_rows($tables))
 			return 1; // no such table or error
 
-		$fields = @db_query("SHOW COLUMNS FROM " . $pref . $table);
+		$fields = @DBOld::query("SHOW COLUMNS FROM " . $pref . $table);
 		if (!isset($field))
 			return 0; // table exists
 
-		while ($row = db_fetch_assoc($fields))
+		while ($row = DBOld::fetch_assoc($fields))
 		{
 			if ($row['Field'] == $field) {
 				if (!isset($properties))
@@ -95,14 +92,13 @@
 				$sql = $inst->sql;
 
 				if ($sql != '')
-					$ret &= db_import(PATH_TO_ROOT . '/sql/' . $sql, $conn, $force);
+					$ret &= DB_Utils::import(PATH_TO_ROOT . '/sql/' . $sql, $conn, $force);
 
 				$ret &= $inst->install($force);
-			} else
-				if ($state !== true) {
-					ui_msgs::display_error(_("Upgrade cannot be done because database has been already partially upgraded. Please downgrade database to clean previous version or try forced upgrade."));
-					$ret = false;
-				}
+			} else if ($state !== true) {
+				ui_msgs::display_error(_("Upgrade cannot be done because database has been already partially upgraded. Please downgrade database to clean previous version or try forced upgrade."));
+				$ret = false;
+			}
 		}
 		return $ret;
 	}
@@ -121,7 +117,7 @@
 	if (get_post('Upgrade')) {
 
 		$ret = true;
-		foreach ($db_connections as $conn)
+		foreach (Config::get_all('db') as $conn)
 		{
 			// connect to database
 			if (!($db = db_open($conn))) {
@@ -130,7 +126,7 @@
 				continue;
 			}
 			// create security backup
-			db_backup($conn, 'no', 'Security backup before upgrade');
+			DB_Utils::backup($conn, 'no', 'Security backup before upgrade');
 			// apply all upgrade data
 			foreach ($installers as $i => $inst)
 			{
@@ -147,8 +143,8 @@
 		}
 		if ($ret) { // re-read the prefs
 
-			$user = get_user_by_login($_SESSION["wa_current_user"]->username);
-			$_SESSION["wa_current_user"]->prefs = new user_prefs($user);
+			$user = User::get_by_login($_SESSION["wa_current_user"]->username);
+			$_SESSION["wa_current_user"]->prefs = new userPrefs($user);
 			ui_msgs::display_notification(_('All companies data has been successfully updated'));
 		}
 		$Ajax->activate('_page_body');
@@ -176,21 +172,20 @@
 		$check = $inst->installed('');
 		if ($check === true)
 			label_cell(_("Installed"));
-		else
-			if (!$check)
-				check_cells(null, 'install_' . $i, 0);
-			else {
-				label_cell("<span class=redfg>"
-					 . sprintf(_("Partially installed (%s)"), $check) . "</span>");
-				$partial++;
-			}
+		else if (!$check)
+			check_cells(null, 'install_' . $i, 0);
+		else {
+			label_cell("<span class=redfg>"
+				 . sprintf(_("Partially installed (%s)"), $check) . "</span>");
+			$partial++;
+		}
 
 		check_cells(null, 'force_' . $i, 0);
 		end_row();
 	}
 	end_table(1);
 	if ($partial != 0) {
-		ui_msgs::display_note(_("Database upgrades marked as partially installed cannot be installed automatically.
+		ui_msgs::display_warning(_("Database upgrades marked as partially installed cannot be installed automatically.
 You have to clean database manually to enable them, or try to perform forced upgrade."));
 		br();
 	}

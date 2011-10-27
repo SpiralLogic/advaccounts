@@ -17,7 +17,7 @@
 	// Title:	Annual expense breakdown
 	// ----------------------------------------------------------------
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	//----------------------------------------------------------------------------------------------------
 
@@ -55,13 +55,13 @@
     			FROM gl_trans
 				WHERE account='$account'";
 		if ($dimension != 0)
-			$sql .= " AND dimension_id = " . ($dimension < 0 ? 0 : db_escape($dimension));
+			$sql .= " AND dimension_id = " . ($dimension < 0 ? 0 : DBOld::escape($dimension));
 		if ($dimension2 != 0)
-			$sql .= " AND dimension2_id = " . ($dimension2 < 0 ? 0 : db_escape($dimension2));
+			$sql .= " AND dimension2_id = " . ($dimension2 < 0 ? 0 : DBOld::escape($dimension2));
 
-		$result = db_query($sql, "Transactions for account $account could not be calculated");
+		$result = DBOld::query($sql, "Transactions for account $account could not be calculated");
 
-		return db_fetch($result);
+		return DBOld::fetch($result);
 	}
 
 	//----------------------------------------------------------------------------------------------------
@@ -75,7 +75,7 @@
 
 		//Get Accounts directly under this group/type
 		$result = get_gl_accounts(null, null, $type);
-		while ($account = db_fetch($result))
+		while ($account = DBOld::fetch($result))
 		{
 			$bal = getPeriods($yr, $mo, $account["account_code"], $dimension, $dimension2);
 			if (!$bal['per01'] && !$bal['per02'] && !$bal['per03'] && !$bal['per04'] && !$bal['per05'] &&
@@ -112,7 +112,7 @@
 
 		//Get Account groups/types under this group/type
 		$result = get_account_types(false, false, $type);
-		while ($accounttype = db_fetch($result))
+		while ($accounttype = DBOld::fetch($result))
 		{
 			//Print Type Title if has sub types and not previously printed
 			if (!$printtitle) {
@@ -155,7 +155,7 @@
 
 	function print_annual_expense_breakdown() {
 
-		$dim = get_company_pref('use_dimension');
+		$dim = DB_Company::get_pref('use_dimension');
 		$dimension = $dimension2 = 0;
 
 		if ($dim == 2) {
@@ -178,9 +178,9 @@
 			$destination = $_POST['PARAM_2'];
 		}
 		if ($destination)
-			include_once(APP_PATH . "reporting/includes/excel_report.inc");
+			include_once(APP_PATH . "reporting/includes/excel_report.php");
 		else
-			include_once(APP_PATH . "reporting/includes/pdf_report.inc");
+			include_once(APP_PATH . "reporting/includes/pdf_report.php");
 
 		$dec = 1;
 		//$pdec = user_percent_dec();
@@ -191,17 +191,17 @@
 		//$yr = date('Y');
 		//$mo = date('m'):
 		// from now
-		$sql = "SELECT begin, end, YEAR(end) AS yr, MONTH(end) AS mo FROM fiscal_year WHERE id=" . db_escape($year);
-		$result = db_query($sql, "could not get fiscal year");
-		$row = db_fetch($result);
+		$sql = "SELECT begin, end, YEAR(end) AS yr, MONTH(end) AS mo FROM fiscal_year WHERE id=" . DBOld::escape($year);
+		$result = DBOld::query($sql, "could not get fiscal year");
+		$row = DBOld::fetch($result);
 
 		$year = Dates::sql2date($row['begin']) . " - " . Dates::sql2date($row['end']);
 		$yr = $row['yr'];
 		$mo = $row['mo'];
 		$da = 1;
-		if (Config::get('accounts.datesystem') == 1)
+		if (Config::get('accounts_datesystem') == 1)
 			list($yr, $mo, $da) = Dates::jalali_to_gregorian($yr, $mo, $da);
-		elseif (Config::get('accounts.datesystem') == 2)
+		elseif (Config::get('accounts_datesystem') == 2)
 			list($yr, $mo, $da) = Dates::islamic_to_gregorian($yr, $mo, $da);
 		$per12 = strftime('%b', mktime(0, 0, 0, $mo, $da, $yr));
 		$per11 = strftime('%b', mktime(0, 0, 0, $mo - 1, $da, $yr));
@@ -274,7 +274,7 @@
 		$sales = Array(1 => 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 
 		$classresult = get_account_classes(false, 0);
-		while ($class = db_fetch($classresult))
+		while ($class = DBOld::fetch($classresult))
 		{
 			$ctotal = Array(1 => 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 			$convert = get_class_type_convert($class["ctype"]);
@@ -287,7 +287,7 @@
 
 			//Get Account groups/types under this group/type with no parents
 			$typeresult = get_account_types(false, $class['cid'], -1);
-			while ($accounttype = db_fetch($typeresult))
+			while ($accounttype = DBOld::fetch($typeresult))
 			{
 				$classtotal = display_type(
 					$accounttype["id"], $accounttype["name"], $yr, $mo, $convert, $dec, $rep, $dimension, $dimension2);

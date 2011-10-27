@@ -17,7 +17,7 @@
 	// Title:	Balance Sheet
 	// ----------------------------------------------------------------
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	//----------------------------------------------------------------------------------------------------
 
@@ -33,7 +33,7 @@
 
 		//Get Accounts directly under this group/type
 		$result = get_gl_accounts(null, null, $type);
-		while ($account = db_fetch($result))
+		while ($account = DBOld::fetch($result))
 		{
 			$prev_balance = get_gl_balance_from_to("", $from, $account["account_code"], $dimension, $dimension2);
 
@@ -67,7 +67,7 @@
 
 		//Get Account groups/types under this group/type
 		$result = get_account_types(false, false, $type);
-		while ($accounttype = db_fetch($result))
+		while ($accounttype = DBOld::fetch($result))
 		{
 			//Print Type Title if has sub types and not previously printed
 			if (!$printtitle) {
@@ -113,7 +113,7 @@
 
 	function print_balance_sheet() {
 
-		$dim = get_company_pref('use_dimension');
+		$dim = DB_Company::get_pref('use_dimension');
 		$dimension = $dimension2 = 0;
 
 		$from = $_POST['PARAM_0'];
@@ -141,11 +141,11 @@
 			$destination = $_POST['PARAM_5'];
 		}
 		if ($destination)
-			include_once(APP_PATH . "reporting/includes/excel_report.inc");
+			include_once(APP_PATH . "reporting/includes/excel_report.php");
 		else
-			include_once(APP_PATH . "reporting/includes/pdf_report.inc");
+			include_once(APP_PATH . "reporting/includes/pdf_report.php");
 		if ($graphics) {
-			include_once(APP_PATH . "reporting/includes/class.graphic.inc");
+			include_once(APP_PATH . "reporting/includes/class.graphic.php");
 			$pg = new graph();
 		}
 		if (!$decimals)
@@ -199,7 +199,7 @@
 		$econvert = $lconvert = 0;
 
 		$classresult = get_account_classes(false, 1);
-		while ($class = db_fetch($classresult))
+		while ($class = DBOld::fetch($classresult))
 		{
 			$class_open_total = 0;
 			$class_period_total = 0;
@@ -213,7 +213,7 @@
 
 			//Get Account groups/types under this group/type with no parents
 			$typeresult = get_account_types(false, $class['cid'], -1);
-			while ($accounttype = db_fetch($typeresult))
+			while ($accounttype = DBOld::fetch($typeresult))
 			{
 				$classtotal = display_type($accounttype["id"], $accounttype["name"], $from, $to, $convert, $dec,
 					$rep, $dimension, $dimension2, $pg, $graphics);
@@ -280,10 +280,10 @@
 			$pg->graphic_1 = $headers[2];
 			$pg->graphic_2 = $headers[3];
 			$pg->type = $graphics;
-			$pg->skin = Config::get('graphs.skin');
+			$pg->skin = Config::get('graphs_skin');
 			$pg->built_in = false;
 			$pg->fontfile = PATH_TO_ROOT . "/reporting/fonts/Vera.ttf";
-			$pg->latin_notation = (Config::get('seperators.decimal', $_SESSION["wa_current_user"]->prefs->dec_sep()) != ".");
+			$pg->latin_notation = (Config::get('separators_decimal', $_SESSION["wa_current_user"]->prefs->dec_sep()) != ".");
 
 			$filename = COMPANY_PATH . "/pdf_files/test.png";
 			$pg->display($filename, true);

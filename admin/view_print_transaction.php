@@ -11,11 +11,11 @@
 	 ***********************************************************************/
 	$page_security = 'SA_VIEWPRINTTRANSACTION';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	include_once(APP_PATH . "reporting/includes/reporting.inc");
+	include_once(APP_PATH . "reporting/includes/reporting.php");
 	$js = "";
-	if (Config::get('ui.windows.popups'))
+	if (Config::get('ui_windows_popups'))
 		$js .= ui_view::get_js_open_window(800, 500);
 	page(_($help_context = "View or Print Transactions"), false, false, "", $js);
 
@@ -36,7 +36,7 @@
 	}
 
 	function viewing_controls() {
-		ui_msgs::display_note(_("Only documents can be printed."));
+		ui_msgs::display_warning(_("Only documents can be printed."));
 
 		start_table("class='tablestyle_noborder'");
 		start_row();
@@ -78,7 +78,7 @@
 
 	function handle_search() {
 		if (check_valid_entries() == true) {
-			$db_info = get_systype_db_info($_POST['filterType']);
+			$db_info = SysTypes::get_systype_db_info($_POST['filterType']);
 
 			if ($db_info == null)
 				return;
@@ -94,11 +94,11 @@
 				$sql .= " ,$trans_ref ";
 
 			$sql .= ", " . $_POST['filterType'] . " as type FROM $table_name
-			WHERE $trans_no_name >= " . db_escape($_POST['FromTransNo']) . "
-			AND  $trans_no_name <= " . db_escape($_POST['ToTransNo']);
+			WHERE $trans_no_name >= " . DBOld::escape($_POST['FromTransNo']) . "
+			AND  $trans_no_name <= " . DBOld::escape($_POST['ToTransNo']);
 
 			if ($type_name != null)
-				$sql .= " AND `$type_name` = " . db_escape($_POST['filterType']);
+				$sql .= " AND `$type_name` = " . DBOld::escape($_POST['filterType']);
 
 			$sql .= " ORDER BY $trans_no_name";
 

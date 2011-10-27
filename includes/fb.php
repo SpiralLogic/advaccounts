@@ -421,7 +421,7 @@
 			// if we are going to use a file then use that
 			// here we only want to json_encode
 			if ($this->getSetting(self::LOG_PATH) !== null) {
-				return $this->_writeToFile(json_encode($this->_json));
+				//		return $this->_writeToFile(json_encode($this->_json));
 			}
 			return $this->_setCookie($this->_json);
 		}

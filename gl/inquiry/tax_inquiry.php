@@ -11,11 +11,11 @@
 	 ***********************************************************************/
 	$page_security = 'SA_TAXREP';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	$js = '';
 	ui_view::set_focus('account');
-	if (Config::get('ui.windows.popups'))
+	if (Config::get('ui_windows_popups'))
 		$js .= ui_view::get_js_open_window(800, 500);
 
 	page(_($help_context = "Tax Inquiry"), false, false, '', $js);
@@ -29,7 +29,7 @@
 
 	if (get_post('TransFromDate') == "" && get_post('TransToDate') == "") {
 		$date = Dates::Today();
-		$row = get_company_prefs();
+		$row = DB_Company::get_prefs();
 		$edate = Dates::add_months($date, -$row['tax_last']);
 		$edate = Dates::end_month($edate);
 		$bdate = Dates::begin_month($edate);
@@ -44,7 +44,7 @@
 
 		start_form();
 
-		//start_table(Config::get('tables.style2'));
+		//start_table(Config::get('tables_style2'));
 		start_table("class='tablestyle_noborder'");
 		start_row();
 
@@ -65,7 +65,7 @@
 
 		/*Now get the transactions  */
 		div_start('trans_tbl');
-		start_table(Config::get('tables.style'));
+		start_table(Config::get('tables_style'));
 
 		$th = array(_("Type"), _("Description"), _("Amount"), _("Outputs") . "/" . _("Inputs"));
 		table_header($th);
@@ -76,7 +76,7 @@
 
 		$taxes = get_tax_summary($_POST['TransFromDate'], $_POST['TransToDate']);
 
-		while ($tx = db_fetch($taxes))
+		while ($tx = DBOld::fetch($taxes))
 		{
 
 			$payable = $tx['payable'];

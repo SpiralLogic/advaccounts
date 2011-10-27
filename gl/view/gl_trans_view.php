@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 	$page_security = 'SA_GLTRANSVIEW';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	page(_($help_context = "General Ledger Transaction Details"), true);
 
@@ -24,7 +24,7 @@
 	function display_gl_heading($myrow) {
 		global $systypes_array;
 		$trans_name = $systypes_array[$_GET['type_id']];
-		start_table(Config::get('tables.style') . "  width=95%");
+		start_table(Config::get('tables_style') . "  width=95%");
 		$th = array(_("General Ledger Transaction Details"), _("Reference"),
 			_("Date"), _("Person/Item")
 		);
@@ -45,13 +45,13 @@
 	$sql = "SELECT gl.*, cm.account_name, IF(ISNULL(refs.reference), '', refs.reference) AS reference FROM gl_trans as gl
 	LEFT JOIN chart_master as cm ON gl.account = cm.account_code
 	LEFT JOIN refs as refs ON (gl.type=refs.type AND gl.type_no=refs.id)"
-	 . " WHERE gl.type= " . db_escape($_GET['type_id'])
-	 . " AND gl.type_no = " . db_escape($_GET['trans_no'])
+	 . " WHERE gl.type= " . DBOld::escape($_GET['type_id'])
+	 . " AND gl.type_no = " . DBOld::escape($_GET['trans_no'])
 	 . " ORDER BY counter";
-	$result = db_query($sql, "could not get transactions");
+	$result = DBOld::query($sql, "could not get transactions");
 	//alert("sql = ".$sql);
 
-	if (db_num_rows($result) == 0) {
+	if (DBOld::num_rows($result) == 0) {
 		echo "<p><center>" . _("No general ledger transactions have been created for") . " " .
 		 $systypes_array[$_GET['type_id']] . " " . _("number") . " " . $_GET['trans_no'] . "</center></p><br><br>";
 		end_page(true);
@@ -59,7 +59,7 @@
 	}
 
 	/*show a table of the transactions returned by the sql */
-	$dim = get_company_pref('use_dimension');
+	$dim = DB_Company::get_pref('use_dimension');
 
 	if ($dim == 2)
 		$th = array(_("Account Code"), _("Account Name"), _("Dimension") . " 1", _("Dimension") . " 2",
@@ -76,12 +76,12 @@
 	$k = 0; //row colour counter
 	$heading_shown = false;
 
-	while ($myrow = db_fetch($result))
+	while ($myrow = DBOld::fetch($result))
 	{
 		if ($myrow['amount'] == 0) continue;
 		if (!$heading_shown) {
 			display_gl_heading($myrow);
-			start_table(Config::get('tables.style') . "  width=95%");
+			start_table(Config::get('tables_style') . "  width=95%");
 			table_header($th);
 			$heading_shown = true;
 		}

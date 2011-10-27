@@ -19,9 +19,7 @@
 	// draft version!
 	// ----------------------------------------------------------------
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
-
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/sales/includes/sales_db.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	$packing_slip = 0;
 	//----------------------------------------------------------------------------------------------------
@@ -33,7 +31,7 @@
 	function print_deliveries() {
 		global $packing_slip;
 
-		include_once($_SERVER['DOCUMENT_ROOT'] . "/reporting/includes/pdf_report.inc");
+		include_once($_SERVER['DOCUMENT_ROOT'] . "/reporting/includes/pdf_report.php");
 
 		$from = $_POST['PARAM_0'];
 		$to = $_POST['PARAM_1'];
@@ -57,7 +55,7 @@
 
 		$params = array('comments' => $comments);
 
-		$cur = get_company_Pref('curr_default');
+		$cur = DB_Company::get_pref('curr_default');
 
 		if ($email == 0) {
 			if ($packing_slip == 0)
@@ -97,7 +95,7 @@
 
 			$result = get_customer_trans_details(ST_CUSTDELIVERY, $i);
 			$SubTotal = 0;
-			while ($myrow2 = db_fetch($result))
+			while ($myrow2 = DBOld::fetch($result))
 			{
 				if ($myrow2["quantity"] == 0)
 					continue;
@@ -118,10 +116,10 @@
 					$rep->Header2($myrow, $branch, $sales_order, '', ST_CUSTDELIVERY);
 			}
 
-			$comments = get_comments(ST_CUSTDELIVERY, $i);
-			if ($comments && db_num_rows($comments)) {
+			$comments = DB_Comments::get(ST_CUSTDELIVERY, $i);
+			if ($comments && DBOld::num_rows($comments)) {
 				$rep->NewLine();
-				while ($comment = db_fetch($comments))
+				while ($comment = DBOld::fetch($comments))
 				{
 					$rep->TextColLines(0, 6, $comment['memo_'], -2);
 				}
@@ -134,11 +132,11 @@
 			$linetype = true;
 			$doctype = ST_CUSTDELIVERY;
 			if ($rep->currency != $myrow['curr_code']) {
-				include(APP_PATH . "reporting/includes/doctext2.inc");
+				include(APP_PATH . "reporting/includes/doctext2.php");
 			}
 			else
 			{
-				include(APP_PATH . "reporting/includes/doctext.inc");
+				include(APP_PATH . "reporting/includes/doctext.php");
 			}
 
 			if ($email == 1) {

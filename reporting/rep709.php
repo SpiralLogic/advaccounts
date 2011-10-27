@@ -17,7 +17,7 @@
 	// Title:	Tax Report
 	// ----------------------------------------------------------------
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	//------------------------------------------------------------------
 
@@ -45,18 +45,18 @@
 			AND taxrec.tran_date <= '$todate'
 		ORDER BY taxrec.tran_date";
 		//ui_msgs::display_error($sql);
-		return db_query($sql, "No transactions were returned");
+		return DBOld::query($sql, "No transactions were returned");
 	}
 
 	function getTaxTypes() {
 		$sql = "SELECT * FROM tax_types ORDER BY id";
-		return db_query($sql, "No transactions were returned");
+		return DBOld::query($sql, "No transactions were returned");
 	}
 
 	function getTaxInfo($id) {
 		$sql = "SELECT * FROM tax_types WHERE id=$id";
-		$result = db_query($sql, "No transactions were returned");
-		return db_fetch($result);
+		$result = DBOld::query($sql, "No transactions were returned");
+		return DBOld::fetch($result);
 	}
 
 	//----------------------------------------------------------------------------------------------------
@@ -71,9 +71,9 @@
 		$destination = $_POST['PARAM_4'];
 
 		if ($destination)
-			include_once(APP_PATH . "reporting/includes/excel_report.inc");
+			include_once(APP_PATH . "reporting/includes/excel_report.php");
 		else
-			include_once(APP_PATH . "reporting/includes/pdf_report.inc");
+			include_once(APP_PATH . "reporting/includes/pdf_report.php");
 
 		$dec = user_price_dec();
 
@@ -86,7 +86,7 @@
 		$res = getTaxTypes();
 
 		$taxes = array();
-		while ($tax = db_fetch($res))
+		while ($tax = DBOld::fetch($res))
 		{
 			$taxes[$tax['id']] = array('in' => 0, 'out' => 0, 'taxin' => 0, 'taxout' => 0);
 		}
@@ -112,7 +112,7 @@
 		$totaltax = 0.0;
 		$transactions = getTaxTransactions($from, $to);
 
-		while ($trans = db_fetch($transactions))
+		while ($trans = DBOld::fetch($transactions))
 		{
 			if (in_array($trans['trans_type'], array(ST_CUSTCREDIT, ST_SUPPINVOICE))) {
 				$trans['net_amount'] *= -1;
@@ -122,7 +122,7 @@
 			if (!$summaryOnly) {
 				$rep->TextCol(0, 1, $systypes_array[$trans['trans_type']]);
 				if ($trans['memo'] == '')
-					$trans['memo'] = get_reference($trans['trans_type'], $trans['trans_no']);
+					$trans['memo'] = Refs::get_reference($trans['trans_type'], $trans['trans_no']);
 				$rep->TextCol(1, 2, $trans['memo']);
 				$rep->DateCol(2, 3, $trans['tran_date'], true);
 				$rep->TextCol(3, 4, $trans['name']);

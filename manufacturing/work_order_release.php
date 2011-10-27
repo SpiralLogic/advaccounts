@@ -11,14 +11,12 @@
 	 ***********************************************************************/
 	$page_security = 'SA_MANUFRELEASE';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	include_once(APP_PATH . "includes/manufacturing.inc");
-
-	include_once(APP_PATH . "manufacturing/includes/manufacturing_ui.inc");
+	include_once(APP_PATH . "manufacturing/includes/manufacturing_ui.php");
 
 	$js = "";
-	if (Config::get('ui.windows.popups'))
+	if (Config::get('ui_windows_popups'))
 		$js .= ui_view::get_js_open_window(800, 500);
 
 	page(_($help_context = "Work Order Release to Manufacturing"), false, false, "", $js);
@@ -32,7 +30,7 @@
 	}
 	else
 	{
-		ui_msgs::display_note("This page must be called with a work order reference");
+		ui_msgs::display_warning("This page must be called with a work order reference");
 		exit;
 	}
 
@@ -46,7 +44,7 @@
 		}
 
 		// make sure item has components
-		if (!has_bom($myrow['stock_id'])) {
+		if (!Manufacturing::has_bom($myrow['stock_id'])) {
 			ui_msgs::display_error(_("This Work Order cannot be released. The selected item to manufacture does not have a bom."));
 			ui_view::set_focus('stock_id');
 			return false;
@@ -61,7 +59,7 @@
 
 		ui_msgs::display_notification(_("The work order has been released to manufacturing."));
 
-		ui_msgs::display_note(ui_view::get_trans_view_str(ST_WORKORDER, $selected_id, _("View this Work Order")));
+		ui_msgs::display_warning(ui_view::get_trans_view_str(ST_WORKORDER, $selected_id, _("View this Work Order")));
 
 		hyperlink_no_params("search_work_orders.php", _("Select another &work order"));
 
@@ -80,7 +78,7 @@
 	$_POST['memo_'] = "";
 
 	if (can_process($myrow)) {
-		start_table(Config::get('tables.style2'));
+		start_table(Config::get('tables_style2'));
 
 		label_row(_("Work Order #:"), $selected_id);
 		label_row(_("Work Order Reference:"), $myrow["wo_ref"]);

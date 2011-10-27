@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 	$page_security = 'SA_PAYTERMS';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	page(_($help_context = "Payment Terms"));
 
@@ -53,17 +53,17 @@
 		if ($inpug_error != 1) {
 			if ($selected_id != -1) {
 				if (check_value('DaysOrFoll')) {
-					$sql = "UPDATE payment_terms SET terms=" . db_escape($_POST['terms']) . ",
+					$sql = "UPDATE payment_terms SET terms=" . DBOld::escape($_POST['terms']) . ",
 					day_in_following_month=0,
-					days_before_due=" . db_escape($_POST['DayNumber']) . "
-					WHERE terms_indicator = " . db_escape($selected_id);
+					days_before_due=" . DBOld::escape($_POST['DayNumber']) . "
+					WHERE terms_indicator = " . DBOld::escape($selected_id);
 				}
 				else
 				{
-					$sql = "UPDATE payment_terms SET terms=" . db_escape($_POST['terms']) . ",
-					day_in_following_month=" . db_escape($_POST['DayNumber']) . ",
+					$sql = "UPDATE payment_terms SET terms=" . DBOld::escape($_POST['terms']) . ",
+					day_in_following_month=" . DBOld::escape($_POST['DayNumber']) . ",
 					days_before_due=0
-					WHERE terms_indicator = " . db_escape($selected_id);
+					WHERE terms_indicator = " . DBOld::escape($selected_id);
 				}
 				$note = _('Selected payment terms have been updated');
 			}
@@ -74,19 +74,19 @@
 					$sql = "INSERT INTO payment_terms (terms,
 					days_before_due, day_in_following_month)
 					VALUES (" .
-					 db_escape($_POST['terms']) . ", " . db_escape($_POST['DayNumber']) . ", 0)";
+					 DBOld::escape($_POST['terms']) . ", " . DBOld::escape($_POST['DayNumber']) . ", 0)";
 				}
 				else
 				{
 					$sql = "INSERT INTO payment_terms (terms,
 					days_before_due, day_in_following_month)
-					VALUES (" . db_escape($_POST['terms']) . ",
-					0, " . db_escape($_POST['DayNumber']) . ")";
+					VALUES (" . DBOld::escape($_POST['terms']) . ",
+					0, " . DBOld::escape($_POST['DayNumber']) . ")";
 				}
 				$note = _('New payment terms have been added');
 			}
 			//run the sql from either of the above possibilites
-			db_query($sql, "The payment term could not be added or updated");
+			DBOld::query($sql, "The payment term could not be added or updated");
 			ui_msgs::display_notification($note);
 			$Mode = 'RESET';
 		}
@@ -95,17 +95,17 @@
 	if ($Mode == 'Delete') {
 		// PREVENT DELETES IF DEPENDENT RECORDS IN debtors_master
 
-		$sql = "SELECT COUNT(*) FROM debtors_master WHERE payment_terms = " . db_escape($selected_id);
-		$result = db_query($sql, "check failed");
-		$myrow = db_fetch_row($result);
+		$sql = "SELECT COUNT(*) FROM debtors_master WHERE payment_terms = " . DBOld::escape($selected_id);
+		$result = DBOld::query($sql, "check failed");
+		$myrow = DBOld::fetch_row($result);
 		if ($myrow[0] > 0) {
 			ui_msgs::display_error(_("Cannot delete this payment term, because customer accounts have been created referring to this term."));
 		}
 		else
 		{
-			$sql = "SELECT COUNT(*) FROM suppliers WHERE payment_terms = " . db_escape($selected_id);
-			$result = db_query($sql, "check failed");
-			$myrow = db_fetch_row($result);
+			$sql = "SELECT COUNT(*) FROM suppliers WHERE payment_terms = " . DBOld::escape($selected_id);
+			$result = DBOld::query($sql, "check failed");
+			$myrow = DBOld::fetch_row($result);
 			if ($myrow[0] > 0) {
 				ui_msgs::display_error(_("Cannot delete this payment term, because supplier accounts have been created referring to this term"));
 			}
@@ -113,8 +113,8 @@
 			{
 				//only delete if used in neither customer or supplier accounts
 
-				$sql = "DELETE FROM payment_terms WHERE terms_indicator=" . db_escape($selected_id);
-				db_query($sql, "could not delete a payment terms");
+				$sql = "DELETE FROM payment_terms WHERE terms_indicator=" . DBOld::escape($selected_id);
+				DBOld::query($sql, "could not delete a payment terms");
 				ui_msgs::display_notification(_('Selected payment terms have been deleted'));
 			}
 		}
@@ -132,16 +132,16 @@
 
 	$sql = "SELECT * FROM payment_terms";
 	if (!check_value('show_inactive')) $sql .= " WHERE !inactive";
-	$result = db_query($sql, "could not get payment terms");
+	$result = DBOld::query($sql, "could not get payment terms");
 
 	start_form();
-	start_table(Config::get('tables.style'));
+	start_table(Config::get('tables_style'));
 	$th = array(_("Description"), _("Following Month On"), _("Due After (Days)"), "", "");
 	inactive_control_column($th);
 	table_header($th);
 
 	$k = 0; //row colour counter
-	while ($myrow = db_fetch($result))
+	while ($myrow = DBOld::fetch($result))
 	{
 		if ($myrow["day_in_following_month"] == 0) {
 			$full_text = _("N/A");
@@ -175,17 +175,17 @@
 
 	//-------------------------------------------------------------------------------------------------
 
-	start_table(Config::get('tables.style2'));
+	start_table(Config::get('tables_style2'));
 
 	$day_in_following_month = $days_before_due = 0;
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {
 			//editing an existing payment terms
 			$sql = "SELECT * FROM payment_terms
-			WHERE terms_indicator=" . db_escape($selected_id);
+			WHERE terms_indicator=" . DBOld::escape($selected_id);
 
-			$result = db_query($sql, "could not get payment term");
-			$myrow = db_fetch($result);
+			$result = DBOld::query($sql, "could not get payment term");
+			$myrow = DBOld::fetch($result);
 
 			$_POST['terms'] = $myrow["terms"];
 			$days_before_due = $myrow["days_before_due"];

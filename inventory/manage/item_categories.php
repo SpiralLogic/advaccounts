@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 	$page_security = 'SA_ITEMCATEGORY';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	page(_($help_context = "Item Categories"));
 
@@ -58,9 +58,9 @@
 	if ($Mode == 'Delete') {
 
 		// PREVENT DELETES IF DEPENDENT RECORDS IN 'stock_master'
-		$sql = "SELECT COUNT(*) FROM stock_master WHERE category_id=" . db_escape($selected_id);
-		$result = db_query($sql, "could not query stock master");
-		$myrow = db_fetch_row($result);
+		$sql = "SELECT COUNT(*) FROM stock_master WHERE category_id=" . DBOld::escape($selected_id);
+		$result = DBOld::query($sql, "could not query stock master");
+		$myrow = DBOld::fetch_row($result);
 		if ($myrow[0] > 0) {
 			ui_msgs::display_error(_("Cannot delete this item category because items have been created using this item category."));
 		}
@@ -86,10 +86,10 @@
 	$sql = "SELECT c.*, t.name as tax_name FROM stock_category c, item_tax_types t WHERE c.dflt_tax_type=t.id";
 	if (!check_value('show_inactive')) $sql .= " AND !c.inactive";
 
-	$result = db_query($sql, "could not get stock categories");
+	$result = DBOld::query($sql, "could not get stock categories");
 
 	start_form();
-	start_table(Config::get('tables.style') . "  width=90%");
+	start_table(Config::get('tables_style') . "  width=90%");
 	$th = array(_("Name"), _("Tax type"), _("Units"), _("Type"), _("Sales Act"),
 		_("Inventory Account"), _("COGS Account"), _("Adjustment Account"),
 		_("Assembly Account"), "", ""
@@ -99,7 +99,7 @@
 	table_header($th);
 	$k = 0; //row colour counter
 
-	while ($myrow = db_fetch($result))
+	while ($myrow = DBOld::fetch($result))
 	{
 
 		alt_table_row_color($k);
@@ -125,7 +125,7 @@
 	//----------------------------------------------------------------------------------
 
 	div_start('details');
-	start_table(Config::get('tables.style2'));
+	start_table(Config::get('tables_style2'));
 
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {
@@ -153,7 +153,7 @@
 		$_POST['description'] = '';
 		$_POST['no_sale'] = 0;
 
-		$company_record = get_company_prefs();
+		$company_record = DB_Company::get_prefs();
 
 		if (get_post('inventory_account') == "")
 			$_POST['inventory_account'] = $company_record["default_inventory_act"];
@@ -185,7 +185,7 @@
 
 	gl_all_accounts_list_row(_("Sales Account:"), 'sales_account', $_POST['sales_account']);
 
-	if (is_service($_POST['mb_flag'])) {
+	if (Input::post('mb_flag') == STOCK_SERVICE) {
 		gl_all_accounts_list_row(_("C.O.G.S. Account:"), 'cogs_account', $_POST['cogs_account']);
 		hidden('inventory_account', $_POST['inventory_account']);
 		hidden('adjustment_account', $_POST['adjustment_account']);
@@ -198,12 +198,12 @@
 		gl_all_accounts_list_row(_("Inventory Adjustments Account:"), 'adjustment_account', $_POST['adjustment_account']);
 	}
 
-	if (is_manufactured($_POST['mb_flag']))
+	if (STOCK_MANUFACTURED == $_POST['mb_flag'])
 		gl_all_accounts_list_row(_("Item Assembly Costs Account:"), 'assembly_account', $_POST['assembly_account']);
 	else
 		hidden('assembly_account', $_POST['assembly_account']);
 
-	$dim = get_company_pref('use_dimension');
+	$dim = DB_Company::get_pref('use_dimension');
 	if ($dim >= 1) {
 		dimensions_list_row(_("Dimension") . " 1", 'dim1', null, true, " ", false, 1);
 		if ($dim > 1)

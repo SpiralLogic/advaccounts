@@ -11,11 +11,11 @@
 	 ***********************************************************************/
 	$page_security = 'SA_SUPPTRANSVIEW';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
-	include(APP_PATH . "purchasing/includes/purchasing_ui.inc");
-	include(APP_PATH . "reporting/includes/reporting.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
+	include(APP_PATH . "purchasing/includes/purchasing_ui.php");
+	include(APP_PATH . "reporting/includes/reporting.php");
 	$js = "";
-	if (Config::get('ui.windows.popups')) {
+	if (Config::get('ui_windows_popups')) {
 		$js .= ui_view::get_js_open_window(900, 500);
 	}
 
@@ -46,12 +46,12 @@
 	ui_globals::set_global_supplier($_POST['supplier_id']);
 	//------------------------------------------------------------------------------------------------
 	function display_supplier_summary($supplier_record) {
-		$past1 = get_company_pref('past_due_days');
+		$past1 = DB_Company::get_pref('past_due_days');
 		$past2 = 2 * $past1;
 		$nowdue = "1-" . $past1 . " " . _('Days');
 		$pastdue1 = $past1 + 1 . "-" . $past2 . " " . _('Days');
 		$pastdue2 = _('Over') . " " . $past2 . " " . _('Days');
-		start_table("width=90%  " . Config::get('tables.style'));
+		start_table("width=90%  " . Config::get('tables_style'));
 		$th = array(_("Currency"), _("Terms"), _("Current"), $nowdue,
 			$pastdue1, $pastdue2, _("Total Balance"), _("Total For Search Period")
 		);
@@ -138,11 +138,13 @@
 	$sql = "SELECT trans.type,
 		trans.trans_no,
 		trans.reference, 
-		supplier.supp_name, 
+		supplier.supp_name,
+		supplier.supplier_id as id,
 		trans.supp_reference,
     	trans.tran_date, 
 		trans.due_date,
-		supplier.curr_code, 
+		supplier.curr_code,
+
     	(trans.ov_amount + trans.ov_gst  + trans.ov_discount) AS TotalAmount, 
 		trans.alloc AS Allocated,
 		((trans.type = " . ST_SUPPINVOICE . " OR trans.type = " . ST_SUPPCREDIT . ") AND trans.due_date < '" . Dates::date2sql(Dates::Today()) . "') AS OverDue,
@@ -157,15 +159,15 @@
 			}
 			$ajaxsearch = "%" . $ajaxsearch . "%";
 			$sql .= " AND (";
-			$sql .= " supplier.supp_name LIKE " . db_escape($ajaxsearch);
-			if (countFilter('supp_trans', 'trans_no', $ajaxsearch) > 0) {
-				$sql .= " OR trans.trans_no LIKE " . db_escape($ajaxsearch);
+			$sql .= " supplier.supp_name LIKE " . DBOld::escape($ajaxsearch);
+			if (db_pager::countFilter('supp_trans', 'trans_no', $ajaxsearch) > 0) {
+				$sql .= " OR trans.trans_no LIKE " . DBOld::escape($ajaxsearch);
 			}
-			if (countFilter('supp_trans', 'reference', $ajaxsearch) > 0) {
-				$sql .= " OR trans.reference LIKE " . db_escape($ajaxsearch);
+			if (db_pager::countFilter('supp_trans', 'reference', $ajaxsearch) > 0) {
+				$sql .= " OR trans.reference LIKE " . DBOld::escape($ajaxsearch);
 			}
-			if (countFilter('supp_trans', 'supp_reference', $ajaxsearch) > 0) {
-				$sql .= " OR trans.supp_reference LIKE " . db_escape($ajaxsearch);
+			if (db_pager::countFilter('supp_trans', 'supp_reference', $ajaxsearch) > 0) {
+				$sql .= " OR trans.supp_reference LIKE " . DBOld::escape($ajaxsearch);
 			}
 			$sql .= ")";
 		}
@@ -174,7 +176,7 @@
 	            AND trans . tran_date <= '$date_to'";
 	}
 	if (Input::post('supplier_id') != ALL_TEXT) {
-		$sql .= " AND trans.supplier_id = " . db_escape($_POST['supplier_id']);
+		$sql .= " AND trans.supplier_id = " . DBOld::escape($_POST['supplier_id']);
 	}
 	if (isset($_POST['filterType']) && $_POST['filterType'] != ALL_TEXT) {
 		if (($_POST['filterType'] == '1')) {
@@ -203,7 +205,8 @@
 		_("Type") => array('fun' => 'systype_name', 'ord' => ''),
 		_("#") => array('fun' => 'trans_view', 'ord' => ''),
 		_("Reference"),
-		_("Supplier"),
+		_("Supplier") => array('type' => 'id'),
+		_("Supplier ID") => 'skip',
 		_("Supplier's Reference"),
 		_("Date") => array('name' => 'tran_date', 'type' => 'date', 'ord' => 'desc'),
 		_("Due Date") => array('type' => 'date', 'fun' => 'due_date'),
@@ -224,6 +227,8 @@
 	$table->set_marker('check_overdue', _("Marked items are overdue."));
 	$table->width = "85%";
 	display_db_pager($table);
+	Supplier::addInfoDialog('.pagerclick');
+
 	end_form();
 	end_page();
 

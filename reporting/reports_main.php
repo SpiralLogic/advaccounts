@@ -11,15 +11,15 @@
 	 ***********************************************************************/
 
 	$page_security = 'SA_OPEN';
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	include_once(APP_PATH . "/reporting/includes/reports_classes.inc");
+	include_once(APP_PATH . "/reporting/includes/reports_classes.php");
 	$js = "";
 	page(_($help_context = "Reports and Analysis"), false, false, "", $js);
 
 	$reports = new BoxReports;
 
-	$dim = get_company_pref('use_dimension');
+	$dim = DB_Company::get_pref('use_dimension');
 
 	$reports->addReportClass(_('Customer'));
 	$reports->addReport(_('Customer'), 101, _('Customer &Balances'),

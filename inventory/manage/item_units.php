@@ -11,11 +11,11 @@
 	 ***********************************************************************/
 	$page_security = 'SA_UOM';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	page(_($help_context = "Units of Measure"));
 
-	include_once(APP_PATH . "inventory/includes/db/items_units_db.inc");
+	include_once(APP_PATH . "inventory/includes/db/items_units_db.php");
 
 	simple_page_mode(false);
 	//----------------------------------------------------------------------------------
@@ -30,7 +30,7 @@
 			ui_msgs::display_error(_("The unit of measure code cannot be empty."));
 			ui_view::set_focus('abbr');
 		}
-		if (strlen(db_escape($_POST['abbr'])) > (20 + 2)) {
+		if (strlen(DBOld::escape($_POST['abbr'])) > (20 + 2)) {
 			$input_error = 1;
 			ui_msgs::display_error(_("The unit of measure code is too long."));
 			ui_view::set_focus('abbr');
@@ -80,14 +80,14 @@
 	$result = get_all_item_units(check_value('show_inactive'));
 
 	start_form();
-	start_table(Config::get('tables.style') . "  width=40%");
+	start_table(Config::get('tables_style') . "  width=40%");
 	$th = array(_('Unit'), _('Description'), _('Decimals'), "", "");
 	inactive_control_column($th);
 
 	table_header($th);
 	$k = 0; //row colour counter
 
-	while ($myrow = db_fetch($result))
+	while ($myrow = DBOld::fetch($result))
 	{
 
 		alt_table_row_color($k);
@@ -107,7 +107,7 @@
 
 	//----------------------------------------------------------------------------------
 
-	start_table(Config::get('tables.style2'));
+	start_table(Config::get('tables_style2'));
 
 	if ($selected_id != '') {
 		if ($Mode == 'Edit') {

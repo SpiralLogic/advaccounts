@@ -11,16 +11,13 @@
 	 ***********************************************************************/
 	$page_security = 'SA_TAXGROUPS';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	page(_($help_context = "Tax Groups"));
 
-	include_once(APP_PATH . "taxes/db/tax_groups_db.inc");
-	include_once(APP_PATH . "taxes/db/tax_types_db.inc");
-
 	simple_page_mode(true);
 
-	check_db_has_tax_types(_("There are no tax types defined. Define tax types before defining tax groups."));
+	Validation::check(Validation::TAX_TYPES, _("There are no tax types defined. Define tax types before defining tax groups."));
 
 	//-----------------------------------------------------------------------------------
 
@@ -42,7 +39,7 @@
 		 {
 			 if (isset($_POST['tax_type_id' . $i]) &&
 				 $_POST['tax_type_id' . $i] != ALL_NUMERIC	&&
-				 !check_num('rate' . $i, 0))
+				 !Validation::is_num('rate' . $i, 0))
 			 {
 			 ui_msgs::display_error( _("An entered tax rate is invalid or less than zero."));
 				 $input_error = 1;
@@ -64,20 +61,20 @@
 				 $_POST['tax_type_id' . $i] != ANY_NUMERIC
 				) {
 					$taxes[] = $_POST['tax_type_id' . $i];
-					$rates[] = get_tax_type_default_rate($_POST['tax_type_id' . $i]);
+					$rates[] = Tax_Types::get_default_rate($_POST['tax_type_id' . $i]);
 					//Editable rate has been removed 090920 Joe Hunt
 					//$rates[] = input_num('rate' . $i);
 				}
 			}
 
 			if ($selected_id != -1) {
-				update_tax_group($selected_id, $_POST['name'], $_POST['tax_shipping'], $taxes,
+				Tax_Groups::update_tax_group($selected_id, $_POST['name'], $_POST['tax_shipping'], $taxes,
 					$rates);
 				ui_msgs::display_notification(_('Selected tax group has been updated'));
 			}
 			else
 			{
-				add_tax_group($_POST['name'], $_POST['tax_shipping'], $taxes, $rates);
+				Tax_Groups::add_tax_group($_POST['name'], $_POST['tax_shipping'], $taxes, $rates);
 				ui_msgs::display_notification(_('New tax group has been added'));
 			}
 
@@ -90,17 +87,17 @@
 	function can_delete($selected_id) {
 		if ($selected_id == -1)
 			return false;
-		$sql = "SELECT COUNT(*) FROM cust_branch WHERE tax_group_id=" . db_escape($selected_id);
-		$result = db_query($sql, "could not query customers");
-		$myrow = db_fetch_row($result);
+		$sql    = "SELECT COUNT(*) FROM cust_branch WHERE tax_group_id=" . DBOld::escape($selected_id);
+		$result = DBOld::query($sql, "could not query customers");
+		$myrow  = DBOld::fetch_row($result);
 		if ($myrow[0] > 0) {
 			ui_msgs::display_note(_("Cannot delete this tax group because customer branches been created referring to it."));
 			return false;
 		}
 
-		$sql = "SELECT COUNT(*) FROM suppliers WHERE tax_group_id=" . db_escape($selected_id);
-		$result = db_query($sql, "could not query suppliers");
-		$myrow = db_fetch_row($result);
+		$sql    = "SELECT COUNT(*) FROM suppliers WHERE tax_group_id=" . DBOld::escape($selected_id);
+		$result = DBOld::query($sql, "could not query suppliers");
+		$myrow  = DBOld::fetch_row($result);
 		if ($myrow[0] > 0) {
 			ui_msgs::display_note(_("Cannot delete this tax group because suppliers been created referring to it."));
 			return false;
@@ -114,7 +111,7 @@
 	if ($Mode == 'Delete') {
 
 		if (can_delete($selected_id)) {
-			delete_tax_group($selected_id);
+			Tax_Groups::delete_tax_group($selected_id);
 			ui_msgs::display_notification(_('Selected tax group has been deleted'));
 		}
 		$Mode = 'RESET';
@@ -122,22 +119,22 @@
 
 	if ($Mode == 'RESET') {
 		$selected_id = -1;
-		$sav = get_post('show_inactive');
+		$sav         = get_post('show_inactive');
 		unset($_POST);
 		$_POST['show_inactive'] = $sav;
 	}
 	//-----------------------------------------------------------------------------------
 
-	$result = get_all_tax_groups(check_value('show_inactive'));
+	$result = Tax_Groups::get_all_tax_groups(check_value('show_inactive'));
 
 	start_form();
-	start_table(Config::get('tables.style'));
+	start_table(Config::get('tables_style'));
 	$th = array(_("Description"), _("Shipping Tax"), "", "");
 	inactive_control_column($th);
 	table_header($th);
 
 	$k = 0;
-	while ($myrow = db_fetch($result))
+	while ($myrow = DBOld::fetch($result))
 	{
 
 		alt_table_row_color($k);
@@ -164,24 +161,24 @@
 
 	//-----------------------------------------------------------------------------------
 
-	start_table(Config::get('tables.style2'));
+	start_table(Config::get('tables_style2'));
 
 	if ($selected_id != -1) {
 		//editing an existing status code
 
 		if ($Mode == 'Edit') {
-			$group = get_tax_group($selected_id);
+			$group = Tax_Groups::get_tax_group($selected_id);
 
-			$_POST['name'] = $group["name"];
+			$_POST['name']         = $group["name"];
 			$_POST['tax_shipping'] = $group["tax_shipping"];
 
-			$items = get_tax_group_items($selected_id);
+			$items = Tax_Groups::get_for_item($selected_id);
 
 			$i = 0;
-			while ($tax_item = db_fetch($items))
+			while ($tax_item = DBOld::fetch($items))
 			{
 				$_POST['tax_type_id' . $i] = $tax_item["tax_type_id"];
-				$_POST['rate' . $i] = percent_format($tax_item["rate"]);
+				$_POST['rate' . $i]        = percent_format($tax_item["rate"]);
 				$i++;
 			}
 			while ($i < 5) unset($_POST['tax_type_id' . $i++]);
@@ -196,7 +193,7 @@
 
 	ui_msgs::display_note(_("Select the taxes that are included in this group."), 1);
 
-	start_table(Config::get('tables.style2'));
+	start_table(Config::get('tables_style2'));
 	//$th = array(_("Tax"), _("Default Rate (%)"), _("Rate (%)"));
 	//Editable rate has been removed 090920 Joe Hunt
 	$th = array(_("Tax"), _("Rate (%)"));
@@ -209,7 +206,7 @@
 		tax_types_list_cells(null, 'tax_type_id' . $i, $_POST['tax_type_id' . $i], _("None"), true);
 
 		if ($_POST['tax_type_id' . $i] != 0 && $_POST['tax_type_id' . $i] != ALL_NUMERIC) {
-			$default_rate = get_tax_type_default_rate($_POST['tax_type_id' . $i]);
+			$default_rate = Tax_Types::get_default_rate($_POST['tax_type_id' . $i]);
 			label_cell(percent_format($default_rate), "nowrap align=right");
 			//Editable rate has been removed 090920 Joe Hunt
 			//if (!isset($_POST['rate' . $i]) || $_POST['rate' . $i] == "")

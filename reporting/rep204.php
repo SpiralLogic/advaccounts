@@ -18,7 +18,7 @@
 	// Title:	Outstanding GRNs Report
 	// ----------------------------------------------------------------
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	//----------------------------------------------------------------------------------------------------
 
@@ -46,11 +46,11 @@
 		AND qty_recd-quantity_inv <>0 ";
 
 		if ($fromsupp != ALL_NUMERIC)
-			$sql .= "AND grn_batch.supplier_id =" . db_escape($fromsupp) . " ";
+			$sql .= "AND grn_batch.supplier_id =" . DBOld::escape($fromsupp) . " ";
 		$sql .= "ORDER BY grn_batch.supplier_id,
 			grn_batch.id";
 
-		return db_query($sql, "No transactions were returned");
+		return DBOld::query($sql, "No transactions were returned");
 	}
 
 	//----------------------------------------------------------------------------------------------------
@@ -61,8 +61,8 @@
 		$comments = $_POST['PARAM_1'];
 		$destination = $_POST['PARAM_2'];
 		if ($destination)
-			include_once(APP_PATH . "reporting/includes/excel_report.inc");
-		else include_once(APP_PATH . "reporting/includes/pdf_report.inc");
+			include_once(APP_PATH . "reporting/includes/excel_report.php");
+		else include_once(APP_PATH . "reporting/includes/pdf_report.php");
 
 		if ($fromsupp == ALL_NUMERIC) $from = _('All');
 		else $from = get_supplier_name($fromsupp);
@@ -92,7 +92,7 @@
 		$SuppTot_Val = 0;
 		$res = getTransactions($fromsupp);
 
-		While ($GRNs = db_fetch($res)) {
+		While ($GRNs = DBOld::fetch($res)) {
 			$dec2 = get_qty_dec($GRNs['item_code']);
 			if ($Supplier != $GRNs['supplier_id']) {
 				if ($Supplier != '') {

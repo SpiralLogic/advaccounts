@@ -11,12 +11,12 @@
 	 ***********************************************************************/
 	$page_security = 'SA_JOURNALENTRY';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	include_once(APP_PATH . "gl/includes/ui/gl_journal_ui.inc");
+	include_once(APP_PATH . "gl/includes/ui/gl_journal_ui.php");
 
 	$js = '';
-	if (Config::get('ui.windows.popups'))
+	if (Config::get('ui_windows_popups'))
 		$js .= ui_view::get_js_open_window(800, 500);
 
 	if (isset($_GET['ModifyGL'])) {
@@ -30,7 +30,7 @@
 	//--------------------------------------------------------------------------------------------------
 
 	function line_start_focus() {
-		global $Ajax;
+		$Ajax = Ajax::instance();
 
 		$Ajax->activate('items_table');
 		ui_view::set_focus('_code_id_edit');
@@ -44,7 +44,7 @@
 
 		ui_msgs::display_notification_centered(_("Journal entry has been entered") . " #$trans_no");
 
-		ui_msgs::display_note(ui_view::get_gl_view_str($trans_type, $trans_no, _("&View this Journal Entry")));
+		ui_msgs::display_warning(ui_view::get_gl_view_str($trans_type, $trans_no, _("&View this Journal Entry")));
 
 		ui_view::reset_focus();
 		hyperlink_params($_SERVER['PHP_SELF'], _("Enter &New Journal Entry"), "NewJournal=Yes");
@@ -57,7 +57,7 @@
 
 		ui_msgs::display_notification_centered(_("Journal entry has been updated") . " #$trans_no");
 
-		ui_msgs::display_note(ui_view::get_gl_view_str($trans_type, $trans_no, _("&View this Journal Entry")));
+		ui_msgs::display_warning(ui_view::get_gl_view_str($trans_type, $trans_no, _("&View this Journal Entry")));
 
 		hyperlink_no_params(PATH_TO_ROOT . "/gl/inquiry/journal_inquiry.php", _("Return to Journal &Inquiry"));
 
@@ -79,20 +79,19 @@
 	}
 
 	function create_cart($type = 0, $trans_no = 0) {
-		global $Refs;
 
 		if (isset($_SESSION['journal_items'])) {
 			unset ($_SESSION['journal_items']);
 		}
 
-		$cart = new items_cart($type);
+		$cart = new itemsCart($type);
 		$cart->order_id = $trans_no;
 
 		if ($trans_no) {
 			$result = get_gl_trans($type, $trans_no);
 
 			if ($result) {
-				while ($row = db_fetch($result)) {
+				while ($row = DBOld::fetch($result)) {
 					if ($row['amount'] == 0) continue;
 					$date = $row['tran_date'];
 					$cart->add_gl_item($row['account'], $row['dimension_id'],
@@ -101,10 +100,10 @@
 			}
 			$cart->memo_ = ui_view::get_comments_string($type, $trans_no);
 			$cart->tran_date = Dates::sql2date($date);
-			$cart->reference = $Refs->get($type, $trans_no);
+			$cart->reference = Refs::get($type, $trans_no);
 			$_POST['ref_original'] = $cart->reference; // Store for comparison when updating
 		} else {
-			$cart->reference = $Refs->get_next(0);
+			$cart->reference = Refs::get_next(0);
 			$cart->tran_date = Dates::new_doc_date();
 			if (!Dates::is_date_in_fiscalyear($cart->tran_date))
 				$cart->tran_date = Dates::end_fiscalyear();
@@ -146,12 +145,12 @@
 			ui_view::set_focus('date_');
 			$input_error = 1;
 		}
-		if (!$Refs->is_valid($_POST['ref'])) {
+		if (!Refs::is_valid($_POST['ref'])) {
 			ui_msgs::display_error(_("You must enter a reference."));
 			ui_view::set_focus('ref');
 			$input_error = 1;
 		}
-		elseif ($Refs->exists(ST_JOURNAL, $_POST['ref']))
+		elseif (Refs::exists(ST_JOURNAL, $_POST['ref']))
 		{
 			// The reference can exist already so long as it's the same as the original (when modifying)
 			if ($_POST['ref'] != $_POST['ref_original']) {
@@ -165,7 +164,7 @@
 	}
 
 	if (isset($_POST['Process'])) {
-		$cart = &$_SESSION['journal_items'];
+		$cart = $_SESSION['journal_items'];
 		$new = $cart->order_id == 0;
 
 		$cart->reference = $_POST['ref'];
@@ -206,18 +205,18 @@
 			return false;
 		}
 
-		if (strlen($_POST['AmountDebit']) && !check_num('AmountDebit', 0)) {
+		if (strlen($_POST['AmountDebit']) && !Validation::is_num('AmountDebit', 0)) {
 			ui_msgs::display_error(_("The debit amount entered is not a valid number or is less than zero."));
 			ui_view::set_focus('AmountDebit');
 			return false;
-		} elseif (strlen($_POST['AmountCredit']) && !check_num('AmountCredit', 0))
+		} elseif (strlen($_POST['AmountCredit']) && !Validation::is_num('AmountCredit', 0))
 		{
 			ui_msgs::display_error(_("The credit amount entered is not a valid number or is less than zero."));
 			ui_view::set_focus('AmountCredit');
 			return false;
 		}
 
-		if (!is_tax_gl_unique(get_post('code_id'))) {
+		if (!Tax_Types::is_tax_gl_unique(get_post('code_id'))) {
 			ui_msgs::display_error(_("Cannot post to GL account used by more than one tax type."));
 			ui_view::set_focus('code_id');
 			return false;
@@ -297,7 +296,7 @@
 
 	display_order_header($_SESSION['journal_items']);
 
-	start_table(Config::get('tables.style2') . " width=90%", 10);
+	start_table(Config::get('tables_style2') . " width=90%", 10);
 	start_row();
 	echo "<td>";
 	display_gl_items(_("Rows"), $_SESSION['journal_items']);

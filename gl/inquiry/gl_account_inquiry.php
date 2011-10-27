@@ -11,11 +11,11 @@
 	 ***********************************************************************/
 	$page_security = 'SA_GLTRANSVIEW';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	$js = '';
 	ui_view::set_focus('account');
-	if (Config::get('ui.windows.popups'))
+	if (Config::get('ui_windows_popups'))
 		$js .= ui_view::get_js_open_window(800, 500);
 
 	page(_($help_context = "General Ledger Inquiry"), false, false, '', $js);
@@ -51,7 +51,7 @@
 
 	function gl_inquiry_controls() {
 
-		$dim = get_company_pref('use_dimension');
+		$dim = DB_Company::get_pref('use_dimension');
 		start_form();
 
 		start_table("class='tablestyle_noborder'");
@@ -88,7 +88,7 @@
 			$_POST["account"] = null;
 
 		$act_name = $_POST["account"] ? get_gl_account_name($_POST["account"]) : "";
-		$dim = get_company_pref('use_dimension');
+		$dim = DB_Company::get_pref('use_dimension');
 
 		/*Now get the transactions  */
 		if (!isset($_POST['Dimension']))
@@ -109,7 +109,7 @@
 		 input_num("amount_min") == 0 &&
 		 input_num("amount_max") == 0;
 
-		start_table(Config::get('tables.style'));
+		start_table(Config::get('tables_style'));
 
 		$first_cols = array(_("Type"), _("#"), _("Date"));
 
@@ -159,7 +159,7 @@
 		$j = 1;
 		$k = 0; //row colour counter
 
-		while ($myrow = db_fetch($result))
+		while ($myrow = DBOld::fetch($result))
 		{
 
 			alt_table_row_color($k);
@@ -204,8 +204,8 @@
 		}
 
 		end_table(2);
-		if (db_num_rows($result) == 0)
-			ui_msgs::display_note(_("No general ledger transactions have been created for the specified criteria."), 0, 1);
+		if (DBOld::num_rows($result) == 0)
+			ui_msgs::display_warning(_("No general ledger transactions have been created for the specified criteria."), 0, 1);
 	}
 
 	//----------------------------------------------------------------------------------------------------

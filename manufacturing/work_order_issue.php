@@ -11,12 +11,12 @@
 	 ***********************************************************************/
 	$page_security = 'SA_MANUFISSUE';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	include_once(APP_PATH . "manufacturing/includes/manufacturing_ui.inc");
-	include_once(APP_PATH . "manufacturing/includes/work_order_issue_ui.inc");
+	include_once(APP_PATH . "manufacturing/includes/manufacturing_ui.php");
+	include_once(APP_PATH . "manufacturing/includes/work_order_issue_ui.php");
 	$js = "";
-	if (Config::get('ui.windows.popups'))
+	if (Config::get('ui_windows_popups'))
 		$js .= ui_view::get_js_open_window(800, 500);
 
 	page(_($help_context = "Issue Items to Work Order"), false, false, "", $js);
@@ -26,7 +26,7 @@
 	if (isset($_GET['AddedID'])) {
 		ui_msgs::display_notification(_("The work order issue has been entered."));
 
-		ui_msgs::display_note(ui_view::get_trans_view_str(ST_WORKORDER, $_GET['AddedID'], _("View this Work Order")));
+		ui_msgs::display_warning(ui_view::get_trans_view_str(ST_WORKORDER, $_GET['AddedID'], _("View this Work Order")));
 
 		hyperlink_no_params("search_work_orders.php", _("Select another &Work Order to Process"));
 
@@ -35,7 +35,7 @@
 	//--------------------------------------------------------------------------------------------------
 
 	function line_start_focus() {
-		global $Ajax;
+		$Ajax = Ajax::instance();
 
 		$Ajax->activate('items_table');
 		ui_view::set_focus('_stock_id_edit');
@@ -51,14 +51,13 @@
 
 		Session_register("issue_items");
 
-		$_SESSION['issue_items'] = new items_cart(28);
+		$_SESSION['issue_items'] = new itemsCart(28);
 		$_SESSION['issue_items']->order_id = $_GET['trans_no'];
 	}
 
 	//-----------------------------------------------------------------------------------------------
 
 	function can_process() {
-		global $Refs;
 
 		if (!Dates::is_date($_POST['date_'])) {
 			ui_msgs::display_error(_("The entered date for the issue is invalid."));
@@ -71,7 +70,7 @@
 			ui_view::set_focus('date_');
 			return false;
 		}
-		if (!$Refs->is_valid($_POST['ref'])) {
+		if (!Refs::is_valid($_POST['ref'])) {
 			ui_msgs::display_error(_("You must enter a reference."));
 			ui_view::set_focus('ref');
 			return false;
@@ -114,13 +113,13 @@
 	//-----------------------------------------------------------------------------------------------
 
 	function check_item_data() {
-		if (!check_num('qty', 0)) {
+		if (!Validation::is_num('qty', 0)) {
 			ui_msgs::display_error(_("The quantity entered is negative or invalid."));
 			ui_view::set_focus('qty');
 			return false;
 		}
 
-		if (!check_num('std_cost', 0)) {
+		if (!Validation::is_num('std_cost', 0)) {
 			ui_msgs::display_error(_("The entered standard cost is negative or invalid."));
 			ui_view::set_focus('std_cost');
 			return false;
@@ -185,7 +184,7 @@
 
 	start_form();
 
-	start_table(Config::get('tables.style') . "  width=90%", 10);
+	start_table(Config::get('tables_style') . "  width=90%", 10);
 	echo "<tr><td>";
 	display_issue_items(_("Items to Issue"), $_SESSION['issue_items']);
 	issue_options_controls();

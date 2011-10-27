@@ -11,11 +11,11 @@
 	 ***********************************************************************/
 	$page_security = 'SA_WORKCENTRES';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	page(_($help_context = "Work Centres"));
 
-	include(APP_PATH . "manufacturing/includes/manufacturing_db.inc");
+	include(APP_PATH . "manufacturing/includes/manufacturing_db.php");
 
 	simple_page_mode(true);
 	//-----------------------------------------------------------------------------------
@@ -49,17 +49,17 @@
 	//-----------------------------------------------------------------------------------
 
 	function can_delete($selected_id) {
-		$sql = "SELECT COUNT(*) FROM bom WHERE workcentre_added=" . db_escape($selected_id);
-		$result = db_query($sql, "check can delete work centre");
-		$myrow = db_fetch_row($result);
+		$sql = "SELECT COUNT(*) FROM bom WHERE workcentre_added=" . DBOld::escape($selected_id);
+		$result = DBOld::query($sql, "check can delete work centre");
+		$myrow = DBOld::fetch_row($result);
 		if ($myrow[0] > 0) {
 			ui_msgs::display_error(_("Cannot delete this work centre because BOMs have been created referring to it."));
 			return false;
 		}
 
-		$sql = "SELECT COUNT(*) FROM wo_requirements WHERE workcentre=" . db_escape($selected_id);
-		$result = db_query($sql, "check can delete work centre");
-		$myrow = db_fetch_row($result);
+		$sql = "SELECT COUNT(*) FROM wo_requirements WHERE workcentre=" . DBOld::escape($selected_id);
+		$result = DBOld::query($sql, "check can delete work centre");
+		$myrow = DBOld::fetch_row($result);
 		if ($myrow[0] > 0) {
 			ui_msgs::display_error(_("Cannot delete this work centre because work order requirements have been created referring to it."));
 			return false;
@@ -90,13 +90,13 @@
 	$result = get_all_work_centres(check_value('show_inactive'));
 
 	start_form();
-	start_table(Config::get('tables.style') . "  width=50%");
+	start_table(Config::get('tables_style') . "  width=50%");
 	$th = array(_("Name"), _("description"), "", "");
 	inactive_control_column($th);
 	table_header($th);
 
 	$k = 0;
-	while ($myrow = db_fetch($result))
+	while ($myrow = DBOld::fetch($result))
 	{
 
 		alt_table_row_color($k);
@@ -113,7 +113,7 @@
 	end_table(1);
 	//-----------------------------------------------------------------------------------
 
-	start_table(Config::get('tables.style2'));
+	start_table(Config::get('tables_style2'));
 
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {

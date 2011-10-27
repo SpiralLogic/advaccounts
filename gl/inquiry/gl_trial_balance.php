@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 	$page_security = 'SA_GLANALYTIC';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	$js = "";
 
@@ -44,7 +44,7 @@
 	function display_trial_balance() {
 
 		div_start('balance_tbl');
-		start_table(Config::get('tables.style'));
+		start_table(Config::get('tables_style'));
 		$tableheader = "<tr>
         <td rowspan=2 class='tableheader'>" . _("Account") . "</td>
         <td rowspan=2 class='tableheader'>" . _("Account Name") . "</td>
@@ -71,7 +71,7 @@
 			$begin = $_POST['TransFromDate'];
 		$begin = Dates::add_days($begin, -1);
 
-		while ($account = db_fetch($accounts))
+		while ($account = DBOld::fetch($accounts))
 		{
 			$prev = get_balance($account["account_code"], 0, 0, $begin, $_POST['TransFromDate'], false, false);
 			$curr = get_balance($account["account_code"], 0, 0, $_POST['TransFromDate'], $_POST['TransToDate'], true, true);

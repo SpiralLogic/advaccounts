@@ -10,9 +10,9 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	// For tag constants
-	include_once(APP_PATH . "admin/db/tags_db.inc");
+	include_once(APP_PATH . "admin/db/tags_db.php");
 
 	// Set up page security based on what type of tags we're working with
 	if (@$_GET['type'] == "account" || get_post('type') == TAG_ACCOUNT) {
@@ -21,19 +21,19 @@
 		$page_security = 'SA_DIMTAGS';
 	}
 
-	// We use $_POST['type'] throughout this script, so convert $_GET vars
-	// if $_POST['type'] is not set.
-	if (!isset($_POST['type'])) {
-		if ($_GET['type'] == "account")
+	// We use Input::post('type') throughout this script, so convert $_GET vars
+	// if Input::post('type') is not set.
+	if (!Input::post('type')) {
+		if (Input::get('type') == "account")
 			$_POST['type'] = TAG_ACCOUNT;
-		elseif ($_GET['type'] == "dimension")
+		elseif (Input::get('type') == "dimension")
 			$_POST['type'] = TAG_DIMENSION;
 		else
 			die(_("Unspecified tag type"));
 	}
 
 	// Set up page based on what type of tags we're working with
-	switch ($_POST['type']) {
+	switch (Input::post('type')) {
 		case TAG_ACCOUNT:
 			// Account tags
 			$_SESSION['page_title'] = _($help_context = "Account Tags");
@@ -63,12 +63,12 @@
 	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 		if (can_process()) {
 			if ($selected_id != -1) {
-				if ($ret = update_tag($selected_id, $_POST['name'], $_POST['description']))
+				if ($ret = Tags::update($selected_id, $_POST['name'], $_POST['description']))
 					ui_msgs::display_notification(_('Selected tag settings have been updated'));
 			}
 			else
 			{
-				if ($ret = add_tag($_POST['type'], $_POST['name'], $_POST['description']))
+				if ($ret = Tags::add(Input::post('type'), $_POST['name'], $_POST['description']))
 					ui_msgs::display_notification(_('New tag has been added'));
 			}
 			if ($ret) $Mode = 'RESET';
@@ -80,9 +80,9 @@
 	function can_delete($selected_id) {
 		if ($selected_id == -1)
 			return false;
-		$result = get_records_associated_with_tag($selected_id);
+		$result = Tags::get_associated_records($selected_id);
 
-		if (db_num_rows($result) > 0) {
+		if (DBOld::num_rows($result) > 0) {
 			ui_msgs::display_error(_("Cannot delete this tag because records have been created referring to it."));
 			return false;
 		}
@@ -94,7 +94,7 @@
 
 	if ($Mode == 'Delete') {
 		if (can_delete($selected_id)) {
-			delete_tag($selected_id);
+			Tags::delete($selected_id);
 			ui_msgs::display_notification(_('Selected tag has been deleted'));
 		}
 		$Mode = 'RESET';
@@ -103,22 +103,22 @@
 	//-----------------------------------------------------------------------------------
 
 	if ($Mode == 'RESET') {
-		$selected_id = -1;
+		$selected_id   = -1;
 		$_POST['name'] = $_POST['description'] = '';
 	}
 
 	//-----------------------------------------------------------------------------------
 
-	$result = get_tags($_POST['type'], check_value('show_inactive'));
+	$result = Tags::get_all(Input::post('type'), check_value('show_inactive'));
 
 	start_form();
-	start_table(Config::get('tables.style'));
+	start_table(Config::get('tables_style'));
 	$th = array(_("Tag Name"), _("Tag Description"), "", "");
 	inactive_control_column($th);
 	table_header($th);
 
 	$k = 0;
-	while ($myrow = db_fetch($result))
+	while ($myrow = DBOld::fetch($result))
 	{
 		alt_table_row_color($k);
 
@@ -135,15 +135,15 @@
 
 	//-----------------------------------------------------------------------------------
 
-	start_table(Config::get('tables.style2'));
+	start_table(Config::get('tables_style2'));
 
 	if ($selected_id != -1) // We've selected a tag
 	{
 		if ($Mode == 'Edit') {
 			// Editing an existing tag
-			$myrow = get_tag($selected_id);
+			$myrow = Tags::get($selected_id);
 
-			$_POST['name'] = $myrow["name"];
+			$_POST['name']        = $myrow["name"];
 			$_POST['description'] = $myrow["description"];
 		}
 		// Note the selected tag

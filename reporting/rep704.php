@@ -17,7 +17,7 @@
 	// Title:	GL Accounts Transactions
 	// ----------------------------------------------------------------
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	//----------------------------------------------------------------------------------------------------
 
@@ -28,7 +28,7 @@
 	function print_GL_transactions() {
 		global $systypes_array;
 
-		$dim = get_company_pref('use_dimension');
+		$dim = DB_Company::get_pref('use_dimension');
 		$dimension = $dimension2 = 0;
 
 		$from = $_POST['PARAM_0'];
@@ -52,9 +52,9 @@
 			$destination = $_POST['PARAM_5'];
 		}
 		if ($destination)
-			include_once(APP_PATH . "reporting/includes/excel_report.inc");
+			include_once(APP_PATH . "reporting/includes/excel_report.php");
 		else
-			include_once(APP_PATH . "reporting/includes/pdf_report.inc");
+			include_once(APP_PATH . "reporting/includes/pdf_report.php");
 
 		$rep = new FrontReport(_('GL Account Transactions'), "GLAccountTransactions", user_pagesize());
 		$dec = user_price_dec();
@@ -115,7 +115,7 @@
 
 		$accounts = get_gl_accounts($fromacc, $toacc);
 
-		while ($account = db_fetch($accounts))
+		while ($account = DBOld::fetch($accounts))
 		{
 			if (is_account_balancesheet($account["account_code"]))
 				$begin = "";
@@ -129,7 +129,7 @@
 			$prev_balance = get_gl_balance_from_to($begin, $from, $account["account_code"], $dimension, $dimension2);
 
 			$trans = get_gl_transactions($from, $to, -1, $account['account_code'], $dimension, $dimension2);
-			$rows = db_num_rows($trans);
+			$rows = DBOld::num_rows($trans);
 			if ($prev_balance == 0.0 && $rows == 0)
 				continue;
 			$rep->Font('bold');
@@ -143,12 +143,12 @@
 			$total = $prev_balance;
 			$rep->NewLine(2);
 			if ($rows > 0) {
-				while ($myrow = db_fetch($trans))
+				while ($myrow = DBOld::fetch($trans))
 				{
 					$total += $myrow['amount'];
 
 					$rep->TextCol(0, 1, $systypes_array[$myrow["type"]], -2);
-					$reference = get_reference($myrow["type"], $myrow["type_no"]);
+					$reference = Refs::get_reference($myrow["type"], $myrow["type_no"]);
 					$rep->TextCol(1, 2, $reference);
 					$rep->TextCol(2, 3, $myrow['type_no'], -2);
 					$rep->DateCol(3, 4, $myrow["tran_date"], true);

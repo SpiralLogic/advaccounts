@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 	$page_security = 'SA_EXCHANGERATE';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	$js = "";
 
@@ -90,9 +90,9 @@
 	//---------------------------------------------------------------------------------------------
 
 	function display_rate_edit() {
-		global $selected_id, $Ajax;
-
-		start_table(Config::get('tables.style2'));
+		global $selected_id;
+		$Ajax = Ajax::instance();
+		start_table(Config::get('tables_style2'));
 
 		if ($selected_id != "") {
 			//editing an existing exchange rate
@@ -168,7 +168,7 @@
 	ui_globals::set_global_curr_code($_POST['curr_abrev']);
 
 	$sql = "SELECT date_, rate_buy, id FROM exchange_rates "
-	 . "WHERE curr_code=" . db_escape($_POST['curr_abrev']) . "
+	 . "WHERE curr_code=" . DBOld::escape($_POST['curr_abrev']) . "
 	 ORDER BY date_ DESC";
 
 	$cols = array(

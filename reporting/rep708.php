@@ -17,7 +17,7 @@
 	// Title:	Trial Balance
 	// ----------------------------------------------------------------
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	//----------------------------------------------------------------------------------------------------
 
@@ -27,7 +27,7 @@
 
 	function print_trial_balance() {
 
-		$dim = get_company_pref('use_dimension');
+		$dim = DB_Company::get_pref('use_dimension');
 		$dimension = $dimension2 = 0;
 
 		$from = $_POST['PARAM_0'];
@@ -51,9 +51,9 @@
 			$destination = $_POST['PARAM_5'];
 		}
 		if ($destination)
-			include_once(APP_PATH . "reporting/includes/excel_report.inc");
+			include_once(APP_PATH . "reporting/includes/excel_report.php");
 		else
-			include_once(APP_PATH . "reporting/includes/pdf_report.inc");
+			include_once(APP_PATH . "reporting/includes/pdf_report.php");
 		$dec = user_price_dec();
 
 		//$cols2 = array(0, 50, 230, 330, 430, 530);
@@ -113,7 +113,7 @@
 		if (Dates::date1_greater_date2($begin, $from))
 			$begin = $from;
 		$begin = Dates::add_days($begin, -1);
-		while ($account = db_fetch($accounts))
+		while ($account = DBOld::fetch($accounts))
 		{
 			$prev = get_balance($account["account_code"], $dimension, $dimension2, $begin, $from, false, false);
 			$curr = get_balance($account["account_code"], $dimension, $dimension2, $from, $to, true, true);

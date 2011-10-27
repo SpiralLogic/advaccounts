@@ -17,31 +17,29 @@
 	//
 	$page_security = 'SA_SALESINVOICE';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	include_once(APP_PATH . "includes/manufacturing.inc");
+	include_once(APP_PATH . "sales/includes/sales_ui.php");
+	include_once(APP_PATH . "reporting/includes/reporting.php");
 
-	include_once(APP_PATH . "sales/includes/sales_ui.inc");
-	include_once(APP_PATH . "reporting/includes/reporting.inc");
-	include_once(APP_PATH . "taxes/tax_calc.inc");
 	$js = "";
-	if (Config::get('ui.windows.popups')) {
+	if (Config::get('ui_windows_popups')) {
 		$js .= ui_view::get_js_open_window(900, 500);
 	}
-
+	$page_title = 'Sales Invoice Complete';
 	if (isset($_GET['ModifyInvoice'])) {
-		$_SESSION['page_title'] = sprintf(_("Modifying Sales Invoice # %d."), $_GET['ModifyInvoice']);
+		$page_title = sprintf(_("Modifying Sales Invoice # %d."), $_GET['ModifyInvoice']);
 		$help_context = "Modifying Sales Invoice";
 	}
 	elseif (isset($_GET['DeliveryNumber'])) {
-		$_SESSION['page_title'] = _($help_context = "Issue an Invoice for Delivery Note");
+		$page_title = _($help_context = "Issue an Invoice for Delivery Note");
 	}
 	elseif (isset($_GET['BatchInvoice'])) {
-		$_SESSION['page_title'] = _($help_context = "Issue Batch Invoice for Delivery Notes");
+		$page_title = _($help_context = "Issue Batch Invoice for Delivery Notes");
 	} elseif (isset($_GET['ViewInvoice'])) {
-		$_SESSION['page_title'] = sprintf(_("View Sales Invoice # %d."), $_GET['ViewInvoice']);
+		$page_title = sprintf(_("View Sales Invoice # %d."), $_GET['ViewInvoice']);
 	}
-	page($_SESSION['page_title'], false, false, "", $js);
+	page($page_title, false, false, "", $js);
 	//-----------------------------------------------------------------------------
 	check_edit_conflicts();
 	if (isset($_GET['AddedID'])) {
@@ -111,7 +109,7 @@
 		$dn->trans_type = ST_SALESINVOICE;
 		$dn->src_docs = $dn->trans_no;
 		$dn->trans_no = 0;
-		$dn->reference = $Refs->get_next(ST_SALESINVOICE);
+		$dn->reference = Refs::get_next(ST_SALESINVOICE);
 		$dn->due_date = get_invoice_duedate($dn->customer_id, $dn->document_date);
 		$_SESSION['Items'] = $dn;
 		copy_from_cart();
@@ -163,10 +161,10 @@
 					$min = 0;
 					$max = $itm->quantity - $itm->qty_done;
 				}
-				if ($itm->quantity > 0 && check_num('Line' . $line_no, $min, $max)) {
+				if ($itm->quantity > 0 && Validation::is_num('Line' . $line_no, $min, $max)) {
 					$_SESSION['Items']->line_items[$line_no]->qty_dispatched = input_num('Line' . $line_no);
 				}
-				elseif ($itm->quantity < 0 && check_num('Line' . $line_no, $max, $min)) {
+				elseif ($itm->quantity < 0 && Validation::is_num('Line' . $line_no, $max, $min)) {
 					$_SESSION['Items']->line_items[$line_no]->qty_dispatched = input_num('Line' . $line_no);
 				}
 				else {
@@ -223,7 +221,7 @@
 
 	//-----------------------------------------------------------------------------
 	function check_data() {
-		global $Refs;
+
 		if (!isset($_POST['InvoiceDate']) || !Dates::is_date($_POST['InvoiceDate'])) {
 			ui_msgs::display_error(_("The entered invoice date is invalid."));
 			ui_view::set_focus('InvoiceDate');
@@ -240,7 +238,7 @@
 			return false;
 		}
 		if ($_SESSION['Items']->trans_no == 0) {
-			if (!$Refs->is_valid($_POST['ref'])) {
+			if (!Refs::is_valid($_POST['ref'])) {
 				ui_msgs::display_error(_("You must enter a reference."));
 				ui_view::set_focus('ref');
 				return false;
@@ -254,7 +252,7 @@
 		if ($_POST['ChargeFreightCost'] == "") {
 			$_POST['ChargeFreightCost'] = price_format(0);
 		}
-		if (!check_num('ChargeFreightCost', 0)) {
+		if (!Validation::is_num('ChargeFreightCost', 0)) {
 			ui_msgs::display_error(_("The entered shipping value is not numeric."));
 			ui_view::set_focus('ChargeFreightCost');
 			return false;
@@ -313,7 +311,7 @@
 	$is_edition = $_SESSION['Items']->trans_type == ST_SALESINVOICE && $_SESSION['Items']->trans_no != 0;
 	start_form();
 	hidden('cart_id');
-	start_table(Config::get('tables.style2') . " width=90%", 5);
+	start_table(Config::get('tables_style2') . " width=90%", 5);
 	start_row();
 	label_cells(_("Customer"), $_SESSION['Items']->customer_name, "class='tableheader2'");
 	label_cells(_("Branch"), get_branch_name($_SESSION['Items']->Branch), "class='tableheader2'");
@@ -359,7 +357,7 @@
 	}
 	ui_msgs::display_heading(_("Invoice Items"));
 	div_start('Items');
-	start_table(Config::get('tables.style') . "  width=90%");
+	start_table(Config::get('tables_style') . "  width=90%");
 	$th = array(_("Item Code"), _("Item Description"), _("Delivered"), _("Units"), _("Invoiced"), _("This Invoice"), _("Price"), _("Tax Type"), _("Discount"), _("Total"));
 	if ($is_batch_invoice) {
 		$th[] = _("DN");
@@ -425,11 +423,11 @@
 		else {
 			$_POST['ChargeFreightCost'] = price_format($_SESSION['Items']->freight_cost);
 		}
-		if (!check_num('ChargeFreightCost')) {
+		if (!Validation::is_num('ChargeFreightCost')) {
 			$_POST['ChargeFreightCost'] = price_format(0);
 		}
 	}
-	$accumulate_shipping = get_company_pref('accumulate_shipping');
+	$accumulate_shipping = DB_Company::get_pref('accumulate_shipping');
 	if ($is_batch_invoice && $accumulate_shipping)
 		set_delivery_shipping_sum(array_keys($_SESSION['Items']->src_docs));
 	$colspan = 9;
@@ -449,7 +447,7 @@
 	label_row(_("Invoice Total"), $display_total, "colspan=$colspan align=right", "align=right", $is_batch_invoice ? 2 : 0);
 	end_table(1);
 	div_end();
-	start_table(Config::get('tables.style2'));
+	start_table(Config::get('tables_style2'));
 	textarea_row(_("Memo"), 'Comments', null, 50, 4);
 	end_table(1);
 	start_table('style="color:red; font-weight:bold;"');

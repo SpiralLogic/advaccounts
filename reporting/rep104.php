@@ -17,9 +17,9 @@
 	// Title:	price Listing
 	// ----------------------------------------------------------------
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	include_once(APP_PATH . "sales/includes/db/sales_types_db.inc");
+	include_once(APP_PATH . "sales/includes/db/sales_types_db.php");
 
 	//----------------------------------------------------------------------------------------------------
 
@@ -34,11 +34,11 @@
 				stock_category
 			WHERE stock_master.category_id=stock_category.category_id AND NOT stock_master.inactive";
 		if ($category != 0)
-			$sql .= " AND stock_category.category_id = " . db_escape($category);
+			$sql .= " AND stock_category.category_id = " . DBOld::escape($category);
 		$sql .= " ORDER BY stock_master.category_id,
 				stock_master.stock_id";
 
-		return db_query($sql, "No transactions were returned");
+		return DBOld::query($sql, "No transactions were returned");
 	}
 
 	function get_kits($category = 0) {
@@ -50,9 +50,9 @@
 			ON i.category_id=c.category_id";
 		$sql .= " WHERE !i.is_foreign AND i.item_code!=i.stock_id";
 		if ($category != 0)
-			$sql .= " AND c.category_id = " . db_escape($category);
+			$sql .= " AND c.category_id = " . DBOld::escape($category);
 		$sql .= " GROUP BY i.item_code";
-		return db_query($sql, "No kits were returned");
+		return DBOld::query($sql, "No kits were returned");
 	}
 
 	//----------------------------------------------------------------------------------------------------
@@ -67,13 +67,13 @@
 		$comments = $_POST['PARAM_5'];
 		$destination = $_POST['PARAM_6'];
 		if ($destination)
-			include_once(APP_PATH . "reporting/includes/excel_report.inc");
+			include_once(APP_PATH . "reporting/includes/excel_report.php");
 		else
-			include_once(APP_PATH . "reporting/includes/pdf_report.inc");
+			include_once(APP_PATH . "reporting/includes/pdf_report.php");
 
 		$dec = user_price_dec();
 
-		$home_curr = get_company_pref('curr_default');
+		$home_curr = DB_Company::get_pref('curr_default');
 		if ($currency == ALL_TEXT)
 			$currency = $home_curr;
 		$curr = get_currency($currency);
@@ -118,7 +118,7 @@
 
 		$catgor = '';
 		$_POST['sales_type_id'] = $salestype;
-		while ($myrow = db_fetch($result))
+		while ($myrow = DBOld::fetch($result))
 		{
 			if ($catgor != $myrow['description']) {
 				$rep->Line($rep->row - $rep->lineHeight);
@@ -147,10 +147,10 @@
 				 . item_img_name($myrow['stock_id']) . ".jpg";
 				if (file_exists($image)) {
 					$rep->NewLine();
-					if ($rep->row - Config::get('item.images.height') < $rep->bottomMargin)
+					if ($rep->row - Config::get('item_images_height') < $rep->bottomMargin)
 						$rep->Header();
-					$rep->AddImage($image, $rep->cols[1], $rep->row - Config::get('item.images.height'), 0, Config::get('item.images.height'));
-					$rep->row -= Config::get('item.images.height');
+					$rep->AddImage($image, $rep->cols[1], $rep->row - Config::get('item_images_height'), 0, Config::get('item_images_height'));
+					$rep->row -= Config::get('item_images_height');
 					$rep->NewLine();
 				}
 			}
@@ -162,7 +162,7 @@
 		$result = get_kits($category);
 
 		$catgor = '';
-		while ($myrow = db_fetch($result))
+		while ($myrow = DBOld::fetch($result))
 		{
 			if ($catgor != $myrow['cat_name']) {
 				if ($catgor == '') {

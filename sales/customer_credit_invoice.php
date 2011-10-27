@@ -16,15 +16,12 @@
 
 	$page_security = 'SA_SALESCREDITINV';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
-
-	include_once(APP_PATH . "includes/manufacturing.inc");
-
-	include_once(APP_PATH . "sales/includes/sales_ui.inc");
-	include_once(APP_PATH . "reporting/includes/reporting.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
+	include_once(APP_PATH . "sales/includes/sales_ui.php");
+	include_once(APP_PATH . "reporting/includes/reporting.php");
 
 	$js = "";
-	if (Config::get('ui.windows.popups')) {
+	if (Config::get('ui_windows_popups')) {
 		$js .= ui_view::get_js_open_window(900, 500);
 	}
 
@@ -34,10 +31,10 @@
 		processing_start();
 	}
 	elseif (isset($_GET['InvoiceNumber'])) {
-		$_SESSION['page_title'] = _($help_context = "Credit all or part of an Invoice");
+		$page_title = _($help_context = "Credit all or part of an Invoice");
 		processing_start();
 	}
-	page($_SESSION['page_title'], false, false, "", $js);
+	page($page_title, false, false, "", $js);
 
 	//-----------------------------------------------------------------------------
 
@@ -46,13 +43,9 @@
 		$trans_type = ST_CUSTCREDIT;
 
 		ui_msgs::display_notification_centered(_("Credit Note has been processed"));
-
 		ui_msgs::display_note(ui_view::get_customer_trans_view_str($trans_type, $credit_no, _("&View This Credit Note")), 0, 0);
-
-		ui_msgs::display_note(print_document_link($credit_no, _("&Print This Credit Note"), true, $trans_type), 1);
-
+		ui_msgs::display_warning(print_document_link($credit_no, _("&Print This Credit Note"), true, $trans_type), 1);
 		ui_msgs::display_note(ui_view::get_gl_view_str($trans_type, $credit_no, _("View the GL &Journal Entries for this Credit Note")), 1);
-
 		ui_view::display_footer_exit();
 	}
 	elseif (isset($_GET['UpdatedID'])) {
@@ -61,11 +54,11 @@
 
 		ui_msgs::display_notification_centered(_("Credit Note has been updated"));
 
-		ui_msgs::display_note(ui_view::get_customer_trans_view_str($trans_type, $credit_no, _("&View This Credit Note")), 0, 0);
+		ui_msgs::display_warning(ui_view::get_customer_trans_view_str($trans_type, $credit_no, _("&View This Credit Note")), 0, 0);
 
-		ui_msgs::display_note(print_document_link($credit_no, _("&Print This Credit Note"), true, $trans_type), 1);
+		ui_msgs::display_warning(print_document_link($credit_no, _("&Print This Credit Note"), true, $trans_type), 1);
 
-		ui_msgs::display_note(ui_view::get_gl_view_str($trans_type, $credit_no, _("View the GL &Journal Entries for this Credit Note")), 1);
+		ui_msgs::display_warning(ui_view::get_gl_view_str($trans_type, $credit_no, _("View the GL &Journal Entries for this Credit Note")), 1);
 
 		ui_view::display_footer_exit();
 	}
@@ -75,7 +68,6 @@
 	//-----------------------------------------------------------------------------
 
 	function can_process() {
-		global $Refs;
 
 		if (!Dates::is_date($_POST['CreditDate'])) {
 			ui_msgs::display_error(_("The entered date is invalid."));
@@ -90,7 +82,7 @@
 		}
 
 		if ($_SESSION['Items']->trans_no == 0) {
-			if (!$Refs->is_valid($_POST['ref'])) {
+			if (!Refs::is_valid($_POST['ref'])) {
 				ui_msgs::display_error(_("You must enter a reference."));
 				;
 				ui_view::set_focus('ref');
@@ -104,7 +96,7 @@
 				return false;
 			}
 		}
-		if (!check_num('ChargeFreightCost', 0)) {
+		if (!Validation::is_num('ChargeFreightCost', 0)) {
 			ui_msgs::display_error(_("The entered shipping cost is invalid or less than zero."));
 			;
 			ui_view::set_focus('ChargeFreightCost');
@@ -128,7 +120,7 @@
 		$ci->src_date = $ci->document_date;
 		$ci->trans_no = 0;
 		$ci->document_date = Dates::new_doc_date();
-		$ci->reference = $Refs->get_next(ST_CUSTCREDIT);
+		$ci->reference = Refs::get_next(ST_CUSTCREDIT);
 
 		for ($line_no = 0; $line_no < count($ci->line_items); $line_no++) {
 			$ci->line_items[$line_no]->qty_dispatched = '0';
@@ -157,7 +149,7 @@
 				continue; // this line was fully credited/removed
 			}
 			if (isset($_POST['Line' . $line_no])) {
-				if (check_num('Line' . $line_no, 0, $itm->quantity)) {
+				if (Validation::is_num('Line' . $line_no, 0, $itm->quantity)) {
 					$_SESSION['Items']->line_items[$line_no]->qty_dispatched =
 					 input_num('Line' . $line_no);
 				}
@@ -237,10 +229,10 @@
 		start_form();
 		hidden('cart_id');
 
-		start_table(Config::get('tables.style2') . " width=90%", 5);
+		start_table(Config::get('tables_style2') . " width=90%", 5);
 		echo "<tr><td>"; // outer table
 
-		start_table(Config::get('tables.style') . "  width=100%");
+		start_table(Config::get('tables_style') . "  width=100%");
 		start_row();
 		label_cells(_("Customer"), $_SESSION['Items']->customer_name, "class='tableheader2'");
 		label_cells(_("Branch"), get_branch_name($_SESSION['Items']->Branch), "class='tableheader2'");
@@ -249,7 +241,7 @@
 		start_row();
 
 		//	if (!isset($_POST['ref']))
-		//		$_POST['ref'] = $Refs->get_next(11);
+		//		$_POST['ref'] = Refs::get_next(11);
 
 		if ($_SESSION['Items']->trans_no == 0) {
 			ref_cells(_("Reference"), 'ref', '', null, "class='tableheader2'");
@@ -275,7 +267,7 @@
 
 		echo "</td><td>"; // outer table
 
-		start_table(Config::get('tables.style') . "  width=100%");
+		start_table(Config::get('tables_style') . "  width=100%");
 
 		label_row(_("Invoice Date"), $_SESSION['Items']->src_date, "class='tableheader2'");
 
@@ -289,7 +281,7 @@
 		end_table(1); // outer table
 
 		div_start('credit_items');
-		start_table(Config::get('tables.style') . "  width=90%");
+		start_table(Config::get('tables_style') . "  width=90%");
 		$th = array(_("Item Code"), _("Item Description"), _("Invoiced Quantity"), _("Units"),
 			_("Credit Quantity"), _("Price"), _("Discount %"), _("Total")
 		);
@@ -320,7 +312,7 @@
 			end_row();
 		}
 
-		if (!check_num('ChargeFreightCost')) {
+		if (!Validation::is_num('ChargeFreightCost')) {
 			$_POST['ChargeFreightCost'] = price_format($_SESSION['Items']->freight_cost);
 		}
 		$colspan = 7;
@@ -348,14 +340,14 @@
 
 	//-----------------------------------------------------------------------------
 	function display_credit_options() {
-		global $Ajax;
+		$Ajax = Ajax::instance();
 		echo "<br>";
 
 		if (isset($_POST['_CreditType_update']))
 			$Ajax->activate('options');
 
 		div_start('options');
-		start_table(Config::get('tables.style2'));
+		start_table(Config::get('tables_style2'));
 
 		credit_type_list_row(_("Credit Note Type"), 'CreditType', null, true);
 

@@ -11,15 +11,15 @@
 	 ***********************************************************************/
 	$page_security = 'SA_BANKTRANSVIEW';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	$js = "";
-	if (Config::get('ui.windows.popups'))
+	if (Config::get('ui_windows_popups'))
 		$js .= ui_view::get_js_open_window(800, 500);
 
 	page(_($help_context = "Bank Statement"), false, false, "", $js);
 
-	check_db_has_bank_accounts(_("There are no bank accounts defined in the system."));
+	Validation::check(Validation::BANK_ACCOUNTS, _("There are no bank accounts defined in the system."));
 
 	//-----------------------------------------------------------------------------------
 	// Ajax updates
@@ -49,18 +49,18 @@
 	if (!isset($_POST['bank_account']))
 		$_POST['bank_account'] = "";
 	$sql = "SELECT bank_trans.* FROM bank_trans
-	WHERE bank_trans.bank_act = " . db_escape($_POST['bank_account']) . "
+	WHERE bank_trans.bank_act = " . DBOld::escape($_POST['bank_account']) . "
 	AND trans_date >= '$date_after'
 	AND trans_date <= '$date_to'
 	ORDER BY trans_date,bank_trans.id";
 
-	$result = db_query($sql, "The transactions for '" . $_POST['bank_account'] . "' could not be retrieved");
+	$result = DBOld::query($sql, "The transactions for '" . $_POST['bank_account'] . "' could not be retrieved");
 
 	div_start('trans_tbl');
 	$act = get_bank_account($_POST["bank_account"]);
 	ui_msgs::display_heading($act['bank_account_name'] . " - " . $act['bank_curr_code']);
 
-	start_table(Config::get('tables.style'));
+	start_table(Config::get('tables_style'));
 
 	$th = array(_("Type"), _("#"), _("Reference"), _("Date"),
 		_("Debit"), _("Credit"), _("Balance"), _("Person/Item"), ""
@@ -68,13 +68,13 @@
 	table_header($th);
 
 	$sql = "SELECT SUM(amount) FROM bank_trans WHERE bank_act="
-	 . db_escape($_POST['bank_account']) . "
+	 . DBOld::escape($_POST['bank_account']) . "
 	AND trans_date < '$date_after'";
-	$before_qty = db_query($sql, "The starting balance on hand could not be calculated");
+	$before_qty = DBOld::query($sql, "The starting balance on hand could not be calculated");
 
 	start_row("class='inquirybg'");
 	label_cell("<b>" . _("Opening Balance") . " - " . $_POST['TransAfterDate'] . "</b>", "colspan=4");
-	$bfw_row = db_fetch_row($before_qty);
+	$bfw_row = DBOld::fetch_row($before_qty);
 	$bfw = $bfw_row[0];
 	ui_view::display_debit_or_credit_cells($bfw);
 	label_cell("");
@@ -84,7 +84,7 @@
 	$running_total = $bfw;
 	$j = 1;
 	$k = 0; //row colour counter
-	while ($myrow = db_fetch($result))
+	while ($myrow = DBOld::fetch($result))
 	{
 
 		alt_table_row_color($k);

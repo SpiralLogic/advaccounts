@@ -11,16 +11,14 @@
 	 ***********************************************************************/
 	$page_security = 'SA_MANUFTRANSVIEW';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	$js = "";
-	if (Config::get('ui.windows.popups'))
+	if (Config::get('ui_windows_popups'))
 		$js .= ui_view::get_js_open_window(900, 500);
 	page(_($help_context = "View Work Order Production"), true, false, "", $js);
 
-	include_once(APP_PATH . "includes/manufacturing.inc");
-
-	include_once(APP_PATH . "manufacturing/includes/manufacturing_ui.inc");
+	include_once(APP_PATH . "manufacturing/includes/manufacturing_ui.php");
 
 	//-------------------------------------------------------------------------------------------------
 
@@ -35,7 +33,7 @@
 		$myrow = get_work_order_produce($prod_id);
 
 		br(1);
-		start_table(Config::get('tables.style'));
+		start_table(Config::get('tables_style'));
 		$th = array(_("Production #"), _("Reference"), _("For Work Order #"),
 			_("Item"), _("Quantity Manufactured"), _("Date")
 		);

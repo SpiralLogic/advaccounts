@@ -12,7 +12,7 @@
 			* ********************************************************************* */
 	$page_security = 'SA_CUSTOMER';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	page(_($help_context = "Customers"), Input::request('popup'));
 
 	if (isset($_GET['debtor_no'])) {
@@ -35,19 +35,19 @@
 			return false;
 		}
 
-		if (!check_num('credit_limit', 0)) {
+		if (!Validation::is_num('credit_limit', 0)) {
 			ui_msgs::display_error(_("The credit limit must be numeric and not less than zero."));
 			ui_view::set_focus('credit_limit');
 			return false;
 		}
 
-		if (!check_num('pymt_discount', 0, 100)) {
+		if (!Validation::is_num('pymt_discount', 0, 100)) {
 			ui_msgs::display_error(_("The payment discount must be numeric and is expected to be less than 100% and greater than or equal to 0."));
 			ui_view::set_focus('pymt_discount');
 			return false;
 		}
 
-		if (!check_num('discount', 0, 100)) {
+		if (!Validation::is_num('discount', 0, 100)) {
 			ui_msgs::display_error(_("The discount percentage must be numeric and is expected to be less than 100% and greater than or equal to 0."));
 			ui_view::set_focus('discount');
 			return false;
@@ -59,56 +59,56 @@
 	//--------------------------------------------------------------------------------------------
 
 	function handle_submit() {
-		global $new_customer, $Ajax;
-
+		global $new_customer;
+		$Ajax = Ajax::instance();
 		if (!can_process()) return;
 
 		if ($new_customer == false) {
 
-			$sql = "UPDATE debtors_master SET name=" . db_escape($_POST['CustName']) . ",
-			debtor_ref=" . db_escape($_POST['cust_ref']) . ",
-			address=" . db_escape($_POST['address']) . ",
-			tax_id=" . db_escape($_POST['tax_id']) . ",
-			curr_code=" . db_escape($_POST['curr_code']) . ",
-			email=" . db_escape($_POST['email']) . ",
-			dimension_id=" . db_escape($_POST['dimension_id']) . ",
-			dimension2_id=" . db_escape($_POST['dimension2_id']) . ",
-            credit_status=" . db_escape($_POST['credit_status']) . ",
-            payment_terms=" . db_escape($_POST['payment_terms']) . ",
+			$sql = "UPDATE debtors_master SET name=" . DBOld::escape($_POST['CustName']) . ",
+			debtor_ref=" . DBOld::escape($_POST['cust_ref']) . ",
+			address=" . DBOld::escape($_POST['address']) . ",
+			tax_id=" . DBOld::escape($_POST['tax_id']) . ",
+			curr_code=" . DBOld::escape($_POST['curr_code']) . ",
+			email=" . DBOld::escape($_POST['email']) . ",
+			dimension_id=" . DBOld::escape($_POST['dimension_id']) . ",
+			dimension2_id=" . DBOld::escape($_POST['dimension2_id']) . ",
+            credit_status=" . DBOld::escape($_POST['credit_status']) . ",
+            payment_terms=" . DBOld::escape($_POST['payment_terms']) . ",
             discount=" . input_num('discount') / 100 . ", 
             pymt_discount=" . input_num('pymt_discount') / 100 . ", 
             credit_limit=" . input_num('credit_limit') . ", 
-            sales_type = " . db_escape($_POST['sales_type']) . ",
-            notes=" . db_escape($_POST['notes']) . "
-            WHERE debtor_no = " . db_escape($_POST['customer_id']);
+            sales_type = " . DBOld::escape($_POST['sales_type']) . ",
+            notes=" . DBOld::escape($_POST['notes']) . "
+            WHERE debtor_no = " . DBOld::escape($_POST['customer_id']);
 
-			db_query($sql, "The customer could not be updated");
+			DBOld::query($sql, "The customer could not be updated");
 
-			update_record_status($_POST['customer_id'], $_POST['inactive'],
+			DBOld::update_record_status($_POST['customer_id'], $_POST['inactive'],
 				'debtors_master', 'debtor_no');
 
 			$Ajax->activate('customer_id'); // in case of status change
 			ui_msgs::display_notification(_("Customer has been updated."));
 		}
 		else { //it is a new customer
-			begin_transaction();
+			DBOld::begin_transaction();
 
 			$sql = "INSERT INTO debtors_master (name, debtor_ref, address, tax_id, email, dimension_id, dimension2_id,
 			curr_code, credit_status, payment_terms, discount, pymt_discount,credit_limit,  
-			sales_type, notes) VALUES (" . db_escape($_POST['CustName']) . ", " . db_escape($_POST['cust_ref']) . ", "
-			 . db_escape($_POST['address']) . ", " . db_escape($_POST['tax_id']) . ","
-			 . db_escape($_POST['email']) . ", " . db_escape($_POST['dimension_id']) . ", "
-			 . db_escape($_POST['dimension2_id']) . ", " . db_escape($_POST['curr_code']) . ",
-			" . db_escape($_POST['credit_status']) . ", " . db_escape(
+			sales_type, notes) VALUES (" . DBOld::escape($_POST['CustName']) . ", " . DBOld::escape($_POST['cust_ref']) . ", "
+			 . DBOld::escape($_POST['address']) . ", " . DBOld::escape($_POST['tax_id']) . ","
+			 . DBOld::escape($_POST['email']) . ", " . DBOld::escape($_POST['dimension_id']) . ", "
+			 . DBOld::escape($_POST['dimension2_id']) . ", " . DBOld::escape($_POST['curr_code']) . ",
+			" . DBOld::escape($_POST['credit_status']) . ", " . DBOld::escape(
 				$_POST['payment_terms']) . ", " . input_num('discount') / 100 . ",
 			" . input_num('pymt_discount') / 100 . ", " . input_num('credit_limit')
-			 . ", " . db_escape($_POST['sales_type']) . ", " . db_escape($_POST['notes']) . ")";
+			 . ", " . DBOld::escape($_POST['sales_type']) . ", " . DBOld::escape($_POST['notes']) . ")";
 
-			db_query($sql, "The customer could not be added");
+			DBOld::query($sql, "The customer could not be added");
 
-			$_POST['customer_id'] = db_insert_id();
-			$new_customer = false;
-			commit_transaction();
+			$_POST['customer_id'] = DBOld::insert_id();
+			$new_customer         = false;
+			DBOld::commit_transaction();
 
 			ui_msgs::display_notification(_("A new customer has been added."));
 
@@ -130,26 +130,26 @@
 		$cancel_delete = 0;
 
 		// PREVENT DELETES IF DEPENDENT RECORDS IN 'debtor_trans'
-		$sel_id = db_escape($_POST['customer_id']);
-		$sql = "SELECT COUNT(*) FROM debtor_trans WHERE debtor_no=$sel_id";
-		$result = db_query($sql, "check failed");
-		$myrow = db_fetch_row($result);
+		$sel_id = DBOld::escape($_POST['customer_id']);
+		$sql    = "SELECT COUNT(*) FROM debtor_trans WHERE debtor_no=$sel_id";
+		$result = DBOld::query($sql, "check failed");
+		$myrow  = DBOld::fetch_row($result);
 		if ($myrow[0] > 0) {
 			$cancel_delete = 1;
 			ui_msgs::display_error(_("This customer cannot be deleted because there are transactions that refer to it."));
 		}
 		else {
-			$sql = "SELECT COUNT(*) FROM sales_orders WHERE debtor_no=$sel_id";
-			$result = db_query($sql, "check failed");
-			$myrow = db_fetch_row($result);
+			$sql    = "SELECT COUNT(*) FROM sales_orders WHERE debtor_no=$sel_id";
+			$result = DBOld::query($sql, "check failed");
+			$myrow  = DBOld::fetch_row($result);
 			if ($myrow[0] > 0) {
 				$cancel_delete = 1;
 				ui_msgs::display_error(_("Cannot delete the customer record because orders have been created against it."));
 			}
 			else {
-				$sql = "SELECT COUNT(*) FROM cust_branch WHERE debtor_no=$sel_id";
-				$result = db_query($sql, "check failed");
-				$myrow = db_fetch_row($result);
+				$sql    = "SELECT COUNT(*) FROM cust_branch WHERE debtor_no=$sel_id";
+				$result = DBOld::query($sql, "check failed");
+				$myrow  = DBOld::fetch_row($result);
 				if ($myrow[0] > 0) {
 					$cancel_delete = 1;
 					ui_msgs::display_error(_("Cannot delete this customer because there are branch records set up against it."));
@@ -160,7 +160,7 @@
 
 		if ($cancel_delete == 0) { //ie not cancelled the delete as a result of above tests
 			$sql = "DELETE FROM debtors_master WHERE debtor_no=$sel_id";
-			db_query($sql, "cannot delete customer");
+			DBOld::query($sql, "cannot delete customer");
 
 			ui_msgs::display_notification(_("Selected customer has been deleted."));
 			unset($_POST['customer_id']);
@@ -169,7 +169,7 @@
 		} //end if Delete Customer
 	}
 
-	check_db_has_sales_types(_("There are no sales types defined. Please define at least one sales type before adding a customer."));
+	Validation::check(Validation::SALES_TYPES, _("There are no sales types defined. Please define at least one sales type before adding a customer."));
 
 	start_form();
 
@@ -191,45 +191,45 @@
 	}
 
 	if ($new_customer) {
-		$_POST['CustName'] = $_POST['cust_ref'] = $_POST['address'] = $_POST['tax_id'] = '';
-		$_POST['dimension_id'] = 0;
+		$_POST['CustName']      = $_POST['cust_ref'] = $_POST['address'] = $_POST['tax_id'] = '';
+		$_POST['dimension_id']  = 0;
 		$_POST['dimension2_id'] = 0;
-		$_POST['sales_type'] = -1;
-		$_POST['email'] = '';
-		$_POST['curr_code'] = Banking::get_company_currency();
+		$_POST['sales_type']    = -1;
+		$_POST['email']         = '';
+		$_POST['curr_code']     = Banking::get_company_currency();
 		$_POST['credit_status'] = -1;
 		$_POST['payment_terms'] = $_POST['notes'] = '';
 
-		$_POST['discount'] = $_POST['pymt_discount'] = percent_format(0);
-		$_POST['credit_limit'] = price_format($SysPrefs->default_credit_limit());
-		$_POST['inactive'] = 0;
+		$_POST['discount']     = $_POST['pymt_discount'] = percent_format(0);
+		$_POST['credit_limit'] = price_format(SysPrefs::default_credit_limit());
+		$_POST['inactive']     = 0;
 	}
 	else {
 
-		$sql = "SELECT * FROM debtors_master WHERE debtor_no = " . db_escape($_POST['customer_id']);
-		$result = db_query($sql, "check failed");
+		$sql    = "SELECT * FROM debtors_master WHERE debtor_no = " . DBOld::escape($_POST['customer_id']);
+		$result = DBOld::query($sql, "check failed");
 
-		$myrow = db_fetch($result);
+		$myrow = DBOld::fetch($result);
 
-		$_POST['CustName'] = $myrow["name"];
-		$_POST['cust_ref'] = $myrow["debtor_ref"];
-		$_POST['address'] = $myrow["address"];
-		$_POST['tax_id'] = $myrow["tax_id"];
-		$_POST['email'] = $myrow["email"];
-		$_POST['dimension_id'] = $myrow["dimension_id"];
+		$_POST['CustName']      = $myrow["name"];
+		$_POST['cust_ref']      = $myrow["debtor_ref"];
+		$_POST['address']       = $myrow["address"];
+		$_POST['tax_id']        = $myrow["tax_id"];
+		$_POST['email']         = $myrow["email"];
+		$_POST['dimension_id']  = $myrow["dimension_id"];
 		$_POST['dimension2_id'] = $myrow["dimension2_id"];
-		$_POST['sales_type'] = $myrow["sales_type"];
-		$_POST['curr_code'] = $myrow["curr_code"];
+		$_POST['sales_type']    = $myrow["sales_type"];
+		$_POST['curr_code']     = $myrow["curr_code"];
 		$_POST['credit_status'] = $myrow["credit_status"];
 		$_POST['payment_terms'] = $myrow["payment_terms"];
-		$_POST['discount'] = percent_format($myrow["discount"] * 100);
+		$_POST['discount']      = percent_format($myrow["discount"] * 100);
 		$_POST['pymt_discount'] = percent_format($myrow["pymt_discount"] * 100);
-		$_POST['credit_limit'] = price_format($myrow["credit_limit"]);
-		$_POST['notes'] = $myrow["notes"];
-		$_POST['inactive'] = $myrow["inactive"];
+		$_POST['credit_limit']  = price_format($myrow["credit_limit"]);
+		$_POST['notes']         = $myrow["notes"];
+		$_POST['inactive']      = $myrow["inactive"];
 	}
 
-	start_outer_table(Config::get('tables.style2'), 5);
+	start_outer_table(Config::get('tables_style2'), 5);
 	table_section(1);
 	table_section_title(_("Name and Address"));
 
@@ -259,7 +259,7 @@
 
 	payment_terms_list_row(_("Payment Terms:"), 'payment_terms', $_POST['payment_terms']);
 	credit_status_list_row(_("Credit Status:"), 'credit_status', $_POST['credit_status']);
-	$dim = get_company_pref('use_dimension');
+	$dim = DB_Company::get_pref('use_dimension');
 	if ($dim >= 1)
 		dimensions_list_row(_("Dimension") . " 1:", 'dimension_id', $_POST['dimension_id'], true, " ", false, 1);
 	if ($dim > 1)

@@ -18,11 +18,9 @@
 	// Title:	Print Sales Quotations
 	// ----------------------------------------------------------------
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	//include_once(APP_PATH . "taxes/item_tax_types.php");
-	include_once(APP_PATH . "taxes/tax_calc.inc");
-	include_once(APP_PATH . "taxes/db/tax_groups_db.inc");
 
 	//----------------------------------------------------------------------------------------------------
 
@@ -31,12 +29,12 @@
 	function print_sales_quotations() {
 		global $print_as_quote;
 
-		include_once(APP_PATH . "reporting/includes/pdf_report.inc");
+		include_once(APP_PATH . "reporting/includes/pdf_report.php");
 
-		$from = $_POST['PARAM_0'];
-		$to = $_POST['PARAM_1'];
+		$from     = $_POST['PARAM_0'];
+		$to       = $_POST['PARAM_1'];
 		$currency = $_POST['PARAM_2'];
-		$email = $_POST['PARAM_3'];
+		$email    = $_POST['PARAM_3'];
 		$comments = $_POST['PARAM_4'];
 
 		if ($from == null)
@@ -52,10 +50,10 @@
 
 		$params = array('comments' => $comments);
 
-		$cur = get_company_Pref('curr_default');
+		$cur = DB_Company::get_pref('curr_default');
 
 		if ($email == 0) {
-			$rep = new FrontReport(_("PROFORMA INVOICE"), "SalesQuotationBulk", user_pagesize());
+			$rep           = new FrontReport(_("PROFORMA INVOICE"), "SalesQuotationBulk", user_pagesize());
 			$rep->currency = $cur;
 			$rep->Font();
 			$rep->Info($params, $cols, null, $aligns);
@@ -63,12 +61,12 @@
 
 		for ($i = $from; $i <= $to; $i++)
 		{
-			$myrow = get_sales_order_header($i, ST_SALESQUOTE);
-			$baccount = get_default_bank_account($myrow['curr_code']);
+			$myrow                 = get_sales_order_header($i, ST_SALESQUOTE);
+			$baccount              = get_default_bank_account($myrow['curr_code']);
 			$params['bankaccount'] = $baccount['id'];
-			$branch = get_branch($myrow["branch_code"]);
+			$branch                = get_branch($myrow["branch_code"]);
 			if ($email == 1) {
-				$rep = new FrontReport("PROFORMA INVOICE", "", user_pagesize());
+				$rep           = new FrontReport("PROFORMA INVOICE", "", user_pagesize());
 				$rep->currency = $cur;
 				$rep->Font();
 				$rep->filename = "ProformaInvoice" . $i . ".pdf";
@@ -77,22 +75,22 @@
 			$rep->title = _("PROFORMA INVOICE");
 			$rep->Header2($myrow, $branch, $myrow, $baccount, ST_PROFORMAQ);
 
-			$result = get_sales_order_details($i, ST_SALESQUOTE);
+			$result   = get_sales_order_details($i, ST_SALESQUOTE);
 			$SubTotal = 0;
 			$TaxTotal = 0;
-			while ($myrow2 = db_fetch($result))
+			while ($myrow2 = DBOld::fetch($result))
 			{
 				$Net = round2(((1 - $myrow2["discount_percent"]) * $myrow2["unit_price"] * $myrow2["quantity"]),
 					user_price_dec());
 				$SubTotal += $Net;
 				#  __ADVANCEDEDIT__ BEGIN #
-				$TaxType = get_item_tax_type_for_item($myrow2['stk_code']);
-				$TaxTotal += get_tax_for_item($myrow2['stk_code'], $Net, $TaxType);
+				$TaxType = Tax_Groups::get_for_item($myrow2['stk_code']);
+				$TaxTotal += Taxes::get_tax_for_item($myrow2['stk_code'], $Net, $TaxType);
 
 				#  __ADVANCEDEDIT__ END #
 				$DisplayPrice = number_format2($myrow2["unit_price"], $dec);
-				$DisplayQty = number_format2($myrow2["quantity"], get_qty_dec($myrow2['stk_code']));
-				$DisplayNet = number_format2($Net, $dec);
+				$DisplayQty   = number_format2($myrow2["quantity"], get_qty_dec($myrow2['stk_code']));
+				$DisplayNet   = number_format2($Net, $dec);
 				if ($myrow2["discount_percent"] == 0)
 					$DisplayDiscount = "";
 				else
@@ -100,7 +98,7 @@
 				$rep->TextCol(0, 1, $myrow2['stk_code'], -2);
 				$oldrow = $rep->row;
 				$rep->TextColLines(1, 2, $myrow2['description'], -2);
-				$newrow = $rep->row;
+				$newrow   = $rep->row;
 				$rep->row = $oldrow;
 				$rep->TextCol(2, 3, $DisplayQty, -2);
 				$rep->TextCol(3, 4, $myrow2['units'], -2);
@@ -125,13 +123,13 @@
 
 			$rep->row = $rep->bottomMargin + (15 * $rep->lineHeight);
 			$linetype = true;
-			$doctype = ST_SALESQUOTE;
+			$doctype  = ST_SALESQUOTE;
 			if ($rep->currency != $myrow['curr_code']) {
-				include(APP_PATH . "reporting/includes/doctext2.inc");
+				include(APP_PATH . "reporting/includes/doctext2.php");
 			}
 			else
 			{
-				include(APP_PATH . "reporting/includes/doctext.inc");
+				include(APP_PATH . "reporting/includes/doctext.php");
 			}
 
 			$rep->TextCol(4, 7, $doc_Sub_total, -2);

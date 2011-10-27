@@ -12,10 +12,10 @@
 	$page_security = 'SA_SUPPLIERALLOC';
 
 	//
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
-	include(APP_PATH . "purchasing/includes/purchasing_ui.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
+	include(APP_PATH . "purchasing/includes/purchasing_ui.php");
 	$js = "";
-	if (Config::get('ui.windows.popups'))
+	if (Config::get('ui_windows_popups'))
 		$js .= ui_view::get_js_open_window(900, 500);
 
 	page(_($help_context = "Supplier Allocation Inquiry"), false, false, "", $js);
@@ -98,7 +98,8 @@
 		trans.type, 
 		trans.trans_no,
 		trans.reference, 
-		supplier.supp_name, 
+		supplier.supp_name,
+		supplier.supplier_id as id,
 		trans.supp_reference,
     	trans.tran_date, 
 		trans.due_date,
@@ -111,7 +112,7 @@
      	AND trans.tran_date >= '$date_after'
     	AND trans.tran_date <= '$date_to'";
 	if ($_POST['supplier_id'] != ALL_TEXT)
-		$sql .= " AND trans.supplier_id = " . db_escape($_POST['supplier_id']);
+		$sql .= " AND trans.supplier_id = " . DBOld::escape($_POST['supplier_id']);
 	if (isset($_POST['filterType']) && $_POST['filterType'] != ALL_TEXT) {
 		if (($_POST['filterType'] == '1') || ($_POST['filterType'] == '2')) {
 			$sql .= " AND trans.type = " . ST_SUPPINVOICE . " ";
@@ -136,7 +137,8 @@
 		_("Type") => array('fun' => 'systype_name'),
 		_("#") => array('fun' => 'view_link', 'ord' => ''),
 		_("Reference"),
-		_("Supplier") => array('ord' => ''),
+		_("Supplier") => array('ord' => '', 'type' => 'id'),
+		_("Supplier ID") => array('skip'),
 		_("Supp Reference"),
 		_("Date") => array('name' => 'tran_date', 'type' => 'date', 'ord' => 'asc'),
 		_("Due Date") => array('fun' => 'due_date'),
@@ -156,6 +158,7 @@
 	$table->set_marker('check_overdue', _("Marked items are overdue."));
 	$table->width = "90%";
 	display_db_pager($table);
+	Supplier::addInfoDialog('.pagerclick');
 	end_form();
 	end_page();
 ?>

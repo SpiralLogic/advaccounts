@@ -11,12 +11,12 @@
 	 ***********************************************************************/
 	$page_security = 'SA_SALESALLOC';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	include_once(APP_PATH . "sales/includes/sales_ui.inc");
+	include_once(APP_PATH . "sales/includes/sales_ui.php");
 
 	$js = "";
-	if (Config::get('ui.windows.popups'))
+	if (Config::get('ui_windows_popups'))
 		$js .= ui_view::get_js_open_window(900, 500);
 
 	page(_($help_context = "Customer Allocation Inquiry"), false, false, "", $js);
@@ -147,7 +147,7 @@
     		AND trans.tran_date <= '$date_to'";
 
 	if ($_POST['customer_id'] != ALL_TEXT)
-		$sql .= " AND trans.debtor_no = " . db_escape($_POST['customer_id']);
+		$sql .= " AND trans.debtor_no = " . DBOld::escape($_POST['customer_id']);
 
 	if (isset($_POST['filterType']) && $_POST['filterType'] != ALL_TEXT) {
 		if ($_POST['filterType'] == '1' || $_POST['filterType'] == '2') {

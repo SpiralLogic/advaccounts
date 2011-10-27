@@ -17,9 +17,9 @@
 	// Title:	Stock Check Sheet
 	// ----------------------------------------------------------------
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	include_once(APP_PATH . "includes/db/manufacturing_db.inc");
+	include_once(APP_PATH . "includes/manufacturing.php");
 
 	//----------------------------------------------------------------------------------------------------
 
@@ -39,9 +39,9 @@
 		WHERE stock_master.category_id=stock_category.category_id
 		AND (stock_master.mb_flag='" . STOCK_PURCHASED . "' OR stock_master.mb_flag='" . STOCK_MANUFACTURE . "')";
 		if ($category != 0)
-			$sql .= " AND stock_master.category_id = " . db_escape($category);
+			$sql .= " AND stock_master.category_id = " . DBOld::escape($category);
 		if ($location != 'all')
-			$sql .= " AND IF(stock_moves.stock_id IS NULL, '1=1',stock_moves.loc_code = " . db_escape($location) . ")";
+			$sql .= " AND IF(stock_moves.stock_id IS NULL, '1=1',stock_moves.loc_code = " . DBOld::escape($location) . ")";
 		$sql .= " GROUP BY stock_master.category_id,
 		stock_category.description,
 		stock_master.stock_id,
@@ -49,7 +49,7 @@
 		ORDER BY stock_master.category_id,
 		stock_master.stock_id";
 
-		return db_query($sql, "No transactions were returned");
+		return DBOld::query($sql, "No transactions were returned");
 	}
 
 	//----------------------------------------------------------------------------------------------------
@@ -65,9 +65,9 @@
 		$comments = $_POST['PARAM_6'];
 		$destination = $_POST['PARAM_7'];
 		if ($destination)
-			include_once(APP_PATH . "reporting/includes/excel_report.inc");
+			include_once(APP_PATH . "reporting/includes/excel_report.php");
 		else
-			include_once(APP_PATH . "reporting/includes/pdf_report.inc");
+			include_once(APP_PATH . "reporting/includes/pdf_report.php");
 
 		if ($category == ALL_NUMERIC)
 			$category = 0;
@@ -122,18 +122,18 @@
 
 		$res = getTransactions($category, $location);
 		$catt = '';
-		while ($trans = db_fetch($res))
+		while ($trans = DBOld::fetch($res))
 		{
 			if ($location == 'all')
 				$loc_code = "";
 			else
 				$loc_code = $location;
-			$demandqty = get_demand_qty($trans['stock_id'], $loc_code);
-			$demandqty += get_demand_asm_qty($trans['stock_id'], $loc_code);
-			$onorder = get_on_porder_qty($trans['stock_id'], $loc_code);
-			$flag = get_mb_flag($trans['stock_id']);
+			$demandqty = Manufacturing::get_demand_qty($trans['stock_id'], $loc_code);
+			$demandqty += Manufacturing::get_demand_asm_qty($trans['stock_id'], $loc_code);
+			$onorder = Manufacturing::get_on_porder_qty($trans['stock_id'], $loc_code);
+			$flag = Manufacturing::get_mb_flag($trans['stock_id']);
 			if ($flag == STOCK_MANUFACTURE)
-				$onorder += get_on_worder_qty($trans['stock_id'], $loc_code);
+				$onorder += Manufacturing::get_on_worder_qty($trans['stock_id'], $loc_code);
 			if ($no_zeros && $trans['QtyOnHand'] == 0 && $demandqty == 0 && $onorder == 0)
 				continue;
 			if ($shortage && $trans['QtyOnHand'] - $demandqty >= 0)
@@ -170,10 +170,10 @@
 				 . item_img_name($trans['stock_id']) . '.jpg';
 				if (file_exists($image)) {
 					$rep->NewLine();
-					if ($rep->row - Config::get('item.images.height') < $rep->bottomMargin)
+					if ($rep->row - Config::get('item_images_height') < $rep->bottomMargin)
 						$rep->Header();
-					$rep->AddImage($image, $rep->cols[1], $rep->row - Config::get('item.images.height'), 0, Config::get('item.images.height'));
-					$rep->row -= Config::get('item.images.height');
+					$rep->AddImage($image, $rep->cols[1], $rep->row - Config::get('item_images_height'), 0, Config::get('item_images_height'));
+					$rep->row -= Config::get('item_images_height');
 					$rep->NewLine();
 				}
 			}

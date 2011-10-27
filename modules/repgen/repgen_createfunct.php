@@ -24,22 +24,20 @@
  */
 	$page_security = 'SA_REPORT_GENERATOR';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	add_access_extensions();
 
-	include_once(APP_PATH . "admin/db/company_db.inc");
-
-	require_once("repgen_const.inc");
-	require_once("repgen_def.inc");
-	require_once("repgen.inc");
+	require_once("repgen_const.php");
+	require_once("repgen_def.php");
+	require_once("repgen.php");
 
 	function check_short($short) { // controls, that short-name of blocks does not be twice
 		global $id_new;
 		if (empty($short))
 			return false;
 		$query = "SELECT attrib,id FROM xx_reports WHERE typ='funct'";
-		$res = db_query($query);
-		while ($f = db_fetch($res))
+		$res = DBOld::query($query);
+		while ($f = DBOld::fetch($res))
 		{
 			$h = explode("|", $f["attrib"]);
 			if (($h[0] == $short) && (trim($f["id"]) != $id_new))
@@ -56,12 +54,12 @@
 	}
 
 	function store($id, $info) { // stores the records 'block' in the database
-		db_query("BEGIN");
+		DBOld::query("BEGIN");
 		$query = "DELETE FROM xx_reports WHERE (id ='" . $id . "' AND typ='funct')";
-		db_query($query);
+		DBOld::query($query);
 		$query = "INSERT INTO xx_reports VALUES ('" . $id . "','funct','" . $info . "')";
-		db_query($query);
-		db_query("COMMIT");
+		DBOld::query($query);
+		DBOld::query("COMMIT");
 	}
 
 	if (!isset($funct))
@@ -134,8 +132,8 @@
 		ui_msgs::display_notification(PHP_OK . $field);
 
 	if (empty($funct)) {
-		$res = db_query("SELECT attrib FROM xx_reports WHERE id = '$id_new'");
-		$f = db_fetch($res);
+		$res = DBOld::query("SELECT attrib FROM xx_reports WHERE id = '$id_new'");
+		$f = DBOld::fetch($res);
 		$h = explode("|", $f["attrib"]);
 		if (!isset($h[4]))
 			$h[4] = "";
@@ -144,7 +142,7 @@
 
 	start_form(false, false, "repgen_createfunct.php", "edit");
 
-	start_table(Config::get('tables.style2'));
+	start_table(Config::get('tables_style2'));
 	label_row(ID_FUNCT, $id_new . hidden("date_", date("Y-m-d"), false) . hidden("id", $id_new, false) . hidden("id_new", $id_new, false));
 	text_row(SHORT, "short", $short, 10, 10);
 	text_row(LONG, "long", $long, 40, 40);
@@ -155,7 +153,7 @@
 
 	ui_msgs::display_note(FUNC_DECL, 0, 1);
 
-	start_table(Config::get('tables.style'));
+	start_table(Config::get('tables_style'));
 	start_row();
 	submit_cells("select", SELECT_CR);
 	submit_cells("store", PAGE_STORE);

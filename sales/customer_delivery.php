@@ -15,30 +15,27 @@
 	//
 	$page_security = 'SA_SALESDELIVERY';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	include_once(APP_PATH . "includes/manufacturing.inc");
-
-	include_once(APP_PATH . "sales/includes/sales_ui.inc");
-	include_once(APP_PATH . "reporting/includes/reporting.inc");
-	include_once(APP_PATH . "taxes/tax_calc.inc");
+	include_once(APP_PATH . "sales/includes/sales_ui.php");
+	include_once(APP_PATH . "reporting/includes/reporting.php");
 
 	$js = "";
-	if (Config::get('ui.windows.popups')) {
+	if (Config::get('ui_windows_popups')) {
 		$js .= ui_view::get_js_open_window(900, 500);
 	}
 
 	if (isset($_GET['ModifyDelivery'])) {
-		$_SESSION['page_title'] = sprintf(_("Modifying Delivery Note # %d."), $_GET['ModifyDelivery']);
+		$page_title = sprintf(_("Modifying Delivery Note # %d."), $_GET['ModifyDelivery']);
 		$help_context = "Modifying Delivery Note";
 		processing_start();
 	}
 	elseif (isset($_GET['OrderNumber'])) {
-		$_SESSION['page_title'] = _($help_context = "Deliver Items for a Sales Order");
+		$page_title = _($help_context = "Deliver Items for a Sales Order");
 		processing_start();
 	}
 
-	page($_SESSION['page_title'], false, false, "", $js);
+	page($page_title, false, false, "", $js);
 
 	if (isset($_GET['AddedID'])) {
 		$dispatch_no = $_GET['AddedID'];
@@ -97,7 +94,7 @@
 		$ord->src_docs = $ord->trans_no;
 		$ord->order_no = key($ord->trans_no);
 		$ord->trans_no = 0;
-		$ord->reference = $Refs->get_next(ST_CUSTDELIVERY);
+		$ord->reference = Refs::get_next(ST_CUSTDELIVERY);
 		$ord->document_date = Dates::new_doc_date();
 		$_SESSION['Items'] = $ord;
 		copy_from_cart();
@@ -132,7 +129,7 @@
 		if (!check_quantities()) {
 			ui_msgs::display_error(_("Selected quantity cannot be less than quantity invoiced nor more than quantity	not dispatched on sales order."));
 		}
-		elseif (!check_num('ChargeFreightCost', 0)) {
+		elseif (!Validation::is_num('ChargeFreightCost', 0)) {
 			ui_msgs::display_error(_("Freight cost cannot be less than zero"));
 			ui_view::set_focus('ChargeFreightCost');
 		}
@@ -141,7 +138,6 @@
 	//-----------------------------------------------------------------------------
 
 	function check_data() {
-		global $Refs;
 
 		if (!isset($_POST['DispatchDate']) || !Dates::is_date($_POST['DispatchDate'])) {
 			ui_msgs::display_error(_("The entered date of delivery is invalid."));
@@ -162,7 +158,7 @@
 		}
 
 		if ($_SESSION['Items']->trans_no == 0) {
-			if (!$Refs->is_valid($_POST['ref'])) {
+			if (!Refs::is_valid($_POST['ref'])) {
 				ui_msgs::display_error(_("You must enter a reference."));
 				ui_view::set_focus('ref');
 				return false;
@@ -178,7 +174,7 @@
 			$_POST['ChargeFreightCost'] = price_format(0);
 		}
 
-		if (!check_num('ChargeFreightCost', 0)) {
+		if (!Validation::is_num('ChargeFreightCost', 0)) {
 			ui_msgs::display_error(_("The entered shipping value is not numeric."));
 			ui_view::set_focus('ChargeFreightCost');
 			return false;
@@ -239,10 +235,10 @@
 					$max = $itm->quantity - $itm->qty_done;
 				}
 
-				if ($itm->quantity > 0 && check_num('Line' . $line, $min, $max)) {
+				if ($itm->quantity > 0 && Validation::is_num('Line' . $line, $min, $max)) {
 					$_SESSION['Items']->line_items[$line]->qty_dispatched = input_num('Line' . $line);
 				}
-				elseif ($itm->quantity < 0 && check_num('Line' . $line, $max, $min)) {
+				elseif ($itm->quantity < 0 && Validation::is_num('Line' . $line, $max, $min)) {
 					$_SESSION['Items']->line_items[$line]->qty_dispatched = input_num('Line' . $line);
 				}
 				else {
@@ -267,12 +263,11 @@
 	//------------------------------------------------------------------------------
 
 	function check_qoh() {
-		global $SysPrefs;
 
-		if (!$SysPrefs->allow_negative_stock()) {
+		if (!SysPrefs::allow_negative_stock()) {
 			foreach ($_SESSION['Items']->line_items as $itm) {
 
-				if ($itm->qty_dispatched && has_stock_holding($itm->mb_flag)) {
+				if ($itm->qty_dispatched && Manufacturing::has_stock_holding($itm->mb_flag)) {
 					$qoh = get_qoh_on_date($itm->stock_id, $_POST['Location'], $_POST['DispatchDate']);
 
 					if ($itm->qty_dispatched > $qoh) {
@@ -319,10 +314,10 @@
 	start_form();
 	hidden('cart_id');
 
-	start_table(Config::get('tables.style2') . " width=90%", 5);
+	start_table(Config::get('tables_style2') . " width=90%", 5);
 	echo "<tr><td>"; // outer table
 
-	start_table(Config::get('tables.style') . "  width=100%");
+	start_table(Config::get('tables_style') . "  width=100%");
 	start_row();
 	label_cells(_("Customer"), $_SESSION['Items']->customer_name, "class='tableheader2'");
 	label_cells(_("Branch"), get_branch_name($_SESSION['Items']->Branch), "class='tableheader2'");
@@ -331,7 +326,7 @@
 	start_row();
 
 	//if (!isset($_POST['ref']))
-	//	$_POST['ref'] = $Refs->get_next(ST_CUSTDELIVERY);
+	//	$_POST['ref'] = Refs::get_next(ST_CUSTDELIVERY);
 
 	if ($_SESSION['Items']->trans_no == 0) {
 		ref_cells(_("Reference"), 'ref', '', null, "class='tableheader2'");
@@ -373,7 +368,7 @@
 
 	echo "</td><td>"; // outer table
 
-	start_table(Config::get('tables.style') . "  width=90%");
+	start_table(Config::get('tables_style') . "  width=90%");
 
 	if (!isset($_POST['due_date']) || !Dates::is_date($_POST['due_date'])) {
 		$_POST['due_date'] = get_invoice_duedate($_SESSION['Items']->customer_id, $_POST['DispatchDate']);
@@ -395,7 +390,7 @@
 	}
 	ui_msgs::display_heading(_("Delivery Items"));
 	div_start('Items');
-	start_table(Config::get('tables.style') . "  width=90%");
+	start_table(Config::get('tables_style') . "  width=90%");
 
 	$new = $_SESSION['Items']->trans_no == 0;
 	$th = array(_("Item Code"), _("Item Description"),
@@ -413,7 +408,7 @@
 		}
 		// if it's a non-stock item (eg. service) don't show qoh
 		$show_qoh = true;
-		if ($SysPrefs->allow_negative_stock() || !has_stock_holding($ln_itm->mb_flag) ||
+		if (SysPrefs::allow_negative_stock() || !Manufacturing::has_stock_holding($ln_itm->mb_flag) ||
 		 $ln_itm->qty_dispatched == 0
 		) {
 			$show_qoh = false;
@@ -479,9 +474,9 @@
 	end_table(1);
 
 	if ($has_marked) {
-		ui_msgs::display_note(_("Marked items have insufficient quantities in stock as on day of delivery."), 0, 1, "class='red'");
+		ui_msgs::display_warning(_("Marked items have insufficient quantities in stock as on day of delivery."), 0, 1, "class='red'");
 	}
-	start_table(Config::get('tables.style2'));
+	start_table(Config::get('tables_style2'));
 
 	policy_list_row(_("Action For Balance"), "bo_policy", null);
 

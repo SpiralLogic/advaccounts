@@ -11,11 +11,11 @@
 	 ***********************************************************************/
 	$page_security = 'SA_REORDER';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	page(_($help_context = "Reorder Levels"));
 
-	check_db_has_costable_items(_("There are no inventory items defined in the system (Purchased or manufactured items)."));
+	Validation::check(Validation::COST_ITEMS, _("There are no inventory items defined in the system (Purchased or manufactured items)."), STOCK_SERVICE);
 
 	//------------------------------------------------------------------------------------
 
@@ -31,7 +31,7 @@
 
 	start_form();
 
-	if (!isset($_POST['stock_id'])) {
+	if (!Input::post('stock_id')) {
 		$_POST['stock_id'] = ui_globals::get_global_stock_item();
 	}
 
@@ -47,7 +47,7 @@
 	ui_globals::set_global_stock_item($_POST['stock_id']);
 
 	div_start('reorders');
-	start_table(Config::get('tables.style') . "  width=30%");
+	start_table(Config::get('tables_style') . "  width=30%");
 
 	$th = array(_("Location"), _("Quantity On Hand"), _("Re-Order Level"));
 	table_header($th);
@@ -57,12 +57,12 @@
 
 	$result = get_loc_details($_POST['stock_id']);
 
-	while ($myrow = db_fetch($result))
+	while ($myrow = DBOld::fetch($result))
 	{
 
 		alt_table_row_color($k);
 
-		if (isset($_POST['UpdateData']) && check_num($myrow["loc_code"])) {
+		if (isset($_POST['UpdateData']) && Validation::is_num($myrow["loc_code"])) {
 
 			$myrow["reorder_level"] = input_num($myrow["loc_code"]);
 			set_reorder_level($_POST['stock_id'], $myrow["loc_code"], input_num($myrow["loc_code"]));

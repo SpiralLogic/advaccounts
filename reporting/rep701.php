@@ -17,7 +17,7 @@
 	// Title:	Chart of GL Accounts
 	// ----------------------------------------------------------------
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	//----------------------------------------------------------------------------------------------------
 
@@ -26,7 +26,7 @@
 
 		//Get Accounts directly under this group/type
 		$result = get_gl_accounts(null, null, $type);
-		while ($account = db_fetch($result))
+		while ($account = DBOld::fetch($result))
 		{
 			//Print Type Title if it has atleast one non-zero account
 			if (!$printtitle) {
@@ -54,7 +54,7 @@
 
 		//Get Account groups/types under this group/type
 		$result = get_account_types(false, false, $type);
-		while ($accounttype = db_fetch($result))
+		while ($accounttype = DBOld::fetch($result))
 		{
 			//Print Type Title if has sub types and not previously printed
 			if (!$printtitle) {
@@ -83,9 +83,9 @@
 		$comments = $_POST['PARAM_1'];
 		$destination = $_POST['PARAM_2'];
 		if ($destination)
-			include_once(APP_PATH . "reporting/includes/excel_report.inc");
+			include_once(APP_PATH . "reporting/includes/excel_report.php");
 		else
-			include_once(APP_PATH . "reporting/includes/pdf_report.inc");
+			include_once(APP_PATH . "reporting/includes/pdf_report.php");
 
 		$dec = 0;
 
@@ -104,7 +104,7 @@
 		$rep->Header();
 
 		$classresult = get_account_classes(false);
-		while ($class = db_fetch($classresult))
+		while ($class = DBOld::fetch($classresult))
 		{
 			$rep->Font('bold');
 			$rep->TextCol(0, 1, $class['cid']);
@@ -114,7 +114,7 @@
 
 			//Get Account groups/types under this group/type with no parents
 			$typeresult = get_account_types(false, $class['cid'], -1);
-			while ($accounttype = db_fetch($typeresult))
+			while ($accounttype = DBOld::fetch($typeresult))
 			{
 				display_type($accounttype["id"], $accounttype["name"], $dec, $rep, $showbalance);
 			}

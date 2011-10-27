@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 	$page_security = 'SA_INVENTORYMOVETYPE';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	page(_($help_context = "Inventory Movement Types"));
 
@@ -48,10 +48,10 @@
 
 	function can_delete($selected_id) {
 		$sql = "SELECT COUNT(*) FROM stock_moves
-		WHERE type=" . ST_INVADJUST . " AND person_id=" . db_escape($selected_id);
+		WHERE type=" . ST_INVADJUST . " AND person_id=" . DBOld::escape($selected_id);
 
-		$result = db_query($sql, "could not query stock moves");
-		$myrow = db_fetch_row($result);
+		$result = DBOld::query($sql, "could not query stock moves");
+		$myrow = DBOld::fetch_row($result);
 		if ($myrow[0] > 0) {
 			ui_msgs::display_error(_("Cannot delete this inventory movement type because item transactions have been created referring to it."));
 			return false;
@@ -81,13 +81,13 @@
 	$result = get_all_movement_type(check_value('show_inactive'));
 
 	start_form();
-	start_table(Config::get('tables.style') . "  width=30%");
+	start_table(Config::get('tables_style') . "  width=30%");
 
 	$th = array(_("Description"), "", "");
 	inactive_control_column($th);
 	table_header($th);
 	$k = 0;
-	while ($myrow = db_fetch($result))
+	while ($myrow = DBOld::fetch($result))
 	{
 
 		alt_table_row_color($k);
@@ -103,7 +103,7 @@
 
 	//-----------------------------------------------------------------------------------
 
-	start_table(Config::get('tables.style2'));
+	start_table(Config::get('tables_style2'));
 
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {

@@ -12,10 +12,10 @@
 
 	$page_security = 'SA_GLANALYTIC';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	$js = "";
-	if (Config::get('ui.windows.popups'))
+	if (Config::get('ui_windows_popups'))
 		$js .= ui_view::get_js_open_window(800, 500);
 
 	page(_($help_context = "Journal Inquiry"), false, false, "", $js);
@@ -95,7 +95,7 @@
 	function edit_link($row) {
 		global $editors;
 
-		return isset($editors[$row["type"]]) && !is_closed_trans($row["type"], $row["type_no"]) ?
+		return isset($editors[$row["type"]]) && !DB_AuditTrail::is_closed_trans($row["type"], $row["type_no"]) ?
 		 pager_link(_("Edit"),
 			 sprintf($editors[$row["type"]], $row["type_no"], $row["type"]),
 			 ICON_EDIT) : '';

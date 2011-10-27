@@ -11,11 +11,9 @@
 	 ***********************************************************************/
 	$page_security = 'SA_SETUPDISPLAY';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	page(_($help_context = "Display Setup"));
-
-	include_once(APP_PATH . "admin/db/company_db.inc");
 
 	//-------------------------------------------------------------------------------------------------
 
@@ -60,7 +58,7 @@
 
 	start_form();
 
-	start_outer_table(Config::get('tables.style2'));
+	start_outer_table(Config::get('tables_style2'));
 
 	table_section(1);
 	table_section_title(_("Decimal Places"));
@@ -81,12 +79,12 @@
 
 	thoseps_list_row(_("Thousand Separator:"), "tho_sep", user_tho_sep());
 
-	/* The array Config::get('seperators.thousands') is set up in config.php for modifications
+	/* The array Config::get('separators_thousands') is set up in config.php for modifications
 	possible separators can be added by modifying the array definition by editing that file */
 
 	decseps_list_row(_("Decimal Separator:"), "dec_sep", user_dec_sep());
 
-	/* The array Config::get('seperators.thousands',user_tho_sep()); is set up in config.php for modifications
+	/* The array Config::get('separators_thousands',user_tho_sep()); is set up in config.php for modifications
 	possible separators can be added by modifying the array definition by editing that file */
 	if (!isset($_POST['language']))
 		$_POST['language'] = $_SESSION['language']->code;
@@ -113,7 +111,7 @@
 
 	tab_list_row(_("Start-up Tab"), 'startup_tab', user_startup_tab());
 
-	/* The array Config::get('formats.paper_size') is set up in config.php for modifications
+	/* The array Config::get('formats_paper_size') is set up in config.php for modifications
 	possible separators can be added by modifying the array definition by editing that file */
 
 	if (!isset($_POST['profile']))

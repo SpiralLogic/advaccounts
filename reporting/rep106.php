@@ -17,9 +17,9 @@
 	// Title:	Salesman Report
 	// ----------------------------------------------------------------
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	include_once(APP_PATH . "inventory/includes/db/items_category_db.inc");
+	include_once(APP_PATH . "inventory/includes/db/items_category_db.php");
 
 	//----------------------------------------------------------------------------------------------------
 
@@ -46,7 +46,7 @@
 		    AND debtor_trans.tran_date<='$todate'
 		ORDER BY salesman.salesman_code, debtor_trans.tran_date";
 
-		return db_query($sql, "Error getting order details");
+		return DBOld::query($sql, "Error getting order details");
 	}
 
 	//----------------------------------------------------------------------------------------------------
@@ -59,9 +59,9 @@
 		$comments = $_POST['PARAM_3'];
 		$destination = $_POST['PARAM_4'];
 		if ($destination)
-			include_once(APP_PATH . "reporting/includes/excel_report.inc");
+			include_once(APP_PATH . "reporting/includes/excel_report.php");
 		else
-			include_once(APP_PATH . "reporting/includes/pdf_report.inc");
+			include_once(APP_PATH . "reporting/includes/pdf_report.php");
 
 		if ($summary == 0)
 			$sum = _("No");
@@ -100,7 +100,7 @@
 
 		$result = GetSalesmanTrans($from, $to);
 
-		while ($myrow = db_fetch($result))
+		while ($myrow = DBOld::fetch($result))
 		{
 			if ($rep->row < $rep->bottomMargin + (2 * $rep->lineHeight)) {
 				$salesman = 0;

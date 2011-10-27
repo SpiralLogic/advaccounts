@@ -40,15 +40,15 @@
 				$this->_status(false, 'Processing', "The customer short name cannot be empty.", 'debtor_ref');
 				return false;
 			}
-			if (!check_num('credit_limit', 0)) {
+			if (!Validation::is_num('credit_limit', 0)) {
 				$this->_status(false, 'Processing', "The credit limit must be numeric and not less than zero.", 'credit_limit');
 				return false;
 			}
-			if (!check_num('pymt_discount', 0, 100)) {
+			if (!Validation::is_num('pymt_discount', 0, 100)) {
 				$this->_status(false, 'Processing', "The payment discount must be numeric and is expected to be less than 100% and greater than or equal to 0.", 'pymt_discount');
 				return false;
 			}
-			if (!check_num('discount', 0, 100)) {
+			if (!Validation::is_num('discount', 0, 100)) {
 				$this->_status(false, 'Processing', "The discount percentage must be numeric and is expected to be less than 100% and greater than or equal to 0.", 'discount');
 				return false;
 			}
@@ -90,26 +90,26 @@
 			if ($this->id == 0) {
 				$status = $this->_saveNew();
 			} else {
-				begin_transaction();
-				$sql = "UPDATE debtors_master SET name=" . db_escape($this->name) . ",
-			debtor_ref=" . db_escape(substr($this->name, 0, 29)) . ",
-			address=" . db_escape($this->address) . ",
-			tax_id=" . db_escape($this->tax_id) . ",
-			curr_code=" . db_escape($this->curr_code) . ",
-			email=" . db_escape($this->email) . ",
-			dimension_id=" . db_escape($this->dimension_id) . ",
-			dimension2_id=" . db_escape($this->dimension2_id) . ",
-            credit_status=" . db_escape($this->credit_status) . ",
-            payment_terms=" . db_escape($this->payment_terms) . ",
+				DBOld::begin_transaction();
+				$sql = "UPDATE debtors_master SET name=" . DBOld::escape($this->name) . ",
+			debtor_ref=" . DBOld::escape(substr($this->name, 0, 29)) . ",
+			address=" . DBOld::escape($this->address) . ",
+			tax_id=" . DBOld::escape($this->tax_id) . ",
+			curr_code=" . DBOld::escape($this->curr_code) . ",
+			email=" . DBOld::escape($this->email) . ",
+			dimension_id=" . DBOld::escape($this->dimension_id) . ",
+			dimension2_id=" . DBOld::escape($this->dimension2_id) . ",
+            credit_status=" . DBOld::escape($this->credit_status) . ",
+            payment_terms=" . DBOld::escape($this->payment_terms) . ",
             discount=" . user_numeric($this->discount) / 100 . ",
             pymt_discount=" . user_numeric($this->pymt_discount) / 100 . ",
             credit_limit=" . user_numeric($this->credit_limit) . ",
-            sales_type = " . db_escape($this->sales_type) . ",
-            notes=" . db_escape($this->notes) . "
-            WHERE debtor_no = " . db_escape($this->id);
-				db_query($sql, "The customer could not be updated");
-				update_record_status($this->id, $this->inactive, 'debtors_master', 'debtor_no');
-				commit_transaction();
+            sales_type = " . DBOld::escape($this->sales_type) . ",
+            notes=" . DBOld::escape($this->notes) . "
+            WHERE debtor_no = " . DBOld::escape($this->id);
+				DBOld::query($sql, "The customer could not be updated");
+				DBOld::update_record_status($this->id, $this->inactive, 'debtors_master', 'debtor_no');
+				DBOld::commit_transaction();
 				$status = "Customer has been updated.";
 			}
 			$this->accounts->save(array('debtor_no' => $this->id));
@@ -138,14 +138,14 @@
 
 		protected
 		function _saveNew() {
-			begin_transaction();
+			DBOld::begin_transaction();
 			$sql = "INSERT INTO debtors_master (name, debtor_ref, address, tax_id, email, dimension_id, dimension2_id,
 			curr_code, credit_status, payment_terms, discount, pymt_discount,credit_limit,
-			sales_type, notes) VALUES (" . db_escape($this->name) . ", " . db_escape(substr($this->name, 0, 29)) . ", " . db_escape($this->address) . ", " . db_escape($this->tax_id) . ",
-			" . db_escape($this->email) . ", " . db_escape($this->dimension_id) . ", " . db_escape($this->dimension2_id) . ", " . db_escape($this->curr_code) . ", " . db_escape($this->credit_status) . ", " . db_escape($this->payment_terms) . ", " . user_numeric($this->discount) / 100 . "," . user_numeric($this->pymt_discount) / 100 . ", " . user_numeric($this->credit_limit) . ", " . db_escape($this->sales_type) . ", " . db_escape($this->notes) . ")";
-			db_query($sql, "The customer could not be added");
-			$this->id = db_insert_id();
-			commit_transaction();
+			sales_type, notes) VALUES (" . DBOld::escape($this->name) . ", " . DBOld::escape(substr($this->name, 0, 29)) . ", " . DBOld::escape($this->address) . ", " . DBOld::escape($this->tax_id) . ",
+			" . DBOld::escape($this->email) . ", " . DBOld::escape($this->dimension_id) . ", " . DBOld::escape($this->dimension2_id) . ", " . DBOld::escape($this->curr_code) . ", " . DBOld::escape($this->credit_status) . ", " . DBOld::escape($this->payment_terms) . ", " . user_numeric($this->discount) / 100 . "," . user_numeric($this->pymt_discount) / 100 . ", " . user_numeric($this->credit_limit) . ", " . DBOld::escape($this->sales_type) . ", " . DBOld::escape($this->notes) . ")";
+			DBOld::query($sql, "The customer could not be added");
+			$this->id = DBOld::insert_id();
+			DBOld::commit_transaction();
 			foreach ($this->branches as $branch) {
 				if ($branch->name == 'New Address') {
 					$branch->name = $this->name;
@@ -167,13 +167,13 @@
 
 		protected
 		function _defaults() {
-			global $SysPrefs;
+
 			$this->dimension_id = $this->dimension2_id = $this->inactive = 0;
 			$this->sales_type = $this->credit_status = 1;
 			$this->name = $this->address = $this->email = $this->tax_id = $this->payment_terms = $this->notes = $this->debtor_ref = '';
 			$this->curr_code = Banking::get_company_currency();
 			$this->discount = $this->pymt_discount = percent_format(0);
-			$this->credit_limit = price_format($SysPrefs->default_credit_limit());
+			$this->credit_limit = price_format(SysPrefs::default_credit_limit());
 		}
 
 		protected
@@ -207,15 +207,15 @@
 				debtor_trans.ov_freight_tax + debtor_trans.ov_discount)
 				AS TotalAmount, debtor_trans.alloc AS Allocated
 				FROM debtor_trans LEFT OUTER JOIN sales_orders ON  debtor_trans.order_ =  sales_orders.order_no
-    			WHERE  debtor_trans.debtor_no = " . db_escape($this->id) . "
-    			 AND sales_orders.debtor_no = " . db_escape($this->id) . "
+    			WHERE  debtor_trans.debtor_no = " . DBOld::escape($this->id) . "
+    			 AND sales_orders.debtor_no = " . DBOld::escape($this->id) . "
     				AND debtor_trans.type <> " . ST_CUSTDELIVERY . "
     				AND (debtor_trans.ov_amount + debtor_trans.ov_gst + debtor_trans.ov_freight +
 				debtor_trans.ov_freight_tax + debtor_trans.ov_discount) != 0
     				ORDER BY debtor_trans.branch_code, debtor_trans.tran_date";
-			$result = db_query($sql);
+			$result = DBOld::query($sql);
 			$results = array();
-			while ($row = db_fetch_assoc($result)) {
+			while ($row = DBOld::fetch_assoc($result)) {
 				$results[] = $row;
 			}
 			return $results;
@@ -254,7 +254,7 @@
 				return $this->_status(false, 'delete', "Cannot delete this customer because there are contact records set up against it.");
 			}
 			$sql = "DELETE FROM debtors_master WHERE debtor_no=" . $this->id;
-			db_query($sql, "cannot delete customer");
+			DBOld::query($sql, "cannot delete customer");
 			unset($this->id);
 			$this->_new();
 			return $this->_status(true, 'delete', "Customer deleted.");
@@ -347,17 +347,17 @@
 			$defaults = array('inactive' => false, 'selected' => '');
 			$o = array_merge($defaults, $options);
 			$term = explode(' ', $term);
-			$term1 = db_escape(trim($term[0]) . '%');
-			$term2 = db_escape('%' . implode(' AND name LIKE ', array_map(function($v) {
+			$term1 = DBOld::escape(trim($term[0]) . '%');
+			$term2 = DBOld::escape('%' . implode(' AND name LIKE ', array_map(function($v) {
 							return trim($v);
 						}, $term)) . '%');
 			$where = ($o['inactive'] ? '' : ' AND inactive = 0 ');
 			$sql = "(SELECT debtor_no as id, name as label, debtor_no as value, name as description FROM debtors_master WHERE name LIKE $term1 $where ORDER BY name LIMIT 20)
 						UNION (SELECT debtor_no as id, name as label, debtor_no as value, name as description FROM debtors_master
 						WHERE debtor_ref LIKE $term1 OR name LIKE $term2 OR debtor_no LIKE $term1 $where ORDER BY debtor_no, name LIMIT 20)";
-			$result = db_query($sql, 'Couldn\'t Get Customers');
+			$result = DBOld::query($sql, 'Couldn\'t Get Customers');
 			$data = '';
-			while ($row = db_fetch_assoc($result)) {
+			while ($row = DBOld::fetch_assoc($result)) {
 				foreach ($row as &$value) {
 					$value = htmlspecialchars_decode($value);
 				}

@@ -11,13 +11,13 @@
 	 ***********************************************************************/
 	$page_security = 'SA_DIMTRANSVIEW';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	$js = "";
 	page(_($help_context = "View Dimension"), true, false, "", $js);
 
-	include_once(APP_PATH . "dimensions/includes/dimensions_db.inc");
-	include_once(APP_PATH . "dimensions/includes/dimensions_ui.inc");
+	include_once(APP_PATH . "dimensions/includes/dimensions_db.php");
+	include_once(APP_PATH . "dimensions/includes/dimensions_ui.php");
 
 	//-------------------------------------------------------------------------------------------------
 
@@ -39,7 +39,7 @@
 		exit;
 	}
 
-	start_table(Config::get('tables.style'));
+	start_table(Config::get('tables_style'));
 
 	$th = array(_("#"), _("Reference"), _("Name"), _("Type"), _("Date"), _("Due Date"));
 	table_header($th);

@@ -13,9 +13,8 @@
 	$page_security = $_POST['PARAM_0'] == $_POST['PARAM_1'] ?
 	 'SA_SALESTRANSVIEW' : 'SA_SALESBULKREP';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	include_once(APP_PATH . "taxes/tax_calc.inc");
 	//----------------------------------------------------------------------------------------------------
 
 	print_sales_orders();
@@ -25,7 +24,7 @@
 	function print_sales_orders() {
 		global $print_as_quote;
 
-		include_once(APP_PATH . "reporting/includes/pdf_report.inc");
+		include_once(APP_PATH . "reporting/includes/pdf_report.php");
 
 		$from = $_POST['PARAM_0'];
 		$to = $_POST['PARAM_1'];
@@ -47,7 +46,7 @@
 
 		$params = array('comments' => $comments);
 
-		$cur = get_company_Pref('curr_default');
+		$cur = DB_Company::get_pref('curr_default');
 
 		if ($email == 0) {
 			if ($print_as_quote == 0)
@@ -84,13 +83,13 @@
 			$result = get_sales_order_details($i, ST_SALESORDER);
 			$SubTotal = 0;
 			$TaxTotal = 0;
-			while ($myrow2 = db_fetch($result)) {
+			while ($myrow2 = DBOld::fetch($result)) {
 				$Net = round2(((1 - $myrow2["discount_percent"]) * $myrow2["unit_price"] * $myrow2["quantity"]),
 					user_price_dec());
 				$SubTotal += $Net;
 				#  __ADVANCEDEDIT__ BEGIN #
-				$TaxType = get_item_tax_type_for_item($myrow2['stk_code']);
-				$TaxTotal += get_tax_for_item($myrow2['stk_code'], $Net, $TaxType);
+				$TaxType = Tax_Groups::get_for_item($myrow2['stk_code']);
+				$TaxTotal += Taxes::get_tax_for_item($myrow2['stk_code'], $Net, $TaxType);
 
 				#  __ADVANCEDEDIT__ END #
 				$DisplayPrice = number_format2($myrow2["unit_price"], $dec);
@@ -132,9 +131,9 @@
 			$linetype = true;
 			$doctype = ($print_as_quote < 3) ? ST_SALESORDER : ST_SALESQUOTE;
 			if ($rep->currency != $myrow['curr_code']) {
-				include(APP_PATH . "reporting/includes/doctext2.inc");
+				include(APP_PATH . "reporting/includes/doctext2.php");
 			} else {
-				include(APP_PATH . "reporting/includes/doctext.inc");
+				include(APP_PATH . "reporting/includes/doctext.php");
 			}
 
 			$rep->TextCol(4, 7, $doc_Shipping . ' (ex.GST)', -2);

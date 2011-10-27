@@ -13,7 +13,7 @@
 		//
 		static function	insert(&$array, $index, $elements) {
 			if (!is_array($elements)) $elements = array($elements);
-			$head = array_splice($array, 0, $index);
+			$head  = array_splice($array, 0, $index);
 			$array = array_merge($head, $elements, $array);
 		}
 
@@ -34,6 +34,7 @@
 		}
 
 		static function	search_value($needle, $haystack, $valuekey = null) {
+
 			foreach ($haystack as $key => $value) {
 				$val = isset($valuekey) ? $value[$valuekey] : $value;
 				if ($needle == $val) {
@@ -51,5 +52,39 @@
 				}
 			}
 			return null;
+		}
+
+		static function natsort($aryData, $strIndex, $strSortBy, $strSortType = false) {
+			//    if the parameters are invalid
+			if (!is_array($aryData) || !$strSortBy
+			)
+				//    return the array
+				return $aryData;
+			//    create our temporary arrays
+			$arySort = $aryResult = array();
+
+			//    loop through the array
+			foreach ($aryData as $key => $aryRow) {
+				$arySort[$strIndex ? $aryRow[$strIndex] : $key] = $aryRow[$strSortBy];
+			}
+
+			//    apply the natural sort
+			natsort($arySort);
+
+			//    if the sort type is descending
+			if ($strSortType == "desc")
+				arsort($arySort);
+
+			//    loop through the sorted and original data
+			foreach ($arySort as $arySortKey => $arySorted) {
+				if ($strIndex) {
+					foreach ($aryData as $aryOriginal) {
+						if ($aryOriginal[$strIndex] == $arySortKey)
+							array_push($aryResult, $aryOriginal);
+					}
+				} else $aryResult[$arySortKey] = $aryData[$arySortKey];
+			}
+
+			return $aryResult;
 		}
 	}

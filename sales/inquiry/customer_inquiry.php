@@ -11,12 +11,12 @@
 	 ***********************************************************************/
 	$page_security = 'SA_SALESTRANSVIEW';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
-	include_once(APP_PATH . "sales/includes/sales_ui.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
+	include_once(APP_PATH . "sales/includes/sales_ui.php");
 
-	include_once(APP_PATH . "reporting/includes/reporting.inc");
+	include_once(APP_PATH . "reporting/includes/reporting.php");
 	$js = "";
-	if (Config::get('ui.windows.popups')) {
+	if (Config::get('ui_windows_popups')) {
 		$js .= ui_view::get_js_open_window(900, 500);
 	}
 
@@ -45,7 +45,7 @@
 	ui_globals::set_global_customer($_POST['customer_id']);
 	//------------------------------------------------------------------------------------------------
 	function display_customer_summary($customer_record) {
-		$past1 = get_company_pref('past_due_days');
+		$past1 = DB_Company::get_pref('past_due_days');
 		$past2 = 2 * $past1;
 		if (isset($customer_record["dissallow_invoices"]) && $customer_record["dissallow_invoices"] != 0) {
 			echo "<center><font color=red size=4><b>" . _("CUSTOMER ACCOUNT IS ON HOLD") . "</font></b></center>";
@@ -53,7 +53,7 @@
 		$nowdue = "1-" . $past1 . " " . _('Days');
 		$pastdue1 = $past1 + 1 . "-" . $past2 . " " . _('Days');
 		$pastdue2 = _('Over') . " " . $past2 . " " . _('Days');
-		start_table("width=90%  " . Config::get('tables.style'));
+		start_table("width=90%  " . Config::get('tables_style'));
 		$th = array(_("Currency"), _("Terms"), _("Current"), $nowdue, $pastdue1, $pastdue2, _("Total Balance"));
 		table_header($th);
 		start_row();
@@ -120,7 +120,7 @@
 		$str = '';
 		switch ($row['type']) {
 			case ST_SALESINVOICE:
-				if (get_voided_entry(ST_SALESINVOICE, $row["trans_no"]) === false || AJAX_REFERRER) {
+				if (Voiding::get(ST_SALESINVOICE, $row["trans_no"]) === false || AJAX_REFERRER) {
 					if ($row['Allocated'] == 0) {
 						$str = "/sales/customer_invoice.php?ModifyInvoice=" . $row['trans_no'];
 					} else {
@@ -129,7 +129,7 @@
 				}
 				break;
 			case ST_CUSTCREDIT:
-				if (get_voided_entry(ST_CUSTCREDIT, $row["trans_no"]) === false && $row['Allocated'] == 0) {
+				if (Voiding::get(ST_CUSTCREDIT, $row["trans_no"]) === false && $row['Allocated'] == 0) {
 					if ($row['order_'] == 0) {
 						$str = "/sales/credit_note_entry.php?ModifyCredit=" . $row['trans_no'];
 					} else {
@@ -138,12 +138,12 @@
 				}
 				break;
 			case ST_CUSTDELIVERY:
-				if (get_voided_entry(ST_CUSTDELIVERY, $row["trans_no"]) === false) {
+				if (Voiding::get(ST_CUSTDELIVERY, $row["trans_no"]) === false) {
 					$str = "/sales/customer_delivery.php?ModifyDelivery=" . $row['trans_no'];
 				}
 				break;
 		}
-		if ($str != "" && (!is_closed_trans($row['type'], $row["trans_no"]) || $row['type'] == ST_SALESINVOICE)) {
+		if ($str != "" && (!DB_AuditTrail::is_closed_trans($row['type'], $row["trans_no"]) || $row['type'] == ST_SALESINVOICE)) {
 			return pager_link(_('Edit'), $str, ICON_EDIT);
 		}
 		return '';
@@ -220,14 +220,14 @@
 				if (substr($ajaxsearch, -1) == 0 && substr($ajaxsearch, -3, 1) == '.') {
 					$ajaxsearch = (substr($ajaxsearch, 0, -1));
 				}
-				$sql .= "TotalAmount LIKE " . db_escape('%' . substr($ajaxsearch, 1) . '%') . ") ";
+				$sql .= "TotalAmount LIKE " . DBOld::escape('%' . substr($ajaxsearch, 1) . '%') . ") ";
 				continue;
 			}
 			;
 			if (stripos($ajaxsearch, '/') > 0) {
 				$sql .= " tran_date LIKE '%" . Dates::date2sql($ajaxsearch, false) . "%' OR";
 			}
-			$ajaxsearch = db_escape("%" . $ajaxsearch . "%");
+			$ajaxsearch = DBOld::escape("%" . $ajaxsearch . "%");
 			$sql .= " name LIKE $ajaxsearch OR trans_no LIKE $ajaxsearch OR reference LIKE $ajaxsearch
 			 OR order_ LIKE $ajaxsearch OR br_name LIKE $ajaxsearch) ";
 		}
@@ -241,10 +241,10 @@
 	}
 	if ($_POST['reference'] != ALL_TEXT) {
 		$number_like = "%" . $_POST['reference'] . "%";
-		$sql .= " AND trans.reference LIKE " . db_escape($number_like);
+		$sql .= " AND trans.reference LIKE " . DBOld::escape($number_like);
 	}
 	if (isset($_POST['customer_id']) && $_POST['customer_id'] != ALL_TEXT) {
-		$sql .= " AND trans.debtor_no = " . db_escape($_POST['customer_id']);
+		$sql .= " AND trans.debtor_no = " . DBOld::escape($_POST['customer_id']);
 	}
 	if (isset($_POST['filterType']) && $_POST['filterType'] != ALL_TEXT) {
 		if ($_POST['filterType'] == '1') {
@@ -273,25 +273,55 @@
 		}
 	}
 	//------------------------------------------------------------------------------------------------
-	db_query("set @bal:=0");
-	$cols = array(_("Type") => array('fun' => 'systype_name', 'ord' => ''),
-		_("#") => array('fun' => 'trans_view', 'ord' => ''),
+	DBOld::query("set @bal:=0");
+	$cols = array(_("Type") => array('fun' => 'systype_name',
+		'ord' => ''
+	),
+		_("#") => array('fun' => 'trans_view',
+			'ord' => ''
+		),
 		_("Order") => array('fun' => 'order_view'),
 		_("Reference") => array('ord' => ''),
-		_("Date") => array('name' => 'tran_date', 'type' => 'date', 'ord' => 'desc'),
-		_("Due Date") => array('type' => 'date', 'fun' => 'due_date'),
+		_("Date") => array('name' => 'tran_date',
+			'type' => 'date',
+			'ord' => 'desc'
+		),
+		_("Due Date") => array('type' => 'date',
+			'fun' => 'due_date'
+		),
 		_("Customer") => array('ord' => ''),
 
 		_("Branch") => array('ord' => ''),
 		_("Currency") => array('align' => 'center'),
-		_("Debit") => array('align' => 'right', 'fun' => 'fmt_debit'),
-		_("Credit") => array('align' => 'right', 'insert' => true, 'fun' => 'fmt_credit'),
-		_("RB") => array('align' => 'right', 'type' => 'amount'),
-		array('insert' => true, 'fun' => 'gl_view'),
-		array('insert' => true, 'align' => 'center', 'fun' => 'credit_link'),
-		array('insert' => true, 'align' => 'center', 'fun' => 'edit_link'),
-		array('insert' => true, 'align' => 'center', 'fun' => 'email_link'),
-		array('insert' => true, 'align' => 'center', 'fun' => 'prt_link')
+		_("Debit") => array('align' => 'right',
+			'fun' => 'fmt_debit'
+		),
+		_("Credit") => array('align' => 'right',
+			'insert' => true,
+			'fun' => 'fmt_credit'
+		),
+		_("RB") => array('align' => 'right',
+			'type' => 'amount'
+		),
+		array('insert' => true,
+			'fun' => 'gl_view'
+		),
+		array('insert' => true,
+			'align' => 'center',
+			'fun' => 'credit_link'
+		),
+		array('insert' => true,
+			'align' => 'center',
+			'fun' => 'edit_link'
+		),
+		array('insert' => true,
+			'align' => 'center',
+			'fun' => 'email_link'
+		),
+		array('insert' => true,
+			'align' => 'center',
+			'fun' => 'prt_link'
+		)
 	);
 	if (isset($_POST['customer_id']) && $_POST['customer_id'] != ALL_TEXT) {
 		$cols[_("Customer")] = 'skip';

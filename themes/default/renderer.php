@@ -13,8 +13,13 @@
 
 	class renderer {
 
+		public $has_header = true;
+		protected static $_instance = null;
 
-		protected $has_header = true;
+		public static function getInstance() {
+			if (static::$_instance === null) static::$_instance = new static;
+			return static::$_instance;
+		}
 
 		function wa_header() {
 			page(_($help_context = "Main Menu"), false, true);
@@ -25,22 +30,20 @@
 		}
 
 		function menu_header($title, $no_menu, $is_index) {
-			global $db_connections;
+
 			$sel_app = $_SESSION['sel_app'];
 			echo "<div id='content'>\n";
 			if (!$no_menu || AJAX_REFERRER) {
-				if ($this->has_header) {
-					Sidemenu::render();
-				}
+
 				$applications = $_SESSION['App']->applications;
 				echo "<div id='top'>\n";
-				echo "<p>" . $db_connections[$_SESSION["wa_current_user"]->company]["name"] . " | " .
+				echo "<p>" . Config::get('db.' . $_SESSION["wa_current_user"]->company, 'name') . " | " .
 				 $_SERVER['SERVER_NAME'] . " | " . $_SESSION["wa_current_user"]->name . "</p>\n";
 				echo "<ul>\n";
 				echo "  <li><a href='" . PATH_TO_ROOT . "/admin/display_prefs.php?'>" . _("Preferences") . "</a></li>\n";
 				echo "  <li><a href='" . PATH_TO_ROOT . "/admin/change_current_user_password.php?selected_id=" .
 				 $_SESSION["wa_current_user"]->username . "'>" . _("Change password") . "</a></li>\n";
-				if (Config::get('help.baseurl') != null) {
+				if (Config::get('help_baseurl') != null) {
 					echo "  <li><a target = '_blank' onclick=" . '"' . "javascript:openWindow(this.href,this.target); return false;" . '" ' . "href='" . help_url() . "'>" . _("Help") . "</a></li>";
 				}
 				echo "  <li><a href='" . PATH_TO_ROOT . "/access/logout.php?'>" . _("Logout") . "</a></li>";
@@ -85,7 +88,7 @@
 				if (isset($_SESSION['wa_current_user'])) {
 					echo "<span class='power'><a target='_blank' href='" . POWERED_URL . "'>" . POWERED_BY . "</a></span>\n";
 					echo "<span class='date'>" . Dates::Today() . " | " . Dates::Now() . "</span>\n";
-					if ($_SESSION['wa_current_user']->logged_in()) echo "<span class='date'>" . show_users_online() . "</span>\n";
+					if ($_SESSION['wa_current_user']->logged_in()) echo "<span class='date'>" . User::show_online() . "</span>\n";
 				}
 				echo "</div>\n";
 			}

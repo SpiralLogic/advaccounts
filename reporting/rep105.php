@@ -17,9 +17,9 @@
 	// Title:	Order Status List
 	// ----------------------------------------------------------------
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	include_once(APP_PATH . "inventory/includes/db/items_category_db.inc");
+	include_once(APP_PATH . "inventory/includes/db/items_category_db.php");
 
 	//----------------------------------------------------------------------------------------------------
 
@@ -53,14 +53,14 @@
             WHERE sales_orders.ord_date >='$fromdate'
                 AND sales_orders.ord_date <='$todate'";
 		if ($category > 0)
-			$sql .= " AND stock_master.category_id=" . db_escape($category);
+			$sql .= " AND stock_master.category_id=" . DBOld::escape($category);
 		if ($location != null)
-			$sql .= " AND sales_orders.from_stk_loc=" . db_escape($location);
+			$sql .= " AND sales_orders.from_stk_loc=" . DBOld::escape($location);
 		if ($backorder)
 			$sql .= " AND sales_order_details.quantity - sales_order_details.qty_sent > 0";
 		$sql .= " ORDER BY sales_orders.order_no";
 
-		return db_query($sql, "Error getting order details");
+		return DBOld::query($sql, "Error getting order details");
 	}
 
 	//----------------------------------------------------------------------------------------------------
@@ -75,9 +75,9 @@
 		$comments = $_POST['PARAM_5'];
 		$destination = $_POST['PARAM_6'];
 		if ($destination)
-			include_once(APP_PATH . "reporting/includes/excel_report.inc");
+			include_once(APP_PATH . "reporting/includes/excel_report.php");
 		else
-			include_once(APP_PATH . "reporting/includes/pdf_report.inc");
+			include_once(APP_PATH . "reporting/includes/pdf_report.php");
 
 		if ($category == ALL_NUMERIC)
 			$category = 0;
@@ -127,7 +127,7 @@
 
 		$result = GetSalesOrders($from, $to, $category, $location, $backorder);
 
-		while ($myrow = db_fetch($result))
+		while ($myrow = DBOld::fetch($result))
 		{
 			if ($rep->row < $rep->bottomMargin + (2 * $rep->lineHeight)) {
 				$orderno = 0;

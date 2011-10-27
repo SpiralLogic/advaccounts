@@ -11,39 +11,35 @@
 	 ***********************************************************************/
 	$page_security = 'SA_CREATEMODULES';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	page(_($help_context = "Install/Activate extensions"));
-
-	include_once(APP_PATH . "admin/db/company_db.inc");
-	include_once(APP_PATH . "admin/db/maintenance_db.inc");
 
 	simple_page_mode(true);
 
 	//---------------------------------------------------------------------------------------------
 	function update_extensions($extensions) {
-		global $db_connections;
 
-		if (!write_extensions($extensions)) {
+		if (!frontaccounting::write_extensions($extensions)) {
 			ui_msgs::display_notification(_("Cannot update system extensions list."));
 			return false;
 		}
 
 		// update per company files
-		$cnt = count($db_connections);
+		$cnt = count(Config::get_all('db'));
 		for ($i = 0; $i < $cnt; $i++)
 		{
 			$newexts = $extensions;
 			// update 'active' status
-			$exts = get_company_extensions($i);
+			$exts = DB_Company::get_company_extensions($i);
 			foreach ($exts as $key => $ext)
 			{
 				if (isset($newexts[$key]))
 					$newexts[$key]['active'] = $exts[$key]['active'];
 			}
-			if (!write_extensions($newexts, $i)) {
+			if (!frontaccounting::write_extensions($newexts, $i)) {
 				ui_msgs::display_notification(sprintf(_("Cannot update extensions list for company '%s'."),
-						$db_connections[$i]['name']));
+						Config::get('db.'.$i, 'name')));
 				return false;
 			}
 		}
@@ -80,9 +76,9 @@
 	//---------------------------------------------------------------------------------------------
 
 	function handle_submit() {
-		global $db_connections, $selected_id, $next_extension_id;
+		global $selected_id, $next_extension_id;
 
-		$extensions = get_company_extensions();
+		$extensions = DB_Company::get_company_extensions();
 		if (!check_data($selected_id, $extensions))
 			return false;
 		$id = $selected_id == -1 ? $next_extension_id : $selected_id;
@@ -121,7 +117,7 @@
 				unlink($file2);
 			move_uploaded_file($file1, $file2);
 			$db_name = $_SESSION["wa_current_user"]->company;
-			db_import($file2, $db_connections[$db_name]);
+			DB_Utils::import($file2, Config::get('db.' . $db_name));
 		}
 
 		if (is_uploaded_file($_FILES['uploadfile3']['tmp_name'])) {
@@ -155,9 +151,9 @@
 	}
 
 	function handle_delete() {
-		global $db_connections, $selected_id;
+		global $selected_id;
 
-		$extensions = get_company_extensions();
+		$extensions = DB_Company::get_company_extensions();
 
 		$id = $selected_id;
 
@@ -184,8 +180,8 @@
 		table_header($th);
 
 		$k = 0;
-		$mods = get_company_extensions();
-		$mods = array_natsort($mods, null, 'name');
+		$mods = DB_Company::get_company_extensions();
+		$mods = Arr::natsort($mods, null, 'name');
 
 		foreach ($mods as $i => $mod)
 		{
@@ -223,8 +219,8 @@
 		// get all available extensions and display
 		// with current status stored in company directory.
 
-		$mods = get_company_extensions();
-		$exts = get_company_extensions($id);
+		$mods = DB_Company::get_company_extensions();
+		$exts = DB_Company::get_company_extensions($id);
 		foreach ($mods as $key => $ins) {
 			foreach ($exts as $ext)
 			{
@@ -234,7 +230,7 @@
 				}
 			}
 		}
-		$mods = array_natsort($mods, null, 'name');
+		$mods = Arr::natsort($mods, null, 'name');
 		table_header($th);
 		$k = 0;
 		foreach ($mods as $i => $mod)
@@ -259,7 +255,7 @@
 	function display_ext_edit($selected_id) {
 		global $Mode;
 
-		$extensions = get_company_extensions();
+		$extensions = DB_Company::get_company_extensions();
 
 		start_table(Config::get('tables.style2'));
 
@@ -290,7 +286,7 @@
 		file_row(_("SQL File"), 'uploadfile2');
 
 		end_table(0);
-		ui_msgs::display_note(_("Select your module PHP file from your local harddisk."), 0, 1);
+		ui_msgs::display_warning(_("Select your module PHP file from your local harddisk."), 0, 1);
 		submit_add_or_update_center($selected_id == -1, '', 'both');
 	}
 
@@ -309,11 +305,11 @@
 		$Mode = 'RESET';
 	}
 	if (get_post('Update')) {
-		$exts = get_company_extensions();
+		$exts = DB_Company::get_company_extensions();
 		foreach ($exts as $i => $ext) {
 			$exts[$i]['active'] = check_value('Active' . $i);
 		}
-		write_extensions($exts, get_post('extset'));
+		frontaccounting::write_extensions($exts, get_post('extset'));
 		$installed_extensions = $exts;
 		ui_msgs::display_notification(_('Current active extensions set has been saved.'));
 	}

@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 	$page_security = 'SA_ITEMSTRANSVIEW';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	page(_($help_context = "View Inventory Transfer"), true);
 
@@ -27,7 +27,7 @@
 	ui_msgs::display_heading($systypes_array[ST_LOCTRANSFER] . " #$trans_no");
 
 	echo "<br>";
-	start_table(Config::get('tables.style2') . " width=90%");
+	start_table(Config::get('tables_style2') . " width=90%");
 
 	start_row();
 	label_cells(_("Item"), $from_trans['stock_id'] . " - " . $from_trans['description'], "class='tableheader2'");
@@ -46,13 +46,13 @@
 	end_table(1);
 
 	echo "<br>";
-	start_table(Config::get('tables.style') . "  width=90%");
+	start_table(Config::get('tables_style') . "  width=90%");
 
 	$th = array(_("Item"), _("Description"), _("Quantity"), _("Units"));
 	table_header($th);
 	$transfer_items = get_stock_moves(ST_LOCTRANSFER, $trans_no);
 	$k = 0;
-	while ($item = db_fetch($transfer_items))
+	while ($item = DBOld::fetch($transfer_items))
 	{
 		if ($item['loc_code'] == $to_trans['loc_code']) {
 			alt_table_row_color($k);

@@ -17,7 +17,7 @@
 	// Title:	Audit Trail
 	// ----------------------------------------------------------------
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	//----------------------------------------------------------------------------------------------------
 
@@ -25,7 +25,7 @@
 
 	function getTransactions($from, $to, $type, $user) {
 		$fromdate = Dates::date2sql($from) . " 00:00:00";
-		$todate = Dates::date2sql($to) . " 23:59.59";
+		$todate   = Dates::date2sql($to) . " 23:59.59";
 
 		$sql = "SELECT a.*,
 		SUM(IF(ISNULL(g.amount), NULL, IF(g.amount > 0, g.amount, 0))) AS amount,
@@ -43,7 +43,7 @@
 			AND a.stamp <= '$todate'
 		GROUP BY a.trans_no,a.gl_seq,a.stamp	
 		ORDER BY a.stamp,a.gl_seq";
-		return db_query($sql, "No transactions were returned");
+		return DBOld::query($sql, "No transactions were returned");
 	}
 
 	//----------------------------------------------------------------------------------------------------
@@ -51,35 +51,42 @@
 	function print_audit_trail() {
 		global $systypes_array;
 
-		$from = $_POST['PARAM_0'];
-		$to = $_POST['PARAM_1'];
-		$systype = $_POST['PARAM_2'];
-		$user = $_POST['PARAM_3'];
-		$comments = $_POST['PARAM_4'];
+		$from        = $_POST['PARAM_0'];
+		$to          = $_POST['PARAM_1'];
+		$systype     = $_POST['PARAM_2'];
+		$user        = $_POST['PARAM_3'];
+		$comments    = $_POST['PARAM_4'];
 		$destination = $_POST['PARAM_5'];
 		if ($destination)
-			include_once(APP_PATH . "reporting/includes/excel_report.inc");
+			include_once(APP_PATH . "reporting/includes/excel_report.php");
 		else
-			include_once(APP_PATH . "reporting/includes/pdf_report.inc");
+			include_once(APP_PATH . "reporting/includes/pdf_report.php");
 
 		$dec = user_price_dec();
 
 		$cols = array(0, 60, 120, 180, 240, 340, 400, 460, 520);
 
 		$headers = array(_('Date'), _('Time'), _('User'), _('Trans Date'),
-			_('Type'), _('#'), _('Action'), _('Amount')
+										 _('Type'), _('#'), _('Action'), _('Amount')
 		);
 
 		$aligns = array('left', 'left', 'left', 'left', 'left', 'left', 'left', 'right');
 
-		$usr = get_user($user);
+		$usr     = User::get($user);
 		$user_id = $usr['user_id'];
-		$params = array(0 => $comments,
-			1 => array('text' => _('Period'), 'from' => $from, 'to' => $to),
-			2 => array('text' => _('Type'), 'from' => ($systype != -1 ? $systypes_array[$systype] : _('All')),
-				'to' => ''
-			),
-			3 => array('text' => _('User'), 'from' => ($user != -1 ? $user_id : _('All')), 'to' => '')
+		$params  = array(0 => $comments,
+										 1 => array('text' => _('Period'),
+																'from' => $from,
+																'to'   => $to
+										 ),
+										 2 => array('text' => _('Type'),
+																'from' => ($systype != -1 ? $systypes_array[$systype] : _('All')),
+																'to'   => ''
+										 ),
+										 3 => array('text' => _('User'),
+																'from' => ($user != -1 ? $user_id : _('All')),
+																'to'   => ''
+										 )
 		);
 
 		$rep = new FrontReport(_('Audit Trail'), "AuditTrail", user_pagesize());
@@ -90,7 +97,7 @@
 
 		$trans = getTransactions($from, $to, $systype, $user);
 
-		while ($myrow = db_fetch($trans))
+		while ($myrow = DBOld::fetch($trans))
 		{
 			$rep->TextCol(0, 1, Dates::sql2date(date("Y-m-d", $myrow['unix_stamp'])));
 			if (user_date_format() == 0)

@@ -11,16 +11,14 @@
 	 ***********************************************************************/
 	$page_security = 'SA_WORKORDERCOST';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	include_once(APP_PATH . "gl/includes/db/gl_db_bank_trans.inc");
+	include_once(APP_PATH . "gl/includes/db/gl_db_bank_trans.php");
 
-	include_once(APP_PATH . "includes/manufacturing.inc");
-
-	include_once(APP_PATH . "manufacturing/includes/manufacturing_ui.inc");
+	include_once(APP_PATH . "manufacturing/includes/manufacturing_ui.php");
 
 	$js = "";
-	if (Config::get('ui.windows.popups'))
+	if (Config::get('ui_windows_popups'))
 		$js .= ui_view::get_js_open_window(900, 500);
 
 	page(_($help_context = "Work Order Additional Costs"), false, false, "", $js);
@@ -37,9 +35,9 @@
 
 		ui_msgs::display_notification(_("The additional cost has been entered."));
 
-		ui_msgs::display_note(ui_view::get_trans_view_str($stype, $id, _("View this Work Order")));
+		ui_msgs::display_warning(ui_view::get_trans_view_str($stype, $id, _("View this Work Order")));
 
-		ui_msgs::display_note(ui_view::get_gl_view_str($stype, $id, _("View the GL Journal Entries for this Work Order")), 1);
+		ui_msgs::display_warning(ui_view::get_gl_view_str($stype, $id, _("View the GL Journal Entries for this Work Order")), 1);
 
 		hyperlink_params("work_order_costs.php", _("Enter another additional cost."), "trans_no=$id");
 
@@ -63,7 +61,7 @@
 	function can_process() {
 		global $wo_details;
 
-		if (!check_num('costs', 0)) {
+		if (!Validation::is_num('costs', 0)) {
 			ui_msgs::display_error(_("The amount entered is not a valid number or less then zero."));
 			ui_view::set_focus('costs');
 			return false;
@@ -92,7 +90,7 @@
 	//--------------------------------------------------------------------------------------------------
 
 	if (isset($_POST['process']) && can_process() == true) {
-		begin_transaction();
+		DBOld::begin_transaction();
 		add_gl_trans_std_cost(ST_WORKORDER, $_POST['selected_id'], $_POST['date_'], $_POST['cr_acc'],
 			0, 0, $wo_cost_types[$_POST['PaymentType']], -input_num('costs'), PT_WORKORDER,
 			$_POST['PaymentType']);
@@ -108,7 +106,7 @@
 			$_POST['dim1'], $_POST['dim2'],
 			$wo_cost_types[$_POST['PaymentType']], input_num('costs'), PT_WORKORDER,
 			$_POST['PaymentType']);
-		commit_transaction();
+		DBOld::commit_transaction();
 
 		meta_forward($_SERVER['PHP_SELF'], "AddedID=" . $_POST['selected_id']);
 	}
@@ -124,7 +122,7 @@
 	hidden('selected_id', $_POST['selected_id']);
 	//hidden('WOReqQuantity', $_POST['WOReqQuantity']);
 
-	start_table(Config::get('tables.style2'));
+	start_table(Config::get('tables_style2'));
 
 	br();
 
@@ -135,8 +133,8 @@
 	$item_accounts = get_stock_gl_code($wo_details['stock_id']);
 	$_POST['db_acc'] = $item_accounts['assembly_account'];
 	$sql = "SELECT DISTINCT account_code FROM bank_accounts";
-	$rs = db_query($sql, "could not get bank accounts");
-	$r = db_fetch_row($rs);
+	$rs = DBOld::query($sql, "could not get bank accounts");
+	$r = DBOld::fetch_row($rs);
 	$_POST['cr_acc'] = $r[0];
 
 	amount_row(_("Additional Costs:"), 'costs');

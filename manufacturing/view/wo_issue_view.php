@@ -11,16 +11,14 @@
 	 ***********************************************************************/
 	$page_security = 'SA_MANUFTRANSVIEW';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	$js = "";
-	if (Config::get('ui.windows.popups'))
+	if (Config::get('ui_windows_popups'))
 		$js .= ui_view::get_js_open_window(900, 500);
 	page(_($help_context = "View Work Order Issue"), true, false, "", $js);
 
-	include_once(APP_PATH . "includes/manufacturing.inc");
-
-	include_once(APP_PATH . "manufacturing/includes/manufacturing_ui.inc");
+	include_once(APP_PATH . "manufacturing/includes/manufacturing_ui.php");
 
 	//-------------------------------------------------------------------------------------------------
 
@@ -35,7 +33,7 @@
 		$myrow = get_work_order_issue($issue_no);
 
 		br(1);
-		start_table(Config::get('tables.style'));
+		start_table(Config::get('tables_style'));
 		$th = array(_("Issue #"), _("Reference"), _("For Work Order #"),
 			_("Item"), _("From Location"), _("To Work Centre"), _("Date of Issue")
 		);
@@ -64,12 +62,12 @@
 
 		$result = get_work_order_issue_details($issue_no);
 
-		if (db_num_rows($result) == 0) {
-			ui_msgs::display_note(_("There are no items for this issue."));
+		if (DBOld::num_rows($result) == 0) {
+			ui_msgs::display_warning(_("There are no items for this issue."));
 		}
 		else
 		{
-			start_table(Config::get('tables.style'));
+			start_table(Config::get('tables_style'));
 			$th = array(_("Component"), _("Quantity"), _("Units"));
 
 			table_header($th);
@@ -79,7 +77,7 @@
 
 			$total_cost = 0;
 
-			while ($myrow = db_fetch($result))
+			while ($myrow = DBOld::fetch($result))
 			{
 
 				alt_table_row_color($k);

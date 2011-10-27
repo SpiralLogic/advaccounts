@@ -11,13 +11,11 @@
 	 ***********************************************************************/
 	$page_security = 'SA_SALESKIT';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	page(_($help_context = "Sales Kits & Alias Codes"));
 
-	include_once(APP_PATH . "includes/manufacturing.inc");
-
-	check_db_has_stock_items(_("There are no items defined in the system."));
+	Validation::check(Validation::STOCK_ITEMS, _("There are no items defined in the system."));
 
 	simple_page_mode(true);
 	/*
@@ -32,14 +30,14 @@
 
 		$result = get_item_kit($selected_kit);
 		div_start('bom');
-		start_table(Config::get('tables.style') . "  width=60%");
+		start_table(Config::get('tables_style') . "  width=60%");
 		$th = array(_("Stock Item"), _("Description"), _("Quantity"), _("Units"),
 			'', ''
 		);
 		table_header($th);
 
 		$k = 0;
-		while ($myrow = db_fetch($result))
+		while ($myrow = DBOld::fetch($result))
 		{
 
 			alt_table_row_color($k);
@@ -60,9 +58,9 @@
 	//--------------------------------------------------------------------------------------------------
 
 	function update_component($kit_code, $selected_item) {
-		global $Mode, $Ajax, $selected_kit;
-
-		if (!check_num('quantity', 0)) {
+		global $Mode, $selected_kit;
+		$Ajax = Ajax::instance();
+		if (!Validation::is_num('quantity', 0)) {
 			ui_msgs::display_error(_("The quantity entered must be numeric and greater than zero."));
 			ui_view::set_focus('quantity');
 			return;
@@ -77,7 +75,7 @@
 		{
 			if (get_post('item_code') == '') { // New kit/alias definition
 				$kit = get_item_kit($_POST['kit_code']);
-				if (db_num_rows($kit)) {
+				if (DBOld::num_rows($kit)) {
 					$input_error = 1;
 					ui_msgs::display_error(_("This item code is already assigned to stock item or sale kit."));
 					ui_view::set_focus('kit_code');
@@ -141,16 +139,16 @@
 		// if selected kit is not included in any other kit.
 		//
 		$other_kits = get_where_used($_POST['item_code']);
-		$num_kits = db_num_rows($other_kits);
+		$num_kits = DBOld::num_rows($other_kits);
 
 		$kit = get_item_kit($_POST['item_code']);
-		if ((db_num_rows($kit) == 1) && $num_kits) {
+		if ((DBOld::num_rows($kit) == 1) && $num_kits) {
 
 			$msg = _("This item cannot be deleted because it is the last item in the kit used by following kits")
 			 . ':<br>';
 
 			while ($num_kits--) {
-				$kit = db_fetch($other_kits);
+				$kit = DBOld::fetch($other_kits);
 				$msg .= "'" . $kit[0] . "'";
 				if ($num_kits) $msg .= ',';
 			}
@@ -186,14 +184,14 @@
 	//----------------------------------------------------------------------------------
 	if (get_post('item_code') == '') {
 		// New sales kit entry
-		start_table(Config::get('tables.style2'));
+		start_table(Config::get('tables_style2'));
 		text_row(_("Alias/kit code:"), 'kit_code', null, 20, 21);
 	} else
 	{
 		// Kit selected so display bom or edit component
 		$_POST['description'] = $props['description'];
 		$_POST['category'] = $props['category_id'];
-		start_table(Config::get('tables.style2'));
+		start_table(Config::get('tables_style2'));
 		text_row(_("Description:"), 'description', null, 50, 200);
 		stock_categories_list_row(_("Category:"), 'category', null);
 		submit_row('update_name', _("Update"), false, 'align=center colspan=2', _('Update kit/alias name'), true);
@@ -201,7 +199,7 @@
 		end_table(1);
 		display_kit_items($selected_kit);
 		echo '<br>';
-		start_table(Config::get('tables.style2'));
+		start_table(Config::get('tables_style2'));
 	}
 
 	if ($Mode == 'Edit') {

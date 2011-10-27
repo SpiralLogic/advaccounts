@@ -11,13 +11,13 @@
 	 ***********************************************************************/
 	$page_security = 'SA_SALESINVOICE';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	include(APP_PATH . "sales/includes/sales_ui.inc");
-	include_once(APP_PATH . "reporting/includes/reporting.inc");
+	include(APP_PATH . "sales/includes/sales_ui.php");
+	include_once(APP_PATH . "reporting/includes/reporting.php");
 
 	$js = "";
-	if (Config::get('ui.windows.popups'))
+	if (Config::get('ui_windows_popups'))
 		$js .= ui_view::get_js_open_window(900, 600);
 
 	if (isset($_GET['OutstandingOnly']) && ($_GET['OutstandingOnly'] == true)) {
@@ -161,7 +161,7 @@
 	$sql = "SELECT trans.trans_no,
 		debtor.name,
 		branch.branch_code,
-		branch.br_name,
+		
 		sorder.contact_name,
 		sorder.deliver_to,
 		trans.reference,
@@ -189,7 +189,7 @@
 	//figure out the sql required from the inputs available
 	if (isset($_POST['DeliveryNumber']) && $_POST['DeliveryNumber'] != "") {
 		$delivery = "%" . $_POST['DeliveryNumber'];
-		$sql .= " AND trans.trans_no LIKE " . db_escape($delivery);
+		$sql .= " AND trans.trans_no LIKE " . DBOld::escape($delivery);
 		$sql .= " GROUP BY trans.trans_no";
 	}
 	else
@@ -198,13 +198,13 @@
 		$sql .= " AND trans.tran_date <= '" . Dates::date2sql($_POST['DeliveryToDate']) . "'";
 
 		if ($selected_customer != -1)
-			$sql .= " AND trans.debtor_no=" . db_escape($selected_customer) . " ";
+			$sql .= " AND trans.debtor_no=" . DBOld::escape($selected_customer) . " ";
 
 		if (isset($selected_stock_item))
-			$sql .= " AND line.stock_id=" . db_escape($selected_stock_item) . " ";
+			$sql .= " AND line.stock_id=" . DBOld::escape($selected_stock_item) . " ";
 
 		if (isset($_POST['StockLocation']) && $_POST['StockLocation'] != ALL_TEXT)
-			$sql .= " AND sorder.from_stk_loc = " . db_escape($_POST['StockLocation']) . " ";
+			$sql .= " AND sorder.from_stk_loc = " . DBOld::escape($_POST['StockLocation']) . " ";
 
 		$sql .= " GROUP BY trans.trans_no ";
 	} //end no delivery number selected
@@ -212,13 +212,13 @@
 	$cols = array(
 		_("Delivery #") => array('fun' => 'trans_view'),
 		_("Customer"),
-		'branch_code' => 'skip',
-		_("Branch") => array('ord' => ''),
+		_("branch_code") => 'skip',
 		_("Contact"),
-		_("Reference") => array('skip'),
+		_("Address"),
+		_("Reference"),
 		_("Cust Ref"),
 		_("Delivery Date") => array('type' => 'date', 'ord' => ''),
-		_("Due By") => 'date',
+		_("Due By") => array('type' => 'date'),
 		_("Delivery Total") => array('type' => 'amount', 'ord' => ''),
 		_("Currency") => array('align' => 'center'),
 		submit('BatchInvoice', _("Batch"), false, _("Batch Invoicing"))

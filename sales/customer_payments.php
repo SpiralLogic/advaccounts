@@ -12,27 +12,25 @@
 			* ********************************************************************* */
 	$page_security = 'SA_SALESPAYMNT';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
-	include_once(APP_PATH . "taxes/db/tax_groups_db.inc");
-	include_once(APP_PATH . "sales/includes/ui/sales_order_ui.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	include_once(APP_PATH . "sales/includes/sales_ui.inc");
-
-	include_once(APP_PATH . "reporting/includes/reporting.inc");
+	include_once(APP_PATH . "sales/includes/ui/sales_order_ui.php");
+	include_once(APP_PATH . "sales/includes/sales_ui.php");
+	include_once(APP_PATH . "reporting/includes/reporting.php");
 
 	$js = "";
-	if (Config::get('ui.windows.popups')) {
+	if (Config::get('ui_windows_popups')) {
 		$js .= ui_view::get_js_open_window(900, 500);
 	}
 	JS::headerFile('/js/payalloc.js');
 
-	page(_($help_context = "Customer Payment Entry"), @$_REQUEST['frame'], false, "", $js);
+	page(_($help_context = "Customer Payment Entry"), Input::request('frame'), false, "", $js);
 
 	//----------------------------------------------------------------------------------------------
 
-	check_db_has_customers(_("There are no customers defined in the system."));
+	Validation::check(Validation::CUSTOMERS, _("There are no customers defined in the system."));
 
-	check_db_has_bank_accounts(_("There are no bank accounts defined in the system."));
+	Validation::check(Validation::BANK_ACCOUNTS, _("There are no bank accounts defined in the system."));
 
 	//----------------------------------------------------------------------------------------
 
@@ -73,7 +71,6 @@
 	//----------------------------------------------------------------------------------------------
 
 	function can_process() {
-		global $Refs;
 
 		if (!get_post('customer_id')) {
 			ui_msgs::display_error(_("There is no customer selected."));
@@ -98,7 +95,7 @@
 			return false;
 		}
 
-		if (!$Refs->is_valid($_POST['ref'])) {
+		if (!Refs::is_valid($_POST['ref'])) {
 			ui_msgs::display_error(_("You must enter a reference."));
 			ui_view::set_focus('ref');
 			return false;
@@ -110,19 +107,19 @@
 			return false;
 		}
 
-		if (!check_num('amount', 0)) {
+		if (!Validation::is_num('amount', 0)) {
 			ui_msgs::display_error(_("The entered amount is invalid or negative and cannot be processed."));
 			ui_view::set_focus('amount');
 			return false;
 		}
 
-		if (isset($_POST['charge']) && !check_num('charge', 0)) {
+		if (isset($_POST['charge']) && !Validation::is_num('charge', 0)) {
 			ui_msgs::display_error(_("The entered amount is invalid or negative and cannot be processed."));
 			ui_view::set_focus('charge');
 			return false;
 		}
 		if (isset($_POST['charge']) && input_num('charge') > 0) {
-			$charge_acct = get_company_pref('bank_charge_act');
+			$charge_acct = DB_Company::get_pref('bank_charge_act');
 			if (get_gl_account($charge_acct) == false) {
 				ui_msgs::display_error(_("The Bank Charge Account has not been set in System and General GL Setup."));
 				ui_view::set_focus('charge');
@@ -130,7 +127,7 @@
 			}
 		}
 
-		if (isset($_POST['_ex_rate']) && !check_num('_ex_rate', 0.000001)) {
+		if (isset($_POST['_ex_rate']) && !Validation::is_num('_ex_rate', 0.000001)) {
 			ui_msgs::display_error(_("The exchange rate must be numeric and greater than zero."));
 			ui_view::set_focus('_ex_rate');
 			return false;
@@ -140,7 +137,7 @@
 			$_POST['discount'] = 0;
 		}
 
-		if (!check_num('discount')) {
+		if (!Validation::is_num('discount')) {
 			ui_msgs::display_error(_("The entered discount is not a valid number."));
 			ui_view::set_focus('discount');
 			return false;
@@ -156,7 +153,7 @@
 		$_SESSION['alloc']->amount = input_num('amount');
 
 		if (isset($_POST["TotalNumberOfAllocs"])) {
-			return check_allocations();
+			return Allocation::check_allocations();
 		}
 		else
 		{
@@ -198,7 +195,7 @@
 
 		Dates::new_doc_date($_POST['DateBanked']);
 		if (check_value('createinvoice')) {
-			create_miscorder($_POST['customer_id'], $_POST['BranchID'], $_POST['memo_'], $_POST['ref'], input_num('amount'), input_num('discount'));
+			Allocation::create_miscorder($_POST['customer_id'], $_POST['BranchID'], $_POST['memo_'], $_POST['ref'], input_num('amount'), input_num('discount'));
 		}
 		$payment_no = write_customer_payment(0, $_POST['customer_id'], $_POST['BranchID'],
 			$_POST['bank_account'], $_POST['DateBanked'], $_POST['ref'],
@@ -214,20 +211,19 @@
 	//----------------------------------------------------------------------------------------------
 
 	function read_customer_data() {
-		global $Refs;
 
 		$myrow = get_customer_habit($_POST['customer_id']);
 
 		$_POST['HoldAccount'] = $myrow["dissallow_invoices"];
 		$_POST['pymt_discount'] = $myrow["pymt_discount"];
-		$_POST['ref'] = $Refs->get_next(ST_CUSTPAYMENT);
+		$_POST['ref'] = Refs::get_next(ST_CUSTPAYMENT);
 	}
 
 	//----------------------------------------------------------------------------------------------
 
 	start_form();
 
-	start_outer_table(Config::get('tables.style2') . " width=60%", 5);
+	start_outer_table(Config::get('tables_style2') . " width=60%", 5);
 	table_section(1);
 
 	customer_list_row(_("From Customer:"), 'customer_id', null, false, true);
@@ -236,7 +232,7 @@
 		$_SESSION['alloc'] = new allocation(ST_CUSTPAYMENT, 0);
 	}
 
-	if (db_customer_has_branches($_POST['customer_id'])) {
+	if (Validation::check(Validation::BRANCHES, '', $_POST['customer_id'])) {
 		customer_branches_list_row(_("Branch:"), $_POST['customer_id'], 'BranchID', null, false, true, true);
 	}
 	else {
@@ -277,11 +273,11 @@
 		if ($cust_currency == $bank_currency) {
 			div_start('alloc_tbl');
 			$_SESSION['alloc']->read();
-			show_allocatable(false);
+			Allocation::show_allocatable(false);
 			div_end();
 		}
 
-		start_table(Config::get('tables.style') . "  width=60%");
+		start_table(Config::get('tables_style') . "  width=60%");
 
 		label_row(_("Customer prompt payment discount :"), $display_discount_percent);
 		amount_row(_("Amount of Discount:"), 'discount');
@@ -306,11 +302,11 @@
 	$js = <<<JS
 var ci = $("#createinvoice"), ci_row = ci.closest('tr'),alloc_tbl = $('#alloc_tbl'),hasallocated = false;
   alloc_tbl.find('.amount').each(function() { if (this.value != 0) hasallocated = true});
-  if (hasallocated) ci_row.hide(); else ci_row.show();
+  if (hasallocated && !ci.prop('checked')) ci_row.hide(); else ci_row.show();
 JS;
 
 	JS::addLiveEvent('a, :input', 'click change', $js, 'wrapper', true);
-	(isset($_REQUEST['frame'])) ? end_page() : end_page(true, true, true);
+	(Input::request('frame')) ? end_page() : end_page(true, true, true);
 
 
 ?>

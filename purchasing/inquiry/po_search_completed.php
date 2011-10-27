@@ -11,11 +11,11 @@
 	 ***********************************************************************/
 	$page_security = 'SA_SUPPTRANSVIEW';
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
-	include(APP_PATH . "purchasing/includes/purchasing_ui.inc");
-	include_once(APP_PATH . "reporting/includes/reporting.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
+	include(APP_PATH . "purchasing/includes/purchasing_ui.php");
+	include_once(APP_PATH . "reporting/includes/reporting.php");
 	$js = "";
-	if (Config::get('ui.windows.popups')) {
+	if (Config::get('ui_windows_popups')) {
 		$js .= ui_view::get_js_open_window(900, 500);
 	}
 
@@ -87,6 +87,7 @@
 		return pager_link(_("Edit"), "/purchasing/po_entry_items.php?" . SID . "ModifyOrderNumber=" .
 		 $row["order_no"], ICON_EDIT);
 	}
+
 	function prt_link($row) {
 		return print_document_link($row['order_no'], _("Print"), true, 18, ICON_PRINT, 'button');
 	}
@@ -131,14 +132,14 @@
 			if (empty($ajaxsearch)) {
 				continue;
 			}
-			$ajaxsearch = db_escape("%" . $ajaxsearch . "%");
+			$ajaxsearch = DBOld::escape("%" . $ajaxsearch . "%");
 			$sql .= " AND (supplier.supp_name LIKE $ajaxsearch OR porder.order_no LIKE $ajaxsearch
 		 OR porder.reference LIKE $ajaxsearch
 		  OR porder.requisition_no LIKE $ajaxsearch
 		   OR location.location_name LIKE $ajaxsearch)";
 		}
 	} elseif (isset($order_number) && $order_number != "") {
-		$sql .= "AND porder.reference LIKE " . db_escape('%' . $order_number . '%');
+		$sql .= "AND porder.reference LIKE " . DBOld::escape('%' . $order_number . '%');
 	} else {
 
 		$data_after = Dates::date2sql($_POST['OrdersAfterDate']);
@@ -149,10 +150,10 @@
 
 		if ((isset($_POST['StockLocation']) && $_POST['StockLocation'] != ALL_TEXT) || isset($_GET['NFY'])) {
 			$sql .= " AND porder.into_stock_location = ";
-			$sql .= (!$_GET['NFY'] == 1) ? db_escape($_POST['StockLocation']) : db_escape('NFY');
+			$sql .= (!$_GET['NFY'] == 1) ? DBOld::escape($_POST['StockLocation']) : DBOld::escape('NFY');
 		}
 		if (isset($selected_stock_item)) {
-			$sql .= " AND line.item_code=" . db_escape($selected_stock_item);
+			$sql .= " AND line.item_code=" . DBOld::escape($selected_stock_item);
 		}
 	} //end not order number selected
 
@@ -160,9 +161,9 @@
 
 	$cols = array(_("#") => array('fun' => 'trans_view', 'ord' => ''),
 		_("Reference"),
-		_("Supplier") => array('ord' => '','type'=>'id'),
-        _("Supplier ID")=>'skip',
-        _("Location"),
+		_("Supplier") => array('ord' => '', 'type' => 'id'),
+		_("Supplier ID") => 'skip',
+		_("Location"),
 		_("Supplier's Reference"),
 		_("Order Date") => array('name' => 'ord_date', 'type' => 'date', 'ord' => 'desc'),
 		_("Currency") => array('align' => 'center'),
@@ -172,7 +173,7 @@
 		array('insert' => true, 'fun' => 'receive_link'),
 	);
 
-	if (get_post('StockLocation') != $all_items) {
+	if (get_post('StockLocation') != ALL_TEXT) {
 		$cols[_("Location")] = 'skip';
 	}
 	//---------------------------------------------------------------------------------------------------
@@ -182,7 +183,7 @@
 	$table->width = "80%";
 
 	display_db_pager($table);
-    Supplier::addSupplierInfo('.pagerclick');
+	Supplier::addInfoDialog('.pagerclick');
 
 	end_form();
 	end_page();

@@ -8,12 +8,10 @@
 	// this has to be an own page, because otherwise we could not get Content-type application/pdf
 
 	$page_security = 'SA_REPORT_GENERATOR';
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/session.inc");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	add_access_extensions();
 
-	include_once(APP_PATH . "admin/db/company_db.inc");
-
-	require_once("repgen.inc");
+	require_once("repgen.php");
 	$id = $_GET['id'];
 	$file = COMPANY_PATH . '/pdf_files/' . $id . '.pdf';
 	create_report($id, $file);
