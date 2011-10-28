@@ -7,11 +7,11 @@
     <h3><a href="#">Search</a></h3>
 
     <div id="search">
-
-        <a id="orders" href="/sales/inquiry/sales_orders_view.php?type=30">Orders/Quotes</a>
-        <a id="invoices" href="/sales/inquiry/customer_inquiry.php?">Invoice/Delivery</a>
-        <a id="purchaseOrders" href="/purchasing/inquiry/po_search_completed.php?">Purchase Order</a>
-        <a id="supplierInvoices" href="/purchasing/inquiry/supplier_inquiry.php?">Supplier Invoices</a></div>
+<ul>
+        <li id="orders" data-href="/sales/inquiry/sales_orders_view.php?type=30">Orders/Quotes</li>
+        <li id="invoices" data-href="/sales/inquiry/customer_inquiry.php?">Invoice/Delivery</li>
+        <li id="purchaseOrders" data-href="/purchasing/inquiry/po_search_completed.php?">Purchase Order</li>
+        <li id="supplierInvoices" data-href="/purchasing/inquiry/supplier_inquiry.php?">Supplier Invoices</li></ul></div>
 
     <h3><a href="#">Create</a></h3>
 

@@ -68,7 +68,6 @@
 
 		function display() {
 
-			include(APP_PATH . "themes/" . user_theme() . "/renderer.php");
 			$this->init();
 			$rend = renderer::getInstance();
 			$rend->wa_header();

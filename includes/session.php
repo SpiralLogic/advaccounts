@@ -10,7 +10,7 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	ini_set('session.gc_maxlifetime', 36000); // 10hrs
-	session_name('FA' . md5(dirname(__FILE__)));
+	session_name('FA' . md5($_SERVER['SERVER_NAME']));
 	session_start();
 	header("Cache-control: private");
 	gettextNativeSupport::get_text_init();

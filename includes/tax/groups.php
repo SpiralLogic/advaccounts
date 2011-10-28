@@ -92,9 +92,7 @@
 		static function get_for_item($id) {
 			$sql = "SELECT tax_group_items.*, tax_types.name AS tax_type_name, tax_types.rate,
 		tax_types.sales_gl_code, tax_types.purchasing_gl_code
-		FROM tax_group_items, tax_types
-		WHERE tax_group_id=" . DBOld::escape($id) . "
-			AND tax_types.id=tax_type_id";
+		FROM tax_group_items, tax_types	WHERE tax_group_id=" . DBOld::escape($id) . "	AND tax_types.id=tax_type_id";
 
 			return DBOld::query($sql, "could not get item tax type group items");
 		}
