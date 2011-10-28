@@ -61,8 +61,11 @@
 	function page_header($title, $no_menu = false, $is_index = false, $onload = "", $js = "") {
 		// titles and screen header
 
-		if (Ajax::in_ajax() || AJAX_REFERRER)
+		if (Ajax::in_ajax() || AJAX_REFERRER) {
+			Renderer::getInstance()->has_header = false;
+
 			return; // just for speed up
+		}
 		$theme = user_theme();
 
 		if (Config::get('help_baseurl') != null && Config::get('ui_windows_popups') && $js == '') {
@@ -106,7 +109,6 @@
 		else
 			echo "body onload='$onload'";
 		echo	($no_menu) ? ' class="lite">' : '>';
-		include_once(APP_PATH . "/themes/" . user_theme() . "/renderer.php");
 		$rend = renderer::getInstance();
 		$rend->menu_header($title, $no_menu, $is_index);
 		Errors::error_box();

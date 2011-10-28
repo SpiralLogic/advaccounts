@@ -9,7 +9,9 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-
+	/**
+	 *
+	 */
 	defined('FUEL_START_TIME') or define('FUEL_START_TIME', microtime(true));
 	define('APP_PATH', realpath(__DIR__) . DIRECTORY_SEPARATOR);
 
