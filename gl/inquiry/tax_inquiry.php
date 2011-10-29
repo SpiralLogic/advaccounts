@@ -15,7 +15,7 @@
 
 	$js = '';
 	ui_view::set_focus('account');
-	if (Config::get('ui.windows.popups'))
+	if (Config::get('ui_windows_popups'))
 		$js .= ui_view::get_js_open_window(800, 500);
 
 	page(_($help_context = "Tax Inquiry"), false, false, '', $js);
@@ -44,7 +44,7 @@
 
 		start_form();
 
-		//start_table(Config::get('tables.style2'));
+		//start_table(Config::get('tables_style2'));
 		start_table("class='tablestyle_noborder'");
 		start_row();
 
@@ -65,7 +65,7 @@
 
 		/*Now get the transactions  */
 		div_start('trans_tbl');
-		start_table(Config::get('tables.style'));
+		start_table(Config::get('tables_style'));
 
 		$th = array(_("Type"), _("Description"), _("Amount"), _("Outputs") . "/" . _("Inputs"));
 		table_header($th);

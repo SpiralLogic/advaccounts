@@ -9,7 +9,9 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-
+	/**
+	 *
+	 */
 	defined('FUEL_START_TIME') or define('FUEL_START_TIME', microtime(true));
 	define('APP_PATH', realpath(__DIR__) . DIRECTORY_SEPARATOR);
 
@@ -33,6 +35,7 @@
 	// intercept all output to destroy it in case of ajax call
 	register_shutdown_function('adv_shutdown_function_handler');
 	ob_start('adv_ob_flush_handler', 0);
+
 	// POST vars cleanup needed for direct reuse.
 	// We quote all values later with DBOld::escape() before db update.
 	array_walk($_POST, function(&$v) {

@@ -99,7 +99,7 @@
 	start_form();
 
 	ui_msgs::display_warning(_("To avoid problems with manual journal entry all tax types should have unique Sales/Purchasing GL accounts."));
-	start_table(Config::get('tables.style'));
+	start_table(Config::get('tables_style'));
 
 	$th = array(_("Description"), _("Default Rate (%)"),
 							_("Sales GL Account"), _("Purchasing GL Account"), "", ""
@@ -129,7 +129,7 @@
 	end_table(1);
 	//-----------------------------------------------------------------------------------
 
-	start_table(Config::get('tables.style2'));
+	start_table(Config::get('tables_style2'));
 
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {

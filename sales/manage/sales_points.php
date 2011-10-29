@@ -80,7 +80,7 @@
 	$result = get_all_sales_points(check_value('show_inactive'));
 
 	start_form();
-	start_table(Config::get('tables.style'));
+	start_table(Config::get('tables_style'));
 
 	$th = array(_('POS Name'), _('Credit sale'), _('Cash sale'), _('Location'), _('Default account'),
 		'', ''
@@ -111,7 +111,7 @@
 
 	if (!$cash) ui_msgs::display_warning(_("To have cash POS first define at least one cash bank account."));
 
-	start_table(Config::get('tables.style2'));
+	start_table(Config::get('tables_style2'));
 
 	if ($selected_id != -1) {
 

@@ -177,10 +177,8 @@ JS;
 			else {
 				$dir = dirname($file);
 				$file = basename($file);
-				if (!isset($var[$dir])) {
-					$var[$dir] = array();
-				}
-				array_push($var[$dir], $file);
+				isset($var[$dir]) or $var[$dir] = array();
+				$var[$dir][$file] = $file;
 			}
 		}
 

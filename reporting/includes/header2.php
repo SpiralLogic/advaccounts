@@ -129,7 +129,7 @@
 	$this->NewLine();
 	$this->Text($mcol + 100, $doc_Invoice_no);
 	if ($doctype == ST_SALESQUOTE || $doctype == ST_PURCHORDER || $doctype == ST_SALESORDER) { // QUOTE, PO or SO
-		if (Config::get('print.useinvoicenumber') == 1) {
+		if (Config::get('print_useinvoicenumber') == 1) {
 
 			$this->Text($mcol + 180, $myrow['reference']);
 		} else {
@@ -137,7 +137,7 @@
 		}
 	}
 	if ($doctype == ST_SALESQUOTE || $doctype == ST_PURCHORDER || $doctype == ST_SALESORDER) { // QUOTE, PO or SO
-		if (Config::get('print.useinvoicenumber') == 1) {
+		if (Config::get('print_useinvoicenumber') == 1) {
 			$this->Text($mcol + 180, $myrow['reference']);
 		} else {
 			$this->Text($mcol + 180, $myrow['order_no']);
@@ -146,7 +146,7 @@
 		$this->Text($mcol + 180, $myrow['id']);
 	} else {
 		if (isset($myrow['trans_no']) && isset($myrow['reference'])) { // INV/CRE/STA
-			if (Config::get('print.useinvoicenumber') == 1) {
+			if (Config::get('print_useinvoicenumber') == 1) {
 				$this->Text($mcol + 180, $myrow['reference']);
 			} else {
 				$this->Text($mcol + 180, $myrow['order_no']);
@@ -283,7 +283,7 @@
 	 $line = "";	#  __ADVANCEDEDIT__ END # }
 
 	 foreach ($deliveries as $delivery) {
-		 if (Config::get('print.useinvoicenumber') == 0) {
+		 if (Config::get('print_useinvoicenumber') == 0) {
 			 $ref = Refs::get_reference(ST_CUSTDELIVERY, $delivery);
 			 if ($ref) $delivery = $ref;
 		 }
@@ -295,7 +295,7 @@
  else*/
 	if ($doctype == ST_CUSTDELIVERY) {
 		$ref = $myrow['order_'];
-		if (Config::get('print.useinvoicenumber') == 0) {
+		if (Config::get('print_useinvoicenumber') == 0) {
 			$ref = Refs::get_reference(ST_SALESORDER, $myrow['order_']);
 			if (!$ref) {
 				$ref = $myrow['order_'];

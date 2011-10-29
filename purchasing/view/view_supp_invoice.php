@@ -16,7 +16,7 @@
 	include_once(APP_PATH . "purchasing/includes/purchasing_ui.php");
 
 	$js = "";
-	if (Config::get('ui.windows.popups'))
+	if (Config::get('ui_windows_popups'))
 		$js .= ui_view::get_js_open_window(900, 500);
 	page(_($help_context = "View Supplier Invoice"), true, false, "", $js);
 
@@ -38,7 +38,7 @@
 	ui_msgs::display_heading(_("SUPPLIER INVOICE") . " # " . $trans_no);
 	echo "<br>";
 
-	start_table(Config::get('tables.style') . "  width=95%");
+	start_table(Config::get('tables_style') . "  width=95%");
 	start_row();
 	label_cells(_("Supplier"), $supp_trans->supplier_name, "class='tableheader2'");
 	label_cells(_("Reference"), $supp_trans->reference, "class='tableheader2'");
@@ -59,7 +59,7 @@
 
 	$display_sub_tot = number_format2($total_gl + $total_grn, user_price_dec());
 
-	start_table("width=95%  " . Config::get('tables.style'));
+	start_table("width=95%  " . Config::get('tables_style'));
 	label_row(_("Sub Total"), $display_sub_tot, "align=right", "nowrap align=right width=15%");
 
 	$tax_items = get_trans_tax_details(ST_SUPPINVOICE, $trans_no);

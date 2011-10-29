@@ -1430,7 +1430,7 @@ JS
 	//------------------------------------------------------------------------------------------------
 	function languages_list($name, $selected_id = null) {
 		$items = array();
-		$langs = Config::get(null, null, 'installed_languages');
+		$langs = Config::get_all('installed_languages');
 		foreach ($langs as $lang) $items[$lang['code']] = $lang['name'];
 		return array_selector($name, $selected_id, $items);
 	}
@@ -1515,26 +1515,26 @@ JS
 	//------------------------------------------------------------------------------------------------
 	function dateformats_list_row($label, $name, $value = null) {
 		echo "<tr><td class='label'>$label</td>\n<td>";
-		echo array_selector($name, $value, Config::get('formats.date'));
+		echo array_selector($name, $value, Config::get('formats_date'));
 		echo "</td></tr>\n";
 	}
 
 	function dateseps_list_row($label, $name, $value = null) {
 
 		echo "<tr><td class='label'>$label</td>\n<td>";
-		echo array_selector($name, $value, Config::get('separators.date'));
+		echo array_selector($name, $value, Config::get('separators_date'));
 		echo "</td></tr>\n";
 	}
 
 	function thoseps_list_row($label, $name, $value = null) {
 		echo "<tr><td class='label'>$label</td>\n<td>";
-		echo array_selector($name, $value, Config::get('separators.thousands'));
+		echo array_selector($name, $value, Config::get('separators_thousands'));
 		echo "</td></tr>\n";
 	}
 
 	function decseps_list_row($label, $name, $value = null) {
 		echo "<tr><td class='label'>$label</td>\n<td>";
-		echo array_selector($name, $value, Config::get('separators.decimal'));
+		echo array_selector($name, $value, Config::get('separators_decimal'));
 		echo "</td></tr>\n";
 	}
 
@@ -1554,7 +1554,7 @@ JS
 
 	function pagesizes_list_row($label, $name, $value = null) {
 		$items = array();
-		foreach (Config::get('formats.paper_size') as $pz) $items[$pz] = $pz;
+		foreach (Config::get('formats_paper_size') as $pz) $items[$pz] = $pz;
 		echo "<tr><td class='label'>$label</td>\n<td>";
 		echo array_selector($name, $value, $items);
 		echo "</td></tr>\n";
@@ -1869,7 +1869,7 @@ JS
 	function extset_list($name, $value = null, $submit_on_change = false) {
 
 		$items = array();
-		foreach (Config::get(null, null, 'db') as $comp) $items[] = sprintf(_("Activated for '%s'"), $comp['name']);
+		foreach (Config::get_all('db') as $comp) $items[] = sprintf(_("Activated for '%s'"), $comp['name']);
 		return array_selector($name, $value, $items, array('spec_option' => _("Installed on system"),
 			'spec_id' => -1,
 			'select_submit' => $submit_on_change,

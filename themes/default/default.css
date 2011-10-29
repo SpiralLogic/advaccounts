@@ -162,12 +162,9 @@ div#content {
 	top:         18em;
 	left:        auto;
 	width:       12em;
-	right:       2em;
+	right:       -10em;
 	z-index:     10;
-}
-
-#sidemenu div.rightHidden {
-	right: 6em !important;
+	opacity:     .75;
 }
 
 #sidemenu p {
@@ -179,25 +176,25 @@ div#content {
 div.banner a { display: block; margin: 0 0.5em }
 div.banner a + a { border-top: 2px groove #999 }
 */
-#sidemenu a, #sidemenu em {
+#sidemenu li, #sidemenu em {
 	display:     block;
 	margin:      0.5em 0; /*  padding: 0.3em 0.4em;*/
 	white-space: nowrap;
 }
 
-#sidemenu a:first-child {
+#sidemenu li:first-child {
 	border-top: none
 }
 
-#sidemenu a:link {
+#sidemenu li:link {
 	text-decoration: none;
 }
 
-#sidemenu a:visited {
+#sidemenu li:visited {
 	text-decoration: none;
 }
 
-#sidemenu a:hover {
+#sidemenu li:hover {
 }
 
 #sidemenu img {
@@ -224,9 +221,9 @@ div.banner a + a { border-top: 2px groove #999 }
 }
 
 #top {
-	float:            right;
-	color:            #808080;
-	text-align:       right;
+	float:      right;
+	color:      #808080;
+	text-align: right;
 }
 
 #top p {

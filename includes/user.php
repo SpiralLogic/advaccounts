@@ -33,7 +33,7 @@
 		//-----------------------------------------------------------------------------------------------
 
 		public static function	update($id, $user_id, $real_name, $phone, $email, $role_id,
-																				$language, $profile, $rep_popup, $pos) {
+																	 $language, $profile, $rep_popup, $pos) {
 			$sql = "UPDATE users SET real_name=" . DBOld::escape($real_name) .
 			 ", phone=" . DBOld::escape($phone) . ",
 				email=" . DBOld::escape($email) . ",
@@ -50,9 +50,9 @@
 		//-----------------------------------------------------------------------------------------------
 
 		public static function	update_display_prefs($id, $price_dec, $qty_dec, $exrate_dec,
-																											$percent_dec, $showgl, $showcodes, $date_format, $date_sep, $tho_sep,
-																											$dec_sep, $theme, $pagesize, $show_hints, $profile, $rep_popup, $query_size,
-																											$graphic_links, $lang, $stickydate, $startup_tab) {
+																								 $percent_dec, $showgl, $showcodes, $date_format, $date_sep, $tho_sep,
+																								 $dec_sep, $theme, $pagesize, $show_hints, $profile, $rep_popup, $query_size,
+																								 $graphic_links, $lang, $stickydate, $startup_tab) {
 			$sql = "UPDATE users SET
 				prices_dec=" . DBOld::escape($price_dec) . ",
 				qty_dec=" . DBOld::escape($qty_dec) . ",
@@ -125,14 +125,14 @@
 
 			// do not exclude inactive records or you lost access after source upgrade
 			// on sites using pre 2.2 database
-			$user        = new Auth($user_id);
+			$user = new Auth($user_id);
 			$md5password = md5($password);
-			$result      = DB::select('user_id')->from('users')->where('password=', $md5password)->fetch();
+			$result = DB::select('user_id')->from('users')->where('password=', $md5password)->fetch();
 			if (count($result) > 0) {
 				$_SESSION['change_password'] = true;
 			}
 			$password = $user->hash_password($password);
-			$sql      = "SELECT * FROM users WHERE user_id = " . DBOld::escape($user_id) . " AND"
+			$sql = "SELECT * FROM users WHERE user_id = " . DBOld::escape($user_id) . " AND"
 			 . " (password=" . DBOld::escape($password) . " OR password=" . DBOld::escape($md5password) . ")";
 			return DBOld::query($sql, "could not get validate user login for $user_id");
 		}
@@ -148,10 +148,10 @@
 
 		//-----------------------------------------------------------------------------------------------
 		public static function	check_activity($id) {
-			$sql    = "SELECT COUNT(*) FROM audit_trail WHERE audit_trail.user="
+			$sql = "SELECT COUNT(*) FROM audit_trail WHERE audit_trail.user="
 			 . DBOld::escape($id);
 			$result = DBOld::query($sql, "Cant check user activity");
-			$ret    = DBOld::fetch($result);
+			$ret = DBOld::fetch($result);
 
 			return $ret[0];
 		}
@@ -159,14 +159,14 @@
 		//-----------------------------------------------------------------------------------------------
 		public static function	show_online() {
 
-			if (!Config::get('ui.users.showonline') || !isset($_SESSION['get_text']))
+			if (!Config::get('ui_users_showonline') || !isset($_SESSION['get_text']))
 				return "";
 			$result = DBOld::query("SHOW TABLES LIKE 'useronline'");
 			if (DBOld::num_rows($result) == 1) {
 				$timeoutseconds = 120;
 
 				$timestamp = time();
-				$timeout   = $timestamp - $timeoutseconds;
+				$timeout = $timestamp - $timeoutseconds;
 				/*
 								 This will find out if user is from behind proxy server.
 								 In that case, the script would count them all as 1 user.
@@ -199,7 +199,7 @@
 
 				// Select online users
 				$result = DBOld::query("SELECT DISTINCT ip FROM useronline");
-				$users  = DBOld::num_rows($result);
+				$users = DBOld::num_rows($result);
 			}
 			else
 				$users = 1;

@@ -39,8 +39,8 @@
 			if ($user == null) {
 				// set default values, used before login
 
-				$this->date_sep = Config::get('ui.date.seperator');
-				$this->date_format = Config::get('ui.date.format');
+				$this->date_sep = Config::get('ui_date_seperator');
+				$this->date_format = Config::get('ui_date_format');
 				$this->tho_sep = 0;
 				$this->dec_sep = 0;
 				$this->price_dec = 2;
@@ -117,7 +117,7 @@
 		}
 
 		function date_display() {
-			$sep = Config::get('separators.date', $this->date_sep);
+			$sep = Config::get('separators_date', $this->date_sep);
 			if ($this->date_format == 0)
 				return "m" . $sep . "d" . $sep . "Y";
 			elseif ($this->date_format == 1)

@@ -58,13 +58,13 @@
 			}
 			$Ajax->activate('_page_body');
 		}
-	} elseif ($_SESSION['change_password']) {
+	} elseif (Input::session('change_password')) {
 		ui_msgs::display_warning('You are required to change your password!');
 	}
 
 	start_form();
 
-	start_table(Config::get('tables.style'));
+	start_table(Config::get('tables_style'));
 	table_section_title(_("Enter your new password in the fields."));
 
 	$myrow = User::get($_SESSION["wa_current_user"]->user);

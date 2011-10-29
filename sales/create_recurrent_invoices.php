@@ -17,7 +17,7 @@
 	include_once(APP_PATH . "reporting/includes/reporting.php");
 
 	$js = "";
-	if (Config::get('ui.windows.popups'))
+	if (Config::get('ui_windows_popups'))
 		$js .= ui_view::get_js_open_window(900, 600);
 
 	page(_($help_context = "Create and Print Recurrent Invoices"), false, false, "", $js);
@@ -108,7 +108,7 @@
 	$sql = "SELECT * FROM recurrent_invoices ORDER BY description, group_no, debtor_no";
 	$result = DBOld::query($sql, "could not get recurrent invoices");
 
-	start_table(Config::get('tables.style') . "  width=70%");
+	start_table(Config::get('tables_style') . "  width=70%");
 	$th = array(_("Description"), _("Template No"), _("Customer"), _("Branch") . "/" . _("Group"), _("Days"),
 		_("Monthly"), _("Begin"), _("End"), _("Last Created"), ""
 	);

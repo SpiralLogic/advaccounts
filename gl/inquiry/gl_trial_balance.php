@@ -44,7 +44,7 @@
 	function display_trial_balance() {
 
 		div_start('balance_tbl');
-		start_table(Config::get('tables.style'));
+		start_table(Config::get('tables_style'));
 		$tableheader = "<tr>
         <td rowspan=2 class='tableheader'>" . _("Account") . "</td>
         <td rowspan=2 class='tableheader'>" . _("Account Name") . "</td>

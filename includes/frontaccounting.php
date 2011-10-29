@@ -10,7 +10,7 @@
 			MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 			See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		 * ********************************************************************* */
-	$installed_extensions = Config::get(null, null, 'installed_extensions');
+	$installed_extensions = Config::get_all('installed_extensions');
 
 	include_once(APP_PATH . 'applications/application.php');
 	include_once(APP_PATH . 'applications/customers.php');
@@ -68,7 +68,6 @@
 
 		function display() {
 
-			include(APP_PATH . "themes/" . user_theme() . "/renderer.php");
 			$this->init();
 			$rend = renderer::getInstance();
 			$rend->wa_header();

@@ -40,7 +40,7 @@
 	ui_msgs::display_heading(_("GL Deposit") . " #$trans_no");
 
 	echo "<br>";
-	start_table(Config::get('tables.style') . "  width=90%");
+	start_table(Config::get('tables_style') . "  width=90%");
 
 	if ($show_currencies) {
 		$colspan1 = 5;
@@ -84,7 +84,7 @@
 		if ($show_currencies)
 			ui_msgs::display_heading2(_("Item Amounts are Shown in :") . " " . $company_currency);
 
-		start_table(Config::get('tables.style') . "  width=90%");
+		start_table(Config::get('tables_style') . "  width=90%");
 		$dim = DB_Company::get_pref('use_dimension');
 		if ($dim == 2)
 			$th = array(_("Account Code"), _("Account Description"), _("Dimension") . " 1", _("Dimension") . " 2",

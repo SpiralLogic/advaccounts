@@ -72,7 +72,7 @@
 	start_form();
 
 	//start_outer_table("class='tablestyle'");
-	start_outer_table(Config::get('tables.style2'), 5);
+	start_outer_table(Config::get('tables_style2'), 5);
 
 	table_section(1);
 

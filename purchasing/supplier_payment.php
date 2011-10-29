@@ -16,7 +16,7 @@
 	include_once(APP_PATH . "reporting/includes/reporting.php");
 
 	$js = "";
-	if (Config::get('ui.windows.popups'))
+	if (Config::get('ui_windows_popups'))
 		$js .= ui_view::get_js_open_window(900, 500);
 
 	JS::headerFile('/js/payalloc.js');
@@ -206,7 +206,7 @@
 
 	start_form();
 
-	start_outer_table(Config::get('tables.style2') . " width=60%", 5);
+	start_outer_table(Config::get('tables_style2') . " width=60%", 5);
 
 	table_section(1);
 
@@ -243,7 +243,7 @@
 		div_end();
 	}
 
-	start_table(Config::get('tables.style') . "  width=60%");
+	start_table(Config::get('tables_style') . "  width=60%");
 	amount_row(_("Amount of Discount:"), 'discount');
 	amount_row(_("Amount of Payment:"), 'amount');
 	textarea_row(_("Memo:"), 'memo_', null, 22, 4);

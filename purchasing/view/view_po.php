@@ -15,7 +15,7 @@
 	include_once(APP_PATH . "reporting/includes/reporting.php");
 	include(APP_PATH . "purchasing/includes/purchasing_ui.php");
 	$js = "";
-	if (Config::get('ui.windows.popups'))
+	if (Config::get('ui_windows_popups'))
 		$js .= ui_view::get_js_open_window(900, 500);
 	page(_($help_context = "View Purchase Order"), true, false, "", $js);
 	if (!isset($_GET['trans_no'])) {
@@ -26,10 +26,10 @@
 	read_po($_GET['trans_no'], $purchase_order);
 	echo "<br>";
 	display_po_summary($purchase_order, true);
-	start_table(Config::get('tables.style') . "  width=90%", 6);
+	start_table(Config::get('tables_style') . "  width=90%", 6);
 	echo "<tr><td valign=top>"; // outer table
 	ui_msgs::display_heading2(_("Line Details"));
-	start_table("colspan=9 " . Config::get('tables.style') . " width=100%");
+	start_table("colspan=9 " . Config::get('tables_style') . " width=100%");
 	$th = array(_("Item Code"), _("Item Description"), _("Quantity"), _("Unit"), _("Price"), _("Discount"), _("Line Total"), _("Requested By"), _("Quantity Received"),
 		_("Quantity Invoiced")
 	);
@@ -71,7 +71,7 @@
 	if (DBOld::num_rows($grns_result) > 0) {
 		echo "</td><td valign=top>"; // outer table
 		ui_msgs::display_heading2(_("Deliveries"));
-		start_table(Config::get('tables.style'));
+		start_table(Config::get('tables_style'));
 		$th = array(_("#"), _("Reference"), _("Delivered On"));
 		table_header($th);
 		while ($myrow = DBOld::fetch($grns_result)) {
@@ -88,7 +88,7 @@
 	if (DBOld::num_rows($invoice_result) > 0) {
 		echo "</td><td valign=top>"; // outer table
 		ui_msgs::display_heading2(_("Invoices/Credits"));
-		start_table(Config::get('tables.style'));
+		start_table(Config::get('tables_style'));
 		$th = array(_("#"), _("Date"), _("Total"));
 		table_header($th);
 		while ($myrow = DBOld::fetch($invoice_result)) {

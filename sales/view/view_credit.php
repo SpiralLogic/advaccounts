@@ -15,7 +15,7 @@
 
 	include_once(APP_PATH . "reporting/includes/reporting.php");
 	$js = "";
-	if (Config::get('ui.windows.popups'))
+	if (Config::get('ui_windows_popups'))
 		$js .= ui_view::get_js_open_window(900, 500);
 	page(_($help_context = "View Credit Note"), true, false, "", $js);
 
@@ -34,11 +34,11 @@
 	ui_msgs::display_heading("<font color=red>" . sprintf(_("CREDIT NOTE #%d"), $trans_id) . "</font>");
 	echo "<br>";
 
-	start_table(Config::get('tables.style2') . " width=95%");
+	start_table(Config::get('tables_style2') . " width=95%");
 	echo "<tr valign=top><td>"; // outer table
 
 	/*Now the customer charged to details in a sub table*/
-	start_table(Config::get('tables.style') . "  width=100%");
+	start_table(Config::get('tables_style') . "  width=100%");
 	$th = array(_("Customer"));
 	table_header($th);
 
@@ -49,7 +49,7 @@
 
 	echo "</td><td>"; // outer table
 
-	start_table(Config::get('tables.style') . "  width=100%");
+	start_table(Config::get('tables_style') . "  width=100%");
 	$th = array(_("Branch"));
 	table_header($th);
 
@@ -58,7 +58,7 @@
 
 	echo "</td><td>"; // outer table
 
-	start_table(Config::get('tables.style') . "  width=100%");
+	start_table(Config::get('tables_style') . "  width=100%");
 	start_row();
 	label_cells(_("Ref"), $myrow["reference"], "class='tableheader2'");
 	label_cells(_("Date"), Dates::sql2date($myrow["tran_date"]), "class='tableheader2'");
@@ -78,7 +78,7 @@
 
 	$result = get_customer_trans_details(ST_CUSTCREDIT, $trans_id);
 
-	start_table(Config::get('tables.style') . "  width=95%");
+	start_table(Config::get('tables_style') . "  width=95%");
 
 	if (DBOld::num_rows($result) > 0) {
 		$th = array(_("Item Code"), _("Item Description"), _("Quantity"),

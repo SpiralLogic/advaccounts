@@ -112,7 +112,7 @@
 	$this->NewLine();
 	$this->Text($mcol + 100, $doc_Invoice_no);
 	if (isset($myrow['trans_no']) && isset($myrow['reference'])) { // INV/CRE/STA
-		if (Config::get('print.useinvoicenumber') == 1) {
+		if (Config::get('print_useinvoicenumber') == 1) {
 
 			$this->Text($mcol + 180, $myrow['trans_no']);
 		} else {

@@ -17,7 +17,7 @@
 		var $loginname;
 		var $username;
 		var $name;
-		var $company;
+		var $company = 1;
 		var $pos;
 		var $salesmanid = false;
 		var $access;
@@ -32,17 +32,17 @@
 
 		function CurrentUser() {
 			$this->loginname = $this->username = $this->name = "";
-			$this->company   = Config::get('company.default') ? Config::get('company.default') : 0;
-			$this->logged    = false;
-			$this->prefs     = new userPrefs();
+			$this->company = Config::get('company_default') ? Config::get('company_default') : 1;
+			$this->logged = false;
+			$this->prefs = new userPrefs();
 		}
 
 		function set_salesman($salesman_code = null) {
 			if ($salesman_code == null) {
 				$salesman_name = $this->name;
-				$sql           = "SELECT salesman_code FROM salesman WHERE salesman_name = " . DBOld::escape($salesman_name);
-				$query         = DBOld::query($sql, 'Couldn\'t find current salesman');
-				$result        = DBOld::fetch_assoc($query);
+				$sql = "SELECT salesman_code FROM salesman WHERE salesman_name = " . DBOld::escape($salesman_name);
+				$query = DBOld::query($sql, 'Couldn\'t find current salesman');
+				$result = DBOld::fetch_assoc($query);
 				if (!empty($result['salesman_code'])) $this->salesmanid = $result['salesman_code'];
 			}
 			if ($salesman_code != null) $this->salesmanid = $salesman_code;
@@ -66,7 +66,7 @@
 
 				if (!@$myrow["inactive"]) {
 					$this->role_set = array();
-					$this->access   = $myrow["role_id"];
+					$this->access = $myrow["role_id"];
 					// store area codes available for current user role
 					$role = Security::get_role($this->access);
 					if (!$role) return false;
@@ -76,16 +76,16 @@
 					}
 				}
 				if ($myrow['change_password']) $_SESSION['change_password'] = true;
-				$this->name      = $myrow["real_name"];
-				$this->pos       = $myrow["pos"];
+				$this->name = $myrow["real_name"];
+				$this->pos = $myrow["pos"];
 				$this->loginname = $loginname;
-				$this->username  = $this->loginname;
-				$this->prefs     = new userPrefs($myrow);
-				$this->user      = @$myrow["id"];
+				$this->username = $this->loginname;
+				$this->prefs = new userPrefs($myrow);
+				$this->user = @$myrow["id"];
 				User::update_visitdate($this->username);
-				$this->logged   = true;
+				$this->logged = true;
 				$this->last_act = time();
-				$this->timeout  = session_timeout();
+				$this->timeout = session_timeout();
 				$this->set_salesman();
 			}
 			return $this->logged;
@@ -98,7 +98,7 @@
 			if ($page_level === 'SA_DENIED' || $page_level === '') return false;
 			$code = $security_areas[$page_level][0];
 			// only first registered company has site admin privileges
-			return $code && in_array($code, $this->role_set) && ($this->company == 0 || (($code & ~0xff) != SS_SADMIN));
+			return $code && in_array($code, $this->role_set) && ($this->company == 1 || (($code & ~0xff) != SS_SADMIN));
 		}
 
 		function can_access_page($page_level) {
@@ -106,8 +106,10 @@
 		}
 
 		function get_db_connection($id = -1) {
-			$connection = Config::get($id == -1 ? $this->company : $id, null, 'db');
-			$db         = mysql_connect($connection["host"], $connection["dbuser"], $connection["dbpassword"]);
+			$id = $id == -1 ? $this->company : 1;
+
+			$connection = Config::get('db.' . $id);
+			$db = mysql_connect($connection["host"], $connection["dbuser"], $connection["dbpassword"]);
 			mysql_select_db($connection["dbname"], $db);
 			if (!defined('TB_PREF')) define('TB_PREF', '');
 			return $db;
@@ -115,26 +117,26 @@
 
 		function update_prefs($price_dec, $qty_dec, $exrate_dec, $percent_dec, $showgl, $showcodes, $date_format, $date_sep, $tho_sep, $dec_sep, $theme, $pagesize, $show_hints, $profile, $rep_popup,
 													$query_size, $graphic_links, $lang, $stickydate, $startup_tab) {
-			$user = array('prices_dec'			=> $price_dec,
-										'qty_dec'				 => $qty_dec,
-										'rates_dec'			 => $exrate_dec,
-										'percent_dec'		 => $percent_dec,
-										'show_gl'				 => $showgl,
-										'show_codes'			=> $showcodes,
-										'date_format'		 => $date_format,
-										'date_sep'				=> $date_sep,
-										'tho_sep'				 => $tho_sep,
-										'dec_sep'				 => $dec_sep,
-										'theme'					 => $theme,
-										'page_size'			 => $pagesize,
-										'show_hints'			=> $show_hints,
-										'print_profile'	 => $profile,
-										'rep_popup'			 => $rep_popup,
-										'query_size'			=> $query_size,
-										'graphic_links'	 => $graphic_links,
-										'language'				=> $lang,
-										'sticky_doc_date' => $stickydate,
-										'startup_tab'		 => $startup_tab
+			$user = array('prices_dec' => $price_dec,
+				'qty_dec' => $qty_dec,
+				'rates_dec' => $exrate_dec,
+				'percent_dec' => $percent_dec,
+				'show_gl' => $showgl,
+				'show_codes' => $showcodes,
+				'date_format' => $date_format,
+				'date_sep' => $date_sep,
+				'tho_sep' => $tho_sep,
+				'dec_sep' => $dec_sep,
+				'theme' => $theme,
+				'page_size' => $pagesize,
+				'show_hints' => $show_hints,
+				'print_profile' => $profile,
+				'rep_popup' => $rep_popup,
+				'query_size' => $query_size,
+				'graphic_links' => $graphic_links,
+				'language' => $lang,
+				'sticky_doc_date' => $stickydate,
+				'startup_tab' => $startup_tab
 			);
 			if (!Config::get('demo_mode')) {
 				User::update_display_prefs($this->user, $price_dec, $qty_dec, $exrate_dec, $percent_dec, $showgl, $showcodes, $date_format, $date_sep, $tho_sep, $dec_sep, $theme, $pagesize, $show_hints,
@@ -152,10 +154,10 @@
 	}
 
 	function number_format2($number, $decimals = 0) {
-		$tsep = Config::get('separators.thousands', $_SESSION["wa_current_user"]->prefs->tho_sep());
-		$dsep = Config::get('separators.decimal', $_SESSION["wa_current_user"]->prefs->dec_sep());
+		$tsep = Config::get('separators_thousands', $_SESSION["wa_current_user"]->prefs->tho_sep());
+		$dsep = Config::get('separators_decimal', $_SESSION["wa_current_user"]->prefs->dec_sep());
 		//return number_format($number, $decimals, $dsep,	$tsep);
-		$delta  = ($number < 0 ? -.0000000001 : .0000000001);
+		$delta = ($number < 0 ? -.0000000001 : .0000000001);
 		$number = number_format($number + $delta, $decimals, $dsep, $tsep);
 		return ($number == -0 ? 0 : $number);
 	}
@@ -215,9 +217,9 @@
 
 	function user_numeric($input) {
 		$num = trim($input);
-		$sep = Config::get('separators.thousands', user_tho_sep());
+		$sep = Config::get('separators_thousands', user_tho_sep());
 		if ($sep != '') $num = str_replace($sep, '', $num);
-		$sep = Config::get('separators.decimal', user_dec_sep());
+		$sep = Config::get('separators_decimal', user_dec_sep());
 		if ($sep != '.') $num = str_replace($sep, '.', $num);
 		if (!is_numeric($num)) return false;
 		$num = (float)$num;
@@ -330,11 +332,11 @@
 					 \n theme: '/themes/" . user_theme() . "/',
 					 \nloadtxt: '" . _('Requesting data...') . "',
 					 \ndate: '" . Dates::Today() . "',
-					 \ndatesys: " . Config::get('accounts.datesystem') . ",
+					 \ndatesys: " . Config::get('accounts_datesystem') . ",
 					 \ndatefmt: " . user_date_format() . ",
-					 \ndatesep: '" . Config::get('ui.date.format') . "',
-					 \nts: '" . Config::get('separators.thousands', user_tho_sep()) . "',
-					 \nds: '" . Config::get('separators.decimal', user_dec_sep()) . "',
+					 \ndatesep: '" . Config::get('ui_date_format') . "',
+					 \nts: '" . Config::get('separators_thousands', user_tho_sep()) . "',
+					 \nds: '" . Config::get('separators_decimal', user_dec_sep()) . "',
 					 \npdec: " . user_price_dec() . "}\n";
 		JS::beforeload($js);
 	}

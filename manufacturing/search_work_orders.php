@@ -15,7 +15,7 @@
 
 	include_once(APP_PATH . "manufacturing/includes/manufacturing_ui.php");
 	$js = "";
-	if (Config::get('ui.windows.popups'))
+	if (Config::get('ui_windows_popups'))
 		$js .= ui_view::get_js_open_window(800, 500);
 	if (isset($_GET['outstanding_only']) && ($_GET['outstanding_only'] == true)) {
 		// curently outstanding simply means not closed

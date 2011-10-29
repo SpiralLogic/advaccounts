@@ -17,7 +17,7 @@
 
 	include_once(APP_PATH . "reporting/includes/reporting.php");
 	$js = "";
-	if (Config::get('ui.windows.popups'))
+	if (Config::get('ui_windows_popups'))
 		$js .= ui_view::get_js_open_window(900, 600);
 	page(_($help_context = "View Sales Invoice"), true, false, "", $js);
 
@@ -40,11 +40,11 @@
 	ui_msgs::display_heading(sprintf(_("SALES INVOICE #%d"), $trans_id));
 
 	echo "<br>";
-	start_table(Config::get('tables.style2') . " width=95%");
+	start_table(Config::get('tables_style2') . " width=95%");
 	echo "<tr valign=top><td>"; // outer table
 
 	/*Now the customer charged to details in a sub table*/
-	start_table(Config::get('tables.style') . "  width=100%");
+	start_table(Config::get('tables_style') . "  width=100%");
 	$th = array(_("Charge To"));
 	table_header($th);
 
@@ -58,7 +58,7 @@
 
 	/*end of the main table showing the company name and charge to details */
 
-	start_table(Config::get('tables.style') . "  width=100%");
+	start_table(Config::get('tables_style') . "  width=100%");
 	$th = array(_("Charge Branch"));
 	table_header($th);
 
@@ -67,7 +67,7 @@
 
 	echo "</td><td>"; // outer table
 
-	start_table(Config::get('tables.style') . "  width=100%");
+	start_table(Config::get('tables_style') . "  width=100%");
 	$th = array(_("Delivered To"));
 	table_header($th);
 
@@ -77,7 +77,7 @@
 
 	echo "</td><td>"; // outer table
 
-	start_table(Config::get('tables.style') . "  width=100%");
+	start_table(Config::get('tables_style') . "  width=100%");
 	start_row();
 	label_cells(_("Reference"), $myrow["reference"], "class='label'");
 	label_cells(_("Currency"), $sales_order["curr_code"], "class='label'");
@@ -103,7 +103,7 @@
 
 	$result = get_customer_trans_details(ST_SALESINVOICE, $trans_id);
 
-	start_table(Config::get('tables.style') . "  width=95%");
+	start_table(Config::get('tables_style') . "  width=95%");
 
 	if (DBOld::num_rows($result) > 0) {
 		$th = array(_("Item Code"), _("Item Description"), _("Quantity"),

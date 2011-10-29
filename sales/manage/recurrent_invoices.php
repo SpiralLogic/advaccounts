@@ -14,7 +14,7 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	$js = "";
-	if (Config::get('ui.windows.popups'))
+	if (Config::get('ui_windows_popups'))
 		$js .= ui_view::get_js_open_window(900, 600);
 
 	page(_($help_context = "Recurrent Invoices"), false, false, "", $js);
@@ -92,7 +92,7 @@
 	$result = DBOld::query($sql, "could not get recurrent invoices");
 
 	start_form();
-	start_table(Config::get('tables.style') . "  width=70%");
+	start_table(Config::get('tables_style') . "  width=70%");
 	$th = array(_("Description"), _("Template No"), _("Customer"), _("Branch") . "/" . _("Group"), _("Days"),
 		_("Monthly"), _("Begin"), _("End"), _("Last Created"), "", ""
 	);
@@ -135,7 +135,7 @@
 
 	start_form();
 
-	start_table(Config::get('tables.style2'));
+	start_table(Config::get('tables_style2'));
 
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {

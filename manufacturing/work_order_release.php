@@ -16,7 +16,7 @@
 	include_once(APP_PATH . "manufacturing/includes/manufacturing_ui.php");
 
 	$js = "";
-	if (Config::get('ui.windows.popups'))
+	if (Config::get('ui_windows_popups'))
 		$js .= ui_view::get_js_open_window(800, 500);
 
 	page(_($help_context = "Work Order Release to Manufacturing"), false, false, "", $js);
@@ -78,7 +78,7 @@
 	$_POST['memo_'] = "";
 
 	if (can_process($myrow)) {
-		start_table(Config::get('tables.style2'));
+		start_table(Config::get('tables_style2'));
 
 		label_row(_("Work Order #:"), $selected_id);
 		label_row(_("Work Order Reference:"), $myrow["wo_ref"]);

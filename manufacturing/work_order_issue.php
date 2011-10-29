@@ -16,7 +16,7 @@
 	include_once(APP_PATH . "manufacturing/includes/manufacturing_ui.php");
 	include_once(APP_PATH . "manufacturing/includes/work_order_issue_ui.php");
 	$js = "";
-	if (Config::get('ui.windows.popups'))
+	if (Config::get('ui_windows_popups'))
 		$js .= ui_view::get_js_open_window(800, 500);
 
 	page(_($help_context = "Issue Items to Work Order"), false, false, "", $js);
@@ -184,7 +184,7 @@
 
 	start_form();
 
-	start_table(Config::get('tables.style') . "  width=90%", 10);
+	start_table(Config::get('tables_style') . "  width=90%", 10);
 	echo "<tr><td>";
 	display_issue_items(_("Items to Issue"), $_SESSION['issue_items']);
 	issue_options_controls();

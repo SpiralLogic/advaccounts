@@ -16,7 +16,7 @@
 
 	include_once(APP_PATH . "purchasing/includes/purchasing_ui.php");
 	$js = "";
-	if (Config::get('ui.windows.popups')) {
+	if (Config::get('ui_windows_popups')) {
 		$js .= ui_view::get_js_open_window(900, 500);
 	}
 
@@ -210,7 +210,7 @@
 			return false;
 		}
 		$margin = SysPrefs::over_charge_allowance();
-		if (Config::get('valid.charged_to_delivered.price') == True && $margin != 0) {
+		if (Config::get('valid_charged_to_delivered_price') == True && $margin != 0) {
 			if ($_POST['order_price' . $n] != input_num('ChgPrice' . $n)) {
 				if ($_POST['order_price' . $n] == 0 || input_num('ChgPrice' . $n) / $_POST['order_price' . $n] > (1 + ($margin / 100))) {
 					if ($_SESSION['err_over_charge'] != true) {
@@ -225,7 +225,7 @@
 				}
 			}
 		}
-		if (Config::get('valid.charged_to_delivered.qty') == True) {
+		if (Config::get('valid_charged_to_delivered_qty') == True) {
 			if (input_num('this_quantity_inv' . $n) / ($_POST['qty_recd' . $n] - $_POST['prev_quantity_inv' . $n]) > (1 + ($margin / 100))) {
 				ui_msgs::display_error(_("The quantity being invoiced is more than the outstanding quantity by more than the allowed over-charge percentage. The system is set up to prohibit this. See the system administrator to modify the set up parameters if necessary.") . _("The over-charge percentage allowance is :") . $margin . "%");
 				ui_view::set_focus('this_quantity_inv' . $n);

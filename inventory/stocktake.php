@@ -16,7 +16,7 @@
 	include_once(APP_PATH . "inventory/includes/item_adjustments_ui.php");
 
 	$js = "";
-	if (Config::get('ui.windows.popups'))
+	if (Config::get('ui_windows_popups'))
 		$js .= ui_view::get_js_open_window(800, 500);
 
 	page(_($help_context = "Item Stocktake Note"), false, false, "", $js);
@@ -107,7 +107,6 @@
 	//-------------------------------------------------------------------------------
 
 	if (isset($_POST['Process']) && can_process()) {
-		FB::info($_SESSION['adj_items']);
 
 		foreach ($_SESSION['adj_items']->line_items as $line) {
 			$item = new Item($line->stock_id);
@@ -195,7 +194,7 @@
 
 	display_order_header($_SESSION['adj_items']);
 
-	start_outer_table(Config::get('tables.style') . "  width=80%", 10);
+	start_outer_table(Config::get('tables_style') . "  width=80%", 10);
 
 	display_adjustment_items(_("Adjustment Items"), $_SESSION['adj_items']);
 	adjustment_options_controls();

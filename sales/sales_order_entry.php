@@ -41,7 +41,7 @@
 		));
 	$js = '';
 
-	if (Config::get('ui.windows.popups')) {
+	if (Config::get('ui_windows_popups')) {
 		$js .= ui_view::get_js_open_window(900, 500);
 	}
 	$page_title = _($help_context = "Sales Order Entry");
@@ -529,7 +529,6 @@
 			$doc->trans_type = ST_SALESORDER;
 			$doc->reference = Refs::get_next($doc->trans_type);
 			$doc->document_date = $doc->due_date = Dates::new_doc_date();
-			FB::info($doc);
 			foreach ($doc->line_items as $line_no => $line) {
 				$line->qty_done = $line->qty_dispatched = 0;
 			}
@@ -631,7 +630,7 @@
 	hidden('cart_id');
 	$customer_error = display_order_header($_SESSION['Items'], ($_SESSION['Items']->any_already_delivered() == 0), $idate);
 	if ($customer_error == "") {
-		start_table(Config::get('tables.style'), 10);
+		start_table(Config::get('tables_style'), 10);
 		echo "
 <tr>
     <td>";

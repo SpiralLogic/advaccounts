@@ -14,7 +14,7 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
 	$js = "";
-	if (Config::get('ui.windows.popups'))
+	if (Config::get('ui_windows_popups'))
 		$js .= ui_view::get_js_open_window(900, 500);
 	page(_($help_context = "View Purchase Order Delivery"), true, false, "", $js);
 
@@ -33,7 +33,7 @@
 
 	ui_msgs::display_heading2(_("Line Details"));
 
-	start_table("colspan=9 " . Config::get('tables.style') . " width=90%");
+	start_table("colspan=9 " . Config::get('tables_style') . " width=90%");
 	$th = array(_("Item Code"), _("Item Description"), _("Delivery Date"), _("Quantity"),
 		_("Unit"), _("Price"), _("Line Total"), _("Quantity Invoiced")
 	);

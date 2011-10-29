@@ -20,10 +20,10 @@
 		var $is_locale_file;
 
 		function language($name, $code, $encoding, $dir = 'ltr') {
-			$this->name     = $name;
-			$this->code     = $code ? $code : 'en_GB';
+			$this->name = $name;
+			$this->code = $code ? $code : 'en_GB';
 			$this->encoding = $encoding;
-			$this->dir      = $dir;
+			$this->dir = $dir;
 		}
 
 		function get_language_dir() {
@@ -38,17 +38,17 @@
 		function set_language($code) {
 
 			$changed = $this->code != $code;
-			$lang    = Arr::search_value($code, Config::get(null, null, 'installed_languages'), 'code');
+			$lang = Arr::search_value($code, Config::get_all('installed_languages'), 'code');
 
 			if ($lang && $changed) {
 				// flush cache as we can use several languages in one account
 				flush_dir(COMPANY_PATH . '/js_cache');
 
-				$this->name           = $lang['name'];
-				$this->code           = $lang['code'];
-				$this->encoding       = $lang['encoding'];
-				$this->dir            = isset($lang['rtl']) ? 'rtl' : 'ltr';
-				$locale               = APP_PATH . "lang/" . $this->code . "/locale.php";
+				$this->name = $lang['name'];
+				$this->code = $lang['code'];
+				$this->encoding = $lang['encoding'];
+				$this->dir = isset($lang['rtl']) ? 'rtl' : 'ltr';
+				$locale = APP_PATH . "lang/" . $this->code . "/locale.php";
 				$this->is_locale_file = file_exists($locale);
 			}
 
@@ -65,11 +65,11 @@
 
 		static function write_lang() {
 
-			$conn = Arr::natsort(Config::get(null, null, 'installed_languages'), 'code', 'code');
+			$conn = Arr::natsort(Config::get_all('installed_languages'), 'code', 'code');
 			Config::set('installed_languages', $conn);
-			$installed_languages = Config::get(null, null, 'installed_languages');
-			$n                   = count($installed_languages);
-			$msg                 = "<?php\n\n";
+			$installed_languages = Config::get_all('installed_languages');
+			$n = count($installed_languages);
+			$msg = "<?php\n\n";
 
 			$msg .= "/* How to make new entries here\n\n";
 			$msg .= "-- if adding languages at the beginning of the list, make sure it's index is set to 0 (it has ' 0 => ')\n";
@@ -98,7 +98,7 @@
 
 			$msg .= "\t);\n";
 
-			$path     = APP_PATH . "lang";
+			$path = APP_PATH . "lang";
 			$filename = $path . '/installed_languages.php';
 			// Check if directory exists and is writable first.
 			if (file_exists($path) && is_writable($path)) {

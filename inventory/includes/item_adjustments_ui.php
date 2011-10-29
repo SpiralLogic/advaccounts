@@ -23,7 +23,7 @@
 
 	function display_order_header(&$order) {
 
-		start_outer_table("width=70% " . Config::get('tables.style2')); // outer table
+		start_outer_table("width=70% " . Config::get('tables_style2')); // outer table
 		table_section(1);
 
 		locations_list_row(_("Location:"), 'StockLocation', null);
@@ -51,7 +51,7 @@
 
 		ui_msgs::display_heading($title);
 		div_start('items_table');
-		start_table(Config::get('tables.style') . "  width=90%");
+		start_table(Config::get('tables_style') . "  width=90%");
 		$th = array(_("Item Code"), _("Item Description"), _("Quantity"),
 			_("Unit"), _("Unit Cost"), _("Total"), ""
 		);

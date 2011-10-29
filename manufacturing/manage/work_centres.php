@@ -90,7 +90,7 @@
 	$result = get_all_work_centres(check_value('show_inactive'));
 
 	start_form();
-	start_table(Config::get('tables.style') . "  width=50%");
+	start_table(Config::get('tables_style') . "  width=50%");
 	$th = array(_("Name"), _("description"), "", "");
 	inactive_control_column($th);
 	table_header($th);
@@ -113,7 +113,7 @@
 	end_table(1);
 	//-----------------------------------------------------------------------------------
 
-	start_table(Config::get('tables.style2'));
+	start_table(Config::get('tables_style2'));
 
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {

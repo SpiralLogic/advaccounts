@@ -40,7 +40,7 @@
 	//---------------------------------------------------------------------------------------------
 
 	function handle_submit() {
-		$installed_languages = Config::get(null, null, 'installed_languages');
+		$installed_languages = Config::get_all('installed_languages');
 		if (!check_data())
 			return false;
 
@@ -84,7 +84,7 @@
 	function handle_delete() {
 
 		$id = $_GET['id'];
-		$lang = Config::get(null, null, 'installed_languages');
+		$lang = Config::get_all('installed_languages');
 		$lang = $lang[$id]['code'];
 		$filename = PATH_TO_ROOT . "/lang/$lang/LC_MESSAGES";
 
@@ -124,7 +124,7 @@
 		table_header($th);
 
 		$k = 0;
-		$conn = Config::get(null, null, 'installed_languages');
+		$conn = Config::get_all('installed_languages');
 		$n = count($conn);
 		for ($i = 0; $i < $n; $i++)
 		{
@@ -165,7 +165,7 @@
 		if ($selected_id != -1)
 			$n = $selected_id;
 		else
-			$n = count(Config::get(null, null, 'installed_languages'));
+			$n = count(Config::get_all('installed_languages'));
 
 		start_form(true);
 

@@ -12,7 +12,6 @@
 	$page_security = 'SA_PRINTPROFILE';
 
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	include(APP_PATH . "admin/db/printers_db.php");
 
 	page(_($help_context = "Printing Profiles"));
 
@@ -140,7 +139,7 @@
 		$prints[$myrow['report']] = $myrow['printer'];
 	}
 
-	start_table(Config::get('tables.style'));
+	start_table(Config::get('tables_style'));
 	$th = array(_("Report Id"), _("Description"), _("Printer"));
 	table_header($th);
 

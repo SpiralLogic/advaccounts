@@ -7,7 +7,7 @@
 	 * To change this template use File | Settings | File Templates.
 	 */
 	return array(
-		0 => array('name' => 'Advanced Group PTY LTD',
+		1 => array('name' => 'Advanced Group PTY LTD',
 			'host' => 'localhost',
 			'dbuser' => 'fa',
 			'dbpassword' => '1willenberg',

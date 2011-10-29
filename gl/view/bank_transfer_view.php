@@ -54,7 +54,7 @@
 	ui_msgs::display_heading($systypes_array[ST_BANKTRANSFER] . " #$trans_no");
 
 	echo "<br>";
-	start_table(Config::get('tables.style') . "  width=90%");
+	start_table(Config::get('tables_style') . "  width=90%");
 
 	start_row();
 	label_cells(_("From Bank Account"), $from_trans['bank_account_name'], "class='tableheader2'");

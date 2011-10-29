@@ -142,7 +142,7 @@
 
 	start_form(false, false, "repgen_createfunct.php", "edit");
 
-	start_table(Config::get('tables.style2'));
+	start_table(Config::get('tables_style2'));
 	label_row(ID_FUNCT, $id_new . hidden("date_", date("Y-m-d"), false) . hidden("id", $id_new, false) . hidden("id_new", $id_new, false));
 	text_row(SHORT, "short", $short, 10, 10);
 	text_row(LONG, "long", $long, 40, 40);
@@ -153,7 +153,7 @@
 
 	ui_msgs::display_warning(FUNC_DECL, 0, 1);
 
-	start_table(Config::get('tables.style'));
+	start_table(Config::get('tables_style'));
 	start_row();
 	submit_cells("select", SELECT_CR);
 	submit_cells("store", PAGE_STORE);

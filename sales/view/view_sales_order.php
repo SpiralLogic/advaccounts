@@ -17,7 +17,7 @@
 
 	include_once(APP_PATH . "reporting/includes/reporting.php");
 	$js = "";
-	if (Config::get('ui.windows.popups'))
+	if (Config::get('ui_windows_popups'))
 		$js .= ui_view::get_js_open_window(900, 600);
 	if ($_GET['trans_type'] == ST_SALESQUOTE) {
 		page(_($help_context = "View Sales Quotation"), true, false, "", $js);
@@ -31,7 +31,7 @@
 		unset ($_SESSION['View']);
 	}
 	$_SESSION['View'] = new Cart($_GET['trans_type'], $_GET['trans_no'], true);
-	start_table(Config::get('tables.style2') . " width=95%", 5);
+	start_table(Config::get('tables_style2') . " width=95%", 5);
 	echo "<tr valign=top class='tableheader2'><td >";
 
 	if ($_GET['trans_type'] != ST_SALESQUOTE) {
@@ -45,7 +45,7 @@
 	}
 	echo "</td></tr>";
 	echo "<tr valign=top><td>";
-	start_table(Config::get('tables.style') . "  width=95%");
+	start_table(Config::get('tables_style') . "  width=95%");
 	label_row(_("Customer Name"), $_SESSION['View']->customer_name, "class='label'", "colspan=3");
 	start_row();
 	label_cells(_("Customer Purchase Order #"), $_SESSION['View']->cust_ref, "class='label'");
@@ -71,7 +71,7 @@
 	end_table();
 	if ($_GET['trans_type'] != ST_SALESQUOTE) {
 		echo "</td><td valign='top'>";
-		start_table(Config::get('tables.style'));
+		start_table(Config::get('tables_style'));
 		ui_msgs::display_heading2(_("Delivery Notes"));
 		$th = array(_("#"), _("Ref"), _("Date"), _("Total"));
 		table_header($th);
@@ -94,7 +94,7 @@
 		label_row(null, price_format($delivery_total), " ", "colspan=4 align=right");
 		end_table();
 		echo "</td><td valign='top'>";
-		start_table(Config::get('tables.style'));
+		start_table(Config::get('tables_style'));
 		ui_msgs::display_heading2(_("Sales Invoices"));
 		$th = array(_("#"), _("Ref"), _("Date"), _("Total"));
 		table_header($th);
@@ -119,7 +119,7 @@
 		label_row(null, price_format($invoices_total), " ", "colspan=4 align=right");
 		end_table();
 		ui_msgs::display_heading2(_("Credit Notes"));
-		start_table(Config::get('tables.style'));
+		start_table(Config::get('tables_style'));
 		$th = array(_("#"), _("Ref"), _("Date"), _("Total"));
 		table_header($th);
 		$credits_total = 0;
@@ -149,7 +149,7 @@
 	if ($_SESSION['View']->so_type == 1)
 		ui_msgs::display_warning(_("This Sales Order is used as a Template."), 0, 0, "class='currentfg'");
 	ui_msgs::display_heading2(_("Line Details"));
-	start_table("colspan=9 width=95%  " . Config::get('tables.style'));
+	start_table("colspan=9 width=95%  " . Config::get('tables_style'));
 	$th = array(_("Item Code"), _("Item Description"), _("Quantity"), _("Unit"), _("Price"), _("Discount"), _("Total"), _("Quantity Delivered"));
 	table_header($th);
 	$k = 0; //row colour counter

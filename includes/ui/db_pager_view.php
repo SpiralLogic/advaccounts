@@ -60,7 +60,7 @@
 			}
 		}
 		/* show a table of records returned by the sql */
-		start_table(Config::get('tables.style') . "  width=$pager->width");
+		start_table(Config::get('tables_style') . "  width=$pager->width");
 		table_header($headers);
 
 		if ($pager->header_fun) { // if set header handler

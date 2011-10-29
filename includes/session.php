@@ -10,12 +10,12 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	ini_set('session.gc_maxlifetime', 36000); // 10hrs
-	session_name('FA' . md5(dirname(__FILE__)));
+	session_name('FA' . md5($_SERVER['SERVER_NAME']));
 	session_start();
 	header("Cache-control: private");
 	gettextNativeSupport::get_text_init();
 	if (!isset($_SESSION['language']) || !method_exists($_SESSION['language'], 'set_language')) {
-		$l = Arr::search_value(Config::get('default_lang'), Config::get(null, null, 'installed_languages'), 'code');
+		$l = Arr::search_value(Config::get('default_lang'), Config::get_all('installed_languages'), 'code');
 
 		$_SESSION['language'] = new language($l['name'], $l['code'], $l['encoding'], isset($l['rtl']) ? 'rtl' : 'ltr');
 	}
@@ -53,7 +53,7 @@
 				}
 				exit();
 			} else {
-				$succeed = (Config::get($_POST["company_login_name"], null, 'db')) && $_SESSION["wa_current_user"]->login($_POST["company_login_name"], $_POST["user_name_entry_field"], $_POST["password"]);
+				$succeed = (Config::get('db.' . $_POST["company_login_name"])) && $_SESSION["wa_current_user"]->login($_POST["company_login_name"], $_POST["user_name_entry_field"], $_POST["password"]);
 				// select full vs fallback ui mode on login
 
 				$_SESSION["wa_current_user"]->ui_mode = $_POST['ui_mode'];

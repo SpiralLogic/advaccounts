@@ -15,7 +15,7 @@
 	include(APP_PATH . "purchasing/includes/purchasing_ui.php");
 	include(APP_PATH . "reporting/includes/reporting.php");
 	$js = "";
-	if (Config::get('ui.windows.popups')) {
+	if (Config::get('ui_windows_popups')) {
 		$js .= ui_view::get_js_open_window(900, 500);
 	}
 
@@ -51,7 +51,7 @@
 		$nowdue = "1-" . $past1 . " " . _('Days');
 		$pastdue1 = $past1 + 1 . "-" . $past2 . " " . _('Days');
 		$pastdue2 = _('Over') . " " . $past2 . " " . _('Days');
-		start_table("width=90%  " . Config::get('tables.style'));
+		start_table("width=90%  " . Config::get('tables_style'));
 		$th = array(_("Currency"), _("Terms"), _("Current"), $nowdue,
 			$pastdue1, $pastdue2, _("Total Balance"), _("Total For Search Period")
 		);

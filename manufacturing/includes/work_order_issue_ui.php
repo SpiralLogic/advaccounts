@@ -25,7 +25,7 @@
 
 		ui_msgs::display_heading($title);
 		div_start('items_table');
-		start_table(Config::get('tables.style') . "  width=90% colspan=7");
+		start_table(Config::get('tables_style') . "  width=90% colspan=7");
 		$th = array(_("Item Code"), _("Item Description"), _("Quantity"),
 			_("Unit"), _("Unit Cost"), ''
 		);

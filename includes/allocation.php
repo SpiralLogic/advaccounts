@@ -206,7 +206,7 @@
 			$k = $counter = $total_allocated = 0;
 
 			if (count($_SESSION['alloc']->allocs)) {
-				start_table(Config::get('tables.style') . "  width=60%");
+				start_table(Config::get('tables_style') . "  width=60%");
 				$th = array(_("Transaction Type"), _("#"), _("Date"), _("Due Date"), _("Amount"),
 					_("Other Allocations"), _("This Allocation"), _("Left to Allocate"), '', ''
 				);

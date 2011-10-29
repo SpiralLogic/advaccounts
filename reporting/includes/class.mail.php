@@ -74,7 +74,7 @@
 			//$this->mail->ContentType = "text/html; charset=ISO-8859-1";
 			//$this->mail->Encoding = "quoted-printable";
 			$this->mail->IsHTML(true);
-			$this->mail->AltBody = $text . "\n";
+			$this->mail->AltBody = $html . "\n";
 			$this->mail->Body = "<html><body>\n" . $html . "\n</body></html>\n";
 		}
 

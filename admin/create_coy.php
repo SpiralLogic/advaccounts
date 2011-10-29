@@ -37,7 +37,7 @@
 			ui_msgs::display_error(_("When creating a new company, you must provide a Database script file."));
 			return false;
 		}
-		foreach (Config::get(null, null, 'db') as $id => $con)
+		foreach (Config::get_all('db') as $id => $con)
 		{
 			if ($id != $selected_id && $_POST['host'] == $con['host']
 			 && $_POST['dbname'] == $con['dbname']
@@ -60,7 +60,9 @@
 			return false;
 
 		$id = $_GET['id'];
-		$new = !Config::get($id, null, 'db');
+		$connections = Config::get_all('db');
+
+		$new = !isset($conections[$id]);
 		$db_connection['name'] = $_POST['name'];
 		$db_connection['host'] = $_POST['host'];
 		$db_connection['dbuser'] = $_POST['dbuser'];
@@ -68,7 +70,7 @@
 		$db_connection['dbname'] = $_POST['dbname'];
 		Config::set($id, $db_connection, 'db');
 		if ((bool)$_POST['def'] == true)
-			Config::set('company.default', $id);
+			Config::set('company_default', $id);
 
 		if (isset($_GET['ul']) && $_GET['ul'] == 1) {
 			$conn = Config::get($id, null, 'db');
@@ -126,7 +128,7 @@
 
 		// First make sure all company directories from the one under removal are writable.
 		// Without this after operation we end up with changed per-company owners!
-		for ($i = $id; $i < count(Config::get(null, null, 'db')); $i++) {
+		for ($i = $id; $i < count(Config::get_all('db')); $i++) {
 			if (!is_dir(COMPANY_PATH . '/' . $i) || !is_writable(COMPANY_PATH . '/' . $i)) {
 				ui_msgs::display_error(_('Broken company subdirectories system. You have to remove this company manually.'));
 				return;
@@ -144,7 +146,7 @@
 			return;
 		}
 		// 'shift' company directories names
-		for ($i = $id + 1; $i < count(Config::get(null, null, 'db')); $i++) {
+		for ($i = $id + 1; $i < count(Config::get_all('db')); $i++) {
 			if (!rename(COMPANY_PATH . '/' . $i, COMPANY_PATH . '/' . ($i - 1))) {
 				ui_msgs::display_error(_("Cannot rename company subdirectory"));
 				return;
@@ -154,8 +156,8 @@
 		if ($err == 0)
 			ui_msgs::display_error(_("Error removing Database: ") . _(", please remove it manually"));
 
-		if (Config::get('company.default') == $id)
-			Config::set('company.default', 0);
+		if (Config::get('company_default') == $id)
+			Config::set('company_default', 1);
 
 		// finally remove renamed company directory
 		@flush_dir($tmpname, true);
@@ -188,11 +190,11 @@
 		table_header($th);
 
 		$k = 0;
-		$conn = Config::get(null, null, 'db');
+		$conn = Config::get_all('db');
 		$n = count($conn);
 		for ($i = 0; $i < $n; $i++)
 		{
-			if ($i == Config::get('company.default'))
+			if ($i == Config::get('company_default'))
 				$what = _("Yes");
 			else
 				$what = _("No");
@@ -230,7 +232,7 @@
 		if ($selected_id != -1)
 			$n = $selected_id;
 		else
-			$n = count(Config::get(null, null, 'db'));
+			$n = count(Config::get_all('db'));
 
 		start_form(true);
 
@@ -250,14 +252,14 @@
 		start_table(Config::get('tables.style2'));
 
 		if ($selected_id != -1) {
-			$conn = Config::get($selected_id, null, 'db');
+			$conn = Config::get('db.' . $selected_id);
 			$_POST['name'] = $conn['name'];
 			$_POST['host'] = $conn['host'];
 			$_POST['dbuser'] = $conn['dbuser'];
 			$_POST['dbpassword'] = $conn['dbpassword'];
 			$_POST['dbname'] = $conn['dbname'];
 
-			if ($selected_id == Config::get('company.default'))
+			if ($selected_id == Config::get('company_default'))
 				$_POST['def'] = true;
 			else
 				$_POST['def'] = false;

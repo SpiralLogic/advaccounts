@@ -135,7 +135,7 @@
 	$result = DBOld::query($sql, "could not get payment terms");
 
 	start_form();
-	start_table(Config::get('tables.style'));
+	start_table(Config::get('tables_style'));
 	$th = array(_("Description"), _("Following Month On"), _("Due After (Days)"), "", "");
 	inactive_control_column($th);
 	table_header($th);
@@ -175,7 +175,7 @@
 
 	//-------------------------------------------------------------------------------------------------
 
-	start_table(Config::get('tables.style2'));
+	start_table(Config::get('tables_style2'));
 
 	$day_in_following_month = $days_before_due = 0;
 	if ($selected_id != -1) {

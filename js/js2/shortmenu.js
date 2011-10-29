@@ -7,15 +7,19 @@
  */
 ;
 (function(window, $, undefined) {
-	var $current, Searchboxtimeout, Adv = window.Adv, sidemenu = {}, searchInput = $('<input/>').attr({type:'text', value:'', size:14, maxlength:18}).data({'id':'', url:''}), $search = $("#search"), $quickMenu = $('#quickCustomer');
+	var $current, Searchboxtimeout, menuTimeout, inAnminate, Adv = window.Adv, sidemenu = {}, searchInput = $('<input/>')
+	 .attr({type:'text', value:'', size:14, maxlength:18}).data({'id':'', url:''}), $search = $("#search"), $quickMenu = $('#quickCustomer');
 	(function() {
 		var $this = this, $wrapper = $("#_page_body"), $results = $wrapper.clone();
-		this.menu = $("#sidemenu").accordion({autoHeight:false, active:false, event:"mouseenter"}).fadeTo("fast", .75).draggable();
+		this.menu = $("#sidemenu").accordion({autoHeight:false, active:false, event:"mouseenter"}).draggable();
 		this.sidemenuOn = function() {
-			$this.menu.accordion("enable").hover(function() {
-				$(this).fadeTo("fast", 1).accordion({collapsible:false, active:false});
+			$this.menu.animate({right:'-10em', opacity:1}, 300).accordion("enable").hover(function() {
+				window.clearTimeout(menuTimeout);
+				$(this).stop().animate({right:'1em', opacity:'1'}, 500).accordion({collapsible:false, active:false});
 			}, function() {
-				$(this).accordion({collapsible:false, active:false}).fadeTo("fast", .75);
+				menuTimeout = window.setTimeout(function() {
+					$this.menu.clearQueue().animate({right:'-10em', opacity:'.75'}, 500).accordion({collapsible:false, active:false});
+				}, 1000)
 			});
 		};
 		this.sidemenuOn();
@@ -34,11 +38,11 @@
 			$results.empty().append(data).insertBefore($wrapper);
 			$wrapper.hide();
 		}
-		$search.delegate("a", "click", function(event) {
+		$search.delegate("li", "click", function(event) {
 			searchInput.trigger('blur');
 			$current = $(this).hide();
 			$this.sidemenuOff();
-			searchInput.data({'id':$current.attr('href'), url:$current.attr('href')}).insertBefore($current).focus();
+			searchInput.data({'id':$current.data('href'), url:$current.data('href')}).insertBefore($current).focus();
 			return false;
 		});
 		$search.delegate('input', "change blur keyup", function(event) {

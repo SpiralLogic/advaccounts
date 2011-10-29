@@ -15,7 +15,7 @@
 
 	$js = '';
 	ui_view::set_focus('account');
-	if (Config::get('ui.windows.popups'))
+	if (Config::get('ui_windows_popups'))
 		$js .= ui_view::get_js_open_window(800, 500);
 
 	page(_($help_context = "General Ledger Inquiry"), false, false, '', $js);
@@ -109,7 +109,7 @@
 		 input_num("amount_min") == 0 &&
 		 input_num("amount_max") == 0;
 
-		start_table(Config::get('tables.style'));
+		start_table(Config::get('tables_style'));
 
 		$first_cols = array(_("Type"), _("#"), _("Date"));
 

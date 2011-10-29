@@ -54,9 +54,9 @@
 			ui_msgs::display_warning(_('Only jpg files are supported - a file extension of .jpg is expected'));
 			$upload_file = 'No';
 		}
-		elseif ($_FILES['pic']['size'] > (Config::get('item.images.max_size') * 1024))
+		elseif ($_FILES['pic']['size'] > (Config::get('item_images_max_size') * 1024))
 		{ //File Size Check
-			ui_msgs::display_warning(_('The file size is over the maximum allowed. The maximum size allowed in KB is') . ' ' . Config::get('item.images.max_size'));
+			ui_msgs::display_warning(_('The file size is over the maximum allowed. The maximum size allowed in KB is') . ' ' . Config::get('item_images_max_size'));
 			$upload_file = 'No';
 		}
 		elseif ($_FILES['pic']['type'] == "text/plain")
@@ -246,14 +246,13 @@
 		end_table();
 		if (get_post('_show_inactive_update')) {
 			$_SESSION['options']['stock_id']['inactive'] = check_value('show_inactive');
-			FB::info($_SESSION['options']);
 			$Ajax->activate('stock_id');
 			ui_view::set_focus('stock_id');
 		}
 	}
 
 	div_start('details');
-	start_outer_table(Config::get('tables.style2'), 5);
+	start_outer_table(Config::get('tables_style2'), 5);
 	table_section(1);
 	table_section_title(_("Item"));
 	//------------------------------------------------------------------------------------
@@ -347,7 +346,7 @@
 	if (isset($_POST['NewStockID']) && file_exists(COMPANY_PATH . "/$user_comp/images/" . item_img_name($_POST['NewStockID']) . ".jpg")) {
 		// 31/08/08 - rand() call is necessary here to avoid caching problems. Thanks to Peter D.
 		$stock_img_link .= "<img id='item_img' alt = '[" . $_POST['NewStockID'] . ".jpg" . "]' src='" . COMPANY_PATH . "/$user_comp/images/"
-		 . item_img_name($_POST['NewStockID']) . ".jpg?nocache=" . rand() . "'" . " height='" . Config::get('item.images.height') . "' border='0'>";
+		 . item_img_name($_POST['NewStockID']) . ".jpg?nocache=" . rand() . "'" . " height='" . Config::get('item_images_height') . "' border='0'>";
 		$check_remove_image = true;
 	} else {
 		$stock_img_link .= _("No image");

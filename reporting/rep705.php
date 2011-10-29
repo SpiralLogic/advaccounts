@@ -199,9 +199,9 @@
 		$yr = $row['yr'];
 		$mo = $row['mo'];
 		$da = 1;
-		if (Config::get('accounts.datesystem') == 1)
+		if (Config::get('accounts_datesystem') == 1)
 			list($yr, $mo, $da) = Dates::jalali_to_gregorian($yr, $mo, $da);
-		elseif (Config::get('accounts.datesystem') == 2)
+		elseif (Config::get('accounts_datesystem') == 2)
 			list($yr, $mo, $da) = Dates::islamic_to_gregorian($yr, $mo, $da);
 		$per12 = strftime('%b', mktime(0, 0, 0, $mo, $da, $yr));
 		$per11 = strftime('%b', mktime(0, 0, 0, $mo - 1, $da, $yr));

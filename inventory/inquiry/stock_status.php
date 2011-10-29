@@ -52,7 +52,7 @@
 
 	$loc_details = get_loc_details($_POST['stock_id']);
 
-	start_table(Config::get('tables.style'));
+	start_table(Config::get('tables_style'));
 
 	if ($kitset_or_service == true) {
 		$th = array(_("Location"), _("Demand"));

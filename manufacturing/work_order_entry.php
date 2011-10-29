@@ -16,7 +16,7 @@
 	include_once(APP_PATH . "manufacturing/includes/manufacturing_ui.php");
 
 	$js = "";
-	if (Config::get('ui.windows.popups'))
+	if (Config::get('ui_windows_popups'))
 		$js .= ui_view::get_js_open_window(900, 500);
 
 	page(_($help_context = "Work Order Entry"), false, false, "", $js);
@@ -49,15 +49,16 @@
 			include_once(APP_PATH . "reporting/includes/reporting.php");
 			$ar = array('PARAM_0' => $id,
 				'PARAM_1' => $id,
-				ui_msgs::display_warning();
+				'PARAM_2' => 0
+			);
 			ui_msgs::display_note(print_link(_("Print this Work Order"), 409, $ar), 1);
 			$ar['PARAM_2'] = 1;
 			ui_msgs::display_note(print_link(_("Email this Work Order"), 409, $ar), 1);
 			ui_msgs::display_warning(ui_view::get_gl_view_str($stype, $id, _("View the GL Journal Entries for this Work Order")), 1);
 			$ar = array('PARAM_0' => $_GET['date'],
 				'PARAM_1' => $_GET['date'],
-				ui_msgs::display_warning(ype
-				);
+				'PARAM_2' => $stype
+			);
 			ui_msgs::display_warning(print_link(_("Print the GL Journal Entries for this Work Order"), 702, $ar), 1);
 		}
 

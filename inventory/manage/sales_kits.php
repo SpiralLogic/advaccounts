@@ -30,9 +30,9 @@
 
 		$result = get_item_kit($selected_kit);
 		div_start('bom');
-		start_table(Config::get('tables.style') . "  width=60%");
+		start_table(Config::get('tables_style') . "  width=60%");
 		$th = array(_("Stock Item"), _("Description"), _("Quantity"), _("Units"),
-								'', ''
+			'', ''
 		);
 		table_header($th);
 
@@ -103,9 +103,9 @@
 		}
 		if ($selected_item == -1) { // new item alias/kit
 			if ($_POST['item_code'] == '') {
-				$kit_code     = $_POST['kit_code'];
+				$kit_code = $_POST['kit_code'];
 				$selected_kit = $_POST['item_code'] = $kit_code;
-				$msg          = _("New alias code has been created.");
+				$msg = _("New alias code has been created.");
 			}
 			else
 				$msg = _("New component has been added to selected kit.");
@@ -139,7 +139,7 @@
 		// if selected kit is not included in any other kit.
 		//
 		$other_kits = get_where_used($_POST['item_code']);
-		$num_kits   = DBOld::num_rows($other_kits);
+		$num_kits = DBOld::num_rows($other_kits);
 
 		$kit = get_item_kit($_POST['item_code']);
 		if ((DBOld::num_rows($kit) == 1) && $num_kits) {
@@ -184,14 +184,14 @@
 	//----------------------------------------------------------------------------------
 	if (get_post('item_code') == '') {
 		// New sales kit entry
-		start_table(Config::get('tables.style2'));
+		start_table(Config::get('tables_style2'));
 		text_row(_("Alias/kit code:"), 'kit_code', null, 20, 21);
 	} else
 	{
 		// Kit selected so display bom or edit component
 		$_POST['description'] = $props['description'];
-		$_POST['category']    = $props['category_id'];
-		start_table(Config::get('tables.style2'));
+		$_POST['category'] = $props['category_id'];
+		start_table(Config::get('tables_style2'));
 		text_row(_("Description:"), 'description', null, 50, 200);
 		stock_categories_list_row(_("Category:"), 'category', null);
 		submit_row('update_name', _("Update"), false, 'align=center colspan=2', _('Update kit/alias name'), true);
@@ -199,13 +199,13 @@
 		end_table(1);
 		display_kit_items($selected_kit);
 		echo '<br>';
-		start_table(Config::get('tables.style2'));
+		start_table(Config::get('tables_style2'));
 	}
 
 	if ($Mode == 'Edit') {
-		$myrow              = get_item_code($selected_id);
+		$myrow = get_item_code($selected_id);
 		$_POST['component'] = $myrow["stock_id"];
-		$_POST['quantity']  = number_format2($myrow["quantity"], get_qty_dec($myrow["stock_id"]));
+		$_POST['quantity'] = number_format2($myrow["quantity"], get_qty_dec($myrow["stock_id"]));
 	}
 	hidden("selected_id", $selected_id);
 
@@ -216,13 +216,13 @@
 	if (get_post('item_code') == '') { // new kit/alias
 		if ($Mode != 'ADD_ITEM' && $Mode != 'UPDATE_ITEM') {
 			$_POST['description'] = $props['description'];
-			$_POST['category']    = $props['category_id'];
+			$_POST['category'] = $props['category_id'];
 		}
 		text_row(_("Description:"), 'description', null, 50, 200);
 		stock_categories_list_row(_("Category:"), 'category', null);
 	}
-	$res   = get_item_edit_info(get_post('component'));
-	$dec   = $res["decimals"] == '' ? 0 : $res["decimals"];
+	$res = get_item_edit_info(get_post('component'));
+	$dec = $res["decimals"] == '' ? 0 : $res["decimals"];
 	$units = $res["units"] == '' ? _('kits') : $res["units"];
 	if (list_updated('component')) {
 		$_POST['quantity'] = number_format2(1, $dec);

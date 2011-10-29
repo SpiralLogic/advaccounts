@@ -16,7 +16,7 @@
 	include_once(APP_PATH . "inventory/includes/stock_transfers_ui.php");
 
 	$js = "";
-	if (Config::get('ui.windows.popups'))
+	if (Config::get('ui_windows_popups'))
 		$js .= ui_view::get_js_open_window(800, 500);
 
 	page(_($help_context = "Inventory Location Transfers"), false, false, "", $js);
@@ -204,7 +204,7 @@
 
 	display_order_header($_SESSION['transfer_items']);
 
-	start_table(Config::get('tables.style') . "  width=70%", 10);
+	start_table(Config::get('tables_style') . "  width=70%", 10);
 	start_row();
 	echo "<td>";
 	display_transfer_items(_("Items"), $_SESSION['transfer_items']);

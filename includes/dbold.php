@@ -21,7 +21,7 @@
 
 		public static function query($sql, $err_msg = null) {
 			$db = static::getInstance();
-			if (Config::get('debug.sql')) {
+			if (Config::get('debug_sql')) {
 				if (class_exists('FB')) {
 					FB::info($sql);
 				} else {
@@ -32,9 +32,9 @@
 				}
 			}
 			$result = mysql_query($sql, $db);
-			if (Config::get('debug.query.log')) {
+			if (Config::get('debug_query_log')) {
 				DBOld::set_info();
-				if (Config::get('debug.select.log') || (strstr($sql, 'SELECT') === false)) {
+				if (Config::get('debug_select_log') || (strstr($sql, 'SELECT') === false)) {
 					mysql_query("INSERT INTO sql_trail (`sql`, `result`, `msg`) VALUES(" . DBOld::escape($sql) . "," . ($result ? 1 : 0) . ", " . DBOld::escape($err_msg) . ")", $db);
 				}
 			}
@@ -121,8 +121,8 @@
 		}
 
 		public static function set_info() {
-			$db                                   = static::getInstance();
-			$_SESSION['db_info']['insert_id']     = mysql_insert_id($db);
+			$db = static::getInstance();
+			$_SESSION['db_info']['insert_id'] = mysql_insert_id($db);
 			$_SESSION['db_info']['affected_rows'] = mysql_affected_rows($db);
 		}
 

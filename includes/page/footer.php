@@ -13,7 +13,6 @@
 		global $Editors;
 		$Validate = array();
 		$Ajax = Ajax::instance();
-		include_once(APP_PATH . "themes/" . user_theme() . "/renderer.php");
 		$rend = renderer::getInstance();
 		$rend->menu_footer($no_menu, $is_index);
 		$edits = "editors = " . $Ajax->php2js(set_editor(false, false)) . ";";

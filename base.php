@@ -6,7 +6,7 @@
 			// so we must check the output
 			if ($text && preg_match('/\bFatal error(<.*?>)?:(.*)/i', $text, $m)) {
 				$Ajax->aCommands = array(); // Don't update page via ajax on errors
-				$text               = preg_replace('/\bFatal error(<.*?>)?:(.*)/i', '', $text);
+				$text = preg_replace('/\bFatal error(<.*?>)?:(.*)/i', '', $text);
 				Errors::$messages[] = array(E_ERROR, $m[2], null, null);
 			}
 			$Ajax->run();
@@ -30,11 +30,11 @@
 			static $firsterror = 0;
 			$error = func_get_args();
 
-			if ($firsterror < 2) {
-				FB::log(array('Line'   => $error[3],
-										 'Message' => $error[1],
-										 'File'    => $error[2]
-								), 'ERROR');
+			if ($firsterror < 2 && !(E_USER_ERROR || E_USER_NOTICE || E_USER_WARNING)) {
+				FB::log(array('Line' => $error[3],
+					'Message' => $error[1],
+					'File' => $error[2], $error
+				), 'ERROR');
 				//var_dump(debug_backtrace());
 				$firsterror++;
 			}
