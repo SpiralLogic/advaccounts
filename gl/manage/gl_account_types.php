@@ -10,45 +10,37 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	$page_security = 'SA_GLACCOUNTGROUP';
-
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-
-	page(_($help_context = "GL Account Groups"));
-
+	Page::start(_($help_context = "GL Account Groups"));
 	simple_page_mode(true);
 	//-----------------------------------------------------------------------------------
-
-	function can_process() {
+	function can_process()
+	{
 		global $selected_id;
-
 		if (!input_num('id')) {
 			ui_msgs::display_error(_("The account id must be an integer and cannot be empty."));
-			ui_view::set_focus('id');
+			JS::set_focus('id');
 			return false;
 		}
 		if (strlen($_POST['name']) == 0) {
 			ui_msgs::display_error(_("The account group name cannot be empty."));
-			ui_view::set_focus('name');
+			JS::set_focus('name');
 			return false;
 		}
-
 		if (isset($selected_id) && ($selected_id == $_POST['parent'])) {
 			ui_msgs::display_error(_("You cannot set an account group to be a subgroup of itself."));
 			return false;
 		}
-
 		return true;
 	}
 
 	//-----------------------------------------------------------------------------------
-
 	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
-
 		if (can_process()) {
-
 			if ($selected_id != -1) {
-				if (update_account_type($selected_id, $_POST['name'], $_POST['class_id'], $_POST['parent']))
+				if (update_account_type($selected_id, $_POST['name'], $_POST['class_id'], $_POST['parent'])) {
 					ui_msgs::display_notification(_('Selected account type has been updated'));
+				}
 			}
 			else
 			{
@@ -59,39 +51,36 @@
 			}
 		}
 	}
-
 	//-----------------------------------------------------------------------------------
-
-	function can_delete($selected_id) {
-		if ($selected_id == -1)
+	function can_delete($selected_id)
+	{
+		if ($selected_id == -1) {
 			return false;
+		}
 		$type = DBOld::escape($selected_id);
-
-		$sql = "SELECT COUNT(*) FROM chart_master
+		$sql
+						= "SELECT COUNT(*) FROM chart_master
 		WHERE account_type=$type";
 		$result = DBOld::query($sql, "could not query chart master");
-		$myrow = DBOld::fetch_row($result);
+		$myrow  = DBOld::fetch_row($result);
 		if ($myrow[0] > 0) {
 			ui_msgs::display_error(_("Cannot delete this account group because GL accounts have been created referring to it."));
 			return false;
 		}
-
-		$sql = "SELECT COUNT(*) FROM chart_types
+		$sql
+						= "SELECT COUNT(*) FROM chart_types
 		WHERE parent=$type";
 		$result = DBOld::query($sql, "could not query chart types");
-		$myrow = DBOld::fetch_row($result);
+		$myrow  = DBOld::fetch_row($result);
 		if ($myrow[0] > 0) {
 			ui_msgs::display_error(_("Cannot delete this account group because GL account groups have been created referring to it."));
 			return false;
 		}
-
 		return true;
 	}
 
 	//-----------------------------------------------------------------------------------
-
 	if ($Mode == 'Delete') {
-
 		if (can_delete($selected_id)) {
 			delete_account_type($selected_id);
 			ui_msgs::display_notification(_('Selected account group has been deleted'));
@@ -105,23 +94,17 @@
 		unset($_POST['class_id']);
 	}
 	//-----------------------------------------------------------------------------------
-
 	$result = get_account_types(check_value('show_inactive'));
-
 	start_form();
 	start_table(Config::get('tables_style'));
 	$th = array(_("ID"), _("Name"), _("Subgroup Of"), _("Class Type"), "", "");
 	inactive_control_column($th);
 	table_header($th);
-
 	$k = 0;
 	while ($myrow = DBOld::fetch($result))
 	{
-
 		alt_table_row_color($k);
-
 		$bs_text = get_account_class_name($myrow["class_id"]);
-
 		if ($myrow["parent"] == ANY_NUMERIC) {
 			$parent_text = "";
 		}
@@ -129,7 +112,6 @@
 		{
 			$parent_text = get_account_type_name($myrow["parent"]);
 		}
-
 		label_cell($myrow["id"]);
 		label_cell($myrow["name"]);
 		label_cell($parent_text);
@@ -139,21 +121,17 @@
 		delete_button_cell("Delete" . $myrow["id"], _("Delete"));
 		end_row();
 	}
-
 	inactive_control_row($th);
 	end_table(1);
 	//-----------------------------------------------------------------------------------
-
 	start_table(Config::get('tables_style2'));
-
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {
 			//editing an existing status code
 			$myrow = get_account_type($selected_id);
-
-			$_POST['id'] = $myrow["id"];
-			$_POST['name'] = $myrow["name"];
-			$_POST['parent'] = $myrow["parent"];
+			$_POST['id']       = $myrow["id"];
+			$_POST['name']     = $myrow["name"];
+			$_POST['parent']   = $myrow["parent"];
 			$_POST['class_id'] = $myrow["class_id"];
 			hidden('selected_id', $selected_id);
 		}
@@ -161,21 +139,16 @@
 		label_row(_("ID:"), $_POST['id']);
 	}
 	else
+	{
 		text_row_ex(_("ID:"), 'id', 10);
+	}
 	text_row_ex(_("Name:"), 'name', 50);
-
 	gl_account_types_list_row(_("Subgroup Of:"), 'parent', null, _("None"), true);
-
 	class_list_row(_("Class Type:"), 'class_id', null);
-
 	end_table(1);
-
 	submit_add_or_update_center($selected_id == -1, '', 'both');
-
 	end_form();
-
 	//------------------------------------------------------------------------------------
-
 	end_page();
 
 ?>

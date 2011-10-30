@@ -58,11 +58,11 @@
 			| \xD9[\xA0-\xA9\xAB\xAC]												# AN
 			)/x");
 
-	include_once (dirname(__FILE__) . '/tcpdf.php');
+	include (APP_PATH.'/includes/reports/tcpdf.php');
 
-	class Cpdf extends TCPDF {
+	class Reports_Cpdf extends TCPDF {
 
-		function Cpdf($pageSize = 'A4', $l = array(), $pageOrientation = 'P') {
+		function Reports_Cpdf($pageSize = 'A4', $l = array(), $pageOrientation = 'P') {
 			if (!isset($l['a_meta_charset'])) $l = array('a_meta_charset' => 'ISO-8859-1', 'a_meta_dir' => 'ltr', 'a_meta_language' => 'en_GB', 'w_page' => 'page');
 			$enc = $l['a_meta_charset'];
 			$uni = ($enc == 'UTF-8' || $enc == 'GB2312' ? true : false);

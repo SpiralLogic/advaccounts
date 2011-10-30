@@ -9,22 +9,20 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-
 	//--------------------------------------------------------------------------------------
-
-	function display_dimension_balance($id, $from, $to) {
-
+	function display_dimension_balance($id, $from, $to)
+	{
 		$from = Dates::date2sql($from);
-		$to = Dates::date2sql($to);
-		$sql = "SELECT account, chart_master.account_name, sum(amount) AS amt FROM
+		$to   = Dates::date2sql($to);
+		$sql
+						= "SELECT account, chart_master.account_name, sum(amount) AS amt FROM
 		gl_trans,chart_master WHERE
 		gl_trans.account = chart_master.account_code AND
 		(dimension_id = $id OR dimension2_id = $id) AND
 		tran_date >= '$from' AND tran_date <= '$to' GROUP BY account";
 		$result = DBOld::query($sql, "Transactions could not be calculated");
-
 		if (DBOld::num_rows($result) == 0) {
-			ui_msgs::display_note(_("There are no transactions for this dimension for the selected period."));
+			ui_msgs::display_warning(_("There are no transactions for this dimension for the selected period."));
 		}
 		else
 		{
@@ -33,12 +31,10 @@
 			start_table(Config::get('tables_style'));
 			$th = array(_("Account"), _("Debit"), _("Credit"));
 			table_header($th);
-
 			$total = $k = 0;
 			while ($myrow = DBOld::fetch($result))
 			{
 				alt_table_row_color($k);
-
 				label_cell($myrow["account"] . " " . $myrow['account_name']);
 				ui_view::display_debit_or_credit_cells($myrow["amt"]);
 				$total += $myrow["amt"];
@@ -56,11 +52,9 @@
 				amount_cell(abs($total), true);
 			}
 			end_row();
-
 			end_table();
 		}
 	}
 
 	//--------------------------------------------------------------------------------------
-
 ?>

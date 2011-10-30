@@ -1,30 +1,21 @@
 <?php
 
 	/* * ********************************************************************
-		 Copyright (C) FrontAccounting, LLC.
-		 Released under the terms of the GNU General Public License, GPL,
-		 as published by the Free Software Foundation, either version 3
-		 of the License, or (at your option) any later version.
-		 This program is distributed in the hope that it will be useful,
-		 but WITHOUT ANY WARRANTY; without even the implied warranty of
-		 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-		 See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
-		* ********************************************************************* */
+			 Copyright (C) FrontAccounting, LLC.
+			 Released under the terms of the GNU General Public License, GPL,
+			 as published by the Free Software Foundation, either version 3
+			 of the License, or (at your option) any later version.
+			 This program is distributed in the hope that it will be useful,
+			 but WITHOUT ANY WARRANTY; without even the implied warranty of
+			 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+			 See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+			* ********************************************************************* */
 	$page_security = 'SA_SALESREFUND';
-
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-
 	include_once(APP_PATH . "contacts/includes/contacts.php");
-
-	include_once(APP_PATH . "reporting/includes/reporting.php");
-
-	$js = "";
-	if (Config::get('ui_windows_popups')) {
-		$js .= ui_view::get_js_open_window(900, 500);
-	}
-
+	JS::get_js_open_window(900, 500);
 	JS::headerFile('/js/payalloc.js');
-	page(_($help_context = "Customer Refund Entry"), Input::request('frame'), false, "", $js);
+	Page::start(_($help_context = "Customer Refund Entry"), Input::request('frame'));
 	//----------------------------------------------------------------------------------------------
 	Validation::check(Validation::CUSTOMERS, _("There are no customers defined in the system."));
 	Validation::check(Validation::BANK_ACCOUNTS, _("There are no bank accounts defined in the system."));
@@ -46,10 +37,9 @@
 		ui_msgs::display_note(ui_view::get_gl_view_str(ST_CUSTREFUND, $refund_id, _("&View the GL Journal Entries for this Customer Refund")));
 		ui_view::display_footer_exit();
 	}
-
 	//----------------------------------------------------------------------------------------------
-	function can_process() {
-
+	function can_process()
+	{
 		if (!get_post('customer_id')) {
 			ui_msgs::display_error(_("There is no customer selected."));
 			JS::setfocus('[name="customer_id"]');
@@ -134,7 +124,6 @@
 		$Ajax->activate('alloc_tbl');
 	}
 	//----------------------------------------------------------------------------------------------
-
 	if (isset($_POST['AddRefundItem'])) {
 		$cust_currency = Banking::get_customer_currency($_POST['customer_id']);
 		$bank_currency = Banking::get_bank_account_currency($_POST['bank_account']);
@@ -147,41 +136,44 @@
 			$rate = input_num('_ex_rate');
 		}
 		Dates::new_doc_date($_POST['DateBanked']);
-		$refund_id = write_customer_refund(0, $_POST['customer_id'], $_POST['BranchID'],
+		$refund_id                   = write_customer_refund(
+			0, $_POST['customer_id'], $_POST['BranchID'],
 			$_POST['bank_account'], $_POST['DateBanked'], $_POST['ref'],
 			input_num('amount'), input_num('discount'),
-			$_POST['memo_'], $rate, input_num('charge'));
+			$_POST['memo_'], $rate, input_num('charge')
+		);
 		$_SESSION['alloc']->trans_no = $refund_id;
 		$_SESSION['alloc']->write();
 		meta_forward($_SERVER['PHP_SELF'], "AddedID=$refund_id");
 	}
-
 	//----------------------------------------------------------------------------------------------
-
-	function read_customer_data() {
+	function read_customer_data()
+	{
 		global $customer;
-		$sql = "SELECT debtors_master.pymt_discount,
+		$sql
+														= "SELECT debtors_master.pymt_discount,
 		credit_status.dissallow_invoices
 		FROM debtors_master, credit_status
 		WHERE debtors_master.credit_status = credit_status.id
 			AND debtors_master.debtor_no = " . $customer->id;
-		$result = DBOld::query($sql, "could not query customers");
-		$myrow = DBOld::fetch($result);
-		$_POST['HoldAccount'] = $myrow["dissallow_invoices"];
+		$result                 = DBOld::query($sql, "could not query customers");
+		$myrow                  = DBOld::fetch($result);
+		$_POST['HoldAccount']   = $myrow["dissallow_invoices"];
 		$_POST['pymt_discount'] = 0;
-		$_POST['ref'] = Refs::get_next(12);
+		$_POST['ref']           = Refs::get_next(12);
 	}
 
 	//----------------------------------------------------------------------------------------------
-
 	start_form();
-
 	start_outer_table(Config::get('tables_style2') . " width=60%", 5);
 	table_section(1);
-	UI::search('customer', array('label' => 'Search Customer:',
-		'size' => 20,
-		'url' => '/contacts/search.php'
-	));
+	UI::search(
+		'customer', array(
+										 'label' => 'Search Customer:',
+										 'size'	=> 20,
+										 'url'	 => '/contacts/search.php'
+								)
+	);
 	if (!isset($_POST['bank_account'])) // first page call
 	{
 		$_SESSION['alloc'] = new allocation(ST_CUSTREFUND, 0);
@@ -223,7 +215,7 @@
 		textarea_row(_("Memo:"), 'memo_', null, 22, 4);
 		end_table(1);
 		if ($cust_currency != $bank_currency) {
-			ui_msgs::display_note(_("Amount and discount are in customer's currency."));
+			ui_msgs::display_warning(_("Amount and discount are in customer's currency."));
 		}
 		br();
 		submit_center('AddRefundItem', _("Add Refund"), true, '', 'default');

@@ -228,7 +228,7 @@
 	if (!isset($_POST['bank_account'])) // first page call
 		$_SESSION['alloc'] = new allocation(ST_CUSTPAYMENT, 0);
 
-	if (Validation::check(Validation::BRANCHES, $_POST['customer_id'])) {
+	if (Validation::check(Validation::BRANCHES, _("No Branches for Customer"), $_POST['customer_id'])) {
 		customer_branches_list_row(_("Branch:"), $_POST['customer_id'], 'BranchID', null, false, true, true);
 	}
 	else {

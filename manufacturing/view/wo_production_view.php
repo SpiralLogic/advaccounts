@@ -10,35 +10,25 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	$page_security = 'SA_MANUFTRANSVIEW';
-
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-
-	$js = "";
-	if (Config::get('ui_windows_popups'))
-		$js .= ui_view::get_js_open_window(900, 500);
-	page(_($help_context = "View Work Order Production"), true, false, "", $js);
-
+	JS::get_js_open_window(900, 500);
+	Page::start(_($help_context = "View Work Order Production"), true);
 	include_once(APP_PATH . "manufacturing/includes/manufacturing_ui.php");
-
 	//-------------------------------------------------------------------------------------------------
-
 	if ($_GET['trans_no'] != "") {
 		$wo_production = $_GET['trans_no'];
 	}
-
 	//-------------------------------------------------------------------------------------------------
-
-	function display_wo_production($prod_id) {
-
+	function display_wo_production($prod_id)
+	{
 		$myrow = get_work_order_produce($prod_id);
-
 		br(1);
 		start_table(Config::get('tables_style'));
-		$th = array(_("Production #"), _("Reference"), _("For Work Order #"),
+		$th = array(
+			_("Production #"), _("Reference"), _("For Work Order #"),
 			_("Item"), _("Quantity Manufactured"), _("Date")
 		);
 		table_header($th);
-
 		start_row();
 		label_cell($myrow["id"]);
 		label_cell($myrow["reference"]);
@@ -47,24 +37,16 @@
 		qty_cell($myrow["quantity"], false, get_qty_dec($myrow["stock_id"]));
 		label_cell(Dates::sql2date($myrow["date_"]));
 		end_row();
-
 		ui_view::comments_display_row(ST_MANURECEIVE, $prod_id);
-
 		end_table(1);
-
 		ui_view::is_voided_display(ST_MANURECEIVE, $prod_id, _("This production has been voided."));
 	}
 
 	//-------------------------------------------------------------------------------------------------
-
 	ui_msgs::display_heading($systypes_array[ST_MANURECEIVE] . " # " . $wo_production);
-
 	display_wo_production($wo_production);
-
 	//-------------------------------------------------------------------------------------------------
-
 	br(2);
-
 	end_page(true);
 
 ?>

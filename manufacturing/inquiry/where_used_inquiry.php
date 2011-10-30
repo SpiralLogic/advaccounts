@@ -10,30 +10,26 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	$page_security = 'SA_WORKORDERANALYTIC';
-
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-
-	page(_($help_context = "Inventory Item Where Used Inquiry"));
-
+	Page::start(_($help_context = "Inventory Item Where Used Inquiry"));
 	Validation::check(Validation::STOCK_ITEMS, _("There are no items defined in the system."));
-
 	start_form(false, true);
-
-	if (!Input::post('stock_id'))
+	if (!Input::post('stock_id')) {
 		$_POST['stock_id'] = ui_globals::get_global_stock_item();
-
+	}
 	echo "<center>" . _("Select an item to display its parent item(s).") . "&nbsp;";
 	echo stock_items_list('stock_id', $_POST['stock_id'], false, true);
 	echo "<hr></center>";
-
 	ui_globals::set_global_stock_item($_POST['stock_id']);
 	//-----------------------------------------------------------------------------
-	function select_link($row) {
+	function select_link($row)
+	{
 		return pager_link($row["parent"] . " - " . $row["description"],
-		 "/manufacturing/manage/bom_edit.php?stock_id=" . $row["parent"]);
+											"/manufacturing/manage/bom_edit.php?stock_id=" . $row["parent"]);
 	}
 
-	$sql = "SELECT
+	$sql
+	 = "SELECT
 		bom.parent,
 		workcentre.name As WorkCentreName,
 		location.location_name,
@@ -44,19 +40,15 @@
 			AND bom.workcentre_added = workcentre.id
 			AND bom.loc_code = location.loc_code
 			AND bom.component=" . DBOld::escape($_POST['stock_id']);
-
 	$cols = array(
 		_("Parent Item") => array('fun' => 'select_link'),
 		_("Work Centre"),
 		_("Location"),
 		_("Quantity Required")
 	);
-
 	$table =& db_pager::new_db_pager('usage_table', $sql, $cols);
-
 	$table->width = "80%";
 	display_db_pager($table);
-
 	end_form();
 	end_page();
 

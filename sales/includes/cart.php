@@ -10,17 +10,15 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	/* Definition of the cart class
-				this class can hold all the information for:
+		this class can hold all the information for:
 
-				i)   a sales order
-				ii)  an invoice
-				iii) a credit note
-				iv)  a delivery note
-				*/
-
-	class Cart {
-
-
+		i)   a sales order
+		ii)  an invoice
+		iii) a credit note
+		iv)  a delivery note
+		*/
+	class Cart
+	{
 		var $trans_type; // invoice, order, quotation, delivery note ...
 		var $trans_no = array(); // array (num1=>ver1,..) or 0 for new
 		var $so_type = 0; // for sales order: simple=0 template=1
@@ -40,12 +38,10 @@
 		var $customer_id;
 		var $Branch;
 		var $email;
-
 		var $deliver_to;
 		var $delivery_address;
 		var $name;
 		var $phone;
-
 		var $cust_ref;
 		var $reference;
 		var $Comments;
@@ -53,10 +49,8 @@
 		var $location_name;
 		var $order_no; // the original order number
 		var $trans_link = 0;
-
 		var $ship_via;
 		var $freight_cost = 0;
-
 		var $tax_group_id;
 		var $tax_group_name;
 		var $tax_group_array = null; // saves db queries
@@ -77,7 +71,8 @@
 		//  $trans_no!=0 && $view==false => read for view
 		//  $trans_no!=0 && $view==true => read for edit (qty update from parent doc)
 		//
-		function Cart($type, $trans_no = 0, $view = false) {
+		function Cart($type, $trans_no = 0, $view = false)
+		{
 			/*Constructor function initialises a new shopping cart */
 			$this->line_items = array();
 			$this->sales_type = "";
@@ -87,7 +82,7 @@
 			else {
 				$this->trans_type = ST_SALESORDER;
 			}
-			$this->dimension_id = 0;
+			$this->dimension_id  = 0;
 			$this->dimension2_id = 0;
 			$this->read($type, $trans_no, $view);
 			$this->cart_id = uniqid('');
@@ -96,8 +91,8 @@
 		//-------------------------------------------------------------------------
 		// Reading document into cart
 		//
-		function read($type, $trans_no = 0, $view = false) {
-
+		function read($type, $trans_no = 0, $view = false)
+		{
 			if (!is_array($trans_no)) {
 				$trans_no = array($trans_no);
 			}
@@ -107,7 +102,7 @@
 					read_sales_order($trans_no[0], $this, $type);
 					if ($view) { // prepare for DN/IV entry
 						for ($line_no = 0; $line_no < count($this->line_items); $line_no++) {
-							$line = &$this->line_items[$line_no];
+							$line         = &$this->line_items[$line_no];
 							$line->src_id = $line->id; // save src line ids for update
 							$line->qty_dispatched = $line->quantity - $line->qty_done;
 						}
@@ -116,12 +111,12 @@
 				else { // other type of sales transaction
 					read_sales_trans($type, $trans_no, $this);
 					if ($this->order_no) { // free hand credit notes have no order_no
-						$sodata = get_sales_order_header($this->order_no, ST_SALESORDER);
+						$sodata         = get_sales_order_header($this->order_no, ST_SALESORDER);
 						$this->cust_ref = $sodata["customer_ref"];
 						// currently currency is hard linked to debtor account
 						//	$this->customer_currency = $sodata["curr_code"];
-						$this->name = $sodata["contact_name"];
-						$this->delivery_to = $sodata["deliver_to"];
+						$this->name             = $sodata["contact_name"];
+						$this->delivery_to      = $sodata["deliver_to"];
 						$this->delivery_address = $sodata["delivery_address"];
 					}
 					// old derivative transaction edit
@@ -129,16 +124,16 @@
 						$src_type = get_parent_type($type);
 						if ($src_type == ST_SALESORDER) { // get src data from sales_orders
 							$this->src_docs = array($sodata['order_no'] => $sodata['version']);
-							$srcdetails = get_sales_order_details($this->order_no, ST_SALESORDER);
+							$srcdetails     = get_sales_order_details($this->order_no, ST_SALESORDER);
 						}
 						else { // get src_data from debtor_trans
 							$this->src_docs = get_customer_trans_version($src_type, get_parent_trans($type, $trans_no[0]));
-							$srcdetails = get_customer_trans_details($src_type, array_keys($this->src_docs));
+							$srcdetails     = get_customer_trans_details($src_type, array_keys($this->src_docs));
 						}
 						// calculate & save: qtys on other docs and free qtys on src doc
 						for ($line_no = 0; $srcline = DBOld::fetch($srcdetails); $line_no++) {
 							$sign = 1; // $type==13 ?  1 : -1; // this is strange debtor_trans atavism
-							$line = &$this->line_items[$line_no];
+							$line         = &$this->line_items[$line_no];
 							$line->src_id = $srcline['id']; // save src line ids for update
 							$line->qty_old = $line->qty_dispatched = $line->quantity;
 							$line->quantity += $sign * ($srcline['quantity'] - $srcline['qty_done']); // add free qty on src doc
@@ -146,7 +141,7 @@
 					}
 					else { // prepare qtys for derivative document entry (not used in display)
 						for ($line_no = 0; $line_no < count($this->line_items); $line_no++) {
-							$line = &$this->line_items[$line_no];
+							$line         = &$this->line_items[$line_no];
 							$line->src_id = $line->id; // save src line ids for update
 							$line->qty_dispatched = $line->quantity - $line->qty_done;
 						}
@@ -154,8 +149,8 @@
 				}
 			}
 			else { // new document
-				$this->trans_type = $type;
-				$this->trans_no = 0;
+				$this->trans_type        = $type;
+				$this->trans_no          = 0;
 				$this->customer_currency = Banking::get_company_currency();
 				// set new sales document defaults here
 				if (ui_globals::get_global_customer() != ALL_TEXT) {
@@ -179,7 +174,7 @@
 							$this->dimension_id = 0;
 						}
 						else {
-							$cust = get_customer($this->customer_id);
+							$cust               = get_customer($this->customer_id);
 							$this->dimension_id = $cust['dimension_id'];
 						}
 						if ($dim > 1) {
@@ -195,9 +190,9 @@
 				}
 				if ($type == ST_SALESINVOICE) {
 					$this->due_date = get_invoice_duedate($this->customer_id, $this->document_date);
-					$this->pos = user_pos();
-					$pos = get_sales_point($this->pos);
-					$this->cash = !$pos['credit_sale'];
+					$this->pos      = user_pos();
+					$pos            = get_sales_point($this->pos);
+					$this->cash     = !$pos['credit_sale'];
 					if (!$pos['cash_sale'] || !$pos['credit_sale'] || $this->due_date == Dates::Today()) {
 						$this->pos = -1;
 					} // mark not editable payment type
@@ -206,10 +201,10 @@
 						$this->cash = Dates::date_diff2($this->due_date, Dates::Today(), 'd') < 2;
 					}
 					if ($this->cash) {
-						$this->Location = $pos['pos_location'];
+						$this->Location      = $pos['pos_location'];
 						$this->location_name = $pos['location_name'];
-						$this->cash_account = $pos['pos_account'];
-						$this->account_name = $pos['bank_account_name'];
+						$this->cash_account  = $pos['pos_account'];
+						$this->account_name  = $pos['bank_account_name'];
 					}
 				}
 				else
@@ -224,88 +219,95 @@
 		// Writing new/modified sales document to database.
 		// Makes parent documents for direct delivery/invoice by recurent call.
 		// $policy - 0 or 1:  writeoff/return for IV, back order/cancel for DN
-		function write($policy = 0) {
+		function write($policy = 0)
+		{
 			if (count($this->src_docs) == 0 && ($this->trans_type == ST_SALESINVOICE || $this->trans_type == ST_CUSTDELIVERY)) {
 				// this is direct document - first add parent
 				$src = (PHP_VERSION < 5) ? $this : clone($this); // make local copy of this cart
 				$src->trans_type = get_parent_type($src->trans_type);
-				$src->reference = 'auto';
+				$src->reference  = 'auto';
 				$src->write(1);
 				$type = $this->trans_type;
-				$ref = $this->reference;
+				$ref  = $this->reference;
 				$date = $this->document_date;
 				// re-read document
 				$this->read($src->trans_type, key($src->trans_no), true);
 				$this->document_date = $date;
-				$this->reference = $ref;
-				$this->trans_type = $type;
-				$this->src_docs = $this->trans_no;
-				$this->trans_no = 0;
-				$this->order_no = $this->trans_type == ST_CUSTDELIVERY ? key($src->trans_no) : $src->order_no;
+				$this->reference     = $ref;
+				$this->trans_type    = $type;
+				$this->src_docs      = $this->trans_no;
+				$this->trans_no      = 0;
+				$this->order_no      = $this->trans_type == ST_CUSTDELIVERY ? key($src->trans_no) : $src->order_no;
 			}
 			$this->reference = @html_entity_decode($this->reference, ENT_QUOTES);
-			$this->Comments = @html_entity_decode($this->Comments, ENT_QUOTES);
+			$this->Comments  = @html_entity_decode($this->Comments, ENT_QUOTES);
 			foreach ($this->line_items as $lineno => $line) {
-				$this->line_items[$lineno]->stock_id = @html_entity_decode($line->stock_id, ENT_QUOTES);
+				$this->line_items[$lineno]->stock_id    = @html_entity_decode($line->stock_id, ENT_QUOTES);
 				$this->line_items[$lineno]->description = @html_entity_decode($line->description, ENT_QUOTES);
 			}
 			switch ($this->trans_type) {
-				case ST_SALESINVOICE:
-					return write_sales_invoice($this);
-				case ST_CUSTCREDIT:
-					return write_credit_note($this, $policy);
-				case ST_CUSTDELIVERY:
-					return write_sales_delivery($this, $policy);
-				case ST_SALESORDER:
-				case ST_SALESQUOTE:
-					$_SESSION['Jobsboard'] = clone($this);
-					if ($this->trans_no == 0) // new document
-					{
-						return add_sales_order($this);
-					}
-					else {
-						return update_sales_order($this);
-					}
+			case ST_SALESINVOICE:
+				return write_sales_invoice($this);
+			case ST_CUSTCREDIT:
+				return write_credit_note($this, $policy);
+			case ST_CUSTDELIVERY:
+				return write_sales_delivery($this, $policy);
+			case ST_SALESORDER:
+			case ST_SALESQUOTE:
+				$_SESSION['Jobsboard'] = clone($this);
+				if ($this->trans_no == 0) // new document
+				{
+					return add_sales_order($this);
+				}
+				else {
+					return update_sales_order($this);
+				}
 			}
 		}
 
-		function check_cust_ref($cust_ref) {
-			if (!is_int($this->trans_type)) return false;
-			$sql = "SELECT customer_ref,type FROM sales_orders WHERE debtor_no=" . DBOld::escape($this->customer_id) . " AND customer_ref=" . DBOld::escape($cust_ref) . " AND type != " . $this->trans_type;
+		function check_cust_ref($cust_ref)
+		{
+			if (!is_int($this->trans_type)) {
+				return false;
+			}
+			$sql    = "SELECT customer_ref,type FROM sales_orders WHERE debtor_no=" . DBOld::escape($this->customer_id) . " AND customer_ref=" . DBOld::escape($cust_ref) . " AND type != " . $this->trans_type;
 			$result = DBOld::query($sql);
-
 			return (DBOld::num_rows($result) > 0) ? false : true;
 		}
 
-		function set_customer($customer_id, $customer_name, $currency, $discount, $payment) {
-			$this->customer_name = $customer_name;
-			$this->customer_id = $customer_id;
-			$this->default_discount = $discount;
+		function set_customer($customer_id, $customer_name, $currency, $discount, $payment)
+		{
+			$this->customer_name     = $customer_name;
+			$this->customer_id       = $customer_id;
+			$this->default_discount  = $discount;
 			$this->customer_currency = $currency;
-			$this->payment = $payment;
-			$this->payment_terms = DB_Company::get_payment_terms($payment);
-
+			$this->payment           = $payment;
+			$this->payment_terms     = DB_Company::get_payment_terms($payment);
 			if ($this->payment_terms['cash_sale']) {
-				$this->Location = $this->pos['pos_location'];
+				$this->Location      = $this->pos['pos_location'];
 				$this->location_name = $this->pos['location_name'];
 			}
-			if ($customer_id > 0) $this->credit = get_current_cust_credit($customer_id);
+			if ($customer_id > 0) {
+				$this->credit = get_current_cust_credit($customer_id);
+			}
 		}
 
-		function set_branch($branch_id, $tax_group_id, $tax_group_name, $phone = '', $email = '', $name = '') {
-			$this->Branch = $branch_id;
-			$this->phone = $phone;
-			$this->email = $email;
-			$this->tax_group_id = $tax_group_id;
+		function set_branch($branch_id, $tax_group_id, $tax_group_name, $phone = '', $email = '', $name = '')
+		{
+			$this->Branch          = $branch_id;
+			$this->phone           = $phone;
+			$this->email           = $email;
+			$this->tax_group_id    = $tax_group_id;
 			$this->tax_group_array = Tax_Groups::get_tax_group_items_as_array($tax_group_id);
 		}
 
-		function set_salesman($salesman_code = null) {
+		function set_salesman($salesman_code = null)
+		{
 			if ($salesman_code == null) {
 				$salesman_name = $_SESSION['wa_current_user']->name;
-				$sql = "SELECT salesman_code FROM salesman WHERE salesman_name = " . DBOld::escape($salesman_name);
-				$query = DBOld::query($sql, 'Couldn\'t find current salesman');
-				$result = DBOld::fetch_assoc($query);
+				$sql           = "SELECT salesman_code FROM salesman WHERE salesman_name = " . DBOld::escape($salesman_name);
+				$query         = DBOld::query($sql, 'Couldn\'t find current salesman');
+				$result        = DBOld::fetch_assoc($query);
 				if (!empty($result['salesman_code'])) {
 					$salesman_code = $result['salesman_code'];
 				}
@@ -315,28 +317,32 @@
 			}
 		}
 
-		function set_sales_type($sales_type, $sales_name, $tax_included = 0, $factor = 0) {
-			$this->sales_type = $sales_type;
+		function set_sales_type($sales_type, $sales_name, $tax_included = 0, $factor = 0)
+		{
+			$this->sales_type      = $sales_type;
 			$this->sales_type_name = $sales_name;
-			$this->tax_included = $tax_included;
-			$this->price_factor = $factor;
+			$this->tax_included    = $tax_included;
+			$this->price_factor    = $factor;
 		}
 
-		function set_location($id, $name) {
-			$this->Location = $id;
+		function set_location($id, $name)
+		{
+			$this->Location      = $id;
 			$this->location_name = $name;
 		}
 
-		function set_delivery($shipper, $destination, $address, $freight_cost = null) {
-			$this->ship_via = $shipper;
-			$this->deliver_to = $destination;
+		function set_delivery($shipper, $destination, $address, $freight_cost = null)
+		{
+			$this->ship_via         = $shipper;
+			$this->deliver_to       = $destination;
 			$this->delivery_address = $address;
 			if (isset($freight_cost)) {
 				$this->freight_cost = $freight_cost;
 			}
 		}
 
-		function add_to_cart($line_no, $stock_id, $qty, $price, $disc, $qty_done = 0, $standard_cost = 0, $description = null, $id = 0, $src_no = 0) {
+		function add_to_cart($line_no, $stock_id, $qty, $price, $disc, $qty_done = 0, $standard_cost = 0, $description = null, $id = 0, $src_no = 0)
+		{
 			if (isset($stock_id) && $stock_id != "" && isset($qty) /* && $qty > 0*/) {
 				$this->line_items[$line_no] = new line_details($stock_id, $qty, $price, $disc, $qty_done, $standard_cost, $description, $id, $src_no);
 				return 1;
@@ -348,39 +354,45 @@
 			return 0;
 		}
 
-		function update_cart_item($line_no, $qty, $price, $disc, $description = "") {
+		function update_cart_item($line_no, $qty, $price, $disc, $description = "")
+		{
 			if ($description != "") {
 				$this->line_items[$line_no]->description = $description;
 			}
-			$this->line_items[$line_no]->quantity = $qty;
-			$this->line_items[$line_no]->qty_dispatched = $qty;
-			$this->line_items[$line_no]->price = $price;
+			$this->line_items[$line_no]->quantity         = $qty;
+			$this->line_items[$line_no]->qty_dispatched   = $qty;
+			$this->line_items[$line_no]->price            = $price;
 			$this->line_items[$line_no]->discount_percent = $disc;
 		}
 
-		function discount_all($discount) {
+		function discount_all($discount)
+		{
 			foreach ($this->line_items as $line) {
 				$line->discount_percent = $discount;
 			}
 		}
 
-		function update_add_cart_item_qty($line_no, $qty) {
+		function update_add_cart_item_qty($line_no, $qty)
+		{
 			$this->line_items[$line_no]->quantity += $qty;
 		}
 
-		function remove_from_cart($line_no) {
+		function remove_from_cart($line_no)
+		{
 			array_splice($this->line_items, $line_no, 1);
 		}
 
-		function clear_items() {
+		function clear_items()
+		{
 			unset($this->line_items);
-			$this->line_items = array();
-			$this->sales_type = "";
-			$this->trans_no = 0;
+			$this->line_items  = array();
+			$this->sales_type  = "";
+			$this->trans_no    = 0;
 			$this->customer_id = $this->order_no = 0;
 		}
 
-		function count_items() {
+		function count_items()
+		{
 			$counter = 0;
 			foreach ($this->line_items as $line) {
 				if ($line->quantity != $line->qty_done) {
@@ -390,7 +402,8 @@
 			return $counter;
 		}
 
-		function get_items_total() {
+		function get_items_total()
+		{
 			$total = 0;
 			foreach ($this->line_items as $ln_itm) {
 				$price = $ln_itm->line_price();
@@ -399,7 +412,8 @@
 			return $total;
 		}
 
-		function get_items_total_dispatch() {
+		function get_items_total_dispatch()
+		{
 			$total = 0;
 			foreach ($this->line_items as $ln_itm) {
 				$price = $ln_itm->line_price();
@@ -408,7 +422,8 @@
 			return $total;
 		}
 
-		function has_items_dispatch() {
+		function has_items_dispatch()
+		{
 			foreach ($this->line_items as $ln_itm) {
 				if ($ln_itm->qty_dispatched > 0) {
 					return true;
@@ -417,7 +432,8 @@
 			return false;
 		}
 
-		function any_already_delivered() {
+		function any_already_delivered()
+		{
 			/* Checks if there have been any line item processed */
 			foreach ($this->line_items as $stock_item) {
 				if ($stock_item->qty_done != 0) {
@@ -427,7 +443,8 @@
 			return 0;
 		}
 
-		function some_already_delivered($line_no) {
+		function some_already_delivered($line_no)
+		{
 			/* Checks if there have been deliveries of a specific line item */
 			if (isset($this->line_items[$line_no]) && $this->line_items[$line_no]->qty_done != 0) {
 				return 1;
@@ -435,27 +452,29 @@
 			return 0;
 		}
 
-		function get_taxes($shipping_cost = null) {
-			$items = array();
+		function get_taxes($shipping_cost = null)
+		{
+			$items  = array();
 			$prices = array();
 			if ($shipping_cost == null) {
 				$shipping_cost = $this->freight_cost;
 			}
 			foreach ($this->line_items as $ln_itm) {
-				$items[] = $ln_itm->stock_id;
+				$items[]  = $ln_itm->stock_id;
 				$prices[] = round(($ln_itm->qty_dispatched * $ln_itm->line_price() * (1 - $ln_itm->discount_percent)), user_price_dec());
 			}
 			$taxes = Taxes::get_tax_for_items($items, $prices, $shipping_cost, $this->tax_group_id, $this->tax_included, $this->tax_group_array);
 			// Adjustment for swiss franken, we always have 5 rappen = 1/20 franken
 			if ($this->customer_currency == 'CHF') {
-				$val = $taxes['1']['Value'];
-				$val1 = (floatval((intval(round(($val * 20), 0))) / 20));
+				$val                 = $taxes['1']['Value'];
+				$val1                = (floatval((intval(round(($val * 20), 0))) / 20));
 				$taxes['1']['Value'] = $val1;
 			}
 			return $taxes;
 		}
 
-		function get_tax_free_shipping() {
+		function get_tax_free_shipping()
+		{
 			if ($this->tax_included == 0) {
 				return $this->freight_cost;
 			}
@@ -464,9 +483,10 @@
 			}
 		}
 
-		function get_shipping_tax() {
+		function get_shipping_tax()
+		{
 			$tax_items = Tax_Groups::get_shipping_tax_as_array();
-			$tax_rate = 0;
+			$tax_rate  = 0;
 			if ($tax_items != null) {
 				foreach ($tax_items as $item_tax) {
 					$index = $item_tax['tax_type_id'];
@@ -483,25 +503,26 @@
 			}
 		}
 
-		function store() {
+		function store()
+		{
 			$serial = serialize($this);
-			$sql = "DELETE FROM `user_class_store` WHERE `user_id`=" . $_SESSION['wa_current_user']->user;
+			$sql    = "DELETE FROM `user_class_store` WHERE `user_id`=" . $_SESSION['wa_current_user']->user;
 			DBOld::query($sql);
 			$sql = "INSERT INTO `user_class_store` (`user_id`, `data`) VALUE (" . $_SESSION['wa_current_user']->user . ",'" . $serial . "')";
 			DBOld::query($sql);
 		}
 
-		static function restore() {
-			$sql = "SELECT `data` FROM  `user_class_store` WHERE `user_id`=" . $_SESSION['wa_current_user']->user;
+		static function restore()
+		{
+			$sql    = "SELECT `data` FROM  `user_class_store` WHERE `user_id`=" . $_SESSION['wa_current_user']->user;
 			$result = DBOld::query($sql);
 			$serial = DBOld::fetch_assoc($result);
 			$serial = $serial['data'];
 			return unserialize($serial);
 		}
 	} /* end of class defintion */
-	class line_details {
-
-
+	class line_details
+	{
 		var $id;
 		var $stock_id;
 		var $description;
@@ -519,16 +540,17 @@
 		var $qty_old = 0; // quantity dispatched before edition
 		var $standard_cost;
 
-		function line_details($stock_id, $qty, $prc, $disc_percent, $qty_done, $standard_cost, $description, $id = 0, $src_no = 0) {
+		function line_details($stock_id, $qty, $prc, $disc_percent, $qty_done, $standard_cost, $description, $id = 0, $src_no = 0)
+		{
 			/* Constructor function to add a new LineDetail object with passed params */
-			$this->id = $id;
+			$this->id     = $id;
 			$this->src_no = $src_no;
-			$item_row = get_item($stock_id);
+			$item_row     = get_item($stock_id);
 			if ($item_row == null) {
 				Errors::show_db_error("invalid item added to order : $stock_id", "");
 			}
 			$this->mb_flag = $item_row["mb_flag"];
-			$this->units = $item_row["units"];
+			$this->units   = $item_row["units"];
 			if ($description == null) {
 				$this->description = $item_row["long_description"];
 			}
@@ -536,19 +558,20 @@
 				$this->description = $description;
 			}
 			//$this->standard_cost = $item_row["material_cost"] + $item_row["labour_cost"] + $item_row["overhead_cost"];
-			$this->tax_type = $item_row["tax_type_id"];
-			$this->tax_type_name = $item_row["tax_type_name"];
-			$this->stock_id = $stock_id;
-			$this->quantity = $qty;
-			$this->qty_dispatched = $qty;
-			$this->price = $prc;
+			$this->tax_type         = $item_row["tax_type_id"];
+			$this->tax_type_name    = $item_row["tax_type_name"];
+			$this->stock_id         = $stock_id;
+			$this->quantity         = $qty;
+			$this->qty_dispatched   = $qty;
+			$this->price            = $prc;
 			$this->discount_percent = $disc_percent;
-			$this->qty_done = $qty_done;
-			$this->standard_cost = $standard_cost;
+			$this->qty_done         = $qty_done;
+			$this->standard_cost    = $standard_cost;
 		}
 
 		// get unit price as stated on document
-		function line_price() {
+		function line_price()
+		{
 			return $this->price;
 		}
 	}

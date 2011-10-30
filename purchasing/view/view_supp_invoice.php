@@ -10,16 +10,10 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	$page_security = 'SA_SUPPTRANSVIEW';
-
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-
 	include_once(APP_PATH . "purchasing/includes/purchasing_ui.php");
-
-	$js = "";
-	if (Config::get('ui_windows_popups'))
-		$js .= ui_view::get_js_open_window(900, 500);
-	page(_($help_context = "View Supplier Invoice"), true, false, "", $js);
-
+	JS::get_js_open_window(900, 500);
+	Page::start(_($help_context = "View Supplier Invoice"), true);
 	if (isset($_GET["trans_no"])) {
 		$trans_no = $_GET["trans_no"];
 	}
@@ -27,17 +21,12 @@
 	{
 		$trans_no = $_POST["trans_no"];
 	}
-
-	$supp_trans = new suppTrans();
+	$supp_trans             = new suppTrans();
 	$supp_trans->is_invoice = true;
-
 	read_supp_invoice($trans_no, ST_SUPPINVOICE, $supp_trans);
-
 	$supplier_curr_code = Banking::get_supplier_currency($supp_trans->supplier_id);
-
 	ui_msgs::display_heading(_("SUPPLIER INVOICE") . " # " . $trans_no);
 	echo "<br>";
-
 	start_table(Config::get('tables_style') . "  width=95%");
 	start_row();
 	label_cells(_("Supplier"), $supp_trans->supplier_name, "class='tableheader2'");
@@ -47,32 +36,23 @@
 	start_row();
 	label_cells(_("Invoice Date"), $supp_trans->tran_date, "class='tableheader2'");
 	label_cells(_("Due Date"), $supp_trans->due_date, "class='tableheader2'");
-	if (!Banking::is_company_currency($supplier_curr_code))
+	if (!Banking::is_company_currency($supplier_curr_code)) {
 		label_cells(_("Currency"), $supplier_curr_code, "class='tableheader2'");
+	}
 	end_row();
 	ui_view::comments_display_row(ST_SUPPINVOICE, $trans_no);
-
 	end_table(1);
-
-	$total_gl = display_gl_items($supp_trans, 2);
+	$total_gl  = display_gl_items($supp_trans, 2);
 	$total_grn = display_grn_items($supp_trans, 2);
-
 	$display_sub_tot = number_format2($total_gl + $total_grn, user_price_dec());
-
 	start_table("width=95%  " . Config::get('tables_style'));
 	label_row(_("Sub Total"), $display_sub_tot, "align=right", "nowrap align=right width=15%");
-
 	$tax_items = get_trans_tax_details(ST_SUPPINVOICE, $trans_no);
 	$tax_total = ui_view::display_supp_trans_tax_details($tax_items, 1, $supp_trans->ov_gst);
-
 	$display_total = number_format2($supp_trans->ov_amount + $supp_trans->ov_gst, user_price_dec());
-
 	label_row(_("TOTAL INVOICE"), $display_total, "colspan=1 align=right", "nowrap align=right");
-
 	end_table(1);
-
 	ui_view::is_voided_display(ST_SUPPINVOICE, $trans_no, _("This invoice has been voided."));
-
 	end_page(true);
 
 ?>

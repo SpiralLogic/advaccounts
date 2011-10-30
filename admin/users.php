@@ -10,32 +10,26 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	$page_security = 'SA_USERS';
-
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-
-	page(_($help_context = "Users"));
-
+	Page::start(_($help_context = "Users"));
 	simple_page_mode(true);
 	//-------------------------------------------------------------------------------------------------
-
-	function can_process($user) {
-
+	function can_process($user)
+	{
 		if (strlen($_POST['user_id']) < 4) {
 			ui_msgs::display_error(_("The user login entered must be at least 4 characters long."));
-			ui_view::set_focus('user_id');
+			JS::set_focus('user_id');
 			return false;
 		}
-
 		if ($_POST['password'] != "") {
 			if (strlen($_POST['password']) < 4) {
 				ui_msgs::display_error(_("The password entered must be at least 4 characters long."));
-				ui_view::set_focus('password');
+				JS::set_focus('password');
 				return false;
 			}
-
 			if (strstr($_POST['password'], $_POST['user_id']) != false) {
 				ui_msgs::display_error(_("The password cannot contain the user login."));
-				ui_view::set_focus('password');
+				JS::set_focus('password');
 				return false;
 			}
 			$check = ($user !== null) ? $user->checkPasswordStrength($_POST['password']) : false;
@@ -52,7 +46,6 @@
 	}
 
 	//-------------------------------------------------------------------------------------------------
-
 	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 		$user = null;
 		if ($_POST['password'] != "") {
@@ -60,45 +53,43 @@
 			$password = $user->hash_password($_POST['password']);
 		}
 		if (can_process($user)) {
-
 			if ($selected_id != -1) {
-				User::update($selected_id, $_POST['user_id'], $_POST['real_name'], $_POST['phone'],
+				User::update(
+					$selected_id, $_POST['user_id'], $_POST['real_name'], $_POST['phone'],
 					$_POST['email'], $_POST['Access'], $_POST['language'],
-					$_POST['profile'], check_value('rep_popup'), $_POST['pos']);
-
+					$_POST['profile'], check_value('rep_popup'), $_POST['pos']
+				);
 				User::update_password($selected_id, $_POST['user_id'], $password);
-
 				ui_msgs::display_notification_centered(_("The selected user has been updated."));
 			}
 			else
 			{
-
-				User::add($_POST['user_id'], $_POST['real_name'], $password,
+				User::add(
+					$_POST['user_id'], $_POST['real_name'], $password,
 					$_POST['phone'], $_POST['email'], $_POST['Access'], $_POST['language'],
-					$_POST['profile'], check_value('rep_popup'), $_POST['pos']);
+					$_POST['profile'], check_value('rep_popup'), $_POST['pos']
+				);
 				$id = DBOld::insert_id();
 				// use current user display preferences as start point for new user
-				User::update_display_prefs($id, user_price_dec(), user_qty_dec(), user_exrate_dec(),
+				User::update_display_prefs(
+					$id, user_price_dec(), user_qty_dec(), user_exrate_dec(),
 					user_percent_dec(), user_show_gl_info(), user_show_codes(),
 					user_date_format(), user_date_sep(), user_tho_sep(),
 					user_dec_sep(), user_theme(), user_pagesize(), user_hints(),
 					$_POST['profile'], check_value('rep_popup'), user_query_size(),
-					user_graphic_links(), $_POST['language'], sticky_doc_date(), user_startup_tab());
-
+					user_graphic_links(), $_POST['language'], sticky_doc_date(), user_startup_tab()
+				);
 				ui_msgs::display_notification_centered(_("A new user has been added."));
 			}
 			$Mode = 'RESET';
 		}
 	}
-
 	//-------------------------------------------------------------------------------------------------
-
 	if ($Mode == 'Delete') {
 		User::delete($selected_id);
 		ui_msgs::display_notification_centered(_("User has been deleted."));
 		$Mode = 'RESET';
 	}
-
 	//-------------------------------------------------------------------------------------------------
 	if ($Mode == 'RESET') {
 		$selected_id = -1;
@@ -106,62 +97,54 @@
 		unset($_POST); // clean all input fields
 		$_POST['show_inactive'] = $sav;
 	}
-
 	$result = User::get_all(check_value('show_inactive'));
 	start_form();
 	start_table(Config::get('tables_style'));
-
-	$th = array(_("User login"), _("Full Name"), _("Phone"),
-							_("E-mail"), _("Last Visit"), _("Access Level"), "", ""
+	$th = array(
+		_("User login"), _("Full Name"), _("Phone"),
+		_("E-mail"), _("Last Visit"), _("Access Level"), "", ""
 	);
-
 	inactive_control_column($th);
 	table_header($th);
-
 	$k = 0; //row colour counter
-
 	while ($myrow = DBOld::fetch($result))
 	{
-
 		alt_table_row_color($k);
-
 		$last_visit_date = Dates::sql2date($myrow["last_visit_date"]);
-
 		/*The security_headings array is defined in config.php */
-		$not_me = strcasecmp($myrow["user_id"], $_SESSION["wa_current_user"]->username);
-
+		$not_me = strcasecmp($myrow["user_id"], CurrentUser::instance()->username);
 		label_cell($myrow["user_id"]);
 		label_cell($myrow["real_name"]);
 		label_cell($myrow["phone"]);
 		email_cell($myrow["email"]);
 		label_cell($last_visit_date, "nowrap");
 		label_cell($myrow["role"]);
-
-		if ($not_me)
+		if ($not_me) {
 			inactive_control_cell($myrow["id"], $myrow["inactive"], 'users', 'id');
+		}
 		elseif (check_value('show_inactive'))
+		{
 			label_cell('');
-
+		}
 		edit_button_cell("Edit" . $myrow["id"], _("Edit"));
-		if ($not_me)
+		if ($not_me) {
 			delete_button_cell("Delete" . $myrow["id"], _("Delete"));
+		}
 		else
+		{
 			label_cell('');
+		}
 		end_row();
 	} //END WHILE LIST LOOP
-
 	inactive_control_row($th);
 	end_table(1);
 	//-------------------------------------------------------------------------------------------------
 	start_table(Config::get('tables_style2'));
-
 	$_POST['email'] = "";
-
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {
 			//editing an existing User
-			$myrow = User::get($selected_id);
-
+			$myrow              = User::get($selected_id);
 			$_POST['id']        = $myrow["id"];
 			$_POST['user_id']   = $myrow["user_id"];
 			$_POST['real_name'] = $myrow["real_name"];
@@ -175,7 +158,6 @@
 		}
 		hidden('selected_id', $selected_id);
 		hidden('user_id');
-
 		start_row();
 		label_row(_("User login:"), Input::post('user_id'));
 	}
@@ -189,33 +171,25 @@
 	}
 	$_POST['password'] = "";
 	password_row(_("Password:"), 'password', $_POST['password']);
-
 	if ($selected_id != -1) {
 		table_section_title(_("Enter a new password to change, leave empty to keep current."));
 	}
-
 	text_row_ex(_("Full Name") . ":", 'real_name', 50);
-
 	text_row_ex(_("Telephone No.:"), 'phone', 30);
-
 	email_row_ex(_("Email Address:"), 'email', 50);
-
 	security_roles_list_row(_("Access Level:"), 'Access', null);
-
 	languages_list_row(_("Language:"), 'language', null);
-
 	pos_list_row(_("User's POS") . ':', 'pos', null);
-
-	print_profiles_list_row(_("Printing profile") . ':', 'profile', null,
-		_('Browser printing support'));
-
-	check_row(_("Use popup window for reports:"), 'rep_popup', Input::post('rep_popup'),
-		false, _('Set this option to on if your browser directly supports pdf files'));
-
+	print_profiles_list_row(
+		_("Printing profile") . ':', 'profile', null,
+		_('Browser printing support')
+	);
+	check_row(
+		_("Use popup window for reports:"), 'rep_popup', Input::post('rep_popup'),
+		false, _('Set this option to on if your browser directly supports pdf files')
+	);
 	end_table(1);
-
 	submit_add_or_update_center($selected_id == -1, '', 'both');
-
 	end_form();
 	end_page();
 ?>

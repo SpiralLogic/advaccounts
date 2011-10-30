@@ -1,10 +1,8 @@
 <?php
 
 	$page_security = 'SA_CUSTOMER';
-
 	include_once("includes/items.php");
 	if (AJAX_REFERRER) {
-
 		if (isset($_GET['term'])) {
 			$data = Item::search($_GET['term']);
 		} elseif (isset($_POST['stock_id'])) {
@@ -12,47 +10,42 @@
 				$item = new Item($_POST);
 				$item->save($_POST);
 			} else {
-				$id = Item::getStockId($_POST['stock_id']);
+				$id   = Item::getStockId($_POST['stock_id']);
 				$item = new Item($id);
 			}
-			$data['item'] = $item;
+			$data['item']        = $item;
 			$data['stockLevels'] = $item->getStockLevels();
 		}
 		if (isset($_GET['page'])) {
 			$data['page'] = $_GET['page'];
 		}
-
 		echo json_encode($data, JSON_NUMERIC_CHECK);
 		exit();
 	}
 	JS::footerFile(array("/js/js2/jquery-tmpl.min.js", "includes/js/quickitems.js"));
-
-	page(_($help_context = "Items"), true);
-
+	Page::start(_($help_context = "Items"), true);
 	$stock_cats = stock_categories_list('category_id');
 	if (!isset($_GET['stock_id'])) {
 		HTML::div('itemSearch');
-		UI::search('item', array('label' => 'Search Item',
-			'size' => 80,
-			'url' => 'search.php',
-			'callback' => 'Items.fetch'
-		));
+		UI::search('item', array('label'   => 'Search Item',
+														'size'     => 80,
+														'url'      => 'search.php',
+														'callback' => 'Items.fetch'
+											 ));
 		HTML::div();
 		$id = 0;
 	} else {
 		$id = Item::getStockId($_GET['stock_id']);
 	}
-	$data['item'] = $item = new Item($id);
+	$data['item']        = $item = new Item($id);
 	$data['stockLevels'] = $item->getStockLevels();
-	$data = json_encode($data, JSON_NUMERIC_CHECK);
+	$data                = json_encode($data, JSON_NUMERIC_CHECK);
 	JS::onload(<<<JS
 Items.onload($data);
 JS
 	);
-
 	$menu = new MenuUI();
 	$menu->startTab("Items", "Items");
-
 	echo <<<HTML
 <div id="Items" class="center">
 <hidden value="\${id}" id="id"></hidden>
@@ -72,17 +65,13 @@ HTML;
 	$menu->endTab();
 	$menu->startTab("Selling", "Sales Prices");
 	echo "<iframe id='sellFrame' src='" . PATH_TO_ROOT . "/inventory/prices.php?frame=1&stock_id=" . $item->stock_id . "' width='90%' height='500' frameborder='0'></iframe> ";
-
 	$menu->endTab();
 	$menu->startTab("Purchasing", "Purchasing Prices");
 	echo "<iframe id='buyFrame' src='" . PATH_TO_ROOT . "/inventory/purchasing_data.php?frame=1&stock_id=" . $item->stock_id . "' width='90%' height='500'  frameborder='0'></iframe> ";
-
 	$menu->endTab();
 	$menu->startTab("Website", "Website page for product");
 	echo "<iframe id='webFrame' src='" . STORE_PRODUCT_URL . $item->stock_id . STORE_URL_EXTENSION . "' width='90%' height='500'  frameborder='0'></iframe> ";
-
 	$menu->endTab();
-
 	if (isset($_GET['page'])) {
 		$menu->firstPage = $_GET['page'];
 	}

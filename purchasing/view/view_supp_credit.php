@@ -10,16 +10,10 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	$page_security = 'SA_SUPPTRANSVIEW';
-
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-
 	include_once(APP_PATH . "purchasing/includes/purchasing_ui.php");
-
-	$js = "";
-	if (Config::get('ui_windows_popups'))
-		$js .= ui_view::get_js_open_window(900, 500);
-	page(_($help_context = "View Supplier Credit Note"), true, false, "", $js);
-
+	JS::get_js_open_window(900, 500);
+	Page::start(_($help_context = "View Supplier Credit Note"), true);
 	if (isset($_GET["trans_no"])) {
 		$trans_no = $_GET["trans_no"];
 	}
@@ -27,12 +21,9 @@
 	{
 		$trans_no = $_POST["trans_no"];
 	}
-
-	$supp_trans = new suppTrans();
+	$supp_trans             = new suppTrans();
 	$supp_trans->is_invoice = false;
-
 	read_supp_invoice($trans_no, ST_SUPPCREDIT, $supp_trans);
-
 	ui_msgs::display_heading(_("SUPPLIER CREDIT NOTE") . " # " . $trans_no);
 	echo "<br>";
 	start_table(Config::get('tables_style2'));
@@ -48,29 +39,20 @@
 	end_row();
 	ui_view::comments_display_row(ST_SUPPCREDIT, $trans_no);
 	end_table(1);
-
-	$total_gl = display_gl_items($supp_trans, 3);
+	$total_gl  = display_gl_items($supp_trans, 3);
 	$total_grn = display_grn_items($supp_trans, 2);
-
 	$display_sub_tot = number_format2($total_gl + $total_grn, user_price_dec());
-
 	start_table(Config::get('tables_style') . "  width=95%");
 	label_row(_("Sub Total"), $display_sub_tot, "align=right", "nowrap align=right width=17%");
-
 	$tax_items = get_trans_tax_details(ST_SUPPCREDIT, $trans_no);
 	ui_view::display_supp_trans_tax_details($tax_items, 1);
-
 	$display_total = number_format2(-($supp_trans->ov_amount + $supp_trans->ov_gst), user_price_dec());
 	label_row(_("TOTAL CREDIT NOTE"), $display_total, "colspan=1 align=right", "nowrap align=right");
-
 	end_table(1);
-
 	$voided = ui_view::is_voided_display(ST_SUPPCREDIT, $trans_no, _("This credit note has been voided."));
-
 	if (!$voided) {
 		ui_view::display_allocations_from(PT_SUPPLIER, $supp_trans->supplier_id, ST_SUPPCREDIT, $trans_no, -($supp_trans->ov_amount + $supp_trans->ov_gst));
 	}
-
 	end_page(true);
 
 ?>

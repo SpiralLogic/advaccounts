@@ -1,34 +1,27 @@
 <?php
 
 	/* * ********************************************************************
-					Copyright (C) FrontAccounting, LLC.
-					Released under the terms of the GNU General Public License, GPL,
-					as published by the Free Software Foundation, either version 3
-					of the License, or (at your option) any later version.
-					This program is distributed in the hope that it will be useful,
-					but WITHOUT ANY WARRANTY; without even the implied warranty of
-					MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-					See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
-				* ********************************************************************* */
+						Copyright (C) FrontAccounting, LLC.
+						Released under the terms of the GNU General Public License, GPL,
+						as published by the Free Software Foundation, either version 3
+						of the License, or (at your option) any later version.
+						This program is distributed in the hope that it will be useful,
+						but WITHOUT ANY WARRANTY; without even the implied warranty of
+						MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+						See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+					* ********************************************************************* */
 	//---------------------------------------------------------------------------
 	//
 	//	Entry/Modify Sales Invoice against single delivery
 	//	Entry/Modify Batch Sales Invoice against batch of deliveries
 	//
 	$page_security = 'SA_SALESINVOICE';
-
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-
 	include_once(APP_PATH . "sales/includes/sales_ui.php");
-	include_once(APP_PATH . "reporting/includes/reporting.php");
-
-	$js = "";
-	if (Config::get('ui_windows_popups')) {
-		$js .= ui_view::get_js_open_window(900, 500);
-	}
+	JS::get_js_open_window(900, 500);
 	$page_title = 'Sales Invoice Complete';
 	if (isset($_GET['ModifyInvoice'])) {
-		$page_title = sprintf(_("Modifying Sales Invoice # %d."), $_GET['ModifyInvoice']);
+		$page_title   = sprintf(_("Modifying Sales Invoice # %d."), $_GET['ModifyInvoice']);
 		$help_context = "Modifying Sales Invoice";
 	}
 	elseif (isset($_GET['DeliveryNumber'])) {
@@ -39,22 +32,19 @@
 	} elseif (isset($_GET['ViewInvoice'])) {
 		$page_title = sprintf(_("View Sales Invoice # %d."), $_GET['ViewInvoice']);
 	}
-	page($page_title, false, false, "", $js);
+	Page::start($page_title);
 	//-----------------------------------------------------------------------------
 	check_edit_conflicts();
 	if (isset($_GET['AddedID'])) {
 		$_SESSION['Items'] = new Cart(ST_SALESINVOICE, $_GET['AddedID']);
-		$customer = new Customer($_SESSION['Items']->customer_id);
-		$emails = $customer->getEmailAddresses();
-		$invoice_no = $_GET['AddedID'];
-
+		$customer          = new Customer($_SESSION['Items']->customer_id);
+		$emails            = $customer->getEmailAddresses();
+		$invoice_no        = $_GET['AddedID'];
 		ui_msgs::display_notification_centered(sprintf(_("Order # %d has been entered."), $invoice_no));
-
 		$trans_type = ST_SALESINVOICE;
 		ui_msgs::display_notification(_("Selected deliveries has been processed"), true);
 		ui_msgs::display_note(ui_view::get_customer_trans_view_str($trans_type, $invoice_no, _("&View This Invoice")), 0, 1);
-		ui_msgs::display_note(print_document_link($invoice_no, _("&Print This Invoice"), true, ST_SALESINVOICE));
-
+		ui_msgs::display_note(Reporting::print_doc_link($invoice_no, _("&Print This Invoice"), true, ST_SALESINVOICE));
 		submenu_email(_("Email This Invoice"), ST_SALESINVOICE, $invoice_no, null, $emails, 1);
 		hyperlink_params("/sales/customer_payments.php", _("Apply a customer payment"));
 		ui_msgs::display_note(ui_view::get_gl_view_str($trans_type, $invoice_no, _("View the GL &Journal Entries for this Invoice")), 1);
@@ -63,25 +53,24 @@
 	}
 	elseif (isset($_GET['UpdatedID'])) {
 		$_SESSION['Items'] = new Cart(ST_SALESINVOICE, $_GET['UpdatedID']);
-		$customer = new Customer($_SESSION['Items']->customer_id);
-		$emails = $customer->getEmailAddresses();
-		$invoice_no = $_GET['UpdatedID'];
+		$customer          = new Customer($_SESSION['Items']->customer_id);
+		$emails            = $customer->getEmailAddresses();
+		$invoice_no        = $_GET['UpdatedID'];
 		ui_msgs::display_notification_centered(sprintf(_('Sales Invoice # %d has been updated.'), $invoice_no));
-
 		ui_msgs::display_note(ui_view::get_trans_view_str(ST_SALESINVOICE, $invoice_no, _("&View This Invoice")));
-
 		echo '<br>';
-		ui_msgs::display_note(print_document_link($invoice_no, _("&Print This Invoice"), true, ST_SALESINVOICE));
+		ui_msgs::display_note(Reporting::print_doc_link($invoice_no, _("&Print This Invoice"), true, ST_SALESINVOICE));
 		submenu_email(_("Email This Invoice"), ST_SALESINVOICE, $invoice_no, null, $emails, 1);
-
 		hyperlink_no_params("/sales/inquiry/customer_inquiry.php", _("Select A Different &Invoice to Modify"));
 		ui_view::display_footer_exit();
 	}
 	elseif (isset($_GET['RemoveDN'])) {
-		for ($line_no = 0; $line_no < count($_SESSION['Items']->line_items); $line_no++) {
+		for (
+			$line_no = 0; $line_no < count($_SESSION['Items']->line_items); $line_no++
+		) {
 			$line = &$_SESSION['Items']->line_items[$line_no];
 			if ($line->src_no == $_GET['RemoveDN']) {
-				$line->quantity = $line->qty_done;
+				$line->quantity       = $line->qty_done;
 				$line->qty_dispatched = 0;
 			}
 		}
@@ -106,19 +95,21 @@
 			hyperlink_params("/sales/inquiry/sales_deliveries_view.php", _("Select a different delivery to invoice"), "OutstandingOnly=1");
 			die("<br><b>" . _("There are no delivered items with a quantity left to invoice. There is nothing left to invoice.") . "</b>");
 		}
-		$dn->trans_type = ST_SALESINVOICE;
-		$dn->src_docs = $dn->trans_no;
-		$dn->trans_no = 0;
-		$dn->reference = Refs::get_next(ST_SALESINVOICE);
-		$dn->due_date = get_invoice_duedate($dn->customer_id, $dn->document_date);
+		$dn->trans_type    = ST_SALESINVOICE;
+		$dn->src_docs      = $dn->trans_no;
+		$dn->trans_no      = 0;
+		$dn->reference     = Refs::get_next(ST_SALESINVOICE);
+		$dn->due_date      = get_invoice_duedate($dn->customer_id, $dn->document_date);
 		$_SESSION['Items'] = $dn;
 		copy_from_cart();
 	}
 	elseif (isset($_GET['ModifyInvoice']) && $_GET['ModifyInvoice'] > 0) {
 		if (get_parent_trans(ST_SALESINVOICE, $_GET['ModifyInvoice']) == 0) { // 1.xx compatibility hack
-			echo"<center><br><b>" . _("There are no delivery notes for this invoice.<br>
+			echo"<center><br><b>" . _(
+				"There are no delivery notes for this invoice.<br>
 		Most likely this invoice was created in Front Accounting version prior to 2.0
-		and therefore can not be modified.") . "</b></center>";
+		and therefore can not be modified."
+			) . "</b></center>";
 			ui_view::display_footer_exit();
 		}
 		processing_start();
@@ -149,9 +140,12 @@
 		$Ajax->activate('due_date');
 	}
 	//-----------------------------------------------------------------------------
-	function check_quantities() {
+	function check_quantities()
+	{
 		$ok = 1;
-		foreach ($_SESSION['Items']->line_items as $line_no => $itm) {
+		foreach (
+			$_SESSION['Items']->line_items as $line_no => $itm
+		) {
 			if (isset($_POST['Line' . $line_no])) {
 				if ($_SESSION['Items']->trans_no) {
 					$min = $itm->qty_done;
@@ -181,9 +175,12 @@
 		return $ok;
 	}
 
-	function set_delivery_shipping_sum($delivery_notes) {
+	function set_delivery_shipping_sum($delivery_notes)
+	{
 		$shipping = 0;
-		foreach ($delivery_notes as $delivery_num) {
+		foreach (
+			$delivery_notes as $delivery_num
+		) {
 			$myrow = get_customer_trans($delivery_num, 13);
 			//$branch = get_branch($myrow["branch_code"]);
 			//$sales_order = get_sales_order_header($myrow["order_"]);
@@ -193,59 +190,61 @@
 		$_POST['ChargeFreightCost'] = price_format($shipping);
 	}
 
-	function copy_to_cart() {
-		$cart = &$_SESSION['Items'];
-		$cart->ship_via = $_POST['ship_via'];
-		$cart->freight_cost = input_num('ChargeFreightCost');
+	function copy_to_cart()
+	{
+		$cart                = &$_SESSION['Items'];
+		$cart->ship_via      = $_POST['ship_via'];
+		$cart->freight_cost  = input_num('ChargeFreightCost');
 		$cart->document_date = $_POST['InvoiceDate'];
-		$cart->due_date = $_POST['due_date'];
-		$cart->Comments = $_POST['Comments'];
-		if ($_SESSION['Items']->trans_no == 0)
+		$cart->due_date      = $_POST['due_date'];
+		$cart->Comments      = $_POST['Comments'];
+		if ($_SESSION['Items']->trans_no == 0) {
 			$cart->reference = $_POST['ref'];
+		}
 	}
 
 	//-----------------------------------------------------------------------------
-	function copy_from_cart() {
+	function copy_from_cart()
+	{
 		$cart = &$_SESSION['Items'];
 		if (!isset($_POST['viewing'])) {
-			$_POST['ship_via'] = $cart->ship_via;
+			$_POST['ship_via']          = $cart->ship_via;
 			$_POST['ChargeFreightCost'] = price_format($cart->freight_cost);
-			$_POST['InvoiceDate'] = $cart->document_date;
-			$_POST['due_date'] = $cart->due_date;
-			$_POST['ref'] = $cart->reference;
+			$_POST['InvoiceDate']       = $cart->document_date;
+			$_POST['due_date']          = $cart->due_date;
+			$_POST['ref']               = $cart->reference;
 		}
 		$_POST['cart_id'] = $cart->cart_id;
-
 		$_POST['Comments'] = $cart->Comments;
 	}
 
 	//-----------------------------------------------------------------------------
-	function check_data() {
-
+	function check_data()
+	{
 		if (!isset($_POST['InvoiceDate']) || !Dates::is_date($_POST['InvoiceDate'])) {
 			ui_msgs::display_error(_("The entered invoice date is invalid."));
-			ui_view::set_focus('InvoiceDate');
+			JS::set_focus('InvoiceDate');
 			return false;
 		}
 		if (!Dates::is_date_in_fiscalyear($_POST['InvoiceDate'])) {
 			ui_msgs::display_error(_("The entered invoice date is not in fiscal year."));
-			ui_view::set_focus('InvoiceDate');
+			JS::set_focus('InvoiceDate');
 			return false;
 		}
 		if (!isset($_POST['due_date']) || !Dates::is_date($_POST['due_date'])) {
 			ui_msgs::display_error(_("The entered invoice due date is invalid."));
-			ui_view::set_focus('due_date');
+			JS::set_focus('due_date');
 			return false;
 		}
 		if ($_SESSION['Items']->trans_no == 0) {
 			if (!Refs::is_valid($_POST['ref'])) {
 				ui_msgs::display_error(_("You must enter a reference."));
-				ui_view::set_focus('ref');
+				JS::set_focus('ref');
 				return false;
 			}
 			if (!is_new_reference($_POST['ref'], 10)) {
 				ui_msgs::display_error(_("The entered reference is already in use."));
-				ui_view::set_focus('ref');
+				JS::set_focus('ref');
 				return false;
 			}
 		}
@@ -254,7 +253,7 @@
 		}
 		if (!Validation::is_num('ChargeFreightCost', 0)) {
 			ui_msgs::display_error(_("The entered shipping value is not numeric."));
-			ui_view::set_focus('ChargeFreightCost');
+			JS::set_focus('ChargeFreightCost');
 			return false;
 		}
 		if ($_SESSION['Items']->has_items_dispatch() == 0 && input_num('ChargeFreightCost') == 0) {
@@ -272,8 +271,9 @@
 	if (isset($_POST['process_invoice']) && check_data()) {
 		$newinvoice = $_SESSION['Items']->trans_no == 0;
 		copy_to_cart();
-		if ($newinvoice)
+		if ($newinvoice) {
 			Dates::new_doc_date($_SESSION['Items']->document_date);
+		}
 		$invoice_no = $_SESSION['Items']->write();
 		processing_end();
 		if ($newinvoice) {
@@ -284,10 +284,12 @@
 		}
 	}
 	// find delivery spans for batch invoice display
-	$dspans = array();
-	$lastdn = '';
+	$dspans  = array();
+	$lastdn  = '';
 	$spanlen = 1;
-	for ($line_no = 0; $line_no < count($_SESSION['Items']->line_items); $line_no++) {
+	for (
+		$line_no = 0; $line_no < count($_SESSION['Items']->line_items); $line_no++
+	) {
 		$line = $_SESSION['Items']->line_items[$line_no];
 		if ($line->quantity == $line->qty_done) {
 			continue;
@@ -298,7 +300,7 @@
 		else {
 			if ($lastdn != '') {
 				$dspans[] = $spanlen;
-				$spanlen = 1;
+				$spanlen  = 1;
 			}
 		}
 		$lastdn = $line->src_no;
@@ -306,9 +308,8 @@
 	$dspans[] = $spanlen;
 	//-----------------------------------------------------------------------------
 	$viewing = isset($_GET['ViewInvoice']);
-
 	$is_batch_invoice = count($_SESSION['Items']->src_docs) > 1;
-	$is_edition = $_SESSION['Items']->trans_type == ST_SALESINVOICE && $_SESSION['Items']->trans_no != 0;
+	$is_edition       = $_SESSION['Items']->trans_type == ST_SALESINVOICE && $_SESSION['Items']->trans_no != 0;
 	start_form();
 	hidden('cart_id');
 	start_table(Config::get('tables_style2') . " width=90%", 5);
@@ -332,20 +333,30 @@
 		$_POST['ship_via'] = $_SESSION['Items']->ship_via;
 	}
 	label_cell(_("Shipping Company"), "class='tableheader2'");
-	if (!$viewing || !isset($_SESSION['Items']->shipper_name)) shippers_list_cells(null, 'ship_via', $_POST['ship_via']); else	 label_cell($_SESSION['Items']->shipper_name);
-
+	if (!$viewing || !isset($_SESSION['Items']->shipper_name)) {
+		shippers_list_cells(null, 'ship_via', $_POST['ship_via']);
+	} else {
+		label_cell($_SESSION['Items']->shipper_name);
+	}
 	if (!isset($_POST['InvoiceDate']) || !Dates::is_date($_POST['InvoiceDate'])) {
 		$_POST['InvoiceDate'] = Dates::new_doc_date();
 		if (!Dates::is_date_in_fiscalyear($_POST['InvoiceDate'])) {
 			$_POST['InvoiceDate'] = Dates::end_fiscalyear();
 		}
 	}
-
-	if (!$viewing) date_cells(_("Date"), 'InvoiceDate', '', $_SESSION['Items']->trans_no == 0, 0, 0, 0, "class='tableheader2'", true); else label_cell($_POST['InvoiceDate']);
+	if (!$viewing) {
+		date_cells(_("Date"), 'InvoiceDate', '', $_SESSION['Items']->trans_no == 0, 0, 0, 0, "class='tableheader2'", true);
+	} else {
+		label_cell($_POST['InvoiceDate']);
+	}
 	if (!isset($_POST['due_date']) || !Dates::is_date($_POST['due_date'])) {
 		$_POST['due_date'] = get_invoice_duedate($_SESSION['Items']->customer_id, $_POST['InvoiceDate']);
 	}
-	if (!$viewing) date_cells(_("Due Date"), 'due_date', '', null, 0, 0, 0, "class='tableheader2'"); else label_cell($_POST['due_date']);
+	if (!$viewing) {
+		date_cells(_("Due Date"), 'due_date', '', null, 0, 0, 0, "class='tableheader2'");
+	} else {
+		label_cell($_POST['due_date']);
+	}
 	end_row();
 	end_table();
 	$row = get_customer_to_order($_SESSION['Items']->customer_id);
@@ -367,19 +378,24 @@
 		$th[4] = _("Credited");
 	}
 	table_header($th);
-	$k = 0;
-	$has_marked = false;
-	$show_qoh = true;
+	$k           = 0;
+	$has_marked  = false;
+	$show_qoh    = true;
 	$dn_line_cnt = 0;
-
-	foreach ($_SESSION['Items']->line_items as $line => $ln_itm) {
+	foreach (
+		$_SESSION['Items']->line_items as $line => $ln_itm
+	) {
 		if (!$viewing && $ln_itm->quantity == $ln_itm->qty_done) {
 			continue; // this line was fully invoiced
 		}
 		alt_table_row_color($k);
 		ui_view::view_stock_status_cell($ln_itm->stock_id);
-		if (!$viewing) textarea_cells(null, 'Line' . $line . 'Desc', $ln_itm->description, 30, 3); else
+		if (!$viewing) {
+			textarea_cells(null, 'Line' . $line . 'Desc', $ln_itm->description, 30, 3);
+		} else
+		{
 			label_cell($ln_itm->description);
+		}
 		$dec = get_qty_dec($ln_itm->stock_id);
 		qty_cell($ln_itm->quantity, false, $dec);
 		label_cell($ln_itm->units);
@@ -396,7 +412,7 @@
 			small_qty_cells(null, 'Line' . $line, qty_format($ln_itm->qty_dispatched, $ln_itm->stock_id, $dec), null, null, $dec);
 		}
 		$display_discount_percent = percent_format($ln_itm->discount_percent * 100) . " %";
-		$line_total = ($ln_itm->qty_dispatched * $ln_itm->price * (1 - $ln_itm->discount_percent));
+		$line_total               = ($ln_itm->qty_dispatched * $ln_itm->price * (1 - $ln_itm->discount_percent));
 		amount_cell($ln_itm->price);
 		label_cell($ln_itm->tax_type_name);
 		label_cell($display_discount_percent, "nowrap align=right");
@@ -404,7 +420,7 @@
 		if ($is_batch_invoice) {
 			if ($dn_line_cnt == 0) {
 				$dn_line_cnt = $dspans[0];
-				$dspans = array_slice($dspans, 1);
+				$dspans      = array_slice($dspans, 1);
 				label_cell($ln_itm->src_no, "rowspan=$dn_line_cnt class=oddrow");
 				label_cell("<a href='" . $_SERVER['PHP_SELF'] . "?RemoveDN=" . $ln_itm->src_no . "'>" . _("Remove") . "</a>", "rowspan=$dn_line_cnt class=oddrow");
 			}
@@ -413,9 +429,9 @@
 		end_row();
 	}
 	/* Don't re-calculate freight if some of the order has already been delivered -
-				depending on the business logic required this condition may not be required.
-				It seems unfair to charge the customer twice for freight if the order
-				was not fully delivered the first time ?? */
+					depending on the business logic required this condition may not be required.
+					It seems unfair to charge the customer twice for freight if the order
+					was not fully delivered the first time ?? */
 	if (!isset($_POST['ChargeFreightCost']) || $_POST['ChargeFreightCost'] == "") {
 		if ($_SESSION['Items']->any_already_delivered() == 1) {
 			$_POST['ChargeFreightCost'] = price_format(0);
@@ -428,21 +444,26 @@
 		}
 	}
 	$accumulate_shipping = DB_Company::get_pref('accumulate_shipping');
-	if ($is_batch_invoice && $accumulate_shipping)
+	if ($is_batch_invoice && $accumulate_shipping) {
 		set_delivery_shipping_sum(array_keys($_SESSION['Items']->src_docs));
+	}
 	$colspan = 9;
 	start_row();
 	label_cell(_("Shipping Cost"), "colspan=$colspan align=right");
-	if (!$viewing) small_amount_cells(null, 'ChargeFreightCost', null); else amount_cell($_SESSION['Items']->freight_cost);
+	if (!$viewing) {
+		small_amount_cells(null, 'ChargeFreightCost', null);
+	} else {
+		amount_cell($_SESSION['Items']->freight_cost);
+	}
 	if ($is_batch_invoice) {
 		label_cell('', 'colspan=2');
 	}
 	end_row();
-	$inv_items_total = $_SESSION['Items']->get_items_total_dispatch();
+	$inv_items_total   = $_SESSION['Items']->get_items_total_dispatch();
 	$display_sub_total = price_format($inv_items_total + input_num('ChargeFreightCost'));
 	label_row(_("Sub-total"), $display_sub_total, "colspan=$colspan align=right", "align=right", $is_batch_invoice ? 2 : 0);
-	$taxes = $_SESSION['Items']->get_taxes(input_num('ChargeFreightCost'));
-	$tax_total = ui_view::display_edit_tax_items($taxes, $colspan, $_SESSION['Items']->tax_included, $is_batch_invoice ? 2 : 0);
+	$taxes         = $_SESSION['Items']->get_taxes(input_num('ChargeFreightCost'));
+	$tax_total     = ui_view::display_edit_tax_items($taxes, $colspan, $_SESSION['Items']->tax_included, $is_batch_invoice ? 2 : 0);
 	$display_total = price_format(($inv_items_total + input_num('ChargeFreightCost') + $tax_total));
 	label_row(_("Invoice Total"), $display_total, "colspan=$colspan align=right", "align=right", $is_batch_invoice ? 2 : 0);
 	end_table(1);

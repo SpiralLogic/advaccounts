@@ -1,59 +1,63 @@
 <?php
 	// session_start();
 	/* Create a new block or alter a stored block
-	* repgen_createblock.php for PHP Report Generator
-		Bauer, 22.1.2002
-		Version 0.2
- */
-
+		* repgen_createblock.php for PHP Report Generator
+			Bauer, 22.1.2002
+			Version 0.2
+	 */
 	/*
-	*
-	*
-	* 1. A section where utility functions are defined.
-	* 2. A section that is called only after the submit.
-	* 3. And a final section that is called when the script runs first time and
-	*    every time after the submit.
-	*
-	* Scripts organized in this way will allow the user perpetual
-	* editing and they will reflect submitted changes immediately
-	* after a form submission.
-	*
-	* We consider this to be the standard organization of table editor
-	* scripts.
-	*
- */
+		*
+		*
+		* 1. A section where utility functions are defined.
+		* 2. A section that is called only after the submit.
+		* 3. And a final section that is called when the script runs first time and
+		*    every time after the submit.
+		*
+		* Scripts organized in this way will allow the user perpetual
+		* editing and they will reflect submitted changes immediately
+		* after a form submission.
+		*
+		* We consider this to be the standard organization of table editor
+		* scripts.
+		*
+	 */
 	$page_security = 'SA_REPORT_GENERATOR';
-
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	add_access_extensions();
-
 	require_once("repgen_const.php");
 	require_once("repgen_def.php");
 	require_once("repgen.php");
-
-	function check_short($short) { // controls, that short-name of blocks does not be twice
+	function check_short($short)
+	{ // controls, that short-name of blocks does not be twice
 		global $id_new;
-		if (empty($short))
+		if (empty($short)) {
 			return false;
+		}
 		$query = "SELECT attrib,id FROM xx_reports WHERE typ='block'";
-		$res = DBOld::query($query);
+		$res   = DBOld::query($query);
 		while ($f = DBOld::fetch($res))
 		{
 			$h = explode("|", $f["attrib"]);
-			if (($h[0] == $short) && (trim($f["id"]) != $id_new))
+			if (($h[0] == $short) && (trim($f["id"]) != $id_new)) {
 				return false;
+			}
 		}
 		return true;
 	}
 
-	function m_s($a1, $a2) { // sets "selected" in select box when $a1 == $a2
-		if ($a1 == $a2)
+	function m_s($a1, $a2)
+	{ // sets "selected" in select box when $a1 == $a2
+		if ($a1 == $a2) {
 			return "selected";
+		}
 		else
+		{
 			return "";
+		}
 	}
 
-	function store($id, $info) { // stores the records 'block' in the database
+	function store($id, $info)
+	{ // stores the records 'block' in the database
 		DBOld::query("BEGIN");
 		$query = "DELETE FROM xx_reports WHERE (id ='" . $id . "' AND typ='block')";
 		DBOld::query($query);
@@ -65,9 +69,7 @@
 	###
 	### Submit Handler
 	###
-
 	## Check if there was a submission
-
 	if (isset($select)) {
 		// go to the page for selection of an old block without storing the content of this page
 		$url = REPGENDIR . "/repgen_select.php";
@@ -107,8 +109,7 @@
 			exit;
 		}
 	}
-
-	page("Report Generator REPGEN");
+	Page::start("Report Generator REPGEN");
 
 	### Output key administration forms, including all updated
 	### information, if we come here after a submission...
@@ -125,17 +126,18 @@ function num_test(feld) {
 }
 //--></script>
 <?php
-	if (!empty($long))
+	if (!empty($long)) {
 		ui_msgs::display_heading(ALTER_BLOCK . ":   " . $long);
+	}
 	else
+	{
 		ui_msgs::display_heading(CREATE_BLOCK);
+	}
 	if (!empty($error)) {
 		ui_msgs::display_error($error);
 		$error = NULL;
 	}
-
 	start_form(false, false, REPGENDIR . "/repgen_createblock.php", "edit");
-
 	start_table(Config::get('tables_style2'));
 	label_row(ID_BLOCK, $id_new);
 	hidden("id_new", $id_new);
@@ -144,7 +146,6 @@ function num_test(feld) {
 	text_row(AUTHOR, "author", $author, 20, 20);
 	label_row(DATE, today() . hidden("date_", date("Y-m-d"), false) . hidden("id", $id_new, false));
 	end_table(1);
-
 	start_table(Config::get('tables_style'));
 	start_row();
 	submit_cells("select", SELECT_CR);
@@ -153,6 +154,5 @@ function num_test(feld) {
 	end_row();
 	end_table();
 	end_form();
-
 	end_page();
 ?>

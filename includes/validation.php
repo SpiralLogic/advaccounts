@@ -45,16 +45,21 @@
 
 		public static function check($validate, $msg = '', $extra = null) {
 			//if (!property_exists(__CLASS__, $validate)) return ui_msgs::display_error("TABLE $validate doesn't exist", true);
-			if ($extra===false) return 0;
-			$extra  = ($extra!==null) ? DBOld::escape($extra) : '';
+			if ($extra === false) return 0;
+			if ($extra !== null) {
+			if ( empty($extra)) throw new Adv_Exception("Extra information not provided for ".$validate);
+					DBOld::escape($extra);
+			} else {
+				$extra = '';
+			}
 
 			$result = DBOld::query('SELECT COUNT(*) FROM ' . $validate . ' ' . $extra, 'Could not do check empty query');
-			$myrow  = DBOld::fetch_row($result);
+			$myrow = DBOld::fetch_row($result);
 			if (!($myrow[0] > 0)) {
 				throw new Adv_Exception($msg);
 				end_page();
 				exit;
-			}else {
+			} else {
 				return $myrow[0];
 			}
 		}

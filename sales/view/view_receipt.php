@@ -10,20 +10,14 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	$page_security = 'SA_SALESTRANSVIEW';
-
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-
-	include_once(APP_PATH . "reporting/includes/reporting.php");
-	$help_context = $js = "";
-	if (Config::get('ui_windows_popups'))
-		$js .= ui_view::get_js_open_window(900, 600);
+	$help_context = "";
+	JS::get_js_open_window(900, 600);
 	$trans_type = $_GET['trans_type'];
-	page(_($help_context), true, false, "", $js);
-
+	Page::start(_($help_context), true);
 	if (isset($_GET["trans_no"])) {
 		$trans_id = $_GET["trans_no"];
 	}
-
 	if (isset($_POST)) {
 		unset($_POST);
 	}
@@ -34,16 +28,12 @@
 	else {
 		ui_msgs::display_heading(sprintf(_("Customer Refund #%d"), $trans_id));
 	}
-
 	echo "<br>";
 	start_table(Config::get('tables_style') . "  width=90%");
 	start_row();
 	start_form();
-
 	label_cells(_("From Customer"), $receipt['DebtorName'], "class='tableheader2'");
-
 	label_cells(_("Into Bank Account"), $receipt['bank_account_name'], "class='tableheader2'");
-
 	label_cells(_("Date of Deposit"), Dates::sql2date($receipt['tran_date']), "class='tableheader2'");
 	end_row();
 	start_row();
@@ -52,17 +42,16 @@
 	label_cells(_("Discount"), price_format($receipt['ov_discount']), "class='tableheader2'");
 	end_row();
 	start_row();
-	label_cells(_("Payment Type"),
-		$bank_transfer_types[$receipt['BankTransType']], "class='tableheader2'");
+	label_cells(
+		_("Payment Type"),
+		$bank_transfer_types[$receipt['BankTransType']], "class='tableheader2'"
+	);
 	label_cells(_("Reference"), $receipt['reference'], "class='tableheader2'", "colspan=4");
 	end_form();
 	end_row();
 	ui_view::comments_display_row($trans_type, $trans_id);
-
 	end_table(1);
-
 	$voided = ui_view::is_voided_display($trans_type, $trans_id, _("This customer payment has been voided."));
-
 	if (!$voided && ($trans_type != ST_CUSTREFUND)) {
 		ui_view::display_allocations_from(PT_CUSTOMER, $receipt['debtor_no'], ST_CUSTPAYMENT, $trans_id, $receipt['Total']);
 	}

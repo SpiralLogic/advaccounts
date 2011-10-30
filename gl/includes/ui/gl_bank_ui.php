@@ -63,7 +63,7 @@
 			case PT_CUSTOMER :
 				customer_list_row(_("Customer:"), 'person_id', null, false, true, false, true);
 
-				if (Validation::check(Validation::BRANCHES, $_POST['person_id'])) {
+				if (Input::post('person_id') && Validation::check(Validation::BRANCHES, _("No Branches for Customer"), $_POST['person_id'])) {
 					customer_branches_list_row(_("Branch:"), $_POST['person_id'],
 						'PersonDetailID', null, false, true, true, true);
 				}

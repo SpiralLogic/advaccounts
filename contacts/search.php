@@ -7,9 +7,7 @@
 	 * To change this template use File | Settings | File Templates.
 	 */
 	$page_security = 'SA_CUSTOMER';
-
 	include_once("includes/contacts.php");
-
 	if (AJAX_REFERRER) {
 		if (isset($_GET['postcode']) && isset($_GET['term'])) {
 			$data = Postcode::searchByPostcode($_GET['term']);
@@ -25,8 +23,7 @@
 		echo json_encode($data, JSON_NUMERIC_CHECK);
 		exit();
 	}
-
-	page(_($help_context = "Items"), Input::request('popup'));
-	Customer::addSearchBox('customer_id', array('cell' => false, 'description' => ''));
-
+	Page::start(_($help_context = "Items"), Input::request('popup'));
+	Customer::addSearchBox('customer_id', array('cell'       => false,
+																						 'description' => ''));
 	end_page();

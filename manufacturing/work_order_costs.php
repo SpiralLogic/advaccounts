@@ -10,145 +10,110 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	$page_security = 'SA_WORKORDERCOST';
-
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-
 	include_once(APP_PATH . "gl/includes/db/gl_db_bank_trans.php");
-
 	include_once(APP_PATH . "manufacturing/includes/manufacturing_ui.php");
-
-	$js = "";
-	if (Config::get('ui_windows_popups'))
-		$js .= ui_view::get_js_open_window(900, 500);
-
-	page(_($help_context = "Work Order Additional Costs"), false, false, "", $js);
-
+	JS::get_js_open_window(900, 500);
+	Page::start(_($help_context = "Work Order Additional Costs"));
 	if (isset($_GET['trans_no']) && $_GET['trans_no'] != "") {
 		$_POST['selected_id'] = $_GET['trans_no'];
 	}
-
 	//--------------------------------------------------------------------------------------------------
-
 	if (isset($_GET['AddedID'])) {
-		$id = $_GET['AddedID'];
+		$id    = $_GET['AddedID'];
 		$stype = ST_WORKORDER;
-
 		ui_msgs::display_notification(_("The additional cost has been entered."));
-
-		ui_msgs::display_warning(ui_view::get_trans_view_str($stype, $id, _("View this Work Order")));
-
-		ui_msgs::display_warning(ui_view::get_gl_view_str($stype, $id, _("View the GL Journal Entries for this Work Order")), 1);
-
+		ui_msgs::display_note(ui_view::get_trans_view_str($stype, $id, _("View this Work Order")));
+		ui_msgs::display_note(ui_view::get_gl_view_str($stype, $id, _("View the GL Journal Entries for this Work Order")), 1);
 		hyperlink_params("work_order_costs.php", _("Enter another additional cost."), "trans_no=$id");
-
 		hyperlink_no_params("search_work_orders.php", _("Select another &Work Order to Process"));
-
 		end_page();
 		exit;
 	}
-
 	//--------------------------------------------------------------------------------------------------
-
 	$wo_details = get_work_order($_POST['selected_id']);
-
 	if (strlen($wo_details[0]) == 0) {
 		ui_msgs::display_error(_("The order number sent is not valid."));
 		exit;
 	}
-
 	//--------------------------------------------------------------------------------------------------
-
-	function can_process() {
+	function can_process()
+	{
 		global $wo_details;
-
 		if (!Validation::is_num('costs', 0)) {
 			ui_msgs::display_error(_("The amount entered is not a valid number or less then zero."));
-			ui_view::set_focus('costs');
+			JS::set_focus('costs');
 			return false;
 		}
-
 		if (!Dates::is_date($_POST['date_'])) {
 			ui_msgs::display_error(_("The entered date is invalid."));
-			ui_view::set_focus('date_');
+			JS::set_focus('date_');
 			return false;
 		}
 		elseif (!Dates::is_date_in_fiscalyear($_POST['date_']))
 		{
 			ui_msgs::display_error(_("The entered date is not in fiscal year."));
-			ui_view::set_focus('date_');
+			JS::set_focus('date_');
 			return false;
 		}
 		if (Dates::date_diff2(Dates::sql2date($wo_details["released_date"]), $_POST['date_'], "d") > 0) {
 			ui_msgs::display_error(_("The additional cost date cannot be before the release date of the work order."));
-			ui_view::set_focus('date_');
+			JS::set_focus('date_');
 			return false;
 		}
-
 		return true;
 	}
 
 	//--------------------------------------------------------------------------------------------------
-
 	if (isset($_POST['process']) && can_process() == true) {
 		DBOld::begin_transaction();
-		add_gl_trans_std_cost(ST_WORKORDER, $_POST['selected_id'], $_POST['date_'], $_POST['cr_acc'],
+		add_gl_trans_std_cost(
+			ST_WORKORDER, $_POST['selected_id'], $_POST['date_'], $_POST['cr_acc'],
 			0, 0, $wo_cost_types[$_POST['PaymentType']], -input_num('costs'), PT_WORKORDER,
-			$_POST['PaymentType']);
+			$_POST['PaymentType']
+		);
 		$is_bank_to = Banking::is_bank_account($_POST['cr_acc']);
 		if ($is_bank_to) {
-			add_bank_trans(ST_WORKORDER, $_POST['selected_id'], $is_bank_to, "",
+			add_bank_trans(
+				ST_WORKORDER, $_POST['selected_id'], $is_bank_to, "",
 				$_POST['date_'], -input_num('costs'), PT_WORKORDER,
 				$_POST['PaymentType'], Banking::get_company_currency(),
-				"Cannot insert a destination bank transaction");
+				"Cannot insert a destination bank transaction"
+			);
 		}
-
-		add_gl_trans_std_cost(ST_WORKORDER, $_POST['selected_id'], $_POST['date_'], $_POST['db_acc'],
+		add_gl_trans_std_cost(
+			ST_WORKORDER, $_POST['selected_id'], $_POST['date_'], $_POST['db_acc'],
 			$_POST['dim1'], $_POST['dim2'],
 			$wo_cost_types[$_POST['PaymentType']], input_num('costs'), PT_WORKORDER,
-			$_POST['PaymentType']);
+			$_POST['PaymentType']
+		);
 		DBOld::commit_transaction();
-
 		meta_forward($_SERVER['PHP_SELF'], "AddedID=" . $_POST['selected_id']);
 	}
-
 	//-------------------------------------------------------------------------------------
-
 	display_wo_details($_POST['selected_id']);
-
 	//-------------------------------------------------------------------------------------
-
 	start_form();
-
 	hidden('selected_id', $_POST['selected_id']);
 	//hidden('WOReqQuantity', $_POST['WOReqQuantity']);
-
 	start_table(Config::get('tables_style2'));
-
 	br();
-
 	yesno_list_row(_("Type:"), 'PaymentType', null, $wo_cost_types[WO_OVERHEAD], $wo_cost_types[WO_LABOUR]);
-
 	date_row(_("Date:"), 'date_');
-
-	$item_accounts = get_stock_gl_code($wo_details['stock_id']);
+	$item_accounts   = get_stock_gl_code($wo_details['stock_id']);
 	$_POST['db_acc'] = $item_accounts['assembly_account'];
-	$sql = "SELECT DISTINCT account_code FROM bank_accounts";
-	$rs = DBOld::query($sql, "could not get bank accounts");
-	$r = DBOld::fetch_row($rs);
+	$sql             = "SELECT DISTINCT account_code FROM bank_accounts";
+	$rs              = DBOld::query($sql, "could not get bank accounts");
+	$r               = DBOld::fetch_row($rs);
 	$_POST['cr_acc'] = $r[0];
-
 	amount_row(_("Additional Costs:"), 'costs');
 	gl_all_accounts_list_row(_("Debit Account"), 'db_acc', null);
 	gl_all_accounts_list_row(_("Credit Account"), 'cr_acc', null);
-
 	end_table(1);
 	hidden('dim1', $item_accounts["dimension_id"]);
 	hidden('dim2', $item_accounts["dimension2_id"]);
-
 	submit_center('process', _("Process Additional Cost"), true, '', true);
-
 	end_form();
-
 	end_page();
 
 ?>

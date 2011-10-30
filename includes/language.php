@@ -10,8 +10,8 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	// Prevent register_globals vulnerability
-
-	class language {
+	class language
+	{
 		var $name;
 		var $code; // eg. ar_EG, en_GB
 		var $encoding; // eg. UTF-8, CP1256, ISO8859-1
@@ -19,86 +19,90 @@
 		// Right-To-Left (rtl)
 		var $is_locale_file;
 
-		function language($name, $code, $encoding, $dir = 'ltr') {
-			$this->name = $name;
-			$this->code = $code ? $code : 'en_GB';
+		function language($name, $code, $encoding, $dir = 'ltr')
+		{
+			$this->name     = $name;
+			$this->code     = $code ? $code : 'en_GB';
 			$this->encoding = $encoding;
-			$this->dir = $dir;
+			$this->dir      = $dir;
 		}
 
-		function get_language_dir() {
+		function get_language_dir()
+		{
 			return "lang/" . $this->code;
 		}
 
-		function get_current_language_dir() {
+		function get_current_language_dir()
+		{
 			$lang = $_SESSION['language'];
 			return "lang/" . $lang->code;
 		}
 
-		function set_language($code) {
-
+		function set_language($code)
+		{
 			$changed = $this->code != $code;
-			$lang = Arr::search_value($code, Config::get_all('installed_languages'), 'code');
-
+			$lang    = Arr::search_value($code, Config::get_all('installed_languages'), 'code');
 			if ($lang && $changed) {
 				// flush cache as we can use several languages in one account
-				flush_dir(COMPANY_PATH . '/js_cache');
-
-				$this->name = $lang['name'];
-				$this->code = $lang['code'];
-				$this->encoding = $lang['encoding'];
-				$this->dir = isset($lang['rtl']) ? 'rtl' : 'ltr';
-				$locale = APP_PATH . "lang/" . $this->code . "/locale.php";
+				Files::flush_dir(COMPANY_PATH . '/js_cache');
+				$this->name           = $lang['name'];
+				$this->code           = $lang['code'];
+				$this->encoding       = $lang['encoding'];
+				$this->dir            = isset($lang['rtl']) ? 'rtl' : 'ltr';
+				$locale               = APP_PATH . "lang/" . $this->code . "/locale.php";
 				$this->is_locale_file = file_exists($locale);
 			}
-
 			$_SESSION['get_text']->set_language($this->code, $this->encoding);
 			$_SESSION['get_text']->add_domain($this->code, PATH_TO_ROOT . "/lang");
-
 			// Necessary for ajax calls. Due to bug in php 4.3.10 for this
 			// version set globally in php.ini
 			ini_set('default_charset', $this->encoding);
-
-			if (isset($_SESSION['App']) && $changed)
-				$_SESSION['App']->init(); // refresh menu
+			if (isset($_SESSION['App']) && $changed) {
+				$_SESSION['App']->init();
+			} // refresh menu
 		}
 
-		static function write_lang() {
-
+		static function write_lang()
+		{
 			$conn = Arr::natsort(Config::get_all('installed_languages'), 'code', 'code');
 			Config::set('installed_languages', $conn);
 			$installed_languages = Config::get_all('installed_languages');
-			$n = count($installed_languages);
-			$msg = "<?php\n\n";
-
+			$n                   = count($installed_languages);
+			$msg                 = "<?php\n\n";
 			$msg .= "/* How to make new entries here\n\n";
 			$msg .= "-- if adding languages at the beginning of the list, make sure it's index is set to 0 (it has ' 0 => ')\n";
 			$msg .= "-- 'code' should match the name of the directory for the language under \\lang\n";
 			$msg .= "-- 'name' is the name that will be displayed in the language selection list (in Users and Display Setup)\n";
 			$msg .= "-- 'rtl' only needs to be set for right-to-left languages like Arabic and Hebrew\n\n";
 			$msg .= "*/\n\n\n";
-
 			$msg .= "\return array (\n";
-			if ($n > 0)
+			if ($n > 0) {
 				$msg .= "\t0 => ";
-			for ($i = 0; $i < $n; $i++)
+			}
+			for (
+				$i = 0; $i < $n; $i++
+			)
 			{
-				if ($i > 0)
+				if ($i > 0) {
 					$msg .= "\t\tarray ";
+				}
 				else
+				{
 					$msg .= "array ";
+				}
 				$msg .= "('code' => '" . $installed_languages[$i]['code'] . "', ";
 				$msg .= "'name' => '" . $installed_languages[$i]['name'] . "', ";
 				$msg .= "'encoding' => '" . $installed_languages[$i]['encoding'] . "'";
-				if (isset($installed_languages[$i]['rtl']) && $installed_languages[$i]['rtl'])
+				if (isset($installed_languages[$i]['rtl']) && $installed_languages[$i]['rtl']) {
 					$msg .= ", 'rtl' => true),\n";
+				}
 				else
+				{
 					$msg .= "),\n";
+				}
 			}
-
 			$msg .= "\t);\n";
-
-			$path = APP_PATH . "lang";
+			$path     = APP_PATH . "lang";
 			$filename = $path . '/installed_languages.php';
 			// Check if directory exists and is writable first.
 			if (file_exists($path) && is_writable($path)) {
@@ -125,10 +129,12 @@
 	}
 
 	if (!function_exists("_")) {
-		function _($text) {
+		function _($text)
+		{
 			$retVal = $_SESSION['get_text']->gettext($text);
-			if ($retVal == "")
+			if ($retVal == "") {
 				return $text;
+			}
 			return $retVal;
 		}
 	}

@@ -10,12 +10,8 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	$page_security = 'SA_OPEN';
-
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-
-	include(APP_PATH . "includes/page/header.php");
-	page_header(_("Logout"), true, false, '');
-
+	Page::header(_("Logout"), true, false, '');
 	echo "<table width='100%' border='0'> <tr><td align='center'><img src='/themes/default/images/logo_frontaccounting.png' alt='FrontAccounting' width='250' height='50'' /></td>
   </tr>
   <tr>
@@ -24,9 +20,7 @@
   <tr>
     <td><div align='center'><font size=2>";
 	echo _("Thank you for using") . " ";
-
 	echo "<strong>" . APP_TITLE . ' ' . VERSION . "</strong>";
-
 	echo "</font></div></td>
   </tr>
   <tr>
@@ -41,7 +35,7 @@
 <br>\n";
 	session_unset();
 	session_destroy();
-	end_page(false,false,true);
+	end_page(false, false, true);
 ?>
 
 

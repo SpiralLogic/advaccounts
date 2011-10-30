@@ -10,13 +10,9 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	$page_security = 'SA_SECROLES';
-
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-
 	add_access_extensions();
-
-	page(_($help_context = "Access setup"));
-
+	Page::start(_($help_context = "Access setup"));
 	$new_role = get_post('role') == '' || get_post('cancel') || get_post('clone');
 	//--------------------------------------------------------------------------------------------------
 	// Following compare function is used for sorting areas
@@ -24,14 +20,18 @@
 	// is properly placed under related section regardless of
 	// unique extension number, with order inside sections preserved.
 	//
-	function comp_areas($area1, $area2) {
+	function comp_areas($area1, $area2)
+	{
 		$sec_comp = ($area1[0] & 0xff00) - ($area2[0] & 0xff00);
 		return $sec_comp == 0 ? ($area1[2] - $area2[2]) : $sec_comp;
 	}
 
-	function sort_areas($areas) {
+	function sort_areas($areas)
+	{
 		$old_order = 0;
-		foreach ($areas as $key => $area) {
+		foreach (
+			$areas as $key => $area
+		) {
 			$areas[$key][] = $old_order++;
 		}
 		uasort($areas, 'comp_areas');
@@ -43,8 +43,8 @@
 		$Ajax->activate('details');
 		$Ajax->activate('controls');
 	}
-
-	function clear_data() {
+	function clear_data()
+	{
 		unset($_POST);
 	}
 
@@ -53,13 +53,13 @@
 		if ($_POST['description'] == '') {
 			$input_error = 1;
 			ui_msgs::display_error(_("Role description cannot be empty."));
-			ui_view::set_focus('description');
+			JS::set_focus('description');
 		}
 		elseif ($_POST['name'] == '')
 		{
 			$input_error = 1;
 			ui_msgs::display_error(_("Role name cannot be empty."));
-			ui_view::set_focus('name');
+			JS::set_focus('name');
 		}
 		// prevent accidental editor lockup by removing SA_SECROLES
 		if (get_post('role') == $_SESSION['wa_current_user']->access) {
@@ -68,15 +68,18 @@
 			) {
 				ui_msgs::display_error(_("Access level edition in Company setup section have to be enabled for your account."));
 				$input_error = 1;
-				ui_view::set_focus(!isset($_POST['Section' . SS_SETUP])
-					 ? 'Section' . SS_SETUP : 'Area' . $security_areas['SA_SECROLES'][0]);
+				JS::set_focus(
+					!isset($_POST['Section' . SS_SETUP])
+					 ? 'Section' . SS_SETUP : 'Area' . $security_areas['SA_SECROLES'][0]
+				);
 			}
 		}
-
 		if ($input_error == 0) {
 			$sections = array();
 			$areas    = array();
-			foreach ($_POST as $p => $val) {
+			foreach (
+				$_POST as $p => $val
+			) {
 				if (substr($p, 0, 4) == 'Area') {
 					$a = substr($p, 4);
 					if (($a & ~0xffff) && (($a & 0xff00) < (99 << 8))) {
@@ -84,23 +87,25 @@
 					}
 					$areas[] = $a;
 				}
-				if (substr($p, 0, 7) == 'Section')
+				if (substr($p, 0, 7) == 'Section') {
 					$sections[] = substr($p, 7);
+				}
 			}
 			//		$areas = sort_areas($areas);
-
 			$sections = array_values($sections);
-
 			if ($new_role) {
 				Printer::add_role($_POST['name'], $_POST['description'], $sections, $areas);
 				ui_msgs::display_notification(_("New security role has been added."));
 			} else
 			{
-				Printer::update_role($_POST['role'], $_POST['name'], $_POST['description'],
-					$sections, $areas);
-				DBOld::update_record_status($_POST['role'], get_post('inactive'),
-					'security_roles', 'id');
-
+				Printer::update_role(
+					$_POST['role'], $_POST['name'], $_POST['description'],
+					$sections, $areas
+				);
+				DBOld::update_record_status(
+					$_POST['role'], get_post('inactive'),
+					'security_roles', 'id'
+				);
 				ui_msgs::display_notification(_("Security role has been updated."));
 			}
 			$new_role = true;
@@ -108,9 +113,7 @@
 			$Ajax->activate('_page_body');
 		}
 	}
-
 	//--------------------------------------------------------------------------------------------------
-
 	if (get_post('delete')) {
 		if (check_role_used(get_post('role'))) {
 			ui_msgs::display_error(_("This role is currently assigned to some users and cannot be deleted"));
@@ -121,16 +124,13 @@
 		}
 		$Ajax->activate('_page_body');
 	}
-
 	if (get_post('cancel')) {
 		unset($_POST['role']);
 		$Ajax->activate('_page_body');
 	}
-
 	if (!isset($_POST['role']) || get_post('clone') || list_updated('role')) {
 		$id    = get_post('role');
 		$clone = get_post('clone');
-
 		unset($_POST);
 		if ($id) {
 			$row                  = Security::get_role($id);
@@ -138,7 +138,6 @@
 			$_POST['name']        = $row['role'];
 			//	if ($row['inactive']
 			//		$_POST['inactive'] = 1;
-
 			$_POST['inactive'] = $row['inactive'];
 			$access            = $row['areas'];
 			$sections          = $row['sections'];
@@ -148,20 +147,26 @@
 			unset($_POST['inactive']);
 			$access = $sections = array();
 		}
-		foreach ($access as $a) $_POST['Area' . $a] = 1;
-		foreach ($sections as $s) $_POST['Section' . $s] = 1;
-
+		foreach (
+			$access as $a
+		) {
+			$_POST['Area' . $a] = 1;
+		}
+		foreach (
+			$sections as $s
+		) {
+			$_POST['Section' . $s] = 1;
+		}
 		if ($clone) {
-			ui_view::set_focus('name');
+			JS::set_focus('name');
 			$Ajax->activate('_page_body');
 		} else
+		{
 			$_POST['role'] = $id;
+		}
 	}
-
 	//--------------------------------------------------------------------------------------------------
-
 	start_form();
-
 	start_table("class='tablestyle_noborder'");
 	start_row();
 	security_roles_list_cells(_("Role:") . "&nbsp;", 'role', null, true, true, check_value('show_inactive'));
@@ -170,10 +175,9 @@
 	end_row();
 	end_table();
 	echo "<hr>";
-
 	if (get_post('_show_inactive_update')) {
 		$Ajax->activate('role');
-		ui_view::set_focus('role');
+		JS::set_focus('role');
 	}
 	if (find_submit('_Section')) {
 		$Ajax->activate('details');
@@ -185,17 +189,17 @@
 	text_row(_("Role description:"), 'description', null, 50, 52);
 	record_status_list_row(_("Current status:"), 'inactive');
 	end_table(1);
-
 	start_table(Config::get('tables_style') . " width=40%");
-
 	$k = $j = 0; //row colour counter
 	$ext = $sec = $m = -1;
-
-	foreach (sort_areas($security_areas) as $area => $parms) {
+	foreach (
+		sort_areas($security_areas) as $area => $parms
+	) {
 		// system setup areas are accessable only for site admins i.e.
 		// admins of first registered company
-		if ((($parms[0] & 0xff00) == SS_SADMIN)) continue;
-
+		if ((($parms[0] & 0xff00) == SS_SADMIN)) {
+			continue;
+		}
 		$newsec = ($parms[0] >> 8) & 0xff;
 		$newext = $parms[0] >> 16;
 		if ($newsec != $sec || (($newext != $ext) && ($newsec > 99))) { // features set selection
@@ -204,15 +208,21 @@
 			$m   = $parms[0] & ~0xff;
 			//			if(!isset($security_sections[$m]))
 			//			 ui_msgs::display_error(sprintf("Bad section %X:", $m));
-			label_row($security_sections[$m] . ':',
-				checkbox(null, 'Section' . $m, null, true,
-					_("On/off set of features")),
-				"class='tableheader2'", "class='tableheader'");
+			label_row(
+				$security_sections[$m] . ':',
+				checkbox(
+					null, 'Section' . $m, null, true,
+					_("On/off set of features")
+				),
+				"class='tableheader2'", "class='tableheader'"
+			);
 		}
 		if (check_value('Section' . $m)) {
 			alt_table_row_color($k);
-			check_cells($parms[1], 'Area' . $parms[0], null,
-				false, '', "align='center'");
+			check_cells(
+				$parms[1], 'Area' . $parms[0], null,
+				false, '', "align='center'"
+			);
 			end_row();
 		} else {
 			hidden('Area' . $parms[0]);
@@ -220,9 +230,7 @@
 	}
 	end_table(1);
 	div_end();
-
 	div_start('controls');
-
 	if ($new_role) {
 		submit_center_first('Update', _("Update view"), '', null);
 		submit_center_last('addupdate', _("Insert New Role"), '', 'default');
@@ -235,9 +243,7 @@
 		submit('delete', _("Delete This Role"), true, '', true);
 		submit_center_last('cancel', _("Cancel"), _("Cancel Edition"), 'cancel');
 	}
-
 	div_end();
-
 	end_form();
 	end_page();
 

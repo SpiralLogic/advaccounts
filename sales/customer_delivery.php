@@ -24,14 +24,13 @@
 	if (Config::get('ui_windows_popups')) {
 		$js .= ui_view::get_js_open_window(900, 500);
 	}
-
+	$page_title = _($help_context = "Deliver Items for a Sales Order");
 	if (isset($_GET['ModifyDelivery'])) {
 		$page_title = sprintf(_("Modifying Delivery Note # %d."), $_GET['ModifyDelivery']);
 		$help_context = "Modifying Delivery Note";
 		processing_start();
 	}
 	elseif (isset($_GET['OrderNumber'])) {
-		$page_title = _($help_context = "Deliver Items for a Sales Order");
 		processing_start();
 	}
 

@@ -52,7 +52,7 @@
 
 	/**
 	 * PHP class to creates array representations for common 1D barcodes to be used with TCPDF (http://www.tcpdf.org).<br>
-	 * @name TCPDFBarcode
+	 * @name Reports_TCPDFBarcode
 	 * @package com.tecnick.tcpdf
 	 * @version 1.0.001
 	 * @author Nicola Asuni

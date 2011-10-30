@@ -9,22 +9,21 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	function get_post($name, $dflt = '') {
+	function get_post($name, $dflt = '')
+	{
 		return ((!isset($_POST[$name]) || $_POST[$name] === '') ? $dflt : $_POST[$name]);
 	}
 
 	//---------------------------------------------------------------------------------
-
-	function start_form($multi = false, $dummy = false, $action = "", $name = "") {
+	function start_form($multi = false, $dummy = false, $action = "", $name = "")
+	{
 		// $dummy - leaved for compatibility with 2.0 API
-
 		if ($name != "") {
 			$name = "name='$name'";
 		}
 		if ($action == "") {
 			$action = $_SERVER['PHP_SELF'];
 		}
-
 		if ($multi) {
 			echo "<form enctype='multipart/form-data' method='post' action='$action' $name>\n";
 		}
@@ -35,8 +34,8 @@
 	}
 
 	//---------------------------------------------------------------------------------
-
-	function end_form($breaks = 0) {
+	function end_form($breaks = 0)
+	{
 		if ($breaks) {
 			br($breaks);
 		}
@@ -44,7 +43,8 @@
 		echo "</form>\n";
 	}
 
-	function start_table($extra = "", $padding = '2', $spacing = '0') {
+	function start_table($extra = "", $padding = '2', $spacing = '0')
+	{
 		echo "<center><table";
 		if ($extra != "") {
 			echo " $extra";
@@ -52,14 +52,16 @@
 		echo " cellpadding=$padding cellspacing=$spacing>\n";
 	}
 
-	function end_table($breaks = 0) {
+	function end_table($breaks = 0)
+	{
 		echo "</table></center>\n";
 		if ($breaks) {
 			br($breaks);
 		}
 	}
 
-	function start_outer_table($extra = "", $padding = '2', $spacing = '0', $br = false) {
+	function start_outer_table($extra = "", $padding = '2', $spacing = '0', $br = false)
+	{
 		if ($br) {
 			br();
 		}
@@ -67,7 +69,8 @@
 		echo "<tr valign=top><td>\n"; // outer table
 	}
 
-	function table_section($number = 1, $width = false, $class = '') {
+	function table_section($number = 1, $width = false, $class = '')
+	{
 		if ($number > 1) {
 			echo "</table>\n";
 			$width = ($width ? "width=$width" : "");
@@ -77,7 +80,8 @@
 		echo "<table class='tablestyle_inner $class'>\n";
 	}
 
-	function end_outer_table($breaks = 0, $close_table = true) {
+	function end_outer_table($breaks = 0, $close_table = true)
+	{
 		if ($close_table) {
 			echo "</table>\n";
 		}
@@ -88,11 +92,13 @@
 	//
 	//  outer table spacer
 	//
-	function vertical_space($params = '') {
+	function vertical_space($params = '')
+	{
 		echo "</td></tr><tr><td valign=center $params>";
 	}
 
-	function meta_forward($forward_to, $params = "") {
+	function meta_forward($forward_to, $params = "")
+	{
 		$Ajax = Ajax::instance();
 		echo "<meta http-equiv='Refresh' content='0; url=$forward_to?$params'>\n";
 		echo "<center><br>" . _("You should automatically be forwarded.");
@@ -110,22 +116,23 @@
 	// (for use in wiki help system), otherwise result is array of label
 	// with underlined hotkey letter and access property string.
 	//
-	function access_string($label, $clean = false) {
+	function access_string($label, $clean = false)
+	{
 		$access = '';
 		$slices = array();
-
 		if (preg_match('/(.*)&([a-zA-Z0-9])(.*)/', $label, $slices)) {
-			$label = $clean ? $slices[1] . $slices[2] . $slices[3] :
+			$label  = $clean
+			 ? $slices[1] . $slices[2] . $slices[3]
+			 :
 			 $slices[1] . '<u>' . $slices[2] . '</u>' . $slices[3];
 			$access = " accesskey='" . strtoupper($slices[2]) . "'";
 		}
-
 		$label = str_replace('&&', '&', $label);
-
 		return $clean ? $label : array($label, $access);
 	}
 
-	function hyperlink_back($center = true, $no_menu = true) {
+	function hyperlink_back($center = true, $no_menu = true)
+	{
 		if ($center) {
 			echo "<center>";
 		}
@@ -140,8 +147,9 @@
 		echo "<br>";
 	}
 
-	function hyperlink_no_params($target, $label, $center = true, $button = false) {
-		$id = ui_view::default_focus();
+	function hyperlink_no_params($target, $label, $center = true, $button = false)
+	{
+		$id   = ui_view::default_focus();
 		$pars = access_string($label);
 		if ($target == '') {
 			$target = $_SERVER['PHP_SELF'];
@@ -158,22 +166,21 @@
 		}
 	}
 
-	function hyperlink_no_params_td($target, $label) {
+	function hyperlink_no_params_td($target, $label)
+	{
 		echo "<td>";
 		hyperlink_no_params($target, $label);
 		echo "</td>\n";
 	}
 
-	function viewer_link($label, $url = '', $class = '', $id = '', $icon = null) {
-
+	function viewer_link($label, $url = '', $class = '', $id = '', $icon = null)
+	{
 		if ($class != '') {
 			$class = " class='$class'";
 		}
-
 		if ($id != '') {
 			$class = " id='$id'";
 		}
-
 		if ($url != "") {
 			$pars = access_string($label);
 			if (user_graphic_links() && $icon) {
@@ -185,52 +192,52 @@
 		{
 			$preview_str = $label;
 		}
-
 		return $preview_str;
 	}
 
-	function menu_link($url, $label, $id = null) {
-
-		$id = ui_view::default_focus($id);
+	function menu_link($url, $label, $id = null)
+	{
+		$id   = ui_view::default_focus($id);
 		$pars = access_string($label);
 		return "<a href='$url' class='menu_option' id='$id' $pars[1]>$pars[0]</a>";
 	}
 
-	function menu_button($url, $label, $id = null) {
-
-		$id = ui_view::default_focus($id);
+	function menu_button($url, $label, $id = null)
+	{
+		$id   = ui_view::default_focus($id);
 		$pars = access_string($label);
 		return "<a href='$url' class='button' id='$id' $pars[1]>$pars[0]</a>";
 	}
 
-	function submenu_option($title, $url, $id = null) {
-
+	function submenu_option($title, $url, $id = null)
+	{
 		ui_msgs::display_note(menu_link(PATH_TO_ROOT . $url, $title, $id), 0, 1);
 	}
 
-	function submenu_button($title, $url, $id = null) {
-
+	function submenu_button($title, $url, $id = null)
+	{
 		ui_msgs::display_note(menu_button(PATH_TO_ROOT . $url, $title, $id), 0, 1);
 	}
 
-	function submenu_view($title, $type, $number, $id = null) {
+	function submenu_view($title, $type, $number, $id = null)
+	{
 		ui_msgs::display_note(ui_view::get_trans_view_str($type, $number, $title, false, 'menu_option', $id), 0, 1, false, 'button');
 	}
 
-	function submenu_print($title, $type, $number, $id = null, $email = 0, $extra = 0) {
-		ui_msgs::display_note(print_document_link($number, $title, true, $type, false, 'menu_option', $id, $email, $extra), 0, 1);
+	function submenu_print($title, $type, $number, $id = null, $email = 0, $extra = 0)
+	{
+		ui_msgs::display_note(Reporting::print_doc_link($number, $title, true, $type, false, 'menu_option', $id, $email, $extra), 0, 1);
 	}
 
-	function submenu_email($title, $type, $number, $id = null, $emails, $extra = 0, $return = false) {
-
-		return email_document_link($number, $title, true, $type, 'EmailLink', $id, $emails, $extra, $return);
+	function submenu_email($title, $type, $number, $id = null, $emails, $extra = 0, $return = false)
+	{
+		return Reporting::email_link($number, $title, true, $type, 'EmailLink', $id, $emails, $extra, $return);
 	}
 
 	//-----------------------------------------------------------------------------------
-
-	function hyperlink_params($target, $label, $link_params = '', $center = true, $params = '') {
+	function hyperlink_params($target, $label, $link_params = '', $center = true, $params = '')
+	{
 		$id = ui_view::default_focus();
-
 		$pars = access_string($label);
 		if ($target == '') {
 			$target = $_SERVER['PHP_SELF'];
@@ -244,9 +251,9 @@
 		}
 	}
 
-	function hyperlink_button($target, $label, $link_params = '', $center = true, $params = '') {
+	function hyperlink_button($target, $label, $link_params = '', $center = true, $params = '')
+	{
 		$id = ui_view::default_focus();
-
 		$pars = access_string($label);
 		if ($target == '') {
 			$target = $_SERVER['PHP_SELF'];
@@ -260,17 +267,17 @@
 		}
 	}
 
-	function hyperlink_params_td($target, $label, $link_params, $params = '') {
+	function hyperlink_params_td($target, $label, $link_params, $params = '')
+	{
 		echo "<td>";
 		hyperlink_params($target, $label, $link_params, false, $params);
 		echo "</td>\n";
 	}
 
 	//-----------------------------------------------------------------------------------
-
-	function hyperlink_params_separate($target, $label, $params, $center = false, $nobr = false) {
+	function hyperlink_params_separate($target, $label, $params, $center = false, $nobr = false)
+	{
 		$id = ui_view::default_focus();
-
 		$pars = access_string($label);
 		if (!$nobr) {
 			echo "<br>";
@@ -284,15 +291,16 @@
 		}
 	}
 
-	function hyperlink_params_separate_td($target, $label, $params) {
+	function hyperlink_params_separate_td($target, $label, $params)
+	{
 		echo "<td>";
 		hyperlink_params_separate($target, $label, $params);
 		echo "</td>\n";
 	}
 
 	//--------------------------------------------------------------------------------------------------
-
-	function alt_table_row_color(&$k) {
+	function alt_table_row_color(&$k)
+	{
 		if ($k == 1) {
 			echo "<tr class='oddrow grid'>\n";
 			$k = 0;
@@ -304,12 +312,13 @@
 		}
 	}
 
-	function table_section_title($msg, $colspan = 2, $class = 'tableheader') {
-
+	function table_section_title($msg, $colspan = 2, $class = 'tableheader')
+	{
 		echo "<tr class='$class'><td colspan=$colspan class='$class'>$msg</td></tr>\n";
 	}
 
-	function table_header($labels, $params = '') {
+	function table_header($labels, $params = '')
+	{
 		echo '<thead>';
 		foreach ($labels as $label)
 		{
@@ -319,8 +328,8 @@
 	}
 
 	//-----------------------------------------------------------------------------------
-
-	function start_row($param = "") {
+	function start_row($param = "")
+	{
 		if ($param != "") {
 			echo "<tr $param>\n";
 		}
@@ -330,11 +339,13 @@
 		}
 	}
 
-	function end_row() {
+	function end_row()
+	{
 		echo "</tr>\n";
 	}
 
-	function br($num = 1) {
+	function br($num = 1)
+	{
 		for ($i = 0; $i < $num; $i++)
 		{
 			echo "<br>";
@@ -342,10 +353,9 @@
 	}
 
 	$ajax_divs = array();
-
-	function div_start($id = '', $trigger = null, $non_ajax = false) {
+	function div_start($id = '', $trigger = null, $non_ajax = false)
+	{
 		global $ajax_divs;
-
 		if ($non_ajax) { // div for non-ajax elements
 			array_push($ajax_divs, array($id, null));
 			echo "<div style='display:none' class='js_only' " . ($id != '' ? "id='$id'" : '') . ">";
@@ -356,7 +366,8 @@
 		}
 	}
 
-	function div_end() {
+	function div_end()
+	{
 		global $ajax_divs;
 		$Ajax = Ajax::instance();
 		if (count($ajax_divs)) {
@@ -376,30 +387,32 @@
 			 true: default)
 	 */
 	//$Pagehelp = array();
-	function set_editor($type, $input, $caller = true) {
+	function set_editor($type, $input, $caller = true)
+	{
 		static $Editors = array();
 		/* Table editor interfaces. Key is editor type
 		 0 => url of editor page
 		 1 => hotkey code
 		 2 => context help
 	 */
-		if ($type === false && $input === false) return $Editors;
+		if ($type === false && $input === false) {
+			return $Editors;
+		}
 		$popup_editors = array(
 			'customer' => array('/sales/manage/customers.php?debtor_no=',
-				113, _("Customers")
+													113, _("Customers")
 			),
-			'branch' => array('/sales/manage/customer_branches.php?SelectedBranch=',
-				114, _("Branches")
+			'branch'   => array('/sales/manage/customer_branches.php?SelectedBranch=',
+													114, _("Branches")
 			),
 			'supplier' => array('/purchasing/manage/suppliers.php?supplier_id=',
-				113, _("Suppliers")
+													113, _("Suppliers")
 			),
-			'item' => array('/inventory/manage/items.php?stock_id=',
-				115, _("Items")
+			'item'     => array('/inventory/manage/items.php?stock_id=',
+													115, _("Items")
 			)
 		);
-		$key = $caller === true ? $popup_editors[$type][1] : $caller;
-
+		$key           = $caller === true ? $popup_editors[$type][1] : $caller;
 		$Editors[$key] = array(PATH_TO_ROOT . $popup_editors[$type][0], $input);
 		/*	$help = 'F' . ($key - 111) . ' - ';
 				$help .= $popup_editors[$type][2];
@@ -408,14 +421,14 @@
 
 	//------------------------------------------------------------------------------
 	// Procedures below are now obsolete. Preserved for eventual future use.
-
 	/*
-	 External page call with saving current context.
-	 $call - url of external page
-	 $ctx - optional. name of SESSION context object or array of names of POST
-		 variables saved on call
- */
-	function context_call($call, $ctx = '') {
+		 External page call with saving current context.
+		 $call - url of external page
+		 $ctx - optional. name of SESSION context object or array of names of POST
+			 variables saved on call
+	 */
+	function context_call($call, $ctx = '')
+	{
 		if (is_array($ctx)) {
 			foreach ($ctx as $postname)
 			{
@@ -425,12 +438,11 @@
 		{
 			$context = isset($_SESSION[$ctx]) ? $_SESSION[$ctx] : null;
 		}
-
-		array_unshift($_SESSION['Context'], array('name' => $ctx,
-			'ctx' => $context,
-			'caller' => $_SERVER['PHP_SELF'],
-			'ret' => array()
-		));
+		array_unshift($_SESSION['Context'], array('name'  => $ctx,
+																						 'ctx'    => $context,
+																						 'caller' => $_SERVER['PHP_SELF'],
+																						 'ret'    => array()
+																				));
 		meta_forward($call);
 	}
 
@@ -438,7 +450,8 @@
 	 Restores context after external page call and
 	 returns array of data passed by external page.
  */
-	function context_restore() {
+	function context_restore()
+	{
 		if (count($_SESSION['Context'])) {
 			if ($_SERVER['PHP_SELF'] == $_SESSION['Context'][0]['caller']) {
 				$ctx = array_shift($_SESSION['Context']);
@@ -464,9 +477,10 @@
 	/*
 	 Return to caller page if the page was called from external context.
  */
-	function context_return($ret) {
+	function context_return($ret)
+	{
 		if (count($_SESSION['Context'])) {
-			$ctx = &$_SESSION['Context'][0];
+			$ctx        = &$_SESSION['Context'][0];
 			$ctx['ret'] = $ret;
 			meta_forward($ctx['caller']);
 		}
@@ -475,7 +489,8 @@
 	/*
 	 Clearing context stack after page cancel.
  */
-	function context_reset() {
+	function context_reset()
+	{
 		$_SESSION['Context'] = array();
 	}
 
@@ -489,7 +504,8 @@
 	 Redirector for selector F4 calls.
 	 $sel_editors is array of selname=>editor_page
  */
-	function editor_redirect($sel_editors, $save_fun = '') {
+	function editor_redirect($sel_editors, $save_fun = '')
+	{
 		foreach ($sel_editors as $selname => $editor)
 		{
 			if (isset($_POST['_' . $selname . '_editor'])) {
@@ -505,17 +521,17 @@
 	/*
 	 Return procedure for selector F4 calls
  */
-	function editor_return($vars, $restore_fun = '') {
+	function editor_return($vars, $restore_fun = '')
+	{
 		if (function_exists($restore_fun)) {
 			$restore_fun();
 		}
-
 		if ($ret = context_restore()) {
 			foreach ($vars as $postname => $retname)
 			{
 				if (isset($ret[$retname])) {
 					$_POST[$postname] = $ret[$retname];
-					ui_view::set_focus($postname);
+					JS::set_focus($postname);
 				}
 			}
 		}

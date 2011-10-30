@@ -10,33 +10,26 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	$page_security = 'SA_MANUFTRANSVIEW';
-
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-
 	include_once(APP_PATH . "manufacturing/includes/manufacturing_ui.php");
-	$js = "";
-	if (Config::get('ui_windows_popups'))
-		$js .= ui_view::get_js_open_window(800, 500);
-	page(_($help_context = "View Work Order"), true, false, "", $js);
-
+	JS::get_js_open_window(800, 500);
+	Page::start(_($help_context = "View Work Order"), true);
 	//-------------------------------------------------------------------------------------------------
 	$woid = 0;
 	if ($_GET['trans_no'] != "") {
 		$woid = $_GET['trans_no'];
 	}
-
 	ui_msgs::display_heading($systypes_array[ST_WORKORDER] . " # " . $woid);
-
 	br(1);
 	$myrow = get_work_order($woid);
-
-	if ($myrow["type"] == WO_ADVANCED)
+	if ($myrow["type"] == WO_ADVANCED) {
 		display_wo_details($woid, true);
+	}
 	else
+	{
 		display_wo_details_quick($woid, true);
-
+	}
 	echo "<center>";
-
 	// display the WO requirements
 	br(1);
 	if ($myrow["released"] == false) {
@@ -67,11 +60,8 @@
 			echo "</td></tr></table>";
 		}
 	}
-
 	echo "<br></center>";
-
 	ui_view::is_voided_display(ST_WORKORDER, $woid, _("This work order has been voided."));
-
 	end_page(true);
 
 ?>

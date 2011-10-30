@@ -7,7 +7,7 @@
  */
 	require_once "repgen_def.php";
 	define('K_PATH_FONTS', "../../reporting/fonts/");
-	require_once APP_PATH . "reporting/includes/class.pdf.php"; // PDF class
+	require_once APP_PATH . "reporting/includes/cpdf.php"; // PDF class
 	// Define constants
 	define("RH", "RH"); // Repport Header konstante
 	define("PH", "PH"); // Page Header konstante
@@ -1456,10 +1456,10 @@
 			'w_page' => 'page'
 		);
 
-		$rep->pdf = new Cpdf('A4', $l);
+		$rep->pdf = new Reports_Cpdf('A4', $l);
 		///////////////////////////////////////////////////////////////////////////    kalido
 
-		// $rep->pdf = new Cpdf('A4'); Replaced by kalido. Now it works in the Arabic countries as well.
+		// $rep->pdf = new Reports_Cpdf('A4'); Replaced by kalido. Now it works in the Arabic countries as well.
 		$rep->pdf->setPageFormat($rep->get_paper_format(), $rep->get_report_format());
 		$rep->set_font();
 		$rep->set_margins(POS_LEFT, POS_TOP, POS_RIGHT, POS_BOTTOM);

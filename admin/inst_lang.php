@@ -10,13 +10,9 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	$page_security = 'SA_CREATELANGUAGE';
-
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-
-	page(_($help_context = "Install/Update Languages"));
-
+	Page::start(_($help_context = "Install/Update Languages"));
 	//---------------------------------------------------------------------------------------------
-
 	if (isset($_GET['selected_id'])) {
 		$selected_id = $_GET['selected_id'];
 	}
@@ -25,11 +21,12 @@
 		$selected_id = $_POST['selected_id'];
 	}
 	else
+	{
 		$selected_id = -1;
-
+	}
 	//---------------------------------------------------------------------------------------------
-
-	function check_data() {
+	function check_data()
+	{
 		if ($_POST['code'] == "" || $_POST['name'] == "" || $_POST['encoding'] == "") {
 			ui_msgs::display_error(_("Language name, code nor encoding cannot be empty"));
 			return false;
@@ -38,24 +35,23 @@
 	}
 
 	//---------------------------------------------------------------------------------------------
-
-	function handle_submit() {
+	function handle_submit()
+	{
 		$installed_languages = Config::get_all('installed_languages');
-		if (!check_data())
+		if (!check_data()) {
 			return false;
-
+		}
 		$id = $_GET['id'];
-
 		if ($_POST['dflt']) {
 			Config::set('default_lang', $_POST['code']);
 		}
-
-		$installed_languages[$id]['code'] = $_POST['code'];
-		$installed_languages[$id]['name'] = $_POST['name'];
+		$installed_languages[$id]['code']     = $_POST['code'];
+		$installed_languages[$id]['name']     = $_POST['name'];
 		$installed_languages[$id]['encoding'] = $_POST['encoding'];
-		$installed_languages[$id]['rtl'] = (bool)$_POST['rtl'];
-		if (!Files::save_to_file())
+		$installed_languages[$id]['rtl']      = (bool)$_POST['rtl'];
+		if (!Files::save_to_file()) {
 			return false;
+		}
 		$directory = APP_PATH . "lang/" . $_POST['code'];
 		if (!file_exists($directory)) {
 			mkdir($directory);
@@ -64,15 +60,17 @@
 		if (is_uploaded_file($_FILES['uploadfile']['tmp_name'])) {
 			$file1 = $_FILES['uploadfile']['tmp_name'];
 			$file2 = $directory . "/LC_MESSAGES/" . $_POST['code'] . ".po";
-			if (file_exists($file2))
+			if (file_exists($file2)) {
 				unlink($file2);
+			}
 			move_uploaded_file($file1, $file2);
 		}
 		if (is_uploaded_file($_FILES['uploadfile2']['tmp_name'])) {
 			$file1 = $_FILES['uploadfile2']['tmp_name'];
 			$file2 = $directory . "/LC_MESSAGES/" . $_POST['code'] . ".mo";
-			if (file_exists($file2))
+			if (file_exists($file2)) {
 				unlink($file2);
+			}
 			move_uploaded_file($file1, $file2);
 		}
 		Config::set('installed_languages', $installed_languages);
@@ -80,37 +78,30 @@
 	}
 
 	//---------------------------------------------------------------------------------------------
-
-	function handle_delete() {
-
-		$id = $_GET['id'];
-		$lang = Config::get_all('installed_languages');
-		$lang = $lang[$id]['code'];
+	function handle_delete()
+	{
+		$id       = $_GET['id'];
+		$lang     = Config::get_all('installed_languages');
+		$lang     = $lang[$id]['code'];
 		$filename = PATH_TO_ROOT . "/lang/$lang/LC_MESSAGES";
-
 		if ($lang == Config::get('default_lang')) {
 			// on delete set default to current.
 			Config::set('default_lang', $_SESSION['language']->code);
 		}
-
 		Config::remove('installed_languages', $id);
-
-		if (!Files::save_to_file())
+		if (!Files::save_to_file()) {
 			return;
-
+		}
 		$filename = PATH_TO_ROOT . "/lang/$lang";
-		flush_dir($filename);
+		Files::flush_dir($filename);
 		rmdir($filename);
-
 		meta_forward($_SERVER['PHP_SELF']);
 	}
 
 	//---------------------------------------------------------------------------------------------
-
-	function display_languages() {
-
+	function display_languages()
+	{
 		$lang = $_SESSION["language"]->code;
-
 		echo "
 		<script language='javascript'>
 		function deleteLanguage(id) {
@@ -122,53 +113,62 @@
 		start_table(Config::get('tables.style'));
 		$th = array(_("Language"), _("Name"), _("Encoding"), _("Right To Left"), _("Default"), "", "");
 		table_header($th);
-
-		$k = 0;
+		$k    = 0;
 		$conn = Config::get_all('installed_languages');
-		$n = count($conn);
-		for ($i = 0; $i < $n; $i++)
+		$n    = count($conn);
+		for (
+			$i = 0; $i < $n; $i++
+		)
 		{
-			if ($conn[$i]['code'] == $lang)
+			if ($conn[$i]['code'] == $lang) {
 				start_row("class='stockmankobg'");
+			}
 			else
+			{
 				alt_table_row_color($k);
-
+			}
 			label_cell($conn[$i]['code']);
 			label_cell($conn[$i]['name']);
 			label_cell($conn[$i]['encoding']);
-			if (isset($conn[$i]['rtl']) && $conn[$i]['rtl'])
+			if (isset($conn[$i]['rtl']) && $conn[$i]['rtl']) {
 				$rtl = _("Yes");
+			}
 			else
+			{
 				$rtl = _("No");
+			}
 			label_cell($rtl);
 			label_cell(Config::get('default_lang') == $conn[$i]['code'] ? _("Yes") : _("No"));
-			$edit = _("Edit");
+			$edit   = _("Edit");
 			$delete = _("Delete");
 			if (user_graphic_links()) {
-				$edit = set_icon(ICON_EDIT, $edit);
+				$edit   = set_icon(ICON_EDIT, $edit);
 				$delete = set_icon(ICON_DELETE, $delete);
 			}
 			label_cell("<a href='" . $_SERVER['PHP_SELF'] . "?selected_id=$i'>$edit</a>");
-			label_cell($conn[$i]['code'] == $lang ? '' :
-				 "<a href='javascript:deleteLanguage(" . $i . ")'>$delete</a>");
+			label_cell(
+				$conn[$i]['code'] == $lang
+				 ? ''
+				 :
+				 "<a href='javascript:deleteLanguage(" . $i . ")'>$delete</a>"
+			);
 			end_row();
 		}
-
 		end_table();
 		ui_msgs::display_warning(_("The marked language is the current language which cannot be deleted."), 0, 0, "class='currentfg'");
 	}
 
 	//---------------------------------------------------------------------------------------------
-
-	function display_language_edit($selected_id) {
-
-		if ($selected_id != -1)
+	function display_language_edit($selected_id)
+	{
+		if ($selected_id != -1) {
 			$n = $selected_id;
+		}
 		else
+		{
 			$n = count(Config::get_all('installed_languages'));
-
+		}
 		start_form(true);
-
 		echo "
 		<script language='javascript'>
 		function updateLanguage() {
@@ -176,62 +176,51 @@
 			document.forms[0].submit()
 		}
 		</script>";
-
 		start_table(Config::get('tables.style2'));
-
 		if ($selected_id != -1) {
-			$conn = Config::get('installed_languages', $selected_id);
-			$_POST['code'] = $conn['code'];
-			$_POST['name'] = $conn['name'];
+			$conn              = Config::get('installed_languages', $selected_id);
+			$_POST['code']     = $conn['code'];
+			$_POST['name']     = $conn['name'];
 			$_POST['encoding'] = $conn['encoding'];
-			if (isset($conn['rtl']))
+			if (isset($conn['rtl'])) {
 				$_POST['rtl'] = $conn['rtl'];
+			}
 			else
+			{
 				$_POST['rtl'] = false;
+			}
 			$_POST['dflt'] = Config::set('default_lang', $conn['code']);
 			hidden('selected_id', $selected_id);
 		}
 		text_row_ex(_("Language Code"), 'code', 20);
 		text_row_ex(_("Language Name"), 'name', 20);
 		text_row_ex(_("Encoding"), 'encoding', 20);
-
 		yesno_list_row(_("Right To Left"), 'rtl', null, "", "", false);
 		yesno_list_row(_("Default Language"), 'dflt', null, "", "", false);
-
 		file_row(_("Language File") . " (PO)", 'uploadfile');
 		file_row(_("Language File") . " (MO)", 'uploadfile2');
-
 		end_table(0);
 		ui_msgs::display_warning(_("Select your language files from your local harddisk."), 0, 1);
 		echo "<center><input onclick='javascript:updateLanguage()' type='button' style='width:150px' value='" . _("Save") . "'></center>";
-
 		end_form();
 	}
 
 	//---------------------------------------------------------------------------------------------
-
 	if (isset($_GET['c'])) {
 		if ($_GET['c'] == 'df') {
 			handle_delete();
 		}
-
 		if ($_GET['c'] == 'u') {
 			if (handle_submit()) {
 				//meta_forward($_SERVER['PHP_SELF']);
 			}
 		}
 	}
-
 	//---------------------------------------------------------------------------------------------
-
 	display_languages();
-
 	hyperlink_no_params($_SERVER['PHP_SELF'], _("Create a new language"));
-
 	display_language_edit($selected_id);
-
 	//---------------------------------------------------------------------------------------------
-
 	end_page();
 
 ?>

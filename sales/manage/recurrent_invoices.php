@@ -10,30 +10,21 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	$page_security = 'SA_SRECURRENT';
-
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-
-	$js = "";
-	if (Config::get('ui_windows_popups'))
-		$js .= ui_view::get_js_open_window(900, 600);
-
-	page(_($help_context = "Recurrent Invoices"), false, false, "", $js);
-
+	JS::get_js_open_window(900, 600);
+	Page::start(_($help_context = "Recurrent Invoices"));
 	simple_page_mode(true);
-
 	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
-
 		$input_error = 0;
-
 		if (strlen($_POST['description']) == 0) {
 			$input_error = 1;
 			ui_msgs::display_error(_("The area description cannot be empty."));
-			ui_view::set_focus('description');
+			JS::set_focus('description');
 		}
-
 		if ($input_error != 1) {
 			if ($selected_id != -1) {
-				$sql = "UPDATE recurrent_invoices SET
+				$sql
+							= "UPDATE recurrent_invoices SET
     			description=" . DBOld::escape($_POST['description']) . ",
     			order_no=" . DBOld::escape($_POST['order_no']) . ",
     			debtor_no=" . DBOld::escape($_POST['debtor_no']) . ",
@@ -47,65 +38,63 @@
 			}
 			else
 			{
-				$sql = "INSERT INTO recurrent_invoices (description, order_no, debtor_no,
+				$sql
+							= "INSERT INTO recurrent_invoices (description, order_no, debtor_no,
     			group_no, days, monthly, begin, end, last_sent) VALUES (" . DBOld::escape($_POST['description']) . ", "
 				 . DBOld::escape($_POST['order_no']) . ", " . DBOld::escape($_POST['debtor_no']) . ", "
 				 . DBOld::escape(
-					 $_POST['group_no']) . ", " . input_num('days', 0) . ", " . input_num('monthly', 0) . ", '"
-				 . Dates::date2sql($_POST['begin']) . "', '" . Dates::date2sql($_POST['end']) . "', '" . Dates::date2sql(Add_Years(
-						$_POST['begin'], -5)) . "')";
+					 $_POST['group_no']
+				 ) . ", " . input_num('days', 0) . ", " . input_num('monthly', 0) . ", '"
+				 . Dates::date2sql($_POST['begin']) . "', '" . Dates::date2sql($_POST['end']) . "', '" . Dates::date2sql(
+					Add_Years(
+						$_POST['begin'], -5
+					)
+				) . "')";
 				$note = _('New recurrent invoice has been added');
 			}
-
 			DBOld::query($sql, "The recurrent invoice could not be updated or added");
 			ui_msgs::display_notification($note);
 			$Mode = 'RESET';
 		}
 	}
-
 	if ($Mode == 'Delete') {
-
 		$cancel_delete = 0;
-
 		if ($cancel_delete == 0) {
 			$sql = "DELETE FROM recurrent_invoices WHERE id=" . DBOld::escape($selected_id);
 			DBOld::query($sql, "could not delete recurrent invoice");
-
 			ui_msgs::display_notification(_('Selected recurrent invoice has been deleted'));
 		} //end if Delete area
 		$Mode = 'RESET';
 	}
-
 	if ($Mode == 'RESET') {
 		$selected_id = -1;
 		unset($_POST);
 	}
 	//-------------------------------------------------------------------------------------------------
-	function get_sales_group_name($group_no) {
-		$sql = "SELECT description FROM groups WHERE id = " . DBOld::escape($group_no);
+	function get_sales_group_name($group_no)
+	{
+		$sql    = "SELECT description FROM groups WHERE id = " . DBOld::escape($group_no);
 		$result = DBOld::query($sql, "could not get group");
-		$row = DBOld::fetch($result);
+		$row    = DBOld::fetch($result);
 		return $row[0];
 	}
 
-	$sql = "SELECT * FROM recurrent_invoices ORDER BY description, group_no, debtor_no";
+	$sql    = "SELECT * FROM recurrent_invoices ORDER BY description, group_no, debtor_no";
 	$result = DBOld::query($sql, "could not get recurrent invoices");
-
 	start_form();
 	start_table(Config::get('tables_style') . "  width=70%");
-	$th = array(_("Description"), _("Template No"), _("Customer"), _("Branch") . "/" . _("Group"), _("Days"),
+	$th = array(
+		_("Description"), _("Template No"), _("Customer"), _("Branch") . "/" . _("Group"), _("Days"),
 		_("Monthly"), _("Begin"), _("End"), _("Last Created"), "", ""
 	);
 	table_header($th);
 	$k = 0;
 	while ($myrow = DBOld::fetch($result))
 	{
-		$begin = Dates::sql2date($myrow["begin"]);
-		$end = Dates::sql2date($myrow["end"]);
+		$begin     = Dates::sql2date($myrow["begin"]);
+		$end       = Dates::sql2date($myrow["end"]);
 		$last_sent = Dates::sql2date($myrow["last_sent"]);
-
 		alt_table_row_color($k);
-
 		label_cell($myrow["description"]);
 		label_cell(ui_view::get_customer_trans_view_str(ST_SALESORDER, $myrow["order_no"]));
 		if ($myrow["debtor_no"] == 0) {
@@ -127,60 +116,44 @@
 		end_row();
 	}
 	end_table();
-
 	end_form();
 	echo '<br>';
-
 	//-------------------------------------------------------------------------------------------------
-
 	start_form();
-
 	start_table(Config::get('tables_style2'));
-
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {
 			//editing an existing area
 			$sql = "SELECT * FROM recurrent_invoices WHERE id=" . DBOld::escape($selected_id);
-
 			$result = DBOld::query($sql, "could not get recurrent invoice");
-			$myrow = DBOld::fetch($result);
-
+			$myrow  = DBOld::fetch($result);
 			$_POST['description'] = $myrow["description"];
-			$_POST['order_no'] = $myrow["order_no"];
-			$_POST['debtor_no'] = $myrow["debtor_no"];
-			$_POST['group_no'] = $myrow["group_no"];
-			$_POST['days'] = $myrow["days"];
-			$_POST['monthly'] = $myrow["monthly"];
-			$_POST['begin'] = Dates::sql2date($myrow["begin"]);
-			$_POST['end'] = Dates::sql2date($myrow["end"]);
+			$_POST['order_no']    = $myrow["order_no"];
+			$_POST['debtor_no']   = $myrow["debtor_no"];
+			$_POST['group_no']    = $myrow["group_no"];
+			$_POST['days']        = $myrow["days"];
+			$_POST['monthly']     = $myrow["monthly"];
+			$_POST['begin']       = Dates::sql2date($myrow["begin"]);
+			$_POST['end']         = Dates::sql2date($myrow["end"]);
 		}
 		hidden("selected_id", $selected_id);
 	}
-
 	text_row_ex(_("Description:"), 'description', 50);
-
 	templates_list_row(_("Template:"), 'order_no');
-
 	customer_list_row(_("Customer:"), 'debtor_no', null, " ", true);
-
-	if ($_POST['debtor_no'] > 0)
+	if ($_POST['debtor_no'] > 0) {
 		customer_branches_list_row(_("Branch:"), $_POST['debtor_no'], 'group_no', null, false);
+	}
 	else
+	{
 		sales_groups_list_row(_("Sales Group:"), 'group_no', null, " ");
-
+	}
 	small_amount_row(_("Days:"), 'days', 0, null, null, 0);
-
 	small_amount_row(_("Monthly:"), 'monthly', 0, null, null, 0);
-
 	date_row(_("Begin:"), 'begin');
-
 	date_row(_("End:"), 'end', null, null, 0, 0, 5);
-
 	end_table(1);
-
 	submit_add_or_update_center($selected_id == -1, '', 'both');
-
 	end_form();
-
 	end_page();
 ?>

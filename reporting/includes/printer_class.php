@@ -4,9 +4,8 @@
 	 * All needed filters should be set for the printer in printercap file.
 	 * Based on PrintSendLPR class by Mick Sear, eCreate
 	 */
-
-	class remote_printer {
-
+	class remote_printer
+	{
 		var $host;
 		var $port;
 		var $timeout;
@@ -15,25 +14,26 @@
 		//
 		//	Setting connection parameters
 		//
-		function remote_printer($queue, $host = '', $port = 515, $timeout = 20) {
-			if ($host == '') $host = $_SERVER['REMOTE_ADDR']; // default is user's host
-			$this->host = $host;
-			$this->port = $port;
+		function remote_printer($queue, $host = '', $port = 515, $timeout = 20)
+		{
+			if ($host == '') {
+				$host = $_SERVER['REMOTE_ADDR'];
+			} // default is user's host
+			$this->host    = $host;
+			$this->port    = $port;
 			$this->timeout = $timeout;
-			$this->queue = $queue;
+			$this->queue   = $queue;
 		}
 
 		//
 		//	Send file to remote network printer.
 		//
-		function print_file($fname) {
-
+		function print_file($fname)
+		{
 			$queue = $this->queue;
-
 			//Private static function prints waiting jobs on the queue.
 			$ret = $this->flush_queue($queue);
 			//		if($ret) return $ret;
-
 			//Open a new connection to send the control file and data.
 			$stream = fsockopen("tcp://" . $this->host, $this->port, $errNo, $errStr, $this->timeout);
 			if (!$stream) {
@@ -50,24 +50,21 @@
 				fclose($stream);
 				return _('Printer does not acept the job') . ' (' . ord($ack) . ')';
 			}
-
 			// Send Control file.
 			$server = $_SERVER['SERVER_NAME'];
-			$ctrl = "H" . $server . "\nP" . substr($_SESSION["wa_current_user"]->loginname, 0, 31) . "\nfdfA" . $job . $server . "\n";
+			$ctrl   = "H" . $server . "\nP" . substr(CurrentUser::instance()->loginname, 0, 31) . "\nfdfA" . $job . $server . "\n";
 			fwrite($stream, chr(2) . strlen($ctrl) . " cfA" . $job . $server . "\n");
 			$ack = fread($stream, 1);
 			if ($ack != 0) {
 				fclose($stream);
 				return _('Error sending print job control file') . ' (' . ord($ack) . ')';
 			}
-
 			fwrite($stream, $ctrl . chr(0)); //Write null to indicate end of stream
 			$ack = fread($stream, 1);
 			if ($ack != 0) {
 				fclose($stream);
 				return _('Print control file not accepted') . ' (' . ord($ack) . ')';
 			}
-
 			$data = fopen($fname, "rb");
 			fwrite($stream, chr(3) . filesize($fname) . " dfA" . $job . $server . "\n");
 			$ack = fread($stream, 1);
@@ -75,9 +72,10 @@
 				fclose($stream);
 				return _('Cannot send report to printer') . ' (' . ord($ack) . ')';
 			}
-
 			while (!feof($data)) {
-				if (fwrite($stream, fread($data, 8192)) < 8192) break;
+				if (fwrite($stream, fread($data, 8192)) < 8192) {
+					break;
+				}
 			}
 			fwrite($stream, chr(0)); //Write null to indicate end of stream
 			$ack = fread($stream, 1);
@@ -85,17 +83,16 @@
 				fclose($stream);
 				return _('No ack after report printout') . ' (' . ord($ack) . ')';
 			}
-
 			fclose($data);
 			fclose($stream);
-
 			return '';
 		}
 
 		//
 		//	Print all waiting jobs on remote printer queue.
 		//
-		function flush_queue($queue) {
+		function flush_queue($queue)
+		{
 			$stream = fsockopen("tcp://" . $this->host, $this->port, $errNo, $errStr, $this->timeout);
 			if (!$stream) {
 				return _('Cannot flush printing queue');

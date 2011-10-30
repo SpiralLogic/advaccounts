@@ -17,14 +17,12 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	$page_security = 'SA_ITEM';
-
 	include_once("includes/items.php");
 	if (AJAX_REFERRER) {
 		if (isset($_GET['term'])) {
 			$data = Item::search($_GET['term']);
 		}
 		elseif (isset ($_POST['id'])) {
-
 			$data = new Item($_POST['id']);
 		}
 		echo json_encode($data);
@@ -33,7 +31,7 @@
 	JS::footerFile("includes/js/items.js");
 	JS::footerFile('/js/js2/jquery.jeditable.js');
 	JS::footerFile('/js/js2/jquery.dataTables.min.js');
-	page(_($help_context = "Items"), Input::request('popup'));
+	Page::start(_($help_context = "Items"), Input::request('popup'));
 ?>
 <div id="dynamic" style="margin:0 auto;text-align:center;width:80%">
 	<table width="100%" cellpadding="0" cellspacing="0" border="0" class="display" id="itemDetails">

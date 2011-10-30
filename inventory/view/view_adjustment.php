@@ -10,27 +10,20 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	$page_security = 'SA_ITEMSTRANSVIEW';
-
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-
-	page(_($help_context = "View Inventory Adjustment"), true);
-
+	Page::start(_($help_context = "View Inventory Adjustment"), true);
 	if (isset($_GET["trans_no"])) {
 		$trans_no = $_GET["trans_no"];
 	}
-
 	ui_msgs::display_heading($systypes_array[ST_INVADJUST] . " #$trans_no");
-
 	br(1);
 	$adjustment_items = get_stock_adjustment_items($trans_no);
-	$k = 0;
-	$header_shown = false;
+	$k                = 0;
+	$header_shown     = false;
 	while ($adjustment = DBOld::fetch($adjustment_items))
 	{
-
 		if (!$header_shown) {
 			$adjustment_type = get_movement_type($adjustment['person_id']);
-
 			start_table(Config::get('tables_style2') . " width=90%");
 			start_row();
 			label_cells(_("At Location"), $adjustment['location_name'], "class='tableheader2'");
@@ -39,21 +32,17 @@
 			label_cells(_("Adjustment Type"), $adjustment_type['name'], "class='tableheader2'");
 			end_row();
 			ui_view::comments_display_row(ST_INVADJUST, $trans_no);
-
 			end_table();
 			$header_shown = true;
-
 			echo "<br>";
 			start_table(Config::get('tables_style') . "  width=90%");
-
-			$th = array(_("Item"), _("Description"), _("Quantity"),
+			$th = array(
+				_("Item"), _("Description"), _("Quantity"),
 				_("Units"), _("Unit Cost")
 			);
 			table_header($th);
 		}
-
 		alt_table_row_color($k);
-
 		label_cell($adjustment['stock_id']);
 		label_cell($adjustment['description']);
 		qty_cell($adjustment['qty'], false, get_qty_dec($adjustment['stock_id']));
@@ -61,10 +50,7 @@
 		amount_decimal_cell($adjustment['standard_cost']);
 		end_row();
 	}
-
 	end_table(1);
-
 	ui_view::is_voided_display(ST_INVADJUST, $trans_no, _("This adjustment has been voided."));
-
 	end_page(true);
 ?>
