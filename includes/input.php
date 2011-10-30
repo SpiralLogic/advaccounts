@@ -103,12 +103,12 @@
 			switch ($type) {
 			case self::NUMERIC:
 				if (!$value || !is_numeric($value)) {
-					return self::DEFAULT_NUMBER;
+					return self::$default_number;
 				}
-				return ($value === self::DEFAULT_NUMBER) ? true : $value;
+				return ($value === self::$default_number) ? true : $value;
 			case self::STRING:
 				if (!$value || !is_string($value)) {
-					return self::DEFAULT_STRING;
+					return self::$default_string;
 				}
 			}
 			return $value;
