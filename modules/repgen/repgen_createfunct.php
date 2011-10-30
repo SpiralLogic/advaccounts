@@ -1,59 +1,63 @@
 <?php
 	// session_start();
 	/* Create a new funct or alter a stored function
-	* repgen_createfunction.php for PHP Report Generator
-		Bauer, 5.2.2002
-		Version 0.2
- */
-
+		* repgen_createfunction.php for PHP Report Generator
+			Bauer, 5.2.2002
+			Version 0.2
+	 */
 	/*
-	*
-	*
-	* 1. A section where utility functions are defined.
-	* 2. A section that is called only after the submit.
-	* 3. And a final section that is called when the script runs first time and
-	*    every time after the submit.
-	*
-	* Scripts organized in this way will allow the user perpetual
-	* editing and they will reflect submitted changes immediately
-	* after a form submission.
-	*
-	* We consider this to be the standard organization of table editor
-	* scripts.
-	*
- */
+		*
+		*
+		* 1. A section where utility functions are defined.
+		* 2. A section that is called only after the submit.
+		* 3. And a final section that is called when the script runs first time and
+		*    every time after the submit.
+		*
+		* Scripts organized in this way will allow the user perpetual
+		* editing and they will reflect submitted changes immediately
+		* after a form submission.
+		*
+		* We consider this to be the standard organization of table editor
+		* scripts.
+		*
+	 */
 	$page_security = 'SA_REPORT_GENERATOR';
-
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	add_access_extensions();
-
 	require_once("repgen_const.php");
 	require_once("repgen_def.php");
 	require_once("repgen.php");
-
-	function check_short($short) { // controls, that short-name of blocks does not be twice
+	function check_short($short)
+	{ // controls, that short-name of blocks does not be twice
 		global $id_new;
-		if (empty($short))
+		if (empty($short)) {
 			return false;
+		}
 		$query = "SELECT attrib,id FROM xx_reports WHERE typ='funct'";
-		$res = DBOld::query($query);
+		$res   = DBOld::query($query);
 		while ($f = DBOld::fetch($res))
 		{
 			$h = explode("|", $f["attrib"]);
-			if (($h[0] == $short) && (trim($f["id"]) != $id_new))
+			if (($h[0] == $short) && (trim($f["id"]) != $id_new)) {
 				return false;
+			}
 		}
 		return true;
 	}
 
-	function m_s($a1, $a2) { // sets "selected" in select box when $a1 == $a2
-		if ($a1 == $a2)
+	function m_s($a1, $a2)
+	{ // sets "selected" in select box when $a1 == $a2
+		if ($a1 == $a2) {
 			return "selected";
+		}
 		else
+		{
 			return "";
+		}
 	}
 
-	function store($id, $info) { // stores the records 'block' in the database
+	function store($id, $info)
+	{ // stores the records 'block' in the database
 		DBOld::query("BEGIN");
 		$query = "DELETE FROM xx_reports WHERE (id ='" . $id . "' AND typ='funct')";
 		DBOld::query($query);
@@ -62,20 +66,18 @@
 		DBOld::query("COMMIT");
 	}
 
-	if (!isset($funct))
+	if (!isset($funct)) {
 		$funct = "";
-	if (!empty($funct))
-		$funct = stripslashes($funct); // strip $funct
-
+	}
+	if (!empty($funct)) {
+		$funct = stripslashes($funct);
+	} // strip $funct
 	###
 	### Submit Handler
 	###
-
 	## Check if there was a submission
-
 	if (isset($select)) {
 		// go to the page for selection of an old report without storing the content of this page
-
 		$url = REPGENDIR . "/repgen_select.php";
 		$url = "http://$HTTP_HOST" . $url;
 		header("Location: " . $url); // switches to repgen_select.php
@@ -94,7 +96,9 @@
 			header("Location: " . $url); // switches to repgen_strings.php
 		}
 		else
+		{
 			$error = ERROR_FUNC . $short . "(){...}";
+		}
 	}
 	if (isset($test)) {
 		if (stristr($funct, " " . $short . "(")) { // $short == functionname?
@@ -102,7 +106,6 @@
 			@eval($funct); //declare funct
 			$h_a = strtok($funct, "("); // look if the funct has a parameter
 			$h_a = strtok(")"); // $h_a is now the parameter
-
 			if (!empty($h_a)) { // first parameter is $this
 				$func = '$field=' . $short . '($this);'; // two parameters
 			}
@@ -114,34 +117,33 @@
 			$error = $php_errormsg;
 		}
 	}
-
-	page("Report Generator REPGEN");
-
+	Page::start("Report Generator REPGEN");
 	### Output key administration forms, including all updated
 	### information, if we come here after a submission...
-
-	if (!empty($long))
+	if (!empty($long)) {
 		ui_msgs::display_heading(ALTER_FUNCT . ":   " . $long);
+	}
 	else
+	{
 		ui_msgs::display_heading(CREATE_FUNCT);
+	}
 	if (!empty($error)) {
 		ui_msgs::display_error($error);
 		$error = NULL;
 	}
-	else if (!empty($funct))
+	else if (!empty($funct)) {
 		ui_msgs::display_notification(PHP_OK . $field);
-
+	}
 	if (empty($funct)) {
 		$res = DBOld::query("SELECT attrib FROM xx_reports WHERE id = '$id_new'");
-		$f = DBOld::fetch($res);
-		$h = explode("|", $f["attrib"]);
-		if (!isset($h[4]))
+		$f   = DBOld::fetch($res);
+		$h   = explode("|", $f["attrib"]);
+		if (!isset($h[4])) {
 			$h[4] = "";
+		}
 		$funct = stripslashes($h[4]);
 	}
-
 	start_form(false, false, "repgen_createfunct.php", "edit");
-
 	start_table(Config::get('tables_style2'));
 	label_row(ID_FUNCT, $id_new . hidden("date_", date("Y-m-d"), false) . hidden("id", $id_new, false) . hidden("id_new", $id_new, false));
 	text_row(SHORT, "short", $short, 10, 10);
@@ -150,9 +152,7 @@
 	label_row(DATE, today());
 	textarea_row(ALTER_FUNCT, "funct", $funct, 50, 10);
 	end_table(1);
-
 	ui_msgs::display_warning(FUNC_DECL, 0, 1);
-
 	start_table(Config::get('tables_style'));
 	start_row();
 	submit_cells("select", SELECT_CR);
@@ -161,6 +161,5 @@
 	end_row();
 	end_table();
 	end_form();
-
 	end_page();
 ?>

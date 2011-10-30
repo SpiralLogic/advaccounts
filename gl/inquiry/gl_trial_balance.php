@@ -10,42 +10,35 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	$page_security = 'SA_GLANALYTIC';
-
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-
 	$js = "";
-
-	page(_($help_context = "Trial Balance"), false, false, "", $js);
-
+	Page::start(_($help_context = "Trial Balance"));
 	//----------------------------------------------------------------------------------------------------
 	// Ajax updates
 	//
 	if (get_post('Show')) {
 		$Ajax->activate('balance_tbl');
 	}
-
-	function gl_inquiry_controls() {
+	function gl_inquiry_controls()
+	{
 		start_form();
-
 		start_table("class='tablestyle_noborder'");
-
 		date_cells(_("From:"), 'TransFromDate', '', null, -30);
 		date_cells(_("To:"), 'TransToDate');
 		check_cells(_("No zero values"), 'NoZero', null);
 		check_cells(_("Only balances"), 'Balance', null);
-
 		submit_cells('Show', _("Show"), '', '', 'default');
 		end_table();
 		end_form();
 	}
 
 	//----------------------------------------------------------------------------------------------------
-
-	function display_trial_balance() {
-
+	function display_trial_balance()
+	{
 		div_start('balance_tbl');
 		start_table(Config::get('tables_style'));
-		$tableheader = "<tr>
+		$tableheader
+		 = "<tr>
         <td rowspan=2 class='tableheader'>" . _("Account") . "</td>
         <td rowspan=2 class='tableheader'>" . _("Account Name") . "</td>
 		<td colspan=2 class='tableheader'>" . _("Brought Forward") . "</td>
@@ -59,31 +52,27 @@
         <td class='tableheader'>" . _("Debit") . "</td>
         <td class='tableheader'>" . _("Credit") . "</td>
         </tr>";
-
 		echo $tableheader;
-
 		$k = 0;
-
 		$accounts = get_gl_accounts();
-		$pdeb = $pcre = $cdeb = $ccre = $tdeb = $tcre = $pbal = $cbal = $tbal = 0;
-		$begin = Dates::begin_fiscalyear();
-		if (Dates::date1_greater_date2($begin, $_POST['TransFromDate']))
+		$pdeb     = $pcre = $cdeb = $ccre = $tdeb = $tcre = $pbal = $cbal = $tbal = 0;
+		$begin    = Dates::begin_fiscalyear();
+		if (Dates::date1_greater_date2($begin, $_POST['TransFromDate'])) {
 			$begin = $_POST['TransFromDate'];
+		}
 		$begin = Dates::add_days($begin, -1);
-
 		while ($account = DBOld::fetch($accounts))
 		{
 			$prev = get_balance($account["account_code"], 0, 0, $begin, $_POST['TransFromDate'], false, false);
 			$curr = get_balance($account["account_code"], 0, 0, $_POST['TransFromDate'], $_POST['TransToDate'], true, true);
-			$tot = get_balance($account["account_code"], 0, 0, $begin, $_POST['TransToDate'], false, true);
-			if (check_value("NoZero") && !$prev['balance'] && !$curr['balance'] && !$tot['balance'])
+			$tot  = get_balance($account["account_code"], 0, 0, $begin, $_POST['TransToDate'], false, true);
+			if (check_value("NoZero") && !$prev['balance'] && !$curr['balance'] && !$tot['balance']) {
 				continue;
+			}
 			alt_table_row_color($k);
-
 			$url = "<a hre'" . PATH_TO_ROOT . "/gl/inquiry/gl_account_inquiry.php?TransFromDate=" .
 			 $_POST["TransFromDate"] . "&TransToDate=" . $_POST["TransToDate"] . "&account=" .
 			 $account["account_code"] . "'>" . $account["account_code"] . "</a>";
-
 			label_cell($url);
 			label_cell($account["account_name"]);
 			if (check_value('Balance')) {
@@ -111,7 +100,6 @@
 			$tbal += $tot['balance'];
 			end_row();
 		}
-
 		//$prev = get_balance(null, $begin, $_POST['TransFromDate'], false, false);
 		//$curr = get_balance(null, $_POST['TransFromDate'], $_POST['TransToDate'], true, true);
 		//$tot = get_balance(null, $begin, $_POST['TransToDate'], false, true);
@@ -132,19 +120,14 @@
 		ui_view::display_debit_or_credit_cells($cbal);
 		ui_view::display_debit_or_credit_cells($tbal);
 		end_row();
-
 		end_table(1);
 		div_end();
 	}
 
 	//----------------------------------------------------------------------------------------------------
-
 	gl_inquiry_controls();
-
 	display_trial_balance();
-
 	//----------------------------------------------------------------------------------------------------
-
 	end_page();
 
 ?>

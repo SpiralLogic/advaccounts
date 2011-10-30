@@ -10,21 +10,16 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	$page_security = 'SA_DIMTRANSVIEW';
-
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-
-	$js = "";
-	if (Config::get('ui_windows_popups'))
-		$js .= ui_view::get_js_open_window(800, 500);
-
+	JS::get_js_open_window(800, 500);
 	if (isset($_GET['outstanding_only']) && $_GET['outstanding_only']) {
 		$outstanding_only = 1;
-		page(_($help_context = "Search Outstanding Dimensions"), false, false, "", $js);
+		Page::start(_($help_context = "Search Outstanding Dimensions"));
 	}
 	else
 	{
 		$outstanding_only = 0;
-		page(_($help_context = "Search Dimensions"), false, false, "", $js);
+		Page::start(_($help_context = "Search Dimensions"));
 	}
 	//-----------------------------------------------------------------------------------
 	// Ajax updates
@@ -34,87 +29,83 @@
 	} elseif (get_post('_OrderNumber_changed'))
 	{
 		$disable = get_post('OrderNumber') !== '';
-
 		$Ajax->addDisable(true, 'FromDate', $disable);
 		$Ajax->addDisable(true, 'ToDate', $disable);
 		$Ajax->addDisable(true, 'type_', $disable);
 		$Ajax->addDisable(true, 'OverdueOnly', $disable);
 		$Ajax->addDisable(true, 'OpenOnly', $disable);
-
 		if ($disable) {
 			//		$Ajax->addFocus(true, 'OrderNumber');
-			ui_view::set_focus('OrderNumber');
+			JS::set_focus('OrderNumber');
 		} else
-			ui_view::set_focus('type_');
-
+		{
+			JS::set_focus('type_');
+		}
 		$Ajax->activate('dim_table');
 	}
-
 	//--------------------------------------------------------------------------------------
-
-	if (isset($_GET["stock_id"]))
+	if (isset($_GET["stock_id"])) {
 		$_POST['SelectedStockItem'] = $_GET["stock_id"];
-
+	}
 	//--------------------------------------------------------------------------------------
-
 	start_form(false, false, $_SERVER['PHP_SELF'] . "?outstanding_only=$outstanding_only");
-
 	start_table("class='tablestyle_noborder'");
 	start_row();
-
 	ref_cells(_("Reference:"), 'OrderNumber', '', null, '', true);
-
 	number_list_cells(_("Type"), 'type_', null, 1, 2, _("All"));
 	date_cells(_("From:"), 'FromDate', '', null, 0, 0, -5);
 	date_cells(_("To:"), 'ToDate');
-
 	check_cells(_("Only Overdue:"), 'OverdueOnly', null);
-
 	if (!$outstanding_only) {
 		check_cells(_("Only Open:"), 'OpenOnly', null);
 	}
 	else
+	{
 		$_POST['OpenOnly'] = 1;
-
+	}
 	submit_cells('SearchOrders', _("Search"), '', '', 'default');
-
 	end_row();
 	end_table();
-
 	$dim = DB_Company::get_pref('use_dimension');
-
-	function view_link($row) {
+	function view_link($row)
+	{
 		return ui_view::get_dimensions_trans_view_str(ST_DIMENSION, $row["id"]);
 	}
 
-	function is_closed($row) {
+	function is_closed($row)
+	{
 		return $row['closed'] ? _('Yes') : _('No');
 	}
 
-	function sum_dimension($row) {
+	function sum_dimension($row)
+	{
 		$sql = "SELECT SUM(amount) FROM gl_trans WHERE tran_date >= '" .
 		 Dates::date2sql($_POST['FromDate']) . "' AND
 		tran_date <= '" . Dates::date2sql($_POST['ToDate']) . "' AND (dimension_id = " .
 		 $row['id'] . " OR dimension2_id = " . $row['id'] . ")";
 		$res = DBOld::query($sql, "Sum of transactions could not be calculated");
 		$row = DBOld::fetch_row($res);
-
 		return $row[0];
 	}
 
-	function is_overdue($row) {
+	function is_overdue($row)
+	{
 		return Dates::date_diff2(Dates::Today(), Dates::sql2date($row["due_date"]), "d") > 0;
 	}
 
-	function edit_link($row) {
+	function edit_link($row)
+	{
 		//return $row["closed"] ?  '' :
 		//	pager_link(_("Edit"),
 		//		"/dimensions/dimension_entry.php?trans_no=" . $row["id"], ICON_EDIT);
-		return pager_link(_("Edit"),
-		 "/dimensions/dimension_entry.php?trans_no=" . $row["id"], ICON_EDIT);
+		return pager_link(
+			_("Edit"),
+			"/dimensions/dimension_entry.php?trans_no=" . $row["id"], ICON_EDIT
+		);
 	}
 
-	$sql = "SELECT dim.id,
+	$sql
+	 = "SELECT dim.id,
 	dim.reference,
 	dim.name,
 	dim.type_,
@@ -122,55 +113,54 @@
 	dim.due_date,
 	dim.closed
 	FROM dimensions as dim WHERE id > 0";
-
 	if (isset($_POST['OrderNumber']) && $_POST['OrderNumber'] != "") {
 		$sql .= " AND reference LIKE " . DBOld::escape("%" . $_POST['OrderNumber'] . "%");
 	} else {
-
-		if ($dim == 1)
+		if ($dim == 1) {
 			$sql .= " AND type_=1";
-
+		}
 		if (isset($_POST['OpenOnly'])) {
 			$sql .= " AND closed=0";
 		}
-
 		if (isset($_POST['type_']) && ($_POST['type_'] > 0)) {
 			$sql .= " AND type_=" . DBOld::escape($_POST['type_']);
 		}
-
 		if (isset($_POST['OverdueOnly'])) {
 			$today = Dates::date2sql(Dates::Today());
-
 			$sql .= " AND due_date < '$today'";
 		}
-
 		$sql .= " AND date_ >= '" . Dates::date2sql($_POST['FromDate']) . "'
 		AND date_ <= '" . Dates::date2sql($_POST['ToDate']) . "'";
 	}
-
 	$cols = array(
-		_("#") => array('fun' => 'view_link'),
+		_("#")				=> array('fun' => 'view_link'),
 		_("Reference"),
 		_("Name"),
 		_("Type"),
-		_("Date") => 'date',
-		_("Due Date") => array('name' => 'due_date', 'type' => 'date', 'ord' => 'asc'),
-		_("Closed") => array('fun' => 'is_closed'),
-		_("Balance") => array('type' => 'amount', 'insert' => true, 'fun' => 'sum_dimension'),
-		array('insert' => true, 'fun' => 'edit_link')
+		_("Date")		 => 'date',
+		_("Due Date") => array(
+			'name' => 'due_date',
+			'type' => 'date',
+			'ord'	=> 'asc'
+		),
+		_("Closed")	 => array('fun' => 'is_closed'),
+		_("Balance")	=> array(
+			'type'	 => 'amount',
+			'insert' => true,
+			'fun'		=> 'sum_dimension'
+		),
+		array(
+			'insert' => true,
+			'fun'		=> 'edit_link'
+		)
 	);
-
 	if ($outstanding_only) {
 		$cols[_("Closed")] = 'skip';
 	}
-
 	$table =& db_pager::new_db_pager('dim_tbl', $sql, $cols);
 	$table->set_marker('is_overdue', _("Marked dimensions are overdue."));
-
 	$table->width = "80%";
-
 	display_db_pager($table);
-
 	end_form();
 	end_page();
 

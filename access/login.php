@@ -10,24 +10,21 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-
 	// Display demo user name and password within login form if "Config::get('demo_mode') " is true
 	if (Config::get('demo_mode') == true) {
 		$demo_text = _("Login as user: demouser and password: password");
 	} else {
 		$demo_text = _("Please login here");
 	}
-
 	if (!Config::get('company_default') === false) {
 		Config::set('company_default', 1);
 	}
-
-	$def_theme = "default";
-	$login_timeout = $_SESSION["wa_current_user"]->last_act;
-	$title = $login_timeout ? _('Authorization timeout') : APP_TITLE . " " . VERSION . " - " . _("Login");
-	$encoding = isset($_SESSION['language']->encoding) ? $_SESSION['language']->encoding : "utf-8";
-	$rtl = isset($_SESSION['language']->dir) ? $_SESSION['language']->dir : "ltr";
-	$onload = !$login_timeout ? "onload='defaultCompany()'" : "";
+	$def_theme     = "default";
+	$login_timeout = CurrentUser::instance()->last_act;
+	$title         = $login_timeout ? _('Authorization timeout') : APP_TITLE . " " . VERSION . " - " . _("Login");
+	$encoding      = isset($_SESSION['language']->encoding) ? $_SESSION['language']->encoding : "utf-8";
+	$rtl           = isset($_SESSION['language']->dir) ? $_SESSION['language']->dir : "ltr";
+	$onload        = !$login_timeout ? "onload='defaultCompany()'" : "";
 	echo "<!DOCTYPE HTML>\n";
 	echo "<html dir='$rtl' >\n";
 	echo "<head><title>$title</title>\n";
@@ -35,8 +32,9 @@
 	echo "<link rel='apple-touch-icon' href='/company/images/advanced-icon.png'/>";
 	echo "<link href='/themes/$def_theme/default.css' rel='stylesheet' type='text/css'> \n";
 	$js = "function set_fullmode() {	document.getElementById('ui_mode').value = 1;document.loginform.submit();return true;};";
-	if (!$login_timeout)
-		$js .= "function defaultCompany(){document.forms[0].company_login_name.options[" . $_SESSION["wa_current_user"]->company . "].selected = true;}" . ui_view::get_js_png_fix() . "</script>";
+	if (!$login_timeout) {
+		$js .= "function defaultCompany(){document.forms[0].company_login_name.options[" . CurrentUser::instance()->company . "].selected = true;}" . ui_view::get_js_png_fix() . "</script>";
+	}
 	echo "<script>" . $js . "</script>";
 	echo "</head>\n";
 	echo "<body id='loginscreen' $onload>\n";
@@ -50,11 +48,11 @@
 	if (!$login_timeout) { // FA logo
 		echo "<a target='_blank' href='" . POWERED_URL . "'><img src='/themes/$def_theme/images/logo_frontaccounting.png' alt='FrontAccounting' height='50' onload='fixPNG(this)' border='0' /></a>";
 	} else {
-		echo "<font size=5>" . _('Authorization timeout') . "</font><br>You were idle for: " . ($_SESSION["wa_current_user"]->last_act + $_SESSION['wa_current_user']->timeout - time());
+		echo "<font size=5>" . _('Authorization timeout') . "</font><br>You were idle for: " . (CurrentUser::instance()->last_act + $_SESSION['wa_current_user']->timeout - time());
 	}
 	echo "</td>\n";
 	end_row();
-	echo "<input type='hidden' id=ui_mode name='ui_mode' value='" . $_SESSION["wa_current_user"]->ui_mode . "' />\n";
+	echo "<input type='hidden' id=ui_mode name='ui_mode' value='" . CurrentUser::instance()->ui_mode . "' />\n";
 	if (!$login_timeout) {
 		table_section_title(_("Version") . VERSION . "   Build " . BUILD_VERSION . " - " . _("Login"));
 	}
@@ -63,7 +61,7 @@
 	$password = Config::get('demo_mode') ? "password" : "";
 	password_row(_("Password:"), 'password', $password);
 	if ($login_timeout) {
-		hidden('company_login_name', $_SESSION["wa_current_user"]->company);
+		hidden('company_login_name', CurrentUser::instance()->company);
 	} else {
 		if (isset($_SESSION['wa_current_user']->company)) {
 			$coy = $_SESSION['wa_current_user']->company;
@@ -71,8 +69,9 @@
 			$coy = Config::get('company_default');
 		}
 		echo "<tr><td class='label'>" . _("Company") . "</td><td><select name='company_login_name'>\n";
-
-		for ($i = 1; $i < count(Config::get_all('db')) + 1; $i++) {
+		for (
+			$i = 1; $i < count(Config::get_all('db')) + 1; $i++
+		) {
 			echo "<option value=$i " . ($i == $coy ? 'selected' : '') . ">" . Config::get('db.' . $i, "name") . "</option>";
 		}
 		echo "</select>\n";
@@ -82,7 +81,9 @@
 	}
 	end_table(1);
 	echo "<center><input type='submit' value='&nbsp;&nbsp;" . _("Login -->") . "&nbsp;&nbsp;' name='SubmitUser'" . ($login_timeout ? '' : " onclick='set_fullmode();'") . " /></center>\n";
-	foreach ($_SESSION['timeout']['post'] as $p => $val) {
+	foreach (
+		$_SESSION['timeout']['post'] as $p => $val
+	) {
 		// add all request variables to be resend together with login data
 		if (!in_array($p, array('ui_mode', 'user_name_entry_field', 'password', 'SubmitUser', 'company_login_name'))) {
 			echo "<input type='hidden' name='$p' value='$val'>";

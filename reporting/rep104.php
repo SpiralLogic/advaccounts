@@ -16,107 +16,129 @@
 	// date_:	2005-05-19
 	// Title:	price Listing
 	// ----------------------------------------------------------------
-
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-
 	include_once(APP_PATH . "sales/includes/db/sales_types_db.php");
-
 	//----------------------------------------------------------------------------------------------------
-
 	print_price_listing();
-
-	function fetch_items($category = 0) {
-		$sql = "SELECT stock_master.stock_id, stock_master.description AS name,
+	function fetch_items($category = 0)
+	{
+		$sql
+		 = "SELECT stock_master.stock_id, stock_master.description AS name,
 				stock_master.material_cost+stock_master.labour_cost+stock_master.overhead_cost AS Standardcost,
 				stock_master.category_id,
 				stock_category.description
 			FROM stock_master,
 				stock_category
 			WHERE stock_master.category_id=stock_category.category_id AND NOT stock_master.inactive";
-		if ($category != 0)
+		if ($category != 0) {
 			$sql .= " AND stock_category.category_id = " . DBOld::escape($category);
-		$sql .= " ORDER BY stock_master.category_id,
+		}
+		$sql
+		 .= " ORDER BY stock_master.category_id,
 				stock_master.stock_id";
-
 		return DBOld::query($sql, "No transactions were returned");
 	}
 
-	function get_kits($category = 0) {
-		$sql = "SELECT i.item_code AS kit_code, i.description AS kit_name, c.category_id AS cat_id, c.description AS cat_name, count(*)>1 AS kit
+	function get_kits($category = 0)
+	{
+		$sql
+		 = "SELECT i.item_code AS kit_code, i.description AS kit_name, c.category_id AS cat_id, c.description AS cat_name, count(*)>1 AS kit
 			FROM
 			item_codes i
 			LEFT JOIN
 			stock_category c
 			ON i.category_id=c.category_id";
 		$sql .= " WHERE !i.is_foreign AND i.item_code!=i.stock_id";
-		if ($category != 0)
+		if ($category != 0) {
 			$sql .= " AND c.category_id = " . DBOld::escape($category);
+		}
 		$sql .= " GROUP BY i.item_code";
 		return DBOld::query($sql, "No kits were returned");
 	}
 
 	//----------------------------------------------------------------------------------------------------
-
-	function print_price_listing() {
-
-		$currency = $_POST['PARAM_0'];
-		$category = $_POST['PARAM_1'];
-		$salestype = $_POST['PARAM_2'];
-		$pictures = $_POST['PARAM_3'];
-		$showGP = $_POST['PARAM_4'];
-		$comments = $_POST['PARAM_5'];
+	function print_price_listing()
+	{
+		$currency    = $_POST['PARAM_0'];
+		$category    = $_POST['PARAM_1'];
+		$salestype   = $_POST['PARAM_2'];
+		$pictures    = $_POST['PARAM_3'];
+		$showGP      = $_POST['PARAM_4'];
+		$comments    = $_POST['PARAM_5'];
 		$destination = $_POST['PARAM_6'];
-		if ($destination)
+		if ($destination) {
 			include_once(APP_PATH . "reporting/includes/excel_report.php");
+		}
 		else
+		{
 			include_once(APP_PATH . "reporting/includes/pdf_report.php");
-
+		}
 		$dec = user_price_dec();
-
 		$home_curr = DB_Company::get_pref('curr_default');
-		if ($currency == ALL_TEXT)
+		if ($currency == ALL_TEXT) {
 			$currency = $home_curr;
-		$curr = get_currency($currency);
+		}
+		$curr     = get_currency($currency);
 		$curr_sel = $currency . " - " . $curr['currency'];
-		if ($category == ALL_NUMERIC)
+		if ($category == ALL_NUMERIC) {
 			$category = 0;
-		if ($salestype == ALL_NUMERIC)
+		}
+		if ($salestype == ALL_NUMERIC) {
 			$salestype = 0;
-		if ($category == 0)
+		}
+		if ($category == 0) {
 			$cat = _('All');
+		}
 		else
+		{
 			$cat = get_category_name($category);
-		if ($salestype == 0)
+		}
+		if ($salestype == 0) {
 			$stype = _('All');
+		}
 		else
+		{
 			$stype = get_sales_type_name($salestype);
-		if ($showGP == 0)
+		}
+		if ($showGP == 0) {
 			$GP = _('No');
+		}
 		else
+		{
 			$GP = _('Yes');
-
+		}
 		$cols = array(0, 100, 385, 450, 515);
-
 		$headers = array(_('Category/Items'), _('Description'), _('Price'), _('GP %'));
-
 		$aligns = array('left', 'left', 'right', 'right');
-
-		$params = array(0 => $comments,
-			1 => array('text' => _('Currency'), 'from' => $curr_sel, 'to' => ''),
-			2 => array('text' => _('Category'), 'from' => $cat, 'to' => ''),
-			3 => array('text' => _('Sales Type'), 'from' => $stype, 'to' => ''),
-			4 => array('text' => _('Show GP %'), 'from' => $GP, 'to' => '')
+		$params = array(
+			0 => $comments,
+			1 => array(
+				'text' => _('Currency'),
+				'from' => $curr_sel,
+				'to'	 => ''
+			),
+			2 => array(
+				'text' => _('Category'),
+				'from' => $cat,
+				'to'	 => ''
+			),
+			3 => array(
+				'text' => _('Sales Type'),
+				'from' => $stype,
+				'to'	 => ''
+			),
+			4 => array(
+				'text' => _('Show GP %'),
+				'from' => $GP,
+				'to'	 => ''
+			)
 		);
-
 		$rep = new FrontReport(_('Price Listing'), "PriceListing", user_pagesize());
-
 		$rep->Font();
 		$rep->Info($params, $cols, $headers, $aligns);
 		$rep->Header();
-
 		$result = fetch_items($category);
-
-		$catgor = '';
+		$catgor                 = '';
 		$_POST['sales_type_id'] = $salestype;
 		while ($myrow = DBOld::fetch($result))
 		{
@@ -136,10 +158,13 @@
 			$rep->AmountCol(2, 3, $price, $dec);
 			if ($showGP) {
 				$price2 = get_price($myrow['stock_id'], $home_curr, $salestype);
-				if ($price2 != 0.0)
+				if ($price2 != 0.0) {
 					$disp = ($price2 - $myrow['Standardcost']) * 100 / $price2;
+				}
 				else
+				{
 					$disp = 0.0;
+				}
 				$rep->TextCol(3, 4, number_format2($disp, user_percent_dec()) . " %");
 			}
 			if ($pictures) {
@@ -147,20 +172,21 @@
 				 . item_img_name($myrow['stock_id']) . ".jpg";
 				if (file_exists($image)) {
 					$rep->NewLine();
-					if ($rep->row - Config::get('item_images_height') < $rep->bottomMargin)
+					if ($rep->row - Config::get('item_images_height') < $rep->bottomMargin) {
 						$rep->Header();
+					}
 					$rep->AddImage($image, $rep->cols[1], $rep->row - Config::get('item_images_height'), 0, Config::get('item_images_height'));
 					$rep->row -= Config::get('item_images_height');
 					$rep->NewLine();
 				}
 			}
 			else
+			{
 				$rep->NewLine(0, 1);
+			}
 		}
 		$rep->Line($rep->row - 4);
-
 		$result = get_kits($category);
-
 		$catgor = '';
 		while ($myrow = DBOld::fetch($result))
 		{

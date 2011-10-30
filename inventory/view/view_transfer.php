@@ -10,25 +10,17 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	$page_security = 'SA_ITEMSTRANSVIEW';
-
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-
-	page(_($help_context = "View Inventory Transfer"), true);
-
+	Page::start(_($help_context = "View Inventory Transfer"), true);
 	if (isset($_GET["trans_no"])) {
 		$trans_no = $_GET["trans_no"];
 	}
-
 	$transfer_items = get_stock_transfer($trans_no);
-
 	$from_trans = $transfer_items[0];
-	$to_trans = $transfer_items[1];
-
+	$to_trans   = $transfer_items[1];
 	ui_msgs::display_heading($systypes_array[ST_LOCTRANSFER] . " #$trans_no");
-
 	echo "<br>";
 	start_table(Config::get('tables_style2') . " width=90%");
-
 	start_row();
 	label_cells(_("Item"), $from_trans['stock_id'] . " - " . $from_trans['description'], "class='tableheader2'");
 	label_cells(_("From Location"), $from_trans['location_name'], "class='tableheader2'");
@@ -40,23 +32,18 @@
 	label_cells(_("Adjustment Type"), $adjustment_type['name'], "class='tableheader2'");
 	label_cells(_("Date"), Dates::sql2date($from_trans['tran_date']), "class='tableheader2'");
 	end_row();
-
 	ui_view::comments_display_row(ST_LOCTRANSFER, $trans_no);
-
 	end_table(1);
-
 	echo "<br>";
 	start_table(Config::get('tables_style') . "  width=90%");
-
 	$th = array(_("Item"), _("Description"), _("Quantity"), _("Units"));
 	table_header($th);
 	$transfer_items = get_stock_moves(ST_LOCTRANSFER, $trans_no);
-	$k = 0;
+	$k              = 0;
 	while ($item = DBOld::fetch($transfer_items))
 	{
 		if ($item['loc_code'] == $to_trans['loc_code']) {
 			alt_table_row_color($k);
-
 			label_cell($item['stock_id']);
 			label_cell($item['description']);
 			qty_cell($item['qty'], false, get_qty_dec($item['stock_id']));
@@ -65,10 +52,7 @@
 			;
 		}
 	}
-
 	end_table(1);
-
 	ui_view::is_voided_display(ST_LOCTRANSFER, $trans_no, _("This transfer has been voided."));
-
 	end_page(true);
 ?>

@@ -6,11 +6,11 @@
 	 * Time: 7:22 PM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	class Security {
-
-		static function check_page($page_security) {
-
-			if (!$_SESSION["wa_current_user"]->can_access_page($page_security)) {
+	class Security
+	{
+		static function check_page($page_security)
+		{
+			if (!CurrentUser::instance()->can_access_page($page_security)) {
 				echo "<center><br><br><br><b>";
 				echo _("The security settings on your account do not permit you to access this function");
 				echo "</b>";
@@ -25,7 +25,8 @@
 			 GET start variable and/or some value stored in session variable.
 			 Before the call $page_security should be set to default page_security value.
 		 */
-		static function set_page($value = null, $trans = array(), $gtrans = array()) {
+		static function set_page($value = null, $trans = array(), $gtrans = array())
+		{
 			global $page_security;
 			// first check is this is not start page call
 			foreach ($gtrans as $key => $area) {
@@ -42,9 +43,9 @@
 		}
 
 		//	Removing magic quotes from nested arrays/variables
-
 		//============================================================================
-		static function strip_quotes($data) {
+		static function strip_quotes($data)
+		{
 			if (get_magic_quotes_gpc()) {
 				if (is_array($data)) {
 					foreach ($data as $k => $v) {
@@ -57,7 +58,8 @@
 			return $data;
 		}
 
-		public static function get_role($id) {
+		public static function get_role($id)
+		{
 			$sql = "SELECT * FROM security_roles WHERE id='$id'";
 			$ret = DBOld::query($sql, "could not retrieve security roles");
 			$row = DBOld::fetch($ret);
@@ -69,21 +71,21 @@
 		}
 
 		//--------------------------------------------------------------------------------------------------
-
-		public static function add_role($name, $description, $sections, $areas) {
-			$sql = "INSERT INTO security_roles (role, description, sections, areas)
+		public static function add_role($name, $description, $sections, $areas)
+		{
+			$sql
+			 = "INSERT INTO security_roles (role, description, sections, areas)
 			VALUES ("
 			 . DBOld::escape($name) . ","
 			 . DBOld::escape($description) . ","
 			 . DBOld::escape(implode(';', $sections)) . ","
 			 . DBOld::escape(implode(';', $areas)) . ")";
-
 			DBOld::query($sql, "could not add new security role");
 		}
 
 		//--------------------------------------------------------------------------------------------------
-
-		public static function update_role($id, $name, $description, $sections, $areas) {
+		public static function update_role($id, $name, $description, $sections, $areas)
+		{
 			$sql = "UPDATE security_roles SET role=" . DBOld::escape($name)
 			 . ",description=" . DBOld::escape($description)
 			 . ",sections=" . DBOld::escape(implode(';', $sections))
@@ -93,16 +95,15 @@
 		}
 
 		//--------------------------------------------------------------------------------------------------
-
-		public static function get_profile($id) {
+		public static function get_profile($id)
+		{
 			$sql = "DELETE FROM security_roles WHERE id=$id";
-
 			DBOld::query($sql, "could not delete role");
 		}
 
 		//--------------------------------------------------------------------------------------------------
-
-		public static function check_role_used($id) {
+		public static function check_role_used($id)
+		{
 			$sql = "SELECT count(*) FROM users WHERE role_id=$id";
 			$ret = DBOld::query($sql, 'cannot check role usage');
 			$row = DBOld::fetch($ret);

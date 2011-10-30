@@ -9,78 +9,77 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-
 	//--------------------------------------------------------------------------------
-
-	function add_to_order(&$order, $new_item, $new_item_qty, $standard_cost) {
-		if ($order->find_cart_item($new_item))
+	function add_to_order(&$order, $new_item, $new_item_qty, $standard_cost)
+	{
+		if ($order->find_cart_item($new_item)) {
 			ui_msgs::display_error(_("For Part :") . $new_item . " " . "This item is already on this order.  You can change the quantity ordered of the existing line if necessary.");
+		}
 		else
+		{
 			$order->add_to_cart(count($order->line_items), $new_item, $new_item_qty, $standard_cost);
+		}
 	}
 
 	//--------------------------------------------------------------------------------
-
-	function display_order_header(&$order) {
-
+	function display_order_header(&$order)
+	{
 		start_outer_table("width=70% " . Config::get('tables_style2')); // outer table
 		table_section(1);
-
 		locations_list_row(_("Location:"), 'StockLocation', null);
 		ref_row(_("Reference:"), 'ref', '', Refs::get_next(ST_INVADJUST));
-
 		table_section(2, "33%");
-
 		date_row(_("Date:"), 'AdjDate', '', true);
-
 		table_section(3, "33%");
-
 		movement_types_list_row(_("Detail:"), 'type', null);
-
-		if (!isset($_POST['Increase']))
+		if (!isset($_POST['Increase'])) {
 			$_POST['Increase'] = 1;
-		yesno_list_row(_("Type:"), 'Increase', $_POST['Increase'],
-			_("Positive Adjustment"), _("Negative Adjustment"));
-
+		}
+		yesno_list_row(
+			_("Type:"), 'Increase', $_POST['Increase'],
+			_("Positive Adjustment"), _("Negative Adjustment")
+		);
 		end_outer_table(1); // outer table
 	}
 
 	//---------------------------------------------------------------------------------
-
-	function display_adjustment_items($title, &$order) {
-
+	function display_adjustment_items($title, &$order)
+	{
 		ui_msgs::display_heading($title);
 		div_start('items_table');
 		start_table(Config::get('tables_style') . "  width=90%");
-		$th = array(_("Item Code"), _("Item Description"), _("Quantity"),
+		$th = array(
+			_("Item Code"), _("Item Description"), _("Quantity"),
 			_("Unit"), _("Unit Cost"), _("Total"), ""
 		);
-		if (count($order->line_items)) $th[] = '';
-
+		if (count($order->line_items)) {
+			$th[] = '';
+		}
 		table_header($th);
 		$total = 0;
-		$k = 0; //row colour counter
-
+		$k     = 0; //row colour counter
 		$id = find_submit('Edit');
-		foreach ($order->line_items as $line_no => $stock_item)
+		foreach (
+			$order->line_items as $line_no => $stock_item
+		)
 		{
-
 			$total += ($stock_item->standard_cost * $stock_item->quantity);
-
 			if ($id != $line_no) {
 				alt_table_row_color($k);
-
 				ui_view::view_stock_status_cell($stock_item->stock_id);
 				label_cell($stock_item->description);
 				qty_cell($stock_item->quantity, false, get_qty_dec($stock_item->stock_id));
 				label_cell($stock_item->units);
 				amount_decimal_cell($stock_item->standard_cost);
 				amount_cell($stock_item->standard_cost * $stock_item->quantity);
-
-				edit_button_cell("Edit$line_no", _("Edit"),
-					_('Edit document line'));
-				delete_button_cell("Delete$line_no", _("Delete"),
-					_('Remove line from document'));
+				edit_button_cell(
+					"Edit$line_no", _("Edit"),
+					_('Edit document line')
+				);
+				delete_button_cell(
+					"Delete$line_no", _("Delete"),
+					_('Remove line from document')
+				);
 				end_row();
 			}
 			else
@@ -88,32 +87,30 @@
 				adjustment_edit_item_controls($order, $line_no);
 			}
 		}
-
-		if ($id == -1)
+		if ($id == -1) {
 			adjustment_edit_item_controls($order);
-
+		}
 		label_row(_("Total"), number_format2($total, user_price_dec()), "align=right colspan=5", "align=right", 2);
-
 		end_table();
 		div_end();
 	}
 
 	//---------------------------------------------------------------------------------
-
-	function adjustment_edit_item_controls(&$order, $line_no = -1) {
+	function adjustment_edit_item_controls(&$order, $line_no = -1)
+	{
 		$Ajax = Ajax::instance();
 		start_row();
-
 		$dec2 = 0;
-		$id = find_submit('Edit');
+		$id   = find_submit('Edit');
 		if ($line_no != -1 && $line_no == $id) {
 			$_POST['stock_id'] = $order->line_items[$id]->stock_id;
-			$_POST['qty'] = qty_format($order->line_items[$id]->quantity,
-				$order->line_items[$id]->stock_id, $dec);
+			$_POST['qty']      = qty_format(
+				$order->line_items[$id]->quantity,
+				$order->line_items[$id]->stock_id, $dec
+			);
 			//$_POST['std_cost'] = price_format($order->line_items[$id]->standard_cost);
 			$_POST['std_cost'] = price_decimal_format($order->line_items[$id]->standard_cost, $dec2);
-			$_POST['units'] = $order->line_items[$id]->units;
-
+			$_POST['units']    = $order->line_items[$id]->units;
 			hidden('stock_id', $_POST['stock_id']);
 			label_cell($_POST['stock_id']);
 			label_cell($order->line_items[$id]->description, 'nowrap');
@@ -127,50 +124,48 @@
 				$Ajax->activate('qty');
 				$Ajax->activate('std_cost');
 			}
-
-			$item_info = get_item_edit_info((isset($_POST['stock_id']) ? $_POST['stock_id'] : ''));
-			$dec = $item_info['decimals'];
+			$item_info    = get_item_edit_info((isset($_POST['stock_id']) ? $_POST['stock_id'] : ''));
+			$dec          = $item_info['decimals'];
 			$_POST['qty'] = number_format2(0, $dec);
 			//$_POST['std_cost'] = price_format($item_info["standard_cost"]);
 			$_POST['std_cost'] = price_decimal_format($item_info["standard_cost"], $dec2);
-			$_POST['units'] = $item_info["units"];
+			$_POST['units']    = $item_info["units"];
 		}
-
 		qty_cells(null, 'qty', $_POST['qty'], null, null, $dec);
 		label_cell($_POST['units'], '', 'units');
-
 		//amount_cells(null, 'std_cost', $_POST['std_cost']);
 		amount_cells(null, 'std_cost', null, null, null, $dec2);
 		label_cell("&nbsp;");
-
 		if ($id != -1) {
-			button_cell('UpdateItem', _("Update"),
-				_('Confirm changes'), ICON_UPDATE);
-			button_cell('CancelItemChanges', _("Cancel"),
-				_('Cancel changes'), ICON_CANCEL);
+			button_cell(
+				'UpdateItem', _("Update"),
+				_('Confirm changes'), ICON_UPDATE
+			);
+			button_cell(
+				'CancelItemChanges', _("Cancel"),
+				_('Cancel changes'), ICON_CANCEL
+			);
 			hidden('LineNo', $line_no);
-			ui_view::set_focus('qty');
+			JS::set_focus('qty');
 		}
 		else
 		{
-			submit_cells('AddItem', _("Add Item"), "colspan=2",
-				_('Add new item to document'), true);
+			submit_cells(
+				'AddItem', _("Add Item"), "colspan=2",
+				_('Add new item to document'), true
+			);
 		}
-
 		end_row();
 	}
 
 	//---------------------------------------------------------------------------------
-
-	function adjustment_options_controls() {
+	function adjustment_options_controls()
+	{
 		echo "<br>";
 		start_table();
-
 		textarea_row(_("Memo"), 'memo_', null, 50, 3);
-
 		end_table(1);
 	}
 
 	//---------------------------------------------------------------------------------
-
 ?>

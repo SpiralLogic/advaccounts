@@ -9,16 +9,17 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-
 	//----------------------------------------------------------------------------
 	// helper functions for script execution control
 	//
-	function processing_start() {
+	function processing_start()
+	{
 		processing_end();
 		$_SESSION['Processing'] = $_SERVER['PHP_SELF'];
 	}
 
-	function processing_end() {
+	function processing_end()
+	{
 		unset($_SESSION['Processing']);
 		if (isset($_SESSION['Items'])) {
 			unset($_SESSION['Items']->line_items);
@@ -26,18 +27,19 @@
 		}
 	}
 
-	function processing_active() {
+	function processing_active()
+	{
 		return (isset($_SESSION['Processing']) && $_SESSION['Processing'] == $_SERVER['PHP_SELF']);
 	}
 
 	/*
-	 Check if the cart was not destroyed during opening the edition page in
-	 another browser tab.
- */
-	function check_edit_conflicts($cartname = 'Items') {
+			 Check if the cart was not destroyed during opening the edition page in
+			 another browser tab.
+		 */
+	function check_edit_conflicts($cartname = 'Items')
+	{
 		$Ajax = Ajax::instance();
-
-		if (isset($_POST['cart_id']) && $_POST['cart_id'] != $_SESSION[$cartname]->cart_id) {
+		if (Input::post('cart_id') != $_SESSION[$cartname]->cart_id) {
 			ui_msgs::display_error(_('This edit session has been abandoned by opening sales document in another browser tab. You cannot edit more than one sales document at once.'));
 			$Ajax->activate('_page_body');
 			ui_view::display_footer_exit();

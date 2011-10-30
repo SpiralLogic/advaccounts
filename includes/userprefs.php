@@ -9,18 +9,15 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	class userPrefs {
-
+	class userPrefs
+	{
 		var $language;
-
 		var $qty_dec;
 		var $price_dec;
 		var $exrate_dec;
 		var $percent_dec;
-
 		var $show_gl_info;
 		var $show_codes;
-
 		var $date_format;
 		var $date_sep;
 		var $tho_sep;
@@ -34,39 +31,36 @@
 		var $graphic_links; // use graphic links
 		var $sticky_date; // save date on subsequent document entry
 		var $startup_tab; // default start-up menu tab
-
-		function userPrefs($user = null) {
+		function userPrefs($user = null)
+		{
 			if ($user == null) {
 				// set default values, used before login
-
-				$this->date_sep = Config::get('ui_date_seperator');
+				$this->date_sep    = Config::get('ui_date_seperator');
 				$this->date_format = Config::get('ui_date_format');
-				$this->tho_sep = 0;
-				$this->dec_sep = 0;
-				$this->price_dec = 2;
-				$this->language = Config::get('default_lang');
-				$this->theme = 'default';
+				$this->tho_sep     = 0;
+				$this->dec_sep     = 0;
+				$this->price_dec   = 2;
+				$this->language    = Config::get('default_lang');
+				$this->theme       = 'default';
 			} else {
 				$this->language = $user["language"];
 				$_SESSION['language']->set_language($this->language);
-
-				$this->qty_dec = $user["qty_dec"];
-				$this->price_dec = $user["prices_dec"];
-				$this->exrate_dec = $user["rates_dec"];
+				$this->qty_dec     = $user["qty_dec"];
+				$this->price_dec   = $user["prices_dec"];
+				$this->exrate_dec  = $user["rates_dec"];
 				$this->percent_dec = $user["percent_dec"];
-
-				$this->show_gl_info = $user["show_gl"];
-				$this->show_codes = $user["show_codes"];
-				$this->date_format = $user["date_format"];
-				$this->date_sep = $user["date_sep"];
-				$this->tho_sep = $user["tho_sep"];
-				$this->dec_sep = $user["dec_sep"];
-				$this->theme = $user["theme"];
-				$this->pagesize = $user["page_size"];
-				$this->show_hints = $user["show_hints"];
+				$this->show_gl_info  = $user["show_gl"];
+				$this->show_codes    = $user["show_codes"];
+				$this->date_format   = $user["date_format"];
+				$this->date_sep      = $user["date_sep"];
+				$this->tho_sep       = $user["tho_sep"];
+				$this->dec_sep       = $user["dec_sep"];
+				$this->theme         = $user["theme"];
+				$this->pagesize      = $user["page_size"];
+				$this->show_hints    = $user["show_hints"];
 				$this->print_profile = $user["print_profile"];
-				$this->rep_popup = $user["rep_popup"];
-				$this->query_size = $user["query_size"];
+				$this->rep_popup     = $user["rep_popup"];
+				$this->query_size    = $user["query_size"];
 				$this->graphic_links = $user["graphic_links"];
 				if (isset($user["sticky_doc_date"])) {
 					$this->sticky_date = $user["sticky_doc_date"];
@@ -80,112 +74,140 @@
 			}
 		}
 
-		function language() {
+		function language()
+		{
 			return $this->language;
 		}
 
-		function qty_dec() {
+		function qty_dec()
+		{
 			return $this->qty_dec;
 		}
 
-		function price_dec() {
+		function price_dec()
+		{
 			return $this->price_dec;
 		}
 
-		function exrate_dec() {
+		function exrate_dec()
+		{
 			return $this->exrate_dec;
 		}
 
-		function percent_dec() {
+		function percent_dec()
+		{
 			return $this->percent_dec;
 		}
 
-		function show_gl_info() {
+		function show_gl_info()
+		{
 			return $this->show_gl_info;
 		}
 
-		function show_codes() {
+		function show_codes()
+		{
 			return $this->show_codes;
 		}
 
-		function date_format() {
+		function date_format()
+		{
 			return $this->date_format;
 		}
 
-		function date_sep() {
+		function date_sep()
+		{
 			return $this->date_sep;
 		}
 
-		function date_display() {
+		function date_display()
+		{
 			$sep = Config::get('separators_date', $this->date_sep);
-			if ($this->date_format == 0)
+			if ($this->date_format == 0) {
 				return "m" . $sep . "d" . $sep . "Y";
+			}
 			elseif ($this->date_format == 1)
+			{
 				return "d" . $sep . "m" . $sep . "Y";
+			}
 			else
+			{
 				return "Y" . $sep . "m" . $sep . "d";
+			}
 		}
 
-		function tho_sep() {
+		function tho_sep()
+		{
 			return $this->tho_sep;
 		}
 
-		function dec_sep() {
+		function dec_sep()
+		{
 			return $this->dec_sep;
 		}
 
-		function get_theme() {
+		function get_theme()
+		{
 			return $this->theme;
 		}
 
-		function get_pagesize() {
+		function get_pagesize()
+		{
 			return $this->pagesize;
 		}
 
-		function show_hints() {
+		function show_hints()
+		{
 			return $this->show_hints;
 		}
 
-		function print_profile() {
+		function print_profile()
+		{
 			return $this->print_profile;
 		}
 
-		function rep_popup() {
+		function rep_popup()
+		{
 			return $this->rep_popup;
 		}
 
-		function query_size() {
+		function query_size()
+		{
 			return $this->query_size;
 		}
 
-		function graphic_links() {
+		function graphic_links()
+		{
 			return $this->graphic_links;
 		}
 
-		function sticky_date() {
+		function sticky_date()
+		{
 			return $this->sticky_date;
 		}
 
-		function start_up_tab() {
+		function start_up_tab()
+		{
 			return $this->startup_tab;
 		}
 
-		function set_dec($price_dec, $qty_dec, $exrate_dec, $percent_dec, $showgl, $showcodes) {
-			$this->price_dec = $price_dec;
-			$this->qty_dec = $qty_dec;
-			$this->exrate_dec = $exrate_dec;
-			$this->percent_dec = $percent_dec;
+		function set_dec($price_dec, $qty_dec, $exrate_dec, $percent_dec, $showgl, $showcodes)
+		{
+			$this->price_dec    = $price_dec;
+			$this->qty_dec      = $qty_dec;
+			$this->exrate_dec   = $exrate_dec;
+			$this->percent_dec  = $percent_dec;
 			$this->show_gl_info = $showgl;
-			$this->show_codes = $showcodes;
+			$this->show_codes   = $showcodes;
 		}
 
-		function set_format($date_format, $date_sep, $tho_sep, $dec_sep, $theme, $pagesize) {
+		function set_format($date_format, $date_sep, $tho_sep, $dec_sep, $theme, $pagesize)
+		{
 			$this->date_format = $date_format;
-			$this->date_sep = $date_sep;
-			$this->tho_sep = $tho_sep;
-			$this->dec_sep = $dec_sep;
-			$this->theme = $theme;
-			$this->pagesize = $pagesize;
+			$this->date_sep    = $date_sep;
+			$this->tho_sep     = $tho_sep;
+			$this->dec_sep     = $dec_sep;
+			$this->theme       = $theme;
+			$this->pagesize    = $pagesize;
 		}
 	}
 

@@ -65,7 +65,7 @@
 			}
 		});
 		$quickMenu.autocomplete({
-															source:function(request, response) {
+															source:   function(request, response) {
 																Adv.lastXhr = $.getJSON('/contacts/customers.php', request, function(data, status, xhr) {
 																	if (xhr === Adv.lastXhr) {
 																		response(data);
@@ -73,7 +73,7 @@
 																})
 															},
 															minLength:2,
-															select:function(event, ui) {
+															select:   function(event, ui) {
 																window.location.href = '/contacts/customers.php?id=' + ui.item.id;
 															}
 														});

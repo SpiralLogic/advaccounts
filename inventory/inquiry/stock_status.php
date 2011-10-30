@@ -10,74 +10,56 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	$page_security = 'SA_ITEMSSTATVIEW';
-
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-
 	if (isset($_GET['stock_id'])) {
 		$_POST['stock_id'] = $_GET['stock_id'];
-		page(_($help_context = "Inventory Item Status"), true);
+		Page::start(_($help_context = "Inventory Item Status"), true);
 	} else {
-		page(_($help_context = "Inventory Item Status"));
+		Page::start(_($help_context = "Inventory Item Status"));
 	}
-
-	if (Input::post('stock_id'))
+	if (Input::post('stock_id')) {
 		$Ajax->activate('status_tbl');
+	}
 	//----------------------------------------------------------------------------------------------------
-
 	Validation::check(Validation::STOCK_ITEMS, _("There are no items defined in the system."));
-
 	start_form();
-
-	if (!Input::post('stock_id'))
+	if (!Input::post('stock_id')) {
 		$_POST['stock_id'] = ui_globals::get_global_stock_item();
-
+	}
 	echo "<center> ";
-
 	echo stock_items_list_cells(_("Select an item:"), 'stock_id', $_POST['stock_id'], false, true, false, false);
-
 	echo "<br>";
-
 	echo "<hr></center>";
-
 	ui_globals::set_global_stock_item($_POST['stock_id']);
-
-	$mb_flag = Manufacturing::get_mb_flag($_POST['stock_id']);
+	$mb_flag           = Manufacturing::get_mb_flag($_POST['stock_id']);
 	$kitset_or_service = false;
-
 	div_start('status_tbl');
 	if (Input::post('mb_flag') == STOCK_SERVICE) {
 		ui_msgs::display_warning(_("This is a service and cannot have a stock holding, only the total quantity on outstanding sales orders is shown."), 0, 1);
 		$kitset_or_service = true;
 	}
-
 	$loc_details = get_loc_details($_POST['stock_id']);
-
 	start_table(Config::get('tables_style'));
-
 	if ($kitset_or_service == true) {
 		$th = array(_("Location"), _("Demand"));
 	}
 	else
 	{
-		$th = array(_("Location"), _("Quantity On Hand"), _("Re-Order Level"),
+		$th = array(
+			_("Location"), _("Quantity On Hand"), _("Re-Order Level"),
 			_("Demand"), _("Available"), _("On Order")
 		);
 	}
 	table_header($th);
 	$dec = get_qty_dec($_POST['stock_id']);
-	$j = 1;
-	$k = 0; //row colour counter
-
+	$j   = 1;
+	$k   = 0; //row colour counter
 	while ($myrow = DBOld::fetch($loc_details))
 	{
-
 		alt_table_row_color($k);
-
 		$demand_qty = Manufacturing::get_demand_qty($_POST['stock_id'], $myrow["loc_code"]);
 		$demand_qty += Manufacturing::get_demand_asm_qty($_POST['stock_id'], $myrow["loc_code"]);
-
 		$qoh = get_qoh_on_date($_POST['stock_id'], $myrow["loc_code"]);
-
 		if ($kitset_or_service == false) {
 			$qoo = Manufacturing::get_on_porder_qty($_POST['stock_id'], $myrow["loc_code"]);
 			$qoo += Manufacturing::get_on_worder_qty($_POST['stock_id'], $myrow["loc_code"]);
@@ -102,7 +84,6 @@
 			table_header($th);
 		}
 	}
-
 	end_table();
 	div_end();
 	end_form();

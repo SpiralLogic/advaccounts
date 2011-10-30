@@ -1,28 +1,30 @@
 <?php
 
 	/*     * ********************************************************************
-			Copyright (C) FrontAccounting, LLC.
-			Released under the terms of the GNU General Public License, GPL,
-			as published by the Free Software Foundation, either version 3
-			of the License, or (at your option) any later version.
-			This program is distributed in the hope that it will be useful,
-			but WITHOUT ANY WARRANTY; without even the implied warranty of
-			MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-			See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
-			* ********************************************************************* */
-
+				Copyright (C) FrontAccounting, LLC.
+				Released under the terms of the GNU General Public License, GPL,
+				as published by the Free Software Foundation, either version 3
+				of the License, or (at your option) any later version.
+				This program is distributed in the hope that it will be useful,
+				but WITHOUT ANY WARRANTY; without even the implied warranty of
+				MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+				See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+				* ********************************************************************* */
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	include_once(APP_PATH . "sales/includes/sales_ui.php");
-	include_once(APP_PATH . "reporting/includes/reporting.php");
 	$page_security = 'SA_SALESTRANSVIEW';
-	Security::set_page(Input::post('order_view_mode'),
-		array('OutstandingOnly' => 'SA_SALESDELIVERY', 'InvoiceTemplates' => 'SA_SALESINVOICE'),
-		array('OutstandingOnly' => 'SA_SALESDELIVERY', 'InvoiceTemplates' => 'SA_SALESINVOICE'));
-	$js = "";
-	if (Config::get('ui_windows_popups')) {
-		$js .= ui_view::get_js_open_window(900, 600);
-	}
-
+	Security::set_page(
+		Input::post('order_view_mode'),
+		array(
+				 'OutstandingOnly'	=> 'SA_SALESDELIVERY',
+				 'InvoiceTemplates' => 'SA_SALESINVOICE'
+		),
+		array(
+				 'OutstandingOnly'	=> 'SA_SALESDELIVERY',
+				 'InvoiceTemplates' => 'SA_SALESINVOICE'
+		)
+	);
+	JS::get_js_open_window(900, 600);
 	if (AJAX_REFERRER && !empty($_POST['ajaxsearch'])) {
 		$searchArray = explode(' ', $_POST['ajaxsearch']);
 	}
@@ -47,26 +49,26 @@
 	if ($trans_type == ST_SALESORDER) {
 		if (Input::get('OutstandingOnly')) {
 			$_POST['order_view_mode'] = 'OutstandingOnly';
-			$page_title = _($help_context = "Search Outstanding Sales Orders");
+			$page_title               = _($help_context = "Search Outstanding Sales Orders");
 		}
 		elseif (isset($_GET['InvoiceTemplates']) && ($_GET['InvoiceTemplates'] == true)) {
 			$_POST['order_view_mode'] = 'InvoiceTemplates';
-			$page_title = _($help_context = "Search Template for Invoicing");
+			$page_title               = _($help_context = "Search Template for Invoicing");
 		}
 		elseif (isset($_GET['DeliveryTemplates']) && ($_GET['DeliveryTemplates'] == true)) {
 			$_POST['order_view_mode'] = 'DeliveryTemplates';
-			$page_title = _($help_context = "Select Template for Delivery");
+			$page_title               = _($help_context = "Select Template for Delivery");
 		}
 		elseif (!isset($_POST['order_view_mode'])) {
 			$_POST['order_view_mode'] = false;
-			$page_title = _($help_context = "Search All Sales Orders");
+			$page_title               = _($help_context = "Search All Sales Orders");
 		}
 	}
 	else {
 		$_POST['order_view_mode'] = "Quotations";
-		$page_title = _($help_context = "Search All Sales Quotations");
+		$page_title               = _($help_context = "Search All Sales Quotations");
 	}
-	page($page_title, false, false, "", $js);
+	Page::start($page_title);
 	if (isset($_GET['selected_customer'])) {
 		$selected_customer = $_GET['selected_customer'];
 	}
@@ -77,8 +79,9 @@
 		$selected_customer = -1;
 	}
 	//---------------------------------------------------------------------------------------------
-	if (isset($_POST['SelectStockFromList']) && ($_POST['SelectStockFromList'] != "") && (
-	 $_POST['SelectStockFromList'] != ALL_TEXT)
+	if (isset($_POST['SelectStockFromList']) && ($_POST['SelectStockFromList'] != "")
+	 && (
+		$_POST['SelectStockFromList'] != ALL_TEXT)
 	) {
 		$selected_stock_item = $_POST['SelectStockFromList'];
 	}
@@ -88,41 +91,48 @@
 	//---------------------------------------------------------------------------------------------
 	//	Query format functions
 	//
-	function check_overdue($row) {
+	function check_overdue($row)
+	{
 		global $trans_type;
 		if ($trans_type == ST_SALESQUOTE) {
 			return (Dates::date1_greater_date2(Dates::Today(), Dates::sql2date($row['delivery_date'])));
 		}
 		else {
-			return ($row['type'] == 0 && Dates::date1_greater_date2(Dates::Today(), Dates::sql2date($row['ord_date'])) && (
-			 $row['TotDelivered'] < $row['TotQuantity']));
+			return ($row['type'] == 0 && Dates::date1_greater_date2(Dates::Today(), Dates::sql2date($row['ord_date']))
+			 && (
+				$row['TotDelivered'] < $row['TotQuantity']));
 		}
 	}
 
-	function view_link($row, $order_no) {
+	function view_link($row, $order_no)
+	{
 		global $trans_type;
 		return ui_view::get_customer_trans_view_str($row['trans_type'], $order_no);
 	}
 
-	function prt_link($row) {
-
-		return print_document_link($row['order_no'], _("Print"), true, $row['trans_type'], ICON_PRINT, 'button');
+	function prt_link($row)
+	{
+		return Reporting::print_doc_link($row['order_no'], _("Print"), true, $row['trans_type'], ICON_PRINT, 'button');
 	}
 
-	function prt_link2($row) {
-		return print_document_link($row['order_no'], _("Proforma"), true, ST_PROFORMA, ICON_PRINT, 'button');
+	function prt_link2($row)
+	{
+		return Reporting::print_doc_link($row['order_no'], _("Proforma"), true, ST_PROFORMA, ICON_PRINT, 'button');
 	}
 
-	function edit_link($row) {
+	function edit_link($row)
+	{
 		$modify = ($row['trans_type'] == ST_SALESORDER ? "ModifyOrderNumber" : "ModifyQuotationNumber");
 		return pager_link(_("Edit"), "/sales/sales_order_entry.php?$modify=" . $row['order_no'], ICON_EDIT);
 	}
 
-	function email_link($row) {
+	function email_link($row)
+	{
 		return UI::emailDialogue('c', $row['debtor_no'] . '-' . $row['trans_type'] . '-' . $row['order_no']);
 	}
 
-	function dispatch_link($row) {
+	function dispatch_link($row)
+	{
 		if ($row['trans_type'] == ST_SALESORDER) {
 			return pager_link(_("Dispatch"), "/sales/customer_delivery.php?OrderNumber=" . $row['order_no'], ICON_DOC);
 		}
@@ -131,7 +141,8 @@
 		}
 	}
 
-	function invoice_link($row) {
+	function invoice_link($row)
+	{
 		if ($row['trans_type'] == ST_SALESORDER) {
 			return pager_link(_("Invoice"), "/sales/sales_order_entry.php?NewInvoice=" . $row["order_no"], ICON_DOC);
 		}
@@ -140,34 +151,42 @@
 		}
 	}
 
-	function delivery_link($row) {
+	function delivery_link($row)
+	{
 		return pager_link(_("Delivery"), "/sales/sales_order_entry.php?NewDelivery=" . $row['order_no'], ICON_DOC);
 	}
 
-	function order_link($row) {
-		return pager_link(_("Create Order"), "/sales/sales_order_entry.php?NewQuoteToSalesOrder=" .
-		 $row['order_no'], ICON_DOC);
+	function order_link($row)
+	{
+		return pager_link(
+			_("Create Order"), "/sales/sales_order_entry.php?NewQuoteToSalesOrder=" .
+		 $row['order_no'], ICON_DOC
+		);
 	}
 
-	function tmpl_checkbox($row) {
+	function tmpl_checkbox($row)
+	{
 		global $trans_type;
 		if ($trans_type == ST_SALESQUOTE) {
 			return '';
 		}
-		$name = "chgtpl" . $row['order_no'];
+		$name  = "chgtpl" . $row['order_no'];
 		$value = $row['type'] ? 1 : 0;
 		// save also in hidden field for testing during 'Update'
-		return checkbox(null, $name, $value, true, _('Set this order as a template for direct deliveries/invoices')) . hidden('last[' .
+		return checkbox(null, $name, $value, true, _('Set this order as a template for direct deliveries/invoices')) . hidden(
+			'last[' .
 			 $row
-			 ['order_no'] . ']', $value, false);
+			 ['order_no'] . ']', $value, false
+		);
 	}
 
 	//---------------------------------------------------------------------------------------------
 	// Update db record if respective checkbox value has changed.
 	//
-	function change_tpl_flag($id) {
+	function change_tpl_flag($id)
+	{
 		$Ajax = Ajax::instance();
-		$sql = "UPDATE sales_orders SET type = !type WHERE order_no=$id";
+		$sql  = "UPDATE sales_orders SET type = !type WHERE order_no=$id";
 		DBOld::query($sql, "Can't change sales order type");
 		$Ajax->activate('orders_tbl');
 	}
@@ -177,7 +196,9 @@
 		change_tpl_flag($id);
 	}
 	if (isset($_POST['Update']) && isset($_POST['last'])) {
-		foreach ($_POST['last'] as $id => $value)
+		foreach (
+			$_POST['last'] as $id => $value
+		)
 		{
 			if ($value != check_value('chgtpl' . $id)) {
 				change_tpl_flag($id);
@@ -227,14 +248,15 @@
 	//---------------------------------------------------------------------------------------------
 	//	Orders inquiry table
 	//
-	$sql = "SELECT
+	$sql
+	 = "SELECT
 		sorder.order_no,
 		sorder.trans_type,
 		sorder.reference,
 		debtor.name,
 		debtor.debtor_no,
-		branch.br_name," . ($_POST['order_view_mode'] == 'InvoiceTemplates' ||
-	 $_POST['order_view_mode'] == 'DeliveryTemplates' ? "sorder.comments, "
+		branch.br_name," . ($_POST['order_view_mode'] == 'InvoiceTemplates'
+	 || $_POST['order_view_mode'] == 'DeliveryTemplates' ? "sorder.comments, "
 	 : "sorder.customer_ref, ") . "sorder.ord_date,
 		sorder.delivery_date,
 		sorder.deliver_to,
@@ -258,7 +280,8 @@
 	else {
 		$sql .= " AND sorder.trans_type = " . $trans_type;
 	}
-	$sql .= " AND sorder.debtor_no = debtor.debtor_no
+	$sql
+	 .= " AND sorder.debtor_no = debtor.debtor_no
 		AND sorder.branch_code = branch.branch_code
 		AND debtor.debtor_no = branch.debtor_no";
 	if ($_POST['customer_id'] != ALL_TEXT) {
@@ -275,17 +298,21 @@
 		$sql .= " AND sorder.reference LIKE " . DBOld::escape($number_like) . " GROUP BY sorder.order_no";
 	}
 	elseif (AJAX_REFERRER && !empty($_POST['ajaxsearch'])) {
-		foreach ($searchArray as $ajaxsearch) {
+		foreach (
+			$searchArray as $ajaxsearch
+		) {
 			if (empty($ajaxsearch)) {
 				continue;
 			}
 			$ajaxsearch = DBOld::escape("%" . trim($ajaxsearch) . "%");
-			$sql .= " AND (debtor.name LIKE $ajaxsearch OR sorder.order_no LIKE $ajaxsearch
+			$sql
+			 .= " AND (debtor.name LIKE $ajaxsearch OR sorder.order_no LIKE $ajaxsearch
 			OR sorder.reference LIKE $ajaxsearch  OR sorder.contact_name LIKE $ajaxsearch
 			OR sorder.customer_ref LIKE $ajaxsearch
 			 OR sorder.customer_ref LIKE $ajaxsearch OR branch.br_name LIKE $ajaxsearch)";
 		}
-		$sql .= " GROUP BY sorder.ord_date,
+		$sql
+		 .= " GROUP BY sorder.ord_date,
         sorder.order_no,
 				sorder.debtor_no,
 				sorder.branch_code,
@@ -293,10 +320,11 @@
 				sorder.deliver_to";
 	}
 	else { // ... or select inquiry constraints
-		if ($_POST['order_view_mode'] != 'DeliveryTemplates' && $_POST['order_view_mode'] != 'InvoiceTemplates' && !isset(
-		$_POST['ajaxsearch'])
+		if ($_POST['order_view_mode'] != 'DeliveryTemplates' && $_POST['order_view_mode'] != 'InvoiceTemplates'
+		 && !isset(
+		 $_POST['ajaxsearch'])
 		) {
-			$date_after = Dates::date2sql($_POST['OrdersAfterDate']);
+			$date_after  = Dates::date2sql($_POST['OrdersAfterDate']);
 			$date_before = Dates::date2sql($_POST['OrdersToDate']);
 			$sql .= " AND sorder.ord_date >= '$date_after'" . " AND sorder.ord_date <= '$date_before'";
 		}
@@ -321,7 +349,8 @@
 		{
 			$sql .= " AND sorder.type=1";
 		}
-		$sql .= " GROUP BY sorder.ord_date,
+		$sql
+		 .= " GROUP BY sorder.ord_date,
         sorder.order_no,
 				sorder.debtor_no,
 				sorder.branch_code,
@@ -329,71 +358,155 @@
 				sorder.deliver_to";
 	}
 	if ($trans_type == ST_SALESORDER) {
-		$cols = array(_("Order #") => array('fun' => 'view_link', 'ord' => 'desc'),
+		$cols = array(
+			_("Order #")		 => array(
+				'fun' => 'view_link',
+				'ord' => 'desc'
+			),
 			array('type' => 'skip'),
-			_("Ref") => array('ord' => ''),
-			_("Customer") => array('ord' => ''),
+			_("Ref")				 => array('ord' => ''),
+			_("Customer")		=> array('ord' => ''),
 			array('type' => 'skip'),
-			_("Branch") => array('ord' => ''),
-			_("PO#") => array('ord' => ''),
-			_("Date") => array('type' => 'date', 'ord' => ''),
-			_("Required By") => array('type' => 'date', 'ord' => ''),
+			_("Branch")			=> array('ord' => ''),
+			_("PO#")				 => array('ord' => ''),
+			_("Date")				=> array(
+				'type' => 'date',
+				'ord'	=> ''
+			),
+			_("Required By") => array(
+				'type' => 'date',
+				'ord'	=> ''
+			),
 			_("Delivery To"),
-			_("Total") => array('type' => 'amount', 'ord' => ''),
-			'type' => 'skip',
-			_("Currency") => array('align' => 'center')
+			_("Total")			 => array(
+				'type' => 'amount',
+				'ord'	=> ''
+			),
+			'type'					 => 'skip',
+			_("Currency")		=> array('align' => 'center')
 		);
 	}
 	else {
 		$cols = array(
-			_("Quote #") => array('fun' => 'view_link', 'ord' => 'desc'),
+			_("Quote #")		 => array(
+				'fun' => 'view_link',
+				'ord' => 'desc'
+			),
 			array('type' => 'skip'),
-			_("Ref") => array('ord' => ''),
-			_("Customer") => array('ord' => ''),
+			_("Ref")				 => array('ord' => ''),
+			_("Customer")		=> array('ord' => ''),
 			array('type' => 'skip'),
-			_("Branch") => array('ord' => ''),
-			_("PO#") => array('ord' => ''),
-			_("Date") => array('type' => 'date', 'ord' => ''),
-			_("Valid until") => array('type' => 'date', 'ord' => ''),
+			_("Branch")			=> array('ord' => ''),
+			_("PO#")				 => array('ord' => ''),
+			_("Date")				=> array(
+				'type' => 'date',
+				'ord'	=> ''
+			),
+			_("Valid until") => array(
+				'type' => 'date',
+				'ord'	=> ''
+			),
 			_("Delivery To"),
-			_("Total") => array('type' => 'amount', 'ord' => ''),
-			'type' => 'skip',
-			_("Currency") => array('align' => 'center')
+			_("Total")			 => array(
+				'type' => 'amount',
+				'ord'	=> ''
+			),
+			'type'					 => 'skip',
+			_("Currency")		=> array('align' => 'center')
 		);
 	}
 	if ($_POST['order_view_mode'] == 'OutstandingOnly') {
 		//Arr::substitute($cols, 3, 1, _("Cust Order Ref"));
-		Arr::append($cols, array(array('insert' => true, 'fun' => 'dispatch_link')));
+		Arr::append(
+			$cols, array(
+									array(
+										'insert' => true,
+										'fun'		=> 'dispatch_link'
+									)
+						 )
+		);
 	}
 	elseif ($_POST['order_view_mode'] == 'InvoiceTemplates') {
 		Arr::substitute($cols, 3, 1, _("Description"));
-		Arr::append($cols, array(array('insert' => true, 'fun' => 'invoice_link')));
+		Arr::append(
+			$cols, array(
+									array(
+										'insert' => true,
+										'fun'		=> 'invoice_link'
+									)
+						 )
+		);
 	}
 	else {
 		if ($_POST['order_view_mode'] == 'DeliveryTemplates') {
 			Arr::substitute($cols, 3, 1, _("Description"));
-			Arr::append($cols, array(array('insert' => true, 'fun' => 'delivery_link')));
+			Arr::append(
+				$cols, array(
+										array(
+											'insert' => true,
+											'fun'		=> 'delivery_link'
+										)
+							 )
+			);
 		}
 		elseif ($trans_type == ST_SALESQUOTE) {
-			Arr::append($cols,
-				array(array('insert' => true, 'type' => 'skip'),
-					array('insert' => true, 'type' => 'skip'),
-					array('insert' => true, 'fun' => 'edit_link'),
-					array('insert' => true, 'fun' => 'order_link'),
-					array('insert' => true, 'fun' => 'email_link'),
-					array('insert' => true, 'fun' => 'prt_link')
+			Arr::append(
+				$cols,
+				array(
+						 array(
+							 'insert' => true,
+							 'type'	 => 'skip'
+						 ),
+						 array(
+							 'insert' => true,
+							 'type'	 => 'skip'
+						 ),
+						 array(
+							 'insert' => true,
+							 'fun'		=> 'edit_link'
+						 ),
+						 array(
+							 'insert' => true,
+							 'fun'		=> 'order_link'
+						 ),
+						 array(
+							 'insert' => true,
+							 'fun'		=> 'email_link'
+						 ),
+						 array(
+							 'insert' => true,
+							 'fun'		=> 'prt_link'
+						 )
 				)
 			);
 		}
 		elseif ($trans_type == ST_SALESORDER) {
-			Arr::append($cols,
+			Arr::append(
+				$cols,
 				array(
-					_("Tmpl") => array('type' => 'skip', 'insert' => true, 'fun' => 'tmpl_checkbox'),
-					array('insert' => true, 'fun' => 'edit_link'),
-					array('insert' => true, 'fun' => 'email_link'),
-					array('insert' => true, 'fun' => 'prt_link2'),
-					array('insert' => true, 'fun' => 'prt_link')
-				));
+						 _("Tmpl") => array(
+							 'type'	 => 'skip',
+							 'insert' => true,
+							 'fun'		=> 'tmpl_checkbox'
+						 ),
+						 array(
+							 'insert' => true,
+							 'fun'		=> 'edit_link'
+						 ),
+						 array(
+							 'insert' => true,
+							 'fun'		=> 'email_link'
+						 ),
+						 array(
+							 'insert' => true,
+							 'fun'		=> 'prt_link2'
+						 ),
+						 array(
+							 'insert' => true,
+							 'fun'		=> 'prt_link'
+						 )
+				)
+			);
 		}
 	}
 	;

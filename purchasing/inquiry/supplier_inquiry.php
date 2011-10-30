@@ -10,16 +10,10 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	$page_security = 'SA_SUPPTRANSVIEW';
-
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	include(APP_PATH . "purchasing/includes/purchasing_ui.php");
-	include(APP_PATH . "reporting/includes/reporting.php");
-	$js = "";
-	if (Config::get('ui_windows_popups')) {
-		$js .= ui_view::get_js_open_window(900, 500);
-	}
-
-	page(_($help_context = "Supplier Inquiry"), false, false, "", $js);
+	JS::get_js_open_window(900, 500);
+	Page::start(_($help_context = "Supplier Inquiry"));
 	if (isset($_GET['supplier_id'])) {
 		$_POST['supplier_id'] = $_GET['supplier_id'];
 	}
@@ -45,14 +39,16 @@
 	end_table();
 	ui_globals::set_global_supplier($_POST['supplier_id']);
 	//------------------------------------------------------------------------------------------------
-	function display_supplier_summary($supplier_record) {
-		$past1 = DB_Company::get_pref('past_due_days');
-		$past2 = 2 * $past1;
-		$nowdue = "1-" . $past1 . " " . _('Days');
+	function display_supplier_summary($supplier_record)
+	{
+		$past1    = DB_Company::get_pref('past_due_days');
+		$past2    = 2 * $past1;
+		$nowdue   = "1-" . $past1 . " " . _('Days');
 		$pastdue1 = $past1 + 1 . "-" . $past2 . " " . _('Days');
 		$pastdue2 = _('Over') . " " . $past2 . " " . _('Days');
 		start_table("width=90%  " . Config::get('tables_style'));
-		$th = array(_("Currency"), _("Terms"), _("Current"), $nowdue,
+		$th = array(
+			_("Currency"), _("Terms"), _("Current"), $nowdue,
 			$pastdue1, $pastdue2, _("Total Balance"), _("Total For Search Period")
 		);
 		table_header($th);
@@ -80,49 +76,61 @@
 		$Ajax->activate('totals_tbl');
 	}
 	//------------------------------------------------------------------------------------------------
-	function systype_name($dummy, $type) {
+	function systype_name($dummy, $type)
+	{
 		global $systypes_array;
 		return $systypes_array[$type];
 	}
 
-	function trans_view($trans) {
+	function trans_view($trans)
+	{
 		return ui_view::get_trans_view_str($trans["type"], $trans["trans_no"]);
 	}
 
-	function due_date($row) {
+	function due_date($row)
+	{
 		return ($row["type"] == ST_SUPPINVOICE) || ($row["type"] == ST_SUPPCREDIT) ? $row["due_date"] : '';
 	}
 
-	function gl_view($row) {
+	function gl_view($row)
+	{
 		return ui_view::get_gl_view_str($row["type"], $row["trans_no"]);
 	}
 
-	function credit_link($row) {
+	function credit_link($row)
+	{
 		return $row['type'] == ST_SUPPINVOICE && $row["TotalAmount"] - $row["Allocated"] > 0 ?
-		 pager_link(_("Credit This"),
-			"/purchasing/supplier_credit.php?New=1&invoice_no=" .
-			 $row['trans_no'], ICON_CREDIT)
+		 pager_link(
+			 _("Credit This"),
+			 "/purchasing/supplier_credit.php?New=1&invoice_no=" .
+				$row['trans_no'], ICON_CREDIT
+		 )
 		 : '';
 	}
 
-	function fmt_debit($row) {
+	function fmt_debit($row)
+	{
 		$value = $row["TotalAmount"];
 		return $value >= 0 ? price_format($value) : '';
 	}
 
-	function fmt_credit($row) {
+	function fmt_credit($row)
+	{
 		$value = -$row["TotalAmount"];
 		return $value > 0 ? price_format($value) : '';
 	}
 
-	function prt_link($row) {
+	function prt_link($row)
+	{
 		if ($row['type'] == ST_SUPPAYMENT || $row['type'] == ST_BANKPAYMENT || $row['type'] == ST_SUPPCREDIT) {
-			return print_document_link(
-				$row['trans_no'] . "-" . $row['type'], _("Print Remittance"), true, ST_SUPPAYMENT, ICON_PRINT);
+			return Reporting::print_doc_link(
+				$row['trans_no'] . "-" . $row['type'], _("Print Remittance"), true, ST_SUPPAYMENT, ICON_PRINT
+			);
 		}
 	}
 
-	function check_overdue($row) {
+	function check_overdue($row)
+	{
 		return $row['OverDue'] == 1
 		 && (abs($row["TotalAmount"]) - $row["Allocated"] != 0);
 	}
@@ -133,9 +141,10 @@
 		unset($_POST['supplier_id']);
 	}
 	$date_after = Dates::date2sql($_POST['TransAfterDate']);
-	$date_to = Dates::date2sql($_POST['TransToDate']);
+	$date_to    = Dates::date2sql($_POST['TransToDate']);
 	// Sherifoz 22.06.03 Also get the description
-	$sql = "SELECT trans.type,
+	$sql
+	 = "SELECT trans.type,
 		trans.trans_no,
 		trans.reference, 
 		supplier.supp_name,
@@ -153,7 +162,9 @@
     	WHERE supplier.supplier_id = trans.supplier_id
      	AND trans.ov_amount != 0"; // exclude voided transactions
 	if (AJAX_REFERRER && !empty($_POST['ajaxsearch'])) {
-		foreach ($searchArray as $ajaxsearch) {
+		foreach (
+			$searchArray as $ajaxsearch
+		) {
 			if (empty($ajaxsearch)) {
 				continue;
 			}
@@ -172,7 +183,8 @@
 			$sql .= ")";
 		}
 	} else {
-		$sql .= " AND trans . tran_date >= '$date_after'
+		$sql
+		 .= " AND trans . tran_date >= '$date_after'
 	            AND trans . tran_date <= '$date_to'";
 	}
 	if (Input::post('supplier_id') != ALL_TEXT) {
@@ -202,20 +214,49 @@
 		}
 	}
 	$cols = array(
-		_("Type") => array('fun' => 'systype_name', 'ord' => ''),
-		_("#") => array('fun' => 'trans_view', 'ord' => ''),
+		_("Type")				=> array(
+			'fun' => 'systype_name',
+			'ord' => ''
+		),
+		_("#")					 => array(
+			'fun' => 'trans_view',
+			'ord' => ''
+		),
 		_("Reference"),
-		_("Supplier") => array('type' => 'id'),
+		_("Supplier")		=> array('type' => 'id'),
 		_("Supplier ID") => 'skip',
 		_("Supplier's Reference"),
-		_("Date") => array('name' => 'tran_date', 'type' => 'date', 'ord' => 'desc'),
-		_("Due Date") => array('type' => 'date', 'fun' => 'due_date'),
-		_("Currency") => array('align' => 'center'),
-		_("Debit") => array('align' => 'right', 'fun' => 'fmt_debit'),
-		_("Credit") => array('align' => 'right', 'insert' => true, 'fun' => 'fmt_credit'),
-		array('insert' => true, 'fun' => 'gl_view'),
-		array('insert' => true, 'fun' => 'credit_link'),
-		array('insert' => true, 'fun' => 'prt_link')
+		_("Date")				=> array(
+			'name' => 'tran_date',
+			'type' => 'date',
+			'ord'	=> 'desc'
+		),
+		_("Due Date")		=> array(
+			'type' => 'date',
+			'fun'	=> 'due_date'
+		),
+		_("Currency")		=> array('align' => 'center'),
+		_("Debit")			 => array(
+			'align' => 'right',
+			'fun'	 => 'fmt_debit'
+		),
+		_("Credit")			=> array(
+			'align'	=> 'right',
+			'insert' => true,
+			'fun'		=> 'fmt_credit'
+		),
+		array(
+			'insert' => true,
+			'fun'		=> 'gl_view'
+		),
+		array(
+			'insert' => true,
+			'fun'		=> 'credit_link'
+		),
+		array(
+			'insert' => true,
+			'fun'		=> 'prt_link'
+		)
 	);
 	if (Input::post('supplier_id') != ALL_TEXT) {
 		$cols[_("Supplier")] = 'skip';
@@ -228,7 +269,6 @@
 	$table->width = "85%";
 	display_db_pager($table);
 	Supplier::addInfoDialog('.pagerclick');
-
 	end_form();
 	end_page();
 

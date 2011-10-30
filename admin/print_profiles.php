@@ -10,27 +10,24 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	$page_security = 'SA_PRINTPROFILE';
-
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-
-	page(_($help_context = "Printing Profiles"));
-
+	Page::start(_($help_context = "Printing Profiles"));
 	$selected_id = get_post('profile_id', '');
-
 	//-------------------------------------------------------------------------------------------------
 	// Returns array of defined reports
 	//
-	function get_reports() {
-
+	function get_reports()
+	{
 		if (Config::get('debug') || !isset($_SESSION['reports'])) {
 			// to save time, store in session.
-			$paths = array(
+			$paths   = array(
 				PATH_TO_ROOT . '/reporting/',
 				COMPANY_PATH . '/reporting/'
 			);
 			$reports = array('' => _('Default printing destination'));
-
-			foreach ($paths as $dirno => $path) {
+			foreach (
+				$paths as $dirno => $path
+			) {
 				$repdir = opendir($path);
 				while (false !== ($fname = readdir($repdir)))
 				{
@@ -42,7 +39,6 @@
 					) {
 						$repno = $match[1];
 						$title = '';
-
 						$line = file_get_contents($path . $fname);
 						if (preg_match('/.*(FrontReport\()\s*_\([\'"]([^\'"]*)/', $line, $match)) {
 							$title = trim($match[2]);
@@ -62,17 +58,21 @@
 		return $_SESSION['reports'];
 	}
 
-	function clear_form() {
+	function clear_form()
+	{
 		global $selected_id;
-		$Ajax = Ajax::instance();
-		$selected_id = '';
+		$Ajax          = Ajax::instance();
+		$selected_id   = '';
 		$_POST['name'] = '';
 		$Ajax->activate('_page_body');
 	}
 
-	function check_delete($name) {
+	function check_delete($name)
+	{
 		// check if selected profile is used by any user
-		if ($name == '') return 0; // cannot delete system default profile
+		if ($name == '') {
+			return 0;
+		} // cannot delete system default profile
 		$sql = "SELECT * FROM users WHERE print_profile=" . DBOld::escape($name);
 		$res = DBOld::query($sql, 'cannot check printing profile usage');
 		return DBOld::num_rows($res);
@@ -80,24 +80,23 @@
 
 	//-------------------------------------------------------------------------------------------
 	if (get_post('submit')) {
-
 		$error = 0;
-
 		if ($_POST['profile_id'] == '' && empty($_POST['name'])) {
 			$error = 1;
 			ui_msgs::display_error(_("Printing profile name cannot be empty."));
-			ui_view::set_focus('name');
+			JS::set_focus('name');
 		}
-
 		if (!$error) {
 			$prof = array('' => get_post('Prn')); // store default value/profile name
-			foreach (get_reports() as $rep => $descr) {
-				$val = get_post('Prn' . $rep);
+			foreach (
+				get_reports() as $rep => $descr
+			) {
+				$val        = get_post('Prn' . $rep);
 				$prof[$rep] = $val;
 			}
-			if ($_POST['profile_id'] == '')
+			if ($_POST['profile_id'] == '') {
 				$_POST['profile_id'] = get_post('name');
-
+			}
 			Printer::update_profile($_POST['profile_id'], $prof);
 			if ($selected_id == '') {
 				ui_msgs::display_notification_centered(_('New printing profile has been created'));
@@ -107,7 +106,6 @@
 			}
 		}
 	}
-
 	if (get_post('delete')) {
 		if (!check_delete(get_post('name'))) {
 			Printer::delete_profile($selected_id);
@@ -115,67 +113,77 @@
 			clear_form();
 		}
 	}
-
 	if (get_post('_profile_id_update')) {
 		$Ajax->activate('_page_body');
 	}
-
 	start_form();
 	start_table();
-	print_profiles_list_row(_('Select printing profile') . ':', 'profile_id', null,
-		_('New printing profile'), true);
+	print_profiles_list_row(
+		_('Select printing profile') . ':', 'profile_id', null,
+		_('New printing profile'), true
+	);
 	end_table();
 	echo '<hr>';
 	start_table();
-	if (get_post('profile_id') == '')
+	if (get_post('profile_id') == '') {
 		text_row(_("Printing Profile Name") . ':', 'name', null, 30, 30);
+	}
 	else
+	{
 		label_cells(_("Printing Profile Name") . ':', get_post('profile_id'));
+	}
 	end_table(1);
-
 	$result = Printer::get_profile(get_post('profile_id'));
 	$prints = array();
 	while ($myrow = DBOld::fetch($result)) {
 		$prints[$myrow['report']] = $myrow['printer'];
 	}
-
 	start_table(Config::get('tables_style'));
 	$th = array(_("Report Id"), _("Description"), _("Printer"));
 	table_header($th);
-
-	$k = 0;
+	$k    = 0;
 	$unkn = 0;
-	foreach (get_reports() as $rep => $descr)
+	foreach (
+		get_reports() as $rep => $descr
+	)
 	{
 		alt_table_row_color($k);
-
 		label_cell($rep == '' ? '-' : $rep, 'align=center');
 		label_cell($descr == '' ? '???<sup>1)</sup>' : _($descr));
 		$_POST['Prn' . $rep] = isset($prints[$rep]) ? $prints[$rep] : '';
 		echo '<td>';
-		echo printers_list('Prn' . $rep, null,
-			$rep == '' ? _('Browser support') : _('Default'));
+		echo printers_list(
+			'Prn' . $rep, null,
+			$rep == '' ? _('Browser support') : _('Default')
+		);
 		echo '</td>';
-		if ($descr == '') $unkn = 1;
+		if ($descr == '') {
+			$unkn = 1;
+		}
 		end_row();
 	}
 	end_table();
-	if ($unkn)
+	if ($unkn) {
 		ui_msgs::display_warning('<sup>1)</sup>&nbsp;-&nbsp;' . _("no title was found in this report definition file."), 0, 1, '');
+	}
 	else
+	{
 		echo '<br>';
-
+	}
 	div_start('controls');
 	if (get_post('profile_id') == '') {
 		submit_center('submit', _("Add New Profile"), true, '', 'default');
 	} else {
-		submit_center_first('submit', _("Update Profile"),
-			_('Update printer profile'), 'default');
-		submit_center_last('delete', _("Delete Profile"),
-			_('Delete printer profile (only if not used by any user)'), true);
+		submit_center_first(
+			'submit', _("Update Profile"),
+			_('Update printer profile'), 'default'
+		);
+		submit_center_last(
+			'delete', _("Delete Profile"),
+			_('Delete printer profile (only if not used by any user)'), true
+		);
 	}
 	div_end();
-
 	end_form();
 	end_page();
 

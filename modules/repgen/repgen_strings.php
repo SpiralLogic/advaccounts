@@ -1,78 +1,92 @@
 <?php
 	/*
-	 *  Werner Bauer
-	 *  5.2.2002
-	 *  file: repgen_seite.php
-	 *  Changed 19.11.2002 Version 0.44 Total, reportheader+footer
-	 *
-	 *  item definition routine for Report generator repgen.
-	 *
-	 *  shows all items of a report and enables creation of an item
-	 *
-	 * 1. A section where utility functions are defined.
-	 * 2. A section that is called only after the submit.
-	 * 3. And a final section that is called when the script runs first time and
-	 *    every time after the submit.
-	 *
-	 * Scripts organized in this way will allow the user perpetual
-	 * editing and they will reflect submitted changes immediately
-	 * after a form submission.
-	 *
-	 * We consider this to be the standard organization of table editor
-	 * scripts.
-	 *
-	 */
-
+		 *  Werner Bauer
+		 *  5.2.2002
+		 *  file: repgen_seite.php
+		 *  Changed 19.11.2002 Version 0.44 Total, reportheader+footer
+		 *
+		 *  item definition routine for Report generator repgen.
+		 *
+		 *  shows all items of a report and enables creation of an item
+		 *
+		 * 1. A section where utility functions are defined.
+		 * 2. A section that is called only after the submit.
+		 * 3. And a final section that is called when the script runs first time and
+		 *    every time after the submit.
+		 *
+		 * Scripts organized in this way will allow the user perpetual
+		 * editing and they will reflect submitted changes immediately
+		 * after a form submission.
+		 *
+		 * We consider this to be the standard organization of table editor
+		 * scripts.
+		 *
+		 */
 	$page_security = 'SA_REPORT_GENERATOR';
-
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	add_access_extensions();
-
 	require_once("repgen_const.php");
 	require_once("repgen_def.php");
 	require_once("repgen.php");
-
-	if (!isset($sel_art))
+	if (!isset($sel_art)) {
 		$sel_art = "";
-	if (!isset($sel_font))
+	}
+	if (!isset($sel_font)) {
 		$sel_font = "";
-	if (!isset($sel_fontsize))
+	}
+	if (!isset($sel_fontsize)) {
 		$sel_fontsize = "";
-	if (!isset($sel_typ))
+	}
+	if (!isset($sel_typ)) {
 		$sel_typ = "";
-	if (!isset($sel_center))
+	}
+	if (!isset($sel_center)) {
 		$sel_center = "";
-	if (!isset($term))
+	}
+	if (!isset($term)) {
 		$term = "";
-	if (!isset($feld))
+	}
+	if (!isset($feld)) {
 		$feld = "";
-	if (!isset($alternate))
+	}
+	if (!isset($alternate)) {
 		$alternate = "";
-	if (!isset($attrib))
+	}
+	if (!isset($attrib)) {
 		$attrib = "";
-	if (!isset($block))
+	}
+	if (!isset($block)) {
 		$block = "";
-
-	function m_s($a1, $a2) { // sets "selected" in select box when $a1 == $a2
-		if ($a1 == $a2)
+	}
+	function m_s($a1, $a2)
+	{ // sets "selected" in select box when $a1 == $a2
+		if ($a1 == $a2) {
 			return "selected";
+		}
 		else
+		{
 			return "";
+		}
 	}
 
-	function m_c($a1, $a2) { // sets "checked" in radio box when $a1 == $a2
-		if ($a1 == $a2)
+	function m_c($a1, $a2)
+	{ // sets "checked" in radio box when $a1 == $a2
+		if ($a1 == $a2) {
 			return "checked";
+		}
 		else
+		{
 			return "";
+		}
 	}
 
-	function de_read($id_new) { // read all item-records and returns all DE-Attributs
-		$ar = array();
+	function de_read($id_new)
+	{ // read all item-records and returns all DE-Attributs
+		$ar  = array();
 		$res = DBOld::query("SELECT attrib FROM xx_reports WHERE (id = '" . $id_new . "' AND typ='item')");
 		while ($f = DBOld::fetch($res))
 		{
-			$attr = $f["attrib"];
+			$attr   = $f["attrib"];
 			$attr_h = explode("|", $attr);
 			if ($attr_h[1] == "DE") { // nur art="DE" - Saetze interessieren
 				$ar[] = $attr;
@@ -81,12 +95,16 @@
 		return $ar;
 	}
 
-	function is_ord($ar) { // checks, if there is an DE-item with ord<> ""
-		for ($i = 0; $i < sizeof($ar); $i++)
+	function is_ord($ar)
+	{ // checks, if there is an DE-item with ord<> ""
+		for (
+			$i = 0; $i < sizeof($ar); $i++
+		)
 		{
 			$attr_h = explode("|", $ar[$i]); //
-			if (!empty($attr_h[8]))
+			if (!empty($attr_h[8])) {
 				return true;
+			}
 		}
 		return false;
 	}
@@ -94,236 +112,245 @@
 	###
 	### Submit Handler
 	###
-
 	## Check if there was a submission
 	## Get a database connection
-
 	//while (is_array($HTTP_POST_VARS) && list($key, $val) = each($HTTP_POST_VARS))
 	while (is_array($_POST) && list($key, $val) = each($_POST))
 	{
 		switch ($key)
 		{
-
 			// go back
-			case "back":
-				$url = REPGENDIR . "/repgen_select.php";
-				header("Location: http://$HTTP_HOST" . $url); // switches to page 'select a report'
-				exit;
+		case "back":
+			$url = REPGENDIR . "/repgen_select.php";
+			header("Location: http://$HTTP_HOST" . $url); // switches to page 'select a report'
+			exit;
+			break;
+		case "delete":
+			// deletes item from table reports
+			$query = "DELETE FROM xx_reports WHERE (id ='$id1' AND attrib = '$attrib')";
+			DBOld::query($query);
+			break;
+		case "insert":
+			//  inserts item into table reports
+			// test the input
+			if (!isset($total)) {
+				$total = "";
+			}
+			if (!isset($o_score)) {
+				$o_score = "";
+			}
+			if (!isset($u_score)) {
+				$u_score = "";
+			}
+			if (!isset($bold)) {
+				$bold = "";
+			}
+			$is_ord = !(empty($number) || empty($ord)); //enter order = true
+			$is_y1   = !empty($y1) || ($y1 == "0");
+			$is_from = !empty($from) || ($from == "0");
+			$is_to   = !empty($to) || ($to == "0");
+			if ((!$is_y1 || empty($x1)) && !$is_ord) { // No Rf and x or y error
+				$error = ERROR_XY;
 				break;
-			case "delete":
-				// deletes item from table reports
-				$query = "DELETE FROM xx_reports WHERE (id ='$id1' AND attrib = '$attrib')";
-				DBOld::query($query);
+			}
+			if ((!empty($x1) && !empty($y1) && $is_ord)) { // RF and x and y enter -> Error
+				$error = ERROR_MIX;
 				break;
-			case "insert":
-				//  inserts item into table reports
-				// test the input
-				if (!isset($total))
-					$total = "";
-				if (!isset($o_score))
-					$o_score = "";
-				if (!isset($u_score))
-					$u_score = "";
-				if (!isset($bold))
-					$bold = "";
-				$is_ord = !(empty($number) || empty($ord)); //enter order = true
-				$is_y1 = !empty($y1) || ($y1 == "0");
-				$is_from = !empty($from) || ($from == "0");
-				$is_to = !empty($to) || ($to == "0");
-				if ((!$is_y1 || empty($x1)) && !$is_ord) { // No Rf and x or y error
-					$error = ERROR_XY;
+			}
+			if (($sel_art != "DE") && $is_ord) { // Rf only when art <> DE
+				$error = ERROR_ORDER;
+				break;
+			}
+			if ($report_type != "single") {
+				if (empty($id_new) || (empty($number) && empty($x1)) || empty($number)) { // no entrance
+					$error = ERROR_EMPTY;
 					break;
 				}
-				if ((!empty($x1) && !empty($y1) && $is_ord)) { // RF and x and y enter -> Error
+				if ($is_from || $is_to) { // $from or $to have value
+					$from = 0 + $from;
+					$to   = 0 + $to;
+					if ($from < 1) {
+						$from = 1;
+					} // $from must be > 0
+					if ($to > $number) {
+						$to = $number;
+					} // $to must not > $number
+					if ($to == 0) {
+						$to = $number;
+					} // $to must not > 0
+					if ($from >= $to) {
+						$error = ERROR_TO;
+						break;
+					}
+				}
+				$is_x    = !empty($x1);
+				$attr_ar = array();
+				$attr_ar = de_read($id_new); // reading Detail -items and return as array
+				$ord_attr = is_ord($attr_ar);
+				if (($is_x && $ord_attr) || ($is_x && $is_ord)) {
+					// x and y entrance and art=DE, even if Rf is saved
 					$error = ERROR_MIX;
 					break;
 				}
-				if (($sel_art != "DE") && $is_ord) { // Rf only when art <> DE
-					$error = ERROR_ORDER;
+				if (($sel_typ == "String") && empty($value_)) {
+					$error = ERROR_VALUE;
 					break;
 				}
-				if ($report_type != "single") {
-					if (empty($id_new) || (empty($number) && empty($x1)) || empty($number)) { // no entrance
-						$error = ERROR_EMPTY;
-						break;
-					}
-					if ($is_from || $is_to) { // $from or $to have value
-						$from = 0 + $from;
-						$to = 0 + $to;
-						if ($from < 1)
-							$from = 1; // $from must be > 0
-						if ($to > $number)
-							$to = $number; // $to must not > $number
-						if ($to == 0)
-							$to = $number; // $to must not > 0
-						if ($from >= $to) {
-							$error = ERROR_TO;
-							break;
-						}
-					}
-					$is_x = !empty($x1);
-					$attr_ar = array();
-					$attr_ar = de_read($id_new); // reading Detail -items and return as array
-					$ord_attr = is_ord($attr_ar);
-
-					if (($is_x && $ord_attr) || ($is_x && $is_ord)) {
-						// x and y entrance and art=DE, even if Rf is saved
-						$error = ERROR_MIX;
-						break;
-					}
-					if (($sel_typ == "String") && empty($value_)) {
-						$error = ERROR_VALUE;
-						break;
-					}
-					if (($sel_typ == "Textarea") && empty($term) && empty($width)) {
-						$error = ERROR_VALUE;
-						break;
-					}
-
-					if (($total == "true") && ($sel_art != "DE")) {
-						$error = ERROR_TOTAL;
-						break;
-					}
-
-					////////////////// end of input-Test /////////////
-					if ($sel_typ == "Textarea") {
-						$number = $width;
-					}
-
-					$attrib1 = $sel_typ . "|" . $sel_art . "|" . $sel_font . "|" . $sel_fontsize . "|" . $number . $sel_center . "|" . $x1 . "|" . $y1 . "|";
-					DBOld::query("BEGIN");
-					switch ($sel_typ)
-					{
-						case "DB":
-							$attrib1 .= $feld;
-							break;
-						case "Term":
-						case "Textarea":
-							$attrib1 .= $term;
-							break;
-						case "String":
-							$attrib1 .= $value_;
-							break;
-						case "Block":
-							$attrib1 .= $block;
-							break;
-						default:
-							$attrib1 .= $value_;
-							break;
-					}
-
-					$attrib1 .= "|" . $ord; // new attrib is ready
-					$attrib1 .= "|"; // no decode
-					$attrib1 .= "|" . $from . "|" . $to; // begin and end of substring
-					$attrib1 .= "|" . $total . "|" . $o_score . "|" . $u_score . "|" . $bold; // total sum for this item
-					if ($alternate == "true") { // coming from change
-						$query = "DELETE FROM xx_reports WHERE (id = '" . $id_new . "' AND attrib ='" . $attriba . "' AND typ='item')";
+				if (($sel_typ == "Textarea") && empty($term) && empty($width)) {
+					$error = ERROR_VALUE;
+					break;
+				}
+				if (($total == "true") && ($sel_art != "DE")) {
+					$error = ERROR_TOTAL;
+					break;
+				}
+				////////////////// end of input-Test /////////////
+				if ($sel_typ == "Textarea") {
+					$number = $width;
+				}
+				$attrib1 = $sel_typ . "|" . $sel_art . "|" . $sel_font . "|" . $sel_fontsize . "|" . $number . $sel_center . "|" . $x1 . "|" . $y1 . "|";
+				DBOld::query("BEGIN");
+				switch ($sel_typ)
+				{
+				case "DB":
+					$attrib1 .= $feld;
+					break;
+				case "Term":
+				case "Textarea":
+					$attrib1 .= $term;
+					break;
+				case "String":
+					$attrib1 .= $value_;
+					break;
+				case "Block":
+					$attrib1 .= $block;
+					break;
+				default:
+					$attrib1 .= $value_;
+					break;
+				}
+				$attrib1 .= "|" . $ord; // new attrib is ready
+				$attrib1 .= "|"; // no decode
+				$attrib1 .= "|" . $from . "|" . $to; // begin and end of substring
+				$attrib1 .= "|" . $total . "|" . $o_score . "|" . $u_score . "|" . $bold; // total sum for this item
+				if ($alternate == "true") { // coming from change
+					$query = "DELETE FROM xx_reports WHERE (id = '" . $id_new . "' AND attrib ='" . $attriba . "' AND typ='item')";
+					DBOld::query($query);
+					$alternate = "false";
+				}
+				$query = "SELECT * FROM xx_reports WHERE (id = '" . $id_new . "' AND attrib ='" . $attrib1 . "' AND typ='item')";
+				$res   = DBOld::query($query);
+				if (DBOld::num_rows($res) == 0) { // it is new item, store it
+					if (empty($ord)) { // store X/Y -item
+						$query = "INSERT INTO xx_reports VALUES('$id_new','item','$attrib1')";
 						DBOld::query($query);
-						$alternate = "false";
+						$error = NULL;
 					}
-
-					$query = "SELECT * FROM xx_reports WHERE (id = '" . $id_new . "' AND attrib ='" . $attrib1 . "' AND typ='item')";
-					$res = DBOld::query($query);
-					if (DBOld::num_rows($res) == 0) { // it is new item, store it
-						if (empty($ord)) { // store X/Y -item
-							$query = "INSERT INTO xx_reports VALUES('$id_new','item','$attrib1')";
+					else
+					{ // rearrange all items with correct ord ($h[8]) (there are only items with ord)
+						$attr_h = array();
+						for (
+							$i = 0; $i < count($attr_ar); $i++
+						)
+						{ // create array(ord => attrib) and delete records
+							$h             = explode("|", $attr_ar[$i]);
+							$attr_h[$h[8]] = $attr_ar[$i];
+							$query         = "DELETE FROM xx_reports WHERE (id = '" . $id_new . "' AND attrib ='" .
+							 $attr_ar[$i] . "' AND typ='item')";
 							DBOld::query($query);
-							$error = NULL;
 						}
-						else
-						{ // rearrange all items with correct ord ($h[8]) (there are only items with ord)
-							$attr_h = array();
-							for ($i = 0; $i < count($attr_ar); $i++)
-							{ // create array(ord => attrib) and delete records
-								$h = explode("|", $attr_ar[$i]);
-								$attr_h[$h[8]] = $attr_ar[$i];
-								$query = "DELETE FROM xx_reports WHERE (id = '" . $id_new . "' AND attrib ='" .
-								 $attr_ar[$i] . "' AND typ='item')";
+						ksort($attr_h, SORT_STRING); // sort old items
+						reset($attr_h);
+						$li      = 1;
+						$entered = false;
+						while (list($key, $attr) = each($attr_h))
+						{ // write items back and insert the new at the right position
+							$h = explode("|", $attr);
+							if (($ord <= $h[8]) && !$entered) { // insert new item in the hole or before old item
+								$hi      = explode("|", $attrib1);
+								$hi[8]   = $li;
+								$attrib1 = implode("|", $hi);
+								$query   = "INSERT INTO xx_reports VALUES('$id_new','item','$attrib1')";
 								DBOld::query($query);
-							}
-							ksort($attr_h, SORT_STRING); // sort old items
-							reset($attr_h);
-							$li = 1;
-							$entered = false;
-							while (list($key, $attr) = each($attr_h))
-							{ // write items back and insert the new at the right position
-								$h = explode("|", $attr);
-								if (($ord <= $h[8]) && !$entered) { // insert new item in the hole or before old item
-									$hi = explode("|", $attrib1);
-									$hi[8] = $li;
-									$attrib1 = implode("|", $hi);
-									$query = "INSERT INTO xx_reports VALUES('$id_new','item','$attrib1')";
-									DBOld::query($query);
-									$entered = true;
-									$li++;
-								}
-								$h[8] = $li;
-								$attr = implode("|", $h);
-								$query = "INSERT INTO xx_reports VALUES('$id_new','item','$attr')";
-								DBOld::query($query);
+								$entered = true;
 								$li++;
 							}
-							if ($ord > $h[8]) { // the new item has the greatest ord-number $ord of all items
-								$hi = explode("|", $attrib1);
-								$hi[8] = $li;
-								$attrib1 = implode("|", $hi);
-								$query = "INSERT INTO xx_reports VALUES('$id_new','item','$attrib1')";
-								DBOld::query($query);
-							}
+							$h[8]  = $li;
+							$attr  = implode("|", $h);
+							$query = "INSERT INTO xx_reports VALUES('$id_new','item','$attr')";
+							DBOld::query($query);
+							$li++;
+						}
+						if ($ord > $h[8]) { // the new item has the greatest ord-number $ord of all items
+							$hi      = explode("|", $attrib1);
+							$hi[8]   = $li;
+							$attrib1 = implode("|", $hi);
+							$query   = "INSERT INTO xx_reports VALUES('$id_new','item','$attrib1')";
+							DBOld::query($query);
 						}
 					}
 				}
-				DBOld::query("COMMIT");
-				break;
-
-			case "alter":
-				//  alters item into table reports
-				$alternate = "true";
-				$h = explode("|", $attrib);
-				for ($i = 0; $i < 16; $i++)
-				{
-					if (!isset($h[$i]))
-						$h[$i] = "";
+			}
+			DBOld::query("COMMIT");
+			break;
+		case "alter":
+			//  alters item into table reports
+			$alternate = "true";
+			$h         = explode("|", $attrib);
+			for (
+				$i = 0; $i < 16; $i++
+			)
+			{
+				if (!isset($h[$i])) {
+					$h[$i] = "";
 				}
-				$sel_typ = $h[0];
-				$sel_art = $h[1];
-				$sel_font = $h[2];
-				$sel_fontsize = $h[3];
-				$number = substr($h[4], 0, strlen($h[4]) - 1);
-
-				$sel_center = substr($h[4], strlen($h[4]) - 1, 1);
-				$x1 = $h[5];
-				$y1 = $h[6];
-				if ($sel_typ == "String")
-					$value_ = $h[7];
-				if ($sel_typ == "DB")
-					$feld = $h[7];
-				if ($sel_typ == "Term")
-					$term = $h[7];
-				if ($sel_typ == "Textarea") {
-					$term = $h[7];
-					$width = $h[4]; // width stored in $number!
-				}
-
-				$ord = $h[8];
-				$from = $h[10];
-				if (trim($h[11]) != "")
-					$to = $h[11];
-				else
-					$to = ""; // there could be a trailing space from the database
-				$total = $h[12];
-				$o_score = $h[13];
-				$u_score = $h[14];
-				if (trim($h[15]) != "")
-					$bold = $h[15];
-				else
-					$bold = ""; // there could be a trailing space from the database
-				break;
-			default:
-				break;
+			}
+			$sel_typ      = $h[0];
+			$sel_art      = $h[1];
+			$sel_font     = $h[2];
+			$sel_fontsize = $h[3];
+			$number       = substr($h[4], 0, strlen($h[4]) - 1);
+			$sel_center = substr($h[4], strlen($h[4]) - 1, 1);
+			$x1         = $h[5];
+			$y1         = $h[6];
+			if ($sel_typ == "String") {
+				$value_ = $h[7];
+			}
+			if ($sel_typ == "DB") {
+				$feld = $h[7];
+			}
+			if ($sel_typ == "Term") {
+				$term = $h[7];
+			}
+			if ($sel_typ == "Textarea") {
+				$term  = $h[7];
+				$width = $h[4]; // width stored in $number!
+			}
+			$ord  = $h[8];
+			$from = $h[10];
+			if (trim($h[11]) != "") {
+				$to = $h[11];
+			}
+			else
+			{
+				$to = "";
+			} // there could be a trailing space from the database
+			$total   = $h[12];
+			$o_score = $h[13];
+			$u_score = $h[14];
+			if (trim($h[15]) != "") {
+				$bold = $h[15];
+			}
+			else
+			{
+				$bold = "";
+			} // there could be a trailing space from the database
+			break;
+		default:
+			break;
 		}
 	}
-	page("Report Generator REPGEN");
+	Page::start("Report Generator REPGEN");
 
 ?>
 <script language="javascript"><!--
@@ -346,20 +373,19 @@ function displayReport(id) {
 //--></script>
 
 <?php
-	if (!empty($long))
+	if (!empty($long)) {
 		ui_msgs::display_heading(ITEM_DEF . ": " . $long);
+	}
 	else
+	{
 		ui_msgs::display_heading(ITEM_DEF);
-
+	}
 	ui_msgs::display_heading(ITEM_CHAR);
-
-	if (!empty($error))
+	if (!empty($error)) {
 		ui_msgs::display_error($error);
-
+	}
 	start_form(false, false, "repgen_strings.php?report_type=" . $report_type, "strings");
-
 	start_table(Config::get('tables_style2') . " width=70%");
-
 	// <!--   Table 1 -->
 	start_row();
 	if ($report_type == "single") {
@@ -380,7 +406,8 @@ function displayReport(id) {
           </select></td>";
 	}
 	echo $txt;
-	$txt = "<td>Font <select name='sel_font' size='1' >
+	$txt
+	 = "<td>Font <select name='sel_font' size='1' >
             <option value='Helvetica' " . m_s("Helvetica", $sel_font) . ">Helvetica</option>
             <option value='Helvetica-Bold' " . m_s("Helvetica-Bold", $sel_font) . ">Helvetica Bold</option>
             <option value='Helvetica-Italic' " . m_s("Helvetica-Italic", $sel_font) . ">Helvetica Italic</option>
@@ -398,22 +425,30 @@ function displayReport(id) {
 	$txt .= "</select></td>";
 	echo $txt;
 	$txt = "<td>Fontsize <select name='sel_fontsize' size='1' >\n";
-	for ($i = 0; $i < 7; $i++)
+	for (
+		$i = 0; $i < 7; $i++
+	)
 	{
 		$h = $i + 6;
 		$txt .= "<option value= '" . $h . "' " . m_s($h, $sel_fontsize) . ">" . $h . "</option>\n";
 	}
-	for ($i = 0; $i < 9; $i++)
+	for (
+		$i = 0; $i < 9; $i++
+	)
 	{
 		$h = 2 * $i + 14;
 		$txt .= "<option value='" . $h . "' " . m_s($h, $sel_fontsize) . ">" . $h . "</option>\n";
 	}
-	for ($i = 0; $i < 4; $i++)
+	for (
+		$i = 0; $i < 4; $i++
+	)
 	{
 		$h = 4 * $i + 32;
 		$txt .= "<option value='" . $h . "' " . m_s($h, $sel_fontsize) . ">" . $h . "</option>\n";
 	}
-	for ($i = 0; $i < 5; $i++)
+	for (
+		$i = 0; $i < 5; $i++
+	)
 	{
 		$h = 6 * $i + 48;
 		$txt .= "<option value='" . $h . "' " . m_s($h, $sel_fontsize) . ">" . $h . "</option>\n";
@@ -440,7 +475,8 @@ function displayReport(id) {
 		// <!--   Third table in Table2 -->
 		start_row();
 		text_cells(NUMBER, "number", (isset($number) ? $number : ""), 2, 2, "onblur='num_test(this);'");
-		$txt = "<select name='sel_center' size='1' >
+		$txt
+		 = "<select name='sel_center' size='1' >
                      <option value='l' " . m_s("l", $sel_center) . ">left</option>
                      <option value='c' " . m_s("c", $sel_center) . ">center</option>
                      <option value='r' " . m_s("r", $sel_center) . ">right</option>
@@ -473,10 +509,12 @@ function displayReport(id) {
 	label_cell($txt);
 	if (substr($id_new, 0, 1) != 'B') { // This is a report
 		$sql1 = str_replace("", '', $sql);
-		$res = DBOld::query($sql1);
-		$num = DBOld::num_fields($res);
-		$txt = "<td><select name = 'feld' size='1'>\n";
-		for ($i = 0; $i < $num; $i++)
+		$res  = DBOld::query($sql1);
+		$num  = DBOld::num_fields($res);
+		$txt  = "<td><select name = 'feld' size='1'>\n";
+		for (
+			$i = 0; $i < $num; $i++
+		)
 		{
 			$meta = mysql_fetch_field($res, $i);
 			$txt .= "<option value=\"" . $meta->name . "\" " . m_s($meta->name, $feld) . " > " . $meta->name . "</option>\n";
@@ -519,7 +557,6 @@ function displayReport(id) {
 	$txt .= "</select>\n";
 	label_cell($txt);
 	end_row();
-
 	if (($report_type == "single") && (substr($id_new, 0, 1) != 'B')) { //  show Textarea-element, if Report and single_typed
 		start_row();
 		$txt = "<input type='radio' name='sel_typ' value = 'Textarea' " . m_c("Textarea", $sel_typ) . ">Textarea\n";
@@ -553,47 +590,57 @@ function displayReport(id) {
 		end_row();
 	}
 	end_table(1);
-
 	start_table();
 	start_row();
 	label_cell(submit("insert", IT_STORE, false));
-	label_cell(submit("back", IT_BACK, false) . hidden("alternate", $alternate, false) . hidden("attriba", $attrib, false) .
-		 hidden("id_new", $id_new, false) . hidden("sql", $sql, false) . hidden("long", $long));
+	label_cell(
+		submit("back", IT_BACK, false) . hidden("alternate", $alternate, false) . hidden("attriba", $attrib, false) .
+		 hidden("id_new", $id_new, false) . hidden("sql", $sql, false) . hidden("long", $long)
+	);
 	if (!((substr($id_new, 0, 1) == 'B') || (substr($id_new, 0, 1) == 'F'))) { // Only show test button for reports
 		$txt = "<input name='druck' class='inputsubmit' type='button' value='" . IT_PRINT . "' onclick=\"displayReport('" . $id_new . "');\">\n";
 		label_cell($txt);
 	}
 	end_row();
 	end_table();
-
 	echo "<hr size=1>\n";
 	end_form();
-
 	// <!--        End of input item form   -->
 	// <!--------------------------------------------------------------------->
-
 	ui_msgs::display_heading(ITEM_HEAD);
-
 	start_table(Config::get('tables_style') . "  width=70%");
 	$th = array(IT_TYP, IT_ART, IT_FONT, IT_FONT_SIZE, IT_ORD, IT_LEN, IT_X1, IT_Y1, "Total", IT_STRING, "Action", "");
 	table_header($th);
 	## Traverse the result set
-	$rec_ar = array();
-	$sort_ar = array("RH" => "0", "PH" => "1", "GH" => "2", "DE" => "3", "GF" => "4", "PF" => "5", "RF" => "6");
-	$query = "SELECT  * FROM xx_reports WHERE (typ = 'item' AND id='" . $id_new . "')";
-	$res = DBOld::query($query);
+	$rec_ar  = array();
+	$sort_ar = array(
+		"RH" => "0",
+		"PH" => "1",
+		"GH" => "2",
+		"DE" => "3",
+		"GF" => "4",
+		"PF" => "5",
+		"RF" => "6"
+	);
+	$query   = "SELECT  * FROM xx_reports WHERE (typ = 'item' AND id='" . $id_new . "')";
+	$res     = DBOld::query($query);
 	while ($f = DBOld::fetch($res))
 	{
-		$in = $f["attrib"];
+		$in  = $f["attrib"];
 		$ine = explode("|", $in);
-		for ($i = 0; $i < 16; $i++)
+		for (
+			$i = 0; $i < 16; $i++
+		)
 		{
-			if (!isset($ine[$i]))
+			if (!isset($ine[$i])) {
 				$ine[$i] = "";
+			}
 		}
-		$in_index = sprintf("%2s%2d%3d%3d%3d%3d%4s%1s%2%d%2d%1s%1s%1s%1s%5s", $sort_ar[$ine[1]], $ine[8], $ine[5], $ine[6],
+		$in_index = sprintf(
+			"%2s%2d%3d%3d%3d%3d%4s%1s%2%d%2d%1s%1s%1s%1s%5s", $sort_ar[$ine[1]], $ine[8], $ine[5], $ine[6],
 			$ine[3],
-			$ine[4], $ine[0], $ine[9], $ine[10], $ine[11], $ine[12], $ine[13], $ine[14], $ine[15], $ine[2]);
+			$ine[4], $ine[0], $ine[9], $ine[10], $ine[11], $ine[12], $ine[13], $ine[14], $ine[15], $ine[2]
+		);
 		// for sort after 1) Art 2) Ord 3) X1 4) Y1 ....
 		$rec_ar[$in_index] = $in;
 	}
@@ -603,35 +650,40 @@ function displayReport(id) {
 	while (list ($key, $val) = each($rec_ar))
 	{
 		$h = explode("|", $val);
-		for ($i = 0; $i < 16; $i++)
+		for (
+			$i = 0; $i < 16; $i++
+		)
 		{
-			if (!isset($h[$i]))
+			if (!isset($h[$i])) {
 				$h[$i] = "";
+			}
 		}
-		$it_typ = $h[0];
-		$it_art = $h[1];
-		$it_font = $h[2];
+		$it_typ      = $h[0];
+		$it_art      = $h[1];
+		$it_font     = $h[2];
 		$it_fontsize = $h[3];
-		$it_number = $h[4];
-		$it_x1 = $h[5];
-		$it_y1 = $h[6];
-		if (in_array($it_typ, array("String", "DB", "Term", "Block", "Textarea")))
+		$it_number   = $h[4];
+		$it_x1       = $h[5];
+		$it_y1       = $h[6];
+		if (in_array($it_typ, array("String", "DB", "Term", "Block", "Textarea"))) {
 			$it_str = $h[7];
-		$it_ord = $h[8];
-		$it_from = $h[10];
-		$it_to = $h[11];
-		$it_total = $h[12];
+		}
+		$it_ord     = $h[8];
+		$it_from    = $h[10];
+		$it_to      = $h[11];
+		$it_total   = $h[12];
 		$it_o_score = $h[13];
 		$it_u_score = $h[14];
-		$it_bold = $h[15];
-
+		$it_bold    = $h[15];
 		// <!-- existing items -->
 		alt_table_row_color($k);
 		echo "<td style='width;0px;display:none;'>\n";
 		start_form(false, false, "repgen_strings.php?report_type=" . $report_type, "edit");
 		echo "</td>\n";
-		label_cell($it_typ . hidden("id1", $id_new, false) . hidden("attrib", $val, false) .
-			 hidden("id_new", $id_new, false) . hidden("sql", $sql, false) . hidden("long", $long, false));
+		label_cell(
+			$it_typ . hidden("id1", $id_new, false) . hidden("attrib", $val, false) .
+			 hidden("id_new", $id_new, false) . hidden("sql", $sql, false) . hidden("long", $long, false)
+		);
 		label_cell($it_art);
 		label_cell($it_font);
 		label_cell($it_fontsize);
@@ -640,27 +692,32 @@ function displayReport(id) {
 		label_cell($it_x1);
 		label_cell(($it_y1 != "" ? $it_y1 : "."));
 		label_cell(($it_total != "" ? $it_total : "."));
-		if (in_array($it_typ, array("Line", "Rectangle")))
+		if (in_array($it_typ, array("Line", "Rectangle"))) {
 			label_cell(".");
+		}
 		else
 		{
-			if (!(empty($it_from) || empty($it_to)))
+			if (!(empty($it_from) || empty($it_to))) {
 				label_cell($it_str . "(" . $it_from . "-" . $it_to . ")");
+			}
 			else
+			{
 				label_cell($it_str);
+			}
 		}
-		if (in_array($it_typ, array("String", "DB", "Term", "Block", "Textarea")))
+		if (in_array($it_typ, array("String", "DB", "Term", "Block", "Textarea"))) {
 			label_cell(submit("alter", CHANGE, false));
+		}
 		else
+		{
 			label_cell(" ");
+		}
 		label_cell(submit("delete", DELETE, false));
 		echo "<td style='width;0px;display:none;'>\n";
 		end_form();
 		echo "</td>\n";
 		end_row();
 	} // end of while
-
 	end_table(1);
-
 	end_page();
 ?>

@@ -1243,7 +1243,7 @@
 
 .ui-accordion .ui-state-disabled {
 	opacity: 1;
-	filter:   Alpha(Opacity = 1)
+	filter:  Alpha(Opacity = 1)
 }
 
 /*
@@ -1270,7 +1270,7 @@
 	font-weight: bold;
 	font-size:   11px;
 	padding:     .2em .4em;
-	
+
 	line-height: 1.5;
 }
 
@@ -1278,6 +1278,7 @@
 	text-indent: 10px;
 	font-size:   10px;
 }
+
 /* workarounds */
 * html .ui-autocomplete {
 	width: 1px;
@@ -1321,8 +1322,8 @@
 	padding:         .2em .4em;
 	line-height:     1.5;
 	zoom:            1;
- white-space: nowrap;
- font-size: .9em;
+	white-space:     nowrap;
+	font-size:       .9em;
 }
 
 .ui-menu .ui-menu-item a.ui-state-hover,

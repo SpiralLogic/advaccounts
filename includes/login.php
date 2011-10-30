@@ -6,13 +6,16 @@
 	 * Time: 7:20 PM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	class Login {
-		static function kill() {
+	class Login
+	{
+		static function kill()
+		{
 			session_unset();
 			session_destroy();
 		}
 
-		static function fail() {
+		static function fail()
+		{
 			header("HTTP/1.1 401 Authorization Required");
 			echo "<center><br><br><font size='5' color='red'><b>" . _("Incorrect Password") . "<b></font><br><br>";
 			echo "<b>" . _("The user and password combination is not valid for the system.") . "<b><br><br>";
@@ -23,15 +26,15 @@
 			die();
 		}
 
-		static function timeout() {
+		static function timeout()
+		{
 			// skip timeout on logout page
-			if ($_SESSION["wa_current_user"]->logged) {
-				$tout = $_SESSION["wa_current_user"]->timeout;
-				if ($tout && (time() > $_SESSION["wa_current_user"]->last_act + $tout)) {
-					$_SESSION["wa_current_user"]->logged = false;
+			if (CurrentUser::instance()->logged) {
+				$tout = CurrentUser::instance()->timeout;
+				if ($tout && (time() > CurrentUser::instance()->last_act + $tout)) {
+					CurrentUser::instance()->logged = false;
 				}
-
-				$_SESSION["wa_current_user"]->last_act = time();
+				CurrentUser::instance()->last_act = time();
 			}
 		}
 	}

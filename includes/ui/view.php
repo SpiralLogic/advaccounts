@@ -9,10 +9,11 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-
-	class ui_view {
+	class ui_view
+	{
 		//--------------------------------------------------------------------------------------
-		static function get_supplier_trans_view_str($type, $trans_no, $label = "", $icon = false, $class = '', $id = '') {
+		static function get_supplier_trans_view_str($type, $trans_no, $label = "", $icon = false, $class = '', $id = '')
+		{
 			$viewer = "purchasing/view/";
 			if ($type == ST_PURCHORDER) {
 				$viewer .= "view_po.php";
@@ -40,7 +41,8 @@
 		}
 
 		//--------------------------------------------------------------------------------------
-		static function get_gl_view_str($type, $trans_no, $label = "", $force = false, $class = '', $id = '') {
+		static function get_gl_view_str($type, $trans_no, $label = "", $force = false, $class = '', $id = '')
+		{
 			if (!$force && !user_show_gl_info()) {
 				return "";
 			}
@@ -53,7 +55,8 @@
 		}
 
 		//--------------------------------------------------------------------------------------
-		static function get_gl_view_str_cell($type, $trans_no, $label = "") {
+		static function get_gl_view_str_cell($type, $trans_no, $label = "")
+		{
 			$str = ui_view::get_gl_view_str($type, $trans_no, $label);
 			if ($str != "") {
 				return "<td>$str</td>";
@@ -61,7 +64,8 @@
 		}
 
 		//--------------------------------------------------------------------------------------
-		static function get_customer_trans_view_str($type, $trans_no, $label = "", $icon = false, $class = '', $id = '') {
+		static function get_customer_trans_view_str($type, $trans_no, $label = "", $icon = false, $class = '', $id = '')
+		{
 			$viewer = "sales/view/";
 			if ($type == ST_SALESINVOICE) {
 				$viewer .= "view_invoice.php";
@@ -89,7 +93,9 @@
 			}
 			$lbl         = $label;
 			$preview_str = '';
-			foreach ($trans_no as $trans) {
+			foreach (
+				$trans_no as $trans
+			) {
 				if ($label == "") {
 					$lbl = $trans;
 				}
@@ -102,7 +108,8 @@
 		}
 
 		//--------------------------------------------------------------------------------------
-		static function get_banking_trans_view_str($type, $trans_no, $label = "", $icon = false, $class = '', $id = '') {
+		static function get_banking_trans_view_str($type, $trans_no, $label = "", $icon = false, $class = '', $id = '')
+		{
 			if ($label == "") {
 				$label = $trans_no;
 			}
@@ -122,7 +129,8 @@
 		}
 
 		//--------------------------------------------------------------------------------------
-		static function get_inventory_trans_view_str($type, $trans_no, $label = "", $icon = false, $class = '', $id = '') {
+		static function get_inventory_trans_view_str($type, $trans_no, $label = "", $icon = false, $class = '', $id = '')
+		{
 			$viewer = "inventory/view/";
 			if ($type == ST_INVADJUST) {
 				$viewer .= "view_adjustment.php";
@@ -141,7 +149,8 @@
 		}
 
 		//--------------------------------------------------------------------------------------
-		static function get_manufacturing_trans_view_str($type, $trans_no, $label = "", $icon = false, $class = '', $id = '') {
+		static function get_manufacturing_trans_view_str($type, $trans_no, $label = "", $icon = false, $class = '', $id = '')
+		{
 			$viewer = "manufacturing/view/";
 			if ($type == ST_MANUISSUE) {
 				$viewer .= "wo_issue_view.php";
@@ -163,7 +172,8 @@
 		}
 
 		//--------------------------------------------------------------------------------------
-		static function get_dimensions_trans_view_str($type, $trans_no, $label = "", $icon = false, $class = '', $id = '') {
+		static function get_dimensions_trans_view_str($type, $trans_no, $label = "", $icon = false, $class = '', $id = '')
+		{
 			if ($type == ST_DIMENSION) {
 				$viewer = "dimensions/view/view_dimension.php?trans_no=$trans_no";
 			}
@@ -177,9 +187,10 @@
 		}
 
 		/*
-				 Journal entry or cost update postings link
-		 */
-		static function get_journal_trans_view_str($type, $trans_no, $label = "", $icon = false, $class = '', $id = '') {
+							 Journal entry or cost update postings link
+					 */
+		static function get_journal_trans_view_str($type, $trans_no, $label = "", $icon = false, $class = '', $id = '')
+		{
 			if ($type == ST_JOURNAL || $type == ST_COSTUPDATE) {
 				$viewer = "gl/view/gl_trans_view.php?type_id=$type&trans_no=$trans_no";
 			}
@@ -193,7 +204,8 @@
 		}
 
 		//--------------------------------------------------------------------------------------
-		static function get_trans_view_str($type, $trans_no, $label = "", $icon = false, $class = '', $id = '') {
+		static function get_trans_view_str($type, $trans_no, $label = "", $icon = false, $class = '', $id = '')
+		{
 			$view_str = ui_view::get_customer_trans_view_str($type, $trans_no, $label, $icon, $class, $id);
 			if ($view_str != null) {
 				return $view_str;
@@ -230,7 +242,8 @@
 		// When there is no exrate for today,
 		// gets it form ECB and stores in local database.
 		//
-		static function exchange_rate_display($from_currency, $to_currency, $date_, $edit_rate = false) {
+		static function exchange_rate_display($from_currency, $to_currency, $date_, $edit_rate = false)
+		{
 			$Ajax = Ajax::instance();
 			if ($from_currency != $to_currency) {
 				$comp_currency = Banking::get_company_currency();
@@ -271,7 +284,8 @@
 		}
 
 		//--------------------------------------------------------------------------------------
-		static function is_voided_display($type, $id, $label) {
+		static function is_voided_display($type, $id, $label)
+		{
 			$void_entry = Voiding::get($type, $id);
 			if ($void_entry == null) {
 				return false;
@@ -288,7 +302,8 @@
 		}
 
 		//--------------------------------------------------------------------------------------
-		static function comments_display_row($type, $id) {
+		static function comments_display_row($type, $id)
+		{
 			$comments = DB_Comments::get($type, $id);
 			if ($comments and DBOld::num_rows($comments)) {
 				echo "<tr><td colspan=15>";
@@ -300,7 +315,8 @@
 		}
 
 		//--------------------------------------------------------------------------------------
-		static function get_comments_string($type, $type_no) {
+		static function get_comments_string($type, $type_no)
+		{
 			$str_return = "";
 			$result     = DB_Comments::get($type, $type_no);
 			while ($comment = DBOld::fetch($result)) {
@@ -313,8 +329,8 @@
 		}
 
 		//--------------------------------------------------------------------------------------
-		static function view_stock_status($stock_id, $description = null, $echo = true) {
-
+		static function view_stock_status($stock_id, $description = null, $echo = true)
+		{
 			if ($description) //hyperlink_params_separate( "/inventory/inquiry/stock_status.php", (user_show_codes()?$stock_id . " - ":"") . $description, "stock_id=$stock_id");
 			{
 				$preview_str = "<a target='_blank' href='/inventory/inquiry/stock_status.php?stock_id=$stock_id' onclick=\"javascript:openWindow(this.href,this.target); return false;\" >" . (user_show_codes()
@@ -330,14 +346,16 @@
 			return $preview_str;
 		}
 
-		static function view_stock_status_cell($stock_id, $description = null) {
+		static function view_stock_status_cell($stock_id, $description = null)
+		{
 			echo "<td>";
 			ui_view::view_stock_status($stock_id, $description);
 			echo "</td>";
 		}
 
 		//--------------------------------------------------------------------------------------
-		static function display_debit_or_credit_cells($value) {
+		static function display_debit_or_credit_cells($value)
+		{
 			$value = round2($value, user_price_dec());
 			if ($value >= 0) {
 				amount_cell($value);
@@ -350,7 +368,8 @@
 		}
 
 		//--------------------------------------------------------------------------------------
-		static function display_customer_trans_tax_details($tax_items, $columns) {
+		static function display_customer_trans_tax_details($tax_items, $columns)
+		{
 			while ($tax_item = DBOld::fetch($tax_items)) {
 				$tax = number_format2($tax_item['amount'], user_price_dec());
 				if ($tax_item['included_in_price']) {
@@ -363,7 +382,8 @@
 		}
 
 		//--------------------------------------------------------------------------------------
-		static function display_supp_trans_tax_details($tax_items, $columns, $tax_recorded = 0) {
+		static function display_supp_trans_tax_details($tax_items, $columns, $tax_recorded = 0)
+		{
 			$tax_total = 0;
 			while ($tax_item = DBOld::fetch($tax_items)) {
 				$tax = number_format2(abs($tax_item['amount']), user_price_dec());
@@ -382,9 +402,12 @@
 		}
 
 		//--------------------------------------------------------------------------------------
-		static function display_edit_tax_items($taxes, $columns, $tax_included, $leftspan = 0, $tax_correcting = false) {
+		static function display_edit_tax_items($taxes, $columns, $tax_included, $leftspan = 0, $tax_correcting = false)
+		{
 			$total = 0;
-			foreach ($taxes as $taxitem) {
+			foreach (
+				$taxes as $taxitem
+			) {
 				if ($tax_included) {
 					label_row(_("Included") . " " . $taxitem['tax_type_name'] . " (" . $taxitem['rate'] . "%) " . _("Amount:") . " ", number_format2($taxitem['Value'], user_price_dec()), "colspan=$columns align=right", "align=right", $leftspan);
 				}
@@ -403,14 +426,16 @@
 		}
 
 		//--------------------------------------------------------------------------------------
-		static function display_footer_exit() {
+		static function display_footer_exit()
+		{
 			br(2);
 			end_page(false, false, true);
 			exit;
 		}
 
 		//--------------------------------------------------------------------------------------
-		static function display_allocations($alloc_result, $total) {
+		static function display_allocations($alloc_result, $total)
+		{
 			global $systypes_array;
 			if (!$alloc_result || DBOld::num_rows($alloc_result) == 0) {
 				return;
@@ -447,16 +472,17 @@
 		}
 
 		//--------------------------------------------------------------------------------------
-		static function display_allocations_from($person_type, $person_id, $type, $type_no, $total) {
+		static function display_allocations_from($person_type, $person_id, $type, $type_no, $total)
+		{
 			switch ($person_type) {
-				case PT_CUSTOMER :
-					$alloc_result = get_allocatable_to_cust_transactions($person_id, $type_no, $type);
-					ui_view::display_allocations($alloc_result, $total);
-					return;
-				case PT_SUPPLIER :
-					$alloc_result = get_allocatable_to_supp_transactions($person_id, $type_no, $type);
-					ui_view::display_allocations($alloc_result, $total);
-					return;
+			case PT_CUSTOMER :
+				$alloc_result = get_allocatable_to_cust_transactions($person_id, $type_no, $type);
+				ui_view::display_allocations($alloc_result, $total);
+				return;
+			case PT_SUPPLIER :
+				$alloc_result = get_allocatable_to_supp_transactions($person_id, $type_no, $type);
+				ui_view::display_allocations($alloc_result, $total);
+				return;
 			}
 		}
 
@@ -465,11 +491,12 @@
 		//	Expands selected quick entry $id into GL posings and adds to cart.
 		//		returns calculated amount posted to bank GL account.
 		//
-		static function display_quick_entries(&$cart, $id, $base, $type, $descr = '') {
+		static function display_quick_entries(&$cart, $id, $base, $type, $descr = '')
+		{
 			$bank_amount = 0;
 			if (!isset($id) || $id == null || $id == "") {
 				ui_msgs::display_error(_("No Quick Entries are defined."));
-				ui_view::set_focus('totamount');
+				JS::set_focus('totamount');
 			}
 			else {
 				if ($type == QE_DEPOSIT) {
@@ -488,92 +515,94 @@
 				while ($row = DBOld::fetch($result)) {
 					$qe_lines[] = $row;
 					switch (strtolower($row['action'])) {
-						case "t": // post taxes calculated on base amount
-						case "t+": // ditto & increase base amount
-						case "t-": // ditto & reduce base amount
-							if (substr($row['action'], 0, 1) != 'T') {
-								$totrate += Tax_Types::get_default_rate($row['dest_id']);
-							}
+					case "t": // post taxes calculated on base amount
+					case "t+": // ditto & increase base amount
+					case "t-": // ditto & reduce base amount
+						if (substr($row['action'], 0, 1) != 'T') {
+							$totrate += Tax_Types::get_default_rate($row['dest_id']);
+						}
 					}
 				}
 				$first   = true;
 				$taxbase = 0;
-				foreach ($qe_lines as $qe_line) {
+				foreach (
+					$qe_lines as $qe_line
+				) {
 					switch (strtolower($qe_line['action'])) {
-						case "=": // post current base amount to GL account
-							$part = $base;
-							break;
-						case "a": // post amount to GL account and reduce base
-							$part = $qe_line['amount'];
-							break;
-						case "a+": // post amount to GL account and increase base
-							$part = $qe_line['amount'];
-							$base += $part;
-							break;
-						case "a-": // post amount to GL account and reduce base
-							$part = $qe_line['amount'];
-							$base -= $part;
-							break;
-						case "%": // store acc*amount% to GL account
-							$part = round2($base * $qe_line['amount'] / 100, user_price_dec());
-							break;
-						case "%+": // ditto & increase base amount
-							$part = round2($base * $qe_line['amount'] / 100, user_price_dec());
-							$base += $part;
-							break;
-						case "%-": // ditto & reduce base amount
-							$part = round2($base * $qe_line['amount'] / 100, user_price_dec());
-							$base -= $part;
-							break;
-						case "t": // post taxes calculated on base amount
-						case "t+": // ditto & increase base amount
-						case "t-": // ditto & reduce base amount
-							if ($first) {
-								$taxbase = $base / ($totrate + 100);
-								$first   = false;
+					case "=": // post current base amount to GL account
+						$part = $base;
+						break;
+					case "a": // post amount to GL account and reduce base
+						$part = $qe_line['amount'];
+						break;
+					case "a+": // post amount to GL account and increase base
+						$part = $qe_line['amount'];
+						$base += $part;
+						break;
+					case "a-": // post amount to GL account and reduce base
+						$part = $qe_line['amount'];
+						$base -= $part;
+						break;
+					case "%": // store acc*amount% to GL account
+						$part = round2($base * $qe_line['amount'] / 100, user_price_dec());
+						break;
+					case "%+": // ditto & increase base amount
+						$part = round2($base * $qe_line['amount'] / 100, user_price_dec());
+						$base += $part;
+						break;
+					case "%-": // ditto & reduce base amount
+						$part = round2($base * $qe_line['amount'] / 100, user_price_dec());
+						$base -= $part;
+						break;
+					case "t": // post taxes calculated on base amount
+					case "t+": // ditto & increase base amount
+					case "t-": // ditto & reduce base amount
+						if ($first) {
+							$taxbase = $base / ($totrate + 100);
+							$first   = false;
+						}
+						if (substr($qe_line['action'], 0, 1) != 'T') {
+							$part = $taxbase;
+						}
+						else {
+							$part = $base / 100;
+						}
+						$item_tax = Tax_Types::get($qe_line['dest_id']);
+						//if ($type == QE_SUPPINV && substr($qe_line['action'],0,1) != 'T')
+						if ($type == QE_SUPPINV) {
+							$taxgroup = $cart->tax_group_id;
+							$rates    = 0;
+							$res      = Tax_Groups::get_for_item($cart->tax_group_id);
+							while ($row = DBOld::fetch($res)) {
+								$rates += $row['rate'];
 							}
-							if (substr($qe_line['action'], 0, 1) != 'T') {
-								$part = $taxbase;
-							}
-							else {
-								$part = $base / 100;
-							}
-							$item_tax = Tax_Types::get($qe_line['dest_id']);
-							//if ($type == QE_SUPPINV && substr($qe_line['action'],0,1) != 'T')
-							if ($type == QE_SUPPINV) {
-								$taxgroup = $cart->tax_group_id;
-								$rates    = 0;
-								$res      = Tax_Groups::get_for_item($cart->tax_group_id);
-								while ($row = DBOld::fetch($res)) {
-									$rates += $row['rate'];
-								}
-								if ($rates == 0) {
-									continue 2;
-								}
-							}
-							$tax = round2($part * $item_tax['rate'], user_price_dec());
-							if ($tax == 0) {
+							if ($rates == 0) {
 								continue 2;
 							}
-							$gl_code = ($type == QE_DEPOSIT || ($type == QE_JOURNAL && $base < 0)) ? $item_tax['sales_gl_code'] : $item_tax['purchasing_gl_code'];
-							if (!Tax_Types::is_tax_gl_unique($gl_code)) {
-								ui_msgs::display_error(_("Cannot post to GL account used by more than one tax type."));
-								break 2;
-							}
-							if ($type != QE_SUPPINV) {
-								$cart->add_gl_item($gl_code, $qe_line['dimension_id'], $qe_line['dimension2_id'], $tax, $qe['description']);
-							}
-							else {
-								$acc_name = get_gl_account_name($gl_code);
-								$cart->add_gl_codes_to_trans($gl_code, $acc_name, $qe_line['dimension_id'], $qe_line['dimension2_id'], $tax, $qe['description']);
-							}
-							if (strpos($qe_line['action'], '+')) {
-								$base += $tax;
-							}
-							elseif (strpos($qe_line['action'], '-')) {
-								$base -= $tax;
-							}
+						}
+						$tax = round2($part * $item_tax['rate'], user_price_dec());
+						if ($tax == 0) {
 							continue 2;
+						}
+						$gl_code = ($type == QE_DEPOSIT || ($type == QE_JOURNAL && $base < 0)) ? $item_tax['sales_gl_code'] : $item_tax['purchasing_gl_code'];
+						if (!Tax_Types::is_tax_gl_unique($gl_code)) {
+							ui_msgs::display_error(_("Cannot post to GL account used by more than one tax type."));
+							break 2;
+						}
+						if ($type != QE_SUPPINV) {
+							$cart->add_gl_item($gl_code, $qe_line['dimension_id'], $qe_line['dimension2_id'], $tax, $qe['description']);
+						}
+						else {
+							$acc_name = get_gl_account_name($gl_code);
+							$cart->add_gl_codes_to_trans($gl_code, $acc_name, $qe_line['dimension_id'], $qe_line['dimension2_id'], $tax, $qe['description']);
+						}
+						if (strpos($qe_line['action'], '+')) {
+							$base += $tax;
+						}
+						elseif (strpos($qe_line['action'], '-')) {
+							$base -= $tax;
+						}
+						continue 2;
 					}
 					if ($type != QE_SUPPINV) {
 						$cart->add_gl_item($qe_line['dest_id'], $qe_line['dimension_id'], $qe_line['dimension2_id'], $part, $qe['description']);
@@ -591,7 +620,8 @@
 		//
 		//	Simple English version of number to words conversion.
 		//
-		static function _number_to_words($number) {
+		static function _number_to_words($number)
+		{
 			$Bn = floor($number / 1000000000); /* Billions (giga) */
 			$number -= $Bn * 1000000000;
 			$Gn = floor($number / 1000000); /* Millions (mega) */
@@ -615,8 +645,9 @@
 			if ($Hn) {
 				$res .= (empty($res) ? "" : " ") . ui_view::_number_to_words($Hn) . " Hundred";
 			}
-			$ones = array("", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen",
-										"Eightteen", "Nineteen"
+			$ones = array(
+				"", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen",
+				"Eightteen", "Nineteen"
 			);
 			$tens = array("", "", "Twenty", "Thirty", "Fourty", "Fifty", "Sixty", "Seventy", "Eigthy", "Ninety");
 			if ($Dn || $n) {
@@ -639,7 +670,8 @@
 			return $res;
 		}
 
-		static function price_in_words($amount, $document = 0) {
+		static function price_in_words($amount, $document = 0)
+		{
 			global $Hooks;
 			// use local ui_view::price_in_words() if the hook is defined
 			if (method_exists($Hooks, 'price_in_words')) {
@@ -666,50 +698,42 @@
 			return ui_view::_number_to_words(intval($amount)) . $frac;
 		}
 
-		static function get_js_open_window($width, $height) {
-			$js = "function openWindow(url, title)\n" . "{\n" . " var left = (screen.width - $width) / 2;\n" . " var top = (screen.height - $height) / 2;\n" . " return window.open(url, title, 'width=$width,height=$height,left='+left+',top='+top+',screenX='+left+',screenY='+top+',status=no,scrollbars=yes');\n" . "}\n";
-			return $js;
-		}
-
-		/*
-			 Setting focus on element $name in $form.
-			 If $form<0 $name is element id.
-		 */
-		static function set_focus($name, $form_no = 0) {
-			$Ajax = Ajax::instance();
-			$Ajax->addFocus(true, $name);
-			$_POST['_focus'] = $name;
-		}
-
 		//
 		//	Set default focus on first field $name if not set yet
 		//	Returns unique name if $name=null
 		//
-		static function default_focus($name = null, $form_no = 0) {
+		static function default_focus($name = null, $form_no = 0)
+		{
 			static $next;
 			if ($name == null) {
 				$name = uniqid('_el', true);
 			}
 			if (!isset($_POST['_focus'])) {
-				ui_view::set_focus($name);
+				JS::set_focus($name);
 			}
 			return $name;
 		}
 
 		/*
-				 Reset focus to next control element (e.g. link).
-		 */
-		static function reset_focus() {
+							 Reset focus to next control element (e.g. link).
+					 */
+		static function reset_focus()
+		{
 			unset($_POST['_focus']);
 		}
 
-		static function get_js_png_fix() {
-			$js = "function fixPNG(myImage)\n" . "{\n" . " var arVersion = navigator.appVersion.split(\"MSIE\")\n" . " var version = parseFloat(arVersion[1])\n" . " if ((version >= 5.5) && (version < 7) && (document.body.filters))\n" . " {\n" . "  var imgID = (myImage.id) ? \"id='\" + myImage.id + \"' \" : \"\"\n" . "  var imgClass = (myImage.className) ? \"class='\" + myImage.className + \"' \" : \"\"\n" . "  var imgTitle = (myImage.title) ?\n" . "    \"title='\" + myImage.title  + \"' \" : \"title='\" + myImage.alt + \"' \"\n" . "  var imgStyle = \"display:inline-block;\" + myImage.style.cssText\n" . "  var strNewHTML = \"<span \" + imgID + imgClass + imgTitle\n" . "    + \" style=\\\"\" + \"width:\" + myImage.width\n" . "    + \"px; height:\" + myImage.height\n" . "    + \"px;\" + imgStyle + \";\"\n" . "    + \"filter:progid:DXImageTransform.Microsoft.AlphaImageLoader\"\n" . "    + \"(src=\'\" + myImage.src + \"\', sizingMethod='scale');\\\"></span>\"\n" . "  myImage.outerHTML = strNewHTML\n" . " }\n" . "}\n";
-			JS::beforeload( $js);
+		static function get_js_png_fix()
+		{
+			$js = "function fixPNG(myImage)\n" . "{\n" . " var arVersion = navigator.appVersion.split(\"MSIE\")\n" . " var version = parseFloat(arVersion[1])\n" . " if ((version >= 5.5) && (version < 7) && (document.body.filters))\n" . " {\n"
+			 . "  var imgID = (myImage.id) ? \"id='\" + myImage.id + \"' \" : \"\"\n" . "  var imgClass = (myImage.className) ? \"class='\" + myImage.className + \"' \" : \"\"\n" . "  var imgTitle = (myImage.title) ?\n"
+			 . "    \"title='\" + myImage.title  + \"' \" : \"title='\" + myImage.alt + \"' \"\n" . "  var imgStyle = \"display:inline-block;\" + myImage.style.cssText\n" . "  var strNewHTML = \"<span \" + imgID + imgClass + imgTitle\n" . "    + \" style=\\\"\" + \"width:\" + myImage.width\n"
+			 . "    + \"px; height:\" + myImage.height\n" . "    + \"px;\" + imgStyle + \";\"\n" . "    + \"filter:progid:DXImageTransform.Microsoft.AlphaImageLoader\"\n" . "    + \"(src=\'\" + myImage.src + \"\', sizingMethod='scale');\\\"></span>\"\n" . "  myImage.outerHTML = strNewHTML\n" . " }\n"
+			 . "}\n";
+			JS::beforeload($js);
 		}
 
-		static function get_websales() {
-
+		static function get_websales()
+		{
 			static $inserted;
 			if ($_SERVER['SERVER_NAME'] == 'advaccounts' && !$inserted && !isset($_SESSION['getWebsales'])) {
 				$_SESSION['getWebsales'] = true;
@@ -724,22 +748,23 @@ JS;
 			}
 		}
 
-		static function get_jquery_gmaps() {
+		static function get_jquery_gmaps()
+		{
 			static $inserted;
 			if (!$inserted && $_SERVER['SERVER_NAME'] == 'advaccounts') {
-
 				//TODO: api key this shouldn't be hardcoded
-
 				JS::footerFile('/js/js2/jquery.gmap-1.1.0-min.js');
 				$inserted = true;
 			}
 		}
 
-		static function alert($msg) {
+		static function alert($msg)
+		{
 			echo "\n<script language=\"javascript\"  type=\"text/javascript\">\n" . "<!--\n" . "alert('$msg');\n" . "-->\n" . "</script>\n";
 		}
 
-		static function _vd($mixed, $title = '', $exit = false) {
+		static function _vd($mixed, $title = '', $exit = false)
+		{
 			// Only the site admin is able to proceed here.
 			$str = (!empty($title) ? ($title . ':') : '') . '<pre>';
 			$str .= print_r($mixed, true); //var_dump($mixed);
@@ -750,7 +775,8 @@ JS;
 			}
 		}
 
-		static function display_backtrace($cond = true, $msg = '') {
+		static function display_backtrace($cond = true, $msg = '')
+		{
 			if ($cond) {
 				if ($msg) {
 					$str = "<center><span class='headingtext'>$msg</span></center>\n";
@@ -760,7 +786,9 @@ JS;
 				}
 				$str .= '<table border=0>';
 				$trace = debug_backtrace();
-				foreach ($trace as $trn => $tr) {
+				foreach (
+					$trace as $trn => $tr
+				) {
 					if (!$trn) {
 						continue;
 					}
@@ -777,7 +805,9 @@ JS;
 							}
 						}
 					}
-					foreach ($tr['args'] as $n => $a) {
+					foreach (
+						$tr['args'] as $n => $a
+					) {
 						if (is_object($tr['args'][$n])) {
 							$tr['args'][$n] = "(" . get_class($tr['args'][$n]) . " Object)";
 						}

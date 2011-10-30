@@ -10,52 +10,45 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	$page_security = 'SA_POSSETUP';
-
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-
-	page(_($help_context = "POS settings"));
-
+	Page::start(_($help_context = "POS settings"));
 	include_once(APP_PATH . "sales/includes/db/sales_points_db.php");
-
 	simple_page_mode(true);
 	//----------------------------------------------------------------------------------------------------
-
-	function can_process() {
+	function can_process()
+	{
 		if (strlen($_POST['name']) == 0) {
 			ui_msgs::display_error(_("The POS name cannot be empty."));
-			ui_view::set_focus('pos_name');
+			JS::set_focus('pos_name');
 			return false;
 		}
 		if (!check_value('cash') && !check_value('credit')) {
 			ui_msgs::display_error(_("You must allow cash or credit sale."));
-			ui_view::set_focus('credit');
+			JS::set_focus('credit');
 			return false;
 		}
-
 		return true;
 	}
 
 	//----------------------------------------------------------------------------------------------------
-
 	if ($Mode == 'ADD_ITEM' && can_process()) {
-		add_sales_point($_POST['name'], $_POST['location'], $_POST['account'],
-			check_value('cash'), check_value('credit'));
+		add_sales_point(
+			$_POST['name'], $_POST['location'], $_POST['account'],
+			check_value('cash'), check_value('credit')
+		);
 		ui_msgs::display_notification(_('New point of sale has been added'));
 		$Mode = 'RESET';
 	}
-
 	//----------------------------------------------------------------------------------------------------
-
 	if ($Mode == 'UPDATE_ITEM' && can_process()) {
-
-		update_sales_point($selected_id, $_POST['name'], $_POST['location'],
-			$_POST['account'], check_value('cash'), check_value('credit'));
+		update_sales_point(
+			$selected_id, $_POST['name'], $_POST['location'],
+			$_POST['account'], check_value('cash'), check_value('credit')
+		);
 		ui_msgs::display_notification(_('Selected point of sale has been updated'));
 		$Mode = 'RESET';
 	}
-
 	//----------------------------------------------------------------------------------------------------
-
 	if ($Mode == 'Delete') {
 		$sql = "SELECT * FROM users WHERE pos=" . DBOld::escape($selected_id);
 		$res = DBOld::query($sql, "canot check pos usage");
@@ -68,27 +61,23 @@
 			$Mode = 'RESET';
 		}
 	}
-
 	if ($Mode == 'RESET') {
 		$selected_id = -1;
-		$sav = get_post('show_inactive');
+		$sav         = get_post('show_inactive');
 		unset($_POST);
 		$_POST['show_inactive'] = $sav;
 	}
 	//----------------------------------------------------------------------------------------------------
-
 	$result = get_all_sales_points(check_value('show_inactive'));
-
 	start_form();
 	start_table(Config::get('tables_style'));
-
-	$th = array(_('POS Name'), _('Credit sale'), _('Cash sale'), _('Location'), _('Default account'),
+	$th = array(
+		_('POS Name'), _('Credit sale'), _('Cash sale'), _('Location'), _('Default account'),
 		'', ''
 	);
 	inactive_control_column($th);
 	table_header($th);
 	$k = 0;
-
 	while ($myrow = DBOld::fetch($result))
 	{
 		alt_table_row_color($k);
@@ -102,31 +91,29 @@
 		delete_button_cell("Delete" . $myrow['id'], _("Delete"));
 		end_row();
 	}
-
 	inactive_control_row($th);
 	end_table(1);
 	//----------------------------------------------------------------------------------------------------
-
 	$cash = Validation::check(Validation::CASH_ACCOUNTS);
-
-	if (!$cash) ui_msgs::display_warning(_("To have cash POS first define at least one cash bank account."));
-
+	if (!$cash) {
+		ui_msgs::display_warning(_("To have cash POS first define at least one cash bank account."));
+	}
 	start_table(Config::get('tables_style2'));
-
 	if ($selected_id != -1) {
-
 		if ($Mode == 'Edit') {
 			$myrow = get_sales_point($selected_id);
-
-			$_POST['name'] = $myrow["pos_name"];
+			$_POST['name']     = $myrow["pos_name"];
 			$_POST['location'] = $myrow["pos_location"];
-			$_POST['account'] = $myrow["pos_account"];
-			if ($myrow["credit_sale"]) $_POST['credit_sale'] = 1;
-			if ($myrow["cash_sale"]) $_POST['cash_sale'] = 1;
+			$_POST['account']  = $myrow["pos_account"];
+			if ($myrow["credit_sale"]) {
+				$_POST['credit_sale'] = 1;
+			}
+			if ($myrow["cash_sale"]) {
+				$_POST['cash_sale'] = 1;
+			}
 		}
 		hidden('selected_id', $selected_id);
 	}
-
 	text_row_ex(_("Point of Sale Name") . ':', 'name', 20, 30);
 	if ($cash) {
 		check_row(_('Allowed credit sale'), 'credit', check_value('credit_sale'));
@@ -137,14 +124,10 @@
 		hidden('credit', 1);
 		hidden('account', 0);
 	}
-
 	locations_list_row(_("POS location") . ':', 'location');
 	end_table(1);
-
 	submit_add_or_update_center($selected_id == -1, '', 'both');
-
 	end_form();
-
 	end_page();
 
 ?>

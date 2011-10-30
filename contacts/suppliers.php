@@ -17,7 +17,6 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	$page_security = 'SA_SUPPLIER';
-
 	include_once("includes/contacts.php");
 	if (AJAX_REFERRER) {
 		if (isset($_GET['term'])) {
@@ -40,7 +39,7 @@
 		exit();
 	}
 	JS::footerFile("includes/js/suppliers.js");
-	page(_($help_context = "Suppliers"), Input::request('popup'));
+	Page::start(_($help_context = "Suppliers"), Input::request('popup'));
 	if (isset($_GET['id'])) {
 		$supplier = new Supplier($_GET['id']);
 	}
@@ -52,8 +51,8 @@
 	}
 	if (Validation::check(Validation::SUPPLIERS,)) {
 		HTML::div('suppliersearch', array('style' => 'text-align:center; '));
-		UI::search('supplier', array('label'   => 'Supplier:',
-																'size'     => 80,
+		UI::search('supplier', array('label'	 => 'Supplier:',
+																'size'		 => 80,
 																'callback' => 'Supplier.fetch'
 													 ));
 	}
@@ -93,20 +92,20 @@
 	$menu->render();
 	if ($customer->id) {
 		UI::button('btnSupplier', 'Update Supplier', array('name' => 'submit',
-																											'type'  => 'submit',
+																											'type'	=> 'submit',
 																											'style' => 'margin:10px;'
 																								 ));
 	}
 	else {
 		UI::button('btnSupplier', 'New Supplier',
-			array('name' => 'submit',
-					 'type'  => 'submit',
-					 'class' => ' ui-helper-hidden',
-					 'style' => 'margin:10px;'
-			));
+							 array('name' => 'submit',
+										'type'	=> 'submit',
+										'class' => ' ui-helper-hidden',
+										'style' => 'margin:10px;'
+							 ));
 	}
 	UI::button('btnCancel', 'Cancel', array('name' => 'cancel',
-																				 'type'  => 'submit',
+																				 'type'	=> 'submit',
 																				 'class' => 'ui-helper-hidden',
 																				 'style' => 'margin:10px;'
 																		))->div;

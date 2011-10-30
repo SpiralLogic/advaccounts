@@ -10,21 +10,16 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	$page_security = 'SA_WORKORDERCOST';
-
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-
-	page(_($help_context = "Costed Bill Of Material Inquiry"));
-
+	Page::start(_($help_context = "Costed Bill Of Material Inquiry"));
 	include_once(APP_PATH . "manufacturing/includes/manufacturing_ui.php");
-
 	Validation::check(Validation::BOM_ITEMS, _("There are no manufactured or kit items defined in the system."), BOM_ITEMS);
-
 	if (isset($_GET['stock_id'])) {
 		$_POST['stock_id'] = $_GET['stock_id'];
 	}
-	if (list_updated('stock_id'))
+	if (list_updated('stock_id')) {
 		$Ajax->activate('_page_body');
-
+	}
 	start_form(false, true);
 	start_table("class='tablestyle_noborder'");
 	stock_manufactured_items_list_row(_("Select a manufacturable item:"), 'stock_id', null, false, true);
@@ -32,8 +27,6 @@
 	br();
 	ui_msgs::display_heading(_("All Costs Are In:") . " " . Banking::get_company_currency());
 	display_bom(Input::post('stock_id'));
-
 	end_form();
-
 	end_page();
 ?>

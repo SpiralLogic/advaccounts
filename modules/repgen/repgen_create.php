@@ -1,65 +1,68 @@
 <?php
 	/* Create a new report or alter a stored report
-	* repgen_create.php for PHP Report Generator
-		Bauer, 22.1.2002
-		Version 0.2
- */
-
+		* repgen_create.php for PHP Report Generator
+			Bauer, 22.1.2002
+			Version 0.2
+	 */
 	/*
-	*
-	*
-	* 1. A section where utility functions are defined.
-	* 2. A section that is called only after the submit.
-	* 3. And a final section that is called when the script runs first time and
-	*    every time after the submit.
-	*
-	* Scripts organized in this way will allow the user perpetual
-	* editing and they will reflect submitted changes immediately
-	* after a form submission.
-	*
-	* We consider this to be the standard organization of table editor
-	* scripts.
-	*
- */
+		*
+		*
+		* 1. A section where utility functions are defined.
+		* 2. A section that is called only after the submit.
+		* 3. And a final section that is called when the script runs first time and
+		*    every time after the submit.
+		*
+		* Scripts organized in this way will allow the user perpetual
+		* editing and they will reflect submitted changes immediately
+		* after a form submission.
+		*
+		* We consider this to be the standard organization of table editor
+		* scripts.
+		*
+	 */
 	$page_security = 'SA_REPORT_GENERATOR';
-
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	add_access_extensions();
-
 	require_once("repgen_const.php");
 	require_once("repgen_def.php");
 	require_once("repgen.php");
-
-	function check_short($short) { // controls, that short-name of reports does not be twice
+	function check_short($short)
+	{ // controls, that short-name of reports does not be twice
 		global $id_new;
-		if (empty($short))
+		if (empty($short)) {
 			return false;
+		}
 		$query = "SELECT attrib,id FROM xx_reports WHERE typ='info'";
-		$res = DBOld::query($query);
+		$res   = DBOld::query($query);
 		while ($f = DBOld::fetch($res))
 		{
 			$h = explode("|", $f["attrib"]);
-			if (($h[0] == $short) && (trim($f["id"]) != $id_new))
+			if (($h[0] == $short) && (trim($f["id"]) != $id_new)) {
 				return false;
+			}
 		}
 		return true;
 	}
 
-	function m_s($a1, $a2) { // sets "selected" in select box when $a1 == $a2
-		if ($a1 == $a2)
+	function m_s($a1, $a2)
+	{ // sets "selected" in select box when $a1 == $a2
+		if ($a1 == $a2) {
 			return "selected";
+		}
 		else
+		{
 			return "";
+		}
 	}
 
-	function store($id, $info, $sql, $group, $group_type) { // stores the records info, select and group in the database
+	function store($id, $info, $sql, $group, $group_type)
+	{ // stores the records info, select and group in the database
 		DBOld::query("BEGIN");
 		$query = "DELETE FROM xx_reports WHERE (id ='" . $id . "' AND typ='info')";
 		DBOld::query($query);
 		$sql = strtr($sql, "'", "^"); // translate ' into ^
 		$query = "INSERT INTO xx_reports VALUES ('" . $id . "','info','" . $info . "')";
 		DBOld::query($query);
-
 		$query = "DELETE FROM xx_reports WHERE (id ='" . $id . "' AND typ='select')";
 		DBOld::query($query);
 		$sql = strtr($sql, "'", "^"); // translate ' into !
@@ -67,7 +70,7 @@
 		DBOld::query($query);
 		$query = "DELETE FROM xx_reports WHERE (id ='" . $id . "' AND typ='group')";
 		DBOld::query($query);
-		$g = $group . "|" . $group_type;
+		$g     = $group . "|" . $group_type;
 		$query = "INSERT INTO xx_reports VALUES ('" . $id . "','group','" . $g . "')";
 		DBOld::query($query);
 		DBOld::query("COMMIT");
@@ -76,9 +79,7 @@
 	###
 	### Submit Handler
 	###
-
 	## Check if there was a submission
-
 	if (isset($select)) {
 		// go to the page for selection of an old report without storing the content of this page
 		$url = REPGENDIR . "/repgen_select.php";
@@ -99,7 +100,7 @@
 			// switches to repgen_strings.php (Definition of String-items of the report)
 			//                   get_session_data();
 			// test, if $sql is correct SQL Statement
-			$sql = urldecode(stripslashes($sql));
+			$sql  = urldecode(stripslashes($sql));
 			$sql1 = str_replace("", '', $sql);
 			DBOld::query($sql1, "SQL-Statement : '" . $sql . "' " . SQL_ERROR . ":<BR>" . NOTSTORED);
 			$info = $short . "|" . $date_ . "|" . $author . "|" . $long . "|" . $print_format . "|" . $print_size . "|" . $report_type;
@@ -123,7 +124,7 @@
 			// switches to repgen_graphics.php (Definition of items of the report)
 			// set_session_data();
 			// test, if $sql is correct SQL Statement
-			$sql = urldecode(stripslashes($sql));
+			$sql  = urldecode(stripslashes($sql));
 			$sql1 = str_replace("", '', $sql);
 			DBOld::query($sql1, "Entered values NOT saved!");
 			$info = $short . "|" . $date_ . "|" . $author . "|" . $long . "|" . $print_format . "|" . $print_size . "|" . $report_type;
@@ -133,8 +134,7 @@
 			exit;
 		}
 	}
-
-	page("Report Generator REPGEN");
+	Page::start("Report Generator REPGEN");
 	### Output key administration forms, including all updated
 	### information, if we come here after a submission...
 ?>
@@ -162,16 +162,18 @@ function openWindow2(url, title) {
 </script>
 
 <?php
-	if (!empty($long))
+	if (!empty($long)) {
 		ui_msgs::display_heading(ALTER_HEAD . ":   " . $long);
+	}
 	else
+	{
 		ui_msgs::display_heading(CREATE_HEAD);
+	}
 	if (!empty($error)) {
 		ui_msgs::display_error($error);
 		$error = NULL;
 	}
 	start_form(false, false, "repgen_create.php", "edit");
-
 	start_table(Config::get('tables_style2'));
 	label_row(ID, $id_new . hidden("id_new", $id_new, false));
 	text_row(SHORT, "short", $short, 10, 10);
@@ -179,7 +181,8 @@ function openWindow2(url, title) {
 	text_row(AUTHOR, "author", $author, 20, 20);
 	label_row(DATE, today());
 	text_row(GROUP_NAME, "group", $group, 20, 30, "bgcolor='#eeeeee'");
-	$txt = "<select name='group_type' size='1'>
+	$txt
+	 = "<select name='group_type' size='1'>
 	<option value = 'nopage' " . m_s($group_type, "nopage") . ">" . NO_PAGE . "</option>
 	<option value = 'newpage' " . m_s($group_type, "newpage") . ">" . NEW_PAGE . "</option>
 	</select>";
@@ -189,17 +192,20 @@ function openWindow2(url, title) {
 	 "' onclick=\"openWindow2('" . REPGENDIR . "/repgen_test_sel.php" . "', 'SQL');\" >";
 	label_row("&nbsp;", $txt);
 	label_row("&nbsp;", "&nbsp;");
-	$txt = "<select name='print_format' size='1'>
+	$txt
+	 = "<select name='print_format' size='1'>
 	<option value = 'portrait' " . m_s($print_format, "portrait") . ">Portrait</option>
 	<option value = 'landscape' " . m_s($print_format, "landscape") . ">Landscape</option>
 	</select>";
 	label_row(PRINT_FORMAT, $txt);
-	$txt = "<select name='print_size' size='1'>
+	$txt
+	 = "<select name='print_size' size='1'>
 	<option value = 'letter' " . m_s($print_size, "letter") . ">Letter</option>
 	<option value = 'a4' " . m_s($print_size, "a4") . ">A4</option>
 	</select>";
 	label_row(A4FORMAT1, $txt);
-	$txt = "<select name='report_type' size='1'>
+	$txt
+	 = "<select name='report_type' size='1'>
 	<option value = 'single' " . m_s($report_type, "single") . ">" . PAGE_REC . "</option>
 	<option value = 'class' " . m_s($report_type, "class") . ">" . LINE_REC . "</option>
 	<option value = 'classtable' " . m_s($report_type, "classtable") . ">" . GRID_REC . "</option>
@@ -216,6 +222,5 @@ function openWindow2(url, title) {
 	end_row();
 	end_table();
 	end_form();
-
 	end_page();
 ?>
