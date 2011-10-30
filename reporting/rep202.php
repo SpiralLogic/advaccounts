@@ -70,8 +70,8 @@
 			include_once(APP_PATH . "reporting/includes/pdf_report.php");
 		}
 		if ($graphics) {
-			include_once(APP_PATH . "reporting/includes/class.graphic.php");
-			$pg = new graph();
+			include_once(APP_PATH . "reporting/includes/graph.php");
+			$pg = new Reports_Graph();
 		}
 		if ($fromsupp == ALL_NUMERIC) {
 			$from = _('All');

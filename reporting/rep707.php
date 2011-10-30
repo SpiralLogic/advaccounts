@@ -162,7 +162,7 @@
 		}
 		if ($graphics) {
 			include_once(APP_PATH . "reporting/includes/class.graphic.php");
-			$pg = new graph();
+			$pg = new Reports_Graph();
 		}
 		if (!$decimals) {
 			$dec = 0;

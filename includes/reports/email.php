@@ -10,8 +10,8 @@
 
 			 Leave this header in this file!
 	 */
-	require_once('class.phpmailer.php');
-	class email
+	require_once(dirname(__FILE__).'/phpmailer.php');
+	class Reports_Email
 	{
 		var $to = array();
 		var $cc = array();
@@ -24,7 +24,7 @@
 		var $mail;
 		var $toerror = "No vaild email address";
 
-		function email($name, $mail)
+		function __construct($name, $mail)
 		{
 			$this->mail = new PHPMailer();
 			$this->mail->IsSMTP(); // telling the class to use SMTP

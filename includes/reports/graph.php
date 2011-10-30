@@ -112,7 +112,7 @@
 
 	 */
 
-	class graph {
+	class Reports_Graph {
 
 		var $x;
 		var $y;
@@ -147,7 +147,7 @@
 		var $built_in = true;
 		var $fontfile = "";
 
-		function graph() {
+		function __construct() {
 			$this->x = $this->y = $this->z = array();
 
 			$this->biggest_x = NULL;

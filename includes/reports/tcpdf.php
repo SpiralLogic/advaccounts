@@ -147,8 +147,8 @@
 	 * 8. Lines 8642,9256 and 9348. split replaced by preg_split.
 	 * -------------------------------------------------------------------------------
 	 */
-	if (!defined("K_PATH_FONTS")) define ("K_PATH_FONTS", '../reporting/fonts/');
-	if (!defined("K_PATH_CACHE")) define ("K_PATH_CACHE", '../reporting/fonts/');
+	if (!defined("K_PATH_FONTS")) define ("K_PATH_FONTS", APP_PATH.'reporting/fonts/');
+	if (!defined("K_PATH_CACHE")) define ("K_PATH_CACHE", APP_PATH.'reporting/fonts/');
 	if (!defined("K_CELL_HEIGHT_RATIO")) define("K_CELL_HEIGHT_RATIO", 1.25);
 
 	//require_once(dirname(__FILE__).'/config/tcpdf_config.php');
@@ -169,7 +169,7 @@
 	/**
 	 * barcode class
 	 */
-	require_once(dirname(__FILE__) . "/barcodes.php");
+	require_once(dirname(__FILE__) . "/tcpdfbarcode.php");
 
 	/**
 	 * HTML entity decode functions

@@ -67,9 +67,9 @@
 		Refs::save($order->trans_type, $order_no, $order->reference);
 		DBOld::commit_transaction();
 		if (Config::get('accounts_stock_emailnotify') == 1 && count($st_ids) > 0) {
-			require_once(APP_PATH . "/reporting/includes/class.mail.php");
+			require_once(APP_PATH . "/reporting/includes/email.php");
 			$company = DB_Company::get_prefs();
-			$mail    = new email($company['coy_name'], $company['email']);
+			$mail    = new Reports_Email($company['coy_name'], $company['email']);
 			$from    = $company['coy_name'] . " <" . $company['email'] . ">";
 			$to      = $loc['location_name'] . " <" . $loc['email'] . ">";
 			$subject = _("Stocks below Re-Order Level at " . $loc['location_name']);
@@ -198,7 +198,7 @@
 		if (Config::get('accounts_stock_emailnotify') == 1 && count($st_ids) > 0) {
 			require_once(APP_PATH . "/reporting/includes/class.mail.php");
 			$company = DB_Company::get_prefs();
-			$mail    = new email($company['coy_name'], $company['email']);
+			$mail    = new Reports_Email($company['coy_name'], $company['email']);
 			$from    = $company['coy_name'] . " <" . $company['email'] . ">";
 			$to      = $loc['location_name'] . " <" . $loc['email'] . ">";
 			$subject = _("Stocks below Re-Order Level at " . $loc['location_name']);

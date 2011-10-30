@@ -11,9 +11,9 @@
 		See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		* ********************************************************************* */
 	//include_once(APP_PATH . "reporting/includes/class.pdf.php");
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/reporting/includes/class.pdf.php");
+
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/reporting/includes/printer_class.php");
-	class FrontReport extends Cpdf
+	class FrontReport extends Reports_Cpdf
 	{
 		var $size;
 		var $company;
@@ -185,7 +185,7 @@
 				'a_meta_language' => $code,
 				'w_page'					=> 'page'
 			);
-			$this->Cpdf($size, $l, $orientation);
+			$this->Reports_Cpdf($size, $l, $orientation);
 		}
 
 		/*
@@ -887,7 +887,7 @@
 						include("includes/doctext.php");
 					}
 					require_once(APP_PATH . "reporting/includes/class.mail.php");
-					$mail = new email(str_replace(",", "", $this->company['coy_name']), $this->company['email']);
+					$mail = new Reports_Email(str_replace(",", "", $this->company['coy_name']), $this->company['email']);
 					if (!isset($myrow['email']) || $myrow['email'] == '') {
 						$myrow['email'] = isset($myrow['contact_email']) ? $myrow['contact_email'] : '';
 					}

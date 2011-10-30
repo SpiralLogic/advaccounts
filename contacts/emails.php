@@ -8,7 +8,6 @@
 	 */
 	$page_security = 'SA_CUSTOMER';
 	include_once("includes/contacts.php");
-	include_once(APP_PATH . "reporting/includes/tcpdf.php");
 	if (AJAX_REFERRER) {
 		if (Input::has_post('type', 'id')) {
 			if ($_POST['type'] === 'c') {

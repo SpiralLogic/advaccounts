@@ -72,7 +72,7 @@
 		}
 		if ($graphics) {
 			include_once(APP_PATH . "reporting/includes/class.graphic.php");
-			$pg = new graph();
+			$pg = new Reports_Graph();
 		}
 		if ($fromcust == ALL_NUMERIC) {
 			$from = _('All');
