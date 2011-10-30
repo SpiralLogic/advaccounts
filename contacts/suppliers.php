@@ -49,12 +49,12 @@
 	else {
 		$supplier = new Supplier();
 	}
-	if (Validation::check(Validation::SUPPLIERS,)) {
+	if (Validation::check(Validation::SUPPLIERS)) {
 		HTML::div('suppliersearch', array('style' => 'text-align:center; '));
-		UI::search('supplier', array('label'	 => 'Supplier:',
-																'size'		 => 80,
-																'callback' => 'Supplier.fetch'
-													 ));
+		UI::search('supplier', array('label' => 'Supplier:',
+			'size' => 80,
+			'callback' => 'Supplier.fetch'
+		));
 	}
 	$menu = new MenuUI();
 	$menu->startTab('Details', 'Supplier Details');
@@ -92,21 +92,21 @@
 	$menu->render();
 	if ($customer->id) {
 		UI::button('btnSupplier', 'Update Supplier', array('name' => 'submit',
-																											'type'	=> 'submit',
-																											'style' => 'margin:10px;'
-																								 ));
+			'type' => 'submit',
+			'style' => 'margin:10px;'
+		));
 	}
 	else {
 		UI::button('btnSupplier', 'New Supplier',
-							 array('name' => 'submit',
-										'type'	=> 'submit',
-										'class' => ' ui-helper-hidden',
-										'style' => 'margin:10px;'
-							 ));
+			array('name' => 'submit',
+				'type' => 'submit',
+				'class' => ' ui-helper-hidden',
+				'style' => 'margin:10px;'
+			));
 	}
 	UI::button('btnCancel', 'Cancel', array('name' => 'cancel',
-																				 'type'	=> 'submit',
-																				 'class' => 'ui-helper-hidden',
-																				 'style' => 'margin:10px;'
-																		))->div;
+		'type' => 'submit',
+		'class' => 'ui-helper-hidden',
+		'style' => 'margin:10px;'
+	))->div;
 	end_page(true, true);

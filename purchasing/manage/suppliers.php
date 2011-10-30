@@ -99,7 +99,7 @@
 				 . DBOld::escape($_POST['tax_group_id']) . ")";
 				DBOld::query($sql, "The supplier could not be added");
 				$_POST['supplier_id'] = DBOld::insert_id();
-				$new_supplier         = false;
+				$new_supplier = false;
 				ui_msgs::display_notification(_("A new supplier has been added."));
 				$Ajax->activate('_page_body');
 			}
@@ -110,18 +110,18 @@
 		//the link to delete a selected record was clicked instead of the submit button
 		$cancel_delete = 0;
 		// PREVENT DELETES IF DEPENDENT RECORDS IN 'supp_trans' , purch_orders
-		$sql    = "SELECT COUNT(*) FROM supp_trans WHERE supplier_id=" . DBOld::escape($_POST['supplier_id']);
+		$sql = "SELECT COUNT(*) FROM supp_trans WHERE supplier_id=" . DBOld::escape($_POST['supplier_id']);
 		$result = DBOld::query($sql, "check failed");
-		$myrow  = DBOld::fetch_row($result);
+		$myrow = DBOld::fetch_row($result);
 		if ($myrow[0] > 0) {
 			$cancel_delete = 1;
 			ui_msgs::display_error(_("Cannot delete this supplier because there are transactions that refer to this supplier."));
 		}
 		else
 		{
-			$sql    = "SELECT COUNT(*) FROM purch_orders WHERE supplier_id=" . DBOld::escape($_POST['supplier_id']);
+			$sql = "SELECT COUNT(*) FROM purch_orders WHERE supplier_id=" . DBOld::escape($_POST['supplier_id']);
 			$result = DBOld::query($sql, "check failed");
-			$myrow  = DBOld::fetch_row($result);
+			$myrow = DBOld::fetch_row($result);
 			if ($myrow[0] > 0) {
 				$cancel_delete = 1;
 				ui_msgs::display_error(_("Cannot delete the supplier record because purchase orders have been created against this supplier."));
@@ -136,7 +136,7 @@
 		} //end if Delete supplier
 	}
 	start_form();
-	if (Validation::check(Validation::SUPPLIERS,)) {
+	if (Validation::check(Validation::SUPPLIERS)) {
 		start_table("", 3);
 		//	start_table("class = 'tablestyle_noborder'");
 		start_row();
@@ -161,48 +161,48 @@
 	if (!$new_supplier) {
 		//SupplierID exists - either passed when calling the form or from the form itself
 		$myrow = get_supplier($_POST['supplier_id']);
-		$_POST['supp_name']                = $myrow["supp_name"];
-		$_POST['supp_ref']                 = $myrow["supp_ref"];
-		$_POST['address']                  = $myrow["address"];
-		$_POST['supp_address']             = $myrow["supp_address"];
-		$_POST['phone']                    = $myrow["phone"];
-		$_POST['phone2']                   = $myrow["phone2"];
-		$_POST['fax']                      = $myrow["fax"];
-		$_POST['gst_no']                   = $myrow["gst_no"];
-		$_POST['email']                    = $myrow["email"];
-		$_POST['website']                  = $myrow["website"];
-		$_POST['contact']                  = $myrow["contact"];
-		$_POST['supp_account_no']          = $myrow["supp_account_no"];
-		$_POST['bank_account']             = $myrow["bank_account"];
-		$_POST['dimension_id']             = $myrow["dimension_id"];
-		$_POST['dimension2_id']            = $myrow["dimension2_id"];
-		$_POST['curr_code']                = $myrow["curr_code"];
-		$_POST['payment_terms']            = $myrow["payment_terms"];
-		$_POST['credit_limit']             = price_format($myrow["credit_limit"]);
-		$_POST['tax_group_id']             = $myrow["tax_group_id"];
-		$_POST['payable_account']          = $myrow["payable_account"];
-		$_POST['purchase_account']         = $myrow["purchase_account"];
+		$_POST['supp_name'] = $myrow["supp_name"];
+		$_POST['supp_ref'] = $myrow["supp_ref"];
+		$_POST['address'] = $myrow["address"];
+		$_POST['supp_address'] = $myrow["supp_address"];
+		$_POST['phone'] = $myrow["phone"];
+		$_POST['phone2'] = $myrow["phone2"];
+		$_POST['fax'] = $myrow["fax"];
+		$_POST['gst_no'] = $myrow["gst_no"];
+		$_POST['email'] = $myrow["email"];
+		$_POST['website'] = $myrow["website"];
+		$_POST['contact'] = $myrow["contact"];
+		$_POST['supp_account_no'] = $myrow["supp_account_no"];
+		$_POST['bank_account'] = $myrow["bank_account"];
+		$_POST['dimension_id'] = $myrow["dimension_id"];
+		$_POST['dimension2_id'] = $myrow["dimension2_id"];
+		$_POST['curr_code'] = $myrow["curr_code"];
+		$_POST['payment_terms'] = $myrow["payment_terms"];
+		$_POST['credit_limit'] = price_format($myrow["credit_limit"]);
+		$_POST['tax_group_id'] = $myrow["tax_group_id"];
+		$_POST['payable_account'] = $myrow["payable_account"];
+		$_POST['purchase_account'] = $myrow["purchase_account"];
 		$_POST['payment_discount_account'] = $myrow["payment_discount_account"];
-		$_POST['notes']                    = $myrow["notes"];
-		$_POST['inactive']                 = $myrow["inactive"];
+		$_POST['notes'] = $myrow["notes"];
+		$_POST['inactive'] = $myrow["inactive"];
 	}
 	else
 	{
-		$_POST['supp_name']     = $_POST['supp_ref'] = $_POST['address'] = $_POST['supp_address']
+		$_POST['supp_name'] = $_POST['supp_ref'] = $_POST['address'] = $_POST['supp_address']
 		 = $_POST['tax_group_id'] = $_POST['website'] = $_POST['supp_account_no'] = $_POST['notes'] = '';
-		$_POST['dimension_id']  = 0;
+		$_POST['dimension_id'] = 0;
 		$_POST['dimension2_id'] = 0;
-		$_POST['sales_type']    = -1;
-		$_POST['email']         = $_POST['phone'] = $_POST['phone2'] = $_POST['fax']
+		$_POST['sales_type'] = -1;
+		$_POST['email'] = $_POST['phone'] = $_POST['phone2'] = $_POST['fax']
 		 = $_POST['gst_no'] = $_POST['contact'] = $_POST['bank_account'] = '';
 		$_POST['payment_terms'] = '';
-		$_POST['credit_limit']  = price_format(0);
-		$company_record                    = DB_Company::get_prefs();
-		$_POST['curr_code']                = $company_record["curr_default"];
-		$_POST['payable_account']          = $company_record["creditors_act"];
-		$_POST['purchase_account']         = $company_record["default_cogs_act"];
+		$_POST['credit_limit'] = price_format(0);
+		$company_record = DB_Company::get_prefs();
+		$_POST['curr_code'] = $company_record["curr_default"];
+		$_POST['payable_account'] = $company_record["creditors_act"];
+		$_POST['purchase_account'] = $company_record["default_cogs_act"];
 		$_POST['payment_discount_account'] = $company_record['pyt_discount_act'];
-		$_POST['inactive']                 = 0;
+		$_POST['inactive'] = 0;
 	}
 	table_section_title(_("Name and Contact"));
 	text_row(_("Supplier Name:"), 'supp_name', null, 42, 40);
