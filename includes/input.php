@@ -14,9 +14,9 @@
 		const OBJECT = 'object';
 		const STRING = 'string';
 		const BOOL = 'boolean';
-		protected $default_number = 0;
-		protected $default_string = '';
-		protected $default_bool = false;
+		protected static $default_number = 0;
+		protected static $default_string = '';
+		protected static $default_bool = false;
 
 		public static function post($var, $type = null, $default = null)
 		{
