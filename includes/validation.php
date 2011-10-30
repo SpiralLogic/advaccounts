@@ -9,7 +9,8 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	class Validation {
+	class Validation
+	{
 		const CUSTOMERS = "debtors_master";
 		const CURRENCIES = "currencies";
 		const SALES_TYPES = "sales_types";
@@ -43,10 +44,13 @@
 		const TAGS = "FROM tags WHERE type=";
 		const EMPTY_RESULT = "";
 
-		public static function check($validate, $msg = '', $extra = null) {
+		public static function check($validate, $msg = '', $extra = null)
+		{
 			//if (!property_exists(__CLASS__, $validate)) return ui_msgs::display_error("TABLE $validate doesn't exist", true);
-			if ($extra===false) return 0;
-			$extra  = ($extra!==null) ? DBOld::escape($extra) : '';
+			if ($extra === false) {
+				return 0;
+			}
+			$extra = ($extra !== null) ? DBOld::escape($extra) : '';
 
 			$result = DBOld::query('SELECT COUNT(*) FROM ' . $validate . ' ' . $extra, 'Could not do check empty query');
 			$myrow  = DBOld::fetch_row($result);
@@ -54,7 +58,7 @@
 				throw new Adv_Exception($msg);
 				end_page();
 				exit;
-			}else {
+			} else {
 				return $myrow[0];
 			}
 		}
@@ -63,16 +67,21 @@
 		//	Integer input check
 		//	Return 1 if number has proper form and is within <min, max> range
 		//
-		public static function is_int($postname, $min = null, $max = null) {
-			if (!isset($_POST[$postname]))
+		public static function is_int($postname, $min = null, $max = null)
+		{
+			if (!isset($_POST[$postname])) {
 				return 0;
+			}
 			$num = input_num($postname);
-			if (!is_int($num))
+			if (!is_int($num)) {
 				return 0;
-			if (isset($min) && ($num < $min))
+			}
+			if (isset($min) && ($num < $min)) {
 				return 0;
-			if (isset($max) && ($num > $max))
+			}
+			if (isset($max) && ($num > $max)) {
 				return 0;
+			}
 			return 1;
 		}
 
@@ -81,16 +90,44 @@
 		//	Return 1 if number has proper form and is within <min, max> range
 		//	Empty/not defined fields are defaulted to $dflt value.
 		//
-		public static function is_num($postname, $min = null, $max = null, $dflt = 0) {
-			if (!isset($_POST[$postname]))
+		public static function is_num($postname, $min = null, $max = null, $dflt = 0)
+		{
+			if (!isset($_POST[$postname])) {
 				return 0;
+			}
 			$num = input_num($postname, $dflt);
-			if ($num === false || $num === null)
+			if ($num === false || $num === null) {
 				return 0;
-			if (isset($min) && ($num < $min))
+			}
+			if (isset($min) && ($num < $min)) {
 				return 0;
-			if (isset($max) && ($num > $max))
+			}
+			if (isset($max) && ($num > $max)) {
 				return 0;
+			}
 			return 1;
+		}
+
+		public static function user_num($input)
+		{
+			$num = trim($input);
+			$sep = Config::get('separators_thousands', user_tho_sep());
+			if ($sep != '') {
+				$num = str_replace($sep, '', $num);
+			}
+			$sep = Config::get('separators_decimal', user_dec_sep());
+			if ($sep != '.') {
+				$num = str_replace($sep, '.', $num);
+			}
+			if (!is_numeric($num)) {
+				return false;
+			}
+			$num = (float)$num;
+			if ($num == (int)$num) {
+				return (int)$num;
+			} else
+			{
+				return $num;
+			}
 		}
 	}
