@@ -21,7 +21,7 @@
 	{
 		$trans_no = $_POST["trans_no"];
 	}
-	$supp_trans             = new suppTrans();
+	$supp_trans             = new Order_Trans();
 	$supp_trans->is_invoice = true;
 	read_supp_invoice($trans_no, ST_SUPPINVOICE, $supp_trans);
 	$supplier_curr_code = Banking::get_supplier_currency($supp_trans->supplier_id);

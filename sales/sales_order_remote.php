@@ -13,7 +13,7 @@
 	include_once(APP_PATH . "sales/includes/db/sales_types_db.php");
 	if (!isset($_SESSION['remote_order'])) {
 		processing_start();
-		$_SESSION['remote_order'] = new Cart(ST_SALESORDER, array(0));
+		$_SESSION['remote_order'] = new Order_Sales(ST_SALESORDER, array(0));
 		copy_from_cart($_SESSION['remote_order']);
 	}
 	if (isset($_GET['item']) && isset($_GET['new'])) {

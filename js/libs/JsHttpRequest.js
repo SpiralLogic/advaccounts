@@ -829,6 +829,6 @@ JsHttpRequest.LOADERS.form = { loader:function(req) {
 		// Success.
 		return null;
 	}
-}}
+}};
 // }}}
 

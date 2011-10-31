@@ -2,11 +2,7 @@
  * User: Eli Sklar
  * Date: 30/05/11 - 9:50 AM
  */
-
-
-$ = jQuery;
-
-remote_order = (function () {
+remote_order = (function ($) {
   var overlay,remote,message,button;
   return  {
     domain: "https://advanced.sorijen.net.au:2223/",
@@ -84,7 +80,7 @@ remote_order = (function () {
       });
     }
   }
-})();
+})(jQuery);
 if (window.location.hostname != "www.advancedroadsigns.com.au") {
   var go;
   go = confirm("Not currently at www.advancedroadsigns.com.au, open in new tab?");

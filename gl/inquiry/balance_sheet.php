@@ -104,8 +104,8 @@
 
 	function display_balance_sheet()
 	{
-		$from = Dates::begin_fiscalyear();
-		$to   = $_POST['TransToDate'];
+		$from      = Dates::begin_fiscalyear();
+		$to        = $_POST['TransToDate'];
 		$dim       = DB_Company::get_pref('use_dimension');
 		$dimension = $dimension2 = 0;
 		$lconvert  = $econvert = 1;
@@ -120,10 +120,8 @@
 		start_table("width=30%  " . Config::get('tables_style'));
 		if (!$drilldown) //Root Level
 		{
-			$equityclose    = 0.0;
-			$lclose         = 0.0;
-			$calculateclose = 0.0;
-			$parent = -1;
+			$equityclose = $lclose = $calculateclose = 0.0;
+			$parent      = -1;
 			//Get classes for BS
 			$classresult = get_account_classes(false, 1);
 			while ($class = DBOld::fetch($classresult))
@@ -188,7 +186,7 @@
 		{
 			//Level Pointer : Global variable defined in order to control display of root
 			global $levelptr;
-			$levelptr = 0;
+			$levelptr    = 0;
 			$accounttype = get_account_type($_POST["AccGrp"]);
 			$classid     = $accounttype["class_id"];
 			$class       = get_account_class($classid);

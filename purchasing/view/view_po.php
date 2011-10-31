@@ -18,7 +18,7 @@
 		die ("<br>" . _("This page must be called with a purchase order number to review."));
 	}
 	ui_msgs::display_heading(_("Purchase Order") . " #" . $_GET['trans_no']);
-	$purchase_order = new purchOrder;
+	$purchase_order = new Order_Purchase;
 	read_po($_GET['trans_no'], $purchase_order);
 	echo "<br>";
 	display_po_summary($purchase_order, true);
