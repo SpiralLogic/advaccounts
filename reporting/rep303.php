@@ -61,9 +61,9 @@
 		$comments = $_POST['PARAM_6'];
 		$destination = $_POST['PARAM_7'];
 		if ($destination) {
-			include_once(APP_PATH . "reporting/includes/excel_report.php");
+			include_once(APP_PATH . "includes/reports/excel.php");
 		} else {
-			include_once(APP_PATH . "reporting/includes/pdf_report.php");
+			include_once(APP_PATH . "includes/reports/pdf.php");
 		}
 		if ($category == ALL_NUMERIC) {
 			$category = 0;

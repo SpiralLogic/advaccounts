@@ -12,8 +12,10 @@
 		* ********************************************************************* */
 	//include_once(APP_PATH . "reporting/includes/class.pdf.php");
 
-	include_once($_SERVER['DOCUMENT_ROOT'] . "/reporting/includes/printer_class.php");
-	class FrontReport extends Reports_Cpdf
+	include(dirname(__FILE__)."/printer/remote.php");
+	if (!class_exists('Cpdf',false)) include(dirname(__FILE__).DS.'pdf/cpdf.php');
+	if (!class_exists('TCPDF',false)) include(dirname(__FILE__).DS.'pdf/tcpdf.php');
+	class FrontReport extends Cpdf
 	{
 		var $size;
 		var $company;
@@ -50,7 +52,7 @@
 		var $footerText;
 		// store user-generated footer text
 		var $headerFunc; // store the name of the currently selected header function
-		function FrontReport($title, $filename, $size = 'A4', $fontsize = 9, $orientation = 'P', $margins = NULL, $excelColWidthFactor = NULL)
+		function __construct($title, $filename, $size = 'A4', $fontsize = 9, $orientation = 'P', $margins = NULL, $excelColWidthFactor = NULL)
 		{
 			global $page_security;
 			if (!CurrentUser::instance()->can_access_page($page_security)) {
@@ -185,7 +187,7 @@
 				'a_meta_language' => $code,
 				'w_page'					=> 'page'
 			);
-			$this->Reports_Cpdf($size, $l, $orientation);
+			parent::__construct($size, $l, $orientation);
 		}
 
 		/*
@@ -358,7 +360,7 @@
 			} else {
 				include("includes/doctext.php");
 			}
-			include("includes/header2.php");
+			include("includes/header.php");
 			//    }
 			$this->row = $temp;
 		}
@@ -958,7 +960,7 @@
 							$this->Stream();
 						}
 					} else { // send report to network printer
-						$prn   = new remote_printer($printer['queue'], $printer['host'], $printer['port'], $printer['timeout']);
+						$prn   = new Reports_Printer_Remote($printer['queue'], $printer['host'], $printer['port'], $printer['timeout']);
 						$error = $prn->print_file($fname);
 						if ($error) {
 							ui_msgs::display_error($error);

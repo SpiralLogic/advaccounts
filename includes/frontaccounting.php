@@ -117,7 +117,7 @@
 							$ext['path'] . "/lang"
 						);
 						$class = $ext['tab'] . "_app";
-						if (class_exists($class)) {
+						if (class_exists($class,false)) {
 							$this->add_application(new $class());
 						}
 						$_SESSION['get_text']->add_domain(

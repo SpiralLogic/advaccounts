@@ -5,10 +5,16 @@
 		by extensions editor.
 	*/
 
-	$installed_extensions = array(1 => array('tab' => 'system', 'name' => 'Report Generator ', 'path' => 'repgen', 'title' => 'Report Generator', 'active' => '1', 'type' => 'plugin',
-		'filename' => 'repgen_select.php', 'acc_file' => 'acc_levels.php', 'access' => 'SA_REPORT_GENERATOR',
-	)
-
-	,
+	$installed_extensions = array(
+		1 => array('tab' => 'system',
+			'name' => 'Advanced',
+			'path' => 'advanced',
+			'title' => 'Advanced',
+			'active' => '1',
+			'type' => 'plugin',
+			'filename' => 'advanced.php',
+			'acc_file' => 'acc_levels.php',
+			'access' => 'SA_ADVANCED',
+		),
 	);
 ?>

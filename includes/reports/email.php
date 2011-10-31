@@ -10,7 +10,7 @@
 
 			 Leave this header in this file!
 	 */
-	require_once(dirname(__FILE__).'/phpmailer.php');
+	include(dirname(__FILE__).'/email/phpmailer.php');
 	class Reports_Email
 	{
 		var $to = array();

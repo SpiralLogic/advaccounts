@@ -1,10 +1,10 @@
 <?php
 	/*
-	 * remote_printer class.
+	 * Reports_Printer_Remote class.
 	 * All needed filters should be set for the printer in printercap file.
 	 * Based on PrintSendLPR class by Mick Sear, eCreate
 	 */
-	class remote_printer
+	class Reports_Printer_Remote
 	{
 		var $host;
 		var $port;
@@ -14,7 +14,7 @@
 		//
 		//	Setting connection parameters
 		//
-		function remote_printer($queue, $host = '', $port = 515, $timeout = 20)
+		function __construct($queue, $host = '', $port = 515, $timeout = 20)
 		{
 			if ($host == '') {
 				$host = $_SERVER['REMOTE_ADDR'];

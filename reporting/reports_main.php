@@ -11,10 +11,9 @@
 	 ***********************************************************************/
 	$page_security = 'SA_OPEN';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	include_once(APP_PATH . "/reporting/includes/reports_classes.php");
-	$js = "";
+
 	Page::start(_($help_context = "Reports and Analysis"));
-	$reports = new BoxReports;
+	$reports = new Reports_Box();
 	$dim = DB_Company::get_pref('use_dimension');
 	$reports->addReportClass(_('Customer'));
 	$reports->addReport(_('Customer'), 101, _('Customer &Balances'),
@@ -416,5 +415,6 @@
 	</script>
 ";
 	echo $reports->getDisplay();
+
 	end_page();
 ?>

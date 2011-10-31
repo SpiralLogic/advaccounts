@@ -58,16 +58,16 @@
 			| \xD9[\xA0-\xA9\xAB\xAC]												# AN
 			)/x");
 
-	include (APP_PATH.'/includes/reports/tcpdf.php');
+	if (!class_exists('TCPDF',false)) include(dirname(__FILE__).DS.'tcpdf.php');
 
-	class Reports_Cpdf extends TCPDF {
+	class Cpdf extends TCPDF {
 
-		function Reports_Cpdf($pageSize = 'A4', $l = array(), $pageOrientation = 'P') {
+		function __construct($pageSize = 'A4', $l = array(), $pageOrientation = 'P') {
 			if (!isset($l['a_meta_charset'])) $l = array('a_meta_charset' => 'ISO-8859-1', 'a_meta_dir' => 'ltr', 'a_meta_language' => 'en_GB', 'w_page' => 'page');
 			$enc = $l['a_meta_charset'];
 			$uni = ($enc == 'UTF-8' || $enc == 'GB2312' ? true : false);
 			if ($uni) ini_set("memory_limit", "48M");
-			$this->TCPDF($pageOrientation, 'pt', $pageSize, $uni, $enc);
+			parent::__construct($pageOrientation, 'pt', $pageSize, $uni, $enc);
 			$this->setLanguageArray($l);
 			$this->setPrintHeader(false);
 			$this->setPrintFooter(false);

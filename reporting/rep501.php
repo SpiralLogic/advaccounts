@@ -67,9 +67,9 @@
 		$comments = $_POST['PARAM_3'];
 		$destination = $_POST['PARAM_4'];
 		if ($destination)
-			include_once(APP_PATH . "reporting/includes/excel_report.php");
+			include_once(APP_PATH . "includes/reports/excel.php");
 		else
-			include_once(APP_PATH . "reporting/includes/pdf_report.php");
+			include_once(APP_PATH . "includes/reports/pdf.php");
 
 		$cols = array(0, 50, 210, 250, 320, 395, 465, 515);
 
