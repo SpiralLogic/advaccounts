@@ -1,9 +1,8 @@
 <?php
 
 	$page_security = 'SA_CUSTOMER';
-
-		require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-		$_SESSION['App']->selected_application = 'Items';
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
+	$_SESSION['App']->selected_application = 'Items';
 	if (AJAX_REFERRER) {
 		if (isset($_GET['term'])) {
 			$data = Item::search($_GET['term']);
@@ -29,9 +28,9 @@
 	$stock_cats = stock_categories_list('category_id');
 	if (!isset($_GET['stock_id'])) {
 		HTML::div('itemSearch');
-		UI::search('item', array('label'   => 'Search Item',
-														'size'     => 80,
-														'url'      => 'search.php',
+		UI::search('item', array('label'	 => 'Search Item',
+														'size'		 => 80,
+														'url'			=> 'search.php',
 														'callback' => 'Items.fetch'
 											 ));
 		HTML::div();

@@ -16,13 +16,13 @@
 		this.getItem = function(id) {
 			$.post("items.php", {id:id}, function(data) {
 				var content = $('<td><td/>').css('vertical-align', 'top');
-				item = {stock_id:data.stock_id,
-					description:data.description,
+				item = {stock_id:  data.stock_id,
+					description:     data.description,
 					long_description:data.long_description,
-					actual_cost:data.actual_cost,
-					last_cost:data.last_cost,
-					inactive:data.inactive,
-					no_sale:data.no_sale};
+					actual_cost:     data.actual_cost,
+					last_cost:       data.last_cost,
+					inactive:        data.inactive,
+					no_sale:         data.no_sale};
 				$.each(item, function(i, data) {
 					$this.addFeild(i, data).appendTo(content);
 				});
@@ -50,12 +50,12 @@
 
 $(function($) {
 	var oTable = $('#itemDetails').dataTable({
-																						 "bProcessing":true,
-																						 "bServerSide":true,
-																						 "bJQueryUI":true,
+																						 "bProcessing":   true,
+																						 "bServerSide":   true,
+																						 "bJQueryUI":     true,
 																						 "iDisplayLength":100,
-																						 "sAjaxSource":"includes/server_processing.php",
-																						 "aoColumns":[
+																						 "sAjaxSource":   "includes/server_processing.php",
+																						 "aoColumns":     [
 																							 {},
 																							 {"sClass":"editable_textarea"},
 																							 {"sClass":"editable_textarea"},
@@ -68,7 +68,7 @@ $(function($) {
 																						 "fnDrawCallback":function() {
 																							 $('#itemDetails').find('.editable')
 																								.editable('../items/editable_ajax.php', {
-																														"callback":function(sValue, y) {
+																														"callback":  function(sValue, y) {
 																															/* Redraw the table from the new data on the server */
 																															oTable.fnDraw();
 																														},
@@ -78,7 +78,7 @@ $(function($) {
 																																"column":oTable.fnGetPosition(this)[2]
 																															}
 																														},
-																														"height":"14px"
+																														"height":    "14px"
 																													}).end().find('.editable_textarea')
 																								.editable('../items/editable_ajax.php',
 																													{"submitdata":function(value, message) {
@@ -89,13 +89,13 @@ $(function($) {
 
 																														}
 																													},
-																														"callback":function(value, y) {
+																														"callback": function(value, y) {
 																															/* Redraw the table from the new data on the server */
 																															oTable.fnDraw();
 																														},
-																														type:'textarea',
-																														cancel:'Cancel',
-																														submit:'OK'
+																														type:       'textarea',
+																														cancel:     'Cancel',
+																														submit:     'OK'
 																													}).end().find('.editable_check')
 																								.editable('../items/editable_ajax.php',
 																													{
@@ -103,7 +103,7 @@ $(function($) {
 																															/* Redraw the table from the new data on the server */
 																															oTable.fnDraw();
 																														},
-																														type:'checkbox'
+																														type:      'checkbox'
 																													});
 																						 }
 																					 });
