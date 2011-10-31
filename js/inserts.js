@@ -10,7 +10,7 @@
  ***********************************************************************/
 var _focus;
 var _hotkeys = {
-	'alt':  false, // whether is the Alt key pressed
+	'alt':false, // whether is the Alt key pressed
 	'focus':-1		// currently selected indeks of document.links
 };
 
@@ -185,7 +185,7 @@ function passBack(value) {
  Behaviour definitions
  */
 var inserts = {
-	'input':                                                                                  function(e) {
+	'input':function(e) {
 		if (e.onfocus == undefined) {
 			e.onfocus = function() {
 				save_focus(this);
@@ -212,11 +212,11 @@ var inserts = {
 			}
 		}
 	},
-	'input.combo2,input[aspect="fallback"]':                                                  function(e) {
+	'input.combo2,input[aspect="fallback"]':function(e) {
 		// this hides search button for js enabled browsers
 		e.style.display = 'none';
 	},
-	'div.js_only':                                                                            function(e) {
+	'div.js_only':function(e) {
 		// this shows divs for js enabled browsers only
 		e.style.display = 'block';
 	},
@@ -233,7 +233,7 @@ var inserts = {
 			return false;
 		}
 	},
-	'button':                                                                                 function(e) {
+	'button':function(e) {
 		if (e.name) {
 			var func = _validate[e.name];
 			var old = e.onclick;
@@ -253,7 +253,7 @@ var inserts = {
 			}
 		}
 	},
-	'.amount':                                                                                function(e) {
+	'.amount':function(e) {
 		if (e.onblur == undefined) {
 			e.onblur = function() {
 				var dec = this.getAttribute("dec");
@@ -261,7 +261,7 @@ var inserts = {
 			};
 		}
 	},
-	'.freight':                                                                               function(e) {
+	'.freight':function(e) {
 		if (e.onblur == undefined) {
 			e.onblur = function() {
 				var dec = this.getAttribute("dec");
@@ -270,24 +270,24 @@ var inserts = {
 		}
 	},
 	'.searchbox':// emulated onchange event handling for text inputs
-																																														function(e) {
-																																															e.setAttribute('_last_val', e.value);
-																																															e.setAttribute('autocomplete', 'off'); //must be off when calling onblur
-																																															e.onblur = function() {
-																																																var val = this.getAttribute('_last_val');
-																																																if (val != this.value) {
-																																																	this.setAttribute('_last_val', this.value);
-																																																	JsHttpRequest.request('_' + this.name + '_changed', this.form);
-																																																}
-																																															}
-																																														},
-	'button[aspect="selector"], input[aspect="selector"]':                                    function(e) {
+	 function(e) {
+		 e.setAttribute('_last_val', e.value);
+		 e.setAttribute('autocomplete', 'off'); //must be off when calling onblur
+		 e.onblur = function() {
+			 var val = this.getAttribute('_last_val');
+			 if (val != this.value) {
+				 this.setAttribute('_last_val', this.value);
+				 JsHttpRequest.request('_' + this.name + '_changed', this.form);
+			 }
+		 }
+	 },
+	'button[aspect="selector"], input[aspect="selector"]':function(e) {
 		e.onclick = function() {
 			passBack(this.getAttribute('rel'));
 			return false;
 		}
 	},
-	'select':                                                                                 function(e) {
+	'select':function(e) {
 		if (e.onfocus == undefined) {
 			e.onfocus = function() {
 				save_focus(this);
@@ -298,14 +298,14 @@ var inserts = {
 			}
 		}
 	},
-	'a.printlink':                                                                            function(l) {
+	'a.printlink':function(l) {
 		l.onclick = function() {
 			save_focus(this);
 			JsHttpRequest.request(this, null, 60000);
 			return false;
 		}
 	},
-	'a':                                                                                      function(e) { // traverse menu
+	'a':function(e) { // traverse menu
 		e.onkeydown = function(ev) {
 			ev = ev || window.event;
 			key = ev.keyCode || ev.which;
@@ -316,7 +316,7 @@ var inserts = {
 			}
 		}
 	},
-	'ul.ajaxtabs':                                                                            function(ul) {
+	'ul.ajaxtabs':function(ul) {
 		var ulist = ul.getElementsByTagName("li");
 		for (var x = 0; x < ulist.length; x++) { //loop through each LI e
 			var ulistlink = ulist[x].getElementsByTagName("input")[0];
