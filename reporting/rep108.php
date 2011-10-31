@@ -59,7 +59,6 @@
 	function print_statements()
 	{
 		global $systypes_array;
-		include(APP_PATH . 'reporting/includes/lang/en_AU/statement.php');
 		include_once(APP_PATH . "includes/reports/pdf.php");
 		$doc_Statement = "Statement";
 		$doc_as_of     = "as of";
@@ -84,6 +83,7 @@
 			$rep->currency = $cur;
 			$rep->Font();
 			$rep->Info($params, $cols, null, $aligns);
+
 		}
 		$sql = "SELECT debtor_no, name AS DebtorName, address, tax_id, email,  curr_code, curdate() AS tran_date, payment_terms FROM debtors_master";
 		if ($customer != ALL_NUMERIC) {
