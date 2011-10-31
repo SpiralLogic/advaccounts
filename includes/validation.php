@@ -48,7 +48,7 @@
 			if ($extra === false) return 0;
 			if ($extra !== null) {
 			if ( empty($extra)) throw new Adv_Exception("Extra information not provided for ".$validate);
-					DBOld::escape($extra);
+				if (is_string($extra)) $extra  = DBOld::escape($extra);
 			} else {
 				$extra = '';
 			}
