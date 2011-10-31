@@ -64,9 +64,9 @@
 		$comments = $_POST['PARAM_5'];
 		$destination = $_POST['PARAM_6'];
 		if ($destination) {
-			include_once(APP_PATH . "reporting/includes/excel_report.php");
+			include_once(APP_PATH . "includes/reports/excel.php");
 		} else {
-			include_once(APP_PATH . "reporting/includes/pdf_report.php");
+			include_once(APP_PATH . "includes/reports/pdf.php");
 		}
 		$dec = user_price_dec();
 		$home_curr = DB_Company::get_pref('curr_default');

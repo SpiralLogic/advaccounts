@@ -61,8 +61,8 @@
 		$comments = $_POST['PARAM_1'];
 		$destination = $_POST['PARAM_2'];
 		if ($destination)
-			include_once(APP_PATH . "reporting/includes/excel_report.php");
-		else include_once(APP_PATH . "reporting/includes/pdf_report.php");
+			include_once(APP_PATH . "includes/reports/excel.php");
+		else include_once(APP_PATH . "includes/reports/pdf.php");
 
 		if ($fromsupp == ALL_NUMERIC) $from = _('All');
 		else $from = get_supplier_name($fromsupp);
