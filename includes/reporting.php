@@ -186,7 +186,7 @@
 			$.get($(this).data('url') + "&Email="+email,function(response) {
 				Adv.msgbox.html(response);
 			});
-			$("#emailBox$type_no").dialog("close");
+			$("#emailBox").dialog("close");
 		});
 JS;
 			if ($return) {

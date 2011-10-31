@@ -202,8 +202,8 @@ JS;
 			$emailBox->addButtons(array('Close' => '$(this).dialog("close");'));
 			$emailBox->setOptions(array('autoopen' => false,
 				'modal' => true,
-				'width' => '"500"',
-				'height' => '"350"',
+				'width' => 500,
+				'height' => 350,
 				'resizeable' => false
 			));
 			$emailBox->show();
