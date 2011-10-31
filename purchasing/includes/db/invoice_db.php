@@ -221,7 +221,7 @@
 				$mat_cost = update_average_material_cost(null, $entered_grn->item_code,
 					$diff, $entered_grn->this_quantity_inv, $old_date, true);
 				// added 2008-12-08 Joe Hunt. Update the purchase data table
-				$current_purchase_price = Items_Price::getPriceBySupplier(Items_Item::getStockID($entered_grn->item_code), $supp_trans->supplier_id)->price;
+				$current_purchase_price = Items_Price::getPriceBySupplier(Item::getStockID($entered_grn->item_code), $supp_trans->supplier_id)->price;
 
 				if ($current_purchase_price == 0 || $current_purchase_price > $entered_grn->chg_price)
 					add_or_update_purchase_data($supp_trans->supplier_id, $entered_grn->item_code, $entered_grn->chg_price);

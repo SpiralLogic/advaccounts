@@ -9,8 +9,7 @@
 
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 
-	ini_set('display_errors', 'On');
-	error_reporting(E_ALL);
+
 	$item = array('id' => $_POST['row_id']);
 	$q = DB::update('stock')->where('id=', $item['id']);
 	switch ($_POST['column']) {

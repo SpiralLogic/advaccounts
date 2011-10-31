@@ -10,7 +10,7 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 
-	class itemsCart {
+	class Items_Cart {
 		var $trans_type;
 		var $line_items;
 		var $gl_items;
@@ -29,7 +29,7 @@
 		var $branch_id;
 		var $reference;
 
-		function itemsCart($type) {
+		function __construct($type) {
 			$this->trans_type = $type;
 			$this->clear_items();
 		}
@@ -39,7 +39,7 @@
 		function add_to_cart($line_no, $stock_id, $qty, $standard_cost, $description = null) {
 
 			if (isset($stock_id) && $stock_id != "" && isset($qty)) {
-				$this->line_items[$line_no] = new line_item($stock_id, $qty,
+				$this->line_items[$line_no] = new Items_Line($stock_id, $qty,
 					$standard_cost, $description);
 				return true;
 			}
@@ -87,7 +87,7 @@
 
 		function add_gl_item($code_id, $dimension_id, $dimension2_id, $amount, $reference, $description = null) {
 			if (isset($code_id) && $code_id != "" && isset($amount) && isset($dimension_id) && isset($dimension2_id)) {
-				$this->gl_items[] = new gl_item($code_id, $dimension_id, $dimension2_id, $amount, $reference, $description);
+				$this->gl_items[] = new Items_Gl($code_id, $dimension_id, $dimension2_id, $amount, $reference, $description);
 				return true;
 			} else {
 				// shouldn't come here under normal circumstances
@@ -159,91 +159,5 @@
 
 	//--------------------------------------------------------------------------------------------
 
-	class line_item {
-		var $stock_id;
-		var $description;
-		var $units;
-		var $mb_flag;
-
-		var $quantity;
-		var $price;
-		var $standard_cost;
-
-		function line_item($stock_id, $qty, $standard_cost = null, $description = null) {
-			$item_row = get_item($stock_id);
-
-			if ($item_row == null)
-				Errors::show_db_error("invalid item added to order : $stock_id", "");
-
-			$this->mb_flag = $item_row["mb_flag"];
-			$this->units = $item_row["units"];
-
-			if ($description == null)
-				$this->description = $item_row["description"];
-			else
-				$this->description = $description;
-
-			if ($standard_cost == null)
-				$this->standard_cost = $item_row["actual_cost"];
-			else
-				$this->standard_cost = $standard_cost;
-
-			$this->stock_id = $stock_id;
-			$this->quantity = $qty;
-			//$this->price = $price;
-			$this->price = 0;
-		}
-
-		function check_qoh($location, $date_, $reverse) {
-
-			if (!SysPrefs::allow_negative_stock()) {
-				if (Manufacturing::has_stock_holding($this->mb_flag)) {
-					$quantity = $this->quantity;
-					if ($reverse)
-						$quantity = -$this->quantity;
-
-					if ($quantity >= 0)
-						return null;
-
-					$qoh = get_qoh_on_date($this->stock_id, $location, $date_);
-					if ($quantity + $qoh < 0) {
-						return $this;
-					}
-				}
-			}
-
-			return null;
-		}
-	}
-
-	//---------------------------------------------------------------------------------------
-
-	class gl_item {
-
-		var $code_id;
-		var $dimension_id;
-		var $dimension2_id;
-		var $amount;
-		var $reference;
-		var $description;
-
-		function gl_item($code_id, $dimension_id, $dimension2_id, $amount, $reference,
-										 $description = null) {
-			//echo "adding $index, $code_id, $dimension_id, $amount, $reference<br>";
-
-			if ($description == null)
-				$this->description = get_gl_account_name($code_id);
-			else
-				$this->description = $description;
-
-			$this->code_id = $code_id;
-			$this->dimension_id = $dimension_id;
-			$this->dimension2_id = $dimension2_id;
-			$this->amount = $amount;
-			$this->reference = $reference;
-		}
-	}
-
-	//---------------------------------------------------------------------------------------
 
 ?>

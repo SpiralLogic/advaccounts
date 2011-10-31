@@ -43,7 +43,7 @@
 			unset ($_SESSION['adj_items']);
 		}
 		//session_register("adj_items");
-		$_SESSION['adj_items'] = new itemsCart(ST_INVADJUST);
+		$_SESSION['adj_items'] = new Items_Cart(ST_INVADJUST);
 		$_POST['AdjDate']      = Dates::new_doc_date();
 		if (!Dates::is_date_in_fiscalyear($_POST['AdjDate'])) {
 			$_POST['AdjDate'] = Dates::end_fiscalyear();
@@ -89,7 +89,7 @@
 		foreach (
 			$_SESSION['adj_items']->line_items as $line
 		) {
-			$item          = new Items_Item($line->stock_id);
+			$item          = new Item($line->stock_id);
 			$current_stock = $item->getStockLevels($_POST['StockLocation']);
 			$line->quantity -= $current_stock['qty'];
 		}

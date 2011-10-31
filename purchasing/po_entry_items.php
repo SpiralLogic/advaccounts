@@ -410,7 +410,7 @@
 	//---------------------------------------------------------------------------------------------------
 	end_form();
 	JS::onUnload('Are you sure you want to leave without commiting changes?');
-	Items_Item::addEditDialog();
+	Item::addEditDialog();
 	if (isset($_SESSION['PO']->supplier_id)) {
 		Contacts_Supplier::addInfoDialog("td[name=\"supplier_name\"]", $_SESSION['PO']->supplier_details['supplier_id']);
 	}

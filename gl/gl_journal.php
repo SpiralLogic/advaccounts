@@ -67,7 +67,7 @@
 		if (isset($_SESSION['journal_items'])) {
 			unset ($_SESSION['journal_items']);
 		}
-		$cart = new itemsCart($type);
+		$cart = new Items_Cart($type);
 		$cart->order_id = $trans_no;
 		if ($trans_no) {
 			$result = get_gl_trans($type, $trans_no);

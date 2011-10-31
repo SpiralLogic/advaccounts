@@ -681,6 +681,6 @@
 	}
 	end_form();
 	JS::onUnload('Are you sure you want to leave without commiting changes?');
-	Items_Item::addEditDialog();
+	Item::addEditDialog();
 	end_page();
 	unset($_SESSION['order_no']);
