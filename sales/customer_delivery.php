@@ -75,7 +75,7 @@
 
 	if (isset($_GET['OrderNumber']) && $_GET['OrderNumber'] > 0) {
 
-		$ord = new Order_Sales(ST_SALESORDER, $_GET['OrderNumber'], true);
+		$ord = new Sales_Order(ST_SALESORDER, $_GET['OrderNumber'], true);
 
 		/*read in all the selected order into the Items cart  */
 
@@ -98,7 +98,7 @@
 	}
 	elseif (isset($_GET['ModifyDelivery']) && $_GET['ModifyDelivery'] > 0) {
 
-		$_SESSION['Items'] = new Order_Sales(ST_CUSTDELIVERY, $_GET['ModifyDelivery']);
+		$_SESSION['Items'] = new Sales_Order(ST_CUSTDELIVERY, $_GET['ModifyDelivery']);
 
 		if ($_SESSION['Items']->count_items() == 0) {
 			hyperlink_params(

@@ -33,7 +33,7 @@
 			unset($_SESSION['PO']);
 		}
 		//session_register("PO");
-		$_SESSION['PO'] = new Order_Purchase;
+		$_SESSION['PO'] = new Purchase_Order;
 		$_POST['OrderDate'] = Dates::new_doc_date();
 		if (!Dates::is_date_in_fiscalyear($_POST['OrderDate'])) {
 			$_POST['OrderDate'] = Dates::end_fiscalyear();

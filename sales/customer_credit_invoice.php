@@ -92,7 +92,7 @@
 
 	//-----------------------------------------------------------------------------
 	if (isset($_GET['InvoiceNumber']) && $_GET['InvoiceNumber'] > 0) {
-		$ci = new Order_Sales(ST_SALESINVOICE, $_GET['InvoiceNumber'], true);
+		$ci = new Sales_Order(ST_SALESINVOICE, $_GET['InvoiceNumber'], true);
 		$ci->trans_type = ST_CUSTCREDIT;
 		$ci->src_docs = $ci->trans_no;
 		$ci->src_date = $ci->document_date;
@@ -108,7 +108,7 @@
 		copy_from_cart();
 	}
 	elseif (isset($_GET['ModifyCredit']) && $_GET['ModifyCredit'] > 0) {
-		$_SESSION['Items'] = new Order_Sales(ST_CUSTCREDIT, $_GET['ModifyCredit']);
+		$_SESSION['Items'] = new Sales_Order(ST_CUSTCREDIT, $_GET['ModifyCredit']);
 		copy_from_cart();
 	}
 	elseif (!processing_active()) {

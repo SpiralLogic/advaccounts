@@ -320,7 +320,7 @@
 			$result = get_customer_trans_details($doc_type, $trans_no);
 			if (DBOld::num_rows($result) > 0) {
 				for ($line_no = 0; $myrow = DBOld::fetch($result); $line_no++) {
-					$cart->line_items[$line_no] = new line_details(
+					$cart->line_items[$line_no] = new Sales_Line(
 						$myrow["stock_id"], $myrow["quantity"],
 						$myrow["unit_price"], $myrow["discount_percent"],
 						$myrow["qty_done"], $myrow["standard_cost"],

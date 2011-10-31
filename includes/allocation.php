@@ -348,7 +348,7 @@
 		{
 			processing_start();
 			$type = ST_SALESINVOICE;
-			$doc  = new Order_Sales(ST_SALESINVOICE, 0);
+			$doc  = new Sales_Order(ST_SALESINVOICE, 0);
 			$doc->trans_type    = $type;
 			$doc->document_date = Dates::new_doc_date();
 			$doc->pos           = user_pos();

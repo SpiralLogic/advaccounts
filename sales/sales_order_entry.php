@@ -93,7 +93,7 @@
 	} elseif (Input::get('NewRemoteToSalesOrder')) {
 		create_cart(ST_SALESORDER, $_GET['NewRemoteToSalesOrder']);
 	} elseif (isset($_GET['restoreorder'])) {
-		$serial = Order_Sales::restore();
+		$serial = Sales_Order::restore();
 		create_cart($serial, 0);
 	}
 	Page::start($page_title);
@@ -390,7 +390,7 @@
 		Dates::new_doc_date($_SESSION['Items']->document_date);
 		$_SESSION['wa_global_customer_id'] = $_SESSION['Items']->customer_id;
 		processing_end();
-		$_SESSION['Jobsboard'] = new Order_Sales($trans_type, $_SESSION['order_no']);
+		$_SESSION['Jobsboard'] = new Sales_Order($trans_type, $_SESSION['order_no']);
 		if ($modified) {
 			if ($trans_type == ST_SALESQUOTE) {
 				meta_forward($_SERVER['PHP_SELF'], "UpdatedQU=$trans_no");
@@ -530,7 +530,7 @@
 		$doc_type = $type;
 		if (isset($_GET['NewQuoteToSalesOrder'])) {
 			$trans_no           = $_GET['NewQuoteToSalesOrder'];
-			$doc                = new Order_Sales(ST_SALESQUOTE, $trans_no);
+			$doc                = new Sales_Order(ST_SALESQUOTE, $trans_no);
 			$doc->trans_no      = 0;
 			$doc->trans_type    = ST_SALESORDER;
 			$doc->reference     = Refs::get_next($doc->trans_type);
@@ -539,7 +539,7 @@
 			$_SESSION['Items']  = $doc;
 		} elseif (isset($_Get['CloneOrder'])) {
 			$trans_no           = $_GET['CloneOrder'];
-			$doc                = new Order_Sales(ST_SALESORDER, $trans_no);
+			$doc                = new Sales_Order(ST_SALESORDER, $trans_no);
 			$doc->trans_no      = 0;
 			$doc->trans_type    = ST_SALESORDER;
 			$doc->reference     = Refs::get_next($doc->trans_type);
@@ -557,7 +557,7 @@
 		}
 		elseif ($type != ST_SALESORDER && $type != ST_SALESQUOTE && $trans_no != 0) { // this is template
 			$doc_type           = ST_SALESORDER;
-			$doc                = new Order_Sales(ST_SALESORDER, array($trans_no));
+			$doc                = new Sales_Order(ST_SALESORDER, array($trans_no));
 			$doc->trans_type    = $type;
 			$doc->trans_no      = 0;
 			$doc->document_date = Dates::new_doc_date();
@@ -580,7 +580,7 @@
 			$_SESSION['Items'] = $doc;
 		}
 		else {
-			$_SESSION['Items'] = new Order_Sales($type, array($trans_no));
+			$_SESSION['Items'] = new Sales_Order($type, array($trans_no));
 		}
 		copy_from_cart();
 	}
