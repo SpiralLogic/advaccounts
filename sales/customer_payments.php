@@ -16,15 +16,12 @@
 
 	include_once(APP_PATH . "sales/includes/ui/sales_order_ui.php");
 	include_once(APP_PATH . "sales/includes/sales_ui.php");
-	include_once(APP_PATH . "reporting/includes/reporting.php");
 
-	$js = "";
-	if (Config::get('ui_windows_popups')) {
-		$js .= ui_view::get_js_open_window(900, 500);
-	}
+	JS::get_js_open_window(900, 500);
+
 	JS::headerFile('/js/payalloc.js');
 
-	page(_($help_context = "Customer Payment Entry"), Input::request('frame'), false, "", $js);
+	Page::start(_($help_context = "Customer Payment Entry"), Input::request('frame'));
 
 	//----------------------------------------------------------------------------------------------
 
@@ -232,7 +229,7 @@
 		$_SESSION['alloc'] = new allocation(ST_CUSTPAYMENT, 0);
 	}
 
-	if (Validation::check(Validation::BRANCHES, _("No Branches for Customer").$_POST["customer_id"], $_POST['customer_id'])) {
+	if (Validation::check(Validation::BRANCHES, _("No Branches for Customer") . $_POST["customer_id"], $_POST['customer_id'])) {
 		customer_branches_list_row(_("Branch:"), $_POST['customer_id'], 'BranchID', null, false, true, true);
 	}
 	else {
