@@ -50,9 +50,7 @@
 		// PREVENT DELETES IF DEPENDENT RECORDS IN 'stock_master'
 		if (item_unit_used($selected_id)) {
 			ui_msgs::display_error(_("Cannot delete this unit of measure because items have been created using this unit."));
-		}
-		else
-		{
+		} else {
 			delete_item_unit($selected_id);
 			ui_msgs::display_notification(_('Selected unit has been deleted'));
 		}
@@ -60,7 +58,7 @@
 	}
 	if ($Mode == 'RESET') {
 		$selected_id = '';
-		$sav         = get_post('show_inactive');
+		$sav = get_post('show_inactive');
 		unset($_POST);
 		$_POST['show_inactive'] = $sav;
 	}
@@ -91,9 +89,9 @@
 		if ($Mode == 'Edit') {
 			//editing an existing item category
 			$myrow = get_item_unit($selected_id);
-			$_POST['abbr']        = $myrow["abbr"];
+			$_POST['abbr'] = $myrow["abbr"];
 			$_POST['description'] = $myrow["name"];
-			$_POST['decimals']    = $myrow["decimals"];
+			$_POST['decimals'] = $myrow["decimals"];
 		}
 		hidden('selected_id', $selected_id);
 	}

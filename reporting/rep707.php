@@ -18,10 +18,9 @@
 	// ----------------------------------------------------------------
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	//----------------------------------------------------------------------------------------------------
-	function display_type($type, $typename, $from, $to, $begin, $end, $compare, $convert, &$dec, &$pdec, &$rep, $dimension, $dimension2, &$pg, $graphics)
-	{
-		$code_per_balance  = 0;
-		$code_acc_balance  = 0;
+	function display_type($type, $typename, $from, $to, $begin, $end, $compare, $convert, &$dec, &$pdec, &$rep, $dimension, $dimension2, &$pg, $graphics) {
+		$code_per_balance = 0;
+		$code_acc_balance = 0;
 		$per_balance_total = 0;
 		$acc_balance_total = 0;
 		unset($totals_arr);
@@ -107,8 +106,7 @@
 
 	print_profit_and_loss_statement();
 	//----------------------------------------------------------------------------------------------------
-	function Achieve($d1, $d2)
-	{
+	function Achieve($d1, $d2) {
 		if ($d1 == 0 && $d2 == 0) {
 			return 0;
 		}
@@ -124,41 +122,36 @@
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	function print_profit_and_loss_statement()
-	{
-		$dim       = DB_Company::get_pref('use_dimension');
+	function print_profit_and_loss_statement() {
+		$dim = DB_Company::get_pref('use_dimension');
 		$dimension = $dimension2 = 0;
-		$from    = $_POST['PARAM_0'];
-		$to      = $_POST['PARAM_1'];
+		$from = $_POST['PARAM_0'];
+		$to = $_POST['PARAM_1'];
 		$compare = $_POST['PARAM_2'];
 		if ($dim == 2) {
-			$dimension   = $_POST['PARAM_3'];
-			$dimension2  = $_POST['PARAM_4'];
-			$decimals    = $_POST['PARAM_5'];
-			$graphics    = $_POST['PARAM_6'];
-			$comments    = $_POST['PARAM_7'];
+			$dimension = $_POST['PARAM_3'];
+			$dimension2 = $_POST['PARAM_4'];
+			$decimals = $_POST['PARAM_5'];
+			$graphics = $_POST['PARAM_6'];
+			$comments = $_POST['PARAM_7'];
 			$destination = $_POST['PARAM_8'];
 		}
 		else if ($dim == 1) {
-			$dimension   = $_POST['PARAM_3'];
-			$decimals    = $_POST['PARAM_4'];
-			$graphics    = $_POST['PARAM_5'];
-			$comments    = $_POST['PARAM_6'];
+			$dimension = $_POST['PARAM_3'];
+			$decimals = $_POST['PARAM_4'];
+			$graphics = $_POST['PARAM_5'];
+			$comments = $_POST['PARAM_6'];
 			$destination = $_POST['PARAM_7'];
-		}
-		else
-		{
-			$decimals    = $_POST['PARAM_3'];
-			$graphics    = $_POST['PARAM_4'];
-			$comments    = $_POST['PARAM_5'];
+		} else {
+			$decimals = $_POST['PARAM_3'];
+			$graphics = $_POST['PARAM_4'];
+			$comments = $_POST['PARAM_5'];
 			$destination = $_POST['PARAM_6'];
 		}
 		if ($destination) {
-			include_once(APP_PATH . "reporting/includes/excel_report.php");
-		}
-		else
-		{
-			include_once(APP_PATH . "reporting/includes/pdf_report.php");
+			include_once(APP_PATH . "includes/reports/excel.php");
+		} else {
+			include_once(APP_PATH . "includes/reports/pdf.php");
 		}
 		if ($graphics) {
 			include_once(APP_PATH . "reporting/includes/class.graphic.php");
@@ -166,9 +159,7 @@
 		}
 		if (!$decimals) {
 			$dec = 0;
-		}
-		else
-		{
+		} else {
 			$dec = user_price_dec();
 		}
 		$pdec = user_percent_dec();
@@ -182,17 +173,17 @@
 				1 => array(
 					'text' => _('Period'),
 					'from' => $from,
-					'to'	 => $to
+					'to' => $to
 				),
 				2 => array(
 					'text' => _('Dimension') . " 1",
 					'from' => get_dimension_string($dimension),
-					'to'	 => ''
+					'to' => ''
 				),
 				3 => array(
 					'text' => _('Dimension') . " 2",
 					'from' => get_dimension_string($dimension2),
-					'to'	 => ''
+					'to' => ''
 				)
 			);
 		}
@@ -202,30 +193,28 @@
 				1 => array(
 					'text' => _('Period'),
 					'from' => $from,
-					'to'	 => $to
+					'to' => $to
 				),
 				2 => array(
 					'text' => _('Dimension'),
 					'from' => get_dimension_string($dimension),
-					'to'	 => ''
+					'to' => ''
 				)
 			);
-		}
-		else
-		{
+		} else {
 			$params = array(
 				0 => $comments,
 				1 => array(
 					'text' => _('Period'),
 					'from' => $from,
-					'to'	 => $to
+					'to' => $to
 				)
 			);
 		}
 		if ($compare == 0 || $compare == 2) {
 			$end = $to;
 			if ($compare == 2) {
-				$begin      = $from;
+				$begin = $from;
 				$headers[3] = _('Budget');
 			}
 			else
@@ -235,8 +224,8 @@
 		}
 		elseif ($compare == 1)
 		{
-			$begin      = Dates::add_months($from, -12);
-			$end        = Dates::add_months($to, -12);
+			$begin = Dates::add_months($from, -12);
+			$end = Dates::add_months($to, -12);
 			$headers[3] = _('Period Y-1');
 		}
 		$rep = new FrontReport(_('Profit and Loss Statement'), "ProfitAndLoss", user_pagesize());
@@ -252,7 +241,7 @@
 		{
 			$class_per_total = 0;
 			$class_acc_total = 0;
-			$convert         = get_class_type_convert($class["ctype"]);
+			$convert = get_class_type_convert($class["ctype"]);
 			//Print Class Name
 			$rep->Font('bold');
 			$rep->TextCol(0, 5, $class["class_name"]);
@@ -297,17 +286,17 @@
 		$rep->NewLine();
 		$rep->Line($rep->row);
 		if ($graphics) {
-			$pg->title          = $rep->title;
-			$pg->axis_x         = _("Group");
-			$pg->axis_y         = _("Amount");
-			$pg->graphic_1      = $headers[2];
-			$pg->graphic_2      = $headers[3];
-			$pg->type           = $graphics;
-			$pg->skin           = Config::get('graphs_skin');
-			$pg->built_in       = false;
-			$pg->fontfile       = PATH_TO_ROOT . "/reporting/fonts/Vera.ttf";
+			$pg->title = $rep->title;
+			$pg->axis_x = _("Group");
+			$pg->axis_y = _("Amount");
+			$pg->graphic_1 = $headers[2];
+			$pg->graphic_2 = $headers[3];
+			$pg->type = $graphics;
+			$pg->skin = Config::get('graphs_skin');
+			$pg->built_in = false;
+			$pg->fontfile = PATH_TO_ROOT . "/reporting/fonts/Vera.ttf";
 			$pg->latin_notation = (Config::get('separators_decimal', CurrentUser::instance()->prefs->dec_sep()) != ".");
-			$filename           = COMPANY_PATH . "/pdf_files/test.png";
+			$filename = COMPANY_PATH . "/pdf_files/test.png";
 			$pg->display($filename, true);
 			$w = $pg->width / 1.5;
 			$h = $pg->height / 1.5;

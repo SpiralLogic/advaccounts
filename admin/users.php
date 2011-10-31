@@ -14,8 +14,7 @@
 	Page::start(_($help_context = "Users"));
 	simple_page_mode(true);
 	//-------------------------------------------------------------------------------------------------
-	function can_process($user)
-	{
+	function can_process($user) {
 		if (strlen($_POST['user_id']) < 4) {
 			ui_msgs::display_error(_("The user login entered must be at least 4 characters long."));
 			JS::set_focus('user_id');
@@ -49,7 +48,7 @@
 	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 		$user = null;
 		if ($_POST['password'] != "") {
-			$user     = new Auth($_POST['user_id']);
+			$user = new Auth($_POST['user_id']);
 			$password = $user->hash_password($_POST['password']);
 		}
 		if (can_process($user)) {
@@ -93,7 +92,7 @@
 	//-------------------------------------------------------------------------------------------------
 	if ($Mode == 'RESET') {
 		$selected_id = -1;
-		$sav         = get_post('show_inactive');
+		$sav = get_post('show_inactive');
 		unset($_POST); // clean all input fields
 		$_POST['show_inactive'] = $sav;
 	}
@@ -129,9 +128,7 @@
 		edit_button_cell("Edit" . $myrow["id"], _("Edit"));
 		if ($not_me) {
 			delete_button_cell("Delete" . $myrow["id"], _("Delete"));
-		}
-		else
-		{
+		} else {
 			label_cell('');
 		}
 		end_row();
@@ -144,17 +141,17 @@
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {
 			//editing an existing User
-			$myrow              = User::get($selected_id);
-			$_POST['id']        = $myrow["id"];
-			$_POST['user_id']   = $myrow["user_id"];
+			$myrow = User::get($selected_id);
+			$_POST['id'] = $myrow["id"];
+			$_POST['user_id'] = $myrow["user_id"];
 			$_POST['real_name'] = $myrow["real_name"];
-			$_POST['phone']     = $myrow["phone"];
-			$_POST['email']     = $myrow["email"];
-			$_POST['Access']    = $myrow["role_id"];
-			$_POST['language']  = $myrow["language"];
-			$_POST['profile']   = $myrow["print_profile"];
+			$_POST['phone'] = $myrow["phone"];
+			$_POST['email'] = $myrow["email"];
+			$_POST['Access'] = $myrow["role_id"];
+			$_POST['language'] = $myrow["language"];
+			$_POST['profile'] = $myrow["print_profile"];
 			$_POST['rep_popup'] = $myrow["rep_popup"];
-			$_POST['pos']       = $myrow["pos"];
+			$_POST['pos'] = $myrow["pos"];
 		}
 		hidden('selected_id', $selected_id);
 		hidden('user_id');
@@ -164,10 +161,10 @@
 	else
 	{ //end of if $selected_id only do the else when a new record is being entered
 		text_row(_("User Login:"), "user_id", null, 22, 20);
-		$_POST['language']  = user_language();
-		$_POST['profile']   = user_print_profile();
+		$_POST['language'] = user_language();
+		$_POST['profile'] = user_print_profile();
 		$_POST['rep_popup'] = user_rep_popup();
-		$_POST['pos']       = user_pos();
+		$_POST['pos'] = user_pos();
 	}
 	$_POST['password'] = "";
 	password_row(_("Password:"), 'password', $_POST['password']);

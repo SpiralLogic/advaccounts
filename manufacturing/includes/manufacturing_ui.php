@@ -10,14 +10,11 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	//--------------------------------------------------------------------------------------
-	function display_bom($item_check)
-	{
+	function display_bom($item_check) {
 		$result = Manufacturing::get_bom($item_check);
 		if (DBOld::num_rows($result) == 0) {
 			ui_msgs::display_note(_("The bill of material for this item is empty."), 0, 1);
-		}
-		else
-		{
+		} else {
 			start_table(Config::get('tables_style'));
 			$th = array(
 				_("Component"), _("Description"), _("Work Centre"),
@@ -56,14 +53,11 @@
 	}
 
 	//--------------------------------------------------------------------------------------
-	function display_wo_requirements($woid, $quantity, $show_qoh = false, $date = null)
-	{
+	function display_wo_requirements($woid, $quantity, $show_qoh = false, $date = null) {
 		$result = get_wo_requirements($woid);
 		if (DBOld::num_rows($result) == 0) {
 			ui_msgs::display_note(_("There are no Requirements for this Order."), 1, 0);
-		}
-		else
-		{
+		} else {
 			start_table(Config::get('tables_style') . "  width=90%");
 			$th = array(
 				_("Component"), _("From Location"), _("Work Centre"),
@@ -77,7 +71,7 @@
 			}
 			while ($myrow = DBOld::fetch($result))
 			{
-				$qoh      = 0;
+				$qoh = 0;
 				$show_qoh = true;
 				// if it's a non-stock item (eg. service) don't show qoh
 				if (!Manufacturing::has_stock_holding($myrow["mb_flag"])) {
@@ -127,14 +121,11 @@
 	}
 
 	//--------------------------------------------------------------------------------------
-	function display_wo_productions($woid)
-	{
+	function display_wo_productions($woid) {
 		$result = get_work_order_productions($woid);
 		if (DBOld::num_rows($result) == 0) {
 			ui_msgs::display_note(_("There are no Productions for this Order."), 1, 1);
-		}
-		else
-		{
+		} else {
 			start_table(Config::get('tables_style'));
 			$th = array(_("#"), _("Reference"), _("Date"), _("Quantity"));
 			table_header($th);
@@ -160,14 +151,11 @@
 	}
 
 	//--------------------------------------------------------------------------------------
-	function display_wo_issues($woid)
-	{
+	function display_wo_issues($woid) {
 		$result = get_work_order_issues($woid);
 		if (DBOld::num_rows($result) == 0) {
 			ui_msgs::display_note(_("There are no Issues for this Order."), 0, 1);
-		}
-		else
-		{
+		} else {
 			start_table(Config::get('tables.style'));
 			$th = array(_("#"), _("Reference"), _("Date"));
 			table_header($th);
@@ -185,16 +173,13 @@
 	}
 
 	//--------------------------------------------------------------------------------------
-	function display_wo_payments($woid)
-	{
+	function display_wo_payments($woid) {
 		global $wo_cost_types;
 		//$result = get_bank_trans(null, null, PT_WORKORDER, $woid);
 		$result = get_gl_wo_cost_trans($woid);
 		if (DBOld::num_rows($result) == 0) {
 			ui_msgs::display_note(_("There are no additional costs for this Order."), 0, 1);
-		}
-		else
-		{
+		} else {
 			start_table(Config::get('tables.style'));
 			$th = array(_("#"), _("Type"), _("Date"), _("Amount"));
 			table_header($th);
@@ -214,8 +199,7 @@
 	}
 
 	//--------------------------------------------------------------------------------------
-	function display_wo_details($woid, $suppress_view_link = false)
-	{
+	function display_wo_details($woid, $suppress_view_link = false) {
 		global $wo_types_array;
 		$myrow = get_work_order($woid);
 		if (strlen($myrow[0]) == 0) {
@@ -229,9 +213,7 @@
 				_("Into Location"), _("Date"), _("Required By"), _("Quantity Required"),
 				_("Released Date"), _("Manufactured")
 			);
-		}
-		else
-		{
+		} else {
 			$th = array(
 				_("#"), _("Reference"), _("Type"), _("Manufactured Item"),
 				_("Into Location"), _("Date"), _("Required By"), _("Quantity Required")
@@ -241,9 +223,7 @@
 		start_row();
 		if ($suppress_view_link) {
 			label_cell($myrow["id"]);
-		}
-		else
-		{
+		} else {
 			label_cell(ui_view::get_trans_view_str(ST_WORKORDER, $myrow["id"]));
 		}
 		label_cell($myrow["wo_ref"]);
@@ -267,8 +247,7 @@
 	}
 
 	//--------------------------------------------------------------------------------------
-	function display_wo_details_quick($woid, $suppress_view_link = false)
-	{
+	function display_wo_details_quick($woid, $suppress_view_link = false) {
 		global $wo_types_array;
 		$myrow = get_work_order($woid);
 		if (strlen($myrow[0]) == 0) {
@@ -284,9 +263,7 @@
 		start_row();
 		if ($suppress_view_link) {
 			label_cell($myrow["id"]);
-		}
-		else
-		{
+		} else {
 			label_cell(ui_view::get_trans_view_str(ST_WORKORDER, $myrow["id"]));
 		}
 		label_cell($myrow["wo_ref"]);

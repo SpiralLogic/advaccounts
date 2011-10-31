@@ -50,8 +50,8 @@
 	start_row();
 	label_cells(
 		_("From"), payment_person_name(
-							 $to_trans['person_type_id'], $to_trans['person_id']
-						 ), "class='tableheader2'", "colspan=$colspan1"
+			$to_trans['person_type_id'], $to_trans['person_id']
+		), "class='tableheader2'", "colspan=$colspan1"
 	);
 	label_cells(_("Deposit Type"), $bank_transfer_types[$to_trans['account_type']], "class='tableheader2'");
 	end_row();
@@ -84,9 +84,7 @@
 				_("Account Code"), _("Account Description"), _("Dimension"),
 				_("Amount"), _("Memo")
 			);
-		}
-		else
-		{
+		} else {
 			$th = array(
 				_("Account Code"), _("Account Description"),
 				_("Amount"), _("Memo")

@@ -44,16 +44,14 @@
 			$dimension = $_POST['PARAM_4'];
 			$comments = $_POST['PARAM_5'];
 			$destination = $_POST['PARAM_6'];
-		}
-		else
-		{
+		} else {
 			$comments = $_POST['PARAM_4'];
 			$destination = $_POST['PARAM_5'];
 		}
 		if ($destination)
-			include_once(APP_PATH . "reporting/includes/excel_report.php");
+			include_once(APP_PATH . "includes/reports/excel.php");
 		else
-			include_once(APP_PATH . "reporting/includes/pdf_report.php");
+			include_once(APP_PATH . "includes/reports/pdf.php");
 		$dec = user_price_dec();
 
 		//$cols2 = array(0, 50, 230, 330, 430, 530);
@@ -92,9 +90,7 @@
 					'from' => get_dimension_string($dimension), 'to' => ''
 				)
 			);
-		}
-		else
-		{
+		} else {
 			$params = array(0 => $comments,
 				1 => array('text' => _('Period'), 'from' => $from, 'to' => $to)
 			);

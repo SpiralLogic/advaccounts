@@ -151,9 +151,7 @@
 			AND alloc.trans_type_from=" . DBOld::escape($type) . "
 			AND trans.supplier_id=" . DBOld::escape($supplier_id),
 				"supp_allocations as alloc");
-		}
-		else
-		{
+		} else {
 			$sql = get_alloc_supp_sql(null, "round(ABS(ov_amount+ov_gst+ov_discount)-alloc,6) > 0
 			AND trans.type != " . ST_SUPPAYMENT . "
 			AND trans.supplier_id=" . DBOld::escape($supplier_id));

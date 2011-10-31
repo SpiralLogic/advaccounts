@@ -48,8 +48,7 @@
 		$_POST["amount_max"] = price_format(0);
 	}
 	//----------------------------------------------------------------------------------------------------
-	function gl_inquiry_controls()
-	{
+	function gl_inquiry_controls() {
 		$dim = DB_Company::get_pref('use_dimension');
 		start_form();
 		start_table("class='tablestyle_noborder'");
@@ -77,14 +76,13 @@
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	function show_results()
-	{
+	function show_results() {
 		global $systypes_array;
 		if (!isset($_POST["account"])) {
 			$_POST["account"] = null;
 		}
 		$act_name = $_POST["account"] ? get_gl_account_name($_POST["account"]) : "";
-		$dim      = DB_Company::get_pref('use_dimension');
+		$dim = DB_Company::get_pref('use_dimension');
 		/*Now get the transactions  */
 		if (!isset($_POST['Dimension'])) {
 			$_POST['Dimension'] = 0;
@@ -109,9 +107,7 @@
 		$first_cols = array(_("Type"), _("#"), _("Date"));
 		if ($_POST["account"] == null) {
 			$account_col = array(_("Account"));
-		}
-		else
-		{
+		} else {
 			$account_col = array();
 		}
 		if ($dim == 2) {
@@ -119,25 +115,19 @@
 		}
 		else if ($dim == 1) {
 			$dim_cols = array(_("Dimension"));
-		}
-		else
-		{
+		} else {
 			$dim_cols = array();
 		}
 		if ($show_balances) {
 			$remaining_cols = array(_("Person/Item"), _("Debit"), _("Credit"), _("Balance"), _("Memo"));
-		}
-		else
-		{
+		} else {
 			$remaining_cols = array(_("Person/Item"), _("Debit"), _("Credit"), _("Memo"));
 		}
 		$th = array_merge($first_cols, $account_col, $dim_cols, $remaining_cols);
 		table_header($th);
 		if ($_POST["account"] != null && is_account_balancesheet($_POST["account"])) {
 			$begin = "";
-		}
-		else
-		{
+		} else {
 			$begin = Dates::begin_fiscalyear();
 			if (Dates::date1_greater_date2($begin, $_POST['TransFromDate'])) {
 				$begin = $_POST['TransFromDate'];
@@ -158,8 +148,8 @@
 			end_row();
 		}
 		$running_total = $bfw;
-		$j             = 1;
-		$k             = 0; //row colour counter
+		$j = 1;
+		$k = 0; //row colour counter
 		while ($myrow = DBOld::fetch($result))
 		{
 			alt_table_row_color($k);

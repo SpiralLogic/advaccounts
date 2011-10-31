@@ -9,7 +9,7 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	include_once(APP_PATH . "reporting/includes/Workbook.php");
+	include(dirname(__FILE__) . DS . "excel/Workbook.php");
 	// xls version
 	class FrontReport extends Spreadsheet_Excel_Writer_Workbook
 	{

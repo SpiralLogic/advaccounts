@@ -302,9 +302,7 @@
 
 			// clear the requirements units received
 			void_wo_requirements($woid);
-		}
-		else
-		{
+		} else {
 			// void everything inside the work order : issues, productions, payments
 			$date = Dates::sql2date($work_order['date_']);
 			add_material_cost($work_order['stock_id'], -$work_order['units_reqd'], $date); // remove avg. cost for qty

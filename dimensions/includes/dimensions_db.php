@@ -85,9 +85,7 @@
 				$dim = "&nbsp;";
 			else
 				$dim = "";
-		}
-		else
-		{
+		} else {
 			$row = get_dimension($id, true);
 			$dim = $row['reference'] . $space . $row['name'];
 		}

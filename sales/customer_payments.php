@@ -151,9 +151,7 @@
 
 		if (isset($_POST["TotalNumberOfAllocs"])) {
 			return Allocation::check_allocations();
-		}
-		else
-		{
+		} else {
 			return true;
 		}
 	}
@@ -184,9 +182,7 @@
 		$comp_currency = Banking::get_company_currency();
 		if ($comp_currency != $bank_currency && $bank_currency != $cust_currency) {
 			$rate = 0;
-		}
-		else
-		{
+		} else {
 			$rate = input_num('_ex_rate');
 		}
 

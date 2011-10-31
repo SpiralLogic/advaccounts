@@ -19,7 +19,7 @@
 	Validation::check(Validation::MOVEMENT_TYPES, _("There are no inventory movement types defined in the system. Please define at least one inventory adjustment type."));
 	//-----------------------------------------------------------------------------------------------
 	if (isset($_GET['AddedID'])) {
-		$trans_no   = $_GET['AddedID'];
+		$trans_no = $_GET['AddedID'];
 		$trans_type = ST_LOCTRANSFER;
 		ui_msgs::display_notification_centered(_("Inventory transfer has been processed"));
 		ui_msgs::display_note(ui_view::get_trans_view_str($trans_type, $trans_no, _("&View this transfer")));
@@ -27,23 +27,21 @@
 		ui_view::display_footer_exit();
 	}
 	//--------------------------------------------------------------------------------------------------
-	function line_start_focus()
-	{
+	function line_start_focus() {
 		$Ajax = Ajax::instance();
 		$Ajax->activate('items_table');
 		JS::set_focus('_stock_id_edit');
 	}
 
 	//-----------------------------------------------------------------------------------------------
-	function handle_new_order()
-	{
+	function handle_new_order() {
 		if (isset($_SESSION['transfer_items'])) {
 			$_SESSION['transfer_items']->clear_items();
 			unset ($_SESSION['transfer_items']);
 		}
 		//session_register("transfer_items");
 		$_SESSION['transfer_items'] = new itemsCart(ST_LOCTRANSFER);
-		$_POST['AdjDate']           = Dates::new_doc_date();
+		$_POST['AdjDate'] = Dates::new_doc_date();
 		if (!Dates::is_date_in_fiscalyear($_POST['AdjDate'])) {
 			$_POST['AdjDate'] = Dates::end_fiscalyear();
 		}
@@ -52,7 +50,7 @@
 
 	//-----------------------------------------------------------------------------------------------
 	if (isset($_POST['Process'])) {
-		$tr          = &$_SESSION['transfer_items'];
+		$tr = &$_SESSION['transfer_items'];
 		$input_error = 0;
 		if (count($tr->line_items) == 0) {
 			ui_msgs::display_error(_("You must enter at least one non empty item line."));
@@ -87,9 +85,7 @@
 			ui_msgs::display_error(_("The locations to transfer from and to must be different."));
 			JS::set_focus('FromStockLocation');
 			$input_error = 1;
-		}
-		else
-		{
+		} else {
 			$failed_item = $tr->check_qoh($_POST['FromStockLocation'], $_POST['AdjDate'], true);
 			if ($failed_item >= 0) {
 				$line = $tr->line_items[$failed_item];
@@ -119,8 +115,7 @@
 		meta_forward($_SERVER['PHP_SELF'], "AddedID=$trans_no");
 	} /*end of process credit note */
 	//-----------------------------------------------------------------------------------------------
-	function check_item_data()
-	{
+	function check_item_data() {
 		if (!Validation::is_num('qty', 0)) {
 			ui_msgs::display_error(_("The quantity entered must be a positive number."));
 			JS::set_focus('qty');
@@ -130,8 +125,7 @@
 	}
 
 	//-----------------------------------------------------------------------------------------------
-	function handle_update_item()
-	{
+	function handle_update_item() {
 		if ($_POST['UpdateItem'] != "" && check_item_data()) {
 			$id = $_POST['LineNo'];
 			if (!isset($_POST['std_cost'])) {
@@ -143,15 +137,13 @@
 	}
 
 	//-----------------------------------------------------------------------------------------------
-	function handle_delete_item($id)
-	{
+	function handle_delete_item($id) {
 		$_SESSION['transfer_items']->remove_from_cart($id);
 		line_start_focus();
 	}
 
 	//-----------------------------------------------------------------------------------------------
-	function handle_new_item()
-	{
+	function handle_new_item() {
 		if (!check_item_data()) {
 			return;
 		}

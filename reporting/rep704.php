@@ -45,16 +45,14 @@
 			$dimension = $_POST['PARAM_4'];
 			$comments = $_POST['PARAM_5'];
 			$destination = $_POST['PARAM_6'];
-		}
-		else
-		{
+		} else {
 			$comments = $_POST['PARAM_4'];
 			$destination = $_POST['PARAM_5'];
 		}
 		if ($destination)
-			include_once(APP_PATH . "reporting/includes/excel_report.php");
+			include_once(APP_PATH . "includes/reports/excel.php");
 		else
-			include_once(APP_PATH . "reporting/includes/pdf_report.php");
+			include_once(APP_PATH . "includes/reports/pdf.php");
 
 		$rep = new FrontReport(_('GL Account Transactions'), "GLAccountTransactions", user_pagesize());
 		$dec = user_price_dec();
@@ -100,9 +98,7 @@
 					'to' => ''
 				)
 			);
-		}
-		else
-		{
+		} else {
 			$params = array(0 => $comments,
 				1 => array('text' => _('Period'), 'from' => $from, 'to' => $to),
 				2 => array('text' => _('Accounts'), 'from' => $fromacc, 'to' => $toacc)

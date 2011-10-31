@@ -15,8 +15,7 @@
 	Page::start(_($help_context = "Exchange Rates"));
 	simple_page_mode(false);
 	//---------------------------------------------------------------------------------------------
-	function check_data()
-	{
+	function check_data() {
 		if (!Dates::is_date($_POST['date_'])) {
 			ui_msgs::display_error(_("The entered date is invalid."));
 			JS::set_focus('date_');
@@ -36,8 +35,7 @@
 	}
 
 	//---------------------------------------------------------------------------------------------
-	function handle_submit()
-	{
+	function handle_submit() {
 		global $selected_id;
 		if (!check_data()) {
 			return false;
@@ -47,9 +45,7 @@
 				$_POST['curr_abrev'], $_POST['date_'],
 				input_num('BuyRate'), input_num('BuyRate')
 			);
-		}
-		else
-		{
+		} else {
 			add_exchange_rate(
 				$_POST['curr_abrev'], $_POST['date_'],
 				input_num('BuyRate'), input_num('BuyRate')
@@ -60,8 +56,7 @@
 	}
 
 	//---------------------------------------------------------------------------------------------
-	function handle_delete()
-	{
+	function handle_delete() {
 		global $selected_id;
 		if ($selected_id == "") {
 			return;
@@ -72,38 +67,32 @@
 	}
 
 	//---------------------------------------------------------------------------------------------
-	function edit_link($row)
-	{
+	function edit_link($row) {
 		return button('Edit' . $row["id"], _("Edit"), true, ICON_EDIT);
 	}
 
-	function del_link($row)
-	{
+	function del_link($row) {
 		return button('Delete' . $row["id"], _("Delete"), true, ICON_DELETE);
 	}
 
-	function display_rates($curr_code)
-	{
+	function display_rates($curr_code) {
 	}
 
 	//---------------------------------------------------------------------------------------------
-	function display_rate_edit()
-	{
+	function display_rate_edit() {
 		global $selected_id;
 		$Ajax = Ajax::instance();
 		start_table(Config::get('tables_style2'));
 		if ($selected_id != "") {
 			//editing an existing exchange rate
 			$myrow = get_exchange_rate($selected_id);
-			$_POST['date_']   = Dates::sql2date($myrow["date_"]);
+			$_POST['date_'] = Dates::sql2date($myrow["date_"]);
 			$_POST['BuyRate'] = exrate_format($myrow["rate_buy"]);
 			hidden('selected_id', $selected_id);
 			hidden('date_', $_POST['date_']);
 			label_row(_("Date to Use From:"), $_POST['date_']);
-		}
-		else
-		{
-			$_POST['date_']   = Dates::Today();
+		} else {
+			$_POST['date_'] = Dates::Today();
 			$_POST['BuyRate'] = '';
 			date_row(_("Date to Use From:"), 'date_');
 		}
@@ -123,8 +112,7 @@
 	}
 
 	//---------------------------------------------------------------------------------------------
-	function clear_data()
-	{
+	function clear_data() {
 		unset($_POST['selected_id']);
 		unset($_POST['date_']);
 		unset($_POST['BuyRate']);
@@ -156,16 +144,16 @@
 	$sql = "SELECT date_, rate_buy, id FROM exchange_rates "
 	 . "WHERE curr_code=" . DBOld::escape($_POST['curr_abrev']) . "
 	 ORDER BY date_ DESC";
-	$cols  = array(
+	$cols = array(
 		_("Date to Use From") => 'date',
-		_("Exchange Rate")		=> 'rate',
+		_("Exchange Rate") => 'rate',
 		array(
 			'insert' => true,
-			'fun'		=> 'edit_link'
+			'fun' => 'edit_link'
 		),
 		array(
 			'insert' => true,
-			'fun'		=> 'del_link'
+			'fun' => 'del_link'
 		),
 	);
 	$table =& db_pager::new_db_pager('orders_tbl', $sql, $cols);

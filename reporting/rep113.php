@@ -1,2 +1,2 @@
 <?php
-	include 'rep112';
+	include dirname(__FILE__).DS.'rep112';

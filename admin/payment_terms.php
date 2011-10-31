@@ -87,17 +87,15 @@
 	}
 	if ($Mode == 'Delete') {
 		// PREVENT DELETES IF DEPENDENT RECORDS IN debtors_master
-		$sql    = "SELECT COUNT(*) FROM debtors_master WHERE payment_terms = " . DBOld::escape($selected_id);
+		$sql = "SELECT COUNT(*) FROM debtors_master WHERE payment_terms = " . DBOld::escape($selected_id);
 		$result = DBOld::query($sql, "check failed");
-		$myrow  = DBOld::fetch_row($result);
+		$myrow = DBOld::fetch_row($result);
 		if ($myrow[0] > 0) {
 			ui_msgs::display_error(_("Cannot delete this payment term, because customer accounts have been created referring to this term."));
-		}
-		else
-		{
-			$sql    = "SELECT COUNT(*) FROM suppliers WHERE payment_terms = " . DBOld::escape($selected_id);
+		} else {
+			$sql = "SELECT COUNT(*) FROM suppliers WHERE payment_terms = " . DBOld::escape($selected_id);
 			$result = DBOld::query($sql, "check failed");
-			$myrow  = DBOld::fetch_row($result);
+			$myrow = DBOld::fetch_row($result);
 			if ($myrow[0] > 0) {
 				ui_msgs::display_error(_("Cannot delete this payment term, because supplier accounts have been created referring to this term"));
 			}
@@ -114,7 +112,7 @@
 	}
 	if ($Mode == 'RESET') {
 		$selected_id = -1;
-		$sav         = get_post('show_inactive');
+		$sav = get_post('show_inactive');
 		unset($_POST);
 		$_POST['show_inactive'] = $sav;
 	}
@@ -134,16 +132,12 @@
 	{
 		if ($myrow["day_in_following_month"] == 0) {
 			$full_text = _("N/A");
-		}
-		else
-		{
+		} else {
 			$full_text = $myrow["day_in_following_month"];
 		}
 		if ($myrow["days_before_due"] == 0) {
 			$after_text = _("N/A");
-		}
-		else
-		{
+		} else {
 			$after_text = $myrow["days_before_due"] . " " . _("days");
 		}
 		alt_table_row_color($k);
@@ -167,9 +161,9 @@
 			 = "SELECT * FROM payment_terms
 			WHERE terms_indicator=" . DBOld::escape($selected_id);
 			$result = DBOld::query($sql, "could not get payment term");
-			$myrow  = DBOld::fetch($result);
-			$_POST['terms']         = $myrow["terms"];
-			$days_before_due        = $myrow["days_before_due"];
+			$myrow = DBOld::fetch($result);
+			$_POST['terms'] = $myrow["terms"];
+			$days_before_due = $myrow["days_before_due"];
 			$day_in_following_month = $myrow["day_in_following_month"];
 			unset($_POST['DayNumber']);
 		}
@@ -180,9 +174,7 @@
 	if (!isset($_POST['DayNumber'])) {
 		if ($days_before_due != 0) {
 			$_POST['DayNumber'] = $days_before_due;
-		}
-		else
-		{
+		} else {
 			$_POST['DayNumber'] = $day_in_following_month;
 		}
 	}

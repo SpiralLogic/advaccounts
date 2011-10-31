@@ -14,8 +14,7 @@
 	Page::start(_($help_context = "Currencies"));
 	simple_page_mode(false);
 	//---------------------------------------------------------------------------------------------
-	function check_data()
-	{
+	function check_data() {
 		if (strlen($_POST['Abbreviation']) == 0) {
 			ui_msgs::display_error(_("The currency abbreviation must be entered."));
 			JS::set_focus('Abbreviation');
@@ -43,8 +42,7 @@
 	}
 
 	//---------------------------------------------------------------------------------------------
-	function handle_submit()
-	{
+	function handle_submit() {
 		global $selected_id, $Mode;
 		if (!check_data()) {
 			return false;
@@ -55,9 +53,7 @@
 				$_POST['country'], $_POST['hundreds_name'], check_value('auto_update')
 			);
 			ui_msgs::display_notification(_('Selected currency settings has been updated'));
-		}
-		else
-		{
+		} else {
 			add_currency(
 				$_POST['Abbreviation'], $_POST['Symbol'], $_POST['CurrencyName'],
 				$_POST['country'], $_POST['hundreds_name'], check_value('auto_update')
@@ -68,39 +64,38 @@
 	}
 
 	//---------------------------------------------------------------------------------------------
-	function check_can_delete()
-	{
+	function check_can_delete() {
 		global $selected_id;
 		if ($selected_id == "") {
 			return false;
 		}
 		$curr = DBOld::escape($selected_id);
 		// PREVENT DELETES IF DEPENDENT RECORDS IN debtors_master
-		$sql    = "SELECT COUNT(*) FROM debtors_master WHERE curr_code = $curr";
+		$sql = "SELECT COUNT(*) FROM debtors_master WHERE curr_code = $curr";
 		$result = DBOld::query($sql);
-		$myrow  = DBOld::fetch_row($result);
+		$myrow = DBOld::fetch_row($result);
 		if ($myrow[0] > 0) {
 			ui_msgs::display_error(_("Cannot delete this currency, because customer accounts have been created referring to this currency."));
 			return false;
 		}
-		$sql    = "SELECT COUNT(*) FROM suppliers WHERE curr_code = $curr";
+		$sql = "SELECT COUNT(*) FROM suppliers WHERE curr_code = $curr";
 		$result = DBOld::query($sql);
-		$myrow  = DBOld::fetch_row($result);
+		$myrow = DBOld::fetch_row($result);
 		if ($myrow[0] > 0) {
 			ui_msgs::display_error(_("Cannot delete this currency, because supplier accounts have been created referring to this currency."));
 			return false;
 		}
-		$sql    = "SELECT COUNT(*) FROM company WHERE curr_default = $curr";
+		$sql = "SELECT COUNT(*) FROM company WHERE curr_default = $curr";
 		$result = DBOld::query($sql);
-		$myrow  = DBOld::fetch_row($result);
+		$myrow = DBOld::fetch_row($result);
 		if ($myrow[0] > 0) {
 			ui_msgs::display_error(_("Cannot delete this currency, because the company preferences uses this currency."));
 			return false;
 		}
 		// see if there are any bank accounts that use this currency
-		$sql    = "SELECT COUNT(*) FROM bank_accounts WHERE bank_curr_code = $curr";
+		$sql = "SELECT COUNT(*) FROM bank_accounts WHERE bank_curr_code = $curr";
 		$result = DBOld::query($sql);
-		$myrow  = DBOld::fetch_row($result);
+		$myrow = DBOld::fetch_row($result);
 		if ($myrow[0] > 0) {
 			ui_msgs::display_error(_("Cannot delete this currency, because thre are bank accounts that use this currency."));
 			return false;
@@ -109,8 +104,7 @@
 	}
 
 	//---------------------------------------------------------------------------------------------
-	function handle_delete()
-	{
+	function handle_delete() {
 		global $selected_id, $Mode;
 		if (check_can_delete()) {
 			//only delete if used in neither customer or supplier, comp prefs, bank trans accounts
@@ -121,8 +115,7 @@
 	}
 
 	//---------------------------------------------------------------------------------------------
-	function display_currencies()
-	{
+	function display_currencies() {
 		$company_currency = Banking::get_company_currency();
 		$result = get_currencies(check_value('show_inactive'));
 		start_table(Config::get('tables_style'));
@@ -170,27 +163,24 @@
 	}
 
 	//---------------------------------------------------------------------------------------------
-	function display_currency_edit($selected_id)
-	{
+	function display_currency_edit($selected_id) {
 		global $Mode;
 		start_table(Config::get('tables_style2'));
 		if ($selected_id != '') {
 			if ($Mode == 'Edit') {
 				//editing an existing currency
 				$myrow = get_currency($selected_id);
-				$_POST['Abbreviation']  = $myrow["curr_abrev"];
-				$_POST['Symbol']        = $myrow["curr_symbol"];
-				$_POST['CurrencyName']  = $myrow["currency"];
-				$_POST['country']       = $myrow["country"];
+				$_POST['Abbreviation'] = $myrow["curr_abrev"];
+				$_POST['Symbol'] = $myrow["curr_symbol"];
+				$_POST['CurrencyName'] = $myrow["currency"];
+				$_POST['country'] = $myrow["country"];
 				$_POST['hundreds_name'] = $myrow["hundreds_name"];
-				$_POST['auto_update']   = $myrow["auto_update"];
+				$_POST['auto_update'] = $myrow["auto_update"];
 			}
 			hidden('Abbreviation');
 			hidden('selected_id', $selected_id);
 			label_row(_("Currency Abbreviation:"), $_POST['Abbreviation']);
-		}
-		else
-		{
+		} else {
 			$_POST['auto_update'] = 1;
 			text_row_ex(_("Currency Abbreviation:"), 'Abbreviation', 4, 3);
 		}
@@ -213,9 +203,9 @@
 	}
 	//---------------------------------------------------------------------------------------------
 	if ($Mode == 'RESET') {
-		$selected_id            = '';
-		$_POST['Abbreviation']  = $_POST['Symbol'] = '';
-		$_POST['CurrencyName']  = $_POST['country'] = '';
+		$selected_id = '';
+		$_POST['Abbreviation'] = $_POST['Symbol'] = '';
+		$_POST['CurrencyName'] = $_POST['country'] = '';
 		$_POST['hundreds_name'] = '';
 	}
 	start_form();

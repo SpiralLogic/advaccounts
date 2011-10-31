@@ -31,7 +31,7 @@
 	function print_deliveries() {
 		global $packing_slip;
 
-		include_once($_SERVER['DOCUMENT_ROOT'] . "/reporting/includes/pdf_report.php");
+		require(APP_PATH. "includes/reports/pdf.php");
 
 		$from = $_POST['PARAM_0'];
 		$to = $_POST['PARAM_1'];

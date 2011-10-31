@@ -20,8 +20,7 @@
 	include_once(APP_PATH . "includes/manufacturing.php");
 	//----------------------------------------------------------------------------------------------------
 	print_stock_check();
-	function getTransactions($category, $location)
-	{
+	function getTransactions($category, $location) {
 		$sql
 		 = "SELECT stock_master.category_id,
 			stock_category.description AS cat_description,
@@ -52,31 +51,26 @@
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	function print_stock_check()
-	{
-		$category    = $_POST['PARAM_0'];
-		$location    = $_POST['PARAM_1'];
-		$pictures    = $_POST['PARAM_2'];
-		$check       = $_POST['PARAM_3'];
-		$shortage    = $_POST['PARAM_4'];
-		$no_zeros    = $_POST['PARAM_5'];
-		$comments    = $_POST['PARAM_6'];
+	function print_stock_check() {
+		$category = $_POST['PARAM_0'];
+		$location = $_POST['PARAM_1'];
+		$pictures = $_POST['PARAM_2'];
+		$check = $_POST['PARAM_3'];
+		$shortage = $_POST['PARAM_4'];
+		$no_zeros = $_POST['PARAM_5'];
+		$comments = $_POST['PARAM_6'];
 		$destination = $_POST['PARAM_7'];
 		if ($destination) {
-			include_once(APP_PATH . "reporting/includes/excel_report.php");
-		}
-		else
-		{
-			include_once(APP_PATH . "reporting/includes/pdf_report.php");
+			include_once(APP_PATH . "includes/reports/excel.php");
+		} else {
+			include_once(APP_PATH . "includes/reports/pdf.php");
 		}
 		if ($category == ALL_NUMERIC) {
 			$category = 0;
 		}
 		if ($category == 0) {
 			$cat = _('All');
-		}
-		else
-		{
+		} else {
 			$cat = get_category_name($category);
 		}
 		if ($location == ALL_TEXT) {
@@ -84,18 +78,14 @@
 		}
 		if ($location == 'all') {
 			$loc = _('All');
-		}
-		else
-		{
+		} else {
 			$loc = get_location_name($location);
 		}
 		if ($shortage) {
-			$short     = _('Yes');
+			$short = _('Yes');
 			$available = _('Shortage');
-		}
-		else
-		{
-			$short     = _('No');
+		} else {
+			$short = _('No');
 			$available = _('Available');
 		}
 		if ($no_zeros) {
@@ -105,47 +95,45 @@
 			$nozeros = _('No');
 		}
 		if ($check) {
-			$cols    = array(0, 100, 250, 295, 345, 390, 445, 515);
+			$cols = array(0, 100, 250, 295, 345, 390, 445, 515);
 			$headers = array(
 				_('Stock ID'), _('Description'), _('Quantity'), _('Check'), _('Demand'), $available,
 				_('On Order')
 			);
-			$aligns  = array('left', 'left', 'right', 'right', 'right', 'right', 'right');
-		}
-		else
-		{
-			$cols    = array(0, 100, 250, 315, 380, 445, 515);
+			$aligns = array('left', 'left', 'right', 'right', 'right', 'right', 'right');
+		} else {
+			$cols = array(0, 100, 250, 315, 380, 445, 515);
 			$headers = array(_('Stock ID'), _('Description'), _('Quantity'), _('Demand'), $available, _('On Order'));
-			$aligns  = array('left', 'left', 'right', 'right', 'right', 'right');
+			$aligns = array('left', 'left', 'right', 'right', 'right', 'right');
 		}
 		$params = array(
 			0 => $comments,
 			1 => array(
 				'text' => _('Category'),
 				'from' => $cat,
-				'to'	 => ''
+				'to' => ''
 			),
 			2 => array(
 				'text' => _('Location'),
 				'from' => $loc,
-				'to'	 => ''
+				'to' => ''
 			),
 			3 => array(
 				'text' => _('Only Shortage'),
 				'from' => $short,
-				'to'	 => ''
+				'to' => ''
 			),
 			4 => array(
 				'text' => _('Suppress Zeros'),
 				'from' => $nozeros,
-				'to'	 => ''
+				'to' => ''
 			)
 		);
 		$rep = new FrontReport(_('Stock Check Sheets'), "StockCheckSheet", user_pagesize());
 		$rep->Font();
 		$rep->Info($params, $cols, $headers, $aligns);
 		$rep->Header();
-		$res  = getTransactions($category, $location);
+		$res = getTransactions($category, $location);
 		$catt = '';
 		while ($trans = DBOld::fetch($res))
 		{
@@ -159,7 +147,7 @@
 			$demandqty = Manufacturing::get_demand_qty($trans['stock_id'], $loc_code);
 			$demandqty += Manufacturing::get_demand_asm_qty($trans['stock_id'], $loc_code);
 			$onorder = Manufacturing::get_on_porder_qty($trans['stock_id'], $loc_code);
-			$flag    = Manufacturing::get_mb_flag($trans['stock_id']);
+			$flag = Manufacturing::get_mb_flag($trans['stock_id']);
 			if ($flag == STOCK_MANUFACTURE) {
 				$onorder += Manufacturing::get_on_worder_qty($trans['stock_id'], $loc_code);
 			}

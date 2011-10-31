@@ -15,8 +15,7 @@
 	include_once(APP_PATH . "sales/includes/db/sales_types_db.php");
 	simple_page_mode(true);
 	//----------------------------------------------------------------------------------------------------
-	function can_process()
-	{
+	function can_process() {
 		if (strlen($_POST['sales_type']) == 0) {
 			ui_msgs::display_error(_("The sales type description cannot be empty."));
 			JS::set_focus('sales_type');
@@ -51,16 +50,14 @@
 	//----------------------------------------------------------------------------------------------------
 	if ($Mode == 'Delete') {
 		// PREVENT DELETES IF DEPENDENT RECORDS IN 'debtor_trans'
-		$sql    = "SELECT COUNT(*) FROM debtor_trans WHERE tpe=" . DBOld::escape($selected_id);
+		$sql = "SELECT COUNT(*) FROM debtor_trans WHERE tpe=" . DBOld::escape($selected_id);
 		$result = DBOld::query($sql, "check failed");
 		Errors::check_db_error("The number of transactions using this Sales type record could not be retrieved", $sql);
 		$myrow = DBOld::fetch_row($result);
 		if ($myrow[0] > 0) {
 			ui_msgs::display_error(_("Cannot delete this sale type because customer transactions have been created using this sales type."));
-		}
-		else
-		{
-			$sql    = "SELECT COUNT(*) FROM debtors_master WHERE sales_type=" . DBOld::escape($selected_id);
+		} else {
+			$sql = "SELECT COUNT(*) FROM debtors_master WHERE sales_type=" . DBOld::escape($selected_id);
 			$result = DBOld::query($sql, "check failed");
 			Errors::check_db_error("The number of customers using this Sales type record could not be retrieved", $sql);
 			$myrow = DBOld::fetch_row($result);
@@ -77,7 +74,7 @@
 	}
 	if ($Mode == 'RESET') {
 		$selected_id = -1;
-		$sav         = get_post('show_inactive');
+		$sav = get_post('show_inactive');
 		unset($_POST);
 		$_POST['show_inactive'] = $sav;
 	}
@@ -88,15 +85,13 @@
 	$th = array(_('Type Name'), _('Factor'), _('Tax Incl'), '', '');
 	inactive_control_column($th);
 	table_header($th);
-	$k          = 0;
+	$k = 0;
 	$base_sales = DB_Company::get_base_sales_type();
 	while ($myrow = DBOld::fetch($result))
 	{
 		if ($myrow["id"] == $base_sales) {
 			start_row("class='overduebg'");
-		}
-		else
-		{
+		} else {
 			alt_table_row_color($k);
 		}
 		label_cell($myrow["sales_type"]);
@@ -125,9 +120,9 @@
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {
 			$myrow = get_sales_type($selected_id);
-			$_POST['sales_type']   = $myrow["sales_type"];
+			$_POST['sales_type'] = $myrow["sales_type"];
 			$_POST['tax_included'] = $myrow["tax_included"];
-			$_POST['factor']       = number_format2($myrow["factor"], 4);
+			$_POST['factor'] = number_format2($myrow["factor"], 4);
 		}
 		hidden('selected_id', $selected_id);
 	}

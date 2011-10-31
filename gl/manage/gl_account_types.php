@@ -14,8 +14,7 @@
 	Page::start(_($help_context = "GL Account Groups"));
 	simple_page_mode(true);
 	//-----------------------------------------------------------------------------------
-	function can_process()
-	{
+	function can_process() {
 		global $selected_id;
 		if (!input_num('id')) {
 			ui_msgs::display_error(_("The account id must be an integer and cannot be empty."));
@@ -52,26 +51,25 @@
 		}
 	}
 	//-----------------------------------------------------------------------------------
-	function can_delete($selected_id)
-	{
+	function can_delete($selected_id) {
 		if ($selected_id == -1) {
 			return false;
 		}
 		$type = DBOld::escape($selected_id);
 		$sql
-						= "SELECT COUNT(*) FROM chart_master
+		 = "SELECT COUNT(*) FROM chart_master
 		WHERE account_type=$type";
 		$result = DBOld::query($sql, "could not query chart master");
-		$myrow  = DBOld::fetch_row($result);
+		$myrow = DBOld::fetch_row($result);
 		if ($myrow[0] > 0) {
 			ui_msgs::display_error(_("Cannot delete this account group because GL accounts have been created referring to it."));
 			return false;
 		}
 		$sql
-						= "SELECT COUNT(*) FROM chart_types
+		 = "SELECT COUNT(*) FROM chart_types
 		WHERE parent=$type";
 		$result = DBOld::query($sql, "could not query chart types");
-		$myrow  = DBOld::fetch_row($result);
+		$myrow = DBOld::fetch_row($result);
 		if ($myrow[0] > 0) {
 			ui_msgs::display_error(_("Cannot delete this account group because GL account groups have been created referring to it."));
 			return false;
@@ -107,9 +105,7 @@
 		$bs_text = get_account_class_name($myrow["class_id"]);
 		if ($myrow["parent"] == ANY_NUMERIC) {
 			$parent_text = "";
-		}
-		else
-		{
+		} else {
 			$parent_text = get_account_type_name($myrow["parent"]);
 		}
 		label_cell($myrow["id"]);
@@ -129,9 +125,9 @@
 		if ($Mode == 'Edit') {
 			//editing an existing status code
 			$myrow = get_account_type($selected_id);
-			$_POST['id']       = $myrow["id"];
-			$_POST['name']     = $myrow["name"];
-			$_POST['parent']   = $myrow["parent"];
+			$_POST['id'] = $myrow["id"];
+			$_POST['name'] = $myrow["name"];
+			$_POST['parent'] = $myrow["parent"];
 			$_POST['class_id'] = $myrow["class_id"];
 			hidden('selected_id', $selected_id);
 		}

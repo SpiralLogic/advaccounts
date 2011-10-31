@@ -10,8 +10,7 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	//---------------------------------------------------------------------------------------------------
-	function display_grn_summary(&$po, $editable = false)
-	{
+	function display_grn_summary(&$po, $editable = false) {
 		start_table(Config::get('tables_style2') . " width=90%");
 		start_row();
 		label_cells(_("Supplier"), $po->supplier_name, "class='label'");
@@ -40,9 +39,7 @@
 				$_POST['DefaultReceivedDate'] = Dates::new_doc_date();
 			}
 			date_cells(_("Date Items Received"), 'DefaultReceivedDate', '', true, 0, 0, 0, "class='label'");
-		}
-		else
-		{
+		} else {
 			label_cells(_("Reference"), $po->reference, "class='label'");
 			label_cells(_("Deliver Into Location"), get_location_name($po->Location), "class='label'");
 		}

@@ -27,27 +27,24 @@
 		elseif (Input::get('type') == "dimension")
 		{
 			$_POST['type'] = TAG_DIMENSION;
-		}
-		else
-		{
+		} else {
 			die(_("Unspecified tag type"));
 		}
 	}
 	// Set up page based on what type of tags we're working with
 	switch (Input::post('type')) {
-	case TAG_ACCOUNT:
-		// Account tags
-		$_SESSION['page_title'] = _($help_context = "Account Tags");
-		break;
-	case TAG_DIMENSION:
-		// Dimension tags
-		$_SESSION['page_title'] = _($help_context = "Dimension Tags");
+		case TAG_ACCOUNT:
+			// Account tags
+			$_SESSION['page_title'] = _($help_context = "Account Tags");
+			break;
+		case TAG_DIMENSION:
+			// Dimension tags
+			$_SESSION['page_title'] = _($help_context = "Dimension Tags");
 	}
 	Page::start($_SESSION['page_title']);
 	simple_page_mode(true);
 	//-----------------------------------------------------------------------------------
-	function can_process()
-	{
+	function can_process() {
 		if (strlen($_POST['name']) == 0) {
 			ui_msgs::display_error(_("The tag name cannot be empty."));
 			JS::set_focus('name');
@@ -76,8 +73,7 @@
 		}
 	}
 	//-----------------------------------------------------------------------------------
-	function can_delete($selected_id)
-	{
+	function can_delete($selected_id) {
 		if ($selected_id == -1) {
 			return false;
 		}
@@ -99,7 +95,7 @@
 	}
 	//-----------------------------------------------------------------------------------
 	if ($Mode == 'RESET') {
-		$selected_id   = -1;
+		$selected_id = -1;
 		$_POST['name'] = $_POST['description'] = '';
 	}
 	//-----------------------------------------------------------------------------------
@@ -129,7 +125,7 @@
 		if ($Mode == 'Edit') {
 			// Editing an existing tag
 			$myrow = Tags::get($selected_id);
-			$_POST['name']        = $myrow["name"];
+			$_POST['name'] = $myrow["name"];
 			$_POST['description'] = $myrow["description"];
 		}
 		// Note the selected tag

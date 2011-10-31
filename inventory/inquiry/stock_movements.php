@@ -35,9 +35,9 @@
 	end_form();
 	ui_globals::set_global_stock_item($_POST['stock_id']);
 	$before_date = Dates::date2sql($_POST['BeforeDate']);
-	$after_date  = Dates::date2sql($_POST['AfterDate']);
+	$after_date = Dates::date2sql($_POST['AfterDate']);
 	$sql
-					= "SELECT type, trans_no, tran_date, person_id, qty, reference
+	 = "SELECT type, trans_no, tran_date, person_id, qty, reference
 	FROM stock_moves
 	WHERE loc_code=" . DBOld::escape($_POST['StockLocation']) . "
 	AND tran_date >= '" . $after_date . "'
@@ -52,12 +52,12 @@
 		_("Quantity In"), _("Quantity Out"), _("Quantity On Hand")
 	);
 	table_header($th);
-	$sql        = "SELECT SUM(qty) FROM stock_moves WHERE stock_id=" . DBOld::escape($_POST['stock_id']) . "
+	$sql = "SELECT SUM(qty) FROM stock_moves WHERE stock_id=" . DBOld::escape($_POST['stock_id']) . "
 	AND loc_code=" . DBOld::escape($_POST['StockLocation']) . "
 	AND tran_date < '" . $after_date . "'";
 	$before_qty = DBOld::query($sql, "The starting quantity on hand could not be calculated");
 	$before_qty_row = DBOld::fetch_row($before_qty);
-	$after_qty      = $before_qty = $before_qty_row[0];
+	$after_qty = $before_qty = $before_qty_row[0];
 	if (!isset($before_qty_row[0])) {
 		$after_qty = $before_qty = 0;
 	}
@@ -69,7 +69,7 @@
 	end_row();
 	$j = 1;
 	$k = 0; //row colour counter
-	$total_in  = 0;
+	$total_in = 0;
 	$total_out = 0;
 	while ($myrow = DBOld::fetch($result))
 	{
@@ -79,9 +79,7 @@
 		if ($myrow["qty"] > 0) {
 			$quantity_formatted = number_format2($myrow["qty"], $dec);
 			$total_in += $myrow["qty"];
-		}
-		else
-		{
+		} else {
 			$quantity_formatted = number_format2(-$myrow["qty"], $dec);
 			$total_out += -$myrow["qty"];
 		}
@@ -90,7 +88,7 @@
 		label_cell(ui_view::get_trans_view_str($myrow["type"], $myrow["trans_no"]));
 		label_cell(ui_view::get_trans_view_str($myrow["type"], $myrow["trans_no"], $myrow["reference"]));
 		label_cell($trandate);
-		$person     = $myrow["person_id"];
+		$person = $myrow["person_id"];
 		$gl_posting = "";
 		if (($myrow["type"] == ST_CUSTDELIVERY) || ($myrow["type"] == ST_CUSTCREDIT)) {
 			$cust_row = get_customer_details_from_trans($myrow["type"], $myrow["trans_no"]);
@@ -101,7 +99,7 @@
 		elseif ($myrow["type"] == ST_SUPPRECEIVE || $myrow['type'] == ST_SUPPCREDIT)
 		{
 			// get the supplier name
-			$sql         = "SELECT supp_name FROM suppliers WHERE supplier_id = '" . $myrow["person_id"] . "'";
+			$sql = "SELECT supp_name FROM suppliers WHERE supplier_id = '" . $myrow["person_id"] . "'";
 			$supp_result = DBOld::query($sql, "check failed");
 			$supp_row = DBOld::fetch($supp_result);
 			if (strlen($supp_row['supp_name']) > 0) {
@@ -112,7 +110,7 @@
 		{
 			// get the adjustment type
 			$movement_type = get_movement_type($myrow["person_id"]);
-			$person        = $movement_type["name"];
+			$person = $movement_type["name"];
 		}
 		elseif ($myrow["type"] == ST_WORKORDER || $myrow["type"] == ST_MANUISSUE
 		 || $myrow["type"] == ST_MANURECEIVE

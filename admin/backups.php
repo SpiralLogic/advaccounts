@@ -35,8 +35,7 @@
 	}
 	Page::start(_($help_context = "Backup and Restore Database"), false, false, '', '');
 	check_paths();
-	function check_paths()
-	{
+	function check_paths() {
 		if (!file_exists(BACKUP_PATH)) {
 			ui_msgs::display_error(
 				_("Backup paths have not been set correctly.")
@@ -48,24 +47,20 @@
 		}
 	}
 
-	function generate_backup($conn, $ext = 'no', $comm = '')
-	{
+	function generate_backup($conn, $ext = 'no', $comm = '') {
 		$filename = DB_Utils::backup($conn, $ext, $comm);
 		if ($filename) {
 			ui_msgs::display_notification(
 				_("Backup successfully generated.") . ' '
 				 . _("Filename") . ": " . $filename
 			);
-		}
-		else
-		{
+		} else {
 			ui_msgs::display_error(_("Database backup failed."));
 		}
 		return $filename;
 	}
 
-	function get_backup_file_combo()
-	{
+	function get_backup_file_combo() {
 		$Ajax = Ajax::instance();
 		$ar_files = array();
 		ui_view::default_focus('backups');
@@ -91,8 +86,7 @@
 		return $selector;
 	}
 
-	function compress_list_row($label, $name, $value = null)
-	{
+	function compress_list_row($label, $name, $value = null) {
 		$ar_comps = array('no' => _("No"));
 		if (function_exists("gzcompress")) {
 			$ar_comps['zip'] = "zip";
@@ -105,8 +99,7 @@
 		echo "</td></tr>";
 	}
 
-	function download_file($filename)
-	{
+	function download_file($filename) {
 		if (empty($filename) || !file_exists($filename)) {
 			ui_msgs::display_error(_('Select backup file first.'));
 			return false;
@@ -119,9 +112,9 @@
 		return true;
 	}
 
-	$db_name     = CurrentUser::instance()->company;
+	$db_name = CurrentUser::instance()->company;
 	$connections = Config::get_all('db');
-	$conn        = $conections[$db_name];
+	$conn = $conections[$db_name];
 	if (get_post('creat')) {
 		generate_backup($conn, get_post('comp'), get_post('comments'));
 		$Ajax->activate('backups');
@@ -139,16 +132,14 @@
 				 . _("Filename") . ": " . get_post('backups')
 			);
 			$Ajax->activate('backups');
-		}
-		else
-		{
+		} else {
 			ui_msgs::display_error(_("Can't delete backup file."));
 		}
 	}
 	;
 	if (get_post('upload')) {
 		$tmpname = $_FILES['uploadfile']['tmp_name'];
-		$fname   = $_FILES['uploadfile']['name'];
+		$fname = $_FILES['uploadfile']['name'];
 		if (!preg_match("/.sql(.zip|.gz)?$/", $fname)) {
 			ui_msgs::display_error(_("You can only upload *.sql backup files"));
 		}

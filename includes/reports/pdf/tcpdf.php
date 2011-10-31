@@ -147,8 +147,8 @@
 	 * 8. Lines 8642,9256 and 9348. split replaced by preg_split.
 	 * -------------------------------------------------------------------------------
 	 */
-	if (!defined("K_PATH_FONTS")) define ("K_PATH_FONTS", APP_PATH.'reporting/fonts/');
-	if (!defined("K_PATH_CACHE")) define ("K_PATH_CACHE", APP_PATH.'reporting/fonts/');
+	if (!defined("K_PATH_FONTS")) define ("K_PATH_FONTS", APP_PATH.'includes/reports/fonts/');
+	if (!defined("K_PATH_CACHE")) define ("K_PATH_CACHE", APP_PATH.'includes/reports/fonts/');
 	if (!defined("K_CELL_HEIGHT_RATIO")) define("K_CELL_HEIGHT_RATIO", 1.25);
 
 	//require_once(dirname(__FILE__).'/config/tcpdf_config.php');
@@ -164,19 +164,19 @@
 	/**
 	 * html colors table
 	 */
-	require_once(dirname(__FILE__) . '/htmlcolors.php');
+	require(dirname(__FILE__) . '/htmlcolors.php');
 
 	/**
 	 * barcode class
 	 */
-	require_once(dirname(__FILE__) . "/tcpdfbarcode.php");
+	require(dirname(__FILE__) . "/tcpdfbarcode.php");
 
 	/**
 	 * HTML entity decode functions
 	 */
-	require_once(dirname(__FILE__) . "/html_entity_decode_php4.php");
+	require(dirname(__FILE__) . "/html_entity_decode_php4.php");
 
-	if (!class_exists('TCPDF')) {
+	if (!class_exists('TCPDF',false)) {
 		/**
 		 * define default PDF document producer
 		 */
@@ -1107,7 +1107,7 @@
 			 * @param boolean $unicode     TRUE means that the input text is unicode (default = true)
 			 * @param String  $encoding    charset encoding; default is UTF-8
 			 */
-			function TCPDF($orientation = 'P', $unit = 'mm', $format = 'A4', $uni = true, $encoding = "UTF-8") {
+			function __construct($orientation = 'P', $unit = 'mm', $format = 'A4', $uni = true, $encoding = "UTF-8") {
 				if ($uni) // Fix for FrontAccounting
 				{
 					global $unicode, $unicode_mirror, $unicode_arlet, $laa_array, $diacritics;

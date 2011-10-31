@@ -10,20 +10,16 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	//--------------------------------------------------------------------------------
-	function add_to_order(&$order, $new_item, $new_item_qty, $standard_cost)
-	{
+	function add_to_order(&$order, $new_item, $new_item_qty, $standard_cost) {
 		if ($order->find_cart_item($new_item)) {
 			ui_msgs::display_error(_("For Part :") . $new_item . " " . "This item is already on this order.  You can change the quantity ordered of the existing line if necessary.");
-		}
-		else
-		{
+		} else {
 			$order->add_to_cart(count($order->line_items), $new_item, $new_item_qty, $standard_cost);
 		}
 	}
 
 	//--------------------------------------------------------------------------------
-	function display_order_header(&$order)
-	{
+	function display_order_header(&$order) {
 		start_outer_table("width=70% " . Config::get('tables_style2')); // outer table
 		table_section(1);
 		locations_list_row(_("Location:"), 'StockLocation', null);
@@ -43,8 +39,7 @@
 	}
 
 	//---------------------------------------------------------------------------------
-	function display_adjustment_items($title, &$order)
-	{
+	function display_adjustment_items($title, &$order) {
 		ui_msgs::display_heading($title);
 		div_start('items_table');
 		start_table(Config::get('tables_style') . "  width=90%");
@@ -57,7 +52,7 @@
 		}
 		table_header($th);
 		$total = 0;
-		$k     = 0; //row colour counter
+		$k = 0; //row colour counter
 		$id = find_submit('Edit');
 		foreach (
 			$order->line_items as $line_no => $stock_item
@@ -96,40 +91,37 @@
 	}
 
 	//---------------------------------------------------------------------------------
-	function adjustment_edit_item_controls(&$order, $line_no = -1)
-	{
+	function adjustment_edit_item_controls(&$order, $line_no = -1) {
 		$Ajax = Ajax::instance();
 		start_row();
 		$dec2 = 0;
-		$id   = find_submit('Edit');
+		$id = find_submit('Edit');
 		if ($line_no != -1 && $line_no == $id) {
 			$_POST['stock_id'] = $order->line_items[$id]->stock_id;
-			$_POST['qty']      = qty_format(
+			$_POST['qty'] = qty_format(
 				$order->line_items[$id]->quantity,
 				$order->line_items[$id]->stock_id, $dec
 			);
 			//$_POST['std_cost'] = price_format($order->line_items[$id]->standard_cost);
 			$_POST['std_cost'] = price_decimal_format($order->line_items[$id]->standard_cost, $dec2);
-			$_POST['units']    = $order->line_items[$id]->units;
+			$_POST['units'] = $order->line_items[$id]->units;
 			hidden('stock_id', $_POST['stock_id']);
 			label_cell($_POST['stock_id']);
 			label_cell($order->line_items[$id]->description, 'nowrap');
 			$Ajax->activate('items_table');
-		}
-		else
-		{
+		} else {
 			stock_costable_items_list_cells(null, 'stock_id', null, false, true);
 			if (list_updated('stock_id')) {
 				$Ajax->activate('units');
 				$Ajax->activate('qty');
 				$Ajax->activate('std_cost');
 			}
-			$item_info    = get_item_edit_info((isset($_POST['stock_id']) ? $_POST['stock_id'] : ''));
-			$dec          = $item_info['decimals'];
+			$item_info = get_item_edit_info((isset($_POST['stock_id']) ? $_POST['stock_id'] : ''));
+			$dec = $item_info['decimals'];
 			$_POST['qty'] = number_format2(0, $dec);
 			//$_POST['std_cost'] = price_format($item_info["standard_cost"]);
 			$_POST['std_cost'] = price_decimal_format($item_info["standard_cost"], $dec2);
-			$_POST['units']    = $item_info["units"];
+			$_POST['units'] = $item_info["units"];
 		}
 		qty_cells(null, 'qty', $_POST['qty'], null, null, $dec);
 		label_cell($_POST['units'], '', 'units');
@@ -147,9 +139,7 @@
 			);
 			hidden('LineNo', $line_no);
 			JS::set_focus('qty');
-		}
-		else
-		{
+		} else {
 			submit_cells(
 				'AddItem', _("Add Item"), "colspan=2",
 				_('Add new item to document'), true
@@ -159,8 +149,7 @@
 	}
 
 	//---------------------------------------------------------------------------------
-	function adjustment_options_controls()
-	{
+	function adjustment_options_controls() {
 		echo "<br>";
 		start_table();
 		textarea_row(_("Memo"), 'memo_', null, 50, 3);

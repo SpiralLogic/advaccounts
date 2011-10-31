@@ -37,7 +37,7 @@
 			if (!isset($_POST["user_name_entry_field"]) or $_POST["user_name_entry_field"] == "") {
 				// strip ajax marker from uri, to force synchronous page reload
 				$_SESSION['timeout'] = array(
-					'uri'	=> preg_replace('/JsHttpRequest=(?:(\d+)-)?([^&]+)/s', '', @$_SERVER['REQUEST_URI']),
+					'uri' => preg_replace('/JsHttpRequest=(?:(\d+)-)?([^&]+)/s', '', @$_SERVER['REQUEST_URI']),
 					'post' => $_POST
 				);
 				include(APP_PATH . "access/login.php");
@@ -56,9 +56,7 @@
 				$lang = &$_SESSION['language'];
 				$lang->set_language($_SESSION['language']->code);
 			}
-		}
-		else
-		{
+		} else {
 			if (Input::session('change_password') && strstr($_SERVER['PHP_SELF'], 'change_current_user_password.php') == false) {
 				meta_forward('/admin/change_current_user_password.php', 'selected_id=' . CurrentUser::instance()->username);
 			}
@@ -71,8 +69,7 @@
 		$_SESSION["App"]->init();
 	}
 	//--------------------------------------------------------------------------
-	function session_timeout()
-	{
+	function session_timeout() {
 		$tout = @DB_Company::get_pref('login_tout'); // mask warning for db ver. 2.2
 		return $tout ? $tout : ini_get('session.gc_maxlifetime');
 	}

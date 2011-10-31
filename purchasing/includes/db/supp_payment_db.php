@@ -22,9 +22,7 @@
 			$supp_amount = Banking::exchange_from_to($amount, $bank_account_currency, $supplier_currency, $date_);
 			$supp_discount = Banking::exchange_from_to($discount, $bank_account_currency, $supplier_currency, $date_);
 			$supp_charge = Banking::exchange_from_to($charge, $bank_account_currency, $supplier_currency, $date_);
-		}
-		else
-		{
+		} else {
 			$supp_amount = round($amount / $rate, user_price_dec());
 			$supp_discount = round($discount / $rate, user_price_dec());
 			$supp_charge = round($charge / $rate, user_price_dec());

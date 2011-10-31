@@ -26,7 +26,7 @@
 	}
 	//---------------------------------------------------------------------------------------
 	if (isset($_GET['AddedID'])) {
-		$id    = $_GET['AddedID'];
+		$id = $_GET['AddedID'];
 		$stype = ST_WORKORDER;
 		ui_msgs::display_notification_centered(_("The work order been added."));
 		ui_msgs::display_note(ui_view::get_trans_view_str($stype, $id, _("View this Work Order")));
@@ -68,8 +68,7 @@
 		safe_exit();
 	}
 	//---------------------------------------------------------------------------------------
-	function safe_exit()
-	{
+	function safe_exit() {
 		hyperlink_no_params("", _("Enter a new work order"));
 		hyperlink_no_params("search_work_orders.php", _("Select an existing work order"));
 		ui_view::display_footer_exit();
@@ -82,8 +81,7 @@
 			$_POST['date_'] = Dates::end_fiscalyear();
 		}
 	}
-	function can_process()
-	{
+	function can_process() {
 		global $selected_id;
 		if (!isset($selected_id)) {
 			if (!Refs::is_valid($_POST['wo_ref'])) {
@@ -168,9 +166,7 @@
 					}
 				}
 			}
-		}
-		else
-		{
+		} else {
 			if (!Dates::is_date($_POST['RequDate'])) {
 				JS::set_focus('RequDate');
 				ui_msgs::display_error(_("The date entered is in an invalid format."));
@@ -264,19 +260,19 @@
 			ui_msgs::display_error(_("This work order is closed and cannot be edited."));
 			safe_exit();
 		}
-		$_POST['wo_ref']        = $myrow["wo_ref"];
-		$_POST['stock_id']      = $myrow["stock_id"];
-		$_POST['quantity']      = qty_format($myrow["units_reqd"], Input::post('stock_id'), $dec);
+		$_POST['wo_ref'] = $myrow["wo_ref"];
+		$_POST['stock_id'] = $myrow["stock_id"];
+		$_POST['quantity'] = qty_format($myrow["units_reqd"], Input::post('stock_id'), $dec);
 		$_POST['StockLocation'] = $myrow["loc_code"];
-		$_POST['released']      = $myrow["released"];
-		$_POST['closed']        = $myrow["closed"];
-		$_POST['type']          = $myrow["type"];
-		$_POST['date_']         = Dates::sql2date($myrow["date_"]);
-		$_POST['RequDate']      = Dates::sql2date($myrow["required_by"]);
+		$_POST['released'] = $myrow["released"];
+		$_POST['closed'] = $myrow["closed"];
+		$_POST['type'] = $myrow["type"];
+		$_POST['date_'] = Dates::sql2date($myrow["date_"]);
+		$_POST['RequDate'] = Dates::sql2date($myrow["required_by"]);
 		$_POST['released_date'] = Dates::sql2date($myrow["released_date"]);
-		$_POST['memo_']         = "";
-		$_POST['units_issued']  = $myrow["units_issued"];
-		$_POST['Costs']         = price_format($myrow["additional_costs"]);
+		$_POST['memo_'] = "";
+		$_POST['units_issued'] = $myrow["units_issued"];
+		$_POST['Costs'] = price_format($myrow["additional_costs"]);
 		$_POST['memo_'] = ui_view::get_comments_string(ST_WORKORDER, $selected_id);
 		hidden('wo_ref', $_POST['wo_ref']);
 		hidden('units_issued', $_POST['units_issued']);
@@ -331,16 +327,16 @@
 		date_row(_("Date") . ":", 'date_', '', true);
 		hidden('RequDate', '');
 		$sql = "SELECT DISTINCT account_code FROM bank_accounts";
-		$rs  = DBOld::query($sql, "could not get bank accounts");
-		$r   = DBOld::fetch_row($rs);
+		$rs = DBOld::query($sql, "could not get bank accounts");
+		$r = DBOld::fetch_row($rs);
 		if (!isset($_POST['Labour'])) {
-			$_POST['Labour']     = price_format(0);
+			$_POST['Labour'] = price_format(0);
 			$_POST['cr_lab_acc'] = $r[0];
 		}
 		amount_row($wo_cost_types[WO_LABOUR], 'Labour');
 		gl_all_accounts_list_row(_("Credit Labour Account"), 'cr_lab_acc', null);
 		if (!isset($_POST['Costs'])) {
-			$_POST['Costs']  = price_format(0);
+			$_POST['Costs'] = price_format(0);
 			$_POST['cr_acc'] = $r[0];
 		}
 		amount_row($wo_cost_types[WO_OVERHEAD], 'Costs');

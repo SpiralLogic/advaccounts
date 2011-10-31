@@ -61,9 +61,7 @@
 				 AND suppliers.supplier_id = " . DBOld::escape($supplier_id);
 
 			$result = DBOld::query($sql, "The customer details could not be retrieved");
-		}
-		else
-		{
+		} else {
 			$nil_balance = false;
 		}
 

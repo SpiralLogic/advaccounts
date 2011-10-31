@@ -28,11 +28,10 @@
 	// $show_or_hide 1 show this item in invoice/credit views, 0 to hide it (used for write-off items)
 	// $type is 10 (invoice) or 11 (credit)
 	function add_stock_move_customer($type, $stock_id, $trans_id, $location, $date_, $reference,
-																	 $quantity, $std_cost, $show_or_hide = 1, $price = 0, $discount_percent = 0)
-	{
+																	 $quantity, $std_cost, $show_or_hide = 1, $price = 0, $discount_percent = 0) {
 		return add_stock_move($type, $stock_id, $trans_id, $location, $date_, $reference,
-													$quantity, $std_cost, 0, $show_or_hide, $price, $discount_percent,
-													"The customer stock movement record cannot be inserted");
+			$quantity, $std_cost, 0, $show_or_hide, $price, $discount_percent,
+			"The customer stock movement record cannot be inserted");
 	}
 
 	//----------------------------------------------------------------------------------------
@@ -40,19 +39,17 @@
 	// $date_ is display date (non-sql)
 	// $amount is in CUSTOMER'S currency
 	function add_gl_trans_customer($type, $type_no, $date_, $account, $dimension, $dimension2,
-																 $amount, $customer_id, $err_msg = "", $rate = 0)
-	{
+																 $amount, $customer_id, $err_msg = "", $rate = 0) {
 		if ($err_msg == "") {
 			$err_msg = "The customer GL transaction could not be inserted";
 		}
 		return add_gl_trans($type, $type_no, $date_, $account, $dimension, $dimension2, "", $amount,
-												Banking::get_customer_currency($customer_id),
-												PT_CUSTOMER, $customer_id, $err_msg, $rate);
+			Banking::get_customer_currency($customer_id),
+			PT_CUSTOMER, $customer_id, $err_msg, $rate);
 	}
 
 	//----------------------------------------------------------------------------------------
-	function get_calculated_price($stock_id, $add_pct)
-	{
+	function get_calculated_price($stock_id, $add_pct) {
 		$avg = get_standard_cost($stock_id);
 		if ($avg == 0) {
 			return 0;
@@ -60,40 +57,34 @@
 		return round2($avg * (1 + $add_pct / 100), user_price_dec());
 	}
 
-	function round_to_nearest($price, $round_to)
-	{
+	function round_to_nearest($price, $round_to) {
 		if ($price == 0) {
 			return 0;
 		}
 		$pow = pow(10, user_price_dec());
 		if ($pow >= $round_to) {
 			$mod = ($pow % $round_to);
-		}
-		else
-		{
+		} else {
 			$mod = ($round_to % $pow);
 		}
 		if ($mod != 0) {
 			$price = ceil($price) - ($pow - $round_to) / $pow;
-		}
-		else
-		{
+		} else {
 			$price = ceil($price * ($pow / $round_to)) / ($pow / $round_to);
 		}
 		return $price;
 	}
 
-	function get_price($stock_id, $currency, $sales_type_id, $factor = null, $date = null)
-	{
+	function get_price($stock_id, $currency, $sales_type_id, $factor = null, $date = null) {
 		if ($date == null) {
 			$date = Dates::new_doc_date();
 		}
 		if ($factor === null) {
-			$myrow  = get_sales_type($sales_type_id);
+			$myrow = get_sales_type($sales_type_id);
 			$factor = $myrow['factor'];
 		}
-		$add_pct   = DB_Company::get_pref('add_pct');
-		$base_id   = DB_Company::get_base_sales_type();
+		$add_pct = DB_Company::get_pref('add_pct');
+		$base_id = DB_Company::get_base_sales_type();
 		$home_curr = Banking::get_company_currency();
 		//	AND (sales_type_id = $sales_type_id	OR sales_type_id = $base_id)
 		$sql
@@ -101,12 +92,12 @@
 		FROM prices
 		WHERE stock_id = " . DBOld::escape($stock_id) . "
 			AND (curr_abrev = " . DBOld::escape($currency) . " OR curr_abrev = " . DBOld::escape($home_curr) . ")";
-		$result   = DBOld::query($sql, "There was a problem retrieving the pricing information for the part $stock_id for customer");
+		$result = DBOld::query($sql, "There was a problem retrieving the pricing information for the part $stock_id for customer");
 		$num_rows = DBOld::num_rows($result);
-		$rate     = round2(Banking::get_exchange_rate_from_home_currency($currency, $date),
-											 user_exrate_dec());
+		$rate = round2(Banking::get_exchange_rate_from_home_currency($currency, $date),
+			user_exrate_dec());
 		$round_to = DB_Company::get_pref('round_to');
-		$prices   = array();
+		$prices = array();
 		while ($myrow = DBOld::fetch($result))
 		{
 			$prices[$myrow['sales_type_id']][$myrow['curr_abrev']] = $myrow['price'];
@@ -157,9 +148,7 @@
 		elseif ($round_to != 1)
 		{
 			return round_to_nearest($price, $round_to);
-		}
-		else
-		{
+		} else {
 			return round2($price, user_price_dec());
 		}
 	}
@@ -171,12 +160,11 @@
 	//	otherwise all prices set for kits and items are accepted.
 	//
 	function get_kit_price($item_code, $currency, $sales_type_id, $factor = null,
-												 $date = null, $std = false)
-	{
+												 $date = null, $std = false) {
 		$kit_price = 0.00;
 		if (!$std) {
 			$kit_price = get_price($item_code, $currency, $sales_type_id,
-														 $factor, $date);
+				$factor, $date);
 			if ($kit_price !== false) {
 				return $kit_price;
 			}
@@ -187,24 +175,23 @@
 			if ($item['item_code'] != $item['stock_id']) {
 				// foreign/kit code
 				$kit_price += $item['quantity'] * get_kit_price($item['stock_id'],
-																												$currency, $sales_type_id, $factor, $date, $std);
+					$currency, $sales_type_id, $factor, $date, $std);
 			}
 			else {
 				// stock item
 				$kit_price += $item['quantity'] * get_price($item['stock_id'],
-																										$currency, $sales_type_id, $factor, $date);
+					$currency, $sales_type_id, $factor, $date);
 			}
 		}
 		return $kit_price;
 	}
 
 	//-----------------------------------------------------------------------------
-	function set_document_parent($cart)
-	{
+	function set_document_parent($cart) {
 		$inv_no = key($cart->trans_no);
 		if (count($cart->src_docs) == 1) {
 			// if this child document has only one parent - update child link
-			$src    = array_keys($cart->src_docs);
+			$src = array_keys($cart->src_docs);
 			$del_no = reset($src);
 			$sql = 'UPDATE debtor_trans SET trans_link = ' . $del_no .
 			 ' WHERE type=' . DBOld::escape($cart->trans_type) . ' AND trans_no=' . $inv_no;
@@ -232,18 +219,16 @@
 	}
 
 	//--------------------------------------------------------------------------------------------------
-	function get_parent_type($type)
-	{
-		$parent_types = array(ST_CUSTCREDIT	 => ST_SALESINVOICE,
-													ST_SALESINVOICE => ST_CUSTDELIVERY,
-													ST_CUSTDELIVERY => ST_SALESORDER
+	function get_parent_type($type) {
+		$parent_types = array(ST_CUSTCREDIT => ST_SALESINVOICE,
+			ST_SALESINVOICE => ST_CUSTDELIVERY,
+			ST_CUSTDELIVERY => ST_SALESORDER
 		);
 		return isset($parent_types[$type]) ? $parent_types[$type] : 0;
 	}
 
 	//--------------------------------------------------------------------------------------------------
-	function update_parent_line($doc_type, $line_id, $qty_dispatched)
-	{
+	function update_parent_line($doc_type, $line_id, $qty_dispatched) {
 		$doc_type = get_parent_type($doc_type);
 		//	echo "update line: $line_id, $doc_type, $qty_dispatched";
 		if ($doc_type == 0) {
@@ -271,9 +256,8 @@
 	//--------------------------------------------------------------------------------------------------
 	// find inventory location for given transaction
 	//
-	function get_location(&$cart)
-	{
-		$sql    = "SELECT locations.* FROM stock_moves,"
+	function get_location(&$cart) {
+		$sql = "SELECT locations.* FROM stock_moves,"
 		 . "locations" .
 		 " WHERE type=" . DBOld::escape($cart->trans_type) .
 		 " AND trans_no=" . key($cart->trans_no) .
@@ -291,8 +275,7 @@
 	//
 	//	$trans_no - array of trans nums; special case trans_no==0 - new doc
 	//
-	function read_sales_trans($doc_type, $trans_no, &$cart)
-	{
+	function read_sales_trans($doc_type, $trans_no, &$cart) {
 		if (!is_array($trans_no) && $trans_no) {
 			$trans_no = array($trans_no);
 		}
@@ -312,25 +295,25 @@
 			}
 			$cart->set_sales_type($myrow["tpe"], $myrow["sales_type"], $myrow["tax_included"], 0);
 			$cart->set_customer($myrow["debtor_no"], $myrow["DebtorName"],
-													$myrow["curr_code"], $myrow["discount"], $myrow["payment_terms"]);
+				$myrow["curr_code"], $myrow["discount"], $myrow["payment_terms"]);
 			$cart->set_branch($myrow["branch_code"], $myrow["tax_group_id"],
-												$myrow["tax_group_name"], $myrow["phone"], $myrow["email"]);
-			$cart->reference     = $myrow["reference"];
-			$cart->order_no      = $myrow["order_"];
-			$cart->trans_link    = $myrow["trans_link"];
-			$cart->due_date      = Dates::sql2date($myrow["due_date"]);
+				$myrow["tax_group_name"], $myrow["phone"], $myrow["email"]);
+			$cart->reference = $myrow["reference"];
+			$cart->order_no = $myrow["order_"];
+			$cart->trans_link = $myrow["trans_link"];
+			$cart->due_date = Dates::sql2date($myrow["due_date"]);
 			$cart->document_date = Dates::sql2date($myrow["tran_date"]);
-			$cart->dimension_id  = $myrow['dimension_id']; // added 2.1 Joe Hunt 2008-11-12
+			$cart->dimension_id = $myrow['dimension_id']; // added 2.1 Joe Hunt 2008-11-12
 			$cart->dimension2_id = $myrow['dimension2_id'];
-			$cart->Comments      = '';
+			$cart->Comments = '';
 			foreach ($trans_no as $trans) {
 				$cart->Comments .= ui_view::get_comments_string($doc_type, $trans);
 			}
 			// FIX this should be calculated sum() for multiply parents
 			$cart->set_delivery($myrow["ship_via"], $myrow["br_name"],
-													$myrow["br_address"], $myrow["ov_freight"]);
+				$myrow["br_address"], $myrow["ov_freight"]);
 			$location = 0;
-			$myrow    = get_location($cart); // find location from movement
+			$myrow = get_location($cart); // find location from movement
 			if ($myrow != null) {
 				$cart->set_location($myrow['loc_code'], $myrow['location_name']);
 			}

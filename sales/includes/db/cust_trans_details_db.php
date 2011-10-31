@@ -10,8 +10,7 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	//----------------------------------------------------------------------------------------
-	function get_customer_trans_details($debtor_trans_type, $debtor_trans_no)
-	{
+	function get_customer_trans_details($debtor_trans_type, $debtor_trans_no) {
 		if (!is_array($debtor_trans_no)) {
 			$debtor_trans_no = array(0 => $debtor_trans_no);
 		}
@@ -35,8 +34,7 @@
 	}
 
 	//----------------------------------------------------------------------------------------
-	function void_customer_trans_details($type, $type_no)
-	{
+	function void_customer_trans_details($type, $type_no) {
 		$sql
 		 = "UPDATE debtor_trans_details SET quantity=0, unit_price=0,
 		unit_tax=0, discount_percent=0, standard_cost=0
@@ -49,8 +47,7 @@
 
 	//----------------------------------------------------------------------------------------
 	function write_customer_trans_detail_item($debtor_trans_type, $debtor_trans_no, $stock_id, $description,
-																						$quantity, $unit_price, $unit_tax, $discount_percent, $std_cost, $line_id = 0)
-	{
+																						$quantity, $unit_price, $unit_tax, $discount_percent, $std_cost, $line_id = 0) {
 		if ($line_id != 0) {
 			$sql
 			 = "UPDATE debtor_trans_details SET
@@ -62,9 +59,7 @@
 			discount_percent=$discount_percent,
 			standard_cost=$std_cost WHERE
 			id=" . DBOld::escape($line_id);
-		}
-		else
-		{
+		} else {
 			$sql
 			 = "INSERT INTO debtor_trans_details (debtor_trans_no,
 				debtor_trans_type, stock_id, description, quantity, unit_price,

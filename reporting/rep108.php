@@ -60,7 +60,7 @@
 	{
 		global $systypes_array;
 		include(APP_PATH . 'reporting/includes/lang/en_AU/statement.php');
-		include_once(APP_PATH . "reporting/includes/pdf_report.php");
+		include_once(APP_PATH . "includes/reports/pdf.php");
 		$doc_Statement = "Statement";
 		$doc_as_of     = "as of";
 		$customer        = $_POST['PARAM_0'];

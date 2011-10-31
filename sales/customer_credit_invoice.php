@@ -19,7 +19,7 @@
 	JS::get_js_open_window(900, 500);
 	if (isset($_GET['ModifyCredit'])) {
 		$_SESSION['page_title'] = sprintf(_("Modifying Credit Invoice # %d."), $_GET['ModifyCredit']);
-		$help_context           = "Modifying Credit Invoice";
+		$help_context = "Modifying Credit Invoice";
 		processing_start();
 	}
 	elseif (isset($_GET['InvoiceNumber'])) {
@@ -29,7 +29,7 @@
 	Page::start($page_title);
 	//-----------------------------------------------------------------------------
 	if (isset($_GET['AddedID'])) {
-		$credit_no  = $_GET['AddedID'];
+		$credit_no = $_GET['AddedID'];
 		$trans_type = ST_CUSTCREDIT;
 		ui_msgs::display_notification_centered(_("Credit Note has been processed"));
 		ui_msgs::display_note(ui_view::get_customer_trans_view_str($trans_type, $credit_no, _("&View This Credit Note")), 0, 0);
@@ -38,7 +38,7 @@
 		ui_view::display_footer_exit();
 	}
 	elseif (isset($_GET['UpdatedID'])) {
-		$credit_no  = $_GET['UpdatedID'];
+		$credit_no = $_GET['UpdatedID'];
 		$trans_type = ST_CUSTCREDIT;
 		ui_msgs::display_notification_centered(_("Credit Note has been updated"));
 		ui_msgs::display_note(ui_view::get_customer_trans_view_str($trans_type, $credit_no, _("&View This Credit Note")), 0, 0);
@@ -51,8 +51,7 @@
 		check_edit_conflicts();
 	}
 	//-----------------------------------------------------------------------------
-	function can_process()
-	{
+	function can_process() {
 		if (!Dates::is_date($_POST['CreditDate'])) {
 			ui_msgs::display_error(_("The entered date is invalid."));
 			;
@@ -94,12 +93,12 @@
 	//-----------------------------------------------------------------------------
 	if (isset($_GET['InvoiceNumber']) && $_GET['InvoiceNumber'] > 0) {
 		$ci = new Cart(ST_SALESINVOICE, $_GET['InvoiceNumber'], true);
-		$ci->trans_type    = ST_CUSTCREDIT;
-		$ci->src_docs      = $ci->trans_no;
-		$ci->src_date      = $ci->document_date;
-		$ci->trans_no      = 0;
+		$ci->trans_type = ST_CUSTCREDIT;
+		$ci->src_docs = $ci->trans_no;
+		$ci->src_date = $ci->document_date;
+		$ci->trans_no = 0;
 		$ci->document_date = Dates::new_doc_date();
-		$ci->reference     = Refs::get_next(ST_CUSTCREDIT);
+		$ci->reference = Refs::get_next(ST_CUSTCREDIT);
 		for (
 			$line_no = 0; $line_no < count($ci->line_items); $line_no++
 		) {
@@ -119,8 +118,7 @@
 	elseif (!check_quantities()) {
 		ui_msgs::display_error(_("Selected quantity cannot be less than zero nor more than quantity not credited yet."));
 	}
-	function check_quantities()
-	{
+	function check_quantities() {
 		$ok = 1;
 		foreach (
 			$_SESSION['Items']->line_items as $line_no => $itm
@@ -148,30 +146,28 @@
 	}
 
 	//-----------------------------------------------------------------------------
-	function copy_to_cart()
-	{
-		$cart                = &$_SESSION['Items'];
-		$cart->ship_via      = $_POST['ShipperID'];
-		$cart->freight_cost  = input_num('ChargeFreightCost');
+	function copy_to_cart() {
+		$cart = &$_SESSION['Items'];
+		$cart->ship_via = $_POST['ShipperID'];
+		$cart->freight_cost = input_num('ChargeFreightCost');
 		$cart->document_date = $_POST['CreditDate'];
-		$cart->Location      = $_POST['Location'];
-		$cart->Comments      = $_POST['CreditText'];
+		$cart->Location = $_POST['Location'];
+		$cart->Comments = $_POST['CreditText'];
 		if ($_SESSION['Items']->trans_no == 0) {
 			$cart->reference = $_POST['ref'];
 		}
 	}
 
 	//-----------------------------------------------------------------------------
-	function copy_from_cart()
-	{
-		$cart                       = &$_SESSION['Items'];
-		$_POST['ShipperID']         = $cart->ship_via;
+	function copy_from_cart() {
+		$cart = &$_SESSION['Items'];
+		$_POST['ShipperID'] = $cart->ship_via;
 		$_POST['ChargeFreightCost'] = price_format($cart->freight_cost);
-		$_POST['CreditDate']        = $cart->document_date;
-		$_POST['Location']          = $cart->Location;
-		$_POST['CreditText']        = $cart->Comments;
-		$_POST['cart_id']           = $cart->cart_id;
-		$_POST['ref']               = $cart->reference;
+		$_POST['CreditDate'] = $cart->document_date;
+		$_POST['Location'] = $cart->Location;
+		$_POST['CreditText'] = $cart->Comments;
+		$_POST['cart_id'] = $cart->cart_id;
+		$_POST['ref'] = $cart->reference;
 	}
 
 	//-----------------------------------------------------------------------------
@@ -198,8 +194,7 @@
 		$_SESSION['Items']->Location = $_POST['Location'];
 	}
 	//-----------------------------------------------------------------------------
-	function display_credit_items()
-	{
+	function display_credit_items() {
 		start_form();
 		hidden('cart_id');
 		start_table(Config::get('tables_style2') . " width=90%", 5);
@@ -221,10 +216,10 @@
 		}
 		label_cells(
 			_("Crediting Invoice"), ui_view::get_customer_trans_view_str(
-															ST_SALESINVOICE, array_keys(
-																							 $_SESSION['Items']->src_docs
-																						 )
-														), "class='tableheader2'"
+				ST_SALESINVOICE, array_keys(
+					$_SESSION['Items']->src_docs
+				)
+			), "class='tableheader2'"
 		);
 		if (!isset($_POST['ShipperID'])) {
 			$_POST['ShipperID'] = $_SESSION['Items']->ship_via;
@@ -242,7 +237,7 @@
 		label_row(_("Invoice Date"), $_SESSION['Items']->src_date, "class='tableheader2'");
 		date_row(
 			_("Credit Note Date"), 'CreditDate', '',
-			$_SESSION['Items']->trans_no == 0, 0, 0, 0, "class='tableheader2'"
+		 $_SESSION['Items']->trans_no == 0, 0, 0, 0, "class='tableheader2'"
 		);
 		end_table();
 		echo "</td></tr>";
@@ -298,8 +293,7 @@
 	}
 
 	//-----------------------------------------------------------------------------
-	function display_credit_options()
-	{
+	function display_credit_options() {
 		$Ajax = Ajax::instance();
 		echo "<br>";
 		if (isset($_POST['_CreditType_update'])) {
@@ -314,9 +308,7 @@
 				$_POST['Location'] = $_SESSION['Items']->Location;
 			}
 			locations_list_row(_("Items Returned to Location"), 'Location', $_POST['Location']);
-		}
-		else
-		{
+		} else {
 			/* the goods are to be written off to somewhere */
 			gl_all_accounts_list_row(_("Write off the cost of the items to"), 'WriteOffGLCode', null);
 		}

@@ -15,8 +15,7 @@
 	include(APP_PATH . "sales/includes/db/credit_status_db.php");
 	simple_page_mode(true);
 	//-----------------------------------------------------------------------------------
-	function can_process()
-	{
+	function can_process() {
 		if (strlen($_POST['reason_description']) == 0) {
 			ui_msgs::display_error(_("The credit status description cannot be empty."));
 			JS::set_focus('reason_description');
@@ -38,13 +37,12 @@
 		$Mode = 'RESET';
 	}
 	//-----------------------------------------------------------------------------------
-	function can_delete($selected_id)
-	{
+	function can_delete($selected_id) {
 		$sql
-						= "SELECT COUNT(*) FROM debtors_master
+		 = "SELECT COUNT(*) FROM debtors_master
 		WHERE credit_status=" . DBOld::escape($selected_id);
 		$result = DBOld::query($sql, "could not query customers");
-		$myrow  = DBOld::fetch_row($result);
+		$myrow = DBOld::fetch_row($result);
 		if ($myrow[0] > 0) {
 			ui_msgs::display_error(_("Cannot delete this credit status because customer accounts have been created referring to it."));
 			return false;
@@ -62,7 +60,7 @@
 	}
 	if ($Mode == 'RESET') {
 		$selected_id = -1;
-		$sav         = get_post('show_inactive');
+		$sav = get_post('show_inactive');
 		unset($_POST);
 		$_POST['show_inactive'] = $sav;
 	}
@@ -79,9 +77,7 @@
 		alt_table_row_color($k);
 		if ($myrow["dissallow_invoices"] == 0) {
 			$disallow_text = _("Invoice OK");
-		}
-		else
-		{
+		} else {
 			$disallow_text = "<b>" . _("NO INVOICING") . "</b>";
 		}
 		label_cell($myrow["reason_description"]);
@@ -101,7 +97,7 @@
 			//editing an existing status code
 			$myrow = get_credit_status($selected_id);
 			$_POST['reason_description'] = $myrow["reason_description"];
-			$_POST['DisallowInvoices']   = $myrow["dissallow_invoices"];
+			$_POST['DisallowInvoices'] = $myrow["dissallow_invoices"];
 		}
 		hidden('selected_id', $selected_id);
 	}

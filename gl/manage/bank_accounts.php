@@ -51,18 +51,18 @@
 	{
 		//the link to delete a selected record was clicked instead of the submit button
 		$cancel_delete = 0;
-		$acc           = DBOld::escape($selected_id);
+		$acc = DBOld::escape($selected_id);
 		// PREVENT DELETES IF DEPENDENT RECORDS IN 'bank_trans'
-		$sql    = "SELECT COUNT(*) FROM bank_trans WHERE bank_act=$acc";
+		$sql = "SELECT COUNT(*) FROM bank_trans WHERE bank_act=$acc";
 		$result = DBOld::query($sql, "check failed");
-		$myrow  = DBOld::fetch_row($result);
+		$myrow = DBOld::fetch_row($result);
 		if ($myrow[0] > 0) {
 			$cancel_delete = 1;
 			ui_msgs::display_error(_("Cannot delete this bank account because transactions have been created using this account."));
 		}
-		$sql    = "SELECT COUNT(*) FROM sales_pos WHERE pos_account=$acc";
+		$sql = "SELECT COUNT(*) FROM sales_pos WHERE pos_account=$acc";
 		$result = DBOld::query($sql, "check failed");
-		$myrow  = DBOld::fetch_row($result);
+		$myrow = DBOld::fetch_row($result);
 		if ($myrow[0] > 0) {
 			$cancel_delete = 1;
 			ui_msgs::display_error(_("Cannot delete this bank account because POS definitions have been created using this account."));
@@ -74,8 +74,8 @@
 		$Mode = 'RESET';
 	}
 	if ($Mode == 'RESET') {
-		$selected_id                  = -1;
-		$_POST['bank_name']           = $_POST['bank_account_name'] = '';
+		$selected_id = -1;
+		$_POST['bank_name'] = $_POST['bank_account_name'] = '';
 		$_POST['bank_account_number'] = $_POST['bank_address'] = '';
 	}
 	/* Always show the list of accounts */
@@ -110,9 +110,7 @@
 		label_cell($myrow["bank_address"]);
 		if ($myrow["dflt_curr_act"]) {
 			label_cell(_("Yes"));
-		}
-		else
-		{
+		} else {
 			label_cell(_("No"));
 		}
 		inactive_control_cell($myrow["id"], $myrow["inactive"], 'bank_accounts', 'id');
@@ -127,14 +125,14 @@
 	if ($is_editing) {
 		if ($Mode == 'Edit') {
 			$myrow = get_bank_account($selected_id);
-			$_POST['account_code']        = $myrow["account_code"];
-			$_POST['account_type']        = $myrow["account_type"];
-			$_POST['bank_name']           = $myrow["bank_name"];
-			$_POST['bank_account_name']   = $myrow["bank_account_name"];
+			$_POST['account_code'] = $myrow["account_code"];
+			$_POST['account_type'] = $myrow["account_type"];
+			$_POST['bank_name'] = $myrow["bank_name"];
+			$_POST['bank_account_name'] = $myrow["bank_account_name"];
 			$_POST['bank_account_number'] = $myrow["bank_account_number"];
-			$_POST['bank_address']        = $myrow["bank_address"];
+			$_POST['bank_address'] = $myrow["bank_address"];
 			$_POST['BankAccountCurrency'] = $myrow["bank_curr_code"];
-			$_POST['dflt_curr_act']       = $myrow["dflt_curr_act"];
+			$_POST['dflt_curr_act'] = $myrow["dflt_curr_act"];
 		}
 		hidden('selected_id', $selected_id);
 		hidden('account_code');

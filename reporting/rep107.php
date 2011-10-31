@@ -24,7 +24,7 @@
 	//----------------------------------------------------------------------------------------------------
 	function print_invoices()
 	{
-		include_once(APP_PATH . "reporting/includes/pdf_report.php");
+		include_once(APP_PATH . "includes/reports/pdf.php");
 		$from     = $_POST['PARAM_0'];
 		$to       = $_POST['PARAM_1'];
 		$currency = $_POST['PARAM_2'];
