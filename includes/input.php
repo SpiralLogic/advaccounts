@@ -7,75 +7,109 @@
 	 * To change this template use File | Settings | File Templates.
 	 */
 
-	class Input {
+	class Input
+	{
 
-		const NUMERIC = 1;
-		const OBJECT = 2;
+		const NUMERIC = 'number';
+		const OBJECT = 'object';
+		const STRING = 'string';
+		const BOOL = 'boolean';
+		protected static $default_number = 0;
+		protected static $default_string = '';
+		protected static $default_bool = false;
 
-
-		public static function post($var, $default = false, $type = null) {
-			return static::_isset($_POST, $var, $default, $type);
+		public static function post($var, $type = null, $default = null)
+		{
+			return static::_isset($_POST, $var, $type, $default);
 		}
 
-		public static function get($var, $default = false, $type = null) {
-			return static::_isset($_GET, $var, $default, $type);
+		public static function get($var, $type = null, $default = null)
+		{
+			return static::_isset($_GET, $var, $type, $default);
 		}
 
-		public static function request($var, $default = false, $type = null) {
-			return static::_isset($_REQUEST, $var, $default, $type);
+		public static function request($var, $type = null, $default = null)
+		{
+			return static::_isset($_REQUEST, $var, $type, $default);
 		}
 
-		public static function get_post($var, $default = false, $type = null) {
-			return static::_get_post($_GET, $_POST, $var, $default, $type);
+		public static function get_post($var, $type = null, $default = null)
+		{
+			return static::_get_post($_GET, $_POST, $var, $type, $default);
 		}
 
-		public static function post_get($var, $default = false, $type = null) {
-			return static::_get_post($_POST, $_GET, $var, $default, $type);
+		public static function post_get($var, $type = null, $default = null)
+		{
+			return static::_get_post($_POST, $_GET, $var, $type, $default);
 		}
 
-		public static function session($var = array(), $default = false, $type = null) {
-			return (!isset($_SESSION)) ? false : static::_isset($_SESSION, $var, $default, $type);
+		public static function session($var = array(), $type = null, $default = null)
+		{
+			return (!isset($_SESSION)) ? false : static::_isset($_SESSION, $var, $type, $default);
 		}
 
-		public static function has_post($vars) {
+		public static function has_post($vars)
+		{
 			$vars = func_get_args();
-			foreach ($vars as $var) {
-				if (static::post($var) === false) return false;
+			foreach (
+				$vars as $var
+			) {
+				if (static::post($var) === false) {
+					return false;
+				}
 			}
 			return true;
 		}
 
-		public static function has_get($vars) {
+		public static function has_get($vars)
+		{
 			$vars = func_get_args();
-			foreach ($vars as $var) {
-				if (static::get($var) === false) return false;
+			foreach (
+				$vars as $var
+			) {
+				if (static::get($var) === false) {
+					return false;
+				}
 			}
 			return true;
 		}
 
-		public static function has($vars) {
+		public static function has($vars)
+		{
 			$vars = func_get_args();
-			foreach ($vars as $var) {
-				if (static::_get_post($_GET, $_POST, $var, false) === false) return false;
+			foreach (
+				$vars as $var
+			) {
+				if (static::_get_post($_GET, $_POST, $var) === false) {
+					return false;
+				}
 			}
 			return true;
 		}
 
-		protected static function _get_post($first, $second, $var, $default, $type = null) {
-			$value = static::_isset($first, $var, $default, $type);
-			if ($value === false) $value = static::_isset($second, $var, $type, $default, $type);
+		protected static function _get_post($first, $second, $var, $type = null)
+		{
+			$value = static::_isset($first, $var, $type);
+			if ($value === false) {
+				$value = static::_isset($second, $var, $type);
+			}
 			return $value;
 		}
 
-		protected static function _isset($array, $var, $default, $type) {
+		protected static function _isset($array, $var, $type, $default = null)
+		{
 
-			if (!isset($array[$var])) return $default;
-			$value = $array[$var];
+			$value = (!isset($array[$var])) ? false : $array[$var];
 			switch ($type) {
-				case self::NUMERIC:
-					if (!is_numeric($value)) return false;
-					return ($value === 0) ? true : $value;
-					break;
+			case self::NUMERIC:
+				if (!$value || !is_numeric($value)) {
+					return self::$default_number;
+				}
+				return ($value === self::$default_number) ? true : $value;
+			case self::STRING:
+				if (!$value || !is_string($value)) {
+					return self::$default_string;
+				}
 			}
 			return $value;
 		}

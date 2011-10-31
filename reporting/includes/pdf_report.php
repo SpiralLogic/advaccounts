@@ -886,7 +886,6 @@
 					} else {
 						include("includes/doctext.php");
 					}
-					require_once(APP_PATH . "reporting/includes/class.mail.php");
 					$mail = new Reports_Email(str_replace(",", "", $this->company['coy_name']), $this->company['email']);
 					if (!isset($myrow['email']) || $myrow['email'] == '') {
 						$myrow['email'] = isset($myrow['contact_email']) ? $myrow['contact_email'] : '';
@@ -904,8 +903,10 @@
 					$msg .= $doc_Kindest_regards . "\n\n";
 					$sender = $this->company['postal_address'] . "\n" . $this->company['email'] . "\n" . $this->company['phone'];
 					//$mail->to($to);
-					$customer     = new Customer($myrow['debtor_no']);
-					$emailAddress = $customer->accounts->email;
+					if (!empty($myrow['debtor_no'])){
+						$customer     = new Customer($myrow['debtor_no']);
+						$emailAddress = $customer->accounts->email;
+					}
 					if (empty($emailAddress)) {
 						$emailAddress = (isset($_GET['Email'])) ? $_GET['Email'] : $myrow['email'];
 					}
