@@ -6,7 +6,7 @@
 	 * Time: 4:29 PM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	class postcode {
+	class Contacts_Postcode {
 
 
 		private static $count = 0;

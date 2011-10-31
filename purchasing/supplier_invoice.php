@@ -368,7 +368,7 @@
 	br();
 	end_form();
 	//--------------------------------------------------------------------------------------------------
-	Item::addEditDialog();
+	Items_Item::addEditDialog();
 	JS::onload(
 		<<<JS
 	    $("#wrapper").delegate('.amount','change',function() {

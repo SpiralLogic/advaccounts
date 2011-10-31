@@ -15,12 +15,9 @@
 			self::add_path(
 				array(
 						 realpath('.') . DS . 'includes' . DS . 'classes',
-						 APP_PATH . 'contacts' . DS . 'includes' . DS . 'classes',
 						 APP_PATH . 'includes',
-						 APP_PATH . 'items' . DS . 'includes' . DS . 'classes',
 						 APP_PATH . 'sales' . DS . 'includes',
 						 APP_PATH . 'purchasing' . DS . 'includes',
-						 APP_PATH . 'reporting' . DS . 'includes'
 				));
 		}
 

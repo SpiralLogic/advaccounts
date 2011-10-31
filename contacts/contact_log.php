@@ -9,9 +9,9 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	if (!AJAX_REFERRER) die();
 	if (Input::has_post('contact_id', 'message', 'type')) {
-		$message_id = ContactLog::add($_POST['contact_id'], $_POST['contact_name'], $_POST['type'], $_POST['message']);
+		$message_id = Contacts_ContactLog::add($_POST['contact_id'], $_POST['contact_name'], $_POST['type'], $_POST['message']);
 	}
 	if (Input::has_post('contact_id', 'type')) {
-		$contact_log = ContactLog::read($_POST['contact_id'], $_POST['type']);
+		$contact_log = Contacts_ContactLog::read($_POST['contact_id'], $_POST['type']);
 		echo json_encode($contact_log);
 	}

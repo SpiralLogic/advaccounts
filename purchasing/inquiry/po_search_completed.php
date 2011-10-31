@@ -188,7 +188,7 @@
 	$table =& db_pager::new_db_pager('orders_tbl', $sql, $cols);
 	$table->width = "80%";
 	display_db_pager($table);
-	Supplier::addInfoDialog('.pagerclick');
+	Contacts_Supplier::addInfoDialog('.pagerclick');
 	end_form();
 	end_page();
 ?>

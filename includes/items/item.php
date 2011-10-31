@@ -6,7 +6,7 @@
 	 * Time: 7:37 PM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	class Item extends DB_abstract {
+	class Items_Item extends DB_abstract {
 
 		public $id;
 		public $stock_id;

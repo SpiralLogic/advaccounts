@@ -6,7 +6,7 @@
 	 * Time: 4:07 PM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	class Customer extends Company {
+	class Contacts_Customer extends Contacts_Company {
 
 		public $debtor_no = 0;
 		public $name = 'New Customer';
@@ -53,7 +53,7 @@
 				return false;
 			}
 			if ($this->id != 0) {
-				$previous = new Customer($this->id);
+				$previous = new Contacts_Customer($this->id);
 				if (($this->credit_limit != $previous->credit_limit || $this->payment_terms != $previous->payment_terms) && !$_SESSION['wa_current_user']->can_access('SA_CUSTOMER_CREDIT')
 				) {
 					$this->_status(false, 'Processing', "You don't have access to alter credit limits", 'credit_limit');
@@ -66,16 +66,16 @@
 		protected function setFromArray($changes = NULL) {
 			parent::setFromArray($changes);
 			if (isset($changes['accounts']) && is_array($changes['accounts'])) {
-				$this->accounts = new Accounts($changes['accounts']);
+				$this->accounts = new Contacts_Accounts($changes['accounts']);
 			}
 			if (isset($changes['branches']) && is_array($changes['branches'])) {
 				foreach ($changes['branches'] as $branchid => $branch) {
-					$this->branches[$branchid] = new Branch($branch);
+					$this->branches[$branchid] = new Contacts_Branch($branch);
 				}
 			}
 			if (isset($changes['contacts']) && is_array($changes['contacts'])) {
 				foreach ($changes['contacts'] as $id => $contact) {
-					$this->contacts[$id] = new Contact($contact);
+					$this->contacts[$id] = new Contacts_Contact($contact);
 				}
 			}
 		}
@@ -133,7 +133,7 @@
 		function _setDefaults() {
 			$this->defaultBranch = reset($this->branches)->branch_code;
 			$this->defaultContact = (count($this->contacts) > 0) ? reset($this->contacts)->id : 0;
-			$this->contacts[0] = new Contact(array('parent_id' => $this->id));
+			$this->contacts[0] = new Contacts_Contact(array('parent_id' => $this->id));
 		}
 
 		protected
@@ -157,9 +157,9 @@
 		protected
 		function _new() {
 			$this->_defaults();
-			$this->accounts = new Accounts();
-			$this->branches[0] = new Branch();
-			$this->contacts[0] = new Contact();
+			$this->accounts = new Contacts_Accounts();
+			$this->branches[0] = new Contacts_Branch();
+			$this->contacts[0] = new Contacts_Contact();
 			$this->branches[0]->debtor_no = $this->accounts->debtor_no = $this->contacts[0]->parent_id = $this->id = 0;
 			$this->_setDefaults();
 			return $this->_status(true, 'Initialize new customer', 'Now working with a new customer');
@@ -263,7 +263,7 @@
 		protected
 		function _getAccounts() {
 			DB::select()->from('cust_branch')->where('debtor_no=', $this->debtor_no)->and_where('branch_ref=', 'accounts');
-			$this->accounts = DB::fetch()->asClassLate('Accounts')->all();
+			$this->accounts = DB::fetch()->asClassLate('Contacts_Accounts')->all();
 			if (!$this->accounts && $this->id > 0 && $this->defaultBranch > 0) {
 				$this->accounts = clone($this->branches[$this->defaultBranch]);
 				$this->accounts->br_name = 'Accounts Department';
@@ -281,7 +281,7 @@
 			 ->where('debtor_no=', $this->debtor_no)
 			 ->where('branch_ref !=', 'accounts')
 			 ->where('disable_trans=', 0);
-			$branches = DB::fetch()->asClassLate('Branch');
+			$branches = DB::fetch()->asClassLate('Contacts_Branch');
 			foreach ($branches as $branch) {
 				$this->branches[$branch->branch_code] = $branch;
 			}
@@ -291,7 +291,7 @@
 		protected
 		function _getContacts() {
 			DB::select()->from('contacts')->where('parent_id=', $this->debtor_no);
-			$contacts = DB::fetch()->asClassLate('Contact');
+			$contacts = DB::fetch()->asClassLate('Contacts_Contact');
 			if (count($contacts)) {
 				foreach ($contacts as $contact) {
 					$this->contacts[$contact->id] = $contact;
@@ -299,12 +299,12 @@
 
 				$this->defaultContact = reset($this->contacts)->id;
 			}
-			$this->contacts[0] = new Contact(array('parent_id' => $this->id));
+			$this->contacts[0] = new Contacts_Contact(array('parent_id' => $this->id));
 		}
 
 		public
 		function addBranch($details = null) {
-			$branch = new Branch($details);
+			$branch = new Contacts_Branch($details);
 			$branch->debtor_no = $this->id;
 			$branch->save();
 			$this->branches[$branch->branch_code] = $branch;

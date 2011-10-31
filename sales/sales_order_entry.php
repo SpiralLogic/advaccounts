@@ -141,7 +141,7 @@
 	}
 	function page_complete($order_no, $trans_type, $trans_name = 'Transaction', $edit = false, $update = false)
 	{
-		$customer = new Customer($_SESSION['Jobsboard']->customer_id);
+		$customer = new Contacts_Customer($_SESSION['Jobsboard']->customer_id);
 		$emails   = $customer->getEmailAddresses();
 		ui_msgs::display_notification_centered(
 			sprintf(
@@ -681,6 +681,6 @@
 	}
 	end_form();
 	JS::onUnload('Are you sure you want to leave without commiting changes?');
-	Item::addEditDialog();
+	Items_Item::addEditDialog();
 	end_page();
 	unset($_SESSION['order_no']);

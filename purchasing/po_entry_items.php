@@ -27,7 +27,7 @@
 	if (isset($_GET['AddedID'])) {
 		$order_no   = $_GET['AddedID'];
 		$trans_type = ST_PURCHORDER;
-		$supplier   = new Supplier($_SESSION['wa_global_supplier_id']);
+		$supplier   = new Contacts_Supplier($_SESSION['wa_global_supplier_id']);
 		if (!isset($_GET['Updated'])) {
 			ui_msgs::display_notification_centered(_("Purchase Order: " . $_SESSION['history'][ST_PURCHORDER] . " has been entered"));
 		}
@@ -410,9 +410,9 @@
 	//---------------------------------------------------------------------------------------------------
 	end_form();
 	JS::onUnload('Are you sure you want to leave without commiting changes?');
-	Item::addEditDialog();
+	Items_Item::addEditDialog();
 	if (isset($_SESSION['PO']->supplier_id)) {
-		Supplier::addInfoDialog("td[name=\"supplier_name\"]", $_SESSION['PO']->supplier_details['supplier_id']);
+		Contacts_Supplier::addInfoDialog("td[name=\"supplier_name\"]", $_SESSION['PO']->supplier_details['supplier_id']);
 	}
 	end_page();
 

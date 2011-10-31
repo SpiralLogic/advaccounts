@@ -37,7 +37,7 @@
 	check_edit_conflicts();
 	if (isset($_GET['AddedID'])) {
 		$_SESSION['Items'] = new Cart(ST_SALESINVOICE, $_GET['AddedID']);
-		$customer          = new Customer($_SESSION['Items']->customer_id);
+		$customer          = new Contacts_Customer($_SESSION['Items']->customer_id);
 		$emails            = $customer->getEmailAddresses();
 		$invoice_no        = $_GET['AddedID'];
 		ui_msgs::display_notification_centered(sprintf(_("Order # %d has been entered."), $invoice_no));
@@ -53,7 +53,7 @@
 	}
 	elseif (isset($_GET['UpdatedID'])) {
 		$_SESSION['Items'] = new Cart(ST_SALESINVOICE, $_GET['UpdatedID']);
-		$customer          = new Customer($_SESSION['Items']->customer_id);
+		$customer          = new Contacts_Customer($_SESSION['Items']->customer_id);
 		$emails            = $customer->getEmailAddresses();
 		$invoice_no        = $_GET['UpdatedID'];
 		ui_msgs::display_notification_centered(sprintf(_('Sales Invoice # %d has been updated.'), $invoice_no));

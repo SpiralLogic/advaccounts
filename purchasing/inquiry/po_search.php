@@ -177,7 +177,7 @@
 	$table->set_marker('check_overdue', _("Marked orders have overdue items."));
 	$table->width = "80%";
 	display_db_pager($table);
-	Supplier::addInfoDialog('.pagerclick');
+	Contacts_Supplier::addInfoDialog('.pagerclick');
 	end_form();
 	end_page();
 ?>

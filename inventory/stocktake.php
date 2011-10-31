@@ -89,7 +89,7 @@
 		foreach (
 			$_SESSION['adj_items']->line_items as $line
 		) {
-			$item          = new Item($line->stock_id);
+			$item          = new Items_Item($line->stock_id);
 			$current_stock = $item->getStockLevels($_POST['StockLocation']);
 			$line->quantity -= $current_stock['qty'];
 		}

@@ -17,23 +17,24 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	$page_security = 'SA_SUPPLIER';
-	include_once("includes/contacts.php");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
+		$_SESSION['App']->selected_application = 'contacts';
 	if (AJAX_REFERRER) {
 		if (isset($_GET['term'])) {
-			$data = Supplier::search($_GET['term']);
+			$data = Contacts_Supplier::search($_GET['term']);
 		}
 		elseif (isset($_POST['id'])) {
 			if (isset($_POST['name'])) {
-				$data['supplier'] = $supplier = new Supplier($_POST);
+				$data['supplier'] = $supplier = new Contacts_Supplier($_POST);
 				$supplier->save();
 				$data['status'] = $supplier->getStatus();
 			}
 			elseif (!isset($_POST['name'])) {
-				$data['supplier'] = $supplier = new Supplier($_POST['id']);
+				$data['supplier'] = $supplier = new Contacts_Supplier($_POST['id']);
 			}
 		}
 		else {
-			$data['supplier'] = new Supplier(0);
+			$data['supplier'] = new Contacts_Supplier(0);
 		}
 		echo json_encode($data);
 		exit();
@@ -41,13 +42,13 @@
 	JS::footerFile("includes/js/suppliers.js");
 	Page::start(_($help_context = "Suppliers"), Input::request('popup'));
 	if (isset($_GET['id'])) {
-		$supplier = new Supplier($_GET['id']);
+		$supplier = new Contacts_Supplier($_GET['id']);
 	}
 	elseif (isset($_POST['id']) && !empty($_POST['id'])) {
-		$supplier = new Supplier($_POST['id']);
+		$supplier = new Contacts_Supplier($_POST['id']);
 	}
 	else {
-		$supplier = new Supplier();
+		$supplier = new Contacts_Supplier();
 	}
 	if (Validation::check(Validation::SUPPLIERS)) {
 		HTML::div('suppliersearch', array('style' => 'text-align:center; '));
