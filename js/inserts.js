@@ -281,7 +281,7 @@ var inserts = {
 			 }
 		 }
 	 },
-	'button[aspect*selector], input[aspect*selector]':function(e) {
+	'button[aspect="selector"], input[aspect="selector"]':function(e) {
 		e.onclick = function() {
 			passBack(this.getAttribute('rel'));
 			return false;
@@ -415,7 +415,6 @@ function setHotKeys() {
 				for (var i = 0; i < form.elements.length; i++) {
 					var el = form.elements[i];
 					var asp = el.getAttribute('aspect');
-
 
 					if (el.className != 'editbutton' && (asp && asp.indexOf('selector') !== -1) && (key == 13 || key == 27)) {
 						passBack(key == 13 ? el.getAttribute('rel') : false);

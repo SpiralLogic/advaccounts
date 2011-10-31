@@ -36,7 +36,7 @@
 	 * @version $Id: class.phpmailer.php 447 2009-05-25 01:36:38Z codeworxtech $
 	 * @license http://www.gnu.org/copyleft/lesser.html GNU Lesser General Public License
 	 */
-
+require 'smtp.php';
 	if (version_compare(PHP_VERSION, '5.0.0', '<')) exit("Sorry, this version of PHPMailer will only run on PHP version 5 or greater!\n");
 
 	class PHPMailer {
@@ -699,7 +699,7 @@
 		 * @return bool
 		 */
 		protected function SmtpSend($header, $body) {
-			require_once $this->PluginDir . 'class.smtp.php';
+			//require_once $this->PluginDir . 'class.smtp.php';
 			$bad_rcpt = array();
 
 			if (!$this->SmtpConnect()) {

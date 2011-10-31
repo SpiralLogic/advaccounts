@@ -91,6 +91,7 @@
 		}
 		/* read in all the selected deliveries into the Items cart  */
 		$dn = new Cart(ST_CUSTDELIVERY, $src, true);
+
 		if ($dn->count_items() == 0) {
 			hyperlink_params("/sales/inquiry/sales_deliveries_view.php", _("Select a different delivery to invoice"), "OutstandingOnly=1");
 			die("<br><b>" . _("There are no delivered items with a quantity left to invoice. There is nothing left to invoice.") . "</b>");
@@ -115,7 +116,7 @@
 		processing_start();
 		$_SESSION['Items'] = new Cart(ST_SALESINVOICE, $_GET['ModifyInvoice']);
 		if ($_SESSION['Items']->count_items() == 0) {
-			echo"<center><br><b>" . _("All quantities on this invoice has been credited. There is nothing to modify on this invoice") . "</b></center>";
+			echo "<center><br><b>" . _("All quantities on this invoice has been credited. There is nothing to modify on this invoice") . "</b></center>";
 		}
 		copy_from_cart();
 	} elseif (isset($_GET['ViewInvoice']) && $_GET['ViewInvoice'] > 0) {
@@ -214,7 +215,7 @@
 			$_POST['due_date']          = $cart->due_date;
 			$_POST['ref']               = $cart->reference;
 		}
-		$_POST['cart_id'] = $cart->cart_id;
+		$_POST['cart_id']  = $cart->cart_id;
 		$_POST['Comments'] = $cart->Comments;
 	}
 
@@ -307,7 +308,7 @@
 	}
 	$dspans[] = $spanlen;
 	//-----------------------------------------------------------------------------
-	$viewing = isset($_GET['ViewInvoice']);
+	$viewing          = isset($_GET['ViewInvoice']);
 	$is_batch_invoice = count($_SESSION['Items']->src_docs) > 1;
 	$is_edition       = $_SESSION['Items']->trans_type == ST_SALESINVOICE && $_SESSION['Items']->trans_no != 0;
 	start_form();
