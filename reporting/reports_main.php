@@ -406,7 +406,7 @@
 													 _('Comments')    => 'TEXTBOX',
 													 _('Destination') => 'DESTINATION'
 											));
-	add_custom_reports($reports);
+	$reports->add_custom_reports($reports);
 	echo "<script language='javascript'>
 		function onWindowLoad() {
 			showClass(" . $_GET['Class'] . ")
