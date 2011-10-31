@@ -1,23 +1,23 @@
 <?php
 
 	$page_security = 'SA_CUSTOMER';
-	include_once("includes/contacts.php");
-
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
+		$_SESSION['App']->selected_application = 'contacts';
 	if (isset($_POST['name'])) {
-		$data['customer'] = $customer = new Customer($_POST);
+		$data['customer'] = $customer = new Contacts_Customer($_POST);
 		$data['customer']->save();
 	} elseif (Input::post_get('id', Input::NUMERIC) > 0) {
-		$data['customer'] = $customer = new Customer(Input::post_get('id'));
-		$data['contact_log'] = ContactLog::read($customer->id, ContactLog::CUSTOMER);
+		$data['customer'] = $customer = new Contacts_Customer(Input::post_get('id'));
+		$data['contact_log'] = Contacts_ContactLog::read($customer->id, Contacts_ContactLog::CUSTOMER);
 		$data['transactions'] = '<pre>' . print_r($customer->getTransactions(), true) . '</pre>';
 		$_SESSION['wa_global_customer_id'] = $customer->id;
 	} else {
-		$data['customer'] = $customer = new Customer();
+		$data['customer'] = $customer = new Contacts_Customer();
 	}
 	$data['status'] = $customer->getStatus();
 	if (AJAX_REFERRER) {
 		if (isset($_GET['term'])) {
-			$data = Customer::search($_GET['term']);
+			$data = Contacts_Customer::search($_GET['term']);
 		}
 		echo json_encode($data, JSON_NUMERIC_CHECK);
 		exit();
@@ -116,7 +116,7 @@
 	text_row(_("Fax Number:"), 'br_fax', $currentBranch->fax, 32, 30);
 	email_row(_("Email:"), 'br_email', $currentBranch->email, 35, 55);
 	textarea_row(_("Street:"), 'br_br_address', $currentBranch->br_address, 35, 2);
-	postcode::render(array('br_postcode', $currentBranch->postcode), array('br_city', $currentBranch->city), array('br_state', $currentBranch->state));
+	Contacts_Postcode::render(array('br_postcode', $currentBranch->postcode), array('br_city', $currentBranch->city), array('br_state', $currentBranch->state));
 	table_section(2);
 	table_section_title(_("Accounts Details"), 2);
 	/** @noinspection PhpUndefinedMethodInspection */
@@ -134,7 +134,7 @@
 	text_row(_("Fax Number:"), 'acc_fax', $customer->accounts->fax, 40, 30);
 	email_row(_("E-mail:"), 'acc_email', $customer->accounts->email, 35, 40);
 	textarea_row(_("Street:"), 'acc_br_address', $customer->accounts->br_address, 35, 2);
-	postcode::render(array('acc_postcode', $customer->accounts->postcode), array('acc_city', $customer->accounts->city), array('acc_state', $customer->accounts->state));
+	Contacts_Postcode::render(array('acc_postcode', $customer->accounts->postcode), array('acc_city', $customer->accounts->city), array('acc_state', $customer->accounts->state));
 	end_outer_table(1);
 	$menu->endTab()->startTab('Accounts', 'Accounts');
 	start_outer_table(Config::get('tables_style2'), 5);
@@ -183,7 +183,7 @@
 		'rows' => 25
 	)
 	);
-	ContactLog::read($customer->id, 'C');
+	Contacts_ContactLog::read($customer->id, 'C');
 	/** @noinspection PhpUndefinedMethodInspection */
 	HTML::textarea()->td->td;
 	end_outer_table(1);
@@ -243,7 +243,7 @@
 	HTML::p('New log entry:', array('class' => 'validateTips'));
 	start_table();
 	label_row('Date:', date('Y-m-d H:i:s'));
-	hidden('type', ContactLog::CUSTOMER);
+	hidden('type', Contacts_ContactLog::CUSTOMER);
 	text_row('Contact:', 'contact_name', $customer->accounts->contact_name, 40, 40);
 	textarea_row('Entry:', 'message', '', 100, 10);
 	end_table();

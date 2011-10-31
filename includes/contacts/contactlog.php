@@ -6,7 +6,7 @@
 	 * Time: 2:39 PM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	class ContactLog {
+	class Contacts_ContactLog {
 
 		private static $dbTable = 'contact_log';
 		const CUSTOMER = 'C';

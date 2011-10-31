@@ -21,7 +21,7 @@
 	Validation::check(Validation::BANK_ACCOUNTS, _("There are no bank accounts defined in the system."));
 	//----------------------------------------------------------------------------------------
 	if (!isset($_POST['customer_id'])) {
-		$customer = new Customer(ui_globals::get_global_customer(false));
+		$customer = new Contacts_Customer(ui_globals::get_global_customer(false));
 	}
 	if (!isset($_POST['DateBanked'])) {
 		$_POST['DateBanked'] = Dates::new_doc_date();

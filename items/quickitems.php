@@ -4,14 +4,14 @@
 	include_once("includes/items.php");
 	if (AJAX_REFERRER) {
 		if (isset($_GET['term'])) {
-			$data = Item::search($_GET['term']);
+			$data = Items_Item::search($_GET['term']);
 		} elseif (isset($_POST['stock_id'])) {
 			if (isset($_POST['name'])) {
-				$item = new Item($_POST);
+				$item = new Items_Item($_POST);
 				$item->save($_POST);
 			} else {
-				$id   = Item::getStockId($_POST['stock_id']);
-				$item = new Item($id);
+				$id   = Items_Item::getStockId($_POST['stock_id']);
+				$item = new Items_Item($id);
 			}
 			$data['item']        = $item;
 			$data['stockLevels'] = $item->getStockLevels();
@@ -35,9 +35,9 @@
 		HTML::div();
 		$id = 0;
 	} else {
-		$id = Item::getStockId($_GET['stock_id']);
+		$id = Items_Item::getStockId($_GET['stock_id']);
 	}
-	$data['item']        = $item = new Item($id);
+	$data['item']        = $item = new Items_Item($id);
 	$data['stockLevels'] = $item->getStockLevels();
 	$data                = json_encode($data, JSON_NUMERIC_CHECK);
 	JS::onload(<<<JS

@@ -20,10 +20,10 @@
 	include_once("includes/items.php");
 	if (AJAX_REFERRER) {
 		if (isset($_GET['term'])) {
-			$data = Item::search($_GET['term']);
+			$data = Items_Item::search($_GET['term']);
 		}
 		elseif (isset ($_POST['id'])) {
-			$data = new Item($_POST['id']);
+			$data = new Items_Item($_POST['id']);
 		}
 		echo json_encode($data);
 		exit();

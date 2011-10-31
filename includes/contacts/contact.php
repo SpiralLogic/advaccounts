@@ -3,7 +3,7 @@
 	 * User: Sorijen
 	 * Date: 15/04/11 - 4:08 PM
 	 */
-	class Contact extends DB_abstract {
+	class Contacts_Contact extends DB_abstract {
 
 		public $id = 0;
 		public $parent_id = 0;
@@ -19,7 +19,7 @@
 		}
 
 		protected function _canProcess() {
-			$temp = new Contact();
+			$temp = new Contacts_Contact();
 			if ($this->id > 0) {
 				return true;
 			}

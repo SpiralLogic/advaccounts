@@ -6,7 +6,7 @@
 	 * Time: 4:12 PM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	class Supplier extends Company {
+	class Contacts_Supplier extends Contacts_Company {
 
 		public $id, $supplier_id; //
 		public $name, $supp_name; //

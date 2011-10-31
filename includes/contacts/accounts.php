@@ -6,7 +6,7 @@
 	 * Time: 1:25 PM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	class Accounts extends Branch {
+	class Contacts_Accounts extends Contacts_Branch {
 		public $accounts_id = 0;
 		public $br_name = 'Accounts Department';
 		public $branch_ref = 'accounts';

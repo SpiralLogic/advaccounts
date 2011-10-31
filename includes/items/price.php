@@ -7,7 +7,7 @@
  * To change this template use File | Settings | File Templates.
  */
 
- class Price {
+ class Items_Price {
 
 	const PURCHASE = 1;
 	const SALE = 2;
@@ -21,10 +21,10 @@
 	static function getPrices($stockid, $type = self::SALE,$sort = self::SORT_PRICE) {
 	 switch ($type) {
 		case self::PURCHASE:
-		 $result = DB::select()->from('purch_data')->where('stockid=', $stockid)->orderby($sort)->fetch()->asClassLate('Price', array(self::PURCHASE))->all();
+		 $result = DB::select()->from('purch_data')->where('stockid=', $stockid)->orderby($sort)->fetch()->asClassLate('Items_Price', array(self::PURCHASE))->all();
 		 break;
 		case self::SALE:
-		 $result = DB::select()->from('prices')->where('stockid=', $stockid)->orderby($sort)->fetch()->asClassLate('Price', array(self::SALE))->all();
+		 $result = DB::select()->from('prices')->where('stockid=', $stockid)->orderby($sort)->fetch()->asClassLate('Items_Price', array(self::SALE))->all();
 		 break;
 		default:
 		 throw Exception();
@@ -34,7 +34,7 @@
 	}
 
 	static function getPriceBySupplier($stockid, $supplierid) {
-	 $result = DB::select()->from('purch_data')->where('stockid=', $stockid)->and_where('supplier_id=', $supplierid)->fetch()->asClassLate('Price', array(self::PURCHASE))->one();
+	 $result = DB::select()->from('purch_data')->where('stockid=', $stockid)->and_where('supplier_id=', $supplierid)->fetch()->asClassLate('Items_Price', array(self::PURCHASE))->one();
 	 return $result;
 	}
 
