@@ -36,7 +36,7 @@
 			unset ($_SESSION['issue_items']);
 		}
 		Session_register("issue_items");
-		$_SESSION['issue_items'] = new itemsCart(28);
+		$_SESSION['issue_items'] = new Items_Cart(28);
 		$_SESSION['issue_items']->order_id = $_GET['trans_no'];
 	}
 

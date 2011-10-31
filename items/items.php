@@ -17,13 +17,14 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	$page_security = 'SA_ITEM';
-	include_once("includes/items.php");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
+	$_SESSION['App']->selected_application = 'Items';
 	if (AJAX_REFERRER) {
 		if (isset($_GET['term'])) {
-			$data = Items_Item::search($_GET['term']);
+			$data = Item::search($_GET['term']);
 		}
 		elseif (isset ($_POST['id'])) {
-			$data = new Items_Item($_POST['id']);
+			$data = new Item($_POST['id']);
 		}
 		echo json_encode($data);
 		exit();

@@ -40,7 +40,7 @@
 		}
 		//session_register("SuppInv");
 		//session_register("supp_trans");
-		$_SESSION['supp_trans']             = new suppTrans;
+		$_SESSION['supp_trans']             = new Purchase_Trans;
 		$_SESSION['supp_trans']->is_invoice = true;
 		if (isset($_GET['SuppID'])) {
 			$_SESSION['wa_global_supplier_id'] = $_GET['SuppID'];
@@ -368,7 +368,7 @@
 	br();
 	end_form();
 	//--------------------------------------------------------------------------------------------------
-	Items_Item::addEditDialog();
+	Item::addEditDialog();
 	JS::onload(
 		<<<JS
 	    $("#wrapper").delegate('.amount','change',function() {

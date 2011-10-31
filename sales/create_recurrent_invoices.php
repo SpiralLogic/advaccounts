@@ -21,7 +21,7 @@
 	}
 
 	function create_recurrent_invoices($customer_id, $branch_id, $order_no, $tmpl_no) {
-		$doc = new Cart(ST_SALESORDER, array($order_no));
+		$doc = new Sales_Order(ST_SALESORDER, array($order_no));
 		get_customer_details_to_order($doc, $customer_id, $branch_id);
 		$doc->trans_type = ST_SALESORDER;
 		$doc->trans_no = 0;

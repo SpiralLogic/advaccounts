@@ -662,7 +662,7 @@ JS
 	function stock_items_list($name, $selected_id = null, $all_option = false, $submit_on_change = false, $opts = array(), $editkey = false, $legacy = false)
 	{
 		if (!$legacy) {
-			return Items_Item::addSearchBox(
+			return Item::addSearchBox(
 				$name, array_merge(
 							 array(
 										'submitonselect' => $submit_on_change,
@@ -730,7 +730,7 @@ JS
 	{
 		// all sales codes
 		if (!$legacy) {
-			return Items_Item::addSearchBox(
+			return Item::addSearchBox(
 				$name, array_merge(
 							 array(
 										'selected' => $selected_id,

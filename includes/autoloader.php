@@ -12,13 +12,6 @@
 		{
 			ini_set('unserialize_callback_func', 'adv_autoload_handler'); // set your callback_function
 			spl_autoload_register(array(__CLASS__, 'includeClass'));
-			self::add_path(
-				array(
-						 realpath('.') . DS . 'includes' . DS . 'classes',
-						 APP_PATH . 'includes',
-						 APP_PATH . 'sales' . DS . 'includes',
-						 APP_PATH . 'purchasing' . DS . 'includes',
-				));
 		}
 
 		static function add_path($path = array())
@@ -32,7 +25,7 @@
 		{
 			$path  = explode('_', strtolower($class));
 			$class = array_pop($path);
-			$path = realpath(APP_PATH . 'includes' . DS . implode(DS, $path) . DS . $class . '.php');
+			$path  = realpath(APP_PATH . 'includes' . DS . implode(DS, $path) . DS . $class . '.php');
 			if (file_exists($path)) {
 				include $path;
 			}

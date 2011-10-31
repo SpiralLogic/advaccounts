@@ -192,10 +192,7 @@
 		if (!$drilldown) //Root Level
 		{
 			$parent = -1;
-			$classper = 0.0;
-			$classacc = 0.0;
-			$salesper = 0.0;
-			$salesacc = 0.0;
+			$classper = $classacc = $salesper = $salesacc = 0.0;
 			//Get classes for PL
 			$classresult = get_account_classes(false, 0);
 			while ($class = DBOld::fetch($classresult))

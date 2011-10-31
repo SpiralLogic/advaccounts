@@ -21,7 +21,7 @@
 	{
 		$trans_no = $_POST["trans_no"];
 	}
-	$supp_trans             = new suppTrans();
+	$supp_trans             = new Purchase_Trans();
 	$supp_trans->is_invoice = false;
 	read_supp_invoice($trans_no, ST_SUPPCREDIT, $supp_trans);
 	ui_msgs::display_heading(_("SUPPLIER CREDIT NOTE") . " # " . $trans_no);

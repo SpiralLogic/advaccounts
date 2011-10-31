@@ -18,15 +18,15 @@ Adv.extend({
 								 return null;
 							 };
 						 },
-						 revertState:function() {
+						 revertState:    function() {
 							 $("#Items").empty();
 							 $.tmpl('items', Items.getInit()).appendTo("#Items");
 						 },
-						 resetState:function() {
+						 resetState:     function() {
 							 $("#tabs0 input, #tabs0 textarea").empty();
 							 Items.fetch(0);
 						 },
-						 showStatus:function(status) {
+						 showStatus:     function(status) {
 							 Adv.msgbox.empty();
 							 if (status.status) {
 								 Adv.msgbox.attr('class', 'note_msg').text(status.message);
@@ -34,7 +34,7 @@ Adv.extend({
 								 Adv.msgbox.attr('class', 'err_msg').text(status.message);
 							 }
 						 },
-						 stateModified:function(feild) {
+						 stateModified:  function(feild) {
 							 if (feild.prop('disabled')) {
 								 return;
 							 }
@@ -63,7 +63,7 @@ var Items = function() {
 	$Items.template('items');
 	$stockRow.template('stockrow');
 	return {
-		fetch:function(id) {
+		fetch:     function(id) {
 			if (id.id !== undefined) {
 				id = id.id;
 			}
@@ -74,11 +74,11 @@ var Items = function() {
 			}, 'json')
 
 		},
-		set:function(feildname, val) {
+		set:       function(feildname, val) {
 			item[feildname] = val;
 
 		},
-		onload:function(data) {
+		onload:    function(data) {
 			$Items.empty();
 
 			item = data.item;
@@ -87,12 +87,12 @@ var Items = function() {
 			$stockLevels.find('tbody').html($.tmpl('stockrow', data.stockLevels));
 
 		},
-		get:function() {
+		get:       function() {
 			return item;
 		}, getInit:function() {
 			return initItem;
 		},
-		save:function() {
+		save:      function() {
 			$.post('#', item, function(data) {
 				Items.onload(data);
 			}, 'json');
@@ -104,7 +104,7 @@ $(function() {
 		(	!Adv.fieldsChanged > 0) ? Adv.resetState() : Adv.revertState();
 		return false;
 	}),
-							 tabs:$("#tabs0")});
+							 tabs:    $("#tabs0")});
 	Adv.tabs.delegate(":input", "change", function(event) {
 		event.stopImmediatePropagation();
 		Adv.fieldsChanged++;

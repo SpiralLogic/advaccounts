@@ -36,7 +36,7 @@
 	//-----------------------------------------------------------------------------
 	check_edit_conflicts();
 	if (isset($_GET['AddedID'])) {
-		$_SESSION['Items'] = new Cart(ST_SALESINVOICE, $_GET['AddedID']);
+		$_SESSION['Items'] = new Sales_Order(ST_SALESINVOICE, $_GET['AddedID']);
 		$customer          = new Contacts_Customer($_SESSION['Items']->customer_id);
 		$emails            = $customer->getEmailAddresses();
 		$invoice_no        = $_GET['AddedID'];
@@ -52,7 +52,7 @@
 		ui_view::display_footer_exit();
 	}
 	elseif (isset($_GET['UpdatedID'])) {
-		$_SESSION['Items'] = new Cart(ST_SALESINVOICE, $_GET['UpdatedID']);
+		$_SESSION['Items'] = new Sales_Order(ST_SALESINVOICE, $_GET['UpdatedID']);
 		$customer          = new Contacts_Customer($_SESSION['Items']->customer_id);
 		$emails            = $customer->getEmailAddresses();
 		$invoice_no        = $_GET['UpdatedID'];
@@ -90,7 +90,7 @@
 			$src = array($_GET['DeliveryNumber']);
 		}
 		/* read in all the selected deliveries into the Items cart  */
-		$dn = new Cart(ST_CUSTDELIVERY, $src, true);
+		$dn = new Sales_Order(ST_CUSTDELIVERY, $src, true);
 
 		if ($dn->count_items() == 0) {
 			hyperlink_params("/sales/inquiry/sales_deliveries_view.php", _("Select a different delivery to invoice"), "OutstandingOnly=1");
@@ -114,14 +114,14 @@
 			ui_view::display_footer_exit();
 		}
 		processing_start();
-		$_SESSION['Items'] = new Cart(ST_SALESINVOICE, $_GET['ModifyInvoice']);
+		$_SESSION['Items'] = new Sales_Order(ST_SALESINVOICE, $_GET['ModifyInvoice']);
 		if ($_SESSION['Items']->count_items() == 0) {
 			echo "<center><br><b>" . _("All quantities on this invoice has been credited. There is nothing to modify on this invoice") . "</b></center>";
 		}
 		copy_from_cart();
 	} elseif (isset($_GET['ViewInvoice']) && $_GET['ViewInvoice'] > 0) {
 		processing_start();
-		$_SESSION['Items'] = new Cart(ST_SALESINVOICE, $_GET['ViewInvoice']);
+		$_SESSION['Items'] = new Sales_Order(ST_SALESINVOICE, $_GET['ViewInvoice']);
 		copy_from_cart();
 	} elseif (!processing_active()) {
 		/* This page can only be called with a delivery for invoicing or invoice no for edit */

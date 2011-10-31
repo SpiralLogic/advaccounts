@@ -105,7 +105,7 @@
 	function handle_new_credit($trans_no)
 	{
 		processing_start();
-		$_SESSION['Items'] = new Cart(ST_CUSTCREDIT, $trans_no);
+		$_SESSION['Items'] = new Sales_Order(ST_CUSTCREDIT, $trans_no);
 		copy_from_cn();
 	}
 

@@ -520,17 +520,9 @@
 					$this->width += $this->graphic_area_x1;
 					break;
 
-				// Dots
-				case 3:
-					$this->legend_box_width = ($this->legend_exists == true) ? ($this->string_width($this->biggest_graphic_name, $this->size) + 25) : 0;
-					$this->graphic_area_width = ($this->space_between_dots * $this->total_parameters) - 10;
-					$this->graphic_area_x1 += $this->string_width(($this->higher_value_str), $this->size);
-					$this->width += $this->graphic_area_x1 + 20;
-					$this->width += ($this->legend_exists == true) ? 40 : ((7 * strlen($this->axis_x)) + 10);
-					break;
+				// Dots				// Lines
 
-				// Lines
-				case 4:
+				case 3 || 4:
 					$this->legend_box_width = ($this->legend_exists == true) ? ($this->string_width($this->biggest_graphic_name, $this->size) + 25) : 0;
 					$this->graphic_area_width = ($this->space_between_dots * $this->total_parameters) - 10;
 					$this->graphic_area_x1 += $this->string_width(($this->higher_value_str), $this->size);

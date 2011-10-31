@@ -121,7 +121,7 @@
 			meta_forward('/index.php', 'application=AP');
 		}
 		$_SESSION['PO']->clear_items();
-		$_SESSION['PO'] = new purchOrder;
+		$_SESSION['PO'] = new Purchase_Order;
 		ui_msgs::display_notification(_("This purchase order has been cancelled."));
 		hyperlink_params("/purchasing/po_entry_items.php", _("Enter a new purchase order"), "NewOrder=Yes");
 		echo "<br>";
@@ -410,7 +410,7 @@
 	//---------------------------------------------------------------------------------------------------
 	end_form();
 	JS::onUnload('Are you sure you want to leave without commiting changes?');
-	Items_Item::addEditDialog();
+	Item::addEditDialog();
 	if (isset($_SESSION['PO']->supplier_id)) {
 		Contacts_Supplier::addInfoDialog("td[name=\"supplier_name\"]", $_SESSION['PO']->supplier_details['supplier_id']);
 	}

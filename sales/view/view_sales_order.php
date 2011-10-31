@@ -24,7 +24,7 @@
 	if (isset($_SESSION['View'])) {
 		unset ($_SESSION['View']);
 	}
-	$_SESSION['View'] = new Cart($_GET['trans_type'], $_GET['trans_no'], true);
+	$_SESSION['View'] = new Sales_Order($_GET['trans_type'], $_GET['trans_no'], true);
 	start_table(Config::get('tables_style2') . " width=95%", 5);
 	echo "<tr valign=top class='tableheader2'><td >";
 	if ($_GET['trans_type'] != ST_SALESQUOTE) {
