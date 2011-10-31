@@ -27,14 +27,13 @@
 	require_once("repgen_const.php");
 	require_once("repgen_def.php");
 	require_once("repgen.php");
-	function check_short($short)
-	{ // controls, that short-name of blocks does not be twice
+	function check_short($short) { // controls, that short-name of blocks does not be twice
 		global $id_new;
 		if (empty($short)) {
 			return false;
 		}
 		$query = "SELECT attrib,id FROM xx_reports WHERE typ='funct'";
-		$res   = DBOld::query($query);
+		$res = DBOld::query($query);
 		while ($f = DBOld::fetch($res))
 		{
 			$h = explode("|", $f["attrib"]);
@@ -45,19 +44,15 @@
 		return true;
 	}
 
-	function m_s($a1, $a2)
-	{ // sets "selected" in select box when $a1 == $a2
+	function m_s($a1, $a2) { // sets "selected" in select box when $a1 == $a2
 		if ($a1 == $a2) {
 			return "selected";
-		}
-		else
-		{
+		} else {
 			return "";
 		}
 	}
 
-	function store($id, $info)
-	{ // stores the records 'block' in the database
+	function store($id, $info) { // stores the records 'block' in the database
 		DBOld::query("BEGIN");
 		$query = "DELETE FROM xx_reports WHERE (id ='" . $id . "' AND typ='funct')";
 		DBOld::query($query);
@@ -94,9 +89,7 @@
 			$url = REPGENDIR . "/repgen_select.php";
 			$url = "http://$HTTP_HOST" . $url;
 			header("Location: " . $url); // switches to repgen_strings.php
-		}
-		else
-		{
+		} else {
 			$error = ERROR_FUNC . $short . "(){...}";
 		}
 	}
@@ -136,8 +129,8 @@
 	}
 	if (empty($funct)) {
 		$res = DBOld::query("SELECT attrib FROM xx_reports WHERE id = '$id_new'");
-		$f   = DBOld::fetch($res);
-		$h   = explode("|", $f["attrib"]);
+		$f = DBOld::fetch($res);
+		$h = explode("|", $f["attrib"]);
 		if (!isset($h[4])) {
 			$h[4] = "";
 		}

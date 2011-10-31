@@ -27,14 +27,13 @@
 	require_once("repgen_const.php");
 	require_once("repgen_def.php");
 	require_once("repgen.php");
-	function check_short($short)
-	{ // controls, that short-name of blocks does not be twice
+	function check_short($short) { // controls, that short-name of blocks does not be twice
 		global $id_new;
 		if (empty($short)) {
 			return false;
 		}
 		$query = "SELECT attrib,id FROM xx_reports WHERE typ='block'";
-		$res   = DBOld::query($query);
+		$res = DBOld::query($query);
 		while ($f = DBOld::fetch($res))
 		{
 			$h = explode("|", $f["attrib"]);
@@ -45,19 +44,15 @@
 		return true;
 	}
 
-	function m_s($a1, $a2)
-	{ // sets "selected" in select box when $a1 == $a2
+	function m_s($a1, $a2) { // sets "selected" in select box when $a1 == $a2
 		if ($a1 == $a2) {
 			return "selected";
-		}
-		else
-		{
+		} else {
 			return "";
 		}
 	}
 
-	function store($id, $info)
-	{ // stores the records 'block' in the database
+	function store($id, $info) { // stores the records 'block' in the database
 		DBOld::query("BEGIN");
 		$query = "DELETE FROM xx_reports WHERE (id ='" . $id . "' AND typ='block')";
 		DBOld::query($query);
@@ -81,9 +76,7 @@
 		$error = "";
 		if (!check_short($short)) {
 			$error = ID_ERROR;
-		}
-		else
-		{
+		} else {
 			// switches to repgen_strings.php (Definition of String-items of the block)
 			$info = $short . "|" . $date_ . "|" . $author . "|" . $long;
 			store($id_new, $info);
@@ -97,9 +90,7 @@
 		// go to page for definition of Line-items
 		if (!check_short($short)) {
 			$error = ID_ERROR;
-		}
-		else
-		{
+		} else {
 			// switches to repgen_graphics.php (Definition of items of the report)
 			$info = $short . "|" . $date_ . "|" . $author . "|" . $long;
 			store($id_new, $info);

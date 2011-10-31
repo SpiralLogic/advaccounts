@@ -12,8 +12,7 @@
 	//------------------------------------------------------------------------------
 	//	Retreive parent document number(s) for given transaction
 	//
-	function get_parent_trans($trans_type, $trans_no)
-	{
+	function get_parent_trans($trans_type, $trans_no) {
 		$sql
 		 = 'SELECT trans_link FROM
 			' . 'debtor_trans WHERE
@@ -44,8 +43,7 @@
 	//----------------------------------------------------------------------------------------
 	// Mark changes in debtor_trans_details
 	//
-	function update_customer_trans_version($type, $versions)
-	{
+	function update_customer_trans_version($type, $versions) {
 		$sql
 		 = 'UPDATE debtor_trans SET version=version+1
 			WHERE type=' . DBOld::escape($type) . ' AND (';
@@ -62,8 +60,7 @@
 	// $trans_no = array(num1, num2,...);
 	// returns array(num1=>ver1, num2=>ver2...)
 	//
-	function get_customer_trans_version($type, $trans_no)
-	{
+	function get_customer_trans_version($type, $trans_no) {
 		if (!is_array($trans_no)) {
 			$trans_no = array($trans_no);
 		}
@@ -88,9 +85,8 @@
 	function write_customer_trans($trans_type, $trans_no, $debtor_no, $BranchNo,
 																$date_, $reference, $Total, $discount = 0, $Tax = 0, $Freight = 0, $FreightTax = 0,
 																$sales_type = 0, $order_no = 0, $trans_link = 0, $ship_via = 0, $due_date = "",
-																$AllocAmt = 0, $rate = 0, $dimension_id = 0, $dimension2_id = 0)
-	{
-		$new  = $trans_no == 0;
+																$AllocAmt = 0, $rate = 0, $dimension_id = 0, $dimension2_id = 0) {
+		$new = $trans_no == 0;
 		$curr = Banking::get_customer_currency($debtor_no);
 		if ($rate == 0) {
 			$rate = Banking::get_exchange_rate_from_home_currency($curr, $date_);
@@ -98,9 +94,7 @@
 		$SQLDate = Dates::date2sql($date_);
 		if ($due_date == "") {
 			$SQLDueDate = "0000-00-00";
-		}
-		else
-		{
+		} else {
 			$SQLDueDate = Dates::date2sql($due_date);
 		}
 		if ($trans_type == ST_BANKPAYMENT) {
@@ -147,8 +141,7 @@
 	}
 
 	//----------------------------------------------------------------------------------------
-	function get_customer_trans($trans_id, $trans_type)
-	{
+	function get_customer_trans($trans_id, $trans_type) {
 		$sql
 		 = "SELECT debtor_trans.*,
 		ov_amount+ov_gst+ov_freight+ov_freight_tax+ov_discount AS Total,
@@ -209,14 +202,13 @@
 			exit;
 		}
 		//return DBOld::fetch($result);
-		$row          = DBOld::fetch($result);
+		$row = DBOld::fetch($result);
 		$row['email'] = $row['email2'];
 		return $row;
 	}
 
 	//----------------------------------------------------------------------------------------
-	function exists_customer_trans($type, $type_no)
-	{
+	function exists_customer_trans($type, $type_no) {
 		$sql = "SELECT trans_no FROM debtor_trans WHERE type=" . DBOld::escape($type) . "
 		AND trans_no=" . DBOld::escape($type_no);
 		$result = DBOld::query($sql, "Cannot retreive a debtor transaction");
@@ -225,8 +217,7 @@
 
 	//----------------------------------------------------------------------------------------
 	// retreives the related sales order for a given trans
-	function get_customer_trans_order($type, $type_no)
-	{
+	function get_customer_trans_order($type, $type_no) {
 		$sql = "SELECT order_ FROM debtor_trans WHERE type=" . DBOld::escape($type) . " AND trans_no=" . DBOld::escape($type_no);
 		$result = DBOld::query($sql, "The debtor transaction could not be queried");
 		$row = DBOld::fetch_row($result);
@@ -234,8 +225,7 @@
 	}
 
 	//----------------------------------------------------------------------------------------
-	function get_customer_details_from_trans($type, $type_no)
-	{
+	function get_customer_details_from_trans($type, $type_no) {
 		$sql
 		 = "SELECT debtors_master.name, debtors_master.curr_code, cust_branch.br_name
 		FROM debtors_master,cust_branch,debtor_trans
@@ -247,8 +237,7 @@
 	}
 
 	//----------------------------------------------------------------------------------------
-	function void_customer_trans($type, $type_no)
-	{
+	function void_customer_trans($type, $type_no) {
 		// clear all values and mark as void
 		$sql
 		 = "UPDATE debtor_trans SET ov_amount=0, ov_discount=0, ov_gst=0, ov_freight=0,
@@ -257,28 +246,26 @@
 	}
 
 	//----------------------------------------------------------------------------------------
-	function post_void_customer_trans($type, $type_no)
-	{
+	function post_void_customer_trans($type, $type_no) {
 		switch ($type) {
-		case ST_SALESINVOICE :
-		case ST_CUSTCREDIT	:
-			void_sales_invoice($type, $type_no);
-			break;
-		case ST_CUSTDELIVERY :
-			void_sales_delivery($type, $type_no);
-			break;
-		case ST_CUSTPAYMENT :
-			void_customer_payment($type, $type_no);
-			break;
+			case ST_SALESINVOICE :
+			case ST_CUSTCREDIT	:
+				void_sales_invoice($type, $type_no);
+				break;
+			case ST_CUSTDELIVERY :
+				void_sales_delivery($type, $type_no);
+				break;
+			case ST_CUSTPAYMENT :
+				void_customer_payment($type, $type_no);
+				break;
 		}
 	}
 
 	//----------------------------------------------------------------------------------------
-	function get_customer_trans_link($type, $type_no)
-	{
+	function get_customer_trans_link($type, $type_no) {
 		$row = DBOld::query("SELECT trans_link from debtor_trans
 		WHERE type=" . DBOld::escape($type) . " AND trans_no=" . DBOld::escape($type_no),
-												"could not get transaction link for type=$type and trans_no=$type_no");
+			"could not get transaction link for type=$type and trans_no=$type_no");
 		return $row[0];
 	}
 

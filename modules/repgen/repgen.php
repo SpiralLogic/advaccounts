@@ -1475,9 +1475,7 @@
 			echo '<html><body>';
 			echo trim($pdfcode);
 			echo '</body></html>';
-		}
-		else
-		{
+		} else {
 			$tmp = $rep->pdf->Output($file, 'F');
 			/*$fh =fopen($file,"w");
 								fwrite($fh,$tmp);

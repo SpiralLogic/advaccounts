@@ -45,9 +45,7 @@
 			$dimension = $_POST['PARAM_4'];
 			$comments = $_POST['PARAM_5'];
 			$destination = $_POST['PARAM_6'];
-		}
-		else
-		{
+		} else {
 			$comments = $_POST['PARAM_4'];
 			$destination = $_POST['PARAM_5'];
 		}
@@ -100,9 +98,7 @@
 					'to' => ''
 				)
 			);
-		}
-		else
-		{
+		} else {
 			$params = array(0 => $comments,
 				1 => array('text' => _('Period'), 'from' => $from, 'to' => $to),
 				2 => array('text' => _('Accounts'), 'from' => $fromacc, 'to' => $toacc)

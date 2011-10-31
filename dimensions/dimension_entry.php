@@ -59,8 +59,7 @@
 		safe_exit();
 	}
 	//-------------------------------------------------------------------------------------------------
-	function safe_exit()
-	{
+	function safe_exit() {
 		hyperlink_no_params("", _("Enter a &new dimension"));
 		echo "<br>";
 		hyperlink_no_params(PATH_TO_ROOT . "/dimensions/inquiry/search_dimensions.php", _("&Select an existing dimension"));
@@ -68,8 +67,7 @@
 	}
 
 	//-------------------------------------------------------------------------------------
-	function can_process()
-	{
+	function can_process() {
 		global $selected_id;
 		if ($selected_id == -1) {
 			if (!Refs::is_valid($_POST['ref'])) {
@@ -167,15 +165,15 @@
 		//	ui_msgs::display_error(_("This dimension is closed and cannot be edited."));
 		//	ui_view::display_footer_exit();
 		//}
-		$_POST['ref']      = $myrow["reference"];
-		$_POST['closed']   = $myrow["closed"];
-		$_POST['name']     = $myrow["name"];
-		$_POST['type_']    = $myrow["type_"];
-		$_POST['date_']    = Dates::sql2date($myrow["date_"]);
+		$_POST['ref'] = $myrow["reference"];
+		$_POST['closed'] = $myrow["closed"];
+		$_POST['name'] = $myrow["name"];
+		$_POST['type_'] = $myrow["type_"];
+		$_POST['date_'] = Dates::sql2date($myrow["date_"]);
 		$_POST['due_date'] = Dates::sql2date($myrow["due_date"]);
-		$_POST['memo_']    = ui_view::get_comments_string(ST_DIMENSION, $selected_id);
+		$_POST['memo_'] = ui_view::get_comments_string(ST_DIMENSION, $selected_id);
 		$tags_result = Tags::get_all_associated_with_record(TAG_DIMENSION, $selected_id);
-		$tagids      = array();
+		$tagids = array();
 		while ($tag = DBOld::fetch($tags_result))
 		{
 			$tagids[] = $tag['id'];
@@ -206,9 +204,7 @@
 		submit_center_first('UPDATE_ITEM', _("Update"), _('Save changes to dimension'), 'default');
 		if ($_POST['closed'] == 1) {
 			submit('reopen', _("Re-open This Dimension"), true, _('Mark this dimension as re-opened'), true);
-		}
-		else
-		{
+		} else {
 			submit('close', _("Close This Dimension"), true, _('Mark this dimension as closed'), true);
 		}
 		submit_center_last('delete', _("Delete This Dimension"), _('Delete unused dimension'), true);

@@ -19,15 +19,14 @@
 			_("Modifying Journal Transaction # %d."),
 			$_GET['trans_no']
 		);
-		$help_context           = "Modifying Journal Entry";
+		$help_context = "Modifying Journal Entry";
 	} else
 	{
 		$_SESSION['page_title'] = _($help_context = "Journal Entry");
 	}
 	Page::start($_SESSION['page_title']);
 	//--------------------------------------------------------------------------------------------------
-	function line_start_focus()
-	{
+	function line_start_focus() {
 		$Ajax = Ajax::instance();
 		$Ajax->activate('items_table');
 		JS::set_focus('_code_id_edit');
@@ -35,7 +34,7 @@
 
 	//-----------------------------------------------------------------------------------------------
 	if (isset($_GET['AddedID'])) {
-		$trans_no   = $_GET['AddedID'];
+		$trans_no = $_GET['AddedID'];
 		$trans_type = ST_JOURNAL;
 		ui_msgs::display_notification_centered(_("Journal entry has been entered") . " #$trans_no");
 		ui_msgs::display_note(ui_view::get_gl_view_str($trans_type, $trans_no, _("&View this Journal Entry")));
@@ -44,7 +43,7 @@
 		ui_view::display_footer_exit();
 	} elseif (isset($_GET['UpdatedID']))
 	{
-		$trans_no   = $_GET['UpdatedID'];
+		$trans_no = $_GET['UpdatedID'];
 		$trans_type = ST_JOURNAL;
 		ui_msgs::display_notification_centered(_("Journal entry has been updated") . " #$trans_no");
 		ui_msgs::display_note(ui_view::get_gl_view_str($trans_type, $trans_no, _("&View this Journal Entry")));
@@ -64,12 +63,11 @@
 		}
 		create_cart($_GET['trans_type'], $_GET['trans_no']);
 	}
-	function create_cart($type = 0, $trans_no = 0)
-	{
+	function create_cart($type = 0, $trans_no = 0) {
 		if (isset($_SESSION['journal_items'])) {
 			unset ($_SESSION['journal_items']);
 		}
-		$cart           = new itemsCart($type);
+		$cart = new itemsCart($type);
 		$cart->order_id = $trans_no;
 		if ($trans_no) {
 			$result = get_gl_trans($type, $trans_no);
@@ -85,9 +83,9 @@
 					);
 				}
 			}
-			$cart->memo_           = ui_view::get_comments_string($type, $trans_no);
-			$cart->tran_date       = Dates::sql2date($date);
-			$cart->reference       = Refs::get($type, $trans_no);
+			$cart->memo_ = ui_view::get_comments_string($type, $trans_no);
+			$cart->tran_date = Dates::sql2date($date);
+			$cart->reference = Refs::get($type, $trans_no);
 			$_POST['ref_original'] = $cart->reference; // Store for comparison when updating
 		} else {
 			$cart->reference = Refs::get_next(0);
@@ -98,7 +96,7 @@
 			$_POST['ref_original'] = -1;
 		}
 		$_POST['memo_'] = $cart->memo_;
-		$_POST['ref']   = $cart->reference;
+		$_POST['ref'] = $cart->reference;
 		$_POST['date_'] = $cart->tran_date;
 		$_SESSION['journal_items'] = &$cart;
 	}
@@ -147,9 +145,9 @@
 	}
 	if (isset($_POST['Process'])) {
 		$cart = $_SESSION['journal_items'];
-		$new  = $cart->order_id == 0;
+		$new = $cart->order_id == 0;
 		$cart->reference = $_POST['ref'];
-		$cart->memo_     = $_POST['memo_'];
+		$cart->memo_ = $_POST['memo_'];
 		$cart->tran_date = $_POST['date_'];
 		$trans_no = write_journal_entries($cart, check_value('Reverse'));
 		$cart->clear_items();
@@ -157,15 +155,12 @@
 		unset($_SESSION['journal_items']);
 		if ($new) {
 			meta_forward($_SERVER['PHP_SELF'], "AddedID=$trans_no");
-		}
-		else
-		{
+		} else {
 			meta_forward($_SERVER['PHP_SELF'], "UpdatedID=$trans_no");
 		}
 	}
 	//-----------------------------------------------------------------------------------------------
-	function check_item_data()
-	{
+	function check_item_data() {
 		if (isset($_POST['dimension_id']) && $_POST['dimension_id'] != 0 && dimension_is_closed($_POST['dimension_id'])) {
 			ui_msgs::display_error(_("Dimension is closed."));
 			JS::set_focus('dimension_id');
@@ -209,8 +204,7 @@
 	}
 
 	//-----------------------------------------------------------------------------------------------
-	function handle_update_item()
-	{
+	function handle_update_item() {
 		if ($_POST['UpdateItem'] != "" && check_item_data()) {
 			if (input_num('AmountDebit') > 0) {
 				$amount = input_num('AmountDebit');
@@ -229,23 +223,19 @@
 	}
 
 	//-----------------------------------------------------------------------------------------------
-	function handle_delete_item($id)
-	{
+	function handle_delete_item($id) {
 		$_SESSION['journal_items']->remove_gl_item($id);
 		line_start_focus();
 	}
 
 	//-----------------------------------------------------------------------------------------------
-	function handle_new_item()
-	{
+	function handle_new_item() {
 		if (!check_item_data()) {
 			return;
 		}
 		if (input_num('AmountDebit') > 0) {
 			$amount = input_num('AmountDebit');
-		}
-		else
-		{
+		} else {
 			$amount = -input_num('AmountCredit');
 		}
 		$_SESSION['journal_items']->add_gl_item(

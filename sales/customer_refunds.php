@@ -38,8 +38,7 @@
 		ui_view::display_footer_exit();
 	}
 	//----------------------------------------------------------------------------------------------
-	function can_process()
-	{
+	function can_process() {
 		if (!get_post('customer_id')) {
 			ui_msgs::display_error(_("There is no customer selected."));
 			JS::setfocus('[name="customer_id"]');
@@ -130,13 +129,11 @@
 		$comp_currency = Banking::get_company_currency();
 		if ($comp_currency != $bank_currency && $bank_currency != $cust_currency) {
 			$rate = 0;
-		}
-		else
-		{
+		} else {
 			$rate = input_num('_ex_rate');
 		}
 		Dates::new_doc_date($_POST['DateBanked']);
-		$refund_id                   = write_customer_refund(
+		$refund_id = write_customer_refund(
 			0, $_POST['customer_id'], $_POST['BranchID'],
 			$_POST['bank_account'], $_POST['DateBanked'], $_POST['ref'],
 			input_num('amount'), input_num('discount'),
@@ -147,20 +144,19 @@
 		meta_forward($_SERVER['PHP_SELF'], "AddedID=$refund_id");
 	}
 	//----------------------------------------------------------------------------------------------
-	function read_customer_data()
-	{
+	function read_customer_data() {
 		global $customer;
 		$sql
-														= "SELECT debtors_master.pymt_discount,
+		 = "SELECT debtors_master.pymt_discount,
 		credit_status.dissallow_invoices
 		FROM debtors_master, credit_status
 		WHERE debtors_master.credit_status = credit_status.id
 			AND debtors_master.debtor_no = " . $customer->id;
-		$result                 = DBOld::query($sql, "could not query customers");
-		$myrow                  = DBOld::fetch($result);
-		$_POST['HoldAccount']   = $myrow["dissallow_invoices"];
+		$result = DBOld::query($sql, "could not query customers");
+		$myrow = DBOld::fetch($result);
+		$_POST['HoldAccount'] = $myrow["dissallow_invoices"];
 		$_POST['pymt_discount'] = 0;
-		$_POST['ref']           = Refs::get_next(12);
+		$_POST['ref'] = Refs::get_next(12);
 	}
 
 	//----------------------------------------------------------------------------------------------
@@ -169,10 +165,10 @@
 	table_section(1);
 	UI::search(
 		'customer', array(
-										 'label' => 'Search Customer:',
-										 'size'	=> 20,
-										 'url'	 => '/contacts/search.php'
-								)
+		'label' => 'Search Customer:',
+		'size' => 20,
+		'url' => '/contacts/search.php'
+	)
 	);
 	if (!isset($_POST['bank_account'])) // first page call
 	{

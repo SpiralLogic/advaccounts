@@ -10,20 +10,16 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	//--------------------------------------------------------------------------------
-	function add_to_issue(&$order, $new_item, $new_item_qty, $standard_cost)
-	{
+	function add_to_issue(&$order, $new_item, $new_item_qty, $standard_cost) {
 		if ($order->find_cart_item($new_item)) {
 			ui_msgs::display_error(_("For Part :") . $new_item . " " . "This item is already on this issue.  You can change the quantity issued of the existing line if necessary.");
-		}
-		else
-		{
+		} else {
 			$order->add_to_cart(count($order->line_items), $new_item, $new_item_qty, $standard_cost);
 		}
 	}
 
 	//---------------------------------------------------------------------------------
-	function display_issue_items($title, &$order)
-	{
+	function display_issue_items($title, &$order) {
 		ui_msgs::display_heading($title);
 		div_start('items_table');
 		start_table(Config::get('tables_style') . "  width=90% colspan=7");
@@ -75,26 +71,23 @@
 	}
 
 	//---------------------------------------------------------------------------------
-	function issue_edit_item_controls(&$order, $line_no = -1)
-	{
+	function issue_edit_item_controls(&$order, $line_no = -1) {
 		$Ajax = Ajax::instance();
 		start_row();
 		$id = find_submit('Edit');
 		if ($line_no != -1 && $line_no == $id) {
 			$_POST['stock_id'] = $order->line_items[$id]->stock_id;
-			$_POST['qty']      = qty_format(
+			$_POST['qty'] = qty_format(
 				$order->line_items[$id]->quantity,
 				$order->line_items[$id]->stock_id, $dec
 			);
 			$_POST['std_cost'] = price_format($order->line_items[$id]->standard_cost);
-			$_POST['units']    = $order->line_items[$id]->units;
+			$_POST['units'] = $order->line_items[$id]->units;
 			hidden('stock_id', $_POST['stock_id']);
 			label_cell($_POST['stock_id']);
 			label_cell($order->line_items[$id]->description);
 			$Ajax->activate('items_table');
-		}
-		else
-		{
+		} else {
 			$wo_details = get_work_order($_SESSION['issue_items']->order_id);
 			stock_component_items_list_cells(
 				null, 'stock_id',
@@ -106,10 +99,10 @@
 				$Ajax->activate('std_cost');
 			}
 			$item_info = get_item_edit_info($_POST['stock_id']);
-			$dec               = $item_info["decimals"];
-			$_POST['qty']      = number_format2(0, $dec);
+			$dec = $item_info["decimals"];
+			$_POST['qty'] = number_format2(0, $dec);
 			$_POST['std_cost'] = price_format($item_info["standard_cost"]);
-			$_POST['units']    = $item_info["units"];
+			$_POST['units'] = $item_info["units"];
 		}
 		qty_cells(null, 'qty', $_POST['qty'], null, null, $dec);
 		label_cell($_POST['units'], '', 'units');
@@ -125,9 +118,7 @@
 			);
 			hidden('LineNo', $line_no);
 			JS::set_focus('qty');
-		}
-		else
-		{
+		} else {
 			submit_cells(
 				'AddItem', _("Add Item"), "colspan=2",
 				_('Add new item to document'), true
@@ -137,8 +128,7 @@
 	}
 
 	//---------------------------------------------------------------------------------
-	function issue_options_controls()
-	{
+	function issue_options_controls() {
 		echo "<br>";
 		start_table();
 		ref_row(_("Reference:"), 'ref', '', Refs::get_next(28));

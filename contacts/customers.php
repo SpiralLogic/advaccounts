@@ -2,13 +2,14 @@
 
 	$page_security = 'SA_CUSTOMER';
 	include_once("includes/contacts.php");
+
 	if (isset($_POST['name'])) {
 		$data['customer'] = $customer = new Customer($_POST);
 		$data['customer']->save();
 	} elseif (Input::post_get('id', Input::NUMERIC) > 0) {
-		$data['customer']                  = $customer = new Customer(Input::post_get('id'));
-		$data['contact_log']               = ContactLog::read($customer->id, ContactLog::CUSTOMER);
-		$data['transactions']              = '<pre>' . print_r($customer->getTransactions(), true) . '</pre>';
+		$data['customer'] = $customer = new Customer(Input::post_get('id'));
+		$data['contact_log'] = ContactLog::read($customer->id, ContactLog::CUSTOMER);
+		$data['transactions'] = '<pre>' . print_r($customer->getTransactions(), true) . '</pre>';
 		$_SESSION['wa_global_customer_id'] = $customer->id;
 	} else {
 		$data['customer'] = $customer = new Customer();
@@ -31,7 +32,7 @@
 	Validation::check(Validation::TAX_GROUP, _("There are no tax groups defined in the system. At least one tax group is required before proceeding."));
 	JS::onload("Customer.setValues(" . json_encode($data) . ");");
 	$currentContact = $customer->contacts[$customer->defaultContact];
-	$currentBranch  = $customer->branches[$customer->defaultBranch];
+	$currentBranch = $customer->branches[$customer->defaultBranch];
 	if (isset($_POST['delete'])) {
 		$customer->delete();
 		$status = $customer->getStatus();
@@ -44,10 +45,10 @@
 		HTML::tr(true)->td(array("style" => "width:750px"));
 		UI::search(
 			'customer', array(
-											 'label'		=> 'Search Customer:',
-											 'size'		 => 80,
-											 'callback' => 'Customer.fetch'
-									), array('focus' => true)
+			'label' => 'Search Customer:',
+			'size' => 80,
+			'callback' => 'Customer.fetch'
+		), array('focus' => true)
 		);
 		HTML::td()->tr->table->div;
 	}
@@ -58,30 +59,30 @@
 	HTML::table(array("class" => "marginauto bold"))->tr(true)->td(true);
 	HTML::label(
 		array(
-				 'for'		 => 'name',
-				 'content' => 'Customer name:'
+			'for' => 'name',
+			'content' => 'Customer name:'
 		), false
 	);
 	HTML::input(
 		'name', array(
-								 'value' => $customer->name,
-								 'name'	=> 'name',
-								 'size'	=> 50
-						)
+		'value' => $customer->name,
+		'name' => 'name',
+		'size' => 50
+	)
 	);
 	HTML::td()->td(
 		array(
-				 'content' => _("Customer ID: "),
-				 "style"	 => "width:90px"
+			'content' => _("Customer ID: "),
+			"style" => "width:90px"
 		), false
 	)->td(true);
 	HTML::input(
 		'id', array(
-							 'value'		 => $customer->id,
-							 'name'			=> 'id',
-							 'size'			=> 10,
-							 'maxlength' => '7'
-					)
+		'value' => $customer->id,
+		'name' => 'id',
+		'size' => 10,
+		'maxlength' => '7'
+	)
 	);
 	HTML::td()->tr->table->div;
 	start_outer_table(Config::get('tables_style2'), 5);
@@ -90,23 +91,22 @@
 	/** @noinspection PhpUndefinedMethodInspection */
 	HTML::tr(true)->td(
 		'branchSelect', array(
-												 'colspan' => 2,
-												 'class'	 => "center"
-										)
+		'colspan' => 2,
+		'class' => "center"
+	)
 	);
 	UI::select(
 		'branchList', array_map(
-									function($v)
-									{
-										return $v->br_name;
-									}, $customer->branches
-								), array('name' => 'branchList')
+			function($v) {
+				return $v->br_name;
+			}, $customer->branches
+		), array('name' => 'branchList')
 	);
 	UI::button(
 		'addBranch', 'Add new address', array(
-																				 'class' => 'invis',
-																				 'name'	=> 'addBranch'
-																		)
+		'class' => 'invis',
+		'name' => 'addBranch'
+	)
 	);
 	HTML::td()->tr;
 	text_row(_("Contact:"), 'br_contact_name', $currentBranch->contact_name, 35, 40);
@@ -122,8 +122,8 @@
 	/** @noinspection PhpUndefinedMethodInspection */
 	HTML::tr(true)->td(
 		array(
-				 'class'	 => "center",
-				 'colspan' => 2
+			'class' => "center",
+			'colspan' => 2
 		)
 	);
 	UI::button('useShipAddress', _("Use shipping details"), array('name' => 'useShipAddress'));
@@ -173,15 +173,15 @@
 	start_row();
 	HTML::td(
 		array(
-				 'class'	 => 'ui-widget-content center',
-				 'colspan' => 2
+			'class' => 'ui-widget-content center',
+			'colspan' => 2
 		)
 	);
 	UI::button('addLog', "Add log entry")->td->tr->tr(true)->td(array('colspan' => 2))->textarea(
 		'messageLog', array(
-											 'cols' => 50,
-											 'rows' => 25
-									)
+		'cols' => 50,
+		'rows' => 25
+	)
 	);
 	ContactLog::read($customer->id, 'C');
 	/** @noinspection PhpUndefinedMethodInspection */
@@ -191,14 +191,14 @@
 	HTML::div(array('style' => 'text-align:center'))->div('Contacts', array('style' => 'min-height:200px;'));
 	HTML::script('contact', array('type' => 'text/x-jquery-tmpl'))->table(
 		'contact-${id}', array(
-													'class' => '',
-													'style' => 'display:inline-block'
-										 )
+		'class' => '',
+		'style' => 'display:inline-block'
+	)
 	)->tr(true)->td(
 		array(
-				 'content' => '${name}',
-				 'class'	 => 'tableheader',
-				 'colspan' => 2
+			'content' => '${name}',
+			'class' => 'tableheader',
+			'colspan' => 2
 		)
 	)->td->tr;
 	text_row("Name:", 'con_name-${id}', '${name}', 35, 40);
@@ -235,10 +235,10 @@
 	end_form();
 	HTML::div(
 		'contactLog', array(
-											 'title' => 'New contact log entry',
-											 'class' => 'ui-widget-overlay',
-											 'style' => 'display:none;'
-									)
+		'title' => 'New contact log entry',
+		'class' => 'ui-widget-overlay',
+		'style' => 'display:none;'
+	)
 	);
 	HTML::p('New log entry:', array('class' => 'validateTips'));
 	start_table();
@@ -250,18 +250,18 @@
 	HTML::p()->div->div(array('class' => 'center width50'));
 	UI::button(
 		'btnCustomer', ($customer->id) ? 'Update Customer' : 'New Customer', array(
-																																							'name'	=> 'submit',
-																																							'type'	=> 'submit',
-																																							'style' => 'margin:10px;'
-																																				 )
+		'name' => 'submit',
+		'type' => 'submit',
+		'style' => 'margin:10px;'
+	)
 	);
 	UI::button(
 		'btnCancel', 'Cancel', array(
-																'name'	=> 'cancel',
-																'type'	=> 'submit',
-																'class' => 'ui-helper-hidden',
-																'style' => 'margin:10px;'
-													 )
+		'name' => 'cancel',
+		'type' => 'submit',
+		'class' => 'ui-helper-hidden',
+		'style' => 'margin:10px;'
+	)
 	);
 	/** @noinspection PhpUndefinedMethodInspection */
 	HTML::_div();

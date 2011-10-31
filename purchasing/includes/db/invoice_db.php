@@ -33,9 +33,7 @@
 
 		if ($myrow['days_before_due'] == 0) {
 			$supp_trans->terms = "1" . $myrow['day_in_following_month'];
-		}
-		else
-		{
+		} else {
 			$supp_trans->terms = "0" . $myrow['days_before_due'];
 		}
 		$supp_trans->tax_description = $myrow['tax_group_name'];
@@ -70,9 +68,7 @@
 			$result = DBOld::query($sql, "The old delivery date from the received record cout not be retrieved");
 			$row = DBOld::fetch_row($result);
 			$date = $row[0];
-		}
-		else
-		{
+		} else {
 			$ret = 0;
 			$date = "";
 			$unit_price = 0; // Added by Rasmus
@@ -382,9 +378,7 @@
 			{
 				return Errors::show_db_error("Invalid supptrans details for supptrans number : $trans_no and type : $trans_type", $sql, true);
 			}
-		}
-		else
-		{
+		} else {
 			return Errors::show_db_error("Invalid supptrans number : $trans_no and type : $trans_type", $sql, true);
 		}
 	}

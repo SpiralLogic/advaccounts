@@ -51,8 +51,7 @@
 		ui_view::display_footer_exit();
 	}
 	//----------------------------------------------------------------------------------------
-	function check_inputs()
-	{
+	function check_inputs() {
 		if (!get_post('supplier_id')) {
 			ui_msgs::display_error(_("There is no supplier selected."));
 			JS::set_focus('supplier_id');
@@ -122,24 +121,19 @@
 		$_SESSION['alloc']->amount = -input_num('amount');
 		if (isset($_POST["TotalNumberOfAllocs"])) {
 			return Allocation::check_allocations();
-		}
-		else
-		{
+		} else {
 			return true;
 		}
 	}
 
 	//----------------------------------------------------------------------------------------
-	function handle_add_payment()
-	{
+	function handle_add_payment() {
 		$supp_currency = Banking::get_supplier_currency($_POST['supplier_id']);
 		$bank_currency = Banking::get_bank_account_currency($_POST['bank_account']);
 		$comp_currency = Banking::get_company_currency();
 		if ($comp_currency != $bank_currency && $bank_currency != $supp_currency) {
 			$rate = 0;
-		}
-		else
-		{
+		} else {
 			$rate = input_num('_ex_rate');
 		}
 		$payment_id = add_supp_payment(
@@ -186,7 +180,7 @@
 	date_row(_("Date Paid") . ":", 'DatePaid', '', true, 0, 0, 0, null, true);
 	table_section(3);
 	$supplier_currency = Banking::get_supplier_currency($_POST['supplier_id']);
-	$bank_currency     = Banking::get_bank_account_currency($_POST['bank_account']);
+	$bank_currency = Banking::get_bank_account_currency($_POST['bank_account']);
 	if ($bank_currency != $supplier_currency) {
 		ui_view::exchange_rate_display($bank_currency, $supplier_currency, $_POST['DatePaid'], true);
 	}

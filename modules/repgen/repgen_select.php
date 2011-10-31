@@ -30,44 +30,37 @@
 	add_access_extensions();
 	require_once("repgen_const.php");
 	require_once("repgen_def.php");
-	function get_name($str)
-	{ // get name out of str
+	function get_name($str) { // get name out of str
 		$h = explode("|", $str);
 		return $h[3];
 	}
 
-	function get_author($str)
-	{ // get author out of str
+	function get_author($str) { // get author out of str
 		$h = explode("|", $str);
 		return $h[2];
 	}
 
-	function get_create_date($str)
-	{ // get date_ out of str
+	function get_create_date($str) { // get date_ out of str
 		$h = explode("|", $str);
 		return Dates::sql2date($h[1]);
 	}
 
-	function get_short($str)
-	{ // get short out of str
+	function get_short($str) { // get short out of str
 		$h = explode("|", $str);
 		return $h[0];
 	}
 
-	function get_print_format($str)
-	{ // get print_format out of str
+	function get_print_format($str) { // get print_format out of str
 		$h = explode("|", $str);
 		return $h[4];
 	}
 
-	function get_print_size($str)
-	{ // get print_size out of str
+	function get_print_size($str) { // get print_size out of str
 		$h = explode("|", $str);
 		return $h[5];
 	}
 
-	function get_report_type($str)
-	{ // get report_type out of str
+	function get_report_type($str) { // get report_type out of str
 		$h = explode("|", $str);
 		return $h[6];
 	}
@@ -77,35 +70,35 @@
 	###
 	## Check if there was a submission
 	if (isset($change)) {
-		$id     = trim($id);
+		$id = trim($id);
 		$id_new = trim($id_new);
-		$url    = REPGENDIR . "/repgen_create.php";
+		$url = REPGENDIR . "/repgen_create.php";
 		switch (substr($id, 0, 1))
 		{ // Change a Block
-		case 'B':
-			$url = REPGENDIR . "/repgen_createblock.php";
-			$url .= "?id_new=$id&short=" . urlencode(get_short($attr)) . "&long=" . urlencode(get_name($attr)) . "&author=" . urlencode(get_author($attr));
-			$url .= "&id=" . $id;
-			break;
-		case 'F': // Change Function
-			$url = REPGENDIR . "/repgen_createfunct.php";
-			$url .= "?id_new=$id&short=" . urlencode(get_short($attr)) . "&long=" . urlencode(get_name($attr)) . "&author=" . urlencode(get_author($attr));
-			$url .= "&id=" . $id;
-			break;
-		default: // Change report
-			$url = REPGENDIR . "/repgen_create.php";
-			$url .= "?id_new=$id&short=" . urlencode(get_short($attr)) . "&long=" . urlencode(get_name($attr)) . "&author=" . urlencode(get_author($attr));
-			$url .= "&print_format=" . get_print_format($attr) . "&print_size=" . get_print_size($attr);
-			$url .= "&report_type=" . trim(get_report_type($attr)) . "&id=" . $id;
-			$query = "SELECT  * FROM xx_reports WHERE (typ = 'select' AND id = '" . $id . "' )";
-			$res   = DBOld::query($query);
-			$f     = DBOld::fetch($res);
-			$url .= "&sql=" . urlencode(trim($f["attrib"]));
-			$query = "SELECT  * FROM xx_reports WHERE (typ = 'group' AND id = '" . $id . "' )";
-			$res   = DBOld::query($query);
-			$f     = DBOld::fetch($res);
-			$h     = explode("|", $f["attrib"]);
-			$url .= "&group=" . trim($h[0]) . "&group_type=" . trim($h[1]);
+			case 'B':
+				$url = REPGENDIR . "/repgen_createblock.php";
+				$url .= "?id_new=$id&short=" . urlencode(get_short($attr)) . "&long=" . urlencode(get_name($attr)) . "&author=" . urlencode(get_author($attr));
+				$url .= "&id=" . $id;
+				break;
+			case 'F': // Change Function
+				$url = REPGENDIR . "/repgen_createfunct.php";
+				$url .= "?id_new=$id&short=" . urlencode(get_short($attr)) . "&long=" . urlencode(get_name($attr)) . "&author=" . urlencode(get_author($attr));
+				$url .= "&id=" . $id;
+				break;
+			default: // Change report
+				$url = REPGENDIR . "/repgen_create.php";
+				$url .= "?id_new=$id&short=" . urlencode(get_short($attr)) . "&long=" . urlencode(get_name($attr)) . "&author=" . urlencode(get_author($attr));
+				$url .= "&print_format=" . get_print_format($attr) . "&print_size=" . get_print_size($attr);
+				$url .= "&report_type=" . trim(get_report_type($attr)) . "&id=" . $id;
+				$query = "SELECT  * FROM xx_reports WHERE (typ = 'select' AND id = '" . $id . "' )";
+				$res = DBOld::query($query);
+				$f = DBOld::fetch($res);
+				$url .= "&sql=" . urlencode(trim($f["attrib"]));
+				$query = "SELECT  * FROM xx_reports WHERE (typ = 'group' AND id = '" . $id . "' )";
+				$res = DBOld::query($query);
+				$f = DBOld::fetch($res);
+				$h = explode("|", $f["attrib"]);
+				$url .= "&group=" . trim($h[0]) . "&group_type=" . trim($h[1]);
 		}
 		//echo $url; exit;
 		header("Location: http://$HTTP_HOST" . $url); // switches to repgen_create.php
@@ -123,24 +116,24 @@
 		// read the records of the selected report
 		switch (substr($id, 0, 1))
 		{
-		case 'B':
-			$type = 'block';
-			break;
-		case 'F':
-			$type = 'funct';
-			break;
-		default:
-			$type = 'info';
-			break;
+			case 'B':
+				$type = 'block';
+				break;
+			case 'F':
+				$type = 'funct';
+				break;
+			default:
+				$type = 'info';
+				break;
 		}
-		$query     = "SELECT * FROM xx_reports WHERE id ='$id'";
-		$res       = DBOld::query($query);
-		$typ_ar    = array();
+		$query = "SELECT * FROM xx_reports WHERE id ='$id'";
+		$res = DBOld::query($query);
+		$typ_ar = array();
 		$attrib_ar = array();
-		$l         = 0;
+		$l = 0;
 		while ($f = DBOld::fetch($res))
 		{
-			$typ_ar[$l]    = $f["typ"];
+			$typ_ar[$l] = $f["typ"];
 			$attrib_ar[$l] = $f["attrib"];
 			if (trim($typ_ar[$l]) == $type) {
 				$h = explode("|", $attrib_ar[$l]); // change short
@@ -152,7 +145,7 @@
 		}
 		// change  $id to a new value and $short to "COPY".$short
 		$res = DBOld::query("SELECT typ,id FROM xx_reports WHERE typ = '$type'");
-		$n   = 0;
+		$n = 0;
 		while ($f = DBOld::fetch($res))
 		{
 			$n = max($n, $f["id"]);
@@ -176,7 +169,7 @@
 	if (isset($new_)) {
 		// create a new report Id
 		$res = DBOld::query("SELECT typ,id FROM xx_reports WHERE typ = 'info' ORDER BY id");
-		$n   = 0;
+		$n = 0;
 		while ($f = DBOld::fetch($res))
 		{
 			$n = max($n, $f["id"]);
@@ -193,11 +186,11 @@
 		$max = 0;
 		while ($f = DBOld::fetch($res))
 		{
-			$n   = trim($f["id"], "B");
+			$n = trim($f["id"], "B");
 			$max = max($max, $n);
 		}
-		$n   = $max + 1;
-		$n   = 'B' . $n;
+		$n = $max + 1;
+		$n = 'B' . $n;
 		$url = REPGENDIR . "/repgen_createblock.php";
 		$url .= "?id_new=$n&short=&long=&author=&group=&sqlf=&print_format=&print_size=&report_type=&id=&group_type=";
 		header("Location: http://$HTTP_HOST" . $url); // switches to repgen_createblock.php
@@ -209,11 +202,11 @@
 		$max = 0;
 		while ($f = DBOld::fetch($res))
 		{
-			$n   = trim($f["id"], "F");
+			$n = trim($f["id"], "F");
 			$max = max($max, $n);
 		}
-		$n   = $max + 1;
-		$n   = 'F' . $n;
+		$n = $max + 1;
+		$n = 'F' . $n;
 		$url = REPGENDIR . "/repgen_createfunct.php";
 		$url .= "?id_new=$n&short=&long=&author=&group=&sql=&print_format=&print_size=&report_type=&id=&group_type=";
 		header("Location: http://$HTTP_HOST" . $url); // switches to repgen_createfunct.php
@@ -250,26 +243,26 @@ function displayReport(f, id) {
 	## Traverse the result set
 	## Get a database connection
 	$query = "SELECT  * FROM xx_reports WHERE (typ = 'info' OR typ = 'block' OR typ = 'funct') ORDER BY id";
-	$res   = DBOld::query($query);
+	$res = DBOld::query($query);
 	while ($f = DBOld::fetch($res))
 	{
 		$attrib_h = $f["attrib"];
-		$act      = false;
+		$act = false;
 		switch (substr($f["id"], 0, 1))
 		{
-		case 'B':
-			$bgcolor = "cfff8a";
-			break;
-		case 'F':
-			$bgcolor = "ffaa49";
-			$h       = explode("|", $attrib_h);
-			$h[4]    = ""; // remove the PHP-statement part because of troubles with ' and "
-			$attrib_h = implode("|", $h);
-			break;
-		default:
-			$bgcolor = "dedede";
-			$act     = true;
-			break;
+			case 'B':
+				$bgcolor = "cfff8a";
+				break;
+			case 'F':
+				$bgcolor = "ffaa49";
+				$h = explode("|", $attrib_h);
+				$h[4] = ""; // remove the PHP-statement part because of troubles with ' and "
+				$attrib_h = implode("|", $h);
+				break;
+			default:
+				$bgcolor = "dedede";
+				$act = true;
+				break;
 		}
 		start_row("style='background-color:#{$bgcolor};'");
 		echo "<td style='width;0px;display:none;'>\n";
@@ -284,9 +277,7 @@ function displayReport(f, id) {
 				"<input type=\"button\" class=\"inputsubmit\" name=\"run\" value=\"Run\"
   			onclick=\"javascript:displayReport(document.edit, " . $f["id"] . ");\""
 			);
-		}
-		else
-		{
+		} else {
 			label_cell("");
 		}
 		submit_cells("change", CHANGE);

@@ -28,13 +28,10 @@
 	require_once("repgen_const.php");
 	require_once("repgen_def.php");
 	require_once("repgen.php");
-	function m_s($a1, $a2)
-	{ // sets "selected" in select box when $a1 == $a2
+	function m_s($a1, $a2) { // sets "selected" in select box when $a1 == $a2
 		if ($a1 == $a2) {
 			return "selected";
-		}
-		else
-		{
+		} else {
 			return "";
 		}
 	}
@@ -66,62 +63,62 @@
 		switch ($key)
 		{
 			// go back
-		case "back":
-			$url = REPGENDIR . "/repgen_select.php";
-			header("Location: http://$HTTP_HOST" . $url); // switches to page 'select a report'
-			exit;
-			break;
-		case "delete":
-			// deletes item from table reports
-			$query = "DELETE FROM xx_reports WHERE (id ='$id1' AND attrib = '$attrib')";
-			DBOld::query($query);
-			break;
-		case "insert":
-			//  inserts item into table reports
-			// test the input
-			$attrib1 = $sel_typ . "|" . $sel_art . "|" . $width . "|" . $x1 . "|" . $y1 . "|" . $x2 . "|" . $y2;
-			if (!(empty($id_new) || empty($width) || empty($x1) || empty($y1) || empty($x2) || empty($y2))) {
-				// does item exist already?
-				if ($alternate == "true") {
-					$query = "DELETE FROM xx_reports WHERE (id = '" . $id_new . "' AND attrib ='" . $attriba . "' AND typ='item')";
-					DBOld::query($query);
-					$alternate = "false";
+			case "back":
+				$url = REPGENDIR . "/repgen_select.php";
+				header("Location: http://$HTTP_HOST" . $url); // switches to page 'select a report'
+				exit;
+				break;
+			case "delete":
+				// deletes item from table reports
+				$query = "DELETE FROM xx_reports WHERE (id ='$id1' AND attrib = '$attrib')";
+				DBOld::query($query);
+				break;
+			case "insert":
+				//  inserts item into table reports
+				// test the input
+				$attrib1 = $sel_typ . "|" . $sel_art . "|" . $width . "|" . $x1 . "|" . $y1 . "|" . $x2 . "|" . $y2;
+				if (!(empty($id_new) || empty($width) || empty($x1) || empty($y1) || empty($x2) || empty($y2))) {
+					// does item exist already?
+					if ($alternate == "true") {
+						$query = "DELETE FROM xx_reports WHERE (id = '" . $id_new . "' AND attrib ='" . $attriba . "' AND typ='item')";
+						DBOld::query($query);
+						$alternate = "false";
+					}
+					$query = "SELECT * FROM xx_reports WHERE (id = '" . $id_new . "' AND attrib ='" . $attrib1 . "' AND typ='item')";
+					$res = DBOld::query($query);
+					if (DBOld::num_rows($res) == 0) { // it is new item, store it
+						$query = "INSERT INTO xx_reports VALUES('$id_new','item','$attrib1')";
+						DBOld::query($query);
+						$error = NULL;
+					}
 				}
-				$query = "SELECT * FROM xx_reports WHERE (id = '" . $id_new . "' AND attrib ='" . $attrib1 . "' AND typ='item')";
-				$res   = DBOld::query($query);
-				if (DBOld::num_rows($res) == 0) { // it is new item, store it
-					$query = "INSERT INTO xx_reports VALUES('$id_new','item','$attrib1')";
-					DBOld::query($query);
-					$error = NULL;
+				else
+				{
+					$error = ERROR_EMPTY_LINE;
 				}
-			}
-			else
-			{
-				$error = ERROR_EMPTY_LINE;
-			}
-			break;
-		case "alter":
-			//  alters item into table reports
-			$alternate = "true";
-			$h         = explode("|", $attrib);
-			for (
-				$i = 0; $i < 7; $i++
-			)
-			{
-				if (!isset($h[$i])) {
-					$h[$i] = "";
+				break;
+			case "alter":
+				//  alters item into table reports
+				$alternate = "true";
+				$h = explode("|", $attrib);
+				for (
+					$i = 0; $i < 7; $i++
+				)
+				{
+					if (!isset($h[$i])) {
+						$h[$i] = "";
+					}
 				}
-			}
-			$sel_typ = $h[0];
-			$sel_art = $h[1];
-			$width   = $h[2];
-			$x1      = $h[3];
-			$y1      = $h[4];
-			$x2      = $h[5];
-			$y2      = $h[6];
-			break;
-		default:
-			break;
+				$sel_typ = $h[0];
+				$sel_art = $h[1];
+				$width = $h[2];
+				$x1 = $h[3];
+				$y1 = $h[4];
+				$x2 = $h[5];
+				$y2 = $h[6];
+				break;
+			default:
+				break;
 		}
 	}
 	Page::start("Report Generator REPGEN");
@@ -227,8 +224,8 @@ function displayReport(id) {
 	table_header($th);
 	## Traverse the result set
 	$query = "SELECT  * FROM xx_reports WHERE (typ = 'item' AND id='" . $id_new . "') ORDER BY attrib";
-	$res   = DBOld::query($query);
-	$k     = 0; // line-number
+	$res = DBOld::query($query);
+	$k = 0; // line-number
 	while ($f = DBOld::fetch($res))
 	{
 		$h = explode("|", $f["attrib"]);
@@ -240,13 +237,13 @@ function displayReport(id) {
 				$h[$i] = "";
 			}
 		}
-		$it_typ      = $h[0];
-		$it_art      = $h[1];
-		$it_font     = $h[2];
+		$it_typ = $h[0];
+		$it_art = $h[1];
+		$it_font = $h[2];
 		$it_fontsize = $h[3];
-		$it_zahl     = $h[4];
-		$it_x1       = $h[5];
-		$it_y1       = $h[6];
+		$it_zahl = $h[4];
+		$it_x1 = $h[5];
+		$it_y1 = $h[6];
 		if ($it_typ == "String" || $it_typ == "DB" || $it_typ == "Term") {
 			$it_str = $h[7];
 		}
@@ -267,9 +264,7 @@ function displayReport(id) {
 			label_cell($it_str);
 			label_cell($it_x1);
 			label_cell(($it_y1 != "" ? $it_y1 : "."));
-		}
-		else
-		{
+		} else {
 			label_cell(".");
 			label_cell(".");
 			label_cell(".");
@@ -281,18 +276,14 @@ function displayReport(id) {
 			label_cell(".");
 			label_cell(".");
 			label_cell(".");
-		}
-		else
-		{
+		} else {
 			label_cell($it_x1);
 			label_cell($it_y1);
 			label_cell($it_font);
 		}
 		if (in_array($it_typ, array("Line", "Rect"))) {
 			label_cell(submit("alter", CHANGE, false));
-		}
-		else
-		{
+		} else {
 			label_cell(" ");
 		}
 		label_cell(submit("delete", DELETE, false));

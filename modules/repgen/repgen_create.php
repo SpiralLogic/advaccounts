@@ -26,14 +26,13 @@
 	require_once("repgen_const.php");
 	require_once("repgen_def.php");
 	require_once("repgen.php");
-	function check_short($short)
-	{ // controls, that short-name of reports does not be twice
+	function check_short($short) { // controls, that short-name of reports does not be twice
 		global $id_new;
 		if (empty($short)) {
 			return false;
 		}
 		$query = "SELECT attrib,id FROM xx_reports WHERE typ='info'";
-		$res   = DBOld::query($query);
+		$res = DBOld::query($query);
 		while ($f = DBOld::fetch($res))
 		{
 			$h = explode("|", $f["attrib"]);
@@ -44,19 +43,15 @@
 		return true;
 	}
 
-	function m_s($a1, $a2)
-	{ // sets "selected" in select box when $a1 == $a2
+	function m_s($a1, $a2) { // sets "selected" in select box when $a1 == $a2
 		if ($a1 == $a2) {
 			return "selected";
-		}
-		else
-		{
+		} else {
 			return "";
 		}
 	}
 
-	function store($id, $info, $sql, $group, $group_type)
-	{ // stores the records info, select and group in the database
+	function store($id, $info, $sql, $group, $group_type) { // stores the records info, select and group in the database
 		DBOld::query("BEGIN");
 		$query = "DELETE FROM xx_reports WHERE (id ='" . $id . "' AND typ='info')";
 		DBOld::query($query);
@@ -70,7 +65,7 @@
 		DBOld::query($query);
 		$query = "DELETE FROM xx_reports WHERE (id ='" . $id . "' AND typ='group')";
 		DBOld::query($query);
-		$g     = $group . "|" . $group_type;
+		$g = $group . "|" . $group_type;
 		$query = "INSERT INTO xx_reports VALUES ('" . $id . "','group','" . $g . "')";
 		DBOld::query($query);
 		DBOld::query("COMMIT");
@@ -100,7 +95,7 @@
 			// switches to repgen_strings.php (Definition of String-items of the report)
 			//                   get_session_data();
 			// test, if $sql is correct SQL Statement
-			$sql  = urldecode(stripslashes($sql));
+			$sql = urldecode(stripslashes($sql));
 			$sql1 = str_replace("", '', $sql);
 			DBOld::query($sql1, "SQL-Statement : '" . $sql . "' " . SQL_ERROR . ":<BR>" . NOTSTORED);
 			$info = $short . "|" . $date_ . "|" . $author . "|" . $long . "|" . $print_format . "|" . $print_size . "|" . $report_type;
@@ -109,9 +104,7 @@
 			$url .= "?id_new=" . $id_new . "&long=" . urlencode($long) . "&report_type=" . $report_type . "&sql=" . urlencode($sql);
 			header("Location: http://$HTTP_HOST" . $url); // switches to repgen_strings.php
 			exit;
-		}
-		else
-		{
+		} else {
 			$error .= "<BR>" . NOTSTORED;
 		}
 	}
@@ -124,7 +117,7 @@
 			// switches to repgen_graphics.php (Definition of items of the report)
 			// set_session_data();
 			// test, if $sql is correct SQL Statement
-			$sql  = urldecode(stripslashes($sql));
+			$sql = urldecode(stripslashes($sql));
 			$sql1 = str_replace("", '', $sql);
 			DBOld::query($sql1, "Entered values NOT saved!");
 			$info = $short . "|" . $date_ . "|" . $author . "|" . $long . "|" . $print_format . "|" . $print_size . "|" . $report_type;

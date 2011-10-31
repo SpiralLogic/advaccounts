@@ -17,8 +17,7 @@
 	JS::footerFile('/js/allocate.js');
 	Page::start(_($help_context = "Allocate Customer Payment or Credit Note"));
 	//--------------------------------------------------------------------------------
-	function clear_allocations()
-	{
+	function clear_allocations() {
 		if (isset($_SESSION['alloc'])) {
 			unset($_SESSION['alloc']->allocs);
 			unset($_SESSION['alloc']);
@@ -27,8 +26,7 @@
 	}
 
 	//--------------------------------------------------------------------------------
-	function edit_allocations_for_transaction($type, $trans_no)
-	{
+	function edit_allocations_for_transaction($type, $trans_no) {
 		global $systypes_array;
 		ui_msgs::display_heading(
 			sprintf(
@@ -47,9 +45,7 @@
 			submit_center_first('UpdateDisplay', _("Refresh"), _('Start again allocation of selected amount'), true);
 			submit('Process', _("Process"), true, _('Process allocations'), 'default');
 			submit_center_last('Cancel', _("Back to Allocations"), _('Abandon allocations and return to selection of allocatable amounts'), 'cancel');
-		}
-		else
-		{
+		} else {
 			ui_msgs::display_warning(_("There are no unsettled transactions to allocate."), 0, 1);
 			submit_center(
 				'Cancel', _("Back to Allocations"), true,

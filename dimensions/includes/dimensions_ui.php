@@ -10,12 +10,11 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	//--------------------------------------------------------------------------------------
-	function display_dimension_balance($id, $from, $to)
-	{
+	function display_dimension_balance($id, $from, $to) {
 		$from = Dates::date2sql($from);
-		$to   = Dates::date2sql($to);
+		$to = Dates::date2sql($to);
 		$sql
-						= "SELECT account, chart_master.account_name, sum(amount) AS amt FROM
+		 = "SELECT account, chart_master.account_name, sum(amount) AS amt FROM
 		gl_trans,chart_master WHERE
 		gl_trans.account = chart_master.account_code AND
 		(dimension_id = $id OR dimension2_id = $id) AND
@@ -23,9 +22,7 @@
 		$result = DBOld::query($sql, "Transactions could not be calculated");
 		if (DBOld::num_rows($result) == 0) {
 			ui_msgs::display_warning(_("There are no transactions for this dimension for the selected period."));
-		}
-		else
-		{
+		} else {
 			ui_msgs::display_heading2(_("Balance for this Dimension"));
 			br();
 			start_table(Config::get('tables_style'));

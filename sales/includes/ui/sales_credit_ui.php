@@ -10,13 +10,12 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	// ------------------------------------------------------------------------------
-	function display_credit_header(&$order)
-	{
+	function display_credit_header(&$order) {
 		$Ajax = Ajax::instance();
 		start_outer_table("width=90%  " . Config::get('tables_style'));
 		table_section(1);
 		$customer_error = "";
-		$change_prices  = 0;
+		$change_prices = 0;
 		if (!isset($_POST['customer_id']) && (ui_globals::get_global_customer() != ALL_TEXT)) {
 			$_POST['customer_id'] = ui_globals::get_global_customer();
 		}
@@ -36,13 +35,13 @@
 		if (($order->customer_id != $_POST['customer_id'])
 		 || ($order->Branch != $_POST['branch_id'])
 		) {
-			$old_order      = (PHP_VERSION < 5) ? $order : clone($order);
+			$old_order = (PHP_VERSION < 5) ? $order : clone($order);
 			$customer_error = get_customer_details_to_order($order, $_POST['customer_id'], $_POST['branch_id']);
-			$_POST['Location']         = $order->Location;
-			$_POST['deliver_to']       = $order->deliver_to;
+			$_POST['Location'] = $order->Location;
+			$_POST['deliver_to'] = $order->deliver_to;
 			$_POST['delivery_address'] = $order->delivery_address;
-			$_POST['name']             = $order->name;
-			$_POST['phone']            = $order->phone;
+			$_POST['name'] = $order->name;
+			$_POST['phone'] = $order->phone;
 			$Ajax->activate('Location');
 			$Ajax->activate('deliver_to');
 			$Ajax->activate('name');
@@ -75,9 +74,7 @@
 		}
 		if ($order->trans_no == 0) {
 			ref_row(_("Reference") . ':', 'ref');
-		}
-		else
-		{
+		} else {
 			label_row(_("Reference") . ':', $order->reference);
 		}
 		if (!Banking::is_company_currency($order->customer_currency)) {
@@ -124,9 +121,7 @@
 				_("Dimension") . ":", 'dimension_id',
 				null, true, ' ', false, 1, false
 			);
-		}
-		else
-		{
+		} else {
 			hidden('dimension_id', 0);
 		}
 		if ($dim > 1) {
@@ -134,9 +129,7 @@
 				_("Dimension") . " 2:", 'dimension2_id',
 				null, true, ' ', false, 2, false
 			);
-		}
-		else
-		{
+		} else {
 			hidden('dimension2_id', 0);
 		}
 		end_outer_table(1); // outer table
@@ -144,7 +137,7 @@
 			foreach (
 				$order->line_items as $line_no => $item
 			) {
-				$line        = &$order->line_items[$line_no];
+				$line = &$order->line_items[$line_no];
 				$line->price = get_price(
 					$line->stock_id, $order->customer_currency,
 					$order->sales_type, $order->price_factor, get_post('OrderDate')
@@ -157,8 +150,7 @@
 	}
 
 	//---------------------------------------------------------------------------------
-	function display_credit_items($title, &$order)
-	{
+	function display_credit_items($title, &$order) {
 		ui_msgs::display_heading($title);
 		div_start('items_table');
 		start_table(Config::get('tables_style') . "  width=90%");
@@ -171,7 +163,7 @@
 		}
 		table_header($th);
 		$subtotal = 0;
-		$k        = 0; //row colour counter
+		$k = 0; //row colour counter
 		$id = find_submit('Edit');
 		foreach (
 			$order->line_items as $line_no => $line
@@ -209,7 +201,7 @@
 		if ($id == -1) {
 			credit_edit_item_controls($order, $k);
 		}
-		$colspan           = 6;
+		$colspan = 6;
 		$display_sub_total = price_format($subtotal);
 		label_row(_("Sub-total"), $display_sub_total, "colspan=$colspan align=right", "align=right", 2);
 		if (!isset($_POST['ChargeFreightCost']) OR ($_POST['ChargeFreightCost'] == "")) {
@@ -229,24 +221,21 @@
 	}
 
 	//---------------------------------------------------------------------------------
-	function credit_edit_item_controls(&$order, $rowcounter, $line_no = -1)
-	{
+	function credit_edit_item_controls(&$order, $rowcounter, $line_no = -1) {
 		$Ajax = Ajax::instance();
 		alt_table_row_color($rowcounter);
 		$id = find_submit('Edit');
 		if ($line_no != -1 && $line_no == $id) {
 			$_POST['stock_id'] = $order->line_items[$id]->stock_id;
-			$_POST['qty']      = qty_format($order->line_items[$id]->qty_dispatched, $_POST['stock_id'], $dec);
-			$_POST['price']    = price_format($order->line_items[$id]->price);
-			$_POST['Disc']     = percent_format(($order->line_items[$id]->discount_percent) * 100);
-			$_POST['units']    = $order->line_items[$id]->units;
+			$_POST['qty'] = qty_format($order->line_items[$id]->qty_dispatched, $_POST['stock_id'], $dec);
+			$_POST['price'] = price_format($order->line_items[$id]->price);
+			$_POST['Disc'] = percent_format(($order->line_items[$id]->discount_percent) * 100);
+			$_POST['units'] = $order->line_items[$id]->units;
 			hidden('stock_id', $_POST['stock_id']);
 			label_cell($_POST['stock_id']);
 			label_cell($order->line_items[$id]->description, "nowrap");
 			$Ajax->activate('items_table');
-		}
-		else
-		{
+		} else {
 			sales_items_list_cells(null, 'stock_id', null, false, false, array('description' => ''));
 			if (list_updated('stock_id')) {
 				$Ajax->activate('price');
@@ -255,8 +244,8 @@
 				$Ajax->activate('line_total');
 			}
 			$item_info = get_item_edit_info(Input::post('stock_id'));
-			$dec            = $item_info['decimals'];
-			$_POST['qty']   = number_format2(0, $dec);
+			$dec = $item_info['decimals'];
+			$_POST['qty'] = number_format2(0, $dec);
 			$_POST['units'] = $item_info["units"];
 			$_POST['price'] = price_format(
 				get_price(
@@ -283,9 +272,7 @@
 			);
 			hidden('line_no', $line_no);
 			JS::set_focus('qty');
-		}
-		else
-		{
+		} else {
 			submit_cells(
 				'AddItem', _("Add Item"), "colspan=2",
 				_('Add new item to document'), true
@@ -295,8 +282,7 @@
 	}
 
 	//---------------------------------------------------------------------------------
-	function credit_options_controls($credit)
-	{
+	function credit_options_controls($credit) {
 		$Ajax = Ajax::instance();
 		echo "<br>";
 		if (isset($_POST['_CreditType_update'])) {
@@ -311,9 +297,7 @@
 				$_POST['Location'] = $credit->Location;
 			}
 			locations_list_row(_("Items Returned to Location"), 'Location', $_POST['Location']);
-		}
-		else
-		{
+		} else {
 			/* the goods are to be written off to somewhere */
 			gl_all_accounts_list_row(_("Write off the cost of the items to"), 'WriteOffGLCode', null);
 		}

@@ -14,11 +14,10 @@
 	Page::start(_($help_context = "Quick Entries"));
 	simple_page_mode(true);
 	simple_page_mode2(true);
-	function simple_page_mode2($numeric_id = true)
-	{
+	function simple_page_mode2($numeric_id = true) {
 		global $Mode2, $selected_id2;
 		$Ajax = Ajax::instance();
-		$default      = $numeric_id ? -1 : '';
+		$default = $numeric_id ? -1 : '';
 		$selected_id2 = get_post('selected_id2', $default);
 		foreach (
 			array('ADD_ITEM2', 'UPDATE_ITEM2', 'RESET2') as $m
@@ -51,8 +50,7 @@
 		$Mode2 = '';
 	}
 
-	function submit_add_or_update_center2($add = true, $title = false, $async = false)
-	{
+	function submit_add_or_update_center2($add = true, $title = false, $async = false) {
 		echo "<center>";
 		if ($add) {
 			submit('ADD_ITEM2', _("Add new"), true, $title, $async);
@@ -65,8 +63,7 @@
 	}
 
 	//-----------------------------------------------------------------------------------
-	function can_process()
-	{
+	function can_process() {
 		if (strlen($_POST['description']) == 0) {
 			ui_msgs::display_error(_("The Quick Entry description cannot be empty."));
 			JS::set_focus('description');
@@ -108,9 +105,7 @@
 				$_POST['dimension_id'], $_POST['dimension2_id']
 			);
 			ui_msgs::display_notification(_('Selected quick entry line has been updated'));
-		}
-		else
-		{
+		} else {
 			add_quick_entry_line(
 				$selected_id, $_POST['actn'], $_POST['dest_id'], input_num('amount', 0),
 				$_POST['dimension_id'], $_POST['dimension2_id']
@@ -125,9 +120,7 @@
 			delete_quick_entry($selected_id);
 			ui_msgs::display_notification(_('Selected quick entry has been deleted'));
 			$Mode = 'RESET';
-		}
-		else
-		{
+		} else {
 			ui_msgs::display_error(_("The Quick Entry has Quick Entry Lines. Cannot be deleted."));
 			JS::set_focus('description');
 		}
@@ -139,13 +132,13 @@
 	}
 	//-----------------------------------------------------------------------------------
 	if ($Mode == 'RESET') {
-		$selected_id          = -1;
+		$selected_id = -1;
 		$_POST['description'] = $_POST['type'] = '';
-		$_POST['base_desc']   = _('Base Amount');
+		$_POST['base_desc'] = _('Base Amount');
 		$_POST['base_amount'] = price_format(0);
 	}
 	if ($Mode2 == 'RESET2') {
-		$selected_id2  = -1;
+		$selected_id2 = -1;
 		$_POST['actn'] = $_POST['dest_id'] = $_POST['amount']
 		 = $_POST['dimension_id'] = $_POST['dimension2_id'] = '';
 	}
@@ -176,10 +169,10 @@
 		//{
 		//editing an existing status code
 		$myrow = get_quick_entry($selected_id);
-		$_POST['id']          = $myrow["id"];
+		$_POST['id'] = $myrow["id"];
 		$_POST['description'] = $myrow["description"];
-		$_POST['type']        = $myrow["type"];
-		$_POST['base_desc']   = $myrow["base_desc"];
+		$_POST['type'] = $myrow["type"];
+		$_POST['base_desc'] = $myrow["base_desc"];
 		$_POST['base_amount'] = price_format($myrow["base_amount"]);
 		hidden('selected_id', $selected_id);
 		//}
@@ -202,9 +195,7 @@
 		}
 		else if ($dim == 1) {
 			$th = array(_("Post"), _("Account/Tax Type"), _("Amount"), _("Dimension"), "", "");
-		}
-		else
-		{
+		} else {
 			$th = array(_("Post"), _("Account/Tax Type"), _("Amount"), "", "");
 		}
 		table_header($th);
@@ -255,11 +246,11 @@
 			if ($Mode2 == 'BEd') {
 				//editing an existing status code
 				$myrow = get_quick_entry_line($selected_id2);
-				$_POST['id']            = $myrow["id"];
-				$_POST['dest_id']       = $myrow["dest_id"];
-				$_POST['actn']          = $myrow["action"];
-				$_POST['amount']        = $myrow["amount"];
-				$_POST['dimension_id']  = $myrow["dimension_id"];
+				$_POST['id'] = $myrow["id"];
+				$_POST['dest_id'] = $myrow["dest_id"];
+				$_POST['actn'] = $myrow["action"];
+				$_POST['amount'] = $myrow["amount"];
+				$_POST['dimension_id'] = $myrow["dimension_id"];
 				$_POST['dimension2_id'] = $myrow["dimension2_id"];
 			}
 		}
@@ -271,12 +262,10 @@
 		if ($actn == 't') {
 			//item_tax_types_list_row(_("Item Tax Type").":",'dest_id', null);
 			tax_types_list_row(_("Tax Type") . ":", 'dest_id', null);
-		}
-		else
-		{
+		} else {
 			gl_all_accounts_list_row(
 				_("Account") . ":", 'dest_id', null,
-				$_POST['type'] == QE_DEPOSIT || $_POST['type'] == QE_PAYMENT
+			 $_POST['type'] == QE_DEPOSIT || $_POST['type'] == QE_PAYMENT
 			);
 			if ($actn != '=') {
 				if ($actn == '%') {

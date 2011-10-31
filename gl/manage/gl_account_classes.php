@@ -14,8 +14,7 @@
 	Page::start(_($help_context = "GL Account Classes"));
 	simple_page_mode(true);
 	//-----------------------------------------------------------------------------------
-	function can_process()
-	{
+	function can_process() {
 		if (!is_numeric($_POST['id'])) {
 			ui_msgs::display_error(_("The account class ID must be numeric."));
 			JS::set_focus('id');
@@ -50,16 +49,15 @@
 		}
 	}
 	//-----------------------------------------------------------------------------------
-	function can_delete($selected_id)
-	{
+	function can_delete($selected_id) {
 		if ($selected_id == -1) {
 			return false;
 		}
 		$sql
-						= "SELECT COUNT(*) FROM chart_types
+		 = "SELECT COUNT(*) FROM chart_types
 		WHERE class_id=$selected_id";
 		$result = DBOld::query($sql, "could not query chart master");
-		$myrow  = DBOld::fetch_row($result);
+		$myrow = DBOld::fetch_row($result);
 		if ($myrow[0] > 0) {
 			ui_msgs::display_error(_("Cannot delete this account class because GL account types have been created referring to it."));
 			return false;
@@ -99,9 +97,7 @@
 		if (Config::get('accounts_gl_oldconvertstyle') == 1) {
 			$myrow['ctype'] = ($myrow["ctype"] >= CL_ASSETS && $myrow["ctype"] < CL_INCOME ? 1 : 0);
 			label_cell(($myrow['ctype'] == 1 ? _("Yes") : _("No")));
-		}
-		else
-		{
+		} else {
 			label_cell($class_types[$myrow["ctype"]]);
 		}
 		inactive_control_cell($myrow["cid"], $myrow["inactive"], 'chart_class', 'cid');
@@ -117,7 +113,7 @@
 		if ($Mode == 'Edit') {
 			//editing an existing status code
 			$myrow = get_account_class($selected_id);
-			$_POST['id']   = $myrow["cid"];
+			$_POST['id'] = $myrow["cid"];
 			$_POST['name'] = $myrow["class_name"];
 			if (Config::get('accounts_gl_oldconvertstyle') == 1) {
 				$_POST['ctype'] = ($myrow["ctype"] >= CL_ASSETS && $myrow["ctype"] < CL_INCOME ? 1 : 0);

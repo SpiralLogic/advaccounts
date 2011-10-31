@@ -116,9 +116,7 @@
 		if ($myrow[0] > 0) {
 			$cancel_delete = 1;
 			ui_msgs::display_error(_("Cannot delete this supplier because there are transactions that refer to this supplier."));
-		}
-		else
-		{
+		} else {
 			$sql = "SELECT COUNT(*) FROM purch_orders WHERE supplier_id=" . DBOld::escape($_POST['supplier_id']);
 			$result = DBOld::query($sql, "check failed");
 			$myrow = DBOld::fetch_row($result);

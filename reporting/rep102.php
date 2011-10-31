@@ -19,18 +19,17 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	//----------------------------------------------------------------------------------------------------
 	print_aged_customer_analysis();
-	function get_invoices($customer_id, $to)
-	{
-		$todate       = Dates::date2sql($to);
+	function get_invoices($customer_id, $to) {
+		$todate = Dates::date2sql($to);
 		$PastDueDays1 = DB_Company::get_pref('past_due_days');
 		$PastDueDays2 = 2 * $PastDueDays1;
 		// Revomed allocated from sql
 		$value = "(debtor_trans.ov_amount + debtor_trans.ov_gst + "
 		 . "debtor_trans.ov_freight + debtor_trans.ov_freight_tax + "
 		 . "debtor_trans.ov_discount)";
-		$due   = "IF (debtor_trans.type=" . ST_SALESINVOICE . ",debtor_trans.due_date,debtor_trans.tran_date)";
+		$due = "IF (debtor_trans.type=" . ST_SALESINVOICE . ",debtor_trans.due_date,debtor_trans.tran_date)";
 		$sql
-					 = "SELECT debtor_trans.type, debtor_trans.reference,
+		 = "SELECT debtor_trans.type, debtor_trans.reference,
 		debtor_trans.tran_date,
 		$value as Balance,
 		IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= 0,$value,0) AS Due,
@@ -52,22 +51,19 @@
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	function print_aged_customer_analysis()
-	{
+	function print_aged_customer_analysis() {
 		global $systypes_array;
-		$to          = $_POST['PARAM_0'];
-		$fromcust    = $_POST['PARAM_1'];
-		$currency    = $_POST['PARAM_2'];
+		$to = $_POST['PARAM_0'];
+		$fromcust = $_POST['PARAM_1'];
+		$currency = $_POST['PARAM_2'];
 		$summaryOnly = $_POST['PARAM_3'];
-		$no_zeros    = $_POST['PARAM_4'];
-		$graphics    = $_POST['PARAM_5'];
-		$comments    = $_POST['PARAM_6'];
+		$no_zeros = $_POST['PARAM_4'];
+		$graphics = $_POST['PARAM_5'];
+		$comments = $_POST['PARAM_6'];
 		$destination = $_POST['PARAM_7'];
 		if ($destination) {
 			include_once(APP_PATH . "reporting/includes/excel_report.php");
-		}
-		else
-		{
+		} else {
 			include_once(APP_PATH . "reporting/includes/pdf_report.php");
 		}
 		if ($graphics) {
@@ -76,25 +72,19 @@
 		}
 		if ($fromcust == ALL_NUMERIC) {
 			$from = _('All');
-		}
-		else
-		{
+		} else {
 			$from = get_customer_name($fromcust);
 		}
 		$dec = user_price_dec();
 		if ($summaryOnly == 1) {
 			$summary = _('Summary Only');
-		}
-		else
-		{
+		} else {
 			$summary = _('Detailed Report');
 		}
 		if ($currency == ALL_TEXT) {
-			$convert  = true;
+			$convert = true;
 			$currency = _('Balances in Home Currency');
-		}
-		else
-		{
+		} else {
 			$convert = false;
 		}
 		if ($no_zeros) {
@@ -105,10 +95,10 @@
 		}
 		$PastDueDays1 = DB_Company::get_pref('past_due_days');
 		$PastDueDays2 = 2 * $PastDueDays1;
-		$nowdue       = "1-" . $PastDueDays1 . " " . _('Days');
-		$pastdue1     = $PastDueDays1 + 1 . "-" . $PastDueDays2 . " " . _('Days');
-		$pastdue2     = _('Over') . " " . $PastDueDays2 . " " . _('Days');
-		$cols    = array(0, 100, 130, 190, 250, 320, 385, 450, 515);
+		$nowdue = "1-" . $PastDueDays1 . " " . _('Days');
+		$pastdue1 = $PastDueDays1 + 1 . "-" . $PastDueDays2 . " " . _('Days');
+		$pastdue2 = _('Over') . " " . $PastDueDays2 . " " . _('Days');
+		$cols = array(0, 100, 130, 190, 250, 320, 385, 450, 515);
 		$headers = array(
 			_('Customer'), '', '', _('Current'), $nowdue, $pastdue1, $pastdue2,
 			_('Total Balance')
@@ -119,27 +109,27 @@
 			1 => array(
 				'text' => _('End Date'),
 				'from' => $to,
-				'to'	 => ''
+				'to' => ''
 			),
 			2 => array(
 				'text' => _('Customer'),
 				'from' => $from,
-				'to'	 => ''
+				'to' => ''
 			),
 			3 => array(
 				'text' => _('Currency'),
 				'from' => $currency,
-				'to'	 => ''
+				'to' => ''
 			),
 			4 => array(
 				'text' => _('Type'),
 				'from' => $summary,
-				'to'	 => ''
+				'to' => ''
 			),
 			5 => array(
 				'text' => _('Suppress Zeros'),
 				'from' => $nozeros,
-				'to'	 => ''
+				'to' => ''
 			)
 		);
 		if ($convert) {
@@ -265,17 +255,17 @@
 		}
 		$rep->Line($rep->row - 8);
 		if ($graphics) {
-			$pg->x              = array(_('Current'), $nowdue, $pastdue1, $pastdue2);
-			$pg->title          = $rep->title;
-			$pg->axis_x         = _("Days");
-			$pg->axis_y         = _("Amount");
-			$pg->graphic_1      = $to;
-			$pg->type           = $graphics;
-			$pg->skin           = Config::get('graphs_skin');
-			$pg->built_in       = false;
-			$pg->fontfile       = APP_PATH . "reporting/fonts/Vera.ttf";
+			$pg->x = array(_('Current'), $nowdue, $pastdue1, $pastdue2);
+			$pg->title = $rep->title;
+			$pg->axis_x = _("Days");
+			$pg->axis_y = _("Amount");
+			$pg->graphic_1 = $to;
+			$pg->type = $graphics;
+			$pg->skin = Config::get('graphs_skin');
+			$pg->built_in = false;
+			$pg->fontfile = APP_PATH . "reporting/fonts/Vera.ttf";
 			$pg->latin_notation = (Config::get('separators_decimal', CurrentUser::instance()->prefs->dec_sep()) != ".");
-			$filename           = COMPANY_PATH . "/images/test.png";
+			$filename = COMPANY_PATH . "/images/test.png";
 			$pg->display($filename, true);
 			$w = $pg->width / 1.5;
 			$h = $pg->height / 1.5;

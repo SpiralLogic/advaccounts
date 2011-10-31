@@ -10,8 +10,7 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	//--------------------------------------------------------------------------------
-	function display_order_header(&$Order)
-	{
+	function display_order_header(&$Order) {
 		$Ajax = Ajax::instance();
 		$qes = has_quick_entries(QE_JOURNAL);
 		$new = $Order->order_id == 0;
@@ -48,8 +47,7 @@
 	}
 
 	//---------------------------------------------------------------------------------
-	function display_gl_items($title, &$order)
-	{
+	function display_gl_items($title, &$order) {
 		ui_msgs::display_heading($title);
 		$dim = DB_Company::get_pref('use_dimension');
 		div_start('items_table');
@@ -65,9 +63,7 @@
 				_("Account Code"), _("Account Description"), _("Dimension"),
 				_("Debit"), _("Credit"), _("Memo"), ""
 			);
-		}
-		else
-		{
+		} else {
 			$th = array(
 				_("Account Code"), _("Account Description"),
 				_("Debit"), _("Credit"), _("Memo"), ""
@@ -134,28 +130,27 @@
 	}
 
 	//---------------------------------------------------------------------------------
-	function gl_edit_item_controls(&$order, $dim, $Index = null)
-	{
+	function gl_edit_item_controls(&$order, $dim, $Index = null) {
 		$Ajax = Ajax::instance();
 		start_row();
 		$id = find_submit('Edit');
 		if ($Index != -1 && $Index == $id) {
 			// Modifying an existing row
-			$item                   = $order->gl_items[$Index];
-			$_POST['code_id']       = $item->code_id;
-			$_POST['dimension_id']  = $item->dimension_id;
+			$item = $order->gl_items[$Index];
+			$_POST['code_id'] = $item->code_id;
+			$_POST['dimension_id'] = $item->dimension_id;
 			$_POST['dimension2_id'] = $item->dimension2_id;
 			if ($item->amount > 0) {
-				$_POST['AmountDebit']  = price_format($item->amount);
+				$_POST['AmountDebit'] = price_format($item->amount);
 				$_POST['AmountCredit'] = "";
 			}
 			else
 			{
-				$_POST['AmountDebit']  = "";
+				$_POST['AmountDebit'] = "";
 				$_POST['AmountCredit'] = price_format(abs($item->amount));
 			}
 			$_POST['description'] = $item->description;
-			$_POST['LineMemo']    = $item->reference;
+			$_POST['LineMemo'] = $item->reference;
 			hidden('Index', $id);
 			$skip_bank = !CurrentUser::instance()->can_access('SA_BANKJOURNAL');
 			echo gl_all_accounts_list('code_id', null, $skip_bank, true);
@@ -166,17 +161,15 @@
 				dimensions_list_cells(null, 'dimension2_id', null, true, " ", false, 2);
 			}
 			$Ajax->activate('items_table');
-		}
-		else
-		{
+		} else {
 			// Adding a new row
 			$_POST['AmountDebit'] = ''; //price_format(0);
 			$_POST['AmountCredit'] = ''; //price_format(0);
-			$_POST['dimension_id']  = 0;
+			$_POST['dimension_id'] = 0;
 			$_POST['dimension2_id'] = 0;
 			//$_POST['LineMemo'] = ""; // let memo go to next line Joe Hunt 2010-05-30
 			$_POST['_code_id_edit'] = "";
-			$_POST['code_id']       = "";
+			$_POST['code_id'] = "";
 			if (isset($_POST['_code_id_update'])) {
 				$Ajax->activate('code_id');
 			}
@@ -208,9 +201,7 @@
 				_('Cancel changes'), ICON_CANCEL
 			);
 			JS::set_focus('amount');
-		}
-		else
-		{
+		} else {
 			submit_cells(
 				'AddItem', _("Add Item"), "colspan=2",
 				_('Add new line to journal'), true
@@ -220,8 +211,7 @@
 	}
 
 	//---------------------------------------------------------------------------------
-	function gl_options_controls()
-	{
+	function gl_options_controls() {
 		echo "<br><table align='center'>";
 		textarea_row(_("Memo"), 'memo_', null, 50, 3);
 		echo "</table>";

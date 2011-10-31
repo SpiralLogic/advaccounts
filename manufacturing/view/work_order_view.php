@@ -51,9 +51,7 @@
 			ui_msgs::display_heading2(_("Additional Costs"));
 			display_wo_payments($woid);
 			echo "</td></tr></table>";
-		}
-		else
-		{
+		} else {
 			echo "<br><table cellspacing=7><tr valign=top><td>";
 			ui_msgs::display_heading2(_("Additional Costs"));
 			display_wo_payments($woid);

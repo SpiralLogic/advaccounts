@@ -24,7 +24,7 @@
 		if ($input_error != 1) {
 			if ($selected_id != -1) {
 				$sql
-							= "UPDATE recurrent_invoices SET
+				 = "UPDATE recurrent_invoices SET
     			description=" . DBOld::escape($_POST['description']) . ",
     			order_no=" . DBOld::escape($_POST['order_no']) . ",
     			debtor_no=" . DBOld::escape($_POST['debtor_no']) . ",
@@ -39,7 +39,7 @@
 			else
 			{
 				$sql
-							= "INSERT INTO recurrent_invoices (description, order_no, debtor_no,
+				 = "INSERT INTO recurrent_invoices (description, order_no, debtor_no,
     			group_no, days, monthly, begin, end, last_sent) VALUES (" . DBOld::escape($_POST['description']) . ", "
 				 . DBOld::escape($_POST['order_no']) . ", " . DBOld::escape($_POST['debtor_no']) . ", "
 				 . DBOld::escape(
@@ -71,15 +71,14 @@
 		unset($_POST);
 	}
 	//-------------------------------------------------------------------------------------------------
-	function get_sales_group_name($group_no)
-	{
-		$sql    = "SELECT description FROM groups WHERE id = " . DBOld::escape($group_no);
+	function get_sales_group_name($group_no) {
+		$sql = "SELECT description FROM groups WHERE id = " . DBOld::escape($group_no);
 		$result = DBOld::query($sql, "could not get group");
-		$row    = DBOld::fetch($result);
+		$row = DBOld::fetch($result);
 		return $row[0];
 	}
 
-	$sql    = "SELECT * FROM recurrent_invoices ORDER BY description, group_no, debtor_no";
+	$sql = "SELECT * FROM recurrent_invoices ORDER BY description, group_no, debtor_no";
 	$result = DBOld::query($sql, "could not get recurrent invoices");
 	start_form();
 	start_table(Config::get('tables_style') . "  width=70%");
@@ -91,8 +90,8 @@
 	$k = 0;
 	while ($myrow = DBOld::fetch($result))
 	{
-		$begin     = Dates::sql2date($myrow["begin"]);
-		$end       = Dates::sql2date($myrow["end"]);
+		$begin = Dates::sql2date($myrow["begin"]);
+		$end = Dates::sql2date($myrow["end"]);
 		$last_sent = Dates::sql2date($myrow["last_sent"]);
 		alt_table_row_color($k);
 		label_cell($myrow["description"]);
@@ -100,9 +99,7 @@
 		if ($myrow["debtor_no"] == 0) {
 			label_cell("");
 			label_cell(get_sales_group_name($myrow["group_no"]));
-		}
-		else
-		{
+		} else {
 			label_cell(get_customer_name($myrow["debtor_no"]));
 			label_cell(get_branch_name($myrow['group_no']));
 		}
@@ -126,15 +123,15 @@
 			//editing an existing area
 			$sql = "SELECT * FROM recurrent_invoices WHERE id=" . DBOld::escape($selected_id);
 			$result = DBOld::query($sql, "could not get recurrent invoice");
-			$myrow  = DBOld::fetch($result);
+			$myrow = DBOld::fetch($result);
 			$_POST['description'] = $myrow["description"];
-			$_POST['order_no']    = $myrow["order_no"];
-			$_POST['debtor_no']   = $myrow["debtor_no"];
-			$_POST['group_no']    = $myrow["group_no"];
-			$_POST['days']        = $myrow["days"];
-			$_POST['monthly']     = $myrow["monthly"];
-			$_POST['begin']       = Dates::sql2date($myrow["begin"]);
-			$_POST['end']         = Dates::sql2date($myrow["end"]);
+			$_POST['order_no'] = $myrow["order_no"];
+			$_POST['debtor_no'] = $myrow["debtor_no"];
+			$_POST['group_no'] = $myrow["group_no"];
+			$_POST['days'] = $myrow["days"];
+			$_POST['monthly'] = $myrow["monthly"];
+			$_POST['begin'] = Dates::sql2date($myrow["begin"]);
+			$_POST['end'] = Dates::sql2date($myrow["end"]);
 		}
 		hidden("selected_id", $selected_id);
 	}

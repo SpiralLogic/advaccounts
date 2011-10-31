@@ -7,7 +7,7 @@
  */
 ;
 (function(window, $, undefined) {
-	var $current, Searchboxtimeout, menuTimeout, inAnminate, Adv = window.Adv, sidemenu = {}, searchInput = $('<input/>')
+	var $current, Searchboxtimeout, menuTimeout, Adv = window.Adv, sidemenu = {}, searchInput = $('<input/>')
 	 .attr({type:'text', value:'', size:14, maxlength:18}).data({'id':'', url:''}), $search = $("#search"), $quickMenu = $('#quickCustomer');
 	(function() {
 		var $this = this, $wrapper = $("#_page_body"), $results = $wrapper.clone();
@@ -64,19 +64,21 @@
 				$this.sidemenuOn();
 			}
 		});
-		$quickMenu.autocomplete({
-															source:   function(request, response) {
-																Adv.lastXhr = $.getJSON('/contacts/customers.php', request, function(data, status, xhr) {
-																	if (xhr === Adv.lastXhr) {
-																		response(data);
-																	}
-																})
-															},
-															minLength:2,
-															select:   function(event, ui) {
-																window.location.href = '/contacts/customers.php?id=' + ui.item.id;
-															}
-														});
+		$quickMenu.focus(
+		 function() { $this.sidemenuOff()}).blur(
+		 function() {searchInput.trigger('blur')}).autocomplete({
+																															source:function(request, response) {
+																																Adv.lastXhr = $.getJSON('/contacts/customers.php', request, function(data, status, xhr) {
+																																	if (xhr === Adv.lastXhr) {
+																																		response(data);
+																																	}
+																																})
+																															},
+																															minLength:2,
+																															select:function(event, ui) {
+																																window.location.href = '/contacts/customers.php?id=' + ui.item.id;
+																															}
+																														});
 	}).apply(sidemenu);
 	Adv.sidemenu = sidemenu;
 })(window, jQuery);

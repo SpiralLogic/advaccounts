@@ -79,9 +79,7 @@
 		// if search is not empty rewrite table
 		if ($disable) {
 			$Ajax->addFocus(true, 'DeliveryNumber');
-		}
-		else
-		{
+		} else {
 			$Ajax->addFocus(true, 'DeliveryAfterDate');
 		}
 		$Ajax->activate('deliveries_tbl');
@@ -110,13 +108,11 @@
 		unset($selected_stock_item);
 	}
 	//---------------------------------------------------------------------------------------------
-	function trans_view($trans, $trans_no)
-	{
+	function trans_view($trans, $trans_no) {
 		return ui_view::get_customer_trans_view_str(ST_CUSTDELIVERY, $trans['trans_no']);
 	}
 
-	function batch_checkbox($row)
-	{
+	function batch_checkbox($row) {
 		$name = "Sel_" . $row['trans_no'];
 		return $row['Done']
 		 ? ''
@@ -127,8 +123,7 @@
 			. $row['branch_code'] . "'>\n";
 	}
 
-	function edit_link($row)
-	{
+	function edit_link($row) {
 		return $row["Outstanding"] == 0
 		 ? ''
 		 :
@@ -138,13 +133,11 @@
 		 );
 	}
 
-	function prt_link($row)
-	{
+	function prt_link($row) {
 		return Reporting::print_doc_link($row['trans_no'], _("Print"), true, ST_CUSTDELIVERY, ICON_PRINT);
 	}
 
-	function invoice_link($row)
-	{
+	function invoice_link($row) {
 		return $row["Outstanding"] == 0
 		 ? ''
 		 :
@@ -154,8 +147,7 @@
 		 );
 	}
 
-	function check_overdue($row)
-	{
+	function check_overdue($row) {
 		return Dates::date1_greater_date2(Dates::Today(), Dates::sql2date($row["due_date"]))
 		 && $row["Outstanding"] != 0;
 	}
@@ -210,40 +202,40 @@
 		$sql .= " GROUP BY trans.trans_no ";
 	} //end no delivery number selected
 	$cols = array(
-		_("Delivery #")		 => array('fun' => 'trans_view'),
+		_("Delivery #") => array('fun' => 'trans_view'),
 		_("Customer"),
-		_("branch_code")		=> 'skip',
+		_("branch_code") => 'skip',
 		_("Contact"),
 		_("Address"),
 		_("Reference"),
 		_("Cust Ref"),
-		_("Delivery Date")	=> array(
+		_("Delivery Date") => array(
 			'type' => 'date',
-			'ord'	=> ''
+			'ord' => ''
 		),
-		_("Due By")				 => array('type' => 'date'),
+		_("Due By") => array('type' => 'date'),
 		_("Delivery Total") => array(
 			'type' => 'amount',
-			'ord'	=> ''
+			'ord' => ''
 		),
-		_("Currency")			 => array('align' => 'center'),
+		_("Currency") => array('align' => 'center'),
 		submit('BatchInvoice', _("Batch"), false, _("Batch Invoicing"))
-												=> array(
+		=> array(
 			'insert' => true,
-			'fun'		=> 'batch_checkbox',
-			'align'	=> 'center'
+			'fun' => 'batch_checkbox',
+			'align' => 'center'
 		),
 		array(
 			'insert' => true,
-			'fun'		=> 'edit_link'
+			'fun' => 'edit_link'
 		),
 		array(
 			'insert' => true,
-			'fun'		=> 'invoice_link'
+			'fun' => 'invoice_link'
 		),
 		array(
 			'insert' => true,
-			'fun'		=> 'prt_link'
+			'fun' => 'prt_link'
 		)
 	);
 	//-----------------------------------------------------------------------------------

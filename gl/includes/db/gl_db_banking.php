@@ -176,9 +176,7 @@
 
 			$trans_no = add_supp_trans($trans_type, $person_id, $date_, '',
 				$ref, "", $supp_amount, 0, 0);
-		}
-		else
-		{
+		} else {
 			$trans_no = SysTypes::get_next_trans_no($trans_type);
 			$do_exchange_variance = true;
 		}

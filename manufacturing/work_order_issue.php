@@ -23,28 +23,25 @@
 		ui_view::display_footer_exit();
 	}
 	//--------------------------------------------------------------------------------------------------
-	function line_start_focus()
-	{
+	function line_start_focus() {
 		$Ajax = Ajax::instance();
 		$Ajax->activate('items_table');
 		JS::set_focus('_stock_id_edit');
 	}
 
 	//--------------------------------------------------------------------------------------------------
-	function handle_new_order()
-	{
+	function handle_new_order() {
 		if (isset($_SESSION['issue_items'])) {
 			$_SESSION['issue_items']->clear_items();
 			unset ($_SESSION['issue_items']);
 		}
 		Session_register("issue_items");
-		$_SESSION['issue_items']           = new itemsCart(28);
+		$_SESSION['issue_items'] = new itemsCart(28);
 		$_SESSION['issue_items']->order_id = $_GET['trans_no'];
 	}
 
 	//-----------------------------------------------------------------------------------------------
-	function can_process()
-	{
+	function can_process() {
 		if (!Dates::is_date($_POST['date_'])) {
 			ui_msgs::display_error(_("The entered date for the issue is invalid."));
 			JS::set_focus('date_');
@@ -90,15 +87,12 @@
 				 . _("Component is :") . $failed_data[0] . "<br>"
 				 . _("From location :") . $failed_data[1] . "<br>"
 			);
-		}
-		else
-		{
+		} else {
 			meta_forward($_SERVER['PHP_SELF'], "AddedID=" . $_SESSION['issue_items']->order_id);
 		}
 	} /*end of process credit note */
 	//-----------------------------------------------------------------------------------------------
-	function check_item_data()
-	{
+	function check_item_data() {
 		if (!Validation::is_num('qty', 0)) {
 			ui_msgs::display_error(_("The quantity entered is negative or invalid."));
 			JS::set_focus('qty');
@@ -113,8 +107,7 @@
 	}
 
 	//-----------------------------------------------------------------------------------------------
-	function handle_update_item()
-	{
+	function handle_update_item() {
 		if ($_POST['UpdateItem'] != "" && check_item_data()) {
 			$id = $_POST['LineNo'];
 			$_SESSION['issue_items']->update_cart_item($id, input_num('qty'), input_num('std_cost'));
@@ -123,15 +116,13 @@
 	}
 
 	//-----------------------------------------------------------------------------------------------
-	function handle_delete_item($id)
-	{
+	function handle_delete_item($id) {
 		$_SESSION['issue_items']->remove_from_cart($id);
 		line_start_focus();
 	}
 
 	//-----------------------------------------------------------------------------------------------
-	function handle_new_item()
-	{
+	function handle_new_item() {
 		if (!check_item_data()) {
 			return;
 		}

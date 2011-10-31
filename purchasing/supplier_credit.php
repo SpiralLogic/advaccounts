@@ -35,14 +35,13 @@
 			unset ($_SESSION['supp_trans']->gl_codes);
 			unset ($_SESSION['supp_trans']);
 		}
-		$_SESSION['supp_trans']             = new suppTrans;
+		$_SESSION['supp_trans'] = new suppTrans;
 		$_SESSION['supp_trans']->is_invoice = false;
 		if (isset($_GET['invoice_no'])) {
 			$_SESSION['supp_trans']->supp_reference = $_POST['invoice_no'] = $_GET['invoice_no'];
 		}
 	}
-	function clear_fields()
-	{
+	function clear_fields() {
 		$Ajax = Ajax::instance();
 		unset($_POST['gl_code']);
 		unset($_POST['dimension_id']);
@@ -64,7 +63,7 @@
 	if (isset($_POST['AddGLCodeToTrans'])) {
 		$Ajax->activate('gl_items');
 		$input_error = false;
-		$sql    = "SELECT account_code, account_name FROM chart_master WHERE account_code=" . DBOld::escape(
+		$sql = "SELECT account_code, account_name FROM chart_master WHERE account_code=" . DBOld::escape(
 			$_POST['gl_code']
 		);
 		$result = DBOld::query($sql, "get account information");
@@ -72,10 +71,8 @@
 			ui_msgs::display_error(_("The account code entered is not a valid code, this line cannot be added to the transaction."));
 			JS::set_focus('gl_code');
 			$input_error = true;
-		}
-		else
-		{
-			$myrow       = DBOld::fetch_row($result);
+		} else {
+			$myrow = DBOld::fetch_row($result);
 			$gl_act_name = $myrow[1];
 			if (!Validation::is_num('amount')) {
 				ui_msgs::display_error(_("The amount entered is not numeric. This line cannot be added to the transaction."));
@@ -98,8 +95,7 @@
 		}
 	}
 	//---------------------------------------------------------------------------------------------------
-	function check_data()
-	{
+	function check_data() {
 		global $total_grn_value, $total_gl_value;
 		if (!$_SESSION['supp_trans']->is_valid_trans_to_post()) {
 			ui_msgs::display_error(_("The credit note cannot be processed because the there are no items or values on the invoice.  Credit notes are expected to have a charge."));
@@ -145,17 +141,14 @@
 	}
 
 	//---------------------------------------------------------------------------------------------------
-	function handle_commit_credit_note()
-	{
+	function handle_commit_credit_note() {
 		copy_to_trans($_SESSION['supp_trans']);
 		if (!check_data()) {
 			return;
 		}
 		if (isset($_POST['invoice_no'])) {
 			$invoice_no = add_supp_invoice($_SESSION['supp_trans'], $_POST['invoice_no']);
-		}
-		else
-		{
+		} else {
 			$invoice_no = add_supp_invoice($_SESSION['supp_trans']);
 		}
 		$_SESSION['supp_trans']->clear_items();
@@ -167,8 +160,7 @@
 	if (isset($_POST['PostCreditNote'])) {
 		handle_commit_credit_note();
 	}
-	function check_item_data($n)
-	{
+	function check_item_data($n) {
 		if (!Validation::is_num('This_QuantityCredited' . $n, 0)) {
 			ui_msgs::display_error(_("The quantity to credit must be numeric and greater than zero."));
 			JS::set_focus('This_QuantityCredited' . $n);
@@ -182,8 +174,7 @@
 		return true;
 	}
 
-	function commit_item_data($n)
-	{
+	function commit_item_data($n) {
 		if (check_item_data($n)) {
 			$complete = False;
 			$_SESSION['supp_trans']->add_grn_to_trans(

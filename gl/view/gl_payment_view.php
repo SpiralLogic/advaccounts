@@ -45,16 +45,16 @@
 	}
 	label_cells(
 		_("Amount"), number_format2(
-								 $from_trans['amount'], user_price_dec()
-							 ), "class='tableheader2'", "align=right"
+			$from_trans['amount'], user_price_dec()
+		), "class='tableheader2'", "align=right"
 	);
 	label_cells(_("Date"), Dates::sql2date($from_trans['trans_date']), "class='tableheader2'");
 	end_row();
 	start_row();
 	label_cells(
 		_("Pay To"), payment_person_name(
-								 $from_trans['person_type_id'], $from_trans['person_id']
-							 ), "class='tableheader2'", "colspan=$colspan1"
+			$from_trans['person_type_id'], $from_trans['person_id']
+		), "class='tableheader2'", "colspan=$colspan1"
 	);
 	label_cells(_("Payment Type"), $bank_transfer_types[$from_trans['account_type']], "class='tableheader2'");
 	end_row();
@@ -88,9 +88,7 @@
 				_("Account Code"), _("Account Description"), _("Dimension"),
 				_("Amount"), _("Memo")
 			);
-		}
-		else
-		{
+		} else {
 			$th = array(
 				_("Account Code"), _("Account Description"),
 				_("Amount"), _("Memo")

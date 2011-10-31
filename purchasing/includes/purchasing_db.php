@@ -45,9 +45,7 @@
 		if (DBOld::num_rows($result) == 1) {
 			$myrow = DBOld::fetch($result);
 			return $myrow["price"] / $myrow['conversion_factor'];
-		}
-		else
-		{
+		} else {
 			return 0;
 		}
 	}
@@ -61,9 +59,7 @@
 		if (DBOld::num_rows($result) == 1) {
 			$myrow = DBOld::fetch($result);
 			return $myrow['conversion_factor'];
-		}
-		else
-		{
+		} else {
 			return 1;
 		}
 	}

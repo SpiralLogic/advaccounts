@@ -31,7 +31,7 @@
 	echo "<br>";
 	echo "<hr></center>";
 	ui_globals::set_global_stock_item($_POST['stock_id']);
-	$mb_flag           = Manufacturing::get_mb_flag($_POST['stock_id']);
+	$mb_flag = Manufacturing::get_mb_flag($_POST['stock_id']);
 	$kitset_or_service = false;
 	div_start('status_tbl');
 	if (Input::post('mb_flag') == STOCK_SERVICE) {
@@ -52,8 +52,8 @@
 	}
 	table_header($th);
 	$dec = get_qty_dec($_POST['stock_id']);
-	$j   = 1;
-	$k   = 0; //row colour counter
+	$j = 1;
+	$k = 0; //row colour counter
 	while ($myrow = DBOld::fetch($loc_details))
 	{
 		alt_table_row_color($k);
@@ -70,9 +70,7 @@
 			qty_cell($qoh - $demand_qty, false, $dec);
 			qty_cell($qoo, false, $dec);
 			end_row();
-		}
-		else
-		{
+		} else {
 			/* It must be a service or kitset part */
 			label_cell($myrow["location_name"]);
 			qty_cell($demand_qty, false, $dec);

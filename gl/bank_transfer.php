@@ -16,7 +16,7 @@
 	Validation::check(Validation::BANK_ACCOUNTS, _("There are no bank accounts defined in the system."));
 	//----------------------------------------------------------------------------------------
 	if (isset($_GET['AddedID'])) {
-		$trans_no   = $_GET['AddedID'];
+		$trans_no = $_GET['AddedID'];
 		$trans_type = ST_BANKTRANSFER;
 		ui_msgs::display_notification_centered(_("Transfer has been entered"));
 		ui_msgs::display_note(ui_view::get_gl_view_str($trans_type, $trans_no, _("&View the GL Journal Entries for this Transfer")));
@@ -27,8 +27,7 @@
 		$Ajax->activate('_ex_rate');
 	}
 	//----------------------------------------------------------------------------------------
-	function gl_payment_controls()
-	{
+	function gl_payment_controls() {
 		$home_currency = Banking::get_company_currency();
 		start_form();
 		start_outer_table(Config::get('tables.style2'), 5);
@@ -37,14 +36,12 @@
 		bank_accounts_list_row(_("To Account:"), 'ToBankAccount', null, true);
 		date_row(_("Transfer Date:"), 'DatePaid', '', null, 0, 0, 0, null, true);
 		$from_currency = Banking::get_bank_account_currency($_POST['FromBankAccount']);
-		$to_currency   = Banking::get_bank_account_currency($_POST['ToBankAccount']);
+		$to_currency = Banking::get_bank_account_currency($_POST['ToBankAccount']);
 		if ($from_currency != "" && $to_currency != "" && $from_currency != $to_currency) {
 			amount_row(_("Amount:"), 'amount', null, null, $from_currency);
 			amount_row(_("Bank Charge:"), 'charge', null, null, $from_currency);
 			ui_view::exchange_rate_display($from_currency, $to_currency, $_POST['DatePaid']);
-		}
-		else
-		{
+		} else {
 			amount_row(_("Amount:"), 'amount');
 			amount_row(_("Bank Charge:"), 'charge');
 		}
@@ -57,8 +54,7 @@
 	}
 
 	//----------------------------------------------------------------------------------------
-	function check_valid_entries()
-	{
+	function check_valid_entries() {
 		if (!Dates::is_date($_POST['DatePaid'])) {
 			ui_msgs::display_error(_("The entered date is invalid ."));
 			JS::set_focus('DatePaid');
@@ -103,11 +99,10 @@
 	}
 
 	//----------------------------------------------------------------------------------------
-	function handle_add_deposit()
-	{
+	function handle_add_deposit() {
 		$trans_no = add_bank_transfer($_POST['FromBankAccount'], $_POST['ToBankAccount'],
-																	$_POST['DatePaid'], input_num('amount'), $_POST['ref'],
-																	$_POST['memo_'], input_num('charge'));
+			$_POST['DatePaid'], input_num('amount'), $_POST['ref'],
+			$_POST['memo_'], input_num('charge'));
 		meta_forward($_SERVER['PHP_SELF'], "AddedID = $trans_no");
 	}
 

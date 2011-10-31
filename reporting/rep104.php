@@ -20,8 +20,7 @@
 	include_once(APP_PATH . "sales/includes/db/sales_types_db.php");
 	//----------------------------------------------------------------------------------------------------
 	print_price_listing();
-	function fetch_items($category = 0)
-	{
+	function fetch_items($category = 0) {
 		$sql
 		 = "SELECT stock_master.stock_id, stock_master.description AS name,
 				stock_master.material_cost+stock_master.labour_cost+stock_master.overhead_cost AS Standardcost,
@@ -39,8 +38,7 @@
 		return DBOld::query($sql, "No transactions were returned");
 	}
 
-	function get_kits($category = 0)
-	{
+	function get_kits($category = 0) {
 		$sql
 		 = "SELECT i.item_code AS kit_code, i.description AS kit_name, c.category_id AS cat_id, c.description AS cat_name, count(*)>1 AS kit
 			FROM
@@ -57,20 +55,17 @@
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	function print_price_listing()
-	{
-		$currency    = $_POST['PARAM_0'];
-		$category    = $_POST['PARAM_1'];
-		$salestype   = $_POST['PARAM_2'];
-		$pictures    = $_POST['PARAM_3'];
-		$showGP      = $_POST['PARAM_4'];
-		$comments    = $_POST['PARAM_5'];
+	function print_price_listing() {
+		$currency = $_POST['PARAM_0'];
+		$category = $_POST['PARAM_1'];
+		$salestype = $_POST['PARAM_2'];
+		$pictures = $_POST['PARAM_3'];
+		$showGP = $_POST['PARAM_4'];
+		$comments = $_POST['PARAM_5'];
 		$destination = $_POST['PARAM_6'];
 		if ($destination) {
 			include_once(APP_PATH . "reporting/includes/excel_report.php");
-		}
-		else
-		{
+		} else {
 			include_once(APP_PATH . "reporting/includes/pdf_report.php");
 		}
 		$dec = user_price_dec();
@@ -78,7 +73,7 @@
 		if ($currency == ALL_TEXT) {
 			$currency = $home_curr;
 		}
-		$curr     = get_currency($currency);
+		$curr = get_currency($currency);
 		$curr_sel = $currency . " - " . $curr['currency'];
 		if ($category == ALL_NUMERIC) {
 			$category = 0;
@@ -88,23 +83,17 @@
 		}
 		if ($category == 0) {
 			$cat = _('All');
-		}
-		else
-		{
+		} else {
 			$cat = get_category_name($category);
 		}
 		if ($salestype == 0) {
 			$stype = _('All');
-		}
-		else
-		{
+		} else {
 			$stype = get_sales_type_name($salestype);
 		}
 		if ($showGP == 0) {
 			$GP = _('No');
-		}
-		else
-		{
+		} else {
 			$GP = _('Yes');
 		}
 		$cols = array(0, 100, 385, 450, 515);
@@ -115,22 +104,22 @@
 			1 => array(
 				'text' => _('Currency'),
 				'from' => $curr_sel,
-				'to'	 => ''
+				'to' => ''
 			),
 			2 => array(
 				'text' => _('Category'),
 				'from' => $cat,
-				'to'	 => ''
+				'to' => ''
 			),
 			3 => array(
 				'text' => _('Sales Type'),
 				'from' => $stype,
-				'to'	 => ''
+				'to' => ''
 			),
 			4 => array(
 				'text' => _('Show GP %'),
 				'from' => $GP,
-				'to'	 => ''
+				'to' => ''
 			)
 		);
 		$rep = new FrontReport(_('Price Listing'), "PriceListing", user_pagesize());
@@ -138,7 +127,7 @@
 		$rep->Info($params, $cols, $headers, $aligns);
 		$rep->Header();
 		$result = fetch_items($category);
-		$catgor                 = '';
+		$catgor = '';
 		$_POST['sales_type_id'] = $salestype;
 		while ($myrow = DBOld::fetch($result))
 		{
