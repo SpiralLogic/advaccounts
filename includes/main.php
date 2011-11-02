@@ -18,4 +18,3 @@
 	include_once(APP_PATH . "includes/ui/ui_lists.php");
 	include_once(APP_PATH . "includes/ui/ui_controls.php");
 	include_once(APP_PATH . "includes/ui/ui_input.php");
-	include_once(APP_PATH . "includes/session.php");

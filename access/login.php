@@ -24,20 +24,20 @@
 	$title         = $login_timeout ? _('Authorization timeout') : APP_TITLE . " " . VERSION . " - " . _("Login");
 	$encoding      = isset($_SESSION['language']->encoding) ? $_SESSION['language']->encoding : "utf-8";
 	$rtl           = isset($_SESSION['language']->dir) ? $_SESSION['language']->dir : "ltr";
-	$onload        = !$login_timeout ? "onload='defaultCompany()'" : "";
+
 	echo "<!DOCTYPE HTML>\n";
 	echo "<html dir='$rtl' >\n";
 	echo "<head><title>$title</title>\n";
 	echo "<meta http-equiv='Content-type' content='text/html; charset=$encoding' />\n";
 	echo "<link rel='apple-touch-icon' href='/company/images/advanced-icon.png'/>";
 	echo "<link href='/themes/$def_theme/default.css' rel='stylesheet' type='text/css'> \n";
-	$js = "function set_fullmode() {	document.getElementById('ui_mode').value = 1;document.loginform.submit();return true;};";
+	$js = "(function set_fullmode() {	document.getElementById('ui_mode').value = 1;document.loginform.submit();return true;})();";
 	if (!$login_timeout) {
-		$js .= "function defaultCompany(){document.forms[0].company_login_name.options[" . CurrentUser::instance()->company . "].selected = true;}" . ui_view::get_js_png_fix() . "</script>";
+		$js .= "(function defaultCompany(){document.forms[0].company_login_name.options[" . CurrentUser::instance()->company . "].selected = true;})()";
 	}
-	echo "<script>" . $js . "</script>";
+	JS::onLoad($js);
 	echo "</head>\n";
-	echo "<body id='loginscreen' $onload>\n";
+	echo "<body id='loginscreen' >\n";
 	echo "<table class='titletext'><tr><td>$title</td></tr></table>\n";
 	div_start('_page_body');
 	br(2);
@@ -46,7 +46,7 @@
 	start_row();
 	echo "<td align='center' colspan=2>";
 	if (!$login_timeout) { // FA logo
-		echo "<a target='_blank' href='" . POWERED_URL . "'><img src='/themes/$def_theme/images/logo_frontaccounting.png' alt='FrontAccounting' height='50' onload='fixPNG(this)' border='0' /></a>";
+		echo "<a target='_blank' href='" . POWERED_URL . "'><img src='/themes/$def_theme/images/logo_frontaccounting.png' alt='FrontAccounting' height='50' border='0' /></a>";
 	} else {
 		echo "<font size=5>" . _('Authorization timeout') . "</font><br>You were idle for: " . (CurrentUser::instance()->last_act + $_SESSION['wa_current_user']->timeout - time());
 	}

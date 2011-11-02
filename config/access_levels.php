@@ -239,7 +239,8 @@
  */
 	function add_access_extensions()
 	{
-		global $security_areas, $security_sections, $installed_extensions;
+		global $security_areas, $security_sections;
+		$installed_extensions = Config::get_all('installed_extensions');
 		foreach ($installed_extensions as $extid => $ext) {
 			$scode       = 100;
 			$acode       = 100;

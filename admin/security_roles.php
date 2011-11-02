@@ -11,7 +11,6 @@
 	 ***********************************************************************/
 	$page_security = 'SA_SECROLES';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	add_access_extensions();
 	Page::start(_($help_context = "Access setup"));
 	$new_role = get_post('role') == '' || get_post('cancel') || get_post('clone');
 	//--------------------------------------------------------------------------------------------------

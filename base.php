@@ -28,10 +28,13 @@
 	}
 	if (!function_exists('adv_error_handler')) {
 		function adv_error_handler() {
+
 			static $firsterror = 0;
+
 			$error = func_get_args();
+			if ($firsterror < 2)	FB::info($error[2].'['.$error[3].']: '.$error[1]);
 			if ($firsterror < 2 && !(E_USER_ERROR || E_USER_NOTICE || E_USER_WARNING)) {
-				FB::log(
+				FB::info(
 					array(
 						'Line' => $error[3],
 						'Message' => $error[1],

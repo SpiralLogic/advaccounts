@@ -16,9 +16,10 @@
 	 'access' - security area code in string form
  */
 
-	$next_extension_id = 4; // unique id for next installed extension
+	$GLOBALS['next_extension_id'] = 2; // unique id for next installed extension
 
-	$installed_extensions = array(
+
+	$GLOBALS['installed_extensions'] = array(
 
 		1 => array('tab' => 'system',
 			'name' => 'Advanced',
@@ -31,5 +32,5 @@
 			'access' => 'SA_ADVANCED',
 		),
 	);
-	return $installed_extensions;
+	return $GLOBALS['installed_extensions'];
 ?>

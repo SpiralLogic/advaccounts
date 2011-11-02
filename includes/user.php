@@ -8,18 +8,15 @@
 	 */
 	class User
 	{
-		public static function	add(
-			$user_id, $real_name, $password, $phone, $email, $role_id,
-			$language, $profile, $rep_popup, $pos
-		)
-		{
-			$sql = "INSERT INTO users (user_id, real_name, password"
-			 . ", phone, email, role_id, language, pos, print_profile, rep_popup)
+		public static function	add($user_id, $real_name, $password, $phone, $email, $role_id,
+			$language, $profile, $rep_popup, $pos) {
+			$sql = "INSERT INTO users (user_id, real_name, password,phone, email, role_id, language, pos, print_profile, rep_popup)
 				VALUES (" . DBOld::escape($user_id) . ",
 				" . DBOld::escape($real_name) . ", " . DBOld::escape($password) . "," . DBOld::escape($phone)
 			 . "," . DBOld::escape($email) . ", " . DBOld::escape($role_id) . ", " . DBOld::escape($language)
 			 . ", " . DBOld::escape($pos) . "," . DBOld::escape($profile) . "," . DBOld::escape($rep_popup)
 			 . " )";
+
 			DBOld::query($sql, "could not add user for $user_id");
 		}
 
