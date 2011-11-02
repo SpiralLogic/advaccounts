@@ -10,20 +10,9 @@
 				MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 				See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 			 * ********************************************************************* */
-include('application.php');
+	include('application.php');
 
-	$installed_extensions = Config::get_all('installed_extensions');
-	if (count($installed_extensions) > 0) {
-		foreach (
-			$installed_extensions as $ext
-		) {
-			if ($ext['type'] == 'module') {
-				include_once(APP_PATH . "" . $ext['path'] . "/" . $ext['filename']);
-			}
-		}
-	}
-	class frontaccounting
-	{
+	class frontaccounting {
 		var $user;
 		var $settings;
 		var $applications;
@@ -32,45 +21,59 @@ include('application.php');
 		var $menu;
 
 		//var $renderer;
-		function __construct()
-		{
-			//$this->renderer =& renderer::getInstance();
+		function __construct() {
 
+			Session::hasLogin();
+			$installed_extensions = Config::get('installed_extensions');
+			$this->menu = new menu(_("Main  Menu"));
+			$this->menu->add_item(_("Main  Menu"), "index.php");
+			$this->menu->add_item(_("Logout"), "/account/access/logout.php");
+			$this->applications = array();
+			$apps = Config::get_all('apps');
+			foreach ($apps as $app) {
+				$app = 'App_' . $app;
+				$this->add_application(new $app());
 			}
 
-		function add_application(&$app)
-		{
+			if (count($installed_extensions) > 0) {
+				// Do not use global array directly here, or you suffer
+				// from buggy php behaviour (unexpected loop break
+				// because of same var usage in class constructor).
+				$extensions = $installed_extensions;
+				foreach ($extensions as $ext) {
+					$ext = 'App_' . $ext['name'];
+					$this->add_application(new $ext());
+				}
+				Session::$get_text->add_domain(Session::$lang->code, PATH_TO_ROOT . "/lang");
+			}
+			$this->add_application(new App_Setup());
+		}
+
+		function add_application(&$app) {
 			if ($app->enabled) // skip inactive modules
 			{
 				$this->applications[$app->id] = &$app;
 			}
 		}
 
-		function get_application($id)
-		{
+		function get_application($id) {
 			if (isset($this->applications[$id])) {
 				return $this->applications[$id];
 			}
 			return null;
 		}
 
-		function get_selected_application()
-		{
+		function get_selected_application() {
 			if (isset($this->selected_application)) {
 				return $this->applications[$this->selected_application];
 			}
-			foreach (
-				$this->applications as $application
-			)
-			{
+			foreach ($this->applications as $application) {
 				return $application;
 			}
 			return null;
 		}
 
-		function display()
-		{
-			$this->init();
+		function display() {
 			$rend = renderer::getInstance();
 			$rend->wa_header();
 			//$rend->menu_header($this->menu);
@@ -79,58 +82,23 @@ include('application.php');
 			$rend->wa_footer();
 		}
 
-		function init()
-		{
-			global $installed_extensions;
-			$this->menu = new menu(_("Main  Menu"));
-			$this->menu->add_item(_("Main  Menu"), "index.php");
-			$this->menu->add_item(_("Logout"), "/account/access/logout.php");
-			$this->applications = array();
-			$apps = Config::get_all('apps');
-					foreach($apps as $app) {
-						$app = 'App_'.$app;
-						$this->add_application(new $app());
-					}
-
-			if (count($installed_extensions) > 0) {
-				// Do not use global array directly here, or you suffer
-				// from buggy php behaviour (unexpected loop break
-				// because of same var usage in class constructor).
-				$extensions = $installed_extensions;
-				foreach (
-					$extensions as $ext
-				) {
-					if (@($ext['active'] && $ext['type'] == 'module')) { // supressed warnings before 2.2 upgrade
-						$_SESSION['get_text']->add_domain(
-							$_SESSION['language']->code,
-							$ext['path'] . "/lang"
-						);
-						$class = $ext['tab'] . "_app";
-						if (class_exists($class,false)) {
-							$this->add_application(new $class());
-						}
-						$_SESSION['get_text']->add_domain(
-							$_SESSION['language']->code,
-							PATH_TO_ROOT . "/lang"
-						);
-					}
-				}
+		public static function init() {
+			if (!isset($_SESSION["App"])) {
+				$_SESSION["App"] = new frontaccounting();
 			}
-			$this->add_application(new App_Setup());
 		}
 
 		/**
 		 * @return Returns the array sorted as required
 		 *
-		 * @param $aryData       Array containing data to sort
-		 * @param $strIndex      name of column to use as an index
+		 * @param $aryData			 Array containing data to sort
+		 * @param $strIndex			name of column to use as an index
 		 * @param $strSortBy		 Column to sort the array by
 		 * @param $strSortType	 String containing either asc or desc [default to asc]
 		 *
 		 * @desc Naturally sorts an array using by the column $strSortBy
 		 */
-		static function write_extensions($extensions = null, $company = -1)
-		{
+		public static function write_extensions($extensions = null, $company = -1) {
 			global $installed_extensions, $next_extension_id;
 			if (!isset($extensions)) {
 				$extensions = $installed_extensions;

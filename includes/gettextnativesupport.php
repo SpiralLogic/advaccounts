@@ -42,19 +42,16 @@
 			return $err > 0;
 		}
 
-		public static function get_text_init($managerType = self::GETTEXT_NATIVE) {
-
-			if (!isset($_SESSION['get_text'])) {
+		public static function init($managerType = self::GETTEXT_NATIVE) {
 
 				if ($managerType == self::GETTEXT_NATIVE) {
 					if (function_exists('gettext')) {
-						$_SESSION['get_text'] = new gettextNativeSupport();
-						return;
+						return new static();
 					}
 				}
 				// fail back to php support
-				$_SESSION['get_text'] = new gettext_php_support();
-			}
+				return new gettext_php_support();
+
 		}
 
 		/**

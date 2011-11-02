@@ -32,6 +32,7 @@
 				Config::set('debug', false);
 				error_reporting(E_USER_WARNING | E_USER_ERROR | E_USER_NOTICE);
 			}
+
 			// colect all error msgs
 			set_error_handler('adv_error_handler');
 			set_exception_handler('adv_exception_handler');

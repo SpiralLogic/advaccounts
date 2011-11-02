@@ -91,25 +91,30 @@
 		//DB wrapper functions to change only once for whole application
 		public static function escape($value = "", $nullify = false)
 		{
+			$db = static::getInstance();
+
 			$value = trim($value);
 			//reset default if second parameter is skipped
 			$nullify = ($nullify === null) ? (false) : ($nullify);
 			//check for null/unset/empty strings
 			if ((!isset($value)) || (is_null($value)) || ($value === "")) {
+
 				$value = ($nullify) ? ("NULL") : ("''");
 			} else {
+
 				if (is_string($value)) {
 					//value is a string and should be quoted; determine best method based on available extensions
 					if (function_exists('mysql_real_escape_string')) {
-						$value = "'" . mysql_real_escape_string($value) . "'";
+						$value = "'" . mysql_real_escape_string($value,$db) . "'";
 					} else {
 						$value = "'" . mysql_escape_string($value) . "'";
 					}
-				} else if (!is_numeric($value)) {
+				} elseif (!is_numeric($value)) {
 					//value is not a string nor numeric
 					throw new DB_Exception("ERROR: incorrect data type send to sql query");
 				}
 			}
+
 			return $value;
 		}
 

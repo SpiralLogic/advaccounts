@@ -53,6 +53,7 @@
 		}
 		if (can_process($user)) {
 			if ($selected_id != -1) {
+
 				User::update(
 					$selected_id, $_POST['user_id'], $_POST['real_name'], $_POST['phone'],
 					$_POST['email'], $_POST['Access'], $_POST['language'],
