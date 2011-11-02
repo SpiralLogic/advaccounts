@@ -910,8 +910,9 @@
 						$emailAddress = $customer->accounts->email;
 					}
 					if (empty($emailAddress)) {
-						$emailAddress = (isset($_GET['Email'])) ? $_GET['Email'] : $myrow['email'];
+						$emailAddress = $myrow['email'];
 					}
+					if (isset($_GET['Email']))  $emailAddress =$_GET['Email'];
 					$mail->to($emailAddress, str_replace(",", "", $myrow['DebtorName']));
 					$mail->subject($subject);
 					$mail->text($msg . $sender);
