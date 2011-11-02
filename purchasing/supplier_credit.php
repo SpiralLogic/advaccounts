@@ -30,15 +30,10 @@
 	}
 	//---------------------------------------------------------------------------------------------------
 	if (isset($_GET['New'])) {
-		if (isset($_SESSION['supp_trans'])) {
-			unset ($_SESSION['supp_trans']->grn_items);
-			unset ($_SESSION['supp_trans']->gl_codes);
-			unset ($_SESSION['supp_trans']);
-		}
-		$_SESSION['supp_trans'] = new Purchase_Trans;
-		$_SESSION['supp_trans']->is_invoice = false;
+
+		Purchase_Trans::instance(true)->is_invoice = false;
 		if (isset($_GET['invoice_no'])) {
-			$_SESSION['supp_trans']->supp_reference = $_POST['invoice_no'] = $_GET['invoice_no'];
+			Purchase_Trans::instance()->supp_reference = $_POST['invoice_no'] = $_GET['invoice_no'];
 		}
 	}
 	function clear_fields() {
@@ -86,7 +81,7 @@
 			$input_error = true;
 		}
 		if ($input_error == false) {
-			$_SESSION['supp_trans']->add_gl_codes_to_trans(
+			Purchase_Trans::instance()->add_gl_codes_to_trans(
 				$_POST['gl_code'], $gl_act_name,
 				$_POST['dimension_id'], $_POST['dimension2_id'],
 				input_num('amount'), $_POST['memo_']
@@ -97,43 +92,43 @@
 	//---------------------------------------------------------------------------------------------------
 	function check_data() {
 		global $total_grn_value, $total_gl_value;
-		if (!$_SESSION['supp_trans']->is_valid_trans_to_post()) {
+		if (!Purchase_Trans::instance()->is_valid_trans_to_post()) {
 			ui_msgs::display_error(_("The credit note cannot be processed because the there are no items or values on the invoice.  Credit notes are expected to have a charge."));
 			JS::set_focus('');
 			return false;
 		}
-		if (!Refs::is_valid($_SESSION['supp_trans']->reference)) {
+		if (!Refs::is_valid(Purchase_Trans::instance()->reference)) {
 			ui_msgs::display_error(_("You must enter an credit note reference."));
 			JS::set_focus('reference');
 			return false;
 		}
-		if (!is_new_reference($_SESSION['supp_trans']->reference, ST_SUPPCREDIT)) {
+		if (!is_new_reference(Purchase_Trans::instance()->reference, ST_SUPPCREDIT)) {
 			ui_msgs::display_error(_("The entered reference is already in use."));
 			JS::set_focus('reference');
 			return false;
 		}
-		if (!Refs::is_valid($_SESSION['supp_trans']->supp_reference)) {
+		if (!Refs::is_valid(Purchase_Trans::instance()->supp_reference)) {
 			ui_msgs::display_error(_("You must enter a supplier's credit note reference."));
 			JS::set_focus('supp_reference');
 			return false;
 		}
-		if (!Dates::is_date($_SESSION['supp_trans']->tran_date)) {
+		if (!Dates::is_date(Purchase_Trans::instance()->tran_date)) {
 			ui_msgs::display_error(_("The credit note as entered cannot be processed because the date entered is not valid."));
 			JS::set_focus('tran_date');
 			return false;
 		}
-		elseif (!Dates::is_date_in_fiscalyear($_SESSION['supp_trans']->tran_date))
+		elseif (!Dates::is_date_in_fiscalyear(Purchase_Trans::instance()->tran_date))
 		{
 			ui_msgs::display_error(_("The entered date is not in fiscal year."));
 			JS::set_focus('tran_date');
 			return false;
 		}
-		if (!Dates::is_date($_SESSION['supp_trans']->due_date)) {
+		if (!Dates::is_date(Purchase_Trans::instance()->due_date)) {
 			ui_msgs::display_error(_("The invoice as entered cannot be processed because the due date is in an incorrect format."));
 			JS::set_focus('due_date');
 			return false;
 		}
-		if ($_SESSION['supp_trans']->ov_amount < ($total_gl_value + $total_grn_value)) {
+		if (Purchase_Trans::instance()->ov_amount < ($total_gl_value + $total_grn_value)) {
 			ui_msgs::display_error(_("The credit note total as entered is less than the sum of the the general ledger entires (if any) and the charges for goods received. There must be a mistake somewhere, the credit note as entered will not be processed."));
 			return false;
 		}
@@ -142,17 +137,17 @@
 
 	//---------------------------------------------------------------------------------------------------
 	function handle_commit_credit_note() {
-		copy_to_trans($_SESSION['supp_trans']);
+		copy_to_trans(Purchase_Trans::instance());
 		if (!check_data()) {
 			return;
 		}
 		if (isset($_POST['invoice_no'])) {
-			$invoice_no = add_supp_invoice($_SESSION['supp_trans'], $_POST['invoice_no']);
+			$invoice_no = add_supp_invoice(Purchase_Trans::instance(), $_POST['invoice_no']);
 		} else {
-			$invoice_no = add_supp_invoice($_SESSION['supp_trans']);
+			$invoice_no = add_supp_invoice(Purchase_Trans::instance());
 		}
-		$_SESSION['supp_trans']->clear_items();
-		unset($_SESSION['supp_trans']);
+		Purchase_Trans::instance()->clear_items();
+		Purchase_Trans::killInstance();
 		meta_forward($_SERVER['PHP_SELF'], "AddedID=$invoice_no");
 	}
 
@@ -177,7 +172,7 @@
 	function commit_item_data($n) {
 		if (check_item_data($n)) {
 			$complete = False;
-			$_SESSION['supp_trans']->add_grn_to_trans(
+			Purchase_Trans::instance()->add_grn_to_trans(
 				$n,
 				$_POST['po_detail_item' . $n], $_POST['item_code' . $n],
 				$_POST['description' . $n], $_POST['qty_recd' . $n],
@@ -208,13 +203,13 @@
 	//--------------------------------------------------------------------------------------------------
 	$id3 = find_submit('Delete');
 	if ($id3 != -1) {
-		$_SESSION['supp_trans']->remove_grn_from_trans($id3);
+		Purchase_Trans::instance()->remove_grn_from_trans($id3);
 		$Ajax->activate('grn_items');
 		$Ajax->activate('inv_tot');
 	}
 	$id4 = find_submit('Delete2');
 	if ($id4 != -1) {
-		$_SESSION['supp_trans']->remove_gl_codes_from_trans($id4);
+		Purchase_Trans::instance()->remove_gl_codes_from_trans($id4);
 		clear_fields();
 		$Ajax->activate('gl_items');
 		$Ajax->activate('inv_tot');
@@ -225,22 +220,22 @@
 	}
 	if (isset($_POST['go'])) {
 		$Ajax->activate('gl_items');
-		ui_view::display_quick_entries($_SESSION['supp_trans'], $_POST['qid'], input_num('totamount'), QE_SUPPINV);
+		ui_view::display_quick_entries(Purchase_Trans::instance(), $_POST['qid'], input_num('totamount'), QE_SUPPINV);
 		$_POST['totamount'] = price_format(0);
 		$Ajax->activate('totamount');
 		$Ajax->activate('inv_tot');
 	}
 	//--------------------------------------------------------------------------------------------------
 	start_form();
-	invoice_header($_SESSION['supp_trans']);
+	invoice_header(Purchase_Trans::instance());
 	if ($_POST['supplier_id'] == '') {
 		ui_msgs::display_error('No supplier found for entered search text');
 	}
 	else {
-		$total_grn_value = display_grn_items($_SESSION['supp_trans'], 1);
-		$total_gl_value = display_gl_items($_SESSION['supp_trans'], 1);
+		$total_grn_value = display_grn_items(Purchase_Trans::instance(), 1);
+		$total_gl_value = display_gl_items(Purchase_Trans::instance(), 1);
 		div_start('inv_tot');
-		invoice_totals($_SESSION['supp_trans']);
+		invoice_totals(Purchase_Trans::instance());
 		div_end();
 	}
 	if ($id != -1) {

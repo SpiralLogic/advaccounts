@@ -23,7 +23,7 @@
 		echo json_encode($data, JSON_NUMERIC_CHECK);
 		exit();
 	}
-	JS::footerFile(array("/js/js2/jquery-tmpl.min.js", "includes/js/quickitems.js"));
+	JS::footerFile(array( "includes/js/quickitems.js"));
 	Page::start(_($help_context = "Items"), true);
 	$stock_cats = stock_categories_list('category_id');
 	if (!isset($_GET['stock_id'])) {

@@ -89,7 +89,7 @@
 
 	function voiding_controls() {
 		start_form();
-		start_table(Config::get('tables.style2'));
+		start_table(Config::get('tables_style2'));
 		systypes_list_row(_("Transaction Type:"), "filterType", null, true);
 		text_row(_("Transaction #:"), 'trans_no', null, 12, 12);
 		date_row(_("Voiding Date:"), 'date_');

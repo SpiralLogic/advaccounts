@@ -13,6 +13,20 @@
  */
 
 	class Purchase_Trans {
+		protected static $_instance = null;
+
+		public static function instance($reset_session = false) {
+			if (!$reset_session && isset($_SESSION["Purchase_Trans"])) {
+				static::$_instance = $_SESSION["Purchase_Trans"];
+			} elseif (static::$_instance === null) {
+				static::$_instance = $_SESSION["Purchase_Trans"] = new static;
+			}
+			return static::$_instance;
+		}
+
+		public static function killInstance() {
+			unset($_SESSION["Purchase_Trans"]);
+		}
 
 		var $grn_items; /*array of objects of class GRNDetails using the GRN No as the pointer */
 		var $gl_codes; /*array of objects of class gl_codes using a counter as the pointer */
@@ -132,9 +146,5 @@
 			return $total;
 		}
 	} /* end of class defintion */
-
-
-
-
 
 ?>

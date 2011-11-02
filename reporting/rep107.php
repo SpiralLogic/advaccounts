@@ -22,14 +22,13 @@
 	//----------------------------------------------------------------------------------------------------
 	print_invoices();
 	//----------------------------------------------------------------------------------------------------
-	function print_invoices()
-	{
+	function print_invoices() {
 		include_once(APP_PATH . "includes/reports/pdf.php");
-		$from     = $_POST['PARAM_0'];
-		$to       = $_POST['PARAM_1'];
+		$from = $_POST['PARAM_0'];
+		$to = $_POST['PARAM_1'];
 		$currency = $_POST['PARAM_2'];
-		$email    = $_POST['PARAM_3'];
-		$paylink  = $_POST['PARAM_4'];
+		$email = $_POST['PARAM_3'];
+		$paylink = $_POST['PARAM_4'];
 		$comments = $_POST['PARAM_5'];
 		if ($from == null) {
 			$from = 0;
@@ -37,23 +36,21 @@
 		if ($to == null) {
 			$to = 0;
 		}
-		$dec  = user_price_dec();
-		$fno  = explode("-", $from);
-		$tno  = explode("-", $to);
+		$dec = user_price_dec();
+		$fno = explode("-", $from);
+		$tno = explode("-", $to);
 		$cols = array(4, 60, 330, 355, 380, 410, 450, 470, 495);
 		// $headers in doctext.inc
 		$aligns = array('left', 'left', 'center', 'left', 'right', 'right', 'center', 'right', 'right');
 		$params = array('comments' => $comments);
-		$cur    = DB_Company::get_pref('curr_default');
+		$cur = DB_Company::get_pref('curr_default');
 		if ($email == 0) {
-			$rep           = new FrontReport(_('TAX INVOICE'), "InvoiceBulk", user_pagesize());
+			$rep = new FrontReport(_('TAX INVOICE'), "InvoiceBulk", user_pagesize());
 			$rep->currency = $cur;
 			$rep->Font();
 			$rep->Info($params, $cols, null, $aligns);
 		}
-		for (
-			$i = $fno[0]; $i <= $tno[0]; $i++
-		) {
+		for ($i = $fno[0]; $i <= $tno[0]; $i++) {
 			for (
 				$j = ST_SALESINVOICE; $j <= ST_CUSTCREDIT; $j++
 			) {
@@ -63,11 +60,11 @@
 				if (!exists_customer_trans($j, $i)) {
 					continue;
 				}
-				$sign                     = $j == ST_SALESINVOICE ? 1 : -1;
-				$myrow                    = get_customer_trans($i, $j);
-				$baccount                 = get_default_bank_account($myrow['curr_code']);
-				$params['bankaccount']    = $baccount['id'];
-				$branch                   = get_branch($myrow["branch_code"]);
+				$sign = $j == ST_SALESINVOICE ? 1 : -1;
+				$myrow = get_customer_trans($i, $j);
+				$baccount = get_default_bank_account($myrow['curr_code']);
+				$params['bankaccount'] = $baccount['id'];
+				$branch = get_branch($myrow["branch_code"]);
 				$branch['disable_branch'] = $paylink; // helper
 				if ($j == ST_SALESINVOICE) {
 					$sales_order = get_sales_order_header($myrow["order_"], ST_SALESORDER);
@@ -76,15 +73,15 @@
 					$sales_order = null;
 				}
 				if ($email == 1) {
-					$rep           = new FrontReport("", "", user_pagesize());
+					$rep = new FrontReport("", "", user_pagesize());
 					$rep->currency = $cur;
 					$rep->Font();
 					if ($j == ST_SALESINVOICE) {
-						$rep->title    = _('TAX INVOICE');
+						$rep->title = _('TAX INVOICE');
 						$rep->filename = "Invoice" . $myrow['reference'] . ".pdf";
 					}
 					else {
-						$rep->title    = _('CREDIT NOTE');
+						$rep->title = _('CREDIT NOTE');
 						$rep->filename = "CreditNote" . $myrow['reference'] . ".pdf";
 					}
 					$rep->Info($params, $cols, null, $aligns);
@@ -93,7 +90,7 @@
 					$rep->title = ($j == ST_SALESINVOICE) ? _('TAX INVOICE') : _('CREDIT NOTE');
 				}
 				$rep->Header2($myrow, $branch, $sales_order, $baccount, $j);
-				$result   = get_customer_trans_details($j, $i);
+				$result = get_customer_trans_details($j, $i);
 				$SubTotal = 0;
 				while ($myrow2 = DBOld::fetch($result)) {
 					if ($myrow2["quantity"] == 0) {
@@ -104,10 +101,10 @@
 						user_price_dec()
 					);
 					$SubTotal += $Net;
-					$TaxType      = Tax_ItemType::get_for_item($myrow2['stock_id']);
+					$TaxType = Tax_ItemType::get_for_item($myrow2['stock_id']);
 					$DisplayPrice = number_format2($myrow2["unit_price"], $dec);
-					$DisplayQty   = number_format2($sign * $myrow2["quantity"], get_qty_dec($myrow2['stock_id']));
-					$DisplayNet   = number_format2($Net, $dec);
+					$DisplayQty = number_format2($sign * $myrow2["quantity"], get_qty_dec($myrow2['stock_id']));
+					$DisplayNet = number_format2($Net, $dec);
 					if ($myrow2["discount_percent"] == 0) {
 						$DisplayDiscount = "";
 					}
@@ -118,7 +115,7 @@
 					$rep->TextCol(0, 1, $myrow2['stock_id'], -2);
 					$oldrow = $rep->row;
 					$rep->TextColLines(1, 2, $myrow2['StockDescription'], -2);
-					$newrow   = $rep->row;
+					$newrow = $rep->row;
 					$rep->row = $oldrow;
 					$rep->TextCol(2, 3, $DisplayQty, -2);
 					$rep->TextCol(3, 4, $myrow2['units'], -2);
@@ -140,11 +137,11 @@
 						$rep->TextColLines(0, 6, $comment['memo_'], -2);
 					}
 				}
-				$DisplaySubTot  = number_format2($SubTotal, $dec);
+				$DisplaySubTot = number_format2($SubTotal, $dec);
 				$DisplayFreight = number_format2($sign * $myrow["ov_freight"], $dec);
-				$rep->row       = $rep->bottomMargin + (15 * $rep->lineHeight);
-				$linetype       = true;
-				$doctype        = $j;
+				$rep->row = $rep->bottomMargin + (15 * $rep->lineHeight);
+				$linetype = true;
+				$doctype = $j;
 				if ($rep->currency != $myrow['curr_code']) {
 					include(APP_PATH . "/reporting/includes/doctext2.php");
 				}
@@ -199,8 +196,9 @@
 				$rep->Font();
 				if ($email == 1) {
 					$myrow['dimension_id'] = $paylink; // helper for pmt link
-					if ($myrow['email'] == '') {
-						$myrow['email']      = $branch['email'];
+					$myrow['email'] = $myrow['email']?:Input::get('Email');
+					if (!$myrow['email']) {
+						$myrow['email'] = $branch['email'];
 						$myrow['DebtorName'] = $branch['br_name'];
 					}
 					$rep->End($email, $doc_Invoice_no . " " . $myrow['reference'], $myrow, $j);

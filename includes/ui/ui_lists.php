@@ -427,13 +427,14 @@
 			set_editor('customer', $name, $editkey);
 		}
 		$customerBox = new Dialog('Customer Edit', 'customerBox', '');
-		$customerBox->addButtons(array('Close' => '$(this).dialog("close");$("#customer_id").trigger("change")'));
+		$customerBox->addButtons(array('Close' => '$(this).dialog("close");'));
+		$customerBox->addBeforeClose('$("#customer_id").trigger("change")');
 		$customerBox->setOptions(
 			array(
-					 'autoopen'	 => false,
+					 'autoOpen'	 => false,
 					 'modal'			=> true,
 					 'width'			=> '850',
-					 'height'		 => '850',
+					 'height'		 => '715',
 					 'resizeable' => true
 			)
 		);
@@ -441,8 +442,8 @@
 		JS::addLiveEvent(
 			'#customer_id_label', 'click', <<<JS
 var val = $("#customer_id").val();
-if (val>0) {
-$("#customerBox").html("<iframe src='/contacts/customers.php?popup=1&id="+val+"' width='100%' height='710' scrolling='no' style='border:none' frameborder='0'></iframe>").dialog('open');}
+
+$("#customerBox").html("<iframe src='/contacts/customers.php?popup=1&id="+val+"' width='100%' height='595' scrolling='no' style='border:none' frameborder='0'></iframe>").dialog('open');
 JS
 		);
 		return combo_input(
@@ -475,7 +476,7 @@ JS
 
 	function customer_list_row($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false, $show_inactive = false, $editkey = false)
 	{
-		echo "<tr><td id='customer_id_label' class='label'>$label</td><td nowrap>";
+		echo "<tr><td id='customer_id_label' class='label pointer'>$label</td><td nowrap>";
 		echo customer_list($name, $selected_id, $all_option, $submit_on_change, $show_inactive, $editkey);
 		echo "</td>\n</tr>\n";
 	}
