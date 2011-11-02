@@ -6,29 +6,34 @@
 	 * Time: 8:06 PM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	class Report {
-		var $id;
-		var $name;
-		var $ar_params;
-		var $controls;
+	class Report
+	{
+		public $id;
+		public $name;
+		public $ar_params;
+		public $controls;
 
-		function __construct($id, $name, $ar_params = null) {
-			$this->id = $id;
+		function __construct($id, $name, $ar_params = null)
+		{
+			$this->id   = $id;
 			$this->name = $name;
 			if ($ar_params) {
 				$this->set_controls($ar_params);
 			}
 		}
 
-		function set_controls($ar_params) {
+		function set_controls($ar_params)
+		{
 			$this->controls = $ar_params;
 		}
 
-		function get_controls() {
+		function get_controls()
+		{
 			return $this->controls;
 		}
 
-		function add_custom_reports(&$reports) {
+		function add_custom_reports(&$reports)
+		{
 			global $installed_extensions;
 			// include reports installed inside extension modules
 			if (count($installed_extensions) > 0) {

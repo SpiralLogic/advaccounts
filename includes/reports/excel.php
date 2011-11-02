@@ -13,42 +13,42 @@
 	// xls version
 	class FrontReport extends Spreadsheet_Excel_Writer_Workbook
 	{
-		var $size;
-		var $company;
-		var $user;
-		var $host;
-		var $fiscal_year;
-		var $title;
-		var $filename;
-		var $unique_name;
-		var $path;
-		var $code;
-		var $bottomMargin = 0;
-		var $lineHeight;
-		var $leftMargin = 0;
-		var $cols;
-		var $params;
-		var $headers;
-		var $aligns;
-		var $headers2;
-		var $aligns2;
-		var $cols2;
-		var $fontSize;
-		var $oldFontSize;
-		var $currency;
-		var $row = 9999999;
-		var $y;
-		var $numcols;
-		var $excelColWidthFactor;
-		var $endLine;
-		var $formatTitle;
-		var $formatDateTime;
-		var $formatDate;
-		var $formatHeaderLeft;
-		var $formatHeaderRight;
-		var $formatFooter;
-		var $formatAmount = array();
-		var $sheet;
+		public $size;
+		public $company;
+		public $user;
+		public $host;
+		public $fiscal_year;
+		public $title;
+		public $filename;
+		public $unique_name;
+		public $path;
+		public $code;
+		public $bottomMargin = 0;
+		public $lineHeight;
+		public $leftMargin = 0;
+		public $cols;
+		public $params;
+		public $headers;
+		public $aligns;
+		public $headers2;
+		public $aligns2;
+		public $cols2;
+		public $fontSize;
+		public $oldFontSize;
+		public $currency;
+		public $row = 9999999;
+		public $y;
+		public $numcols;
+		public $excelColWidthFactor;
+		public $endLine;
+		public $formatTitle;
+		public $formatDateTime;
+		public $formatDate;
+		public $formatHeaderLeft;
+		public $formatHeaderRight;
+		public $formatFooter;
+		public $formatAmount = array();
+		public $sheet;
 
 		function FrontReport($title, $filename, $size = 'A4', $fontsize = 9, $orientation = 'P', $margins = NULL, $excelColWidthFactor = 6.5)
 		{
@@ -329,8 +329,8 @@
 		{
 			// Flag to make sure we only print the company name once
 			$companyNamePrinted = false;
-			$this->y = 0;
-			$tcol    = $this->numcols - 1;
+			$this->y            = 0;
+			$tcol               = $this->numcols - 1;
 			$this->sheet->setRow($this->y, 20);
 			// Title
 			for (
@@ -459,9 +459,9 @@
 		/**
 		 * Format a numeric string date into something nicer looking.
 		 *
-		 * @param string $date          Date string to be formatted.
-		 * @param int    $input_format	Format of the input string.	Possible values are:<ul><li>0: user's default (default)</li></ul>
-		 * @param int    $output_format Format of the output string.	Possible values are:<ul><li>0: Month (word) Day (numeric), 4-digit Year - Example: January 1, 2000 (default)</li><li>1: Month 4-digit Year - Example: January 2000</li><li>2: Month Abbreviation 4-digit Year - Example: Jan 2000</li></ul>
+		 * @param string $date					Date string to be formatted.
+		 * @param int		$input_format	Format of the input string.	Possible values are:<ul><li>0: user's default (default)</li></ul>
+		 * @param int		$output_format Format of the output string.	Possible values are:<ul><li>0: Month (word) Day (numeric), 4-digit Year - Example: January 1, 2000 (default)</li><li>1: Month 4-digit Year - Example: January 2000</li><li>2: Month Abbreviation 4-digit Year - Example: Jan 2000</li></ul>
 		 *
 		 * @access public
 		 */

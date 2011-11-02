@@ -11,26 +11,26 @@
 	 ***********************************************************************/
 	class userPrefs
 	{
-		var $language;
-		var $qty_dec;
-		var $price_dec;
-		var $exrate_dec;
-		var $percent_dec;
-		var $show_gl_info;
-		var $show_codes;
-		var $date_format;
-		var $date_sep;
-		var $tho_sep;
-		var $dec_sep;
-		var $theme;
-		var $print_profile;
-		var $rep_popup;
-		var $pagesize; // for printing
-		var $show_hints;
-		var $query_size; // table pager page length
-		var $graphic_links; // use graphic links
-		var $sticky_date; // save date on subsequent document entry
-		var $startup_tab; // default start-up menu tab
+		public $language;
+		public $qty_dec;
+		public $price_dec;
+		public $exrate_dec;
+		public $percent_dec;
+		public $show_gl_info;
+		public $show_codes;
+		public $date_format;
+		public $date_sep;
+		public $tho_sep;
+		public $dec_sep;
+		public $theme;
+		public $print_profile;
+		public $rep_popup;
+		public $pagesize; // for printing
+		public $show_hints;
+		public $query_size; // table pager page length
+		public $graphic_links; // use graphic links
+		public $sticky_date; // save date on subsequent document entry
+		public $startup_tab; // default start-up menu tab
 		function userPrefs($user = null)
 		{
 			if ($user == null) {
@@ -45,10 +45,10 @@
 			} else {
 				$this->language = $user["language"];
 				$_SESSION['language']->set_language($this->language);
-				$this->qty_dec     = $user["qty_dec"];
-				$this->price_dec   = $user["prices_dec"];
-				$this->exrate_dec  = $user["rates_dec"];
-				$this->percent_dec = $user["percent_dec"];
+				$this->qty_dec       = $user["qty_dec"];
+				$this->price_dec     = $user["prices_dec"];
+				$this->exrate_dec    = $user["rates_dec"];
+				$this->percent_dec   = $user["percent_dec"];
 				$this->show_gl_info  = $user["show_gl"];
 				$this->show_codes    = $user["show_codes"];
 				$this->date_format   = $user["date_format"];

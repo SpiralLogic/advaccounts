@@ -12,12 +12,12 @@
 	// Prevent register_globals vulnerability
 	class language
 	{
-		var $name;
-		var $code; // eg. ar_EG, en_GB
-		var $encoding; // eg. UTF-8, CP1256, ISO8859-1
-		var $dir; // Currently support for Left-to-Right (ltr) and
+		public $name;
+		public $code; // eg. ar_EG, en_GB
+		public $encoding; // eg. UTF-8, CP1256, ISO8859-1
+		public $dir; // Currently support for Left-to-Right (ltr) and
 		// Right-To-Left (rtl)
-		var $is_locale_file;
+		public $is_locale_file;
 
 		function language($name, $code, $encoding, $dir = 'ltr')
 		{

@@ -10,19 +10,19 @@
 
 			 Leave this header in this file!
 	 */
-	include(dirname(__FILE__).'/email/phpmailer.php');
+	include(dirname(__FILE__) . '/email/phpmailer.php');
 	class Reports_Email
 	{
-		var $to = array();
-		var $cc = array();
-		var $bcc = array();
-		var $attachment = array();
-		var $boundary = "";
-		var $header = "";
-		var $subject = "";
-		var $body = "";
-		var $mail;
-		var $toerror = "No vaild email address";
+		public $to = array();
+		public $cc = array();
+		public $bcc = array();
+		public $attachment = array();
+		public $boundary = "";
+		public $header = "";
+		public $subject = "";
+		public $body = "";
+		public $mail;
+		public $toerror = "No vaild email address";
 
 		function __construct($name, $mail)
 		{

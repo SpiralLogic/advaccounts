@@ -11,30 +11,29 @@
 				See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 			 * ********************************************************************* */
 	include('application.php');
-
-	class frontaccounting {
-		var $user;
-		var $settings;
-		var $applications;
-		var $selected_application;
+	class frontaccounting
+	{
+		public $user;
+		public $settings;
+		public $applications;
+		public $selected_application;
 		// GUI
-		var $menu;
+		public $menu;
 
-		//var $renderer;
-		function __construct() {
-
+		//public $renderer;
+		function __construct()
+		{
 			Session::hasLogin();
 			$installed_extensions = Config::get('installed_extensions');
-			$this->menu = new menu(_("Main  Menu"));
+			$this->menu           = new menu(_("Main  Menu"));
 			$this->menu->add_item(_("Main  Menu"), "index.php");
 			$this->menu->add_item(_("Logout"), "/account/access/logout.php");
 			$this->applications = array();
-			$apps = Config::get_all('apps');
+			$apps               = Config::get_all('apps');
 			foreach ($apps as $app) {
 				$app = 'App_' . $app;
 				$this->add_application(new $app());
 			}
-
 			if (count($installed_extensions) > 0) {
 				// Do not use global array directly here, or you suffer
 				// from buggy php behaviour (unexpected loop break
@@ -49,21 +48,24 @@
 			$this->add_application(new App_Setup());
 		}
 
-		function add_application(&$app) {
+		function add_application(&$app)
+		{
 			if ($app->enabled) // skip inactive modules
 			{
 				$this->applications[$app->id] = &$app;
 			}
 		}
 
-		function get_application($id) {
+		function get_application($id)
+		{
 			if (isset($this->applications[$id])) {
 				return $this->applications[$id];
 			}
 			return null;
 		}
 
-		function get_selected_application() {
+		function get_selected_application()
+		{
 			if (isset($this->selected_application)) {
 				return $this->applications[$this->selected_application];
 			}
@@ -73,7 +75,8 @@
 			return null;
 		}
 
-		function display() {
+		function display()
+		{
 			$rend = renderer::getInstance();
 			$rend->wa_header();
 			//$rend->menu_header($this->menu);
@@ -82,7 +85,8 @@
 			$rend->wa_footer();
 		}
 
-		public static function init() {
+		public static function init()
+		{
 			if (!isset($_SESSION["App"])) {
 				$_SESSION["App"] = new frontaccounting();
 			}
@@ -98,7 +102,8 @@
 		 *
 		 * @desc Naturally sorts an array using by the column $strSortBy
 		 */
-		public static function write_extensions($extensions = null, $company = -1) {
+		public static function write_extensions($extensions = null, $company = -1)
+		{
 			global $installed_extensions, $next_extension_id;
 			if (!isset($extensions)) {
 				$extensions = $installed_extensions;

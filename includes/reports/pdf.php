@@ -11,47 +11,50 @@
 		See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		* ********************************************************************* */
 	//include_once(APP_PATH . "reporting/includes/class.pdf.php");
-
-	include(dirname(__FILE__)."/printer/remote.php");
-	if (!class_exists('Cpdf',false)) include(dirname(__FILE__).DS.'pdf/cpdf.php');
-	if (!class_exists('TCPDF',false)) include(dirname(__FILE__).DS.'pdf/tcpdf.php');
+	include(dirname(__FILE__) . "/printer/remote.php");
+	if (!class_exists('Cpdf', false)) {
+		include(dirname(__FILE__) . DS . 'pdf/cpdf.php');
+	}
+	if (!class_exists('TCPDF', false)) {
+		include(dirname(__FILE__) . DS . 'pdf/tcpdf.php');
+	}
 	class FrontReport extends Cpdf
 	{
-		var $size;
-		var $company;
-		var $user;
-		var $host;
-		var $fiscal_year;
-		var $title;
-		var $filename;
-		var $pageWidth;
-		var $pageHeight;
-		var $topMargin;
-		var $bottomMargin;
-		var $leftMargin;
-		var $rightMargin;
-		var $endLine;
-		var $lineHeight;
-		//var $rtl;
-		var $cols;
-		var $params;
-		var $headers;
-		var $aligns;
-		var $headers2;
-		var $aligns2;
-		var $cols2;
-		var $pageNumber;
-		var $fontSize;
-		var $oldFontSize;
-		var $currency;
-		var $companyLogoEnable;
+		public $size;
+		public $company;
+		public $user;
+		public $host;
+		public $fiscal_year;
+		public $title;
+		public $filename;
+		public $pageWidth;
+		public $pageHeight;
+		public $topMargin;
+		public $bottomMargin;
+		public $leftMargin;
+		public $rightMargin;
+		public $endLine;
+		public $lineHeight;
+		//public $rtl;
+		public $cols;
+		public $params;
+		public $headers;
+		public $aligns;
+		public $headers2;
+		public $aligns2;
+		public $cols2;
+		public $pageNumber;
+		public $fontSize;
+		public $oldFontSize;
+		public $currency;
+		public $companyLogoEnable;
 		// select whether to use a company logo graphic in some header templates
-		var $scaleLogoWidth;
-		var $footerEnable;
+		public $scaleLogoWidth;
+		public $footerEnable;
 		// select whether to print a page footer or not
-		var $footerText;
+		public $footerText;
 		// store user-generated footer text
-		var $headerFunc; // store the name of the currently selected header function
+		public $headerFunc; // store the name of the currently selected header function
 		function __construct($title, $filename, $size = 'A4', $fontsize = 9, $orientation = 'P', $margins = NULL, $excelColWidthFactor = NULL)
 		{
 			global $page_security;
@@ -905,14 +908,16 @@
 					$msg .= $doc_Kindest_regards . "\n\n";
 					$sender = $this->company['postal_address'] . "\n" . $this->company['email'] . "\n" . $this->company['phone'];
 					//$mail->to($to);
-					if (!empty($myrow['debtor_no'])){
+					if (!empty($myrow['debtor_no'])) {
 						$customer     = new Contacts_Customer($myrow['debtor_no']);
 						$emailAddress = $customer->accounts->email;
 					}
 					if (empty($emailAddress)) {
 						$emailAddress = $myrow['email'];
 					}
-					if (isset($_GET['Email']))  $emailAddress =$_GET['Email'];
+					if (isset($_GET['Email'])) {
+						$emailAddress = $_GET['Email'];
+					}
 					$mail->to($emailAddress, str_replace(",", "", $myrow['DebtorName']));
 					$mail->subject($subject);
 					$mail->text($msg . $sender);
