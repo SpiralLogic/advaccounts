@@ -1999,135 +1999,135 @@ msgstr ""
 msgid "Selected transaction has been voided."
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/applications/customers.php:17
+#: c:\Apache2\htdocs\account226/applications/sales.php:17
 msgid "&Sales"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/applications/customers.php:19
+#: c:\Apache2\htdocs\account226/applications/sales.php:19
 #: c:\Apache2\htdocs\account226/applications/dimensions.php:22
 #: c:\Apache2\htdocs\account226/applications/generalledger.php:19
 #: c:\Apache2\htdocs\account226/applications/inventory.php:19
 #: c:\Apache2\htdocs\account226/applications/manufacturing.php:19
-#: c:\Apache2\htdocs\account226/applications/suppliers.php:19
+#: c:\Apache2\htdocs\account226/applications/purchases.php:19
 msgid "Transactions"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/applications/customers.php:20
+#: c:\Apache2\htdocs\account226/applications/sales.php:20
 msgid "Sales &Quotation Entry"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/applications/customers.php:22
+#: c:\Apache2\htdocs\account226/applications/sales.php:22
 msgid "Sales &Order Entry"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/applications/customers.php:24
+#: c:\Apache2\htdocs\account226/applications/sales.php:24
 msgid "Direct &Delivery"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/applications/customers.php:26
+#: c:\Apache2\htdocs\account226/applications/sales.php:26
 msgid "Direct &Invoice"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/applications/customers.php:29
+#: c:\Apache2\htdocs\account226/applications/sales.php:29
 msgid "&Delivery Against Sales Orders"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/applications/customers.php:31
+#: c:\Apache2\htdocs\account226/applications/sales.php:31
 msgid "&Invoice Against Sales Delivery"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/applications/customers.php:34
+#: c:\Apache2\htdocs\account226/applications/sales.php:34
 msgid "&Template Delivery"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/applications/customers.php:36
+#: c:\Apache2\htdocs\account226/applications/sales.php:36
 msgid "&Template Invoice"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/applications/customers.php:38
+#: c:\Apache2\htdocs\account226/applications/sales.php:38
 msgid "&Create and Print Recurrent Invoices"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/applications/customers.php:41
+#: c:\Apache2\htdocs\account226/applications/sales.php:41
 msgid "Customer &Payments"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/applications/customers.php:43
+#: c:\Apache2\htdocs\account226/applications/sales.php:43
 msgid "Customer &Credit Notes"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/applications/customers.php:45
+#: c:\Apache2\htdocs\account226/applications/sales.php:45
 msgid "&Allocate Customer Payments or Credit Notes"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/applications/customers.php:48
+#: c:\Apache2\htdocs\account226/applications/sales.php:48
 #: c:\Apache2\htdocs\account226/applications/dimensions.php:28
 #: c:\Apache2\htdocs\account226/applications/generalledger.php:33
 #: c:\Apache2\htdocs\account226/applications/inventory.php:25
 #: c:\Apache2\htdocs\account226/applications/manufacturing.php:25
-#: c:\Apache2\htdocs\account226/applications/suppliers.php:34
+#: c:\Apache2\htdocs\account226/applications/purchases.php:34
 msgid "Inquiries and Reports"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/applications/customers.php:49
+#: c:\Apache2\htdocs\account226/applications/sales.php:49
 msgid "Sales Quotation I&nquiry"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/applications/customers.php:51
+#: c:\Apache2\htdocs\account226/applications/sales.php:51
 msgid "Sales Order &Inquiry"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/applications/customers.php:53
+#: c:\Apache2\htdocs\account226/applications/sales.php:53
 msgid "Customer Transaction &Inquiry"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/applications/customers.php:56
+#: c:\Apache2\htdocs\account226/applications/sales.php:56
 msgid "Customer Allocation &Inquiry"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/applications/customers.php:59
+#: c:\Apache2\htdocs\account226/applications/sales.php:59
 msgid "Customer and Sales &Reports"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/applications/customers.php:62
+#: c:\Apache2\htdocs\account226/applications/sales.php:62
 #: c:\Apache2\htdocs\account226/applications/dimensions.php:35
 #: c:\Apache2\htdocs\account226/applications/generalledger.php:54
 #: c:\Apache2\htdocs\account226/applications/inventory.php:33
 #: c:\Apache2\htdocs\account226/applications/manufacturing.php:35
 #: c:\Apache2\htdocs\account226/applications/setup.php:53
-#: c:\Apache2\htdocs\account226/applications/suppliers.php:46
+#: c:\Apache2\htdocs\account226/applications/purchases.php:46
 msgid "Maintenance"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/applications/customers.php:63
+#: c:\Apache2\htdocs\account226/applications/sales.php:63
 msgid "Add and Manage &Customers"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/applications/customers.php:65
+#: c:\Apache2\htdocs\account226/applications/sales.php:65
 msgid "Customer &Branches"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/applications/customers.php:67
+#: c:\Apache2\htdocs\account226/applications/sales.php:67
 msgid "Sales &Groups"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/applications/customers.php:69
+#: c:\Apache2\htdocs\account226/applications/sales.php:69
 msgid "Recurrent &Invoices"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/applications/customers.php:71
+#: c:\Apache2\htdocs\account226/applications/sales.php:71
 msgid "Sales T&ypes"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/applications/customers.php:73
+#: c:\Apache2\htdocs\account226/applications/sales.php:73
 msgid "Sales &Persons"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/applications/customers.php:75
+#: c:\Apache2\htdocs\account226/applications/sales.php:75
 msgid "Sales &Areas"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/applications/customers.php:77
+#: c:\Apache2\htdocs\account226/applications/sales.php:77
 msgid "Credit &Status Setup"
 msgstr ""
 
@@ -2459,51 +2459,51 @@ msgstr ""
 msgid "Software &Upgrade"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/applications/suppliers.php:17
+#: c:\Apache2\htdocs\account226/applications/purchases.php:17
 msgid "&Purchases"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/applications/suppliers.php:20
+#: c:\Apache2\htdocs\account226/applications/purchases.php:20
 msgid "Purchase &Order Entry"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/applications/suppliers.php:22
+#: c:\Apache2\htdocs\account226/applications/purchases.php:22
 msgid "&Outstanding Purchase Orders Maintenance"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/applications/suppliers.php:24
+#: c:\Apache2\htdocs\account226/applications/purchases.php:24
 msgid "&Payments to Suppliers"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/applications/suppliers.php:27
+#: c:\Apache2\htdocs\account226/applications/purchases.php:27
 msgid "Supplier &Invoices"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/applications/suppliers.php:29
+#: c:\Apache2\htdocs\account226/applications/purchases.php:29
 msgid "Supplier &Credit Notes"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/applications/suppliers.php:31
+#: c:\Apache2\htdocs\account226/applications/purchases.php:31
 msgid "&Allocate Supplier Payments or Credit Notes"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/applications/suppliers.php:35
+#: c:\Apache2\htdocs\account226/applications/purchases.php:35
 msgid "Purchase Orders &Inquiry"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/applications/suppliers.php:37
+#: c:\Apache2\htdocs\account226/applications/purchases.php:37
 msgid "Supplier Transaction &Inquiry"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/applications/suppliers.php:40
+#: c:\Apache2\htdocs\account226/applications/purchases.php:40
 msgid "Supplier Allocation &Inquiry"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/applications/suppliers.php:43
+#: c:\Apache2\htdocs\account226/applications/purchases.php:43
 msgid "Supplier and Purchasing &Reports"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/applications/suppliers.php:47
+#: c:\Apache2\htdocs\account226/applications/purchases.php:47
 msgid "&Suppliers"
 msgstr ""
 

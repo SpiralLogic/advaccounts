@@ -11,40 +11,6 @@
 	  See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 * ********************************************************************* */
 
-class menu_item
-{
-
-	var $label;
-	var $link;
-
-	function menu_item($label, $link)
-	{
-		$this->label = $label;
-		$this->link = $link;
-	}
-
-}
-
-class menu
-{
-
-	var $title;
-	var $items;
-
-	function menu($title)
-	{
-		$this->title = $title;
-		$this->items = array();
-	}
-
-	function add_item($label, $link)
-	{
-		$item = new menu_item($label, $link);
-		array_push($this->items, $item);
-		return $item;
-	}
-
-}
 
 class app_function
 {
@@ -96,7 +62,7 @@ class module
 
 }
 
-class application
+abstract class Application
 {
 
 	var $id;
@@ -106,7 +72,7 @@ class application
 	var $modules;
 	var $enabled;
 
-	function application($id, $name, $enabled = true)
+	function __construct($id, $name, $enabled = true)
 	{
 		$this->id = $id;
 		$this->name = $name;

@@ -12,13 +12,13 @@
  * ********************************************************************* */
 
 
-class contacts_app extends application
+class App_Contacts extends Application
 {
 
-	function contacts_app()
+	function __construct()
 	{
 		$this->direct = 'contacts/customers.php';
-		$this->application("contacts", _($this->help_context = "&Customers"));
+		parent::__construct("contacts", _($this->help_context = "&Customers"));
 
 
 	}

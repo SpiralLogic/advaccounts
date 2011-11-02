@@ -9,11 +9,9 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	class MenuUI {
+	class MenuUI extends Menu {
 
-		protected $tabs = array();
-		protected $menu = '';
-		protected $content = '';
+
 		protected $options = array();
 		public $firstPage = false;
 		static $menuCount = 0;
@@ -21,17 +19,16 @@
 		function __construct($options = array()) {
 			$this->options = $options;
 			ob_start();
-			$this->menu = "<div class='tabs' id='tabs" . MenuUI::$menuCount . "'>";
 		}
 
 		function addTab($title, $tooltip = '', $link = '#') {
-			$this->tabs[] = new MenuUi_item($title, $tooltip, $link);
+			$this->items[] = new MenuUi_item($title, $tooltip, $link);
 			return $this;
 		}
 
 		function startTab($title, $tooltip, $link = '#', $style = '') {
 			$this->addTab($title, $tooltip, $link);
-			echo '<div id="tabs' . MenuUI::$menuCount . '-' . count($this->tabs) . '" ';
+			echo '<div id="tabs' . MenuUI::$menuCount . '-' . count($this->items) . '" ';
 			if (!empty($style)) echo ' style="' . $style . '" ';
 			echo '>';
 			return $this;
@@ -43,30 +40,27 @@
 		}
 
 		function render() {
-			$this->menu .= "<ul>";
-			foreach ($this->tabs as $key => $tab) {
+			$menu = "<div class='tabs' id='tabs" . MenuUI::$menuCount . "'><ul>";
+			foreach ($this->items as $key => $item) {
 				$num = $key + 1;
-				$this->menu .= "<li><a title='{$tab->title}'";
-				$this->menu .= ($tab->link != "#") ? ' href="' . $tab->link . '" ' : " href='#tabs" . MenuUI::$menuCount . "-{$num}'";
-				$this->menu .= "><span>{$tab->title}</span></a></li>";
+				$menu .= "<li><a title='{$item->label}'";
+				$menu .= ($item->link != "#") ? ' href="' . $item->link . '" ' : " href='#tabs" . MenuUI::$menuCount . "-{$num}'";
+				$menu .= "><span>{$item->label}</span></a></li>";
 			}
-			$this->menu .= "</ul>";
-			$this->content = ob_get_clean();
-			echo $this->menu . $this->content . '</div>';
+			$menu .= "</ul>";
+			$content = ob_get_clean();
+			echo $menu . $content . '</div>';
 			JS::tabs('#tabs' . MenuUI::$menuCount, $this->options, $this->firstPage);
 			MenuUI::$menuCount++;
 		}
 	}
 
 
-	class MenuUi_item {
-		public $content = '';
-		public $link = '';
-		public $title = '';
+	class MenuUi_item extends menu_item {
 		public $tooltip = '';
 
-		function __construct($title, $tooltip = '', $link = '') {
-			$this->title = $title;
+		function __construct($label, $tooltip = '', $link = '') {
+			$this->label = $label;
 			$this->link = $link;
 			$this->tooltip = $tooltip;
 		}

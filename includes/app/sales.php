@@ -11,13 +11,13 @@
   See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
  * ********************************************************************* */
 
-class customers_app extends application
+class App_Sales extends Application
 {
 
-	function customers_app()
+	function __construct()
 	{
 		global $installed_extensions;
-		$this->application("orders", _($this->help_context = "&Sales"));
+		parent::__construct("orders", _($this->help_context = "&Sales"));
 
 		$this->add_module(_("Quotations and Orders"));
 		$this->add_lapp_function(0, '', '');

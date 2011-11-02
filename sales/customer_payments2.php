@@ -146,7 +146,7 @@
 		$_SESSION['alloc']->amount = input_num('amount');
 
 		if (isset($_POST["TotalNumberOfAllocs"]))
-			return Allocation::check_allocations();
+			return Gl_Allocation::check_allocations();
 		else
 			return true;
 	}
@@ -223,7 +223,7 @@
 
 	customer_list_row(_("From Customer:"), 'customer_id', null, false, true);
 	if (!isset($_POST['bank_account'])) // first page call
-		$_SESSION['alloc'] = new allocation(ST_CUSTPAYMENT, 0);
+		$_SESSION['alloc'] = new Gl_Allocation(ST_CUSTPAYMENT, 0);
 
 	if (Validation::check(Validation::BRANCHES, _("No Branches for Customer"), $_POST['customer_id'])) {
 		customer_branches_list_row(_("Branch:"), $_POST['customer_id'], 'BranchID', null, false, true, true);
@@ -260,7 +260,7 @@
 
 		if ($cust_currency == $bank_currency) {
 			div_start('alloc_tbl');
-			Allocation::show_allocatable(false);
+			Gl_Allocation::show_allocatable(false);
 			div_end();
 		}
 

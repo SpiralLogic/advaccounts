@@ -150,7 +150,7 @@
 		$_SESSION['alloc']->amount = input_num('amount');
 
 		if (isset($_POST["TotalNumberOfAllocs"])) {
-			return Allocation::check_allocations();
+			return Gl_Allocation::check_allocations();
 		} else {
 			return true;
 		}
@@ -188,7 +188,7 @@
 
 		Dates::new_doc_date($_POST['DateBanked']);
 		if (check_value('createinvoice')) {
-			Allocation::create_miscorder($_POST['customer_id'], $_POST['BranchID'], $_POST['memo_'], $_POST['ref'], input_num('amount'), input_num('discount'));
+			Gl_Allocation::create_miscorder($_POST['customer_id'], $_POST['BranchID'], $_POST['memo_'], $_POST['ref'], input_num('amount'), input_num('discount'));
 		}
 		$payment_no = write_customer_payment(0, $_POST['customer_id'], $_POST['BranchID'],
 			$_POST['bank_account'], $_POST['DateBanked'], $_POST['ref'],
@@ -222,7 +222,7 @@
 	customer_list_row(_("From Customer:"), 'customer_id', null, false, true);
 	if (!isset($_POST['bank_account'])) // first page call
 	{
-		$_SESSION['alloc'] = new allocation(ST_CUSTPAYMENT, 0);
+		$_SESSION['alloc'] = new Gl_Allocation(ST_CUSTPAYMENT, 0);
 	}
 
 	if (Validation::check(Validation::BRANCHES, _("No Branches for Customer") . $_POST["customer_id"], $_POST['customer_id'])) {
@@ -266,7 +266,7 @@
 		if ($cust_currency == $bank_currency) {
 			div_start('alloc_tbl');
 			$_SESSION['alloc']->read();
-			Allocation::show_allocatable(false);
+			Gl_Allocation::show_allocatable(false);
 			div_end();
 		}
 

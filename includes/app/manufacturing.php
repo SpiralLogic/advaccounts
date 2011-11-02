@@ -9,12 +9,12 @@ but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
  ***********************************************************************/
-class manufacturing_app extends application
+class App_Manufacturing extends Application
 {
-	function manufacturing_app()
+	function App_Manufacturing()
 	{
 		global $installed_extensions;
-		$this->application("manuf", _($this->help_context = "&Manufacturing"));
+		parent::__construct("manuf", _($this->help_context = "&Manufacturing"));
 
 		$this->add_module(_("Transactions"));
 		$this->add_lapp_function(0, _("Work &Order Entry"),

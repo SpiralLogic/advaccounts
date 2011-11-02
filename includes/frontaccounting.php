@@ -10,18 +10,9 @@
 				MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 				See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 			 * ********************************************************************* */
+include('application.php');
+
 	$installed_extensions = Config::get_all('installed_extensions');
-	include_once(APP_PATH . 'applications/application.php');
-	include_once(APP_PATH . 'applications/customers.php');
-	include_once(APP_PATH . 'applications/contacts.php');
-	include_once(APP_PATH . 'applications/suppliers.php');
-	include_once(APP_PATH . 'applications/inventory.php');
-	include_once(APP_PATH . 'applications/items.php');
-	include_once(APP_PATH . 'applications/advanced.php');
-	include_once(APP_PATH . 'applications/manufacturing.php');
-	include_once(APP_PATH . 'applications/dimensions.php');
-	include_once(APP_PATH . 'applications/generalledger.php');
-	include_once(APP_PATH . 'applications/setup.php');
 	if (count($installed_extensions) > 0) {
 		foreach (
 			$installed_extensions as $ext
@@ -41,10 +32,11 @@
 		var $menu;
 
 		//var $renderer;
-		function frontaccounting()
+		function __construct()
 		{
 			//$this->renderer =& renderer::getInstance();
-		}
+
+			}
 
 		function add_application(&$app)
 		{
@@ -94,15 +86,12 @@
 			$this->menu->add_item(_("Main  Menu"), "index.php");
 			$this->menu->add_item(_("Logout"), "/account/access/logout.php");
 			$this->applications = array();
-			$this->add_application(new customers_app());
-			$this->add_application(new contacts_app());
-			$this->add_application(new suppliers_app());
-			$this->add_application(new inventory_app());
-			$this->add_application(new items_app());
-			$this->add_application(new advanced_app());
-			$this->add_application(new manufacturing_app());
-			$this->add_application(new dimensions_app());
-			$this->add_application(new general_ledger_app());
+			$apps = Config::get_all('apps');
+					foreach($apps as $app) {
+						$app = 'App_'.$app;
+						$this->add_application(new $app());
+					}
+
 			if (count($installed_extensions) > 0) {
 				// Do not use global array directly here, or you suffer
 				// from buggy php behaviour (unexpected loop break
@@ -127,7 +116,7 @@
 					}
 				}
 			}
-			$this->add_application(new setup_app());
+			$this->add_application(new App_Setup());
 		}
 
 		/**

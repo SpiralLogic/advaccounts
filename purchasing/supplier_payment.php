@@ -120,7 +120,7 @@
 		}
 		$_SESSION['alloc']->amount = -input_num('amount');
 		if (isset($_POST["TotalNumberOfAllocs"])) {
-			return Allocation::check_allocations();
+			return Gl_Allocation::check_allocations();
 		} else {
 			return true;
 		}
@@ -171,7 +171,7 @@
 	supplier_list_row(_("Payment To:"), 'supplier_id', null, false, true);
 	if (!isset($_POST['bank_account'])) // first page call
 	{
-		$_SESSION['alloc'] = new allocation(ST_SUPPAYMENT, 0);
+		$_SESSION['alloc'] = new Gl_Allocation(ST_SUPPAYMENT, 0);
 	}
 	ui_globals::set_global_supplier($_POST['supplier_id']);
 	bank_accounts_list_row(_("From Bank Account:"), 'bank_account', null, true);
@@ -188,7 +188,7 @@
 	end_outer_table(1); // outer table
 	if ($bank_currency == $supplier_currency) {
 		div_start('alloc_tbl');
-		Allocation::show_allocatable(false);
+		Gl_Allocation::show_allocatable(false);
 		div_end();
 	}
 	start_table(Config::get('tables_style') . "  width=60%");

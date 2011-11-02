@@ -9,11 +9,11 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	class dimensions_app extends application {
-		function dimensions_app() {
+	class App_Dimensions extends Application {
+		function __construct() {
 			global $installed_extensions;
 			$dim = DB_Company::get_pref('use_dimension');
-			$this->application("proj", _($this->help_context = "&Dimensions"), $dim);
+			parent::__construct("proj", _($this->help_context = "&Dimensions"), $dim);
 
 			if ($dim > 0) {
 				$this->add_module(_("Transactions"));
