@@ -28,9 +28,15 @@
 			$path  = realpath(APP_PATH . 'includes' . DS . implode(DS, $path) . DS . $class . '.php');
 			if (file_exists($path)) {
 				include $path;
-			}
-			else {
-				include $class . '.php';
+			} else {
+				if (Config::get('debug')) {
+					echo '<pre>';
+					debug_print_backtrace();
+					throw new Adv_Exception('Could not load class '.$class.' in location '.$path);
+				} else {
+					Login::kill();
+					Login::timeout();
+				}
 			}
 		}
 	}
