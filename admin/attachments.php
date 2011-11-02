@@ -197,7 +197,7 @@
 		display_rows($_POST['filterType']);
 	}
 	start_form(true);
-	start_table(Config::get('tables.style2'));
+	start_table(Config::get('tables_style2'));
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {
 			$row = get_attachment($selected_id);

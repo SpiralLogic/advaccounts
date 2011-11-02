@@ -245,7 +245,7 @@
 	}
 	//-------------------------------------------------------------------------------------
 	start_form();
-	start_table(Config::get('tables.style2'));
+	start_table(Config::get('tables_style2'));
 	$existing_comments = "";
 	$dec = 0;
 	if (isset($selected_id)) {

@@ -30,7 +30,7 @@
 	function gl_payment_controls() {
 		$home_currency = Banking::get_company_currency();
 		start_form();
-		start_outer_table(Config::get('tables.style2'), 5);
+		start_outer_table(Config::get('tables_style2'), 5);
 		table_section(1);
 		bank_accounts_list_row(_("From Account:"), 'FromBankAccount', null, true);
 		bank_accounts_list_row(_("To Account:"), 'ToBankAccount', null, true);

@@ -259,7 +259,7 @@
 	function display_ext_edit($selected_id) {
 		global $Mode;
 		$extensions = DB_Company::get_company_extensions();
-		start_table(Config::get('tables.style2'));
+		start_table(Config::get('tables_style2'));
 		if ($selected_id != -1 && $extensions[$selected_id]['type'] == 'plugin') {
 			if ($Mode == 'Edit') {
 				$mod = $extensions[$selected_id];

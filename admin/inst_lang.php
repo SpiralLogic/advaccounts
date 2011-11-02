@@ -169,7 +169,7 @@
 			document.forms[0].submit()
 		}
 		</script>";
-		start_table(Config::get('tables.style2'));
+		start_table(Config::get('tables_style2'));
 		if ($selected_id != -1) {
 			$conn = Config::get('installed_languages', $selected_id);
 			$_POST['code'] = $conn['code'];
