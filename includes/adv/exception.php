@@ -12,8 +12,9 @@
 
 	class Adv_Exception extends Exception {
 
-		public function __construct($message, $code = 0, Exception $previous = null) {
+		public function __construct($message, $code = 0, Exception $previous = null, $fatal=false) {
 			parent::__construct($message, $code, $previous);
+			if ($fatal) exit();
 		}
 
 		public function __toString() {

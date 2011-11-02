@@ -51,19 +51,30 @@
 	}
 	if (!function_exists('adv_exception_handler')) {
 		function adv_exception_handler() {
+			echo '<pre>';
 			var_dump(func_get_args());
 		}
 	}
 	if (!function_exists('adv_autoload_handler')) {
 		function adv_autoload_handler($className) {
-			spl_autoload(strtolower($className));
-			if (!class_exists($className)) {
-				echo '<pre>';
-				debug_print_backtrace();
-				throw new Adv_Exception('Could not load class ' . $className);
-			} else {
-				Login::kill();
-				Login::timeout();
+			try {
+				spl_autoload(strtolower($className));
+			}
+			catch (LogicException $e) {
+				echo('<pre>');
+		if (Config::get('debug'))		debug_print_backtrace();
+				session_unset();
+				session_destroy();
+				// strip ajax marker from uri, to force synchronous page reload
+							$_SESSION['timeout'] = array(
+								'uri' => preg_replace('/JsHttpRequest=(?:(\d+)-)?([^&]+)/s', '', @$_SERVER['REQUEST_URI']),
+								'post' => $_POST
+							);
+							include(APP_PATH . "access/login.php");
+							if (Ajax::in_ajax() || AJAX_REFERRER) {
+								$Ajax->activate('_page_body');
+							}
+							exit();
 			}
 		}
 	}
