@@ -22,7 +22,6 @@
 		echo json_encode($data, JSON_NUMERIC_CHECK);
 		exit();
 	}
-	JS::footerFile("/js/js2/jquery-tmpl.min.js");
 	JS::footerFile("includes/js/customers.js");
 	Page::start(_($help_context = "Customers"), Input::request('popup'));
 	Validation::check(Validation::SALES_TYPES, _("There are no sales types defined. Please define at least one sales type before adding a customer."));
@@ -180,7 +179,7 @@
 	UI::button('addLog', "Add log entry")->td->tr->tr(true)->td(array('colspan' => 2))->textarea(
 		'messageLog', array(
 		'cols' => 50,
-		'rows' => 25
+		'rows' => 20
 	)
 	);
 	Contacts_ContactLog::read($customer->id, 'C');

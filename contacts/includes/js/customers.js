@@ -100,10 +100,12 @@ var Branches = function() {
 	var current = {}, list = $("#branchList"), adding = false, btn = $("#addBranch").button();
 	return {
 		init:         function() {
+			btn.hide().removeClass('invis');
 			list.change(function() {
 				if (!$(this).val().length) return;
 				var newBranch = Customer.get().branches[$(this).val()];
 				Branches.change(newBranch);
+
 			})
 		},
 		empty:        function() {

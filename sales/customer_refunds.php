@@ -103,7 +103,7 @@
 		}
 		$_SESSION['alloc']->amount = -1 * input_num('amount');
 		if (isset($_POST["TotalNumberOfAllocs"])) {
-			return Allocation::check_allocations();
+			return Gl_Allocation::check_allocations();
 		}
 		return true;
 	}
@@ -172,7 +172,7 @@
 	);
 	if (!isset($_POST['bank_account'])) // first page call
 	{
-		$_SESSION['alloc'] = new allocation(ST_CUSTREFUND, 0);
+		$_SESSION['alloc'] = new Gl_Allocation(ST_CUSTREFUND, 0);
 	}
 	if (count($customer->branches) == 0) {
 		customer_branches_list_row(_("Branch:"), $_POST['customer_id'], 'BranchID', null, false, true, true);
@@ -203,7 +203,7 @@
 		end_outer_table(1);
 		if ($cust_currency == $bank_currency) {
 			div_start('alloc_tbl');
-			Allocation::show_allocatable(true);
+			Gl_Allocation::show_allocatable(true);
 			div_end();
 		}
 		start_table(Config::get('tables_style') . "  width=60%");

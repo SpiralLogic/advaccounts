@@ -9,12 +9,12 @@ but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
  ***********************************************************************/
-class inventory_app extends application
+class App_Inventory extends Application
 {
-	function inventory_app()
+	function App_Inventory()
 	{
 		global $installed_extensions; 
-		$this->application("stock", _($this->help_context = "&Inventory"));
+		parent::__construct("stock", _($this->help_context = "&Inventory"));
 
 		$this->add_module(_("Transactions"));
 		$this->add_lapp_function(0, _("Inventory Location &Transfers"),

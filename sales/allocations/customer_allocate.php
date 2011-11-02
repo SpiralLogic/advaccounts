@@ -41,7 +41,7 @@
 		start_form();
 		div_start('alloc_tbl');
 		if (count($_SESSION['alloc']->allocs) > 0) {
-			Allocation::show_allocatable(true);
+			Gl_Allocation::show_allocatable(true);
 			submit_center_first('UpdateDisplay', _("Refresh"), _('Start again allocation of selected amount'), true);
 			submit('Process', _("Process"), true, _('Process allocations'), 'default');
 			submit_center_last('Cancel', _("Back to Allocations"), _('Abandon allocations and return to selection of allocatable amounts'), 'cancel');
@@ -58,7 +58,7 @@
 
 	//--------------------------------------------------------------------------------
 	if (isset($_POST['Process'])) {
-		if (Allocation::check_allocations()) {
+		if (Gl_Allocation::check_allocations()) {
 			$_SESSION['alloc']->write();
 			clear_allocations();
 			$_POST['Cancel'] = 1;
@@ -72,7 +72,7 @@
 	//--------------------------------------------------------------------------------
 	if (isset($_GET['trans_no']) && isset($_GET['trans_type'])) {
 		clear_allocations();
-		$_SESSION['alloc'] = new allocation($_GET['trans_type'], $_GET['trans_no']);
+		$_SESSION['alloc'] = new Gl_Allocation($_GET['trans_type'], $_GET['trans_no']);
 	}
 	if (get_post('UpdateDisplay')) {
 		$_SESSION['alloc']->read();

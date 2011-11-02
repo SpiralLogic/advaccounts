@@ -9,12 +9,12 @@ but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
  ***********************************************************************/
-class general_ledger_app extends application
+class App_GeneralLedger extends Application
 {
-	function general_ledger_app()
+	function __construct()
 	{
 		global $installed_extensions;
-		$this->application("GL", _($this->help_context = "&Banking"));
+		parent::__construct("GL", _($this->help_context = "&Banking"));
 
 		$this->add_module(_("Transactions"));
 		$this->add_lapp_function(0, _("&Payments"),

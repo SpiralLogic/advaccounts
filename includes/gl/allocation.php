@@ -14,7 +14,7 @@
 		 and related helpers.
 	 */
 	//-----------------------------------------------------------------------------------
-	class allocation
+	class Gl_Allocation
 	{
 		var $trans_no;
 		var $type;
@@ -24,7 +24,7 @@
 		var $date_;
 		var $amount = 0; /*Total amount of the transaction in FX */
 		var $allocs; /*array of transactions allocated to */
-		function allocation($type, $trans_no)
+		function __construct($type, $trans_no)
 		{
 			$this->allocs = array();
 			$this->trans_no = $trans_no;

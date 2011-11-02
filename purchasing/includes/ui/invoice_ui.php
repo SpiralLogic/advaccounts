@@ -50,6 +50,7 @@
 
 	//--------------------------------------------------------------------------------------------------
 	function invoice_header(&$supp_trans) {
+		$Ajax = Ajax::instance();
 		// if vars have been lost, recopy
 		if (!isset($_POST['tran_date'])) {
 			copy_from_trans($supp_trans);
@@ -117,7 +118,7 @@
 	}
 
 	//--------------------------------------------------------------------------------------------------
-	function invoice_totals(&$supp_trans) {
+	function invoice_totals($supp_trans) {
 		copy_to_trans($supp_trans);
 		$dim = DB_Company::get_pref('use_dimension');
 		$colspan = ($dim == 2 ? 7 : ($dim == 1 ? 6 : 5));
@@ -127,12 +128,12 @@
 		$tax_total = ui_view::display_edit_tax_items($taxes, $colspan, 0, null, true); // tax_included==0 (we are the company)
 		label_cell(_("Total Correction"), "colspan=$colspan align=right width='90%'");
 		small_amount_cells(null, 'ChgTotal', price_format(get_post('ChgTotal'), 2));
-		$display_total = price_format($supp_trans->ov_amount + $tax_total + get_post('ChgTotal'));
+		$total = $supp_trans->ov_amount + $tax_total + get_post('ChgTotal');
 		if ($supp_trans->is_invoice) {
-			label_row(_("Invoice Total:"), $display_total, "colspan=$colspan align=right style='font-weight:bold;'", "align=right style='font-weight:bold;'");
+			label_row(_("Invoice Total:"), price_format($total), "colspan=$colspan align=right style='font-weight:bold;'", "align=right id='invoiceTotal' data-total=".$total." style='font-weight:bold;'");
 		}
 		else {
-			label_row(_("Credit Note Total"), $display_total, "colspan=$colspan align=right style='font-weight:bold;color:red;'", "nowrap align=right style='font-weight:bold;color:red;'");
+			label_row(_("Credit Note Total"), price_format($total), "colspan=$colspan align=right style='font-weight:bold;color:red;'", "nowrap align=right id='invoiceTotal' data-total=".$total."  style='font-weight:bold;color:red;'");
 		}
 		end_table(1);
 		start_table(Config::get('tables_style2'));
@@ -273,7 +274,7 @@
 	}
 
 	//--------------//-----------------------------------------------------------------------------------------
-	function display_grn_items_for_selection(&$supp_trans, $k) {
+	function display_grn_items_for_selection($supp_trans, $k) {
 		if ($supp_trans->is_invoice) {
 			$result = get_grn_items(0, $supp_trans->supplier_id, true);
 		}
@@ -382,8 +383,9 @@
 	//		 = 1 display on invoice/credit page
 	//		 = 2 display on view invoice
 	//		 = 3 display on view credit
-	function display_grn_items(&$supp_trans, $mode = 0) {
+	function display_grn_items($supp_trans, $mode = 0) {
 		$ret = true;
+
 		// if displaying in form, and no items, exit
 		if (($mode == 2 || $mode == 3) && count($supp_trans->grn_items) == 0) {
 			return 0;
@@ -530,7 +532,7 @@
 	}
 
 	//--------------------------------------------------------------------------------------------------
-	function get_duedate_from_terms(&$supp_trans) {
+	function get_duedate_from_terms($supp_trans) {
 		if (!Dates::is_date($supp_trans->tran_date)) {
 			$supp_trans->tran_date = Dates::Today();
 		}

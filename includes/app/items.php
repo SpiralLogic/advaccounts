@@ -8,13 +8,13 @@
  */
 
 
-class items_app extends application
+class App_Items extends Application
 {
 
 	function __construct()
 	{
 		$this->direct = 'items/items.php';
-		$this->application("items", _($this->help_context = "Items"));
+		parent::__construct("items", _($this->help_context = "Items"));
 
 	}
 }

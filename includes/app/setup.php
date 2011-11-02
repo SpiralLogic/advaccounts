@@ -11,13 +11,13 @@
 	  See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 * ********************************************************************* */
 
-class setup_app extends application
+class App_Setup extends Application
 {
 
-	function setup_app()
+	function __construct()
 	{
 		global $installed_extensions;
-		$this->application("system", _($this->help_context = "S&etup"));
+		parent::__construct("system", _($this->help_context = "S&etup"));
 
 		$this->add_module(_("Company Setup"));
 		$this->add_lapp_function(0, _("&Company Setup"),
