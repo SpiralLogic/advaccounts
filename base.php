@@ -1,13 +1,12 @@
 <?php
 	if (!function_exists('adv_ob_flush_handler')) {
-		function adv_ob_flush_handler($text)
-		{
+		function adv_ob_flush_handler($text) {
 			$Ajax = Ajax::instance();
 			// Fatal errors are not send to Errors::handler,
 			// so we must check the output
 			if ($text && preg_match('/\bFatal error(<.*?>)?:(.*)/i', $text, $m)) {
 				$Ajax->aCommands = array(); // Don't update page via ajax on errors
-				$text               = preg_replace('/\bFatal error(<.*?>)?:(.*)/i', '', $text);
+				$text = preg_replace('/\bFatal error(<.*?>)?:(.*)/i', '', $text);
 				Errors::$messages[] = array(E_ERROR, $m[2], null, null);
 			}
 			$Ajax->run();
@@ -15,8 +14,7 @@
 		}
 	}
 	if (!function_exists('adv_shutdown_function_handler')) {
-		function adv_shutdown_function_handler()
-		{
+		function adv_shutdown_function_handler() {
 			$Ajax = Ajax::instance();
 			if (isset($Ajax)) {
 				$Ajax->run();
@@ -29,16 +27,15 @@
 		}
 	}
 	if (!function_exists('adv_error_handler')) {
-		function adv_error_handler()
-		{
+		function adv_error_handler() {
 			static $firsterror = 0;
 			$error = func_get_args();
 			if ($firsterror < 2 && !(E_USER_ERROR || E_USER_NOTICE || E_USER_WARNING)) {
 				FB::log(
 					array(
-							 'Line'		=> $error[3],
-							 'Message' => $error[1],
-							 'File'		=> $error[2], $error
+						'Line' => $error[3],
+						'Message' => $error[1],
+						'File' => $error[2], $error
 					), 'ERROR'
 				);
 				//var_dump(debug_backtrace());
@@ -53,19 +50,24 @@
 		}
 	}
 	if (!function_exists('adv_exception_handler')) {
-		function adv_exception_handler()
-		{
+		function adv_exception_handler() {
 			var_dump(func_get_args());
 		}
 	}
 	if (!function_exists('adv_autoload_handler')) {
-		function adv_autoload_handler($className)
-		{
+		function adv_autoload_handler($className) {
 			spl_autoload(strtolower($className));
+			if (!class_exists($className)) {
+				echo '<pre>';
+				debug_print_backtrace();
+				throw new Adv_Exception('Could not load class ' . $className);
+			} else {
+				Login::kill();
+				Login::timeout();
+			}
 		}
 	}
-	function end_page($no_menu = false, $is_index = false, $hide_back_link = false)
-	{
+	function end_page($no_menu = false, $is_index = false, $hide_back_link = false) {
 		if (isset($_REQUEST['frame']) && $_REQUEST['frame']) {
 			$nomenu = $is_index = $hide_back_link = true;
 		}
