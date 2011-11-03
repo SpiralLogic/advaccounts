@@ -24,15 +24,16 @@
 			if (Config::get('debug') && CurrentUser::instance()->user == 1) {
 				if (preg_match('/Chrome/i', $_SERVER['HTTP_USER_AGENT'])) {
 					include(dirname('.') . DS . 'fb.php');
-					FB::useFile(APP_PATH . 'tmp' . DS . 'chromelogs', DS . 'tmp' . DS . 'chromelogs');
+					FB::useFile(APP_PATH . DS . 'includes/chromelogs', DS . 'tmp' . DS . 'chromelogs');
 				} else {
-					include(dirname('.') . DS . 'FirePHP/FirePHP.class.php');
-					include(dirname('.') . DS . 'FirePHP/fb.php');
+					include(APP_PATH . DS . 'includes/FirePHP/FirePHP.class.php');
+					include(APP_PATH . DS . 'includes/FirePHP/fb.php');
 				}
 				return;
+			} else {
+				error_reporting(E_USER_WARNING | E_USER_ERROR | E_USER_NOTICE);
 			}
 			// colect all error msgs
-			error_reporting(E_USER_WARNING | E_USER_ERROR | E_USER_NOTICE);
 		}
 
 		static function handler($errno, $errstr, $file, $line)
@@ -48,8 +49,8 @@
 			}
 			// error_reporting==0 when messages are set off with @
 			if ($errno & error_reporting()) {
-				static::$messages[] = array('error_no'   => $errno,
-																		'error_str'  => $errstr,
+				static::$messages[] = array('error_no'	 => $errno,
+																		'error_str'	=> $errstr,
 																		'error_file' => $file,
 																		'error_line' => $line);
 			} else if ($errno & ~E_NOTICE) { // log all not displayed messages
@@ -64,14 +65,17 @@
 		static function format()
 		{
 			$msg_class = array(
-				E_USER_ERROR   => 'err_msg',
+				E_USER_ERROR	 => 'err_msg',
 				E_USER_WARNING => 'warn_msg',
-				E_USER_NOTICE  => 'note_msg'
+				E_USER_NOTICE	=> 'note_msg'
 			);
-			$type    = E_USER_NOTICE;
-			$content = '';
+			$type      = E_USER_NOTICE;
+			$content   = '';
 			if (PATH_TO_ROOT == '.' && count(static::$messages)) {
 				return '';
+			}
+			if (count(static::$messages) == 0) {
+				return;
 			}
 			foreach (static::$messages as $cnt => $msg) {
 				if ($msg['error_no'] > $type) {

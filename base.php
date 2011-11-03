@@ -4,7 +4,7 @@
 		{
 			$Ajax = Ajax::instance();
 			if ($text && preg_match('/\bFatal error(<.*?>)?:(.*)/i', $text, $m)) {
-				$Ajax->aCommands = array();
+				$Ajax->aCommands    = array();
 				$text               = preg_replace('/\bFatal error(<.*?>)?:(.*)/i', '', $text);
 				Errors::$messages[] = array(E_ERROR, $m[2], null, null);
 			}
@@ -35,9 +35,9 @@
 				if (!(E_USER_ERROR || E_USER_NOTICE || E_USER_WARNING)) {
 					FB::info($error[2] . '[' . $error[3] . ']: ' . $error[1]);
 				} else {
-					FB::info(array('Line'   => $error[3],
-												'Message' => $error[1],
-												'File'    => $error[2], $error), 'ERROR');
+					FB::log(array('Line'	 => $error[3],
+											 'Message' => $error[1],
+											 'File'		=> $error[2], $error), 'ERROR');
 				}
 				//var_dump(debug_backtrace());
 				$firsterror++;
@@ -68,7 +68,7 @@
 				session_destroy();
 				// strip ajax marker from uri, to force synchronous page reload
 				$_SESSION['timeout'] = array(
-					'uri'  => preg_replace('/JsHttpRequest=(?:(\d+)-)?([^&]+)/s', '', @$_SERVER['REQUEST_URI']),
+					'uri'	=> preg_replace('/JsHttpRequest=(?:(\d+)-)?([^&]+)/s', '', @$_SERVER['REQUEST_URI']),
 					'post' => $_POST
 				);
 				include(APP_PATH . "access/login.php");
