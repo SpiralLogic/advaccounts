@@ -84,7 +84,7 @@
 				if ($msg['error_no'] < $type) {
 					$type = ($msg['error_no'] == E_USER_WARNING) ? E_USER_WARNING : E_USER_ERROR; // php or user errors
 				}
-				$str = $msg['error_string'];
+				$str = $msg['error_str'];
 				if ($msg['error_no'] < E_USER_ERROR && $msg['error_no'] != null) {
 					$str .= ' ' . _('in file') . ': ' . $msg['error_file'] . ' ' . _('at line ') . $msg['error_line'];
 				}
