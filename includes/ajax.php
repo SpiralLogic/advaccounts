@@ -14,8 +14,8 @@
 	 */
 	class Ajax extends JsHttpRequest
 	{
-		var $aCommands = array();
-		var $triggers = array();
+		public $aCommands = array();
+		public $triggers = array();
 		protected static $_instance = null;
 
 		public static function instance()
@@ -77,8 +77,8 @@
 		function addAssign($trigger, $sTarget, $sAttribute, $sData)
 		{
 			$this->_addCommand($trigger, array('n' => 'as',
-																				't'  => $sTarget,
-																				'p'  => $sAttribute), $sData);
+																				't'	=> $sTarget,
+																				'p'	=> $sAttribute), $sData);
 			return $this;
 		}
 
@@ -88,7 +88,7 @@
 		function addUpdate($trigger, $sTarget, $sData)
 		{
 			$this->_addCommand($trigger, array('n' => 'up',
-																				't'  => $sTarget), $sData);
+																				't'	=> $sTarget), $sData);
 			return $this;
 		}
 
@@ -98,7 +98,7 @@
 		function addDisable($trigger, $sTarget, $sData = true)
 		{
 			$this->_addCommand($trigger, array('n' => 'di',
-																				't'  => $sTarget), $sData);
+																				't'	=> $sTarget), $sData);
 			return $this;
 		}
 
@@ -108,7 +108,7 @@
 		function addEnable($trigger, $sTarget, $sData = true)
 		{
 			$this->_addCommand($trigger, array('n' => 'di',
-																				't'  => $sTarget), !$sData);
+																				't'	=> $sTarget), !$sData);
 			return $this;
 		}
 

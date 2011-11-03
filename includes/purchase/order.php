@@ -11,34 +11,34 @@
 	 ***********************************************************************/
 	/* Definition of the purch_order class to hold all the information for a purchase order and delivery
  */
+	class Purchase_Order
+	{
+		public $supplier_id;
+		public $supplier_details;
+		public $line_items; /*array of objects of class Sales_Line using the product id as the pointer */
+		public $curr_code;
+		public $requisition_no;
+		public $delivery_address;
+		public $Comments;
+		public $Location;
+		public $supplier_name;
+		public $orig_order_date;
+		public $order_no; /*Only used for modification of existing orders otherwise only established when order committed */
+		public $lines_on_order;
+		public $freight;
+		public $salesman;
+		public $reference;
 
-	class Purchase_Order {
-
-		var $supplier_id;
-		var $supplier_details;
-		var $line_items; /*array of objects of class Sales_Line using the product id as the pointer */
-		var $curr_code;
-		var $requisition_no;
-		var $delivery_address;
-		var $Comments;
-		var $Location;
-
-		var $supplier_name;
-		var $orig_order_date;
-		var $order_no; /*Only used for modification of existing orders otherwise only established when order committed */
-		var $lines_on_order;
-		var $freight;
-		var $salesman;
-		var $reference;
-
-		function __construct() {
+		function __construct()
+		{
 			/*Constructor function initialises a new purchase order object */
-			$this->line_items = array();
+			$this->line_items     = array();
 			$this->lines_on_order = $this->order_no = $this->supplier_id = 0;
 			$this->set_salesman();
 		}
 
-		function add_to_order($line_no, $stock_id, $qty, $item_descr, $price, $uom, $req_del_date, $qty_inv, $qty_recd, $discount) {
+		function add_to_order($line_no, $stock_id, $qty, $item_descr, $price, $uom, $req_del_date, $qty_inv, $qty_recd, $discount)
+		{
 			if ($qty != 0 && isset($qty)) {
 				$this->line_items[$line_no] = new Purchase_Line($line_no, $stock_id, $item_descr, $qty, $price, $uom, $req_del_date, $qty_inv, $qty_recd, $discount);
 				$this->lines_on_order++;
@@ -47,34 +47,41 @@
 			Return 0;
 		}
 
-		function set_salesman($salesman_code = null) {
-
+		function set_salesman($salesman_code = null)
+		{
 			if ($salesman_code == null) {
 				$salesman_name = $_SESSION['wa_current_user']->name;
-				$sql = "SELECT salesman_code FROM salesman WHERE salesman_name = " . DBOld::escape($salesman_name);
-				$query = DBOld::query($sql, 'Couldn\'t find current salesman');
-				$result = DBOld::fetch_assoc($query);
-				if (!empty($result['salesman_code'])) $salesman_code = $result['salesman_code'];
+				$sql           = "SELECT salesman_code FROM salesman WHERE salesman_name = " . DBOld::escape($salesman_name);
+				$query         = DBOld::query($sql, 'Couldn\'t find current salesman');
+				$result        = DBOld::fetch_assoc($query);
+				if (!empty($result['salesman_code'])) {
+					$salesman_code = $result['salesman_code'];
+				}
 			}
-			if ($salesman_code != null) $this->salesman = $salesman_code;
+			if ($salesman_code != null) {
+				$this->salesman = $salesman_code;
+			}
 		}
 
-		function update_order_item($line_no, $qty, $price, $req_del_date, $item_descr = '', $discount = 0) {
+		function update_order_item($line_no, $qty, $price, $req_del_date, $item_descr = '', $discount = 0)
+		{
 			$this->line_items[$line_no]->quantity = $qty;
-			$this->line_items[$line_no]->price = $price;
+			$this->line_items[$line_no]->price    = $price;
 			$this->line_items[$line_no]->discount = $discount;
 			if (!empty($item_descr)) {
 				$this->line_items[$line_no]->description = $item_descr;
 			}
 			$this->line_items[$line_no]->req_del_date = $req_del_date;
-			$this->line_items[$line_no]->price = $price;
+			$this->line_items[$line_no]->price        = $price;
 		}
 
-		function remove_from_order($line_no) {
+		function remove_from_order($line_no)
+		{
 			$this->line_items[$line_no]->Deleted = true;
 		}
 
-		function order_has_items() {
+		function order_has_items()
+		{
 			if (count($this->line_items) > 0) {
 				foreach ($this->line_items as $ordered_items)
 				{
@@ -86,16 +93,16 @@
 			return false;
 		}
 
-		function clear_items() {
+		function clear_items()
+		{
 			unset($this->line_items);
 			$this->line_items = array();
-
 			$this->lines_on_order = 0;
-			$this->order_no = 0;
+			$this->order_no       = 0;
 		}
 
-
-		function any_already_received() {
+		function any_already_received()
+		{
 			/* Checks if there have been deliveries or invoiced entered against any of the line items */
 			if (count($this->line_items) > 0) {
 				foreach ($this->line_items as $ordered_items)
@@ -108,11 +115,12 @@
 			return 0;
 		}
 
-		function some_already_received($line_no) {
+		function some_already_received($line_no)
+		{
 			/* Checks if there have been deliveries or amounts invoiced against a specific line item */
 			if (count($this->line_items) > 0) {
-				if ($this->line_items[$line_no]->qty_received != 0 ||
-				 $this->line_items[$line_no]->qty_inv != 0
+				if ($this->line_items[$line_no]->qty_received != 0
+				 || $this->line_items[$line_no]->qty_inv != 0
 				) {
 					return 1;
 				}

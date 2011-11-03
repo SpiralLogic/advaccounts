@@ -12,12 +12,12 @@
 	// Prevent register_globals vulnerability
 	class language
 	{
-		var $name;
-		var $code; // eg. ar_EG, en_GB
-		var $encoding; // eg. UTF-8, CP1256, ISO8859-1
-		var $dir; // Currently support for Left-to-Right (ltr) and
+		public $name;
+		public $code; // eg. ar_EG, en_GB
+		public $encoding; // eg. UTF-8, CP1256, ISO8859-1
+		public $dir; // Currently support for Left-to-Right (ltr) and
 		// Right-To-Left (rtl)
-		var $is_locale_file;
+		public $is_locale_file;
 
 		function language($name, $code, $encoding, $dir = 'ltr')
 		{
@@ -41,7 +41,7 @@
 		function set_language($code)
 		{
 			$changed = $this->code != $code;
-			$lang    = Arr::search_value($code, Config::get_all('installed_languages'), 'code');
+			$lang    = Arr::search_value($code, Config::get('languages.installed'), 'code');
 			if ($lang && $changed) {
 				// flush cache as we can use several languages in one account
 				Files::flush_dir(COMPANY_PATH . '/js_cache');
@@ -64,9 +64,9 @@
 
 		static function write_lang()
 		{
-			$conn = Arr::natsort(Config::get_all('installed_languages'), 'code', 'code');
-			Config::set('installed_languages', $conn);
-			$installed_languages = Config::get_all('installed_languages');
+			$conn = Arr::natsort(Config::get('languages.installed'), 'code', 'code');
+			//Config::set('languages.installed', $conn);
+			$installed_languages = Config::get('languages.installed');
 			$n                   = count($installed_languages);
 			$msg                 = "<?php\n\n";
 			$msg .= "/* How to make new entries here\n\n";

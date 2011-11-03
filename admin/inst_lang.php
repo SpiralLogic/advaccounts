@@ -25,7 +25,8 @@
 		$selected_id = -1;
 	}
 	//---------------------------------------------------------------------------------------------
-	function check_data() {
+	function check_data()
+	{
 		if ($_POST['code'] == "" || $_POST['name'] == "" || $_POST['encoding'] == "") {
 			ui_msgs::display_error(_("Language name, code nor encoding cannot be empty"));
 			return false;
@@ -34,8 +35,9 @@
 	}
 
 	//---------------------------------------------------------------------------------------------
-	function handle_submit() {
-		$installed_languages = Config::get_all('installed_languages');
+	function handle_submit()
+	{
+		$installed_languages = Config::get('languages.installed');
 		if (!check_data()) {
 			return false;
 		}
@@ -43,10 +45,10 @@
 		if ($_POST['dflt']) {
 			Config::set('default_lang', $_POST['code']);
 		}
-		$installed_languages[$id]['code'] = $_POST['code'];
-		$installed_languages[$id]['name'] = $_POST['name'];
+		$installed_languages[$id]['code']     = $_POST['code'];
+		$installed_languages[$id]['name']     = $_POST['name'];
 		$installed_languages[$id]['encoding'] = $_POST['encoding'];
-		$installed_languages[$id]['rtl'] = (bool)$_POST['rtl'];
+		$installed_languages[$id]['rtl']      = (bool)$_POST['rtl'];
 		if (!Files::save_to_file()) {
 			return false;
 		}
@@ -71,21 +73,22 @@
 			}
 			move_uploaded_file($file1, $file2);
 		}
-		Config::set('installed_languages', $installed_languages);
+		Config::set('languages.installed', $installed_languages);
 		return true;
 	}
 
 	//---------------------------------------------------------------------------------------------
-	function handle_delete() {
-		$id = $_GET['id'];
-		$lang = Config::get_all('installed_languages');
-		$lang = $lang[$id]['code'];
+	function handle_delete()
+	{
+		$id       = $_GET['id'];
+		$lang     = Config::get('languages.installed');
+		$lang     = $lang[$id]['code'];
 		$filename = PATH_TO_ROOT . "/lang/$lang/LC_MESSAGES";
 		if ($lang == Config::get('default_lang')) {
 			// on delete set default to current.
 			Config::set('default_lang', $_SESSION['language']->code);
 		}
-		Config::remove('installed_languages', $id);
+		Config::remove('languages.installed', $id);
 		if (!Files::save_to_file()) {
 			return;
 		}
@@ -96,7 +99,8 @@
 	}
 
 	//---------------------------------------------------------------------------------------------
-	function display_languages() {
+	function display_languages()
+	{
 		$lang = $_SESSION["language"]->code;
 		echo "
 		<script language='javascript'>
@@ -106,12 +110,12 @@
 			document.location.replace('inst_lang.php?c=df&id='+id)
 		}
 		</script>";
-		start_table(Config::get('tables.style'));
+		start_table(Config::get('tables_style'));
 		$th = array(_("Language"), _("Name"), _("Encoding"), _("Right To Left"), _("Default"), "", "");
 		table_header($th);
-		$k = 0;
-		$conn = Config::get_all('installed_languages');
-		$n = count($conn);
+		$k    = 0;
+		$conn = Config::get('languages.installed');
+		$n    = count($conn);
 		for (
 			$i = 0; $i < $n; $i++
 		)
@@ -135,10 +139,10 @@
 			}
 			label_cell($rtl);
 			label_cell(Config::get('default_lang') == $conn[$i]['code'] ? _("Yes") : _("No"));
-			$edit = _("Edit");
+			$edit   = _("Edit");
 			$delete = _("Delete");
 			if (user_graphic_links()) {
-				$edit = set_icon(ICON_EDIT, $edit);
+				$edit   = set_icon(ICON_EDIT, $edit);
 				$delete = set_icon(ICON_DELETE, $delete);
 			}
 			label_cell("<a href='" . $_SERVER['PHP_SELF'] . "?selected_id=$i'>$edit</a>");
@@ -155,11 +159,12 @@
 	}
 
 	//---------------------------------------------------------------------------------------------
-	function display_language_edit($selected_id) {
+	function display_language_edit($selected_id)
+	{
 		if ($selected_id != -1) {
 			$n = $selected_id;
 		} else {
-			$n = count(Config::get_all('installed_languages'));
+			$n = count(Config::get('languages.installed'));
 		}
 		start_form(true);
 		echo "
@@ -169,11 +174,11 @@
 			document.forms[0].submit()
 		}
 		</script>";
-		start_table(Config::get('tables.style2'));
+		start_table(Config::get('tables_style2'));
 		if ($selected_id != -1) {
-			$conn = Config::get('installed_languages', $selected_id);
-			$_POST['code'] = $conn['code'];
-			$_POST['name'] = $conn['name'];
+			$conn              = Config::get('languages.installed', $selected_id);
+			$_POST['code']     = $conn['code'];
+			$_POST['name']     = $conn['name'];
 			$_POST['encoding'] = $conn['encoding'];
 			if (isset($conn['rtl'])) {
 				$_POST['rtl'] = $conn['rtl'];

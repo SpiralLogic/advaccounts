@@ -42,7 +42,8 @@
 		}
 	}
 	//--------------------------------------------------------------------------------------------------
-	function clear_fields() {
+	function clear_fields()
+	{
 		$Ajax = Ajax::instance();
 		unset($_POST['gl_code']);
 		unset($_POST['dimension_id']);
@@ -64,15 +65,15 @@
 	if (isset($_POST['AddGLCodeToTrans'])) {
 		$Ajax->activate('gl_items');
 		$input_error = false;
-		$sql = "SELECT account_code, account_name FROM chart_master WHERE account_code=" . DBOld::escape($_POST['gl_code']);
-		$result = DBOld::query($sql, "get account information");
+		$sql         = "SELECT account_code, account_name FROM chart_master WHERE account_code=" . DBOld::escape($_POST['gl_code']);
+		$result      = DBOld::query($sql, "get account information");
 		if (DBOld::num_rows($result) == 0) {
 			ui_msgs::display_error(_("The account code entered is not a valid code, this line cannot be added to the transaction."));
 			JS::set_focus('gl_code');
 			$input_error = true;
 		}
 		else {
-			$myrow = DBOld::fetch_row($result);
+			$myrow       = DBOld::fetch_row($result);
 			$gl_act_name = $myrow[1];
 			if (!Validation::is_num('amount')) {
 				ui_msgs::display_error(_("The amount entered is not numeric. This line cannot be added to the transaction."));
@@ -104,7 +105,8 @@
 		}
 	}
 	//------------------------------------------------------------------------------------------------
-	function check_data() {
+	function check_data()
+	{
 		if (!Purchase_Trans::instance()->is_valid_trans_to_post()) {
 			ui_msgs::display_error(_("The invoice cannot be processed because the there are no items or values on the invoice.  Invoices are expected to have a charge."));
 			return false;
@@ -142,7 +144,7 @@
 		}
 		$sql = "SELECT Count(*) FROM supp_trans WHERE supplier_id=" . DBOld::escape(Purchase_Trans::instance()->supplier_id) . " AND supp_reference=" . DBOld::escape($_POST['supp_reference']) . " AND ov_amount!=0"; // ignore voided invoice references
 		$result = DBOld::query($sql, "The sql to check for the previous entry of the same invoice failed");
-		$myrow = DBOld::fetch_row($result);
+		$myrow  = DBOld::fetch_row($result);
 		if ($myrow[0] == 1) { /*Transaction reference already entered */
 			ui_msgs::display_error(_("This invoice number has already been entered. It cannot be entered again." . " (" . $_POST['supp_reference'] . ")"));
 			return false;
@@ -151,7 +153,8 @@
 	}
 
 	//--------------------------------------------------------------------------------------------------
-	function handle_commit_invoice() {
+	function handle_commit_invoice()
+	{
 		copy_to_trans(Purchase_Trans::instance());
 		if (!check_data()) {
 			return;
@@ -184,7 +187,8 @@
 	if (isset($_POST['PostInvoice'])) {
 		handle_commit_invoice();
 	}
-	function check_item_data($n) {
+	function check_item_data($n)
+	{
 		if (!Validation::is_num('this_quantity_inv' . $n, 0) || input_num('this_quantity_inv' . $n) == 0) {
 			ui_msgs::display_error(_("The quantity to invoice must be numeric and greater than zero."));
 			JS::set_focus('this_quantity_inv' . $n);
@@ -233,7 +237,8 @@
 		return true;
 	}
 
-	function commit_item_data($n) {
+	function commit_item_data($n)
+	{
 		if (check_item_data($n)) {
 			if (input_num('this_quantity_inv' . $n) >= ($_POST['qty_recd' . $n] - $_POST['prev_quantity_inv' . $n])) {
 				$complete = true;
@@ -301,9 +306,9 @@
 		if ($id2 != -1) {
 			DBOld::begin_transaction();
 			$myrow = get_grn_item_detail($id2);
-			$grn = get_grn_batch($myrow['grn_batch_id']);
+			$grn   = get_grn_batch($myrow['grn_batch_id']);
 			$sql
-			 = "UPDATE purch_order_details
+						 = "UPDATE purch_order_details
 			SET quantity_received = qty_invoiced, quantity_ordered = qty_invoiced WHERE po_detail_item = " . $myrow["po_detail_item"];
 			DBOld::query($sql, "The quantity invoiced of the purchase order line could not be updated");
 			$sql

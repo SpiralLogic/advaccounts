@@ -19,51 +19,51 @@
 		*/
 	class Sales_Order
 	{
-		var $trans_type; // invoice, order, quotation, delivery note ...
-		var $trans_no = array(); // array (num1=>ver1,..) or 0 for new
-		var $so_type = 0; // for sales order: simple=0 template=1
-		var $cart_id; // used to detect multi-tab edition conflits
-		var $line_items; //array of objects of class Sales_Line
-		var $src_docs = array(); // array of arrays(num1=>ver1,...) or 0 for no src
-		var $src_date; // src document date (for info only)
-		var $document_date;
-		var $due_date;
-		var $salesman;
-		var $sales_type; // set to the customer's sales type
-		var $sales_type_name; // set to customer's sales type name
-		var $tax_included;
-		var $customer_currency; // set to the customer's currency
-		var $default_discount; // set to the customer's discount %
-		var $customer_name;
-		var $customer_id;
-		var $Branch;
-		var $email;
-		var $deliver_to;
-		var $delivery_address;
-		var $name;
-		var $phone;
-		var $cust_ref;
-		var $reference;
-		var $Comments;
-		var $Location;
-		var $location_name;
-		var $order_no; // the original order number
-		var $trans_link = 0;
-		var $ship_via;
-		var $freight_cost = 0;
-		var $tax_group_id;
-		var $tax_group_name;
-		var $tax_group_array = null; // saves db queries
-		var $price_factor; // ditto for price calculations
-		var $pos; // user assigned POS
-		var $cash; // cash transaction
-		var $cash_account;
-		var $account_name;
-		var $dimension_id;
-		var $dimension2_id;
-		var $payment;
-		var $payment_terms; // cached payment terms
-		var $credit;
+		public $trans_type; // invoice, order, quotation, delivery note ...
+		public $trans_no = array(); // array (num1=>ver1,..) or 0 for new
+		public $so_type = 0; // for sales order: simple=0 template=1
+		public $cart_id; // used to detect multi-tab edition conflits
+		public $line_items; //array of objects of class Sales_Line
+		public $src_docs = array(); // array of arrays(num1=>ver1,...) or 0 for no src
+		public $src_date; // src document date (for info only)
+		public $document_date;
+		public $due_date;
+		public $salesman;
+		public $sales_type; // set to the customer's sales type
+		public $sales_type_name; // set to customer's sales type name
+		public $tax_included;
+		public $customer_currency; // set to the customer's currency
+		public $default_discount; // set to the customer's discount %
+		public $customer_name;
+		public $customer_id;
+		public $Branch;
+		public $email;
+		public $deliver_to;
+		public $delivery_address;
+		public $name;
+		public $phone;
+		public $cust_ref;
+		public $reference;
+		public $Comments;
+		public $Location;
+		public $location_name;
+		public $order_no; // the original order number
+		public $trans_link = 0;
+		public $ship_via;
+		public $freight_cost = 0;
+		public $tax_group_id;
+		public $tax_group_name;
+		public $tax_group_array = null; // saves db queries
+		public $price_factor; // ditto for price calculations
+		public $pos; // user assigned POS
+		public $cash; // cash transaction
+		public $cash_account;
+		public $account_name;
+		public $dimension_id;
+		public $dimension2_id;
+		public $payment;
+		public $payment_terms; // cached payment terms
+		public $credit;
 
 		//-------------------------------------------------------------------------
 		//
@@ -521,6 +521,4 @@
 			return unserialize($serial);
 		}
 	} /* end of class defintion */
-
-
 ?>

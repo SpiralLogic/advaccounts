@@ -30,7 +30,7 @@
 		label_cell("$trans_name #" . $_GET['trans_no']);
 		label_cell($myrow["reference"]);
 		label_cell(Dates::sql2date($myrow["tran_date"]));
-		label_cell(payment_person_name($myrow["person_type_id"], $myrow["person_id"]));
+		label_cell(Banking::payment_person_name($myrow["person_type_id"], $myrow["person_id"]));
 		end_row();
 		ui_view::comments_display_row($_GET['type_id'], $_GET['trans_no']);
 		end_table(1);

@@ -34,10 +34,11 @@
 	function display_type(
 		$type, $typename, $from, $to, $begin, $end, $compare, $convert,
 		&$dec, &$pdec, &$rep, $dimension = 0, $dimension2 = 0, $drilldown, $path_to_root = PATH_TO_ROOT
-	) {
+	)
+	{
 		global $levelptr, $k;
-		$code_per_balance = 0;
-		$code_acc_balance = 0;
+		$code_per_balance  = 0;
+		$code_acc_balance  = 0;
 		$per_balance_total = 0;
 		$acc_balance_total = 0;
 		unset($totals_arr);
@@ -96,7 +97,7 @@
 			}
 			//START Patch#1 : Display  only direct child types
 			$acctype1 = get_account_type($type);
-			$parent1 = $acctype1["parent"];
+			$parent1  = $acctype1["parent"];
 			if ($drilldown && $parent1 == $_POST["AccGrp"]
 			) //END Patch#2
 				//elseif ($drilldown && $type != $_POST["AccGrp"])
@@ -117,7 +118,8 @@
 		return $totals_arr;
 	}
 
-	function Achieve($d1, $d2) {
+	function Achieve($d1, $d2)
+	{
 		if ($d1 == 0 && $d2 == 0) {
 			return 0;
 		}
@@ -132,7 +134,8 @@
 		return $ret;
 	}
 
-	function inquiry_controls() {
+	function inquiry_controls()
+	{
 		start_table("class='tablestyle_noborder'");
 		date_cells(_("From:"), 'TransFromDate', '', null, -30);
 		date_cells(_("To:"), 'TransToDate');
@@ -149,13 +152,14 @@
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	function display_profit_and_loss() {
+	function display_profit_and_loss()
+	{
 		global $sel;
-		$dim = DB_Company::get_pref('use_dimension');
+		$dim       = DB_Company::get_pref('use_dimension');
 		$dimension = $dimension2 = 0;
-		$from = $_POST['TransFromDate'];
-		$to = $_POST['TransToDate'];
-		$compare = $_POST['Compare'];
+		$from      = $_POST['TransFromDate'];
+		$to        = $_POST['TransToDate'];
+		$compare   = $_POST['Compare'];
 		if (isset($_POST["AccGrp"]) && (strlen($_POST['AccGrp']) > 0)) {
 			$drilldown = 1;
 		} // Deeper Level
@@ -163,7 +167,7 @@
 		{
 			$drilldown = 0;
 		} // Root level
-		$dec = 0;
+		$dec  = 0;
 		$pdec = user_percent_dec();
 		if ($compare == 0 || $compare == 2) {
 			$end = $to;
@@ -178,7 +182,7 @@
 		elseif ($compare == 1)
 		{
 			$begin = Dates::add_months($from, -12);
-			$end = Dates::add_months($to, -12);
+			$end   = Dates::add_months($to, -12);
 		}
 		div_start('pl_tbl');
 		start_table("width=50%  " . Config::get('tables_style'));
@@ -191,7 +195,7 @@
         </tr>";
 		if (!$drilldown) //Root Level
 		{
-			$parent = -1;
+			$parent   = -1;
 			$classper = $classacc = $salesper = $salesacc = 0.0;
 			//Get classes for PL
 			$classresult = get_account_classes(false, 0);
@@ -199,7 +203,7 @@
 			{
 				$class_per_total = 0;
 				$class_acc_total = 0;
-				$convert = get_class_type_convert($class["ctype"]);
+				$convert         = Systypes::get_class_type_convert($class["ctype"]);
 				//Print Class Name
 				table_section_title($class["class_name"], 4);
 				echo $tableheader;
@@ -244,11 +248,11 @@
 		} else {
 			//Level Pointer : Global variable defined in order to control display of root
 			global $levelptr;
-			$levelptr = 0;
+			$levelptr    = 0;
 			$accounttype = get_account_type($_POST["AccGrp"]);
-			$classid = $accounttype["class_id"];
-			$class = get_account_class($classid);
-			$convert = get_class_type_convert($class["ctype"]);
+			$classid     = $accounttype["class_id"];
+			$class       = get_account_class($classid);
+			$convert     = Systypes::get_class_type_convert($class["ctype"]);
 			//Print Class Name
 			table_section_title(get_account_type_name($_POST["AccGrp"]), 4);
 			echo $tableheader;

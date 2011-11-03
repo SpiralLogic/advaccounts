@@ -1,30 +1,29 @@
 <?php
-/**
- * Created by JetBrains PhpStorm.
- * User: Complex
- * Date: 1/11/11
- * Time: 7:09 AM
- * To change this template use File | Settings | File Templates.
- */ 
-
+	/**
+	 * Created by JetBrains PhpStorm.
+	 * User: Complex
+	 * Date: 1/11/11
+	 * Time: 7:09 AM
+	 * To change this template use File | Settings | File Templates.
+	 */
 	class Sales_Line
 	{
-		var $id;
-		var $stock_id;
-		var $description;
-		var $units;
-		var $mb_flag;
-		var $tax_type;
-		var $tax_type_name;
-		var $src_no; // number of src doc for this line
-		var $src_id;
-		var $quantity;
-		var $price;
-		var $discount_percent;
-		var $qty_done; // quantity processed on child documents
-		var $qty_dispatched; // quantity selected to process
-		var $qty_old = 0; // quantity dispatched before edition
-		var $standard_cost;
+		public $id;
+		public $stock_id;
+		public $description;
+		public $units;
+		public $mb_flag;
+		public $tax_type;
+		public $tax_type_name;
+		public $src_no; // number of src doc for this line
+		public $src_id;
+		public $quantity;
+		public $price;
+		public $discount_percent;
+		public $qty_done; // quantity processed on child documents
+		public $qty_dispatched; // quantity selected to process
+		public $qty_old = 0; // quantity dispatched before edition
+		public $standard_cost;
 
 		function __construct($stock_id, $qty, $prc, $disc_percent, $qty_done, $standard_cost, $description, $id = 0, $src_no = 0)
 		{

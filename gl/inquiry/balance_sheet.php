@@ -127,7 +127,7 @@
 			while ($class = DBOld::fetch($classresult))
 			{
 				$classclose = 0.0;
-				$convert    = get_class_type_convert($class["ctype"]);
+				$convert    = Systypes::get_class_type_convert($class["ctype"]);
 				$ctype      = $class["ctype"];
 				$classname  = $class["class_name"];
 				//Print Class Name
@@ -190,7 +190,7 @@
 			$accounttype = get_account_type($_POST["AccGrp"]);
 			$classid     = $accounttype["class_id"];
 			$class       = get_account_class($classid);
-			$convert     = get_class_type_convert($class["ctype"]);
+			$convert     = Systypes::get_class_type_convert($class["ctype"]);
 			//Print Class Name
 			table_section_title(get_account_type_name($_POST["AccGrp"]));
 			$classclose = display_type($accounttype["id"], $accounttype["name"], $from, $to, $convert, $drilldown, PATH_TO_ROOT);

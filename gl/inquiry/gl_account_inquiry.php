@@ -48,7 +48,8 @@
 		$_POST["amount_max"] = price_format(0);
 	}
 	//----------------------------------------------------------------------------------------------------
-	function gl_inquiry_controls() {
+	function gl_inquiry_controls()
+	{
 		$dim = DB_Company::get_pref('use_dimension');
 		start_form();
 		start_table("class='tablestyle_noborder'");
@@ -76,13 +77,14 @@
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	function show_results() {
+	function show_results()
+	{
 		global $systypes_array;
 		if (!isset($_POST["account"])) {
 			$_POST["account"] = null;
 		}
 		$act_name = $_POST["account"] ? get_gl_account_name($_POST["account"]) : "";
-		$dim = DB_Company::get_pref('use_dimension');
+		$dim      = DB_Company::get_pref('use_dimension');
 		/*Now get the transactions  */
 		if (!isset($_POST['Dimension'])) {
 			$_POST['Dimension'] = 0;
@@ -90,7 +92,7 @@
 		if (!isset($_POST['Dimension2'])) {
 			$_POST['Dimension2'] = 0;
 		}
-		$result = get_gl_transactions(
+		$result  = get_gl_transactions(
 			$_POST['TransFromDate'], $_POST['TransToDate'], -1,
 			$_POST["account"], $_POST['Dimension'], $_POST['Dimension2'], null,
 			input_num('amount_min'), input_num('amount_max')
@@ -148,8 +150,8 @@
 			end_row();
 		}
 		$running_total = $bfw;
-		$j = 1;
-		$k = 0; //row colour counter
+		$j             = 1;
+		$k             = 0; //row colour counter
 		while ($myrow = DBOld::fetch($result))
 		{
 			alt_table_row_color($k);
@@ -167,7 +169,7 @@
 			if ($dim > 1) {
 				label_cell(get_dimension_string($myrow['dimension2_id'], true));
 			}
-			label_cell(payment_person_name($myrow["person_type_id"], $myrow["person_id"]));
+			label_cell(Banking::payment_person_name($myrow["person_type_id"], $myrow["person_id"]));
 			ui_view::display_debit_or_credit_cells($myrow["amount"]);
 			if ($show_balances) {
 				amount_cell($running_total);

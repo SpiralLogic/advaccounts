@@ -13,7 +13,7 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "System Diagnostics"));
 	// Type of requirement for positive test result
-	$test_level = array(
+	$test_level   = array(
 		0 => _('Info'),
 		1 => _('Optional'),
 		2 => _('Recomended'),
@@ -138,7 +138,7 @@
 
 	function tst_subdirs()
 	{
-		$comp_subdirs = array('images', 'pdf_files', 'backup', 'js_cache');
+		$comp_subdirs  = array('images', 'pdf_files', 'backup', 'js_cache');
 		$test['descr'] = _('Company subdirectories consistency');
 		$test['type']  = 3;
 		$test['test']  = array(COMPANY_PATH . '/*');
@@ -203,11 +203,9 @@
 		$test['type']     = 3;
 		$test['result']   = true;
 		$test['comments'] = array();
-		$old = setlocale(LC_MESSAGES, '0');
-		$langs = array();
-		foreach (
-			Config::get_all('installed_languages') as $lang
-		) {
+		$old              = setlocale(LC_MESSAGES, '0');
+		$langs            = array();
+		foreach (Config::get('languages.installed') as $lang) {
 			$langs[] = $lang['code'];
 			if ($lang['code'] == 'en_AU') {
 				continue;
@@ -266,7 +264,7 @@
 	}
 
 	//-------------------------------------------------------------------------------------------------
-	start_table(Config::get('tables.style') . " width=90%");
+	start_table(Config::get('tables_style') . " width=90%");
 	$th = array(_("Test"), _('Test type'), _("Value"), _("Comments"));
 	table_header($th);
 	$k = 0; //row colour counter

@@ -16,17 +16,17 @@
 	//-----------------------------------------------------------------------------------
 	class Gl_Allocation
 	{
-		var $trans_no;
-		var $type;
-		var $person_id = '';
-		var $person_name = '';
-		var $person_type;
-		var $date_;
-		var $amount = 0; /*Total amount of the transaction in FX */
-		var $allocs; /*array of transactions allocated to */
+		public $trans_no;
+		public $type;
+		public $person_id = '';
+		public $person_name = '';
+		public $person_type;
+		public $date_;
+		public $amount = 0; /*Total amount of the transaction in FX */
+		public $allocs; /*array of transactions allocated to */
 		function __construct($type, $trans_no)
 		{
-			$this->allocs = array();
+			$this->allocs   = array();
 			$this->trans_no = $trans_no;
 			$this->type     = $type;
 			$this->read(); // read payment or credit
@@ -106,7 +106,7 @@
 			}
 			$this->allocs = array();
 			if ($trans_no) {
-				$trans = $this->person_type ? get_supp_trans($trans_no, $type)
+				$trans             = $this->person_type ? get_supp_trans($trans_no, $type)
 				 : get_customer_trans($trans_no, $type);
 				$this->person_id   = $trans[$this->person_type ? 'supplier_id' : 'debtor_no'];
 				$this->person_name = $trans[$this->person_type ? "supplier_name" : "DebtorName"];
@@ -347,14 +347,14 @@
 		public static function create_miscorder($customer, $branch, $memo, $ref, $amount, $discount = 0)
 		{
 			processing_start();
-			$type = ST_SALESINVOICE;
-			$doc  = new Sales_Order(ST_SALESINVOICE, 0);
+			$type               = ST_SALESINVOICE;
+			$doc                = new Sales_Order(ST_SALESINVOICE, 0);
 			$doc->trans_type    = $type;
 			$doc->document_date = Dates::new_doc_date();
 			$doc->pos           = user_pos();
-			$doc->due_date = $doc->document_date;
-			$doc->cust_ref = $ref;
-			$doc->Comments = "Invoice for Customer Payment: " . $doc->cust_ref;
+			$doc->due_date      = $doc->document_date;
+			$doc->cust_ref      = $ref;
+			$doc->Comments      = "Invoice for Customer Payment: " . $doc->cust_ref;
 			$doc->add_to_cart(0, 'MiscSale', '1', Taxes::get_tax_free_price_for_item('MiscSale', $amount, 0, true, $doc->tax_group_array), $discount / 100, 1, 0, 'Order: ' . $memo);
 			$doc->write(1);
 			processing_end();
@@ -365,23 +365,23 @@
 	//-----------------------------------------------------------------------------------
 	class allocation_item
 	{
-		var $type;
-		var $type_no;
-		var $date_;
-		var $due_date;
-		var $amount_allocated;
-		var $amount;
-		var $current_allocated;
+		public $type;
+		public $type_no;
+		public $date_;
+		public $due_date;
+		public $amount_allocated;
+		public $amount;
+		public $current_allocated;
 
 		function allocation_item(
 			$type, $type_no, $date_, $due_date, $amount,
 			$amount_allocated, $current_allocated
 		)
 		{
-			$this->type    = $type;
-			$this->type_no = $type_no;
-			$this->date_    = $date_;
-			$this->due_date = $due_date;
+			$this->type              = $type;
+			$this->type_no           = $type_no;
+			$this->date_             = $date_;
+			$this->due_date          = $due_date;
 			$this->amount            = $amount;
 			$this->amount_allocated  = $amount_allocated;
 			$this->current_allocated = $current_allocated;
@@ -406,9 +406,9 @@
 			$_POST['ship_via']         = $cart->ship_via;
 			$_POST['sales_type']       = $cart->sales_type;
 			$_POST['salesman']         = $cart->salesman;
-			$_POST['dimension_id']  = $cart->dimension_id;
-			$_POST['dimension2_id'] = $cart->dimension2_id;
-			$_POST['cart_id']       = $cart->cart_id;
+			$_POST['dimension_id']     = $cart->dimension_id;
+			$_POST['dimension2_id']    = $cart->dimension2_id;
+			$_POST['cart_id']          = $cart->cart_id;
 		}
 	}
 ?>

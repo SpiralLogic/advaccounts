@@ -104,6 +104,15 @@
 			$result = DBOld::query($sql, "could not query systypes table");
 			return $result;
 		}
+
+		public static function get_class_type_convert($ctype)
+		{
+			if (Config::get('accounts_gl_oldconvertstyle') == 1) {
+				return (($ctype >= CL_INCOME || $ctype == CL_NONE) ? -1 : 1);
+			} else {
+				return ((($ctype >= CL_LIABILITIES && $ctype <= CL_INCOME) || $ctype == CL_NONE) ? -1 : 1);
+			}
+		}
 	}
 
 ?>

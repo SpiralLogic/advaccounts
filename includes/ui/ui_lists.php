@@ -15,11 +15,11 @@
 	//	Options are merged with defaults.
 	/**
 	 *
-	 * @param          $name
-	 * @param          $selected_id
-	 * @param          $sql
-	 * @param          $valfield
-	 * @param          $namefield
+	 * @param					$name
+	 * @param					$selected_id
+	 * @param					$sql
+	 * @param					$valfield
+	 * @param					$namefield
 	 * @param null		 $options
 	 *
 	 * @return string*/
@@ -667,9 +667,9 @@ JS
 				$name, array_merge(
 							 array(
 										'submitonselect' => $submit_on_change,
-										'selected'       => $selected_id,
-										'purchase'       => true,
-										'cells'          => true
+										'selected'			 => $selected_id,
+										'purchase'			 => true,
+										'cells'					=> true
 							 ), $opts
 						 )
 			);
@@ -735,9 +735,9 @@ JS
 				$name, array_merge(
 							 array(
 										'selected' => $selected_id,
-										'type'     => $type,
-										'cells'    => true,
-										'sale'     => true
+										'type'		 => $type,
+										'cells'		=> true,
+										'sale'		 => true
 							 ), $opts
 						 )
 			);
@@ -1671,7 +1671,7 @@ JS
 	function languages_list($name, $selected_id = null)
 	{
 		$items = array();
-		$langs = Config::get_all('installed_languages');
+		$langs = Config::get('languages.installed');
 		foreach (
 			$langs as $lang
 		) {

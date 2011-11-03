@@ -22,38 +22,38 @@
 	include_once($_SERVER['DOCUMENT_ROOT'] . "/includes/ui/db_pager_view.php");
 	class db_pager
 	{
-		var $sql;
-		var $name;
-		var $columns; // column definitions (head, type, order)
-		var $marker; // marker check function
-		var $marker_txt;
-		var $marker_class;
-		var $notice_class;
-		var $width; // table width (default '95%')
-		var $header_fun; // additional row between title and body
-		var $header_class;
-		var $footer_fun;
-		var $footer_class;
-		var $data = array();
-		var $curr_page,
+		public $sql;
+		public $name;
+		public $columns; // column definitions (head, type, order)
+		public $marker; // marker check function
+		public $marker_txt;
+		public $marker_class;
+		public $notice_class;
+		public $width; // table width (default '95%')
+		public $header_fun; // additional row between title and body
+		public $header_class;
+		public $footer_fun;
+		public $footer_class;
+		public $data = array();
+		public $curr_page,
 		$max_page,
 		$last_page,
 		$prev_page,
 		$next_page,
 		$first_page;
-		var $page_len,
+		public $page_len,
 		$rec_count;
-		var $select,
+		public $select,
 		$where,
 		$from,
 		$group,
 		$order;
-		var $extra_where;
-		var $ready = false; // this var is false after change in sql before first
+		public $extra_where;
+		public $ready = false; // this var is false after change in sql before first
 		// and before first query.
-		var $inactive_ctrl = false;
-		var $main_tbl; // table and key field name for inactive ctrl and edit/delete links
-		var $key; // key field name
+		public $inactive_ctrl = false;
+		public $main_tbl; // table and key field name for inactive ctrl and edit/delete links
+		public $key; // key field name
 		//  db_pager constructor
 		//  accepts $sql like 'SELECT ...[FROM ...][WHERE ...][GROUP ...][ORDER ...]'
 		//	$name is base name for pager controls
@@ -160,7 +160,7 @@
 			if ($this->rec_count == 0) {
 				return true;
 			}
-			$sql = $this->_sql_gen(false);
+			$sql    = $this->_sql_gen(false);
 			$result = DBOld::query($sql, 'Error browsing database: ' . $sql);
 			if ($result) {
 				// setting field names for subsequent queries
@@ -415,7 +415,7 @@
 		function set_inactive_ctrl($table, $key)
 		{
 			$this->inactive_ctrl = array('table' => $table,
-																	 'key'   => $key);
+																	 'key'	 => $key);
 		}
 
 		//
@@ -428,7 +428,7 @@
 				//				 $row['inactive'], $this->inactive_ctrl['table'],
 				//				 $this->inactive_ctrl['key']);
 				$Ajax = Ajax::instance();
-				$key = $this->key ?
+				$key  = $this->key ?
 				 $this->key : $this->columns[0]['name']; // TODO - support for complex keys
 				$id    = $row[$key];
 				$table = $this->main_tbl;

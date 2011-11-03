@@ -20,9 +20,9 @@
 	if (DBOld::num_rows($result) != 1) {
 		Errors::show_db_error("duplicate payment bank transaction found", "");
 	}
-	$from_trans = DBOld::fetch($result);
+	$from_trans       = DBOld::fetch($result);
 	$company_currency = Banking::get_company_currency();
-	$show_currencies = false;
+	$show_currencies  = false;
 	if ($from_trans['bank_curr_code'] != $company_currency) {
 		$show_currencies = true;
 	}
@@ -45,16 +45,16 @@
 	}
 	label_cells(
 		_("Amount"), number_format2(
-			$from_trans['amount'], user_price_dec()
-		), "class='tableheader2'", "align=right"
+								 $from_trans['amount'], user_price_dec()
+							 ), "class='tableheader2'", "align=right"
 	);
 	label_cells(_("Date"), Dates::sql2date($from_trans['trans_date']), "class='tableheader2'");
 	end_row();
 	start_row();
 	label_cells(
-		_("Pay To"), payment_person_name(
-			$from_trans['person_type_id'], $from_trans['person_id']
-		), "class='tableheader2'", "colspan=$colspan1"
+		_("Pay To"), Banking::payment_person_name(
+								 $from_trans['person_type_id'], $from_trans['person_id']
+							 ), "class='tableheader2'", "colspan=$colspan1"
 	);
 	label_cells(_("Payment Type"), $bank_transfer_types[$from_trans['account_type']], "class='tableheader2'");
 	end_row();
@@ -64,7 +64,7 @@
 	ui_view::comments_display_row(ST_BANKPAYMENT, $trans_no);
 	end_table(1);
 	$voided = ui_view::is_voided_display(ST_BANKPAYMENT, $trans_no, _("This payment has been voided."));
-	$items = get_gl_trans(ST_BANKPAYMENT, $trans_no);
+	$items  = get_gl_trans(ST_BANKPAYMENT, $trans_no);
 	if (DBOld::num_rows($items) == 0) {
 		ui_msgs::display_warning(_("There are no items for this payment."));
 	}
