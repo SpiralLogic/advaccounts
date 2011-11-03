@@ -104,8 +104,7 @@
 			$input_error = 1;
 			ui_msgs::display_error(_('The item code cannot be empty'));
 			JS::set_focus('NewStockID');
-		} elseif (strstr($_POST['NewStockID'], " ") || strstr($_POST['NewStockID'], "'")
-		 || strstr($_POST['NewStockID'], "+")
+		} elseif (strstr($_POST['NewStockID'], " ") || strstr($_POST['NewStockID'], "'") || strstr($_POST['NewStockID'], "+")
 		 || strstr($_POST['NewStockID'], "\"")
 		 || strstr($_POST['NewStockID'], "&")
 		 || strstr($_POST['NewStockID'], "\t")
@@ -138,7 +137,6 @@
 				);
 				DBOld::update_record_status($_POST['NewStockID'], $_POST['inactive'], 'stock_master', 'stock_id');
 				DBOld::update_record_status($_POST['NewStockID'], $_POST['inactive'], 'item_codes', 'item_code');
-				JS::set_focus('stock_id');
 				$Ajax->activate('stock_id'); // in case of status change
 				ui_msgs::display_notification(_("Item has been updated."));
 			} else { //it is a NEW part
@@ -158,7 +156,6 @@
 				$_POST['NewStockID'] = $_POST['stock_id'] = '';
 				clear_data();
 				$new_item = true;
-				JS::set_focus('stock_id');
 				meta_forward($_SERVER['PHP_SELF']);
 			} else {
 				ui_globals::set_global_stock_item($_POST['NewStockID']);
@@ -177,9 +174,9 @@
 	function check_usage($stock_id, $dispmsg = true)
 	{
 		$sqls = array(
-			"SELECT COUNT(*) FROM stock_moves WHERE stock_id=" . DBOld::escape($stock_id)					=> _('Cannot delete this item because there are stock movements that refer to this item.'),
-			"SELECT COUNT(*) FROM bom WHERE component=" . DBOld::escape($stock_id)								 => _('Cannot delete this item record because there are bills of material that require this part as a component.'),
-			"SELECT COUNT(*) FROM sales_order_details WHERE stk_code=" . DBOld::escape($stock_id)	=> _('Cannot delete this item because there are existing purchase order items for it.'),
+			"SELECT COUNT(*) FROM stock_moves WHERE stock_id=" . DBOld::escape($stock_id)          => _('Cannot delete this item because there are stock movements that refer to this item.'),
+			"SELECT COUNT(*) FROM bom WHERE component=" . DBOld::escape($stock_id)                 => _('Cannot delete this item record because there are bills of material that require this part as a component.'),
+			"SELECT COUNT(*) FROM sales_order_details WHERE stk_code=" . DBOld::escape($stock_id)  => _('Cannot delete this item because there are existing purchase order items for it.'),
 			"SELECT COUNT(*) FROM purch_order_details WHERE item_code=" . DBOld::escape($stock_id) => _('Cannot delete this item because there are existing purchase order items for it.')
 		);
 		$msg  = '';
@@ -228,7 +225,6 @@
 			ui_msgs::display_notification(_("Selected item has been deleted."));
 			$_POST['stock_id'] = '';
 			clear_data();
-			JS::set_focus('stock_id');
 			$new_item = true;
 			$Ajax->activate('_page_body');
 		}
@@ -250,7 +246,6 @@
 		if (get_post('_show_inactive_update')) {
 			$_SESSION['options']['stock_id']['inactive'] = check_value('show_inactive');
 			$Ajax->activate('stock_id');
-			JS::set_focus('stock_id');
 		}
 	}
 	div_start('details');
@@ -263,7 +258,7 @@
 		$_POST['inactive'] = 0;
 	} else { // Must be modifying an existing item
 		if (get_post('NewStockID') != get_post('stock_id') || get_post('addupdate')) { // first item display
-			$_POST['NewStockID'] = $_POST['stock_id'];
+			$_POST['NewStockID']         = $_POST['stock_id'];
 			$myrow                       = get_item($_POST['NewStockID']);
 			$_POST['long_description']   = $myrow["long_description"];
 			$_POST['description']        = $myrow["description"];

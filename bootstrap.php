@@ -32,8 +32,8 @@
 	// intercept all output to destroy it in case of ajax call
 	// POST vars cleanup needed for direct reuse.
 	// We quote all values later with DBOld::escape() before db update.
-	array_walk(
-		$_POST, function(&$v)
+	array_walk($_POST,
+		function(&$v)
 		{
 			$v = is_string($v) ? trim($v) : $v;
 		}

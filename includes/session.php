@@ -39,7 +39,7 @@
 		protected function setLanguage()
 		{
 			if (!isset($_SESSION['language']) || !method_exists($_SESSION['language'], 'set_language')) {
-				$l            = Arr::search_value(Config::get('default_lang'), Config::get_all('installed_languages'), 'code');
+				$l            = Arr::search_value(Config::get('default_lang'), Config::get('languages.installed'), 'code');
 				static::$lang = new language($l['name'], $l['code'], $l['encoding'], isset($l['rtl']) ? 'rtl' : 'ltr');
 				static::$lang->set_language(static::$lang->code);
 				if (file_exists(APP_PATH . "lang/" . Session::$lang->code . "/locale.php")) {

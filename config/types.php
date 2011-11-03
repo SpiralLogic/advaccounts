@@ -105,67 +105,6 @@
 		_("Supplier"),
 		_("Quick Entry")
 	);
-	function payment_person_currency($type, $person_id)
-	{
-		switch ($type)
-		{
-		case PT_MISC :
-		case PT_QUICKENTRY :
-		case PT_WORKORDER :
-			return Banking::get_company_currency();
-		case PT_CUSTOMER :
-			return Banking::get_customer_currency($person_id);
-		case PT_SUPPLIER :
-			return Banking::get_supplier_currency($person_id);
-		default :
-			return Banking::get_company_currency();
-		}
-	}
-
-	function payment_person_name($type, $person_id, $full = true)
-	{
-		global $payment_person_types;
-		switch ($type)
-		{
-		case PT_MISC :
-			return $person_id;
-		case PT_QUICKENTRY :
-			$qe = get_quick_entry($person_id);
-			return ($full ? $payment_person_types[$type] . " " : "") . $qe["description"];
-		case PT_WORKORDER :
-			global $wo_cost_types;
-			return $wo_cost_types[$person_id];
-		case PT_CUSTOMER :
-			return ($full ? $payment_person_types[$type] . " " : "") . get_customer_name($person_id);
-		case PT_SUPPLIER :
-			return ($full ? $payment_person_types[$type] . " " : "") . get_supplier_name($person_id);
-		default :
-			//DisplayDBerror("Invalid type sent to person_name");
-			//return;
-			return '';
-		}
-	}
-
-	function payment_person_has_items($type)
-	{
-		switch ($type)
-		{
-		case PT_MISC :
-			return true;
-		case PT_QUICKENTRY :
-			return Validation::check(Validation::QUICK_ENTRIES);
-		case PT_WORKORDER : // 070305 changed to open workorders JH
-			return Validation::check(Validation::OPEN_WORKORDERS);
-		case PT_CUSTOMER :
-			return db_has_customers();
-		case PT_SUPPLIER :
-			return Validation::check(Validation::SUPPLIERS);
-		default :
-			Errors::show_db_error("Invalid type sent to has_items", "");
-			return false;
-		}
-	}
-
 	//----------------------------------------------------------------------------------
 	//	Manufacturing types
 	//
@@ -201,15 +140,6 @@
 		CL_COGS        => _("Cost of Goods Sold"),
 		CL_EXPENSE     => _("Expense"),
 	);
-	function get_class_type_convert($ctype)
-	{
-		if (Config::get('accounts_gl_oldconvertstyle') == 1) {
-			return (($ctype >= CL_INCOME || $ctype == CL_NONE) ? -1 : 1);
-		} else {
-			return ((($ctype >= CL_LIABILITIES && $ctype <= CL_INCOME) || $ctype == CL_NONE) ? -1 : 1);
-		}
-	}
-
 	//----------------------------------------------------------------------------------
 	//	Quick entry types
 	//
@@ -263,4 +193,17 @@
 	$GLOBALS['tag_types'] = array(
 		TAG_ACCOUNT   => _("Account"),
 		TAG_DIMENSION => _("Dimension")
+	);
+	return array(
+		'class_types'          => $GLOBALS['class_types'],
+		'quick_actions'        => $GLOBALS['quick_actions'],
+		'quick_entry_types'    => $GLOBALS['quick_entry_types'],
+		'stock_types'          => $GLOBALS['stock_types'],
+		'tag_types'            => $GLOBALS['tag_types'],
+		'systypes_array'       => $GLOBALS['systypes_array'],
+		'bank_account_types'   => $GLOBALS['bank_account_types'],
+		'bank_transfer_types'  => $GLOBALS['bank_transfer_types'],
+		'payment_person_types' => $GLOBALS['payment_person_types'],
+		'wo_types_array'       => $GLOBALS['wo_types_array'],
+		'wo_cost_types'        => $GLOBALS['wo_cost_types']
 	);

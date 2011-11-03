@@ -16,7 +16,7 @@
 		public $amount;
 		public $memo_;
 
-		function Purchase_GLCode($Counter, $gl_code, $gl_act_name, $gl_dim, $gl_dim2, $amount, $memo_)
+		function __construct($Counter, $gl_code, $gl_act_name, $gl_dim, $gl_dim2, $amount, $memo_)
 		{
 			/* Constructor function to add a new gl_codes object with passed params */
 			$this->Counter     = $Counter;

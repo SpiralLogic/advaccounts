@@ -38,7 +38,7 @@
 		$_POST['bank_account'] = "";
 	}
 	$sql
-	 = "SELECT bank_trans.* FROM bank_trans
+					= "SELECT bank_trans.* FROM bank_trans
 	WHERE bank_trans.bank_act = " . DBOld::escape($_POST['bank_account']) . "
 	AND trans_date >= '$date_after'
 	AND trans_date <= '$date_to'
@@ -79,7 +79,7 @@
 		label_cell($trandate);
 		ui_view::display_debit_or_credit_cells($myrow["amount"]);
 		amount_cell($running_total);
-		label_cell(payment_person_name($myrow["person_type_id"], $myrow["person_id"]));
+		label_cell(Banking::payment_person_name($myrow["person_type_id"], $myrow["person_id"]));
 		label_cell(ui_view::get_gl_view_str($myrow["type"], $myrow["trans_no"]));
 		end_row();
 		if ($j == 12) {

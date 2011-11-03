@@ -76,11 +76,11 @@
 		if (isset($_FILES['filename']) && $_FILES['filename']['size'] > 0) {
 			//$content = base64_encode(file_get_contents($_FILES['filename']['tmp_name']));
 			$tmpname = $_FILES['filename']['tmp_name'];
-			$dir = COMPANY_PATH . "/attachments";
+			$dir     = COMPANY_PATH . "/attachments";
 			if (!file_exists($dir)) {
 				mkdir($dir, 0777);
 				$index_file = "<?php\nheader(\"Location: ../index.php\");\n?>";
-				$fp = fopen($dir . "/index.php", "w");
+				$fp         = fopen($dir . "/index.php", "w");
 				fwrite($fp, $index_file);
 				fclose($fp);
 			}
@@ -95,7 +95,7 @@
 			$filetype = $_FILES['filename']['type'];
 		} else {
 			$unique_name = $filename = $filetype = "";
-			$filesize = 0;
+			$filesize    = 0;
 		}
 		$date = Dates::date2sql(Dates::Today());
 		if ($Mode == 'ADD_ITEM') {
@@ -141,7 +141,8 @@
 		unset($_POST['description']);
 		$selected_id = -1;
 	}
-	function viewing_controls() {
+	function viewing_controls()
+	{
 		start_form();
 		start_table("class='tablestyle_noborder'");
 		systypes_list_row(_("Type:"), 'filterType', null, true);
@@ -150,24 +151,27 @@
 	}
 
 	//----------------------------------------------------------------------------------------
-	function get_attached_documents($type) {
+	function get_attached_documents($type)
+	{
 		$sql = "SELECT * FROM attachments WHERE type_no=" . DBOld::escape($type)
 		 . " ORDER BY trans_no";
 		return DBOld::query($sql, "Could not retrieve attachments");
 	}
 
-	function get_attachment($id) {
-		$sql = "SELECT * FROM attachments WHERE id=" . DBOld::escape($id);
+	function get_attachment($id)
+	{
+		$sql    = "SELECT * FROM attachments WHERE id=" . DBOld::escape($id);
 		$result = DBOld::query($sql, "Could not retrieve attachments");
 		return DBOld::fetch($result);
 	}
 
-	function display_rows($type) {
+	function display_rows($type)
+	{
 		$rows = get_attached_documents($type);
-		$th = array(_("#"), _("Description"), _("Filename"), _("Size"), _("Filetype"), _("Date Uploaded"), "", "", "", "");
+		$th   = array(_("#"), _("Description"), _("Filename"), _("Size"), _("Filetype"), _("Date Uploaded"), "", "", "", "");
 		div_start('transactions');
 		start_form();
-		start_table(Config::get('tables.style'));
+		start_table(Config::get('tables_style'));
 		table_header($th);
 		$k = 0;
 		while ($row = DBOld::fetch($rows))
@@ -200,8 +204,8 @@
 	start_table(Config::get('tables_style2'));
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {
-			$row = get_attachment($selected_id);
-			$_POST['trans_no'] = $row["trans_no"];
+			$row                  = get_attachment($selected_id);
+			$_POST['trans_no']    = $row["trans_no"];
 			$_POST['description'] = $row["description"];
 			hidden('trans_no', $row['trans_no']);
 			hidden('unique_name', $row['unique_name']);

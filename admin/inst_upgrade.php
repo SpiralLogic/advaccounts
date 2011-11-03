@@ -83,8 +83,8 @@
 	function upgrade_step($index, $conn)
 	{
 		global $installers;
-		$inst = $installers[$index];
-		$ret = true;
+		$inst  = $installers[$index];
+		$ret   = true;
 		$force = get_post('force_' . $index);
 		if ($force || get_post('install_' . $index)) {
 			$state = $inst->installed();
@@ -164,7 +164,7 @@
 		$Ajax->activate('_page_body');
 	}
 	start_form();
-	start_table(Config::get('tables.style'));
+	start_table(Config::get('tables_style'));
 	$th = array(
 		_("Version"), _("Description"), _("Sql file"), _("Install"),
 		_("Force upgrade")

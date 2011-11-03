@@ -8,7 +8,7 @@
 	 */
 	class Extensions
 	{
-		function get_access($id)
+		public static function get_access($id)
 		{
 			global $installed_extensions;
 			$ext               = $installed_extensions[$id];
@@ -19,10 +19,10 @@
 			return array($security_areas, $security_sections);
 		}
 
-		function add_access()
+		public static function add_access()
 		{
 			global $security_areas, $security_sections;
-			$installed_extensions = Config::get_all('installed_extensions');
+			$installed_extensions = Config::get('extensions.installed');
 			foreach ($installed_extensions as $extid => $ext) {
 				$scode       = 100;
 				$acode       = 100;

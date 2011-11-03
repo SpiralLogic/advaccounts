@@ -9,15 +9,15 @@
 	 * @copyright	2010 - 2011 Fuel Development Team
 	 * @link			 http://fuelphp.com
 	 */
-
-	class Adv_Exception extends Exception {
-
-		public function __construct($message, $code = 0, Exception $previous = null, $fatal=false) {
+	class Adv_Exception extends Exception
+	{
+		public function __construct($message, $code = 0, Exception $previous = null)
+		{
 			parent::__construct($message, $code, $previous);
-			if ($fatal) exit();
 		}
 
-		public function __toString() {
+		public function __toString()
+		{
 			return __CLASS__ . ": [{$this->code}]: {$this->message}\n";
 		}
 	}

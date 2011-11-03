@@ -70,7 +70,7 @@
 			return 1;
 		}
 
-		function remove_grn_from_trans(&$grn_item_id)
+		function remove_grn_from_trans($grn_item_id)
 		{
 			unset($this->grn_items[$grn_item_id]);
 		}

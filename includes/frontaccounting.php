@@ -24,7 +24,7 @@
 		function __construct()
 		{
 			Session::hasLogin();
-			$installed_extensions = Config::get('installed_extensions');
+			$installed_extensions = Config::get('extensions.installed');
 			$this->menu           = new menu(_("Main  Menu"));
 			$this->menu->add_item(_("Main  Menu"), "index.php");
 			$this->menu->add_item(_("Logout"), "/account/access/logout.php");

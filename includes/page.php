@@ -6,8 +6,10 @@
 	 * Time: 6:57 AM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	class Page {
-		public static function start($title, $no_menu = false, $is_index = false, $onload = "", $js = "", $script_only = false) {
+	class Page
+	{
+		public static function start($title, $no_menu = false, $is_index = false, $onload = "", $js = "", $script_only = false)
+		{
 			global $page_security;
 			if (empty($page_security)) {
 				$page_security = 'SA_OPEN';
@@ -26,7 +28,8 @@
 			}
 		}
 
-		public static function header($title, $no_menu = false, $is_index = false, $onload = "", $js = "") {
+		public static function header($title, $no_menu = false, $is_index = false, $onload = "", $js = "")
+		{
 			// titles and screen header
 			if (Ajax::in_ajax() || AJAX_REFERRER) {
 				Renderer::getInstance()->has_header = false;
@@ -81,10 +84,11 @@
 			Errors::error_box();
 		}
 
-		public static function help_url($context = null) {
+		public static function help_url($context = null)
+		{
 			global $help_context, $old_style_help;
 			$country = $_SESSION['language']->code;
-			$clean = 0;
+			$clean   = 0;
 			if ($context != null) {
 				$help_page_url = $context;
 			}
@@ -93,9 +97,9 @@
 			}
 			else // main menu
 			{
-				$app = $_SESSION['sel_app'];
+				$app           = $_SESSION['sel_app'];
 				$help_page_url = $_SESSION['App']->applications[$app]->help_context;
-				$clean = 1;
+				$clean         = 1;
 			}
 			if (@$old_style_help) {
 				$help_page_url = _($help_page_url);
@@ -106,18 +110,19 @@
 			return Config::get('help_baseurl') . urlencode(
 				strtr(
 					ucwords($help_page_url), array(
-					' ' => '',
-					'/' => '',
-					'&' => 'And'
-				)
+																				' ' => '',
+																				'/' => '',
+																				'&' => 'And'
+																	 )
 				)
 			) . '&ctxhelp=1&lang=' . $country;
 		}
 
-		public static function footer($no_menu = false, $is_index = false, $hide_back_link = false) {
+		public static function footer($no_menu = false, $is_index = false, $hide_back_link = false)
+		{
 			$Validate = array();
-			$Ajax = Ajax::instance();
-			$rend = renderer::getInstance();
+			$Ajax     = Ajax::instance();
+			$rend     = renderer::getInstance();
 			$rend->menu_footer($no_menu, $is_index);
 			$edits = "editors = " . $Ajax->php2js(set_editor(false, false)) . ";";
 			$Ajax->addScript('editors', $edits);
@@ -131,14 +136,15 @@
 			if (AJAX_REFERRER) {
 				return;
 			}
-			$load_info = array(Files::convert_size(memory_get_usage(true)), Files::convert_size(memory_get_peak_usage(true)), Dates::getReadableTime(microtime(true) - FUEL_START_TIME));
+			$load_info = array(Files::convert_size(memory_get_usage(true)), Files::convert_size(memory_get_peak_usage(true)), Dates::getReadableTime(microtime(true) - ADV_START_TIME));
 			echo implode(($rend->has_header) ? "<br>" : "|", $load_info);
 			echo "</div></body>";
 			ui_view::get_websales();
 			echo	 "</html>\n";
 		}
 
-		public static function add_css($file = false) {
+		public static function add_css($file = false)
+		{
 			static $css = array();
 			if ($file == false) {
 				return $css;
@@ -146,10 +152,11 @@
 			$css[] = $file;
 		}
 
-		public static function send_css() {
+		public static function send_css()
+		{
 			$theme = user_theme();
-			$path = "/themes/$theme/";
-			$css = implode(',', static::add_css());
+			$path  = "/themes/$theme/";
+			$css   = implode(',', static::add_css());
 			echo "<link href='{$path}{$css}' rel='stylesheet' type='text/css'> \n";
 		}
 	}

@@ -20,7 +20,8 @@
 	//----------------------------------------------------------------------------------------------------
 	print_annual_expense_breakdown();
 	//----------------------------------------------------------------------------------------------------
-	function getPeriods($yr, $mo, $account, $dimension, $dimension2) {
+	function getPeriods($yr, $mo, $account, $dimension, $dimension2)
+	{
 		$date13 = date('Y-m-d', mktime(0, 0, 0, $mo + 1, 1, $yr));
 		$date12 = date('Y-m-d', mktime(0, 0, 0, $mo, 1, $yr));
 		$date11 = date('Y-m-d', mktime(0, 0, 0, $mo - 1, 1, $yr));
@@ -35,7 +36,7 @@
 		$date02 = date('Y-m-d', mktime(0, 0, 0, $mo - 10, 1, $yr));
 		$date01 = date('Y-m-d', mktime(0, 0, 0, $mo - 11, 1, $yr));
 		$sql
-		 = "SELECT SUM(CASE WHEN tran_date >= '$date01' AND tran_date < '$date02' THEN amount / 1000 ELSE 0 END) AS per01,
+						= "SELECT SUM(CASE WHEN tran_date >= '$date01' AND tran_date < '$date02' THEN amount / 1000 ELSE 0 END) AS per01,
 		   		SUM(CASE WHEN tran_date >= '$date02' AND tran_date < '$date03' THEN amount / 1000 ELSE 0 END) AS per02,
 		   		SUM(CASE WHEN tran_date >= '$date03' AND tran_date < '$date04' THEN amount / 1000 ELSE 0 END) AS per03,
 		   		SUM(CASE WHEN tran_date >= '$date04' AND tran_date < '$date05' THEN amount / 1000 ELSE 0 END) AS per04,
@@ -60,9 +61,10 @@
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	function display_type($type, $typename, $yr, $mo, $convert, &$dec, &$rep, $dimension, $dimension2) {
-		$ctotal = array(1 => 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-		$total = array(1 => 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+	function display_type($type, $typename, $yr, $mo, $convert, &$dec, &$rep, $dimension, $dimension2)
+	{
+		$ctotal     = array(1 => 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+		$total      = array(1 => 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 		$totals_arr = array();
 		$printtitle = 0; //Flag for printing type name
 		//Get Accounts directly under this group/type
@@ -153,24 +155,25 @@
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	function print_annual_expense_breakdown() {
-		$dim = DB_Company::get_pref('use_dimension');
+	function print_annual_expense_breakdown()
+	{
+		$dim       = DB_Company::get_pref('use_dimension');
 		$dimension = $dimension2 = 0;
 		if ($dim == 2) {
-			$year = $_POST['PARAM_0'];
-			$dimension = $_POST['PARAM_1'];
-			$dimension2 = $_POST['PARAM_2'];
-			$comments = $_POST['PARAM_3'];
+			$year        = $_POST['PARAM_0'];
+			$dimension   = $_POST['PARAM_1'];
+			$dimension2  = $_POST['PARAM_2'];
+			$comments    = $_POST['PARAM_3'];
 			$destination = $_POST['PARAM_4'];
 		}
 		else if ($dim == 1) {
-			$year = $_POST['PARAM_0'];
-			$dimension = $_POST['PARAM_1'];
-			$comments = $_POST['PARAM_2'];
+			$year        = $_POST['PARAM_0'];
+			$dimension   = $_POST['PARAM_1'];
+			$comments    = $_POST['PARAM_2'];
 			$destination = $_POST['PARAM_3'];
 		} else {
-			$year = $_POST['PARAM_0'];
-			$comments = $_POST['PARAM_1'];
+			$year        = $_POST['PARAM_0'];
+			$comments    = $_POST['PARAM_1'];
 			$destination = $_POST['PARAM_2'];
 		}
 		if ($destination) {
@@ -185,13 +188,13 @@
 		//$yr = date('Y');
 		//$mo = date('m'):
 		// from now
-		$sql = "SELECT begin, end, YEAR(end) AS yr, MONTH(end) AS mo FROM fiscal_year WHERE id=" . DBOld::escape($year);
+		$sql    = "SELECT begin, end, YEAR(end) AS yr, MONTH(end) AS mo FROM fiscal_year WHERE id=" . DBOld::escape($year);
 		$result = DBOld::query($sql, "could not get fiscal year");
-		$row = DBOld::fetch($result);
-		$year = Dates::sql2date($row['begin']) . " - " . Dates::sql2date($row['end']);
-		$yr = $row['yr'];
-		$mo = $row['mo'];
-		$da = 1;
+		$row    = DBOld::fetch($result);
+		$year   = Dates::sql2date($row['begin']) . " - " . Dates::sql2date($row['end']);
+		$yr     = $row['yr'];
+		$mo     = $row['mo'];
+		$da     = 1;
 		if (Config::get('accounts_datesystem') == 1) {
 			list($yr, $mo, $da) = Dates::jalali_to_gregorian($yr, $mo, $da);
 		}
@@ -199,23 +202,23 @@
 		{
 			list($yr, $mo, $da) = Dates::islamic_to_gregorian($yr, $mo, $da);
 		}
-		$per12 = strftime('%b', mktime(0, 0, 0, $mo, $da, $yr));
-		$per11 = strftime('%b', mktime(0, 0, 0, $mo - 1, $da, $yr));
-		$per10 = strftime('%b', mktime(0, 0, 0, $mo - 2, $da, $yr));
-		$per09 = strftime('%b', mktime(0, 0, 0, $mo - 3, $da, $yr));
-		$per08 = strftime('%b', mktime(0, 0, 0, $mo - 4, $da, $yr));
-		$per07 = strftime('%b', mktime(0, 0, 0, $mo - 5, $da, $yr));
-		$per06 = strftime('%b', mktime(0, 0, 0, $mo - 6, $da, $yr));
-		$per05 = strftime('%b', mktime(0, 0, 0, $mo - 7, $da, $yr));
-		$per04 = strftime('%b', mktime(0, 0, 0, $mo - 8, $da, $yr));
-		$per03 = strftime('%b', mktime(0, 0, 0, $mo - 9, $da, $yr));
-		$per02 = strftime('%b', mktime(0, 0, 0, $mo - 10, $da, $yr));
-		$per01 = strftime('%b', mktime(0, 0, 0, $mo - 11, $da, $yr));
+		$per12   = strftime('%b', mktime(0, 0, 0, $mo, $da, $yr));
+		$per11   = strftime('%b', mktime(0, 0, 0, $mo - 1, $da, $yr));
+		$per10   = strftime('%b', mktime(0, 0, 0, $mo - 2, $da, $yr));
+		$per09   = strftime('%b', mktime(0, 0, 0, $mo - 3, $da, $yr));
+		$per08   = strftime('%b', mktime(0, 0, 0, $mo - 4, $da, $yr));
+		$per07   = strftime('%b', mktime(0, 0, 0, $mo - 5, $da, $yr));
+		$per06   = strftime('%b', mktime(0, 0, 0, $mo - 6, $da, $yr));
+		$per05   = strftime('%b', mktime(0, 0, 0, $mo - 7, $da, $yr));
+		$per04   = strftime('%b', mktime(0, 0, 0, $mo - 8, $da, $yr));
+		$per03   = strftime('%b', mktime(0, 0, 0, $mo - 9, $da, $yr));
+		$per02   = strftime('%b', mktime(0, 0, 0, $mo - 10, $da, $yr));
+		$per01   = strftime('%b', mktime(0, 0, 0, $mo - 11, $da, $yr));
 		$headers = array(
 			_('Account'), _('Account Name'), $per01, $per02, $per03, $per04,
 			$per05, $per06, $per07, $per08, $per09, $per10, $per11, $per12
 		);
-		$aligns = array(
+		$aligns  = array(
 			'left', 'left', 'right', 'right', 'right', 'right', 'right', 'right',
 			'right', 'right', 'right', 'right', 'right', 'right'
 		);
@@ -225,22 +228,22 @@
 				1 => array(
 					'text' => _("Year"),
 					'from' => $year,
-					'to' => ''
+					'to'   => ''
 				),
 				2 => array(
 					'text' => _("Dimension") . " 1",
 					'from' => get_dimension_string($dimension),
-					'to' => ''
+					'to'   => ''
 				),
 				3 => array(
 					'text' => _("Dimension") . " 2",
 					'from' => get_dimension_string($dimension2),
-					'to' => ''
+					'to'   => ''
 				),
 				4 => array(
 					'text' => _('Info'),
 					'from' => _('Amounts in thousands'),
-					'to' => ''
+					'to'   => ''
 				)
 			);
 		}
@@ -250,17 +253,17 @@
 				1 => array(
 					'text' => _("Year"),
 					'from' => $year,
-					'to' => ''
+					'to'   => ''
 				),
 				2 => array(
 					'text' => _('Dimension'),
 					'from' => get_dimension_string($dimension),
-					'to' => ''
+					'to'   => ''
 				),
 				3 => array(
 					'text' => _('Info'),
 					'from' => _('Amounts in thousands'),
-					'to' => ''
+					'to'   => ''
 				)
 			);
 		} else {
@@ -269,12 +272,12 @@
 				1 => array(
 					'text' => _("Year"),
 					'from' => $year,
-					'to' => ''
+					'to'   => ''
 				),
 				2 => array(
 					'text' => _('Info'),
 					'from' => _('Amounts in thousands'),
-					'to' => ''
+					'to'   => ''
 				)
 			);
 		}
@@ -282,12 +285,12 @@
 		$rep->Font();
 		$rep->Info($params, $cols, $headers, $aligns);
 		$rep->Header();
-		$sales = Array(1 => 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+		$sales       = Array(1 => 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 		$classresult = get_account_classes(false, 0);
 		while ($class = DBOld::fetch($classresult))
 		{
-			$ctotal = Array(1 => 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-			$convert = get_class_type_convert($class["ctype"]);
+			$ctotal  = Array(1 => 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+			$convert = Systypes::get_class_type_convert($class["ctype"]);
 			//Print Class Name
 			$rep->Font('bold');
 			$rep->TextCol(0, 5, $class["class_name"]);

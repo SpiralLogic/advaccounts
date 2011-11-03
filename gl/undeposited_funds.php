@@ -82,7 +82,7 @@
 
 	function fmt_person($row)
 	{
-		return payment_person_name($row["person_type_id"], $row["person_id"]);
+		return Banking::payment_person_name($row["person_type_id"], $row["person_id"]);
 	}
 
 	$update_pager = false;
@@ -215,7 +215,7 @@
 	end_table();
 	echo "<hr>";
 	div_start('summary');
-	start_table(Config::get('tables.style'));
+	start_table(Config::get('tables_style'));
 	$th = array(_("Deposit Date"), _("Total Deposit<br>Amount"));
 	table_header($th);
 	start_row();

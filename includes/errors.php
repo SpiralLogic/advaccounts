@@ -19,23 +19,20 @@
 		//    display in message box.
 		static function init()
 		{
-			if (Config::get('debug') && isset($_SESSION["wa_current_user"]) && CurrentUser::instance()->user == 1) {
-				if (preg_match('/Chrome/i', $_SERVER['HTTP_USER_AGENT'])) {
-					include(APP_PATH . 'includes' . DS . 'fb.php');
-					FB::useFile(APP_PATH . 'tmp' . DS . 'chromelogs', DS . 'tmp' . DS . 'chromelogs');
-				} else {
-					include(APP_PATH . 'includes' . DS . 'FirePHP' . DS . 'FirePHP.class.php');
-					include(APP_PATH . 'includes' . DS . 'FirePHP' . DS . 'fb.php');
-				}
-			}
-			else {
-				Config::set('debug', false);
-				error_reporting(E_USER_WARNING | E_USER_ERROR | E_USER_NOTICE);
-			}
-
-			// colect all error msgs
 			set_error_handler('adv_error_handler');
 			set_exception_handler('adv_exception_handler');
+			if (Config::get('debug') && CurrentUser::instance()->user == 1) {
+				if (preg_match('/Chrome/i', $_SERVER['HTTP_USER_AGENT'])) {
+					include(dirname('.') . DS . 'fb.php');
+					FB::useFile(APP_PATH . 'tmp' . DS . 'chromelogs', DS . 'tmp' . DS . 'chromelogs');
+				} else {
+					include(dirname('.') . DS . 'FirePHP/FirePHP.class.php');
+					include(dirname('.') . DS . 'FirePHP/fb.php');
+				}
+				return;
+			}
+			// colect all error msgs
+			error_reporting(E_USER_WARNING | E_USER_ERROR | E_USER_NOTICE);
 		}
 
 		static function handler($errno, $errstr, $file, $line)
@@ -43,23 +40,20 @@
 			// skip well known warnings we don't care about.
 			// Please use restrainedly to not risk loss of important messages
 			$excluded_warnings = array('html_entity_decode', 'htmlspecialchars');
-			foreach (
-				$excluded_warnings as $ref
-			) {
+			foreach ($excluded_warnings as $ref)
+			{
 				if (strpos($errstr, $ref) !== false) {
 					return true;
 				}
 			}
 			// error_reporting==0 when messages are set off with @
 			if ($errno & error_reporting()) {
-				static::$messages[] = array($errno, $errstr, $file, $line);
-			}
-			else if ($errno & ~E_NOTICE) // log all not displayed messages
-			{
-				error_log(
-					CurrentUser::instance()->loginname . ':'
-					 . basename($file) . ":$line: $errstr"
-				);
+				static::$messages[] = array('error_no'   => $errno,
+																		'error_str'  => $errstr,
+																		'error_file' => $file,
+																		'error_line' => $line);
+			} else if ($errno & ~E_NOTICE) { // log all not displayed messages
+				error_log(CurrentUser::instance()->loginname . ':' . basename($file) . ":$line: $errstr");
 			}
 			return true;
 		}
@@ -67,45 +61,33 @@
 		//------------------------------------------------------------------------------
 		//	Formats system messages before insert them into message <div>
 		// FIX center is unused now
-		static function format($center = false)
+		static function format()
 		{
 			$msg_class = array(
-				E_USER_ERROR	 => 'err_msg',
+				E_USER_ERROR   => 'err_msg',
 				E_USER_WARNING => 'warn_msg',
-				E_USER_NOTICE	=> 'note_msg'
+				E_USER_NOTICE  => 'note_msg'
 			);
 			$type    = E_USER_NOTICE;
 			$content = '';
-			//  $class = 'no_msg';
-			if (count(static::$messages)) {
-				foreach (
-					static::$messages as $cnt => $msg
-				) {
-					if ($msg[0] > $type) {
-						continue;
-					}
-					if ($msg[0] < $type) {
-						if ($msg[0] == E_USER_WARNING) {
-							$type = E_USER_WARNING; // user warnings
-							$content = ''; // clean notices when we have errors
-						} else {
-							$type = E_USER_ERROR; // php or user errors
-							if ($type == E_USER_WARNING) {
-								$content = '';
-							} // clean other messages
-						}
-					}
-					$str = $msg[1];
-					if ($msg[0] < E_USER_ERROR && $msg[2] != null) {
-						$str .= ' ' . _('in file') . ': ' . $msg[2] . ' ' . _('at line ') . $msg[3];
-					}
-					$content .= ($cnt ? '<hr>' : '') . $str;
-				}
-				$class   = $msg_class[$type];
-				$content = "<div class='$class'>$content</div>";
-			} else if (PATH_TO_ROOT == '.') {
+			if (PATH_TO_ROOT == '.' && count(static::$messages)) {
 				return '';
 			}
+			foreach (static::$messages as $cnt => $msg) {
+				if ($msg['error_no'] > $type) {
+					continue;
+				}
+				if ($msg['error_no'] < $type) {
+					$type = ($msg['error_no'] == E_USER_WARNING) ? E_USER_WARNING : E_USER_ERROR; // php or user errors
+				}
+				$str = $msg['error_string'];
+				if ($msg['error_no'] < E_USER_ERROR && $msg['error_no'] != null) {
+					$str .= ' ' . _('in file') . ': ' . $msg['error_file'] . ' ' . _('at line ') . $msg['error_line'];
+				}
+				$content .= ($cnt ? '<hr>' : '') . $str;
+			}
+			$class   = $msg_class[$type];
+			$content = "<div class='$class'>$content</div>";
 			return $content;
 		}
 
@@ -115,7 +97,6 @@
 		static function error_box()
 		{
 			echo "<div id='msgbox'>";
-			// Necessary restart instead of get_contents/clean calls due to a bug in php 4.3.2
 			static::$before_box = ob_get_clean(); // save html content before error box
 			ob_start('adv_ob_flush_handler');
 			echo "</div>";
@@ -126,7 +107,7 @@
 					 */
 		static function show_db_error($msg, $sql_statement = null, $exit = true)
 		{
-			$db = DBOld::getInstance();
+			$db       = DBOld::getInstance();
 			$warning  = $msg == null;
 			$db_error = DBOld::error_no();
 			//	$str = "<span class='errortext'><b>" . _("DATABASE ERROR :") . "</b> $msg</span><br>";

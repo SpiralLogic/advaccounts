@@ -10,10 +10,11 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	//----------------------------------------------------------------------------------------
-	function add_sales_order(&$order) {
+	function add_sales_order(&$order)
+	{
 		DBOld::begin_transaction();
-		$order_no = SysTypes::get_next_trans_no($order->trans_type);
-		$del_date = Dates::date2sql($order->due_date);
+		$order_no   = SysTypes::get_next_trans_no($order->trans_type);
+		$del_date   = Dates::date2sql($order->due_date);
 		$order_type = 0; // this is default on new order
 		$sql
 		 = "INSERT INTO sales_orders (order_no, type, debtor_no, trans_type, branch_code, customer_ref, reference, salesman, comments, ord_date,
@@ -26,9 +27,9 @@
 		DBOld::query($sql, "order Cannot be Added");
 		$order->trans_no = array($order_no => 0);
 		if (Config::get('accounts_stock_emailnotify') == 1) {
-			$st_ids = array();
-			$st_names = array();
-			$st_num = array();
+			$st_ids     = array();
+			$st_names   = array();
+			$st_num     = array();
 			$st_reorder = array();
 		}
 		foreach (
@@ -36,7 +37,7 @@
 		) {
 			if (Config::get('accounts_stock_emailnotify') == 1 && is_inventory_item($line->stock_id)) {
 				$sql
-				 = "SELECT loc_stock.*, locations.location_name, locations.email
+						 = "SELECT loc_stock.*, locations.location_name, locations.email
 				FROM loc_stock, locations
 				WHERE loc_stock.loc_code=locations.loc_code
 				AND loc_stock.stock_id = '" . $line->stock_id . "'
@@ -49,9 +50,9 @@
 					$qoh -= Manufacturing::get_demand_asm_qty($line->stock_id, $order->Location);
 					$qoh -= $line->quantity;
 					if ($qoh < $loc['reorder_level']) {
-						$st_ids[] = $line->stock_id;
-						$st_names[] = $line->description;
-						$st_num[] = $qoh - $loc['reorder_level'];
+						$st_ids[]     = $line->stock_id;
+						$st_names[]   = $line->description;
+						$st_num[]     = $qoh - $loc['reorder_level'];
 						$st_reorder[] = $loc['reorder_level'];
 					}
 				}
@@ -68,11 +69,11 @@
 		if (Config::get('accounts_stock_emailnotify') == 1 && count($st_ids) > 0) {
 			require_once(APP_PATH . "/reporting/includes/email.php");
 			$company = DB_Company::get_prefs();
-			$mail = new Reports_Email($company['coy_name'], $company['email']);
-			$from = $company['coy_name'] . " <" . $company['email'] . ">";
-			$to = $loc['location_name'] . " <" . $loc['email'] . ">";
+			$mail    = new Reports_Email($company['coy_name'], $company['email']);
+			$from    = $company['coy_name'] . " <" . $company['email'] . ">";
+			$to      = $loc['location_name'] . " <" . $loc['email'] . ">";
 			$subject = _("Stocks below Re-Order Level at " . $loc['location_name']);
-			$msg = "\n";
+			$msg     = "\n";
 			for (
 				$i = 0; $i < count($st_ids); $i++
 			)
@@ -90,7 +91,8 @@
 	}
 
 	//----------------------------------------------------------------------------------------
-	function delete_sales_order($order_no, $trans_type) {
+	function delete_sales_order($order_no, $trans_type)
+	{
 		DBOld::begin_transaction();
 		$sql = "DELETE FROM sales_orders WHERE order_no=" . DBOld::escape($order_no) . " AND trans_type=" . DBOld::escape($trans_type);
 		DBOld::query($sql, "order Header Delete");
@@ -104,7 +106,8 @@
 	//----------------------------------------------------------------------------------------
 	// Mark changes in sales_order_details
 	//
-	function update_sales_order_version($order) {
+	function update_sales_order_version($order)
+	{
 		foreach (
 			$order as $so_num => $so_ver
 		) {
@@ -114,11 +117,12 @@
 	}
 
 	//----------------------------------------------------------------------------------------
-	function update_sales_order($order) {
+	function update_sales_order($order)
+	{
 		$del_date = Dates::date2sql($order->due_date);
 		$ord_date = Dates::date2sql($order->document_date);
 		$order_no = key($order->trans_no);
-		$version = current($order->trans_no);
+		$version  = current($order->trans_no);
 		DBOld::begin_transaction();
 		$sql = "UPDATE sales_orders SET type =" . DBOld::escape($order->so_type) . " ,
 		debtor_no = " . DBOld::escape($order->customer_id) . ",
@@ -145,9 +149,9 @@
 		$sql = "DELETE FROM sales_order_details WHERE order_no =" . $order_no . " AND trans_type=" . $order->trans_type;
 		DBOld::query($sql, "Old order Cannot be Deleted");
 		if (Config::get('accounts_stock_emailnotify') == 1) {
-			$st_ids = array();
-			$st_names = array();
-			$st_num = array();
+			$st_ids     = array();
+			$st_names   = array();
+			$st_num     = array();
 			$st_reorder = array();
 		}
 		foreach (
@@ -155,7 +159,7 @@
 		) {
 			if (Config::get('accounts_stock_emailnotify') == 1 && is_inventory_item($line->stock_id)) {
 				$sql
-				 = "SELECT loc_stock.*, locations.location_name, locations.email
+						 = "SELECT loc_stock.*, locations.location_name, locations.email
 				FROM loc_stock, locations
 				WHERE loc_stock.loc_code=locations.loc_code
 				 AND loc_stock.stock_id = " . DBOld::escape($line->stock_id) . "
@@ -168,9 +172,9 @@
 					$qoh -= Manufacturing::get_demand_asm_qty($line->stock_id, $order->Location);
 					$qoh -= $line->quantity;
 					if ($qoh < $loc['reorder_level']) {
-						$st_ids[] = $line->stock_id;
-						$st_names[] = $line->description;
-						$st_num[] = $qoh - $loc['reorder_level'];
+						$st_ids[]     = $line->stock_id;
+						$st_names[]   = $line->description;
+						$st_num[]     = $qoh - $loc['reorder_level'];
 						$st_reorder[] = $loc['reorder_level'];
 					}
 				}
@@ -194,11 +198,11 @@
 		if (Config::get('accounts_stock_emailnotify') == 1 && count($st_ids) > 0) {
 			require_once(APP_PATH . "/reporting/includes/class.mail.php");
 			$company = DB_Company::get_prefs();
-			$mail = new Reports_Email($company['coy_name'], $company['email']);
-			$from = $company['coy_name'] . " <" . $company['email'] . ">";
-			$to = $loc['location_name'] . " <" . $loc['email'] . ">";
+			$mail    = new Reports_Email($company['coy_name'], $company['email']);
+			$from    = $company['coy_name'] . " <" . $company['email'] . ">";
+			$to      = $loc['location_name'] . " <" . $loc['email'] . ">";
 			$subject = _("Stocks below Re-Order Level at " . $loc['location_name']);
-			$msg = "\n";
+			$msg     = "\n";
 			for (
 				$i = 0; $i < count($st_ids); $i++
 			)
@@ -215,9 +219,10 @@
 	}
 
 	//----------------------------------------------------------------------------------------
-	function get_sales_order_header($order_no, $trans_type) {
+	function get_sales_order_header($order_no, $trans_type)
+	{
 		$sql
-		 = "SELECT DISTINCT sales_orders.*,
+						= "SELECT DISTINCT sales_orders.*,
 	  debtors_master.name,
 	  debtors_master.curr_code,
 	  debtors_master.email AS master_email,
@@ -246,7 +251,7 @@
 		AND sales_orders.trans_type = " . DBOld::escape($trans_type) . "
 		AND sales_orders.order_no = " . DBOld::escape($order_no);
 		$result = DBOld::query($sql, "order Retreival");
-		$num = DBOld::num_rows($result);
+		$num    = DBOld::num_rows($result);
 		if ($num > 1) {
 			Errors::show_db_error("FATAL : sales order query returned a duplicate - " . DBOld::num_rows($result), $sql, true);
 		}
@@ -258,7 +263,8 @@
 	}
 
 	//----------------------------------------------------------------------------------------
-	function get_sales_order_details($order_no, $trans_type) {
+	function get_sales_order_details($order_no, $trans_type)
+	{
 		$sql
 		 = "SELECT sales_order_details.id, stk_code, unit_price, sales_order_details.description,sales_order_details.quantity,
 		  discount_percent,
@@ -270,11 +276,12 @@
 	}
 
 	//----------------------------------------------------------------------------------------
-	function read_sales_order($order_no, &$order, $trans_type) {
-		$myrow = get_sales_order_header($order_no, $trans_type);
+	function read_sales_order($order_no, &$order, $trans_type)
+	{
+		$myrow             = get_sales_order_header($order_no, $trans_type);
 		$order->trans_type = $myrow['trans_type'];
-		$order->so_type = $myrow["type"];
-		$order->trans_no = array($order_no => $myrow["version"]);
+		$order->so_type    = $myrow["type"];
+		$order->trans_no   = array($order_no => $myrow["version"]);
 		$order->set_customer(
 			$myrow["debtor_no"], $myrow["name"],
 			$myrow["curr_code"], $myrow["discount"], $myrow["payment_terms"]
@@ -283,15 +290,15 @@
 		$order->set_sales_type($myrow["sales_type_id"], $myrow["sales_type"], $myrow["tax_included"], 0); // no default price calculations on edit
 		$order->set_location($myrow["from_stk_loc"], $myrow["location_name"]);
 		$order->set_delivery($myrow["ship_via"], $myrow["deliver_to"], $myrow["delivery_address"], $myrow["freight_cost"]);
-		$order->cust_ref = $myrow["customer_ref"];
-		$order->name = $myrow["contact_name"];
-		$order->sales_type = $myrow["order_type"];
-		$order->reference = $myrow["reference"];
-		$order->salesman = $myrow["salesman"];
-		$order->Comments = $myrow["comments"];
-		$order->due_date = Dates::sql2date($myrow["delivery_date"]);
+		$order->cust_ref      = $myrow["customer_ref"];
+		$order->name          = $myrow["contact_name"];
+		$order->sales_type    = $myrow["order_type"];
+		$order->reference     = $myrow["reference"];
+		$order->salesman      = $myrow["salesman"];
+		$order->Comments      = $myrow["comments"];
+		$order->due_date      = Dates::sql2date($myrow["delivery_date"]);
 		$order->document_date = Dates::sql2date($myrow["ord_date"]);
-		$result = get_sales_order_details($order_no, $order->trans_type);
+		$result               = get_sales_order_details($order_no, $order->trans_type);
 		if (DBOld::num_rows($result) > 0) {
 			$line_no = 0;
 			while ($myrow = DBOld::fetch($result)) {
@@ -306,20 +313,22 @@
 	}
 
 	//----------------------------------------------------------------------------------------
-	function sales_order_has_deliveries($order_no) {
-		$sql = "SELECT SUM(qty_sent) FROM sales_order_details WHERE order_no=" . DBOld::escape($order_no) . " AND trans_type=" . ST_SALESORDER . "";
+	function sales_order_has_deliveries($order_no)
+	{
+		$sql    = "SELECT SUM(qty_sent) FROM sales_order_details WHERE order_no=" . DBOld::escape($order_no) . " AND trans_type=" . ST_SALESORDER . "";
 		$result = DBOld::query($sql, "could not query for sales order usage");
-		$row = DBOld::fetch_row($result);
+		$row    = DBOld::fetch_row($result);
 		if ($row[0] > 0) {
 			return true;
 		} // 2010-04-21 added check for eventually voided deliveries, Joe Hunt
-		$sql = "SELECT order_ FROM debtor_trans WHERE type=" . ST_CUSTDELIVERY . " AND order_=" . DBOld::escape($order_no);
+		/*$sql = "SELECT order_ FROM debtor_trans WHERE type=" . ST_CUSTDELIVERY . " AND order_=" . DBOld::escape($order_no);
 		$result = DBOld::query($sql, "The related delivery notes could not be retreived");
-		return (DBOld::num_rows($result) > 0);
+		;*/
 	}
 
 	//----------------------------------------------------------------------------------------
-	function close_sales_order($order_no) {
+	function close_sales_order($order_no)
+	{
 		// set the quantity of each item to the already sent quantity. this will mark item as closed.
 		$sql
 		 = "UPDATE sales_order_details
@@ -328,16 +337,17 @@
 	}
 
 	//---------------------------------------------------------------------------------------------------------------
-	function get_invoice_duedate($debtorno, $invdate) {
+	function get_invoice_duedate($debtorno, $invdate)
+	{
 		if (!Dates::is_date($invdate)) {
 			return Dates::new_doc_date();
 		}
 		$sql
-		 = "SELECT debtors_master.debtor_no, debtors_master.payment_terms, payment_terms.* FROM debtors_master,
+						= "SELECT debtors_master.debtor_no, debtors_master.payment_terms, payment_terms.* FROM debtors_master,
 		payment_terms WHERE debtors_master.payment_terms = payment_terms.terms_indicator AND
 		debtors_master.debtor_no = " . DBOld::escape($debtorno);
 		$result = DBOld::query($sql, "The customer details could not be retrieved");
-		$myrow = DBOld::fetch($result);
+		$myrow  = DBOld::fetch($result);
 		if (DBOld::num_rows($result) == 0) {
 			return $invdate;
 		}
@@ -349,10 +359,11 @@
 		return $duedate;
 	}
 
-	function get_customer_to_order($customer_id) {
+	function get_customer_to_order($customer_id)
+	{
 		// Now check to ensure this account is not on hold */
 		$sql
-		 = "SELECT debtors_master.name,
+						= "SELECT debtors_master.name,
 	 debtors_master.address,
 	 credit_status.dissallow_invoices,
 	 debtors_master.sales_type AS salestype,
@@ -373,7 +384,8 @@
 		return DBOld::fetch($result);
 	}
 
-	function get_branch_to_order($customer_id, $branch_id) {
+	function get_branch_to_order($customer_id, $branch_id)
+	{
 		// the branch was also selected from the customer selection so default the delivery details from the customer branches table cust_branch. The order process will ask for branch details later anyway
 		$sql
 		 = "SELECT cust_branch.br_name,
