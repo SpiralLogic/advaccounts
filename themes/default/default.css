@@ -559,7 +559,7 @@ div.banner a + a { border-top: 2px groove #999 }
 	padding:     5px;
 }
 
-.headingtext2 {
+table .headingtext {
 	font-size:   14px;
 	color:       black;
 	padding:     3px;
@@ -567,11 +567,6 @@ div.banner a + a { border-top: 2px groove #999 }
 	display:     block;
 }
 
-.headingtext3 {
-	font-weight: bold;
-	font-size:   10px;
-	color:       black;
-}
 
 .menu_group {
 	font-size:        13px;

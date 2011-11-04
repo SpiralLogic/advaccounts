@@ -31,25 +31,25 @@
 	// display the WO requirements
 	br(1);
 	if ($myrow["released"] == false) {
-		ui_msgs::display_heading2(_("BOM for item:") . " " . $myrow["StockItemName"]);
+		ui_msgs::display_heading(_("BOM for item:") . " " . $myrow["StockItemName"]);
 		display_bom($myrow["stock_id"]);
 } else {
-		ui_msgs::display_heading2(_("Work Order Requirements"));
+		ui_msgs::display_heading(_("Work Order Requirements"));
 		display_wo_requirements($woid, $myrow["units_reqd"]);
 		if ($myrow["type"] == WO_ADVANCED) {
 			echo "<br><table cellspacing=7><tr valign=top><td>";
-			ui_msgs::display_heading2(_("Issues"));
+			ui_msgs::display_heading(_("Issues"));
 			display_wo_issues($woid);
 			echo "</td><td>";
-			ui_msgs::display_heading2(_("Productions"));
+			ui_msgs::display_heading(_("Productions"));
 			display_wo_productions($woid);
 			echo "</td><td>";
-			ui_msgs::display_heading2(_("Additional Costs"));
+			ui_msgs::display_heading(_("Additional Costs"));
 			display_wo_payments($woid);
 			echo "</td></tr></table>";
 		} else {
 			echo "<br><table cellspacing=7><tr valign=top><td>";
-			ui_msgs::display_heading2(_("Additional Costs"));
+			ui_msgs::display_heading(_("Additional Costs"));
 			display_wo_payments($woid);
 			echo "</td></tr></table>";
 		}

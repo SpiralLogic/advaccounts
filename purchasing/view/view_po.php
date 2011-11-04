@@ -24,7 +24,7 @@
 	display_po_summary($purchase_order, true);
 	start_table(Config::get('tables_style') . "  width=90%", 6);
 	echo "<tr><td valign=top>"; // outer table
-	ui_msgs::display_heading2(_("Line Details"));
+	ui_msgs::display_heading(_("Line Details"));
 	start_table("colspan=9 " . Config::get('tables_style') . " width=100%");
 	$th = array(
 		_("Item Code"), _("Item Description"), _("Quantity"), _("Unit"), _("Price"), _("Discount"), _("Line Total"), _("Requested By"), _("Quantity Received"),
@@ -70,7 +70,7 @@
 	$grns_result = get_po_grns($_GET['trans_no']);
 	if (DBOld::num_rows($grns_result) > 0) {
 		echo "</td><td valign=top>"; // outer table
-		ui_msgs::display_heading2(_("Deliveries"));
+		ui_msgs::display_heading(_("Deliveries"));
 		start_table(Config::get('tables_style'));
 		$th = array(_("#"), _("Reference"), _("Delivered On"));
 		table_header($th);
@@ -87,7 +87,7 @@
 	$k              = 0;
 	if (DBOld::num_rows($invoice_result) > 0) {
 		echo "</td><td valign=top>"; // outer table
-		ui_msgs::display_heading2(_("Invoices/Credits"));
+		ui_msgs::display_heading(_("Invoices/Credits"));
 		start_table(Config::get('tables_style'));
 		$th = array(_("#"), _("Date"), _("Total"));
 		table_header($th);

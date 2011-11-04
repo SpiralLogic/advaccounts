@@ -63,9 +63,9 @@
 	if (DBOld::num_rows($items) == 0) {
 		ui_msgs::display_warning(_("There are no items for this deposit."));
 } else {
-		ui_msgs::display_heading2(_("Items for this Deposit"));
+		ui_msgs::display_heading(_("Items for this Deposit"));
 		if ($show_currencies) {
-			ui_msgs::display_heading2(_("Item Amounts are Shown in :") . " " . $company_currency);
+			ui_msgs::display_heading(_("Item Amounts are Shown in :") . " " . $company_currency);
 		}
 		start_table(Config::get('tables_style') . "  width=90%");
 		$dim = DB_Company::get_pref('use_dimension');

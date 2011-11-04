@@ -35,8 +35,8 @@
 			)
 		);
 		ui_msgs::display_heading($_SESSION['alloc']->person_name);
-		ui_msgs::display_heading2(_("Date:") . " <b>" . $_SESSION['alloc']->date_ . "</b>");
-		ui_msgs::display_heading2(_("Total:") . " <b>" . price_format($_SESSION['alloc']->amount) . "</b>");
+		ui_msgs::display_heading(_("Date:") . " <b>" . $_SESSION['alloc']->date_ . "</b>");
+		ui_msgs::display_heading(_("Total:") . " <b>" . price_format($_SESSION['alloc']->amount) . "</b>");
 		echo "<br>";
 		start_form();
 		div_start('alloc_tbl');

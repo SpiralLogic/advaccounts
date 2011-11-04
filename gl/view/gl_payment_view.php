@@ -66,9 +66,9 @@
 	if (DBOld::num_rows($items) == 0) {
 		ui_msgs::display_warning(_("There are no items for this payment."));
 } else {
-		ui_msgs::display_heading2(_("Items for this Payment"));
+		ui_msgs::display_heading(_("Items for this Payment"));
 		if ($show_currencies) {
-			ui_msgs::display_heading2(_("Item Amounts are Shown in :") . " " . $company_currency);
+			ui_msgs::display_heading(_("Item Amounts are Shown in :") . " " . $company_currency);
 		}
 		echo "<br>";
 		start_table(Config::get('tables_style') . "  width=90%");

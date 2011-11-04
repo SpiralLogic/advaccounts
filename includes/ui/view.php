@@ -440,7 +440,7 @@
 			if (!$alloc_result || DBOld::num_rows($alloc_result) == 0) {
 				return;
 			}
-			ui_msgs::display_heading2(_("Allocations"));
+			ui_msgs::display_heading(_("Allocations"));
 			start_table(Config::get('tables_style') . "  width=90%");
 			$th = array(_("Type"), _("Number"), _("Date"), _("Total Amount"), _("Left to Allocate"), _("This Allocation"));
 			table_header($th);

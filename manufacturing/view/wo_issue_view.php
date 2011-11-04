@@ -77,7 +77,7 @@
 	//-------------------------------------------------------------------------------------------------
 	ui_msgs::display_heading($systypes_array[ST_MANUISSUE] . " # " . $wo_issue_no);
 	display_wo_issue($wo_issue_no);
-	ui_msgs::display_heading2(_("Items for this Issue"));
+	ui_msgs::display_heading(_("Items for this Issue"));
 	display_wo_issue_details($wo_issue_no);
 	//-------------------------------------------------------------------------------------------------
 	echo "<br>";

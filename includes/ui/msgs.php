@@ -23,17 +23,10 @@
 			trigger_error($msg, E_USER_WARNING);
 		}
 
-		static function display_notification($msg) {
-			ui_msgs::display_notification($msg, true);
-		}
-
 		static function display_heading($msg) {
 			echo "<center><span class='headingtext'>$msg</span></center>\n";
 		}
 
-		static function display_heading2($msg) {
-			echo "<center><span class='headingtext2'>$msg</span></center>\n";
-		}
 
 		static function display_note($msg, $br = 0, $br2 = 0, $extra = "") {
 			for ($i = 0; $i < $br; $i++)
@@ -57,7 +50,7 @@
 
 				ui_msgs::display_heading("$stock_id - $myrow[0]");
 				$units = $myrow[1];
-				ui_msgs::display_heading2(_("in units of : ") . $units);
+				ui_msgs::display_heading(_("in units of : ") . $units);
 			}
 		}
 	}

@@ -28,13 +28,13 @@
 	start_table(Config::get('tables_style2') . " width=95%", 5);
 	echo "<tr valign=top class='tableheader2'><td >";
 	if ($_GET['trans_type'] != ST_SALESQUOTE) {
-		ui_msgs::display_heading2(_("Order Information"));
+		ui_msgs::display_heading(_("Order Information"));
 		echo "</td><td>";
-		ui_msgs::display_heading2(_("Deliveries"));
+		ui_msgs::display_heading(_("Deliveries"));
 		echo "</td><td>";
-		ui_msgs::display_heading2(_("Invoices/Credits"));
+		ui_msgs::display_heading(_("Invoices/Credits"));
 	} else {
-		ui_msgs::display_heading2(_("Quote Information"));
+		ui_msgs::display_heading(_("Quote Information"));
 	}
 	echo "</td></tr>";
 	echo "<tr valign=top><td>";
@@ -66,7 +66,7 @@
 	if ($_GET['trans_type'] != ST_SALESQUOTE) {
 		echo "</td><td valign='top'>";
 		start_table(Config::get('tables_style'));
-		ui_msgs::display_heading2(_("Delivery Notes"));
+		ui_msgs::display_heading(_("Delivery Notes"));
 		$th = array(_("#"), _("Ref"), _("Date"), _("Total"));
 		table_header($th);
 		$sql            = "SELECT * FROM debtor_trans WHERE type=" . ST_CUSTDELIVERY . " AND order_=" . DBOld::escape($_GET['trans_no']);
@@ -89,7 +89,7 @@
 		end_table();
 		echo "</td><td valign='top'>";
 		start_table(Config::get('tables_style'));
-		ui_msgs::display_heading2(_("Sales Invoices"));
+		ui_msgs::display_heading(_("Sales Invoices"));
 		$th = array(_("#"), _("Ref"), _("Date"), _("Total"));
 		table_header($th);
 		$inv_numbers    = array();
@@ -112,7 +112,7 @@
 		}
 		label_row(null, price_format($invoices_total), " ", "colspan=4 align=right");
 		end_table();
-		ui_msgs::display_heading2(_("Credit Notes"));
+		ui_msgs::display_heading(_("Credit Notes"));
 		start_table(Config::get('tables_style'));
 		$th = array(_("#"), _("Ref"), _("Date"), _("Total"));
 		table_header($th);
@@ -143,7 +143,7 @@
 	if ($_SESSION['View']->so_type == 1) {
 		ui_msgs::display_warning(_("This Sales Order is used as a Template."), 0, 0, "class='currentfg'");
 	}
-	ui_msgs::display_heading2(_("Line Details"));
+	ui_msgs::display_heading(_("Line Details"));
 	start_table("colspan=9 width=95%  " . Config::get('tables_style'));
 	$th = array(_("Item Code"), _("Item Description"), _("Quantity"), _("Unit"), _("Price"), _("Discount"), _("Total"), _("Quantity Delivered"));
 	table_header($th);

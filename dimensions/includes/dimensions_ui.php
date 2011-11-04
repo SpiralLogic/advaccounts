@@ -23,7 +23,7 @@
 		if (DBOld::num_rows($result) == 0) {
 			ui_msgs::display_warning(_("There are no transactions for this dimension for the selected period."));
 		} else {
-			ui_msgs::display_heading2(_("Balance for this Dimension"));
+			ui_msgs::display_heading(_("Balance for this Dimension"));
 			br();
 			start_table(Config::get('tables_style'));
 			$th = array(_("Account"), _("Debit"), _("Credit"));

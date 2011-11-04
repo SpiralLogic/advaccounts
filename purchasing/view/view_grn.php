@@ -22,7 +22,7 @@
 	ui_msgs::display_heading(_("Purchase Order Delivery") . " #" . $_GET['trans_no']);
 	echo "<BR>";
 	display_grn_summary($purchase_order);
-	ui_msgs::display_heading2(_("Line Details"));
+	ui_msgs::display_heading(_("Line Details"));
 	start_table("colspan=9 " . Config::get('tables_style') . " width=90%");
 	$th = array(
 		_("Item Code"), _("Item Description"), _("Delivery Date"), _("Quantity"),
