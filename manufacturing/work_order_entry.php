@@ -28,7 +28,7 @@
 	if (isset($_GET['AddedID'])) {
 		$id = $_GET['AddedID'];
 		$stype = ST_WORKORDER;
-		ui_msgs::display_notification_centered(_("The work order been added."));
+		ui_msgs::display_notification(_("The work order been added."));
 		ui_msgs::display_note(ui_view::get_trans_view_str($stype, $id, _("View this Work Order")));
 		if ($_GET['type'] != WO_ADVANCED) {
 			$ar = array(
@@ -52,19 +52,19 @@
 	//---------------------------------------------------------------------------------------
 	if (isset($_GET['UpdatedID'])) {
 		$id = $_GET['UpdatedID'];
-		ui_msgs::display_notification_centered(_("The work order been updated."));
+		ui_msgs::display_notification(_("The work order been updated."));
 		safe_exit();
 	}
 	//---------------------------------------------------------------------------------------
 	if (isset($_GET['DeletedID'])) {
 		$id = $_GET['DeletedID'];
-		ui_msgs::display_notification_centered(_("Work order has been deleted."));
+		ui_msgs::display_notification(_("Work order has been deleted."));
 		safe_exit();
 	}
 	//---------------------------------------------------------------------------------------
 	if (isset($_GET['ClosedID'])) {
 		$id = $_GET['ClosedID'];
-		ui_msgs::display_notification_centered(_("This work order has been closed. There can be no more issues against it.") . " #$id");
+		ui_msgs::display_notification(_("This work order has been closed. There can be no more issues against it.") . " #$id");
 		safe_exit();
 	}
 	//---------------------------------------------------------------------------------------
@@ -284,9 +284,7 @@
 		label_row(_("Reference:"), $_POST['wo_ref']);
 		label_row(_("Type:"), $wo_types_array[$_POST['type']]);
 		hidden('type', $myrow["type"]);
-	}
-	else
-	{
+} else {
 		$_POST['units_issued'] = $_POST['released'] = 0;
 		ref_row(_("Reference:"), 'wo_ref', '', Refs::get_next(ST_WORKORDER));
 		wo_types_list_row(_("Type:"), 'type', null);
@@ -297,9 +295,7 @@
 		hidden('type', $_POST['type']);
 		label_row(_("Item:"), $myrow["StockItemName"]);
 		label_row(_("Destination Location:"), $myrow["location_name"]);
-	}
-	else
-	{
+} else {
 		stock_manufactured_items_list_row(_("Item:"), 'stock_id', null, false, true);
 		if (list_updated('stock_id')) {
 			$Ajax->activate('quantity');
@@ -308,9 +304,7 @@
 	}
 	if (!isset($_POST['quantity'])) {
 		$_POST['quantity'] = qty_format(1, Input::post('stock_id'), $dec);
-	}
-	else
-	{
+} else {
 		$_POST['quantity'] = qty_format($_POST['quantity'], Input::post('stock_id'), $dec);
 	}
 	if (get_post('type') == WO_ADVANCED) {
@@ -320,9 +314,7 @@
 		}
 		date_row(_("Date") . ":", 'date_', '', true);
 		date_row(_("Date Required By") . ":", 'RequDate', '', null, SysPrefs::default_wo_required_by());
-	}
-	else
-	{
+} else {
 		qty_row(_("Quantity:"), 'quantity', null, null, null, $dec);
 		date_row(_("Date") . ":", 'date_', '', true);
 		hidden('RequDate', '');
@@ -355,9 +347,7 @@
 		}
 		submit_cells('delete', _("Delete This Work Order"), '', '', true);
 		echo "</tr></table>";
-	}
-	else
-	{
+} else {
 		submit_center('ADD_ITEM', _("Add Workorder"), true, '', 'default');
 	}
 	end_form();

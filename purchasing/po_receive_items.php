@@ -18,7 +18,7 @@
 	if (isset($_GET['AddedID'])) {
 		$grn        = $_GET['AddedID'];
 		$trans_type = ST_SUPPRECEIVE;
-		ui_msgs::display_notification_centered(_("Purchase Order Delivery has been processed"));
+		ui_msgs::display_notification(_("Purchase Order Delivery has been processed"));
 		ui_msgs::display_note(ui_view::get_trans_view_str($trans_type, $grn, _("&View this Delivery")));
 		hyperlink_params("/purchasing/supplier_invoice.php", _("Entry purchase &invoice for this receival"), "New=1");
 		hyperlink_no_params("/purchasing/inquiry/po_search.php", _("Select a different &purchase order for receiving items against"));

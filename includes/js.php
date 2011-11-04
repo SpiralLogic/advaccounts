@@ -1,7 +1,6 @@
 <?php
 	include(APP_PATH . 'modules/smartoptimizer/minifiers/js.php');
-	class JS
-	{
+	class JS {
 		private static $_beforeload = array();
 		private static $_onload = array();
 		private static $_onlive = array();
@@ -10,12 +9,10 @@
 		private static $_footerFiles = array();
 		private static $_focus = false;
 
-		private function __construct()
-		{
+		private function __construct() {
 		}
 
-		public static function get_js_open_window($width, $height)
-		{
+		public static function get_js_open_window($width, $height) {
 			if (Config::get('ui_windows_popups')) {
 				$js = "function openWindow(url, title)\n" . "{\n" . " var left = (screen.width - $width) / 2;\n" . " var top = (screen.height - $height) / 2;\n"
 				 . " return window.open(url, title, 'width=$width,height=$height,left='+left+',top='+top+',screenX='+left+',screenY='+top+',status=no,scrollbars=yes');\n" . "}\n";
@@ -23,8 +20,7 @@
 			}
 		}
 
-		public static function autocomplete($id, $callback, $url = false, $options = array())
-		{
+		public static function autocomplete($id, $callback, $url = false, $options = array()) {
 			$afterSource = (isset($options['afterSource'])) ? $options['afterSource'] . '(data,request);' : '';
 			if (!$url) {
 				$url = $_SERVER['PHP_SELF'];
@@ -52,27 +48,31 @@ JS;
 			}
 		}
 
-		public static function gmap($selector, $address, $title)
-		{
-			$address = str_replace("\r\t\n\v", ", ", $address);
-			self::$_onload[]
-							 = <<<JS
+		public static function gmap($selector, $address, $title) {
+			$address = str_replace(array("\r","\t","\n","\v"), ", ", $address);
+			$apikey = Config::get('js.maps_api_key');
+			JS::beforeload(<<<JS
+	Adv.maps = { api_key: '$apikey'}
+JS
+		);
+			self::addLive(<<<JS
 
 	var map = $("<div/>").gMap({
 	address:"{$address}",
 	markers: [{ address:"{$address}", html: "_address", popup: true}],
 	zoom: 10}).appendTo('body').dialog({title: "{$title}", autoOpen: false, show: "slide", hide: "slide", height: 450, width: 1000, modal: true});
-${$selector} = $("{$selector}").click(function() {
+$("{$selector}").click(function() {
     map.dialog("open");
     return false; });
     $(".ui-widget-overlay").click(function() {
     map.dialog("close");
     return false; });
-JS;
+JS
+			);
+			JS::footerFile('/js/libs/jquery.gmap-1.1.0-min.js');
 		}
 
-		public static function tabs($id, $options = array(), $page)
-		{
+		public static function tabs($id, $options = array(), $page) {
 			$defaults = array('noajax' => false);
 			extract(array_merge($defaults, $options));
 			$content = "$('" . $id . "').tabs().toggleClass('tabs')";
@@ -83,8 +83,7 @@ JS;
 			self::onload($content);
 		}
 
-		public static function renderHeader()
-		{
+		public static function renderHeader() {
 			HTML::script(null, "document.documentElement.className = document.documentElement.className +' js'", false);
 			foreach (
 				self::$_headerFiles as $dir => $files
@@ -94,8 +93,7 @@ JS;
 			}
 		}
 
-		public static function render()
-		{
+		public static function render() {
 			$files = $content = $onReady = '';
 			if (!AJAX_REFERRER) {
 				foreach (
@@ -127,24 +125,20 @@ JS;
 			HTML::script(array('content' => $content))->script;
 		}
 
-		public static function setFocus($selector, $cached = false)
-		{
+		public static function setFocus($selector, $cached = false) {
 			$_POST['_focus'] = self::$_focus = ($selector) ? (!$cached) ? "$('$selector')" : 'Adv.o.' . $selector : false;
 		}
 
-		public static function arrayToOptions($options = array())
-		{
+		public static function arrayToOptions($options = array()) {
 			$options = (object)$options;
 			return json_encode($options);
 		}
 
-		public static function addEvent($selector, $type, $action)
-		{
+		public static function addEvent($selector, $type, $action) {
 			self::onload("$('$selector').bind('$type',function(e){ {$action} }).css('cursor','pointer');");
 		}
 
-		public static function addLiveEvent($selector, $type, $action, $delegate = false, $cached = false)
-		{
+		public static function addLiveEvent($selector, $type, $action, $delegate = false, $cached = false) {
 			if (!$delegate) {
 				return self::addLive("$('$selector').bind('$type',function(e){ {$action} });");
 			}
@@ -152,16 +146,14 @@ JS;
 			self::register($cached . ".delegate('$selector','$type',function(e){ {$action} } )", self::$_onload);
 		}
 
-		public static function addLive($action, $clean = false)
-		{
+		public static function addLive($action, $clean = false) {
 			self::register($action, self::$_onlive);
 			if ($clean) {
 				self::register($clean, self::$_toclean);
 			}
 		}
 
-		public static function addEvents($events = array())
-		{
+		public static function addEvents($events = array()) {
 			if (is_array($events)) {
 				foreach (
 					$events as $event
@@ -173,32 +165,27 @@ JS;
 			}
 		}
 
-		public static function onload($js = false)
-		{
+		public static function onload($js = false) {
 			if ($js) {
 				self::register($js, self::$_onload);
 			}
 		}
 
-		public static function beforeload($js = false)
-		{
+		public static function beforeload($js = false) {
 			if ($js) {
 				self::register($js, self::$_beforeload);
 			}
 		}
 
-		public static function headerFile($file)
-		{
+		public static function headerFile($file) {
 			self::registerFile($file, self::$_headerFiles);
 		}
 
-		public static function footerFile($file)
-		{
+		public static function footerFile($file) {
 			self::registerFile($file, self::$_footerFiles);
 		}
 
-		protected static function register($js = false, &$var)
-		{
+		protected static function register($js = false, &$var) {
 			if (is_array($js)) {
 				foreach (
 					$js as $j
@@ -211,8 +198,7 @@ JS;
 			}
 		}
 
-		protected static function registerFile($file, &$var)
-		{
+		protected static function registerFile($file, &$var) {
 			if (is_array($file)) {
 				foreach (
 					$file as $f
@@ -221,15 +207,14 @@ JS;
 				}
 			}
 			else {
-				$dir  = dirname($file);
+				$dir = dirname($file);
 				$file = basename($file);
 				isset($var[$dir]) or $var[$dir] = array();
 				$var[$dir][$file] = $file;
 			}
 		}
 
-		static function onUnload($message = false)
-		{
+		static function onUnload($message = false) {
 			if ($message) {
 				self::addLiveEvent(':input', 'change', "Adv.Events.onLeave('$message')", 'wrapper', true);
 				self::addLiveEvent('form', 'submit', "Adv.Events.onLeave()", 'wrapper', true);
@@ -238,8 +223,7 @@ JS;
 					   Setting focus on element $name in $form.
 					   If $form<0 $name is element id.
 				   */
-		public static function set_focus($name)
-		{
+		public static function set_focus($name) {
 			$Ajax = Ajax::instance();
 			$Ajax->addFocus(true, $name);
 			$_POST['_focus'] = $name;

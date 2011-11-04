@@ -90,9 +90,7 @@
 			$marker = $pager->marker;
 			if ($marker && call_user_func($marker, $row)) {
 				start_row("class='$pager->marker_class'");
-			}
-			else
-			{
+} else {
 				alt_table_row_color($cc);
 			}
 			foreach (
@@ -133,18 +131,14 @@
 				case 'amount':
 					if ($cell == '') {
 						label_cell('');
-					}
-					else
-					{
+} else {
 						amount_cell($cell, false);
 					}
 					break;
 				case 'qty':
 					if ($cell == '') {
 						label_cell('');
-					}
-					else
-					{
+} else {
 						qty_cell($cell, false, isset($col['dec']) ? $col['dec'] : null);
 					}
 					break;
@@ -162,9 +156,7 @@
 				case 'id':
 					if (isset($col['align'])) {
 						label_cell($cell, " class='pagerclick' data-id='" . $row['id'] . "' align='" . $col['align'] . "'");
-					}
-					else
-					{
+} else {
 						label_cell($cell, " class='pagerclick' data-id='" . $row['id'] . "'");
 					}
 					break;
@@ -172,9 +164,7 @@
 //		    case 'text':
 					if (isset($col['align'])) {
 						label_cell($cell, "align='" . $col['align'] . "'");
-					}
-					else
-					{
+} else {
 						label_cell($cell);
 					}
 				case 'skip': // column not displayed

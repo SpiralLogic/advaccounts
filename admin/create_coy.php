@@ -19,9 +19,7 @@
 	elseif (isset($_POST['selected_id']))
 	{
 		$selected_id = $_POST['selected_id'];
-	}
-	else
-	{
+} else {
 		$selected_id = -1;
 	}
 	//---------------------------------------------------------------------------------------------
@@ -87,9 +85,7 @@
 							) . "' WHERE user_id = 'admin'"
 						);
 					}
-				}
-				else
-				{
+} else {
 					ui_msgs::display_error(_("Error uploading Database Script, please upload it manually"));
 					$error = true;
 				}
@@ -198,16 +194,12 @@
 		{
 			if ($i == Config::get('company_default')) {
 				$what = _("Yes");
-			}
-			else
-			{
+} else {
 				$what = _("No");
 			}
 			if ($i == $coyno) {
 				start_row("class='stockmankobg'");
-			}
-			else
-			{
+} else {
 				alt_table_row_color($k);
 			}
 			label_cell($conn[$i]['name']);
@@ -265,9 +257,7 @@
 			$_POST['dbname']     = $conn['dbname'];
 			if ($selected_id == Config::get('company_default')) {
 				$_POST['def'] = true;
-			}
-			else
-			{
+} else {
 				$_POST['def'] = false;
 			}
 			$_POST['dbcreate'] = false;

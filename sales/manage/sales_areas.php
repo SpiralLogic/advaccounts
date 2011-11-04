@@ -26,9 +26,7 @@
 					$_POST['description']
 				) . " WHERE area_code = " . DBOld::escape($selected_id);
 				$note = _('Selected sales area has been updated');
-			}
-			else
-			{
+} else {
 				$sql  = "INSERT INTO areas (description) VALUES (" . DBOld::escape($_POST['description']) . ")";
 				$note = _('New sales area has been added');
 			}

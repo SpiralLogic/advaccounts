@@ -41,9 +41,7 @@
 		if ($email == 0) {
 			if ($print_as_quote == 0) {
 				$rep = new FrontReport(_("PROFORMA INVOICE"), "SalesOrderBulk", user_pagesize());
-			}
-			else
-			{
+} else {
 				$rep = new FrontReport(_("QUOTE"), "QuoteBulk", user_pagesize());
 			}
 			$rep->currency = $cur;
@@ -69,9 +67,7 @@
 					$rep->filename = "ProformaInvoice" . $i . ".pdf";
 				}
 				$rep->Info($params, $cols, null, $aligns);
-			}
-			else
-			{
+} else {
 				$rep->title = ($print_as_quote == 1 ? _("PROFORMA INVOICE") : _("PROFORMA INVOICE"));
 			}
 			$rep->Header2($myrow, $branch, $myrow, $baccount, ST_PROFORMA);
@@ -93,9 +89,7 @@
 				$DisplayNet   = number_format2($Net, $dec);
 				if ($myrow2["discount_percent"] == 0) {
 					$DisplayDiscount = "";
-				}
-				else
-				{
+} else {
 					$DisplayDiscount = number_format2($myrow2["discount_percent"] * 100, user_percent_dec()) . "%";
 				}
 				$rep->TextCol(0, 1, $myrow2['stk_code'], -2);

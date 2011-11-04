@@ -26,9 +26,7 @@
 					$_POST['description']
 				) . " WHERE id = " . DBOld::escape($selected_id);
 				$note = _('Selected sales group has been updated');
-			}
-			else
-			{
+} else {
 				$sql  = "INSERT INTO groups (description) VALUES (" . DBOld::escape($_POST['description']) . ")";
 				$note = _('New sales group has been added');
 			}

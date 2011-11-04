@@ -44,9 +44,7 @@
     			break_pt=" . input_num('break_pt') . ",
     			provision2=" . input_num('provision2') . "
     			WHERE salesman_code = " . DBOld::escape($selected_id);
-			}
-			else
-			{
+} else {
 				/*Selected group is null cos no item selected on first time round so must be adding a record must be submitting new entries in the new Sales-person form */
 				$sql
 				 = "INSERT INTO salesman (salesman_name, salesman_phone, salesman_fax, salesman_email,
@@ -62,9 +60,7 @@
 			DBOld::query($sql, "The insert or update of the sales person failed");
 			if ($selected_id != -1) {
 				ui_msgs::display_notification(_('Selected sales person data have been updated'));
-			}
-			else
-			{
+} else {
 				ui_msgs::display_notification(_('New sales person data have been added'));
 			}
 			$Mode = 'RESET';

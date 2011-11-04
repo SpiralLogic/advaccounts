@@ -29,10 +29,10 @@
 		$trans_type = ST_PURCHORDER;
 		$supplier   = new Contacts_Supplier($_SESSION['wa_global_supplier_id']);
 		if (!isset($_GET['Updated'])) {
-			ui_msgs::display_notification_centered(_("Purchase Order: " . $_SESSION['history'][ST_PURCHORDER] . " has been entered"));
+			ui_msgs::display_notification(_("Purchase Order: " . $_SESSION['history'][ST_PURCHORDER] . " has been entered"));
 		}
 		else {
-			ui_msgs::display_notification_centered(_("Purchase Order: " . $_SESSION['history'][ST_PURCHORDER] . " has been updated") . " #$order_no");
+			ui_msgs::display_notification(_("Purchase Order: " . $_SESSION['history'][ST_PURCHORDER] . " has been updated") . " #$order_no");
 		}
 		unset($_SESSION['PO']);
 		ui_msgs::display_note(ui_view::get_trans_view_str($trans_type, $order_no, _("&View this order"), false, 'button'), 0, 1);

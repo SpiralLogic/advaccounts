@@ -45,7 +45,7 @@
 	if (isset($_GET['AddedID'])) {
 		$credit_no  = $_GET['AddedID'];
 		$trans_type = ST_CUSTCREDIT;
-		ui_msgs::display_notification_centered(sprintf(_("Credit Note # %d has been processed"), $credit_no));
+		ui_msgs::display_notification(sprintf(_("Credit Note # %d has been processed"), $credit_no));
 		ui_msgs::display_note(ui_view::get_customer_trans_view_str($trans_type, $credit_no, _("&View this credit note")), 0, 1);
 		ui_msgs::display_note(Reporting::print_doc_link($credit_no . "-" . $trans_type, _("&Print This Credit Invoice"), true, ST_CUSTCREDIT), 0, 1);
 		ui_msgs::display_note(Reporting::print_doc_link($credit_no . "-" . $trans_type, _("&Email This Credit Invoice"), true, ST_CUSTCREDIT, false, "printlink", "", 1), 0, 1);
@@ -53,9 +53,7 @@
 		hyperlink_params($_SERVER['PHP_SELF'], _("Enter Another &Credit Note"), "NewCredit=yes");
 		hyperlink_params("/admin/attachments.php", _("Add an Attachment"), "filterType=$trans_type&trans_no=$credit_no");
 		ui_view::display_footer_exit();
-	}
-	else
-	{
+} else {
 		check_edit_conflicts();
 	}
 	//--------------------------------------------------------------------------------

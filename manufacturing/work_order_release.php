@@ -20,9 +20,7 @@
 	elseif (isset($_POST["selected_id"]))
 	{
 		$selected_id = $_POST["selected_id"];
-	}
-	else
-	{
+} else {
 		ui_msgs::display_warning("This page must be called with a work order reference");
 		exit;
 	}

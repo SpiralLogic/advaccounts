@@ -35,9 +35,7 @@
     			end='" . Dates::date2sql($_POST['end']) . "'
     			WHERE id = " . DBOld::escape($selected_id);
 				$note = _('Selected recurrent invoice has been updated');
-			}
-			else
-			{
+} else {
 				$sql
 				 = "INSERT INTO recurrent_invoices (description, order_no, debtor_no,
     			group_no, days, monthly, begin, end, last_sent) VALUES (" . DBOld::escape($_POST['description']) . ", "
@@ -140,9 +138,7 @@
 	customer_list_row(_("Customer:"), 'debtor_no', null, " ", true);
 	if ($_POST['debtor_no'] > 0) {
 		customer_branches_list_row(_("Branch:"), $_POST['debtor_no'], 'group_no', null, false);
-	}
-	else
-	{
+} else {
 		sales_groups_list_row(_("Sales Group:"), 'group_no', null, " ");
 	}
 	small_amount_row(_("Days:"), 'days', 0, null, null, 0);

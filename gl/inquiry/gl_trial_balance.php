@@ -79,9 +79,7 @@
 				ui_view::display_debit_or_credit_cells($prev['balance']);
 				ui_view::display_debit_or_credit_cells($curr['balance']);
 				ui_view::display_debit_or_credit_cells($tot['balance']);
-			}
-			else
-			{
+} else {
 				amount_cell($prev['debit']);
 				amount_cell($prev['credit']);
 				amount_cell($curr['debit']);

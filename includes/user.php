@@ -198,9 +198,7 @@
 				// Select online users
 				$result = DBOld::query("SELECT DISTINCT ip FROM useronline");
 				$users  = DBOld::num_rows($result);
-			}
-			else
-			{
+} else {
 				$users = 1;
 			}
 			return "$users " . ($users == 1 ? _("user online") : _("users online"));

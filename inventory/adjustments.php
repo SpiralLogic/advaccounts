@@ -21,7 +21,7 @@
 	if (isset($_GET['AddedID'])) {
 		$trans_no   = $_GET['AddedID'];
 		$trans_type = ST_INVADJUST;
-		ui_msgs::display_notification_centered(_("Items adjustment has been processed"));
+		ui_msgs::display_notification(_("Items adjustment has been processed"));
 		ui_msgs::display_note(ui_view::get_trans_view_str($trans_type, $trans_no, _("&View this adjustment")));
 		ui_msgs::display_note(ui_view::get_gl_view_str($trans_type, $trans_no, _("View the GL &Postings for this Adjustment")), 1, 0);
 		hyperlink_no_params($_SERVER['PHP_SELF'], _("Enter &Another Adjustment"));

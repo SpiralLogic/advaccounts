@@ -67,9 +67,7 @@
 				);
 				$Ajax->activate('supplier_id'); // in case of status change
 				ui_msgs::display_notification(_("Supplier has been updated."));
-			}
-			else
-			{
+} else {
 				$sql
 				 = "INSERT INTO suppliers (supp_name, supp_ref, address, supp_address, phone, phone2, fax, gst_no, email, website,
 				contact, supp_account_no, bank_account, credit_limit, dimension_id, dimension2_id, curr_code,
@@ -149,9 +147,7 @@
 			$Ajax->activate('supplier_id');
 			JS::set_focus('supplier_id');
 		}
-	}
-	else
-	{
+} else {
 		hidden('supplier_id', get_post('supplier_id'));
 	}
 	start_outer_table(Config::get('tables_style2'), 5);
@@ -183,9 +179,7 @@
 		$_POST['payment_discount_account'] = $myrow["payment_discount_account"];
 		$_POST['notes'] = $myrow["notes"];
 		$_POST['inactive'] = $myrow["inactive"];
-	}
-	else
-	{
+} else {
 		$_POST['supp_name'] = $_POST['supp_ref'] = $_POST['address'] = $_POST['supp_address']
 		 = $_POST['tax_group_id'] = $_POST['website'] = $_POST['supp_account_no'] = $_POST['notes'] = '';
 		$_POST['dimension_id'] = 0;
@@ -223,9 +217,7 @@
 	if (!$new_supplier) {
 		label_row(_("Supplier's Currency:"), $_POST['curr_code']);
 		hidden('curr_code', $_POST['curr_code']);
-	}
-	else
-	{
+} else {
 		currencies_list_row(_("Supplier's Currency:"), 'curr_code', null);
 	}
 	tax_groups_list_row(_("Tax Group:"), 'tax_group_id', null);
@@ -266,9 +258,7 @@
 			'delete', _("Delete Supplier"),
 			_('Delete supplier data if have been never used'), true
 		);
-	}
-	else
-	{
+} else {
 		submit_center('submit', _("Add New Supplier Details"), true, '', 'default');
 	}
 	div_end();

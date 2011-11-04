@@ -227,9 +227,7 @@
 			// else take the Item Sales Account
 			if ($branch_data['sales_account'] != "") {
 				$sales_account = $branch_data['sales_account'];
-			}
-			else
-			{
+} else {
 				$sales_account = $stock_gl_codes['sales_account'];
 			}
 			$total += add_gl_trans_customer(ST_CUSTCREDIT, $credit_no, $date_, $sales_account, $dim, $dim2,

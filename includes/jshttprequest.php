@@ -180,9 +180,7 @@
 		{
 			if ($this->SCRIPT_DECODE_MODE == 'entities') {
 				return str_replace(array('"', '<', '>'), array('&quot;', '&lt;', '&gt;'), $s);
-			}
-			else
-			{
+} else {
 				return htmlspecialchars($s);
 			}
 		}

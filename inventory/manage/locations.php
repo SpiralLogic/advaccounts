@@ -39,9 +39,7 @@
 					$_POST['phone'], $_POST['phone2'], $_POST['fax'], $_POST['email'], $_POST['contact']
 				);
 				ui_msgs::display_notification(_('Selected location has been updated'));
-			}
-			else
-			{
+} else {
 				/*selected_id is null cos no item selected on first time round so must be adding a	record must be submitting new entries in the new Location form */
 				add_item_location(
 					$_POST['loc_code'], $_POST['location_name'], $_POST['delivery_address'],
@@ -174,9 +172,7 @@
 		hidden("selected_id", $selected_id);
 		hidden("loc_code");
 		label_row(_("Location Code:"), $_POST['loc_code']);
-	}
-	else
-	{ //end of if $selected_id only do the else when a new record is being entered
+} else { //end of if $selected_id only do the else when a new record is being entered
 		text_row(_("Location Code:"), 'loc_code', null, 5, 5);
 	}
 	text_row_ex(_("Location Name:"), 'location_name', 50, 50);

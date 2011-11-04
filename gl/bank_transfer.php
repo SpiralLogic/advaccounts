@@ -18,7 +18,7 @@
 	if (isset($_GET['AddedID'])) {
 		$trans_no = $_GET['AddedID'];
 		$trans_type = ST_BANKTRANSFER;
-		ui_msgs::display_notification_centered(_("Transfer has been entered"));
+		ui_msgs::display_notification(_("Transfer has been entered"));
 		ui_msgs::display_note(ui_view::get_gl_view_str($trans_type, $trans_no, _("&View the GL Journal Entries for this Transfer")));
 		hyperlink_no_params($_SERVER['PHP_SELF'], _("Enter & Another Transfer"));
 		ui_view::display_footer_exit();

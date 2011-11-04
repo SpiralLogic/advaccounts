@@ -85,9 +85,7 @@
 			{
 				if ($i > 0) {
 					$msg .= "\t\tarray ";
-				}
-				else
-				{
+} else {
 					$msg .= "array ";
 				}
 				$msg .= "('code' => '" . $installed_languages[$i]['code'] . "', ";
@@ -95,9 +93,7 @@
 				$msg .= "'encoding' => '" . $installed_languages[$i]['encoding'] . "'";
 				if (isset($installed_languages[$i]['rtl']) && $installed_languages[$i]['rtl']) {
 					$msg .= ", 'rtl' => true),\n";
-				}
-				else
-				{
+} else {
 					$msg .= "),\n";
 				}
 			}
@@ -109,9 +105,7 @@
 				if (!$zp = fopen($filename, 'w')) {
 					ui_msgs::display_error(_("Cannot open the languages file - ") . $filename);
 					return false;
-				}
-				else
-				{
+} else {
 					if (!fwrite($zp, $msg)) {
 						ui_msgs::display_error(_("Cannot write to the language file - ") . $filename);
 						fclose($zp);

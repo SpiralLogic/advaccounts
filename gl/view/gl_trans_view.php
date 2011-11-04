@@ -64,9 +64,7 @@
 			_("Account Code"), _("Account Name"), _("Dimension"),
 			_("Debit"), _("Credit"), _("Memo")
 		);
-	}
-	else
-	{
+} else {
 		$th = array(
 			_("Account Code"), _("Account Name"),
 			_("Debit"), _("Credit"), _("Memo")

@@ -91,9 +91,7 @@
 	 && ($_POST['SelectStockFromList'] != ALL_TEXT)
 	) {
 		$selected_stock_item = $_POST['SelectStockFromList'];
-	}
-	else
-	{
+} else {
 		unset($selected_stock_item);
 	}
 	//figure out the sql required from the inputs available
@@ -120,9 +118,7 @@
 	}
 	if (isset($order_number) && $order_number != "") {
 		$sql .= "AND porder.reference LIKE " . DBOld::escape('%' . $order_number . '%');
-	}
-	else
-	{
+} else {
 		$data_after  = Dates::date2sql($_POST['OrdersAfterDate']);
 		$data_before = Dates::date2sql($_POST['OrdersToDate']);
 		$sql .= "  AND porder.ord_date >= '$data_after'";

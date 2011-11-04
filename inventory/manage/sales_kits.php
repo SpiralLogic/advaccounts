@@ -100,9 +100,7 @@
 				$kit_code     = $_POST['kit_code'];
 				$selected_kit = $_POST['item_code'] = $kit_code;
 				$msg          = _("New alias code has been created.");
-			}
-			else
-			{
+} else {
 				$msg = _("New component has been added to selected kit.");
 			}
 			add_item_code(

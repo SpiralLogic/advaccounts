@@ -42,9 +42,7 @@
 			if ($total >= 0) {
 				amount_cell($total, true);
 				label_cell("");
-			}
-			else
-			{
+} else {
 				label_cell("");
 				amount_cell(abs($total), true);
 			}

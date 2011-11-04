@@ -35,7 +35,7 @@
 	if (isset($_GET['AddedID'])) {
 		$dispatch_no = $_GET['AddedID'];
 
-		ui_msgs::display_notification_centered(sprintf(_("Delivery # %d has been entered."), $dispatch_no));
+		ui_msgs::display_notification(sprintf(_("Delivery # %d has been entered."), $dispatch_no));
 
 		ui_msgs::display_note(ui_view::get_customer_trans_view_str(ST_CUSTDELIVERY, $dispatch_no, _("&View This Delivery")), 0, 1);
 
@@ -56,7 +56,7 @@
 
 		$delivery_no = $_GET['UpdatedID'];
 
-		ui_msgs::display_notification_centered(sprintf(_('Delivery Note # %d has been updated.'), $delivery_no));
+		ui_msgs::display_notification(sprintf(_('Delivery Note # %d has been updated.'), $delivery_no));
 
 		ui_msgs::display_note(ui_view::get_trans_view_str(ST_CUSTDELIVERY, $delivery_no, _("View this delivery")), 0, 1);
 

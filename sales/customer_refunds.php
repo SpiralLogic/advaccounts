@@ -31,7 +31,7 @@
 	}
 	if (isset($_GET['AddedID'])) {
 		$refund_id = $_GET['AddedID'];
-		ui_msgs::display_notification_centered(_("The customer refund has been successfully entered."));
+		ui_msgs::display_notification(_("The customer refund has been successfully entered."));
 		submenu_print(_("&Print This Receipt"), ST_CUSTREFUND, $refund_id . "-" . ST_CUSTREFUND, 'prtopt');
 		hyperlink_no_params("/sales/inquiry/customer_inquiry.php", _("Show Invoices"));
 		ui_msgs::display_note(ui_view::get_gl_view_str(ST_CUSTREFUND, $refund_id, _("&View the GL Journal Entries for this Customer Refund")));

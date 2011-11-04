@@ -22,7 +22,7 @@
 		$invoice_no = $_GET['AddedID'];
 		$trans_type = ST_SUPPINVOICE;
 		echo "<center>";
-		ui_msgs::display_notification_centered(_("Supplier invoice has been processed."));
+		ui_msgs::display_notification(_("Supplier invoice has been processed."));
 		ui_msgs::display_note(ui_view::get_trans_view_str($trans_type, $invoice_no, _("View this Invoice")));
 		hyperlink_no_params("/purchasing/inquiry/po_search.php", _("Purchase Order Maintainants"));
 		hyperlink_params($_SERVER['PHP_SELF'], _("Enter Another Invoice"), "New=1");
@@ -380,11 +380,12 @@
       });
       if (feild.attr('id') == nodes.total.attr('id')) {
          if (fv.price == 0 && fv.discount==0) {
-            fv.discount = fv.total / fv.qty;
+            fv.price = fv.total / fv.qty;
          } else {
             fv.discount = 100*(1-(fv.total)/(fv.price*fv.qty));
+         		fv.discount = Math.round(fv.discount*1)/1;
          }
-         fv.discount = Math.round(fv.discount*1)/1
+         nodes.price.val(fv.price);
          nodes.discount.val(fv.discount);
       } else if (fv.qty > 0 && fv.price > 0) {
          fv.total = fv.qty*fv.price*((100-fv.discount)/100);
@@ -394,12 +395,9 @@
        } else {
 	if (feild.attr('name')=='ChgTotal' || feild.attr('name')=='ChgTax') {
 	var total = Number(invTotal.data('total'));
-	console.log(total);
 	var ChgTax =  Number(ChgTax.val().replace(',',''));
-		console.log(ChgTax);
 	var ChgTotal = Number(ChgTotal.val().replace(',',''));
-		console.log(ChgTotal);
-	console.log(total+ChgTax+ChgTotal); price_format(invTotal.attr('id'),total+ChgTax+ChgTotal,2,true); }
+	price_format(invTotal.attr('id'),total+ChgTax+ChgTotal,2,true); }
 }});
 JS
 	);

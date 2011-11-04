@@ -46,10 +46,8 @@
 			}
 			if (Config::get('demo_mode')) {
 				ui_msgs::display_warning(_("Display settings have been updated. Keep in mind that changed settings are restored on every login in demo mode."));
-			}
-			else
-			{
-				ui_msgs::display_notification_centered(_("Display settings have been updated."));
+} else {
+				ui_msgs::display_notification(_("Display settings have been updated."));
 			}
 		}
 	}

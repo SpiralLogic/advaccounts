@@ -21,7 +21,7 @@
 	if (isset($_GET['AddedID'])) {
 		$trans_no = $_GET['AddedID'];
 		$trans_type = ST_LOCTRANSFER;
-		ui_msgs::display_notification_centered(_("Inventory transfer has been processed"));
+		ui_msgs::display_notification(_("Inventory transfer has been processed"));
 		ui_msgs::display_note(ui_view::get_trans_view_str($trans_type, $trans_no, _("&View this transfer")));
 		hyperlink_no_params($_SERVER['PHP_SELF'], _("Enter &Another Inventory Transfer"));
 		ui_view::display_footer_exit();

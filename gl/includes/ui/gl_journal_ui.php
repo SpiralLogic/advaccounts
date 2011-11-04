@@ -91,9 +91,7 @@
 				if ($item->amount > 0) {
 					amount_cell(abs($item->amount));
 					label_cell("");
-				}
-				else
-				{
+} else {
 					label_cell("");
 					amount_cell(abs($item->amount));
 				}
@@ -107,9 +105,7 @@
 					_('Remove line from journal')
 				);
 				end_row();
-			}
-			else
-			{
+} else {
 				gl_edit_item_controls($order, $dim, $line);
 			}
 		}
@@ -143,9 +139,7 @@
 			if ($item->amount > 0) {
 				$_POST['AmountDebit'] = price_format($item->amount);
 				$_POST['AmountCredit'] = "";
-			}
-			else
-			{
+} else {
 				$_POST['AmountDebit'] = "";
 				$_POST['AmountCredit'] = price_format(abs($item->amount));
 			}

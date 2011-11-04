@@ -191,9 +191,7 @@
 					_('Remove line from document')
 				);
 				end_row();
-			}
-			else
-			{
+} else {
 				credit_edit_item_controls($order, $k, $line_no);
 			}
 			$subtotal += $line_total;

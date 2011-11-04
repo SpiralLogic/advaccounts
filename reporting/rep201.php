@@ -186,9 +186,7 @@
 				if ($trans['TotalAmount'] > 0.0) {
 					$item[0] = round2(abs($trans['TotalAmount']) * $rate, $dec);
 					$rep->AmountCol(4, 5, $item[0], $dec);
-				}
-				else
-				{
+} else {
 					$item[1] = round2(abs($trans['TotalAmount']) * $rate, $dec);
 					$rep->AmountCol(5, 6, $item[1], $dec);
 				}

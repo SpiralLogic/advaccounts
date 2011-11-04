@@ -36,9 +36,7 @@
 			if ($selected_id != -1) {
 				update($selected_id, $_POST['name'], $_POST['exempt'], $exempt_from);
 				ui_msgs::display_notification(_('Selected item tax type has been updated'));
-			}
-			else
-			{
+} else {
 				add($_POST['name'], $_POST['exempt'], $exempt_from);
 				ui_msgs::display_notification(_('New item tax type has been added'));
 			}

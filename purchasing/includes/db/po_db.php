@@ -104,9 +104,7 @@
 				 DBOld::escape($po_line->quantity) . ", " .
 				 DBOld::escape($po_line->discount) .
 				 ")";
-			}
-			else
-			{
+} else {
 				$sql = "UPDATE purch_order_details SET item_code=" . DBOld::escape($po_line->stock_id) . ",
 				description =" . DBOld::escape($po_line->description) . ",
 				delivery_date ='" . Dates::date2sql($po_line->req_del_date) . "',
@@ -193,9 +191,7 @@
 				}
 				if (is_null($myrow["units"])) {
 					$units = "";
-				}
-				else
-				{
+} else {
 					$units = $myrow["units"];
 				}
 

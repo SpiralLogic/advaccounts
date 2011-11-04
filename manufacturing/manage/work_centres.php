@@ -27,9 +27,7 @@
 			if ($selected_id != -1) {
 				update_work_centre($selected_id, $_POST['name'], $_POST['description']);
 				ui_msgs::display_notification(_('Selected work center has been updated'));
-			}
-			else
-			{
+} else {
 				add_work_centre($_POST['name'], $_POST['description']);
 				ui_msgs::display_notification(_('New work center has been added'));
 			}

@@ -153,9 +153,7 @@
 			days_before_due, day_in_following_month)
 			VALUES (" .
 				 DBOld::escape($terms) . ", " . DBOld::escape($dayNumber) . ", 0)";
-			}
-			else
-			{
+} else {
 				$sql = "INSERT INTO  payment_terms (terms,
 			days_before_due, day_in_following_month)
 			VALUES (" . DBOld::escape($terms) . ",
@@ -170,9 +168,7 @@
 			day_in_following_month=0,
 			days_before_due=" . DBOld::escape($dayNumber) . "
 			WHERE terms_indicator = " . DBOld::escape($selected_id);
-			}
-			else
-			{
+} else {
 				$sql = "UPDATE payment_terms SET terms=" . DBOld::escape($terms) . ",
 			day_in_following_month=" . DBOld::escape($dayNumber) . ",
 			days_before_due=0

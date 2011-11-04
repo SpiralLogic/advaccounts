@@ -9,6 +9,11 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
+	class Warning_Exception extends Adv_Exception {};
+	class Notice_Exception extends Adv_Exception {};
+	class Error_Exception extends Adv_Exception {};
+
+
 	class Errors
 	{
 		const DB_DUPLICATE_ERROR_CODE = 1062;
@@ -23,7 +28,7 @@
 			set_exception_handler('adv_exception_handler');
 			if (Config::get('debug') && CurrentUser::instance()->user == 1) {
 				if (preg_match('/Chrome/i', $_SERVER['HTTP_USER_AGENT'])) {
-					include(dirname('.') . DS . 'fb.php');
+					include(APP_PATH . DS . 'includes/fb.php');
 					FB::useFile(APP_PATH . DS . 'includes/chromelogs', DS . 'tmp' . DS . 'chromelogs');
 				} else {
 					include(APP_PATH . DS . 'includes/FirePHP/FirePHP.class.php');
@@ -117,9 +122,7 @@
 			//	$str = "<span class='errortext'><b>" . _("DATABASE ERROR :") . "</b> $msg</span><br>";
 			if ($warning) {
 				$str = "<b>" . _("Debug mode database warning:") . "</b><br>";
-			}
-			else
-			{
+} else {
 				$str = "<b>" . _("DATABASE ERROR :") . "</b> $msg<br>";
 			}
 			if ($db_error != 0) {

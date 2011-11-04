@@ -45,9 +45,7 @@
 		}
 		if ($destination) {
 			include_once(APP_PATH . "includes/reports/excel.php");
-		}
-		else
-		{
+} else {
 			include_once(APP_PATH . "includes/reports/pdf.php");
 		}
 		$rep = new FrontReport(_('GL Account Transactions'), "GLAccountTransactions", user_pagesize());
@@ -69,9 +67,7 @@
 			$headers = array(_('Type'), _('Ref'), _('#'), _('Date'), _('Dimension'), "", _('Person/Item'),
 											 _('Debit'), _('Credit'), _('Balance')
 			);
-		}
-		else
-		{
+} else {
 			$headers = array(_('Type'), _('Ref'), _('#'), _('Date'), "", "", _('Person/Item'),
 											 _('Debit'), _('Credit'), _('Balance')
 			);
@@ -125,9 +121,7 @@
 		{
 			if (is_account_balancesheet($account["account_code"])) {
 				$begin = "";
-			}
-			else
-			{
+} else {
 				$begin = Dates::begin_fiscalyear();
 				if (Dates::date1_greater_date2($begin, $from)) {
 					$begin = $from;
@@ -145,9 +139,7 @@
 			$rep->TextCol(4, 6, _('Opening Balance'));
 			if ($prev_balance > 0.0) {
 				$rep->AmountCol(7, 8, abs($prev_balance), $dec);
-			}
-			else
-			{
+} else {
 				$rep->AmountCol(8, 9, abs($prev_balance), $dec);
 			}
 			$rep->Font();
@@ -174,17 +166,13 @@
 						if ($memo != "") {
 							$txt = $txt . "/" . $memo;
 						}
-					}
-					else
-					{
+} else {
 						$txt = $memo;
 					}
 					$rep->TextCol(6, 7, $txt, -2);
 					if ($myrow['amount'] > 0.0) {
 						$rep->AmountCol(7, 8, abs($myrow['amount']), $dec);
-					}
-					else
-					{
+} else {
 						$rep->AmountCol(8, 9, abs($myrow['amount']), $dec);
 					}
 					$rep->TextCol(9, 10, number_format2($total, $dec));
@@ -200,9 +188,7 @@
 			$rep->TextCol(4, 6, _("Ending Balance"));
 			if ($total > 0.0) {
 				$rep->AmountCol(7, 8, abs($total), $dec);
-			}
-			else
-			{
+} else {
 				$rep->AmountCol(8, 9, abs($total), $dec);
 			}
 			$rep->Font();

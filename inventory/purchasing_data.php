@@ -104,9 +104,7 @@
 	if ($mb_flag == -1) {
 		ui_msgs::display_error(_("Entered item is not defined. Please re-enter."));
 		JS::set_focus('stock_id');
-	}
-	else
-	{
+} else {
 		$sql = "SELECT purch_data.*,suppliers.supp_name,"
 		 . "suppliers.curr_code
 		FROM purch_data INNER JOIN suppliers
@@ -173,9 +171,7 @@
 	if ($Mode == 'Edit') {
 		hidden('supplier_id');
 		label_row(_("Supplier:"), $supp_name);
-	}
-	else
-	{
+} else {
 		supplier_list_row(_("Supplier:"), 'supplier_id', null, false, true);
 		$_POST['price'] = $_POST['suppliers_uom'] = $_POST['conversion_factor'] = $_POST['supplier_description'] = "";
 	}

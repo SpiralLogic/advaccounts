@@ -203,9 +203,7 @@
 			label_cell(@$mod['acc_file']);
 			if ($is_mod) {
 				label_cell(''); // not implemented (yet)
-			}
-			else
-			{
+} else {
 				edit_button_cell("Edit" . $i, _("Edit"));
 			}
 			delete_button_cell("Delete" . $i, _("Delete"));
@@ -299,9 +297,7 @@
 		if (handle_submit()) {
 			if ($selected_id != -1) {
 				ui_msgs::display_notification(_("Extension data has been updated."));
-			}
-			else
-			{
+} else {
 				ui_msgs::display_notification(_("Extension has been installed."));
 			}
 			$Mode = 'RESET';

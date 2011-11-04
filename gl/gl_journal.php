@@ -36,7 +36,7 @@
 	if (isset($_GET['AddedID'])) {
 		$trans_no = $_GET['AddedID'];
 		$trans_type = ST_JOURNAL;
-		ui_msgs::display_notification_centered(_("Journal entry has been entered") . " #$trans_no");
+		ui_msgs::display_notification(_("Journal entry has been entered") . " #$trans_no");
 		ui_msgs::display_note(ui_view::get_gl_view_str($trans_type, $trans_no, _("&View this Journal Entry")));
 		ui_view::reset_focus();
 		hyperlink_params($_SERVER['PHP_SELF'], _("Enter &New Journal Entry"), "NewJournal=Yes");
@@ -45,7 +45,7 @@
 	{
 		$trans_no = $_GET['UpdatedID'];
 		$trans_type = ST_JOURNAL;
-		ui_msgs::display_notification_centered(_("Journal entry has been updated") . " #$trans_no");
+		ui_msgs::display_notification(_("Journal entry has been updated") . " #$trans_no");
 		ui_msgs::display_note(ui_view::get_gl_view_str($trans_type, $trans_no, _("&View this Journal Entry")));
 		hyperlink_no_params(PATH_TO_ROOT . "/gl/inquiry/journal_inquiry.php", _("Return to Journal &Inquiry"));
 		ui_view::display_footer_exit();
@@ -208,9 +208,7 @@
 		if ($_POST['UpdateItem'] != "" && check_item_data()) {
 			if (input_num('AmountDebit') > 0) {
 				$amount = input_num('AmountDebit');
-			}
-			else
-			{
+} else {
 				$amount = -input_num('AmountCredit');
 			}
 			$_SESSION['journal_items']->update_gl_item(

@@ -130,9 +130,7 @@
 		{
 			if ($myrow[1] == $company_currency) {
 				start_row("class='currencybg'");
-			}
-			else
-			{
+} else {
 				alt_table_row_color($k);
 			}
 			label_cell($myrow["curr_abrev"]);
@@ -150,9 +148,7 @@
 			edit_button_cell("Edit" . $myrow["curr_abrev"], _("Edit"));
 			if ($myrow["curr_abrev"] != $company_currency) {
 				delete_button_cell("Delete" . $myrow["curr_abrev"], _("Delete"));
-			}
-			else
-			{
+} else {
 				label_cell('');
 			}
 			end_row();

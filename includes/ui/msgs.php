@@ -11,19 +11,19 @@
 	 ***********************************************************************/
 
 	class ui_msgs {
-		static function display_error($msg, $center = true) {
+		static function display_error($msg) {
 			trigger_error($msg, E_USER_ERROR);
 		}
 
-		static function display_notification($msg, $center = true) {
+		static function display_notification($msg) {
 			trigger_error($msg, E_USER_NOTICE);
 		}
 
-		static function display_warning($msg, $center = true) {
+		static function display_warning($msg) {
 			trigger_error($msg, E_USER_WARNING);
 		}
 
-		static function display_notification_centered($msg) {
+		static function display_notification($msg) {
 			ui_msgs::display_notification($msg, true);
 		}
 

@@ -25,9 +25,7 @@
 	elseif (isset($_GET['selected_account']))
 	{
 		$selected_account = $_GET['selected_account'];
-	}
-	else
-	{
+} else {
 		$selected_account = "";
 	}
 	//-------------------------------------------------------------------------------------
@@ -74,9 +72,7 @@
 					$Ajax->activate('account_code'); // in case of status change
 					ui_msgs::display_notification(_("Account data has been updated."));
 				}
-			}
-			else
-			{
+} else {
 				if (add_gl_account(
 					$_POST['account_code'], $_POST['account_name'],
 					$_POST['account_type'], $_POST['account_code2']
@@ -236,9 +232,7 @@
 		hidden('account_code', $_POST['account_code']);
 		hidden('selected_account', $selected_account);
 		label_row(_("Account Code:"), $_POST['account_code']);
-	}
-	else
-	{
+} else {
 		if (!isset($_POST['account_code'])) {
 			$_POST['account_tags'] = array();
 			$_POST['account_code'] = $_POST['account_code2'] = '';
@@ -255,9 +249,7 @@
 	end_table(1);
 	if ($selected_account == "") {
 		submit_center('add', _("Add Account"), true, '', 'default');
-	}
-	else
-	{
+} else {
 		submit_center_first('update', _("Update Account"), '', 'default');
 		submit_center_last('delete', _("Delete account"), '', true);
 	}

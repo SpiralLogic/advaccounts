@@ -86,9 +86,7 @@
 					input_num('base_amount'), $_POST['base_desc']
 				);
 				ui_msgs::display_notification(_('Selected quick entry has been updated'));
-			}
-			else
-			{
+} else {
 				add_quick_entry(
 					$_POST['description'], $_POST['type'],
 					input_num('base_amount'), $_POST['base_desc']
@@ -207,9 +205,7 @@
 			$act_type = strtolower(substr($myrow['action'], 0, 1));
 			if ($act_type == 't') {
 				label_cells($myrow['tax_name'], '');
-			}
-			else
-			{
+} else {
 				label_cell($myrow['dest_id'] . ' ' . $myrow['account_name']);
 				if ($act_type == '=') {
 					label_cell('');
@@ -217,9 +213,7 @@
 				elseif ($act_type == '%')
 				{
 					label_cell(number_format2($myrow['amount'], user_exrate_dec()), "nowrap align=right ");
-				}
-				else
-				{
+} else {
 					amount_cell($myrow['amount']);
 				}
 			}
@@ -270,9 +264,7 @@
 			if ($actn != '=') {
 				if ($actn == '%') {
 					small_amount_row(_("Part") . ":", 'amount', price_format(0), null, "%", user_exrate_dec());
-				}
-				else
-				{
+} else {
 					amount_row(_("Amount") . ":", 'amount', price_format(0));
 				}
 			}

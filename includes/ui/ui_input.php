@@ -488,9 +488,7 @@
 		if (!isset($_POST[$name]) || $_POST[$name] == "") {
 			if ($init) {
 				$_POST[$name] = $init;
-			}
-			else
-			{
+} else {
 				$_POST[$name] = "";
 			}
 		}
@@ -573,9 +571,7 @@
 		if (!isset($_POST[$name]) || $_POST[$name] == "") {
 			if ($inc_years == 1001) {
 				$_POST[$name] = null;
-			}
-			else
-			{
+} else {
 				$dd = Dates::Today();
 				if ($inc_days != 0) {
 					$dd = Dates::add_days($dd, $inc_days);
@@ -669,9 +665,7 @@
 		if (!isset($_POST[$name]) || $_POST[$name] == "") {
 			if ($init !== null) {
 				$_POST[$name] = $init;
-			}
-			else
-			{
+} else {
 				$_POST[$name] = '';
 			}
 		}

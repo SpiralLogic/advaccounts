@@ -2,14 +2,17 @@ $(function($)
   {
 	  $("#wrapper").delegate(".amount", 'focus', function()
 	  {
-			$(this).val($(this).val().replace(/[^-]?[^0-9\.]/g,''));
+			var value = $(this).val();
+
+			value=((value[0]=='-') ? '-': '')+value.replace(/[^0-9\.]/g,'');
+			$(this).val(value);
 		  $(this).calculator({
 								 useThemeRoller: true, showOn: 'operator', isOperator: mathsOnly,constrainInput:false});
  
 		  function mathsOnly(ch, event, value, base, decimalChar)
 		  {
 
-			  return '+-*/'.indexOf(ch) > -1 && !(value[1]=='-' && ch == '-' && value == '');
+			  return '+-*/'.indexOf(ch) > -1 && !(ch == '-' && (value == '' || value == '0.00'));
 		  }
 
 	  });

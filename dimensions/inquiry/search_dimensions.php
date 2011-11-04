@@ -15,9 +15,7 @@
 	if (isset($_GET['outstanding_only']) && $_GET['outstanding_only']) {
 		$outstanding_only = 1;
 		Page::start(_($help_context = "Search Outstanding Dimensions"));
-	}
-	else
-	{
+} else {
 		$outstanding_only = 0;
 		Page::start(_($help_context = "Search Dimensions"));
 	}
@@ -58,9 +56,7 @@
 	check_cells(_("Only Overdue:"), 'OverdueOnly', null);
 	if (!$outstanding_only) {
 		check_cells(_("Only Open:"), 'OpenOnly', null);
-	}
-	else
-	{
+} else {
 		$_POST['OpenOnly'] = 1;
 	}
 	submit_cells('SearchOrders', _("Search"), '', '', 'default');

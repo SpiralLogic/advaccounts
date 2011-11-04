@@ -55,9 +55,7 @@
 				//editing an existing price
 				update_item_price($selected_id, $_POST['sales_type_id'], $_POST['curr_abrev'], input_num('price'));
 				$msg = _("This price has been updated.");
-			}
-			else
-			{
+} else {
 				add_item_price(
 					$_POST['stock_id'], $_POST['sales_type_id'],
 					$_POST['curr_abrev'], input_num('price')

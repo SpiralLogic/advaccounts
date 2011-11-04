@@ -155,9 +155,7 @@
 				// set new sales document defaults here
 				if (ui_globals::get_global_customer() != ALL_TEXT) {
 					$this->customer_id = ui_globals::get_global_customer();
-				}
-				else
-				{
+} else {
 					$this->customer_id = '';
 				}
 				$this->document_date = Dates::new_doc_date();
@@ -180,9 +178,7 @@
 						if ($dim > 1) {
 							if ($this->customer_id == '') {
 								$this->dimension2_id = 0;
-							}
-							else
-							{
+} else {
 								$this->dimension2_id = $cust['dimension2_id'];
 							}
 						}
@@ -206,9 +202,7 @@
 						$this->cash_account  = $pos['pos_account'];
 						$this->account_name  = $pos['bank_account_name'];
 					}
-				}
-				else
-				{
+} else {
 					$this->due_date = Dates::add_days($this->document_date, SysPrefs::default_delivery_required_by());
 				}
 			}

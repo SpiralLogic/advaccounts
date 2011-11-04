@@ -84,9 +84,7 @@
 				$DisplayNet   = number_format2($Net, $dec);
 				if ($myrow2["discount_percent"] == 0) {
 					$DisplayDiscount = "";
-				}
-				else
-				{
+} else {
 					$DisplayDiscount = number_format2($myrow2["discount_percent"] * 100, user_percent_dec()) . "%";
 				}
 				$rep->TextCol(0, 1, $myrow2['stk_code'], -2);
@@ -122,9 +120,7 @@
 			$doctype  = ST_SALESQUOTE;
 			if ($rep->currency != $myrow['curr_code']) {
 				include(APP_PATH . "reporting/includes/doctext2.php");
-			}
-			else
-			{
+} else {
 				include(APP_PATH . "reporting/includes/doctext.php");
 			}
 			$rep->TextCol(4, 7, $doc_Sub_total, -2);

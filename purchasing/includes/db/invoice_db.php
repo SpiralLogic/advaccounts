@@ -115,9 +115,7 @@
 		$tax_total;
 		if ($supp_trans->is_invoice) {
 			$trans_type = ST_SUPPINVOICE;
-		}
-		else
-		{
+} else {
 			$trans_type = ST_SUPPCREDIT;
 			// let's negate everything because it's a credit note
 			$invoice_items_total     = -$invoice_items_total;
@@ -330,17 +328,13 @@
 							$details_row["grn_item_id"], $details_row["po_detail_item_id"], $details_row["stock_id"],
 							$details_row["description"], 0, 0, $details_row["quantity"], 0, $details_row["FullUnitPrice"],
 							false, 0, 0, $details_row['discount'], $details_row['exp_price']);
-					}
-					else
-					{
+} else {
 						$supp_trans->add_gl_codes_to_trans(
 							$details_row["gl_code"], get_gl_account_name($details_row["gl_code"]), 0, 0,
 							$details_row["FullUnitPrice"], $details_row["memo_"]);
 					}
 				}
-			}
-			else
-			{
+} else {
 				return Errors::show_db_error("Invalid supptrans details for supptrans number : $trans_no and type : $trans_type", $sql, true);
 			}
 		} else {
@@ -392,9 +386,7 @@
 																											 $match["unit_price"], -
 								$details_row["quantity"], Dates::sql2date($match['tran_date']),
 																											 $match['tran_date'] !== $trans['tran_date']);
-						}
-						else
-						{
+} else {
 							$mat_cost = update_average_material_cost($grn["supplier_id"], $details_row["stock_id"],
 																											 $details_row["FullUnitPrice"], -
 								$details_row["quantity"], $old_date, $old[1] !== $trans['tran_date']);
@@ -411,9 +403,7 @@
 						$sql = "UPDATE grn_items SET qty_recd=qty_recd+" . -$details_row["quantity"] . "
 						WHERE id=" . $details_row["grn_item_id"];
 						DBOld::query($sql);
-					}
-					else
-					{
+} else {
 						$diff = get_diff_in_home_currency(
 							$grn["supplier_id"], $old_date, Dates::sql2date($trans['tran_date']), $old[2],
 							$details_row["FullUnitPrice"]);

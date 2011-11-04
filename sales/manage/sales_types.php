@@ -63,9 +63,7 @@
 			$myrow = DBOld::fetch_row($result);
 			if ($myrow[0] > 0) {
 				ui_msgs::display_error(_("Cannot delete this sale type because customers are currently set up to use this sales type."));
-			}
-			else
-			{
+} else {
 				delete_sales_type($selected_id);
 				ui_msgs::display_notification(_('Selected sales type has been deleted'));
 			}

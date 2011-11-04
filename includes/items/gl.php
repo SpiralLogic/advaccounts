@@ -21,9 +21,7 @@
 			//echo "adding $index, $code_id, $dimension_id, $amount, $reference<br>";
 			if ($description == null) {
 				$this->description = get_gl_account_name($code_id);
-			}
-			else
-			{
+} else {
 				$this->description = $description;
 			}
 			$this->code_id       = $code_id;

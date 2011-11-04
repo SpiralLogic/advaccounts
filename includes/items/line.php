@@ -26,16 +26,12 @@
 			$this->units   = $item_row["units"];
 			if ($description == null) {
 				$this->description = $item_row["description"];
-			}
-			else
-			{
+} else {
 				$this->description = $description;
 			}
 			if ($standard_cost == null) {
 				$this->standard_cost = $item_row["actual_cost"];
-			}
-			else
-			{
+} else {
 				$this->standard_cost = $standard_cost;
 			}
 			$this->stock_id = $stock_id;

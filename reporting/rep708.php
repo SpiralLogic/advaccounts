@@ -132,9 +132,7 @@
 					$rep->AmountCol(6, 7, $tot['balance'], $dec);
 				else
 					$rep->AmountCol(7, 8, abs($tot['balance']), $dec);
-			}
-			else
-			{
+} else {
 				$rep->AmountCol(2, 3, $prev['debit'], $dec);
 				$rep->AmountCol(3, 4, $prev['credit'], $dec);
 				$rep->AmountCol(4, 5, $curr['debit'], $dec);

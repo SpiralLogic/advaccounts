@@ -22,18 +22,14 @@
 		if (!isset($_POST['PayType'])) {
 			if (isset($_GET['PayType'])) {
 				$_POST['PayType'] = $_GET['PayType'];
-			}
-			else
-			{
+} else {
 				$_POST['PayType'] = "";
 			}
 		}
 		if (!isset($_POST['person_id'])) {
 			if (isset($_GET['PayPerson'])) {
 				$_POST['person_id'] = $_GET['PayPerson'];
-			}
-			else
-			{
+} else {
 				$_POST['person_id'] = "";
 			}
 		}
@@ -63,9 +59,7 @@
 			if (Input::post('person_id') && Validation::check(Validation::BRANCHES, _("No Branches for Customer"), $_POST['person_id'])) {
 				customer_branches_list_row(_("Branch:"), $_POST['person_id'],
 																	 'PersonDetailID', null, false, true, true, true);
-			}
-			else
-			{
+} else {
 				$_POST['PersonDetailID'] = ANY_NUMERIC;
 				hidden('PersonDetailID');
 			}
@@ -90,9 +84,7 @@
 		table_section(3, "33%");
 		if (isset($_GET['NewPayment'])) {
 			ref_row(_("Reference:"), 'ref', '', Refs::get_next(ST_BANKPAYMENT));
-		}
-		else
-		{
+} else {
 			ref_row(_("Reference:"), 'ref', '', Refs::get_next(ST_BANKDEPOSIT));
 		}
 		end_outer_table(1); // outer table
@@ -116,9 +108,7 @@
 			$th = array(_("Account Code"), _("Account Description"), _("Dimension"),
 									_("Amount"), _("Memo"), ""
 			);
-		}
-		else
-		{
+} else {
 			$th = array(_("Account Code"), _("Account Description"),
 									_("Amount"), _("Memo"), ""
 			);
@@ -144,9 +134,7 @@
 				//amount_cell(abs($item->amount));
 				if ($order->trans_type == ST_BANKDEPOSIT) {
 					amount_cell(-$item->amount);
-				}
-				else
-				{
+} else {
 					amount_cell($item->amount);
 				}
 				label_cell($item->reference);
@@ -155,9 +143,7 @@
 				delete_button_cell("Delete$line", _("Delete"),
 													 _('Remove line from document'));
 				end_row();
-			}
-			else
-			{
+} else {
 				gl_edit_item_controls($order, $dim, $line);
 			}
 		}

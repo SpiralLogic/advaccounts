@@ -37,9 +37,7 @@
 			write_item_unit(htmlentities($selected_id), $_POST['abbr'], $_POST['description'], $_POST['decimals']);
 			if ($selected_id != '') {
 				ui_msgs::display_notification(_('Selected unit has been updated'));
-			}
-			else
-			{
+} else {
 				ui_msgs::display_notification(_('New unit has been added'));
 			}
 			$Mode = 'RESET';

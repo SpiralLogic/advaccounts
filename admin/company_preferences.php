@@ -74,9 +74,7 @@
 				if (!$result) {
 					ui_msgs::display_error(_('The existing image could not be removed'));
 					$input_error = 1;
-				}
-				else
-				{
+} else {
 					$_POST['coy_logo'] = "";
 				}
 			}
@@ -100,7 +98,7 @@
 				$_POST['login_tout']
 			);
 			$_SESSION['wa_current_user']->timeout = $_POST['login_tout'];
-			ui_msgs::display_notification_centered(_("Company setup has been updated."));
+			ui_msgs::display_notification(_("Company setup has been updated."));
 		}
 		JS::set_focus('coy_name');
 		$Ajax->activate('_page_body');

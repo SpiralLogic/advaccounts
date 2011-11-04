@@ -40,7 +40,7 @@
 	//----------------------------------------------------------------------------------------
 	if (isset($_GET['AddedID'])) {
 		$payment_id = $_GET['AddedID'];
-		ui_msgs::display_notification_centered(_("Payment has been sucessfully entered"));
+		ui_msgs::display_notification(_("Payment has been sucessfully entered"));
 		submenu_print(_("&Print This Remittance"), ST_SUPPAYMENT, $payment_id . "-" . ST_SUPPAYMENT, 'prtopt');
 		submenu_print(_("&Email This Remittance"), ST_SUPPAYMENT, $payment_id . "-" . ST_SUPPAYMENT, null, 1);
 		ui_msgs::display_note(ui_view::get_gl_view_str(ST_SUPPAYMENT, $payment_id, _("View the GL &Journal Entries for this Payment")));

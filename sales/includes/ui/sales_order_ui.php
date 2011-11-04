@@ -524,7 +524,7 @@ JS;
 			text_row(_("Deliver To:"), 'deliver_to', $order->deliver_to, 40, 40, _('Additional identifier for delivery e.g. name of receiving person'));
 			textarea_row("<a href='#'>Address:</a>", 'delivery_address', $order->delivery_address, 35, 5, _('Delivery address. Default is address of customer branch'), null, 'id="address_map"');
 			if (strlen($order->delivery_address) > 10) {
-				//JS::gmap("#address_map", $order->delivery_address, $order->delivery_to);
+				//JS::gmap("#address_map", $order->delivery_address, $order->deliver_to);
 			}
 			table_section(2);
 			text_row(_("Person ordering:"), 'name', $order->name, 25, 25, 'Ordering person&#39;s name');

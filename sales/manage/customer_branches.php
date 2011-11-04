@@ -230,9 +230,7 @@
 		$table->set_inactive_ctrl('cust_branch', 'branch_code');
 		//$table->width = "85%";
 		display_db_pager($table);
-	}
-	else
-	{
+} else {
 		ui_msgs::display_warning(_("The selected customer does not have any branches. Please create at least one branch."));
 	}
 	start_outer_table(Config::get('tables_style2'), 5);

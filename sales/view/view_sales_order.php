@@ -48,9 +48,7 @@
 	label_cells(_("Ordered On"), $_SESSION['View']->document_date, "class='label'");
 	if ($_GET['trans_type'] == ST_SALESQUOTE) {
 		label_cells(_("Valid until"), $_SESSION['View']->due_date, "class='label'");
-	}
-	else
-	{
+} else {
 		label_cells(_("Requested Delivery"), $_SESSION['View']->due_date, "class='label'");
 	}
 	end_row();

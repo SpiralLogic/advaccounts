@@ -40,7 +40,7 @@
 		$customer          = new Contacts_Customer($_SESSION['Items']->customer_id);
 		$emails            = $customer->getEmailAddresses();
 		$invoice_no        = $_GET['AddedID'];
-		ui_msgs::display_notification_centered(sprintf(_("Order # %d has been entered."), $invoice_no));
+		ui_msgs::display_notification(sprintf(_("Order # %d has been entered."), $invoice_no));
 		$trans_type = ST_SALESINVOICE;
 		ui_msgs::display_notification(_("Selected deliveries has been processed"), true);
 		ui_msgs::display_note(ui_view::get_customer_trans_view_str($trans_type, $invoice_no, _("&View This Invoice")), 0, 1);
@@ -56,7 +56,7 @@
 		$customer          = new Contacts_Customer($_SESSION['Items']->customer_id);
 		$emails            = $customer->getEmailAddresses();
 		$invoice_no        = $_GET['UpdatedID'];
-		ui_msgs::display_notification_centered(sprintf(_('Sales Invoice # %d has been updated.'), $invoice_no));
+		ui_msgs::display_notification(sprintf(_('Sales Invoice # %d has been updated.'), $invoice_no));
 		ui_msgs::display_note(ui_view::get_trans_view_str(ST_SALESINVOICE, $invoice_no, _("&View This Invoice")));
 		echo '<br>';
 		ui_msgs::display_note(Reporting::print_doc_link($invoice_no, _("&Print This Invoice"), true, ST_SALESINVOICE));

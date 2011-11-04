@@ -47,9 +47,7 @@
 			elseif (isset($_SESSION["sel_app"]) && $_SESSION["sel_app"] != "")
 			{
 				$sel_app = $_SESSION["sel_app"];
-			}
-			else
-			{
+} else {
 				$sel_app = user_startup_tab();
 			}
 			$_SESSION["sel_app"] = $sel_app;
@@ -73,9 +71,7 @@
 			echo "</head> \n";
 			if ($onload == "") {
 				echo "<body";
-			}
-			else
-			{
+} else {
 				echo "body onload='$onload'";
 			}
 			echo	($no_menu) ? ' class="lite">' : '>';

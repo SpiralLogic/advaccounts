@@ -53,9 +53,7 @@
 			elseif (strpos($filename, ".zip") || strpos($filename, ".ZIP"))
 			{
 				$lines = DB_Utils::unzip("lines", $filename);
-			}
-			else
-			{
+} else {
 				$lines = file("" . $filename);
 			}
 			// parse input file
@@ -149,9 +147,7 @@
 			// returns one string or an array of lines
 			if ($mode != "lines") {
 				return implode("", $file_data);
-			}
-			else
-			{
+} else {
 				return $file_data;
 			}
 		}
@@ -168,9 +164,7 @@
 			 != $filename
 			) {
 				return ''; // exit if names differ
-			}
-			else
-			{
+} else {
 				// get the suffix of the filename in hex
 				$crc_bugfix = substr($all, 30, strlen($filename) + 13);
 				$crc_bugfix = substr(substr($crc_bugfix, 0, strlen($crc_bugfix) - 4),
@@ -191,9 +185,7 @@
 			// returns one string or an array of lines
 			if ($mode != "lines") {
 				return $file_data;
-			}
-			else
-			{
+} else {
 				return explode("\n", $file_data);
 			}
 		}
@@ -222,9 +214,7 @@
 			elseif ($zip == "zip")
 			{
 				$backupfile = $filename . ".zip";
-			}
-			else
-			{
+} else {
 				$backupfile = $filename;
 			}
 			$company = DB_Company::get_pref('coy_name');
@@ -325,9 +315,7 @@
 							if (strlen($out) > $max_size && $zip != "zip") {
 								if (Files::save_to_file($backupfile, $zip, $out)) {
 									$out = "";
-								}
-								else
-								{
+} else {
 									$error = true;
 								}
 							}
@@ -343,17 +331,13 @@
 					if (strlen($out) > $max_size && $zip != "zip") {
 						if (Files::save_to_file($backupfile, $zip, $out)) {
 							$out = "";
-						}
-						else
-						{
+} else {
 							$error = true;
 						}
 					}
 				}
 				// an error occurred! Try to delete file and return error status
-			}
-			else
-			{
+} else {
 				unlink(BACKUP_PATH . $backupfile);
 				return false;
 			}
@@ -363,9 +347,7 @@
 			//	$zip = $time;
 			if (Files::save_to_file($backupfile, $zip, $out)) {
 				$out = "";
-			}
-			else
-			{
+} else {
 				unlink(BACKUP_PATH . $backupfile);
 				return false;
 			}

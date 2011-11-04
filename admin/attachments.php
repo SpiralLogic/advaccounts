@@ -13,9 +13,7 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	if (isset($_GET['vw'])) {
 		$view_id = $_GET['vw'];
-	}
-	else
-	{
+} else {
 		$view_id = find_submit('view');
 	}
 	if ($view_id != -1) {
@@ -29,9 +27,7 @@
 				header('Content-Length: ' . $row['filesize']);
 				if ($type == 'application/octet-stream') {
 					header('Content-Disposition: attachment; filename=' . $row['filename']);
-				}
-				else
-				{
+} else {
 					header("Content-Disposition: inline");
 				}
 				echo file_get_contents(COMPANY_PATH . "/attachments/" . $row['unique_name']);
@@ -41,9 +37,7 @@
 	}
 	if (isset($_GET['dl'])) {
 		$download_id = $_GET['dl'];
-	}
-	else
-	{
+} else {
 		$download_id = find_submit('download');
 	}
 	if ($download_id != -1) {
@@ -212,9 +206,7 @@
 			label_row(_("Transaction #"), $row['trans_no']);
 		}
 		hidden('selected_id', $selected_id);
-	}
-	else
-	{
+} else {
 		text_row_ex(_("Transaction #") . ':', 'trans_no', 10);
 	}
 	text_row_ex(_("Description") . ':', 'description', 40);

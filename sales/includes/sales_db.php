@@ -240,9 +240,7 @@
 				 = "UPDATE sales_order_details
 				SET qty_sent = qty_sent + $qty_dispatched
 				WHERE id=" . DBOld::escape($line_id);
-			}
-			else
-			{
+} else {
 				$sql
 				 = "UPDATE debtor_trans_details
 				SET qty_done = qty_done + $qty_dispatched
@@ -288,9 +286,7 @@
 			$myrow = get_customer_trans($trans_no[0], $doc_type);
 			if (count($trans_no) > 1) {
 				$cart->trans_no = get_customer_trans_version($doc_type, $trans_no);
-			}
-			else
-			{
+} else {
 				$cart->trans_no = array($trans_no[0] => $myrow["version"]);
 			}
 			$cart->set_sales_type($myrow["tpe"], $myrow["sales_type"], $myrow["tax_included"], 0);

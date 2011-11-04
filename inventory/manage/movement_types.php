@@ -26,9 +26,7 @@
 			if ($selected_id != -1) {
 				update_movement_type($selected_id, $_POST['name']);
 				ui_msgs::display_notification(_('Selected movement type has been updated'));
-			}
-			else
-			{
+} else {
 				add_movement_type($_POST['name']);
 				ui_msgs::display_notification(_('New movement type has been added'));
 			}

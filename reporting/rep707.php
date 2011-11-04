@@ -34,9 +34,7 @@
 			$per_balance = get_gl_trans_from_to($from, $to, $account["account_code"], $dimension, $dimension2);
 			if ($compare == 2) {
 				$acc_balance = get_budget_trans_from_to($begin, $end, $account["account_code"], $dimension, $dimension2);
-			}
-			else
-			{
+} else {
 				$acc_balance = get_gl_trans_from_to($begin, $end, $account["account_code"], $dimension, $dimension2);
 			}
 			if (!$per_balance && !$acc_balance) {
@@ -219,9 +217,7 @@
 			if ($compare == 2) {
 				$begin      = $from;
 				$headers[3] = _('Budget');
-			}
-			else
-			{
+} else {
 				$begin = Dates::begin_fiscalyear();
 			}
 		}

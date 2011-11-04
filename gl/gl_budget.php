@@ -76,18 +76,16 @@
 					$da, $_POST['account'], $_POST['dim1'],
 					$_POST['dim2'], input_num('amount' . $i)
 				);
-			}
-			else
-			{
+} else {
 				delete_gl_budget_trans($da, $_POST['account'], $_POST['dim1'], $_POST['dim2']);
 			}
 			$da = Dates::add_months($da, 1);
 		}
 		DBOld::commit_transaction();
 		if (isset($_POST['add'])) {
-			ui_msgs::display_notification_centered(_("The Budget has been saved."));
+			ui_msgs::display_notification(_("The Budget has been saved."));
 		} else {
-			ui_msgs::display_notification_centered(_("The Budget has been deleted."));
+			ui_msgs::display_notification(_("The Budget has been deleted."));
 		}
 		//meta_forward($_SERVER['PHP_SELF']);
 		$Ajax->activate('budget_tbl');

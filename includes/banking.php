@@ -149,9 +149,7 @@
 				$person_id = $trans['debtor_no'];
 				$curr      = $trans['curr_code'];
 				$date      = Dates::sql2date($trans['tran_date']);
-			}
-			else
-			{
+} else {
 				$trans     = get_supp_trans($trans_no, $type);
 				$pyt_trans = get_supp_trans($pyt_no, $pyt_type);
 				$supp_accs = get_supplier_accounts($trans['supplier_id']);
@@ -178,9 +176,7 @@
 					$memo = $systypes_array[$pyt_type] . " " . $pyt_no;
 					add_gl_trans($type, $trans_no, $date, $ar_ap_act, 0, 0, $memo, -$diff, null, $person_type, $person_id);
 					add_gl_trans($type, $trans_no, $date, $exc_var_act, 0, 0, $memo, $diff, null, $person_type, $person_id);
-				}
-				else
-				{
+} else {
 					$memo = $systypes_array[$type] . " " . $trans_no;
 					add_gl_trans($pyt_type, $pyt_no, $pyt_date, $ar_ap_act, 0, 0, $memo, -$diff, null, $person_type, $person_id);
 					add_gl_trans($pyt_type, $pyt_no, $pyt_date, $exc_var_act, 0, 0, $memo, $diff, null, $person_type, $person_id);

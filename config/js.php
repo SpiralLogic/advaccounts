@@ -16,10 +16,11 @@
 			'/js/inserts.js',
 		),
 		'footer' => array(
+			'/js/advanced.js',
 			'/js/libs/jquery-tmpl.min.js',
 			'/js/libs/jquery.calculator.pack.js',
 			'/js/calc.js',
-			'/js/advanced.js',
 			'/js/sidemenu.js',
-		)
+		),
+		'maps_api_key'=>'ABQIAAAAi6QUBXugcwuPqyTcPMoi7BRpI0TaLspvsTOnOMM4T78mt8FLYBQC5z4qKk3rJIKFVEWI7RCzzewJLQ'
 	);

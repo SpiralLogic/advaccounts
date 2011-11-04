@@ -33,9 +33,7 @@
 					$_POST['dflt_curr_act']
 				);
 				ui_msgs::display_notification(_('Bank account has been updated'));
-			}
-			else
-			{
+} else {
 				add_bank_account(
 					$_POST['account_code'], $_POST['account_type'],
 					$_POST['bank_account_name'], $_POST['bank_name'],
@@ -143,24 +141,18 @@
 	text_row(_("Bank Account Name:"), 'bank_account_name', null, 50, 100);
 	if ($is_editing) {
 		label_row(_("Account Type:"), $bank_account_types[$_POST['account_type']]);
-	}
-	else
-	{
+} else {
 		bank_account_types_list_row(_("Account Type:"), 'account_type', null);
 	}
 	if ($is_editing) {
 		label_row(_("Bank Account Currency:"), $_POST['BankAccountCurrency']);
-	}
-	else
-	{
+} else {
 		currencies_list_row(_("Bank Account Currency:"), 'BankAccountCurrency', null);
 	}
 	yesno_list_row(_("Default currency account:"), 'dflt_curr_act');
 	if ($is_editing) {
 		label_row(_("Bank Account GL Code:"), $_POST['account_code']);
-	}
-	else
-	{
+} else {
 		gl_all_accounts_list_row(_("Bank Account GL Code:"), 'account_code', null);
 	}
 	text_row(_("Bank Name:"), 'bank_name', null, 50, 60);

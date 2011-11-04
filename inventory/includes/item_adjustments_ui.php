@@ -76,9 +76,7 @@
 					_('Remove line from document')
 				);
 				end_row();
-			}
-			else
-			{
+} else {
 				adjustment_edit_item_controls($order, $line_no);
 			}
 		}

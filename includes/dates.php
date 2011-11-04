@@ -40,9 +40,7 @@
 			}
 			else if ($how == 1) {
 				return $day . $sep . $month . $sep . $year;
-			}
-			else
-			{
+} else {
 				return $year . $sep . $month . $sep . $day;
 			}
 		}
@@ -129,9 +127,7 @@
 		{
 			if (user_date_format() == 0) {
 				return date("h:i a");
-			}
-			else
-			{
+} else {
 				return date("H:i");
 			}
 		}
@@ -159,9 +155,7 @@
 			}
 			if ($convert) {
 				$date2 = Dates::sql2date($date);
-			}
-			else
-			{
+} else {
 				$date2 = $date;
 			}
 			$begin = Dates::sql2date($myrow['begin']);
@@ -490,9 +484,7 @@
 				$g_day_no %= 36524;
 				if ($g_day_no >= 365) {
 					$g_day_no++;
-				}
-				else
-				{
+} else {
 					$leap = false;
 				}
 			}

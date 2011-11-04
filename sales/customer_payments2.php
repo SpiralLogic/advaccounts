@@ -48,7 +48,7 @@
 	if (isset($_GET['AddedID'])) {
 		$payment_no = $_GET['AddedID'];
 
-		ui_msgs::display_notification_centered(_("The customer payment has been successfully entered."));
+		ui_msgs::display_notification(_("The customer payment has been successfully entered."));
 
 		submenu_print(_("&Print This Receipt"), ST_CUSTPAYMENT, $payment_no . "-" . ST_CUSTPAYMENT, 'prtopt');
 

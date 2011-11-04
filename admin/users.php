@@ -60,10 +60,8 @@
 					$_POST['profile'], check_value('rep_popup'), $_POST['pos']
 				);
 				User::update_password($selected_id, $_POST['user_id'], $password);
-				ui_msgs::display_notification_centered(_("The selected user has been updated."));
-			}
-			else
-			{
+				ui_msgs::display_notification(_("The selected user has been updated."));
+} else {
 				User::add(
 					$_POST['user_id'], $_POST['real_name'], $password,
 					$_POST['phone'], $_POST['email'], $_POST['Access'], $_POST['language'],
@@ -79,7 +77,7 @@
 					$_POST['profile'], check_value('rep_popup'), user_query_size(),
 					user_graphic_links(), $_POST['language'], sticky_doc_date(), user_startup_tab()
 				);
-				ui_msgs::display_notification_centered(_("A new user has been added."));
+				ui_msgs::display_notification(_("A new user has been added."));
 			}
 			$Mode = 'RESET';
 		}
@@ -87,7 +85,7 @@
 	//-------------------------------------------------------------------------------------------------
 	if ($Mode == 'Delete') {
 		User::delete($selected_id);
-		ui_msgs::display_notification_centered(_("User has been deleted."));
+		ui_msgs::display_notification(_("User has been deleted."));
 		$Mode = 'RESET';
 	}
 	//-------------------------------------------------------------------------------------------------
@@ -158,9 +156,7 @@
 		hidden('user_id');
 		start_row();
 		label_row(_("User login:"), Input::post('user_id'));
-	}
-	else
-	{ //end of if $selected_id only do the else when a new record is being entered
+} else { //end of if $selected_id only do the else when a new record is being entered
 		text_row(_("User Login:"), "user_id", null, 22, 20);
 		$_POST['language'] = user_language();
 		$_POST['profile'] = user_print_profile();

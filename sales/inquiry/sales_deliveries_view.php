@@ -16,9 +16,7 @@
 	if (isset($_GET['OutstandingOnly']) && ($_GET['OutstandingOnly'] == true)) {
 		$_POST['OutstandingOnly'] = true;
 		Page::start(_($help_context = "Search Not Invoiced Deliveries"));
-	}
-	else
-	{
+} else {
 		$_POST['OutstandingOnly'] = false;
 		Page::start(_($help_context = "Search All Deliveries"));
 	}
@@ -28,9 +26,7 @@
 	elseif (isset($_POST['selected_customer']))
 	{
 		$selected_customer = $_POST['selected_customer'];
-	}
-	else
-	{
+} else {
 		$selected_customer = -1;
 	}
 	if (isset($_POST['BatchInvoice'])) {
@@ -102,9 +98,7 @@
 	 && ($_POST['SelectStockFromList'] != ALL_TEXT)
 	) {
 		$selected_stock_item = $_POST['SelectStockFromList'];
-	}
-	else
-	{
+} else {
 		unset($selected_stock_item);
 	}
 	//---------------------------------------------------------------------------------------------
@@ -185,9 +179,7 @@
 		$delivery = "%" . $_POST['DeliveryNumber'];
 		$sql .= " AND trans.trans_no LIKE " . DBOld::escape($delivery);
 		$sql .= " GROUP BY trans.trans_no";
-	}
-	else
-	{
+} else {
 		$sql .= " AND trans.tran_date >= '" . Dates::date2sql($_POST['DeliveryAfterDate']) . "'";
 		$sql .= " AND trans.tran_date <= '" . Dates::date2sql($_POST['DeliveryToDate']) . "'";
 		if ($selected_customer != -1) {

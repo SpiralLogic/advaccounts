@@ -61,9 +61,7 @@
 						$row['debtor_no'], $row['branch_code'], $myrow['order_no'], $myrow['id']
 					);
 				}
-			}
-			else
-			{
+} else {
 				$invs[] = create_recurrent_invoices(
 					$myrow['debtor_no'], $myrow['group_no'], $myrow['order_no'], $myrow['id']
 				);
@@ -71,9 +69,7 @@
 			if (count($invs) > 0) {
 				$min = min($invs);
 				$max = max($invs);
-			}
-			else
-			{
+} else {
 				$min = $max = 0;
 			}
 			ui_msgs::display_notification(sprintf(_("%s recurrent invoice(s) created, # $min - # $max."), count($invs)));
@@ -161,9 +157,7 @@
 	end_table();
 	if ($due) {
 		ui_msgs::display_warning(_("Marked items are due."), 1, 0, "class='overduefg'");
-	}
-	else
-	{
+} else {
 		ui_msgs::display_warning(_("No recurrent invoices are due."), 1, 0);
 	}
 	echo '<br>';

@@ -23,39 +23,37 @@
 	elseif (isset($_POST['selected_id']))
 	{
 		$selected_id = $_POST['selected_id'];
-	}
-	else
-	{
+} else {
 		$selected_id = -1;
 	}
 	//---------------------------------------------------------------------------------------
 	if (isset($_GET['AddedID'])) {
 		$id = $_GET['AddedID'];
-		ui_msgs::display_notification_centered(_("The dimension has been entered."));
+		ui_msgs::display_notification(_("The dimension has been entered."));
 		safe_exit();
 	}
 	//---------------------------------------------------------------------------------------
 	if (isset($_GET['UpdatedID'])) {
 		$id = $_GET['UpdatedID'];
-		ui_msgs::display_notification_centered(_("The dimension has been updated."));
+		ui_msgs::display_notification(_("The dimension has been updated."));
 		safe_exit();
 	}
 	//---------------------------------------------------------------------------------------
 	if (isset($_GET['DeletedID'])) {
 		$id = $_GET['DeletedID'];
-		ui_msgs::display_notification_centered(_("The dimension has been deleted."));
+		ui_msgs::display_notification(_("The dimension has been deleted."));
 		safe_exit();
 	}
 	//---------------------------------------------------------------------------------------
 	if (isset($_GET['ClosedID'])) {
 		$id = $_GET['ClosedID'];
-		ui_msgs::display_notification_centered(_("The dimension has been closed. There can be no more changes to it.") . " #$id");
+		ui_msgs::display_notification(_("The dimension has been closed. There can be no more changes to it.") . " #$id");
 		safe_exit();
 	}
 	//---------------------------------------------------------------------------------------
 	if (isset($_GET['ReopenedID'])) {
 		$id = $_GET['ReopenedID'];
-		ui_msgs::display_notification_centered(_("The dimension has been re-opened. ") . " #$id");
+		ui_msgs::display_notification(_("The dimension has been re-opened. ") . " #$id");
 		safe_exit();
 	}
 	//-------------------------------------------------------------------------------------------------
@@ -111,9 +109,7 @@
 				);
 				Tags::add_associations($id, $_POST['dimension_tags']);
 				meta_forward($_SERVER['PHP_SELF'], "AddedID=$id");
-			}
-			else
-			{
+} else {
 				update_dimension(
 					$selected_id, $_POST['name'], $_POST['type_'], $_POST['date_'], $_POST['due_date'],
 					$_POST['memo_']
@@ -182,9 +178,7 @@
 		hidden('ref', $_POST['ref']);
 		label_row(_("Dimension Reference:"), $_POST['ref']);
 		hidden('selected_id', $selected_id);
-	}
-	else
-	{
+} else {
 		$_POST['dimension_tags'] = array();
 		ref_row(_("Dimension Reference:"), 'ref', '', Refs::get_next(ST_DIMENSION));
 	}
@@ -208,9 +202,7 @@
 			submit('close', _("Close This Dimension"), true, _('Mark this dimension as closed'), true);
 		}
 		submit_center_last('delete', _("Delete This Dimension"), _('Delete unused dimension'), true);
-	}
-	else
-	{
+} else {
 		submit_center('ADD_ITEM', _("Add"), true, '', 'default');
 	}
 	end_form();

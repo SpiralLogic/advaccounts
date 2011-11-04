@@ -124,9 +124,7 @@
 					return false;
 				}
 				$ok = close_year($selected_id);
-			}
-			else
-			{
+			} else {
 				open_year($selected_id);
 			}
 			if ($ok) {
@@ -396,18 +394,14 @@
 		{
 			if ($myrow['id'] == $company_year) {
 				start_row("class='stockmankobg'");
-			}
-			else
-			{
+			} else {
 				alt_table_row_color($k);
 			}
 			$from = Dates::sql2date($myrow["begin"]);
 			$to = Dates::sql2date($myrow["end"]);
 			if ($myrow["closed"] == 0) {
 				$closed_text = _("No");
-			}
-			else
-			{
+			} else {
 				$closed_text = _("Yes");
 			}
 			label_cell($from);

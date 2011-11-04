@@ -142,9 +142,7 @@
 			$val_b = str_replace(',', '', $val_b);
 			if ($val_b) {
 				$val = $val_a / $val_b;
-			}
-			else
-			{
+} else {
 				$val = 0;
 			}
 		}

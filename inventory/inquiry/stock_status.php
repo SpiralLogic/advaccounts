@@ -42,9 +42,7 @@
 	start_table(Config::get('tables_style'));
 	if ($kitset_or_service == true) {
 		$th = array(_("Location"), _("Demand"));
-	}
-	else
-	{
+} else {
 		$th = array(
 			_("Location"), _("Quantity On Hand"), _("Re-Order Level"),
 			_("Demand"), _("Available"), _("On Order")

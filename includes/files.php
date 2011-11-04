@@ -17,9 +17,7 @@
 					gzwrite($zp, $fileData);
 					gzclose($zp);
 					return true;
-				}
-				else
-				{
+} else {
 					return false;
 				}
 				// $zip contains the timestamp
@@ -78,22 +76,16 @@
 					fwrite($zp, $fileData);
 					fclose($zp);
 					return true;
-				}
-				else
-				{
+} else {
 					return false;
 				}
 				// uncompressed
-			}
-			else
-			{
+} else {
 				if ($zp = fopen(BACKUP_PATH . $backupfile, "a")) {
 					fwrite($zp, $fileData);
 					fclose($zp);
 					return true;
-				}
-				else
-				{
+} else {
 					return false;
 				}
 			}

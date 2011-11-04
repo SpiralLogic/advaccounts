@@ -33,9 +33,7 @@
 					check_value('no_sale')
 				);
 				ui_msgs::display_notification(_('Selected item category has been updated'));
-			}
-			else
-			{
+} else {
 				add_item_category(
 					$_POST['description'],
 					$_POST['tax_type_id'], $_POST['sales_account'],
@@ -163,18 +161,14 @@
 		gl_all_accounts_list_row(_("C.O.G.S. Account:"), 'cogs_account', $_POST['cogs_account']);
 		hidden('inventory_account', $_POST['inventory_account']);
 		hidden('adjustment_account', $_POST['adjustment_account']);
-	}
-	else
-	{
+} else {
 		gl_all_accounts_list_row(_("Inventory Account:"), 'inventory_account', $_POST['inventory_account']);
 		gl_all_accounts_list_row(_("C.O.G.S. Account:"), 'cogs_account', $_POST['cogs_account']);
 		gl_all_accounts_list_row(_("Inventory Adjustments Account:"), 'adjustment_account', $_POST['adjustment_account']);
 	}
 	if (STOCK_MANUFACTURED == $_POST['mb_flag']) {
 		gl_all_accounts_list_row(_("Item Assembly Costs Account:"), 'assembly_account', $_POST['assembly_account']);
-	}
-	else
-	{
+} else {
 		hidden('assembly_account', $_POST['assembly_account']);
 	}
 	$dim = DB_Company::get_pref('use_dimension');

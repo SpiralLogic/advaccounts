@@ -98,9 +98,7 @@
 			$sub_total += $value;
 			if ($myrow2["discount_percent"] == 0) {
 				$display_discount = "";
-			}
-			else
-			{
+} else {
 				$display_discount = percent_format($myrow2["discount_percent"] * 100) . "%";
 			}
 			label_cell($myrow2["stock_id"]);
@@ -112,9 +110,7 @@
 			amount_cell($value);
 			end_row();
 		} //end while there are line items to print out
-	}
-	else
-	{
+} else {
 		ui_msgs::display_warning(_("There are no line items on this dispatch."), 1, 2);
 	}
 	$display_sub_tot = price_format($sub_total);

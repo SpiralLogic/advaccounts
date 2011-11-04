@@ -65,9 +65,7 @@
 				if (isset($user["sticky_doc_date"])) {
 					$this->sticky_date = $user["sticky_doc_date"];
 					$this->startup_tab = $user['startup_tab'];
-				}
-				else
-				{
+} else {
 					$this->sticky_date = 0;
 					$this->startup_tab = "orders";
 				}
@@ -128,9 +126,7 @@
 			elseif ($this->date_format == 1)
 			{
 				return "d" . $sep . "m" . $sep . "Y";
-			}
-			else
-			{
+} else {
 				return "Y" . $sep . "m" . $sep . "d";
 			}
 		}

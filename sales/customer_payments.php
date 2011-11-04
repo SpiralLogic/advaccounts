@@ -38,7 +38,7 @@
 	}
 	if (isset($_GET['AddedID'])) {
 		$payment_no = $_GET['AddedID'];
-		ui_msgs::display_notification_centered(_("The customer payment has been successfully entered."));
+		ui_msgs::display_notification(_("The customer payment has been successfully entered."));
 		submenu_print(_("&Print This Receipt"), ST_CUSTPAYMENT, $payment_no . "-" . ST_CUSTPAYMENT, 'prtopt');
 		hyperlink_no_params("/sales/inquiry/customer_inquiry.php", _("Show Invoices"));
 		ui_msgs::display_note(ui_view::get_gl_view_str(ST_CUSTPAYMENT, $payment_no, _("&View the GL Journal Entries for this Customer Payment")));

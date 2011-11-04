@@ -132,9 +132,7 @@
 			if (DBOld::num_rows($qoo_result) == 1) {
 				$qoo_row = DBOld::fetch_row($qoo_result);
 				$qoo = $qoo_row[0];
-			}
-			else
-			{
+} else {
 				$qoo = 0;
 			}
 			return $qoo;

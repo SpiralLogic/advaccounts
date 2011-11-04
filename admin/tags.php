@@ -60,9 +60,7 @@
 				if ($ret = Tags::update($selected_id, $_POST['name'], $_POST['description'])) {
 					ui_msgs::display_notification(_('Selected tag settings have been updated'));
 				}
-			}
-			else
-			{
+} else {
 				if ($ret = Tags::add(Input::post('type'), $_POST['name'], $_POST['description'])) {
 					ui_msgs::display_notification(_('New tag has been added'));
 				}

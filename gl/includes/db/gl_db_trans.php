@@ -22,9 +22,7 @@
 		if ($currency != null) {
 			if ($rate == 0) {
 				$amount_in_home_currency = Banking::to_home_currency($amount, $currency, $date_);
-			}
-			else
-			{
+} else {
 				$amount_in_home_currency = round2($amount * $rate, user_price_dec());
 			}
 		} else {
@@ -39,9 +37,7 @@
 		if (Config::get('logs_audits')) {
 			if ($memo_ == "" || $memo_ == null) {
 				$memo_ = CurrentUser::instance()->username;
-			}
-			else
-			{
+} else {
 				$memo_ = CurrentUser::instance()->username . " - " . $memo_;
 			}
 		}

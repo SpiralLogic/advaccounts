@@ -30,9 +30,7 @@
 		$destination = $_POST['PARAM_4'];
 		if ($destination) {
 			include_once(APP_PATH . "includes/reports/excel.php");
-		}
-		else
-		{
+} else {
 			include_once(APP_PATH . "includes/reports/pdf.php");
 		}
 		$dec = user_price_dec();
@@ -78,9 +76,7 @@
 				if ($memo != '') {
 					if ($coms == "") {
 						$coms = $memo;
-					}
-					else
-					{
+} else {
 						$coms .= " / " . $memo;
 					}
 				}
@@ -98,9 +94,7 @@
 			$rep->TextCol(3, 4, $myrow['memo_']);
 			if ($myrow['amount'] > 0.0) {
 				$rep->AmountCol(4, 5, abs($myrow['amount']), $dec);
-			}
-			else
-			{
+} else {
 				$rep->AmountCol(5, 6, abs($myrow['amount']), $dec);
 			}
 			$rep->NewLine(1, 2);

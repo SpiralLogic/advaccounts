@@ -139,9 +139,7 @@
 		{
 			if ($location == 'all') {
 				$loc_code = "";
-			}
-			else
-			{
+} else {
 				$loc_code = $location;
 			}
 			$demandqty = Manufacturing::get_demand_qty($trans['stock_id'], $loc_code);
@@ -177,9 +175,7 @@
 				$rep->AmountCol(4, 5, $demandqty, $dec);
 				$rep->AmountCol(5, 6, $trans['QtyOnHand'] - $demandqty, $dec);
 				$rep->AmountCol(6, 7, $onorder, $dec);
-			}
-			else
-			{
+} else {
 				$rep->AmountCol(3, 4, $demandqty, $dec);
 				$rep->AmountCol(4, 5, $trans['QtyOnHand'] - $demandqty, $dec);
 				$rep->AmountCol(5, 6, $onorder, $dec);

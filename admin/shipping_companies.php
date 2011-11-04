@@ -66,9 +66,7 @@
 			if ($myrow[0] > 0) {
 				$cancel_delete = 1;
 				ui_msgs::display_error(_("Cannot delete this shipping company because invoices have been created using this shipping company."));
-			}
-			else
-			{
+} else {
 				$sql = "DELETE FROM shippers WHERE shipper_id=" . DBOld::escape($selected_id);
 				DBOld::query($sql, "could not delete shipper");
 				ui_msgs::display_notification(_('Selected shipping company has been deleted'));

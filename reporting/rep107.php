@@ -107,9 +107,7 @@
 					$DisplayNet = number_format2($Net, $dec);
 					if ($myrow2["discount_percent"] == 0) {
 						$DisplayDiscount = "";
-					}
-					else
-					{
+} else {
 						$DisplayDiscount = number_format2($myrow2["discount_percent"] * 100, user_percent_dec()) . "%";
 					}
 					$rep->TextCol(0, 1, $myrow2['stock_id'], -2);

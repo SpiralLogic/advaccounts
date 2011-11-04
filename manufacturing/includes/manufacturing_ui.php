@@ -88,16 +88,12 @@
 					// oops, we don't have enough of one of the component items
 					start_row("class='stockmankobg'");
 					$has_marked = true;
-				}
-				else
-				{
+} else {
 					alt_table_row_color($k);
 				}
 				if (user_show_codes()) {
 					label_cell($myrow["stock_id"] . " - " . $myrow["description"]);
-				}
-				else
-				{
+} else {
 					label_cell($myrow["description"]);
 				}
 				label_cell($myrow["location_name"]);
@@ -108,9 +104,7 @@
 				qty_cell($myrow["units_issued"], false, $dec);
 				if ($show_qoh) {
 					qty_cell($qoh, false, $dec);
-				}
-				else
-				{
+} else {
 					label_cell("");
 				}
 				end_row();

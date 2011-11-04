@@ -41,9 +41,7 @@
 				$this->allocs[count($this->allocs)] = new allocation_item($type, $type_no,
 					$date_, $due_date, $amount, $amount_allocated, $current_allocated);
 				return true;
-			}
-			else
-			{
+} else {
 				return false;
 			}
 		}
@@ -57,9 +55,7 @@
 				$this->allocs[$index] = new allocation_item($type, $type_no,
 					$date_, $due_date, $amount, $amount_allocated, $current_allocated);
 				return true;
-			}
-			else
-			{
+} else {
 				return false;
 			}
 		}
@@ -99,9 +95,7 @@
 			if ($type == ST_BANKPAYMENT || $type == ST_BANKDEPOSIT) {
 				$bank_trans        = DBOld::fetch(get_bank_trans($type, $trans_no));
 				$this->person_type = $bank_trans['person_type_id'] == PT_SUPPLIER;
-			}
-			else
-			{
+} else {
 				$this->person_type = $type == ST_SUPPCREDIT || $type == ST_SUPPAYMENT;
 			}
 			$this->allocs = array();
@@ -122,9 +116,7 @@
 											outstanding balances ie Total-alloc >0 */
 			if ($this->person_type) {
 				$trans_items = get_allocatable_to_supp_transactions($this->person_id);
-			}
-			else
-			{
+} else {
 				$trans_items = get_allocatable_to_cust_transactions($this->person_id);
 			}
 			while ($myrow = DBOld::fetch($trans_items))
@@ -149,9 +141,7 @@
 					$this->person_id,
 					$trans_no, $type
 				);
-			}
-			else
-			{
+} else {
 				$trans_items = get_allocatable_to_cust_transactions(
 					$this->person_id,
 					$trans_no, $type
@@ -177,9 +167,7 @@
 			DBOld::begin_transaction();
 			if ($this->person_type) {
 				clear_supp_alloctions($this->type, $this->trans_no, $this->date_);
-			}
-			else
-			{
+} else {
 				clear_cust_alloctions($this->type, $this->trans_no, $this->date_);
 			}
 			// now add the new allocations
@@ -227,9 +215,7 @@
 					$this->type, $this->trans_no,
 					$total_allocated
 				);
-			}
-			else
-			{
+} else {
 				update_debtor_trans_allocation(
 					$this->type, $this->trans_no,
 					$total_allocated
@@ -294,9 +280,7 @@
 					if ($amount - $total_allocated < 0) {
 						$font1 = "<font color=red>";
 						$font2 = "</font>";
-					}
-					else
-					{
+} else {
 						$font1 = $font2 = "";
 					}
 					$left_to_allocate = price_format($amount - $total_allocated);

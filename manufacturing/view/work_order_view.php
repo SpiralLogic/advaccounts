@@ -24,9 +24,7 @@
 	$myrow = get_work_order($woid);
 	if ($myrow["type"] == WO_ADVANCED) {
 		display_wo_details($woid, true);
-	}
-	else
-	{
+} else {
 		display_wo_details_quick($woid, true);
 	}
 	echo "<center>";
@@ -35,9 +33,7 @@
 	if ($myrow["released"] == false) {
 		ui_msgs::display_heading2(_("BOM for item:") . " " . $myrow["StockItemName"]);
 		display_bom($myrow["stock_id"]);
-	}
-	else
-	{
+} else {
 		ui_msgs::display_heading2(_("Work Order Requirements"));
 		display_wo_requirements($woid, $myrow["units_reqd"]);
 		if ($myrow["type"] == WO_ADVANCED) {

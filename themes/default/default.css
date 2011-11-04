@@ -176,7 +176,7 @@ div#content {
 div.banner a { display: block; margin: 0 0.5em }
 div.banner a + a { border-top: 2px groove #999 }
 */
-#sidemenu li, #sidemenu em {
+#sidemenu li, #sidemenu a, #sidemenu em {
 	display:     block;
 	margin:      0.5em 0; /*  padding: 0.3em 0.4em;*/
 	white-space: nowrap;
@@ -186,15 +186,8 @@ div.banner a + a { border-top: 2px groove #999 }
 	border-top: none
 }
 
-#sidemenu li:link {
+#sidemenu a:visited, #sidemenu a:link {
 	text-decoration: none;
-}
-
-#sidemenu li:visited {
-	text-decoration: none;
-}
-
-#sidemenu li:hover {
 }
 
 #sidemenu img {

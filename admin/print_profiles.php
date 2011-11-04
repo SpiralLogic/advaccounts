@@ -99,10 +99,10 @@
 			}
 			Printer::update_profile($_POST['profile_id'], $prof);
 			if ($selected_id == '') {
-				ui_msgs::display_notification_centered(_('New printing profile has been created'));
+				ui_msgs::display_notification(_('New printing profile has been created'));
 				clear_form();
 			} else {
-				ui_msgs::display_notification_centered(_('Printing profile has been updated'));
+				ui_msgs::display_notification(_('Printing profile has been updated'));
 			}
 		}
 	}
@@ -127,9 +127,7 @@
 	start_table();
 	if (get_post('profile_id') == '') {
 		text_row(_("Printing Profile Name") . ':', 'name', null, 30, 30);
-	}
-	else
-	{
+} else {
 		label_cells(_("Printing Profile Name") . ':', get_post('profile_id'));
 	}
 	end_table(1);
@@ -165,9 +163,7 @@
 	end_table();
 	if ($unkn) {
 		ui_msgs::display_warning('<sup>1)</sup>&nbsp;-&nbsp;' . _("no title was found in this report definition file."), 0, 1, '');
-	}
-	else
-	{
+} else {
 		echo '<br>';
 	}
 	div_start('controls');

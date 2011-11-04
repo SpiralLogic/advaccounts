@@ -233,9 +233,7 @@
 	if ($new_role) {
 		submit_center_first('Update', _("Update view"), '', null);
 		submit_center_last('addupdate', _("Insert New Role"), '', 'default');
-	}
-	else
-	{
+} else {
 		submit_center_first('addupdate', _("Save Role"), '', 'default');
 		submit('Update', _("Update view"), true, '', null);
 		submit('clone', _("Clone This Role"), true, '', true);

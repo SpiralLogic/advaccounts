@@ -24,9 +24,7 @@
 	if ($trans1["amount"] < 0) {
 		$from_trans = $trans1; // from trans is the negative one
 		$to_trans = $trans2;
-	}
-	else
-	{
+} else {
 		$from_trans = $trans2;
 		$to_trans   = $trans1;
 	}

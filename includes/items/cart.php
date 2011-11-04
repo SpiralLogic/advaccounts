@@ -39,9 +39,7 @@
 				$this->line_items[$line_no] = new Items_Line($stock_id, $qty,
 					$standard_cost, $description);
 				return true;
-			}
-			else
-			{
+} else {
 				// shouldn't come here under normal circumstances
 				Errors::show_db_error("unexpected - adding an invalid item or null quantity", "", true);
 			}
@@ -108,9 +106,7 @@
 			$this->gl_items[$index]->reference     = $reference;
 			if ($description == null) {
 				$this->gl_items[$index]->description = get_gl_account_name($code_id);
-			}
-			else
-			{
+} else {
 				$this->gl_items[$index]->description = $description;
 			}
 		}

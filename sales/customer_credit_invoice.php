@@ -31,7 +31,7 @@
 	if (isset($_GET['AddedID'])) {
 		$credit_no = $_GET['AddedID'];
 		$trans_type = ST_CUSTCREDIT;
-		ui_msgs::display_notification_centered(_("Credit Note has been processed"));
+		ui_msgs::display_notification(_("Credit Note has been processed"));
 		ui_msgs::display_note(ui_view::get_customer_trans_view_str($trans_type, $credit_no, _("&View This Credit Note")), 0, 0);
 		ui_msgs::display_note(Reporting::print_doc_link($credit_no, _("&Print This Credit Note"), true, $trans_type), 1);
 		ui_msgs::display_note(ui_view::get_gl_view_str($trans_type, $credit_no, _("View the GL &Journal Entries for this Credit Note")), 1);
@@ -40,14 +40,12 @@
 	elseif (isset($_GET['UpdatedID'])) {
 		$credit_no = $_GET['UpdatedID'];
 		$trans_type = ST_CUSTCREDIT;
-		ui_msgs::display_notification_centered(_("Credit Note has been updated"));
+		ui_msgs::display_notification(_("Credit Note has been updated"));
 		ui_msgs::display_note(ui_view::get_customer_trans_view_str($trans_type, $credit_no, _("&View This Credit Note")), 0, 0);
 		ui_msgs::display_note(Reporting::print_doc_link($credit_no, _("&Print This Credit Note"), true, $trans_type), 1);
 		ui_msgs::display_note(ui_view::get_gl_view_str($trans_type, $credit_no, _("View the GL &Journal Entries for this Credit Note")), 1);
 		ui_view::display_footer_exit();
-	}
-	else
-	{
+} else {
 		check_edit_conflicts();
 	}
 	//-----------------------------------------------------------------------------

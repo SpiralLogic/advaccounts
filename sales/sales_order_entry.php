@@ -143,7 +143,7 @@
 	{
 		$customer = new Contacts_Customer($_SESSION['Jobsboard']->customer_id);
 		$emails   = $customer->getEmailAddresses();
-		ui_msgs::display_notification_centered(
+		ui_msgs::display_notification(
 			sprintf(
 				_(
 					$trans_name . " # %d has been " . ($update ? "updated!"

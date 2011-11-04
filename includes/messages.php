@@ -28,9 +28,7 @@
 					static::$messages .= '<div style="margin-top:5px; margin-bottom:5px; font-weight:bold; text-decoration:underline;">' .
 					 $row['subject'] . ':</div><hr style="margin-top:1px;"/> <div style="padding-top:5px;" >'
 					 . trim($row['message']) . '</div>';
-				}
-				else
-				{
+} else {
 					static::$messages .= '<hr style="margin-top:1px;"/> <div style="margin-top:5px; padding-bottom:10px;" >'
 					 . trim($row['message']) . '</div>';
 				}

@@ -15,8 +15,8 @@
 	Page::start(_($help_context = "Void a Transaction"));
 	//----------------------------------------------------------------------------------------
 	function exist_transaction($type, $type_no) {
-		$void_entry = Voiding::get($type, $type_no);
-		if ($void_entry != null) {
+		$void_entry = Voiding::has($type, $type_no);
+		if ($void_entry >0) {
 			return false;
 		}
 		switch ($type)
@@ -104,16 +104,12 @@
 				unset($_POST['memo_']);
 				unset($_POST['date_']);
 				submit_center('ProcessVoiding', _("Void Transaction"), true, '', 'default');
-			}
-			else
-			{
+} else {
 				ui_msgs::display_warning(_("Are you sure you want to void this transaction ? This action cannot be undone."), 0, 1);
 				if ($_POST['filterType'] == ST_JOURNAL) // GL transaction are not included in get_trans_view_str
 				{
 					$view_str = ui_view::get_gl_view_str($_POST['filterType'], $_POST['trans_no'], _("View Transaction"));
-				}
-				else
-				{
+} else {
 					$view_str = ui_view::get_trans_view_str($_POST['filterType'], $_POST['trans_no'], _("View Transaction"));
 				}
 				ui_msgs::display_warning($view_str);
@@ -167,7 +163,7 @@
 				$_POST['date_'], $_POST['memo_']
 			);
 			if ($ret) {
-				ui_msgs::display_notification_centered(_("Selected transaction has been voided."));
+				ui_msgs::display_notification(_("Selected transaction has been voided."));
 				unset($_POST['trans_no']);
 				unset($_POST['memo_']);
 				unset($_POST['date_']);

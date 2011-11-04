@@ -23,7 +23,7 @@
 		}
 		elseif (empty($_POST['host']))
 		{
-			ui_msgs::display_notification_centered(_("You have selected printing to server at user IP."));
+			ui_msgs::display_notification(_("You have selected printing to server at user IP."));
 		}
 		elseif (!Validation::is_num('tout', 0, 60))
 		{
@@ -37,7 +37,7 @@
 				get_post('queue'), get_post('host'), input_num('port', 0),
 				input_num('tout', 0)
 			);
-			ui_msgs::display_notification_centered(
+			ui_msgs::display_notification(
 				$selected_id == -1 ?
 				 _('New printer definition has been created')
 				 : _('Selected printer definition has been updated')

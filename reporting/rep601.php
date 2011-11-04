@@ -54,9 +54,7 @@
 		$destination = $_POST['PARAM_4'];
 		if ($destination) {
 			include_once(APP_PATH . "includes/reports/excel.php");
-		}
-		else
-		{
+} else {
 			include_once(APP_PATH . "includes/reports/pdf.php");
 		}
 		$rep = new FrontReport(_('Bank Statement'), "BankStatement", user_pagesize());
@@ -88,9 +86,7 @@
 			$rep->TextCol(3, 5, _('Opening Balance'));
 			if ($prev_balance > 0.0) {
 				$rep->AmountCol(5, 6, abs($prev_balance), $dec);
-			}
-			else
-			{
+} else {
 				$rep->AmountCol(6, 7, abs($prev_balance), $dec);
 			}
 			$rep->Font();
@@ -111,9 +107,7 @@
 					if ($myrow['amount'] > 0.0) {
 						$rep->AmountCol(5, 6, abs($myrow['amount']), $dec);
 						$total_debit += abs($myrow['amount']);
-					}
-					else
-					{
+} else {
 						$rep->AmountCol(6, 7, abs($myrow['amount']), $dec);
 						$total_credit += abs($myrow['amount']);
 					}
@@ -135,9 +129,7 @@
 			$rep->TextCol(3, 5, _("Ending Balance"));
 			if ($total > 0.0) {
 				$rep->AmountCol(5, 6, abs($total), $dec);
-			}
-			else
-			{
+} else {
 				$rep->AmountCol(6, 7, abs($total), $dec);
 			}
 			$rep->Font();
@@ -148,9 +140,7 @@
 			$rep->TextCol(3, 5, _("Net Change"));
 			if ($total > 0.0) {
 				$rep->AmountCol(5, 6, $net_change, $dec, 0, 0, 0, 0, null, 1, True);
-			}
-			else
-			{
+} else {
 				$rep->AmountCol(6, 7, $net_change, $dec, 0, 0, 0, 0, null, 1, True);
 			}
 		}

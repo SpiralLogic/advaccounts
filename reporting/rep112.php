@@ -109,9 +109,7 @@
 				$doctype = ST_CUSTPAYMENT;
 				if ($rep->currency != $myrow['curr_code']) {
 					include(APP_PATH . "reporting/includes/doctext2.php");
-				}
-				else
-				{
+} else {
 					include(APP_PATH . "reporting/includes/doctext.php");
 				}
 

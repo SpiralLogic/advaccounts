@@ -64,9 +64,7 @@
 					$rates
 				);
 				ui_msgs::display_notification(_('Selected tax group has been updated'));
-			}
-			else
-			{
+} else {
 				Tax_Groups::add_tax_group($_POST['name'], $_POST['tax_shipping'], $taxes, $rates);
 				ui_msgs::display_notification(_('New tax group has been added'));
 			}

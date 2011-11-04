@@ -85,9 +85,7 @@
 		{
 			if ($path === false) {
 				bindtextdomain($domain, "./locale/");
-			}
-			else
-			{
+} else {
 				bindtextdomain($domain, $path);
 			}
 			//bind_textdomain_codeset($domain, $encoding);
@@ -292,9 +290,7 @@
 					}
 				}
 				$d->_keys = $hash;
-			}
-			else
-			{
+} else {
 				$d->_keys = include $php_domain;
 			}
 			$this->_domains[] = &$d;

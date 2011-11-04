@@ -33,9 +33,7 @@
 	if ($show_currencies) {
 		$colspan1 = 5;
 		$colspan2 = 8;
-	}
-	else
-	{
+} else {
 		$colspan1 = 3;
 		$colspan2 = 6;
 	}
@@ -64,9 +62,7 @@
 	$items = get_gl_trans(ST_BANKDEPOSIT, $trans_no);
 	if (DBOld::num_rows($items) == 0) {
 		ui_msgs::display_warning(_("There are no items for this deposit."));
-	}
-	else
-	{
+} else {
 		ui_msgs::display_heading2(_("Items for this Deposit"));
 		if ($show_currencies) {
 			ui_msgs::display_heading2(_("Item Amounts are Shown in :") . " " . $company_currency);

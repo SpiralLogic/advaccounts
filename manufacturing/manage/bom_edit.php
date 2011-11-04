@@ -132,9 +132,7 @@
 					DBOld::query($sql, "check failed");
 					ui_msgs::display_notification(_("A new component part has been added to the bill of material for this item."));
 					$Mode = 'RESET';
-				}
-				else
-				{
+} else {
 					/*The component must already be on the bom */
 					ui_msgs::display_error(_("The selected component is already on this bom. You can modify it's quantity but it cannot appear more than once on the same bom."));
 				}

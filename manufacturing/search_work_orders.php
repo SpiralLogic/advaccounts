@@ -17,9 +17,7 @@
 		// curently outstanding simply means not closed
 		$outstanding_only = 1;
 		Page::start(_($help_context = "Search Outstanding Work Orders"));
-	}
-	else
-	{
+} else {
 		$outstanding_only = 0;
 		Page::start(_($help_context = "Search Work Orders"));
 	}

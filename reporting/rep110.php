@@ -81,9 +81,7 @@
 				if ($packing_slip == 0) {
 					$rep->title = _('DELIVERY NOTE');
 					$rep->filename = "Delivery" . $myrow['reference'] . ".pdf";
-				}
-				else
-				{
+} else {
 					$rep->title = _('PACKING SLIP');
 					$rep->filename = "Packing_slip" . $myrow['reference'] . ".pdf";
 				}
@@ -133,9 +131,7 @@
 			$doctype = ST_CUSTDELIVERY;
 			if ($rep->currency != $myrow['curr_code']) {
 				include(APP_PATH . "reporting/includes/doctext2.php");
-			}
-			else
-			{
+} else {
 				include(APP_PATH . "reporting/includes/doctext.php");
 			}
 

@@ -149,9 +149,7 @@
 				$price2 = get_price($myrow['stock_id'], $home_curr, $salestype);
 				if ($price2 != 0.0) {
 					$disp = ($price2 - $myrow['Standardcost']) * 100 / $price2;
-				}
-				else
-				{
+} else {
 					$disp = 0.0;
 				}
 				$rep->TextCol(3, 4, number_format2($disp, user_percent_dec()) . " %");
@@ -168,9 +166,7 @@
 					$rep->row -= Config::get('item_images_height');
 					$rep->NewLine();
 				}
-			}
-			else
-			{
+} else {
 				$rep->NewLine(0, 1);
 			}
 		}
