@@ -36,7 +36,7 @@
 
 	function viewing_controls()
 	{
-		ui_msgs::display_warning(_("Only documents can be printed."));
+		Errors::warning(_("Only documents can be printed."));
 		start_table("class='tablestyle_noborder'");
 		start_row();
 		systypes_list_cells(_("Type:"), 'filterType', null, true);
@@ -57,11 +57,11 @@
 	function check_valid_entries()
 	{
 		if (!is_numeric($_POST['FromTransNo']) OR $_POST['FromTransNo'] <= 0) {
-			ui_msgs::display_error(_("The starting transaction number is expected to be numeric and greater than zero."));
+			Errors::error(_("The starting transaction number is expected to be numeric and greater than zero."));
 			return false;
 		}
 		if (!is_numeric($_POST['ToTransNo']) OR $_POST['ToTransNo'] <= 0) {
-			ui_msgs::display_error(_("The ending transaction number is expected to be numeric and greater than zero."));
+			Errors::error(_("The ending transaction number is expected to be numeric and greater than zero."));
 			return false;
 		}
 		return true;
@@ -84,10 +84,10 @@
 				$sql .= " ,$trans_ref ";
 			}
 			$sql .= ", " . $_POST['filterType'] . " as type FROM $table_name
-			WHERE $trans_no_name >= " . DBOld::escape($_POST['FromTransNo']) . "
-			AND  $trans_no_name <= " . DBOld::escape($_POST['ToTransNo']);
+			WHERE $trans_no_name >= " . DB::escape($_POST['FromTransNo']) . "
+			AND  $trans_no_name <= " . DB::escape($_POST['ToTransNo']);
 			if ($type_name != null) {
-				$sql .= " AND `$type_name` = " . DBOld::escape($_POST['filterType']);
+				$sql .= " AND `$type_name` = " . DB::escape($_POST['filterType']);
 			}
 			$sql .= " ORDER BY $trans_no_name";
 			$print_type = $_POST['filterType'];

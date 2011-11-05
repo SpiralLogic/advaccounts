@@ -17,7 +17,7 @@
 	//-----------------------------------------------------------------------------------
 	function can_process() {
 		if (strlen($_POST['reason_description']) == 0) {
-			ui_msgs::display_error(_("The credit status description cannot be empty."));
+			Errors::error(_("The credit status description cannot be empty."));
 			JS::set_focus('reason_description');
 			return false;
 		}
@@ -27,12 +27,12 @@
 	//-----------------------------------------------------------------------------------
 	if ($Mode == 'ADD_ITEM' && can_process()) {
 		add_credit_status($_POST['reason_description'], $_POST['DisallowInvoices']);
-		ui_msgs::display_notification(_('New credit status has been added'));
+		Errors::notice(_('New credit status has been added'));
 		$Mode = 'RESET';
 	}
 	//-----------------------------------------------------------------------------------
 	if ($Mode == 'UPDATE_ITEM' && can_process()) {
-		ui_msgs::display_notification(_('Selected credit status has been updated'));
+		Errors::notice(_('Selected credit status has been updated'));
 		update_credit_status($selected_id, $_POST['reason_description'], $_POST['DisallowInvoices']);
 		$Mode = 'RESET';
 	}
@@ -40,11 +40,11 @@
 	function can_delete($selected_id) {
 		$sql
 		 = "SELECT COUNT(*) FROM debtors_master
-		WHERE credit_status=" . DBOld::escape($selected_id);
+		WHERE credit_status=" . DB::escape($selected_id);
 		$result = DBOld::query($sql, "could not query customers");
 		$myrow = DBOld::fetch_row($result);
 		if ($myrow[0] > 0) {
-			ui_msgs::display_error(_("Cannot delete this credit status because customer accounts have been created referring to it."));
+			Errors::error(_("Cannot delete this credit status because customer accounts have been created referring to it."));
 			return false;
 		}
 		return true;
@@ -54,7 +54,7 @@
 	if ($Mode == 'Delete') {
 		if (can_delete($selected_id)) {
 			delete_credit_status($selected_id);
-			ui_msgs::display_notification(_('Selected credit status has been deleted'));
+			Errors::notice(_('Selected credit status has been deleted'));
 		}
 		$Mode = 'RESET';
 	}

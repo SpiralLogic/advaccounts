@@ -35,8 +35,8 @@
    				debtors_master.email, debtors_master.address
     			FROM debtor_trans, debtors_master
 				WHERE debtor_trans.debtor_no = debtors_master.debtor_no
-				AND debtor_trans.type = " . DBOld::escape($type) . "
-				AND debtor_trans.trans_no = " . DBOld::escape($trans_no);
+				AND debtor_trans.type = " . DB::escape($type) . "
+				AND debtor_trans.trans_no = " . DB::escape($trans_no);
 		$result = DBOld::query($sql, "The remittance cannot be retrieved");
 		if (DBOld::num_rows($result) == 0)
 			return false;
@@ -48,7 +48,7 @@
 		AND trans.type = alloc.trans_type_to
 		AND alloc.trans_no_from=$trans_no
 		AND alloc.trans_type_from=$type
-		AND trans.debtor_no=" . DBOld::escape($debtor_id),
+		AND trans.debtor_no=" . DB::escape($debtor_id),
 			"cust_allocations as alloc");
 		$sql .= " ORDER BY trans_no";
 		return DBOld::query($sql, "Cannot retreive alloc to transactions");

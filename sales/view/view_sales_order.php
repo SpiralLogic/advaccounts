@@ -69,7 +69,7 @@
 		ui_msgs::display_heading(_("Delivery Notes"));
 		$th = array(_("#"), _("Ref"), _("Date"), _("Total"));
 		table_header($th);
-		$sql            = "SELECT * FROM debtor_trans WHERE type=" . ST_CUSTDELIVERY . " AND order_=" . DBOld::escape($_GET['trans_no']);
+		$sql            = "SELECT * FROM debtor_trans WHERE type=" . ST_CUSTDELIVERY . " AND order_=" . DB::escape($_GET['trans_no']);
 		$result         = DBOld::query($sql, "The related delivery notes could not be retreived");
 		$delivery_total = 0;
 		$k              = 0;
@@ -141,7 +141,7 @@
 	}
 	echo "<center>";
 	if ($_SESSION['View']->so_type == 1) {
-		ui_msgs::display_warning(_("This Sales Order is used as a Template."), 0, 0, "class='currentfg'");
+		Errors::warning(_("This Sales Order is used as a Template."), 0, 0, "class='currentfg'");
 	}
 	ui_msgs::display_heading(_("Line Details"));
 	start_table("colspan=9 width=95%  " . Config::get('tables_style'));

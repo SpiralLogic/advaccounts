@@ -44,7 +44,7 @@
 			AND taxrec.tran_date >= '$fromdate'
 			AND taxrec.tran_date <= '$todate'
 		ORDER BY taxrec.tran_date";
-		//ui_msgs::display_error($sql);
+		//Errors::error($sql);
 		return DBOld::query($sql, "No transactions were returned");
 	}
 

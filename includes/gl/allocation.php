@@ -303,14 +303,14 @@
 			)
 			{
 				if (!Validation::is_num('amount' . $counter, 0)) {
-					ui_msgs::display_error(_("The entry for one or more amounts is invalid or negative."));
+					Errors::error(_("The entry for one or more amounts is invalid or negative."));
 					JS::set_focus('amount' . $counter);
 					return false;
 				}
 				/*Now check to see that the AllocAmt is no greater than the
 														 amount left to be allocated against the transaction under review */
 				if (input_num('amount' . $counter) > input_num('un_allocated' . $counter)) {
-					ui_msgs::display_error(_("At least one transaction is overallocated."));
+					Errors::error(_("At least one transaction is overallocated."));
 					JS::set_focus('amount' . $counter);
 					return false;
 				}
@@ -322,7 +322,7 @@
 				$amount = -$amount;
 			}
 			if ($total_allocated - ($amount + input_num('discount')) > SysPrefs::allocation_settled_allowance()) {
-				ui_msgs::display_error(_("These allocations cannot be processed because the amount allocated is more than the total amount left to allocate."));
+				Errors::error(_("These allocations cannot be processed because the amount allocated is more than the total amount left to allocate."));
 				return false;
 			}
 			return true;

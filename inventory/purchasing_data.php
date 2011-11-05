@@ -24,19 +24,19 @@
 		$input_error = 0;
 		if ($_POST['stock_id'] == "" || !isset($_POST['stock_id'])) {
 			$input_error = 1;
-			ui_msgs::display_error(_("There is no item selected."));
+			Errors::error(_("There is no item selected."));
 			JS::set_focus('stock_id');
 		}
 		elseif (!Validation::is_num('price', 0))
 		{
 			$input_error = 1;
-			ui_msgs::display_error(_("The price entered was not numeric."));
+			Errors::error(_("The price entered was not numeric."));
 			JS::set_focus('price');
 		}
 		elseif (!Validation::is_num('conversion_factor'))
 		{
 			$input_error = 1;
-			ui_msgs::display_error(_("The conversion factor entered was not numeric. The conversion factor is the number by which the price must be divided by to get the unit price in our unit of measure."));
+			Errors::error(_("The conversion factor entered was not numeric. The conversion factor is the number by which the price must be divided by to get the unit price in our unit of measure."));
 			JS::set_focus('conversion_factor');
 		}
 		if ($input_error == 0) {
@@ -44,22 +44,22 @@
 				$sql
 				 = "INSERT INTO purch_data (supplier_id, stock_id, price, suppliers_uom,
     			conversion_factor, supplier_description) VALUES (";
-				$sql .= DBOld::escape($_POST['supplier_id']) . ", " . DBOld::escape($_POST['stock_id']) . ", "
-				 . input_num('price', 0) . ", " . DBOld::escape($_POST['suppliers_uom']) . ", "
+				$sql .= DB::escape($_POST['supplier_id']) . ", " . DB::escape($_POST['stock_id']) . ", "
+				 . input_num('price', 0) . ", " . DB::escape($_POST['suppliers_uom']) . ", "
 				 . input_num('conversion_factor') . ", "
-				 . DBOld::escape($_POST['supplier_description']) . ")";
+				 . DB::escape($_POST['supplier_description']) . ")";
 				DBOld::query($sql, "The supplier purchasing details could not be added");
-				ui_msgs::display_notification(_("This supplier purchasing data has been added."));
+				Errors::notice(_("This supplier purchasing data has been added."));
 			} else
 			{
 				$sql = "UPDATE purch_data SET price=" . input_num('price', 0) . ",
-				suppliers_uom=" . DBOld::escape($_POST['suppliers_uom']) . ",
+				suppliers_uom=" . DB::escape($_POST['suppliers_uom']) . ",
 				conversion_factor=" . input_num('conversion_factor') . ",
-				supplier_description=" . DBOld::escape($_POST['supplier_description']) . "
-				WHERE stock_id=" . DBOld::escape($_POST['stock_id']) . " AND
-				supplier_id=" . DBOld::escape($selected_id);
+				supplier_description=" . DB::escape($_POST['supplier_description']) . "
+				WHERE stock_id=" . DB::escape($_POST['stock_id']) . " AND
+				supplier_id=" . DB::escape($selected_id);
 				DBOld::query($sql, "The supplier purchasing details could not be updated");
-				ui_msgs::display_notification(_("Supplier purchasing data has been updated."));
+				Errors::notice(_("Supplier purchasing data has been updated."));
 			}
 			$Mode = 'RESET';
 		}
@@ -69,10 +69,10 @@
 		if (!Input::post('stock_id')) {
 			$_POST['stock_id'] = ui_globals::get_global_stock_item();
 		}
-		$sql = "DELETE FROM purch_data WHERE supplier_id=" . DBOld::escape($selected_id) . "
-		AND stock_id=" . DBOld::escape($_POST['stock_id']);
+		$sql = "DELETE FROM purch_data WHERE supplier_id=" . DB::escape($selected_id) . "
+		AND stock_id=" . DB::escape($_POST['stock_id']);
 		DBOld::query($sql, "could not delete purchasing data");
-		ui_msgs::display_notification(_("The purchasing data item has been sucessfully deleted."));
+		Errors::notice(_("The purchasing data item has been sucessfully deleted."));
 		$Mode = 'RESET';
 	}
 	if ($Mode == 'RESET') {
@@ -102,18 +102,18 @@
 	ui_globals::set_global_stock_item($_POST['stock_id']);
 	$mb_flag = Manufacturing::get_mb_flag($_POST['stock_id']);
 	if ($mb_flag == -1) {
-		ui_msgs::display_error(_("Entered item is not defined. Please re-enter."));
+		Errors::error(_("Entered item is not defined. Please re-enter."));
 		JS::set_focus('stock_id');
 } else {
 		$sql = "SELECT purch_data.*,suppliers.supp_name,"
 		 . "suppliers.curr_code
 		FROM purch_data INNER JOIN suppliers
 		ON purch_data.supplier_id=suppliers.supplier_id
-		WHERE stock_id = " . DBOld::escape($_POST['stock_id']);
+		WHERE stock_id = " . DB::escape($_POST['stock_id']);
 		$result = DBOld::query($sql, "The supplier purchasing details for the selected part could not be retrieved");
 		div_start('price_table');
 		if (DBOld::num_rows($result) == 0) {
-			ui_msgs::display_warning(_("There is no supplier prices set up for the product selected"));
+			Errors::warning(_("There is no supplier prices set up for the product selected"));
 		} else {
 			if (Input::request('frame')) {
 				start_table(Config::get('tables_style') . "  width=90%");
@@ -155,8 +155,8 @@
 		$sql
 		 = "SELECT purch_data.*,suppliers.supp_name FROM purch_data
 		INNER JOIN suppliers ON purch_data.supplier_id=suppliers.supplier_id
-		WHERE purch_data.supplier_id=" . DBOld::escape($selected_id) . "
-		AND purch_data.stock_id=" . DBOld::escape($_POST['stock_id']);
+		WHERE purch_data.supplier_id=" . DB::escape($selected_id) . "
+		AND purch_data.stock_id=" . DB::escape($_POST['stock_id']);
 		$result = DBOld::query($sql, "The supplier purchasing details for the selected supplier and item could not be retrieved");
 		$myrow = DBOld::fetch($result);
 		$supp_name = $myrow["supp_name"];

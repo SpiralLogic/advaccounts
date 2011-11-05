@@ -43,7 +43,7 @@
 	ui_view::comments_display_row(ST_DIMENSION, $id);
 	end_table();
 	if ($myrow["closed"] == true) {
-		ui_msgs::display_warning(_("This dimension is closed."));
+		Errors::warning(_("This dimension is closed."));
 	}
 	start_form();
 	start_table("class='tablestyle_noborder'");

@@ -18,7 +18,7 @@
 		$input_error = 0;
 		if (strlen($_POST['name']) == 0) {
 			$input_error = 1;
-			ui_msgs::display_error(_("The item tax type description cannot be empty."));
+			Errors::error(_("The item tax type description cannot be empty."));
 			JS::set_focus('name');
 		}
 		if ($input_error != 1) {
@@ -35,10 +35,10 @@
 			}
 			if ($selected_id != -1) {
 				update($selected_id, $_POST['name'], $_POST['exempt'], $exempt_from);
-				ui_msgs::display_notification(_('Selected item tax type has been updated'));
+				Errors::notice(_('Selected item tax type has been updated'));
 } else {
 				add($_POST['name'], $_POST['exempt'], $exempt_from);
-				ui_msgs::display_notification(_('New item tax type has been added'));
+				Errors::notice(_('New item tax type has been added'));
 			}
 			$Mode = 'RESET';
 		}
@@ -46,11 +46,11 @@
 	//-----------------------------------------------------------------------------------
 	function can_delete($selected_id)
 	{
-		$sql    = "SELECT COUNT(*) FROM stock_master WHERE tax_type_id=" . DBOld::escape($selected_id);
+		$sql    = "SELECT COUNT(*) FROM stock_master WHERE tax_type_id=" . DB::escape($selected_id);
 		$result = DBOld::query($sql, "could not query stock master");
 		$myrow  = DBOld::fetch_row($result);
 		if ($myrow[0] > 0) {
-			ui_msgs::display_error(_("Cannot delete this item tax type because items have been created referring to it."));
+			Errors::error(_("Cannot delete this item tax type because items have been created referring to it."));
 			return false;
 		}
 		return true;
@@ -60,7 +60,7 @@
 	if ($Mode == 'Delete') {
 		if (can_delete($selected_id)) {
 			delete($selected_id);
-			ui_msgs::display_notification(_('Selected item tax type has been deleted'));
+			Errors::notice(_('Selected item tax type has been deleted'));
 		}
 		$Mode = 'RESET';
 	}
@@ -118,7 +118,7 @@
 	yesno_list_row(_("Is Fully Tax-exempt:"), 'exempt', null, "", "", true);
 	end_table(1);
 	if (!isset($_POST['exempt']) || $_POST['exempt'] == 0) {
-		ui_msgs::display_warning(_("Select which taxes this item tax type is exempt from."), 0, 1);
+		Errors::warning(_("Select which taxes this item tax type is exempt from."), 0, 1);
 		start_table(Config::get('tables_style2'));
 		$th = array(_("Tax Name"), _("Rate"), _("Is exempt"));
 		table_header($th);

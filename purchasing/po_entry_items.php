@@ -29,10 +29,10 @@
 		$trans_type = ST_PURCHORDER;
 		$supplier   = new Contacts_Supplier($_SESSION['wa_global_supplier_id']);
 		if (!isset($_GET['Updated'])) {
-			ui_msgs::display_notification(_("Purchase Order: " . $_SESSION['history'][ST_PURCHORDER] . " has been entered"));
+			Errors::notice(_("Purchase Order: " . $_SESSION['history'][ST_PURCHORDER] . " has been entered"));
 		}
 		else {
-			ui_msgs::display_notification(_("Purchase Order: " . $_SESSION['history'][ST_PURCHORDER] . " has been updated") . " #$order_no");
+			Errors::notice(_("Purchase Order: " . $_SESSION['history'][ST_PURCHORDER] . " has been updated") . " #$order_no");
 		}
 		unset($_SESSION['PO']);
 		ui_msgs::display_note(ui_view::get_trans_view_str($trans_type, $order_no, _("&View this order"), false, 'button'), 0, 1);
@@ -96,7 +96,7 @@
 			unset_form_variables();
 		}
 		else {
-			ui_msgs::display_error(_("This item cannot be deleted because some of it has already been received."));
+			Errors::error(_("This item cannot be deleted because some of it has already been received."));
 		}
 		line_start_focus();
 	}
@@ -106,7 +106,7 @@
 	{
 		//need to check that not already dispatched or invoiced by the supplier
 		if (($_SESSION['PO']->order_no != 0) && $_SESSION['PO']->any_already_received() == 1) {
-			ui_msgs::display_error(
+			Errors::error(
 				_("This order cannot be cancelled because some of it has already been received.") . "<br>" . _(
 					"The line item quantities may be modified to quantities more than already received. prices cannot be altered for lines that have already been received and quantities cannot be reduced below the quantity already received."
 				)
@@ -122,7 +122,7 @@
 		}
 		$_SESSION['PO']->clear_items();
 		$_SESSION['PO'] = new Purchase_Order;
-		ui_msgs::display_notification(_("This purchase order has been cancelled."));
+		Errors::notice(_("This purchase order has been cancelled."));
 		hyperlink_params("/purchasing/po_entry_items.php", _("Enter a new purchase order"), "NewOrder=Yes");
 		echo "<br>";
 		end_page();
@@ -136,22 +136,22 @@
 		$min = 1 / pow(10, $dec);
 		if (!Validation::is_num('qty', $min)) {
 			$min = number_format2($min, $dec);
-			ui_msgs::display_error(_("The quantity of the order item must be numeric and not less than ") . $min);
+			Errors::error(_("The quantity of the order item must be numeric and not less than ") . $min);
 			JS::set_focus('qty');
 			return false;
 		}
 		if (!Validation::is_num('price', 0)) {
-			ui_msgs::display_error(_("The price entered must be numeric and not less than zero."));
+			Errors::error(_("The price entered must be numeric and not less than zero."));
 			JS::set_focus('price');
 			return false;
 		}
 		if (!Validation::is_num('discount', 0, 100)) {
-			ui_msgs::display_error(_("Discount percent can not be less than 0 or more than 100."));
+			Errors::error(_("Discount percent can not be less than 0 or more than 100."));
 			JS::set_focus('discount');
 			return false;
 		}
 		if (!Dates::is_date($_POST['req_del_date'])) {
-			ui_msgs::display_error(_("The date entered is in an invalid format."));
+			Errors::error(_("The date entered is in an invalid format."));
 			JS::set_focus('req_del_date');
 			return false;
 		}
@@ -164,7 +164,7 @@
 		$allow_update = check_data();
 		if ($allow_update) {
 			if ($_SESSION['PO']->line_items[$_POST['line_no']]->qty_inv > input_num('qty') || $_SESSION['PO']->line_items[$_POST['line_no']]->qty_received > input_num('qty')) {
-				ui_msgs::display_error(
+				Errors::error(
 					_("You are attempting to make the quantity ordered a quantity less than has already been invoiced or received.  This is prohibited.") . "<br>" . _(
 						"The quantity received can only be modified by entering a negative receipt and the quantity invoiced can only be reduced by entering a credit note against this item."
 					)
@@ -195,14 +195,14 @@
 																																										 ($order_item->Deleted == false))
 																																									{
 																																									 $allow_update = false;
-																																									 ui_msgs::display_error(_("The selected item is already on this order."));
+																																									 Errors::error(_("The selected item is already on this order."));
 																																								}
 																																						 } /* end of the foreach loop to look for pre-existing items of the same code */
 			}
 			if ($allow_update == true) {
 				$sql
 								= "SELECT long_description as description , units, mb_flag
-				FROM stock_master WHERE stock_id = " . DBOld::escape($_POST['stock_id']);
+				FROM stock_master WHERE stock_id = " . DB::escape($_POST['stock_id']);
 				$result = DBOld::query($sql, "The stock details for " . $_POST['stock_id'] . " could not be retrieved");
 				if (DBOld::num_rows($result) == 0) {
 					$allow_update = false;
@@ -217,7 +217,7 @@
 					$_POST['stock_id'] = "";
 				}
 				else {
-					ui_msgs::display_error(_("The selected item does not exist or it is a kit part and therefore cannot be purchased."));
+					Errors::error(_("The selected item does not exist or it is a kit part and therefore cannot be purchased."));
 				}
 			} /* end of if not already on the order and allow input was true*/
 		}
@@ -228,43 +228,43 @@
 	function can_commit()
 	{
 		if (!get_post('supplier_id')) {
-			ui_msgs::display_error(_("There is no supplier selected."));
+			Errors::error(_("There is no supplier selected."));
 			JS::set_focus('supplier_id');
 			return false;
 		}
 		if (!Dates::is_date($_POST['OrderDate'])) {
-			ui_msgs::display_error(_("The entered order date is invalid."));
+			Errors::error(_("The entered order date is invalid."));
 			JS::set_focus('OrderDate');
 			return false;
 		}
 		if (get_post('delivery_address') == '') {
-			ui_msgs::display_error(_("There is no delivery address specified."));
+			Errors::error(_("There is no delivery address specified."));
 			JS::set_focus('delivery_address');
 			return false;
 		}
 		if (!Validation::is_num('freight', 0)) {
-			ui_msgs::display_error(_("The freight entered must be numeric and not less than zero."));
+			Errors::error(_("The freight entered must be numeric and not less than zero."));
 			JS::set_focus('freight');
 			return false;
 		}
 		if (get_post('StkLocation') == '') {
-			ui_msgs::display_error(_("There is no location specified to move any items into."));
+			Errors::error(_("There is no location specified to move any items into."));
 			JS::set_focus('StkLocation');
 			return false;
 		}
 		if ($_SESSION['PO']->order_has_items() == false) {
-			ui_msgs::display_error(_("The order cannot be placed because there are no lines entered on this order."));
+			Errors::error(_("The order cannot be placed because there are no lines entered on this order."));
 			return false;
 		}
 		if (!$_SESSION['PO']->order_no) {
 			if (!Refs::is_valid(get_post('ref'))) {
-				ui_msgs::display_error(_("There is no reference entered for this purchase order."));
+				Errors::error(_("There is no reference entered for this purchase order."));
 				JS::set_focus('ref');
 				return false;
 			}
 			while (!is_new_reference($_POST['ref'], ST_PURCHORDER)) {
 				//            if (!is_new_reference(get_post('ref'), ST_PURCHORDER)) {
-				//ui_msgs::display_error(_("The entered reference is already in use."));
+				//Errors::error(_("The entered reference is already in use."));
 				//JS::set_focus('ref');
 				//return false;
 				$_POST['ref'] = Refs::get_next(ST_PURCHORDER);
@@ -335,7 +335,7 @@
 								= "SELECT purch_data.price,purch_data.supplier_id
 		FROM purch_data INNER JOIN suppliers
 		ON purch_data.supplier_id=suppliers.supplier_id
-		WHERE stock_id = " . DBOld::escape($line_item->stock_id) . ' ORDER BY price';
+		WHERE stock_id = " . DB::escape($line_item->stock_id) . ' ORDER BY price';
 				$result = DBOld::query($sql);
 				$myrow  = array();
 				if (DBOld::num_rows($result) > 0) {

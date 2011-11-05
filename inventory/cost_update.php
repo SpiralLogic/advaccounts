@@ -28,13 +28,13 @@
 		if (!Validation::is_num('material_cost') || !Validation::is_num('labour_cost')
 		 || !Validation::is_num('overhead_cost')
 		) {
-			ui_msgs::display_error(_("The entered cost is not numeric."));
+			Errors::error(_("The entered cost is not numeric."));
 			JS::set_focus('material_cost');
 			$should_update = false;
 		}
 		elseif ($old_cost == $new_cost)
 		{
-			ui_msgs::display_error(_("The new cost is the same as the old cost. Cost was not updated."));
+			Errors::error(_("The new cost is the same as the old cost. Cost was not updated."));
 			$should_update = false;
 		}
 		if ($should_update) {
@@ -43,7 +43,7 @@
 				input_num('material_cost'), input_num('labour_cost'),
 				input_num('overhead_cost'), $old_cost
 			);
-			ui_msgs::display_notification(_("Cost has been updated."));
+			Errors::notice(_("Cost has been updated."));
 			if ($update_no > 0) {
 				ui_msgs::display_note(ui_view::get_gl_view_str(ST_COSTUPDATE, $update_no, _("View the GL Journal Entries for this Cost Update")), 0, 1);
 			}
@@ -65,7 +65,7 @@
 					= "SELECT description, units, material_cost, labour_cost,
 	overhead_cost, mb_flag
 	FROM stock_master
-	WHERE stock_id=" . DBOld::escape($_POST['stock_id']) . "
+	WHERE stock_id=" . DB::escape($_POST['stock_id']) . "
 	GROUP BY description, units, material_cost, labour_cost, overhead_cost, mb_flag";
 	$result = DBOld::query($sql);
 	Errors::check_db_error("The cost details for the item could not be retrieved", $sql);

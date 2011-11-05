@@ -34,8 +34,8 @@
    		suppliers.email, suppliers.address, suppliers.contact
 		FROM supp_trans, suppliers
 		WHERE supp_trans.supplier_id = suppliers.supplier_id
-		AND supp_trans.type = " . DBOld::escape($type) . "
-		AND supp_trans.trans_no = " . DBOld::escape($trans_no);
+		AND supp_trans.type = " . DB::escape($type) . "
+		AND supp_trans.trans_no = " . DB::escape($trans_no);
 		$result = DBOld::query($sql, "The remittance cannot be retrieved");
 		if (DBOld::num_rows($result) == 0)
 			return false;
@@ -45,9 +45,9 @@
 	function get_allocations_for_remittance($supplier_id, $type, $trans_no) {
 		$sql = get_alloc_supp_sql("amt, supp_reference, trans.alloc", "trans.trans_no = alloc.trans_no_to
 		AND trans.type = alloc.trans_type_to
-		AND alloc.trans_no_from=" . DBOld::escape($trans_no) . "
-		AND alloc.trans_type_from=" . DBOld::escape($type) . "
-		AND trans.supplier_id=" . DBOld::escape($supplier_id),
+		AND alloc.trans_no_from=" . DB::escape($trans_no) . "
+		AND alloc.trans_type_from=" . DB::escape($type) . "
+		AND trans.supplier_id=" . DB::escape($supplier_id),
 			"supp_allocations as alloc");
 		$sql .= " ORDER BY trans_no";
 		return DBOld::query($sql, "Cannot retreive alloc to transactions");

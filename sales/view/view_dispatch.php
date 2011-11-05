@@ -111,7 +111,7 @@
 			end_row();
 		} //end while there are line items to print out
 } else {
-		ui_msgs::display_warning(_("There are no line items on this dispatch."), 1, 2);
+		Errors::warning(_("There are no line items on this dispatch."), 1, 2);
 	}
 	$display_sub_tot = price_format($sub_total);
 	$display_freight = price_format($myrow["ov_freight"]);

@@ -48,7 +48,7 @@
 	if (isset($_GET['AddedID'])) {
 		$payment_no = $_GET['AddedID'];
 
-		ui_msgs::display_notification(_("The customer payment has been successfully entered."));
+		Errors::notice(_("The customer payment has been successfully entered."));
 
 		submenu_print(_("&Print This Receipt"), ST_CUSTPAYMENT, $payment_no . "-" . ST_CUSTPAYMENT, 'prtopt');
 
@@ -66,62 +66,62 @@
 	function can_process() {
 
 		if (!get_post('customer_id')) {
-			ui_msgs::display_error(_("There is no customer selected."));
+			Errors::error(_("There is no customer selected."));
 			ui_view::set_focus('customer_id');
 			return false;
 		}
 
 		if (!get_post('BranchID')) {
-			ui_msgs::display_error(_("This customer has no branch defined."));
+			Errors::error(_("This customer has no branch defined."));
 			ui_view::set_focus('BranchID');
 			return false;
 		}
 
 		if (!isset($_POST['DateBanked']) || !Dates::is_date($_POST['DateBanked'])) {
-			ui_msgs::display_error(_("The entered date is invalid. Please enter a valid date for the payment."));
+			Errors::error(_("The entered date is invalid. Please enter a valid date for the payment."));
 			ui_view::set_focus('DateBanked');
 			return false;
 		}
 		elseif (!Dates::is_date_in_fiscalyear($_POST['DateBanked'])) {
-			ui_msgs::display_error(_("The entered date is not in fiscal year."));
+			Errors::error(_("The entered date is not in fiscal year."));
 			ui_view::set_focus('DateBanked');
 			return false;
 		}
 
 		if (!Refs::is_valid($_POST['ref'])) {
-			ui_msgs::display_error(_("You must enter a reference."));
+			Errors::error(_("You must enter a reference."));
 			ui_view::set_focus('ref');
 			return false;
 		}
 
 		if (!is_new_reference($_POST['ref'], ST_CUSTPAYMENT)) {
-			ui_msgs::display_error(_("The entered reference is already in use."));
+			Errors::error(_("The entered reference is already in use."));
 			ui_view::set_focus('ref');
 			return false;
 		}
 
 		if (!Validation::is_num('amount', 0)) {
-			ui_msgs::display_error(_("The entered amount is invalid or negative and cannot be processed."));
+			Errors::error(_("The entered amount is invalid or negative and cannot be processed."));
 			ui_view::set_focus('amount');
 			return false;
 		}
 
 		if (isset($_POST['charge']) && !Validation::is_num('charge', 0)) {
-			ui_msgs::display_error(_("The entered amount is invalid or negative and cannot be processed."));
+			Errors::error(_("The entered amount is invalid or negative and cannot be processed."));
 			ui_view::set_focus('charge');
 			return false;
 		}
 		if (isset($_POST['charge']) && input_num('charge') > 0) {
 			$charge_acct = DB_Company::get_pref('bank_charge_act');
 			if (get_gl_account($charge_acct) == false) {
-				ui_msgs::display_error(_("The Bank Charge Account has not been set in System and General GL Setup."));
+				Errors::error(_("The Bank Charge Account has not been set in System and General GL Setup."));
 				ui_view::set_focus('charge');
 				return false;
 			}
 		}
 
 		if (isset($_POST['_ex_rate']) && !Validation::is_num('_ex_rate', 0.000001)) {
-			ui_msgs::display_error(_("The exchange rate must be numeric and greater than zero."));
+			Errors::error(_("The exchange rate must be numeric and greater than zero."));
 			ui_view::set_focus('_ex_rate');
 			return false;
 		}
@@ -131,14 +131,14 @@
 		}
 
 		if (!Validation::is_num('discount')) {
-			ui_msgs::display_error(_("The entered discount is not a valid number."));
+			Errors::error(_("The entered discount is not a valid number."));
 			ui_view::set_focus('discount');
 			return false;
 		}
 
 		//if ((input_num('amount') - input_num('discount') <= 0)) {
 		if (input_num('amount') <= 0) {
-			ui_msgs::display_error(_("The balance of the amount and discout is zero or negative. Please enter valid amounts."));
+			Errors::error(_("The balance of the amount and discout is zero or negative. Please enter valid amounts."));
 			ui_view::set_focus('discount');
 			return false;
 		}
@@ -203,7 +203,7 @@
 		credit_status.dissallow_invoices
 		FROM debtors_master, credit_status
 		WHERE debtors_master.credit_status = credit_status.id
-			AND debtors_master.debtor_no = " . DBOld::escape($_POST['customer_id']);
+			AND debtors_master.debtor_no = " . DB::escape($_POST['customer_id']);
 
 		$result = DBOld::query($sql, "could not query customers");
 
@@ -237,7 +237,7 @@
 	ui_globals::set_global_customer($_POST['customer_id']);
 	if (isset($_POST['HoldAccount']) && $_POST['HoldAccount'] != 0) {
 		end_outer_table();
-		ui_msgs::display_error(_("This customer account is on hold."));
+		Errors::error(_("This customer account is on hold."));
 	}
 	else {
 		$display_discount_percent = percent_format($_POST['pymt_discount'] * 100) . "%";

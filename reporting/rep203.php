@@ -106,7 +106,7 @@
 		$sql = "SELECT supplier_id, supp_name AS name, curr_code, payment_terms.terms FROM suppliers, payment_terms
 		WHERE ";
 		if ($fromsupp != ALL_NUMERIC)
-			$sql .= "supplier_id=" . DBOld::escape($fromsupp) . " AND ";
+			$sql .= "supplier_id=" . DB::escape($fromsupp) . " AND ";
 		$sql .= "suppliers.payment_terms = payment_terms.terms_indicator
 		ORDER BY supp_name";
 		$result = DBOld::query($sql, "The customers could not be retrieved");

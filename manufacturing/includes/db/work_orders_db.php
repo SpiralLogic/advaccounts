@@ -22,7 +22,7 @@
 		$dec = user_price_dec();
 		price_decimal_format($m_cost, $dec);
 		$sql = "SELECT material_cost FROM stock_master WHERE stock_id = "
-		 . DBOld::escape($stock_id);
+		 . DB::escape($stock_id);
 		$result = DBOld::query($sql);
 		$myrow = DBOld::fetch($result);
 		$material_cost = $myrow['material_cost'];
@@ -33,7 +33,7 @@
 			$material_cost = ($qoh * $material_cost + $qty * $m_cost) / ($qoh + $qty);
 		$material_cost = round2($material_cost, $dec);
 		$sql = "UPDATE stock_master SET material_cost=$material_cost
-		WHERE stock_id=" . DBOld::escape($stock_id);
+		WHERE stock_id=" . DB::escape($stock_id);
 		DBOld::query($sql, "The cost details for the inventory item could not be updated");
 	}
 
@@ -43,7 +43,7 @@
 		if ($qty != 0)
 			$costs /= $qty;
 		$sql = "SELECT overhead_cost FROM stock_master WHERE stock_id = "
-		 . DBOld::escape($stock_id);
+		 . DB::escape($stock_id);
 		$result = DBOld::query($sql);
 		$myrow = DBOld::fetch($result);
 		$overhead_cost = $myrow['overhead_cost'];
@@ -53,8 +53,8 @@
 		if ($qoh + $qty != 0)
 			$overhead_cost = ($qoh * $overhead_cost + $qty * $costs) / ($qoh + $qty);
 		$overhead_cost = round2($overhead_cost, $dec);
-		$sql = "UPDATE stock_master SET overhead_cost=" . DBOld::escape($overhead_cost) . "
-		WHERE stock_id=" . DBOld::escape($stock_id);
+		$sql = "UPDATE stock_master SET overhead_cost=" . DB::escape($overhead_cost) . "
+		WHERE stock_id=" . DB::escape($stock_id);
 		DBOld::query($sql, "The cost details for the inventory item could not be updated");
 	}
 
@@ -64,7 +64,7 @@
 		if ($qty != 0)
 			$costs /= $qty;
 		$sql = "SELECT labour_cost FROM stock_master WHERE stock_id = "
-		 . DBOld::escape($stock_id);
+		 . DB::escape($stock_id);
 		$result = DBOld::query($sql);
 		$myrow = DBOld::fetch($result);
 		$labour_cost = $myrow['labour_cost'];
@@ -74,8 +74,8 @@
 		if ($qoh + $qty != 0)
 			$labour_cost = ($qoh * $labour_cost + $qty * $costs) / ($qoh + $qty);
 		$labour_cost = round2($labour_cost, $dec);
-		$sql = "UPDATE stock_master SET labour_cost=" . DBOld::escape($labour_cost) . "
-		WHERE stock_id=" . DBOld::escape($stock_id);
+		$sql = "UPDATE stock_master SET labour_cost=" . DB::escape($labour_cost) . "
+		WHERE stock_id=" . DB::escape($stock_id);
 		DBOld::query($sql, "The cost details for the inventory item could not be updated");
 	}
 
@@ -83,7 +83,7 @@
 		if ($qty != 0)
 			$costs /= $qty;
 		$sql = "SELECT material_cost FROM stock_master WHERE stock_id = "
-		 . DBOld::escape($stock_id);
+		 . DB::escape($stock_id);
 		$result = DBOld::query($sql);
 		$myrow = DBOld::fetch($result);
 		$material_cost = $myrow['material_cost'];
@@ -96,8 +96,8 @@
 			$material_cost = ($qty * $costs) / ($qoh + $qty);
 		$material_cost = round2($material_cost, $dec);
 		$sql = "UPDATE stock_master SET material_cost=material_cost+"
-		 . DBOld::escape($material_cost)
-		 . " WHERE stock_id=" . DBOld::escape($stock_id);
+		 . DB::escape($material_cost)
+		 . " WHERE stock_id=" . DB::escape($stock_id);
 		DBOld::query($sql, "The cost details for the inventory item could not be updated");
 	}
 
@@ -116,9 +116,9 @@
 
 		$sql = "INSERT INTO workorders (wo_ref, loc_code, units_reqd, stock_id,
 		type, date_, required_by)
-    	VALUES (" . DBOld::escape($wo_ref) . ", " . DBOld::escape($loc_code) . ", "
-		 . DBOld::escape($units_reqd) . ", " . DBOld::escape($stock_id) . ",
-		" . DBOld::escape($type) . ", '$date', " . DBOld::escape($required) . ")";
+    	VALUES (" . DB::escape($wo_ref) . ", " . DB::escape($loc_code) . ", "
+		 . DB::escape($units_reqd) . ", " . DB::escape($stock_id) . ",
+		" . DB::escape($type) . ", '$date', " . DB::escape($required) . ")";
 		DBOld::query($sql, "could not add work order");
 
 		$woid = DBOld::insert_id();
@@ -145,11 +145,11 @@
 		$date = Dates::date2sql($date_);
 		$required = Dates::date2sql($required_by);
 
-		$sql = "UPDATE workorders SET loc_code=" . DBOld::escape($loc_code) . ",
-		units_reqd=" . DBOld::escape($units_reqd) . ", stock_id=" . DBOld::escape($stock_id) . ",
-		required_by=" . DBOld::escape($required) . ",
+		$sql = "UPDATE workorders SET loc_code=" . DB::escape($loc_code) . ",
+		units_reqd=" . DB::escape($units_reqd) . ", stock_id=" . DB::escape($stock_id) . ",
+		required_by=" . DB::escape($required) . ",
 		date_='$date'
-		WHERE id = " . DBOld::escape($woid);
+		WHERE id = " . DB::escape($woid);
 
 		DBOld::query($sql, "could not update work order");
 
@@ -168,7 +168,7 @@
 		delete_wo_requirements($woid);
 
 		// delete the actual work order
-		$sql = "DELETE FROM workorders WHERE id=" . DBOld::escape($woid);
+		$sql = "DELETE FROM workorders WHERE id=" . DB::escape($woid);
 		DBOld::query($sql, "The work order could not be deleted");
 
 		DB_Comments::delete(ST_WORKORDER, $woid);
@@ -185,7 +185,7 @@
 		FROM workorders, stock_master, locations
 		WHERE stock_master.stock_id=workorders.stock_id
 		AND	locations.loc_code=workorders.loc_code
-		AND workorders.id=" . DBOld::escape($woid) . "
+		AND workorders.id=" . DB::escape($woid) . "
 		GROUP BY workorders.id";
 
 		$result = DBOld::query($sql, "The work order issues could not be retrieved");
@@ -199,7 +199,7 @@
 	//--------------------------------------------------------------------------------------
 
 	function work_order_has_productions($woid) {
-		$sql = "SELECT COUNT(*) FROM wo_manufacture WHERE workorder_id=" . DBOld::escape($woid);
+		$sql = "SELECT COUNT(*) FROM wo_manufacture WHERE workorder_id=" . DB::escape($woid);
 		$result = DBOld::query($sql, "query work order for productions");
 
 		$myrow = DBOld::fetch_row($result);
@@ -209,7 +209,7 @@
 	//--------------------------------------------------------------------------------------
 
 	function work_order_has_issues($woid) {
-		$sql = "SELECT COUNT(*) FROM wo_issues WHERE workorder_id=" . DBOld::escape($woid);
+		$sql = "SELECT COUNT(*) FROM wo_issues WHERE workorder_id=" . DB::escape($woid);
 		$result = DBOld::query($sql, "query work order for issues");
 
 		$myrow = DBOld::fetch_row($result);
@@ -235,7 +235,7 @@
 		$date = Dates::date2sql($releaseDate);
 
 		$sql = "UPDATE workorders SET released_date='$date',
-		released=1 WHERE id = " . DBOld::escape($woid);
+		released=1 WHERE id = " . DB::escape($woid);
 		DBOld::query($sql, "could not release work order");
 
 		// create Work Order Requirements based on the bom
@@ -250,14 +250,14 @@
 	//--------------------------------------------------------------------------------------
 
 	function close_work_order($woid) {
-		$sql = "UPDATE workorders SET closed=1 WHERE id = " . DBOld::escape($woid);
+		$sql = "UPDATE workorders SET closed=1 WHERE id = " . DB::escape($woid);
 		DBOld::query($sql, "could not close work order");
 	}
 
 	//--------------------------------------------------------------------------------------
 
 	function work_order_is_closed($woid) {
-		$sql = "SELECT closed FROM workorders WHERE id = " . DBOld::escape($woid);
+		$sql = "SELECT closed FROM workorders WHERE id = " . DB::escape($woid);
 		$result = DBOld::query($sql, "could not query work order");
 		$row = DBOld::fetch_row($result);
 		return ($row[0] > 0);
@@ -266,9 +266,9 @@
 	//--------------------------------------------------------------------------------------
 
 	function work_order_update_finished_quantity($woid, $quantity, $force_close = 0) {
-		$sql = "UPDATE workorders SET units_issued = units_issued + " . DBOld::escape($quantity) . ",
-		closed = ((units_issued >= units_reqd) OR " . DBOld::escape($force_close) . ")
-		WHERE id = " . DBOld::escape($woid);
+		$sql = "UPDATE workorders SET units_issued = units_issued + " . DB::escape($quantity) . ",
+		closed = ((units_issued >= units_reqd) OR " . DB::escape($force_close) . ")
+		WHERE id = " . DB::escape($woid);
 
 		DBOld::query($sql, "The work order issued quantity couldn't be updated");
 	}
@@ -291,7 +291,7 @@
 				add_overhead_cost($work_order['stock_id'], -$qty, $date, $cost);
 
 			$sql = "UPDATE workorders SET closed=1,units_reqd=0,units_issued=0 WHERE id = "
-			 . DBOld::escape($woid);
+			 . DB::escape($woid);
 			DBOld::query($sql, "The work order couldn't be voided");
 
 			// void all related stock moves
@@ -329,7 +329,7 @@
 					$issue_no = $row['issue_no'];
 				// void the actual issue items and their quantities
 				$sql = "UPDATE wo_issue_items SET qty_issued = 0 WHERE issue_id="
-				 . DBOld::escape($row['id']);
+				 . DB::escape($row['id']);
 				DBOld::query($sql, "A work order issue item could not be voided");
 			}
 			if ($issue_no != 0)
@@ -345,7 +345,7 @@
 				add_overhead_cost($work_order['stock_id'], -$qty, $date, $cost);
 
 			$sql = "UPDATE workorders SET closed=1,units_reqd=0,units_issued=0 WHERE id = "
-			 . DBOld::escape($woid);
+			 . DB::escape($woid);
 			DBOld::query($sql, "The work order couldn't be voided");
 
 			// void all related stock moves

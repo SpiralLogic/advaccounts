@@ -12,18 +12,18 @@
 	class Tax_Types {
 		public static function add($name, $sales_gl_code, $purchasing_gl_code, $rate) {
 			$sql = "INSERT INTO tax_types (name, sales_gl_code, purchasing_gl_code, rate)
-		VALUES (" . DBOld::escape($name) . ", " . DBOld::escape($sales_gl_code)
-			 . ", " . DBOld::escape($purchasing_gl_code) . ", $rate)";
+		VALUES (" . DB::escape($name) . ", " . DB::escape($sales_gl_code)
+			 . ", " . DB::escape($purchasing_gl_code) . ", $rate)";
 
 			DBOld::query($sql, "could not add tax type");
 		}
 
 		public static function update($type_id, $name, $sales_gl_code, $purchasing_gl_code, $rate) {
-			$sql = "UPDATE tax_types SET name=" . DBOld::escape($name) . ",
-		sales_gl_code=" . DBOld::escape($sales_gl_code) . ",
-		purchasing_gl_code=" . DBOld::escape($purchasing_gl_code) . ",
+			$sql = "UPDATE tax_types SET name=" . DB::escape($name) . ",
+		sales_gl_code=" . DB::escape($sales_gl_code) . ",
+		purchasing_gl_code=" . DB::escape($purchasing_gl_code) . ",
 		rate=$rate
-		WHERE id=" . DBOld::escape($type_id);
+		WHERE id=" . DB::escape($type_id);
 
 			DBOld::query($sql, "could not update tax type");
 		}
@@ -54,14 +54,14 @@
 		FROM tax_types, chart_master AS Chart1,
 		chart_master AS Chart2
 		WHERE tax_types.sales_gl_code = Chart1.account_code
-		AND tax_types.purchasing_gl_code = Chart2.account_code AND id=" . DBOld::escape($type_id);
+		AND tax_types.purchasing_gl_code = Chart2.account_code AND id=" . DB::escape($type_id);
 
 			$result = DBOld::query($sql, "could not get tax type");
 			return DBOld::fetch($result);
 		}
 
 		public static function get_default_rate($type_id) {
-			$sql = "SELECT rate FROM tax_types WHERE id=" . DBOld::escape($type_id);
+			$sql = "SELECT rate FROM tax_types WHERE id=" . DB::escape($type_id);
 
 			$result = DBOld::query($sql, "could not get tax type rate");
 
@@ -72,7 +72,7 @@
 		public static function delete($type_id) {
 			DBOld::begin_transaction();
 
-			$sql = "DELETE FROM tax_types WHERE id=" . DBOld::escape($type_id);
+			$sql = "DELETE FROM tax_types WHERE id=" . DB::escape($type_id);
 
 			DBOld::query($sql, "could not delete tax type");
 
@@ -96,11 +96,11 @@
 
 			$sql = "SELECT count(*) FROM "
 			 . "tax_types
-		WHERE (sales_gl_code=" . DBOld::escape($gl_code)
-			 . " OR purchasing_gl_code=" . DBOld::escape($purch_code) . ")";
+		WHERE (sales_gl_code=" . DB::escape($gl_code)
+			 . " OR purchasing_gl_code=" . DB::escape($purch_code) . ")";
 
 			if ($selected_id != -1)
-				$sql .= " AND id!=" . DBOld::escape($selected_id);
+				$sql .= " AND id!=" . DB::escape($selected_id);
 
 			$res = DBOld::query($sql, "could not query gl account uniqueness");
 			$row = DBOld::fetch($res);

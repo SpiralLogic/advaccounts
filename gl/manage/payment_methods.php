@@ -20,7 +20,7 @@
 		//first off validate inputs sensible
 		if (strlen($_POST['bank_account_name']) == 0) {
 			$input_error = 1;
-			ui_msgs::display_error(_("The bank account name cannot be empty."));
+			Errors::error(_("The bank account name cannot be empty."));
 			JS::set_focus('bank_account_name');
 		}
 		if ($input_error != 1) {
@@ -32,7 +32,7 @@
 					$_POST['bank_address'], $_POST['BankAccountCurrency'],
 					$_POST['dflt_curr_act']
 				);
-				ui_msgs::display_notification(_('Bank account has been updated'));
+				Errors::notice(_('Bank account has been updated'));
 } else {
 				add_bank_account(
 					$_POST['account_code'], $_POST['account_type'],
@@ -40,7 +40,7 @@
 					$_POST['bank_account_number'], $_POST['bank_address'],
 					$_POST['BankAccountCurrency'], $_POST['dflt_curr_act']
 				);
-				ui_msgs::display_notification(_('New bank account has been added'));
+				Errors::notice(_('New bank account has been added'));
 			}
 			$Mode = 'RESET';
 		}
@@ -49,25 +49,25 @@
 	{
 		//the link to delete a selected record was clicked instead of the submit button
 		$cancel_delete = 0;
-		$acc = DBOld::escape($selected_id);
+		$acc = DB::escape($selected_id);
 		// PREVENT DELETES IF DEPENDENT RECORDS IN 'bank_trans'
 		$sql = "SELECT COUNT(*) FROM bank_trans WHERE bank_act=$acc";
 		$result = DBOld::query($sql, "check failed");
 		$myrow = DBOld::fetch_row($result);
 		if ($myrow[0] > 0) {
 			$cancel_delete = 1;
-			ui_msgs::display_error(_("Cannot delete this bank account because transactions have been created using this account."));
+			Errors::error(_("Cannot delete this bank account because transactions have been created using this account."));
 		}
 		$sql = "SELECT COUNT(*) FROM sales_pos WHERE pos_account=$acc";
 		$result = DBOld::query($sql, "check failed");
 		$myrow = DBOld::fetch_row($result);
 		if ($myrow[0] > 0) {
 			$cancel_delete = 1;
-			ui_msgs::display_error(_("Cannot delete this bank account because POS definitions have been created using this account."));
+			Errors::error(_("Cannot delete this bank account because POS definitions have been created using this account."));
 		}
 		if (!$cancel_delete) {
 			delete_bank_account($selected_id);
-			ui_msgs::display_notification(_('Selected bank account has been deleted'));
+			Errors::notice(_('Selected bank account has been deleted'));
 		} //end if Delete bank account
 		$Mode = 'RESET';
 	}

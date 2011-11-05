@@ -27,8 +27,8 @@
 		$sql = "SELECT *
 		FROM
 			dimensions
-		WHERE reference >= " . DBOld::escape($from) . "
-		AND reference <= " . DBOld::escape($to) . "
+		WHERE reference >= " . DB::escape($from) . "
+		AND reference <= " . DB::escape($to) . "
 		ORDER BY
 			reference";
 

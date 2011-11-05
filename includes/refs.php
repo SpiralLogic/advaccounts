@@ -12,7 +12,7 @@
 	class Refs {
 
 		public static function get_reference($type, $id) {
-			$sql = "SELECT * FROM refs WHERE type=" . DBOld::escape($type) . " AND id=" . DBOld::escape($id);
+			$sql = "SELECT * FROM refs WHERE type=" . DB::escape($type) . " AND id=" . DB::escape($id);
 			$result = DBOld::query($sql, "could not query reference table");
 			$row = DBOld::fetch($result);
 			return $row['reference'];
@@ -22,8 +22,8 @@
 
 		public static function add_reference($type, $id, $reference) {
 			$sql = "INSERT INTO refs (type, id, reference)
-			VALUES (" . DBOld::escape($type) . ", " . DBOld::escape($id) . ", "
-			 . DBOld::escape(trim($reference)) . ")";
+			VALUES (" . DB::escape($type) . ", " . DB::escape($id) . ", "
+			 . DB::escape(trim($reference)) . ")";
 
 			DBOld::query($sql, "could not add reference entry");
 		}
@@ -31,15 +31,15 @@
 		//--------------------------------------------------------------------------------------------------
 
 		public static function update_reference($type, $id, $reference) {
-			$sql = "UPDATE refs SET reference=" . DBOld::escape($reference)
-			 . " WHERE type=" . DBOld::escape($type) . " AND id=" . DBOld::escape($id);
+			$sql = "UPDATE refs SET reference=" . DB::escape($reference)
+			 . " WHERE type=" . DB::escape($type) . " AND id=" . DB::escape($id);
 			DBOld::query($sql, "could not update reference entry");
 		}
 
 		//--------------------------------------------------------------------------------------------------
 
 		public static function delete_reference($type, $id) {
-			$sql = "DELETE FROM refs WHERE type=$type AND id=" . DBOld::escape($id);
+			$sql = "DELETE FROM refs WHERE type=$type AND id=" . DB::escape($id);
 
 			return DBOld::query($sql, "could not delete from reference table");
 		}
@@ -47,8 +47,8 @@
 		//--------------------------------------------------------------------------------------------------
 
 		public static function find_reference($type, $reference) {
-			$sql = "SELECT id FROM refs WHERE type=" . DBOld::escape($type)
-			 . " AND reference=" . DBOld::escape($reference);
+			$sql = "SELECT id FROM refs WHERE type=" . DB::escape($type)
+			 . " AND reference=" . DB::escape($reference);
 
 			$result = DBOld::query($sql, "could not query reference table");
 
@@ -58,8 +58,8 @@
 		//--------------------------------------------------------------------------------------------------
 
 		public static function save_next_reference($type, $reference) {
-			$sql = "UPDATE sys_types SET next_reference=" . DBOld::escape(trim($reference))
-			 . " WHERE type_id = " . DBOld::escape($type);
+			$sql = "UPDATE sys_types SET next_reference=" . DB::escape(trim($reference))
+			 . " WHERE type_id = " . DB::escape($type);
 
 			DBOld::query($sql, "The next transaction ref for $type could not be updated");
 		}
@@ -67,7 +67,7 @@
 		//--------------------------------------------------------------------------------------------------
 
 		public static function get_next_reference($type) {
-			$sql = "SELECT next_reference FROM sys_types WHERE type_id = " . DBOld::escape($type);
+			$sql = "SELECT next_reference FROM sys_types WHERE type_id = " . DB::escape($type);
 
 			$result = DBOld::query($sql, "The last transaction ref for $type could not be retreived");
 

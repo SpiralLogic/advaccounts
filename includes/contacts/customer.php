@@ -91,22 +91,22 @@
 				$status = $this->_saveNew();
 			} else {
 				DBOld::begin_transaction();
-				$sql = "UPDATE debtors_master SET name=" . DBOld::escape($this->name) . ",
-			debtor_ref=" . DBOld::escape(substr($this->name, 0, 29)) . ",
-			address=" . DBOld::escape($this->address) . ",
-			tax_id=" . DBOld::escape($this->tax_id) . ",
-			curr_code=" . DBOld::escape($this->curr_code) . ",
-			email=" . DBOld::escape($this->email) . ",
-			dimension_id=" . DBOld::escape($this->dimension_id) . ",
-			dimension2_id=" . DBOld::escape($this->dimension2_id) . ",
-            credit_status=" . DBOld::escape($this->credit_status) . ",
-            payment_terms=" . DBOld::escape($this->payment_terms) . ",
+				$sql = "UPDATE debtors_master SET name=" . DB::escape($this->name) . ",
+			debtor_ref=" . DB::escape(substr($this->name, 0, 29)) . ",
+			address=" . DB::escape($this->address) . ",
+			tax_id=" . DB::escape($this->tax_id) . ",
+			curr_code=" . DB::escape($this->curr_code) . ",
+			email=" . DB::escape($this->email) . ",
+			dimension_id=" . DB::escape($this->dimension_id) . ",
+			dimension2_id=" . DB::escape($this->dimension2_id) . ",
+            credit_status=" . DB::escape($this->credit_status) . ",
+            payment_terms=" . DB::escape($this->payment_terms) . ",
             discount=" . user_numeric($this->discount) / 100 . ",
             pymt_discount=" . user_numeric($this->pymt_discount) / 100 . ",
             credit_limit=" . user_numeric($this->credit_limit) . ",
-            sales_type = " . DBOld::escape($this->sales_type) . ",
-            notes=" . DBOld::escape($this->notes) . "
-            WHERE debtor_no = " . DBOld::escape($this->id);
+            sales_type = " . DB::escape($this->sales_type) . ",
+            notes=" . DB::escape($this->notes) . "
+            WHERE debtor_no = " . DB::escape($this->id);
 				DBOld::query($sql, "The customer could not be updated");
 				DBOld::update_record_status($this->id, $this->inactive, 'debtors_master', 'debtor_no');
 				DBOld::commit_transaction();
@@ -141,8 +141,8 @@
 			DBOld::begin_transaction();
 			$sql = "INSERT INTO debtors_master (name, debtor_ref, address, tax_id, email, dimension_id, dimension2_id,
 			curr_code, credit_status, payment_terms, discount, pymt_discount,credit_limit,
-			sales_type, notes) VALUES (" . DBOld::escape($this->name) . ", " . DBOld::escape(substr($this->name, 0, 29)) . ", " . DBOld::escape($this->address) . ", " . DBOld::escape($this->tax_id) . ",
-			" . DBOld::escape($this->email) . ", " . DBOld::escape($this->dimension_id) . ", " . DBOld::escape($this->dimension2_id) . ", " . DBOld::escape($this->curr_code) . ", " . DBOld::escape($this->credit_status) . ", " . DBOld::escape($this->payment_terms) . ", " . user_numeric($this->discount) / 100 . "," . user_numeric($this->pymt_discount) / 100 . ", " . user_numeric($this->credit_limit) . ", " . DBOld::escape($this->sales_type) . ", " . DBOld::escape($this->notes) . ")";
+			sales_type, notes) VALUES (" . DB::escape($this->name) . ", " . DB::escape(substr($this->name, 0, 29)) . ", " . DB::escape($this->address) . ", " . DB::escape($this->tax_id) . ",
+			" . DB::escape($this->email) . ", " . DB::escape($this->dimension_id) . ", " . DB::escape($this->dimension2_id) . ", " . DB::escape($this->curr_code) . ", " . DB::escape($this->credit_status) . ", " . DB::escape($this->payment_terms) . ", " . user_numeric($this->discount) / 100 . "," . user_numeric($this->pymt_discount) / 100 . ", " . user_numeric($this->credit_limit) . ", " . DB::escape($this->sales_type) . ", " . DB::escape($this->notes) . ")";
 			DBOld::query($sql, "The customer could not be added");
 			$this->id = DBOld::insert_id();
 			DBOld::commit_transaction();
@@ -207,8 +207,8 @@
 				debtor_trans.ov_freight_tax + debtor_trans.ov_discount)
 				AS TotalAmount, debtor_trans.alloc AS Allocated
 				FROM debtor_trans LEFT OUTER JOIN sales_orders ON  debtor_trans.order_ =  sales_orders.order_no
-    			WHERE  debtor_trans.debtor_no = " . DBOld::escape($this->id) . "
-    			 AND sales_orders.debtor_no = " . DBOld::escape($this->id) . "
+    			WHERE  debtor_trans.debtor_no = " . DB::escape($this->id) . "
+    			 AND sales_orders.debtor_no = " . DB::escape($this->id) . "
     				AND debtor_trans.type <> " . ST_CUSTDELIVERY . "
     				AND (debtor_trans.ov_amount + debtor_trans.ov_gst + debtor_trans.ov_freight +
 				debtor_trans.ov_freight_tax + debtor_trans.ov_discount) != 0
@@ -347,8 +347,8 @@
 			$defaults = array('inactive' => false, 'selected' => '');
 			$o = array_merge($defaults, $options);
 			$term = explode(' ', $term);
-			$term1 = DBOld::escape(trim($term[0]) . '%');
-			$term2 = DBOld::escape('%' . implode(' AND name LIKE ', array_map(function($v) {
+			$term1 = DB::escape(trim($term[0]) . '%');
+			$term2 = DB::escape('%' . implode(' AND name LIKE ', array_map(function($v) {
 							return trim($v);
 						}, $term)) . '%');
 			$where = ($o['inactive'] ? '' : ' AND inactive = 0 ');

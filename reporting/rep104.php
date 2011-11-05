@@ -30,7 +30,7 @@
 				stock_category
 			WHERE stock_master.category_id=stock_category.category_id AND NOT stock_master.inactive";
 		if ($category != 0) {
-			$sql .= " AND stock_category.category_id = " . DBOld::escape($category);
+			$sql .= " AND stock_category.category_id = " . DB::escape($category);
 		}
 		$sql
 		 .= " ORDER BY stock_master.category_id,
@@ -48,7 +48,7 @@
 			ON i.category_id=c.category_id";
 		$sql .= " WHERE !i.is_foreign AND i.item_code!=i.stock_id";
 		if ($category != 0) {
-			$sql .= " AND c.category_id = " . DBOld::escape($category);
+			$sql .= " AND c.category_id = " . DB::escape($category);
 		}
 		$sql .= " GROUP BY i.item_code";
 		return DBOld::query($sql, "No kits were returned");

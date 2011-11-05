@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 	//---------------------------------------------------------------------------------------------
 	function get_exchange_rate($rate_id) {
-		$sql = "SELECT * FROM exchange_rates WHERE id=" . DBOld::escape($rate_id);
+		$sql = "SELECT * FROM exchange_rates WHERE id=" . DB::escape($rate_id);
 		$result = DBOld::query($sql, "could not get exchange rate for $rate_id");
 
 		return DBOld::fetch($result);
@@ -20,7 +20,7 @@
 	// Retrieves buy exchange rate for given currency/date, zero if no result
 	function get_date_exchange_rate($curr_code, $date_) {
 		$date = Dates::date2sql($date_);
-		$sql = "SELECT rate_buy FROM exchange_rates WHERE curr_code=" . DBOld::escape($curr_code)
+		$sql = "SELECT rate_buy FROM exchange_rates WHERE curr_code=" . DB::escape($curr_code)
 		 . " AND date_='$date'";
 		$result = DBOld::query($sql, "could not get exchange rate for $curr_code - $date_");
 
@@ -38,8 +38,8 @@
 
 		$date = Dates::date2sql($date_);
 
-		$sql = "UPDATE exchange_rates SET rate_buy=$buy_rate, rate_sell=" . DBOld::escape($sell_rate)
-		 . " WHERE curr_code=" . DBOld::escape($curr_code) . " AND date_='$date'";
+		$sql = "UPDATE exchange_rates SET rate_buy=$buy_rate, rate_sell=" . DB::escape($sell_rate)
+		 . " WHERE curr_code=" . DB::escape($curr_code) . " AND date_='$date'";
 
 		DBOld::query($sql, "could not add exchange rate for $curr_code");
 	}
@@ -53,15 +53,15 @@
 		$date = Dates::date2sql($date_);
 
 		$sql = "INSERT INTO exchange_rates (curr_code, date_, rate_buy, rate_sell)
-		VALUES (" . DBOld::escape($curr_code) . ", '$date', " . DBOld::escape($buy_rate)
-		 . ", " . DBOld::escape($sell_rate) . ")";
+		VALUES (" . DB::escape($curr_code) . ", '$date', " . DB::escape($buy_rate)
+		 . ", " . DB::escape($sell_rate) . ")";
 		DBOld::query($sql, "could not add exchange rate for $curr_code");
 	}
 
 	//---------------------------------------------------------------------------------------------
 
 	function delete_exchange_rate($rate_id) {
-		$sql = "DELETE FROM exchange_rates WHERE id=" . DBOld::escape($rate_id);
+		$sql = "DELETE FROM exchange_rates WHERE id=" . DB::escape($rate_id);
 		DBOld::query($sql, "could not delete exchange rate $rate_id");
 	}
 
@@ -128,7 +128,7 @@
 			} // end handle
 		}
 		if (!$contents) {
-			ui_msgs::display_warning(_("Cannot retrieve currency rate from $provider page. Please set the rate manually."));
+			Errors::warning(_("Cannot retrieve currency rate from $provider page. Please set the rate manually."));
 		}
 		if ($provider == 'ECB') {
 			$contents = str_replace("<Cube currency='USD'", " <Cube currency='EUR' rate='1'/> <Cube currency='USD'", $contents);

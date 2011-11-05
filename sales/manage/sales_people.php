@@ -19,49 +19,49 @@
 		$input_error = 0;
 		if (strlen($_POST['salesman_name']) == 0) {
 			$input_error = 1;
-			ui_msgs::display_error(_("The sales person name cannot be empty."));
+			Errors::error(_("The sales person name cannot be empty."));
 			JS::set_focus('salesman_name');
 		}
 		$pr1 = Validation::is_num('provision', 0, 100);
 		if (!$pr1 || !Validation::is_num('provision2', 0, 100)) {
 			$input_error = 1;
-			ui_msgs::display_error(_("Salesman provision cannot be less than 0 or more than 100%."));
+			Errors::error(_("Salesman provision cannot be less than 0 or more than 100%."));
 			JS::set_focus(!$pr1 ? 'provision' : 'provision2');
 		}
 		if (!Validation::is_num('break_pt', 0)) {
 			$input_error = 1;
-			ui_msgs::display_error(_("Salesman provision breakpoint must be numeric and not less than 0."));
+			Errors::error(_("Salesman provision breakpoint must be numeric and not less than 0."));
 			JS::set_focus('break_pt');
 		}
 		if ($input_error != 1) {
 			if ($selected_id != -1) {
 				/*selected_id could also exist if submit had not been clicked this code would not run in this case cos submit is false of course  see the delete code below*/
-				$sql = "UPDATE salesman SET salesman_name=" . DBOld::escape($_POST['salesman_name']) . ",
-    			salesman_phone=" . DBOld::escape($_POST['salesman_phone']) . ",
-    			salesman_fax=" . DBOld::escape($_POST['salesman_fax']) . ",
-    			salesman_email=" . DBOld::escape($_POST['salesman_email']) . ",
+				$sql = "UPDATE salesman SET salesman_name=" . DB::escape($_POST['salesman_name']) . ",
+    			salesman_phone=" . DB::escape($_POST['salesman_phone']) . ",
+    			salesman_fax=" . DB::escape($_POST['salesman_fax']) . ",
+    			salesman_email=" . DB::escape($_POST['salesman_email']) . ",
     			provision=" . input_num('provision') . ",
     			break_pt=" . input_num('break_pt') . ",
     			provision2=" . input_num('provision2') . "
-    			WHERE salesman_code = " . DBOld::escape($selected_id);
+    			WHERE salesman_code = " . DB::escape($selected_id);
 } else {
 				/*Selected group is null cos no item selected on first time round so must be adding a record must be submitting new entries in the new Sales-person form */
 				$sql
 				 = "INSERT INTO salesman (salesman_name, salesman_phone, salesman_fax, salesman_email,
     			provision, break_pt, provision2)
-    			VALUES (" . DBOld::escape($_POST['salesman_name']) . ", "
-				 . DBOld::escape($_POST['salesman_phone']) . ", "
-				 . DBOld::escape($_POST['salesman_fax']) . ", "
-				 . DBOld::escape($_POST['salesman_email']) . ", " .
+    			VALUES (" . DB::escape($_POST['salesman_name']) . ", "
+				 . DB::escape($_POST['salesman_phone']) . ", "
+				 . DB::escape($_POST['salesman_fax']) . ", "
+				 . DB::escape($_POST['salesman_email']) . ", " .
 				 input_num('provision') . ", " . input_num('break_pt') . ", "
 				 . input_num('provision2') . ")";
 			}
 			//run the sql from either of the above possibilites
 			DBOld::query($sql, "The insert or update of the sales person failed");
 			if ($selected_id != -1) {
-				ui_msgs::display_notification(_('Selected sales person data have been updated'));
+				Errors::notice(_('Selected sales person data have been updated'));
 } else {
-				ui_msgs::display_notification(_('New sales person data have been added'));
+				Errors::notice(_('New sales person data have been added'));
 			}
 			$Mode = 'RESET';
 		}
@@ -69,15 +69,15 @@
 	if ($Mode == 'Delete') {
 		//the link to delete a selected record was clicked instead of the submit button
 		// PREVENT DELETES IF DEPENDENT RECORDS IN 'debtors_master'
-		$sql = "SELECT COUNT(*) FROM cust_branch WHERE salesman=" . DBOld::escape($selected_id);
+		$sql = "SELECT COUNT(*) FROM cust_branch WHERE salesman=" . DB::escape($selected_id);
 		$result = DBOld::query($sql, "check failed");
 		$myrow = DBOld::fetch_row($result);
 		if ($myrow[0] > 0) {
-			ui_msgs::display_error("Cannot delete this sales-person because branches are set up referring to this sales-person - first alter the branches concerned.");
+			Errors::error("Cannot delete this sales-person because branches are set up referring to this sales-person - first alter the branches concerned.");
 		} else {
-			$sql = "DELETE FROM salesman WHERE salesman_code=" . DBOld::escape($selected_id);
+			$sql = "DELETE FROM salesman WHERE salesman_code=" . DB::escape($selected_id);
 			DBOld::query($sql, "The sales-person could not be deleted");
-			ui_msgs::display_notification(_('Selected sales person data have been deleted'));
+			Errors::notice(_('Selected sales person data have been deleted'));
 		}
 		$Mode = 'RESET';
 	}
@@ -125,7 +125,7 @@
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {
 			//editing an existing Sales-person
-			$sql = "SELECT *  FROM salesman WHERE salesman_code=" . DBOld::escape($selected_id);
+			$sql = "SELECT *  FROM salesman WHERE salesman_code=" . DB::escape($selected_id);
 			$result = DBOld::query($sql, "could not get sales person");
 			$myrow = DBOld::fetch($result);
 			$_POST['salesman_name'] = $myrow["salesman_name"];

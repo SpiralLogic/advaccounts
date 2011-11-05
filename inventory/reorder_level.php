@@ -47,7 +47,7 @@
 		if (isset($_POST['UpdateData']) && Validation::is_num($myrow["loc_code"])) {
 			$myrow["reorder_level"] = input_num($myrow["loc_code"]);
 			set_reorder_level($_POST['stock_id'], $myrow["loc_code"], input_num($myrow["loc_code"]));
-			ui_msgs::display_notification(_("Reorder levels has been updated."));
+			Errors::notice(_("Reorder levels has been updated."));
 		}
 		$qoh = get_qoh_on_date($_POST['stock_id'], $myrow["loc_code"]);
 		label_cell($myrow["location_name"]);

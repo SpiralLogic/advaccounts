@@ -103,11 +103,11 @@
 			// Check if directory exists and is writable first.
 			if (file_exists($path) && is_writable($path)) {
 				if (!$zp = fopen($filename, 'w')) {
-					ui_msgs::display_error(_("Cannot open the languages file - ") . $filename);
+					Errors::error(_("Cannot open the languages file - ") . $filename);
 					return false;
 } else {
 					if (!fwrite($zp, $msg)) {
-						ui_msgs::display_error(_("Cannot write to the language file - ") . $filename);
+						Errors::error(_("Cannot write to the language file - ") . $filename);
 						fclose($zp);
 						return false;
 					}
@@ -115,7 +115,7 @@
 					fclose($zp);
 				}
 			} else {
-				ui_msgs::display_error(_("The language files folder ") . $path . _(" is not writable. Change its permissions so it is, then re-run the operation."));
+				Errors::error(_("The language files folder ") . $path . _(" is not writable. Change its permissions so it is, then re-run the operation."));
 				return false;
 			}
 			return true;

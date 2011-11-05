@@ -15,8 +15,8 @@
 	//-------------------------------------------------------------------------------------------------
 	if (isset($_POST['setprefs'])) {
 		if (!is_numeric($_POST['query_size']) || ($_POST['query_size'] < 1)) {
-			ui_msgs::display_error($_POST['query_size']);
-			ui_msgs::display_error(_("Query size must be integer and greater than zero."));
+			Errors::error($_POST['query_size']);
+			Errors::error(_("Query size must be integer and greater than zero."));
 			JS::set_focus('query_size');
 		} else {
 			$chg_theme = user_theme() != $_POST['theme'];
@@ -45,9 +45,9 @@
 				meta_forward($_SERVER['PHP_SELF']);
 			}
 			if (Config::get('demo_mode')) {
-				ui_msgs::display_warning(_("Display settings have been updated. Keep in mind that changed settings are restored on every login in demo mode."));
+				Errors::warning(_("Display settings have been updated. Keep in mind that changed settings are restored on every login in demo mode."));
 } else {
-				ui_msgs::display_notification(_("Display settings have been updated."));
+				Errors::notice(_("Display settings have been updated."));
 			}
 		}
 	}

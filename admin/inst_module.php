@@ -17,7 +17,7 @@
 	function update_extensions($extensions)
 	{
 		if (!frontaccounting::write_extensions($extensions)) {
-			ui_msgs::display_notification(_("Cannot update system extensions list."));
+			Errors::notice(_("Cannot update system extensions list."));
 			return false;
 		}
 		// update per company files
@@ -38,7 +38,7 @@
 				}
 			}
 			if (!frontaccounting::write_extensions($newexts, $i)) {
-				ui_msgs::display_notification(
+				Errors::notice(
 					sprintf(
 						_("Cannot update extensions list for company '%s'."),
 						Config::get('db.' . $i, 'name')
@@ -53,27 +53,27 @@
 	function check_data($id, $exts)
 	{
 		if ($_POST['name'] == "") {
-			ui_msgs::display_error(_("Extension name cannot be empty."));
+			Errors::error(_("Extension name cannot be empty."));
 			return false;
 		}
 		foreach (
 			$exts as $n => $ext
 		) {
 			if ($_POST['name'] == $ext['name'] && $id != $n) {
-				ui_msgs::display_error(_("Extension name have to be unique."));
+				Errors::error(_("Extension name have to be unique."));
 				return false;
 			}
 		}
 		if ($_POST['title'] == "") {
-			ui_msgs::display_error(_("Extension title cannot be empty."));
+			Errors::error(_("Extension title cannot be empty."));
 			return false;
 		}
 		if ($_POST['path'] == "") {
-			ui_msgs::display_error(_("Extension folder name cannot be empty."));
+			Errors::error(_("Extension folder name cannot be empty."));
 			return false;
 		}
 		if ($id == -1 && !is_uploaded_file($_FILES['uploadfile']['tmp_name'])) {
-			ui_msgs::display_error(_("You have to select plugin file to upload"));
+			Errors::error(_("You have to select plugin file to upload"));
 			return false;
 		}
 		return true;
@@ -89,7 +89,7 @@
 		}
 		$id = $selected_id == -1 ? $next_extension_id : $selected_id;
 		if ($selected_id != -1 && $extensions[$id]['type'] != 'plugin') {
-			ui_msgs::display_error(_('Module installation support is not implemented yet. You have to do it manually.'));
+			Errors::error(_('Module installation support is not implemented yet. You have to do it manually.'));
 			return;
 		}
 		$extensions[$id]['tab']    = $_POST['tab'];
@@ -168,7 +168,7 @@
 		rmdir($filename);
 		unset($extensions[$id]);
 		if (update_extensions($extensions)) {
-			ui_msgs::display_notification(_("Selected extension has been successfully deleted"));
+			Errors::notice(_("Selected extension has been successfully deleted"));
 		}
 		return true;
 	}
@@ -288,7 +288,7 @@
 		file_row(_("Access Levels Extensions"), 'uploadfile3');
 		file_row(_("SQL File"), 'uploadfile2');
 		end_table(0);
-		ui_msgs::display_warning(_("Select your module PHP file from your local harddisk."), 0, 1);
+		Errors::warning(_("Select your module PHP file from your local harddisk."), 0, 1);
 		submit_add_or_update_center($selected_id == -1, '', 'both');
 	}
 
@@ -296,9 +296,9 @@
 	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 		if (handle_submit()) {
 			if ($selected_id != -1) {
-				ui_msgs::display_notification(_("Extension data has been updated."));
+				Errors::notice(_("Extension data has been updated."));
 } else {
-				ui_msgs::display_notification(_("Extension has been installed."));
+				Errors::notice(_("Extension has been installed."));
 			}
 			$Mode = 'RESET';
 		}
@@ -316,7 +316,7 @@
 		}
 		frontaccounting::write_extensions($exts, get_post('extset'));
 		$installed_extensions = $exts;
-		ui_msgs::display_notification(_('Current active extensions set has been saved.'));
+		Errors::notice(_('Current active extensions set has been saved.'));
 	}
 	if ($Mode == 'RESET') {
 		$selected_id = -1;

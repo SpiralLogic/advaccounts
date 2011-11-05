@@ -35,7 +35,7 @@
 	$kitset_or_service = false;
 	div_start('status_tbl');
 	if (Input::post('mb_flag') == STOCK_SERVICE) {
-		ui_msgs::display_warning(_("This is a service and cannot have a stock holding, only the total quantity on outstanding sales orders is shown."), 0, 1);
+		Errors::warning(_("This is a service and cannot have a stock holding, only the total quantity on outstanding sales orders is shown."), 0, 1);
 		$kitset_or_service = true;
 	}
 	$loc_details = get_loc_details($_POST['stock_id']);

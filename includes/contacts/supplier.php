@@ -80,7 +80,7 @@
 			}
 			$this->_defaults();
 			$this->id = $id;
-			$sql = "SELECT * FROM suppliers WHERE supplier_id = " . DBOld::escape($id);
+			$sql = "SELECT * FROM suppliers WHERE supplier_id = " . DB::escape($id);
 			$result = DBOld::query($sql, "check failed");
 			if (DBOld::num_rows($result) != 1) {
 				$this->_status(false, 'read', "Supplier could not be found!");
@@ -97,7 +97,7 @@
 			$sql = "INSERT INTO suppliers (supp_name, supp_ref, address, supp_address, phone, phone2, fax, gst_no, email, website,
 				contact, supp_account_no, bank_account, credit_limit, dimension_id, dimension2_id, curr_code,
 				payment_terms, payable_account, purchase_account, payment_discount_account, notes, tax_group_id)
-				VALUES (" . DBOld::escape($this->name) . ", " . DBOld::escape($this->supp_ref) . ", " . DBOld::escape($this->address) . ", " . DBOld::escape($this->post_address) . ", " . DBOld::escape($this->phone) . ", " . DBOld::escape($this->phone2) . ", " . DBOld::escape($this->fax) . ", " . DBOld::escape($this->tax_id) . ", " . DBOld::escape($this->email) . ", " . DBOld::escape($this->website) . ", " . DBOld::escape($this->contact_name) . ", " . DBOld::escape($this->account_no) . ", " . DBOld::escape($this->bank_account) . ", " . DBOld::escape($this->credit_limit) . ", " . DBOld::escape($this->dimension_id) . ", " . DBOld::escape($this->dimension2_id) . ", " . DBOld::escape($this->curr_code) . ", " . DBOld::escape($this->payment_terms) . ", " . DBOld::escape($this->payable_account) . ", " . DBOld::escape($this->purchase_account) . ", " . DBOld::escape($this->payment_discount_account) . ", " . DBOld::escape($this->notes) . ", " . DBOld::escape($this->tax_group_id) . ")";
+				VALUES (" . DB::escape($this->name) . ", " . DB::escape($this->supp_ref) . ", " . DB::escape($this->address) . ", " . DB::escape($this->post_address) . ", " . DB::escape($this->phone) . ", " . DB::escape($this->phone2) . ", " . DB::escape($this->fax) . ", " . DB::escape($this->tax_id) . ", " . DB::escape($this->email) . ", " . DB::escape($this->website) . ", " . DB::escape($this->contact_name) . ", " . DB::escape($this->account_no) . ", " . DB::escape($this->bank_account) . ", " . DB::escape($this->credit_limit) . ", " . DB::escape($this->dimension_id) . ", " . DB::escape($this->dimension2_id) . ", " . DB::escape($this->curr_code) . ", " . DB::escape($this->payment_terms) . ", " . DB::escape($this->payable_account) . ", " . DB::escape($this->purchase_account) . ", " . DB::escape($this->payment_discount_account) . ", " . DB::escape($this->notes) . ", " . DB::escape($this->tax_group_id) . ")";
 			DBOld::query($sql, "The supplier could not be added");
 			$this->id = DBOld::insert_id();
 			DBOld::commit_transaction();
@@ -119,30 +119,30 @@
 				$this->_saveNew();
 			}
 			DBOld::begin_transaction();
-			$sql = "UPDATE suppliers SET name=" . DBOld::escape($this->name) . ",
-			supp_ref=" . DBOld::escape(substr($this->name, 0, 29)) . ",
-			address=" . DBOld::escape($this->address) . ",
-			supp_account_no=" . DBOld::escape($this->account_no) . ",
-			tax_id=" . DBOld::escape($this->tax_id) . ",
-			bank_account=" . DBOld::escape($this->bank_account) . ",
-			purchase_account=" . DBOld::escape($this->purchase_account) . ",
-			payable_account=" . DBOld::escape($this->payable_account) . ",
-			payment_discount_account=" . DBOld::escape($this->payment_discount_account) . ",
-			curr_code=" . DBOld::escape($this->curr_code) . ",
-			email=" . DBOld::escape($this->email) . ",
-			website=" . DBOld::escape($this->website) . ",
-			fax=" . DBOld::escape($this->fax) . ",
-			phone=" . DBOld::escape($this->phone) . ",
-			phone2=" . DBOld::escape($this->phone2) . ",
-			inactive=" . DBOld::escape($this->inactive) . ",
-			dimension_id=" . DBOld::escape($this->dimension_id) . ",
-			dimension2_id=" . DBOld::escape($this->dimension2_id) . ",
-            credit_status=" . DBOld::escape($this->credit_status) . ",
-            payment_terms=" . DBOld::escape($this->payment_terms) . ",
+			$sql = "UPDATE suppliers SET name=" . DB::escape($this->name) . ",
+			supp_ref=" . DB::escape(substr($this->name, 0, 29)) . ",
+			address=" . DB::escape($this->address) . ",
+			supp_account_no=" . DB::escape($this->account_no) . ",
+			tax_id=" . DB::escape($this->tax_id) . ",
+			bank_account=" . DB::escape($this->bank_account) . ",
+			purchase_account=" . DB::escape($this->purchase_account) . ",
+			payable_account=" . DB::escape($this->payable_account) . ",
+			payment_discount_account=" . DB::escape($this->payment_discount_account) . ",
+			curr_code=" . DB::escape($this->curr_code) . ",
+			email=" . DB::escape($this->email) . ",
+			website=" . DB::escape($this->website) . ",
+			fax=" . DB::escape($this->fax) . ",
+			phone=" . DB::escape($this->phone) . ",
+			phone2=" . DB::escape($this->phone2) . ",
+			inactive=" . DB::escape($this->inactive) . ",
+			dimension_id=" . DB::escape($this->dimension_id) . ",
+			dimension2_id=" . DB::escape($this->dimension2_id) . ",
+            credit_status=" . DB::escape($this->credit_status) . ",
+            payment_terms=" . DB::escape($this->payment_terms) . ",
             pymt_discount=" . user_numeric($this->pymt_discount) / 100 . ",
             credit_limit=" . user_numeric($this->credit_limit) . ",
-            notes=" . DBOld::escape($this->notes) . "
-            WHERE debtor_no = " . DBOld::escape($this->id);
+            notes=" . DB::escape($this->notes) . "
+            WHERE debtor_no = " . DB::escape($this->id);
 			DBOld::query($sql, "The supplier could not be updated");
 			DBOld::commit_transaction();
 			return $this->_status(true, 'Processing', "Supplier has been updated.");

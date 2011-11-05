@@ -40,7 +40,7 @@
 	//----------------------------------------------------------------------------------------
 	if (isset($_GET['AddedID'])) {
 		$payment_id = $_GET['AddedID'];
-		ui_msgs::display_notification(_("Payment has been sucessfully entered"));
+		Errors::notice(_("Payment has been sucessfully entered"));
 		submenu_print(_("&Print This Remittance"), ST_SUPPAYMENT, $payment_id . "-" . ST_SUPPAYMENT, 'prtopt');
 		submenu_print(_("&Email This Remittance"), ST_SUPPAYMENT, $payment_id . "-" . ST_SUPPAYMENT, null, 1);
 		ui_msgs::display_note(ui_view::get_gl_view_str(ST_SUPPAYMENT, $payment_id, _("View the GL &Journal Entries for this Payment")));
@@ -53,7 +53,7 @@
 	//----------------------------------------------------------------------------------------
 	function check_inputs() {
 		if (!get_post('supplier_id')) {
-			ui_msgs::display_error(_("There is no supplier selected."));
+			Errors::error(_("There is no supplier selected."));
 			JS::set_focus('supplier_id');
 			return false;
 		}
@@ -61,25 +61,25 @@
 			$_POST['amount'] = price_format(0);
 		}
 		if (!Validation::is_num('amount', 0)) {
-			ui_msgs::display_error(_("The entered amount is invalid or less than zero."));
+			Errors::error(_("The entered amount is invalid or less than zero."));
 			JS::set_focus('amount');
 			return false;
 		}
 		if (isset($_POST['charge']) && !Validation::is_num('charge', 0)) {
-			ui_msgs::display_error(_("The entered amount is invalid or less than zero."));
+			Errors::error(_("The entered amount is invalid or less than zero."));
 			JS::set_focus('charge');
 			return false;
 		}
 		if (isset($_POST['charge']) && input_num('charge') > 0) {
 			$charge_acct = DB_Company::get_pref('bank_charge_act');
 			if (get_gl_account($charge_acct) == false) {
-				ui_msgs::display_error(_("The Bank Charge Account has not been set in System and General GL Setup."));
+				Errors::error(_("The Bank Charge Account has not been set in System and General GL Setup."));
 				JS::set_focus('charge');
 				return false;
 			}
 		}
 		if (isset($_POST['_ex_rate']) && !Validation::is_num('_ex_rate', 0.000001)) {
-			ui_msgs::display_error(_("The exchange rate must be numeric and greater than zero."));
+			Errors::error(_("The exchange rate must be numeric and greater than zero."));
 			JS::set_focus('_ex_rate');
 			return false;
 		}
@@ -87,34 +87,34 @@
 			$_POST['discount'] = 0;
 		}
 		if (!Validation::is_num('discount', 0)) {
-			ui_msgs::display_error(_("The entered discount is invalid or less than zero."));
+			Errors::error(_("The entered discount is invalid or less than zero."));
 			JS::set_focus('amount');
 			return false;
 		}
 		//if (input_num('amount') - input_num('discount') <= 0)
 		if (input_num('amount') <= 0) {
-			ui_msgs::display_error(_("The total of the amount and the discount is zero or negative. Please enter positive values."));
+			Errors::error(_("The total of the amount and the discount is zero or negative. Please enter positive values."));
 			JS::set_focus('amount');
 			return false;
 		}
 		if (!Dates::is_date($_POST['DatePaid'])) {
-			ui_msgs::display_error(_("The entered date is invalid."));
+			Errors::error(_("The entered date is invalid."));
 			JS::set_focus('DatePaid');
 			return false;
 		}
 		elseif (!Dates::is_date_in_fiscalyear($_POST['DatePaid']))
 		{
-			ui_msgs::display_error(_("The entered date is not in fiscal year."));
+			Errors::error(_("The entered date is not in fiscal year."));
 			JS::set_focus('DatePaid');
 			return false;
 		}
 		if (!Refs::is_valid($_POST['ref'])) {
-			ui_msgs::display_error(_("You must enter a reference."));
+			Errors::error(_("You must enter a reference."));
 			JS::set_focus('ref');
 			return false;
 		}
 		if (!is_new_reference($_POST['ref'], ST_SUPPAYMENT)) {
-			ui_msgs::display_error(_("The entered reference is already in use."));
+			Errors::error(_("The entered reference is already in use."));
 			JS::set_focus('ref');
 			return false;
 		}
@@ -197,7 +197,7 @@
 	textarea_row(_("Memo:"), 'memo_', null, 22, 4);
 	end_table(1);
 	if ($bank_currency != $supplier_currency) {
-		ui_msgs::display_warning(_("The amount and discount are in the bank account's currency."), 0, 1);
+		Errors::warning(_("The amount and discount are in the bank account's currency."), 0, 1);
 	}
 	submit_center('ProcessSuppPayment', _("Enter Payment"), true, '', 'default');
 	end_form();

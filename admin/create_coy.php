@@ -30,7 +30,7 @@
 			return false;
 		}
 		if ($selected_id == -1 && (!isset($_GET['ul']) || $_GET['ul'] != 1)) {
-			ui_msgs::display_error(_("When creating a new company, you must provide a Database script file."));
+			Errors::error(_("When creating a new company, you must provide a Database script file."));
 			return false;
 		}
 		foreach (
@@ -70,13 +70,13 @@
 		if (isset($_GET['ul']) && $_GET['ul'] == 1) {
 			$conn = Config::get($id, null, 'db');
 			if (($db = DB_Utils::create($conn)) == 0) {
-				ui_msgs::display_error(_("Error creating Database: ") . $conn['dbname'] . _(", Please create it manually"));
+				Errors::error(_("Error creating Database: ") . $conn['dbname'] . _(", Please create it manually"));
 				$error = true;
 			} else {
 				$filename = $_FILES['uploadfile']['tmp_name'];
 				if (is_uploaded_file($filename)) {
 					if (!DB_Utils::import($filename, $conn, $id)) {
-						ui_msgs::display_error(_('Cannot create new company due to bugs in sql file.'));
+						Errors::error(_('Cannot create new company due to bugs in sql file.'));
 						$error = true;
 					} else if (isset($_POST['admpassword']) && $_POST['admpassword'] != "") {
 						DBOld::query(
@@ -86,7 +86,7 @@
 						);
 					}
 } else {
-					ui_msgs::display_error(_("Error uploading Database Script, please upload it manually"));
+					Errors::error(_("Error uploading Database Script, please upload it manually"));
 					$error = true;
 				}
 			}
@@ -99,7 +99,7 @@
 			if ($_GET['c'] = 'u') {
 				$conn = Config::get($id, null, 'db');
 				if (($db = DB_Utils::create($conn)) == 0) {
-					ui_msgs::display_error(_("Error connecting to Database: ") . $conn['dbname'] . _(", Please correct it"));
+					Errors::error(_("Error connecting to Database: ") . $conn['dbname'] . _(", Please correct it"));
 				} elseif ($_POST['admpassword'] != "") {
 					DBOld::query(
 						"UPDATE users set password = '" . md5(
@@ -114,7 +114,7 @@
 		}
 		$exts = DB_Company::get_company_extensions();
 		frontaccounting::write_extensions($exts, $id);
-		ui_msgs::display_notification($new ? _('New company has been created.') : _('Company has been updated.'));
+		Errors::notice($new ? _('New company has been created.') : _('Company has been updated.'));
 		return true;
 	}
 
@@ -128,7 +128,7 @@
 			$i = $id; $i < count(Config::get_all('db')); $i++
 		) {
 			if (!is_dir(COMPANY_PATH . DS . $i) || !is_writable(COMPANY_PATH . DS . $i)) {
-				ui_msgs::display_error(_('Broken company subdirectories system. You have to remove this company manually.'));
+				Errors::error(_('Broken company subdirectories system. You have to remove this company manually.'));
 				return;
 			}
 		}
@@ -139,7 +139,7 @@
 		$cdir    = COMPANY_PATH . DS . $id;
 		$tmpname = COMPANY_PATH . '/old_' . $id;
 		if (!@rename($cdir, $tmpname)) {
-			ui_msgs::display_error(_('Cannot rename subdirectory to temporary name.'));
+			Errors::error(_('Cannot rename subdirectory to temporary name.'));
 			return;
 		}
 		// 'shift' company directories names
@@ -147,13 +147,13 @@
 			$i = $id + 1; $i < count(Config::get_all('db')); $i++
 		) {
 			if (!rename(COMPANY_PATH . DS . $i, COMPANY_PATH . DS . ($i - 1))) {
-				ui_msgs::display_error(_("Cannot rename company subdirectory"));
+				Errors::error(_("Cannot rename company subdirectory"));
 				return;
 			}
 		}
 		$err = remove_connection($id);
 		if ($err == 0) {
-			ui_msgs::display_error(_("Error removing Database: ") . _(", please remove it manually"));
+			Errors::error(_("Error removing Database: ") . _(", please remove it manually"));
 		}
 		if (Config::get('company_default') == $id) {
 			Config::set('company_default', 1);
@@ -161,10 +161,10 @@
 		// finally remove renamed company directory
 		@Files::flush_dir($tmpname, true);
 		if (!@rmdir($tmpname)) {
-			ui_msgs::display_error(_("Cannot remove temporary renamed company data directory ") . $tmpname);
+			Errors::error(_("Cannot remove temporary renamed company data directory ") . $tmpname);
 			return;
 		}
-		ui_msgs::display_notification(_("Selected company as been deleted"));
+		Errors::notice(_("Selected company as been deleted"));
 	}
 
 	//---------------------------------------------------------------------------------------------
@@ -223,7 +223,7 @@
 			end_row();
 		}
 		end_table();
-		ui_msgs::display_warning(_("The marked company is the current company which cannot be deleted."), 0, 0, "class='currentfg'");
+		Errors::warning(_("The marked company is the current company which cannot be deleted."), 0, 0, "class='currentfg'");
 	}
 
 	//---------------------------------------------------------------------------------------------
@@ -275,7 +275,7 @@
 		file_row(_("Database Script"), "uploadfile");
 		text_row_ex(_("New script Admin Password"), 'admpassword', 20);
 		end_table();
-		ui_msgs::display_warning(_("Choose from Database scripts in SQL folder. No Database is created without a script."), 0, 1);
+		Errors::warning(_("Choose from Database scripts in SQL folder. No Database is created without a script."), 0, 1);
 		echo "<center><input onclick='javascript:updateCompany()' type='button' style='width:150px' value='" . _("Save") . "'></center>";
 		end_form();
 	}

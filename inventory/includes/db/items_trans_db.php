@@ -23,11 +23,11 @@
 
 		DBOld::begin_transaction();
 
-		$sql = "UPDATE stock_master SET material_cost=" . DBOld::escape($material_cost) . ",
-		labour_cost=" . DBOld::escape($labour_cost) . ",
-		overhead_cost=" . DBOld::escape($overhead_cost) . ",
-		last_cost=" . DBOld::escape($last_cost) . "
-		WHERE stock_id=" . DBOld::escape($stock_id);
+		$sql = "UPDATE stock_master SET material_cost=" . DB::escape($material_cost) . ",
+		labour_cost=" . DB::escape($labour_cost) . ",
+		overhead_cost=" . DB::escape($overhead_cost) . ",
+		last_cost=" . DB::escape($last_cost) . "
+		WHERE stock_id=" . DB::escape($stock_id);
 		DBOld::query($sql, "The cost details for the inventory item could not be updated");
 
 		$qoh = get_qoh_on_date($_POST['stock_id']);

@@ -22,7 +22,7 @@
 					$order->line_items as $order_item
 				) {
 					if (strcasecmp($order_item->stock_id, $item['stock_id']) == 0 && !$no_errors) {
-						ui_msgs::display_warning(_("For Part :") . $item['stock_id'] . " " . _("This item is already on this document. You have been warned."));
+						Errors::warning(_("For Part :") . $item['stock_id'] . " " . _("This item is already on this document. You have been warned."));
 						break;
 					}
 				}
@@ -63,7 +63,7 @@
 					$order->line_items as $order_item
 				) {
 					if (strcasecmp($order_item->stock_id, $item['stock_id']) == 0) {
-						ui_msgs::display_warning(_("For Part :") . $item['stock_id'] . " " . _("This item is already on this document. You have been warned."));
+						Errors::warning(_("For Part :") . $item['stock_id'] . " " . _("This item is already on this document. You have been warned."));
 						break;
 					}
 				}
@@ -235,10 +235,10 @@ JS;
 		end_row();
 		end_table();
 		if ($has_marked) {
-			ui_msgs::display_warning(note(_("Marked items have insufficient quantities in stock as on day of delivery."), 0, 1, "class='stockmankofg'"));
+			Errors::warning(note(_("Marked items have insufficient quantities in stock as on day of delivery."), 0, 1, "class='stockmankofg'"));
 		}
 		if ($order->trans_type != 30 && !SysPrefs::allow_negative_stock()) {
-			ui_msgs::display_error(_("The delivery cannot be processed because there is an insufficient quantity for item:") . '<br>' . $qoh_msg);
+			Errors::error(_("The delivery cannot be processed because there is an insufficient quantity for item:") . '<br>' . $qoh_msg);
 		}
 		div_end();
 	}

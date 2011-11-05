@@ -35,10 +35,10 @@
 		WHERE stock_master.category_id=stock_category.category_id
 		AND (stock_master.mb_flag='" . STOCK_PURCHASED . "' OR stock_master.mb_flag='" . STOCK_MANUFACTURE . "')";
 		if ($category != 0) {
-			$sql .= " AND stock_master.category_id = " . DBOld::escape($category);
+			$sql .= " AND stock_master.category_id = " . DB::escape($category);
 		}
 		if ($location != 'all') {
-			$sql .= " AND IF(stock_moves.stock_id IS NULL, '1=1',stock_moves.loc_code = " . DBOld::escape($location) . ")";
+			$sql .= " AND IF(stock_moves.stock_id IS NULL, '1=1',stock_moves.loc_code = " . DB::escape($location) . ")";
 		}
 		$sql
 		 .= " GROUP BY stock_master.category_id,

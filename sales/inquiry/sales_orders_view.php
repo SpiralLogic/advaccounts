@@ -285,17 +285,17 @@
 		AND sorder.branch_code = branch.branch_code
 		AND debtor.debtor_no = branch.debtor_no";
 	if ($_POST['customer_id'] != ALL_TEXT) {
-		$sql .= " AND sorder.debtor_no = " . DBOld::escape($_POST['customer_id']);
+		$sql .= " AND sorder.debtor_no = " . DB::escape($_POST['customer_id']);
 	}
 	if (isset($_POST['OrderNumber']) && $_POST['OrderNumber'] != "") {
 		// search orders with number like
 		$number_like = "%" . $_POST['OrderNumber'];
-		$sql .= " AND sorder.order_no LIKE " . DBOld::escape($number_like) . " GROUP BY sorder.order_no";
+		$sql .= " AND sorder.order_no LIKE " . DB::escape($number_like) . " GROUP BY sorder.order_no";
 	}
 	elseif (isset($_POST['OrderReference']) && $_POST['OrderReference'] != "") {
 		// search orders with reference like
 		$number_like = "%" . $_POST['OrderReference'] . "%";
-		$sql .= " AND sorder.reference LIKE " . DBOld::escape($number_like) . " GROUP BY sorder.order_no";
+		$sql .= " AND sorder.reference LIKE " . DB::escape($number_like) . " GROUP BY sorder.order_no";
 	}
 	elseif (AJAX_REFERRER && !empty($_POST['ajaxsearch'])) {
 		foreach (
@@ -304,7 +304,7 @@
 			if (empty($ajaxsearch)) {
 				continue;
 			}
-			$ajaxsearch = DBOld::escape("%" . trim($ajaxsearch) . "%");
+			$ajaxsearch = DB::escape("%" . trim($ajaxsearch) . "%");
 			$sql
 			 .= " AND (debtor.name LIKE $ajaxsearch OR sorder.order_no LIKE $ajaxsearch
 			OR sorder.reference LIKE $ajaxsearch  OR sorder.contact_name LIKE $ajaxsearch
@@ -332,13 +332,13 @@
 			$sql .= " AND sorder.delivery_date >= '" . Dates::date2sql(Dates::Today()) . "'";
 		}
 		if ($selected_customer != -1) {
-			$sql .= " AND sorder.debtor_no=" . DBOld::escape($selected_customer);
+			$sql .= " AND sorder.debtor_no=" . DB::escape($selected_customer);
 		}
 		if (isset($selected_stock_item)) {
-			$sql .= " AND line.stk_code=" . DBOld::escape($selected_stock_item);
+			$sql .= " AND line.stk_code=" . DB::escape($selected_stock_item);
 		}
 		if (isset($_POST['StockLocation']) && $_POST['StockLocation'] != ALL_TEXT) {
-			$sql .= " AND sorder.from_stk_loc = " . DBOld::escape($_POST['StockLocation']);
+			$sql .= " AND sorder.from_stk_loc = " . DB::escape($_POST['StockLocation']);
 		}
 		if ($_POST['order_view_mode'] == 'OutstandingOnly') {
 			$sql .= " AND line.qty_sent < line.quantity";

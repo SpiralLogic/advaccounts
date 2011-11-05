@@ -18,11 +18,11 @@
 
 		$sql = "INSERT INTO supp_invoice_items (supp_trans_type, supp_trans_no, stock_id, description, gl_code, unit_price, unit_tax, quantity,
 	  	grn_item_id, po_detail_item_id, memo_, discount, exp_price) ";
-		$sql .= "VALUES (" . DBOld::escape($supp_trans_type) . ", " . DBOld::escape($supp_trans_no) . ", "
-		 . DBOld::escape($stock_id) .
-		 ", " . DBOld::escape($description) . ", " . DBOld::escape($gl_code) . ", " . DBOld::escape($unit_price)
-		 . ", " . DBOld::escape($unit_tax) . ", " . DBOld::escape($quantity) . ",
-		" . DBOld::escape($grn_item_id) . ", " . DBOld::escape($po_detail_item_id) . ", " . DBOld::escape($memo_) . ", " . DBOld::escape($discount) . "," . DBOld::escape($exp_price) . ")";
+		$sql .= "VALUES (" . DB::escape($supp_trans_type) . ", " . DB::escape($supp_trans_no) . ", "
+		 . DB::escape($stock_id) .
+		 ", " . DB::escape($description) . ", " . DB::escape($gl_code) . ", " . DB::escape($unit_price)
+		 . ", " . DB::escape($unit_tax) . ", " . DB::escape($quantity) . ",
+		" . DB::escape($grn_item_id) . ", " . DB::escape($po_detail_item_id) . ", " . DB::escape($memo_) . ", " . DB::escape($discount) . "," . DB::escape($exp_price) . ")";
 
 		if ($err_msg == "")
 			$err_msg = "Cannot insert a supplier transaction detail record";
@@ -45,8 +45,8 @@
 
 	function get_supp_invoice_items($supp_trans_type, $supp_trans_no) {
 		$sql = "SELECT *, unit_price AS FullUnitPrice FROM supp_invoice_items
-		WHERE supp_trans_type = " . DBOld::escape($supp_trans_type) . "
-		AND supp_trans_no = " . DBOld::escape($supp_trans_no) . " ORDER BY id";
+		WHERE supp_trans_type = " . DB::escape($supp_trans_type) . "
+		AND supp_trans_no = " . DB::escape($supp_trans_no) . " ORDER BY id";
 		return DBOld::query($sql, "Cannot retreive supplier transaction detail records");
 	}
 
@@ -54,7 +54,7 @@
 
 	function void_supp_invoice_items($type, $type_no) {
 		$sql = "UPDATE supp_invoice_items SET quantity=0, unit_price=0
-		WHERE supp_trans_type = " . DBOld::escape($type) . " AND supp_trans_no=" . DBOld::escape($type_no);
+		WHERE supp_trans_type = " . DB::escape($type) . " AND supp_trans_no=" . DB::escape($type_no);
 		DBOld::query($sql, "could not void supptrans details");
 	}
 

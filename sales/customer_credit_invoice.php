@@ -31,7 +31,7 @@
 	if (isset($_GET['AddedID'])) {
 		$credit_no = $_GET['AddedID'];
 		$trans_type = ST_CUSTCREDIT;
-		ui_msgs::display_notification(_("Credit Note has been processed"));
+		Errors::notice(_("Credit Note has been processed"));
 		ui_msgs::display_note(ui_view::get_customer_trans_view_str($trans_type, $credit_no, _("&View This Credit Note")), 0, 0);
 		ui_msgs::display_note(Reporting::print_doc_link($credit_no, _("&Print This Credit Note"), true, $trans_type), 1);
 		ui_msgs::display_note(ui_view::get_gl_view_str($trans_type, $credit_no, _("View the GL &Journal Entries for this Credit Note")), 1);
@@ -40,7 +40,7 @@
 	elseif (isset($_GET['UpdatedID'])) {
 		$credit_no = $_GET['UpdatedID'];
 		$trans_type = ST_CUSTCREDIT;
-		ui_msgs::display_notification(_("Credit Note has been updated"));
+		Errors::notice(_("Credit Note has been updated"));
 		ui_msgs::display_note(ui_view::get_customer_trans_view_str($trans_type, $credit_no, _("&View This Credit Note")), 0, 0);
 		ui_msgs::display_note(Reporting::print_doc_link($credit_no, _("&Print This Credit Note"), true, $trans_type), 1);
 		ui_msgs::display_note(ui_view::get_gl_view_str($trans_type, $credit_no, _("View the GL &Journal Entries for this Credit Note")), 1);
@@ -51,38 +51,38 @@
 	//-----------------------------------------------------------------------------
 	function can_process() {
 		if (!Dates::is_date($_POST['CreditDate'])) {
-			ui_msgs::display_error(_("The entered date is invalid."));
+			Errors::error(_("The entered date is invalid."));
 			;
 			JS::set_focus('CreditDate');
 			return false;
 		}
 		elseif (!Dates::is_date_in_fiscalyear($_POST['CreditDate'])) {
-			ui_msgs::display_error(_("The entered date is not in fiscal year."));
+			Errors::error(_("The entered date is not in fiscal year."));
 			JS::set_focus('CreditDate');
 			return false;
 		}
 		if ($_SESSION['Items']->trans_no == 0) {
 			if (!Refs::is_valid($_POST['ref'])) {
-				ui_msgs::display_error(_("You must enter a reference."));
+				Errors::error(_("You must enter a reference."));
 				;
 				JS::set_focus('ref');
 				return false;
 			}
 			if (!is_new_reference($_POST['ref'], ST_CUSTCREDIT)) {
-				ui_msgs::display_error(_("The entered reference is already in use."));
+				Errors::error(_("The entered reference is already in use."));
 				;
 				JS::set_focus('ref');
 				return false;
 			}
 		}
 		if (!Validation::is_num('ChargeFreightCost', 0)) {
-			ui_msgs::display_error(_("The entered shipping cost is invalid or less than zero."));
+			Errors::error(_("The entered shipping cost is invalid or less than zero."));
 			;
 			JS::set_focus('ChargeFreightCost');
 			return false;
 		}
 		if (!check_quantities()) {
-			ui_msgs::display_error(_("Selected quantity cannot be less than zero nor more than quantity not credited yet."));
+			Errors::error(_("Selected quantity cannot be less than zero nor more than quantity not credited yet."));
 			return false;
 		}
 		return true;
@@ -114,7 +114,7 @@
 		die (_("This page can only be opened if an invoice has been selected for crediting."));
 	}
 	elseif (!check_quantities()) {
-		ui_msgs::display_error(_("Selected quantity cannot be less than zero nor more than quantity not credited yet."));
+		Errors::error(_("Selected quantity cannot be less than zero nor more than quantity not credited yet."));
 	}
 	function check_quantities() {
 		$ok = 1;

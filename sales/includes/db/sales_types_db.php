@@ -11,15 +11,15 @@
 	 ***********************************************************************/
 	function add_sales_type($name, $tax_included, $factor)
 	{
-		$sql = "INSERT INTO sales_types (sales_type,tax_included,factor) VALUES (" . DBOld::escape($name) . ","
-		 . DBOld::escape($tax_included) . "," . DBOld::escape($factor) . ")";
+		$sql = "INSERT INTO sales_types (sales_type,tax_included,factor) VALUES (" . DB::escape($name) . ","
+		 . DB::escape($tax_included) . "," . DB::escape($factor) . ")";
 		DBOld::query($sql, "could not add sales type");
 	}
 
 	function update_sales_type($id, $name, $tax_included, $factor)
 	{
-		$sql = "UPDATE sales_types SET sales_type = " . DBOld::escape($name) . ",
-	tax_included =" . DBOld::escape($tax_included) . ", factor=" . DBOld::escape($factor) . " WHERE id = " . DBOld::escape($id);
+		$sql = "UPDATE sales_types SET sales_type = " . DB::escape($name) . ",
+	tax_included =" . DB::escape($tax_included) . ", factor=" . DB::escape($factor) . " WHERE id = " . DB::escape($id);
 		DBOld::query($sql, "could not update sales type");
 	}
 
@@ -34,14 +34,14 @@
 
 	function get_sales_type($id)
 	{
-		$sql = "SELECT * FROM sales_types WHERE id=" . DBOld::escape($id);
+		$sql = "SELECT * FROM sales_types WHERE id=" . DB::escape($id);
 		$result = DBOld::query($sql, "could not get sales type");
 		return DBOld::fetch($result);
 	}
 
 	function get_sales_type_name($id)
 	{
-		$sql = "SELECT sales_type FROM sales_types WHERE id=" . DBOld::escape($id);
+		$sql = "SELECT sales_type FROM sales_types WHERE id=" . DB::escape($id);
 		$result = DBOld::query($sql, "could not get sales type");
 		$row = DBOld::fetch_row($result);
 		return $row[0];
@@ -49,9 +49,9 @@
 
 	function delete_sales_type($id)
 	{
-		$sql = "DELETE FROM sales_types WHERE id=" . DBOld::escape($id);
+		$sql = "DELETE FROM sales_types WHERE id=" . DB::escape($id);
 		DBOld::query($sql, "The Sales type record could not be deleted");
-		$sql = "DELETE FROM prices WHERE sales_type_id=" . DBOld::escape($id);
+		$sql = "DELETE FROM prices WHERE sales_type_id=" . DB::escape($id);
 		DBOld::query($sql, "The Sales type prices could not be deleted");
 	}
 

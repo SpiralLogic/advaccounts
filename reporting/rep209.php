@@ -34,7 +34,7 @@
 		FROM purch_orders, suppliers, locations
 		WHERE purch_orders.supplier_id = suppliers.supplier_id
 		AND locations.loc_code = into_stock_location
-		AND purch_orders.order_no = " . DBOld::escape($order_no);
+		AND purch_orders.order_no = " . DB::escape($order_no);
 		$result = DBOld::query($sql, "The order cannot be retrieved");
 		return DBOld::fetch($result);
 	}
@@ -44,7 +44,7 @@
 		FROM purch_order_details
 		LEFT JOIN stock_master
 		ON purch_order_details.item_code=stock_master.stock_id
-		WHERE order_no =" . DBOld::escape($order_no) . " ";
+		WHERE order_no =" . DB::escape($order_no) . " ";
 		$sql .= " ORDER BY po_detail_item";
 		return DBOld::query($sql, "Retreive order Line Items");
 	}

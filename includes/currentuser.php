@@ -48,7 +48,7 @@
 		function set_salesman($salesman_code = null) {
 			if ($salesman_code == null) {
 				$salesman_name = $this->name;
-				$sql = "SELECT salesman_code FROM salesman WHERE salesman_name = " . DBOld::escape($salesman_name);
+				$sql = "SELECT salesman_code FROM salesman WHERE salesman_name = " . DB::escape($salesman_name);
 				$query = DBOld::query($sql, 'Couldn\'t find current salesman');
 				$result = DBOld::fetch_assoc($query);
 				if (!empty($result['salesman_code'])) {

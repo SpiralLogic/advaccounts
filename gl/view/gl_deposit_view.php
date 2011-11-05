@@ -61,7 +61,7 @@
 	ui_view::is_voided_display(ST_BANKDEPOSIT, $trans_no, _("This deposit has been voided."));
 	$items = get_gl_trans(ST_BANKDEPOSIT, $trans_no);
 	if (DBOld::num_rows($items) == 0) {
-		ui_msgs::display_warning(_("There are no items for this deposit."));
+		Errors::warning(_("There are no items for this deposit."));
 } else {
 		ui_msgs::display_heading(_("Items for this Deposit"));
 		if ($show_currencies) {

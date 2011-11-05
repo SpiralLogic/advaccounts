@@ -44,7 +44,7 @@
 	if (isset($_GET['AddedID'])) {
 		$trans_no   = $_GET['AddedID'];
 		$trans_type = ST_BANKPAYMENT;
-		ui_msgs::display_notification(_("Payment $trans_no has been entered"));
+		Errors::notice(_("Payment $trans_no has been entered"));
 		ui_msgs::display_note(ui_view::get_gl_view_str($trans_type, $trans_no, _("&View the GL Postings for this Payment")));
 		hyperlink_params($_SERVER['PHP_SELF'], _("Enter Another &Payment"), "NewPayment=yes");
 		hyperlink_params($_SERVER['PHP_SELF'], _("Enter A &Deposit"), "NewDeposit=yes");
@@ -53,7 +53,7 @@
 	if (isset($_GET['AddedDep'])) {
 		$trans_no   = $_GET['AddedDep'];
 		$trans_type = ST_BANKDEPOSIT;
-		ui_msgs::display_notification(_("Deposit $trans_no has been entered"));
+		Errors::notice(_("Deposit $trans_no has been entered"));
 		ui_msgs::display_note(ui_view::get_gl_view_str($trans_type, $trans_no, _("View the GL Postings for this Deposit")));
 		hyperlink_params($_SERVER['PHP_SELF'], _("Enter Another Deposit"), "NewDeposit=yes");
 		hyperlink_params($_SERVER['PHP_SELF'], _("Enter A Payment"), "NewPayment=yes");
@@ -81,34 +81,34 @@
 	if (isset($_POST['Process'])) {
 		$input_error = 0;
 		if ($_SESSION['pay_items']->count_gl_items() < 1) {
-			ui_msgs::display_error(_("You must enter at least one payment line."));
+			Errors::error(_("You must enter at least one payment line."));
 			JS::set_focus('code_id');
 			$input_error = 1;
 		}
 		if ($_SESSION['pay_items']->gl_items_total() == 0.0) {
-			ui_msgs::display_error(_("The total bank amount cannot be 0."));
+			Errors::error(_("The total bank amount cannot be 0."));
 			JS::set_focus('code_id');
 			$input_error = 1;
 		}
 		if (!Refs::is_valid($_POST['ref'])) {
-			ui_msgs::display_error(_("You must enter a reference."));
+			Errors::error(_("You must enter a reference."));
 			JS::set_focus('ref');
 			$input_error = 1;
 		}
 		elseif (!is_new_reference($_POST['ref'], $_SESSION['pay_items']->trans_type))
 		{
-			ui_msgs::display_error(_("The entered reference is already in use."));
+			Errors::error(_("The entered reference is already in use."));
 			JS::set_focus('ref');
 			$input_error = 1;
 		}
 		if (!Dates::is_date($_POST['date_'])) {
-			ui_msgs::display_error(_("The entered date for the payment is invalid."));
+			Errors::error(_("The entered date for the payment is invalid."));
 			JS::set_focus('date_');
 			$input_error = 1;
 		}
 		elseif (!Dates::is_date_in_fiscalyear($_POST['date_']))
 		{
-			//	ui_msgs::display_error(_("The entered date is not in fiscal year."));
+			//	Errors::error(_("The entered date is not in fiscal year."));
 			//	JS::set_focus('date_');
 			//	$input_error = 1;
 		}
@@ -138,21 +138,21 @@
 	{
 		//if (!Validation::is_num('amount', 0))
 		//{
-		//	ui_msgs::display_error( _("The amount entered is not a valid number or is less than zero."));
+		//	Errors::error( _("The amount entered is not a valid number or is less than zero."));
 		//	JS::set_focus('amount');
 		//	return false;
 		//}
 		if ($_POST['code_id'] == $_POST['bank_account']) {
-			ui_msgs::display_error(_("The source and destination accouts cannot be the same."));
+			Errors::error(_("The source and destination accouts cannot be the same."));
 			JS::set_focus('code_id');
 			return false;
 		}
 		//if (Banking::is_bank_account($_POST['code_id']))
 		//{
 		//	if ($_SESSION['pay_items']->trans_type == ST_BANKPAYMENT)
-		//		ui_msgs::display_error( _("You cannot make a payment to a bank account. Please use the transfer funds facility for this."));
+		//		Errors::error( _("You cannot make a payment to a bank account. Please use the transfer funds facility for this."));
 		//	else
-		//		ui_msgs::display_error( _("You cannot make a deposit from a bank account. Please use the transfer funds facility for this."));
+		//		Errors::error( _("You cannot make a deposit from a bank account. Please use the transfer funds facility for this."));
 		//	JS::set_focus('code_id') ;
 		//	return false;
 		//}

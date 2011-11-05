@@ -17,17 +17,17 @@
 	//---------------------------------------------------------------------------------------------
 	function check_data() {
 		if (!Dates::is_date($_POST['date_'])) {
-			ui_msgs::display_error(_("The entered date is invalid."));
+			Errors::error(_("The entered date is invalid."));
 			JS::set_focus('date_');
 			return false;
 		}
 		if (input_num('BuyRate') <= 0) {
-			ui_msgs::display_error(_("The exchange rate cannot be zero or a negative number."));
+			Errors::error(_("The exchange rate cannot be zero or a negative number."));
 			JS::set_focus('BuyRate');
 			return false;
 		}
 		if (get_date_exchange_rate($_POST['curr_abrev'], $_POST['date_'])) {
-			ui_msgs::display_error(_("The exchange rate for the date is already there."));
+			Errors::error(_("The exchange rate for the date is already there."));
 			JS::set_focus('date_');
 			return false;
 		}
@@ -108,7 +108,7 @@
 		);
 		end_table(1);
 		submit_add_or_update_center($selected_id == '', '', 'both');
-		ui_msgs::display_warning(_("Exchange rates are entered against the company currency."), 1);
+		Errors::warning(_("Exchange rates are entered against the company currency."), 1);
 	}
 
 	//---------------------------------------------------------------------------------------------
@@ -142,7 +142,7 @@
 	}
 	ui_globals::set_global_curr_code($_POST['curr_abrev']);
 	$sql = "SELECT date_, rate_buy, id FROM exchange_rates "
-	 . "WHERE curr_code=" . DBOld::escape($_POST['curr_abrev']) . "
+	 . "WHERE curr_code=" . DB::escape($_POST['curr_abrev']) . "
 	 ORDER BY date_ DESC";
 	$cols = array(
 		_("Date to Use From") => 'date',
@@ -158,8 +158,8 @@
 	);
 	$table =& db_pager::new_db_pager('orders_tbl', $sql, $cols);
 	if (Banking::is_company_currency($_POST['curr_abrev'])) {
-		ui_msgs::display_warning(_("The selected currency is the company currency."), 2);
-		ui_msgs::display_warning(_("The company currency is the base currency so exchange rates cannot be set for it."), 1);
+		Errors::warning(_("The selected currency is the company currency."), 2);
+		Errors::warning(_("The company currency is the base currency so exchange rates cannot be set for it."), 1);
 } else {
 		br(1);
 		$table->width = "40%";

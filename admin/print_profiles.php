@@ -73,7 +73,7 @@
 		if ($name == '') {
 			return 0;
 		} // cannot delete system default profile
-		$sql = "SELECT * FROM users WHERE print_profile=" . DBOld::escape($name);
+		$sql = "SELECT * FROM users WHERE print_profile=" . DB::escape($name);
 		$res = DBOld::query($sql, 'cannot check printing profile usage');
 		return DBOld::num_rows($res);
 	}
@@ -83,7 +83,7 @@
 		$error = 0;
 		if ($_POST['profile_id'] == '' && empty($_POST['name'])) {
 			$error = 1;
-			ui_msgs::display_error(_("Printing profile name cannot be empty."));
+			Errors::error(_("Printing profile name cannot be empty."));
 			JS::set_focus('name');
 		}
 		if (!$error) {
@@ -99,17 +99,17 @@
 			}
 			Printer::update_profile($_POST['profile_id'], $prof);
 			if ($selected_id == '') {
-				ui_msgs::display_notification(_('New printing profile has been created'));
+				Errors::notice(_('New printing profile has been created'));
 				clear_form();
 			} else {
-				ui_msgs::display_notification(_('Printing profile has been updated'));
+				Errors::notice(_('Printing profile has been updated'));
 			}
 		}
 	}
 	if (get_post('delete')) {
 		if (!check_delete(get_post('name'))) {
 			Printer::delete_profile($selected_id);
-			ui_msgs::display_notification(_('Selected printing profile has been deleted'));
+			Errors::notice(_('Selected printing profile has been deleted'));
 			clear_form();
 		}
 	}
@@ -162,7 +162,7 @@
 	}
 	end_table();
 	if ($unkn) {
-		ui_msgs::display_warning('<sup>1)</sup>&nbsp;-&nbsp;' . _("no title was found in this report definition file."), 0, 1, '');
+		Errors::warning('<sup>1)</sup>&nbsp;-&nbsp;' . _("no title was found in this report definition file."), 0, 1, '');
 } else {
 		echo '<br>';
 	}

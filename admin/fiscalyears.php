@@ -52,17 +52,17 @@
 			 $_POST['from_date']
 		 )
 		) {
-			ui_msgs::display_error(_("Invalid BEGIN date in fiscal year."));
+			Errors::error(_("Invalid BEGIN date in fiscal year."));
 			JS::set_focus('from_date');
 			return false;
 		}
 		if (!Dates::is_date($_POST['to_date']) || is_date_in_fiscalyears($_POST['to_date'])) {
-			ui_msgs::display_error(_("Invalid END date in fiscal year."));
+			Errors::error(_("Invalid END date in fiscal year."));
 			JS::set_focus('to_date');
 			return false;
 		}
 		if (Dates::date1_greater_date2($_POST['from_date'], $_POST['to_date'])) {
-			ui_msgs::display_error(_("BEGIN date bigger than END date."));
+			Errors::error(_("BEGIN date bigger than END date."));
 			JS::set_focus('from_date');
 			return false;
 		}
@@ -73,7 +73,7 @@
 	function close_year($year) {
 		$co = DB_Company::get_prefs();
 		if (get_gl_account($co['retained_earnings_act']) == false || get_gl_account($co['profit_loss_year_act']) == false) {
-			ui_msgs::display_error(_("The Retained Earnings Account or the Profit and Loss Year Account has not been set in System and General GL Setup"));
+			Errors::error(_("The Retained Earnings Account or the Profit and Loss Year Account has not been set in System and General GL Setup"));
 			return false;
 		}
 		DBOld::begin_transaction();
@@ -119,7 +119,7 @@
 		if ($selected_id != -1) {
 			if ($_POST['closed'] == 1) {
 				if (check_years_before($_POST['from_date'], false)) {
-					ui_msgs::display_error(_("Cannot CLOSE this year because there are open fiscal years before"));
+					Errors::error(_("Cannot CLOSE this year because there are open fiscal years before"));
 					JS::set_focus('closed');
 					return false;
 				}
@@ -129,14 +129,14 @@
 			}
 			if ($ok) {
 				DB_Company::update_fiscalyear($selected_id, $_POST['closed']);
-				ui_msgs::display_notification(_('Selected fiscal year has been updated'));
+				Errors::notice(_('Selected fiscal year has been updated'));
 			}
 		} else {
 			if (!check_data()) {
 				return false;
 			}
 			DB_Company::add_fiscalyear($_POST['from_date'], $_POST['to_date'], $_POST['closed']);
-			ui_msgs::display_notification(_('New fiscal year has been added'));
+			Errors::notice(_('New fiscal year has been added'));
 		}
 		$Mode = 'RESET';
 	}
@@ -146,11 +146,11 @@
 		$myrow = DB_Company::get_fiscalyear($selected_id);
 		// PREVENT DELETES IF DEPENDENT RECORDS IN gl_trans
 		if (check_years_before(Dates::sql2date($myrow['begin']), true)) {
-			ui_msgs::display_error(_("Cannot delete this fiscal year because thera are fiscal years before."));
+			Errors::error(_("Cannot delete this fiscal year because thera are fiscal years before."));
 			return false;
 		}
 		if ($myrow['closed'] == 0) {
-			ui_msgs::display_error(_("Cannot delete this fiscal year because the fiscal year is not closed."));
+			Errors::error(_("Cannot delete this fiscal year because the fiscal year is not closed."));
 			return false;
 		}
 		return true;
@@ -369,7 +369,7 @@
 		if (check_can_delete($selected_id)) {
 			//only delete if used in neither customer or supplier, comp prefs, bank trans accounts
 			delete_this_fiscalyear($selected_id);
-			ui_msgs::display_notification(_('Selected fiscal year has been deleted'));
+			Errors::notice(_('Selected fiscal year has been deleted'));
 		}
 		$Mode = 'RESET';
 	}
@@ -379,7 +379,7 @@
 		$company_year = DB_Company::get_pref('f_year');
 		$result = DB_Company::get_all_fiscalyears();
 		start_form();
-		ui_msgs::display_warning(
+		Errors::warning(
 			_(
 				"Warning: Deleting a fiscal year all transactions
 		are removed and converted into relevant balances. This process is irreversible!"

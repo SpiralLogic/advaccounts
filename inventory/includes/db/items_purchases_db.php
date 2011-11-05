@@ -17,10 +17,10 @@
 
 		$sql = "INSERT INTO " . TB_PREF . "purch_data (supplier_id, stockid, stock_id, price, suppliers_uom,
 		conversion_factor, supplier_description) VALUES (";
-		$sql .= DBOld::escape($supplier_id) . ", " . DBOld::escape($stock_id) . ", " . DBOld::escape($stockid) . ", "
-		 . $price . ", " . DBOld::escape($suppliers_uom) . ", "
+		$sql .= DB::escape($supplier_id) . ", " . DB::escape($stock_id) . ", " . DB::escape($stockid) . ", "
+		 . $price . ", " . DB::escape($suppliers_uom) . ", "
 		 . $conversion_factor . ", "
-		 . DBOld::escape($supplier_description) . ")";
+		 . DB::escape($supplier_description) . ")";
 
 		DBOld::query($sql, "The supplier purchasing details could not be added");
 	}
@@ -28,17 +28,17 @@
 	function update_item_purchasing_data($selected_id, $stock_id, $price,
 																			 $suppliers_uom, $conversion_factor, $supplier_description) {
 		$sql = "UPDATE " . TB_PREF . "purch_data SET price=" . $price . ",
-		suppliers_uom=" . DBOld::escape($suppliers_uom) . ",
+		suppliers_uom=" . DB::escape($suppliers_uom) . ",
 		conversion_factor=" . $conversion_factor . ",
-		supplier_description=" . DBOld::escape($supplier_description) . "
-		WHERE stock_id=" . DBOld::escape($stock_id) . " AND
-		supplier_id=" . DBOld::escape($selected_id);
+		supplier_description=" . DB::escape($supplier_description) . "
+		WHERE stock_id=" . DB::escape($stock_id) . " AND
+		supplier_id=" . DB::escape($selected_id);
 		DBOld::query($sql, "The supplier purchasing details could not be updated");
 	}
 
 	function delete_item_purchasing_data($selected_id, $stock_id) {
-		$sql = "DELETE FROM " . TB_PREF . "purch_data WHERE supplier_id=" . DBOld::escape($selected_id) . "
-		AND stock_id=" . DBOld::escape($stock_id);
+		$sql = "DELETE FROM " . TB_PREF . "purch_data WHERE supplier_id=" . DB::escape($selected_id) . "
+		AND stock_id=" . DB::escape($stock_id);
 		DBOld::query($sql, "could not delete purchasing data");
 	}
 
@@ -47,7 +47,7 @@
 		 . TB_PREF . "suppliers.curr_code
 		FROM " . TB_PREF . "purch_data INNER JOIN " . TB_PREF . "suppliers
 		ON " . TB_PREF . "purch_data.supplier_id=" . TB_PREF . "suppliers.supplier_id
-		WHERE stock_id = " . DBOld::escape($stock_id);
+		WHERE stock_id = " . DB::escape($stock_id);
 
 		return DBOld::query($sql, "The supplier purchasing details for the selected part could not be retrieved");
 	}
@@ -55,8 +55,8 @@
 	function get_item_purchasing_data($selected_id, $stock_id) {
 		$sql = "SELECT " . TB_PREF . "purch_data.*," . TB_PREF . "suppliers.supp_name FROM " . TB_PREF . "purch_data
 		INNER JOIN " . TB_PREF . "suppliers ON " . TB_PREF . "purch_data.supplier_id=" . TB_PREF . "suppliers.supplier_id
-		WHERE " . TB_PREF . "purch_data.supplier_id=" . DBOld::escape($selected_id) . "
-		AND " . TB_PREF . "purch_data.stock_id=" . DBOld::escape($stock_id);
+		WHERE " . TB_PREF . "purch_data.supplier_id=" . DB::escape($selected_id) . "
+		AND " . TB_PREF . "purch_data.stock_id=" . DB::escape($stock_id);
 
 		$result = DBOld::query($sql, "The supplier purchasing details for the selected supplier and item could not be retrieved");
 

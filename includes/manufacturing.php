@@ -21,7 +21,7 @@
 			$date = Dates::date2sql(Dates::Today());
 
 			$sql = "SELECT stock_id, SUM(qty) FROM stock_moves WHERE tran_date <= '$date'";
-			if ($location != '') $sql .= " AND loc_code = " . DBOld::escape($location);
+			if ($location != '') $sql .= " AND loc_code = " . DB::escape($location);
 			$sql .= " GROUP BY stock_id";
 			$result = DBOld::query($sql, "QOH calulcation failed");
 			while ($row = DBOld::fetch($result)) {
@@ -39,8 +39,8 @@
 			 . "sales_orders.order_no AND sales_orders.trans_type=" . ST_SALESORDER . " AND
 						sales_orders.trans_type=sales_order_details.trans_type AND ";
 			if ($location != "")
-				$sql .= "sales_orders.from_stk_loc =" . DBOld::escape($location) . " AND ";
-			$sql .= "sales_order_details.stk_code = " . DBOld::escape($stock_id);
+				$sql .= "sales_orders.from_stk_loc =" . DB::escape($location) . " AND ";
+			$sql .= "sales_order_details.stk_code = " . DB::escape($stock_id);
 
 			$result = DBOld::query($sql, "No transactions were returned");
 			$row = DBOld::fetch($result);
@@ -54,7 +54,7 @@
 
 			$demand = 0.0;
 			if ($level > 10) {
-				ui_msgs::display_warning("BOM Too many Manufacturing levels deep $level");
+				Errors::warning("BOM Too many Manufacturing levels deep $level");
 				return $demand;
 			}
 			// Load all stock levels (stock moves) into static::$qoh_stock
@@ -68,8 +68,8 @@
 			$bom = @static::$bom_list[$stock_id];
 			if ($bom == NULL) {
 				$sql = "SELECT parent, component, quantity FROM "
-				 . "bom WHERE parent = " . DBOld::escape($stock_id);
-				if ($location != "") $sql .= " AND loc_code = " . DBOld::escape($location);
+				 . "bom WHERE parent = " . DB::escape($stock_id);
+				if ($location != "") $sql .= " AND loc_code = " . DB::escape($location);
 				$result = DBOld::query($sql, "Could not search bom");
 				$bom = array();
 				// Even if we get no results, remember that fact
@@ -106,7 +106,7 @@
 				   	sales_orders.trans_type=" . ST_SALESORDER . " AND
 					sales_orders.trans_type=sales_order_details.trans_type AND ";
 			if ($location != "")
-				$sql .= "sales_orders.from_stk_loc =" . DBOld::escape($location) . " AND ";
+				$sql .= "sales_orders.from_stk_loc =" . DB::escape($location) . " AND ";
 			$sql .= "sales_order_details.quantity-sales_order_details.qty_sent > 0 AND
 				   stock_master.stock_id=sales_order_details.stk_code AND
 				   (stock_master.mb_flag='" . STOCK_MANUFACTURE . "' OR stock_master.mb_flag='A')
@@ -123,10 +123,10 @@
 			 . "purch_order_details.quantity_received) AS qoo
 		FROM purch_order_details INNER JOIN "
 			 . "purch_orders ON purch_order_details.order_no=purch_orders.order_no
-		WHERE purch_order_details.item_code=" . DBOld::escape($stock_id) . " ";
+		WHERE purch_order_details.item_code=" . DB::escape($stock_id) . " ";
 			if ($location != "")
-				$sql .= "AND purch_orders.into_stock_location=" . DBOld::escape($location) . " ";
-			$sql .= "AND purch_order_details.item_code=" . DBOld::escape($stock_id);
+				$sql .= "AND purch_orders.into_stock_location=" . DB::escape($location) . " ";
+			$sql .= "AND purch_order_details.item_code=" . DB::escape($stock_id);
 			$qoo_result = DBOld::query($sql, "could not receive quantity on order for item");
 
 			if (DBOld::num_rows($qoo_result) == 1) {
@@ -143,9 +143,9 @@
 		(wo_requirements.units_req-wo_requirements.units_issued)) AS qoo
 		FROM wo_requirements INNER JOIN workorders
 			ON wo_requirements.workorder_id=workorders.id
-		WHERE wo_requirements.stock_id=" . DBOld::escape($stock_id) . " ";
+		WHERE wo_requirements.stock_id=" . DB::escape($stock_id) . " ";
 			if ($location != "")
-				$sql .= "AND wo_requirements.loc_code=" . DBOld::escape($location) . " ";
+				$sql .= "AND wo_requirements.loc_code=" . DB::escape($location) . " ";
 			$sql .= "AND workorders.released=1";
 			$qoo_result = DBOld::query($sql, "could not receive quantity on order for item");
 			if (DBOld::num_rows($qoo_result) == 1) {
@@ -158,9 +158,9 @@
 			if ($flag == 'A' || $flag == STOCK_MANUFACTURE) {
 				$sql = "SELECT SUM((workorders.units_reqd-workorders.units_issued)) AS qoo
 			FROM workorders
-			WHERE workorders.stock_id=" . DBOld::escape($stock_id) . " ";
+			WHERE workorders.stock_id=" . DB::escape($stock_id) . " ";
 				if ($location != "")
-					$sql .= "AND workorders.loc_code=" . DBOld::escape($location) . " ";
+					$sql .= "AND workorders.loc_code=" . DB::escape($location) . " ";
 				$sql .= "AND workorders.released=1";
 				$qoo_result = DBOld::query($sql, "could not receive quantity on order for item");
 				if (DBOld::num_rows($qoo_result) == 1) {
@@ -173,7 +173,7 @@
 
 		public static function get_mb_flag($stock_id) {
 			$sql = "SELECT mb_flag FROM stock_master WHERE stock_id = "
-			 . DBOld::escape($stock_id);
+			 . DB::escape($stock_id);
 			$result = DBOld::query($sql, "retreive mb_flag from item");
 
 			if (DBOld::num_rows($result) == 0)
@@ -191,7 +191,7 @@
     	stock_master.material_cost+ stock_master.labour_cost+stock_master.overhead_cost AS standard_cost, units,
     	bom.quantity * (stock_master.material_cost+ stock_master.labour_cost+ stock_master.overhead_cost) AS ComponentCost
     	FROM (workcentres, locations, bom) INNER JOIN stock_master ON bom.component = stock_master.stock_id
-    	WHERE bom.parent = " . DBOld::escape($item) . "
+    	WHERE bom.parent = " . DB::escape($item) . "
 		AND workcentres.id=bom.workcentre_added
 		AND bom.loc_code = locations.loc_code ORDER BY bom.id";
 

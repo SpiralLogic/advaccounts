@@ -20,7 +20,7 @@
 			$st = SysTypes::get_systype_db_info($trans_type);
 			if (!($st && $st[0] && $st[2])) {
 				// this is in fact internal error condition.
-				ui_msgs::display_error('Internal error: invalid type passed to SysTypes::get_next_trans_no()');
+				Errors::error('Internal error: invalid type passed to SysTypes::get_next_trans_no()');
 				return 0;
 			}
 			$sql = "SELECT MAX(`$st[2]`) FROM $st[0]";

@@ -100,13 +100,13 @@
 
 		$sql = "INSERT INTO stock_moves (stock_id, trans_no, type, loc_code,
 			tran_date, person_id, reference, qty, standard_cost, visible, price,
-			discount_percent) VALUES (" . DBOld::escape($stock_id)
-		 . ", " . DBOld::escape($trans_no) . ", " . DBOld::escape($type)
-		 . ",	" . DBOld::escape($location) . ", '$date', "
-		 . DBOld::escape($person_id) . ", " . DBOld::escape($reference) . ", "
-		 . DBOld::escape($quantity) . ", " . DBOld::escape($std_cost) . ","
-		 . DBOld::escape($show_or_hide) . ", " . DBOld::escape($price) . ", "
-		 . DBOld::escape($discount_percent) . ")";
+			discount_percent) VALUES (" . DB::escape($stock_id)
+		 . ", " . DB::escape($trans_no) . ", " . DB::escape($type)
+		 . ",	" . DB::escape($location) . ", '$date', "
+		 . DB::escape($person_id) . ", " . DB::escape($reference) . ", "
+		 . DB::escape($quantity) . ", " . DB::escape($std_cost) . ","
+		 . DB::escape($show_or_hide) . ", " . DB::escape($price) . ", "
+		 . DB::escape($discount_percent) . ")";
 
 		if ($error_msg == "") {
 			$error_msg = "The stock movement record cannot be inserted";
@@ -120,11 +120,11 @@
 	function update_stock_move_pid($type, $stock_id, $from, $to, $pid, $cost) {
 		$from = Dates::date2sql($from);
 		$to = Dates::date2sql($to);
-		$sql = "UPDATE stock_moves SET standard_cost=" . DBOld::escape($cost)
-		 . " WHERE type=" . DBOld::escape($type)
-		 . "	AND stock_id=" . DBOld::escape($stock_id)
+		$sql = "UPDATE stock_moves SET standard_cost=" . DB::escape($cost)
+		 . " WHERE type=" . DB::escape($type)
+		 . "	AND stock_id=" . DB::escape($stock_id)
 		 . "  AND tran_date>='$from' AND tran_date<='$to'
-				AND person_id = " . DBOld::escape($pid);
+				AND person_id = " . DB::escape($pid);
 		DBOld::query($sql, "The stock movement standard_cost cannot be updated");
 	}
 
@@ -139,7 +139,7 @@
 			FROM stock_moves,locations,stock_master
 			WHERE stock_moves.stock_id = stock_master.stock_id
 			AND locations.loc_code=stock_moves.loc_code
-			AND type=" . DBOld::escape($type) . " AND trans_no=" . DBOld::escape($type_no) . " ORDER BY trans_id";
+			AND type=" . DB::escape($type) . " AND trans_no=" . DB::escape($type_no) . " ORDER BY trans_id";
 		if ($visible) {
 			$sql .= " AND stock_moves.visible=1";
 		}
@@ -151,7 +151,7 @@
 
 	function void_stock_move($type, $type_no) {
 		$sql = "UPDATE stock_moves SET qty=0, price=0, discount_percent=0,
-			standard_cost=0	WHERE type=" . DBOld::escape($type) . " AND trans_no=" . DBOld::escape($type_no);
+			standard_cost=0	WHERE type=" . DB::escape($type) . " AND trans_no=" . DB::escape($type_no);
 
 		DBOld::query($sql, "Could not void stock moves");
 	}

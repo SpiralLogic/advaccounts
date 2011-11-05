@@ -228,7 +228,7 @@
 		{
 			$sql
 							= "SELECT id FROM tax_types WHERE
-		sales_gl_code=" . DBOld::escape($account_code) . " OR purchasing_gl_code=" . DBOld::escape($account_code);
+		sales_gl_code=" . DB::escape($account_code) . " OR purchasing_gl_code=" . DB::escape($account_code);
 			$result = DBOld::query($sql, "checking account is tax account");
 			if (DBOld::num_rows($result) > 0) {
 				$acct = DBOld::fetch($result);

@@ -11,10 +11,10 @@
 		public static function	add($user_id, $real_name, $password, $phone, $email, $role_id,
 			$language, $profile, $rep_popup, $pos) {
 			$sql = "INSERT INTO users (user_id, real_name, password,phone, email, role_id, language, pos, print_profile, rep_popup)
-				VALUES (" . DBOld::escape($user_id) . ",
-				" . DBOld::escape($real_name) . ", " . DBOld::escape($password) . "," . DBOld::escape($phone)
-			 . "," . DBOld::escape($email) . ", " . DBOld::escape($role_id) . ", " . DBOld::escape($language)
-			 . ", " . DBOld::escape($pos) . "," . DBOld::escape($profile) . "," . DBOld::escape($rep_popup)
+				VALUES (" . DB::escape($user_id) . ",
+				" . DB::escape($real_name) . ", " . DB::escape($password) . "," . DB::escape($phone)
+			 . "," . DB::escape($email) . ", " . DB::escape($role_id) . ", " . DB::escape($language)
+			 . ", " . DB::escape($pos) . "," . DB::escape($profile) . "," . DB::escape($rep_popup)
 			 . " )";
 
 			DBOld::query($sql, "could not add user for $user_id");
@@ -23,8 +23,8 @@
 		//-----------------------------------------------------------------------------------------------
 		public static function	update_password($id, $user_id, $password)
 		{
-			$sql = "UPDATE users SET password=" . DBOld::escape($password) . ",
-				user_id = " . DBOld::escape($user_id) . " WHERE id=" . DBOld::escape($id);
+			$sql = "UPDATE users SET password=" . DB::escape($password) . ",
+				user_id = " . DB::escape($user_id) . " WHERE id=" . DB::escape($id);
 			DBOld::query($sql, "could not update user password for $user_id");
 		}
 
@@ -34,16 +34,16 @@
 			$language, $profile, $rep_popup, $pos
 		)
 		{
-			$sql = "UPDATE users SET real_name=" . DBOld::escape($real_name) .
-			 ", phone=" . DBOld::escape($phone) . ",
-				email=" . DBOld::escape($email) . ",
-				role_id=" . DBOld::escape($role_id) . ",
-				language=" . DBOld::escape($language) . ",
-				print_profile=" . DBOld::escape($profile) . ",
-				rep_popup=" . DBOld::escape($rep_popup) . ",
-				pos=" . DBOld::escape($pos) . ",
-				user_id = " . DBOld::escape($user_id)
-			 . " WHERE id=" . DBOld::escape($id);
+			$sql = "UPDATE users SET real_name=" . DB::escape($real_name) .
+			 ", phone=" . DB::escape($phone) . ",
+				email=" . DB::escape($email) . ",
+				role_id=" . DB::escape($role_id) . ",
+				language=" . DB::escape($language) . ",
+				print_profile=" . DB::escape($profile) . ",
+				rep_popup=" . DB::escape($rep_popup) . ",
+				pos=" . DB::escape($pos) . ",
+				user_id = " . DB::escape($user_id)
+			 . " WHERE id=" . DB::escape($id);
 			DBOld::query($sql, "could not update user for $user_id");
 		}
 
@@ -57,27 +57,27 @@
 		{
 			$sql
 			 = "UPDATE users SET
-				prices_dec=" . DBOld::escape($price_dec) . ",
-				qty_dec=" . DBOld::escape($qty_dec) . ",
-				rates_dec=" . DBOld::escape($exrate_dec) . ",
-				percent_dec=" . DBOld::escape($percent_dec) . ",
-				show_gl=" . DBOld::escape($showgl) . ",
-				show_codes=" . DBOld::escape($showcodes) . ",
-				date_format=" . DBOld::escape($date_format) . ",
-				date_sep=" . DBOld::escape($date_sep) . ",
-				tho_sep=" . DBOld::escape($tho_sep) . ",
-				dec_sep=" . DBOld::escape($dec_sep) . ",
-				theme=" . DBOld::escape($theme) . ",
-				page_size=" . DBOld::escape($pagesize) . ",
-				show_hints=" . DBOld::escape($show_hints) . ",
-				print_profile=" . DBOld::escape($profile) . ",
-				rep_popup=" . DBOld::escape($rep_popup) . ",
-				query_size=" . DBOld::escape($query_size) . ",
-				graphic_links=" . DBOld::escape($graphic_links) . ",
-				language=" . DBOld::escape($lang) . ",
-				sticky_doc_date=" . DBOld::escape($stickydate) . ",
-				startup_tab=" . DBOld::escape($startup_tab) . "
-				WHERE id = " . DBOld::escape($id);
+				prices_dec=" . DB::escape($price_dec) . ",
+				qty_dec=" . DB::escape($qty_dec) . ",
+				rates_dec=" . DB::escape($exrate_dec) . ",
+				percent_dec=" . DB::escape($percent_dec) . ",
+				show_gl=" . DB::escape($showgl) . ",
+				show_codes=" . DB::escape($showcodes) . ",
+				date_format=" . DB::escape($date_format) . ",
+				date_sep=" . DB::escape($date_sep) . ",
+				tho_sep=" . DB::escape($tho_sep) . ",
+				dec_sep=" . DB::escape($dec_sep) . ",
+				theme=" . DB::escape($theme) . ",
+				page_size=" . DB::escape($pagesize) . ",
+				show_hints=" . DB::escape($show_hints) . ",
+				print_profile=" . DB::escape($profile) . ",
+				rep_popup=" . DB::escape($rep_popup) . ",
+				query_size=" . DB::escape($query_size) . ",
+				graphic_links=" . DB::escape($graphic_links) . ",
+				language=" . DB::escape($lang) . ",
+				sticky_doc_date=" . DB::escape($stickydate) . ",
+				startup_tab=" . DB::escape($startup_tab) . "
+				WHERE id = " . DB::escape($id);
 			DBOld::query($sql, "could not update user display prefs for $id");
 		}
 
@@ -96,7 +96,7 @@
 		//-----------------------------------------------------------------------------------------------
 		public static function	get($id)
 		{
-			$sql    = "SELECT * FROM users WHERE id=" . DBOld::escape($id);
+			$sql    = "SELECT * FROM users WHERE id=" . DB::escape($id);
 			$result = DBOld::query($sql, "could not get user $id");
 			return DBOld::fetch($result);
 		}
@@ -106,7 +106,7 @@
 		//
 		public static function	get_by_login($user_id)
 		{
-			$sql    = "SELECT * FROM users WHERE user_id=" . DBOld::escape($user_id);
+			$sql    = "SELECT * FROM users WHERE user_id=" . DB::escape($user_id);
 			$result = DBOld::query($sql, "could not get user $user_id");
 			return DBOld::fetch($result);
 		}
@@ -114,7 +114,7 @@
 		//-----------------------------------------------------------------------------------------------
 		public static function	delete($id)
 		{
-			$sql = "DELETE FROM users WHERE id=" . DBOld::escape($id);
+			$sql = "DELETE FROM users WHERE id=" . DB::escape($id);
 			DBOld::query($sql, "could not delete user $id");
 		}
 
@@ -131,8 +131,8 @@
 				$_SESSION['change_password'] = true;
 			}
 			$password = $user->hash_password($password);
-			$sql      = "SELECT * FROM users WHERE user_id = " . DBOld::escape($user_id) . " AND"
-			 . " (password=" . DBOld::escape($password) . " OR password=" . DBOld::escape($md5password) . ")";
+			$sql      = "SELECT * FROM users WHERE user_id = " . DB::escape($user_id) . " AND"
+			 . " (password=" . DB::escape($password) . " OR password=" . DB::escape($md5password) . ")";
 			return DBOld::query($sql, "could not get validate user login for $user_id");
 		}
 
@@ -140,7 +140,7 @@
 		public static function	update_visitdate($user_id)
 		{
 			$sql = "UPDATE users SET last_visit_date='" . date("Y-m-d H:i:s") . "'
-				WHERE user_id=" . DBOld::escape($user_id);
+				WHERE user_id=" . DB::escape($user_id);
 			DBOld::query($sql, "could not update last visit date for user $user_id");
 		}
 
@@ -148,7 +148,7 @@
 		public static function	check_activity($id)
 		{
 			$sql    = "SELECT COUNT(*) FROM audit_trail WHERE audit_trail.user="
-			 . DBOld::escape($id);
+			 . DB::escape($id);
 			$result = DBOld::query($sql, "Cant check user activity");
 			$ret    = DBOld::fetch($result);
 			return $ret[0];

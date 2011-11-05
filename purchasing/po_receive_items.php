@@ -18,7 +18,7 @@
 	if (isset($_GET['AddedID'])) {
 		$grn        = $_GET['AddedID'];
 		$trans_type = ST_SUPPRECEIVE;
-		ui_msgs::display_notification(_("Purchase Order Delivery has been processed"));
+		Errors::notice(_("Purchase Order Delivery has been processed"));
 		ui_msgs::display_note(ui_view::get_trans_view_str($trans_type, $grn, _("&View this Delivery")));
 		hyperlink_params("/purchasing/supplier_invoice.php", _("Entry purchase &invoice for this receival"), "New=1");
 		hyperlink_no_params("/purchasing/inquiry/po_search.php", _("Select a different &purchase order for receiving items against"));
@@ -93,7 +93,7 @@
 		$sql
 						= "SELECT item_code, quantity_ordered, quantity_received, qty_invoiced
 		FROM purch_order_details
-		WHERE order_no=" . DBOld::escape($_SESSION['PO']->order_no) . " ORDER BY po_detail_item";
+		WHERE order_no=" . DB::escape($_SESSION['PO']->order_no) . " ORDER BY po_detail_item";
 		$result = DBOld::query($sql, "could not query purch order details");
 		Errors::check_db_error("Could not check that the details of the purchase order had not been changed by another user ", $sql);
 		$line_no = 1;
@@ -122,26 +122,26 @@
 	function can_process()
 	{
 		if (count($_SESSION['PO']->line_items) <= 0) {
-			ui_msgs::display_error(_("There is nothing to process. Please enter valid quantities greater than zero."));
+			Errors::error(_("There is nothing to process. Please enter valid quantities greater than zero."));
 			return false;
 		}
 		if (!Dates::is_date($_POST['DefaultReceivedDate'])) {
-			ui_msgs::display_error(_("The entered date is invalid."));
+			Errors::error(_("The entered date is invalid."));
 			JS::set_focus('DefaultReceivedDate');
 			return false;
 		}
 		if (!Validation::is_num('freight', 0)) {
-			ui_msgs::display_error(_("The freight entered must be numeric and not less than zero."));
+			Errors::error(_("The freight entered must be numeric and not less than zero."));
 			JS::set_focus('freight');
 			return false;
 		}
 		if (!Refs::is_valid($_POST['ref'])) {
-			ui_msgs::display_error(_("You must enter a reference."));
+			Errors::error(_("You must enter a reference."));
 			JS::set_focus('ref');
 			return false;
 		}
 		while (!is_new_reference($_POST['ref'], ST_SUPPRECEIVE)) {
-			//		ui_msgs::display_error(_("The entered reference is already in use."));
+			//		Errors::error(_("The entered reference is already in use."));
 			//		JS::set_focus('ref');
 			//		return false;
 			$_POST['ref'] = Refs::get_next(ST_SUPPRECEIVE);
@@ -166,10 +166,10 @@
 			}
 		}
 		if ($something_received == 0) { /*Then dont bother proceeding cos nothing to do ! */
-			ui_msgs::display_error(_("There is nothing to process. Please enter valid quantities greater than zero."));
+			Errors::error(_("There is nothing to process. Please enter valid quantities greater than zero."));
 			return false;
 		} elseif ($delivery_qty_too_large == 1) {
-			ui_msgs::display_error(
+			Errors::error(
 				_("Entered quantities cannot be greater than the quantity entered on the purchase order including the allowed over-receive percentage") . " (" . SysPrefs::over_receive_allowance() . "%)." . "<br>" . _(
 					"Modify the ordered items on the purchase order if you wish to increase the quantities."
 				)
@@ -187,7 +187,7 @@
 			return;
 		}
 		if (check_po_changed()) {
-			ui_msgs::display_error(_("This order has been changed or invoiced since this delivery was started to be actioned. Processing halted. To enter a delivery against this purchase order, it must be re-selected and re-read again to update the changes made by the other user."));
+			Errors::error(_("This order has been changed or invoiced since this delivery was started to be actioned. Processing halted. To enter a delivery against this purchase order, it must be re-selected and re-read again to update the changes made by the other user."));
 			hyperlink_no_params("/purchasing/inquiry/po_search.php", _("Select a different purchase order for receiving goods against"));
 			hyperlink_params(
 				"/purchasing/po_receive_items.php", _("Re-Read the updated purchase order for receiving goods against"), "PONumber=" .

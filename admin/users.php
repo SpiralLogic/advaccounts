@@ -16,28 +16,28 @@
 	//-------------------------------------------------------------------------------------------------
 	function can_process($user) {
 		if (strlen($_POST['user_id']) < 4) {
-			ui_msgs::display_error(_("The user login entered must be at least 4 characters long."));
+			Errors::error(_("The user login entered must be at least 4 characters long."));
 			JS::set_focus('user_id');
 			return false;
 		}
 		if ($_POST['password'] != "") {
 			if (strlen($_POST['password']) < 4) {
-				ui_msgs::display_error(_("The password entered must be at least 4 characters long."));
+				Errors::error(_("The password entered must be at least 4 characters long."));
 				JS::set_focus('password');
 				return false;
 			}
 			if (strstr($_POST['password'], $_POST['user_id']) != false) {
-				ui_msgs::display_error(_("The password cannot contain the user login."));
+				Errors::error(_("The password cannot contain the user login."));
 				JS::set_focus('password');
 				return false;
 			}
 			$check = ($user !== null) ? $user->checkPasswordStrength($_POST['password']) : false;
 			if (!$check && $check['error'] > 0) {
-				ui_msgs::display_error($check['text']);
+				Errors::error($check['text']);
 				return false;
 			}
 			if (!$check && $check['strength'] < 3) {
-				ui_msgs::display_error(_("Password Too Weeak!"));
+				Errors::error(_("Password Too Weeak!"));
 				return false;
 			}
 		}
@@ -60,7 +60,7 @@
 					$_POST['profile'], check_value('rep_popup'), $_POST['pos']
 				);
 				User::update_password($selected_id, $_POST['user_id'], $password);
-				ui_msgs::display_notification(_("The selected user has been updated."));
+				Errors::notice(_("The selected user has been updated."));
 } else {
 				User::add(
 					$_POST['user_id'], $_POST['real_name'], $password,
@@ -77,7 +77,7 @@
 					$_POST['profile'], check_value('rep_popup'), user_query_size(),
 					user_graphic_links(), $_POST['language'], sticky_doc_date(), user_startup_tab()
 				);
-				ui_msgs::display_notification(_("A new user has been added."));
+				Errors::notice(_("A new user has been added."));
 			}
 			$Mode = 'RESET';
 		}
@@ -85,7 +85,7 @@
 	//-------------------------------------------------------------------------------------------------
 	if ($Mode == 'Delete') {
 		User::delete($selected_id);
-		ui_msgs::display_notification(_("User has been deleted."));
+		Errors::notice(_("User has been deleted."));
 		$Mode = 'RESET';
 	}
 	//-------------------------------------------------------------------------------------------------

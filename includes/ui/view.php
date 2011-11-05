@@ -495,7 +495,7 @@
 		{
 			$bank_amount = 0;
 			if (!isset($id) || $id == null || $id == "") {
-				ui_msgs::display_error(_("No Quick Entries are defined."));
+				Errors::error(_("No Quick Entries are defined."));
 				JS::set_focus('totamount');
 			}
 			else {
@@ -586,7 +586,7 @@
 						}
 						$gl_code = ($type == QE_DEPOSIT || ($type == QE_JOURNAL && $base < 0)) ? $item_tax['sales_gl_code'] : $item_tax['purchasing_gl_code'];
 						if (!Tax_Types::is_tax_gl_unique($gl_code)) {
-							ui_msgs::display_error(_("Cannot post to GL account used by more than one tax type."));
+							Errors::error(_("Cannot post to GL account used by more than one tax type."));
 							break 2;
 						}
 						if ($type != QE_SUPPINV) {
@@ -769,7 +769,7 @@ JS;
 			$str = (!empty($title) ? ($title . ':') : '') . '<pre>';
 			$str .= print_r($mixed, true); //var_dump($mixed);
 			$str .= "</pre>\n";
-			ui_msgs::display_error('<table><tr><td>' . $str . '</td></tr></table>');
+			Errors::error('<table><tr><td>' . $str . '</td></tr></table>');
 			if ($exit) {
 				exit;
 			}
@@ -822,7 +822,7 @@ JS;
 					$str .= '</tr>';
 				}
 				$str .= '</table>';
-				ui_msgs::display_error($str);
+				Errors::error($str);
 			}
 		}
 	}

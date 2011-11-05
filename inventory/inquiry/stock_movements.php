@@ -39,10 +39,10 @@
 	$sql
 	 = "SELECT type, trans_no, tran_date, person_id, qty, reference
 	FROM stock_moves
-	WHERE loc_code=" . DBOld::escape($_POST['StockLocation']) . "
+	WHERE loc_code=" . DB::escape($_POST['StockLocation']) . "
 	AND tran_date >= '" . $after_date . "'
 	AND tran_date <= '" . $before_date . "'
-	AND stock_id = " . DBOld::escape($_POST['stock_id']) . " ORDER BY tran_date,trans_id";
+	AND stock_id = " . DB::escape($_POST['stock_id']) . " ORDER BY tran_date,trans_id";
 	$result = DBOld::query($sql, "could not query stock moves");
 	Errors::check_db_error("The stock movements for the selected criteria could not be retrieved", $sql);
 	div_start('doc_tbl');
@@ -52,8 +52,8 @@
 		_("Quantity In"), _("Quantity Out"), _("Quantity On Hand")
 	);
 	table_header($th);
-	$sql = "SELECT SUM(qty) FROM stock_moves WHERE stock_id=" . DBOld::escape($_POST['stock_id']) . "
-	AND loc_code=" . DBOld::escape($_POST['StockLocation']) . "
+	$sql = "SELECT SUM(qty) FROM stock_moves WHERE stock_id=" . DB::escape($_POST['stock_id']) . "
+	AND loc_code=" . DB::escape($_POST['StockLocation']) . "
 	AND tran_date < '" . $after_date . "'";
 	$before_qty = DBOld::query($sql, "The starting quantity on hand could not be calculated");
 	$before_qty_row = DBOld::fetch_row($before_qty);

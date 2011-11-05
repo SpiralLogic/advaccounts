@@ -54,7 +54,7 @@
 		$sql .= ")) AS OutStanding
 		FROM " . '' . "debtor_trans
     	WHERE " . '' . "debtor_trans.tran_date < '$to'
-		AND " . '' . "debtor_trans.debtor_no = " . DBOld::escape($debtorno) . "
+		AND " . '' . "debtor_trans.debtor_no = " . DB::escape($debtorno) . "
 		AND " . '' . "debtor_trans.type <> " . ST_CUSTDELIVERY . " GROUP BY debtor_no";
 
 		$result = DBOld::query($sql, "No transactions were returned");
@@ -74,7 +74,7 @@
     	FROM " . '' . "debtor_trans
     	WHERE " . '' . "debtor_trans.tran_date >= '$from'
 		AND " . '' . "debtor_trans.tran_date <= '$to'
-		AND " . '' . "debtor_trans.debtor_no = " . DBOld::escape($debtorno) . "
+		AND " . '' . "debtor_trans.debtor_no = " . DB::escape($debtorno) . "
 		AND " . '' . "debtor_trans.type <> " . ST_CUSTDELIVERY . "
     	ORDER BY " . '' . "debtor_trans.tran_date";
 
@@ -139,7 +139,7 @@
 
 		$sql = "SELECT debtor_no, name, curr_code FROM " . '' . "debtors_master ";
 		if ($fromcust != ALL_NUMERIC)
-			$sql .= "WHERE debtor_no=" . DBOld::escape($fromcust);
+			$sql .= "WHERE debtor_no=" . DB::escape($fromcust);
 		$sql .= " ORDER BY name";
 		$result = DBOld::query($sql, "The customers could not be retrieved");
 		$num_lines = 0;

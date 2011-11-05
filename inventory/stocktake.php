@@ -21,7 +21,7 @@
 	if (isset($_GET['AddedID'])) {
 		$trans_no   = $_GET['AddedID'];
 		$trans_type = ST_INVADJUST;
-		ui_msgs::display_notification(_("Items adjustment has been processed"));
+		Errors::notice(_("Items adjustment has been processed"));
 		ui_msgs::display_note(ui_view::get_trans_view_str($trans_type, $trans_no, _("&View this adjustment")));
 		ui_msgs::display_note(ui_view::get_gl_view_str($trans_type, $trans_no, _("View the GL &Postings for this Adjustment")), 1, 0);
 		hyperlink_no_params($_SERVER['PHP_SELF'], _("Enter &Another Adjustment"));
@@ -56,28 +56,28 @@
 	{
 		$adj = &$_SESSION['adj_items'];
 		if (count($adj->line_items) == 0) {
-			ui_msgs::display_error(_("You must enter at least one non empty item line."));
+			Errors::error(_("You must enter at least one non empty item line."));
 			JS::set_focus('stock_id');
 			return false;
 		}
 		if (!Refs::is_valid($_POST['ref'])) {
-			ui_msgs::display_error(_("You must enter a reference."));
+			Errors::error(_("You must enter a reference."));
 			JS::set_focus('ref');
 			return false;
 		}
 		if (!is_new_reference($_POST['ref'], ST_INVADJUST)) {
-			ui_msgs::display_error(_("The entered reference is already in use."));
+			Errors::error(_("The entered reference is already in use."));
 			JS::set_focus('ref');
 			return false;
 		}
 		if (!Dates::is_date($_POST['AdjDate'])) {
-			ui_msgs::display_error(_("The entered date for the adjustment is invalid."));
+			Errors::error(_("The entered date for the adjustment is invalid."));
 			JS::set_focus('AdjDate');
 			return false;
 		}
 		elseif (!Dates::is_date_in_fiscalyear($_POST['AdjDate']))
 		{
-			ui_msgs::display_error(_("The entered date is not in fiscal year."));
+			Errors::error(_("The entered date is not in fiscal year."));
 			JS::set_focus('AdjDate');
 			return false;
 		}
@@ -107,12 +107,12 @@
 	function check_item_data()
 	{
 		if (!Validation::is_num('qty', 0)) {
-			ui_msgs::display_error(_("The quantity entered is negative or invalid."));
+			Errors::error(_("The quantity entered is negative or invalid."));
 			JS::set_focus('qty');
 			return false;
 		}
 		if (!Validation::is_num('std_cost', 0)) {
-			ui_msgs::display_error(_("The entered standard cost is negative or invalid."));
+			Errors::error(_("The entered standard cost is negative or invalid."));
 			JS::set_focus('std_cost');
 			return false;
 		}

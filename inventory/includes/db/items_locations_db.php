@@ -11,15 +11,15 @@
 	 ***********************************************************************/
 	function add_item_location($loc_code, $location_name, $delivery_address, $phone, $phone2, $fax, $email, $contact) {
 		$sql = "INSERT INTO locations (loc_code, location_name, delivery_address, phone, phone2, fax, email, contact)
-		VALUES (" . DBOld::escape($loc_code) . ", " . DBOld::escape($location_name) . ", " . DBOld::escape($delivery_address) . ", "
-		 . DBOld::escape($phone) . ", " . DBOld::escape($phone2) . ", " . DBOld::escape($fax) . ", " . DBOld::escape($email) . ", "
-		 . DBOld::escape($contact) . ")";
+		VALUES (" . DB::escape($loc_code) . ", " . DB::escape($location_name) . ", " . DB::escape($delivery_address) . ", "
+		 . DB::escape($phone) . ", " . DB::escape($phone2) . ", " . DB::escape($fax) . ", " . DB::escape($email) . ", "
+		 . DB::escape($contact) . ")";
 
 		DBOld::query($sql, "a location could not be added");
 
 		/* Also need to add loc_stock records for all existing items */
 		$sql = "INSERT INTO loc_stock (loc_code, stock_id, reorder_level)
-		SELECT " . DBOld::escape($loc_code) . ", stock_master.stock_id, 0 FROM stock_master";
+		SELECT " . DB::escape($loc_code) . ", stock_master.stock_id, 0 FROM stock_master";
 
 		DBOld::query($sql, "a location could not be added");
 	}
@@ -27,11 +27,11 @@
 	//------------------------------------------------------------------------------------
 
 	function update_item_location($loc_code, $location_name, $delivery_address, $phone, $phone2, $fax, $email, $contact) {
-		$sql = "UPDATE locations SET location_name=" . DBOld::escape($location_name) . ",
-    	delivery_address=" . DBOld::escape($delivery_address) . ",
-    	phone=" . DBOld::escape($phone) . ", phone2=" . DBOld::escape($phone2) . ", fax=" . DBOld::escape($fax) . ",
-    	email=" . DBOld::escape($email) . ", contact=" . DBOld::escape($contact) . "
-    	WHERE loc_code = " . DBOld::escape($loc_code);
+		$sql = "UPDATE locations SET location_name=" . DB::escape($location_name) . ",
+    	delivery_address=" . DB::escape($delivery_address) . ",
+    	phone=" . DB::escape($phone) . ", phone2=" . DB::escape($phone2) . ", fax=" . DB::escape($fax) . ",
+    	email=" . DB::escape($email) . ", contact=" . DB::escape($contact) . "
+    	WHERE loc_code = " . DB::escape($loc_code);
 
 		DBOld::query($sql, "a location could not be updated");
 	}
@@ -39,17 +39,17 @@
 	//------------------------------------------------------------------------------------
 
 	function delete_item_location($item_location) {
-		$sql = "DELETE FROM locations WHERE loc_code=" . DBOld::escape($item_location);
+		$sql = "DELETE FROM locations WHERE loc_code=" . DB::escape($item_location);
 		DBOld::query($sql, "a location could not be deleted");
 
-		$sql = "DELETE FROM loc_stock WHERE loc_code =" . DBOld::escape($item_location);
+		$sql = "DELETE FROM loc_stock WHERE loc_code =" . DB::escape($item_location);
 		DBOld::query($sql, "a location could not be deleted");
 	}
 
 	//------------------------------------------------------------------------------------
 
 	function get_item_location($item_location) {
-		$sql = "SELECT * FROM locations WHERE loc_code=" . DBOld::escape($item_location);
+		$sql = "SELECT * FROM locations WHERE loc_code=" . DB::escape($item_location);
 
 		$result = DBOld::query($sql, "a location could not be retrieved");
 
@@ -60,7 +60,7 @@
 
 	function set_reorder_level($stock_id, $loc_code, $reorder_level) {
 		$sql = "UPDATE loc_stock SET reorder_level = $reorder_level
-		WHERE stock_id = " . DBOld::escape($stock_id) . " AND loc_code = " . DBOld::escape($loc_code);
+		WHERE stock_id = " . DB::escape($stock_id) . " AND loc_code = " . DB::escape($loc_code);
 
 		DBOld::query($sql, "an item reorder could not be set");
 	}
@@ -71,7 +71,7 @@
 		$sql = "SELECT loc_stock.*, locations.location_name
 		FROM loc_stock, locations
 		WHERE loc_stock.loc_code=locations.loc_code
-		AND loc_stock.stock_id = " . DBOld::escape($stock_id)
+		AND loc_stock.stock_id = " . DB::escape($stock_id)
 		 . " ORDER BY loc_stock.loc_code";
 		return DBOld::query($sql, "an item reorder could not be retreived");
 	}
@@ -79,7 +79,7 @@
 	//------------------------------------------------------------------------------------
 	function get_location_name($loc_code) {
 		$sql = "SELECT location_name FROM locations WHERE loc_code="
-		 . DBOld::escape($loc_code);
+		 . DB::escape($loc_code);
 
 		$result = DBOld::query($sql, "could not retreive the location name for $loc_code");
 

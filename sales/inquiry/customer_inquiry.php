@@ -234,14 +234,14 @@
 				if (substr($ajaxsearch, -1) == 0 && substr($ajaxsearch, -3, 1) == '.') {
 					$ajaxsearch = (substr($ajaxsearch, 0, -1));
 				}
-				$sql .= "TotalAmount LIKE " . DBOld::escape('%' . substr($ajaxsearch, 1) . '%') . ") ";
+				$sql .= "TotalAmount LIKE " . DB::escape('%' . substr($ajaxsearch, 1) . '%') . ") ";
 				continue;
 			}
 			;
 			if (stripos($ajaxsearch, '/') > 0) {
 				$sql .= " tran_date LIKE '%" . Dates::date2sql($ajaxsearch, false) . "%' OR";
 			}
-			$ajaxsearch = DBOld::escape("%" . $ajaxsearch . "%");
+			$ajaxsearch = DB::escape("%" . $ajaxsearch . "%");
 			$sql
 			 .= " name LIKE $ajaxsearch OR trans_no LIKE $ajaxsearch OR reference LIKE $ajaxsearch
 			 OR order_ LIKE $ajaxsearch OR br_name LIKE $ajaxsearch) ";
@@ -257,10 +257,10 @@
 	}
 	if ($_POST['reference'] != ALL_TEXT) {
 		$number_like = "%" . $_POST['reference'] . "%";
-		$sql .= " AND trans.reference LIKE " . DBOld::escape($number_like);
+		$sql .= " AND trans.reference LIKE " . DB::escape($number_like);
 	}
 	if (isset($_POST['customer_id']) && $_POST['customer_id'] != ALL_TEXT) {
-		$sql .= " AND trans.debtor_no = " . DBOld::escape($_POST['customer_id']);
+		$sql .= " AND trans.debtor_no = " . DB::escape($_POST['customer_id']);
 	}
 	if (isset($_POST['filterType']) && $_POST['filterType'] != ALL_TEXT) {
 		if ($_POST['filterType'] == '1') {

@@ -107,15 +107,15 @@
 		//--------------------------------------------------------------------------------------------------
 
 		public static function get($type, $type_no) {
-			$sql = "SELECT * FROM voided WHERE type=" . DBOld::escape($type)
-			 . " AND id=" . DBOld::escape($type_no);
+			$sql = "SELECT * FROM voided WHERE type=" . DB::escape($type)
+			 . " AND id=" . DB::escape($type_no);
 
 			$result = DBOld::query($sql, "could not query voided transaction table");
 			return DBOld::fetch($result);
 		}
 public static function has($type,$type_no) {
-	$sql = "SELECT * FROM voided WHERE type=" . DBOld::escape($type)
-		 . " AND id=" . DBOld::escape($type_no);
+	$sql = "SELECT * FROM voided WHERE type=" . DB::escape($type)
+		 . " AND id=" . DB::escape($type_no);
 
 		$result = DBOld::query($sql, "could not query voided transaction table");
 
@@ -127,8 +127,8 @@ public static function has($type,$type_no) {
 		public static function add($type, $type_no, $date_, $memo_) {
 			$date = Dates::date2sql($date_);
 			$sql = "INSERT INTO voided (type, id, date_, memo_)
-			VALUES (" . DBOld::escape($type) . ", " . DBOld::escape($type_no) . ", "
-			 . DBOld::escape($date) . ", " . DBOld::escape($memo_) . ")";
+			VALUES (" . DB::escape($type) . ", " . DB::escape($type_no) . ", "
+			 . DB::escape($date) . ", " . DB::escape($memo_) . ")";
 
 			DBOld::query($sql, "could not add voided transaction entry");
 		}

@@ -1981,7 +1981,7 @@
 			 */
 			function Error($msg) {
 				//Fatal error
-				ui_msgs::display_error('<strong>TCPDF error: </strong>' . $msg);
+				Errors::error('<strong>TCPDF error: </strong>' . $msg);
 				exit;
 			}
 

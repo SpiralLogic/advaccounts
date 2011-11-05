@@ -34,7 +34,7 @@
 				((debtor_trans.type = " . ST_SALESINVOICE . ")
 					AND debtor_trans.due_date < '$date') AS OverDue
     			FROM debtor_trans
-    			WHERE debtor_trans.tran_date <= '$date' AND debtor_trans.debtor_no = " . DBOld::escape($debtorno) . "
+    			WHERE debtor_trans.tran_date <= '$date' AND debtor_trans.debtor_no = " . DB::escape($debtorno) . "
     				AND debtor_trans.type <> " . ST_CUSTDELIVERY . "
     				AND (debtor_trans.ov_amount + debtor_trans.ov_gst + debtor_trans.ov_freight +
 				debtor_trans.ov_freight_tax + debtor_trans.ov_discount) != 0
@@ -87,7 +87,7 @@
 		}
 		$sql = "SELECT debtor_no, name AS DebtorName, address, tax_id, email,  curr_code, curdate() AS tran_date, payment_terms FROM debtors_master";
 		if ($customer != ALL_NUMERIC) {
-			$sql .= " WHERE debtor_no = " . DBOld::escape($customer);
+			$sql .= " WHERE debtor_no = " . DB::escape($customer);
 		}
 		else {
 			$sql .= " ORDER by name";

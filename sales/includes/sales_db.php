@@ -90,8 +90,8 @@
 		$sql
 		 = "SELECT price, curr_abrev, sales_type_id
 		FROM prices
-		WHERE stock_id = " . DBOld::escape($stock_id) . "
-			AND (curr_abrev = " . DBOld::escape($currency) . " OR curr_abrev = " . DBOld::escape($home_curr) . ")";
+		WHERE stock_id = " . DB::escape($stock_id) . "
+			AND (curr_abrev = " . DB::escape($currency) . " OR curr_abrev = " . DB::escape($home_curr) . ")";
 		$result = DBOld::query($sql, "There was a problem retrieving the pricing information for the part $stock_id for customer");
 		$num_rows = DBOld::num_rows($result);
 		$rate = round2(Banking::get_exchange_rate_from_home_currency($currency, $date),
@@ -194,7 +194,7 @@
 			$src = array_keys($cart->src_docs);
 			$del_no = reset($src);
 			$sql = 'UPDATE debtor_trans SET trans_link = ' . $del_no .
-			 ' WHERE type=' . DBOld::escape($cart->trans_type) . ' AND trans_no=' . $inv_no;
+			 ' WHERE type=' . DB::escape($cart->trans_type) . ' AND trans_no=' . $inv_no;
 			DBOld::query($sql, 'UPDATE Child document link cannot be updated');
 		}
 		if ($cart->trans_type != ST_SALESINVOICE) {
@@ -239,12 +239,12 @@
 				$sql
 				 = "UPDATE sales_order_details
 				SET qty_sent = qty_sent + $qty_dispatched
-				WHERE id=" . DBOld::escape($line_id);
+				WHERE id=" . DB::escape($line_id);
 } else {
 				$sql
 				 = "UPDATE debtor_trans_details
 				SET qty_done = qty_done + $qty_dispatched
-				WHERE id=" . DBOld::escape($line_id);
+				WHERE id=" . DB::escape($line_id);
 			}
 		}
 		DBOld::query($sql, "The parent document detail record could not be updated");
@@ -257,7 +257,7 @@
 	function get_location(&$cart) {
 		$sql = "SELECT locations.* FROM stock_moves,"
 		 . "locations" .
-		 " WHERE type=" . DBOld::escape($cart->trans_type) .
+		 " WHERE type=" . DB::escape($cart->trans_type) .
 		 " AND trans_no=" . key($cart->trans_no) .
 		 " AND qty!=0 " .
 		 " AND locations.loc_code=stock_moves.loc_code";

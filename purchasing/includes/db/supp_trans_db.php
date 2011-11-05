@@ -28,10 +28,10 @@
 
 		$sql = "INSERT INTO supp_trans (trans_no, type, supplier_id, tran_date, due_date,
 		reference, supp_reference, ov_amount, ov_gst, rate, ov_discount) ";
-		$sql .= "VALUES (" . DBOld::escape($trans_no) . ", " . DBOld::escape($type)
-		 . ", " . DBOld::escape($supplier_id) . ", '$date', '$due_date',
-		" . DBOld::escape($reference) . ", " . DBOld::escape($supp_reference) . ", " . DBOld::escape($amount)
-		 . ", " . DBOld::escape($amount_tax) . ", " . DBOld::escape($rate) . ", " . DBOld::escape($discount) . ")";
+		$sql .= "VALUES (" . DB::escape($trans_no) . ", " . DB::escape($type)
+		 . ", " . DB::escape($supplier_id) . ", '$date', '$due_date',
+		" . DB::escape($reference) . ", " . DB::escape($supp_reference) . ", " . DB::escape($amount)
+		 . ", " . DB::escape($amount_tax) . ", " . DB::escape($rate) . ", " . DB::escape($discount) . ")";
 
 		if ($err_msg == "")
 			$err_msg = "Cannot insert a supplier transaction record";
@@ -62,16 +62,16 @@
 			$sql .= ", bank_trans, bank_accounts";
 		}
 
-		$sql .= " WHERE supp_trans.trans_no=" . DBOld::escape($trans_no) . "
+		$sql .= " WHERE supp_trans.trans_no=" . DB::escape($trans_no) . "
 		AND supp_trans.supplier_id=suppliers.supplier_id";
 
 		if ($trans_type > 0)
-			$sql .= " AND supp_trans.type=" . DBOld::escape($trans_type);
+			$sql .= " AND supp_trans.type=" . DB::escape($trans_type);
 
 		if ($trans_type == ST_SUPPAYMENT) {
 			// it's a payment so also get the bank account
-			$sql .= " AND bank_trans.trans_no =" . DBOld::escape($trans_no) . "
-			AND bank_trans.type=" . DBOld::escape($trans_type) . "
+			$sql .= " AND bank_trans.trans_no =" . DB::escape($trans_no) . "
+			AND bank_trans.type=" . DB::escape($trans_type) . "
 			AND bank_accounts.id=bank_trans.bank_act ";
 		}
 
@@ -98,8 +98,8 @@
 		if ($type == ST_SUPPRECEIVE)
 			return exists_grn($type_no);
 
-		$sql = "SELECT trans_no FROM supp_trans WHERE type=" . DBOld::escape($type) . "
-		AND trans_no=" . DBOld::escape($type_no);
+		$sql = "SELECT trans_no FROM supp_trans WHERE type=" . DB::escape($type) . "
+		AND trans_no=" . DB::escape($type_no);
 		$result = DBOld::query($sql, "Cannot retreive a supplier transaction");
 
 		return (DBOld::num_rows($result) > 0);
@@ -109,7 +109,7 @@
 
 	function void_supp_trans($type, $type_no) {
 		$sql = "UPDATE supp_trans SET ov_amount=0, ov_discount=0, ov_gst=0,
-		alloc=0 WHERE type=" . DBOld::escape($type) . " AND trans_no=" . DBOld::escape($type_no);
+		alloc=0 WHERE type=" . DB::escape($type) . " AND trans_no=" . DB::escape($type_no);
 
 		DBOld::query($sql, "could not void supp transactions for type=$type and trans_no=$type_no");
 	}

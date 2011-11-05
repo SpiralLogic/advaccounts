@@ -15,19 +15,19 @@
  */
 	function update_item_code($id, $item_code, $stock_id, $description, $category, $qty, $foreign = 0) {
 		$sql = "UPDATE item_codes SET
-	 	item_code = " . DBOld::escape($item_code) . ",
-	 	stock_id = " . DBOld::escape($stock_id) . ",
-	 	description = " . DBOld::escape($description) . ",
-	 	category_id = " . DBOld::escape($category) . ",
-	 	quantity = " . DBOld::escape($qty) . ",
-	 	is_foreign = " . DBOld::escape($foreign) . "
+	 	item_code = " . DB::escape($item_code) . ",
+	 	stock_id = " . DB::escape($stock_id) . ",
+	 	description = " . DB::escape($description) . ",
+	 	category_id = " . DB::escape($category) . ",
+	 	quantity = " . DB::escape($qty) . ",
+	 	is_foreign = " . DB::escape($foreign) . "
         	WHERE ";
 
 		if ($id == -1) // update with unknown $id i.e. from items table editor
-			$sql .= "item_code = " . DBOld::escape($item_code)
-			 . " AND stock_id = " . DBOld::escape($stock_id);
+			$sql .= "item_code = " . DB::escape($item_code)
+			 . " AND stock_id = " . DB::escape($stock_id);
 		else
-			$sql .= "id = " . DBOld::escape($id);
+			$sql .= "id = " . DB::escape($id);
 
 		DBOld::query($sql, "an item code could not be updated");
 	}
@@ -35,20 +35,20 @@
 	function add_item_code($item_code, $stock_id, $description, $category, $qty, $foreign = 0) {
 		$sql = "INSERT INTO item_codes
 			(item_code, stock_id, description, category_id, quantity, is_foreign) 
-			VALUES( " . DBOld::escape($item_code) . "," . DBOld::escape($stock_id) . ",
-	  		" . DBOld::escape($description) . "," . DBOld::escape($category)
-		 . "," . DBOld::escape($qty) . "," . DBOld::escape($foreign) . ")";
+			VALUES( " . DB::escape($item_code) . "," . DB::escape($stock_id) . ",
+	  		" . DB::escape($description) . "," . DB::escape($category)
+		 . "," . DB::escape($qty) . "," . DB::escape($foreign) . ")";
 
 		DBOld::query($sql, "an item code could not be added");
 	}
 
 	function delete_item_code($id) {
-		$sql = "DELETE FROM item_codes WHERE id=" . DBOld::escape($id);
+		$sql = "DELETE FROM item_codes WHERE id=" . DB::escape($id);
 		DBOld::query($sql, "an item code could not be deleted");
 	}
 
 	function get_item_code($id) {
-		$sql = "SELECT * FROM item_codes WHERE id=" . DBOld::escape($id);
+		$sql = "SELECT * FROM item_codes WHERE id=" . DB::escape($id);
 
 		$result = DBOld::query($sql, "item code could not be retrieved");
 
@@ -59,9 +59,9 @@
 		$sql = "SELECT i.*, c.description as cat_name FROM "
 		 . "item_codes as i,"
 		 . "stock_category as c
-		WHERE stock_id=" . DBOld::escape($stock_id) . "
+		WHERE stock_id=" . DB::escape($stock_id) . "
 		AND i.category_id=c.category_id
-		AND i.is_foreign=" . DBOld::escape($foreign);
+		AND i.is_foreign=" . DB::escape($foreign);
 
 		$result = DBOld::query($sql, "all item codes could not be retrieved");
 
@@ -69,7 +69,7 @@
 	}
 
 	function delete_item_kit($item_code) {
-		$sql = "DELETE FROM item_codes WHERE item_code=" . DBOld::escape($item_code);
+		$sql = "DELETE FROM item_codes WHERE item_code=" . DB::escape($item_code);
 		DBOld::query($sql, "an item kit could not be deleted");
 	}
 
@@ -84,7 +84,7 @@
 			item.stock_id=comp.item_code
 		WHERE
 			kit.stock_id=comp.item_code
-			AND kit.item_code=" . DBOld::escape($item_code);
+			AND kit.item_code=" . DB::escape($item_code);
 
 		$result = DBOld::query($sql, "item kit could not be retrieved");
 
@@ -92,14 +92,14 @@
 	}
 
 	function is_item_kit($item_code) {
-		$sql = "SELECT * FROM item_codes WHERE item_code=" . DBOld::escape($item_code);
+		$sql = "SELECT * FROM item_codes WHERE item_code=" . DB::escape($item_code);
 		return DBOld::query($sql, "Could not do shit for some reason");
 	}
 
 	function get_item_code_dflts($stock_id) {
 		$sql = "SELECT units, decimals, description, category_id
 		FROM stock_master,item_units
-		WHERE stock_id=" . DBOld::escape($stock_id);
+		WHERE stock_id=" . DB::escape($stock_id);
 
 		$result = DBOld::query($sql, "item code defaults could not be retrieved");
 		return DBOld::fetch($result);
@@ -132,23 +132,23 @@
 
 	function get_kit_props($kit_code) {
 		$sql = "SELECT description, category_id FROM item_codes "
-		 . " WHERE item_code=" . DBOld::escape($kit_code);
+		 . " WHERE item_code=" . DB::escape($kit_code);
 		$res = DBOld::query($sql, "kit name query failed");
 		return DBOld::fetch($res);
 	}
 
 	function update_kit_props($kit_code, $name, $category) {
 		$sql = "UPDATE item_codes SET description="
-		 . DBOld::escape($name) . ",category_id=" . DBOld::escape($category)
-		 . " WHERE item_code=" . DBOld::escape($kit_code);
+		 . DB::escape($name) . ",category_id=" . DB::escape($category)
+		 . " WHERE item_code=" . DB::escape($kit_code);
 		DBOld::query($sql, "kit name update failed");
 	}
 
 	function get_where_used($item_code) {
 		$sql = "SELECT item_code, description FROM "
 		 . "item_codes "
-		 . " WHERE stock_id=" . DBOld::escape($item_code) . "
-			AND item_code!=" . DBOld::escape($item_code);
+		 . " WHERE stock_id=" . DB::escape($item_code) . "
+			AND item_code!=" . DB::escape($item_code);
 		return DBOld::query($sql, "where used query failed");
 	}
 

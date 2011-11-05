@@ -36,8 +36,8 @@
 			stock_master,
 			bom
 		WHERE stock_master.stock_id=bom.component
-		AND bom.parent >= " . DBOld::escape($from) . "
-		AND bom.parent <= " . DBOld::escape($to) . "
+		AND bom.parent >= " . DB::escape($from) . "
+		AND bom.parent <= " . DB::escape($to) . "
 		ORDER BY
 			bom.parent,
 			bom.component";

@@ -35,7 +35,7 @@
 	if (isset($_POST['delete'])) {
 		$customer->delete();
 		$status = $customer->getStatus();
-		ui_msgs::display_notification($status['message']);
+		Errors::notice($status['message']);
 	}
 	if (!Input::get('popup') && !Input::get('id')) {
 		/** @noinspection PhpUndefinedMethodInspection */

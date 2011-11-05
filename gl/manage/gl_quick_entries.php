@@ -65,12 +65,12 @@
 	//-----------------------------------------------------------------------------------
 	function can_process() {
 		if (strlen($_POST['description']) == 0) {
-			ui_msgs::display_error(_("The Quick Entry description cannot be empty."));
+			Errors::error(_("The Quick Entry description cannot be empty."));
 			JS::set_focus('description');
 			return false;
 		}
 		if (strlen($_POST['base_desc']) == 0) {
-			ui_msgs::display_error(_("The base amount description cannot be empty."));
+			Errors::error(_("The base amount description cannot be empty."));
 			JS::set_focus('base_desc');
 			return false;
 		}
@@ -85,13 +85,13 @@
 					$selected_id, $_POST['description'], $_POST['type'],
 					input_num('base_amount'), $_POST['base_desc']
 				);
-				ui_msgs::display_notification(_('Selected quick entry has been updated'));
+				Errors::notice(_('Selected quick entry has been updated'));
 } else {
 				add_quick_entry(
 					$_POST['description'], $_POST['type'],
 					input_num('base_amount'), $_POST['base_desc']
 				);
-				ui_msgs::display_notification(_('New quick entry has been added'));
+				Errors::notice(_('New quick entry has been added'));
 			}
 			$Mode = 'RESET';
 		}
@@ -102,13 +102,13 @@
 				$selected_id2, $selected_id, $_POST['actn'], $_POST['dest_id'], input_num('amount', 0),
 				$_POST['dimension_id'], $_POST['dimension2_id']
 			);
-			ui_msgs::display_notification(_('Selected quick entry line has been updated'));
+			Errors::notice(_('Selected quick entry line has been updated'));
 		} else {
 			add_quick_entry_line(
 				$selected_id, $_POST['actn'], $_POST['dest_id'], input_num('amount', 0),
 				$_POST['dimension_id'], $_POST['dimension2_id']
 			);
-			ui_msgs::display_notification(_('New quick entry line has been added'));
+			Errors::notice(_('New quick entry line has been added'));
 		}
 		$Mode2 = 'RESET2';
 	}
@@ -116,16 +116,16 @@
 	if ($Mode == 'Delete') {
 		if (!has_quick_entry_lines($selected_id)) {
 			delete_quick_entry($selected_id);
-			ui_msgs::display_notification(_('Selected quick entry has been deleted'));
+			Errors::notice(_('Selected quick entry has been deleted'));
 			$Mode = 'RESET';
 		} else {
-			ui_msgs::display_error(_("The Quick Entry has Quick Entry Lines. Cannot be deleted."));
+			Errors::error(_("The Quick Entry has Quick Entry Lines. Cannot be deleted."));
 			JS::set_focus('description');
 		}
 	}
 	if ($Mode2 == 'BDel') {
 		delete_quick_entry_line($selected_id2);
-		ui_msgs::display_notification(_('Selected quick entry line has been deleted'));
+		Errors::notice(_('Selected quick entry line has been deleted'));
 		$Mode2 = 'RESET2';
 	}
 	//-----------------------------------------------------------------------------------

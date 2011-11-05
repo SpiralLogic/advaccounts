@@ -46,7 +46,7 @@
 	//-----------------------------------------------------------------------------------
 	function can_process() {
 		if (strlen($_POST['name']) == 0) {
-			ui_msgs::display_error(_("The tag name cannot be empty."));
+			Errors::error(_("The tag name cannot be empty."));
 			JS::set_focus('name');
 			return false;
 		}
@@ -58,11 +58,11 @@
 		if (can_process()) {
 			if ($selected_id != -1) {
 				if ($ret = Tags::update($selected_id, $_POST['name'], $_POST['description'])) {
-					ui_msgs::display_notification(_('Selected tag settings have been updated'));
+					Errors::notice(_('Selected tag settings have been updated'));
 				}
 } else {
 				if ($ret = Tags::add(Input::post('type'), $_POST['name'], $_POST['description'])) {
-					ui_msgs::display_notification(_('New tag has been added'));
+					Errors::notice(_('New tag has been added'));
 				}
 			}
 			if ($ret) {
@@ -77,7 +77,7 @@
 		}
 		$result = Tags::get_associated_records($selected_id);
 		if (DBOld::num_rows($result) > 0) {
-			ui_msgs::display_error(_("Cannot delete this tag because records have been created referring to it."));
+			Errors::error(_("Cannot delete this tag because records have been created referring to it."));
 			return false;
 		}
 		return true;
@@ -87,7 +87,7 @@
 	if ($Mode == 'Delete') {
 		if (can_delete($selected_id)) {
 			Tags::delete($selected_id);
-			ui_msgs::display_notification(_('Selected tag has been deleted'));
+			Errors::notice(_('Selected tag has been deleted'));
 		}
 		$Mode = 'RESET';
 	}

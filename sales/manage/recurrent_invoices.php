@@ -18,29 +18,29 @@
 		$input_error = 0;
 		if (strlen($_POST['description']) == 0) {
 			$input_error = 1;
-			ui_msgs::display_error(_("The area description cannot be empty."));
+			Errors::error(_("The area description cannot be empty."));
 			JS::set_focus('description');
 		}
 		if ($input_error != 1) {
 			if ($selected_id != -1) {
 				$sql
 				 = "UPDATE recurrent_invoices SET
-    			description=" . DBOld::escape($_POST['description']) . ",
-    			order_no=" . DBOld::escape($_POST['order_no']) . ",
-    			debtor_no=" . DBOld::escape($_POST['debtor_no']) . ",
-    			group_no=" . DBOld::escape($_POST['group_no']) . ",
+    			description=" . DB::escape($_POST['description']) . ",
+    			order_no=" . DB::escape($_POST['order_no']) . ",
+    			debtor_no=" . DB::escape($_POST['debtor_no']) . ",
+    			group_no=" . DB::escape($_POST['group_no']) . ",
     			days=" . input_num('days', 0) . ",
     			monthly=" . input_num('monthly', 0) . ",
     			begin='" . Dates::date2sql($_POST['begin']) . "',
     			end='" . Dates::date2sql($_POST['end']) . "'
-    			WHERE id = " . DBOld::escape($selected_id);
+    			WHERE id = " . DB::escape($selected_id);
 				$note = _('Selected recurrent invoice has been updated');
 } else {
 				$sql
 				 = "INSERT INTO recurrent_invoices (description, order_no, debtor_no,
-    			group_no, days, monthly, begin, end, last_sent) VALUES (" . DBOld::escape($_POST['description']) . ", "
-				 . DBOld::escape($_POST['order_no']) . ", " . DBOld::escape($_POST['debtor_no']) . ", "
-				 . DBOld::escape(
+    			group_no, days, monthly, begin, end, last_sent) VALUES (" . DB::escape($_POST['description']) . ", "
+				 . DB::escape($_POST['order_no']) . ", " . DB::escape($_POST['debtor_no']) . ", "
+				 . DB::escape(
 					 $_POST['group_no']
 				 ) . ", " . input_num('days', 0) . ", " . input_num('monthly', 0) . ", '"
 				 . Dates::date2sql($_POST['begin']) . "', '" . Dates::date2sql($_POST['end']) . "', '" . Dates::date2sql(
@@ -51,16 +51,16 @@
 				$note = _('New recurrent invoice has been added');
 			}
 			DBOld::query($sql, "The recurrent invoice could not be updated or added");
-			ui_msgs::display_notification($note);
+			Errors::notice($note);
 			$Mode = 'RESET';
 		}
 	}
 	if ($Mode == 'Delete') {
 		$cancel_delete = 0;
 		if ($cancel_delete == 0) {
-			$sql = "DELETE FROM recurrent_invoices WHERE id=" . DBOld::escape($selected_id);
+			$sql = "DELETE FROM recurrent_invoices WHERE id=" . DB::escape($selected_id);
 			DBOld::query($sql, "could not delete recurrent invoice");
-			ui_msgs::display_notification(_('Selected recurrent invoice has been deleted'));
+			Errors::notice(_('Selected recurrent invoice has been deleted'));
 		} //end if Delete area
 		$Mode = 'RESET';
 	}
@@ -70,7 +70,7 @@
 	}
 	//-------------------------------------------------------------------------------------------------
 	function get_sales_group_name($group_no) {
-		$sql = "SELECT description FROM groups WHERE id = " . DBOld::escape($group_no);
+		$sql = "SELECT description FROM groups WHERE id = " . DB::escape($group_no);
 		$result = DBOld::query($sql, "could not get group");
 		$row = DBOld::fetch($result);
 		return $row[0];
@@ -119,7 +119,7 @@
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {
 			//editing an existing area
-			$sql = "SELECT * FROM recurrent_invoices WHERE id=" . DBOld::escape($selected_id);
+			$sql = "SELECT * FROM recurrent_invoices WHERE id=" . DB::escape($selected_id);
 			$result = DBOld::query($sql, "could not get recurrent invoice");
 			$myrow = DBOld::fetch($result);
 			$_POST['description'] = $myrow["description"];

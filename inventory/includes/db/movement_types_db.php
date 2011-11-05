@@ -11,14 +11,14 @@
 	 ***********************************************************************/
 	function add_movement_type($name) {
 		$sql = "INSERT INTO movement_types (name)
-		VALUES (" . DBOld::escape($name) . ")";
+		VALUES (" . DB::escape($name) . ")";
 
 		DBOld::query($sql, "could not add item movement type");
 	}
 
 	function update_movement_type($type_id, $name) {
-		$sql = "UPDATE movement_types SET name=" . DBOld::escape($name) . "
-			WHERE id=" . DBOld::escape($type_id);
+		$sql = "UPDATE movement_types SET name=" . DB::escape($name) . "
+			WHERE id=" . DB::escape($type_id);
 
 		DBOld::query($sql, "could not update item movement type");
 	}
@@ -31,7 +31,7 @@
 	}
 
 	function get_movement_type($type_id) {
-		$sql = "SELECT * FROM movement_types WHERE id=" . DBOld::escape($type_id);
+		$sql = "SELECT * FROM movement_types WHERE id=" . DB::escape($type_id);
 
 		$result = DBOld::query($sql, "could not get item movement type");
 
@@ -39,7 +39,7 @@
 	}
 
 	function delete_movement_type($type_id) {
-		$sql = "DELETE FROM movement_types WHERE id=" . DBOld::escape($type_id);
+		$sql = "DELETE FROM movement_types WHERE id=" . DB::escape($type_id);
 
 		DBOld::query($sql, "could not delete item movement type");
 	}

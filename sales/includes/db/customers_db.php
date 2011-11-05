@@ -46,7 +46,7 @@
 		WHERE
 			 debtors_master.payment_terms = payment_terms.terms_indicator
 			 AND debtors_master.credit_status = credit_status.id
-			 AND debtors_master.debtor_no = " . DBOld::escape($customer_id) . "
+			 AND debtors_master.debtor_no = " . DB::escape($customer_id) . "
 			 AND debtor_trans.tran_date <= '$todate'
 			 AND debtor_trans.type <> 13
 			 AND debtors_master.debtor_no = debtor_trans.debtor_no
@@ -73,7 +73,7 @@
     		WHERE
     		     debtors_master.payment_terms = payment_terms.terms_indicator
     		     AND debtors_master.credit_status = credit_status.id
-    		     AND debtors_master.debtor_no = " . DBOld::escape($customer_id);
+    		     AND debtors_master.debtor_no = " . DB::escape($customer_id);
 			$result = DBOld::query($sql, "The customer details could not be retrieved");
 		}
 		else {
@@ -91,14 +91,14 @@
 
 	function get_customer($customer_id)
 	{
-		$sql = "SELECT * FROM debtors_master WHERE debtor_no=" . DBOld::escape($customer_id);
+		$sql = "SELECT * FROM debtors_master WHERE debtor_no=" . DB::escape($customer_id);
 		$result = DBOld::query($sql, "could not get customer");
 		return DBOld::fetch($result);
 	}
 
 	function get_customer_name($customer_id)
 	{
-		$sql = "SELECT name FROM debtors_master WHERE debtor_no=" . DBOld::escape($customer_id);
+		$sql = "SELECT name FROM debtors_master WHERE debtor_no=" . DB::escape($customer_id);
 		$result = DBOld::query($sql, "could not get customer");
 		$row = DBOld::fetch_row($result);
 		return $row[0];
@@ -111,14 +111,14 @@
 			 credit_status.dissallow_invoices
 			FROM  debtors_master,  credit_status
 			WHERE  debtors_master.credit_status =  credit_status.id
-				AND  debtors_master.debtor_no = " . DBOld::escape($customer_id);
+				AND  debtors_master.debtor_no = " . DB::escape($customer_id);
 		$result = DBOld::query($sql, "could not query customers");
 		return DBOld::fetch($result);
 	}
 
 	function get_area_name($id)
 	{
-		$sql = "SELECT description FROM areas WHERE area_code=" . DBOld::escape($id);
+		$sql = "SELECT description FROM areas WHERE area_code=" . DB::escape($id);
 		$result = DBOld::query($sql, "could not get sales type");
 		$row = DBOld::fetch_row($result);
 		return $row[0];
@@ -126,7 +126,7 @@
 
 	function get_salesman_name($id)
 	{
-		$sql = "SELECT salesman_name FROM salesman WHERE salesman_code=" . DBOld::escape($id);
+		$sql = "SELECT salesman_name FROM salesman WHERE salesman_code=" . DB::escape($id);
 		$result = DBOld::query($sql, "could not get sales type");
 		$row = DBOld::fetch_row($result);
 		return $row[0];

@@ -25,39 +25,39 @@
 		//first off validate inputs sensible
 		if (strlen($_POST['supp_name']) == 0 || $_POST['supp_name'] == "") {
 			$input_error = 1;
-			ui_msgs::display_error(_("The supplier name must be entered."));
+			Errors::error(_("The supplier name must be entered."));
 			JS::set_focus('supp_name');
 		}
 		if (strlen($_POST['supp_ref']) == 0 || $_POST['supp_ref'] == "") {
 			$input_error = 1;
-			ui_msgs::display_error(_("The supplier short name must be entered."));
+			Errors::error(_("The supplier short name must be entered."));
 			JS::set_focus('supp_ref');
 		}
 		if ($input_error != 1) {
 			if (!$new_supplier) {
-				$sql = "UPDATE suppliers SET supp_name=" . DBOld::escape($_POST['supp_name']) . ",
-				supp_ref=" . DBOld::escape($_POST['supp_ref']) . ",
-                address=" . DBOld::escape($_POST['address']) . ",
-                supp_address=" . DBOld::escape($_POST['supp_address']) . ",
-                phone=" . DBOld::escape($_POST['phone']) . ",
-                phone2=" . DBOld::escape($_POST['phone2']) . ",
-                fax=" . DBOld::escape($_POST['fax']) . ",
-                gst_no=" . DBOld::escape($_POST['gst_no']) . ",
-                email=" . DBOld::escape($_POST['email']) . ",
-                website=" . DBOld::escape($_POST['website']) . ",
-                contact=" . DBOld::escape($_POST['contact']) . ",
-                supp_account_no=" . DBOld::escape($_POST['supp_account_no']) . ",
-                bank_account=" . DBOld::escape($_POST['bank_account']) . ",
+				$sql = "UPDATE suppliers SET supp_name=" . DB::escape($_POST['supp_name']) . ",
+				supp_ref=" . DB::escape($_POST['supp_ref']) . ",
+                address=" . DB::escape($_POST['address']) . ",
+                supp_address=" . DB::escape($_POST['supp_address']) . ",
+                phone=" . DB::escape($_POST['phone']) . ",
+                phone2=" . DB::escape($_POST['phone2']) . ",
+                fax=" . DB::escape($_POST['fax']) . ",
+                gst_no=" . DB::escape($_POST['gst_no']) . ",
+                email=" . DB::escape($_POST['email']) . ",
+                website=" . DB::escape($_POST['website']) . ",
+                contact=" . DB::escape($_POST['contact']) . ",
+                supp_account_no=" . DB::escape($_POST['supp_account_no']) . ",
+                bank_account=" . DB::escape($_POST['bank_account']) . ",
                 credit_limit=" . input_num('credit_limit', 0) . ",
-                dimension_id=" . DBOld::escape($_POST['dimension_id']) . ",
-                dimension2_id=" . DBOld::escape($_POST['dimension2_id']) . ",
-                curr_code=" . DBOld::escape($_POST['curr_code']) . ",
-                payment_terms=" . DBOld::escape($_POST['payment_terms']) . ",
-				payable_account=" . DBOld::escape($_POST['payable_account']) . ",
-				purchase_account=" . DBOld::escape($_POST['purchase_account']) . ",
-				payment_discount_account=" . DBOld::escape($_POST['payment_discount_account']) . ",
-                notes=" . DBOld::escape($_POST['notes']) . ",
-				tax_group_id=" . DBOld::escape($_POST['tax_group_id']) . " WHERE supplier_id = " . DBOld::escape(
+                dimension_id=" . DB::escape($_POST['dimension_id']) . ",
+                dimension2_id=" . DB::escape($_POST['dimension2_id']) . ",
+                curr_code=" . DB::escape($_POST['curr_code']) . ",
+                payment_terms=" . DB::escape($_POST['payment_terms']) . ",
+				payable_account=" . DB::escape($_POST['payable_account']) . ",
+				purchase_account=" . DB::escape($_POST['purchase_account']) . ",
+				payment_discount_account=" . DB::escape($_POST['payment_discount_account']) . ",
+                notes=" . DB::escape($_POST['notes']) . ",
+				tax_group_id=" . DB::escape($_POST['tax_group_id']) . " WHERE supplier_id = " . DB::escape(
 					$_POST['supplier_id']
 				);
 				DBOld::query($sql, "The supplier could not be updated");
@@ -66,39 +66,39 @@
 					'suppliers', 'supplier_id'
 				);
 				$Ajax->activate('supplier_id'); // in case of status change
-				ui_msgs::display_notification(_("Supplier has been updated."));
+				Errors::notice(_("Supplier has been updated."));
 } else {
 				$sql
 				 = "INSERT INTO suppliers (supp_name, supp_ref, address, supp_address, phone, phone2, fax, gst_no, email, website,
 				contact, supp_account_no, bank_account, credit_limit, dimension_id, dimension2_id, curr_code,
 				payment_terms, payable_account, purchase_account, payment_discount_account, notes, tax_group_id)
-				VALUES (" . DBOld::escape($_POST['supp_name']) . ", "
-				 . DBOld::escape($_POST['supp_ref']) . ", "
-				 . DBOld::escape($_POST['address']) . ", "
-				 . DBOld::escape($_POST['supp_address']) . ", "
-				 . DBOld::escape($_POST['phone']) . ", "
-				 . DBOld::escape($_POST['phone2']) . ", "
-				 . DBOld::escape($_POST['fax']) . ", "
-				 . DBOld::escape($_POST['gst_no']) . ", "
-				 . DBOld::escape($_POST['email']) . ", "
-				 . DBOld::escape($_POST['website']) . ", "
-				 . DBOld::escape($_POST['contact']) . ", "
-				 . DBOld::escape($_POST['supp_account_no']) . ", "
-				 . DBOld::escape($_POST['bank_account']) . ", "
+				VALUES (" . DB::escape($_POST['supp_name']) . ", "
+				 . DB::escape($_POST['supp_ref']) . ", "
+				 . DB::escape($_POST['address']) . ", "
+				 . DB::escape($_POST['supp_address']) . ", "
+				 . DB::escape($_POST['phone']) . ", "
+				 . DB::escape($_POST['phone2']) . ", "
+				 . DB::escape($_POST['fax']) . ", "
+				 . DB::escape($_POST['gst_no']) . ", "
+				 . DB::escape($_POST['email']) . ", "
+				 . DB::escape($_POST['website']) . ", "
+				 . DB::escape($_POST['contact']) . ", "
+				 . DB::escape($_POST['supp_account_no']) . ", "
+				 . DB::escape($_POST['bank_account']) . ", "
 				 . input_num('credit_limit', 0) . ", "
-				 . DBOld::escape($_POST['dimension_id']) . ", "
-				 . DBOld::escape($_POST['dimension2_id']) . ", "
-				 . DBOld::escape($_POST['curr_code']) . ", "
-				 . DBOld::escape($_POST['payment_terms']) . ", "
-				 . DBOld::escape($_POST['payable_account']) . ", "
-				 . DBOld::escape($_POST['purchase_account']) . ", "
-				 . DBOld::escape($_POST['payment_discount_account']) . ", "
-				 . DBOld::escape($_POST['notes']) . ", "
-				 . DBOld::escape($_POST['tax_group_id']) . ")";
+				 . DB::escape($_POST['dimension_id']) . ", "
+				 . DB::escape($_POST['dimension2_id']) . ", "
+				 . DB::escape($_POST['curr_code']) . ", "
+				 . DB::escape($_POST['payment_terms']) . ", "
+				 . DB::escape($_POST['payable_account']) . ", "
+				 . DB::escape($_POST['purchase_account']) . ", "
+				 . DB::escape($_POST['payment_discount_account']) . ", "
+				 . DB::escape($_POST['notes']) . ", "
+				 . DB::escape($_POST['tax_group_id']) . ")";
 				DBOld::query($sql, "The supplier could not be added");
 				$_POST['supplier_id'] = DBOld::insert_id();
 				$new_supplier = false;
-				ui_msgs::display_notification(_("A new supplier has been added."));
+				Errors::notice(_("A new supplier has been added."));
 				$Ajax->activate('_page_body');
 			}
 		}
@@ -108,23 +108,23 @@
 		//the link to delete a selected record was clicked instead of the submit button
 		$cancel_delete = 0;
 		// PREVENT DELETES IF DEPENDENT RECORDS IN 'supp_trans' , purch_orders
-		$sql = "SELECT COUNT(*) FROM supp_trans WHERE supplier_id=" . DBOld::escape($_POST['supplier_id']);
+		$sql = "SELECT COUNT(*) FROM supp_trans WHERE supplier_id=" . DB::escape($_POST['supplier_id']);
 		$result = DBOld::query($sql, "check failed");
 		$myrow = DBOld::fetch_row($result);
 		if ($myrow[0] > 0) {
 			$cancel_delete = 1;
-			ui_msgs::display_error(_("Cannot delete this supplier because there are transactions that refer to this supplier."));
+			Errors::error(_("Cannot delete this supplier because there are transactions that refer to this supplier."));
 		} else {
-			$sql = "SELECT COUNT(*) FROM purch_orders WHERE supplier_id=" . DBOld::escape($_POST['supplier_id']);
+			$sql = "SELECT COUNT(*) FROM purch_orders WHERE supplier_id=" . DB::escape($_POST['supplier_id']);
 			$result = DBOld::query($sql, "check failed");
 			$myrow = DBOld::fetch_row($result);
 			if ($myrow[0] > 0) {
 				$cancel_delete = 1;
-				ui_msgs::display_error(_("Cannot delete the supplier record because purchase orders have been created against this supplier."));
+				Errors::error(_("Cannot delete the supplier record because purchase orders have been created against this supplier."));
 			}
 		}
 		if ($cancel_delete == 0) {
-			$sql = "DELETE FROM suppliers WHERE supplier_id=" . DBOld::escape($_POST['supplier_id']);
+			$sql = "DELETE FROM suppliers WHERE supplier_id=" . DB::escape($_POST['supplier_id']);
 			DBOld::query($sql, "check failed");
 			unset($_SESSION['supplier_id']);
 			$new_supplier = true;

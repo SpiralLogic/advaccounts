@@ -39,7 +39,7 @@
 	}
 	$sql
 					= "SELECT bank_trans.* FROM bank_trans
-	WHERE bank_trans.bank_act = " . DBOld::escape($_POST['bank_account']) . "
+	WHERE bank_trans.bank_act = " . DB::escape($_POST['bank_account']) . "
 	AND trans_date >= '$date_after'
 	AND trans_date <= '$date_to'
 	ORDER BY trans_date,bank_trans.id";
@@ -54,7 +54,7 @@
 	);
 	table_header($th);
 	$sql        = "SELECT SUM(amount) FROM bank_trans WHERE bank_act="
-	 . DBOld::escape($_POST['bank_account']) . "
+	 . DB::escape($_POST['bank_account']) . "
 	AND trans_date < '$date_after'";
 	$before_qty = DBOld::query($sql, "The starting balance on hand could not be calculated");
 	start_row("class='inquirybg'");

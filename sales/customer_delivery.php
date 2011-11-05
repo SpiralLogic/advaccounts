@@ -35,7 +35,7 @@
 	if (isset($_GET['AddedID'])) {
 		$dispatch_no = $_GET['AddedID'];
 
-		ui_msgs::display_notification(sprintf(_("Delivery # %d has been entered."), $dispatch_no));
+		Errors::notice(sprintf(_("Delivery # %d has been entered."), $dispatch_no));
 
 		ui_msgs::display_note(ui_view::get_customer_trans_view_str(ST_CUSTDELIVERY, $dispatch_no, _("&View This Delivery")), 0, 1);
 
@@ -56,7 +56,7 @@
 
 		$delivery_no = $_GET['UpdatedID'];
 
-		ui_msgs::display_notification(sprintf(_('Delivery Note # %d has been updated.'), $delivery_no));
+		Errors::notice(sprintf(_('Delivery Note # %d has been updated.'), $delivery_no));
 
 		ui_msgs::display_note(ui_view::get_trans_view_str(ST_CUSTDELIVERY, $delivery_no, _("View this delivery")), 0, 1);
 
@@ -115,7 +115,7 @@
 	elseif (!processing_active()) {
 		/* This page can only be called with an order number for invoicing*/
 
-		ui_msgs::display_error(_("This page can only be opened if an order or delivery note has been selected. Please select it first."));
+		Errors::error(_("This page can only be opened if an order or delivery note has been selected. Please select it first."));
 
 		hyperlink_params("/sales/inquiry/sales_orders_view.php", _("Select a Sales Order to Delivery"), "OutstandingOnly=1");
 
@@ -126,10 +126,10 @@
 		check_edit_conflicts();
 
 		if (!check_quantities()) {
-			ui_msgs::display_error(_("Selected quantity cannot be less than quantity invoiced nor more than quantity	not dispatched on sales order."));
+			Errors::error(_("Selected quantity cannot be less than quantity invoiced nor more than quantity	not dispatched on sales order."));
 		}
 		elseif (!Validation::is_num('ChargeFreightCost', 0)) {
-			ui_msgs::display_error(_("Freight cost cannot be less than zero"));
+			Errors::error(_("Freight cost cannot be less than zero"));
 			ui_view::set_focus('ChargeFreightCost');
 		}
 	}
@@ -140,32 +140,32 @@
 	{
 
 		if (!isset($_POST['DispatchDate']) || !Dates::is_date($_POST['DispatchDate'])) {
-			ui_msgs::display_error(_("The entered date of delivery is invalid."));
+			Errors::error(_("The entered date of delivery is invalid."));
 			ui_view::set_focus('DispatchDate');
 			return false;
 		}
 
 		if (!Dates::is_date_in_fiscalyear($_POST['DispatchDate'])) {
-			ui_msgs::display_error(_("The entered date of delivery is not in fiscal year."));
+			Errors::error(_("The entered date of delivery is not in fiscal year."));
 			ui_view::set_focus('DispatchDate');
 			return false;
 		}
 
 		if (!isset($_POST['due_date']) || !Dates::is_date($_POST['due_date'])) {
-			ui_msgs::display_error(_("The entered dead-line for invoice is invalid."));
+			Errors::error(_("The entered dead-line for invoice is invalid."));
 			ui_view::set_focus('due_date');
 			return false;
 		}
 
 		if ($_SESSION['Items']->trans_no == 0) {
 			if (!Refs::is_valid($_POST['ref'])) {
-				ui_msgs::display_error(_("You must enter a reference."));
+				Errors::error(_("You must enter a reference."));
 				ui_view::set_focus('ref');
 				return false;
 			}
 
 			if ($_SESSION['Items']->trans_no == 0 && !is_new_reference($_POST['ref'], ST_CUSTDELIVERY)) {
-				ui_msgs::display_error(_("The entered reference is already in use."));
+				Errors::error(_("The entered reference is already in use."));
 				ui_view::set_focus('ref');
 				return false;
 			}
@@ -175,13 +175,13 @@
 		}
 
 		if (!Validation::is_num('ChargeFreightCost', 0)) {
-			ui_msgs::display_error(_("The entered shipping value is not numeric."));
+			Errors::error(_("The entered shipping value is not numeric."));
 			ui_view::set_focus('ChargeFreightCost');
 			return false;
 		}
 
 		if ($_SESSION['Items']->has_items_dispatch() == 0 && input_num('ChargeFreightCost') == 0) {
-			ui_msgs::display_error(_("There are no item quantities on this delivery note."));
+			Errors::error(_("There are no item quantities on this delivery note."));
 			return false;
 		}
 
@@ -280,7 +280,7 @@
 					$qoh = get_qoh_on_date($itm->stock_id, $_POST['Location'], $_POST['DispatchDate']);
 
 					if ($itm->qty_dispatched > $qoh) {
-						ui_msgs::display_error(
+						Errors::error(
 							_("The delivery cannot be processed because there is an insufficient quantity for item:") .
 							 " " . $itm->stock_id . " - " . $itm->description
 						);
@@ -400,7 +400,7 @@
 
 	$row = get_customer_to_order($_SESSION['Items']->customer_id);
 	if ($row['dissallow_invoices'] == 1) {
-		ui_msgs::display_error(_("The selected customer account is currently on hold. Please contact the credit control personnel to discuss."));
+		Errors::error(_("The selected customer account is currently on hold. Please contact the credit control personnel to discuss."));
 		end_form();
 		end_page();
 		exit();
@@ -496,7 +496,7 @@
 	end_table(1);
 
 	if ($has_marked) {
-		ui_msgs::display_warning(_("Marked items have insufficient quantities in stock as on day of delivery."), 0, 1, "class='red'");
+		Errors::warning(_("Marked items have insufficient quantities in stock as on day of delivery."), 0, 1, "class='red'");
 	}
 	start_table(Config::get('tables_style2'));
 

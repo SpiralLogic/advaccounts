@@ -42,7 +42,7 @@
 
 		static function setNewMessage($userid, $subject, $message)
 		{
-			$sql    = "INSERT INTO user_messages (user, subject,message,unread) VALUES (" . DBOld::escape($userid) . ", " . DBOld::escape($subject) . ", " . DBOld::escape($message) . ", 1)";
+			$sql    = "INSERT INTO user_messages (user, subject,message,unread) VALUES (" . DB::escape($userid) . ", " . DB::escape($subject) . ", " . DB::escape($message) . ", 1)";
 			$result = DBOld::query($sql, "Couldn't add message for $userid");
 			return $result;
 		}

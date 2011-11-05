@@ -40,7 +40,7 @@
 	{
 		$Ajax = Ajax::instance();
 		if (Input::post('cart_id') && Input::post('cart_id') != $_SESSION[$cartname]->cart_id) {
-			ui_msgs::display_error(_('This edit session has been abandoned by opening sales document in another browser tab. You cannot edit more than one sales document at once.'));
+			Errors::error(_('This edit session has been abandoned by opening sales document in another browser tab. You cannot edit more than one sales document at once.'));
 			$Ajax->activate('_page_body');
 			ui_view::display_footer_exit();
 		}

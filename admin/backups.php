@@ -13,7 +13,7 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	if (get_post('view')) {
 		if (!get_post('backups')) {
-			ui_msgs::display_error(_('Select backup file first.'));
+			Errors::error(_('Select backup file first.'));
 		} else {
 			$filename = BACKUP_PATH . get_post('backups');
 			if (Ajax::in_ajax()) {
@@ -37,7 +37,7 @@
 	check_paths();
 	function check_paths() {
 		if (!file_exists(BACKUP_PATH)) {
-			ui_msgs::display_error(
+			Errors::error(
 				_("Backup paths have not been set correctly.")
 				 . _("Please contact System Administrator.") . "<br>"
 				 . _("cannot find backup directory") . " - " . BACKUP_PATH . "<br>"
@@ -50,12 +50,12 @@
 	function generate_backup($conn, $ext = 'no', $comm = '') {
 		$filename = DB_Utils::backup($conn, $ext, $comm);
 		if ($filename) {
-			ui_msgs::display_notification(
+			Errors::notice(
 				_("Backup successfully generated.") . ' '
 				 . _("Filename") . ": " . $filename
 			);
 		} else {
-			ui_msgs::display_error(_("Database backup failed."));
+			Errors::error(_("Database backup failed."));
 		}
 		return $filename;
 	}
@@ -101,7 +101,7 @@
 
 	function download_file($filename) {
 		if (empty($filename) || !file_exists($filename)) {
-			ui_msgs::display_error(_('Select backup file first.'));
+			Errors::error(_('Select backup file first.'));
 			return false;
 		}
 		$saveasname = basename($filename);
@@ -122,18 +122,18 @@
 	;
 	if (get_post('restore')) {
 		if (DB_Utils::import(BACKUP_PATH . get_post('backups'), $conn)) {
-			ui_msgs::display_notification(_("Restore backup completed."));
+			Errors::notice(_("Restore backup completed."));
 		}
 	}
 	if (get_post('deldump')) {
 		if (unlink(BACKUP_PATH . get_post('backups'))) {
-			ui_msgs::display_notification(
+			Errors::notice(
 				_("File successfully deleted.") . " "
 				 . _("Filename") . ": " . get_post('backups')
 			);
 			$Ajax->activate('backups');
 		} else {
-			ui_msgs::display_error(_("Can't delete backup file."));
+			Errors::error(_("Can't delete backup file."));
 		}
 	}
 	;
@@ -141,15 +141,15 @@
 		$tmpname = $_FILES['uploadfile']['tmp_name'];
 		$fname = $_FILES['uploadfile']['name'];
 		if (!preg_match("/.sql(.zip|.gz)?$/", $fname)) {
-			ui_msgs::display_error(_("You can only upload *.sql backup files"));
+			Errors::error(_("You can only upload *.sql backup files"));
 		}
 		elseif (is_uploaded_file($tmpname)) {
 			rename($tmpname, BACKUP_PATH . $fname);
-			ui_msgs::display_notification("File uploaded to backup directory");
+			Errors::notice("File uploaded to backup directory");
 			$Ajax->activate('backups');
 		} else
 		{
-			ui_msgs::display_error(_("File was not uploaded into the system."));
+			Errors::error(_("File was not uploaded into the system."));
 		}
 	}
 	//-------------------------------------------------------------------------------

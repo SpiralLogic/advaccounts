@@ -21,20 +21,20 @@
 	{
 		$selected_id = $_POST["selected_id"];
 } else {
-		ui_msgs::display_warning("This page must be called with a work order reference");
+		Errors::warning("This page must be called with a work order reference");
 		exit;
 	}
 	//------------------------------------------------------------------------------------
 	function can_process($myrow)
 	{
 		if ($myrow['released']) {
-			ui_msgs::display_error(_("This work order has already been released."));
+			Errors::error(_("This work order has already been released."));
 			JS::set_focus('released');
 			return false;
 		}
 		// make sure item has components
 		if (!Manufacturing::has_bom($myrow['stock_id'])) {
-			ui_msgs::display_error(_("This Work Order cannot be released. The selected item to manufacture does not have a bom."));
+			Errors::error(_("This Work Order cannot be released. The selected item to manufacture does not have a bom."));
 			JS::set_focus('stock_id');
 			return false;
 		}
@@ -44,7 +44,7 @@
 	//------------------------------------------------------------------------------------
 	if (isset($_POST['release'])) {
 		release_work_order($selected_id, $_POST['released_date'], $_POST['memo_']);
-		ui_msgs::display_notification(_("The work order has been released to manufacturing."));
+		Errors::notice(_("The work order has been released to manufacturing."));
 		ui_msgs::display_note(ui_view::get_trans_view_str(ST_WORKORDER, $selected_id, _("View this Work Order")));
 		hyperlink_no_params("search_work_orders.php", _("Select another &work order"));
 		$Ajax->activate('_page_body');

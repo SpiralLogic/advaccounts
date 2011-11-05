@@ -129,7 +129,7 @@
 			if (count($sql_errors)) {
 				// display first failure message; the rest are probably derivative
 				$err = $sql_errors[0];
-				ui_msgs::display_error(sprintf(_("SQL script execution failed in line %d: %s"),
+				Errors::error(sprintf(_("SQL script execution failed in line %d: %s"),
 																			 $err[1], $err[0]));
 				return false;
 			} else
@@ -305,7 +305,7 @@
 							// run through each field
 							for ($k = 0; $k < $nf = DBOld::num_fields($res2); $k++)
 							{
-								$out .= DBOld::escape($row2[$k], $field_null[$k]);
+								$out .= DB::escape($row2[$k], $field_null[$k]);
 								if ($k < ($nf - 1)) {
 									$out .= ", ";
 								}

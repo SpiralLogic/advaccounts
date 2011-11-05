@@ -57,13 +57,13 @@
 		global $Mode, $selected_kit;
 		$Ajax = Ajax::instance();
 		if (!Validation::is_num('quantity', 0)) {
-			ui_msgs::display_error(_("The quantity entered must be numeric and greater than zero."));
+			Errors::error(_("The quantity entered must be numeric and greater than zero."));
 			JS::set_focus('quantity');
 			return;
 		}
 		elseif ($_POST['description'] == '')
 		{
-			ui_msgs::display_error(_("Item code description cannot be empty."));
+			Errors::error(_("Item code description cannot be empty."));
 			JS::set_focus('description');
 			return;
 		}
@@ -73,25 +73,25 @@
 				$kit = get_item_kit($_POST['kit_code']);
 				if (DBOld::num_rows($kit)) {
 					$input_error = 1;
-					ui_msgs::display_error(_("This item code is already assigned to stock item or sale kit."));
+					Errors::error(_("This item code is already assigned to stock item or sale kit."));
 					JS::set_focus('kit_code');
 					return;
 				}
 				if (get_post('kit_code') == '') {
-					ui_msgs::display_error(_("Kit/alias code cannot be empty."));
+					Errors::error(_("Kit/alias code cannot be empty."));
 					JS::set_focus('kit_code');
 					return;
 				}
 			}
 		}
 		if (check_item_in_kit($selected_item, $kit_code, $_POST['component'], true)) {
-			ui_msgs::display_error(_("The selected component contains directly or on any lower level the kit under edition. Recursive kits are not allowed."));
+			Errors::error(_("The selected component contains directly or on any lower level the kit under edition. Recursive kits are not allowed."));
 			JS::set_focus('component');
 			return;
 		}
 		/*Now check to see that the component is not already in the kit */
 		if (check_item_in_kit($selected_item, $kit_code, $_POST['component'])) {
-			ui_msgs::display_error(_("The selected component is already in this kit. You can modify it's quantity but it cannot appear more than once in the same kit."));
+			Errors::error(_("The selected component is already in this kit. You can modify it's quantity but it cannot appear more than once in the same kit."));
 			JS::set_focus('component');
 			return;
 		}
@@ -107,14 +107,14 @@
 				$kit_code, get_post('component'), get_post('description'),
 				get_post('category'), input_num('quantity'), 0
 			);
-			ui_msgs::display_notification($msg);
+			Errors::notice($msg);
 		} else {
 			$props = get_kit_props($_POST['item_code']);
 			update_item_code(
 				$selected_item, $kit_code, get_post('component'),
 				$props['description'], $props['category_id'], input_num('quantity'), 0
 			);
-			ui_msgs::display_notification(_("Component of selected kit has been updated."));
+			Errors::notice(_("Component of selected kit has been updated."));
 		}
 		$Mode = 'RESET';
 		$Ajax->activate('_page_body');
@@ -123,7 +123,7 @@
 	//--------------------------------------------------------------------------------------------------
 	if (get_post('update_name')) {
 		update_kit_props(get_post('item_code'), get_post('description'), get_post('category'));
-		ui_msgs::display_notification(_('Kit common properties has been updated'));
+		Errors::notice(_('Kit common properties has been updated'));
 		$Ajax->activate('_page_body');
 	}
 	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
@@ -146,10 +146,10 @@
 					$msg .= ',';
 				}
 			}
-			ui_msgs::display_error($msg);
+			Errors::error($msg);
 		} else {
 			delete_item_code($selected_id);
-			ui_msgs::display_notification(_("The component item has been deleted from this bom"));
+			Errors::notice(_("The component item has been deleted from this bom"));
 			$Mode = 'RESET';
 		}
 	}

@@ -17,17 +17,17 @@
 	function can_process() {
 		global $selected_id;
 		if (!input_num('id')) {
-			ui_msgs::display_error(_("The account id must be an integer and cannot be empty."));
+			Errors::error(_("The account id must be an integer and cannot be empty."));
 			JS::set_focus('id');
 			return false;
 		}
 		if (strlen($_POST['name']) == 0) {
-			ui_msgs::display_error(_("The account group name cannot be empty."));
+			Errors::error(_("The account group name cannot be empty."));
 			JS::set_focus('name');
 			return false;
 		}
 		if (isset($selected_id) && ($selected_id == $_POST['parent'])) {
-			ui_msgs::display_error(_("You cannot set an account group to be a subgroup of itself."));
+			Errors::error(_("You cannot set an account group to be a subgroup of itself."));
 			return false;
 		}
 		return true;
@@ -38,11 +38,11 @@
 		if (can_process()) {
 			if ($selected_id != -1) {
 				if (update_account_type($selected_id, $_POST['name'], $_POST['class_id'], $_POST['parent'])) {
-					ui_msgs::display_notification(_('Selected account type has been updated'));
+					Errors::notice(_('Selected account type has been updated'));
 				}
 } else {
 				if (add_account_type($_POST['id'], $_POST['name'], $_POST['class_id'], $_POST['parent'])) {
-					ui_msgs::display_notification(_('New account type has been added'));
+					Errors::notice(_('New account type has been added'));
 					$Mode = 'RESET';
 				}
 			}
@@ -53,14 +53,14 @@
 		if ($selected_id == -1) {
 			return false;
 		}
-		$type = DBOld::escape($selected_id);
+		$type = DB::escape($selected_id);
 		$sql
 		 = "SELECT COUNT(*) FROM chart_master
 		WHERE account_type=$type";
 		$result = DBOld::query($sql, "could not query chart master");
 		$myrow = DBOld::fetch_row($result);
 		if ($myrow[0] > 0) {
-			ui_msgs::display_error(_("Cannot delete this account group because GL accounts have been created referring to it."));
+			Errors::error(_("Cannot delete this account group because GL accounts have been created referring to it."));
 			return false;
 		}
 		$sql
@@ -69,7 +69,7 @@
 		$result = DBOld::query($sql, "could not query chart types");
 		$myrow = DBOld::fetch_row($result);
 		if ($myrow[0] > 0) {
-			ui_msgs::display_error(_("Cannot delete this account group because GL account groups have been created referring to it."));
+			Errors::error(_("Cannot delete this account group because GL account groups have been created referring to it."));
 			return false;
 		}
 		return true;
@@ -79,7 +79,7 @@
 	if ($Mode == 'Delete') {
 		if (can_delete($selected_id)) {
 			delete_account_type($selected_id);
-			ui_msgs::display_notification(_('Selected account group has been deleted'));
+			Errors::notice(_('Selected account group has been deleted'));
 		}
 		$Mode = 'RESET';
 	}

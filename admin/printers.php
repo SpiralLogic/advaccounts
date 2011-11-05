@@ -18,17 +18,17 @@
 		$error = 0;
 		if (empty($_POST['name'])) {
 			$error = 1;
-			ui_msgs::display_error(_("Printer name cannot be empty."));
+			Errors::error(_("Printer name cannot be empty."));
 			JS::set_focus('name');
 		}
 		elseif (empty($_POST['host']))
 		{
-			ui_msgs::display_notification(_("You have selected printing to server at user IP."));
+			Errors::notice(_("You have selected printing to server at user IP."));
 		}
 		elseif (!Validation::is_num('tout', 0, 60))
 		{
 			$error = 1;
-			ui_msgs::display_error(_("Timeout cannot be less than zero nor longer than 60 (sec)."));
+			Errors::error(_("Timeout cannot be less than zero nor longer than 60 (sec)."));
 			JS::set_focus('tout');
 		}
 		if ($error != 1) {
@@ -37,7 +37,7 @@
 				get_post('queue'), get_post('host'), input_num('port', 0),
 				input_num('tout', 0)
 			);
-			ui_msgs::display_notification(
+			Errors::notice(
 				$selected_id == -1 ?
 				 _('New printer definition has been created')
 				 : _('Selected printer definition has been updated')
@@ -47,15 +47,15 @@
 	}
 	if ($Mode == 'Delete') {
 		// PREVENT DELETES IF DEPENDENT RECORDS IN print_profiles
-		$sql = "SELECT COUNT(*) FROM print_profiles WHERE printer = " . DBOld::escape($selected_id);
+		$sql = "SELECT COUNT(*) FROM print_profiles WHERE printer = " . DB::escape($selected_id);
 		$result = DBOld::query($sql, "check printers relations failed");
 		$myrow = DBOld::fetch_row($result);
 		if ($myrow[0] > 0) {
-			ui_msgs::display_error(_("Cannot delete this printer definition, because print profile have been created using it."));
+			Errors::error(_("Cannot delete this printer definition, because print profile have been created using it."));
 		} else {
-			$sql = "DELETE FROM printers WHERE id=" . DBOld::escape($selected_id);
+			$sql = "DELETE FROM printers WHERE id=" . DB::escape($selected_id);
 			DBOld::query($sql, "could not delete printer definition");
-			ui_msgs::display_notification(_('Selected printer definition has been deleted'));
+			Errors::notice(_('Selected printer definition has been deleted'));
 		}
 		$Mode = 'RESET';
 	}

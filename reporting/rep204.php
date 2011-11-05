@@ -46,7 +46,7 @@
 		AND qty_recd-quantity_inv <>0 ";
 
 		if ($fromsupp != ALL_NUMERIC)
-			$sql .= "AND grn_batch.supplier_id =" . DBOld::escape($fromsupp) . " ";
+			$sql .= "AND grn_batch.supplier_id =" . DB::escape($fromsupp) . " ";
 		$sql .= "ORDER BY grn_batch.supplier_id,
 			grn_batch.id";
 

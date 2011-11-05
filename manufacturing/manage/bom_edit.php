@@ -49,7 +49,7 @@
 	function check_for_recursive_bom($ultimate_parent, $component_to_check) {
 		/* returns true ie 1 if the bom contains the parent part as a component
 						ie the bom is recursive otherwise false ie 0 */
-		$sql = "SELECT component FROM bom WHERE parent=" . DBOld::escape($component_to_check);
+		$sql = "SELECT component FROM bom WHERE parent=" . DB::escape($component_to_check);
 		$result = DBOld::query($sql, "could not check recursive bom");
 		if ($result != 0) {
 			while ($myrow = DBOld::fetch_row($result))
@@ -95,19 +95,19 @@
 	//--------------------------------------------------------------------------------------------------
 	function on_submit($selected_parent, $selected_component = -1) {
 		if (!Validation::is_num('quantity', 0)) {
-			ui_msgs::display_error(_("The quantity entered must be numeric and greater than zero."));
+			Errors::error(_("The quantity entered must be numeric and greater than zero."));
 			JS::set_focus('quantity');
 			return;
 		}
 		if ($selected_component != -1) {
-			$sql = "UPDATE bom SET workcentre_added=" . DBOld::escape($_POST['workcentre_added'])
-			 . ",loc_code=" . DBOld::escape($_POST['loc_code']) . ",
+			$sql = "UPDATE bom SET workcentre_added=" . DB::escape($_POST['workcentre_added'])
+			 . ",loc_code=" . DB::escape($_POST['loc_code']) . ",
 			quantity= " . input_num('quantity') . "
-			WHERE parent=" . DBOld::escape($selected_parent) . "
-			AND id=" . DBOld::escape($selected_component);
+			WHERE parent=" . DB::escape($selected_parent) . "
+			AND id=" . DB::escape($selected_component);
 			Errors::check_db_error("Could not update this bom component", $sql);
 			DBOld::query($sql, "could not update bom");
-			ui_msgs::display_notification(_('Selected component has been updated'));
+			Errors::notice(_('Selected component has been updated'));
 			$Mode = 'RESET';
 		} else {
 			/*Selected component is null cos no item selected on first time round
@@ -118,37 +118,37 @@
 				/*Now check to see that the component is not already on the bom */
 				$sql
 				 = "SELECT component FROM bom
-				WHERE parent=" . DBOld::escape($selected_parent) . "
-				AND component=" . DBOld::escape($_POST['component']) . "
-				AND workcentre_added=" . DBOld::escape($_POST['workcentre_added']) . "
-				AND loc_code=" . DBOld::escape($_POST['loc_code']);
+				WHERE parent=" . DB::escape($selected_parent) . "
+				AND component=" . DB::escape($_POST['component']) . "
+				AND workcentre_added=" . DB::escape($_POST['workcentre_added']) . "
+				AND loc_code=" . DB::escape($_POST['loc_code']);
 				$result = DBOld::query($sql, "check failed");
 				if (DBOld::num_rows($result) == 0) {
 					$sql
 					 = "INSERT INTO bom (parent, component, workcentre_added, loc_code, quantity)
-					VALUES (" . DBOld::escape($selected_parent) . ", " . DBOld::escape($_POST['component']) . ","
-					 . DBOld::escape($_POST['workcentre_added']) . ", " . DBOld::escape($_POST['loc_code']) . ", "
+					VALUES (" . DB::escape($selected_parent) . ", " . DB::escape($_POST['component']) . ","
+					 . DB::escape($_POST['workcentre_added']) . ", " . DB::escape($_POST['loc_code']) . ", "
 					 . input_num('quantity') . ")";
 					DBOld::query($sql, "check failed");
-					ui_msgs::display_notification(_("A new component part has been added to the bill of material for this item."));
+					Errors::notice(_("A new component part has been added to the bill of material for this item."));
 					$Mode = 'RESET';
 } else {
 					/*The component must already be on the bom */
-					ui_msgs::display_error(_("The selected component is already on this bom. You can modify it's quantity but it cannot appear more than once on the same bom."));
+					Errors::error(_("The selected component is already on this bom. You can modify it's quantity but it cannot appear more than once on the same bom."));
 				}
 			} //end of if its not a recursive bom
 			else
 			{
-				ui_msgs::display_error(_("The selected component is a parent of the current item. Recursive BOMs are not allowed."));
+				Errors::error(_("The selected component is a parent of the current item. Recursive BOMs are not allowed."));
 			}
 		}
 	}
 
 	//--------------------------------------------------------------------------------------------------
 	if ($Mode == 'Delete') {
-		$sql = "DELETE FROM bom WHERE id=" . DBOld::escape($selected_id);
+		$sql = "DELETE FROM bom WHERE id=" . DB::escape($selected_id);
 		DBOld::query($sql, "Could not delete this bom components");
-		ui_msgs::display_notification(_("The component item has been deleted from this bom"));
+		Errors::notice(_("The component item has been deleted from this bom"));
 		$Mode = 'RESET';
 	}
 	if ($Mode == 'RESET') {
@@ -183,7 +183,7 @@
 				//editing a selected component from the link to the line item
 				$sql = "SELECT bom.*,stock_master.description FROM "
 				 . "bom,stock_master
-				WHERE id=" . DBOld::escape($selected_id) . "
+				WHERE id=" . DB::escape($selected_id) . "
 				AND stock_master.stock_id=bom.component";
 				$result = DBOld::query($sql, "could not get bom");
 				$myrow = DBOld::fetch($result);

@@ -70,7 +70,7 @@
 				}
 			}
 			if ($errors) {
-				ui_msgs::display_warning(_("Some transactions journal GL postings were not indexed due to lack of audit trail record."));
+				Errors::warning(_("Some transactions journal GL postings were not indexed due to lack of audit trail record."));
 			}
 		}
 
@@ -103,8 +103,8 @@
 		public static function is_closed_trans($type, $trans_no)
 		{
 			$sql = "SELECT	gl_seq  FROM audit_trail"
-			 . " WHERE type=" . DBOld::escape($type)
-			 . " AND trans_no=" . DBOld::escape($trans_no)
+			 . " WHERE type=" . DB::escape($type)
+			 . " AND trans_no=" . DB::escape($trans_no)
 			 . " AND gl_seq>0";
 			$res = DBOld::query($sql, "Cannot check transaction");
 			return DBOld::num_rows($res);

@@ -147,7 +147,7 @@
 		$pastdue2 = _('Over') . " " . $PastDueDays2 . " " . _('Days');
 		$sql = "SELECT supplier_id, supp_name AS name, curr_code FROM suppliers";
 		if ($fromsupp != ALL_NUMERIC) {
-			$sql .= " WHERE supplier_id=" . DBOld::escape($fromsupp);
+			$sql .= " WHERE supplier_id=" . DB::escape($fromsupp);
 		}
 		$sql .= " ORDER BY supp_name";
 		$result = DBOld::query($sql, "The suppliers could not be retrieved");

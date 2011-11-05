@@ -27,7 +27,7 @@
 		}
 
 		protected function _read($id = 0) {
-			$sql = "SELECT * FROM stock_master WHERE id = " . DBOld::escape($id);
+			$sql = "SELECT * FROM stock_master WHERE id = " . DB::escape($id);
 			$result = DBOld::query($sql, 'Could not retrieve stock information');
 			if (DBOld::num_rows($result) == 1) {
 				$myrow = DBOld::fetch_assoc($result);
@@ -76,18 +76,18 @@
 				$this->_saveNew();
 			}
 			DBOld::begin_transaction();
-			$sql = "UPDATE stock_master SET description=" . DBOld::escape($this->name) . ",
-					long_description=" . DBOld::escape($this->description) . ",
-					category_id=" . DBOld::escape($this->category_id) . ",
-					stock_id=" . DBOld::escape($this->stock_id) . ",
-					units=" . DBOld::escape($this->units) . "
-		            WHERE id = " . DBOld::escape($this->id);
+			$sql = "UPDATE stock_master SET description=" . DB::escape($this->name) . ",
+					long_description=" . DB::escape($this->description) . ",
+					category_id=" . DB::escape($this->category_id) . ",
+					stock_id=" . DB::escape($this->stock_id) . ",
+					units=" . DB::escape($this->units) . "
+		            WHERE id = " . DB::escape($this->id);
 			DBOld::query($sql, "The item could not be updated");
-			$sql = "UPDATE item_codes SET stock_id=" . DBOld::escape($this->stock_id) . ",
-							category_id=" . DBOld::escape($this->category_id) . ",
-							description=" . DBOld::escape($this->name) . ",
-							item_code=" . DBOld::escape($this->stock_id) . "
-							WHERE stockid = " . DBOld::escape($this->id);
+			$sql = "UPDATE item_codes SET stock_id=" . DB::escape($this->stock_id) . ",
+							category_id=" . DB::escape($this->category_id) . ",
+							description=" . DB::escape($this->name) . ",
+							item_code=" . DB::escape($this->stock_id) . "
+							WHERE stockid = " . DB::escape($this->id);
 			DBOld::query($sql, "The item could not be updated");
 			DBOld::commit_transaction();
 			return $this->_status(true, 'Processing', "Item has been updated.");
@@ -134,7 +134,7 @@
 			LEFT JOIN (SELECT SUM(purch_order_details.quantity_ordered - purch_order_details.quantity_received) AS onorder , purch_orders.into_stock_location AS loc_code
 				FROM purch_order_details, purch_orders	WHERE purch_order_details.order_no= purch_orders.order_no AND purch_order_details.stockid = $id
 				GROUP BY purch_orders.into_stock_location) p ON p.loc_code=l.loc_code";
-			if ($location !== null) $sql .= " WHERE l.loc_code=" . DBOld::escape($location);
+			if ($location !== null) $sql .= " WHERE l.loc_code=" . DB::escape($location);
 			$result = DBOld::query($sql, 'Could not get item stock levels');
 			if ($location !== null) return DBOld::fetch_assoc($result);
 			while ($row = DBOld::fetch_assoc($result)) {
@@ -144,7 +144,7 @@
 		}
 
 		function getStockOnOrder() {
-			$sql = "SELECT SUM(sales_order_details.quantity - sales_order_details.qty_sent) AS demand , sales_orders.from_stk_loc AS loc_code FROM sales_order_details, sales_orders WHERE sales_order_details.order_no= sales_orders.order_no AND sales_orders.trans_type=30 AND sales_orders.trans_type=sales_order_details.trans_type AND sales_order_details.stockid = " . DBOld::escape($this->id) . "' GROUP BY sales_orders.from_stk_loc";
+			$sql = "SELECT SUM(sales_order_details.quantity - sales_order_details.qty_sent) AS demand , sales_orders.from_stk_loc AS loc_code FROM sales_order_details, sales_orders WHERE sales_order_details.order_no= sales_orders.order_no AND sales_orders.trans_type=30 AND sales_orders.trans_type=sales_order_details.trans_type AND sales_order_details.stockid = " . DB::escape($this->id) . "' GROUP BY sales_orders.from_stk_loc";
 
 			$result = DBOld::query($sql, "No transactions were returned");
 			$row = DBOld::fetch($result);
@@ -155,7 +155,7 @@
 		}
 
 		static function search($term) {
-			$term = DBOld::escape("%$term%");
+			$term = DB::escape("%$term%");
 			$sql = "SELECT stock_id AS id, description AS label, stock_id AS value FROM stock_master WHERE stock_id LIKE $term OR description LIKE $term LIMIT 200";
 			$result = DBOld::query($sql, 'Couldn\'t Get Items');
 			$data = '';

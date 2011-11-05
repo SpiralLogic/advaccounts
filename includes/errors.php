@@ -9,21 +9,17 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	class Warning_Exception extends Adv_Exception {};
-	class Notice_Exception extends Adv_Exception {};
-	class Error_Exception extends Adv_Exception {};
 
 
-	class Errors
-	{
+	class Errors {
 		const DB_DUPLICATE_ERROR_CODE = 1062;
 		public static $messages = array(); // container for system messages
+		public static $fatal = false; // container for system messages
 		public static $before_box = ''; // temporary container for output html data before error box
 		//-----------------------------------------------------------------------------
 		//    Error handler - collects all php/user messages for
 		//    display in message box.
-		static function init()
-		{
+		static function init() {
 			set_error_handler('adv_error_handler');
 			set_exception_handler('adv_exception_handler');
 			if (Config::get('debug') && CurrentUser::instance()->user == 1) {
@@ -40,26 +36,42 @@
 			}
 			// colect all error msgs
 		}
+		static function error($msg) {
+					trigger_error($msg, E_USER_ERROR);
+				}
 
-		static function handler($errno, $errstr, $file, $line)
-		{
+				static function notice($msg) {
+					trigger_error($msg, E_USER_NOTICE);
+				}
+
+				static function warning($msg) {
+					trigger_error($msg, E_USER_WARNING);
+				}
+
+		static function handler($type, $message, $file, $line) {
 			// skip well known warnings we don't care about.
 			// Please use restrainedly to not risk loss of important messages
 			$excluded_warnings = array('html_entity_decode', 'htmlspecialchars');
 			foreach ($excluded_warnings as $ref)
 			{
-				if (strpos($errstr, $ref) !== false) {
+				if (strpos($message, $ref) !== false) {
 					return true;
 				}
 			}
 			// error_reporting==0 when messages are set off with @
-			if ($errno & error_reporting()) {
-				static::$messages[] = array('error_no'	 => $errno,
-																		'error_str'	=> $errstr,
-																		'error_file' => $file,
-																		'error_line' => $line);
-			} else if ($errno & ~E_NOTICE) { // log all not displayed messages
-				error_log(CurrentUser::instance()->loginname . ':' . basename($file) . ":$line: $errstr");
+			$last_error = error_get_last();
+
+			if (!empty($last_error)) {
+				extract($last_error);
+			}
+
+			if ($type & error_reporting()) {
+				static::$messages[] = array('type' => $type,
+					'message' => $message,
+					'file' => $file,
+					'line' => $line);
+			} else if ($type & ~E_NOTICE) { // log all not displayed messages
+				error_log(CurrentUser::instance()->loginname . ':' . basename($file) . ":$line: $message");
 			}
 			return true;
 		}
@@ -67,44 +79,42 @@
 		//------------------------------------------------------------------------------
 		//	Formats system messages before insert them into message <div>
 		// FIX center is unused now
-		static function format()
-		{
+		static function format() {
 			$msg_class = array(
-				E_USER_ERROR	 => 'err_msg',
+				E_USER_ERROR => 'err_msg',
 				E_USER_WARNING => 'warn_msg',
-				E_USER_NOTICE	=> 'note_msg'
+				E_USER_NOTICE => 'note_msg'
 			);
-			$type      = E_USER_NOTICE;
-			$content   = '';
+			$content = '';
 			if (PATH_TO_ROOT == '.' && count(static::$messages)) {
 				return '';
 			}
 			if (count(static::$messages) == 0) {
 				return;
 			}
-			foreach (static::$messages as $cnt => $msg) {
-				if ($msg['error_no'] > $type) {
+			foreach (static::$messages as $msg) {
+				$type = $msg['type'];
+				if ($msg['type'] > E_USER_NOTICE) {
 					continue;
 				}
-				if ($msg['error_no'] < $type) {
-					$type = ($msg['error_no'] == E_USER_WARNING) ? E_USER_WARNING : E_USER_ERROR; // php or user errors
+				$str = $msg['message'];
+				if ($msg['type'] < E_USER_ERROR && $msg['type'] != null) {
+					$str .= ' ' . _('in file') . ': ' . $msg['file'] . ' ' . _('at line ') . $msg['line'];
+					FB::log($msg, 'ERROR');
+					$type = E_USER_ERROR;
+				} else {
+					FB::log($msg, 'USER');
 				}
-				$str = $msg['error_str'];
-				if ($msg['error_no'] < E_USER_ERROR && $msg['error_no'] != null) {
-					$str .= ' ' . _('in file') . ': ' . $msg['error_file'] . ' ' . _('at line ') . $msg['error_line'];
-				}
-				$content .= ($cnt ? '<hr>' : '') . $str;
+				$class = $msg_class[$type] ? : $msg_class[E_USER_NOTICE];
+				$content .= "<div class='$class'>$str</div>";
 			}
-			$class   = $msg_class[$type];
-			$content = "<div class='$class'>$content</div>";
 			return $content;
 		}
 
 		//-----------------------------------------------------------------------------
 		// Error box <div> element.
 		//
-		static function error_box()
-		{
+		static function error_box() {
 			echo "<div id='msgbox'>";
 			static::$before_box = ob_get_clean(); // save html content before error box
 			ob_start('adv_ob_flush_handler');
@@ -114,15 +124,14 @@
 		/*
 						 Helper to avoid sparse log notices.
 					 */
-		static function show_db_error($msg, $sql_statement = null, $exit = true)
-		{
-			$db       = DBOld::getInstance();
-			$warning  = $msg == null;
+		static function show_db_error($msg, $sql_statement = null, $exit = true) {
+			$db = DBOld::getInstance();
+			$warning = $msg == null;
 			$db_error = DBOld::error_no();
 			//	$str = "<span class='errortext'><b>" . _("DATABASE ERROR :") . "</b> $msg</span><br>";
 			if ($warning) {
 				$str = "<b>" . _("Debug mode database warning:") . "</b><br>";
-} else {
+			} else {
 				$str = "<b>" . _("DATABASE ERROR :") . "</b> $msg<br>";
 			}
 			if ($db_error != 0) {
@@ -145,17 +154,15 @@
 			}
 		}
 
-		static function nice_db_error($db_error)
-		{
+		static function nice_db_error($db_error) {
 			if ($db_error == static::DB_DUPLICATE_ERROR_CODE) {
-				ui_msgs::display_error(_("The entered information is a duplicate. Please go back and enter different values."));
+				Errors::error(_("The entered information is a duplicate. Please go back and enter different values."));
 				return true;
 			}
 			return false;
 		}
 
-		static function check_db_error($msg, $sql_statement, $exit_if_error = true, $rollback_if_error = true)
-		{
+		static function check_db_error($msg, $sql_statement, $exit_if_error = true, $rollback_if_error = true) {
 			$db_error = DBOld::error_no();
 			if ($db_error != 0) {
 				if (CurrentUser::instance()->user == 1 && (Config::get('debug') || !Errors::nice_db_error($db_error))) {

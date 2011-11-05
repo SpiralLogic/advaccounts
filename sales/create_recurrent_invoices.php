@@ -16,7 +16,7 @@
 	Page::start(_($help_context = "Create and Print Recurrent Invoices"));
 	function set_last_sent($id, $date) {
 		$date = Dates::date2sql($date);
-		$sql = "UPDATE recurrent_invoices SET last_sent='$date' WHERE id=" . DBOld::escape($id);
+		$sql = "UPDATE recurrent_invoices SET last_sent='$date' WHERE id=" . DB::escape($id);
 		DBOld::query($sql, "The recurrent invoice could not be updated or added");
 	}
 
@@ -50,7 +50,7 @@
 		$date = Dates::Today();
 		if (Dates::is_date_in_fiscalyear($date)) {
 			$invs = array();
-			$sql = "SELECT * FROM recurrent_invoices WHERE id=" . DBOld::escape($_GET['recurrent']);
+			$sql = "SELECT * FROM recurrent_invoices WHERE id=" . DB::escape($_GET['recurrent']);
 			$result = DBOld::query($sql, "could not get recurrent invoice");
 			$myrow = DBOld::fetch($result);
 			if ($myrow['debtor_no'] == 0) {
@@ -72,7 +72,7 @@
 } else {
 				$min = $max = 0;
 			}
-			ui_msgs::display_notification(sprintf(_("%s recurrent invoice(s) created, # $min - # $max."), count($invs)));
+			Errors::notice(sprintf(_("%s recurrent invoice(s) created, # $min - # $max."), count($invs)));
 			if (count($invs) > 0) {
 				$ar = array(
 					'PARAM_0' => $min . "-" . ST_SALESINVOICE,
@@ -83,17 +83,17 @@
 					'PARAM_5' => "",
 					'PARAM_6' => ST_SALESINVOICE
 				);
-				ui_msgs::display_warning(Reporting::print_link(_("&Print Recurrent Invoices # $min - # $max"), 107, $ar), 0, 1);
+				Errors::warning(Reporting::print_link(_("&Print Recurrent Invoices # $min - # $max"), 107, $ar), 0, 1);
 				$ar['PARAM_3'] = 1;
-				ui_msgs::display_warning(Reporting::print_link(_("&Email Recurrent Invoices # $min - # $max"), 107, $ar), 0, 1);
+				Errors::warning(Reporting::print_link(_("&Email Recurrent Invoices # $min - # $max"), 107, $ar), 0, 1);
 			}
 		} else {
-			ui_msgs::display_error(_("The entered date is not in fiscal year."));
+			Errors::error(_("The entered date is not in fiscal year."));
 		}
 	}
 	//-------------------------------------------------------------------------------------------------
 	function get_sales_group_name($group_no) {
-		$sql = "SELECT description FROM groups WHERE id = " . DBOld::escape($group_no);
+		$sql = "SELECT description FROM groups WHERE id = " . DB::escape($group_no);
 		$result = DBOld::query($sql, "could not get group");
 		$row = DBOld::fetch($result);
 		return $row[0];
@@ -156,9 +156,9 @@
 	}
 	end_table();
 	if ($due) {
-		ui_msgs::display_warning(_("Marked items are due."), 1, 0, "class='overduefg'");
+		Errors::warning(_("Marked items are due."), 1, 0, "class='overduefg'");
 } else {
-		ui_msgs::display_warning(_("No recurrent invoices are due."), 1, 0);
+		Errors::warning(_("No recurrent invoices are due."), 1, 0);
 	}
 	echo '<br>';
 	end_page();

@@ -17,38 +17,38 @@
 		$input_error = 0;
 		if (strlen($_POST['description']) == 0) {
 			$input_error = 1;
-			ui_msgs::display_error(_("The area description cannot be empty."));
+			Errors::error(_("The area description cannot be empty."));
 			JS::set_focus('description');
 		}
 		if ($input_error != 1) {
 			if ($selected_id != -1) {
-				$sql  = "UPDATE groups SET description=" . DBOld::escape(
+				$sql  = "UPDATE groups SET description=" . DB::escape(
 					$_POST['description']
-				) . " WHERE id = " . DBOld::escape($selected_id);
+				) . " WHERE id = " . DB::escape($selected_id);
 				$note = _('Selected sales group has been updated');
 } else {
-				$sql  = "INSERT INTO groups (description) VALUES (" . DBOld::escape($_POST['description']) . ")";
+				$sql  = "INSERT INTO groups (description) VALUES (" . DB::escape($_POST['description']) . ")";
 				$note = _('New sales group has been added');
 			}
 			DBOld::query($sql, "The sales group could not be updated or added");
-			ui_msgs::display_notification($note);
+			Errors::notice($note);
 			$Mode = 'RESET';
 		}
 	}
 	if ($Mode == 'Delete') {
 		$cancel_delete = 0;
 		// PREVENT DELETES IF DEPENDENT RECORDS IN 'debtors_master'
-		$sql    = "SELECT COUNT(*) FROM cust_branch WHERE group_no=" . DBOld::escape($selected_id);
+		$sql    = "SELECT COUNT(*) FROM cust_branch WHERE group_no=" . DB::escape($selected_id);
 		$result = DBOld::query($sql, "check failed");
 		$myrow  = DBOld::fetch_row($result);
 		if ($myrow[0] > 0) {
 			$cancel_delete = 1;
-			ui_msgs::display_error(_("Cannot delete this group because customers have been created using this group."));
+			Errors::error(_("Cannot delete this group because customers have been created using this group."));
 		}
 		if ($cancel_delete == 0) {
-			$sql = "DELETE FROM groups WHERE id=" . DBOld::escape($selected_id);
+			$sql = "DELETE FROM groups WHERE id=" . DB::escape($selected_id);
 			DBOld::query($sql, "could not delete sales group");
-			ui_msgs::display_notification(_('Selected sales group has been deleted'));
+			Errors::notice(_('Selected sales group has been deleted'));
 		} //end if Delete area
 		$Mode = 'RESET';
 	}
@@ -90,7 +90,7 @@
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {
 			//editing an existing area
-			$sql = "SELECT * FROM groups WHERE id=" . DBOld::escape($selected_id);
+			$sql = "SELECT * FROM groups WHERE id=" . DB::escape($selected_id);
 			$result = DBOld::query($sql, "could not get group");
 			$myrow  = DBOld::fetch($result);
 			$_POST['description'] = $myrow["description"];

@@ -40,9 +40,9 @@
 		$customer          = new Contacts_Customer($_SESSION['Items']->customer_id);
 		$emails            = $customer->getEmailAddresses();
 		$invoice_no        = $_GET['AddedID'];
-		ui_msgs::display_notification(sprintf(_("Order # %d has been entered."), $invoice_no));
+		Errors::notice(sprintf(_("Order # %d has been entered."), $invoice_no));
 		$trans_type = ST_SALESINVOICE;
-		ui_msgs::display_notification(_("Selected deliveries has been processed"), true);
+		Errors::notice(_("Selected deliveries has been processed"), true);
 		ui_msgs::display_note(ui_view::get_customer_trans_view_str($trans_type, $invoice_no, _("&View This Invoice")), 0, 1);
 		ui_msgs::display_note(Reporting::print_doc_link($invoice_no, _("&Print This Invoice"), true, ST_SALESINVOICE));
 		submenu_email(_("Email This Invoice"), ST_SALESINVOICE, $invoice_no, null, $emails, 1);
@@ -56,7 +56,7 @@
 		$customer          = new Contacts_Customer($_SESSION['Items']->customer_id);
 		$emails            = $customer->getEmailAddresses();
 		$invoice_no        = $_GET['UpdatedID'];
-		ui_msgs::display_notification(sprintf(_('Sales Invoice # %d has been updated.'), $invoice_no));
+		Errors::notice(sprintf(_('Sales Invoice # %d has been updated.'), $invoice_no));
 		ui_msgs::display_note(ui_view::get_trans_view_str(ST_SALESINVOICE, $invoice_no, _("&View This Invoice")));
 		echo '<br>';
 		ui_msgs::display_note(Reporting::print_doc_link($invoice_no, _("&Print This Invoice"), true, ST_SALESINVOICE));
@@ -125,13 +125,13 @@
 		copy_from_cart();
 	} elseif (!processing_active()) {
 		/* This page can only be called with a delivery for invoicing or invoice no for edit */
-		ui_msgs::display_error(_("This page can only be opened after delivery selection. Please select delivery to invoicing first."));
+		Errors::error(_("This page can only be opened after delivery selection. Please select delivery to invoicing first."));
 		hyperlink_no_params("/sales/inquiry/sales_deliveries_view.php", _("Select Delivery to Invoice"));
 		end_page();
 		exit;
 	}
 	elseif (!check_quantities()) {
-		ui_msgs::display_error(_("Selected quantity cannot be less than quantity credited nor more than quantity not invoiced yet."));
+		Errors::error(_("Selected quantity cannot be less than quantity credited nor more than quantity not invoiced yet."));
 	}
 	if (isset($_POST['Update'])) {
 		$Ajax->activate('Items');
@@ -223,28 +223,28 @@
 	function check_data()
 	{
 		if (!isset($_POST['InvoiceDate']) || !Dates::is_date($_POST['InvoiceDate'])) {
-			ui_msgs::display_error(_("The entered invoice date is invalid."));
+			Errors::error(_("The entered invoice date is invalid."));
 			JS::set_focus('InvoiceDate');
 			return false;
 		}
 		if (!Dates::is_date_in_fiscalyear($_POST['InvoiceDate'])) {
-			ui_msgs::display_error(_("The entered invoice date is not in fiscal year."));
+			Errors::error(_("The entered invoice date is not in fiscal year."));
 			JS::set_focus('InvoiceDate');
 			return false;
 		}
 		if (!isset($_POST['due_date']) || !Dates::is_date($_POST['due_date'])) {
-			ui_msgs::display_error(_("The entered invoice due date is invalid."));
+			Errors::error(_("The entered invoice due date is invalid."));
 			JS::set_focus('due_date');
 			return false;
 		}
 		if ($_SESSION['Items']->trans_no == 0) {
 			if (!Refs::is_valid($_POST['ref'])) {
-				ui_msgs::display_error(_("You must enter a reference."));
+				Errors::error(_("You must enter a reference."));
 				JS::set_focus('ref');
 				return false;
 			}
 			if (!is_new_reference($_POST['ref'], 10)) {
-				ui_msgs::display_error(_("The entered reference is already in use."));
+				Errors::error(_("The entered reference is already in use."));
 				JS::set_focus('ref');
 				return false;
 			}
@@ -253,16 +253,16 @@
 			$_POST['ChargeFreightCost'] = price_format(0);
 		}
 		if (!Validation::is_num('ChargeFreightCost', 0)) {
-			ui_msgs::display_error(_("The entered shipping value is not numeric."));
+			Errors::error(_("The entered shipping value is not numeric."));
 			JS::set_focus('ChargeFreightCost');
 			return false;
 		}
 		if ($_SESSION['Items']->has_items_dispatch() == 0 && input_num('ChargeFreightCost') == 0) {
-			ui_msgs::display_error(_("There are no item quantities on this invoice."));
+			Errors::error(_("There are no item quantities on this invoice."));
 			return false;
 		}
 		if (!check_quantities()) {
-			ui_msgs::display_error(_("Selected quantity cannot be less than quantity credited nor more than quantity not invoiced yet."));
+			Errors::error(_("Selected quantity cannot be less than quantity credited nor more than quantity not invoiced yet."));
 			return false;
 		}
 		return true;
@@ -362,7 +362,7 @@
 	end_table();
 	$row = get_customer_to_order($_SESSION['Items']->customer_id);
 	if ($row['dissallow_invoices'] == 1) {
-		ui_msgs::display_error(_("The selected customer account is currently on hold. Please contact the credit control personnel to discuss."));
+		Errors::error(_("The selected customer account is currently on hold. Please contact the credit control personnel to discuss."));
 		end_form();
 		end_page();
 		exit();

@@ -21,7 +21,7 @@
 		}
 
 		if (work_order_is_closed($woid)) {
-			ui_msgs::display_error("UNEXPECTED : Producing Items for a closed Work Order");
+			Errors::error("UNEXPECTED : Producing Items for a closed Work Order");
 			DBOld::cancel_transaction();
 			exit;
 		}
@@ -29,7 +29,7 @@
 		$date = Dates::date2sql($date_);
 
 		$sql = "INSERT INTO wo_manufacture (workorder_id, reference, quantity, date_)
-		VALUES (" . DBOld::escape($woid) . ", " . DBOld::escape($ref) . ", " . DBOld::escape($quantity)
+		VALUES (" . DB::escape($woid) . ", " . DB::escape($ref) . ", " . DB::escape($quantity)
 		 . ", '$date')";
 
 		DBOld::query($sql, "A work order manufacture could not be added");
@@ -65,7 +65,7 @@
 		FROM wo_manufacture, workorders, stock_master
 		WHERE wo_manufacture.workorder_id=workorders.id
 		AND stock_master.stock_id=workorders.stock_id
-		AND wo_manufacture.id=" . DBOld::escape($id);
+		AND wo_manufacture.id=" . DB::escape($id);
 		$result = DBOld::query($sql, "The work order production could not be retrieved");
 
 		return DBOld::fetch($result);
@@ -75,14 +75,14 @@
 
 	function get_work_order_productions($woid) {
 		$sql = "SELECT * FROM wo_manufacture WHERE workorder_id="
-		 . DBOld::escape($woid) . " ORDER BY id";
+		 . DB::escape($woid) . " ORDER BY id";
 		return DBOld::query($sql, "The work order issues could not be retrieved");
 	}
 
 	//--------------------------------------------------------------------------------------
 
 	function exists_work_order_produce($id) {
-		$sql = "SELECT id FROM wo_manufacture WHERE id=" . DBOld::escape($id);
+		$sql = "SELECT id FROM wo_manufacture WHERE id=" . DB::escape($id);
 		$result = DBOld::query($sql, "Cannot retreive a wo production");
 
 		return (DBOld::num_rows($result) > 0);
@@ -102,7 +102,7 @@
 			$row['workorder_id'], $row['stock_id'], -$row['quantity'], Dates::sql2date($row['date_']), $type_no);
 
 		// clear the production record
-		$sql = "UPDATE wo_manufacture SET quantity=0 WHERE id=" . DBOld::escape($type_no);
+		$sql = "UPDATE wo_manufacture SET quantity=0 WHERE id=" . DB::escape($type_no);
 		DBOld::query($sql, "Cannot void a wo production");
 
 		// void all related stock moves

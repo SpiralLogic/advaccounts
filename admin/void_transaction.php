@@ -99,20 +99,20 @@
 			submit_center('ProcessVoiding', _("Void Transaction"), true, '', 'default');
 		} else {
 			if (!exist_transaction($_POST['filterType'], $_POST['trans_no'])) {
-				ui_msgs::display_error(_("The entered transaction does not exist or cannot be voided."));
+				Errors::error(_("The entered transaction does not exist or cannot be voided."));
 				unset($_POST['trans_no']);
 				unset($_POST['memo_']);
 				unset($_POST['date_']);
 				submit_center('ProcessVoiding', _("Void Transaction"), true, '', 'default');
 } else {
-				ui_msgs::display_warning(_("Are you sure you want to void this transaction ? This action cannot be undone."), 0, 1);
+				Errors::warning(_("Are you sure you want to void this transaction ? This action cannot be undone."), 0, 1);
 				if ($_POST['filterType'] == ST_JOURNAL) // GL transaction are not included in get_trans_view_str
 				{
 					$view_str = ui_view::get_gl_view_str($_POST['filterType'], $_POST['trans_no'], _("View Transaction"));
 } else {
 					$view_str = ui_view::get_trans_view_str($_POST['filterType'], $_POST['trans_no'], _("View Transaction"));
 				}
-				ui_msgs::display_warning($view_str);
+				Errors::warning($view_str);
 				br();
 				submit_center_first('ConfirmVoiding', _("Proceed"), '', true);
 				submit_center_last('CancelVoiding', _("Cancel"), '', 'cancel');
@@ -124,22 +124,22 @@
 	//----------------------------------------------------------------------------------------
 	function check_valid_entries() {
 		if (DB_AuditTrail::is_closed_trans($_POST['filterType'], $_POST['trans_no'])) {
-			ui_msgs::display_error(_("The selected transaction was closed for edition and cannot be voided."));
+			Errors::error(_("The selected transaction was closed for edition and cannot be voided."));
 			JS::set_focus('trans_no');
 			return;
 		}
 		if (!Dates::is_date($_POST['date_'])) {
-			ui_msgs::display_error(_("The entered date is invalid."));
+			Errors::error(_("The entered date is invalid."));
 			JS::set_focus('date_');
 			return false;
 		}
 		if (!Dates::is_date_in_fiscalyear($_POST['date_'])) {
-			ui_msgs::display_error(_("The entered date is not in fiscal year."));
+			Errors::error(_("The entered date is not in fiscal year."));
 			JS::set_focus('date_');
 			return false;
 		}
 		if (!is_numeric($_POST['trans_no']) OR $_POST['trans_no'] <= 0) {
-			ui_msgs::display_error(_("The transaction number is expected to be numeric and greater than zero."));
+			Errors::error(_("The transaction number is expected to be numeric and greater than zero."));
 			JS::set_focus('trans_no');
 			return false;
 		}
@@ -151,7 +151,7 @@
 		if (check_valid_entries() == true) {
 			$void_entry = Voiding::get($_POST['filterType'], $_POST['trans_no']);
 			if ($void_entry != null) {
-				ui_msgs::display_error(_("The selected transaction has already been voided."), true);
+				Errors::error(_("The selected transaction has already been voided."), true);
 				unset($_POST['trans_no']);
 				unset($_POST['memo_']);
 				unset($_POST['date_']);
@@ -163,13 +163,13 @@
 				$_POST['date_'], $_POST['memo_']
 			);
 			if ($ret) {
-				ui_msgs::display_notification(_("Selected transaction has been voided."));
+				Errors::notice(_("Selected transaction has been voided."));
 				unset($_POST['trans_no']);
 				unset($_POST['memo_']);
 				unset($_POST['date_']);
 			}
 			else {
-				ui_msgs::display_error(_("The entered transaction does not exist or cannot be voided."));
+				Errors::error(_("The entered transaction does not exist or cannot be voided."));
 				JS::set_focus('trans_no');
 			}
 		}

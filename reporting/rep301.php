@@ -48,9 +48,9 @@
 			stock_master.description
 		HAVING SUM(stock_moves.qty) != 0";
 		if ($category != 0)
-			$sql .= " AND stock_master.category_id = " . DBOld::escape($category);
+			$sql .= " AND stock_master.category_id = " . DB::escape($category);
 		if ($location != 'all')
-			$sql .= " AND stock_moves.loc_code = " . DBOld::escape($location);
+			$sql .= " AND stock_moves.loc_code = " . DB::escape($location);
 		$sql .= " ORDER BY stock_master.category_id,
 			stock_master.stock_id";
 

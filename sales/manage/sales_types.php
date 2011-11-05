@@ -17,12 +17,12 @@
 	//----------------------------------------------------------------------------------------------------
 	function can_process() {
 		if (strlen($_POST['sales_type']) == 0) {
-			ui_msgs::display_error(_("The sales type description cannot be empty."));
+			Errors::error(_("The sales type description cannot be empty."));
 			JS::set_focus('sales_type');
 			return false;
 		}
 		if (!Validation::is_num('factor', 0)) {
-			ui_msgs::display_error(_("Calculation factor must be valid positive number."));
+			Errors::error(_("Calculation factor must be valid positive number."));
 			JS::set_focus('factor');
 			return false;
 		}
@@ -35,7 +35,7 @@
 			$_POST['sales_type'], isset($_POST['tax_included']) ? 1 : 0,
 			input_num('factor')
 		);
-		ui_msgs::display_notification(_('New sales type has been added'));
+		Errors::notice(_('New sales type has been added'));
 		$Mode = 'RESET';
 	}
 	//----------------------------------------------------------------------------------------------------
@@ -44,28 +44,28 @@
 			$selected_id, $_POST['sales_type'], isset($_POST['tax_included']) ? 1 : 0,
 			input_num('factor')
 		);
-		ui_msgs::display_notification(_('Selected sales type has been updated'));
+		Errors::notice(_('Selected sales type has been updated'));
 		$Mode = 'RESET';
 	}
 	//----------------------------------------------------------------------------------------------------
 	if ($Mode == 'Delete') {
 		// PREVENT DELETES IF DEPENDENT RECORDS IN 'debtor_trans'
-		$sql = "SELECT COUNT(*) FROM debtor_trans WHERE tpe=" . DBOld::escape($selected_id);
+		$sql = "SELECT COUNT(*) FROM debtor_trans WHERE tpe=" . DB::escape($selected_id);
 		$result = DBOld::query($sql, "check failed");
 		Errors::check_db_error("The number of transactions using this Sales type record could not be retrieved", $sql);
 		$myrow = DBOld::fetch_row($result);
 		if ($myrow[0] > 0) {
-			ui_msgs::display_error(_("Cannot delete this sale type because customer transactions have been created using this sales type."));
+			Errors::error(_("Cannot delete this sale type because customer transactions have been created using this sales type."));
 		} else {
-			$sql = "SELECT COUNT(*) FROM debtors_master WHERE sales_type=" . DBOld::escape($selected_id);
+			$sql = "SELECT COUNT(*) FROM debtors_master WHERE sales_type=" . DB::escape($selected_id);
 			$result = DBOld::query($sql, "check failed");
 			Errors::check_db_error("The number of customers using this Sales type record could not be retrieved", $sql);
 			$myrow = DBOld::fetch_row($result);
 			if ($myrow[0] > 0) {
-				ui_msgs::display_error(_("Cannot delete this sale type because customers are currently set up to use this sales type."));
+				Errors::error(_("Cannot delete this sale type because customers are currently set up to use this sales type."));
 } else {
 				delete_sales_type($selected_id);
-				ui_msgs::display_notification(_('Selected sales type has been deleted'));
+				Errors::notice(_('Selected sales type has been deleted'));
 			}
 		} //end if sales type used in debtor transactions or in customers set up
 		$Mode = 'RESET';
@@ -106,7 +106,7 @@
 	}
 	inactive_control_row($th);
 	end_table();
-	ui_msgs::display_warning(_("Marked sales type is the company base pricelist for prices calculations."), 0, 0, "class='overduefg'");
+	Errors::warning(_("Marked sales type is the company base pricelist for prices calculations."), 0, 0, "class='overduefg'");
 	//----------------------------------------------------------------------------------------------------
 	if (!isset($_POST['tax_included'])) {
 		$_POST['tax_included'] = 0;

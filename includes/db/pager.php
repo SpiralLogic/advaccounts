@@ -339,7 +339,7 @@
 						if (isset($col['ord']) && $col['ord'] != ''
 						 && !isset($col['name'])
 						) {
-							//ui_msgs::display_warning("Result field names must be set
+							//Errors::warning("Result field names must be set
 							//		for all intially ordered db_pager columns.");
 						}
 					}
@@ -473,7 +473,7 @@
 		static function countFilter($table = false, $feild = false, $where = false)
 		{
 			if ($table && $where && $feild) {
-				$sql    = "SELECT * FROM " . $table . " WHERE " . $feild . " LIKE " . DBOld::escape($where) . " LIMIT 1";
+				$sql    = "SELECT * FROM " . $table . " WHERE " . $feild . " LIKE " . DB::escape($where) . " LIMIT 1";
 				$result = DBOld::query($sql, 'Couldnt do shit');
 				return DBOld::num_rows($result);
 			}

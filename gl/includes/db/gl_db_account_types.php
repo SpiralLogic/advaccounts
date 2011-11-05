@@ -11,15 +11,15 @@
 	 ***********************************************************************/
 	function add_account_type($id, $name, $class_id, $parent) {
 		$sql = "INSERT INTO chart_types (id, name, class_id, parent)
-		VALUES ($id, " . DBOld::escape($name) . ", " . DBOld::escape($class_id) . ", " . DBOld::escape($parent) . ")";
+		VALUES ($id, " . DB::escape($name) . ", " . DB::escape($class_id) . ", " . DB::escape($parent) . ")";
 
 		return DBOld::query($sql);
 	}
 
 	function update_account_type($id, $name, $class_id, $parent) {
-		$sql = "UPDATE chart_types SET name=" . DBOld::escape($name) . ",
-		class_id=" . DBOld::escape($class_id) . ", parent=" . DBOld::escape($parent)
-		 . " WHERE id = " . DBOld::escape($id);
+		$sql = "UPDATE chart_types SET name=" . DB::escape($name) . ",
+		class_id=" . DB::escape($class_id) . ", parent=" . DB::escape($parent)
+		 . " WHERE id = " . DB::escape($id);
 
 		return DBOld::query($sql, "could not update account type");
 	}
@@ -30,18 +30,18 @@
 		if (!$all)
 			$sql .= " WHERE !inactive";
 		if ($class_id != false)
-			$sql .= " AND class_id=" . DBOld::escape($class_id);
+			$sql .= " AND class_id=" . DB::escape($class_id);
 		if ($parent == -1)
 			$sql .= " AND parent <= 0";
 		elseif ($parent != false)
-			$sql .= " AND parent=" . DBOld::escape($parent);
+			$sql .= " AND parent=" . DB::escape($parent);
 		$sql .= " ORDER BY class_id, id";
 
 		return DBOld::query($sql, "could not get account types");
 	}
 
 	function get_account_type($id) {
-		$sql = "SELECT * FROM chart_types WHERE id = " . DBOld::escape($id);
+		$sql = "SELECT * FROM chart_types WHERE id = " . DB::escape($id);
 
 		$result = DBOld::query($sql, "could not get account type");
 
@@ -49,7 +49,7 @@
 	}
 
 	function get_account_type_name($id) {
-		$sql = "SELECT name FROM chart_types WHERE id = " . DBOld::escape($id);
+		$sql = "SELECT name FROM chart_types WHERE id = " . DB::escape($id);
 
 		$result = DBOld::query($sql, "could not get account type");
 
@@ -58,21 +58,21 @@
 	}
 
 	function delete_account_type($id) {
-		$sql = "DELETE FROM chart_types WHERE id = " . DBOld::escape($id);
+		$sql = "DELETE FROM chart_types WHERE id = " . DB::escape($id);
 
 		DBOld::query($sql, "could not delete account type");
 	}
 
 	function add_account_class($id, $name, $ctype) {
 		$sql = "INSERT INTO chart_class (cid, class_name, ctype)
-		VALUES (" . DBOld::escape($id) . ", " . DBOld::escape($name) . ", " . DBOld::escape($ctype) . ")";
+		VALUES (" . DB::escape($id) . ", " . DB::escape($name) . ", " . DB::escape($ctype) . ")";
 
 		return DBOld::query($sql);
 	}
 
 	function update_account_class($id, $name, $ctype) {
-		$sql = "UPDATE chart_class SET class_name=" . DBOld::escape($name) . ",
-		ctype=" . DBOld::escape($ctype) . " WHERE cid = " . DBOld::escape($id);
+		$sql = "UPDATE chart_class SET class_name=" . DB::escape($name) . ",
+		ctype=" . DB::escape($ctype) . " WHERE cid = " . DB::escape($id);
 
 		return DBOld::query($sql);
 	}
@@ -91,7 +91,7 @@
 	}
 
 	function get_account_class($id) {
-		$sql = "SELECT * FROM chart_class WHERE cid = " . DBOld::escape($id);
+		$sql = "SELECT * FROM chart_class WHERE cid = " . DB::escape($id);
 
 		$result = DBOld::query($sql, "could not get account type");
 
@@ -99,7 +99,7 @@
 	}
 
 	function get_account_class_name($id) {
-		$sql = "SELECT class_name FROM chart_class WHERE cid =" . DBOld::escape($id);
+		$sql = "SELECT class_name FROM chart_class WHERE cid =" . DB::escape($id);
 
 		$result = DBOld::query($sql, "could not get account type");
 
@@ -108,7 +108,7 @@
 	}
 
 	function delete_account_class($id) {
-		$sql = "DELETE FROM chart_class WHERE cid = " . DBOld::escape($id);
+		$sql = "DELETE FROM chart_class WHERE cid = " . DB::escape($id);
 
 		DBOld::query($sql, "could not delete account type");
 	}

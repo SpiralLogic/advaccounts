@@ -16,7 +16,7 @@
 		$sql
 		 = 'SELECT trans_link FROM
 			' . 'debtor_trans WHERE
-			(trans_no=' . DBOld::escape($trans_no) . ' AND type=' . DBOld::escape($trans_type) . ' AND trans_link!=0)';
+			(trans_no=' . DB::escape($trans_no) . ' AND type=' . DB::escape($trans_type) . ' AND trans_link!=0)';
 		$result = DBOld::query($sql, 'Parent document numbers cannot be retrieved');
 		if (DBOld::num_rows($result)) {
 			$link = DBOld::fetch($result);
@@ -29,7 +29,7 @@
 		$sql
 		 = 'SELECT trans_no FROM
 			' . 'debtor_trans WHERE
-			(trans_link=' . DBOld::escape($trans_no) . ' AND type=' . get_parent_type($trans_type) . ')';
+			(trans_link=' . DB::escape($trans_no) . ' AND type=' . get_parent_type($trans_type) . ')';
 		$result = DBOld::query($sql, 'Delivery links cannot be retrieved');
 		$delivery = array();
 		if (DBOld::num_rows($result) > 0) {
@@ -46,10 +46,10 @@
 	function update_customer_trans_version($type, $versions) {
 		$sql
 		 = 'UPDATE debtor_trans SET version=version+1
-			WHERE type=' . DBOld::escape($type) . ' AND (';
+			WHERE type=' . DB::escape($type) . ' AND (';
 		foreach ($versions as $trans_no => $version)
 		{
-			$where[] = '(trans_no=' . DBOld::escape($trans_no) . ' AND version=' . $version . ')';
+			$where[] = '(trans_no=' . DB::escape($trans_no) . ' AND version=' . $version . ')';
 		}
 		$sql .= implode(' OR ', $where) . ')';
 		return DBOld::query($sql, 'Concurrent editing conflict');
@@ -65,7 +65,7 @@
 			$trans_no = array($trans_no);
 		}
 		$sql = 'SELECT trans_no, version FROM ' . 'debtor_trans
-			WHERE type=' . DBOld::escape($type) . ' AND (';
+			WHERE type=' . DB::escape($type) . ' AND (';
 		foreach ($trans_no as $key => $trans)
 		{
 			$trans_no[$key] = 'trans_no=' . $trans_no[$key];
@@ -115,25 +115,25 @@
 		ov_gst, ov_freight, ov_freight_tax,
 		rate, ship_via, alloc, trans_link,
 		dimension_id, dimension2_id
-		) VALUES ($trans_no, " . DBOld::escape($trans_type) . ",
-		" . DBOld::escape($debtor_no) . ", " . DBOld::escape($BranchNo) . ",
-		'$SQLDate', '$SQLDueDate', " . DBOld::escape($reference) . ",
-		" . DBOld::escape($sales_type) . ", " . DBOld::escape($order_no) . ", $Total, " . DBOld::escape($discount) . ", $Tax,
-		" . DBOld::escape($Freight) . ",
-		$FreightTax, $rate, " . DBOld::escape($ship_via) . ", $AllocAmt, " . DBOld::escape($trans_link) . ",
-		" . DBOld::escape($dimension_id) . ", " . DBOld::escape($dimension2_id) . ")";
+		) VALUES ($trans_no, " . DB::escape($trans_type) . ",
+		" . DB::escape($debtor_no) . ", " . DB::escape($BranchNo) . ",
+		'$SQLDate', '$SQLDueDate', " . DB::escape($reference) . ",
+		" . DB::escape($sales_type) . ", " . DB::escape($order_no) . ", $Total, " . DB::escape($discount) . ", $Tax,
+		" . DB::escape($Freight) . ",
+		$FreightTax, $rate, " . DB::escape($ship_via) . ", $AllocAmt, " . DB::escape($trans_link) . ",
+		" . DB::escape($dimension_id) . ", " . DB::escape($dimension2_id) . ")";
 		}
 		else { // may be optional argument should stay unchanged ?
 			$sql
 			 = "UPDATE debtor_trans SET
-		debtor_no=" . DBOld::escape($debtor_no) . " , branch_code=" . DBOld::escape($BranchNo) . ",
+		debtor_no=" . DB::escape($debtor_no) . " , branch_code=" . DB::escape($BranchNo) . ",
 		tran_date='$SQLDate', due_date='$SQLDueDate',
-		reference=" . DBOld::escape($reference) . ", tpe=" . DBOld::escape($sales_type) . ", order_=" . DBOld::escape($order_no) . ",
-		ov_amount=$Total, ov_discount=" . DBOld::escape($discount) . ", ov_gst=$Tax,
-		ov_freight=" . DBOld::escape($Freight) . ", ov_freight_tax=$FreightTax, rate=$rate,
-		ship_via=" . DBOld::escape($ship_via) . ", alloc=$AllocAmt, trans_link=$trans_link,
-		dimension_id=" . DBOld::escape($dimension_id) . ", dimension2_id=" . DBOld::escape($dimension2_id) . "
-		WHERE trans_no=$trans_no AND type=" . DBOld::escape($trans_type);
+		reference=" . DB::escape($reference) . ", tpe=" . DB::escape($sales_type) . ", order_=" . DB::escape($order_no) . ",
+		ov_amount=$Total, ov_discount=" . DB::escape($discount) . ", ov_gst=$Tax,
+		ov_freight=" . DB::escape($Freight) . ", ov_freight_tax=$FreightTax, rate=$rate,
+		ship_via=" . DB::escape($ship_via) . ", alloc=$AllocAmt, trans_link=$trans_link,
+		dimension_id=" . DB::escape($dimension_id) . ", dimension2_id=" . DB::escape($dimension2_id) . "
+		WHERE trans_no=$trans_no AND type=" . DB::escape($trans_type);
 		}
 		DBOld::query($sql, "The debtor transaction record could not be inserted");
 		DB_AuditTrail::add($trans_type, $trans_no, $date_, $new ? '' : _("Updated."));
@@ -172,8 +172,8 @@
 			// it's an invoice so also get the shipper, salestypes
 			$sql .= ", shippers, sales_types, cust_branch, tax_groups ";
 		}
-		$sql .= " WHERE debtor_trans.trans_no=" . DBOld::escape($trans_id) . "
-		AND debtor_trans.type=" . DBOld::escape($trans_type) . "
+		$sql .= " WHERE debtor_trans.trans_no=" . DB::escape($trans_id) . "
+		AND debtor_trans.type=" . DB::escape($trans_type) . "
 		AND debtor_trans.debtor_no=debtors_master.debtor_no";
 		if ($trans_type == ST_CUSTPAYMENT) {
 			// it's a payment so also get the bank account
@@ -209,8 +209,8 @@
 
 	//----------------------------------------------------------------------------------------
 	function exists_customer_trans($type, $type_no) {
-		$sql = "SELECT trans_no FROM debtor_trans WHERE type=" . DBOld::escape($type) . "
-		AND trans_no=" . DBOld::escape($type_no);
+		$sql = "SELECT trans_no FROM debtor_trans WHERE type=" . DB::escape($type) . "
+		AND trans_no=" . DB::escape($type_no);
 		$result = DBOld::query($sql, "Cannot retreive a debtor transaction");
 		return (DBOld::num_rows($result) > 0);
 	}
@@ -218,7 +218,7 @@
 	//----------------------------------------------------------------------------------------
 	// retreives the related sales order for a given trans
 	function get_customer_trans_order($type, $type_no) {
-		$sql = "SELECT order_ FROM debtor_trans WHERE type=" . DBOld::escape($type) . " AND trans_no=" . DBOld::escape($type_no);
+		$sql = "SELECT order_ FROM debtor_trans WHERE type=" . DB::escape($type) . " AND trans_no=" . DB::escape($type_no);
 		$result = DBOld::query($sql, "The debtor transaction could not be queried");
 		$row = DBOld::fetch_row($result);
 		return $row[0];
@@ -229,7 +229,7 @@
 		$sql
 		 = "SELECT debtors_master.name, debtors_master.curr_code, cust_branch.br_name
 		FROM debtors_master,cust_branch,debtor_trans
-		WHERE debtor_trans.type=" . DBOld::escape($type) . " AND debtor_trans.trans_no=" . DBOld::escape($type_no) . "
+		WHERE debtor_trans.type=" . DB::escape($type) . " AND debtor_trans.trans_no=" . DB::escape($type_no) . "
 		AND debtors_master.debtor_no = debtor_trans.debtor_no
 		AND	cust_branch.branch_code = debtor_trans.branch_code";
 		$result = DBOld::query($sql, "could not get customer details from trans");
@@ -241,7 +241,7 @@
 		// clear all values and mark as void
 		$sql
 		 = "UPDATE debtor_trans SET ov_amount=0, ov_discount=0, ov_gst=0, ov_freight=0,
-		ov_freight_tax=0, alloc=0, version=version+1 WHERE type=" . DBOld::escape($type) . " AND trans_no=" . DBOld::escape($type_no);
+		ov_freight_tax=0, alloc=0, version=version+1 WHERE type=" . DB::escape($type) . " AND trans_no=" . DB::escape($type_no);
 		DBOld::query($sql, "could not void debtor transactions for type=$type and trans_no=$type_no");
 	}
 
@@ -264,7 +264,7 @@
 	//----------------------------------------------------------------------------------------
 	function get_customer_trans_link($type, $type_no) {
 		$row = DBOld::query("SELECT trans_link from debtor_trans
-		WHERE type=" . DBOld::escape($type) . " AND trans_no=" . DBOld::escape($type_no),
+		WHERE type=" . DB::escape($type) . " AND trans_no=" . DB::escape($type_no),
 			"could not get transaction link for type=$type and trans_no=$type_no");
 		return $row[0];
 	}

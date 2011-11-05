@@ -17,38 +17,38 @@
 		$input_error = 0;
 		if (strlen($_POST['description']) == 0) {
 			$input_error = 1;
-			ui_msgs::display_error(_("The area description cannot be empty."));
+			Errors::error(_("The area description cannot be empty."));
 			JS::set_focus('description');
 		}
 		if ($input_error != 1) {
 			if ($selected_id != -1) {
-				$sql  = "UPDATE areas SET description=" . DBOld::escape(
+				$sql  = "UPDATE areas SET description=" . DB::escape(
 					$_POST['description']
-				) . " WHERE area_code = " . DBOld::escape($selected_id);
+				) . " WHERE area_code = " . DB::escape($selected_id);
 				$note = _('Selected sales area has been updated');
 } else {
-				$sql  = "INSERT INTO areas (description) VALUES (" . DBOld::escape($_POST['description']) . ")";
+				$sql  = "INSERT INTO areas (description) VALUES (" . DB::escape($_POST['description']) . ")";
 				$note = _('New sales area has been added');
 			}
 			DBOld::query($sql, "The sales area could not be updated or added");
-			ui_msgs::display_notification($note);
+			Errors::notice($note);
 			$Mode = 'RESET';
 		}
 	}
 	if ($Mode == 'Delete') {
 		$cancel_delete = 0;
 		// PREVENT DELETES IF DEPENDENT RECORDS IN 'debtors_master'
-		$sql    = "SELECT COUNT(*) FROM cust_branch WHERE area=" . DBOld::escape($selected_id);
+		$sql    = "SELECT COUNT(*) FROM cust_branch WHERE area=" . DB::escape($selected_id);
 		$result = DBOld::query($sql, "check failed");
 		$myrow  = DBOld::fetch_row($result);
 		if ($myrow[0] > 0) {
 			$cancel_delete = 1;
-			ui_msgs::display_error(_("Cannot delete this area because customer branches have been created using this area."));
+			Errors::error(_("Cannot delete this area because customer branches have been created using this area."));
 		}
 		if ($cancel_delete == 0) {
-			$sql = "DELETE FROM areas WHERE area_code=" . DBOld::escape($selected_id);
+			$sql = "DELETE FROM areas WHERE area_code=" . DB::escape($selected_id);
 			DBOld::query($sql, "could not delete sales area");
-			ui_msgs::display_notification(_('Selected sales area has been deleted'));
+			Errors::notice(_('Selected sales area has been deleted'));
 		} //end if Delete area
 		$Mode = 'RESET';
 	}
@@ -87,7 +87,7 @@
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {
 			//editing an existing area
-			$sql = "SELECT * FROM areas WHERE area_code=" . DBOld::escape($selected_id);
+			$sql = "SELECT * FROM areas WHERE area_code=" . DB::escape($selected_id);
 			$result = DBOld::query($sql, "could not get area");
 			$myrow  = DBOld::fetch($result);
 			$_POST['description'] = $myrow["description"];

@@ -51,10 +51,10 @@
     			FROM gl_trans
 				WHERE account='$account'";
 		if ($dimension != 0) {
-			$sql .= " AND dimension_id = " . ($dimension < 0 ? 0 : DBOld::escape($dimension));
+			$sql .= " AND dimension_id = " . ($dimension < 0 ? 0 : DB::escape($dimension));
 		}
 		if ($dimension2 != 0) {
-			$sql .= " AND dimension2_id = " . ($dimension2 < 0 ? 0 : DBOld::escape($dimension2));
+			$sql .= " AND dimension2_id = " . ($dimension2 < 0 ? 0 : DB::escape($dimension2));
 		}
 		$result = DBOld::query($sql, "Transactions for account $account could not be calculated");
 		return DBOld::fetch($result);
@@ -188,7 +188,7 @@
 		//$yr = date('Y');
 		//$mo = date('m'):
 		// from now
-		$sql    = "SELECT begin, end, YEAR(end) AS yr, MONTH(end) AS mo FROM fiscal_year WHERE id=" . DBOld::escape($year);
+		$sql    = "SELECT begin, end, YEAR(end) AS yr, MONTH(end) AS mo FROM fiscal_year WHERE id=" . DB::escape($year);
 		$result = DBOld::query($sql, "could not get fiscal year");
 		$row    = DBOld::fetch($result);
 		$year   = Dates::sql2date($row['begin']) . " - " . Dates::sql2date($row['end']);

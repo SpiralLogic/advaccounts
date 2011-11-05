@@ -64,7 +64,7 @@
 	$voided = ui_view::is_voided_display(ST_BANKPAYMENT, $trans_no, _("This payment has been voided."));
 	$items  = get_gl_trans(ST_BANKPAYMENT, $trans_no);
 	if (DBOld::num_rows($items) == 0) {
-		ui_msgs::display_warning(_("There are no items for this payment."));
+		Errors::warning(_("There are no items for this payment."));
 } else {
 		ui_msgs::display_heading(_("Items for this Payment"));
 		if ($show_currencies) {

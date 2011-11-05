@@ -18,7 +18,7 @@
 	function check_date()
 	{
 		if (!Dates::is_date(get_post('deposit_date'))) {
-			ui_msgs::display_error(_("Invalid deposit date format"));
+			Errors::error(_("Invalid deposit date format"));
 			JS::setFocus('deposit_date');
 			return false;
 		}
@@ -110,7 +110,7 @@
 		}
 		$_POST['bank_date'] = Dates::date2sql(get_post('deposited_date'));
 		/*	$sql = "UPDATE ".''."bank_trans SET undeposited=0"
-										 ." WHERE id=".DBOld::escape($deposit_id);
+										 ." WHERE id=".DB::escape($deposit_id);
 
 										DBOld::query($sql, "Can't change undeposited status");*/
 		// save last reconcilation status (date, end balance)
@@ -172,7 +172,7 @@
 				$ref[] = $row['ref'];
 			}
 			$sql      = "INSERT INTO bank_trans (type, bank_act, amount, ref, trans_date, person_type_id, person_id, undeposited) VALUES (15, 5, $total_amount,"
-			 . DBOld::escape(implode($ref, ',')) . ",'" . Dates::date2sql($_POST['deposit_date']) . "', 6, '" . $_SESSION['wa_current_user']->user . "',0)";
+			 . DB::escape(implode($ref, ',')) . ",'" . Dates::date2sql($_POST['deposit_date']) . "', 6, '" . $_SESSION['wa_current_user']->user . "',0)";
 			$query    = DBOld::query($sql, "Undeposited Cannot be Added");
 			$order_no = DBOld::insert_id($query);
 			if (!isset($order_no) || !empty($order_no) || $order_no == 127) {
@@ -184,12 +184,12 @@
 			foreach (
 				$togroup as $row
 			) {
-				$sql = "UPDATE bank_trans SET undeposited=" . $order_no . " WHERE id=" . DBOld::escape($row['id']);
+				$sql = "UPDATE bank_trans SET undeposited=" . $order_no . " WHERE id=" . DB::escape($row['id']);
 				DBOld::query($sql, "Can't change undeposited status");
 			}
 		} else {
 			$row = reset($togroup);
-			$sql = "UPDATE bank_trans SET undeposited=0, trans_date='" . Dates::date2sql($_POST['deposit_date']) . "',deposit_date='" . Dates::date2sql($_POST['deposit_date']) . "'  WHERE id=" . DBOld::escape($row['id']);
+			$sql = "UPDATE bank_trans SET undeposited=0, trans_date='" . Dates::date2sql($_POST['deposit_date']) . "',deposit_date='" . Dates::date2sql($_POST['deposit_date']) . "'  WHERE id=" . DB::escape($row['id']);
 			DBOld::query($sql, "Can't change undeposited status");
 		}
 		unset($_POST);

@@ -47,24 +47,24 @@
 		$filename .= "/" . item_img_name($stock_id) . ".jpg";
 		//But check for the worst
 		if (strtoupper(substr(trim($_FILES['pic']['name']), strlen($_FILES['pic']['name']) - 3)) != 'JPG') {
-			ui_msgs::display_warning(_('Only jpg files are supported - a file extension of .jpg is expected'));
+			Errors::warning(_('Only jpg files are supported - a file extension of .jpg is expected'));
 			$upload_file = 'No';
 		}
 		elseif ($_FILES['pic']['size'] > (Config::get('item_images_max_size') * 1024))
 		{ //File Size Check
-			ui_msgs::display_warning(_('The file size is over the maximum allowed. The maximum size allowed in KB is') . ' ' . Config::get('item_images_max_size'));
+			Errors::warning(_('The file size is over the maximum allowed. The maximum size allowed in KB is') . ' ' . Config::get('item_images_max_size'));
 			$upload_file = 'No';
 		}
 		elseif ($_FILES['pic']['type'] == "text/plain")
 		{ //File type Check
-			ui_msgs::display_warning(_('Only graphics files can be uploaded'));
+			Errors::warning(_('Only graphics files can be uploaded'));
 			$upload_file = 'No';
 		}
 		elseif (file_exists($filename))
 		{
 			$result = unlink($filename);
 			if (!$result) {
-				ui_msgs::display_error(_('The existing image could not be removed'));
+				Errors::error(_('The existing image could not be removed'));
 				$upload_file = 'No';
 			}
 		}
@@ -98,11 +98,11 @@
 		}
 		if (strlen($_POST['description']) == 0) {
 			$input_error = 1;
-			ui_msgs::display_error(_('The item name must be entered.'));
+			Errors::error(_('The item name must be entered.'));
 			JS::set_focus('description');
 		} elseif (empty($_POST['NewStockID'])) {
 			$input_error = 1;
-			ui_msgs::display_error(_('The item code cannot be empty'));
+			Errors::error(_('The item code cannot be empty'));
 			JS::set_focus('NewStockID');
 		} elseif (strstr($_POST['NewStockID'], " ") || strstr($_POST['NewStockID'], "'") || strstr($_POST['NewStockID'], "+")
 		 || strstr($_POST['NewStockID'], "\"")
@@ -110,11 +110,11 @@
 		 || strstr($_POST['NewStockID'], "\t")
 		) {
 			$input_error = 1;
-			ui_msgs::display_error(_('The item code cannot contain any of the following characters -  & + OR a space OR quotes'));
+			Errors::error(_('The item code cannot contain any of the following characters -  & + OR a space OR quotes'));
 			JS::set_focus('NewStockID');
 		} elseif ($new_item && DBOld::num_rows(get_item_kit($_POST['NewStockID']))) {
 			$input_error = 1;
-			ui_msgs::display_error(_("This item code is already assigned to stock item or sale kit."));
+			Errors::error(_("This item code is already assigned to stock item or sale kit."));
 			JS::set_focus('NewStockID');
 		}
 		if ($input_error != 1) {
@@ -138,7 +138,7 @@
 				DBOld::update_record_status($_POST['NewStockID'], $_POST['inactive'], 'stock_master', 'stock_id');
 				DBOld::update_record_status($_POST['NewStockID'], $_POST['inactive'], 'item_codes', 'item_code');
 				$Ajax->activate('stock_id'); // in case of status change
-				ui_msgs::display_notification(_("Item has been updated."));
+				Errors::notice(_("Item has been updated."));
 			} else { //it is a NEW part
 				add_item(
 					$_POST['NewStockID'], $_POST['description'],
@@ -149,7 +149,7 @@
 					$_POST['dimension_id'], $_POST['dimension2_id'],
 					check_value('no_sale'), check_value('editable')
 				);
-				ui_msgs::display_notification(_("A new item has been added."));
+				Errors::notice(_("A new item has been added."));
 				JS::set_focus('NewStockID');
 			}
 			if (isset($_POST['addupdatenew'])) {
@@ -174,10 +174,10 @@
 	function check_usage($stock_id, $dispmsg = true)
 	{
 		$sqls = array(
-			"SELECT COUNT(*) FROM stock_moves WHERE stock_id=" . DBOld::escape($stock_id)          => _('Cannot delete this item because there are stock movements that refer to this item.'),
-			"SELECT COUNT(*) FROM bom WHERE component=" . DBOld::escape($stock_id)                 => _('Cannot delete this item record because there are bills of material that require this part as a component.'),
-			"SELECT COUNT(*) FROM sales_order_details WHERE stk_code=" . DBOld::escape($stock_id)  => _('Cannot delete this item because there are existing purchase order items for it.'),
-			"SELECT COUNT(*) FROM purch_order_details WHERE item_code=" . DBOld::escape($stock_id) => _('Cannot delete this item because there are existing purchase order items for it.')
+			"SELECT COUNT(*) FROM stock_moves WHERE stock_id=" . DB::escape($stock_id)          => _('Cannot delete this item because there are stock movements that refer to this item.'),
+			"SELECT COUNT(*) FROM bom WHERE component=" . DB::escape($stock_id)                 => _('Cannot delete this item record because there are bills of material that require this part as a component.'),
+			"SELECT COUNT(*) FROM sales_order_details WHERE stk_code=" . DB::escape($stock_id)  => _('Cannot delete this item because there are existing purchase order items for it.'),
+			"SELECT COUNT(*) FROM purch_order_details WHERE item_code=" . DB::escape($stock_id) => _('Cannot delete this item because there are existing purchase order items for it.')
 		);
 		$msg  = '';
 		foreach (
@@ -206,7 +206,7 @@
 		}
 		if ($msg != '') {
 			if ($dispmsg) {
-				ui_msgs::display_error($msg);
+				Errors::error($msg);
 			}
 			return false;
 		}
@@ -222,7 +222,7 @@
 			if (file_exists($filename)) {
 				unlink($filename);
 			}
-			ui_msgs::display_notification(_("Selected item has been deleted."));
+			Errors::notice(_("Selected item has been deleted."));
 			$_POST['stock_id'] = '';
 			clear_data();
 			$new_item = true;

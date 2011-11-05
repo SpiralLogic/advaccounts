@@ -20,7 +20,7 @@
 		$input_error = 0;
 		if (strlen($_POST['name']) == 0) {
 			$input_error = 1;
-			ui_msgs::display_error(_("The tax group name cannot be empty."));
+			Errors::error(_("The tax group name cannot be empty."));
 			JS::set_focus('name');
 		}
 		/* Editable rate has been removed 090920 Joe Hunt
@@ -33,7 +33,7 @@
 							 $_POST['tax_type_id' . $i] != ALL_NUMERIC	&&
 							 !Validation::is_num('rate' . $i, 0))
 						 {
-						 ui_msgs::display_error( _("An entered tax rate is invalid or less than zero."));
+						 Errors::error( _("An entered tax rate is invalid or less than zero."));
 							 $input_error = 1;
 						 JS::set_focus('rate');
 						 break;
@@ -63,10 +63,10 @@
 					$selected_id, $_POST['name'], $_POST['tax_shipping'], $taxes,
 					$rates
 				);
-				ui_msgs::display_notification(_('Selected tax group has been updated'));
+				Errors::notice(_('Selected tax group has been updated'));
 } else {
 				Tax_Groups::add_tax_group($_POST['name'], $_POST['tax_shipping'], $taxes, $rates);
-				ui_msgs::display_notification(_('New tax group has been added'));
+				Errors::notice(_('New tax group has been added'));
 			}
 			$Mode = 'RESET';
 		}
@@ -76,18 +76,18 @@
 		if ($selected_id == -1) {
 			return false;
 		}
-		$sql = "SELECT COUNT(*) FROM cust_branch WHERE tax_group_id=" . DBOld::escape($selected_id);
+		$sql = "SELECT COUNT(*) FROM cust_branch WHERE tax_group_id=" . DB::escape($selected_id);
 		$result = DBOld::query($sql, "could not query customers");
 		$myrow = DBOld::fetch_row($result);
 		if ($myrow[0] > 0) {
-			ui_msgs::display_warning(_("Cannot delete this tax group because customer branches been created referring to it."));
+			Errors::warning(_("Cannot delete this tax group because customer branches been created referring to it."));
 			return false;
 		}
-		$sql = "SELECT COUNT(*) FROM suppliers WHERE tax_group_id=" . DBOld::escape($selected_id);
+		$sql = "SELECT COUNT(*) FROM suppliers WHERE tax_group_id=" . DB::escape($selected_id);
 		$result = DBOld::query($sql, "could not query suppliers");
 		$myrow = DBOld::fetch_row($result);
 		if ($myrow[0] > 0) {
-			ui_msgs::display_warning(_("Cannot delete this tax group because suppliers been created referring to it."));
+			Errors::warning(_("Cannot delete this tax group because suppliers been created referring to it."));
 			return false;
 		}
 		return true;
@@ -97,7 +97,7 @@
 	if ($Mode == 'Delete') {
 		if (can_delete($selected_id)) {
 			Tax_Groups::delete_tax_group($selected_id);
-			ui_msgs::display_notification(_('Selected tax group has been deleted'));
+			Errors::notice(_('Selected tax group has been deleted'));
 		}
 		$Mode = 'RESET';
 	}
@@ -160,7 +160,7 @@
 	text_row_ex(_("Description:"), 'name', 40);
 	yesno_list_row(_("Tax applied to Shipping:"), 'tax_shipping', null, "", "", true);
 	end_table();
-	ui_msgs::display_warning(_("Select the taxes that are included in this group."), 1);
+	Errors::warning(_("Select the taxes that are included in this group."), 1);
 	start_table(Config::get('tables_style2'));
 	//$th = array(_("Tax"), _("Default Rate (%)"), _("Rate (%)"));
 	//Editable rate has been removed 090920 Joe Hunt

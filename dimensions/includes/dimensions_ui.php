@@ -21,7 +21,7 @@
 		tran_date >= '$from' AND tran_date <= '$to' GROUP BY account";
 		$result = DBOld::query($sql, "Transactions could not be calculated");
 		if (DBOld::num_rows($result) == 0) {
-			ui_msgs::display_warning(_("There are no transactions for this dimension for the selected period."));
+			Errors::warning(_("There are no transactions for this dimension for the selected period."));
 		} else {
 			ui_msgs::display_heading(_("Balance for this Dimension"));
 			br();

@@ -18,12 +18,12 @@
 	function can_process()
 	{
 		if (strlen($_POST['name']) == 0) {
-			ui_msgs::display_error(_("The POS name cannot be empty."));
+			Errors::error(_("The POS name cannot be empty."));
 			JS::set_focus('pos_name');
 			return false;
 		}
 		if (!check_value('cash') && !check_value('credit')) {
-			ui_msgs::display_error(_("You must allow cash or credit sale."));
+			Errors::error(_("You must allow cash or credit sale."));
 			JS::set_focus('credit');
 			return false;
 		}
@@ -36,7 +36,7 @@
 			$_POST['name'], $_POST['location'], $_POST['account'],
 			check_value('cash'), check_value('credit')
 		);
-		ui_msgs::display_notification(_('New point of sale has been added'));
+		Errors::notice(_('New point of sale has been added'));
 		$Mode = 'RESET';
 	}
 	//----------------------------------------------------------------------------------------------------
@@ -45,19 +45,19 @@
 			$selected_id, $_POST['name'], $_POST['location'],
 			$_POST['account'], check_value('cash'), check_value('credit')
 		);
-		ui_msgs::display_notification(_('Selected point of sale has been updated'));
+		Errors::notice(_('Selected point of sale has been updated'));
 		$Mode = 'RESET';
 	}
 	//----------------------------------------------------------------------------------------------------
 	if ($Mode == 'Delete') {
-		$sql = "SELECT * FROM users WHERE pos=" . DBOld::escape($selected_id);
+		$sql = "SELECT * FROM users WHERE pos=" . DB::escape($selected_id);
 		$res = DBOld::query($sql, "canot check pos usage");
 		if (DBOld::num_rows($res)) {
-			ui_msgs::display_error(_("Cannot delete this POS because it is used in users setup."));
+			Errors::error(_("Cannot delete this POS because it is used in users setup."));
 		}
 		else {
 			delete_sales_point($selected_id);
-			ui_msgs::display_notification(_('Selected point of sale has been deleted'));
+			Errors::notice(_('Selected point of sale has been deleted'));
 			$Mode = 'RESET';
 		}
 	}
@@ -96,7 +96,7 @@
 	//----------------------------------------------------------------------------------------------------
 	$cash = Validation::check(Validation::CASH_ACCOUNTS);
 	if (!$cash) {
-		ui_msgs::display_warning(_("To have cash POS first define at least one cash bank account."));
+		Errors::warning(_("To have cash POS first define at least one cash bank account."));
 	}
 	start_table(Config::get('tables_style2'));
 	if ($selected_id != -1) {

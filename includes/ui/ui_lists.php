@@ -176,8 +176,8 @@
 		$found    = false;
 		$lastcat  = null;
 		$edit     = false;
-		//if($name=='stock_id')	ui_msgs::display_notification('<pre>'.print_r($_POST, true).'</pre>');
-		//if($name=='curr_default') ui_msgs::display_notification($opts['search_submit']);
+		//if($name=='stock_id')	Errors::notice('<pre>'.print_r($_POST, true).'</pre>');
+		//if($name=='curr_default') Errors::notice($opts['search_submit']);
 		if ($result = DBOld::query($sql)) {
 			while ($contact_row = DBOld::fetch($result)) {
 				$value = $contact_row[0];
@@ -330,7 +330,7 @@
 		$selector = $first_opt = '';
 		$first_id = false;
 		$found    = false;
-		//if($name=='SelectStockFromList') ui_msgs::display_error($sql);
+		//if($name=='SelectStockFromList') Errors::error($sql);
 		foreach (
 			$items as $value => $descr
 		) {
@@ -1339,7 +1339,7 @@ JS
 	{
 		$sql
 		 = "SELECT reconciled, reconciled FROM bank_trans
-		WHERE bank_act=" . DBOld::escape($account) . " AND reconciled IS NOT NULL
+		WHERE bank_act=" . DB::escape($account) . " AND reconciled IS NOT NULL
 		GROUP BY reconciled";
 		return combo_input(
 			$name, $selected_id, $sql, 'id', 'reconciled', array(

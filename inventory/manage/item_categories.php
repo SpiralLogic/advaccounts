@@ -19,7 +19,7 @@
 		$input_error = 0;
 		if (strlen($_POST['description']) == 0) {
 			$input_error = 1;
-			ui_msgs::display_error(_("The item category description cannot be empty."));
+			Errors::error(_("The item category description cannot be empty."));
 			JS::set_focus('description');
 		}
 		if ($input_error != 1) {
@@ -32,7 +32,7 @@
 					$_POST['units'], $_POST['mb_flag'], $_POST['dim1'], $_POST['dim2'],
 					check_value('no_sale')
 				);
-				ui_msgs::display_notification(_('Selected item category has been updated'));
+				Errors::notice(_('Selected item category has been updated'));
 } else {
 				add_item_category(
 					$_POST['description'],
@@ -42,7 +42,7 @@
 					$_POST['units'], $_POST['mb_flag'], $_POST['dim1'],
 					$_POST['dim2'], check_value('no_sale')
 				);
-				ui_msgs::display_notification(_('New item category has been added'));
+				Errors::notice(_('New item category has been added'));
 			}
 			$Mode = 'RESET';
 		}
@@ -50,14 +50,14 @@
 	//----------------------------------------------------------------------------------
 	if ($Mode == 'Delete') {
 		// PREVENT DELETES IF DEPENDENT RECORDS IN 'stock_master'
-		$sql = "SELECT COUNT(*) FROM stock_master WHERE category_id=" . DBOld::escape($selected_id);
+		$sql = "SELECT COUNT(*) FROM stock_master WHERE category_id=" . DB::escape($selected_id);
 		$result = DBOld::query($sql, "could not query stock master");
 		$myrow = DBOld::fetch_row($result);
 		if ($myrow[0] > 0) {
-			ui_msgs::display_error(_("Cannot delete this item category because items have been created using this item category."));
+			Errors::error(_("Cannot delete this item category because items have been created using this item category."));
 		} else {
 			delete_item_category($selected_id);
-			ui_msgs::display_notification(_('Selected item category has been deleted'));
+			Errors::notice(_('Selected item category has been deleted'));
 		}
 		$Mode = 'RESET';
 	}

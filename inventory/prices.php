@@ -47,7 +47,7 @@
 	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 		if (!Validation::is_num('price', 0)) {
 			$input_error = 1;
-			ui_msgs::display_error(_("The price entered must be numeric."));
+			Errors::error(_("The price entered must be numeric."));
 			JS::set_focus('price');
 		}
 		if ($input_error != 1) {
@@ -62,7 +62,7 @@
 				);
 				$msg = _("The new price has been added.");
 			}
-			ui_msgs::display_notification($msg);
+			Errors::notice($msg);
 			$Mode = 'RESET';
 		}
 	}
@@ -70,7 +70,7 @@
 	if ($Mode == 'Delete') {
 		//the link to delete a selected record was clicked
 		delete_item_price($selected_id);
-		ui_msgs::display_notification(_("The selected price has been deleted."));
+		Errors::notice(_("The selected price has been deleted."));
 		$Mode = 'RESET';
 	}
 	if ($Mode == 'RESET') {
@@ -114,7 +114,7 @@
 		if (DB_Company::get_pref('add_pct') != -1) {
 			$calculated = true;
 		}
-		ui_msgs::display_warning(_("There are no prices set up for this part."), 1);
+		Errors::warning(_("There are no prices set up for this part."), 1);
 	}
 	div_end();
 	//------------------------------------------------------------------------------------------------
@@ -142,7 +142,7 @@
 	small_amount_row(_("Price:"), 'price', null, '', _('per') . ' ' . $kit["units"]);
 	end_table(1);
 	if ($calculated) {
-		ui_msgs::display_warning(_("The price is calculated."), 0, 1);
+		Errors::warning(_("The price is calculated."), 0, 1);
 	}
 	submit_add_or_update_center($selected_id == -1, '', 'both');
 	div_end();

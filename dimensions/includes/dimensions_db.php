@@ -17,7 +17,7 @@
 		$duedate = Dates::date2sql($due_date);
 
 		$sql = "INSERT INTO dimensions (reference, name, type_, date_, due_date)
-		VALUES (" . DBOld::escape($reference) . ", " . DBOld::escape($name) . ", " . DBOld::escape($type_)
+		VALUES (" . DB::escape($reference) . ", " . DB::escape($name) . ", " . DB::escape($type_)
 		 . ", '$date', '$duedate')";
 		DBOld::query($sql, "could not add dimension");
 		$id = DBOld::insert_id();
@@ -37,11 +37,11 @@
 		$date = Dates::date2sql($date_);
 		$duedate = Dates::date2sql($due_date);
 
-		$sql = "UPDATE dimensions SET name=" . DBOld::escape($name) . ",
-		type_ = " . DBOld::escape($type_) . ",
+		$sql = "UPDATE dimensions SET name=" . DB::escape($name) . ",
+		type_ = " . DB::escape($type_) . ",
 		date_='$date',
 		due_date='$duedate'
-		WHERE id = " . DBOld::escape($id);
+		WHERE id = " . DB::escape($id);
 
 		DBOld::query($sql, "could not update dimension");
 
@@ -56,7 +56,7 @@
 		DBOld::begin_transaction();
 
 		// delete the actual dimension
-		$sql = "DELETE FROM dimensions WHERE id=" . DBOld::escape($id);
+		$sql = "DELETE FROM dimensions WHERE id=" . DB::escape($id);
 		DBOld::query($sql, "The dimension could not be deleted");
 
 		DB_Comments::delete(ST_DIMENSION, $id);
@@ -67,7 +67,7 @@
 	//--------------------------------------------------------------------------------------
 
 	function get_dimension($id, $allow_null = false) {
-		$sql = "SELECT * FROM dimensions	WHERE id=" . DBOld::escape($id);
+		$sql = "SELECT * FROM dimensions	WHERE id=" . DB::escape($id);
 
 		$result = DBOld::query($sql, "The dimension could not be retrieved");
 
@@ -110,7 +110,7 @@
 	//--------------------------------------------------------------------------------------
 
 	function dimension_has_payments($id) {
-		$sql = "SELECT SUM(amount) FROM gl_trans WHERE dimension_id = " . DBOld::escape($id);
+		$sql = "SELECT SUM(amount) FROM gl_trans WHERE dimension_id = " . DB::escape($id);
 		$res = DBOld::query($sql, "Transactions could not be calculated");
 		$row = DBOld::fetch_row($res);
 		return ($row[0] != 0.0);
@@ -124,7 +124,7 @@
 	//--------------------------------------------------------------------------------------
 
 	function close_dimension($id) {
-		$sql = "UPDATE dimensions SET closed='1' WHERE id = " . DBOld::escape($id);
+		$sql = "UPDATE dimensions SET closed='1' WHERE id = " . DB::escape($id);
 		DBOld::query($sql, "could not close dimension");
 	}
 

@@ -264,7 +264,7 @@
 			if (!is_int($this->trans_type)) {
 				return false;
 			}
-			$sql    = "SELECT customer_ref,type FROM sales_orders WHERE debtor_no=" . DBOld::escape($this->customer_id) . " AND customer_ref=" . DBOld::escape($cust_ref) . " AND type != " . $this->trans_type;
+			$sql    = "SELECT customer_ref,type FROM sales_orders WHERE debtor_no=" . DB::escape($this->customer_id) . " AND customer_ref=" . DB::escape($cust_ref) . " AND type != " . $this->trans_type;
 			$result = DBOld::query($sql);
 			return (DBOld::num_rows($result) > 0) ? false : true;
 		}
@@ -299,7 +299,7 @@
 		{
 			if ($salesman_code == null) {
 				$salesman_name = $_SESSION['wa_current_user']->name;
-				$sql           = "SELECT salesman_code FROM salesman WHERE salesman_name = " . DBOld::escape($salesman_name);
+				$sql           = "SELECT salesman_code FROM salesman WHERE salesman_name = " . DB::escape($salesman_name);
 				$query         = DBOld::query($sql, 'Couldn\'t find current salesman');
 				$result        = DBOld::fetch_assoc($query);
 				if (!empty($result['salesman_code'])) {

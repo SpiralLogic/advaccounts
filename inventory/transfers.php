@@ -21,7 +21,7 @@
 	if (isset($_GET['AddedID'])) {
 		$trans_no = $_GET['AddedID'];
 		$trans_type = ST_LOCTRANSFER;
-		ui_msgs::display_notification(_("Inventory transfer has been processed"));
+		Errors::notice(_("Inventory transfer has been processed"));
 		ui_msgs::display_note(ui_view::get_trans_view_str($trans_type, $trans_no, _("&View this transfer")));
 		hyperlink_no_params($_SERVER['PHP_SELF'], _("Enter &Another Inventory Transfer"));
 		ui_view::display_footer_exit();
@@ -53,43 +53,43 @@
 		$tr = &$_SESSION['transfer_items'];
 		$input_error = 0;
 		if (count($tr->line_items) == 0) {
-			ui_msgs::display_error(_("You must enter at least one non empty item line."));
+			Errors::error(_("You must enter at least one non empty item line."));
 			JS::set_focus('stock_id');
 			return false;
 		}
 		if (!Refs::is_valid($_POST['ref'])) {
-			ui_msgs::display_error(_("You must enter a reference."));
+			Errors::error(_("You must enter a reference."));
 			JS::set_focus('ref');
 			$input_error = 1;
 		}
 		elseif (!is_new_reference($_POST['ref'], ST_LOCTRANSFER))
 		{
-			ui_msgs::display_error(_("The entered reference is already in use."));
+			Errors::error(_("The entered reference is already in use."));
 			JS::set_focus('ref');
 			$input_error = 1;
 		}
 		elseif (!Dates::is_date($_POST['AdjDate']))
 		{
-			ui_msgs::display_error(_("The entered date for the adjustment is invalid."));
+			Errors::error(_("The entered date for the adjustment is invalid."));
 			JS::set_focus('AdjDate');
 			$input_error = 1;
 		}
 		elseif (!Dates::is_date_in_fiscalyear($_POST['AdjDate']))
 		{
-			ui_msgs::display_error(_("The entered date is not in fiscal year."));
+			Errors::error(_("The entered date is not in fiscal year."));
 			JS::set_focus('AdjDate');
 			$input_error = 1;
 		}
 		elseif ($_POST['FromStockLocation'] == $_POST['ToStockLocation'])
 		{
-			ui_msgs::display_error(_("The locations to transfer from and to must be different."));
+			Errors::error(_("The locations to transfer from and to must be different."));
 			JS::set_focus('FromStockLocation');
 			$input_error = 1;
 		} else {
 			$failed_item = $tr->check_qoh($_POST['FromStockLocation'], $_POST['AdjDate'], true);
 			if ($failed_item >= 0) {
 				$line = $tr->line_items[$failed_item];
-				ui_msgs::display_error(
+				Errors::error(
 					_("The quantity entered is greater than the available quantity for this item at the source location :") .
 					 " " . $line->stock_id . " - " . $line->description
 				);
@@ -117,7 +117,7 @@
 	//-----------------------------------------------------------------------------------------------
 	function check_item_data() {
 		if (!Validation::is_num('qty', 0)) {
-			ui_msgs::display_error(_("The quantity entered must be a positive number."));
+			Errors::error(_("The quantity entered must be a positive number."));
 			JS::set_focus('qty');
 			return false;
 		}

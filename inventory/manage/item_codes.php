@@ -19,19 +19,19 @@
 		$input_error = 0;
 		if ($_POST['stock_id'] == "" || !isset($_POST['stock_id'])) {
 			$input_error = 1;
-			ui_msgs::display_error(_("There is no item selected."));
+			Errors::error(_("There is no item selected."));
 			JS::set_focus('stock_id');
 		}
 		elseif (!input_num('quantity'))
 		{
 			$input_error = 1;
-			ui_msgs::display_error(_("The price entered was not positive number."));
+			Errors::error(_("The price entered was not positive number."));
 			JS::set_focus('quantity');
 		}
 		elseif ($_POST['description'] == '')
 		{
 			$input_error = 1;
-			ui_msgs::display_error(_("Item code description cannot be empty."));
+			Errors::error(_("Item code description cannot be empty."));
 			JS::set_focus('description');
 		}
 		elseif ($selected_id == -1)
@@ -39,7 +39,7 @@
 			$kit = get_item_kit($_POST['item_code']);
 			if (DBOld::num_rows($kit)) {
 				$input_error = 1;
-				ui_msgs::display_error(_("This item code is already assigned to stock item or sale kit."));
+				Errors::error(_("This item code is already assigned to stock item or sale kit."));
 				JS::set_focus('item_code');
 			}
 		}
@@ -49,14 +49,14 @@
 					$_POST['item_code'], $_POST['stock_id'],
 					$_POST['description'], $_POST['category_id'], $_POST['quantity'], 1
 				);
-				ui_msgs::display_notification(_("New item code has been added."));
+				Errors::notice(_("New item code has been added."));
 			} else
 			{
 				update_item_code(
 					$selected_id, $_POST['item_code'], $_POST['stock_id'],
 					$_POST['description'], $_POST['category_id'], $_POST['quantity'], 1
 				);
-				ui_msgs::display_notification(_("Item code has been updated."));
+				Errors::notice(_("Item code has been updated."));
 			}
 			$Mode = 'RESET';
 		}
@@ -64,7 +64,7 @@
 	//--------------------------------------------------------------------------------------------------
 	if ($Mode == 'Delete') {
 		delete_item_code($selected_id);
-		ui_msgs::display_notification(_("Item code has been sucessfully deleted."));
+		Errors::notice(_("Item code has been sucessfully deleted."));
 		$Mode = 'RESET';
 	}
 	if ($Mode == 'RESET') {

@@ -114,7 +114,7 @@
 				$_SESSION['PO']->Location         = $_POST['StkLocation'];
 				$_SESSION['PO']->delivery_address = $_POST['delivery_address'];
 			} else { /* The default location of the user is crook */
-				ui_msgs::display_error(_("The default stock location set up for this user is not a currently defined stock location. Your system administrator needs to amend your user record."));
+				Errors::error(_("The default stock location set up for this user is not a currently defined stock location. Your system administrator needs to amend your user record."));
 			}
 		}
 		textarea_row(_("Deliver to:"), 'delivery_address', $_POST['delivery_address'], 35, 4);

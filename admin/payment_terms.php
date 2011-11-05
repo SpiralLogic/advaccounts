@@ -18,26 +18,26 @@
 		$inpug_error = 0;
 		if (!is_numeric($_POST['DayNumber'])) {
 			$inpug_error = 1;
-			ui_msgs::display_error(_("The number of days or the day in the following month must be numeric."));
+			Errors::error(_("The number of days or the day in the following month must be numeric."));
 			JS::set_focus('DayNumber');
 		}
 		elseif (strlen($_POST['terms']) == 0)
 		{
 			$inpug_error = 1;
-			ui_msgs::display_error(_("The Terms description must be entered."));
+			Errors::error(_("The Terms description must be entered."));
 			JS::set_focus('terms');
 		} // there should be no limits by 30 here if they want longer payment terms. Joe Hunt 2010-05-31
 		//elseif ($_POST['DayNumber'] > 30 && !check_value('DaysOrFoll'))
 		//{
 		//	$inpug_error = 1;
-		//	ui_msgs::display_error( _("When the check box to indicate a day in the following month is the due date, the due date cannot be a day after the 30th. A number between 1 and 30 is expected."));
+		//	Errors::error( _("When the check box to indicate a day in the following month is the due date, the due date cannot be a day after the 30th. A number between 1 and 30 is expected."));
 		//	JS::set_focus('DayNumber');
 		//}
 		// No constrain on day values, Joe Hunt 2010-06-18.
 		//elseif ($_POST['DayNumber'] > 500 && check_value('DaysOrFoll'))
 		//{
 		//	$inpug_error = 1;
-		//	ui_msgs::display_error( _("When the check box is not checked to indicate that the term expects a number of days after which accounts are due, the number entered should be less than 500 days."));
+		//	Errors::error( _("When the check box is not checked to indicate that the term expects a number of days after which accounts are due, the number entered should be less than 500 days."));
 		//	JS::set_focus('DayNumber');
 		//}
 		if ($_POST['DayNumber'] == '') {
@@ -46,15 +46,15 @@
 		if ($inpug_error != 1) {
 			if ($selected_id != -1) {
 				if (check_value('DaysOrFoll')) {
-					$sql = "UPDATE payment_terms SET terms=" . DBOld::escape($_POST['terms']) . ",
+					$sql = "UPDATE payment_terms SET terms=" . DB::escape($_POST['terms']) . ",
 					day_in_following_month=0,
-					days_before_due=" . DBOld::escape($_POST['DayNumber']) . "
-					WHERE terms_indicator = " . DBOld::escape($selected_id);
+					days_before_due=" . DB::escape($_POST['DayNumber']) . "
+					WHERE terms_indicator = " . DB::escape($selected_id);
 } else {
-					$sql = "UPDATE payment_terms SET terms=" . DBOld::escape($_POST['terms']) . ",
-					day_in_following_month=" . DBOld::escape($_POST['DayNumber']) . ",
+					$sql = "UPDATE payment_terms SET terms=" . DB::escape($_POST['terms']) . ",
+					day_in_following_month=" . DB::escape($_POST['DayNumber']) . ",
 					days_before_due=0
-					WHERE terms_indicator = " . DBOld::escape($selected_id);
+					WHERE terms_indicator = " . DB::escape($selected_id);
 				}
 				$note = _('Selected payment terms have been updated');
 } else {
@@ -63,40 +63,40 @@
 					 = "INSERT INTO payment_terms (terms,
 					days_before_due, day_in_following_month)
 					VALUES (" .
-					 DBOld::escape($_POST['terms']) . ", " . DBOld::escape($_POST['DayNumber']) . ", 0)";
+					 DB::escape($_POST['terms']) . ", " . DB::escape($_POST['DayNumber']) . ", 0)";
 } else {
 					$sql
 					 = "INSERT INTO payment_terms (terms,
 					days_before_due, day_in_following_month)
-					VALUES (" . DBOld::escape($_POST['terms']) . ",
-					0, " . DBOld::escape($_POST['DayNumber']) . ")";
+					VALUES (" . DB::escape($_POST['terms']) . ",
+					0, " . DB::escape($_POST['DayNumber']) . ")";
 				}
 				$note = _('New payment terms have been added');
 			}
 			//run the sql from either of the above possibilites
 			DBOld::query($sql, "The payment term could not be added or updated");
-			ui_msgs::display_notification($note);
+			Errors::notice($note);
 			$Mode = 'RESET';
 		}
 	}
 	if ($Mode == 'Delete') {
 		// PREVENT DELETES IF DEPENDENT RECORDS IN debtors_master
-		$sql = "SELECT COUNT(*) FROM debtors_master WHERE payment_terms = " . DBOld::escape($selected_id);
+		$sql = "SELECT COUNT(*) FROM debtors_master WHERE payment_terms = " . DB::escape($selected_id);
 		$result = DBOld::query($sql, "check failed");
 		$myrow = DBOld::fetch_row($result);
 		if ($myrow[0] > 0) {
-			ui_msgs::display_error(_("Cannot delete this payment term, because customer accounts have been created referring to this term."));
+			Errors::error(_("Cannot delete this payment term, because customer accounts have been created referring to this term."));
 		} else {
-			$sql = "SELECT COUNT(*) FROM suppliers WHERE payment_terms = " . DBOld::escape($selected_id);
+			$sql = "SELECT COUNT(*) FROM suppliers WHERE payment_terms = " . DB::escape($selected_id);
 			$result = DBOld::query($sql, "check failed");
 			$myrow = DBOld::fetch_row($result);
 			if ($myrow[0] > 0) {
-				ui_msgs::display_error(_("Cannot delete this payment term, because supplier accounts have been created referring to this term"));
+				Errors::error(_("Cannot delete this payment term, because supplier accounts have been created referring to this term"));
 } else {
 				//only delete if used in neither customer or supplier accounts
-				$sql = "DELETE FROM payment_terms WHERE terms_indicator=" . DBOld::escape($selected_id);
+				$sql = "DELETE FROM payment_terms WHERE terms_indicator=" . DB::escape($selected_id);
 				DBOld::query($sql, "could not delete a payment terms");
-				ui_msgs::display_notification(_('Selected payment terms have been deleted'));
+				Errors::notice(_('Selected payment terms have been deleted'));
 			}
 		}
 		//end if payment terms used in customer or supplier accounts
@@ -151,7 +151,7 @@
 			//editing an existing payment terms
 			$sql
 			 = "SELECT * FROM payment_terms
-			WHERE terms_indicator=" . DBOld::escape($selected_id);
+			WHERE terms_indicator=" . DB::escape($selected_id);
 			$result = DBOld::query($sql, "could not get payment term");
 			$myrow = DBOld::fetch($result);
 			$_POST['terms'] = $myrow["terms"];

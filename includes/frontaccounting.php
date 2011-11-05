@@ -160,7 +160,7 @@
 			 . '/installed_extensions.php';
 			// Check if the file is writable first.
 			if (!$zp = fopen($filename, 'w')) {
-				ui_msgs::display_error(
+				Errors::error(
 					sprintf(
 						_("Cannot open the extension setup file '%s' for writing."),
 						$filename
@@ -169,7 +169,7 @@
 				return false;
 } else {
 				if (!fwrite($zp, $msg)) {
-					ui_msgs::display_error(
+					Errors::error(
 						sprintf(
 							_("Cannot write to the extensions setup file '%s'."),
 							$filename

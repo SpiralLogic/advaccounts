@@ -44,11 +44,11 @@
 		const EMPTY_RESULT = "";
 
 		public static function check($validate, $msg = '', $extra = null) {
-			//if (!property_exists(__CLASS__, $validate)) return ui_msgs::display_error("TABLE $validate doesn't exist", true);
+			//if (!property_exists(__CLASS__, $validate)) return Errors::error("TABLE $validate doesn't exist", true);
 			if ($extra === false) return 0;
 			if ($extra !== null) {
 			if ( empty($extra)) throw new Adv_Exception("Extra information not provided for ".$validate);
-				if (is_string($extra)) $extra  = DBOld::escape($extra);
+				if (is_string($extra)) $extra  = DB::escape($extra);
 			} else {
 				$extra = '';
 			}

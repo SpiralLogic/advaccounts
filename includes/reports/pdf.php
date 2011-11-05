@@ -59,7 +59,7 @@
 		{
 			global $page_security;
 			if (!CurrentUser::instance()->can_access_page($page_security)) {
-				ui_msgs::display_error(_("The security settings on your account do not permit you to print this report"));
+				Errors::error(_("The security settings on your account do not permit you to print this report"));
 				end_page();
 				exit;
 			}
@@ -924,10 +924,10 @@
 					$mail->attachment($fname);
 					$ret = $mail->send();
 					if (!$ret) {
-						ui_msgs::display_error('Error: ' . $emailAddress . ': ' . $mail->toerror);
+						Errors::error('Error: ' . $emailAddress . ': ' . $mail->toerror);
 					} else {
 						$myrow['reference'] = (isset($myrow['reference'])) ? $myrow['reference'] : '';
-						ui_msgs::display_notification(
+						Errors::notice(
 							$this->title . " " . $myrow['reference'] . " " . _("has been sent by email to: ") . str_replace(
 								",", "",
 								$myrow['DebtorName']
@@ -969,10 +969,10 @@
 						$prn   = new Reports_Printer_Remote($printer['queue'], $printer['host'], $printer['port'], $printer['timeout']);
 						$error = $prn->print_file($fname);
 						if ($error) {
-							ui_msgs::display_error($error);
+							Errors::error($error);
 						} else
 						{
-							ui_msgs::display_notification(_('Report has been sent to network printer ') . $printer['name']);
+							Errors::notice(_('Report has been sent to network printer ') . $printer['name']);
 						}
 					}
 				}

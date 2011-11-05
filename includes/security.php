@@ -76,20 +76,20 @@
 			$sql
 			 = "INSERT INTO security_roles (role, description, sections, areas)
 			VALUES ("
-			 . DBOld::escape($name) . ","
-			 . DBOld::escape($description) . ","
-			 . DBOld::escape(implode(';', $sections)) . ","
-			 . DBOld::escape(implode(';', $areas)) . ")";
+			 . DB::escape($name) . ","
+			 . DB::escape($description) . ","
+			 . DB::escape(implode(';', $sections)) . ","
+			 . DB::escape(implode(';', $areas)) . ")";
 			DBOld::query($sql, "could not add new security role");
 		}
 
 		//--------------------------------------------------------------------------------------------------
 		public static function update_role($id, $name, $description, $sections, $areas)
 		{
-			$sql = "UPDATE security_roles SET role=" . DBOld::escape($name)
-			 . ",description=" . DBOld::escape($description)
-			 . ",sections=" . DBOld::escape(implode(';', $sections))
-			 . ",areas=" . DBOld::escape(implode(';', $areas))
+			$sql = "UPDATE security_roles SET role=" . DB::escape($name)
+			 . ",description=" . DB::escape($description)
+			 . ",sections=" . DB::escape(implode(';', $sections))
+			 . ",areas=" . DB::escape(implode(';', $areas))
 			 . " WHERE id=$id";
 			DBOld::query($sql, "could not update role");
 		}

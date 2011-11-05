@@ -142,7 +142,7 @@
 		$total = array(0, 0, 0, 0, 0);
 		$sql = "SELECT debtor_no, name, curr_code FROM debtors_master";
 		if ($fromcust != ALL_NUMERIC) {
-			$sql .= " WHERE debtor_no=" . DBOld::escape($fromcust);
+			$sql .= " WHERE debtor_no=" . DB::escape($fromcust);
 		}
 		$sql .= " ORDER BY name";
 		$result = DBOld::query($sql, "The customers could not be retrieved");

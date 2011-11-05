@@ -37,9 +37,9 @@
 		$sql = "INSERT INTO bank_trans (type, trans_no, bank_act, ref,
 		trans_date, amount, person_type_id, person_id, undeposited) ";
 		$undeposited = ($bank_act == 5 && $type == 12) ? 1 : 0;
-		$sql .= "VALUES ($type, $trans_no, '$bank_act', " . DBOld::escape($ref) . ", '$sqlDate',
-		" . DBOld::escape($amount_bank) . ", " . DBOld::escape($person_type_id)
-		 . ", " . DBOld::escape($person_id) . ", " . DBOld::escape($undeposited) . ")";
+		$sql .= "VALUES ($type, $trans_no, '$bank_act', " . DB::escape($ref) . ", '$sqlDate',
+		" . DB::escape($amount_bank) . ", " . DB::escape($person_type_id)
+		 . ", " . DB::escape($person_id) . ", " . DB::escape($undeposited) . ")";
 
 		if ($err_msg == "")
 			$err_msg = "The bank transaction could not be inserted";
@@ -50,8 +50,8 @@
 	//----------------------------------------------------------------------------------------
 
 	function exists_bank_trans($type, $type_no) {
-		$sql = "SELECT trans_no FROM bank_trans WHERE type=" . DBOld::escape($type)
-		 . " AND trans_no=" . DBOld::escape($type_no);
+		$sql = "SELECT trans_no FROM bank_trans WHERE type=" . DB::escape($type)
+		 . " AND trans_no=" . DB::escape($type_no);
 		$result = DBOld::query($sql, "Cannot retreive a bank transaction");
 
 		return (DBOld::num_rows($result) > 0);
@@ -64,13 +64,13 @@
 		FROM bank_trans, bank_accounts
 		WHERE bank_accounts.id=bank_trans.bank_act ";
 		if ($type != null)
-			$sql .= " AND type=" . DBOld::escape($type);
+			$sql .= " AND type=" . DB::escape($type);
 		if ($trans_no != null)
-			$sql .= " AND bank_trans.trans_no = " . DBOld::escape($trans_no);
+			$sql .= " AND bank_trans.trans_no = " . DB::escape($trans_no);
 		if ($person_type_id != null)
-			$sql .= " AND bank_trans.person_type_id = " . DBOld::escape($person_type_id);
+			$sql .= " AND bank_trans.person_type_id = " . DB::escape($person_type_id);
 		if ($person_id != null)
-			$sql .= " AND bank_trans.person_id = " . DBOld::escape($person_id);
+			$sql .= " AND bank_trans.person_id = " . DB::escape($person_id);
 		$sql .= " ORDER BY trans_date, bank_trans.id";
 
 		return DBOld::query($sql, "query for bank transaction");
@@ -80,8 +80,8 @@
 
 	function get_gl_trans_value($account, $type, $trans_no) {
 		$sql = "SELECT SUM(amount) FROM gl_trans WHERE account="
-		 . DBOld::escape($account) . " AND type=" . DBOld::escape($type)
-		 . " AND type_no=" . DBOld::escape($trans_no);
+		 . DB::escape($account) . " AND type=" . DB::escape($type)
+		 . " AND type_no=" . DB::escape($trans_no);
 
 		$result = DBOld::query($sql, "query for gl trans value");
 
@@ -96,7 +96,7 @@
 			DBOld::begin_transaction();
 
 		$sql = "UPDATE bank_trans SET amount=0
-		WHERE type=" . DBOld::escape($type) . " AND trans_no=" . DBOld::escape($type_no);
+		WHERE type=" . DB::escape($type) . " AND trans_no=" . DB::escape($type_no);
 
 		$result = DBOld::query($sql, "could not void bank transactions for type=$type and trans_no=$type_no");
 

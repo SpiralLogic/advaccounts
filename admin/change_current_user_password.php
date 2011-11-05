@@ -15,17 +15,17 @@
 	function can_process()
 	{
 		if (strlen($_POST['password']) < 4) {
-			ui_msgs::display_error(_("The password entered must be at least 4 characters long."));
+			Errors::error(_("The password entered must be at least 4 characters long."));
 			JS::set_focus('password');
 			return false;
 		}
 		if (strstr($_POST['password'], CurrentUser::instance()->username) != false) {
-			ui_msgs::display_error(_("The password cannot contain the user login."));
+			Errors::error(_("The password cannot contain the user login."));
 			JS::set_focus('password');
 			return false;
 		}
 		if ($_POST['password'] != $_POST['passwordConfirm']) {
-			ui_msgs::display_error(_("The passwords entered are not the same."));
+			Errors::error(_("The passwords entered are not the same."));
 			JS::set_focus('password');
 			return false;
 		}
@@ -35,27 +35,27 @@
 	if (isset($_POST['UPDATE_ITEM'])) {
 		if (can_process()) {
 			if (Config::get('demo_mode')) {
-				ui_msgs::display_warning(_("Password cannot be changed in demo mode."));
+				Errors::warning(_("Password cannot be changed in demo mode."));
 			} else {
 				$auth  = new Auth(CurrentUser::instance()->username);
 				$check = $auth->checkPasswordStrength($_POST['password']);
 				if ($check['error'] > 0) {
-					ui_msgs::display_error($check['text']);
+					Errors::error($check['text']);
 				}
 				elseif ($check['strength'] < 3)
 				{
-					ui_msgs::display_error(_("Password Too Weeak!"));
+					Errors::error(_("Password Too Weeak!"));
 				}
 				else {
 					$auth->update_password($_SESSION['wa_current_user']->user, $_POST['password']);
 					unset($_SESSION['change_password']);
-					ui_msgs::display_notification(_("Password Changed"));
+					Errors::notice(_("Password Changed"));
 				}
 			}
 			$Ajax->activate('_page_body');
 		}
 	} elseif (Input::session('change_password')) {
-		ui_msgs::display_warning('You are required to change your password!');
+		Errors::warning('You are required to change your password!');
 	}
 	start_form();
 	start_table(Config::get('tables_style'));

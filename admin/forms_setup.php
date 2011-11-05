@@ -21,7 +21,7 @@
 			Refs::save_next_reference($type["type_id"], $_POST['id' . $type["type_id"]]);
 		}
 		DBOld::commit_transaction();
-		ui_msgs::display_notification(_("Forms settings have been updated."));
+		Errors::notice(_("Forms settings have been updated."));
 	}
 	start_form();
 	start_outer_table(Config::get('tables_style2'));

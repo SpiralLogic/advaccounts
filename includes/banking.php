@@ -90,7 +90,7 @@
 			$result = DBOld::query($sql, "could not query exchange rates");
 			if (DBOld::num_rows($result) == 0) {
 				// no stored exchange rate, just return 1
-				ui_msgs::display_error(
+				Errors::error(
 					sprintf(_("Cannot retrieve exchange rate for currency %s as of %s. Please add exchange rate manually on Exchange Rates page."),
 									$currency_code, $date_));
 				return 1.000;

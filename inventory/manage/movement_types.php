@@ -19,16 +19,16 @@
 		$input_error = 0;
 		if (strlen($_POST['name']) == 0) {
 			$input_error = 1;
-			ui_msgs::display_error(_("The inventory movement type name cannot be empty."));
+			Errors::error(_("The inventory movement type name cannot be empty."));
 			JS::set_focus('name');
 		}
 		if ($input_error != 1) {
 			if ($selected_id != -1) {
 				update_movement_type($selected_id, $_POST['name']);
-				ui_msgs::display_notification(_('Selected movement type has been updated'));
+				Errors::notice(_('Selected movement type has been updated'));
 } else {
 				add_movement_type($_POST['name']);
-				ui_msgs::display_notification(_('New movement type has been added'));
+				Errors::notice(_('New movement type has been added'));
 			}
 			$Mode = 'RESET';
 		}
@@ -38,11 +38,11 @@
 	{
 		$sql
 		 = "SELECT COUNT(*) FROM stock_moves
-		WHERE type=" . ST_INVADJUST . " AND person_id=" . DBOld::escape($selected_id);
+		WHERE type=" . ST_INVADJUST . " AND person_id=" . DB::escape($selected_id);
 		$result = DBOld::query($sql, "could not query stock moves");
 		$myrow  = DBOld::fetch_row($result);
 		if ($myrow[0] > 0) {
-			ui_msgs::display_error(_("Cannot delete this inventory movement type because item transactions have been created referring to it."));
+			Errors::error(_("Cannot delete this inventory movement type because item transactions have been created referring to it."));
 			return false;
 		}
 		return true;
@@ -52,7 +52,7 @@
 	if ($Mode == 'Delete') {
 		if (can_delete($selected_id)) {
 			delete_movement_type($selected_id);
-			ui_msgs::display_notification(_('Selected movement type has been deleted'));
+			Errors::notice(_('Selected movement type has been deleted'));
 		}
 		$Mode = 'RESET';
 	}

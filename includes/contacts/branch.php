@@ -119,33 +119,33 @@
 
 			DBOld::begin_transaction();
 			$sql = "UPDATE cust_branch SET
-			br_name=" . DBOld::escape($this->name) . ",
-			br_address=" . DBOld::escape($this->address) . ",
-			city=" . DBOld::escape($this->city) . ",
-			state=" . DBOld::escape($this->state) . ",
-			postcode=" . DBOld::escape($this->postcode) . ",
-			br_post_address=" . DBOld::escape($this->post_address) . ",
-			area=" . DBOld::escape($this->area) . ",
-			salesman=" . DBOld::escape($this->salesman) . ",
-			phone=" . DBOld::escape($this->phone) . ",
-			phone2=" . DBOld::escape($this->phone2) . ",
-			fax=" . DBOld::escape($this->fax) . ",
-			contact_name=" . DBOld::escape($this->contact_name) . ",
-			email=" . DBOld::escape($this->email) . ",
-			default_location=" . DBOld::escape($this->default_location) . ",
-			tax_group_id=" . DBOld::escape($this->tax_group_id) . ",
-			sales_account=" . DBOld::escape($this->sales_account) . ",
-			sales_discount_account=" . DBOld::escape($this->sales_discount_account) . ",
-			receivables_account=" . DBOld::escape($this->receivables_account) . ",
-			payment_discount_account=" . DBOld::escape($this->payment_discount_account) . ",
-			default_ship_via=" . DBOld::escape($this->default_ship_via) . ",
-			disable_trans=" . DBOld::escape($this->disable_trans) . ",
-            group_no=" . DBOld::escape($this->group_no) . ",
-            notes=" . DBOld::escape($this->notes) . ",
-            inactive=" . DBOld::escape($this->inactive) . ",
-            branch_ref=" . DBOld::escape($this->branch_ref) . "
-              WHERE branch_code =" . DBOld::escape($this->branch_code) . "
-    	        AND debtor_no=" . DBOld::escape($this->debtor_no);
+			br_name=" . DB::escape($this->name) . ",
+			br_address=" . DB::escape($this->address) . ",
+			city=" . DB::escape($this->city) . ",
+			state=" . DB::escape($this->state) . ",
+			postcode=" . DB::escape($this->postcode) . ",
+			br_post_address=" . DB::escape($this->post_address) . ",
+			area=" . DB::escape($this->area) . ",
+			salesman=" . DB::escape($this->salesman) . ",
+			phone=" . DB::escape($this->phone) . ",
+			phone2=" . DB::escape($this->phone2) . ",
+			fax=" . DB::escape($this->fax) . ",
+			contact_name=" . DB::escape($this->contact_name) . ",
+			email=" . DB::escape($this->email) . ",
+			default_location=" . DB::escape($this->default_location) . ",
+			tax_group_id=" . DB::escape($this->tax_group_id) . ",
+			sales_account=" . DB::escape($this->sales_account) . ",
+			sales_discount_account=" . DB::escape($this->sales_discount_account) . ",
+			receivables_account=" . DB::escape($this->receivables_account) . ",
+			payment_discount_account=" . DB::escape($this->payment_discount_account) . ",
+			default_ship_via=" . DB::escape($this->default_ship_via) . ",
+			disable_trans=" . DB::escape($this->disable_trans) . ",
+            group_no=" . DB::escape($this->group_no) . ",
+            notes=" . DB::escape($this->notes) . ",
+            inactive=" . DB::escape($this->inactive) . ",
+            branch_ref=" . DB::escape($this->branch_ref) . "
+              WHERE branch_code =" . DB::escape($this->branch_code) . "
+    	        AND debtor_no=" . DB::escape($this->debtor_no);
 			DBOld::query($sql, "The customer could not be updated");
 			DBOld::commit_transaction();
 			return $this->_status(true, 'Processing', "Branch has been updated.");
@@ -156,7 +156,7 @@
 			$sql = "INSERT INTO cust_branch (debtor_no, br_name, branch_ref, br_address, city, state, postcode,
 				salesman, phone, phone2, fax, contact_name, area, email, tax_group_id, sales_account, sales_discount_account, receivables_account, payment_discount_account, default_location,
 				br_post_address, disable_trans, group_no, default_ship_via, notes,inactive)
-				VALUES (" . DBOld::escape($this->debtor_no) . "," . DBOld::escape($this->name) . ", " . DBOld::escape($this->branch_ref) . ", " . DBOld::escape($this->address) . ", " . DBOld::escape($this->city) . ", " . DBOld::escape($this->state) . ", " . DBOld::escape($this->postcode) . ", " . DBOld::escape($this->salesman) . ", " . DBOld::escape($this->phone) . ", " . DBOld::escape($this->phone2) . ", " . DBOld::escape($this->fax) . "," . DBOld::escape($this->contact_name) . ", " . DBOld::escape($this->area) . ", " . DBOld::escape($this->email) . ", " . DBOld::escape($this->tax_group_id) . ", " . DBOld::escape($this->sales_account) . ", " . DBOld::escape($this->sales_discount_account) . ", " . DBOld::escape($this->receivables_account) . ", " . DBOld::escape($this->payment_discount_account) . ", " . DBOld::escape($this->default_location) . ", " . DBOld::escape($this->br_post_address) . "," . DBOld::escape($this->disable_trans) . ", " . DBOld::escape($this->group_no) . ", " . DBOld::escape($this->default_ship_via) . ", " . DBOld::escape($this->notes) . ", " . DBOld::escape($this->inactive) . ")";
+				VALUES (" . DB::escape($this->debtor_no) . "," . DB::escape($this->name) . ", " . DB::escape($this->branch_ref) . ", " . DB::escape($this->address) . ", " . DB::escape($this->city) . ", " . DB::escape($this->state) . ", " . DB::escape($this->postcode) . ", " . DB::escape($this->salesman) . ", " . DB::escape($this->phone) . ", " . DB::escape($this->phone2) . ", " . DB::escape($this->fax) . "," . DB::escape($this->contact_name) . ", " . DB::escape($this->area) . ", " . DB::escape($this->email) . ", " . DB::escape($this->tax_group_id) . ", " . DB::escape($this->sales_account) . ", " . DB::escape($this->sales_discount_account) . ", " . DB::escape($this->receivables_account) . ", " . DB::escape($this->payment_discount_account) . ", " . DB::escape($this->default_location) . ", " . DB::escape($this->br_post_address) . "," . DB::escape($this->disable_trans) . ", " . DB::escape($this->group_no) . ", " . DB::escape($this->default_ship_via) . ", " . DB::escape($this->notes) . ", " . DB::escape($this->inactive) . ")";
 			DBOld::query($sql, "The branch could not be added");
 			$this->branch_code = DBOld::insert_id();
 			DBOld::commit_transaction();

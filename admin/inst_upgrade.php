@@ -98,7 +98,7 @@
 				}
 				$ret &= $inst->install($force);
 			} else if ($state !== true) {
-				ui_msgs::display_error(_("Upgrade cannot be done because database has been already partially upgraded. Please downgrade database to clean previous version or try forced upgrade."));
+				Errors::error(_("Upgrade cannot be done because database has been already partially upgraded. Please downgrade database to clean previous version or try forced upgrade."));
 				$ret = false;
 			}
 		}
@@ -126,7 +126,7 @@
 		{
 			// connect to database
 			if (!($db = db_open($conn))) {
-				ui_msgs::display_error(
+				Errors::error(
 					_("Cannot connect to database for company")
 					 . " '" . $conn['name'] . "'"
 				);
@@ -141,7 +141,7 @@
 			{
 				$ret = upgrade_step($i, $conn);
 				if (!$ret) {
-					ui_msgs::display_error(
+					Errors::error(
 						sprintf(
 							_("Database upgrade to version %s failed for company '%s'."),
 							$inst->version, $conn['name']
@@ -159,7 +159,7 @@
 		if ($ret) { // re-read the prefs
 			$user                          = User::get_by_login(CurrentUser::instance()->username);
 			CurrentUser::instance()->prefs = new userPrefs($user);
-			ui_msgs::display_notification(_('All companies data has been successfully updated'));
+			Errors::notice(_('All companies data has been successfully updated'));
 		}
 		$Ajax->activate('_page_body');
 	}
@@ -203,7 +203,7 @@
 	}
 	end_table(1);
 	if ($partial != 0) {
-		ui_msgs::display_warning(
+		Errors::warning(
 			_(
 				"Database upgrades marked as partially installed cannot be installed automatically.
 You have to clean database manually to enable them, or try to perform forced upgrade."

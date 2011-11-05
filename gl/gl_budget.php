@@ -16,9 +16,9 @@
 	Validation::check(Validation::GL_ACCOUNT_GROUPS, _("There are no account groups defined. Please define at least one account group before entering accounts."));
 	//-------------------------------------------------------------------------------------
 	function exists_gl_budget($date_, $account, $dimension, $dimension2) {
-		$sql = "SELECT account FROM budget_trans WHERE account=" . DBOld::escape($account)
+		$sql = "SELECT account FROM budget_trans WHERE account=" . DB::escape($account)
 		 . " AND tran_date='$date_' AND
-		dimension_id=" . DBOld::escape($dimension) . " AND dimension2_id=" . DBOld::escape($dimension2);
+		dimension_id=" . DB::escape($dimension) . " AND dimension2_id=" . DB::escape($dimension2);
 		$result = DBOld::query($sql, "Cannot retreive a gl transaction");
 		return (DBOld::num_rows($result) > 0);
 	}
@@ -26,26 +26,26 @@
 	function add_update_gl_budget_trans($date_, $account, $dimension, $dimension2, $amount) {
 		$date = Dates::date2sql($date_);
 		if (exists_gl_budget($date, $account, $dimension, $dimension2)) {
-			$sql = "UPDATE budget_trans SET amount=" . DBOld::escape($amount)
-			 . " WHERE account=" . DBOld::escape($account)
-			 . " AND dimension_id=" . DBOld::escape($dimension)
-			 . " AND dimension2_id=" . DBOld::escape($dimension2)
+			$sql = "UPDATE budget_trans SET amount=" . DB::escape($amount)
+			 . " WHERE account=" . DB::escape($account)
+			 . " AND dimension_id=" . DB::escape($dimension)
+			 . " AND dimension2_id=" . DB::escape($dimension2)
 			 . " AND tran_date='$date'";
 		} else {
 			$sql
 			 = "INSERT INTO budget_trans (tran_date,
 			account, dimension_id, dimension2_id, amount, memo_) VALUES ('$date',
-			" . DBOld::escape($account) . ", " . DBOld::escape($dimension) . ", "
-			 . DBOld::escape($dimension2) . ", " . DBOld::escape($amount) . ", '')";
+			" . DB::escape($account) . ", " . DB::escape($dimension) . ", "
+			 . DB::escape($dimension2) . ", " . DB::escape($amount) . ", '')";
 		}
 		DBOld::query($sql, "The GL budget transaction could not be saved");
 	}
 
 	function delete_gl_budget_trans($date_, $account, $dimension, $dimension2) {
 		$date = Dates::date2sql($date_);
-		$sql = "DELETE FROM budget_trans WHERE account=" . DBOld::escape($account)
-		 . " AND dimension_id=" . DBOld::escape($dimension)
-		 . " AND dimension2_id=" . DBOld::escape($dimension2)
+		$sql = "DELETE FROM budget_trans WHERE account=" . DB::escape($account)
+		 . " AND dimension_id=" . DB::escape($dimension)
+		 . " AND dimension2_id=" . DB::escape($dimension2)
 		 . " AND tran_date='$date'";
 		DBOld::query($sql, "The GL budget transaction could not be deleted");
 	}
@@ -55,10 +55,10 @@
 		$to = Dates::date2sql($to_date);
 		$sql
 		 = "SELECT SUM(amount) FROM budget_trans
-		WHERE account=" . DBOld::escape($account)
+		WHERE account=" . DB::escape($account)
 		 . " AND tran_date >= '$from' AND tran_date <= '$to'
-		 AND dimension_id = " . DBOld::escape($dimension)
-		 . " AND dimension2_id = " . DBOld::escape($dimension2);
+		 AND dimension_id = " . DB::escape($dimension)
+		 . " AND dimension2_id = " . DB::escape($dimension2);
 		$result = DBOld::query($sql, "No budget accounts were returned");
 		$row = DBOld::fetch_row($result);
 		return $row[0];
@@ -83,9 +83,9 @@
 		}
 		DBOld::commit_transaction();
 		if (isset($_POST['add'])) {
-			ui_msgs::display_notification(_("The Budget has been saved."));
+			Errors::notice(_("The Budget has been saved."));
 		} else {
-			ui_msgs::display_notification(_("The Budget has been deleted."));
+			Errors::notice(_("The Budget has been deleted."));
 		}
 		//meta_forward($_SERVER['PHP_SELF']);
 		$Ajax->activate('budget_tbl');
@@ -131,7 +131,7 @@
 		table_header($th);
 		$year = $_POST['fyear'];
 		if (get_post('update') == '') {
-			$sql = "SELECT * FROM fiscal_year WHERE id=" . DBOld::escape($year);
+			$sql = "SELECT * FROM fiscal_year WHERE id=" . DB::escape($year);
 			$result = DBOld::query($sql, "could not get current fiscal year");
 			$fyear = DBOld::fetch($result);
 			$_POST['begin'] = Dates::sql2date($fyear['begin']);

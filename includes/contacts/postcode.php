@@ -12,14 +12,14 @@
 		private static $count = 0;
 
 		static function				 searchByPostcode($postcode = "*") {
-			$sql = "SELECT ID as id, CONCAT(Locality,', ',Pcode,', ',State) as label,  CONCAT(Locality,'|',Pcode,'|',State) as value FROM postcodes WHERE Pcode LIKE " . DBOld::escape($postcode . '%') . " ORDER BY Pcode LIMIT 20";
+			$sql = "SELECT ID as id, CONCAT(Locality,', ',Pcode,', ',State) as label,  CONCAT(Locality,'|',Pcode,'|',State) as value FROM postcodes WHERE Pcode LIKE " . DB::escape($postcode . '%') . " ORDER BY Pcode LIMIT 20";
 			$result = DBOld::query($sql, "Could not find postcode");
 			while (($resultArray[] = mysql_fetch_assoc($result)) || array_pop($resultArray)) ;
 			return $resultArray;
 		}
 
 		static function searchByCity($city = "*") {
-			$sql = "SELECT ID as id, CONCAT(Locality,', ',Pcode,', ',State) as label,  CONCAT(Locality,'|',Pcode,'|',State) as value FROM postcodes WHERE Locality LIKE " . DBOld::escape('%' . $city . '%') . " ORDER BY Locality LIMIT 20";
+			$sql = "SELECT ID as id, CONCAT(Locality,', ',Pcode,', ',State) as label,  CONCAT(Locality,'|',Pcode,'|',State) as value FROM postcodes WHERE Locality LIKE " . DB::escape('%' . $city . '%') . " ORDER BY Locality LIMIT 20";
 			$result = DBOld::query($sql, "Could not find city");
 			while (($resultArray[] = mysql_fetch_assoc($result)) || array_pop($resultArray)) ;
 			return $resultArray;

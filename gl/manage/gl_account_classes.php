@@ -16,12 +16,12 @@
 	//-----------------------------------------------------------------------------------
 	function can_process() {
 		if (!is_numeric($_POST['id'])) {
-			ui_msgs::display_error(_("The account class ID must be numeric."));
+			Errors::error(_("The account class ID must be numeric."));
 			JS::set_focus('id');
 			return false;
 		}
 		if (strlen($_POST['name']) == 0) {
-			ui_msgs::display_error(_("The account class name cannot be empty."));
+			Errors::error(_("The account class name cannot be empty."));
 			JS::set_focus('name');
 			return false;
 		}
@@ -36,11 +36,11 @@
 		if (can_process()) {
 			if ($selected_id != -1) {
 				if (update_account_class($selected_id, $_POST['name'], $_POST['ctype'])) {
-					ui_msgs::display_notification(_('Selected account class settings has been updated'));
+					Errors::notice(_('Selected account class settings has been updated'));
 				}
 } else {
 				if (add_account_class($_POST['id'], $_POST['name'], $_POST['ctype'])) {
-					ui_msgs::display_notification(_('New account class has been added'));
+					Errors::notice(_('New account class has been added'));
 					$Mode = 'RESET';
 				}
 			}
@@ -57,7 +57,7 @@
 		$result = DBOld::query($sql, "could not query chart master");
 		$myrow = DBOld::fetch_row($result);
 		if ($myrow[0] > 0) {
-			ui_msgs::display_error(_("Cannot delete this account class because GL account types have been created referring to it."));
+			Errors::error(_("Cannot delete this account class because GL account types have been created referring to it."));
 			return false;
 		}
 		return true;
@@ -67,7 +67,7 @@
 	if ($Mode == 'Delete') {
 		if (can_delete($selected_id)) {
 			delete_account_class($selected_id);
-			ui_msgs::display_notification(_('Selected account class has been deleted'));
+			Errors::notice(_('Selected account class has been deleted'));
 		}
 		$Mode = 'RESET';
 	}

@@ -22,7 +22,7 @@
 		$invoice_no = $_GET['AddedID'];
 		$trans_type = ST_SUPPINVOICE;
 		echo "<center>";
-		ui_msgs::display_notification(_("Supplier invoice has been processed."));
+		Errors::notice(_("Supplier invoice has been processed."));
 		ui_msgs::display_note(ui_view::get_trans_view_str($trans_type, $invoice_no, _("View this Invoice")));
 		hyperlink_no_params("/purchasing/inquiry/po_search.php", _("Purchase Order Maintainants"));
 		hyperlink_params($_SERVER['PHP_SELF'], _("Enter Another Invoice"), "New=1");
@@ -65,10 +65,10 @@
 	if (isset($_POST['AddGLCodeToTrans'])) {
 		$Ajax->activate('gl_items');
 		$input_error = false;
-		$sql         = "SELECT account_code, account_name FROM chart_master WHERE account_code=" . DBOld::escape($_POST['gl_code']);
+		$sql         = "SELECT account_code, account_name FROM chart_master WHERE account_code=" . DB::escape($_POST['gl_code']);
 		$result      = DBOld::query($sql, "get account information");
 		if (DBOld::num_rows($result) == 0) {
-			ui_msgs::display_error(_("The account code entered is not a valid code, this line cannot be added to the transaction."));
+			Errors::error(_("The account code entered is not a valid code, this line cannot be added to the transaction."));
 			JS::set_focus('gl_code');
 			$input_error = true;
 		}
@@ -76,13 +76,13 @@
 			$myrow       = DBOld::fetch_row($result);
 			$gl_act_name = $myrow[1];
 			if (!Validation::is_num('amount')) {
-				ui_msgs::display_error(_("The amount entered is not numeric. This line cannot be added to the transaction."));
+				Errors::error(_("The amount entered is not numeric. This line cannot be added to the transaction."));
 				JS::set_focus('amount');
 				$input_error = true;
 			}
 		}
 		if (!Tax_Types::is_tax_gl_unique(get_post('gl_code'))) {
-			ui_msgs::display_error(_("Cannot post to GL account used by more than one tax type."));
+			Errors::error(_("Cannot post to GL account used by more than one tax type."));
 			JS::set_focus('gl_code');
 			$input_error = true;
 		}
@@ -108,45 +108,45 @@
 	function check_data()
 	{
 		if (!Purchase_Trans::instance()->is_valid_trans_to_post()) {
-			ui_msgs::display_error(_("The invoice cannot be processed because the there are no items or values on the invoice.  Invoices are expected to have a charge."));
+			Errors::error(_("The invoice cannot be processed because the there are no items or values on the invoice.  Invoices are expected to have a charge."));
 			return false;
 		}
 		if (!Refs::is_valid(Purchase_Trans::instance()->reference)) {
-			ui_msgs::display_error(_("You must enter an invoice reference."));
+			Errors::error(_("You must enter an invoice reference."));
 			JS::set_focus('reference');
 			return false;
 		}
 		while (!is_new_reference(Purchase_Trans::instance()->reference, ST_SUPPINVOICE)) {
-			//ui_msgs::display_error(_("The entered reference is already in use."));
+			//Errors::error(_("The entered reference is already in use."));
 			//JS::set_focus('reference');
 			//return false;
 			Purchase_Trans::instance()->reference = Refs::get_next(ST_SUPPINVOICE);
 		}
 		if (!Refs::is_valid(Purchase_Trans::instance()->supp_reference)) {
-			ui_msgs::display_error(_("You must enter a supplier's invoice reference."));
+			Errors::error(_("You must enter a supplier's invoice reference."));
 			JS::set_focus('supp_reference');
 			return false;
 		}
 		if (!Dates::is_date(Purchase_Trans::instance()->tran_date)) {
-			ui_msgs::display_error(_("The invoice as entered cannot be processed because the invoice date is in an incorrect format."));
+			Errors::error(_("The invoice as entered cannot be processed because the invoice date is in an incorrect format."));
 			JS::set_focus('trans_date');
 			return false;
 		}
 		elseif (!Dates::is_date_in_fiscalyear(Purchase_Trans::instance()->tran_date)) {
-			ui_msgs::display_error(_("The entered date is not in fiscal year."));
+			Errors::error(_("The entered date is not in fiscal year."));
 			JS::set_focus('trans_date');
 			return false;
 		}
 		if (!Dates::is_date(Purchase_Trans::instance()->due_date)) {
-			ui_msgs::display_error(_("The invoice as entered cannot be processed because the due date is in an incorrect format."));
+			Errors::error(_("The invoice as entered cannot be processed because the due date is in an incorrect format."));
 			JS::set_focus('due_date');
 			return false;
 		}
-		$sql = "SELECT Count(*) FROM supp_trans WHERE supplier_id=" . DBOld::escape(Purchase_Trans::instance()->supplier_id) . " AND supp_reference=" . DBOld::escape($_POST['supp_reference']) . " AND ov_amount!=0"; // ignore voided invoice references
+		$sql = "SELECT Count(*) FROM supp_trans WHERE supplier_id=" . DB::escape(Purchase_Trans::instance()->supplier_id) . " AND supp_reference=" . DB::escape($_POST['supp_reference']) . " AND ov_amount!=0"; // ignore voided invoice references
 		$result = DBOld::query($sql, "The sql to check for the previous entry of the same invoice failed");
 		$myrow  = DBOld::fetch_row($result);
 		if ($myrow[0] == 1) { /*Transaction reference already entered */
-			ui_msgs::display_error(_("This invoice number has already been entered. It cannot be entered again." . " (" . $_POST['supp_reference'] . ")"));
+			Errors::error(_("This invoice number has already been entered. It cannot be entered again." . " (" . $_POST['supp_reference'] . ")"));
 			return false;
 		}
 		return true;
@@ -190,17 +190,17 @@
 	function check_item_data($n)
 	{
 		if (!Validation::is_num('this_quantity_inv' . $n, 0) || input_num('this_quantity_inv' . $n) == 0) {
-			ui_msgs::display_error(_("The quantity to invoice must be numeric and greater than zero."));
+			Errors::error(_("The quantity to invoice must be numeric and greater than zero."));
 			JS::set_focus('this_quantity_inv' . $n);
 			return false;
 		}
 		if (!Validation::is_num('ChgPrice' . $n)) {
-			ui_msgs::display_error(_("The price is not numeric."));
+			Errors::error(_("The price is not numeric."));
 			JS::set_focus('ChgPrice' . $n);
 			return false;
 		}
 		if (!Validation::is_num('ExpPrice' . $n)) {
-			ui_msgs::display_error(_("The price is not numeric."));
+			Errors::error(_("The price is not numeric."));
 			JS::set_focus('ExpPrice' . $n);
 			return false;
 		}
@@ -209,7 +209,7 @@
 			if ($_POST['order_price' . $n] != input_num('ChgPrice' . $n)) {
 				if ($_POST['order_price' . $n] == 0 || input_num('ChgPrice' . $n) / $_POST['order_price' . $n] > (1 + ($margin / 100))) {
 					if ($_SESSION['err_over_charge'] != true) {
-						ui_msgs::display_error(
+						Errors::error(
 							_("The price being invoiced is more than the purchase order price by more than the allowed over-charge percentage. The system is set up to prohibit this. See the system administrator to modify the set up parameters if necessary.") . _(
 								"The over-charge percentage allowance is :"
 							) . $margin . "%"
@@ -226,7 +226,7 @@
 		}
 		if (Config::get('valid_charged_to_delivered_qty') == True) {
 			if (input_num('this_quantity_inv' . $n) / ($_POST['qty_recd' . $n] - $_POST['prev_quantity_inv' . $n]) > (1 + ($margin / 100))) {
-				ui_msgs::display_error(
+				Errors::error(
 					_("The quantity being invoiced is more than the outstanding quantity by more than the allowed over-charge percentage. The system is set up to prohibit this. See the system administrator to modify the set up parameters if necessary.") . _("The over-charge percentage allowance is :")
 					 . $margin . "%"
 				);
@@ -321,7 +321,7 @@
 				$myrow['std_cost_unit'], $grn["supplier_id"], 1, $myrow['unit_price']
 			);
 			DBOld::commit_transaction();
-			ui_msgs::display_notification(sprintf(_('All yet non-invoiced items on delivery line # %d has been removed.'), $id2));
+			Errors::notice(sprintf(_('All yet non-invoiced items on delivery line # %d has been removed.'), $id2));
 		}
 	}
 	if (isset($_POST['go'])) {
@@ -341,7 +341,7 @@
 		}
 	}
 	if ($_POST['supplier_id'] == '') {
-		ui_msgs::display_error(_("There is no supplier selected."));
+		Errors::error(_("There is no supplier selected."));
 	}
 	else {
 		display_grn_items(Purchase_Trans::instance(), 1);

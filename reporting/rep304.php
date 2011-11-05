@@ -54,11 +54,11 @@
 		AND ((debtor_trans.type=" . ST_CUSTDELIVERY . " AND debtor_trans.version=1) OR stock_moves.type=" . ST_CUSTCREDIT . ")
 		AND (stock_master.mb_flag='" . STOCK_PURCHASED . "' OR stock_master.mb_flag='" . STOCK_MANUFACTURE . "')";
 		if ($category != 0)
-			$sql .= " AND stock_master.category_id = " . DBOld::escape($category);
+			$sql .= " AND stock_master.category_id = " . DB::escape($category);
 		if ($location != 'all')
-			$sql .= " AND stock_moves.loc_code = " . DBOld::escape($location);
+			$sql .= " AND stock_moves.loc_code = " . DB::escape($location);
 		if ($fromcust != -1)
-			$sql .= " AND debtors_master.debtor_no = " . DBOld::escape($fromcust);
+			$sql .= " AND debtors_master.debtor_no = " . DB::escape($fromcust);
 		$sql .= " GROUP BY stock_master.stock_id, debtors_master.name ORDER BY stock_master.category_id,
 			stock_master.stock_id, debtors_master.name";
 		return DBOld::query($sql, "No transactions were returned");

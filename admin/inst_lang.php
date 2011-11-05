@@ -25,7 +25,7 @@
 	//---------------------------------------------------------------------------------------------
 	function check_data() {
 		if ($_POST['code'] == "" || $_POST['name'] == "" || $_POST['encoding'] == "") {
-			ui_msgs::display_error(_("Language name, code nor encoding cannot be empty"));
+			Errors::error(_("Language name, code nor encoding cannot be empty"));
 			return false;
 		}
 		return true;
@@ -145,7 +145,7 @@
 			end_row();
 		}
 		end_table();
-		ui_msgs::display_warning(_("The marked language is the current language which cannot be deleted."), 0, 0, "class='currentfg'");
+		Errors::warning(_("The marked language is the current language which cannot be deleted."), 0, 0, "class='currentfg'");
 	}
 
 	//---------------------------------------------------------------------------------------------
@@ -185,7 +185,7 @@
 		file_row(_("Language File") . " (PO)", 'uploadfile');
 		file_row(_("Language File") . " (MO)", 'uploadfile2');
 		end_table(0);
-		ui_msgs::display_warning(_("Select your language files from your local harddisk."), 0, 1);
+		Errors::warning(_("Select your language files from your local harddisk."), 0, 1);
 		echo "<center><input onclick='javascript:updateLanguage()' type='button' style='width:150px' value='" . _("Save") . "'></center>";
 		end_form();
 	}

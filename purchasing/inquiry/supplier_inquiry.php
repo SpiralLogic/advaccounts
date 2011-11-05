@@ -170,15 +170,15 @@
 			}
 			$ajaxsearch = "%" . $ajaxsearch . "%";
 			$sql .= " AND (";
-			$sql .= " supplier.supp_name LIKE " . DBOld::escape($ajaxsearch);
+			$sql .= " supplier.supp_name LIKE " . DB::escape($ajaxsearch);
 			if (db_pager::countFilter('supp_trans', 'trans_no', $ajaxsearch) > 0) {
-				$sql .= " OR trans.trans_no LIKE " . DBOld::escape($ajaxsearch);
+				$sql .= " OR trans.trans_no LIKE " . DB::escape($ajaxsearch);
 			}
 			if (db_pager::countFilter('supp_trans', 'reference', $ajaxsearch) > 0) {
-				$sql .= " OR trans.reference LIKE " . DBOld::escape($ajaxsearch);
+				$sql .= " OR trans.reference LIKE " . DB::escape($ajaxsearch);
 			}
 			if (db_pager::countFilter('supp_trans', 'supp_reference', $ajaxsearch) > 0) {
-				$sql .= " OR trans.supp_reference LIKE " . DBOld::escape($ajaxsearch);
+				$sql .= " OR trans.supp_reference LIKE " . DB::escape($ajaxsearch);
 			}
 			$sql .= ")";
 		}
@@ -188,7 +188,7 @@
 	            AND trans . tran_date <= '$date_to'";
 	}
 	if (Input::post('supplier_id') != ALL_TEXT) {
-		$sql .= " AND trans.supplier_id = " . DBOld::escape($_POST['supplier_id']);
+		$sql .= " AND trans.supplier_id = " . DB::escape($_POST['supplier_id']);
 	}
 	if (isset($_POST['filterType']) && $_POST['filterType'] != ALL_TEXT) {
 		if (($_POST['filterType'] == '1')) {

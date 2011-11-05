@@ -16,7 +16,7 @@
 		 = "SELECT cust_branch.*,salesman.salesman_name
 		FROM cust_branch, salesman
 		WHERE cust_branch.salesman=salesman.salesman_code
-		AND branch_code=" . DBOld::escape($branch_id);
+		AND branch_code=" . DB::escape($branch_id);
 		$result = DBOld::query($sql, "Cannot retreive a customer branch");
 		return DBOld::fetch($result);
 	}
@@ -25,7 +25,7 @@
 	{
 		$sql
 		 = "SELECT receivables_account,sales_account, sales_discount_account, payment_discount_account
-		FROM cust_branch WHERE branch_code=" . DBOld::escape($branch_id);
+		FROM cust_branch WHERE branch_code=" . DB::escape($branch_id);
 		$result = DBOld::query($sql, "Cannot retreive a customer branch");
 		return DBOld::fetch($result);
 	}
@@ -34,7 +34,7 @@
 	{
 		$sql
 		 = "SELECT br_name FROM cust_branch
-		WHERE branch_code = " . DBOld::escape($branch_id);
+		WHERE branch_code = " . DB::escape($branch_id);
 		$result = DBOld::query($sql, "could not retreive name for branch" . $branch_id);
 		$myrow = DBOld::fetch_row($result);
 		return $myrow[0];
@@ -44,7 +44,7 @@
 	{
 		$sql
 		 = "SELECT branch_code, debtor_no FROM cust_branch
-		WHERE group_no = " . DBOld::escape($group_no);
+		WHERE group_no = " . DB::escape($group_no);
 		return DBOld::query($sql, "could not retreive branches for group " . $group_no);
 	}
 

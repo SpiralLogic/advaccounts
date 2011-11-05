@@ -36,7 +36,7 @@
 	if (isset($_GET['AddedID'])) {
 		$trans_no = $_GET['AddedID'];
 		$trans_type = ST_JOURNAL;
-		ui_msgs::display_notification(_("Journal entry has been entered") . " #$trans_no");
+		Errors::notice(_("Journal entry has been entered") . " #$trans_no");
 		ui_msgs::display_note(ui_view::get_gl_view_str($trans_type, $trans_no, _("&View this Journal Entry")));
 		ui_view::reset_focus();
 		hyperlink_params($_SERVER['PHP_SELF'], _("Enter &New Journal Entry"), "NewJournal=Yes");
@@ -45,7 +45,7 @@
 	{
 		$trans_no = $_GET['UpdatedID'];
 		$trans_type = ST_JOURNAL;
-		ui_msgs::display_notification(_("Journal entry has been updated") . " #$trans_no");
+		Errors::notice(_("Journal entry has been updated") . " #$trans_no");
 		ui_msgs::display_note(ui_view::get_gl_view_str($trans_type, $trans_no, _("&View this Journal Entry")));
 		hyperlink_no_params(PATH_TO_ROOT . "/gl/inquiry/journal_inquiry.php", _("Return to Journal &Inquiry"));
 		ui_view::display_footer_exit();
@@ -57,7 +57,7 @@
 	elseif (isset($_GET['ModifyGL']))
 	{
 		if (!isset($_GET['trans_type']) || $_GET['trans_type'] != 0) {
-			ui_msgs::display_error(_("You can edit directly only journal entries created via Journal Entry page."));
+			Errors::error(_("You can edit directly only journal entries created via Journal Entry page."));
 			hyperlink_params("/gl/gl_journal.php", _("Entry &New Journal Entry"), "NewJournal=Yes");
 			ui_view::display_footer_exit();
 		}
@@ -105,28 +105,28 @@
 	if (isset($_POST['Process'])) {
 		$input_error = 0;
 		if ($_SESSION['journal_items']->count_gl_items() < 1) {
-			ui_msgs::display_error(_("You must enter at least one journal line."));
+			Errors::error(_("You must enter at least one journal line."));
 			JS::set_focus('code_id');
 			$input_error = 1;
 		}
 		if (abs($_SESSION['journal_items']->gl_items_total()) > 0.0001) {
-			ui_msgs::display_error(_("The journal must balance (debits equal to credits) before it can be processed."));
+			Errors::error(_("The journal must balance (debits equal to credits) before it can be processed."));
 			JS::set_focus('code_id');
 			$input_error = 1;
 		}
 		if (!Dates::is_date($_POST['date_'])) {
-			ui_msgs::display_error(_("The entered date is invalid."));
+			Errors::error(_("The entered date is invalid."));
 			JS::set_focus('date_');
 			$input_error = 1;
 		}
 		elseif (!Dates::is_date_in_fiscalyear($_POST['date_']))
 		{
-			ui_msgs::display_error(_("The entered date is not in fiscal year."));
+			Errors::error(_("The entered date is not in fiscal year."));
 			JS::set_focus('date_');
 			$input_error = 1;
 		}
 		if (!Refs::is_valid($_POST['ref'])) {
-			ui_msgs::display_error(_("You must enter a reference."));
+			Errors::error(_("You must enter a reference."));
 			JS::set_focus('ref');
 			$input_error = 1;
 		}
@@ -134,7 +134,7 @@
 		{
 			// The reference can exist already so long as it's the same as the original (when modifying)
 			if ($_POST['ref'] != $_POST['ref_original']) {
-				ui_msgs::display_error(_("The entered reference is already in use."));
+				Errors::error(_("The entered reference is already in use."));
 				JS::set_focus('ref');
 				$input_error = 1;
 			}
@@ -162,7 +162,7 @@
 	//-----------------------------------------------------------------------------------------------
 	function check_item_data() {
 		if (isset($_POST['dimension_id']) && $_POST['dimension_id'] != 0 && dimension_is_closed($_POST['dimension_id'])) {
-			ui_msgs::display_error(_("Dimension is closed."));
+			Errors::error(_("Dimension is closed."));
 			JS::set_focus('dimension_id');
 			return false;
 		}
@@ -171,32 +171,32 @@
 			 $_POST['dimension2_id']
 		 )
 		) {
-			ui_msgs::display_error(_("Dimension is closed."));
+			Errors::error(_("Dimension is closed."));
 			JS::set_focus('dimension2_id');
 			return false;
 		}
 		if (!(input_num('AmountDebit') != 0 ^ input_num('AmountCredit') != 0)) {
-			ui_msgs::display_error(_("You must enter either a debit amount or a credit amount."));
+			Errors::error(_("You must enter either a debit amount or a credit amount."));
 			JS::set_focus('AmountDebit');
 			return false;
 		}
 		if (strlen($_POST['AmountDebit']) && !Validation::is_num('AmountDebit', 0)) {
-			ui_msgs::display_error(_("The debit amount entered is not a valid number or is less than zero."));
+			Errors::error(_("The debit amount entered is not a valid number or is less than zero."));
 			JS::set_focus('AmountDebit');
 			return false;
 		} elseif (strlen($_POST['AmountCredit']) && !Validation::is_num('AmountCredit', 0))
 		{
-			ui_msgs::display_error(_("The credit amount entered is not a valid number or is less than zero."));
+			Errors::error(_("The credit amount entered is not a valid number or is less than zero."));
 			JS::set_focus('AmountCredit');
 			return false;
 		}
 		if (!Tax_Types::is_tax_gl_unique(get_post('code_id'))) {
-			ui_msgs::display_error(_("Cannot post to GL account used by more than one tax type."));
+			Errors::error(_("Cannot post to GL account used by more than one tax type."));
 			JS::set_focus('code_id');
 			return false;
 		}
 		if (!CurrentUser::instance()->can_access('SA_BANKJOURNAL') && Banking::is_bank_account($_POST['code_id'])) {
-			ui_msgs::display_error(_("You cannot make a journal entry for a bank account. Please use one of the banking functions for bank transactions."));
+			Errors::error(_("You cannot make a journal entry for a bank account. Please use one of the banking functions for bank transactions."));
 			JS::set_focus('code_id');
 			return false;
 		}

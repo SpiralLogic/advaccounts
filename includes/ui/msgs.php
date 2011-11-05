@@ -11,17 +11,6 @@
 	 ***********************************************************************/
 
 	class ui_msgs {
-		static function display_error($msg) {
-			trigger_error($msg, E_USER_ERROR);
-		}
-
-		static function display_notification($msg) {
-			trigger_error($msg, E_USER_NOTICE);
-		}
-
-		static function display_warning($msg) {
-			trigger_error($msg, E_USER_WARNING);
-		}
 
 		static function display_heading($msg) {
 			echo "<center><span class='headingtext'>$msg</span></center>\n";

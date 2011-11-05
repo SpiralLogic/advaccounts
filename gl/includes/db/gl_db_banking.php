@@ -22,7 +22,7 @@
 		// 2010-02-23 Joe Hunt with help of Ary Wibowo
 		$sql = "SELECT SUM(bt.amount) AS for_amount, ba.bank_curr_code
 		FROM bank_trans bt, bank_accounts ba
-		WHERE ba.id = bt.bank_act AND ba.account_code = " . DBOld::escape($account) . " AND bt.trans_date<='" . Dates::date2sql($date_) . "'
+		WHERE ba.id = bt.bank_act AND ba.account_code = " . DB::escape($account) . " AND bt.trans_date<='" . Dates::date2sql($date_) . "'
 		GROUP BY ba.bank_curr_code";
 		$result = DBOld::query($sql, "Transactions for bank account $acc_id could not be calculated");
 		while ($row = DBOld::fetch($result))

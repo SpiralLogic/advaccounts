@@ -72,12 +72,12 @@
 			}
 			DBOld::begin_transaction();
 			$sql = "UPDATE contacts SET
-			name=" . DBOld::escape($this->name) . ",
-			phone1=" . DBOld::escape($this->phone1) . ",
-			phone2=" . DBOld::escape($this->phone2) . ",
-			email=" . DBOld::escape($this->email) . ",
-			department=" . DBOld::escape($this->department) . " WHERE parent_id =" . DBOld::escape($this->parent_id) . "
-    	    AND id=" . DBOld::escape($this->id);
+			name=" . DB::escape($this->name) . ",
+			phone1=" . DB::escape($this->phone1) . ",
+			phone2=" . DB::escape($this->phone2) . ",
+			email=" . DB::escape($this->email) . ",
+			department=" . DB::escape($this->department) . " WHERE parent_id =" . DB::escape($this->parent_id) . "
+    	    AND id=" . DB::escape($this->id);
 			DBOld::query($sql, "The customer could not be updated");
 			DBOld::commit_transaction();
 			return $this->_status(true, 'Processing', "Contact has been updated.");

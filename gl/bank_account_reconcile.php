@@ -18,7 +18,7 @@
 	function check_date()
 	{
 		if (!Dates::is_date(get_post('reconcile_date'))) {
-			ui_msgs::display_error(_("Invalid reconcile date format"));
+			Errors::error(_("Invalid reconcile date format"));
 			JS::set_focus('reconcile_date');
 			return false;
 		}
@@ -125,10 +125,10 @@
 		foreach (
 			$trans as $tran
 		) {
-			$sql = "UPDATE bank_trans SET undeposited=1, reconciled=NULL WHERE ref=" . DBOld::escape($tran);
+			$sql = "UPDATE bank_trans SET undeposited=1, reconciled=NULL WHERE ref=" . DB::escape($tran);
 			DBOld::query($sql, 'Couldn\'t update undesposited status');
 		}
-		$sql = "UPDATE bank_trans SET ref=" . DBOld::escape('Removed group: ' . $grouprefs) . ", amount=0, reconciled='" . Dates::date2sql(Dates::Today()) . "',
+		$sql = "UPDATE bank_trans SET ref=" . DB::escape('Removed group: ' . $grouprefs) . ", amount=0, reconciled='" . Dates::date2sql(Dates::Today()) . "',
     undeposited=" . $groupid . " WHERE id=" . $groupid;
 		DBOld::query($sql, "Couldn't update removed group data");
 		update_data();

@@ -58,7 +58,7 @@
 				 payment_terms
 			WHERE
 				 suppliers.payment_terms = payment_terms.terms_indicator
-				 AND suppliers.supplier_id = " . DBOld::escape($supplier_id);
+				 AND suppliers.supplier_id = " . DB::escape($supplier_id);
 
 			$result = DBOld::query($sql, "The customer details could not be retrieved");
 		} else {
@@ -93,7 +93,7 @@
      	WHERE trans.ov_amount != 0
 		AND trans . tran_date >= '$date_from'
 		AND trans . tran_date <= '$date_to'
-		AND trans.supplier_id = " . DBOld::escape($supplier_id) . "
+		AND trans.supplier_id = " . DB::escape($supplier_id) . "
 		AND trans.type = " . ST_SUPPINVOICE;
 		$result = DBOld::query($sql);
 		$results = DBOld::fetch($result);
@@ -101,7 +101,7 @@
 	}
 
 	function get_supplier($supplier_id) {
-		$sql = "SELECT * FROM suppliers WHERE supplier_id=" . DBOld::escape($supplier_id);
+		$sql = "SELECT * FROM suppliers WHERE supplier_id=" . DB::escape($supplier_id);
 
 		$result = DBOld::query($sql, "could not get supplier");
 
@@ -109,7 +109,7 @@
 	}
 
 	function get_supplier_name($supplier_id) {
-		$sql = "SELECT supp_name AS name FROM suppliers WHERE supplier_id=" . DBOld::escape($supplier_id);
+		$sql = "SELECT supp_name AS name FROM suppliers WHERE supplier_id=" . DB::escape($supplier_id);
 
 		$result = DBOld::query($sql, "could not get supplier");
 
@@ -119,7 +119,7 @@
 	}
 
 	function get_supplier_accounts($supplier_id) {
-		$sql = "SELECT payable_account,purchase_account,payment_discount_account FROM suppliers WHERE supplier_id=" . DBOld::escape($supplier_id);
+		$sql = "SELECT payable_account,purchase_account,payment_discount_account FROM suppliers WHERE supplier_id=" . DB::escape($supplier_id);
 
 		$result = DBOld::query($sql, "could not get supplier");
 

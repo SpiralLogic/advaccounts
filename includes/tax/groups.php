@@ -24,7 +24,7 @@
 			{
 				static::clear_shipping_tax_group();
 			}
-			$sql = "INSERT INTO tax_groups (name, tax_shipping) VALUES (" . DBOld::escape($name) . ", " . DBOld::escape($tax_shipping) . ")";
+			$sql = "INSERT INTO tax_groups (name, tax_shipping) VALUES (" . DB::escape($name) . ", " . DB::escape($tax_shipping) . ")";
 			DBOld::query($sql, "could not add tax group");
 			$id = DBOld::insert_id();
 			static::add_tax_group_items($id, $taxes, $rates);
@@ -38,7 +38,7 @@
 			{
 				static::clear_shipping_tax_group();
 			}
-			$sql = "UPDATE tax_groups SET name=" . DBOld::escape($name) . ",tax_shipping=" . DBOld::escape($tax_shipping) . " WHERE id=" . DBOld::escape($id);
+			$sql = "UPDATE tax_groups SET name=" . DB::escape($name) . ",tax_shipping=" . DB::escape($tax_shipping) . " WHERE id=" . DB::escape($id);
 			DBOld::query($sql, "could not update tax group");
 			static::delete_tax_group_items($id);
 			static::add_tax_group_items($id, $taxes, $rates);
@@ -56,7 +56,7 @@
 
 		static function get_tax_group($type_id)
 		{
-			$sql = "SELECT * FROM tax_groups WHERE id=" . DBOld::escape($type_id);
+			$sql = "SELECT * FROM tax_groups WHERE id=" . DB::escape($type_id);
 			$result = DBOld::query($sql, "could not get tax group");
 			return DBOld::fetch($result);
 		}
@@ -64,7 +64,7 @@
 		static function delete_tax_group($id)
 		{
 			DBOld::begin_transaction();
-			$sql = "DELETE FROM tax_groups WHERE id=" . DBOld::escape($id);
+			$sql = "DELETE FROM tax_groups WHERE id=" . DB::escape($id);
 			DBOld::query($sql, "could not delete tax group");
 			static::delete_tax_group_items($id);
 			DBOld::commit_transaction();
@@ -78,14 +78,14 @@
 			{
 				$sql
 				 = "INSERT INTO tax_group_items (tax_group_id, tax_type_id, rate)
-			VALUES (" . DBOld::escape($id) . ",  " . DBOld::escape($items[$i]) . ", " . $rates[$i] . ")";
+			VALUES (" . DB::escape($id) . ",  " . DB::escape($items[$i]) . ", " . $rates[$i] . ")";
 				DBOld::query($sql, "could not add item tax group item");
 			}
 		}
 
 		static function delete_tax_group_items($id)
 		{
-			$sql = "DELETE FROM tax_group_items WHERE tax_group_id=" . DBOld::escape($id);
+			$sql = "DELETE FROM tax_group_items WHERE tax_group_id=" . DB::escape($id);
 			DBOld::query($sql, "could not delete item tax group items");
 		}
 
@@ -94,7 +94,7 @@
 			$sql
 			 = "SELECT tax_group_items.*, tax_types.name AS tax_type_name, tax_types.rate,
 		tax_types.sales_gl_code, tax_types.purchasing_gl_code
-		FROM tax_group_items, tax_types	WHERE tax_group_id=" . DBOld::escape($id) . "	AND tax_types.id=tax_type_id";
+		FROM tax_group_items, tax_types	WHERE tax_group_id=" . DB::escape($id) . "	AND tax_types.id=tax_type_id";
 			return DBOld::query($sql, "could not get item tax type group items");
 		}
 
