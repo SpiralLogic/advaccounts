@@ -22,9 +22,9 @@
 		$trans_no = $_GET['AddedID'];
 		$trans_type = ST_LOCTRANSFER;
 		Errors::notice(_("Inventory transfer has been processed"));
-		ui_msgs::display_note(ui_view::get_trans_view_str($trans_type, $trans_no, _("&View this transfer")));
+		Display::note(ui_view::get_trans_view_str($trans_type, $trans_no, _("&View this transfer")));
 		hyperlink_no_params($_SERVER['PHP_SELF'], _("Enter &Another Inventory Transfer"));
-		ui_view::display_footer_exit();
+		Page::footer_exit();
 	}
 	//--------------------------------------------------------------------------------------------------
 	function line_start_focus() {
@@ -40,7 +40,7 @@
 			unset ($_SESSION['transfer_items']);
 		}
 		//session_register("transfer_items");
-		$_SESSION['transfer_items'] = new Items_Cart(ST_LOCTRANSFER);
+		$_SESSION['transfer_items'] = new Item_Cart(ST_LOCTRANSFER);
 		$_POST['AdjDate'] = Dates::new_doc_date();
 		if (!Dates::is_date_in_fiscalyear($_POST['AdjDate'])) {
 			$_POST['AdjDate'] = Dates::end_fiscalyear();

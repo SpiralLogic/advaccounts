@@ -22,7 +22,7 @@
 		static function init() {
 			set_error_handler('adv_error_handler');
 			set_exception_handler('adv_exception_handler');
-			if (Config::get('debug') && CurrentUser::instance()->user == 1) {
+			if (Config::get('debug') && CurrentUser::get()->user == 1) {
 				if (preg_match('/Chrome/i', $_SERVER['HTTP_USER_AGENT'])) {
 					include(APP_PATH . DS . 'includes/fb.php');
 					FB::useFile(APP_PATH . DS . 'includes/chromelogs', DS . 'tmp' . DS . 'chromelogs');
@@ -71,7 +71,7 @@
 					'file' => $file,
 					'line' => $line);
 			} else if ($type & ~E_NOTICE) { // log all not displayed messages
-				error_log(CurrentUser::instance()->loginname . ':' . basename($file) . ":$line: $message");
+				error_log(CurrentUser::get()->loginname . ':' . basename($file) . ":$line: $message");
 			}
 			return true;
 		}
@@ -165,7 +165,7 @@
 		static function check_db_error($msg, $sql_statement, $exit_if_error = true, $rollback_if_error = true) {
 			$db_error = DBOld::error_no();
 			if ($db_error != 0) {
-				if (CurrentUser::instance()->user == 1 && (Config::get('debug') || !Errors::nice_db_error($db_error))) {
+				if (CurrentUser::get()->user == 1 && (Config::get('debug') || !Errors::nice_db_error($db_error))) {
 					Errors::show_db_error($msg, $sql_statement, false);
 				}
 				if ($rollback_if_error) {

@@ -13,7 +13,7 @@
 	class CurrentUser {
 		protected static $_instance = null;
 
-		public static function instance() {
+		public static function get() {
 			if (isset($_SESSION["wa_current_user"])) {
 				static::$_instance = $_SESSION["wa_current_user"];
 			} elseif (static::$_instance === null) {
@@ -45,8 +45,8 @@
 			$this->prefs = new userPrefs();
 		}
 
-		function set_salesman($salesman_code = null) {
-			if ($salesman_code == null) {
+		public function set_salesman($salesmanid = null) {
+			if ($salesmanid == null) {
 				$salesman_name = $this->name;
 				$sql = "SELECT salesman_code FROM salesman WHERE salesman_name = " . DB::escape($salesman_name);
 				$query = DBOld::query($sql, 'Couldn\'t find current salesman');
@@ -55,20 +55,20 @@
 					$this->salesmanid = $result['salesman_code'];
 				}
 			}
-			if ($salesman_code != null) {
-				$this->salesmanid = $salesman_code;
+			if ($salesmanid != null) {
+				$this->salesmanid = $salesmanid;
 			}
 		}
 
-		function logged_in() {
+		public function logged_in() {
 			return $this->logged;
 		}
 
-		function set_company($company) {
+		public function set_company($company) {
 			$this->company = $company;
 		}
 
-		function login($company, $loginname, $password) {
+		public function login($company, $loginname, $password) {
 			$this->set_company($company);
 			$this->logged = false;
 			$Auth_Result = User::get_for_login($loginname, $password);
@@ -118,7 +118,7 @@
 			}
 		}
 
-		function can_access($page_level) {
+		public function can_access($page_level) {
 			global $security_areas;
 			if ($page_level === 'SA_OPEN') {
 				return true;
@@ -131,22 +131,19 @@
 			return $code && in_array($code, $this->role_set) && ($this->company == 1 || (($code & ~0xff) != SS_SADMIN));
 		}
 
-		function can_access_page($page_level) {
+		public function can_access_page($page_level) {
 			return $this->can_access($page_level);
 		}
 
-		function get_db_connection($id = -1) {
+		public function get_db_connection($id = -1) {
 			$id = $id == -1 ? $this->company : 1;
 			$connection = Config::get('db.' . $id);
 			$db = mysql_connect($connection["host"], $connection["dbuser"], $connection["dbpassword"]);
 			mysql_select_db($connection["dbname"], $db);
-			if (!defined('TB_PREF')) {
-				define('TB_PREF', '');
-			}
 			return $db;
 		}
 
-		function update_prefs(
+		public function update_prefs(
 			$price_dec, $qty_dec, $exrate_dec, $percent_dec, $showgl, $showcodes, $date_format, $date_sep, $tho_sep, $dec_sep, $theme, $pagesize, $show_hints, $profile, $rep_popup,
 			$query_size, $graphic_links, $lang, $stickydate, $startup_tab
 		) {
@@ -198,69 +195,8 @@
 	}
 
 	//--------------------------------------------------------------------------
-	function round2($number, $decimals = 0) {
-		return round($number, $decimals, PHP_ROUND_HALF_EVEN);
-	}
-
-	function number_format2($number, $decimals = 0) {
-		$tsep = Config::get('separators_thousands', CurrentUser::instance()->prefs->tho_sep());
-		$dsep = Config::get('separators_decimal', CurrentUser::instance()->prefs->dec_sep());
-		//return number_format($number, $decimals, $dsep,	$tsep);
-		$delta = ($number < 0 ? -.0000000001 : .0000000001);
-		$number = number_format($number + $delta, $decimals, $dsep, $tsep);
-		return ($number == -0 ? 0 : $number);
-	}
-
-	//
-	//	Current ui mode.
-	//
 	function fallback_mode() {
-		return CurrentUser::instance()->ui_mode == 0;
-	}
-
-	function price_format($number) {
-		return number_format2($number, CurrentUser::instance()->prefs->price_dec());
-	}
-
-	function price_decimal_format($number, &$dec) {
-		$dec = user_price_dec();
-		$str = strval($number);
-		$pos = strpos($str, '.');
-		if ($pos !== false) {
-			$len = strlen(substr($str, $pos + 1));
-			if ($len > $dec) {
-				$dec = $len;
-			}
-		}
-		return number_format2($number, $dec);
-	}
-
-	// 2008-06-15. Added extra parameter $stock_id and reference for $dec
-	//--------------------------------------------------------------------
-	function qty_format($number, $stock_id = null, &$dec) {
-		$dec = get_qty_dec($stock_id);
-		return number_format2($number, $dec);
-	}
-
-	// and get_qty_dec
-	function get_qty_dec($stock_id = null) {
-		include_once(APP_PATH . "inventory/includes/db/items_units_db.php");
-		if ($stock_id != null) {
-			$dec = get_unit_dec($stock_id);
-		}
-		if ($stock_id == null || $dec == -1 || $dec == null) {
-			$dec = CurrentUser::instance()->prefs->qty_dec();
-		}
-		return $dec;
-	}
-
-	//-------------------------------------------------------------------
-	function exrate_format($number) {
-		return number_format2($number, CurrentUser::instance()->prefs->exrate_dec());
-	}
-
-	function percent_format($number) {
-		return number_format2($number, CurrentUser::instance()->prefs->percent_dec());
+		return CurrentUser::get()->ui_mode == 0;
 	}
 
 	function user_numeric($input) {
@@ -286,98 +222,98 @@
 	}
 
 	function user_pos() {
-		return CurrentUser::instance()->pos;
+		return CurrentUser::get()->pos;
 	}
 
 	function user_language() {
-		return CurrentUser::instance()->prefs->language();
+		return CurrentUser::get()->prefs->language();
 	}
 
 	function user_qty_dec() {
-		return CurrentUser::instance()->prefs->qty_dec();
+		return CurrentUser::get()->prefs->qty_dec();
 	}
 
 	function user_price_dec() {
-		return CurrentUser::instance()->prefs->price_dec();
+		return CurrentUser::get()->prefs->price_dec();
 	}
 
 	function user_exrate_dec() {
-		return CurrentUser::instance()->prefs->exrate_dec();
+		return CurrentUser::get()->prefs->exrate_dec();
 	}
 
 	function user_percent_dec() {
-		return CurrentUser::instance()->prefs->percent_dec();
+		return CurrentUser::get()->prefs->percent_dec();
 	}
 
 	function user_show_gl_info() {
-		return CurrentUser::instance()->prefs->show_gl_info();
+		return CurrentUser::get()->prefs->show_gl_info();
 	}
 
 	function user_show_codes() {
-		return CurrentUser::instance()->prefs->show_codes();
+		return CurrentUser::get()->prefs->show_codes();
 	}
 
 	function user_date_format() {
-		return CurrentUser::instance()->prefs->date_format();
+		return CurrentUser::get()->prefs->date_format();
 	}
 
 	function user_date_display() {
-		return CurrentUser::instance()->prefs->date_display();
+		return CurrentUser::get()->prefs->date_display();
 	}
 
 	function user_date_sep() {
-		return (isset($_SESSION["wa_current_user"])) ? CurrentUser::instance()->prefs->date_sep() : 0;
+		return (isset($_SESSION["wa_current_user"])) ? CurrentUser::get()->prefs->date_sep() : 0;
 	}
 
 	function user_tho_sep() {
-		return CurrentUser::instance()->prefs->tho_sep();
+		return CurrentUser::get()->prefs->tho_sep();
 	}
 
 	function user_dec_sep() {
-		return CurrentUser::instance()->prefs->dec_sep();
+		return CurrentUser::get()->prefs->dec_sep();
 	}
 
 	function user_theme() {
-		return CurrentUser::instance()->prefs->get_theme();
+		return CurrentUser::get()->prefs->get_theme();
 	}
 
 	function user_pagesize() {
-		return CurrentUser::instance()->prefs->get_pagesize();
+		return CurrentUser::get()->prefs->get_pagesize();
 	}
 
 	function user_hints() {
-		return CurrentUser::instance()->prefs->show_hints();
+		return CurrentUser::get()->prefs->show_hints();
 	}
 
 	function user_print_profile() {
-		return CurrentUser::instance()->prefs->print_profile();
+		return CurrentUser::get()->prefs->print_profile();
 	}
 
 	function user_rep_popup() {
-		return CurrentUser::instance()->prefs->rep_popup();
+		return CurrentUser::get()->prefs->rep_popup();
 	}
 
 	function user_query_size() {
-		return CurrentUser::instance()->prefs->query_size();
+		return CurrentUser::get()->prefs->query_size();
 	}
 
 	function user_graphic_links() {
-		return CurrentUser::instance()->prefs->graphic_links();
+		return CurrentUser::get()->prefs->graphic_links();
 	}
 
 	function sticky_doc_date() {
-		return CurrentUser::instance()->prefs->sticky_date();
+		return CurrentUser::get()->prefs->sticky_date();
 	}
 
 	function user_startup_tab() {
-		return CurrentUser::instance()->prefs->start_up_tab();
+		return CurrentUser::get()->prefs->start_up_tab();
 	}
 
 	function set_user_prefs(
 		$price_dec, $qty_dec, $exrate_dec, $percent_dec, $showgl, $showcodes, $date_format, $date_sep, $tho_sep, $dec_sep, $theme, $pagesize, $show_hints, $print_profile, $rep_popup,
 		$query_size, $graphic_links, $lang, $stickydate, $startup_tab
 	) {
-		CurrentUser::instance()->update_prefs(
+		CurrentUser::get()->update_prefs(
 			$price_dec, $qty_dec, $exrate_dec, $percent_dec, $showgl, $showcodes, $date_format, $date_sep, $tho_sep, $dec_sep, $theme, $pagesize, $show_hints,
 			$print_profile, $rep_popup, $query_size, $graphic_links, $lang, $stickydate, $startup_tab
 		);

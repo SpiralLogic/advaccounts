@@ -19,7 +19,7 @@
 	if ($_GET['trans_no'] != "") {
 		$woid = $_GET['trans_no'];
 	}
-	ui_msgs::display_heading($systypes_array[ST_WORKORDER] . " # " . $woid);
+	Display::heading($systypes_array[ST_WORKORDER] . " # " . $woid);
 	br(1);
 	$myrow = get_work_order($woid);
 	if ($myrow["type"] == WO_ADVANCED) {
@@ -31,31 +31,31 @@
 	// display the WO requirements
 	br(1);
 	if ($myrow["released"] == false) {
-		ui_msgs::display_heading(_("BOM for item:") . " " . $myrow["StockItemName"]);
+		Display::heading(_("BOM for item:") . " " . $myrow["StockItemName"]);
 		display_bom($myrow["stock_id"]);
 } else {
-		ui_msgs::display_heading(_("Work Order Requirements"));
+		Display::heading(_("Work Order Requirements"));
 		display_wo_requirements($woid, $myrow["units_reqd"]);
 		if ($myrow["type"] == WO_ADVANCED) {
 			echo "<br><table cellspacing=7><tr valign=top><td>";
-			ui_msgs::display_heading(_("Issues"));
+			Display::heading(_("Issues"));
 			display_wo_issues($woid);
 			echo "</td><td>";
-			ui_msgs::display_heading(_("Productions"));
+			Display::heading(_("Productions"));
 			display_wo_productions($woid);
 			echo "</td><td>";
-			ui_msgs::display_heading(_("Additional Costs"));
+			Display::heading(_("Additional Costs"));
 			display_wo_payments($woid);
 			echo "</td></tr></table>";
 		} else {
 			echo "<br><table cellspacing=7><tr valign=top><td>";
-			ui_msgs::display_heading(_("Additional Costs"));
+			Display::heading(_("Additional Costs"));
 			display_wo_payments($woid);
 			echo "</td></tr></table>";
 		}
 	}
 	echo "<br></center>";
-	ui_view::is_voided_display(ST_WORKORDER, $woid, _("This work order has been voided."));
+	Display::is_voided(ST_WORKORDER, $woid, _("This work order has been voided."));
 	end_page(true);
 
 ?>

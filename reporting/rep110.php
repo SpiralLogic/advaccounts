@@ -98,8 +98,8 @@
 				if ($myrow2["quantity"] == 0)
 					continue;
 
-				$DisplayPrice = number_format2($myrow2["unit_price"], $dec);
-				$DisplayQty = number_format2($myrow2["quantity"], get_qty_dec($myrow2['stock_id']));
+				$DisplayPrice = Num::format($myrow2["unit_price"], $dec);
+				$DisplayQty = Num::format($myrow2["quantity"], get_qty_dec($myrow2['stock_id']));
 
 				$rep->TextCol(0, 1, $myrow2['stock_id'], -2);
 				$oldrow = $rep->row;
@@ -123,8 +123,8 @@
 				}
 			}
 
-			$DisplaySubTot = number_format2($SubTotal, $dec);
-			$DisplayFreight = number_format2($myrow["ov_freight"], $dec);
+			$DisplaySubTot = Num::format($SubTotal, $dec);
+			$DisplayFreight = Num::format($myrow["ov_freight"], $dec);
 
 			$rep->row = $rep->bottomMargin + (15 * $rep->lineHeight);
 			$linetype = true;

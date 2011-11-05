@@ -150,10 +150,10 @@
 
 			$bal = get_open_balance($myrow['debtor_no'], $from, $convert);
 			$init[0] = $init[1] = 0.0;
-			$init[0] = round2(abs($bal['charges']), $dec);
-			$init[1] = round2(Abs($bal['credits']), $dec);
-			$init[2] = round2($bal['Allocated'], $dec);
-			$init[3] = round2($bal['OutStanding'], $dec);
+			$init[0] = Num::round(abs($bal['charges']), $dec);
+			$init[1] = Num::round(Abs($bal['credits']), $dec);
+			$init[2] = Num::round($bal['Allocated'], $dec);
+			$init[3] = Num::round($bal['OutStanding'], $dec);
 			;
 
 			$res = get_transactions($myrow['debtor_no'], $from, $to);
@@ -198,13 +198,13 @@
 				if ($trans['type'] == ST_CUSTCREDIT || $trans['type'] == ST_CUSTPAYMENT || $trans['type'] == ST_BANKDEPOSIT)
 					$trans['TotalAmount'] *= -1;
 				if ($trans['TotalAmount'] > 0.0) {
-					$item[0] = round2(abs($trans['TotalAmount']) * $rate, $dec);
+					$item[0] = Num::round(abs($trans['TotalAmount']) * $rate, $dec);
 					//		$rep->AmountCol(4, 5, $item[0], $dec);
 } else {
-					$item[1] = round2(Abs($trans['TotalAmount']) * $rate, $dec);
+					$item[1] = Num::round(Abs($trans['TotalAmount']) * $rate, $dec);
 					//		$rep->AmountCol(5, 6, $item[1], $dec);
 				}
-				$item[2] = round2($trans['Allocated'] * $rate, $dec);
+				$item[2] = Num::round($trans['Allocated'] * $rate, $dec);
 				//	$rep->AmountCol(6, 7, $item[2], $dec);
 				/*
 			 if ($trans['type'] == 10)

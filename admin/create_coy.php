@@ -170,7 +170,7 @@
 	//---------------------------------------------------------------------------------------------
 	function display_companies()
 	{
-		$coyno = CurrentUser::instance()->company;
+		$coyno = CurrentUser::get()->company;
 		echo "
 		<script language='javascript'>
 		function deleteCompany(id) {

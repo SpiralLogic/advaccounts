@@ -6,7 +6,7 @@
 	 * Time: 7:20 AM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	class Items_Gl
+	class Item_Gl
 	{
 		public $code_id;
 		public $dimension_id;

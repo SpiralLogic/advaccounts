@@ -72,7 +72,7 @@
 				$rep->TextCol(1, 2, Refs::get_reference($myrow['type'], $myrow['type_no']));
 				$rep->DateCol(2, 3, $myrow['tran_date'], true);
 				$coms = Banking::payment_person_name($myrow["person_type_id"], $myrow["person_id"]);
-				$memo = ui_view::get_comments_string($myrow['type'], $myrow['type_no']);
+				$memo = DB_Comments::get_string($myrow['type'], $myrow['type_no']);
 				if ($memo != '') {
 					if ($coms == "") {
 						$coms = $memo;

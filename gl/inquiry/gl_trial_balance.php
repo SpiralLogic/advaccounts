@@ -76,9 +76,9 @@
 			label_cell($url);
 			label_cell($account["account_name"]);
 			if (check_value('Balance')) {
-				ui_view::display_debit_or_credit_cells($prev['balance']);
-				ui_view::display_debit_or_credit_cells($curr['balance']);
-				ui_view::display_debit_or_credit_cells($tot['balance']);
+				Display::debit_or_credit_cells($prev['balance']);
+				Display::debit_or_credit_cells($curr['balance']);
+				Display::debit_or_credit_cells($tot['balance']);
 } else {
 				amount_cell($prev['debit']);
 				amount_cell($prev['credit']);
@@ -114,9 +114,9 @@
 		}
 		start_row("class='inquirybg' style='font-weight:bold'");
 		label_cell(_("Ending Balance") . " - " . $_POST['TransToDate'], "colspan=2");
-		ui_view::display_debit_or_credit_cells($pbal);
-		ui_view::display_debit_or_credit_cells($cbal);
-		ui_view::display_debit_or_credit_cells($tbal);
+		Display::debit_or_credit_cells($pbal);
+		Display::debit_or_credit_cells($cbal);
+		Display::debit_or_credit_cells($tbal);
 		end_row();
 		end_table(1);
 		div_end();

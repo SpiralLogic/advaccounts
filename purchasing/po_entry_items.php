@@ -35,14 +35,14 @@
 			Errors::notice(_("Purchase Order: " . $_SESSION['history'][ST_PURCHORDER] . " has been updated") . " #$order_no");
 		}
 		unset($_SESSION['PO']);
-		ui_msgs::display_note(ui_view::get_trans_view_str($trans_type, $order_no, _("&View this order"), false, 'button'), 0, 1);
-		ui_msgs::display_note(Reporting::print_doc_link($order_no, _("&Print This Order"), true, $trans_type), 0, 1);
+		Display::note(ui_view::get_trans_view_str($trans_type, $order_no, _("&View this order"), false, 'button'), 0, 1);
+		Display::note(Reporting::print_doc_link($order_no, _("&Print This Order"), true, $trans_type), 0, 1);
 		submenu_button(_("&Edit This Order"), "/purchasing/po_entry_items.php?ModifyOrderNumber=$order_no");
 		submenu_email(_("Email This Order"), $trans_type, $order_no, null, $supplier->getEmailAddresses(), 1);
 		hyperlink_button("/purchasing/po_receive_items.php", _("&Receive Items on this PO"), "PONumber=$order_no");
 		hyperlink_button($_SERVER['PHP_SELF'], _("&New Purchase Order"), "NewOrder=yes");
 		hyperlink_no_params("/purchasing/inquiry/po_search.php", _("&Outstanding Purchase Orders"), true, true);
-		ui_view::display_footer_exit();
+		Page::footer_exit();
 	}
 	//--------------------------------------------------------------------------------------------------
 	function copy_from_cart()
@@ -135,7 +135,7 @@
 		$dec = get_qty_dec($_POST['stock_id']);
 		$min = 1 / pow(10, $dec);
 		if (!Validation::is_num('qty', $min)) {
-			$min = number_format2($min, $dec);
+			$min = Num::format($min, $dec);
 			Errors::error(_("The quantity of the order item must be numeric and not less than ") . $min);
 			JS::set_focus('qty');
 			return false;

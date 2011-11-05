@@ -134,7 +134,7 @@
 	}
 
 	function hyperlink_no_params($target, $label, $center = true, $button = false) {
-		$id = ui_view::default_focus();
+		$id = JS::default_focus();
 		$pars = access_string($label);
 		if ($target == '') {
 			$target = $_SERVER['PHP_SELF'];
@@ -177,31 +177,31 @@
 	}
 
 	function menu_link($url, $label, $id = null) {
-		$id = ui_view::default_focus($id);
+		$id = JS::default_focus($id);
 		$pars = access_string($label);
 		return "<a href='$url' class='menu_option' id='$id' $pars[1]>$pars[0]</a>";
 	}
 
 	function menu_button($url, $label, $id = null) {
-		$id = ui_view::default_focus($id);
+		$id = JS::default_focus($id);
 		$pars = access_string($label);
 		return "<a href='$url' class='button' id='$id' $pars[1]>$pars[0]</a>";
 	}
 
 	function submenu_option($title, $url, $id = null) {
-		ui_msgs::display_note(menu_link(PATH_TO_ROOT . $url, $title, $id), 0, 1);
+		Display::note(menu_link(PATH_TO_ROOT . $url, $title, $id), 0, 1);
 	}
 
 	function submenu_button($title, $url, $id = null) {
-		ui_msgs::display_note(menu_button(PATH_TO_ROOT . $url, $title, $id), 0, 1);
+		Display::note(menu_button(PATH_TO_ROOT . $url, $title, $id), 0, 1);
 	}
 
 	function submenu_view($title, $type, $number, $id = null) {
-		ui_msgs::display_note(ui_view::get_trans_view_str($type, $number, $title, false, 'menu_option', $id), 0, 1, false, 'button');
+		Display::note(ui_view::get_trans_view_str($type, $number, $title, false, 'menu_option', $id), 0, 1, false, 'button');
 	}
 
 	function submenu_print($title, $type, $number, $id = null, $email = 0, $extra = 0) {
-		ui_msgs::display_note(Reporting::print_doc_link($number, $title, true, $type, false, 'menu_option', $id, $email, $extra), 0, 1);
+		Display::note(Reporting::print_doc_link($number, $title, true, $type, false, 'menu_option', $id, $email, $extra), 0, 1);
 	}
 
 	function submenu_email($title, $type, $number, $id = null, $emails, $extra = 0, $return = false) {
@@ -210,7 +210,7 @@
 
 	//-----------------------------------------------------------------------------------
 	function hyperlink_params($target, $label, $link_params = '', $center = true, $params = '') {
-		$id = ui_view::default_focus();
+		$id = JS::default_focus();
 		$pars = access_string($label);
 		if ($target == '') {
 			$target = $_SERVER['PHP_SELF'];
@@ -225,7 +225,7 @@
 	}
 
 	function hyperlink_button($target, $label, $link_params = '', $center = true, $params = '') {
-		$id = ui_view::default_focus();
+		$id = JS::default_focus();
 		$pars = access_string($label);
 		if ($target == '') {
 			$target = $_SERVER['PHP_SELF'];
@@ -247,7 +247,7 @@
 
 	//-----------------------------------------------------------------------------------
 	function hyperlink_params_separate($target, $label, $params, $center = false, $nobr = false) {
-		$id = ui_view::default_focus();
+		$id = JS::default_focus();
 		$pars = access_string($label);
 		if (!$nobr) {
 			echo "<br>";

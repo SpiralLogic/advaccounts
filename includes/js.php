@@ -71,6 +71,54 @@ JS
 			);
 			JS::footerFile('/js/libs/jquery.gmap-1.1.0-min.js');
 		}
+		static function png_fix()
+				{
+					$js = "function fixPNG(myImage)\n" . "{\n" . " var arVersion = navigator.appVersion.split(\"MSIE\")\n" . " var version = parseFloat(arVersion[1])\n" . " if ((version >= 5.5) && (version < 7) && (document.body.filters))\n" . " {\n"
+					 . "  var imgID = (myImage.id) ? \"id='\" + myImage.id + \"' \" : \"\"\n" . "  var imgClass = (myImage.className) ? \"class='\" + myImage.className + \"' \" : \"\"\n" . "  var imgTitle = (myImage.title) ?\n"
+					 . "    \"title='\" + myImage.title  + \"' \" : \"title='\" + myImage.alt + \"' \"\n" . "  var imgStyle = \"display:inline-block;\" + myImage.style.cssText\n" . "  var strNewHTML = \"<span \" + imgID + imgClass + imgTitle\n" . "    + \" style=\\\"\" + \"width:\" + myImage.width\n"
+					 . "    + \"px; height:\" + myImage.height\n" . "    + \"px;\" + imgStyle + \";\"\n" . "    + \"filter:progid:DXImageTransform.Microsoft.AlphaImageLoader\"\n" . "    + \"(src=\'\" + myImage.src + \"\', sizingMethod='scale');\\\"></span>\"\n" . "  myImage.outerHTML = strNewHTML\n" . " }\n"
+					 . "}\n";
+					JS::beforeload($js);
+				}
+		static function get_websales()
+		{
+			static $inserted;
+			if ($_SERVER['SERVER_NAME'] == 'advaccounts' && !$inserted && !isset($_SESSION['getWebsales'])) {
+				$_SESSION['getWebsales'] = true;
+				echo "<script>";
+				echo <<<JS
+$(function() {
+if ($("#websaleGet").length>0) return;
+$('<iframe\>').attr({'id':'websaleGet',src:'//{$_SERVER['SERVER_NAME']}/jobsboard/websales/'}).css({width:0,height:0}).appendTo('body')});
+JS;
+				echo "</script>";
+				$inserted = true;
+			}
+		}
+
+
+		//
+		//	Set default focus on first field $name if not set yet
+		//	Returns unique name if $name=null
+		//
+		static function default_focus($name = null)
+		{
+			if ($name == null) {
+				$name = uniqid('_el', true);
+			}
+			if (!isset($_POST['_focus'])) {
+				JS::set_focus($name);
+			}
+			return $name;
+		}
+
+		/*
+							 Reset focus to next control element (e.g. link).
+					 */
+		static function reset_focus()
+		{
+			unset($_POST['_focus']);
+		}
 
 		public static function tabs($id, $options = array(), $page) {
 			$defaults = array('noajax' => false);

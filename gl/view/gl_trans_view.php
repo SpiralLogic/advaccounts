@@ -32,7 +32,7 @@
 		label_cell(Dates::sql2date($myrow["tran_date"]));
 		label_cell(Banking::payment_person_name($myrow["person_type_id"], $myrow["person_id"]));
 		end_row();
-		ui_view::comments_display_row($_GET['type_id'], $_GET['trans_no']);
+		Display::comments_row($_GET['type_id'], $_GET['trans_no']);
 		end_table(1);
 	}
 
@@ -92,7 +92,7 @@
 		if ($dim > 1) {
 			label_cell(get_dimension_string($myrow['dimension2_id'], true));
 		}
-		ui_view::display_debit_or_credit_cells($myrow['amount']);
+		Display::debit_or_credit_cells($myrow['amount']);
 		label_cell($myrow['memo_']);
 		end_row();
 	}
@@ -100,7 +100,7 @@
 	if ($heading_shown) {
 		end_table(1);
 	}
-	ui_view::is_voided_display($_GET['type_id'], $_GET['trans_no'], _("This transaction has been voided."));
+	Display::is_voided($_GET['type_id'], $_GET['trans_no'], _("This transaction has been voided."));
 	end_page(true);
 
 ?>

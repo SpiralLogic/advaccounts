@@ -23,13 +23,13 @@
 		$trans_type = ST_SUPPINVOICE;
 		echo "<center>";
 		Errors::notice(_("Supplier invoice has been processed."));
-		ui_msgs::display_note(ui_view::get_trans_view_str($trans_type, $invoice_no, _("View this Invoice")));
+		Display::note(ui_view::get_trans_view_str($trans_type, $invoice_no, _("View this Invoice")));
 		hyperlink_no_params("/purchasing/inquiry/po_search.php", _("Purchase Order Maintainants"));
 		hyperlink_params($_SERVER['PHP_SELF'], _("Enter Another Invoice"), "New=1");
 		hyperlink_no_params("/purchasing/supplier_payment.php", _("Entry supplier &payment for this invoice"));
-		ui_msgs::display_note(ui_view::get_gl_view_str($trans_type, $invoice_no, _("View the GL Journal Entries for this Invoice")), 1);
+		Display::note(ui_view::get_gl_view_str($trans_type, $invoice_no, _("View the GL Journal Entries for this Invoice")), 1);
 		hyperlink_params("/admin/attachments.php", _("Add an Attachment"), "filterType=$trans_type&trans_no=$invoice_no");
-		ui_view::display_footer_exit();
+		Page::footer_exit();
 	}
 	//--------------------------------------------------------------------------------------------------
 	if (isset($_GET['New'])) {
@@ -301,7 +301,7 @@
 		$Ajax->activate('inv_tot');
 	}
 	$id2 = -1;
-	if (CurrentUser::instance()->can_access('SA_GRNDELETE')) {
+	if (CurrentUser::get()->can_access('SA_GRNDELETE')) {
 		$id2 = find_submit('void_item_id');
 		if ($id2 != -1) {
 			DBOld::begin_transaction();

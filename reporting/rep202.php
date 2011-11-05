@@ -261,7 +261,7 @@
 			$pg->skin = Config::get('graphs_skin');
 			$pg->built_in = false;
 			$pg->fontfile = PATH_TO_ROOT . "/reporting/fonts/Vera.ttf";
-			$pg->latin_notation = (Config::get('separators_decimal', CurrentUser::instance()->prefs->dec_sep()) != ".");
+			$pg->latin_notation = (Config::get('separators_decimal', CurrentUser::get()->prefs->dec_sep()) != ".");
 			$filename = COMPANY_PATH . "/pdf_files/test.png";
 			$pg->display($filename, true);
 			$w = $pg->width / 1.5;

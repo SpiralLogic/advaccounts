@@ -166,7 +166,7 @@
 		$result = DBOld::query($sql, "could not get sales person");
 		$row    = DBOld::fetch($result);
 		if (empty($row['salesman_name'])) {
-			$user = CurrentUser::instance()->name;
+			$user = CurrentUser::get()->name;
 		} else {
 			$user = $row['salesman_name'];
 		}

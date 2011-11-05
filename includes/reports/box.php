@@ -41,18 +41,14 @@
 			$st_reports    = "";
 			$st_params     = "";
 			$st_classes    = "<b>" . _("Report Classes:") . "</b><br>";
-			foreach (
-				$this->ar_classes as $key => $value
-			) {
+			foreach ($this->ar_classes as $key => $value) {
 				$style = $class_counter == $_REQUEST['Class'] ? '' : "style='display:none'";
 				$acc   = access_string($key);
-				$st_classes .= "<a href='" . $_SERVER['PHP_SELF'] . "?Class=$class_counter'" . " class='menu_option' id='" . ui_view::default_focus() . "'" . " onclick='return showClass($class_counter);'$acc[1]>$acc[0]</a> <br>";
+				$st_classes .= "<a href='" . $_SERVER['PHP_SELF'] . "?Class=$class_counter'" . " class='menu_option' id='" . JS::default_focus() . "'" . " onclick='return showClass($class_counter);'$acc[1]>$acc[0]</a> <br>";
 				$st_reports .= "<table id='TAB_" . $class_counter . "' $style cellpadding=0 cellspacing=0 width='100%'><tr><td><b>" . _("Reports For Class: ") . "&nbsp;$key</b></td></tr>\n";
-				foreach (
-					$value as $report
-				) {
+				foreach ($value as $report) {
 					$acc = access_string($report->name);
-					$st_reports .= "<tr><td><a class='printlink' href='" . $_SERVER['PHP_SELF'] . "?Class=$class_counter&rep_id=$report->id'" . " id='" . ui_view::default_focus() . "'" . "$acc[1]>$acc[0]</a><tr><td>\n";
+					$st_reports .= "<tr><td><a class='printlink' href='" . $_SERVER['PHP_SELF'] . "?Class=$class_counter&rep_id=$report->id'" . " id='" . JS::default_focus() . "'" . "$acc[1]>$acc[0]</a><tr><td>\n";
 					if (isset($_REQUEST['rep_id']) && $_REQUEST['rep_id'] == $report->id) {
 						$action    = PATH_TO_ROOT . '/reporting/prn_redirect.php';
 						$st_params = "<table><tr><td>\n" . "<form method='POST' action='$action' target='_blank'>\n";
@@ -71,8 +67,7 @@
 				$class_counter++;
 			}
 			$st_params = "<div id='rep_form'>" . "$st_params</div>";
-			$st
-								 = "<script language='javascript'>
+			$st = "<script language='javascript'>
 					function showClass(pClass) {
 						for(i=0; i<$class_counter; i++) {
 							document.getElementById(\"TAB_\" + i).style.display=

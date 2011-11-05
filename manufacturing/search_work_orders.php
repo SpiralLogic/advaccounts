@@ -73,7 +73,7 @@
 
 	function view_stock($row)
 	{
-		return ui_view::view_stock_status($row["stock_id"], $row["description"], false);
+		return ui_view::stock_status($row["stock_id"], $row["description"], false);
 	}
 
 	function wo_type_name($dummy, $type)
@@ -149,7 +149,7 @@
 
 	function dec_amount($row, $amount)
 	{
-		return number_format2($amount, $row['decimals']);
+		return Num::format($amount, $row['decimals']);
 	}
 
 	$sql

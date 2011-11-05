@@ -31,7 +31,7 @@
 			$qoh = 0;
 		if ($qoh + $qty != 0)
 			$material_cost = ($qoh * $material_cost + $qty * $m_cost) / ($qoh + $qty);
-		$material_cost = round2($material_cost, $dec);
+		$material_cost = Num::round($material_cost, $dec);
 		$sql = "UPDATE stock_master SET material_cost=$material_cost
 		WHERE stock_id=" . DB::escape($stock_id);
 		DBOld::query($sql, "The cost details for the inventory item could not be updated");
@@ -52,7 +52,7 @@
 			$qoh = 0;
 		if ($qoh + $qty != 0)
 			$overhead_cost = ($qoh * $overhead_cost + $qty * $costs) / ($qoh + $qty);
-		$overhead_cost = round2($overhead_cost, $dec);
+		$overhead_cost = Num::round($overhead_cost, $dec);
 		$sql = "UPDATE stock_master SET overhead_cost=" . DB::escape($overhead_cost) . "
 		WHERE stock_id=" . DB::escape($stock_id);
 		DBOld::query($sql, "The cost details for the inventory item could not be updated");
@@ -73,7 +73,7 @@
 			$qoh = 0;
 		if ($qoh + $qty != 0)
 			$labour_cost = ($qoh * $labour_cost + $qty * $costs) / ($qoh + $qty);
-		$labour_cost = round2($labour_cost, $dec);
+		$labour_cost = Num::round($labour_cost, $dec);
 		$sql = "UPDATE stock_master SET labour_cost=" . DB::escape($labour_cost) . "
 		WHERE stock_id=" . DB::escape($stock_id);
 		DBOld::query($sql, "The cost details for the inventory item could not be updated");
@@ -94,7 +94,7 @@
 			$qoh = 0;
 		if ($qoh + $qty != 0)
 			$material_cost = ($qty * $costs) / ($qoh + $qty);
-		$material_cost = round2($material_cost, $dec);
+		$material_cost = Num::round($material_cost, $dec);
 		$sql = "UPDATE stock_master SET material_cost=material_cost+"
 		 . DB::escape($material_cost)
 		 . " WHERE stock_id=" . DB::escape($stock_id);

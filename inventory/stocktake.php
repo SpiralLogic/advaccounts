@@ -22,10 +22,10 @@
 		$trans_no   = $_GET['AddedID'];
 		$trans_type = ST_INVADJUST;
 		Errors::notice(_("Items adjustment has been processed"));
-		ui_msgs::display_note(ui_view::get_trans_view_str($trans_type, $trans_no, _("&View this adjustment")));
-		ui_msgs::display_note(ui_view::get_gl_view_str($trans_type, $trans_no, _("View the GL &Postings for this Adjustment")), 1, 0);
+		Display::note(ui_view::get_trans_view_str($trans_type, $trans_no, _("&View this adjustment")));
+		Display::note(ui_view::get_gl_view_str($trans_type, $trans_no, _("View the GL &Postings for this Adjustment")), 1, 0);
 		hyperlink_no_params($_SERVER['PHP_SELF'], _("Enter &Another Adjustment"));
-		ui_view::display_footer_exit();
+		Page::footer_exit();
 	}
 	//--------------------------------------------------------------------------------------------------
 	function line_start_focus()
@@ -43,7 +43,7 @@
 			unset ($_SESSION['adj_items']);
 		}
 		//session_register("adj_items");
-		$_SESSION['adj_items'] = new Items_Cart(ST_INVADJUST);
+		$_SESSION['adj_items'] = new Item_Cart(ST_INVADJUST);
 		$_POST['AdjDate']      = Dates::new_doc_date();
 		if (!Dates::is_date_in_fiscalyear($_POST['AdjDate'])) {
 			$_POST['AdjDate'] = Dates::end_fiscalyear();

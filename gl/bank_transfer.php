@@ -19,9 +19,9 @@
 		$trans_no = $_GET['AddedID'];
 		$trans_type = ST_BANKTRANSFER;
 		Errors::notice(_("Transfer has been entered"));
-		ui_msgs::display_note(ui_view::get_gl_view_str($trans_type, $trans_no, _("&View the GL Journal Entries for this Transfer")));
+		Display::note(ui_view::get_gl_view_str($trans_type, $trans_no, _("&View the GL Journal Entries for this Transfer")));
 		hyperlink_no_params($_SERVER['PHP_SELF'], _("Enter & Another Transfer"));
-		ui_view::display_footer_exit();
+		Page::footer_exit();
 	}
 	if (isset($_POST['_DatePaid_changed'])) {
 		$Ajax->activate('_ex_rate');
@@ -40,7 +40,7 @@
 		if ($from_currency != "" && $to_currency != "" && $from_currency != $to_currency) {
 			amount_row(_("Amount:"), 'amount', null, null, $from_currency);
 			amount_row(_("Bank Charge:"), 'charge', null, null, $from_currency);
-			ui_view::exchange_rate_display($from_currency, $to_currency, $_POST['DatePaid']);
+			Display::exchange_rate($from_currency, $to_currency, $_POST['DatePaid']);
 		} else {
 			amount_row(_("Amount:"), 'amount');
 			amount_row(_("Bank Charge:"), 'charge');

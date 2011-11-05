@@ -27,7 +27,7 @@
 	//------------------------------------------------------------------------------------------------
 	start_form();
 	if (!isset($_POST['supplier_id'])) {
-		$_POST['supplier_id'] = ui_globals::get_global_supplier();
+		$_POST['supplier_id'] = Session::get()->supplier_id;
 	}
 	start_table("class='tablestyle_noborder'");
 	start_row();
@@ -37,7 +37,7 @@
 	supp_allocations_list_cell("filterType", null);
 	check_cells(_("show settled:"), 'showSettled', null);
 	submit_cells('RefreshInquiry', _("Search"), '', _('Refresh Inquiry'), 'default');
-	ui_globals::set_global_supplier($_POST['supplier_id']);
+	Session::get()->supplier_id = $_POST['supplier_id'];
 	end_row();
 	end_table();
 	//------------------------------------------------------------------------------------------------

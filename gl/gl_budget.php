@@ -146,7 +146,7 @@
 		{
 			start_row();
 			if (get_post('update') == '') {
-				$_POST['amount' . $i] = number_format2(
+				$_POST['amount' . $i] = Num::format(
 					get_only_budget_trans_from_to(
 						$date_, $date_, $_POST['account'], $_POST['dim1'],
 						$_POST['dim2']
@@ -157,7 +157,7 @@
 			amount_cells(null, 'amount' . $i, null, 15, null, 0);
 			if ($showdims) {
 				$d = get_budget_trans_from_to($date_, $date_, $_POST['account'], $_POST['dim1'], $_POST['dim2']);
-				label_cell(number_format2($d, 0), "nowrap align=right");
+				label_cell(Num::format($d, 0), "nowrap align=right");
 				$btotal += $d;
 			}
 			$lamount = get_gl_trans_from_to(
@@ -166,17 +166,17 @@
 			);
 			$total += input_num('amount' . $i);
 			$ltotal += $lamount;
-			label_cell(number_format2($lamount, 0), "nowrap align=right");
+			label_cell(Num::format($lamount, 0), "nowrap align=right");
 			$date_ = Dates::add_months($date_, 1);
 			end_row();
 		}
 		start_row();
 		label_cell("<b>" . _("Total") . "</b>");
-		label_cell(number_format2($total, 0), 'align=right style="font-weight:bold"', 'Total');
+		label_cell(Num::format($total, 0), 'align=right style="font-weight:bold"', 'Total');
 		if ($showdims) {
-			label_cell("<b>" . number_format2($btotal, 0) . "</b>", "nowrap align=right");
+			label_cell("<b>" . Num::format($btotal, 0) . "</b>", "nowrap align=right");
 		}
-		label_cell("<b>" . number_format2($ltotal, 0) . "</b>", "nowrap align=right");
+		label_cell("<b>" . Num::format($ltotal, 0) . "</b>", "nowrap align=right");
 		end_row();
 		end_table(1);
 		div_end();

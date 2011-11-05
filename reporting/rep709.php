@@ -176,7 +176,7 @@
 		{
 			$tx = getTaxInfo($id);
 
-			$rep->TextCol(0, 1, $tx['name'] . " " . number_format2($tx['rate'], $dec) . "%");
+			$rep->TextCol(0, 1, $tx['name'] . " " . Num::format($tx['rate'], $dec) . "%");
 			$rep->AmountCol(1, 2, $sum['out'], $dec);
 			$rep->AmountCol(2, 3, $sum['taxout'], $dec);
 			$rep->AmountCol(3, 4, $sum['in'], $dec);

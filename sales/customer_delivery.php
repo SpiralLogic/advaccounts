@@ -37,20 +37,20 @@
 
 		Errors::notice(sprintf(_("Delivery # %d has been entered."), $dispatch_no));
 
-		ui_msgs::display_note(ui_view::get_customer_trans_view_str(ST_CUSTDELIVERY, $dispatch_no, _("&View This Delivery")), 0, 1);
+		Display::note(ui_view::get_customer_trans_view_str(ST_CUSTDELIVERY, $dispatch_no, _("&View This Delivery")), 0, 1);
 
-		ui_msgs::display_note(Reporting::print_doc_link($dispatch_no, _("&Print Delivery Note"), true, ST_CUSTDELIVERY));
-		ui_msgs::display_note(Reporting::print_doc_link($dispatch_no, _("&Email Delivery Note"), true, ST_CUSTDELIVERY, false, "printlink", "", 1), 1, 1);
-		ui_msgs::display_note(Reporting::print_doc_link($dispatch_no, _("P&rint as Packing Slip"), true, ST_CUSTDELIVERY, false, "printlink", "", 0, 1));
-		ui_msgs::display_note(Reporting::print_doc_link($dispatch_no, _("E&mail as Packing Slip"), true, ST_CUSTDELIVERY, false, "printlink", "", 1, 1), 1);
+		Display::note(Reporting::print_doc_link($dispatch_no, _("&Print Delivery Note"), true, ST_CUSTDELIVERY));
+		Display::note(Reporting::print_doc_link($dispatch_no, _("&Email Delivery Note"), true, ST_CUSTDELIVERY, false, "printlink", "", 1), 1, 1);
+		Display::note(Reporting::print_doc_link($dispatch_no, _("P&rint as Packing Slip"), true, ST_CUSTDELIVERY, false, "printlink", "", 0, 1));
+		Display::note(Reporting::print_doc_link($dispatch_no, _("E&mail as Packing Slip"), true, ST_CUSTDELIVERY, false, "printlink", "", 1, 1), 1);
 
-		ui_msgs::display_note(ui_view::get_gl_view_str(13, $dispatch_no, _("View the GL Journal Entries for this Dispatch")), 1);
+		Display::note(ui_view::get_gl_view_str(13, $dispatch_no, _("View the GL Journal Entries for this Dispatch")), 1);
 
 		hyperlink_params("/sales/customer_invoice.php", _("Invoice This Delivery"), "DeliveryNumber=$dispatch_no");
 
 		hyperlink_params("/sales/inquiry/sales_orders_view.php", _("Select Another Order For Dispatch"), "OutstandingOnly=1");
 
-		ui_view::display_footer_exit();
+		Page::footer_exit();
 	}
 	elseif (isset($_GET['UpdatedID'])) {
 
@@ -58,18 +58,18 @@
 
 		Errors::notice(sprintf(_('Delivery Note # %d has been updated.'), $delivery_no));
 
-		ui_msgs::display_note(ui_view::get_trans_view_str(ST_CUSTDELIVERY, $delivery_no, _("View this delivery")), 0, 1);
+		Display::note(ui_view::get_trans_view_str(ST_CUSTDELIVERY, $delivery_no, _("View this delivery")), 0, 1);
 
-		ui_msgs::display_note(Reporting::print_doc_link($delivery_no, _("&Print Delivery Note"), true, ST_CUSTDELIVERY));
-		ui_msgs::display_note(Reporting::print_doc_link($delivery_no, _("&Email Delivery Note"), true, ST_CUSTDELIVERY, false, "printlink", "", 1), 1, 1);
-		ui_msgs::display_note(Reporting::print_doc_link($delivery_no, _("P&rint as Packing Slip"), true, ST_CUSTDELIVERY, false, "printlink", "", 0, 1));
-		ui_msgs::display_note(Reporting::print_doc_link($delivery_no, _("E&mail as Packing Slip"), true, ST_CUSTDELIVERY, false, "printlink", "", 1, 1), 1);
+		Display::note(Reporting::print_doc_link($delivery_no, _("&Print Delivery Note"), true, ST_CUSTDELIVERY));
+		Display::note(Reporting::print_doc_link($delivery_no, _("&Email Delivery Note"), true, ST_CUSTDELIVERY, false, "printlink", "", 1), 1, 1);
+		Display::note(Reporting::print_doc_link($delivery_no, _("P&rint as Packing Slip"), true, ST_CUSTDELIVERY, false, "printlink", "", 0, 1));
+		Display::note(Reporting::print_doc_link($delivery_no, _("E&mail as Packing Slip"), true, ST_CUSTDELIVERY, false, "printlink", "", 1, 1), 1);
 
 		hyperlink_params("/sales/customer_invoice.php", _("Confirm Delivery and Invoice"), "DeliveryNumber=$delivery_no");
 
 		hyperlink_params("/sales/inquiry/sales_deliveries_view.php", _("Select A Different Delivery"), "OutstandingOnly=1");
 
-		ui_view::display_footer_exit();
+		Page::footer_exit();
 	}
 	//-----------------------------------------------------------------------------
 
@@ -107,7 +107,7 @@
 			);
 			echo "<br><center><b>" . _("This delivery has all items invoiced. There is nothing to modify.") .
 			 "</center></b>";
-			ui_view::display_footer_exit();
+			Page::footer_exit();
 		}
 
 		copy_from_cart();
@@ -405,7 +405,7 @@
 		end_page();
 		exit();
 	}
-	ui_msgs::display_heading(_("Delivery Items"));
+	Display::heading(_("Delivery Items"));
 	div_start('Items');
 	start_table(Config::get('tables_style') . "  width=90%");
 
@@ -446,7 +446,7 @@
 		else {
 			alt_table_row_color($k);
 		}
-		ui_view::view_stock_status_cell($ln_itm->stock_id);
+		ui_view::stock_status_cell($ln_itm->stock_id);
 
 		text_cells(null, 'Line' . $line . 'Desc', $ln_itm->description, 30, 50);
 		$dec = get_qty_dec($ln_itm->stock_id);
@@ -454,9 +454,9 @@
 		label_cell($ln_itm->units);
 		qty_cell($ln_itm->qty_done, false, $dec);
 
-		small_qty_cells(null, 'Line' . $line, qty_format($ln_itm->qty_dispatched, $ln_itm->stock_id, $dec), null, null, $dec);
+		small_qty_cells(null, 'Line' . $line, Num::qty_format($ln_itm->qty_dispatched, $ln_itm->stock_id, $dec), null, null, $dec);
 
-		$display_discount_percent = percent_format($ln_itm->discount_percent * 100) . "%";
+		$display_discount_percent = Num::percent_format($ln_itm->discount_percent * 100) . "%";
 
 		$line_total = ($ln_itm->qty_dispatched * $ln_itm->price * (1 - $ln_itm->discount_percent));
 
@@ -487,7 +487,7 @@
 	label_row(_("Sub-total"), $display_sub_total, "colspan=$colspan align=right", "align=right");
 
 	$taxes     = $_SESSION['Items']->get_taxes(input_num('ChargeFreightCost'));
-	$tax_total = ui_view::display_edit_tax_items($taxes, $colspan, $_SESSION['Items']->tax_included);
+	$tax_total = Display::edit_tax_items($taxes, $colspan, $_SESSION['Items']->tax_included);
 
 	$display_total = price_format(($inv_items_total + input_num('ChargeFreightCost') + $tax_total));
 

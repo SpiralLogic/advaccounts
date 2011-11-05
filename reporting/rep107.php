@@ -96,19 +96,19 @@
 					if ($myrow2["quantity"] == 0) {
 						continue;
 					}
-					$Net = round2(
+					$Net = Num::round(
 						$sign * ((1 - $myrow2["discount_percent"]) * $myrow2["unit_price"] * $myrow2["quantity"]),
 						user_price_dec()
 					);
 					$SubTotal += $Net;
 					$TaxType = Tax_ItemType::get_for_item($myrow2['stock_id']);
-					$DisplayPrice = number_format2($myrow2["unit_price"], $dec);
-					$DisplayQty = number_format2($sign * $myrow2["quantity"], get_qty_dec($myrow2['stock_id']));
-					$DisplayNet = number_format2($Net, $dec);
+					$DisplayPrice = Num::format($myrow2["unit_price"], $dec);
+					$DisplayQty = Num::format($sign * $myrow2["quantity"], get_qty_dec($myrow2['stock_id']));
+					$DisplayNet = Num::format($Net, $dec);
 					if ($myrow2["discount_percent"] == 0) {
 						$DisplayDiscount = "";
 } else {
-						$DisplayDiscount = number_format2($myrow2["discount_percent"] * 100, user_percent_dec()) . "%";
+						$DisplayDiscount = Num::format($myrow2["discount_percent"] * 100, user_percent_dec()) . "%";
 					}
 					$rep->TextCol(0, 1, $myrow2['stock_id'], -2);
 					$oldrow = $rep->row;
@@ -135,8 +135,8 @@
 						$rep->TextColLines(0, 6, $comment['memo_'], -2);
 					}
 				}
-				$DisplaySubTot = number_format2($SubTotal, $dec);
-				$DisplayFreight = number_format2($sign * $myrow["ov_freight"], $dec);
+				$DisplaySubTot = Num::format($SubTotal, $dec);
+				$DisplayFreight = Num::format($sign * $myrow["ov_freight"], $dec);
 				$rep->row = $rep->bottomMargin + (15 * $rep->lineHeight);
 				$linetype = true;
 				$doctype = $j;
@@ -154,7 +154,7 @@
 				$rep->NewLine();
 				$tax_items = get_trans_tax_details($j, $i);
 				while ($tax_item = DBOld::fetch($tax_items)) {
-					$DisplayTax = number_format2($sign * $tax_item['amount'], $dec);
+					$DisplayTax = Num::format($sign * $tax_item['amount'], $dec);
 					if ($tax_item['included_in_price']) {
 						$rep->TextCol(
 							3, 7, $doc_Included . " " . $tax_item['tax_type_name'] .
@@ -170,7 +170,7 @@
 					}
 				}
 				$rep->NewLine();
-				$DisplayTotal = number_format2(
+				$DisplayTotal = Num::format(
 					$sign * ($myrow["ov_freight"] + $myrow["ov_gst"] +
 					 $myrow["ov_amount"] + $myrow["ov_freight_tax"]), $dec
 				);

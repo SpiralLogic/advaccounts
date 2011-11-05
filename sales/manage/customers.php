@@ -178,7 +178,7 @@
 		$_POST['curr_code']     = Banking::get_company_currency();
 		$_POST['credit_status'] = -1;
 		$_POST['payment_terms'] = $_POST['notes'] = '';
-		$_POST['discount']     = $_POST['pymt_discount'] = percent_format(0);
+		$_POST['discount']     = $_POST['pymt_discount'] = Num::percent_format(0);
 		$_POST['credit_limit'] = price_format(SysPrefs::default_credit_limit());
 		$_POST['inactive']     = 0;
 	}
@@ -197,8 +197,8 @@
 		$_POST['curr_code']     = $myrow["curr_code"];
 		$_POST['credit_status'] = $myrow["credit_status"];
 		$_POST['payment_terms'] = $myrow["payment_terms"];
-		$_POST['discount']      = percent_format($myrow["discount"] * 100);
-		$_POST['pymt_discount'] = percent_format($myrow["pymt_discount"] * 100);
+		$_POST['discount']      = Num::percent_format($myrow["discount"] * 100);
+		$_POST['pymt_discount'] = Num::percent_format($myrow["pymt_discount"] * 100);
 		$_POST['credit_limit']  = price_format($myrow["credit_limit"]);
 		$_POST['notes']         = $myrow["notes"];
 		$_POST['inactive']      = $myrow["inactive"];

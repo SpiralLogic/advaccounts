@@ -87,7 +87,7 @@
 			//editing an existing exchange rate
 			$myrow = get_exchange_rate($selected_id);
 			$_POST['date_'] = Dates::sql2date($myrow["date_"]);
-			$_POST['BuyRate'] = exrate_format($myrow["rate_buy"]);
+			$_POST['BuyRate'] = Num::exrate_format($myrow["rate_buy"]);
 			hidden('selected_id', $selected_id);
 			hidden('date_', $_POST['date_']);
 			label_row(_("Date to Use From:"), $_POST['date_']);
@@ -98,7 +98,7 @@
 		}
 		if (isset($_POST['get_rate'])) {
 			$_POST['BuyRate']
-			 = exrate_format(retrieve_exrate($_POST['curr_abrev'], $_POST['date_']));
+			 = Num::exrate_format(retrieve_exrate($_POST['curr_abrev'], $_POST['date_']));
 			$Ajax->activate('BuyRate');
 		}
 		small_amount_row(
@@ -129,18 +129,18 @@
 	//---------------------------------------------------------------------------------------------
 	start_form();
 	if (!isset($_POST['curr_abrev'])) {
-		$_POST['curr_abrev'] = ui_globals::get_global_curr_code();
+		$_POST['curr_abrev'] = Session::get()->global_curr_code;
 	}
 	echo "<center>";
 	echo _("Select a currency :") . "  ";
 	echo currencies_list('curr_abrev', null, true);
 	echo "</center>";
 	// if currency sel has changed, clear the form
-	if ($_POST['curr_abrev'] != ui_globals::get_global_curr_code()) {
+	if ($_POST['curr_abrev'] != Session::get()->global_curr_code) {
 		clear_data();
 		$selected_id = "";
 	}
-	ui_globals::set_global_curr_code($_POST['curr_abrev']);
+	Session::get()->global_curr_code = $_POST['curr_abrev'];
 	$sql = "SELECT date_, rate_buy, id FROM exchange_rates "
 	 . "WHERE curr_code=" . DB::escape($_POST['curr_abrev']) . "
 	 ORDER BY date_ DESC";

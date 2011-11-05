@@ -69,22 +69,19 @@
 			$TaxTotal = 0;
 			while ($myrow2 = DBOld::fetch($result))
 			{
-				$Net = round2(
-					((1 - $myrow2["discount_percent"]) * $myrow2["unit_price"] * $myrow2["quantity"]),
-					user_price_dec()
-				);
+				$Net = Num::round(((1 - $myrow2["discount_percent"]) * $myrow2["unit_price"] * $myrow2["quantity"]),user_price_dec());
 				$SubTotal += $Net;
 				#  __ADVANCEDEDIT__ BEGIN #
 				$TaxType = Tax_ItemType::get_for_item($myrow2['stk_code']);
 				$TaxTotal += Taxes::get_tax_for_item($myrow2['stk_code'], $Net, $TaxType);
 				#  __ADVANCEDEDIT__ END #
-				$DisplayPrice = number_format2($myrow2["unit_price"], $dec);
-				$DisplayQty   = number_format2($myrow2["quantity"], get_qty_dec($myrow2['stk_code']));
-				$DisplayNet   = number_format2($Net, $dec);
+				$DisplayPrice = Num::format($myrow2["unit_price"], $dec);
+				$DisplayQty   = Num::format($myrow2["quantity"], get_qty_dec($myrow2['stk_code']));
+				$DisplayNet   = Num::format($Net, $dec);
 				if ($myrow2["discount_percent"] == 0) {
 					$DisplayDiscount = "";
 } else {
-					$DisplayDiscount = number_format2($myrow2["discount_percent"] * 100, user_percent_dec()) . "%";
+					$DisplayDiscount = Num::format($myrow2["discount_percent"] * 100, user_percent_dec()) . "%";
 				}
 				$rep->TextCol(0, 1, $myrow2['stk_code'], -2);
 				$oldrow = $rep->row;
@@ -110,10 +107,10 @@
 			if ($rep->row < $rep->bottomMargin + (15 * $rep->lineHeight)) {
 				$rep->Header2($myrow, $branch, $myrow, $baccount, ST_SALESQUOTE);
 			}
-			$DisplayFreight = number_format2($myrow["freight_cost"], $dec);
+			$DisplayFreight = Num::format($myrow["freight_cost"], $dec);
 			$TaxTotal += $myrow["freight_cost"] * .1;
-			$DisplayTaxTot = number_format2($TaxTotal, $dec);
-			$DisplaySubTot = number_format2($SubTotal, $dec);
+			$DisplayTaxTot = Num::format($TaxTotal, $dec);
+			$DisplaySubTot = Num::format($SubTotal, $dec);
 			$rep->row = $rep->bottomMargin + (15 * $rep->lineHeight);
 			$linetype = true;
 			$doctype  = ST_SALESQUOTE;
@@ -133,7 +130,7 @@
 			$rep->TextCol(7, 8, $DisplayTaxTot, -2);
 			$rep->NewLine();
 			#  __ADVANCEDEDIT__ END #
-			$DisplayTotal = number_format2($myrow["freight_cost"] + $SubTotal + $TaxTotal, $dec);
+			$DisplayTotal = Num::format($myrow["freight_cost"] + $SubTotal + $TaxTotal, $dec);
 			$rep->Font('bold');
 			#		if ($myrow['tax_included'] == 0)
 			#			$rep->TextCol(4, 7, $doc_TOTAL_ORDER, - 2);

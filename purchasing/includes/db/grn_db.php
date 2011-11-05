@@ -19,7 +19,7 @@
 		}
 		$dec = user_price_dec();
 		price_decimal_format($price, $dec);
-		$price = round2($price, $dec);
+		$price = Num::round($price, $dec);
 		if ($currency != null) {
 			$ex_rate = Banking::get_exchange_rate_to_home_currency($currency, $date);
 			$price_in_home_currency = $price / $ex_rate;
@@ -51,7 +51,7 @@
 			if ($qoh + $qty != 0)
 				$material_cost = ($qoh * $material_cost + $qty * $price_in_home_currency) / ($qoh + $qty);
 		}
-		$material_cost = round2($material_cost, $dec);
+		$material_cost = Num::round($material_cost, $dec);
 		if ($cost_adjust) // new 2010-02-10
 		{
 			adjust_deliveries($stock_id, $material_cost, $date);

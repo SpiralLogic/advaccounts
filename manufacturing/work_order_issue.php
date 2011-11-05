@@ -18,9 +18,9 @@
 	//-----------------------------------------------------------------------------------------------
 	if (isset($_GET['AddedID'])) {
 		Errors::notice(_("The work order issue has been entered."));
-		ui_msgs::display_note(ui_view::get_trans_view_str(ST_WORKORDER, $_GET['AddedID'], _("View this Work Order")));
+		Display::note(ui_view::get_trans_view_str(ST_WORKORDER, $_GET['AddedID'], _("View this Work Order")));
 		hyperlink_no_params("search_work_orders.php", _("Select another &Work Order to Process"));
-		ui_view::display_footer_exit();
+		Page::footer_exit();
 	}
 	//--------------------------------------------------------------------------------------------------
 	function line_start_focus() {
@@ -36,7 +36,7 @@
 			unset ($_SESSION['issue_items']);
 		}
 		Session_register("issue_items");
-		$_SESSION['issue_items'] = new Items_Cart(28);
+		$_SESSION['issue_items'] = new Item_Cart(28);
 		$_SESSION['issue_items']->order_id = $_GET['trans_no'];
 	}
 

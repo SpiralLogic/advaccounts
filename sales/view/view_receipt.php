@@ -23,10 +23,10 @@
 	}
 	$receipt = get_customer_trans($trans_id, $trans_type);
 	if ($trans_type == ST_CUSTPAYMENT) {
-		ui_msgs::display_heading(sprintf(_("Customer Payment #%d"), $trans_id));
+		Display::heading(sprintf(_("Customer Payment #%d"), $trans_id));
 	}
 	else {
-		ui_msgs::display_heading(sprintf(_("Customer Refund #%d"), $trans_id));
+		Display::heading(sprintf(_("Customer Refund #%d"), $trans_id));
 	}
 	echo "<br>";
 	start_table(Config::get('tables_style') . "  width=90%");
@@ -49,9 +49,9 @@
 	label_cells(_("Reference"), $receipt['reference'], "class='tableheader2'", "colspan=4");
 	end_form();
 	end_row();
-	ui_view::comments_display_row($trans_type, $trans_id);
+	Display::comments_row($trans_type, $trans_id);
 	end_table(1);
-	$voided = ui_view::is_voided_display($trans_type, $trans_id, _("This customer payment has been voided."));
+	$voided = Display::is_voided($trans_type, $trans_id, _("This customer payment has been voided."));
 	if (!$voided && ($trans_type != ST_CUSTREFUND)) {
 		ui_view::display_allocations_from(PT_CUSTOMER, $receipt['debtor_no'], ST_CUSTPAYMENT, $trans_id, $receipt['Total']);
 	}

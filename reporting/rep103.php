@@ -113,11 +113,11 @@
 		else
 			$salesfolk = get_salesman_name($folk);
 		if ($more != '')
-			$morestr = _('Greater than ') . number_format2($more, $dec);
+			$morestr = _('Greater than ') . Num::format($more, $dec);
 		else
 			$morestr = '';
 		if ($less != '')
-			$lessstr = _('Less than ') . number_format2($less, $dec);
+			$lessstr = _('Less than ') . Num::format($less, $dec);
 		else
 			$lessstr = '';
 
@@ -191,7 +191,7 @@
 				$count1++;
 				$rep->TextCol(1, 2, _('Price List') . ": " . $myrow['sales_type']);
 				if ($more != 0.0 || $less != 0.0)
-					$rep->TextCol(1, 2, _('Turnover') . ": " . number_format2($turnover, $dec), 0, $rep->lineHeight);
+					$rep->TextCol(1, 2, _('Turnover') . ": " . Num::format($turnover, $dec), 0, $rep->lineHeight);
 				$rep->TextCol(2, 3, $myrow['br_name']);
 				$rep->TextCol(2, 3, $myrow['contact_name'], 0, $rep->lineHeight);
 				$rep->TextCol(2, 3, _('Ph') . ": " . $myrow['phone'], 0, 2 * $rep->lineHeight);

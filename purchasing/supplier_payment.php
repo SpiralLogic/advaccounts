@@ -22,7 +22,7 @@
 	Validation::check(Validation::BANK_ACCOUNTS, _("There are no bank accounts defined in the system."));
 	//----------------------------------------------------------------------------------------
 	if (!isset($_POST['supplier_id'])) {
-		$_POST['supplier_id'] = ui_globals::get_global_supplier(false);
+		$_POST['supplier_id'] = Session::get()->supplier_id;
 	}
 	if (!isset($_POST['DatePaid'])) {
 		$_POST['DatePaid'] = Dates::new_doc_date();
@@ -43,12 +43,12 @@
 		Errors::notice(_("Payment has been sucessfully entered"));
 		submenu_print(_("&Print This Remittance"), ST_SUPPAYMENT, $payment_id . "-" . ST_SUPPAYMENT, 'prtopt');
 		submenu_print(_("&Email This Remittance"), ST_SUPPAYMENT, $payment_id . "-" . ST_SUPPAYMENT, null, 1);
-		ui_msgs::display_note(ui_view::get_gl_view_str(ST_SUPPAYMENT, $payment_id, _("View the GL &Journal Entries for this Payment")));
+		Display::note(ui_view::get_gl_view_str(ST_SUPPAYMENT, $payment_id, _("View the GL &Journal Entries for this Payment")));
 		//    hyperlink_params($path_to_root . "/purchasing/allocations/supplier_allocate.php", _("&Allocate this Payment"), "trans_no=$payment_id&trans_type=22");
 		hyperlink_params(
 			$_SERVER['PHP_SELF'], _("Enter another supplier &payment"), "supplier_id=" . $_POST['supplier_id']
 		);
-		ui_view::display_footer_exit();
+		Page::footer_exit();
 	}
 	//----------------------------------------------------------------------------------------
 	function check_inputs() {
@@ -173,7 +173,8 @@
 	{
 		$_SESSION['alloc'] = new Gl_Allocation(ST_SUPPAYMENT, 0);
 	}
-	ui_globals::set_global_supplier($_POST['supplier_id']);
+	Session::get()->supplier_id = $_POST['supplier_id'];
+
 	bank_accounts_list_row(_("From Bank Account:"), 'bank_account', null, true);
 	table_section(2);
 	ref_row(_("Reference:"), 'ref', '', Refs::get_next(ST_SUPPAYMENT));
@@ -182,7 +183,7 @@
 	$supplier_currency = Banking::get_supplier_currency($_POST['supplier_id']);
 	$bank_currency = Banking::get_bank_account_currency($_POST['bank_account']);
 	if ($bank_currency != $supplier_currency) {
-		ui_view::exchange_rate_display($bank_currency, $supplier_currency, $_POST['DatePaid'], true);
+		Display::exchange_rate($bank_currency, $supplier_currency, $_POST['DatePaid'], true);
 	}
 	amount_row(_("Bank Charge:"), 'charge');
 	end_outer_table(1); // outer table

@@ -202,7 +202,7 @@
 								$tax_rate += $item_tax['rate'];
 							}
 						}
-						$shipping_net = round2($shipping_cost / (1 + ($tax_rate / 100)), user_price_dec());
+						$shipping_net = Num::round($shipping_cost / (1 + ($tax_rate / 100)), user_price_dec());
 					}
 					foreach (
 						$item_taxes as $item_tax

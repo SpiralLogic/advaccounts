@@ -30,7 +30,7 @@
 			if ($row['for_amount'] == 0)
 				continue;
 			$rate = Banking::get_exchange_rate_from_home_currency($row['bank_curr_code'], $date_);
-			$for_amount += round2($row['for_amount'] * $rate, user_price_dec());
+			$for_amount += Num::round($row['for_amount'] * $rate, user_price_dec());
 		}
 		$amount = get_gl_trans_from_to("", $date_, $account);
 		$diff = $amount - $for_amount;

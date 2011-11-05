@@ -46,7 +46,7 @@
 	$result = DBOld::query($sql, "The transactions for '" . $_POST['bank_account'] . "' could not be retrieved");
 	div_start('trans_tbl');
 	$act = get_bank_account($_POST["bank_account"]);
-	ui_msgs::display_heading($act['bank_account_name'] . " - " . $act['bank_curr_code']);
+	Display::heading($act['bank_account_name'] . " - " . $act['bank_curr_code']);
 	start_table(Config::get('tables_style'));
 	$th = array(
 		_("Type"), _("#"), _("Reference"), _("Date"),
@@ -61,7 +61,7 @@
 	label_cell("<b>" . _("Opening Balance") . " - " . $_POST['TransAfterDate'] . "</b>", "colspan=4");
 	$bfw_row = DBOld::fetch_row($before_qty);
 	$bfw     = $bfw_row[0];
-	ui_view::display_debit_or_credit_cells($bfw);
+	Display::debit_or_credit_cells($bfw);
 	label_cell("");
 	label_cell("", "colspan=2");
 	end_row();
@@ -77,7 +77,7 @@
 		label_cell(ui_view::get_trans_view_str($myrow["type"], $myrow["trans_no"]));
 		label_cell(ui_view::get_trans_view_str($myrow["type"], $myrow["trans_no"], $myrow['ref']));
 		label_cell($trandate);
-		ui_view::display_debit_or_credit_cells($myrow["amount"]);
+		Display::debit_or_credit_cells($myrow["amount"]);
 		amount_cell($running_total);
 		label_cell(Banking::payment_person_name($myrow["person_type_id"], $myrow["person_id"]));
 		label_cell(ui_view::get_gl_view_str($myrow["type"], $myrow["trans_no"]));
@@ -91,7 +91,7 @@
 	//end of while loop
 	start_row("class='inquirybg'");
 	label_cell("<b>" . _("Ending Balance") . " - " . $_POST['TransToDate'] . "</b>", "colspan=4");
-	ui_view::display_debit_or_credit_cells($running_total);
+	Display::debit_or_credit_cells($running_total);
 	label_cell("");
 	label_cell("", "colspan=2");
 	end_row();

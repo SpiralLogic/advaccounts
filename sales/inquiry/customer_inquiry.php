@@ -20,7 +20,7 @@
 	//------------------------------------------------------------------------------------------------
 	start_form();
 	if (!isset($_POST['customer_id'])) {
-		$_POST['customer_id'] = ui_globals::get_global_customer();
+		$_POST['customer_id'] = Session::get()->global_customer;
 	}
 	start_table("class='tablestyle_noborder'");
 	start_row();
@@ -35,7 +35,7 @@
 	submit_cells('RefreshInquiry', _("Search"), '', _('Refresh Inquiry'), 'default');
 	end_row();
 	end_table();
-	ui_globals::set_global_customer($_POST['customer_id']);
+	Session::get()->global_customer = $_POST['customer_id'];
 	//------------------------------------------------------------------------------------------------
 	function display_customer_summary($customer_record)
 	{

@@ -22,7 +22,7 @@
 	}
 	$myrow = get_customer_trans($trans_id, ST_CUSTCREDIT);
 	$branch = get_branch($myrow["branch_code"]);
-	ui_msgs::display_heading("<font color=red>" . sprintf(_("CREDIT NOTE #%d"), $trans_id) . "</font>");
+	Display::heading("<font color=red>" . sprintf(_("CREDIT NOTE #%d"), $trans_id) . "</font>");
 	echo "<br>";
 	start_table(Config::get('tables_style2') . " width=95%");
 	echo "<tr valign=top><td>"; // outer table
@@ -50,7 +50,7 @@
 	label_cells(_("Sales Type"), $myrow["sales_type"], "class='tableheader2'");
 	label_cells(_("Shipping Company"), $myrow["shipper_name"], "class='tableheader2'");
 	end_row();
-	ui_view::comments_display_row(ST_CUSTCREDIT, $trans_id);
+	Display::comments_row(ST_CUSTCREDIT, $trans_id);
 	end_table();
 	echo "</td></tr>";
 	end_table(1); // outer table
@@ -71,7 +71,7 @@
 				continue;
 			}
 			alt_table_row_color($k);
-			$value = round2(
+			$value = Num::round(
 				((1 - $myrow2["discount_percent"]) * $myrow2["unit_price"] * $myrow2["quantity"]),
 				user_price_dec()
 			);
@@ -79,7 +79,7 @@
 			if ($myrow2["discount_percent"] == 0) {
 				$display_discount = "";
 } else {
-				$display_discount = percent_format($myrow2["discount_percent"] * 100) . "%";
+				$display_discount = Num::percent_format($myrow2["discount_percent"] * 100) . "%";
 			}
 			label_cell($myrow2["stock_id"]);
 			label_cell($myrow2["StockDescription"]);
@@ -106,13 +106,13 @@
 	}
 	label_row(_("Shipping"), $display_freight, "colspan=6 align=right", "nowrap align=right");
 	$tax_items = get_trans_tax_details(ST_CUSTCREDIT, $trans_id);
-	ui_view::display_customer_trans_tax_details($tax_items, 6);
+	ui_view::Display::customer_trans_tax_details($tax_items, 6);
 	label_row(
 		"<font color=red>" . _("TOTAL CREDIT") . "</font",
 		"<font color=red>$display_total</font>", "colspan=6 align=right", "nowrap align=right"
 	);
 	end_table(1);
-	$voided = ui_view::is_voided_display(ST_CUSTCREDIT, $trans_id, _("This credit note has been voided."));
+	$voided = Display::is_voided(ST_CUSTCREDIT, $trans_id, _("This credit note has been voided."));
 	if (!$voided) {
 		ui_view::display_allocations_from(
 			PT_CUSTOMER,

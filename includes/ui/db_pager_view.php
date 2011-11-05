@@ -146,7 +146,7 @@
 					email_cell($cell, isset($col['align']) ? "align='" . $col['align'] . "'" : null);
 					break;
 				case 'rate':
-					label_cell(number_format2($cell, user_exrate_dec()), "align=center");
+					label_cell(Num::format($cell, user_exrate_dec()), "align=center");
 					break;
 				case 'inactive':
 					if (get_post('show_inactive')) {

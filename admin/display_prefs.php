@@ -39,7 +39,7 @@
 			// refresh main menu
 			Files::flush_dir(COMPANY_PATH . '/js_cache');
 			if ($chg_theme && Config::get('demo_mode')) {
-				CurrentUser::instance()->prefs->theme = $_POST['theme'];
+				CurrentUser::get()->prefs->theme = $_POST['theme'];
 			}
 			if ($chg_theme || $chg_lang) {
 				meta_forward($_SERVER['PHP_SELF']);

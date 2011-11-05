@@ -23,8 +23,8 @@
 		$id    = $_GET['AddedID'];
 		$stype = ST_WORKORDER;
 		Errors::notice(_("The additional cost has been entered."));
-		ui_msgs::display_note(ui_view::get_trans_view_str($stype, $id, _("View this Work Order")));
-		ui_msgs::display_note(ui_view::get_gl_view_str($stype, $id, _("View the GL Journal Entries for this Work Order")), 1);
+		Display::note(ui_view::get_trans_view_str($stype, $id, _("View this Work Order")));
+		Display::note(ui_view::get_gl_view_str($stype, $id, _("View the GL Journal Entries for this Work Order")), 1);
 		hyperlink_params("work_order_costs.php", _("Enter another additional cost."), "trans_no=$id");
 		hyperlink_no_params("search_work_orders.php", _("Select another &Work Order to Process"));
 		end_page();

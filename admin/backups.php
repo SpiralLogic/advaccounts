@@ -63,7 +63,7 @@
 	function get_backup_file_combo() {
 		$Ajax = Ajax::instance();
 		$ar_files = array();
-		ui_view::default_focus('backups');
+		JS::default_focus('backups');
 		$dh = opendir(BACKUP_PATH);
 		while (($file = readdir($dh)) !== false)
 		{
@@ -112,7 +112,7 @@
 		return true;
 	}
 
-	$db_name = CurrentUser::instance()->company;
+	$db_name = CurrentUser::get()->company;
 	$connections = Config::get_all('db');
 	$conn = $conections[$db_name];
 	if (get_post('creat')) {

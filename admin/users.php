@@ -110,7 +110,7 @@
 		alt_table_row_color($k);
 		$last_visit_date = Dates::sql2date($myrow["last_visit_date"]);
 		/*The security_headings array is defined in config.php */
-		$not_me = strcasecmp($myrow["user_id"], CurrentUser::instance()->username);
+		$not_me = strcasecmp($myrow["user_id"], CurrentUser::get()->username);
 		label_cell($myrow["user_id"]);
 		label_cell($myrow["real_name"]);
 		label_cell($myrow["phone"]);

@@ -23,7 +23,7 @@
 		if (DBOld::num_rows($result) == 0) {
 			Errors::warning(_("There are no transactions for this dimension for the selected period."));
 		} else {
-			ui_msgs::display_heading(_("Balance for this Dimension"));
+			Display::heading(_("Balance for this Dimension"));
 			br();
 			start_table(Config::get('tables_style'));
 			$th = array(_("Account"), _("Debit"), _("Credit"));
@@ -33,7 +33,7 @@
 			{
 				alt_table_row_color($k);
 				label_cell($myrow["account"] . " " . $myrow['account_name']);
-				ui_view::display_debit_or_credit_cells($myrow["amt"]);
+				Display::debit_or_credit_cells($myrow["amt"]);
 				$total += $myrow["amt"];
 				end_row();
 			}

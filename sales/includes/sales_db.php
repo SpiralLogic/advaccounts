@@ -54,7 +54,7 @@
 		if ($avg == 0) {
 			return 0;
 		}
-		return round2($avg * (1 + $add_pct / 100), user_price_dec());
+		return Num::round($avg * (1 + $add_pct / 100), user_price_dec());
 	}
 
 	function round_to_nearest($price, $round_to) {
@@ -94,7 +94,7 @@
 			AND (curr_abrev = " . DB::escape($currency) . " OR curr_abrev = " . DB::escape($home_curr) . ")";
 		$result = DBOld::query($sql, "There was a problem retrieving the pricing information for the part $stock_id for customer");
 		$num_rows = DBOld::num_rows($result);
-		$rate = round2(Banking::get_exchange_rate_from_home_currency($currency, $date),
+		$rate = Num::round(Banking::get_exchange_rate_from_home_currency($currency, $date),
 			user_exrate_dec());
 		$round_to = DB_Company::get_pref('round_to');
 		$prices = array();
@@ -149,7 +149,7 @@
 		{
 			return round_to_nearest($price, $round_to);
 		} else {
-			return round2($price, user_price_dec());
+			return Num::round($price, user_price_dec());
 		}
 	}
 
@@ -303,7 +303,7 @@
 			$cart->dimension2_id = $myrow['dimension2_id'];
 			$cart->Comments = '';
 			foreach ($trans_no as $trans) {
-				$cart->Comments .= ui_view::get_comments_string($doc_type, $trans);
+				$cart->Comments .= DB_Comments::get_string($doc_type, $trans);
 			}
 			// FIX this should be calculated sum() for multiply parents
 			$cart->set_delivery($myrow["ship_via"], $myrow["br_name"],

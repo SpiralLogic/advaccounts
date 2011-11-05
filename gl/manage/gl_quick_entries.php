@@ -183,7 +183,7 @@
 	submit_add_or_update_center($selected_id == -1, '', 'both');
 	end_form();
 	if ($selected_id != -1) {
-		ui_msgs::display_heading(_("Quick Entry Lines") . " - " . $_POST['description']);
+		Display::heading(_("Quick Entry Lines") . " - " . $_POST['description']);
 		$result = get_quick_entry_lines($selected_id);
 		start_form();
 		start_table(Config::get('tables_style2'));
@@ -212,7 +212,7 @@
 				}
 				elseif ($act_type == '%')
 				{
-					label_cell(number_format2($myrow['amount'], user_exrate_dec()), "nowrap align=right ");
+					label_cell(Num::format($myrow['amount'], user_exrate_dec()), "nowrap align=right ");
 } else {
 					amount_cell($myrow['amount']);
 				}

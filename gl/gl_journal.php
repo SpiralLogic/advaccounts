@@ -37,18 +37,18 @@
 		$trans_no = $_GET['AddedID'];
 		$trans_type = ST_JOURNAL;
 		Errors::notice(_("Journal entry has been entered") . " #$trans_no");
-		ui_msgs::display_note(ui_view::get_gl_view_str($trans_type, $trans_no, _("&View this Journal Entry")));
-		ui_view::reset_focus();
+		Display::note(ui_view::get_gl_view_str($trans_type, $trans_no, _("&View this Journal Entry")));
+		JS::reset_focus();
 		hyperlink_params($_SERVER['PHP_SELF'], _("Enter &New Journal Entry"), "NewJournal=Yes");
-		ui_view::display_footer_exit();
+		Page::footer_exit();
 	} elseif (isset($_GET['UpdatedID']))
 	{
 		$trans_no = $_GET['UpdatedID'];
 		$trans_type = ST_JOURNAL;
 		Errors::notice(_("Journal entry has been updated") . " #$trans_no");
-		ui_msgs::display_note(ui_view::get_gl_view_str($trans_type, $trans_no, _("&View this Journal Entry")));
+		Display::note(ui_view::get_gl_view_str($trans_type, $trans_no, _("&View this Journal Entry")));
 		hyperlink_no_params(PATH_TO_ROOT . "/gl/inquiry/journal_inquiry.php", _("Return to Journal &Inquiry"));
-		ui_view::display_footer_exit();
+		Page::footer_exit();
 	}
 	//--------------------------------------------------------------------------------------------------
 	if (isset($_GET['NewJournal'])) {
@@ -59,7 +59,7 @@
 		if (!isset($_GET['trans_type']) || $_GET['trans_type'] != 0) {
 			Errors::error(_("You can edit directly only journal entries created via Journal Entry page."));
 			hyperlink_params("/gl/gl_journal.php", _("Entry &New Journal Entry"), "NewJournal=Yes");
-			ui_view::display_footer_exit();
+			Page::footer_exit();
 		}
 		create_cart($_GET['trans_type'], $_GET['trans_no']);
 	}
@@ -67,7 +67,7 @@
 		if (isset($_SESSION['journal_items'])) {
 			unset ($_SESSION['journal_items']);
 		}
-		$cart = new Items_Cart($type);
+		$cart = new Item_Cart($type);
 		$cart->order_id = $trans_no;
 		if ($trans_no) {
 			$result = get_gl_trans($type, $trans_no);
@@ -83,7 +83,7 @@
 					);
 				}
 			}
-			$cart->memo_ = ui_view::get_comments_string($type, $trans_no);
+			$cart->memo_ = DB_Comments::get_string($type, $trans_no);
 			$cart->tran_date = Dates::sql2date($date);
 			$cart->reference = Refs::get($type, $trans_no);
 			$_POST['ref_original'] = $cart->reference; // Store for comparison when updating
@@ -195,7 +195,7 @@
 			JS::set_focus('code_id');
 			return false;
 		}
-		if (!CurrentUser::instance()->can_access('SA_BANKJOURNAL') && Banking::is_bank_account($_POST['code_id'])) {
+		if (!CurrentUser::get()->can_access('SA_BANKJOURNAL') && Banking::is_bank_account($_POST['code_id'])) {
 			Errors::error(_("You cannot make a journal entry for a bank account. Please use one of the banking functions for bank transactions."));
 			JS::set_focus('code_id');
 			return false;

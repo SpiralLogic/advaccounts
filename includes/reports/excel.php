@@ -53,7 +53,7 @@
 		function FrontReport($title, $filename, $size = 'A4', $fontsize = 9, $orientation = 'P', $margins = NULL, $excelColWidthFactor = 6.5)
 		{
 			global $page_security;
-			if (!CurrentUser::instance()->can_access_page($page_security)) {
+			if (!CurrentUser::get()->can_access_page($page_security)) {
 				Errors::error(_("The security settings on your account do not permit you to print this report"));
 				end_page();
 				exit;
@@ -210,7 +210,7 @@
 				$how = _("Closed");
 			}
 			$this->fiscal_year = Dates::sql2date($year['begin']) . " - " . Dates::sql2date($year['end']) . "  " . "(" . $how . ")";
-			$this->user        = CurrentUser::instance()->name;
+			$this->user        = CurrentUser::get()->name;
 			$this->host        = $_SERVER['SERVER_NAME'];
 			$this->params      = $params;
 			$this->cols        = $cols;

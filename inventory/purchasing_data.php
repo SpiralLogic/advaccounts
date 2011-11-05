@@ -19,7 +19,7 @@
 	//--------------------------------------------------------------------------------------------------
 	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 		if (Input::request('frame')) {
-			$_POST['stock_id'] = ui_globals::get_global_stock_item();
+			$_POST['stock_id'] = Session::get()->global_stock_id;
 		}
 		$input_error = 0;
 		if ($_POST['stock_id'] == "" || !isset($_POST['stock_id'])) {
@@ -67,7 +67,7 @@
 	//--------------------------------------------------------------------------------------------------
 	if ($Mode == 'Delete') {
 		if (!Input::post('stock_id')) {
-			$_POST['stock_id'] = ui_globals::get_global_stock_item();
+			$_POST['stock_id'] = Session::get()->global_stock_id;
 		}
 		$sql = "DELETE FROM purch_data WHERE supplier_id=" . DB::escape($selected_id) . "
 		AND stock_id=" . DB::escape($_POST['stock_id']);
@@ -92,14 +92,14 @@
 		start_form();
 	}
 	if (!Input::post('stock_id')) {
-		$_POST['stock_id'] = ui_globals::get_global_stock_item();
+		$_POST['stock_id'] = Session::get()->global_stock_id;
 	}
 	if (!Input::request('frame')) {
 		echo "<center>" . _("Item:") . "&nbsp;";
 		echo stock_purchasable_items_list('stock_id', $_POST['stock_id'], false, true, false, false);
 		echo "<hr></center>";
 	}
-	ui_globals::set_global_stock_item($_POST['stock_id']);
+	Session::get()->global_stock_id = $_POST['stock_id'];
 	$mb_flag = Manufacturing::get_mb_flag($_POST['stock_id']);
 	if ($mb_flag == -1) {
 		Errors::error(_("Entered item is not defined. Please re-enter."));
@@ -163,7 +163,7 @@
 		$_POST['price'] = price_decimal_format($myrow["price"], $dec2);
 		$_POST['suppliers_uom'] = $myrow["suppliers_uom"];
 		$_POST['supplier_description'] = $myrow["supplier_description"];
-		$_POST['conversion_factor'] = exrate_format($myrow["conversion_factor"]);
+		$_POST['conversion_factor'] = Num::exrate_format($myrow["conversion_factor"]);
 	}
 	br();
 	hidden('selected_id', $selected_id);
@@ -178,11 +178,11 @@
 	amount_row(_("Price:"), 'price', null, '', Banking::get_supplier_currency($selected_id), $dec2);
 	text_row(_("Suppliers Unit of Measure:"), 'suppliers_uom', null, false, 51);
 	if (!isset($_POST['conversion_factor']) || $_POST['conversion_factor'] == "") {
-		$_POST['conversion_factor'] = exrate_format(1);
+		$_POST['conversion_factor'] = Num::exrate_format(1);
 	}
 	amount_row(
 		_("Conversion Factor (to our UOM):"), 'conversion_factor',
-		exrate_format($_POST['conversion_factor']), null, null, user_exrate_dec()
+		Num::exrate_format($_POST['conversion_factor']), null, null, user_exrate_dec()
 	);
 	text_row(_("Supplier's Product Code:"), 'supplier_description', null, 50, 51);
 	end_table(1);

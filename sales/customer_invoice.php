@@ -43,13 +43,13 @@
 		Errors::notice(sprintf(_("Order # %d has been entered."), $invoice_no));
 		$trans_type = ST_SALESINVOICE;
 		Errors::notice(_("Selected deliveries has been processed"), true);
-		ui_msgs::display_note(ui_view::get_customer_trans_view_str($trans_type, $invoice_no, _("&View This Invoice")), 0, 1);
-		ui_msgs::display_note(Reporting::print_doc_link($invoice_no, _("&Print This Invoice"), true, ST_SALESINVOICE));
+		Display::note(ui_view::get_customer_trans_view_str($trans_type, $invoice_no, _("&View This Invoice")), 0, 1);
+		Display::note(Reporting::print_doc_link($invoice_no, _("&Print This Invoice"), true, ST_SALESINVOICE));
 		submenu_email(_("Email This Invoice"), ST_SALESINVOICE, $invoice_no, null, $emails, 1);
 		hyperlink_params("/sales/customer_payments.php", _("Apply a customer payment"));
-		ui_msgs::display_note(ui_view::get_gl_view_str($trans_type, $invoice_no, _("View the GL &Journal Entries for this Invoice")), 1);
+		Display::note(ui_view::get_gl_view_str($trans_type, $invoice_no, _("View the GL &Journal Entries for this Invoice")), 1);
 		hyperlink_params("/sales/inquiry/sales_deliveries_view.php", _("Select Another &Delivery For Invoicing"), "OutstandingOnly=1");
-		ui_view::display_footer_exit();
+		Page::footer_exit();
 	}
 	elseif (isset($_GET['UpdatedID'])) {
 		$_SESSION['Items'] = new Sales_Order(ST_SALESINVOICE, $_GET['UpdatedID']);
@@ -57,12 +57,12 @@
 		$emails            = $customer->getEmailAddresses();
 		$invoice_no        = $_GET['UpdatedID'];
 		Errors::notice(sprintf(_('Sales Invoice # %d has been updated.'), $invoice_no));
-		ui_msgs::display_note(ui_view::get_trans_view_str(ST_SALESINVOICE, $invoice_no, _("&View This Invoice")));
+		Display::note(ui_view::get_trans_view_str(ST_SALESINVOICE, $invoice_no, _("&View This Invoice")));
 		echo '<br>';
-		ui_msgs::display_note(Reporting::print_doc_link($invoice_no, _("&Print This Invoice"), true, ST_SALESINVOICE));
+		Display::note(Reporting::print_doc_link($invoice_no, _("&Print This Invoice"), true, ST_SALESINVOICE));
 		submenu_email(_("Email This Invoice"), ST_SALESINVOICE, $invoice_no, null, $emails, 1);
 		hyperlink_no_params("/sales/inquiry/customer_inquiry.php", _("Select A Different &Invoice to Modify"));
-		ui_view::display_footer_exit();
+		Page::footer_exit();
 	}
 	elseif (isset($_GET['RemoveDN'])) {
 		for (
@@ -111,7 +111,7 @@
 		Most likely this invoice was created in Front Accounting version prior to 2.0
 		and therefore can not be modified."
 			) . "</b></center>";
-			ui_view::display_footer_exit();
+			Page::footer_exit();
 		}
 		processing_start();
 		$_SESSION['Items'] = new Sales_Order(ST_SALESINVOICE, $_GET['ModifyInvoice']);
@@ -367,7 +367,7 @@
 		end_page();
 		exit();
 	}
-	ui_msgs::display_heading(_("Invoice Items"));
+	Display::heading(_("Invoice Items"));
 	div_start('Items');
 	start_table(Config::get('tables_style') . "  width=90%");
 	$th = array(_("Item Code"), _("Item Description"), _("Delivered"), _("Units"), _("Invoiced"), _("This Invoice"), _("Price"), _("Tax Type"), _("Discount"), _("Total"));
@@ -390,7 +390,7 @@
 			continue; // this line was fully invoiced
 		}
 		alt_table_row_color($k);
-		ui_view::view_stock_status_cell($ln_itm->stock_id);
+		ui_view::stock_status_cell($ln_itm->stock_id);
 		if (!$viewing) {
 			textarea_cells(null, 'Line' . $line . 'Desc', $ln_itm->description, 30, 3);
 		} else
@@ -405,14 +405,14 @@
 			// for batch invoices we can only remove whole deliveries
 			echo '<td nowrap align=right>';
 			hidden('Line' . $line, $ln_itm->qty_dispatched);
-			echo number_format2($ln_itm->qty_dispatched, $dec) . '</td>';
+			echo Num::format($ln_itm->qty_dispatched, $dec) . '</td>';
 		} elseif ($viewing) {
 			hidden('viewing');
 			qty_cell($ln_itm->quantity, false, $dec);
 		} else {
-			small_qty_cells(null, 'Line' . $line, qty_format($ln_itm->qty_dispatched, $ln_itm->stock_id, $dec), null, null, $dec);
+			small_qty_cells(null, 'Line' . $line, Num::qty_format($ln_itm->qty_dispatched, $ln_itm->stock_id, $dec), null, null, $dec);
 		}
-		$display_discount_percent = percent_format($ln_itm->discount_percent * 100) . " %";
+		$display_discount_percent = Num::percent_format($ln_itm->discount_percent * 100) . " %";
 		$line_total               = ($ln_itm->qty_dispatched * $ln_itm->price * (1 - $ln_itm->discount_percent));
 		amount_cell($ln_itm->price);
 		label_cell($ln_itm->tax_type_name);
@@ -464,7 +464,7 @@
 	$display_sub_total = price_format($inv_items_total + input_num('ChargeFreightCost'));
 	label_row(_("Sub-total"), $display_sub_total, "colspan=$colspan align=right", "align=right", $is_batch_invoice ? 2 : 0);
 	$taxes         = $_SESSION['Items']->get_taxes(input_num('ChargeFreightCost'));
-	$tax_total     = ui_view::display_edit_tax_items($taxes, $colspan, $_SESSION['Items']->tax_included, $is_batch_invoice ? 2 : 0);
+	$tax_total     = Display::edit_tax_items($taxes, $colspan, $_SESSION['Items']->tax_included, $is_batch_invoice ? 2 : 0);
 	$display_total = price_format(($inv_items_total + input_num('ChargeFreightCost') + $tax_total));
 	label_row(_("Invoice Total"), $display_total, "colspan=$colspan align=right", "align=right", $is_batch_invoice ? 2 : 0);
 	end_table(1);

@@ -148,7 +148,7 @@
 			while ($tax_item = DBOld::fetch($items))
 			{
 				$_POST['tax_type_id' . $i] = $tax_item["tax_type_id"];
-				$_POST['rate' . $i] = percent_format($tax_item["rate"]);
+				$_POST['rate' . $i] = Num::percent_format($tax_item["rate"]);
 				$i++;
 			}
 			while ($i < 5) {
@@ -177,10 +177,10 @@
 		tax_types_list_cells(null, 'tax_type_id' . $i, $_POST['tax_type_id' . $i], _("None"), true);
 		if ($_POST['tax_type_id' . $i] != 0 && $_POST['tax_type_id' . $i] != ALL_NUMERIC) {
 			$default_rate = Tax_Types::get_default_rate($_POST['tax_type_id' . $i]);
-			label_cell(percent_format($default_rate), "nowrap align=right");
+			label_cell(Num::percent_format($default_rate), "nowrap align=right");
 			//Editable rate has been removed 090920 Joe Hunt
 			//if (!isset($_POST['rate' . $i]) || $_POST['rate' . $i] == "")
-			//	$_POST['rate' . $i] = percent_format($default_rate);
+			//	$_POST['rate' . $i] = Num::percent_format($default_rate);
 			//small_amount_cells(null, 'rate' . $i, $_POST['rate' . $i], null, null,
 			//  user_percent_dec());
 		}

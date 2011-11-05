@@ -25,7 +25,7 @@
 	$myrow = get_customer_trans($trans_id, ST_SALESINVOICE);
 	$branch = get_branch($myrow["branch_code"]);
 	$sales_order = get_sales_order_header($myrow["order_"], ST_SALESORDER);
-	ui_msgs::display_heading(sprintf(_("SALES INVOICE #%d"), $trans_id));
+	Display::heading(sprintf(_("SALES INVOICE #%d"), $trans_id));
 	echo "<br>";
 	start_table(Config::get('tables_style2') . " width=95%");
 	echo "<tr valign=top><td>"; // outer table
@@ -77,7 +77,7 @@
 									 ), "class='label'"
 	);
 	end_row();
-	ui_view::comments_display_row(ST_SALESINVOICE, $trans_id);
+	Display::comments_row(ST_SALESINVOICE, $trans_id);
 	end_table();
 	echo "</td></tr>";
 	end_table(1); // outer table
@@ -97,7 +97,7 @@
 				continue;
 			}
 			alt_table_row_color($k);
-			$value = round2(
+			$value = Num::round(
 				((1 - $myrow2["discount_percent"]) * $myrow2["unit_price"] * $myrow2["quantity"]),
 				user_price_dec()
 			);
@@ -105,7 +105,7 @@
 			if ($myrow2["discount_percent"] == 0) {
 				$display_discount = "";
 } else {
-				$display_discount = percent_format($myrow2["discount_percent"] * 100) . "%";
+				$display_discount = Num::percent_format($myrow2["discount_percent"] * 100) . "%";
 			}
 			label_cell($myrow2["stock_id"]);
 			label_cell($myrow2["StockDescription"]);
@@ -128,14 +128,14 @@
 	);
 	label_row(_("Shipping"), $display_freight, "colspan=6 align=right", "nowrap align=right");
 	$tax_items = get_trans_tax_details(ST_SALESINVOICE, $trans_id);
-	ui_view::display_customer_trans_tax_details($tax_items, 6);
+	Display::customer_trans_tax_details($tax_items, 6);
 	$display_total = price_format($myrow["ov_freight"] + $myrow["ov_gst"] + $myrow["ov_amount"] + $myrow["ov_freight_tax"]);
 	label_row(
 		_("TOTAL INVOICE"), $display_total, "colspan=6 align=right",
 		"nowrap align=right"
 	);
 	end_table(1);
-	ui_view::is_voided_display(ST_SALESINVOICE, $trans_id, _("This invoice has been voided."));
+	Display::is_voided(ST_SALESINVOICE, $trans_id, _("This invoice has been voided."));
 	submenu_print(_("&Print This Invoice"), ST_SALESINVOICE, $_GET['trans_no'], 'prtopt');
 	end_page(true);
 

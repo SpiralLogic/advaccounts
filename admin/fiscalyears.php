@@ -86,7 +86,7 @@
 		WHERE ctype>=" . CL_ASSETS . " AND ctype <=" . CL_EQUITY . " AND tran_date <= '$to'";
 		$result = DBOld::query($sql, "The total balance could not be calculated");
 		$row = DBOld::fetch_row($result);
-		$balance = round2($row[0], user_price_dec());
+		$balance = Num::round($row[0], user_price_dec());
 		$to = Dates::sql2date($to);
 		if ($balance != 0.0) {
 			$trans_type = ST_JOURNAL;
@@ -176,7 +176,7 @@
 	}
 
 	function delete_this_fiscalyear($selected_id) {
-		DB_Utils::backup(Config::get('db.' . CurrentUser::instance()->company), 'Security backup before Fiscal Year Removal');
+		DB_Utils::backup(Config::get('db.' . CurrentUser::get()->company), 'Security backup before Fiscal Year Removal');
 		DBOld::begin_transaction();
 		$ref = _("Open Balance");
 		$myrow = DB_Company::get_fiscalyear($selected_id);
@@ -293,7 +293,7 @@
 			$sql = "DELETE FROM stock_moves WHERE tran_date <= '$to' AND loc_code = '{$row['loc_code']}' AND stock_id = '{$row['stock_id']}'";
 			DBOld::query($sql, "Could not delete stock moves");
 			$qty = $row['qty'];
-			$std_cost = ($qty == 0 ? 0 : round2($row['std_cost'] / $qty, user_price_dec()));
+			$std_cost = ($qty == 0 ? 0 : Num::round($row['std_cost'] / $qty, user_price_dec()));
 			$sql
 			 = "INSERT INTO stock_moves (stock_id, loc_code, tran_date, reference, qty, standard_cost) VALUES
 			('{$row['stock_id']}', '{$row['loc_code']}', '$to', '$ref', $qty, $std_cost)";
@@ -422,7 +422,7 @@
 		}
 		end_table();
 		end_form();
-		ui_msgs::display_note(_("The marked fiscal year is the current fiscal year which cannot be deleted."), 0, 0, "class='currentfg'");
+		Display::note(_("The marked fiscal year is the current fiscal year which cannot be deleted."), 0, 0, "class='currentfg'");
 	}
 
 	//---------------------------------------------------------------------------------------------

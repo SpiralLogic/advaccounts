@@ -37,9 +37,9 @@
 		label_cell($myrow["WorkCentreName"]);
 		label_cell(Dates::sql2date($myrow["issue_date"]));
 		end_row();
-		ui_view::comments_display_row(28, $issue_no);
+		Display::comments_row(28, $issue_no);
 		end_table(1);
-		ui_view::is_voided_display(28, $issue_no, _("This issue has been voided."));
+		Display::is_voided(28, $issue_no, _("This issue has been voided."));
 	}
 
 	//-------------------------------------------------------------------------------------------------
@@ -75,9 +75,9 @@
 	}
 
 	//-------------------------------------------------------------------------------------------------
-	ui_msgs::display_heading($systypes_array[ST_MANUISSUE] . " # " . $wo_issue_no);
+	Display::heading($systypes_array[ST_MANUISSUE] . " # " . $wo_issue_no);
 	display_wo_issue($wo_issue_no);
-	ui_msgs::display_heading(_("Items for this Issue"));
+	Display::heading(_("Items for this Issue"));
 	display_wo_issue_details($wo_issue_no);
 	//-------------------------------------------------------------------------------------------------
 	echo "<br>";

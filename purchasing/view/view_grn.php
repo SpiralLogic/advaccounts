@@ -19,10 +19,10 @@
 	}
 	$purchase_order = new Purchase_Order;
 	read_grn($_GET["trans_no"], $purchase_order);
-	ui_msgs::display_heading(_("Purchase Order Delivery") . " #" . $_GET['trans_no']);
+	Display::heading(_("Purchase Order Delivery") . " #" . $_GET['trans_no']);
 	echo "<BR>";
 	display_grn_summary($purchase_order);
-	ui_msgs::display_heading(_("Line Details"));
+	Display::heading(_("Line Details"));
 	start_table("colspan=9 " . Config::get('tables_style') . " width=90%");
 	$th = array(
 		_("Item Code"), _("Item Description"), _("Delivery Date"), _("Quantity"),
@@ -49,13 +49,13 @@
 		end_row();
 		$total += $line_total;
 	}
-	$display_total = number_format2($total, user_price_dec());
+	$display_total = Num::format($total, user_price_dec());
 	label_row(
 		_("Total Excluding Tax/Shipping"), $display_total,
 		"colspan=6", "nowrap align=right"
 	);
 	end_table(1);
-	ui_view::is_voided_display(ST_SUPPRECEIVE, $_GET['trans_no'], _("This delivery has been voided."));
+	Display::is_voided(ST_SUPPRECEIVE, $_GET['trans_no'], _("This delivery has been voided."));
 	end_page(true);
 
 ?>

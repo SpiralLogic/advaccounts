@@ -421,9 +421,9 @@
 
 	function percent_cell($label, $bold = false, $id = null) {
 		if ($bold) {
-			label_cell("<b>" . percent_format($label) . "</b>", "nowrap align=right", $id);
+			label_cell("<b>" . Num::percent_format($label) . "</b>", "nowrap align=right", $id);
 		} else {
-			label_cell(percent_format($label), "nowrap align=right", $id);
+			label_cell(Num::percent_format($label), "nowrap align=right", $id);
 		}
 	}
 
@@ -433,9 +433,9 @@
 			$dec = get_qty_dec();
 		}
 		if ($bold) {
-			label_cell("<b>" . number_format2($label, $dec) . "</b>", "nowrap align=right", $id);
+			label_cell("<b>" . Num::format($label, $dec) . "</b>", "nowrap align=right", $id);
 		} else {
-			label_cell(number_format2(round2($label), $dec), "nowrap align=right", $id);
+			label_cell(Num::format(Num::round($label), $dec), "nowrap align=right", $id);
 		}
 	}
 
@@ -463,7 +463,7 @@
 	function text_cells($label, $name, $value = null, $size = "", $max = "", $title = false,
 											$labparams = "", $post_label = "", $inparams = "") {
 		$Ajax = Ajax::instance();
-		ui_view::default_focus($name);
+		JS::default_focus($name);
 		if ($label != null) {
 			label_cell($label, $labparams);
 		}
@@ -484,7 +484,7 @@
 	function text_cells_ex($label, $name, $size, $max = null, $init = null, $title = null,
 												 $labparams = null, $post_label = null, $submit_on_change = false) {
 		$Ajax = Ajax::instance();
-		ui_view::default_focus($name);
+		JS::default_focus($name);
 		if (!isset($_POST[$name]) || $_POST[$name] == "") {
 			if ($init) {
 				$_POST[$name] = $init;
@@ -595,7 +595,7 @@
 		if ($check && (get_post($name) != Dates::Today())) {
 			$aspect .= ' style="color:#FF0000"';
 		}
-		//	 ui_view::default_focus($name);
+		//	 JS::default_focus($name);
 		echo "<input id='$name' type=\"text\" name=\"$name\" $class $aspect size=\"9\" maxlength=\"12\" value=\""
 		 . $_POST[$name] . "\""
 		 . ($title ? " title='$title'" : '') . " > $post_label";
@@ -770,7 +770,7 @@
 	//-----------------------------------------------------------------------------------
 	function textarea_cells($label, $name, $value, $cols, $rows, $title = null, $params = "") {
 		$Ajax = Ajax::instance();
-		ui_view::default_focus($name);
+		JS::default_focus($name);
 		if ($label != null) {
 			echo "<td $params>$label</td>\n";
 		}

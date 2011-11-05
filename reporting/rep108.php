@@ -126,10 +126,10 @@
 				$i = 0; $i < count($transactions); $i++
 			) {
 				$myrow2       = $transactions[$i];
-				$DisplayTotal = number_format2(Abs($myrow2["TotalAmount"]), $dec);
+				$DisplayTotal = Num::format(Abs($myrow2["TotalAmount"]), $dec);
 				if ($myrow2["Allocated"] > 0) {
-					$DisplayAlloc = number_format2($myrow2["Allocated"], $dec);
-					$DisplayNet   = number_format2($DisplayTotal - $DisplayAlloc, $dec);
+					$DisplayAlloc = Num::format($myrow2["Allocated"], $dec);
+					$DisplayNet   = Num::format($DisplayTotal - $DisplayAlloc, $dec);
 				}
 				else {
 					$DisplayAlloc = '0.00';
@@ -181,7 +181,7 @@
 				else {
 					$rep->TextCol(
 						8, 9,
-						number_format2(
+						Num::format(
 							$DisplayNet * -1,
 							$dec
 						), -2
@@ -198,11 +198,11 @@
 			$pastdue2    = $doc_Over . " " . $PastDueDays2 . " " . $doc_Days;
 			$str         = array($doc_Current, $nowdue, $pastdue1, $pastdue2, $doc_Total_Balance);
 			$str2        = array(
-				number_format2(($CustomerRecord["Balance"] - $CustomerRecord["Due"]), $dec),
-				number_format2(($CustomerRecord["Due"] - $CustomerRecord["Overdue1"]), $dec),
-				number_format2(($CustomerRecord["Overdue1"] - $CustomerRecord["Overdue2"]), $dec),
-				number_format2($CustomerRecord["Overdue2"], $dec),
-				number_format2($CustomerRecord["Balance"], $dec)
+				Num::format(($CustomerRecord["Balance"] - $CustomerRecord["Due"]), $dec),
+				Num::format(($CustomerRecord["Due"] - $CustomerRecord["Overdue1"]), $dec),
+				Num::format(($CustomerRecord["Overdue1"] - $CustomerRecord["Overdue2"]), $dec),
+				Num::format($CustomerRecord["Overdue2"], $dec),
+				Num::format($CustomerRecord["Balance"], $dec)
 			);
 			$col         = array(
 				$rep->cols[0], $rep->cols[0] + 110, $rep->cols[0] + 210, $rep->cols[0] + 310, $rep->cols[0] + 410,

@@ -18,14 +18,14 @@
 	start_form();
 	/* show all outstanding receipts and credits to be allocated */
 	if (!isset($_POST['customer_id'])) {
-		$_POST['customer_id'] = ui_globals::get_global_customer();
+		$_POST['customer_id'] = Session::get()->global_customer;
 	}
 	echo "<center>" . _("Select a customer: ") . "&nbsp;&nbsp;";
 	echo customer_list('customer_id', $_POST['customer_id'], true, true);
 	echo "<br>";
 	check(_("Show Settled Items:"), 'ShowSettled', null, true);
 	echo "</center><br><br>";
-	ui_globals::set_global_customer($_POST['customer_id']);
+	Session::get()->global_customer = $_POST['customer_id'];
 	if (isset($_POST['customer_id']) && ($_POST['customer_id'] == ALL_TEXT)) {
 		unset($_POST['customer_id']);
 	}

@@ -45,7 +45,7 @@
 			);
 			Errors::notice(_("Cost has been updated."));
 			if ($update_no > 0) {
-				ui_msgs::display_note(ui_view::get_gl_view_str(ST_COSTUPDATE, $update_no, _("View the GL Journal Entries for this Cost Update")), 0, 1);
+				Display::note(ui_view::get_gl_view_str(ST_COSTUPDATE, $update_no, _("View the GL Journal Entries for this Cost Update")), 0, 1);
 			}
 		}
 	}
@@ -55,12 +55,12 @@
 	//-----------------------------------------------------------------------------------------
 	start_form();
 	if (!Input::post('stock_id')) {
-		$_POST['stock_id'] = ui_globals::get_global_stock_item();
+		$_POST['stock_id'] = Session::get()->global_stock_id;
 	}
 	echo "<center>" . _("Item:") . "&nbsp;";
 	echo stock_costable_items_list('stock_id', $_POST['stock_id'], false, true);
 	echo "</center><hr>";
-	ui_globals::set_global_stock_item($_POST['stock_id']);
+	Session::get()->global_stock_id = $_POST['stock_id'];
 	$sql
 					= "SELECT description, units, material_cost, labour_cost,
 	overhead_cost, mb_flag

@@ -134,7 +134,7 @@
 			submenu_option(_("Enter a New Sales Order"), "/sales/sales_order_entry.php?NewOrder=Yes");
 			submenu_option(_("Select A Different Order to edit"), "/sales/inquiry/sales_orders_view.php?type=" . ST_SALESORDER);
 		}
-		ui_view::display_footer_exit();
+		Page::footer_exit();
 	}
 	else {
 		check_edit_conflicts();
@@ -183,7 +183,7 @@
 		elseif ($trans_type == ST_CUSTDELIVERY) {
 			submenu_print(_("&Print Delivery Note"), ST_CUSTDELIVERY, $order_no, 'prtopt');
 			submenu_print(_("P&rint as Packing Slip"), ST_CUSTDELIVERY, $order_no, 'prtopt', null, 1);
-			ui_msgs::display_note(ui_view::get_gl_view_str(ST_CUSTDELIVERY, $order_no, _("View the GL Journal Entries for this Dispatch")), 0, 1);
+			Display::note(ui_view::get_gl_view_str(ST_CUSTDELIVERY, $order_no, _("View the GL Journal Entries for this Dispatch")), 0, 1);
 			submenu_option(_("Make &Invoice Against This Delivery"), "/sales/customer_invoice.php?DeliveryNumber=$order_no");
 			((isset($_GET['Type']) && $_GET['Type'] == 1))
 			 ? submenu_option(_("Enter a New Template &Delivery"), "/sales/inquiry/sales_orders_view.php?DeliveryTemplates=Yes")
@@ -196,7 +196,7 @@
 			if ($row !== false) {
 				submenu_print(_("Print &Receipt"), $row['trans_type_from'], $row['trans_no_from'] . "-" . $row['trans_type_from'], 'prtopt');
 			}
-			ui_msgs::display_note(ui_view::get_gl_view_str(ST_SALESINVOICE, $order_no, _("View the GL &Journal Entries for this Invoice")), 0, 1);
+			Display::note(ui_view::get_gl_view_str(ST_SALESINVOICE, $order_no, _("View the GL &Journal Entries for this Invoice")), 0, 1);
 			if ((isset($_GET['Type']) && $_GET['Type'] == 1)) {
 				submenu_option(_("Enter a &New Template Invoice"), "/sales/inquiry/sales_orders_view.php?InvoiceTemplates=Yes");
 			}
@@ -210,7 +210,7 @@
 		}
 		JS::set_focus('prtopt');
 		//	UploadHandler::insert($order_no);
-		ui_view::display_footer_exit();
+		Page::footer_exit();
 	}
 
 	//-----------------------------------------------------------------------------
@@ -378,7 +378,7 @@
 		$_SESSION['Items']->write(1);
 		if (Errors::$fatal) { // abort on failure or error messages are lost
 			$Ajax->activate('_page_body');
-			ui_view::display_footer_exit();
+			Page::footer_exit();
 		}
 		$_SESSION['order_no'] = $trans_no = key($_SESSION['Items']->trans_no);
 		$trans_type = $_SESSION['Items']->trans_type;
@@ -412,7 +412,7 @@
 	}
 	//--------------------------------------------------------------------------------
 	function check_item_data() {
-		if (!CurrentUser::instance()->can_access('SA_SALESCREDIT') && (!Validation::is_num('qty', 0) || !Validation::is_num('Disc', 0, 100))) {
+		if (!CurrentUser::get()->can_access('SA_SALESCREDIT') && (!Validation::is_num('qty', 0) || !Validation::is_num('Disc', 0, 100))) {
 			Errors::error(_("The item could not be updated because you are attempting to set the quantity ordered to less than 0, or the discount percent to more than 100."));
 			JS::set_focus('qty');
 			return false;
@@ -422,7 +422,7 @@
 			JS::set_focus('price');
 			return false;
 		}
-		elseif (!CurrentUser::instance()->can_access('SA_SALESCREDIT') && isset($_POST['LineNo']) && isset($_SESSION['Items']->line_items[$_POST['LineNo']])
+		elseif (!CurrentUser::get()->can_access('SA_SALESCREDIT') && isset($_POST['LineNo']) && isset($_SESSION['Items']->line_items[$_POST['LineNo']])
 		 && !Validation::is_num(
 			 'qty',
 			 $_SESSION['Items']->line_items[$_POST['LineNo']]->qty_done
@@ -437,7 +437,7 @@
 			if (input_num('qty') > $qoh) {
 				$stock = get_item($_POST['stock_id']);
 				Errors::error(
-					_("The delivery cannot be processed because there is an insufficient quantity for item:") . " " . $stock['stock_id'] . " - " . $stock['description'] . " - " . _("Quantity On Hand") . " = " . number_format2(
+					_("The delivery cannot be processed because there is an insufficient quantity for item:") . " " . $stock['stock_id'] . " - " . $stock['description'] . " - " . _("Quantity On Hand") . " = " . Num::format(
 						$qoh,
 						get_qty_dec($_POST['stock_id'])
 					)
@@ -510,7 +510,7 @@
 		}
 		$Ajax->activate('_page_body');
 		processing_end();
-		ui_view::display_footer_exit();
+		Page::footer_exit();
 	}
 
 	//------------------------------------------------------- -------------------------

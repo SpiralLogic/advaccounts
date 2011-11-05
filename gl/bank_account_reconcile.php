@@ -225,7 +225,7 @@
 	}
 	$sql = get_sql_for_bank_account_reconcile($_POST['bank_account'], get_post('reconcile_date'));
 	$act = get_bank_account($_POST["bank_account"]);
-	ui_msgs::display_heading($act['bank_account_name'] . " - " . $act['bank_curr_code']);
+	Display::heading($act['bank_account_name'] . " - " . $act['bank_curr_code']);
 	$cols         = array(
 		_("Type")				=> array(
 			'fun' => 'systype_name',

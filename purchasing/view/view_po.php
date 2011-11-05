@@ -17,14 +17,14 @@
 	if (!isset($_GET['trans_no'])) {
 		die ("<br>" . _("This page must be called with a purchase order number to review."));
 	}
-	ui_msgs::display_heading(_("Purchase Order") . " #" . $_GET['trans_no']);
+	Display::heading(_("Purchase Order") . " #" . $_GET['trans_no']);
 	$purchase_order = new Purchase_Order;
 	read_po($_GET['trans_no'], $purchase_order);
 	echo "<br>";
 	display_po_summary($purchase_order, true);
 	start_table(Config::get('tables_style') . "  width=90%", 6);
 	echo "<tr><td valign=top>"; // outer table
-	ui_msgs::display_heading(_("Line Details"));
+	Display::heading(_("Line Details"));
 	start_table("colspan=9 " . Config::get('tables_style') . " width=100%");
 	$th = array(
 		_("Item Code"), _("Item Description"), _("Quantity"), _("Unit"), _("Price"), _("Discount"), _("Line Total"), _("Requested By"), _("Quantity Received"),
@@ -59,7 +59,7 @@
 		end_row();
 		$total += $line_total;
 	}
-	$display_total = number_format2($total, user_price_dec());
+	$display_total = Num::format($total, user_price_dec());
 	label_row(_("Total Excluding Tax/Shipping"), $display_total, "align=right colspan=6", "nowrap align=right", 3);
 	end_table();
 	if ($overdue_items) {
@@ -70,7 +70,7 @@
 	$grns_result = get_po_grns($_GET['trans_no']);
 	if (DBOld::num_rows($grns_result) > 0) {
 		echo "</td><td valign=top>"; // outer table
-		ui_msgs::display_heading(_("Deliveries"));
+		Display::heading(_("Deliveries"));
 		start_table(Config::get('tables_style'));
 		$th = array(_("#"), _("Reference"), _("Delivered On"));
 		table_header($th);
@@ -87,7 +87,7 @@
 	$k              = 0;
 	if (DBOld::num_rows($invoice_result) > 0) {
 		echo "</td><td valign=top>"; // outer table
-		ui_msgs::display_heading(_("Invoices/Credits"));
+		Display::heading(_("Invoices/Credits"));
 		start_table(Config::get('tables_style'));
 		$th = array(_("#"), _("Date"), _("Total"));
 		table_header($th);

@@ -93,7 +93,7 @@
 			alt_table_row_color($k);
 		}
 		label_cell($myrow["sales_type"]);
-		$f = number_format2($myrow["factor"], 4);
+		$f = Num::format($myrow["factor"], 4);
 		if ($myrow["id"] == $base_sales) {
 			$f = "<I>" . _('Base') . "</I>";
 		}
@@ -120,12 +120,12 @@
 			$myrow = get_sales_type($selected_id);
 			$_POST['sales_type'] = $myrow["sales_type"];
 			$_POST['tax_included'] = $myrow["tax_included"];
-			$_POST['factor'] = number_format2($myrow["factor"], 4);
+			$_POST['factor'] = Num::format($myrow["factor"], 4);
 		}
 		hidden('selected_id', $selected_id);
 	}
 	else {
-		$_POST['factor'] = number_format2(1, 4);
+		$_POST['factor'] = Num::format(1, 4);
 	}
 	text_row_ex(_("Sales Type Name") . ':', 'sales_type', 20);
 	amount_row(_("Calculation factor") . ':', 'factor', null, null, null, 4);

@@ -22,11 +22,11 @@
 		$trans_type = ST_SUPPCREDIT;
 		echo "<center>";
 		Errors::notice(_("Supplier credit note has been processed."));
-		ui_msgs::display_note(ui_view::get_trans_view_str($trans_type, $invoice_no, _("View this Credit Note")));
-		ui_msgs::display_note(ui_view::get_gl_view_str($trans_type, $invoice_no, _("View the GL Journal Entries for this Credit Note")), 1);
+		Display::note(ui_view::get_trans_view_str($trans_type, $invoice_no, _("View this Credit Note")));
+		Display::note(ui_view::get_gl_view_str($trans_type, $invoice_no, _("View the GL Journal Entries for this Credit Note")), 1);
 		hyperlink_params($_SERVER['PHP_SELF'], _("Enter Another Credit Note"), "New=1");
 		hyperlink_params("/admin/attachments.php", _("Add an Attachment"), "filterType=$trans_type&trans_no=$invoice_no");
-		ui_view::display_footer_exit();
+		Page::footer_exit();
 	}
 	//---------------------------------------------------------------------------------------------------
 	if (isset($_GET['New'])) {

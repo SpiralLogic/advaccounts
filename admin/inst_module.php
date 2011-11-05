@@ -121,7 +121,7 @@
 				unlink($file2);
 			}
 			move_uploaded_file($file1, $file2);
-			$db_name = CurrentUser::instance()->company;
+			$db_name = CurrentUser::get()->company;
 			DB_Utils::import($file2, Config::get('db.' . $db_name));
 		}
 		if (is_uploaded_file($_FILES['uploadfile3']['tmp_name'])) {

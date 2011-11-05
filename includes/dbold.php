@@ -15,7 +15,7 @@
 
 		public static function getInstance() {
 			if (static::$db === null) {
-				static::$db = CurrentUser::instance()->get_db_connection();
+				static::$db = CurrentUser::get()->get_db_connection();
 			}
 			return static::$db;
 		}

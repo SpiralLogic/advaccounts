@@ -106,9 +106,9 @@
 		label_cell($myrow["salesman_phone"]);
 		label_cell($myrow["salesman_fax"]);
 		email_cell($myrow["salesman_email"]);
-		label_cell(percent_format($myrow["provision"]) . " %", "nowrap align=right");
+		label_cell(Num::percent_format($myrow["provision"]) . " %", "nowrap align=right");
 		amount_cell($myrow["break_pt"]);
-		label_cell(percent_format($myrow["provision2"]) . " %", "nowrap align=right");
+		label_cell(Num::percent_format($myrow["provision2"]) . " %", "nowrap align=right");
 		inactive_control_cell(
 			$myrow["salesman_code"], $myrow["inactive"],
 			'salesman', 'salesman_code'
@@ -132,16 +132,16 @@
 			$_POST['salesman_phone'] = $myrow["salesman_phone"];
 			$_POST['salesman_fax'] = $myrow["salesman_fax"];
 			$_POST['salesman_email'] = $myrow["salesman_email"];
-			$_POST['provision'] = percent_format($myrow["provision"]);
+			$_POST['provision'] = Num::percent_format($myrow["provision"]);
 			$_POST['break_pt'] = price_format($myrow["break_pt"]);
-			$_POST['provision2'] = percent_format($myrow["provision2"]);
+			$_POST['provision2'] = Num::percent_format($myrow["provision2"]);
 		}
 		hidden('selected_id', $selected_id);
 	}
 	elseif ($Mode != 'ADD_ITEM') {
-		$_POST['provision'] = percent_format(0);
+		$_POST['provision'] = Num::percent_format(0);
 		$_POST['break_pt'] = price_format(0);
-		$_POST['provision2'] = percent_format(0);
+		$_POST['provision2'] = Num::percent_format(0);
 	}
 	start_table(Config::get('tables_style2'));
 	text_row_ex(_("Sales person name:"), 'salesman_name', 30);

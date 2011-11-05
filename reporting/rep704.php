@@ -175,7 +175,7 @@
 } else {
 						$rep->AmountCol(8, 9, abs($myrow['amount']), $dec);
 					}
-					$rep->TextCol(9, 10, number_format2($total, $dec));
+					$rep->TextCol(9, 10, Num::format($total, $dec));
 					$rep->NewLine();
 					if ($rep->row < $rep->bottomMargin + $rep->lineHeight) {
 						$rep->Line($rep->row - 2);

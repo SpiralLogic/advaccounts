@@ -97,7 +97,7 @@
 	{
 		alt_table_row_color($k);
 		label_cell($myrow["name"]);
-		label_cell(percent_format($myrow["rate"]), "align=right");
+		label_cell(Num::percent_format($myrow["rate"]), "align=right");
 		label_cell($myrow["sales_gl_code"] . "&nbsp;" . $myrow["SalesAccountName"]);
 		label_cell($myrow["purchasing_gl_code"] . "&nbsp;" . $myrow["PurchasingAccountName"]);
 		inactive_control_cell($myrow["id"], $myrow["inactive"], 'tax_types', 'id');
@@ -114,7 +114,7 @@
 			//editing an existing status code
 			$myrow = Tax_Types::get($selected_id);
 			$_POST['name']               = $myrow["name"];
-			$_POST['rate']               = percent_format($myrow["rate"]);
+			$_POST['rate']               = Num::percent_format($myrow["rate"]);
 			$_POST['sales_gl_code']      = $myrow["sales_gl_code"];
 			$_POST['purchasing_gl_code'] = $myrow["purchasing_gl_code"];
 		}

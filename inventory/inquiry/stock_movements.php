@@ -23,7 +23,7 @@
 	}
 	start_form();
 	if (!Input::post('stock_id')) {
-		$_POST['stock_id'] = ui_globals::get_global_stock_item();
+		$_POST['stock_id'] = Session::get()->global_stock_id;
 	}
 	start_table("class='tablestyle_noborder'");
 	stock_items_list_cells(_("Select an item:"), 'stock_id', $_POST['stock_id'], false, true, false);
@@ -33,7 +33,7 @@
 	submit_cells('ShowMoves', _("Show Movements"), '', _('Refresh Inquiry'), 'default');
 	end_table();
 	end_form();
-	ui_globals::set_global_stock_item($_POST['stock_id']);
+	Session::get()->global_stock_id = $_POST['stock_id'];
 	$before_date = Dates::date2sql($_POST['BeforeDate']);
 	$after_date = Dates::date2sql($_POST['AfterDate']);
 	$sql
@@ -77,10 +77,10 @@
 		$trandate = Dates::sql2date($myrow["tran_date"]);
 		$type_name = $systypes_array[$myrow["type"]];
 		if ($myrow["qty"] > 0) {
-			$quantity_formatted = number_format2($myrow["qty"], $dec);
+			$quantity_formatted = Num::format($myrow["qty"], $dec);
 			$total_in += $myrow["qty"];
 		} else {
-			$quantity_formatted = number_format2(-$myrow["qty"], $dec);
+			$quantity_formatted = Num::format(-$myrow["qty"], $dec);
 			$total_out += -$myrow["qty"];
 		}
 		$after_qty += $myrow["qty"];

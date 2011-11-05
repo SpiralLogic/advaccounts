@@ -27,7 +27,7 @@
 		$show_currencies = true;
 	}
 	echo "<center>";
-	ui_msgs::display_heading(_("GL Deposit") . " #$trans_no");
+	Display::heading(_("GL Deposit") . " #$trans_no");
 	echo "<br>";
 	start_table(Config::get('tables_style') . "  width=90%");
 	if ($show_currencies) {
@@ -42,7 +42,7 @@
 	if ($show_currencies) {
 		label_cells(_("Currency"), $to_trans['bank_curr_code'], "class='tableheader2'");
 	}
-	label_cells(_("Amount"), number_format2($to_trans['amount'], user_price_dec()), "class='tableheader2'", "align=right");
+	label_cells(_("Amount"), Num::format($to_trans['amount'], user_price_dec()), "class='tableheader2'", "align=right");
 	label_cells(_("Date"), Dates::sql2date($to_trans['trans_date']), "class='tableheader2'");
 	end_row();
 	start_row();
@@ -56,16 +56,16 @@
 	start_row();
 	label_cells(_("Reference"), $to_trans['ref'], "class='tableheader2'", "colspan=$colspan2");
 	end_row();
-	ui_view::comments_display_row(ST_BANKDEPOSIT, $trans_no);
+	Display::comments_row(ST_BANKDEPOSIT, $trans_no);
 	end_table(1);
-	ui_view::is_voided_display(ST_BANKDEPOSIT, $trans_no, _("This deposit has been voided."));
+	Display::is_voided(ST_BANKDEPOSIT, $trans_no, _("This deposit has been voided."));
 	$items = get_gl_trans(ST_BANKDEPOSIT, $trans_no);
 	if (DBOld::num_rows($items) == 0) {
 		Errors::warning(_("There are no items for this deposit."));
 } else {
-		ui_msgs::display_heading(_("Items for this Deposit"));
+		Display::heading(_("Items for this Deposit"));
 		if ($show_currencies) {
-			ui_msgs::display_heading(_("Item Amounts are Shown in :") . " " . $company_currency);
+			Display::heading(_("Item Amounts are Shown in :") . " " . $company_currency);
 		}
 		start_table(Config::get('tables_style') . "  width=90%");
 		$dim = DB_Company::get_pref('use_dimension');
@@ -107,7 +107,7 @@
 				$total_amount += $item["amount"];
 			}
 		}
-		label_row(_("Total"), number_format2($total_amount, user_price_dec()), "colspan=" . (2 + $dim) . " align=right", "align=right");
+		label_row(_("Total"), Num::format($total_amount, user_price_dec()), "colspan=" . (2 + $dim) . " align=right", "align=right");
 		end_table(1);
 		ui_view::display_allocations_from($to_trans['person_type_id'], $to_trans['person_id'], 2, $trans_no, $to_trans['amount']);
 	}

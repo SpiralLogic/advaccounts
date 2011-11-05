@@ -16,7 +16,7 @@
 			$insertid = DB::insert('audit_trail')
 			 ->values(array('type'       => $trans_type,
 										 'trans_no'    => $trans_no,
-										 'user'        => CurrentUser::instance()->user,
+										 'user'        => CurrentUser::get()->user,
 										 'fiscal_year' => DB_Company::get_pref('f_year'),
 										 'gl_date'     => Dates::date2sql($trans_date),
 										 'description' => $descr,

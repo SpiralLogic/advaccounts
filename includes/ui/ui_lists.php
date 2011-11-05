@@ -267,7 +267,7 @@
 				$edit_entry .= sprintf($_search_button, $disabled, user_theme(), (fallback_mode() ? '' : 'display:none;'), $search_submit ? $search_submit : "_{$name}_button") . "\n";
 			}
 		}
-		ui_view::default_focus(($search_box && $by_id) ? $search_box : $name);
+		JS::default_focus(($search_box && $by_id) ? $search_box : $name);
 		if ($search_box && $opts['cells']) {
 			$str = ($edit_entry != '' ? "<td>$edit_entry</td>" : '') . "<td>$selector</td>";
 		} else {
@@ -364,7 +364,7 @@
 			$_select_button = "<input %s type='submit' class='combo_select' style='border:0;background:url(/themes/" . "%s/images/button_ok.png) no-repeat;%s' aspect='fallback' name='%s' value=' ' title='" . _("Select") . "'> ";
 			$selector .= sprintf($_select_button, $disabled, user_theme(), (fallback_mode() ? '' : 'display:none;'), '_' . $name . '_update') . "\n";
 		}
-		ui_view::default_focus($name);
+		JS::default_focus($name);
 		return $selector;
 	}
 
@@ -917,7 +917,7 @@ JS
 
 	function stock_units_list_row($label, $name, $value = null, $enabled = true)
 	{
-		$result = get_all_item_units();
+		$result = Item_Unit::get_all();
 		echo "<tr>";
 		if ($label != null) {
 			echo "<td class='label'>$label</td>\n";
@@ -1384,7 +1384,7 @@ JS
 
 	function workcenter_list_cells($label, $name, $selected_id = null, $all_option = false)
 	{
-		ui_view::default_focus($name);
+		JS::default_focus($name);
 		if ($label != null) {
 			echo "<td>$label</td>\n";
 		}
@@ -1457,7 +1457,7 @@ JS
 	function pos_list_row($label, $name, $selected_id = null, $spec_option = false, $submit_on_change = false)
 	{
 		$sql = "SELECT id, pos_name, inactive FROM sales_pos";
-		ui_view::default_focus($name);
+		JS::default_focus($name);
 		echo '<tr>';
 		if ($label != null) {
 			echo "<td class='label'>$label</td>\n";

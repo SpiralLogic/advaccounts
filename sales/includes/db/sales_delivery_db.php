@@ -27,7 +27,7 @@
 		$tax_total = 0;
 		$taxes     = $delivery->get_taxes(); // all taxes with freight_tax
 		foreach ($taxes as $taxitem) {
-			$taxitem['Value'] = round2($taxitem['Value'], user_price_dec());
+			$taxitem['Value'] = Num::round($taxitem['Value'], user_price_dec());
 			$tax_total += $taxitem['Value'];
 		}
 		/* Insert/update the debtor_trans */

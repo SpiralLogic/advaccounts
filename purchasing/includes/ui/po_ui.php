@@ -49,8 +49,8 @@
 		start_outer_table("width=90% " . Config::get('tables_style2'));
 		table_section(1);
 		if ($editable) {
-			if (!isset($_POST['supplier_id']) && (ui_globals::get_global_supplier() != ALL_TEXT)) {
-				$_POST['supplier_id'] = ui_globals::get_global_supplier();
+			if (!isset($_POST['supplier_id']) && Session::get()->supplier_id) {
+				$_POST['supplier_id'] = Session::get()->supplier_id;
 			}
 			supplier_list_row(_("Supplier:"), 'supplier_id', null, false, true, false, true);
 		}
@@ -76,10 +76,10 @@
 			}
 			$Ajax->activate('items_table');
 		}
-		ui_globals::set_global_supplier($_POST['supplier_id']);
+		Session::get()->supplier_id = $_POST['supplier_id'];
 		if (!Banking::is_company_currency($order->curr_code)) {
 			label_row(_("Supplier Currency:"), $order->curr_code);
-			ui_view::exchange_rate_display(
+			Display::exchange_rate(
 				$order->curr_code, Banking::get_company_currency(),
 				$_POST['OrderDate']
 			);
@@ -125,7 +125,7 @@
 	function display_po_items(&$order, $editable = true)
 	{
 		$Ajax = Ajax::instance();
-		ui_msgs::display_heading(_("Order Items"));
+		Display::heading(_("Order Items"));
 		div_start('items_table');
 		start_table(Config::get('tables_style') . "  width=90%");
 		$th = array(
@@ -250,10 +250,10 @@
 			hidden('line_no', $id);
 			$_POST['stock_id'] = $order->line_items[$id]->stock_id;
 			$dec               = get_qty_dec($_POST['stock_id']);
-			$_POST['qty']      = qty_format($order->line_items[$id]->quantity, $_POST['stock_id'], $dec);
+			$_POST['qty']      = Num::qty_format($order->line_items[$id]->quantity, $_POST['stock_id'], $dec);
 			//$_POST['price'] = price_format($order->line_items[$id]->price);
 			$_POST['price']        = price_decimal_format($order->line_items[$id]->price, $dec2);
-			$_POST['discount']     = percent_format($order->line_items[$id]->discount * 100);
+			$_POST['discount']     = Num::percent_format($order->line_items[$id]->discount * 100);
 			$_POST['req_del_date'] = $order->line_items[$id]->req_del_date;
 			$_POST['description']  = $order->line_items[$id]->description;
 			$_POST['units']        = $order->line_items[$id]->units;
@@ -278,11 +278,11 @@
 			$_POST['units']       = $item_info["units"];
 			$_POST['description'] = $item_info['description'];
 			$dec                  = $item_info["decimals"];
-			$_POST['qty']         = number_format2(get_purchase_conversion_factor($order->supplier_id, Input::post('stock_id')), $dec);
+			$_POST['qty']         = Num::format(get_purchase_conversion_factor($order->supplier_id, Input::post('stock_id')), $dec);
 			//$_POST['price'] = price_format(get_purchase_price ($order->supplier_id, $_POST['stock_id']));
 			$_POST['price']        = price_decimal_format(get_purchase_price($order->supplier_id, Input::post('stock_id')), $dec2);
 			$_POST['req_del_date'] = Dates::add_days(Dates::Today(), 10);
-			$_POST['discount']     = percent_format(0);
+			$_POST['discount']     = Num::percent_format(0);
 			$qty_rcvd              = '';
 		}
 		qty_cells(null, 'qty', null, null, null, $dec);
@@ -290,7 +290,7 @@
 		label_cell($_POST['units'], '', 'units');
 		date_cells(null, 'req_del_date', '', null, 0, 0, 0);
 		amount_cells(null, 'price', null, null, null, $dec2);
-		small_amount_cells(null, 'discount', percent_format($_POST['discount']), null, null, user_percent_dec());
+		small_amount_cells(null, 'discount', Num::percent_format($_POST['discount']), null, null, user_percent_dec());
 		//$line_total = $_POST['qty'] * $_POST['price'] * (1 - $_POST['Disc'] / 100);
 		$line_total = input_num('qty') * input_num('price') * (1 - input_num('discount') / 100);
 		amount_cell($line_total, false, '', 'line_total');

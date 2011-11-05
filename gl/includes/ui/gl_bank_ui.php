@@ -80,7 +80,7 @@
 		}
 		$person_currency = Banking::payment_person_currency($_POST['PayType'], $_POST['person_id']);
 		$bank_currency   = Banking::get_bank_account_currency($_POST['bank_account']);
-		ui_view::exchange_rate_display($bank_currency, $person_currency, $_POST['date_']);
+		Display::exchange_rate($bank_currency, $person_currency, $_POST['date_']);
 		table_section(3, "33%");
 		if (isset($_GET['NewPayment'])) {
 			ref_row(_("Reference:"), 'ref', '', Refs::get_next(ST_BANKPAYMENT));
@@ -96,7 +96,7 @@
 	{
 		$dim     = DB_Company::get_pref('use_dimension');
 		$colspan = ($dim == 2 ? 4 : ($dim == 1 ? 3 : 2));
-		ui_msgs::display_heading($title);
+		Display::heading($title);
 		div_start('items_table');
 		start_table(Config::get('tables_style') . " colspan=7 width=95%");
 		if ($dim == 2) {
@@ -151,7 +151,7 @@
 			gl_edit_item_controls($order, $dim);
 		}
 		if ($order->count_gl_items()) {
-			label_row(_("Total"), number_format2(abs($order->gl_items_total()), user_price_dec()), "colspan=" . $colspan . " align=right", "align=right", 3);
+			label_row(_("Total"), Num::format(abs($order->gl_items_total()), user_price_dec()), "colspan=" . $colspan . " align=right", "align=right", 3);
 		}
 		end_table();
 		div_end();

@@ -19,7 +19,7 @@
 	}
 	//------------------------------------------------------------------------------------------------
 	if (!isset($_POST['customer_id'])) {
-		$_POST['customer_id'] = ui_globals::get_global_customer();
+		$_POST['customer_id'] = Session::get()->global_customer;
 	}
 	start_form();
 	start_table("class='tablestyle_noborder'");
@@ -30,7 +30,7 @@
 	cust_allocations_list_cells(_("Type:"), 'filterType', null);
 	check_cells(" " . _("show settled:"), 'showSettled', null);
 	submit_cells('RefreshInquiry', _("Search"), '', _('Refresh Inquiry'), 'default');
-	ui_globals::set_global_customer($_POST['customer_id']);
+	Session::get()->global_customer = $_POST['customer_id'];
 	end_row();
 	end_table();
 	//------------------------------------------------------------------------------------------------

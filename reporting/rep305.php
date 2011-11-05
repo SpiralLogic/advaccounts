@@ -107,7 +107,7 @@
 			$rep->AmountCol(3, 4, $trans['quantity_received'], $qdec);
 			$rep->AmountCol(4, 5, $trans['unit_price'], $dec);
 			$rep->AmountCol(5, 6, $trans['act_price'], $dec);
-			$amt = round2($trans['quantity_received'] * $trans['act_price'], $dec);
+			$amt = Num::round($trans['quantity_received'] * $trans['act_price'], $dec);
 			$rep->AmountCol(6, 7, $amt, $dec);
 			$total += $amt;
 			$qtotal += $trans['quantity_received'];

@@ -9,7 +9,7 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	class Items_Cart
+	class Item_Cart
 	{
 		public $trans_type;
 		public $line_items;
@@ -36,7 +36,7 @@
 		function add_to_cart($line_no, $stock_id, $qty, $standard_cost, $description = null)
 		{
 			if (isset($stock_id) && $stock_id != "" && isset($qty)) {
-				$this->line_items[$line_no] = new Items_Line($stock_id, $qty,
+				$this->line_items[$line_no] = new Item_Line($stock_id, $qty,
 					$standard_cost, $description);
 				return true;
 } else {
@@ -88,7 +88,7 @@
 		function add_gl_item($code_id, $dimension_id, $dimension2_id, $amount, $reference, $description = null)
 		{
 			if (isset($code_id) && $code_id != "" && isset($amount) && isset($dimension_id) && isset($dimension2_id)) {
-				$this->gl_items[] = new Items_Gl($code_id, $dimension_id, $dimension2_id, $amount, $reference, $description);
+				$this->gl_items[] = new Item_Gl($code_id, $dimension_id, $dimension2_id, $amount, $reference, $description);
 				return true;
 			} else {
 				// shouldn't come here under normal circumstances

@@ -21,7 +21,7 @@
 	Validation::check(Validation::BANK_ACCOUNTS, _("There are no bank accounts defined in the system."));
 	//----------------------------------------------------------------------------------------
 	if (!isset($_POST['customer_id'])) {
-		$customer = new Contacts_Customer(ui_globals::get_global_customer(false));
+		$customer = new Contacts_Customer(Session::get()->global_customer);
 	}
 	if (!isset($_POST['DateBanked'])) {
 		$_POST['DateBanked'] = Dates::new_doc_date();
@@ -34,8 +34,8 @@
 		Errors::notice(_("The customer refund has been successfully entered."));
 		submenu_print(_("&Print This Receipt"), ST_CUSTREFUND, $refund_id . "-" . ST_CUSTREFUND, 'prtopt');
 		hyperlink_no_params("/sales/inquiry/customer_inquiry.php", _("Show Invoices"));
-		ui_msgs::display_note(ui_view::get_gl_view_str(ST_CUSTREFUND, $refund_id, _("&View the GL Journal Entries for this Customer Refund")));
-		ui_view::display_footer_exit();
+		Display::note(ui_view::get_gl_view_str(ST_CUSTREFUND, $refund_id, _("&View the GL Journal Entries for this Customer Refund")));
+		Page::footer_exit();
 	}
 	//----------------------------------------------------------------------------------------------
 	function can_process()
@@ -183,13 +183,13 @@
 		hidden('BranchID', ANY_NUMERIC);
 	}
 	read_customer_data();
-	ui_globals::set_global_customer($customer->id);
+	Session::get()->global_customer = $customer->id;
 	if (isset($_POST['HoldAccount']) && $_POST['HoldAccount'] != 0) {
 		end_outer_table();
 		Errors::error(_("This customer account is on hold."));
 	}
 	else {
-		$display_discount_percent = percent_format($_POST['pymt_discount'] * 100) . "%";
+		$display_discount_percent = Num::percent_format($_POST['pymt_discount'] * 100) . "%";
 		table_section(2);
 		bank_accounts_list_row(_("Into Bank Account:"), 'bank_account', null, true);
 		text_row(_("Reference:"), 'ref', null, 20, 40);
@@ -199,7 +199,7 @@
 		$cust_currency = Banking::get_customer_currency($customer->id);
 		$bank_currency = Banking::get_bank_account_currency($_POST['bank_account']);
 		if ($cust_currency != $bank_currency) {
-			ui_view::exchange_rate_display($bank_currency, $cust_currency, $_POST['DateBanked'], ($bank_currency == $comp_currency));
+			Display::exchange_rate($bank_currency, $cust_currency, $_POST['DateBanked'], ($bank_currency == $comp_currency));
 		}
 		amount_row(_("Bank Charge:"), 'charge');
 		end_outer_table(1);

@@ -6,7 +6,7 @@
 	 * Time: 7:19 AM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	class Items_Line
+	class Item_Line
 	{
 		public $stock_id;
 		public $description;

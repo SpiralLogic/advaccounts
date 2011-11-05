@@ -48,7 +48,7 @@
 
 	//---------------------------------------------------------------------------------
 	function display_gl_items($title, &$order) {
-		ui_msgs::display_heading($title);
+		Display::heading($title);
 		$dim = DB_Company::get_pref('use_dimension');
 		div_start('items_table');
 		start_table(Config::get('tables_style') . " colspan=7 width=95%");
@@ -146,7 +146,7 @@
 			$_POST['description'] = $item->description;
 			$_POST['LineMemo'] = $item->reference;
 			hidden('Index', $id);
-			$skip_bank = !CurrentUser::instance()->can_access('SA_BANKJOURNAL');
+			$skip_bank = !CurrentUser::get()->can_access('SA_BANKJOURNAL');
 			echo gl_all_accounts_list('code_id', null, $skip_bank, true);
 			if ($dim >= 1) {
 				dimensions_list_cells(null, 'dimension_id', null, true, " ", false, 1);
@@ -167,7 +167,7 @@
 			if (isset($_POST['_code_id_update'])) {
 				$Ajax->activate('code_id');
 			}
-			$skip_bank = !CurrentUser::instance()->can_access('SA_BANKJOURNAL');
+			$skip_bank = !CurrentUser::get()->can_access('SA_BANKJOURNAL');
 			echo gl_all_accounts_list('code_id', null, $skip_bank, true);
 			if ($dim >= 1) {
 				dimensions_list_cells(null, 'dimension_id', null, true, " ", false, 1);

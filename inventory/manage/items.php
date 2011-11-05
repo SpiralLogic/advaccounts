@@ -158,7 +158,7 @@
 				$new_item = true;
 				meta_forward($_SERVER['PHP_SELF']);
 			} else {
-				ui_globals::set_global_stock_item($_POST['NewStockID']);
+				Session::get()->global_stock_id = $_POST['NewStockID'];
 				$_POST['stock_id'] = $_POST['NewStockID'];
 			}
 			$Ajax->activate('_page_body');
@@ -372,11 +372,11 @@
 		submit_center_last('cancel', _("Cancel"), _("Cancel Edition"), 'cancel');
 	}
 	if (get_post('stock_id')) {
-		ui_globals::set_global_stock_item(get_post('stock_id'));
+		Session::get()->global_stock_id = get_post('stock_id');
 		echo "<iframe src='/inventory/purchasing_data.php?frame=1' width='48%' height='450' style='overflow-x: hidden; overflow-y: scroll; ' frameborder='0'></iframe> ";
 	}
 	if (get_post('stock_id')) {
-		ui_globals::set_global_stock_item(get_post('stock_id'));
+		Session::get()->global_stock_id = get_post('stock_id');
 		echo "<iframe style='float:right;' src='/inventory/prices.php?frame=1' width='48%' height='450' style='overflow-x: hidden; overflow-y: scroll; ' frameborder='0'></iframe> ";
 	}
 	div_end();

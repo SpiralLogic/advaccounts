@@ -20,7 +20,7 @@
 			//	Errors::error_box();
 			if ($script_only) {
 				echo '<noscript>';
-				echo ui_msgs::display_heading(_('This page is usable only with javascript enabled browsers.'));
+				echo Display::heading(_('This page is usable only with javascript enabled browsers.'));
 				echo '</noscript>';
 				div_start('_page_body', null, true);
 			} else {
@@ -135,7 +135,7 @@
 			$load_info = array(Files::convert_size(memory_get_usage(true)), Files::convert_size(memory_get_peak_usage(true)), Dates::getReadableTime(microtime(true) - ADV_START_TIME));
 			echo implode(($rend->has_header) ? "<br>" : "|", $load_info);
 			echo "</div></body>";
-			ui_view::get_websales();
+			JS::get_websales();
 			echo	 "</html>\n";
 		}
 
@@ -155,4 +155,13 @@
 			$css   = implode(',', static::add_css());
 			echo "<link href='{$path}{$css}' rel='stylesheet' type='text/css'> \n";
 		}
+
+		//--------------------------------------------------------------------------------------
+		public static function display_footer_exit()
+		{
+			br(2);
+			end_page(false, false, true);
+			exit;
+		}
+
 	}

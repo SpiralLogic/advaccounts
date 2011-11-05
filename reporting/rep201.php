@@ -142,10 +142,10 @@
 				continue;
 			$bal = get_open_balance($myrow['supplier_id'], $from, $convert);
 			$init[0] = $init[1] = 0.0;
-			$init[0] = round2(abs($bal['charges']), $dec);
-			$init[1] = round2(Abs($bal['credits']), $dec);
-			$init[2] = round2($bal['Allocated'], $dec);
-			$init[3] = round2($bal['OutStanding'], $dec);
+			$init[0] = Num::round(abs($bal['charges']), $dec);
+			$init[1] = Num::round(Abs($bal['credits']), $dec);
+			$init[2] = Num::round($bal['Allocated'], $dec);
+			$init[3] = Num::round($bal['OutStanding'], $dec);
 			;
 			$total = array(0, 0, 0, 0);
 			for ($i = 0; $i < 4; $i++)
@@ -184,13 +184,13 @@
 				else
 					$rate = 1.0;
 				if ($trans['TotalAmount'] > 0.0) {
-					$item[0] = round2(abs($trans['TotalAmount']) * $rate, $dec);
+					$item[0] = Num::round(abs($trans['TotalAmount']) * $rate, $dec);
 					$rep->AmountCol(4, 5, $item[0], $dec);
 } else {
-					$item[1] = round2(abs($trans['TotalAmount']) * $rate, $dec);
+					$item[1] = Num::round(abs($trans['TotalAmount']) * $rate, $dec);
 					$rep->AmountCol(5, 6, $item[1], $dec);
 				}
-				$item[2] = round2($trans['Allocated'] * $rate, $dec);
+				$item[2] = Num::round($trans['Allocated'] * $rate, $dec);
 				$rep->AmountCol(6, 7, $item[2], $dec);
 				/*
 			 if ($trans['type'] == 20)

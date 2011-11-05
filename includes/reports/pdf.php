@@ -58,7 +58,7 @@
 		function __construct($title, $filename, $size = 'A4', $fontsize = 9, $orientation = 'P', $margins = NULL, $excelColWidthFactor = NULL)
 		{
 			global $page_security;
-			if (!CurrentUser::instance()->can_access_page($page_security)) {
+			if (!CurrentUser::get()->can_access_page($page_security)) {
 				Errors::error(_("The security settings on your account do not permit you to print this report"));
 				end_page();
 				exit;
@@ -232,7 +232,7 @@
 			}
 			$this->fiscal_year = Dates::sql2date($year['begin']) . " - " . Dates::sql2date($year['end']) . "  " . "(" . $how . ")";
 			$this->company     = DB_Company::get_prefs();
-			$this->user        = CurrentUser::instance()->name;
+			$this->user        = CurrentUser::get()->name;
 			$this->host        = $_SERVER['SERVER_NAME'];
 			$this->params      = $params;
 			$this->cols        = $cols;
@@ -690,7 +690,7 @@
 			if ($color_red && $txt < 0) {
 				$this->SetTextColor(255, 0, 0);
 			}
-			$ret = $this->TextCol($c, $n, number_format2($txt, $dec), $corr, $r, $border, $fill, $link, $stretch);
+			$ret = $this->TextCol($c, $n, Num::format($txt, $dec), $corr, $r, $border, $fill, $link, $stretch);
 			if ($color_red && $txt < 0) {
 				$this->SetTextColor(0, 0, 0);
 			}

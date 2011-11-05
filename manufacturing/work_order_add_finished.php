@@ -23,14 +23,14 @@
 		$id    = $_GET['AddedID'];
 		$stype = ST_WORKORDER;
 		Errors::notice(_("The manufacturing process has been entered."));
-		ui_msgs::display_note(ui_view::get_trans_view_str($stype, $id, _("View this Work Order")));
-		ui_msgs::display_note(ui_view::get_gl_view_str($stype, $id, _("View the GL Journal Entries for this Work Order")), 1);
+		Display::note(ui_view::get_trans_view_str($stype, $id, _("View this Work Order")));
+		Display::note(ui_view::get_gl_view_str($stype, $id, _("View the GL Journal Entries for this Work Order")), 1);
 		$ar = array(
 			'PARAM_0' => $_GET['date'],
 			'PARAM_1' => $_GET['date'],
 			'PARAM_2' => $stype
 		);
-		ui_msgs::display_note(Reporting::print_link(_("Print the GL Journal Entries for this Work Order"), 702, $ar), 1);
+		Display::note(Reporting::print_link(_("Print the GL Journal Entries for this Work Order"), 702, $ar), 1);
 		hyperlink_no_params("search_work_orders.php", _("Select another &Work Order to Process"));
 		end_page();
 		exit;
@@ -137,7 +137,7 @@
 	//hidden('WOReqQuantity', $_POST['WOReqQuantity']);
 	$dec = get_qty_dec($wo_details["stock_id"]);
 	if (!isset($_POST['quantity']) || $_POST['quantity'] == '') {
-		$_POST['quantity'] = qty_format(
+		$_POST['quantity'] = Num::qty_format(
 			max($wo_details["units_reqd"] - $wo_details["units_issued"], 0),
 			$wo_details["stock_id"], $dec
 		);

@@ -15,12 +15,12 @@
 	Validation::check(Validation::STOCK_ITEMS, _("There are no items defined in the system."));
 	start_form(false, true);
 	if (!Input::post('stock_id')) {
-		$_POST['stock_id'] = ui_globals::get_global_stock_item();
+		$_POST['stock_id'] = Session::get()->global_stock_id;
 	}
 	echo "<center>" . _("Select an item to display its parent item(s).") . "&nbsp;";
 	echo stock_items_list('stock_id', $_POST['stock_id'], false, true);
 	echo "<hr></center>";
-	ui_globals::set_global_stock_item($_POST['stock_id']);
+	Session::get()->global_stock_id = $_POST['stock_id'];
 	//-----------------------------------------------------------------------------
 	function select_link($row)
 	{

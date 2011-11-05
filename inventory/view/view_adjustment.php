@@ -15,7 +15,7 @@
 	if (isset($_GET["trans_no"])) {
 		$trans_no = $_GET["trans_no"];
 	}
-	ui_msgs::display_heading($systypes_array[ST_INVADJUST] . " #$trans_no");
+	Display::heading($systypes_array[ST_INVADJUST] . " #$trans_no");
 	br(1);
 	$adjustment_items = get_stock_adjustment_items($trans_no);
 	$k                = 0;
@@ -31,7 +31,7 @@
 			label_cells(_("Date"), Dates::sql2date($adjustment['tran_date']), "class='tableheader2'");
 			label_cells(_("Adjustment Type"), $adjustment_type['name'], "class='tableheader2'");
 			end_row();
-			ui_view::comments_display_row(ST_INVADJUST, $trans_no);
+			Display::comments_row(ST_INVADJUST, $trans_no);
 			end_table();
 			$header_shown = true;
 			echo "<br>";
@@ -51,6 +51,6 @@
 		end_row();
 	}
 	end_table(1);
-	ui_view::is_voided_display(ST_INVADJUST, $trans_no, _("This adjustment has been voided."));
+	Display::is_voided(ST_INVADJUST, $trans_no, _("This adjustment has been voided."));
 	end_page(true);
 ?>

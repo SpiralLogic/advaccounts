@@ -29,16 +29,16 @@
 		$id = $_GET['AddedID'];
 		$stype = ST_WORKORDER;
 		Errors::notice(_("The work order been added."));
-		ui_msgs::display_note(ui_view::get_trans_view_str($stype, $id, _("View this Work Order")));
+		Display::note(ui_view::get_trans_view_str($stype, $id, _("View this Work Order")));
 		if ($_GET['type'] != WO_ADVANCED) {
 			$ar = array(
 				'PARAM_0' => $id,
 				'PARAM_1' => $id,
 				'PARAM_2' => 0
 			);
-			ui_msgs::display_note(Reporting::print_link(_("Print this Work Order"), 409, $ar), 1);
+			Display::note(Reporting::print_link(_("Print this Work Order"), 409, $ar), 1);
 			$ar['PARAM_2'] = 1;
-			ui_msgs::display_note(Reporting::print_link(_("Email this Work Order"), 409, $ar), 1);
+			Display::note(Reporting::print_link(_("Email this Work Order"), 409, $ar), 1);
 			Errors::warning(ui_view::get_gl_view_str($stype, $id, _("View the GL Journal Entries for this Work Order")), 1);
 			$ar = array(
 				'PARAM_0' => $_GET['date'],
@@ -71,7 +71,7 @@
 	function safe_exit() {
 		hyperlink_no_params("", _("Enter a new work order"));
 		hyperlink_no_params("search_work_orders.php", _("Select an existing work order"));
-		ui_view::display_footer_exit();
+		Page::footer_exit();
 	}
 
 	//-------------------------------------------------------------------------------------
@@ -262,7 +262,7 @@
 		}
 		$_POST['wo_ref'] = $myrow["wo_ref"];
 		$_POST['stock_id'] = $myrow["stock_id"];
-		$_POST['quantity'] = qty_format($myrow["units_reqd"], Input::post('stock_id'), $dec);
+		$_POST['quantity'] = Num::qty_format($myrow["units_reqd"], Input::post('stock_id'), $dec);
 		$_POST['StockLocation'] = $myrow["loc_code"];
 		$_POST['released'] = $myrow["released"];
 		$_POST['closed'] = $myrow["closed"];
@@ -273,7 +273,7 @@
 		$_POST['memo_'] = "";
 		$_POST['units_issued'] = $myrow["units_issued"];
 		$_POST['Costs'] = price_format($myrow["additional_costs"]);
-		$_POST['memo_'] = ui_view::get_comments_string(ST_WORKORDER, $selected_id);
+		$_POST['memo_'] = DB_Comments::get_string(ST_WORKORDER, $selected_id);
 		hidden('wo_ref', $_POST['wo_ref']);
 		hidden('units_issued', $_POST['units_issued']);
 		hidden('released', $_POST['released']);
@@ -303,9 +303,9 @@
 		locations_list_row(_("Destination Location:"), 'StockLocation', null);
 	}
 	if (!isset($_POST['quantity'])) {
-		$_POST['quantity'] = qty_format(1, Input::post('stock_id'), $dec);
+		$_POST['quantity'] = Num::qty_format(1, Input::post('stock_id'), $dec);
 } else {
-		$_POST['quantity'] = qty_format($_POST['quantity'], Input::post('stock_id'), $dec);
+		$_POST['quantity'] = Num::qty_format($_POST['quantity'], Input::post('stock_id'), $dec);
 	}
 	if (get_post('type') == WO_ADVANCED) {
 		qty_row(_("Quantity Required:"), 'quantity', null, null, null, $dec);

@@ -31,7 +31,7 @@
 		$taxes = $credit_note->get_taxes();
 		$tax_total = 0;
 		foreach ($taxes as $taxitem) {
-			$taxitem['Value'] = round2($taxitem['Value'], user_price_dec());
+			$taxitem['Value'] = Num::round($taxitem['Value'], user_price_dec());
 			$tax_total += $taxitem['Value'];
 		}
 		if ($credit_note->tax_included == 0) {

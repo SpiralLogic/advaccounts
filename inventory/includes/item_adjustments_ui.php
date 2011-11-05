@@ -40,7 +40,7 @@
 
 	//---------------------------------------------------------------------------------
 	function display_adjustment_items($title, &$order) {
-		ui_msgs::display_heading($title);
+		Display::heading($title);
 		div_start('items_table');
 		start_table(Config::get('tables_style') . "  width=90%");
 		$th = array(
@@ -61,7 +61,7 @@
 			$total += ($stock_item->standard_cost * $stock_item->quantity);
 			if ($id != $line_no) {
 				alt_table_row_color($k);
-				ui_view::view_stock_status_cell($stock_item->stock_id);
+				ui_view::stock_status_cell($stock_item->stock_id);
 				label_cell($stock_item->description);
 				qty_cell($stock_item->quantity, false, get_qty_dec($stock_item->stock_id));
 				label_cell($stock_item->units);
@@ -83,7 +83,7 @@
 		if ($id == -1) {
 			adjustment_edit_item_controls($order);
 		}
-		label_row(_("Total"), number_format2($total, user_price_dec()), "align=right colspan=5", "align=right", 2);
+		label_row(_("Total"), Num::format($total, user_price_dec()), "align=right colspan=5", "align=right", 2);
 		end_table();
 		div_end();
 	}
@@ -96,7 +96,7 @@
 		$id = find_submit('Edit');
 		if ($line_no != -1 && $line_no == $id) {
 			$_POST['stock_id'] = $order->line_items[$id]->stock_id;
-			$_POST['qty'] = qty_format(
+			$_POST['qty'] = Num::qty_format(
 				$order->line_items[$id]->quantity,
 				$order->line_items[$id]->stock_id, $dec
 			);
@@ -116,7 +116,7 @@
 			}
 			$item_info = get_item_edit_info((isset($_POST['stock_id']) ? $_POST['stock_id'] : ''));
 			$dec = $item_info['decimals'];
-			$_POST['qty'] = number_format2(0, $dec);
+			$_POST['qty'] = Num::format(0, $dec);
 			//$_POST['std_cost'] = price_format($item_info["standard_cost"]);
 			$_POST['std_cost'] = price_decimal_format($item_info["standard_cost"], $dec2);
 			$_POST['units'] = $item_info["units"];

@@ -45,19 +45,19 @@
 		$trans_no   = $_GET['AddedID'];
 		$trans_type = ST_BANKPAYMENT;
 		Errors::notice(_("Payment $trans_no has been entered"));
-		ui_msgs::display_note(ui_view::get_gl_view_str($trans_type, $trans_no, _("&View the GL Postings for this Payment")));
+		Display::note(ui_view::get_gl_view_str($trans_type, $trans_no, _("&View the GL Postings for this Payment")));
 		hyperlink_params($_SERVER['PHP_SELF'], _("Enter Another &Payment"), "NewPayment=yes");
 		hyperlink_params($_SERVER['PHP_SELF'], _("Enter A &Deposit"), "NewDeposit=yes");
-		ui_view::display_footer_exit();
+		Page::footer_exit();
 	}
 	if (isset($_GET['AddedDep'])) {
 		$trans_no   = $_GET['AddedDep'];
 		$trans_type = ST_BANKDEPOSIT;
 		Errors::notice(_("Deposit $trans_no has been entered"));
-		ui_msgs::display_note(ui_view::get_gl_view_str($trans_type, $trans_no, _("View the GL Postings for this Deposit")));
+		Display::note(ui_view::get_gl_view_str($trans_type, $trans_no, _("View the GL Postings for this Deposit")));
 		hyperlink_params($_SERVER['PHP_SELF'], _("Enter Another Deposit"), "NewDeposit=yes");
 		hyperlink_params($_SERVER['PHP_SELF'], _("Enter A Payment"), "NewPayment=yes");
-		ui_view::display_footer_exit();
+		Page::footer_exit();
 	}
 	if (isset($_POST['_date__changed'])) {
 		$Ajax->activate('_ex_rate');
@@ -69,7 +69,7 @@
 			unset ($_SESSION['pay_items']);
 		}
 		//session_register("pay_items");
-		$_SESSION['pay_items'] = new Items_Cart($type);
+		$_SESSION['pay_items'] = new Item_Cart($type);
 		$_POST['date_'] = Dates::new_doc_date();
 		if (!Dates::is_date_in_fiscalyear($_POST['date_'])) {
 			$_POST['date_'] = Dates::end_fiscalyear();

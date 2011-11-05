@@ -25,7 +25,7 @@
 	$myrow = get_customer_trans($trans_id, ST_CUSTDELIVERY);
 	$branch = get_branch($myrow["branch_code"]);
 	$sales_order = get_sales_order_header($myrow["order_"], ST_SALESORDER);
-	ui_msgs::display_heading(sprintf(_("DISPATCH NOTE #%d"), $trans_id));
+	Display::heading(sprintf(_("DISPATCH NOTE #%d"), $trans_id));
 	echo "<br>";
 	start_table(Config::get('tables_style2') . " width=95%");
 	echo "<tr valign=top><td>"; // outer table
@@ -71,7 +71,7 @@
 	label_cells(_("Dispatch Date"), Dates::sql2date($myrow["tran_date"]), "class='tableheader2'", "nowrap");
 	label_cells(_("Due Date"), Dates::sql2date($myrow["due_date"]), "class='tableheader2'", "nowrap");
 	end_row();
-	ui_view::comments_display_row(ST_CUSTDELIVERY, $trans_id);
+	Display::comments_row(ST_CUSTDELIVERY, $trans_id);
 	end_table();
 	echo "</td></tr>";
 	end_table(1); // outer table
@@ -91,7 +91,7 @@
 				continue;
 			}
 			alt_table_row_color($k);
-			$value = round2(
+			$value = Num::round(
 				((1 - $myrow2["discount_percent"]) * $myrow2["unit_price"] * $myrow2["quantity"]),
 				user_price_dec()
 			);
@@ -99,7 +99,7 @@
 			if ($myrow2["discount_percent"] == 0) {
 				$display_discount = "";
 } else {
-				$display_discount = percent_format($myrow2["discount_percent"] * 100) . "%";
+				$display_discount = Num::percent_format($myrow2["discount_percent"] * 100) . "%";
 			}
 			label_cell($myrow2["stock_id"]);
 			label_cell($myrow2["StockDescription"]);
@@ -122,13 +122,13 @@
 	);
 	label_row(_("Shipping"), $display_freight, "colspan=6 align=right", "nowrap align=right");
 	$tax_items = get_trans_tax_details(ST_CUSTDELIVERY, $trans_id);
-	ui_view::display_customer_trans_tax_details($tax_items, 6);
+	ui_view::Display::customer_trans_tax_details($tax_items, 6);
 	$display_total = price_format($myrow["ov_freight"] + $myrow["ov_amount"] + $myrow["ov_freight_tax"] + $myrow["ov_gst"]);
 	label_row(
 		_("TOTAL VALUE"), $display_total, "colspan=6 align=right",
 		"nowrap align=right"
 	);
 	end_table(1);
-	ui_view::is_voided_display(ST_CUSTDELIVERY, $trans_id, _("This dispatch has been voided."));
+	Display::is_voided(ST_CUSTDELIVERY, $trans_id, _("This dispatch has been voided."));
 	submenu_print(_("&Print This Delivery Note"), ST_CUSTDELIVERY, $_GET['trans_no'], 'prtopt');
 	end_page(true);

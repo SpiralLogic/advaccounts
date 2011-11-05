@@ -28,13 +28,13 @@
 	function edit_allocations_for_transaction($type, $trans_no) {
 		global $systypes_array;
 		start_form();
-		ui_msgs::display_heading(
+		Display::heading(
 			_("Allocation of") . " " . $systypes_array[$_SESSION['alloc']->type] . " # " .
 			 $_SESSION['alloc']->trans_no
 		);
-		ui_msgs::display_heading($_SESSION['alloc']->person_name);
-		ui_msgs::display_heading(_("Date:") . " <b>" . $_SESSION['alloc']->date_ . "</b>");
-		ui_msgs::display_heading(_("Total:") . " <b>" . price_format(-$_SESSION['alloc']->amount) . "</b>");
+		Display::heading($_SESSION['alloc']->person_name);
+		Display::heading(_("Date:") . " <b>" . $_SESSION['alloc']->date_ . "</b>");
+		Display::heading(_("Total:") . " <b>" . price_format(-$_SESSION['alloc']->amount) . "</b>");
 		echo "<br>";
 		div_start('alloc_tbl');
 		if (count($_SESSION['alloc']->allocs) > 0) {

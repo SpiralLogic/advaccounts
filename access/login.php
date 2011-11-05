@@ -20,7 +20,7 @@
 		Config::set('company_default', 1);
 	}
 	$def_theme     = "default";
-	$login_timeout = CurrentUser::instance()->last_act;
+	$login_timeout = CurrentUser::get()->last_act;
 	$title         = $login_timeout ? _('Authorization timeout') : APP_TITLE . " " . VERSION . " - " . _("Login");
 	$encoding      = isset($_SESSION['language']->encoding) ? $_SESSION['language']->encoding : "utf-8";
 	$rtl           = isset($_SESSION['language']->dir) ? $_SESSION['language']->dir : "ltr";
@@ -33,7 +33,7 @@
 	echo "<link href='/themes/$def_theme/default.css' rel='stylesheet' type='text/css'> \n";
 	$js = "(function set_fullmode() {	document.getElementById('ui_mode').value = 1;document.loginform.submit();return true;})();";
 	if (!$login_timeout) {
-		$js .= "(function defaultCompany(){document.forms[0].company_login_name.options[" . CurrentUser::instance()->company . "].selected = true;})()";
+		$js .= "(function defaultCompany(){document.forms[0].company_login_name.options[" . CurrentUser::get()->company . "].selected = true;})()";
 	}
 	JS::onLoad($js);
 	echo "</head>\n";
@@ -48,11 +48,11 @@
 	if (!$login_timeout) { // FA logo
 		echo "<a target='_blank' href='" . POWERED_URL . "'><img src='/themes/$def_theme/images/logo_frontaccounting.png' alt='FrontAccounting' height='50' border='0' /></a>";
 	} else {
-		echo "<font size=5>" . _('Authorization timeout') . "</font><br>You were idle for: " . (CurrentUser::instance()->last_act + $_SESSION['wa_current_user']->timeout - time());
+		echo "<font size=5>" . _('Authorization timeout') . "</font><br>You were idle for: " . (CurrentUser::get()->last_act + $_SESSION['wa_current_user']->timeout - time());
 	}
 	echo "</td>\n";
 	end_row();
-	echo "<input type='hidden' id=ui_mode name='ui_mode' value='" . CurrentUser::instance()->ui_mode . "' />\n";
+	echo "<input type='hidden' id=ui_mode name='ui_mode' value='" . CurrentUser::get()->ui_mode . "' />\n";
 	if (!$login_timeout) {
 		table_section_title(_("Version") . VERSION . "   Build " . BUILD_VERSION . " - " . _("Login"));
 	}
@@ -61,7 +61,7 @@
 	$password = Config::get('demo_mode') ? "password" : "";
 	password_row(_("Password:"), 'password', $password);
 	if ($login_timeout) {
-		hidden('company_login_name', CurrentUser::instance()->company);
+		hidden('company_login_name', CurrentUser::get()->company);
 	} else {
 		if (isset($_SESSION['wa_current_user']->company)) {
 			$coy = $_SESSION['wa_current_user']->company;

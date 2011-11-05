@@ -34,7 +34,7 @@
 			JS::set_focus('description');
 		}
 		if ($input_error != 1) {
-			write_item_unit(htmlentities($selected_id), $_POST['abbr'], $_POST['description'], $_POST['decimals']);
+			Item_Unit::write(htmlentities($selected_id), $_POST['abbr'], $_POST['description'], $_POST['decimals']);
 			if ($selected_id != '') {
 				Errors::notice(_('Selected unit has been updated'));
 } else {
@@ -46,10 +46,10 @@
 	//----------------------------------------------------------------------------------
 	if ($Mode == 'Delete') {
 		// PREVENT DELETES IF DEPENDENT RECORDS IN 'stock_master'
-		if (item_unit_used($selected_id)) {
+		if (Item_Unit::used($selected_id)) {
 			Errors::error(_("Cannot delete this unit of measure because items have been created using this unit."));
 		} else {
-			delete_item_unit($selected_id);
+			Item_Unit::delete($selected_id);
 			Errors::notice(_('Selected unit has been deleted'));
 		}
 		$Mode = 'RESET';
@@ -61,7 +61,7 @@
 		$_POST['show_inactive'] = $sav;
 	}
 	//----------------------------------------------------------------------------------
-	$result = get_all_item_units(check_value('show_inactive'));
+	$result = Item_Unit::get_all(check_value('show_inactive'));
 	start_form();
 	start_table(Config::get('tables_style') . "  width=40%");
 	$th = array(_('Unit'), _('Description'), _('Decimals'), "", "");
@@ -86,14 +86,14 @@
 	if ($selected_id != '') {
 		if ($Mode == 'Edit') {
 			//editing an existing item category
-			$myrow = get_item_unit($selected_id);
+			$myrow = Item_Unit::get($selected_id);
 			$_POST['abbr'] = $myrow["abbr"];
 			$_POST['description'] = $myrow["name"];
 			$_POST['decimals'] = $myrow["decimals"];
 		}
 		hidden('selected_id', $selected_id);
 	}
-	if ($selected_id != '' && item_unit_used($selected_id)) {
+	if ($selected_id != '' && Item_Unit::used($selected_id)) {
 		label_row(_("Unit Abbreviation:"), $_POST['abbr']);
 		hidden('abbr', $_POST['abbr']);
 	} else

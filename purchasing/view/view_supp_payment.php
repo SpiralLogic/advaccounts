@@ -28,7 +28,7 @@
 		$show_both_amounts = true;
 	}
 	echo "<center>";
-	ui_msgs::display_heading(_("Payment to Supplier") . " #$trans_no");
+	Display::heading(_("Payment to Supplier") . " #$trans_no");
 	echo "<br>";
 	start_table(Config::get('tables_style2') . " width=90%");
 	start_row();
@@ -40,7 +40,7 @@
 	if ($show_currencies) {
 		label_cells(_("Payment Currency"), $receipt['bank_curr_code'], "class='tableheader2'");
 	}
-	label_cells(_("Amount"), number_format2(-$receipt['BankAmount'], user_price_dec()), "class='tableheader2'");
+	label_cells(_("Amount"), Num::format(-$receipt['BankAmount'], user_price_dec()), "class='tableheader2'");
 	label_cells(_("Payment Type"), $bank_transfer_types[$receipt['BankTransType']], "class='tableheader2'");
 	end_row();
 	start_row();
@@ -48,13 +48,13 @@
 		label_cells(_("Supplier's Currency"), $receipt['SupplierCurrCode'], "class='tableheader2'");
 	}
 	if ($show_both_amounts) {
-		label_cells(_("Amount"), number_format2(-$receipt['Total'], user_price_dec()), "class='tableheader2'");
+		label_cells(_("Amount"), Num::format(-$receipt['Total'], user_price_dec()), "class='tableheader2'");
 	}
 	label_cells(_("Reference"), $receipt['ref'], "class='tableheader2'");
 	end_row();
-	ui_view::comments_display_row(ST_SUPPAYMENT, $trans_no);
+	Display::comments_row(ST_SUPPAYMENT, $trans_no);
 	end_table(1);
-	$voided = ui_view::is_voided_display(ST_SUPPAYMENT, $trans_no, _("This payment has been voided."));
+	$voided = Display::is_voided(ST_SUPPAYMENT, $trans_no, _("This payment has been voided."));
 	// now display the allocations for this payment
 	if (!$voided) {
 		ui_view::display_allocations_from(PT_SUPPLIER, $receipt['supplier_id'], ST_SUPPAYMENT, $trans_no, -$receipt['Total']);

@@ -32,19 +32,19 @@
 		$credit_no = $_GET['AddedID'];
 		$trans_type = ST_CUSTCREDIT;
 		Errors::notice(_("Credit Note has been processed"));
-		ui_msgs::display_note(ui_view::get_customer_trans_view_str($trans_type, $credit_no, _("&View This Credit Note")), 0, 0);
-		ui_msgs::display_note(Reporting::print_doc_link($credit_no, _("&Print This Credit Note"), true, $trans_type), 1);
-		ui_msgs::display_note(ui_view::get_gl_view_str($trans_type, $credit_no, _("View the GL &Journal Entries for this Credit Note")), 1);
-		ui_view::display_footer_exit();
+		Display::note(ui_view::get_customer_trans_view_str($trans_type, $credit_no, _("&View This Credit Note")), 0, 0);
+		Display::note(Reporting::print_doc_link($credit_no, _("&Print This Credit Note"), true, $trans_type), 1);
+		Display::note(ui_view::get_gl_view_str($trans_type, $credit_no, _("View the GL &Journal Entries for this Credit Note")), 1);
+		Page::footer_exit();
 	}
 	elseif (isset($_GET['UpdatedID'])) {
 		$credit_no = $_GET['UpdatedID'];
 		$trans_type = ST_CUSTCREDIT;
 		Errors::notice(_("Credit Note has been updated"));
-		ui_msgs::display_note(ui_view::get_customer_trans_view_str($trans_type, $credit_no, _("&View This Credit Note")), 0, 0);
-		ui_msgs::display_note(Reporting::print_doc_link($credit_no, _("&Print This Credit Note"), true, $trans_type), 1);
-		ui_msgs::display_note(ui_view::get_gl_view_str($trans_type, $credit_no, _("View the GL &Journal Entries for this Credit Note")), 1);
-		ui_view::display_footer_exit();
+		Display::note(ui_view::get_customer_trans_view_str($trans_type, $credit_no, _("&View This Credit Note")), 0, 0);
+		Display::note(Reporting::print_doc_link($credit_no, _("&Print This Credit Note"), true, $trans_type), 1);
+		Display::note(ui_view::get_gl_view_str($trans_type, $credit_no, _("View the GL &Journal Entries for this Credit Note")), 1);
+		Page::footer_exit();
 } else {
 		check_edit_conflicts();
 	}
@@ -255,14 +255,14 @@
 				continue; // this line was fully credited/removed
 			}
 			alt_table_row_color($k);
-			//	ui_view::view_stock_status_cell($ln_itm->stock_id); alternative view
+			//	ui_view::stock_status_cell($ln_itm->stock_id); alternative view
 			label_cell($ln_itm->stock_id);
 			text_cells(null, 'Line' . $line_no . 'Desc', $ln_itm->description, 30, 50);
 			$dec = get_qty_dec($ln_itm->stock_id);
 			qty_cell($ln_itm->quantity, false, $dec);
 			label_cell($ln_itm->units);
 			amount_cells(
-				null, 'Line' . $line_no, number_format2($ln_itm->qty_dispatched, $dec),
+				null, 'Line' . $line_no, Num::format($ln_itm->qty_dispatched, $dec),
 				null, null, $dec
 			);
 			$line_total = ($ln_itm->qty_dispatched * $ln_itm->price * (1 - $ln_itm->discount_percent));
@@ -283,7 +283,7 @@
 		$display_sub_total = price_format($inv_items_total + input_num('ChargeFreightCost'));
 		label_row(_("Sub-total"), $display_sub_total, "colspan=$colspan align=right", "align=right");
 		$taxes = $_SESSION['Items']->get_taxes(input_num('ChargeFreightCost'));
-		$tax_total = ui_view::display_edit_tax_items($taxes, $colspan, $_SESSION['Items']->tax_included);
+		$tax_total = Display::edit_tax_items($taxes, $colspan, $_SESSION['Items']->tax_included);
 		$display_total = price_format(($inv_items_total + input_num('ChargeFreightCost') + $tax_total));
 		label_row(_("Credit Note Total"), $display_total, "colspan=$colspan align=right", "align=right");
 		end_table();

@@ -133,7 +133,7 @@
 	//---------------------------------------------------------------------------------
 	function display_order_summary($title, &$order, $editable_items = false)
 	{
-		ui_msgs::display_heading($title);
+		Display::heading($title);
 		div_start('items_table');
 		if (count($_SESSION['Items']->line_items) > 0) {
 			start_outer_table(" width=90%");
@@ -168,7 +168,7 @@
 					if ($stock_item->qty_dispatched > $qoh) {
 						// oops, we don't have enough of one of the component items
 						start_row("class='stockmankobg'");
-						$qoh_msg .= $stock_item->stock_id . " - " . $stock_item->description . ": " . _("Quantity On Hand") . " = " . number_format2($qoh, get_qty_dec($stock_item->stock_id)) . '<br>';
+						$qoh_msg .= $stock_item->stock_id . " - " . $stock_item->description . ": " . _("Quantity On Hand") . " = " . Num::format($qoh, get_qty_dec($stock_item->stock_id)) . '<br>';
 						$has_marked = true;
 					} else {
 						alt_table_row_color($k);
@@ -227,7 +227,7 @@ JS;
 		end_row();
 		label_row(_("Sub-total"), $display_sub_total, "colspan=$colspan align=right", "align=right", 2);
 		$taxes         = $order->get_taxes(input_num('freight_cost'));
-		$tax_total     = ui_view::display_edit_tax_items($taxes, $colspan, $order->tax_included, 2);
+		$tax_total     = Display::edit_tax_items($taxes, $colspan, $order->tax_included, 2);
 		$display_total = price_format(($total + input_num('freight_cost') + $tax_total));
 		start_row();
 		label_cells(_("Amount Total"), $display_total, "colspan=$colspan align=right", "align=right");
@@ -328,7 +328,7 @@ JS;
 					}
 					unset($old_order);
 				}
-				ui_globals::set_global_customer($_POST['customer_id']);
+				Session::get()->global_customer = $_POST['customer_id'];
 			} // changed branch
 			else {
 				$row = get_customer_to_order($_POST['customer_id']);
@@ -341,7 +341,7 @@ JS;
 		if (!Banking::is_company_currency($order->customer_currency)) {
 			table_section(2);
 			label_row(_("Customer Currency:"), $order->customer_currency);
-			ui_view::exchange_rate_display($order->customer_currency, Banking::get_company_currency(), ($editable ? $_POST['OrderDate'] : $order->document_date));
+			Display::exchange_rate($order->customer_currency, Banking::get_company_currency(), ($editable ? $_POST['OrderDate'] : $order->document_date));
 		}
 		table_section(3);
 		customer_credit_row($_POST['customer_id'], $order->credit);
@@ -427,9 +427,9 @@ JS;
 		{
 			$_POST['stock_id']    = $order->line_items[$id]->stock_id;
 			$dec                  = get_qty_dec($_POST['stock_id']);
-			$_POST['qty']         = number_format2($order->line_items[$id]->qty_dispatched, $dec);
+			$_POST['qty']         = Num::format($order->line_items[$id]->qty_dispatched, $dec);
 			$_POST['price']       = price_format($order->line_items[$id]->price);
-			$_POST['Disc']        = percent_format($order->line_items[$id]->discount_percent * 100);
+			$_POST['Disc']        = Num::percent_format($order->line_items[$id]->discount_percent * 100);
 			$_POST['description'] = $order->line_items[$id]->description;
 			$units                = $order->line_items[$id]->units;
 			hidden('stock_id', $_POST['stock_id']);
@@ -450,10 +450,10 @@ JS;
 			$item_info      = get_item_edit_info(Input::post('stock_id'));
 			$units          = $item_info["units"];
 			$dec            = $item_info['decimals'];
-			$_POST['qty']   = number_format2(1, $dec);
+			$_POST['qty']   = Num::format(1, $dec);
 			$price          = get_kit_price(Input::post('stock_id'), $order->customer_currency, $order->sales_type, $order->price_factor, get_post('OrderDate'));
 			$_POST['price'] = price_format($price);
-			$_POST['Disc']  = percent_format($order->default_discount * 100);
+			$_POST['Disc']  = Num::percent_format($order->default_discount * 100);
 		}
 		qty_cells(null, 'qty', $_POST['qty'], null, null, $dec);
 		if ($order->trans_no != 0) {
@@ -461,7 +461,7 @@ JS;
 		}
 		label_cell($units, '', 'units');
 		$str = amount_cells(null, 'price');
-		small_amount_cells(null, 'Disc', percent_format($_POST['Disc']), null, null, user_percent_dec());
+		small_amount_cells(null, 'Disc', Num::percent_format($_POST['Disc']), null, null, user_percent_dec());
 		$line_total = input_num('qty') * input_num('price') * (1 - input_num('Disc') / 100);
 		amount_cell($line_total, false, '', 'line_total');
 		if ($id != -1) {
@@ -483,7 +483,7 @@ JS;
 		div_start('delivery');
 		if (get_post('cash', 0)) { // Direct payment sale
 			$Ajax->activate('items_table');
-			ui_msgs::display_heading(_('Cash payment'));
+			Display::heading(_('Cash payment'));
 			start_table(Config::get('tables_style2') . " width=60%");
 			label_row(_("Deliver from Location:"), $order->location_name);
 			hidden('Location', $order->Location);
@@ -508,7 +508,7 @@ JS;
 				$title   = _("Order Delivery Details");
 				$delname = _("Required Delivery Date") . ':';
 			}
-			ui_msgs::display_heading($title);
+			Display::heading($title);
 			start_outer_table(Config::get('tables_style2') . " width=90%");
 			table_section(1);
 			locations_list_row(_("Deliver from Location:"), 'Location', null, false, true);

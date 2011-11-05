@@ -112,18 +112,18 @@
 						if ($data['suppliers_uom'] != "")
 							$myrow2['units'] = $data['suppliers_uom'];
 						if ($data['conversion_factor'] > 1) {
-							$myrow2['unit_price'] = round2(
+							$myrow2['unit_price'] = Num::round(
 								$myrow2['unit_price'] * $data['conversion_factor'], user_price_dec());
-							$myrow2['quantity_ordered'] = round2(
+							$myrow2['quantity_ordered'] = Num::round(
 								$myrow2['quantity_ordered'] / $data['conversion_factor'], user_qty_dec());
 						}
 					}
-					$Net = round2(($myrow2["unit_price"] * $myrow2["quantity_ordered"]), user_price_dec());
+					$Net = Num::round(($myrow2["unit_price"] * $myrow2["quantity_ordered"]), user_price_dec());
 					$SubTotal += $Net;
 					$dec2 = 0;
 					$DisplayPrice = price_decimal_format($myrow2["unit_price"], $dec2);
-					$DisplayQty = number_format2($myrow2["quantity_ordered"], get_qty_dec($myrow2['item_code']));
-					$DisplayNet = number_format2($Net, $dec);
+					$DisplayQty = Num::format($myrow2["quantity_ordered"], get_qty_dec($myrow2['item_code']));
+					$DisplayNet = Num::format($Net, $dec);
 					$rep->TextCol(0, 1, $myrow2['item_code'], -2);
 
 					$oldrow = $rep->row;
@@ -146,7 +146,7 @@
 				$rep->NewLine();
 				$rep->TextColLines(1, 5, $myrow['comments'], -2);
 			}
-			$DisplaySubTot = number_format2($SubTotal, $dec);
+			$DisplaySubTot = Num::format($SubTotal, $dec);
 
 			$rep->row = $rep->bottomMargin + (15 * $rep->lineHeight);
 			$linetype = true;
@@ -161,10 +161,10 @@
 			$rep->TextCol(6, 7, $DisplaySubTot, -2);
 			$rep->NewLine();
 			$rep->TextCol(3, 6, 'Freight:', -2);
-			$rep->TextCol(6, 7, number_format2($myrow['freight'], $dec), -2);
+			$rep->TextCol(6, 7, Num::format($myrow['freight'], $dec), -2);
 			$rep->NewLine();
 
-			$DisplayTotal = number_format2($SubTotal + $myrow['freight'], $dec);
+			$DisplayTotal = Num::format($SubTotal + $myrow['freight'], $dec);
 			$rep->Font('bold');
 			$rep->TextCol(3, 6, $doc_TOTAL_PO, -2);
 			$rep->TextCol(6, 7, $DisplayTotal, -2);

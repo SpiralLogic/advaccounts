@@ -84,8 +84,8 @@
 	$_POST['default_inv_sales_act'] = $myrow['default_inv_sales_act'];
 	$_POST['default_assembly_act']  = $myrow['default_assembly_act'];
 	$_POST['allow_negative_stock'] = $myrow['allow_negative_stock'];
-	$_POST['po_over_receive'] = percent_format($myrow['po_over_receive']);
-	$_POST['po_over_charge']  = percent_format($myrow['po_over_charge']);
+	$_POST['po_over_receive'] = Num::percent_format($myrow['po_over_receive']);
+	$_POST['po_over_charge']  = Num::percent_format($myrow['po_over_charge']);
 	$_POST['past_due_days']   = $myrow['past_due_days'];
 	$_POST['default_credit_limit'] = $myrow['default_credit_limit'];
 	$_POST['legal_text']           = $myrow['legal_text'];

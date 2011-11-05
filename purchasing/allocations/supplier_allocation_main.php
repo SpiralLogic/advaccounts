@@ -17,14 +17,14 @@
 	start_form();
 	/* show all outstanding receipts and credits to be allocated */
 	if (!isset($_POST['supplier_id'])) {
-		$_POST['supplier_id'] = ui_globals::get_global_supplier();
+		$_POST['supplier_id'] = Session::get()->supplier_id;
 	}
 	echo "<center>" . _("Select a Supplier: ") . "&nbsp;&nbsp;";
 	echo supplier_list('supplier_id', $_POST['supplier_id'], true, true);
 	echo "<br>";
 	check(_("Show Settled Items:"), 'ShowSettled', null, true);
 	echo "</center><br><br>";
-	ui_globals::set_global_supplier($_POST['supplier_id']);
+	Session::get()->supplier_id = $_POST['supplier_id'];
 	if (isset($_POST['supplier_id']) && ($_POST['supplier_id'] == ALL_TEXT)) {
 		unset($_POST['supplier_id']);
 	}
@@ -34,7 +34,7 @@
 	}
 	$supplier_id = null;
 	if (isset($_POST['supplier_id'])) {
-		$supplier_id = $_POST['supplier_id'];
+		$supplier_id = $_POST['supplier_id']; 
 	}
 	//--------------------------------------------------------------------------------
 	function systype_name($dummy, $type)

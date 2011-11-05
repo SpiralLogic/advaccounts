@@ -35,14 +35,14 @@
 		start_form();
 	}
 	if (!Input::post('stock_id')) {
-		$_POST['stock_id'] = ui_globals::get_global_stock_item();
+		$_POST['stock_id'] = Session::get()->global_stock_id;
 	}
 	if (!Input::request('frame')) {
 		echo "<center>" . _("Item:") . "&nbsp;";
 		echo sales_items_list('stock_id', $_POST['stock_id'], false, true, '', array(), true);
 		echo "<hr></center>";
 	}
-	ui_globals::set_global_stock_item($_POST['stock_id']);
+	Session::get()->global_stock_id = $_POST['stock_id'];
 	//----------------------------------------------------------------------------------------------------
 	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 		if (!Validation::is_num('price', 0)) {

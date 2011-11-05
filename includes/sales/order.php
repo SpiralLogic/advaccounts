@@ -153,8 +153,8 @@
 				$this->trans_no          = 0;
 				$this->customer_currency = Banking::get_company_currency();
 				// set new sales document defaults here
-				if (ui_globals::get_global_customer() != ALL_TEXT) {
-					$this->customer_id = ui_globals::get_global_customer();
+				if (Session::get()->global_customer != ALL_TEXT) {
+					$this->customer_id = Session::get()->global_customer;
 } else {
 					$this->customer_id = '';
 				}

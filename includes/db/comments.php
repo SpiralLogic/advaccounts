@@ -9,7 +9,6 @@
 	class DB_Comments {
 
 		//--------------------------------------------------------------------------------------------------
-
 		public static function get($type, $type_no) {
 			$sql = "SELECT * FROM comments WHERE type="
 			 . DB::escape($type) . " AND id=" . DB::escape($type_no);
@@ -17,7 +16,6 @@
 		}
 
 		//--------------------------------------------------------------------------------------------------
-
 		public static function add($type, $type_no, $date_, $memo_) {
 			if ($memo_ != null && $memo_ != "") {
 				$date = Dates::date2sql($date_);
@@ -29,7 +27,6 @@
 		}
 
 		//--------------------------------------------------------------------------------------------------
-
 		public static function update($type, $id, $date_, $memo_) {
 			if ($date_ == null) {
 				DB_Comments::delete($type, $id);
@@ -52,4 +49,17 @@
 			DBOld::query($sql, "could not delete from comments transaction table");
 		}
 		//--------------------------------------------------------------------------------------------------
+		//--------------------------------------------------------------------------------------
+		static function get_string($type, $type_no)
+		{
+			$str_return = "";
+			$result     = DB_Comments::get($type, $type_no);
+			while ($comment = DBOld::fetch($result)) {
+				if (strlen($str_return)) {
+					$str_return = $str_return . " \n";
+				}
+				$str_return = $str_return . $comment["memo_"];
+			}
+			return $str_return;
+		}
 	}

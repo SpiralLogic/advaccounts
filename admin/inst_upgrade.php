@@ -157,8 +157,8 @@
 			}
 		}
 		if ($ret) { // re-read the prefs
-			$user                          = User::get_by_login(CurrentUser::instance()->username);
-			CurrentUser::instance()->prefs = new userPrefs($user);
+			$user                          = User::get_by_login(CurrentUser::get()->username);
+			CurrentUser::get()->prefs = new userPrefs($user);
 			Errors::notice(_('All companies data has been successfully updated'));
 		}
 		$Ajax->activate('_page_body');

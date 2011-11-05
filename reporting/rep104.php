@@ -152,7 +152,7 @@
 } else {
 					$disp = 0.0;
 				}
-				$rep->TextCol(3, 4, number_format2($disp, user_percent_dec()) . " %");
+				$rep->TextCol(3, 4, Num::format($disp, user_percent_dec()) . " %");
 			}
 			if ($pictures) {
 				$image = COMPANY_PATH . "/images/"

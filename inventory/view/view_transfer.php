@@ -18,7 +18,7 @@
 	$transfer_items = get_stock_transfer($trans_no);
 	$from_trans = $transfer_items[0];
 	$to_trans   = $transfer_items[1];
-	ui_msgs::display_heading($systypes_array[ST_LOCTRANSFER] . " #$trans_no");
+	Display::heading($systypes_array[ST_LOCTRANSFER] . " #$trans_no");
 	echo "<br>";
 	start_table(Config::get('tables_style2') . " width=90%");
 	start_row();
@@ -32,7 +32,7 @@
 	label_cells(_("Adjustment Type"), $adjustment_type['name'], "class='tableheader2'");
 	label_cells(_("Date"), Dates::sql2date($from_trans['tran_date']), "class='tableheader2'");
 	end_row();
-	ui_view::comments_display_row(ST_LOCTRANSFER, $trans_no);
+	Display::comments_row(ST_LOCTRANSFER, $trans_no);
 	end_table(1);
 	echo "<br>";
 	start_table(Config::get('tables_style') . "  width=90%");
@@ -53,6 +53,6 @@
 		}
 	}
 	end_table(1);
-	ui_view::is_voided_display(ST_LOCTRANSFER, $trans_no, _("This transfer has been voided."));
+	Display::is_voided(ST_LOCTRANSFER, $trans_no, _("This transfer has been voided."));
 	end_page(true);
 ?>

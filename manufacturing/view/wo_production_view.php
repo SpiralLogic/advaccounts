@@ -37,13 +37,13 @@
 		qty_cell($myrow["quantity"], false, get_qty_dec($myrow["stock_id"]));
 		label_cell(Dates::sql2date($myrow["date_"]));
 		end_row();
-		ui_view::comments_display_row(ST_MANURECEIVE, $prod_id);
+		Display::comments_row(ST_MANURECEIVE, $prod_id);
 		end_table(1);
-		ui_view::is_voided_display(ST_MANURECEIVE, $prod_id, _("This production has been voided."));
+		Display::is_voided(ST_MANURECEIVE, $prod_id, _("This production has been voided."));
 	}
 
 	//-------------------------------------------------------------------------------------------------
-	ui_msgs::display_heading($systypes_array[ST_MANURECEIVE] . " # " . $wo_production);
+	Display::heading($systypes_array[ST_MANURECEIVE] . " # " . $wo_production);
 	display_wo_production($wo_production);
 	//-------------------------------------------------------------------------------------------------
 	br(2);

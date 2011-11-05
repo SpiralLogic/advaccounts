@@ -202,7 +202,7 @@ JS;
 		public static function print_link($link_text, $rep, $pars = array(), $dir = '', $icon = false, $class = 'printlink', $id = '')
 		{
 			$url = $dir == '' ? PATH_TO_ROOT . '/reporting/prn_redirect.php?' : $dir;
-			$id  = ui_view::default_focus($id);
+			$id  = JS::default_focus($id);
 			foreach (
 				$pars as $par => $val
 			) {

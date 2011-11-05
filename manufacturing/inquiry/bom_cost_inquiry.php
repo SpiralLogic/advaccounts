@@ -25,7 +25,7 @@
 	stock_manufactured_items_list_row(_("Select a manufacturable item:"), 'stock_id', null, false, true);
 	end_table();
 	br();
-	ui_msgs::display_heading(_("All Costs Are In:") . " " . Banking::get_company_currency());
+	Display::heading(_("All Costs Are In:") . " " . Banking::get_company_currency());
 	display_bom(Input::post('stock_id'));
 	end_form();
 	end_page();

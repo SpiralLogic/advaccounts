@@ -38,7 +38,7 @@
 		$show_currencies   = true;
 		$show_both_amounts = true;
 	}
-	ui_msgs::display_heading($systypes_array[ST_BANKTRANSFER] . " #$trans_no");
+	Display::heading($systypes_array[ST_BANKTRANSFER] . " #$trans_no");
 	echo "<br>";
 	start_table(Config::get('tables_style') . "  width=90%");
 	start_row();
@@ -46,7 +46,7 @@
 	if ($show_currencies) {
 		label_cells(_("Currency"), $from_trans['bank_curr_code'], "class='tableheader2'");
 	}
-	label_cells(_("Amount"), number_format2(-$from_trans['amount'], user_price_dec()), "class='tableheader2'", "align=right");
+	label_cells(_("Amount"), Num::format(-$from_trans['amount'], user_price_dec()), "class='tableheader2'", "align=right");
 	if ($show_currencies) {
 		end_row();
 		start_row();
@@ -57,7 +57,7 @@
 	}
 	if ($show_both_amounts) {
 		label_cells(
-			_("Amount"), number_format2(
+			_("Amount"), Num::format(
 									 $to_trans['amount'], user_price_dec()
 								 ), "class='tableheader2'", "align=right"
 		);
@@ -71,8 +71,8 @@
 	);
 	label_cells(_("Reference"), $from_trans['ref'], "class='tableheader2'");
 	end_row();
-	ui_view::comments_display_row(ST_BANKTRANSFER, $trans_no);
+	Display::comments_row(ST_BANKTRANSFER, $trans_no);
 	end_table(1);
-	ui_view::is_voided_display(ST_BANKTRANSFER, $trans_no, _("This transfer has been voided."));
+	Display::is_voided(ST_BANKTRANSFER, $trans_no, _("This transfer has been voided."));
 	end_page(true);
 ?>

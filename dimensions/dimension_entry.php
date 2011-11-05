@@ -61,7 +61,7 @@
 		hyperlink_no_params("", _("Enter a &new dimension"));
 		echo "<br>";
 		hyperlink_no_params(PATH_TO_ROOT . "/dimensions/inquiry/search_dimensions.php", _("&Select an existing dimension"));
-		ui_view::display_footer_exit();
+		Page::footer_exit();
 	}
 
 	//-------------------------------------------------------------------------------------
@@ -153,13 +153,13 @@
 		$myrow = get_dimension($selected_id);
 		if (strlen($myrow[0]) == 0) {
 			Errors::error(_("The dimension sent is not valid."));
-			ui_view::display_footer_exit();
+			Page::footer_exit();
 		}
 		// if it's a closed dimension can't edit it
 		//if ($myrow["closed"] == 1)
 		//{
 		//	Errors::error(_("This dimension is closed and cannot be edited."));
-		//	ui_view::display_footer_exit();
+		//	Page::footer_exit();
 		//}
 		$_POST['ref'] = $myrow["reference"];
 		$_POST['closed'] = $myrow["closed"];
@@ -167,7 +167,7 @@
 		$_POST['type_'] = $myrow["type_"];
 		$_POST['date_'] = Dates::sql2date($myrow["date_"]);
 		$_POST['due_date'] = Dates::sql2date($myrow["due_date"]);
-		$_POST['memo_'] = ui_view::get_comments_string(ST_DIMENSION, $selected_id);
+		$_POST['memo_'] = DB_Comments::get_string(ST_DIMENSION, $selected_id);
 		$tags_result = Tags::get_all_associated_with_record(TAG_DIMENSION, $selected_id);
 		$tagids = array();
 		while ($tag = DBOld::fetch($tags_result))

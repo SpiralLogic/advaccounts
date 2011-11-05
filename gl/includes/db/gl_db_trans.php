@@ -23,10 +23,10 @@
 			if ($rate == 0) {
 				$amount_in_home_currency = Banking::to_home_currency($amount, $currency, $date_);
 } else {
-				$amount_in_home_currency = round2($amount * $rate, user_price_dec());
+				$amount_in_home_currency = Num::round($amount * $rate, user_price_dec());
 			}
 		} else {
-			$amount_in_home_currency = round2($amount, user_price_dec());
+			$amount_in_home_currency = Num::round($amount, user_price_dec());
 		}
 		if ($dimension == null || $dimension < 0) {
 			$dimension = 0;
@@ -36,9 +36,9 @@
 		}
 		if (Config::get('logs_audits')) {
 			if ($memo_ == "" || $memo_ == null) {
-				$memo_ = CurrentUser::instance()->username;
+				$memo_ = CurrentUser::get()->username;
 } else {
-				$memo_ = CurrentUser::instance()->username . " - " . $memo_;
+				$memo_ = CurrentUser::get()->username . " - " . $memo_;
 			}
 		}
 		$sql
@@ -83,7 +83,7 @@
 
 	// Function for even out rounding problems
 	function add_gl_balance($type, $trans_id, $date_, $amount, $person_type_id = null, $person_id = null) {
-		$amount = round2($amount, user_price_dec());
+		$amount = Num::round($amount, user_price_dec());
 		if ($amount != 0) {
 			return add_gl_trans(
 				$type, $trans_id, $date_, DB_Company::get_pref('exchange_diff_act'), 0, 0, "",
