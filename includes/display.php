@@ -129,7 +129,7 @@
 				if ($from_currency != $comp_currency) {
 					$rate = 1 / ($rate / Banking::get_exchange_rate_from_home_currency($to_currency, $date_));
 				}
-				$rate = Num::format($rate, user_exrate_dec());
+				$rate = Num::format($rate, User::exrate_dec());
 				if ($edit_rate) {
 					text_row(_("Exchange Rate:"), '_ex_rate', $rate, 8, 8, null, "", " $from_currency = 1 $to_currency");
 				}
@@ -174,7 +174,7 @@
 		//--------------------------------------------------------------------------------------
 		static function debit_or_credit_cells($value)
 		{
-			$value = Num::round($value, user_price_dec());
+			$value = Num::round($value, User::price_dec());
 			if ($value >= 0) {
 				amount_cell($value);
 				label_cell("");
@@ -189,7 +189,7 @@
 		static function customer_trans_tax_details($tax_items, $columns)
 		{
 			while ($tax_item = DBOld::fetch($tax_items)) {
-				$tax = Num::format($tax_item['amount'], user_price_dec());
+				$tax = Num::format($tax_item['amount'], User::price_dec());
 				if ($tax_item['included_in_price']) {
 					label_row(_("Included") . " " . $tax_item['tax_type_name'] . " (" . $tax_item['rate'] . "%) " . _("Amount") . ": $tax", "", "colspan=$columns align=right", "align=right");
 				}
@@ -204,7 +204,7 @@
 		{
 			$tax_total = 0;
 			while ($tax_item = DBOld::fetch($tax_items)) {
-				$tax = Num::format(abs($tax_item['amount']), user_price_dec());
+				$tax = Num::format(abs($tax_item['amount']), User::price_dec());
 				if ($tax_item['included_in_price']) {
 					label_row(_("Included") . " " . $tax_item['tax_type_name'] . " (" . $tax_item['rate'] . "%) " . _("Amount") . ": $tax", "colspan=$columns align=right", "align=right");
 				}
@@ -214,7 +214,7 @@
 				$tax_total += $tax;
 			}
 			if ($tax_recorded != 0) {
-				$tax_correction = Num::format($tax_recorded - $tax_total, user_price_dec());
+				$tax_correction = Num::format($tax_recorded - $tax_total, User::price_dec());
 				label_row("Tax Correction" . " ", $tax_correction, "colspan=$columns align=right", "align=right");
 			}
 		}
@@ -227,11 +227,11 @@
 				$taxes as $taxitem
 			) {
 				if ($tax_included) {
-					label_row(_("Included") . " " . $taxitem['tax_type_name'] . " (" . $taxitem['rate'] . "%) " . _("Amount:") . " ", Num::format($taxitem['Value'], user_price_dec()), "colspan=$columns align=right", "align=right", $leftspan);
+					label_row(_("Included") . " " . $taxitem['tax_type_name'] . " (" . $taxitem['rate'] . "%) " . _("Amount:") . " ", Num::format($taxitem['Value'], User::price_dec()), "colspan=$columns align=right", "align=right", $leftspan);
 				}
 				else {
-					$total += Num::round($taxitem['Value'], user_price_dec());
-					label_row($taxitem['tax_type_name'] . " (" . $taxitem['rate'] . "%)", Num::format($taxitem['Value'], user_price_dec()), "colspan=$columns align=right", "align=right", $leftspan);
+					$total += Num::round($taxitem['Value'], User::price_dec());
+					label_row($taxitem['tax_type_name'] . " (" . $taxitem['rate'] . "%)", Num::format($taxitem['Value'], User::price_dec()), "colspan=$columns align=right", "align=right", $leftspan);
 				}
 			}
 			if ($tax_correcting) {
@@ -260,8 +260,8 @@
 				label_cell($systypes_array[$alloc_row['type']]);
 				label_cell(ui_view::get_trans_view_str($alloc_row['type'], $alloc_row['trans_no']));
 				label_cell(Dates::sql2date($alloc_row['tran_date']));
-				$alloc_row['Total'] = Num::round($alloc_row['Total'], user_price_dec());
-				$alloc_row['amt'] = Num::round($alloc_row['amt'], user_price_dec());
+				$alloc_row['Total'] = Num::round($alloc_row['Total'], User::price_dec());
+				$alloc_row['amt'] = Num::round($alloc_row['amt'], User::price_dec());
 				amount_cell($alloc_row['Total']);
 				//amount_cell($alloc_row['Total'] - $alloc_row['PrevAllocs'] - $alloc_row['amt']);
 				amount_cell($alloc_row['Total'] - $alloc_row['amt']);
@@ -275,7 +275,7 @@
 			end_row();
 			start_row();
 			label_cell(_("Left to Allocate:"), "align=right colspan=5");
-			$total = Num::round($total, user_price_dec());
+			$total = Num::round($total, User::price_dec());
 			amount_cell($total - $total_allocated);
 			end_row();
 			end_table(1);
@@ -354,14 +354,14 @@
 						$base -= $part;
 						break;
 					case "%": // store acc*amount% to GL account
-						$part = Num::round($base * $qe_line['amount'] / 100, user_price_dec());
+						$part = Num::round($base * $qe_line['amount'] / 100, User::price_dec());
 						break;
 					case "%+": // ditto & increase base amount
-						$part = Num::round($base * $qe_line['amount'] / 100, user_price_dec());
+						$part = Num::round($base * $qe_line['amount'] / 100, User::price_dec());
 						$base += $part;
 						break;
 					case "%-": // ditto & reduce base amount
-						$part = Num::round($base * $qe_line['amount'] / 100, user_price_dec());
+						$part = Num::round($base * $qe_line['amount'] / 100, User::price_dec());
 						$base -= $part;
 						break;
 					case "t": // post taxes calculated on base amount
@@ -390,7 +390,7 @@
 								continue 2;
 							}
 						}
-						$tax = Num::round($part * $item_tax['rate'], user_price_dec());
+						$tax = Num::round($part * $item_tax['rate'], User::price_dec());
 						if ($tax == 0) {
 							continue 2;
 						}

@@ -151,7 +151,7 @@
 	foreach (
 		$_SESSION['View']->line_items as $stock_item
 	) {
-		$line_total = Num::round($stock_item->quantity * $stock_item->price * (1 - $stock_item->discount_percent), user_price_dec());
+		$line_total = Num::round($stock_item->quantity * $stock_item->price * (1 - $stock_item->discount_percent), User::price_dec());
 		alt_table_row_color($k);
 		label_cell($stock_item->stock_id);
 		label_cell($stock_item->description);

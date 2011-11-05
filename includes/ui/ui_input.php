@@ -81,7 +81,7 @@
 		if (!isset($_POST[$postname]) || $_POST[$postname] == "") {
 			return $dflt;
 		}
-		return user_numeric($_POST[$postname]);
+		return User::numeric($_POST[$postname]);
 	}
 
 	//---------------------------------------------------------------------------------
@@ -121,7 +121,7 @@
 	{
 		$aspect = '';
 		if ($atype === null) {
-			$aspect = fallback_mode() ? " aspect='fallback'" : " style='display:none;'";
+			$aspect = User::fallback() ? " aspect='fallback'" : " style='display:none;'";
 		}
 		elseif (!is_bool($atype)) { // necessary: switch uses '=='
 			$aspect = "aspect='$atype' ";
@@ -155,7 +155,7 @@
 		 . " name=\"$name\"  id=\"$name\" value=\"$value\""
 		 . ($title ? " title='$title'" : '')
 		 . ">"
-		 . ($icon ? "<img src='/themes/" . user_theme() . "/images/$icon' height='12'>" : '')
+		 . ($icon ? "<img src='/themes/" . User::theme() . "/images/$icon' height='12'>" : '')
 		 . "<span>$value</span>"
 		 . "</button>\n";
 		if ($echo) {
@@ -273,7 +273,7 @@
 	//-----------------------------------------------------------------------------------
 	function set_icon($icon, $title = false)
 	{
-		return "<img src='/themes/" . user_theme() . "/images/$icon' width='12' height='12' border='0'" . ($title
+		return "<img src='/themes/" . User::theme() . "/images/$icon' width='12' height='12' border='0'" . ($title
 		 ? " title='$title'" : "") . " />\n";
 	}
 
@@ -286,7 +286,7 @@
 			$rel = " rel='$value'";
 			$value = _("Select");
 		}
-		if (user_graphic_links() && $icon) {
+		if (User::graphic_links() && $icon) {
 			if ($value == _("Delete")) // Helper during implementation
 			{
 				$icon = ICON_DELETE;
@@ -708,14 +708,14 @@
 		if (!isset($_POST[$name]) || $_POST[$name] == "") {
 			$_POST[$name] = ($init === null) ? '' : $init;
 		}
-		small_amount_row($label, $name . '" ' . $params, $_POST[$name], null, "%", user_percent_dec());
+		small_amount_row($label, $name . '" ' . $params, $_POST[$name], null, "%", User::percent_dec());
 	}
 
 	function amount_cells_ex($label, $name, $size, $max = null, $init = null, $params = null, $post_label = null, $dec = null, $id = null)
 	{
 		$Ajax = Ajax::instance();
 		if (!isset($dec)) {
-			$dec = user_price_dec();
+			$dec = User::price_dec();
 		}
 		if (!isset($_POST[$name]) || $_POST[$name] == "") {
 			if ($init !== null) {
@@ -768,7 +768,7 @@
 	function unit_amount_cells($label, $name, $init = null, $params = null, $post_label = null, $dec = null)
 	{
 		if (!isset($dec)) {
-			$dec = user_price_dec() + 2;
+			$dec = User::price_dec() + 2;
 		}
 		amount_cells_ex($label, $name, 10, 15, $init, $params, $post_label, $dec + 2);
 	}
@@ -791,7 +791,7 @@
 	function qty_cells($label, $name, $init = null, $params = null, $post_label = null, $dec = null)
 	{
 		if (!isset($dec)) {
-			$dec = user_qty_dec();
+			$dec = User::qty_dec();
 		}
 		amount_cells_ex($label, $name, 15, 15, $init, $params, $post_label, $dec);
 	}
@@ -799,7 +799,7 @@
 	function qty_row($label, $name, $init = null, $params = null, $post_label = null, $dec = null)
 	{
 		if (!isset($dec)) {
-			$dec = user_qty_dec();
+			$dec = User::qty_dec();
 		}
 		echo "<tr>";
 		amount_cells($label, $name, $init, $params, $post_label, $dec);
@@ -809,7 +809,7 @@
 	function small_qty_row($label, $name, $init = null, $params = null, $post_label = null, $dec = null)
 	{
 		if (!isset($dec)) {
-			$dec = user_qty_dec();
+			$dec = User::qty_dec();
 		}
 		echo "<tr>";
 		small_amount_cells($label, $name, $init, $params, $post_label, $dec);
@@ -826,7 +826,7 @@
 	function small_qty_cells($label, $name, $init = null, $params = null, $post_label = null, $dec = null)
 	{
 		if (!isset($dec)) {
-			$dec = user_qty_dec();
+			$dec = User::qty_dec();
 		}
 		amount_cells_ex($label, $name, 7, 12, $init, $params, $post_label, $dec);
 	}

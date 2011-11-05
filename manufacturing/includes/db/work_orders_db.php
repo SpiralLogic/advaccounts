@@ -19,7 +19,7 @@
 			$standard_cost = get_standard_cost($bom_item['component']);
 			$m_cost += ($bom_item['quantity'] * $standard_cost);
 		}
-		$dec = user_price_dec();
+		$dec = User::price_dec();
 		Num::price_decimal($m_cost, $dec);
 		$sql = "SELECT material_cost FROM stock_master WHERE stock_id = "
 		 . DB::escape($stock_id);
@@ -42,7 +42,7 @@
 
 	function add_overhead_cost($stock_id, $qty, $date_, $costs)
 	{
-		$dec = user_price_dec();
+		$dec = User::price_dec();
 		Num::price_decimal($costs, $dec);
 		if ($qty != 0) {
 			$costs /= $qty;
@@ -67,7 +67,7 @@
 
 	function add_labour_cost($stock_id, $qty, $date_, $costs)
 	{
-		$dec = user_price_dec();
+		$dec = User::price_dec();
 		Num::price_decimal($costs, $dec);
 		if ($qty != 0) {
 			$costs /= $qty;
@@ -100,7 +100,7 @@
 		$result = DBOld::query($sql);
 		$myrow = DBOld::fetch($result);
 		$material_cost = $myrow['material_cost'];
-		$dec = user_price_dec();
+		$dec = User::price_dec();
 		Num::price_decimal($material_cost, $dec);
 		$qoh = get_qoh_on_date($stock_id, null, $date_);
 		if ($qoh < 0) {

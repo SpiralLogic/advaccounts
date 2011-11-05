@@ -15,7 +15,7 @@
 
 		function price_decimal($number, &$dec)
 		{
-			$dec = user_price_dec();
+			$dec = User::price_dec();
 			$str = strval($number);
 			$pos = strpos($str, '.');
 			if ($pos !== false) {

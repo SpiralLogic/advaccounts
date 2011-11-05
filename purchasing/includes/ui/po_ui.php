@@ -144,7 +144,7 @@
 			$order->line_items as $line_no => $po_line
 		) {
 			if ($po_line->Deleted == false) {
-				$line_total = round($po_line->quantity * $po_line->price * (1 - $po_line->discount), user_price_dec(), PHP_ROUND_HALF_EVEN);
+				$line_total = round($po_line->quantity * $po_line->price * (1 - $po_line->discount), User::price_dec(), PHP_ROUND_HALF_EVEN);
 				if (!$editable || ($id != $line_no)) {
 					alt_table_row_color($k);
 					label_cell($po_line->stock_id, " class='stock'  data-stock_id='{$po_line->stock_id}'");
@@ -290,7 +290,7 @@
 		label_cell($_POST['units'], '', 'units');
 		date_cells(null, 'req_del_date', '', null, 0, 0, 0);
 		amount_cells(null, 'price', null, null, null, $dec2);
-		small_amount_cells(null, 'discount', Num::percent_format($_POST['discount']), null, null, user_percent_dec());
+		small_amount_cells(null, 'discount', Num::percent_format($_POST['discount']), null, null, User::percent_dec());
 		//$line_total = $_POST['qty'] * $_POST['price'] * (1 - $_POST['Disc'] / 100);
 		$line_total = input_num('qty') * input_num('price') * (1 - input_num('discount') / 100);
 		amount_cell($line_total, false, '', 'line_total');

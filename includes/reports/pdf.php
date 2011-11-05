@@ -898,7 +898,7 @@
 					$msg = $doc_Dear_Sirs . " " . $myrow['DebtorName'] . ",\n\n" . $doc_AttachedFile . " " . $subject . "\n\n";
 					if (isset($myrow['dimension_id']) && $myrow['dimension_id'] > 0 && $doctype == ST_SALESINVOICE) { // helper for payment links
 						if ($myrow['dimension_id'] == 1) {
-							$amt = number_format($myrow["ov_freight"] + $myrow["ov_gst"] + $myrow["ov_amount"], user_price_dec());
+							$amt = number_format($myrow["ov_freight"] + $myrow["ov_gst"] + $myrow["ov_amount"], User::price_dec());
 							$txt = $doc_Payment_Link . " PayPal: ";
 							$nn = urlencode($this->title . " " . $myrow['reference']);
 							$url = "https://www.paypal.com/xclick/business=" . $this->company['email'] . "&item_name=" . $nn . "&amount=" . $amt . "&currency_code=" . $myrow['curr_code'];
@@ -936,11 +936,11 @@
 					}
 					unlink($fname);
 				} else {
-					$printer = Printer::get_report(user_print_profile(), $_POST['REP_ID']);
+					$printer = Printer::get_report(User::print_profile(), $_POST['REP_ID']);
 					if ($printer == false) {
 						if (Ajax::in_ajax()) {
 							$Ajax = Ajax::instance();
-							if (user_rep_popup()) {
+							if (User::rep_popup()) {
 								$Ajax->popup($fname);
 							} // when embeded pdf viewer used
 							else

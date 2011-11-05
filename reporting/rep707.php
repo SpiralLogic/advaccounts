@@ -161,9 +161,9 @@
 		if (!$decimals) {
 			$dec = 0;
 		} else {
-			$dec = user_price_dec();
+			$dec = User::price_dec();
 		}
-		$pdec = user_percent_dec();
+		$pdec = User::percent_dec();
 		$cols = array(0, 50, 200, 350, 425, 500);
 		//------------0--1---2----3----4----5--
 		$headers = array(_('Account'), _('Account Name'), _('Period'), _('Accumulated'), _('Achieved %'));
@@ -227,7 +227,7 @@
 			$end = Dates::add_months($to, -12);
 			$headers[3] = _('Period Y-1');
 		}
-		$rep = new FrontReport(_('Profit and Loss Statement'), "ProfitAndLoss", user_pagesize());
+		$rep = new FrontReport(_('Profit and Loss Statement'), "ProfitAndLoss", User::pagesize());
 		$rep->Font();
 		$rep->Info($params, $cols, $headers, $aligns);
 		$rep->Header();

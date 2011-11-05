@@ -53,7 +53,7 @@
 				echo "</ul>\n";
 				echo "</div>\n";
 				echo "<div id='logo'>\n";
-				$indicator = "/themes/" . user_theme() . "/images/ajax-loader.gif";
+				$indicator = "/themes/" . User::theme() . "/images/ajax-loader.gif";
 				echo "<h1>" . APP_TITLE . " " . VERSION . "<span style='padding-left:280px;'><img id='ajaxmark' src='$indicator' align='center' style='visibility:hidden;'></span></h1>\n";
 				echo "</div>\n";
 				echo '<div id="_tabs2"><div class="menu_container">';
@@ -78,7 +78,7 @@
 				$this->has_header = false;
 				echo "<br>";
 			} elseif ($title && !$is_index) {
-				echo "<center><table id='title'><tr><td width='100%' class='titletext'>$title</td>" . "<td align=right>" . (user_hints()
+				echo "<center><table id='title'><tr><td width='100%' class='titletext'>$title</td>" . "<td align=right>" . (User::hints()
 				 ? "<span id='hints'></span>" : '') . "</td>" . "</tr></table></center>";
 			}
 		}
@@ -87,10 +87,10 @@
 		{
 			if ($no_menu == false && !AJAX_REFERRER) {
 				echo "<div id='footer'>\n";
-				if (isset($_SESSION['wa_current_user'])) {
+				if (isset($_SESSION['current_user'])) {
 					echo "<span class='power'><a target='_blank' href='" . POWERED_URL . "'>" . POWERED_BY . "</a></span>\n";
 					echo "<span class='date'>" . Dates::Today() . " | " . Dates::Now() . "</span>\n";
-					if ($_SESSION['wa_current_user']->logged_in()) {
+					if ($_SESSION['current_user']->logged_in()) {
 						echo "<span class='date'>" . Users::show_online() . "</span>\n";
 					}
 				}

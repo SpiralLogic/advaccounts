@@ -24,18 +24,18 @@
 	if ($trans1["amount"] < 0) {
 		$from_trans = $trans1; // from trans is the negative one
 		$to_trans = $trans2;
-} else {
+	} else {
 		$from_trans = $trans2;
-		$to_trans   = $trans1;
+		$to_trans = $trans1;
 	}
 	$company_currency = Banking::get_company_currency();
-	$show_currencies   = false;
+	$show_currencies = false;
 	$show_both_amounts = false;
 	if (($from_trans['bank_curr_code'] != $company_currency) || ($to_trans['bank_curr_code'] != $company_currency)) {
 		$show_currencies = true;
 	}
 	if ($from_trans['bank_curr_code'] != $to_trans['bank_curr_code']) {
-		$show_currencies   = true;
+		$show_currencies = true;
 		$show_both_amounts = true;
 	}
 	Display::heading($systypes_array[ST_BANKTRANSFER] . " #$trans_no");
@@ -46,7 +46,7 @@
 	if ($show_currencies) {
 		label_cells(_("Currency"), $from_trans['bank_curr_code'], "class='tableheader2'");
 	}
-	label_cells(_("Amount"), Num::format(-$from_trans['amount'], user_price_dec()), "class='tableheader2'", "align=right");
+	label_cells(_("Amount"), Num::format(-$from_trans['amount'], User::price_dec()), "class='tableheader2'", "align=right");
 	if ($show_currencies) {
 		end_row();
 		start_row();
@@ -58,8 +58,8 @@
 	if ($show_both_amounts) {
 		label_cells(
 			_("Amount"), Num::format(
-									 $to_trans['amount'], user_price_dec()
-								 ), "class='tableheader2'", "align=right"
+				$to_trans['amount'], User::price_dec()
+			), "class='tableheader2'", "align=right"
 		);
 	}
 	end_row();

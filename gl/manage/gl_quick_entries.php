@@ -215,7 +215,7 @@
 				}
 				elseif ($act_type == '%')
 				{
-					label_cell(Num::format($myrow['amount'], user_exrate_dec()), "nowrap align=right ");
+					label_cell(Num::format($myrow['amount'], User::exrate_dec()), "nowrap align=right ");
 				} else {
 					amount_cell($myrow['amount']);
 				}
@@ -266,7 +266,7 @@
 			);
 			if ($actn != '=') {
 				if ($actn == '%') {
-					small_amount_row(_("Part") . ":", 'amount', Num::price_format(0), null, "%", user_exrate_dec());
+					small_amount_row(_("Part") . ":", 'amount', Num::price_format(0), null, "%", User::exrate_dec());
 				} else {
 					amount_row(_("Amount") . ":", 'amount', Num::price_format(0));
 				}

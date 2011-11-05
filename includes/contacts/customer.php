@@ -54,7 +54,7 @@
 			}
 			if ($this->id != 0) {
 				$previous = new Contacts_Customer($this->id);
-				if (($this->credit_limit != $previous->credit_limit || $this->payment_terms != $previous->payment_terms) && !$_SESSION['wa_current_user']->can_access('SA_CUSTOMER_CREDIT')
+				if (($this->credit_limit != $previous->credit_limit || $this->payment_terms != $previous->payment_terms) && !$_SESSION['current_user']->can_access('SA_CUSTOMER_CREDIT')
 				) {
 					$this->_status(false, 'Processing', "You don't have access to alter credit limits", 'credit_limit');
 					return false;
@@ -103,9 +103,9 @@
 			dimension2_id=" . DB::escape($this->dimension2_id) . ",
             credit_status=" . DB::escape($this->credit_status) . ",
             payment_terms=" . DB::escape($this->payment_terms) . ",
-            discount=" . user_numeric($this->discount) / 100 . ",
-            pymt_discount=" . user_numeric($this->pymt_discount) / 100 . ",
-            credit_limit=" . user_numeric($this->credit_limit) . ",
+            discount=" . User::numeric($this->discount) / 100 . ",
+            pymt_discount=" . User::numeric($this->pymt_discount) / 100 . ",
+            credit_limit=" . User::numeric($this->credit_limit) . ",
             sales_type = " . DB::escape($this->sales_type) . ",
             notes=" . DB::escape($this->notes) . "
             WHERE debtor_no = " . DB::escape($this->id);
@@ -146,8 +146,8 @@
 			 = "INSERT INTO debtors_master (name, debtor_ref, address, tax_id, email, dimension_id, dimension2_id,
 			curr_code, credit_status, payment_terms, discount, pymt_discount,credit_limit,
 			sales_type, notes) VALUES (" . DB::escape($this->name) . ", " . DB::escape(substr($this->name, 0, 29)) . ", " . DB::escape($this->address) . ", " . DB::escape($this->tax_id) . ",
-			" . DB::escape($this->email) . ", " . DB::escape($this->dimension_id) . ", " . DB::escape($this->dimension2_id) . ", " . DB::escape($this->curr_code) . ", " . DB::escape($this->credit_status) . ", " . DB::escape($this->payment_terms) . ", " . user_numeric($this->discount) / 100 . "," .
-			 user_numeric($this->pymt_discount) / 100 . ", " . user_numeric($this->credit_limit) . ", " . DB::escape($this->sales_type) . ", " . DB::escape($this->notes) . ")";
+			" . DB::escape($this->email) . ", " . DB::escape($this->dimension_id) . ", " . DB::escape($this->dimension2_id) . ", " . DB::escape($this->curr_code) . ", " . DB::escape($this->credit_status) . ", " . DB::escape($this->payment_terms) . ", " . User::numeric($this->discount) / 100 . "," .
+			 User::numeric($this->pymt_discount) / 100 . ", " . User::numeric($this->credit_limit) . ", " . DB::escape($this->sales_type) . ", " . DB::escape($this->notes) . ")";
 			DBOld::query($sql, "The customer could not be added");
 			$this->id = DBOld::insert_id();
 			DBOld::commit_transaction();

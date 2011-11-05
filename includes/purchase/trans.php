@@ -54,7 +54,7 @@
 		{
 			/*Constructor function initialises a new Supplier Transaction object */
 			$this->grn_items = array();
-			$this->gl_codes  = array();
+			$this->gl_codes = array();
 		}
 
 		function add_grn_to_trans($grn_item_id, $po_detail_item, $item_code, $description, $qty_recd, $prev_quantity_inv, $this_quantity_inv, $order_price, $chg_price, $Complete, $std_cost_unit, $gl_code, $discount = 0, $exp_price = null)
@@ -91,20 +91,20 @@
 			unset($this->gl_codes);
 			$this->ov_amount = $this->ov_discount = $this->supplier_id = $this->tax_correction = $this->total_correction = 0;
 			$this->grn_items = array();
-			$this->gl_codes  = array();
+			$this->gl_codes = array();
 		}
 
 		function get_taxes($tax_group_id = null, $shipping_cost = 0, $gl_codes = true)
 		{
-			$items  = array();
+			$items = array();
 			$prices = array();
 			if ($tax_group_id == null) {
 				$tax_group_id = $this->tax_group_id;
 			}
 			$tax_group = Tax_Groups::get_tax_group_items_as_array($tax_group_id);
 			foreach ($this->grn_items as $ln_itm) {
-				$items[]  = $ln_itm->item_code;
-				$prices[] = round(($ln_itm->this_quantity_inv * $ln_itm->taxfree_charge_price($tax_group_id, $tax_group)), user_price_dec(), PHP_ROUND_HALF_EVEN);
+				$items[] = $ln_itm->item_code;
+				$prices[] = round(($ln_itm->this_quantity_inv * $ln_itm->taxfree_charge_price($tax_group_id, $tax_group)), User::price_dec(), PHP_ROUND_HALF_EVEN);
 			}
 			if ($tax_group_id == null) {
 				$tax_group_id = $this->tax_group_id;
@@ -133,7 +133,7 @@
 				$tax_group = null;
 			}
 			foreach ($this->grn_items as $ln_itm) {
-				$total += round(($ln_itm->this_quantity_inv * $ln_itm->taxfree_charge_price($tax_group_id, $tax_group)), user_price_dec(), PHP_ROUND_HALF_EVEN);
+				$total += round(($ln_itm->this_quantity_inv * $ln_itm->taxfree_charge_price($tax_group_id, $tax_group)), User::price_dec(), PHP_ROUND_HALF_EVEN);
 			}
 			foreach ($this->gl_codes as $gl_line) { //////// 2009-08-18 Joe Hunt
 				if (!Taxes::is_tax_account($gl_line->gl_code)) {

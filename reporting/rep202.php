@@ -76,7 +76,7 @@
 		} else {
 			$from = get_supplier_name($fromsupp);
 		}
-		$dec = user_price_dec();
+		$dec = User::price_dec();
 		if ($summaryOnly == 1) {
 			$summary = _('Summary Only');
 		} else {
@@ -136,7 +136,7 @@
 		if ($convert) {
 			$headers[2] = _('currency');
 		}
-		$rep = new FrontReport(_('Aged Supplier Analysis'), "AgedSupplierAnalysis", user_pagesize());
+		$rep = new FrontReport(_('Aged Supplier Analysis'), "AgedSupplierAnalysis", User::pagesize());
 		$rep->Font();
 		$rep->Info($params, $cols, $headers, $aligns);
 		$rep->Header();

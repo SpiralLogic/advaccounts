@@ -47,7 +47,7 @@
 	if (!$login_timeout) { // FA logo
 		echo "<a target='_blank' href='" . POWERED_URL . "'><img src='/themes/$def_theme/images/logo_frontaccounting.png' alt='FrontAccounting' height='50' border='0' /></a>";
 	} else {
-		echo "<font size=5>" . _('Authorization timeout') . "</font><br>You were idle for: " . (User::get()->last_act + $_SESSION['wa_current_user']->timeout - time());
+		echo "<font size=5>" . _('Authorization timeout') . "</font><br>You were idle for: " . (User::get()->last_act + $_SESSION['current_user']->timeout - time());
 	}
 	echo "</td>\n";
 	end_row();
@@ -55,15 +55,15 @@
 	if (!$login_timeout) {
 		table_section_title(_("Version") . VERSION . "   Build " . BUILD_VERSION . " - " . _("Login"));
 	}
-	$value = $login_timeout ? $_SESSION['wa_current_user']->loginname : (Config::get('demo_mode') ? "demouser" : "");
+	$value = $login_timeout ? $_SESSION['current_user']->loginname : (Config::get('demo_mode') ? "demouser" : "");
 	text_row(_("User name"), "user_name_entry_field", $value, 20, 30);
 	$password = Config::get('demo_mode') ? "password" : "";
 	password_row(_("Password:"), 'password', $password);
 	if ($login_timeout) {
 		hidden('company_login_name', User::get()->company);
 	} else {
-		if (isset($_SESSION['wa_current_user']->company)) {
-			$coy = $_SESSION['wa_current_user']->company;
+		if (isset($_SESSION['current_user']->company)) {
+			$coy = $_SESSION['current_user']->company;
 		} else {
 			$coy = Config::get('company_default');
 		}
@@ -92,7 +92,7 @@
 	div_end();
 	echo "<table class='bottomBar'>\n";
 	echo "<tr>";
-	if (isset($_SESSION['wa_current_user'])) {
+	if (isset($_SESSION['current_user'])) {
 		$date = Dates::Today() . " | " . Dates::Now();
 	} else {
 		$date = date("m/d/Y") . " | " . date("h.i am");

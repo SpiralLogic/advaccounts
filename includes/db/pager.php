@@ -61,9 +61,9 @@
 		{
 			$this->width = "80%";
 			if ($page_len == 0) {
-				$page_len = user_query_size();
+				$page_len = User::query_size();
 			}
-			$this->name     = $name;
+			$this->name = $name;
 			$this->page_len = $page_len;
 			$this->set_sql($sql);
 		}
@@ -74,26 +74,26 @@
 		function set_sql($sql)
 		{
 			if ($sql != $this->sql) {
-				$this->sql   = $sql;
+				$this->sql = $sql;
 				$this->ready = false;
-				$parts       = preg_split('/\sORDER\s*BY\s/si', $sql, 2);
+				$parts = preg_split('/\sORDER\s*BY\s/si', $sql, 2);
 				if (count($parts) == 2) {
-					$sql         = $parts[0];
+					$sql = $parts[0];
 					$this->order = $parts[1];
 				}
 				$parts = preg_split('/\sGROUP\s*BY\s/si', $sql, 2);
 				if (count($parts) == 2) {
-					$sql         = $parts[0];
+					$sql = $parts[0];
 					$this->group = $parts[1];
 				}
 				$parts = preg_split('/\sWHERE\s/si', $sql, 2);
 				if (count($parts) == 2) {
-					$sql         = $parts[0];
+					$sql = $parts[0];
 					$this->where = $parts[1];
 				}
 				$parts = preg_split('/\sFROM\s/si', $sql, 2);
 				if (count($parts) == 2) {
-					$sql        = $parts[0];
+					$sql = $parts[0];
 					$this->from = $parts[1];
 				}
 				$this->select = $sql;
@@ -116,7 +116,7 @@
 				}
 			}
 			$this->extra_where = $where;
-			$this->ready       = false;
+			$this->ready = false;
 		}
 
 		//
@@ -138,8 +138,8 @@
 			if (is_null($col)) {
 				return false;
 			}
-			$ord                        = (!isset($this->columns[$col]['ord'])) ? '' : $this->columns[$col]['ord'];
-			$ord                        = ($ord == '') ? 'asc' : (($ord == 'asc') ? 'desc' : '');
+			$ord = (!isset($this->columns[$col]['ord'])) ? '' : $this->columns[$col]['ord'];
+			$ord = ($ord == '') ? 'asc' : (($ord == 'asc') ? 'desc' : '');
 			$this->columns[$col]['ord'] = $ord;
 			$this->set_page(1);
 			$this->query();
@@ -160,7 +160,7 @@
 			if ($this->rec_count == 0) {
 				return true;
 			}
-			$sql    = $this->_sql_gen(false);
+			$sql = $this->_sql_gen(false);
 			$result = DBOld::query($sql, 'Error browsing database: ' . $sql);
 			if ($result) {
 				// setting field names for subsequent queries
@@ -218,10 +218,10 @@
 			if ($page > $max) {
 				$page = $max;
 			}
-			$this->curr_page  = $page;
-			$this->next_page  = ($page < $max) ? $page + 1 : null;
-			$this->prev_page  = ($page > 1) ? ($page - 1) : null;
-			$this->last_page  = ($page < $max) ? $max : null;
+			$this->curr_page = $page;
+			$this->next_page = ($page < $max) ? $page + 1 : null;
+			$this->prev_page = ($page > 1) ? ($page - 1) : null;
+			$this->last_page = ($page < $max) ? $max : null;
 			$this->first_page = ($page != 1) ? 1 : null;
 		}
 
@@ -277,10 +277,10 @@
 		function _sql_gen($count = false)
 		{
 			$select = $this->select;
-			$from   = $this->from;
-			$where  = $this->where;
-			$group  = $this->group;
-			$order  = $this->order;
+			$from = $this->from;
+			$where = $this->where;
+			$group = $this->group;
+			$order = $this->order;
 			if (count($this->extra_where)) {
 				$where .= ($where == '' ? '' : ' AND ')
 				 . implode($this->extra_where, ' AND ');
@@ -312,7 +312,7 @@
 				} // original base query order
 			}
 			$page_len = $this->page_len;
-			$offset   = ($this->curr_page - 1) * $page_len;
+			$offset = ($this->curr_page - 1) * $page_len;
 			$sql .= " LIMIT $offset, $page_len";
 			return $sql;
 		}
@@ -323,14 +323,14 @@
 		function _init()
 		{
 			if ($this->ready == false) {
-				$sql    = $this->_sql_gen(true);
+				$sql = $this->_sql_gen(true);
 				$result = DBOld::query($sql, 'Error reading record set');
 				if ($result == false) {
 					return false;
 				}
-				$row             = DBOld::fetch_row($result);
+				$row = DBOld::fetch_row($result);
 				$this->rec_count = $row[0];
-				$this->max_page  = $this->page_len ?
+				$this->max_page = $this->page_len ?
 				 ceil($this->rec_count / $this->page_len) : 0;
 				if (Config::get('debug')) { // FIX - need column name parsing, but for now:
 					// check if field names are set explicite in col def
@@ -383,8 +383,8 @@
 		//
 		function set_marker($func, $notice = '', $markercl = 'overduebg', $msgclass = 'overduefg')
 		{
-			$this->marker       = $func;
-			$this->marker_txt   = $notice;
+			$this->marker = $func;
+			$this->marker_txt = $notice;
 			$this->marker_class = $markercl;
 			$this->notice_class = $msgclass;
 		}
@@ -395,7 +395,7 @@
 		//
 		function set_header($func, $headercl = 'inquirybg')
 		{
-			$this->header_fun   = $func;
+			$this->header_fun = $func;
 			$this->header_class = $headercl;
 		}
 
@@ -405,7 +405,7 @@
 		//
 		function set_footer($func, $footercl = 'inquirybg')
 		{
-			$this->footer_fun   = $func;
+			$this->footer_fun = $func;
 			$this->footer_class = $footercl;
 		}
 
@@ -415,7 +415,7 @@
 		function set_inactive_ctrl($table, $key)
 		{
 			$this->inactive_ctrl = array('table' => $table,
-																	 'key'	 => $key);
+				'key' => $key);
 		}
 
 		//
@@ -428,11 +428,11 @@
 				//				 $row['inactive'], $this->inactive_ctrl['table'],
 				//				 $this->inactive_ctrl['key']);
 				$Ajax = Ajax::instance();
-				$key  = $this->key ?
+				$key = $this->key ?
 				 $this->key : $this->columns[0]['name']; // TODO - support for complex keys
-				$id    = $row[$key];
+				$id = $row[$key];
 				$table = $this->main_tbl;
-				$name  = "Inactive" . $id;
+				$name = "Inactive" . $id;
 				$value = $row['inactive'] ? 1 : 0;
 				if (check_value('show_inactive')) {
 					if (isset($_POST['LInact'][$id])
@@ -460,9 +460,9 @@
 				unset($_SESSION[$name]); // kill pager if sql has changed
 			}
 			if (!isset($_SESSION[$name])) {
-				$_SESSION[$name]           = new db_pager($sql, $name, $table, $page_len);
+				$_SESSION[$name] = new db_pager($sql, $name, $table, $page_len);
 				$_SESSION[$name]->main_tbl = $table;
-				$_SESSION[$name]->key      = $key;
+				$_SESSION[$name]->key = $key;
 				$_SESSION[$name]->set_sql($sql);
 				$_SESSION[$name]->set_columns($coldef);
 				$_SESSION[$name]->sort_table($sort);
@@ -473,7 +473,7 @@
 		static function countFilter($table = false, $feild = false, $where = false)
 		{
 			if ($table && $where && $feild) {
-				$sql    = "SELECT * FROM " . $table . " WHERE " . $feild . " LIKE " . DB::escape($where) . " LIMIT 1";
+				$sql = "SELECT * FROM " . $table . " WHERE " . $feild . " LIKE " . DB::escape($where) . " LIMIT 1";
 				$result = DBOld::query($sql, 'Couldnt do shit');
 				return DBOld::num_rows($result);
 			}

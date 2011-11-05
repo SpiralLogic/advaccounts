@@ -152,8 +152,8 @@
 			dimension2_id=" . DB::escape($this->dimension2_id) . ",
             credit_status=" . DB::escape($this->credit_status) . ",
             payment_terms=" . DB::escape($this->payment_terms) . ",
-            pymt_discount=" . user_numeric($this->pymt_discount) / 100 . ",
-            credit_limit=" . user_numeric($this->credit_limit) . ",
+            pymt_discount=" . User::numeric($this->pymt_discount) / 100 . ",
+            credit_limit=" . User::numeric($this->credit_limit) . ",
             notes=" . DB::escape($this->notes) . "
             WHERE debtor_no = " . DB::escape($this->id);
 			DBOld::query($sql, "The supplier could not be updated");

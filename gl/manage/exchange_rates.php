@@ -15,7 +15,8 @@
 	Page::start(_($help_context = "Exchange Rates"));
 	simple_page_mode(false);
 	//---------------------------------------------------------------------------------------------
-	function check_data() {
+	function check_data()
+	{
 		if (!Dates::is_date($_POST['date_'])) {
 			Errors::error(_("The entered date is invalid."));
 			JS::set_focus('date_');
@@ -35,7 +36,8 @@
 	}
 
 	//---------------------------------------------------------------------------------------------
-	function handle_submit() {
+	function handle_submit()
+	{
 		global $selected_id;
 		if (!check_data()) {
 			return false;
@@ -56,7 +58,8 @@
 	}
 
 	//---------------------------------------------------------------------------------------------
-	function handle_delete() {
+	function handle_delete()
+	{
 		global $selected_id;
 		if ($selected_id == "") {
 			return;
@@ -67,19 +70,23 @@
 	}
 
 	//---------------------------------------------------------------------------------------------
-	function edit_link($row) {
+	function edit_link($row)
+	{
 		return button('Edit' . $row["id"], _("Edit"), true, ICON_EDIT);
 	}
 
-	function del_link($row) {
+	function del_link($row)
+	{
 		return button('Delete' . $row["id"], _("Delete"), true, ICON_DELETE);
 	}
 
-	function display_rates($curr_code) {
+	function display_rates($curr_code)
+	{
 	}
 
 	//---------------------------------------------------------------------------------------------
-	function display_rate_edit() {
+	function display_rate_edit()
+	{
 		global $selected_id;
 		$Ajax = Ajax::instance();
 		start_table(Config::get('tables_style2'));
@@ -104,7 +111,7 @@
 		small_amount_row(
 			_("Exchange Rate:"), 'BuyRate', null, '',
 			submit('get_rate', _("Get"), false, _('Get current ECB rate'), true),
-			user_exrate_dec()
+			User::exrate_dec()
 		);
 		end_table(1);
 		submit_add_or_update_center($selected_id == '', '', 'both');
@@ -112,7 +119,8 @@
 	}
 
 	//---------------------------------------------------------------------------------------------
-	function clear_data() {
+	function clear_data()
+	{
 		unset($_POST['selected_id']);
 		unset($_POST['date_']);
 		unset($_POST['BuyRate']);
@@ -160,7 +168,7 @@
 	if (Banking::is_company_currency($_POST['curr_abrev'])) {
 		Errors::warning(_("The selected currency is the company currency."), 2);
 		Errors::warning(_("The company currency is the base currency so exchange rates cannot be set for it."), 1);
-} else {
+	} else {
 		br(1);
 		$table->width = "40%";
 		if ($table->rec_count == 0) {

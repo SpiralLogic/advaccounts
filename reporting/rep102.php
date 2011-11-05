@@ -77,7 +77,7 @@
 		} else {
 			$from = get_customer_name($fromcust);
 		}
-		$dec = user_price_dec();
+		$dec = User::price_dec();
 		if ($summaryOnly == 1) {
 			$summary = _('Summary Only');
 		} else {
@@ -137,7 +137,7 @@
 		if ($convert) {
 			$headers[2] = _('Currency');
 		}
-		$rep = new FrontReport(_('Aged Customer Analysis'), "AgedCustomerAnalysis", user_pagesize());
+		$rep = new FrontReport(_('Aged Customer Analysis'), "AgedCustomerAnalysis", User::pagesize());
 		$rep->Font();
 		$rep->Info($params, $cols, $headers, $aligns);
 		$rep->Header();

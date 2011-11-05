@@ -16,19 +16,16 @@
 	// date_:	2005-05-19
 	// Title:	Inventory Sales Report
 	// ----------------------------------------------------------------
-
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-
 	include_once(APP_PATH . "inventory/includes/db/items_category_db.php");
-
 	//----------------------------------------------------------------------------------------------------
-
 	print_inventory_sales();
-
-	function getTransactions($category, $location, $fromcust, $from, $to) {
+	function getTransactions($category, $location, $fromcust, $from, $to)
+	{
 		$from = Dates::date2sql($from);
 		$to = Dates::date2sql($to);
-		$sql = "SELECT stock_master.category_id,
+		$sql
+		 = "SELECT stock_master.category_id,
 			stock_category.description AS cat_description,
 			stock_master.stock_id,
 			stock_master.description, stock_master.inactive,
@@ -53,21 +50,24 @@
 		AND stock_moves.tran_date<='$to'
 		AND ((debtor_trans.type=" . ST_CUSTDELIVERY . " AND debtor_trans.version=1) OR stock_moves.type=" . ST_CUSTCREDIT . ")
 		AND (stock_master.mb_flag='" . STOCK_PURCHASED . "' OR stock_master.mb_flag='" . STOCK_MANUFACTURE . "')";
-		if ($category != 0)
+		if ($category != 0) {
 			$sql .= " AND stock_master.category_id = " . DB::escape($category);
-		if ($location != 'all')
+		}
+		if ($location != 'all') {
 			$sql .= " AND stock_moves.loc_code = " . DB::escape($location);
-		if ($fromcust != -1)
+		}
+		if ($fromcust != -1) {
 			$sql .= " AND debtors_master.debtor_no = " . DB::escape($fromcust);
-		$sql .= " GROUP BY stock_master.stock_id, debtors_master.name ORDER BY stock_master.category_id,
+		}
+		$sql
+		 .= " GROUP BY stock_master.stock_id, debtors_master.name ORDER BY stock_master.category_id,
 			stock_master.stock_id, debtors_master.name";
 		return DBOld::query($sql, "No transactions were returned");
 	}
 
 	//----------------------------------------------------------------------------------------------------
-
-	function print_inventory_sales() {
-
+	function print_inventory_sales()
+	{
 		$from = $_POST['PARAM_0'];
 		$to = $_POST['PARAM_1'];
 		$category = $_POST['PARAM_2'];
@@ -75,54 +75,58 @@
 		$fromcust = $_POST['PARAM_4'];
 		$comments = $_POST['PARAM_5'];
 		$destination = $_POST['PARAM_6'];
-		if ($destination)
+		if ($destination) {
 			include_once(APP_PATH . "includes/reports/excel.php");
+		}
 		else
+		{
 			include_once(APP_PATH . "includes/reports/pdf.php");
-
-		$dec = user_price_dec();
-
-		if ($category == ALL_NUMERIC)
+		}
+		$dec = User::price_dec();
+		if ($category == ALL_NUMERIC) {
 			$category = 0;
-		if ($category == 0)
+		}
+		if ($category == 0) {
 			$cat = _('All');
+		}
 		else
+		{
 			$cat = get_category_name($category);
-
-		if ($location == ALL_TEXT)
+		}
+		if ($location == ALL_TEXT) {
 			$location = 'all';
-		if ($location == 'all')
+		}
+		if ($location == 'all') {
 			$loc = _('All');
+		}
 		else
+		{
 			$loc = get_location_name($location);
-
-		if ($fromcust == ALL_NUMERIC)
+		}
+		if ($fromcust == ALL_NUMERIC) {
 			$fromc = _('All');
+		}
 		else
+		{
 			$fromc = get_customer_name($fromcust);
-
+		}
 		$cols = array(0, 75, 175, 250, 300, 375, 450, 515);
-
-		$headers =
-		 array(_('Category'), _('Description'), _('Customer'), _('Qty'), _('Sales'), _('Cost'), _('Contribution'));
-		if ($fromcust != ALL_NUMERIC)
+		$headers
+		 = array(_('Category'), _('Description'), _('Customer'), _('Qty'), _('Sales'), _('Cost'), _('Contribution'));
+		if ($fromcust != ALL_NUMERIC) {
 			$headers[2] = '';
-
+		}
 		$aligns = array('left', 'left', 'left', 'right', 'right', 'right', 'right');
-
 		$params = array(0 => $comments,
 			1 => array('text' => _('Period'), 'from' => $from, 'to' => $to),
 			2 => array('text' => _('Category'), 'from' => $cat, 'to' => ''),
 			3 => array('text' => _('Location'), 'from' => $loc, 'to' => ''),
 			4 => array('text' => _('Customer'), 'from' => $fromc, 'to' => '')
 		);
-
-		$rep = new FrontReport(_('Inventory Sales Report'), "InventorySalesReport", user_pagesize());
-
+		$rep = new FrontReport(_('Inventory Sales Report'), "InventorySalesReport", User::pagesize());
 		$rep->Font();
 		$rep->Info($params, $cols, $headers, $aligns);
 		$rep->Header();
-
 		$res = getTransactions($category, $location, $fromcust, $from, $to);
 		$total = $grandtotal = 0.0;
 		$total1 = $grandtotal1 = 0.0;
@@ -147,7 +151,6 @@
 				$catt = $trans['cat_description'];
 				$rep->NewLine();
 			}
-
 			$curr = Banking::get_customer_currency($trans['debtor_no']);
 			$rate = Banking::get_exchange_rate_from_home_currency($curr, Dates::sql2date($trans['tran_date']));
 			$trans['amt'] *= $rate;
@@ -161,8 +164,10 @@
 				$rep->TextCol(2, 3, $trans['debtor_name']);
 			}
 			else
+			{
 				$rep->TextCol(1, 3,
 				 $trans['description'] . ($trans['inactive'] == 1 ? " (" . _("Inactive") . ")" : ""), -1);
+			}
 			$rep->AmountCol(3, 4, $trans['qty'], get_qty_dec($trans['stock_id']));
 			$rep->AmountCol(4, 5, $trans['amt'], $dec);
 			$rep->AmountCol(5, 6, $trans['cost'], $dec);
@@ -187,7 +192,6 @@
 		$rep->AmountCol(4, 5, $grandtotal, $dec);
 		$rep->AmountCol(5, 6, $grandtotal1, $dec);
 		$rep->AmountCol(6, 7, $grandtotal2, $dec);
-
 		$rep->Line($rep->row - 4);
 		$rep->NewLine();
 		$rep->End();

@@ -19,9 +19,9 @@
 			Errors::error(_("Query size must be integer and greater than zero."));
 			JS::set_focus('query_size');
 		} else {
-			$chg_theme = user_theme() != $_POST['theme'];
+			$chg_theme = User::theme() != $_POST['theme'];
 			$chg_lang = $_SESSION['language']->code != $_POST['language'];
-			set_user_prefs(
+			User::get()->update_prefs(
 				$_POST['prices'], $_POST['Quantities'],
 				$_POST['Rates'], $_POST['Percent'],
 				check_value('show_gl'),
@@ -55,20 +55,20 @@
 	start_outer_table(Config::get('tables_style2'));
 	table_section(1);
 	table_section_title(_("Decimal Places"));
-	text_row_ex(_("Prices/Amounts:"), 'prices', 5, 5, '', user_price_dec());
-	text_row_ex(_("Quantities:"), 'Quantities', 5, 5, '', user_qty_dec());
-	text_row_ex(_("Exchange Rates:"), 'Rates', 5, 5, '', user_exrate_dec());
-	text_row_ex(_("Percentages:"), 'Percent', 5, 5, '', user_percent_dec());
+	text_row_ex(_("Prices/Amounts:"), 'prices', 5, 5, '', User::price_dec());
+	text_row_ex(_("Quantities:"), 'Quantities', 5, 5, '', User::qty_dec());
+	text_row_ex(_("Exchange Rates:"), 'Rates', 5, 5, '', User::exrate_dec());
+	text_row_ex(_("Percentages:"), 'Percent', 5, 5, '', User::percent_dec());
 	table_section_title(_("Dateformat and Separators"));
-	dateformats_list_row(_("Dateformat:"), "date_format", user_date_format());
-	dateseps_list_row(_("Date Separator:"), "date_sep", user_date_sep());
+	dateformats_list_row(_("Dateformat:"), "date_format", User::date_format());
+	dateseps_list_row(_("Date Separator:"), "date_sep", User::date_sep());
 	/* The array $dateseps is set up in config.php for modifications
 		possible separators can be added by modifying the array definition by editing that file */
-	thoseps_list_row(_("Thousand Separator:"), "tho_sep", user_tho_sep());
+	thoseps_list_row(_("Thousand Separator:"), "tho_sep", User::tho_sep());
 	/* The array Config::get('separators_thousands') is set up in config.php for modifications
 		possible separators can be added by modifying the array definition by editing that file */
-	decseps_list_row(_("Decimal Separator:"), "dec_sep", user_dec_sep());
-	/* The array Config::get('separators_thousands',user_tho_sep()); is set up in config.php for modifications
+	decseps_list_row(_("Decimal Separator:"), "dec_sep", User::dec_sep());
+	/* The array Config::get('separators_thousands',User::tho_sep()); is set up in config.php for modifications
 		possible separators can be added by modifying the array definition by editing that file */
 	if (!isset($_POST['language'])) {
 		$_POST['language'] = $_SESSION['language']->code;
@@ -77,34 +77,34 @@
 	languages_list_row(_("Language:"), 'language', $_POST['language']);
 	table_section(2);
 	table_section_title(_("Miscellaneous"));
-	check_row(_("Show hints for new users:"), 'show_hints', user_hints());
-	check_row(_("Show GL Information:"), 'show_gl', user_show_gl_info());
-	check_row(_("Show Item Codes:"), 'show_codes', user_show_codes());
-	themes_list_row(_("Theme:"), "theme", user_theme());
+	check_row(_("Show hints for new users:"), 'show_hints', User::hints());
+	check_row(_("Show GL Information:"), 'show_gl', User::show_gl_info());
+	check_row(_("Show Item Codes:"), 'show_codes', User::show_codes());
+	themes_list_row(_("Theme:"), "theme", User::theme());
 	/* The array $themes is set up in config.php for modifications
 		possible separators can be added by modifying the array definition by editing that file */
-	pagesizes_list_row(_("Page Size:"), "page_size", user_pagesize());
-	tab_list_row(_("Start-up Tab"), 'startup_tab', user_startup_tab());
+	pagesizes_list_row(_("Page Size:"), "page_size", User::pagesize());
+	tab_list_row(_("Start-up Tab"), 'startup_tab', User::startup_tab());
 	/* The array Config::get('formats_paper_size') is set up in config.php for modifications
 		possible separators can be added by modifying the array definition by editing that file */
 	if (!isset($_POST['profile'])) {
-		$_POST['profile'] = user_print_profile();
+		$_POST['profile'] = User::print_profile();
 	}
 	print_profiles_list_row(
 		_("Printing profile") . ':', 'profile',
 		null, _('Browser printing support')
 	);
 	check_row(
-		_("Use popup window to display reports:"), 'rep_popup', user_rep_popup(),
+		_("Use popup window to display reports:"), 'rep_popup', User::rep_popup(),
 		false, _('Set this option to on if your browser directly supports pdf files')
 	);
 	check_row(
-		_("Use icons instead of text links:"), 'graphic_links', user_graphic_links(),
+		_("Use icons instead of text links:"), 'graphic_links', User::graphic_links(),
 		false, _('Set this option to on for using icons instead of text links')
 	);
-	text_row_ex(_("Query page size:"), 'query_size', 5, 5, '', user_query_size());
+	text_row_ex(_("Query page size:"), 'query_size', 5, 5, '', User::query_size());
 	check_row(
-		_("Remember last document date:"), 'sticky_doc_date', sticky_doc_date(),
+		_("Remember last document date:"), 'sticky_doc_date', User::sticky_date(),
 		false, _('If set document date is remembered on subsequent documents, otherwise default is current date')
 	);
 	end_outer_table(1);

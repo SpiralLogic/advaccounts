@@ -16,22 +16,17 @@
 	// date_:	2005-05-19
 	// Title:	Salesman Report
 	// ----------------------------------------------------------------
-
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-
 	include_once(APP_PATH . "inventory/includes/db/items_category_db.php");
-
 	//----------------------------------------------------------------------------------------------------
-
 	print_salesman_list();
-
 	//----------------------------------------------------------------------------------------------------
-
-	function GetSalesmanTrans($from, $to) {
+	function GetSalesmanTrans($from, $to)
+	{
 		$fromdate = Dates::date2sql($from);
 		$todate = Dates::date2sql($to);
-
-		$sql = "SELECT DISTINCT debtor_trans.*,
+		$sql
+		 = "SELECT DISTINCT debtor_trans.*,
 		ov_amount+ov_discount AS InvoiceTotal,
 		debtors_master.name AS DebtorName, debtors_master.curr_code, cust_branch.br_name,
 		cust_branch.contact_name, salesman.*
@@ -45,61 +40,53 @@
 		    AND debtor_trans.tran_date>='$fromdate'
 		    AND debtor_trans.tran_date<='$todate'
 		ORDER BY salesman.salesman_code, debtor_trans.tran_date";
-
 		return DBOld::query($sql, "Error getting order details");
 	}
 
 	//----------------------------------------------------------------------------------------------------
-
-	function print_salesman_list() {
-
+	function print_salesman_list()
+	{
 		$from = $_POST['PARAM_0'];
 		$to = $_POST['PARAM_1'];
 		$summary = $_POST['PARAM_2'];
 		$comments = $_POST['PARAM_3'];
 		$destination = $_POST['PARAM_4'];
-		if ($destination)
+		if ($destination) {
 			include_once(APP_PATH . "includes/reports/excel.php");
+		}
 		else
+		{
 			include_once(APP_PATH . "includes/reports/pdf.php");
-
-		if ($summary == 0)
+		}
+		if ($summary == 0) {
 			$sum = _("No");
+		}
 		else
+		{
 			$sum = _("Yes");
-
-		$dec = user_price_dec();
-
+		}
+		$dec = User::price_dec();
 		$cols = array(0, 60, 150, 220, 325, 385, 450, 515);
-
 		$headers = array(_('Invoice'), _('Customer'), _('Branch'), _('Customer Ref'),
 			_('Inv Date'), _('Total'), _('Provision')
 		);
-
 		$aligns = array('left', 'left', 'left', 'left', 'left', 'right', 'right');
-
 		$headers2 = array(_('Salesman'), " ", _('Phone'), _('Email'), _('Provision'),
 			_('Break Pt.'), _('Provision') . " 2"
 		);
-
 		$params = array(0 => $comments,
 			1 => array('text' => _('Period'), 'from' => $from, 'to' => $to),
 			2 => array('text' => _('Summary Only'), 'from' => $sum, 'to' => '')
 		);
-
 		$cols2 = $cols;
 		$aligns2 = $aligns;
-
-		$rep = new FrontReport(_('Salesman Listing'), "SalesmanListing", user_pagesize());
+		$rep = new FrontReport(_('Salesman Listing'), "SalesmanListing", User::pagesize());
 		$rep->Font();
 		$rep->Info($params, $cols, $headers, $aligns, $cols2, $headers2, $aligns2);
-
 		$rep->Header();
 		$salesman = 0;
 		$subtotal = $total = $subprov = $provtotal = 0;
-
 		$result = GetSalesmanTrans($from, $to);
-
 		while ($myrow = DBOld::fetch($result))
 		{
 			if ($rep->row < $rep->bottomMargin + (2 * $rep->lineHeight)) {
@@ -120,9 +107,9 @@
 				$rep->TextCol(0, 2, $myrow['salesman_code'] . " " . $myrow['salesman_name']);
 				$rep->TextCol(2, 3, $myrow['salesman_phone']);
 				$rep->TextCol(3, 4, $myrow['salesman_email']);
-				$rep->TextCol(4, 5, Num::format($myrow['provision'], user_percent_dec()) . " %");
+				$rep->TextCol(4, 5, Num::format($myrow['provision'], User::percent_dec()) . " %");
 				$rep->AmountCol(5, 6, $myrow['break_pt'], $dec);
-				$rep->TextCol(6, 7, Num::format($myrow['provision2'], user_percent_dec()) . " %");
+				$rep->TextCol(6, 7, Num::format($myrow['provision2'], User::percent_dec()) . " %");
 				$rep->NewLine(2);
 				$salesman = $myrow['salesman_code'];
 				$total += $subtotal;
@@ -132,10 +119,13 @@
 			}
 			$rate = $myrow['rate'];
 			$amt = $myrow['InvoiceTotal'] * $rate;
-			if ($subprov > $myrow['break_pt'] && $myrow['provision2'] != 0)
+			if ($subprov > $myrow['break_pt'] && $myrow['provision2'] != 0) {
 				$prov = $myrow['provision2'] * $amt / 100;
+			}
 			else
+			{
 				$prov = $myrow['provision'] * $amt / 100;
+			}
 			if (!$summary) {
 				$rep->TextCol(0, 1, $myrow['trans_no']);
 				$rep->TextCol(1, 2, $myrow['DebtorName']);

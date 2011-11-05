@@ -134,7 +134,7 @@
 				amount_decimal_cell($myrow["price"]);
 				label_cell($myrow["curr_code"]);
 				label_cell($myrow["suppliers_uom"]);
-				qty_cell($myrow['conversion_factor'], false, user_exrate_dec());
+				qty_cell($myrow['conversion_factor'], false, User::exrate_dec());
 				label_cell($myrow["supplier_description"]);
 				edit_button_cell("Edit" . $myrow['supplier_id'], _("Edit"));
 				delete_button_cell("Delete" . $myrow['supplier_id'], _("Delete"));
@@ -182,7 +182,7 @@
 	}
 	amount_row(
 		_("Conversion Factor (to our UOM):"), 'conversion_factor',
-		Num::exrate_format($_POST['conversion_factor']), null, null, user_exrate_dec()
+		Num::exrate_format($_POST['conversion_factor']), null, null, User::exrate_dec()
 	);
 	text_row(_("Supplier's Product Code:"), 'supplier_description', null, 50, 51);
 	end_table(1);

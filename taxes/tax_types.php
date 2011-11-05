@@ -57,9 +57,9 @@
 	//-----------------------------------------------------------------------------------
 	function can_delete($selected_id)
 	{
-		$sql    = "SELECT COUNT(*) FROM tax_group_items	WHERE tax_type_id=" . DB::escape($selected_id);
+		$sql = "SELECT COUNT(*) FROM tax_group_items	WHERE tax_type_id=" . DB::escape($selected_id);
 		$result = DBOld::query($sql, "could not query tax groups");
-		$myrow  = DBOld::fetch_row($result);
+		$myrow = DBOld::fetch_row($result);
 		if ($myrow[0] > 0) {
 			Errors::error(_("Cannot delete this tax type because tax groups been created referring to it."));
 			return false;
@@ -77,7 +77,7 @@
 	}
 	if ($Mode == 'RESET') {
 		$selected_id = -1;
-		$sav         = get_post('show_inactive');
+		$sav = get_post('show_inactive');
 		unset($_POST);
 		$_POST['show_inactive'] = $sav;
 	}
@@ -113,15 +113,15 @@
 		if ($Mode == 'Edit') {
 			//editing an existing status code
 			$myrow = Tax_Types::get($selected_id);
-			$_POST['name']               = $myrow["name"];
-			$_POST['rate']               = Num::percent_format($myrow["rate"]);
-			$_POST['sales_gl_code']      = $myrow["sales_gl_code"];
+			$_POST['name'] = $myrow["name"];
+			$_POST['rate'] = Num::percent_format($myrow["rate"]);
+			$_POST['sales_gl_code'] = $myrow["sales_gl_code"];
 			$_POST['purchasing_gl_code'] = $myrow["purchasing_gl_code"];
 		}
 		hidden('selected_id', $selected_id);
 	}
 	text_row_ex(_("Description:"), 'name', 50);
-	small_amount_row(_("Default Rate:"), 'rate', '', "", "%", user_percent_dec());
+	small_amount_row(_("Default Rate:"), 'rate', '', "", "%", User::percent_dec());
 	gl_all_accounts_list_row(_("Sales GL Account:"), 'sales_gl_code', null);
 	gl_all_accounts_list_row(_("Purchasing GL Account:"), 'purchasing_gl_code', null);
 	end_table(1);

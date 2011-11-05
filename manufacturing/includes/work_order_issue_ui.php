@@ -65,7 +65,7 @@
 		if ($id == -1) {
 			issue_edit_item_controls($order);
 		}
-		//	label_row(_("Total"), Num::format($total,user_price_dec()), "colspan=5", "align=right");
+		//	label_row(_("Total"), Num::format($total,User::price_dec()), "colspan=5", "align=right");
 		end_table();
 		div_end();
 	}

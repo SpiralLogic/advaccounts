@@ -16,14 +16,11 @@
 	// date_:	2005-05-19
 	// Title:	Chart of GL Accounts
 	// ----------------------------------------------------------------
-
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-
 	//----------------------------------------------------------------------------------------------------
-
-	function display_type($type, $typename, &$dec, &$rep, $showbalance) {
+	function display_type($type, $typename, &$dec, &$rep, $showbalance)
+	{
 		$printtitle = 0; //Flag for printing type name
-
 		//Get Accounts directly under this group/type
 		$result = get_gl_accounts(null, null, $type);
 		while ($account = DBOld::fetch($result))
@@ -40,18 +37,19 @@
 			}
 			if ($showbalance == 1) {
 				$begin = Dates::begin_fiscalyear();
-				if (is_account_balancesheet($account["account_code"]))
+				if (is_account_balancesheet($account["account_code"])) {
 					$begin = "";
+				}
 				$balance = get_gl_trans_from_to($begin, ToDay(), $account["account_code"], 0);
 			}
 			$rep->TextCol(0, 1, $account['account_code']);
 			$rep->TextCol(1, 2, $account['account_name']);
 			$rep->TextCol(2, 3, $account['account_code2']);
-			if ($showbalance == 1)
+			if ($showbalance == 1) {
 				$rep->AmountCol(3, 4, $balance, $dec);
+			}
 			$rep->NewLine();
 		}
-
 		//Get Account groups/types under this group/type
 		$result = get_account_types(false, false, $type);
 		while ($accounttype = DBOld::fetch($result))
@@ -66,43 +64,34 @@
 				$rep->Line($rep->row);
 				$rep->NewLine();
 			}
-
 			display_type($accounttype["id"], $accounttype["name"], $dec, $rep, $showbalance);
 		}
 	}
 
 	//----------------------------------------------------------------------------------------------------
-
 	print_Chart_of_Accounts();
-
 	//----------------------------------------------------------------------------------------------------
-
-	function print_Chart_of_Accounts() {
-
+	function print_Chart_of_Accounts()
+	{
 		$showbalance = $_POST['PARAM_0'];
 		$comments = $_POST['PARAM_1'];
 		$destination = $_POST['PARAM_2'];
-		if ($destination)
+		if ($destination) {
 			include_once(APP_PATH . "includes/reports/excel.php");
+		}
 		else
+		{
 			include_once(APP_PATH . "includes/reports/pdf.php");
-
+		}
 		$dec = 0;
-
 		$cols = array(0, 50, 300, 425, 500);
-
 		$headers = array(_('Account'), _('Account Name'), _('Account Code'), _('Balance'));
-
 		$aligns = array('left', 'left', 'left', 'right');
-
 		$params = array(0 => $comments);
-
-		$rep = new FrontReport(_('Chart of Accounts'), "ChartOfAccounts", user_pagesize());
-
+		$rep = new FrontReport(_('Chart of Accounts'), "ChartOfAccounts", User::pagesize());
 		$rep->Font();
 		$rep->Info($params, $cols, $headers, $aligns);
 		$rep->Header();
-
 		$classresult = get_account_classes(false);
 		while ($class = DBOld::fetch($classresult))
 		{
@@ -111,7 +100,6 @@
 			$rep->TextCol(1, 4, $class['class_name']);
 			$rep->Font();
 			$rep->NewLine();
-
 			//Get Account groups/types under this group/type with no parents
 			$typeresult = get_account_types(false, $class['cid'], -1);
 			while ($accounttype = DBOld::fetch($typeresult))

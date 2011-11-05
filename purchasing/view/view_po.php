@@ -31,7 +31,7 @@
 		_("Quantity Invoiced")
 	);
 	table_header($th);
-	$total         = $k = 0;
+	$total = $k = 0;
 	$overdue_items = false;
 	foreach (
 		$purchase_order->line_items as $stock_item
@@ -59,14 +59,14 @@
 		end_row();
 		$total += $line_total;
 	}
-	$display_total = Num::format($total, user_price_dec());
+	$display_total = Num::format($total, User::price_dec());
 	label_row(_("Total Excluding Tax/Shipping"), $display_total, "align=right colspan=6", "nowrap align=right", 3);
 	end_table();
 	if ($overdue_items) {
 		Errors::warning(_("Marked items are overdue."), 0, 0, "class='overduefg'");
 	}
 	//----------------------------------------------------------------------------------------------------
-	$k           = 0;
+	$k = 0;
 	$grns_result = get_po_grns($_GET['trans_no']);
 	if (DBOld::num_rows($grns_result) > 0) {
 		echo "</td><td valign=top>"; // outer table
@@ -84,7 +84,7 @@
 		end_table();
 	}
 	$invoice_result = get_po_invoices_credits($_GET['trans_no']);
-	$k              = 0;
+	$k = 0;
 	if (DBOld::num_rows($invoice_result) > 0) {
 		echo "</td><td valign=top>"; // outer table
 		Display::heading(_("Invoices/Credits"));

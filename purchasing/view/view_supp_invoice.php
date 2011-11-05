@@ -21,7 +21,7 @@
 	{
 		$trans_no = $_POST["trans_no"];
 	}
-	$supp_trans             = new Purchase_Trans();
+	$supp_trans = new Purchase_Trans();
 	$supp_trans->is_invoice = true;
 	read_supp_invoice($trans_no, ST_SUPPINVOICE, $supp_trans);
 	$supplier_curr_code = Banking::get_supplier_currency($supp_trans->supplier_id);
@@ -42,14 +42,14 @@
 	end_row();
 	Display::comments_row(ST_SUPPINVOICE, $trans_no);
 	end_table(1);
-	$total_gl  = display_gl_items($supp_trans, 2);
+	$total_gl = display_gl_items($supp_trans, 2);
 	$total_grn = display_grn_items($supp_trans, 2);
-	$display_sub_tot = Num::format($total_gl + $total_grn, user_price_dec());
+	$display_sub_tot = Num::format($total_gl + $total_grn, User::price_dec());
 	start_table("width=95%  " . Config::get('tables_style'));
 	label_row(_("Sub Total"), $display_sub_tot, "align=right", "nowrap align=right width=15%");
 	$tax_items = get_trans_tax_details(ST_SUPPINVOICE, $trans_no);
 	$tax_total = Display::supp_trans_tax_details($tax_items, 1, $supp_trans->ov_gst);
-	$display_total = Num::format($supp_trans->ov_amount + $supp_trans->ov_gst, user_price_dec());
+	$display_total = Num::format($supp_trans->ov_amount + $supp_trans->ov_gst, User::price_dec());
 	label_row(_("TOTAL INVOICE"), $display_total, "colspan=1 align=right", "nowrap align=right");
 	end_table(1);
 	Display::is_voided(ST_SUPPINVOICE, $trans_no, _("This invoice has been voided."));

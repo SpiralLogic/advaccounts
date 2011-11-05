@@ -21,7 +21,7 @@
 	{
 		static function is_bank_account($account_code)
 		{
-			$sql    = "SELECT id FROM bank_accounts WHERE account_code='$account_code'";
+			$sql = "SELECT id FROM bank_accounts WHERE account_code='$account_code'";
 			$result = DBOld::query($sql, "checking account is bank account");
 			if (DBOld::num_rows($result) > 0) {
 				$acct = DBOld::fetch($result);
@@ -41,7 +41,7 @@
 		//----------------------------------------------------------------------------------
 		static function get_company_currency()
 		{
-			$sql    = "SELECT curr_default FROM company";
+			$sql = "SELECT curr_default FROM company";
 			$result = DBOld::query($sql, "retreive company currency");
 			if (DBOld::num_rows($result) == 0) {
 				Errors::show_db_error("Could not find the requested currency. Fatal.", $sql);
@@ -53,7 +53,7 @@
 		//----------------------------------------------------------------------------------
 		static function get_bank_account_currency($id)
 		{
-			$sql    = "SELECT bank_curr_code FROM bank_accounts WHERE id='$id'";
+			$sql = "SELECT bank_curr_code FROM bank_accounts WHERE id='$id'";
 			$result = DBOld::query($sql, "retreive bank account currency");
 			$myrow = DBOld::fetch_row($result);
 			return $myrow[0];
@@ -92,7 +92,7 @@
 				// no stored exchange rate, just return 1
 				Errors::error(
 					sprintf(_("Cannot retrieve exchange rate for currency %s as of %s. Please add exchange rate manually on Exchange Rates page."),
-									$currency_code, $date_));
+						$currency_code, $date_));
 				return 1.000;
 			}
 			$myrow = DBOld::fetch_row($result);
@@ -109,7 +109,7 @@
 		static function to_home_currency($amount, $currency_code, $date_)
 		{
 			$ex_rate = static::get_exchange_rate_to_home_currency($currency_code, $date_);
-			return Num::round($amount / $ex_rate, user_price_dec());
+			return Num::round($amount / $ex_rate, User::price_dec());
 		}
 
 		//----------------------------------------------------------------------------------
@@ -143,26 +143,26 @@
 		{
 			global $systypes_array;
 			if ($person_type == PT_CUSTOMER) {
-				$trans     = get_customer_trans($trans_no, $type);
+				$trans = get_customer_trans($trans_no, $type);
 				$pyt_trans = get_customer_trans($pyt_no, $pyt_type);
 				$ar_ap_act = $trans['receivables_account'];
 				$person_id = $trans['debtor_no'];
-				$curr      = $trans['curr_code'];
-				$date      = Dates::sql2date($trans['tran_date']);
-} else {
-				$trans     = get_supp_trans($trans_no, $type);
+				$curr = $trans['curr_code'];
+				$date = Dates::sql2date($trans['tran_date']);
+			} else {
+				$trans = get_supp_trans($trans_no, $type);
 				$pyt_trans = get_supp_trans($pyt_no, $pyt_type);
 				$supp_accs = get_supplier_accounts($trans['supplier_id']);
 				$ar_ap_act = $supp_accs['payable_account'];
 				$person_id = $trans['supplier_id'];
-				$curr      = $trans['SupplierCurrCode'];
-				$date      = Dates::sql2date($trans['tran_date']);
+				$curr = $trans['SupplierCurrCode'];
+				$date = Dates::sql2date($trans['tran_date']);
 			}
 			if (static::is_company_currency($curr)) {
 				return;
 			}
-			$inv_amt = Num::round($amount * $trans['rate'], user_price_dec());
-			$pay_amt = Num::round($amount * $pyt_trans['rate'], user_price_dec());
+			$inv_amt = Num::round($amount * $trans['rate'], User::price_dec());
+			$pay_amt = Num::round($amount * $pyt_trans['rate'], User::price_dec());
 			if ($inv_amt != $pay_amt) {
 				$diff = $inv_amt - $pay_amt;
 				if ($person_type == PT_SUPPLIER) {
@@ -176,7 +176,7 @@
 					$memo = $systypes_array[$pyt_type] . " " . $pyt_no;
 					add_gl_trans($type, $trans_no, $date, $ar_ap_act, 0, 0, $memo, -$diff, null, $person_type, $person_id);
 					add_gl_trans($type, $trans_no, $date, $exc_var_act, 0, 0, $memo, $diff, null, $person_type, $person_id);
-} else {
+				} else {
 					$memo = $systypes_array[$type] . " " . $trans_no;
 					add_gl_trans($pyt_type, $pyt_no, $pyt_date, $ar_ap_act, 0, 0, $memo, -$diff, null, $person_type, $person_id);
 					add_gl_trans($pyt_type, $pyt_no, $pyt_date, $exc_var_act, 0, 0, $memo, $diff, null, $person_type, $person_id);

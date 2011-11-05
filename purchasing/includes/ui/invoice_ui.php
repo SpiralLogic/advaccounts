@@ -35,7 +35,7 @@
 			foreach (
 				$supp_trans->grn_items as $grn
 			) {
-				$supp_trans->ov_amount += Num::round(($grn->this_quantity_inv * $grn->chg_price * (1 - $grn->discount / 100)), user_price_dec());
+				$supp_trans->ov_amount += Num::round(($grn->this_quantity_inv * $grn->chg_price * (1 - $grn->discount / 100)), User::price_dec());
 			}
 		}
 		if (count($supp_trans->gl_codes) > 0) {
@@ -199,7 +199,7 @@
 				}
 				echo "&nbsp;" . $qid['base_desc'] . ":" . "&nbsp;";
 				$amount = input_num('totamount', $qid['base_amount']);
-				$dec = user_price_dec();
+				$dec = User::price_dec();
 				echo "<input class='amount' type='text' name='totamount' size='7' maxlength='12' dec='$dec' value='$amount'>&nbsp;";
 				submit('go', _("Go"), true, false, true);
 				echo "</div>";
@@ -357,14 +357,14 @@
 					small_amount_cells(
 						null, 'ChgDiscount' . $n, Num::percent_format(
 							$myrow['discount'] * 100
-						), null, null, user_percent_dec()
+						), null, null, User::percent_dec()
 					);
 					amount_cell(Num::price_decimal(($myrow["unit_price"] * ($myrow["qty_recd"] - $myrow["quantity_inv"]) * (1 - $myrow['discount'])) / $myrow["qty_recd"], $dec2), false, $dec2, 'Ea' . $n);
 					if ($supp_trans->is_invoice) {
 						amount_cells(null, 'ChgTotal' . $n, Num::price_decimal($myrow["unit_price"] * ($myrow["qty_recd"] - $myrow["quantity_inv"]) * (1 - $myrow['discount']), $dec2), null, null, $dec2, 'ChgTotalCalc' . $n);
 					}
 					else {
-						amount_cell(Num::round($myrow["unit_price"] * max($myrow['quantity_inv'], 0) * (1 - $myrow['discount']), user_price_dec()));
+						amount_cell(Num::round($myrow["unit_price"] * max($myrow['quantity_inv'], 0) * (1 - $myrow['discount']), User::price_dec()));
 					}
 					submit_cells('grn_item_id' . $n, _("Add"), '', ($supp_trans->is_invoice ? _("Add to Invoice") : _("Add to Credit Note")), true);
 					if ($supp_trans->is_invoice && User::get()->can_access('SA_GRNDELETE')) { // Added 2008-10-18 by Joe Hunt. Special access rights needed.
@@ -486,9 +486,9 @@
 				amount_decimal_cell(
 					Num::round(
 						($entered_grn->chg_price * abs($entered_grn->this_quantity_inv) * (1 - $entered_grn->discount / 100)) / abs($entered_grn->this_quantity_inv)
-					), user_price_dec()
+					), User::price_dec()
 				);
-				amount_cell(Num::round($entered_grn->chg_price * abs($entered_grn->this_quantity_inv) * (1 - $entered_grn->discount / 100), user_price_dec()));
+				amount_cell(Num::round($entered_grn->chg_price * abs($entered_grn->this_quantity_inv) * (1 - $entered_grn->discount / 100), User::price_dec()));
 				if ($mode == 1) {
 					if ($supp_trans->is_invoice && User::get()->can_access('SA_GRNDELETE')) {
 						label_cell("");
@@ -497,7 +497,7 @@
 					delete_button_cell("Delete" . $entered_grn->id, _("Edit"), _('Edit document line'));
 				}
 				end_row();
-				$total_grn_value += Num::round($entered_grn->chg_price * abs($entered_grn->this_quantity_inv) * (1 - $entered_grn->discount / 100), user_price_dec());
+				$total_grn_value += Num::round($entered_grn->chg_price * abs($entered_grn->this_quantity_inv) * (1 - $entered_grn->discount / 100), User::price_dec());
 				$i++;
 				if ($i > 15) {
 					$i = 0;

@@ -18,13 +18,13 @@
 	}
 	$receipt = get_supp_trans($trans_no, ST_SUPPAYMENT);
 	$company_currency = Banking::get_company_currency();
-	$show_currencies   = false;
+	$show_currencies = false;
 	$show_both_amounts = false;
 	if (($receipt['bank_curr_code'] != $company_currency) || ($receipt['SupplierCurrCode'] != $company_currency)) {
 		$show_currencies = true;
 	}
 	if ($receipt['bank_curr_code'] != $receipt['SupplierCurrCode']) {
-		$show_currencies   = true;
+		$show_currencies = true;
 		$show_both_amounts = true;
 	}
 	echo "<center>";
@@ -40,7 +40,7 @@
 	if ($show_currencies) {
 		label_cells(_("Payment Currency"), $receipt['bank_curr_code'], "class='tableheader2'");
 	}
-	label_cells(_("Amount"), Num::format(-$receipt['BankAmount'], user_price_dec()), "class='tableheader2'");
+	label_cells(_("Amount"), Num::format(-$receipt['BankAmount'], User::price_dec()), "class='tableheader2'");
 	label_cells(_("Payment Type"), $bank_transfer_types[$receipt['BankTransType']], "class='tableheader2'");
 	end_row();
 	start_row();
@@ -48,7 +48,7 @@
 		label_cells(_("Supplier's Currency"), $receipt['SupplierCurrCode'], "class='tableheader2'");
 	}
 	if ($show_both_amounts) {
-		label_cells(_("Amount"), Num::format(-$receipt['Total'], user_price_dec()), "class='tableheader2'");
+		label_cells(_("Amount"), Num::format(-$receipt['Total'], User::price_dec()), "class='tableheader2'");
 	}
 	label_cells(_("Reference"), $receipt['ref'], "class='tableheader2'");
 	end_row();

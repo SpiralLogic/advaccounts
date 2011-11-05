@@ -62,14 +62,14 @@
 		if ($to == null) {
 			$to = 0;
 		}
-		$dec = user_price_dec();
+		$dec = User::price_dec();
 		$cols = array(4, 80, 329, 330, 370, 405, 450, 515);
 		// $headers in doctext.inc
 		$aligns = array('left', 'left', 'left', 'center', 'right', 'right', 'right');
 		$params = array('comments' => $comments);
 		$cur = DB_Company::get_pref('curr_default');
 		if ($email == 0) {
-			$rep = new FrontReport(_('PURCHASE ORDER'), "PurchaseOrderBulk", user_pagesize());
+			$rep = new FrontReport(_('PURCHASE ORDER'), "PurchaseOrderBulk", User::pagesize());
 			$rep->currency = $cur;
 			$rep->Font();
 			$rep->Info($params, $cols, null, $aligns);
@@ -80,7 +80,7 @@
 			$baccount = get_default_bank_account($myrow['curr_code']);
 			$params['bankaccount'] = $baccount['id'];
 			if ($email == 1) {
-				$rep = new FrontReport("", "", user_pagesize());
+				$rep = new FrontReport("", "", User::pagesize());
 				$rep->currency = $cur;
 				$rep->Font();
 				$rep->title = _('PURCHASE ORDER');
@@ -107,12 +107,12 @@
 						}
 						if ($data['conversion_factor'] > 1) {
 							$myrow2['unit_price'] = Num::round(
-								$myrow2['unit_price'] * $data['conversion_factor'], user_price_dec());
+								$myrow2['unit_price'] * $data['conversion_factor'], User::price_dec());
 							$myrow2['quantity_ordered'] = Num::round(
-								$myrow2['quantity_ordered'] / $data['conversion_factor'], user_qty_dec());
+								$myrow2['quantity_ordered'] / $data['conversion_factor'], User::qty_dec());
 						}
 					}
-					$Net = Num::round(($myrow2["unit_price"] * $myrow2["quantity_ordered"]), user_price_dec());
+					$Net = Num::round(($myrow2["unit_price"] * $myrow2["quantity_ordered"]), User::price_dec());
 					$SubTotal += $Net;
 					$dec2 = 0;
 					$DisplayPrice = Num::price_decimal($myrow2["unit_price"], $dec2);

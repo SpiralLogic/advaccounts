@@ -22,7 +22,8 @@
 	//----------------------------------------------------------------------------------------------------
 	print_invoices();
 	//----------------------------------------------------------------------------------------------------
-	function print_invoices() {
+	function print_invoices()
+	{
 		include_once(APP_PATH . "includes/reports/pdf.php");
 		$from = $_POST['PARAM_0'];
 		$to = $_POST['PARAM_1'];
@@ -36,7 +37,7 @@
 		if ($to == null) {
 			$to = 0;
 		}
-		$dec = user_price_dec();
+		$dec = User::price_dec();
 		$fno = explode("-", $from);
 		$tno = explode("-", $to);
 		$cols = array(4, 60, 330, 355, 380, 410, 450, 470, 495);
@@ -45,7 +46,7 @@
 		$params = array('comments' => $comments);
 		$cur = DB_Company::get_pref('curr_default');
 		if ($email == 0) {
-			$rep = new FrontReport(_('TAX INVOICE'), "InvoiceBulk", user_pagesize());
+			$rep = new FrontReport(_('TAX INVOICE'), "InvoiceBulk", User::pagesize());
 			$rep->currency = $cur;
 			$rep->Font();
 			$rep->Info($params, $cols, null, $aligns);
@@ -73,7 +74,7 @@
 					$sales_order = null;
 				}
 				if ($email == 1) {
-					$rep = new FrontReport("", "", user_pagesize());
+					$rep = new FrontReport("", "", User::pagesize());
 					$rep->currency = $cur;
 					$rep->Font();
 					if ($j == ST_SALESINVOICE) {
@@ -98,7 +99,7 @@
 					}
 					$Net = Num::round(
 						$sign * ((1 - $myrow2["discount_percent"]) * $myrow2["unit_price"] * $myrow2["quantity"]),
-						user_price_dec()
+						User::price_dec()
 					);
 					$SubTotal += $Net;
 					$TaxType = Tax_ItemType::get_for_item($myrow2['stock_id']);
@@ -107,8 +108,8 @@
 					$DisplayNet = Num::format($Net, $dec);
 					if ($myrow2["discount_percent"] == 0) {
 						$DisplayDiscount = "";
-} else {
-						$DisplayDiscount = Num::format($myrow2["discount_percent"] * 100, user_percent_dec()) . "%";
+					} else {
+						$DisplayDiscount = Num::format($myrow2["discount_percent"] * 100, User::percent_dec()) . "%";
 					}
 					$rep->TextCol(0, 1, $myrow2['stock_id'], -2);
 					$oldrow = $rep->row;
@@ -194,7 +195,7 @@
 				$rep->Font();
 				if ($email == 1) {
 					$myrow['dimension_id'] = $paylink; // helper for pmt link
-					$myrow['email'] = $myrow['email']?:Input::get('Email');
+					$myrow['email'] = $myrow['email'] ? : Input::get('Email');
 					if (!$myrow['email']) {
 						$myrow['email'] = $branch['email'];
 						$myrow['DebtorName'] = $branch['br_name'];

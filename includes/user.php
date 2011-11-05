@@ -16,10 +16,10 @@
 
 		public static function get()
 		{
-			if (isset($_SESSION["wa_current_user"])) {
-				static::$_instance = $_SESSION["wa_current_user"];
+			if (isset($_SESSION["current_user"])) {
+				static::$_instance = $_SESSION["current_user"];
 			} elseif (static::$_instance === null) {
-				static::$_instance = $_SESSION["wa_current_user"] = new static;
+				static::$_instance = $_SESSION["current_user"] = new static;
 			}
 			return static::$_instance;
 		}
@@ -199,167 +199,156 @@
 		{
 			$js
 			 = "\nvar user = {
-						 \n theme: '/themes/" . user_theme() . "/',
+						 \n theme: '/themes/" . User::theme() . "/',
 						 \nloadtxt: '" . _('Requesting data...') . "',
 						 \ndate: '" . Dates::Today() . "',
 						 \ndatesys: " . Config::get('accounts_datesystem') . ",
-						 \ndatefmt: " . user_date_format() . ",
+						 \ndatefmt: " . User::date_format() . ",
 						 \ndatesep: '" . Config::get('ui_date_format') . "',
-						 \nts: '" . Config::get('separators_thousands', user_tho_sep()) . "',
-						 \nds: '" . Config::get('separators_decimal', user_dec_sep()) . "',
-						 \npdec: " . user_price_dec() . "}\n";
+						 \nts: '" . Config::get('separators_thousands', User::tho_sep()) . "',
+						 \nds: '" . Config::get('separators_decimal', User::dec_sep()) . "',
+						 \npdec: " . User::price_dec() . "}\n";
 			JS::beforeload($js);
 		}
-	}
 
-	//--------------------------------------------------------------------------
-	function fallback_mode()
-	{
-		return User::get()->ui_mode == 0;
-	}
-
-	function user_numeric($input)
-	{
-		$num = trim($input);
-		$sep = Config::get('separators_thousands', user_tho_sep());
-		if ($sep != '') {
-			$num = str_replace($sep, '', $num);
-		}
-		$sep = Config::get('separators_decimal', user_dec_sep());
-		if ($sep != '.') {
-			$num = str_replace($sep, '.', $num);
-		}
-		if (!is_numeric($num)) {
-			return false;
-		}
-		$num = (float)$num;
-		if ($num == (int)$num) {
-			return (int)$num;
-		} else
+		//--------------------------------------------------------------------------
+		function fallback()
 		{
-			return $num;
+			return User::get()->ui_mode == 0;
 		}
-	}
 
-	function user_pos()
-	{
-		return User::get()->pos;
-	}
+		function numeric($input)
+		{
+			$num = trim($input);
+			$sep = Config::get('separators_thousands', User::tho_sep());
+			if ($sep != '') {
+				$num = str_replace($sep, '', $num);
+			}
+			$sep = Config::get('separators_decimal', User::dec_sep());
+			if ($sep != '.') {
+				$num = str_replace($sep, '.', $num);
+			}
+			if (!is_numeric($num)) {
+				return false;
+			}
+			$num = (float)$num;
+			if ($num == (int)$num) {
+				return (int)$num;
+			} else
+			{
+				return $num;
+			}
+		}
 
-	function user_language()
-	{
-		return User::prefs()->language();
-	}
+		function pos()
+		{
+			return User::get()->pos;
+		}
 
-	function user_qty_dec()
-	{
-		return User::prefs()->qty_dec();
-	}
+		function language()
+		{
+			return User::prefs()->language();
+		}
 
-	function user_price_dec()
-	{
-		return User::prefs()->price_dec();
-	}
+		function qty_dec()
+		{
+			return User::prefs()->qty_dec();
+		}
 
-	function user_exrate_dec()
-	{
-		return User::prefs()->exrate_dec();
-	}
+		function price_dec()
+		{
+			return User::prefs()->price_dec();
+		}
 
-	function user_percent_dec()
-	{
-		return User::prefs()->percent_dec();
-	}
+		function exrate_dec()
+		{
+			return User::prefs()->exrate_dec();
+		}
 
-	function user_show_gl_info()
-	{
-		return User::prefs()->show_gl_info();
-	}
+		function percent_dec()
+		{
+			return User::prefs()->percent_dec();
+		}
 
-	function user_show_codes()
-	{
-		return User::prefs()->show_codes();
-	}
+		function show_gl_info()
+		{
+			return User::prefs()->show_gl_info();
+		}
 
-	function user_date_format()
-	{
-		return User::prefs()->date_format();
-	}
+		function show_codes()
+		{
+			return User::prefs()->show_codes();
+		}
 
-	function user_date_display()
-	{
-		return User::prefs()->date_display();
-	}
+		function date_format()
+		{
+			return User::prefs()->date_format();
+		}
 
-	function user_date_sep()
-	{
-		return (isset($_SESSION["wa_current_user"])) ? User::prefs()->date_sep() : 0;
-	}
+		function date_display()
+		{
+			return User::prefs()->date_display();
+		}
 
-	function user_tho_sep()
-	{
-		return User::prefs()->tho_sep();
-	}
+		function date_sep()
+		{
+			return (isset($_SESSION["current_user"])) ? User::prefs()->date_sep() : 0;
+		}
 
-	function user_dec_sep()
-	{
-		return User::prefs()->dec_sep();
-	}
+		function tho_sep()
+		{
+			return User::prefs()->tho_sep();
+		}
 
-	function user_theme()
-	{
-		return User::prefs()->get_theme();
-	}
+		function dec_sep()
+		{
+			return User::prefs()->dec_sep();
+		}
 
-	function user_pagesize()
-	{
-		return User::prefs()->get_pagesize();
-	}
+		function theme()
+		{
+			return User::prefs()->get_theme();
+		}
 
-	function user_hints()
-	{
-		return User::prefs()->show_hints();
-	}
+		function pagesize()
+		{
+			return User::prefs()->get_pagesize();
+		}
 
-	function user_print_profile()
-	{
-		return User::prefs()->print_profile();
-	}
+		function hints()
+		{
+			return User::prefs()->show_hints();
+		}
 
-	function user_rep_popup()
-	{
-		return User::prefs()->rep_popup();
-	}
+		function print_profile()
+		{
+			return User::prefs()->print_profile();
+		}
 
-	function user_query_size()
-	{
-		return User::prefs()->query_size();
-	}
+		function rep_popup()
+		{
+			return User::prefs()->rep_popup();
+		}
 
-	function user_graphic_links()
-	{
-		return User::prefs()->graphic_links();
-	}
+		function query_size()
+		{
+			return User::prefs()->query_size();
+		}
 
-	function sticky_doc_date()
-	{
-		return User::prefs()->sticky_date();
-	}
+		function graphic_links()
+		{
+			return User::prefs()->graphic_links();
+		}
 
-	function user_startup_tab()
-	{
-		return User::prefs()->start_up_tab();
-	}
+		function sticky_date()
+		{
+			return User::prefs()->sticky_date();
+		}
 
-	function set_user_prefs(
-		$price_dec, $qty_dec, $exrate_dec, $percent_dec, $showgl, $showcodes, $date_format, $date_sep, $tho_sep, $dec_sep, $theme, $pagesize, $show_hints, $print_profile, $rep_popup,
-		$query_size, $graphic_links, $lang, $stickydate, $startup_tab
-	)
-	{
-		User::get()->update_prefs(
-			$price_dec, $qty_dec, $exrate_dec, $percent_dec, $showgl, $showcodes, $date_format, $date_sep, $tho_sep, $dec_sep, $theme, $pagesize, $show_hints,
-			$print_profile, $rep_popup, $query_size, $graphic_links, $lang, $stickydate, $startup_tab
-		);
+		function startup_tab()
+		{
+			return User::prefs()->start_up_tab();
+		}
 	}
 
 ?>

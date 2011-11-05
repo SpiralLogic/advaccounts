@@ -61,7 +61,7 @@
 			JS::set_focus('name');
 		}
 		// prevent accidental editor lockup by removing SA_SECROLES
-		if (get_post('role') == $_SESSION['wa_current_user']->access) {
+		if (get_post('role') == $_SESSION['current_user']->access) {
 			if (!isset($_POST['Area' . $security_areas['SA_SECROLES'][0]])
 			 || !isset($_POST['Section' . SS_SETUP])
 			) {
@@ -75,7 +75,7 @@
 		}
 		if ($input_error == 0) {
 			$sections = array();
-			$areas    = array();
+			$areas = array();
 			foreach (
 				$_POST as $p => $val
 			) {
@@ -128,18 +128,18 @@
 		$Ajax->activate('_page_body');
 	}
 	if (!isset($_POST['role']) || get_post('clone') || list_updated('role')) {
-		$id    = get_post('role');
+		$id = get_post('role');
 		$clone = get_post('clone');
 		unset($_POST);
 		if ($id) {
-			$row                  = Security::get_role($id);
+			$row = Security::get_role($id);
 			$_POST['description'] = $row['description'];
-			$_POST['name']        = $row['role'];
+			$_POST['name'] = $row['role'];
 			//	if ($row['inactive']
 			//		$_POST['inactive'] = 1;
 			$_POST['inactive'] = $row['inactive'];
-			$access            = $row['areas'];
-			$sections          = $row['sections'];
+			$access = $row['areas'];
+			$sections = $row['sections'];
 		}
 		else {
 			$_POST['description'] = $_POST['name'] = '';
@@ -204,7 +204,7 @@
 		if ($newsec != $sec || (($newext != $ext) && ($newsec > 99))) { // features set selection
 			$ext = $newext;
 			$sec = $newsec;
-			$m   = $parms[0] & ~0xff;
+			$m = $parms[0] & ~0xff;
 			//			if(!isset($security_sections[$m]))
 			//			 Errors::error(sprintf("Bad section %X:", $m));
 			label_row(
@@ -233,7 +233,7 @@
 	if ($new_role) {
 		submit_center_first('Update', _("Update view"), '', null);
 		submit_center_last('addupdate', _("Insert New Role"), '', 'default');
-} else {
+	} else {
 		submit_center_first('addupdate', _("Save Role"), '', 'default');
 		submit('Update', _("Update view"), true, '', null);
 		submit('clone', _("Clone This Role"), true, '', true);

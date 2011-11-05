@@ -70,12 +70,12 @@
 				$id = DBOld::insert_id();
 				// use current user display preferences as start point for new user
 				Users::update_display_prefs(
-					$id, user_price_dec(), user_qty_dec(), user_exrate_dec(),
-					user_percent_dec(), user_show_gl_info(), user_show_codes(),
-					user_date_format(), user_date_sep(), user_tho_sep(),
-					user_dec_sep(), user_theme(), user_pagesize(), user_hints(),
-					$_POST['profile'], check_value('rep_popup'), user_query_size(),
-					user_graphic_links(), $_POST['language'], sticky_doc_date(), user_startup_tab()
+					$id, User::price_dec(), User::qty_dec(), User::exrate_dec(),
+					User::percent_dec(), User::show_gl_info(), User::show_codes(),
+					User::date_format(), User::date_sep(), User::tho_sep(),
+					User::dec_sep(), User::theme(), User::pagesize(), User::hints(),
+					$_POST['profile'], check_value('rep_popup'), User::query_size(),
+					User::graphic_links(), $_POST['language'], User::sticky_date(), User::startup_tab()
 				);
 				Errors::notice(_("A new user has been added."));
 			}
@@ -158,10 +158,10 @@
 		label_row(_("User login:"), Input::post('user_id'));
 	} else { //end of if $selected_id only do the else when a new record is being entered
 		text_row(_("User Login:"), "user_id", null, 22, 20);
-		$_POST['language'] = user_language();
-		$_POST['profile'] = user_print_profile();
-		$_POST['rep_popup'] = user_rep_popup();
-		$_POST['pos'] = user_pos();
+		$_POST['language'] = User::language();
+		$_POST['profile'] = User::print_profile();
+		$_POST['rep_popup'] = User::rep_popup();
+		$_POST['pos'] = User::pos();
 	}
 	$_POST['password'] = "";
 	password_row(_("Password:"), 'password', $_POST['password']);

@@ -173,7 +173,7 @@
 		{
 			$line_total = round(
 				$line->qty_dispatched * $line->price * (1 - $line->discount_percent),
-				user_price_dec()
+				User::price_dec()
 			);
 			if ($id != $line_no) {
 				alt_table_row_color($k);
@@ -261,7 +261,7 @@
 		qty_cells(null, 'qty', $_POST['qty'], null, null, $dec);
 		label_cell($_POST['units']);
 		amount_cells(null, 'price', null);
-		small_amount_cells(null, 'Disc', Num::percent_format(0), null, null, user_percent_dec());
+		small_amount_cells(null, 'Disc', Num::percent_format(0), null, null, User::percent_dec());
 		amount_cell(input_num('qty') * input_num('price') * (1 - input_num('Disc') / 100));
 		if ($id != -1) {
 			button_cell(

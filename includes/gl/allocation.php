@@ -335,7 +335,7 @@
 			$doc = new Sales_Order(ST_SALESINVOICE, 0);
 			$doc->trans_type = $type;
 			$doc->document_date = Dates::new_doc_date();
-			$doc->pos = user_pos();
+			$doc->pos = User::pos();
 			$doc->due_date = $doc->document_date;
 			$doc->cust_ref = $ref;
 			$doc->Comments = "Invoice for Customer Payment: " . $doc->cust_ref;

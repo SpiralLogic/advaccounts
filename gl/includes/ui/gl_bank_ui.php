@@ -151,7 +151,7 @@
 			gl_edit_item_controls($order, $dim);
 		}
 		if ($order->count_gl_items()) {
-			label_row(_("Total"), Num::format(abs($order->gl_items_total()), user_price_dec()), "colspan=" . $colspan . " align=right", "align=right", 3);
+			label_row(_("Total"), Num::format(abs($order->gl_items_total()), User::price_dec()), "colspan=" . $colspan . " align=right", "align=right", 3);
 		}
 		end_table();
 		div_end();

@@ -13,7 +13,8 @@
 	// if ($writeoff_acc==0) return goods into $cart->Location
 	// if src_docs!=0 => credit invoice else credit note
 	//
-	function write_credit_note($credit_note, $write_off_acc) {
+	function write_credit_note($credit_note, $write_off_acc)
+	{
 		$credit_invoice = is_array($credit_note->src_docs) ?
 		 reset(array_keys($credit_note->src_docs)) : $credit_note->src_docs;
 		$credit_date = $credit_note->document_date;
@@ -31,7 +32,7 @@
 		$taxes = $credit_note->get_taxes();
 		$tax_total = 0;
 		foreach ($taxes as $taxitem) {
-			$taxitem['Value'] = Num::round($taxitem['Value'], user_price_dec());
+			$taxitem['Value'] = Num::round($taxitem['Value'], User::price_dec());
 			$tax_total += $taxitem['Value'];
 		}
 		if ($credit_note->tax_included == 0) {
@@ -98,7 +99,7 @@
 		foreach ($credit_note->line_items as $credit_line) {
 			if ($credit_invoice && $credit_line->qty_dispatched != $credit_line->qty_old) {
 				update_parent_line(11, $credit_line->src_id, ($credit_line->qty_dispatched
-					 - $credit_line->qty_old));
+				 - $credit_line->qty_old));
 			}
 			$line_taxfree_price = Taxes::get_tax_free_price_for_item($credit_line->stock_id, $credit_line->price,
 				0, $credit_note->tax_included, $credit_note->tax_group_array);
@@ -154,7 +155,8 @@
 	// 	a reversing stock movement to show the write off
 	//
 	function add_credit_movements_item(&$credit_note, &$credit_line,
-																		 $credit_type, $price, $credited_invoice = 0) {
+																		 $credit_type, $price, $credited_invoice = 0)
+	{
 		if ($credit_type == "Return") {
 			$reference = "Return ";
 			if ($credited_invoice) {
@@ -181,7 +183,8 @@
 
 	//----------------------------------------------------------------------------------------
 	function add_gl_trans_credit_costs($order, $order_line, $credit_no, $date_,
-																		 $credit_type, $write_off_gl_code, &$branch_data) {
+																		 $credit_type, $write_off_gl_code, &$branch_data)
+	{
 		$stock_gl_codes = get_stock_gl_code($order_line->stock_id);
 		$customer = get_customer($order->customer_id);
 		// 2008-08-01. If there is a Customer Dimension, then override with this,
@@ -227,7 +230,7 @@
 			// else take the Item Sales Account
 			if ($branch_data['sales_account'] != "") {
 				$sales_account = $branch_data['sales_account'];
-} else {
+			} else {
 				$sales_account = $stock_gl_codes['sales_account'];
 			}
 			$total += add_gl_trans_customer(ST_CUSTCREDIT, $credit_no, $date_, $sales_account, $dim, $dim2,

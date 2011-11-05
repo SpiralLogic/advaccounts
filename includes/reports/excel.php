@@ -90,8 +90,8 @@
 			$this->formatTitle->setAlign($rtl ? 'right' : 'left');
 			$this->formatTitle->setTop(2);
 			$this->formatTitle->setTopColor('gray');
-			$how = user_date_format();
-			$sep = Config::get('separators_date', user_date_sep());
+			$how = User::date_format();
+			$sep = Config::get('separators_date', User::date_sep());
 			if ($sep == '.') {
 				$sep = "\\.";
 			}
@@ -180,8 +180,8 @@
 		{
 			if (!isset($this->formatAmount[$dec])) {
 				$dec = (int)$dec;
-				//$tsep = Config::get('separators_thousands',user_tho_sep());
-				//$dsep = Config::get('separators_decimal',user_dec_sep());
+				//$tsep = Config::get('separators_thousands',User::tho_sep());
+				//$dsep = Config::get('separators_decimal',User::dec_sep());
 				$tsep = ',';
 				$dsep = '.';
 				$format = "###{$tsep}###{$tsep}###{$tsep}##0";

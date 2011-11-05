@@ -30,7 +30,7 @@
 	);
 	table_header($th);
 	$total = 0;
-	$k     = 0; //row colour counter
+	$k = 0; //row colour counter
 	foreach (
 		$purchase_order->line_items as $stock_item
 	)
@@ -49,7 +49,7 @@
 		end_row();
 		$total += $line_total;
 	}
-	$display_total = Num::format($total, user_price_dec());
+	$display_total = Num::format($total, User::price_dec());
 	label_row(
 		_("Total Excluding Tax/Shipping"), $display_total,
 		"colspan=6", "nowrap align=right"

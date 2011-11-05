@@ -78,7 +78,7 @@
 		}
 		label_cell(_("Freight"), "colspan=9 align=right");
 		small_amount_cells(null, 'freight', Num::price_format($_SESSION['PO']->freight));
-		$display_total = Num::format($total + $_POST['freight'], user_price_dec());
+		$display_total = Num::format($total + $_POST['freight'], User::price_dec());
 		label_row(_("Total value of items received"), $display_total, "colspan=9 align=right", "nowrap align=right");
 		end_table();
 		div_end();

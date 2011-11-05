@@ -47,7 +47,7 @@
 					Errors::error(_("Password Too Weeak!"));
 				}
 				else {
-					$auth->update_password($_SESSION['wa_current_user']->user, $_POST['password']);
+					$auth->update_password($_SESSION['current_user']->user, $_POST['password']);
 					unset($_SESSION['change_password']);
 					Errors::notice(_("Password Changed"));
 				}

@@ -24,19 +24,19 @@
 	{
 		$to = Dates::date2sql($to);
 		$sql
-						= "SELECT SUM(amount) FROM bank_trans WHERE bank_act='$account'
+		 = "SELECT SUM(amount) FROM bank_trans WHERE bank_act='$account'
 	AND trans_date < '$to'";
 		$result = DBOld::query($sql, "The starting balance on hand could not be calculated");
-		$row    = DBOld::fetch_row($result);
+		$row = DBOld::fetch_row($result);
 		return $row[0];
 	}
 
 	function get_bank_transactions($from, $to, $account)
 	{
 		$from = Dates::date2sql($from);
-		$to   = Dates::date2sql($to);
+		$to = Dates::date2sql($to);
 		$sql
-					= "SELECT bank_trans.* FROM bank_trans
+		 = "SELECT bank_trans.* FROM bank_trans
 		WHERE bank_trans.bank_act = '$account'
 		AND trans_date >= '$from'
 		AND trans_date <= '$to'
@@ -47,32 +47,32 @@
 	function print_bank_transactions()
 	{
 		global $systypes_array;
-		$acc         = $_POST['PARAM_0'];
-		$from        = $_POST['PARAM_1'];
-		$to          = $_POST['PARAM_2'];
-		$comments    = $_POST['PARAM_3'];
+		$acc = $_POST['PARAM_0'];
+		$from = $_POST['PARAM_1'];
+		$to = $_POST['PARAM_2'];
+		$comments = $_POST['PARAM_3'];
 		$destination = $_POST['PARAM_4'];
 		if ($destination) {
 			include_once(APP_PATH . "includes/reports/excel.php");
-} else {
+		} else {
 			include_once(APP_PATH . "includes/reports/pdf.php");
 		}
-		$rep = new FrontReport(_('Bank Statement'), "BankStatement", user_pagesize());
-		$dec = user_price_dec();
+		$rep = new FrontReport(_('Bank Statement'), "BankStatement", User::pagesize());
+		$dec = User::price_dec();
 		$cols = array(0, 90, 110, 170, 225, 350, 400, 460, 520);
 		$aligns = array('left', 'left', 'left', 'left', 'left', 'right', 'right', 'right');
 		$headers = array(_('Type'), _('#'), _('Reference'), _('Date'), _('Person/Item'),
-										 _('Debit'), _('Credit'), _('Balance')
+			_('Debit'), _('Credit'), _('Balance')
 		);
 		$account = get_bank_account($acc);
-		$act     = $account['bank_account_name'] . " - " . $account['bank_curr_code'] . " - " . $account['bank_account_number'];
-		$params  = array(0 => $comments,
-										 1 => array('text' => _('Period'),
-																'from' => $from,
-																'to'   => $to),
-										 2 => array('text' => _('Bank Account'),
-																'from' => $act,
-																'to'   => '')
+		$act = $account['bank_account_name'] . " - " . $account['bank_curr_code'] . " - " . $account['bank_account_number'];
+		$params = array(0 => $comments,
+			1 => array('text' => _('Period'),
+				'from' => $from,
+				'to' => $to),
+			2 => array('text' => _('Bank Account'),
+				'from' => $act,
+				'to' => '')
 		);
 		$rep->Font();
 		$rep->Info($params, $cols, $headers, $aligns);
@@ -86,7 +86,7 @@
 			$rep->TextCol(3, 5, _('Opening Balance'));
 			if ($prev_balance > 0.0) {
 				$rep->AmountCol(5, 6, abs($prev_balance), $dec);
-} else {
+			} else {
 				$rep->AmountCol(6, 7, abs($prev_balance), $dec);
 			}
 			$rep->Font();
@@ -107,7 +107,7 @@
 					if ($myrow['amount'] > 0.0) {
 						$rep->AmountCol(5, 6, abs($myrow['amount']), $dec);
 						$total_debit += abs($myrow['amount']);
-} else {
+					} else {
 						$rep->AmountCol(6, 7, abs($myrow['amount']), $dec);
 						$total_credit += abs($myrow['amount']);
 					}
@@ -129,7 +129,7 @@
 			$rep->TextCol(3, 5, _("Ending Balance"));
 			if ($total > 0.0) {
 				$rep->AmountCol(5, 6, abs($total), $dec);
-} else {
+			} else {
 				$rep->AmountCol(6, 7, abs($total), $dec);
 			}
 			$rep->Font();
@@ -140,7 +140,7 @@
 			$rep->TextCol(3, 5, _("Net Change"));
 			if ($total > 0.0) {
 				$rep->AmountCol(5, 6, $net_change, $dec, 0, 0, 0, 0, null, 1, True);
-} else {
+			} else {
 				$rep->AmountCol(6, 7, $net_change, $dec, 0, 0, 0, 0, null, 1, True);
 			}
 		}

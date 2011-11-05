@@ -12,7 +12,8 @@
 	//-----------------------------------------------------------------------------
 	//	Add or update Sales Invoice
 	//
-	function write_sales_invoice(&$invoice) {
+	function write_sales_invoice(&$invoice)
+	{
 		$trans_no = $invoice->trans_no;
 		if (is_array($trans_no)) {
 			$trans_no = key($trans_no);
@@ -34,7 +35,7 @@
 		$ov_gst = 0;
 		$taxes = $invoice->get_taxes(); // all taxes with freight_tax
 		foreach ($taxes as $taxitem) {
-			$taxitem['Value'] = Num::round($taxitem['Value'], user_price_dec());
+			$taxitem['Value'] = Num::round($taxitem['Value'], User::price_dec());
 			$ov_gst += $taxitem['Value'];
 		}
 		if ($invoice->tax_included == 0) {
@@ -156,7 +157,8 @@
 	}
 
 	//--------------------------------------------------------------------------------------------------
-	function void_sales_invoice($type, $type_no) {
+	function void_sales_invoice($type, $type_no)
+	{
 		DBOld::begin_transaction();
 		void_bank_trans($type, $type_no, true);
 		void_gl_trans($type, $type_no, true);

@@ -20,19 +20,19 @@
 	{
 		global $print_as_quote;
 		include_once(APP_PATH . "includes/reports/pdf.php");
-		$from           = $_POST['PARAM_0'];
-		$to             = $_POST['PARAM_1'];
-		$currency       = $_POST['PARAM_2'];
-		$email          = $_POST['PARAM_3'];
+		$from = $_POST['PARAM_0'];
+		$to = $_POST['PARAM_1'];
+		$currency = $_POST['PARAM_2'];
+		$email = $_POST['PARAM_3'];
 		$print_as_quote = $_POST['PARAM_4'];
-		$comments       = $_POST['PARAM_5'];
+		$comments = $_POST['PARAM_5'];
 		if ($from == null) {
 			$from = 0;
 		}
 		if ($to == null) {
 			$to = 0;
 		}
-		$dec = user_price_dec();
+		$dec = User::price_dec();
 		$cols = array(4, 70, 300, 320, 360, 395, 450, 475, 515);
 		// $headers in doctext.inc
 		$aligns = array('left', 'left', 'center', 'left', 'left', 'left', 'left', 'right');
@@ -40,9 +40,9 @@
 		$cur = DB_Company::get_pref('curr_default');
 		if ($email == 0) {
 			if ($print_as_quote == 0) {
-				$rep = new FrontReport(_("PROFORMA INVOICE"), "SalesOrderBulk", user_pagesize());
-} else {
-				$rep = new FrontReport(_("QUOTE"), "QuoteBulk", user_pagesize());
+				$rep = new FrontReport(_("PROFORMA INVOICE"), "SalesOrderBulk", User::pagesize());
+			} else {
+				$rep = new FrontReport(_("QUOTE"), "QuoteBulk", User::pagesize());
 			}
 			$rep->currency = $cur;
 			$rep->Font();
@@ -51,33 +51,33 @@
 		for (
 			$i = $from; $i <= $to; $i++
 		) {
-			$myrow                 = get_sales_order_header($i, ST_SALESORDER);
-			$baccount              = get_default_bank_account($myrow['curr_code']);
+			$myrow = get_sales_order_header($i, ST_SALESORDER);
+			$baccount = get_default_bank_account($myrow['curr_code']);
 			$params['bankaccount'] = $baccount['id'];
-			$branch                = get_branch($myrow["branch_code"]);
+			$branch = get_branch($myrow["branch_code"]);
 			if ($email == 1) {
-				$rep           = new FrontReport("", "", user_pagesize());
+				$rep = new FrontReport("", "", User::pagesize());
 				$rep->currency = $cur;
 				$rep->Font();
 				if ($print_as_quote == 1) {
-					$rep->title    = _('PROFORMA INVOICE');
+					$rep->title = _('PROFORMA INVOICE');
 					$rep->filename = "ProformaInvoice" . $i . ".pdf";
 				} else {
-					$rep->title    = _("PROFORMA INVOICE");
+					$rep->title = _("PROFORMA INVOICE");
 					$rep->filename = "ProformaInvoice" . $i . ".pdf";
 				}
 				$rep->Info($params, $cols, null, $aligns);
-} else {
+			} else {
 				$rep->title = ($print_as_quote == 1 ? _("PROFORMA INVOICE") : _("PROFORMA INVOICE"));
 			}
 			$rep->Header2($myrow, $branch, $myrow, $baccount, ST_PROFORMA);
-			$result   = get_sales_order_details($i, ST_SALESORDER);
+			$result = get_sales_order_details($i, ST_SALESORDER);
 			$SubTotal = 0;
 			$TaxTotal = 0;
 			while ($myrow2 = DBOld::fetch($result)) {
 				$Net = Num::round(
 					((1 - $myrow2["discount_percent"]) * $myrow2["unit_price"] * $myrow2["quantity"]),
-					user_price_dec()
+					User::price_dec()
 				);
 				$SubTotal += $Net;
 				#  __ADVANCEDEDIT__ BEGIN #
@@ -85,17 +85,17 @@
 				$TaxTotal += Taxes::get_tax_for_item($myrow2['stk_code'], $Net, $TaxType);
 				#  __ADVANCEDEDIT__ END #
 				$DisplayPrice = Num::format($myrow2["unit_price"], $dec);
-				$DisplayQty   = Num::format($myrow2["quantity"], get_qty_dec($myrow2['stk_code']));
-				$DisplayNet   = Num::format($Net, $dec);
+				$DisplayQty = Num::format($myrow2["quantity"], get_qty_dec($myrow2['stk_code']));
+				$DisplayNet = Num::format($Net, $dec);
 				if ($myrow2["discount_percent"] == 0) {
 					$DisplayDiscount = "";
-} else {
-					$DisplayDiscount = Num::format($myrow2["discount_percent"] * 100, user_percent_dec()) . "%";
+				} else {
+					$DisplayDiscount = Num::format($myrow2["discount_percent"] * 100, User::percent_dec()) . "%";
 				}
 				$rep->TextCol(0, 1, $myrow2['stk_code'], -2);
 				$oldrow = $rep->row;
 				$rep->TextColLines(1, 2, $myrow2['description'], -2);
-				$newrow   = $rep->row;
+				$newrow = $rep->row;
 				$rep->row = $oldrow;
 				$rep->TextCol(2, 3, $DisplayQty, -2);
 				$rep->TextCol(3, 4, $myrow2['units'], -2);
@@ -121,10 +121,10 @@
 			$TaxTotal += $myrow['freight_cost'] * .1;
 			$DisplaySubTot = Num::format($SubTotal, $dec);
 			$DisplayTaxTot = Num::format($TaxTotal, $dec);
-			$DisplayTotal  = Num::format($SubTotal + $TaxTotal, $dec);
+			$DisplayTotal = Num::format($SubTotal + $TaxTotal, $dec);
 			$rep->row = $rep->bottomMargin + (15 * $rep->lineHeight);
 			$linetype = true;
-			$doctype  = ($print_as_quote < 3) ? ST_SALESORDER : ST_SALESQUOTE;
+			$doctype = ($print_as_quote < 3) ? ST_SALESORDER : ST_SALESQUOTE;
 			if ($rep->currency != $myrow['curr_code']) {
 				include(APP_PATH . "reporting/includes/doctext2.php");
 			} else {

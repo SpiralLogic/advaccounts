@@ -16,17 +16,14 @@
 	// date_:	2005-05-19
 	// Title:	Inventory Valuation
 	// ----------------------------------------------------------------
-
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-
 	include_once(APP_PATH . "inventory/includes/db/items_category_db.php");
-
 	//----------------------------------------------------------------------------------------------------
-
 	print_inventory_valuation_report();
-
-	function getTransactions($category, $location) {
-		$sql = "SELECT stock_master.category_id,
+	function getTransactions($category, $location)
+	{
+		$sql
+		 = "SELECT stock_master.category_id,
 			stock_category.description AS cat_description,
 			stock_master.stock_id,
 			stock_master.description, stock_master.inactive,
@@ -41,69 +38,74 @@
 		AND stock_master.category_id=stock_category.category_id
 		GROUP BY stock_master.category_id,
 			stock_category.description, ";
-		if ($location != 'all')
+		if ($location != 'all') {
 			$sql .= "stock_moves.loc_code, ";
-		$sql .= "UnitCost,
+		}
+		$sql
+		 .= "UnitCost,
 			stock_master.stock_id,
 			stock_master.description
 		HAVING SUM(stock_moves.qty) != 0";
-		if ($category != 0)
+		if ($category != 0) {
 			$sql .= " AND stock_master.category_id = " . DB::escape($category);
-		if ($location != 'all')
+		}
+		if ($location != 'all') {
 			$sql .= " AND stock_moves.loc_code = " . DB::escape($location);
-		$sql .= " ORDER BY stock_master.category_id,
+		}
+		$sql
+		 .= " ORDER BY stock_master.category_id,
 			stock_master.stock_id";
-
 		return DBOld::query($sql, "No transactions were returned");
 	}
 
 	//----------------------------------------------------------------------------------------------------
-
-	function print_inventory_valuation_report() {
-
+	function print_inventory_valuation_report()
+	{
 		$category = $_POST['PARAM_0'];
 		$location = $_POST['PARAM_1'];
 		$detail = $_POST['PARAM_2'];
 		$comments = $_POST['PARAM_3'];
 		$destination = $_POST['PARAM_4'];
-		if ($destination)
+		if ($destination) {
 			include_once(APP_PATH . "includes/reports/excel.php");
+		}
 		else
+		{
 			include_once(APP_PATH . "includes/reports/pdf.php");
+		}
 		$detail = !$detail;
-		$dec = user_price_dec();
-
-		if ($category == ALL_NUMERIC)
+		$dec = User::price_dec();
+		if ($category == ALL_NUMERIC) {
 			$category = 0;
-		if ($category == 0)
+		}
+		if ($category == 0) {
 			$cat = _('All');
+		}
 		else
+		{
 			$cat = get_category_name($category);
-
-		if ($location == ALL_TEXT)
+		}
+		if ($location == ALL_TEXT) {
 			$location = 'all';
-		if ($location == 'all')
+		}
+		if ($location == 'all') {
 			$loc = _('All');
+		}
 		else
+		{
 			$loc = get_location_name($location);
-
+		}
 		$cols = array(0, 100, 250, 350, 450, 515);
-
 		$headers = array(_('Category'), '', _('Quantity'), _('Unit Cost'), _('Value'));
-
 		$aligns = array('left', 'left', 'right', 'right', 'right');
-
 		$params = array(0 => $comments,
 			1 => array('text' => _('Category'), 'from' => $cat, 'to' => ''),
 			2 => array('text' => _('Location'), 'from' => $loc, 'to' => '')
 		);
-
-		$rep = new FrontReport(_('Inventory Valuation Report'), "InventoryValReport", user_pagesize());
-
+		$rep = new FrontReport(_('Inventory Valuation Report'), "InventoryValReport", User::pagesize());
 		$rep->Font();
 		$rep->Info($params, $cols, $headers, $aligns);
 		$rep->Header();
-
 		$res = getTransactions($category, $location);
 		$total = $grandtotal = 0.0;
 		$catt = '';
@@ -126,8 +128,9 @@
 				$rep->TextCol(0, 1, $trans['category_id']);
 				$rep->TextCol(1, 2, $trans['cat_description']);
 				$catt = $trans['cat_description'];
-				if ($detail)
+				if ($detail) {
 					$rep->NewLine();
+				}
 			}
 			if ($detail) {
 				$rep->NewLine();

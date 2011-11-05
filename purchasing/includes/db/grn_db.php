@@ -17,7 +17,7 @@
 		} else {
 			$currency = null;
 		}
-		$dec = user_price_dec();
+		$dec = User::price_dec();
 		Num::price_decimal($price, $dec);
 		$price = Num::round($price, $dec);
 		if ($currency != null) {

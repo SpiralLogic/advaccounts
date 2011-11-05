@@ -20,7 +20,8 @@
 	include_once(APP_PATH . "sales/includes/db/sales_types_db.php");
 	//----------------------------------------------------------------------------------------------------
 	print_price_listing();
-	function fetch_items($category = 0) {
+	function fetch_items($category = 0)
+	{
 		$sql
 		 = "SELECT stock_master.stock_id, stock_master.description AS name,
 				stock_master.material_cost+stock_master.labour_cost+stock_master.overhead_cost AS Standardcost,
@@ -38,7 +39,8 @@
 		return DBOld::query($sql, "No transactions were returned");
 	}
 
-	function get_kits($category = 0) {
+	function get_kits($category = 0)
+	{
 		$sql
 		 = "SELECT i.item_code AS kit_code, i.description AS kit_name, c.category_id AS cat_id, c.description AS cat_name, count(*)>1 AS kit
 			FROM
@@ -55,7 +57,8 @@
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	function print_price_listing() {
+	function print_price_listing()
+	{
 		$currency = $_POST['PARAM_0'];
 		$category = $_POST['PARAM_1'];
 		$salestype = $_POST['PARAM_2'];
@@ -68,7 +71,7 @@
 		} else {
 			include_once(APP_PATH . "includes/reports/pdf.php");
 		}
-		$dec = user_price_dec();
+		$dec = User::price_dec();
 		$home_curr = DB_Company::get_pref('curr_default');
 		if ($currency == ALL_TEXT) {
 			$currency = $home_curr;
@@ -122,7 +125,7 @@
 				'to' => ''
 			)
 		);
-		$rep = new FrontReport(_('Price Listing'), "PriceListing", user_pagesize());
+		$rep = new FrontReport(_('Price Listing'), "PriceListing", User::pagesize());
 		$rep->Font();
 		$rep->Info($params, $cols, $headers, $aligns);
 		$rep->Header();
@@ -149,10 +152,10 @@
 				$price2 = get_price($myrow['stock_id'], $home_curr, $salestype);
 				if ($price2 != 0.0) {
 					$disp = ($price2 - $myrow['Standardcost']) * 100 / $price2;
-} else {
+				} else {
 					$disp = 0.0;
 				}
-				$rep->TextCol(3, 4, Num::format($disp, user_percent_dec()) . " %");
+				$rep->TextCol(3, 4, Num::format($disp, User::percent_dec()) . " %");
 			}
 			if ($pictures) {
 				$image = COMPANY_PATH . "/images/"
@@ -166,7 +169,7 @@
 					$rep->row -= Config::get('item_images_height');
 					$rep->NewLine();
 				}
-} else {
+			} else {
 				$rep->NewLine(0, 1);
 			}
 		}

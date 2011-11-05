@@ -23,7 +23,8 @@
 		$selected_id = -1;
 	}
 	//---------------------------------------------------------------------------------------------
-	function check_data() {
+	function check_data()
+	{
 		if ($_POST['code'] == "" || $_POST['name'] == "" || $_POST['encoding'] == "") {
 			Errors::error(_("Language name, code nor encoding cannot be empty"));
 			return false;
@@ -32,7 +33,8 @@
 	}
 
 	//---------------------------------------------------------------------------------------------
-	function handle_submit() {
+	function handle_submit()
+	{
 		$installed_languages = Config::get('languages.installed');
 		if (!check_data()) {
 			return false;
@@ -74,7 +76,8 @@
 	}
 
 	//---------------------------------------------------------------------------------------------
-	function handle_delete() {
+	function handle_delete()
+	{
 		$id = $_GET['id'];
 		$lang = Config::get('languages.installed');
 		$lang = $lang[$id]['code'];
@@ -94,7 +97,8 @@
 	}
 
 	//---------------------------------------------------------------------------------------------
-	function display_languages() {
+	function display_languages()
+	{
 		$lang = $_SESSION["language"]->code;
 		echo "
 		<script language='javascript'>
@@ -131,7 +135,7 @@
 			label_cell(Config::get('default_lang') == $conn[$i]['code'] ? _("Yes") : _("No"));
 			$edit = _("Edit");
 			$delete = _("Delete");
-			if (user_graphic_links()) {
+			if (User::graphic_links()) {
 				$edit = set_icon(ICON_EDIT, $edit);
 				$delete = set_icon(ICON_DELETE, $delete);
 			}
@@ -149,7 +153,8 @@
 	}
 
 	//---------------------------------------------------------------------------------------------
-	function display_language_edit($selected_id) {
+	function display_language_edit($selected_id)
+	{
 		if ($selected_id != -1) {
 			$n = $selected_id;
 		} else {

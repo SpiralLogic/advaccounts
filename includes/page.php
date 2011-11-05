@@ -35,7 +35,7 @@
 				Renderer::getInstance()->has_header = false;
 				return; // just for speed up
 			}
-			$theme = user_theme();
+			$theme = User::theme();
 			JS::get_js_open_window(900, 500);
 			JS::beforeload($js);
 			if (!isset($no_menu)) {
@@ -48,7 +48,7 @@
 			{
 				$sel_app = $_SESSION["sel_app"];
 			} else {
-				$sel_app = user_startup_tab();
+				$sel_app = User::startup_tab();
 			}
 			$_SESSION["sel_app"] = $sel_app;
 			// When startup tab for current user was set to already
@@ -150,7 +150,7 @@
 
 		public static function send_css()
 		{
-			$theme = user_theme();
+			$theme = User::theme();
 			$path = "/themes/$theme/";
 			$css = implode(',', static::add_css());
 			echo "<link href='{$path}{$css}' rel='stylesheet' type='text/css'> \n";

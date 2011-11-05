@@ -43,13 +43,13 @@
 		//--------------------------------------------------------------------------------------
 		static function get_gl_view_str($type, $trans_no, $label = "", $force = false, $class = '', $id = '')
 		{
-			if (!$force && !user_show_gl_info()) {
+			if (!$force && !User::show_gl_info()) {
 				return "";
 			}
 			$icon = false;
 			if ($label == "") {
 				$label = _("GL");
-				$icon  = ICON_GL;
+				$icon = ICON_GL;
 			}
 			return viewer_link($label, "gl/view/gl_trans_view.php?type_id=$type&trans_no=$trans_no", $class, $id, $icon);
 		}
@@ -91,7 +91,7 @@
 			if (!is_array($trans_no)) {
 				$trans_no = array($trans_no);
 			}
-			$lbl         = $label;
+			$lbl = $label;
 			$preview_str = '';
 			foreach (
 				$trans_no as $trans
@@ -235,15 +235,14 @@
 				return $view_str;
 			}
 			return null;
-
 		}
 
 		//--------------------------------------------------------------------------------------
 		static function stock_status($stock_id, $description = null, $echo = true)
 		{
-			if ($description) //hyperlink_params_separate( "/inventory/inquiry/stock_status.php", (user_show_codes()?$stock_id . " - ":"") . $description, "stock_id=$stock_id");
+			if ($description) //hyperlink_params_separate( "/inventory/inquiry/stock_status.php", (User::show_codes()?$stock_id . " - ":"") . $description, "stock_id=$stock_id");
 			{
-				$preview_str = "<a target='_blank' href='/inventory/inquiry/stock_status.php?stock_id=$stock_id' onclick=\"javascript:openWindow(this.href,this.target); return false;\" >" . (user_show_codes()
+				$preview_str = "<a target='_blank' href='/inventory/inquiry/stock_status.php?stock_id=$stock_id' onclick=\"javascript:openWindow(this.href,this.target); return false;\" >" . (User::show_codes()
 				 ? $stock_id . " - " : "") . $description . "</a>";
 			}
 			else //hyperlink_params_separate( "/inventory/inquiry/stock_status.php", $stock_id, "stock_id=$stock_id");
@@ -331,13 +330,13 @@
 			if ($amount < 0 || $amount > 999999999999) {
 				return "";
 			}
-			$dec = user_price_dec();
+			$dec = User::price_dec();
 			if ($dec > 0) {
 				$divisor = pow(10, $dec);
-				$frac    = Num::round($amount - floor($amount), $dec) * $divisor;
-				$frac    = sprintf("%0{$dec}d", $frac);
-				$and     = _("and");
-				$frac    = " $and $frac/$divisor";
+				$frac = Num::round($amount - floor($amount), $dec) * $divisor;
+				$frac = sprintf("%0{$dec}d", $frac);
+				$and = _("and");
+				$frac = " $and $frac/$divisor";
 			}
 			else {
 				$frac = "";

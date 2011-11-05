@@ -209,7 +209,7 @@
 			label_cell($what);
 			$edit = _("Edit");
 			$delete = _("Delete");
-			if (user_graphic_links()) {
+			if (User::graphic_links()) {
 				$edit = set_icon(ICON_EDIT, $edit);
 				$delete = set_icon(ICON_DELETE, $delete);
 			}

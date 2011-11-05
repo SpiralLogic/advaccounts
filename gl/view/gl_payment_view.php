@@ -20,9 +20,9 @@
 	if (DBOld::num_rows($result) != 1) {
 		Errors::show_db_error("duplicate payment bank transaction found", "");
 	}
-	$from_trans       = DBOld::fetch($result);
+	$from_trans = DBOld::fetch($result);
 	$company_currency = Banking::get_company_currency();
-	$show_currencies  = false;
+	$show_currencies = false;
 	if ($from_trans['bank_curr_code'] != $company_currency) {
 		$show_currencies = true;
 	}
@@ -32,7 +32,7 @@
 	if ($show_currencies) {
 		$colspan1 = 5;
 		$colspan2 = 8;
-} else {
+	} else {
 		$colspan1 = 3;
 		$colspan2 = 6;
 	}
@@ -43,16 +43,16 @@
 	}
 	label_cells(
 		_("Amount"), Num::format(
-								 $from_trans['amount'], user_price_dec()
-							 ), "class='tableheader2'", "align=right"
+			$from_trans['amount'], User::price_dec()
+		), "class='tableheader2'", "align=right"
 	);
 	label_cells(_("Date"), Dates::sql2date($from_trans['trans_date']), "class='tableheader2'");
 	end_row();
 	start_row();
 	label_cells(
 		_("Pay To"), Banking::payment_person_name(
-								 $from_trans['person_type_id'], $from_trans['person_id']
-							 ), "class='tableheader2'", "colspan=$colspan1"
+			$from_trans['person_type_id'], $from_trans['person_id']
+		), "class='tableheader2'", "colspan=$colspan1"
 	);
 	label_cells(_("Payment Type"), $bank_transfer_types[$from_trans['account_type']], "class='tableheader2'");
 	end_row();
@@ -62,10 +62,10 @@
 	Display::comments_row(ST_BANKPAYMENT, $trans_no);
 	end_table(1);
 	$voided = Display::is_voided(ST_BANKPAYMENT, $trans_no, _("This payment has been voided."));
-	$items  = get_gl_trans(ST_BANKPAYMENT, $trans_no);
+	$items = get_gl_trans(ST_BANKPAYMENT, $trans_no);
 	if (DBOld::num_rows($items) == 0) {
 		Errors::warning(_("There are no items for this payment."));
-} else {
+	} else {
 		Display::heading(_("Items for this Payment"));
 		if ($show_currencies) {
 			Display::heading(_("Item Amounts are Shown in :") . " " . $company_currency);
@@ -111,7 +111,7 @@
 				$total_amount += $item["amount"];
 			}
 		}
-		label_row(_("Total"), Num::format($total_amount, user_price_dec()), "colspan=" . (2 + $dim) . " align=right", "align=right");
+		label_row(_("Total"), Num::format($total_amount, User::price_dec()), "colspan=" . (2 + $dim) . " align=right", "align=right");
 		end_table(1);
 		if (!$voided) {
 			ui_view::display_allocations_from(

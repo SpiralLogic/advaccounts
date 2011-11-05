@@ -20,7 +20,8 @@
 	include_once(APP_PATH . "includes/manufacturing.php");
 	//----------------------------------------------------------------------------------------------------
 	print_stock_check();
-	function getTransactions($category, $location) {
+	function getTransactions($category, $location)
+	{
 		$sql
 		 = "SELECT stock_master.category_id,
 			stock_category.description AS cat_description,
@@ -51,7 +52,8 @@
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	function print_stock_check() {
+	function print_stock_check()
+	{
 		$category = $_POST['PARAM_0'];
 		$location = $_POST['PARAM_1'];
 		$pictures = $_POST['PARAM_2'];
@@ -129,7 +131,7 @@
 				'to' => ''
 			)
 		);
-		$rep = new FrontReport(_('Stock Check Sheets'), "StockCheckSheet", user_pagesize());
+		$rep = new FrontReport(_('Stock Check Sheets'), "StockCheckSheet", User::pagesize());
 		$rep->Font();
 		$rep->Info($params, $cols, $headers, $aligns);
 		$rep->Header();
@@ -139,7 +141,7 @@
 		{
 			if ($location == 'all') {
 				$loc_code = "";
-} else {
+			} else {
 				$loc_code = $location;
 			}
 			$demandqty = Manufacturing::get_demand_qty($trans['stock_id'], $loc_code);
@@ -175,7 +177,7 @@
 				$rep->AmountCol(4, 5, $demandqty, $dec);
 				$rep->AmountCol(5, 6, $trans['QtyOnHand'] - $demandqty, $dec);
 				$rep->AmountCol(6, 7, $onorder, $dec);
-} else {
+			} else {
 				$rep->AmountCol(3, 4, $demandqty, $dec);
 				$rep->AmountCol(4, 5, $trans['QtyOnHand'] - $demandqty, $dec);
 				$rep->AmountCol(5, 6, $onorder, $dec);

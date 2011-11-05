@@ -563,7 +563,7 @@
 			$doc->document_date = Dates::new_doc_date();
 			if ($type == ST_SALESINVOICE) {
 				$doc->due_date = get_invoice_duedate($doc->customer_id, $doc->document_date);
-				$doc->pos = user_pos();
+				$doc->pos = User::pos();
 				$pos = get_sales_point($doc->pos);
 				$doc->pos = -1;
 			}

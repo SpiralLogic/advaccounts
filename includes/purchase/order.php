@@ -32,7 +32,7 @@
 		function __construct()
 		{
 			/*Constructor function initialises a new purchase order object */
-			$this->line_items     = array();
+			$this->line_items = array();
 			$this->lines_on_order = $this->order_no = $this->supplier_id = 0;
 			$this->set_salesman();
 		}
@@ -50,10 +50,10 @@
 		function set_salesman($salesman_code = null)
 		{
 			if ($salesman_code == null) {
-				$salesman_name = $_SESSION['wa_current_user']->name;
-				$sql           = "SELECT salesman_code FROM salesman WHERE salesman_name = " . DB::escape($salesman_name);
-				$query         = DBOld::query($sql, 'Couldn\'t find current salesman');
-				$result        = DBOld::fetch_assoc($query);
+				$salesman_name = $_SESSION['current_user']->name;
+				$sql = "SELECT salesman_code FROM salesman WHERE salesman_name = " . DB::escape($salesman_name);
+				$query = DBOld::query($sql, 'Couldn\'t find current salesman');
+				$result = DBOld::fetch_assoc($query);
 				if (!empty($result['salesman_code'])) {
 					$salesman_code = $result['salesman_code'];
 				}
@@ -66,13 +66,13 @@
 		function update_order_item($line_no, $qty, $price, $req_del_date, $item_descr = '', $discount = 0)
 		{
 			$this->line_items[$line_no]->quantity = $qty;
-			$this->line_items[$line_no]->price    = $price;
+			$this->line_items[$line_no]->price = $price;
 			$this->line_items[$line_no]->discount = $discount;
 			if (!empty($item_descr)) {
 				$this->line_items[$line_no]->description = $item_descr;
 			}
 			$this->line_items[$line_no]->req_del_date = $req_del_date;
-			$this->line_items[$line_no]->price        = $price;
+			$this->line_items[$line_no]->price = $price;
 		}
 
 		function remove_from_order($line_no)
@@ -98,7 +98,7 @@
 			unset($this->line_items);
 			$this->line_items = array();
 			$this->lines_on_order = 0;
-			$this->order_no       = 0;
+			$this->order_no = 0;
 		}
 
 		function any_already_received()

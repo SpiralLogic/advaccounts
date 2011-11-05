@@ -53,7 +53,7 @@
 				}
 				$item_price = $price;
 			}
-			$item_price = round($item_price, user_price_dec());
+			$item_price = round($item_price, User::price_dec());
 			if (!$item['is_foreign'] && $item['item_code'] != $item['stock_id']) { // this is sales kit - recurse
 				add_to_order($order, $item['stock_id'], $new_item_qty * $item['quantity'], $item_price, $discount, $std_price);
 			}
@@ -159,8 +159,8 @@
 		foreach (
 			$order->line_items as $line_no => $stock_item
 		) {
-			$line_total = round($stock_item->qty_dispatched * $stock_item->price * (1 - $stock_item->discount_percent), user_price_dec());
-			$line_discount = round($stock_item->qty_dispatched * $stock_item->price, user_price_dec()) - $line_total;
+			$line_total = round($stock_item->qty_dispatched * $stock_item->price * (1 - $stock_item->discount_percent), User::price_dec());
+			$line_discount = round($stock_item->qty_dispatched * $stock_item->price, User::price_dec()) - $line_total;
 			$qoh_msg = '';
 			if (!$editable_items || $id != $line_no) {
 				if (!SysPrefs::allow_negative_stock() && is_inventory_item($stock_item->stock_id)) {
@@ -402,7 +402,7 @@ JS;
 			label_row(_("Tax Group:"), $order->tax_group_name);
 			hidden('tax_group_id', $order->tax_group_id);
 		}
-		sales_persons_list_row(_("Sales Person:"), 'salesman', (isset($order->salesman)) ? $order->salesman : $_SESSION['wa_current_user']->salesmanid);
+		sales_persons_list_row(_("Sales Person:"), 'salesman', (isset($order->salesman)) ? $order->salesman : $_SESSION['current_user']->salesmanid);
 		end_outer_table(1); // outer table
 		if ($change_prices != 0) {
 			foreach (
@@ -461,7 +461,7 @@ JS;
 		}
 		label_cell($units, '', 'units');
 		$str = amount_cells(null, 'price');
-		small_amount_cells(null, 'Disc', Num::percent_format($_POST['Disc']), null, null, user_percent_dec());
+		small_amount_cells(null, 'Disc', Num::percent_format($_POST['Disc']), null, null, User::percent_dec());
 		$line_total = input_num('qty') * input_num('price') * (1 - input_num('Disc') / 100);
 		amount_cell($line_total, false, '', 'line_total');
 		if ($id != -1) {

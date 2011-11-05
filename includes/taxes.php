@@ -45,7 +45,7 @@
 			) {
 				$tax_multiplier += $taxitem["rate"];
 			}
-			return round($price / (1 + ($tax_multiplier / 100)), 2 * user_price_dec(), PHP_ROUND_HALF_EVEN);
+			return round($price / (1 + ($tax_multiplier / 100)), 2 * User::price_dec(), PHP_ROUND_HALF_EVEN);
 		}
 
 		//
@@ -63,7 +63,7 @@
 			}
 			// if array already read, then make a copy and use that
 			$ret_tax_array = Tax_Groups::get_tax_group_items_as_array($tax_group[0]);
-			$tax_array     = Taxes::get_taxes_for_item($stock_id, $ret_tax_array);
+			$tax_array = Taxes::get_taxes_for_item($stock_id, $ret_tax_array);
 			// if no exemptions or taxgroup is empty, then no included/excluded taxes
 			if ($tax_array == null) {
 				return 0;
@@ -75,7 +75,7 @@
 			) {
 				$tax_multiplier += $taxitem["rate"];
 			}
-			return round($price * (($tax_multiplier / 100)), 2 * user_price_dec(), PHP_ROUND_HALF_EVEN);
+			return round($price * (($tax_multiplier / 100)), 2 * User::price_dec(), PHP_ROUND_HALF_EVEN);
 		}
 
 		#  __ADVANCEDEDIT__ BEGIN #
@@ -108,7 +108,7 @@
 			) {
 				$tax_multiplier += $taxitem["rate"];
 			}
-			return round($price * (1 + ($tax_multiplier / 100)), 2 * user_price_dec(), PHP_ROUND_HALF_EVEN);
+			return round($price * (1 + ($tax_multiplier / 100)), 2 * User::price_dec(), PHP_ROUND_HALF_EVEN);
 		}
 
 		#  __ADVANCEDEDIT__ END #
@@ -144,7 +144,7 @@
 					}
 				}
 				if (!$skip) {
-					$index                 = $tax_group_item['tax_type_id'];
+					$index = $tax_group_item['tax_type_id'];
 					$ret_tax_array[$index] = $tax_group_item;
 				}
 			}
@@ -202,7 +202,7 @@
 								$tax_rate += $item_tax['rate'];
 							}
 						}
-						$shipping_net = Num::round($shipping_cost / (1 + ($tax_rate / 100)), user_price_dec());
+						$shipping_net = Num::round($shipping_cost / (1 + ($tax_rate / 100)), User::price_dec());
 					}
 					foreach (
 						$item_taxes as $item_tax
@@ -227,7 +227,7 @@
 		public static function is_tax_account($account_code)
 		{
 			$sql
-							= "SELECT id FROM tax_types WHERE
+			 = "SELECT id FROM tax_types WHERE
 		sales_gl_code=" . DB::escape($account_code) . " OR purchasing_gl_code=" . DB::escape($account_code);
 			$result = DBOld::query($sql, "checking account is tax account");
 			if (DBOld::num_rows($result) > 0) {

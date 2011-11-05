@@ -16,18 +16,15 @@
 	// date_:	2005-05-19
 	// Title:	Tax Report
 	// ----------------------------------------------------------------
-
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-
 	//------------------------------------------------------------------
-
 	print_tax_report();
-
-	function getTaxTransactions($from, $to) {
+	function getTaxTransactions($from, $to)
+	{
 		$fromdate = Dates::date2sql($from);
 		$todate = Dates::date2sql($to);
-
-		$sql = "SELECT taxrec.*, taxrec.amount*ex_rate AS amount,
+		$sql
+		 = "SELECT taxrec.*, taxrec.amount*ex_rate AS amount,
 	            taxrec.net_amount*ex_rate AS net_amount,
 				IF(ISNULL(supp.supp_name), debt.name, supp.supp_name) as name,
 				branch.br_name
@@ -48,56 +45,55 @@
 		return DBOld::query($sql, "No transactions were returned");
 	}
 
-	function getTaxTypes() {
+	function getTaxTypes()
+	{
 		$sql = "SELECT * FROM tax_types ORDER BY id";
 		return DBOld::query($sql, "No transactions were returned");
 	}
 
-	function getTaxInfo($id) {
+	function getTaxInfo($id)
+	{
 		$sql = "SELECT * FROM tax_types WHERE id=$id";
 		$result = DBOld::query($sql, "No transactions were returned");
 		return DBOld::fetch($result);
 	}
 
 	//----------------------------------------------------------------------------------------------------
-
-	function print_tax_report() {
+	function print_tax_report()
+	{
 		global $trans_dir, $Hooks, $systypes_array;
-
 		$from = $_POST['PARAM_0'];
 		$to = $_POST['PARAM_1'];
 		$summaryOnly = $_POST['PARAM_2'];
 		$comments = $_POST['PARAM_3'];
 		$destination = $_POST['PARAM_4'];
-
-		if ($destination)
+		if ($destination) {
 			include_once(APP_PATH . "includes/reports/excel.php");
+		}
 		else
+		{
 			include_once(APP_PATH . "includes/reports/pdf.php");
-
-		$dec = user_price_dec();
-
-		$rep = new FrontReport(_('Tax Report'), "TaxReport", user_pagesize());
-		if ($summaryOnly == 1)
+		}
+		$dec = User::price_dec();
+		$rep = new FrontReport(_('Tax Report'), "TaxReport", User::pagesize());
+		if ($summaryOnly == 1) {
 			$summary = _('Summary Only');
+		}
 		else
+		{
 			$summary = _('Detailed Report');
-
+		}
 		$res = getTaxTypes();
-
 		$taxes = array();
 		while ($tax = DBOld::fetch($res))
 		{
 			$taxes[$tax['id']] = array('in' => 0, 'out' => 0, 'taxin' => 0, 'taxout' => 0);
 		}
-
 		$params = array(0 => $comments,
 			1 => array('text' => _('Period'), 'from' => $from, 'to' => $to),
 			2 => array('text' => _('Type'), 'from' => $summary, 'to' => '')
 		);
-
 		$cols = array(0, 100, 130, 180, 290, 370, 420, 470, 520);
-
 		$headers = array(_('Trans Type'), _('Ref'), _('Date'), _('Name'), _('Branch Name'),
 			_('Net'), _('Rate'), _('Tax')
 		);
@@ -107,33 +103,28 @@
 		if (!$summaryOnly) {
 			$rep->Header();
 		}
-
 		$totalnet = 0.0;
 		$totaltax = 0.0;
 		$transactions = getTaxTransactions($from, $to);
-
 		while ($trans = DBOld::fetch($transactions))
 		{
 			if (in_array($trans['trans_type'], array(ST_CUSTCREDIT, ST_SUPPINVOICE))) {
 				$trans['net_amount'] *= -1;
 				$trans['amount'] *= -1;
 			}
-
 			if (!$summaryOnly) {
 				$rep->TextCol(0, 1, $systypes_array[$trans['trans_type']]);
-				if ($trans['memo'] == '')
+				if ($trans['memo'] == '') {
 					$trans['memo'] = Refs::get_reference($trans['trans_type'], $trans['trans_no']);
+				}
 				$rep->TextCol(1, 2, $trans['memo']);
 				$rep->DateCol(2, 3, $trans['tran_date'], true);
 				$rep->TextCol(3, 4, $trans['name']);
 				$rep->TextCol(4, 5, $trans['br_name']);
-
 				$rep->AmountCol(5, 6, $trans['net_amount'], $dec);
 				$rep->AmountCol(6, 7, $trans['rate'], $dec);
 				$rep->AmountCol(7, 8, $trans['amount'], $dec);
-
 				$rep->NewLine();
-
 				if ($rep->row < $rep->bottomMargin + $rep->lineHeight) {
 					$rep->Line($rep->row - 2);
 					$rep->Header();
@@ -153,29 +144,21 @@
 			$totalnet += $trans['net_amount'];
 			$totaltax += $trans['amount'];
 		}
-
 		// Summary
 		$cols2 = array(0, 100, 180, 260, 340, 420, 500);
-
 		$headers2 = array(_('Tax Rate'), _('Outputs'), _('Output Tax'), _('Inputs'), _('Input Tax'), _('Net Tax'));
-
 		$aligns2 = array('left', 'right', 'right', 'right', 'right', 'right', 'right');
-
 		$rep->Info($params, $cols2, $headers2, $aligns2);
-
 		//for ($i = 0; $i < count($cols2); $i++)
 		//	$rep->cols[$i] = $rep->leftMargin + $cols2[$i];
-
 		//$rep->numcols = count($headers2);
 		//$rep->headers = $headers2;
 		//$rep->aligns = $aligns2;
 		$rep->Header();
-
 		$taxtotal = 0;
 		foreach ($taxes as $id => $sum)
 		{
 			$tx = getTaxInfo($id);
-
 			$rep->TextCol(0, 1, $tx['name'] . " " . Num::format($tx['rate'], $dec) . "%");
 			$rep->AmountCol(1, 2, $sum['out'], $dec);
 			$rep->AmountCol(2, 3, $sum['taxout'], $dec);
@@ -185,7 +168,6 @@
 			$taxtotal += $sum['taxout'] + $sum['taxin'];
 			$rep->NewLine();
 		}
-
 		$rep->Font('bold');
 		$rep->NewLine();
 		$rep->Line($rep->row + $rep->lineHeight);
@@ -194,11 +176,9 @@
 		$rep->Line($rep->row - 5);
 		$rep->Font();
 		$rep->NewLine();
-
 		if (method_exists($Hooks, 'TaxFunction')) {
 			$Hooks->TaxFunction();
 		}
-
 		$rep->End();
 	}
 

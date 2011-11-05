@@ -91,7 +91,7 @@
 		WHERE ctype>=" . CL_ASSETS . " AND ctype <=" . CL_EQUITY . " AND tran_date <= '$to'";
 		$result = DBOld::query($sql, "The total balance could not be calculated");
 		$row = DBOld::fetch_row($result);
-		$balance = Num::round($row[0], user_price_dec());
+		$balance = Num::round($row[0], User::price_dec());
 		$to = Dates::sql2date($to);
 		if ($balance != 0.0) {
 			$trans_type = ST_JOURNAL;
@@ -303,7 +303,7 @@
 			$sql = "DELETE FROM stock_moves WHERE tran_date <= '$to' AND loc_code = '{$row['loc_code']}' AND stock_id = '{$row['stock_id']}'";
 			DBOld::query($sql, "Could not delete stock moves");
 			$qty = $row['qty'];
-			$std_cost = ($qty == 0 ? 0 : Num::round($row['std_cost'] / $qty, user_price_dec()));
+			$std_cost = ($qty == 0 ? 0 : Num::round($row['std_cost'] / $qty, User::price_dec()));
 			$sql
 			 = "INSERT INTO stock_moves (stock_id, loc_code, tran_date, reference, qty, standard_cost) VALUES
 			('{$row['stock_id']}', '{$row['loc_code']}', '$to', '$ref', $qty, $std_cost)";

@@ -24,10 +24,10 @@
 			if ($rate == 0) {
 				$amount_in_home_currency = Banking::to_home_currency($amount, $currency, $date_);
 			} else {
-				$amount_in_home_currency = Num::round($amount * $rate, user_price_dec());
+				$amount_in_home_currency = Num::round($amount * $rate, User::price_dec());
 			}
 		} else {
-			$amount_in_home_currency = Num::round($amount, user_price_dec());
+			$amount_in_home_currency = Num::round($amount, User::price_dec());
 		}
 		if ($dimension == null || $dimension < 0) {
 			$dimension = 0;
@@ -86,7 +86,7 @@
 	// Function for even out rounding problems
 	function add_gl_balance($type, $trans_id, $date_, $amount, $person_type_id = null, $person_id = null)
 	{
-		$amount = Num::round($amount, user_price_dec());
+		$amount = Num::round($amount, User::price_dec());
 		if ($amount != 0) {
 			return add_gl_trans(
 				$type, $trans_id, $date_, DB_Company::get_pref('exchange_diff_act'), 0, 0, "",
@@ -442,7 +442,7 @@
 		}
 		DB_AuditTrail::add($trans_type, $trans_id, $date_);
 		if ($reverse) {
-			//$reversingDate = date(user_date_display(),
+			//$reversingDate = date(User::date_display(),
 			//	Mktime(0,0,0,get_month($date_)+1,1,get_year($date_)));
 			$reversingDate = Dates::begin_month(Dates::add_months($date_, 1));
 			$trans_id_reverse = SysTypes::get_next_trans_no($trans_type);

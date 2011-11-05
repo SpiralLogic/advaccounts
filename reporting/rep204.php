@@ -17,15 +17,13 @@
 	// date_:	2005-05-19
 	// Title:	Outstanding GRNs Report
 	// ----------------------------------------------------------------
-
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-
 	//----------------------------------------------------------------------------------------------------
-
 	print_outstanding_GRN();
-
-	function getTransactions($fromsupp) {
-		$sql = "SELECT grn_batch.id,
+	function getTransactions($fromsupp)
+	{
+		$sql
+		 = "SELECT grn_batch.id,
 			order_no,
 			grn_batch.supplier_id,
 			suppliers.supp_name,
@@ -44,54 +42,51 @@
 		AND grn_batch.id = grn_items.grn_batch_id
 		AND grn_items.po_detail_item = purch_order_details.po_detail_item
 		AND qty_recd-quantity_inv <>0 ";
-
-		if ($fromsupp != ALL_NUMERIC)
+		if ($fromsupp != ALL_NUMERIC) {
 			$sql .= "AND grn_batch.supplier_id =" . DB::escape($fromsupp) . " ";
-		$sql .= "ORDER BY grn_batch.supplier_id,
+		}
+		$sql
+		 .= "ORDER BY grn_batch.supplier_id,
 			grn_batch.id";
-
 		return DBOld::query($sql, "No transactions were returned");
 	}
 
 	//----------------------------------------------------------------------------------------------------
-
-	function print_outstanding_GRN() {
-
+	function print_outstanding_GRN()
+	{
 		$fromsupp = $_POST['PARAM_0'];
 		$comments = $_POST['PARAM_1'];
 		$destination = $_POST['PARAM_2'];
-		if ($destination)
+		if ($destination) {
 			include_once(APP_PATH . "includes/reports/excel.php");
-		else include_once(APP_PATH . "includes/reports/pdf.php");
-
-		if ($fromsupp == ALL_NUMERIC) $from = _('All');
-		else $from = get_supplier_name($fromsupp);
-		$dec = user_price_dec();
-
+		}
+		else {
+			include_once(APP_PATH . "includes/reports/pdf.php");
+		}
+		if ($fromsupp == ALL_NUMERIC) {
+			$from = _('All');
+		}
+		else {
+			$from = get_supplier_name($fromsupp);
+		}
+		$dec = User::price_dec();
 		$cols = array(0, 40, 80, 190, 250, 320, 385, 450, 515);
-
-		$headers =
-		 array(_('GRN'), _('Order'), _('Item') . '/' . _('Description'), _('Qty Recd'), _('qty Inv'), _('Balance'),
-			 _('Std Cost'), _('Value')
-		 );
-
+		$headers
+		 = array(_('GRN'), _('Order'), _('Item') . '/' . _('Description'), _('Qty Recd'), _('qty Inv'), _('Balance'),
+			_('Std Cost'), _('Value')
+		);
 		$aligns = array('left', 'left', 'left', 'right', 'right', 'right', 'right', 'right');
-
 		$params = array(0 => $comments,
 			1 => array('text' => _('Supplier'), 'from' => $from, 'to' => '')
 		);
-
-		$rep = new FrontReport(_('Outstanding GRNs Report'), "OutstandingGRN", user_pagesize());
-
+		$rep = new FrontReport(_('Outstanding GRNs Report'), "OutstandingGRN", User::pagesize());
 		$rep->Font();
 		$rep->Info($params, $cols, $headers, $aligns);
 		$rep->Header();
-
 		$Tot_Val = 0;
 		$Supplier = '';
 		$SuppTot_Val = 0;
 		$res = getTransactions($fromsupp);
-
 		While ($GRNs = DBOld::fetch($res)) {
 			$dec2 = get_qty_dec($GRNs['item_code']);
 			if ($Supplier != $GRNs['supplier_id']) {
@@ -119,7 +114,6 @@
 			$rep->AmountCol(7, 8, $Value, $dec);
 			$Tot_Val += $Value;
 			$SuppTot_Val += $Value;
-
 			$rep->NewLine(0, 1);
 		}
 		if ($Supplier != '') {

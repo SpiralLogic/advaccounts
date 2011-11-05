@@ -64,7 +64,7 @@
 					$rates
 				);
 				Errors::notice(_('Selected tax group has been updated'));
-} else {
+			} else {
 				Tax_Groups::add_tax_group($_POST['name'], $_POST['tax_shipping'], $taxes, $rates);
 				Errors::notice(_('New tax group has been added'));
 			}
@@ -72,7 +72,8 @@
 		}
 	}
 	//-----------------------------------------------------------------------------------
-	function can_delete($selected_id) {
+	function can_delete($selected_id)
+	{
 		if ($selected_id == -1) {
 			return false;
 		}
@@ -182,7 +183,7 @@
 			//if (!isset($_POST['rate' . $i]) || $_POST['rate' . $i] == "")
 			//	$_POST['rate' . $i] = Num::percent_format($default_rate);
 			//small_amount_cells(null, 'rate' . $i, $_POST['rate' . $i], null, null,
-			//  user_percent_dec());
+			//  User::percent_dec());
 		}
 		end_row();
 	}

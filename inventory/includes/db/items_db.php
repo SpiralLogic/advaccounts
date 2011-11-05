@@ -89,7 +89,7 @@
 	function get_item($stock_id)
 	{
 		$sql
-						= "SELECT stock_master.*,item_tax_types.name AS tax_type_name
+		 = "SELECT stock_master.*,item_tax_types.name AS tax_type_name
 		FROM stock_master,item_tax_types
 		WHERE item_tax_types.id=stock_master.tax_type_id
 		AND stock_id=" . DB::escape($stock_id);
@@ -147,15 +147,15 @@
 	function get_item_edit_info($stock_id)
 	{
 		$sql
-						= "SELECT material_cost + labour_cost + overhead_cost AS standard_cost, units, decimals
+		 = "SELECT material_cost + labour_cost + overhead_cost AS standard_cost, units, decimals
 		FROM stock_master,item_units
 		WHERE stock_id=" . DB::escape($stock_id)
 		 . " AND stock_master.units=item_units.abbr";
-		$query  = DBOld::query($sql, "The standard cost cannot be retrieved");
+		$query = DBOld::query($sql, "The standard cost cannot be retrieved");
 		$result = array(
 			'standard_cost' => 0,
-			'units'				 => 'ea',
-			'decimals'			=> user_price_dec()
+			'units' => 'ea',
+			'decimals' => User::price_dec()
 		);
 		if (DBOld::num_rows($query) == 0) {
 			$result = DBOld::fetch($query);
@@ -167,7 +167,7 @@
 	function is_inventory_item($stock_id)
 	{
 		$sql
-						= "SELECT stock_id FROM stock_master
+		 = "SELECT stock_id FROM stock_master
 		WHERE stock_id=" . DB::escape($stock_id) . " AND mb_flag <> 'D'";
 		$result = DBOld::query($sql, "Cannot query is inventory item or not");
 		return DBOld::num_rows($result) > 0;
@@ -176,7 +176,7 @@
 	//-------------------------------------------------------------------
 	function last_negative_stock_begin_date($stock_id, $to)
 	{
-		$to  = Dates::date2sql($to);
+		$to = Dates::date2sql($to);
 		$sql = "SET @q = 0";
 		DBOld::query($sql);
 		$sql = "SET @flag = 0";
@@ -188,7 +188,7 @@
 		AND qty <> 0
 		GROUP BY stock_id ORDER BY tran_date";
 		$result = DBOld::query($sql, "The dstock moves could not be retrieved");
-		$row    = DBOld::fetch_row($result);
+		$row = DBOld::fetch_row($result);
 		return $row[3];
 	}
 
@@ -196,9 +196,9 @@
 	function get_deliveries_between($stock_id, $from, $to)
 	{
 		$from = Dates::date2sql($from);
-		$to   = Dates::date2sql($to);
+		$to = Dates::date2sql($to);
 		$sql
-					= "SELECT SUM(-qty), SUM(-qty*standard_cost) FROM stock_moves
+		 = "SELECT SUM(-qty), SUM(-qty*standard_cost) FROM stock_moves
 		WHERE type=" . ST_CUSTDELIVERY . " AND stock_id=" . DB::escape($stock_id) . " AND
 			tran_date>='$from' AND tran_date<='$to' GROUP BY stock_id";
 		$result = DBOld::query($sql, "The deliveries could not be updated");
@@ -216,13 +216,13 @@
 			return;
 		}
 		$from = Dates::sql2date($from);
-		$row  = get_deliveries_between($stock_id, $from, $to);
+		$row = get_deliveries_between($stock_id, $from, $to);
 		if ($row == false) {
 			return;
 		}
 		$old_cost = $row[1];
 		$new_cost = $row[0] * $material_cost;
-		$diff     = $new_cost - $old_cost;
+		$diff = $new_cost - $old_cost;
 		if ($diff != 0) {
 			$update_no = SysTypes::get_next_trans_no(ST_COSTUPDATE);
 			if (!Dates::is_date_in_fiscalyear($to)) {

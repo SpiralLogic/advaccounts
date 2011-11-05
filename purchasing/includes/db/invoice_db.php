@@ -86,7 +86,7 @@
 
 	function get_diff_in_home_currency($supplier, $old_date, $date, $amount1, $amount2)
 	{
-		$dec = user_price_dec();
+		$dec = User::price_dec();
 		Num::price_decimal($amount2, $dec);
 		$currency = Banking::get_supplier_currency($supplier);
 		$ex_rate = Banking::get_exchange_rate_to_home_currency($currency, $old_date);
@@ -108,7 +108,7 @@
 		;
 		foreach ($taxes as $taxitem)
 		{
-			$taxitem['Value'] = Num::round($taxitem['Value'], user_price_dec());
+			$taxitem['Value'] = Num::round($taxitem['Value'], User::price_dec());
 			$tax_total += $taxitem['Value'];
 		}
 		$invoice_items_total = $supp_trans->get_total_charged($supp_trans->tax_group_id);

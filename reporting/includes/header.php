@@ -175,7 +175,7 @@
 		//$row = DBOld::fetch($result);
 		$this->Text($mcol + 180, $user);
 		//$this->TextWrap($col, $this->row, $width, $row['salesman_name'], 'C');
-		//$this->TextWrap($col, $this->row, $width, $_SESSION['wa_current_user'], 'C');
+		//$this->TextWrap($col, $this->row, $width, $_SESSION['current_user'], 'C');
 	}
 	if ($this->pageNumber > 1 && !strstr($this->filename, "Bulk")) {
 		$this->Text($this->endLine - 35, _("Page") . ' ' . $this->pageNumber);
@@ -254,7 +254,7 @@
 		$result = DBOld::query($sql, "could not get sales person");
 		$row = DBOld::fetch($result);
 		$this->TextWrap($col, $this->row, $width, $row['salesman_name'], 'C');
-		$this->TextWrap($col, $this->row, $width, $_SESSION['wa_current_user'], 'C');
+		$this->TextWrap($col, $this->row, $width, $_SESSION['current_user'], 'C');
 	} #  __ADVANCEDEDIT__ END #
 	elseif ($doctype == ST_SUPPAYMENT || $doctype == ST_CUSTPAYMENT || $doctype == ST_CUSTREFUND) {
 		$this->TextWrap($col, $this->row, $width, $systypes_array[$myrow["type"]], 'C');
@@ -388,7 +388,7 @@
 	}
 	if ($doctype == ST_SALESINVOICE && $branch['disable_branch'] > 0) { // payment links
 		if ($branch['disable_branch'] == 1) {
-			$amt = number_format($myrow["ov_freight"] + $myrow["ov_gst"] + $myrow["ov_amount"], user_price_dec());
+			$amt = number_format($myrow["ov_freight"] + $myrow["ov_gst"] + $myrow["ov_amount"], User::price_dec());
 			$txt = $doc_Payment_Link . " PayPal: ";
 			$name = urlencode($this->title . " " . $myrow['reference']);
 			$url = "https://www.paypal.com/xclick/business=" . $this->company['email'] . "&item_name=" . $name . "&amount=" . $amt . "&currency_code=" . $myrow['curr_code'];

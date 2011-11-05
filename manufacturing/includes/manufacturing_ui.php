@@ -46,7 +46,7 @@
 			}
 			//end of while
 			label_row(
-				"<b>" . _("Total Cost") . "</b>", "<b>" . Num::format($total_cost, user_price_dec()) . "</b>",
+				"<b>" . _("Total Cost") . "</b>", "<b>" . Num::format($total_cost, User::price_dec()) . "</b>",
 				"colspan=6 align=right", "nowrap align=right"
 			);
 			end_table();
@@ -73,7 +73,7 @@
 			}
 			while ($myrow = DBOld::fetch($result))
 			{
-				$qoh      = 0;
+				$qoh = 0;
 				$show_qoh = true;
 				// if it's a non-stock item (eg. service) don't show qoh
 				if (!Manufacturing::has_stock_holding($myrow["mb_flag"])) {
@@ -88,12 +88,12 @@
 					// oops, we don't have enough of one of the component items
 					start_row("class='stockmankobg'");
 					$has_marked = true;
-} else {
+				} else {
 					alt_table_row_color($k);
 				}
-				if (user_show_codes()) {
+				if (User::show_codes()) {
 					label_cell($myrow["stock_id"] . " - " . $myrow["description"]);
-} else {
+				} else {
 					label_cell($myrow["description"]);
 				}
 				label_cell($myrow["location_name"]);
@@ -104,7 +104,7 @@
 				qty_cell($myrow["units_issued"], false, $dec);
 				if ($show_qoh) {
 					qty_cell($qoh, false, $dec);
-} else {
+				} else {
 					label_cell("");
 				}
 				end_row();
@@ -140,7 +140,7 @@
 			}
 			//end of while
 			label_row(
-				_("Total"), Num::format($total_qty, user_qty_dec()),
+				_("Total"), Num::format($total_qty, User::qty_dec()),
 				"colspan=3", "nowrap align=right"
 			);
 			end_table();

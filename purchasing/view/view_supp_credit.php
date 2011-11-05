@@ -21,7 +21,7 @@
 	{
 		$trans_no = $_POST["trans_no"];
 	}
-	$supp_trans             = new Purchase_Trans();
+	$supp_trans = new Purchase_Trans();
 	$supp_trans->is_invoice = false;
 	read_supp_invoice($trans_no, ST_SUPPCREDIT, $supp_trans);
 	Display::heading(_("SUPPLIER CREDIT NOTE") . " # " . $trans_no);
@@ -39,14 +39,14 @@
 	end_row();
 	Display::comments_row(ST_SUPPCREDIT, $trans_no);
 	end_table(1);
-	$total_gl  = display_gl_items($supp_trans, 3);
+	$total_gl = display_gl_items($supp_trans, 3);
 	$total_grn = display_grn_items($supp_trans, 2);
-	$display_sub_tot = Num::format($total_gl + $total_grn, user_price_dec());
+	$display_sub_tot = Num::format($total_gl + $total_grn, User::price_dec());
 	start_table(Config::get('tables_style') . "  width=95%");
 	label_row(_("Sub Total"), $display_sub_tot, "align=right", "nowrap align=right width=17%");
 	$tax_items = get_trans_tax_details(ST_SUPPCREDIT, $trans_no);
 	Display::supp_trans_tax_details($tax_items, 1);
-	$display_total = Num::format(-($supp_trans->ov_amount + $supp_trans->ov_gst), user_price_dec());
+	$display_total = Num::format(-($supp_trans->ov_amount + $supp_trans->ov_gst), User::price_dec());
 	label_row(_("TOTAL CREDIT NOTE"), $display_total, "colspan=1 align=right", "nowrap align=right");
 	end_table(1);
 	$voided = Display::is_voided(ST_SUPPCREDIT, $trans_no, _("This credit note has been voided."));

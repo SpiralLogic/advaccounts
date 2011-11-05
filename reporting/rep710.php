@@ -63,7 +63,7 @@
 		{
 			include_once(APP_PATH . "includes/reports/pdf.php");
 		}
-		$dec = user_price_dec();
+		$dec = User::price_dec();
 		$cols = array(0, 60, 120, 180, 240, 340, 400, 460, 520);
 		$headers = array(_('Date'), _('Time'), _('User'), _('Trans Date'),
 			_('Type'), _('#'), _('Action'), _('Amount')
@@ -85,7 +85,7 @@
 				'to' => ''
 			)
 		);
-		$rep = new FrontReport(_('Audit Trail'), "AuditTrail", user_pagesize());
+		$rep = new FrontReport(_('Audit Trail'), "AuditTrail", User::pagesize());
 		$rep->Font();
 		$rep->Info($params, $cols, $headers, $aligns);
 		$rep->Header();
@@ -93,7 +93,7 @@
 		while ($myrow = DBOld::fetch($trans))
 		{
 			$rep->TextCol(0, 1, Dates::sql2date(date("Y-m-d", $myrow['unix_stamp'])));
-			if (user_date_format() == 0) {
+			if (User::date_format() == 0) {
 				$rep->TextCol(1, 2, date("h:i:s a", $myrow['unix_stamp']));
 			}
 			else

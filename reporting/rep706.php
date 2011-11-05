@@ -135,7 +135,7 @@
 		if (!$decimals) {
 			$dec = 0;
 		} else {
-			$dec = user_price_dec();
+			$dec = User::price_dec();
 		}
 		$cols = array(0, 50, 200, 350, 425, 500);
 		//------------0--1---2----3----4----5--
@@ -188,7 +188,7 @@
 				)
 			);
 		}
-		$rep = new FrontReport(_('Balance Sheet'), "BalanceSheet", user_pagesize());
+		$rep = new FrontReport(_('Balance Sheet'), "BalanceSheet", User::pagesize());
 		$rep->Font();
 		$rep->Info($params, $cols, $headers, $aligns);
 		$rep->Header();
