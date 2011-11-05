@@ -6,15 +6,16 @@
 	 * Time: 5:46 AM
 	 *
 	 */
-
-	Class DB_Update extends DB_Insert {
-
-		public function __construct($table = false) {
-			parent::__construct($table);
+	Class DB_Update extends DB_Insert
+	{
+		public function __construct($table = false, $db)
+		{
+			parent::__construct($table, $db);
 			$this->type = DB::UPDATE;
 		}
 
-		protected function _buildQuery() {
+		protected function _buildQuery()
+		{
 			$sql = "UPDATE " . $this->table . " SET ";
 			foreach ($this->feilds as &$feild) {
 				$feild = " $feild = :$feild";

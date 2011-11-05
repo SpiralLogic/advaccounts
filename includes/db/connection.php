@@ -10,14 +10,9 @@
 	{
 		protected static $instances = array();
 
-		static function instance($name = null, $config = array())
+		static function instance($name, $config)
 		{
-			$default = Config::get('db_default');
-			if ($name === null) {
-				$name = $default['name'];
-			}
 			if (!isset(static::$instances[$name])) {
-				$config = array_merge($default, $config);
 				new static($name, $config);
 			}
 			return static::$instances[$name];
@@ -33,14 +28,19 @@
 
 		protected function __construct($name, array $config)
 		{
-			$this->name  = $name;
-			$this->user  = $config['user'];
-			$this->pass  = $config['pass'];
-			$this->host  = $config['host'];
-			$this->port  = $config['port'];
+			$this->name = $name;
+			$this->user = $config['user'];
+			$this->pass = $config['pass'];
+			$this->host = $config['host'];
+			$this->port = $config['port'];
 			$this->debug = false;
 			$this->_connect();
 			static::$instances[$name] = $this;
+		}
+
+		public function name()
+		{
+			return $this->name;
 		}
 
 		public function prepare($sql)
