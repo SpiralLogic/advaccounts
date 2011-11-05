@@ -58,11 +58,11 @@
 				if (isset($_POST['PARAM_6']) && $_POST['PARAM_6'] != $j) {
 					continue;
 				}
-				if (!exists_customer_trans($j, $i)) {
+				if (!Sales_Trans::exists($j, $i)) {
 					continue;
 				}
 				$sign = $j == ST_SALESINVOICE ? 1 : -1;
-				$myrow = get_customer_trans($i, $j);
+				$myrow = Sales_Trans::get($i, $j);
 				$baccount = get_default_bank_account($myrow['curr_code']);
 				$params['bankaccount'] = $baccount['id'];
 				$branch = get_branch($myrow["branch_code"]);
@@ -104,7 +104,7 @@
 					$SubTotal += $Net;
 					$TaxType = Tax_ItemType::get_for_item($myrow2['stock_id']);
 					$DisplayPrice = Num::format($myrow2["unit_price"], $dec);
-					$DisplayQty = Num::format($sign * $myrow2["quantity"], get_qty_dec($myrow2['stock_id']));
+					$DisplayQty = Num::format($sign * $myrow2["quantity"], Num::qty_dec($myrow2['stock_id']));
 					$DisplayNet = Num::format($Net, $dec);
 					if ($myrow2["discount_percent"] == 0) {
 						$DisplayDiscount = "";

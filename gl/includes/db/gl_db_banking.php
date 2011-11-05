@@ -147,7 +147,7 @@
 			$cust_amount = Banking::exchange_from_to($total_amount, $currency, Banking::get_customer_currency($person_id), $date_);
 			// we need to negate it too
 			$cust_amount = -$cust_amount;
-			$trans_no = write_customer_trans($trans_type, 0, $person_id, $person_detail_id, $date_,
+			$trans_no = Sales_Trans::write($trans_type, 0, $person_id, $person_detail_id, $date_,
 				$ref, $cust_amount);
 		}
 		elseif ($person_type_id == PT_SUPPLIER)

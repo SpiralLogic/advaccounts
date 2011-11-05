@@ -12,7 +12,7 @@
 	$page_security = 'SA_MANUFRELEASE';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	include_once(APP_PATH . "manufacturing/includes/manufacturing_ui.php");
-	JS::get_js_open_window(800, 500);
+	JS::open_window(800, 500);
 	Page::start(_($help_context = "Work Order Release to Manufacturing"));
 	if (isset($_GET["trans_no"])) {
 		$selected_id = $_GET["trans_no"];
@@ -20,7 +20,7 @@
 	elseif (isset($_POST["selected_id"]))
 	{
 		$selected_id = $_POST["selected_id"];
-} else {
+	} else {
 		Errors::warning("This page must be called with a work order reference");
 		exit;
 	}
@@ -55,7 +55,7 @@
 	start_form();
 	$myrow = get_work_order($selected_id);
 	$_POST['released'] = $myrow["released"];
-	$_POST['memo_']    = "";
+	$_POST['memo_'] = "";
 	if (can_process($myrow)) {
 		start_table(Config::get('tables_style2'));
 		label_row(_("Work Order #:"), $selected_id);

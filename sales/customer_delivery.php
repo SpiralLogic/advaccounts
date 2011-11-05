@@ -16,7 +16,7 @@
 	$page_security = 'SA_SALESDELIVERY';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	include_once(APP_PATH . "sales/includes/sales_ui.php");
-	JS::get_js_open_window(900, 500);
+	JS::open_window(900, 500);
 	$page_title = _($help_context = "Deliver Items for a Sales Order");
 	if (isset($_GET['ModifyDelivery'])) {
 		$page_title = sprintf(_("Modifying Delivery Note # %d."), $_GET['ModifyDelivery']);
@@ -373,7 +373,7 @@
 		}
 		ui_view::stock_status_cell($ln_itm->stock_id);
 		text_cells(null, 'Line' . $line . 'Desc', $ln_itm->description, 30, 50);
-		$dec = get_qty_dec($ln_itm->stock_id);
+		$dec = Num::qty_dec($ln_itm->stock_id);
 		qty_cell($ln_itm->quantity, false, $dec);
 		label_cell($ln_itm->units);
 		qty_cell($ln_itm->qty_done, false, $dec);

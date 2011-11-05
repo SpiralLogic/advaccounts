@@ -110,7 +110,7 @@
 				// strip ajax marker from uri, to force synchronous page reload
 				$_SESSION['timeout'] = array('uri' => preg_replace('/JsHttpRequest=(?:(\d+)-)?([^&]+)/s', '', @$_SERVER['REQUEST_URI']),
 					'post' => $_POST);
-				include(APP_PATH . "access/login.php");
+				require(APP_PATH . "access/login.php");
 				if (Ajax::in_ajax() || AJAX_REFERRER) {
 					$Ajax->activate('_page_body');
 				}

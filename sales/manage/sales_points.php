@@ -13,7 +13,7 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "POS settings"));
 	include_once(APP_PATH . "sales/includes/db/sales_points_db.php");
-	simple_page_mode(true);
+	Page::simple_mode(true);
 	//----------------------------------------------------------------------------------------------------
 	function can_process()
 	{
@@ -63,7 +63,7 @@
 	}
 	if ($Mode == 'RESET') {
 		$selected_id = -1;
-		$sav         = get_post('show_inactive');
+		$sav = get_post('show_inactive');
 		unset($_POST);
 		$_POST['show_inactive'] = $sav;
 	}
@@ -102,9 +102,9 @@
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {
 			$myrow = get_sales_point($selected_id);
-			$_POST['name']     = $myrow["pos_name"];
+			$_POST['name'] = $myrow["pos_name"];
 			$_POST['location'] = $myrow["pos_location"];
-			$_POST['account']  = $myrow["pos_account"];
+			$_POST['account'] = $myrow["pos_account"];
 			if ($myrow["credit_sale"]) {
 				$_POST['credit_sale'] = 1;
 			}

@@ -254,7 +254,7 @@
 		$selector = "<span id='_{$name}_sel'>" . $selector . "</span>\n";
 		// if selectable or editable list is used - add select button
 		if ($select_submit != false || $search_button) {
-			$_select_button = "<input %s type='submit' class='combo_select' style='border:0;background:url(/themes/" . "%s/images/button_ok.png) no-repeat;%s' aspect='fallback' name='%s' value=' ' title='" . _("Select") . "'> "; // button class selects form reload/ajax selector update
+			$_select_button = "<input %s type='submit' class='combo_select' style='border:0;background:url(/themes/%s/images/button_ok.png) no-repeat;%s' aspect='fallback' name='%s' value=' ' title='" . _("Select") . "'> "; // button class selects form reload/ajax selector update
 			$selector .= sprintf($_select_button, $disabled, User::theme(), (User::fallback() ? '' : 'display:none;'), '_' . $name . '_update') . "\n";
 		}
 		// ------ make combo ----------
@@ -263,7 +263,7 @@
 			$edit_entry = "<input $disabled type='text' name='$search_box' id='$search_box' size='" . $opts['size'] . "' maxlength='" . $opts['max'] . "' value='$txt' class='$class' rel='$name' autocomplete='off' title='" . $opts['box_hint'] . "'" . (!User::fallback() && !$by_id
 			 ? " style=display:none;" : '') . ">\n";
 			if ($search_submit != false || $opts['editable']) {
-				$_search_button = "<input %s type='submit' class='combo_submit' style='border:0;background:url(/themes/" . "%s/images/locate.png) no-repeat;%s' aspect='fallback' name='%s' value=' ' title='" . _("Set filter") . "'> ";
+				$_search_button = "<input %s type='submit' class='combo_submit' style='border:0;background:url(/themes/%s/images/locate.png) no-repeat;%s' aspect='fallback' name='%s' value=' ' title='" . _("Set filter") . "'> ";
 				$edit_entry .= sprintf($_search_button, $disabled, User::theme(), (User::fallback() ? '' : 'display:none;'), $search_submit ? $search_submit : "_{$name}_button") . "\n";
 			}
 		}
@@ -361,7 +361,7 @@
 		$Ajax->addUpdate($name, "_{$name}_sel", $selector);
 		$selector = "<span id='_{$name}_sel'>" . $selector . "</span>\n";
 		if ($select_submit != false) { // if submit on change is used - add select button
-			$_select_button = "<input %s type='submit' class='combo_select' style='border:0;background:url(/themes/" . "%s/images/button_ok.png) no-repeat;%s' aspect='fallback' name='%s' value=' ' title='" . _("Select") . "'> ";
+			$_select_button = "<input %s type='submit' class='combo_select' style='border:0;background:url(/themes/%s/images/button_ok.png) no-repeat;%s' aspect='fallback' name='%s' value=' ' title='" . _("Select") . "'> ";
 			$selector .= sprintf($_select_button, $disabled, User::theme(), (User::fallback() ? '' : 'display:none;'), '_' . $name . '_update') . "\n";
 		}
 		JS::default_focus($name);
@@ -1585,7 +1585,7 @@ JS
 		if ($skip_bank_accounts) {
 			$sql
 			 = "SELECT chart.account_code, chart.account_name, type.name, chart.inactive, type.id
-			FROM (chart_master chart,chart_types type) " . "LEFT JOIN bank_accounts acc " . "ON chart.account_code=acc.account_code
+			FROM (chart_master chart,chart_types type) LEFT JOIN bank_accounts acc ON chart.account_code=acc.account_code
 				WHERE acc.account_code  IS NULL
 			AND chart.account_type=type.id";
 		} else {
@@ -1998,7 +1998,7 @@ JS
 
 	function print_profiles_list_row($label, $name, $selected_id = null, $spec_opt = false, $submit_on_change = true)
 	{
-		$sql = "SELECT profile FROM print_profiles" . " GROUP BY profile";
+		$sql = "SELECT profile FROM print_profiles GROUP BY profile";
 		$result = DBOld::query($sql, 'cannot get all profile names');
 		$profiles = array();
 		while ($myrow = DBOld::fetch($result)) {
@@ -2163,7 +2163,6 @@ JS
 	function tag_list($name, $height, $type, $multi = false, $all = false, $spec_opt = false)
 	{
 		// Get tags
-		include_once(APP_PATH . "admin/db/tags_db.php");
 		$results = Tags::get_all($type, $all);
 		while ($tag = DBOld::fetch($results)) {
 			$tags[$tag['id']] = $tag['name'];

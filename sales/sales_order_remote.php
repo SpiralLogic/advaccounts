@@ -10,7 +10,6 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	include_once(APP_PATH . "sales/includes/sales_ui.php");
 	include_once(APP_PATH . "sales/includes/ui/sales_order_ui.php");
-	include_once(APP_PATH . "sales/includes/db/sales_types_db.php");
 	if (!isset($_SESSION['remote_order'])) {
 		processing_start();
 		$_SESSION['remote_order'] = new Sales_Order(ST_SALESORDER, array(0));

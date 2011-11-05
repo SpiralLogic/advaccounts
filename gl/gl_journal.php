@@ -13,7 +13,7 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	include_once(APP_PATH . "gl/includes/ui/gl_journal_ui.php");
 	$js = '';
-	JS::get_js_open_window(800, 500);
+	JS::open_window(800, 500);
 	if (isset($_GET['ModifyGL'])) {
 		$_SESSION['page_title'] = sprintf(
 			_("Modifying Journal Transaction # %d."),
@@ -265,7 +265,7 @@
 	}
 	if (isset($_POST['go'])) {
 		ui_view::display_quick_entries($_SESSION['journal_items'], $_POST['person_id'], input_num('totamount'), QE_JOURNAL);
-		$_POST['totamount'] = Num::Num::price_format(0);
+		$_POST['totamount'] = Num::price_format(0);
 		$Ajax->activate('totamount');
 		line_start_focus();
 	}

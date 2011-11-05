@@ -47,12 +47,12 @@
 		//--------------------------------------------------------------------
 		function qty_format($number, $stock_id = null, &$dec)
 		{
-			$dec = get_qty_dec($stock_id);
+			$dec = Num::qty_dec($stock_id);
 			return Num::format($number, $dec);
 		}
 
 		// and get_qty_dec
-		function get_qty_dec($stock_id = null)
+		function qty_dec($stock_id = null)
 		{
 			if ($stock_id != null) {
 				$dec = Item_Unit::get_decimal($stock_id);

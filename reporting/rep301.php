@@ -138,7 +138,7 @@
 				$rep->TextCol(0, 1, $trans['stock_id']);
 				$rep->TextCol(1, 2,
 				 $trans['description'] . ($trans['inactive'] == 1 ? " (" . _("Inactive") . ")" : ""), -1);
-				$rep->AmountCol(2, 3, $trans['QtyOnHand'], get_qty_dec($trans['stock_id']));
+				$rep->AmountCol(2, 3, $trans['QtyOnHand'], Num::qty_dec($trans['stock_id']));
 				$rep->AmountCol(3, 4, $trans['UnitCost'], $dec);
 				$rep->AmountCol(4, 5, $trans['ItemTotal'], $dec);
 				$rep->fontsize += 2;

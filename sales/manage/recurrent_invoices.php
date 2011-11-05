@@ -11,9 +11,9 @@
 	 ***********************************************************************/
 	$page_security = 'SA_SRECURRENT';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	JS::get_js_open_window(900, 600);
+	JS::open_window(900, 600);
 	Page::start(_($help_context = "Recurrent Invoices"));
-	simple_page_mode(true);
+	Page::simple_mode(true);
 	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 		$input_error = 0;
 		if (strlen($_POST['description']) == 0) {
@@ -35,7 +35,7 @@
     			end='" . Dates::date2sql($_POST['end']) . "'
     			WHERE id = " . DB::escape($selected_id);
 				$note = _('Selected recurrent invoice has been updated');
-} else {
+			} else {
 				$sql
 				 = "INSERT INTO recurrent_invoices (description, order_no, debtor_no,
     			group_no, days, monthly, begin, end, last_sent) VALUES (" . DB::escape($_POST['description']) . ", "
@@ -69,7 +69,8 @@
 		unset($_POST);
 	}
 	//-------------------------------------------------------------------------------------------------
-	function get_sales_group_name($group_no) {
+	function get_sales_group_name($group_no)
+	{
 		$sql = "SELECT description FROM groups WHERE id = " . DB::escape($group_no);
 		$result = DBOld::query($sql, "could not get group");
 		$row = DBOld::fetch($result);
@@ -138,7 +139,7 @@
 	customer_list_row(_("Customer:"), 'debtor_no', null, " ", true);
 	if ($_POST['debtor_no'] > 0) {
 		customer_branches_list_row(_("Branch:"), $_POST['debtor_no'], 'group_no', null, false);
-} else {
+	} else {
 		sales_groups_list_row(_("Sales Group:"), 'group_no', null, " ");
 	}
 	small_amount_row(_("Days:"), 'days', 0, null, null, 0);

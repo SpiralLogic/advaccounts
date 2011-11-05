@@ -12,7 +12,7 @@
 	$page_security = 'SA_BANKACCOUNT';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "Bank Accounts"));
-	simple_page_mode();
+	Page::simple_mode();
 	//-----------------------------------------------------------------------------------
 	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 		//initialise no input errors assumed initially before we test
@@ -33,7 +33,7 @@
 					$_POST['dflt_curr_act']
 				);
 				Errors::notice(_('Bank account has been updated'));
-} else {
+			} else {
 				add_bank_account(
 					$_POST['account_code'], $_POST['account_type'],
 					$_POST['bank_account_name'], $_POST['bank_name'],
@@ -141,18 +141,18 @@
 	text_row(_("Bank Account Name:"), 'bank_account_name', null, 50, 100);
 	if ($is_editing) {
 		label_row(_("Account Type:"), $bank_account_types[$_POST['account_type']]);
-} else {
+	} else {
 		bank_account_types_list_row(_("Account Type:"), 'account_type', null);
 	}
 	if ($is_editing) {
 		label_row(_("Bank Account Currency:"), $_POST['BankAccountCurrency']);
-} else {
+	} else {
 		currencies_list_row(_("Bank Account Currency:"), 'BankAccountCurrency', null);
 	}
 	yesno_list_row(_("Default currency account:"), 'dflt_curr_act');
 	if ($is_editing) {
 		label_row(_("Bank Account GL Code:"), $_POST['account_code']);
-} else {
+	} else {
 		gl_all_accounts_list_row(_("Bank Account GL Code:"), 'account_code', null);
 	}
 	text_row(_("Bank Name:"), 'bank_name', null, 50, 60);

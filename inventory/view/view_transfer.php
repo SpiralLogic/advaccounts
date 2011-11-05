@@ -17,7 +17,7 @@
 	}
 	$transfer_items = get_stock_transfer($trans_no);
 	$from_trans = $transfer_items[0];
-	$to_trans   = $transfer_items[1];
+	$to_trans = $transfer_items[1];
 	Display::heading($systypes_array[ST_LOCTRANSFER] . " #$trans_no");
 	echo "<br>";
 	start_table(Config::get('tables_style2') . " width=90%");
@@ -39,14 +39,14 @@
 	$th = array(_("Item"), _("Description"), _("Quantity"), _("Units"));
 	table_header($th);
 	$transfer_items = get_stock_moves(ST_LOCTRANSFER, $trans_no);
-	$k              = 0;
+	$k = 0;
 	while ($item = DBOld::fetch($transfer_items))
 	{
 		if ($item['loc_code'] == $to_trans['loc_code']) {
 			alt_table_row_color($k);
 			label_cell($item['stock_id']);
 			label_cell($item['description']);
-			qty_cell($item['qty'], false, get_qty_dec($item['stock_id']));
+			qty_cell($item['qty'], false, Num::qty_dec($item['stock_id']));
 			label_cell($item['units']);
 			end_row();
 			;

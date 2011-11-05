@@ -12,7 +12,7 @@
 	$page_security = 'SA_ITEMTAXTYPE';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "Item Tax Types"));
-	simple_page_mode(true);
+	Page::simple_mode(true);
 	//-----------------------------------------------------------------------------------
 	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 		$input_error = 0;
@@ -24,8 +24,8 @@
 		if ($input_error != 1) {
 			// create an array of the exemptions
 			$exempt_from = array();
-			$tax_types   = Tax_Types::get_all_simple();
-			$i           = 0;
+			$tax_types = Tax_Types::get_all_simple();
+			$i = 0;
 			while ($myrow = DBOld::fetch($tax_types))
 			{
 				if (check_value('ExemptTax' . $myrow["id"])) {
@@ -36,7 +36,7 @@
 			if ($selected_id != -1) {
 				update($selected_id, $_POST['name'], $_POST['exempt'], $exempt_from);
 				Errors::notice(_('Selected item tax type has been updated'));
-} else {
+			} else {
 				add($_POST['name'], $_POST['exempt'], $exempt_from);
 				Errors::notice(_('New item tax type has been added'));
 			}
@@ -46,9 +46,9 @@
 	//-----------------------------------------------------------------------------------
 	function can_delete($selected_id)
 	{
-		$sql    = "SELECT COUNT(*) FROM stock_master WHERE tax_type_id=" . DB::escape($selected_id);
+		$sql = "SELECT COUNT(*) FROM stock_master WHERE tax_type_id=" . DB::escape($selected_id);
 		$result = DBOld::query($sql, "could not query stock master");
-		$myrow  = DBOld::fetch_row($result);
+		$myrow = DBOld::fetch_row($result);
 		if ($myrow[0] > 0) {
 			Errors::error(_("Cannot delete this item tax type because items have been created referring to it."));
 			return false;
@@ -66,7 +66,7 @@
 	}
 	if ($Mode == 'RESET') {
 		$selected_id = -1;
-		$sav         = get_post('show_inactive');
+		$sav = get_post('show_inactive');
 		unset($_POST);
 		$_POST['show_inactive'] = $sav;
 	}
@@ -101,7 +101,7 @@
 		if ($Mode == 'Edit') {
 			$myrow = get($selected_id);
 			unset($_POST); // clear exemption checkboxes
-			$_POST['name']   = $myrow["name"];
+			$_POST['name'] = $myrow["name"];
 			$_POST['exempt'] = $myrow["exempt"];
 			// read the exemptions and check the ones that are on
 			$exemptions = Tax_ItemType::get_exemptions($selected_id);

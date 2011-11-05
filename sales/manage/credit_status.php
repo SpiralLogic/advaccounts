@@ -13,9 +13,10 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "Credit Status"));
 	include(APP_PATH . "sales/includes/db/credit_status_db.php");
-	simple_page_mode(true);
+	Page::simple_mode(true);
 	//-----------------------------------------------------------------------------------
-	function can_process() {
+	function can_process()
+	{
 		if (strlen($_POST['reason_description']) == 0) {
 			Errors::error(_("The credit status description cannot be empty."));
 			JS::set_focus('reason_description');
@@ -37,7 +38,8 @@
 		$Mode = 'RESET';
 	}
 	//-----------------------------------------------------------------------------------
-	function can_delete($selected_id) {
+	function can_delete($selected_id)
+	{
 		$sql
 		 = "SELECT COUNT(*) FROM debtors_master
 		WHERE credit_status=" . DB::escape($selected_id);

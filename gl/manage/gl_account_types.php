@@ -12,9 +12,10 @@
 	$page_security = 'SA_GLACCOUNTGROUP';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "GL Account Groups"));
-	simple_page_mode(true);
+	Page::simple_mode(true);
 	//-----------------------------------------------------------------------------------
-	function can_process() {
+	function can_process()
+	{
 		global $selected_id;
 		if (!input_num('id')) {
 			Errors::error(_("The account id must be an integer and cannot be empty."));
@@ -40,7 +41,7 @@
 				if (update_account_type($selected_id, $_POST['name'], $_POST['class_id'], $_POST['parent'])) {
 					Errors::notice(_('Selected account type has been updated'));
 				}
-} else {
+			} else {
 				if (add_account_type($_POST['id'], $_POST['name'], $_POST['class_id'], $_POST['parent'])) {
 					Errors::notice(_('New account type has been added'));
 					$Mode = 'RESET';
@@ -49,7 +50,8 @@
 		}
 	}
 	//-----------------------------------------------------------------------------------
-	function can_delete($selected_id) {
+	function can_delete($selected_id)
+	{
 		if ($selected_id == -1) {
 			return false;
 		}
@@ -131,7 +133,7 @@
 		}
 		hidden('id');
 		label_row(_("ID:"), $_POST['id']);
-} else {
+	} else {
 		text_row_ex(_("ID:"), 'id', 10);
 	}
 	text_row_ex(_("Name:"), 'name', 50);

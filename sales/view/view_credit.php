@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 	$page_security = 'SA_SALESTRANSVIEW';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	JS::get_js_open_window(900, 500);
+	JS::open_window(900, 500);
 	Page::start(_($help_context = "View Credit Note"), true);
 	if (isset($_GET["trans_no"])) {
 		$trans_id = $_GET["trans_no"];
@@ -20,7 +20,7 @@
 	{
 		$trans_id = $_POST["trans_no"];
 	}
-	$myrow = get_customer_trans($trans_id, ST_CUSTCREDIT);
+	$myrow = Sales_Trans::get($trans_id, ST_CUSTCREDIT);
 	$branch = get_branch($myrow["branch_code"]);
 	Display::heading("<font color=red>" . sprintf(_("CREDIT NOTE #%d"), $trans_id) . "</font>");
 	echo "<br>";
@@ -83,7 +83,7 @@
 			}
 			label_cell($myrow2["stock_id"]);
 			label_cell($myrow2["StockDescription"]);
-			qty_cell($myrow2["quantity"], false, get_qty_dec($myrow2["stock_id"]));
+			qty_cell($myrow2["quantity"], false, Num::qty_dec($myrow2["stock_id"]));
 			label_cell($myrow2["units"], "align=right");
 			amount_cell($myrow2["unit_price"]);
 			label_cell($display_discount, "align=right");

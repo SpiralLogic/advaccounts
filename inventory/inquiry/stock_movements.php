@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 	$page_security = 'SA_ITEMSTRANSVIEW';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	JS::get_js_open_window(800, 500);
+	JS::open_window(800, 500);
 	Page::start(_($help_context = "Inventory Item Movement"));
 	//------------------------------------------------------------------------------------------------
 	Validation::check(Validation::STOCK_ITEMS, _("There are no items defined in the system."));
@@ -64,7 +64,7 @@
 	start_row("class='inquirybg'");
 	label_cell("<b>" . _("Quantity on hand before") . " " . $_POST['AfterDate'] . "</b>", "align=center colspan=5");
 	label_cell("&nbsp;", "colspan=2");
-	$dec = get_qty_dec($_POST['stock_id']);
+	$dec = Num::qty_dec($_POST['stock_id']);
 	qty_cell($before_qty, false, $dec);
 	end_row();
 	$j = 1;
@@ -91,7 +91,7 @@
 		$person = $myrow["person_id"];
 		$gl_posting = "";
 		if (($myrow["type"] == ST_CUSTDELIVERY) || ($myrow["type"] == ST_CUSTCREDIT)) {
-			$cust_row = get_customer_details_from_trans($myrow["type"], $myrow["trans_no"]);
+			$cust_row = Sales_Trans::get_details($myrow["type"], $myrow["trans_no"]);
 			if (strlen($cust_row['name']) > 0) {
 				$person = $cust_row['name'] . " (" . $cust_row['br_name'] . ")";
 			}

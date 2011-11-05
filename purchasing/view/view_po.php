@@ -12,7 +12,7 @@
 	$page_security = 'SA_SUPPTRANSVIEW';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	include(APP_PATH . "purchasing/includes/purchasing_ui.php");
-	JS::get_js_open_window(900, 500);
+	JS::open_window(900, 500);
 	Page::start(_($help_context = "View Purchase Order"), true);
 	if (!isset($_GET['trans_no'])) {
 		die ("<br>" . _("This page must be called with a purchase order number to review."));
@@ -47,7 +47,7 @@
 		}
 		label_cell($stock_item->stock_id);
 		label_cell($stock_item->description);
-		$dec = get_qty_dec($stock_item->stock_id);
+		$dec = Num::qty_dec($stock_item->stock_id);
 		qty_cell($stock_item->quantity, false, $dec);
 		label_cell($stock_item->units);
 		amount_decimal_cell($stock_item->price);

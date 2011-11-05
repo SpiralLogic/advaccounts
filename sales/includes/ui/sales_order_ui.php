@@ -10,11 +10,11 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	//--------------------------------------------------------------------------------
-	function add_to_order(&$order, $new_item, $new_item_qty, $price, $discount, $description = null, $no_errors = false)
+	function add_to_order($order, $new_item, $new_item_qty, $price, $discount, $description = null, $no_errors = false)
 	{
 		// calculate item price to sum of kit element prices factor for
 		// value distribution over all exploded kit items
-		$item = is_item_kit($new_item);
+		$item = Item_Code::is_kit($new_item);
 		if (DBOld::num_rows($item) == 1) {
 			$item = DBOld::fetch($item);
 			if (!$item['is_foreign'] && $item['item_code'] == $item['stock_id']) {
@@ -22,7 +22,7 @@
 					$order->line_items as $order_item
 				) {
 					if (strcasecmp($order_item->stock_id, $item['stock_id']) == 0 && !$no_errors) {
-						Errors::warning(_("For Part :") . $item['stock_id'] . " " . _("This item is already on this document. You have been warned."));
+						Errors::warning(_("For Part: '") . $item['stock_id'] . "' " . _("This item is already on this document. You have been warned."));
 						break;
 					}
 				}
@@ -37,7 +37,7 @@
 		else {
 			$price_factor = $price / $std_price;
 		}
-		$kit = get_item_kit($new_item);
+		$kit = Item_Code::get_kit($new_item);
 		$item_num = DBOld::num_rows($kit);
 		while ($item = DBOld::fetch($kit)) {
 			$std_price = get_kit_price($item['stock_id'], $order->customer_currency, $order->sales_type, $order->price_factor, get_post('OrderDate'), true);
@@ -63,7 +63,7 @@
 					$order->line_items as $order_item
 				) {
 					if (strcasecmp($order_item->stock_id, $item['stock_id']) == 0) {
-						Errors::warning(_("For Part :") . $item['stock_id'] . " " . _("This item is already on this document. You have been warned."));
+						Errors::warning(_("For Part: '") . $item['stock_id'] . "' " . _("This item is already on this document. You have been warned."));
 						break;
 					}
 				}
@@ -73,7 +73,7 @@
 	}
 
 	//---------------------------------------------------------------------------------
-	function get_customer_details_to_order(&$order, $customer_id, $branch_id)
+	function get_customer_details_to_order($order, $customer_id, $branch_id)
 	{
 		$ret_error = "";
 		$myrow = get_customer_to_order($customer_id);
@@ -168,7 +168,7 @@
 					if ($stock_item->qty_dispatched > $qoh) {
 						// oops, we don't have enough of one of the component items
 						start_row("class='stockmankobg'");
-						$qoh_msg .= $stock_item->stock_id . " - " . $stock_item->description . ": " . _("Quantity On Hand") . " = " . Num::format($qoh, get_qty_dec($stock_item->stock_id)) . '<br>';
+						$qoh_msg .= $stock_item->stock_id . " - " . $stock_item->description . ": " . _("Quantity On Hand") . " = " . Num::format($qoh, Num::qty_dec($stock_item->stock_id)) . '<br>';
 						$has_marked = true;
 					} else {
 						alt_table_row_color($k);
@@ -179,7 +179,7 @@
 				label_cell($stock_item->stock_id, "class='stock' data-stock_id='{$stock_item->stock_id}'");
 				//label_cell($stock_item->description, "nowrap" );
 				description_cell($stock_item->description);
-				$dec = get_qty_dec($stock_item->stock_id);
+				$dec = Num::qty_dec($stock_item->stock_id);
 				qty_cell($stock_item->qty_dispatched, false, $dec);
 				if ($order->trans_no != 0) {
 					qty_cell($stock_item->qty_done, false, $dec);
@@ -244,7 +244,7 @@ JS;
 	}
 
 	// ------------------------------------------------------------------------------
-	function display_order_header(&$order, $editable, $date_text, $display_tax_group = false)
+	function display_order_header($order, $editable, $date_text, $display_tax_group = false)
 	{
 		$Ajax = Ajax::instance();
 		start_outer_table("width=90% " . Config::get('tables_style2'));
@@ -352,7 +352,7 @@ JS;
 			label_row(_("Price List:"), $order->sales_type_name);
 		}
 		if ($order->sales_type != $_POST['sales_type']) {
-			$myrow = get_sales_type($_POST['sales_type']);
+			$myrow = Sales_Type::get($_POST['sales_type']);
 			$order->set_sales_type($myrow['id'], $myrow['sales_type'], $myrow['tax_included'], $myrow['factor']);
 			$Ajax->activate('sales_type');
 			$change_prices = 1;
@@ -418,7 +418,7 @@ JS;
 	}
 
 	//--------------------------------------------------------------------------------
-	function sales_order_item_controls(&$order, &$rowcounter, $line_no = -1)
+	function sales_order_item_controls($order, &$rowcounter, $line_no = -1)
 	{
 		$Ajax = Ajax::instance();
 		alt_table_row_color($rowcounter);
@@ -426,7 +426,7 @@ JS;
 		if ($line_no != -1 && $line_no == $id) // edit old line
 		{
 			$_POST['stock_id'] = $order->line_items[$id]->stock_id;
-			$dec = get_qty_dec($_POST['stock_id']);
+			$dec = Num::qty_dec($_POST['stock_id']);
 			$_POST['qty'] = Num::format($order->line_items[$id]->qty_dispatched, $dec);
 			$_POST['price'] = Num::price_format($order->line_items[$id]->price);
 			$_POST['Disc'] = Num::percent_format($order->line_items[$id]->discount_percent * 100);
@@ -477,7 +477,7 @@ JS;
 	}
 
 	//--------------------------------------------------------------------------------
-	function display_delivery_details(&$order)
+	function display_delivery_details($order)
 	{
 		$Ajax = Ajax::instance();
 		div_start('delivery');

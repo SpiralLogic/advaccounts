@@ -116,7 +116,7 @@
 					$SubTotal += $Net;
 					$dec2 = 0;
 					$DisplayPrice = Num::price_decimal($myrow2["unit_price"], $dec2);
-					$DisplayQty = Num::format($myrow2["quantity_ordered"], get_qty_dec($myrow2['item_code']));
+					$DisplayQty = Num::format($myrow2["quantity_ordered"], Num::qty_dec($myrow2['item_code']));
 					$DisplayNet = Num::format($Net, $dec);
 					$rep->TextCol(0, 1, $myrow2['item_code'], -2);
 					$oldrow = $rep->row;

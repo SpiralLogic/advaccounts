@@ -12,7 +12,7 @@
 	$page_security = 'SA_SALESTRANSVIEW';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	include_once(APP_PATH . "sales/includes/sales_ui.php");
-	JS::get_js_open_window(900, 600);
+	JS::open_window(900, 600);
 	Page::start(_($help_context = "View Sales Dispatch"), true);
 	if (isset($_GET["trans_no"])) {
 		$trans_id = $_GET["trans_no"];
@@ -22,7 +22,7 @@
 		$trans_id = $_POST["trans_no"];
 	}
 	// 3 different queries to get the information - what a JOKE !!!!
-	$myrow = get_customer_trans($trans_id, ST_CUSTDELIVERY);
+	$myrow = Sales_Trans::get($trans_id, ST_CUSTDELIVERY);
 	$branch = get_branch($myrow["branch_code"]);
 	$sales_order = get_sales_order_header($myrow["order_"], ST_SALESORDER);
 	Display::heading(sprintf(_("DISPATCH NOTE #%d"), $trans_id));
@@ -103,7 +103,7 @@
 			}
 			label_cell($myrow2["stock_id"]);
 			label_cell($myrow2["StockDescription"]);
-			qty_cell($myrow2["quantity"], false, get_qty_dec($myrow2["stock_id"]));
+			qty_cell($myrow2["quantity"], false, Num::qty_dec($myrow2["stock_id"]));
 			label_cell($myrow2["units"], "align=right");
 			amount_cell($myrow2["unit_price"]);
 			label_cell($display_discount, "nowrap align=right");

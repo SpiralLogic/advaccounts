@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 	$page_security = 'SA_RECONCILE';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	JS::get_js_open_window(800, 500);
+	JS::open_window(800, 500);
 	JS::footerFile('/js/reconcile.js');
 	Page::start(_($help_context = "Undeposited Funds"), Input::request('frame'));
 	Validation::check(Validation::BANK_ACCOUNTS, _("There are no bank accounts defined in the system."));

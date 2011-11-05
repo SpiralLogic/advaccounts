@@ -36,78 +36,68 @@
 	 * @version $Id: class.phpmailer.php 447 2009-05-25 01:36:38Z codeworxtech $
 	 * @license http://www.gnu.org/copyleft/lesser.html GNU Lesser General Public License
 	 */
-require dirname(__FILE__).DS.'smtp.php';
-	if (version_compare(PHP_VERSION, '5.0.0', '<')) exit("Sorry, this version of PHPMailer will only run on PHP version 5 or greater!\n");
-
-	class PHPMailer {
-
+	require dirname(__FILE__) . DS . 'smtp.php';
+	if (version_compare(PHP_VERSION, '5.0.0', '<')) {
+		exit("Sorry, this version of PHPMailer will only run on PHP version 5 or greater!\n");
+	}
+	class PHPMailer
+	{
 		/////////////////////////////////////////////////
 		// PROPERTIES, PUBLIC
 		/////////////////////////////////////////////////
-
 		/**
 		 * Email priority (1 = High, 3 = Normal, 5 = low).
 		 * @var int
 		 */
 		public $Priority = 3;
-
 		/**
 		 * Sets the CharSet of the message.
 		 * @var string
 		 */
 		public $CharSet = 'iso-8859-1';
-
 		/**
 		 * Sets the Content-type of the message.
 		 * @var string
 		 */
 		public $ContentType = 'text/plain';
-
 		/**
 		 * Sets the Encoding of the message. Options for this are
 		 *	"8bit", "7bit", "binary", "base64", and "quoted-printable".
 		 * @var string
 		 */
 		public $Encoding = '8bit';
-
 		/**
 		 * Holds the most recent mailer error message.
 		 * @var string
 		 */
 		public $ErrorInfo = '';
-
 		/**
 		 * Sets the From email address for the message.
 		 * @var string
 		 */
 		public $From = 'root@localhost';
-
 		/**
 		 * Sets the From name of the message.
 		 * @var string
 		 */
 		public $FromName = 'Root User';
-
 		/**
 		 * Sets the Sender email (Return-Path) of the message.	If not empty,
 		 * will be sent via -f to sendmail or as 'MAIL FROM' in smtp mode.
 		 * @var string
 		 */
 		public $Sender = '';
-
 		/**
 		 * Sets the Subject of the message.
 		 * @var string
 		 */
 		public $Subject = '';
-
 		/**
 		 * Sets the Body of the message.	This can be either an HTML or text body.
 		 * If HTML then run IsHTML(true).
 		 * @var string
 		 */
 		public $Body = '';
-
 		/**
 		 * Sets the text-only body of the message.	This automatically sets the
 		 * email to multipart/alternative.	This body can be read by mail
@@ -116,39 +106,33 @@ require dirname(__FILE__).DS.'smtp.php';
 		 * @var string
 		 */
 		public $AltBody = '';
-
 		/**
 		 * Sets word wrapping on the body of the message to a given number of
 		 * characters.
 		 * @var int
 		 */
 		public $WordWrap = 0;
-
 		/**
 		 * Method to send mail: ("mail", "sendmail", or "smtp").
 		 * @var string
 		 */
 		public $Mailer = 'mail';
-
 		/**
 		 * Sets the path of the sendmail program.
 		 * @var string
 		 */
 		public $Sendmail = '/usr/sbin/sendmail';
-
 		/**
 		 * Path to PHPMailer plugins.	Useful if the SMTP class
 		 * is in a different directory than the PHP include path.
 		 * @var string
 		 */
 		public $PluginDir = '';
-
 		/**
 		 * Sets the email address that a reading confirmation will be sent.
 		 * @var string
 		 */
 		public $ConfirmReadingTo = '';
-
 		/**
 		 * Sets the hostname to use in Message-Id and Received headers
 		 * and as default HELO string. If empty, the value returned
@@ -156,18 +140,15 @@ require dirname(__FILE__).DS.'smtp.php';
 		 * @var string
 		 */
 		public $Hostname = '';
-
 		/**
 		 * Sets the message ID to be used in the Message-Id header.
 		 * If empty, a unique id will be generated.
 		 * @var string
 		 */
 		public $MessageID = '';
-
 		/////////////////////////////////////////////////
 		// PROPERTIES FOR SMTP
 		/////////////////////////////////////////////////
-
 		/**
 		 * Sets the SMTP hosts.	All hosts must be separated by a
 		 * semicolon.	You can also specify a different port
@@ -177,57 +158,48 @@ require dirname(__FILE__).DS.'smtp.php';
 		 * @var string
 		 */
 		public $Host = 'localhost';
-
 		/**
 		 * Sets the default SMTP server port.
 		 * @var int
 		 */
 		public $Port = 25;
-
 		/**
 		 * Sets the SMTP HELO of the message (Default is $Hostname).
 		 * @var string
 		 */
 		public $Helo = '';
-
 		/**
 		 * Sets connection prefix.
 		 * Options are "", "ssl" or "tls"
 		 * @var string
 		 */
 		public $SMTPSecure = '';
-
 		/**
 		 * Sets SMTP authentication. Utilizes the Username and Password variables.
 		 * @var bool
 		 */
 		public $SMTPAuth = false;
-
 		/**
 		 * Sets SMTP username.
 		 * @var string
 		 */
 		public $Username = '';
-
 		/**
 		 * Sets SMTP password.
 		 * @var string
 		 */
 		public $Password = '';
-
 		/**
 		 * Sets the SMTP server timeout in seconds.
 		 * This function will not work with the win32 version.
 		 * @var int
 		 */
 		public $Timeout = 10;
-
 		/**
 		 * Sets SMTP class debugging on or off.
 		 * @var bool
 		 */
 		public $SMTPDebug = false;
-
 		/**
 		 * Prevents the SMTP connection from being closed after each mail
 		 * sending.	If this is set to true then to close the connection
@@ -235,53 +207,45 @@ require dirname(__FILE__).DS.'smtp.php';
 		 * @var bool
 		 */
 		public $SMTPKeepAlive = false;
-
 		/**
 		 * Provides the ability to have the TO field process individual
 		 * emails, instead of sending to entire TO addresses
 		 * @var bool
 		 */
 		public $SingleTo = false;
-
 		/**
 		 * If SingleTo is true, this provides the array to hold the email addresses
 		 * @var bool
 		 */
 		public $SingleToArray = array();
-
 		/**
 		 * Provides the ability to change the line ending
 		 * @var string
 		 */
 		public $LE = "\n";
-
 		/**
 		 * Used with DKIM DNS Resource Record
 		 * @var string
 		 */
 		public $DKIM_selector = 'phpmailer';
-
 		/**
 		 * Used with DKIM DNS Resource Record
 		 * optional, in format of email address 'you@yourdomain.com'
 		 * @var string
 		 */
 		public $DKIM_identity = '';
-
 		/**
 		 * Used with DKIM DNS Resource Record
 		 * optional, in format of email address 'you@yourdomain.com'
 		 * @var string
 		 */
 		public $DKIM_domain = '';
-
 		/**
 		 * Used with DKIM DNS Resource Record
 		 * optional, in format of email address 'you@yourdomain.com'
 		 * @var string
 		 */
 		public $DKIM_private = '';
-
 		/**
 		 * Callback Action function name
 		 * the function that handles the result of the send email action. Parameters:
@@ -294,17 +258,14 @@ require dirname(__FILE__).DS.'smtp.php';
 		 * @var string
 		 */
 		public $action_function = ''; //'callbackAction';
-
 		/**
 		 * Sets the PHPMailer Version number
 		 * @var string
 		 */
 		public $Version = '5.1';
-
 		/////////////////////////////////////////////////
 		// PROPERTIES, PRIVATE AND PROTECTED
 		/////////////////////////////////////////////////
-
 		private $smtp = NULL;
 		private $to = array();
 		private $cc = array();
@@ -321,24 +282,21 @@ require dirname(__FILE__).DS.'smtp.php';
 		private $sign_key_file = "";
 		private $sign_key_pass = "";
 		private $exceptions = false;
-
 		/////////////////////////////////////////////////
 		// CONSTANTS
 		/////////////////////////////////////////////////
-
 		const STOP_MESSAGE = 0; // message only, continue processing
 		const STOP_CONTINUE = 1; // message?, likely ok to continue processing
 		const STOP_CRITICAL = 2; // message, plus full stop, critical error reached
-
 		/////////////////////////////////////////////////
 		// METHODS, VARIABLES
 		/////////////////////////////////////////////////
-
 		/**
 		 * Constructor
 		 * @param boolean $exceptions Should we throw external exceptions?
 		 */
-		public function __construct($exceptions = false) {
+		public function __construct($exceptions = false)
+		{
 			$this->exceptions = ($exceptions == true);
 		}
 
@@ -347,7 +305,8 @@ require dirname(__FILE__).DS.'smtp.php';
 		 * @param bool $ishtml
 		 * @return void
 		 */
-		public function IsHTML($ishtml = true) {
+		public function IsHTML($ishtml = true)
+		{
 			if ($ishtml) {
 				$this->ContentType = 'text/html';
 			} else {
@@ -359,7 +318,8 @@ require dirname(__FILE__).DS.'smtp.php';
 		 * Sets Mailer to send message using SMTP.
 		 * @return void
 		 */
-		public function IsSMTP() {
+		public function IsSMTP()
+		{
 			$this->Mailer = 'smtp';
 		}
 
@@ -367,7 +327,8 @@ require dirname(__FILE__).DS.'smtp.php';
 		 * Sets Mailer to send message using PHP mail() function.
 		 * @return void
 		 */
-		public function IsMail() {
+		public function IsMail()
+		{
 			$this->Mailer = 'mail';
 		}
 
@@ -375,7 +336,8 @@ require dirname(__FILE__).DS.'smtp.php';
 		 * Sets Mailer to send message using the $Sendmail program.
 		 * @return void
 		 */
-		public function IsSendmail() {
+		public function IsSendmail()
+		{
 			if (!stristr(ini_get('sendmail_path'), 'sendmail')) {
 				$this->Sendmail = '/var/qmail/bin/sendmail';
 			}
@@ -386,7 +348,8 @@ require dirname(__FILE__).DS.'smtp.php';
 		 * Sets Mailer to send message using the qmail MTA.
 		 * @return void
 		 */
-		public function IsQmail() {
+		public function IsQmail()
+		{
 			if (stristr(ini_get('sendmail_path'), 'qmail')) {
 				$this->Sendmail = '/var/qmail/bin/sendmail';
 			}
@@ -396,14 +359,14 @@ require dirname(__FILE__).DS.'smtp.php';
 		/////////////////////////////////////////////////
 		// METHODS, RECIPIENTS
 		/////////////////////////////////////////////////
-
 		/**
 		 * Adds a "To" address.
 		 * @param string $address
 		 * @param string $name
 		 * @return boolean true on success, false if address already used
 		 */
-		public function AddAddress($address, $name = '') {
+		public function AddAddress($address, $name = '')
+		{
 			return $this->AddAnAddress('to', $address, $name);
 		}
 
@@ -414,7 +377,8 @@ require dirname(__FILE__).DS.'smtp.php';
 		 * @param string $name
 		 * @return boolean true on success, false if address already used
 		 */
-		public function AddCC($address, $name = '') {
+		public function AddCC($address, $name = '')
+		{
 			return $this->AddAnAddress('cc', $address, $name);
 		}
 
@@ -425,7 +389,8 @@ require dirname(__FILE__).DS.'smtp.php';
 		 * @param string $name
 		 * @return boolean true on success, false if address already used
 		 */
-		public function AddBCC($address, $name = '') {
+		public function AddBCC($address, $name = '')
+		{
 			return $this->AddAnAddress('bcc', $address, $name);
 		}
 
@@ -435,7 +400,8 @@ require dirname(__FILE__).DS.'smtp.php';
 		 * @param string $name
 		 * @return boolean
 		 */
-		public function AddReplyTo($address, $name = '') {
+		public function AddReplyTo($address, $name = '')
+		{
 			return $this->AddAnAddress('ReplyTo', $address, $name);
 		}
 
@@ -448,7 +414,8 @@ require dirname(__FILE__).DS.'smtp.php';
 		 * @return boolean true on success, false if address already used or invalid in some way
 		 * @access private
 		 */
-		private function AddAnAddress($kind, $address, $name = '') {
+		private function AddAnAddress($kind, $address, $name = '')
+		{
 			if (!preg_match('/^(to|cc|bcc|ReplyTo)$/', $kind)) {
 				echo 'Invalid recipient array: ' . kind;
 				return false;
@@ -484,7 +451,8 @@ require dirname(__FILE__).DS.'smtp.php';
 		 * @param string $name
 		 * @return boolean
 		 */
-		public function SetFrom($address, $name = '', $auto = 1) {
+		public function SetFrom($address, $name = '', $auto = 1)
+		{
 			$address = trim($address);
 			$name = trim(preg_replace('/[\r\n]+/', '', $name)); //Strip breaks and trim
 			if (!self::ValidateAddress($address)) {
@@ -519,7 +487,8 @@ require dirname(__FILE__).DS.'smtp.php';
 		 * @static
 		 * @access public
 		 */
-		public static function ValidateAddress($address) {
+		public static function ValidateAddress($address)
+		{
 			if (function_exists('filter_var')) { //Introduced in PHP 5.2
 				if (filter_var($address, FILTER_VALIDATE_EMAIL) === FALSE) {
 					return false;
@@ -535,47 +504,42 @@ require dirname(__FILE__).DS.'smtp.php';
 		/////////////////////////////////////////////////
 		// METHODS, MAIL SENDING
 		/////////////////////////////////////////////////
-
 		/**
 		 * Creates message and assigns Mailer. If the message is
 		 * not sent successfully then it returns false.	Use the ErrorInfo
 		 * variable to view description of the error.
 		 * @return bool
 		 */
-		public function Send() {
+		public function Send()
+		{
 			try {
 				if ((count($this->to) + count($this->cc) + count($this->bcc)) < 1) {
 					throw new phpmailerException($this->Lang('provide_address'), self::STOP_CRITICAL);
 				}
-
 				// Set whether the message is multipart/alternative
 				if (!empty($this->AltBody)) {
 					$this->ContentType = 'multipart/alternative';
 				}
-
 				$this->error_count = 0; // reset errors
 				$this->SetMessageType();
 				$header = $this->CreateHeader();
 				$body = $this->CreateBody();
-
 				if (empty($this->Body)) {
 					throw new phpmailerException($this->Lang('empty_message'), self::STOP_CRITICAL);
 				}
-
 				// digitally sign with DKIM if enabled
 				if ($this->DKIM_domain && $this->DKIM_private) {
 					$header_dkim = $this->DKIM_Add($header, $this->Subject, $body);
 					$header = str_replace("\r\n", "\n", $header_dkim) . $header;
 				}
-
 				// Choose the mailer and send through it
 				switch ($this->Mailer) {
-					case 'sendmail':
-						return $this->SendmailSend($header, $body);
-					case 'smtp':
-						return $this->SmtpSend($header, $body);
-					default:
-						return $this->MailSend($header, $body);
+				case 'sendmail':
+					return $this->SendmailSend($header, $body);
+				case 'smtp':
+					return $this->SmtpSend($header, $body);
+				default:
+					return $this->MailSend($header, $body);
 				}
 			}
 			catch (phpmailerException $e) {
@@ -595,7 +559,8 @@ require dirname(__FILE__).DS.'smtp.php';
 		 * @access protected
 		 * @return bool
 		 */
-		protected function SendmailSend($header, $body) {
+		protected function SendmailSend($header, $body)
+		{
 			if ($this->Sender != '') {
 				$sendmail = sprintf("%s -oi -f %s -t", escapeshellcmd($this->Sendmail), escapeshellarg($this->Sender));
 			} else {
@@ -641,13 +606,13 @@ require dirname(__FILE__).DS.'smtp.php';
 		 * @access protected
 		 * @return bool
 		 */
-		protected function MailSend($header, $body) {
+		protected function MailSend($header, $body)
+		{
 			$toArr = array();
 			foreach ($this->to as $t) {
 				$toArr[] = $this->AddrFormat($t);
 			}
 			$to = implode(', ', $toArr);
-
 			$params = sprintf("-oi -f %s", $this->Sender);
 			if ($this->Sender != '' && strlen(ini_get('safe_mode')) < 1) {
 				$old_from = ini_get('sendmail_from');
@@ -698,10 +663,10 @@ require dirname(__FILE__).DS.'smtp.php';
 		 * @access protected
 		 * @return bool
 		 */
-		protected function SmtpSend($header, $body) {
+		protected function SmtpSend($header, $body)
+		{
 			//require_once $this->PluginDir . 'class.smtp.php';
 			$bad_rcpt = array();
-
 			if (!$this->SmtpConnect()) {
 				throw new phpmailerException($this->Lang('smtp_connect_failed'), self::STOP_CRITICAL);
 			}
@@ -709,7 +674,6 @@ require dirname(__FILE__).DS.'smtp.php';
 			if (!$this->smtp->Mail($smtp_from)) {
 				throw new phpmailerException($this->Lang('from_failed') . $smtp_from, self::STOP_CRITICAL);
 			}
-
 			// Attempt to send attach all recipients
 			foreach ($this->to as $to) {
 				if (!$this->smtp->Recipient($to[0])) {
@@ -747,7 +711,6 @@ require dirname(__FILE__).DS.'smtp.php';
 					$this->doCallback($isSent, '', '', $bcc[0], $this->Subject, $body);
 				}
 			}
-
 			if (count($bad_rcpt) > 0) { //Create error message for any bad addresses
 				$badaddresses = implode(', ', $bad_rcpt);
 				throw new phpmailerException($this->Lang('recipients_failed') . $badaddresses);
@@ -768,16 +731,15 @@ require dirname(__FILE__).DS.'smtp.php';
 		 * @access public
 		 * @return bool
 		 */
-		public function SmtpConnect() {
+		public function SmtpConnect()
+		{
 			if (is_null($this->smtp)) {
 				$this->smtp = new SMTP();
 			}
-
 			$this->smtp->do_debug = $this->SMTPDebug;
 			$hosts = explode(';', $this->Host);
 			$index = 0;
 			$connection = $this->smtp->Connected();
-
 			// Retry while there is no connection
 			try {
 				while ($index < count($hosts) && !$connection) {
@@ -789,24 +751,18 @@ require dirname(__FILE__).DS.'smtp.php';
 						$host = $hosts[$index];
 						$port = $this->Port;
 					}
-
 					$tls = ($this->SMTPSecure == 'tls');
 					$ssl = ($this->SMTPSecure == 'ssl');
-
 					if ($this->smtp->Connect(($ssl ? 'ssl://' : '') . $host, $port, $this->Timeout)) {
-
 						$hello = ($this->Helo != '' ? $this->Helo : $this->ServerHostname());
 						$this->smtp->Hello($hello);
-
 						if ($tls) {
 							if (!$this->smtp->StartTLS()) {
 								throw new phpmailerException($this->Lang('tls'));
 							}
-
 							//We must resend HELO after tls negotiation
 							$this->smtp->Hello($hello);
 						}
-
 						$connection = true;
 						if ($this->SMTPAuth) {
 							if (!$this->smtp->Authenticate($this->Username, $this->Password)) {
@@ -831,7 +787,8 @@ require dirname(__FILE__).DS.'smtp.php';
 		 * Closes the active SMTP session if one exists.
 		 * @return void
 		 */
-		public function SmtpClose() {
+		public function SmtpClose()
+		{
 			if (!is_null($this->smtp)) {
 				if ($this->smtp->Connected()) {
 					$this->smtp->Quit();
@@ -847,7 +804,8 @@ require dirname(__FILE__).DS.'smtp.php';
 		 * @param string $lang_path Path to the language file directory
 		 * @access public
 		 */
-		function SetLanguage($langcode = 'en', $lang_path = 'language/') {
+		function SetLanguage($langcode = 'en', $lang_path = 'language/')
+		{
 			//Define full set of translatable strings
 			$PHPMAILER_LANG = array('provide_address' => 'You must provide at least one recipient email address.', 'mailer_not_supported' => ' mailer is not supported.', 'execute' => 'Could not execute: ', 'instantiate' => 'Could not instantiate mail function.',
 				'authenticate' => 'SMTP Error: Could not authenticate.', 'from_failed' => 'The following From address failed: ', 'recipients_failed' => 'SMTP Error: The following recipients failed: ', 'data_not_accepted' => 'SMTP Error: Data not accepted.',
@@ -867,20 +825,21 @@ require dirname(__FILE__).DS.'smtp.php';
 		 * Return the current array of language strings
 		 * @return array
 		 */
-		public function GetTranslations() {
+		public function GetTranslations()
+		{
 			return $this->language;
 		}
 
 		/////////////////////////////////////////////////
 		// METHODS, MESSAGE CREATION
 		/////////////////////////////////////////////////
-
 		/**
 		 * Creates recipient headers.
 		 * @access public
 		 * @return string
 		 */
-		public function AddrAppend($type, $addr) {
+		public function AddrAppend($type, $addr)
+		{
 			$addr_str = $type . ': ';
 			$addresses = array();
 			foreach ($addr as $a) {
@@ -888,7 +847,6 @@ require dirname(__FILE__).DS.'smtp.php';
 			}
 			$addr_str .= implode(', ', $addresses);
 			$addr_str .= $this->LE;
-
 			return $addr_str;
 		}
 
@@ -897,7 +855,8 @@ require dirname(__FILE__).DS.'smtp.php';
 		 * @access public
 		 * @return string
 		 */
-		public function AddrFormat($addr) {
+		public function AddrFormat($addr)
+		{
 			if (empty($addr[1])) {
 				return $this->SecureHeader($addr[0]);
 			} else {
@@ -915,17 +874,16 @@ require dirname(__FILE__).DS.'smtp.php';
 		 * @access public
 		 * @return string
 		 */
-		public function WrapText($message, $length, $qp_mode = false) {
+		public function WrapText($message, $length, $qp_mode = false)
+		{
 			$soft_break = ($qp_mode) ? sprintf(" =%s", $this->LE) : $this->LE;
 			// If utf-8 encoding is used, we will need to make sure we don't
 			// split multibyte characters when we wrap
 			$is_utf8 = (strtolower($this->CharSet) == "utf-8");
-
 			$message = $this->FixEOL($message);
 			if (substr($message, -1) == $this->LE) {
 				$message = substr($message, 0, -1);
 			}
-
 			$line = explode($this->LE, $message);
 			$message = '';
 			for ($i = 0; $i < count($line); $i++) {
@@ -965,7 +923,6 @@ require dirname(__FILE__).DS.'smtp.php';
 							}
 							$part = substr($word, 0, $len);
 							$word = substr($word, $len);
-
 							if (strlen($word) > 0) {
 								$message .= $part . sprintf("=%s", $this->LE);
 							} else {
@@ -975,7 +932,6 @@ require dirname(__FILE__).DS.'smtp.php';
 					} else {
 						$buf_o = $buf;
 						$buf .= ($e == 0) ? $word : (' ' . $word);
-
 						if (strlen($buf) > $length and $buf_o != '') {
 							$message .= $buf_o . $soft_break;
 							$buf = $word;
@@ -984,7 +940,6 @@ require dirname(__FILE__).DS.'smtp.php';
 				}
 				$message .= $buf . $this->LE;
 			}
-
 			return $message;
 		}
 
@@ -997,7 +952,8 @@ require dirname(__FILE__).DS.'smtp.php';
 		 * @param int	$maxLength	 find last character boundary prior to this length
 		 * @return int
 		 */
-		public function UTF8CharBoundary($encodedText, $maxLength) {
+		public function UTF8CharBoundary($encodedText, $maxLength)
+		{
 			$foundSplitPos = false;
 			$lookBack = 3;
 			while (!$foundSplitPos) {
@@ -1028,25 +984,24 @@ require dirname(__FILE__).DS.'smtp.php';
 			return $maxLength;
 		}
 
-
 		/**
 		 * Set the body wrapping.
 		 * @access public
 		 * @return void
 		 */
-		public function SetWordWrap() {
+		public function SetWordWrap()
+		{
 			if ($this->WordWrap < 1) {
 				return;
 			}
-
 			switch ($this->message_type) {
-				case 'alt':
-				case 'alt_attachments':
-					$this->AltBody = $this->WrapText($this->AltBody, $this->WordWrap);
-					break;
-				default:
-					$this->Body = $this->WrapText($this->Body, $this->WordWrap);
-					break;
+			case 'alt':
+			case 'alt_attachments':
+				$this->AltBody = $this->WrapText($this->AltBody, $this->WordWrap);
+				break;
+			default:
+				$this->Body = $this->WrapText($this->Body, $this->WordWrap);
+				break;
 			}
 		}
 
@@ -1055,21 +1010,19 @@ require dirname(__FILE__).DS.'smtp.php';
 		 * @access public
 		 * @return string The assembled header
 		 */
-		public function CreateHeader() {
+		public function CreateHeader()
+		{
 			$result = '';
-
 			// Set the boundaries
 			$uniq_id = md5(uniqid(time()));
 			$this->boundary[1] = 'b1_' . $uniq_id;
 			$this->boundary[2] = 'b2_' . $uniq_id;
-
 			$result .= $this->HeaderLine('Date', self::RFCDate());
 			if ($this->Sender == '') {
 				$result .= $this->HeaderLine('Return-Path', trim($this->From));
 			} else {
 				$result .= $this->HeaderLine('Return-Path', trim($this->Sender));
 			}
-
 			// To be created automatically by mail()
 			if ($this->Mailer != 'mail') {
 				if ($this->SingleTo === true) {
@@ -1084,31 +1037,25 @@ require dirname(__FILE__).DS.'smtp.php';
 					}
 				}
 			}
-
 			$from = array();
 			$from[0][0] = trim($this->From);
 			$from[0][1] = $this->FromName;
 			$result .= $this->AddrAppend('From', $from);
-
 			// sendmail and mail() extract Cc from the header before sending
 			if (count($this->cc) > 0) {
 				$result .= $this->AddrAppend('Cc', $this->cc);
 			}
-
 			// sendmail and mail() extract Bcc from the header before sending
 			if ((($this->Mailer == 'sendmail') || ($this->Mailer == 'mail')) && (count($this->bcc) > 0)) {
 				$result .= $this->AddrAppend('Bcc', $this->bcc);
 			}
-
 			if (count($this->ReplyTo) > 0) {
 				$result .= $this->AddrAppend('Reply-to', $this->ReplyTo);
 			}
-
 			// mail() sets the subject itself
 			if ($this->Mailer != 'mail') {
 				$result .= $this->HeaderLine('Subject', $this->EncodeHeader($this->SecureHeader($this->Subject)));
 			}
-
 			if ($this->MessageID != '') {
 				$result .= $this->HeaderLine('Message-ID', $this->MessageID);
 			} else {
@@ -1116,11 +1063,9 @@ require dirname(__FILE__).DS.'smtp.php';
 			}
 			$result .= $this->HeaderLine('X-Priority', $this->Priority);
 			$result .= $this->HeaderLine('X-Mailer', 'PHPMailer ' . $this->Version . ' (phpmailer.sourceforge.net)');
-
 			if ($this->ConfirmReadingTo != '') {
 				$result .= $this->HeaderLine('Disposition-Notification-To', '<' . trim($this->ConfirmReadingTo) . '>');
 			}
-
 			// Add custom headers
 			for ($index = 0; $index < count($this->CustomHeader); $index++) {
 				$result .= $this->HeaderLine(trim($this->CustomHeader[$index][0]), $this->EncodeHeader(trim($this->CustomHeader[$index][1])));
@@ -1129,7 +1074,6 @@ require dirname(__FILE__).DS.'smtp.php';
 				$result .= $this->HeaderLine('MIME-Version', '1.0');
 				$result .= $this->GetMailMIME();
 			}
-
 			return $result;
 		}
 
@@ -1138,32 +1082,31 @@ require dirname(__FILE__).DS.'smtp.php';
 		 * @access public
 		 * @return string
 		 */
-		public function GetMailMIME() {
+		public function GetMailMIME()
+		{
 			$result = '';
 			switch ($this->message_type) {
-				case 'plain':
-					$result .= $this->HeaderLine('Content-Transfer-Encoding', $this->Encoding);
-					$result .= sprintf("Content-Type: %s; charset=\"%s\"", $this->ContentType, $this->CharSet);
-					break;
-				case 'attachments':
-				case 'alt_attachments':
-					if ($this->InlineImageExists()) {
-						$result .= sprintf("Content-Type: %s;%s\ttype=\"text/html\";%s\tboundary=\"%s\"%s", 'multipart/related', $this->LE, $this->LE, $this->boundary[1], $this->LE);
-					} else {
-						$result .= $this->HeaderLine('Content-Type', 'multipart/mixed;');
-						$result .= $this->TextLine("\tboundary=\"" . $this->boundary[1] . '"');
-					}
-					break;
-				case 'alt':
-					$result .= $this->HeaderLine('Content-Type', 'multipart/alternative;');
+			case 'plain':
+				$result .= $this->HeaderLine('Content-Transfer-Encoding', $this->Encoding);
+				$result .= sprintf("Content-Type: %s; charset=\"%s\"", $this->ContentType, $this->CharSet);
+				break;
+			case 'attachments':
+			case 'alt_attachments':
+				if ($this->InlineImageExists()) {
+					$result .= sprintf("Content-Type: %s;%s\ttype=\"text/html\";%s\tboundary=\"%s\"%s", 'multipart/related', $this->LE, $this->LE, $this->boundary[1], $this->LE);
+				} else {
+					$result .= $this->HeaderLine('Content-Type', 'multipart/mixed;');
 					$result .= $this->TextLine("\tboundary=\"" . $this->boundary[1] . '"');
-					break;
+				}
+				break;
+			case 'alt':
+				$result .= $this->HeaderLine('Content-Type', 'multipart/alternative;');
+				$result .= $this->TextLine("\tboundary=\"" . $this->boundary[1] . '"');
+				break;
 			}
-
 			if ($this->Mailer != 'mail') {
 				$result .= $this->LE . $this->LE;
 			}
-
 			return $result;
 		}
 
@@ -1172,48 +1115,45 @@ require dirname(__FILE__).DS.'smtp.php';
 		 * @access public
 		 * @return string The assembled message body
 		 */
-		public function CreateBody() {
+		public function CreateBody()
+		{
 			$body = '';
-
 			if ($this->sign_key_file) {
 				$body .= $this->GetMailMIME();
 			}
-
 			$this->SetWordWrap();
-
 			switch ($this->message_type) {
-				case 'alt':
-					$body .= $this->GetBoundary($this->boundary[1], '', 'text/plain', '');
-					$body .= $this->EncodeString($this->AltBody, $this->Encoding);
-					$body .= $this->LE . $this->LE;
-					$body .= $this->GetBoundary($this->boundary[1], '', 'text/html', '');
-					$body .= $this->EncodeString($this->Body, $this->Encoding);
-					$body .= $this->LE . $this->LE;
-					$body .= $this->EndBoundary($this->boundary[1]);
-					break;
-				case 'plain':
-					$body .= $this->EncodeString($this->Body, $this->Encoding);
-					break;
-				case 'attachments':
-					$body .= $this->GetBoundary($this->boundary[1], '', '', '');
-					$body .= $this->EncodeString($this->Body, $this->Encoding);
-					$body .= $this->LE;
-					$body .= $this->AttachAll();
-					break;
-				case 'alt_attachments':
-					$body .= sprintf("--%s%s", $this->boundary[1], $this->LE);
-					$body .= sprintf("Content-Type: %s;%s" . "\tboundary=\"%s\"%s", 'multipart/alternative', $this->LE, $this->boundary[2], $this->LE . $this->LE);
-					$body .= $this->GetBoundary($this->boundary[2], '', 'text/plain', '') . $this->LE; // Create text body
-					$body .= $this->EncodeString($this->AltBody, $this->Encoding);
-					$body .= $this->LE . $this->LE;
-					$body .= $this->GetBoundary($this->boundary[2], '', 'text/html', '') . $this->LE; // Create the HTML body
-					$body .= $this->EncodeString($this->Body, $this->Encoding);
-					$body .= $this->LE . $this->LE;
-					$body .= $this->EndBoundary($this->boundary[2]);
-					$body .= $this->AttachAll();
-					break;
+			case 'alt':
+				$body .= $this->GetBoundary($this->boundary[1], '', 'text/plain', '');
+				$body .= $this->EncodeString($this->AltBody, $this->Encoding);
+				$body .= $this->LE . $this->LE;
+				$body .= $this->GetBoundary($this->boundary[1], '', 'text/html', '');
+				$body .= $this->EncodeString($this->Body, $this->Encoding);
+				$body .= $this->LE . $this->LE;
+				$body .= $this->EndBoundary($this->boundary[1]);
+				break;
+			case 'plain':
+				$body .= $this->EncodeString($this->Body, $this->Encoding);
+				break;
+			case 'attachments':
+				$body .= $this->GetBoundary($this->boundary[1], '', '', '');
+				$body .= $this->EncodeString($this->Body, $this->Encoding);
+				$body .= $this->LE;
+				$body .= $this->AttachAll();
+				break;
+			case 'alt_attachments':
+				$body .= sprintf("--%s%s", $this->boundary[1], $this->LE);
+				$body .= sprintf("Content-Type: %s;%s\tboundary=\"%s\"%s", 'multipart/alternative', $this->LE, $this->boundary[2], $this->LE . $this->LE);
+				$body .= $this->GetBoundary($this->boundary[2], '', 'text/plain', '') . $this->LE; // Create text body
+				$body .= $this->EncodeString($this->AltBody, $this->Encoding);
+				$body .= $this->LE . $this->LE;
+				$body .= $this->GetBoundary($this->boundary[2], '', 'text/html', '') . $this->LE; // Create the HTML body
+				$body .= $this->EncodeString($this->Body, $this->Encoding);
+				$body .= $this->LE . $this->LE;
+				$body .= $this->EndBoundary($this->boundary[2]);
+				$body .= $this->AttachAll();
+				break;
 			}
-
 			if ($this->IsError()) {
 				$body = '';
 			} elseif ($this->sign_key_file) {
@@ -1238,7 +1178,6 @@ require dirname(__FILE__).DS.'smtp.php';
 					}
 				}
 			}
-
 			return $body;
 		}
 
@@ -1246,7 +1185,8 @@ require dirname(__FILE__).DS.'smtp.php';
 		 * Returns the start of a message boundary.
 		 * @access private
 		 */
-		private function GetBoundary($boundary, $charSet, $contentType, $encoding) {
+		private function GetBoundary($boundary, $charSet, $contentType, $encoding)
+		{
 			$result = '';
 			if ($charSet == '') {
 				$charSet = $this->CharSet;
@@ -1262,7 +1202,6 @@ require dirname(__FILE__).DS.'smtp.php';
 			$result .= $this->LE;
 			$result .= $this->HeaderLine('Content-Transfer-Encoding', $encoding);
 			$result .= $this->LE;
-
 			return $result;
 		}
 
@@ -1270,7 +1209,8 @@ require dirname(__FILE__).DS.'smtp.php';
 		 * Returns the end of a message boundary.
 		 * @access private
 		 */
-		private function EndBoundary($boundary) {
+		private function EndBoundary($boundary)
+		{
 			return $this->LE . '--' . $boundary . '--' . $this->LE;
 		}
 
@@ -1279,7 +1219,8 @@ require dirname(__FILE__).DS.'smtp.php';
 		 * @access private
 		 * @return void
 		 */
-		private function SetMessageType() {
+		private function SetMessageType()
+		{
 			if (count($this->attachment) < 1 && strlen($this->AltBody) < 1) {
 				$this->message_type = 'plain';
 			} else {
@@ -1300,7 +1241,8 @@ require dirname(__FILE__).DS.'smtp.php';
 		 * @access public
 		 * @return string
 		 */
-		public function HeaderLine($name, $value) {
+		public function HeaderLine($name, $value)
+		{
 			return $name . ': ' . $value . $this->LE;
 		}
 
@@ -1309,14 +1251,14 @@ require dirname(__FILE__).DS.'smtp.php';
 		 * @access public
 		 * @return string
 		 */
-		public function TextLine($value) {
+		public function TextLine($value)
+		{
 			return $value . $this->LE;
 		}
 
 		/////////////////////////////////////////////////
 		// CLASS METHODS, ATTACHMENTS
 		/////////////////////////////////////////////////
-
 		/**
 		 * Adds an attachment from a path on the filesystem.
 		 * Returns false if the file could not be found
@@ -1327,7 +1269,8 @@ require dirname(__FILE__).DS.'smtp.php';
 		 * @param string $type File extension (MIME) type.
 		 * @return bool
 		 */
-		public function AddAttachment($path, $name = '', $encoding = 'base64', $type = 'application/octet-stream') {
+		public function AddAttachment($path, $name = '', $encoding = 'base64', $type = 'application/octet-stream')
+		{
 			try {
 				if (!@is_file($path)) {
 					throw new phpmailerException($this->Lang('file_access') . $path, self::STOP_CONTINUE);
@@ -1336,7 +1279,6 @@ require dirname(__FILE__).DS.'smtp.php';
 				if ($name == '') {
 					$name = $filename;
 				}
-
 				$this->attachment[] = array(0 => $path, 1 => $filename, 2 => $name, 3 => $encoding, 4 => $type, 5 => false, // isStringAttachment
 					6 => 'attachment', 7 => 0
 				);
@@ -1358,7 +1300,8 @@ require dirname(__FILE__).DS.'smtp.php';
 		 * Return the current array of attachments
 		 * @return array
 		 */
-		public function GetAttachments() {
+		public function GetAttachments()
+		{
 			return $this->attachment;
 		}
 
@@ -1368,12 +1311,12 @@ require dirname(__FILE__).DS.'smtp.php';
 		 * @access private
 		 * @return string
 		 */
-		private function AttachAll() {
+		private function AttachAll()
+		{
 			// Return text of body
 			$mime = array();
 			$cidUniq = array();
 			$incl = array();
-
 			// Add all attachments
 			foreach ($this->attachment as $attachment) {
 				// Check for string attachment
@@ -1383,7 +1326,6 @@ require dirname(__FILE__).DS.'smtp.php';
 				} else {
 					$path = $attachment[0];
 				}
-
 				if (in_array($attachment[0], $incl)) {
 					continue;
 				}
@@ -1398,17 +1340,13 @@ require dirname(__FILE__).DS.'smtp.php';
 					continue;
 				}
 				$cidUniq[$cid] = true;
-
 				$mime[] = sprintf("--%s%s", $this->boundary[1], $this->LE);
 				$mime[] = sprintf("Content-Type: %s; name=\"%s\"%s", $type, $this->EncodeHeader($this->SecureHeader($name)), $this->LE);
 				$mime[] = sprintf("Content-Transfer-Encoding: %s%s", $encoding, $this->LE);
-
 				if ($disposition == 'inline') {
 					$mime[] = sprintf("Content-ID: <%s>%s", $cid, $this->LE);
 				}
-
 				$mime[] = sprintf("Content-Disposition: %s; filename=\"%s\"%s", $disposition, $this->EncodeHeader($this->SecureHeader($name)), $this->LE . $this->LE);
-
 				// Encode as string attachment
 				if ($bString) {
 					$mime[] = $this->EncodeString($string, $encoding);
@@ -1424,9 +1362,7 @@ require dirname(__FILE__).DS.'smtp.php';
 					$mime[] = $this->LE . $this->LE;
 				}
 			}
-
 			$mime[] = sprintf("--%s--%s", $this->boundary[1], $this->LE);
-
 			return join('', $mime);
 		}
 
@@ -1439,13 +1375,15 @@ require dirname(__FILE__).DS.'smtp.php';
 		 * @access private
 		 * @return string
 		 */
-		private function EncodeFile($path, $encoding = 'base64') {
+		private function EncodeFile($path, $encoding = 'base64')
+		{
 			try {
 				if (!is_readable($path)) {
 					throw new phpmailerException($this->Lang('file_open') . $path, self::STOP_CONTINUE);
 				}
 				if (function_exists('get_magic_quotes')) {
-					function get_magic_quotes() {
+					function get_magic_quotes()
+					{
 						return false;
 					}
 				}
@@ -1474,27 +1412,30 @@ require dirname(__FILE__).DS.'smtp.php';
 		 * @access public
 		 * @return string
 		 */
-		public function EncodeString($str, $encoding = 'base64') {
+		public function EncodeString($str, $encoding = 'base64')
+		{
 			$encoded = '';
 			switch (strtolower($encoding)) {
-				case 'base64':
-					$encoded = chunk_split(base64_encode($str), 76, $this->LE);
-					break;
-				case '7bit':
-				case '8bit':
-					$encoded = $this->FixEOL($str);
-					//Make sure it ends with a line break
-					if (substr($encoded, -(strlen($this->LE))) != $this->LE) $encoded .= $this->LE;
-					break;
-				case 'binary':
-					$encoded = $str;
-					break;
-				case 'quoted-printable':
-					$encoded = $this->EncodeQP($str);
-					break;
-				default:
-					$this->SetError($this->Lang('encoding') . $encoding);
-					break;
+			case 'base64':
+				$encoded = chunk_split(base64_encode($str), 76, $this->LE);
+				break;
+			case '7bit':
+			case '8bit':
+				$encoded = $this->FixEOL($str);
+				//Make sure it ends with a line break
+				if (substr($encoded, -(strlen($this->LE))) != $this->LE) {
+					$encoded .= $this->LE;
+				}
+				break;
+			case 'binary':
+				$encoded = $str;
+				break;
+			case 'quoted-printable':
+				$encoded = $this->EncodeQP($str);
+				break;
+			default:
+				$this->SetError($this->Lang('encoding') . $encoding);
+				break;
 			}
 			return $encoded;
 		}
@@ -1504,35 +1445,33 @@ require dirname(__FILE__).DS.'smtp.php';
 		 * @access public
 		 * @return string
 		 */
-		public function EncodeHeader($str, $position = 'text') {
+		public function EncodeHeader($str, $position = 'text')
+		{
 			$x = 0;
-
 			switch (strtolower($position)) {
-				case 'phrase':
-					if (!preg_match('/[\200-\377]/', $str)) {
-						// Can't use addslashes as we don't know what value has magic_quotes_sybase
-						$encoded = addcslashes($str, "\0..\37\177\\\"");
-						if (($str == $encoded) && !preg_match('/[^A-Za-z0-9!#$%&\'*+\/=?^_`{|}~ -]/', $str)) {
-							return ($encoded);
-						} else {
-							return ("\"$encoded\"");
-						}
+			case 'phrase':
+				if (!preg_match('/[\200-\377]/', $str)) {
+					// Can't use addslashes as we don't know what value has magic_quotes_sybase
+					$encoded = addcslashes($str, "\0..\37\177\\\"");
+					if (($str == $encoded) && !preg_match('/[^A-Za-z0-9!#$%&\'*+\/=?^_`{|}~ -]/', $str)) {
+						return ($encoded);
+					} else {
+						return ("\"$encoded\"");
 					}
-					$x = preg_match_all('/[^\040\041\043-\133\135-\176]/', $str, $matches);
-					break;
-				case 'comment':
-					$x = preg_match_all('/[()"]/', $str, $matches);
+				}
+				$x = preg_match_all('/[^\040\041\043-\133\135-\176]/', $str, $matches);
+				break;
+			case 'comment':
+				$x = preg_match_all('/[()"]/', $str, $matches);
 				// Fall-through
-				case 'text':
-				default:
-					$x += preg_match_all('/[\000-\010\013\014\016-\037\177-\377]/', $str, $matches);
-					break;
+			case 'text':
+			default:
+				$x += preg_match_all('/[\000-\010\013\014\016-\037\177-\377]/', $str, $matches);
+				break;
 			}
-
 			if ($x == 0) {
 				return ($str);
 			}
-
 			$maxlen = 75 - 7 - strlen($this->CharSet);
 			// Try to select the encoding which should produce the shortest output
 			if (strlen($str) / 3 < $x) {
@@ -1552,10 +1491,8 @@ require dirname(__FILE__).DS.'smtp.php';
 				$encoded = $this->WrapText($encoded, $maxlen, true);
 				$encoded = str_replace('=' . $this->LE, "\n", trim($encoded));
 			}
-
 			$encoded = preg_replace('/^(.*)$/m', " =?" . $this->CharSet . "?$encoding?\\1?=", $encoded);
 			$encoded = trim(str_replace("\n", $this->LE, $encoded));
-
 			return $encoded;
 		}
 
@@ -1565,7 +1502,8 @@ require dirname(__FILE__).DS.'smtp.php';
 		 * @param string $str multi-byte text to wrap encode
 		 * @return bool
 		 */
-		public function HasMultiBytes($str) {
+		public function HasMultiBytes($str)
+		{
 			if (function_exists('mb_strlen')) {
 				return (strlen($str) > mb_strlen($str, $this->CharSet));
 			} else { // Assume no multibytes (we can't handle without mbstring functions anyway)
@@ -1581,11 +1519,11 @@ require dirname(__FILE__).DS.'smtp.php';
 		 * @param string $str multi-byte text to wrap encode
 		 * @return string
 		 */
-		public function Base64EncodeWrapMB($str) {
+		public function Base64EncodeWrapMB($str)
+		{
 			$start = "=?" . $this->CharSet . "?B?";
 			$end = "?=";
 			$encoded = "";
-
 			$mb_length = mb_strlen($str, $this->CharSet);
 			// Each line must have length <= 75, including $start and $end
 			$length = 75 - strlen($start) - strlen($end);
@@ -1593,20 +1531,16 @@ require dirname(__FILE__).DS.'smtp.php';
 			$ratio = $mb_length / strlen($str);
 			// Base64 has a 4:3 ratio
 			$offset = $avgLength = floor($length * $ratio * .75);
-
 			for ($i = 0; $i < $mb_length; $i += $offset) {
 				$lookBack = 0;
-
 				do {
 					$offset = $avgLength - $lookBack;
 					$chunk = mb_substr($str, $i, $offset, $this->CharSet);
 					$chunk = base64_encode($chunk);
 					$lookBack++;
 				} while (strlen($chunk) > $length);
-
 				$encoded .= $chunk . $this->LE;
 			}
-
 			// Chomp the last linefeed
 			$encoded = substr($encoded, 0, -strlen($this->LE));
 			return $encoded;
@@ -1620,7 +1554,8 @@ require dirname(__FILE__).DS.'smtp.php';
 		 * @param integer $line_max Number of chars allowed on a line before wrapping
 		 * @return string
 		 */
-		public function EncodeQPphp($input = '', $line_max = 76, $space_conv = false) {
+		public function EncodeQPphp($input = '', $line_max = 76, $space_conv = false)
+		{
 			$hex = array('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F');
 			$lines = preg_split('/(?:\r\n|\r|\n)/', $input);
 			$eol = "\r\n";
@@ -1673,7 +1608,8 @@ require dirname(__FILE__).DS.'smtp.php';
 		 * @return string
 		 * @author Marcus Bointon
 		 */
-		public function EncodeQP($string, $line_max = 76, $space_conv = false) {
+		public function EncodeQP($string, $line_max = 76, $space_conv = false)
+		{
 			if (function_exists('quoted_printable_encode')) { //Use native function if it's available (>= PHP5.3)
 				return quoted_printable_encode($string);
 			}
@@ -1702,27 +1638,25 @@ require dirname(__FILE__).DS.'smtp.php';
 		 * @access public
 		 * @return string
 		 */
-		public function EncodeQ($str, $position = 'text') {
+		public function EncodeQ($str, $position = 'text')
+		{
 			// There should not be any EOL in the string
 			$encoded = preg_replace('/[\r\n]*/', '', $str);
-
 			switch (strtolower($position)) {
-				case 'phrase':
-					$encoded = preg_replace("/([^A-Za-z0-9!*+\/ -])/e", "'='.sprintf('%02X', ord('\\1'))", $encoded);
-					break;
-				case 'comment':
-					$encoded = preg_replace("/([\(\)\"])/e", "'='.sprintf('%02X', ord('\\1'))", $encoded);
-				case 'text':
-				default:
-					// Replace every high ascii, control =, ? and _ characters
-					//TODO using /e (equivalent to eval()) is probably not a good idea
-					$encoded = preg_replace('/([\000-\011\013\014\016-\037\075\077\137\177-\377])/e', "'='.sprintf('%02X', ord('\\1'))", $encoded);
-					break;
+			case 'phrase':
+				$encoded = preg_replace("/([^A-Za-z0-9!*+\/ -])/e", "'='.sprintf('%02X', ord('\\1'))", $encoded);
+				break;
+			case 'comment':
+				$encoded = preg_replace("/([\(\)\"])/e", "'='.sprintf('%02X', ord('\\1'))", $encoded);
+			case 'text':
+			default:
+				// Replace every high ascii, control =, ? and _ characters
+				//TODO using /e (equivalent to eval()) is probably not a good idea
+				$encoded = preg_replace('/([\000-\011\013\014\016-\037\075\077\137\177-\377])/e', "'='.sprintf('%02X', ord('\\1'))", $encoded);
+				break;
 			}
-
 			// Replace every spaces to _ (more readable than =20)
 			$encoded = str_replace(' ', '_', $encoded);
-
 			return $encoded;
 		}
 
@@ -1736,7 +1670,8 @@ require dirname(__FILE__).DS.'smtp.php';
 		 * @param string $type File extension (MIME) type.
 		 * @return void
 		 */
-		public function AddStringAttachment($string, $filename, $encoding = 'base64', $type = 'application/octet-stream') {
+		public function AddStringAttachment($string, $filename, $encoding = 'base64', $type = 'application/octet-stream')
+		{
 			// Append to $attachment array
 			$this->attachment[] = array(0 => $string, 1 => $filename, 2 => basename($filename), 3 => $encoding, 4 => $type, 5 => true, // isStringAttachment
 				6 => 'attachment', 7 => 0
@@ -1756,23 +1691,20 @@ require dirname(__FILE__).DS.'smtp.php';
 		 * @param string $type File extension (MIME) type.
 		 * @return bool
 		 */
-		public function AddEmbeddedImage($path, $cid, $name = '', $encoding = 'base64', $type = 'application/octet-stream') {
-
+		public function AddEmbeddedImage($path, $cid, $name = '', $encoding = 'base64', $type = 'application/octet-stream')
+		{
 			if (!@is_file($path)) {
 				$this->SetError($this->Lang('file_access') . $path);
 				return false;
 			}
-
 			$filename = basename($path);
 			if ($name == '') {
 				$name = $filename;
 			}
-
 			// Append to $attachment array
 			$this->attachment[] = array(0 => $path, 1 => $filename, 2 => $name, 3 => $encoding, 4 => $type, 5 => false, // isStringAttachment
 				6 => 'inline', 7 => $cid
 			);
-
 			return true;
 		}
 
@@ -1781,7 +1713,8 @@ require dirname(__FILE__).DS.'smtp.php';
 		 * @access public
 		 * @return bool
 		 */
-		public function InlineImageExists() {
+		public function InlineImageExists()
+		{
 			foreach ($this->attachment as $attachment) {
 				if ($attachment[6] == 'inline') {
 					return true;
@@ -1793,12 +1726,12 @@ require dirname(__FILE__).DS.'smtp.php';
 		/////////////////////////////////////////////////
 		// CLASS METHODS, MESSAGE RESET
 		/////////////////////////////////////////////////
-
 		/**
 		 * Clears all recipients assigned in the TO array.	Returns void.
 		 * @return void
 		 */
-		public function ClearAddresses() {
+		public function ClearAddresses()
+		{
 			foreach ($this->to as $to) {
 				unset($this->all_recipients[strtolower($to[0])]);
 			}
@@ -1809,7 +1742,8 @@ require dirname(__FILE__).DS.'smtp.php';
 		 * Clears all recipients assigned in the CC array.	Returns void.
 		 * @return void
 		 */
-		public function ClearCCs() {
+		public function ClearCCs()
+		{
 			foreach ($this->cc as $cc) {
 				unset($this->all_recipients[strtolower($cc[0])]);
 			}
@@ -1820,7 +1754,8 @@ require dirname(__FILE__).DS.'smtp.php';
 		 * Clears all recipients assigned in the BCC array.	Returns void.
 		 * @return void
 		 */
-		public function ClearBCCs() {
+		public function ClearBCCs()
+		{
 			foreach ($this->bcc as $bcc) {
 				unset($this->all_recipients[strtolower($bcc[0])]);
 			}
@@ -1831,7 +1766,8 @@ require dirname(__FILE__).DS.'smtp.php';
 		 * Clears all recipients assigned in the ReplyTo array.	Returns void.
 		 * @return void
 		 */
-		public function ClearReplyTos() {
+		public function ClearReplyTos()
+		{
 			$this->ReplyTo = array();
 		}
 
@@ -1840,7 +1776,8 @@ require dirname(__FILE__).DS.'smtp.php';
 		 * array.	Returns void.
 		 * @return void
 		 */
-		public function ClearAllRecipients() {
+		public function ClearAllRecipients()
+		{
 			$this->to = array();
 			$this->cc = array();
 			$this->bcc = array();
@@ -1852,7 +1789,8 @@ require dirname(__FILE__).DS.'smtp.php';
 		 * attachments.	Returns void.
 		 * @return void
 		 */
-		public function ClearAttachments() {
+		public function ClearAttachments()
+		{
 			$this->attachment = array();
 		}
 
@@ -1860,20 +1798,21 @@ require dirname(__FILE__).DS.'smtp.php';
 		 * Clears all custom headers.	Returns void.
 		 * @return void
 		 */
-		public function ClearCustomHeaders() {
+		public function ClearCustomHeaders()
+		{
 			$this->CustomHeader = array();
 		}
 
 		/////////////////////////////////////////////////
 		// CLASS METHODS, MISCELLANEOUS
 		/////////////////////////////////////////////////
-
 		/**
 		 * Adds the error message to the error container.
 		 * @access protected
 		 * @return void
 		 */
-		protected function SetError($msg) {
+		protected function SetError($msg)
+		{
 			$this->error_count++;
 			if ($this->Mailer == 'smtp' and !is_null($this->smtp)) {
 				$lasterror = $this->smtp->getError();
@@ -1890,13 +1829,13 @@ require dirname(__FILE__).DS.'smtp.php';
 		 * @return string
 		 * @static
 		 */
-		public static function RFCDate() {
+		public static function RFCDate()
+		{
 			$tz = date('Z');
 			$tzs = ($tz < 0) ? '-' : '+';
 			$tz = abs($tz);
 			$tz = (int)($tz / 3600) * 100 + ($tz % 3600) / 60;
 			$result = sprintf("%s %s%04d", date('D, j M Y H:i:s'), $tzs, $tz);
-
 			return $result;
 		}
 
@@ -1905,7 +1844,8 @@ require dirname(__FILE__).DS.'smtp.php';
 		 * @access private
 		 * @return string
 		 */
-		private function ServerHostname() {
+		private function ServerHostname()
+		{
 			if (!empty($this->Hostname)) {
 				$result = $this->Hostname;
 			} elseif (isset($_SERVER['SERVER_NAME'])) {
@@ -1913,7 +1853,6 @@ require dirname(__FILE__).DS.'smtp.php';
 			} else {
 				$result = 'localhost.localdomain';
 			}
-
 			return $result;
 		}
 
@@ -1922,11 +1861,11 @@ require dirname(__FILE__).DS.'smtp.php';
 		 * @access private
 		 * @return string
 		 */
-		private function Lang($key) {
+		private function Lang($key)
+		{
 			if (count($this->language) < 1) {
 				$this->SetLanguage('en'); // set the default language
 			}
-
 			if (isset($this->language[$key])) {
 				return $this->language[$key];
 			} else {
@@ -1939,7 +1878,8 @@ require dirname(__FILE__).DS.'smtp.php';
 		 * @access public
 		 * @return bool
 		 */
-		public function IsError() {
+		public function IsError()
+		{
 			return ($this->error_count > 0);
 		}
 
@@ -1948,7 +1888,8 @@ require dirname(__FILE__).DS.'smtp.php';
 		 * @access private
 		 * @return string
 		 */
-		private function FixEOL($str) {
+		private function FixEOL($str)
+		{
 			$str = str_replace("\r\n", "\n", $str);
 			$str = str_replace("\r", "\n", $str);
 			$str = str_replace("\n", $this->LE, $str);
@@ -1960,7 +1901,8 @@ require dirname(__FILE__).DS.'smtp.php';
 		 * @access public
 		 * @return void
 		 */
-		public function AddCustomHeader($custom_header) {
+		public function AddCustomHeader($custom_header)
+		{
 			$this->CustomHeader[] = explode(':', $custom_header, 2);
 		}
 
@@ -1969,7 +1911,8 @@ require dirname(__FILE__).DS.'smtp.php';
 		 * @access public
 		 * @return $message
 		 */
-		public function MsgHTML($message, $basedir = '') {
+		public function MsgHTML($message, $basedir = '')
+		{
 			preg_match_all("/(src|background)=\"(.*)\"/Ui", $message, $images);
 			if (isset($images[2])) {
 				foreach ($images[2] as $i => $url) {
@@ -2011,7 +1954,8 @@ require dirname(__FILE__).DS.'smtp.php';
 		 * @return string MIME type of ext
 		 * @static
 		 */
-		public static function _mime_types($ext = '') {
+		public static function _mime_types($ext = '')
+		{
 			$mimes = array('hqx' => 'application/mac-binhex40', 'cpt' => 'application/mac-compactpro', 'doc' => 'application/msword', 'bin' => 'application/macbinary', 'dms' => 'application/octet-stream', 'lha' => 'application/octet-stream', 'lzh' => 'application/octet-stream',
 				'exe' => 'application/octet-stream', 'class' => 'application/octet-stream', 'psd' => 'application/octet-stream', 'so' => 'application/octet-stream', 'sea' => 'application/octet-stream', 'dll' => 'application/octet-stream', 'oda' => 'application/oda', 'pdf' => 'application/pdf',
 				'ai' => 'application/postscript', 'eps' => 'application/postscript', 'ps' => 'application/postscript', 'smi' => 'application/smil', 'smil' => 'application/smil', 'mif' => 'application/vnd.mif', 'xls' => 'application/vnd.ms-excel', 'ppt' => 'application/vnd.ms-powerpoint',
@@ -2038,7 +1982,8 @@ require dirname(__FILE__).DS.'smtp.php';
 		 * NOTE: will not work with arrays, there are no arrays to set/reset
 		 * @todo Should this not be using __set() magic function?
 		 */
-		public function set($name, $value = '') {
+		public function set($name, $value = '')
+		{
 			try {
 				if (isset($this->$name)) {
 					$this->$name = $value;
@@ -2061,7 +2006,8 @@ require dirname(__FILE__).DS.'smtp.php';
 		 * @param string $str String
 		 * @return string
 		 */
-		public function SecureHeader($str) {
+		public function SecureHeader($str)
+		{
 			$str = str_replace("\r", '', $str);
 			$str = str_replace("\n", '', $str);
 			return trim($str);
@@ -2074,7 +2020,8 @@ require dirname(__FILE__).DS.'smtp.php';
 		 * @param string $key_filename Parameter File Name
 		 * @param string $key_pass Password for private key
 		 */
-		public function Sign($cert_filename, $key_filename, $key_pass) {
+		public function Sign($cert_filename, $key_filename, $key_pass)
+		{
 			$this->sign_cert_file = $cert_filename;
 			$this->sign_key_file = $key_filename;
 			$this->sign_key_pass = $key_pass;
@@ -2087,7 +2034,8 @@ require dirname(__FILE__).DS.'smtp.php';
 		 * @param string $key_filename Parameter File Name
 		 * @param string $key_pass Password for private key
 		 */
-		public function DKIM_QP($txt) {
+		public function DKIM_QP($txt)
+		{
 			$tmp = "";
 			$line = "";
 			for ($i = 0; $i < strlen($txt); $i++) {
@@ -2107,7 +2055,8 @@ require dirname(__FILE__).DS.'smtp.php';
 		 * @access public
 		 * @param string $s Header
 		 */
-		public function DKIM_Sign($s) {
+		public function DKIM_Sign($s)
+		{
 			$privKeyStr = file_get_contents($this->DKIM_private);
 			if ($this->DKIM_passphrase != '') {
 				$privKey = openssl_pkey_get_private($privKeyStr, $this->DKIM_passphrase);
@@ -2125,7 +2074,8 @@ require dirname(__FILE__).DS.'smtp.php';
 		 * @access public
 		 * @param string $s Header
 		 */
-		public function DKIM_HeaderC($s) {
+		public function DKIM_HeaderC($s)
+		{
 			$s = preg_replace("/\r\n\s+/", " ", $s);
 			$lines = explode("\r\n", $s);
 			foreach ($lines as $key => $line) {
@@ -2144,8 +2094,11 @@ require dirname(__FILE__).DS.'smtp.php';
 		 * @access public
 		 * @param string $body Message Body
 		 */
-		public function DKIM_BodyC($body) {
-			if ($body == '') return "\r\n";
+		public function DKIM_BodyC($body)
+		{
+			if ($body == '') {
+				return "\r\n";
+			}
 			// stabilize line endings
 			$body = str_replace("\r\n", "\n", $body);
 			$body = str_replace("\n", "\r\n", $body);
@@ -2164,7 +2117,8 @@ require dirname(__FILE__).DS.'smtp.php';
 		 * @param string $subject Subject
 		 * @param string $body Body
 		 */
-		public function DKIM_Add($headers_line, $subject, $body) {
+		public function DKIM_Add($headers_line, $subject, $body)
+		{
 			$DKIMsignatureType = 'rsa-sha1'; // Signature & hash algorithms
 			$DKIMcanonicalization = 'relaxed/simple'; // Canonicalization of header/body
 			$DKIMquery = 'dns/txt'; // Query method
@@ -2185,13 +2139,15 @@ require dirname(__FILE__).DS.'smtp.php';
 			$DKIMlen = strlen($body); // Length of body
 			$DKIMb64 = base64_encode(pack("H*", sha1($body))); // Base64 of packed binary SHA-1 hash of body
 			$ident = ($this->DKIM_identity == '') ? '' : " i=" . $this->DKIM_identity . ";";
-			$dkimhdrs = "DKIM-Signature: v=1; a=" . $DKIMsignatureType . "; q=" . $DKIMquery . "; l=" . $DKIMlen . "; s=" . $this->DKIM_selector . ";\r\n" . "\tt=" . $DKIMtime . "; c=" . $DKIMcanonicalization . ";\r\n" . "\th=From:To:Subject;\r\n" . "\td=" . $this->DKIM_domain . ";" . $ident . "\r\n" . "\tz=$from\r\n" . "\t|$to\r\n" . "\t|$subject;\r\n" . "\tbh=" . $DKIMb64 . ";\r\n" . "\tb=";
+			$dkimhdrs = "DKIM-Signature: v=1; a=" . $DKIMsignatureType . "; q=" . $DKIMquery . "; l=" . $DKIMlen . "; s=" . $this->DKIM_selector . ";\r\n\tt=" . $DKIMtime . "; c=" . $DKIMcanonicalization . ";\r\n\th=From:To:Subject;\r\n\td=" . $this->DKIM_domain . ";" . $ident
+			 . "\r\n\tz=$from\r\n\t|$to\r\n\t|$subject;\r\n\tbh=" . $DKIMb64 . ";\r\n\tb=";
 			$toSign = $this->DKIM_HeaderC($from_header . "\r\n" . $to_header . "\r\n" . $subject_header . "\r\n" . $dkimhdrs);
 			$signed = $this->DKIM_Sign($toSign);
 			return "X-PHPMAILER-DKIM: phpmailer.worxware.com\r\n" . $dkimhdrs . $signed . "\r\n";
 		}
 
-		protected function doCallback($isSent, $to, $cc, $bcc, $subject, $body) {
+		protected function doCallback($isSent, $to, $cc, $bcc, $subject, $body)
+		{
 			if (!empty($this->action_function) && function_exists($this->action_function)) {
 				$params = array($isSent, $to, $cc, $bcc, $subject, $body);
 				call_user_func_array($this->action_function, $params);
@@ -2199,8 +2155,10 @@ require dirname(__FILE__).DS.'smtp.php';
 		}
 	}
 
-	class phpmailerException extends Exception {
-		public function errorMessage() {
+	class phpmailerException extends Exception
+	{
+		public function errorMessage()
+		{
 			$errorMsg = '<strong>' . $this->getMessage() . "</strong><br />\n";
 			return $errorMsg;
 		}

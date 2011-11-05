@@ -12,15 +12,17 @@
 	$page_security = 'SA_SALESINVOICE';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	include_once(APP_PATH . "sales/includes/ui/sales_order_ui.php");
-	JS::get_js_open_window(900, 600);
+	JS::open_window(900, 600);
 	Page::start(_($help_context = "Create and Print Recurrent Invoices"));
-	function set_last_sent($id, $date) {
+	function set_last_sent($id, $date)
+	{
 		$date = Dates::date2sql($date);
 		$sql = "UPDATE recurrent_invoices SET last_sent='$date' WHERE id=" . DB::escape($id);
 		DBOld::query($sql, "The recurrent invoice could not be updated or added");
 	}
 
-	function create_recurrent_invoices($customer_id, $branch_id, $order_no, $tmpl_no) {
+	function create_recurrent_invoices($customer_id, $branch_id, $order_no, $tmpl_no)
+	{
 		$doc = new Sales_Order(ST_SALESORDER, array($order_no));
 		get_customer_details_to_order($doc, $customer_id, $branch_id);
 		$doc->trans_type = ST_SALESORDER;
@@ -61,7 +63,7 @@
 						$row['debtor_no'], $row['branch_code'], $myrow['order_no'], $myrow['id']
 					);
 				}
-} else {
+			} else {
 				$invs[] = create_recurrent_invoices(
 					$myrow['debtor_no'], $myrow['group_no'], $myrow['order_no'], $myrow['id']
 				);
@@ -69,7 +71,7 @@
 			if (count($invs) > 0) {
 				$min = min($invs);
 				$max = max($invs);
-} else {
+			} else {
 				$min = $max = 0;
 			}
 			Errors::notice(sprintf(_("%s recurrent invoice(s) created, # $min - # $max."), count($invs)));
@@ -92,7 +94,8 @@
 		}
 	}
 	//-------------------------------------------------------------------------------------------------
-	function get_sales_group_name($group_no) {
+	function get_sales_group_name($group_no)
+	{
 		$sql = "SELECT description FROM groups WHERE id = " . DB::escape($group_no);
 		$result = DBOld::query($sql, "could not get group");
 		$row = DBOld::fetch($result);
@@ -157,7 +160,7 @@
 	end_table();
 	if ($due) {
 		Errors::warning(_("Marked items are due."), 1, 0, "class='overduefg'");
-} else {
+	} else {
 		Errors::warning(_("No recurrent invoices are due."), 1, 0);
 	}
 	echo '<br>';

@@ -12,9 +12,10 @@
 	$page_security = 'SA_CURRENCY';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "Currencies"));
-	simple_page_mode(false);
+	Page::simple_mode(false);
 	//---------------------------------------------------------------------------------------------
-	function check_data() {
+	function check_data()
+	{
 		if (strlen($_POST['Abbreviation']) == 0) {
 			Errors::error(_("The currency abbreviation must be entered."));
 			JS::set_focus('Abbreviation');
@@ -42,7 +43,8 @@
 	}
 
 	//---------------------------------------------------------------------------------------------
-	function handle_submit() {
+	function handle_submit()
+	{
 		global $selected_id, $Mode;
 		if (!check_data()) {
 			return false;
@@ -64,7 +66,8 @@
 	}
 
 	//---------------------------------------------------------------------------------------------
-	function check_can_delete() {
+	function check_can_delete()
+	{
 		global $selected_id;
 		if ($selected_id == "") {
 			return false;
@@ -104,7 +107,8 @@
 	}
 
 	//---------------------------------------------------------------------------------------------
-	function handle_delete() {
+	function handle_delete()
+	{
 		global $selected_id, $Mode;
 		if (check_can_delete()) {
 			//only delete if used in neither customer or supplier, comp prefs, bank trans accounts
@@ -115,7 +119,8 @@
 	}
 
 	//---------------------------------------------------------------------------------------------
-	function display_currencies() {
+	function display_currencies()
+	{
 		$company_currency = Banking::get_company_currency();
 		$result = get_currencies(check_value('show_inactive'));
 		start_table(Config::get('tables_style'));
@@ -130,7 +135,7 @@
 		{
 			if ($myrow[1] == $company_currency) {
 				start_row("class='currencybg'");
-} else {
+			} else {
 				alt_table_row_color($k);
 			}
 			label_cell($myrow["curr_abrev"]);
@@ -148,7 +153,7 @@
 			edit_button_cell("Edit" . $myrow["curr_abrev"], _("Edit"));
 			if ($myrow["curr_abrev"] != $company_currency) {
 				delete_button_cell("Delete" . $myrow["curr_abrev"], _("Delete"));
-} else {
+			} else {
 				label_cell('');
 			}
 			end_row();
@@ -159,7 +164,8 @@
 	}
 
 	//---------------------------------------------------------------------------------------------
-	function display_currency_edit($selected_id) {
+	function display_currency_edit($selected_id)
+	{
 		global $Mode;
 		start_table(Config::get('tables_style2'));
 		if ($selected_id != '') {

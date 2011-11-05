@@ -13,14 +13,14 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	include_once(APP_PATH . "gl/includes/db/gl_db_bank_trans.php");
 	include_once(APP_PATH . "manufacturing/includes/manufacturing_ui.php");
-	JS::get_js_open_window(900, 500);
+	JS::open_window(900, 500);
 	Page::start(_($help_context = "Work Order Additional Costs"));
 	if (isset($_GET['trans_no']) && $_GET['trans_no'] != "") {
 		$_POST['selected_id'] = $_GET['trans_no'];
 	}
 	//--------------------------------------------------------------------------------------------------
 	if (isset($_GET['AddedID'])) {
-		$id    = $_GET['AddedID'];
+		$id = $_GET['AddedID'];
 		$stype = ST_WORKORDER;
 		Errors::notice(_("The additional cost has been entered."));
 		Display::note(ui_view::get_trans_view_str($stype, $id, _("View this Work Order")));
@@ -100,11 +100,11 @@
 	br();
 	yesno_list_row(_("Type:"), 'PaymentType', null, $wo_cost_types[WO_OVERHEAD], $wo_cost_types[WO_LABOUR]);
 	date_row(_("Date:"), 'date_');
-	$item_accounts   = get_stock_gl_code($wo_details['stock_id']);
+	$item_accounts = get_stock_gl_code($wo_details['stock_id']);
 	$_POST['db_acc'] = $item_accounts['assembly_account'];
-	$sql             = "SELECT DISTINCT account_code FROM bank_accounts";
-	$rs              = DBOld::query($sql, "could not get bank accounts");
-	$r               = DBOld::fetch_row($rs);
+	$sql = "SELECT DISTINCT account_code FROM bank_accounts";
+	$rs = DBOld::query($sql, "could not get bank accounts");
+	$r = DBOld::fetch_row($rs);
 	$_POST['cr_acc'] = $r[0];
 	amount_row(_("Additional Costs:"), 'costs');
 	gl_all_accounts_list_row(_("Debit Account"), 'db_acc', null);

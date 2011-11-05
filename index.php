@@ -10,14 +10,13 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	if (!file_exists('config/config.php')) {
-		header("Location: " . "/install/index.php");
+		header("Location: /install/index.php");
 	}
 	$page_security = 'SA_OPEN';
-
 	require_once("bootstrap.php");
 	$app = $_SESSION["App"];
 	Extensions::add_access();
 	if (isset($_GET['application'])) {
 		$app->selected_application = $_GET['application'];
-	} 
+	}
 	$app->display();

@@ -13,7 +13,7 @@
 	$js = '';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	include_once(APP_PATH . "purchasing/includes/purchasing_ui.php");
-	JS::get_js_open_window(900, 500);
+	JS::open_window(900, 500);
 	if (isset($_GET['ModifyOrderNumber'])) {
 		Page::start(_($help_context = "Modify Purchase Order #") . $_GET['ModifyOrderNumber']);
 	}
@@ -132,7 +132,7 @@
 	//---------------------------------------------------------------------------------------------------
 	function check_data()
 	{
-		$dec = get_qty_dec($_POST['stock_id']);
+		$dec = Num::qty_dec($_POST['stock_id']);
 		$min = 1 / pow(10, $dec);
 		if (!Validation::is_num('qty', $min)) {
 			$min = Num::format($min, $dec);

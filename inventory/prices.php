@@ -12,11 +12,10 @@
 	$page_security = 'SA_SALESPRICE';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "Inventory Item Sales prices"), Input::request('frame'));
-	include_once(APP_PATH . "sales/includes/db/sales_types_db.php");
 	//---------------------------------------------------------------------------------------------------
 	Validation::check(Validation::STOCK_ITEMS, _("There are no items defined in the system."));
 	Validation::check(Validation::SALES_TYPES, _("There are no sales types in the system. Please set up sales types befor entering pricing."));
-	simple_page_mode(true);
+	Page::simple_mode(true);
 	//---------------------------------------------------------------------------------------------------
 	$input_error = 0;
 	if (isset($_GET['stock_id'])) {
@@ -138,7 +137,7 @@
 			)
 		);
 	}
-	$kit = get_item_code_dflts($_POST['stock_id']);
+	$kit = Item_Code::get_defaults($_POST['stock_id']);
 	small_amount_row(_("Price:"), 'price', null, '', _('per') . ' ' . $kit["units"]);
 	end_table(1);
 	if ($calculated) {

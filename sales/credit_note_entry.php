@@ -16,10 +16,9 @@
 	$page_security = 'SA_SALESCREDIT';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	include_once(APP_PATH . "sales/includes/sales_ui.php");
-	include_once(APP_PATH . "sales/includes/db/sales_types_db.php");
 	include_once(APP_PATH . "sales/includes/ui/sales_credit_ui.php");
 	include_once(APP_PATH . "sales/includes/ui/sales_order_ui.php");
-	JS::get_js_open_window(900, 500);
+	JS::open_window(900, 500);
 	if (isset($_GET['NewCredit'])) {
 		$_SESSION['page_title'] = _($help_context = "Customer Credit Note");
 		handle_new_credit(0);

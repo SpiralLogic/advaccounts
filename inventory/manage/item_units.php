@@ -13,7 +13,7 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "Units of Measure"));
 	include_once(APP_PATH . "inventory/includes/db/items_units_db.php");
-	simple_page_mode(false);
+	Page::simple_mode(false);
 	//----------------------------------------------------------------------------------
 	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 		//initialise no input errors assumed initially before we test
@@ -37,7 +37,7 @@
 			Item_Unit::write(htmlentities($selected_id), $_POST['abbr'], $_POST['description'], $_POST['decimals']);
 			if ($selected_id != '') {
 				Errors::notice(_('Selected unit has been updated'));
-} else {
+			} else {
 				Errors::notice(_('New unit has been added'));
 			}
 			$Mode = 'RESET';

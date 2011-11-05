@@ -197,7 +197,7 @@
 					unset($_POST['totamount']); // enable default
 					$Ajax->activate('totamount');
 				}
-				echo "&nbsp;" . $qid['base_desc'] . ":" . "&nbsp;";
+				echo "&nbsp;" . $qid['base_desc'] . ":&nbsp;";
 				$amount = input_num('totamount', $qid['base_amount']);
 				$dec = User::price_dec();
 				echo "<input class='amount' type='text' name='totamount' size='7' maxlength='12' dec='$dec' value='$amount'>&nbsp;";
@@ -331,7 +331,7 @@
 					label_cell($myrow["item_code"], "class='stock' data-stock_id='" . $myrow['item_code'] . "'");
 					label_cell($myrow["description"]);
 					label_cell(Dates::sql2date($myrow["delivery_date"]));
-					$dec = get_qty_dec($myrow["item_code"]);
+					$dec = Num::qty_dec($myrow["item_code"]);
 					qty_cell($myrow["qty_recd"], false, $dec);
 					qty_cell($myrow["quantity_inv"], false, $dec);
 					if ($supp_trans->is_invoice) {
@@ -473,7 +473,7 @@
 				}
 				label_cell($entered_grn->item_code, "class='stock' data-stock_id='{$entered_grn->item_code}'");
 				label_cell($entered_grn->description);
-				$dec = get_qty_dec($entered_grn->item_code);
+				$dec = Num::qty_dec($entered_grn->item_code);
 				if ($mode == 1) {
 					label_cell("");
 					qty_cell($entered_grn->qty_recd, false, $dec);

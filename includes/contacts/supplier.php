@@ -163,7 +163,7 @@
 
 		public static function search($terms)
 		{
-			$sql = "SELECT supplier_id as id, supp_ref as label, supp_ref as value FROM suppliers " . "where supp_ref LIKE '%" . $terms . "%' LIMIT 20";
+			$sql = "SELECT supplier_id as id, supp_ref as label, supp_ref as value FROM suppliers where supp_ref LIKE '%" . $terms . "%' LIMIT 20";
 			$result = DBOld::query($sql, 'Couldn\'t Get Supplier');
 			$data = '';
 			while ($row = DBOld::fetch_assoc($result)) {

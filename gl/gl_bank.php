@@ -15,7 +15,7 @@
 		? 'SA_PAYMENT' : 'SA_DEPOSIT';
 	include_once(APP_PATH . "gl/includes/ui/gl_bank_ui.php");
 	$js = '';
-	JS::get_js_open_window(800, 500);
+	JS::open_window(800, 500);
 	if (isset($_GET['NewPayment'])) {
 		$_SESSION['page_title'] = _($help_context = "Bank Account Payment Entry");
 		handle_new_order(ST_BANKPAYMENT);
@@ -213,7 +213,7 @@
 			$_SESSION['pay_items'], $_POST['person_id'], input_num('totamount'),
 			$_SESSION['pay_items']->trans_type == ST_BANKPAYMENT ? QE_PAYMENT : QE_DEPOSIT
 		);
-		$_POST['totamount'] = Num::Num::price_format(0);
+		$_POST['totamount'] = Num::price_format(0);
 		$Ajax->activate('totamount');
 		line_start_focus();
 	}

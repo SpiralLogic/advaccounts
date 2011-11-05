@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 	$page_security = 'SA_MANUFTRANSVIEW';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	JS::get_js_open_window(900, 500);
+	JS::open_window(900, 500);
 	Page::start(_($help_context = "View Work Order Issue"), true);
 	include_once(APP_PATH . "manufacturing/includes/manufacturing_ui.php");
 	//-------------------------------------------------------------------------------------------------
@@ -19,7 +19,8 @@
 		$wo_issue_no = $_GET['trans_no'];
 	}
 	//-------------------------------------------------------------------------------------------------
-	function display_wo_issue($issue_no) {
+	function display_wo_issue($issue_no)
+	{
 		$myrow = get_work_order_issue($issue_no);
 		br(1);
 		start_table(Config::get('tables_style'));
@@ -43,7 +44,8 @@
 	}
 
 	//-------------------------------------------------------------------------------------------------
-	function display_wo_issue_details($issue_no) {
+	function display_wo_issue_details($issue_no)
+	{
 		$result = get_work_order_issue_details($issue_no);
 		if (DBOld::num_rows($result) == 0) {
 			Errors::warning(_("There are no items for this issue."));
@@ -58,7 +60,7 @@
 			{
 				alt_table_row_color($k);
 				label_cell($myrow["stock_id"] . " - " . $myrow["description"]);
-				qty_cell($myrow["qty_issued"], false, get_qty_dec($myrow["stock_id"]));
+				qty_cell($myrow["qty_issued"], false, Num::qty_dec($myrow["stock_id"]));
 				label_cell($myrow["units"]);
 				end_row();
 				;

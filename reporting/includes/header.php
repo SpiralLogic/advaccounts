@@ -276,7 +276,7 @@
 	#  __ADVANCEDEDIT__ END #
 	$col += $width;
 	/*if ($doctype == ST_SALESINVOICE) {
-		 $deliveries = get_parent_trans(ST_SALESINVOICE, $myrow['trans_no']);
+		 $deliveries = Sales_Trans::get_parent(ST_SALESINVOICE, $myrow['trans_no']);
 		 $line = "";	#  __ADVANCEDEDIT__ END # }
 
 		 foreach ($deliveries as $delivery) {

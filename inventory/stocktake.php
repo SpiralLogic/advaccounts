@@ -12,14 +12,14 @@
 	$page_security = 'SA_INVENTORYADJUSTMENT';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	include_once(APP_PATH . "inventory/includes/item_adjustments_ui.php");
-	JS::get_js_open_window(800, 500);
+	JS::open_window(800, 500);
 	Page::start(_($help_context = "Item Stocktake Note"));
 	//-----------------------------------------------------------------------------------------------
 	Validation::check(Validation::COST_ITEMS, _("There are no inventory items defined in the system which can be adjusted (Purchased or Manufactured)."), STOCK_SERVICE);
 	Validation::check(Validation::MOVEMENT_TYPES, _("There are no inventory movement types defined in the system. Please define at least one inventory adjustment type."));
 	//-----------------------------------------------------------------------------------------------
 	if (isset($_GET['AddedID'])) {
-		$trans_no   = $_GET['AddedID'];
+		$trans_no = $_GET['AddedID'];
 		$trans_type = ST_INVADJUST;
 		Errors::notice(_("Items adjustment has been processed"));
 		Display::note(ui_view::get_trans_view_str($trans_type, $trans_no, _("&View this adjustment")));
@@ -44,7 +44,7 @@
 		}
 		//session_register("adj_items");
 		$_SESSION['adj_items'] = new Item_Cart(ST_INVADJUST);
-		$_POST['AdjDate']      = Dates::new_doc_date();
+		$_POST['AdjDate'] = Dates::new_doc_date();
 		if (!Dates::is_date_in_fiscalyear($_POST['AdjDate'])) {
 			$_POST['AdjDate'] = Dates::end_fiscalyear();
 		}
@@ -89,7 +89,7 @@
 		foreach (
 			$_SESSION['adj_items']->line_items as $line
 		) {
-			$item          = new Item($line->stock_id);
+			$item = new Item($line->stock_id);
 			$current_stock = $item->getStockLevels($_POST['StockLocation']);
 			$line->quantity -= $current_stock['qty'];
 		}

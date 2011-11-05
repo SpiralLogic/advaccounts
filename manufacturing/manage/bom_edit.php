@@ -14,7 +14,7 @@
 	Page::start(_($help_context = "Bill Of Materials"));
 	Validation::check(Validation::BOM_ITEMS, _("There are no manufactured or kit items defined in the system."), STOCK_MANUFACTURE);
 	Validation::check(Validation::WORKCENTRES, _("There are no work centres defined in the system. BOMs require at least one work centre be defined."));
-	simple_page_mode(true);
+	Page::simple_mode(true);
 	$selected_component = $selected_id;
 	//--------------------------------------------------------------------------------------------------
 	//if (isset($_GET["NewItem"]))
@@ -46,7 +46,8 @@
 	 }
 	 */
 	//--------------------------------------------------------------------------------------------------
-	function check_for_recursive_bom($ultimate_parent, $component_to_check) {
+	function check_for_recursive_bom($ultimate_parent, $component_to_check)
+	{
 		/* returns true ie 1 if the bom contains the parent part as a component
 						ie the bom is recursive otherwise false ie 0 */
 		$sql = "SELECT component FROM bom WHERE parent=" . DB::escape($component_to_check);
@@ -65,7 +66,8 @@
 		return 0;
 	} //end of function check_for_recursive_bom
 	//--------------------------------------------------------------------------------------------------
-	function display_bom_items($selected_parent) {
+	function display_bom_items($selected_parent)
+	{
 		$result = Manufacturing::get_bom($selected_parent);
 		div_start('bom');
 		start_table(Config::get('tables_style') . "  width=60%");
@@ -82,7 +84,7 @@
 			label_cell($myrow["description"]);
 			label_cell($myrow["location_name"]);
 			label_cell($myrow["WorkCentreDescription"]);
-			qty_cell($myrow["quantity"], false, get_qty_dec($myrow["component"]));
+			qty_cell($myrow["quantity"], false, Num::qty_dec($myrow["component"]));
 			label_cell($myrow["units"]);
 			edit_button_cell("Edit" . $myrow['id'], _("Edit"));
 			delete_button_cell("Delete" . $myrow['id'], _("Delete"));
@@ -93,7 +95,8 @@
 	}
 
 	//--------------------------------------------------------------------------------------------------
-	function on_submit($selected_parent, $selected_component = -1) {
+	function on_submit($selected_parent, $selected_component = -1)
+	{
 		if (!Validation::is_num('quantity', 0)) {
 			Errors::error(_("The quantity entered must be numeric and greater than zero."));
 			JS::set_focus('quantity');
@@ -132,7 +135,7 @@
 					DBOld::query($sql, "check failed");
 					Errors::notice(_("A new component part has been added to the bill of material for this item."));
 					$Mode = 'RESET';
-} else {
+				} else {
 					/*The component must already be on the bom */
 					Errors::error(_("The selected component is already on this bom. You can modify it's quantity but it cannot appear more than once on the same bom."));
 				}
@@ -190,7 +193,7 @@
 				$_POST['loc_code'] = $myrow["loc_code"];
 				$_POST['component'] = $myrow["component"]; // by Tom Moulton
 				$_POST['workcentre_added'] = $myrow["workcentre_added"];
-				$_POST['quantity'] = Num::format($myrow["quantity"], get_qty_dec($myrow["component"]));
+				$_POST['quantity'] = Num::format($myrow["quantity"], Num::qty_dec($myrow["component"]));
 				label_row(_("Component:"), $myrow["component"] . " - " . $myrow["description"]);
 			}
 			hidden('selected_id', $selected_id);
@@ -208,7 +211,7 @@
 		hidden('stock_id', $selected_parent);
 		locations_list_row(_("Location to Draw From:"), 'loc_code', null);
 		workcenter_list_row(_("Work Centre Added:"), 'workcentre_added', null);
-		$dec = get_qty_dec(get_post('component'));
+		$dec = Num::qty_dec(get_post('component'));
 		$_POST['quantity'] = Num::format(input_num('quantity', 1), $dec);
 		qty_row(_("Quantity:"), 'quantity', null, null, null, $dec);
 		end_table(1);

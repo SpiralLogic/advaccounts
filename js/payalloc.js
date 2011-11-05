@@ -19,14 +19,14 @@ function blur_alloc(i) {
 	if (i.name != 'amount' && i.name != 'charge' && i.name != 'discount') {
 		change = Math.min(change, get_amount('maxval' + i.name.substr(6), 1));
 	}
-	Num::price_format(i.name, change, user.pdec);
+	price_format(i.name, change, user.pdec);
 	if (i.name != 'amount' && i.name != 'charge') {
 		if (change < 0) change = 0;
 		change = change - i.getAttribute('_last');
 		if (i.name == 'discount') change = -change;
 
 		var total = get_amount('amount') + change;
-		Num::price_format('amount', total, user.pdec, 0);
+		price_format('amount', total, user.pdec, 0);
 	}
 }
 
@@ -43,15 +43,15 @@ function allocate_all(doc) {
 		amount += left;
 		left = 0;
 	}
-	Num::price_format('amount' + doc, amount, user.pdec);
-	Num::price_format('amount', total, user.pdec);
+	price_format('amount' + doc, amount, user.pdec);
+	price_format('amount', total, user.pdec);
 }
 
 function allocate_none(doc) {
 	amount = get_amount('amount' + doc);
 	total = get_amount('amount');
-	Num::price_format('amount' + doc, 0, user.pdec);
-	Num::price_format('amount', total - amount, user.pdec);
+	price_format('amount' + doc, 0, user.pdec);
+	price_format('amount', total - amount, user.pdec);
 }
 
 

@@ -12,7 +12,7 @@
 	$page_security = 'SA_CREATEMODULES';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "Install/Activate extensions"));
-	simple_page_mode(true);
+	Page::simple_mode(true);
 	//---------------------------------------------------------------------------------------------
 	function update_extensions($extensions)
 	{

@@ -12,7 +12,7 @@
 	/* Author Rob Mallon */
 	$page_security = 'SA_RECONCILE';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	JS::get_js_open_window(800, 500);
+	JS::open_window(800, 500);
 	Page::start(_($help_context = "Reconcile Bank Account"));
 	Validation::check(Validation::BANK_ACCOUNTS, _("There are no bank accounts defined in the system."));
 	function check_date()
@@ -66,13 +66,13 @@
 	function fmt_debit($row)
 	{
 		$value = $row["amount"];
-		return $value >= 0 ? Num::Num::price_format($value) : '';
+		return $value >= 0 ? Num::price_format($value) : '';
 	}
 
 	function fmt_credit($row)
 	{
 		$value = -$row["amount"];
-		return $value > 0 ? Num::Num::price_format($value) : '';
+		return $value > 0 ? Num::price_format($value) : '';
 	}
 
 	function fmt_person($row)
@@ -186,17 +186,17 @@
 	$_SESSION['wa_current_reconcile_date'] = $_POST['bank_date'];
 	$result = get_max_reconciled(get_post('reconcile_date'), $_POST['bank_account']);
 	if ($row = DBOld::fetch($result)) {
-		$_POST["reconciled"] = Num::Num::price_format($row["end_balance"] - $row["beg_balance"]);
+		$_POST["reconciled"] = Num::price_format($row["end_balance"] - $row["beg_balance"]);
 		$total = $row["total"];
 		if (!isset($_POST["beg_balance"])) { // new selected account/statement
 			$_POST["last_date"] = Dates::sql2date($row["last_date"]);
-			$_POST["beg_balance"] = Num::Num::price_format($row["beg_balance"]);
-			$_POST["end_balance"] = Num::Num::price_format($row["end_balance"]);
+			$_POST["beg_balance"] = Num::price_format($row["beg_balance"]);
+			$_POST["end_balance"] = Num::price_format($row["end_balance"]);
 			if (get_post('bank_date')) {
 				// if it is the last updated bank statement retrieve ending balance
 				$row = get_ending_reconciled($_POST['bank_account'], $_POST['bank_date']);
 				if ($row) {
-					$_POST["end_balance"] = Num::Num::price_format($row["ending_reconcile_balance"]);
+					$_POST["end_balance"] = Num::price_format($row["ending_reconcile_balance"]);
 				}
 			}
 		}

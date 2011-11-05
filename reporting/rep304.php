@@ -168,7 +168,7 @@
 				$rep->TextCol(1, 3,
 				 $trans['description'] . ($trans['inactive'] == 1 ? " (" . _("Inactive") . ")" : ""), -1);
 			}
-			$rep->AmountCol(3, 4, $trans['qty'], get_qty_dec($trans['stock_id']));
+			$rep->AmountCol(3, 4, $trans['qty'], Num::qty_dec($trans['stock_id']));
 			$rep->AmountCol(4, 5, $trans['amt'], $dec);
 			$rep->AmountCol(5, 6, $trans['cost'], $dec);
 			$rep->AmountCol(6, 7, $cb, $dec);

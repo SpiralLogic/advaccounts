@@ -13,7 +13,7 @@
 	$page_security = 'SA_SALESREFUND';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	include_once(APP_PATH . "contacts/includes/contacts.php");
-	JS::get_js_open_window(900, 500);
+	JS::open_window(900, 500);
 	JS::headerFile('/js/payalloc.js');
 	Page::start(_($help_context = "Customer Refund Entry"), Input::request('frame'));
 	//----------------------------------------------------------------------------------------------
@@ -134,7 +134,7 @@
 			$rate = input_num('_ex_rate');
 		}
 		Dates::new_doc_date($_POST['DateBanked']);
-		$refund_id                   = write_customer_refund(
+		$refund_id = write_customer_refund(
 			0, $_POST['customer_id'], $_POST['BranchID'],
 			$_POST['bank_account'], $_POST['DateBanked'], $_POST['ref'],
 			input_num('amount'), input_num('discount'),
@@ -149,16 +149,16 @@
 	{
 		global $customer;
 		$sql
-														= "SELECT debtors_master.pymt_discount,
+		 = "SELECT debtors_master.pymt_discount,
 		credit_status.dissallow_invoices
 		FROM debtors_master, credit_status
 		WHERE debtors_master.credit_status = credit_status.id
 			AND debtors_master.debtor_no = " . $customer->id;
-		$result                 = DBOld::query($sql, "could not query customers");
-		$myrow                  = DBOld::fetch($result);
-		$_POST['HoldAccount']   = $myrow["dissallow_invoices"];
+		$result = DBOld::query($sql, "could not query customers");
+		$myrow = DBOld::fetch($result);
+		$_POST['HoldAccount'] = $myrow["dissallow_invoices"];
 		$_POST['pymt_discount'] = 0;
-		$_POST['ref']           = Refs::get_next(12);
+		$_POST['ref'] = Refs::get_next(12);
 	}
 
 	//----------------------------------------------------------------------------------------------
@@ -167,10 +167,10 @@
 	table_section(1);
 	UI::search(
 		'customer', array(
-										 'label' => 'Search Customer:',
-										 'size'  => 20,
-										 'url'   => '/contacts/search.php'
-								)
+			'label' => 'Search Customer:',
+			'size' => 20,
+			'url' => '/contacts/search.php'
+		)
 	);
 	if (!isset($_POST['bank_account'])) // first page call
 	{

@@ -101,7 +101,7 @@
 			$this->allocs = array();
 			if ($trans_no) {
 				$trans = $this->person_type ? get_supp_trans($trans_no, $type)
-				 : get_customer_trans($trans_no, $type);
+				 : Sales_Trans::get($trans_no, $type);
 				$this->person_id = $trans[$this->person_type ? 'supplier_id' : 'debtor_no'];
 				$this->person_name = $trans[$this->person_type ? "supplier_name" : "DebtorName"];
 				$this->amount = $trans["Total"];

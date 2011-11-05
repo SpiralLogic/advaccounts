@@ -14,7 +14,7 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	include_once(APP_PATH . "sales/includes/ui/sales_order_ui.php");
 	include_once(APP_PATH . "sales/includes/sales_ui.php");
-	JS::get_js_open_window(900, 500);
+	JS::open_window(900, 500);
 	JS::headerFile('/js/payalloc.js');
 	Page::start(_($help_context = "Customer Payment Entry"), Input::request('frame'));
 	//----------------------------------------------------------------------------------------------
@@ -23,7 +23,7 @@
 	//----------------------------------------------------------------------------------------
 	if (list_updated('BranchID')) {
 		// when branch is selected via external editor also customer can change
-		$br                   = get_branch(get_post('BranchID'));
+		$br = get_branch(get_post('BranchID'));
 		$_POST['customer_id'] = $br['debtor_no'];
 		$Ajax->activate('customer_id');
 	}
@@ -156,9 +156,9 @@
 			Gl_Allocation::create_miscorder($_POST['customer_id'], $_POST['BranchID'], $_POST['memo_'], $_POST['ref'], input_num('amount'), input_num('discount'));
 		}
 		$payment_no = write_customer_payment(0, $_POST['customer_id'], $_POST['BranchID'],
-																				 $_POST['bank_account'], $_POST['DateBanked'], $_POST['ref'],
-																				 input_num('amount'), input_num('discount'),
-																				 $_POST['memo_'], $rate, input_num('charge'));
+			$_POST['bank_account'], $_POST['DateBanked'], $_POST['ref'],
+			input_num('amount'), input_num('discount'),
+			$_POST['memo_'], $rate, input_num('charge'));
 		$_SESSION['alloc']->trans_no = $payment_no;
 		$_SESSION['alloc']->write();
 		meta_forward($_SERVER['PHP_SELF'], "AddedID=$payment_no");
@@ -167,9 +167,9 @@
 	function read_customer_data()
 	{
 		$myrow = get_customer_habit($_POST['customer_id']);
-		$_POST['HoldAccount']   = $myrow["dissallow_invoices"];
+		$_POST['HoldAccount'] = $myrow["dissallow_invoices"];
 		$_POST['pymt_discount'] = $myrow["pymt_discount"];
-		$_POST['ref']           = Refs::get_next(ST_CUSTPAYMENT);
+		$_POST['ref'] = Refs::get_next(ST_CUSTPAYMENT);
 	}
 
 	//----------------------------------------------------------------------------------------------

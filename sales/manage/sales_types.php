@@ -12,10 +12,10 @@
 	$page_security = 'SA_SALESTYPES';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "Sales Types"));
-	include_once(APP_PATH . "sales/includes/db/sales_types_db.php");
-	simple_page_mode(true);
+	Page::simple_mode(true);
 	//----------------------------------------------------------------------------------------------------
-	function can_process() {
+	function can_process()
+	{
 		if (strlen($_POST['sales_type']) == 0) {
 			Errors::error(_("The sales type description cannot be empty."));
 			JS::set_focus('sales_type');
@@ -31,7 +31,7 @@
 
 	//----------------------------------------------------------------------------------------------------
 	if ($Mode == 'ADD_ITEM' && can_process()) {
-		add_sales_type(
+		Sales_Type::add(
 			$_POST['sales_type'], isset($_POST['tax_included']) ? 1 : 0,
 			input_num('factor')
 		);
@@ -40,7 +40,7 @@
 	}
 	//----------------------------------------------------------------------------------------------------
 	if ($Mode == 'UPDATE_ITEM' && can_process()) {
-		update_sales_type(
+		Sales_Type::update(
 			$selected_id, $_POST['sales_type'], isset($_POST['tax_included']) ? 1 : 0,
 			input_num('factor')
 		);
@@ -63,8 +63,8 @@
 			$myrow = DBOld::fetch_row($result);
 			if ($myrow[0] > 0) {
 				Errors::error(_("Cannot delete this sale type because customers are currently set up to use this sales type."));
-} else {
-				delete_sales_type($selected_id);
+			} else {
+				Sales_Type::delete($selected_id);
 				Errors::notice(_('Selected sales type has been deleted'));
 			}
 		} //end if sales type used in debtor transactions or in customers set up
@@ -77,7 +77,7 @@
 		$_POST['show_inactive'] = $sav;
 	}
 	//----------------------------------------------------------------------------------------------------
-	$result = get_all_sales_types(check_value('show_inactive'));
+	$result = Sales_Type::get_all(check_value('show_inactive'));
 	start_form();
 	start_table(Config::get('tables_style') . "  width=30%");
 	$th = array(_('Type Name'), _('Factor'), _('Tax Incl'), '', '');
@@ -117,7 +117,7 @@
 	start_table(Config::get('tables_style2'));
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {
-			$myrow = get_sales_type($selected_id);
+			$myrow = Sales_Type::get($selected_id);
 			$_POST['sales_type'] = $myrow["sales_type"];
 			$_POST['tax_included'] = $myrow["tax_included"];
 			$_POST['factor'] = Num::format($myrow["factor"], 4);

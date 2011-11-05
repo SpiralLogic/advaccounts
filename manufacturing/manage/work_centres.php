@@ -13,7 +13,7 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "Work Centres"));
 	include(APP_PATH . "manufacturing/includes/manufacturing_db.php");
-	simple_page_mode(true);
+	Page::simple_mode(true);
 	//-----------------------------------------------------------------------------------
 	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 		//initialise no input errors assumed initially before we test
@@ -27,7 +27,7 @@
 			if ($selected_id != -1) {
 				update_work_centre($selected_id, $_POST['name'], $_POST['description']);
 				Errors::notice(_('Selected work center has been updated'));
-} else {
+			} else {
 				add_work_centre($_POST['name'], $_POST['description']);
 				Errors::notice(_('New work center has been added'));
 			}
@@ -37,16 +37,16 @@
 	//-----------------------------------------------------------------------------------
 	function can_delete($selected_id)
 	{
-		$sql    = "SELECT COUNT(*) FROM bom WHERE workcentre_added=" . DB::escape($selected_id);
+		$sql = "SELECT COUNT(*) FROM bom WHERE workcentre_added=" . DB::escape($selected_id);
 		$result = DBOld::query($sql, "check can delete work centre");
-		$myrow  = DBOld::fetch_row($result);
+		$myrow = DBOld::fetch_row($result);
 		if ($myrow[0] > 0) {
 			Errors::error(_("Cannot delete this work centre because BOMs have been created referring to it."));
 			return false;
 		}
-		$sql    = "SELECT COUNT(*) FROM wo_requirements WHERE workcentre=" . DB::escape($selected_id);
+		$sql = "SELECT COUNT(*) FROM wo_requirements WHERE workcentre=" . DB::escape($selected_id);
 		$result = DBOld::query($sql, "check can delete work centre");
-		$myrow  = DBOld::fetch_row($result);
+		$myrow = DBOld::fetch_row($result);
 		if ($myrow[0] > 0) {
 			Errors::error(_("Cannot delete this work centre because work order requirements have been created referring to it."));
 			return false;
@@ -64,7 +64,7 @@
 	}
 	if ($Mode == 'RESET') {
 		$selected_id = -1;
-		$sav         = get_post('show_inactive');
+		$sav = get_post('show_inactive');
 		unset($_POST);
 		$_POST['show_inactive'] = $sav;
 	}
@@ -94,7 +94,7 @@
 		if ($Mode == 'Edit') {
 			//editing an existing status code
 			$myrow = get_work_centre($selected_id);
-			$_POST['name']        = $myrow["name"];
+			$_POST['name'] = $myrow["name"];
 			$_POST['description'] = $myrow["description"];
 		}
 		hidden('selected_id', $selected_id);

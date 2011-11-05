@@ -36,7 +36,7 @@
 		}
 		$sql .= " WHERE stock_id=" . DB::escape($stock_id);
 		DBOld::query($sql, "The item could not be updated");
-		update_item_code(-1, $stock_id, $stock_id, $description, $category_id, 1, 0);
+		Item_Code::update(-1, $stock_id, $stock_id, $description, $category_id, 1, 0);
 	}
 
 	function add_item(
@@ -64,7 +64,7 @@
 		SELECT locations.loc_code, " . DB::escape($stock_id)
 		 . " FROM locations";
 		DBOld::query($sql, "The item locstock could not be added");
-		add_item_code($stock_id, $stock_id, $description, $category_id, 1, 0);
+		Item_Code::add($stock_id, $stock_id, $description, $category_id, 1, 0);
 	}
 
 	function delete_item($stock_id)
@@ -83,7 +83,7 @@
 		/*and cascade delete the bill of material if any */
 		$sql = "DELETE FROM bom WHERE parent=" . DB::escape($stock_id);
 		DBOld::query($sql, "could not delete stock item bom");
-		delete_item_kit($stock_id);
+		Item_Code::delete_kit($stock_id);
 	}
 
 	function get_item($stock_id)

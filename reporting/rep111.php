@@ -76,7 +76,7 @@
 				$TaxTotal += Taxes::get_tax_for_item($myrow2['stk_code'], $Net, $TaxType);
 				#  __ADVANCEDEDIT__ END #
 				$DisplayPrice = Num::format($myrow2["unit_price"], $dec);
-				$DisplayQty = Num::format($myrow2["quantity"], get_qty_dec($myrow2['stk_code']));
+				$DisplayQty = Num::format($myrow2["quantity"], Num::qty_dec($myrow2['stk_code']));
 				$DisplayNet = Num::format($Net, $dec);
 				if ($myrow2["discount_percent"] == 0) {
 					$DisplayDiscount = "";

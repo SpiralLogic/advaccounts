@@ -12,12 +12,12 @@
 	$page_security = 'SA_MANUFTRANSVIEW';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	include_once(APP_PATH . "manufacturing/includes/manufacturing_ui.php");
-	JS::get_js_open_window(800, 500);
+	JS::open_window(800, 500);
 	if (isset($_GET['outstanding_only']) && ($_GET['outstanding_only'] == true)) {
 		// curently outstanding simply means not closed
 		$outstanding_only = 1;
 		Page::start(_($help_context = "Search Outstanding Work Orders"));
-} else {
+	} else {
 		$outstanding_only = 0;
 		Page::start(_($help_context = "Search Work Orders"));
 	}
@@ -89,7 +89,7 @@
 		 :
 		 pager_link(
 			 _("Edit"),
-			 "/manufacturing/work_order_entry.php?trans_no=" . $row["id"], ICON_EDIT
+			"/manufacturing/work_order_entry.php?trans_no=" . $row["id"], ICON_EDIT
 		 );
 	}
 
@@ -102,12 +102,12 @@
 			?
 			pager_link(
 				_('Release'),
-				"/manufacturing/work_order_release.php?trans_no=" . $row["id"]
+			 "/manufacturing/work_order_release.php?trans_no=" . $row["id"]
 			)
 			:
 			pager_link(
 				_('Issue'),
-				"/manufacturing/work_order_issue.php?trans_no=" . $row["id"]
+			 "/manufacturing/work_order_issue.php?trans_no=" . $row["id"]
 			));
 	}
 
@@ -118,7 +118,7 @@
 		 :
 		 pager_link(
 			 _('Produce'),
-			 "/manufacturing/work_order_add_finished.php?trans_no=" . $row["id"]
+			"/manufacturing/work_order_add_finished.php?trans_no=" . $row["id"]
 		 );
 	}
 
@@ -135,7 +135,7 @@
 		 :
 		 pager_link(
 			 _('Costs'),
-			 "/manufacturing/work_order_costs.php?trans_no=" . $row["id"]
+			"/manufacturing/work_order_costs.php?trans_no=" . $row["id"]
 		 );
 	}
 
@@ -192,43 +192,43 @@
 		$sql .= " AND workorder.required_by < '$Today' ";
 	}
 	$cols = array(
-		_("#")						=> array('fun' => 'view_link'),
+		_("#") => array('fun' => 'view_link'),
 		_("Reference"), // viewlink 2 ?
-		_("Type")				 => array('fun' => 'wo_type_name'),
+		_("Type") => array('fun' => 'wo_type_name'),
 		_("Location"),
-		_("Item")				 => array('fun' => 'view_stock'),
-		_("Required")		 => array(
-			'fun'	 => 'dec_amount',
+		_("Item") => array('fun' => 'view_stock'),
+		_("Required") => array(
+			'fun' => 'dec_amount',
 			'align' => 'right'
 		),
 		_("Manufactured") => array(
-			'fun'	 => 'dec_amount',
+			'fun' => 'dec_amount',
 			'align' => 'right'
 		),
-		_("Date")				 => 'date',
-		_("Required By")	=> array(
+		_("Date") => 'date',
+		_("Required By") => array(
 			'type' => 'date',
-			'ord'	=> ''
+			'ord' => ''
 		),
 		array(
 			'insert' => true,
-			'fun'		=> 'edit_link'
+			'fun' => 'edit_link'
 		),
 		array(
 			'insert' => true,
-			'fun'		=> 'release_link'
+			'fun' => 'release_link'
 		),
 		array(
 			'insert' => true,
-			'fun'		=> 'produce_link'
+			'fun' => 'produce_link'
 		),
 		array(
 			'insert' => true,
-			'fun'		=> 'costs_link'
+			'fun' => 'costs_link'
 		),
 		array(
 			'insert' => true,
-			'fun'		=> 'view_gl_link'
+			'fun' => 'view_gl_link'
 		)
 	);
 	$table =& db_pager::new_db_pager('orders_tbl', $sql, $cols);

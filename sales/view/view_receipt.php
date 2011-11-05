@@ -12,7 +12,7 @@
 	$page_security = 'SA_SALESTRANSVIEW';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	$help_context = "";
-	JS::get_js_open_window(900, 600);
+	JS::open_window(900, 600);
 	$trans_type = $_GET['trans_type'];
 	Page::start(_($help_context), true);
 	if (isset($_GET["trans_no"])) {
@@ -21,7 +21,7 @@
 	if (isset($_POST)) {
 		unset($_POST);
 	}
-	$receipt = get_customer_trans($trans_id, $trans_type);
+	$receipt = Sales_Trans::get($trans_id, $trans_type);
 	if ($trans_type == ST_CUSTPAYMENT) {
 		Display::heading(sprintf(_("Customer Payment #%d"), $trans_id));
 	}

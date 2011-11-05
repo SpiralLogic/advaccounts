@@ -81,7 +81,7 @@
 				$rep->NewLine();
 			}
 			$rep->NewLine();
-			$dec = get_qty_dec($trans['component']);
+			$dec = Num::qty_dec($trans['component']);
 			$rep->TextCol(0, 1, $trans['component']);
 			$rep->TextCol(1, 2, $trans['CompDescription']);
 			//$rep->TextCol(2, 3, $trans['loc_code']);

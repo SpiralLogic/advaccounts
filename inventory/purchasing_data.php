@@ -15,7 +15,7 @@
 	Validation::check(Validation::PURCHASE_ITEMS, _("There are no purchasable inventory items defined in the system."), STOCK_PURCHASED);
 	Validation::check(Validation::SUPPLIERS, _("There are no suppliers defined in the system."));
 	//----------------------------------------------------------------------------------------
-	simple_page_mode(true);
+	Page::simple_mode(true);
 	//--------------------------------------------------------------------------------------------------
 	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 		if (Input::request('frame')) {

@@ -12,7 +12,7 @@
 	$page_security = 'SA_SUPPTRANSVIEW';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	include(APP_PATH . "purchasing/includes/purchasing_ui.php");
-	JS::get_js_open_window(900, 500);
+	JS::open_window(900, 500);
 	Page::start(_($help_context = "Search Purchase Orders"), Input::request('frame'));
 	if (isset($_GET['order_number'])) {
 		$order_number = $_GET['order_number'];
@@ -135,7 +135,7 @@
 	} elseif (isset($order_number) && $order_number != "") {
 		$sql .= "AND porder.reference LIKE " . DB::escape('%' . $order_number . '%');
 	} else {
-		$data_after  = Dates::date2sql($_POST['OrdersAfterDate']);
+		$data_after = Dates::date2sql($_POST['OrdersAfterDate']);
 		$date_before = Dates::date2sql($_POST['OrdersToDate']);
 		$sql .= " AND porder.ord_date >= '$data_after'";
 		$sql .= " AND porder.ord_date <= '$date_before'";
@@ -149,36 +149,36 @@
 	} //end not order number selected
 	$sql .= " GROUP BY porder.order_no";
 	$cols = array(
-		_("#")					 => array(
+		_("#") => array(
 			'fun' => 'trans_view',
 			'ord' => ''
 		),
 		_("Reference"),
-		_("Supplier")		=> array(
-			'ord'	=> '',
+		_("Supplier") => array(
+			'ord' => '',
 			'type' => 'id'
 		),
 		_("Supplier ID") => 'skip',
 		_("Location"),
 		_("Supplier's Reference"),
-		_("Order Date")	=> array(
+		_("Order Date") => array(
 			'name' => 'ord_date',
 			'type' => 'date',
-			'ord'	=> 'desc'
+			'ord' => 'desc'
 		),
-		_("Currency")		=> array('align' => 'center'),
+		_("Currency") => array('align' => 'center'),
 		_("Order Total") => 'amount',
 		array(
 			'insert' => true,
-			'fun'		=> 'edit_link'
+			'fun' => 'edit_link'
 		),
 		array(
 			'insert' => true,
-			'fun'		=> 'prt_link'
+			'fun' => 'prt_link'
 		),
 		array(
 			'insert' => true,
-			'fun'		=> 'receive_link'
+			'fun' => 'receive_link'
 		),
 	);
 	if (get_post('StockLocation') != ALL_TEXT) {

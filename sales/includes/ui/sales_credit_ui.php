@@ -10,7 +10,7 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	// ------------------------------------------------------------------------------
-	function display_credit_header(&$order)
+	function display_credit_header($order)
 	{
 		$Ajax = Ajax::instance();
 		start_outer_table("width=90%  " . Config::get('tables_style'));
@@ -92,7 +92,7 @@
 		}
 		sales_types_list_row(_("Sales Type"), 'sales_type_id', $_POST['sales_type_id'], true);
 		if ($order->sales_type != $_POST['sales_type_id']) {
-			$myrow = get_sales_type($_POST['sales_type_id']);
+			$myrow = Sales_Type::get($_POST['sales_type_id']);
 			$order->set_sales_type(
 				$myrow['id'], $myrow['sales_type'],
 				$myrow['tax_included'], $myrow['factor']
@@ -179,7 +179,7 @@
 				alt_table_row_color($k);
 				label_cell("<a target='_blank' href='" . PATH_TO_ROOT . "/inventory/inquiry/stock_status.php?stock_id=" . $line->stock_id . "'>$line->stock_id</a>");
 				label_cell($line->description, "nowrap");
-				qty_cell($line->qty_dispatched, false, get_qty_dec($line->stock_id));
+				qty_cell($line->qty_dispatched, false, Num::qty_dec($line->stock_id));
 				label_cell($line->units);
 				amount_cell($line->price);
 				percent_cell($line->discount_percent * 100);
@@ -221,7 +221,7 @@
 	}
 
 	//---------------------------------------------------------------------------------
-	function credit_edit_item_controls(&$order, $rowcounter, $line_no = -1)
+	function credit_edit_item_controls($order, $rowcounter, $line_no = -1)
 	{
 		$Ajax = Ajax::instance();
 		alt_table_row_color($rowcounter);

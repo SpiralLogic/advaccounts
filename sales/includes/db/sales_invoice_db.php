@@ -31,7 +31,7 @@
 		if (is_array($delivery_no)) {
 			$delivery_no = 0;
 		}
-		update_customer_trans_version(get_parent_type(ST_SALESINVOICE), $invoice->src_docs);
+		Sales_Trans::update_version(get_parent_type(ST_SALESINVOICE), $invoice->src_docs);
 		$ov_gst = 0;
 		$taxes = $invoice->get_taxes(); // all taxes with freight_tax
 		foreach ($taxes as $taxitem) {
@@ -58,7 +58,7 @@
 		if (is_array($sales_order)) {
 			$sales_order = $sales_order[0];
 		} // assume all crucial SO data are same for every delivery
-		$invoice_no = write_customer_trans(ST_SALESINVOICE, $trans_no, $invoice->customer_id,
+		$invoice_no = Sales_Trans::write(ST_SALESINVOICE, $trans_no, $invoice->customer_id,
 			$invoice->Branch, $date_, $invoice->reference, $items_total, 0,
 			$items_added_tax, $invoice->freight_cost, $freight_added_tax,
 			$invoice->sales_type, $sales_order, $delivery_no,
@@ -164,7 +164,7 @@
 		void_gl_trans($type, $type_no, true);
 		// reverse all the changes in parent document(s)
 		$items_result = get_customer_trans_details($type, $type_no);
-		$deliveries = get_parent_trans($type, $type_no);
+		$deliveries = Sales_Trans::get_parent($type, $type_no);
 		if ($deliveries !== 0) {
 			$srcdetails = get_customer_trans_details(get_parent_type($type), $deliveries);
 			while ($row = DBOld::fetch($items_result)) {
@@ -178,7 +178,7 @@
 		void_cust_allocations($type, $type_no);
 		// do this last because other voidings can depend on it - especially voiding
 		// DO NOT MOVE THIS ABOVE VOIDING or we can end up with trans with alloc < 0
-		void_customer_trans($type, $type_no);
+		Sales_Trans::void($type, $type_no);
 		DBOld::commit_transaction();
 	}
 

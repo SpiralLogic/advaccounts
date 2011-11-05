@@ -69,7 +69,8 @@
 			$sql = DB::select('b.*', 'a.description', 's.salesman_name', 't.name AS tax_group_name')
 			 ->from('cust_branch b, debtors_master c, areas a, salesman s, tax_groups t')
 			 ->where(array('b.debtor_no=c.debtor_no', 'b.tax_group_id=t.id', 'b.area=a.area_code', 'b.salesman=s.salesman_code'));
-			$sql2 = "SELECT " . "b.*, a.description, s.salesman_name, t.name AS tax_group_name
+			$sql2
+			 = "SELECT b.*, a.description, s.salesman_name, t.name AS tax_group_name
 		FROM cust_branch b, debtors_master c, areas a, salesman s, tax_groups t
 		WHERE b.debtor_no=c.debtor_no
 		AND b.tax_group_id=t.id

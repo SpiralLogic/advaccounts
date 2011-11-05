@@ -17,7 +17,6 @@
 	// Title:	price Listing
 	// ----------------------------------------------------------------
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	include_once(APP_PATH . "sales/includes/db/sales_types_db.php");
 	//----------------------------------------------------------------------------------------------------
 	print_price_listing();
 	function fetch_items($category = 0)
@@ -92,7 +91,7 @@
 		if ($salestype == 0) {
 			$stype = _('All');
 		} else {
-			$stype = get_sales_type_name($salestype);
+			$stype = Sales_Type::get_name($salestype);
 		}
 		if ($showGP == 0) {
 			$GP = _('No');

@@ -16,7 +16,7 @@
 	$page_security = 'SA_SALESCREDITINV';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	include_once(APP_PATH . "sales/includes/sales_ui.php");
-	JS::get_js_open_window(900, 500);
+	JS::open_window(900, 500);
 	if (isset($_GET['ModifyCredit'])) {
 		$_SESSION['page_title'] = sprintf(_("Modifying Credit Invoice # %d."), $_GET['ModifyCredit']);
 		$help_context = "Modifying Credit Invoice";
@@ -263,7 +263,7 @@
 			//	ui_view::stock_status_cell($ln_itm->stock_id); alternative view
 			label_cell($ln_itm->stock_id);
 			text_cells(null, 'Line' . $line_no . 'Desc', $ln_itm->description, 30, 50);
-			$dec = get_qty_dec($ln_itm->stock_id);
+			$dec = Num::qty_dec($ln_itm->stock_id);
 			qty_cell($ln_itm->quantity, false, $dec);
 			label_cell($ln_itm->units);
 			amount_cells(

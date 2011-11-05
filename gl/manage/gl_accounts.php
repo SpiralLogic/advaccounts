@@ -12,7 +12,6 @@
 	$page_security = 'SA_GLACCOUNT';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "Chart of Accounts"));
-	include(APP_PATH . "admin/db/tags_db.php");
 	Validation::check(Validation::GL_ACCOUNT_GROUPS, _("There are no account groups defined. Please define at least one account group before entering accounts."));
 	//-------------------------------------------------------------------------------------
 	if (isset($_POST['_AccountList_update'])) {
@@ -25,7 +24,7 @@
 	elseif (isset($_GET['selected_account']))
 	{
 		$selected_account = $_GET['selected_account'];
-} else {
+	} else {
 		$selected_account = "";
 	}
 	//-------------------------------------------------------------------------------------
@@ -72,7 +71,7 @@
 					$Ajax->activate('account_code'); // in case of status change
 					Errors::notice(_("Account data has been updated."));
 				}
-} else {
+			} else {
 				if (add_gl_account(
 					$_POST['account_code'], $_POST['account_name'],
 					$_POST['account_type'], $_POST['account_code2']
@@ -87,7 +86,8 @@
 		}
 	}
 	//-------------------------------------------------------------------------------------
-	function can_delete($selected_account) {
+	function can_delete($selected_account)
+	{
 		if ($selected_account == "") {
 			return false;
 		}
@@ -232,7 +232,7 @@
 		hidden('account_code', $_POST['account_code']);
 		hidden('selected_account', $selected_account);
 		label_row(_("Account Code:"), $_POST['account_code']);
-} else {
+	} else {
 		if (!isset($_POST['account_code'])) {
 			$_POST['account_tags'] = array();
 			$_POST['account_code'] = $_POST['account_code2'] = '';
@@ -249,7 +249,7 @@
 	end_table(1);
 	if ($selected_account == "") {
 		submit_center('add', _("Add Account"), true, '', 'default');
-} else {
+	} else {
 		submit_center_first('update', _("Update Account"), '', 'default');
 		submit_center_last('delete', _("Delete account"), '', true);
 	}

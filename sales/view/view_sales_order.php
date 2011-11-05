@@ -12,7 +12,7 @@
 	$page_security = 'SA_SALESTRANSVIEW';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	include_once(APP_PATH . "sales/includes/sales_ui.php");
-	JS::get_js_open_window(900, 600);
+	JS::open_window(900, 600);
 	if ($_GET['trans_type'] == ST_SALESQUOTE) {
 		Page::start(_($help_context = "View Sales Quotation"), true);
 		Display::heading(sprintf(_("Sales Quotation #%d"), $_GET['trans_no']));
@@ -155,7 +155,7 @@
 		alt_table_row_color($k);
 		label_cell($stock_item->stock_id);
 		label_cell($stock_item->description);
-		$dec = get_qty_dec($stock_item->stock_id);
+		$dec = Num::qty_dec($stock_item->stock_id);
 		qty_cell($stock_item->quantity, false, $dec);
 		label_cell($stock_item->units);
 		amount_cell($stock_item->price);

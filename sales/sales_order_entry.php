@@ -21,7 +21,6 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	include_once(APP_PATH . "sales/includes/sales_ui.php");
 	include_once(APP_PATH . "sales/includes/ui/sales_order_ui.php");
-	include_once(APP_PATH . "sales/includes/db/sales_types_db.php");
 	Security::set_page(
 		(!Input::session('Items') ? : $_SESSION['Items']->trans_type),
 		array(
@@ -39,7 +38,7 @@
 			'NewInvoice' => 'SA_SALESINVOICE'
 		)
 	);
-	JS::get_js_open_window(900, 500);
+	JS::open_window(900, 500);
 	$page_title = _($help_context = "Sales Order Entry");
 	if (Input::post('saveorder')) {
 		$_SESSION['Items']->store();
@@ -445,7 +444,7 @@
 				Errors::error(
 					_("The delivery cannot be processed because there is an insufficient quantity for item:") . " " . $stock['stock_id'] . " - " . $stock['description'] . " - " . _("Quantity On Hand") . " = " . Num::format(
 						$qoh,
-						get_qty_dec($_POST['stock_id'])
+						Num::qty_dec($_POST['stock_id'])
 					)
 				);
 				return false;

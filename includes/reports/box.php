@@ -33,25 +33,25 @@
 
 		function getDisplay($class = null)
 		{
-			$Ajax          = Ajax::instance();
-			$temp          = array_values($this->ar_classes);
+			$Ajax = Ajax::instance();
+			$temp = array_values($this->ar_classes);
 			$display_class = $class == null ? $temp[0] : $this->ar_classes[$class];
 			$class_counter = 0;
-			$rep_counter   = 0;
-			$st_reports    = "";
-			$st_params     = "";
-			$st_classes    = "<b>" . _("Report Classes:") . "</b><br>";
+			$rep_counter = 0;
+			$st_reports = "";
+			$st_params = "";
+			$st_classes = "<b>" . _("Report Classes:") . "</b><br>";
 			foreach ($this->ar_classes as $key => $value) {
 				$style = $class_counter == $_REQUEST['Class'] ? '' : "style='display:none'";
-				$acc   = access_string($key);
-				$st_classes .= "<a href='" . $_SERVER['PHP_SELF'] . "?Class=$class_counter'" . " class='menu_option' id='" . JS::default_focus() . "'" . " onclick='return showClass($class_counter);'$acc[1]>$acc[0]</a> <br>";
+				$acc = access_string($key);
+				$st_classes .= "<a href='" . $_SERVER['PHP_SELF'] . "?Class=$class_counter' class='menu_option' id='" . JS::default_focus() . "' onclick='return showClass($class_counter);'$acc[1]>$acc[0]</a> <br>";
 				$st_reports .= "<table id='TAB_" . $class_counter . "' $style cellpadding=0 cellspacing=0 width='100%'><tr><td><b>" . _("Reports For Class: ") . "&nbsp;$key</b></td></tr>\n";
 				foreach ($value as $report) {
 					$acc = access_string($report->name);
-					$st_reports .= "<tr><td><a class='printlink' href='" . $_SERVER['PHP_SELF'] . "?Class=$class_counter&rep_id=$report->id'" . " id='" . JS::default_focus() . "'" . "$acc[1]>$acc[0]</a><tr><td>\n";
+					$st_reports .= "<tr><td><a class='printlink' href='" . $_SERVER['PHP_SELF'] . "?Class=$class_counter&rep_id=$report->id' id='" . JS::default_focus() . "'$acc[1]>$acc[0]</a><tr><td>\n";
 					if (isset($_REQUEST['rep_id']) && $_REQUEST['rep_id'] == $report->id) {
-						$action    = PATH_TO_ROOT . '/reporting/prn_redirect.php';
-						$st_params = "<table><tr><td>\n" . "<form method='POST' action='$action' target='_blank'>\n";
+						$action = PATH_TO_ROOT . '/reporting/prn_redirect.php';
+						$st_params = "<table><tr><td>\n<form method='POST' action='$action' target='_blank'>\n";
 						$st_params .= submit('Rep' . $report->id, _("Display: ") . access_string($report->name, true), false, '', Config::get('debug_pdf') ? false : 'default process') . hidden(
 							'REP_ID',
 							$report->id,
@@ -66,8 +66,9 @@
 				$st_reports .= "</table>";
 				$class_counter++;
 			}
-			$st_params = "<div id='rep_form'>" . "$st_params</div>";
-			$st = "<script language='javascript'>
+			$st_params = "<div id='rep_form'>$st_params</div>";
+			$st
+			 = "<script language='javascript'>
 					function showClass(pClass) {
 						for(i=0; i<$class_counter; i++) {
 							document.getElementById(\"TAB_\" + i).style.display=
@@ -147,10 +148,10 @@
 				$sql = "SELECT curr_abrev, concat(curr_abrev,' - ', currency) AS name FROM currencies";
 				return combo_input(
 					$name, '', $sql, 'curr_abrev', 'name', array(
-																											'spec_option' => _("No Currency Filter"),
-																											'spec_id'     => ALL_TEXT,
-																											'order'       => false
-																								 )
+						'spec_option' => _("No Currency Filter"),
+						'spec_id' => ALL_TEXT,
+						'order' => false
+					)
 				);
 			case 'DATE':
 			case 'DATEBEGIN':
@@ -171,7 +172,7 @@
 				} elseif ($type == 'DATEENDM') {
 					$date = Dates::end_month($date);
 				} elseif ($type == 'DATEBEGINTAX' || $type == 'DATEENDTAX') {
-					$row   = DB_Company::get_prefs();
+					$row = DB_Company::get_prefs();
 					$edate = Dates::add_months($date, -$row['tax_last']);
 					$edate = Dates::end_month($edate);
 					if ($type == 'DATEENDTAX') {
@@ -179,12 +180,12 @@
 					} else {
 						$bdate = Dates::begin_month($edate);
 						$bdate = Dates::add_months($bdate, -$row['tax_prd'] + 1);
-						$date  = $bdate;
+						$date = $bdate;
 					}
 				}
 				$st = "<input type='text' name='$name' value='$date'>";
 				if (Config::get('ui_forms_datepicker')) {
-					$st .= "<a href=\"javascript:date_picker(document.forms[0].$name);\">" . "	<img src='/themes/default/images/cal.gif' width='16' height='16' border='0' alt='" . _('Click Here to Pick up the date') . "'></a>\n";
+					$st .= "<a href=\"javascript:date_picker(document.forms[0].$name);\">	<img src='/themes/default/images/cal.gif' width='16' height='16' border='0' alt='" . _('Click Here to Pick up the date') . "'></a>\n";
 				}
 				return $st;
 				break;
@@ -242,9 +243,9 @@
 				if ($type == 'CUSTOMERS_NO_FILTER') {
 					return combo_input(
 						$name, '', $sql, 'debtor_no', 'name', array(
-																											 'spec_option' => _("No Customer Filter"),
-																											 'spec_id'     => ALL_NUMERIC
-																									)
+							'spec_option' => _("No Customer Filter"),
+							'spec_id' => ALL_NUMERIC
+						)
 					);
 				} // FIX allitems numeric!
 					//						return customer_list($name, null, _("No Customer Filter"));
@@ -258,9 +259,9 @@
 				if ($type == 'SUPPLIERS_NO_FILTER') {
 					return combo_input(
 						$name, '', $sql, 'supplier_id', 'supp_name', array(
-																															'spec_option' => _("No Supplier Filter"),
-																															'spec_id'     => ALL_NUMERIC
-																												 )
+							'spec_option' => _("No Supplier Filter"),
+							'spec_id' => ALL_NUMERIC
+						)
 					);
 				} // FIX allitems numeric!
 					//						return supplier_list($name, null, _("No Supplier Filter"));
@@ -269,27 +270,27 @@
 				}
 				//						return supplier_list($name);
 			case 'INVOICE':
-				$IV  = _("IV");
-				$CN  = _("CN");
+				$IV = _("IV");
+				$CN = _("CN");
 				$ref = (Config::get('print_useinvoicenumber') == 0 ? "trans_no" : "reference");
 				$sql
-						 = "SELECT concat(debtor_trans.trans_no, '-',
+				 = "SELECT concat(debtor_trans.trans_no, '-',
 						debtor_trans.type) AS TNO, concat(debtor_trans.$ref, if (type=" . ST_SALESINVOICE . ", ' $IV ', ' $CN '), debtors_master.name) as IName
 						FROM debtors_master, debtor_trans WHERE (type=" . ST_SALESINVOICE . " OR type=" . ST_CUSTCREDIT . ") AND debtors_master.debtor_no=debtor_trans.debtor_no ORDER BY debtor_trans.trans_no DESC";
 				return combo_input($name, '', $sql, 'TNO', 'IName', array('order' => false));
 			case 'DELIVERY':
 				$DN = _("DN");
 				$sql
-						= "SELECT
+				 = "SELECT
 					concat(debtor_trans.trans_no, '-', debtor_trans.type) AS TNO, concat(debtor_trans.trans_no, ' $DN ',
 					 debtors_master.name) as IName
 						FROM debtors_master, debtor_trans
-						WHERE type=" . ST_CUSTDELIVERY . " AND debtors_master.debtor_no=" . "debtor_trans.debtor_no ORDER BY debtor_trans.trans_no DESC";
+						WHERE type=" . ST_CUSTDELIVERY . " AND debtors_master.debtor_no=debtor_trans.debtor_no ORDER BY debtor_trans.trans_no DESC";
 				return combo_input($name, '', $sql, 'TNO', 'IName', array('order' => false));
 			case 'ORDERS':
 				$ref = (Config::get('print_useinvoicenumber') == 0) ? "order_no" : "reference";
 				$sql
-						 = "SELECT sales_orders.order_no, concat(sales_orders.$ref, '-',
+				 = "SELECT sales_orders.order_no, concat(sales_orders.$ref, '-',
 						debtors_master.name) as IName
 						FROM debtors_master, sales_orders WHERE debtors_master.debtor_no=sales_orders.debtor_no
 						AND sales_orders.trans_type=" . ST_SALESORDER . " ORDER BY sales_orders.order_no DESC";
@@ -297,7 +298,7 @@
 			case 'QUOTATIONS':
 				$ref = (Config::get('print_useinvoicenumber') == 0 ? "order_no" : "reference");
 				$sql
-						 = "SELECT sales_orders.order_no, concat(sales_orders.$ref, '-',
+				 = "SELECT sales_orders.order_no, concat(sales_orders.$ref, '-',
 						debtors_master.name) as IName
 						FROM debtors_master, sales_orders WHERE debtors_master.debtor_no=sales_orders.debtor_no
 						AND sales_orders.trans_type=" . ST_SALESQUOTE . " ORDER BY sales_orders.order_no DESC";
@@ -305,40 +306,40 @@
 			case 'PO':
 				$ref = (Config::get('print_useinvoicenumber') == 0 ? "order_no" : "reference");
 				$sql
-						 = "SELECT purch_orders.order_no, concat(purch_orders.$ref, '-',
+				 = "SELECT purch_orders.order_no, concat(purch_orders.$ref, '-',
 						suppliers.supp_name) as IName
 						FROM suppliers, purch_orders WHERE suppliers.supplier_id=purch_orders.supplier_id ORDER BY purch_orders.order_no DESC";
 				return combo_input($name, '', $sql, 'order_no', 'IName', array('order' => false));
 			case 'REMITTANCE':
-				$BP  = _("BP");
-				$SP  = _("SP");
-				$CN  = _("CN");
+				$BP = _("BP");
+				$SP = _("SP");
+				$CN = _("CN");
 				$ref = (Config::get('print_useinvoicenumber') == 0 ? "trans_no" : "reference");
 				$sql
-						 = "SELECT concat(supp_trans.trans_no, '-',
+				 = "SELECT concat(supp_trans.trans_no, '-',
 						supp_trans.type) AS TNO, concat(supp_trans.$ref, if (type=" . ST_BANKPAYMENT . ", ' $BP ', if (type=" . ST_SUPPAYMENT . ", ' $SP ', ' $CN ')), suppliers.supp_name) as IName
 						FROM suppliers, supp_trans WHERE (type=" . ST_BANKPAYMENT . " OR type=" . ST_SUPPAYMENT . " OR type=" . ST_SUPPCREDIT . ") AND suppliers.supplier_id=supp_trans.supplier_id ORDER BY supp_trans.trans_no DESC";
 				return combo_input($name, '', $sql, 'TNO', 'IName', array('order' => false));
 			case 'RECEIPT':
-				$BD  = _("BD");
-				$CP  = _("CP");
-				$CN  = _("CN");
+				$BD = _("BD");
+				$CP = _("CP");
+				$CN = _("CN");
 				$ref = (Config::get('print_useinvoicenumber') == 0 ? "trans_no" : "reference");
 				$sql
-						 = "SELECT concat(debtor_trans.trans_no, '-',
+				 = "SELECT concat(debtor_trans.trans_no, '-',
 						debtor_trans.type) AS TNO, concat(debtor_trans.$ref, if (type=" . ST_BANKDEPOSIT . ", ' $BD ', if (type=" . ST_CUSTPAYMENT . ", ' $CP ', ' $CN ')), debtors_master.name) as IName
 						FROM debtors_master, debtor_trans WHERE (type=" . ST_BANKDEPOSIT . " OR type=" . ST_CUSTPAYMENT . " OR type=" . ST_CUSTCREDIT . ") AND debtors_master.debtor_no=debtor_trans.debtor_no ORDER BY debtor_trans.trans_no DESC";
 				return combo_input($name, '', $sql, 'TNO', 'IName', array('order' => false));
 			case 'REFUND':
-				$BD  = _("BD");
-				$CP  = _("CP");
-				$CN  = _("CN");
+				$BD = _("BD");
+				$CP = _("CP");
+				$CN = _("CN");
 				$ref = (Config::get('print_useinvoicenumber') == 0 ? "trans_no" : "reference");
 				$sql
-						 = "SELECT concat(debtor_trans.trans_no, '-',
+				 = "SELECT concat(debtor_trans.trans_no, '-',
 						debtor_trans.type) AS TNO, concat(debtor_trans.$ref, if (type=" . ST_BANKDEPOSIT . ", ' $BD ', if (type=" . ST_CUSTREFUND . ",
 						' $CP ', ' $CN ')), debtors_master.name) as IName
-						FROM debtors_master, debtor_trans WHERE (type=" . ST_CUSTREFUND . ") AND debtors_master.debtor_no=" . "debtor_trans.debtor_no ORDER BY debtor_trans.trans_no DESC";
+						FROM debtors_master, debtor_trans WHERE (type=" . ST_CUSTREFUND . ") AND debtors_master.debtor_no=debtor_trans.debtor_no ORDER BY debtor_trans.trans_no DESC";
 				return combo_input($name, '', $sql, 'TNO', 'IName', array('order' => false));
 			case 'ITEMS':
 				return stock_manufactured_items_list($name);
@@ -364,9 +365,9 @@
 				$sql = "SELECT id, user_id FROM users";
 				return combo_input(
 					$name, '', $sql, 'id', 'user_id', array(
-																								 'spec_option' => _("No Users Filter"),
-																								 'spec_id'     => ALL_NUMERIC
-																						)
+						'spec_option' => _("No Users Filter"),
+						'spec_id' => ALL_NUMERIC
+					)
 				);
 			case 'ACCOUNTTAGS':
 			case 'DIMENSIONTAGS':
@@ -392,10 +393,10 @@
 			}
 			return array_selector(
 				$name, $value, $types, array(
-																		'spec_option' => $spec_opt,
-																		'spec_id'     => ALL_NUMERIC,
-																		'async'       => false,
-															 )
+					'spec_option' => $spec_opt,
+					'spec_id' => ALL_NUMERIC,
+					'async' => false,
+				)
 			);
 		}
 	}

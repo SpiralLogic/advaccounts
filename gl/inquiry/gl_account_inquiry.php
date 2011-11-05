@@ -12,7 +12,7 @@
 	$page_security = 'SA_GLTRANSVIEW';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	JS::set_focus('account');
-	JS::get_js_open_window(800, 500);
+	JS::open_window(800, 500);
 	Page::start(_($help_context = "General Ledger Inquiry"));
 	//----------------------------------------------------------------------------------------------------
 	// Ajax updates
@@ -42,10 +42,10 @@
 		$_POST["amount_max"] = $_GET["amount_max"];
 	}
 	if (!isset($_POST["amount_min"])) {
-		$_POST["amount_min"] = Num::Num::price_format(0);
+		$_POST["amount_min"] = Num::price_format(0);
 	}
 	if (!isset($_POST["amount_max"])) {
-		$_POST["amount_max"] = Num::Num::price_format(0);
+		$_POST["amount_max"] = Num::price_format(0);
 	}
 	//----------------------------------------------------------------------------------------------------
 	function gl_inquiry_controls()

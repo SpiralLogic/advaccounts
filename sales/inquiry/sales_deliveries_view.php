@@ -12,11 +12,11 @@
 	$page_security = 'SA_SALESINVOICE';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	include(APP_PATH . "sales/includes/sales_ui.php");
-	JS::get_js_open_window(900, 600);
+	JS::open_window(900, 600);
 	if (isset($_GET['OutstandingOnly']) && ($_GET['OutstandingOnly'] == true)) {
 		$_POST['OutstandingOnly'] = true;
 		Page::start(_($help_context = "Search Not Invoiced Deliveries"));
-} else {
+	} else {
 		$_POST['OutstandingOnly'] = false;
 		Page::start(_($help_context = "Search All Deliveries"));
 	}
@@ -26,7 +26,7 @@
 	elseif (isset($_POST['selected_customer']))
 	{
 		$selected_customer = $_POST['selected_customer'];
-} else {
+	} else {
 		$selected_customer = -1;
 	}
 	if (isset($_POST['BatchInvoice'])) {
@@ -98,15 +98,17 @@
 	 && ($_POST['SelectStockFromList'] != ALL_TEXT)
 	) {
 		$selected_stock_item = $_POST['SelectStockFromList'];
-} else {
+	} else {
 		unset($selected_stock_item);
 	}
 	//---------------------------------------------------------------------------------------------
-	function trans_view($trans, $trans_no) {
+	function trans_view($trans, $trans_no)
+	{
 		return ui_view::get_customer_trans_view_str(ST_CUSTDELIVERY, $trans['trans_no']);
 	}
 
-	function batch_checkbox($row) {
+	function batch_checkbox($row)
+	{
 		$name = "Sel_" . $row['trans_no'];
 		return $row['Done']
 		 ? ''
@@ -117,7 +119,8 @@
 			. $row['branch_code'] . "'>\n";
 	}
 
-	function edit_link($row) {
+	function edit_link($row)
+	{
 		return $row["Outstanding"] == 0
 		 ? ''
 		 :
@@ -127,11 +130,13 @@
 		 );
 	}
 
-	function prt_link($row) {
+	function prt_link($row)
+	{
 		return Reporting::print_doc_link($row['trans_no'], _("Print"), true, ST_CUSTDELIVERY, ICON_PRINT);
 	}
 
-	function invoice_link($row) {
+	function invoice_link($row)
+	{
 		return $row["Outstanding"] == 0
 		 ? ''
 		 :
@@ -141,7 +146,8 @@
 		 );
 	}
 
-	function check_overdue($row) {
+	function check_overdue($row)
+	{
 		return Dates::date1_greater_date2(Dates::Today(), Dates::sql2date($row["due_date"]))
 		 && $row["Outstanding"] != 0;
 	}
@@ -179,7 +185,7 @@
 		$delivery = "%" . $_POST['DeliveryNumber'];
 		$sql .= " AND trans.trans_no LIKE " . DB::escape($delivery);
 		$sql .= " GROUP BY trans.trans_no";
-} else {
+	} else {
 		$sql .= " AND trans.tran_date >= '" . Dates::date2sql($_POST['DeliveryAfterDate']) . "'";
 		$sql .= " AND trans.tran_date <= '" . Dates::date2sql($_POST['DeliveryToDate']) . "'";
 		if ($selected_customer != -1) {

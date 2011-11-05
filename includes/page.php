@@ -8,6 +8,42 @@
 	 */
 	class Page
 	{
+		//------------------------------------------------------------------------------
+		//
+		// Helper function for simple db table editor pages
+		//
+		public static function simple_mode($numeric_id = true)
+		{
+			global $Mode, $selected_id;
+			$Ajax = Ajax::instance();
+			$default = $numeric_id ? -1 : '';
+			$selected_id = get_post('selected_id', $default);
+			foreach (array('ADD_ITEM', 'UPDATE_ITEM', 'RESET', 'CLONE') as $m) {
+				if (isset($_POST[$m])) {
+					$Ajax->activate('_page_body');
+					if ($m == 'RESET' || $m == 'CLONE') {
+						$selected_id = $default;
+					}
+					unset($_POST['_focus']);
+					$Mode = $m;
+					return;
+				}
+			}
+			foreach (array('Edit', 'Delete') as $m) {
+				foreach ($_POST as $p => $pvar) {
+					if (strpos($p, $m) === 0) {
+						//				$selected_id = strtr(substr($p, strlen($m)), array('%2E'=>'.'));
+						unset($_POST['_focus']); // focus on first form entry
+						$selected_id = quoted_printable_decode(substr($p, strlen($m)));
+						$Ajax->activate('_page_body');
+						$Mode = $m;
+						return;
+					}
+				}
+			}
+			$Mode = '';
+		}
+
 		public static function start($title, $no_menu = false, $is_index = false, $onload = "", $js = "", $script_only = false)
 		{
 			global $page_security;
@@ -36,7 +72,7 @@
 				return; // just for speed up
 			}
 			$theme = User::theme();
-			JS::get_js_open_window(900, 500);
+			JS::open_window(900, 500);
 			JS::beforeload($js);
 			if (!isset($no_menu)) {
 				$no_menu = false;

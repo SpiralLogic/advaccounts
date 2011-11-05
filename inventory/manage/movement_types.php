@@ -12,7 +12,7 @@
 	$page_security = 'SA_INVENTORYMOVETYPE';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "Inventory Movement Types"));
-	simple_page_mode(true);
+	Page::simple_mode(true);
 	//-----------------------------------------------------------------------------------
 	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 		//initialise no input errors assumed initially before we test
@@ -26,7 +26,7 @@
 			if ($selected_id != -1) {
 				update_movement_type($selected_id, $_POST['name']);
 				Errors::notice(_('Selected movement type has been updated'));
-} else {
+			} else {
 				add_movement_type($_POST['name']);
 				Errors::notice(_('New movement type has been added'));
 			}
@@ -40,7 +40,7 @@
 		 = "SELECT COUNT(*) FROM stock_moves
 		WHERE type=" . ST_INVADJUST . " AND person_id=" . DB::escape($selected_id);
 		$result = DBOld::query($sql, "could not query stock moves");
-		$myrow  = DBOld::fetch_row($result);
+		$myrow = DBOld::fetch_row($result);
 		if ($myrow[0] > 0) {
 			Errors::error(_("Cannot delete this inventory movement type because item transactions have been created referring to it."));
 			return false;
@@ -58,7 +58,7 @@
 	}
 	if ($Mode == 'RESET') {
 		$selected_id = -1;
-		$sav         = get_post('show_inactive');
+		$sav = get_post('show_inactive');
 		unset($_POST);
 		$_POST['show_inactive'] = $sav;
 	}

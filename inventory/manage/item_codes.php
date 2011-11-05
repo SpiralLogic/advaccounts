@@ -13,7 +13,7 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "Foreign Item Codes"));
 	Validation::check(Validation::PURCHASE_ITEMS, _("There are no inventory items defined in the system."), STOCK_PURCHASED);
-	simple_page_mode(true);
+	Page::simple_mode(true);
 	//--------------------------------------------------------------------------------------------------
 	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 		$input_error = 0;
@@ -36,7 +36,7 @@
 		}
 		elseif ($selected_id == -1)
 		{
-			$kit = get_item_kit($_POST['item_code']);
+			$kit = Item_Code::get_kit($_POST['item_code']);
 			if (DBOld::num_rows($kit)) {
 				$input_error = 1;
 				Errors::error(_("This item code is already assigned to stock item or sale kit."));
@@ -45,14 +45,14 @@
 		}
 		if ($input_error == 0) {
 			if ($Mode == 'ADD_ITEM') {
-				add_item_code(
+				Item_Code::add(
 					$_POST['item_code'], $_POST['stock_id'],
 					$_POST['description'], $_POST['category_id'], $_POST['quantity'], 1
 				);
 				Errors::notice(_("New item code has been added."));
 			} else
 			{
-				update_item_code(
+				Item_Code::update(
 					$selected_id, $_POST['item_code'], $_POST['stock_id'],
 					$_POST['description'], $_POST['category_id'], $_POST['quantity'], 1
 				);
@@ -63,7 +63,7 @@
 	}
 	//--------------------------------------------------------------------------------------------------
 	if ($Mode == 'Delete') {
-		delete_item_code($selected_id);
+		Item_Code::delete($selected_id);
 		Errors::notice(_("Item code has been sucessfully deleted."));
 		$Mode = 'RESET';
 	}
@@ -83,12 +83,12 @@
 	echo stock_purchasable_items_list('stock_id', $_POST['stock_id'], false, true, false, false);
 	echo "<hr></center>";
 	Session::get()->global_stock_id = $_POST['stock_id'];
-	$result    = get_item_code_dflts($_POST['stock_id']);
-	$dec       = $result['decimals'];
-	$units     = $result['units'];
+	$result = Item_Code::get_defaults($_POST['stock_id']);
+	$dec = $result['decimals'];
+	$units = $result['units'];
 	$dflt_desc = $result['description'];
-	$dflt_cat  = $result['category_id'];
-	$result = get_all_item_codes($_POST['stock_id']);
+	$dflt_cat = $result['category_id'];
+	$result = Item_Code::get_all($_POST['stock_id']);
 	div_start('code_table');
 	start_table(Config::get('tables_style') . "  width=60%");
 	$th = array(
@@ -119,15 +119,15 @@
 	//-----------------------------------------------------------------------------------------------
 	if ($selected_id != '') {
 		if ($Mode == 'Edit') {
-			$myrow                = get_item_code($selected_id);
-			$_POST['item_code']   = $myrow["item_code"];
-			$_POST['quantity']    = $myrow["quantity"];
+			$myrow = Item_Code::get($selected_id);
+			$_POST['item_code'] = $myrow["item_code"];
+			$_POST['quantity'] = $myrow["quantity"];
 			$_POST['description'] = $myrow["description"];
 			$_POST['category_id'] = $myrow["category_id"];
 		}
 		hidden('selected_id', $selected_id);
 	} else {
-		$_POST['quantity']    = 1;
+		$_POST['quantity'] = 1;
 		$_POST['description'] = $dflt_desc;
 		$_POST['category_id'] = $dflt_cat;
 	}

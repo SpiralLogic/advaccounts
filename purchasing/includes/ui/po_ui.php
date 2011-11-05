@@ -11,7 +11,7 @@
 			See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		 * ********************************************************************* */
 	// ------------------------------------------------------------------------------
-	function get_supplier_details_to_order(&$order, $supplier_id)
+	function get_supplier_details_to_order($order, $supplier_id)
 	{
 		$sql
 		 = "SELECT * FROM suppliers
@@ -42,7 +42,7 @@
 	}
 
 	//---------------------------------------------------------------------------------------------------
-	function display_po_header(&$order)
+	function display_po_header($order)
 	{
 		$Ajax = Ajax::instance();
 		$editable = ($order->order_no == 0);
@@ -122,7 +122,7 @@
 	}
 
 	//---------------------------------------------------------------------------------------------------
-	function display_po_items(&$order, $editable = true)
+	function display_po_items($order, $editable = true)
 	{
 		$Ajax = Ajax::instance();
 		Display::heading(_("Order Items"));
@@ -149,8 +149,8 @@
 					alt_table_row_color($k);
 					label_cell($po_line->stock_id, " class='stock'  data-stock_id='{$po_line->stock_id}'");
 					label_cell($po_line->description);
-					qty_cell($po_line->quantity, false, get_qty_dec($po_line->stock_id));
-					qty_cell($po_line->qty_received, false, get_qty_dec($po_line->stock_id));
+					qty_cell($po_line->quantity, false, Num::qty_dec($po_line->stock_id));
+					qty_cell($po_line->qty_received, false, Num::qty_dec($po_line->stock_id));
 					label_cell($po_line->units);
 					label_cell($po_line->req_del_date);
 					amount_decimal_cell($po_line->price);
@@ -240,7 +240,7 @@
 	}
 
 	//--------------------------------------------------------------------------------
-	function po_item_controls(&$order, $stock_id = null)
+	function po_item_controls($order, $stock_id = null)
 	{
 		$Ajax = Ajax::instance();
 		start_row();
@@ -249,7 +249,7 @@
 		if (($id != -1) && $stock_id != null) {
 			hidden('line_no', $id);
 			$_POST['stock_id'] = $order->line_items[$id]->stock_id;
-			$dec = get_qty_dec($_POST['stock_id']);
+			$dec = Num::qty_dec($_POST['stock_id']);
 			$_POST['qty'] = Num::qty_format($order->line_items[$id]->quantity, $_POST['stock_id'], $dec);
 			//$_POST['price'] = Num::price_format($order->line_items[$id]->price);
 			$_POST['price'] = Num::price_decimal($order->line_items[$id]->price, $dec2);

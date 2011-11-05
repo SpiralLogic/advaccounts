@@ -10,10 +10,10 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	//--------------------------------------------------------------------------------
-	function add_to_issue(&$order, $new_item, $new_item_qty, $standard_cost)
+	function add_to_issue($order, $new_item, $new_item_qty, $standard_cost)
 	{
 		if ($order->find_cart_item($new_item)) {
-			Errors::error(_("For Part :") . $new_item . " " . "This item is already on this issue.  You can change the quantity issued of the existing line if necessary.");
+			Errors::error(_("For Part: '") . $new_item . "' This item is already on this issue.  You can change the quantity issued of the existing line if necessary.");
 		} else {
 			$order->add_to_cart(count($order->line_items), $new_item, $new_item_qty, $standard_cost);
 		}
@@ -45,7 +45,7 @@
 				alt_table_row_color($k);
 				ui_view::stock_status_cell($stock_item->stock_id);
 				label_cell($stock_item->description);
-				qty_cell($stock_item->quantity, false, get_qty_dec($stock_item->stock_id));
+				qty_cell($stock_item->quantity, false, Num::qty_dec($stock_item->stock_id));
 				label_cell($stock_item->units);
 				amount_cell($stock_item->standard_cost);
 				//			amount_cell($stock_item->standard_cost * $stock_item->quantity);
@@ -71,7 +71,7 @@
 	}
 
 	//---------------------------------------------------------------------------------
-	function issue_edit_item_controls(&$order, $line_no = -1)
+	function issue_edit_item_controls($order, $line_no = -1)
 	{
 		$Ajax = Ajax::instance();
 		start_row();

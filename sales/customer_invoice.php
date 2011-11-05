@@ -18,7 +18,7 @@
 	$page_security = 'SA_SALESINVOICE';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	include_once(APP_PATH . "sales/includes/sales_ui.php");
-	JS::get_js_open_window(900, 500);
+	JS::open_window(900, 500);
 	$page_title = 'Sales Invoice Complete';
 	if (isset($_GET['ModifyInvoice'])) {
 		$page_title = sprintf(_("Modifying Sales Invoice # %d."), $_GET['ModifyInvoice']);
@@ -104,7 +104,7 @@
 		copy_from_cart();
 	}
 	elseif (isset($_GET['ModifyInvoice']) && $_GET['ModifyInvoice'] > 0) {
-		if (get_parent_trans(ST_SALESINVOICE, $_GET['ModifyInvoice']) == 0) { // 1.xx compatibility hack
+		if (Sales_Trans::get_parent(ST_SALESINVOICE, $_GET['ModifyInvoice']) == 0) { // 1.xx compatibility hack
 			echo"<center><br><b>" . _(
 				"There are no delivery notes for this invoice.<br>
 		Most likely this invoice was created in Front Accounting version prior to 2.0
@@ -181,7 +181,7 @@
 		foreach (
 			$delivery_notes as $delivery_num
 		) {
-			$myrow = get_customer_trans($delivery_num, 13);
+			$myrow = Sales_Trans::get($delivery_num, 13);
 			//$branch = get_branch($myrow["branch_code"]);
 			//$sales_order = get_sales_order_header($myrow["order_"]);
 			//$shipping += $sales_order['freight_cost'];
@@ -396,7 +396,7 @@
 		{
 			label_cell($ln_itm->description);
 		}
-		$dec = get_qty_dec($ln_itm->stock_id);
+		$dec = Num::qty_dec($ln_itm->stock_id);
 		qty_cell($ln_itm->quantity, false, $dec);
 		label_cell($ln_itm->units);
 		qty_cell($ln_itm->qty_done, false, $dec);

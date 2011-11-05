@@ -57,7 +57,7 @@
 		}
 		/*Now insert the Credit Note into the debtor_trans table with the allocations as calculated above*/
 		// all amounts in debtor's currency
-		$credit_no = write_customer_trans(ST_CUSTCREDIT, $trans_no, $credit_note->customer_id,
+		$credit_no = Sales_Trans::write(ST_CUSTCREDIT, $trans_no, $credit_note->customer_id,
 			$credit_note->Branch, $credit_date, $credit_note->reference,
 			$credit_note_total, 0, $items_added_tax,
 			$credit_note->freight_cost, $freight_added_tax,
@@ -78,7 +78,7 @@
 		}
 		if ($credit_invoice) {
 			$invoice_alloc_balance = get_DebtorTrans_allocation_balance(ST_SALESINVOICE, $credit_invoice);
-			update_customer_trans_version(get_parent_type(ST_CUSTCREDIT), $credit_note->src_docs);
+			Sales_Trans::update_version(get_parent_type(ST_CUSTCREDIT), $credit_note->src_docs);
 			if ($invoice_alloc_balance > 0) { //the invoice is not already fully allocated
 				$total = $credit_note_total + $credit_note->freight_cost +
 				 $items_added_tax + $freight_added_tax;

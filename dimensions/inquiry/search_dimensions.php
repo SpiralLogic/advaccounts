@@ -11,11 +11,11 @@
 	 ***********************************************************************/
 	$page_security = 'SA_DIMTRANSVIEW';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	JS::get_js_open_window(800, 500);
+	JS::open_window(800, 500);
 	if (isset($_GET['outstanding_only']) && $_GET['outstanding_only']) {
 		$outstanding_only = 1;
 		Page::start(_($help_context = "Search Outstanding Dimensions"));
-} else {
+	} else {
 		$outstanding_only = 0;
 		Page::start(_($help_context = "Search Dimensions"));
 	}
@@ -56,7 +56,7 @@
 	check_cells(_("Only Overdue:"), 'OverdueOnly', null);
 	if (!$outstanding_only) {
 		check_cells(_("Only Open:"), 'OpenOnly', null);
-} else {
+	} else {
 		$_POST['OpenOnly'] = 1;
 	}
 	submit_cells('SearchOrders', _("Search"), '', '', 'default');
@@ -96,7 +96,7 @@
 		//		"/dimensions/dimension_entry.php?trans_no=" . $row["id"], ICON_EDIT);
 		return pager_link(
 			_("Edit"),
-			"/dimensions/dimension_entry.php?trans_no=" . $row["id"], ICON_EDIT
+		 "/dimensions/dimension_entry.php?trans_no=" . $row["id"], ICON_EDIT
 		);
 	}
 
@@ -129,25 +129,25 @@
 		AND date_ <= '" . Dates::date2sql($_POST['ToDate']) . "'";
 	}
 	$cols = array(
-		_("#")				=> array('fun' => 'view_link'),
+		_("#") => array('fun' => 'view_link'),
 		_("Reference"),
 		_("Name"),
 		_("Type"),
-		_("Date")		 => 'date',
+		_("Date") => 'date',
 		_("Due Date") => array(
 			'name' => 'due_date',
 			'type' => 'date',
-			'ord'	=> 'asc'
+			'ord' => 'asc'
 		),
-		_("Closed")	 => array('fun' => 'is_closed'),
-		_("Balance")	=> array(
-			'type'	 => 'amount',
+		_("Closed") => array('fun' => 'is_closed'),
+		_("Balance") => array(
+			'type' => 'amount',
 			'insert' => true,
-			'fun'		=> 'sum_dimension'
+			'fun' => 'sum_dimension'
 		),
 		array(
 			'insert' => true,
-			'fun'		=> 'edit_link'
+			'fun' => 'edit_link'
 		)
 	);
 	if ($outstanding_only) {

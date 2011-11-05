@@ -12,7 +12,7 @@
 	$page_security = 'SA_QUICKENTRY';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "Quick Entries"));
-	simple_page_mode(true);
+	Page::simple_mode(true);
 	simple_page_mode2(true);
 	function simple_page_mode2($numeric_id = true)
 	{

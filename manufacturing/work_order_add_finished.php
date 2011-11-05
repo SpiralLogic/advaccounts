@@ -13,14 +13,14 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	include_once(APP_PATH . "gl/includes/db/gl_db_bank_trans.php");
 	include_once(APP_PATH . "manufacturing/includes/manufacturing_ui.php");
-	JS::get_js_open_window(900, 500);
+	JS::open_window(900, 500);
 	Page::start(_($help_context = "Produce or Unassemble Finished Items From Work Order"));
 	if (isset($_GET['trans_no']) && $_GET['trans_no'] != "") {
 		$_POST['selected_id'] = $_GET['trans_no'];
 	}
 	//--------------------------------------------------------------------------------------------------
 	if (isset($_GET['AddedID'])) {
-		$id    = $_GET['AddedID'];
+		$id = $_GET['AddedID'];
 		$stype = ST_WORKORDER;
 		Errors::notice(_("The manufacturing process has been entered."));
 		Display::note(ui_view::get_trans_view_str($stype, $id, _("View this Work Order")));
@@ -88,7 +88,7 @@
 		}
 		// if production we need to check the qoh of the wo requirements
 		if (($_POST['ProductionType'] == 1) && !SysPrefs::allow_negative_stock()) {
-			$err    = false;
+			$err = false;
 			$result = get_wo_requirements($_POST['selected_id']);
 			while ($row = DBOld::fetch($result))
 			{
@@ -135,7 +135,7 @@
 	start_form();
 	hidden('selected_id', $_POST['selected_id']);
 	//hidden('WOReqQuantity', $_POST['WOReqQuantity']);
-	$dec = get_qty_dec($wo_details["stock_id"]);
+	$dec = Num::qty_dec($wo_details["stock_id"]);
 	if (!isset($_POST['quantity']) || $_POST['quantity'] == '') {
 		$_POST['quantity'] = Num::qty_format(
 			max($wo_details["units_reqd"] - $wo_details["units_issued"], 0),

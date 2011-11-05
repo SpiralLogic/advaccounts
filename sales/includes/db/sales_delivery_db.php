@@ -31,7 +31,7 @@
 			$tax_total += $taxitem['Value'];
 		}
 		/* Insert/update the debtor_trans */
-		$delivery_no = write_customer_trans(ST_CUSTDELIVERY, $trans_no, $delivery->customer_id,
+		$delivery_no = Sales_Trans::write(ST_CUSTDELIVERY, $trans_no, $delivery->customer_id,
 			$delivery->Branch, $delivery->document_date, $delivery->reference,
 			$delivery_items_total, 0,
 			$delivery->tax_included ? 0 : $tax_total - $freight_tax,
@@ -134,7 +134,7 @@
 		void_gl_trans($type, $type_no, true);
 		// reverse all the changes in the sales order
 		$items_result = get_customer_trans_details($type, $type_no);
-		$order = get_customer_trans_order($type, $type_no);
+		$order = Sales_Trans::get_order($type, $type_no);
 		if ($order) {
 			$order_items = get_sales_order_details($order, ST_SALESORDER);
 			while ($row = DBOld::fetch($items_result)) {
@@ -148,7 +148,7 @@
 		void_cust_allocations($type, $type_no);
 		// do this last because other voidings can depend on it
 		// DO NOT MOVE THIS ABOVE VOIDING or we can end up with trans with alloc < 0
-		void_customer_trans($type, $type_no);
+		Sales_Trans::void($type, $type_no);
 		DBOld::commit_transaction();
 	}
 

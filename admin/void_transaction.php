@@ -11,83 +11,85 @@
 	 ***********************************************************************/
 	$page_security = 'SA_VOIDTRANSACTION';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	JS::get_js_open_window(800, 500);
+	JS::open_window(800, 500);
 	Page::start(_($help_context = "Void a Transaction"));
 	//----------------------------------------------------------------------------------------
-	function exist_transaction($type, $type_no) {
+	function exist_transaction($type, $type_no)
+	{
 		$void_entry = Voiding::has($type, $type_no);
-		if ($void_entry >0) {
+		if ($void_entry > 0) {
 			return false;
 		}
 		switch ($type)
 		{
-			case ST_JOURNAL : // it's a journal entry
-				if (!exists_gl_trans($type, $type_no)) {
-					return false;
-				}
-				break;
-			case ST_BANKPAYMENT : // it's a payment
-			case ST_BANKDEPOSIT : // it's a deposit
-			case ST_BANKTRANSFER : // it's a transfer
-				if (!exists_bank_trans($type, $type_no)) {
-					return false;
-				}
-				break;
-			case ST_SALESINVOICE : // it's a customer invoice
-			case ST_CUSTCREDIT : // it's a customer credit note
-			case ST_CUSTPAYMENT : // it's a customer payment
-			case ST_CUSTREFUND : // it's a customer refund
-			case ST_CUSTDELIVERY : // it's a customer dispatch
-				if (!exists_customer_trans($type, $type_no)) {
-					return false;
-				}
-				break;
-			case ST_LOCTRANSFER : // it's a stock transfer
-				if (get_stock_transfer_items($type_no) == null) {
-					return false;
-				}
-				break;
-			case ST_INVADJUST : // it's a stock adjustment
-				if (get_stock_adjustment_items($type_no) == null) {
-					return false;
-				}
-				break;
-			case ST_PURCHORDER : // it's a PO
-			case ST_SUPPRECEIVE : // it's a GRN
+		case ST_JOURNAL : // it's a journal entry
+			if (!exists_gl_trans($type, $type_no)) {
 				return false;
-			case ST_SUPPINVOICE : // it's a suppler invoice
-			case ST_SUPPCREDIT : // it's a supplier credit note
-			case ST_SUPPAYMENT : // it's a supplier payment
-				if (!exists_supp_trans($type, $type_no)) {
-					return false;
-				}
-				break;
-			case ST_WORKORDER : // it's a work order
-				if (!get_work_order($type_no, true)) {
-					return false;
-				}
-				break;
-			case ST_MANUISSUE : // it's a work order issue
-				if (!exists_work_order_issue($type_no)) {
-					return false;
-				}
-				break;
-			case ST_MANURECEIVE : // it's a work order production
-				if (!exists_work_order_produce($type_no)) {
-					return false;
-				}
-				break;
-			case ST_SALESORDER: // it's a sales order
-			case ST_SALESQUOTE: // it's a sales quotation
+			}
+			break;
+		case ST_BANKPAYMENT : // it's a payment
+		case ST_BANKDEPOSIT : // it's a deposit
+		case ST_BANKTRANSFER : // it's a transfer
+			if (!exists_bank_trans($type, $type_no)) {
 				return false;
-			case ST_COSTUPDATE : // it's a stock cost update
+			}
+			break;
+		case ST_SALESINVOICE : // it's a customer invoice
+		case ST_CUSTCREDIT : // it's a customer credit note
+		case ST_CUSTPAYMENT : // it's a customer payment
+		case ST_CUSTREFUND : // it's a customer refund
+		case ST_CUSTDELIVERY : // it's a customer dispatch
+			if (!Sales_Trans::exists($type, $type_no)) {
 				return false;
-				break;
+			}
+			break;
+		case ST_LOCTRANSFER : // it's a stock transfer
+			if (get_stock_transfer_items($type_no) == null) {
+				return false;
+			}
+			break;
+		case ST_INVADJUST : // it's a stock adjustment
+			if (get_stock_adjustment_items($type_no) == null) {
+				return false;
+			}
+			break;
+		case ST_PURCHORDER : // it's a PO
+		case ST_SUPPRECEIVE : // it's a GRN
+			return false;
+		case ST_SUPPINVOICE : // it's a suppler invoice
+		case ST_SUPPCREDIT : // it's a supplier credit note
+		case ST_SUPPAYMENT : // it's a supplier payment
+			if (!exists_supp_trans($type, $type_no)) {
+				return false;
+			}
+			break;
+		case ST_WORKORDER : // it's a work order
+			if (!get_work_order($type_no, true)) {
+				return false;
+			}
+			break;
+		case ST_MANUISSUE : // it's a work order issue
+			if (!exists_work_order_issue($type_no)) {
+				return false;
+			}
+			break;
+		case ST_MANURECEIVE : // it's a work order production
+			if (!exists_work_order_produce($type_no)) {
+				return false;
+			}
+			break;
+		case ST_SALESORDER: // it's a sales order
+		case ST_SALESQUOTE: // it's a sales quotation
+			return false;
+		case ST_COSTUPDATE : // it's a stock cost update
+			return false;
+			break;
 		}
 		return true;
 	}
 
-	function voiding_controls() {
+	function voiding_controls()
+	{
 		start_form();
 		start_table(Config::get('tables_style2'));
 		systypes_list_row(_("Transaction Type:"), "filterType", null, true);
@@ -104,12 +106,12 @@
 				unset($_POST['memo_']);
 				unset($_POST['date_']);
 				submit_center('ProcessVoiding', _("Void Transaction"), true, '', 'default');
-} else {
+			} else {
 				Errors::warning(_("Are you sure you want to void this transaction ? This action cannot be undone."), 0, 1);
 				if ($_POST['filterType'] == ST_JOURNAL) // GL transaction are not included in get_trans_view_str
 				{
 					$view_str = ui_view::get_gl_view_str($_POST['filterType'], $_POST['trans_no'], _("View Transaction"));
-} else {
+				} else {
 					$view_str = ui_view::get_trans_view_str($_POST['filterType'], $_POST['trans_no'], _("View Transaction"));
 				}
 				Errors::warning($view_str);
@@ -122,7 +124,8 @@
 	}
 
 	//----------------------------------------------------------------------------------------
-	function check_valid_entries() {
+	function check_valid_entries()
+	{
 		if (DB_AuditTrail::is_closed_trans($_POST['filterType'], $_POST['trans_no'])) {
 			Errors::error(_("The selected transaction was closed for edition and cannot be voided."));
 			JS::set_focus('trans_no');
@@ -147,7 +150,8 @@
 	}
 
 	//----------------------------------------------------------------------------------------
-	function handle_void_transaction() {
+	function handle_void_transaction()
+	{
 		if (check_valid_entries() == true) {
 			$void_entry = Voiding::get($_POST['filterType'], $_POST['trans_no']);
 			if ($void_entry != null) {

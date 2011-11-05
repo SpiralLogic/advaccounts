@@ -32,7 +32,7 @@
 				label_cell($myrow["description"]);
 				label_cell($myrow["WorkCentreDescription"]);
 				label_cell($myrow["location_name"]);
-				qty_cell($myrow["quantity"], false, get_qty_dec($myrow["component"]));
+				qty_cell($myrow["quantity"], false, Num::qty_dec($myrow["component"]));
 				amount_cell($myrow["standard_cost"]);
 				amount_cell($myrow["ComponentCost"]);
 				end_row();
@@ -98,7 +98,7 @@
 				}
 				label_cell($myrow["location_name"]);
 				label_cell($myrow["WorkCentreDescription"]);
-				$dec = get_qty_dec($myrow["stock_id"]);
+				$dec = Num::qty_dec($myrow["stock_id"]);
 				qty_cell($myrow["units_req"], false, $dec);
 				qty_cell($myrow["units_req"] * $quantity, false, $dec);
 				qty_cell($myrow["units_issued"], false, $dec);
@@ -135,7 +135,7 @@
 				label_cell(ui_view::get_trans_view_str(29, $myrow["id"]));
 				label_cell($myrow['reference']);
 				label_cell(Dates::sql2date($myrow["date_"]));
-				qty_cell($myrow['quantity'], false, get_qty_dec($myrow['reference']));
+				qty_cell($myrow['quantity'], false, Num::qty_dec($myrow['reference']));
 				end_row();
 			}
 			//end of while
@@ -232,7 +232,7 @@
 		label_cell($myrow["location_name"]);
 		label_cell(Dates::sql2date($myrow["date_"]));
 		label_cell(Dates::sql2date($myrow["required_by"]));
-		$dec = get_qty_dec($myrow["stock_id"]);
+		$dec = Num::qty_dec($myrow["stock_id"]);
 		qty_cell($myrow["units_reqd"], false, $dec);
 		if ($myrow["released"] == true) {
 			label_cell(Dates::sql2date($myrow["released_date"]));
@@ -272,7 +272,7 @@
 		ui_view::stock_status_cell($myrow["stock_id"], $myrow["StockItemName"]);
 		label_cell($myrow["location_name"]);
 		label_cell(Dates::sql2date($myrow["date_"]));
-		qty_cell($myrow["units_issued"], false, get_qty_dec($myrow["stock_id"]));
+		qty_cell($myrow["units_issued"], false, Num::qty_dec($myrow["stock_id"]));
 		end_row();
 		Display::comments_row(ST_WORKORDER, $woid);
 		end_table();

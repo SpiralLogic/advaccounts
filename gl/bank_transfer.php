@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 	$page_security = 'SA_BANKTRANSFER';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	JS::get_js_open_window(800, 500);
+	JS::open_window(800, 500);
 	Page::start(_($help_context = "Transfer between Bank Accounts"));
 	Validation::check(Validation::BANK_ACCOUNTS, _("There are no bank accounts defined in the system."));
 	//----------------------------------------------------------------------------------------
@@ -27,7 +27,8 @@
 		$Ajax->activate('_ex_rate');
 	}
 	//----------------------------------------------------------------------------------------
-	function gl_payment_controls() {
+	function gl_payment_controls()
+	{
 		$home_currency = Banking::get_company_currency();
 		start_form();
 		start_outer_table(Config::get('tables_style2'), 5);
@@ -54,7 +55,8 @@
 	}
 
 	//----------------------------------------------------------------------------------------
-	function check_valid_entries() {
+	function check_valid_entries()
+	{
 		if (!Dates::is_date($_POST['DatePaid'])) {
 			Errors::error(_("The entered date is invalid ."));
 			JS::set_focus('DatePaid');
@@ -99,7 +101,8 @@
 	}
 
 	//----------------------------------------------------------------------------------------
-	function handle_add_deposit() {
+	function handle_add_deposit()
+	{
 		$trans_no = add_bank_transfer($_POST['FromBankAccount'], $_POST['ToBankAccount'],
 			$_POST['DatePaid'], input_num('amount'), $_POST['ref'],
 			$_POST['memo_'], input_num('charge'));

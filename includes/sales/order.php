@@ -127,7 +127,7 @@
 							$srcdetails = get_sales_order_details($this->order_no, ST_SALESORDER);
 						}
 						else { // get src_data from debtor_trans
-							$this->src_docs = get_customer_trans_version($src_type, get_parent_trans($type, $trans_no[0]));
+							$this->src_docs = Sales_Trans::get_version($src_type, Sales_Trans::get_parent($type, $trans_no[0]));
 							$srcdetails = get_customer_trans_details($src_type, array_keys($this->src_docs));
 						}
 						// calculate & save: qtys on other docs and free qtys on src doc

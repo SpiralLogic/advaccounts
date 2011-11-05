@@ -38,42 +38,6 @@
 
 	//------------------------------------------------------------------------------
 	//
-	// Helper function for simple db table editor pages
-	//
-	function simple_page_mode($numeric_id = true)
-	{
-		global $Mode, $selected_id;
-		$Ajax = Ajax::instance();
-		$default = $numeric_id ? -1 : '';
-		$selected_id = get_post('selected_id', $default);
-		foreach (array('ADD_ITEM', 'UPDATE_ITEM', 'RESET', 'CLONE') as $m) {
-			if (isset($_POST[$m])) {
-				$Ajax->activate('_page_body');
-				if ($m == 'RESET' || $m == 'CLONE') {
-					$selected_id = $default;
-				}
-				unset($_POST['_focus']);
-				$Mode = $m;
-				return;
-			}
-		}
-		foreach (array('Edit', 'Delete') as $m) {
-			foreach ($_POST as $p => $pvar) {
-				if (strpos($p, $m) === 0) {
-					//				$selected_id = strtr(substr($p, strlen($m)), array('%2E'=>'.'));
-					unset($_POST['_focus']); // focus on first form entry
-					$selected_id = quoted_printable_decode(substr($p, strlen($m)));
-					$Ajax->activate('_page_body');
-					$Mode = $m;
-					return;
-				}
-			}
-		}
-		$Mode = '';
-	}
-
-	//------------------------------------------------------------------------------
-	//
 	//	Read numeric value from user formatted input
 	//
 	function input_num($postname = null, $dflt = 0)
@@ -466,7 +430,7 @@
 	function qty_cell($label, $bold = false, $dec = null, $id = null)
 	{
 		if (!isset($dec)) {
-			$dec = get_qty_dec();
+			$dec = Num::qty_dec();
 		}
 		if ($bold) {
 			label_cell("<b>" . Num::format($label, $dec) . "</b>", "nowrap align=right", $id);

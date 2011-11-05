@@ -12,7 +12,7 @@
 	$page_security = 'SA_SALESGROUP';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "Sales Groups"));
-	simple_page_mode(true);
+	Page::simple_mode(true);
 	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 		$input_error = 0;
 		if (strlen($_POST['description']) == 0) {
@@ -22,12 +22,12 @@
 		}
 		if ($input_error != 1) {
 			if ($selected_id != -1) {
-				$sql  = "UPDATE groups SET description=" . DB::escape(
+				$sql = "UPDATE groups SET description=" . DB::escape(
 					$_POST['description']
 				) . " WHERE id = " . DB::escape($selected_id);
 				$note = _('Selected sales group has been updated');
-} else {
-				$sql  = "INSERT INTO groups (description) VALUES (" . DB::escape($_POST['description']) . ")";
+			} else {
+				$sql = "INSERT INTO groups (description) VALUES (" . DB::escape($_POST['description']) . ")";
 				$note = _('New sales group has been added');
 			}
 			DBOld::query($sql, "The sales group could not be updated or added");
@@ -38,9 +38,9 @@
 	if ($Mode == 'Delete') {
 		$cancel_delete = 0;
 		// PREVENT DELETES IF DEPENDENT RECORDS IN 'debtors_master'
-		$sql    = "SELECT COUNT(*) FROM cust_branch WHERE group_no=" . DB::escape($selected_id);
+		$sql = "SELECT COUNT(*) FROM cust_branch WHERE group_no=" . DB::escape($selected_id);
 		$result = DBOld::query($sql, "check failed");
-		$myrow  = DBOld::fetch_row($result);
+		$myrow = DBOld::fetch_row($result);
 		if ($myrow[0] > 0) {
 			$cancel_delete = 1;
 			Errors::error(_("Cannot delete this group because customers have been created using this group."));
@@ -54,7 +54,7 @@
 	}
 	if ($Mode == 'RESET') {
 		$selected_id = -1;
-		$sav         = get_post('show_inactive');
+		$sav = get_post('show_inactive');
 		unset($_POST);
 		if ($sav) {
 			$_POST['show_inactive'] = 1;
@@ -92,7 +92,7 @@
 			//editing an existing area
 			$sql = "SELECT * FROM groups WHERE id=" . DB::escape($selected_id);
 			$result = DBOld::query($sql, "could not get group");
-			$myrow  = DBOld::fetch($result);
+			$myrow = DBOld::fetch($result);
 			$_POST['description'] = $myrow["description"];
 		}
 		hidden("selected_id", $selected_id);

@@ -11,7 +11,6 @@
 	 ***********************************************************************/
 	$page_security = 'SA_DIMENSION';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	include_once(APP_PATH . "admin/db/tags_db.php");
 	include_once(APP_PATH . "dimensions/includes/dimensions_db.php");
 	include_once(APP_PATH . "dimensions/includes/dimensions_ui.php");
 	$js = "";
@@ -23,7 +22,7 @@
 	elseif (isset($_POST['selected_id']))
 	{
 		$selected_id = $_POST['selected_id'];
-} else {
+	} else {
 		$selected_id = -1;
 	}
 	//---------------------------------------------------------------------------------------
@@ -57,7 +56,8 @@
 		safe_exit();
 	}
 	//-------------------------------------------------------------------------------------------------
-	function safe_exit() {
+	function safe_exit()
+	{
 		hyperlink_no_params("", _("Enter a &new dimension"));
 		echo "<br>";
 		hyperlink_no_params(PATH_TO_ROOT . "/dimensions/inquiry/search_dimensions.php", _("&Select an existing dimension"));
@@ -65,7 +65,8 @@
 	}
 
 	//-------------------------------------------------------------------------------------
-	function can_process() {
+	function can_process()
+	{
 		global $selected_id;
 		if ($selected_id == -1) {
 			if (!Refs::is_valid($_POST['ref'])) {
@@ -109,7 +110,7 @@
 				);
 				Tags::add_associations($id, $_POST['dimension_tags']);
 				meta_forward($_SERVER['PHP_SELF'], "AddedID=$id");
-} else {
+			} else {
 				update_dimension(
 					$selected_id, $_POST['name'], $_POST['type_'], $_POST['date_'], $_POST['due_date'],
 					$_POST['memo_']
@@ -178,7 +179,7 @@
 		hidden('ref', $_POST['ref']);
 		label_row(_("Dimension Reference:"), $_POST['ref']);
 		hidden('selected_id', $selected_id);
-} else {
+	} else {
 		$_POST['dimension_tags'] = array();
 		ref_row(_("Dimension Reference:"), 'ref', '', Refs::get_next(ST_DIMENSION));
 	}
@@ -202,7 +203,7 @@
 			submit('close', _("Close This Dimension"), true, _('Mark this dimension as closed'), true);
 		}
 		submit_center_last('delete', _("Delete This Dimension"), _('Delete unused dimension'), true);
-} else {
+	} else {
 		submit_center('ADD_ITEM', _("Add"), true, '', 'default');
 	}
 	end_form();

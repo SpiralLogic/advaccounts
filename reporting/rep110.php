@@ -26,7 +26,7 @@
 	function print_deliveries()
 	{
 		global $packing_slip;
-		require(APP_PATH . "includes/reports/pdf.php");
+		require_once(APP_PATH . "includes/reports/pdf.php");
 		$from = $_POST['PARAM_0'];
 		$to = $_POST['PARAM_1'];
 		$email = $_POST['PARAM_2'];
@@ -60,10 +60,10 @@
 		}
 		for ($i = $fno[0]; $i <= $tno[0]; $i++)
 		{
-			if (!exists_customer_trans(ST_CUSTDELIVERY, $i)) {
+			if (!Sales_Trans::exists(ST_CUSTDELIVERY, $i)) {
 				continue;
 			}
-			$myrow = get_customer_trans($i, ST_CUSTDELIVERY);
+			$myrow = Sales_Trans::get($i, ST_CUSTDELIVERY);
 			$branch = get_branch($myrow["branch_code"]);
 			$sales_order = get_sales_order_header($myrow["order_"], ST_SALESORDER); // ?
 			if ($email == 1) {
@@ -92,7 +92,7 @@
 					continue;
 				}
 				$DisplayPrice = Num::format($myrow2["unit_price"], $dec);
-				$DisplayQty = Num::format($myrow2["quantity"], get_qty_dec($myrow2['stock_id']));
+				$DisplayQty = Num::format($myrow2["quantity"], Num::qty_dec($myrow2['stock_id']));
 				$rep->TextCol(0, 1, $myrow2['stock_id'], -2);
 				$oldrow = $rep->row;
 				$rep->TextColLines(1, 2, $myrow2['StockDescription'], -2);

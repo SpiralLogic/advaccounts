@@ -12,7 +12,7 @@
 	$page_security = 'SA_SALESALLOC';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	include_once(APP_PATH . "sales/includes/sales_ui.php");
-	JS::get_js_open_window(900, 500);
+	JS::open_window(900, 500);
 	Page::start(_($help_context = "Customer Allocations"));
 	//--------------------------------------------------------------------------------
 	start_form();

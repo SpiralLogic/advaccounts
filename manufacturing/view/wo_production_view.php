@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 	$page_security = 'SA_MANUFTRANSVIEW';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	JS::get_js_open_window(900, 500);
+	JS::open_window(900, 500);
 	Page::start(_($help_context = "View Work Order Production"), true);
 	include_once(APP_PATH . "manufacturing/includes/manufacturing_ui.php");
 	//-------------------------------------------------------------------------------------------------
@@ -34,7 +34,7 @@
 		label_cell($myrow["reference"]);
 		label_cell(ui_view::get_trans_view_str(ST_WORKORDER, $myrow["workorder_id"]));
 		label_cell($myrow["stock_id"] . " - " . $myrow["StockDescription"]);
-		qty_cell($myrow["quantity"], false, get_qty_dec($myrow["stock_id"]));
+		qty_cell($myrow["quantity"], false, Num::qty_dec($myrow["stock_id"]));
 		label_cell(Dates::sql2date($myrow["date_"]));
 		end_row();
 		Display::comments_row(ST_MANURECEIVE, $prod_id);

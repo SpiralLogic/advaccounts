@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 	$page_security = 'SA_SUPPTRANSVIEW';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	JS::get_js_open_window(900, 500);
+	JS::open_window(900, 500);
 	Page::start(_($help_context = "View Purchase Order Delivery"), true);
 	include(APP_PATH . "purchasing/includes/purchasing_ui.php");
 	if (!isset($_GET['trans_no'])) {
@@ -40,7 +40,7 @@
 		label_cell($stock_item->stock_id);
 		label_cell($stock_item->description);
 		label_cell($stock_item->req_del_date, "nowrap align=right");
-		$dec = get_qty_dec($stock_item->stock_id);
+		$dec = Num::qty_dec($stock_item->stock_id);
 		qty_cell($stock_item->qty_received, false, $dec);
 		label_cell($stock_item->units);
 		amount_decimal_cell($stock_item->price);

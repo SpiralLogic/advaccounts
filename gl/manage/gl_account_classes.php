@@ -12,9 +12,10 @@
 	$page_security = 'SA_GLACCOUNTCLASS';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "GL Account Classes"));
-	simple_page_mode(true);
+	Page::simple_mode(true);
 	//-----------------------------------------------------------------------------------
-	function can_process() {
+	function can_process()
+	{
 		if (!is_numeric($_POST['id'])) {
 			Errors::error(_("The account class ID must be numeric."));
 			JS::set_focus('id');
@@ -38,7 +39,7 @@
 				if (update_account_class($selected_id, $_POST['name'], $_POST['ctype'])) {
 					Errors::notice(_('Selected account class settings has been updated'));
 				}
-} else {
+			} else {
 				if (add_account_class($_POST['id'], $_POST['name'], $_POST['ctype'])) {
 					Errors::notice(_('New account class has been added'));
 					$Mode = 'RESET';
@@ -47,7 +48,8 @@
 		}
 	}
 	//-----------------------------------------------------------------------------------
-	function can_delete($selected_id) {
+	function can_delete($selected_id)
+	{
 		if ($selected_id == -1) {
 			return false;
 		}
@@ -115,20 +117,20 @@
 			$_POST['name'] = $myrow["class_name"];
 			if (Config::get('accounts_gl_oldconvertstyle') == 1) {
 				$_POST['ctype'] = ($myrow["ctype"] >= CL_ASSETS && $myrow["ctype"] < CL_INCOME ? 1 : 0);
-} else {
+			} else {
 				$_POST['ctype'] = $myrow["ctype"];
 			}
 			hidden('selected_id', $selected_id);
 		}
 		hidden('id');
 		label_row(_("Class ID:"), $_POST['id']);
-} else {
+	} else {
 		text_row_ex(_("Class ID:"), 'id', 3);
 	}
 	text_row_ex(_("Class Name:"), 'name', 50, 60);
 	if (Config::get('accounts_gl_oldconvertstyle') == 1) {
 		check_row(_("Balance Sheet"), 'ctype', null);
-} else {
+	} else {
 		class_types_list_row(_("Class Type:"), 'ctype', null);
 	}
 	end_table(1);

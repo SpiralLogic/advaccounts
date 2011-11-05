@@ -13,7 +13,7 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	$js = "";
 	Page::start(_($help_context = "Exchange Rates"));
-	simple_page_mode(false);
+	Page::simple_mode(false);
 	//---------------------------------------------------------------------------------------------
 	function check_data()
 	{

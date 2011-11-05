@@ -257,7 +257,7 @@ var inserts = {
 		if (e.onblur == undefined) {
 			e.onblur = function () {
 				var dec = this.getAttribute("dec");
-				Num::price_format(this.name, get_amount(this.name), dec);
+				price_format(this.name, get_amount(this.name), dec);
 			};
 		}
 	},
@@ -265,7 +265,7 @@ var inserts = {
 		if (e.onblur == undefined) {
 			e.onblur = function () {
 				var dec = this.getAttribute("dec");
-				Num::price_format(this.name, get_amount(this.name), dec, '2');
+				price_format(this.name, get_amount(this.name), dec, '2');
 			};
 		}
 	},

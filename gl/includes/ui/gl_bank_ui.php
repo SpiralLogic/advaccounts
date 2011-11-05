@@ -9,7 +9,7 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	function display_bank_header(&$order)
+	function display_bank_header($order)
 	{
 		$Ajax = Ajax::instance();
 		$payment = $order->trans_type == ST_BANKPAYMENT;
@@ -71,8 +71,8 @@
 				unset($_POST['totamount']); // enable default
 				$Ajax->activate('totamount');
 			}
-			amount_row($qid['base_desc'] . ":", 'totamount', Num::Num::price_format($qid['base_amount']),
-								 null, "&nbsp;&nbsp;" . submit('go', _("Go"), false, false, true));
+			amount_row($qid['base_desc'] . ":", 'totamount', Num::price_format($qid['base_amount']),
+				null, "&nbsp;&nbsp;" . submit('go', _("Go"), false, false, true));
 			break;
 			//case payment_person_types::Project() :
 			//	dimensions_list_row(_("Dimension:"), 'person_id', $_POST['person_id'], false, null, true);
@@ -158,7 +158,7 @@
 	}
 
 	//---------------------------------------------------------------------------------
-	function gl_edit_item_controls(&$order, $dim, $Index = null)
+	function gl_edit_item_controls($order, $dim, $Index = null)
 	{
 		$Ajax = Ajax::instance();
 		$payment = $order->trans_type == ST_BANKPAYMENT;
@@ -169,7 +169,7 @@
 			$_POST['code_id'] = $item->code_id;
 			$_POST['dimension_id'] = $item->dimension_id;
 			$_POST['dimension2_id'] = $item->dimension2_id;
-			$_POST['amount'] = Num::Num::price_format(abs($item->amount));
+			$_POST['amount'] = Num::price_format(abs($item->amount));
 			$_POST['description'] = $item->description;
 			$_POST['LineMemo'] = $item->reference;
 			hidden('Index', $id);
@@ -182,7 +182,7 @@
 			}
 			$Ajax->activate('items_table');
 		} else {
-			$_POST['amount'] = Num::Num::price_format(0);
+			$_POST['amount'] = Num::price_format(0);
 			$_POST['dimension_id'] = 0;
 			$_POST['dimension2_id'] = 0;
 			//$_POST['LineMemo'] = ""; // let memo go to next line Joe Hunt 2010-05-30

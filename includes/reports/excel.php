@@ -209,7 +209,7 @@
 			{
 				$how = _("Closed");
 			}
-			$this->fiscal_year = Dates::sql2date($year['begin']) . " - " . Dates::sql2date($year['end']) . "  " . "(" . $how . ")";
+			$this->fiscal_year = Dates::sql2date($year['begin']) . " - " . Dates::sql2date($year['end']) . "  (" . $how . ")";
 			$this->user = User::get()->name;
 			$this->host = $_SERVER['SERVER_NAME'];
 			$this->params = $params;

@@ -12,7 +12,7 @@
 	$page_security = 'SA_LOCATIONTRANSFER';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	include_once(APP_PATH . "inventory/includes/stock_transfers_ui.php");
-	JS::get_js_open_window(800, 500);
+	JS::open_window(800, 500);
 	Page::start(_($help_context = "Inventory Location Transfers"));
 	//-----------------------------------------------------------------------------------------------
 	Validation::check(Validation::COST_ITEMS, _("There are no inventory items defined in the system (Purchased or manufactured items)."), STOCK_SERVICE);
@@ -27,14 +27,16 @@
 		Page::footer_exit();
 	}
 	//--------------------------------------------------------------------------------------------------
-	function line_start_focus() {
+	function line_start_focus()
+	{
 		$Ajax = Ajax::instance();
 		$Ajax->activate('items_table');
 		JS::set_focus('_stock_id_edit');
 	}
 
 	//-----------------------------------------------------------------------------------------------
-	function handle_new_order() {
+	function handle_new_order()
+	{
 		if (isset($_SESSION['transfer_items'])) {
 			$_SESSION['transfer_items']->clear_items();
 			unset ($_SESSION['transfer_items']);
@@ -115,7 +117,8 @@
 		meta_forward($_SERVER['PHP_SELF'], "AddedID=$trans_no");
 	} /*end of process credit note */
 	//-----------------------------------------------------------------------------------------------
-	function check_item_data() {
+	function check_item_data()
+	{
 		if (!Validation::is_num('qty', 0)) {
 			Errors::error(_("The quantity entered must be a positive number."));
 			JS::set_focus('qty');
@@ -125,7 +128,8 @@
 	}
 
 	//-----------------------------------------------------------------------------------------------
-	function handle_update_item() {
+	function handle_update_item()
+	{
 		if ($_POST['UpdateItem'] != "" && check_item_data()) {
 			$id = $_POST['LineNo'];
 			if (!isset($_POST['std_cost'])) {
@@ -137,13 +141,15 @@
 	}
 
 	//-----------------------------------------------------------------------------------------------
-	function handle_delete_item($id) {
+	function handle_delete_item($id)
+	{
 		$_SESSION['transfer_items']->remove_from_cart($id);
 		line_start_focus();
 	}
 
 	//-----------------------------------------------------------------------------------------------
-	function handle_new_item() {
+	function handle_new_item()
+	{
 		if (!check_item_data()) {
 			return;
 		}

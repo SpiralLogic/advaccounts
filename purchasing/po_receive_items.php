@@ -12,7 +12,7 @@
 	$page_security = 'SA_GRN';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	include_once(APP_PATH . "purchasing/includes/purchasing_ui.php");
-	JS::get_js_open_window(900, 500);
+	JS::open_window(900, 500);
 	Page::start(_($help_context = "Receive Purchase Order Items"));
 	//---------------------------------------------------------------------------------------------------------------
 	if (isset($_GET['AddedID'])) {
@@ -59,7 +59,7 @@
 				{
 					label_cell($ln_itm->description);
 				}
-				$dec = get_qty_dec($ln_itm->stock_id);
+				$dec = Num::qty_dec($ln_itm->stock_id);
 				qty_cell($ln_itm->quantity, false, $dec);
 				label_cell($ln_itm->units);
 				qty_cell($ln_itm->qty_received, false, $dec);
@@ -170,7 +170,7 @@
 			return false;
 		} elseif ($delivery_qty_too_large == 1) {
 			Errors::error(
-				_("Entered quantities cannot be greater than the quantity entered on the purchase order including the allowed over-receive percentage") . " (" . SysPrefs::over_receive_allowance() . "%)." . "<br>" . _(
+				_("Entered quantities cannot be greater than the quantity entered on the purchase order including the allowed over-receive percentage") . " (" . SysPrefs::over_receive_allowance() . "%).<br>" . _(
 					"Modify the ordered items on the purchase order if you wish to increase the quantities."
 				)
 			);
@@ -225,7 +225,7 @@
 			if (($line->quantity - $line->qty_received) > 0) {
 				$_POST[$line->line_no] = max($_POST[$line->line_no], 0);
 				if (!Validation::is_num($line->line_no)) {
-					$_POST[$line->line_no] = Num::format(0, get_qty_dec($line->stock_id));
+					$_POST[$line->line_no] = Num::format(0, Num::qty_dec($line->stock_id));
 				}
 				if (!isset($_POST['DefaultReceivedDate']) || $_POST['DefaultReceivedDate'] == "") {
 					$_POST['DefaultReceivedDate'] = Dates::new_doc_date();

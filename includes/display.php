@@ -215,7 +215,7 @@
 			}
 			if ($tax_recorded != 0) {
 				$tax_correction = Num::format($tax_recorded - $tax_total, User::price_dec());
-				label_row("Tax Correction" . " ", $tax_correction, "colspan=$columns align=right", "align=right");
+				label_row("Tax Correction ", $tax_correction, "colspan=$columns align=right", "align=right");
 			}
 		}
 

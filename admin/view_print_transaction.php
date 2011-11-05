@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 	$page_security = 'SA_VIEWPRINTTRANSACTION';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	JS::get_js_open_window(800, 500);
+	JS::open_window(800, 500);
 	Page::start(_($help_context = "View or Print Transactions"));
 	//----------------------------------------------------------------------------------------
 	function view_link($trans)
@@ -75,10 +75,10 @@
 			if ($db_info == null) {
 				return;
 			}
-			$table_name    = $db_info[0];
-			$type_name     = $db_info[1];
+			$table_name = $db_info[0];
+			$type_name = $db_info[1];
 			$trans_no_name = $db_info[2];
-			$trans_ref     = $db_info[3];
+			$trans_ref = $db_info[3];
 			$sql = "SELECT DISTINCT $trans_no_name as trans_no";
 			if ($trans_ref) {
 				$sql .= " ,$trans_ref ";
@@ -91,24 +91,24 @@
 			}
 			$sql .= " ORDER BY $trans_no_name";
 			$print_type = $_POST['filterType'];
-			$print_out  = ($print_type == ST_SALESINVOICE || $print_type == ST_CUSTCREDIT || $print_type == ST_CUSTDELIVERY
+			$print_out = ($print_type == ST_SALESINVOICE || $print_type == ST_CUSTCREDIT || $print_type == ST_CUSTDELIVERY
 			 || $print_type == ST_PURCHORDER
 			 || $print_type == ST_SALESORDER
 			 || $print_type == ST_SALESQUOTE);
 			$cols = array(
 				_("#"),
 				_("Reference"),
-				_("View")	=> array(
+				_("View") => array(
 					'insert' => true,
-					'fun'		=> 'view_link'
+					'fun' => 'view_link'
 				),
 				_("Print") => array(
 					'insert' => true,
-					'fun'		=> 'prt_link'
+					'fun' => 'prt_link'
 				),
-				_("GL")		=> array(
+				_("GL") => array(
 					'insert' => true,
-					'fun'		=> 'gl_view'
+					'fun' => 'gl_view'
 				)
 			);
 			if (!$print_out) {
@@ -117,7 +117,7 @@
 			if (!$trans_ref) {
 				Arr::remove($cols, 1);
 			}
-			$table        =& db_pager::new_db_pager('transactions', $sql, $cols);
+			$table =& db_pager::new_db_pager('transactions', $sql, $cols);
 			$table->width = "40%";
 			display_db_pager($table);
 		}

@@ -12,7 +12,7 @@
 	$page_security = 'SA_TAXGROUPS';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "Tax Groups"));
-	simple_page_mode(true);
+	Page::simple_mode(true);
 	Validation::check(Validation::TAX_TYPES, _("There are no tax types defined. Define tax types before defining tax groups."));
 	//-----------------------------------------------------------------------------------
 	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {

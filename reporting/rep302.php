@@ -156,7 +156,7 @@
 			$suppqty += Manufacturing::get_on_worder_qty($trans['stock_id'], $loc_code);
 			$period = getPeriods($trans['stock_id'], $trans['loc_code']);
 			$rep->NewLine();
-			$dec = get_qty_dec($trans['stock_id']);
+			$dec = Num::qty_dec($trans['stock_id']);
 			$rep->TextCol(0, 1, $trans['stock_id']);
 			$rep->TextCol(1, 2, $trans['description'] . ($trans['inactive'] == 1 ? " (" . _("Inactive") . ")" : ""), -1);
 			$rep->AmountCol(2, 3, $period['prd0'], $dec);

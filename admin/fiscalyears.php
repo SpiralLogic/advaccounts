@@ -11,10 +11,9 @@
 	 ***********************************************************************/
 	$page_security = 'SA_FISCALYEARS';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	include_once(APP_PATH . "sales/includes/db/cust_trans_db.php");
 	$js = "";
 	Page::start(_($help_context = "Fiscal Years"));
-	simple_page_mode(true);
+	Page::simple_mode(true);
 	//---------------------------------------------------------------------------------------------
 	function is_date_in_fiscalyears($date)
 	{
@@ -238,7 +237,7 @@
 		while ($row = DBOld::fetch($result))
 		{
 			if ($row['type'] == ST_SALESINVOICE) {
-				$deliveries = get_parent_trans(ST_SALESINVOICE, $row['trans_no']);
+				$deliveries = Sales_Trans::get_parent(ST_SALESINVOICE, $row['trans_no']);
 				foreach (
 					$deliveries as $delivery
 				)

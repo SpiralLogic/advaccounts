@@ -12,7 +12,7 @@
 	$page_security = 'SA_USERS';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "Users"));
-	simple_page_mode(true);
+	Page::simple_mode(true);
 	//-------------------------------------------------------------------------------------------------
 	function can_process($user)
 	{

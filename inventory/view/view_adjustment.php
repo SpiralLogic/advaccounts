@@ -18,8 +18,8 @@
 	Display::heading($systypes_array[ST_INVADJUST] . " #$trans_no");
 	br(1);
 	$adjustment_items = get_stock_adjustment_items($trans_no);
-	$k                = 0;
-	$header_shown     = false;
+	$k = 0;
+	$header_shown = false;
 	while ($adjustment = DBOld::fetch($adjustment_items))
 	{
 		if (!$header_shown) {
@@ -45,7 +45,7 @@
 		alt_table_row_color($k);
 		label_cell($adjustment['stock_id']);
 		label_cell($adjustment['description']);
-		qty_cell($adjustment['qty'], false, get_qty_dec($adjustment['stock_id']));
+		qty_cell($adjustment['qty'], false, Num::qty_dec($adjustment['stock_id']));
 		label_cell($adjustment['units']);
 		amount_decimal_cell($adjustment['standard_cost']);
 		end_row();

@@ -192,39 +192,39 @@
 
 		public static function prefs()
 		{
-			return User::get()->prefs;
+			return static::get()->prefs;
 		}
 
 		public static function add_js_data()
 		{
 			$js
 			 = "\nvar user = {
-						 \n theme: '/themes/" . User::theme() . "/',
+						 \n theme: '/themes/" . static::theme() . "/',
 						 \nloadtxt: '" . _('Requesting data...') . "',
 						 \ndate: '" . Dates::Today() . "',
 						 \ndatesys: " . Config::get('accounts_datesystem') . ",
-						 \ndatefmt: " . User::date_format() . ",
+						 \ndatefmt: " . static::date_format() . ",
 						 \ndatesep: '" . Config::get('ui_date_format') . "',
-						 \nts: '" . Config::get('separators_thousands', User::tho_sep()) . "',
-						 \nds: '" . Config::get('separators_decimal', User::dec_sep()) . "',
-						 \npdec: " . User::price_dec() . "}\n";
+						 \nts: '" . Config::get('separators_thousands', static::tho_sep()) . "',
+						 \nds: '" . Config::get('separators_decimal', static::dec_sep()) . "',
+						 \npdec: " . static::price_dec() . "}\n";
 			JS::beforeload($js);
 		}
 
 		//--------------------------------------------------------------------------
-		function fallback()
+		public static function	fallback()
 		{
-			return User::get()->ui_mode == 0;
+			return static::get()->ui_mode == 0;
 		}
 
-		function numeric($input)
+		public static function	numeric($input)
 		{
 			$num = trim($input);
-			$sep = Config::get('separators_thousands', User::tho_sep());
+			$sep = Config::get('separators_thousands', static::tho_sep());
 			if ($sep != '') {
 				$num = str_replace($sep, '', $num);
 			}
-			$sep = Config::get('separators_decimal', User::dec_sep());
+			$sep = Config::get('separators_decimal', static::dec_sep());
 			if ($sep != '.') {
 				$num = str_replace($sep, '.', $num);
 			}
@@ -240,114 +240,114 @@
 			}
 		}
 
-		function pos()
+		public static function	pos()
 		{
-			return User::get()->pos;
+			return static::get()->pos;
 		}
 
-		function language()
+		public static function	language()
 		{
-			return User::prefs()->language();
+			return static::prefs()->language();
 		}
 
-		function qty_dec()
+		public static function	qty_dec()
 		{
-			return User::prefs()->qty_dec();
+			return static::prefs()->qty_dec();
 		}
 
-		function price_dec()
+		public static function	price_dec()
 		{
-			return User::prefs()->price_dec();
+			return static::prefs()->price_dec();
 		}
 
-		function exrate_dec()
+		public static function	exrate_dec()
 		{
-			return User::prefs()->exrate_dec();
+			return static::prefs()->exrate_dec();
 		}
 
-		function percent_dec()
+		public static function	percent_dec()
 		{
-			return User::prefs()->percent_dec();
+			return static::prefs()->percent_dec();
 		}
 
-		function show_gl_info()
+		public static function	show_gl_info()
 		{
-			return User::prefs()->show_gl_info();
+			return static::prefs()->show_gl_info();
 		}
 
-		function show_codes()
+		public static function	show_codes()
 		{
-			return User::prefs()->show_codes();
+			return static::prefs()->show_codes();
 		}
 
-		function date_format()
+		public static function	date_format()
 		{
-			return User::prefs()->date_format();
+			return static::prefs()->date_format();
 		}
 
-		function date_display()
+		public static function	date_display()
 		{
-			return User::prefs()->date_display();
+			return static::prefs()->date_display();
 		}
 
-		function date_sep()
+		public static function	date_sep()
 		{
-			return (isset($_SESSION["current_user"])) ? User::prefs()->date_sep() : 0;
+			return (isset($_SESSION["current_user"])) ? static::prefs()->date_sep() : 0;
 		}
 
-		function tho_sep()
+		public static function	tho_sep()
 		{
-			return User::prefs()->tho_sep();
+			return static::prefs()->tho_sep();
 		}
 
-		function dec_sep()
+		public static function	dec_sep()
 		{
-			return User::prefs()->dec_sep();
+			return static::prefs()->dec_sep();
 		}
 
-		function theme()
+		public static function	theme()
 		{
-			return User::prefs()->get_theme();
+			return static::prefs()->get_theme();
 		}
 
-		function pagesize()
+		public static function	pagesize()
 		{
-			return User::prefs()->get_pagesize();
+			return static::prefs()->get_pagesize();
 		}
 
-		function hints()
+		public static function	hints()
 		{
-			return User::prefs()->show_hints();
+			return static::prefs()->show_hints();
 		}
 
-		function print_profile()
+		public static function	print_profile()
 		{
-			return User::prefs()->print_profile();
+			return static::prefs()->print_profile();
 		}
 
-		function rep_popup()
+		public static function	rep_popup()
 		{
-			return User::prefs()->rep_popup();
+			return static::prefs()->rep_popup();
 		}
 
-		function query_size()
+		public static function	query_size()
 		{
-			return User::prefs()->query_size();
+			return static::prefs()->query_size();
 		}
 
-		function graphic_links()
+		public static function	graphic_links()
 		{
-			return User::prefs()->graphic_links();
+			return static::prefs()->graphic_links();
 		}
 
-		function sticky_date()
+		public static function	sticky_date()
 		{
-			return User::prefs()->sticky_date();
+			return static::prefs()->sticky_date();
 		}
 
-		function startup_tab()
+		public static function	startup_tab()
 		{
-			return User::prefs()->start_up_tab();
+			return static::prefs()->start_up_tab();
 		}
 	}
 

@@ -143,8 +143,8 @@
 		{
 			global $systypes_array;
 			if ($person_type == PT_CUSTOMER) {
-				$trans = get_customer_trans($trans_no, $type);
-				$pyt_trans = get_customer_trans($pyt_no, $pyt_type);
+				$trans = Sales_Trans::get($trans_no, $type);
+				$pyt_trans = Sales_Trans::get($pyt_no, $pyt_type);
 				$ar_ap_act = $trans['receivables_account'];
 				$person_id = $trans['debtor_no'];
 				$curr = $trans['curr_code'];

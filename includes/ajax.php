@@ -18,6 +18,10 @@
 		public $triggers = array();
 		protected static $_instance = null;
 
+		/***
+		 * @static
+		 * @return $this
+		 */
 		public static function instance()
 		{
 			if (static::$_instance === null) {
@@ -77,8 +81,8 @@
 		function addAssign($trigger, $sTarget, $sAttribute, $sData)
 		{
 			$this->_addCommand($trigger, array('n' => 'as',
-																				't'	=> $sTarget,
-																				'p'	=> $sAttribute), $sData);
+				't' => $sTarget,
+				'p' => $sAttribute), $sData);
 			return $this;
 		}
 
@@ -88,7 +92,7 @@
 		function addUpdate($trigger, $sTarget, $sData)
 		{
 			$this->_addCommand($trigger, array('n' => 'up',
-																				't'	=> $sTarget), $sData);
+				't' => $sTarget), $sData);
 			return $this;
 		}
 
@@ -98,7 +102,7 @@
 		function addDisable($trigger, $sTarget, $sData = true)
 		{
 			$this->_addCommand($trigger, array('n' => 'di',
-																				't'	=> $sTarget), $sData);
+				't' => $sTarget), $sData);
 			return $this;
 		}
 
@@ -108,7 +112,7 @@
 		function addEnable($trigger, $sTarget, $sData = true)
 		{
 			$this->_addCommand($trigger, array('n' => 'di',
-																				't'	=> $sTarget), !$sData);
+				't' => $sTarget), !$sData);
 			return $this;
 		}
 
@@ -128,9 +132,9 @@
 		{
 			if ($this->isActive() && ($trigger !== false)) {
 				//		Errors::error('adding '.$trigger.':'.htmlentities($mData));
-				$aAttributes['why']  = $trigger;
+				$aAttributes['why'] = $trigger;
 				$aAttributes['data'] = $mData;
-				$this->aCommands[]   = $aAttributes;
+				$this->aCommands[] = $aAttributes;
 			}
 		}
 
@@ -177,8 +181,7 @@
 
 		static function in_ajax()
 		{
-			$Ajax = Ajax::instance();
-			return $Ajax->isActive();
+			return static::instance()->isActive();
 		}
 
 		// Returns absolute path of relative $url. To be used in ajax calls

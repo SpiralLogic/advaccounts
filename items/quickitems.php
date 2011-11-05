@@ -11,10 +11,10 @@
 				$item = new Item($_POST);
 				$item->save($_POST);
 			} else {
-				$id   = Item::getStockId($_POST['stock_id']);
+				$id = Item::getStockId($_POST['stock_id']);
 				$item = new Item($id);
 			}
-			$data['item']        = $item;
+			$data['item'] = $item;
 			$data['stockLevels'] = $item->getStockLevels();
 		}
 		if (isset($_GET['page'])) {
@@ -23,24 +23,24 @@
 		echo json_encode($data, JSON_NUMERIC_CHECK);
 		exit();
 	}
-	JS::footerFile(array( "includes/js/quickitems.js"));
+	JS::footerFile("includes/js/quickitems.js");
 	Page::start(_($help_context = "Items"), true);
 	$stock_cats = stock_categories_list('category_id');
 	if (!isset($_GET['stock_id'])) {
 		HTML::div('itemSearch');
-		UI::search('item', array('label'	 => 'Search Item',
-														'size'		 => 80,
-														'url'			=> 'search.php',
-														'callback' => 'Items.fetch'
-											 ));
+		UI::search('item', array('label' => 'Search Item',
+			'size' => 80,
+			'url' => 'search.php',
+			'callback' => 'Items.fetch'
+		));
 		HTML::div();
 		$id = 0;
 	} else {
 		$id = Item::getStockId($_GET['stock_id']);
 	}
-	$data['item']        = $item = new Item($id);
+	$data['item'] = $item = new Item($id);
 	$data['stockLevels'] = $item->getStockLevels();
-	$data                = json_encode($data, JSON_NUMERIC_CHECK);
+	$data = json_encode($data, JSON_NUMERIC_CHECK);
 	JS::onload(<<<JS
 Items.onload($data);
 JS

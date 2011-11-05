@@ -12,7 +12,7 @@
 	$page_security = 'SA_WORKORDERENTRY';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	include_once(APP_PATH . "manufacturing/includes/manufacturing_ui.php");
-	JS::get_js_open_window(900, 500);
+	JS::open_window(900, 500);
 	Page::start(_($help_context = "Work Order Entry"));
 	Validation::check(Validation::MANUFACTURE_ITEMS, _("There are no manufacturable items defined in the system."), STOCK_MANUFACTURE);
 	Validation::check(Validation::LOCATIONS, ("There are no inventory locations defined in the system."));
@@ -312,7 +312,7 @@
 	if (get_post('type') == WO_ADVANCED) {
 		qty_row(_("Quantity Required:"), 'quantity', null, null, null, $dec);
 		if ($_POST['released']) {
-			label_row(_("Quantity Manufactured:"), number_format($_POST['units_issued'], get_qty_dec(Input::post('stock_id'))));
+			label_row(_("Quantity Manufactured:"), number_format($_POST['units_issued'], Num::qty_dec(Input::post('stock_id'))));
 		}
 		date_row(_("Date") . ":", 'date_', '', true);
 		date_row(_("Date Required By") . ":", 'RequDate', '', null, SysPrefs::default_wo_required_by());

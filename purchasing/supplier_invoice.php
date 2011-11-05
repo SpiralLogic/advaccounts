@@ -11,9 +11,9 @@
 	 ***********************************************************************/
 	$page_security = 'SA_SUPPLIERINVOICE';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	include_once(APP_PATH . "/purchasing/includes/purchasing_db.php");
+	include_once(APP_PATH . "purchasing/includes/purchasing_db.php");
 	include_once(APP_PATH . "purchasing/includes/purchasing_ui.php");
-	JS::get_js_open_window(900, 500);
+	JS::open_window(900, 500);
 	Page::start(_($help_context = "Enter Supplier Invoice"));
 	//----------------------------------------------------------------------------------------
 	Validation::check(Validation::SUPPLIERS, _("There are no suppliers defined in the system."));
@@ -146,7 +146,7 @@
 		$result = DBOld::query($sql, "The sql to check for the previous entry of the same invoice failed");
 		$myrow = DBOld::fetch_row($result);
 		if ($myrow[0] == 1) { /*Transaction reference already entered */
-			Errors::error(_("This invoice number has already been entered. It cannot be entered again." . " (" . $_POST['supp_reference'] . ")"));
+			Errors::error(_("This invoice number has already been entered. It cannot be entered again. (" . $_POST['supp_reference'] . ")"));
 			return false;
 		}
 		return true;

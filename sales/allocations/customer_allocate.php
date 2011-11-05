@@ -13,7 +13,7 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	include_once(APP_PATH . "sales/includes/sales_ui.php");
 	//include_once(APP_PATH . "sales/includes/ui/cust_alloc_ui.php");
-	JS::get_js_open_window(900, 500);
+	JS::open_window(900, 500);
 	JS::footerFile('/js/allocate.js');
 	Page::start(_($help_context = "Allocate Customer Payment or Credit Note"));
 	//--------------------------------------------------------------------------------

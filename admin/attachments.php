@@ -13,7 +13,7 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	if (isset($_GET['vw'])) {
 		$view_id = $_GET['vw'];
-} else {
+	} else {
 		$view_id = find_submit('view');
 	}
 	if ($view_id != -1) {
@@ -27,7 +27,7 @@
 				header('Content-Length: ' . $row['filesize']);
 				if ($type == 'application/octet-stream') {
 					header('Content-Disposition: attachment; filename=' . $row['filename']);
-} else {
+				} else {
 					header("Content-Disposition: inline");
 				}
 				echo file_get_contents(COMPANY_PATH . "/attachments/" . $row['unique_name']);
@@ -37,7 +37,7 @@
 	}
 	if (isset($_GET['dl'])) {
 		$download_id = $_GET['dl'];
-} else {
+	} else {
 		$download_id = find_submit('download');
 	}
 	if ($download_id != -1) {
@@ -55,9 +55,9 @@
 			}
 		}
 	}
-	JS::get_js_open_window(800, 500);
+	JS::open_window(800, 500);
 	Page::start(_($help_context = "Attach Documents"));
-	simple_page_mode(true);
+	Page::simple_mode(true);
 	//----------------------------------------------------------------------------------------
 	if (isset($_GET['filterType'])) // catch up external links
 	{
@@ -70,11 +70,11 @@
 		if (isset($_FILES['filename']) && $_FILES['filename']['size'] > 0) {
 			//$content = base64_encode(file_get_contents($_FILES['filename']['tmp_name']));
 			$tmpname = $_FILES['filename']['tmp_name'];
-			$dir     = COMPANY_PATH . "/attachments";
+			$dir = COMPANY_PATH . "/attachments";
 			if (!file_exists($dir)) {
 				mkdir($dir, 0777);
 				$index_file = "<?php\nheader(\"Location: ../index.php\");\n?>";
-				$fp         = fopen($dir . "/index.php", "w");
+				$fp = fopen($dir . "/index.php", "w");
 				fwrite($fp, $index_file);
 				fclose($fp);
 			}
@@ -89,7 +89,7 @@
 			$filetype = $_FILES['filename']['type'];
 		} else {
 			$unique_name = $filename = $filetype = "";
-			$filesize    = 0;
+			$filesize = 0;
 		}
 		$date = Dates::date2sql(Dates::Today());
 		if ($Mode == 'ADD_ITEM') {
@@ -154,7 +154,7 @@
 
 	function get_attachment($id)
 	{
-		$sql    = "SELECT * FROM attachments WHERE id=" . DB::escape($id);
+		$sql = "SELECT * FROM attachments WHERE id=" . DB::escape($id);
 		$result = DBOld::query($sql, "Could not retrieve attachments");
 		return DBOld::fetch($result);
 	}
@@ -162,7 +162,7 @@
 	function display_rows($type)
 	{
 		$rows = get_attached_documents($type);
-		$th   = array(_("#"), _("Description"), _("Filename"), _("Size"), _("Filetype"), _("Date Uploaded"), "", "", "", "");
+		$th = array(_("#"), _("Description"), _("Filename"), _("Size"), _("Filetype"), _("Date Uploaded"), "", "", "", "");
 		div_start('transactions');
 		start_form();
 		start_table(Config::get('tables_style'));
@@ -198,15 +198,15 @@
 	start_table(Config::get('tables_style2'));
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {
-			$row                  = get_attachment($selected_id);
-			$_POST['trans_no']    = $row["trans_no"];
+			$row = get_attachment($selected_id);
+			$_POST['trans_no'] = $row["trans_no"];
 			$_POST['description'] = $row["description"];
 			hidden('trans_no', $row['trans_no']);
 			hidden('unique_name', $row['unique_name']);
 			label_row(_("Transaction #"), $row['trans_no']);
 		}
 		hidden('selected_id', $selected_id);
-} else {
+	} else {
 		text_row_ex(_("Transaction #") . ':', 'trans_no', 10);
 	}
 	text_row_ex(_("Description") . ':', 'description', 40);

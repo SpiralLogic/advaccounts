@@ -12,7 +12,7 @@
 	$page_security = 'SA_PAYTERMS';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "Payment Terms"));
-	simple_page_mode(true);
+	Page::simple_mode(true);
 	//-------------------------------------------------------------------------------------------
 	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 		$inpug_error = 0;
@@ -50,21 +50,21 @@
 					day_in_following_month=0,
 					days_before_due=" . DB::escape($_POST['DayNumber']) . "
 					WHERE terms_indicator = " . DB::escape($selected_id);
-} else {
+				} else {
 					$sql = "UPDATE payment_terms SET terms=" . DB::escape($_POST['terms']) . ",
 					day_in_following_month=" . DB::escape($_POST['DayNumber']) . ",
 					days_before_due=0
 					WHERE terms_indicator = " . DB::escape($selected_id);
 				}
 				$note = _('Selected payment terms have been updated');
-} else {
+			} else {
 				if (check_value('DaysOrFoll')) {
 					$sql
 					 = "INSERT INTO payment_terms (terms,
 					days_before_due, day_in_following_month)
 					VALUES (" .
 					 DB::escape($_POST['terms']) . ", " . DB::escape($_POST['DayNumber']) . ", 0)";
-} else {
+				} else {
 					$sql
 					 = "INSERT INTO payment_terms (terms,
 					days_before_due, day_in_following_month)
@@ -92,7 +92,7 @@
 			$myrow = DBOld::fetch_row($result);
 			if ($myrow[0] > 0) {
 				Errors::error(_("Cannot delete this payment term, because supplier accounts have been created referring to this term"));
-} else {
+			} else {
 				//only delete if used in neither customer or supplier accounts
 				$sql = "DELETE FROM payment_terms WHERE terms_indicator=" . DB::escape($selected_id);
 				DBOld::query($sql, "could not delete a payment terms");

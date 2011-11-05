@@ -11,7 +11,6 @@
 	 ***********************************************************************/
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	// For tag constants
-	include_once(APP_PATH . "admin/db/tags_db.php");
 	// Set up page security based on what type of tags we're working with
 	if (@$_GET['type'] == "account" || get_post('type') == TAG_ACCOUNT) {
 		$page_security = 'SA_GLACCOUNTTAGS';
@@ -33,18 +32,19 @@
 	}
 	// Set up page based on what type of tags we're working with
 	switch (Input::post('type')) {
-		case TAG_ACCOUNT:
-			// Account tags
-			$_SESSION['page_title'] = _($help_context = "Account Tags");
-			break;
-		case TAG_DIMENSION:
-			// Dimension tags
-			$_SESSION['page_title'] = _($help_context = "Dimension Tags");
+	case TAG_ACCOUNT:
+		// Account tags
+		$_SESSION['page_title'] = _($help_context = "Account Tags");
+		break;
+	case TAG_DIMENSION:
+		// Dimension tags
+		$_SESSION['page_title'] = _($help_context = "Dimension Tags");
 	}
 	Page::start($_SESSION['page_title']);
-	simple_page_mode(true);
+	Page::simple_mode(true);
 	//-----------------------------------------------------------------------------------
-	function can_process() {
+	function can_process()
+	{
 		if (strlen($_POST['name']) == 0) {
 			Errors::error(_("The tag name cannot be empty."));
 			JS::set_focus('name');
@@ -60,7 +60,7 @@
 				if ($ret = Tags::update($selected_id, $_POST['name'], $_POST['description'])) {
 					Errors::notice(_('Selected tag settings have been updated'));
 				}
-} else {
+			} else {
 				if ($ret = Tags::add(Input::post('type'), $_POST['name'], $_POST['description'])) {
 					Errors::notice(_('New tag has been added'));
 				}
@@ -71,7 +71,8 @@
 		}
 	}
 	//-----------------------------------------------------------------------------------
-	function can_delete($selected_id) {
+	function can_delete($selected_id)
+	{
 		if ($selected_id == -1) {
 			return false;
 		}

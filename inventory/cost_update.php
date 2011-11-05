@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 	$page_security = 'SA_STANDARDCOST';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	JS::get_js_open_window(900, 500);
+	JS::open_window(900, 500);
 	Page::start(_($help_context = "Inventory Item Cost Update"));
 	//--------------------------------------------------------------------------------------
 	Validation::check(Validation::COST_ITEMS, _("There are no costable inventory items defined in the system (Purchased or manufactured items)."), STOCK_SERVICE);

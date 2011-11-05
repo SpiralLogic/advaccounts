@@ -10,7 +10,7 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	//--------------------------------------------------------------------------------
-	function display_order_header(&$Order)
+	function display_order_header($order)
 	{
 		$Ajax = Ajax::instance();
 		$qes = has_quick_entries(QE_JOURNAL);
@@ -39,7 +39,7 @@
 				$Ajax->activate('totamount');
 			}
 			amount_cells(
-				$qid['base_desc'] . ":", 'totamount', Num::Num::price_format($qid['base_amount']),
+				$qid['base_desc'] . ":", 'totamount', Num::price_format($qid['base_amount']),
 				null, "&nbsp;&nbsp;" . submit('go', _("Go"), false, false, true)
 			);
 			end_row();
@@ -128,7 +128,7 @@
 	}
 
 	//---------------------------------------------------------------------------------
-	function gl_edit_item_controls(&$order, $dim, $Index = null)
+	function gl_edit_item_controls($order, $dim, $Index = null)
 	{
 		$Ajax = Ajax::instance();
 		start_row();
@@ -140,11 +140,11 @@
 			$_POST['dimension_id'] = $item->dimension_id;
 			$_POST['dimension2_id'] = $item->dimension2_id;
 			if ($item->amount > 0) {
-				$_POST['AmountDebit'] = Num::Num::price_format($item->amount);
+				$_POST['AmountDebit'] = Num::price_format($item->amount);
 				$_POST['AmountCredit'] = "";
-} else {
+			} else {
 				$_POST['AmountDebit'] = "";
-				$_POST['AmountCredit'] = Num::Num::price_format(abs($item->amount));
+				$_POST['AmountCredit'] = Num::price_format(abs($item->amount));
 			}
 			$_POST['description'] = $item->description;
 			$_POST['LineMemo'] = $item->reference;
@@ -160,8 +160,8 @@
 			$Ajax->activate('items_table');
 		} else {
 			// Adding a new row
-			$_POST['AmountDebit'] = ''; //Num::Num::price_format(0);
-			$_POST['AmountCredit'] = ''; //Num::Num::price_format(0);
+			$_POST['AmountDebit'] = ''; //Num::price_format(0);
+			$_POST['AmountCredit'] = ''; //Num::price_format(0);
 			$_POST['dimension_id'] = 0;
 			$_POST['dimension2_id'] = 0;
 			//$_POST['LineMemo'] = ""; // let memo go to next line Joe Hunt 2010-05-30

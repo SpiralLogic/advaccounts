@@ -11,7 +11,6 @@
 	include_once(APP_PATH . "config/types.php");
 	ini_set("ignore_repeated_errors", "On");
 	ini_set("log_errors", "On");
-
 	class Config
 	{
 		static $_vars = null;
@@ -35,13 +34,13 @@
 
 		protected static function load($group = 'config')
 		{
-			$file      = APP_PATH . "config" . DS . $group . '.php';
+			$file = APP_PATH . "config" . DS . $group . '.php';
 			$groupname = $group;
 			if (is_array($group)) {
 				$groupname = implode('.', $group);
 				$groupfile = array_pop($group) . '.php';
 				$grouppath = implode(DS, $group);
-				$file      = APP_PATH . "config" . $grouppath . DS . $groupfile;
+				$file = APP_PATH . "config" . $grouppath . DS . $groupfile;
 			}
 			if (array_key_exists($groupname, static::$_vars)) {
 				return;
@@ -68,8 +67,8 @@
 				$var = $group . '.' . $var;
 			}
 			$grouparray = explode('.', $var);
-			$var        = array_pop($grouparray);
-			$group      = implode('.', $grouparray);
+			$var = array_pop($grouparray);
+			$group = implode('.', $grouparray);
 			if (!isset(static::$_vars[$group])) {
 				static::load($grouparray);
 			}

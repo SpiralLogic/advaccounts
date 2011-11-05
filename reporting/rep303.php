@@ -168,7 +168,7 @@
 				$rep->NewLine();
 			}
 			$rep->NewLine();
-			$dec = get_qty_dec($trans['stock_id']);
+			$dec = Num::qty_dec($trans['stock_id']);
 			$rep->TextCol(0, 1, $trans['stock_id']);
 			$rep->TextCol(1, 2, $trans['description'] . ($trans['inactive'] == 1 ? " (" . _("Inactive") . ")" : ""), -1);
 			$rep->AmountCol(2, 3, $trans['QtyOnHand'], $dec);

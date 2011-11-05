@@ -212,10 +212,7 @@ JsHttpRequest.formInputs = function (inp, objForm, upload) {
 //
 //	User price formatting
 //
-function Num
-::
-price_format(post, num, dec, label, color)
-{
+function price_format(post, num, dec, label, color) {
 
 	var el = label ? document.getElementById(post) : document.getElementsByName(post)[0];
 	//num = num.toString().replace(/\$|\,/g,'');

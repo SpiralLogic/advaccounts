@@ -13,10 +13,8 @@
 	include_once(APP_PATH . "sales/includes/db/sales_credit_db.php");
 	include_once(APP_PATH . "sales/includes/db/sales_invoice_db.php");
 	include_once(APP_PATH . "sales/includes/db/sales_delivery_db.php");
-	include_once(APP_PATH . "sales/includes/db/sales_types_db.php");
 	include_once(APP_PATH . "sales/includes/db/sales_points_db.php");
 	include_once(APP_PATH . "sales/includes/db/custalloc_db.php");
-	include_once(APP_PATH . "sales/includes/db/cust_trans_db.php");
 	include_once(APP_PATH . "sales/includes/db/cust_trans_details_db.php");
 	include_once(APP_PATH . "sales/includes/db/payment_db.php");
 	include_once(APP_PATH . "sales/includes/db/branches_db.php");
@@ -85,7 +83,7 @@
 			$date = Dates::new_doc_date();
 		}
 		if ($factor === null) {
-			$myrow = get_sales_type($sales_type_id);
+			$myrow = Sales_Type::get($sales_type_id);
 			$factor = $myrow['factor'];
 		}
 		$add_pct = DB_Company::get_pref('add_pct');
@@ -176,7 +174,7 @@
 			}
 		}
 		// no price for kit found, get total value of all items
-		$kit = get_item_kit($item_code);
+		$kit = Item_Code::get_kit($item_code);
 		while ($item = DBOld::fetch($kit)) {
 			if ($item['item_code'] != $item['stock_id']) {
 				// foreign/kit code
@@ -294,9 +292,9 @@
 		}
 		else {
 			// read header data from first document
-			$myrow = get_customer_trans($trans_no[0], $doc_type);
+			$myrow = Sales_Trans::get($trans_no[0], $doc_type);
 			if (count($trans_no) > 1) {
-				$cart->trans_no = get_customer_trans_version($doc_type, $trans_no);
+				$cart->trans_no = Sales_Trans::get_version($doc_type, $trans_no);
 			} else {
 				$cart->trans_no = array($trans_no[0] => $myrow["version"]);
 			}
