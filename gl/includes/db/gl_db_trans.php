@@ -421,7 +421,7 @@
 				$journal_item->reference, $journal_item->amount
 			);
 			if ($is_bank_to) {
-				add_bank_trans(
+				Bank_Trans::add(
 					$trans_type, $trans_id, $is_bank_to, $ref,
 					$date_, $journal_item->amount, 0, "", Banking::get_company_currency(),
 					"Cannot insert a destination bank transaction"
@@ -457,7 +457,7 @@
 					$journal_item->reference, -$journal_item->amount
 				);
 				if ($is_bank_to) {
-					add_bank_trans(
+					Bank_Trans::add(
 						$trans_type, $trans_id_reverse, $is_bank_to, $ref,
 						$reversingDate, -$journal_item->amount,
 						0, "", Banking::get_company_currency(),
@@ -509,12 +509,23 @@
 		if ($use_transaction) {
 			DBOld::begin_transaction();
 		}
-		void_bank_trans($type, $type_no, true);
+		Bank_Trans::void($type, $type_no, true);
 		//	void_gl_trans($type, $type_no, true);	 // this is done above
 		//	void_trans_tax_details($type, $type_no); // ditto
 		if ($use_transaction) {
 			DBOld::commit_transaction();
 		}
+	}
+
+	//----------------------------------------------------------------------------------------
+	function get_gl_trans_value($account, $type, $trans_no)
+	{
+		$sql = "SELECT SUM(amount) FROM gl_trans WHERE account="
+		 . DB::escape($account) . " AND type=" . DB::escape($type)
+		 . " AND type_no=" . DB::escape($trans_no);
+		$result = DBOld::query($sql, "query for gl trans value");
+		$row = DBOld::fetch_row($result);
+		return $row[0];
 	}
 
 ?>

@@ -53,7 +53,7 @@
 		/*Post a balance post if $total != 0 */
 		add_gl_balance($trans_type, $payment_id, $date_, -$total, PT_SUPPLIER, $supplier_id);
 		/*now enter the bank_trans entry */
-		add_bank_trans($trans_type, $payment_id, $bank_account, $ref,
+		Bank_Trans::add($trans_type, $payment_id, $bank_account, $ref,
 			$date_, -($amount + $supp_charge), PT_SUPPLIER,
 			$supplier_id, $bank_account_currency,
 			"Could not add the supplier payment bank transaction");
@@ -67,7 +67,7 @@
 	function void_supp_payment($type, $type_no)
 	{
 		DBOld::begin_transaction();
-		void_bank_trans($type, $type_no, true);
+		Bank_Trans::void($type, $type_no, true);
 		void_gl_trans($type, $type_no, true);
 		void_supp_allocations($type, $type_no);
 		void_supp_trans($type, $type_no);

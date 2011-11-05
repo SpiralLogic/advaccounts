@@ -129,7 +129,6 @@
 			include_once(APP_PATH . "includes/reports/pdf.php");
 		}
 		if ($graphics) {
-			include_once(APP_PATH . "reporting/includes/graph.php");
 			$pg = new Reports_Graph();
 		}
 		if (!$decimals) {

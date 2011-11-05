@@ -93,7 +93,7 @@
 				$trans_no = $this->trans_no;
 			}
 			if ($type == ST_BANKPAYMENT || $type == ST_BANKDEPOSIT) {
-				$bank_trans = DBOld::fetch(get_bank_trans($type, $trans_no));
+				$bank_trans = DBOld::fetch(Bank_Trans::get($type, $trans_no));
 				$this->person_type = $bank_trans['person_type_id'] == PT_SUPPLIER;
 			} else {
 				$this->person_type = $type == ST_SUPPCREDIT || $type == ST_SUPPAYMENT;

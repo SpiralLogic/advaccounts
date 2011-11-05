@@ -174,7 +174,7 @@
 	function display_wo_payments($woid)
 	{
 		global $wo_cost_types;
-		//$result = get_bank_trans(null, null, PT_WORKORDER, $woid);
+		//$result = Bank_Trans::get(null, null, PT_WORKORDER, $woid);
 		$result = get_gl_wo_cost_trans($woid);
 		if (DBOld::num_rows($result) == 0) {
 			Display::note(_("There are no additional costs for this Order."), 0, 1);

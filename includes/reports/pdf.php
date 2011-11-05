@@ -10,7 +10,6 @@
 		MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 		See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		* ********************************************************************* */
-	//include_once(APP_PATH . "reporting/includes/class.pdf.php");
 	include(dirname(__FILE__) . "/printer/remote.php");
 	if (!class_exists('Cpdf', false)) {
 		include(dirname(__FILE__) . DS . 'pdf/cpdf.php');

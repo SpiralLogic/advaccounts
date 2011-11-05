@@ -86,7 +86,7 @@
 		// do the source account postings
 		$total += add_gl_trans($trans_type, $trans_no, $date_, $from_gl_account, 0, 0, "",
 			-($amount + $charge), $currency);
-		add_bank_trans($trans_type, $trans_no, $from_account, $ref,
+		Bank_Trans::add($trans_type, $trans_no, $from_account, $ref,
 			$date_, -($amount + $charge),
 			PT_MISC, "", $currency,
 			"Cannot insert a source bank transaction");
@@ -103,7 +103,7 @@
 			$amount, $currency);
 		/*Post a balance post if $total != 0 */
 		add_gl_balance($trans_type, $trans_no, $date_, -$total);
-		add_bank_trans($trans_type, $trans_no, $to_account, $ref,
+		Bank_Trans::add($trans_type, $trans_no, $to_account, $ref,
 			$date_, $amount, PT_MISC, "",
 			$currency, "Cannot insert a destination bank transaction");
 		$currency = Banking::get_bank_account_currency($to_account);
@@ -164,7 +164,7 @@
 			$do_exchange_variance = true;
 		}
 		// do the source account postings
-		add_bank_trans($trans_type, $trans_no, $from_account, $ref,
+		Bank_Trans::add($trans_type, $trans_no, $from_account, $ref,
 			$date_, -$total_amount,
 			$person_type_id, $person_id,
 			$currency,
@@ -182,7 +182,7 @@
 				$gl_item->dimension_id, $gl_item->dimension2_id, $gl_item->reference,
 				$gl_item->amount, $currency, $person_type_id, $person_id);
 			if ($is_bank_to) {
-				add_bank_trans($trans_type, $trans_no, $is_bank_to, $ref,
+				Bank_Trans::add($trans_type, $trans_no, $is_bank_to, $ref,
 					$date_, $gl_item->amount,
 					$person_type_id, $person_id, $currency,
 					"Cannot insert a destination bank transaction");

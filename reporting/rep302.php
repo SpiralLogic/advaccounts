@@ -18,7 +18,6 @@
 	// ----------------------------------------------------------------
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	include_once(APP_PATH . "inventory/includes/db/items_category_db.php");
-	include_once(APP_PATH . "includes/manufacturing.php");
 	//----------------------------------------------------------------------------------------------------
 	print_inventory_planning();
 	function getTransactions($category, $location)

@@ -11,7 +11,6 @@
 	 ***********************************************************************/
 	$page_security = 'SA_SUPPLIERALLOC';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	//include_once(APP_PATH . "purchasing/includes/ui/supp_alloc_ui.php");
 	JS::open_window(900, 500);
 	JS::footerFile('/js/allocate.js');
 	Page::start(_($help_context = "Allocate Supplier Payment or Credit Note"));

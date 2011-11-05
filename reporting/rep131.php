@@ -18,7 +18,6 @@
 	// Title:	Print Sales Quotations
 	// ----------------------------------------------------------------
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	//include_once(APP_PATH . "taxes/item_tax_types.php");
 	//----------------------------------------------------------------------------------------------------
 	print_sales_quotations();
 	function print_sales_quotations()

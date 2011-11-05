@@ -16,7 +16,7 @@
 		$trans_no = $_GET["trans_no"];
 	}
 	// get the pay-to bank payment info
-	$result = get_bank_trans(ST_BANKDEPOSIT, $trans_no);
+	$result = Bank_Trans::get(ST_BANKDEPOSIT, $trans_no);
 	if (DBOld::num_rows($result) != 1) {
 		Errors::show_db_error("duplicate payment bank transaction found", "");
 	}

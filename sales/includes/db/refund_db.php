@@ -23,7 +23,7 @@
 		$bank_gl_account = get_bank_gl_account($bank_account);
 		if ($trans_no != 0) {
 			DB_Comments::delete(ST_CUSTREFUND, $trans_no);
-			void_bank_trans(ST_CUSTREFUND, $trans_no, true);
+			Bank_Trans::void(ST_CUSTREFUND, $trans_no, true);
 			void_gl_trans(ST_CUSTREFUND, $trans_no, true);
 			void_cust_allocations(ST_CUSTREFUND, $trans_no, $date_);
 		}
@@ -57,7 +57,7 @@
 		/*Post a balance post if $total != 0 */
 		add_gl_balance(ST_CUSTREFUND, $refund_no, $date_, -$total, PT_CUSTOMER, $customer_id);
 		/*now enter the bank_trans entry */
-		add_bank_trans(ST_CUSTREFUND, $refund_no, $bank_account, $ref,
+		Bank_Trans::add(ST_CUSTREFUND, $refund_no, $bank_account, $ref,
 			$date_, $amount - $charge, PT_CUSTOMER, $customer_id,
 			Banking::get_customer_currency($customer_id), "", $rate);
 		DB_Comments::add(ST_CUSTREFUND, $refund_no, $date_, $memo_);
@@ -70,7 +70,7 @@
 	function void_customer_refund($type, $type_no)
 	{
 		DBOld::begin_transaction();
-		void_bank_trans($type, $type_no, true);
+		Bank_Trans::void($type, $type_no, true);
 		void_gl_trans($type, $type_no, true);
 		void_cust_allocations($type, $type_no);
 		Sales_Trans::void($type, $type_no);

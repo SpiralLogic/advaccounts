@@ -160,7 +160,7 @@
 	function void_sales_invoice($type, $type_no)
 	{
 		DBOld::begin_transaction();
-		void_bank_trans($type, $type_no, true);
+		Bank_Trans::void($type, $type_no, true);
 		void_gl_trans($type, $type_no, true);
 		// reverse all the changes in parent document(s)
 		$items_result = get_customer_trans_details($type, $type_no);

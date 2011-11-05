@@ -358,7 +358,7 @@
 	{
 		DBOld::begin_transaction();
 		$trans = get_supp_trans($type_no, $type);
-		void_bank_trans($type, $type_no, true);
+		Bank_Trans::void($type, $type_no, true);
 		void_gl_trans($type, $type_no, true);
 		void_supp_allocations($type, $type_no);
 		void_supp_trans($type, $type_no);

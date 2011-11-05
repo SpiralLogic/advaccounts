@@ -15,7 +15,7 @@
 	if (isset($_GET["trans_no"])) {
 		$trans_no = $_GET["trans_no"];
 	}
-	$result = get_bank_trans(ST_BANKTRANSFER, $trans_no);
+	$result = Bank_Trans::get(ST_BANKTRANSFER, $trans_no);
 	if (DBOld::num_rows($result) != 2) {
 		Errors::show_db_error("Bank transfer does not contain two records");
 	}

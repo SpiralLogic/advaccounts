@@ -11,7 +11,6 @@
 	 ***********************************************************************/
 	$page_security = 'SA_WORKORDERCOST';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	include_once(APP_PATH . "gl/includes/db/gl_db_bank_trans.php");
 	include_once(APP_PATH . "manufacturing/includes/manufacturing_ui.php");
 	JS::open_window(900, 500);
 	Page::start(_($help_context = "Work Order Additional Costs"));
@@ -74,7 +73,7 @@
 		);
 		$is_bank_to = Banking::is_bank_account($_POST['cr_acc']);
 		if ($is_bank_to) {
-			add_bank_trans(
+			Bank_Trans::add(
 				ST_WORKORDER, $_POST['selected_id'], $is_bank_to, "",
 				$_POST['date_'], -input_num('costs'), PT_WORKORDER,
 				$_POST['PaymentType'], Banking::get_company_currency(),

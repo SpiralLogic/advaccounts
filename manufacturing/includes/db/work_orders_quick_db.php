@@ -115,7 +115,7 @@
 				0, 0, $wo_cost_types[WO_OVERHEAD], -$costs, PT_WORKORDER, WO_OVERHEAD);
 			$is_bank_to = Banking::is_bank_account($cr_acc);
 			if ($is_bank_to) {
-				add_bank_trans(ST_WORKORDER, $woid, $is_bank_to, "",
+				Bank_Trans::add(ST_WORKORDER, $woid, $is_bank_to, "",
 					$date_, -$costs, PT_WORKORDER, WO_OVERHEAD, Banking::get_company_currency(),
 					"Cannot insert a destination bank transaction");
 			}
@@ -129,7 +129,7 @@
 				0, 0, $wo_cost_types[WO_LABOUR], -$labour, PT_WORKORDER, WO_LABOUR);
 			$is_bank_to = Banking::is_bank_account($cr_lab_acc);
 			if ($is_bank_to) {
-				add_bank_trans(ST_WORKORDER, $woid, $is_bank_to, "",
+				Bank_Trans::add(ST_WORKORDER, $woid, $is_bank_to, "",
 					$date_, -$labour, PT_WORKORDER, WO_LABOUR, Banking::get_company_currency(),
 					"Cannot insert a destination bank transaction");
 			}

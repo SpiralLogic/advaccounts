@@ -30,7 +30,7 @@
 		case ST_BANKPAYMENT : // it's a payment
 		case ST_BANKDEPOSIT : // it's a deposit
 		case ST_BANKTRANSFER : // it's a transfer
-			if (!exists_bank_trans($type, $type_no)) {
+			if (!Bank_Trans::exists($type, $type_no)) {
 				return false;
 			}
 			break;

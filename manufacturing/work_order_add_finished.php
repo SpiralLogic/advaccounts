@@ -11,7 +11,6 @@
 	 ***********************************************************************/
 	$page_security = 'SA_MANUFRECEIVE';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	include_once(APP_PATH . "gl/includes/db/gl_db_bank_trans.php");
 	include_once(APP_PATH . "manufacturing/includes/manufacturing_ui.php");
 	JS::open_window(900, 500);
 	Page::start(_($help_context = "Produce or Unassemble Finished Items From Work Order"));
