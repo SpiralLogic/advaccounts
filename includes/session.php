@@ -1,14 +1,14 @@
 <?php
 	/**********************************************************************
-Copyright (C) FrontAccounting, LLC.
-Released under the terms of the GNU General Public License, GPL,
-as published by the Free Software Foundation, either version 3
-of the License, or (at your option) any later version.
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
- ***********************************************************************/
+	Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL,
+	as published by the Free Software Foundation, either version 3
+	of the License, or (at your option) any later version.
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+	 ***********************************************************************/
 	class Session extends Input
 	{
 		private static $_instance = null;
@@ -16,6 +16,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		public static $get_text;
 		protected $installed_languages;
 		protected $_session = array();
+
 		public static function init()
 		{
 			if (static::$_instance === null) {
@@ -81,7 +82,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		{
 			// logout.php is the only page we should have always
 			// accessable regardless of access level and current login status.
-			$currentUser = CurrentUser::get();
+			$currentUser = User::get();
 			if (strstr($_SERVER['PHP_SELF'], 'logout.php') == false) {
 				$currentUser->timeout();
 				if (!$currentUser->logged_in()) {
@@ -108,7 +109,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 			if (!Input::post("user_name_entry_field")) {
 				// strip ajax marker from uri, to force synchronous page reload
 				$_SESSION['timeout'] = array('uri' => preg_replace('/JsHttpRequest=(?:(\d+)-)?([^&]+)/s', '', @$_SERVER['REQUEST_URI']),
-																		 'post' => $_POST);
+					'post' => $_POST);
 				include(APP_PATH . "access/login.php");
 				if (Ajax::in_ajax() || AJAX_REFERRER) {
 					$Ajax->activate('_page_body');
@@ -131,7 +132,7 @@ See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 
 		public function __get($var)
 		{
-			return static::_isset($this->_session,$var)?:null;
+			return static::_isset($this->_session, $var) ? : null;
 		}
 
 		public function __set($var, $value)

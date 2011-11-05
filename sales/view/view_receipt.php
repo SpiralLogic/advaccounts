@@ -38,8 +38,8 @@
 	end_row();
 	start_row();
 	label_cells(_("Payment Currency"), $receipt['curr_code'], "class='tableheader2'");
-	label_cells(_("Amount"), price_format($receipt['Total'] - $receipt['ov_discount']), "class='tableheader2'");
-	label_cells(_("Discount"), price_format($receipt['ov_discount']), "class='tableheader2'");
+	label_cells(_("Amount"), Num::price_format($receipt['Total'] - $receipt['ov_discount']), "class='tableheader2'");
+	label_cells(_("Discount"), Num::price_format($receipt['ov_discount']), "class='tableheader2'");
 	end_row();
 	start_row();
 	label_cells(

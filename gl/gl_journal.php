@@ -26,7 +26,8 @@
 	}
 	Page::start($_SESSION['page_title']);
 	//--------------------------------------------------------------------------------------------------
-	function line_start_focus() {
+	function line_start_focus()
+	{
 		$Ajax = Ajax::instance();
 		$Ajax->activate('items_table');
 		JS::set_focus('_code_id_edit');
@@ -63,7 +64,8 @@
 		}
 		create_cart($_GET['trans_type'], $_GET['trans_no']);
 	}
-	function create_cart($type = 0, $trans_no = 0) {
+	function create_cart($type = 0, $trans_no = 0)
+	{
 		if (isset($_SESSION['journal_items'])) {
 			unset ($_SESSION['journal_items']);
 		}
@@ -160,7 +162,8 @@
 		}
 	}
 	//-----------------------------------------------------------------------------------------------
-	function check_item_data() {
+	function check_item_data()
+	{
 		if (isset($_POST['dimension_id']) && $_POST['dimension_id'] != 0 && dimension_is_closed($_POST['dimension_id'])) {
 			Errors::error(_("Dimension is closed."));
 			JS::set_focus('dimension_id');
@@ -195,7 +198,7 @@
 			JS::set_focus('code_id');
 			return false;
 		}
-		if (!CurrentUser::get()->can_access('SA_BANKJOURNAL') && Banking::is_bank_account($_POST['code_id'])) {
+		if (!User::get()->can_access('SA_BANKJOURNAL') && Banking::is_bank_account($_POST['code_id'])) {
 			Errors::error(_("You cannot make a journal entry for a bank account. Please use one of the banking functions for bank transactions."));
 			JS::set_focus('code_id');
 			return false;
@@ -204,11 +207,12 @@
 	}
 
 	//-----------------------------------------------------------------------------------------------
-	function handle_update_item() {
+	function handle_update_item()
+	{
 		if ($_POST['UpdateItem'] != "" && check_item_data()) {
 			if (input_num('AmountDebit') > 0) {
 				$amount = input_num('AmountDebit');
-} else {
+			} else {
 				$amount = -input_num('AmountCredit');
 			}
 			$_SESSION['journal_items']->update_gl_item(
@@ -221,13 +225,15 @@
 	}
 
 	//-----------------------------------------------------------------------------------------------
-	function handle_delete_item($id) {
+	function handle_delete_item($id)
+	{
 		$_SESSION['journal_items']->remove_gl_item($id);
 		line_start_focus();
 	}
 
 	//-----------------------------------------------------------------------------------------------
-	function handle_new_item() {
+	function handle_new_item()
+	{
 		if (!check_item_data()) {
 			return;
 		}
@@ -259,7 +265,7 @@
 	}
 	if (isset($_POST['go'])) {
 		ui_view::display_quick_entries($_SESSION['journal_items'], $_POST['person_id'], input_num('totamount'), QE_JOURNAL);
-		$_POST['totamount'] = price_format(0);
+		$_POST['totamount'] = Num::Num::price_format(0);
 		$Ajax->activate('totamount');
 		line_start_focus();
 	}

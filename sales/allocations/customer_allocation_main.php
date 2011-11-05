@@ -58,14 +58,14 @@
 	{
 		return pager_link(
 			_("Allocate"),
-			"/sales/allocations/customer_allocate.php?trans_no="
-			 . $row["trans_no"] . "&trans_type=" . $row["type"], ICON_MONEY
+		 "/sales/allocations/customer_allocate.php?trans_no="
+			. $row["trans_no"] . "&trans_type=" . $row["type"], ICON_MONEY
 		);
 	}
 
 	function amount_left($row)
 	{
-		return price_format($row["Total"] - $row["alloc"]);
+		return Num::price_format($row["Total"] - $row["alloc"]);
 	}
 
 	function check_settled($row)
@@ -76,24 +76,24 @@
 	$sql = get_allocatable_from_cust_sql($customer_id, $settled);
 	$cols = array(
 		_("Transaction Type") => array('fun' => 'systype_name'),
-		_("#")								=> array('fun' => 'trans_view'),
+		_("#") => array('fun' => 'trans_view'),
 		_("Reference"),
-		_("Date")						 => array(
+		_("Date") => array(
 			'name' => 'tran_date',
 			'type' => 'date',
-			'ord'	=> 'desc'
+			'ord' => 'desc'
 		),
-		_("Customer")				 => array('ord' => ''),
-		_("Currency")				 => array('align' => 'center'),
-		_("Total")						=> 'amount',
+		_("Customer") => array('ord' => ''),
+		_("Currency") => array('align' => 'center'),
+		_("Total") => 'amount',
 		_("Left to Allocate") => array(
-			'align'	=> 'right',
+			'align' => 'right',
 			'insert' => true,
-			'fun'		=> 'amount_left'
+			'fun' => 'amount_left'
 		),
 		array(
 			'insert' => true,
-			'fun'		=> 'alloc_link'
+			'fun' => 'alloc_link'
 		)
 	);
 	if (isset($_POST['customer_id'])) {

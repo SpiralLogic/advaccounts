@@ -26,9 +26,9 @@
 		public $allocs; /*array of transactions allocated to */
 		function __construct($type, $trans_no)
 		{
-			$this->allocs   = array();
+			$this->allocs = array();
 			$this->trans_no = $trans_no;
-			$this->type     = $type;
+			$this->type = $type;
 			$this->read(); // read payment or credit
 		}
 
@@ -41,7 +41,7 @@
 				$this->allocs[count($this->allocs)] = new allocation_item($type, $type_no,
 					$date_, $due_date, $amount, $amount_allocated, $current_allocated);
 				return true;
-} else {
+			} else {
 				return false;
 			}
 		}
@@ -55,7 +55,7 @@
 				$this->allocs[$index] = new allocation_item($type, $type_no,
 					$date_, $due_date, $amount, $amount_allocated, $current_allocated);
 				return true;
-} else {
+			} else {
 				return false;
 			}
 		}
@@ -89,34 +89,34 @@
 		function read($type = null, $trans_no = 0)
 		{
 			if ($type == null) { // re-read
-				$type     = $this->type;
+				$type = $this->type;
 				$trans_no = $this->trans_no;
 			}
 			if ($type == ST_BANKPAYMENT || $type == ST_BANKDEPOSIT) {
-				$bank_trans        = DBOld::fetch(get_bank_trans($type, $trans_no));
+				$bank_trans = DBOld::fetch(get_bank_trans($type, $trans_no));
 				$this->person_type = $bank_trans['person_type_id'] == PT_SUPPLIER;
-} else {
+			} else {
 				$this->person_type = $type == ST_SUPPCREDIT || $type == ST_SUPPAYMENT;
 			}
 			$this->allocs = array();
 			if ($trans_no) {
-				$trans             = $this->person_type ? get_supp_trans($trans_no, $type)
+				$trans = $this->person_type ? get_supp_trans($trans_no, $type)
 				 : get_customer_trans($trans_no, $type);
-				$this->person_id   = $trans[$this->person_type ? 'supplier_id' : 'debtor_no'];
+				$this->person_id = $trans[$this->person_type ? 'supplier_id' : 'debtor_no'];
 				$this->person_name = $trans[$this->person_type ? "supplier_name" : "DebtorName"];
-				$this->amount      = $trans["Total"];
-				$this->date_       = Dates::sql2date($trans["tran_date"]);
+				$this->amount = $trans["Total"];
+				$this->date_ = Dates::sql2date($trans["tran_date"]);
 			}
 			else {
 				$this->person_id = get_post($this->person_type ? 'supplier_id' : 'customer_id');
-				$this->date_     = get_post($this->person_type ? 'DatePaid' : 'DateBanked', Dates::Today());
+				$this->date_ = get_post($this->person_type ? 'DatePaid' : 'DateBanked', Dates::Today());
 			}
 			/* Now populate the array of possible (and previous actual) allocations
 											for this customer/supplier. First get the transactions that have
 											outstanding balances ie Total-alloc >0 */
 			if ($this->person_type) {
 				$trans_items = get_allocatable_to_supp_transactions($this->person_id);
-} else {
+			} else {
 				$trans_items = get_allocatable_to_cust_transactions($this->person_id);
 			}
 			while ($myrow = DBOld::fetch($trans_items))
@@ -141,7 +141,7 @@
 					$this->person_id,
 					$trans_no, $type
 				);
-} else {
+			} else {
 				$trans_items = get_allocatable_to_cust_transactions(
 					$this->person_id,
 					$trans_no, $type
@@ -154,7 +154,7 @@
 					Dates::sql2date($myrow["tran_date"]),
 					Dates::sql2date($myrow["due_date"]),
 					$myrow["Total"],
-					$myrow["alloc"] - $myrow["amt"], $myrow["amt"]
+				 $myrow["alloc"] - $myrow["amt"], $myrow["amt"]
 				);
 			}
 		}
@@ -167,7 +167,7 @@
 			DBOld::begin_transaction();
 			if ($this->person_type) {
 				clear_supp_alloctions($this->type, $this->trans_no, $this->date_);
-} else {
+			} else {
 				clear_cust_alloctions($this->type, $this->trans_no, $this->date_);
 			}
 			// now add the new allocations
@@ -215,7 +215,7 @@
 					$this->type, $this->trans_no,
 					$total_allocated
 				);
-} else {
+			} else {
 				update_debtor_trans_allocation(
 					$this->type, $this->trans_no,
 					$total_allocated
@@ -246,8 +246,8 @@
 					label_cell($alloc_item->due_date, "align=right");
 					amount_cell($alloc_item->amount);
 					amount_cell($alloc_item->amount_allocated);
-					$_POST['amount' . $counter] = price_format($alloc_item->current_allocated);
-					amount_cells(null, "amount" . $counter, price_format('amount' . $counter));
+					$_POST['amount' . $counter] = Num::price_format($alloc_item->current_allocated);
+					amount_cells(null, "amount" . $counter, Num::price_format('amount' . $counter));
 					$un_allocated = round($alloc_item->amount - $alloc_item->amount_allocated, 6);
 					amount_cell($un_allocated, false, '', 'maxval' . $counter);
 					label_cell(
@@ -258,7 +258,7 @@
 						"<a href='javascript:' name=DeAll$counter onclick='allocate_none(this.name.substr(5));return true;'>"
 						 . _("None") . "</a>" . hidden(
 							"un_allocated" . $counter,
-							price_format($un_allocated), false
+							Num::price_format($un_allocated), false
 						)
 					);
 					end_row();
@@ -267,7 +267,7 @@
 				}
 				if ($show_totals) {
 					label_row(
-						_("Total Allocated"), price_format($total_allocated),
+						_("Total Allocated"), Num::price_format($total_allocated),
 						"colspan=6 align=right", "align=right id='total_allocated'", 3
 					);
 					$amount = $_SESSION['alloc']->amount;
@@ -280,10 +280,10 @@
 					if ($amount - $total_allocated < 0) {
 						$font1 = "<font color=red>";
 						$font2 = "</font>";
-} else {
+					} else {
 						$font1 = $font2 = "";
 					}
-					$left_to_allocate = price_format($amount - $total_allocated);
+					$left_to_allocate = Num::price_format($amount - $total_allocated);
 					label_row(
 						_("Left to Allocate"), $font1 . $left_to_allocate . $font2,
 						"colspan=6 align=right", "nowrap align=right id='left_to_allocate'",
@@ -331,14 +331,14 @@
 		public static function create_miscorder($customer, $branch, $memo, $ref, $amount, $discount = 0)
 		{
 			processing_start();
-			$type               = ST_SALESINVOICE;
-			$doc                = new Sales_Order(ST_SALESINVOICE, 0);
-			$doc->trans_type    = $type;
+			$type = ST_SALESINVOICE;
+			$doc = new Sales_Order(ST_SALESINVOICE, 0);
+			$doc->trans_type = $type;
 			$doc->document_date = Dates::new_doc_date();
-			$doc->pos           = user_pos();
-			$doc->due_date      = $doc->document_date;
-			$doc->cust_ref      = $ref;
-			$doc->Comments      = "Invoice for Customer Payment: " . $doc->cust_ref;
+			$doc->pos = user_pos();
+			$doc->due_date = $doc->document_date;
+			$doc->cust_ref = $ref;
+			$doc->Comments = "Invoice for Customer Payment: " . $doc->cust_ref;
 			$doc->add_to_cart(0, 'MiscSale', '1', Taxes::get_tax_free_price_for_item('MiscSale', $amount, 0, true, $doc->tax_group_array), $discount / 100, 1, 0, 'Order: ' . $memo);
 			$doc->write(1);
 			processing_end();
@@ -362,12 +362,12 @@
 			$amount_allocated, $current_allocated
 		)
 		{
-			$this->type              = $type;
-			$this->type_no           = $type_no;
-			$this->date_             = $date_;
-			$this->due_date          = $due_date;
-			$this->amount            = $amount;
-			$this->amount_allocated  = $amount_allocated;
+			$this->type = $type;
+			$this->type_no = $type_no;
+			$this->date_ = $date_;
+			$this->due_date = $due_date;
+			$this->amount = $amount;
+			$this->amount_allocated = $amount_allocated;
 			$this->current_allocated = $current_allocated;
 		}
 	}
@@ -377,22 +377,22 @@
 	if (!function_exists('copy_from_cart')) {
 		function copy_from_cart($cart)
 		{
-			$_POST['Comments']         = $cart->Comments;
-			$_POST['OrderDate']        = $cart->document_date;
-			$_POST['delivery_date']    = $cart->due_date;
-			$_POST['cust_ref']         = $cart->cust_ref;
-			$_POST['freight_cost']     = price_format($cart->freight_cost);
-			$_POST['deliver_to']       = $cart->deliver_to;
+			$_POST['Comments'] = $cart->Comments;
+			$_POST['OrderDate'] = $cart->document_date;
+			$_POST['delivery_date'] = $cart->due_date;
+			$_POST['cust_ref'] = $cart->cust_ref;
+			$_POST['freight_cost'] = Num::price_format($cart->freight_cost);
+			$_POST['deliver_to'] = $cart->deliver_to;
 			$_POST['delivery_address'] = $cart->delivery_address;
-			$_POST['name']             = $cart->name;
-			$_POST['phone']            = $cart->phone;
-			$_POST['Location']         = $cart->Location;
-			$_POST['ship_via']         = $cart->ship_via;
-			$_POST['sales_type']       = $cart->sales_type;
-			$_POST['salesman']         = $cart->salesman;
-			$_POST['dimension_id']     = $cart->dimension_id;
-			$_POST['dimension2_id']    = $cart->dimension2_id;
-			$_POST['cart_id']          = $cart->cart_id;
+			$_POST['name'] = $cart->name;
+			$_POST['phone'] = $cart->phone;
+			$_POST['Location'] = $cart->Location;
+			$_POST['ship_via'] = $cart->ship_via;
+			$_POST['sales_type'] = $cart->sales_type;
+			$_POST['salesman'] = $cart->salesman;
+			$_POST['dimension_id'] = $cart->dimension_id;
+			$_POST['dimension2_id'] = $cart->dimension2_id;
+			$_POST['cart_id'] = $cart->cart_id;
 		}
 	}
 ?>

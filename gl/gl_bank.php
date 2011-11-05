@@ -28,7 +28,7 @@
 	Validation::check(Validation::BANK_ACCOUNTS, _("There are no bank accounts defined in the system."));
 	//----------------------------------------------------------------------------------------
 	if (list_updated('PersonDetailID')) {
-		$br                 = get_branch(get_post('PersonDetailID'));
+		$br = get_branch(get_post('PersonDetailID'));
 		$_POST['person_id'] = $br['debtor_no'];
 		$Ajax->activate('person_id');
 	}
@@ -42,7 +42,7 @@
 
 	//-----------------------------------------------------------------------------------------------
 	if (isset($_GET['AddedID'])) {
-		$trans_no   = $_GET['AddedID'];
+		$trans_no = $_GET['AddedID'];
 		$trans_type = ST_BANKPAYMENT;
 		Errors::notice(_("Payment $trans_no has been entered"));
 		Display::note(ui_view::get_gl_view_str($trans_type, $trans_no, _("&View the GL Postings for this Payment")));
@@ -51,7 +51,7 @@
 		Page::footer_exit();
 	}
 	if (isset($_GET['AddedDep'])) {
-		$trans_no   = $_GET['AddedDep'];
+		$trans_no = $_GET['AddedDep'];
 		$trans_type = ST_BANKDEPOSIT;
 		Errors::notice(_("Deposit $trans_no has been entered"));
 		Display::note(ui_view::get_gl_view_str($trans_type, $trans_no, _("View the GL Postings for this Deposit")));
@@ -124,13 +124,13 @@
 			$_POST['ref'], $_POST['memo_']
 		);
 		$trans_type = $trans[0];
-		$trans_no   = $trans[1];
+		$trans_no = $trans[1];
 		Dates::new_doc_date($_POST['date_']);
 		$_SESSION['pay_items']->clear_items();
 		unset($_SESSION['pay_items']);
 		meta_forward(
 			$_SERVER['PHP_SELF'], $trans_type == ST_BANKPAYMENT ?
-													 "AddedID=$trans_no" : "AddedDep=$trans_no"
+			 "AddedID=$trans_no" : "AddedDep=$trans_no"
 		);
 	} /*end of process credit note */
 	//-----------------------------------------------------------------------------------------------
@@ -213,7 +213,7 @@
 			$_SESSION['pay_items'], $_POST['person_id'], input_num('totamount'),
 			$_SESSION['pay_items']->trans_type == ST_BANKPAYMENT ? QE_PAYMENT : QE_DEPOSIT
 		);
-		$_POST['totamount'] = price_format(0);
+		$_POST['totamount'] = Num::Num::price_format(0);
 		$Ajax->activate('totamount');
 		line_start_focus();
 	}
@@ -234,7 +234,7 @@
 	submit_center_first('Update', _("Update"), '', null);
 	submit_center_last(
 		'Process', $_SESSION['pay_items']->trans_type == ST_BANKPAYMENT ?
-							_("Process Payment") : _("Process Deposit"), '', 'default'
+		 _("Process Payment") : _("Process Deposit"), '', 'default'
 	);
 	end_form();
 	//------------------------------------------------------------------------------------------------

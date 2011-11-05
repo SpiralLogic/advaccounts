@@ -139,7 +139,8 @@
 	else {
 		check_edit_conflicts();
 	}
-	function page_complete($order_no, $trans_type, $trans_name = 'Transaction', $edit = false, $update = false) {
+	function page_complete($order_no, $trans_type, $trans_name = 'Transaction', $edit = false, $update = false)
+	{
 		$customer = new Contacts_Customer($_SESSION['Jobsboard']->customer_id);
 		$emails = $customer->getEmailAddresses();
 		Errors::notice(
@@ -214,7 +215,8 @@
 	}
 
 	//-----------------------------------------------------------------------------
-	function copy_to_cart() {
+	function copy_to_cart()
+	{
 		$cart = &$_SESSION['Items'];
 		$cart->reference = $_POST['ref'];
 		$cart->Comments = $_POST['Comments'];
@@ -248,14 +250,15 @@
 	}
 
 	//-----------------------------------------------------------------------------
-	function copy_from_cart() {
+	function copy_from_cart()
+	{
 		$cart = &$_SESSION['Items'];
 		$_POST['ref'] = $cart->reference;
 		$_POST['Comments'] = $cart->Comments;
 		$_POST['OrderDate'] = $cart->document_date;
 		$_POST['delivery_date'] = $cart->due_date;
 		$_POST['cust_ref'] = $cart->cust_ref;
-		$_POST['freight_cost'] = price_format($cart->freight_cost);
+		$_POST['freight_cost'] = Num::price_format($cart->freight_cost);
 		$_POST['deliver_to'] = $cart->deliver_to;
 		$_POST['delivery_address'] = $cart->delivery_address;
 		$_POST['name'] = $cart->name;
@@ -274,14 +277,16 @@
 	}
 
 	//--------------------------------------------------------------------------------
-	function line_start_focus() {
+	function line_start_focus()
+	{
 		$Ajax = Ajax::instance();
 		$Ajax->activate('items_table');
 		JS::set_focus('_stock_id_edit');
 	}
 
 	//--------------------------------------------------------------------------------
-	function can_process() {
+	function can_process()
+	{
 		if (!get_post('customer_id')) {
 			Errors::error(_("There is no customer selected."));
 			JS::set_focus('customer_id');
@@ -323,7 +328,7 @@
 			return false;
 		}
 		if ($_POST['freight_cost'] == "") {
-			$_POST['freight_cost'] = price_format(0);
+			$_POST['freight_cost'] = Num::price_format(0);
 		}
 		if (!Validation::is_num('freight_cost', 0)) {
 			Errors::error(_("The shipping cost entered is expected to be numeric."));
@@ -411,8 +416,9 @@
 		$Ajax->activate('items_table');
 	}
 	//--------------------------------------------------------------------------------
-	function check_item_data() {
-		if (!CurrentUser::get()->can_access('SA_SALESCREDIT') && (!Validation::is_num('qty', 0) || !Validation::is_num('Disc', 0, 100))) {
+	function check_item_data()
+	{
+		if (!User::get()->can_access('SA_SALESCREDIT') && (!Validation::is_num('qty', 0) || !Validation::is_num('Disc', 0, 100))) {
 			Errors::error(_("The item could not be updated because you are attempting to set the quantity ordered to less than 0, or the discount percent to more than 100."));
 			JS::set_focus('qty');
 			return false;
@@ -422,7 +428,7 @@
 			JS::set_focus('price');
 			return false;
 		}
-		elseif (!CurrentUser::get()->can_access('SA_SALESCREDIT') && isset($_POST['LineNo']) && isset($_SESSION['Items']->line_items[$_POST['LineNo']])
+		elseif (!User::get()->can_access('SA_SALESCREDIT') && isset($_POST['LineNo']) && isset($_SESSION['Items']->line_items[$_POST['LineNo']])
 		 && !Validation::is_num(
 			 'qty',
 			 $_SESSION['Items']->line_items[$_POST['LineNo']]->qty_done
@@ -450,7 +456,8 @@
 	}
 
 	//--------------------------------------------------------------------------------
-	function handle_update_item() {
+	function handle_update_item()
+	{
 		if ($_POST['UpdateItem'] != '' && check_item_data()) {
 			$_SESSION['Items']->update_cart_item($_POST['LineNo'], input_num('qty'), input_num('price'), input_num('Disc') / 100, $_POST['description']);
 		}
@@ -458,7 +465,8 @@
 	}
 
 	//--------------------------------------------------------------------------------
-	function handle_delete_item($line_no) {
+	function handle_delete_item($line_no)
+	{
 		if ($_SESSION['Items']->some_already_delivered($line_no) == 0) {
 			$_SESSION['Items']->remove_from_cart($line_no);
 		}
@@ -469,7 +477,8 @@
 	}
 
 	//--------------------------------------------------------------------------------
-	function handle_new_item() {
+	function handle_new_item()
+	{
 		if (!check_item_data()) {
 			return;
 		}
@@ -479,7 +488,8 @@
 	}
 
 	//--------------------------------------------------------------------------------
-	function handle_cancel_order() {
+	function handle_cancel_order()
+	{
 		$Ajax = Ajax::instance();
 		if ($_SESSION['Items']->trans_type == ST_CUSTDELIVERY) {
 			Errors::notice(_("Direct delivery entry has been cancelled as requested."), 1);
@@ -514,7 +524,8 @@
 	}
 
 	//------------------------------------------------------- -------------------------
-	function create_cart($type, $trans_no) {
+	function create_cart($type, $trans_no)
+	{
 		processing_start();
 		$doc_type = $type;
 		if (isset($_GET['NewQuoteToSalesOrder'])) {

@@ -32,9 +32,9 @@
 			if (isset($_POST["_" . $rowid . '_update'])) {
 				continue;
 			}
-			$amountid                  = substr($rowid, 4);
+			$amountid = substr($rowid, 4);
 			$_POST['amount_' . $rowid] = $row;
-			$_POST[$rowid]             = 1;
+			$_POST[$rowid] = 1;
 		}
 	}
 	//
@@ -44,9 +44,9 @@
 	//
 	function dep_checkbox($row)
 	{
-		$name      = "dep_" . $row['id'];
-		$hidden    = 'amount_' . $row['id'];
-		$value     = $row['amount'];
+		$name = "dep_" . $row['id'];
+		$hidden = 'amount_' . $row['id'];
+		$value = $row['amount'];
 		$chk_value = check_value("dep_" . $row['id']);
 		// save also in hidden field for testing during 'Reconcile'
 		return checkbox(null, $name, $chk_value, true, _('Deposit this transaction')) . hidden($hidden, $value, false);
@@ -71,13 +71,13 @@
 	function fmt_debit($row)
 	{
 		$value = $row["amount"];
-		return $value >= 0 ? price_format($value) : '';
+		return $value >= 0 ? Num::price_format($value) : '';
 	}
 
 	function fmt_credit($row)
 	{
 		$value = -$row["amount"];
-		return $value > 0 ? price_format($value) : '';
+		return $value > 0 ? Num::price_format($value) : '';
 	}
 
 	function fmt_person($row)
@@ -116,7 +116,7 @@
 		// save last reconcilation status (date, end balance)
 		if (check_value("dep_" . $deposit_id)) {
 			$_SESSION['undeposited']["dep_" . $deposit_id] = get_post('amount_' . $deposit_id);
-			$_POST['deposited']                            = $_POST['to_deposit'] + get_post('amount_' . $deposit_id);
+			$_POST['deposited'] = $_POST['to_deposit'] + get_post('amount_' . $deposit_id);
 		}
 		else {
 			unset($_SESSION['undeposited']["dep_" . $deposit_id]);
@@ -130,9 +130,9 @@
 		update_data();
 	}
 	if (get_post('_deposit_date_changed')) {
-		$_POST['deposited']      = 0;
+		$_POST['deposited'] = 0;
 		$_SESSION['undeposited'] = array();
-		$_POST['deposit_date']   = check_date() ? (get_post('deposit_date')) : '';
+		$_POST['deposit_date'] = check_date() ? (get_post('deposit_date')) : '';
 		foreach (
 			$_POST as $rowid => $row
 		) {
@@ -147,8 +147,8 @@
 		change_tpl_flag($id);
 	}
 	if (isset($_POST['Deposit'])) {
-		$sql         = "SELECT * FROM bank_trans WHERE undeposited=1  AND reconciled IS NULL";
-		$query       = DBOld::query($sql);
+		$sql = "SELECT * FROM bank_trans WHERE undeposited=1  AND reconciled IS NULL";
+		$query = DBOld::query($sql);
 		$undeposited = array();
 		while ($row = DBOld::fetch($query)) {
 			$undeposited[$row['id']] = $row;
@@ -164,19 +164,19 @@
 		}
 		if (count($togroup) > 1) {
 			$total_amount = 0;
-			$ref          = array();
+			$ref = array();
 			foreach (
 				$togroup as $row
 			) {
 				$total_amount += $row['amount'];
 				$ref[] = $row['ref'];
 			}
-			$sql      = "INSERT INTO bank_trans (type, bank_act, amount, ref, trans_date, person_type_id, person_id, undeposited) VALUES (15, 5, $total_amount,"
+			$sql = "INSERT INTO bank_trans (type, bank_act, amount, ref, trans_date, person_type_id, person_id, undeposited) VALUES (15, 5, $total_amount,"
 			 . DB::escape(implode($ref, ',')) . ",'" . Dates::date2sql($_POST['deposit_date']) . "', 6, '" . $_SESSION['wa_current_user']->user . "',0)";
-			$query    = DBOld::query($sql, "Undeposited Cannot be Added");
+			$query = DBOld::query($sql, "Undeposited Cannot be Added");
 			$order_no = DBOld::insert_id($query);
 			if (!isset($order_no) || !empty($order_no) || $order_no == 127) {
-				$sql      = "SELECT LAST_INSERT_ID()";
+				$sql = "SELECT LAST_INSERT_ID()";
 				$order_no = DBOld::query($sql);
 				$order_no = DBOld::fetch_row($order_no);
 				$order_no = $order_no[0];
@@ -229,40 +229,40 @@
 	echo "<hr>";
 	$date = Dates::add_days($_POST['deposit_date'], 10);
 	$sql
-								= "SELECT	type, trans_no, ref, trans_date,
+	 = "SELECT	type, trans_no, ref, trans_date,
 				amount,	person_id, person_type_id, reconciled, id
 		FROM bank_trans
 		WHERE undeposited=1 AND trans_date <= '" . Dates::date2sql($date) . "' AND reconciled IS NULL
 		ORDER BY trans_date DESC,bank_trans.id ";
-	$cols         = array(
-		_("Type")				=> array(
+	$cols = array(
+		_("Type") => array(
 			'fun' => 'systype_name',
 			'ord' => ''
 		),
-		_("#")					 => array(
+		_("#") => array(
 			'fun' => 'trans_view',
 			'ord' => ''
 		), _("Reference"),
-		_("Date")				=> 'date',
-		_("Debit")			 => array(
+		_("Date") => 'date',
+		_("Debit") => array(
 			'align' => 'right',
-			'fun'	 => 'fmt_debit'
+			'fun' => 'fmt_debit'
 		),
-		_("Credit")			=> array(
-			'align'	=> 'right',
+		_("Credit") => array(
+			'align' => 'right',
 			'insert' => true,
-			'fun'		=> 'fmt_credit'
+			'fun' => 'fmt_credit'
 		),
 		_("Person/Item") => array('fun' => 'fmt_person'), array(
 			'insert' => true,
-			'fun'		=> 'gl_view'
+			'fun' => 'gl_view'
 		),
-		"X"							=> array(
+		"X" => array(
 			'insert' => true,
-			'fun'		=> 'dep_checkbox'
+			'fun' => 'dep_checkbox'
 		)
 	);
-	$table        =& db_pager::new_db_pager('trans_tbl', $sql, $cols);
+	$table =& db_pager::new_db_pager('trans_tbl', $sql, $cols);
 	$table->width = "80%";
 	display_db_pager($table);
 	br(1);

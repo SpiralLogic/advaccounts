@@ -77,8 +77,8 @@
 		$link
 		 = pager_link(
 			_("Allocations"),
-			"/purchasing/allocations/supplier_allocate.php?trans_no=" .
-			 $row["trans_no"] . "&trans_type=" . $row["type"], ICON_MONEY
+		 "/purchasing/allocations/supplier_allocate.php?trans_no=" .
+			$row["trans_no"] . "&trans_type=" . $row["type"], ICON_MONEY
 		);
 		return (($row["type"] == ST_BANKPAYMENT || $row["type"] == ST_SUPPCREDIT || $row["type"] == ST_SUPPAYMENT)
 		 && (-$row["TotalAmount"] - $row["Allocated"]) > 0)
@@ -88,18 +88,18 @@
 	function fmt_debit($row)
 	{
 		$value = -$row["TotalAmount"];
-		return $value >= 0 ? price_format($value) : '';
+		return $value >= 0 ? Num::price_format($value) : '';
 	}
 
 	function fmt_credit($row)
 	{
 		$value = $row["TotalAmount"];
-		return $value > 0 ? price_format($value) : '';
+		return $value > 0 ? Num::price_format($value) : '';
 	}
 
 	//------------------------------------------------------------------------------------------------
 	$date_after = Dates::date2sql($_POST['TransAfterDate']);
-	$date_to    = Dates::date2sql($_POST['TransToDate']);
+	$date_to = Dates::date2sql($_POST['TransToDate']);
 	// Sherifoz 22.06.03 Also get the description
 	$sql
 	 = "SELECT
@@ -143,43 +143,43 @@
 		$sql .= " AND (round(abs(ov_amount + ov_gst + ov_discount) - alloc,6) != 0) ";
 	}
 	$cols = array(
-		_("Type")				=> array('fun' => 'systype_name'),
-		_("#")					 => array(
+		_("Type") => array('fun' => 'systype_name'),
+		_("#") => array(
 			'fun' => 'view_link',
 			'ord' => ''
 		),
 		_("Reference"),
-		_("Supplier")		=> array(
-			'ord'	=> '',
+		_("Supplier") => array(
+			'ord' => '',
 			'type' => 'id'
 		),
 		_("Supplier ID") => array('skip'),
 		_("Supp Reference"),
-		_("Date")				=> array(
+		_("Date") => array(
 			'name' => 'tran_date',
 			'type' => 'date',
-			'ord'	=> 'asc'
+			'ord' => 'asc'
 		),
-		_("Due Date")		=> array('fun' => 'due_date'),
-		_("Currency")		=> array('align' => 'center'),
-		_("Debit")			 => array(
+		_("Due Date") => array('fun' => 'due_date'),
+		_("Currency") => array('align' => 'center'),
+		_("Debit") => array(
 			'align' => 'right',
-			'fun'	 => 'fmt_debit'
+			'fun' => 'fmt_debit'
 		),
-		_("Credit")			=> array(
-			'align'	=> 'right',
+		_("Credit") => array(
+			'align' => 'right',
 			'insert' => true,
-			'fun'		=> 'fmt_credit'
+			'fun' => 'fmt_credit'
 		),
-		_("Allocated")	 => 'amount',
-		_("Balance")		 => array(
-			'type'	 => 'amount',
+		_("Allocated") => 'amount',
+		_("Balance") => array(
+			'type' => 'amount',
 			'insert' => true,
-			'fun'		=> 'fmt_balance'
+			'fun' => 'fmt_balance'
 		),
 		array(
 			'insert' => true,
-			'fun'		=> 'alloc_link'
+			'fun' => 'alloc_link'
 		)
 	);
 	if ($_POST['supplier_id'] != ALL_TEXT) {

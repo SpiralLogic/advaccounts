@@ -92,21 +92,21 @@
 			Errors::error(_('Module installation support is not implemented yet. You have to do it manually.'));
 			return;
 		}
-		$extensions[$id]['tab']    = $_POST['tab'];
-		$extensions[$id]['name']   = $_POST['name'];
-		$extensions[$id]['path']   = $_POST['path'];
-		$extensions[$id]['title']  = $_POST['title'];
+		$extensions[$id]['tab'] = $_POST['tab'];
+		$extensions[$id]['name'] = $_POST['name'];
+		$extensions[$id]['path'] = $_POST['path'];
+		$extensions[$id]['title'] = $_POST['title'];
 		$extensions[$id]['active'] = check_value('active');
 		// Currently we support only plugin extensions here.
 		$extensions[$id]['type'] = 'plugin';
-		$directory               = APP_PATH . "modules/" . $_POST['path'];
+		$directory = APP_PATH . "modules/" . $_POST['path'];
 		if (!file_exists($directory)) {
 			mkdir($directory);
 		}
 		if (is_uploaded_file($_FILES['uploadfile']['tmp_name'])) {
 			$extensions[$id]['filename'] = $_FILES['uploadfile']['name'];
-			$file1                       = $_FILES['uploadfile']['tmp_name'];
-			$file2                       = $directory . "/" . $_FILES['uploadfile']['name'];
+			$file1 = $_FILES['uploadfile']['tmp_name'];
+			$file2 = $directory . "/" . $_FILES['uploadfile']['name'];
 			if (file_exists($file2)) {
 				unlink($file2);
 			}
@@ -121,13 +121,13 @@
 				unlink($file2);
 			}
 			move_uploaded_file($file1, $file2);
-			$db_name = CurrentUser::get()->company;
+			$db_name = User::get()->company;
 			DB_Utils::import($file2, Config::get('db.' . $db_name));
 		}
 		if (is_uploaded_file($_FILES['uploadfile3']['tmp_name'])) {
 			$extensions[$id]['acc_file'] = $_FILES['uploadfile3']['name'];
-			$file1                       = $_FILES['uploadfile3']['tmp_name'];
-			$file2                       = $directory . "/" . $_FILES['uploadfile3']['name'];
+			$file1 = $_FILES['uploadfile3']['tmp_name'];
+			$file2 = $directory . "/" . $_FILES['uploadfile3']['name'];
 			if (file_exists($file2)) {
 				unlink($file2);
 			}
@@ -141,7 +141,7 @@
 				PATH_TO_ROOT . '/modules/'
 				 . $extensions[$id]['path'] . '/' . $extensions[$id]['filename']
 			);
-			$area    = 'SA_OPEN';
+			$area = 'SA_OPEN';
 			if (preg_match('/.*\$page_security\s*=\s*[\'"]([^\'"]*)/', $exttext, $match)) {
 				$area = trim($match[1]);
 			}
@@ -160,8 +160,8 @@
 	{
 		global $selected_id;
 		$extensions = DB_Company::get_company_extensions();
-		$id         = $selected_id;
-		$filename   = PATH_TO_ROOT
+		$id = $selected_id;
+		$filename = PATH_TO_ROOT
 		 . ($extensions[$id]['type'] == 'plugin' ? "/modules/" : '/')
 		 . $extensions[$id]['path'];
 		Files::flush_dir($filename);
@@ -182,7 +182,7 @@
 			_("Access extensions"), "", ""
 		);
 		table_header($th);
-		$k    = 0;
+		$k = 0;
 		$mods = DB_Company::get_company_extensions();
 		$mods = Arr::natsort($mods, null, 'name');
 		foreach (
@@ -203,7 +203,7 @@
 			label_cell(@$mod['acc_file']);
 			if ($is_mod) {
 				label_cell(''); // not implemented (yet)
-} else {
+			} else {
 				edit_button_cell("Edit" . $i, _("Edit"));
 			}
 			delete_button_cell("Delete" . $i, _("Delete"));
@@ -267,11 +267,11 @@
 		start_table(Config::get('tables_style2'));
 		if ($selected_id != -1 && $extensions[$selected_id]['type'] == 'plugin') {
 			if ($Mode == 'Edit') {
-				$mod               = $extensions[$selected_id];
-				$_POST['tab']      = $mod['tab'];
-				$_POST['name']     = $mod['name'];
-				$_POST['title']    = $mod['title'];
-				$_POST['path']     = $mod['path'];
+				$mod = $extensions[$selected_id];
+				$_POST['tab'] = $mod['tab'];
+				$_POST['name'] = $mod['name'];
+				$_POST['title'] = $mod['title'];
+				$_POST['path'] = $mod['path'];
 				$_POST['filename'] = $mod['filename'];
 				$_POST['acc_file'] = @$mod['acc_file'];
 				hidden('filename', $_POST['filename']);
@@ -297,7 +297,7 @@
 		if (handle_submit()) {
 			if ($selected_id != -1) {
 				Errors::notice(_("Extension data has been updated."));
-} else {
+			} else {
 				Errors::notice(_("Extension has been installed."));
 			}
 			$Mode = 'RESET';

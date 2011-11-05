@@ -6,17 +6,18 @@
 	 * Time: 5:49 AM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	class User
+	class Users
 	{
 		public static function	add($user_id, $real_name, $password, $phone, $email, $role_id,
-			$language, $profile, $rep_popup, $pos) {
-			$sql = "INSERT INTO users (user_id, real_name, password,phone, email, role_id, language, pos, print_profile, rep_popup)
+																$language, $profile, $rep_popup, $pos)
+		{
+			$sql
+			 = "INSERT INTO users (user_id, real_name, password,phone, email, role_id, language, pos, print_profile, rep_popup)
 				VALUES (" . DB::escape($user_id) . ",
 				" . DB::escape($real_name) . ", " . DB::escape($password) . "," . DB::escape($phone)
 			 . "," . DB::escape($email) . ", " . DB::escape($role_id) . ", " . DB::escape($language)
 			 . ", " . DB::escape($pos) . "," . DB::escape($profile) . "," . DB::escape($rep_popup)
 			 . " )";
-
 			DBOld::query($sql, "could not add user for $user_id");
 		}
 
@@ -96,7 +97,7 @@
 		//-----------------------------------------------------------------------------------------------
 		public static function	get($id)
 		{
-			$sql    = "SELECT * FROM users WHERE id=" . DB::escape($id);
+			$sql = "SELECT * FROM users WHERE id=" . DB::escape($id);
 			$result = DBOld::query($sql, "could not get user $id");
 			return DBOld::fetch($result);
 		}
@@ -106,7 +107,7 @@
 		//
 		public static function	get_by_login($user_id)
 		{
-			$sql    = "SELECT * FROM users WHERE user_id=" . DB::escape($user_id);
+			$sql = "SELECT * FROM users WHERE user_id=" . DB::escape($user_id);
 			$result = DBOld::query($sql, "could not get user $user_id");
 			return DBOld::fetch($result);
 		}
@@ -124,14 +125,14 @@
 			DBOld::getInstance();
 			// do not exclude inactive records or you lost access after source upgrade
 			// on sites using pre 2.2 database
-			$user        = new Auth($user_id);
+			$user = new Auth($user_id);
 			$md5password = md5($password);
-			$result      = DB::select('user_id')->from('users')->where('password=', $md5password)->fetch();
+			$result = DB::select('user_id')->from('users')->where('password=', $md5password)->fetch();
 			if (count($result) > 0) {
 				$_SESSION['change_password'] = true;
 			}
 			$password = $user->hash_password($password);
-			$sql      = "SELECT * FROM users WHERE user_id = " . DB::escape($user_id) . " AND"
+			$sql = "SELECT * FROM users WHERE user_id = " . DB::escape($user_id) . " AND"
 			 . " (password=" . DB::escape($password) . " OR password=" . DB::escape($md5password) . ")";
 			return DBOld::query($sql, "could not get validate user login for $user_id");
 		}
@@ -147,10 +148,10 @@
 		//-----------------------------------------------------------------------------------------------
 		public static function	check_activity($id)
 		{
-			$sql    = "SELECT COUNT(*) FROM audit_trail WHERE audit_trail.user="
+			$sql = "SELECT COUNT(*) FROM audit_trail WHERE audit_trail.user="
 			 . DB::escape($id);
 			$result = DBOld::query($sql, "Cant check user activity");
-			$ret    = DBOld::fetch($result);
+			$ret = DBOld::fetch($result);
 			return $ret[0];
 		}
 
@@ -163,8 +164,8 @@
 			$result = DBOld::query("SHOW TABLES LIKE 'useronline'");
 			if (DBOld::num_rows($result) == 1) {
 				$timeoutseconds = 120;
-				$timestamp      = time();
-				$timeout        = $timestamp - $timeoutseconds;
+				$timestamp = time();
+				$timeout = $timestamp - $timeoutseconds;
 				/*
 														 This will find out if user is from behind proxy server.
 														 In that case, the script would count them all as 1 user.
@@ -197,8 +198,8 @@
 				DBOld::query("DELETE FROM useronline WHERE timestamp<" . $timeout);
 				// Select online users
 				$result = DBOld::query("SELECT DISTINCT ip FROM useronline");
-				$users  = DBOld::num_rows($result);
-} else {
+				$users = DBOld::num_rows($result);
+			} else {
 				$users = 1;
 			}
 			return "$users " . ($users == 1 ? _("user online") : _("users online"));

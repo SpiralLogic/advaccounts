@@ -31,9 +31,9 @@
 	//
 	function rec_checkbox($row)
 	{
-		$name   = "rec_" . $row['id'];
+		$name = "rec_" . $row['id'];
 		$hidden = 'last[' . $row['id'] . ']';
-		$value  = $row['reconciled'] != '';
+		$value = $row['reconciled'] != '';
 		// save also in hidden field for testing during 'Reconcile'
 		return checkbox(null, $name, $value, true, _('Reconcile this transaction')) . hidden($hidden, $value, false);
 	}
@@ -66,13 +66,13 @@
 	function fmt_debit($row)
 	{
 		$value = $row["amount"];
-		return $value >= 0 ? price_format($value) : '';
+		return $value >= 0 ? Num::Num::price_format($value) : '';
 	}
 
 	function fmt_credit($row)
 	{
 		$value = -$row["amount"];
-		return $value > 0 ? price_format($value) : '';
+		return $value > 0 ? Num::Num::price_format($value) : '';
 	}
 
 	function fmt_person($row)
@@ -106,7 +106,7 @@
 			$Ajax->activate('bank_date');
 		}
 		$_POST['bank_date'] = Dates::date2sql(get_post('reconcile_date'));
-		$reconcile_value    = check_value("rec_" . $reconcile_id) ? ("'" . $_POST['bank_date'] . "'") : 'NULL';
+		$reconcile_value = check_value("rec_" . $reconcile_id) ? ("'" . $_POST['bank_date'] . "'") : 'NULL';
 		update_reconciled_values($reconcile_id, $reconcile_value, $_POST['reconcile_date'], input_num('end_balance'), $_POST['bank_account']);
 		$Ajax->activate('reconciled');
 		$Ajax->activate('difference');
@@ -120,7 +120,7 @@
 	$groupid = find_submit("_ungroup_");
 	if (isset($groupid) && $groupid > 1) {
 		$grouprefs = $_POST['ungroup_' . $groupid];
-		$trans     = explode(',', $grouprefs);
+		$trans = explode(',', $grouprefs);
 		reset($trans);
 		foreach (
 			$trans as $tran
@@ -135,7 +135,7 @@
 	}
 	if (isset($_SESSION['wa_current_reconcile_date']) && count($_POST) < 1) {
 		if ($_SESSION['wa_current_reconcile_date'] != '') {
-			$_POST['bank_date']         = $_SESSION['wa_current_reconcile_date'];
+			$_POST['bank_date'] = $_SESSION['wa_current_reconcile_date'];
 			$_POST['_bank_date_update'] = $_POST['bank_date'];
 			update_data();
 		}
@@ -184,19 +184,19 @@
 	end_row();
 	end_table();
 	$_SESSION['wa_current_reconcile_date'] = $_POST['bank_date'];
-	$result                                = get_max_reconciled(get_post('reconcile_date'), $_POST['bank_account']);
+	$result = get_max_reconciled(get_post('reconcile_date'), $_POST['bank_account']);
 	if ($row = DBOld::fetch($result)) {
-		$_POST["reconciled"] = price_format($row["end_balance"] - $row["beg_balance"]);
-		$total               = $row["total"];
+		$_POST["reconciled"] = Num::Num::price_format($row["end_balance"] - $row["beg_balance"]);
+		$total = $row["total"];
 		if (!isset($_POST["beg_balance"])) { // new selected account/statement
-			$_POST["last_date"]   = Dates::sql2date($row["last_date"]);
-			$_POST["beg_balance"] = price_format($row["beg_balance"]);
-			$_POST["end_balance"] = price_format($row["end_balance"]);
+			$_POST["last_date"] = Dates::sql2date($row["last_date"]);
+			$_POST["beg_balance"] = Num::Num::price_format($row["beg_balance"]);
+			$_POST["end_balance"] = Num::Num::price_format($row["end_balance"]);
 			if (get_post('bank_date')) {
 				// if it is the last updated bank statement retrieve ending balance
 				$row = get_ending_reconciled($_POST['bank_account'], $_POST['bank_date']);
 				if ($row) {
-					$_POST["end_balance"] = price_format($row["ending_reconcile_balance"]);
+					$_POST["end_balance"] = Num::Num::price_format($row["ending_reconcile_balance"]);
 				}
 			}
 		}
@@ -226,39 +226,39 @@
 	$sql = get_sql_for_bank_account_reconcile($_POST['bank_account'], get_post('reconcile_date'));
 	$act = get_bank_account($_POST["bank_account"]);
 	Display::heading($act['bank_account_name'] . " - " . $act['bank_curr_code']);
-	$cols         = array(
-		_("Type")				=> array(
+	$cols = array(
+		_("Type") => array(
 			'fun' => 'systype_name',
 			'ord' => ''
 		),
-		_("#")					 => array(
+		_("#") => array(
 			'fun' => 'trans_view',
 			'ord' => ''
 		), _("Reference"),
-		_("Date")				=> 'date',
-		_("Debit")			 => array(
+		_("Date") => 'date',
+		_("Debit") => array(
 			'align' => 'right',
-			'fun'	 => 'fmt_debit'
+			'fun' => 'fmt_debit'
 		),
-		_("Credit")			=> array(
-			'align'	=> 'right',
+		_("Credit") => array(
+			'align' => 'right',
 			'insert' => true,
-			'fun'		=> 'fmt_credit'
+			'fun' => 'fmt_credit'
 		),
 		_("Person/Item") => array('fun' => 'fmt_person'), array(
 			'insert' => true,
-			'fun'		=> 'gl_view'
+			'fun' => 'gl_view'
 		),
-		"X"							=> array(
+		"X" => array(
 			'insert' => true,
-			'fun'		=> 'rec_checkbox'
+			'fun' => 'rec_checkbox'
 		),
 		array(
 			'insert' => true,
-			'fun'		=> 'ungroup'
+			'fun' => 'ungroup'
 		)
 	);
-	$table        =& db_pager::new_db_pager('trans_tbl', $sql, $cols);
+	$table =& db_pager::new_db_pager('trans_tbl', $sql, $cols);
 	$table->width = "80%";
 	display_db_pager($table);
 	br(1);

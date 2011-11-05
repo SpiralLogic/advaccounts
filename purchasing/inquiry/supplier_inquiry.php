@@ -41,9 +41,9 @@
 	//------------------------------------------------------------------------------------------------
 	function display_supplier_summary($supplier_record)
 	{
-		$past1    = DB_Company::get_pref('past_due_days');
-		$past2    = 2 * $past1;
-		$nowdue   = "1-" . $past1 . " " . _('Days');
+		$past1 = DB_Company::get_pref('past_due_days');
+		$past2 = 2 * $past1;
+		$nowdue = "1-" . $past1 . " " . _('Days');
 		$pastdue1 = $past1 + 1 . "-" . $past2 . " " . _('Days');
 		$pastdue2 = _('Over') . " " . $past2 . " " . _('Days');
 		start_table("width=90%  " . Config::get('tables_style'));
@@ -102,8 +102,8 @@
 		return $row['type'] == ST_SUPPINVOICE && $row["TotalAmount"] - $row["Allocated"] > 0 ?
 		 pager_link(
 			 _("Credit This"),
-			 "/purchasing/supplier_credit.php?New=1&invoice_no=" .
-				$row['trans_no'], ICON_CREDIT
+			"/purchasing/supplier_credit.php?New=1&invoice_no=" .
+			 $row['trans_no'], ICON_CREDIT
 		 )
 		 : '';
 	}
@@ -111,13 +111,13 @@
 	function fmt_debit($row)
 	{
 		$value = $row["TotalAmount"];
-		return $value >= 0 ? price_format($value) : '';
+		return $value >= 0 ? Num::price_format($value) : '';
 	}
 
 	function fmt_credit($row)
 	{
 		$value = -$row["TotalAmount"];
-		return $value > 0 ? price_format($value) : '';
+		return $value > 0 ? Num::price_format($value) : '';
 	}
 
 	function prt_link($row)
@@ -141,7 +141,7 @@
 		unset($_POST['supplier_id']);
 	}
 	$date_after = Dates::date2sql($_POST['TransAfterDate']);
-	$date_to    = Dates::date2sql($_POST['TransToDate']);
+	$date_to = Dates::date2sql($_POST['TransToDate']);
 	// Sherifoz 22.06.03 Also get the description
 	$sql
 	 = "SELECT trans.type,
@@ -214,48 +214,48 @@
 		}
 	}
 	$cols = array(
-		_("Type")				=> array(
+		_("Type") => array(
 			'fun' => 'systype_name',
 			'ord' => ''
 		),
-		_("#")					 => array(
+		_("#") => array(
 			'fun' => 'trans_view',
 			'ord' => ''
 		),
 		_("Reference"),
-		_("Supplier")		=> array('type' => 'id'),
+		_("Supplier") => array('type' => 'id'),
 		_("Supplier ID") => 'skip',
 		_("Supplier's Reference"),
-		_("Date")				=> array(
+		_("Date") => array(
 			'name' => 'tran_date',
 			'type' => 'date',
-			'ord'	=> 'desc'
+			'ord' => 'desc'
 		),
-		_("Due Date")		=> array(
+		_("Due Date") => array(
 			'type' => 'date',
-			'fun'	=> 'due_date'
+			'fun' => 'due_date'
 		),
-		_("Currency")		=> array('align' => 'center'),
-		_("Debit")			 => array(
+		_("Currency") => array('align' => 'center'),
+		_("Debit") => array(
 			'align' => 'right',
-			'fun'	 => 'fmt_debit'
+			'fun' => 'fmt_debit'
 		),
-		_("Credit")			=> array(
-			'align'	=> 'right',
+		_("Credit") => array(
+			'align' => 'right',
 			'insert' => true,
-			'fun'		=> 'fmt_credit'
-		),
-		array(
-			'insert' => true,
-			'fun'		=> 'gl_view'
+			'fun' => 'fmt_credit'
 		),
 		array(
 			'insert' => true,
-			'fun'		=> 'credit_link'
+			'fun' => 'gl_view'
 		),
 		array(
 			'insert' => true,
-			'fun'		=> 'prt_link'
+			'fun' => 'credit_link'
+		),
+		array(
+			'insert' => true,
+			'fun' => 'prt_link'
 		)
 	);
 	if (Input::post('supplier_id') != ALL_TEXT) {

@@ -10,7 +10,8 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	//--------------------------------------------------------------------------------
-	function add_to_issue(&$order, $new_item, $new_item_qty, $standard_cost) {
+	function add_to_issue(&$order, $new_item, $new_item_qty, $standard_cost)
+	{
 		if ($order->find_cart_item($new_item)) {
 			Errors::error(_("For Part :") . $new_item . " " . "This item is already on this issue.  You can change the quantity issued of the existing line if necessary.");
 		} else {
@@ -19,7 +20,8 @@
 	}
 
 	//---------------------------------------------------------------------------------
-	function display_issue_items($title, &$order) {
+	function display_issue_items($title, &$order)
+	{
 		Display::heading($title);
 		div_start('items_table');
 		start_table(Config::get('tables_style') . "  width=90% colspan=7");
@@ -56,7 +58,7 @@
 					_('Remove line from document')
 				);
 				end_row();
-} else {
+			} else {
 				issue_edit_item_controls($order, $line_no);
 			}
 		}
@@ -69,7 +71,8 @@
 	}
 
 	//---------------------------------------------------------------------------------
-	function issue_edit_item_controls(&$order, $line_no = -1) {
+	function issue_edit_item_controls(&$order, $line_no = -1)
+	{
 		$Ajax = Ajax::instance();
 		start_row();
 		$id = find_submit('Edit');
@@ -79,7 +82,7 @@
 				$order->line_items[$id]->quantity,
 				$order->line_items[$id]->stock_id, $dec
 			);
-			$_POST['std_cost'] = price_format($order->line_items[$id]->standard_cost);
+			$_POST['std_cost'] = Num::price_format($order->line_items[$id]->standard_cost);
 			$_POST['units'] = $order->line_items[$id]->units;
 			hidden('stock_id', $_POST['stock_id']);
 			label_cell($_POST['stock_id']);
@@ -99,7 +102,7 @@
 			$item_info = get_item_edit_info($_POST['stock_id']);
 			$dec = $item_info["decimals"];
 			$_POST['qty'] = Num::format(0, $dec);
-			$_POST['std_cost'] = price_format($item_info["standard_cost"]);
+			$_POST['std_cost'] = Num::price_format($item_info["standard_cost"]);
 			$_POST['units'] = $item_info["units"];
 		}
 		qty_cells(null, 'qty', $_POST['qty'], null, null, $dec);
@@ -126,7 +129,8 @@
 	}
 
 	//---------------------------------------------------------------------------------
-	function issue_options_controls() {
+	function issue_options_controls()
+	{
 		echo "<br>";
 		start_table();
 		ref_row(_("Reference:"), 'ref', '', Refs::get_next(28));

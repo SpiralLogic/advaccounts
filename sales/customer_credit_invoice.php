@@ -45,11 +45,12 @@
 		Display::note(Reporting::print_doc_link($credit_no, _("&Print This Credit Note"), true, $trans_type), 1);
 		Display::note(ui_view::get_gl_view_str($trans_type, $credit_no, _("View the GL &Journal Entries for this Credit Note")), 1);
 		Page::footer_exit();
-} else {
+	} else {
 		check_edit_conflicts();
 	}
 	//-----------------------------------------------------------------------------
-	function can_process() {
+	function can_process()
+	{
 		if (!Dates::is_date($_POST['CreditDate'])) {
 			Errors::error(_("The entered date is invalid."));
 			;
@@ -116,7 +117,8 @@
 	elseif (!check_quantities()) {
 		Errors::error(_("Selected quantity cannot be less than zero nor more than quantity not credited yet."));
 	}
-	function check_quantities() {
+	function check_quantities()
+	{
 		$ok = 1;
 		foreach (
 			$_SESSION['Items']->line_items as $line_no => $itm
@@ -144,7 +146,8 @@
 	}
 
 	//-----------------------------------------------------------------------------
-	function copy_to_cart() {
+	function copy_to_cart()
+	{
 		$cart = &$_SESSION['Items'];
 		$cart->ship_via = $_POST['ShipperID'];
 		$cart->freight_cost = input_num('ChargeFreightCost');
@@ -157,10 +160,11 @@
 	}
 
 	//-----------------------------------------------------------------------------
-	function copy_from_cart() {
+	function copy_from_cart()
+	{
 		$cart = &$_SESSION['Items'];
 		$_POST['ShipperID'] = $cart->ship_via;
-		$_POST['ChargeFreightCost'] = price_format($cart->freight_cost);
+		$_POST['ChargeFreightCost'] = Num::price_format($cart->freight_cost);
 		$_POST['CreditDate'] = $cart->document_date;
 		$_POST['Location'] = $cart->Location;
 		$_POST['CreditText'] = $cart->Comments;
@@ -192,7 +196,8 @@
 		$_SESSION['Items']->Location = $_POST['Location'];
 	}
 	//-----------------------------------------------------------------------------
-	function display_credit_items() {
+	function display_credit_items()
+	{
 		start_form();
 		hidden('cart_id');
 		start_table(Config::get('tables_style2') . " width=90%", 5);
@@ -272,26 +277,27 @@
 			end_row();
 		}
 		if (!Validation::is_num('ChargeFreightCost')) {
-			$_POST['ChargeFreightCost'] = price_format($_SESSION['Items']->freight_cost);
+			$_POST['ChargeFreightCost'] = Num::price_format($_SESSION['Items']->freight_cost);
 		}
 		$colspan = 7;
 		start_row();
 		label_cell(_("Credit Shipping Cost"), "colspan=$colspan align=right");
-		small_amount_cells(null, "ChargeFreightCost", price_format(get_post('ChargeFreightCost', 0)));
+		small_amount_cells(null, "ChargeFreightCost", Num::price_format(get_post('ChargeFreightCost', 0)));
 		end_row();
 		$inv_items_total = $_SESSION['Items']->get_items_total_dispatch();
-		$display_sub_total = price_format($inv_items_total + input_num('ChargeFreightCost'));
+		$display_sub_total = Num::price_format($inv_items_total + input_num('ChargeFreightCost'));
 		label_row(_("Sub-total"), $display_sub_total, "colspan=$colspan align=right", "align=right");
 		$taxes = $_SESSION['Items']->get_taxes(input_num('ChargeFreightCost'));
 		$tax_total = Display::edit_tax_items($taxes, $colspan, $_SESSION['Items']->tax_included);
-		$display_total = price_format(($inv_items_total + input_num('ChargeFreightCost') + $tax_total));
+		$display_total = Num::price_format(($inv_items_total + input_num('ChargeFreightCost') + $tax_total));
 		label_row(_("Credit Note Total"), $display_total, "colspan=$colspan align=right", "align=right");
 		end_table();
 		div_end();
 	}
 
 	//-----------------------------------------------------------------------------
-	function display_credit_options() {
+	function display_credit_options()
+	{
 		$Ajax = Ajax::instance();
 		echo "<br>";
 		if (isset($_POST['_CreditType_update'])) {

@@ -16,18 +16,15 @@
 	// date_:	2005-05-19
 	// Title:	Audit Trail
 	// ----------------------------------------------------------------
-
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-
 	//----------------------------------------------------------------------------------------------------
-
 	print_audit_trail();
-
-	function getTransactions($from, $to, $type, $user) {
+	function getTransactions($from, $to, $type, $user)
+	{
 		$fromdate = Dates::date2sql($from) . " 00:00:00";
-		$todate   = Dates::date2sql($to) . " 23:59.59";
-
-		$sql = "SELECT a.*,
+		$todate = Dates::date2sql($to) . " 23:59.59";
+		$sql
+		 = "SELECT a.*,
 		SUM(IF(ISNULL(g.amount), NULL, IF(g.amount > 0, g.amount, 0))) AS amount,
 		u.user_id,
 		UNIX_TIMESTAMP(a.stamp) as unix_stamp
@@ -35,11 +32,14 @@
 		LEFT JOIN gl_trans AS g ON (g.type_no=a.trans_no
 			AND g.type=a.type)
 		WHERE a.user = u.id ";
-		if ($type != -1)
+		if ($type != -1) {
 			$sql .= "AND a.type=$type ";
-		if ($user != -1)
+		}
+		if ($user != -1) {
 			$sql .= "AND a.user='$user' ";
-		$sql .= "AND a.stamp >= '$fromdate'
+		}
+		$sql
+		 .= "AND a.stamp >= '$fromdate'
 			AND a.stamp <= '$todate'
 		GROUP BY a.trans_no,a.gl_seq,a.stamp	
 		ORDER BY a.stamp,a.gl_seq";
@@ -47,74 +47,74 @@
 	}
 
 	//----------------------------------------------------------------------------------------------------
-
-	function print_audit_trail() {
+	function print_audit_trail()
+	{
 		global $systypes_array;
-
-		$from        = $_POST['PARAM_0'];
-		$to          = $_POST['PARAM_1'];
-		$systype     = $_POST['PARAM_2'];
-		$user        = $_POST['PARAM_3'];
-		$comments    = $_POST['PARAM_4'];
+		$from = $_POST['PARAM_0'];
+		$to = $_POST['PARAM_1'];
+		$systype = $_POST['PARAM_2'];
+		$user = $_POST['PARAM_3'];
+		$comments = $_POST['PARAM_4'];
 		$destination = $_POST['PARAM_5'];
-		if ($destination)
+		if ($destination) {
 			include_once(APP_PATH . "includes/reports/excel.php");
+		}
 		else
+		{
 			include_once(APP_PATH . "includes/reports/pdf.php");
-
+		}
 		$dec = user_price_dec();
-
 		$cols = array(0, 60, 120, 180, 240, 340, 400, 460, 520);
-
 		$headers = array(_('Date'), _('Time'), _('User'), _('Trans Date'),
-										 _('Type'), _('#'), _('Action'), _('Amount')
+			_('Type'), _('#'), _('Action'), _('Amount')
 		);
-
 		$aligns = array('left', 'left', 'left', 'left', 'left', 'left', 'left', 'right');
-
-		$usr     = User::get($user);
+		$usr = Users::get($user);
 		$user_id = $usr['user_id'];
-		$params  = array(0 => $comments,
-										 1 => array('text' => _('Period'),
-																'from' => $from,
-																'to'   => $to
-										 ),
-										 2 => array('text' => _('Type'),
-																'from' => ($systype != -1 ? $systypes_array[$systype] : _('All')),
-																'to'   => ''
-										 ),
-										 3 => array('text' => _('User'),
-																'from' => ($user != -1 ? $user_id : _('All')),
-																'to'   => ''
-										 )
+		$params = array(0 => $comments,
+			1 => array('text' => _('Period'),
+				'from' => $from,
+				'to' => $to
+			),
+			2 => array('text' => _('Type'),
+				'from' => ($systype != -1 ? $systypes_array[$systype] : _('All')),
+				'to' => ''
+			),
+			3 => array('text' => _('User'),
+				'from' => ($user != -1 ? $user_id : _('All')),
+				'to' => ''
+			)
 		);
-
 		$rep = new FrontReport(_('Audit Trail'), "AuditTrail", user_pagesize());
-
 		$rep->Font();
 		$rep->Info($params, $cols, $headers, $aligns);
 		$rep->Header();
-
 		$trans = getTransactions($from, $to, $systype, $user);
-
 		while ($myrow = DBOld::fetch($trans))
 		{
 			$rep->TextCol(0, 1, Dates::sql2date(date("Y-m-d", $myrow['unix_stamp'])));
-			if (user_date_format() == 0)
+			if (user_date_format() == 0) {
 				$rep->TextCol(1, 2, date("h:i:s a", $myrow['unix_stamp']));
+			}
 			else
+			{
 				$rep->TextCol(1, 2, date("H:i:s", $myrow['unix_stamp']));
+			}
 			$rep->TextCol(2, 3, $myrow['user_id']);
 			$rep->TextCol(3, 4, Dates::sql2date($myrow['gl_date']));
 			$rep->TextCol(4, 5, $systypes_array[$myrow['type']]);
 			$rep->TextCol(5, 6, $myrow['trans_no']);
-			if ($myrow['gl_seq'] == null)
+			if ($myrow['gl_seq'] == null) {
 				$action = _('Changed');
+			}
 			else
+			{
 				$action = _('Closed');
+			}
 			$rep->TextCol(6, 7, $action);
-			if ($myrow['amount'] != null)
+			if ($myrow['amount'] != null) {
 				$rep->AmountCol(7, 8, $myrow['amount'], $dec);
+			}
 			$rep->NewLine(1, 2);
 		}
 		$rep->Line($rep->row + 4);

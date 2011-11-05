@@ -1,11 +1,11 @@
 <?php
-/**
- * Created by JetBrains PhpStorm.
- * User: Complex
- * Date: 6/11/11
- * Time: 1:37 AM
- * To change this template use File | Settings | File Templates.
- */
+	/**
+	 * Created by JetBrains PhpStorm.
+	 * User: Complex
+	 * Date: 6/11/11
+	 * Time: 1:37 AM
+	 * To change this template use File | Settings | File Templates.
+	 */
 	class Display
 	{
 		static function heading($msg)
@@ -42,6 +42,7 @@
 				static::heading(_("in units of : ") . $units);
 			}
 		}
+
 		static function backtrace($cond = true, $msg = '')
 		{
 			if ($cond) {
@@ -92,6 +93,7 @@
 				Errors::error($str);
 			}
 		}
+
 		//--------------------------------------------------------------------------------------
 		// Displays currency exchange rate for given date.
 		// When there is no exrate for today,
@@ -137,6 +139,7 @@
 				$Ajax->addUpdate('_ex_rate', '_ex_rate', $rate);
 			}
 		}
+
 		//--------------------------------------------------------------------------------------
 		static function is_voided($type, $id, $label)
 		{
@@ -154,6 +157,7 @@
 			end_table(1);
 			return true;
 		}
+
 		//--------------------------------------------------------------------------------------
 		static function comments_row($type, $id)
 		{
@@ -232,7 +236,7 @@
 			}
 			if ($tax_correcting) {
 				label_cell(_("Tax Correction"), "colspan=$columns align=right width='90%'");
-				small_amount_cells(null, 'ChgTax', price_format(get_post('ChgTax'), 2));
+				small_amount_cells(null, 'ChgTax', Num::price_format(get_post('ChgTax'), 2));
 				end_row();
 				$total += get_post('ChgTax');
 			}
@@ -257,7 +261,7 @@
 				label_cell(ui_view::get_trans_view_str($alloc_row['type'], $alloc_row['trans_no']));
 				label_cell(Dates::sql2date($alloc_row['tran_date']));
 				$alloc_row['Total'] = Num::round($alloc_row['Total'], user_price_dec());
-				$alloc_row['amt']   = Num::round($alloc_row['amt'], user_price_dec());
+				$alloc_row['amt'] = Num::round($alloc_row['amt'], user_price_dec());
 				amount_cell($alloc_row['Total']);
 				//amount_cell($alloc_row['Total'] - $alloc_row['PrevAllocs'] - $alloc_row['amt']);
 				amount_cell($alloc_row['Total'] - $alloc_row['amt']);
@@ -316,7 +320,7 @@
 				if ($descr != '') {
 					$qe['description'] .= ': ' . $descr;
 				}
-				$result  = get_quick_entry_lines($id);
+				$result = get_quick_entry_lines($id);
 				$totrate = 0;
 				while ($row = DBOld::fetch($result)) {
 					$qe_lines[] = $row;
@@ -329,7 +333,7 @@
 						}
 					}
 				}
-				$first   = true;
+				$first = true;
 				$taxbase = 0;
 				foreach (
 					$qe_lines as $qe_line
@@ -365,7 +369,7 @@
 					case "t-": // ditto & reduce base amount
 						if ($first) {
 							$taxbase = $base / ($totrate + 100);
-							$first   = false;
+							$first = false;
 						}
 						if (substr($qe_line['action'], 0, 1) != 'T') {
 							$part = $taxbase;
@@ -377,8 +381,8 @@
 						//if ($type == QE_SUPPINV && substr($qe_line['action'],0,1) != 'T')
 						if ($type == QE_SUPPINV) {
 							$taxgroup = $cart->tax_group_id;
-							$rates    = 0;
-							$res      = Tax_Groups::get_for_item($cart->tax_group_id);
+							$rates = 0;
+							$res = Tax_Groups::get_for_item($cart->tax_group_id);
 							while ($row = DBOld::fetch($res)) {
 								$rates += $row['rate'];
 							}

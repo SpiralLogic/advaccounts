@@ -20,7 +20,7 @@
 			JS::set_focus('query_size');
 		} else {
 			$chg_theme = user_theme() != $_POST['theme'];
-			$chg_lang  = $_SESSION['language']->code != $_POST['language'];
+			$chg_lang = $_SESSION['language']->code != $_POST['language'];
 			set_user_prefs(
 				$_POST['prices'], $_POST['Quantities'],
 				$_POST['Rates'], $_POST['Percent'],
@@ -39,14 +39,14 @@
 			// refresh main menu
 			Files::flush_dir(COMPANY_PATH . '/js_cache');
 			if ($chg_theme && Config::get('demo_mode')) {
-				CurrentUser::get()->prefs->theme = $_POST['theme'];
+				User::prefs()->theme = $_POST['theme'];
 			}
 			if ($chg_theme || $chg_lang) {
 				meta_forward($_SERVER['PHP_SELF']);
 			}
 			if (Config::get('demo_mode')) {
 				Errors::warning(_("Display settings have been updated. Keep in mind that changed settings are restored on every login in demo mode."));
-} else {
+			} else {
 				Errors::notice(_("Display settings have been updated."));
 			}
 		}

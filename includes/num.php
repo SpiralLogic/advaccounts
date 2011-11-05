@@ -1,19 +1,19 @@
 <?php
-/**
- * Created by JetBrains PhpStorm.
- * User: Complex
- * Date: 6/11/11
- * Time: 2:53 AM
- * To change this template use File | Settings | File Templates.
- */
+	/**
+	 * Created by JetBrains PhpStorm.
+	 * User: Complex
+	 * Date: 6/11/11
+	 * Time: 2:53 AM
+	 * To change this template use File | Settings | File Templates.
+	 */
 	class Num
 	{
 		function price_format($number)
 		{
-			return Num::format($number, CurrentUser::get()->prefs->price_dec());
+			return Num::format($number, User::prefs()->price_dec());
 		}
 
-		function price_decimal_format($number, &$dec)
+		function price_decimal($number, &$dec)
 		{
 			$dec = user_price_dec();
 			$str = strval($number);
@@ -34,8 +34,8 @@
 
 		function format($number, $decimals = 0)
 		{
-			$tsep = Config::get('separators_thousands', CurrentUser::get()->prefs->tho_sep());
-			$dsep = Config::get('separators_decimal', CurrentUser::get()->prefs->dec_sep());
+			$tsep = Config::get('separators_thousands', User::prefs()->tho_sep());
+			$dsep = Config::get('separators_decimal', User::prefs()->dec_sep());
 			//return number_format($number, $decimals, $dsep,	$tsep);
 			$delta = ($number < 0 ? -.0000000001 : .0000000001);
 			$number = number_format($number + $delta, $decimals, $dsep, $tsep);
@@ -58,7 +58,7 @@
 				$dec = Item_Unit::get_decimal($stock_id);
 			}
 			if ($stock_id == null || $dec == -1 || $dec == null) {
-				$dec = CurrentUser::get()->prefs->qty_dec();
+				$dec = User::prefs()->qty_dec();
 			}
 			return $dec;
 		}
@@ -66,11 +66,11 @@
 		//-------------------------------------------------------------------
 		function exrate_format($number)
 		{
-			return Num::format($number, CurrentUser::get()->prefs->exrate_dec());
+			return Num::format($number, User::prefs()->exrate_dec());
 		}
 
-		function Num::percent_format($number)
+		function percent_format($number)
 		{
-			return Num::format($number, CurrentUser::get()->prefs->percent_dec());
+			return Num::format($number, User::prefs()->percent_dec());
 		}
 	}

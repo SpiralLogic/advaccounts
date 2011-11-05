@@ -20,7 +20,8 @@
 	//----------------------------------------------------------------------------------------------------
 	print_aged_supplier_analysis();
 	//----------------------------------------------------------------------------------------------------
-	function get_invoices($supplier_id, $to) {
+	function get_invoices($supplier_id, $to)
+	{
 		$todate = Dates::date2sql($to);
 		$PastDueDays1 = DB_Company::get_pref('past_due_days');
 		$PastDueDays2 = 2 * $PastDueDays1;
@@ -50,7 +51,8 @@
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	function print_aged_supplier_analysis() {
+	function print_aged_supplier_analysis()
+	{
 		global $systypes_array;
 		$to = $_POST['PARAM_0'];
 		$fromsupp = $_POST['PARAM_1'];
@@ -261,7 +263,7 @@
 			$pg->skin = Config::get('graphs_skin');
 			$pg->built_in = false;
 			$pg->fontfile = PATH_TO_ROOT . "/reporting/fonts/Vera.ttf";
-			$pg->latin_notation = (Config::get('separators_decimal', CurrentUser::get()->prefs->dec_sep()) != ".");
+			$pg->latin_notation = (Config::get('separators_decimal', User::prefs()->dec_sep()) != ".");
 			$filename = COMPANY_PATH . "/pdf_files/test.png";
 			$pg->display($filename, true);
 			$w = $pg->width / 1.5;

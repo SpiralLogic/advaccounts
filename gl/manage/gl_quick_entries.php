@@ -14,7 +14,8 @@
 	Page::start(_($help_context = "Quick Entries"));
 	simple_page_mode(true);
 	simple_page_mode2(true);
-	function simple_page_mode2($numeric_id = true) {
+	function simple_page_mode2($numeric_id = true)
+	{
 		global $Mode2, $selected_id2;
 		$Ajax = Ajax::instance();
 		$default = $numeric_id ? -1 : '';
@@ -50,7 +51,8 @@
 		$Mode2 = '';
 	}
 
-	function submit_add_or_update_center2($add = true, $title = false, $async = false) {
+	function submit_add_or_update_center2($add = true, $title = false, $async = false)
+	{
 		echo "<center>";
 		if ($add) {
 			submit('ADD_ITEM2', _("Add new"), true, $title, $async);
@@ -63,7 +65,8 @@
 	}
 
 	//-----------------------------------------------------------------------------------
-	function can_process() {
+	function can_process()
+	{
 		if (strlen($_POST['description']) == 0) {
 			Errors::error(_("The Quick Entry description cannot be empty."));
 			JS::set_focus('description');
@@ -86,7 +89,7 @@
 					input_num('base_amount'), $_POST['base_desc']
 				);
 				Errors::notice(_('Selected quick entry has been updated'));
-} else {
+			} else {
 				add_quick_entry(
 					$_POST['description'], $_POST['type'],
 					input_num('base_amount'), $_POST['base_desc']
@@ -133,7 +136,7 @@
 		$selected_id = -1;
 		$_POST['description'] = $_POST['type'] = '';
 		$_POST['base_desc'] = _('Base Amount');
-		$_POST['base_amount'] = price_format(0);
+		$_POST['base_amount'] = Num::price_format(0);
 	}
 	if ($Mode2 == 'RESET2') {
 		$selected_id2 = -1;
@@ -171,14 +174,14 @@
 		$_POST['description'] = $myrow["description"];
 		$_POST['type'] = $myrow["type"];
 		$_POST['base_desc'] = $myrow["base_desc"];
-		$_POST['base_amount'] = price_format($myrow["base_amount"]);
+		$_POST['base_amount'] = Num::price_format($myrow["base_amount"]);
 		hidden('selected_id', $selected_id);
 		//}
 	}
 	text_row_ex(_("Description") . ':', 'description', 50, 60);
 	quick_entry_types_list_row(_("Entry Type") . ':', 'type');
 	text_row_ex(_("Base Amount Description") . ':', 'base_desc', 50, 60, '', _('Base Amount'));
-	amount_row(_("Default Base Amount") . ':', 'base_amount', price_format(0));
+	amount_row(_("Default Base Amount") . ':', 'base_amount', Num::price_format(0));
 	end_table(1);
 	submit_add_or_update_center($selected_id == -1, '', 'both');
 	end_form();
@@ -205,7 +208,7 @@
 			$act_type = strtolower(substr($myrow['action'], 0, 1));
 			if ($act_type == 't') {
 				label_cells($myrow['tax_name'], '');
-} else {
+			} else {
 				label_cell($myrow['dest_id'] . ' ' . $myrow['account_name']);
 				if ($act_type == '=') {
 					label_cell('');
@@ -213,7 +216,7 @@
 				elseif ($act_type == '%')
 				{
 					label_cell(Num::format($myrow['amount'], user_exrate_dec()), "nowrap align=right ");
-} else {
+				} else {
 					amount_cell($myrow['amount']);
 				}
 			}
@@ -263,9 +266,9 @@
 			);
 			if ($actn != '=') {
 				if ($actn == '%') {
-					small_amount_row(_("Part") . ":", 'amount', price_format(0), null, "%", user_exrate_dec());
-} else {
-					amount_row(_("Amount") . ":", 'amount', price_format(0));
+					small_amount_row(_("Part") . ":", 'amount', Num::price_format(0), null, "%", user_exrate_dec());
+				} else {
+					amount_row(_("Amount") . ":", 'amount', Num::price_format(0));
 				}
 			}
 		}

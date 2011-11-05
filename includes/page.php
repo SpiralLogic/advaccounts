@@ -47,7 +47,7 @@
 			elseif (isset($_SESSION["sel_app"]) && $_SESSION["sel_app"] != "")
 			{
 				$sel_app = $_SESSION["sel_app"];
-} else {
+			} else {
 				$sel_app = user_startup_tab();
 			}
 			$_SESSION["sel_app"] = $sel_app;
@@ -71,7 +71,7 @@
 			echo "</head> \n";
 			if ($onload == "") {
 				echo "<body";
-} else {
+			} else {
 				echo "body onload='$onload'";
 			}
 			echo	($no_menu) ? ' class="lite">' : '>';
@@ -84,7 +84,7 @@
 		{
 			global $help_context, $old_style_help;
 			$country = $_SESSION['language']->code;
-			$clean   = 0;
+			$clean = 0;
 			if ($context != null) {
 				$help_page_url = $context;
 			}
@@ -93,9 +93,9 @@
 			}
 			else // main menu
 			{
-				$app           = $_SESSION['sel_app'];
+				$app = $_SESSION['sel_app'];
 				$help_page_url = $_SESSION['App']->applications[$app]->help_context;
-				$clean         = 1;
+				$clean = 1;
 			}
 			if (@$old_style_help) {
 				$help_page_url = _($help_page_url);
@@ -106,10 +106,10 @@
 			return Config::get('help_baseurl') . urlencode(
 				strtr(
 					ucwords($help_page_url), array(
-																				' ' => '',
-																				'/' => '',
-																				'&' => 'And'
-																	 )
+						' ' => '',
+						'/' => '',
+						'&' => 'And'
+					)
 				)
 			) . '&ctxhelp=1&lang=' . $country;
 		}
@@ -117,13 +117,13 @@
 		public static function footer($no_menu = false, $is_index = false, $hide_back_link = false)
 		{
 			$Validate = array();
-			$Ajax     = Ajax::instance();
-			$rend     = renderer::getInstance();
+			$Ajax = Ajax::instance();
+			$rend = renderer::getInstance();
 			$rend->menu_footer($no_menu, $is_index);
 			$edits = "editors = " . $Ajax->php2js(set_editor(false, false)) . ";";
 			$Ajax->addScript('editors', $edits);
 			JS::beforeload("_focus = '" . get_post('_focus') . "';_validate = " . $Ajax->php2js($Validate) . ";var $edits");
-			CurrentUser::add_js_data();
+			User::add_js_data();
 			if ($rend->has_header) {
 				Sidemenu::render();
 			}
@@ -151,8 +151,8 @@
 		public static function send_css()
 		{
 			$theme = user_theme();
-			$path  = "/themes/$theme/";
-			$css   = implode(',', static::add_css());
+			$path = "/themes/$theme/";
+			$css = implode(',', static::add_css());
 			echo "<link href='{$path}{$css}' rel='stylesheet' type='text/css'> \n";
 		}
 
@@ -163,5 +163,4 @@
 			end_page(false, false, true);
 			exit;
 		}
-
 	}

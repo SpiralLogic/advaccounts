@@ -44,7 +44,7 @@
     			break_pt=" . input_num('break_pt') . ",
     			provision2=" . input_num('provision2') . "
     			WHERE salesman_code = " . DB::escape($selected_id);
-} else {
+			} else {
 				/*Selected group is null cos no item selected on first time round so must be adding a record must be submitting new entries in the new Sales-person form */
 				$sql
 				 = "INSERT INTO salesman (salesman_name, salesman_phone, salesman_fax, salesman_email,
@@ -60,7 +60,7 @@
 			DBOld::query($sql, "The insert or update of the sales person failed");
 			if ($selected_id != -1) {
 				Errors::notice(_('Selected sales person data have been updated'));
-} else {
+			} else {
 				Errors::notice(_('New sales person data have been added'));
 			}
 			$Mode = 'RESET';
@@ -133,14 +133,14 @@
 			$_POST['salesman_fax'] = $myrow["salesman_fax"];
 			$_POST['salesman_email'] = $myrow["salesman_email"];
 			$_POST['provision'] = Num::percent_format($myrow["provision"]);
-			$_POST['break_pt'] = price_format($myrow["break_pt"]);
+			$_POST['break_pt'] = Num::price_format($myrow["break_pt"]);
 			$_POST['provision2'] = Num::percent_format($myrow["provision2"]);
 		}
 		hidden('selected_id', $selected_id);
 	}
 	elseif ($Mode != 'ADD_ITEM') {
 		$_POST['provision'] = Num::percent_format(0);
-		$_POST['break_pt'] = price_format(0);
+		$_POST['break_pt'] = Num::price_format(0);
 		$_POST['provision2'] = Num::percent_format(0);
 	}
 	start_table(Config::get('tables_style2'));

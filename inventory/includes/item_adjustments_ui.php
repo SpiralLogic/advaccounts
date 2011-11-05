@@ -10,7 +10,8 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	//--------------------------------------------------------------------------------
-	function add_to_order(&$order, $new_item, $new_item_qty, $standard_cost) {
+	function add_to_order(&$order, $new_item, $new_item_qty, $standard_cost)
+	{
 		if ($order->find_cart_item($new_item)) {
 			Errors::error(_("For Part :") . $new_item . " " . "This item is already on this order.  You can change the quantity ordered of the existing line if necessary.");
 		} else {
@@ -19,7 +20,8 @@
 	}
 
 	//--------------------------------------------------------------------------------
-	function display_order_header(&$order) {
+	function display_order_header(&$order)
+	{
 		start_outer_table("width=70% " . Config::get('tables_style2')); // outer table
 		table_section(1);
 		locations_list_row(_("Location:"), 'StockLocation', null);
@@ -39,7 +41,8 @@
 	}
 
 	//---------------------------------------------------------------------------------
-	function display_adjustment_items($title, &$order) {
+	function display_adjustment_items($title, &$order)
+	{
 		Display::heading($title);
 		div_start('items_table');
 		start_table(Config::get('tables_style') . "  width=90%");
@@ -76,7 +79,7 @@
 					_('Remove line from document')
 				);
 				end_row();
-} else {
+			} else {
 				adjustment_edit_item_controls($order, $line_no);
 			}
 		}
@@ -89,7 +92,8 @@
 	}
 
 	//---------------------------------------------------------------------------------
-	function adjustment_edit_item_controls(&$order, $line_no = -1) {
+	function adjustment_edit_item_controls(&$order, $line_no = -1)
+	{
 		$Ajax = Ajax::instance();
 		start_row();
 		$dec2 = 0;
@@ -100,8 +104,8 @@
 				$order->line_items[$id]->quantity,
 				$order->line_items[$id]->stock_id, $dec
 			);
-			//$_POST['std_cost'] = price_format($order->line_items[$id]->standard_cost);
-			$_POST['std_cost'] = price_decimal_format($order->line_items[$id]->standard_cost, $dec2);
+			//$_POST['std_cost'] = Num::price_format($order->line_items[$id]->standard_cost);
+			$_POST['std_cost'] = Num::price_decimal($order->line_items[$id]->standard_cost, $dec2);
 			$_POST['units'] = $order->line_items[$id]->units;
 			hidden('stock_id', $_POST['stock_id']);
 			label_cell($_POST['stock_id']);
@@ -117,8 +121,8 @@
 			$item_info = get_item_edit_info((isset($_POST['stock_id']) ? $_POST['stock_id'] : ''));
 			$dec = $item_info['decimals'];
 			$_POST['qty'] = Num::format(0, $dec);
-			//$_POST['std_cost'] = price_format($item_info["standard_cost"]);
-			$_POST['std_cost'] = price_decimal_format($item_info["standard_cost"], $dec2);
+			//$_POST['std_cost'] = Num::price_format($item_info["standard_cost"]);
+			$_POST['std_cost'] = Num::price_decimal($item_info["standard_cost"], $dec2);
 			$_POST['units'] = $item_info["units"];
 		}
 		qty_cells(null, 'qty', $_POST['qty'], null, null, $dec);
@@ -147,7 +151,8 @@
 	}
 
 	//---------------------------------------------------------------------------------
-	function adjustment_options_controls() {
+	function adjustment_options_controls()
+	{
 		echo "<br>";
 		start_table();
 		textarea_row(_("Memo"), 'memo_', null, 50, 3);

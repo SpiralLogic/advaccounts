@@ -68,7 +68,8 @@
 		safe_exit();
 	}
 	//---------------------------------------------------------------------------------------
-	function safe_exit() {
+	function safe_exit()
+	{
 		hyperlink_no_params("", _("Enter a new work order"));
 		hyperlink_no_params("search_work_orders.php", _("Select an existing work order"));
 		Page::footer_exit();
@@ -81,7 +82,8 @@
 			$_POST['date_'] = Dates::end_fiscalyear();
 		}
 	}
-	function can_process() {
+	function can_process()
+	{
 		global $selected_id;
 		if (!isset($selected_id)) {
 			if (!Refs::is_valid($_POST['wo_ref'])) {
@@ -119,7 +121,7 @@
 				return false;
 			}
 			if ($_POST['Labour'] == "") {
-				$_POST['Labour'] = price_format(0);
+				$_POST['Labour'] = Num::price_format(0);
 			}
 			if (!Validation::is_num('Labour', 0)) {
 				Errors::error(_("The labour cost entered is invalid or less than zero."));
@@ -127,7 +129,7 @@
 				return false;
 			}
 			if ($_POST['Costs'] == "") {
-				$_POST['Costs'] = price_format(0);
+				$_POST['Costs'] = Num::price_format(0);
 			}
 			if (!Validation::is_num('Costs', 0)) {
 				Errors::error(_("The cost entered is invalid or less than zero."));
@@ -272,7 +274,7 @@
 		$_POST['released_date'] = Dates::sql2date($myrow["released_date"]);
 		$_POST['memo_'] = "";
 		$_POST['units_issued'] = $myrow["units_issued"];
-		$_POST['Costs'] = price_format($myrow["additional_costs"]);
+		$_POST['Costs'] = Num::price_format($myrow["additional_costs"]);
 		$_POST['memo_'] = DB_Comments::get_string(ST_WORKORDER, $selected_id);
 		hidden('wo_ref', $_POST['wo_ref']);
 		hidden('units_issued', $_POST['units_issued']);
@@ -284,7 +286,7 @@
 		label_row(_("Reference:"), $_POST['wo_ref']);
 		label_row(_("Type:"), $wo_types_array[$_POST['type']]);
 		hidden('type', $myrow["type"]);
-} else {
+	} else {
 		$_POST['units_issued'] = $_POST['released'] = 0;
 		ref_row(_("Reference:"), 'wo_ref', '', Refs::get_next(ST_WORKORDER));
 		wo_types_list_row(_("Type:"), 'type', null);
@@ -295,7 +297,7 @@
 		hidden('type', $_POST['type']);
 		label_row(_("Item:"), $myrow["StockItemName"]);
 		label_row(_("Destination Location:"), $myrow["location_name"]);
-} else {
+	} else {
 		stock_manufactured_items_list_row(_("Item:"), 'stock_id', null, false, true);
 		if (list_updated('stock_id')) {
 			$Ajax->activate('quantity');
@@ -304,7 +306,7 @@
 	}
 	if (!isset($_POST['quantity'])) {
 		$_POST['quantity'] = Num::qty_format(1, Input::post('stock_id'), $dec);
-} else {
+	} else {
 		$_POST['quantity'] = Num::qty_format($_POST['quantity'], Input::post('stock_id'), $dec);
 	}
 	if (get_post('type') == WO_ADVANCED) {
@@ -314,7 +316,7 @@
 		}
 		date_row(_("Date") . ":", 'date_', '', true);
 		date_row(_("Date Required By") . ":", 'RequDate', '', null, SysPrefs::default_wo_required_by());
-} else {
+	} else {
 		qty_row(_("Quantity:"), 'quantity', null, null, null, $dec);
 		date_row(_("Date") . ":", 'date_', '', true);
 		hidden('RequDate', '');
@@ -322,13 +324,13 @@
 		$rs = DBOld::query($sql, "could not get bank accounts");
 		$r = DBOld::fetch_row($rs);
 		if (!isset($_POST['Labour'])) {
-			$_POST['Labour'] = price_format(0);
+			$_POST['Labour'] = Num::price_format(0);
 			$_POST['cr_lab_acc'] = $r[0];
 		}
 		amount_row($wo_cost_types[WO_LABOUR], 'Labour');
 		gl_all_accounts_list_row(_("Credit Labour Account"), 'cr_lab_acc', null);
 		if (!isset($_POST['Costs'])) {
-			$_POST['Costs'] = price_format(0);
+			$_POST['Costs'] = Num::price_format(0);
 			$_POST['cr_acc'] = $r[0];
 		}
 		amount_row($wo_cost_types[WO_OVERHEAD], 'Costs');
@@ -347,7 +349,7 @@
 		}
 		submit_cells('delete', _("Delete This Work Order"), '', '', true);
 		echo "</tr></table>";
-} else {
+	} else {
 		submit_center('ADD_ITEM', _("Add Workorder"), true, '', 'default');
 	}
 	end_form();

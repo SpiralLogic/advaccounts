@@ -16,7 +16,8 @@
 	JS::footerFile('/js/allocate.js');
 	Page::start(_($help_context = "Allocate Supplier Payment or Credit Note"));
 	//--------------------------------------------------------------------------------
-	function clear_allocations() {
+	function clear_allocations()
+	{
 		if (isset($_SESSION['alloc'])) {
 			unset($_SESSION['alloc']->allocs);
 			unset($_SESSION['alloc']);
@@ -25,7 +26,8 @@
 	}
 
 	//--------------------------------------------------------------------------------
-	function edit_allocations_for_transaction($type, $trans_no) {
+	function edit_allocations_for_transaction($type, $trans_no)
+	{
 		global $systypes_array;
 		start_form();
 		Display::heading(
@@ -34,7 +36,7 @@
 		);
 		Display::heading($_SESSION['alloc']->person_name);
 		Display::heading(_("Date:") . " <b>" . $_SESSION['alloc']->date_ . "</b>");
-		Display::heading(_("Total:") . " <b>" . price_format(-$_SESSION['alloc']->amount) . "</b>");
+		Display::heading(_("Total:") . " <b>" . Num::price_format(-$_SESSION['alloc']->amount) . "</b>");
 		echo "<br>";
 		div_start('alloc_tbl');
 		if (count($_SESSION['alloc']->allocs) > 0) {

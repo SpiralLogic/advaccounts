@@ -19,7 +19,8 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	//----------------------------------------------------------------------------------------------------
 	print_aged_customer_analysis();
-	function get_invoices($customer_id, $to) {
+	function get_invoices($customer_id, $to)
+	{
 		$todate = Dates::date2sql($to);
 		$PastDueDays1 = DB_Company::get_pref('past_due_days');
 		$PastDueDays2 = 2 * $PastDueDays1;
@@ -51,7 +52,8 @@
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	function print_aged_customer_analysis() {
+	function print_aged_customer_analysis()
+	{
 		global $systypes_array;
 		$to = $_POST['PARAM_0'];
 		$fromcust = $_POST['PARAM_1'];
@@ -264,7 +266,7 @@
 			$pg->skin = Config::get('graphs_skin');
 			$pg->built_in = false;
 			$pg->fontfile = APP_PATH . "reporting/fonts/Vera.ttf";
-			$pg->latin_notation = (Config::get('separators_decimal', CurrentUser::get()->prefs->dec_sep()) != ".");
+			$pg->latin_notation = (Config::get('separators_decimal', User::prefs()->dec_sep()) != ".");
 			$filename = COMPANY_PATH . "/images/test.png";
 			$pg->display($filename, true);
 			$w = $pg->width / 1.5;

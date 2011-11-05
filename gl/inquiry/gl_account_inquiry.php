@@ -42,10 +42,10 @@
 		$_POST["amount_max"] = $_GET["amount_max"];
 	}
 	if (!isset($_POST["amount_min"])) {
-		$_POST["amount_min"] = price_format(0);
+		$_POST["amount_min"] = Num::Num::price_format(0);
 	}
 	if (!isset($_POST["amount_max"])) {
-		$_POST["amount_max"] = price_format(0);
+		$_POST["amount_max"] = Num::Num::price_format(0);
 	}
 	//----------------------------------------------------------------------------------------------------
 	function gl_inquiry_controls()
@@ -84,7 +84,7 @@
 			$_POST["account"] = null;
 		}
 		$act_name = $_POST["account"] ? get_gl_account_name($_POST["account"]) : "";
-		$dim      = DB_Company::get_pref('use_dimension');
+		$dim = DB_Company::get_pref('use_dimension');
 		/*Now get the transactions  */
 		if (!isset($_POST['Dimension'])) {
 			$_POST['Dimension'] = 0;
@@ -92,7 +92,7 @@
 		if (!isset($_POST['Dimension2'])) {
 			$_POST['Dimension2'] = 0;
 		}
-		$result  = get_gl_transactions(
+		$result = get_gl_transactions(
 			$_POST['TransFromDate'], $_POST['TransToDate'], -1,
 			$_POST["account"], $_POST['Dimension'], $_POST['Dimension2'], null,
 			input_num('amount_min'), input_num('amount_max')
@@ -150,8 +150,8 @@
 			end_row();
 		}
 		$running_total = $bfw;
-		$j             = 1;
-		$k             = 0; //row colour counter
+		$j = 1;
+		$k = 0; //row colour counter
 		while ($myrow = DBOld::fetch($result))
 		{
 			alt_table_row_color($k);

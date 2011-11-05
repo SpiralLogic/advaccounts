@@ -10,7 +10,8 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	// ------------------------------------------------------------------------------
-	function display_credit_header(&$order) {
+	function display_credit_header(&$order)
+	{
 		$Ajax = Ajax::instance();
 		start_outer_table("width=90%  " . Config::get('tables_style'));
 		table_section(1);
@@ -150,7 +151,8 @@
 	}
 
 	//---------------------------------------------------------------------------------
-	function display_credit_items($title, &$order) {
+	function display_credit_items($title, &$order)
+	{
 		Display::heading($title);
 		div_start('items_table');
 		start_table(Config::get('tables_style') . "  width=90%");
@@ -191,7 +193,7 @@
 					_('Remove line from document')
 				);
 				end_row();
-} else {
+			} else {
 				credit_edit_item_controls($order, $k, $line_no);
 			}
 			$subtotal += $line_total;
@@ -200,34 +202,35 @@
 			credit_edit_item_controls($order, $k);
 		}
 		$colspan = 6;
-		$display_sub_total = price_format($subtotal);
+		$display_sub_total = Num::price_format($subtotal);
 		label_row(_("Sub-total"), $display_sub_total, "colspan=$colspan align=right", "align=right", 2);
 		if (!isset($_POST['ChargeFreightCost']) OR ($_POST['ChargeFreightCost'] == "")) {
 			$_POST['ChargeFreightCost'] = 0;
 		}
 		start_row();
 		label_cell(_("Shipping"), "colspan=$colspan align=right");
-		small_amount_cells(null, 'ChargeFreightCost', price_format(get_post('ChargeFreightCost', 0)));
+		small_amount_cells(null, 'ChargeFreightCost', Num::price_format(get_post('ChargeFreightCost', 0)));
 		label_cell('', 'colspan=2');
 		end_row();
 		$taxes = $order->get_taxes($_POST['ChargeFreightCost']);
 		$tax_total = Display::edit_tax_items($taxes, $colspan, $order->tax_included, 2);
-		$display_total = price_format(($subtotal + $_POST['ChargeFreightCost'] + $tax_total));
+		$display_total = Num::price_format(($subtotal + $_POST['ChargeFreightCost'] + $tax_total));
 		label_row(_("Credit Note Total"), $display_total, "colspan=$colspan align=right", "class='amount'", 2);
 		end_table();
 		div_end();
 	}
 
 	//---------------------------------------------------------------------------------
-	function credit_edit_item_controls(&$order, $rowcounter, $line_no = -1) {
+	function credit_edit_item_controls(&$order, $rowcounter, $line_no = -1)
+	{
 		$Ajax = Ajax::instance();
 		alt_table_row_color($rowcounter);
 		$id = find_submit('Edit');
 		if ($line_no != -1 && $line_no == $id) {
 			$_POST['stock_id'] = $order->line_items[$id]->stock_id;
-			$_POST['qty'] =
-			Num::qty_format($order->line_items[$id]->qty_dispatched, $_POST['stock_id'], $dec);
-			$_POST['price'] = price_format($order->line_items[$id]->price);
+			$_POST['qty']
+			 = Num::qty_format($order->line_items[$id]->qty_dispatched, $_POST['stock_id'], $dec);
+			$_POST['price'] = Num::price_format($order->line_items[$id]->price);
 			$_POST['Disc'] = Num::percent_format(($order->line_items[$id]->discount_percent) * 100);
 			$_POST['units'] = $order->line_items[$id]->units;
 			hidden('stock_id', $_POST['stock_id']);
@@ -246,7 +249,7 @@
 			$dec = $item_info['decimals'];
 			$_POST['qty'] = Num::format(0, $dec);
 			$_POST['units'] = $item_info["units"];
-			$_POST['price'] = price_format(
+			$_POST['price'] = Num::price_format(
 				get_price(
 					Input::post('stock_id'), $order->customer_currency,
 					$order->sales_type, $order->price_factor, $order->document_date
@@ -281,7 +284,8 @@
 	}
 
 	//---------------------------------------------------------------------------------
-	function credit_options_controls($credit) {
+	function credit_options_controls($credit)
+	{
 		$Ajax = Ajax::instance();
 		echo "<br>";
 		if (isset($_POST['_CreditType_update'])) {

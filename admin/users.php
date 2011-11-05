@@ -14,7 +14,8 @@
 	Page::start(_($help_context = "Users"));
 	simple_page_mode(true);
 	//-------------------------------------------------------------------------------------------------
-	function can_process($user) {
+	function can_process($user)
+	{
 		if (strlen($_POST['user_id']) < 4) {
 			Errors::error(_("The user login entered must be at least 4 characters long."));
 			JS::set_focus('user_id');
@@ -53,23 +54,22 @@
 		}
 		if (can_process($user)) {
 			if ($selected_id != -1) {
-
-				User::update(
+				Users::update(
 					$selected_id, $_POST['user_id'], $_POST['real_name'], $_POST['phone'],
 					$_POST['email'], $_POST['Access'], $_POST['language'],
 					$_POST['profile'], check_value('rep_popup'), $_POST['pos']
 				);
-				User::update_password($selected_id, $_POST['user_id'], $password);
+				Users::update_password($selected_id, $_POST['user_id'], $password);
 				Errors::notice(_("The selected user has been updated."));
-} else {
-				User::add(
+			} else {
+				Users::add(
 					$_POST['user_id'], $_POST['real_name'], $password,
 					$_POST['phone'], $_POST['email'], $_POST['Access'], $_POST['language'],
 					$_POST['profile'], check_value('rep_popup'), $_POST['pos']
 				);
 				$id = DBOld::insert_id();
 				// use current user display preferences as start point for new user
-				User::update_display_prefs(
+				Users::update_display_prefs(
 					$id, user_price_dec(), user_qty_dec(), user_exrate_dec(),
 					user_percent_dec(), user_show_gl_info(), user_show_codes(),
 					user_date_format(), user_date_sep(), user_tho_sep(),
@@ -84,7 +84,7 @@
 	}
 	//-------------------------------------------------------------------------------------------------
 	if ($Mode == 'Delete') {
-		User::delete($selected_id);
+		Users::delete($selected_id);
 		Errors::notice(_("User has been deleted."));
 		$Mode = 'RESET';
 	}
@@ -95,7 +95,7 @@
 		unset($_POST); // clean all input fields
 		$_POST['show_inactive'] = $sav;
 	}
-	$result = User::get_all(check_value('show_inactive'));
+	$result = Users::get_all(check_value('show_inactive'));
 	start_form();
 	start_table(Config::get('tables_style'));
 	$th = array(
@@ -110,7 +110,7 @@
 		alt_table_row_color($k);
 		$last_visit_date = Dates::sql2date($myrow["last_visit_date"]);
 		/*The security_headings array is defined in config.php */
-		$not_me = strcasecmp($myrow["user_id"], CurrentUser::get()->username);
+		$not_me = strcasecmp($myrow["user_id"], User::get()->username);
 		label_cell($myrow["user_id"]);
 		label_cell($myrow["real_name"]);
 		label_cell($myrow["phone"]);
@@ -140,7 +140,7 @@
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {
 			//editing an existing User
-			$myrow = User::get($selected_id);
+			$myrow = Users::get($selected_id);
 			$_POST['id'] = $myrow["id"];
 			$_POST['user_id'] = $myrow["user_id"];
 			$_POST['real_name'] = $myrow["real_name"];
@@ -156,7 +156,7 @@
 		hidden('user_id');
 		start_row();
 		label_row(_("User login:"), Input::post('user_id'));
-} else { //end of if $selected_id only do the else when a new record is being entered
+	} else { //end of if $selected_id only do the else when a new record is being entered
 		text_row(_("User Login:"), "user_id", null, 22, 20);
 		$_POST['language'] = user_language();
 		$_POST['profile'] = user_print_profile();

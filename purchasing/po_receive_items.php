@@ -16,7 +16,7 @@
 	Page::start(_($help_context = "Receive Purchase Order Items"));
 	//---------------------------------------------------------------------------------------------------------------
 	if (isset($_GET['AddedID'])) {
-		$grn        = $_GET['AddedID'];
+		$grn = $_GET['AddedID'];
 		$trans_type = ST_SUPPRECEIVE;
 		Errors::notice(_("Purchase Order Delivery has been processed"));
 		Display::note(ui_view::get_trans_view_str($trans_type, $grn, _("&View this Delivery")));
@@ -40,7 +40,7 @@
 		table_header($th);
 		/*show the line items on the order with the quantity being received for modification */
 		$total = 0;
-		$k     = 0; //row colour counter
+		$k = 0; //row colour counter
 		if (count($_SESSION['PO']->line_items) > 0) {
 			foreach (
 				$_SESSION['PO']->line_items as $ln_itm
@@ -77,7 +77,7 @@
 			}
 		}
 		label_cell(_("Freight"), "colspan=9 align=right");
-		small_amount_cells(null, 'freight', price_format($_SESSION['PO']->freight));
+		small_amount_cells(null, 'freight', Num::price_format($_SESSION['PO']->freight));
 		$display_total = Num::format($total + $_POST['freight'], user_price_dec());
 		label_row(_("Total value of items received"), $display_total, "colspan=9 align=right", "nowrap align=right");
 		end_table();
@@ -91,7 +91,7 @@
 		// Sherifoz 22.06.03 Compare against COMPLETED items only !!
 		// Otherwise if you try to fullfill item quantities separately will give error.
 		$sql
-						= "SELECT item_code, quantity_ordered, quantity_received, qty_invoiced
+		 = "SELECT item_code, quantity_ordered, quantity_received, qty_invoiced
 		FROM purch_order_details
 		WHERE order_no=" . DB::escape($_SESSION['PO']->order_no) . " ORDER BY po_detail_item";
 		$result = DBOld::query($sql, "could not query purch order details");
@@ -201,8 +201,8 @@
 			Page::footer_exit();
 		}
 		$_SESSION['wa_global_supplier_id'] = $_SESSION['PO']->supplier_id;
-		$grn                               = add_grn($_SESSION['PO'], $_POST['DefaultReceivedDate'], $_POST['ref'], $_POST['Location']);
-		$_SESSION['delivery_po']           = $_SESSION['PO']->order_no;
+		$grn = add_grn($_SESSION['PO'], $_POST['DefaultReceivedDate'], $_POST['ref'], $_POST['Location']);
+		$_SESSION['delivery_po'] = $_SESSION['PO']->order_no;
 		Dates::new_doc_date($_POST['DefaultReceivedDate']);
 		unset($_SESSION['PO']->line_items);
 		unset($_SESSION['PO']);

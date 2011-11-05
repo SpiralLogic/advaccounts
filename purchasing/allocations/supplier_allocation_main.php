@@ -34,7 +34,7 @@
 	}
 	$supplier_id = null;
 	if (isset($_POST['supplier_id'])) {
-		$supplier_id = $_POST['supplier_id']; 
+		$supplier_id = $_POST['supplier_id'];
 	}
 	//--------------------------------------------------------------------------------
 	function systype_name($dummy, $type)
@@ -52,19 +52,19 @@
 	{
 		return pager_link(
 			_("Allocate"),
-			"/purchasing/allocations/supplier_allocate.php?trans_no="
-			 . $row["trans_no"] . "&trans_type=" . $row["type"], ICON_MONEY
+		 "/purchasing/allocations/supplier_allocate.php?trans_no="
+			. $row["trans_no"] . "&trans_type=" . $row["type"], ICON_MONEY
 		);
 	}
 
 	function amount_left($row)
 	{
-		return price_format(-$row["Total"] - $row["alloc"]);
+		return Num::price_format(-$row["Total"] - $row["alloc"]);
 	}
 
 	function amount_total($row)
 	{
-		return price_format(-$row["Total"]);
+		return Num::price_format(-$row["Total"]);
 	}
 
 	function check_settled($row)
@@ -75,27 +75,27 @@
 	$sql = get_allocatable_from_supp_sql($supplier_id, $settled);
 	$cols = array(
 		_("Transaction Type") => array('fun' => 'systype_name'),
-		_("#")								=> array('fun' => 'trans_view'),
+		_("#") => array('fun' => 'trans_view'),
 		_("Reference"),
-		_("Date")						 => array(
+		_("Date") => array(
 			'name' => 'tran_date',
 			'type' => 'date',
-			'ord'	=> 'asc'
+			'ord' => 'asc'
 		),
-		_("Supplier")				 => array('ord' => ''),
-		_("Currency")				 => array('align' => 'center'),
-		_("Total")						=> array(
+		_("Supplier") => array('ord' => ''),
+		_("Currency") => array('align' => 'center'),
+		_("Total") => array(
 			'align' => 'right',
-			'fun'	 => 'amount_total'
+			'fun' => 'amount_total'
 		),
 		_("Left to Allocate") => array(
-			'align'	=> 'right',
+			'align' => 'right',
 			'insert' => true,
-			'fun'		=> 'amount_left'
+			'fun' => 'amount_left'
 		),
 		array(
 			'insert' => true,
-			'fun'		=> 'alloc_link'
+			'fun' => 'alloc_link'
 		)
 	);
 	if (isset($_POST['customer_id'])) {

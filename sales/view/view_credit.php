@@ -78,7 +78,7 @@
 			$sub_total += $value;
 			if ($myrow2["discount_percent"] == 0) {
 				$display_discount = "";
-} else {
+			} else {
 				$display_discount = Num::percent_format($myrow2["discount_percent"] * 100) . "%";
 			}
 			label_cell($myrow2["stock_id"]);
@@ -90,13 +90,13 @@
 			amount_cell($value);
 			end_row();
 		} //end while there are line items to print out
-} else {
+	} else {
 		Errors::warning(_("There are no line items on this credit note."), 1, 2);
 	}
-	$display_sub_tot = price_format($sub_total);
-	$display_freight = price_format($myrow["ov_freight"]);
-	$credit_total  = $myrow["ov_freight"] + $myrow["ov_gst"] + $myrow["ov_amount"] + $myrow["ov_freight_tax"];
-	$display_total = price_format($credit_total);
+	$display_sub_tot = Num::price_format($sub_total);
+	$display_freight = Num::price_format($myrow["ov_freight"]);
+	$credit_total = $myrow["ov_freight"] + $myrow["ov_gst"] + $myrow["ov_amount"] + $myrow["ov_freight_tax"];
+	$display_total = Num::price_format($credit_total);
 	/*Print out the invoice text entered */
 	if ($sub_total != 0) {
 		label_row(

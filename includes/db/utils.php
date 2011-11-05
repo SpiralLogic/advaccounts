@@ -11,7 +11,7 @@
 		public static function create($connection)
 		{
 			$db = mysql_connect($connection["host"],
-													$connection["dbuser"], $connection["dbpassword"]);
+				$connection["dbuser"], $connection["dbpassword"]);
 			if (!mysql_select_db($connection["dbname"], $db)) {
 				$sql = "CREATE DATABASE " . $connection["dbname"] . "";
 				if (!mysql_query($sql)) {
@@ -25,11 +25,11 @@
 		public static function import($filename, $connection = null, $force = true)
 		{
 			$db = DBOld::getInstance();
-			$allowed_commands     = array(
-				"create"							 => 'table_queries',
-				"alter table"					=> 'table_queries',
-				"insert"							 => 'data_queries',
-				"update"							 => 'data_queries',
+			$allowed_commands = array(
+				"create" => 'table_queries',
+				"alter table" => 'table_queries',
+				"insert" => 'data_queries',
+				"update" => 'data_queries',
 				"drop table if exists" => 'drop_queries'
 			);
 			$ignored_mysql_errors = array( //errors ignored in normal (non forced) mode
@@ -40,10 +40,10 @@
 				'1062', // duplicate key entry
 				'1091' // can't drop key/column check if exists
 			);
-			$data_queries         = array();
-			$drop_queries         = array();
-			$table_queries        = array();
-			$sql_errors           = array();
+			$data_queries = array();
+			$drop_queries = array();
+			$table_queries = array();
+			$sql_errors = array();
 			ini_set("max_execution_time", "180");
 			DBOld::query("SET foreign_key_checks=0");
 			// uncrompress gziped backup files
@@ -53,7 +53,7 @@
 			elseif (strpos($filename, ".zip") || strpos($filename, ".ZIP"))
 			{
 				$lines = DB_Utils::unzip("lines", $filename);
-} else {
+			} else {
 				$lines = file("" . $filename);
 			}
 			// parse input file
@@ -65,7 +65,7 @@
 					foreach ($allowed_commands as $cmd => $table)
 					{
 						if (strtolower(substr($line, 0, strlen($cmd))) == $cmd) {
-							$query_table      = $table;
+							$query_table = $table;
 							${$query_table}[] = array('', $line_no + 1);
 							break;
 						}
@@ -130,7 +130,7 @@
 				// display first failure message; the rest are probably derivative
 				$err = $sql_errors[0];
 				Errors::error(sprintf(_("SQL script execution failed in line %d: %s"),
-																			 $err[1], $err[0]));
+					$err[1], $err[0]));
 				return false;
 			} else
 			{
@@ -147,7 +147,7 @@
 			// returns one string or an array of lines
 			if ($mode != "lines") {
 				return implode("", $file_data);
-} else {
+			} else {
 				return $file_data;
 			}
 		}
@@ -164,12 +164,12 @@
 			 != $filename
 			) {
 				return ''; // exit if names differ
-} else {
+			} else {
 				// get the suffix of the filename in hex
 				$crc_bugfix = substr($all, 30, strlen($filename) + 13);
 				$crc_bugfix = substr(substr($crc_bugfix, 0, strlen($crc_bugfix) - 4),
-														 strlen($crc_bugfix) - 12 - 4);
-				$suffix     = false;
+				 strlen($crc_bugfix) - 12 - 4);
+				$suffix = false;
 				// convert hex to ascii
 				for ($i = 0; $i < 12;)
 				{
@@ -179,13 +179,13 @@
 				$comp = substr($all, -(strlen($all) - 30 - strlen($filename) - 13));
 				$comp = substr($comp, 0, (strlen($comp) - 80 - strlen($filename) - 13));
 				// fix the crc bugfix (see function save_to_file)
-				$comp      = "xœ" . $comp . $suffix;
+				$comp = "xœ" . $comp . $suffix;
 				$file_data = gzuncompress($comp);
 			}
 			// returns one string or an array of lines
 			if ($mode != "lines") {
 				return $file_data;
-} else {
+			} else {
 				return explode("\n", $file_data);
 			}
 		}
@@ -214,7 +214,7 @@
 			elseif ($zip == "zip")
 			{
 				$backupfile = $filename . ".zip";
-} else {
+			} else {
 				$backupfile = $filename;
 			}
 			$company = DB_Company::get_pref('coy_name');
@@ -224,7 +224,7 @@
 			$out .= "# Built by " . APP_TITLE . " " . VERSION . "\n";
 			$out .= "# " . POWERED_URL . "\n";
 			$out .= "# Company: " . html_entity_decode($company, ENT_QUOTES, $_SESSION['language']->encoding) . "\n";
-			$out .= "# User: " . CurrentUser::get()->name . "\n\n";
+			$out .= "# User: " . User::get()->name . "\n\n";
 			// write users comment
 			if ($comment) {
 				$out .= "# Comment:\n";
@@ -238,7 +238,7 @@
 			}
 			//$out.="use ".$db.";\n"; we don't use this option.
 			// get auto_increment values and names of all tables
-			$res        = DBOld::query("show table status");
+			$res = DBOld::query("show table status");
 			$all_tables = array();
 			while ($row = DBOld::fetch($res))
 			{
@@ -247,8 +247,8 @@
 			// get table structures
 			foreach ($all_tables as $table)
 			{
-				$res1                      = DBOld::query("SHOW CREATE TABLE `" . $table['Name'] . "`");
-				$tmp                       = DBOld::fetch($res1);
+				$res1 = DBOld::query("SHOW CREATE TABLE `" . $table['Name'] . "`");
+				$tmp = DBOld::fetch($res1);
 				$table_sql[$table['Name']] = $tmp["Create Table"];
 			}
 			// find foreign keys
@@ -260,8 +260,8 @@
 					// save all tables, needed for creating this table in $fks
 					while (($ref_pos = strpos($tmp_table, " REFERENCES ")) > 0)
 					{
-						$tmp_table        = substr($tmp_table, $ref_pos + 12);
-						$ref_pos          = strpos($tmp_table, "(");
+						$tmp_table = substr($tmp_table, $ref_pos + 12);
+						$ref_pos = strpos($tmp_table, "(");
 						$fks[$tablenme][] = substr($tmp_table, 0, $ref_pos);
 					}
 				}
@@ -273,7 +273,7 @@
 				//while($row=mysql_fetch_array($res))
 				foreach ($all_tables as $row)
 				{
-					$tablename             = $row['Name'];
+					$tablename = $row['Name'];
 					$auto_incr[$tablename] = $row['Auto_increment'];
 					$out .= "\n\n";
 					// export tables
@@ -294,7 +294,7 @@
 						$field_null = array();
 						for ($j = 0; $j < DBOld::num_rows($res3); $j++)
 						{
-							$row3         = DBOld::fetch($res3);
+							$row3 = DBOld::fetch($res3);
 							$field_null[] = $row3[2] == 'YES' && $row3[4] === null;
 						}
 						$res2 = DBOld::query("SELECT * FROM `" . $tablename . "`");
@@ -315,7 +315,7 @@
 							if (strlen($out) > $max_size && $zip != "zip") {
 								if (Files::save_to_file($backupfile, $zip, $out)) {
 									$out = "";
-} else {
+								} else {
 									$error = true;
 								}
 							}
@@ -331,13 +331,13 @@
 					if (strlen($out) > $max_size && $zip != "zip") {
 						if (Files::save_to_file($backupfile, $zip, $out)) {
 							$out = "";
-} else {
+						} else {
 							$error = true;
 						}
 					}
 				}
 				// an error occurred! Try to delete file and return error status
-} else {
+			} else {
 				unlink(BACKUP_PATH . $backupfile);
 				return false;
 			}
@@ -347,7 +347,7 @@
 			//	$zip = $time;
 			if (Files::save_to_file($backupfile, $zip, $out)) {
 				$out = "";
-} else {
+			} else {
 				unlink(BACKUP_PATH . $backupfile);
 				return false;
 			}
@@ -364,8 +364,8 @@
 			}
 			// order
 			$new_tables = array();
-			$existing   = array();
-			$modified   = true;
+			$existing = array();
+			$modified = true;
 			while (count($tables) && $modified == true)
 			{
 				$modified = false;
@@ -382,7 +382,7 @@
 						}
 					}
 					// delete from $tables and add to $new_tables
-					$existing[]   = $row['Name'];
+					$existing[] = $row['Name'];
 					$new_tables[] = $row;
 					prev($tables);
 					unset($tables[$key]);

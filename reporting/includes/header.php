@@ -13,24 +13,24 @@
 	// New version (without vertical lines)
 	global $wo_types_array, $systypes_array;
 	$this->row = $this->pageHeight - $this->topMargin;
-	$upper     = $this->row - 2 * $this->lineHeight;
-	$lower     = $this->bottomMargin + 8 * $this->lineHeight;
-	$iline1    = $upper - 7.5 * $this->lineHeight;
-	$iline2    = $iline1 - 8 * $this->lineHeight;
-	$iline3    = $iline2 - 1.5 * $this->lineHeight;
-	$iline4    = $iline3 - 1.5 * $this->lineHeight;
-	$iline5    = $iline4 - 3 * $this->lineHeight;
-	$iline6    = $iline5 - 1.5 * $this->lineHeight;
-	$iline7    = $lower;
-	$right     = $this->pageWidth - $this->rightMargin;
-	$width     = ($right - $this->leftMargin) / 5;
-	$icol      = $this->pageWidth / 2;
-	$ccol      = $this->cols[0] + 4;
-	$c2col     = $ccol + 60;
-	$ccol2     = $icol / 2;
-	$mcol      = $icol + 8;
-	$mcol2     = $this->pageWidth - $ccol2;
-	$cols      = count($this->cols);
+	$upper = $this->row - 2 * $this->lineHeight;
+	$lower = $this->bottomMargin + 8 * $this->lineHeight;
+	$iline1 = $upper - 7.5 * $this->lineHeight;
+	$iline2 = $iline1 - 8 * $this->lineHeight;
+	$iline3 = $iline2 - 1.5 * $this->lineHeight;
+	$iline4 = $iline3 - 1.5 * $this->lineHeight;
+	$iline5 = $iline4 - 3 * $this->lineHeight;
+	$iline6 = $iline5 - 1.5 * $this->lineHeight;
+	$iline7 = $lower;
+	$right = $this->pageWidth - $this->rightMargin;
+	$width = ($right - $this->leftMargin) / 5;
+	$icol = $this->pageWidth / 2;
+	$ccol = $this->cols[0] + 4;
+	$c2col = $ccol + 60;
+	$ccol2 = $icol / 2;
+	$mcol = $icol + 8;
+	$mcol2 = $this->pageWidth - $ccol2;
+	$cols = count($this->cols);
 	$this->SetDrawColor(205, 205, 205);
 	$this->Line($iline1, 3);
 	$this->SetDrawColor(128, 128, 128);
@@ -162,11 +162,11 @@
 		} else {
 			$id = $myrow['salesman'];
 		}
-		$sql    = "SELECT salesman_name  FROM salesman WHERE salesman_code='$id'";
+		$sql = "SELECT salesman_name  FROM salesman WHERE salesman_code='$id'";
 		$result = DBOld::query($sql, "could not get sales person");
-		$row    = DBOld::fetch($result);
+		$row = DBOld::fetch($result);
 		if (empty($row['salesman_name'])) {
-			$user = CurrentUser::get()->name;
+			$user = User::get()->name;
 		} else {
 			$user = $row['salesman_name'];
 		}
@@ -190,8 +190,8 @@
 	$this->Font('');
 	//		$this->fontSize += 4;
 	$this->row = $this->row - $this->lineHeight - 5;
-	$temp      = $this->row;
-	$name      = @$myrow['DebtorName'];
+	$temp = $this->row;
+	$name = @$myrow['DebtorName'];
 	if (isset($customer)) {
 		$addr = $customer->accounts->getAddress();
 	}
@@ -225,7 +225,7 @@
 	}
 	$this->TextWrapLines($mcol + 60, $this->rightMargin - $mcol, $addr);
 	$this->row = $iline2 - $this->lineHeight - 1;
-	$col       = $this->leftMargin;
+	$col = $this->leftMargin;
 	$this->TextWrap($col, $this->row, $width, $doc_Customers_Ref, 'C');
 	$col += $width;
 	$this->TextWrap($col, $this->row, $width, $doc_Our_Ref, 'C');
@@ -236,7 +236,7 @@
 	$col += $width;
 	$this->TextWrap($col, $this->row, $width, $doc_Due_Date, 'C');
 	$this->row = $iline3 - $this->lineHeight - 1;
-	$col       = $this->leftMargin;
+	$col = $this->leftMargin;
 	if ($doctype == ST_PURCHORDER || $doctype == ST_SUPPAYMENT) {
 		$this->TextWrap($col, $this->row, $width, $myrow['supp_account_no'], 'C');
 	} elseif ($doctype == ST_WORKORDER) {
@@ -249,10 +249,10 @@
 	$col += $width;
 	$report_contact = (!empty($myrow['contact_name'])) ? $myrow['contact_name'] : $branch['contact_name'];
 	if ($doctype == ST_PURCHORDER) {
-		$id     = $branch['salesman'];
-		$sql    = "SELECT salesman_name  FROM salesman WHERE salesman_code='$id'";
+		$id = $branch['salesman'];
+		$sql = "SELECT salesman_name  FROM salesman WHERE salesman_code='$id'";
 		$result = DBOld::query($sql, "could not get sales person");
-		$row    = DBOld::fetch($result);
+		$row = DBOld::fetch($result);
 		$this->TextWrap($col, $this->row, $width, $row['salesman_name'], 'C');
 		$this->TextWrap($col, $this->row, $width, $_SESSION['wa_current_user'], 'C');
 	} #  __ADVANCEDEDIT__ END #
@@ -343,11 +343,11 @@
 		if ($doctype == ST_WORKORDER) {
 			$str = Dates::sql2date($myrow["required_by"]);
 		} else {
-			$id     = $myrow['payment_terms'];
-			$sql    = "SELECT terms FROM payment_terms WHERE terms_indicator='$id'";
+			$id = $myrow['payment_terms'];
+			$sql = "SELECT terms FROM payment_terms WHERE terms_indicator='$id'";
 			$result = DBOld::query($sql, "could not get paymentterms");
-			$row    = DBOld::fetch($result);
-			$str    = $row["terms"];
+			$row = DBOld::fetch($result);
+			$str = $row["terms"];
 		}
 		$this->Font('italic');
 		$this->TextWrap($ccol, $this->row, $right - $ccol, $doc_Payment_Terms . ":  " . $str . "         " . $doc_customer_id . ": " . $customer->id);
@@ -355,7 +355,7 @@
 	}
 	$this->row = $iline5 - $this->lineHeight - 1;
 	$this->Font('bold');
-	$count              = count($this->headers);
+	$count = count($this->headers);
 	$this->cols[$count] = $right - 3;
 	for (
 		$i = 0; $i < $count; $i++
@@ -388,10 +388,10 @@
 	}
 	if ($doctype == ST_SALESINVOICE && $branch['disable_branch'] > 0) { // payment links
 		if ($branch['disable_branch'] == 1) {
-			$amt  = number_format($myrow["ov_freight"] + $myrow["ov_gst"] + $myrow["ov_amount"], user_price_dec());
-			$txt  = $doc_Payment_Link . " PayPal: ";
+			$amt = number_format($myrow["ov_freight"] + $myrow["ov_gst"] + $myrow["ov_amount"], user_price_dec());
+			$txt = $doc_Payment_Link . " PayPal: ";
 			$name = urlencode($this->title . " " . $myrow['reference']);
-			$url  = "https://www.paypal.com/xclick/business=" . $this->company['email'] . "&item_name=" . $name . "&amount=" . $amt . "&currency_code=" . $myrow['curr_code'];
+			$url = "https://www.paypal.com/xclick/business=" . $this->company['email'] . "&item_name=" . $name . "&amount=" . $amt . "&currency_code=" . $myrow['curr_code'];
 			$this->fontSize -= 2;
 			$this->TextWrap($ccol, $this->row, $right - $ccol, $txt, 'C');
 			$this->row -= $this->lineHeight;

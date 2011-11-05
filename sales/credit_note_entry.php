@@ -38,12 +38,12 @@
 	//-----------------------------------------------------------------------------
 	if (list_updated('branch_id')) {
 		// when branch is selected via external editor also customer can change
-		$br                   = get_branch(get_post('branch_id'));
+		$br = get_branch(get_post('branch_id'));
 		$_POST['customer_id'] = $br['debtor_no'];
 		$Ajax->activate('customer_id');
 	}
 	if (isset($_GET['AddedID'])) {
-		$credit_no  = $_GET['AddedID'];
+		$credit_no = $_GET['AddedID'];
 		$trans_type = ST_CUSTCREDIT;
 		Errors::notice(sprintf(_("Credit Note # %d has been processed"), $credit_no));
 		Display::note(ui_view::get_customer_trans_view_str($trans_type, $credit_no, _("&View this credit note")), 0, 1);
@@ -53,7 +53,7 @@
 		hyperlink_params($_SERVER['PHP_SELF'], _("Enter Another &Credit Note"), "NewCredit=yes");
 		hyperlink_params("/admin/attachments.php", _("Add an Attachment"), "filterType=$trans_type&trans_no=$credit_no");
 		Page::footer_exit();
-} else {
+	} else {
 		check_edit_conflicts();
 	}
 	//--------------------------------------------------------------------------------
@@ -67,36 +67,36 @@
 	//-----------------------------------------------------------------------------
 	function copy_to_cn()
 	{
-		$cart                = &$_SESSION['Items'];
-		$cart->Comments      = $_POST['CreditText'];
+		$cart = &$_SESSION['Items'];
+		$cart->Comments = $_POST['CreditText'];
 		$cart->document_date = $_POST['OrderDate'];
-		$cart->freight_cost  = input_num('ChargeFreightCost');
-		$cart->Location      = (isset($_POST["Location"]) ? $_POST["Location"] : "");
-		$cart->sales_type    = $_POST['sales_type_id'];
+		$cart->freight_cost = input_num('ChargeFreightCost');
+		$cart->Location = (isset($_POST["Location"]) ? $_POST["Location"] : "");
+		$cart->sales_type = $_POST['sales_type_id'];
 		if ($cart->trans_no == 0) {
 			$cart->reference = $_POST['ref'];
 		}
-		$cart->ship_via      = $_POST['ShipperID'];
-		$cart->dimension_id  = $_POST['dimension_id'];
+		$cart->ship_via = $_POST['ShipperID'];
+		$cart->dimension_id = $_POST['dimension_id'];
 		$cart->dimension2_id = $_POST['dimension2_id'];
 	}
 
 	//-----------------------------------------------------------------------------
 	function copy_from_cn()
 	{
-		$cart                       = &$_SESSION['Items'];
-		$_POST['CreditText']        = $cart->Comments;
-		$_POST['OrderDate']         = $cart->document_date;
-		$_POST['ChargeFreightCost'] = price_format($cart->freight_cost);
-		$_POST['Location']          = $cart->Location;
-		$_POST['sales_type_id']     = $cart->sales_type;
+		$cart = &$_SESSION['Items'];
+		$_POST['CreditText'] = $cart->Comments;
+		$_POST['OrderDate'] = $cart->document_date;
+		$_POST['ChargeFreightCost'] = Num::price_format($cart->freight_cost);
+		$_POST['Location'] = $cart->Location;
+		$_POST['sales_type_id'] = $cart->sales_type;
 		if ($cart->trans_no == 0) {
 			$_POST['ref'] = $cart->reference;
 		}
-		$_POST['ShipperID']     = $cart->ship_via;
-		$_POST['dimension_id']  = $cart->dimension_id;
+		$_POST['ShipperID'] = $cart->ship_via;
+		$_POST['dimension_id'] = $cart->dimension_id;
 		$_POST['dimension2_id'] = $cart->dimension2_id;
-		$_POST['cart_id']       = $cart->cart_id;
+		$_POST['cart_id'] = $cart->cart_id;
 	}
 
 	//-----------------------------------------------------------------------------

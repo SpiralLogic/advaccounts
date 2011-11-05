@@ -10,7 +10,8 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	//--------------------------------------------------------------------------------------------------
-	function copy_from_trans($supp_trans) {
+	function copy_from_trans($supp_trans)
+	{
 		$_POST['Comments'] = $supp_trans->Comments;
 		$_POST['tran_date'] = $supp_trans->tran_date;
 		$_POST['due_date'] = $supp_trans->due_date;
@@ -21,7 +22,8 @@
 	}
 
 	//--------------------------------------------------------------------------------------------------
-	function copy_to_trans($supp_trans) {
+	function copy_to_trans($supp_trans)
+	{
 		$supp_trans->Comments = $_POST['Comments'];
 		$supp_trans->tran_date = $_POST['tran_date'];
 		$supp_trans->due_date = $_POST['due_date'];
@@ -49,7 +51,8 @@
 	}
 
 	//--------------------------------------------------------------------------------------------------
-	function invoice_header($supp_trans) {
+	function invoice_header($supp_trans)
+	{
 		$Ajax = Ajax::instance();
 		// if vars have been lost, recopy
 		if (!isset($_POST['tran_date'])) {
@@ -118,22 +121,23 @@
 	}
 
 	//--------------------------------------------------------------------------------------------------
-	function invoice_totals($supp_trans) {
+	function invoice_totals($supp_trans)
+	{
 		copy_to_trans($supp_trans);
 		$dim = DB_Company::get_pref('use_dimension');
 		$colspan = ($dim == 2 ? 7 : ($dim == 1 ? 6 : 5));
 		start_table(Config::get('tables_style2') . " width=90%");
-		label_row(_("Sub-total:"), price_format($supp_trans->ov_amount), "colspan=$colspan align=right", "align=right");
+		label_row(_("Sub-total:"), Num::price_format($supp_trans->ov_amount), "colspan=$colspan align=right", "align=right");
 		$taxes = $supp_trans->get_taxes($supp_trans->tax_group_id);
 		$tax_total = Display::edit_tax_items($taxes, $colspan, 0, null, true); // tax_included==0 (we are the company)
 		label_cell(_("Total Correction"), "colspan=$colspan align=right width='90%'");
-		small_amount_cells(null, 'ChgTotal', price_format(get_post('ChgTotal'), 2));
+		small_amount_cells(null, 'ChgTotal', Num::price_format(get_post('ChgTotal'), 2));
 		$total = $supp_trans->ov_amount + $tax_total + get_post('ChgTotal');
 		if ($supp_trans->is_invoice) {
-			label_row(_("Invoice Total:"), price_format($total), "colspan=$colspan align=right style='font-weight:bold;'", "align=right id='invoiceTotal' data-total=" . $total . " style='font-weight:bold;'");
+			label_row(_("Invoice Total:"), Num::price_format($total), "colspan=$colspan align=right style='font-weight:bold;'", "align=right id='invoiceTotal' data-total=" . $total . " style='font-weight:bold;'");
 		}
 		else {
-			label_row(_("Credit Note Total"), price_format($total), "colspan=$colspan align=right style='font-weight:bold;color:red;'", "nowrap align=right id='invoiceTotal' data-total=" . $total . "  style='font-weight:bold;color:red;'");
+			label_row(_("Credit Note Total"), Num::price_format($total), "colspan=$colspan align=right style='font-weight:bold;color:red;'", "nowrap align=right id='invoiceTotal' data-total=" . $total . "  style='font-weight:bold;color:red;'");
 		}
 		end_table(1);
 		start_table(Config::get('tables_style2'));
@@ -142,7 +146,8 @@
 	}
 
 	//--------------------------------------------------------------------------------------------------
-	function display_gl_controls($supp_trans, $k) {
+	function display_gl_controls($supp_trans, $k)
+	{
 		$accs = get_supplier_accounts($supp_trans->supplier_id);
 		$_POST['gl_code'] = $accs['purchase_account'];
 		alt_table_row_color($k);
@@ -167,7 +172,8 @@
 	//		 = 1 display on invoice/credit page
 	//		 = 2 display on view invoice
 	//		 = 3 display on view credit
-	function display_gl_items($supp_trans, $mode = 0) {
+	function display_gl_items($supp_trans, $mode = 0)
+	{
 		$Ajax = Ajax::instance();
 		// if displaying in form, and no items, exit
 		if (($mode == 2 || $mode == 3) && count($supp_trans->gl_codes) == 0) {
@@ -248,7 +254,7 @@
 				/////////// 2009-08-18 Joe Hunt
 				if ($mode > 1 && !Taxes::is_tax_account($entered_gl_code->gl_code)) {
 					$total_gl_value += $entered_gl_code->amount;
-} else {
+				} else {
 					$total_gl_value += $entered_gl_code->amount;
 				}
 				$i++;
@@ -263,7 +269,7 @@
 		}
 		$colspan = ($dim == 2 ? 5 : ($dim == 1 ? 4 : 3));
 		label_row(
-			_("Total"), price_format($total_gl_value), "colspan=" . $colspan . " align=right", "nowrap align=right", ($mode == 1
+			_("Total"), Num::price_format($total_gl_value), "colspan=" . $colspan . " align=right", "nowrap align=right", ($mode == 1
 			 ? 3 : 0)
 		);
 		end_table(1);
@@ -272,7 +278,8 @@
 	}
 
 	//--------------//-----------------------------------------------------------------------------------------
-	function display_grn_items_for_selection($supp_trans, $k) {
+	function display_grn_items_for_selection($supp_trans, $k)
+	{
 		if ($supp_trans->is_invoice) {
 			$result = get_grn_items(0, $supp_trans->supplier_id, true);
 		}
@@ -333,17 +340,17 @@
 								$myrow["qty_recd"] - $myrow["quantity_inv"], $dec
 							), null, null, $dec
 						);
-} else {
+					} else {
 						qty_cells(null, 'This_QuantityCredited' . $n, Num::format(max($myrow["quantity_inv"], 0), $dec), null, null, $dec);
 					}
 					$dec2 = 0;
 					amount_cells(
-						null, 'ChgPrice' . $n, price_decimal_format(
+						null, 'ChgPrice' . $n, Num::price_decimal(
 							$myrow["unit_price"], $dec2
 						), null, null, $dec2, 'ChgPriceCalc' . $n
 					);
 					amount_cells(
-						null, 'ExpPrice' . $n, price_decimal_format(
+						null, 'ExpPrice' . $n, Num::price_decimal(
 							$myrow["unit_price"], $dec2
 						), null, null, $dec2, 'ExpPriceCalc' . $n
 					);
@@ -352,15 +359,15 @@
 							$myrow['discount'] * 100
 						), null, null, user_percent_dec()
 					);
-					amount_cell(price_decimal_format(($myrow["unit_price"] * ($myrow["qty_recd"] - $myrow["quantity_inv"]) * (1 - $myrow['discount'])) / $myrow["qty_recd"], $dec2), false, $dec2, 'Ea' . $n);
+					amount_cell(Num::price_decimal(($myrow["unit_price"] * ($myrow["qty_recd"] - $myrow["quantity_inv"]) * (1 - $myrow['discount'])) / $myrow["qty_recd"], $dec2), false, $dec2, 'Ea' . $n);
 					if ($supp_trans->is_invoice) {
-						amount_cells(null, 'ChgTotal' . $n, price_decimal_format($myrow["unit_price"] * ($myrow["qty_recd"] - $myrow["quantity_inv"]) * (1 - $myrow['discount']), $dec2), null, null, $dec2, 'ChgTotalCalc' . $n);
+						amount_cells(null, 'ChgTotal' . $n, Num::price_decimal($myrow["unit_price"] * ($myrow["qty_recd"] - $myrow["quantity_inv"]) * (1 - $myrow['discount']), $dec2), null, null, $dec2, 'ChgTotalCalc' . $n);
 					}
 					else {
 						amount_cell(Num::round($myrow["unit_price"] * max($myrow['quantity_inv'], 0) * (1 - $myrow['discount']), user_price_dec()));
 					}
 					submit_cells('grn_item_id' . $n, _("Add"), '', ($supp_trans->is_invoice ? _("Add to Invoice") : _("Add to Credit Note")), true);
-					if ($supp_trans->is_invoice && CurrentUser::get()->can_access('SA_GRNDELETE')) { // Added 2008-10-18 by Joe Hunt. Special access rights needed.
+					if ($supp_trans->is_invoice && User::get()->can_access('SA_GRNDELETE')) { // Added 2008-10-18 by Joe Hunt. Special access rights needed.
 						submit_cells('void_item_id' . $n, _("Remove"), '', _("WARNING! Be careful with removal. The operation is executed immediately and cannot be undone !!!"), true);
 						submit_js_confirm('void_item_id' . $n, sprintf(_('You are about to remove all yet non-invoiced items from delivery line #%d. This operation also irreversibly changes related order line. Do you want to continue ?'), $n));
 					}
@@ -379,7 +386,8 @@
 	//		 = 1 display on invoice/credit page
 	//		 = 2 display on view invoice
 	//		 = 3 display on view credit
-	function display_grn_items($supp_trans, $mode = 0) {
+	function display_grn_items($supp_trans, $mode = 0)
+	{
 		$ret = true;
 		// if displaying in form, and no items, exit
 		if (($mode == 2 || $mode == 3) && count($supp_trans->grn_items) == 0) {
@@ -390,7 +398,7 @@
 		if ($mode == 1) {
 			if ($supp_trans->is_invoice) {
 				$heading = _("Items Received Yet to be Invoiced");
-				if (CurrentUser::get()->can_access('SA_GRNDELETE')) // Added 2008-10-18 by Joe Hunt. Only admins can remove GRNs
+				if (User::get()->can_access('SA_GRNDELETE')) // Added 2008-10-18 by Joe Hunt. Only admins can remove GRNs
 				{
 					$heading2 = _("WARNING! Be careful with removal. The operation is executed immediately and cannot be undone !!!");
 				}
@@ -401,7 +409,7 @@
 		else {
 			if ($supp_trans->is_invoice) {
 				$heading = _("Received Items Charged on this Invoice");
-} else {
+			} else {
 				$heading = _("Received Items Credited on this Note");
 			}
 		}
@@ -472,7 +480,6 @@
 					qty_cell($entered_grn->prev_quantity_inv, false, $dec);
 				}
 				qty_cell(abs($entered_grn->this_quantity_inv), true, $dec);
-
 				amount_decimal_cell($entered_grn->chg_price);
 				amount_decimal_cell($entered_grn->exp_price);
 				percent_cell($entered_grn->discount);
@@ -483,7 +490,7 @@
 				);
 				amount_cell(Num::round($entered_grn->chg_price * abs($entered_grn->this_quantity_inv) * (1 - $entered_grn->discount / 100), user_price_dec()));
 				if ($mode == 1) {
-					if ($supp_trans->is_invoice && CurrentUser::get()->can_access('SA_GRNDELETE')) {
+					if ($supp_trans->is_invoice && User::get()->can_access('SA_GRNDELETE')) {
 						label_cell("");
 					}
 					label_cell(""); // PO
@@ -504,7 +511,7 @@
 		} else {
 			$colspan = 7;
 		}
-		label_row(_("Total"), price_format($total_grn_value), "colspan=$colspan align=right", "nowrap align=right");
+		label_row(_("Total"), Num::price_format($total_grn_value), "colspan=$colspan align=right", "nowrap align=right");
 		if (!$ret) {
 			start_row();
 			echo "<td colspan=" . ($colspan + 1) . ">";
@@ -524,7 +531,8 @@
 	}
 
 	//--------------------------------------------------------------------------------------------------
-	function get_duedate_from_terms($supp_trans) {
+	function get_duedate_from_terms($supp_trans)
+	{
 		if (!Dates::is_date($supp_trans->tran_date)) {
 			$supp_trans->tran_date = Dates::Today();
 		}

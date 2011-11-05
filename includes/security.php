@@ -10,7 +10,7 @@
 	{
 		static function check_page($page_security)
 		{
-			if (!CurrentUser::get()->can_access_page($page_security)) {
+			if (!User::get()->can_access_page($page_security)) {
 				echo "<center><br><br><br><b>";
 				echo _("The security settings on your account do not permit you to access this function");
 				echo "</b>";
@@ -64,7 +64,7 @@
 			$ret = DBOld::query($sql, "could not retrieve security roles");
 			$row = DBOld::fetch($ret);
 			if ($row != false) {
-				$row['areas']    = explode(';', $row['areas']);
+				$row['areas'] = explode(';', $row['areas']);
 				$row['sections'] = explode(';', $row['sections']);
 			}
 			return $row;

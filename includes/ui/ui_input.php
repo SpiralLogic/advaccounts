@@ -24,7 +24,8 @@
 	//    If var is found returns variable name with prefix stripped,
 	//    and null or -1 otherwise.
 	//
-	function find_submit($prefix, $numeric = true) {
+	function find_submit($prefix, $numeric = true)
+	{
 		foreach ($_POST as $postkey => $postval)
 		{
 			if (strpos($postkey, $prefix) === 0) {
@@ -39,7 +40,8 @@
 	//
 	// Helper function for simple db table editor pages
 	//
-	function simple_page_mode($numeric_id = true) {
+	function simple_page_mode($numeric_id = true)
+	{
 		global $Mode, $selected_id;
 		$Ajax = Ajax::instance();
 		$default = $numeric_id ? -1 : '';
@@ -74,7 +76,8 @@
 	//
 	//	Read numeric value from user formatted input
 	//
-	function input_num($postname = null, $dflt = 0) {
+	function input_num($postname = null, $dflt = 0)
+	{
 		if (!isset($_POST[$postname]) || $_POST[$postname] == "") {
 			return $dflt;
 		}
@@ -82,7 +85,8 @@
 	}
 
 	//---------------------------------------------------------------------------------
-	function hidden($name, $value = null, $echo = true) {
+	function hidden($name, $value = null, $echo = true)
+	{
 		$Ajax = Ajax::instance();
 		if ($value === null) {
 			$value = get_post($name);
@@ -113,7 +117,8 @@
 	 $atype can contain also multiply type selectors separated by space,
 	 however make sense only combination of 'process' and one of defualt/selector/cancel
  */
-	function submit($name, $value, $echo = true, $title = false, $atype = false, $icon = false) {
+	function submit($name, $value, $echo = true, $title = false, $atype = false, $icon = false)
+	{
 		$aspect = '';
 		if ($atype === null) {
 			$aspect = fallback_mode() ? " aspect='fallback'" : " style='display:none;'";
@@ -123,23 +128,23 @@
 			$types = explode(' ', $atype);
 			foreach ($types as $type) {
 				switch ($type) {
-					case 'selector':
-						$aspect = " aspect='selector' rel = '$value'";
-						$value = _("Select");
-						if ($icon === false) {
-							$icon = ICON_SUBMIT;
-						}
-						break;
-					case 'default':
-						if ($icon === false) {
-							$icon = ICON_SUBMIT;
-						}
-						break;
-					case 'cancel':
-						if ($icon === false) {
-							$icon = ICON_ESCAPE;
-						}
-						break;
+				case 'selector':
+					$aspect = " aspect='selector' rel = '$value'";
+					$value = _("Select");
+					if ($icon === false) {
+						$icon = ICON_SUBMIT;
+					}
+					break;
+				case 'default':
+					if ($icon === false) {
+						$icon = ICON_SUBMIT;
+					}
+					break;
+				case 'cancel':
+					if ($icon === false) {
+						$icon = ICON_ESCAPE;
+					}
+					break;
 				}
 			}
 		}
@@ -160,7 +165,8 @@
 		}
 	}
 
-	function submit_center($name, $value, $echo = true, $title = false, $async = false, $icon = false) {
+	function submit_center($name, $value, $echo = true, $title = false, $async = false, $icon = false)
+	{
 		if ($echo) {
 			echo "<center>";
 		}
@@ -170,13 +176,15 @@
 		}
 	}
 
-	function submit_center_first($name, $value, $title = false, $async = false, $icon = false) {
+	function submit_center_first($name, $value, $title = false, $async = false, $icon = false)
+	{
 		echo "<center>";
 		submit($name, $value, true, $title, $async, $icon);
 		echo "&nbsp;";
 	}
 
-	function submit_center_last($name, $value, $title = false, $async = false, $icon = false) {
+	function submit_center_last($name, $value, $title = false, $async = false, $icon = false)
+	{
 		echo "&nbsp;";
 		submit($name, $value, true, $title, $async, $icon);
 		echo "</center>";
@@ -187,7 +195,8 @@
 	 'both' - use both Ctrl-Enter and Escape hotkeys
 	 'cancel' - apply to 'RESET' button
  */
-	function submit_add_or_update($add = true, $title = false, $async = false, $clone = false) {
+	function submit_add_or_update($add = true, $title = false, $async = false, $clone = false)
+	{
 		$cancel = $async;
 		if ($async === 'both') {
 			$async = 'default';
@@ -212,13 +221,15 @@
 		}
 	}
 
-	function submit_add_or_update_center($add = true, $title = false, $async = false, $clone = false) {
+	function submit_add_or_update_center($add = true, $title = false, $async = false, $clone = false)
+	{
 		echo "<center>";
 		submit_add_or_update($add, $title, $async, $clone);
 		echo "</center>";
 	}
 
-	function submit_add_or_update_row($add = true, $right = true, $extra = "", $title = false, $async = false, $clone = false) {
+	function submit_add_or_update_row($add = true, $right = true, $extra = "", $title = false, $async = false, $clone = false)
+	{
 		echo "<tr>";
 		if ($right) {
 			echo "<td>&nbsp;</td>\n";
@@ -228,13 +239,15 @@
 		echo "</td></tr>\n";
 	}
 
-	function submit_cells($name, $value, $extra = "", $title = false, $async = false) {
+	function submit_cells($name, $value, $extra = "", $title = false, $async = false)
+	{
 		echo "<td $extra>";
 		submit($name, $value, true, $title, $async);
 		echo "</td>\n";
 	}
 
-	function submit_row($name, $value, $right = true, $extra = "", $title = false, $async = false) {
+	function submit_row($name, $value, $right = true, $extra = "", $title = false, $async = false)
+	{
 		echo "<tr>";
 		if ($right) {
 			echo "<td>&nbsp;</td>\n";
@@ -243,25 +256,29 @@
 		echo "</tr>\n";
 	}
 
-	function submit_return($name, $value, $title = false) {
+	function submit_return($name, $value, $title = false)
+	{
 		if (Input::request('popup')) {
 			submit($name, $value, true, $title, 'selector');
 		}
 	}
 
-	function submit_js_confirm($name, $msg) {
+	function submit_js_confirm($name, $msg)
+	{
 		JS::beforeload(
 			"_validate.$name=function(){ return confirm('" . strtr($msg, array("\n" => '\\n')) . "');};");
 	}
 
 	;
 	//-----------------------------------------------------------------------------------
-	function set_icon($icon, $title = false) {
+	function set_icon($icon, $title = false)
+	{
 		return "<img src='/themes/" . user_theme() . "/images/$icon' width='12' height='12' border='0'" . ($title
 		 ? " title='$title'" : "") . " />\n";
 	}
 
-	function button($name, $value, $title = false, $icon = false, $aspect = '') {
+	function button($name, $value, $title = false, $icon = false, $aspect = '')
+	{
 		// php silently changes dots,spaces,'[' and characters 128-159
 		// to underscore in POST names, to maintain compatibility with register_globals
 		$rel = '';
@@ -276,10 +293,10 @@
 			}
 			return "<button type='submit' class='editbutton' name='" .
 			 htmlentities(strtr($name, array('.' => '=2E',
-					 ' ' => '=20',
-					 '=' => '=3D',
-					 '[' => '=5B'
-				 ))) .
+				 ' ' => '=20',
+				 '=' => '=3D',
+				 '[' => '=5B'
+			 ))) .
 			 "' value='1'" . ($title ? " title='$title'" : " title='$value'")
 			 . ($aspect ? " aspect='$aspect'" : '')
 			 . $rel
@@ -287,10 +304,10 @@
 		} else {
 			return "<input type='submit' class='editbutton' name='"
 			 . htmlentities(strtr($name, array('.' => '=2E',
-					 ' ' => '=20',
-					 '=' => '=3D',
-					 '[' => '=5B'
-				 )))
+				 ' ' => '=20',
+				 '=' => '=3D',
+				 '[' => '=5B'
+			 )))
 			 . "' value='$value'"
 			 . ($title ? " title='$title'" : '')
 			 . ($aspect ? " aspect='$aspect'" : '')
@@ -299,33 +316,39 @@
 		}
 	}
 
-	function button_cell($name, $value, $title = false, $icon = false, $aspect = '') {
+	function button_cell($name, $value, $title = false, $icon = false, $aspect = '')
+	{
 		echo "<td align='center'>";
 		echo button($name, $value, $title, $icon, $aspect);
 		echo "</td>";
 	}
 
-	function delete_button_cell($name, $value, $title = false) {
+	function delete_button_cell($name, $value, $title = false)
+	{
 		button_cell($name, $value, $title, ICON_DELETE);
 	}
 
-	function edit_button_cell($name, $value, $title = false) {
+	function edit_button_cell($name, $value, $title = false)
+	{
 		button_cell($name, $value, $title, ICON_EDIT);
 	}
 
-	function select_button_cell($name, $value, $title = false) {
+	function select_button_cell($name, $value, $title = false)
+	{
 		button_cell($name, $value, $title, ICON_ADD, 'selector');
 	}
 
 	//-----------------------------------------------------------------------------------
-	function check_value($name) {
+	function check_value($name)
+	{
 		if (!isset($_POST[$name])) {
 			return 0;
 		}
 		return 1;
 	}
 
-	function checkbox($label, $name, $value = null, $submit_on_change = false, $title = false) {
+	function checkbox($label, $name, $value = null, $submit_on_change = false, $title = false)
+	{
 		$Ajax = Ajax::instance();
 		$str = '';
 		if ($label) {
@@ -350,12 +373,14 @@
 		return $str;
 	}
 
-	function check($label, $name, $value = null, $submit_on_change = false, $title = false) {
+	function check($label, $name, $value = null, $submit_on_change = false, $title = false)
+	{
 		echo checkbox($label, $name, $value, $submit_on_change, $title);
 	}
 
 	function check_cells($label, $name, $value = null, $submit_on_change = false, $title = false,
-											 $params = '') {
+											 $params = '')
+	{
 		if ($label != null) {
 			echo "<td>$label</td>\n";
 		}
@@ -364,22 +389,26 @@
 		echo "</td>";
 	}
 
-	function check_row($label, $name, $value = null, $submit_on_change = false, $title = false) {
+	function check_row($label, $name, $value = null, $submit_on_change = false, $title = false)
+	{
 		echo "<tr><td class='label'>$label</td>";
 		echo check_cells(NULL, $name, $value, $submit_on_change, $title);
 		echo "</tr>\n";
 	}
 
 	//-----------------------------------------------------------------------------------
-	function labelheader_cell($label, $params = "") {
+	function labelheader_cell($label, $params = "")
+	{
 		echo "<th  $params>$label</th>\n";
 	}
 
-	function description_cell($label, $params = "", $id = null) {
+	function description_cell($label, $params = "", $id = null)
+	{
 		label_cell($label, $params . " class='desc'", $id);
 	}
 
-	function label_cell($label, $params = "", $id = null) {
+	function label_cell($label, $params = "", $id = null)
+	{
 		$Ajax = Ajax::instance();
 		if (!empty($id)) {
 			$params .= " id='$id'";
@@ -389,29 +418,34 @@
 		return $label;
 	}
 
-	function empty_cells($qty) {
+	function empty_cells($qty)
+	{
 		echo "<td colspan=$qty></td>";
 	}
 
-	function email_cell($label, $params = "", $id = null) {
+	function email_cell($label, $params = "", $id = null)
+	{
 		label_cell("<a href='mailto:$label'>$label</a>", $params, $id);
 	}
 
-	function amount_decimal_cell($label, $params = "", $id = null) {
+	function amount_decimal_cell($label, $params = "", $id = null)
+	{
 		$dec = 0;
-		label_cell(price_decimal_format($label, $dec), "nowrap align=right " . $params, $id);
+		label_cell(Num::price_decimal($label, $dec), "nowrap align=right " . $params, $id);
 	}
 
-	function amount_cell($label, $bold = false, $params = "", $id = null) {
+	function amount_cell($label, $bold = false, $params = "", $id = null)
+	{
 		if ($bold) {
-			label_cell("<b>" . price_format($label) . "</b>", "class='amount'" . $params, $id);
+			label_cell("<b>" . Num::price_format($label) . "</b>", "class='amount'" . $params, $id);
 		} else {
-			label_cell(price_format($label), "class='amount'" . $params, $id);
+			label_cell(Num::price_format($label), "class='amount'" . $params, $id);
 		}
 	}
 
 	//JAM  Allow entered unit prices to be fractional
-	function unit_amount_cell($label, $bold = false, $params = "", $id = null) {
+	function unit_amount_cell($label, $bold = false, $params = "", $id = null)
+	{
 		if ($bold) {
 			label_cell("<b>" . unit_price_format($label) . "</b>", "nowrap align=right " . $params, $id);
 		} else {
@@ -419,7 +453,8 @@
 		}
 	}
 
-	function percent_cell($label, $bold = false, $id = null) {
+	function percent_cell($label, $bold = false, $id = null)
+	{
 		if ($bold) {
 			label_cell("<b>" . Num::percent_format($label) . "</b>", "nowrap align=right", $id);
 		} else {
@@ -428,7 +463,8 @@
 	}
 
 	// 2008-06-15. Changed
-	function qty_cell($label, $bold = false, $dec = null, $id = null) {
+	function qty_cell($label, $bold = false, $dec = null, $id = null)
+	{
 		if (!isset($dec)) {
 			$dec = get_qty_dec();
 		}
@@ -439,14 +475,16 @@
 		}
 	}
 
-	function label_cells($label, $value, $params = "", $params2 = "", $id = null) {
+	function label_cells($label, $value, $params = "", $params2 = "", $id = null)
+	{
 		if ($label != null) {
 			echo "<td {$params}>{$label}</td>\n";
 		}
 		label_cell($value, $params2, $id);
 	}
 
-	function label_row($label, $value, $params = "", $params2 = "", $leftfill = 0, $id = null) {
+	function label_row($label, $value, $params = "", $params2 = "", $leftfill = 0, $id = null)
+	{
 		echo "<tr>";
 		if ($params == "") {
 			echo "<td class='label'>$label</td>";
@@ -461,7 +499,8 @@
 
 	//-----------------------------------------------------------------------------------
 	function text_cells($label, $name, $value = null, $size = "", $max = "", $title = false,
-											$labparams = "", $post_label = "", $inparams = "") {
+											$labparams = "", $post_label = "", $inparams = "")
+	{
 		$Ajax = Ajax::instance();
 		JS::default_focus($name);
 		if ($label != null) {
@@ -482,13 +521,14 @@
 	}
 
 	function text_cells_ex($label, $name, $size, $max = null, $init = null, $title = null,
-												 $labparams = null, $post_label = null, $submit_on_change = false) {
+												 $labparams = null, $post_label = null, $submit_on_change = false)
+	{
 		$Ajax = Ajax::instance();
 		JS::default_focus($name);
 		if (!isset($_POST[$name]) || $_POST[$name] == "") {
 			if ($init) {
 				$_POST[$name] = $init;
-} else {
+			} else {
 				$_POST[$name] = "";
 			}
 		}
@@ -509,35 +549,40 @@
 		$Ajax->addUpdate($name, $name, $_POST[$name]);
 	}
 
-	function text_row($label, $name, $value, $size = false, $max, $title = null, $params = "", $post_label = "") {
+	function text_row($label, $name, $value, $size = false, $max, $title = null, $params = "", $post_label = "")
+	{
 		echo "<tr><td class='label'>$label</td>";
 		text_cells(null, $name, $value, $size, $max, $title, $params, $post_label);
 		echo "</tr>\n";
 	}
 
 	//-----------------------------------------------------------------------------------
-	function text_row_ex($label, $name, $size, $max = null, $title = null, $value = null, $params = null, $post_label = null, $params2 = '', $submit_on_change = false) {
+	function text_row_ex($label, $name, $size, $max = null, $title = null, $value = null, $params = null, $post_label = null, $params2 = '', $submit_on_change = false)
+	{
 		echo "<tr {$params}><td class='label' {$params2}>$label</td>";
 		text_cells_ex(null, $name, $size, $max, $value, $title, $params, $post_label, $submit_on_change);
 		echo "</tr>\n";
 	}
 
 	//-----------------------------------------------------------------------------------
-	function email_row($label, $name, $value, $size, $max, $title = null, $params = "", $post_label = "") {
+	function email_row($label, $name, $value, $size, $max, $title = null, $params = "", $post_label = "")
+	{
 		if (get_post($name)) {
 			$label = "<a href='Mailto:" . $_POST[$name] . "'>$label</a>";
 		}
 		text_row($label, $name, $value, $size, $max, $title, $params, $post_label);
 	}
 
-	function email_row_ex($label, $name, $size, $max = null, $title = null, $value = null, $params = null, $post_label = null) {
+	function email_row_ex($label, $name, $size, $max = null, $title = null, $value = null, $params = null, $post_label = null)
+	{
 		if (get_post($name)) {
 			$label = "<a href='Mailto:" . $_POST[$name] . "'>$label</a>";
 		}
 		text_row_ex($label, $name, $size, $max, $title, $value, $params, $post_label);
 	}
 
-	function link_row($label, $name, $value, $size, $max, $title = null, $params = "", $post_label = "") {
+	function link_row($label, $name, $value, $size, $max, $title = null, $params = "", $post_label = "")
+	{
 		$val = get_post($name);
 		if ($val) {
 			if (strpos($val, 'http://') === false) {
@@ -548,7 +593,8 @@
 		text_row($label, $name, $value, $size, $max, $title, $params, $post_label);
 	}
 
-	function link_row_ex($label, $name, $size, $max = null, $title = null, $value = null, $params = null, $post_label = null) {
+	function link_row_ex($label, $name, $size, $max = null, $title = null, $value = null, $params = null, $post_label = null)
+	{
 		$val = get_post($name);
 		if ($val) {
 			if (strpos($val, 'http://') === false) {
@@ -566,12 +612,13 @@
 	//	than current date.
 	//
 	function date_cells($label, $name, $title = null, $check = null, $inc_days = 0,
-											$inc_months = 0, $inc_years = 0, $params = null, $submit_on_change = false, $options = array()) {
+											$inc_months = 0, $inc_years = 0, $params = null, $submit_on_change = false, $options = array())
+	{
 		$Ajax = Ajax::instance();
 		if (!isset($_POST[$name]) || $_POST[$name] == "") {
 			if ($inc_years == 1001) {
 				$_POST[$name] = null;
-} else {
+			} else {
 				$dd = Dates::Today();
 				if ($inc_days != 0) {
 					$dd = Dates::add_days($dd, $inc_days);
@@ -609,7 +656,8 @@
 	}
 
 	function date_row($label, $name, $title = null, $check = null, $inc_days = 0, $inc_months = 0,
-										$inc_years = 0, $params = null, $submit_on_change = false) {
+										$inc_years = 0, $params = null, $submit_on_change = false)
+	{
 		echo "<tr><td class='label'>$label</td>";
 		date_cells(null, $name, $title, $check, $inc_days, $inc_months,
 			$inc_years, $params, $submit_on_change);
@@ -617,47 +665,54 @@
 	}
 
 	//-----------------------------------------------------------------------------------
-	function password_row($label, $name, $value) {
+	function password_row($label, $name, $value)
+	{
 		echo "<tr><td class='label'>$label</td>";
 		label_cell("<input type='password' name='$name' size=20 maxlength=20 value='$value' />");
 		echo "</tr>\n";
 	}
 
 	//-----------------------------------------------------------------------------------
-	function file_cells($label, $name, $id = "") {
+	function file_cells($label, $name, $id = "")
+	{
 		if ($id != "") {
 			$id = "id='$id'";
 		}
 		label_cells($label, "<input type='file' name='$name' $id />");
 	}
 
-	function file_row($label, $name, $id = "") {
+	function file_row($label, $name, $id = "")
+	{
 		echo "<tr><td class='label'>$label</td>";
 		file_cells(null, $name, $id);
 		echo "</tr>\n";
 	}
 
 	//-----------------------------------------------------------------------------------
-	function ref_cells($label, $name, $title = null, $init = null, $params = null, $submit_on_change = false) {
+	function ref_cells($label, $name, $title = null, $init = null, $params = null, $submit_on_change = false)
+	{
 		text_cells_ex($label, $name, 13, 18, $init, $title, $params, null, $submit_on_change);
 	}
 
 	//-----------------------------------------------------------------------------------
-	function ref_row($label, $name, $title = null, $init = null, $submit_on_change = false) {
+	function ref_row($label, $name, $title = null, $init = null, $submit_on_change = false)
+	{
 		echo "<tr><td class='label'>$label</td>";
 		ref_cells(null, $name, $title, $init, null, $submit_on_change);
 		echo "</tr>\n";
 	}
 
 	//-----------------------------------------------------------------------------------
-	function percent_row($label, $name, $init = null, $params = '') {
+	function percent_row($label, $name, $init = null, $params = '')
+	{
 		if (!isset($_POST[$name]) || $_POST[$name] == "") {
 			$_POST[$name] = ($init === null) ? '' : $init;
 		}
 		small_amount_row($label, $name . '" ' . $params, $_POST[$name], null, "%", user_percent_dec());
 	}
 
-	function amount_cells_ex($label, $name, $size, $max = null, $init = null, $params = null, $post_label = null, $dec = null, $id = null) {
+	function amount_cells_ex($label, $name, $size, $max = null, $init = null, $params = null, $post_label = null, $dec = null, $id = null)
+	{
 		$Ajax = Ajax::instance();
 		if (!isset($dec)) {
 			$dec = user_price_dec();
@@ -665,7 +720,7 @@
 		if (!isset($_POST[$name]) || $_POST[$name] == "") {
 			if ($init !== null) {
 				$_POST[$name] = $init;
-} else {
+			} else {
 				$_POST[$name] = '';
 			}
 		}
@@ -704,39 +759,45 @@
 	}
 
 	//-----------------------------------------------------------------------------------
-	function amount_cells($label, $name, $init = null, $params = null, $post_label = null, $dec = null, $id = null) {
+	function amount_cells($label, $name, $init = null, $params = null, $post_label = null, $dec = null, $id = null)
+	{
 		amount_cells_ex($label, $name, 10, 15, $init, $params, $post_label, $dec, $id);
 	}
 
 	//JAM  Allow entered unit prices to be fractional
-	function unit_amount_cells($label, $name, $init = null, $params = null, $post_label = null, $dec = null) {
+	function unit_amount_cells($label, $name, $init = null, $params = null, $post_label = null, $dec = null)
+	{
 		if (!isset($dec)) {
 			$dec = user_price_dec() + 2;
 		}
 		amount_cells_ex($label, $name, 10, 15, $init, $params, $post_label, $dec + 2);
 	}
 
-	function amount_row($label, $name, $init = null, $params = null, $post_label = null, $dec = null) {
+	function amount_row($label, $name, $init = null, $params = null, $post_label = null, $dec = null)
+	{
 		echo "<tr>";
 		amount_cells($label, $name, $init, $params, $post_label, $dec);
 		echo "</tr>\n";
 	}
 
-	function small_amount_row($label, $name, $init = null, $params = null, $post_label = null, $dec = null) {
+	function small_amount_row($label, $name, $init = null, $params = null, $post_label = null, $dec = null)
+	{
 		echo "<tr>";
 		small_amount_cells($label, $name, $init, $params, $post_label, $dec);
 		echo "</tr>\n";
 	}
 
 	//-----------------------------------------------------------------------------------
-	function qty_cells($label, $name, $init = null, $params = null, $post_label = null, $dec = null) {
+	function qty_cells($label, $name, $init = null, $params = null, $post_label = null, $dec = null)
+	{
 		if (!isset($dec)) {
 			$dec = user_qty_dec();
 		}
 		amount_cells_ex($label, $name, 15, 15, $init, $params, $post_label, $dec);
 	}
 
-	function qty_row($label, $name, $init = null, $params = null, $post_label = null, $dec = null) {
+	function qty_row($label, $name, $init = null, $params = null, $post_label = null, $dec = null)
+	{
 		if (!isset($dec)) {
 			$dec = user_qty_dec();
 		}
@@ -745,7 +806,8 @@
 		echo "</tr>\n";
 	}
 
-	function small_qty_row($label, $name, $init = null, $params = null, $post_label = null, $dec = null) {
+	function small_qty_row($label, $name, $init = null, $params = null, $post_label = null, $dec = null)
+	{
 		if (!isset($dec)) {
 			$dec = user_qty_dec();
 		}
@@ -755,12 +817,14 @@
 	}
 
 	//-----------------------------------------------------------------------------------
-	function small_amount_cells($label, $name, $init = null, $params = null, $post_label = null, $dec = null) {
+	function small_amount_cells($label, $name, $init = null, $params = null, $post_label = null, $dec = null)
+	{
 		amount_cells_ex($label, $name, 7, 12, $init, $params, $post_label, $dec);
 	}
 
 	//-----------------------------------------------------------------------------------
-	function small_qty_cells($label, $name, $init = null, $params = null, $post_label = null, $dec = null) {
+	function small_qty_cells($label, $name, $init = null, $params = null, $post_label = null, $dec = null)
+	{
 		if (!isset($dec)) {
 			$dec = user_qty_dec();
 		}
@@ -768,7 +832,8 @@
 	}
 
 	//-----------------------------------------------------------------------------------
-	function textarea_cells($label, $name, $value, $cols, $rows, $title = null, $params = "") {
+	function textarea_cells($label, $name, $value, $cols, $rows, $title = null, $params = "")
+	{
 		$Ajax = Ajax::instance();
 		JS::default_focus($name);
 		if ($label != null) {
@@ -783,7 +848,8 @@
 		$Ajax->addUpdate($name, $name, $value);
 	}
 
-	function textarea_row($label, $name, $value, $cols, $rows, $title = null, $params = "", $labelparams = "") {
+	function textarea_row($label, $name, $value, $cols, $rows, $title = null, $params = "", $labelparams = "")
+	{
 		echo "<tr><td class='label' $labelparams>$label</td>";
 		textarea_cells(null, $name, $value, $cols, $rows, $title, $params);
 		echo "</tr>\n";
@@ -795,7 +861,8 @@
 	//  displays value of inactive field as checkbox cell.
 	//  Also updates database record after status change.
 	//
-	function inactive_control_cell($id, $value, $table, $key) {
+	function inactive_control_cell($id, $value, $table, $key)
+	{
 		$Ajax = Ajax::instance();
 		$name = "Inactive" . $id;
 		$value = $value ? 1 : 0;
@@ -815,7 +882,8 @@
 	//
 	//	Displays controls for optional display of inactive records
 	//
-	function inactive_control_row($th) {
+	function inactive_control_row($th)
+	{
 		echo	"<tr><td colspan=" . (count($th)) . ">"
 		 . "<div style='float:left;'>"
 		 . checkbox(null, 'show_inactive', null, true) . _("Show also Inactive")
@@ -827,7 +895,8 @@
 	//
 	//	Inserts additional column header when display of inactive records is on.
 	//
-	function inactive_control_column(&$th) {
+	function inactive_control_column(&$th)
+	{
 		$Ajax = Ajax::instance();
 		if (check_value('show_inactive')) {
 			Arr::insert($th, count($th) - 2, _("Inactive"));
@@ -837,32 +906,35 @@
 		}
 	}
 
-	function customer_credit_row($customer, $credit, $parms = '') {
+	function customer_credit_row($customer, $credit, $parms = '')
+	{
 		label_row(_("Current Credit:"),
 		 "<a target='_blank' " . ($credit < 0 ? 'class="redfg"' : '')
 			. "href='/sales/inquiry/customer_inquiry.php?frame=1&customer_id=" . $customer . "'"
 			. " onclick=\"javascript:openWindow(this.href,this.target); return false;\" >"
-			. price_format($credit)
+			. Num::price_format($credit)
 			. "</a>", $parms);
 	}
 
-	function supplier_credit_row($supplier, $credit, $parms = '') {
+	function supplier_credit_row($supplier, $credit, $parms = '')
+	{
 		label_row(_("Current Credit:"),
 		 "<a target='_blank' " . ($credit < 0 ? 'class="redfg"' : '')
 			. "href='/purchasing/inquiry/supplier_inquiry.php?supplier_id=" . $supplier . "'"
 			. " onclick=\"javascript:openWindow(this.href,this.target); return false;\" >"
-			. price_format($credit)
+			. Num::price_format($credit)
 			. "</a>", $parms);
 	}
 
-	function bank_balance_row($bank_acc, $parms = '') {
+	function bank_balance_row($bank_acc, $parms = '')
+	{
 		$to = Dates::add_days(Dates::Today(), 1);
 		$bal = get_balance_before_for_bank_account($bank_acc, $to);
 		label_row(_("Bank Balance:"),
 		 "<a target='_blank' " . ($bal < 0 ? 'class="redfg"' : '')
 			. "href='/gl/inquiry/bank_inquiry.php?bank_account=" . $bank_acc . "'"
 			. " onclick=\"javascript:openWindow(this.href,this.target); return false;\" >&nbsp;"
-			. price_format($bal)
+			. Num::price_format($bal)
 			. "</a>", $parms);
 	}
 

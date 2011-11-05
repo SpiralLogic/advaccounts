@@ -30,13 +30,13 @@
 	}
 	//---------------------------------------------------------------------------------------------------
 	if (isset($_GET['New'])) {
-
 		Purchase_Trans::instance(true)->is_invoice = false;
 		if (isset($_GET['invoice_no'])) {
 			Purchase_Trans::instance()->supp_reference = $_POST['invoice_no'] = $_GET['invoice_no'];
 		}
 	}
-	function clear_fields() {
+	function clear_fields()
+	{
 		$Ajax = Ajax::instance();
 		unset($_POST['gl_code']);
 		unset($_POST['dimension_id']);
@@ -90,7 +90,8 @@
 		}
 	}
 	//---------------------------------------------------------------------------------------------------
-	function check_data() {
+	function check_data()
+	{
 		global $total_grn_value, $total_gl_value;
 		if (!Purchase_Trans::instance()->is_valid_trans_to_post()) {
 			Errors::error(_("The credit note cannot be processed because the there are no items or values on the invoice.  Credit notes are expected to have a charge."));
@@ -136,7 +137,8 @@
 	}
 
 	//---------------------------------------------------------------------------------------------------
-	function handle_commit_credit_note() {
+	function handle_commit_credit_note()
+	{
 		copy_to_trans(Purchase_Trans::instance());
 		if (!check_data()) {
 			return;
@@ -155,7 +157,8 @@
 	if (isset($_POST['PostCreditNote'])) {
 		handle_commit_credit_note();
 	}
-	function check_item_data($n) {
+	function check_item_data($n)
+	{
 		if (!Validation::is_num('This_QuantityCredited' . $n, 0)) {
 			Errors::error(_("The quantity to credit must be numeric and greater than zero."));
 			JS::set_focus('This_QuantityCredited' . $n);
@@ -169,7 +172,8 @@
 		return true;
 	}
 
-	function commit_item_data($n) {
+	function commit_item_data($n)
+	{
 		if (check_item_data($n)) {
 			$complete = False;
 			Purchase_Trans::instance()->add_grn_to_trans(
@@ -221,7 +225,7 @@
 	if (isset($_POST['go'])) {
 		$Ajax->activate('gl_items');
 		ui_view::display_quick_entries(Purchase_Trans::instance(), $_POST['qid'], input_num('totamount'), QE_SUPPINV);
-		$_POST['totamount'] = price_format(0);
+		$_POST['totamount'] = Num::price_format(0);
 		$Ajax->activate('totamount');
 		$Ajax->activate('inv_tot');
 	}

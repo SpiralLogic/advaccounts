@@ -35,37 +35,37 @@
 		{
 			if ($user == null) {
 				// set default values, used before login
-				$this->date_sep    = Config::get('ui_date_seperator');
+				$this->date_sep = Config::get('ui_date_seperator');
 				$this->date_format = Config::get('ui_date_format');
-				$this->tho_sep     = 0;
-				$this->dec_sep     = 0;
-				$this->price_dec   = 2;
-				$this->language    = Config::get('default_lang');
-				$this->theme       = 'default';
+				$this->tho_sep = 0;
+				$this->dec_sep = 0;
+				$this->price_dec = 2;
+				$this->language = Config::get('default_lang');
+				$this->theme = 'default';
 			} else {
 				$this->language = $user["language"];
 				$_SESSION['language']->set_language($this->language);
-				$this->qty_dec       = $user["qty_dec"];
-				$this->price_dec     = $user["prices_dec"];
-				$this->exrate_dec    = $user["rates_dec"];
-				$this->percent_dec   = $user["percent_dec"];
-				$this->show_gl_info  = $user["show_gl"];
-				$this->show_codes    = $user["show_codes"];
-				$this->date_format   = $user["date_format"];
-				$this->date_sep      = $user["date_sep"];
-				$this->tho_sep       = $user["tho_sep"];
-				$this->dec_sep       = $user["dec_sep"];
-				$this->theme         = $user["theme"];
-				$this->pagesize      = $user["page_size"];
-				$this->show_hints    = $user["show_hints"];
+				$this->qty_dec = $user["qty_dec"];
+				$this->price_dec = $user["prices_dec"];
+				$this->exrate_dec = $user["rates_dec"];
+				$this->percent_dec = $user["percent_dec"];
+				$this->show_gl_info = $user["show_gl"];
+				$this->show_codes = $user["show_codes"];
+				$this->date_format = $user["date_format"];
+				$this->date_sep = $user["date_sep"];
+				$this->tho_sep = $user["tho_sep"];
+				$this->dec_sep = $user["dec_sep"];
+				$this->theme = $user["theme"];
+				$this->pagesize = $user["page_size"];
+				$this->show_hints = $user["show_hints"];
 				$this->print_profile = $user["print_profile"];
-				$this->rep_popup     = $user["rep_popup"];
-				$this->query_size    = $user["query_size"];
+				$this->rep_popup = $user["rep_popup"];
+				$this->query_size = $user["query_size"];
 				$this->graphic_links = $user["graphic_links"];
 				if (isset($user["sticky_doc_date"])) {
 					$this->sticky_date = $user["sticky_doc_date"];
 					$this->startup_tab = $user['startup_tab'];
-} else {
+				} else {
 					$this->sticky_date = 0;
 					$this->startup_tab = "orders";
 				}
@@ -126,7 +126,7 @@
 			elseif ($this->date_format == 1)
 			{
 				return "d" . $sep . "m" . $sep . "Y";
-} else {
+			} else {
 				return "Y" . $sep . "m" . $sep . "d";
 			}
 		}
@@ -188,22 +188,22 @@
 
 		function set_dec($price_dec, $qty_dec, $exrate_dec, $percent_dec, $showgl, $showcodes)
 		{
-			$this->price_dec    = $price_dec;
-			$this->qty_dec      = $qty_dec;
-			$this->exrate_dec   = $exrate_dec;
-			$this->percent_dec  = $percent_dec;
+			$this->price_dec = $price_dec;
+			$this->qty_dec = $qty_dec;
+			$this->exrate_dec = $exrate_dec;
+			$this->percent_dec = $percent_dec;
 			$this->show_gl_info = $showgl;
-			$this->show_codes   = $showcodes;
+			$this->show_codes = $showcodes;
 		}
 
 		function set_format($date_format, $date_sep, $tho_sep, $dec_sep, $theme, $pagesize)
 		{
 			$this->date_format = $date_format;
-			$this->date_sep    = $date_sep;
-			$this->tho_sep     = $tho_sep;
-			$this->dec_sep     = $dec_sep;
-			$this->theme       = $theme;
-			$this->pagesize    = $pagesize;
+			$this->date_sep = $date_sep;
+			$this->tho_sep = $tho_sep;
+			$this->dec_sep = $dec_sep;
+			$this->theme = $theme;
+			$this->pagesize = $pagesize;
 		}
 	}
 

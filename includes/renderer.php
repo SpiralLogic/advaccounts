@@ -40,12 +40,12 @@
 			if (!$no_menu || AJAX_REFERRER) {
 				$applications = $_SESSION['App']->applications;
 				echo "<div id='top'>\n";
-				echo "<p>" . Config::get('db.' . CurrentUser::get()->company, 'name') . " | " .
-				 $_SERVER['SERVER_NAME'] . " | " . CurrentUser::get()->name . "</p>\n";
+				echo "<p>" . Config::get('db.' . User::get()->company, 'name') . " | " .
+				 $_SERVER['SERVER_NAME'] . " | " . User::get()->name . "</p>\n";
 				echo "<ul>\n";
 				echo "  <li><a href='" . PATH_TO_ROOT . "/admin/display_prefs.php?'>" . _("Preferences") . "</a></li>\n";
 				echo "  <li><a href='" . PATH_TO_ROOT . "/admin/change_current_user_password.php?selected_id=" .
-				 CurrentUser::get()->username . "'>" . _("Change password") . "</a></li>\n";
+				 User::get()->username . "'>" . _("Change password") . "</a></li>\n";
 				if (Config::get('help_baseurl') != null) {
 					echo "  <li><a target = '_blank' onclick=" . '"' . "javascript:openWindow(this.href,this.target); return false;" . '" ' . "href='" . Page::help_url() . "'>" . _("Help") . "</a></li>";
 				}
@@ -91,7 +91,7 @@
 					echo "<span class='power'><a target='_blank' href='" . POWERED_URL . "'>" . POWERED_BY . "</a></span>\n";
 					echo "<span class='date'>" . Dates::Today() . " | " . Dates::Now() . "</span>\n";
 					if ($_SESSION['wa_current_user']->logged_in()) {
-						echo "<span class='date'>" . User::show_online() . "</span>\n";
+						echo "<span class='date'>" . Users::show_online() . "</span>\n";
 					}
 				}
 				echo "</div>\n";
@@ -125,7 +125,7 @@
 				) {
 					if ($appfunction->label == "") {
 						echo "<li class='empty'>&nbsp;</li>\n";
-					} elseif (CurrentUser::get()->can_access_page($appfunction->access)) {
+					} elseif (User::get()->can_access_page($appfunction->access)) {
 						echo "<li>" . menu_link($appfunction->link, $appfunction->label) . "</li>";
 					} else {
 						echo "<li><span class='inactive'>" . access_string($appfunction->label, true) . "</span></li>\n";
@@ -141,7 +141,7 @@
 						if ($appfunction->label == "") {
 							echo "<li class='empty'>&nbsp;</li>\n";
 						} elseif (
-							CurrentUser::get()->can_access_page($appfunction->access)
+							User::get()->can_access_page($appfunction->access)
 						)
 						{
 							echo "<li>" . menu_link($appfunction->link, $appfunction->label) . "</li>";

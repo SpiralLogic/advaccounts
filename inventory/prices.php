@@ -55,7 +55,7 @@
 				//editing an existing price
 				update_item_price($selected_id, $_POST['sales_type_id'], $_POST['curr_abrev'], input_num('price'));
 				$msg = _("This price has been updated.");
-} else {
+			} else {
 				add_item_price(
 					$_POST['stock_id'], $_POST['sales_type_id'],
 					$_POST['curr_abrev'], input_num('price')
@@ -120,10 +120,10 @@
 	//------------------------------------------------------------------------------------------------
 	echo "<br>";
 	if ($Mode == 'Edit') {
-		$myrow                  = get_stock_price($selected_id);
-		$_POST['curr_abrev']    = $myrow["curr_abrev"];
+		$myrow = get_stock_price($selected_id);
+		$_POST['curr_abrev'] = $myrow["curr_abrev"];
 		$_POST['sales_type_id'] = $myrow["sales_type_id"];
-		$_POST['price']         = price_format($myrow["price"]);
+		$_POST['price'] = Num::price_format($myrow["price"]);
 	}
 	hidden('selected_id', $selected_id);
 	div_start('price_details');
@@ -131,7 +131,7 @@
 	currencies_list_row(_("Currency:"), 'curr_abrev', null, true);
 	sales_types_list_row(_("Sales Type:"), 'sales_type_id', null, true);
 	if (!isset($_POST['price'])) {
-		$_POST['price'] = price_format(
+		$_POST['price'] = Num::price_format(
 			get_kit_price(
 				get_post('stock_id'),
 				get_post('curr_abrev'), get_post('sales_type_id')

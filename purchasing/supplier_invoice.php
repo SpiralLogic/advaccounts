@@ -65,15 +65,15 @@
 	if (isset($_POST['AddGLCodeToTrans'])) {
 		$Ajax->activate('gl_items');
 		$input_error = false;
-		$sql         = "SELECT account_code, account_name FROM chart_master WHERE account_code=" . DB::escape($_POST['gl_code']);
-		$result      = DBOld::query($sql, "get account information");
+		$sql = "SELECT account_code, account_name FROM chart_master WHERE account_code=" . DB::escape($_POST['gl_code']);
+		$result = DBOld::query($sql, "get account information");
 		if (DBOld::num_rows($result) == 0) {
 			Errors::error(_("The account code entered is not a valid code, this line cannot be added to the transaction."));
 			JS::set_focus('gl_code');
 			$input_error = true;
 		}
 		else {
-			$myrow       = DBOld::fetch_row($result);
+			$myrow = DBOld::fetch_row($result);
 			$gl_act_name = $myrow[1];
 			if (!Validation::is_num('amount')) {
 				Errors::error(_("The amount entered is not numeric. This line cannot be added to the transaction."));
@@ -144,7 +144,7 @@
 		}
 		$sql = "SELECT Count(*) FROM supp_trans WHERE supplier_id=" . DB::escape(Purchase_Trans::instance()->supplier_id) . " AND supp_reference=" . DB::escape($_POST['supp_reference']) . " AND ov_amount!=0"; // ignore voided invoice references
 		$result = DBOld::query($sql, "The sql to check for the previous entry of the same invoice failed");
-		$myrow  = DBOld::fetch_row($result);
+		$myrow = DBOld::fetch_row($result);
 		if ($myrow[0] == 1) { /*Transaction reference already entered */
 			Errors::error(_("This invoice number has already been entered. It cannot be entered again." . " (" . $_POST['supp_reference'] . ")"));
 			return false;
@@ -301,14 +301,14 @@
 		$Ajax->activate('inv_tot');
 	}
 	$id2 = -1;
-	if (CurrentUser::get()->can_access('SA_GRNDELETE')) {
+	if (User::get()->can_access('SA_GRNDELETE')) {
 		$id2 = find_submit('void_item_id');
 		if ($id2 != -1) {
 			DBOld::begin_transaction();
 			$myrow = get_grn_item_detail($id2);
-			$grn   = get_grn_batch($myrow['grn_batch_id']);
+			$grn = get_grn_batch($myrow['grn_batch_id']);
 			$sql
-						 = "UPDATE purch_order_details
+			 = "UPDATE purch_order_details
 			SET quantity_received = qty_invoiced, quantity_ordered = qty_invoiced WHERE po_detail_item = " . $myrow["po_detail_item"];
 			DBOld::query($sql, "The quantity invoiced of the purchase order line could not be updated");
 			$sql
@@ -327,7 +327,7 @@
 	if (isset($_POST['go'])) {
 		$Ajax->activate('gl_items');
 		ui_view::display_quick_entries(Purchase_Trans::instance(), $_POST['qid'], input_num('totamount'), QE_SUPPINV);
-		$_POST['totamount'] = price_format(0);
+		$_POST['totamount'] = Num::price_format(0);
 		$Ajax->activate('totamount');
 		$Ajax->activate('inv_tot');
 	}
@@ -391,13 +391,13 @@
          fv.total = fv.qty*fv.price*((100-fv.discount)/100);
          nodes.total.val(Math.round(fv.total*100)/100 );
        };
-       price_format(nodes.eachprice.attr('id'),(fv.total/fv.qty),2,true);
+       Num::price_format(nodes.eachprice.attr('id'),(fv.total/fv.qty),2,true);
        } else {
 	if (feild.attr('name')=='ChgTotal' || feild.attr('name')=='ChgTax') {
 	var total = Number(invTotal.data('total'));
 	var ChgTax =  Number(ChgTax.val().replace(',',''));
 	var ChgTotal = Number(ChgTotal.val().replace(',',''));
-	price_format(invTotal.attr('id'),total+ChgTax+ChgTotal,2,true); }
+	Num::price_format(invTotal.attr('id'),total+ChgTax+ChgTotal,2,true); }
 }});
 JS
 	);

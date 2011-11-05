@@ -73,8 +73,8 @@
 		$link
 		 = pager_link(
 			_("Allocation"),
-			"/sales/allocations/customer_allocate.php?trans_no=" . $row["trans_no"]
-			 . "&trans_type=" . $row["type"], ICON_MONEY
+		 "/sales/allocations/customer_allocate.php?trans_no=" . $row["trans_no"]
+			. "&trans_type=" . $row["type"], ICON_MONEY
 		);
 		if ($row["type"] == ST_CUSTCREDIT && $row['TotalAmount'] > 0) {
 			/*its a credit note which could have an allocation */
@@ -100,7 +100,7 @@
 		 = $row['type'] == ST_CUSTCREDIT || $row['type'] == ST_CUSTPAYMENT || $row['type'] == ST_CUSTREFUND
 		 || $row['type'] == ST_BANKDEPOSIT ?
 		 -$row["TotalAmount"] : $row["TotalAmount"];
-		return $value >= 0 ? price_format($value) : '';
+		return $value >= 0 ? Num::price_format($value) : '';
 	}
 
 	function fmt_credit($row)
@@ -109,12 +109,12 @@
 		 = !($row['type'] == ST_CUSTCREDIT || $row['type'] == ST_CUSTPAYMENT || $row['type'] == ST_CUSTREFUND
 		 || $row['type'] == ST_BANKDEPOSIT) ?
 		 -$row["TotalAmount"] : $row["TotalAmount"];
-		return $value > 0 ? price_format($value) : '';
+		return $value > 0 ? Num::price_format($value) : '';
 	}
 
 	//------------------------------------------------------------------------------------------------
 	$data_after = Dates::date2sql($_POST['TransAfterDate']);
-	$date_to    = Dates::date2sql($_POST['TransToDate']);
+	$date_to = Dates::date2sql($_POST['TransToDate']);
 	$sql
 	 = "SELECT
   		trans.type,
@@ -159,7 +159,7 @@
 			 . "trans.ov_gst + trans.ov_freight + "
 			 . "trans.ov_freight_tax + trans.ov_discount) - trans.alloc,6) > 0) ";
 		}
-} else {
+	} else {
 		$sql .= " AND trans.type <> " . ST_CUSTDELIVERY . " ";
 	}
 	if (!check_value('showSettled')) {
@@ -169,39 +169,39 @@
 	}
 	//------------------------------------------------------------------------------------------------
 	$cols = array(
-		_("Type")			=> array('fun' => 'systype_name'),
-		_("#")				 => array('fun' => 'view_link'),
+		_("Type") => array('fun' => 'systype_name'),
+		_("#") => array('fun' => 'view_link'),
 		_("Reference"),
-		_("Order")		 => array('fun' => 'order_link'),
-		_("Date")			=> array(
+		_("Order") => array('fun' => 'order_link'),
+		_("Date") => array(
 			'name' => 'tran_date',
 			'type' => 'date',
-			'ord'	=> 'asc'
+			'ord' => 'asc'
 		),
-		_("Due Date")	=> array(
+		_("Due Date") => array(
 			'type' => 'date',
-			'fun'	=> 'due_date'
+			'fun' => 'due_date'
 		),
 		_("Customer"),
-		_("Currency")	=> array('align' => 'center'),
-		_("Debit")		 => array(
+		_("Currency") => array('align' => 'center'),
+		_("Debit") => array(
 			'align' => 'right',
-			'fun'	 => 'fmt_debit'
+			'fun' => 'fmt_debit'
 		),
-		_("Credit")		=> array(
-			'align'	=> 'right',
+		_("Credit") => array(
+			'align' => 'right',
 			'insert' => true,
-			'fun'		=> 'fmt_credit'
+			'fun' => 'fmt_credit'
 		),
 		_("Allocated") => 'amount',
-		_("Balance")	 => array(
-			'type'	 => 'amount',
+		_("Balance") => array(
+			'type' => 'amount',
 			'insert' => true,
-			'fun'		=> 'fmt_balance'
+			'fun' => 'fmt_balance'
 		),
 		array(
 			'insert' => true,
-			'fun'		=> 'alloc_link'
+			'fun' => 'alloc_link'
 		)
 	);
 	if ($_POST['customer_id'] != ALL_TEXT) {

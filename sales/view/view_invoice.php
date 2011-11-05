@@ -72,9 +72,9 @@
 	label_cells(_("Due Date"), Dates::sql2date($myrow["due_date"]), "class='label'", "nowrap");
 	label_cells(
 		_("Deliveries"), ui_view::get_customer_trans_view_str(
-										 ST_CUSTDELIVERY,
-										 get_parent_trans(ST_SALESINVOICE, $trans_id)
-									 ), "class='label'"
+			ST_CUSTDELIVERY,
+			get_parent_trans(ST_SALESINVOICE, $trans_id)
+		), "class='label'"
 	);
 	end_row();
 	Display::comments_row(ST_SALESINVOICE, $trans_id);
@@ -104,7 +104,7 @@
 			$sub_total += $value;
 			if ($myrow2["discount_percent"] == 0) {
 				$display_discount = "";
-} else {
+			} else {
 				$display_discount = Num::percent_format($myrow2["discount_percent"] * 100) . "%";
 			}
 			label_cell($myrow2["stock_id"]);
@@ -116,11 +116,11 @@
 			amount_cell($value);
 			end_row();
 		} //end while there are line items to print out
-} else {
+	} else {
 		Errors::warning(_("There are no line items on this invoice."), 1, 2);
 	}
-	$display_sub_tot = price_format($sub_total);
-	$display_freight = price_format($myrow["ov_freight"]);
+	$display_sub_tot = Num::price_format($sub_total);
+	$display_freight = Num::price_format($myrow["ov_freight"]);
 	/*Print out the invoice text entered */
 	label_row(
 		_("Sub-total"), $display_sub_tot, "colspan=6 align=right",
@@ -129,7 +129,7 @@
 	label_row(_("Shipping"), $display_freight, "colspan=6 align=right", "nowrap align=right");
 	$tax_items = get_trans_tax_details(ST_SALESINVOICE, $trans_id);
 	Display::customer_trans_tax_details($tax_items, 6);
-	$display_total = price_format($myrow["ov_freight"] + $myrow["ov_gst"] + $myrow["ov_amount"] + $myrow["ov_freight_tax"]);
+	$display_total = Num::price_format($myrow["ov_freight"] + $myrow["ov_gst"] + $myrow["ov_amount"] + $myrow["ov_freight_tax"]);
 	label_row(
 		_("TOTAL INVOICE"), $display_total, "colspan=6 align=right",
 		"nowrap align=right"

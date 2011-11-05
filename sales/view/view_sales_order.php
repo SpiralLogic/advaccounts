@@ -48,7 +48,7 @@
 	label_cells(_("Ordered On"), $_SESSION['View']->document_date, "class='label'");
 	if ($_GET['trans_type'] == ST_SALESQUOTE) {
 		label_cells(_("Valid until"), $_SESSION['View']->due_date, "class='label'");
-} else {
+	} else {
 		label_cells(_("Requested Delivery"), $_SESSION['View']->due_date, "class='label'");
 	}
 	end_row();
@@ -69,15 +69,15 @@
 		Display::heading(_("Delivery Notes"));
 		$th = array(_("#"), _("Ref"), _("Date"), _("Total"));
 		table_header($th);
-		$sql            = "SELECT * FROM debtor_trans WHERE type=" . ST_CUSTDELIVERY . " AND order_=" . DB::escape($_GET['trans_no']);
-		$result         = DBOld::query($sql, "The related delivery notes could not be retreived");
+		$sql = "SELECT * FROM debtor_trans WHERE type=" . ST_CUSTDELIVERY . " AND order_=" . DB::escape($_GET['trans_no']);
+		$result = DBOld::query($sql, "The related delivery notes could not be retreived");
 		$delivery_total = 0;
-		$k              = 0;
-		$dn_numbers     = array();
+		$k = 0;
+		$dn_numbers = array();
 		while ($del_row = DBOld::fetch($result)) {
 			alt_table_row_color($k);
 			$dn_numbers[] = $del_row["trans_link"];
-			$this_total   = $del_row["ov_freight"] + $del_row["ov_amount"] + $del_row["ov_freight_tax"] + $del_row["ov_gst"];
+			$this_total = $del_row["ov_freight"] + $del_row["ov_amount"] + $del_row["ov_freight_tax"] + $del_row["ov_gst"];
 			$delivery_total += $this_total;
 			label_cell(ui_view::get_customer_trans_view_str($del_row["type"], $del_row["trans_no"]));
 			label_cell($del_row["reference"]);
@@ -85,19 +85,19 @@
 			amount_cell($this_total);
 			end_row();
 		}
-		label_row(null, price_format($delivery_total), " ", "colspan=4 align=right");
+		label_row(null, Num::price_format($delivery_total), " ", "colspan=4 align=right");
 		end_table();
 		echo "</td><td valign='top'>";
 		start_table(Config::get('tables_style'));
 		Display::heading(_("Sales Invoices"));
 		$th = array(_("#"), _("Ref"), _("Date"), _("Total"));
 		table_header($th);
-		$inv_numbers    = array();
+		$inv_numbers = array();
 		$invoices_total = 0;
 		if (count($dn_numbers)) {
-			$sql    = "SELECT * FROM debtor_trans WHERE type=" . ST_SALESINVOICE . " AND trans_no IN(" . implode(',', array_values($dn_numbers)) . ")";
+			$sql = "SELECT * FROM debtor_trans WHERE type=" . ST_SALESINVOICE . " AND trans_no IN(" . implode(',', array_values($dn_numbers)) . ")";
 			$result = DBOld::query($sql, "The related invoices could not be retreived");
-			$k      = 0;
+			$k = 0;
 			while ($inv_row = DBOld::fetch($result)) {
 				alt_table_row_color($k);
 				$this_total = $inv_row["ov_freight"] + $inv_row["ov_freight_tax"] + $inv_row["ov_gst"] + $inv_row["ov_amount"];
@@ -110,7 +110,7 @@
 				end_row();
 			}
 		}
-		label_row(null, price_format($invoices_total), " ", "colspan=4 align=right");
+		label_row(null, Num::price_format($invoices_total), " ", "colspan=4 align=right");
 		end_table();
 		Display::heading(_("Credit Notes"));
 		start_table(Config::get('tables_style'));
@@ -120,9 +120,9 @@
 		if (count($inv_numbers)) {
 			// FIXME -  credit notes retrieved here should be those linked to invoices containing
 			// at least one line from this order
-			$sql    = "SELECT * FROM debtor_trans WHERE type=" . ST_CUSTCREDIT . " AND trans_link IN(" . implode(',', array_values($inv_numbers)) . ")";
+			$sql = "SELECT * FROM debtor_trans WHERE type=" . ST_CUSTCREDIT . " AND trans_link IN(" . implode(',', array_values($inv_numbers)) . ")";
 			$result = DBOld::query($sql, "The related credit notes could not be retreived");
-			$k      = 0;
+			$k = 0;
 			while ($credits_row = DBOld::fetch($result)) {
 				alt_table_row_color($k);
 				$this_total = $credits_row["ov_freight"] + $credits_row["ov_freight_tax"] + $credits_row["ov_gst"] + $credits_row["ov_amount"];
@@ -134,7 +134,7 @@
 				end_row();
 			}
 		}
-		label_row(null, "<font color=red>" . price_format(-$credits_total) . "</font>", " ", "colspan=4 align=right");
+		label_row(null, "<font color=red>" . Num::price_format(-$credits_total) . "</font>", " ", "colspan=4 align=right");
 		end_table();
 		echo "</td></tr>";
 		end_table();
@@ -172,9 +172,9 @@
 			}, $_SESSION['View']->line_items
 		)
 	);
-	$items_total   = $_SESSION['View']->get_items_total();
-	$display_total = price_format($items_total + $_SESSION['View']->freight_cost);
-	label_row(_("Shipping"), price_format($_SESSION['View']->freight_cost), "align=right colspan=6", "nowrap align=right", 1);
+	$items_total = $_SESSION['View']->get_items_total();
+	$display_total = Num::price_format($items_total + $_SESSION['View']->freight_cost);
+	label_row(_("Shipping"), Num::price_format($_SESSION['View']->freight_cost), "align=right colspan=6", "nowrap align=right", 1);
 	label_row(_("Total Order Value"), $display_total, "align=right colspan=6", "nowrap align=right", 1);
 	end_table(2);
 	$modify = ($_GET['trans_type'] == ST_SALESORDER ? "ModifyOrderNumber" : "ModifyQuotationNumber");

@@ -19,7 +19,7 @@
 			JS::set_focus('password');
 			return false;
 		}
-		if (strstr($_POST['password'], CurrentUser::get()->username) != false) {
+		if (strstr($_POST['password'], User::get()->username) != false) {
 			Errors::error(_("The password cannot contain the user login."));
 			JS::set_focus('password');
 			return false;
@@ -37,7 +37,7 @@
 			if (Config::get('demo_mode')) {
 				Errors::warning(_("Password cannot be changed in demo mode."));
 			} else {
-				$auth  = new Auth(CurrentUser::get()->username);
+				$auth = new Auth(User::get()->username);
 				$check = $auth->checkPasswordStrength($_POST['password']);
 				if ($check['error'] > 0) {
 					Errors::error($check['text']);
@@ -60,9 +60,9 @@
 	start_form();
 	start_table(Config::get('tables_style'));
 	table_section_title(_("Enter your new password in the fields."));
-	$myrow = User::get(CurrentUser::get()->user);
+	$myrow = Users::get(User::get()->user);
 	label_row(_("User login:"), $myrow['user_id']);
-	$_POST['password']        = "";
+	$_POST['password'] = "";
 	$_POST['passwordConfirm'] = "";
 	password_row(_("Password:"), 'password', $_POST['password']);
 	password_row(_("Repeat password:"), 'passwordConfirm', $_POST['passwordConfirm']);

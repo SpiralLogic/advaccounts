@@ -104,7 +104,7 @@
 	if ($mb_flag == -1) {
 		Errors::error(_("Entered item is not defined. Please re-enter."));
 		JS::set_focus('stock_id');
-} else {
+	} else {
 		$sql = "SELECT purch_data.*,suppliers.supp_name,"
 		 . "suppliers.curr_code
 		FROM purch_data INNER JOIN suppliers
@@ -160,7 +160,7 @@
 		$result = DBOld::query($sql, "The supplier purchasing details for the selected supplier and item could not be retrieved");
 		$myrow = DBOld::fetch($result);
 		$supp_name = $myrow["supp_name"];
-		$_POST['price'] = price_decimal_format($myrow["price"], $dec2);
+		$_POST['price'] = Num::price_decimal($myrow["price"], $dec2);
 		$_POST['suppliers_uom'] = $myrow["suppliers_uom"];
 		$_POST['supplier_description'] = $myrow["supplier_description"];
 		$_POST['conversion_factor'] = Num::exrate_format($myrow["conversion_factor"]);
@@ -171,7 +171,7 @@
 	if ($Mode == 'Edit') {
 		hidden('supplier_id');
 		label_row(_("Supplier:"), $supp_name);
-} else {
+	} else {
 		supplier_list_row(_("Supplier:"), 'supplier_id', null, false, true);
 		$_POST['price'] = $_POST['suppliers_uom'] = $_POST['conversion_factor'] = $_POST['supplier_description'] = "";
 	}

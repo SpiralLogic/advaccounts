@@ -14,14 +14,14 @@
 	function get_supplier_details_to_order(&$order, $supplier_id)
 	{
 		$sql
-						= "SELECT * FROM suppliers
+		 = "SELECT * FROM suppliers
 		WHERE supplier_id = '$supplier_id'";
 		$result = DBOld::query($sql, "The supplier details could not be retreived");
-		$myrow                   = DBOld::fetch_assoc($result);
+		$myrow = DBOld::fetch_assoc($result);
 		$order->supplier_details = $myrow;
-		$order->curr_code        = $_POST['curr_code'] = $myrow["curr_code"];
-		$order->supplier_name    = $_POST['supplier_name'] = $myrow["supp_name"];
-		$order->supplier_id      = $_POST['supplier_id'] = $supplier_id;
+		$order->curr_code = $_POST['curr_code'] = $myrow["curr_code"];
+		$order->supplier_name = $_POST['supplier_name'] = $myrow["supp_name"];
+		$order->supplier_id = $_POST['supplier_id'] = $supplier_id;
 	}
 
 	//---------------------------------------------------------------------------------------------------
@@ -44,7 +44,7 @@
 	//---------------------------------------------------------------------------------------------------
 	function display_po_header(&$order)
 	{
-		$Ajax     = Ajax::instance();
+		$Ajax = Ajax::instance();
 		$editable = ($order->order_no == 0);
 		start_outer_table("width=90% " . Config::get('tables_style2'));
 		table_section(1);
@@ -68,10 +68,10 @@
 			foreach (
 				$order->line_items as $line_no => $item
 			) {
-				$line        = &$order->line_items[$line_no];
+				$line = &$order->line_items[$line_no];
 				$line->price = get_purchase_price($order->supplier_id, $line->stock_id);
 				$line->quantity
-										 = $line->quantity / get_purchase_conversion_factor($old_supp, $line->stock_id)
+				 = $line->quantity / get_purchase_conversion_factor($old_supp, $line->stock_id)
 				 * get_purchase_conversion_factor($order->supplier_id, $line->stock_id);
 			}
 			$Ajax->activate('items_table');
@@ -104,14 +104,14 @@
 		 || !isset($_POST['delivery_address'])
 		 || $_POST['delivery_address'] == ""
 		) {
-			$sql    = "SELECT delivery_address, phone FROM locations WHERE loc_code='" .
+			$sql = "SELECT delivery_address, phone FROM locations WHERE loc_code='" .
 			 $_POST['StkLocation'] . "'";
 			$result = DBOld::query($sql, "could not get location info");
 			if (DBOld::num_rows($result) == 1) {
-				$loc_row                   = DBOld::fetch($result);
+				$loc_row = DBOld::fetch($result);
 				$_POST['delivery_address'] = $loc_row["delivery_address"];
 				$Ajax->activate('delivery_address');
-				$_SESSION['PO']->Location         = $_POST['StkLocation'];
+				$_SESSION['PO']->Location = $_POST['StkLocation'];
 				$_SESSION['PO']->delivery_address = $_POST['delivery_address'];
 			} else { /* The default location of the user is crook */
 				Errors::error(_("The default stock location set up for this user is not a currently defined stock location. Your system administrator needs to amend your user record."));
@@ -137,9 +137,9 @@
 			$th[] = '';
 		}
 		table_header($th);
-		$id    = find_submit('Edit');
+		$id = find_submit('Edit');
 		$total = 0;
-		$k     = 0;
+		$k = 0;
 		foreach (
 			$order->line_items as $line_no => $po_line
 		) {
@@ -177,8 +177,8 @@
 			po_item_controls($order);
 		}
 		label_cell(_("Freight"), "colspan=8 align=right");
-		small_amount_cells(null, 'freight', price_format(get_post('freight', 0)));
-		$display_total = price_format($total + input_num('freight'));
+		small_amount_cells(null, 'freight', Num::price_format(get_post('freight', 0)));
+		$display_total = Num::price_format($total + input_num('freight'));
 		start_row();
 		label_cells(
 			_("Total Excluding Shipping/Tax"), $display_total, "colspan=8 align=right",
@@ -245,18 +245,18 @@
 		$Ajax = Ajax::instance();
 		start_row();
 		$dec2 = 0;
-		$id   = find_submit('Edit');
+		$id = find_submit('Edit');
 		if (($id != -1) && $stock_id != null) {
 			hidden('line_no', $id);
 			$_POST['stock_id'] = $order->line_items[$id]->stock_id;
-			$dec               = get_qty_dec($_POST['stock_id']);
-			$_POST['qty']      = Num::qty_format($order->line_items[$id]->quantity, $_POST['stock_id'], $dec);
-			//$_POST['price'] = price_format($order->line_items[$id]->price);
-			$_POST['price']        = price_decimal_format($order->line_items[$id]->price, $dec2);
-			$_POST['discount']     = Num::percent_format($order->line_items[$id]->discount * 100);
+			$dec = get_qty_dec($_POST['stock_id']);
+			$_POST['qty'] = Num::qty_format($order->line_items[$id]->quantity, $_POST['stock_id'], $dec);
+			//$_POST['price'] = Num::price_format($order->line_items[$id]->price);
+			$_POST['price'] = Num::price_decimal($order->line_items[$id]->price, $dec2);
+			$_POST['discount'] = Num::percent_format($order->line_items[$id]->discount * 100);
 			$_POST['req_del_date'] = $order->line_items[$id]->req_del_date;
-			$_POST['description']  = $order->line_items[$id]->description;
-			$_POST['units']        = $order->line_items[$id]->units;
+			$_POST['description'] = $order->line_items[$id]->description;
+			$_POST['units'] = $order->line_items[$id]->units;
 			hidden('stock_id', $_POST['stock_id']);
 			label_cell($_POST['stock_id'], " class='stock'   data-stock_id='{$_POST['stock_id']}'");
 			textarea_cells(null, 'description', null, 50, 5);
@@ -274,16 +274,16 @@
 				$Ajax->activate('req_del_date');
 				$Ajax->activate('line_total');
 			}
-			$item_info            = get_item_edit_info(Input::post('stock_id'));
-			$_POST['units']       = $item_info["units"];
+			$item_info = get_item_edit_info(Input::post('stock_id'));
+			$_POST['units'] = $item_info["units"];
 			$_POST['description'] = $item_info['description'];
-			$dec                  = $item_info["decimals"];
-			$_POST['qty']         = Num::format(get_purchase_conversion_factor($order->supplier_id, Input::post('stock_id')), $dec);
-			//$_POST['price'] = price_format(get_purchase_price ($order->supplier_id, $_POST['stock_id']));
-			$_POST['price']        = price_decimal_format(get_purchase_price($order->supplier_id, Input::post('stock_id')), $dec2);
+			$dec = $item_info["decimals"];
+			$_POST['qty'] = Num::format(get_purchase_conversion_factor($order->supplier_id, Input::post('stock_id')), $dec);
+			//$_POST['price'] = Num::price_format(get_purchase_price ($order->supplier_id, $_POST['stock_id']));
+			$_POST['price'] = Num::price_decimal(get_purchase_price($order->supplier_id, Input::post('stock_id')), $dec2);
 			$_POST['req_del_date'] = Dates::add_days(Dates::Today(), 10);
-			$_POST['discount']     = Num::percent_format(0);
-			$qty_rcvd              = '';
+			$_POST['discount'] = Num::percent_format(0);
+			$qty_rcvd = '';
 		}
 		qty_cells(null, 'qty', null, null, null, $dec);
 		qty_cell($qty_rcvd, false, $dec);

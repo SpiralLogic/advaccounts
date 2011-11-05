@@ -51,14 +51,15 @@
 		Page::footer_exit();
 	}
 	//----------------------------------------------------------------------------------------
-	function check_inputs() {
+	function check_inputs()
+	{
 		if (!get_post('supplier_id')) {
 			Errors::error(_("There is no supplier selected."));
 			JS::set_focus('supplier_id');
 			return false;
 		}
 		if ($_POST['amount'] == "") {
-			$_POST['amount'] = price_format(0);
+			$_POST['amount'] = Num::price_format(0);
 		}
 		if (!Validation::is_num('amount', 0)) {
 			Errors::error(_("The entered amount is invalid or less than zero."));
@@ -127,7 +128,8 @@
 	}
 
 	//----------------------------------------------------------------------------------------
-	function handle_add_payment() {
+	function handle_add_payment()
+	{
 		$supp_currency = Banking::get_supplier_currency($_POST['supplier_id']);
 		$bank_currency = Banking::get_bank_account_currency($_POST['bank_account']);
 		$comp_currency = Banking::get_company_currency();
@@ -174,7 +176,6 @@
 		$_SESSION['alloc'] = new Gl_Allocation(ST_SUPPAYMENT, 0);
 	}
 	Session::get()->supplier_id = $_POST['supplier_id'];
-
 	bank_accounts_list_row(_("From Bank Account:"), 'bank_account', null, true);
 	table_section(2);
 	ref_row(_("Reference:"), 'ref', '', Refs::get_next(ST_SUPPAYMENT));

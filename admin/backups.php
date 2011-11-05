@@ -35,7 +35,8 @@
 	}
 	Page::start(_($help_context = "Backup and Restore Database"), false, false, '', '');
 	check_paths();
-	function check_paths() {
+	function check_paths()
+	{
 		if (!file_exists(BACKUP_PATH)) {
 			Errors::error(
 				_("Backup paths have not been set correctly.")
@@ -47,7 +48,8 @@
 		}
 	}
 
-	function generate_backup($conn, $ext = 'no', $comm = '') {
+	function generate_backup($conn, $ext = 'no', $comm = '')
+	{
 		$filename = DB_Utils::backup($conn, $ext, $comm);
 		if ($filename) {
 			Errors::notice(
@@ -60,7 +62,8 @@
 		return $filename;
 	}
 
-	function get_backup_file_combo() {
+	function get_backup_file_combo()
+	{
 		$Ajax = Ajax::instance();
 		$ar_files = array();
 		JS::default_focus('backups');
@@ -86,7 +89,8 @@
 		return $selector;
 	}
 
-	function compress_list_row($label, $name, $value = null) {
+	function compress_list_row($label, $name, $value = null)
+	{
 		$ar_comps = array('no' => _("No"));
 		if (function_exists("gzcompress")) {
 			$ar_comps['zip'] = "zip";
@@ -99,7 +103,8 @@
 		echo "</td></tr>";
 	}
 
-	function download_file($filename) {
+	function download_file($filename)
+	{
 		if (empty($filename) || !file_exists($filename)) {
 			Errors::error(_('Select backup file first.'));
 			return false;
@@ -112,7 +117,7 @@
 		return true;
 	}
 
-	$db_name = CurrentUser::get()->company;
+	$db_name = User::get()->company;
 	$connections = Config::get_all('db');
 	$conn = $conections[$db_name];
 	if (get_post('creat')) {

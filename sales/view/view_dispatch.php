@@ -98,7 +98,7 @@
 			$sub_total += $value;
 			if ($myrow2["discount_percent"] == 0) {
 				$display_discount = "";
-} else {
+			} else {
 				$display_discount = Num::percent_format($myrow2["discount_percent"] * 100) . "%";
 			}
 			label_cell($myrow2["stock_id"]);
@@ -110,11 +110,11 @@
 			amount_cell($value);
 			end_row();
 		} //end while there are line items to print out
-} else {
+	} else {
 		Errors::warning(_("There are no line items on this dispatch."), 1, 2);
 	}
-	$display_sub_tot = price_format($sub_total);
-	$display_freight = price_format($myrow["ov_freight"]);
+	$display_sub_tot = Num::price_format($sub_total);
+	$display_freight = Num::price_format($myrow["ov_freight"]);
 	/*Print out the delivery note text entered */
 	label_row(
 		_("Sub-total"), $display_sub_tot, "colspan=6 align=right",
@@ -123,7 +123,7 @@
 	label_row(_("Shipping"), $display_freight, "colspan=6 align=right", "nowrap align=right");
 	$tax_items = get_trans_tax_details(ST_CUSTDELIVERY, $trans_id);
 	ui_view::Display::customer_trans_tax_details($tax_items, 6);
-	$display_total = price_format($myrow["ov_freight"] + $myrow["ov_amount"] + $myrow["ov_freight_tax"] + $myrow["ov_gst"]);
+	$display_total = Num::price_format($myrow["ov_freight"] + $myrow["ov_amount"] + $myrow["ov_freight_tax"] + $myrow["ov_gst"]);
 	label_row(
 		_("TOTAL VALUE"), $display_total, "colspan=6 align=right",
 		"nowrap align=right"

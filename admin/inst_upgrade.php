@@ -56,7 +56,7 @@
 	{
 		$patchdir = APP_PATH . "sql/";
 		$upgrades = array();
-		$datadir  = @opendir($patchdir);
+		$datadir = @opendir($patchdir);
 		if ($datadir) {
 			while (false !== ($fname = readdir($datadir)))
 			{ // check all php files but index.php
@@ -83,8 +83,8 @@
 	function upgrade_step($index, $conn)
 	{
 		global $installers;
-		$inst  = $installers[$index];
-		$ret   = true;
+		$inst = $installers[$index];
+		$ret = true;
 		$force = get_post('force_' . $index);
 		if ($force || get_post('install_' . $index)) {
 			$state = $inst->installed();
@@ -157,8 +157,8 @@
 			}
 		}
 		if ($ret) { // re-read the prefs
-			$user                          = User::get_by_login(CurrentUser::get()->username);
-			CurrentUser::get()->prefs = new userPrefs($user);
+			$user = Users::get_by_login(User::get()->username);
+			User::get()->prefs = new userPrefs($user);
 			Errors::notice(_('All companies data has been successfully updated'));
 		}
 		$Ajax->activate('_page_body');

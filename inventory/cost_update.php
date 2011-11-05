@@ -62,7 +62,7 @@
 	echo "</center><hr>";
 	Session::get()->global_stock_id = $_POST['stock_id'];
 	$sql
-					= "SELECT description, units, material_cost, labour_cost,
+	 = "SELECT description, units, material_cost, labour_cost,
 	overhead_cost, mb_flag
 	FROM stock_master
 	WHERE stock_id=" . DB::escape($_POST['stock_id']) . "
@@ -75,15 +75,15 @@
 	hidden("OldLabourCost", $myrow["labour_cost"]);
 	hidden("OldOverheadCost", $myrow["overhead_cost"]);
 	start_table(Config::get('tables_style2'));
-	$dec1                   = $dec2 = $dec3 = 0;
-	$_POST['material_cost'] = price_decimal_format($myrow["material_cost"], $dec1);
-	$_POST['labour_cost']   = price_decimal_format($myrow["labour_cost"], $dec2);
-	$_POST['overhead_cost'] = price_decimal_format($myrow["overhead_cost"], $dec3);
+	$dec1 = $dec2 = $dec3 = 0;
+	$_POST['material_cost'] = Num::price_decimal($myrow["material_cost"], $dec1);
+	$_POST['labour_cost'] = Num::price_decimal($myrow["labour_cost"], $dec2);
+	$_POST['overhead_cost'] = Num::price_decimal($myrow["overhead_cost"], $dec3);
 	amount_row(_("Standard Material Cost Per Unit"), "material_cost", null, "class='tableheader2'", null, $dec1);
 	if ($myrow["mb_flag"] == STOCK_MANUFACTURE) {
 		amount_row(_("Standard Labour Cost Per Unit"), "labour_cost", null, "class='tableheader2'", null, $dec2);
 		amount_row(_("Standard Overhead Cost Per Unit"), "overhead_cost", null, "class='tableheader2'", null, $dec3);
-} else {
+	} else {
 		hidden("labour_cost", 0);
 		hidden("overhead_cost", 0);
 	}

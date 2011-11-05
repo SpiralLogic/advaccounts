@@ -16,14 +16,16 @@
 	Page::start(_($help_context = "Fiscal Years"));
 	simple_page_mode(true);
 	//---------------------------------------------------------------------------------------------
-	function is_date_in_fiscalyears($date) {
+	function is_date_in_fiscalyears($date)
+	{
 		$date = Dates::date2sql($date);
 		$sql = "SELECT * FROM fiscal_year WHERE '$date' >= begin AND '$date' <= end";
 		$result = DBOld::query($sql, "could not get all fiscal years");
 		return DBOld::fetch($result) !== false;
 	}
 
-	function is_bad_begin_date($date) {
+	function is_bad_begin_date($date)
+	{
 		$bdate = Dates::date2sql($date);
 		$sql = "SELECT MAX(end) FROM fiscal_year WHERE begin < '$bdate'";
 		$result = DBOld::query($sql, "could not retrieve last fiscal years");
@@ -35,7 +37,8 @@
 		return ($max !== $date);
 	}
 
-	function check_years_before($date, $closed = false) {
+	function check_years_before($date, $closed = false)
+	{
 		$date = Dates::date2sql($date);
 		$sql = "SELECT COUNT(*) FROM fiscal_year WHERE begin < '$date'";
 		if (!$closed) {
@@ -46,7 +49,8 @@
 		return ($row[0] > 0);
 	}
 
-	function check_data() {
+	function check_data()
+	{
 		if (!Dates::is_date($_POST['from_date']) || is_date_in_fiscalyears($_POST['from_date'])
 		 || is_bad_begin_date(
 			 $_POST['from_date']
@@ -70,7 +74,8 @@
 	}
 
 	//---------------------------------------------------------------------------------------------
-	function close_year($year) {
+	function close_year($year)
+	{
 		$co = DB_Company::get_prefs();
 		if (get_gl_account($co['retained_earnings_act']) == false || get_gl_account($co['profit_loss_year_act']) == false) {
 			Errors::error(_("The Retained Earnings Account or the Profit and Loss Year Account has not been set in System and General GL Setup"));
@@ -105,7 +110,8 @@
 		return true;
 	}
 
-	function open_year($year) {
+	function open_year($year)
+	{
 		$myrow = DB_Company::get_fiscalyear($year);
 		$from = Dates::sql2date($myrow['begin']);
 		DBOld::begin_transaction();
@@ -113,7 +119,8 @@
 		DBOld::commit_transaction();
 	}
 
-	function handle_submit() {
+	function handle_submit()
+	{
 		global $selected_id, $Mode;
 		$ok = true;
 		if ($selected_id != -1) {
@@ -142,7 +149,8 @@
 	}
 
 	//---------------------------------------------------------------------------------------------
-	function check_can_delete($selected_id) {
+	function check_can_delete($selected_id)
+	{
 		$myrow = DB_Company::get_fiscalyear($selected_id);
 		// PREVENT DELETES IF DEPENDENT RECORDS IN gl_trans
 		if (check_years_before(Dates::sql2date($myrow['begin']), true)) {
@@ -157,7 +165,8 @@
 	}
 
 	//---------------------------------------------------------------------------------------------
-	function delete_attachments_and_comments($type_no, $trans_no) {
+	function delete_attachments_and_comments($type_no, $trans_no)
+	{
 		$sql = "SELECT * FROM attachments WHERE type_no = $type_no AND trans_no = $trans_no";
 		$result = DBOld::query($sql, "Could not retrieve attachments");
 		while ($row = DBOld::fetch($result))
@@ -175,8 +184,9 @@
 		DBOld::query($sql, "Could not delete refs");
 	}
 
-	function delete_this_fiscalyear($selected_id) {
-		DB_Utils::backup(Config::get('db.' . CurrentUser::get()->company), 'Security backup before Fiscal Year Removal');
+	function delete_this_fiscalyear($selected_id)
+	{
+		DB_Utils::backup(Config::get('db.' . User::get()->company), 'Security backup before Fiscal Year Removal');
 		DBOld::begin_transaction();
 		$ref = _("Open Balance");
 		$myrow = DB_Company::get_fiscalyear($selected_id);
@@ -364,7 +374,8 @@
 		DBOld::commit_transaction();
 	}
 
-	function handle_delete() {
+	function handle_delete()
+	{
 		global $selected_id, $Mode;
 		if (check_can_delete($selected_id)) {
 			//only delete if used in neither customer or supplier, comp prefs, bank trans accounts
@@ -375,7 +386,8 @@
 	}
 
 	//---------------------------------------------------------------------------------------------
-	function display_fiscalyears() {
+	function display_fiscalyears()
+	{
 		$company_year = DB_Company::get_pref('f_year');
 		$result = DB_Company::get_all_fiscalyears();
 		start_form();
@@ -426,7 +438,8 @@
 	}
 
 	//---------------------------------------------------------------------------------------------
-	function display_fiscalyear_edit($selected_id) {
+	function display_fiscalyear_edit($selected_id)
+	{
 		global $Mode;
 		start_form();
 		start_table(Config::get('tables_style2'));

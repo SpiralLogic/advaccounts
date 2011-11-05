@@ -10,7 +10,8 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	//--------------------------------------------------------------------------------
-	function display_order_header(&$Order) {
+	function display_order_header(&$Order)
+	{
 		$Ajax = Ajax::instance();
 		$qes = has_quick_entries(QE_JOURNAL);
 		$new = $Order->order_id == 0;
@@ -38,7 +39,7 @@
 				$Ajax->activate('totamount');
 			}
 			amount_cells(
-				$qid['base_desc'] . ":", 'totamount', price_format($qid['base_amount']),
+				$qid['base_desc'] . ":", 'totamount', Num::Num::price_format($qid['base_amount']),
 				null, "&nbsp;&nbsp;" . submit('go', _("Go"), false, false, true)
 			);
 			end_row();
@@ -47,7 +48,8 @@
 	}
 
 	//---------------------------------------------------------------------------------
-	function display_gl_items($title, &$order) {
+	function display_gl_items($title, &$order)
+	{
 		Display::heading($title);
 		$dim = DB_Company::get_pref('use_dimension');
 		div_start('items_table');
@@ -91,7 +93,7 @@
 				if ($item->amount > 0) {
 					amount_cell(abs($item->amount));
 					label_cell("");
-} else {
+				} else {
 					label_cell("");
 					amount_cell(abs($item->amount));
 				}
@@ -105,7 +107,7 @@
 					_('Remove line from journal')
 				);
 				end_row();
-} else {
+			} else {
 				gl_edit_item_controls($order, $dim, $line);
 			}
 		}
@@ -126,7 +128,8 @@
 	}
 
 	//---------------------------------------------------------------------------------
-	function gl_edit_item_controls(&$order, $dim, $Index = null) {
+	function gl_edit_item_controls(&$order, $dim, $Index = null)
+	{
 		$Ajax = Ajax::instance();
 		start_row();
 		$id = find_submit('Edit');
@@ -137,16 +140,16 @@
 			$_POST['dimension_id'] = $item->dimension_id;
 			$_POST['dimension2_id'] = $item->dimension2_id;
 			if ($item->amount > 0) {
-				$_POST['AmountDebit'] = price_format($item->amount);
+				$_POST['AmountDebit'] = Num::Num::price_format($item->amount);
 				$_POST['AmountCredit'] = "";
 } else {
 				$_POST['AmountDebit'] = "";
-				$_POST['AmountCredit'] = price_format(abs($item->amount));
+				$_POST['AmountCredit'] = Num::Num::price_format(abs($item->amount));
 			}
 			$_POST['description'] = $item->description;
 			$_POST['LineMemo'] = $item->reference;
 			hidden('Index', $id);
-			$skip_bank = !CurrentUser::get()->can_access('SA_BANKJOURNAL');
+			$skip_bank = !User::get()->can_access('SA_BANKJOURNAL');
 			echo gl_all_accounts_list('code_id', null, $skip_bank, true);
 			if ($dim >= 1) {
 				dimensions_list_cells(null, 'dimension_id', null, true, " ", false, 1);
@@ -157,8 +160,8 @@
 			$Ajax->activate('items_table');
 		} else {
 			// Adding a new row
-			$_POST['AmountDebit'] = ''; //price_format(0);
-			$_POST['AmountCredit'] = ''; //price_format(0);
+			$_POST['AmountDebit'] = ''; //Num::Num::price_format(0);
+			$_POST['AmountCredit'] = ''; //Num::Num::price_format(0);
 			$_POST['dimension_id'] = 0;
 			$_POST['dimension2_id'] = 0;
 			//$_POST['LineMemo'] = ""; // let memo go to next line Joe Hunt 2010-05-30
@@ -167,7 +170,7 @@
 			if (isset($_POST['_code_id_update'])) {
 				$Ajax->activate('code_id');
 			}
-			$skip_bank = !CurrentUser::get()->can_access('SA_BANKJOURNAL');
+			$skip_bank = !User::get()->can_access('SA_BANKJOURNAL');
 			echo gl_all_accounts_list('code_id', null, $skip_bank, true);
 			if ($dim >= 1) {
 				dimensions_list_cells(null, 'dimension_id', null, true, " ", false, 1);
@@ -205,7 +208,8 @@
 	}
 
 	//---------------------------------------------------------------------------------
-	function gl_options_controls() {
+	function gl_options_controls()
+	{
 		echo "<br><table align='center'>";
 		textarea_row(_("Memo"), 'memo_', null, 50, 3);
 		echo "</table>";
