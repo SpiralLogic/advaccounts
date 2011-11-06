@@ -13,12 +13,12 @@
 		header("Location: /install/index.php");
 	}
 	$page_security = 'SA_OPEN';
-
 	require_once("bootstrap.php");
-
-	$app = $_SESSION["App"];
+	$app = Session::get()->App;
 	Extensions::add_access();
 	if (isset($_GET['application'])) {
 		$app->selected_application = $_GET['application'];
+	} else {
+		$app->selected_application = Config::get('apps.default');
 	}
 	$app->display();
