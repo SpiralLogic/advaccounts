@@ -78,8 +78,7 @@
 			if (!isset(static::$_vars[$group][$var])) {
 				return false;
 			}
-			return ($array_key !== null && is_array(static::$_vars[$group][$var])) ?
-			 static::$_vars[$group][$var][$array_key] : static::$_vars[$group][$var];
+			return ($array_key !== null && is_array(static::$_vars[$group][$var])) ? static::$_vars[$group][$var][$array_key] : static::$_vars[$group][$var];
 		}
 
 		public static function remove($var, $group = 'config')
@@ -105,9 +104,8 @@
 
 		protected static function js()
 		{
-			$files = static::get_all('js');
-			JS::headerFile($files['header']);
-			JS::footerFile($files['footer']);
+			JS::headerFile(static::get('assets.header'));
+			JS::footerFile(static::get('assets.footer'));
 		}
 	}
 

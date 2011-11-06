@@ -21,10 +21,10 @@
 				$Ajax->run();
 			}
 			// flush all output buffers (works also with exit inside any div levels)
-			Config::store();
 			while (ob_get_level()) {
 				ob_end_flush();
 			}
+			Config::store();
 		}
 	}
 	if (!function_exists('adv_error_handler')) {
@@ -49,8 +49,7 @@
 		{
 			try {
 				spl_autoload(strtolower($className));
-			}
-			catch (LogicException $e) {
+			} catch (LogicException $e) {
 				echo('<pre>');
 				if (Config::get('debug')) {
 					debug_print_backtrace();
@@ -59,9 +58,8 @@
 				session_destroy();
 				// strip ajax marker from uri, to force synchronous page reload
 				$_SESSION['timeout'] = array(
-					'uri' => preg_replace('/JsHttpRequest=(?:(\d+)-)?([^&]+)/s', '', @$_SERVER['REQUEST_URI']),
-					'post' => $_POST
-				);
+					'uri'  => preg_replace('/JsHttpRequest=(?:(\d+)-)?([^&]+)/s', '', @$_SERVER['REQUEST_URI']),
+					'post' => $_POST);
 				require(APP_PATH . "access/login.php");
 				if (Ajax::in_ajax() || AJAX_REFERRER) {
 					$Ajax->activate('_page_body');

@@ -6,12 +6,11 @@
 	 * Time: 3:45 AM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	class DB_Utils extends DBOld
+	class DB_Utils extends DB
 	{
 		public static function create($connection)
 		{
-			$db = mysql_connect($connection["host"],
-				$connection["dbuser"], $connection["dbpassword"]);
+			$db = mysql_connect($connection["host"], $connection["dbuser"], $connection["dbpassword"]);
 			if (!mysql_select_db($connection["dbname"], $db)) {
 				$sql = "CREATE DATABASE " . $connection["dbname"] . "";
 				if (!mysql_query($sql)) {
@@ -24,14 +23,12 @@
 
 		public static function import($filename, $connection = null, $force = true)
 		{
-
 			$allowed_commands = array(
-				"create" => 'table_queries',
-				"alter table" => 'table_queries',
-				"insert" => 'data_queries',
-				"update" => 'data_queries',
-				"drop table if exists" => 'drop_queries'
-			);
+				"create"							 => 'table_queries',
+				"alter table"					=> 'table_queries',
+				"insert"							 => 'data_queries',
+				"update"							 => 'data_queries',
+				"drop table if exists" => 'drop_queries');
 			$ignored_mysql_errors = array( //errors ignored in normal (non forced) mode
 				'1022', // duplicate key
 				'1050', // Table %s already exists
@@ -49,21 +46,17 @@
 			// uncrompress gziped backup files
 			if (strpos($filename, ".gz") || strpos($filename, ".GZ")) {
 				$lines = DB_Utils::ungzip("lines", $filename);
-			}
-			elseif (strpos($filename, ".zip") || strpos($filename, ".ZIP"))
-			{
+			} elseif (strpos($filename, ".zip") || strpos($filename, ".ZIP")) {
 				$lines = DB_Utils::unzip("lines", $filename);
 			} else {
 				$lines = file("" . $filename);
 			}
 			// parse input file
 			$query_table = '';
-			foreach ($lines as $line_no => $line)
-			{
+			foreach ($lines as $line_no => $line) {
 				$line = trim($line);
 				if ($query_table == '') { // check if line begins with one of allowed queries
-					foreach ($allowed_commands as $cmd => $table)
-					{
+					foreach ($allowed_commands as $cmd => $table) {
 						if (strtolower(substr($line, 0, strlen($cmd))) == $cmd) {
 							$query_table = $table;
 							${$query_table}[] = array('', $line_no + 1);
@@ -94,33 +87,30 @@
 					 */
 			// execute drop tables if exists queries
 			if (is_array($drop_queries)) {
-				foreach ($drop_queries as $drop_query)
-				{
+				foreach ($drop_queries as $drop_query) {
 					if (!DB::query($drop_query[0])) {
 						if (!in_array(DB::error_no(), $ignored_mysql_errors) || !$force) {
-							$sql_errors[] = array(DB::error_msg($db), $drop_query[1]);
+							$sql_errors[] = array(DB::error_msg(), $drop_query[1]);
 						}
 					}
 				}
 			}
 			// execute create tables queries
 			if (is_array($table_queries)) {
-				foreach ($table_queries as $table_query)
-				{
+				foreach ($table_queries as $table_query) {
 					if (!DB::query($table_query[0])) {
 						if (!in_array(DB::error_no(), $ignored_mysql_errors) || !$force) {
-							$sql_errors[] = array(DB::error_msg($db), $table_query[1]);
+							$sql_errors[] = array(DB::error_msg(), $table_query[1]);
 						}
 					}
 				}
 			}
 			// execute insert data queries
 			if (is_array($data_queries)) {
-				foreach ($data_queries as $data_query)
-				{
+				foreach ($data_queries as $data_query) {
 					if (!DB::query($data_query[0])) {
 						if (!in_array(DB::error_no(), $ignored_mysql_errors) || !$force) {
-							$sql_errors[] = array(DB::error_msg($db), $data_query[1]);
+							$sql_errors[] = array(DB::error_msg(), $data_query[1]);
 						}
 					}
 				}
@@ -129,11 +119,9 @@
 			if (count($sql_errors)) {
 				// display first failure message; the rest are probably derivative
 				$err = $sql_errors[0];
-				Errors::error(sprintf(_("SQL script execution failed in line %d: %s"),
-					$err[1], $err[0]));
+				Errors::error(sprintf(_("SQL script execution failed in line %d: %s"), $err[1], $err[0]));
 				return false;
-			} else
-			{
+			} else {
 				return true;
 			}
 			//$shell_command = C_MYSQL_PATH . " -h $host -u $user -p{$password} $dbname < $filename";
@@ -160,19 +148,16 @@
 			$filename = preg_replace("/.*\//", "", $path);
 			$filename = substr($filename, 0, strlen($filename) - 4);
 			// compare filname in zip and filename from $_GET
-			if (substr($all, 30, strlen($filename) - 4) . substr($all, 30 + strlen($filename) + 9, 4)
-			 != $filename
+			if (substr($all, 30, strlen($filename) - 4) . substr($all, 30 + strlen($filename) + 9, 4) != $filename
 			) {
 				return ''; // exit if names differ
 			} else {
 				// get the suffix of the filename in hex
 				$crc_bugfix = substr($all, 30, strlen($filename) + 13);
-				$crc_bugfix = substr(substr($crc_bugfix, 0, strlen($crc_bugfix) - 4),
-				 strlen($crc_bugfix) - 12 - 4);
+				$crc_bugfix = substr(substr($crc_bugfix, 0, strlen($crc_bugfix) - 4), strlen($crc_bugfix) - 12 - 4);
 				$suffix = false;
 				// convert hex to ascii
-				for ($i = 0; $i < 12;)
-				{
+				for ($i = 0; $i < 12;) {
 					$suffix .= chr($crc_bugfix[$i++] . $crc_bugfix[$i++] . $crc_bugfix[$i++]);
 				}
 				// remove central directory information (we have always just one ziped file)
@@ -210,9 +195,7 @@
 			// set backupfile name
 			if ($zip == "gzip") {
 				$backupfile = $filename . ".gz";
-			}
-			elseif ($zip == "zip")
-			{
+			} elseif ($zip == "zip") {
 				$backupfile = $filename . ".zip";
 			} else {
 				$backupfile = $filename;
@@ -230,8 +213,7 @@
 				$out .= "# Comment:\n";
 				$comment = preg_replace("'\n'", "\n# ", "# " . $comment);
 				//$comment=str_replace("\n", "\n# ", $comment);
-				foreach (explode("\n", $comment) as $line)
-				{
+				foreach (explode("\n", $comment) as $line) {
 					$out .= $line . "\n";
 				}
 				$out .= "\n";
@@ -240,13 +222,11 @@
 			// get auto_increment values and names of all tables
 			$res = DB::query("show table status");
 			$all_tables = array();
-			while ($row = DB::fetch($res))
-			{
+			while ($row = DB::fetch($res)) {
 				$all_tables[] = $row;
 			}
 			// get table structures
-			foreach ($all_tables as $table)
-			{
+			foreach ($all_tables as $table) {
 				$res1 = DB::query("SHOW CREATE TABLE `" . $table['Name'] . "`");
 				$tmp = DB::fetch($res1);
 				$table_sql[$table['Name']] = $tmp["Create Table"];
@@ -254,12 +234,10 @@
 			// find foreign keys
 			$fks = array();
 			if (isset($table_sql)) {
-				foreach ($table_sql as $tablenme => $table)
-				{
+				foreach ($table_sql as $tablenme => $table) {
 					$tmp_table = $table;
 					// save all tables, needed for creating this table in $fks
-					while (($ref_pos = strpos($tmp_table, " REFERENCES ")) > 0)
-					{
+					while (($ref_pos = strpos($tmp_table, " REFERENCES ")) > 0) {
 						$tmp_table = substr($tmp_table, $ref_pos + 12);
 						$ref_pos = strpos($tmp_table, "(");
 						$fks[$tablenme][] = substr($tmp_table, 0, $ref_pos);
@@ -271,8 +249,7 @@
 			// as long as no error occurred
 			if (!$error) {
 				//while($row=mysql_fetch_array($res))
-				foreach ($all_tables as $row)
-				{
+				foreach ($all_tables as $row) {
 					$tablename = $row['Name'];
 					$auto_incr[$tablename] = $row['Auto_increment'];
 					$out .= "\n\n";
@@ -292,19 +269,16 @@
 						// check if field types are NULL or NOT NULL
 						$res3 = DB::query("SHOW COLUMNS FROM `" . $tablename . "`");
 						$field_null = array();
-						for ($j = 0; $j < DB::num_rows($res3); $j++)
-						{
+						for ($j = 0; $j < DB::num_rows($res3); $j++) {
 							$row3 = DB::fetch($res3);
 							$field_null[] = $row3[2] == 'YES' && $row3[4] === null;
 						}
 						$res2 = DB::query("SELECT * FROM `" . $tablename . "`");
-						for ($j = 0; $j < DB::num_rows($res2); $j++)
-						{
+						for ($j = 0; $j < DB::num_rows($res2); $j++) {
 							$out .= "INSERT INTO `" . $tablename . "` VALUES (";
 							$row2 = DB::fetch_row($res2);
 							// run through each field
-							for ($k = 0; $k < $nf = DB::num_fields($res2); $k++)
-							{
+							for ($k = 0; $k < $nf = DB::num_fields($res2); $k++) {
 								$out .= DB::escape($row2[$k], $field_null[$k]);
 								if ($k < ($nf - 1)) {
 									$out .= ", ";
@@ -321,9 +295,7 @@
 							}
 						}
 						// an error occurred! Try to delete file and return error status
-					}
-					elseif ($error)
-					{
+					} elseif ($error) {
 						unlink(BACKUP_PATH . $backupfile);
 						return false;
 					}
@@ -366,15 +338,12 @@
 			$new_tables = array();
 			$existing = array();
 			$modified = true;
-			while (count($tables) && $modified == true)
-			{
+			while (count($tables) && $modified == true) {
 				$modified = false;
-				foreach ($tables as $key => $row)
-				{
+				foreach ($tables as $key => $row) {
 					// delete from $tables and add to $new_tables
 					if (isset($fks[$row['Name']])) {
-						foreach ($fks[$row['Name']] as $needed)
-						{
+						foreach ($fks[$row['Name']] as $needed) {
 							// go to next table if not all needed tables exist in $existing
 							if (!in_array($needed, $existing)) {
 								continue 2;
@@ -393,8 +362,7 @@
 				// probably there are 'circles' in the constraints, bacause of that no proper backups can be created yet
 				// TODO: this will be fixed sometime later through using 'alter table' commands to add the constraints after generating the tables
 				// until now, just add the lasting tables to $new_tables, return them and print a warning
-				foreach ($tables as $row)
-				{
+				foreach ($tables as $row) {
 					$new_tables[] = $row;
 				}
 				echo "<div class=\"red_left\">THIS DATABASE SEEMS TO CONTAIN 'RING CONSTRAINTS'. WA DOES NOT SUPPORT THEM. PROBABLY THE FOLOWING BACKUP IS DEFECT!</div>";

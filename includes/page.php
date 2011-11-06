@@ -68,10 +68,10 @@
 		{
 			// titles and screen header
 			if (Ajax::in_ajax() || AJAX_REFERRER) {
-				Renderer::getInstance()->has_header = false;
+				Renderer::get()->has_header = false;
 				return; // just for speed up
 			}
-			$theme = User::theme();
+			User::theme();
 			JS::open_window(900, 500);
 			JS::beforeload($js);
 			if (!isset($no_menu)) {
@@ -79,9 +79,7 @@
 			}
 			if (isset($_SESSION["App"]) && is_object($_SESSION["App"]) && isset($_SESSION["App"]->selected_application) && $_SESSION["App"]->selected_application != "") {
 				$sel_app = $_SESSION["App"]->selected_application;
-			}
-			elseif (isset($_SESSION["sel_app"]) && $_SESSION["sel_app"] != "")
-			{
+			} elseif (isset($_SESSION["sel_app"]) && $_SESSION["sel_app"] != "") {
 				$sel_app = $_SESSION["sel_app"];
 			} else {
 				$sel_app = User::startup_tab();
@@ -101,7 +99,7 @@
 			echo "<head><title>$title</title>";
 			echo "<meta http-equiv='Content-type' content='text/html; charset=$encoding'>";
 			echo "<link rel='apple-touch-icon' href='/company/images/advanced-icon.png'/>";
-			static::add_css('default.css,jquery-ui-1.8.7.css,jquery.calculator.css,jquery.fileupload-ui.css');
+			static::add_css(Config::get('assets.css'));
 			static::send_css();
 			JS::renderHeader();
 			echo "</head> \n";
@@ -111,8 +109,7 @@
 				echo "body onload='$onload'";
 			}
 			echo	($no_menu) ? ' class="lite">' : '>';
-			$rend = renderer::getInstance();
-			$rend->menu_header($title, $no_menu, $is_index);
+			Renderer::get()->menu_header($title, $no_menu, $is_index);
 			Errors::error_box();
 		}
 
@@ -123,11 +120,9 @@
 			$clean = 0;
 			if ($context != null) {
 				$help_page_url = $context;
-			}
-			elseif (isset($help_context)) {
+			} elseif (isset($help_context)) {
 				$help_page_url = $help_context;
-			}
-			else // main menu
+			} else // main menu
 			{
 				$app = $_SESSION['sel_app'];
 				$help_page_url = $_SESSION['App']->applications[$app]->help_context;
@@ -139,22 +134,17 @@
 			if ($clean) {
 				$help_page_url = access_string($help_page_url, true);
 			}
-			return Config::get('help_baseurl') . urlencode(
-				strtr(
-					ucwords($help_page_url), array(
-						' ' => '',
-						'/' => '',
-						'&' => 'And'
-					)
-				)
-			) . '&ctxhelp=1&lang=' . $country;
+			return Config::get('help_baseurl') . urlencode(strtr(ucwords($help_page_url), array(
+																																												 ' '	=> '',
+																																												 '/'	=> '',
+																																												 '&'	=> 'And'))) . '&ctxhelp=1&lang=' . $country;
 		}
 
 		public static function footer($no_menu = false, $is_index = false, $hide_back_link = false)
 		{
 			$Validate = array();
 			$Ajax = Ajax::instance();
-			$rend = renderer::getInstance();
+			$rend = Renderer::get();
 			$rend->menu_footer($no_menu, $is_index);
 			$edits = "editors = " . $Ajax->php2js(set_editor(false, false)) . ";";
 			$Ajax->addScript('editors', $edits);
@@ -181,7 +171,7 @@
 			if ($file == false) {
 				return $css;
 			}
-			$css[] = $file;
+			$css = $css + $file;
 		}
 
 		public static function send_css()
