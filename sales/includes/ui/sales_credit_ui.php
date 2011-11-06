@@ -34,7 +34,7 @@
 		//	($order->Branch != $_POST['branch_id']))
 		//	$customer_error = get_customer_details_to_order($order, $_POST['customer_id'], $_POST['branch_id']);
 		if (($order->customer_id != $_POST['customer_id'])
-		 || ($order->Branch != $_POST['branch_id'])
+				|| ($order->Branch != $_POST['branch_id'])
 		) {
 			$old_order = (PHP_VERSION < 5) ? $order : clone($order);
 			$customer_error = get_customer_details_to_order($order, $_POST['customer_id'], $_POST['branch_id']);
@@ -109,7 +109,7 @@
 		date_row(_("Date:"), 'OrderDate', '', $order->trans_no == 0, 0, 0, 0, null, true);
 		if (isset($_POST['_OrderDate_changed'])) {
 			if (!Banking::is_company_currency($order->customer_currency)
-			 && (DB_Company::get_base_sales_type() > 0)
+					&& (DB_Company::get_base_sales_type() > 0)
 			) {
 				$change_prices = 1;
 			}
@@ -245,7 +245,7 @@
 				$Ajax->activate('units');
 				$Ajax->activate('line_total');
 			}
-			$item_info = get_item_edit_info(Input::post('stock_id'));
+			$item_info = Item::get_edit_info(Input::post('stock_id'));
 			$dec = $item_info['decimals'];
 			$_POST['qty'] = Num::format(0, $dec);
 			$_POST['units'] = $item_info["units"];

@@ -24,18 +24,18 @@
 	Security::set_page(
 		(!Input::session('Items') ? : $_SESSION['Items']->trans_type),
 		array(
-			ST_SALESORDER => 'SA_SALESORDER',
-			ST_SALESQUOTE => 'SA_SALESQUOTE',
-			ST_CUSTDELIVERY => 'SA_SALESDELIVERY',
-			ST_SALESINVOICE => 'SA_SALESINVOICE'
+				 ST_SALESORDER   => 'SA_SALESORDER',
+				 ST_SALESQUOTE   => 'SA_SALESQUOTE',
+				 ST_CUSTDELIVERY => 'SA_SALESDELIVERY',
+				 ST_SALESINVOICE => 'SA_SALESINVOICE'
 		),
 		array(
-			'NewOrder' => 'SA_SALESORDER',
-			'ModifySalesOrder' => 'SA_SALESORDER',
-			'NewQuotation' => 'SA_SALESQUOTE',
-			'ModifyQuotationNumber' => 'SA_SALESQUOTE',
-			'NewDelivery' => 'SA_SALESDELIVERY',
-			'NewInvoice' => 'SA_SALESINVOICE'
+				 'NewOrder'              => 'SA_SALESORDER',
+				 'ModifySalesOrder'      => 'SA_SALESORDER',
+				 'NewQuotation'          => 'SA_SALESQUOTE',
+				 'ModifyQuotationNumber' => 'SA_SALESQUOTE',
+				 'NewDelivery'           => 'SA_SALESDELIVERY',
+				 'NewInvoice'            => 'SA_SALESINVOICE'
 		)
 	);
 	JS::open_window(900, 500);
@@ -428,7 +428,7 @@
 			return false;
 		}
 		elseif (!User::get()->can_access('SA_SALESCREDIT') && isset($_POST['LineNo']) && isset($_SESSION['Items']->line_items[$_POST['LineNo']])
-		 && !Validation::is_num(
+						&& !Validation::is_num(
 			 'qty',
 			 $_SESSION['Items']->line_items[$_POST['LineNo']]->qty_done
 		 )
@@ -437,10 +437,10 @@
 			Errors::error(_("You attempting to make the quantity ordered a quantity less than has already been delivered. The quantity delivered cannot be modified retrospectively."));
 			return false;
 		} // Joe Hunt added 2008-09-22 -------------------------
-		elseif ($_SESSION['Items']->trans_type != ST_SALESORDER && $_SESSION['Items']->trans_type != ST_SALESQUOTE && !SysPrefs::allow_negative_stock() && is_inventory_item($_POST['stock_id'])) {
-			$qoh = get_qoh_on_date($_POST['stock_id'], $_POST['Location'], $_POST['OrderDate']);
+		elseif ($_SESSION['Items']->trans_type != ST_SALESORDER && $_SESSION['Items']->trans_type != ST_SALESQUOTE && !SysPrefs::allow_negative_stock() && Item::is_inventory_item($_POST['stock_id'])) {
+			$qoh = Item::get_qoh_on_date($_POST['stock_id'], $_POST['Location'], $_POST['OrderDate']);
 			if (input_num('qty') > $qoh) {
-				$stock = get_item($_POST['stock_id']);
+				$stock = Item::get($_POST['stock_id']);
 				Errors::error(
 					_("The delivery cannot be processed because there is an insufficient quantity for item:") . " " . $stock['stock_id'] . " - " . $stock['description'] . " - " . _("Quantity On Hand") . " = " . Num::format(
 						$qoh,

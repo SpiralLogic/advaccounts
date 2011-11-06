@@ -78,7 +78,7 @@
 		// if unassembling we need to check the qoh
 		if (($_POST['ProductionType'] == 0) && !SysPrefs::allow_negative_stock()) {
 			$wo_details = get_work_order($_POST['selected_id']);
-			$qoh = get_qoh_on_date($wo_details["stock_id"], $wo_details["loc_code"], $_POST['date_']);
+			$qoh = Item::get_qoh_on_date($wo_details["stock_id"], $wo_details["loc_code"], $_POST['date_']);
 			if (-input_num('quantity') + $qoh < 0) {
 				Errors::error(_("The unassembling cannot be processed because there is insufficient stock."));
 				JS::set_focus('quantity');
@@ -95,11 +95,11 @@
 				{
 					continue;
 				}
-				$qoh = get_qoh_on_date($row["stock_id"], $row["loc_code"], $_POST['date_']);
+				$qoh = Item::get_qoh_on_date($row["stock_id"], $row["loc_code"], $_POST['date_']);
 				if ($qoh - $row['units_req'] * input_num('quantity') < 0) {
 					Errors::error(
 						_("The production cannot be processed because a required item would cause a negative inventory balance :") .
-						 " " . $row['stock_id'] . " - " . $row['description']
+						" " . $row['stock_id'] . " - " . $row['description']
 					);
 					$err = true;
 				}

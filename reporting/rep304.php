@@ -17,7 +17,6 @@
 	// Title:	Inventory Sales Report
 	// ----------------------------------------------------------------
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	include_once(APP_PATH . "inventory/includes/db/items_category_db.php");
 	//----------------------------------------------------------------------------------------------------
 	print_inventory_sales();
 	function getTransactions($category, $location, $fromcust, $from, $to)
@@ -91,7 +90,7 @@
 		}
 		else
 		{
-			$cat = get_category_name($category);
+			$cat = Item_Category::get_name($category);
 		}
 		if ($location == ALL_TEXT) {
 			$location = 'all';
@@ -117,11 +116,24 @@
 			$headers[2] = '';
 		}
 		$aligns = array('left', 'left', 'left', 'right', 'right', 'right', 'right');
-		$params = array(0 => $comments,
-			1 => array('text' => _('Period'), 'from' => $from, 'to' => $to),
-			2 => array('text' => _('Category'), 'from' => $cat, 'to' => ''),
-			3 => array('text' => _('Location'), 'from' => $loc, 'to' => ''),
-			4 => array('text' => _('Customer'), 'from' => $fromc, 'to' => '')
+		$params = array(
+			0 => $comments,
+			1 => array(
+				'text' => _('Period'),
+				'from' => $from,
+				'to'   => $to),
+			2 => array(
+				'text' => _('Category'),
+				'from' => $cat,
+				'to'   => ''),
+			3 => array(
+				'text' => _('Location'),
+				'from' => $loc,
+				'to'   => ''),
+			4 => array(
+				'text' => _('Customer'),
+				'from' => $fromc,
+				'to'   => '')
 		);
 		$rep = new FrontReport(_('Inventory Sales Report'), "InventorySalesReport", User::pagesize());
 		$rep->Font();
@@ -160,13 +172,13 @@
 			$rep->TextCol(0, 1, $trans['stock_id']);
 			if ($fromcust == ALL_NUMERIC) {
 				$rep->TextCol(1, 2,
-				 $trans['description'] . ($trans['inactive'] == 1 ? " (" . _("Inactive") . ")" : ""), -1);
+											$trans['description'] . ($trans['inactive'] == 1 ? " (" . _("Inactive") . ")" : ""), -1);
 				$rep->TextCol(2, 3, $trans['debtor_name']);
 			}
 			else
 			{
 				$rep->TextCol(1, 3,
-				 $trans['description'] . ($trans['inactive'] == 1 ? " (" . _("Inactive") . ")" : ""), -1);
+											$trans['description'] . ($trans['inactive'] == 1 ? " (" . _("Inactive") . ")" : ""), -1);
 			}
 			$rep->AmountCol(3, 4, $trans['qty'], Num::qty_dec($trans['stock_id']));
 			$rep->AmountCol(4, 5, $trans['amt'], $dec);

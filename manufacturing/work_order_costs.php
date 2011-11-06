@@ -99,7 +99,7 @@
 	br();
 	yesno_list_row(_("Type:"), 'PaymentType', null, $wo_cost_types[WO_OVERHEAD], $wo_cost_types[WO_LABOUR]);
 	date_row(_("Date:"), 'date_');
-	$item_accounts = get_stock_gl_code($wo_details['stock_id']);
+	$item_accounts = Item::get_gl_code($wo_details['stock_id']);
 	$_POST['db_acc'] = $item_accounts['assembly_account'];
 	$sql = "SELECT DISTINCT account_code FROM bank_accounts";
 	$rs = DB::query($sql, "could not get bank accounts");

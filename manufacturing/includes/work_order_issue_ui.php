@@ -99,7 +99,7 @@
 				$Ajax->activate('qty');
 				$Ajax->activate('std_cost');
 			}
-			$item_info = get_item_edit_info($_POST['stock_id']);
+			$item_info = Item::get_edit_info($_POST['stock_id']);
 			$dec = $item_info["decimals"];
 			$_POST['qty'] = Num::format(0, $dec);
 			$_POST['std_cost'] = Num::price_format($item_info["standard_cost"]);

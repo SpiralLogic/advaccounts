@@ -49,7 +49,7 @@
 			set_reorder_level($_POST['stock_id'], $myrow["loc_code"], input_num($myrow["loc_code"]));
 			Errors::notice(_("Reorder levels has been updated."));
 		}
-		$qoh = get_qoh_on_date($_POST['stock_id'], $myrow["loc_code"]);
+		$qoh = Item::get_qoh_on_date($_POST['stock_id'], $myrow["loc_code"]);
 		label_cell($myrow["location_name"]);
 		$_POST[$myrow["loc_code"]] = Num::qty_format($myrow["reorder_level"], $_POST['stock_id'], $dec);
 		qty_cell($qoh, false, $dec);

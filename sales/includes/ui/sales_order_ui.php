@@ -163,8 +163,8 @@
 			$line_discount = round($stock_item->qty_dispatched * $stock_item->price, User::price_dec()) - $line_total;
 			$qoh_msg = '';
 			if (!$editable_items || $id != $line_no) {
-				if (!SysPrefs::allow_negative_stock() && is_inventory_item($stock_item->stock_id)) {
-					$qoh = get_qoh_on_date($stock_item->stock_id, $_POST['Location'], $_POST['OrderDate']);
+				if (!SysPrefs::allow_negative_stock() && Item::is_inventory_item($stock_item->stock_id)) {
+					$qoh = Item::get_qoh_on_date($stock_item->stock_id, $_POST['Location'], $_POST['OrderDate']);
 					if ($stock_item->qty_dispatched > $qoh) {
 						// oops, we don't have enough of one of the component items
 						start_row("class='stockmankobg'");
@@ -447,7 +447,7 @@ JS;
 				$Ajax->activate('qty');
 				$Ajax->activate('line_total');
 			}
-			$item_info = get_item_edit_info(Input::post('stock_id'));
+			$item_info = Item::get_edit_info(Input::post('stock_id'));
 			$units = $item_info["units"];
 			$dec = $item_info['decimals'];
 			$_POST['qty'] = Num::format(1, $dec);
@@ -517,9 +517,9 @@ JS;
 			}
 			date_row(
 				$delname, 'delivery_date', $order->trans_type == ST_SALESORDER
-				 ? _('Enter requested day of delivery')
-				 : $order->trans_type == ST_SALESQUOTE
-					? _('Enter Valid until Date') : ''
+								 ? _('Enter requested day of delivery')
+								 : $order->trans_type == ST_SALESQUOTE
+									? _('Enter Valid until Date') : ''
 			);
 			text_row(_("Deliver To:"), 'deliver_to', $order->deliver_to, 40, 40, _('Additional identifier for delivery e.g. name of receiving person'));
 			textarea_row("<a href='#'>Address:</a>", 'delivery_address', $order->delivery_address, 35, 5, _('Delivery address. Default is address of customer branch'), null, 'id="address_map"');

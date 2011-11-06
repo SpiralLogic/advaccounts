@@ -22,11 +22,11 @@
 		$dec = User::price_dec();
 		Num::price_decimal($m_cost, $dec);
 		$sql = "SELECT material_cost FROM stock_master WHERE stock_id = "
-		 . DB::escape($stock_id);
+					 . DB::escape($stock_id);
 		$result = DB::query($sql);
 		$myrow = DB::fetch($result);
 		$material_cost = $myrow['material_cost'];
-		$qoh = get_qoh_on_date($stock_id, null, $date_);
+		$qoh = Item::get_qoh_on_date($stock_id, null, $date_);
 		if ($qoh < 0) {
 			$qoh = 0;
 		}
@@ -48,11 +48,11 @@
 			$costs /= $qty;
 		}
 		$sql = "SELECT overhead_cost FROM stock_master WHERE stock_id = "
-		 . DB::escape($stock_id);
+					 . DB::escape($stock_id);
 		$result = DB::query($sql);
 		$myrow = DB::fetch($result);
 		$overhead_cost = $myrow['overhead_cost'];
-		$qoh = get_qoh_on_date($stock_id, null, $date_);
+		$qoh = Item::get_qoh_on_date($stock_id, null, $date_);
 		if ($qoh < 0) {
 			$qoh = 0;
 		}
@@ -73,11 +73,11 @@
 			$costs /= $qty;
 		}
 		$sql = "SELECT labour_cost FROM stock_master WHERE stock_id = "
-		 . DB::escape($stock_id);
+					 . DB::escape($stock_id);
 		$result = DB::query($sql);
 		$myrow = DB::fetch($result);
 		$labour_cost = $myrow['labour_cost'];
-		$qoh = get_qoh_on_date($stock_id, null, $date_);
+		$qoh = Item::get_qoh_on_date($stock_id, null, $date_);
 		if ($qoh < 0) {
 			$qoh = 0;
 		}
@@ -96,13 +96,13 @@
 			$costs /= $qty;
 		}
 		$sql = "SELECT material_cost FROM stock_master WHERE stock_id = "
-		 . DB::escape($stock_id);
+					 . DB::escape($stock_id);
 		$result = DB::query($sql);
 		$myrow = DB::fetch($result);
 		$material_cost = $myrow['material_cost'];
 		$dec = User::price_dec();
 		Num::price_decimal($material_cost, $dec);
-		$qoh = get_qoh_on_date($stock_id, null, $date_);
+		$qoh = Item::get_qoh_on_date($stock_id, null, $date_);
 		if ($qoh < 0) {
 			$qoh = 0;
 		}
@@ -111,8 +111,8 @@
 		}
 		$material_cost = Num::round($material_cost, $dec);
 		$sql = "UPDATE stock_master SET material_cost=material_cost+"
-		 . DB::escape($material_cost)
-		 . " WHERE stock_id=" . DB::escape($stock_id);
+					 . DB::escape($material_cost)
+					 . " WHERE stock_id=" . DB::escape($stock_id);
 		DB::query($sql, "The cost details for the inventory item could not be updated");
 	}
 
@@ -130,7 +130,7 @@
 		 = "INSERT INTO workorders (wo_ref, loc_code, units_reqd, stock_id,
 		type, date_, required_by)
     	VALUES (" . DB::escape($wo_ref) . ", " . DB::escape($loc_code) . ", "
-		 . DB::escape($units_reqd) . ", " . DB::escape($stock_id) . ",
+			 . DB::escape($units_reqd) . ", " . DB::escape($stock_id) . ",
 		" . DB::escape($type) . ", '$date', " . DB::escape($required) . ")";
 		DB::query($sql, "could not add work order");
 		$woid = DB::insert_id();
@@ -279,7 +279,7 @@
 				add_overhead_cost($work_order['stock_id'], -$qty, $date, $cost);
 			}
 			$sql = "UPDATE workorders SET closed=1,units_reqd=0,units_issued=0 WHERE id = "
-			 . DB::escape($woid);
+						 . DB::escape($woid);
 			DB::query($sql, "The work order couldn't be voided");
 			// void all related stock moves
 			void_stock_move(ST_WORKORDER, $woid);
@@ -314,7 +314,7 @@
 				}
 				// void the actual issue items and their quantities
 				$sql = "UPDATE wo_issue_items SET qty_issued = 0 WHERE issue_id="
-				 . DB::escape($row['id']);
+							 . DB::escape($row['id']);
 				DB::query($sql, "A work order issue item could not be voided");
 			}
 			if ($issue_no != 0) {
@@ -332,7 +332,7 @@
 				add_overhead_cost($work_order['stock_id'], -$qty, $date, $cost);
 			}
 			$sql = "UPDATE workorders SET closed=1,units_reqd=0,units_issued=0 WHERE id = "
-			 . DB::escape($woid);
+						 . DB::escape($woid);
 			DB::query($sql, "The work order couldn't be voided");
 			// void all related stock moves
 			void_stock_move(ST_WORKORDER, $woid);

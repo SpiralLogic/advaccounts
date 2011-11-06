@@ -211,7 +211,7 @@
 					$myrow = DB::fetch($result);
 					$_SESSION['PO']->add_to_order(
 						$_POST['line_no'], $_POST['stock_id'], input_num('qty'), $_POST['description'], input_num('price'), $myrow["units"], $_POST['req_del_date'], 0, 0,
-					 $_POST['discount'] / 100
+						$_POST['discount'] / 100
 					);
 					unset_form_variables();
 					$_POST['stock_id'] = "";
@@ -360,7 +360,7 @@
 			arsort($po_lines);
 			$_SESSION['supplier_id'] = key($po_lines);
 			if ($_GET['DS']) {
-				$item_info = get_item('DS');
+				$item_info = Item::get('DS');
 				$_POST['StkLocation'] = 'DRP';
 				$_SESSION['PO']->add_to_order(count($_SESSION['PO']->line_items), 'DS', 1, $item_info['long_description'], 0, '', Dates::add_days(Dates::Today(), 10), 0, 0, 0);
 				$address = $_SESSION['Items']->customer_name . "\n";

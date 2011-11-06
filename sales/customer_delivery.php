@@ -80,7 +80,7 @@
 				_("Select a different delivery"), "OutstandingOnly=1"
 			);
 			echo "<br><center><b>" . _("This delivery has all items invoiced. There is nothing to modify.") .
-			 "</center></b>";
+					 "</center></b>";
 			Page::footer_exit();
 		}
 		copy_from_cart();
@@ -228,11 +228,11 @@
 				$_SESSION['Items']->line_items as $itm
 			) {
 				if ($itm->qty_dispatched && Manufacturing::has_stock_holding($itm->mb_flag)) {
-					$qoh = get_qoh_on_date($itm->stock_id, $_POST['Location'], $_POST['DispatchDate']);
+					$qoh = Item::get_qoh_on_date($itm->stock_id, $_POST['Location'], $_POST['DispatchDate']);
 					if ($itm->qty_dispatched > $qoh) {
 						Errors::error(
 							_("The delivery cannot be processed because there is an insufficient quantity for item:") .
-							 " " . $itm->stock_id . " - " . $itm->description
+							" " . $itm->stock_id . " - " . $itm->description
 						);
 						return false;
 					}
@@ -290,9 +290,9 @@
 	}
 	label_cells(
 		_("For Sales Order"), ui_view::get_customer_trans_view_str(
-			ST_SALESORDER,
-			$_SESSION['Items']->order_no
-		), "class='tableheader2'"
+													ST_SALESORDER,
+													$_SESSION['Items']->order_no
+												), "class='tableheader2'"
 	);
 	label_cells(_("Sales Type"), $_SESSION['Items']->sales_type_name, "class='label'");
 	end_row();
@@ -356,12 +356,12 @@
 		// if it's a non-stock item (eg. service) don't show qoh
 		$show_qoh = true;
 		if (SysPrefs::allow_negative_stock() || !Manufacturing::has_stock_holding($ln_itm->mb_flag)
-		 || $ln_itm->qty_dispatched == 0
+				|| $ln_itm->qty_dispatched == 0
 		) {
 			$show_qoh = false;
 		}
 		if ($show_qoh) {
-			$qoh = get_qoh_on_date($ln_itm->stock_id, $_POST['Location'], $_POST['DispatchDate']);
+			$qoh = Item::get_qoh_on_date($ln_itm->stock_id, $_POST['Location'], $_POST['DispatchDate']);
 		}
 		if ($show_qoh && ($ln_itm->qty_dispatched > $qoh)) {
 			// oops, we don't have enough of one of the component items

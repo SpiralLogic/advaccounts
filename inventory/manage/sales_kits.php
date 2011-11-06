@@ -138,7 +138,7 @@
 		$kit = Item_Code::get_kit($_POST['item_code']);
 		if ((DB::num_rows($kit) == 1) && $num_kits) {
 			$msg = _("This item cannot be deleted because it is the last item in the kit used by following kits")
-			 . ':<br>';
+						 . ':<br>';
 			while ($num_kits--) {
 				$kit = DB::fetch($other_kits);
 				$msg .= "'" . $kit[0] . "'";
@@ -208,7 +208,7 @@
 		text_row(_("Description:"), 'description', null, 50, 200);
 		stock_categories_list_row(_("Category:"), 'category', null);
 	}
-	$res = get_item_edit_info(get_post('component'));
+	$res = Item::get_edit_info(get_post('component'));
 	$dec = $res["decimals"] == '' ? 0 : $res["decimals"];
 	$units = $res["units"] == '' ? _('kits') : $res["units"];
 	if (list_updated('component')) {

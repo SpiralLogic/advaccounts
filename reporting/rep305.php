@@ -17,7 +17,6 @@
 	// Title:	GRN Valuation Report
 	// ----------------------------------------------------------------
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	include_once(APP_PATH . "inventory/includes/db/items_category_db.php");
 	//----------------------------------------------------------------------------------------------------
 	print_grn_valuation();
 	function getTransactions($from, $to)
@@ -56,12 +55,17 @@
 		}
 		$dec = User::price_dec();
 		$cols = array(0, 75, 225, 275, 345, 390, 445, 515);
-		$headers = array(_('Stock ID'), _('Description'), _('PO No'), _('Qty Received'), _('Unit Price'), _('Actual Price'),
+		$headers = array(
+			_('Stock ID'), _('Description'), _('PO No'), _('Qty Received'), _('Unit Price'), _('Actual Price'),
 			_('Total')
 		);
 		$aligns = array('left', 'left', 'left', 'right', 'right', 'right', 'right');
-		$params = array(0 => $comments,
-			1 => array('text' => _('Period'), 'from' => $from, 'to' => $to)
+		$params = array(
+			0 => $comments,
+			1 => array(
+				'text' => _('Period'),
+				'from' => $from,
+				'to'   => $to)
 		);
 		$rep = new FrontReport(_('GRN Valuation Report'), "GRNValuationReport", User::pagesize());
 		$rep->Font();

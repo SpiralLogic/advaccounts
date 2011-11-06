@@ -21,7 +21,7 @@
 		order_type, ship_via, deliver_to, delivery_address, contact_name, contact_phone,
 		contact_email, freight_cost, from_stk_loc, delivery_date)
 		VALUES (" . DB::escape($order_no) . "," . DB::escape($order_type) . "," . DB::escape($order->customer_id) . ", " . DB::escape($order->trans_type) . "," . DB::escape($order->Branch) . ", " . DB::escape($order->cust_ref) . "," . DB::escape($order->reference) . ","
-		 . DB::escape($order->salesman) . "," . DB::escape($order->Comments) . ",'" . Dates::date2sql($order->document_date) . "', " . DB::escape($order->sales_type) . ", " . DB::escape($order->ship_via) . "," . DB::escape($order->deliver_to) . "," . DB::escape(
+			 . DB::escape($order->salesman) . "," . DB::escape($order->Comments) . ",'" . Dates::date2sql($order->document_date) . "', " . DB::escape($order->sales_type) . ", " . DB::escape($order->ship_via) . "," . DB::escape($order->deliver_to) . "," . DB::escape(
 			$order->delivery_address
 		) . ", " . DB::escape($order->name) . ", " . DB::escape($order->phone) . ", " . DB::escape($order->email) . ", " . DB::escape($order->freight_cost) . ", " . DB::escape($order->Location) . ", " . DB::escape($del_date) . ")";
 		DB::query($sql, "order Cannot be Added");
@@ -35,7 +35,7 @@
 		foreach (
 			$order->line_items as $line
 		) {
-			if (Config::get('accounts_stock_emailnotify') == 1 && is_inventory_item($line->stock_id)) {
+			if (Config::get('accounts_stock_emailnotify') == 1 && Item::is_inventory_item($line->stock_id)) {
 				$sql
 				 = "SELECT loc_stock.*, locations.location_name, locations.email
 				FROM loc_stock, locations
@@ -45,7 +45,7 @@
 				$res = DB::query($sql, "a location could not be retreived");
 				$loc = DB::fetch($res);
 				if ($loc['email'] != "") {
-					$qoh = get_qoh_on_date($line->stock_id, $order->Location);
+					$qoh = Item::get_qoh_on_date($line->stock_id, $order->Location);
 					$qoh -= Manufacturing::get_demand_qty($line->stock_id, $order->Location);
 					$qoh -= Manufacturing::get_demand_asm_qty($line->stock_id, $order->Location);
 					$qoh -= $line->quantity;
@@ -157,8 +157,7 @@
 		foreach (
 			$order->line_items as $line
 		) {
-
-			if (Config::get('accounts_stock_emailnotify') == 1 && is_inventory_item($line->stock_id)) {
+			if (Config::get('accounts_stock_emailnotify') == 1 && Item::is_inventory_item($line->stock_id)) {
 				$sql
 				 = "SELECT loc_stock.*, locations.location_name, locations.email
 				FROM loc_stock, locations
@@ -166,10 +165,9 @@
 				 AND loc_stock.stock_id = " . DB::escape($line->stock_id) . "
 				 AND loc_stock.loc_code = " . DB::escape($order->Location);
 				$res = DB::query($sql, "a location could not be retreived");
-
-					$loc = DB::fetch($res);
+				$loc = DB::fetch($res);
 				if ($loc['email'] != "") {
-					$qoh = get_qoh_on_date($line->stock_id, $order->Location);
+					$qoh = Item::get_qoh_on_date($line->stock_id, $order->Location);
 					$qoh -= Manufacturing::get_demand_qty($line->stock_id, $order->Location);
 					$qoh -= Manufacturing::get_demand_asm_qty($line->stock_id, $order->Location);
 					$qoh -= $line->quantity;
@@ -187,20 +185,16 @@
 		  discount_percent, qty_sent)
 		 VALUES (";
 			$sql .= DB::escape(
-				$line->id ? $line->id
-				 : 0
-			) . "," . $order_no . "," . $order->trans_type . "," . DB::escape($line->stock_id) . "," . DB::escape($line->description) . ", " . DB::escape($line->price) . ", " . DB::escape($line->quantity) . ", " . DB::escape($line->discount_percent) . ", " . DB::escape($line->qty_done)
-			 . " )";
-
+								$line->id ? $line->id
+								 : 0
+							) . "," . $order_no . "," . $order->trans_type . "," . DB::escape($line->stock_id) . "," . DB::escape($line->description) . ", " . DB::escape($line->price) . ", " . DB::escape($line->quantity) . ", " . DB::escape($line->discount_percent) . ", " . DB::escape($line->qty_done)
+							. " )";
 			DB::query($sql, "Old order Cannot be Inserted");
 		} /* inserted line items into sales order details */
 		DB_AuditTrail::add($order->trans_type, $order_no, $order->document_date, _("Updated."));
-
 		Refs::delete($order->trans_type, $order_no);
 		Refs::save($order->trans_type, $order_no, $order->reference);
-
 		DB::commit_transaction();
-
 		if (Config::get('accounts_stock_emailnotify') == 1 && count($st_ids) > 0) {
 			require_once(APP_PATH . "/reporting/includes/class.mail.php");
 			$company = DB_Company::get_prefs();

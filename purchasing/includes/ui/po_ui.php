@@ -72,7 +72,7 @@
 				$line->price = get_purchase_price($order->supplier_id, $line->stock_id);
 				$line->quantity
 				 = $line->quantity / get_purchase_conversion_factor($old_supp, $line->stock_id)
-				 * get_purchase_conversion_factor($order->supplier_id, $line->stock_id);
+					 * get_purchase_conversion_factor($order->supplier_id, $line->stock_id);
 			}
 			$Ajax->activate('items_table');
 		}
@@ -100,12 +100,12 @@
 		locations_list_row(_("Receive Into:"), 'StkLocation', null, false, true);
 		table_section(3);
 		if (!isset($_POST['StkLocation']) || $_POST['StkLocation'] == ""
-		 || isset($_POST['_StkLocation_update'])
-		 || !isset($_POST['delivery_address'])
-		 || $_POST['delivery_address'] == ""
+				|| isset($_POST['_StkLocation_update'])
+				|| !isset($_POST['delivery_address'])
+				|| $_POST['delivery_address'] == ""
 		) {
 			$sql = "SELECT delivery_address, phone FROM locations WHERE loc_code='" .
-			 $_POST['StkLocation'] . "'";
+						 $_POST['StkLocation'] . "'";
 			$result = DB::query($sql, "could not get location info");
 			if (DB::num_rows($result) == 1) {
 				$loc_row = DB::fetch($result);
@@ -274,7 +274,7 @@
 				$Ajax->activate('req_del_date');
 				$Ajax->activate('line_total');
 			}
-			$item_info = get_item_edit_info(Input::post('stock_id'));
+			$item_info = Item::get_edit_info(Input::post('stock_id'));
 			$_POST['units'] = $item_info["units"];
 			$_POST['description'] = $item_info['description'];
 			$dec = $item_info["decimals"];

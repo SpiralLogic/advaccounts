@@ -17,7 +17,6 @@
 	// Title:	Order Status List
 	// ----------------------------------------------------------------
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	include_once(APP_PATH . "inventory/includes/db/items_category_db.php");
 	//----------------------------------------------------------------------------------------------------
 	print_order_status_list();
 	//----------------------------------------------------------------------------------------------------
@@ -88,7 +87,7 @@
 		}
 		else
 		{
-			$cat = get_category_name($category);
+			$cat = Item_Category::get_name($category);
 		}
 		if ($location == null) {
 			$loc = _('All');
@@ -105,18 +104,33 @@
 			$back = _('Back Orders Only');
 		}
 		$cols = array(0, 60, 150, 260, 325, 385, 450, 515);
-		$headers2 = array(_('Order'), _('Customer'), _('Branch'), _('Customer Ref'),
+		$headers2 = array(
+			_('Order'), _('Customer'), _('Branch'), _('Customer Ref'),
 			_('Ord Date'), _('Del Date'), _('Loc')
 		);
 		$aligns = array('left', 'left', 'right', 'right', 'right', 'right', 'right');
-		$headers = array(_('Code'), _('Description'), _('Ordered'), _('Invoiced'),
+		$headers = array(
+			_('Code'), _('Description'), _('Ordered'), _('Invoiced'),
 			_('Outstanding'), ''
 		);
-		$params = array(0 => $comments,
-			1 => array('text' => _('Period'), 'from' => $from, 'to' => $to),
-			2 => array('text' => _('Category'), 'from' => $cat, 'to' => ''),
-			3 => array('text' => _('Location'), 'from' => $loc, 'to' => ''),
-			4 => array('text' => _('Selection'), 'from' => $back, 'to' => '')
+		$params = array(
+			0 => $comments,
+			1 => array(
+				'text' => _('Period'),
+				'from' => $from,
+				'to'   => $to),
+			2 => array(
+				'text' => _('Category'),
+				'from' => $cat,
+				'to'   => ''),
+			3 => array(
+				'text' => _('Location'),
+				'from' => $loc,
+				'to'   => ''),
+			4 => array(
+				'text' => _('Selection'),
+				'from' => $back,
+				'to'   => '')
 		);
 		$cols2 = $cols;
 		$aligns2 = $aligns;

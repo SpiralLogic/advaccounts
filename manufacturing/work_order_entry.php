@@ -144,13 +144,13 @@
 					{
 						if (Manufacturing::has_stock_holding($bom_item["ResourceType"])) {
 							$quantity = $bom_item["quantity"] * input_num('quantity');
-							$qoh = get_qoh_on_date($bom_item["component"], $bom_item["loc_code"], $_POST['date_']);
+							$qoh = Item::get_qoh_on_date($bom_item["component"], $bom_item["loc_code"], $_POST['date_']);
 							if (-$quantity + $qoh < 0) {
 								Errors::error(
 									_("The work order cannot be processed because there is an insufficient quantity for component:") .
-									 " " . $bom_item["component"] . " - " .
-									 $bom_item["description"] . ".  " . _("Location:") . " " .
-									 $bom_item["location_name"]
+									" " . $bom_item["component"] . " - " .
+									$bom_item["description"] . ".  " . _("Location:") . " " .
+									$bom_item["location_name"]
 								);
 								JS::set_focus('quantity');
 								return false;
@@ -161,7 +161,7 @@
 				elseif ($_POST['type'] == WO_UNASSEMBLY)
 				{
 					// if unassembling, check item to unassemble
-					$qoh = get_qoh_on_date(Input::post('stock_id'), $_POST['StockLocation'], $_POST['date_']);
+					$qoh = Item::get_qoh_on_date(Input::post('stock_id'), $_POST['StockLocation'], $_POST['date_']);
 					if (-input_num('quantity') + $qoh < 0) {
 						Errors::error(_("The selected item cannot be unassembled because there is insufficient stock."));
 						return false;
@@ -223,8 +223,8 @@
 		$cancel_delete = false;
 		// can't delete it there are productions or issues
 		if (work_order_has_productions($selected_id)
-		 || work_order_has_issues($selected_id)
-		 || work_order_has_payments($selected_id)
+				|| work_order_has_issues($selected_id)
+				|| work_order_has_payments($selected_id)
 		) {
 			Errors::error(_("This work order cannot be deleted because it has already been processed."));
 			$cancel_delete = true;

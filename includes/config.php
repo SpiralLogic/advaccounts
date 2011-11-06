@@ -24,7 +24,7 @@
 			if (static::$_vars === null) {
 				static::$_vars = Input::session('config');
 			}
-			if (static::$_vars === false) {
+			if (static::$_vars === false || Input::get('reload_config')) {
 				static::$_vars = array();
 				static::load();
 			}

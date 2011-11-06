@@ -44,7 +44,7 @@
 		if (!file_exists($filename)) {
 			mkdir($filename);
 		}
-		$filename .= "/" . item_img_name($stock_id) . ".jpg";
+		$filename .= "/" . Item::img_name($stock_id) . ".jpg";
 		//But check for the worst
 		if (strtoupper(substr(trim($_FILES['pic']['name']), strlen($_FILES['pic']['name']) - 3)) != 'JPG') {
 			Errors::warning(_('Only jpg files are supported - a file extension of .jpg is expected'));
@@ -105,9 +105,9 @@
 			Errors::error(_('The item code cannot be empty'));
 			JS::set_focus('NewStockID');
 		} elseif (strstr($_POST['NewStockID'], " ") || strstr($_POST['NewStockID'], "'") || strstr($_POST['NewStockID'], "+")
-		 || strstr($_POST['NewStockID'], "\"")
-		 || strstr($_POST['NewStockID'], "&")
-		 || strstr($_POST['NewStockID'], "\t")
+							|| strstr($_POST['NewStockID'], "\"")
+							|| strstr($_POST['NewStockID'], "&")
+							|| strstr($_POST['NewStockID'], "\t")
 		) {
 			$input_error = 1;
 			Errors::error(_('The item code cannot contain any of the following characters -  & + OR a space OR quotes'));
@@ -119,13 +119,13 @@
 		}
 		if ($input_error != 1) {
 			if (check_value('del_image')) {
-				$filename = COMPANY_PATH . "/$user_comp/images/" . item_img_name($_POST['NewStockID']) . ".jpg";
+				$filename = COMPANY_PATH . "/$user_comp/images/" . Item::img_name($_POST['NewStockID']) . ".jpg";
 				if (file_exists($filename)) {
 					unlink($filename);
 				}
 			}
 			if (!$new_item) { /*so its an existing one */
-				update_item(
+				Item::update(
 					$_POST['NewStockID'], $_POST['description'],
 					$_POST['long_description'], $_POST['category_id'],
 					$_POST['tax_type_id'], get_post('units'),
@@ -140,7 +140,7 @@
 				$Ajax->activate('stock_id'); // in case of status change
 				Errors::notice(_("Item has been updated."));
 			} else { //it is a NEW part
-				add_item(
+				Item::add(
 					$_POST['NewStockID'], $_POST['description'],
 					$_POST['long_description'], $_POST['category_id'], $_POST['tax_type_id'],
 					$_POST['units'], $_POST['mb_flag'], $_POST['sales_account'],
@@ -174,9 +174,9 @@
 	function check_usage($stock_id, $dispmsg = true)
 	{
 		$sqls = array(
-			"SELECT COUNT(*) FROM stock_moves WHERE stock_id=" . DB::escape($stock_id) => _('Cannot delete this item because there are stock movements that refer to this item.'),
-			"SELECT COUNT(*) FROM bom WHERE component=" . DB::escape($stock_id) => _('Cannot delete this item record because there are bills of material that require this part as a component.'),
-			"SELECT COUNT(*) FROM sales_order_details WHERE stk_code=" . DB::escape($stock_id) => _('Cannot delete this item because there are existing purchase order items for it.'),
+			"SELECT COUNT(*) FROM stock_moves WHERE stock_id=" . DB::escape($stock_id)          => _('Cannot delete this item because there are stock movements that refer to this item.'),
+			"SELECT COUNT(*) FROM bom WHERE component=" . DB::escape($stock_id)                 => _('Cannot delete this item record because there are bills of material that require this part as a component.'),
+			"SELECT COUNT(*) FROM sales_order_details WHERE stk_code=" . DB::escape($stock_id)  => _('Cannot delete this item because there are existing purchase order items for it.'),
 			"SELECT COUNT(*) FROM purch_order_details WHERE item_code=" . DB::escape($stock_id) => _('Cannot delete this item because there are existing purchase order items for it.')
 		);
 		$msg = '';
@@ -217,8 +217,8 @@
 	if (isset($_POST['delete']) && strlen($_POST['delete']) > 1) {
 		if (check_usage($_POST['NewStockID'])) {
 			$stock_id = $_POST['NewStockID'];
-			delete_item($stock_id);
-			$filename = COMPANY_PATH . "/$user_comp/images/" . item_img_name($stock_id) . ".jpg";
+			Item::del($stock_id);
+			$filename = COMPANY_PATH . "/$user_comp/images/" . Item::img_name($stock_id) . ".jpg";
 			if (file_exists($filename)) {
 				unlink($filename);
 			}
@@ -259,7 +259,7 @@
 	} else { // Must be modifying an existing item
 		if (get_post('NewStockID') != get_post('stock_id') || get_post('addupdate')) { // first item display
 			$_POST['NewStockID'] = $_POST['stock_id'];
-			$myrow = get_item($_POST['NewStockID']);
+			$myrow = Item::get($_POST['NewStockID']);
 			$_POST['long_description'] = $myrow["long_description"];
 			$_POST['description'] = $myrow["description"];
 			$_POST['category_id'] = $myrow["category_id"];
@@ -286,7 +286,7 @@
 	textarea_row(_('Description:'), 'long_description', null, 42, 3);
 	stock_categories_list_row(_("Category:"), 'category_id', null, false, $new_item);
 	if ($new_item && (list_updated('category_id') || !isset($_POST['units']))) {
-		$category_record = get_item_category($_POST['category_id']);
+		$category_record = Item_Category::get($_POST['category_id']);
 		$_POST['tax_type_id'] = $category_record["dflt_tax_type"];
 		$_POST['units'] = $category_record["dflt_units"];
 		$_POST['mb_flag'] = $category_record["dflt_mb_flag"];
@@ -344,10 +344,10 @@
 	// Add Image upload for New Item  - by Joe
 	$stock_img_link = "";
 	$check_remove_image = false;
-	if (isset($_POST['NewStockID']) && file_exists(COMPANY_PATH . "/$user_comp/images/" . item_img_name($_POST['NewStockID']) . ".jpg")) {
+	if (isset($_POST['NewStockID']) && file_exists(COMPANY_PATH . "/$user_comp/images/" . Item::img_name($_POST['NewStockID']) . ".jpg")) {
 		// 31/08/08 - rand() call is necessary here to avoid caching problems. Thanks to Peter D.
 		$stock_img_link .= "<img id='item_img' alt = '[" . $_POST['NewStockID'] . ".jpg]' src='" . COMPANY_PATH . "/$user_comp/images/"
-		 . item_img_name($_POST['NewStockID']) . ".jpg?nocache=" . rand() . "' height='" . Config::get('item_images_height') . "' border='0'>";
+											 . Item::img_name($_POST['NewStockID']) . ".jpg?nocache=" . rand() . "' height='" . Config::get('item_images_height') . "' border='0'>";
 		$check_remove_image = true;
 	} else {
 		$stock_img_link .= _("No image");

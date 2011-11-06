@@ -17,7 +17,6 @@
 	// Title:	Stock Check Sheet
 	// ----------------------------------------------------------------
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	include_once(APP_PATH . "includes/manufacturing.php");
 	//----------------------------------------------------------------------------------------------------
 	print_stock_check();
 	function getTransactions($category, $location)
@@ -73,7 +72,7 @@
 		if ($category == 0) {
 			$cat = _('All');
 		} else {
-			$cat = get_category_name($category);
+			$cat = Item_Category::get_name($category);
 		}
 		if ($location == ALL_TEXT) {
 			$location = 'all';
@@ -113,22 +112,22 @@
 			1 => array(
 				'text' => _('Category'),
 				'from' => $cat,
-				'to' => ''
+				'to'   => ''
 			),
 			2 => array(
 				'text' => _('Location'),
 				'from' => $loc,
-				'to' => ''
+				'to'   => ''
 			),
 			3 => array(
 				'text' => _('Only Shortage'),
 				'from' => $short,
-				'to' => ''
+				'to'   => ''
 			),
 			4 => array(
 				'text' => _('Suppress Zeros'),
 				'from' => $nozeros,
-				'to' => ''
+				'to'   => ''
 			)
 		);
 		$rep = new FrontReport(_('Stock Check Sheets'), "StockCheckSheet", User::pagesize());
@@ -184,7 +183,7 @@
 			}
 			if ($pictures) {
 				$image = COMPANY_PATH . '/images/'
-				 . item_img_name($trans['stock_id']) . '.jpg';
+								 . Item::img_name($trans['stock_id']) . '.jpg';
 				if (file_exists($image)) {
 					$rep->NewLine();
 					if ($rep->row - Config::get('item_images_height') < $rep->bottomMargin) {

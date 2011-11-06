@@ -86,7 +86,7 @@
 		if ($category == 0) {
 			$cat = _('All');
 		} else {
-			$cat = get_category_name($category);
+			$cat = Item_Category::get_name($category);
 		}
 		if ($salestype == 0) {
 			$stype = _('All');
@@ -106,22 +106,22 @@
 			1 => array(
 				'text' => _('Currency'),
 				'from' => $curr_sel,
-				'to' => ''
+				'to'   => ''
 			),
 			2 => array(
 				'text' => _('Category'),
 				'from' => $cat,
-				'to' => ''
+				'to'   => ''
 			),
 			3 => array(
 				'text' => _('Sales Type'),
 				'from' => $stype,
-				'to' => ''
+				'to'   => ''
 			),
 			4 => array(
 				'text' => _('Show GP %'),
 				'from' => $GP,
-				'to' => ''
+				'to'   => ''
 			)
 		);
 		$rep = new FrontReport(_('Price Listing'), "PriceListing", User::pagesize());
@@ -158,7 +158,7 @@
 			}
 			if ($pictures) {
 				$image = COMPANY_PATH . "/images/"
-				 . item_img_name($myrow['stock_id']) . ".jpg";
+								 . Item::img_name($myrow['stock_id']) . ".jpg";
 				if (file_exists($image)) {
 					$rep->NewLine();
 					if ($rep->row - Config::get('item_images_height') < $rep->bottomMargin) {

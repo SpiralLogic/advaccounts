@@ -9,24 +9,24 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-
 	function add_item_purchasing_data($supplier_id, $stock_id, $price,
-																		$suppliers_uom, $conversion_factor, $supplier_description, $stockid = null) {
-
-		if ($stockid == null) $stockid = get_stockid($stock_id);
-
+																		$suppliers_uom, $conversion_factor, $supplier_description, $stockid = null)
+	{
+		if ($stockid == null) {
+			$stockid = Item::get_stockid($stock_id);
+		}
 		$sql = "INSERT INTO purch_data (supplier_id, stockid, stock_id, price, suppliers_uom,
 		conversion_factor, supplier_description) VALUES (";
 		$sql .= DB::escape($supplier_id) . ", " . DB::escape($stock_id) . ", " . DB::escape($stockid) . ", "
-		 . $price . ", " . DB::escape($suppliers_uom) . ", "
-		 . $conversion_factor . ", "
-		 . DB::escape($supplier_description) . ")";
-
+						. $price . ", " . DB::escape($suppliers_uom) . ", "
+						. $conversion_factor . ", "
+						. DB::escape($supplier_description) . ")";
 		DB::query($sql, "The supplier purchasing details could not be added");
 	}
 
 	function update_item_purchasing_data($selected_id, $stock_id, $price,
-																			 $suppliers_uom, $conversion_factor, $supplier_description) {
+																			 $suppliers_uom, $conversion_factor, $supplier_description)
+	{
 		$sql = "UPDATE purch_data SET price=" . $price . ",
 		suppliers_uom=" . DB::escape($suppliers_uom) . ",
 		conversion_factor=" . $conversion_factor . ",
@@ -36,29 +36,29 @@
 		DB::query($sql, "The supplier purchasing details could not be updated");
 	}
 
-	function delete_item_purchasing_data($selected_id, $stock_id) {
+	function delete_item_purchasing_data($selected_id, $stock_id)
+	{
 		$sql = "DELETE FROM purch_data WHERE supplier_id=" . DB::escape($selected_id) . "
 		AND stock_id=" . DB::escape($stock_id);
 		DB::query($sql, "could not delete purchasing data");
 	}
 
-	function get_items_purchasing_data($stock_id) {
+	function get_items_purchasing_data($stock_id)
+	{
 		$sql = "SELECT purch_data.*,suppliers.supp_name, suppliers.curr_code
 		FROM purch_data INNER JOIN suppliers
 		ON purch_data.supplier_id=suppliers.supplier_id
 		WHERE stock_id = " . DB::escape($stock_id);
-
 		return DB::query($sql, "The supplier purchasing details for the selected part could not be retrieved");
 	}
 
-	function get_item_purchasing_data($selected_id, $stock_id) {
+	function get_item_purchasing_data($selected_id, $stock_id)
+	{
 		$sql = "SELECT purch_data.*,suppliers.supp_name FROM purch_data
 		INNER JOIN suppliers ON purch_data.supplier_id=suppliers.supplier_id
 		WHERE purch_data.supplier_id=" . DB::escape($selected_id) . "
 		AND purch_data.stock_id=" . DB::escape($stock_id);
-
 		$result = DB::query($sql, "The supplier purchasing details for the selected supplier and item could not be retrieved");
-
 		return DB::fetch($result);
 	}
 

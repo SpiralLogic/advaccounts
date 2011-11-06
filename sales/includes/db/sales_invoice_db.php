@@ -59,10 +59,10 @@
 			$sales_order = $sales_order[0];
 		} // assume all crucial SO data are same for every delivery
 		$invoice_no = Sales_Trans::write(ST_SALESINVOICE, $trans_no, $invoice->customer_id,
-			$invoice->Branch, $date_, $invoice->reference, $items_total, 0,
-			$items_added_tax, $invoice->freight_cost, $freight_added_tax,
-			$invoice->sales_type, $sales_order, $delivery_no,
-			$invoice->ship_via, $invoice->due_date, $alloc, 0, $invoice->dimension_id, $invoice->dimension2_id);
+																		 $invoice->Branch, $date_, $invoice->reference, $items_total, 0,
+																		 $items_added_tax, $invoice->freight_cost, $freight_added_tax,
+																		 $invoice->sales_type, $sales_order, $delivery_no,
+																		 $invoice->ship_via, $invoice->due_date, $alloc, 0, $invoice->dimension_id, $invoice->dimension2_id);
 		// 2008-06-14 extra $alloc, 2008-11-12 added dimension_id Joe Hunt
 		if ($trans_no == 0) {
 			$invoice->trans_no = array($invoice_no => 0);
@@ -77,22 +77,22 @@
 		$total = 0;
 		foreach ($invoice->line_items as $line_no => $invoice_line) {
 			$line_taxfree_price = Taxes::get_tax_free_price_for_item($invoice_line->stock_id,
-				$invoice_line->price, 0, $invoice->tax_included,
-				$invoice->tax_group_array);
+																															 $invoice_line->price, 0, $invoice->tax_included,
+																															 $invoice->tax_group_array);
 			$line_tax = Taxes::get_full_price_for_item($invoice_line->stock_id,
-				$invoice_line->price, 0, $invoice->tax_included,
-				$invoice->tax_group_array) - $line_taxfree_price;
+																								 $invoice_line->price, 0, $invoice->tax_included,
+																								 $invoice->tax_group_array) - $line_taxfree_price;
 			write_customer_trans_detail_item(ST_SALESINVOICE, $invoice_no, $invoice_line->stock_id,
-				$invoice_line->description, $invoice_line->qty_dispatched,
-				$invoice_line->line_price(), $line_tax, $invoice_line->discount_percent,
-				$invoice_line->standard_cost,
-				$trans_no ? $invoice_line->id : 0);
+																			 $invoice_line->description, $invoice_line->qty_dispatched,
+																			 $invoice_line->line_price(), $line_tax, $invoice_line->discount_percent,
+																			 $invoice_line->standard_cost,
+																			 $trans_no ? $invoice_line->id : 0);
 			// Update delivery items for the quantity invoiced
 			if ($invoice_line->qty_old != $invoice_line->qty_dispatched) {
 				update_parent_line(ST_SALESINVOICE, $invoice_line->src_id, ($invoice_line->qty_dispatched - $invoice_line->qty_old));
 			}
 			if ($invoice_line->qty_dispatched != 0) {
-				$stock_gl_code = get_stock_gl_code($invoice_line->stock_id);
+				$stock_gl_code = Item::get_gl_code($invoice_line->stock_id);
 				if ($invoice_line->line_price() != 0) {
 					//Post sales transaction to GL credit sales
 					// 2008-06-14. If there is a Branch Sales Account, then override with this,
@@ -114,12 +114,12 @@
 						$stock_gl_code["dimension2_id"]));
 					$total += add_gl_trans_customer(ST_SALESINVOICE, $invoice_no, $date_, $sales_account, $dim, $dim2,
 						(-$line_taxfree_price * $invoice_line->qty_dispatched),
-						$invoice->customer_id, "The sales price GL posting could not be inserted");
+																					$invoice->customer_id, "The sales price GL posting could not be inserted");
 					if ($invoice_line->discount_percent != 0) {
 						$total += add_gl_trans_customer(ST_SALESINVOICE, $invoice_no, $date_,
-							$branch_data["sales_discount_account"], $dim, $dim2,
+																						$branch_data["sales_discount_account"], $dim, $dim2,
 							($line_taxfree_price * $invoice_line->qty_dispatched * $invoice_line->discount_percent),
-							$invoice->customer_id, "The sales discount GL posting could not be inserted");
+																						$invoice->customer_id, "The sales discount GL posting could not be inserted");
 					} /*end of if discount !=0 */
 				}
 			} /*quantity dispatched is more than 0 */
@@ -127,23 +127,23 @@
 		if (($items_total + $charge_shipping) != 0) {
 			$total += add_gl_trans_customer(ST_SALESINVOICE, $invoice_no, $date_, $branch_data["receivables_account"], 0, 0,
 				($items_total + $charge_shipping + $items_added_tax + $freight_added_tax),
-				$invoice->customer_id, "The total debtor GL posting could not be inserted");
+																			$invoice->customer_id, "The total debtor GL posting could not be inserted");
 		}
 		if ($charge_shipping != 0) {
 			$total += add_gl_trans_customer(ST_SALESINVOICE, $invoice_no, $date_, $company_data["freight_act"], 0, 0,
-				-$invoice->get_tax_free_shipping(), $invoice->customer_id,
-				"The freight GL posting could not be inserted");
+																			-$invoice->get_tax_free_shipping(), $invoice->customer_id,
+																			"The freight GL posting could not be inserted");
 		}
 		// post all taxes
 		foreach ($taxes as $taxitem) {
 			if ($taxitem['Net'] != 0) {
 				$ex_rate = Banking::get_exchange_rate_from_home_currency(Banking::get_customer_currency($invoice->customer_id), $date_);
 				add_trans_tax_details(ST_SALESINVOICE, $invoice_no, $taxitem['tax_type_id'],
-					$taxitem['rate'], $invoice->tax_included, $taxitem['Value'],
-					$taxitem['Net'], $ex_rate, $date_, $invoice->reference);
+															$taxitem['rate'], $invoice->tax_included, $taxitem['Value'],
+															$taxitem['Net'], $ex_rate, $date_, $invoice->reference);
 				$total += add_gl_trans_customer(ST_SALESINVOICE, $invoice_no, $date_, $taxitem['sales_gl_code'], 0, 0,
 					(-$taxitem['Value']), $invoice->customer_id,
-					"A tax GL posting could not be inserted");
+																				"A tax GL posting could not be inserted");
 			}
 		}
 		/*Post a balance post if $total != 0 */

@@ -40,7 +40,7 @@
 			$exclude = 0;
 		}
 		$cost_adjust = false;
-		$qoh = get_qoh_on_date($stock_id, null, $date, $exclude);
+		$qoh = Item::get_qoh_on_date($stock_id, null, $date, $exclude);
 		if ($adj_only) {
 			if ($qoh > 0) {
 				$material_cost = ($qoh * $material_cost + $qty * $price_in_home_currency) / $qoh;
@@ -59,7 +59,7 @@
 		$material_cost = Num::round($material_cost, $dec);
 		if ($cost_adjust) // new 2010-02-10
 		{
-			adjust_deliveries($stock_id, $material_cost, $date);
+			Item::adjust_deliveries($stock_id, $material_cost, $date);
 		}
 		$sql = "UPDATE stock_master SET material_cost=" . DB::escape($material_cost) . "
 		WHERE stock_id=" . DB::escape($stock_id);
@@ -88,7 +88,7 @@
 				}
 				/*Need to insert a grn item */
 				$grn_item = add_grn_detail_item($grn, $order_line->po_detail_rec, $order_line->stock_id, $order_line->description, $order_line->standard_cost, $order_line->receive_qty, $order_line->price,
-					$order_line->discount);
+																				$order_line->discount);
 				/* Update location stock records - NB  a po cannot be entered for a service/kit parts */
 				add_stock_move(ST_SUPPRECEIVE, $order_line->stock_id, $grn, $location, $date_, "", $order_line->receive_qty, $order_line->standard_cost, $po->supplier_id, 1, $order_line->price);
 			} /*quantity received is != 0 */
@@ -105,13 +105,13 @@
 	{
 		$sql = "INSERT INTO purch_order_details (order_no, item_code, description, delivery_date, unit_price, quantity_ordered, discount) VALUES (";
 		$sql .= $po->order_no . "," .
-		 DB::escape('freight') . "," .
-		 DB::escape('Freight Charges') . ",'" .
-		 Dates::date2sql($date_) . "'," .
-		 DB::escape($po->freight) . ", " .
-		 DB::escape(1) . ", " .
-		 DB::escape(0) .
-		 ")";
+						DB::escape('freight') . "," .
+						DB::escape('Freight Charges') . ",'" .
+						Dates::date2sql($date_) . "'," .
+						DB::escape($po->freight) . ", " .
+						DB::escape(1) . ", " .
+						DB::escape(0) .
+						")";
 		DB::query($sql, "One of the purchase order detail records could not be updated");
 		return DB::insert_id();
 	}
@@ -189,34 +189,34 @@
 	function get_grn_items($grn_batch_id = 0, $supplier_id = "", $outstanding_only = false, $is_invoiced_only = false, $invoice_no = 0, $begin = "", $end = "")
 	{
 		$sql = "SELECT "
-		 . "grn_batch.*, "
-		 . "grn_items.*, "
-		 . "purch_order_details.unit_price, "
-		 . "purch_order_details.std_cost_unit, units
+					 . "grn_batch.*, "
+					 . "grn_items.*, "
+					 . "purch_order_details.unit_price, "
+					 . "purch_order_details.std_cost_unit, units
     	    FROM "
-		 . "grn_batch, "
-		 . "grn_items, "
-		 . "purch_order_details, "
-		 . "stock_master";
+					 . "grn_batch, "
+					 . "grn_items, "
+					 . "purch_order_details, "
+					 . "stock_master";
 		if ($invoice_no != 0) {
 			$sql .= ", supp_invoice_items";
 		}
 		$sql .= " WHERE "
-		 . "grn_items.grn_batch_id="
-		 . "grn_batch.id AND "
-		 . "grn_items.po_detail_item="
-		 . "purch_order_details.po_detail_item";
+						. "grn_items.grn_batch_id="
+						. "grn_batch.id AND "
+						. "grn_items.po_detail_item="
+						. "purch_order_details.po_detail_item";
 		if ($invoice_no != 0) {
 			$sql .= " AND "
-			 . "supp_invoice_items.supp_trans_type="
-			 . ST_SUPPINVOICE . " AND "
-			 . "supp_invoice_items.supp_trans_no=$invoice_no AND "
-			 . "grn_items.id="
-			 . "supp_invoice_items.grn_item_id";
+							. "supp_invoice_items.supp_trans_type="
+							. ST_SUPPINVOICE . " AND "
+							. "supp_invoice_items.supp_trans_no=$invoice_no AND "
+							. "grn_items.id="
+							. "supp_invoice_items.grn_item_id";
 		}
 		$sql .= " AND "
-		 . "stock_master.stock_id="
-		 . "grn_items.item_code ";
+						. "stock_master.stock_id="
+						. "grn_items.item_code ";
 		if ($begin != "") {
 			$sql .= " AND grn_batch.delivery_date>='" . Dates::date2sql($begin) . "'";
 		}
@@ -267,8 +267,8 @@
 					$units = $myrow["units"];
 				}
 				$order->add_to_order($order->lines_on_order + 1, $myrow["item_code"], 1, $myrow["description"],
-					$myrow["unit_price"], $units, Dates::sql2date($myrow["delivery_date"]),
-					$myrow["quantity_inv"], $myrow["qty_recd"], $myrow['discount']);
+														 $myrow["unit_price"], $units, Dates::sql2date($myrow["delivery_date"]),
+														 $myrow["quantity_inv"], $myrow["qty_recd"], $myrow['discount']);
 				$order->line_items[$order->lines_on_order]->po_detail_rec = $myrow["po_detail_item"];
 			} /* line po from purchase order details */
 		} //end of checks on returned data set

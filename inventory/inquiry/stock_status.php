@@ -57,7 +57,7 @@
 		alt_table_row_color($k);
 		$demand_qty = Manufacturing::get_demand_qty($_POST['stock_id'], $myrow["loc_code"]);
 		$demand_qty += Manufacturing::get_demand_asm_qty($_POST['stock_id'], $myrow["loc_code"]);
-		$qoh = get_qoh_on_date($_POST['stock_id'], $myrow["loc_code"]);
+		$qoh = Item::get_qoh_on_date($_POST['stock_id'], $myrow["loc_code"]);
 		if ($kitset_or_service == false) {
 			$qoo = Manufacturing::get_on_porder_qty($_POST['stock_id'], $myrow["loc_code"]);
 			$qoo += Manufacturing::get_on_worder_qty($_POST['stock_id'], $myrow["loc_code"]);

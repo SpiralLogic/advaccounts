@@ -17,7 +17,6 @@
 	// Title:	Bill Of Material
 	// ----------------------------------------------------------------
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	include_once(APP_PATH . "inventory/includes/db/items_db.php");
 	//----------------------------------------------------------------------------------------------------
 	print_bill_of_material();
 	function getTransactions($from, $to)
@@ -58,8 +57,12 @@
 		$cols = array(0, 50, 305, 375, 445, 515);
 		$headers = array(_('Component'), _('Description'), _('Loc'), _('Wrk Ctr'), _('Quantity'));
 		$aligns = array('left', 'left', 'left', 'left', 'right');
-		$params = array(0 => $comments,
-			1 => array('text' => _('Component'), 'from' => $frompart, 'to' => $topart)
+		$params = array(
+			0 => $comments,
+			1 => array(
+				'text' => _('Component'),
+				'from' => $frompart,
+				'to'   => $topart)
 		);
 		$rep = new FrontReport(_('Bill of Material Listing'), "BillOfMaterial", User::pagesize());
 		$rep->Font();
@@ -75,7 +78,7 @@
 					$rep->NewLine(2, 3);
 				}
 				$rep->TextCol(0, 1, $trans['parent']);
-				$desc = get_item($trans['parent']);
+				$desc = Item::get($trans['parent']);
 				$rep->TextCol(1, 2, $desc['description']);
 				$parent = $trans['parent'];
 				$rep->NewLine();

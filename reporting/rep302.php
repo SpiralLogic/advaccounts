@@ -17,7 +17,6 @@
 	// Title:	Inventory Planning
 	// ----------------------------------------------------------------
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	include_once(APP_PATH . "inventory/includes/db/items_category_db.php");
 	//----------------------------------------------------------------------------------------------------
 	print_inventory_planning();
 	function getTransactions($category, $location)
@@ -96,7 +95,7 @@
 		}
 		else
 		{
-			$cat = get_category_name($category);
+			$cat = Item_Category::get_name($category);
 		}
 		if ($location == ALL_TEXT) {
 			$location = 'all';
@@ -114,15 +113,24 @@
 		$per2 = strftime('%b', mktime(0, 0, 0, date('m') - 2, 1, date('Y')));
 		$per3 = strftime('%b', mktime(0, 0, 0, date('m') - 3, 1, date('Y')));
 		$per4 = strftime('%b', mktime(0, 0, 0, date('m') - 4, 1, date('Y')));
-		$headers = array(_('Category'), '', $per4, $per3, $per2, $per1, $per0, '3*M',
+		$headers = array(
+			_('Category'), '', $per4, $per3, $per2, $per1, $per0, '3*M',
 			_('QOH'), _('Cust Ord'), _('Supp Ord'), _('Sugg Ord')
 		);
-		$aligns = array('left', 'left', 'right', 'right', 'right', 'right', 'right', 'right',
+		$aligns = array(
+			'left', 'left', 'right', 'right', 'right', 'right', 'right', 'right',
 			'right', 'right', 'right', 'right'
 		);
-		$params = array(0 => $comments,
-			1 => array('text' => _('Category'), 'from' => $cat, 'to' => ''),
-			2 => array('text' => _('Location'), 'from' => $loc, 'to' => '')
+		$params = array(
+			0 => $comments,
+			1 => array(
+				'text' => _('Category'),
+				'from' => $cat,
+				'to'   => ''),
+			2 => array(
+				'text' => _('Location'),
+				'from' => $loc,
+				'to'   => '')
 		);
 		$rep = new FrontReport(_('Inventory Planning Report'), "InventoryPlanning", User::pagesize());
 		$rep->Font();

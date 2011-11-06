@@ -24,7 +24,7 @@
 		}
 		if ($input_error != 1) {
 			if ($selected_id != -1) {
-				update_item_category(
+				Item_Category::update(
 					$selected_id, $_POST['description'],
 					$_POST['tax_type_id'], $_POST['sales_account'],
 					$_POST['cogs_account'], $_POST['inventory_account'],
@@ -34,7 +34,7 @@
 				);
 				Errors::notice(_('Selected item category has been updated'));
 			} else {
-				add_item_category(
+				Item_Category::add(
 					$_POST['description'],
 					$_POST['tax_type_id'], $_POST['sales_account'],
 					$_POST['cogs_account'], $_POST['inventory_account'],
@@ -56,7 +56,7 @@
 		if ($myrow[0] > 0) {
 			Errors::error(_("Cannot delete this item category because items have been created using this item category."));
 		} else {
-			delete_item_category($selected_id);
+			Item_Category::delete($selected_id);
 			Errors::notice(_('Selected item category has been deleted'));
 		}
 		$Mode = 'RESET';
@@ -112,7 +112,7 @@
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {
 			//editing an existing item category
-			$myrow = get_item_category($selected_id);
+			$myrow = Item_Category::get($selected_id);
 			$_POST['category_id'] = $myrow["category_id"];
 			$_POST['description'] = $myrow["description"];
 			$_POST['tax_type_id'] = $myrow["dflt_tax_type"];

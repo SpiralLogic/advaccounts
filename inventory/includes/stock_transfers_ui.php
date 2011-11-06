@@ -98,7 +98,7 @@
 				$Ajax->activate('units');
 				$Ajax->activate('qty');
 			}
-			$item_info = get_item_edit_info(Input::post('stock_id'));
+			$item_info = Item::get_edit_info(Input::post('stock_id'));
 			$dec = $item_info['decimals'];
 			$_POST['qty'] = Num::format(0, $dec);
 			$_POST['units'] = $item_info["units"];

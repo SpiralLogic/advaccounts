@@ -17,7 +17,6 @@
 	// Title:	Salesman Report
 	// ----------------------------------------------------------------
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	include_once(APP_PATH . "inventory/includes/db/items_category_db.php");
 	//----------------------------------------------------------------------------------------------------
 	print_salesman_list();
 	//----------------------------------------------------------------------------------------------------
@@ -67,16 +66,25 @@
 		}
 		$dec = User::price_dec();
 		$cols = array(0, 60, 150, 220, 325, 385, 450, 515);
-		$headers = array(_('Invoice'), _('Customer'), _('Branch'), _('Customer Ref'),
+		$headers = array(
+			_('Invoice'), _('Customer'), _('Branch'), _('Customer Ref'),
 			_('Inv Date'), _('Total'), _('Provision')
 		);
 		$aligns = array('left', 'left', 'left', 'left', 'left', 'right', 'right');
-		$headers2 = array(_('Salesman'), " ", _('Phone'), _('Email'), _('Provision'),
+		$headers2 = array(
+			_('Salesman'), " ", _('Phone'), _('Email'), _('Provision'),
 			_('Break Pt.'), _('Provision') . " 2"
 		);
-		$params = array(0 => $comments,
-			1 => array('text' => _('Period'), 'from' => $from, 'to' => $to),
-			2 => array('text' => _('Summary Only'), 'from' => $sum, 'to' => '')
+		$params = array(
+			0 => $comments,
+			1 => array(
+				'text' => _('Period'),
+				'from' => $from,
+				'to'   => $to),
+			2 => array(
+				'text' => _('Summary Only'),
+				'from' => $sum,
+				'to'   => '')
 		);
 		$cols2 = $cols;
 		$aligns2 = $aligns;

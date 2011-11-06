@@ -12,7 +12,6 @@
 	$page_security = 'SA_UOM';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "Units of Measure"));
-	include_once(APP_PATH . "inventory/includes/db/items_units_db.php");
 	Page::simple_mode(false);
 	//----------------------------------------------------------------------------------
 	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
