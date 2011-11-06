@@ -43,7 +43,7 @@
 				}
 				Session::$get_text->add_domain(Session::$lang->code, PATH_TO_ROOT . "/lang");
 			}
-			$this->add_application(new App_Setup());
+			$this->add_application(new App_System());
 		}
 
 		function add_application(&$app)

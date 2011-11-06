@@ -10,7 +10,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
  ***********************************************************************/
 	class App_Purchases extends Application {
-		function App_Purchases() {
+		function __construct() {
 			global $installed_extensions;
 			parent::__construct("Purchases", _($this->help_context = "&Purchases"));
 

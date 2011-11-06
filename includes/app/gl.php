@@ -9,7 +9,7 @@ but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
  ***********************************************************************/
-class App_GeneralLedger extends Application
+class App_GL extends Application
 {
 	function __construct()
 	{
