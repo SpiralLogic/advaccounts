@@ -57,7 +57,7 @@
 		}
 		$id = $_GET['id'];
 		$connections = Config::get_all('db');
-		$new = !isset($conections[$id]);
+		$new = !isset($connections[$id]);
 		$db_connection['name'] = $_POST['name'];
 		$db_connection['host'] = $_POST['host'];
 		$db_connection['dbuser'] = $_POST['dbuser'];

@@ -120,7 +120,7 @@
      	AND trans.tran_date >= '$date_after'
     	AND trans.tran_date <= '$date_to'";
 	if ($_POST['supplier_id'] != ALL_TEXT) {
-		$sql .= " AND trans.supplier_id = " . DB::escape($_POST['supplier_id']);
+		$sql .= " AND trans.supplier_id = " . DB::escape($_POST['supplier_id'],false,false);
 	}
 	if (isset($_POST['filterType']) && $_POST['filterType'] != ALL_TEXT) {
 		if (($_POST['filterType'] == '1') || ($_POST['filterType'] == '2')) {

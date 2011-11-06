@@ -183,19 +183,19 @@
 	//figure out the sql required from the inputs available
 	if (isset($_POST['DeliveryNumber']) && $_POST['DeliveryNumber'] != "") {
 		$delivery = "%" . $_POST['DeliveryNumber'];
-		$sql .= " AND trans.trans_no LIKE " . DB::escape($delivery);
+		$sql .= " AND trans.trans_no LIKE " . DB::escape($delivery,false,false);
 		$sql .= " GROUP BY trans.trans_no";
 	} else {
 		$sql .= " AND trans.tran_date >= '" . Dates::date2sql($_POST['DeliveryAfterDate']) . "'";
 		$sql .= " AND trans.tran_date <= '" . Dates::date2sql($_POST['DeliveryToDate']) . "'";
 		if ($selected_customer != -1) {
-			$sql .= " AND trans.debtor_no=" . DB::escape($selected_customer) . " ";
+			$sql .= " AND trans.debtor_no=" . DB::escape($selected_customer,false,false) . " ";
 		}
 		if (isset($selected_stock_item)) {
-			$sql .= " AND line.stock_id=" . DB::escape($selected_stock_item) . " ";
+			$sql .= " AND line.stock_id=" . DB::escape($selected_stock_item,false,false) . " ";
 		}
 		if (isset($_POST['StockLocation']) && $_POST['StockLocation'] != ALL_TEXT) {
-			$sql .= " AND sorder.from_stk_loc = " . DB::escape($_POST['StockLocation']) . " ";
+			$sql .= " AND sorder.from_stk_loc = " . DB::escape($_POST['StockLocation'],false,false) . " ";
 		}
 		$sql .= " GROUP BY trans.trans_no ";
 	} //end no delivery number selected

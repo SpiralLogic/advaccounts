@@ -374,7 +374,6 @@ function stopEv(ev) {
  */
 function setHotKeys() {
 	document.onkeydown = function (ev) {
-		console.log(ev);
 		ev = ev || window.event;
 		key = ev.keyCode || ev.which;
 		if (key == 18 && key != 68 && !ev.ctrlKey) {	// start selection, skip Win AltGr
@@ -382,7 +381,7 @@ function setHotKeys() {
 			_hotkeys.focus = -1;
 			return stopEv(ev);
 		} else {
-			if (ev.altKey && !ev.ctrlKey && ((key > 47 && key < 58) || (key > 64 && key < 91))) {
+			if (ev.altKey && !ev.ctrlKey && key != 68 && ((key > 47 && key < 58) || (key > 64 && key < 91))) {
 				var n = _hotkeys.focus;
 				var l = document.links;
 				var cnt = l.length;

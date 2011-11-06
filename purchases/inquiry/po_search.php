@@ -114,20 +114,20 @@
 	AND location.loc_code = porder.into_stock_location
 	AND (line.quantity_ordered > line.quantity_received) ";
 	if ($_POST['supplier_id'] != ALL_TEXT) {
-		$sql .= " AND supplier.supplier_id = " . DB::escape($_POST['supplier_id']);
+		$sql .= " AND supplier.supplier_id = " . DB::escape($_POST['supplier_id'],false,false);
 	}
 	if (isset($order_number) && $order_number != "") {
-		$sql .= "AND porder.reference LIKE " . DB::escape('%' . $order_number . '%');
+		$sql .= "AND porder.reference LIKE " . DB::escape('%' . $order_number . '%',false,false);
 	} else {
 		$data_after = Dates::date2sql($_POST['OrdersAfterDate']);
 		$data_before = Dates::date2sql($_POST['OrdersToDate']);
 		$sql .= "  AND porder.ord_date >= '$data_after'";
 		$sql .= "  AND porder.ord_date <= '$data_before'";
 		if (isset($_POST['StockLocation']) && $_POST['StockLocation'] != ALL_TEXT) {
-			$sql .= " AND porder.into_stock_location = " . DB::escape($_POST['StockLocation']);
+			$sql .= " AND porder.into_stock_location = " . DB::escape($_POST['StockLocation'],false,false);
 		}
 		if (isset($selected_stock_item)) {
-			$sql .= " AND line.item_code=" . DB::escape($selected_stock_item);
+			$sql .= " AND line.item_code=" . DB::escape($selected_stock_item,false,false);
 		}
 	} //end not order number selected
 	$sql .= " GROUP BY porder.order_no";

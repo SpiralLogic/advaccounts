@@ -119,7 +119,7 @@
 
 	$db_name = User::get()->company;
 	$connections = Config::get_all('db');
-	$conn = $conections[$db_name];
+	$conn = $connections[$db_name];
 	if (get_post('creat')) {
 		generate_backup($conn, get_post('comp'), get_post('comments'));
 		$Ajax->activate('backups');

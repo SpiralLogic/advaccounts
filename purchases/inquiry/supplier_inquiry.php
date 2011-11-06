@@ -170,15 +170,15 @@
 			}
 			$ajaxsearch = "%" . $ajaxsearch . "%";
 			$sql .= " AND (";
-			$sql .= " supplier.supp_name LIKE " . DB::escape($ajaxsearch);
-			if (db_pager::countFilter('supp_trans', 'trans_no', $ajaxsearch) > 0) {
-				$sql .= " OR trans.trans_no LIKE " . DB::escape($ajaxsearch);
+			$sql .= " supplier.supp_name LIKE " . DB::escape($ajaxsearch,false,false);
+			if (db_pager::countFilter('supp_trans', 'trans_no', $ajaxsearch,false,false) > 0) {
+				$sql .= " OR trans.trans_no LIKE " . DB::escape($ajaxsearch,false,false);
 			}
 			if (db_pager::countFilter('supp_trans', 'reference', $ajaxsearch) > 0) {
-				$sql .= " OR trans.reference LIKE " . DB::escape($ajaxsearch);
+				$sql .= " OR trans.reference LIKE " . DB::escape($ajaxsearch,false,false);
 			}
 			if (db_pager::countFilter('supp_trans', 'supp_reference', $ajaxsearch) > 0) {
-				$sql .= " OR trans.supp_reference LIKE " . DB::escape($ajaxsearch);
+				$sql .= " OR trans.supp_reference LIKE " . DB::escape($ajaxsearch,false,false);
 			}
 			$sql .= ")";
 		}

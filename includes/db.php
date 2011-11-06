@@ -15,6 +15,8 @@
 		protected static $_prepared = array();
 		protected static $conn = array();
 		protected static $current = false;
+		protected static $data = array();
+		protected static $prepared = null;
 
 		final function __construct()
 		{
@@ -27,7 +29,7 @@
 			}
 			elseif ($db === null) {
 				$config = $config ? : Config::get('db_default');
-				$db = $config['name'];
+				$db     = $config['name'];
 			}
 			if (!isset($conn[$db])) {
 				static::$conn[$db] = static::$current = DB_Connection::instance($db, $config);
@@ -56,9 +58,11 @@
 					echo "</pre>\n";
 				}
 			}
-			$prepared = static::prepare($sql);
-			$prepared->execute();
-			return $prepared;
+			static::$prepared = null;
+			static::$prepared = static::prepare($sql);
+			static::$prepared->execute(static::$data ? : null);
+			static::$data = array();
+			return static::$prepared;
 		}
 
 		public static function quote($value)
@@ -66,8 +70,13 @@
 			return static::_get()->quote($value);
 		}
 
-		public static function escape($value, $null = false)
+		public static function escape($value, $null = false, $paramaterzed = true)
 		{
+			if ($paramaterzed) {
+				static::$data[] = trim($value);
+
+				return ' ? ';
+			}
 			$value = trim($value);
 			//reset default if second parameter is skipped
 			$null = ($null === null) ? (false) : ($null);
@@ -78,7 +87,8 @@
 				//value is a string and should be quoted; determine best method based on available extensions
 				$value = static::quote($value);
 			}
-			return $value;
+			return  $value;
+
 		}
 
 		public static function prepare($sql)
@@ -186,17 +196,19 @@
 				return $result->closeCursor();
 			}
 		}
+
 		public static function num_rows($result)
 		{
 
 			return $result->rowCount();
 		}
+
 		public static function num_fields($result)
 		{
 			return $result->columnCount();
 		}
-		//DB wrapper functions to change only once for whole application
 
+		//DB wrapper functions to change only once for whole application
 
 		public static function num_affected_rows($results)
 		{
@@ -218,6 +230,7 @@
 		{
 			DB::cancel("could not commit a transaction");
 		}
+
 		//-----------------------------------------------------------------------------
 		//	Update record activity status.
 		//
@@ -226,5 +239,4 @@
 			$sql = "UPDATE " . $table . " SET inactive = " . DB::escape($status) . " WHERE $key=" . DB::escape($id);
 			DB::query($sql, "Can't update record status");
 		}
-
 	}

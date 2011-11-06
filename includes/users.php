@@ -207,6 +207,6 @@
 			} else {
 				$users = 1;
 			}
-			return "$users " . ($users == 1 ? _("user online") : _("users online"));
+			return  _("users online").": $users";
 		}
 	}

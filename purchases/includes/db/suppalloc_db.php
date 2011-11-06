@@ -133,7 +133,7 @@
 
 		$supp_sql = "";
 		if ($supplier_id != null)
-			$supp_sql = " AND trans.supplier_id = " . DB::escape($supplier_id);
+			$supp_sql = " AND trans.supplier_id = " . DB::escape($supplier_id,false,false);
 
 		$sql = get_alloc_supp_sql("round(ABS(ov_amount+ov_gst+ov_discount)-alloc,6) <= 0 AS settled",
 		 "(type=" . ST_SUPPAYMENT . " OR type=" . ST_SUPPCREDIT . " OR type=" . ST_BANKPAYMENT . ") AND (ov_amount < 0) " . $settled_sql . $supp_sql);

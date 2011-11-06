@@ -110,7 +110,7 @@
 	dim.closed
 	FROM dimensions as dim WHERE id > 0";
 	if (isset($_POST['OrderNumber']) && $_POST['OrderNumber'] != "") {
-		$sql .= " AND reference LIKE " . DB::escape("%" . $_POST['OrderNumber'] . "%");
+		$sql .= " AND reference LIKE " . DB::escape("%" . $_POST['OrderNumber'] . "%",false,false);
 	} else {
 		if ($dim == 1) {
 			$sql .= " AND type_=1";
@@ -119,7 +119,7 @@
 			$sql .= " AND closed=0";
 		}
 		if (isset($_POST['type_']) && ($_POST['type_'] > 0)) {
-			$sql .= " AND type_=" . DB::escape($_POST['type_']);
+			$sql .= " AND type_=" . DB::escape($_POST['type_'],false,false);
 		}
 		if (isset($_POST['OverdueOnly'])) {
 			$today = Dates::date2sql(Dates::Today());

@@ -158,8 +158,6 @@
 			if (AJAX_REFERRER) {
 				return;
 			}
-			$load_info = array(Files::convert_size(memory_get_usage(true)), Files::convert_size(memory_get_peak_usage(true)), Dates::getReadableTime(microtime(true) - ADV_START_TIME));
-			echo implode(($rend->has_header) ? "<br>" : "|", $load_info);
 			echo "</div></body>";
 			JS::get_websales();
 			echo	 "</html>\n";
