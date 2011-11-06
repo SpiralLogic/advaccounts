@@ -32,28 +32,28 @@
 	start_table(Config::get('tables_style') . "  width=90%");
 	start_row();
 	start_form();
-	label_cells(_("From Customer"), $receipt['DebtorName'], "class='tableheader2'");
-	label_cells(_("Into Bank Account"), $receipt['bank_account_name'], "class='tableheader2'");
-	label_cells(_("Date of Deposit"), Dates::sql2date($receipt['tran_date']), "class='tableheader2'");
+	label_cells(_("From Customer"), $receipt['DebtorName'],'class="label"');
+	label_cells(_("Into Bank Account"), $receipt['bank_account_name'],'class="label"');
+	label_cells(_("Date of Deposit"), Dates::sql2date($receipt['tran_date']),'class="label"');
 	end_row();
 	start_row();
-	label_cells(_("Payment Currency"), $receipt['curr_code'], "class='tableheader2'");
-	label_cells(_("Amount"), Num::price_format($receipt['Total'] - $receipt['ov_discount']), "class='tableheader2'");
-	label_cells(_("Discount"), Num::price_format($receipt['ov_discount']), "class='tableheader2'");
+	label_cells(_("Payment Currency"), $receipt['curr_code'],'class="label"');
+	label_cells(_("Amount"), Num::price_format($receipt['Total'] - $receipt['ov_discount']),'class="label"');
+	label_cells(_("Discount"), Num::price_format($receipt['ov_discount']),'class="label"');
 	end_row();
 	start_row();
 	label_cells(
 		_("Payment Type"),
-		$bank_transfer_types[$receipt['BankTransType']], "class='tableheader2'"
+		$bank_transfer_types[$receipt['BankTransType']],'class="label"'
 	);
-	label_cells(_("Reference"), $receipt['reference'], "class='tableheader2'", "colspan=4");
+	label_cells(_("Reference"), $receipt['reference'], 'class="label" colspan=1');
 	end_form();
 	end_row();
 	Display::comments_row($trans_type, $trans_id);
 	end_table(1);
 	$voided = Display::is_voided($trans_type, $trans_id, _("This customer payment has been voided."));
 	if (!$voided && ($trans_type != ST_CUSTREFUND)) {
-		ui_view::display_allocations_from(PT_CUSTOMER, $receipt['debtor_no'], ST_CUSTPAYMENT, $trans_id, $receipt['Total']);
+		Display::allocations_from(PT_CUSTOMER, $receipt['debtor_no'], ST_CUSTPAYMENT, $trans_id, $receipt['Total']);
 	}
 	submenu_print(_("&Print This Receipt"), $trans_type, $_GET['trans_no'], 'prtopt');
 	end_page(true);

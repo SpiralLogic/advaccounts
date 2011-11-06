@@ -209,7 +209,7 @@
 		line_start_focus();
 	}
 	if (isset($_POST['go'])) {
-		ui_view::display_quick_entries(
+		Display::quick_entries(
 			$_SESSION['pay_items'], $_POST['person_id'], input_num('totamount'),
 			$_SESSION['pay_items']->trans_type == ST_BANKPAYMENT ? QE_PAYMENT : QE_DEPOSIT
 		);

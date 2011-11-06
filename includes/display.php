@@ -163,7 +163,7 @@
 		{
 			$comments = DB_Comments::get($type, $id);
 			if ($comments and DB::num_rows($comments)) {
-				echo "<tr><td colspan=15>";
+				echo "<tr><td class='label'>Comments</td><td colspan=15>";
 				while ($comment = DB::fetch($comments)) {
 					echo $comment["memo_"] . "<br>";
 				}
@@ -244,7 +244,7 @@
 		}
 
 		//--------------------------------------------------------------------------------------
-		static function display_allocations($alloc_result, $total)
+		static function allocations($alloc_result, $total)
 		{
 			global $systypes_array;
 			if (!$alloc_result || DB::num_rows($alloc_result) == 0) {
@@ -282,16 +282,16 @@
 		}
 
 		//--------------------------------------------------------------------------------------
-		static function display_allocations_from($person_type, $person_id, $type, $type_no, $total)
+		static function allocations_from($person_type, $person_id, $type, $type_no, $total)
 		{
 			switch ($person_type) {
 			case PT_CUSTOMER :
 				$alloc_result = get_allocatable_to_cust_transactions($person_id, $type_no, $type);
-				ui_view::display_allocations($alloc_result, $total);
+				Display::allocations($alloc_result, $total);
 				return;
 			case PT_SUPPLIER :
 				$alloc_result = get_allocatable_to_supp_transactions($person_id, $type_no, $type);
-				ui_view::display_allocations($alloc_result, $total);
+				Display::allocations($alloc_result, $total);
 				return;
 			}
 		}
@@ -301,7 +301,7 @@
 		//	Expands selected quick entry $id into GL posings and adds to cart.
 		//		returns calculated amount posted to bank GL account.
 		//
-		static function display_quick_entries(&$cart, $id, $base, $type, $descr = '')
+		static function quick_entries(&$cart, $id, $base, $type, $descr = '')
 		{
 			$bank_amount = 0;
 			if (!isset($id) || $id == null || $id == "") {

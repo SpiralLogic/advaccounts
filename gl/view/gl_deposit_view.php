@@ -109,7 +109,7 @@
 		}
 		label_row(_("Total"), Num::format($total_amount, User::price_dec()), "colspan=" . (2 + $dim) . " align=right", "align=right");
 		end_table(1);
-		ui_view::display_allocations_from($to_trans['person_type_id'], $to_trans['person_id'], 2, $trans_no, $to_trans['amount']);
+		Display::allocations_from($to_trans['person_type_id'], $to_trans['person_id'], 2, $trans_no, $to_trans['amount']);
 	}
 	end_page(true);
 ?>

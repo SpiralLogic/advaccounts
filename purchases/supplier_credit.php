@@ -224,7 +224,7 @@
 	}
 	if (isset($_POST['go'])) {
 		$Ajax->activate('gl_items');
-		ui_view::display_quick_entries(Purchase_Trans::instance(), $_POST['qid'], input_num('totamount'), QE_SUPPINV);
+		Display::quick_entries(Purchase_Trans::instance(), $_POST['qid'], input_num('totamount'), QE_SUPPINV);
 		$_POST['totamount'] = Num::price_format(0);
 		$Ajax->activate('totamount');
 		$Ajax->activate('inv_tot');

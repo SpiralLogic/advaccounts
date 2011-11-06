@@ -114,7 +114,7 @@
 		label_row(_("Total"), Num::format($total_amount, User::price_dec()), "colspan=" . (2 + $dim) . " align=right", "align=right");
 		end_table(1);
 		if (!$voided) {
-			ui_view::display_allocations_from(
+			Display::allocations_from(
 				$from_trans['person_type_id'], $from_trans['person_id'], 1, $trans_no, -$from_trans['amount']
 			);
 		}

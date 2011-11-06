@@ -181,8 +181,8 @@
 	if (ST_SALESORDER) {
 		submenu_option(_("Clone This Order"), "/sales/sales_order_entry.php?CloneOrder={$_GET['trans_no']}'  target='_top' ");
 	}
-	submenu_option(_('Edit This Order'), "/sales/sales_order_entry.php?{$modify}={$_GET['trans_no']}' target='_top' ");
-	submenu_print(_("&Print This Order"), ST_SALESORDER, $_GET['trans_no'], 'prtopt');
+	submenu_option(_('Edit Order'), "/sales/sales_order_entry.php?{$modify}={$_GET['trans_no']}' target='_top' ");
+	submenu_print(_("&Print Order"), ST_SALESORDER, $_GET['trans_no'], 'prtopt');
 	submenu_print(_("Print Proforma Invoice"), ST_PROFORMA, $_GET['trans_no'], 'prtopt');
 	if ($qty_remaining > 0) {
 		submenu_option(_("Make &Delivery Against This Order"), "/sales/customer_delivery.php?OrderNumber={$_GET['trans_no']}'  target='_top' ");

@@ -207,7 +207,7 @@
 
 	function submenu_option($title, $url, $id = null)
 	{
-		Display::note(menu_link(PATH_TO_ROOT . $url, $title, $id), 0, 1);
+		Display::note(menu_button(PATH_TO_ROOT . $url, $title, $id), 0, 1);
 	}
 
 	function submenu_button($title, $url, $id = null)
@@ -222,7 +222,7 @@
 
 	function submenu_print($title, $type, $number, $id = null, $email = 0, $extra = 0)
 	{
-		Display::note(Reporting::print_doc_link($number, $title, true, $type, false, 'menu_option', $id, $email, $extra), 0, 1);
+		Display::note(Reporting::print_doc_link($number, $title, true, $type, false, 'button printlink', $id, $email, $extra), 0, 1);
 	}
 
 	function submenu_email($title, $type, $number, $id = null, $emails, $extra = 0, $return = false)

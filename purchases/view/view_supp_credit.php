@@ -51,7 +51,7 @@
 	end_table(1);
 	$voided = Display::is_voided(ST_SUPPCREDIT, $trans_no, _("This credit note has been voided."));
 	if (!$voided) {
-		ui_view::display_allocations_from(PT_SUPPLIER, $supp_trans->supplier_id, ST_SUPPCREDIT, $trans_no, -($supp_trans->ov_amount + $supp_trans->ov_gst));
+		Display::allocations_from(PT_SUPPLIER, $supp_trans->supplier_id, ST_SUPPCREDIT, $trans_no, -($supp_trans->ov_amount + $supp_trans->ov_gst));
 	}
 	end_page(true);
 

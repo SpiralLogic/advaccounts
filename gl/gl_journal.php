@@ -264,7 +264,7 @@
 		line_start_focus();
 	}
 	if (isset($_POST['go'])) {
-		ui_view::display_quick_entries($_SESSION['journal_items'], $_POST['person_id'], input_num('totamount'), QE_JOURNAL);
+		Display::quick_entries($_SESSION['journal_items'], $_POST['person_id'], input_num('totamount'), QE_JOURNAL);
 		$_POST['totamount'] = Num::price_format(0);
 		$Ajax->activate('totamount');
 		line_start_focus();
