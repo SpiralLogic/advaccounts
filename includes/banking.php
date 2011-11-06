@@ -21,10 +21,10 @@
 	{
 		static function is_bank_account($account_code)
 		{
-			$sql    = "SELECT id FROM bank_accounts WHERE account_code='$account_code'";
-			$result = DBOld::query($sql, "checking account is bank account");
-			if (DBOld::num_rows($result) > 0) {
-				$acct = DBOld::fetch($result);
+			$sql = "SELECT id FROM bank_accounts WHERE account_code='$account_code'";
+			$result = DB::query($sql, "checking account is bank account");
+			if (DB::num_rows($result) > 0) {
+				$acct = DB::fetch($result);
 				return $acct['id'];
 			} else
 			{
@@ -41,21 +41,21 @@
 		//----------------------------------------------------------------------------------
 		static function get_company_currency()
 		{
-			$sql    = "SELECT curr_default FROM company";
-			$result = DBOld::query($sql, "retreive company currency");
-			if (DBOld::num_rows($result) == 0) {
+			$sql = "SELECT curr_default FROM company";
+			$result = DB::query($sql, "retreive company currency");
+			if (DB::num_rows($result) == 0) {
 				Errors::show_db_error("Could not find the requested currency. Fatal.", $sql);
 			}
-			$myrow = DBOld::fetch_row($result);
+			$myrow = DB::fetch_row($result);
 			return $myrow[0];
 		}
 
 		//----------------------------------------------------------------------------------
 		static function get_bank_account_currency($id)
 		{
-			$sql    = "SELECT bank_curr_code FROM bank_accounts WHERE id='$id'";
-			$result = DBOld::query($sql, "retreive bank account currency");
-			$myrow = DBOld::fetch_row($result);
+			$sql = "SELECT bank_curr_code FROM bank_accounts WHERE id='$id'";
+			$result = DB::query($sql, "retreive bank account currency");
+			$myrow = DB::fetch_row($result);
 			return $myrow[0];
 		}
 
@@ -63,8 +63,8 @@
 		static function get_customer_currency($customer_id)
 		{
 			$sql = "SELECT curr_code FROM debtors_master WHERE debtor_no = '$customer_id'";
-			$result = DBOld::query($sql, "Retreive currency of customer $customer_id");
-			$myrow = DBOld::fetch_row($result);
+			$result = DB::query($sql, "Retreive currency of customer $customer_id");
+			$myrow = DB::fetch_row($result);
 			return $myrow[0];
 		}
 
@@ -72,8 +72,8 @@
 		static function get_supplier_currency($supplier_id)
 		{
 			$sql = "SELECT curr_code FROM suppliers WHERE supplier_id = '$supplier_id'";
-			$result = DBOld::query($sql, "Retreive currency of supplier $supplier_id");
-			$myrow = DBOld::fetch_row($result);
+			$result = DB::query($sql, "Retreive currency of supplier $supplier_id");
+			$myrow = DB::fetch_row($result);
 			return $myrow[0];
 		}
 
@@ -87,15 +87,15 @@
 			$sql
 			 = "SELECT rate_buy, max(date_) as date_ FROM exchange_rates WHERE curr_code = '$currency_code'
 				AND date_ <= '$date' GROUP BY rate_buy ORDER BY date_ Desc LIMIT 1";
-			$result = DBOld::query($sql, "could not query exchange rates");
-			if (DBOld::num_rows($result) == 0) {
+			$result = DB::query($sql, "could not query exchange rates");
+			if (DB::num_rows($result) == 0) {
 				// no stored exchange rate, just return 1
-				ui_msgs::display_error(
+				Errors::error(
 					sprintf(_("Cannot retrieve exchange rate for currency %s as of %s. Please add exchange rate manually on Exchange Rates page."),
-									$currency_code, $date_));
+						$currency_code, $date_));
 				return 1.000;
 			}
-			$myrow = DBOld::fetch_row($result);
+			$myrow = DB::fetch_row($result);
 			return $myrow[0];
 		}
 
@@ -109,7 +109,7 @@
 		static function to_home_currency($amount, $currency_code, $date_)
 		{
 			$ex_rate = static::get_exchange_rate_to_home_currency($currency_code, $date_);
-			return round2($amount / $ex_rate, user_price_dec());
+			return Num::round($amount / $ex_rate, User::price_dec());
 		}
 
 		//----------------------------------------------------------------------------------
@@ -143,28 +143,26 @@
 		{
 			global $systypes_array;
 			if ($person_type == PT_CUSTOMER) {
-				$trans     = get_customer_trans($trans_no, $type);
-				$pyt_trans = get_customer_trans($pyt_no, $pyt_type);
+				$trans = Sales_Trans::get($trans_no, $type);
+				$pyt_trans = Sales_Trans::get($pyt_no, $pyt_type);
 				$ar_ap_act = $trans['receivables_account'];
 				$person_id = $trans['debtor_no'];
-				$curr      = $trans['curr_code'];
-				$date      = Dates::sql2date($trans['tran_date']);
-			}
-			else
-			{
-				$trans     = get_supp_trans($trans_no, $type);
+				$curr = $trans['curr_code'];
+				$date = Dates::sql2date($trans['tran_date']);
+			} else {
+				$trans = get_supp_trans($trans_no, $type);
 				$pyt_trans = get_supp_trans($pyt_no, $pyt_type);
 				$supp_accs = get_supplier_accounts($trans['supplier_id']);
 				$ar_ap_act = $supp_accs['payable_account'];
 				$person_id = $trans['supplier_id'];
-				$curr      = $trans['SupplierCurrCode'];
-				$date      = Dates::sql2date($trans['tran_date']);
+				$curr = $trans['SupplierCurrCode'];
+				$date = Dates::sql2date($trans['tran_date']);
 			}
 			if (static::is_company_currency($curr)) {
 				return;
 			}
-			$inv_amt = round2($amount * $trans['rate'], user_price_dec());
-			$pay_amt = round2($amount * $pyt_trans['rate'], user_price_dec());
+			$inv_amt = Num::round($amount * $trans['rate'], User::price_dec());
+			$pay_amt = Num::round($amount * $pyt_trans['rate'], User::price_dec());
 			if ($inv_amt != $pay_amt) {
 				$diff = $inv_amt - $pay_amt;
 				if ($person_type == PT_SUPPLIER) {
@@ -178,9 +176,7 @@
 					$memo = $systypes_array[$pyt_type] . " " . $pyt_no;
 					add_gl_trans($type, $trans_no, $date, $ar_ap_act, 0, 0, $memo, -$diff, null, $person_type, $person_id);
 					add_gl_trans($type, $trans_no, $date, $exc_var_act, 0, 0, $memo, $diff, null, $person_type, $person_id);
-				}
-				else
-				{
+				} else {
 					$memo = $systypes_array[$type] . " " . $trans_no;
 					add_gl_trans($pyt_type, $pyt_no, $pyt_date, $ar_ap_act, 0, 0, $memo, -$diff, null, $person_type, $person_id);
 					add_gl_trans($pyt_type, $pyt_no, $pyt_date, $exc_var_act, 0, 0, $memo, $diff, null, $person_type, $person_id);

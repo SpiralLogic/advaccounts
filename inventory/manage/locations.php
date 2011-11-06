@@ -12,7 +12,7 @@
 	$page_security = 'SA_INVENTORYLOCATION';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "Inventory Locations"));
-	simple_page_mode(true);
+	Page::simple_mode(true);
 	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 		//initialise no input errors assumed initially before we test
 		$input_error = 0;
@@ -20,16 +20,16 @@
 						ie the page has called itself with some user input */
 		//first off validate inputs sensible
 		$_POST['loc_code'] = strtoupper($_POST['loc_code']);
-		if (strlen(DBOld::escape($_POST['loc_code'])) > 7) //check length after conversion
+		if (strlen(DB::escape($_POST['loc_code'])) > 7) //check length after conversion
 		{
 			$input_error = 1;
-			ui_msgs::display_error(_("The location code must be five characters or less long (including converted special chars)."));
+			Errors::error(_("The location code must be five characters or less long (including converted special chars)."));
 			JS::set_focus('loc_code');
 		}
 		elseif (strlen($_POST['location_name']) == 0)
 		{
 			$input_error = 1;
-			ui_msgs::display_error(_("The location name must be entered."));
+			Errors::error(_("The location name must be entered."));
 			JS::set_focus('location_name');
 		}
 		if ($input_error != 1) {
@@ -38,76 +38,74 @@
 					$selected_id, $_POST['location_name'], $_POST['delivery_address'],
 					$_POST['phone'], $_POST['phone2'], $_POST['fax'], $_POST['email'], $_POST['contact']
 				);
-				ui_msgs::display_notification(_('Selected location has been updated'));
-			}
-			else
-			{
+				Errors::notice(_('Selected location has been updated'));
+			} else {
 				/*selected_id is null cos no item selected on first time round so must be adding a	record must be submitting new entries in the new Location form */
 				add_item_location(
 					$_POST['loc_code'], $_POST['location_name'], $_POST['delivery_address'],
 					$_POST['phone'], $_POST['phone2'], $_POST['fax'], $_POST['email'], $_POST['contact']
 				);
-				ui_msgs::display_notification(_('New location has been added'));
+				Errors::notice(_('New location has been added'));
 			}
 			$Mode = 'RESET';
 		}
 	}
 	function can_delete($selected_id)
 	{
-		$sql    = "SELECT COUNT(*) FROM stock_moves WHERE loc_code=" . DBOld::escape($selected_id);
-		$result = DBOld::query($sql, "could not query stock moves");
-		$myrow  = DBOld::fetch_row($result);
+		$sql = "SELECT COUNT(*) FROM stock_moves WHERE loc_code=" . DB::escape($selected_id);
+		$result = DB::query($sql, "could not query stock moves");
+		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {
-			ui_msgs::display_error(_("Cannot delete this location because item movements have been created using this location."));
+			Errors::error(_("Cannot delete this location because item movements have been created using this location."));
 			return false;
 		}
-		$sql    = "SELECT COUNT(*) FROM workorders WHERE loc_code=" . DBOld::escape($selected_id);
-		$result = DBOld::query($sql, "could not query work orders");
-		$myrow  = DBOld::fetch_row($result);
+		$sql = "SELECT COUNT(*) FROM workorders WHERE loc_code=" . DB::escape($selected_id);
+		$result = DB::query($sql, "could not query work orders");
+		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {
-			ui_msgs::display_error(_("Cannot delete this location because it is used by some work orders records."));
+			Errors::error(_("Cannot delete this location because it is used by some work orders records."));
 			return false;
 		}
-		$sql    = "SELECT COUNT(*) FROM cust_branch WHERE default_location='$selected_id'";
-		$result = DBOld::query($sql, "could not query customer branches");
-		$myrow  = DBOld::fetch_row($result);
+		$sql = "SELECT COUNT(*) FROM cust_branch WHERE default_location='$selected_id'";
+		$result = DB::query($sql, "could not query customer branches");
+		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {
-			ui_msgs::display_error(_("Cannot delete this location because it is used by some branch records as the default location to deliver from."));
+			Errors::error(_("Cannot delete this location because it is used by some branch records as the default location to deliver from."));
 			return false;
 		}
-		$sql    = "SELECT COUNT(*) FROM bom WHERE loc_code=" . DBOld::escape($selected_id);
-		$result = DBOld::query($sql, "could not query bom");
-		$myrow  = DBOld::fetch_row($result);
+		$sql = "SELECT COUNT(*) FROM bom WHERE loc_code=" . DB::escape($selected_id);
+		$result = DB::query($sql, "could not query bom");
+		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {
-			ui_msgs::display_error(_("Cannot delete this location because it is used by some related records in other tables."));
+			Errors::error(_("Cannot delete this location because it is used by some related records in other tables."));
 			return false;
 		}
-		$sql    = "SELECT COUNT(*) FROM grn_batch WHERE loc_code=" . DBOld::escape($selected_id);
-		$result = DBOld::query($sql, "could not query grn batch");
-		$myrow  = DBOld::fetch_row($result);
+		$sql = "SELECT COUNT(*) FROM grn_batch WHERE loc_code=" . DB::escape($selected_id);
+		$result = DB::query($sql, "could not query grn batch");
+		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {
-			ui_msgs::display_error(_("Cannot delete this location because it is used by some related records in other tables."));
+			Errors::error(_("Cannot delete this location because it is used by some related records in other tables."));
 			return false;
 		}
-		$sql    = "SELECT COUNT(*) FROM purch_orders WHERE into_stock_location=" . DBOld::escape($selected_id);
-		$result = DBOld::query($sql, "could not query purch orders");
-		$myrow  = DBOld::fetch_row($result);
+		$sql = "SELECT COUNT(*) FROM purch_orders WHERE into_stock_location=" . DB::escape($selected_id);
+		$result = DB::query($sql, "could not query purch orders");
+		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {
-			ui_msgs::display_error(_("Cannot delete this location because it is used by some related records in other tables."));
+			Errors::error(_("Cannot delete this location because it is used by some related records in other tables."));
 			return false;
 		}
-		$sql    = "SELECT COUNT(*) FROM sales_orders WHERE from_stk_loc=" . DBOld::escape($selected_id);
-		$result = DBOld::query($sql, "could not query sales orders");
-		$myrow  = DBOld::fetch_row($result);
+		$sql = "SELECT COUNT(*) FROM sales_orders WHERE from_stk_loc=" . DB::escape($selected_id);
+		$result = DB::query($sql, "could not query sales orders");
+		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {
-			ui_msgs::display_error(_("Cannot delete this location because it is used by some related records in other tables."));
+			Errors::error(_("Cannot delete this location because it is used by some related records in other tables."));
 			return false;
 		}
-		$sql    = "SELECT COUNT(*) FROM sales_pos WHERE pos_location=" . DBOld::escape($selected_id);
-		$result = DBOld::query($sql, "could not query sales pos");
-		$myrow  = DBOld::fetch_row($result);
+		$sql = "SELECT COUNT(*) FROM sales_pos WHERE pos_location=" . DB::escape($selected_id);
+		$result = DB::query($sql, "could not query sales pos");
+		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {
-			ui_msgs::display_error(_("Cannot delete this location because it is used by some related records in other tables."));
+			Errors::error(_("Cannot delete this location because it is used by some related records in other tables."));
 			return false;
 		}
 		return true;
@@ -117,13 +115,13 @@
 	if ($Mode == 'Delete') {
 		if (can_delete($selected_id)) {
 			delete_item_location($selected_id);
-			ui_msgs::display_notification(_('Selected location has been deleted'));
+			Errors::notice(_('Selected location has been deleted'));
 		} //end if Delete Location
 		$Mode = 'RESET';
 	}
 	if ($Mode == 'RESET') {
 		$selected_id = -1;
-		$sav         = get_post('show_inactive');
+		$sav = get_post('show_inactive');
 		unset($_POST);
 		$_POST['show_inactive'] = $sav;
 	}
@@ -131,7 +129,7 @@
 	if (!check_value('show_inactive')) {
 		$sql .= " WHERE !inactive";
 	}
-	$result = DBOld::query($sql, "could not query locations");
+	$result = DB::query($sql, "could not query locations");
 	;
 	start_form();
 	start_table(Config::get('tables_style'));
@@ -139,7 +137,7 @@
 	inactive_control_column($th);
 	table_header($th);
 	$k = 0; //row colour counter
-	while ($myrow = DBOld::fetch($result))
+	while ($myrow = DB::fetch($result))
 	{
 		alt_table_row_color($k);
 		label_cell($myrow["loc_code"]);
@@ -162,21 +160,19 @@
 		//editing an existing Location
 		if ($Mode == 'Edit') {
 			$myrow = get_item_location($selected_id);
-			$_POST['loc_code']         = $myrow["loc_code"];
-			$_POST['location_name']    = $myrow["location_name"];
+			$_POST['loc_code'] = $myrow["loc_code"];
+			$_POST['location_name'] = $myrow["location_name"];
 			$_POST['delivery_address'] = $myrow["delivery_address"];
-			$_POST['contact']          = $myrow["contact"];
-			$_POST['phone']            = $myrow["phone"];
-			$_POST['phone2']           = $myrow["phone2"];
-			$_POST['fax']              = $myrow["fax"];
-			$_POST['email']            = $myrow["email"];
+			$_POST['contact'] = $myrow["contact"];
+			$_POST['phone'] = $myrow["phone"];
+			$_POST['phone2'] = $myrow["phone2"];
+			$_POST['fax'] = $myrow["fax"];
+			$_POST['email'] = $myrow["email"];
 		}
 		hidden("selected_id", $selected_id);
 		hidden("loc_code");
 		label_row(_("Location Code:"), $_POST['loc_code']);
-	}
-	else
-	{ //end of if $selected_id only do the else when a new record is being entered
+	} else { //end of if $selected_id only do the else when a new record is being entered
 		text_row(_("Location Code:"), 'loc_code', null, 5, 5);
 	}
 	text_row_ex(_("Location Name:"), 'location_name', 50, 50);

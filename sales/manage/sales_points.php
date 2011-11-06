@@ -13,17 +13,17 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "POS settings"));
 	include_once(APP_PATH . "sales/includes/db/sales_points_db.php");
-	simple_page_mode(true);
+	Page::simple_mode(true);
 	//----------------------------------------------------------------------------------------------------
 	function can_process()
 	{
 		if (strlen($_POST['name']) == 0) {
-			ui_msgs::display_error(_("The POS name cannot be empty."));
+			Errors::error(_("The POS name cannot be empty."));
 			JS::set_focus('pos_name');
 			return false;
 		}
 		if (!check_value('cash') && !check_value('credit')) {
-			ui_msgs::display_error(_("You must allow cash or credit sale."));
+			Errors::error(_("You must allow cash or credit sale."));
 			JS::set_focus('credit');
 			return false;
 		}
@@ -36,7 +36,7 @@
 			$_POST['name'], $_POST['location'], $_POST['account'],
 			check_value('cash'), check_value('credit')
 		);
-		ui_msgs::display_notification(_('New point of sale has been added'));
+		Errors::notice(_('New point of sale has been added'));
 		$Mode = 'RESET';
 	}
 	//----------------------------------------------------------------------------------------------------
@@ -45,25 +45,25 @@
 			$selected_id, $_POST['name'], $_POST['location'],
 			$_POST['account'], check_value('cash'), check_value('credit')
 		);
-		ui_msgs::display_notification(_('Selected point of sale has been updated'));
+		Errors::notice(_('Selected point of sale has been updated'));
 		$Mode = 'RESET';
 	}
 	//----------------------------------------------------------------------------------------------------
 	if ($Mode == 'Delete') {
-		$sql = "SELECT * FROM users WHERE pos=" . DBOld::escape($selected_id);
-		$res = DBOld::query($sql, "canot check pos usage");
-		if (DBOld::num_rows($res)) {
-			ui_msgs::display_error(_("Cannot delete this POS because it is used in users setup."));
+		$sql = "SELECT * FROM users WHERE pos=" . DB::escape($selected_id);
+		$res = DB::query($sql, "canot check pos usage");
+		if (DB::num_rows($res)) {
+			Errors::error(_("Cannot delete this POS because it is used in users setup."));
 		}
 		else {
 			delete_sales_point($selected_id);
-			ui_msgs::display_notification(_('Selected point of sale has been deleted'));
+			Errors::notice(_('Selected point of sale has been deleted'));
 			$Mode = 'RESET';
 		}
 	}
 	if ($Mode == 'RESET') {
 		$selected_id = -1;
-		$sav         = get_post('show_inactive');
+		$sav = get_post('show_inactive');
 		unset($_POST);
 		$_POST['show_inactive'] = $sav;
 	}
@@ -78,7 +78,7 @@
 	inactive_control_column($th);
 	table_header($th);
 	$k = 0;
-	while ($myrow = DBOld::fetch($result))
+	while ($myrow = DB::fetch($result))
 	{
 		alt_table_row_color($k);
 		label_cell($myrow["pos_name"], "nowrap");
@@ -96,15 +96,15 @@
 	//----------------------------------------------------------------------------------------------------
 	$cash = Validation::check(Validation::CASH_ACCOUNTS);
 	if (!$cash) {
-		ui_msgs::display_warning(_("To have cash POS first define at least one cash bank account."));
+		Errors::warning(_("To have cash POS first define at least one cash bank account."));
 	}
 	start_table(Config::get('tables_style2'));
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {
 			$myrow = get_sales_point($selected_id);
-			$_POST['name']     = $myrow["pos_name"];
+			$_POST['name'] = $myrow["pos_name"];
 			$_POST['location'] = $myrow["pos_location"];
-			$_POST['account']  = $myrow["pos_account"];
+			$_POST['account'] = $myrow["pos_account"];
 			if ($myrow["credit_sale"]) {
 				$_POST['credit_sale'] = 1;
 			}

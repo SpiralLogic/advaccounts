@@ -12,20 +12,20 @@
 	$page_security = 'SA_INVENTORYADJUSTMENT';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	include_once(APP_PATH . "inventory/includes/item_adjustments_ui.php");
-	JS::get_js_open_window(800, 500);
+	JS::open_window(800, 500);
 	Page::start(_($help_context = "Item Adjustments Note"));
 	//-----------------------------------------------------------------------------------------------
 	Validation::check(Validation::COST_ITEMS, _("There are no inventory items defined in the system which can be adjusted (Purchased or Manufactured)."), STOCK_SERVICE);
 	Validation::check(Validation::MOVEMENT_TYPES, _("There are no inventory movement types defined in the system. Please define at least one inventory adjustment type."));
 	//-----------------------------------------------------------------------------------------------
 	if (isset($_GET['AddedID'])) {
-		$trans_no   = $_GET['AddedID'];
+		$trans_no = $_GET['AddedID'];
 		$trans_type = ST_INVADJUST;
-		ui_msgs::display_notification_centered(_("Items adjustment has been processed"));
-		ui_msgs::display_note(ui_view::get_trans_view_str($trans_type, $trans_no, _("&View this adjustment")));
-		ui_msgs::display_note(ui_view::get_gl_view_str($trans_type, $trans_no, _("View the GL &Postings for this Adjustment")), 1, 0);
+		Errors::notice(_("Items adjustment has been processed"));
+		Display::note(ui_view::get_trans_view_str($trans_type, $trans_no, _("&View this adjustment")));
+		Display::note(ui_view::get_gl_view_str($trans_type, $trans_no, _("View the GL &Postings for this Adjustment")), 1, 0);
 		hyperlink_no_params($_SERVER['PHP_SELF'], _("Enter &Another Adjustment"));
-		ui_view::display_footer_exit();
+		Page::footer_exit();
 	}
 	//--------------------------------------------------------------------------------------------------
 	function line_start_focus()
@@ -43,8 +43,8 @@
 			unset ($_SESSION['adj_items']);
 		}
 		//session_register("adj_items");
-		$_SESSION['adj_items'] = new Items_Cart(ST_INVADJUST);
-		$_POST['AdjDate']      = Dates::new_doc_date();
+		$_SESSION['adj_items'] = new Item_Cart(ST_INVADJUST);
+		$_POST['AdjDate'] = Dates::new_doc_date();
 		if (!Dates::is_date_in_fiscalyear($_POST['AdjDate'])) {
 			$_POST['AdjDate'] = Dates::end_fiscalyear();
 		}
@@ -56,35 +56,35 @@
 	{
 		$adj = &$_SESSION['adj_items'];
 		if (count($adj->line_items) == 0) {
-			ui_msgs::display_error(_("You must enter at least one non empty item line."));
+			Errors::error(_("You must enter at least one non empty item line."));
 			JS::set_focus('stock_id');
 			return false;
 		}
 		if (!Refs::is_valid($_POST['ref'])) {
-			ui_msgs::display_error(_("You must enter a reference."));
+			Errors::error(_("You must enter a reference."));
 			JS::set_focus('ref');
 			return false;
 		}
 		if (!is_new_reference($_POST['ref'], ST_INVADJUST)) {
-			ui_msgs::display_error(_("The entered reference is already in use."));
+			Errors::error(_("The entered reference is already in use."));
 			JS::set_focus('ref');
 			return false;
 		}
 		if (!Dates::is_date($_POST['AdjDate'])) {
-			ui_msgs::display_error(_("The entered date for the adjustment is invalid."));
+			Errors::error(_("The entered date for the adjustment is invalid."));
 			JS::set_focus('AdjDate');
 			return false;
 		}
 		elseif (!Dates::is_date_in_fiscalyear($_POST['AdjDate']))
 		{
-			ui_msgs::display_error(_("The entered date is not in fiscal year."));
+			Errors::error(_("The entered date is not in fiscal year."));
 			JS::set_focus('AdjDate');
 			return false;
 		} else {
 			$failed_item = $adj->check_qoh($_POST['StockLocation'], $_POST['AdjDate'], !$_POST['Increase']);
 			if ($failed_item >= 0) {
 				$line = $adj->line_items[$failed_item];
-				ui_msgs::display_error(
+				Errors::error(
 					_("The adjustment cannot be processed because an adjustment item would cause a negative inventory balance :") .
 					 " " . $line->stock_id . " - " . $line->description
 				);
@@ -112,12 +112,12 @@
 	function check_item_data()
 	{
 		if (!Validation::is_num('qty', 0)) {
-			ui_msgs::display_error(_("The quantity entered is negative or invalid."));
+			Errors::error(_("The quantity entered is negative or invalid."));
 			JS::set_focus('qty');
 			return false;
 		}
 		if (!Validation::is_num('std_cost', 0)) {
-			ui_msgs::display_error(_("The entered standard cost is negative or invalid."));
+			Errors::error(_("The entered standard cost is negative or invalid."));
 			JS::set_focus('std_cost');
 			return false;
 		}

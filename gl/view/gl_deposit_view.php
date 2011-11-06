@@ -16,26 +16,24 @@
 		$trans_no = $_GET["trans_no"];
 	}
 	// get the pay-to bank payment info
-	$result = get_bank_trans(ST_BANKDEPOSIT, $trans_no);
-	if (DBOld::num_rows($result) != 1) {
+	$result = Bank_Trans::get(ST_BANKDEPOSIT, $trans_no);
+	if (DB::num_rows($result) != 1) {
 		Errors::show_db_error("duplicate payment bank transaction found", "");
 	}
-	$to_trans         = DBOld::fetch($result);
+	$to_trans = DB::fetch($result);
 	$company_currency = Banking::get_company_currency();
-	$show_currencies  = false;
+	$show_currencies = false;
 	if ($to_trans['bank_curr_code'] != $company_currency) {
 		$show_currencies = true;
 	}
 	echo "<center>";
-	ui_msgs::display_heading(_("GL Deposit") . " #$trans_no");
+	Display::heading(_("GL Deposit") . " #$trans_no");
 	echo "<br>";
 	start_table(Config::get('tables_style') . "  width=90%");
 	if ($show_currencies) {
 		$colspan1 = 5;
 		$colspan2 = 8;
-	}
-	else
-	{
+	} else {
 		$colspan1 = 3;
 		$colspan2 = 6;
 	}
@@ -44,32 +42,30 @@
 	if ($show_currencies) {
 		label_cells(_("Currency"), $to_trans['bank_curr_code'], "class='tableheader2'");
 	}
-	label_cells(_("Amount"), number_format2($to_trans['amount'], user_price_dec()), "class='tableheader2'", "align=right");
+	label_cells(_("Amount"), Num::format($to_trans['amount'], User::price_dec()), "class='tableheader2'", "align=right");
 	label_cells(_("Date"), Dates::sql2date($to_trans['trans_date']), "class='tableheader2'");
 	end_row();
 	start_row();
 	label_cells(
 		_("From"), Banking::payment_person_name(
-							 $to_trans['person_type_id'], $to_trans['person_id']
-						 ), "class='tableheader2'", "colspan=$colspan1"
+			$to_trans['person_type_id'], $to_trans['person_id']
+		), "class='tableheader2'", "colspan=$colspan1"
 	);
 	label_cells(_("Deposit Type"), $bank_transfer_types[$to_trans['account_type']], "class='tableheader2'");
 	end_row();
 	start_row();
 	label_cells(_("Reference"), $to_trans['ref'], "class='tableheader2'", "colspan=$colspan2");
 	end_row();
-	ui_view::comments_display_row(ST_BANKDEPOSIT, $trans_no);
+	Display::comments_row(ST_BANKDEPOSIT, $trans_no);
 	end_table(1);
-	ui_view::is_voided_display(ST_BANKDEPOSIT, $trans_no, _("This deposit has been voided."));
+	Display::is_voided(ST_BANKDEPOSIT, $trans_no, _("This deposit has been voided."));
 	$items = get_gl_trans(ST_BANKDEPOSIT, $trans_no);
-	if (DBOld::num_rows($items) == 0) {
-		ui_msgs::display_warning(_("There are no items for this deposit."));
-	}
-	else
-	{
-		ui_msgs::display_heading2(_("Items for this Deposit"));
+	if (DB::num_rows($items) == 0) {
+		Errors::warning(_("There are no items for this deposit."));
+	} else {
+		Display::heading(_("Items for this Deposit"));
 		if ($show_currencies) {
-			ui_msgs::display_heading2(_("Item Amounts are Shown in :") . " " . $company_currency);
+			Display::heading(_("Item Amounts are Shown in :") . " " . $company_currency);
 		}
 		start_table(Config::get('tables_style') . "  width=90%");
 		$dim = DB_Company::get_pref('use_dimension');
@@ -93,7 +89,7 @@
 		table_header($th);
 		$k = 0; //row colour counter
 		$total_amount = 0;
-		while ($item = DBOld::fetch($items))
+		while ($item = DB::fetch($items))
 		{
 			if ($item["account"] != $to_trans["account_code"]) {
 				alt_table_row_color($k);
@@ -111,9 +107,9 @@
 				$total_amount += $item["amount"];
 			}
 		}
-		label_row(_("Total"), number_format2($total_amount, user_price_dec()), "colspan=" . (2 + $dim) . " align=right", "align=right");
+		label_row(_("Total"), Num::format($total_amount, User::price_dec()), "colspan=" . (2 + $dim) . " align=right", "align=right");
 		end_table(1);
-		ui_view::display_allocations_from($to_trans['person_type_id'], $to_trans['person_id'], 2, $trans_no, $to_trans['amount']);
+		Display::allocations_from($to_trans['person_type_id'], $to_trans['person_id'], 2, $trans_no, $to_trans['amount']);
 	}
 	end_page(true);
 ?>

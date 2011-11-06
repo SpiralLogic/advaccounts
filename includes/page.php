@@ -8,6 +8,42 @@
 	 */
 	class Page
 	{
+		//------------------------------------------------------------------------------
+		//
+		// Helper function for simple db table editor pages
+		//
+		public static function simple_mode($numeric_id = true)
+		{
+			global $Mode, $selected_id;
+			$Ajax = Ajax::instance();
+			$default = $numeric_id ? -1 : '';
+			$selected_id = get_post('selected_id', $default);
+			foreach (array('ADD_ITEM', 'UPDATE_ITEM', 'RESET', 'CLONE') as $m) {
+				if (isset($_POST[$m])) {
+					$Ajax->activate('_page_body');
+					if ($m == 'RESET' || $m == 'CLONE') {
+						$selected_id = $default;
+					}
+					unset($_POST['_focus']);
+					$Mode = $m;
+					return;
+				}
+			}
+			foreach (array('Edit', 'Delete') as $m) {
+				foreach ($_POST as $p => $pvar) {
+					if (strpos($p, $m) === 0) {
+						//				$selected_id = strtr(substr($p, strlen($m)), array('%2E'=>'.'));
+						unset($_POST['_focus']); // focus on first form entry
+						$selected_id = quoted_printable_decode(substr($p, strlen($m)));
+						$Ajax->activate('_page_body');
+						$Mode = $m;
+						return;
+					}
+				}
+			}
+			$Mode = '';
+		}
+
 		public static function start($title, $no_menu = false, $is_index = false, $onload = "", $js = "", $script_only = false)
 		{
 			global $page_security;
@@ -20,7 +56,7 @@
 			//	Errors::error_box();
 			if ($script_only) {
 				echo '<noscript>';
-				echo ui_msgs::display_heading(_('This page is usable only with javascript enabled browsers.'));
+				echo Display::heading(_('This page is usable only with javascript enabled browsers.'));
 				echo '</noscript>';
 				div_start('_page_body', null, true);
 			} else {
@@ -32,25 +68,21 @@
 		{
 			// titles and screen header
 			if (Ajax::in_ajax() || AJAX_REFERRER) {
-				Renderer::getInstance()->has_header = false;
+				Renderer::get()->has_header = false;
 				return; // just for speed up
 			}
-			$theme = user_theme();
-			JS::get_js_open_window(900, 500);
+			User::theme();
+			JS::open_window(900, 500);
 			JS::beforeload($js);
 			if (!isset($no_menu)) {
 				$no_menu = false;
 			}
 			if (isset($_SESSION["App"]) && is_object($_SESSION["App"]) && isset($_SESSION["App"]->selected_application) && $_SESSION["App"]->selected_application != "") {
 				$sel_app = $_SESSION["App"]->selected_application;
-			}
-			elseif (isset($_SESSION["sel_app"]) && $_SESSION["sel_app"] != "")
-			{
+			} elseif (isset($_SESSION["sel_app"]) && $_SESSION["sel_app"] != "") {
 				$sel_app = $_SESSION["sel_app"];
-			}
-			else
-			{
-				$sel_app = user_startup_tab();
+			} else {
+				$sel_app = User::startup_tab();
 			}
 			$_SESSION["sel_app"] = $sel_app;
 			// When startup tab for current user was set to already
@@ -67,20 +99,17 @@
 			echo "<head><title>$title</title>";
 			echo "<meta http-equiv='Content-type' content='text/html; charset=$encoding'>";
 			echo "<link rel='apple-touch-icon' href='/company/images/advanced-icon.png'/>";
-			static::add_css('default.css,jquery-ui-1.8.7.css,jquery.calculator.css,jquery.fileupload-ui.css');
+			static::add_css(Config::get('assets.css'));
 			static::send_css();
 			JS::renderHeader();
 			echo "</head> \n";
 			if ($onload == "") {
 				echo "<body";
-			}
-			else
-			{
+			} else {
 				echo "body onload='$onload'";
 			}
 			echo	($no_menu) ? ' class="lite">' : '>';
-			$rend = renderer::getInstance();
-			$rend->menu_header($title, $no_menu, $is_index);
+			Renderer::get()->menu_header($title, $no_menu, $is_index);
 			Errors::error_box();
 		}
 
@@ -88,18 +117,16 @@
 		{
 			global $help_context, $old_style_help;
 			$country = $_SESSION['language']->code;
-			$clean   = 0;
+			$clean = 0;
 			if ($context != null) {
 				$help_page_url = $context;
-			}
-			elseif (isset($help_context)) {
+			} elseif (isset($help_context)) {
 				$help_page_url = $help_context;
-			}
-			else // main menu
+			} else // main menu
 			{
-				$app           = $_SESSION['sel_app'];
+				$app = $_SESSION['sel_app'];
 				$help_page_url = $_SESSION['App']->applications[$app]->help_context;
-				$clean         = 1;
+				$clean = 1;
 			}
 			if (@$old_style_help) {
 				$help_page_url = _($help_page_url);
@@ -107,27 +134,22 @@
 			if ($clean) {
 				$help_page_url = access_string($help_page_url, true);
 			}
-			return Config::get('help_baseurl') . urlencode(
-				strtr(
-					ucwords($help_page_url), array(
-																				' ' => '',
-																				'/' => '',
-																				'&' => 'And'
-																	 )
-				)
-			) . '&ctxhelp=1&lang=' . $country;
+			return Config::get('help_baseurl') . urlencode(strtr(ucwords($help_page_url), array(
+																																												 ' '	=> '',
+																																												 '/'	=> '',
+																																												 '&'	=> 'And'))) . '&ctxhelp=1&lang=' . $country;
 		}
 
 		public static function footer($no_menu = false, $is_index = false, $hide_back_link = false)
 		{
 			$Validate = array();
-			$Ajax     = Ajax::instance();
-			$rend     = renderer::getInstance();
+			$Ajax = Ajax::instance();
+			$rend = Renderer::get();
 			$rend->menu_footer($no_menu, $is_index);
 			$edits = "editors = " . $Ajax->php2js(set_editor(false, false)) . ";";
 			$Ajax->addScript('editors', $edits);
 			JS::beforeload("_focus = '" . get_post('_focus') . "';_validate = " . $Ajax->php2js($Validate) . ";var $edits");
-			CurrentUser::add_js_data();
+			User::add_js_data();
 			if ($rend->has_header) {
 				Sidemenu::render();
 			}
@@ -136,10 +158,8 @@
 			if (AJAX_REFERRER) {
 				return;
 			}
-			$load_info = array(Files::convert_size(memory_get_usage(true)), Files::convert_size(memory_get_peak_usage(true)), Dates::getReadableTime(microtime(true) - ADV_START_TIME));
-			echo implode(($rend->has_header) ? "<br>" : "|", $load_info);
 			echo "</div></body>";
-			ui_view::get_websales();
+			JS::get_websales();
 			echo	 "</html>\n";
 		}
 
@@ -149,14 +169,22 @@
 			if ($file == false) {
 				return $css;
 			}
-			$css[] = $file;
+			$css = $css + $file;
 		}
 
 		public static function send_css()
 		{
-			$theme = user_theme();
-			$path  = "/themes/$theme/";
-			$css   = implode(',', static::add_css());
+			$theme = User::theme();
+			$path = "/themes/$theme/";
+			$css = implode(',', static::add_css());
 			echo "<link href='{$path}{$css}' rel='stylesheet' type='text/css'> \n";
+		}
+
+		//--------------------------------------------------------------------------------------
+		public static function footer_exit()
+		{
+			br(2);
+			end_page(false, false, true);
+			exit;
 		}
 	}

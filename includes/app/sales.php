@@ -17,7 +17,7 @@ class App_Sales extends Application
 	function __construct()
 	{
 		global $installed_extensions;
-		parent::__construct("orders", _($this->help_context = "&Sales"));
+		parent::__construct("Sales", _($this->help_context = "&Sales"));
 
 		$this->add_module(_("Quotations and Orders"));
 		$this->add_lapp_function(0, '', '');

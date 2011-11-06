@@ -12,13 +12,11 @@
 	$page_security = 'SA_SALESINVOICE';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	include(APP_PATH . "sales/includes/sales_ui.php");
-	JS::get_js_open_window(900, 600);
+	JS::open_window(900, 600);
 	if (isset($_GET['OutstandingOnly']) && ($_GET['OutstandingOnly'] == true)) {
 		$_POST['OutstandingOnly'] = true;
 		Page::start(_($help_context = "Search Not Invoiced Deliveries"));
-	}
-	else
-	{
+	} else {
 		$_POST['OutstandingOnly'] = false;
 		Page::start(_($help_context = "Search All Deliveries"));
 	}
@@ -28,9 +26,7 @@
 	elseif (isset($_POST['selected_customer']))
 	{
 		$selected_customer = $_POST['selected_customer'];
-	}
-	else
-	{
+	} else {
 		$selected_customer = -1;
 	}
 	if (isset($_POST['BatchInvoice'])) {
@@ -55,7 +51,7 @@
 			}
 		}
 		if (!$del_count) {
-			ui_msgs::display_error(
+			Errors::error(
 				_(
 					'For batch invoicing you should
 		    select at least one delivery. All items must be dispatched to
@@ -102,17 +98,17 @@
 	 && ($_POST['SelectStockFromList'] != ALL_TEXT)
 	) {
 		$selected_stock_item = $_POST['SelectStockFromList'];
-	}
-	else
-	{
+	} else {
 		unset($selected_stock_item);
 	}
 	//---------------------------------------------------------------------------------------------
-	function trans_view($trans, $trans_no) {
+	function trans_view($trans, $trans_no)
+	{
 		return ui_view::get_customer_trans_view_str(ST_CUSTDELIVERY, $trans['trans_no']);
 	}
 
-	function batch_checkbox($row) {
+	function batch_checkbox($row)
+	{
 		$name = "Sel_" . $row['trans_no'];
 		return $row['Done']
 		 ? ''
@@ -123,7 +119,8 @@
 			. $row['branch_code'] . "'>\n";
 	}
 
-	function edit_link($row) {
+	function edit_link($row)
+	{
 		return $row["Outstanding"] == 0
 		 ? ''
 		 :
@@ -133,11 +130,13 @@
 		 );
 	}
 
-	function prt_link($row) {
+	function prt_link($row)
+	{
 		return Reporting::print_doc_link($row['trans_no'], _("Print"), true, ST_CUSTDELIVERY, ICON_PRINT);
 	}
 
-	function invoice_link($row) {
+	function invoice_link($row)
+	{
 		return $row["Outstanding"] == 0
 		 ? ''
 		 :
@@ -147,7 +146,8 @@
 		 );
 	}
 
-	function check_overdue($row) {
+	function check_overdue($row)
+	{
 		return Dates::date1_greater_date2(Dates::Today(), Dates::sql2date($row["due_date"]))
 		 && $row["Outstanding"] != 0;
 	}
@@ -183,21 +183,19 @@
 	//figure out the sql required from the inputs available
 	if (isset($_POST['DeliveryNumber']) && $_POST['DeliveryNumber'] != "") {
 		$delivery = "%" . $_POST['DeliveryNumber'];
-		$sql .= " AND trans.trans_no LIKE " . DBOld::escape($delivery);
+		$sql .= " AND trans.trans_no LIKE " . DB::escape($delivery,false,false);
 		$sql .= " GROUP BY trans.trans_no";
-	}
-	else
-	{
+	} else {
 		$sql .= " AND trans.tran_date >= '" . Dates::date2sql($_POST['DeliveryAfterDate']) . "'";
 		$sql .= " AND trans.tran_date <= '" . Dates::date2sql($_POST['DeliveryToDate']) . "'";
 		if ($selected_customer != -1) {
-			$sql .= " AND trans.debtor_no=" . DBOld::escape($selected_customer) . " ";
+			$sql .= " AND trans.debtor_no=" . DB::escape($selected_customer,false,false) . " ";
 		}
 		if (isset($selected_stock_item)) {
-			$sql .= " AND line.stock_id=" . DBOld::escape($selected_stock_item) . " ";
+			$sql .= " AND line.stock_id=" . DB::escape($selected_stock_item,false,false) . " ";
 		}
 		if (isset($_POST['StockLocation']) && $_POST['StockLocation'] != ALL_TEXT) {
-			$sql .= " AND sorder.from_stk_loc = " . DBOld::escape($_POST['StockLocation']) . " ";
+			$sql .= " AND sorder.from_stk_loc = " . DB::escape($_POST['StockLocation'],false,false) . " ";
 		}
 		$sql .= " GROUP BY trans.trans_no ";
 	} //end no delivery number selected

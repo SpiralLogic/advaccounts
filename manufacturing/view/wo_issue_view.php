@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 	$page_security = 'SA_MANUFTRANSVIEW';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	JS::get_js_open_window(900, 500);
+	JS::open_window(900, 500);
 	Page::start(_($help_context = "View Work Order Issue"), true);
 	include_once(APP_PATH . "manufacturing/includes/manufacturing_ui.php");
 	//-------------------------------------------------------------------------------------------------
@@ -19,7 +19,8 @@
 		$wo_issue_no = $_GET['trans_no'];
 	}
 	//-------------------------------------------------------------------------------------------------
-	function display_wo_issue($issue_no) {
+	function display_wo_issue($issue_no)
+	{
 		$myrow = get_work_order_issue($issue_no);
 		br(1);
 		start_table(Config::get('tables_style'));
@@ -37,16 +38,17 @@
 		label_cell($myrow["WorkCentreName"]);
 		label_cell(Dates::sql2date($myrow["issue_date"]));
 		end_row();
-		ui_view::comments_display_row(28, $issue_no);
+		Display::comments_row(28, $issue_no);
 		end_table(1);
-		ui_view::is_voided_display(28, $issue_no, _("This issue has been voided."));
+		Display::is_voided(28, $issue_no, _("This issue has been voided."));
 	}
 
 	//-------------------------------------------------------------------------------------------------
-	function display_wo_issue_details($issue_no) {
+	function display_wo_issue_details($issue_no)
+	{
 		$result = get_work_order_issue_details($issue_no);
-		if (DBOld::num_rows($result) == 0) {
-			ui_msgs::display_warning(_("There are no items for this issue."));
+		if (DB::num_rows($result) == 0) {
+			Errors::warning(_("There are no items for this issue."));
 		} else {
 			start_table(Config::get('tables_style'));
 			$th = array(_("Component"), _("Quantity"), _("Units"));
@@ -54,11 +56,11 @@
 			$j = 1;
 			$k = 0; //row colour counter
 			$total_cost = 0;
-			while ($myrow = DBOld::fetch($result))
+			while ($myrow = DB::fetch($result))
 			{
 				alt_table_row_color($k);
 				label_cell($myrow["stock_id"] . " - " . $myrow["description"]);
-				qty_cell($myrow["qty_issued"], false, get_qty_dec($myrow["stock_id"]));
+				qty_cell($myrow["qty_issued"], false, Num::qty_dec($myrow["stock_id"]));
 				label_cell($myrow["units"]);
 				end_row();
 				;
@@ -75,9 +77,9 @@
 	}
 
 	//-------------------------------------------------------------------------------------------------
-	ui_msgs::display_heading($systypes_array[ST_MANUISSUE] . " # " . $wo_issue_no);
+	Display::heading($systypes_array[ST_MANUISSUE] . " # " . $wo_issue_no);
 	display_wo_issue($wo_issue_no);
-	ui_msgs::display_heading2(_("Items for this Issue"));
+	Display::heading(_("Items for this Issue"));
 	display_wo_issue_details($wo_issue_no);
 	//-------------------------------------------------------------------------------------------------
 	echo "<br>";

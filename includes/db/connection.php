@@ -10,14 +10,9 @@
 	{
 		protected static $instances = array();
 
-		static function instance($name = null, $config = array())
+		static function instance($name, $config)
 		{
-			$default = Config::get('db_default');
-			if ($name === null) {
-				$name = $default['name'];
-			}
 			if (!isset(static::$instances[$name])) {
-				$config = array_merge($default, $config);
 				new static($name, $config);
 			}
 			return static::$instances[$name];
@@ -33,14 +28,19 @@
 
 		protected function __construct($name, array $config)
 		{
-			$this->name  = $name;
-			$this->user  = $config['user'];
-			$this->pass  = $config['pass'];
-			$this->host  = $config['host'];
-			$this->port  = $config['port'];
+			$this->name = $name;
+			$this->user = $config['user'];
+			$this->pass = $config['pass'];
+			$this->host = $config['host'];
+			$this->port = $config['port'];
 			$this->debug = false;
 			$this->_connect();
 			static::$instances[$name] = $this;
+		}
+
+		public function name()
+		{
+			return $this->name;
 		}
 
 		public function prepare($sql)
@@ -51,7 +51,7 @@
 			return $this->conn->prepare($sql);
 		}
 
-		public function exec($sql, $type, $data)
+		public function exec($sql, $type, $data = null)
 		{
 			try {
 				$prepared = $this->prepare($sql);
@@ -92,17 +92,21 @@
 			return $this;
 		}
 
+		public function cancel()
+		{
+			$this->intransaction = false;
+			$this->conn->rollBack();
+			return $this;
+		}
+
 		public function query($sql, $fetchas = PDO::FETCH_OBJ)
 		{
 			try {
-				$query = $this->conn->query($sql);
+				$query = $this->conn->prepare($sql);
 				if ($fetchas == false) {
-					return $query;
+					return $query->execute();
 				}
-				$results = array();
-				while ($row = $query->fetch($fetchas)) {
-					$results[] = $row;
-				}
+				$results = $query->fetchAll($fetchas);
 			}
 			catch (PDOException $e) {
 				return static::_error($e);
@@ -126,6 +130,18 @@
 			}
 		}
 
+		public function errorCode()
+		{
+			return $this->conn->errorCode();
+		}
+
+		public function errorInfo()
+		{
+			return $this->conn->errorInfo();
+		}
+		public  function getAttribute(PDO $value)
+			{					return $this->conn->getAttribute($value);
+			 }
 		protected function _error(PDOException $e, $exit = false)
 		{
 			if (function_exists('xdebug_call_file')) {

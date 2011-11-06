@@ -71,22 +71,7 @@
 
 		protected function escape($value)
 		{
-			//reset default if second parameter is skipped
-			//check for null/unset/empty strings
-			if (is_string($value)) {
-				//value is a string and should be quoted; determine best method based on available extensions
-				if (function_exists('mysql_real_escape_string')) {
-					$value = "'" . mysql_real_escape_string($value) . "'";
-				}
-				else {
-					$value = "'" . mysql_escape_string($value) . "'";
-				}
-			} else {
-				if (!is_numeric($value)) {
-					//value is not a string nor numeric
-					throw new DB_Exception("ERROR: incorrect data type send to sql query");
-				}
-			}
-			return $value;
+
+			return DB::escape($value);
 		}
 	}

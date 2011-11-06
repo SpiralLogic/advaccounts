@@ -16,18 +16,15 @@
 	// date_:	2005-05-19
 	// Title:	Payment Report
 	// ----------------------------------------------------------------
-
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-
 	//----------------------------------------------------------------------------------------------------
-
 	print_payment_report();
-
-	function getTransactions($supplier, $date) {
+	function getTransactions($supplier, $date)
+	{
 		$date = Dates::date2sql($date);
-		$dec = user_price_dec();
-
-		$sql = "SELECT supp_trans.supp_reference,
+		$dec = User::price_dec();
+		$sql
+		 = "SELECT supp_trans.supp_reference,
 			supp_trans.tran_date,
 			supp_trans.due_date,
 			supp_trans.trans_no,
@@ -42,106 +39,117 @@
 		AND supp_trans.tran_date <='" . $date . "'
 		ORDER BY supp_trans.type,
 			supp_trans.trans_no";
-
-		return DBOld::query($sql, "No transactions were returned");
+		return DB::query($sql, "No transactions were returned");
 	}
 
 	//----------------------------------------------------------------------------------------------------
-
-	function print_payment_report() {
+	function print_payment_report()
+	{
 		global $systypes_array;
-
 		$to = $_POST['PARAM_0'];
 		$fromsupp = $_POST['PARAM_1'];
 		$currency = $_POST['PARAM_2'];
 		$no_zeros = $_POST['PARAM_3'];
 		$comments = $_POST['PARAM_4'];
 		$destination = $_POST['PARAM_5'];
-		if ($destination)
+		if ($destination) {
 			include_once(APP_PATH . "includes/reports/excel.php");
+		}
 		else
+		{
 			include_once(APP_PATH . "includes/reports/pdf.php");
-
-		if ($fromsupp == ALL_NUMERIC)
+		}
+		if ($fromsupp == ALL_NUMERIC) {
 			$from = _('All');
+		}
 		else
+		{
 			$from = get_supplier_name($fromsupp);
-
-		$dec = user_price_dec();
-
+		}
+		$dec = User::price_dec();
 		if ($currency == ALL_TEXT) {
 			$convert = true;
 			$currency = _('Balances in Home Currency');
 		}
 		else
+		{
 			$convert = false;
-
-		if ($no_zeros) $nozeros = _('Yes');
-		else $nozeros = _('No');
-
+		}
+		if ($no_zeros) {
+			$nozeros = _('Yes');
+		}
+		else {
+			$nozeros = _('No');
+		}
 		$cols = array(0, 100, 130, 190, 250, 320, 385, 450, 515);
-
 		$headers = array(_('Trans Type'), _('#'), _('Due Date'), '', '',
 			'', _('Total'), _('Balance')
 		);
-
 		$aligns = array('left', 'left', 'left', 'left', 'right', 'right', 'right', 'right');
-
 		$params = array(0 => $comments,
 			1 => array('text' => _('End Date'), 'from' => $to, 'to' => ''),
 			2 => array('text' => _('Supplier'), 'from' => $from, 'to' => ''),
 			3 => array('text' => _('Currency'), 'from' => $currency, 'to' => ''),
 			4 => array('text' => _('Suppress Zeros'), 'from' => $nozeros, 'to' => '')
 		);
-
-		$rep = new FrontReport(_('Payment Report'), "PaymentReport", user_pagesize());
-
+		$rep = new FrontReport(_('Payment Report'), "PaymentReport", User::pagesize());
 		$rep->Font();
 		$rep->Info($params, $cols, $headers, $aligns);
 		$rep->Header();
-
 		$total = array();
 		$grandtotal = array(0, 0);
-
-		$sql = "SELECT supplier_id, supp_name AS name, curr_code, payment_terms.terms FROM suppliers, payment_terms
+		$sql
+		 = "SELECT supplier_id, supp_name AS name, curr_code, payment_terms.terms FROM suppliers, payment_terms
 		WHERE ";
-		if ($fromsupp != ALL_NUMERIC)
-			$sql .= "supplier_id=" . DBOld::escape($fromsupp) . " AND ";
-		$sql .= "suppliers.payment_terms = payment_terms.terms_indicator
+		if ($fromsupp != ALL_NUMERIC) {
+			$sql .= "supplier_id=" . DB::escape($fromsupp) . " AND ";
+		}
+		$sql
+		 .= "suppliers.payment_terms = payment_terms.terms_indicator
 		ORDER BY supp_name";
-		$result = DBOld::query($sql, "The customers could not be retrieved");
-
-		while ($myrow = DBOld::fetch($result))
+		$result = DB::query($sql, "The customers could not be retrieved");
+		while ($myrow = DB::fetch($result))
 		{
-			if (!$convert && $currency != $myrow['curr_code']) continue;
-
+			if (!$convert && $currency != $myrow['curr_code']) {
+				continue;
+			}
 			$res = getTransactions($myrow['supplier_id'], $to);
-			if ($no_zeros && DBOld::num_rows($res) == 0) continue;
-
+			if ($no_zeros && DB::num_rows($res) == 0) {
+				continue;
+			}
 			$rep->fontSize += 2;
 			$rep->TextCol(0, 6, $myrow['name'] . " - " . $myrow['terms']);
-			if ($convert)
+			if ($convert) {
 				$rep->TextCol(6, 7, $myrow['curr_code']);
+			}
 			$rep->fontSize -= 2;
 			$rep->NewLine(1, 2);
-			if (DBOld::num_rows($res) == 0)
+			if (DB::num_rows($res) == 0) {
 				continue;
+			}
 			$rep->Line($rep->row + 4);
 			$total[0] = $total[1] = 0.0;
-			while ($trans = DBOld::fetch($res))
+			while ($trans = DB::fetch($res))
 			{
-				if ($no_zeros && $trans['TranTotal'] == 0 && $trans['Balance'] == 0) continue;
-
-				if ($convert) $rate = $trans['rate'];
-				else $rate = 1.0;
-
+				if ($no_zeros && $trans['TranTotal'] == 0 && $trans['Balance'] == 0) {
+					continue;
+				}
+				if ($convert) {
+					$rate = $trans['rate'];
+				}
+				else {
+					$rate = 1.0;
+				}
 				$rep->NewLine(1, 2);
 				$rep->TextCol(0, 1, $systypes_array[$trans['type']]);
 				$rep->TextCol(1, 2, $trans['supp_reference']);
-				if ($trans['type'] == ST_SUPPINVOICE)
+				if ($trans['type'] == ST_SUPPINVOICE) {
 					$rep->DateCol(2, 3, $trans['due_date'], true);
+				}
 				else
+				{
 					$rep->DateCol(2, 3, $trans['tran_date'], true);
+				}
 				if ($trans['type'] != ST_SUPPINVOICE) {
 					$trans['TranTotal'] = -$trans['TranTotal'];
 					$trans['Balance'] = -$trans['Balance'];

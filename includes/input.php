@@ -145,7 +145,7 @@
 		 */
 		public static function has_session($vars)
 		{
-			return (static::_has($_REQUEST, func_get_args()));
+			return (static::_has($_SESSION, func_get_args()));
 		}
 
 		protected static function _get_post($first, $second, $var, $type = null, $default = null)
@@ -163,12 +163,12 @@
 					return false;
 				}
 			}
-			return true;
+			return true; 
 		}
 
 		protected static function _isset($array, $var, $type = null, $default = null)
 		{
-			$value = (!isset($array[$var])) ? false : $array[$var];
+			$value = (!isset($array[$var])) ? null : $array[$var];
 			switch ($type) {
 			case self::NUMERIC:
 				if (!$value || !is_numeric($value)) {

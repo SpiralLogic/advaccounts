@@ -56,13 +56,13 @@ function allocate_none(doc) {
 
 
 var allocations = {
-	'.amount':function(e) {
+	'.amount':function (e) {
 
-		e.onblur = function() {
+		e.onblur = function () {
 
 			blur_alloc(this);
 		};
-		e.onfocus = function() {
+		e.onfocus = function () {
 			focus_alloc(this);
 		};
 	}

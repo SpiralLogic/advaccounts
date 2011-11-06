@@ -10,16 +10,18 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	//--------------------------------------------------------------------------------
-	function add_to_order(&$order, $new_item, $new_item_qty, $standard_cost) {
+	function add_to_order($order, $new_item, $new_item_qty, $standard_cost)
+	{
 		if ($order->find_cart_item($new_item)) {
-			ui_msgs::display_error(_("For Part :") . $new_item . " " . "This item is already on this order.  You can change the quantity ordered of the existing line if necessary.");
+			Errors::error(_("For Part: '") . $new_item . "' This item is already on this order.  You can change the quantity ordered of the existing line if necessary.");
 		} else {
 			$order->add_to_cart(count($order->line_items), $new_item, $new_item_qty, $standard_cost);
 		}
 	}
 
 	//--------------------------------------------------------------------------------
-	function display_order_header(&$order) {
+	function display_order_header($order)
+	{
 		start_outer_table("width=70%  " . Config::get('tables_style'));
 		table_section(1);
 		locations_list_row(_("From Location:"), 'FromStockLocation', null);
@@ -33,8 +35,9 @@
 	}
 
 	//---------------------------------------------------------------------------------
-	function display_transfer_items($title, &$order) {
-		ui_msgs::display_heading($title);
+	function display_transfer_items($title, &$order)
+	{
+		Display::heading($title);
 		div_start('items_table');
 		start_table(Config::get('tables_style') . "  width=90%");
 		$th = array(_("Item Code"), _("Item Description"), _("Quantity"), _("Unit"), '');
@@ -51,9 +54,9 @@
 		{
 			if ($id != $line_no) {
 				alt_table_row_color($k);
-				ui_view::view_stock_status_cell($stock_item->stock_id);
+				ui_view::stock_status_cell($stock_item->stock_id);
 				label_cell($stock_item->description);
-				qty_cell($stock_item->quantity, false, get_qty_dec($stock_item->stock_id));
+				qty_cell($stock_item->quantity, false, Num::qty_dec($stock_item->stock_id));
 				label_cell($stock_item->units);
 				edit_button_cell(
 					"Edit$line_no", _("Edit"),
@@ -64,9 +67,7 @@
 					_('Remove line from document')
 				);
 				end_row();
-			}
-			else
-			{
+			} else {
 				transfer_edit_item_controls($order, $line_no);
 			}
 		}
@@ -78,13 +79,14 @@
 	}
 
 	//---------------------------------------------------------------------------------
-	function transfer_edit_item_controls(&$order, $line_no = -1) {
+	function transfer_edit_item_controls($order, $line_no = -1)
+	{
 		$Ajax = Ajax::instance();
 		start_row();
 		$id = find_submit('Edit');
 		if ($line_no != -1 && $line_no == $id) {
 			$_POST['stock_id'] = $order->line_items[$id]->stock_id;
-			$_POST['qty'] = qty_format($order->line_items[$id]->quantity, $order->line_items[$id]->stock_id, $dec);
+			$_POST['qty'] = Num::qty_format($order->line_items[$id]->quantity, $order->line_items[$id]->stock_id, $dec);
 			$_POST['units'] = $order->line_items[$id]->units;
 			hidden('stock_id', $_POST['stock_id']);
 			label_cell($_POST['stock_id']);
@@ -96,9 +98,9 @@
 				$Ajax->activate('units');
 				$Ajax->activate('qty');
 			}
-			$item_info = get_item_edit_info(Input::post('stock_id'));
+			$item_info = Item::get_edit_info(Input::post('stock_id'));
 			$dec = $item_info['decimals'];
-			$_POST['qty'] = number_format2(0, $dec);
+			$_POST['qty'] = Num::format(0, $dec);
 			$_POST['units'] = $item_info["units"];
 		}
 		small_qty_cells(null, 'qty', $_POST['qty'], null, null, $dec);
@@ -124,7 +126,8 @@
 	}
 
 	//---------------------------------------------------------------------------------
-	function transfer_options_controls() {
+	function transfer_options_controls()
+	{
 		echo "<br>";
 		start_table();
 		textarea_row(_("Memo"), 'memo_', null, 50, 3);

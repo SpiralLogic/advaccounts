@@ -25,9 +25,9 @@
 	{
 		static function __date($year, $month, $day)
 		{
-			$how   = user_date_format();
-			$sep   = Config::get('separators_date', 0);
-			$day   = (int)$day;
+			$how = User::date_format();
+			$sep = Config::get('separators_date', 0);
+			$day = (int)$day;
 			$month = (int)$month;
 			if ($day < 10) {
 				$day = "0" . $day;
@@ -40,9 +40,7 @@
 			}
 			else if ($how == 1) {
 				return $day . $sep . $month . $sep . $year;
-			}
-			else
-			{
+			} else {
 				return $year . $sep . $month . $sep . $day;
 			}
 		}
@@ -52,42 +50,42 @@
 			if ($date_ == null || $date_ == "") {
 				return 0;
 			}
-			$how   = user_date_format();
-			$sep   = Config::get('separators_date', 0);
+			$how = User::date_format();
+			$sep = Config::get('separators_date', 0);
 			$date_ = trim($date_);
 			$date_ = str_replace($sep, "", $date_);
 			if (strlen($date_) == 6) {
 				if ($how == 0) {
-					$day   = substr($date_, 2, 2);
+					$day = substr($date_, 2, 2);
 					$month = substr($date_, 0, 2);
-					$year  = substr($date_, 4, 2);
+					$year = substr($date_, 4, 2);
 				}
 				elseif ($how == 1) {
-					$day   = substr($date_, 0, 2);
+					$day = substr($date_, 0, 2);
 					$month = substr($date_, 2, 2);
-					$year  = substr($date_, 4, 2);
+					$year = substr($date_, 4, 2);
 				}
 				else {
-					$day   = substr($date_, 4, 2);
+					$day = substr($date_, 4, 2);
 					$month = substr($date_, 2, 2);
-					$year  = substr($date_, 0, 2);
+					$year = substr($date_, 0, 2);
 				}
 			}
 			elseif (strlen($date_) == 8) {
 				if ($how == 0) {
-					$day   = substr($date_, 2, 2);
+					$day = substr($date_, 2, 2);
 					$month = substr($date_, 0, 2);
-					$year  = substr($date_, 4, 4);
+					$year = substr($date_, 4, 4);
 				}
 				elseif ($how == 1) {
-					$day   = substr($date_, 0, 2);
+					$day = substr($date_, 0, 2);
 					$month = substr($date_, 2, 2);
-					$year  = substr($date_, 4, 4);
+					$year = substr($date_, 4, 4);
 				}
 				else {
-					$day   = substr($date_, 6, 2);
+					$day = substr($date_, 6, 2);
 					$month = substr($date_, 4, 2);
-					$year  = substr($date_, 0, 4);
+					$year = substr($date_, 0, 4);
 				}
 			}
 			if (!isset($year) || (int)$year > 9999) {
@@ -113,9 +111,9 @@
 		} //end of is_date function
 		static function Today()
 		{
-			$year  = date("Y");
+			$year = date("Y");
 			$month = date("n");
-			$day   = date("j");
+			$day = date("j");
 			if (Config::get('accounts_datesystem') == 1) {
 				list($year, $month, $day) = Dates::gregorian_to_jalali($year, $month, $day);
 			}
@@ -127,11 +125,9 @@
 
 		static function Now()
 		{
-			if (user_date_format() == 0) {
+			if (User::date_format() == 0) {
 				return date("h:i a");
-			}
-			else
-			{
+			} else {
 				return date("H:i");
 			}
 		}
@@ -144,7 +140,7 @@
 			if (isset($date) && $date != '') {
 				$_SESSION['_default_date'] = $date;
 			}
-			if (!isset($_SESSION['_default_date']) || !sticky_doc_date()) {
+			if (!isset($_SESSION['_default_date']) || !User::sticky_date()) {
 				$_SESSION['_default_date'] = Dates::Today();
 			}
 			return $_SESSION['_default_date'];
@@ -159,13 +155,11 @@
 			}
 			if ($convert) {
 				$date2 = Dates::sql2date($date);
-			}
-			else
-			{
+			} else {
 				$date2 = $date;
 			}
 			$begin = Dates::sql2date($myrow['begin']);
-			$end   = Dates::sql2date($myrow['end']);
+			$end = Dates::sql2date($myrow['end']);
 			if (Dates::date1_greater_date2($begin, $date2) || Dates::date1_greater_date2($date2, $end)) {
 				return 0;
 			}
@@ -236,7 +230,7 @@
 				}
 				return Dates::__date($year, $month, $day);
 			}
-			return date(user_date_display(), $timet);
+			return date(User::date_display(), $timet);
 		}
 
 		static function add_months($date, $months)
@@ -252,7 +246,7 @@
 				}
 				return Dates::__date($year, $month, $day);
 			}
-			return date(user_date_display(), $timet);
+			return date(User::date_display(), $timet);
 		}
 
 		static function add_years($date, $years)
@@ -268,7 +262,7 @@
 				}
 				return Dates::__date($year, $month, $day);
 			}
-			return date(user_date_display(), $timet);
+			return date(User::date_display(), $timet);
 		}
 
 		//_______________________________________________________________
@@ -300,13 +294,13 @@
 		{
 			/* takes a date in a the format specified in $DefaultDateFormat
 										and converts to a yyyy/mm/dd format */
-			$how = user_date_format();
-			$sep = Config::get('separators_date', user_date_sep());
+			$how = User::date_format();
+			$sep = Config::get('separators_date', User::date_sep());
 			if ($date_ == null || strlen($date_) == 0) {
 				return "";
 			}
 			$date_ = trim($date_);
-			$year  = $month = $day = 0;
+			$year = $month = $day = 0;
 			// Split up the date by the separator based on "how" to split it
 			if ($how == 0) // MMDDYYYY
 			{
@@ -387,8 +381,8 @@
 			$date2 = Dates::date2sql($date2);
 			list($year1, $month1, $day1) = explode("-", $date1);
 			list($year2, $month2, $day2) = explode("-", $date2);
-			$stamp1     = mktime(0, 0, 0, (int)$month1, (int)$day1, (int)$year1);
-			$stamp2     = mktime(0, 0, 0, (int)$month2, (int)$day2, (int)$year2);
+			$stamp1 = mktime(0, 0, 0, (int)$month1, (int)$day1, (int)$year1);
+			$stamp2 = mktime(0, 0, 0, (int)$month2, (int)$day2, (int)$year2);
 			$difference = $stamp1 - $stamp2;
 			/* difference is the number of seconds between each date negative if date_ 2 > date_ 1 */
 			switch ($period) {
@@ -411,7 +405,7 @@
 		{
 			$date = Dates::date2sql($date_);
 			if ($date == "") {
-				$disp = user_date_display();
+				$disp = User::date_display();
 				throw new Adv_Exception("Dates must be entered in the format $disp. Sent was $date");
 			}
 			list($year, $month, $day) = explode("-", $date);
@@ -430,10 +424,10 @@
 		{
 			$g_days_in_month = array(31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
 			$j_days_in_month = array(31, 31, 31, 31, 31, 31, 30, 30, 30, 30, 30, 29);
-			$gy              = $g_y - 1600;
-			$gm              = $g_m - 1;
-			$gd              = $g_d - 1;
-			$g_day_no        = 365 * $gy + static::div($gy + 3, 4) - static::div($gy + 99, 100) + static::div($gy + 399, 400);
+			$gy = $g_y - 1600;
+			$gm = $g_m - 1;
+			$gd = $g_d - 1;
+			$g_day_no = 365 * $gy + static::div($gy + 3, 4) - static::div($gy + 99, 100) + static::div($gy + 399, 400);
 			for (
 				$i = 0; $i < $gm; ++$i
 			)
@@ -446,7 +440,7 @@
 			}
 			$g_day_no += $gd;
 			$j_day_no = $g_day_no - 79;
-			$j_np     = static::div($j_day_no, 12053); /* 12053 = 365*33 + 32/4 */
+			$j_np = static::div($j_day_no, 12053); /* 12053 = 365*33 + 32/4 */
 			$j_day_no %= 12053;
 			$jy = 979 + 33 * $j_np + 4 * static::div($j_day_no, 1461); /* 1461 = 365*4 + 4/4 */
 			$j_day_no %= 1461;
@@ -469,10 +463,10 @@
 		{
 			$g_days_in_month = array(31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
 			$j_days_in_month = array(31, 31, 31, 31, 31, 31, 30, 30, 30, 30, 30, 29);
-			$jy              = $j_y - 979;
-			$jm              = $j_m - 1;
-			$jd              = $j_d - 1;
-			$j_day_no        = 365 * $jy + static::div($jy, 33) * 8 + static::div($jy % 33 + 3, 4);
+			$jy = $j_y - 979;
+			$jm = $j_m - 1;
+			$jd = $j_d - 1;
+			$j_day_no = 365 * $jy + static::div($jy, 33) * 8 + static::div($jy % 33 + 3, 4);
 			for (
 				$i = 0; $i < $jm; ++$i
 			)
@@ -481,7 +475,7 @@
 			}
 			$j_day_no += $jd;
 			$g_day_no = $j_day_no + 79;
-			$gy       = 1600 + 400 * static::div($g_day_no, 146097); /* 146097 = 365*400 + 400/4 - 400/100 + 400/400 */
+			$gy = 1600 + 400 * static::div($g_day_no, 146097); /* 146097 = 365*400 + 400/4 - 400/100 + 400/400 */
 			$g_day_no %= 146097;
 			$leap = true;
 			if ($g_day_no >= 36525) /* 36525 = 365*100 + 100/4 */ {
@@ -490,9 +484,7 @@
 				$g_day_no %= 36524;
 				if ($g_day_no >= 365) {
 					$g_day_no++;
-				}
-				else
-				{
+				} else {
 					$leap = false;
 				}
 			}
@@ -541,9 +533,9 @@
 
 		static function islamic_to_gregorian($i_y, $i_m, $i_d)
 		{
-			$y  = $i_y;
-			$m  = $i_m;
-			$d  = $i_d;
+			$y = $i_y;
+			$m = $i_m;
+			$d = $i_d;
 			$jd = (int)((11 * $y + 3) / 30) + 354 * $y + 30 * $m - (int)(($m - 1) / 2) + $d + 1948440 - 385;
 			if ($jd > 2299160) {
 				$l = $jd + 68569;
@@ -574,16 +566,16 @@
 
 		public static function getReadableTime($time)
 		{
-			$ret       = $time;
+			$ret = $time;
 			$formatter = 0;
-			$formats   = array('ms', 's', 'm');
+			$formats = array('ms', 's', 'm');
 			if ($time >= 1000 && $time < 60000) {
 				$formatter = 1;
-				$ret       = ($time / 1000);
+				$ret = ($time / 1000);
 			}
 			if ($time >= 60000) {
 				$formatter = 2;
-				$ret       = ($time / 1000) / 60;
+				$ret = ($time / 1000) / 60;
 			}
 			$ret = number_format($ret, 3, '.', '') . ' ' . $formats[$formatter];
 			return $ret;

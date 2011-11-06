@@ -13,13 +13,13 @@
 
 	function update_currency($curr_abrev, $symbol, $currency, $country,
 													 $hundreds_name, $auto_update) {
-		$sql = "UPDATE currencies SET currency=" . DBOld::escape($currency)
-		 . ", curr_symbol=" . DBOld::escape($symbol) . ",	country=" . DBOld::escape($country)
-		 . ", hundreds_name=" . DBOld::escape($hundreds_name)
-		 . ",auto_update = " . DBOld::escape($auto_update)
-		 . " WHERE curr_abrev = " . DBOld::escape($curr_abrev);
+		$sql = "UPDATE currencies SET currency=" . DB::escape($currency)
+		 . ", curr_symbol=" . DB::escape($symbol) . ",	country=" . DB::escape($country)
+		 . ", hundreds_name=" . DB::escape($hundreds_name)
+		 . ",auto_update = " . DB::escape($auto_update)
+		 . " WHERE curr_abrev = " . DB::escape($curr_abrev);
 
-		DBOld::query($sql, "could not update currency for $curr_abrev");
+		DB::query($sql, "could not update currency for $curr_abrev");
 	}
 
 	//---------------------------------------------------------------------------------------------
@@ -28,30 +28,30 @@
 												$hundreds_name, $auto_update) {
 		$sql = "INSERT INTO currencies (curr_abrev, curr_symbol, currency,
 			country, hundreds_name, auto_update)
-		VALUES (" . DBOld::escape($curr_abrev) . ", " . DBOld::escape($symbol) . ", "
-		 . DBOld::escape($currency) . ", " . DBOld::escape($country) . ", "
-		 . DBOld::escape($hundreds_name) . "," . DBOld::escape($auto_update) . ")";
+		VALUES (" . DB::escape($curr_abrev) . ", " . DB::escape($symbol) . ", "
+		 . DB::escape($currency) . ", " . DB::escape($country) . ", "
+		 . DB::escape($hundreds_name) . "," . DB::escape($auto_update) . ")";
 
-		DBOld::query($sql, "could not add currency for $curr_abrev");
+		DB::query($sql, "could not add currency for $curr_abrev");
 	}
 
 	//---------------------------------------------------------------------------------------------
 
 	function delete_currency($curr_code) {
-		$sql = "DELETE FROM currencies WHERE curr_abrev=" . DBOld::escape($curr_code);
-		DBOld::query($sql, "could not delete currency	$curr_code");
+		$sql = "DELETE FROM currencies WHERE curr_abrev=" . DB::escape($curr_code);
+		DB::query($sql, "could not delete currency	$curr_code");
 
 		$sql = "DELETE FROM exchange_rates WHERE curr_code='$curr_code'";
-		DBOld::query($sql, "could not delete exchange rates for currency $curr_code");
+		DB::query($sql, "could not delete exchange rates for currency $curr_code");
 	}
 
 	//---------------------------------------------------------------------------------------------
 
 	function get_currency($curr_code) {
-		$sql = "SELECT * FROM currencies WHERE curr_abrev=" . DBOld::escape($curr_code);
-		$result = DBOld::query($sql, "could not get currency $curr_code");
+		$sql = "SELECT * FROM currencies WHERE curr_abrev=" . DB::escape($curr_code);
+		$result = DB::query($sql, "could not get currency $curr_code");
 
-		$row = DBOld::fetch($result);
+		$row = DB::fetch($result);
 		return $row;
 	}
 
@@ -60,7 +60,7 @@
 	function get_currencies($all = false) {
 		$sql = "SELECT * FROM currencies";
 		if (!$all) $sql .= " WHERE !inactive";
-		return DBOld::query($sql, "could not get currencies");
+		return DB::query($sql, "could not get currencies");
 	}
 
 	//---------------------------------------------------------------------------------------------

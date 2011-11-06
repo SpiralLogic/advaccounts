@@ -16,7 +16,7 @@
 	$page_security = 'SA_SALESCREDITINV';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	include_once(APP_PATH . "sales/includes/sales_ui.php");
-	JS::get_js_open_window(900, 500);
+	JS::open_window(900, 500);
 	if (isset($_GET['ModifyCredit'])) {
 		$_SESSION['page_title'] = sprintf(_("Modifying Credit Invoice # %d."), $_GET['ModifyCredit']);
 		$help_context = "Modifying Credit Invoice";
@@ -31,60 +31,59 @@
 	if (isset($_GET['AddedID'])) {
 		$credit_no = $_GET['AddedID'];
 		$trans_type = ST_CUSTCREDIT;
-		ui_msgs::display_notification_centered(_("Credit Note has been processed"));
-		ui_msgs::display_note(ui_view::get_customer_trans_view_str($trans_type, $credit_no, _("&View This Credit Note")), 0, 0);
-		ui_msgs::display_note(Reporting::print_doc_link($credit_no, _("&Print This Credit Note"), true, $trans_type), 1);
-		ui_msgs::display_note(ui_view::get_gl_view_str($trans_type, $credit_no, _("View the GL &Journal Entries for this Credit Note")), 1);
-		ui_view::display_footer_exit();
+		Errors::notice(_("Credit Note has been processed"));
+		Display::note(ui_view::get_customer_trans_view_str($trans_type, $credit_no, _("&View This Credit Note")), 0, 0);
+		Display::note(Reporting::print_doc_link($credit_no, _("&Print This Credit Note"), true, $trans_type), 1);
+		Display::note(ui_view::get_gl_view_str($trans_type, $credit_no, _("View the GL &Journal Entries for this Credit Note")), 1);
+		Page::footer_exit();
 	}
 	elseif (isset($_GET['UpdatedID'])) {
 		$credit_no = $_GET['UpdatedID'];
 		$trans_type = ST_CUSTCREDIT;
-		ui_msgs::display_notification_centered(_("Credit Note has been updated"));
-		ui_msgs::display_note(ui_view::get_customer_trans_view_str($trans_type, $credit_no, _("&View This Credit Note")), 0, 0);
-		ui_msgs::display_note(Reporting::print_doc_link($credit_no, _("&Print This Credit Note"), true, $trans_type), 1);
-		ui_msgs::display_note(ui_view::get_gl_view_str($trans_type, $credit_no, _("View the GL &Journal Entries for this Credit Note")), 1);
-		ui_view::display_footer_exit();
-	}
-	else
-	{
+		Errors::notice(_("Credit Note has been updated"));
+		Display::note(ui_view::get_customer_trans_view_str($trans_type, $credit_no, _("&View This Credit Note")), 0, 0);
+		Display::note(Reporting::print_doc_link($credit_no, _("&Print This Credit Note"), true, $trans_type), 1);
+		Display::note(ui_view::get_gl_view_str($trans_type, $credit_no, _("View the GL &Journal Entries for this Credit Note")), 1);
+		Page::footer_exit();
+	} else {
 		check_edit_conflicts();
 	}
 	//-----------------------------------------------------------------------------
-	function can_process() {
+	function can_process()
+	{
 		if (!Dates::is_date($_POST['CreditDate'])) {
-			ui_msgs::display_error(_("The entered date is invalid."));
+			Errors::error(_("The entered date is invalid."));
 			;
 			JS::set_focus('CreditDate');
 			return false;
 		}
 		elseif (!Dates::is_date_in_fiscalyear($_POST['CreditDate'])) {
-			ui_msgs::display_error(_("The entered date is not in fiscal year."));
+			Errors::error(_("The entered date is not in fiscal year."));
 			JS::set_focus('CreditDate');
 			return false;
 		}
 		if ($_SESSION['Items']->trans_no == 0) {
 			if (!Refs::is_valid($_POST['ref'])) {
-				ui_msgs::display_error(_("You must enter a reference."));
+				Errors::error(_("You must enter a reference."));
 				;
 				JS::set_focus('ref');
 				return false;
 			}
 			if (!is_new_reference($_POST['ref'], ST_CUSTCREDIT)) {
-				ui_msgs::display_error(_("The entered reference is already in use."));
+				Errors::error(_("The entered reference is already in use."));
 				;
 				JS::set_focus('ref');
 				return false;
 			}
 		}
 		if (!Validation::is_num('ChargeFreightCost', 0)) {
-			ui_msgs::display_error(_("The entered shipping cost is invalid or less than zero."));
+			Errors::error(_("The entered shipping cost is invalid or less than zero."));
 			;
 			JS::set_focus('ChargeFreightCost');
 			return false;
 		}
 		if (!check_quantities()) {
-			ui_msgs::display_error(_("Selected quantity cannot be less than zero nor more than quantity not credited yet."));
+			Errors::error(_("Selected quantity cannot be less than zero nor more than quantity not credited yet."));
 			return false;
 		}
 		return true;
@@ -116,9 +115,10 @@
 		die (_("This page can only be opened if an invoice has been selected for crediting."));
 	}
 	elseif (!check_quantities()) {
-		ui_msgs::display_error(_("Selected quantity cannot be less than zero nor more than quantity not credited yet."));
+		Errors::error(_("Selected quantity cannot be less than zero nor more than quantity not credited yet."));
 	}
-	function check_quantities() {
+	function check_quantities()
+	{
 		$ok = 1;
 		foreach (
 			$_SESSION['Items']->line_items as $line_no => $itm
@@ -146,7 +146,8 @@
 	}
 
 	//-----------------------------------------------------------------------------
-	function copy_to_cart() {
+	function copy_to_cart()
+	{
 		$cart = &$_SESSION['Items'];
 		$cart->ship_via = $_POST['ShipperID'];
 		$cart->freight_cost = input_num('ChargeFreightCost');
@@ -159,10 +160,11 @@
 	}
 
 	//-----------------------------------------------------------------------------
-	function copy_from_cart() {
+	function copy_from_cart()
+	{
 		$cart = &$_SESSION['Items'];
 		$_POST['ShipperID'] = $cart->ship_via;
-		$_POST['ChargeFreightCost'] = price_format($cart->freight_cost);
+		$_POST['ChargeFreightCost'] = Num::price_format($cart->freight_cost);
 		$_POST['CreditDate'] = $cart->document_date;
 		$_POST['Location'] = $cart->Location;
 		$_POST['CreditText'] = $cart->Comments;
@@ -194,7 +196,8 @@
 		$_SESSION['Items']->Location = $_POST['Location'];
 	}
 	//-----------------------------------------------------------------------------
-	function display_credit_items() {
+	function display_credit_items()
+	{
 		start_form();
 		hidden('cart_id');
 		start_table(Config::get('tables_style2') . " width=90%", 5);
@@ -257,14 +260,14 @@
 				continue; // this line was fully credited/removed
 			}
 			alt_table_row_color($k);
-			//	ui_view::view_stock_status_cell($ln_itm->stock_id); alternative view
+			//	ui_view::stock_status_cell($ln_itm->stock_id); alternative view
 			label_cell($ln_itm->stock_id);
 			text_cells(null, 'Line' . $line_no . 'Desc', $ln_itm->description, 30, 50);
-			$dec = get_qty_dec($ln_itm->stock_id);
+			$dec = Num::qty_dec($ln_itm->stock_id);
 			qty_cell($ln_itm->quantity, false, $dec);
 			label_cell($ln_itm->units);
 			amount_cells(
-				null, 'Line' . $line_no, number_format2($ln_itm->qty_dispatched, $dec),
+				null, 'Line' . $line_no, Num::format($ln_itm->qty_dispatched, $dec),
 				null, null, $dec
 			);
 			$line_total = ($ln_itm->qty_dispatched * $ln_itm->price * (1 - $ln_itm->discount_percent));
@@ -274,26 +277,27 @@
 			end_row();
 		}
 		if (!Validation::is_num('ChargeFreightCost')) {
-			$_POST['ChargeFreightCost'] = price_format($_SESSION['Items']->freight_cost);
+			$_POST['ChargeFreightCost'] = Num::price_format($_SESSION['Items']->freight_cost);
 		}
 		$colspan = 7;
 		start_row();
 		label_cell(_("Credit Shipping Cost"), "colspan=$colspan align=right");
-		small_amount_cells(null, "ChargeFreightCost", price_format(get_post('ChargeFreightCost', 0)));
+		small_amount_cells(null, "ChargeFreightCost", Num::price_format(get_post('ChargeFreightCost', 0)));
 		end_row();
 		$inv_items_total = $_SESSION['Items']->get_items_total_dispatch();
-		$display_sub_total = price_format($inv_items_total + input_num('ChargeFreightCost'));
+		$display_sub_total = Num::price_format($inv_items_total + input_num('ChargeFreightCost'));
 		label_row(_("Sub-total"), $display_sub_total, "colspan=$colspan align=right", "align=right");
 		$taxes = $_SESSION['Items']->get_taxes(input_num('ChargeFreightCost'));
-		$tax_total = ui_view::display_edit_tax_items($taxes, $colspan, $_SESSION['Items']->tax_included);
-		$display_total = price_format(($inv_items_total + input_num('ChargeFreightCost') + $tax_total));
+		$tax_total = Display::edit_tax_items($taxes, $colspan, $_SESSION['Items']->tax_included);
+		$display_total = Num::price_format(($inv_items_total + input_num('ChargeFreightCost') + $tax_total));
 		label_row(_("Credit Note Total"), $display_total, "colspan=$colspan align=right", "align=right");
 		end_table();
 		div_end();
 	}
 
 	//-----------------------------------------------------------------------------
-	function display_credit_options() {
+	function display_credit_options()
+	{
 		$Ajax = Ajax::instance();
 		echo "<br>";
 		if (isset($_POST['_CreditType_update'])) {

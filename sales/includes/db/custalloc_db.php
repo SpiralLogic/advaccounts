@@ -16,24 +16,24 @@
 		 = "INSERT INTO cust_allocations (
 		amt, date_alloc,
 		trans_type_from, trans_no_from, trans_no_to, trans_type_to)
-		VALUES ($amount, Now() ," . DBOld::escape($trans_type_from) . ", " . DBOld::escape($trans_no_from) . ", " . DBOld::escape($trans_no_to)
-		 . ", " . DBOld::escape($trans_type_to) . ")";
-		DBOld::query($sql, "A customer allocation could not be added to the database");
+		VALUES ($amount, Now() ," . DB::escape($trans_type_from) . ", " . DB::escape($trans_no_from) . ", " . DB::escape($trans_no_to)
+		 . ", " . DB::escape($trans_type_to) . ")";
+		DB::query($sql, "A customer allocation could not be added to the database");
 	}
 
 	//----------------------------------------------------------------------------------------
 	function delete_cust_allocation($trans_id) {
-		$sql = "DELETE FROM cust_allocations WHERE id = " . DBOld::escape($trans_id);
-		return DBOld::query($sql, "The existing allocation $trans_id could not be deleted");
+		$sql = "DELETE FROM cust_allocations WHERE id = " . DB::escape($trans_id);
+		return DB::query($sql, "The existing allocation $trans_id could not be deleted");
 	}
 
 	//----------------------------------------------------------------------------------------
 	function get_DebtorTrans_allocation_balance($trans_type, $trans_no) {
 		$sql
 		 = "SELECT (ov_amount+ov_gst+ov_freight+ov_freight_tax-ov_discount-alloc) AS BalToAllocate
-		FROM debtor_trans WHERE trans_no=" . DBOld::escape($trans_no) . " AND type=" . DBOld::escape($trans_type);
-		$result = DBOld::query($sql, "calculate the allocation");
-		$myrow = DBOld::fetch_row($result);
+		FROM debtor_trans WHERE trans_no=" . DB::escape($trans_no) . " AND type=" . DB::escape($trans_type);
+		$result = DB::query($sql, "calculate the allocation");
+		$myrow = DB::fetch_row($result);
 		return $myrow[0];
 	}
 
@@ -41,8 +41,8 @@
 	function update_debtor_trans_allocation($trans_type, $trans_no, $alloc) {
 		$sql
 		 = "UPDATE debtor_trans SET alloc = alloc + $alloc
-		WHERE type=" . DBOld::escape($trans_type) . " AND trans_no = " . DBOld::escape($trans_no);
-		DBOld::query($sql, "The debtor transaction record could not be modified for the allocation against it");
+		WHERE type=" . DB::escape($trans_type) . " AND trans_no = " . DB::escape($trans_no);
+		DB::query($sql, "The debtor transaction record could not be modified for the allocation against it");
 	}
 
 	//-------------------------------------------------------------------------------------------------------------
@@ -55,15 +55,15 @@
 		// clear any allocations for this transaction
 		$sql
 		 = "SELECT * FROM cust_allocations
-		WHERE (trans_type_from=" . DBOld::escape($type) . " AND trans_no_from=" . DBOld::escape($type_no) . ")
-		OR (trans_type_to=" . DBOld::escape($type) . " AND trans_no_to=" . DBOld::escape($type_no) . ")";
-		$result = DBOld::query($sql, "could not void debtor transactions for type=$type and trans_no=$type_no");
-		while ($row = DBOld::fetch($result))
+		WHERE (trans_type_from=" . DB::escape($type) . " AND trans_no_from=" . DB::escape($type_no) . ")
+		OR (trans_type_to=" . DB::escape($type) . " AND trans_no_to=" . DB::escape($type_no) . ")";
+		$result = DB::query($sql, "could not void debtor transactions for type=$type and trans_no=$type_no");
+		while ($row = DB::fetch($result))
 		{
 			$sql = "UPDATE debtor_trans SET alloc=alloc - " . $row['amt'] . "
 			WHERE (type= " . $row['trans_type_from'] . " AND trans_no=" . $row['trans_no_from'] . ")
 			OR (type=" . $row['trans_type_to'] . " AND trans_no=" . $row['trans_no_to'] . ")";
-			DBOld::query($sql, "could not clear allocation");
+			DB::query($sql, "could not clear allocation");
 			// 2008-09-20 Joe Hunt
 			if ($date != "") {
 				Banking::exchange_variation($type, $type_no, $row['trans_type_to'], $row['trans_no_to'], $date,
@@ -74,9 +74,9 @@
 		// remove any allocations for this transaction
 		$sql
 		 = "DELETE FROM cust_allocations
-		WHERE (trans_type_from=" . DBOld::escape($type) . " AND trans_no_from=" . DBOld::escape($type_no) . ")
-		OR (trans_type_to=" . DBOld::escape($type) . " AND trans_no_to=" . DBOld::escape($type_no) . ")";
-		DBOld::query($sql, "could not void debtor transactions for type=$type and trans_no=$type_no");
+		WHERE (trans_type_from=" . DB::escape($type) . " AND trans_no_from=" . DB::escape($type_no) . ")
+		OR (trans_type_to=" . DB::escape($type) . " AND trans_no_to=" . DB::escape($type_no) . ")";
+		DB::query($sql, "could not void debtor transactions for type=$type and trans_no=$type_no");
 	}
 
 	//----------------------------------------------------------------------------------------
@@ -117,7 +117,7 @@
 		}
 		$cust_sql = "";
 		if ($customer_id != null) {
-			$cust_sql = " AND trans.debtor_no = " . DBOld::escape($customer_id);
+			$cust_sql = " AND trans.debtor_no = " . DB::escape($customer_id,false,false);
 		}
 		$sql = get_alloc_trans_sql("round(ov_amount+ov_gst+ov_freight+ov_freight_tax+ov_discount-alloc,6) <= 0 AS settled",
 		 "(type=" . ST_CUSTPAYMENT . " OR type=" . ST_CUSTREFUND . " OR type=" . ST_CUSTCREDIT . " OR type=" . ST_BANKDEPOSIT . ") AND (trans.ov_amount > 0) " . $settled_sql . $cust_sql);
@@ -131,7 +131,7 @@
 			AND trans.type = alloc.trans_type_to
 			AND alloc.trans_no_from=$trans_no
 			AND alloc.trans_type_from=$type
-			AND trans.debtor_no=" . DBOld::escape($customer_id),
+			AND trans.debtor_no=" . DB::escape($customer_id),
 				"cust_allocations as alloc");
 		} else {
 			$sql = get_alloc_trans_sql(null, "round(ov_amount+ov_gst+ov_freight+ov_freight_tax+ov_discount-alloc,6) > 0
@@ -140,9 +140,9 @@
 			AND trans.type <> " . ST_BANKDEPOSIT . "
 			AND trans.type <> " . ST_CUSTCREDIT . "
 			AND trans.type <> " . ST_CUSTDELIVERY . "
-			AND trans.debtor_no=" . DBOld::escape($customer_id));
+			AND trans.debtor_no=" . DB::escape($customer_id));
 		}
-		return DBOld::query($sql . " ORDER BY trans_no", "Cannot retreive alloc to transactions");
+		return DB::query($sql . " ORDER BY trans_no", "Cannot retreive alloc to transactions");
 	}
 
 ?>

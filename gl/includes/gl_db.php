@@ -9,14 +9,12 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-
-	include_once(APP_PATH . "gl/includes/db/gl_db_trans.php");
-	include_once(APP_PATH . "gl/includes/db/gl_db_bank_trans.php");
-	include_once(APP_PATH . "gl/includes/db/gl_db_banking.php");
-	include_once(APP_PATH . "gl/includes/db/gl_db_bank_accounts.php");
-	include_once(APP_PATH . "gl/includes/db/gl_db_currencies.php");
-	include_once(APP_PATH . "gl/includes/db/gl_db_rates.php");
-	include_once(APP_PATH . "gl/includes/db/gl_db_accounts.php");
-	include_once(APP_PATH . "gl/includes/db/gl_db_account_types.php");
+	include(APP_PATH . "gl/includes/db/gl_db_trans.php");
+	include(APP_PATH . "gl/includes/db/gl_db_banking.php");
+	include(APP_PATH . "gl/includes/db/gl_db_bank_accounts.php");
+	include(APP_PATH . "gl/includes/db/gl_db_currencies.php");
+	include(APP_PATH . "gl/includes/db/gl_db_rates.php");
+	include(APP_PATH . "gl/includes/db/gl_db_accounts.php");
+	include(APP_PATH . "gl/includes/db/gl_db_account_types.php");
 	//--------------------------------------------------------------------------------
 ?>

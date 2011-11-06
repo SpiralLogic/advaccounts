@@ -32,7 +32,7 @@
 		label_cell(Dates::sql2date($myrow["tran_date"]));
 		label_cell(Banking::payment_person_name($myrow["person_type_id"], $myrow["person_id"]));
 		end_row();
-		ui_view::comments_display_row($_GET['type_id'], $_GET['trans_no']);
+		Display::comments_row($_GET['type_id'], $_GET['trans_no']);
 		end_table(1);
 	}
 
@@ -40,12 +40,12 @@
 					= "SELECT gl.*, cm.account_name, IF(ISNULL(refs.reference), '', refs.reference) AS reference FROM gl_trans as gl
 	LEFT JOIN chart_master as cm ON gl.account = cm.account_code
 	LEFT JOIN refs as refs ON (gl.type=refs.type AND gl.type_no=refs.id)"
-	 . " WHERE gl.type= " . DBOld::escape($_GET['type_id'])
-	 . " AND gl.type_no = " . DBOld::escape($_GET['trans_no'])
+	 . " WHERE gl.type= " . DB::escape($_GET['type_id'])
+	 . " AND gl.type_no = " . DB::escape($_GET['trans_no'])
 	 . " ORDER BY counter";
-	$result = DBOld::query($sql, "could not get transactions");
+	$result = DB::query($sql, "could not get transactions");
 	//alert("sql = ".$sql);
-	if (DBOld::num_rows($result) == 0) {
+	if (DB::num_rows($result) == 0) {
 		echo "<p><center>" . _("No general ledger transactions have been created for") . " " .
 		 $systypes_array[$_GET['type_id']] . " " . _("number") . " " . $_GET['trans_no'] . "</center></p><br><br>";
 		end_page(true);
@@ -64,9 +64,7 @@
 			_("Account Code"), _("Account Name"), _("Dimension"),
 			_("Debit"), _("Credit"), _("Memo")
 		);
-	}
-	else
-	{
+} else {
 		$th = array(
 			_("Account Code"), _("Account Name"),
 			_("Debit"), _("Credit"), _("Memo")
@@ -74,7 +72,7 @@
 	}
 	$k = 0; //row colour counter
 	$heading_shown = false;
-	while ($myrow = DBOld::fetch($result))
+	while ($myrow = DB::fetch($result))
 	{
 		if ($myrow['amount'] == 0) {
 			continue;
@@ -94,7 +92,7 @@
 		if ($dim > 1) {
 			label_cell(get_dimension_string($myrow['dimension2_id'], true));
 		}
-		ui_view::display_debit_or_credit_cells($myrow['amount']);
+		Display::debit_or_credit_cells($myrow['amount']);
 		label_cell($myrow['memo_']);
 		end_row();
 	}
@@ -102,7 +100,7 @@
 	if ($heading_shown) {
 		end_table(1);
 	}
-	ui_view::is_voided_display($_GET['type_id'], $_GET['trans_no'], _("This transaction has been voided."));
+	Display::is_voided($_GET['type_id'], $_GET['trans_no'], _("This transaction has been voided."));
 	end_page(true);
 
 ?>

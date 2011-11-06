@@ -11,23 +11,24 @@
 	 ***********************************************************************/
 	$page_security = 'SA_BANKTRANSFER';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	JS::get_js_open_window(800, 500);
+	JS::open_window(800, 500);
 	Page::start(_($help_context = "Transfer between Bank Accounts"));
 	Validation::check(Validation::BANK_ACCOUNTS, _("There are no bank accounts defined in the system."));
 	//----------------------------------------------------------------------------------------
 	if (isset($_GET['AddedID'])) {
 		$trans_no = $_GET['AddedID'];
 		$trans_type = ST_BANKTRANSFER;
-		ui_msgs::display_notification_centered(_("Transfer has been entered"));
-		ui_msgs::display_note(ui_view::get_gl_view_str($trans_type, $trans_no, _("&View the GL Journal Entries for this Transfer")));
+		Errors::notice(_("Transfer has been entered"));
+		Display::note(ui_view::get_gl_view_str($trans_type, $trans_no, _("&View the GL Journal Entries for this Transfer")));
 		hyperlink_no_params($_SERVER['PHP_SELF'], _("Enter & Another Transfer"));
-		ui_view::display_footer_exit();
+		Page::footer_exit();
 	}
 	if (isset($_POST['_DatePaid_changed'])) {
 		$Ajax->activate('_ex_rate');
 	}
 	//----------------------------------------------------------------------------------------
-	function gl_payment_controls() {
+	function gl_payment_controls()
+	{
 		$home_currency = Banking::get_company_currency();
 		start_form();
 		start_outer_table(Config::get('tables_style2'), 5);
@@ -40,7 +41,7 @@
 		if ($from_currency != "" && $to_currency != "" && $from_currency != $to_currency) {
 			amount_row(_("Amount:"), 'amount', null, null, $from_currency);
 			amount_row(_("Bank Charge:"), 'charge', null, null, $from_currency);
-			ui_view::exchange_rate_display($from_currency, $to_currency, $_POST['DatePaid']);
+			Display::exchange_rate($from_currency, $to_currency, $_POST['DatePaid']);
 		} else {
 			amount_row(_("Amount:"), 'amount');
 			amount_row(_("Bank Charge:"), 'charge');
@@ -54,44 +55,45 @@
 	}
 
 	//----------------------------------------------------------------------------------------
-	function check_valid_entries() {
+	function check_valid_entries()
+	{
 		if (!Dates::is_date($_POST['DatePaid'])) {
-			ui_msgs::display_error(_("The entered date is invalid ."));
+			Errors::error(_("The entered date is invalid ."));
 			JS::set_focus('DatePaid');
 			return false;
 		}
 		if (!Dates::is_date_in_fiscalyear($_POST['DatePaid'])) {
-			ui_msgs::display_error(_("The entered date is not in fiscal year . "));
+			Errors::error(_("The entered date is not in fiscal year . "));
 			JS::set_focus('DatePaid');
 			return false;
 		}
 		if (!Validation::is_num('amount', 0)) {
-			ui_msgs::display_error(_("The entered amount is invalid or less than zero ."));
+			Errors::error(_("The entered amount is invalid or less than zero ."));
 			JS::set_focus('amount');
 			return false;
 		}
 		if (isset($_POST['charge']) && !Validation::is_num('charge', 0)) {
-			ui_msgs::display_error(_("The entered amount is invalid or less than zero ."));
+			Errors::error(_("The entered amount is invalid or less than zero ."));
 			JS::set_focus('charge');
 			return false;
 		}
 		if (isset($_POST['charge']) && input_num('charge') > 0 && DB_Company::get_pref('bank_charge_act') == '') {
-			ui_msgs::display_error(_("The Bank Charge Account has not been set in System and General GL Setup ."));
+			Errors::error(_("The Bank Charge Account has not been set in System and General GL Setup ."));
 			JS::set_focus('charge');
 			return false;
 		}
 		if (!Refs::is_valid($_POST['ref'])) {
-			ui_msgs::display_error(_("You must enter a reference ."));
+			Errors::error(_("You must enter a reference ."));
 			JS::set_focus('ref');
 			return false;
 		}
 		if (!is_new_reference($_POST['ref'], ST_BANKTRANSFER)) {
-			ui_msgs::display_error(_("The entered reference is already in use."));
+			Errors::error(_("The entered reference is already in use."));
 			JS::set_focus('ref');
 			return false;
 		}
 		if ($_POST['FromBankAccount'] == $_POST['ToBankAccount']) {
-			ui_msgs::display_error(_("The source and destination bank accouts cannot be the same ."));
+			Errors::error(_("The source and destination bank accouts cannot be the same ."));
 			JS::set_focus('ToBankAccount');
 			return false;
 		}
@@ -99,7 +101,8 @@
 	}
 
 	//----------------------------------------------------------------------------------------
-	function handle_add_deposit() {
+	function handle_add_deposit()
+	{
 		$trans_no = add_bank_transfer($_POST['FromBankAccount'], $_POST['ToBankAccount'],
 			$_POST['DatePaid'], input_num('amount'), $_POST['ref'],
 			$_POST['memo_'], input_num('charge'));

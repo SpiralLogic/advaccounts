@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 	$page_security = 'SA_SALESTRANSVIEW';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	JS::get_js_open_window(900, 500);
+	JS::open_window(900, 500);
 	Page::start(_($help_context = "View Credit Note"), true);
 	if (isset($_GET["trans_no"])) {
 		$trans_id = $_GET["trans_no"];
@@ -20,9 +20,9 @@
 	{
 		$trans_id = $_POST["trans_no"];
 	}
-	$myrow = get_customer_trans($trans_id, ST_CUSTCREDIT);
+	$myrow = Sales_Trans::get($trans_id, ST_CUSTCREDIT);
 	$branch = get_branch($myrow["branch_code"]);
-	ui_msgs::display_heading("<font color=red>" . sprintf(_("CREDIT NOTE #%d"), $trans_id) . "</font>");
+	Display::heading("<font color=red>" . sprintf(_("CREDIT NOTE #%d"), $trans_id) . "</font>");
 	echo "<br>";
 	start_table(Config::get('tables_style2') . " width=95%");
 	echo "<tr valign=top><td>"; // outer table
@@ -50,14 +50,14 @@
 	label_cells(_("Sales Type"), $myrow["sales_type"], "class='tableheader2'");
 	label_cells(_("Shipping Company"), $myrow["shipper_name"], "class='tableheader2'");
 	end_row();
-	ui_view::comments_display_row(ST_CUSTCREDIT, $trans_id);
+	Display::comments_row(ST_CUSTCREDIT, $trans_id);
 	end_table();
 	echo "</td></tr>";
 	end_table(1); // outer table
 	$sub_total = 0;
 	$result = get_customer_trans_details(ST_CUSTCREDIT, $trans_id);
 	start_table(Config::get('tables_style') . "  width=95%");
-	if (DBOld::num_rows($result) > 0) {
+	if (DB::num_rows($result) > 0) {
 		$th = array(
 			_("Item Code"), _("Item Description"), _("Quantity"),
 			_("Unit"), _("Price"), _("Discount %"), _("Total")
@@ -65,42 +65,38 @@
 		table_header($th);
 		$k = 0; //row colour counter
 		$sub_total = 0;
-		while ($myrow2 = DBOld::fetch($result))
+		while ($myrow2 = DB::fetch($result))
 		{
 			if ($myrow2["quantity"] == 0) {
 				continue;
 			}
 			alt_table_row_color($k);
-			$value = round2(
+			$value = Num::round(
 				((1 - $myrow2["discount_percent"]) * $myrow2["unit_price"] * $myrow2["quantity"]),
-				user_price_dec()
+				User::price_dec()
 			);
 			$sub_total += $value;
 			if ($myrow2["discount_percent"] == 0) {
 				$display_discount = "";
-			}
-			else
-			{
-				$display_discount = percent_format($myrow2["discount_percent"] * 100) . "%";
+			} else {
+				$display_discount = Num::percent_format($myrow2["discount_percent"] * 100) . "%";
 			}
 			label_cell($myrow2["stock_id"]);
 			label_cell($myrow2["StockDescription"]);
-			qty_cell($myrow2["quantity"], false, get_qty_dec($myrow2["stock_id"]));
+			qty_cell($myrow2["quantity"], false, Num::qty_dec($myrow2["stock_id"]));
 			label_cell($myrow2["units"], "align=right");
 			amount_cell($myrow2["unit_price"]);
 			label_cell($display_discount, "align=right");
 			amount_cell($value);
 			end_row();
 		} //end while there are line items to print out
+	} else {
+		Errors::warning(_("There are no line items on this credit note."), 1, 2);
 	}
-	else
-	{
-		ui_msgs::display_warning(_("There are no line items on this credit note."), 1, 2);
-	}
-	$display_sub_tot = price_format($sub_total);
-	$display_freight = price_format($myrow["ov_freight"]);
-	$credit_total  = $myrow["ov_freight"] + $myrow["ov_gst"] + $myrow["ov_amount"] + $myrow["ov_freight_tax"];
-	$display_total = price_format($credit_total);
+	$display_sub_tot = Num::price_format($sub_total);
+	$display_freight = Num::price_format($myrow["ov_freight"]);
+	$credit_total = $myrow["ov_freight"] + $myrow["ov_gst"] + $myrow["ov_amount"] + $myrow["ov_freight_tax"];
+	$display_total = Num::price_format($credit_total);
 	/*Print out the invoice text entered */
 	if ($sub_total != 0) {
 		label_row(
@@ -110,15 +106,15 @@
 	}
 	label_row(_("Shipping"), $display_freight, "colspan=6 align=right", "nowrap align=right");
 	$tax_items = get_trans_tax_details(ST_CUSTCREDIT, $trans_id);
-	ui_view::display_customer_trans_tax_details($tax_items, 6);
+	ui_view::Display::customer_trans_tax_details($tax_items, 6);
 	label_row(
 		"<font color=red>" . _("TOTAL CREDIT") . "</font",
 		"<font color=red>$display_total</font>", "colspan=6 align=right", "nowrap align=right"
 	);
 	end_table(1);
-	$voided = ui_view::is_voided_display(ST_CUSTCREDIT, $trans_id, _("This credit note has been voided."));
+	$voided = Display::is_voided(ST_CUSTCREDIT, $trans_id, _("This credit note has been voided."));
 	if (!$voided) {
-		ui_view::display_allocations_from(
+		Display::allocations_from(
 			PT_CUSTOMER,
 			$myrow['debtor_no'], ST_CUSTCREDIT, $trans_id, $credit_total
 		);

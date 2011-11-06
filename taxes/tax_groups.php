@@ -12,7 +12,7 @@
 	$page_security = 'SA_TAXGROUPS';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "Tax Groups"));
-	simple_page_mode(true);
+	Page::simple_mode(true);
 	Validation::check(Validation::TAX_TYPES, _("There are no tax types defined. Define tax types before defining tax groups."));
 	//-----------------------------------------------------------------------------------
 	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
@@ -20,7 +20,7 @@
 		$input_error = 0;
 		if (strlen($_POST['name']) == 0) {
 			$input_error = 1;
-			ui_msgs::display_error(_("The tax group name cannot be empty."));
+			Errors::error(_("The tax group name cannot be empty."));
 			JS::set_focus('name');
 		}
 		/* Editable rate has been removed 090920 Joe Hunt
@@ -33,7 +33,7 @@
 							 $_POST['tax_type_id' . $i] != ALL_NUMERIC	&&
 							 !Validation::is_num('rate' . $i, 0))
 						 {
-						 ui_msgs::display_error( _("An entered tax rate is invalid or less than zero."));
+						 Errors::error( _("An entered tax rate is invalid or less than zero."));
 							 $input_error = 1;
 						 JS::set_focus('rate');
 						 break;
@@ -63,33 +63,32 @@
 					$selected_id, $_POST['name'], $_POST['tax_shipping'], $taxes,
 					$rates
 				);
-				ui_msgs::display_notification(_('Selected tax group has been updated'));
-			}
-			else
-			{
+				Errors::notice(_('Selected tax group has been updated'));
+			} else {
 				Tax_Groups::add_tax_group($_POST['name'], $_POST['tax_shipping'], $taxes, $rates);
-				ui_msgs::display_notification(_('New tax group has been added'));
+				Errors::notice(_('New tax group has been added'));
 			}
 			$Mode = 'RESET';
 		}
 	}
 	//-----------------------------------------------------------------------------------
-	function can_delete($selected_id) {
+	function can_delete($selected_id)
+	{
 		if ($selected_id == -1) {
 			return false;
 		}
-		$sql = "SELECT COUNT(*) FROM cust_branch WHERE tax_group_id=" . DBOld::escape($selected_id);
-		$result = DBOld::query($sql, "could not query customers");
-		$myrow = DBOld::fetch_row($result);
+		$sql = "SELECT COUNT(*) FROM cust_branch WHERE tax_group_id=" . DB::escape($selected_id);
+		$result = DB::query($sql, "could not query customers");
+		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {
-			ui_msgs::display_warning(_("Cannot delete this tax group because customer branches been created referring to it."));
+			Errors::warning(_("Cannot delete this tax group because customer branches been created referring to it."));
 			return false;
 		}
-		$sql = "SELECT COUNT(*) FROM suppliers WHERE tax_group_id=" . DBOld::escape($selected_id);
-		$result = DBOld::query($sql, "could not query suppliers");
-		$myrow = DBOld::fetch_row($result);
+		$sql = "SELECT COUNT(*) FROM suppliers WHERE tax_group_id=" . DB::escape($selected_id);
+		$result = DB::query($sql, "could not query suppliers");
+		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {
-			ui_msgs::display_warning(_("Cannot delete this tax group because suppliers been created referring to it."));
+			Errors::warning(_("Cannot delete this tax group because suppliers been created referring to it."));
 			return false;
 		}
 		return true;
@@ -99,7 +98,7 @@
 	if ($Mode == 'Delete') {
 		if (can_delete($selected_id)) {
 			Tax_Groups::delete_tax_group($selected_id);
-			ui_msgs::display_notification(_('Selected tax group has been deleted'));
+			Errors::notice(_('Selected tax group has been deleted'));
 		}
 		$Mode = 'RESET';
 	}
@@ -117,7 +116,7 @@
 	inactive_control_column($th);
 	table_header($th);
 	$k = 0;
-	while ($myrow = DBOld::fetch($result))
+	while ($myrow = DB::fetch($result))
 	{
 		alt_table_row_color($k);
 		label_cell($myrow["name"]);
@@ -147,10 +146,10 @@
 			$_POST['tax_shipping'] = $group["tax_shipping"];
 			$items = Tax_Groups::get_for_item($selected_id);
 			$i = 0;
-			while ($tax_item = DBOld::fetch($items))
+			while ($tax_item = DB::fetch($items))
 			{
 				$_POST['tax_type_id' . $i] = $tax_item["tax_type_id"];
-				$_POST['rate' . $i] = percent_format($tax_item["rate"]);
+				$_POST['rate' . $i] = Num::percent_format($tax_item["rate"]);
 				$i++;
 			}
 			while ($i < 5) {
@@ -162,7 +161,7 @@
 	text_row_ex(_("Description:"), 'name', 40);
 	yesno_list_row(_("Tax applied to Shipping:"), 'tax_shipping', null, "", "", true);
 	end_table();
-	ui_msgs::display_warning(_("Select the taxes that are included in this group."), 1);
+	Errors::warning(_("Select the taxes that are included in this group."), 1);
 	start_table(Config::get('tables_style2'));
 	//$th = array(_("Tax"), _("Default Rate (%)"), _("Rate (%)"));
 	//Editable rate has been removed 090920 Joe Hunt
@@ -179,12 +178,12 @@
 		tax_types_list_cells(null, 'tax_type_id' . $i, $_POST['tax_type_id' . $i], _("None"), true);
 		if ($_POST['tax_type_id' . $i] != 0 && $_POST['tax_type_id' . $i] != ALL_NUMERIC) {
 			$default_rate = Tax_Types::get_default_rate($_POST['tax_type_id' . $i]);
-			label_cell(percent_format($default_rate), "nowrap align=right");
+			label_cell(Num::percent_format($default_rate), "nowrap align=right");
 			//Editable rate has been removed 090920 Joe Hunt
 			//if (!isset($_POST['rate' . $i]) || $_POST['rate' . $i] == "")
-			//	$_POST['rate' . $i] = percent_format($default_rate);
+			//	$_POST['rate' . $i] = Num::percent_format($default_rate);
 			//small_amount_cells(null, 'rate' . $i, $_POST['rate' . $i], null, null,
-			//  user_percent_dec());
+			//  User::percent_dec());
 		}
 		end_row();
 	}

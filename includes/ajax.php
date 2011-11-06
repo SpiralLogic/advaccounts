@@ -18,6 +18,10 @@
 		public $triggers = array();
 		protected static $_instance = null;
 
+		/***
+		 * @static
+		 * @return $this
+		 */
 		public static function instance()
 		{
 			if (static::$_instance === null) {
@@ -77,8 +81,8 @@
 		function addAssign($trigger, $sTarget, $sAttribute, $sData)
 		{
 			$this->_addCommand($trigger, array('n' => 'as',
-																				't'	=> $sTarget,
-																				'p'	=> $sAttribute), $sData);
+				't' => $sTarget,
+				'p' => $sAttribute), $sData);
 			return $this;
 		}
 
@@ -88,7 +92,7 @@
 		function addUpdate($trigger, $sTarget, $sData)
 		{
 			$this->_addCommand($trigger, array('n' => 'up',
-																				't'	=> $sTarget), $sData);
+				't' => $sTarget), $sData);
 			return $this;
 		}
 
@@ -98,7 +102,7 @@
 		function addDisable($trigger, $sTarget, $sData = true)
 		{
 			$this->_addCommand($trigger, array('n' => 'di',
-																				't'	=> $sTarget), $sData);
+				't' => $sTarget), $sData);
 			return $this;
 		}
 
@@ -108,7 +112,7 @@
 		function addEnable($trigger, $sTarget, $sData = true)
 		{
 			$this->_addCommand($trigger, array('n' => 'di',
-																				't'	=> $sTarget), !$sData);
+				't' => $sTarget), !$sData);
 			return $this;
 		}
 
@@ -127,10 +131,10 @@
 		function _addCommand($trigger, $aAttributes, $mData)
 		{
 			if ($this->isActive() && ($trigger !== false)) {
-				//		ui_msgs::display_error('adding '.$trigger.':'.htmlentities($mData));
-				$aAttributes['why']  = $trigger;
+				//		Errors::error('adding '.$trigger.':'.htmlentities($mData));
+				$aAttributes['why'] = $trigger;
 				$aAttributes['data'] = $mData;
-				$this->aCommands[]   = $aAttributes;
+				$this->aCommands[] = $aAttributes;
 			}
 		}
 
@@ -155,7 +159,7 @@
 				// This is page repost equivalent, although header and footer are not reloaded.
 				if ($com['why'] !== true && !isset($this->triggers[$com['why']])) {
 					unset($this->aCommands[$idx]);
-					//			ui_msgs::display_error('unset '.$com['t']);
+					//			Errors::error('unset '.$com['t']);
 				}
 				else if ($com['n'] == 'up' && $com['t'] == '_page_body') {
 					$cmds = array($com);
@@ -169,16 +173,15 @@
 					break;
 				}
 			}
-			//		ui_msgs::display_error('Activate:'.htmlentities(print_r($this->triggers, true)));
-			//		ui_msgs::display_error('Commands :'.htmlentities(print_r($this->aCommands, true)));
+			//		Errors::error('Activate:'.htmlentities(print_r($this->triggers, true)));
+			//		Errors::error('Commands :'.htmlentities(print_r($this->aCommands, true)));
 			$GLOBALS['_RESULT'] = $this->aCommands;
 			//	    exit();
 		}
 
 		static function in_ajax()
 		{
-			$Ajax = Ajax::instance();
-			return $Ajax->isActive();
+			return static::instance()->isActive();
 		}
 
 		// Returns absolute path of relative $url. To be used in ajax calls

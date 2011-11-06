@@ -12,54 +12,50 @@
 	$page_security = 'SA_MANUFTRANSVIEW';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	include_once(APP_PATH . "manufacturing/includes/manufacturing_ui.php");
-	JS::get_js_open_window(800, 500);
+	JS::open_window(800, 500);
 	Page::start(_($help_context = "View Work Order"), true);
 	//-------------------------------------------------------------------------------------------------
 	$woid = 0;
 	if ($_GET['trans_no'] != "") {
 		$woid = $_GET['trans_no'];
 	}
-	ui_msgs::display_heading($systypes_array[ST_WORKORDER] . " # " . $woid);
+	Display::heading($systypes_array[ST_WORKORDER] . " # " . $woid);
 	br(1);
 	$myrow = get_work_order($woid);
 	if ($myrow["type"] == WO_ADVANCED) {
 		display_wo_details($woid, true);
-	}
-	else
-	{
+	} else {
 		display_wo_details_quick($woid, true);
 	}
 	echo "<center>";
 	// display the WO requirements
 	br(1);
 	if ($myrow["released"] == false) {
-		ui_msgs::display_heading2(_("BOM for item:") . " " . $myrow["StockItemName"]);
+		Display::heading(_("BOM for item:") . " " . $myrow["StockItemName"]);
 		display_bom($myrow["stock_id"]);
-	}
-	else
-	{
-		ui_msgs::display_heading2(_("Work Order Requirements"));
+	} else {
+		Display::heading(_("Work Order Requirements"));
 		display_wo_requirements($woid, $myrow["units_reqd"]);
 		if ($myrow["type"] == WO_ADVANCED) {
 			echo "<br><table cellspacing=7><tr valign=top><td>";
-			ui_msgs::display_heading2(_("Issues"));
+			Display::heading(_("Issues"));
 			display_wo_issues($woid);
 			echo "</td><td>";
-			ui_msgs::display_heading2(_("Productions"));
+			Display::heading(_("Productions"));
 			display_wo_productions($woid);
 			echo "</td><td>";
-			ui_msgs::display_heading2(_("Additional Costs"));
+			Display::heading(_("Additional Costs"));
 			display_wo_payments($woid);
 			echo "</td></tr></table>";
 		} else {
 			echo "<br><table cellspacing=7><tr valign=top><td>";
-			ui_msgs::display_heading2(_("Additional Costs"));
+			Display::heading(_("Additional Costs"));
 			display_wo_payments($woid);
 			echo "</td></tr></table>";
 		}
 	}
 	echo "<br></center>";
-	ui_view::is_voided_display(ST_WORKORDER, $woid, _("This work order has been voided."));
+	Display::is_voided(ST_WORKORDER, $woid, _("This work order has been voided."));
 	end_page(true);
 
 ?>

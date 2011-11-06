@@ -82,8 +82,8 @@
 				return $file;
 			}
 			/*$sql = "SELECT * FROM upload WHERE id = {$upload_id} LIMIT 1";
-				 $result = DBOld::query($sql, 'Could not query uploads');
-				 $result = DBOld::fetch_assoc($result);
+				 $result = DB::query($sql, 'Could not query uploads');
+				 $result = DB::fetch_assoc($result);
 				 $file = new stdClass();
 				 $file->name = $result ['filename'];
 				 $file->type = $result ['type'];
@@ -237,10 +237,10 @@
 			} else {
 				$file->error = $error;
 			}
-			/* DBOld::begin_transaction();
+			/* DB::begin_transaction();
 				 $sql = "INSERT INTO upload (`filename`,`size`,`type`,`order_no`,`content`) VALUES ('{$file->name}','{$file->size}','{$file->type}','{$this->order_no}', '{$content}')";
-				 DBOld::query($sql, 'Could not insert file into database');
-				 $upload_id = DBOld::insert_id();
+				 DB::query($sql, 'Could not insert file into database');
+				 $upload_id = DB::insert_id();
 				 $file->id = $this->upload_id = $upload_id;*/
 			return $file;
 		}
@@ -251,8 +251,8 @@
 
 			if ($upload_id) {
 				$sql = "SELECT content as content,type FROM upload WHERE `id` = {$upload_id}";
-				$result = DBOld::query($sql, 'Could not retrieve file');
-				$result = DBOld::fetch_assoc($result);
+				$result = DB::query($sql, 'Could not retrieve file');
+				$result = DB::fetch_assoc($result);
 				header('Cache-Control: no-cache, must-revalidate');
 				header('Content-type: ' . $result['type']);
 				$content = $result['content'];
@@ -260,11 +260,11 @@
 			}
 			else {
 				$sql = "SELECT `id`,`filename` as name, `size` ,`type` FROM upload WHERE `order_no` = " . $this->order_no;
-				$result = DBOld::query($sql, 'Could not retrieve upload information');
-				if (DBOld::num_rows($result) < 1) {
+				$result = DB::query($sql, 'Could not retrieve upload information');
+				if (DB::num_rows($result) < 1) {
 					return;
 				} else {
-					while ($row = DBOld::fetch_assoc($result)) {
+					while ($row = DB::fetch_assoc($result)) {
 						$info[] = $row;
 					}
 				}
@@ -383,7 +383,7 @@
 			$name = isset($_REQUEST['file']) ? ($_REQUEST['file']) : null;
 			$id = isset($_REQUEST['id']) ? ($_REQUEST['id']) : null;
 			$sql = "DELETE FROM upload WHERE `id` = {$id} AND `filename` = '{$name}'";
-			$result = DBOld::query($sql, 'Could not delete file');
+			$result = DB::query($sql, 'Could not delete file');
 			header('Content-type: application/json');
 			echo json_encode($result);
 		}

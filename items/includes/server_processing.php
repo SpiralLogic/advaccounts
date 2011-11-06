@@ -74,9 +74,7 @@
 		if (isset($_GET['bSearchable_' . $i]) && $_GET['bSearchable_' . $i] == "true" && $_GET['sSearch_' . $i] != '') {
 			if ($sWhere == "") {
 				$sWhere = "WHERE ";
-			}
-			else
-			{
+} else {
 				$sWhere .= " AND ";
 			}
 			$sWhere .= $aColumns[$i] . " LIKE '%" . mysql_real_escape_string($_GET['sSearch_' . $i]) . "%' ";

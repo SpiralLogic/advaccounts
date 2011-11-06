@@ -6,8 +6,8 @@
 	 * Time: 11:52 PM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	class Contacts_Branch extends DB_abstract {
-
+	class Contacts_Branch extends DB_abstract
+	{
 		public $post_address = '';
 		public $branch_code = 0;
 		public $br_name = "New Address";
@@ -30,17 +30,16 @@
 		public $email = '';
 		public $inactive = 0;
 		public $notes = '';
-
 		public $group_no = 1;
 		public $payment_discount_account;
-
 		public $receivables_account;
 		public $sales_account = "";
 		public $sales_discount_account;
 		public $salesman;
 		public $tax_group_id = DEFAULT_TAX_GROUP;
 
-		function __construct($id = null) {
+		function __construct($id = null)
+		{
 			$this->branch_code = $id;
 			$this->id = &$this->branch_code;
 			parent::__construct($id);
@@ -48,15 +47,17 @@
 			$this->address = &$this->br_address;
 		}
 
-		protected function delete() {
+		protected function delete()
+		{
 			$sql = "DELETE FROM cust_branch WHERE branch_code=" . $this->branch_code;
-			DBOld::query($sql, "cannot delete branch");
+			DB::query($sql, "cannot delete branch");
 			unset($this->branch_code);
 			$this->_new();
 			return $this->_status(true, 'delete', "Branch deleted.");
 		}
 
-		protected function _read($params = false) {
+		protected function _read($params = false)
+		{
 			if (!$params) {
 				$this->_status(false, 'Retrieving branch', 'No parameters provided');
 				return false;
@@ -68,7 +69,8 @@
 			$sql = DB::select('b.*', 'a.description', 's.salesman_name', 't.name AS tax_group_name')
 			 ->from('cust_branch b, debtors_master c, areas a, salesman s, tax_groups t')
 			 ->where(array('b.debtor_no=c.debtor_no', 'b.tax_group_id=t.id', 'b.area=a.area_code', 'b.salesman=s.salesman_code'));
-			$sql2 = "SELECT " . "b.*, a.description, s.salesman_name, t.name AS tax_group_name
+			$sql2
+			 = "SELECT b.*, a.description, s.salesman_name, t.name AS tax_group_name
 		FROM cust_branch b, debtors_master c, areas a, salesman s, tax_groups t
 		WHERE b.debtor_no=c.debtor_no
 		AND b.tax_group_id=t.id
@@ -87,20 +89,28 @@
 			//return $this->branch_code;
 		}
 
-		public function getAddress() {
+		public function getAddress()
+		{
 			$address = $this->br_address . "\n";
-			if ($this->city) $address .= $this->city;
-			if ($this->state) $address .= ", " . strtoupper($this->state);
-			if ($this->postcode) $address .= ", " . $this->postcode;
+			if ($this->city) {
+				$address .= $this->city;
+			}
+			if ($this->state) {
+				$address .= ", " . strtoupper($this->state);
+			}
+			if ($this->postcode) {
+				$address .= ", " . $this->postcode;
+			}
 			return $address;
 		}
 
-		protected function _canProcess() {
+		protected function _canProcess()
+		{
 			return true;
 		}
 
-		public function save($changes = null) {
-
+		public function save($changes = null)
+		{
 			if (is_array($changes)) {
 				$this->setFromArray($changes);
 			}
@@ -116,68 +126,76 @@
 			if ($this->branch_ref != 'accounts') {
 				$this->branch_ref = substr($this->br_name, 0, 30);
 			}
-
-			DBOld::begin_transaction();
-			$sql = "UPDATE cust_branch SET
-			br_name=" . DBOld::escape($this->name) . ",
-			br_address=" . DBOld::escape($this->address) . ",
-			city=" . DBOld::escape($this->city) . ",
-			state=" . DBOld::escape($this->state) . ",
-			postcode=" . DBOld::escape($this->postcode) . ",
-			br_post_address=" . DBOld::escape($this->post_address) . ",
-			area=" . DBOld::escape($this->area) . ",
-			salesman=" . DBOld::escape($this->salesman) . ",
-			phone=" . DBOld::escape($this->phone) . ",
-			phone2=" . DBOld::escape($this->phone2) . ",
-			fax=" . DBOld::escape($this->fax) . ",
-			contact_name=" . DBOld::escape($this->contact_name) . ",
-			email=" . DBOld::escape($this->email) . ",
-			default_location=" . DBOld::escape($this->default_location) . ",
-			tax_group_id=" . DBOld::escape($this->tax_group_id) . ",
-			sales_account=" . DBOld::escape($this->sales_account) . ",
-			sales_discount_account=" . DBOld::escape($this->sales_discount_account) . ",
-			receivables_account=" . DBOld::escape($this->receivables_account) . ",
-			payment_discount_account=" . DBOld::escape($this->payment_discount_account) . ",
-			default_ship_via=" . DBOld::escape($this->default_ship_via) . ",
-			disable_trans=" . DBOld::escape($this->disable_trans) . ",
-            group_no=" . DBOld::escape($this->group_no) . ",
-            notes=" . DBOld::escape($this->notes) . ",
-            inactive=" . DBOld::escape($this->inactive) . ",
-            branch_ref=" . DBOld::escape($this->branch_ref) . "
-              WHERE branch_code =" . DBOld::escape($this->branch_code) . "
-    	        AND debtor_no=" . DBOld::escape($this->debtor_no);
-			DBOld::query($sql, "The customer could not be updated");
-			DBOld::commit_transaction();
+			DB::begin_transaction();
+			$sql
+			 = "UPDATE cust_branch SET
+			br_name=" . DB::escape($this->name) . ",
+			br_address=" . DB::escape($this->address) . ",
+			city=" . DB::escape($this->city) . ",
+			state=" . DB::escape($this->state) . ",
+			postcode=" . DB::escape($this->postcode) . ",
+			br_post_address=" . DB::escape($this->post_address) . ",
+			area=" . DB::escape($this->area) . ",
+			salesman=" . DB::escape($this->salesman) . ",
+			phone=" . DB::escape($this->phone) . ",
+			phone2=" . DB::escape($this->phone2) . ",
+			fax=" . DB::escape($this->fax) . ",
+			contact_name=" . DB::escape($this->contact_name) . ",
+			email=" . DB::escape($this->email) . ",
+			default_location=" . DB::escape($this->default_location) . ",
+			tax_group_id=" . DB::escape($this->tax_group_id) . ",
+			sales_account=" . DB::escape($this->sales_account) . ",
+			sales_discount_account=" . DB::escape($this->sales_discount_account) . ",
+			receivables_account=" . DB::escape($this->receivables_account) . ",
+			payment_discount_account=" . DB::escape($this->payment_discount_account) . ",
+			default_ship_via=" . DB::escape($this->default_ship_via) . ",
+			disable_trans=" . DB::escape($this->disable_trans) . ",
+            group_no=" . DB::escape($this->group_no) . ",
+            notes=" . DB::escape($this->notes) . ",
+            inactive=" . DB::escape($this->inactive) . ",
+            branch_ref=" . DB::escape($this->branch_ref) . "
+              WHERE branch_code =" . DB::escape($this->branch_code) . "
+    	        AND debtor_no=" . DB::escape($this->debtor_no);
+			DB::query($sql, "The customer could not be updated");
+			DB::commit_transaction();
 			return $this->_status(true, 'Processing', "Branch has been updated.");
 		}
 
-		protected function _saveNew() {
-			DBOld::begin_transaction();
-			$sql = "INSERT INTO cust_branch (debtor_no, br_name, branch_ref, br_address, city, state, postcode,
+		protected function _saveNew()
+		{
+			DB::begin_transaction();
+			$sql
+			 = "INSERT INTO cust_branch (debtor_no, br_name, branch_ref, br_address, city, state, postcode,
 				salesman, phone, phone2, fax, contact_name, area, email, tax_group_id, sales_account, sales_discount_account, receivables_account, payment_discount_account, default_location,
 				br_post_address, disable_trans, group_no, default_ship_via, notes,inactive)
-				VALUES (" . DBOld::escape($this->debtor_no) . "," . DBOld::escape($this->name) . ", " . DBOld::escape($this->branch_ref) . ", " . DBOld::escape($this->address) . ", " . DBOld::escape($this->city) . ", " . DBOld::escape($this->state) . ", " . DBOld::escape($this->postcode) . ", " . DBOld::escape($this->salesman) . ", " . DBOld::escape($this->phone) . ", " . DBOld::escape($this->phone2) . ", " . DBOld::escape($this->fax) . "," . DBOld::escape($this->contact_name) . ", " . DBOld::escape($this->area) . ", " . DBOld::escape($this->email) . ", " . DBOld::escape($this->tax_group_id) . ", " . DBOld::escape($this->sales_account) . ", " . DBOld::escape($this->sales_discount_account) . ", " . DBOld::escape($this->receivables_account) . ", " . DBOld::escape($this->payment_discount_account) . ", " . DBOld::escape($this->default_location) . ", " . DBOld::escape($this->br_post_address) . "," . DBOld::escape($this->disable_trans) . ", " . DBOld::escape($this->group_no) . ", " . DBOld::escape($this->default_ship_via) . ", " . DBOld::escape($this->notes) . ", " . DBOld::escape($this->inactive) . ")";
-			DBOld::query($sql, "The branch could not be added");
-			$this->branch_code = DBOld::insert_id();
-			DBOld::commit_transaction();
+				VALUES (" . DB::escape($this->debtor_no) . "," . DB::escape($this->name) . ", " . DB::escape($this->branch_ref) . ", " . DB::escape($this->address) . ", " . DB::escape($this->city) . ", " . DB::escape($this->state) . ", " . DB::escape($this->postcode) . ", " . DB::escape($this->salesman)
+			 . ", " . DB::escape($this->phone) . ", " . DB::escape($this->phone2) . ", " . DB::escape($this->fax) . "," . DB::escape($this->contact_name) . ", " . DB::escape($this->area) . ", " . DB::escape($this->email) . ", " . DB::escape($this->tax_group_id) . ", " . DB::escape($this->sales_account)
+			 . ", " . DB::escape($this->sales_discount_account) . ", " . DB::escape($this->receivables_account) . ", " . DB::escape($this->payment_discount_account) . ", " . DB::escape($this->default_location) . ", " . DB::escape($this->br_post_address) . "," . DB::escape($this->disable_trans) . ", "
+			 . DB::escape($this->group_no) . ", " . DB::escape($this->default_ship_via) . ", " . DB::escape($this->notes) . ", " . DB::escape($this->inactive) . ")";
+			DB::query($sql, "The branch could not be added");
+			$this->branch_code = DB::insert_id();
+			DB::commit_transaction();
 			$this->_status(true, 'Saving', "New branch has been added");
 		}
 
-		protected function _defaults() {
+		protected function _defaults()
+		{
 			$company_record = DB_Company::get_prefs();
 			$this->branch_code = 0;
 			$this->sales_discount_account = $company_record['default_sales_discount_act'];
 			$this->receivables_account = $company_record['debtors_act'];
 			$this->payment_discount_account = $company_record['default_prompt_payment_act'];
-			$this->salesman = ($_SESSION['wa_current_user']) ? $_SESSION['wa_current_user']->salesmanid : 1;
+			$this->salesman = ($_SESSION['current_user']) ? $_SESSION['current_user']->salesmanid : 1;
 		}
 
-		protected function _new() {
+		protected function _new()
+		{
 			$this->_defaults();
 			return $this->_status(true, 'Initialize new Branch', 'Now working with a new Branch');
 		}
 
-		protected function _countTransactions() {
+		protected function _countTransactions()
+		{
 		}
 	}
 

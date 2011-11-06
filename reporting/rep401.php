@@ -16,17 +16,13 @@
 	// date_:	2005-05-19
 	// Title:	Bill Of Material
 	// ----------------------------------------------------------------
-
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-
-	include_once(APP_PATH . "inventory/includes/db/items_db.php");
-
 	//----------------------------------------------------------------------------------------------------
-
 	print_bill_of_material();
-
-	function getTransactions($from, $to) {
-		$sql = "SELECT bom.parent,
+	function getTransactions($from, $to)
+	{
+		$sql
+		 = "SELECT bom.parent,
 			bom.component,
 			stock_master.description as CompDescription,
 			bom.quantity,
@@ -36,47 +32,45 @@
 			stock_master,
 			bom
 		WHERE stock_master.stock_id=bom.component
-		AND bom.parent >= " . DBOld::escape($from) . "
-		AND bom.parent <= " . DBOld::escape($to) . "
+		AND bom.parent >= " . DB::escape($from) . "
+		AND bom.parent <= " . DB::escape($to) . "
 		ORDER BY
 			bom.parent,
 			bom.component";
-
-		return DBOld::query($sql, "No transactions were returned");
+		return DB::query($sql, "No transactions were returned");
 	}
 
 	//----------------------------------------------------------------------------------------------------
-
-	function print_bill_of_material() {
-
+	function print_bill_of_material()
+	{
 		$frompart = $_POST['PARAM_0'];
 		$topart = $_POST['PARAM_1'];
 		$comments = $_POST['PARAM_2'];
 		$destination = $_POST['PARAM_3'];
-		if ($destination)
+		if ($destination) {
 			include_once(APP_PATH . "includes/reports/excel.php");
+		}
 		else
+		{
 			include_once(APP_PATH . "includes/reports/pdf.php");
-
+		}
 		$cols = array(0, 50, 305, 375, 445, 515);
-
 		$headers = array(_('Component'), _('Description'), _('Loc'), _('Wrk Ctr'), _('Quantity'));
-
 		$aligns = array('left', 'left', 'left', 'left', 'right');
-
-		$params = array(0 => $comments,
-			1 => array('text' => _('Component'), 'from' => $frompart, 'to' => $topart)
+		$params = array(
+			0 => $comments,
+			1 => array(
+				'text' => _('Component'),
+				'from' => $frompart,
+				'to'   => $topart)
 		);
-
-		$rep = new FrontReport(_('Bill of Material Listing'), "BillOfMaterial", user_pagesize());
-
+		$rep = new FrontReport(_('Bill of Material Listing'), "BillOfMaterial", User::pagesize());
 		$rep->Font();
 		$rep->Info($params, $cols, $headers, $aligns);
 		$rep->Header();
-
 		$res = getTransactions($frompart, $topart);
 		$parent = '';
-		while ($trans = DBOld::fetch($res))
+		while ($trans = DB::fetch($res))
 		{
 			if ($parent != $trans['parent']) {
 				if ($parent != '') {
@@ -84,14 +78,13 @@
 					$rep->NewLine(2, 3);
 				}
 				$rep->TextCol(0, 1, $trans['parent']);
-				$desc = get_item($trans['parent']);
+				$desc = Item::get($trans['parent']);
 				$rep->TextCol(1, 2, $desc['description']);
 				$parent = $trans['parent'];
 				$rep->NewLine();
 			}
-
 			$rep->NewLine();
-			$dec = get_qty_dec($trans['component']);
+			$dec = Num::qty_dec($trans['component']);
 			$rep->TextCol(0, 1, $trans['component']);
 			$rep->TextCol(1, 2, $trans['CompDescription']);
 			//$rep->TextCol(2, 3, $trans['loc_code']);

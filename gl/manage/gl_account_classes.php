@@ -12,16 +12,17 @@
 	$page_security = 'SA_GLACCOUNTCLASS';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "GL Account Classes"));
-	simple_page_mode(true);
+	Page::simple_mode(true);
 	//-----------------------------------------------------------------------------------
-	function can_process() {
+	function can_process()
+	{
 		if (!is_numeric($_POST['id'])) {
-			ui_msgs::display_error(_("The account class ID must be numeric."));
+			Errors::error(_("The account class ID must be numeric."));
 			JS::set_focus('id');
 			return false;
 		}
 		if (strlen($_POST['name']) == 0) {
-			ui_msgs::display_error(_("The account class name cannot be empty."));
+			Errors::error(_("The account class name cannot be empty."));
 			JS::set_focus('name');
 			return false;
 		}
@@ -36,30 +37,29 @@
 		if (can_process()) {
 			if ($selected_id != -1) {
 				if (update_account_class($selected_id, $_POST['name'], $_POST['ctype'])) {
-					ui_msgs::display_notification(_('Selected account class settings has been updated'));
+					Errors::notice(_('Selected account class settings has been updated'));
 				}
-			}
-			else
-			{
+			} else {
 				if (add_account_class($_POST['id'], $_POST['name'], $_POST['ctype'])) {
-					ui_msgs::display_notification(_('New account class has been added'));
+					Errors::notice(_('New account class has been added'));
 					$Mode = 'RESET';
 				}
 			}
 		}
 	}
 	//-----------------------------------------------------------------------------------
-	function can_delete($selected_id) {
+	function can_delete($selected_id)
+	{
 		if ($selected_id == -1) {
 			return false;
 		}
 		$sql
 		 = "SELECT COUNT(*) FROM chart_types
 		WHERE class_id=$selected_id";
-		$result = DBOld::query($sql, "could not query chart master");
-		$myrow = DBOld::fetch_row($result);
+		$result = DB::query($sql, "could not query chart master");
+		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {
-			ui_msgs::display_error(_("Cannot delete this account class because GL account types have been created referring to it."));
+			Errors::error(_("Cannot delete this account class because GL account types have been created referring to it."));
 			return false;
 		}
 		return true;
@@ -69,7 +69,7 @@
 	if ($Mode == 'Delete') {
 		if (can_delete($selected_id)) {
 			delete_account_class($selected_id);
-			ui_msgs::display_notification(_('Selected account class has been deleted'));
+			Errors::notice(_('Selected account class has been deleted'));
 		}
 		$Mode = 'RESET';
 	}
@@ -89,7 +89,7 @@
 	inactive_control_column($th);
 	table_header($th);
 	$k = 0;
-	while ($myrow = DBOld::fetch($result))
+	while ($myrow = DB::fetch($result))
 	{
 		alt_table_row_color($k);
 		label_cell($myrow["cid"]);
@@ -117,26 +117,20 @@
 			$_POST['name'] = $myrow["class_name"];
 			if (Config::get('accounts_gl_oldconvertstyle') == 1) {
 				$_POST['ctype'] = ($myrow["ctype"] >= CL_ASSETS && $myrow["ctype"] < CL_INCOME ? 1 : 0);
-			}
-			else
-			{
+			} else {
 				$_POST['ctype'] = $myrow["ctype"];
 			}
 			hidden('selected_id', $selected_id);
 		}
 		hidden('id');
 		label_row(_("Class ID:"), $_POST['id']);
-	}
-	else
-	{
+	} else {
 		text_row_ex(_("Class ID:"), 'id', 3);
 	}
 	text_row_ex(_("Class Name:"), 'name', 50, 60);
 	if (Config::get('accounts_gl_oldconvertstyle') == 1) {
 		check_row(_("Balance Sheet"), 'ctype', null);
-	}
-	else
-	{
+	} else {
 		class_types_list_row(_("Class Type:"), 'ctype', null);
 	}
 	end_table(1);

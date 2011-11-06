@@ -11,13 +11,11 @@
 	 ***********************************************************************/
 	$page_security = 'SA_DIMTRANSVIEW';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	JS::get_js_open_window(800, 500);
+	JS::open_window(800, 500);
 	if (isset($_GET['outstanding_only']) && $_GET['outstanding_only']) {
 		$outstanding_only = 1;
 		Page::start(_($help_context = "Search Outstanding Dimensions"));
-	}
-	else
-	{
+	} else {
 		$outstanding_only = 0;
 		Page::start(_($help_context = "Search Dimensions"));
 	}
@@ -58,9 +56,7 @@
 	check_cells(_("Only Overdue:"), 'OverdueOnly', null);
 	if (!$outstanding_only) {
 		check_cells(_("Only Open:"), 'OpenOnly', null);
-	}
-	else
-	{
+	} else {
 		$_POST['OpenOnly'] = 1;
 	}
 	submit_cells('SearchOrders', _("Search"), '', '', 'default');
@@ -83,8 +79,8 @@
 		 Dates::date2sql($_POST['FromDate']) . "' AND
 		tran_date <= '" . Dates::date2sql($_POST['ToDate']) . "' AND (dimension_id = " .
 		 $row['id'] . " OR dimension2_id = " . $row['id'] . ")";
-		$res = DBOld::query($sql, "Sum of transactions could not be calculated");
-		$row = DBOld::fetch_row($res);
+		$res = DB::query($sql, "Sum of transactions could not be calculated");
+		$row = DB::fetch_row($res);
 		return $row[0];
 	}
 
@@ -100,7 +96,7 @@
 		//		"/dimensions/dimension_entry.php?trans_no=" . $row["id"], ICON_EDIT);
 		return pager_link(
 			_("Edit"),
-			"/dimensions/dimension_entry.php?trans_no=" . $row["id"], ICON_EDIT
+		 "/dimensions/dimension_entry.php?trans_no=" . $row["id"], ICON_EDIT
 		);
 	}
 
@@ -114,7 +110,7 @@
 	dim.closed
 	FROM dimensions as dim WHERE id > 0";
 	if (isset($_POST['OrderNumber']) && $_POST['OrderNumber'] != "") {
-		$sql .= " AND reference LIKE " . DBOld::escape("%" . $_POST['OrderNumber'] . "%");
+		$sql .= " AND reference LIKE " . DB::escape("%" . $_POST['OrderNumber'] . "%",false,false);
 	} else {
 		if ($dim == 1) {
 			$sql .= " AND type_=1";
@@ -123,7 +119,7 @@
 			$sql .= " AND closed=0";
 		}
 		if (isset($_POST['type_']) && ($_POST['type_'] > 0)) {
-			$sql .= " AND type_=" . DBOld::escape($_POST['type_']);
+			$sql .= " AND type_=" . DB::escape($_POST['type_'],false,false);
 		}
 		if (isset($_POST['OverdueOnly'])) {
 			$today = Dates::date2sql(Dates::Today());
@@ -133,25 +129,25 @@
 		AND date_ <= '" . Dates::date2sql($_POST['ToDate']) . "'";
 	}
 	$cols = array(
-		_("#")				=> array('fun' => 'view_link'),
+		_("#") => array('fun' => 'view_link'),
 		_("Reference"),
 		_("Name"),
 		_("Type"),
-		_("Date")		 => 'date',
+		_("Date") => 'date',
 		_("Due Date") => array(
 			'name' => 'due_date',
 			'type' => 'date',
-			'ord'	=> 'asc'
+			'ord' => 'asc'
 		),
-		_("Closed")	 => array('fun' => 'is_closed'),
-		_("Balance")	=> array(
-			'type'	 => 'amount',
+		_("Closed") => array('fun' => 'is_closed'),
+		_("Balance") => array(
+			'type' => 'amount',
 			'insert' => true,
-			'fun'		=> 'sum_dimension'
+			'fun' => 'sum_dimension'
 		),
 		array(
 			'insert' => true,
-			'fun'		=> 'edit_link'
+			'fun' => 'edit_link'
 		)
 	);
 	if ($outstanding_only) {

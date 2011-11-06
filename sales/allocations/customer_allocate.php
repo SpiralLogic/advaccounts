@@ -13,11 +13,12 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	include_once(APP_PATH . "sales/includes/sales_ui.php");
 	//include_once(APP_PATH . "sales/includes/ui/cust_alloc_ui.php");
-	JS::get_js_open_window(900, 500);
+	JS::open_window(900, 500);
 	JS::footerFile('/js/allocate.js');
 	Page::start(_($help_context = "Allocate Customer Payment or Credit Note"));
 	//--------------------------------------------------------------------------------
-	function clear_allocations() {
+	function clear_allocations()
+	{
 		if (isset($_SESSION['alloc'])) {
 			unset($_SESSION['alloc']->allocs);
 			unset($_SESSION['alloc']);
@@ -26,17 +27,18 @@
 	}
 
 	//--------------------------------------------------------------------------------
-	function edit_allocations_for_transaction($type, $trans_no) {
+	function edit_allocations_for_transaction($type, $trans_no)
+	{
 		global $systypes_array;
-		ui_msgs::display_heading(
+		Display::heading(
 			sprintf(
 				_("Allocation of %s # %d"), $systypes_array[$_SESSION['alloc']->type],
 				$_SESSION['alloc']->trans_no
 			)
 		);
-		ui_msgs::display_heading($_SESSION['alloc']->person_name);
-		ui_msgs::display_heading2(_("Date:") . " <b>" . $_SESSION['alloc']->date_ . "</b>");
-		ui_msgs::display_heading2(_("Total:") . " <b>" . price_format($_SESSION['alloc']->amount) . "</b>");
+		Display::heading($_SESSION['alloc']->person_name);
+		Display::heading(_("Date:") . " <b>" . $_SESSION['alloc']->date_ . "</b>");
+		Display::heading(_("Total:") . " <b>" . Num::price_format($_SESSION['alloc']->amount) . "</b>");
 		echo "<br>";
 		start_form();
 		div_start('alloc_tbl');
@@ -46,7 +48,7 @@
 			submit('Process', _("Process"), true, _('Process allocations'), 'default');
 			submit_center_last('Cancel', _("Back to Allocations"), _('Abandon allocations and return to selection of allocatable amounts'), 'cancel');
 		} else {
-			ui_msgs::display_warning(_("There are no unsettled transactions to allocate."), 0, 1);
+			Errors::warning(_("There are no unsettled transactions to allocate."), 0, 1);
 			submit_center(
 				'Cancel', _("Back to Allocations"), true,
 				_('Abandon allocations and return to selection of allocatable amounts'), 'cancel'

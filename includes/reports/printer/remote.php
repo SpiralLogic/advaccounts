@@ -19,10 +19,10 @@
 			if ($host == '') {
 				$host = $_SERVER['REMOTE_ADDR'];
 			} // default is user's host
-			$this->host    = $host;
-			$this->port    = $port;
+			$this->host = $host;
+			$this->port = $port;
 			$this->timeout = $timeout;
-			$this->queue   = $queue;
+			$this->queue = $queue;
 		}
 
 		//
@@ -52,7 +52,7 @@
 			}
 			// Send Control file.
 			$server = $_SERVER['SERVER_NAME'];
-			$ctrl   = "H" . $server . "\nP" . substr(CurrentUser::instance()->loginname, 0, 31) . "\nfdfA" . $job . $server . "\n";
+			$ctrl = "H" . $server . "\nP" . substr(User::get()->loginname, 0, 31) . "\nfdfA" . $job . $server . "\n";
 			fwrite($stream, chr(2) . strlen($ctrl) . " cfA" . $job . $server . "\n");
 			$ack = fread($stream, 1);
 			if ($ack != 0) {

@@ -12,7 +12,7 @@
 	//--------------------------------------------------------------------------------------------------
 	function pager_link($link_text, $url, $icon = false)
 	{
-		if (user_graphic_links() && $icon) {
+		if (User::graphic_links() && $icon) {
 			$link_text = set_icon($icon, $link_text);
 		}
 		$href = PATH_TO_ROOT . $url;
@@ -26,7 +26,7 @@
 		return "<button " . ($enabled ? '' : 'disabled')
 		 . " class=\"navibutton\" type=\"submit\""
 		 . " name=\"$name\"  id=\"$name\" value=\"$value\">"
-		 . ($icon ? "<img src='/themes/" . user_theme() . "/images/" . $icon . "'>" : '')
+		 . ($icon ? "<img src='/themes/" . User::theme() . "/images/" . $icon . "'>" : '')
 		 . "<span>$value</span></button>\n";
 	}
 
@@ -53,7 +53,7 @@
 					$headers[] = $col['head'];
 				}
 				else {
-					$icon      = (($col['ord'] == 'desc')
+					$icon = (($col['ord'] == 'desc')
 					 ? 'sort_desc.gif'
 					 :
 					 ($col['ord'] == 'asc' ? 'sort_asc.gif' : 'sort_none.gif'));
@@ -90,16 +90,14 @@
 			$marker = $pager->marker;
 			if ($marker && call_user_func($marker, $row)) {
 				start_row("class='$pager->marker_class'");
-			}
-			else
-			{
+			} else {
 				alt_table_row_color($cc);
 			}
 			foreach (
 				$pager->columns as $k => $col
 			) {
 				$coltype = isset($col['type']) ? $col['type'] : '';
-				$cell    = isset($col['name']) ? $row[$col['name']] : '';
+				$cell = isset($col['name']) ? $row[$col['name']] : '';
 				if (isset($col['fun'])) { // use data input function if defined
 					$fun = $col['fun'];
 					if (method_exists($pager, $fun)) {
@@ -133,18 +131,14 @@
 				case 'amount':
 					if ($cell == '') {
 						label_cell('');
-					}
-					else
-					{
+					} else {
 						amount_cell($cell, false);
 					}
 					break;
 				case 'qty':
 					if ($cell == '') {
 						label_cell('');
-					}
-					else
-					{
+					} else {
 						qty_cell($cell, false, isset($col['dec']) ? $col['dec'] : null);
 					}
 					break;
@@ -152,7 +146,7 @@
 					email_cell($cell, isset($col['align']) ? "align='" . $col['align'] . "'" : null);
 					break;
 				case 'rate':
-					label_cell(number_format2($cell, user_exrate_dec()), "align=center");
+					label_cell(Num::format($cell, User::exrate_dec()), "align=center");
 					break;
 				case 'inactive':
 					if (get_post('show_inactive')) {
@@ -162,9 +156,7 @@
 				case 'id':
 					if (isset($col['align'])) {
 						label_cell($cell, " class='pagerclick' data-id='" . $row['id'] . "' align='" . $col['align'] . "'");
-					}
-					else
-					{
+					} else {
 						label_cell($cell, " class='pagerclick' data-id='" . $row['id'] . "'");
 					}
 					break;
@@ -172,9 +164,7 @@
 //		    case 'text':
 					if (isset($col['align'])) {
 						label_cell($cell, "align='" . $col['align'] . "'");
-					}
-					else
-					{
+					} else {
 						label_cell($cell);
 					}
 				case 'skip': // column not displayed
@@ -201,7 +191,7 @@
 		}
 		start_row("class='navibar'");
 		$colspan = count($pager->columns);
-		$inact   = @$pager->inactive_ctrl == true
+		$inact = @$pager->inactive_ctrl == true
 		 ? ' ' . checkbox(null, 'show_inactive', null, true) . _("Show also Inactive") : '';
 		if ($pager->rec_count) {
 			echo "<td colspan=$colspan class='navibar' style='border:none;padding:3px;'>";
@@ -220,7 +210,7 @@
 			end_table();
 			echo "</div>";
 			$from = ($pager->curr_page - 1) * $pager->page_len + 1;
-			$to   = $from + $pager->page_len - 1;
+			$to = $from + $pager->page_len - 1;
 			if ($to > $pager->rec_count) {
 				$to = $pager->rec_count;
 			}
@@ -234,7 +224,7 @@
 		end_row();
 		end_table();
 		if (isset($pager->marker_txt)) {
-			ui_msgs::display_warning($pager->marker_txt, 0, 1, "class='$pager->notice_class'");
+			Errors::warning($pager->marker_txt, 0, 1, "class='$pager->notice_class'");
 		}
 		div_end();
 		return true;

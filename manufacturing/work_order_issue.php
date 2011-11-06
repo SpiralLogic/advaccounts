@@ -13,59 +13,62 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	include_once(APP_PATH . "manufacturing/includes/manufacturing_ui.php");
 	include_once(APP_PATH . "manufacturing/includes/work_order_issue_ui.php");
-	JS::get_js_open_window(800, 500);
+	JS::open_window(800, 500);
 	Page::start(_($help_context = "Issue Items to Work Order"));
 	//-----------------------------------------------------------------------------------------------
 	if (isset($_GET['AddedID'])) {
-		ui_msgs::display_notification(_("The work order issue has been entered."));
-		ui_msgs::display_note(ui_view::get_trans_view_str(ST_WORKORDER, $_GET['AddedID'], _("View this Work Order")));
+		Errors::notice(_("The work order issue has been entered."));
+		Display::note(ui_view::get_trans_view_str(ST_WORKORDER, $_GET['AddedID'], _("View this Work Order")));
 		hyperlink_no_params("search_work_orders.php", _("Select another &Work Order to Process"));
-		ui_view::display_footer_exit();
+		Page::footer_exit();
 	}
 	//--------------------------------------------------------------------------------------------------
-	function line_start_focus() {
+	function line_start_focus()
+	{
 		$Ajax = Ajax::instance();
 		$Ajax->activate('items_table');
 		JS::set_focus('_stock_id_edit');
 	}
 
 	//--------------------------------------------------------------------------------------------------
-	function handle_new_order() {
+	function handle_new_order()
+	{
 		if (isset($_SESSION['issue_items'])) {
 			$_SESSION['issue_items']->clear_items();
 			unset ($_SESSION['issue_items']);
 		}
 		Session_register("issue_items");
-		$_SESSION['issue_items'] = new Items_Cart(28);
+		$_SESSION['issue_items'] = new Item_Cart(28);
 		$_SESSION['issue_items']->order_id = $_GET['trans_no'];
 	}
 
 	//-----------------------------------------------------------------------------------------------
-	function can_process() {
+	function can_process()
+	{
 		if (!Dates::is_date($_POST['date_'])) {
-			ui_msgs::display_error(_("The entered date for the issue is invalid."));
+			Errors::error(_("The entered date for the issue is invalid."));
 			JS::set_focus('date_');
 			return false;
 		}
 		elseif (!Dates::is_date_in_fiscalyear($_POST['date_']))
 		{
-			ui_msgs::display_error(_("The entered date is not in fiscal year."));
+			Errors::error(_("The entered date is not in fiscal year."));
 			JS::set_focus('date_');
 			return false;
 		}
 		if (!Refs::is_valid($_POST['ref'])) {
-			ui_msgs::display_error(_("You must enter a reference."));
+			Errors::error(_("You must enter a reference."));
 			JS::set_focus('ref');
 			return false;
 		}
 		if (!is_new_reference($_POST['ref'], 28)) {
-			ui_msgs::display_error(_("The entered reference is already in use."));
+			Errors::error(_("The entered reference is already in use."));
 			JS::set_focus('ref');
 			return false;
 		}
 		$failed_item = $_SESSION['issue_items']->check_qoh($_POST['Location'], $_POST['date_'], !$_POST['IssueType']);
 		if ($failed_item != -1) {
-			ui_msgs::display_error(
+			Errors::error(
 				_("The issue cannot be processed because an entered item would cause a negative inventory balance :") .
 				 " " . $failed_item->stock_id . " - " . $failed_item->description
 			);
@@ -82,7 +85,7 @@
 			$_POST['Location'], $_POST['WorkCentre'], $_POST['date_'], $_POST['memo_']
 		);
 		if ($failed_data != null) {
-			ui_msgs::display_error(
+			Errors::error(
 				_("The process cannot be completed because there is an insufficient total quantity for a component.") . "<br>"
 				 . _("Component is :") . $failed_data[0] . "<br>"
 				 . _("From location :") . $failed_data[1] . "<br>"
@@ -92,14 +95,15 @@
 		}
 	} /*end of process credit note */
 	//-----------------------------------------------------------------------------------------------
-	function check_item_data() {
+	function check_item_data()
+	{
 		if (!Validation::is_num('qty', 0)) {
-			ui_msgs::display_error(_("The quantity entered is negative or invalid."));
+			Errors::error(_("The quantity entered is negative or invalid."));
 			JS::set_focus('qty');
 			return false;
 		}
 		if (!Validation::is_num('std_cost', 0)) {
-			ui_msgs::display_error(_("The entered standard cost is negative or invalid."));
+			Errors::error(_("The entered standard cost is negative or invalid."));
 			JS::set_focus('std_cost');
 			return false;
 		}
@@ -107,7 +111,8 @@
 	}
 
 	//-----------------------------------------------------------------------------------------------
-	function handle_update_item() {
+	function handle_update_item()
+	{
 		if ($_POST['UpdateItem'] != "" && check_item_data()) {
 			$id = $_POST['LineNo'];
 			$_SESSION['issue_items']->update_cart_item($id, input_num('qty'), input_num('std_cost'));
@@ -116,13 +121,15 @@
 	}
 
 	//-----------------------------------------------------------------------------------------------
-	function handle_delete_item($id) {
+	function handle_delete_item($id)
+	{
 		$_SESSION['issue_items']->remove_from_cart($id);
 		line_start_focus();
 	}
 
 	//-----------------------------------------------------------------------------------------------
-	function handle_new_item() {
+	function handle_new_item()
+	{
 		if (!check_item_data()) {
 			return;
 		}

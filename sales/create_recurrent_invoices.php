@@ -12,15 +12,17 @@
 	$page_security = 'SA_SALESINVOICE';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	include_once(APP_PATH . "sales/includes/ui/sales_order_ui.php");
-	JS::get_js_open_window(900, 600);
+	JS::open_window(900, 600);
 	Page::start(_($help_context = "Create and Print Recurrent Invoices"));
-	function set_last_sent($id, $date) {
+	function set_last_sent($id, $date)
+	{
 		$date = Dates::date2sql($date);
-		$sql = "UPDATE recurrent_invoices SET last_sent='$date' WHERE id=" . DBOld::escape($id);
-		DBOld::query($sql, "The recurrent invoice could not be updated or added");
+		$sql = "UPDATE recurrent_invoices SET last_sent='$date' WHERE id=" . DB::escape($id);
+		DB::query($sql, "The recurrent invoice could not be updated or added");
 	}
 
-	function create_recurrent_invoices($customer_id, $branch_id, $order_no, $tmpl_no) {
+	function create_recurrent_invoices($customer_id, $branch_id, $order_no, $tmpl_no)
+	{
 		$doc = new Sales_Order(ST_SALESORDER, array($order_no));
 		get_customer_details_to_order($doc, $customer_id, $branch_id);
 		$doc->trans_type = ST_SALESORDER;
@@ -50,20 +52,18 @@
 		$date = Dates::Today();
 		if (Dates::is_date_in_fiscalyear($date)) {
 			$invs = array();
-			$sql = "SELECT * FROM recurrent_invoices WHERE id=" . DBOld::escape($_GET['recurrent']);
-			$result = DBOld::query($sql, "could not get recurrent invoice");
-			$myrow = DBOld::fetch($result);
+			$sql = "SELECT * FROM recurrent_invoices WHERE id=" . DB::escape($_GET['recurrent']);
+			$result = DB::query($sql, "could not get recurrent invoice");
+			$myrow = DB::fetch($result);
 			if ($myrow['debtor_no'] == 0) {
 				$cust = get_cust_branches_from_group($myrow['group_no']);
-				while ($row = DBOld::fetch($cust))
+				while ($row = DB::fetch($cust))
 				{
 					$invs[] = create_recurrent_invoices(
 						$row['debtor_no'], $row['branch_code'], $myrow['order_no'], $myrow['id']
 					);
 				}
-			}
-			else
-			{
+			} else {
 				$invs[] = create_recurrent_invoices(
 					$myrow['debtor_no'], $myrow['group_no'], $myrow['order_no'], $myrow['id']
 				);
@@ -71,12 +71,10 @@
 			if (count($invs) > 0) {
 				$min = min($invs);
 				$max = max($invs);
-			}
-			else
-			{
+			} else {
 				$min = $max = 0;
 			}
-			ui_msgs::display_notification(sprintf(_("%s recurrent invoice(s) created, # $min - # $max."), count($invs)));
+			Errors::notice(sprintf(_("%s recurrent invoice(s) created, # $min - # $max."), count($invs)));
 			if (count($invs) > 0) {
 				$ar = array(
 					'PARAM_0' => $min . "-" . ST_SALESINVOICE,
@@ -87,24 +85,25 @@
 					'PARAM_5' => "",
 					'PARAM_6' => ST_SALESINVOICE
 				);
-				ui_msgs::display_warning(Reporting::print_link(_("&Print Recurrent Invoices # $min - # $max"), 107, $ar), 0, 1);
+				Errors::warning(Reporting::print_link(_("&Print Recurrent Invoices # $min - # $max"), 107, $ar), 0, 1);
 				$ar['PARAM_3'] = 1;
-				ui_msgs::display_warning(Reporting::print_link(_("&Email Recurrent Invoices # $min - # $max"), 107, $ar), 0, 1);
+				Errors::warning(Reporting::print_link(_("&Email Recurrent Invoices # $min - # $max"), 107, $ar), 0, 1);
 			}
 		} else {
-			ui_msgs::display_error(_("The entered date is not in fiscal year."));
+			Errors::error(_("The entered date is not in fiscal year."));
 		}
 	}
 	//-------------------------------------------------------------------------------------------------
-	function get_sales_group_name($group_no) {
-		$sql = "SELECT description FROM groups WHERE id = " . DBOld::escape($group_no);
-		$result = DBOld::query($sql, "could not get group");
-		$row = DBOld::fetch($result);
+	function get_sales_group_name($group_no)
+	{
+		$sql = "SELECT description FROM groups WHERE id = " . DB::escape($group_no);
+		$result = DB::query($sql, "could not get group");
+		$row = DB::fetch($result);
 		return $row[0];
 	}
 
 	$sql = "SELECT * FROM recurrent_invoices ORDER BY description, group_no, debtor_no";
-	$result = DBOld::query($sql, "could not get recurrent invoices");
+	$result = DB::query($sql, "could not get recurrent invoices");
 	start_table(Config::get('tables_style') . "  width=70%");
 	$th = array(
 		_("Description"), _("Template No"), _("Customer"), _("Branch") . "/" . _("Group"), _("Days"),
@@ -114,7 +113,7 @@
 	$k = 0;
 	$today = Dates::add_days(Dates::Today(), 1);
 	$due = false;
-	while ($myrow = DBOld::fetch($result))
+	while ($myrow = DB::fetch($result))
 	{
 		$begin = Dates::sql2date($myrow["begin"]);
 		$end = Dates::sql2date($myrow["end"]);
@@ -160,11 +159,9 @@
 	}
 	end_table();
 	if ($due) {
-		ui_msgs::display_warning(_("Marked items are due."), 1, 0, "class='overduefg'");
-	}
-	else
-	{
-		ui_msgs::display_warning(_("No recurrent invoices are due."), 1, 0);
+		Errors::warning(_("Marked items are due."), 1, 0, "class='overduefg'");
+	} else {
+		Errors::warning(_("No recurrent invoices are due."), 1, 0);
 	}
 	echo '<br>';
 	end_page();

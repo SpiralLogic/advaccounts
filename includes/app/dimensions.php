@@ -31,7 +31,7 @@
 
 				$this->add_module(_("Maintenance"));
 				$this->add_lapp_function(2, _("Dimension &Tags"),
-					"admin/tags.php?type=dimension", 'SA_DIMTAGS');
+					"system/tags.php?type=dimension", 'SA_DIMTAGS');
 
 				if (count($installed_extensions) > 0) {
 					foreach ($installed_extensions as $mod)

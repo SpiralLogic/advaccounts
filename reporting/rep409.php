@@ -18,57 +18,46 @@
 	// Title:	Print Workorders
 	// draft version!
 	// ----------------------------------------------------------------
-
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-
 	//----------------------------------------------------------------------------------------------------
-
 	print_workorders();
-
 	//----------------------------------------------------------------------------------------------------
-
-	function print_workorders() {
-
+	function print_workorders()
+	{
 		include_once(APP_PATH . "includes/reports/pdf.php");
-
 		$from = $_POST['PARAM_0'];
 		$to = $_POST['PARAM_1'];
 		$email = $_POST['PARAM_2'];
 		$comments = $_POST['PARAM_3'];
-
-		if ($from == null)
+		if ($from == null) {
 			$from = 0;
-		if ($to == null)
+		}
+		if ($to == null) {
 			$to = 0;
-		$dec = user_price_dec();
-
+		}
+		$dec = User::price_dec();
 		$fno = explode("-", $from);
 		$tno = explode("-", $to);
-
 		$cols = array(4, 60, 190, 255, 320, 385, 450, 515);
-
 		// $headers in doctext.inc
 		$aligns = array('left', 'left', 'left', 'left', 'right', 'right', 'right');
-
 		$params = array('comments' => $comments);
-
 		$cur = DB_Company::get_pref('curr_default');
-
 		if ($email == 0) {
-			$rep = new FrontReport(_('WORK ORDER'), "WorkOrderBulk", user_pagesize());
+			$rep = new FrontReport(_('WORK ORDER'), "WorkOrderBulk", User::pagesize());
 			$rep->currency = $cur;
 			$rep->Font();
 			$rep->Info($params, $cols, null, $aligns);
 		}
-
 		for ($i = $fno[0]; $i <= $tno[0]; $i++)
 		{
 			$myrow = get_work_order($i);
-			if ($myrow === false)
+			if ($myrow === false) {
 				continue;
+			}
 			$date_ = Dates::sql2date($myrow["date_"]);
 			if ($email == 1) {
-				$rep = new FrontReport("", "", user_pagesize());
+				$rep = new FrontReport("", "", User::pagesize());
 				$rep->currency = $cur;
 				$rep->Font();
 				$rep->title = _('WORK ORDER');
@@ -76,64 +65,69 @@
 				$rep->Info($params, $cols, null, $aligns);
 			}
 			else
+			{
 				$rep->title = _('WORK ORDER');
+			}
 			$rep->Header2($myrow, null, null, '', 26);
-
 			$result = get_wo_requirements($i);
 			$rep->TextCol(0, 5, _("Work Order Requirements"), -2);
 			$rep->NewLine(2);
 			$has_marked = false;
-			while ($myrow2 = DBOld::fetch($result))
+			while ($myrow2 = DB::fetch($result))
 			{
 				$qoh = 0;
 				$show_qoh = true;
 				// if it's a non-stock item (eg. service) don't show qoh
-				if (!Manufacturing::has_stock_holding($myrow2["mb_flag"]))
+				if (!Manufacturing::has_stock_holding($myrow2["mb_flag"])) {
 					$show_qoh = false;
-
-				if ($show_qoh)
-					$qoh = get_qoh_on_date($myrow2["stock_id"], $myrow2["loc_code"], $date_);
-
-				if ($show_qoh && ($myrow2["units_req"] * $myrow["units_issued"] > $qoh) &&
-				 !SysPrefs::allow_negative_stock()
+				}
+				if ($show_qoh) {
+					$qoh = Item::get_qoh_on_date($myrow2["stock_id"], $myrow2["loc_code"], $date_);
+				}
+				if ($show_qoh && ($myrow2["units_req"] * $myrow["units_issued"] > $qoh)
+						&& !SysPrefs::allow_negative_stock()
 				) {
 					// oops, we don't have enough of one of the component items
 					$has_marked = true;
 				}
 				else
+				{
 					$has_marked = false;
-				if ($has_marked)
+				}
+				if ($has_marked) {
 					$str = $myrow2['stock_id'] . " ***";
+				}
 				else
+				{
 					$str = $myrow2['stock_id'];
+				}
 				$rep->TextCol(0, 1, $str, -2);
 				$rep->TextCol(1, 2, $myrow2['description'], -2);
-
 				$rep->TextCol(2, 3, $myrow2['location_name'], -2);
 				$rep->TextCol(3, 4, $myrow2['WorkCentreDescription'], -2);
-				$dec = get_qty_dec($myrow2["stock_id"]);
-
+				$dec = Num::qty_dec($myrow2["stock_id"]);
 				$rep->AmountCol(4, 5, $myrow2['units_req'], $dec, -2);
 				$rep->AmountCol(5, 6, $myrow2['units_req'] * $myrow['units_issued'], $dec, -2);
 				$rep->AmountCol(6, 7, $myrow2['units_issued'], $dec, -2);
 				$rep->NewLine(1);
-				if ($rep->row < $rep->bottomMargin + (15 * $rep->lineHeight))
+				if ($rep->row < $rep->bottomMargin + (15 * $rep->lineHeight)) {
 					$rep->Header2($myrow, null, null, '', 26);
+				}
 			}
 			$rep->NewLine(1);
 			$rep->TextCol(0, 5, " *** = " . _("Insufficient stock"), -2);
-
 			$comments = DB_Comments::get(ST_WORKORDER, $i);
-			if ($comments && DBOld::num_rows($comments)) {
+			if ($comments && DB::num_rows($comments)) {
 				$rep->NewLine();
-				while ($comment = DBOld::fetch($comments))
+				while ($comment = DB::fetch($comments))
 				{
 					$rep->TextColLines(0, 6, $comment['memo_'], -2);
 				}
 			}
 		}
-		if ($email == 0)
+		if ($email == 0) {
 			$rep->End();
+		}
 	}
 
 ?>

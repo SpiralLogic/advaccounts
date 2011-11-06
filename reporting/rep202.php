@@ -20,7 +20,8 @@
 	//----------------------------------------------------------------------------------------------------
 	print_aged_supplier_analysis();
 	//----------------------------------------------------------------------------------------------------
-	function get_invoices($supplier_id, $to) {
+	function get_invoices($supplier_id, $to)
+	{
 		$todate = Dates::date2sql($to);
 		$PastDueDays1 = DB_Company::get_pref('past_due_days');
 		$PastDueDays2 = 2 * $PastDueDays1;
@@ -46,11 +47,12 @@
 			AND supp_trans.tran_date <= '$todate'
 			AND ABS(supp_trans.ov_amount + supp_trans.ov_gst + supp_trans.ov_discount) > 0.004
 			ORDER BY supp_trans.tran_date";
-		return DBOld::query($sql, "The supplier details could not be retrieved");
+		return DB::query($sql, "The supplier details could not be retrieved");
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	function print_aged_supplier_analysis() {
+	function print_aged_supplier_analysis()
+	{
 		global $systypes_array;
 		$to = $_POST['PARAM_0'];
 		$fromsupp = $_POST['PARAM_1'];
@@ -66,7 +68,6 @@
 			include_once(APP_PATH . "includes/reports/pdf.php");
 		}
 		if ($graphics) {
-			include_once(APP_PATH . "reporting/includes/graph.php");
 			$pg = new Reports_Graph();
 		}
 		if ($fromsupp == ALL_NUMERIC) {
@@ -74,7 +75,7 @@
 		} else {
 			$from = get_supplier_name($fromsupp);
 		}
-		$dec = user_price_dec();
+		$dec = User::price_dec();
 		if ($summaryOnly == 1) {
 			$summary = _('Summary Only');
 		} else {
@@ -134,7 +135,7 @@
 		if ($convert) {
 			$headers[2] = _('currency');
 		}
-		$rep = new FrontReport(_('Aged Supplier Analysis'), "AgedSupplierAnalysis", user_pagesize());
+		$rep = new FrontReport(_('Aged Supplier Analysis'), "AgedSupplierAnalysis", User::pagesize());
 		$rep->Font();
 		$rep->Info($params, $cols, $headers, $aligns);
 		$rep->Header();
@@ -147,11 +148,11 @@
 		$pastdue2 = _('Over') . " " . $PastDueDays2 . " " . _('Days');
 		$sql = "SELECT supplier_id, supp_name AS name, curr_code FROM suppliers";
 		if ($fromsupp != ALL_NUMERIC) {
-			$sql .= " WHERE supplier_id=" . DBOld::escape($fromsupp);
+			$sql .= " WHERE supplier_id=" . DB::escape($fromsupp);
 		}
 		$sql .= " ORDER BY supp_name";
-		$result = DBOld::query($sql, "The suppliers could not be retrieved");
-		while ($myrow = DBOld::fetch($result))
+		$result = DB::query($sql, "The suppliers could not be retrieved");
+		while ($myrow = DB::fetch($result))
 		{
 			if (!$convert && $currency != $myrow['curr_code']) {
 				continue;
@@ -199,11 +200,11 @@
 			$rep->NewLine(1, 2);
 			if (!$summaryOnly) {
 				$res = get_invoices($myrow['supplier_id'], $to);
-				if (DBOld::num_rows($res) == 0) {
+				if (DB::num_rows($res) == 0) {
 					continue;
 				}
 				$rep->Line($rep->row + 4);
-				while ($trans = DBOld::fetch($res))
+				while ($trans = DB::fetch($res))
 				{
 					$rep->NewLine(1, 2);
 					$rep->TextCol(0, 1, $systypes_array[$trans['type']], -2);
@@ -261,7 +262,7 @@
 			$pg->skin = Config::get('graphs_skin');
 			$pg->built_in = false;
 			$pg->fontfile = PATH_TO_ROOT . "/reporting/fonts/Vera.ttf";
-			$pg->latin_notation = (Config::get('separators_decimal', CurrentUser::instance()->prefs->dec_sep()) != ".");
+			$pg->latin_notation = (Config::get('separators_decimal', User::prefs()->dec_sep()) != ".");
 			$filename = COMPANY_PATH . "/pdf_files/test.png";
 			$pg->display($filename, true);
 			$w = $pg->width / 1.5;

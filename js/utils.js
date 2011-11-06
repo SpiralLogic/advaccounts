@@ -34,14 +34,14 @@ function disp_msg(msg, cl) {
 //		if form parameter exists also form values are submited, otherwise
 //		request is directed to current location
 //
-JsHttpRequest.request = function(trigger, form, tout) {
+JsHttpRequest.request = function (trigger, form, tout) {
 //	if (trigger.type=='submit' && !validate(trigger)) return false;
 	tout = tout | 15000;	// default timeout value
 	set_mark(tout > 60000 ? 'progressbar.gif' : 'ajax-loader.gif');
 	JsHttpRequest._request(trigger, form, tout, 0);
 }
 
-JsHttpRequest._request = function(trigger, form, tout, retry) {
+JsHttpRequest._request = function (trigger, form, tout, retry) {
 	if (trigger.tagName == 'A') {
 		var content = {};
 		var upload = 0;
@@ -70,13 +70,13 @@ JsHttpRequest._request = function(trigger, form, tout, retry) {
 	content['_random'] = Math.random() * 1234567;
 
 	var tcheck = setTimeout(
-	 function() {
+	 function () {
 		 for (var id in JsHttpRequest.PENDING) {
 			 var call = JsHttpRequest.PENDING[id];
 			 if (call != false) {
 				 if (call._ldObj.xr) // needed for gecko
 				 {
-					 call._ldObj.xr.onreadystatechange = function() {
+					 call._ldObj.xr.onreadystatechange = function () {
 					 };
 				 }
 				 call.abort(); // why this doesn't kill request in firebug?
@@ -94,7 +94,7 @@ JsHttpRequest._request = function(trigger, form, tout, retry) {
 	 (upload ? "form." : "") + "POST " + url, // force form loader
 	 content,
 	 // Function is called when an answer arrives.
-	 function(result, errors) {
+	 function (result, errors) {
 		 // Write the answer.
 		 var newwin = 0;
 		 if (result) {
@@ -158,7 +158,7 @@ JsHttpRequest._request = function(trigger, form, tout, retry) {
 	);
 }
 // collect all form input values plus inp trigger value
-JsHttpRequest.formInputs = function(inp, objForm, upload) {
+JsHttpRequest.formInputs = function (inp, objForm, upload) {
 	var submitObj = inp;
 	var q = {};
 
@@ -292,7 +292,7 @@ function setFocus(name, byId) {
 		// The timeout is needed to prevent unpredictable behaviour on IE & Gecko.
 		// Using tmp var prevents crash on IE5
 
-		var tmp = function() {
+		var tmp = function () {
 			el.focus();
 			if (el.select) el.select();
 		};

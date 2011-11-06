@@ -18,27 +18,27 @@
 		if (is_array($trans_no)) {
 			$trans_no = key($trans_no);
 		}
-		DBOld::begin_transaction();
-		$customer             = get_customer($delivery->customer_id);
+		DB::begin_transaction();
+		$customer = get_customer($delivery->customer_id);
 		$delivery_items_total = $delivery->get_items_total_dispatch();
-		$freight_tax          = $delivery->get_shipping_tax();
+		$freight_tax = $delivery->get_shipping_tax();
 		// mark sales order for concurrency conflicts check
 		update_sales_order_version($delivery->src_docs);
 		$tax_total = 0;
-		$taxes     = $delivery->get_taxes(); // all taxes with freight_tax
+		$taxes = $delivery->get_taxes(); // all taxes with freight_tax
 		foreach ($taxes as $taxitem) {
-			$taxitem['Value'] = round2($taxitem['Value'], user_price_dec());
+			$taxitem['Value'] = Num::round($taxitem['Value'], User::price_dec());
 			$tax_total += $taxitem['Value'];
 		}
 		/* Insert/update the debtor_trans */
-		$delivery_no = write_customer_trans(ST_CUSTDELIVERY, $trans_no, $delivery->customer_id,
-																				$delivery->Branch, $delivery->document_date, $delivery->reference,
-																				$delivery_items_total, 0,
-																				$delivery->tax_included ? 0 : $tax_total - $freight_tax,
-																				$delivery->freight_cost,
-																				$delivery->tax_included ? 0 : $freight_tax,
-																				$delivery->sales_type, $delivery->order_no, 0,
-																				$delivery->ship_via, $delivery->due_date, 0, 0, $delivery->dimension_id, $delivery->dimension2_id);
+		$delivery_no = Sales_Trans::write(ST_CUSTDELIVERY, $trans_no, $delivery->customer_id,
+																			$delivery->Branch, $delivery->document_date, $delivery->reference,
+																			$delivery_items_total, 0,
+																			$delivery->tax_included ? 0 : $tax_total - $freight_tax,
+																			$delivery->freight_cost,
+																			$delivery->tax_included ? 0 : $freight_tax,
+																			$delivery->sales_type, $delivery->order_no, 0,
+																			$delivery->ship_via, $delivery->due_date, 0, 0, $delivery->dimension_id, $delivery->dimension2_id);
 		if ($trans_no == 0) {
 			$delivery->trans_no = array($delivery_no => 0);
 		}
@@ -49,7 +49,7 @@
 			DB_Comments::delete(ST_CUSTDELIVERY, $delivery_no);
 		}
 		foreach ($delivery->line_items as $line_no => $delivery_line) {
-			$line_price         = $delivery_line->line_price();
+			$line_price = $delivery_line->line_price();
 			$line_taxfree_price = Taxes::get_tax_free_price_for_item($delivery_line->stock_id,
 																															 $delivery_line->price, 0, $delivery->tax_included,
 																															 $delivery->tax_group_array);
@@ -75,13 +75,13 @@
 																$delivery->Location, $delivery->document_date, $delivery->reference,
 																-$delivery_line->qty_dispatched, $delivery_line->standard_cost, 1,
 																$line_price, $delivery_line->discount_percent);
-				$stock_gl_code = get_stock_gl_code($delivery_line->stock_id);
+				$stock_gl_code = Item::get_gl_code($delivery_line->stock_id);
 				/* insert gl_trans to credit stock and debit cost of sales at standard cost*/
 				if ($delivery_line->standard_cost != 0) {
 					/*first the cost of sales entry*/
 					// 2008-08-01. If there is a Customer Dimension, then override with this,
 					// else take the Item Dimension (if any)
-					$dim  = ($delivery->dimension_id != $customer['dimension_id']
+					$dim = ($delivery->dimension_id != $customer['dimension_id']
 					 ? $delivery->dimension_id
 					 :
 					 ($customer['dimension_id'] != 0 ? $customer["dimension_id"] : $stock_gl_code["dimension_id"]));
@@ -123,22 +123,22 @@
 		if ($trans_no == 0) {
 			Refs::save(ST_CUSTDELIVERY, $delivery_no, $delivery->reference);
 		}
-		DBOld::commit_transaction();
+		DB::commit_transaction();
 		return $delivery_no;
 	}
 
 	//--------------------------------------------------------------------------------------------------
 	function void_sales_delivery($type, $type_no)
 	{
-		DBOld::begin_transaction();
+		DB::begin_transaction();
 		void_gl_trans($type, $type_no, true);
 		// reverse all the changes in the sales order
 		$items_result = get_customer_trans_details($type, $type_no);
-		$order = get_customer_trans_order($type, $type_no);
+		$order = Sales_Trans::get_order($type, $type_no);
 		if ($order) {
 			$order_items = get_sales_order_details($order, ST_SALESORDER);
-			while ($row = DBOld::fetch($items_result)) {
-				$order_line = DBOld::fetch($order_items);
+			while ($row = DB::fetch($items_result)) {
+				$order_line = DB::fetch($order_items);
 				update_parent_line(ST_CUSTDELIVERY, $order_line['id'], -$row['quantity']);
 			}
 		}
@@ -148,8 +148,8 @@
 		void_cust_allocations($type, $type_no);
 		// do this last because other voidings can depend on it
 		// DO NOT MOVE THIS ABOVE VOIDING or we can end up with trans with alloc < 0
-		void_customer_trans($type, $type_no);
-		DBOld::commit_transaction();
+		Sales_Trans::void($type, $type_no);
+		DB::commit_transaction();
 	}
 
 ?>

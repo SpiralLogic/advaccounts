@@ -17,10 +17,10 @@
 	// Title:	Stock Check Sheet
 	// ----------------------------------------------------------------
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	include_once(APP_PATH . "includes/manufacturing.php");
 	//----------------------------------------------------------------------------------------------------
 	print_stock_check();
-	function getTransactions($category, $location) {
+	function getTransactions($category, $location)
+	{
 		$sql
 		 = "SELECT stock_master.category_id,
 			stock_category.description AS cat_description,
@@ -35,10 +35,10 @@
 		WHERE stock_master.category_id=stock_category.category_id
 		AND (stock_master.mb_flag='" . STOCK_PURCHASED . "' OR stock_master.mb_flag='" . STOCK_MANUFACTURE . "')";
 		if ($category != 0) {
-			$sql .= " AND stock_master.category_id = " . DBOld::escape($category);
+			$sql .= " AND stock_master.category_id = " . DB::escape($category);
 		}
 		if ($location != 'all') {
-			$sql .= " AND IF(stock_moves.stock_id IS NULL, '1=1',stock_moves.loc_code = " . DBOld::escape($location) . ")";
+			$sql .= " AND IF(stock_moves.stock_id IS NULL, '1=1',stock_moves.loc_code = " . DB::escape($location) . ")";
 		}
 		$sql
 		 .= " GROUP BY stock_master.category_id,
@@ -47,11 +47,12 @@
 		stock_master.description
 		ORDER BY stock_master.category_id,
 		stock_master.stock_id";
-		return DBOld::query($sql, "No transactions were returned");
+		return DB::query($sql, "No transactions were returned");
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	function print_stock_check() {
+	function print_stock_check()
+	{
 		$category = $_POST['PARAM_0'];
 		$location = $_POST['PARAM_1'];
 		$pictures = $_POST['PARAM_2'];
@@ -71,7 +72,7 @@
 		if ($category == 0) {
 			$cat = _('All');
 		} else {
-			$cat = get_category_name($category);
+			$cat = Item_Category::get_name($category);
 		}
 		if ($location == ALL_TEXT) {
 			$location = 'all';
@@ -111,37 +112,35 @@
 			1 => array(
 				'text' => _('Category'),
 				'from' => $cat,
-				'to' => ''
+				'to'   => ''
 			),
 			2 => array(
 				'text' => _('Location'),
 				'from' => $loc,
-				'to' => ''
+				'to'   => ''
 			),
 			3 => array(
 				'text' => _('Only Shortage'),
 				'from' => $short,
-				'to' => ''
+				'to'   => ''
 			),
 			4 => array(
 				'text' => _('Suppress Zeros'),
 				'from' => $nozeros,
-				'to' => ''
+				'to'   => ''
 			)
 		);
-		$rep = new FrontReport(_('Stock Check Sheets'), "StockCheckSheet", user_pagesize());
+		$rep = new FrontReport(_('Stock Check Sheets'), "StockCheckSheet", User::pagesize());
 		$rep->Font();
 		$rep->Info($params, $cols, $headers, $aligns);
 		$rep->Header();
 		$res = getTransactions($category, $location);
 		$catt = '';
-		while ($trans = DBOld::fetch($res))
+		while ($trans = DB::fetch($res))
 		{
 			if ($location == 'all') {
 				$loc_code = "";
-			}
-			else
-			{
+			} else {
 				$loc_code = $location;
 			}
 			$demandqty = Manufacturing::get_demand_qty($trans['stock_id'], $loc_code);
@@ -168,7 +167,7 @@
 				$rep->NewLine();
 			}
 			$rep->NewLine();
-			$dec = get_qty_dec($trans['stock_id']);
+			$dec = Num::qty_dec($trans['stock_id']);
 			$rep->TextCol(0, 1, $trans['stock_id']);
 			$rep->TextCol(1, 2, $trans['description'] . ($trans['inactive'] == 1 ? " (" . _("Inactive") . ")" : ""), -1);
 			$rep->AmountCol(2, 3, $trans['QtyOnHand'], $dec);
@@ -177,16 +176,14 @@
 				$rep->AmountCol(4, 5, $demandqty, $dec);
 				$rep->AmountCol(5, 6, $trans['QtyOnHand'] - $demandqty, $dec);
 				$rep->AmountCol(6, 7, $onorder, $dec);
-			}
-			else
-			{
+			} else {
 				$rep->AmountCol(3, 4, $demandqty, $dec);
 				$rep->AmountCol(4, 5, $trans['QtyOnHand'] - $demandqty, $dec);
 				$rep->AmountCol(5, 6, $onorder, $dec);
 			}
 			if ($pictures) {
 				$image = COMPANY_PATH . '/images/'
-				 . item_img_name($trans['stock_id']) . '.jpg';
+								 . Item::img_name($trans['stock_id']) . '.jpg';
 				if (file_exists($image)) {
 					$rep->NewLine();
 					if ($rep->row - Config::get('item_images_height') < $rep->bottomMargin) {

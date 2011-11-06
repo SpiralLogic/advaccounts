@@ -12,35 +12,32 @@
 	$page_security = 'SA_UOM';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "Units of Measure"));
-	include_once(APP_PATH . "inventory/includes/db/items_units_db.php");
-	simple_page_mode(false);
+	Page::simple_mode(false);
 	//----------------------------------------------------------------------------------
 	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 		//initialise no input errors assumed initially before we test
 		$input_error = 0;
 		if (strlen($_POST['abbr']) == 0) {
 			$input_error = 1;
-			ui_msgs::display_error(_("The unit of measure code cannot be empty."));
+			Errors::error(_("The unit of measure code cannot be empty."));
 			JS::set_focus('abbr');
 		}
-		if (strlen(DBOld::escape($_POST['abbr'])) > (20 + 2)) {
+		if (strlen(DB::escape($_POST['abbr'])) > (20 + 2)) {
 			$input_error = 1;
-			ui_msgs::display_error(_("The unit of measure code is too long."));
+			Errors::error(_("The unit of measure code is too long."));
 			JS::set_focus('abbr');
 		}
 		if (strlen($_POST['description']) == 0) {
 			$input_error = 1;
-			ui_msgs::display_error(_("The unit of measure description cannot be empty."));
+			Errors::error(_("The unit of measure description cannot be empty."));
 			JS::set_focus('description');
 		}
 		if ($input_error != 1) {
-			write_item_unit(htmlentities($selected_id), $_POST['abbr'], $_POST['description'], $_POST['decimals']);
+			Item_Unit::write(htmlentities($selected_id), $_POST['abbr'], $_POST['description'], $_POST['decimals']);
 			if ($selected_id != '') {
-				ui_msgs::display_notification(_('Selected unit has been updated'));
-			}
-			else
-			{
-				ui_msgs::display_notification(_('New unit has been added'));
+				Errors::notice(_('Selected unit has been updated'));
+			} else {
+				Errors::notice(_('New unit has been added'));
 			}
 			$Mode = 'RESET';
 		}
@@ -48,11 +45,11 @@
 	//----------------------------------------------------------------------------------
 	if ($Mode == 'Delete') {
 		// PREVENT DELETES IF DEPENDENT RECORDS IN 'stock_master'
-		if (item_unit_used($selected_id)) {
-			ui_msgs::display_error(_("Cannot delete this unit of measure because items have been created using this unit."));
+		if (Item_Unit::used($selected_id)) {
+			Errors::error(_("Cannot delete this unit of measure because items have been created using this unit."));
 		} else {
-			delete_item_unit($selected_id);
-			ui_msgs::display_notification(_('Selected unit has been deleted'));
+			Item_Unit::delete($selected_id);
+			Errors::notice(_('Selected unit has been deleted'));
 		}
 		$Mode = 'RESET';
 	}
@@ -63,14 +60,14 @@
 		$_POST['show_inactive'] = $sav;
 	}
 	//----------------------------------------------------------------------------------
-	$result = get_all_item_units(check_value('show_inactive'));
+	$result = Item_Unit::get_all(check_value('show_inactive'));
 	start_form();
 	start_table(Config::get('tables_style') . "  width=40%");
 	$th = array(_('Unit'), _('Description'), _('Decimals'), "", "");
 	inactive_control_column($th);
 	table_header($th);
 	$k = 0; //row colour counter
-	while ($myrow = DBOld::fetch($result))
+	while ($myrow = DB::fetch($result))
 	{
 		alt_table_row_color($k);
 		label_cell($myrow["abbr"]);
@@ -88,14 +85,14 @@
 	if ($selected_id != '') {
 		if ($Mode == 'Edit') {
 			//editing an existing item category
-			$myrow = get_item_unit($selected_id);
+			$myrow = Item_Unit::get($selected_id);
 			$_POST['abbr'] = $myrow["abbr"];
 			$_POST['description'] = $myrow["name"];
 			$_POST['decimals'] = $myrow["decimals"];
 		}
 		hidden('selected_id', $selected_id);
 	}
-	if ($selected_id != '' && item_unit_used($selected_id)) {
+	if ($selected_id != '' && Item_Unit::used($selected_id)) {
 		label_row(_("Unit Abbreviation:"), $_POST['abbr']);
 		hidden('abbr', $_POST['abbr']);
 	} else

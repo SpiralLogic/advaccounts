@@ -45,7 +45,7 @@
 			) {
 				$tax_multiplier += $taxitem["rate"];
 			}
-			return round($price / (1 + ($tax_multiplier / 100)), 2 * user_price_dec(), PHP_ROUND_HALF_EVEN);
+			return round($price / (1 + ($tax_multiplier / 100)), 2 * User::price_dec(), PHP_ROUND_HALF_EVEN);
 		}
 
 		//
@@ -63,7 +63,7 @@
 			}
 			// if array already read, then make a copy and use that
 			$ret_tax_array = Tax_Groups::get_tax_group_items_as_array($tax_group[0]);
-			$tax_array     = Taxes::get_taxes_for_item($stock_id, $ret_tax_array);
+			$tax_array = Taxes::get_taxes_for_item($stock_id, $ret_tax_array);
 			// if no exemptions or taxgroup is empty, then no included/excluded taxes
 			if ($tax_array == null) {
 				return 0;
@@ -75,7 +75,7 @@
 			) {
 				$tax_multiplier += $taxitem["rate"];
 			}
-			return round($price * (($tax_multiplier / 100)), 2 * user_price_dec(), PHP_ROUND_HALF_EVEN);
+			return round($price * (($tax_multiplier / 100)), 2 * User::price_dec(), PHP_ROUND_HALF_EVEN);
 		}
 
 		#  __ADVANCEDEDIT__ BEGIN #
@@ -108,7 +108,7 @@
 			) {
 				$tax_multiplier += $taxitem["rate"];
 			}
-			return round($price * (1 + ($tax_multiplier / 100)), 2 * user_price_dec(), PHP_ROUND_HALF_EVEN);
+			return round($price * (1 + ($tax_multiplier / 100)), 2 * User::price_dec(), PHP_ROUND_HALF_EVEN);
 		}
 
 		#  __ADVANCEDEDIT__ END #
@@ -116,7 +116,7 @@
 		// return an array of (tax_type_id, tax_type_name, sales_gl_code, purchasing_gl_code, rate)
 		public static function get_taxes_for_item($stock_id, $tax_group_items_array)
 		{
-			$item_tax_type = Tax_Groups::get_for_item($stock_id);
+			$item_tax_type = Tax_ItemType::get_for_item($stock_id);
 			// if the item is exempt from all taxes then return 0
 			if ($item_tax_type["exempt"]) {
 				return null;
@@ -125,7 +125,7 @@
 			$item_tax_type_exemptions_db = Tax_ItemType::get_exemptions($item_tax_type["id"]);
 			// read them all into an array to minimize db querying
 			$item_tax_type_exemptions = array();
-			while ($item_tax_type_exemp = DBOld::fetch($item_tax_type_exemptions_db)) {
+			while ($item_tax_type_exemp = DB::fetch($item_tax_type_exemptions_db)) {
 				$item_tax_type_exemptions[] = $item_tax_type_exemp["tax_type_id"];
 			}
 			$ret_tax_array = array();
@@ -144,7 +144,7 @@
 					}
 				}
 				if (!$skip) {
-					$index                 = $tax_group_item['tax_type_id'];
+					$index = $tax_group_item['tax_type_id'];
 					$ret_tax_array[$index] = $tax_group_item;
 				}
 			}
@@ -202,7 +202,7 @@
 								$tax_rate += $item_tax['rate'];
 							}
 						}
-						$shipping_net = round2($shipping_cost / (1 + ($tax_rate / 100)), user_price_dec());
+						$shipping_net = Num::round($shipping_cost / (1 + ($tax_rate / 100)), User::price_dec());
 					}
 					foreach (
 						$item_taxes as $item_tax
@@ -227,11 +227,11 @@
 		public static function is_tax_account($account_code)
 		{
 			$sql
-							= "SELECT id FROM tax_types WHERE
-		sales_gl_code=" . DBOld::escape($account_code) . " OR purchasing_gl_code=" . DBOld::escape($account_code);
-			$result = DBOld::query($sql, "checking account is tax account");
-			if (DBOld::num_rows($result) > 0) {
-				$acct = DBOld::fetch($result);
+			 = "SELECT id FROM tax_types WHERE
+		sales_gl_code=" . DB::escape($account_code) . " OR purchasing_gl_code=" . DB::escape($account_code);
+			$result = DB::query($sql, "checking account is tax account");
+			if (DB::num_rows($result) > 0) {
+				$acct = DB::fetch($result);
 				return $acct['id'];
 			} else
 			{

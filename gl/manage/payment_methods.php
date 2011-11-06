@@ -12,7 +12,7 @@
 	$page_security = 'SA_BANKACCOUNT';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "Bank Accounts"));
-	simple_page_mode();
+	Page::simple_mode();
 	//-----------------------------------------------------------------------------------
 	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 		//initialise no input errors assumed initially before we test
@@ -20,7 +20,7 @@
 		//first off validate inputs sensible
 		if (strlen($_POST['bank_account_name']) == 0) {
 			$input_error = 1;
-			ui_msgs::display_error(_("The bank account name cannot be empty."));
+			Errors::error(_("The bank account name cannot be empty."));
 			JS::set_focus('bank_account_name');
 		}
 		if ($input_error != 1) {
@@ -32,17 +32,15 @@
 					$_POST['bank_address'], $_POST['BankAccountCurrency'],
 					$_POST['dflt_curr_act']
 				);
-				ui_msgs::display_notification(_('Bank account has been updated'));
-			}
-			else
-			{
+				Errors::notice(_('Bank account has been updated'));
+			} else {
 				add_bank_account(
 					$_POST['account_code'], $_POST['account_type'],
 					$_POST['bank_account_name'], $_POST['bank_name'],
 					$_POST['bank_account_number'], $_POST['bank_address'],
 					$_POST['BankAccountCurrency'], $_POST['dflt_curr_act']
 				);
-				ui_msgs::display_notification(_('New bank account has been added'));
+				Errors::notice(_('New bank account has been added'));
 			}
 			$Mode = 'RESET';
 		}
@@ -51,25 +49,25 @@
 	{
 		//the link to delete a selected record was clicked instead of the submit button
 		$cancel_delete = 0;
-		$acc = DBOld::escape($selected_id);
+		$acc = DB::escape($selected_id);
 		// PREVENT DELETES IF DEPENDENT RECORDS IN 'bank_trans'
 		$sql = "SELECT COUNT(*) FROM bank_trans WHERE bank_act=$acc";
-		$result = DBOld::query($sql, "check failed");
-		$myrow = DBOld::fetch_row($result);
+		$result = DB::query($sql, "check failed");
+		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {
 			$cancel_delete = 1;
-			ui_msgs::display_error(_("Cannot delete this bank account because transactions have been created using this account."));
+			Errors::error(_("Cannot delete this bank account because transactions have been created using this account."));
 		}
 		$sql = "SELECT COUNT(*) FROM sales_pos WHERE pos_account=$acc";
-		$result = DBOld::query($sql, "check failed");
-		$myrow = DBOld::fetch_row($result);
+		$result = DB::query($sql, "check failed");
+		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {
 			$cancel_delete = 1;
-			ui_msgs::display_error(_("Cannot delete this bank account because POS definitions have been created using this account."));
+			Errors::error(_("Cannot delete this bank account because POS definitions have been created using this account."));
 		}
 		if (!$cancel_delete) {
 			delete_bank_account($selected_id);
-			ui_msgs::display_notification(_('Selected bank account has been deleted'));
+			Errors::notice(_('Selected bank account has been deleted'));
 		} //end if Delete bank account
 		$Mode = 'RESET';
 	}
@@ -87,7 +85,7 @@
 		$sql .= " AND !account.inactive";
 	}
 	$sql .= " ORDER BY account_code, bank_curr_code";
-	$result = DBOld::query($sql, "could not get bank accounts");
+	$result = DB::query($sql, "could not get bank accounts");
 	Errors::check_db_error("The bank accounts set up could not be retreived", $sql);
 	start_form();
 	start_table(Config::get('tables_style') . "  width='80%'");
@@ -98,7 +96,7 @@
 	inactive_control_column($th);
 	table_header($th);
 	$k = 0;
-	while ($myrow = DBOld::fetch($result))
+	while ($myrow = DB::fetch($result))
 	{
 		alt_table_row_color($k);
 		label_cell($myrow["bank_account_name"], "nowrap");
@@ -143,24 +141,18 @@
 	text_row(_("Bank Account Name:"), 'bank_account_name', null, 50, 100);
 	if ($is_editing) {
 		label_row(_("Account Type:"), $bank_account_types[$_POST['account_type']]);
-	}
-	else
-	{
+	} else {
 		bank_account_types_list_row(_("Account Type:"), 'account_type', null);
 	}
 	if ($is_editing) {
 		label_row(_("Bank Account Currency:"), $_POST['BankAccountCurrency']);
-	}
-	else
-	{
+	} else {
 		currencies_list_row(_("Bank Account Currency:"), 'BankAccountCurrency', null);
 	}
 	yesno_list_row(_("Default currency account:"), 'dflt_curr_act');
 	if ($is_editing) {
 		label_row(_("Bank Account GL Code:"), $_POST['account_code']);
-	}
-	else
-	{
+	} else {
 		gl_all_accounts_list_row(_("Bank Account GL Code:"), 'account_code', null);
 	}
 	text_row(_("Bank Name:"), 'bank_name', null, 50, 60);

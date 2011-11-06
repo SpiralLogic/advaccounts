@@ -18,7 +18,7 @@ class App_Contacts extends Application
 	function __construct()
 	{
 		$this->direct = 'contacts/customers.php';
-		parent::__construct("contacts", _($this->help_context = "&Customers"));
+		parent::__construct("Contacts", _($this->help_context = "&Customers"));
 
 
 	}

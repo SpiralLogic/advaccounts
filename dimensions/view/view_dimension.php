@@ -22,7 +22,7 @@
 	if (isset($_POST['Show'])) {
 		$id = $_POST['trans_no'];
 	}
-	ui_msgs::display_heading($systypes_array[ST_DIMENSION] . " # " . $id);
+	Display::heading($systypes_array[ST_DIMENSION] . " # " . $id);
 	br(1);
 	$myrow = get_dimension($id);
 	if (strlen($myrow[0]) == 0) {
@@ -40,10 +40,10 @@
 	label_cell(Dates::sql2date($myrow["date_"]));
 	label_cell(Dates::sql2date($myrow["due_date"]));
 	end_row();
-	ui_view::comments_display_row(ST_DIMENSION, $id);
+	Display::comments_row(ST_DIMENSION, $id);
 	end_table();
 	if ($myrow["closed"] == true) {
-		ui_msgs::display_warning(_("This dimension is closed."));
+		Errors::warning(_("This dimension is closed."));
 	}
 	start_form();
 	start_table("class='tablestyle_noborder'");

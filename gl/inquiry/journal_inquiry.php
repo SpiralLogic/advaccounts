@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 	$page_security = 'SA_GLANALYTIC';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	JS::get_js_open_window(800, 500);
+	JS::open_window(800, 500);
 	Page::start(_($help_context = "Journal Inquiry"));
 	//-----------------------------------------------------------------------------------
 	// Ajax updates
@@ -59,7 +59,7 @@
 	}
 
 	$editors = array(
-		0							 => "/gl/gl_journal.php?ModifyGL=Yes&trans_no=%d&trans_type=%d",
+		0 => "/gl/gl_journal.php?ModifyGL=Yes&trans_no=%d&trans_type=%d",
 //	1=> Bank Payment,
 //	2=> Bank Deposit,
 //	4=> Funds Transfer,
@@ -168,28 +168,28 @@
 	}
 	$sql .= " GROUP BY gl.type, gl.type_no";
 	$cols = array(
-		_("#")			 => array(
-			'fun'	 => 'journal_pos',
+		_("#") => array(
+			'fun' => 'journal_pos',
 			'align' => 'center'
 		),
-		_("Date")		=> array(
+		_("Date") => array(
 			'name' => 'tran_date',
 			'type' => 'date',
-			'ord'	=> 'desc'
+			'ord' => 'desc'
 		),
-		_("Type")		=> array('fun' => 'systype_name'),
+		_("Type") => array('fun' => 'systype_name'),
 		_("Trans #") => array('fun' => 'view_link'),
 		_("Reference"),
-		_("Amount")	=> array('type' => 'amount'),
+		_("Amount") => array('type' => 'amount'),
 		_("Memo"),
 		_("User"),
-		_("View")		=> array(
+		_("View") => array(
 			'insert' => true,
-			'fun'		=> 'gl_link'
+			'fun' => 'gl_link'
 		),
 		array(
 			'insert' => true,
-			'fun'		=> 'edit_link'
+			'fun' => 'edit_link'
 		)
 	);
 	if (!check_value('AlsoClosed')) {

@@ -16,15 +16,13 @@
 	// date_:	2005-05-19
 	// Title:	Customer Details Listing
 	// ----------------------------------------------------------------
-
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-
 	//----------------------------------------------------------------------------------------------------
-
 	print_customer_details_listing();
-
-	function get_customer_details_for_report($area = 0, $salesid = 0) {
-		$sql = "SELECT debtors_master.debtor_no,
+	function get_customer_details_for_report($area = 0, $salesid = 0)
+	{
+		$sql
+		 = "SELECT debtors_master.debtor_no,
 			debtors_master.name,
 			debtors_master.address,
 			sales_types.sales_type,
@@ -49,42 +47,45 @@
 		INNER JOIN salesman
 			ON cust_branch.salesman=salesman.salesman_code";
 		if ($area != 0) {
-			if ($salesid != 0)
-				$sql .= " WHERE salesman.salesman_code=" . DBOld::escape($salesid) . "
-				AND areas.area_code=" . DBOld::escape($area);
+			if ($salesid != 0) {
+				$sql .= " WHERE salesman.salesman_code=" . DB::escape($salesid) . "
+				AND areas.area_code=" . DB::escape($area);
+			}
 			else
-				$sql .= " WHERE areas.area_code=" . DBOld::escape($area);
+			{
+				$sql .= " WHERE areas.area_code=" . DB::escape($area);
+			}
 		}
 		elseif ($salesid != 0)
-			$sql .= " WHERE salesman.salesman_code=" . DBOld::escape($salesid);
-		$sql .= " ORDER BY description,
+		{
+			$sql .= " WHERE salesman.salesman_code=" . DB::escape($salesid);
+		}
+		$sql
+		 .= " ORDER BY description,
 			salesman.salesman_name,
 			debtors_master.debtor_no,
 			cust_branch.branch_code";
-
-		return DBOld::query($sql, "No transactions were returned");
+		return DB::query($sql, "No transactions were returned");
 	}
 
-	function getTransactions($debtorno, $branchcode, $date) {
+	function getTransactions($debtorno, $branchcode, $date)
+	{
 		$date = Dates::date2sql($date);
-
-		$sql = "SELECT SUM((ov_amount+ov_freight+ov_discount)*rate) AS Turnover
+		$sql
+		 = "SELECT SUM((ov_amount+ov_freight+ov_discount)*rate) AS Turnover
 		FROM debtor_trans
-		WHERE debtor_no=" . DBOld::escape($debtorno) . "
-		AND branch_code=" . DBOld::escape($branchcode) . "
+		WHERE debtor_no=" . DB::escape($debtorno) . "
+		AND branch_code=" . DB::escape($branchcode) . "
 		AND (type=" . ST_SALESINVOICE . " OR type=" . ST_CUSTCREDIT . ")
 		AND trandate >='$date'";
-
-		$result = DBOld::query($sql, "No transactions were returned");
-
-		$row = DBOld::fetch_row($result);
+		$result = DB::query($sql, "No transactions were returned");
+		$row = DB::fetch_row($result);
 		return $row[0];
 	}
 
 	//----------------------------------------------------------------------------------------------------
-
-	function print_customer_details_listing() {
-
+	function print_customer_details_listing()
+	{
 		$from = $_POST['PARAM_0'];
 		$area = $_POST['PARAM_1'];
 		$folk = $_POST['PARAM_2'];
@@ -92,72 +93,79 @@
 		$less = $_POST['PARAM_4'];
 		$comments = $_POST['PARAM_5'];
 		$destination = $_POST['PARAM_6'];
-		if ($destination)
+		if ($destination) {
 			include_once(APP_PATH . "includes/reports/excel.php");
+		}
 		else
+		{
 			include_once(APP_PATH . "includes/reports/pdf.php");
-
+		}
 		$dec = 0;
-
-		if ($area == ALL_NUMERIC)
+		if ($area == ALL_NUMERIC) {
 			$area = 0;
-		if ($folk == ALL_NUMERIC)
+		}
+		if ($folk == ALL_NUMERIC) {
 			$folk = 0;
-
-		if ($area == 0)
+		}
+		if ($area == 0) {
 			$sarea = _('All Areas');
+		}
 		else
+		{
 			$sarea = get_area_name($area);
-		if ($folk == 0)
+		}
+		if ($folk == 0) {
 			$salesfolk = _('All Sales Folk');
+		}
 		else
+		{
 			$salesfolk = get_salesman_name($folk);
-		if ($more != '')
-			$morestr = _('Greater than ') . number_format2($more, $dec);
+		}
+		if ($more != '') {
+			$morestr = _('Greater than ') . Num::format($more, $dec);
+		}
 		else
+		{
 			$morestr = '';
-		if ($less != '')
-			$lessstr = _('Less than ') . number_format2($less, $dec);
+		}
+		if ($less != '') {
+			$lessstr = _('Less than ') . Num::format($less, $dec);
+		}
 		else
+		{
 			$lessstr = '';
-
+		}
 		$more = (double)$more;
 		$less = (double)$less;
-
 		$cols = array(0, 150, 300, 400, 550);
-
 		$headers = array(_('Customer Postal Address'), _('Price/Turnover'), _('Branch Contact Information'),
 			_('Branch Delivery Address')
 		);
-
 		$aligns = array('left', 'left', 'left', 'left');
-
 		$params = array(0 => $comments,
 			1 => array('text' => _('Activity Since'), 'from' => $from, 'to' => ''),
 			2 => array('text' => _('Sales Areas'), 'from' => $sarea, 'to' => ''),
 			3 => array('text' => _('Sales Folk'), 'from' => $salesfolk, 'to' => ''),
 			4 => array('text' => _('Activity'), 'from' => $morestr, 'to' => $lessstr)
 		);
-
-		$rep = new FrontReport(_('Customer Details Listing'), "CustomerDetailsListing", user_pagesize());
-
+		$rep = new FrontReport(_('Customer Details Listing'), "CustomerDetailsListing", User::pagesize());
 		$rep->Font();
 		$rep->Info($params, $cols, $headers, $aligns);
 		$rep->Header();
-
 		$result = get_customer_details_for_report($area, $folk);
-
 		$carea = '';
 		$sman = '';
-		while ($myrow = DBOld::fetch($result))
+		while ($myrow = DB::fetch($result))
 		{
 			$printcustomer = true;
 			if ($more != '' || $less != '') {
 				$turnover = getTransactions($myrow['debtor_no'], $myrow['branch_code'], $from);
-				if ($more != 0.0 && $turnover <= (double)$more)
+				if ($more != 0.0 && $turnover <= (double)$more) {
 					$printcustomer = false;
-				if ($less != 0.0 && $turnover >= (double)$less)
+				}
+				if ($less != 0.0 && $turnover >= (double)$less) {
 					$printcustomer = false;
+				}
 			}
 			if ($printcustomer) {
 				if ($carea != $myrow['description']) {
@@ -190,8 +198,9 @@
 				}
 				$count1++;
 				$rep->TextCol(1, 2, _('Price List') . ": " . $myrow['sales_type']);
-				if ($more != 0.0 || $less != 0.0)
-					$rep->TextCol(1, 2, _('Turnover') . ": " . number_format2($turnover, $dec), 0, $rep->lineHeight);
+				if ($more != 0.0 || $less != 0.0) {
+					$rep->TextCol(1, 2, _('Turnover') . ": " . Num::format($turnover, $dec), 0, $rep->lineHeight);
+				}
 				$rep->TextCol(2, 3, $myrow['br_name']);
 				$rep->TextCol(2, 3, $myrow['contact_name'], 0, $rep->lineHeight);
 				$rep->TextCol(2, 3, _('Ph') . ": " . $myrow['phone'], 0, 2 * $rep->lineHeight);

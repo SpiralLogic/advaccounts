@@ -13,10 +13,8 @@
 	include_once(APP_PATH . "sales/includes/db/sales_credit_db.php");
 	include_once(APP_PATH . "sales/includes/db/sales_invoice_db.php");
 	include_once(APP_PATH . "sales/includes/db/sales_delivery_db.php");
-	include_once(APP_PATH . "sales/includes/db/sales_types_db.php");
 	include_once(APP_PATH . "sales/includes/db/sales_points_db.php");
 	include_once(APP_PATH . "sales/includes/db/custalloc_db.php");
-	include_once(APP_PATH . "sales/includes/db/cust_trans_db.php");
 	include_once(APP_PATH . "sales/includes/db/cust_trans_details_db.php");
 	include_once(APP_PATH . "sales/includes/db/payment_db.php");
 	include_once(APP_PATH . "sales/includes/db/branches_db.php");
@@ -28,7 +26,8 @@
 	// $show_or_hide 1 show this item in invoice/credit views, 0 to hide it (used for write-off items)
 	// $type is 10 (invoice) or 11 (credit)
 	function add_stock_move_customer($type, $stock_id, $trans_id, $location, $date_, $reference,
-																	 $quantity, $std_cost, $show_or_hide = 1, $price = 0, $discount_percent = 0) {
+																	 $quantity, $std_cost, $show_or_hide = 1, $price = 0, $discount_percent = 0)
+	{
 		return add_stock_move($type, $stock_id, $trans_id, $location, $date_, $reference,
 			$quantity, $std_cost, 0, $show_or_hide, $price, $discount_percent,
 			"The customer stock movement record cannot be inserted");
@@ -39,7 +38,8 @@
 	// $date_ is display date (non-sql)
 	// $amount is in CUSTOMER'S currency
 	function add_gl_trans_customer($type, $type_no, $date_, $account, $dimension, $dimension2,
-																 $amount, $customer_id, $err_msg = "", $rate = 0) {
+																 $amount, $customer_id, $err_msg = "", $rate = 0)
+	{
 		if ($err_msg == "") {
 			$err_msg = "The customer GL transaction could not be inserted";
 		}
@@ -49,19 +49,21 @@
 	}
 
 	//----------------------------------------------------------------------------------------
-	function get_calculated_price($stock_id, $add_pct) {
+	function get_calculated_price($stock_id, $add_pct)
+	{
 		$avg = get_standard_cost($stock_id);
 		if ($avg == 0) {
 			return 0;
 		}
-		return round2($avg * (1 + $add_pct / 100), user_price_dec());
+		return Num::round($avg * (1 + $add_pct / 100), User::price_dec());
 	}
 
-	function round_to_nearest($price, $round_to) {
+	function round_to_nearest($price, $round_to)
+	{
 		if ($price == 0) {
 			return 0;
 		}
-		$pow = pow(10, user_price_dec());
+		$pow = pow(10, User::price_dec());
 		if ($pow >= $round_to) {
 			$mod = ($pow % $round_to);
 		} else {
@@ -75,12 +77,13 @@
 		return $price;
 	}
 
-	function get_price($stock_id, $currency, $sales_type_id, $factor = null, $date = null) {
+	function get_price($stock_id, $currency, $sales_type_id, $factor = null, $date = null)
+	{
 		if ($date == null) {
 			$date = Dates::new_doc_date();
 		}
 		if ($factor === null) {
-			$myrow = get_sales_type($sales_type_id);
+			$myrow = Sales_Type::get($sales_type_id);
 			$factor = $myrow['factor'];
 		}
 		$add_pct = DB_Company::get_pref('add_pct');
@@ -90,15 +93,15 @@
 		$sql
 		 = "SELECT price, curr_abrev, sales_type_id
 		FROM prices
-		WHERE stock_id = " . DBOld::escape($stock_id) . "
-			AND (curr_abrev = " . DBOld::escape($currency) . " OR curr_abrev = " . DBOld::escape($home_curr) . ")";
-		$result = DBOld::query($sql, "There was a problem retrieving the pricing information for the part $stock_id for customer");
-		$num_rows = DBOld::num_rows($result);
-		$rate = round2(Banking::get_exchange_rate_from_home_currency($currency, $date),
-			user_exrate_dec());
+		WHERE stock_id = " . DB::escape($stock_id) . "
+			AND (curr_abrev = " . DB::escape($currency) . " OR curr_abrev = " . DB::escape($home_curr) . ")";
+		$result = DB::query($sql, "There was a problem retrieving the pricing information for the part $stock_id for customer");
+		$num_rows = DB::num_rows($result);
+		$rate = Num::round(Banking::get_exchange_rate_from_home_currency($currency, $date),
+			User::exrate_dec());
 		$round_to = DB_Company::get_pref('round_to');
 		$prices = array();
-		while ($myrow = DBOld::fetch($result))
+		while ($myrow = DB::fetch($result))
 		{
 			$prices[$myrow['sales_type_id']][$myrow['curr_abrev']] = $myrow['price'];
 		}
@@ -149,7 +152,7 @@
 		{
 			return round_to_nearest($price, $round_to);
 		} else {
-			return round2($price, user_price_dec());
+			return Num::round($price, User::price_dec());
 		}
 	}
 
@@ -160,7 +163,8 @@
 	//	otherwise all prices set for kits and items are accepted.
 	//
 	function get_kit_price($item_code, $currency, $sales_type_id, $factor = null,
-												 $date = null, $std = false) {
+												 $date = null, $std = false)
+	{
 		$kit_price = 0.00;
 		if (!$std) {
 			$kit_price = get_price($item_code, $currency, $sales_type_id,
@@ -170,8 +174,8 @@
 			}
 		}
 		// no price for kit found, get total value of all items
-		$kit = get_item_kit($item_code);
-		while ($item = DBOld::fetch($kit)) {
+		$kit = Item_Code::get_kit($item_code);
+		while ($item = DB::fetch($kit)) {
 			if ($item['item_code'] != $item['stock_id']) {
 				// foreign/kit code
 				$kit_price += $item['quantity'] * get_kit_price($item['stock_id'],
@@ -187,15 +191,16 @@
 	}
 
 	//-----------------------------------------------------------------------------
-	function set_document_parent($cart) {
+	function set_document_parent($cart)
+	{
 		$inv_no = key($cart->trans_no);
 		if (count($cart->src_docs) == 1) {
 			// if this child document has only one parent - update child link
 			$src = array_keys($cart->src_docs);
 			$del_no = reset($src);
 			$sql = 'UPDATE debtor_trans SET trans_link = ' . $del_no .
-			 ' WHERE type=' . DBOld::escape($cart->trans_type) . ' AND trans_no=' . $inv_no;
-			DBOld::query($sql, 'UPDATE Child document link cannot be updated');
+			 ' WHERE type=' . DB::escape($cart->trans_type) . ' AND trans_no=' . $inv_no;
+			DB::query($sql, 'UPDATE Child document link cannot be updated');
 		}
 		if ($cart->trans_type != ST_SALESINVOICE) {
 			return 0;
@@ -214,12 +219,13 @@
 			$deliveries[$key] = 'trans_no=' . $del;
 		}
 		$sql .= implode(' OR ', $deliveries) . ')';
-		DBOld::query($sql, 'Delivery links cannot be updated');
+		DB::query($sql, 'Delivery links cannot be updated');
 		return 0; // batch or complete invoice
 	}
 
 	//--------------------------------------------------------------------------------------------------
-	function get_parent_type($type) {
+	function get_parent_type($type)
+	{
 		$parent_types = array(ST_CUSTCREDIT => ST_SALESINVOICE,
 			ST_SALESINVOICE => ST_CUSTDELIVERY,
 			ST_CUSTDELIVERY => ST_SALESORDER
@@ -228,7 +234,8 @@
 	}
 
 	//--------------------------------------------------------------------------------------------------
-	function update_parent_line($doc_type, $line_id, $qty_dispatched) {
+	function update_parent_line($doc_type, $line_id, $qty_dispatched)
+	{
 		$doc_type = get_parent_type($doc_type);
 		//	echo "update line: $line_id, $doc_type, $qty_dispatched";
 		if ($doc_type == 0) {
@@ -239,33 +246,32 @@
 				$sql
 				 = "UPDATE sales_order_details
 				SET qty_sent = qty_sent + $qty_dispatched
-				WHERE id=" . DBOld::escape($line_id);
-			}
-			else
-			{
+				WHERE id=" . DB::escape($line_id);
+			} else {
 				$sql
 				 = "UPDATE debtor_trans_details
 				SET qty_done = qty_done + $qty_dispatched
-				WHERE id=" . DBOld::escape($line_id);
+				WHERE id=" . DB::escape($line_id);
 			}
 		}
-		DBOld::query($sql, "The parent document detail record could not be updated");
+		DB::query($sql, "The parent document detail record could not be updated");
 		return true;
 	}
 
 	//--------------------------------------------------------------------------------------------------
 	// find inventory location for given transaction
 	//
-	function get_location(&$cart) {
+	function get_location(&$cart)
+	{
 		$sql = "SELECT locations.* FROM stock_moves,"
 		 . "locations" .
-		 " WHERE type=" . DBOld::escape($cart->trans_type) .
+		 " WHERE type=" . DB::escape($cart->trans_type) .
 		 " AND trans_no=" . key($cart->trans_no) .
 		 " AND qty!=0 " .
 		 " AND locations.loc_code=stock_moves.loc_code";
-		$result = DBOld::query($sql, 'Retreiving inventory location');
-		if (DBOld::num_rows($result)) {
-			return DBOld::fetch($result);
+		$result = DB::query($sql, 'Retreiving inventory location');
+		if (DB::num_rows($result)) {
+			return DB::fetch($result);
 		}
 		return null;
 	}
@@ -275,7 +281,8 @@
 	//
 	//	$trans_no - array of trans nums; special case trans_no==0 - new doc
 	//
-	function read_sales_trans($doc_type, $trans_no, &$cart) {
+	function read_sales_trans($doc_type, $trans_no, &$cart)
+	{
 		if (!is_array($trans_no) && $trans_no) {
 			$trans_no = array($trans_no);
 		}
@@ -285,12 +292,10 @@
 		}
 		else {
 			// read header data from first document
-			$myrow = get_customer_trans($trans_no[0], $doc_type);
+			$myrow = Sales_Trans::get($trans_no[0], $doc_type);
 			if (count($trans_no) > 1) {
-				$cart->trans_no = get_customer_trans_version($doc_type, $trans_no);
-			}
-			else
-			{
+				$cart->trans_no = Sales_Trans::get_version($doc_type, $trans_no);
+			} else {
 				$cart->trans_no = array($trans_no[0] => $myrow["version"]);
 			}
 			$cart->set_sales_type($myrow["tpe"], $myrow["sales_type"], $myrow["tax_included"], 0);
@@ -307,7 +312,7 @@
 			$cart->dimension2_id = $myrow['dimension2_id'];
 			$cart->Comments = '';
 			foreach ($trans_no as $trans) {
-				$cart->Comments .= ui_view::get_comments_string($doc_type, $trans);
+				$cart->Comments .= DB_Comments::get_string($doc_type, $trans);
 			}
 			// FIX this should be calculated sum() for multiply parents
 			$cart->set_delivery($myrow["ship_via"], $myrow["br_name"],
@@ -318,8 +323,8 @@
 				$cart->set_location($myrow['loc_code'], $myrow['location_name']);
 			}
 			$result = get_customer_trans_details($doc_type, $trans_no);
-			if (DBOld::num_rows($result) > 0) {
-				for ($line_no = 0; $myrow = DBOld::fetch($result); $line_no++) {
+			if (DB::num_rows($result) > 0) {
+				for ($line_no = 0; $myrow = DB::fetch($result); $line_no++) {
 					$cart->line_items[$line_no] = new Sales_Line(
 						$myrow["stock_id"], $myrow["quantity"],
 						$myrow["unit_price"], $myrow["discount_percent"],

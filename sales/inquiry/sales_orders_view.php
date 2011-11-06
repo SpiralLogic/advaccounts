@@ -16,15 +16,15 @@
 	Security::set_page(
 		Input::post('order_view_mode'),
 		array(
-				 'OutstandingOnly'	=> 'SA_SALESDELIVERY',
-				 'InvoiceTemplates' => 'SA_SALESINVOICE'
+			'OutstandingOnly'  => 'SA_SALESDELIVERY',
+			'InvoiceTemplates' => 'SA_SALESINVOICE'
 		),
 		array(
-				 'OutstandingOnly'	=> 'SA_SALESDELIVERY',
-				 'InvoiceTemplates' => 'SA_SALESINVOICE'
+			'OutstandingOnly'  => 'SA_SALESDELIVERY',
+			'InvoiceTemplates' => 'SA_SALESINVOICE'
 		)
 	);
-	JS::get_js_open_window(900, 600);
+	JS::open_window(900, 600);
 	if (AJAX_REFERRER && !empty($_POST['ajaxsearch'])) {
 		$searchArray = explode(' ', $_POST['ajaxsearch']);
 	}
@@ -48,27 +48,27 @@
 	}
 	if ($trans_type == ST_SALESORDER) {
 		if (Input::get('OutstandingOnly')) {
-			$_POST['order_view_mode'] = 'OutstandingOnly';
-			$page_title               = _($help_context = "Search Outstanding Sales Orders");
+			$_POST['order_view_mode']  = 'OutstandingOnly';
+			Session::get()->page_title = _($help_context = "Search Outstanding Sales Orders");
 		}
 		elseif (isset($_GET['InvoiceTemplates']) && ($_GET['InvoiceTemplates'] == true)) {
-			$_POST['order_view_mode'] = 'InvoiceTemplates';
-			$page_title               = _($help_context = "Search Template for Invoicing");
+			$_POST['order_view_mode']  = 'InvoiceTemplates';
+			Session::get()->page_title = _($help_context = "Search Template for Invoicing");
 		}
 		elseif (isset($_GET['DeliveryTemplates']) && ($_GET['DeliveryTemplates'] == true)) {
-			$_POST['order_view_mode'] = 'DeliveryTemplates';
-			$page_title               = _($help_context = "Select Template for Delivery");
+			$_POST['order_view_mode']  = 'DeliveryTemplates';
+			Session::get()->page_title = _($help_context = "Select Template for Delivery");
 		}
 		elseif (!isset($_POST['order_view_mode'])) {
-			$_POST['order_view_mode'] = false;
-			$page_title               = _($help_context = "Search All Sales Orders");
+			$_POST['order_view_mode']  = false;
+			Session::get()->page_title = _($help_context = "Search All Sales Orders");
 		}
 	}
 	else {
-		$_POST['order_view_mode'] = "Quotations";
-		$page_title               = _($help_context = "Search All Sales Quotations");
+		$_POST['order_view_mode']  = "Quotations";
+		Session::get()->page_title = _($help_context = "Search All Sales Quotations");
 	}
-	Page::start($page_title);
+	Page::start(Session::get()->page_title);
 	if (isset($_GET['selected_customer'])) {
 		$selected_customer = $_GET['selected_customer'];
 	}
@@ -187,7 +187,7 @@
 	{
 		$Ajax = Ajax::instance();
 		$sql  = "UPDATE sales_orders SET type = !type WHERE order_no=$id";
-		DBOld::query($sql, "Can't change sales order type");
+		DB::query($sql, "Can't change sales order type");
 		$Ajax->activate('orders_tbl');
 	}
 
@@ -285,17 +285,17 @@
 		AND sorder.branch_code = branch.branch_code
 		AND debtor.debtor_no = branch.debtor_no";
 	if ($_POST['customer_id'] != ALL_TEXT) {
-		$sql .= " AND sorder.debtor_no = " . DBOld::escape($_POST['customer_id']);
+		$sql .= " AND sorder.debtor_no = " . DB::escape($_POST['customer_id'], false, false);
 	}
 	if (isset($_POST['OrderNumber']) && $_POST['OrderNumber'] != "") {
 		// search orders with number like
 		$number_like = "%" . $_POST['OrderNumber'];
-		$sql .= " AND sorder.order_no LIKE " . DBOld::escape($number_like) . " GROUP BY sorder.order_no";
+		$sql .= " AND sorder.order_no LIKE " . DB::escape($number_like, false, false) . " GROUP BY sorder.order_no";
 	}
 	elseif (isset($_POST['OrderReference']) && $_POST['OrderReference'] != "") {
 		// search orders with reference like
 		$number_like = "%" . $_POST['OrderReference'] . "%";
-		$sql .= " AND sorder.reference LIKE " . DBOld::escape($number_like) . " GROUP BY sorder.order_no";
+		$sql .= " AND sorder.reference LIKE " . DB::escape($number_like, false, false) . " GROUP BY sorder.order_no";
 	}
 	elseif (AJAX_REFERRER && !empty($_POST['ajaxsearch'])) {
 		foreach (
@@ -304,7 +304,7 @@
 			if (empty($ajaxsearch)) {
 				continue;
 			}
-			$ajaxsearch = DBOld::escape("%" . trim($ajaxsearch) . "%");
+			$ajaxsearch = DB::escape("%" . trim($ajaxsearch) . "%", false, false);
 			$sql
 			 .= " AND (debtor.name LIKE $ajaxsearch OR sorder.order_no LIKE $ajaxsearch
 			OR sorder.reference LIKE $ajaxsearch  OR sorder.contact_name LIKE $ajaxsearch
@@ -326,19 +326,19 @@
 		) {
 			$date_after  = Dates::date2sql($_POST['OrdersAfterDate']);
 			$date_before = Dates::date2sql($_POST['OrdersToDate']);
-			$sql .= " AND sorder.ord_date >= '$date_after'" . " AND sorder.ord_date <= '$date_before'";
+			$sql .= " AND sorder.ord_date >= '$date_after' AND sorder.ord_date <= '$date_before'";
 		}
 		if ($trans_type == 32 && !check_value('show_all')) {
 			$sql .= " AND sorder.delivery_date >= '" . Dates::date2sql(Dates::Today()) . "'";
 		}
 		if ($selected_customer != -1) {
-			$sql .= " AND sorder.debtor_no=" . DBOld::escape($selected_customer);
+			$sql .= " AND sorder.debtor_no=" . DB::escape($selected_customer, false, false);
 		}
 		if (isset($selected_stock_item)) {
-			$sql .= " AND line.stk_code=" . DBOld::escape($selected_stock_item);
+			$sql .= " AND line.stk_code=" . DB::escape($selected_stock_item, false, false);
 		}
 		if (isset($_POST['StockLocation']) && $_POST['StockLocation'] != ALL_TEXT) {
-			$sql .= " AND sorder.from_stk_loc = " . DBOld::escape($_POST['StockLocation']);
+			$sql .= " AND sorder.from_stk_loc = " . DB::escape($_POST['StockLocation'], false, false);
 		}
 		if ($_POST['order_view_mode'] == 'OutstandingOnly') {
 			$sql .= " AND line.qty_sent < line.quantity";
@@ -359,82 +359,82 @@
 	}
 	if ($trans_type == ST_SALESORDER) {
 		$cols = array(
-			_("Order #")		 => array(
+			_("Order #")     => array(
 				'fun' => 'view_link',
 				'ord' => 'desc'
 			),
 			array('type' => 'skip'),
-			_("Ref")				 => array('ord' => ''),
-			_("Customer")		=> array('ord' => ''),
+			_("Ref")         => array('ord' => ''),
+			_("Customer")    => array('ord' => ''),
 			array('type' => 'skip'),
-			_("Branch")			=> array('ord' => ''),
-			_("PO#")				 => array('ord' => ''),
-			_("Date")				=> array(
+			_("Branch")      => array('ord' => ''),
+			_("PO#")         => array('ord' => ''),
+			_("Date")        => array(
 				'type' => 'date',
-				'ord'	=> ''
+				'ord'  => ''
 			),
 			_("Required By") => array(
 				'type' => 'date',
-				'ord'	=> ''
+				'ord'  => ''
 			),
 			_("Delivery To"),
-			_("Total")			 => array(
+			_("Total")       => array(
 				'type' => 'amount',
-				'ord'	=> ''
+				'ord'  => ''
 			),
-			'type'					 => 'skip',
-			_("Currency")		=> array('align' => 'center')
+			'type'           => 'skip',
+			_("Currency")    => array('align' => 'center')
 		);
 	}
 	else {
 		$cols = array(
-			_("Quote #")		 => array(
+			_("Quote #")     => array(
 				'fun' => 'view_link',
 				'ord' => 'desc'
 			),
 			array('type' => 'skip'),
-			_("Ref")				 => array('ord' => ''),
-			_("Customer")		=> array('ord' => ''),
+			_("Ref")         => array('ord' => ''),
+			_("Customer")    => array('ord' => ''),
 			array('type' => 'skip'),
-			_("Branch")			=> array('ord' => ''),
-			_("PO#")				 => array('ord' => ''),
-			_("Date")				=> array(
+			_("Branch")      => array('ord' => ''),
+			_("PO#")         => array('ord' => ''),
+			_("Date")        => array(
 				'type' => 'date',
-				'ord'	=> ''
+				'ord'  => ''
 			),
 			_("Valid until") => array(
 				'type' => 'date',
-				'ord'	=> ''
+				'ord'  => ''
 			),
 			_("Delivery To"),
-			_("Total")			 => array(
+			_("Total")       => array(
 				'type' => 'amount',
-				'ord'	=> ''
+				'ord'  => ''
 			),
-			'type'					 => 'skip',
-			_("Currency")		=> array('align' => 'center')
+			'type'           => 'skip',
+			_("Currency")    => array('align' => 'center')
 		);
 	}
 	if ($_POST['order_view_mode'] == 'OutstandingOnly') {
 		//Arr::substitute($cols, 3, 1, _("Cust Order Ref"));
 		Arr::append(
 			$cols, array(
-									array(
-										'insert' => true,
-										'fun'		=> 'dispatch_link'
-									)
-						 )
+				array(
+					'insert' => true,
+					'fun'    => 'dispatch_link'
+				)
+			)
 		);
 	}
 	elseif ($_POST['order_view_mode'] == 'InvoiceTemplates') {
 		Arr::substitute($cols, 3, 1, _("Description"));
 		Arr::append(
 			$cols, array(
-									array(
-										'insert' => true,
-										'fun'		=> 'invoice_link'
-									)
-						 )
+				array(
+					'insert' => true,
+					'fun'    => 'invoice_link'
+				)
+			)
 		);
 	}
 	else {
@@ -442,41 +442,41 @@
 			Arr::substitute($cols, 3, 1, _("Description"));
 			Arr::append(
 				$cols, array(
-										array(
-											'insert' => true,
-											'fun'		=> 'delivery_link'
-										)
-							 )
+					array(
+						'insert' => true,
+						'fun'    => 'delivery_link'
+					)
+				)
 			);
 		}
 		elseif ($trans_type == ST_SALESQUOTE) {
 			Arr::append(
 				$cols,
 				array(
-						 array(
-							 'insert' => true,
-							 'type'	 => 'skip'
-						 ),
-						 array(
-							 'insert' => true,
-							 'type'	 => 'skip'
-						 ),
-						 array(
-							 'insert' => true,
-							 'fun'		=> 'edit_link'
-						 ),
-						 array(
-							 'insert' => true,
-							 'fun'		=> 'order_link'
-						 ),
-						 array(
-							 'insert' => true,
-							 'fun'		=> 'email_link'
-						 ),
-						 array(
-							 'insert' => true,
-							 'fun'		=> 'prt_link'
-						 )
+					array(
+						'insert' => true,
+						'type'   => 'skip'
+					),
+					array(
+						'insert' => true,
+						'type'   => 'skip'
+					),
+					array(
+						'insert' => true,
+						'fun'    => 'edit_link'
+					),
+					array(
+						'insert' => true,
+						'fun'    => 'order_link'
+					),
+					array(
+						'insert' => true,
+						'fun'    => 'email_link'
+					),
+					array(
+						'insert' => true,
+						'fun'    => 'prt_link'
+					)
 				)
 			);
 		}
@@ -484,27 +484,27 @@
 			Arr::append(
 				$cols,
 				array(
-						 _("Tmpl") => array(
-							 'type'	 => 'skip',
-							 'insert' => true,
-							 'fun'		=> 'tmpl_checkbox'
-						 ),
-						 array(
-							 'insert' => true,
-							 'fun'		=> 'edit_link'
-						 ),
-						 array(
-							 'insert' => true,
-							 'fun'		=> 'email_link'
-						 ),
-						 array(
-							 'insert' => true,
-							 'fun'		=> 'prt_link2'
-						 ),
-						 array(
-							 'insert' => true,
-							 'fun'		=> 'prt_link'
-						 )
+					_("Tmpl") => array(
+						'type'   => 'skip',
+						'insert' => true,
+						'fun'    => 'tmpl_checkbox'
+					),
+					array(
+						'insert' => true,
+						'fun'    => 'edit_link'
+					),
+					array(
+						'insert' => true,
+						'fun'    => 'email_link'
+					),
+					array(
+						'insert' => true,
+						'fun'    => 'prt_link2'
+					),
+					array(
+						'insert' => true,
+						'fun'    => 'prt_link'
+					)
 				)
 			);
 		}

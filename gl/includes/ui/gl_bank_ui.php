@@ -9,9 +9,9 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	function display_bank_header(&$order)
+	function display_bank_header($order)
 	{
-		$Ajax    = Ajax::instance();
+		$Ajax = Ajax::instance();
 		$payment = $order->trans_type == ST_BANKPAYMENT;
 		div_start('pmt_header');
 		start_outer_table("width=90% " . Config::get('tables_style2')); // outer table
@@ -22,18 +22,14 @@
 		if (!isset($_POST['PayType'])) {
 			if (isset($_GET['PayType'])) {
 				$_POST['PayType'] = $_GET['PayType'];
-			}
-			else
-			{
+			} else {
 				$_POST['PayType'] = "";
 			}
 		}
 		if (!isset($_POST['person_id'])) {
 			if (isset($_GET['PayPerson'])) {
 				$_POST['person_id'] = $_GET['PayPerson'];
-			}
-			else
-			{
+			} else {
 				$_POST['person_id'] = "";
 			}
 		}
@@ -45,12 +41,12 @@
 			$Ajax->activate('editors');
 		}
 		payment_person_types_list_row($payment ? _("Pay To:") : _("From:"),
-																	'PayType', $_POST['PayType'], true);
+			'PayType', $_POST['PayType'], true);
 		switch ($_POST['PayType'])
 		{
 		case PT_MISC :
 			text_row_ex($payment ? _("To the Order of:") : _("Name:"),
-									'person_id', 40, 50);
+				'person_id', 40, 50);
 			break;
 			//case PT_WORKORDER :
 			//	workorders_list_row(_("Work Order:"), 'person_id', null);
@@ -62,10 +58,8 @@
 			customer_list_row(_("Customer:"), 'person_id', null, false, true, false, true);
 			if (Input::post('person_id') && Validation::check(Validation::BRANCHES, _("No Branches for Customer"), $_POST['person_id'])) {
 				customer_branches_list_row(_("Branch:"), $_POST['person_id'],
-																	 'PersonDetailID', null, false, true, true, true);
-			}
-			else
-			{
+					'PersonDetailID', null, false, true, true, true);
+			} else {
 				$_POST['PersonDetailID'] = ANY_NUMERIC;
 				hidden('PersonDetailID');
 			}
@@ -77,22 +71,20 @@
 				unset($_POST['totamount']); // enable default
 				$Ajax->activate('totamount');
 			}
-			amount_row($qid['base_desc'] . ":", 'totamount', price_format($qid['base_amount']),
-								 null, "&nbsp;&nbsp;" . submit('go', _("Go"), false, false, true));
+			amount_row($qid['base_desc'] . ":", 'totamount', Num::price_format($qid['base_amount']),
+				null, "&nbsp;&nbsp;" . submit('go', _("Go"), false, false, true));
 			break;
 			//case payment_person_types::Project() :
 			//	dimensions_list_row(_("Dimension:"), 'person_id', $_POST['person_id'], false, null, true);
 			//	break;
 		}
 		$person_currency = Banking::payment_person_currency($_POST['PayType'], $_POST['person_id']);
-		$bank_currency   = Banking::get_bank_account_currency($_POST['bank_account']);
-		ui_view::exchange_rate_display($bank_currency, $person_currency, $_POST['date_']);
+		$bank_currency = Banking::get_bank_account_currency($_POST['bank_account']);
+		Display::exchange_rate($bank_currency, $person_currency, $_POST['date_']);
 		table_section(3, "33%");
 		if (isset($_GET['NewPayment'])) {
 			ref_row(_("Reference:"), 'ref', '', Refs::get_next(ST_BANKPAYMENT));
-		}
-		else
-		{
+		} else {
 			ref_row(_("Reference:"), 'ref', '', Refs::get_next(ST_BANKDEPOSIT));
 		}
 		end_outer_table(1); // outer table
@@ -102,25 +94,23 @@
 	//---------------------------------------------------------------------------------
 	function display_gl_items($title, &$order)
 	{
-		$dim     = DB_Company::get_pref('use_dimension');
+		$dim = DB_Company::get_pref('use_dimension');
 		$colspan = ($dim == 2 ? 4 : ($dim == 1 ? 3 : 2));
-		ui_msgs::display_heading($title);
+		Display::heading($title);
 		div_start('items_table');
 		start_table(Config::get('tables_style') . " colspan=7 width=95%");
 		if ($dim == 2) {
 			$th = array(_("Account Code"), _("Account Description"), _("Dimension") . " 1",
-									_("Dimension") . " 2", _("Amount"), _("Memo"), ""
+				_("Dimension") . " 2", _("Amount"), _("Memo"), ""
 			);
 		}
 		else if ($dim == 1) {
 			$th = array(_("Account Code"), _("Account Description"), _("Dimension"),
-									_("Amount"), _("Memo"), ""
+				_("Amount"), _("Memo"), ""
 			);
-		}
-		else
-		{
+		} else {
 			$th = array(_("Account Code"), _("Account Description"),
-									_("Amount"), _("Memo"), ""
+				_("Amount"), _("Memo"), ""
 			);
 		}
 		if (count($order->gl_items)) {
@@ -144,20 +134,16 @@
 				//amount_cell(abs($item->amount));
 				if ($order->trans_type == ST_BANKDEPOSIT) {
 					amount_cell(-$item->amount);
-				}
-				else
-				{
+				} else {
 					amount_cell($item->amount);
 				}
 				label_cell($item->reference);
 				edit_button_cell("Edit$line", _("Edit"),
-												 _('Edit document line'));
+					_('Edit document line'));
 				delete_button_cell("Delete$line", _("Delete"),
-													 _('Remove line from document'));
+					_('Remove line from document'));
 				end_row();
-			}
-			else
-			{
+			} else {
 				gl_edit_item_controls($order, $dim, $line);
 			}
 		}
@@ -165,27 +151,27 @@
 			gl_edit_item_controls($order, $dim);
 		}
 		if ($order->count_gl_items()) {
-			label_row(_("Total"), number_format2(abs($order->gl_items_total()), user_price_dec()), "colspan=" . $colspan . " align=right", "align=right", 3);
+			label_row(_("Total"), Num::format(abs($order->gl_items_total()), User::price_dec()), "colspan=" . $colspan . " align=right", "align=right", 3);
 		}
 		end_table();
 		div_end();
 	}
 
 	//---------------------------------------------------------------------------------
-	function gl_edit_item_controls(&$order, $dim, $Index = null)
+	function gl_edit_item_controls($order, $dim, $Index = null)
 	{
-		$Ajax    = Ajax::instance();
+		$Ajax = Ajax::instance();
 		$payment = $order->trans_type == ST_BANKPAYMENT;
 		start_row();
 		$id = find_submit('Edit');
 		if ($Index != -1 && $Index == $id) {
-			$item                   = $order->gl_items[$Index];
-			$_POST['code_id']       = $item->code_id;
-			$_POST['dimension_id']  = $item->dimension_id;
+			$item = $order->gl_items[$Index];
+			$_POST['code_id'] = $item->code_id;
+			$_POST['dimension_id'] = $item->dimension_id;
 			$_POST['dimension2_id'] = $item->dimension2_id;
-			$_POST['amount']        = price_format(abs($item->amount));
-			$_POST['description']   = $item->description;
-			$_POST['LineMemo']      = $item->reference;
+			$_POST['amount'] = Num::price_format(abs($item->amount));
+			$_POST['description'] = $item->description;
+			$_POST['LineMemo'] = $item->reference;
 			hidden('Index', $id);
 			echo gl_all_accounts_list('code_id', null, true, true);
 			if ($dim >= 1) {
@@ -196,20 +182,20 @@
 			}
 			$Ajax->activate('items_table');
 		} else {
-			$_POST['amount']        = price_format(0);
-			$_POST['dimension_id']  = 0;
+			$_POST['amount'] = Num::price_format(0);
+			$_POST['dimension_id'] = 0;
 			$_POST['dimension2_id'] = 0;
 			//$_POST['LineMemo'] = ""; // let memo go to next line Joe Hunt 2010-05-30
 			if (isset($_POST['_code_id_update'])) {
 				$Ajax->activate('code_id');
 			}
 			if ($_POST['PayType'] == PT_CUSTOMER) {
-				$acc              = get_branch_accounts($_POST['PersonDetailID']);
+				$acc = get_branch_accounts($_POST['PersonDetailID']);
 				$_POST['code_id'] = $acc['receivables_account'];
 			}
 			elseif ($_POST['PayType'] == PT_SUPPLIER)
 			{
-				$acc              = get_supplier_accounts($_POST['person_id']);
+				$acc = get_supplier_accounts($_POST['person_id']);
 				$_POST['code_id'] = $acc['payable_account'];
 			}
 				//elseif ($_POST['PayType'] == PT_WORKORDER)
@@ -236,13 +222,13 @@
 		text_cells_ex(null, 'LineMemo', 35, 255);
 		if ($id != -1) {
 			button_cell('UpdateItem', _("Update"),
-									_('Confirm changes'), ICON_UPDATE);
+				_('Confirm changes'), ICON_UPDATE);
 			button_cell('CancelItemChanges', _("Cancel"),
-									_('Cancel changes'), ICON_CANCEL);
+				_('Cancel changes'), ICON_CANCEL);
 			ui_view::set_focus('amount');
 		} else {
 			submit_cells('AddItem', _("Add Item"), "colspan=2",
-									 _('Add new item to document'), true);
+				_('Add new item to document'), true);
 		}
 		end_row();
 	}

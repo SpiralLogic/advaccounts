@@ -16,22 +16,16 @@
 	// date_:	2005-05-19
 	// Title:	Order Status List
 	// ----------------------------------------------------------------
-
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-
-	include_once(APP_PATH . "inventory/includes/db/items_category_db.php");
-
 	//----------------------------------------------------------------------------------------------------
-
 	print_order_status_list();
-
 	//----------------------------------------------------------------------------------------------------
-
-	function GetSalesOrders($from, $to, $category = 0, $location = null, $backorder = 0) {
+	function GetSalesOrders($from, $to, $category = 0, $location = null, $backorder = 0)
+	{
 		$fromdate = Dates::date2sql($from);
 		$todate = Dates::date2sql($to);
-
-		$sql = "SELECT sales_orders.order_no,
+		$sql
+		 = "SELECT sales_orders.order_no,
 				sales_orders.debtor_no,
                 sales_orders.branch_code,
                 sales_orders.customer_ref,
@@ -52,21 +46,22 @@
             	    ON sales_order_details.stk_code = stock_master.stock_id
             WHERE sales_orders.ord_date >='$fromdate'
                 AND sales_orders.ord_date <='$todate'";
-		if ($category > 0)
-			$sql .= " AND stock_master.category_id=" . DBOld::escape($category);
-		if ($location != null)
-			$sql .= " AND sales_orders.from_stk_loc=" . DBOld::escape($location);
-		if ($backorder)
+		if ($category > 0) {
+			$sql .= " AND stock_master.category_id=" . DB::escape($category);
+		}
+		if ($location != null) {
+			$sql .= " AND sales_orders.from_stk_loc=" . DB::escape($location);
+		}
+		if ($backorder) {
 			$sql .= " AND sales_order_details.quantity - sales_order_details.qty_sent > 0";
+		}
 		$sql .= " ORDER BY sales_orders.order_no";
-
-		return DBOld::query($sql, "Error getting order details");
+		return DB::query($sql, "Error getting order details");
 	}
 
 	//----------------------------------------------------------------------------------------------------
-
-	function print_order_status_list() {
-
+	function print_order_status_list()
+	{
 		$from = $_POST['PARAM_0'];
 		$to = $_POST['PARAM_1'];
 		$category = $_POST['PARAM_2'];
@@ -74,60 +69,78 @@
 		$backorder = $_POST['PARAM_4'];
 		$comments = $_POST['PARAM_5'];
 		$destination = $_POST['PARAM_6'];
-		if ($destination)
+		if ($destination) {
 			include_once(APP_PATH . "includes/reports/excel.php");
+		}
 		else
+		{
 			include_once(APP_PATH . "includes/reports/pdf.php");
-
-		if ($category == ALL_NUMERIC)
+		}
+		if ($category == ALL_NUMERIC) {
 			$category = 0;
-		if ($location == ALL_TEXT)
+		}
+		if ($location == ALL_TEXT) {
 			$location = null;
-		if ($category == 0)
+		}
+		if ($category == 0) {
 			$cat = _('All');
+		}
 		else
-			$cat = get_category_name($category);
-		if ($location == null)
+		{
+			$cat = Item_Category::get_name($category);
+		}
+		if ($location == null) {
 			$loc = _('All');
+		}
 		else
+		{
 			$loc = get_location_name($location);
-		if ($backorder == 0)
+		}
+		if ($backorder == 0) {
 			$back = _('All Orders');
+		}
 		else
+		{
 			$back = _('Back Orders Only');
-
+		}
 		$cols = array(0, 60, 150, 260, 325, 385, 450, 515);
-
-		$headers2 = array(_('Order'), _('Customer'), _('Branch'), _('Customer Ref'),
+		$headers2 = array(
+			_('Order'), _('Customer'), _('Branch'), _('Customer Ref'),
 			_('Ord Date'), _('Del Date'), _('Loc')
 		);
-
 		$aligns = array('left', 'left', 'right', 'right', 'right', 'right', 'right');
-
-		$headers = array(_('Code'), _('Description'), _('Ordered'), _('Invoiced'),
+		$headers = array(
+			_('Code'), _('Description'), _('Ordered'), _('Invoiced'),
 			_('Outstanding'), ''
 		);
-
-		$params = array(0 => $comments,
-			1 => array('text' => _('Period'), 'from' => $from, 'to' => $to),
-			2 => array('text' => _('Category'), 'from' => $cat, 'to' => ''),
-			3 => array('text' => _('Location'), 'from' => $loc, 'to' => ''),
-			4 => array('text' => _('Selection'), 'from' => $back, 'to' => '')
+		$params = array(
+			0 => $comments,
+			1 => array(
+				'text' => _('Period'),
+				'from' => $from,
+				'to'   => $to),
+			2 => array(
+				'text' => _('Category'),
+				'from' => $cat,
+				'to'   => ''),
+			3 => array(
+				'text' => _('Location'),
+				'from' => $loc,
+				'to'   => ''),
+			4 => array(
+				'text' => _('Selection'),
+				'from' => $back,
+				'to'   => '')
 		);
-
 		$cols2 = $cols;
 		$aligns2 = $aligns;
-
-		$rep = new FrontReport(_('Order Status Listing'), "OrderStatusListing", user_pagesize());
+		$rep = new FrontReport(_('Order Status Listing'), "OrderStatusListing", User::pagesize());
 		$rep->Font();
 		$rep->Info($params, $cols, $headers, $aligns, $cols2, $headers2, $aligns2);
-
 		$rep->Header();
 		$orderno = 0;
-
 		$result = GetSalesOrders($from, $to, $category, $location, $backorder);
-
-		while ($myrow = DBOld::fetch($result))
+		while ($myrow = DB::fetch($result))
 		{
 			if ($rep->row < $rep->bottomMargin + (2 * $rep->lineHeight)) {
 				$orderno = 0;
@@ -151,7 +164,7 @@
 			}
 			$rep->TextCol(0, 1, $myrow['stk_code']);
 			$rep->TextCol(1, 2, $myrow['description']);
-			$dec = get_qty_dec($myrow['stk_code']);
+			$dec = Num::qty_dec($myrow['stk_code']);
 			$rep->AmountCol(2, 3, $myrow['quantity'], $dec);
 			$rep->AmountCol(3, 4, $myrow['qty_sent'], $dec);
 			$rep->AmountCol(4, 5, $myrow['quantity'] - $myrow['qty_sent'], $dec);

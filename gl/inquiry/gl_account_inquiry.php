@@ -12,7 +12,7 @@
 	$page_security = 'SA_GLTRANSVIEW';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	JS::set_focus('account');
-	JS::get_js_open_window(800, 500);
+	JS::open_window(800, 500);
 	Page::start(_($help_context = "General Ledger Inquiry"));
 	//----------------------------------------------------------------------------------------------------
 	// Ajax updates
@@ -42,10 +42,10 @@
 		$_POST["amount_max"] = $_GET["amount_max"];
 	}
 	if (!isset($_POST["amount_min"])) {
-		$_POST["amount_min"] = price_format(0);
+		$_POST["amount_min"] = Num::price_format(0);
 	}
 	if (!isset($_POST["amount_max"])) {
-		$_POST["amount_max"] = price_format(0);
+		$_POST["amount_max"] = Num::price_format(0);
 	}
 	//----------------------------------------------------------------------------------------------------
 	function gl_inquiry_controls()
@@ -84,7 +84,7 @@
 			$_POST["account"] = null;
 		}
 		$act_name = $_POST["account"] ? get_gl_account_name($_POST["account"]) : "";
-		$dim      = DB_Company::get_pref('use_dimension');
+		$dim = DB_Company::get_pref('use_dimension');
 		/*Now get the transactions  */
 		if (!isset($_POST['Dimension'])) {
 			$_POST['Dimension'] = 0;
@@ -92,14 +92,14 @@
 		if (!isset($_POST['Dimension2'])) {
 			$_POST['Dimension2'] = 0;
 		}
-		$result  = get_gl_transactions(
+		$result = get_gl_transactions(
 			$_POST['TransFromDate'], $_POST['TransToDate'], -1,
 			$_POST["account"], $_POST['Dimension'], $_POST['Dimension2'], null,
 			input_num('amount_min'), input_num('amount_max')
 		);
 		$colspan = ($dim == 2 ? "6" : ($dim == 1 ? "5" : "4"));
 		if ($_POST["account"] != null) {
-			ui_msgs::display_heading($_POST["account"] . "&nbsp;&nbsp;&nbsp;" . $act_name);
+			Display::heading($_POST["account"] . "&nbsp;&nbsp;&nbsp;" . $act_name);
 		}
 		// Only show balances if an account is specified AND we're not filtering by amounts
 		$show_balances = $_POST["account"] != null
@@ -144,15 +144,15 @@
 			);
 			start_row("class='inquirybg'");
 			label_cell("<b>" . _("Opening Balance") . " - " . $_POST['TransFromDate'] . "</b>", "colspan=$colspan");
-			ui_view::display_debit_or_credit_cells($bfw);
+			Display::debit_or_credit_cells($bfw);
 			label_cell("");
 			label_cell("");
 			end_row();
 		}
 		$running_total = $bfw;
-		$j             = 1;
-		$k             = 0; //row colour counter
-		while ($myrow = DBOld::fetch($result))
+		$j = 1;
+		$k = 0; //row colour counter
+		while ($myrow = DB::fetch($result))
 		{
 			alt_table_row_color($k);
 			$running_total += $myrow["amount"];
@@ -170,7 +170,7 @@
 				label_cell(get_dimension_string($myrow['dimension2_id'], true));
 			}
 			label_cell(Banking::payment_person_name($myrow["person_type_id"], $myrow["person_id"]));
-			ui_view::display_debit_or_credit_cells($myrow["amount"]);
+			Display::debit_or_credit_cells($myrow["amount"]);
 			if ($show_balances) {
 				amount_cell($running_total);
 			}
@@ -186,14 +186,14 @@
 		if ($show_balances) {
 			start_row("class='inquirybg'");
 			label_cell("<b>" . _("Ending Balance") . " - " . $_POST['TransToDate'] . "</b>", "colspan=$colspan");
-			ui_view::display_debit_or_credit_cells($running_total);
+			Display::debit_or_credit_cells($running_total);
 			label_cell("");
 			label_cell("");
 			end_row();
 		}
 		end_table(2);
-		if (DBOld::num_rows($result) == 0) {
-			ui_msgs::display_warning(_("No general ledger transactions have been created for the specified criteria."), 0, 1);
+		if (DB::num_rows($result) == 0) {
+			Errors::warning(_("No general ledger transactions have been created for the specified criteria."), 0, 1);
 		}
 	}
 

@@ -17,10 +17,10 @@
 	// Title:	price Listing
 	// ----------------------------------------------------------------
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	include_once(APP_PATH . "sales/includes/db/sales_types_db.php");
 	//----------------------------------------------------------------------------------------------------
 	print_price_listing();
-	function fetch_items($category = 0) {
+	function fetch_items($category = 0)
+	{
 		$sql
 		 = "SELECT stock_master.stock_id, stock_master.description AS name,
 				stock_master.material_cost+stock_master.labour_cost+stock_master.overhead_cost AS Standardcost,
@@ -30,15 +30,16 @@
 				stock_category
 			WHERE stock_master.category_id=stock_category.category_id AND NOT stock_master.inactive";
 		if ($category != 0) {
-			$sql .= " AND stock_category.category_id = " . DBOld::escape($category);
+			$sql .= " AND stock_category.category_id = " . DB::escape($category);
 		}
 		$sql
 		 .= " ORDER BY stock_master.category_id,
 				stock_master.stock_id";
-		return DBOld::query($sql, "No transactions were returned");
+		return DB::query($sql, "No transactions were returned");
 	}
 
-	function get_kits($category = 0) {
+	function get_kits($category = 0)
+	{
 		$sql
 		 = "SELECT i.item_code AS kit_code, i.description AS kit_name, c.category_id AS cat_id, c.description AS cat_name, count(*)>1 AS kit
 			FROM
@@ -48,14 +49,15 @@
 			ON i.category_id=c.category_id";
 		$sql .= " WHERE !i.is_foreign AND i.item_code!=i.stock_id";
 		if ($category != 0) {
-			$sql .= " AND c.category_id = " . DBOld::escape($category);
+			$sql .= " AND c.category_id = " . DB::escape($category);
 		}
 		$sql .= " GROUP BY i.item_code";
-		return DBOld::query($sql, "No kits were returned");
+		return DB::query($sql, "No kits were returned");
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	function print_price_listing() {
+	function print_price_listing()
+	{
 		$currency = $_POST['PARAM_0'];
 		$category = $_POST['PARAM_1'];
 		$salestype = $_POST['PARAM_2'];
@@ -68,7 +70,7 @@
 		} else {
 			include_once(APP_PATH . "includes/reports/pdf.php");
 		}
-		$dec = user_price_dec();
+		$dec = User::price_dec();
 		$home_curr = DB_Company::get_pref('curr_default');
 		if ($currency == ALL_TEXT) {
 			$currency = $home_curr;
@@ -84,12 +86,12 @@
 		if ($category == 0) {
 			$cat = _('All');
 		} else {
-			$cat = get_category_name($category);
+			$cat = Item_Category::get_name($category);
 		}
 		if ($salestype == 0) {
 			$stype = _('All');
 		} else {
-			$stype = get_sales_type_name($salestype);
+			$stype = Sales_Type::get_name($salestype);
 		}
 		if ($showGP == 0) {
 			$GP = _('No');
@@ -104,32 +106,32 @@
 			1 => array(
 				'text' => _('Currency'),
 				'from' => $curr_sel,
-				'to' => ''
+				'to'   => ''
 			),
 			2 => array(
 				'text' => _('Category'),
 				'from' => $cat,
-				'to' => ''
+				'to'   => ''
 			),
 			3 => array(
 				'text' => _('Sales Type'),
 				'from' => $stype,
-				'to' => ''
+				'to'   => ''
 			),
 			4 => array(
 				'text' => _('Show GP %'),
 				'from' => $GP,
-				'to' => ''
+				'to'   => ''
 			)
 		);
-		$rep = new FrontReport(_('Price Listing'), "PriceListing", user_pagesize());
+		$rep = new FrontReport(_('Price Listing'), "PriceListing", User::pagesize());
 		$rep->Font();
 		$rep->Info($params, $cols, $headers, $aligns);
 		$rep->Header();
 		$result = fetch_items($category);
 		$catgor = '';
 		$_POST['sales_type_id'] = $salestype;
-		while ($myrow = DBOld::fetch($result))
+		while ($myrow = DB::fetch($result))
 		{
 			if ($catgor != $myrow['description']) {
 				$rep->Line($rep->row - $rep->lineHeight);
@@ -149,16 +151,14 @@
 				$price2 = get_price($myrow['stock_id'], $home_curr, $salestype);
 				if ($price2 != 0.0) {
 					$disp = ($price2 - $myrow['Standardcost']) * 100 / $price2;
-				}
-				else
-				{
+				} else {
 					$disp = 0.0;
 				}
-				$rep->TextCol(3, 4, number_format2($disp, user_percent_dec()) . " %");
+				$rep->TextCol(3, 4, Num::format($disp, User::percent_dec()) . " %");
 			}
 			if ($pictures) {
 				$image = COMPANY_PATH . "/images/"
-				 . item_img_name($myrow['stock_id']) . ".jpg";
+								 . Item::img_name($myrow['stock_id']) . ".jpg";
 				if (file_exists($image)) {
 					$rep->NewLine();
 					if ($rep->row - Config::get('item_images_height') < $rep->bottomMargin) {
@@ -168,16 +168,14 @@
 					$rep->row -= Config::get('item_images_height');
 					$rep->NewLine();
 				}
-			}
-			else
-			{
+			} else {
 				$rep->NewLine(0, 1);
 			}
 		}
 		$rep->Line($rep->row - 4);
 		$result = get_kits($category);
 		$catgor = '';
-		while ($myrow = DBOld::fetch($result))
+		while ($myrow = DB::fetch($result))
 		{
 			if ($catgor != $myrow['cat_name']) {
 				if ($catgor == '') {

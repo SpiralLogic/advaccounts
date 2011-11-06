@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 	$page_security = 'SA_ITEMSTRANSVIEW';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	JS::get_js_open_window(800, 500);
+	JS::open_window(800, 500);
 	Page::start(_($help_context = "Inventory Item Movement"));
 	//------------------------------------------------------------------------------------------------
 	Validation::check(Validation::STOCK_ITEMS, _("There are no items defined in the system."));
@@ -23,7 +23,7 @@
 	}
 	start_form();
 	if (!Input::post('stock_id')) {
-		$_POST['stock_id'] = ui_globals::get_global_stock_item();
+		$_POST['stock_id'] = Session::get()->global_stock_id;
 	}
 	start_table("class='tablestyle_noborder'");
 	stock_items_list_cells(_("Select an item:"), 'stock_id', $_POST['stock_id'], false, true, false);
@@ -33,17 +33,17 @@
 	submit_cells('ShowMoves', _("Show Movements"), '', _('Refresh Inquiry'), 'default');
 	end_table();
 	end_form();
-	ui_globals::set_global_stock_item($_POST['stock_id']);
+	Session::get()->global_stock_id = $_POST['stock_id'];
 	$before_date = Dates::date2sql($_POST['BeforeDate']);
 	$after_date = Dates::date2sql($_POST['AfterDate']);
 	$sql
 	 = "SELECT type, trans_no, tran_date, person_id, qty, reference
 	FROM stock_moves
-	WHERE loc_code=" . DBOld::escape($_POST['StockLocation']) . "
+	WHERE loc_code=" . DB::escape($_POST['StockLocation']) . "
 	AND tran_date >= '" . $after_date . "'
 	AND tran_date <= '" . $before_date . "'
-	AND stock_id = " . DBOld::escape($_POST['stock_id']) . " ORDER BY tran_date,trans_id";
-	$result = DBOld::query($sql, "could not query stock moves");
+	AND stock_id = " . DB::escape($_POST['stock_id']) . " ORDER BY tran_date,trans_id";
+	$result = DB::query($sql, "could not query stock moves");
 	Errors::check_db_error("The stock movements for the selected criteria could not be retrieved", $sql);
 	div_start('doc_tbl');
 	start_table(Config::get('tables_style'));
@@ -52,11 +52,11 @@
 		_("Quantity In"), _("Quantity Out"), _("Quantity On Hand")
 	);
 	table_header($th);
-	$sql = "SELECT SUM(qty) FROM stock_moves WHERE stock_id=" . DBOld::escape($_POST['stock_id']) . "
-	AND loc_code=" . DBOld::escape($_POST['StockLocation']) . "
+	$sql = "SELECT SUM(qty) FROM stock_moves WHERE stock_id=" . DB::escape($_POST['stock_id']) . "
+	AND loc_code=" . DB::escape($_POST['StockLocation']) . "
 	AND tran_date < '" . $after_date . "'";
-	$before_qty = DBOld::query($sql, "The starting quantity on hand could not be calculated");
-	$before_qty_row = DBOld::fetch_row($before_qty);
+	$before_qty = DB::query($sql, "The starting quantity on hand could not be calculated");
+	$before_qty_row = DB::fetch_row($before_qty);
 	$after_qty = $before_qty = $before_qty_row[0];
 	if (!isset($before_qty_row[0])) {
 		$after_qty = $before_qty = 0;
@@ -64,23 +64,23 @@
 	start_row("class='inquirybg'");
 	label_cell("<b>" . _("Quantity on hand before") . " " . $_POST['AfterDate'] . "</b>", "align=center colspan=5");
 	label_cell("&nbsp;", "colspan=2");
-	$dec = get_qty_dec($_POST['stock_id']);
+	$dec = Num::qty_dec($_POST['stock_id']);
 	qty_cell($before_qty, false, $dec);
 	end_row();
 	$j = 1;
 	$k = 0; //row colour counter
 	$total_in = 0;
 	$total_out = 0;
-	while ($myrow = DBOld::fetch($result))
+	while ($myrow = DB::fetch($result))
 	{
 		alt_table_row_color($k);
 		$trandate = Dates::sql2date($myrow["tran_date"]);
 		$type_name = $systypes_array[$myrow["type"]];
 		if ($myrow["qty"] > 0) {
-			$quantity_formatted = number_format2($myrow["qty"], $dec);
+			$quantity_formatted = Num::format($myrow["qty"], $dec);
 			$total_in += $myrow["qty"];
 		} else {
-			$quantity_formatted = number_format2(-$myrow["qty"], $dec);
+			$quantity_formatted = Num::format(-$myrow["qty"], $dec);
 			$total_out += -$myrow["qty"];
 		}
 		$after_qty += $myrow["qty"];
@@ -91,7 +91,7 @@
 		$person = $myrow["person_id"];
 		$gl_posting = "";
 		if (($myrow["type"] == ST_CUSTDELIVERY) || ($myrow["type"] == ST_CUSTCREDIT)) {
-			$cust_row = get_customer_details_from_trans($myrow["type"], $myrow["trans_no"]);
+			$cust_row = Sales_Trans::get_details($myrow["type"], $myrow["trans_no"]);
 			if (strlen($cust_row['name']) > 0) {
 				$person = $cust_row['name'] . " (" . $cust_row['br_name'] . ")";
 			}
@@ -100,8 +100,8 @@
 		{
 			// get the supplier name
 			$sql = "SELECT supp_name FROM suppliers WHERE supplier_id = '" . $myrow["person_id"] . "'";
-			$supp_result = DBOld::query($sql, "check failed");
-			$supp_row = DBOld::fetch($supp_result);
+			$supp_result = DB::query($sql, "check failed");
+			$supp_row = DB::fetch($supp_result);
 			if (strlen($supp_row['supp_name']) > 0) {
 				$person = $supp_row['supp_name'];
 			}

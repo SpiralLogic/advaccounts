@@ -9,12 +9,10 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-
 	include_once(APP_PATH . "gl/includes/gl_db.php");
-	include_once(APP_PATH . "inventory/includes/inventory_db.php");
-	include_once(APP_PATH . "purchasing/includes/purchasing_db.php");
 	include_once(APP_PATH . "sales/includes/sales_db.php");
-
+	include_once(APP_PATH . "inventory/includes/inventory_db.php");
+	include_once(APP_PATH . "purchases/includes/purchasing_db.php");
 	include_once(APP_PATH . "includes/ui/ui_lists.php");
 	include_once(APP_PATH . "includes/ui/ui_controls.php");
 	include_once(APP_PATH . "includes/ui/ui_input.php");

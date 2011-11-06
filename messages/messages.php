@@ -1,6 +1,8 @@
 <?php
 
 	$page_security = 'SA_OPEN';
+	$_SESSION['App']->selected_application = 'messages';
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	if (AJAX_REFERRER) {
 		$data['post'] = $_POST;
 		if (isset($_POST['user_id'])) {
@@ -13,11 +15,14 @@
 	Page::start(_($help_context = "Messages"), Input::request('popup'));
 	HTML::div(array('style' => 'margin:0 auto;text-align:center'));
 	user_list_row(_("User:"), 'user_id');
-	HTML::br(false)->label(array('content' => "Subject: ",
-															'for'      => 'subject'))->br->input('subject', array('size' => 50))->label;
-	HTML::br(false)->label(array('content' => "Message: ",
-															'for'      => 'message'))->br->textarea('message', array('cols' => 35,
-																																											'rows'  => 5,
+	HTML::br(false)->label(array(
+															'content'  => "Subject: ",
+															'for'			=> 'subject'))->br->input('subject', array('size' => 50))->label;
+	HTML::br(false)->label(array(
+															'content'  => "Message: ",
+															'for'			=> 'message'))->br->textarea('message', array(
+																																											'cols'  => 35,
+																																											'rows'	=> 5,
 																																											'title' => 'Message to send:'))->textarea->label->br;
 	UI::button('btnSend', 'Send Message');
 	HTML::_div();

@@ -23,11 +23,11 @@ function blur_budget(i) {
 
 
 var budget_calc = {
-	'.amount':function(e) {
-		e.onblur = function() {
+	'.amount':function (e) {
+		e.onblur = function () {
 			blur_budget(this);
 		};
-		e.onfocus = function() {
+		e.onfocus = function () {
 			focus_budget(this);
 		};
 	}

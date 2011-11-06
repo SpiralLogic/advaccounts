@@ -16,7 +16,7 @@
 		protected $data;
 		protected $valid;
 
-		public function __construct($prepared, $data) {
+		public function __construct($prepared, $data=null) {
 			$this->data = $data;
 			$this->prepared = $prepared;
 			$this->prepared->setFetchMode(PDO::FETCH_ASSOC);

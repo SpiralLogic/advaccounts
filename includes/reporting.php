@@ -11,22 +11,22 @@
 	 ***********************************************************************/
 	// Link to printing single document with bulk report template file.
 	// Ex. label_cell(static::print_doc_link($myrow['order_no'], _("Print")), $type);
-	// or ui_msgs::display_warning(static::print_doc_link($order_no, _("Print this order")));
+	// or Errors::warning(static::print_doc_link($order_no, _("Print this order")));
 	// You only need full parameter list for invoices/credit notes
 	class Reporting
 	{
 		public static function print_doc_link($doc_no, $link_text, $link = true, $type_no, $icon = false, $class = 'button printlink', $id = '', $email = 0, $extra = 0)
 		{
-			$url     = '/reporting/prn_redirect.php?';
+			$url = '/reporting/prn_redirect.php?';
 			$options = static::print_option_array($type_no, $doc_no, $email, $extra);
-			$ar      = $options[0];
-			$rep     = $options[1];
+			$ar = $options[0];
+			$rep = $options[1];
 			return static::print_link($link_text, $rep, $ar, "", $icon, $class, $id);
 		}
 
 		public static function print_option_array($type_no, $doc_no, $email = 0, $extra = 0)
 		{
-			$ar  = array();
+			$ar = array();
 			$rep = '';
 			switch ($type_no) {
 			case ST_SALESQUOTE :
@@ -153,10 +153,10 @@
 			if ($return) {
 				ob_start();
 			}
-			$url     = '/reporting/prn_redirect.php?';
+			$url = '/reporting/prn_redirect.php?';
 			$options = static::print_option_array($type_no, $doc_no, 1, $extra);
-			$ars     = $options[0];
-			$rep     = $options[1];
+			$ars = $options[0];
+			$rep = $options[1];
 			foreach (
 				$ars as $ar => $val
 			) {
@@ -175,9 +175,9 @@
 			UI::select('EmailSelect' . $type_no, $emails, array('style' => 'max-width:600px'))->br;
 			UI::button(
 				'EmailButton' . $type_no, $link_text, array(
-																									 'style'		=> 'margin:20px',
-																									 'data-url' => $url
-																							)
+					'style' => 'margin:20px',
+					'data-url' => $url
+				)
 			)->p;
 			$js
 			 = <<<JS
@@ -202,7 +202,7 @@ JS;
 		public static function print_link($link_text, $rep, $pars = array(), $dir = '', $icon = false, $class = 'printlink', $id = '')
 		{
 			$url = $dir == '' ? PATH_TO_ROOT . '/reporting/prn_redirect.php?' : $dir;
-			$id  = ui_view::default_focus($id);
+			$id = JS::default_focus($id);
 			foreach (
 				$pars as $par => $val
 			) {
@@ -217,7 +217,7 @@ JS;
 				$id = " id='$id'";
 			}
 			$pars = access_string($link_text);
-			if (user_graphic_links() && $icon) {
+			if (User::graphic_links() && $icon) {
 				$pars[0] = set_icon($icon, $pars[0]);
 			}
 			return "<a target='_blank' href='$url'$id$class $pars[1]>$pars[0]</a>";

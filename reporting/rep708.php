@@ -16,20 +16,14 @@
 	// date_:	2005-05-19
 	// Title:	Trial Balance
 	// ----------------------------------------------------------------
-
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-
 	//----------------------------------------------------------------------------------------------------
-
 	print_trial_balance();
-
 	//----------------------------------------------------------------------------------------------------
-
-	function print_trial_balance() {
-
+	function print_trial_balance()
+	{
 		$dim = DB_Company::get_pref('use_dimension');
 		$dimension = $dimension2 = 0;
-
 		$from = $_POST['PARAM_0'];
 		$to = $_POST['PARAM_1'];
 		$zero = $_POST['PARAM_2'];
@@ -48,30 +42,26 @@
 			$comments = $_POST['PARAM_4'];
 			$destination = $_POST['PARAM_5'];
 		}
-		if ($destination)
+		if ($destination) {
 			include_once(APP_PATH . "includes/reports/excel.php");
+		}
 		else
+		{
 			include_once(APP_PATH . "includes/reports/pdf.php");
-		$dec = user_price_dec();
-
+		}
+		$dec = User::price_dec();
 		//$cols2 = array(0, 50, 230, 330, 430, 530);
 		$cols2 = array(0, 50, 190, 310, 430, 530);
 		//-------------0--1---2----3----4----5--
-
 		$headers2 = array('', '', _('Brought Forward'), _('This Period'), _('Balance'));
-
 		$aligns2 = array('left', 'left', 'left', 'left', 'left');
-
 		//$cols = array(0, 50, 200, 250, 300,	350, 400, 450, 500,	550);
 		$cols = array(0, 50, 150, 210, 270, 330, 390, 450, 510, 570);
 		//------------0--1---2----3----4----5----6----7----8----9--
-
 		$headers = array(_('Account'), _('Account Name'), _('Debit'), _('Credit'), _('Debit'),
 			_('Credit'), _('Debit'), _('Credit')
 		);
-
 		$aligns = array('left', 'left', 'right', 'right', 'right', 'right', 'right', 'right');
-
 		if ($dim == 2) {
 			$params = array(0 => $comments,
 				1 => array('text' => _('Period'), 'from' => $from, 'to' => $to),
@@ -95,46 +85,50 @@
 				1 => array('text' => _('Period'), 'from' => $from, 'to' => $to)
 			);
 		}
-
-		$rep = new FrontReport(_('Trial Balance'), "TrialBalance", user_pagesize());
-
+		$rep = new FrontReport(_('Trial Balance'), "TrialBalance", User::pagesize());
 		$rep->Font();
 		$rep->Info($params, $cols, $headers, $aligns, $cols2, $headers2, $aligns2);
 		$rep->Header();
-
 		$accounts = get_gl_accounts();
-
 		$pdeb = $pcre = $cdeb = $ccre = $tdeb = $tcre = $pbal = $cbal = $tbal = 0;
 		$begin = Dates::begin_fiscalyear();
-		if (Dates::date1_greater_date2($begin, $from))
+		if (Dates::date1_greater_date2($begin, $from)) {
 			$begin = $from;
+		}
 		$begin = Dates::add_days($begin, -1);
-		while ($account = DBOld::fetch($accounts))
+		while ($account = DB::fetch($accounts))
 		{
 			$prev = get_balance($account["account_code"], $dimension, $dimension2, $begin, $from, false, false);
 			$curr = get_balance($account["account_code"], $dimension, $dimension2, $from, $to, true, true);
 			$tot = get_balance($account["account_code"], $dimension, $dimension2, $begin, $to, false, true);
-
-			if ($zero == 0 && !$prev['balance'] && !$curr['balance'] && !$tot['balance'])
+			if ($zero == 0 && !$prev['balance'] && !$curr['balance'] && !$tot['balance']) {
 				continue;
+			}
 			$rep->TextCol(0, 1, $account['account_code']);
 			$rep->TextCol(1, 2, $account['account_name']);
 			if ($balances != 0) {
-				if ($prev['balance'] >= 0.0)
+				if ($prev['balance'] >= 0.0) {
 					$rep->AmountCol(2, 3, $prev['balance'], $dec);
+				}
 				else
+				{
 					$rep->AmountCol(3, 4, abs($prev['balance']), $dec);
-				if ($curr['balance'] >= 0.0)
+				}
+				if ($curr['balance'] >= 0.0) {
 					$rep->AmountCol(4, 5, $curr['balance'], $dec);
+				}
 				else
+				{
 					$rep->AmountCol(5, 6, abs($curr['balance']), $dec);
-				if ($tot['balance'] >= 0.0)
+				}
+				if ($tot['balance'] >= 0.0) {
 					$rep->AmountCol(6, 7, $tot['balance'], $dec);
+				}
 				else
+				{
 					$rep->AmountCol(7, 8, abs($tot['balance']), $dec);
-			}
-			else
-			{
+				}
+			} else {
 				$rep->AmountCol(2, 3, $prev['debit'], $dec);
 				$rep->AmountCol(3, 4, $prev['credit'], $dec);
 				$rep->AmountCol(4, 5, $curr['debit'], $dec);
@@ -152,7 +146,6 @@
 			$cbal += $curr['balance'];
 			$tbal += $tot['balance'];
 			$rep->NewLine();
-
 			if ($rep->row < $rep->bottomMargin + $rep->lineHeight) {
 				$rep->Line($rep->row - 2);
 				$rep->Header();
@@ -161,11 +154,9 @@
 		$rep->Line($rep->row);
 		$rep->NewLine();
 		$rep->Font('bold');
-
 		//$prev = get_balance(null, $dimension, $dimension2, $begin, $from, false, false);
 		//$curr = get_balance(null, $dimension, $dimension2, $from, $to, true, true);
 		//$tot = get_balance(null, $dimension, $dimension2, $begin, $to, false, true);
-
 		if ($balances == 0) {
 			$rep->TextCol(0, 2, _("Total"));
 			$rep->AmountCol(2, 3, $pdeb, $dec);
@@ -177,23 +168,29 @@
 			$rep->NewLine();
 		}
 		$rep->TextCol(0, 2, _("Ending Balance"));
-
-		if ($pbal >= 0.0)
+		if ($pbal >= 0.0) {
 			$rep->AmountCol(2, 3, $pbal, $dec);
+		}
 		else
+		{
 			$rep->AmountCol(3, 4, abs($pbal), $dec);
-		if ($cbal >= 0.0)
+		}
+		if ($cbal >= 0.0) {
 			$rep->AmountCol(4, 5, $cbal, $dec);
+		}
 		else
+		{
 			$rep->AmountCol(5, 6, abs($cbal), $dec);
-		if ($tbal >= 0.0)
+		}
+		if ($tbal >= 0.0) {
 			$rep->AmountCol(6, 7, $tbal, $dec);
+		}
 		else
+		{
 			$rep->AmountCol(7, 8, abs($tbal), $dec);
+		}
 		$rep->NewLine();
-
 		$rep->Line($rep->row);
-
 		$rep->End();
 	}
 

@@ -20,16 +20,16 @@
 	//----------------------------------------------------------------------------------------------------
 	function display_type($type, $typename, $from, $to, $convert, &$dec, &$rep, $dimension, $dimension2, &$pg, $graphics)
 	{
-		$code_open_balance    = 0;
-		$code_period_balance  = 0;
-		$open_balance_total   = 0;
+		$code_open_balance = 0;
+		$code_period_balance = 0;
+		$open_balance_total = 0;
 		$period_balance_total = 0;
 		unset($totals_arr);
 		$totals_arr = array();
 		$printtitle = 0; //Flag for printing type name
 		//Get Accounts directly under this group/type
 		$result = get_gl_accounts(null, null, $type);
-		while ($account = DBOld::fetch($result))
+		while ($account = DB::fetch($result))
 		{
 			$prev_balance = get_gl_balance_from_to("", $from, $account["account_code"], $dimension, $dimension2);
 			$curr_balance = get_gl_trans_from_to($from, $to, $account["account_code"], $dimension, $dimension2);
@@ -56,7 +56,7 @@
 		}
 		//Get Account groups/types under this group/type
 		$result = get_account_types(false, false, $type);
-		while ($accounttype = DBOld::fetch($result))
+		while ($accounttype = DB::fetch($result))
 		{
 			//Print Type Title if has sub types and not previously printed
 			if (!$printtitle) {
@@ -99,28 +99,28 @@
 	//----------------------------------------------------------------------------------------------------
 	function print_balance_sheet()
 	{
-		$dim       = DB_Company::get_pref('use_dimension');
+		$dim = DB_Company::get_pref('use_dimension');
 		$dimension = $dimension2 = 0;
-		$from      = $_POST['PARAM_0'];
-		$to        = $_POST['PARAM_1'];
+		$from = $_POST['PARAM_0'];
+		$to = $_POST['PARAM_1'];
 		if ($dim == 2) {
-			$dimension   = $_POST['PARAM_2'];
-			$dimension2  = $_POST['PARAM_3'];
-			$decimals    = $_POST['PARAM_4'];
-			$graphics    = $_POST['PARAM_5'];
-			$comments    = $_POST['PARAM_6'];
+			$dimension = $_POST['PARAM_2'];
+			$dimension2 = $_POST['PARAM_3'];
+			$decimals = $_POST['PARAM_4'];
+			$graphics = $_POST['PARAM_5'];
+			$comments = $_POST['PARAM_6'];
 			$destination = $_POST['PARAM_7'];
 		}
 		else if ($dim == 1) {
-			$dimension   = $_POST['PARAM_2'];
-			$decimals    = $_POST['PARAM_3'];
-			$graphics    = $_POST['PARAM_4'];
-			$comments    = $_POST['PARAM_5'];
+			$dimension = $_POST['PARAM_2'];
+			$decimals = $_POST['PARAM_3'];
+			$graphics = $_POST['PARAM_4'];
+			$comments = $_POST['PARAM_5'];
 			$destination = $_POST['PARAM_6'];
 		} else {
-			$decimals    = $_POST['PARAM_2'];
-			$graphics    = $_POST['PARAM_3'];
-			$comments    = $_POST['PARAM_4'];
+			$decimals = $_POST['PARAM_2'];
+			$graphics = $_POST['PARAM_3'];
+			$comments = $_POST['PARAM_4'];
 			$destination = $_POST['PARAM_5'];
 		}
 		if ($destination) {
@@ -129,13 +129,12 @@
 			include_once(APP_PATH . "includes/reports/pdf.php");
 		}
 		if ($graphics) {
-			include_once(APP_PATH . "reporting/includes/graph.php");
 			$pg = new Reports_Graph();
 		}
 		if (!$decimals) {
 			$dec = 0;
 		} else {
-			$dec = user_price_dec();
+			$dec = User::price_dec();
 		}
 		$cols = array(0, 50, 200, 350, 425, 500);
 		//------------0--1---2----3----4----5--
@@ -143,24 +142,24 @@
 			_('Account'), _('Account Name'), _('Open Balance'), _('Period'),
 			_('Close Balance')
 		);
-		$aligns  = array('left', 'left', 'right', 'right', 'right');
+		$aligns = array('left', 'left', 'right', 'right', 'right');
 		if ($dim == 2) {
 			$params = array(
 				0 => $comments,
 				1 => array(
 					'text' => _('Period'),
 					'from' => $from,
-					'to'   => $to
+					'to' => $to
 				),
 				2 => array(
 					'text' => _('Dimension') . " 1",
 					'from' => get_dimension_string($dimension),
-					'to'   => ''
+					'to' => ''
 				),
 				3 => array(
 					'text' => _('Dimension') . " 2",
 					'from' => get_dimension_string($dimension2),
-					'to'   => ''
+					'to' => ''
 				)
 			);
 		}
@@ -170,12 +169,12 @@
 				1 => array(
 					'text' => _('Period'),
 					'from' => $from,
-					'to'   => $to
+					'to' => $to
 				),
 				2 => array(
 					'text' => _('Dimension'),
 					'from' => get_dimension_string($dimension),
-					'to'   => ''
+					'to' => ''
 				)
 			);
 		} else {
@@ -184,24 +183,24 @@
 				1 => array(
 					'text' => _('Period'),
 					'from' => $from,
-					'to'   => $to
+					'to' => $to
 				)
 			);
 		}
-		$rep = new FrontReport(_('Balance Sheet'), "BalanceSheet", user_pagesize());
+		$rep = new FrontReport(_('Balance Sheet'), "BalanceSheet", User::pagesize());
 		$rep->Font();
 		$rep->Info($params, $cols, $headers, $aligns);
 		$rep->Header();
-		$calc_open      = $calc_period = 0.0;
-		$equity_open    = $equity_period = 0.0;
+		$calc_open = $calc_period = 0.0;
+		$equity_open = $equity_period = 0.0;
 		$liability_open = $liability_period = 0.0;
-		$econvert       = $lconvert = 0;
-		$classresult    = get_account_classes(false, 1);
-		while ($class = DBOld::fetch($classresult))
+		$econvert = $lconvert = 0;
+		$classresult = get_account_classes(false, 1);
+		while ($class = DB::fetch($classresult))
 		{
-			$class_open_total   = 0;
+			$class_open_total = 0;
 			$class_period_total = 0;
-			$convert            = Systypes::get_class_type_convert($class["ctype"]);
+			$convert = Systypes::get_class_type_convert($class["ctype"]);
 			//Print Class Name
 			$rep->Font('bold');
 			$rep->TextCol(0, 5, $class["class_name"]);
@@ -209,7 +208,7 @@
 			$rep->NewLine();
 			//Get Account groups/types under this group/type with no parents
 			$typeresult = get_account_types(false, $class['cid'], -1);
-			while ($accounttype = DBOld::fetch($typeresult))
+			while ($accounttype = DB::fetch($typeresult))
 			{
 				$classtotal = display_type(
 					$accounttype["id"], $accounttype["name"], $from, $to, $convert, $dec,
@@ -255,9 +254,9 @@
 		$rep->NewLine(2);
 		$rep->Font('bold');
 		$rep->TextCol(0, 2, _('Total') . " " . _('Liabilities') . _(' and ') . _('Equities'));
-		$topen   = $equity_open * $econvert + $liability_open * $lconvert + $calc_open;
+		$topen = $equity_open * $econvert + $liability_open * $lconvert + $calc_open;
 		$tperiod = $equity_period * $econvert + $liability_period * $lconvert + $calc_period;
-		$tclose  = $topen + $tperiod;
+		$tclose = $topen + $tperiod;
 		$rep->AmountCol(2, 3, $topen, $dec);
 		$rep->AmountCol(3, 4, $tperiod, $dec);
 		$rep->AmountCol(4, 5, $tclose, $dec);
@@ -265,20 +264,20 @@
 		$rep->NewLine();
 		$rep->Line($rep->row);
 		if ($graphics) {
-			$pg->x[]            = _('Calculated Return');
-			$pg->y[]            = abs($calc_open);
-			$pg->z[]            = abs($calc_period);
-			$pg->title          = $rep->title;
-			$pg->axis_x         = _("Group");
-			$pg->axis_y         = _("Amount");
-			$pg->graphic_1      = $headers[2];
-			$pg->graphic_2      = $headers[3];
-			$pg->type           = $graphics;
-			$pg->skin           = Config::get('graphs_skin');
-			$pg->built_in       = false;
-			$pg->fontfile       = PATH_TO_ROOT . "/reporting/fonts/Vera.ttf";
-			$pg->latin_notation = (Config::get('separators_decimal', CurrentUser::instance()->prefs->dec_sep()) != ".");
-			$filename           = COMPANY_PATH . "/pdf_files/test.png";
+			$pg->x[] = _('Calculated Return');
+			$pg->y[] = abs($calc_open);
+			$pg->z[] = abs($calc_period);
+			$pg->title = $rep->title;
+			$pg->axis_x = _("Group");
+			$pg->axis_y = _("Amount");
+			$pg->graphic_1 = $headers[2];
+			$pg->graphic_2 = $headers[3];
+			$pg->type = $graphics;
+			$pg->skin = Config::get('graphs_skin');
+			$pg->built_in = false;
+			$pg->fontfile = PATH_TO_ROOT . "/reporting/fonts/Vera.ttf";
+			$pg->latin_notation = (Config::get('separators_decimal', User::prefs()->dec_sep()) != ".");
+			$filename = COMPANY_PATH . "/pdf_files/test.png";
 			$pg->display($filename, true);
 			$w = $pg->width / 1.5;
 			$h = $pg->height / 1.5;

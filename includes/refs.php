@@ -12,9 +12,9 @@
 	class Refs {
 
 		public static function get_reference($type, $id) {
-			$sql = "SELECT * FROM refs WHERE type=" . DBOld::escape($type) . " AND id=" . DBOld::escape($id);
-			$result = DBOld::query($sql, "could not query reference table");
-			$row = DBOld::fetch($result);
+			$sql = "SELECT * FROM refs WHERE type=" . DB::escape($type) . " AND id=" . DB::escape($id);
+			$result = DB::query($sql, "could not query reference table");
+			$row = DB::fetch($result);
 			return $row['reference'];
 		}
 
@@ -22,56 +22,56 @@
 
 		public static function add_reference($type, $id, $reference) {
 			$sql = "INSERT INTO refs (type, id, reference)
-			VALUES (" . DBOld::escape($type) . ", " . DBOld::escape($id) . ", "
-			 . DBOld::escape(trim($reference)) . ")";
+			VALUES (" . DB::escape($type) . ", " . DB::escape($id) . ", "
+			 . DB::escape(trim($reference)) . ")";
 
-			DBOld::query($sql, "could not add reference entry");
+			DB::query($sql, "could not add reference entry");
 		}
 
 		//--------------------------------------------------------------------------------------------------
 
 		public static function update_reference($type, $id, $reference) {
-			$sql = "UPDATE refs SET reference=" . DBOld::escape($reference)
-			 . " WHERE type=" . DBOld::escape($type) . " AND id=" . DBOld::escape($id);
-			DBOld::query($sql, "could not update reference entry");
+			$sql = "UPDATE refs SET reference=" . DB::escape($reference)
+			 . " WHERE type=" . DB::escape($type) . " AND id=" . DB::escape($id);
+			DB::query($sql, "could not update reference entry");
 		}
 
 		//--------------------------------------------------------------------------------------------------
 
 		public static function delete_reference($type, $id) {
-			$sql = "DELETE FROM refs WHERE type=$type AND id=" . DBOld::escape($id);
+			$sql = "DELETE FROM refs WHERE type=$type AND id=" . DB::escape($id);
 
-			return DBOld::query($sql, "could not delete from reference table");
+			return DB::query($sql, "could not delete from reference table");
 		}
 
 		//--------------------------------------------------------------------------------------------------
 
 		public static function find_reference($type, $reference) {
-			$sql = "SELECT id FROM refs WHERE type=" . DBOld::escape($type)
-			 . " AND reference=" . DBOld::escape($reference);
+			$sql = "SELECT id FROM refs WHERE type=" . DB::escape($type)
+			 . " AND reference=" . DB::escape($reference);
 
-			$result = DBOld::query($sql, "could not query reference table");
+			$result = DB::query($sql, "could not query reference table");
 
-			return (DBOld::num_rows($result) > 0);
+			return (DB::num_rows($result) > 0);
 		}
 
 		//--------------------------------------------------------------------------------------------------
 
 		public static function save_next_reference($type, $reference) {
-			$sql = "UPDATE sys_types SET next_reference=" . DBOld::escape(trim($reference))
-			 . " WHERE type_id = " . DBOld::escape($type);
+			$sql = "UPDATE sys_types SET next_reference=" . DB::escape(trim($reference))
+			 . " WHERE type_id = " . DB::escape($type);
 
-			DBOld::query($sql, "The next transaction ref for $type could not be updated");
+			DB::query($sql, "The next transaction ref for $type could not be updated");
 		}
 
 		//--------------------------------------------------------------------------------------------------
 
 		public static function get_next_reference($type) {
-			$sql = "SELECT next_reference FROM sys_types WHERE type_id = " . DBOld::escape($type);
+			$sql = "SELECT next_reference FROM sys_types WHERE type_id = " . DB::escape($type);
 
-			$result = DBOld::query($sql, "The last transaction ref for $type could not be retreived");
+			$result = DB::query($sql, "The last transaction ref for $type could not be retreived");
 
-			$row = DBOld::fetch_row($result);
+			$row = DB::fetch_row($result);
 			return $row[0];
 		}
 
@@ -154,10 +154,10 @@
 				if ($db_type != null) {
 					$sql .= " AND $db_type=$type";
 				}
-				$result = DBOld::query($sql, "could not test for unique reference");
-			} while (DBOld::num_rows($result) != 0 && ($ref = Refs::increment($ref)));
+				$result = DB::query($sql, "could not test for unique reference");
+			} while (DB::num_rows($result) != 0 && ($ref = Refs::increment($ref)));
 
-			return (DBOld::num_rows($result) == 0);
+			return (DB::num_rows($result) == 0);
 		}
 		// it's a type that doesn't use references - shouldn't be calling here, but say yes anyways
 		return true;

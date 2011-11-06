@@ -10,19 +10,19 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	//--------------------------------------------------------------------------------
-	function add_to_order(&$order, $new_item, $new_item_qty, $price, $discount, $description = null, $no_errors = false)
+	function add_to_order($order, $new_item, $new_item_qty, $price, $discount, $description = null, $no_errors = false)
 	{
 		// calculate item price to sum of kit element prices factor for
 		// value distribution over all exploded kit items
-		$item = is_item_kit($new_item);
-		if (DBOld::num_rows($item) == 1) {
-			$item = DBOld::fetch($item);
+		$item = Item_Code::is_kit($new_item);
+		if (DB::num_rows($item) == 1) {
+			$item = DB::fetch($item);
 			if (!$item['is_foreign'] && $item['item_code'] == $item['stock_id']) {
 				foreach (
 					$order->line_items as $order_item
 				) {
 					if (strcasecmp($order_item->stock_id, $item['stock_id']) == 0 && !$no_errors) {
-						ui_msgs::display_warning(_("For Part :") . $item['stock_id'] . " " . _("This item is already on this document. You have been warned."));
+						Errors::warning(_("For Part: '") . $item['stock_id'] . "' " . _("This item is already on this document. You have been warned."));
 						break;
 					}
 				}
@@ -37,9 +37,9 @@
 		else {
 			$price_factor = $price / $std_price;
 		}
-		$kit      = get_item_kit($new_item);
-		$item_num = DBOld::num_rows($kit);
-		while ($item = DBOld::fetch($kit)) {
+		$kit = Item_Code::get_kit($new_item);
+		$item_num = DB::num_rows($kit);
+		while ($item = DB::fetch($kit)) {
 			$std_price = get_kit_price($item['stock_id'], $order->customer_currency, $order->sales_type, $order->price_factor, get_post('OrderDate'), true);
 			// rounding differences are included in last price item in kit
 			$item_num--;
@@ -53,7 +53,7 @@
 				}
 				$item_price = $price;
 			}
-			$item_price = round($item_price, user_price_dec());
+			$item_price = round($item_price, User::price_dec());
 			if (!$item['is_foreign'] && $item['item_code'] != $item['stock_id']) { // this is sales kit - recurse
 				add_to_order($order, $item['stock_id'], $new_item_qty * $item['quantity'], $item_price, $discount, $std_price);
 			}
@@ -63,7 +63,7 @@
 					$order->line_items as $order_item
 				) {
 					if (strcasecmp($order_item->stock_id, $item['stock_id']) == 0) {
-						ui_msgs::display_warning(_("For Part :") . $item['stock_id'] . " " . _("This item is already on this document. You have been warned."));
+						Errors::warning(_("For Part: '") . $item['stock_id'] . "' " . _("This item is already on this document. You have been warned."));
 						break;
 					}
 				}
@@ -73,11 +73,11 @@
 	}
 
 	//---------------------------------------------------------------------------------
-	function get_customer_details_to_order(&$order, $customer_id, $branch_id)
+	function get_customer_details_to_order($order, $customer_id, $branch_id)
 	{
 		$ret_error = "";
-		$myrow     = get_customer_to_order($customer_id);
-		$name      = $myrow['name'];
+		$myrow = get_customer_to_order($customer_id);
+		$name = $myrow['name'];
 		if ($myrow['dissallow_invoices'] == 1) {
 			$ret_error = _("The selected customer account is currently on hold. Please contact the credit control personnel to discuss.");
 		}
@@ -88,14 +88,14 @@
 		); // the sales type determines the price list to be used by default
 		$order->set_sales_type($myrow['salestype'], $myrow['sales_type'], $myrow['tax_included'], $myrow['factor']);
 		if ($order->trans_type != ST_SALESORDER && $order->trans_type != ST_SALESQUOTE) {
-			$order->dimension_id  = $myrow['dimension_id'];
+			$order->dimension_id = $myrow['dimension_id'];
 			$order->dimension2_id = $myrow['dimension2_id'];
 		}
 		$result = get_branch_to_order($customer_id, $branch_id);
-		if (DBOld::num_rows($result) == 0) {
+		if (DB::num_rows($result) == 0) {
 			return _("The selected customer and branch are not valid, or the customer does not have any branches.");
 		}
-		$myrow = DBOld::fetch($result);
+		$myrow = DB::fetch($result);
 		$order->set_branch($branch_id, $myrow["tax_group_id"], $myrow["tax_group_name"], $myrow["phone"], $myrow["email"]);
 		//$address = trim($myrow["br_post_address"]) != '' ? $myrow["br_post_address"] : (trim($myrow["br_address"]) != '' ?		$myrow["br_address"] : $deliver);
 		$address = $myrow['br_address'] . "\n";
@@ -133,14 +133,14 @@
 	//---------------------------------------------------------------------------------
 	function display_order_summary($title, &$order, $editable_items = false)
 	{
-		ui_msgs::display_heading($title);
+		Display::heading($title);
 		div_start('items_table');
 		if (count($_SESSION['Items']->line_items) > 0) {
 			start_outer_table(" width=90%");
 			table_section(1);
-			hyperlink_params_separate("/purchasing/po_entry_items.php", _("Create PO from this order"), "NewOrder=Yes&UseOrder=1' class='button'", true, true);
+			hyperlink_params_separate("/purchases/po_entry_items.php", _("Create PO from this order"), "NewOrder=Yes&UseOrder=1' class='button'", true, true);
 			table_section(2);
-			hyperlink_params_separate("/purchasing/po_entry_items.php", _("Dropship this order"), "NewOrder=Yes&UseOrder=1&DS=1' class='button'", true, true);
+			hyperlink_params_separate("/purchases/po_entry_items.php", _("Dropship this order"), "NewOrder=Yes&UseOrder=1&DS=1' class='button'", true, true);
 			end_outer_table(1);
 		}
 		start_table(Config::get('tables_style') . "  colspan=7 width=90%");
@@ -153,22 +153,22 @@
 		}
 		table_header($th);
 		$total_discount = $total = 0;
-		$k              = 0; //row colour counter
-		$id         = find_submit('Edit');
+		$k = 0; //row colour counter
+		$id = find_submit('Edit');
 		$has_marked = false;
 		foreach (
 			$order->line_items as $line_no => $stock_item
 		) {
-			$line_total    = round($stock_item->qty_dispatched * $stock_item->price * (1 - $stock_item->discount_percent), user_price_dec());
-			$line_discount = round($stock_item->qty_dispatched * $stock_item->price, user_price_dec()) - $line_total;
-			$qoh_msg       = '';
+			$line_total = round($stock_item->qty_dispatched * $stock_item->price * (1 - $stock_item->discount_percent), User::price_dec());
+			$line_discount = round($stock_item->qty_dispatched * $stock_item->price, User::price_dec()) - $line_total;
+			$qoh_msg = '';
 			if (!$editable_items || $id != $line_no) {
-				if (!SysPrefs::allow_negative_stock() && is_inventory_item($stock_item->stock_id)) {
-					$qoh = get_qoh_on_date($stock_item->stock_id, $_POST['Location'], $_POST['OrderDate']);
+				if (!SysPrefs::allow_negative_stock() && Item::is_inventory_item($stock_item->stock_id)) {
+					$qoh = Item::get_qoh_on_date($stock_item->stock_id, $_POST['Location'], $_POST['OrderDate']);
 					if ($stock_item->qty_dispatched > $qoh) {
 						// oops, we don't have enough of one of the component items
 						start_row("class='stockmankobg'");
-						$qoh_msg .= $stock_item->stock_id . " - " . $stock_item->description . ": " . _("Quantity On Hand") . " = " . number_format2($qoh, get_qty_dec($stock_item->stock_id)) . '<br>';
+						$qoh_msg .= $stock_item->stock_id . " - " . $stock_item->description . ": " . _("Quantity On Hand") . " = " . Num::format($qoh, Num::qty_dec($stock_item->stock_id)) . '<br>';
 						$has_marked = true;
 					} else {
 						alt_table_row_color($k);
@@ -179,7 +179,7 @@
 				label_cell($stock_item->stock_id, "class='stock' data-stock_id='{$stock_item->stock_id}'");
 				//label_cell($stock_item->description, "nowrap" );
 				description_cell($stock_item->description);
-				$dec = get_qty_dec($stock_item->stock_id);
+				$dec = Num::qty_dec($stock_item->stock_id);
 				qty_cell($stock_item->qty_dispatched, false, $dec);
 				if ($order->trans_no != 0) {
 					qty_cell($stock_item->qty_done, false, $dec);
@@ -208,10 +208,10 @@
 		}
 		start_row();
 		label_cell(_("Shipping Charge"), "colspan=$colspan align=right");
-		small_amount_cells(null, 'freight_cost', price_format(get_post('freight_cost', 0)));
+		small_amount_cells(null, 'freight_cost', Num::price_format(get_post('freight_cost', 0)));
 		label_cell('', 'colspan=2');
 		end_row();
-		$display_sub_total = price_format($total + input_num('freight_cost'));
+		$display_sub_total = Num::price_format($total + input_num('freight_cost'));
 		start_row();
 		label_cells(_("Total Discount"), $total_discount, "colspan=$colspan align=right", "align=right");
 		HTML::td(true)->button('discountall', 'Discount All', array('name' => 'discountall'), false);
@@ -226,31 +226,31 @@ JS;
 		JS::addLiveEvent('#discountall', 'click', $action);
 		end_row();
 		label_row(_("Sub-total"), $display_sub_total, "colspan=$colspan align=right", "align=right", 2);
-		$taxes         = $order->get_taxes(input_num('freight_cost'));
-		$tax_total     = ui_view::display_edit_tax_items($taxes, $colspan, $order->tax_included, 2);
-		$display_total = price_format(($total + input_num('freight_cost') + $tax_total));
+		$taxes = $order->get_taxes(input_num('freight_cost'));
+		$tax_total = Display::edit_tax_items($taxes, $colspan, $order->tax_included, 2);
+		$display_total = Num::price_format(($total + input_num('freight_cost') + $tax_total));
 		start_row();
 		label_cells(_("Amount Total"), $display_total, "colspan=$colspan align=right", "align=right");
 		submit_cells('update', _("Update"), "colspan=2", _("Refresh"), true);
 		end_row();
 		end_table();
 		if ($has_marked) {
-			ui_msgs::display_warning(note(_("Marked items have insufficient quantities in stock as on day of delivery."), 0, 1, "class='stockmankofg'"));
+			Errors::warning(note(_("Marked items have insufficient quantities in stock as on day of delivery."), 0, 1, "class='stockmankofg'"));
 		}
 		if ($order->trans_type != 30 && !SysPrefs::allow_negative_stock()) {
-			ui_msgs::display_error(_("The delivery cannot be processed because there is an insufficient quantity for item:") . '<br>' . $qoh_msg);
+			Errors::error(_("The delivery cannot be processed because there is an insufficient quantity for item:") . '<br>' . $qoh_msg);
 		}
 		div_end();
 	}
 
 	// ------------------------------------------------------------------------------
-	function display_order_header(&$order, $editable, $date_text, $display_tax_group = false)
+	function display_order_header($order, $editable, $date_text, $display_tax_group = false)
 	{
 		$Ajax = Ajax::instance();
 		start_outer_table("width=90% " . Config::get('tables_style2'));
 		table_section(1);
 		$customer_error = "";
-		$change_prices  = 0;
+		$change_prices = 0;
 		if (!$editable) {
 			if (isset($order)) {
 				// can't change the customer/branch if items already received on this order
@@ -284,13 +284,13 @@ JS;
 					$order->Branch = 0;
 				}
 				else {
-					$old_order                 = (PHP_VERSION < 5) ? $order : clone($order);
-					$customer_error            = get_customer_details_to_order($order, $_POST['customer_id'], $_POST['branch_id']);
-					$_POST['Location']         = $order->Location;
-					$_POST['deliver_to']       = $order->deliver_to;
+					$old_order = (PHP_VERSION < 5) ? $order : clone($order);
+					$customer_error = get_customer_details_to_order($order, $_POST['customer_id'], $_POST['branch_id']);
+					$_POST['Location'] = $order->Location;
+					$_POST['deliver_to'] = $order->deliver_to;
 					$_POST['delivery_address'] = $order->delivery_address;
-					$_POST['name']             = $order->name;
-					$_POST['phone']            = $order->phone;
+					$_POST['name'] = $order->name;
+					$_POST['phone'] = $order->phone;
 					if (get_post('cash') !== $order->cash) {
 						$_POST['cash'] = $order->cash;
 						$Ajax->activate('delivery');
@@ -328,7 +328,7 @@ JS;
 					}
 					unset($old_order);
 				}
-				ui_globals::set_global_customer($_POST['customer_id']);
+				Session::get()->global_customer = $_POST['customer_id'];
 			} // changed branch
 			else {
 				$row = get_customer_to_order($_POST['customer_id']);
@@ -341,7 +341,7 @@ JS;
 		if (!Banking::is_company_currency($order->customer_currency)) {
 			table_section(2);
 			label_row(_("Customer Currency:"), $order->customer_currency);
-			ui_view::exchange_rate_display($order->customer_currency, Banking::get_company_currency(), ($editable ? $_POST['OrderDate'] : $order->document_date));
+			Display::exchange_rate($order->customer_currency, Banking::get_company_currency(), ($editable ? $_POST['OrderDate'] : $order->document_date));
 		}
 		table_section(3);
 		customer_credit_row($_POST['customer_id'], $order->credit);
@@ -352,7 +352,7 @@ JS;
 			label_row(_("Price List:"), $order->sales_type_name);
 		}
 		if ($order->sales_type != $_POST['sales_type']) {
-			$myrow = get_sales_type($_POST['sales_type']);
+			$myrow = Sales_Type::get($_POST['sales_type']);
 			$order->set_sales_type($myrow['id'], $myrow['sales_type'], $myrow['tax_included'], $myrow['factor']);
 			$Ajax->activate('sales_type');
 			$change_prices = 1;
@@ -402,13 +402,13 @@ JS;
 			label_row(_("Tax Group:"), $order->tax_group_name);
 			hidden('tax_group_id', $order->tax_group_id);
 		}
-		sales_persons_list_row(_("Sales Person:"), 'salesman', (isset($order->salesman)) ? $order->salesman : $_SESSION['wa_current_user']->salesmanid);
+		sales_persons_list_row(_("Sales Person:"), 'salesman', (isset($order->salesman)) ? $order->salesman : $_SESSION['current_user']->salesmanid);
 		end_outer_table(1); // outer table
 		if ($change_prices != 0) {
 			foreach (
 				$order->line_items as $line_no => $item
 			) {
-				$line        = &$order->line_items[$line_no];
+				$line = &$order->line_items[$line_no];
 				$line->price = get_kit_price($line->stock_id, $order->customer_currency, $order->sales_type, $order->price_factor, get_post('OrderDate'));
 				//		$line->discount_percent = $order->default_discount;
 			}
@@ -418,20 +418,20 @@ JS;
 	}
 
 	//--------------------------------------------------------------------------------
-	function sales_order_item_controls(&$order, &$rowcounter, $line_no = -1)
+	function sales_order_item_controls($order, &$rowcounter, $line_no = -1)
 	{
 		$Ajax = Ajax::instance();
 		alt_table_row_color($rowcounter);
 		$id = find_submit('Edit');
 		if ($line_no != -1 && $line_no == $id) // edit old line
 		{
-			$_POST['stock_id']    = $order->line_items[$id]->stock_id;
-			$dec                  = get_qty_dec($_POST['stock_id']);
-			$_POST['qty']         = number_format2($order->line_items[$id]->qty_dispatched, $dec);
-			$_POST['price']       = price_format($order->line_items[$id]->price);
-			$_POST['Disc']        = percent_format($order->line_items[$id]->discount_percent * 100);
+			$_POST['stock_id'] = $order->line_items[$id]->stock_id;
+			$dec = Num::qty_dec($_POST['stock_id']);
+			$_POST['qty'] = Num::format($order->line_items[$id]->qty_dispatched, $dec);
+			$_POST['price'] = Num::price_format($order->line_items[$id]->price);
+			$_POST['Disc'] = Num::percent_format($order->line_items[$id]->discount_percent * 100);
 			$_POST['description'] = $order->line_items[$id]->description;
-			$units                = $order->line_items[$id]->units;
+			$units = $order->line_items[$id]->units;
 			hidden('stock_id', $_POST['stock_id']);
 			label_cell($_POST['stock_id'], 'class="stock"');
 			textarea_cells(null, 'description', null, 50, 5);
@@ -447,13 +447,13 @@ JS;
 				$Ajax->activate('qty');
 				$Ajax->activate('line_total');
 			}
-			$item_info      = get_item_edit_info(Input::post('stock_id'));
-			$units          = $item_info["units"];
-			$dec            = $item_info['decimals'];
-			$_POST['qty']   = number_format2(1, $dec);
-			$price          = get_kit_price(Input::post('stock_id'), $order->customer_currency, $order->sales_type, $order->price_factor, get_post('OrderDate'));
-			$_POST['price'] = price_format($price);
-			$_POST['Disc']  = percent_format($order->default_discount * 100);
+			$item_info = Item::get_edit_info(Input::post('stock_id'));
+			$units = $item_info["units"];
+			$dec = $item_info['decimals'];
+			$_POST['qty'] = Num::format(1, $dec);
+			$price = get_kit_price(Input::post('stock_id'), $order->customer_currency, $order->sales_type, $order->price_factor, get_post('OrderDate'));
+			$_POST['price'] = Num::price_format($price);
+			$_POST['Disc'] = Num::percent_format($order->default_discount * 100);
 		}
 		qty_cells(null, 'qty', $_POST['qty'], null, null, $dec);
 		if ($order->trans_no != 0) {
@@ -461,7 +461,7 @@ JS;
 		}
 		label_cell($units, '', 'units');
 		$str = amount_cells(null, 'price');
-		small_amount_cells(null, 'Disc', percent_format($_POST['Disc']), null, null, user_percent_dec());
+		small_amount_cells(null, 'Disc', Num::percent_format($_POST['Disc']), null, null, User::percent_dec());
 		$line_total = input_num('qty') * input_num('price') * (1 - input_num('Disc') / 100);
 		amount_cell($line_total, false, '', 'line_total');
 		if ($id != -1) {
@@ -477,13 +477,13 @@ JS;
 	}
 
 	//--------------------------------------------------------------------------------
-	function display_delivery_details(&$order)
+	function display_delivery_details($order)
 	{
 		$Ajax = Ajax::instance();
 		div_start('delivery');
 		if (get_post('cash', 0)) { // Direct payment sale
 			$Ajax->activate('items_table');
-			ui_msgs::display_heading(_('Cash payment'));
+			Display::heading(_('Cash payment'));
 			start_table(Config::get('tables_style2') . " width=60%");
 			label_row(_("Deliver from Location:"), $order->location_name);
 			hidden('Location', $order->Location);
@@ -493,22 +493,22 @@ JS;
 		}
 		else {
 			if ($order->trans_type == ST_SALESINVOICE) {
-				$title   = _("Delivery Details");
+				$title = _("Delivery Details");
 				$delname = _("Due Date") . ':';
 			}
 			elseif ($order->trans_type == ST_CUSTDELIVERY) {
-				$title   = _("Invoice Delivery Details");
+				$title = _("Invoice Delivery Details");
 				$delname = _("Invoice before") . ':';
 			}
 			elseif ($order->trans_type == ST_SALESQUOTE) {
-				$title   = _("Quotation Delivery Details");
+				$title = _("Quotation Delivery Details");
 				$delname = _("Valid until") . ':';
 			}
 			else {
-				$title   = _("Order Delivery Details");
+				$title = _("Order Delivery Details");
 				$delname = _("Required Delivery Date") . ':';
 			}
-			ui_msgs::display_heading($title);
+			Display::heading($title);
 			start_outer_table(Config::get('tables_style2') . " width=90%");
 			table_section(1);
 			locations_list_row(_("Deliver from Location:"), 'Location', null, false, true);
@@ -524,7 +524,7 @@ JS;
 			text_row(_("Deliver To:"), 'deliver_to', $order->deliver_to, 40, 40, _('Additional identifier for delivery e.g. name of receiving person'));
 			textarea_row("<a href='#'>Address:</a>", 'delivery_address', $order->delivery_address, 35, 5, _('Delivery address. Default is address of customer branch'), null, 'id="address_map"');
 			if (strlen($order->delivery_address) > 10) {
-				//JS::gmap("#address_map", $order->delivery_address, $order->delivery_to);
+				//JS::gmap("#address_map", $order->delivery_address, $order->deliver_to);
 			}
 			table_section(2);
 			text_row(_("Person ordering:"), 'name', $order->name, 25, 25, 'Ordering person&#39;s name');

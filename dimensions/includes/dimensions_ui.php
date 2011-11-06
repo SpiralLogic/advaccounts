@@ -19,21 +19,21 @@
 		gl_trans.account = chart_master.account_code AND
 		(dimension_id = $id OR dimension2_id = $id) AND
 		tran_date >= '$from' AND tran_date <= '$to' GROUP BY account";
-		$result = DBOld::query($sql, "Transactions could not be calculated");
-		if (DBOld::num_rows($result) == 0) {
-			ui_msgs::display_warning(_("There are no transactions for this dimension for the selected period."));
+		$result = DB::query($sql, "Transactions could not be calculated");
+		if (DB::num_rows($result) == 0) {
+			Errors::warning(_("There are no transactions for this dimension for the selected period."));
 		} else {
-			ui_msgs::display_heading2(_("Balance for this Dimension"));
+			Display::heading(_("Balance for this Dimension"));
 			br();
 			start_table(Config::get('tables_style'));
 			$th = array(_("Account"), _("Debit"), _("Credit"));
 			table_header($th);
 			$total = $k = 0;
-			while ($myrow = DBOld::fetch($result))
+			while ($myrow = DB::fetch($result))
 			{
 				alt_table_row_color($k);
 				label_cell($myrow["account"] . " " . $myrow['account_name']);
-				ui_view::display_debit_or_credit_cells($myrow["amt"]);
+				Display::debit_or_credit_cells($myrow["amt"]);
 				$total += $myrow["amt"];
 				end_row();
 			}
@@ -42,9 +42,7 @@
 			if ($total >= 0) {
 				amount_cell($total, true);
 				label_cell("");
-			}
-			else
-			{
+} else {
 				label_cell("");
 				amount_cell(abs($total), true);
 			}

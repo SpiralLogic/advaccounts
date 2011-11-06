@@ -61,7 +61,7 @@
 			$begin = $_POST['TransFromDate'];
 		}
 		$begin = Dates::add_days($begin, -1);
-		while ($account = DBOld::fetch($accounts))
+		while ($account = DB::fetch($accounts))
 		{
 			$prev = get_balance($account["account_code"], 0, 0, $begin, $_POST['TransFromDate'], false, false);
 			$curr = get_balance($account["account_code"], 0, 0, $_POST['TransFromDate'], $_POST['TransToDate'], true, true);
@@ -76,12 +76,10 @@
 			label_cell($url);
 			label_cell($account["account_name"]);
 			if (check_value('Balance')) {
-				ui_view::display_debit_or_credit_cells($prev['balance']);
-				ui_view::display_debit_or_credit_cells($curr['balance']);
-				ui_view::display_debit_or_credit_cells($tot['balance']);
-			}
-			else
-			{
+				Display::debit_or_credit_cells($prev['balance']);
+				Display::debit_or_credit_cells($curr['balance']);
+				Display::debit_or_credit_cells($tot['balance']);
+} else {
 				amount_cell($prev['debit']);
 				amount_cell($prev['credit']);
 				amount_cell($curr['debit']);
@@ -116,9 +114,9 @@
 		}
 		start_row("class='inquirybg' style='font-weight:bold'");
 		label_cell(_("Ending Balance") . " - " . $_POST['TransToDate'], "colspan=2");
-		ui_view::display_debit_or_credit_cells($pbal);
-		ui_view::display_debit_or_credit_cells($cbal);
-		ui_view::display_debit_or_credit_cells($tbal);
+		Display::debit_or_credit_cells($pbal);
+		Display::debit_or_credit_cells($cbal);
+		Display::debit_or_credit_cells($tbal);
 		end_row();
 		end_table(1);
 		div_end();

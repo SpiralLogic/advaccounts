@@ -176,7 +176,7 @@ div#content {
 div.banner a { display: block; margin: 0 0.5em }
 div.banner a + a { border-top: 2px groove #999 }
 */
-#sidemenu li, #sidemenu em {
+#sidemenu li, #sidemenu a, #sidemenu em {
 	display:     block;
 	margin:      0.5em 0; /*  padding: 0.3em 0.4em;*/
 	white-space: nowrap;
@@ -186,15 +186,8 @@ div.banner a + a { border-top: 2px groove #999 }
 	border-top: none
 }
 
-#sidemenu li:link {
+#sidemenu a:visited, #sidemenu a:link {
 	text-decoration: none;
-}
-
-#sidemenu li:visited {
-	text-decoration: none;
-}
-
-#sidemenu li:hover {
 }
 
 #sidemenu img {
@@ -394,7 +387,7 @@ div.banner a + a { border-top: 2px groove #999 }
 	color:            white;
 }
 
-.AP #_tabs2 {
+.Purchases #_tabs2 {
 
 	background: -webkit-gradient(linear, 100% 19%, 100% 71%, from(#858585), to(#9E9E9E), color-stop(0, #C7C7C7));
 	background: -moz-linear-gradient(19% 100% 90deg, #858585, #9E9E9E, #C7C7C7 71%);
@@ -402,32 +395,32 @@ div.banner a + a { border-top: 2px groove #999 }
 	position:   relative;
 }
 
-.AP #_tabs2 ul.menu li {
+.Purchases #_tabs2 ul.menu li {
 
 	text-align: center;
 	background: -webkit-gradient(linear, 100% 100%, 100% 0%, from(#1B9C52), to(#49C46E), color-stop(.5, #43E85E));
 	background: -moz-linear-gradient(100% 100% 90deg, #1B9C52, #43E85E, #49C46E 100%);
 }
 
-.AP #_tabs2 ul  a {
+.Purchases #_tabs2 ul  a {
 
 	background: -webkit-gradient(linear, 100% 19%, 100% 71%, from(#858585), to(#9E9E9E), color-stop(0, #C7C7C7));
 	background: -moz-linear-gradient(19% 100% 90deg, #858585, #9E9E9E, #C7C7C7 71%);
 }
 
-.AP #_tabs2 ul  a:hover {
+.Purchases #_tabs2 ul  a:hover {
 
 	background: -webkit-gradient(linear, 100% 100%, 100% 0%, from(#1B9C52), to(#49C46E), color-stop(.5, #43E85E));
 	background: -moz-linear-gradient(100% 100% 90deg, #1B9C52, #43E85E, #49C46E 100%);
 }
 
-.AP #_tabs2 ul li.active a {
+.Purchases #_tabs2 ul li.active a {
 	background: -webkit-gradient(linear, 100% 100%, 100% 0%, from(#1B9C52), to(#49C46E), color-stop(.5, #43E85E));
 	background: -moz-linear-gradient(100% 100% 90deg, #1B9C52, #43E85E, #49C46E 100%);
 	color:      white;
 }
 
-.AP .menu_group {
+.Purchases .menu_group {
 	background:       -moz-linear-gradient(center top, #80FE80, #62BB46) repeat scroll 0 0 transparent;
 	background:       -moz-linear-gradient(center top, #80FE80, #62BB46) repeat scroll 0 0 transparent;
 	box-shadow:       0 1px 0 rgba(255, 255, 255, 0.6) inset;
@@ -438,7 +431,7 @@ div.banner a + a { border-top: 2px groove #999 }
 	box-shadow:       none;
 }
 
-.AP #wrapper, .AP #results {
+.Purchases #wrapper, .Purchases #results {
 	width:      100%;
 	background: #fff url(images/wrapbg2.gif) repeat-x;
 
@@ -566,7 +559,7 @@ div.banner a + a { border-top: 2px groove #999 }
 	padding:     5px;
 }
 
-.headingtext2 {
+table .headingtext {
 	font-size:   14px;
 	color:       black;
 	padding:     3px;
@@ -574,11 +567,6 @@ div.banner a + a { border-top: 2px groove #999 }
 	display:     block;
 }
 
-.headingtext3 {
-	font-weight: bold;
-	font-size:   10px;
-	color:       black;
-}
 
 .menu_group {
 	font-size:        13px;
@@ -759,6 +747,9 @@ input.amount, td.amount {
 	border:           1px solid #7096AB;
 	box-shadow:       none;
 	color:            #333;
+	line-height: 1.4;
+
+		text-shadow: 0 1px 0;
 }
 
 .ajaxsubmit:hover, .inputsubmit:hover, .editbutton:hover, .button:hover, .button-large:hover {
@@ -799,10 +790,7 @@ input.amount, td.amount {
 
 .button.printlink, .button-large {
 	padding:     .4em 1em;
-	line-height: 1.4;
-	font-size:   14px;
-	font-weight: bold;
-	text-shadow: 0 1px 0;
+
 }
 
 .navibutton[disabled], .navibutton[disabled] span {
@@ -888,21 +876,22 @@ input.hasDatepicker {
 	clear:            left;
 	color:            #808080;
 	background-color: #fff;
-	margin-top:       5px;
+	text-align: 			center;
+	margin:       5px auto 0;
 	padding:          5px 15px;
 	border-top:       1px solid #ccc;
 }
-
+#footer span {
+	padding:    0 12px 0 12px;
+}
 #footer .power {
 	font-size:  1.0em;
-	padding:    0 12px 0 12px;
 	background: url(images/news.gif) no-repeat center left #fff;
 	color:      #808080;
 }
 
 #footer .date {
 	font-size: 1.0em;
-	padding:   0 12px 0 12px;
 	color:     #808080;
 }
 

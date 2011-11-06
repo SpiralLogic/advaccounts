@@ -2,7 +2,7 @@
 
 	$page_security = 'SA_CUSTOMER';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-		$_SESSION['App']->selected_application = 'contacts';
+	$_SESSION['App']->selected_application = 'contacts';
 	if (isset($_POST['name'])) {
 		$data['customer'] = $customer = new Contacts_Customer($_POST);
 		$data['customer']->save();
@@ -35,7 +35,7 @@
 	if (isset($_POST['delete'])) {
 		$customer->delete();
 		$status = $customer->getStatus();
-		ui_msgs::display_notification($status['message']);
+		Errors::notice($status['message']);
 	}
 	if (!Input::get('popup') && !Input::get('id')) {
 		/** @noinspection PhpUndefinedMethodInspection */
@@ -44,10 +44,10 @@
 		HTML::tr(true)->td(array("style" => "width:750px"));
 		UI::search(
 			'customer', array(
-			'label' => 'Search Customer:',
-			'size' => 80,
-			'callback' => 'Customer.fetch'
-		), array('focus' => true)
+				'label' => 'Search Customer:',
+				'size' => 80,
+				'callback' => 'Customer.fetch'
+			), array('focus' => true)
 		);
 		HTML::td()->tr->table->div;
 	}
@@ -64,10 +64,10 @@
 	);
 	HTML::input(
 		'name', array(
-		'value' => $customer->name,
-		'name' => 'name',
-		'size' => 50
-	)
+			'value' => $customer->name,
+			'name' => 'name',
+			'size' => 50
+		)
 	);
 	HTML::td()->td(
 		array(
@@ -77,11 +77,11 @@
 	)->td(true);
 	HTML::input(
 		'id', array(
-		'value' => $customer->id,
-		'name' => 'id',
-		'size' => 10,
-		'maxlength' => '7'
-	)
+			'value' => $customer->id,
+			'name' => 'id',
+			'size' => 10,
+			'maxlength' => '7'
+		)
 	);
 	HTML::td()->tr->table->div;
 	start_outer_table(Config::get('tables_style2'), 5);
@@ -90,22 +90,23 @@
 	/** @noinspection PhpUndefinedMethodInspection */
 	HTML::tr(true)->td(
 		'branchSelect', array(
-		'colspan' => 2,
-		'class' => "center"
-	)
+			'colspan' => 2,
+			'class' => "center"
+		)
 	);
 	UI::select(
 		'branchList', array_map(
-			function($v) {
+			function($v)
+			{
 				return $v->br_name;
 			}, $customer->branches
 		), array('name' => 'branchList')
 	);
 	UI::button(
 		'addBranch', 'Add new address', array(
-		'class' => 'invis',
-		'name' => 'addBranch'
-	)
+			'class' => 'invis',
+			'name' => 'addBranch'
+		)
 	);
 	HTML::td()->tr;
 	text_row(_("Contact:"), 'br_contact_name', $currentBranch->contact_name, 35, 40);
@@ -140,9 +141,9 @@
 	table_section(1);
 	hidden('accounts_id', $customer->accounts->accounts_id);
 	table_section_title(_("Accounts Details:"), 2);
-	percent_row(_("Discount Percent:"), 'discount', $customer->discount, ($_SESSION['wa_current_user']->can_access('SA_CUSTOMER_CREDIT')) ? "" : " disabled=\"\"");
-	percent_row(_("Prompt Payment Discount Percent:"), 'pymt_discount', $customer->pymt_discount, ($_SESSION['wa_current_user']->can_access('SA_CUSTOMER_CREDIT')) ? "" : " disabled=\"\"");
-	amount_row(_("Credit Limit:"), 'credit_limit', $customer->credit_limit, ($_SESSION['wa_current_user']->can_access('SA_CUSTOMER_CREDIT')) ? "" : " disabled=\"\"");
+	percent_row(_("Discount Percent:"), 'discount', $customer->discount, ($_SESSION['current_user']->can_access('SA_CUSTOMER_CREDIT')) ? "" : " disabled=\"\"");
+	percent_row(_("Prompt Payment Discount Percent:"), 'pymt_discount', $customer->pymt_discount, ($_SESSION['current_user']->can_access('SA_CUSTOMER_CREDIT')) ? "" : " disabled=\"\"");
+	amount_row(_("Credit Limit:"), 'credit_limit', $customer->credit_limit, ($_SESSION['current_user']->can_access('SA_CUSTOMER_CREDIT')) ? "" : " disabled=\"\"");
 	sales_types_list_row(_("Sales Type/Price List:"), 'sales_type', $customer->sales_type);
 	record_status_list_row(_("Customer status:"), 'inactive');
 	text_row(_("GSTNo:"), 'tax_id', $customer->tax_id, 35, 40);
@@ -178,9 +179,9 @@
 	);
 	UI::button('addLog', "Add log entry")->td->tr->tr(true)->td(array('colspan' => 2))->textarea(
 		'messageLog', array(
-		'cols' => 50,
-		'rows' => 20
-	)
+			'cols' => 50,
+			'rows' => 20
+		)
 	);
 	Contacts_ContactLog::read($customer->id, 'C');
 	/** @noinspection PhpUndefinedMethodInspection */
@@ -190,9 +191,9 @@
 	HTML::div(array('style' => 'text-align:center'))->div('Contacts', array('style' => 'min-height:200px;'));
 	HTML::script('contact', array('type' => 'text/x-jquery-tmpl'))->table(
 		'contact-${id}', array(
-		'class' => '',
-		'style' => 'display:inline-block'
-	)
+			'class' => '',
+			'style' => 'display:inline-block'
+		)
 	)->tr(true)->td(
 		array(
 			'content' => '${name}',
@@ -234,10 +235,10 @@
 	end_form();
 	HTML::div(
 		'contactLog', array(
-		'title' => 'New contact log entry',
-		'class' => 'ui-widget-overlay',
-		'style' => 'display:none;'
-	)
+			'title' => 'New contact log entry',
+			'class' => 'ui-widget-overlay',
+			'style' => 'display:none;'
+		)
 	);
 	HTML::p('New log entry:', array('class' => 'validateTips'));
 	start_table();
@@ -249,18 +250,18 @@
 	HTML::p()->div->div(array('class' => 'center width50'));
 	UI::button(
 		'btnCustomer', ($customer->id) ? 'Update Customer' : 'New Customer', array(
-		'name' => 'submit',
-		'type' => 'submit',
-		'style' => 'margin:10px;'
-	)
+			'name' => 'submit',
+			'type' => 'submit',
+			'style' => 'margin:10px;'
+		)
 	);
 	UI::button(
 		'btnCancel', 'Cancel', array(
-		'name' => 'cancel',
-		'type' => 'submit',
-		'class' => 'ui-helper-hidden',
-		'style' => 'margin:10px;'
-	)
+			'name' => 'cancel',
+			'type' => 'submit',
+			'class' => 'ui-helper-hidden',
+			'style' => 'margin:10px;'
+		)
 	);
 	/** @noinspection PhpUndefinedMethodInspection */
 	HTML::_div();

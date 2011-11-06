@@ -27,10 +27,10 @@
 			$tr[] = 'debtor_trans_no=' . $trans_no;
 		}
 		$sql .= implode(' OR ', $tr);
-		$sql .= ") AND debtor_trans_type=" . DBOld::escape($debtor_trans_type) . "
+		$sql .= ") AND debtor_trans_type=" . DB::escape($debtor_trans_type) . "
 		AND stock_master.stock_id=debtor_trans_details.stock_id
 		ORDER BY id";
-		return DBOld::query($sql, "The debtor transaction detail could not be queried");
+		return DB::query($sql, "The debtor transaction detail could not be queried");
 	}
 
 	//----------------------------------------------------------------------------------------
@@ -38,9 +38,9 @@
 		$sql
 		 = "UPDATE debtor_trans_details SET quantity=0, unit_price=0,
 		unit_tax=0, discount_percent=0, standard_cost=0
-		WHERE debtor_trans_no=" . DBOld::escape($type_no) . "
-		AND debtor_trans_type=" . DBOld::escape($type);
-		DBOld::query($sql, "The debtor transaction details could not be voided");
+		WHERE debtor_trans_no=" . DB::escape($type_no) . "
+		AND debtor_trans_type=" . DB::escape($type);
+		DB::query($sql, "The debtor transaction details could not be voided");
 		// clear the stock move items
 		void_stock_move($type, $type_no);
 	}
@@ -51,24 +51,24 @@
 		if ($line_id != 0) {
 			$sql
 			 = "UPDATE debtor_trans_details SET
-			stock_id=" . DBOld::escape($stock_id) . ",
-			description=" . DBOld::escape($description) . ",
+			stock_id=" . DB::escape($stock_id) . ",
+			description=" . DB::escape($description) . ",
 			quantity=$quantity,
 			unit_price=$unit_price,
 			unit_tax=$unit_tax,
 			discount_percent=$discount_percent,
 			standard_cost=$std_cost WHERE
-			id=" . DBOld::escape($line_id);
+			id=" . DB::escape($line_id);
 		} else {
 			$sql
 			 = "INSERT INTO debtor_trans_details (debtor_trans_no,
 				debtor_trans_type, stock_id, description, quantity, unit_price,
 				unit_tax, discount_percent, standard_cost)
-			VALUES (" . DBOld::escape($debtor_trans_no) . ", " . DBOld::escape($debtor_trans_type) . ", " . DBOld::escape($stock_id) .
-			 ", " . DBOld::escape($description) . ",
+			VALUES (" . DB::escape($debtor_trans_no) . ", " . DB::escape($debtor_trans_type) . ", " . DB::escape($stock_id) .
+			 ", " . DB::escape($description) . ",
 				$quantity, $unit_price, $unit_tax, $discount_percent, $std_cost)";
 		}
-		DBOld::query($sql, "The debtor transaction detail could not be written");
+		DB::query($sql, "The debtor transaction detail could not be written");
 	}
 
 ?>

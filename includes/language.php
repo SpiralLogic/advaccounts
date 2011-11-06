@@ -85,9 +85,7 @@
 			{
 				if ($i > 0) {
 					$msg .= "\t\tarray ";
-				}
-				else
-				{
+} else {
 					$msg .= "array ";
 				}
 				$msg .= "('code' => '" . $installed_languages[$i]['code'] . "', ";
@@ -95,9 +93,7 @@
 				$msg .= "'encoding' => '" . $installed_languages[$i]['encoding'] . "'";
 				if (isset($installed_languages[$i]['rtl']) && $installed_languages[$i]['rtl']) {
 					$msg .= ", 'rtl' => true),\n";
-				}
-				else
-				{
+} else {
 					$msg .= "),\n";
 				}
 			}
@@ -107,13 +103,11 @@
 			// Check if directory exists and is writable first.
 			if (file_exists($path) && is_writable($path)) {
 				if (!$zp = fopen($filename, 'w')) {
-					ui_msgs::display_error(_("Cannot open the languages file - ") . $filename);
+					Errors::error(_("Cannot open the languages file - ") . $filename);
 					return false;
-				}
-				else
-				{
+} else {
 					if (!fwrite($zp, $msg)) {
-						ui_msgs::display_error(_("Cannot write to the language file - ") . $filename);
+						Errors::error(_("Cannot write to the language file - ") . $filename);
 						fclose($zp);
 						return false;
 					}
@@ -121,7 +115,7 @@
 					fclose($zp);
 				}
 			} else {
-				ui_msgs::display_error(_("The language files folder ") . $path . _(" is not writable. Change its permissions so it is, then re-run the operation."));
+				Errors::error(_("The language files folder ") . $path . _(" is not writable. Change its permissions so it is, then re-run the operation."));
 				return false;
 			}
 			return true;

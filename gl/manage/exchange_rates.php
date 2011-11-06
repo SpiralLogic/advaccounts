@@ -13,21 +13,22 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	$js = "";
 	Page::start(_($help_context = "Exchange Rates"));
-	simple_page_mode(false);
+	Page::simple_mode(false);
 	//---------------------------------------------------------------------------------------------
-	function check_data() {
+	function check_data()
+	{
 		if (!Dates::is_date($_POST['date_'])) {
-			ui_msgs::display_error(_("The entered date is invalid."));
+			Errors::error(_("The entered date is invalid."));
 			JS::set_focus('date_');
 			return false;
 		}
 		if (input_num('BuyRate') <= 0) {
-			ui_msgs::display_error(_("The exchange rate cannot be zero or a negative number."));
+			Errors::error(_("The exchange rate cannot be zero or a negative number."));
 			JS::set_focus('BuyRate');
 			return false;
 		}
 		if (get_date_exchange_rate($_POST['curr_abrev'], $_POST['date_'])) {
-			ui_msgs::display_error(_("The exchange rate for the date is already there."));
+			Errors::error(_("The exchange rate for the date is already there."));
 			JS::set_focus('date_');
 			return false;
 		}
@@ -35,7 +36,8 @@
 	}
 
 	//---------------------------------------------------------------------------------------------
-	function handle_submit() {
+	function handle_submit()
+	{
 		global $selected_id;
 		if (!check_data()) {
 			return false;
@@ -56,7 +58,8 @@
 	}
 
 	//---------------------------------------------------------------------------------------------
-	function handle_delete() {
+	function handle_delete()
+	{
 		global $selected_id;
 		if ($selected_id == "") {
 			return;
@@ -67,19 +70,23 @@
 	}
 
 	//---------------------------------------------------------------------------------------------
-	function edit_link($row) {
+	function edit_link($row)
+	{
 		return button('Edit' . $row["id"], _("Edit"), true, ICON_EDIT);
 	}
 
-	function del_link($row) {
+	function del_link($row)
+	{
 		return button('Delete' . $row["id"], _("Delete"), true, ICON_DELETE);
 	}
 
-	function display_rates($curr_code) {
+	function display_rates($curr_code)
+	{
 	}
 
 	//---------------------------------------------------------------------------------------------
-	function display_rate_edit() {
+	function display_rate_edit()
+	{
 		global $selected_id;
 		$Ajax = Ajax::instance();
 		start_table(Config::get('tables_style2'));
@@ -87,7 +94,7 @@
 			//editing an existing exchange rate
 			$myrow = get_exchange_rate($selected_id);
 			$_POST['date_'] = Dates::sql2date($myrow["date_"]);
-			$_POST['BuyRate'] = exrate_format($myrow["rate_buy"]);
+			$_POST['BuyRate'] = Num::exrate_format($myrow["rate_buy"]);
 			hidden('selected_id', $selected_id);
 			hidden('date_', $_POST['date_']);
 			label_row(_("Date to Use From:"), $_POST['date_']);
@@ -98,21 +105,22 @@
 		}
 		if (isset($_POST['get_rate'])) {
 			$_POST['BuyRate']
-			 = exrate_format(retrieve_exrate($_POST['curr_abrev'], $_POST['date_']));
+			 = Num::exrate_format(retrieve_exrate($_POST['curr_abrev'], $_POST['date_']));
 			$Ajax->activate('BuyRate');
 		}
 		small_amount_row(
 			_("Exchange Rate:"), 'BuyRate', null, '',
 			submit('get_rate', _("Get"), false, _('Get current ECB rate'), true),
-			user_exrate_dec()
+			User::exrate_dec()
 		);
 		end_table(1);
 		submit_add_or_update_center($selected_id == '', '', 'both');
-		ui_msgs::display_warning(_("Exchange rates are entered against the company currency."), 1);
+		Errors::warning(_("Exchange rates are entered against the company currency."), 1);
 	}
 
 	//---------------------------------------------------------------------------------------------
-	function clear_data() {
+	function clear_data()
+	{
 		unset($_POST['selected_id']);
 		unset($_POST['date_']);
 		unset($_POST['BuyRate']);
@@ -129,20 +137,20 @@
 	//---------------------------------------------------------------------------------------------
 	start_form();
 	if (!isset($_POST['curr_abrev'])) {
-		$_POST['curr_abrev'] = ui_globals::get_global_curr_code();
+		$_POST['curr_abrev'] = Session::get()->global_curr_code;
 	}
 	echo "<center>";
 	echo _("Select a currency :") . "  ";
 	echo currencies_list('curr_abrev', null, true);
 	echo "</center>";
 	// if currency sel has changed, clear the form
-	if ($_POST['curr_abrev'] != ui_globals::get_global_curr_code()) {
+	if ($_POST['curr_abrev'] != Session::get()->global_curr_code) {
 		clear_data();
 		$selected_id = "";
 	}
-	ui_globals::set_global_curr_code($_POST['curr_abrev']);
+	Session::get()->global_curr_code = $_POST['curr_abrev'];
 	$sql = "SELECT date_, rate_buy, id FROM exchange_rates "
-	 . "WHERE curr_code=" . DBOld::escape($_POST['curr_abrev']) . "
+	 . "WHERE curr_code=" . DB::escape($_POST['curr_abrev'],false,false) . "
 	 ORDER BY date_ DESC";
 	$cols = array(
 		_("Date to Use From") => 'date',
@@ -158,11 +166,9 @@
 	);
 	$table =& db_pager::new_db_pager('orders_tbl', $sql, $cols);
 	if (Banking::is_company_currency($_POST['curr_abrev'])) {
-		ui_msgs::display_warning(_("The selected currency is the company currency."), 2);
-		ui_msgs::display_warning(_("The company currency is the base currency so exchange rates cannot be set for it."), 1);
-	}
-	else
-	{
+		Errors::warning(_("The selected currency is the company currency."), 2);
+		Errors::warning(_("The company currency is the base currency so exchange rates cannot be set for it."), 1);
+	} else {
 		br(1);
 		$table->width = "40%";
 		if ($table->rec_count == 0) {

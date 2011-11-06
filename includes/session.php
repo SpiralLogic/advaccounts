@@ -9,12 +9,13 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	class Session
+	class Session extends Input
 	{
 		private static $_instance = null;
 		public static $lang;
 		public static $get_text;
 		protected $installed_languages;
+		protected $_session = array();
 
 		public static function init()
 		{
@@ -22,6 +23,24 @@
 				static::$_instance = new static;
 			}
 			return static::$_instance;
+		}
+
+		public static function get()
+		{
+			return static::init();
+		}
+
+		public static function kill()
+		{
+			session_unset();
+			session_destroy();
+		}
+
+		public static function hasLogin()
+		{
+
+			static::init()->checkLogin();
+
 		}
 
 		final protected function __construct()
@@ -32,6 +51,7 @@
 			header("Cache-control: private");
 			$this->setText();
 			$this->setLanguage();
+			$this->_session = &$_SESSION;
 			// Ajax communication object
 			$GLOBALS['Ajax'] = Ajax::instance();
 		}
@@ -39,11 +59,11 @@
 		protected function setLanguage()
 		{
 			if (!isset($_SESSION['language']) || !method_exists($_SESSION['language'], 'set_language')) {
-				$l            = Arr::search_value(Config::get('default_lang'), Config::get('languages.installed'), 'code');
+				$l = Arr::search_value(Config::get('default_lang'), Config::get('languages.installed'), 'code');
 				static::$lang = new language($l['name'], $l['code'], $l['encoding'], isset($l['rtl']) ? 'rtl' : 'ltr');
 				static::$lang->set_language(static::$lang->code);
-				if (file_exists(APP_PATH . "lang/" . Session::$lang->code . "/locale.php")) {
-					include(APP_PATH . "lang/" . Session::$lang->code . "/locale.php");
+				if (file_exists(APP_PATH . "lang/" . static::$lang->code . "/locale.php")) {
+					include(APP_PATH . "lang/" . static::$lang->code . "/locale.php");
 				}
 				$_SESSION['language'] = static::$lang;
 			} else {
@@ -64,13 +84,16 @@
 		{
 			// logout.php is the only page we should have always
 			// accessable regardless of access level and current login status.
-			$currentUser = CurrentUser::instance();
+			$currentUser = User::get();
+
 			if (strstr($_SERVER['PHP_SELF'], 'logout.php') == false) {
 				$currentUser->timeout();
 				if (!$currentUser->logged_in()) {
 					$this->showLogin();
 				}
-				$succeed = (Config::get('db.' . $_POST["company_login_name"])) && $currentUser->login($_POST["company_login_name"], $_POST["user_name_entry_field"], $_POST["password"]);
+
+					$succeed = (Config::get('db.' . $_POST["company_login_name"])) && $currentUser->login($_POST["company_login_name"], $_POST["user_name_entry_field"], $_POST["password"]);
+
 				// select full vs fallback ui mode on login
 				$currentUser->ui_mode = $_POST['ui_mode'];
 				if (!$succeed) {
@@ -80,24 +103,19 @@
 				static::$lang->set_language($_SESSION['language']->code);
 			} else {
 				if (Input::session('change_password') && strstr($_SERVER['PHP_SELF'], 'change_current_user_password.php') == false) {
-					meta_forward('/admin/change_current_user_password.php', 'selected_id=' . $currentUser->username);
+					meta_forward('/system/change_current_user_password.php', 'selected_id=' . $currentUser->username);
 				}
-				DBOld::getInstance();
-			}
-		}
 
-		public static function hasLogin()
-		{
-			static::init()->checkLogin();
+			}
 		}
 
 		protected function showLogin()
 		{
 			if (!Input::post("user_name_entry_field")) {
 				// strip ajax marker from uri, to force synchronous page reload
-				$_SESSION['timeout'] = array('uri'	=> preg_replace('/JsHttpRequest=(?:(\d+)-)?([^&]+)/s', '', @$_SERVER['REQUEST_URI']),
-																		 'post' => $_POST);
-				include(APP_PATH . "access/login.php");
+				$_SESSION['timeout'] = array('uri' => preg_replace('/JsHttpRequest=(?:(\d+)-)?([^&]+)/s', '', @$_SERVER['REQUEST_URI']),
+					'post' => $_POST);
+				require(APP_PATH . "access/login.php");
 				if (Ajax::in_ajax() || AJAX_REFERRER) {
 					$Ajax->activate('_page_body');
 				}
@@ -117,9 +135,13 @@
 			die();
 		}
 
-		public static function kill()
+		public function __get($var)
 		{
-			session_unset();
-			session_destroy();
+			return static::_isset($this->_session, $var) ? : null;
+		}
+
+		public function __set($var, $value)
+		{
+			$this->_session[$var] = $value;
 		}
 	}

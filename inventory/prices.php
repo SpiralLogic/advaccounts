@@ -12,11 +12,10 @@
 	$page_security = 'SA_SALESPRICE';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "Inventory Item Sales prices"), Input::request('frame'));
-	include_once(APP_PATH . "sales/includes/db/sales_types_db.php");
 	//---------------------------------------------------------------------------------------------------
 	Validation::check(Validation::STOCK_ITEMS, _("There are no items defined in the system."));
 	Validation::check(Validation::SALES_TYPES, _("There are no sales types in the system. Please set up sales types befor entering pricing."));
-	simple_page_mode(true);
+	Page::simple_mode(true);
 	//---------------------------------------------------------------------------------------------------
 	$input_error = 0;
 	if (isset($_GET['stock_id'])) {
@@ -35,19 +34,19 @@
 		start_form();
 	}
 	if (!Input::post('stock_id')) {
-		$_POST['stock_id'] = ui_globals::get_global_stock_item();
+		$_POST['stock_id'] = Session::get()->global_stock_id;
 	}
 	if (!Input::request('frame')) {
 		echo "<center>" . _("Item:") . "&nbsp;";
 		echo sales_items_list('stock_id', $_POST['stock_id'], false, true, '', array(), true);
 		echo "<hr></center>";
 	}
-	ui_globals::set_global_stock_item($_POST['stock_id']);
+	Session::get()->global_stock_id = $_POST['stock_id'];
 	//----------------------------------------------------------------------------------------------------
 	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 		if (!Validation::is_num('price', 0)) {
 			$input_error = 1;
-			ui_msgs::display_error(_("The price entered must be numeric."));
+			Errors::error(_("The price entered must be numeric."));
 			JS::set_focus('price');
 		}
 		if ($input_error != 1) {
@@ -55,16 +54,14 @@
 				//editing an existing price
 				update_item_price($selected_id, $_POST['sales_type_id'], $_POST['curr_abrev'], input_num('price'));
 				$msg = _("This price has been updated.");
-			}
-			else
-			{
+			} else {
 				add_item_price(
 					$_POST['stock_id'], $_POST['sales_type_id'],
 					$_POST['curr_abrev'], input_num('price')
 				);
 				$msg = _("The new price has been added.");
 			}
-			ui_msgs::display_notification($msg);
+			Errors::notice($msg);
 			$Mode = 'RESET';
 		}
 	}
@@ -72,7 +69,7 @@
 	if ($Mode == 'Delete') {
 		//the link to delete a selected record was clicked
 		delete_item_price($selected_id);
-		ui_msgs::display_notification(_("The selected price has been deleted."));
+		Errors::notice(_("The selected price has been deleted."));
 		$Mode = 'RESET';
 	}
 	if ($Mode == 'RESET') {
@@ -101,7 +98,7 @@
 	table_header($th);
 	$k = 0; //row colour counter
 	$calculated = false;
-	while ($myrow = DBOld::fetch($prices_list))
+	while ($myrow = DB::fetch($prices_list))
 	{
 		alt_table_row_color($k);
 		label_cell($myrow["curr_abrev"]);
@@ -112,20 +109,20 @@
 		end_row();
 	}
 	end_table();
-	if (DBOld::num_rows($prices_list) == 0) {
+	if (DB::num_rows($prices_list) == 0) {
 		if (DB_Company::get_pref('add_pct') != -1) {
 			$calculated = true;
 		}
-		ui_msgs::display_warning(_("There are no prices set up for this part."), 1);
+		Errors::warning(_("There are no prices set up for this part."), 1);
 	}
 	div_end();
 	//------------------------------------------------------------------------------------------------
 	echo "<br>";
 	if ($Mode == 'Edit') {
-		$myrow                  = get_stock_price($selected_id);
-		$_POST['curr_abrev']    = $myrow["curr_abrev"];
+		$myrow = get_stock_price($selected_id);
+		$_POST['curr_abrev'] = $myrow["curr_abrev"];
 		$_POST['sales_type_id'] = $myrow["sales_type_id"];
-		$_POST['price']         = price_format($myrow["price"]);
+		$_POST['price'] = Num::price_format($myrow["price"]);
 	}
 	hidden('selected_id', $selected_id);
 	div_start('price_details');
@@ -133,18 +130,18 @@
 	currencies_list_row(_("Currency:"), 'curr_abrev', null, true);
 	sales_types_list_row(_("Sales Type:"), 'sales_type_id', null, true);
 	if (!isset($_POST['price'])) {
-		$_POST['price'] = price_format(
+		$_POST['price'] = Num::price_format(
 			get_kit_price(
 				get_post('stock_id'),
 				get_post('curr_abrev'), get_post('sales_type_id')
 			)
 		);
 	}
-	$kit = get_item_code_dflts($_POST['stock_id']);
+	$kit = Item_Code::get_defaults($_POST['stock_id']);
 	small_amount_row(_("Price:"), 'price', null, '', _('per') . ' ' . $kit["units"]);
 	end_table(1);
 	if ($calculated) {
-		ui_msgs::display_warning(_("The price is calculated."), 0, 1);
+		Errors::warning(_("The price is calculated."), 0, 1);
 	}
 	submit_add_or_update_center($selected_id == -1, '', 'both');
 	div_end();

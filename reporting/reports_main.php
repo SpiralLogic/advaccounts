@@ -349,9 +349,7 @@
 														 _('Comments')      => 'TEXTBOX',
 														 _('Destination')   => 'DESTINATION'
 												));
-	}
-	else
-	{
+} else {
 		$reports->addReport(_('General Ledger'), 704, _('GL Account &Transactions'),
 												array(_('Start Date')  => 'DATEBEGINM',
 														 _('End Date')     => 'DATEENDM',

@@ -12,21 +12,21 @@
 	$page_security = 'SA_ITEMTAXTYPE';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "Item Tax Types"));
-	simple_page_mode(true);
+	Page::simple_mode(true);
 	//-----------------------------------------------------------------------------------
 	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 		$input_error = 0;
 		if (strlen($_POST['name']) == 0) {
 			$input_error = 1;
-			ui_msgs::display_error(_("The item tax type description cannot be empty."));
+			Errors::error(_("The item tax type description cannot be empty."));
 			JS::set_focus('name');
 		}
 		if ($input_error != 1) {
 			// create an array of the exemptions
 			$exempt_from = array();
-			$tax_types   = Tax_Types::get_all_simple();
-			$i           = 0;
-			while ($myrow = DBOld::fetch($tax_types))
+			$tax_types = Tax_Types::get_all_simple();
+			$i = 0;
+			while ($myrow = DB::fetch($tax_types))
 			{
 				if (check_value('ExemptTax' . $myrow["id"])) {
 					$exempt_from[$i] = $myrow["id"];
@@ -35,12 +35,10 @@
 			}
 			if ($selected_id != -1) {
 				update($selected_id, $_POST['name'], $_POST['exempt'], $exempt_from);
-				ui_msgs::display_notification(_('Selected item tax type has been updated'));
-			}
-			else
-			{
+				Errors::notice(_('Selected item tax type has been updated'));
+			} else {
 				add($_POST['name'], $_POST['exempt'], $exempt_from);
-				ui_msgs::display_notification(_('New item tax type has been added'));
+				Errors::notice(_('New item tax type has been added'));
 			}
 			$Mode = 'RESET';
 		}
@@ -48,11 +46,11 @@
 	//-----------------------------------------------------------------------------------
 	function can_delete($selected_id)
 	{
-		$sql    = "SELECT COUNT(*) FROM stock_master WHERE tax_type_id=" . DBOld::escape($selected_id);
-		$result = DBOld::query($sql, "could not query stock master");
-		$myrow  = DBOld::fetch_row($result);
+		$sql = "SELECT COUNT(*) FROM stock_master WHERE tax_type_id=" . DB::escape($selected_id);
+		$result = DB::query($sql, "could not query stock master");
+		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {
-			ui_msgs::display_error(_("Cannot delete this item tax type because items have been created referring to it."));
+			Errors::error(_("Cannot delete this item tax type because items have been created referring to it."));
 			return false;
 		}
 		return true;
@@ -62,13 +60,13 @@
 	if ($Mode == 'Delete') {
 		if (can_delete($selected_id)) {
 			delete($selected_id);
-			ui_msgs::display_notification(_('Selected item tax type has been deleted'));
+			Errors::notice(_('Selected item tax type has been deleted'));
 		}
 		$Mode = 'RESET';
 	}
 	if ($Mode == 'RESET') {
 		$selected_id = -1;
-		$sav         = get_post('show_inactive');
+		$sav = get_post('show_inactive');
 		unset($_POST);
 		$_POST['show_inactive'] = $sav;
 	}
@@ -80,7 +78,7 @@
 	inactive_control_column($th);
 	table_header($th);
 	$k = 0;
-	while ($myrow = DBOld::fetch($result2))
+	while ($myrow = DB::fetch($result2))
 	{
 		alt_table_row_color($k);
 		if ($myrow["exempt"] == 0) {
@@ -103,12 +101,12 @@
 		if ($Mode == 'Edit') {
 			$myrow = get($selected_id);
 			unset($_POST); // clear exemption checkboxes
-			$_POST['name']   = $myrow["name"];
+			$_POST['name'] = $myrow["name"];
 			$_POST['exempt'] = $myrow["exempt"];
 			// read the exemptions and check the ones that are on
 			$exemptions = Tax_ItemType::get_exemptions($selected_id);
-			if (DBOld::num_rows($exemptions) > 0) {
-				while ($exmp = DBOld::fetch($exemptions))
+			if (DB::num_rows($exemptions) > 0) {
+				while ($exmp = DB::fetch($exemptions))
 				{
 					$_POST['ExemptTax' . $exmp["tax_type_id"]] = 1;
 				}
@@ -120,16 +118,16 @@
 	yesno_list_row(_("Is Fully Tax-exempt:"), 'exempt', null, "", "", true);
 	end_table(1);
 	if (!isset($_POST['exempt']) || $_POST['exempt'] == 0) {
-		ui_msgs::display_warning(_("Select which taxes this item tax type is exempt from."), 0, 1);
+		Errors::warning(_("Select which taxes this item tax type is exempt from."), 0, 1);
 		start_table(Config::get('tables_style2'));
 		$th = array(_("Tax Name"), _("Rate"), _("Is exempt"));
 		table_header($th);
 		$tax_types = Tax_Types::get_all_simple();
-		while ($myrow = DBOld::fetch($tax_types))
+		while ($myrow = DB::fetch($tax_types))
 		{
 			alt_table_row_color($k);
 			label_cell($myrow["name"]);
-			label_cell(percent_format($myrow["rate"]) . " %", "nowrap align=right");
+			label_cell(Num::percent_format($myrow["rate"]) . " %", "nowrap align=right");
 			check_cells("", 'ExemptTax' . $myrow["id"], null);
 			end_row();
 		}

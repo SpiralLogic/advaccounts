@@ -15,7 +15,7 @@
 	 * SYSTEM FOLDER NAME
 	 *---------------------------------------------------------------
 	 *
-	 * This variable must contain the name of your "system" folder.
+	 * This variable must contain the name of your "System" folder.
 	 * Include the path if the folder is not in the same  directory
 	 * as this file.
 	 *
@@ -114,9 +114,7 @@
 	// The path to the "application" folder
 	if (is_dir($application_folder)) {
 		define('APPPATH', $application_folder . '/');
-	}
-	else
-	{
+} else {
 		if (!is_dir(BASEPATH . $application_folder . '/')) {
 			exit("Your application folder path does not appear to be set correctly. Please open the following file and correct this: " . SELF);
 		}

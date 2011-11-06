@@ -12,22 +12,23 @@
 	$page_security = 'SA_GLACCOUNTGROUP';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "GL Account Groups"));
-	simple_page_mode(true);
+	Page::simple_mode(true);
 	//-----------------------------------------------------------------------------------
-	function can_process() {
+	function can_process()
+	{
 		global $selected_id;
 		if (!input_num('id')) {
-			ui_msgs::display_error(_("The account id must be an integer and cannot be empty."));
+			Errors::error(_("The account id must be an integer and cannot be empty."));
 			JS::set_focus('id');
 			return false;
 		}
 		if (strlen($_POST['name']) == 0) {
-			ui_msgs::display_error(_("The account group name cannot be empty."));
+			Errors::error(_("The account group name cannot be empty."));
 			JS::set_focus('name');
 			return false;
 		}
 		if (isset($selected_id) && ($selected_id == $_POST['parent'])) {
-			ui_msgs::display_error(_("You cannot set an account group to be a subgroup of itself."));
+			Errors::error(_("You cannot set an account group to be a subgroup of itself."));
 			return false;
 		}
 		return true;
@@ -38,40 +39,39 @@
 		if (can_process()) {
 			if ($selected_id != -1) {
 				if (update_account_type($selected_id, $_POST['name'], $_POST['class_id'], $_POST['parent'])) {
-					ui_msgs::display_notification(_('Selected account type has been updated'));
+					Errors::notice(_('Selected account type has been updated'));
 				}
-			}
-			else
-			{
+			} else {
 				if (add_account_type($_POST['id'], $_POST['name'], $_POST['class_id'], $_POST['parent'])) {
-					ui_msgs::display_notification(_('New account type has been added'));
+					Errors::notice(_('New account type has been added'));
 					$Mode = 'RESET';
 				}
 			}
 		}
 	}
 	//-----------------------------------------------------------------------------------
-	function can_delete($selected_id) {
+	function can_delete($selected_id)
+	{
 		if ($selected_id == -1) {
 			return false;
 		}
-		$type = DBOld::escape($selected_id);
+		$type = DB::escape($selected_id);
 		$sql
 		 = "SELECT COUNT(*) FROM chart_master
 		WHERE account_type=$type";
-		$result = DBOld::query($sql, "could not query chart master");
-		$myrow = DBOld::fetch_row($result);
+		$result = DB::query($sql, "could not query chart master");
+		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {
-			ui_msgs::display_error(_("Cannot delete this account group because GL accounts have been created referring to it."));
+			Errors::error(_("Cannot delete this account group because GL accounts have been created referring to it."));
 			return false;
 		}
 		$sql
 		 = "SELECT COUNT(*) FROM chart_types
 		WHERE parent=$type";
-		$result = DBOld::query($sql, "could not query chart types");
-		$myrow = DBOld::fetch_row($result);
+		$result = DB::query($sql, "could not query chart types");
+		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {
-			ui_msgs::display_error(_("Cannot delete this account group because GL account groups have been created referring to it."));
+			Errors::error(_("Cannot delete this account group because GL account groups have been created referring to it."));
 			return false;
 		}
 		return true;
@@ -81,7 +81,7 @@
 	if ($Mode == 'Delete') {
 		if (can_delete($selected_id)) {
 			delete_account_type($selected_id);
-			ui_msgs::display_notification(_('Selected account group has been deleted'));
+			Errors::notice(_('Selected account group has been deleted'));
 		}
 		$Mode = 'RESET';
 	}
@@ -99,7 +99,7 @@
 	inactive_control_column($th);
 	table_header($th);
 	$k = 0;
-	while ($myrow = DBOld::fetch($result))
+	while ($myrow = DB::fetch($result))
 	{
 		alt_table_row_color($k);
 		$bs_text = get_account_class_name($myrow["class_id"]);
@@ -133,9 +133,7 @@
 		}
 		hidden('id');
 		label_row(_("ID:"), $_POST['id']);
-	}
-	else
-	{
+	} else {
 		text_row_ex(_("ID:"), 'id', 10);
 	}
 	text_row_ex(_("Name:"), 'name', 50);

@@ -37,22 +37,20 @@
 	)
 	{
 		global $levelptr, $k;
-		$code_per_balance  = 0;
-		$code_acc_balance  = 0;
+		$code_per_balance = 0;
+		$code_acc_balance = 0;
 		$per_balance_total = 0;
 		$acc_balance_total = 0;
 		unset($totals_arr);
 		$totals_arr = array();
 		//Get Accounts directly under this group/type
 		$result = get_gl_accounts(null, null, $type);
-		while ($account = DBOld::fetch($result))
+		while ($account = DB::fetch($result))
 		{
 			$per_balance = get_gl_trans_from_to($from, $to, $account["account_code"], $dimension, $dimension2);
 			if ($compare == 2) {
 				$acc_balance = get_budget_trans_from_to($begin, $end, $account["account_code"], $dimension, $dimension2);
-			}
-			else
-			{
+			} else {
 				$acc_balance = get_gl_trans_from_to($begin, $end, $account["account_code"], $dimension, $dimension2);
 			}
 			if (!$per_balance && !$acc_balance) {
@@ -76,7 +74,7 @@
 		$levelptr = 1;
 		//Get Account groups/types under this group/type
 		$result = get_account_types(false, false, $type);
-		while ($accounttype = DBOld::fetch($result))
+		while ($accounttype = DB::fetch($result))
 		{
 			$totals_arr = display_type(
 				$accounttype["id"], $accounttype["name"], $from, $to, $begin, $end,
@@ -97,7 +95,7 @@
 			}
 			//START Patch#1 : Display  only direct child types
 			$acctype1 = get_account_type($type);
-			$parent1  = $acctype1["parent"];
+			$parent1 = $acctype1["parent"];
 			if ($drilldown && $parent1 == $_POST["AccGrp"]
 			) //END Patch#2
 				//elseif ($drilldown && $type != $_POST["AccGrp"])
@@ -155,11 +153,11 @@
 	function display_profit_and_loss()
 	{
 		global $sel;
-		$dim       = DB_Company::get_pref('use_dimension');
+		$dim = DB_Company::get_pref('use_dimension');
 		$dimension = $dimension2 = 0;
-		$from      = $_POST['TransFromDate'];
-		$to        = $_POST['TransToDate'];
-		$compare   = $_POST['Compare'];
+		$from = $_POST['TransFromDate'];
+		$to = $_POST['TransToDate'];
+		$compare = $_POST['Compare'];
 		if (isset($_POST["AccGrp"]) && (strlen($_POST['AccGrp']) > 0)) {
 			$drilldown = 1;
 		} // Deeper Level
@@ -167,22 +165,20 @@
 		{
 			$drilldown = 0;
 		} // Root level
-		$dec  = 0;
-		$pdec = user_percent_dec();
+		$dec = 0;
+		$pdec = User::percent_dec();
 		if ($compare == 0 || $compare == 2) {
 			$end = $to;
 			if ($compare == 2) {
 				$begin = $from;
-			}
-			else
-			{
+			} else {
 				$begin = Dates::begin_fiscalyear();
 			}
 		}
 		elseif ($compare == 1)
 		{
 			$begin = Dates::add_months($from, -12);
-			$end   = Dates::add_months($to, -12);
+			$end = Dates::add_months($to, -12);
 		}
 		div_start('pl_tbl');
 		start_table("width=50%  " . Config::get('tables_style'));
@@ -195,21 +191,21 @@
         </tr>";
 		if (!$drilldown) //Root Level
 		{
-			$parent   = -1;
+			$parent = -1;
 			$classper = $classacc = $salesper = $salesacc = 0.0;
 			//Get classes for PL
 			$classresult = get_account_classes(false, 0);
-			while ($class = DBOld::fetch($classresult))
+			while ($class = DB::fetch($classresult))
 			{
 				$class_per_total = 0;
 				$class_acc_total = 0;
-				$convert         = Systypes::get_class_type_convert($class["ctype"]);
+				$convert = Systypes::get_class_type_convert($class["ctype"]);
 				//Print Class Name
 				table_section_title($class["class_name"], 4);
 				echo $tableheader;
 				//Get Account groups/types under this group/type
 				$typeresult = get_account_types(false, $class['cid'], -1);
-				while ($accounttype = DBOld::fetch($typeresult))
+				while ($accounttype = DB::fetch($typeresult))
 				{
 					$TypeTotal = display_type(
 						$accounttype["id"], $accounttype["name"], $from, $to, $begin, $end, $compare, $convert,
@@ -248,11 +244,11 @@
 		} else {
 			//Level Pointer : Global variable defined in order to control display of root
 			global $levelptr;
-			$levelptr    = 0;
+			$levelptr = 0;
 			$accounttype = get_account_type($_POST["AccGrp"]);
-			$classid     = $accounttype["class_id"];
-			$class       = get_account_class($classid);
-			$convert     = Systypes::get_class_type_convert($class["ctype"]);
+			$classid = $accounttype["class_id"];
+			$class = get_account_class($classid);
+			$convert = Systypes::get_class_type_convert($class["ctype"]);
 			//Print Class Name
 			table_section_title(get_account_type_name($_POST["AccGrp"]), 4);
 			echo $tableheader;

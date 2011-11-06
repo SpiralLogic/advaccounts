@@ -12,20 +12,20 @@
 	$page_security = 'SA_SALESALLOC';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	include_once(APP_PATH . "sales/includes/sales_ui.php");
-	JS::get_js_open_window(900, 500);
+	JS::open_window(900, 500);
 	Page::start(_($help_context = "Customer Allocations"));
 	//--------------------------------------------------------------------------------
 	start_form();
 	/* show all outstanding receipts and credits to be allocated */
 	if (!isset($_POST['customer_id'])) {
-		$_POST['customer_id'] = ui_globals::get_global_customer();
+		$_POST['customer_id'] = Session::get()->global_customer;
 	}
 	echo "<center>" . _("Select a customer: ") . "&nbsp;&nbsp;";
 	echo customer_list('customer_id', $_POST['customer_id'], true, true);
 	echo "<br>";
 	check(_("Show Settled Items:"), 'ShowSettled', null, true);
 	echo "</center><br><br>";
-	ui_globals::set_global_customer($_POST['customer_id']);
+	Session::get()->global_customer = $_POST['customer_id'];
 	if (isset($_POST['customer_id']) && ($_POST['customer_id'] == ALL_TEXT)) {
 		unset($_POST['customer_id']);
 	}
@@ -58,14 +58,14 @@
 	{
 		return pager_link(
 			_("Allocate"),
-			"/sales/allocations/customer_allocate.php?trans_no="
-			 . $row["trans_no"] . "&trans_type=" . $row["type"], ICON_MONEY
+		 "/sales/allocations/customer_allocate.php?trans_no="
+			. $row["trans_no"] . "&trans_type=" . $row["type"], ICON_MONEY
 		);
 	}
 
 	function amount_left($row)
 	{
-		return price_format($row["Total"] - $row["alloc"]);
+		return Num::price_format($row["Total"] - $row["alloc"]);
 	}
 
 	function check_settled($row)
@@ -76,24 +76,24 @@
 	$sql = get_allocatable_from_cust_sql($customer_id, $settled);
 	$cols = array(
 		_("Transaction Type") => array('fun' => 'systype_name'),
-		_("#")								=> array('fun' => 'trans_view'),
+		_("#") => array('fun' => 'trans_view'),
 		_("Reference"),
-		_("Date")						 => array(
+		_("Date") => array(
 			'name' => 'tran_date',
 			'type' => 'date',
-			'ord'	=> 'desc'
+			'ord' => 'desc'
 		),
-		_("Customer")				 => array('ord' => ''),
-		_("Currency")				 => array('align' => 'center'),
-		_("Total")						=> 'amount',
+		_("Customer") => array('ord' => ''),
+		_("Currency") => array('align' => 'center'),
+		_("Total") => 'amount',
 		_("Left to Allocate") => array(
-			'align'	=> 'right',
+			'align' => 'right',
 			'insert' => true,
-			'fun'		=> 'amount_left'
+			'fun' => 'amount_left'
 		),
 		array(
 			'insert' => true,
-			'fun'		=> 'alloc_link'
+			'fun' => 'alloc_link'
 		)
 	);
 	if (isset($_POST['customer_id'])) {

@@ -3,10 +3,11 @@
 		function adv_ob_flush_handler($text)
 		{
 			$Ajax = Ajax::instance();
-			if ($text && preg_match('/\bFatal error(<.*?>)?:(.*)/i', $text, $m)) {
-				$Ajax->aCommands    = array();
-				$text               = preg_replace('/\bFatal error(<.*?>)?:(.*)/i', '', $text);
-				Errors::$messages[] = array(E_ERROR, $m[2], null, null);
+			if ($text && preg_match('/\bFatal error(<.*?>)?:(.*)/i', $text)) {
+				$Ajax->aCommands = array();
+				Errors::$fatal = true;
+				$text = '';
+				Errors::$messages[] = error_get_last();
 			}
 			$Ajax->run();
 			return Ajax::in_ajax() ? Errors::format() : Errors::$before_box . Errors::format() . $text;
@@ -20,10 +21,10 @@
 				$Ajax->run();
 			}
 			// flush all output buffers (works also with exit inside any div levels)
-			Config::store();
 			while (ob_get_level()) {
 				ob_end_flush();
 			}
+			Config::store();
 		}
 	}
 	if (!function_exists('adv_error_handler')) {
@@ -32,25 +33,15 @@
 			static $firsterror = 0;
 			$error = func_get_args();
 			if ($firsterror < 2) {
-				if (!(E_USER_ERROR || E_USER_NOTICE || E_USER_WARNING)) {
-					FB::info($error[2] . '[' . $error[3] . ']: ' . $error[1]);
-				} else {
-					FB::log(array('Line'	 => $error[3],
-											 'Message' => $error[1],
-											 'File'		=> $error[2], $error), 'ERROR');
-				}
-				//var_dump(debug_backtrace());
 				$firsterror++;
 			}
 			Errors::handler($error[0], $error[1], $error[2], $error[3]);
-			if (!(error_reporting() & $error[0])) {
-			}
 		}
 	}
 	if (!function_exists('adv_exception_handler')) {
-		function adv_exception_handler($exception)
+		function adv_exception_handler(Exception $e)
 		{
-			Errors::handler($exception->code, $exception->getMessage, $exception->file, $exception->line);
+			Errors::handler($e->getCode(), $e->getMessage(), $e->getFile(), $e->getLine());
 		}
 	}
 	if (!function_exists('adv_autoload_handler')) {
@@ -58,8 +49,7 @@
 		{
 			try {
 				spl_autoload(strtolower($className));
-			}
-			catch (LogicException $e) {
+			} catch (LogicException $e) {
 				echo('<pre>');
 				if (Config::get('debug')) {
 					debug_print_backtrace();
@@ -68,10 +58,9 @@
 				session_destroy();
 				// strip ajax marker from uri, to force synchronous page reload
 				$_SESSION['timeout'] = array(
-					'uri'	=> preg_replace('/JsHttpRequest=(?:(\d+)-)?([^&]+)/s', '', @$_SERVER['REQUEST_URI']),
-					'post' => $_POST
-				);
-				include(APP_PATH . "access/login.php");
+					'uri'  => preg_replace('/JsHttpRequest=(?:(\d+)-)?([^&]+)/s', '', @$_SERVER['REQUEST_URI']),
+					'post' => $_POST);
+				require(APP_PATH . "access/login.php");
 				if (Ajax::in_ajax() || AJAX_REFERRER) {
 					$Ajax->activate('_page_body');
 				}

@@ -12,8 +12,8 @@
 	//---------------------------------------------------------------------------------------------
 	function clear_dflt_curr_account($curr_code) {
 		$sql = "UPDATE bank_accounts SET dflt_curr_act=0 WHERE bank_curr_code="
-		 . DBOld::escape($curr_code);
-		DBOld::query($sql, "could not update default currency account");
+		 . DB::escape($curr_code);
+		DB::query($sql, "could not update default currency account");
 	}
 
 	function add_bank_account($account_code, $account_type, $bank_account_name,
@@ -25,12 +25,12 @@
 		$sql = "INSERT INTO bank_accounts (account_code, account_type,
 		bank_account_name, bank_name, bank_account_number, bank_address, 
 		bank_curr_code, dflt_curr_act)
-		VALUES (" . DBOld::escape($account_code) . ", " . DBOld::escape($account_type) . ", "
-		 . DBOld::escape($bank_account_name) . ", " . DBOld::escape($bank_name) . ", "
-		 . DBOld::escape($bank_account_number) . "," . DBOld::escape($bank_address) .
-		 ", " . DBOld::escape($bank_curr_code) . ", " . DBOld::escape($dflt_curr_act) . ")";
+		VALUES (" . DB::escape($account_code) . ", " . DB::escape($account_type) . ", "
+		 . DB::escape($bank_account_name) . ", " . DB::escape($bank_name) . ", "
+		 . DB::escape($bank_account_number) . "," . DB::escape($bank_address) .
+		 ", " . DB::escape($bank_curr_code) . ", " . DB::escape($dflt_curr_act) . ")";
 
-		DBOld::query($sql, "could not add a bank account for $account_code");
+		DB::query($sql, "could not add a bank account for $account_code");
 	}
 
 	//---------------------------------------------------------------------------------------------
@@ -40,42 +40,42 @@
 		if ($dflt_curr_act) // only one default account for any currency
 			clear_dflt_curr_account($bank_curr_code);
 
-		$sql = "UPDATE bank_accounts	SET account_type = " . DBOld::escape($account_type) . ",
-		account_code=" . DBOld::escape($account_code) . ",
-		bank_account_name=" . DBOld::escape($bank_account_name) . ", bank_name=" . DBOld::escape($bank_name) . ",
-		bank_account_number=" . DBOld::escape($bank_account_number) . ", bank_curr_code=" . DBOld::escape($bank_curr_code) . ",
-		bank_address=" . DBOld::escape($bank_address) . ",
-		dflt_curr_act=" . DBOld::escape($dflt_curr_act)
-		 . " WHERE id = " . DBOld::escape($id);
+		$sql = "UPDATE bank_accounts	SET account_type = " . DB::escape($account_type) . ",
+		account_code=" . DB::escape($account_code) . ",
+		bank_account_name=" . DB::escape($bank_account_name) . ", bank_name=" . DB::escape($bank_name) . ",
+		bank_account_number=" . DB::escape($bank_account_number) . ", bank_curr_code=" . DB::escape($bank_curr_code) . ",
+		bank_address=" . DB::escape($bank_address) . ",
+		dflt_curr_act=" . DB::escape($dflt_curr_act)
+		 . " WHERE id = " . DB::escape($id);
 
-		DBOld::query($sql, "could not update bank account for $account_code");
+		DB::query($sql, "could not update bank account for $account_code");
 	}
 
 	//---------------------------------------------------------------------------------------------
 
 	function delete_bank_account($id) {
-		$sql = "DELETE FROM bank_accounts WHERE id=" . DBOld::escape($id);
+		$sql = "DELETE FROM bank_accounts WHERE id=" . DB::escape($id);
 
-		DBOld::query($sql, "could not delete bank account for $id");
+		DB::query($sql, "could not delete bank account for $id");
 	}
 
 	//---------------------------------------------------------------------------------------------
 
 	function get_bank_account($id) {
-		$sql = "SELECT * FROM bank_accounts WHERE id=" . DBOld::escape($id);
+		$sql = "SELECT * FROM bank_accounts WHERE id=" . DB::escape($id);
 
-		$result = DBOld::query($sql, "could not retreive bank account for $id");
+		$result = DB::query($sql, "could not retreive bank account for $id");
 
-		return DBOld::fetch($result);
+		return DB::fetch($result);
 	}
 
 	//---------------------------------------------------------------------------------------------
 	function get_bank_gl_account($id) {
-		$sql = "SELECT account_code FROM bank_accounts WHERE id=" . DBOld::escape($id);
+		$sql = "SELECT account_code FROM bank_accounts WHERE id=" . DB::escape($id);
 
-		$result = DBOld::query($sql, "could not retreive bank account for $id");
+		$result = DB::query($sql, "could not retreive bank account for $id");
 
-		$bank_account = DBOld::fetch($result);
+		$bank_account = DB::fetch($result);
 
 		return $bank_account['account_code'];
 	}
@@ -84,29 +84,29 @@
 
 	function add_quick_entry($description, $type, $base_amount, $base_desc) {
 		$sql = "INSERT INTO quick_entries (description, type, base_amount, base_desc)
-	VALUES (" . DBOld::escape($description) . ", " . DBOld::escape($type) . ", "
-		 . DBOld::escape($base_amount) . ", " . DBOld::escape($base_desc) . ")";
+	VALUES (" . DB::escape($description) . ", " . DB::escape($type) . ", "
+		 . DB::escape($base_amount) . ", " . DB::escape($base_desc) . ")";
 
-		DBOld::query($sql, "could not insert quick entry for $description");
+		DB::query($sql, "could not insert quick entry for $description");
 	}
 
 	//---------------------------------------------------------------------------------------------
 
 	function update_quick_entry($selected_id, $description, $type, $base_amount, $base_desc) {
-		$sql = "UPDATE quick_entries	SET description = " . DBOld::escape($description) . ",
-		type=" . DBOld::escape($type) . ", base_amount=" . DBOld::escape($base_amount)
-		 . ", base_desc=" . DBOld::escape($base_desc) . "
-		WHERE id = " . DBOld::escape($selected_id);
+		$sql = "UPDATE quick_entries	SET description = " . DB::escape($description) . ",
+		type=" . DB::escape($type) . ", base_amount=" . DB::escape($base_amount)
+		 . ", base_desc=" . DB::escape($base_desc) . "
+		WHERE id = " . DB::escape($selected_id);
 
-		DBOld::query($sql, "could not update quick entry for $selected_id");
+		DB::query($sql, "could not update quick entry for $selected_id");
 	}
 
 	//---------------------------------------------------------------------------------------------
 
 	function delete_quick_entry($selected_id) {
-		$sql = "DELETE FROM quick_entries WHERE id=" . DBOld::escape($selected_id);
+		$sql = "DELETE FROM quick_entries WHERE id=" . DB::escape($selected_id);
 
-		DBOld::query($sql, "could not delete quick entry $selected_id");
+		DB::query($sql, "could not delete quick entry $selected_id");
 	}
 
 	//---------------------------------------------------------------------------------------------
@@ -115,30 +115,30 @@
 		$sql = "INSERT INTO quick_entry_lines
 		(qid, action, dest_id, amount, dimension_id, dimension2_id) 
 	VALUES 
-		($qid, " . DBOld::escape($action) . "," . DBOld::escape($dest_id) . ",
-			" . DBOld::escape($amount) . ", " . DBOld::escape($dim) . ", " . DBOld::escape($dim2) . ")";
+		($qid, " . DB::escape($action) . "," . DB::escape($dest_id) . ",
+			" . DB::escape($amount) . ", " . DB::escape($dim) . ", " . DB::escape($dim2) . ")";
 
-		DBOld::query($sql, "could not insert quick entry line for $qid");
+		DB::query($sql, "could not insert quick entry line for $qid");
 	}
 
 	//---------------------------------------------------------------------------------------------
 
 	function update_quick_entry_line($selected_id, $qid, $action, $dest_id, $amount, $dim, $dim2) {
-		$sql = "UPDATE quick_entry_lines SET qid = " . DBOld::escape($qid)
-		 . ", action=" . DBOld::escape($action) . ",
-		dest_id=" . DBOld::escape($dest_id) . ", amount=" . DBOld::escape($amount)
-		 . ", dimension_id=" . DBOld::escape($dim) . ", dimension2_id=" . DBOld::escape($dim2) . "
-		WHERE id = " . DBOld::escape($selected_id);
+		$sql = "UPDATE quick_entry_lines SET qid = " . DB::escape($qid)
+		 . ", action=" . DB::escape($action) . ",
+		dest_id=" . DB::escape($dest_id) . ", amount=" . DB::escape($amount)
+		 . ", dimension_id=" . DB::escape($dim) . ", dimension2_id=" . DB::escape($dim2) . "
+		WHERE id = " . DB::escape($selected_id);
 
-		DBOld::query($sql, "could not update quick entry line for $selected_id");
+		DB::query($sql, "could not update quick entry line for $selected_id");
 	}
 
 	//---------------------------------------------------------------------------------------------
 
 	function delete_quick_entry_line($selected_id) {
-		$sql = "DELETE FROM quick_entry_lines WHERE id=" . DBOld::escape($selected_id);
+		$sql = "DELETE FROM quick_entry_lines WHERE id=" . DB::escape($selected_id);
 
-		DBOld::query($sql, "could not delete quick entry line $selected_id");
+		DB::query($sql, "could not delete quick entry line $selected_id");
 	}
 
 	//---------------------------------------------------------------------------------------------
@@ -146,27 +146,27 @@
 	function has_quick_entries($type = null) {
 		$sql = "SELECT id FROM quick_entries";
 		if ($type != null)
-			$sql .= " WHERE type=" . DBOld::escape($type);
+			$sql .= " WHERE type=" . DB::escape($type);
 
-		$result = DBOld::query($sql, "could not retreive quick entries");
-		return DBOld::num_rows($result) > 0;
+		$result = DB::query($sql, "could not retreive quick entries");
+		return DB::num_rows($result) > 0;
 	}
 
 	function get_quick_entries($type = null) {
 		$sql = "SELECT * FROM quick_entries";
 		if ($type != null)
-			$sql .= " WHERE type=" . DBOld::escape($type);
+			$sql .= " WHERE type=" . DB::escape($type);
 		$sql .= " ORDER BY description";
 
-		return DBOld::query($sql, "could not retreive quick entries");
+		return DB::query($sql, "could not retreive quick entries");
 	}
 
 	function get_quick_entry($selected_id) {
-		$sql = "SELECT * FROM quick_entries WHERE id=" . DBOld::escape($selected_id);
+		$sql = "SELECT * FROM quick_entries WHERE id=" . DB::escape($selected_id);
 
-		$result = DBOld::query($sql, "could not retreive quick entry $selected_id");
+		$result = DB::query($sql, "could not retreive quick entry $selected_id");
 
-		return DBOld::fetch($result);
+		return DB::fetch($result);
 	}
 
 	function get_quick_entry_lines($qid) {
@@ -178,26 +178,26 @@
 		LEFT JOIN tax_types ON
 			quick_entry_lines.dest_id = tax_types.id
 		WHERE 
-			qid=" . DBOld::escape($qid) . " ORDER by id";
+			qid=" . DB::escape($qid) . " ORDER by id";
 
-		return DBOld::query($sql, "could not retreive quick entries");
+		return DB::query($sql, "could not retreive quick entries");
 	}
 
 	function has_quick_entry_lines($qid) {
-		$sql = "SELECT id FROM quick_entry_lines WHERE qid=" . DBOld::escape($qid);
+		$sql = "SELECT id FROM quick_entry_lines WHERE qid=" . DB::escape($qid);
 
-		$result = DBOld::query($sql, "could not retreive quick entries");
-		return DBOld::num_rows($result) > 0;
+		$result = DB::query($sql, "could not retreive quick entries");
+		return DB::num_rows($result) > 0;
 	}
 
 	//---------------------------------------------------------------------------------------------
 
 	function get_quick_entry_line($selected_id) {
-		$sql = "SELECT * FROM quick_entry_lines WHERE id=" . DBOld::escape($selected_id);
+		$sql = "SELECT * FROM quick_entry_lines WHERE id=" . DB::escape($selected_id);
 
-		$result = DBOld::query($sql, "could not retreive quick entry for $selected_id");
+		$result = DB::query($sql, "could not retreive quick entry for $selected_id");
 
-		return DBOld::fetch($result);
+		return DB::fetch($result);
 	}
 
 	//---------------------------------------------------------------------------------------------
@@ -213,19 +213,19 @@
 
 		$sql = "SELECT b.*, b.bank_curr_code='$home_curr' as fall_back FROM "
 		 . "bank_accounts b"
-		 . " WHERE b.bank_curr_code=" . DBOld::escape($curr)
+		 . " WHERE b.bank_curr_code=" . DB::escape($curr)
 		 . " OR b.bank_curr_code='$home_curr'
 		ORDER BY fall_back, dflt_curr_act desc";
 
-		$result = DBOld::query($sql, "could not retreive default bank account");
+		$result = DB::query($sql, "could not retreive default bank account");
 
-		return DBOld::fetch($result);
+		return DB::fetch($result);
 	}
 
 	function get_default_customer_bank_account($cust_id) {
-		$sql = "SELECT curr_code FROM debtors_master WHERE debtor_no=" . DBOld::escape($cust_id);
-		$result = DBOld::query($sql, "could not retreive default customer currency code");
-		$row = DBOld::fetch_row($result);
+		$sql = "SELECT curr_code FROM debtors_master WHERE debtor_no=" . DB::escape($cust_id);
+		$result = DB::query($sql, "could not retreive default customer currency code");
+		$row = DB::fetch_row($result);
 		$ba = get_default_bank_account($row[0]);
 		return $ba['id'];
 	}

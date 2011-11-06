@@ -16,10 +16,9 @@
 	$page_security = 'SA_SALESCREDIT';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	include_once(APP_PATH . "sales/includes/sales_ui.php");
-	include_once(APP_PATH . "sales/includes/db/sales_types_db.php");
 	include_once(APP_PATH . "sales/includes/ui/sales_credit_ui.php");
 	include_once(APP_PATH . "sales/includes/ui/sales_order_ui.php");
-	JS::get_js_open_window(900, 500);
+	JS::open_window(900, 500);
 	if (isset($_GET['NewCredit'])) {
 		$_SESSION['page_title'] = _($help_context = "Customer Credit Note");
 		handle_new_credit(0);
@@ -38,24 +37,22 @@
 	//-----------------------------------------------------------------------------
 	if (list_updated('branch_id')) {
 		// when branch is selected via external editor also customer can change
-		$br                   = get_branch(get_post('branch_id'));
+		$br = get_branch(get_post('branch_id'));
 		$_POST['customer_id'] = $br['debtor_no'];
 		$Ajax->activate('customer_id');
 	}
 	if (isset($_GET['AddedID'])) {
-		$credit_no  = $_GET['AddedID'];
+		$credit_no = $_GET['AddedID'];
 		$trans_type = ST_CUSTCREDIT;
-		ui_msgs::display_notification_centered(sprintf(_("Credit Note # %d has been processed"), $credit_no));
-		ui_msgs::display_note(ui_view::get_customer_trans_view_str($trans_type, $credit_no, _("&View this credit note")), 0, 1);
-		ui_msgs::display_note(Reporting::print_doc_link($credit_no . "-" . $trans_type, _("&Print This Credit Invoice"), true, ST_CUSTCREDIT), 0, 1);
-		ui_msgs::display_note(Reporting::print_doc_link($credit_no . "-" . $trans_type, _("&Email This Credit Invoice"), true, ST_CUSTCREDIT, false, "printlink", "", 1), 0, 1);
-		ui_msgs::display_note(ui_view::get_gl_view_str($trans_type, $credit_no, _("View the GL &Journal Entries for this Credit Note")));
+		Errors::notice(sprintf(_("Credit Note # %d has been processed"), $credit_no));
+		Display::note(ui_view::get_customer_trans_view_str($trans_type, $credit_no, _("&View this credit note")), 0, 1);
+		Display::note(Reporting::print_doc_link($credit_no . "-" . $trans_type, _("&Print This Credit Invoice"), true, ST_CUSTCREDIT), 0, 1);
+		Display::note(Reporting::print_doc_link($credit_no . "-" . $trans_type, _("&Email This Credit Invoice"), true, ST_CUSTCREDIT, false, "printlink", "", 1), 0, 1);
+		Display::note(ui_view::get_gl_view_str($trans_type, $credit_no, _("View the GL &Journal Entries for this Credit Note")));
 		hyperlink_params($_SERVER['PHP_SELF'], _("Enter Another &Credit Note"), "NewCredit=yes");
-		hyperlink_params("/admin/attachments.php", _("Add an Attachment"), "filterType=$trans_type&trans_no=$credit_no");
-		ui_view::display_footer_exit();
-	}
-	else
-	{
+		hyperlink_params("/system/attachments.php", _("Add an Attachment"), "filterType=$trans_type&trans_no=$credit_no");
+		Page::footer_exit();
+	} else {
 		check_edit_conflicts();
 	}
 	//--------------------------------------------------------------------------------
@@ -69,36 +66,36 @@
 	//-----------------------------------------------------------------------------
 	function copy_to_cn()
 	{
-		$cart                = &$_SESSION['Items'];
-		$cart->Comments      = $_POST['CreditText'];
+		$cart = &$_SESSION['Items'];
+		$cart->Comments = $_POST['CreditText'];
 		$cart->document_date = $_POST['OrderDate'];
-		$cart->freight_cost  = input_num('ChargeFreightCost');
-		$cart->Location      = (isset($_POST["Location"]) ? $_POST["Location"] : "");
-		$cart->sales_type    = $_POST['sales_type_id'];
+		$cart->freight_cost = input_num('ChargeFreightCost');
+		$cart->Location = (isset($_POST["Location"]) ? $_POST["Location"] : "");
+		$cart->sales_type = $_POST['sales_type_id'];
 		if ($cart->trans_no == 0) {
 			$cart->reference = $_POST['ref'];
 		}
-		$cart->ship_via      = $_POST['ShipperID'];
-		$cart->dimension_id  = $_POST['dimension_id'];
+		$cart->ship_via = $_POST['ShipperID'];
+		$cart->dimension_id = $_POST['dimension_id'];
 		$cart->dimension2_id = $_POST['dimension2_id'];
 	}
 
 	//-----------------------------------------------------------------------------
 	function copy_from_cn()
 	{
-		$cart                       = &$_SESSION['Items'];
-		$_POST['CreditText']        = $cart->Comments;
-		$_POST['OrderDate']         = $cart->document_date;
-		$_POST['ChargeFreightCost'] = price_format($cart->freight_cost);
-		$_POST['Location']          = $cart->Location;
-		$_POST['sales_type_id']     = $cart->sales_type;
+		$cart = &$_SESSION['Items'];
+		$_POST['CreditText'] = $cart->Comments;
+		$_POST['OrderDate'] = $cart->document_date;
+		$_POST['ChargeFreightCost'] = Num::price_format($cart->freight_cost);
+		$_POST['Location'] = $cart->Location;
+		$_POST['sales_type_id'] = $cart->sales_type;
 		if ($cart->trans_no == 0) {
 			$_POST['ref'] = $cart->reference;
 		}
-		$_POST['ShipperID']     = $cart->ship_via;
-		$_POST['dimension_id']  = $cart->dimension_id;
+		$_POST['ShipperID'] = $cart->ship_via;
+		$_POST['dimension_id'] = $cart->dimension_id;
 		$_POST['dimension2_id'] = $cart->dimension2_id;
-		$_POST['cart_id']       = $cart->cart_id;
+		$_POST['cart_id'] = $cart->cart_id;
 	}
 
 	//-----------------------------------------------------------------------------
@@ -118,23 +115,23 @@
 		}
 		if ($_SESSION['Items']->trans_no == 0) {
 			if (!Refs::is_valid($_POST['ref'])) {
-				ui_msgs::display_error(_("You must enter a reference."));
+				Errors::error(_("You must enter a reference."));
 				JS::set_focus('ref');
 				$input_error = 1;
 			}
 			elseif (!is_new_reference($_POST['ref'], ST_CUSTCREDIT)) {
-				ui_msgs::display_error(_("The entered reference is already in use."));
+				Errors::error(_("The entered reference is already in use."));
 				JS::set_focus('ref');
 				$input_error = 1;
 			}
 		}
 		if (!Dates::is_date($_POST['OrderDate'])) {
-			ui_msgs::display_error(_("The entered date for the credit note is invalid."));
+			Errors::error(_("The entered date for the credit note is invalid."));
 			JS::set_focus('OrderDate');
 			$input_error = 1;
 		}
 		elseif (!Dates::is_date_in_fiscalyear($_POST['OrderDate'])) {
-			ui_msgs::display_error(_("The entered date is not in fiscal year."));
+			Errors::error(_("The entered date is not in fiscal year."));
 			JS::set_focus('OrderDate');
 			$input_error = 1;
 		}
@@ -148,8 +145,8 @@
 		 && (!isset($_POST['WriteOffGLCode'])
 			|| $_POST['WriteOffGLCode'] == '')
 		) {
-			ui_msgs::display_warning(_("For credit notes created to write off the stock, a general ledger account is required to be selected."), 1, 0);
-			ui_msgs::display_warning(_("Please select an account to write the cost of the stock off to, then click on Process again."), 1, 0);
+			Errors::warning(_("For credit notes created to write off the stock, a general ledger account is required to be selected."), 1, 0);
+			Errors::warning(_("Please select an account to write the cost of the stock off to, then click on Process again."), 1, 0);
 			exit;
 		}
 		if (!isset($_POST['WriteOffGLCode'])) {
@@ -165,17 +162,17 @@
 	function check_item_data()
 	{
 		if (!Validation::is_num('qty', 0)) {
-			ui_msgs::display_error(_("The quantity must be greater than zero."));
+			Errors::error(_("The quantity must be greater than zero."));
 			JS::set_focus('qty');
 			return false;
 		}
 		if (!Validation::is_num('price', 0)) {
-			ui_msgs::display_error(_("The entered price is negative or invalid."));
+			Errors::error(_("The entered price is negative or invalid."));
 			JS::set_focus('price');
 			return false;
 		}
 		if (!Validation::is_num('Disc', 0, 100)) {
-			ui_msgs::display_error(_("The entered discount percent is negative, greater than 100 or invalid."));
+			Errors::error(_("The entered discount percent is negative, greater than 100 or invalid."));
 			JS::set_focus('Disc');
 			return false;
 		}
@@ -242,7 +239,7 @@
 		end_table();
 	}
 	else {
-		ui_msgs::display_error($customer_error);
+		Errors::error($customer_error);
 	}
 	echo "<br><center><table><tr>";
 	submit_cells('Update', _("Update"));

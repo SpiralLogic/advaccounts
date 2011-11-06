@@ -12,29 +12,30 @@
 	$page_security = 'SA_CURRENCY';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "Currencies"));
-	simple_page_mode(false);
+	Page::simple_mode(false);
 	//---------------------------------------------------------------------------------------------
-	function check_data() {
+	function check_data()
+	{
 		if (strlen($_POST['Abbreviation']) == 0) {
-			ui_msgs::display_error(_("The currency abbreviation must be entered."));
+			Errors::error(_("The currency abbreviation must be entered."));
 			JS::set_focus('Abbreviation');
 			return false;
 		}
 		elseif (strlen($_POST['CurrencyName']) == 0)
 		{
-			ui_msgs::display_error(_("The currency name must be entered."));
+			Errors::error(_("The currency name must be entered."));
 			JS::set_focus('CurrencyName');
 			return false;
 		}
 		elseif (strlen($_POST['Symbol']) == 0)
 		{
-			ui_msgs::display_error(_("The currency symbol must be entered."));
+			Errors::error(_("The currency symbol must be entered."));
 			JS::set_focus('Symbol');
 			return false;
 		}
 		elseif (strlen($_POST['hundreds_name']) == 0)
 		{
-			ui_msgs::display_error(_("The hundredths name must be entered."));
+			Errors::error(_("The hundredths name must be entered."));
 			JS::set_focus('hundreds_name');
 			return false;
 		}
@@ -42,7 +43,8 @@
 	}
 
 	//---------------------------------------------------------------------------------------------
-	function handle_submit() {
+	function handle_submit()
+	{
 		global $selected_id, $Mode;
 		if (!check_data()) {
 			return false;
@@ -52,70 +54,73 @@
 				$_POST['Abbreviation'], $_POST['Symbol'], $_POST['CurrencyName'],
 				$_POST['country'], $_POST['hundreds_name'], check_value('auto_update')
 			);
-			ui_msgs::display_notification(_('Selected currency settings has been updated'));
+			Errors::notice(_('Selected currency settings has been updated'));
 		} else {
 			add_currency(
 				$_POST['Abbreviation'], $_POST['Symbol'], $_POST['CurrencyName'],
 				$_POST['country'], $_POST['hundreds_name'], check_value('auto_update')
 			);
-			ui_msgs::display_notification(_('New currency has been added'));
+			Errors::notice(_('New currency has been added'));
 		}
 		$Mode = 'RESET';
 	}
 
 	//---------------------------------------------------------------------------------------------
-	function check_can_delete() {
+	function check_can_delete()
+	{
 		global $selected_id;
 		if ($selected_id == "") {
 			return false;
 		}
-		$curr = DBOld::escape($selected_id);
+		$curr = DB::escape($selected_id);
 		// PREVENT DELETES IF DEPENDENT RECORDS IN debtors_master
 		$sql = "SELECT COUNT(*) FROM debtors_master WHERE curr_code = $curr";
-		$result = DBOld::query($sql);
-		$myrow = DBOld::fetch_row($result);
+		$result = DB::query($sql);
+		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {
-			ui_msgs::display_error(_("Cannot delete this currency, because customer accounts have been created referring to this currency."));
+			Errors::error(_("Cannot delete this currency, because customer accounts have been created referring to this currency."));
 			return false;
 		}
 		$sql = "SELECT COUNT(*) FROM suppliers WHERE curr_code = $curr";
-		$result = DBOld::query($sql);
-		$myrow = DBOld::fetch_row($result);
+		$result = DB::query($sql);
+		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {
-			ui_msgs::display_error(_("Cannot delete this currency, because supplier accounts have been created referring to this currency."));
+			Errors::error(_("Cannot delete this currency, because supplier accounts have been created referring to this currency."));
 			return false;
 		}
 		$sql = "SELECT COUNT(*) FROM company WHERE curr_default = $curr";
-		$result = DBOld::query($sql);
-		$myrow = DBOld::fetch_row($result);
+		$result = DB::query($sql);
+		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {
-			ui_msgs::display_error(_("Cannot delete this currency, because the company preferences uses this currency."));
+			Errors::error(_("Cannot delete this currency, because the company preferences uses this currency."));
 			return false;
 		}
 		// see if there are any bank accounts that use this currency
 		$sql = "SELECT COUNT(*) FROM bank_accounts WHERE bank_curr_code = $curr";
-		$result = DBOld::query($sql);
-		$myrow = DBOld::fetch_row($result);
+		$result = DB::query($sql);
+		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {
-			ui_msgs::display_error(_("Cannot delete this currency, because thre are bank accounts that use this currency."));
+			Errors::error(_("Cannot delete this currency, because thre are bank accounts that use this currency."));
 			return false;
 		}
 		return true;
 	}
 
 	//---------------------------------------------------------------------------------------------
-	function handle_delete() {
+	function handle_delete()
+	{
 		global $selected_id, $Mode;
 		if (check_can_delete()) {
 			//only delete if used in neither customer or supplier, comp prefs, bank trans accounts
 			delete_currency($selected_id);
-			ui_msgs::display_notification(_('Selected currency has been deleted'));
+			Errors::notice(_('Selected currency has been deleted'));
 		}
 		$Mode = 'RESET';
 	}
 
 	//---------------------------------------------------------------------------------------------
-	function display_currencies() {
+	function display_currencies()
+	{
 		$company_currency = Banking::get_company_currency();
 		$result = get_currencies(check_value('show_inactive'));
 		start_table(Config::get('tables_style'));
@@ -126,13 +131,11 @@
 		inactive_control_column($th);
 		table_header($th);
 		$k = 0; //row colour counter
-		while ($myrow = DBOld::fetch($result))
+		while ($myrow = DB::fetch($result))
 		{
 			if ($myrow[1] == $company_currency) {
 				start_row("class='currencybg'");
-			}
-			else
-			{
+			} else {
 				alt_table_row_color($k);
 			}
 			label_cell($myrow["curr_abrev"]);
@@ -150,20 +153,19 @@
 			edit_button_cell("Edit" . $myrow["curr_abrev"], _("Edit"));
 			if ($myrow["curr_abrev"] != $company_currency) {
 				delete_button_cell("Delete" . $myrow["curr_abrev"], _("Delete"));
-			}
-			else
-			{
+			} else {
 				label_cell('');
 			}
 			end_row();
 		} //END WHILE LIST LOOP
 		inactive_control_row($th);
 		end_table();
-		ui_msgs::display_warning(_("The marked currency is the home currency which cannot be deleted."), 0, 0, "class='currentfg'");
+		Errors::warning(_("The marked currency is the home currency which cannot be deleted."), 0, 0, "class='currentfg'");
 	}
 
 	//---------------------------------------------------------------------------------------------
-	function display_currency_edit($selected_id) {
+	function display_currency_edit($selected_id)
+	{
 		global $Mode;
 		start_table(Config::get('tables_style2'));
 		if ($selected_id != '') {

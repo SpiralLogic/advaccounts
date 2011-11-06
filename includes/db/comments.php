@@ -9,47 +9,57 @@
 	class DB_Comments {
 
 		//--------------------------------------------------------------------------------------------------
-
 		public static function get($type, $type_no) {
 			$sql = "SELECT * FROM comments WHERE type="
-			 . DBOld::escape($type) . " AND id=" . DBOld::escape($type_no);
-			return DBOld::query($sql, "could not query comments transaction table");
+			 . DB::escape($type) . " AND id=" . DB::escape($type_no);
+			return DB::query($sql, "could not query comments transaction table");
 		}
 
 		//--------------------------------------------------------------------------------------------------
-
 		public static function add($type, $type_no, $date_, $memo_) {
 			if ($memo_ != null && $memo_ != "") {
 				$date = Dates::date2sql($date_);
 				$sql = "INSERT INTO comments (type, id, date_, memo_)
-	    		VALUES (" . DBOld::escape($type) . ", " . DBOld::escape($type_no)
-				 . ", '$date', " . DBOld::escape($memo_) . ")";
-				DBOld::query($sql, "could not add comments transaction entry");
+	    		VALUES (" . DB::escape($type) . ", " . DB::escape($type_no)
+				 . ", '$date', " . DB::escape($memo_) . ")";
+				DB::query($sql, "could not add comments transaction entry");
 			}
 		}
 
 		//--------------------------------------------------------------------------------------------------
-
 		public static function update($type, $id, $date_, $memo_) {
 			if ($date_ == null) {
 				DB_Comments::delete($type, $id);
 				DB_Comments::add($type, $id, Dates::Today(), $memo_);
 			} else {
 				$date = Dates::date2sql($date_);
-				$sql = "UPDATE comments SET memo_=" . DBOld::escape($memo_)
-				 . " WHERE type=" . DBOld::escape($type) . " AND id=" . DBOld::escape($id)
+				$sql = "UPDATE comments SET memo_=" . DB::escape($memo_)
+				 . " WHERE type=" . DB::escape($type) . " AND id=" . DB::escape($id)
 				 . " AND date_='$date'";
-				DBOld::query($sql, "could not update comments");
+				DB::query($sql, "could not update comments");
 			}
 		}
 
 		//--------------------------------------------------------------------------------------------------
 
 		public static function delete($type, $type_no) {
-			$sql = "DELETE FROM comments WHERE type=" . DBOld::escape($type)
-			 . " AND id=" . DBOld::escape($type_no);
+			$sql = "DELETE FROM comments WHERE type=" . DB::escape($type)
+			 . " AND id=" . DB::escape($type_no);
 
-			DBOld::query($sql, "could not delete from comments transaction table");
+			DB::query($sql, "could not delete from comments transaction table");
 		}
 		//--------------------------------------------------------------------------------------------------
+		//--------------------------------------------------------------------------------------
+		static function get_string($type, $type_no)
+		{
+			$str_return = "";
+			$result     = DB_Comments::get($type, $type_no);
+			while ($comment = DB::fetch($result)) {
+				if (strlen($str_return)) {
+					$str_return = $str_return . " \n";
+				}
+				$str_return = $str_return . $comment["memo_"];
+			}
+			return $str_return;
+		}
 	}
