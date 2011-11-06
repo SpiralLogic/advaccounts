@@ -42,7 +42,7 @@
 				$grouppath = implode(DS, $group);
 				$file = APP_PATH . "config" . $grouppath . DS . $groupfile;
 			}
-			if (array_key_exists($groupname, static::$_vars)) {
+			if (static::$_vars && array_key_exists($groupname, static::$_vars)) {
 				return;
 			}
 			if (!file_exists($file)) {
