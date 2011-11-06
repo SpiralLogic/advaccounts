@@ -10,17 +10,17 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	$page_security = 'SA_SUPPTRANSVIEW';
-	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
+		require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	JS::open_window(900, 500);
 	Page::start(_($help_context = "View Purchase Order Delivery"), true);
-	include(APP_PATH . "purchasing/includes/purchasing_ui.php");
+	include(APP_PATH . "purchases/includes/purchasing_ui.php");
 	if (!isset($_GET['trans_no'])) {
 		die ("<BR>" . _("This page must be called with a Purchase Order Delivery number to review."));
 	}
 	$purchase_order = new Purchase_Order;
 	read_grn($_GET["trans_no"], $purchase_order);
 	Display::heading(_("Purchase Order Delivery") . " #" . $_GET['trans_no']);
-	echo "<BR>";
+	echo "<br>";
 	display_grn_summary($purchase_order);
 	Display::heading(_("Line Details"));
 	start_table("colspan=9 " . Config::get('tables_style') . " width=90%");

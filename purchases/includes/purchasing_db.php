@@ -9,13 +9,13 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	include_once(APP_PATH . "purchasing/includes/db/supp_trans_db.php");
-	include_once(APP_PATH . "purchasing/includes/db/po_db.php");
-	include_once(APP_PATH . "purchasing/includes/db/grn_db.php");
-	include_once(APP_PATH . "purchasing/includes/db/invoice_db.php");
-	include_once(APP_PATH . "purchasing/includes/db/suppalloc_db.php");
-	include_once(APP_PATH . "purchasing/includes/db/supp_payment_db.php");
-	include_once(APP_PATH . "purchasing/includes/db/suppliers_db.php");
+	include_once(APP_PATH . "purchases/includes/db/supp_trans_db.php");
+	include_once(APP_PATH . "purchases/includes/db/po_db.php");
+	include_once(APP_PATH . "purchases/includes/db/grn_db.php");
+	include_once(APP_PATH . "purchases/includes/db/invoice_db.php");
+	include_once(APP_PATH . "purchases/includes/db/suppalloc_db.php");
+	include_once(APP_PATH . "purchases/includes/db/supp_payment_db.php");
+	include_once(APP_PATH . "purchases/includes/db/suppliers_db.php");
 	//-------------------------------------------------------------------------------------------------------------
 	// add a supplier-related gl transaction
 	// $date_ is display date (non-sql)

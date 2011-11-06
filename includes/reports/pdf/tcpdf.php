@@ -4593,7 +4593,7 @@
 							}
 							$annots .= ' /F ' . intval($val);
 						}
-						//$annots .= ' /AP ';
+						//$annots .= ' /Purchases ';
 						//$annots .= ' /AS ';
 						$annots .= ' /Border [';
 						if (isset($pl['opt']['border']) AND (count($pl['opt']['border']) >= 3)) {

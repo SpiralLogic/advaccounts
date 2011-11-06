@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 	$page_security = 'SA_SUPPLIERCREDIT';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	include_once(APP_PATH . "purchasing/includes/purchasing_ui.php");
+	include_once(APP_PATH . "purchases/includes/purchasing_ui.php");
 	JS::open_window(900, 500);
 	Page::start(_($help_context = "Supplier Credit Note"));
 	//----------------------------------------------------------------------------------------
@@ -25,7 +25,7 @@
 		Display::note(ui_view::get_trans_view_str($trans_type, $invoice_no, _("View this Credit Note")));
 		Display::note(ui_view::get_gl_view_str($trans_type, $invoice_no, _("View the GL Journal Entries for this Credit Note")), 1);
 		hyperlink_params($_SERVER['PHP_SELF'], _("Enter Another Credit Note"), "New=1");
-		hyperlink_params("/admin/attachments.php", _("Add an Attachment"), "filterType=$trans_type&trans_no=$invoice_no");
+		hyperlink_params("/system/attachments.php", _("Add an Attachment"), "filterType=$trans_type&trans_no=$invoice_no");
 		Page::footer_exit();
 	}
 	//---------------------------------------------------------------------------------------------------

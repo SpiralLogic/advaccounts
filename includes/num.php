@@ -8,12 +8,12 @@
 	 */
 	class Num
 	{
-		function price_format($number)
+		public static function  price_format($number)
 		{
 			return Num::format($number, User::prefs()->price_dec());
 		}
 
-		function price_decimal($number, &$dec)
+		public static function  price_decimal($number, &$dec)
 		{
 			$dec = User::price_dec();
 			$str = strval($number);
@@ -27,12 +27,12 @@
 			return Num::format($number, $dec);
 		}
 
-		function round($number, $decimals = 0)
+		public static function  round($number, $decimals = 0)
 		{
 			return round($number, $decimals, PHP_ROUND_HALF_EVEN);
 		}
 
-		function format($number, $decimals = 0)
+		public static function  format($number, $decimals = 0)
 		{
 			$tsep = Config::get('separators_thousands', User::prefs()->tho_sep());
 			$dsep = Config::get('separators_decimal', User::prefs()->dec_sep());
@@ -45,14 +45,14 @@
 		//	Current ui mode.
 		// 2008-06-15. Added extra parameter $stock_id and reference for $dec
 		//--------------------------------------------------------------------
-		function qty_format($number, $stock_id = null, &$dec)
+		public static function  qty_format($number, $stock_id = null, &$dec)
 		{
 			$dec = Num::qty_dec($stock_id);
 			return Num::format($number, $dec);
 		}
 
 		// and get_qty_dec
-		function qty_dec($stock_id = null)
+		public static function  qty_dec($stock_id = null)
 		{
 			if ($stock_id != null) {
 				$dec = Item_Unit::get_decimal($stock_id);
@@ -64,12 +64,12 @@
 		}
 
 		//-------------------------------------------------------------------
-		function exrate_format($number)
+		public static function  exrate_format($number)
 		{
 			return Num::format($number, User::prefs()->exrate_dec());
 		}
 
-		function percent_format($number)
+		public static function  percent_format($number)
 		{
 			return Num::format($number, User::prefs()->percent_dec());
 		}

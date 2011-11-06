@@ -397,7 +397,7 @@
 			'branch' => array('/sales/manage/customer_branches.php?SelectedBranch=',
 				114, _("Branches")
 			),
-			'supplier' => array('/purchasing/manage/suppliers.php?supplier_id=',
+			'supplier' => array('/purchases/manage/suppliers.php?supplier_id=',
 				113, _("Suppliers")
 			),
 			'item' => array('/inventory/manage/items.php?stock_id=',

@@ -52,7 +52,7 @@
 	{
 		return pager_link(
 			_("Allocate"),
-		 "/purchasing/allocations/supplier_allocate.php?trans_no="
+		 "/purchases/allocations/supplier_allocate.php?trans_no="
 			. $row["trans_no"] . "&trans_type=" . $row["type"], ICON_MONEY
 		);
 	}

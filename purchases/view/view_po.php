@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 	$page_security = 'SA_SUPPTRANSVIEW';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	include(APP_PATH . "purchasing/includes/purchasing_ui.php");
+	include(APP_PATH . "purchases/includes/purchasing_ui.php");
 	JS::open_window(900, 500);
 	Page::start(_($help_context = "View Purchase Order"), true);
 	if (!isset($_GET['trans_no'])) {
@@ -103,7 +103,7 @@
 	echo "</td></tr>";
 	end_table(1); // outer table
 	submenu_print(_("Print This Order"), ST_PURCHORDER, $_GET['trans_no'], 'prtopt');
-	submenu_option(_("&Edit This Order"), "/purchasing/po_entry_items.php?ModifyOrderNumber=" . $_GET['trans_no']);
+	submenu_option(_("&Edit This Order"), "/purchases/po_entry_items.php?ModifyOrderNumber=" . $_GET['trans_no']);
 	//----------------------------------------------------------------------------------------------------
 	end_page(true);
 

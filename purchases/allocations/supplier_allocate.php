@@ -68,7 +68,7 @@
 	//--------------------------------------------------------------------------------
 	if (isset($_POST['Cancel'])) {
 		clear_allocations();
-		meta_forward("/purchasing/allocations/supplier_allocation_main.php");
+		meta_forward("/purchases/allocations/supplier_allocation_main.php");
 	}
 	//--------------------------------------------------------------------------------
 	if (isset($_GET['trans_no']) && isset($_GET['trans_type'])) {

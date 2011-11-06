@@ -17,19 +17,19 @@ class App_Setup extends Application
 	function __construct()
 	{
 		global $installed_extensions;
-		parent::__construct("system", _($this->help_context = "S&etup"));
+		parent::__construct("System", _($this->help_context = "S&etup"));
 
 		$this->add_module(_("Company Setup"));
 		$this->add_lapp_function(0, _("&Company Setup"),
-								 "admin/company_preferences.php?", 'SA_SETUPCOMPANY');
+								 "system/company_preferences.php?", 'SA_SETUPCOMPANY');
 		$this->add_lapp_function(0, _("&User Accounts Setup"),
-								 "admin/users.php?", 'SA_USERS');
+								 "system/users.php?", 'SA_USERS');
 		$this->add_lapp_function(0, _("&Access Setup"),
-								 "admin/security_roles.php?", 'SA_SECROLES');
+								 "system/security_roles.php?", 'SA_SECROLES');
 		$this->add_lapp_function(0, _("&Display Setup"),
-								 "admin/display_prefs.php?", 'SA_SETUPDISPLAY');
+								 "system/display_prefs.php?", 'SA_SETUPDISPLAY');
 		$this->add_lapp_function(0, _("&Forms Setup"),
-								 "admin/forms_setup.php?", 'SA_FORMSETUP');
+								 "system/forms_setup.php?", 'SA_FORMSETUP');
 		$this->add_rapp_function(0, _("&Taxes"),
 								 "taxes/tax_types.php?", 'SA_TAXRATES');
 		$this->add_rapp_function(0, _("Tax &Groups"),
@@ -37,45 +37,45 @@ class App_Setup extends Application
 		$this->add_rapp_function(0, _("Item Ta&x Types"),
 								 "taxes/item_tax_types.php?", 'SA_ITEMTAXTYPE');
 		$this->add_rapp_function(0, _("System and &General GL Setup"),
-								 "admin/gl_setup.php?", 'SA_GLSETUP');
+								 "system/gl_setup.php?", 'SA_GLSETUP');
 		$this->add_rapp_function(0, _("&Fiscal Years"),
-								 "admin/fiscalyears.php?", 'SA_FISCALYEARS');
+								 "system/fiscalyears.php?", 'SA_FISCALYEARS');
 		$this->add_rapp_function(0, _("&Print Profiles"),
-								 "admin/print_profiles.php?", 'SA_PRINTPROFILE');
+								 "system/print_profiles.php?", 'SA_PRINTPROFILE');
 
 		$this->add_module(_("Miscellaneous"));
 		$this->add_lapp_function(1, _("Pa&yment Terms"),
-								 "admin/payment_terms.php?", 'SA_PAYTERMS');
+								 "system/payment_terms.php?", 'SA_PAYTERMS');
 		$this->add_lapp_function(1, _("Shi&pping Company"),
-								 "admin/shipping_companies.php?", 'SA_SHIPPING');
+								 "system/shipping_companies.php?", 'SA_SHIPPING');
 		$this->add_rapp_function(1, _("&Points of Sale"),
 								 "sales/manage/sales_points.php?", 'SA_POSSETUP');
 		$this->add_rapp_function(1, _("&Printers"),
-								 "admin/printers.php?", 'SA_PRINTERS');
+								 "system/printers.php?", 'SA_PRINTERS');
 
 		$this->add_module(_("Maintenance"));
 		$this->add_lapp_function(2, _("&Void a Transaction"),
-								 "admin/void_transaction.php?", 'SA_VOIDTRANSACTION');
+								 "system/void_transaction.php?", 'SA_VOIDTRANSACTION');
 		$this->add_lapp_function(2, _("View or &Print Transactions"),
-								 "admin/view_print_transaction.php?", 'SA_VIEWPRINTTRANSACTION');
+								 "system/view_print_transaction.php?", 'SA_VIEWPRINTTRANSACTION');
 		$this->add_lapp_function(2, _("&Attach Documents"),
-								 "admin/attachments.php?filterType=20", 'SA_ATTACHDOCUMENT');
+								 "system/attachments.php?filterType=20", 'SA_ATTACHDOCUMENT');
 		$this->add_lapp_function(2, _("System &Diagnostics"),
-								 "admin/system_diagnostics.php?", 'SA_OPEN');
+								 "system/system_diagnostics.php?", 'SA_OPEN');
 
 		$this->add_rapp_function(2, _("&Backup and Restore"),
-								 "admin/backups.php?", 'SA_BACKUP');
+								 "system/backups.php?", 'SA_BACKUP');
 		$this->add_rapp_function(2, _("Create/Update &Companies"),
-								 "admin/create_coy.php?", 'SA_CREATECOMPANY');
+								 "system/create_coy.php?", 'SA_CREATECOMPANY');
 		$this->add_rapp_function(2, _("Install/Update &Languages"),
-								 "admin/inst_lang.php?", 'SA_CREATELANGUAGE');
+								 "system/inst_lang.php?", 'SA_CREATELANGUAGE');
 		$this->add_rapp_function(2, _("Install/Activate &Extensions"),
-								 "admin/inst_module.php?", 'SA_CREATEMODULES');
+								 "system/inst_module.php?", 'SA_CREATEMODULES');
 		$this->add_rapp_function(2, _("Software &Upgrade"),
-								 "admin/inst_upgrade.php?", 'SA_SOFTWAREUPGRADE');
+								 "system/inst_upgrade.php?", 'SA_SOFTWAREUPGRADE');
 		if (count($installed_extensions) > 0) {
 			foreach ($installed_extensions as $mod) {
-				if (@$mod['active'] && $mod['type'] == 'plugin' && $mod["tab"] == "system")
+				if (@$mod['active'] && $mod['type'] == 'plugin' && $mod["tab"] == "System")
 					$this->add_rapp_function(2, $mod["title"],
 											 "modules/" . $mod["path"] . "/" . $mod["filename"] . "?",
 											 isset($mod["access"]) ? $mod["access"] : 'SA_OPEN');

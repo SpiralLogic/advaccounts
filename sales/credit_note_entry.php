@@ -50,7 +50,7 @@
 		Display::note(Reporting::print_doc_link($credit_no . "-" . $trans_type, _("&Email This Credit Invoice"), true, ST_CUSTCREDIT, false, "printlink", "", 1), 0, 1);
 		Display::note(ui_view::get_gl_view_str($trans_type, $credit_no, _("View the GL &Journal Entries for this Credit Note")));
 		hyperlink_params($_SERVER['PHP_SELF'], _("Enter Another &Credit Note"), "NewCredit=yes");
-		hyperlink_params("/admin/attachments.php", _("Add an Attachment"), "filterType=$trans_type&trans_no=$credit_no");
+		hyperlink_params("/system/attachments.php", _("Add an Attachment"), "filterType=$trans_type&trans_no=$credit_no");
 		Page::footer_exit();
 	} else {
 		check_edit_conflicts();

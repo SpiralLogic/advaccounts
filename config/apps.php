@@ -7,4 +7,12 @@
 	 * To change this template use File | Settings | File Templates.
 	 */
 	return array(
-		'sales', 'contacts', 'purchases', 'inventory', 'advanced', 'manufacturing', 'dimensions', 'generalledger', 'setup',);
+		'sales',
+		'contacts',
+		'purchases',
+		'inventory',
+		'advanced',
+		'manufacturing',
+		'dimensions',
+		'gl',
+		'system',);

@@ -14,7 +14,7 @@ class App_Inventory extends Application
 	function App_Inventory()
 	{
 		global $installed_extensions; 
-		parent::__construct("stock", _($this->help_context = "&Inventory"));
+		parent::__construct("Inventory", _($this->help_context = "&Inventory"));
 
 		$this->add_module(_("Transactions"));
 		$this->add_lapp_function(0, _("Inventory Location &Transfers"),

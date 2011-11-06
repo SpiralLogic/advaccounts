@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 	$page_security = 'SA_GRN';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	include_once(APP_PATH . "purchasing/includes/purchasing_ui.php");
+	include_once(APP_PATH . "purchases/includes/purchasing_ui.php");
 	JS::open_window(900, 500);
 	Page::start(_($help_context = "Receive Purchase Order Items"));
 	//---------------------------------------------------------------------------------------------------------------
@@ -20,8 +20,8 @@
 		$trans_type = ST_SUPPRECEIVE;
 		Errors::notice(_("Purchase Order Delivery has been processed"));
 		Display::note(ui_view::get_trans_view_str($trans_type, $grn, _("&View this Delivery")));
-		hyperlink_params("/purchasing/supplier_invoice.php", _("Entry purchase &invoice for this receival"), "New=1");
-		hyperlink_no_params("/purchasing/inquiry/po_search.php", _("Select a different &purchase order for receiving items against"));
+		hyperlink_params("/purchases/supplier_invoice.php", _("Entry purchase &invoice for this receival"), "New=1");
+		hyperlink_no_params("/purchases/inquiry/po_search.php", _("Select a different &purchase order for receiving items against"));
 		Page::footer_exit();
 	}
 	//--------------------------------------------------------------------------------------------------
@@ -188,9 +188,9 @@
 		}
 		if (check_po_changed()) {
 			Errors::error(_("This order has been changed or invoiced since this delivery was started to be actioned. Processing halted. To enter a delivery against this purchase order, it must be re-selected and re-read again to update the changes made by the other user."));
-			hyperlink_no_params("/purchasing/inquiry/po_search.php", _("Select a different purchase order for receiving goods against"));
+			hyperlink_no_params("/purchases/inquiry/po_search.php", _("Select a different purchase order for receiving goods against"));
 			hyperlink_params(
-				"/purchasing/po_receive_items.php", _("Re-Read the updated purchase order for receiving goods against"), "PONumber=" .
+				"/purchases/po_receive_items.php", _("Re-Read the updated purchase order for receiving goods against"), "PONumber=" .
 			 $_SESSION
 			 ['PO']->order_no
 			);
@@ -248,7 +248,7 @@
 	Display::heading(_("Items to Receive"));
 	display_po_receive_items();
 	hyperlink_params(
-		"/purchasing/po_entry_items.php", _("Edit This Purchase Order"), "ModifyOrderNumber=" .
+		"/purchases/po_entry_items.php", _("Edit This Purchase Order"), "ModifyOrderNumber=" .
 	 $_SESSION['PO']->order_no
 	);
 	echo '<br>';

@@ -14,7 +14,7 @@
 		//--------------------------------------------------------------------------------------
 		static function get_supplier_trans_view_str($type, $trans_no, $label = "", $icon = false, $class = '', $id = '')
 		{
-			$viewer = "purchasing/view/";
+			$viewer = "purchases/view/";
 			if ($type == ST_PURCHORDER) {
 				$viewer .= "view_po.php";
 			}

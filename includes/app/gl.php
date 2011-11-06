@@ -58,7 +58,7 @@ class App_GeneralLedger extends Application
 		$this->add_lapp_function(2, _("&Quick Entries"),
 								 "gl/manage/gl_quick_entries.php?", 'SA_QUICKENTRY');
 		$this->add_lapp_function(2, _("Account &Tags"),
-								 "admin/tags.php?type=account", 'SA_GLACCOUNTTAGS');
+								 "system/tags.php?type=account", 'SA_GLACCOUNTTAGS');
 
 		$this->add_lapp_function(2, _("Payment Methods"),
 								 "gl/manage/bank_accounts.php", 'SA_BANKACCOUNT');

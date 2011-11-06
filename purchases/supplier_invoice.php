@@ -11,8 +11,8 @@
 	 ***********************************************************************/
 	$page_security = 'SA_SUPPLIERINVOICE';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	include_once(APP_PATH . "purchasing/includes/purchasing_db.php");
-	include_once(APP_PATH . "purchasing/includes/purchasing_ui.php");
+	include_once(APP_PATH . "purchases/includes/purchasing_db.php");
+	include_once(APP_PATH . "purchases/includes/purchasing_ui.php");
 	JS::open_window(900, 500);
 	Page::start(_($help_context = "Enter Supplier Invoice"));
 	//----------------------------------------------------------------------------------------
@@ -24,11 +24,11 @@
 		echo "<center>";
 		Errors::notice(_("Supplier invoice has been processed."));
 		Display::note(ui_view::get_trans_view_str($trans_type, $invoice_no, _("View this Invoice")));
-		hyperlink_no_params("/purchasing/inquiry/po_search.php", _("Purchase Order Maintainants"));
+		hyperlink_no_params("/purchases/inquiry/po_search.php", _("Purchase Order Maintainants"));
 		hyperlink_params($_SERVER['PHP_SELF'], _("Enter Another Invoice"), "New=1");
-		hyperlink_no_params("/purchasing/supplier_payment.php", _("Entry supplier &payment for this invoice"));
+		hyperlink_no_params("/purchases/supplier_payment.php", _("Entry supplier &payment for this invoice"));
 		Display::note(ui_view::get_gl_view_str($trans_type, $invoice_no, _("View the GL Journal Entries for this Invoice")), 1);
-		hyperlink_params("/admin/attachments.php", _("Add an Attachment"), "filterType=$trans_type&trans_no=$invoice_no");
+		hyperlink_params("/system/attachments.php", _("Add an Attachment"), "filterType=$trans_type&trans_no=$invoice_no");
 		Page::footer_exit();
 	}
 	//--------------------------------------------------------------------------------------------------

@@ -371,7 +371,7 @@
 						submit_cells('void_item_id' . $n, _("Remove"), '', _("WARNING! Be careful with removal. The operation is executed immediately and cannot be undone !!!"), true);
 						submit_js_confirm('void_item_id' . $n, sprintf(_('You are about to remove all yet non-invoiced items from delivery line #%d. This operation also irreversibly changes related order line. Do you want to continue ?'), $n));
 					}
-					hyperlink_params_td("/purchasing/po_entry_items.php", _("Modify"), "ModifyOrderNumber=" . $myrow["purch_order_no"], ' class="button"') . end_row();
+					hyperlink_params_td("/purchases/po_entry_items.php", _("Modify"), "ModifyOrderNumber=" . $myrow["purch_order_no"], ' class="button"') . end_row();
 				}
 			}
 		}

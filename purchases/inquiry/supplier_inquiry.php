@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 	$page_security = 'SA_SUPPTRANSVIEW';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	include(APP_PATH . "purchasing/includes/purchasing_ui.php");
+	include(APP_PATH . "purchases/includes/purchasing_ui.php");
 	JS::open_window(900, 500);
 	Page::start(_($help_context = "Supplier Inquiry"));
 	if (isset($_GET['supplier_id'])) {
@@ -102,7 +102,7 @@
 		return $row['type'] == ST_SUPPINVOICE && $row["TotalAmount"] - $row["Allocated"] > 0 ?
 		 pager_link(
 			 _("Credit This"),
-			"/purchasing/supplier_credit.php?New=1&invoice_no=" .
+			"/purchases/supplier_credit.php?New=1&invoice_no=" .
 			 $row['trans_no'], ICON_CREDIT
 		 )
 		 : '';

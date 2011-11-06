@@ -12,7 +12,7 @@
 	$page_security = 'SA_PURCHASEORDER';
 	$js = '';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	include_once(APP_PATH . "purchasing/includes/purchasing_ui.php");
+	include_once(APP_PATH . "purchases/includes/purchasing_ui.php");
 	JS::open_window(900, 500);
 	if (isset($_GET['ModifyOrderNumber'])) {
 		Page::start(_($help_context = "Modify Purchase Order #") . $_GET['ModifyOrderNumber']);
@@ -37,11 +37,11 @@
 		unset($_SESSION['PO']);
 		Display::note(ui_view::get_trans_view_str($trans_type, $order_no, _("&View this order"), false, 'button'), 0, 1);
 		Display::note(Reporting::print_doc_link($order_no, _("&Print This Order"), true, $trans_type), 0, 1);
-		submenu_button(_("&Edit This Order"), "/purchasing/po_entry_items.php?ModifyOrderNumber=$order_no");
+		submenu_button(_("&Edit This Order"), "/purchases/po_entry_items.php?ModifyOrderNumber=$order_no");
 		submenu_email(_("Email This Order"), $trans_type, $order_no, null, $supplier->getEmailAddresses(), 1);
-		hyperlink_button("/purchasing/po_receive_items.php", _("&Receive Items on this PO"), "PONumber=$order_no");
+		hyperlink_button("/purchases/po_receive_items.php", _("&Receive Items on this PO"), "PONumber=$order_no");
 		hyperlink_button($_SERVER['PHP_SELF'], _("&New Purchase Order"), "NewOrder=yes");
-		hyperlink_no_params("/purchasing/inquiry/po_search.php", _("&Outstanding Purchase Orders"), true, true);
+		hyperlink_no_params("/purchases/inquiry/po_search.php", _("&Outstanding Purchase Orders"), true, true);
 		Page::footer_exit();
 	}
 	//--------------------------------------------------------------------------------------------------
@@ -118,12 +118,12 @@
 		}
 		else {
 			unset($_SESSION['PO']);
-			meta_forward('/index.php', 'application=AP');
+			meta_forward('/index.php', 'application=Purchases');
 		}
 		$_SESSION['PO']->clear_items();
 		$_SESSION['PO'] = new Purchase_Order;
 		Errors::notice(_("This purchase order has been cancelled."));
-		hyperlink_params("/purchasing/po_entry_items.php", _("Enter a new purchase order"), "NewOrder=Yes");
+		hyperlink_params("/purchases/po_entry_items.php", _("Enter a new purchase order"), "NewOrder=Yes");
 		echo "<br>";
 		end_page();
 		exit;
@@ -383,7 +383,7 @@
 	if ((isset($_GET['NewOrder']) && $_GET['NewOrder']) && (!isset($_GET['UseOrder']) || !$_GET['UseOrder'])) {
 		echo "
 <center>
-    <iframe src='/purchasing/inquiry/po_search_completed.php?NFY=1&frame=1' width='90%' height='350' frameborder='0'></iframe>
+    <iframe src='/purchases/inquiry/po_search_completed.php?NFY=1&frame=1' width='90%' height='350' frameborder='0'></iframe>
 </center>";
 	}
 	display_po_header($_SESSION['PO']);

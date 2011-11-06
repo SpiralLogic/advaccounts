@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 	$page_security = 'SA_SUPPTRANSVIEW';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	include(APP_PATH . "purchasing/includes/purchasing_ui.php");
+	include(APP_PATH . "purchases/includes/purchasing_ui.php");
 	JS::open_window(900, 500);
 	Page::start(_($help_context = "Search Purchase Orders"), Input::request('frame'));
 	if (isset($_GET['order_number'])) {
@@ -74,7 +74,7 @@
 	function edit_link($row)
 	{
 		return pager_link(
-			_("Edit"), "/purchasing/po_entry_items.php?" . SID . "ModifyOrderNumber=" .
+			_("Edit"), "/purchases/po_entry_items.php?" . SID . "ModifyOrderNumber=" .
 		 $row["order_no"], ICON_EDIT
 		);
 	}
@@ -87,12 +87,12 @@
 	function receive_link($row)
 	{
 		if ($row['Received'] > 0) {
-			return pager_link(_("Receive"), "/purchasing/po_receive_items.php?PONumber=" . $row["order_no"], ICON_RECEIVE);
+			return pager_link(_("Receive"), "/purchases/po_receive_items.php?PONumber=" . $row["order_no"], ICON_RECEIVE);
 		}
 		elseif ($row['Invoiced'] > 0) {
-			return pager_link(_("Invoice"), "/purchasing/supplier_invoice.php?New=1&SuppID=" . $row['supplier_id'] . "&PONumber=" . $row["order_no"], ICON_RECEIVE);
+			return pager_link(_("Invoice"), "/purchases/supplier_invoice.php?New=1&SuppID=" . $row['supplier_id'] . "&PONumber=" . $row["order_no"], ICON_RECEIVE);
 		}
-		//advaccounts/purchasing/supplier_invoice.php?New=1
+		//advaccounts/purchases/supplier_invoice.php?New=1
 	}
 
 	//---------------------------------------------------------------------------------------------

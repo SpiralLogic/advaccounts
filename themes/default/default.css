@@ -387,7 +387,7 @@ div.banner a + a { border-top: 2px groove #999 }
 	color:            white;
 }
 
-.AP #_tabs2 {
+.Purchases #_tabs2 {
 
 	background: -webkit-gradient(linear, 100% 19%, 100% 71%, from(#858585), to(#9E9E9E), color-stop(0, #C7C7C7));
 	background: -moz-linear-gradient(19% 100% 90deg, #858585, #9E9E9E, #C7C7C7 71%);
@@ -395,32 +395,32 @@ div.banner a + a { border-top: 2px groove #999 }
 	position:   relative;
 }
 
-.AP #_tabs2 ul.menu li {
+.Purchases #_tabs2 ul.menu li {
 
 	text-align: center;
 	background: -webkit-gradient(linear, 100% 100%, 100% 0%, from(#1B9C52), to(#49C46E), color-stop(.5, #43E85E));
 	background: -moz-linear-gradient(100% 100% 90deg, #1B9C52, #43E85E, #49C46E 100%);
 }
 
-.AP #_tabs2 ul  a {
+.Purchases #_tabs2 ul  a {
 
 	background: -webkit-gradient(linear, 100% 19%, 100% 71%, from(#858585), to(#9E9E9E), color-stop(0, #C7C7C7));
 	background: -moz-linear-gradient(19% 100% 90deg, #858585, #9E9E9E, #C7C7C7 71%);
 }
 
-.AP #_tabs2 ul  a:hover {
+.Purchases #_tabs2 ul  a:hover {
 
 	background: -webkit-gradient(linear, 100% 100%, 100% 0%, from(#1B9C52), to(#49C46E), color-stop(.5, #43E85E));
 	background: -moz-linear-gradient(100% 100% 90deg, #1B9C52, #43E85E, #49C46E 100%);
 }
 
-.AP #_tabs2 ul li.active a {
+.Purchases #_tabs2 ul li.active a {
 	background: -webkit-gradient(linear, 100% 100%, 100% 0%, from(#1B9C52), to(#49C46E), color-stop(.5, #43E85E));
 	background: -moz-linear-gradient(100% 100% 90deg, #1B9C52, #43E85E, #49C46E 100%);
 	color:      white;
 }
 
-.AP .menu_group {
+.Purchases .menu_group {
 	background:       -moz-linear-gradient(center top, #80FE80, #62BB46) repeat scroll 0 0 transparent;
 	background:       -moz-linear-gradient(center top, #80FE80, #62BB46) repeat scroll 0 0 transparent;
 	box-shadow:       0 1px 0 rgba(255, 255, 255, 0.6) inset;
@@ -431,7 +431,7 @@ div.banner a + a { border-top: 2px groove #999 }
 	box-shadow:       none;
 }
 
-.AP #wrapper, .AP #results {
+.Purchases #wrapper, .Purchases #results {
 	width:      100%;
 	background: #fff url(images/wrapbg2.gif) repeat-x;
 

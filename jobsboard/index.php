@@ -15,7 +15,7 @@
 	 * SYSTEM FOLDER NAME
 	 *---------------------------------------------------------------
 	 *
-	 * This variable must contain the name of your "system" folder.
+	 * This variable must contain the name of your "System" folder.
 	 * Include the path if the folder is not in the same  directory
 	 * as this file.
 	 *

@@ -10,8 +10,8 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 
-	include_once(APP_PATH . "purchasing/includes/ui/invoice_ui.php");
-	include_once(APP_PATH . "purchasing/includes/ui/po_ui.php");
-	include_once(APP_PATH . "purchasing/includes/ui/grn_ui.php");
+	include_once(APP_PATH . "purchases/includes/ui/invoice_ui.php");
+	include_once(APP_PATH . "purchases/includes/ui/po_ui.php");
+	include_once(APP_PATH . "purchases/includes/ui/grn_ui.php");
 	//--------------------------------------------------------------------------------------
 ?>

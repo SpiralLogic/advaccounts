@@ -138,9 +138,9 @@
 		if (count($_SESSION['Items']->line_items) > 0) {
 			start_outer_table(" width=90%");
 			table_section(1);
-			hyperlink_params_separate("/purchasing/po_entry_items.php", _("Create PO from this order"), "NewOrder=Yes&UseOrder=1' class='button'", true, true);
+			hyperlink_params_separate("/purchases/po_entry_items.php", _("Create PO from this order"), "NewOrder=Yes&UseOrder=1' class='button'", true, true);
 			table_section(2);
-			hyperlink_params_separate("/purchasing/po_entry_items.php", _("Dropship this order"), "NewOrder=Yes&UseOrder=1&DS=1' class='button'", true, true);
+			hyperlink_params_separate("/purchases/po_entry_items.php", _("Dropship this order"), "NewOrder=Yes&UseOrder=1&DS=1' class='button'", true, true);
 			end_outer_table(1);
 		}
 		start_table(Config::get('tables_style') . "  colspan=7 width=90%");

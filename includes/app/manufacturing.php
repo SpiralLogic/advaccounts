@@ -14,7 +14,7 @@ class App_Manufacturing extends Application
 	function App_Manufacturing()
 	{
 		global $installed_extensions;
-		parent::__construct("manuf", _($this->help_context = "&Manufacturing"));
+		parent::__construct("Manufacturing", _($this->help_context = "&Manufacturing"));
 
 		$this->add_module(_("Transactions"));
 		$this->add_lapp_function(0, _("Work &Order Entry"),

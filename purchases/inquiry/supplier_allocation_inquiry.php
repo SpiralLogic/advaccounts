@@ -12,7 +12,7 @@
 	$page_security = 'SA_SUPPLIERALLOC';
 	//
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	include(APP_PATH . "purchasing/includes/purchasing_ui.php");
+	include(APP_PATH . "purchases/includes/purchasing_ui.php");
 	JS::open_window(900, 500);
 	Page::start(_($help_context = "Supplier Allocation Inquiry"));
 	if (isset($_GET['supplier_id'])) {
@@ -77,7 +77,7 @@
 		$link
 		 = pager_link(
 			_("Allocations"),
-		 "/purchasing/allocations/supplier_allocate.php?trans_no=" .
+		 "/purchases/allocations/supplier_allocate.php?trans_no=" .
 			$row["trans_no"] . "&trans_type=" . $row["type"], ICON_MONEY
 		);
 		return (($row["type"] == ST_BANKPAYMENT || $row["type"] == ST_SUPPCREDIT || $row["type"] == ST_SUPPAYMENT)

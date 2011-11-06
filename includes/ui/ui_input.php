@@ -822,7 +822,7 @@
 
 	function supplier_credit_row($supplier, $credit, $parms = '')
 	{
-		label_row(_("Current Credit:"), "<a target='_blank' " . ($credit < 0 ? 'class="redfg"' : '') . "href='/purchasing/inquiry/supplier_inquiry.php?supplier_id=" . $supplier . "'" . " onclick=\"javascript:openWindow(this.href,this.target); return false;\" >" . Num::price_format($credit) . "</a>",
+		label_row(_("Current Credit:"), "<a target='_blank' " . ($credit < 0 ? 'class="redfg"' : '') . "href='/purchases/inquiry/supplier_inquiry.php?supplier_id=" . $supplier . "'" . " onclick=\"javascript:openWindow(this.href,this.target); return false;\" >" . Num::price_format($credit) . "</a>",
 							$parms);
 	}
 

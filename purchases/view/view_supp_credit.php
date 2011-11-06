@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 	$page_security = 'SA_SUPPTRANSVIEW';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	include_once(APP_PATH . "purchasing/includes/purchasing_ui.php");
+	include_once(APP_PATH . "purchases/includes/purchasing_ui.php");
 	JS::open_window(900, 500);
 	Page::start(_($help_context = "View Supplier Credit Note"), true);
 	if (isset($_GET["trans_no"])) {

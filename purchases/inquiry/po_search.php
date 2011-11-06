@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 	$page_security = 'SA_SUPPTRANSVIEW';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	include(APP_PATH . "purchasing/includes/purchasing_ui.php");
+	include(APP_PATH . "purchases/includes/purchasing_ui.php");
 	JS::open_window(900, 500);
 	Page::start(_($help_context = "Search Outstanding Purchase Orders"));
 	if (isset($_GET['order_number'])) {
@@ -61,7 +61,7 @@
 	{
 		return pager_link(
 			_("Edit"),
-		 "/purchasing/po_entry_items.php?ModifyOrderNumber=" . $row["order_no"], ICON_EDIT
+		 "/purchases/po_entry_items.php?ModifyOrderNumber=" . $row["order_no"], ICON_EDIT
 		);
 	}
 
@@ -74,7 +74,7 @@
 	{
 		return pager_link(
 			_("Receive"),
-		 "/purchasing/po_receive_items.php?PONumber=" . $row["order_no"], ICON_RECEIVE
+		 "/purchases/po_receive_items.php?PONumber=" . $row["order_no"], ICON_RECEIVE
 		);
 	}
 

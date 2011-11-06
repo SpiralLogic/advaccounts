@@ -103,7 +103,7 @@
 				static::$lang->set_language($_SESSION['language']->code);
 			} else {
 				if (Input::session('change_password') && strstr($_SERVER['PHP_SELF'], 'change_current_user_password.php') == false) {
-					meta_forward('/admin/change_current_user_password.php', 'selected_id=' . $currentUser->username);
+					meta_forward('/system/change_current_user_password.php', 'selected_id=' . $currentUser->username);
 				}
 
 			}
