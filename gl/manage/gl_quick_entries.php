@@ -150,7 +150,7 @@
 	$th = array(_("Description"), _("Type"), "", "");
 	table_header($th);
 	$k = 0;
-	while ($myrow = DBOld::fetch($result))
+	while ($myrow = DB::fetch($result))
 	{
 		alt_table_row_color($k);
 		$type_text = $quick_entry_types[$myrow["type"]];
@@ -201,7 +201,7 @@
 		}
 		table_header($th);
 		$k = 0;
-		while ($myrow = DBOld::fetch($result))
+		while ($myrow = DB::fetch($result))
 		{
 			alt_table_row_color($k);
 			label_cell($quick_actions[$myrow['action']]);

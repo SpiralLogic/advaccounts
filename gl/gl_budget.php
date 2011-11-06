@@ -19,8 +19,8 @@
 		$sql = "SELECT account FROM budget_trans WHERE account=" . DB::escape($account)
 		 . " AND tran_date='$date_' AND
 		dimension_id=" . DB::escape($dimension) . " AND dimension2_id=" . DB::escape($dimension2);
-		$result = DBOld::query($sql, "Cannot retreive a gl transaction");
-		return (DBOld::num_rows($result) > 0);
+		$result = DB::query($sql, "Cannot retreive a gl transaction");
+		return (DB::num_rows($result) > 0);
 	}
 
 	function add_update_gl_budget_trans($date_, $account, $dimension, $dimension2, $amount) {
@@ -38,7 +38,7 @@
 			" . DB::escape($account) . ", " . DB::escape($dimension) . ", "
 			 . DB::escape($dimension2) . ", " . DB::escape($amount) . ", '')";
 		}
-		DBOld::query($sql, "The GL budget transaction could not be saved");
+		DB::query($sql, "The GL budget transaction could not be saved");
 	}
 
 	function delete_gl_budget_trans($date_, $account, $dimension, $dimension2) {
@@ -47,7 +47,7 @@
 		 . " AND dimension_id=" . DB::escape($dimension)
 		 . " AND dimension2_id=" . DB::escape($dimension2)
 		 . " AND tran_date='$date'";
-		DBOld::query($sql, "The GL budget transaction could not be deleted");
+		DB::query($sql, "The GL budget transaction could not be deleted");
 	}
 
 	function get_only_budget_trans_from_to($from_date, $to_date, $account, $dimension = 0, $dimension2 = 0) {
@@ -59,14 +59,14 @@
 		 . " AND tran_date >= '$from' AND tran_date <= '$to'
 		 AND dimension_id = " . DB::escape($dimension)
 		 . " AND dimension2_id = " . DB::escape($dimension2);
-		$result = DBOld::query($sql, "No budget accounts were returned");
-		$row = DBOld::fetch_row($result);
+		$result = DB::query($sql, "No budget accounts were returned");
+		$row = DB::fetch_row($result);
 		return $row[0];
 	}
 
 	//-------------------------------------------------------------------------------------
 	if (isset($_POST['add']) || isset($_POST['delete'])) {
-		DBOld::begin_transaction();
+		DB::begin_transaction();
 		for (
 			$i = 0, $da = $_POST['begin']; Dates::date1_greater_date2($_POST['end'], $da); $i++
 		)
@@ -81,7 +81,7 @@
 			}
 			$da = Dates::add_months($da, 1);
 		}
-		DBOld::commit_transaction();
+		DB::commit_transaction();
 		if (isset($_POST['add'])) {
 			Errors::notice(_("The Budget has been saved."));
 		} else {
@@ -132,8 +132,8 @@
 		$year = $_POST['fyear'];
 		if (get_post('update') == '') {
 			$sql = "SELECT * FROM fiscal_year WHERE id=" . DB::escape($year);
-			$result = DBOld::query($sql, "could not get current fiscal year");
-			$fyear = DBOld::fetch($result);
+			$result = DB::query($sql, "could not get current fiscal year");
+			$fyear = DB::fetch($result);
 			$_POST['begin'] = Dates::sql2date($fyear['begin']);
 			$_POST['end'] = Dates::sql2date($fyear['end']);
 		}

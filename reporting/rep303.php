@@ -48,7 +48,7 @@
 		stock_master.description
 		ORDER BY stock_master.category_id,
 		stock_master.stock_id";
-		return DBOld::query($sql, "No transactions were returned");
+		return DB::query($sql, "No transactions were returned");
 	}
 
 	//----------------------------------------------------------------------------------------------------
@@ -137,7 +137,7 @@
 		$rep->Header();
 		$res = getTransactions($category, $location);
 		$catt = '';
-		while ($trans = DBOld::fetch($res))
+		while ($trans = DB::fetch($res))
 		{
 			if ($location == 'all') {
 				$loc_code = "";

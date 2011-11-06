@@ -12,7 +12,7 @@
 	//--------------------------------------------------------------------------------------
 	function add_work_order_quick($wo_ref, $loc_code, $units_reqd, $stock_id, $type, $date_, $memo_, $costs, $cr_acc, $labour, $cr_lab_acc)
 	{
-		DBOld::begin_transaction();
+		DB::begin_transaction();
 		// if unassembling, reverse the stock movements
 		if ($type == WO_UNASSEMBLY) {
 			$units_reqd = -$units_reqd;
@@ -33,12 +33,12 @@
     	VALUES (" . DB::escape($wo_ref) . ", " . DB::escape($loc_code) . ", " . DB::escape($units_reqd)
 		 . ", " . DB::escape($units_reqd) . ", " . DB::escape($stock_id) . ",
 		" . DB::escape($type) . ", " . DB::escape($costs) . ", '$date', '$date', '$date', 1, 1)";
-		DBOld::query($sql, "could not add work order");
-		$woid = DBOld::insert_id();
+		DB::query($sql, "could not add work order");
+		$woid = DB::insert_id();
 		//--------------------------------------------------------------------------
 		// create Work Order Requirements based on the bom
 		$result = Manufacturing::get_bom($stock_id);
-		while ($bom_item = DBOld::fetch($result))
+		while ($bom_item = DB::fetch($result))
 		{
 			$unit_quantity = $bom_item["quantity"];
 			$item_quantity = $bom_item["quantity"] * $units_reqd;
@@ -47,7 +47,7 @@
 			VALUES ($woid, '" . $bom_item["component"] . "',
 			'" . $bom_item["workcentre_added"] . "',
 			$unit_quantity,	$item_quantity, '" . $bom_item["loc_code"] . "')";
-			DBOld::query($sql, "The work order requirements could not be added");
+			DB::query($sql, "The work order requirements could not be added");
 			// insert a -ve stock move for each item
 			add_stock_move(ST_WORKORDER, $bom_item["component"], $woid,
 				$bom_item["loc_code"], $date_, $wo_ref, -$item_quantity, 0);
@@ -62,7 +62,7 @@
 		DB_Comments::add(ST_WORKORDER, $woid, $date_, $memo_);
 		Refs::save(ST_WORKORDER, $woid, $wo_ref);
 		DB_AuditTrail::add(ST_WORKORDER, $woid, $date_, _("Quick production."));
-		DBOld::commit_transaction();
+		DB::commit_transaction();
 		return $woid;
 	}
 
@@ -73,7 +73,7 @@
 		$result = Manufacturing::get_bom($stock_id);
 		// credit all the components
 		$total_cost = 0;
-		while ($bom_item = DBOld::fetch($result))
+		while ($bom_item = DB::fetch($result))
 		{
 			$bom_accounts = get_stock_gl_code($bom_item["component"]);
 			$bom_cost = $bom_item["ComponentCost"] * $units_reqd;
@@ -91,7 +91,7 @@
 			$res = get_additional_issues($woid);
 			$wo = get_work_order($woid);
 			$issue_total = 0;
-			while ($item = DBOld::fetch($res))
+			while ($item = DB::fetch($res))
 			{
 				$standard_cost = get_standard_cost($item['stock_id']);
 				$issue_cost = $standard_cost * $item['qty_issued'] * $units_reqd / $wo['units_reqd'];

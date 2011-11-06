@@ -33,7 +33,7 @@
 		);
 		table_header($th);
 		$k = 0;
-		while ($myrow = DBOld::fetch($result))
+		while ($myrow = DB::fetch($result))
 		{
 			alt_table_row_color($k);
 			label_cell($myrow["stock_id"]);
@@ -71,7 +71,7 @@
 		{
 			if (get_post('item_code') == '') { // New kit/alias definition
 				$kit = Item_Code::get_kit($_POST['kit_code']);
-				if (DBOld::num_rows($kit)) {
+				if (DB::num_rows($kit)) {
 					$input_error = 1;
 					Errors::error(_("This item code is already assigned to stock item or sale kit."));
 					JS::set_focus('kit_code');
@@ -134,13 +134,13 @@
 		// if selected kit is not included in any other kit.
 		//
 		$other_kits = Item_Code::get_where_used($_POST['item_code']);
-		$num_kits = DBOld::num_rows($other_kits);
+		$num_kits = DB::num_rows($other_kits);
 		$kit = Item_Code::get_kit($_POST['item_code']);
-		if ((DBOld::num_rows($kit) == 1) && $num_kits) {
+		if ((DB::num_rows($kit) == 1) && $num_kits) {
 			$msg = _("This item cannot be deleted because it is the last item in the kit used by following kits")
 			 . ':<br>';
 			while ($num_kits--) {
-				$kit = DBOld::fetch($other_kits);
+				$kit = DB::fetch($other_kits);
 				$msg .= "'" . $kit[0] . "'";
 				if ($num_kits) {
 					$msg .= ',';

@@ -52,8 +52,8 @@
 		FROM supp_trans
     	WHERE supp_trans.tran_date < '$to'
 		AND supp_trans.supplier_id = '$supplier_id' GROUP BY supplier_id";
-		$result = DBOld::query($sql, "No transactions were returned");
-		return DBOld::fetch($result);
+		$result = DB::query($sql, "No transactions were returned");
+		return DB::fetch($result);
 	}
 
 	function getTransactions($supplier_id, $from, $to)
@@ -70,7 +70,7 @@
     			WHERE supp_trans.tran_date >= '$from' AND supp_trans.tran_date <= '$to'
     			AND supp_trans.supplier_id = '$supplier_id'
     				ORDER BY supp_trans.tran_date";
-		$TransResult = DBOld::query($sql, "No transactions were returned");
+		$TransResult = DB::query($sql, "No transactions were returned");
 		return $TransResult;
 	}
 
@@ -137,8 +137,8 @@
 			$sql .= " WHERE supplier_id=" . DB::escape($fromsupp);
 		}
 		$sql .= " ORDER BY supp_name";
-		$result = DBOld::query($sql, "The customers could not be retrieved");
-		while ($myrow = DBOld::fetch($result))
+		$result = DB::query($sql, "The customers could not be retrieved");
+		while ($myrow = DB::fetch($result))
 		{
 			if (!$convert && $currency != $myrow['curr_code']) {
 				continue;
@@ -157,7 +157,7 @@
 				$grandtotal[$i] += $init[$i];
 			}
 			$res = getTransactions($myrow['supplier_id'], $from, $to);
-			if ($no_zeros && DBOld::num_rows($res) == 0) {
+			if ($no_zeros && DB::num_rows($res) == 0) {
 				continue;
 			}
 			$rep->TextCol(0, 2, $myrow['name']);
@@ -171,11 +171,11 @@
 			$rep->AmountCol(6, 7, $init[2], $dec);
 			$rep->AmountCol(7, 8, $init[3], $dec);
 			$rep->NewLine(1, 2);
-			if (DBOld::num_rows($res) == 0) {
+			if (DB::num_rows($res) == 0) {
 				continue;
 			}
 			$rep->Line($rep->row + 4);
-			while ($trans = DBOld::fetch($res))
+			while ($trans = DB::fetch($res))
 			{
 				if ($no_zeros && $trans['TotalAmount'] == 0 && $trans['Allocated'] == 0) {
 					continue;

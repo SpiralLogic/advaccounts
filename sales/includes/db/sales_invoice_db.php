@@ -20,7 +20,7 @@
 		}
 		$date_ = $invoice->document_date;
 		$charge_shipping = $invoice->freight_cost;
-		DBOld::begin_transaction();
+		DB::begin_transaction();
 		$company_data = DB_Company::get_prefs();
 		$branch_data = get_branch_accounts($invoice->Branch);
 		$customer = get_customer($invoice->customer_id);
@@ -152,14 +152,14 @@
 		if ($trans_no == 0) {
 			Refs::save(ST_SALESINVOICE, $invoice_no, $invoice->reference);
 		}
-		DBOld::commit_transaction();
+		DB::commit_transaction();
 		return $invoice_no;
 	}
 
 	//--------------------------------------------------------------------------------------------------
 	function void_sales_invoice($type, $type_no)
 	{
-		DBOld::begin_transaction();
+		DB::begin_transaction();
 		Bank_Trans::void($type, $type_no, true);
 		void_gl_trans($type, $type_no, true);
 		// reverse all the changes in parent document(s)
@@ -167,8 +167,8 @@
 		$deliveries = Sales_Trans::get_parent($type, $type_no);
 		if ($deliveries !== 0) {
 			$srcdetails = get_customer_trans_details(get_parent_type($type), $deliveries);
-			while ($row = DBOld::fetch($items_result)) {
-				$src_line = DBOld::fetch($srcdetails);
+			while ($row = DB::fetch($items_result)) {
+				$src_line = DB::fetch($srcdetails);
 				update_parent_line($type, $src_line['id'], -$row['quantity']);
 			}
 		}
@@ -179,7 +179,7 @@
 		// do this last because other voidings can depend on it - especially voiding
 		// DO NOT MOVE THIS ABOVE VOIDING or we can end up with trans with alloc < 0
 		Sales_Trans::void($type, $type_no);
-		DBOld::commit_transaction();
+		DB::commit_transaction();
 	}
 
 ?>

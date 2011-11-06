@@ -33,7 +33,7 @@
 		 DB::escape($_POST['phone']) . ", " .
 		 DB::escape($_POST['phone2']) . ", " .
 		 DB::escape($_POST['address']) . ")";
-		DBOld::query($sql, "The Shipping Company could not be added");
+		DB::query($sql, "The Shipping Company could not be added");
 		Errors::notice(_('New shipping company has been added'));
 		$Mode = 'RESET';
 	}
@@ -45,7 +45,7 @@
 		phone2 =" . DB::escape($_POST['phone2']) . " ,
 		address =" . DB::escape($_POST['address']) . "
 		WHERE shipper_id = " . DB::escape($selected_id);
-		DBOld::query($sql, "The shipping company could not be updated");
+		DB::query($sql, "The shipping company could not be updated");
 		Errors::notice(_('Selected shipping company has been updated'));
 		$Mode = 'RESET';
 	}
@@ -53,22 +53,22 @@
 	if ($Mode == 'Delete') {
 		// PREVENT DELETES IF DEPENDENT RECORDS IN 'sales_orders'
 		$sql = "SELECT COUNT(*) FROM sales_orders WHERE ship_via=" . DB::escape($selected_id);
-		$result = DBOld::query($sql, "check failed");
-		$myrow = DBOld::fetch_row($result);
+		$result = DB::query($sql, "check failed");
+		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {
 			$cancel_delete = 1;
 			Errors::error(_("Cannot delete this shipping company because sales orders have been created using this shipper."));
 		} else {
 			// PREVENT DELETES IF DEPENDENT RECORDS IN 'debtor_trans'
 			$sql = "SELECT COUNT(*) FROM debtor_trans WHERE ship_via=" . DB::escape($selected_id);
-			$result = DBOld::query($sql, "check failed");
-			$myrow = DBOld::fetch_row($result);
+			$result = DB::query($sql, "check failed");
+			$myrow = DB::fetch_row($result);
 			if ($myrow[0] > 0) {
 				$cancel_delete = 1;
 				Errors::error(_("Cannot delete this shipping company because invoices have been created using this shipping company."));
 			} else {
 				$sql = "DELETE FROM shippers WHERE shipper_id=" . DB::escape($selected_id);
-				DBOld::query($sql, "could not delete shipper");
+				DB::query($sql, "could not delete shipper");
 				Errors::notice(_('Selected shipping company has been deleted'));
 			}
 		}
@@ -86,14 +86,14 @@
 		$sql .= " WHERE !inactive";
 	}
 	$sql .= " ORDER BY shipper_id";
-	$result = DBOld::query($sql, "could not get shippers");
+	$result = DB::query($sql, "could not get shippers");
 	start_form();
 	start_table(Config::get('tables_style'));
 	$th = array(_("Name"), _("Contact Person"), _("Phone Number"), _("Secondary Phone"), _("Address"), "", "");
 	inactive_control_column($th);
 	table_header($th);
 	$k = 0; //row colour counter
-	while ($myrow = DBOld::fetch($result))
+	while ($myrow = DB::fetch($result))
 	{
 		alt_table_row_color($k);
 		label_cell($myrow["shipper_name"]);
@@ -114,8 +114,8 @@
 		if ($Mode == 'Edit') {
 			//editing an existing Shipper
 			$sql = "SELECT * FROM shippers WHERE shipper_id=" . DB::escape($selected_id);
-			$result = DBOld::query($sql, "could not get shipper");
-			$myrow = DBOld::fetch($result);
+			$result = DB::query($sql, "could not get shipper");
+			$myrow = DB::fetch($result);
 			$_POST['shipper_name'] = $myrow["shipper_name"];
 			$_POST['contact'] = $myrow["contact"];
 			$_POST['phone'] = $myrow["phone"];

@@ -56,8 +56,8 @@
 		$sql
 		 = "SELECT COUNT(*) FROM chart_types
 		WHERE class_id=$selected_id";
-		$result = DBOld::query($sql, "could not query chart master");
-		$myrow = DBOld::fetch_row($result);
+		$result = DB::query($sql, "could not query chart master");
+		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {
 			Errors::error(_("Cannot delete this account class because GL account types have been created referring to it."));
 			return false;
@@ -89,7 +89,7 @@
 	inactive_control_column($th);
 	table_header($th);
 	$k = 0;
-	while ($myrow = DBOld::fetch($result))
+	while ($myrow = DB::fetch($result))
 	{
 		alt_table_row_color($k);
 		label_cell($myrow["cid"]);

@@ -42,20 +42,20 @@
 			AND taxrec.tran_date <= '$todate'
 		ORDER BY taxrec.tran_date";
 		//Errors::error($sql);
-		return DBOld::query($sql, "No transactions were returned");
+		return DB::query($sql, "No transactions were returned");
 	}
 
 	function getTaxTypes()
 	{
 		$sql = "SELECT * FROM tax_types ORDER BY id";
-		return DBOld::query($sql, "No transactions were returned");
+		return DB::query($sql, "No transactions were returned");
 	}
 
 	function getTaxInfo($id)
 	{
 		$sql = "SELECT * FROM tax_types WHERE id=$id";
-		$result = DBOld::query($sql, "No transactions were returned");
-		return DBOld::fetch($result);
+		$result = DB::query($sql, "No transactions were returned");
+		return DB::fetch($result);
 	}
 
 	//----------------------------------------------------------------------------------------------------
@@ -85,7 +85,7 @@
 		}
 		$res = getTaxTypes();
 		$taxes = array();
-		while ($tax = DBOld::fetch($res))
+		while ($tax = DB::fetch($res))
 		{
 			$taxes[$tax['id']] = array('in' => 0, 'out' => 0, 'taxin' => 0, 'taxout' => 0);
 		}
@@ -106,7 +106,7 @@
 		$totalnet = 0.0;
 		$totaltax = 0.0;
 		$transactions = getTaxTransactions($from, $to);
-		while ($trans = DBOld::fetch($transactions))
+		while ($trans = DB::fetch($transactions))
 		{
 			if (in_array($trans['trans_type'], array(ST_CUSTCREDIT, ST_SUPPINVOICE))) {
 				$trans['net_amount'] *= -1;

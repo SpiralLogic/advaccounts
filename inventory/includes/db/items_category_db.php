@@ -30,7 +30,7 @@
 		 . DB::escape($dim2) . ","
 		 . DB::escape($no_sale) . ")";
 
-		DBOld::query($sql, "an item category could not be added");
+		DB::query($sql, "an item category could not be added");
 	}
 
 	function update_item_category($id, $description, $tax_type_id,
@@ -51,29 +51,29 @@
 		 . "dflt_no_sale = " . DB::escape($no_sale)
 		 . "WHERE category_id = " . DB::escape($id);
 
-		DBOld::query($sql, "an item category could not be updated");
+		DB::query($sql, "an item category could not be updated");
 	}
 
 	function delete_item_category($id) {
 		$sql = "DELETE FROM stock_category WHERE category_id=" . DB::escape($id);
 
-		DBOld::query($sql, "an item category could not be deleted");
+		DB::query($sql, "an item category could not be deleted");
 	}
 
 	function get_item_category($id) {
 		$sql = "SELECT * FROM stock_category WHERE category_id=" . DB::escape($id);
 
-		$result = DBOld::query($sql, "an item category could not be retrieved");
+		$result = DB::query($sql, "an item category could not be retrieved");
 
-		return DBOld::fetch($result);
+		return DB::fetch($result);
 	}
 
 	function get_category_name($id) {
 		$sql = "SELECT description FROM stock_category WHERE category_id=" . DB::escape($id);
 
-		$result = DBOld::query($sql, "could not get sales type");
+		$result = DB::query($sql, "could not get sales type");
 
-		$row = DBOld::fetch_row($result);
+		$row = DB::fetch_row($result);
 		return $row[0];
 	}
 

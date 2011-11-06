@@ -96,7 +96,7 @@
 			$begin = $from;
 		}
 		$begin = Dates::add_days($begin, -1);
-		while ($account = DBOld::fetch($accounts))
+		while ($account = DB::fetch($accounts))
 		{
 			$prev = get_balance($account["account_code"], $dimension, $dimension2, $begin, $from, false, false);
 			$curr = get_balance($account["account_code"], $dimension, $dimension2, $from, $to, true, true);

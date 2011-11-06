@@ -24,7 +24,7 @@
 			$trans_no = key($trans_no);
 		}
 		$credit_type = $write_off_acc == 0 ? 'Return' : 'WriteOff';
-		DBOld::begin_transaction();
+		DB::begin_transaction();
 		$company_data = DB_Company::get_prefs();
 		$branch_data = get_branch_accounts($credit_note->Branch);
 		$credit_note_total = $credit_note->get_items_total_dispatch();
@@ -146,7 +146,7 @@
 		if ($trans_no == 0) {
 			Refs::save(ST_CUSTCREDIT, $credit_no, $credit_note->reference);
 		}
-		DBOld::commit_transaction();
+		DB::commit_transaction();
 		return $credit_no;
 	}
 

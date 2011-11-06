@@ -43,7 +43,7 @@
 			AND a.stamp <= '$todate'
 		GROUP BY a.trans_no,a.gl_seq,a.stamp	
 		ORDER BY a.stamp,a.gl_seq";
-		return DBOld::query($sql, "No transactions were returned");
+		return DB::query($sql, "No transactions were returned");
 	}
 
 	//----------------------------------------------------------------------------------------------------
@@ -90,7 +90,7 @@
 		$rep->Info($params, $cols, $headers, $aligns);
 		$rep->Header();
 		$trans = getTransactions($from, $to, $systype, $user);
-		while ($myrow = DBOld::fetch($trans))
+		while ($myrow = DB::fetch($trans))
 		{
 			$rep->TextCol(0, 1, Dates::sql2date(date("Y-m-d", $myrow['unix_stamp'])));
 			if (User::date_format() == 0) {

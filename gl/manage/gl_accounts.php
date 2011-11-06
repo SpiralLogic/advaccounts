@@ -60,7 +60,7 @@
 					$_POST['account_type'], $_POST['account_code2']
 				)
 				) {
-					DBOld::update_record_status(
+					DB::update_record_status(
 						$_POST['account_code'], $_POST['inactive'],
 						'chart_master', 'account_code'
 					);
@@ -93,8 +93,8 @@
 		}
 		$acc = DB::escape($selected_account);
 		$sql = "SELECT COUNT(*) FROM gl_trans WHERE account=$acc";
-		$result = DBOld::query($sql, "Couldn't test for existing transactions");
-		$myrow = DBOld::fetch_row($result);
+		$result = DB::query($sql, "Couldn't test for existing transactions");
+		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {
 			Errors::error(_("Cannot delete this account because transactions have been created using this account."));
 			return false;
@@ -116,15 +116,15 @@
 		OR default_adj_act=$acc
 		OR default_inv_sales_act=$acc
 		OR default_assembly_act=$acc";
-		$result = DBOld::query($sql, "Couldn't test for default company GL codes");
-		$myrow = DBOld::fetch_row($result);
+		$result = DB::query($sql, "Couldn't test for default company GL codes");
+		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {
 			Errors::error(_("Cannot delete this account because it is used as one of the company default GL accounts."));
 			return false;
 		}
 		$sql = "SELECT COUNT(*) FROM bank_accounts WHERE account_code=$acc";
-		$result = DBOld::query($sql, "Couldn't test for bank accounts");
-		$myrow = DBOld::fetch_row($result);
+		$result = DB::query($sql, "Couldn't test for bank accounts");
+		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {
 			Errors::error(_("Cannot delete this account because it is used by a bank account."));
 			return false;
@@ -135,15 +135,15 @@
 		OR cogs_account=$acc
 		OR adjustment_account=$acc 
 		OR sales_account=$acc";
-		$result = DBOld::query($sql, "Couldn't test for existing stock GL codes");
-		$myrow = DBOld::fetch_row($result);
+		$result = DB::query($sql, "Couldn't test for existing stock GL codes");
+		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {
 			Errors::error(_("Cannot delete this account because it is used by one or more Items."));
 			return false;
 		}
 		$sql = "SELECT COUNT(*) FROM tax_types WHERE sales_gl_code=$acc OR purchasing_gl_code=$acc";
-		$result = DBOld::query($sql, "Couldn't test for existing tax GL codes");
-		$myrow = DBOld::fetch_row($result);
+		$result = DB::query($sql, "Couldn't test for existing tax GL codes");
+		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {
 			Errors::error(_("Cannot delete this account because it is used by one or more Taxes."));
 			return false;
@@ -154,8 +154,8 @@
 		OR sales_discount_account=$acc
 		OR receivables_account=$acc
 		OR payment_discount_account=$acc";
-		$result = DBOld::query($sql, "Couldn't test for existing cust branch GL codes");
-		$myrow = DBOld::fetch_row($result);
+		$result = DB::query($sql, "Couldn't test for existing cust branch GL codes");
+		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {
 			Errors::error(_("Cannot delete this account because it is used by one or more Customer Branches."));
 			return false;
@@ -165,8 +165,8 @@
 		purchase_account=$acc
 		OR payment_discount_account=$acc
 		OR payable_account=$acc";
-		$result = DBOld::query($sql, "Couldn't test for existing suppliers GL codes");
-		$myrow = DBOld::fetch_row($result);
+		$result = DB::query($sql, "Couldn't test for existing suppliers GL codes");
+		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {
 			Errors::error(_("Cannot delete this account because it is used by one or more suppliers."));
 			return false;
@@ -174,8 +174,8 @@
 		$sql
 		 = "SELECT COUNT(*) FROM quick_entry_lines WHERE
 		dest_id=$acc AND UPPER(LEFT(action, 1)) <> 'T'";
-		$result = DBOld::query($sql, "Couldn't test for existing suppliers GL codes");
-		$myrow = DBOld::fetch_row($result);
+		$result = DB::query($sql, "Couldn't test for existing suppliers GL codes");
+		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {
 			Errors::error(_("Cannot delete this account because it is used by one or more Quick Entry Lines."));
 			return false;
@@ -224,7 +224,7 @@
 		$_POST['inactive'] = $myrow["inactive"];
 		$tags_result = Tags::get_all_associated_with_record(TAG_ACCOUNT, $selected_account);
 		$tagids = array();
-		while ($tag = DBOld::fetch($tags_result))
+		while ($tag = DB::fetch($tags_result))
 		{
 			$tagids[] = $tag['id'];
 		}

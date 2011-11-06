@@ -47,7 +47,7 @@
 	function display_wo_issue_details($issue_no)
 	{
 		$result = get_work_order_issue_details($issue_no);
-		if (DBOld::num_rows($result) == 0) {
+		if (DB::num_rows($result) == 0) {
 			Errors::warning(_("There are no items for this issue."));
 		} else {
 			start_table(Config::get('tables_style'));
@@ -56,7 +56,7 @@
 			$j = 1;
 			$k = 0; //row colour counter
 			$total_cost = 0;
-			while ($myrow = DBOld::fetch($result))
+			while ($myrow = DB::fetch($result))
 			{
 				alt_table_row_color($k);
 				label_cell($myrow["stock_id"] . " - " . $myrow["description"]);

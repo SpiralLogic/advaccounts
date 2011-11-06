@@ -28,8 +28,8 @@
 			$price_in_home_currency = $price;
 		}
 		$sql = "SELECT material_cost FROM stock_master WHERE stock_id=" . DB::escape($stock_id);
-		$result = DBOld::query($sql);
-		$myrow = DBOld::fetch($result);
+		$result = DB::query($sql);
+		$myrow = DB::fetch($result);
 		$material_cost = $myrow['material_cost'];
 		if ($price > -0.0001 && $price < 0.0001) {
 			return $material_cost;
@@ -63,14 +63,14 @@
 		}
 		$sql = "UPDATE stock_master SET material_cost=" . DB::escape($material_cost) . "
 		WHERE stock_id=" . DB::escape($stock_id);
-		DBOld::query($sql, "The cost details for the inventory item could not be updated");
+		DB::query($sql, "The cost details for the inventory item could not be updated");
 		return $material_cost;
 	}
 
 	//-------------------------------------------------------------------------------------------------------------
 	function add_grn(&$po, $date_, $reference, $location)
 	{
-		DBOld::begin_transaction();
+		DB::begin_transaction();
 		$grn = add_grn_batch($po->order_no, $po->supplier_id, $reference, $location, $date_);
 		foreach ($po->line_items as $order_line) {
 			if ($order_line->receive_qty != 0 && $order_line->receive_qty != "" && isset($order_line->receive_qty)) {
@@ -96,7 +96,7 @@
 		$grn_item = add_grn_detail_item($grn, add_freight_to_po($po, $date_), 'Freight', 'Freight Charges', 0, 1, $po->freight, 0);
 		Refs::save(ST_SUPPRECEIVE, $grn, $reference);
 		DB_AuditTrail::add(ST_SUPPRECEIVE, $grn, $date_);
-		DBOld::commit_transaction();
+		DB::commit_transaction();
 		return $grn;
 	}
 
@@ -112,8 +112,8 @@
 		 DB::escape(1) . ", " .
 		 DB::escape(0) .
 		 ")";
-		DBOld::query($sql, "One of the purchase order detail records could not be updated");
-		return DBOld::insert_id();
+		DB::query($sql, "One of the purchase order detail records could not be updated");
+		return DB::insert_id();
 	}
 
 	function add_grn_batch($po_number, $supplier_id, $reference, $location, $date_)
@@ -122,8 +122,8 @@
 		$sql
 		 = "INSERT INTO grn_batch (purch_order_no, delivery_date, supplier_id, reference, loc_code)
 			VALUES (" . DB::escape($po_number) . ", " . DB::escape($date) . ", " . DB::escape($supplier_id) . ", " . DB::escape($reference) . ", " . DB::escape($location) . ")";
-		DBOld::query($sql, "A grn batch record could not be inserted.");
-		return DBOld::insert_id();
+		DB::query($sql, "A grn batch record could not be inserted.");
+		return DB::insert_id();
 	}
 
 	//-------------------------------------------------------------------------------------------------------------
@@ -136,28 +136,28 @@
         discount=" . DB::escape($discount) . ",
         act_price=" . DB::escape($price) . "
         WHERE po_detail_item = " . DB::escape($po_detail_item);
-		DBOld::query($sql, "a purchase order details record could not be updated. This receipt of goods has not been processed ");
+		DB::query($sql, "a purchase order details record could not be updated. This receipt of goods has not been processed ");
 		$sql
 		 = "INSERT INTO grn_items (grn_batch_id, po_detail_item, item_code, description, qty_recd, discount)
 		VALUES (" . DB::escape($grn_batch_id) . ", " . DB::escape($po_detail_item) . ", " . DB::escape($item_code) . ", " . DB::escape($description) . ", " . DB::escape($quantity_received) . ", " . DB::escape($discount) . ")";
-		DBOld::query($sql, "A GRN detail item could not be inserted.");
-		return DBOld::insert_id();
+		DB::query($sql, "A GRN detail item could not be inserted.");
+		return DB::insert_id();
 	}
 
 	//----------------------------------------------------------------------------------------
 	function get_grn_batch_from_item($item)
 	{
 		$sql = "SELECT grn_batch_id FROM grn_items WHERE id=" . DB::escape($item);
-		$result = DBOld::query($sql, "Could not retreive GRN batch id");
-		$row = DBOld::fetch_row($result);
+		$result = DB::query($sql, "Could not retreive GRN batch id");
+		$row = DB::fetch_row($result);
 		return $row[0];
 	}
 
 	function get_grn_batch($grn)
 	{
 		$sql = "SELECT * FROM grn_batch WHERE id=" . DB::escape($grn);
-		$result = DBOld::query($sql, "Could not retreive GRN batch id");
-		return DBOld::fetch($result);
+		$result = DB::query($sql, "Could not retreive GRN batch id");
+		return DB::fetch($result);
 	}
 
 	function set_grn_item_credited(&$entered_grn, $supplier, $transno, $date)
@@ -169,8 +169,8 @@
     	WHERE grn_items.grn_batch_id=grn_batch.id
 		AND grn_items.id=" . DB::escape($entered_grn->id) . "
     	AND grn_items.item_code=" . DB::escape($entered_grn->item_code);
-		$result = DBOld::query($sql, "Could not retreive GRNS");
-		$myrow = DBOld::fetch($result);
+		$result = DB::query($sql, "Could not retreive GRNS");
+		$myrow = DB::fetch($result);
 		$sql
 		 = "UPDATE purch_order_details
         SET quantity_received = quantity_received + " . DB::escape($entered_grn->this_quantity_inv) . ",
@@ -179,10 +179,10 @@
         std_cost_unit=" . DB::escape($mcost) . ",
         act_price=" . DB::escape($entered_grn->chg_price) . "
         WHERE po_detail_item = " . $myrow["po_detail_item"];
-		DBOld::query($sql, "a purchase order details record could not be updated. This receipt of goods has not been processed ");
+		DB::query($sql, "a purchase order details record could not be updated. This receipt of goods has not been processed ");
 		//$sql = "UPDATE ".''."grn_items SET qty_recd=0, quantity_inv=0 WHERE id=$entered_grn->id";
 		$sql = "UPDATE grn_items SET qty_recd=qty_recd+" . DB::escape($entered_grn->this_quantity_inv) . ",quantity_inv=quantity_inv+" . DB::escape($entered_grn->this_quantity_inv) . " WHERE id=" . DB::escape($entered_grn->id);
-		DBOld::query($sql);
+		DB::query($sql);
 		add_stock_move(ST_SUPPCREDIT, $entered_grn->item_code, $transno, $myrow['loc_code'], $date, "", $entered_grn->this_quantity_inv, $mcost, $supplier, 1, $entered_grn->chg_price);
 	}
 
@@ -236,7 +236,7 @@
 			$sql .= " AND grn_batch.supplier_id =" . DB::escape($supplier_id);
 		}
 		$sql .= " ORDER BY grn_batch.delivery_date, grn_batch.id, grn_items.id";
-		return DBOld::query($sql, "Could not retreive GRNS");
+		return DB::query($sql, "Could not retreive GRNS");
 	}
 
 	//----------------------------------------------------------------------------------------
@@ -251,16 +251,16 @@
 		WHERE grn_items.po_detail_item=purch_order_details.po_detail_item
  			AND stock_master.stock_id=grn_items.item_code
 			AND grn_items.id=" . DB::escape($grn_item_no);
-		$result = DBOld::query($sql, "could not retreive grn item details");
-		return DBOld::fetch($result);
+		$result = DB::query($sql, "could not retreive grn item details");
+		return DB::fetch($result);
 	}
 
 	//----------------------------------------------------------------------------------------
 	function read_grn_items_to_order($grn_batch, &$order)
 	{
 		$result = get_grn_items($grn_batch);
-		if (DBOld::num_rows($result) > 0) {
-			while ($myrow = DBOld::fetch($result)) {
+		if (DB::num_rows($result) > 0) {
+			while ($myrow = DB::fetch($result)) {
 				if (is_null($myrow["units"])) {
 					$units = "";
 				} else {
@@ -279,8 +279,8 @@
 	function read_grn($grn_batch, &$order)
 	{
 		$sql = "SELECT *	FROM grn_batch WHERE id=" . DB::escape($grn_batch);
-		$result = DBOld::query($sql, "The grn sent is not valid");
-		$row = DBOld::fetch($result);
+		$result = DB::query($sql, "The grn sent is not valid");
+		$row = DB::fetch($result);
 		$po_number = $row["purch_order_no"];
 		$result = read_po_header($po_number, $order);
 		if ($result) {
@@ -296,15 +296,15 @@
 	function get_po_grns($po_number)
 	{
 		$sql = "SELECT * FROM grn_batch WHERE purch_order_no=" . DB::escape($po_number);
-		return DBOld::query($sql, "The grns for the po $po_number could not be retreived");
+		return DB::query($sql, "The grns for the po $po_number could not be retreived");
 	}
 
 	//----------------------------------------------------------------------------------------------------------
 	function exists_grn($grn_batch)
 	{
 		$sql = "SELECT id FROM grn_batch WHERE id=" . DB::escape($grn_batch);
-		$result = DBOld::query($sql, "Cannot retreive a grn");
-		return (DBOld::num_rows($result) > 0);
+		$result = DB::query($sql, "Cannot retreive a grn");
+		return (DB::num_rows($result) > 0);
 	}
 
 	//----------------------------------------------------------------------------------------------------------
@@ -315,8 +315,8 @@
 		WHERE supp_invoice_items.grn_item_id=grn_items.id
 		AND quantity != 0
 		AND grn_batch_id=" . DB::escape($grn_batch);
-		$result = DBOld::query($sql, "Cannot query GRNs");
-		return (DBOld::num_rows($result) > 0);
+		$result = DB::query($sql, "Cannot query GRNs");
+		return (DB::num_rows($result) > 0);
 	}
 
 	//----------------------------------------------------------------------------------------------------------
@@ -327,27 +327,27 @@
 		if (exists_grn_on_invoices($grn_batch)) {
 			return false;
 		}
-		DBOld::begin_transaction();
+		DB::begin_transaction();
 		Bank_Trans::void(ST_SUPPRECEIVE, $grn_batch, true);
 		void_gl_trans(ST_SUPPRECEIVE, $grn_batch, true);
 		// clear the quantities of the grn items in the POs and invoices
 		$result = get_grn_items($grn_batch);
-		if (DBOld::num_rows($result) > 0) {
-			while ($myrow = DBOld::fetch($result)) {
+		if (DB::num_rows($result) > 0) {
+			while ($myrow = DB::fetch($result)) {
 				$sql
 				 = "UPDATE purch_order_details
                 SET quantity_received = quantity_received - " . $myrow["qty_recd"] . "
                 WHERE po_detail_item = " . $myrow["po_detail_item"];
-				DBOld::query($sql, "a purchase order details record could not be voided.");
+				DB::query($sql, "a purchase order details record could not be voided.");
 			}
 		}
 		// clear the quantities in the grn items
 		$sql
 		 = "UPDATE grn_items SET qty_recd=0, quantity_inv=0
 		WHERE grn_batch_id=" . DB::escape($grn_batch);
-		DBOld::query($sql, "A grn detail item could not be voided.");
+		DB::query($sql, "A grn detail item could not be voided.");
 		// clear the stock move items
 		void_stock_move(ST_SUPPRECEIVE, $grn_batch);
-		DBOld::commit_transaction();
+		DB::commit_transaction();
 		return true;
 	}

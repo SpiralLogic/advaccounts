@@ -13,7 +13,7 @@
 	function clear_dflt_curr_account($curr_code) {
 		$sql = "UPDATE bank_accounts SET dflt_curr_act=0 WHERE bank_curr_code="
 		 . DB::escape($curr_code);
-		DBOld::query($sql, "could not update default currency account");
+		DB::query($sql, "could not update default currency account");
 	}
 
 	function add_bank_account($account_code, $account_type, $bank_account_name,
@@ -30,7 +30,7 @@
 		 . DB::escape($bank_account_number) . "," . DB::escape($bank_address) .
 		 ", " . DB::escape($bank_curr_code) . ", " . DB::escape($dflt_curr_act) . ")";
 
-		DBOld::query($sql, "could not add a bank account for $account_code");
+		DB::query($sql, "could not add a bank account for $account_code");
 	}
 
 	//---------------------------------------------------------------------------------------------
@@ -48,7 +48,7 @@
 		dflt_curr_act=" . DB::escape($dflt_curr_act)
 		 . " WHERE id = " . DB::escape($id);
 
-		DBOld::query($sql, "could not update bank account for $account_code");
+		DB::query($sql, "could not update bank account for $account_code");
 	}
 
 	//---------------------------------------------------------------------------------------------
@@ -56,7 +56,7 @@
 	function delete_bank_account($id) {
 		$sql = "DELETE FROM bank_accounts WHERE id=" . DB::escape($id);
 
-		DBOld::query($sql, "could not delete bank account for $id");
+		DB::query($sql, "could not delete bank account for $id");
 	}
 
 	//---------------------------------------------------------------------------------------------
@@ -64,18 +64,18 @@
 	function get_bank_account($id) {
 		$sql = "SELECT * FROM bank_accounts WHERE id=" . DB::escape($id);
 
-		$result = DBOld::query($sql, "could not retreive bank account for $id");
+		$result = DB::query($sql, "could not retreive bank account for $id");
 
-		return DBOld::fetch($result);
+		return DB::fetch($result);
 	}
 
 	//---------------------------------------------------------------------------------------------
 	function get_bank_gl_account($id) {
 		$sql = "SELECT account_code FROM bank_accounts WHERE id=" . DB::escape($id);
 
-		$result = DBOld::query($sql, "could not retreive bank account for $id");
+		$result = DB::query($sql, "could not retreive bank account for $id");
 
-		$bank_account = DBOld::fetch($result);
+		$bank_account = DB::fetch($result);
 
 		return $bank_account['account_code'];
 	}
@@ -87,7 +87,7 @@
 	VALUES (" . DB::escape($description) . ", " . DB::escape($type) . ", "
 		 . DB::escape($base_amount) . ", " . DB::escape($base_desc) . ")";
 
-		DBOld::query($sql, "could not insert quick entry for $description");
+		DB::query($sql, "could not insert quick entry for $description");
 	}
 
 	//---------------------------------------------------------------------------------------------
@@ -98,7 +98,7 @@
 		 . ", base_desc=" . DB::escape($base_desc) . "
 		WHERE id = " . DB::escape($selected_id);
 
-		DBOld::query($sql, "could not update quick entry for $selected_id");
+		DB::query($sql, "could not update quick entry for $selected_id");
 	}
 
 	//---------------------------------------------------------------------------------------------
@@ -106,7 +106,7 @@
 	function delete_quick_entry($selected_id) {
 		$sql = "DELETE FROM quick_entries WHERE id=" . DB::escape($selected_id);
 
-		DBOld::query($sql, "could not delete quick entry $selected_id");
+		DB::query($sql, "could not delete quick entry $selected_id");
 	}
 
 	//---------------------------------------------------------------------------------------------
@@ -118,7 +118,7 @@
 		($qid, " . DB::escape($action) . "," . DB::escape($dest_id) . ",
 			" . DB::escape($amount) . ", " . DB::escape($dim) . ", " . DB::escape($dim2) . ")";
 
-		DBOld::query($sql, "could not insert quick entry line for $qid");
+		DB::query($sql, "could not insert quick entry line for $qid");
 	}
 
 	//---------------------------------------------------------------------------------------------
@@ -130,7 +130,7 @@
 		 . ", dimension_id=" . DB::escape($dim) . ", dimension2_id=" . DB::escape($dim2) . "
 		WHERE id = " . DB::escape($selected_id);
 
-		DBOld::query($sql, "could not update quick entry line for $selected_id");
+		DB::query($sql, "could not update quick entry line for $selected_id");
 	}
 
 	//---------------------------------------------------------------------------------------------
@@ -138,7 +138,7 @@
 	function delete_quick_entry_line($selected_id) {
 		$sql = "DELETE FROM quick_entry_lines WHERE id=" . DB::escape($selected_id);
 
-		DBOld::query($sql, "could not delete quick entry line $selected_id");
+		DB::query($sql, "could not delete quick entry line $selected_id");
 	}
 
 	//---------------------------------------------------------------------------------------------
@@ -148,8 +148,8 @@
 		if ($type != null)
 			$sql .= " WHERE type=" . DB::escape($type);
 
-		$result = DBOld::query($sql, "could not retreive quick entries");
-		return DBOld::num_rows($result) > 0;
+		$result = DB::query($sql, "could not retreive quick entries");
+		return DB::num_rows($result) > 0;
 	}
 
 	function get_quick_entries($type = null) {
@@ -158,15 +158,15 @@
 			$sql .= " WHERE type=" . DB::escape($type);
 		$sql .= " ORDER BY description";
 
-		return DBOld::query($sql, "could not retreive quick entries");
+		return DB::query($sql, "could not retreive quick entries");
 	}
 
 	function get_quick_entry($selected_id) {
 		$sql = "SELECT * FROM quick_entries WHERE id=" . DB::escape($selected_id);
 
-		$result = DBOld::query($sql, "could not retreive quick entry $selected_id");
+		$result = DB::query($sql, "could not retreive quick entry $selected_id");
 
-		return DBOld::fetch($result);
+		return DB::fetch($result);
 	}
 
 	function get_quick_entry_lines($qid) {
@@ -180,14 +180,14 @@
 		WHERE 
 			qid=" . DB::escape($qid) . " ORDER by id";
 
-		return DBOld::query($sql, "could not retreive quick entries");
+		return DB::query($sql, "could not retreive quick entries");
 	}
 
 	function has_quick_entry_lines($qid) {
 		$sql = "SELECT id FROM quick_entry_lines WHERE qid=" . DB::escape($qid);
 
-		$result = DBOld::query($sql, "could not retreive quick entries");
-		return DBOld::num_rows($result) > 0;
+		$result = DB::query($sql, "could not retreive quick entries");
+		return DB::num_rows($result) > 0;
 	}
 
 	//---------------------------------------------------------------------------------------------
@@ -195,9 +195,9 @@
 	function get_quick_entry_line($selected_id) {
 		$sql = "SELECT * FROM quick_entry_lines WHERE id=" . DB::escape($selected_id);
 
-		$result = DBOld::query($sql, "could not retreive quick entry for $selected_id");
+		$result = DB::query($sql, "could not retreive quick entry for $selected_id");
 
-		return DBOld::fetch($result);
+		return DB::fetch($result);
 	}
 
 	//---------------------------------------------------------------------------------------------
@@ -217,15 +217,15 @@
 		 . " OR b.bank_curr_code='$home_curr'
 		ORDER BY fall_back, dflt_curr_act desc";
 
-		$result = DBOld::query($sql, "could not retreive default bank account");
+		$result = DB::query($sql, "could not retreive default bank account");
 
-		return DBOld::fetch($result);
+		return DB::fetch($result);
 	}
 
 	function get_default_customer_bank_account($cust_id) {
 		$sql = "SELECT curr_code FROM debtors_master WHERE debtor_no=" . DB::escape($cust_id);
-		$result = DBOld::query($sql, "could not retreive default customer currency code");
-		$row = DBOld::fetch_row($result);
+		$result = DB::query($sql, "could not retreive default customer currency code");
+		$row = DB::fetch_row($result);
 		$ba = get_default_bank_account($row[0]);
 		return $ba['id'];
 	}

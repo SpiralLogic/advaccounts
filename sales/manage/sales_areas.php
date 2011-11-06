@@ -30,7 +30,7 @@
 				$sql = "INSERT INTO areas (description) VALUES (" . DB::escape($_POST['description']) . ")";
 				$note = _('New sales area has been added');
 			}
-			DBOld::query($sql, "The sales area could not be updated or added");
+			DB::query($sql, "The sales area could not be updated or added");
 			Errors::notice($note);
 			$Mode = 'RESET';
 		}
@@ -39,15 +39,15 @@
 		$cancel_delete = 0;
 		// PREVENT DELETES IF DEPENDENT RECORDS IN 'debtors_master'
 		$sql = "SELECT COUNT(*) FROM cust_branch WHERE area=" . DB::escape($selected_id);
-		$result = DBOld::query($sql, "check failed");
-		$myrow = DBOld::fetch_row($result);
+		$result = DB::query($sql, "check failed");
+		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {
 			$cancel_delete = 1;
 			Errors::error(_("Cannot delete this area because customer branches have been created using this area."));
 		}
 		if ($cancel_delete == 0) {
 			$sql = "DELETE FROM areas WHERE area_code=" . DB::escape($selected_id);
-			DBOld::query($sql, "could not delete sales area");
+			DB::query($sql, "could not delete sales area");
 			Errors::notice(_('Selected sales area has been deleted'));
 		} //end if Delete area
 		$Mode = 'RESET';
@@ -63,14 +63,14 @@
 	if (!check_value('show_inactive')) {
 		$sql .= " WHERE !inactive";
 	}
-	$result = DBOld::query($sql, "could not get areas");
+	$result = DB::query($sql, "could not get areas");
 	start_form();
 	start_table(Config::get('tables_style') . "  width=30%");
 	$th = array(_("Area Name"), "", "");
 	inactive_control_column($th);
 	table_header($th);
 	$k = 0;
-	while ($myrow = DBOld::fetch($result))
+	while ($myrow = DB::fetch($result))
 	{
 		alt_table_row_color($k);
 		label_cell($myrow["description"]);
@@ -88,8 +88,8 @@
 		if ($Mode == 'Edit') {
 			//editing an existing area
 			$sql = "SELECT * FROM areas WHERE area_code=" . DB::escape($selected_id);
-			$result = DBOld::query($sql, "could not get area");
-			$myrow = DBOld::fetch($result);
+			$result = DB::query($sql, "could not get area");
+			$myrow = DB::fetch($result);
 			$_POST['description'] = $myrow["description"];
 		}
 		hidden("selected_id", $selected_id);

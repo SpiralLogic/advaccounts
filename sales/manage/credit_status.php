@@ -43,8 +43,8 @@
 		$sql
 		 = "SELECT COUNT(*) FROM debtors_master
 		WHERE credit_status=" . DB::escape($selected_id);
-		$result = DBOld::query($sql, "could not query customers");
-		$myrow = DBOld::fetch_row($result);
+		$result = DB::query($sql, "could not query customers");
+		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {
 			Errors::error(_("Cannot delete this credit status because customer accounts have been created referring to it."));
 			return false;
@@ -74,7 +74,7 @@
 	inactive_control_column($th);
 	table_header($th);
 	$k = 0;
-	while ($myrow = DBOld::fetch($result))
+	while ($myrow = DB::fetch($result))
 	{
 		alt_table_row_color($k);
 		if ($myrow["dissallow_invoices"] == 0) {

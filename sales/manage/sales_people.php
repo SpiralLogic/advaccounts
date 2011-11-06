@@ -57,7 +57,7 @@
 				 . input_num('provision2') . ")";
 			}
 			//run the sql from either of the above possibilites
-			DBOld::query($sql, "The insert or update of the sales person failed");
+			DB::query($sql, "The insert or update of the sales person failed");
 			if ($selected_id != -1) {
 				Errors::notice(_('Selected sales person data have been updated'));
 			} else {
@@ -70,13 +70,13 @@
 		//the link to delete a selected record was clicked instead of the submit button
 		// PREVENT DELETES IF DEPENDENT RECORDS IN 'debtors_master'
 		$sql = "SELECT COUNT(*) FROM cust_branch WHERE salesman=" . DB::escape($selected_id);
-		$result = DBOld::query($sql, "check failed");
-		$myrow = DBOld::fetch_row($result);
+		$result = DB::query($sql, "check failed");
+		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {
 			Errors::error("Cannot delete this sales-person because branches are set up referring to this sales-person - first alter the branches concerned.");
 		} else {
 			$sql = "DELETE FROM salesman WHERE salesman_code=" . DB::escape($selected_id);
-			DBOld::query($sql, "The sales-person could not be deleted");
+			DB::query($sql, "The sales-person could not be deleted");
 			Errors::notice(_('Selected sales person data have been deleted'));
 		}
 		$Mode = 'RESET';
@@ -92,14 +92,14 @@
 	if (!check_value('show_inactive')) {
 		$sql .= " WHERE !inactive";
 	}
-	$result = DBOld::query($sql, "could not get sales persons");
+	$result = DB::query($sql, "could not get sales persons");
 	start_form();
 	start_table(Config::get('tables_style') . "  width=60%");
 	$th = array(_("Name"), _("Phone"), _("Fax"), _("Email"), _("Provision"), _("Break Pt."), _("Provision") . " 2", "", "");
 	inactive_control_column($th);
 	table_header($th);
 	$k = 0;
-	while ($myrow = DBOld::fetch($result))
+	while ($myrow = DB::fetch($result))
 	{
 		alt_table_row_color($k);
 		label_cell($myrow["salesman_name"]);
@@ -126,8 +126,8 @@
 		if ($Mode == 'Edit') {
 			//editing an existing Sales-person
 			$sql = "SELECT *  FROM salesman WHERE salesman_code=" . DB::escape($selected_id);
-			$result = DBOld::query($sql, "could not get sales person");
-			$myrow = DBOld::fetch($result);
+			$result = DB::query($sql, "could not get sales person");
+			$myrow = DB::fetch($result);
 			$_POST['salesman_name'] = $myrow["salesman_name"];
 			$_POST['salesman_phone'] = $myrow["salesman_phone"];
 			$_POST['salesman_fax'] = $myrow["salesman_fax"];

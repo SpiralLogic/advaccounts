@@ -178,8 +178,8 @@
 		$edit = false;
 		//if($name=='stock_id')	Errors::notice('<pre>'.print_r($_POST, true).'</pre>');
 		//if($name=='curr_default') Errors::notice($opts['search_submit']);
-		if ($result = DBOld::query($sql)) {
-			while ($contact_row = DBOld::fetch($result)) {
+		if ($result = DB::query($sql)) {
+			while ($contact_row = DB::fetch($result)) {
 				$value = $contact_row[0];
 				$descr = $opts['format'] == null ? $contact_row[1] : call_user_func($opts['format'], $contact_row);
 				$sel = '';
@@ -211,7 +211,7 @@
 				}
 				$selector .= "<option $sel $optclass value='$value'>$descr</option>\n";
 			}
-			DBOld::free_result($result);
+			DB::free_result($result);
 		}
 		// Prepend special option.
 		if ($spec_option !== false) { // if special option used - add it
@@ -923,7 +923,7 @@ JS
 			echo "<td class='label'>$label</td>\n";
 		}
 		echo "<td>";
-		while ($unit = DBOld::fetch($result)) {
+		while ($unit = DB::fetch($result)) {
 			$units[$unit['abbr']] = $unit['name'];
 		}
 		echo array_selector($name, $value, $units, array('disabled' => !$enabled));
@@ -1999,9 +1999,9 @@ JS
 	function print_profiles_list_row($label, $name, $selected_id = null, $spec_opt = false, $submit_on_change = true)
 	{
 		$sql = "SELECT profile FROM print_profiles GROUP BY profile";
-		$result = DBOld::query($sql, 'cannot get all profile names');
+		$result = DB::query($sql, 'cannot get all profile names');
 		$profiles = array();
-		while ($myrow = DBOld::fetch($result)) {
+		while ($myrow = DB::fetch($result)) {
 			$profiles[$myrow['profile']] = $myrow['profile'];
 		}
 		echo "<tr>";
@@ -2024,9 +2024,9 @@ JS
 		static $printers; // query only once for page display
 		if (!$printers) {
 			$sql = "SELECT id, name, description FROM printers";
-			$result = DBOld::query($sql, 'cannot get all printers');
+			$result = DB::query($sql, 'cannot get all printers');
 			$printers = array();
-			while ($myrow = DBOld::fetch($result)) {
+			while ($myrow = DB::fetch($result)) {
 				$printers[$myrow['id']] = $myrow['name'] . '&nbsp;-&nbsp;' . $myrow['description'];
 			}
 		}
@@ -2164,7 +2164,7 @@ JS
 	{
 		// Get tags
 		$results = Tags::get_all($type, $all);
-		while ($tag = DBOld::fetch($results)) {
+		while ($tag = DB::fetch($results)) {
 			$tags[$tag['id']] = $tag['name'];
 		}
 		if (!isset($tags)) {

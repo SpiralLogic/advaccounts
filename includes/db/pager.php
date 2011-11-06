@@ -161,25 +161,29 @@
 				return true;
 			}
 			$sql = $this->_sql_gen(false);
-			$result = DBOld::query($sql, 'Error browsing database: ' . $sql);
+			$result = DB::query($sql, 'Error browsing database: ' . $sql);
 			if ($result) {
 				// setting field names for subsequent queries
 				$c = 0;
 				// add result field names to column defs for
 				// col value retrieve and sort purposes
-				$cnt = min(mysql_num_fields($result), count($this->columns));
+				while ($row = DB::fetch_assoc($result)) {
+													$this->data[] = $row;
+												}
+				$dbfeild_names= array_keys($this->data[0]);
+				$cnt = min(count($dbfeild_names), count($this->columns));
+
+
 				for ($c = $i = 0; $c < $cnt; $c++) {
 					if (!(isset($this->columns[$c]['insert']) && $this->columns[$c]['insert'])) {
 						//					if (!@($this->columns[$c]['type']=='skip'))
-						$this->columns[$c]['name'] = mysql_field_name($result, $i);
+						$this->columns[$c]['name'] = $dbfeild_names[$c];
 						if (!@($this->columns[$c]['type'] == 'insert')) {
 							$i++;
 						}
 					}
 				}
-				while ($row = DBOld::fetch_assoc($result)) {
-					$this->data[] = $row;
-				}
+
 			} else
 			{
 				return false;
@@ -324,11 +328,11 @@
 		{
 			if ($this->ready == false) {
 				$sql = $this->_sql_gen(true);
-				$result = DBOld::query($sql, 'Error reading record set');
+				$result = DB::query($sql, 'Error reading record set');
 				if ($result == false) {
 					return false;
 				}
-				$row = DBOld::fetch_row($result);
+				$row = DB::fetch_row($result);
 				$this->rec_count = $row[0];
 				$this->max_page = $this->page_len ?
 				 ceil($this->rec_count / $this->page_len) : 0;
@@ -440,7 +444,7 @@
 						|| get_post('Update'))
 					 && (check_value('Inactive' . $id) != $value)
 					) {
-						DBOld::update_record_status($id, !$value, $table, $key);
+						DB::update_record_status($id, !$value, $table, $key);
 						$value = !$value;
 					}
 					echo '<td align="center">' . checkbox(null, $name, $value, true, '', "align='center'")
@@ -474,8 +478,8 @@
 		{
 			if ($table && $where && $feild) {
 				$sql = "SELECT * FROM " . $table . " WHERE " . $feild . " LIKE " . DB::escape($where) . " LIMIT 1";
-				$result = DBOld::query($sql, 'Couldnt do shit');
-				return DBOld::num_rows($result);
+				$result = DB::query($sql, 'Couldnt do shit');
+				return DB::num_rows($result);
 			}
 		}
 

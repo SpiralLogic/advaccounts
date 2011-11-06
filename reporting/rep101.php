@@ -61,8 +61,8 @@
     	WHERE " . '' . "debtor_trans.tran_date < '$to'
 		AND " . '' . "debtor_trans.debtor_no = " . DB::escape($debtorno) . "
 		AND " . '' . "debtor_trans.type <> " . ST_CUSTDELIVERY . " GROUP BY debtor_no";
-		$result = DBOld::query($sql, "No transactions were returned");
-		return DBOld::fetch($result);
+		$result = DB::query($sql, "No transactions were returned");
+		return DB::fetch($result);
 	}
 
 	function get_transactions($debtorno, $from, $to)
@@ -81,7 +81,7 @@
 		AND " . '' . "debtor_trans.debtor_no = " . DB::escape($debtorno) . "
 		AND " . '' . "debtor_trans.type <> " . ST_CUSTDELIVERY . "
     	ORDER BY " . '' . "debtor_trans.tran_date";
-		return DBOld::query($sql, "No transactions were returned");
+		return DB::query($sql, "No transactions were returned");
 	}
 
 	//----------------------------------------------------------------------------------------------------
@@ -145,9 +145,9 @@
 			$sql .= "WHERE debtor_no=" . DB::escape($fromcust);
 		}
 		$sql .= " ORDER BY name";
-		$result = DBOld::query($sql, "The customers could not be retrieved");
+		$result = DB::query($sql, "The customers could not be retrieved");
 		$num_lines = 0;
-		while ($myrow = DBOld::fetch($result))
+		while ($myrow = DB::fetch($result))
 		{
 			if (!$convert && $currency != $myrow['curr_code']) {
 				continue;
@@ -160,7 +160,7 @@
 			$init[3] = Num::round($bal['OutStanding'], $dec);
 			;
 			$res = get_transactions($myrow['debtor_no'], $from, $to);
-			if ($no_zeros && DBOld::num_rows($res) == 0) {
+			if ($no_zeros && DB::num_rows($res) == 0) {
 				continue;
 			}
 			$num_lines++;
@@ -182,11 +182,11 @@
 				$grandtotal[$i] += $init[$i];
 			}
 			$rep->NewLine(1, 2);
-			if (DBOld::num_rows($res) == 0) {
+			if (DB::num_rows($res) == 0) {
 				continue;
 			}
 			$rep->Line($rep->row + 4);
-			while ($trans = DBOld::fetch($res))
+			while ($trans = DB::fetch($res))
 			{
 				if ($no_zeros && $trans['TotalAmount'] == 0 && $trans['Allocated'] == 0) {
 					continue;

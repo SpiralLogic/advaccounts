@@ -45,9 +45,9 @@
 			  payment_terms.days_before_due,
 			  payment_terms.day_in_following_month";
 
-		$result = DBOld::query($sql, "The customer details could not be retrieved");
+		$result = DB::query($sql, "The customer details could not be retrieved");
 
-		if (DBOld::num_rows($result) == 0) {
+		if (DB::num_rows($result) == 0) {
 
 			/*Because there is no balance - so just retrieve the header information about the customer - the choice is do one query to get the balance and transactions for those customers who have a balance and two queries for those who don't have a balance OR always do two queries - I opted for the former */
 
@@ -60,12 +60,12 @@
 				 suppliers.payment_terms = payment_terms.terms_indicator
 				 AND suppliers.supplier_id = " . DB::escape($supplier_id);
 
-			$result = DBOld::query($sql, "The customer details could not be retrieved");
+			$result = DB::query($sql, "The customer details could not be retrieved");
 		} else {
 			$nil_balance = false;
 		}
 
-		$supp = DBOld::fetch($result);
+		$supp = DB::fetch($result);
 
 		if ($nil_balance == true) {
 			$supp["Balance"] = 0;
@@ -95,25 +95,25 @@
 		AND trans . tran_date <= '$date_to'
 		AND trans.supplier_id = " . DB::escape($supplier_id) . "
 		AND trans.type = " . ST_SUPPINVOICE;
-		$result = DBOld::query($sql);
-		$results = DBOld::fetch($result);
+		$result = DB::query($sql);
+		$results = DB::fetch($result);
 		return $results['Total'];
 	}
 
 	function get_supplier($supplier_id) {
 		$sql = "SELECT * FROM suppliers WHERE supplier_id=" . DB::escape($supplier_id);
 
-		$result = DBOld::query($sql, "could not get supplier");
+		$result = DB::query($sql, "could not get supplier");
 
-		return DBOld::fetch($result);
+		return DB::fetch($result);
 	}
 
 	function get_supplier_name($supplier_id) {
 		$sql = "SELECT supp_name AS name FROM suppliers WHERE supplier_id=" . DB::escape($supplier_id);
 
-		$result = DBOld::query($sql, "could not get supplier");
+		$result = DB::query($sql, "could not get supplier");
 
-		$row = DBOld::fetch_row($result);
+		$row = DB::fetch_row($result);
 
 		return $row[0];
 	}
@@ -121,9 +121,9 @@
 	function get_supplier_accounts($supplier_id) {
 		$sql = "SELECT payable_account,purchase_account,payment_discount_account FROM suppliers WHERE supplier_id=" . DB::escape($supplier_id);
 
-		$result = DBOld::query($sql, "could not get supplier");
+		$result = DB::query($sql, "could not get supplier");
 
-		return DBOld::fetch($result);
+		return DB::fetch($result);
 	}
 
 ?>

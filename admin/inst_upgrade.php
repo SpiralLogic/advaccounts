@@ -21,15 +21,15 @@
 	//
 	function check_table($pref, $table, $field = null, $properties = null)
 	{
-		$tables = @DBOld::query("SHOW TABLES LIKE '" . $pref . $table . "'");
-		if (!DBOld::num_rows($tables)) {
+		$tables = @DB::query("SHOW TABLES LIKE '" . $pref . $table . "'");
+		if (!DB::num_rows($tables)) {
 			return 1;
 		} // no such table or error
-		$fields = @DBOld::query("SHOW COLUMNS FROM " . $pref . $table);
+		$fields = @DB::query("SHOW COLUMNS FROM " . $pref . $table);
 		if (!isset($field)) {
 			return 0;
 		} // table exists
-		while ($row = DBOld::fetch_assoc($fields))
+		while ($row = DB::fetch_assoc($fields))
 		{
 			if ($row['Field'] == $field) {
 				if (!isset($properties)) {

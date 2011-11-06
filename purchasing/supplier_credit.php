@@ -61,13 +61,13 @@
 		$sql = "SELECT account_code, account_name FROM chart_master WHERE account_code=" . DB::escape(
 			$_POST['gl_code']
 		);
-		$result = DBOld::query($sql, "get account information");
-		if (DBOld::num_rows($result) == 0) {
+		$result = DB::query($sql, "get account information");
+		if (DB::num_rows($result) == 0) {
 			Errors::error(_("The account code entered is not a valid code, this line cannot be added to the transaction."));
 			JS::set_focus('gl_code');
 			$input_error = true;
 		} else {
-			$myrow = DBOld::fetch_row($result);
+			$myrow = DB::fetch_row($result);
 			$gl_act_name = $myrow[1];
 			if (!Validation::is_num('amount')) {
 				Errors::error(_("The amount entered is not numeric. This line cannot be added to the transaction."));

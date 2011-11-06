@@ -26,7 +26,7 @@
 			$exempt_from = array();
 			$tax_types = Tax_Types::get_all_simple();
 			$i = 0;
-			while ($myrow = DBOld::fetch($tax_types))
+			while ($myrow = DB::fetch($tax_types))
 			{
 				if (check_value('ExemptTax' . $myrow["id"])) {
 					$exempt_from[$i] = $myrow["id"];
@@ -47,8 +47,8 @@
 	function can_delete($selected_id)
 	{
 		$sql = "SELECT COUNT(*) FROM stock_master WHERE tax_type_id=" . DB::escape($selected_id);
-		$result = DBOld::query($sql, "could not query stock master");
-		$myrow = DBOld::fetch_row($result);
+		$result = DB::query($sql, "could not query stock master");
+		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {
 			Errors::error(_("Cannot delete this item tax type because items have been created referring to it."));
 			return false;
@@ -78,7 +78,7 @@
 	inactive_control_column($th);
 	table_header($th);
 	$k = 0;
-	while ($myrow = DBOld::fetch($result2))
+	while ($myrow = DB::fetch($result2))
 	{
 		alt_table_row_color($k);
 		if ($myrow["exempt"] == 0) {
@@ -105,8 +105,8 @@
 			$_POST['exempt'] = $myrow["exempt"];
 			// read the exemptions and check the ones that are on
 			$exemptions = Tax_ItemType::get_exemptions($selected_id);
-			if (DBOld::num_rows($exemptions) > 0) {
-				while ($exmp = DBOld::fetch($exemptions))
+			if (DB::num_rows($exemptions) > 0) {
+				while ($exmp = DB::fetch($exemptions))
 				{
 					$_POST['ExemptTax' . $exmp["tax_type_id"]] = 1;
 				}
@@ -123,7 +123,7 @@
 		$th = array(_("Tax Name"), _("Rate"), _("Is exempt"));
 		table_header($th);
 		$tax_types = Tax_Types::get_all_simple();
-		while ($myrow = DBOld::fetch($tax_types))
+		while ($myrow = DB::fetch($tax_types))
 		{
 			alt_table_row_color($k);
 			label_cell($myrow["name"]);

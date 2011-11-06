@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 	function work_order_produce($woid, $ref, $quantity, $date_, $memo_, $close_wo) {
 
-		DBOld::begin_transaction();
+		DB::begin_transaction();
 
 		$details = get_work_order($woid);
 
@@ -22,7 +22,7 @@
 
 		if (work_order_is_closed($woid)) {
 			Errors::error("UNEXPECTED : Producing Items for a closed Work Order");
-			DBOld::cancel_transaction();
+			DB::cancel_transaction();
 			exit;
 		}
 
@@ -32,9 +32,9 @@
 		VALUES (" . DB::escape($woid) . ", " . DB::escape($ref) . ", " . DB::escape($quantity)
 		 . ", '$date')";
 
-		DBOld::query($sql, "A work order manufacture could not be added");
+		DB::query($sql, "A work order manufacture could not be added");
 
-		$id = DBOld::insert_id();
+		$id = DB::insert_id();
 
 		// -------------------------------------------------------------------------
 
@@ -54,7 +54,7 @@
 		Refs::save(ST_MANURECEIVE, $id, $ref);
 		DB_AuditTrail::add(ST_MANURECEIVE, $id, $date_, _("Production."));
 
-		DBOld::commit_transaction();
+		DB::commit_transaction();
 	}
 
 	//--------------------------------------------------------------------------------------------
@@ -66,9 +66,9 @@
 		WHERE wo_manufacture.workorder_id=workorders.id
 		AND stock_master.stock_id=workorders.stock_id
 		AND wo_manufacture.id=" . DB::escape($id);
-		$result = DBOld::query($sql, "The work order production could not be retrieved");
+		$result = DB::query($sql, "The work order production could not be retrieved");
 
-		return DBOld::fetch($result);
+		return DB::fetch($result);
 	}
 
 	//--------------------------------------------------------------------------------------
@@ -76,22 +76,22 @@
 	function get_work_order_productions($woid) {
 		$sql = "SELECT * FROM wo_manufacture WHERE workorder_id="
 		 . DB::escape($woid) . " ORDER BY id";
-		return DBOld::query($sql, "The work order issues could not be retrieved");
+		return DB::query($sql, "The work order issues could not be retrieved");
 	}
 
 	//--------------------------------------------------------------------------------------
 
 	function exists_work_order_produce($id) {
 		$sql = "SELECT id FROM wo_manufacture WHERE id=" . DB::escape($id);
-		$result = DBOld::query($sql, "Cannot retreive a wo production");
+		$result = DB::query($sql, "Cannot retreive a wo production");
 
-		return (DBOld::num_rows($result) > 0);
+		return (DB::num_rows($result) > 0);
 	}
 
 	//--------------------------------------------------------------------------------------------
 
 	function void_work_order_produce($type_no) {
-		DBOld::begin_transaction();
+		DB::begin_transaction();
 
 		$row = get_work_order_produce($type_no);
 
@@ -103,7 +103,7 @@
 
 		// clear the production record
 		$sql = "UPDATE wo_manufacture SET quantity=0 WHERE id=" . DB::escape($type_no);
-		DBOld::query($sql, "Cannot void a wo production");
+		DB::query($sql, "Cannot void a wo production");
 
 		// void all related stock moves
 		void_stock_move(ST_MANURECEIVE, $type_no);
@@ -111,7 +111,7 @@
 		// void any related gl trans
 		void_gl_trans(ST_MANURECEIVE, $type_no, true);
 
-		DBOld::commit_transaction();
+		DB::commit_transaction();
 	}
 
 ?>

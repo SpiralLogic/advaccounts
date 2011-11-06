@@ -83,7 +83,7 @@
 	end_table(1); // outer table
 	$result = get_customer_trans_details(ST_SALESINVOICE, $trans_id);
 	start_table(Config::get('tables_style') . "  width=95%");
-	if (DBOld::num_rows($result) > 0) {
+	if (DB::num_rows($result) > 0) {
 		$th = array(
 			_("Item Code"), _("Item Description"), _("Quantity"),
 			_("Unit"), _("Price"), _("Discount %"), _("Total")
@@ -91,7 +91,7 @@
 		table_header($th);
 		$k = 0; //row colour counter
 		$sub_total = 0;
-		while ($myrow2 = DBOld::fetch($result))
+		while ($myrow2 = DB::fetch($result))
 		{
 			if ($myrow2["quantity"] == 0) {
 				continue;

@@ -20,18 +20,18 @@
 				 . "VALUES (" . DB::escape($name) . "," . DB::escape($descr) . ","
 				 . DB::escape($queue) . "," . DB::escape($host) . "," . DB::escape($port) . "," . DB::escape($timeout) . ")";
 
-			return DBOld::query($sql, "could not write printer definition");
+			return DB::query($sql, "could not write printer definition");
 		}
 
 		public static function get_all() {
 			$sql = "SELECT * FROM printers";
-			return DBOld::query($sql, "could not get printer definitions");
+			return DB::query($sql, "could not get printer definitions");
 		}
 
 		public static function get_printer($id) {
 			$sql    = "SELECT * FROM printers WHERE id=" . DB::escape($id);
-			$result = DBOld::query($sql, "could not get printer definition");
-			return DBOld::fetch($result);
+			$result = DB::query($sql, "could not get printer definition");
+			return DB::fetch($result);
 		}
 
 		//============================================================================
@@ -50,7 +50,7 @@
 					 . "report=" . DB::escape($rep)
 					 . " AND profile=" . DB::escape($name) . ")";
 				}
-				$result = DBOld::query($sql, "could not update printing profile");
+				$result = DB::query($sql, "could not update printing profile");
 				if (!$result) {
 					return false;
 				}
@@ -65,15 +65,15 @@
 			$sql = "SELECT printer FROM print_profiles WHERE "
 			 . "profile=" . DB::escape($profile) . " AND report=";
 
-			$result = DBOld::query($sql . DB::escape($report), 'report printer lookup failed');
+			$result = DB::query($sql . DB::escape($report), 'report printer lookup failed');
 
 			if (!$result) return false;
-			$ret = DBOld::fetch($result);
+			$ret = DB::fetch($result);
 			if ($ret === false) {
-				$result = DBOld::query($sql . "''", 'default report printer lookup failed');
+				$result = DB::query($sql . "''", 'default report printer lookup failed');
 				if (!$result) return false;
 
-				$ret = DBOld::fetch($result);
+				$ret = DB::fetch($result);
 				if (!$ret) return false;
 			}
 			return get_printer($ret['printer']);
@@ -81,7 +81,7 @@
 
 		public static function delete_profile($name) {
 			$sql = "DELETE FROM print_profiles WHERE profile=" . DB::escape($name);
-			return DBOld::query($sql, "could not delete printing profile");
+			return DB::query($sql, "could not delete printing profile");
 		}
 
 		//
@@ -89,6 +89,6 @@
 		//
 		public static function get_profile($name) {
 			$sql = "SELECT	* FROM print_profiles WHERE profile=" . DB::escape($name);
-			return DBOld::query($sql, "could not get printing profile");
+			return DB::query($sql, "could not get printing profile");
 		}
 	}

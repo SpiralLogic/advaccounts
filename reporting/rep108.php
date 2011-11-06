@@ -41,7 +41,7 @@
 				 AND (debtor_trans.ov_amount + debtor_trans.ov_gst + debtor_trans.ov_freight +
 				debtor_trans.ov_freight_tax + debtor_trans.ov_discount - " . '' . "debtor_trans.alloc) != 0
     				ORDER BY debtor_trans.branch_code, debtor_trans.tran_date";
-		return DBOld::query($sql, "No transactions were returned");
+		return DB::query($sql, "No transactions were returned");
 	}
 
 	//----------------------------------------------------------------------------------------------------
@@ -51,8 +51,8 @@
 		 = "SELECT customer_ref
         FROM sales_orders
         WHERE order_no=$no";
-		$result = DBOld::query($sql, "Could not retrieve any branches");
-		$myrow = DBOld::fetch_assoc($result);
+		$result = DB::query($sql, "Could not retrieve any branches");
+		$myrow = DB::fetch_assoc($result);
 		return $myrow['customer_ref'];
 	}
 
@@ -91,8 +91,8 @@
 		else {
 			$sql .= " ORDER by name";
 		}
-		$result = DBOld::query($sql, "The customers could not be retrieved");
-		while ($myrow = DBOld::fetch($result)) {
+		$result = DB::query($sql, "The customers could not be retrieved");
+		while ($myrow = DB::fetch($result)) {
 			$date = date('Y-m-d');
 			$myrow['order_'] = "";
 			$TransResult = getTransactions($myrow['debtor_no'], $date);
@@ -105,7 +105,7 @@
 			}
 			$baccount = get_default_bank_account($myrow['curr_code']);
 			$params['bankaccount'] = $baccount['id'];
-			if ((DBOld::num_rows($TransResult) == 0)) { //|| ($CustomerRecord['Balance'] == 0)
+			if ((DB::num_rows($TransResult) == 0)) { //|| ($CustomerRecord['Balance'] == 0)
 				continue;
 			}
 			if ($email == 1) {
@@ -117,7 +117,7 @@
 				$rep->Info($params, $cols, null, $aligns);
 			}
 			$transactions = array();
-			while ($transaction = DBOld::fetch_assoc($TransResult)) {
+			while ($transaction = DB::fetch_assoc($TransResult)) {
 				$transactions[] = $transaction;
 			}
 			$prev_branch = 0;

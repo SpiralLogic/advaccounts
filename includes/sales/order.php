@@ -131,7 +131,7 @@
 							$srcdetails = get_customer_trans_details($src_type, array_keys($this->src_docs));
 						}
 						// calculate & save: qtys on other docs and free qtys on src doc
-						for ($line_no = 0; $srcline = DBOld::fetch($srcdetails); $line_no++) {
+						for ($line_no = 0; $srcline = DB::fetch($srcdetails); $line_no++) {
 							$sign = 1; // $type==13 ?  1 : -1; // this is strange debtor_trans atavism
 							$line = &$this->line_items[$line_no];
 							$line->src_id = $srcline['id']; // save src line ids for update
@@ -265,8 +265,8 @@
 				return false;
 			}
 			$sql = "SELECT customer_ref,type FROM sales_orders WHERE debtor_no=" . DB::escape($this->customer_id) . " AND customer_ref=" . DB::escape($cust_ref) . " AND type != " . $this->trans_type;
-			$result = DBOld::query($sql);
-			return (DBOld::num_rows($result) > 0) ? false : true;
+			$result = DB::query($sql);
+			return (DB::num_rows($result) > 0) ? false : true;
 		}
 
 		function set_customer($customer_id, $customer_name, $currency, $discount, $payment)
@@ -300,8 +300,8 @@
 			if ($salesman_code == null) {
 				$salesman_name = $_SESSION['current_user']->name;
 				$sql = "SELECT salesman_code FROM salesman WHERE salesman_name = " . DB::escape($salesman_name);
-				$query = DBOld::query($sql, 'Couldn\'t find current salesman');
-				$result = DBOld::fetch_assoc($query);
+				$query = DB::query($sql, 'Couldn\'t find current salesman');
+				$result = DB::fetch_assoc($query);
 				if (!empty($result['salesman_code'])) {
 					$salesman_code = $result['salesman_code'];
 				}
@@ -501,16 +501,16 @@
 		{
 			$serial = serialize($this);
 			$sql = "DELETE FROM `user_class_store` WHERE `user_id`=" . $_SESSION['current_user']->user;
-			DBOld::query($sql);
+			DB::query($sql);
 			$sql = "INSERT INTO `user_class_store` (`user_id`, `data`) VALUE (" . $_SESSION['current_user']->user . ",'" . $serial . "')";
-			DBOld::query($sql);
+			DB::query($sql);
 		}
 
 		static function restore()
 		{
 			$sql = "SELECT `data` FROM  `user_class_store` WHERE `user_id`=" . $_SESSION['current_user']->user;
-			$result = DBOld::query($sql);
-			$serial = DBOld::fetch_assoc($result);
+			$result = DB::query($sql);
+			$serial = DB::fetch_assoc($result);
 			$serial = $serial['data'];
 			return unserialize($serial);
 		}

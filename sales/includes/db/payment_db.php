@@ -15,7 +15,7 @@
 	function write_customer_payment($trans_no, $customer_id, $branch_id, $bank_account,
 																	$date_, $ref, $amount, $discount, $memo_, $rate = 0, $charge = 0, $tax = 0)
 	{
-		DBOld::begin_transaction();
+		DB::begin_transaction();
 		$company_record = DB_Company::get_prefs();
 		$payment_no = Sales_Trans::write(ST_CUSTPAYMENT, $trans_no, $customer_id, $branch_id,
 			$date_, $ref, $amount, $discount, $tax, 0, 0, 0, 0, 0, 0, $date_, 0, $rate);
@@ -71,19 +71,19 @@
 			Banking::get_customer_currency($customer_id), "", $rate);
 		DB_Comments::add(ST_CUSTPAYMENT, $payment_no, $date_, $memo_);
 		Refs::save(ST_CUSTPAYMENT, $payment_no, $ref);
-		DBOld::commit_transaction();
+		DB::commit_transaction();
 		return $payment_no;
 	}
 
 	//-------------------------------------------------------------------------------------------------
 	function void_customer_payment($type, $type_no)
 	{
-		DBOld::begin_transaction();
+		DB::begin_transaction();
 		Bank_Trans::void($type, $type_no, true);
 		void_gl_trans($type, $type_no, true);
 		void_cust_allocations($type, $type_no);
 		Sales_Trans::void($type, $type_no);
-		DBOld::commit_transaction();
+		DB::commit_transaction();
 	}
 
 ?>

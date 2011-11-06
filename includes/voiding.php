@@ -109,16 +109,16 @@
 		{
 			$sql = "SELECT * FROM voided WHERE type=" . DB::escape($type)
 			 . " AND id=" . DB::escape($type_no);
-			$result = DBOld::query($sql, "could not query voided transaction table");
-			return DBOld::fetch($result);
+			$result = DB::query($sql, "could not query voided transaction table");
+			return DB::fetch($result);
 		}
 
 		public static function has($type, $type_no)
 		{
 			$sql = "SELECT * FROM voided WHERE type=" . DB::escape($type)
 			 . " AND id=" . DB::escape($type_no);
-			$result = DBOld::query($sql, "could not query voided transaction table");
-			return DBOld::num_rows($result);
+			$result = DB::query($sql, "could not query voided transaction table");
+			return DB::num_rows($result);
 		}
 
 		//--------------------------------------------------------------------------------------------------
@@ -129,7 +129,7 @@
 			 = "INSERT INTO voided (type, id, date_, memo_)
 			VALUES (" . DB::escape($type) . ", " . DB::escape($type_no) . ", "
 			 . DB::escape($date) . ", " . DB::escape($memo_) . ")";
-			DBOld::query($sql, "could not add voided transaction entry");
+			DB::query($sql, "could not add voided transaction entry");
 		}
 		//--------------------------------------------------------------------------------------------------
 	}

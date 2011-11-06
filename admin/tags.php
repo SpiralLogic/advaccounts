@@ -77,7 +77,7 @@
 			return false;
 		}
 		$result = Tags::get_associated_records($selected_id);
-		if (DBOld::num_rows($result) > 0) {
+		if (DB::num_rows($result) > 0) {
 			Errors::error(_("Cannot delete this tag because records have been created referring to it."));
 			return false;
 		}
@@ -105,7 +105,7 @@
 	inactive_control_column($th);
 	table_header($th);
 	$k = 0;
-	while ($myrow = DBOld::fetch($result))
+	while ($myrow = DB::fetch($result))
 	{
 		alt_table_row_color($k);
 		label_cell($myrow['name']);

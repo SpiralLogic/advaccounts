@@ -36,7 +36,7 @@
 		if ($err_msg == "")
 			$err_msg = "Cannot insert a supplier transaction record";
 
-		DBOld::query($sql, $err_msg);
+		DB::query($sql, $err_msg);
 		DB_AuditTrail::add($type, $trans_no, $date_);
 
 		return $trans_no;
@@ -75,21 +75,21 @@
 			AND bank_accounts.id=bank_trans.bank_act ";
 		}
 
-		$result = DBOld::query($sql, "Cannot retreive a supplier transaction");
+		$result = DB::query($sql, "Cannot retreive a supplier transaction");
 
-		if (DBOld::num_rows($result) == 0) {
+		if (DB::num_rows($result) == 0) {
 			// can't return nothing
 			Errors::show_db_error("no supplier trans found for given params", $sql, true);
 			exit;
 		}
 
-		if (DBOld::num_rows($result) > 1) {
+		if (DB::num_rows($result) > 1) {
 			// can't return multiple
 			Errors::show_db_error("duplicate supplier transactions found for given params", $sql, true);
 			exit;
 		}
 
-		return DBOld::fetch($result);
+		return DB::fetch($result);
 	}
 
 	//----------------------------------------------------------------------------------------
@@ -100,9 +100,9 @@
 
 		$sql = "SELECT trans_no FROM supp_trans WHERE type=" . DB::escape($type) . "
 		AND trans_no=" . DB::escape($type_no);
-		$result = DBOld::query($sql, "Cannot retreive a supplier transaction");
+		$result = DB::query($sql, "Cannot retreive a supplier transaction");
 
-		return (DBOld::num_rows($result) > 0);
+		return (DB::num_rows($result) > 0);
 	}
 
 	//----------------------------------------------------------------------------------------
@@ -111,7 +111,7 @@
 		$sql = "UPDATE supp_trans SET ov_amount=0, ov_discount=0, ov_gst=0,
 		alloc=0 WHERE type=" . DB::escape($type) . " AND trans_no=" . DB::escape($type_no);
 
-		DBOld::query($sql, "could not void supp transactions for type=$type and trans_no=$type_no");
+		DB::query($sql, "could not void supp transactions for type=$type and trans_no=$type_no");
 	}
 
 	//----------------------------------------------------------------------------------------

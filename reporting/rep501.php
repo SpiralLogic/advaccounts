@@ -29,7 +29,7 @@
 		AND reference <= " . DB::escape($to) . "
 		ORDER BY
 			reference";
-		return DBOld::query($sql, "No transactions were returned");
+		return DB::query($sql, "No transactions were returned");
 	}
 
 	function getYTD($dim)
@@ -43,9 +43,9 @@
 			gl_trans
 		WHERE (dimension_id = '$dim' OR dimension2_id = '$dim')
 		AND tran_date >= '$date'";
-		$TransResult = DBOld::query($sql, "No transactions were returned");
-		if (DBOld::num_rows($TransResult) == 1) {
-			$DemandRow = DBOld::fetch_row($TransResult);
+		$TransResult = DB::query($sql, "No transactions were returned");
+		if (DB::num_rows($TransResult) == 1) {
+			$DemandRow = DB::fetch_row($TransResult);
 			$balance = $DemandRow[0];
 		}
 		else
@@ -81,7 +81,7 @@
 		$rep->Info($params, $cols, $headers, $aligns);
 		$rep->Header();
 		$res = getTransactions($fromdim, $todim);
-		while ($trans = DBOld::fetch($res))
+		while ($trans = DB::fetch($res))
 		{
 			$rep->TextCol(0, 1, $trans['reference']);
 			$rep->TextCol(1, 2, $trans['name']);

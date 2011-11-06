@@ -21,9 +21,9 @@
 				return false;
 			}
 			$sql = "SELECT * FROM user_messages WHERE user =$userid AND unread > 0";
-			$result = DBOld::query($sql, "could not retrieve user messages");
-			static::$count = DBOld::num_rows($result);
-			while ($row = DBOld::fetch_assoc($result)) {
+			$result = DB::query($sql, "could not retrieve user messages");
+			static::$count = DB::num_rows($result);
+			while ($row = DB::fetch_assoc($result)) {
 				if (!empty($row['subject'])) {
 					static::$messages .= '<div style="margin-top:5px; margin-bottom:5px; font-weight:bold; text-decoration:underline;">' .
 					 $row['subject'] . ':</div><hr style="margin-top:1px;"/> <div style="padding-top:5px;" >'
@@ -35,7 +35,7 @@
 				$unread = $row['unread'] - 1;
 				$id = $row['id'];
 				$sql2 = "UPDATE user_messages SET unread={$unread} WHERE  id={$id} AND user=" . $userid;
-				$result2 = DBOld::query($sql2, 'Could not mark messages as unread');
+				$result2 = DB::query($sql2, 'Could not mark messages as unread');
 			}
 			return static::$count;
 		}
@@ -43,7 +43,7 @@
 		static function setNewMessage($userid, $subject, $message)
 		{
 			$sql = "INSERT INTO user_messages (user, subject,message,unread) VALUES (" . DB::escape($userid) . ", " . DB::escape($subject) . ", " . DB::escape($message) . ", 1)";
-			$result = DBOld::query($sql, "Couldn't add message for $userid");
+			$result = DB::query($sql, "Couldn't add message for $userid");
 			return $result;
 		}
 

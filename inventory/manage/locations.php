@@ -53,57 +53,57 @@
 	function can_delete($selected_id)
 	{
 		$sql = "SELECT COUNT(*) FROM stock_moves WHERE loc_code=" . DB::escape($selected_id);
-		$result = DBOld::query($sql, "could not query stock moves");
-		$myrow = DBOld::fetch_row($result);
+		$result = DB::query($sql, "could not query stock moves");
+		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {
 			Errors::error(_("Cannot delete this location because item movements have been created using this location."));
 			return false;
 		}
 		$sql = "SELECT COUNT(*) FROM workorders WHERE loc_code=" . DB::escape($selected_id);
-		$result = DBOld::query($sql, "could not query work orders");
-		$myrow = DBOld::fetch_row($result);
+		$result = DB::query($sql, "could not query work orders");
+		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {
 			Errors::error(_("Cannot delete this location because it is used by some work orders records."));
 			return false;
 		}
 		$sql = "SELECT COUNT(*) FROM cust_branch WHERE default_location='$selected_id'";
-		$result = DBOld::query($sql, "could not query customer branches");
-		$myrow = DBOld::fetch_row($result);
+		$result = DB::query($sql, "could not query customer branches");
+		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {
 			Errors::error(_("Cannot delete this location because it is used by some branch records as the default location to deliver from."));
 			return false;
 		}
 		$sql = "SELECT COUNT(*) FROM bom WHERE loc_code=" . DB::escape($selected_id);
-		$result = DBOld::query($sql, "could not query bom");
-		$myrow = DBOld::fetch_row($result);
+		$result = DB::query($sql, "could not query bom");
+		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {
 			Errors::error(_("Cannot delete this location because it is used by some related records in other tables."));
 			return false;
 		}
 		$sql = "SELECT COUNT(*) FROM grn_batch WHERE loc_code=" . DB::escape($selected_id);
-		$result = DBOld::query($sql, "could not query grn batch");
-		$myrow = DBOld::fetch_row($result);
+		$result = DB::query($sql, "could not query grn batch");
+		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {
 			Errors::error(_("Cannot delete this location because it is used by some related records in other tables."));
 			return false;
 		}
 		$sql = "SELECT COUNT(*) FROM purch_orders WHERE into_stock_location=" . DB::escape($selected_id);
-		$result = DBOld::query($sql, "could not query purch orders");
-		$myrow = DBOld::fetch_row($result);
+		$result = DB::query($sql, "could not query purch orders");
+		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {
 			Errors::error(_("Cannot delete this location because it is used by some related records in other tables."));
 			return false;
 		}
 		$sql = "SELECT COUNT(*) FROM sales_orders WHERE from_stk_loc=" . DB::escape($selected_id);
-		$result = DBOld::query($sql, "could not query sales orders");
-		$myrow = DBOld::fetch_row($result);
+		$result = DB::query($sql, "could not query sales orders");
+		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {
 			Errors::error(_("Cannot delete this location because it is used by some related records in other tables."));
 			return false;
 		}
 		$sql = "SELECT COUNT(*) FROM sales_pos WHERE pos_location=" . DB::escape($selected_id);
-		$result = DBOld::query($sql, "could not query sales pos");
-		$myrow = DBOld::fetch_row($result);
+		$result = DB::query($sql, "could not query sales pos");
+		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {
 			Errors::error(_("Cannot delete this location because it is used by some related records in other tables."));
 			return false;
@@ -129,7 +129,7 @@
 	if (!check_value('show_inactive')) {
 		$sql .= " WHERE !inactive";
 	}
-	$result = DBOld::query($sql, "could not query locations");
+	$result = DB::query($sql, "could not query locations");
 	;
 	start_form();
 	start_table(Config::get('tables_style'));
@@ -137,7 +137,7 @@
 	inactive_control_column($th);
 	table_header($th);
 	$k = 0; //row colour counter
-	while ($myrow = DBOld::fetch($result))
+	while ($myrow = DB::fetch($result))
 	{
 		alt_table_row_color($k);
 		label_cell($myrow["loc_code"]);

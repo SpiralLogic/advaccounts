@@ -38,15 +38,15 @@
 	function can_delete($selected_id)
 	{
 		$sql = "SELECT COUNT(*) FROM bom WHERE workcentre_added=" . DB::escape($selected_id);
-		$result = DBOld::query($sql, "check can delete work centre");
-		$myrow = DBOld::fetch_row($result);
+		$result = DB::query($sql, "check can delete work centre");
+		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {
 			Errors::error(_("Cannot delete this work centre because BOMs have been created referring to it."));
 			return false;
 		}
 		$sql = "SELECT COUNT(*) FROM wo_requirements WHERE workcentre=" . DB::escape($selected_id);
-		$result = DBOld::query($sql, "check can delete work centre");
-		$myrow = DBOld::fetch_row($result);
+		$result = DB::query($sql, "check can delete work centre");
+		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {
 			Errors::error(_("Cannot delete this work centre because work order requirements have been created referring to it."));
 			return false;
@@ -76,7 +76,7 @@
 	inactive_control_column($th);
 	table_header($th);
 	$k = 0;
-	while ($myrow = DBOld::fetch($result))
+	while ($myrow = DB::fetch($result))
 	{
 		alt_table_row_color($k);
 		label_cell($myrow["name"]);

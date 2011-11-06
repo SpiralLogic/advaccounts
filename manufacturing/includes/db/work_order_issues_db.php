@@ -14,19 +14,19 @@
 	function add_work_order_issue($woid, $ref, $to_work_order, $items, $location, $workcentre,
 																$date_, $memo_) {
 
-		DBOld::begin_transaction();
+		DB::begin_transaction();
 
 		$details = get_work_order($woid);
 
 		if (strlen($details[0]) == 0) {
 			echo _("The order number sent is not valid.");
-			DBOld::cancel_transaction();
+			DB::cancel_transaction();
 			exit;
 		}
 
 		if (work_order_is_closed($woid)) {
 			Errors::error("UNEXPECTED : Issuing items for a closed Work Order");
-			DBOld::cancel_transaction();
+			DB::cancel_transaction();
 			exit;
 		}
 
@@ -34,9 +34,9 @@
 		$sql = "INSERT INTO wo_issues (workorder_id, reference, issue_date, loc_code, workcentre_id)
 		VALUES (" . DB::escape($woid) . ", " . DB::escape($ref) . ", '" .
 		 Dates::date2sql($date_) . "', " . DB::escape($location) . ", " . DB::escape($workcentre) . ")";
-		DBOld::query($sql, "The work order issue could not be added");
+		DB::query($sql, "The work order issue could not be added");
 
-		$number = DBOld::insert_id();
+		$number = DB::insert_id();
 
 		foreach ($items as $item)
 		{
@@ -51,7 +51,7 @@
 			$sql = "INSERT INTO wo_issue_items (issue_id, stock_id, qty_issued)
 			VALUES (" . DB::escape($number) . ", " . DB::escape($item->stock_id) . ", "
 			 . DB::escape($item->quantity) . ")";
-			DBOld::query($sql, "A work order issue item could not be added");
+			DB::query($sql, "A work order issue item could not be added");
 		}
 
 		if ($memo_)
@@ -60,7 +60,7 @@
 		Refs::save(ST_MANUISSUE, $number, $ref);
 		DB_AuditTrail::add(ST_MANUISSUE, $number, $date_);
 
-		DBOld::commit_transaction();
+		DB::commit_transaction();
 	}
 
 	//--------------------------------------------------------------------------------------
@@ -68,7 +68,7 @@
 	function get_work_order_issues($woid) {
 		$sql = "SELECT * FROM wo_issues WHERE workorder_id=" . DB::escape($woid)
 		 . " ORDER BY issue_no";
-		return DBOld::query($sql, "The work order issues could not be retrieved");
+		return DB::query($sql, "The work order issues could not be retrieved");
 	}
 
 	function get_additional_issues($woid) {
@@ -77,7 +77,7 @@
 		WHERE wo_issues.issue_no=wo_issue_items.issue_id
 		AND wo_issues.workorder_id=" . DB::escape($woid)
 		 . " ORDER BY wo_issue_items.id";
-		return DBOld::query($sql, "The work order issues could not be retrieved");
+		return DB::query($sql, "The work order issues could not be retrieved");
 	}
 
 	//--------------------------------------------------------------------------------------
@@ -93,9 +93,9 @@
 		AND locations.loc_code = wo_issues.loc_code
 		AND workcentres.id = wo_issues.workcentre_id
 		AND stock_master.stock_id = workorders.stock_id";
-		$result = DBOld::query($sql, "A work order issue could not be retrieved");
+		$result = DB::query($sql, "A work order issue could not be retrieved");
 
-		return DBOld::fetch($result);
+		return DB::fetch($result);
 	}
 
 	//--------------------------------------------------------------------------------------
@@ -107,27 +107,27 @@
 		WHERE issue_id=" . DB::escape($issue_no) . "
 		AND stock_master.stock_id=wo_issue_items.stock_id
 		ORDER BY wo_issue_items.id";
-		return DBOld::query($sql, "The work order issue items could not be retrieved");
+		return DB::query($sql, "The work order issue items could not be retrieved");
 	}
 
 	//--------------------------------------------------------------------------------------
 
 	function exists_work_order_issue($issue_no) {
 		$sql = "SELECT issue_no FROM wo_issues WHERE issue_no=" . DB::escape($issue_no);
-		$result = DBOld::query($sql, "Cannot retreive a wo issue");
+		$result = DB::query($sql, "Cannot retreive a wo issue");
 
-		return (DBOld::num_rows($result) > 0);
+		return (DB::num_rows($result) > 0);
 	}
 
 	//--------------------------------------------------------------------------------------
 
 	function void_work_order_issue($type_no) {
-		DBOld::begin_transaction();
+		DB::begin_transaction();
 
 		// void the actual issue items and their quantities
 		$sql = "UPDATE wo_issue_items Set qty_issued = 0 WHERE issue_id="
 		 . DB::escape($type_no);
-		DBOld::query($sql, "A work order issue item could not be voided");
+		DB::query($sql, "A work order issue item could not be voided");
 
 		// void all related stock moves
 		void_stock_move(ST_MANUISSUE, $type_no);
@@ -135,7 +135,7 @@
 		// void any related gl trans
 		void_gl_trans(ST_MANUISSUE, $type_no, true);
 
-		DBOld::commit_transaction();
+		DB::commit_transaction();
 	}
 
 	//--------------------------------------------------------------------------------------

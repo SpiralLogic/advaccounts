@@ -11,7 +11,7 @@
 			$sql = "INSERT INTO tags (type, name, description)
  		VALUES (" . DB::escape($type) . ", " . DB::escape($name) . ", " . DB::escape($description) . ")";
 
-			return DBOld::query($sql);
+			return DB::query($sql);
 		}
 
 		//--------------------------------------------------------------------------------------
@@ -24,7 +24,7 @@
 
 			$sql .= " WHERE id = " . DB::escape($id);
 
-			return DBOld::query($sql);
+			return DB::query($sql);
 		}
 
 		//--------------------------------------------------------------------------------------
@@ -36,7 +36,7 @@
 
 			$sql .= " ORDER BY name";
 
-			return DBOld::query($sql, "could not get tags");
+			return DB::query($sql, "could not get tags");
 		}
 
 		//--------------------------------------------------------------------------------------
@@ -44,9 +44,9 @@
 		public static function get($id) {
 			$sql = "SELECT * FROM tags WHERE id = " . DB::escape($id);
 
-			$result = DBOld::query($sql, "could not get tag");
+			$result = DB::query($sql, "could not get tag");
 
-			return DBOld::fetch($result);
+			return DB::fetch($result);
 		}
 
 		//--------------------------------------------------------------------------------------
@@ -54,9 +54,9 @@
 		public static function get_type($id) {
 			$sql = "SELECT type FROM tags WHERE id = " . DB::escape($id);
 
-			$result = DBOld::query($sql, "could not get tag type");
+			$result = DB::query($sql, "could not get tag type");
 
-			$row = DBOld::fetch_row($result);
+			$row = DB::fetch_row($result);
 			return $row[0];
 		}
 
@@ -65,9 +65,9 @@
 		public static function get_name($id) {
 			$sql = "SELECT name FROM tags WHERE id = " . DB::escape($id);
 
-			$result = DBOld::query($sql, "could not get tag name");
+			$result = DB::query($sql, "could not get tag name");
 
-			$row = DBOld::fetch_row($result);
+			$row = DB::fetch_row($result);
 			return $row[0];
 		}
 
@@ -76,9 +76,9 @@
 		public static function get_description($id) {
 			$sql = "SELECT description FROM tags WHERE id = " . DB::escape($id);
 
-			$result = DBOld::query($sql, "could not get tag description");
+			$result = DB::query($sql, "could not get tag description");
 
-			$row = DBOld::fetch_row($result);
+			$row = DB::fetch_row($result);
 			return $row[0];
 		}
 
@@ -87,7 +87,7 @@
 		public static function delete($id) {
 			$sql = "DELETE FROM tags WHERE id = " . DB::escape($id);
 
-			DBOld::query($sql, "could not delete tag");
+			DB::query($sql, "could not delete tag");
 		}
 
 		//--------------------------------------------------------------------------------------
@@ -98,7 +98,7 @@
 				$sql = "INSERT INTO tag_associations (record_id, tag_id)
  			VALUES (" . DB::escape($recordid) . ", " . DB::escape($tagid) . ")";
 
-				DBOld::query($sql, "could not add tag association");
+				DB::query($sql, "could not add tag association");
 			}
 		}
 
@@ -127,12 +127,12 @@
  			WHERE tags.type = " . DB::escape($type) . " AND ta.record_id = " . DB::escape($recordid);
 			if (!$all)
 				$sql .= " AND tags.inactive = 0";
-			$result = DBOld::query($sql, "could not select tag associations");
+			$result = DB::query($sql, "could not select tag associations");
 
-			while ($ta = DBOld::fetch($result)) {
+			while ($ta = DB::fetch($result)) {
 				$sql2 = "DELETE FROM tag_associations WHERE
  			record_id = '" . $ta['record_id'] . "' AND tag_id=" . $ta['tag_id'];
-				DBOld::query($sql2, "could not delete tag associations");
+				DB::query($sql2, "could not delete tag associations");
 			}
 		}
 
@@ -159,7 +159,7 @@
  		INNER JOIN tags AS tags ON ta.tag_id = tags.id
  	        WHERE tags.id = " . DB::escape($id);
 
-			return DBOld::query($sql, "could not get tag associations for tag");
+			return DB::query($sql, "could not get tag associations for tag");
 		}
 
 		//--------------------------------------------------------------------------------------
@@ -169,7 +169,7 @@
  				INNER JOIN tags AS tags ON tags.id = ta.tag_id
  				WHERE tags.type = $type	AND ta.record_id = " . DB::escape($recordid);
 
-			return DBOld::query($sql, "could not get tags associations for record");
+			return DB::query($sql, "could not get tags associations for record");
 		}
 		//--------------------------------------------------------------------------------------
 

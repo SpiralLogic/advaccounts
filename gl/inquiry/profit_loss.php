@@ -45,7 +45,7 @@
 		$totals_arr = array();
 		//Get Accounts directly under this group/type
 		$result = get_gl_accounts(null, null, $type);
-		while ($account = DBOld::fetch($result))
+		while ($account = DB::fetch($result))
 		{
 			$per_balance = get_gl_trans_from_to($from, $to, $account["account_code"], $dimension, $dimension2);
 			if ($compare == 2) {
@@ -74,7 +74,7 @@
 		$levelptr = 1;
 		//Get Account groups/types under this group/type
 		$result = get_account_types(false, false, $type);
-		while ($accounttype = DBOld::fetch($result))
+		while ($accounttype = DB::fetch($result))
 		{
 			$totals_arr = display_type(
 				$accounttype["id"], $accounttype["name"], $from, $to, $begin, $end,
@@ -195,7 +195,7 @@
 			$classper = $classacc = $salesper = $salesacc = 0.0;
 			//Get classes for PL
 			$classresult = get_account_classes(false, 0);
-			while ($class = DBOld::fetch($classresult))
+			while ($class = DB::fetch($classresult))
 			{
 				$class_per_total = 0;
 				$class_acc_total = 0;
@@ -205,7 +205,7 @@
 				echo $tableheader;
 				//Get Account groups/types under this group/type
 				$typeresult = get_account_types(false, $class['cid'], -1);
-				while ($accounttype = DBOld::fetch($typeresult))
+				while ($accounttype = DB::fetch($typeresult))
 				{
 					$TypeTotal = display_type(
 						$accounttype["id"], $accounttype["name"], $from, $to, $begin, $end, $compare, $convert,

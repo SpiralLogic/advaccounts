@@ -13,7 +13,7 @@
 
 	function add_stock_adjustment($items, $location, $date_, $type, $increase, $reference, $memo_) {
 
-		DBOld::begin_transaction();
+		DB::begin_transaction();
 		$adj_id = SysTypes::get_next_trans_no(ST_INVADJUST);
 		foreach ($items as $line_item) {
 			if (!$increase)
@@ -24,7 +24,7 @@
 		DB_Comments::add(ST_INVADJUST, $adj_id, $date_, $memo_);
 		Refs::save(ST_INVADJUST, $adj_id, $reference);
 		DB_AuditTrail::add(ST_INVADJUST, $adj_id, $date_);
-		DBOld::commit_transaction();
+		DB::commit_transaction();
 		return $adj_id;
 	}
 
@@ -40,7 +40,7 @@
 	function get_stock_adjustment_items($trans_no) {
 		$result = get_stock_moves(ST_INVADJUST, $trans_no);
 
-		if (DBOld::num_rows($result) == 0) {
+		if (DB::num_rows($result) == 0) {
 			return null;
 		}
 

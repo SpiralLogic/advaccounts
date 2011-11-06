@@ -27,9 +27,9 @@
 		if ($err_msg == "")
 			$err_msg = "Cannot insert a supplier transaction detail record";
 
-		DBOld::query($sql, $err_msg);
+		DB::query($sql, $err_msg);
 
-		return DBOld::insert_id();
+		return DB::insert_id();
 	}
 
 	//-------------------------------------------------------------------------------------------------------------
@@ -47,7 +47,7 @@
 		$sql = "SELECT *, unit_price AS FullUnitPrice FROM supp_invoice_items
 		WHERE supp_trans_type = " . DB::escape($supp_trans_type) . "
 		AND supp_trans_no = " . DB::escape($supp_trans_no) . " ORDER BY id";
-		return DBOld::query($sql, "Cannot retreive supplier transaction detail records");
+		return DB::query($sql, "Cannot retreive supplier transaction detail records");
 	}
 
 	//----------------------------------------------------------------------------------------
@@ -55,7 +55,7 @@
 	function void_supp_invoice_items($type, $type_no) {
 		$sql = "UPDATE supp_invoice_items SET quantity=0, unit_price=0
 		WHERE supp_trans_type = " . DB::escape($type) . " AND supp_trans_no=" . DB::escape($type_no);
-		DBOld::query($sql, "could not void supptrans details");
+		DB::query($sql, "could not void supptrans details");
 	}
 
 ?>

@@ -15,14 +15,14 @@
 		{
 			$sql = "INSERT INTO sales_types (sales_type,tax_included,factor) VALUES (" . DB::escape($name) . ","
 			 . DB::escape($tax_included) . "," . DB::escape($factor) . ")";
-			DBOld::query($sql, "could not add sales type");
+			DB::query($sql, "could not add sales type");
 		}
 
 		public static function update($id, $name, $tax_included, $factor)
 		{
 			$sql = "UPDATE sales_types SET sales_type = " . DB::escape($name) . ",
 	tax_included =" . DB::escape($tax_included) . ", factor=" . DB::escape($factor) . " WHERE id = " . DB::escape($id);
-			DBOld::query($sql, "could not update sales type");
+			DB::query($sql, "could not update sales type");
 		}
 
 		public static function get_all($all = false)
@@ -31,30 +31,30 @@
 			if (!$all) {
 				$sql .= " WHERE !inactive";
 			}
-			return DBOld::query($sql, "could not get all sales types");
+			return DB::query($sql, "could not get all sales types");
 		}
 
 		public static function get($id)
 		{
 			$sql = "SELECT * FROM sales_types WHERE id=" . DB::escape($id);
-			$result = DBOld::query($sql, "could not get sales type");
-			return DBOld::fetch($result);
+			$result = DB::query($sql, "could not get sales type");
+			return DB::fetch($result);
 		}
 
 		public static function get_name($id)
 		{
 			$sql = "SELECT sales_type FROM sales_types WHERE id=" . DB::escape($id);
-			$result = DBOld::query($sql, "could not get sales type");
-			$row = DBOld::fetch_row($result);
+			$result = DB::query($sql, "could not get sales type");
+			$row = DB::fetch_row($result);
 			return $row[0];
 		}
 
 		public static function delete($id)
 		{
 			$sql = "DELETE FROM sales_types WHERE id=" . DB::escape($id);
-			DBOld::query($sql, "The Sales type record could not be deleted");
+			DB::query($sql, "The Sales type record could not be deleted");
 			$sql = "DELETE FROM prices WHERE sales_type_id=" . DB::escape($id);
-			DBOld::query($sql, "The Sales type prices could not be deleted");
+			DB::query($sql, "The Sales type prices could not be deleted");
 		}
 	}
 

@@ -52,8 +52,8 @@
 			if ($salesman_code == null) {
 				$salesman_name = $_SESSION['current_user']->name;
 				$sql = "SELECT salesman_code FROM salesman WHERE salesman_name = " . DB::escape($salesman_name);
-				$query = DBOld::query($sql, 'Couldn\'t find current salesman');
-				$result = DBOld::fetch_assoc($query);
+				$query = DB::query($sql, 'Couldn\'t find current salesman');
+				$result = DB::fetch_assoc($query);
 				if (!empty($result['salesman_code'])) {
 					$salesman_code = $result['salesman_code'];
 				}

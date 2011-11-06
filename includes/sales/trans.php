@@ -17,9 +17,9 @@
 		public static function get_parent($trans_type, $trans_no)
 		{
 			$sql = 'SELECT trans_link FROM ' . 'debtor_trans WHERE (trans_no=' . DB::escape($trans_no) . ' AND type=' . DB::escape($trans_type) . ' AND trans_link!=0)';
-			$result = DBOld::query($sql, 'Parent document numbers cannot be retrieved');
-			if (DBOld::num_rows($result)) {
-				$link = DBOld::fetch($result);
+			$result = DB::query($sql, 'Parent document numbers cannot be retrieved');
+			if (DB::num_rows($result)) {
+				$link = DB::fetch($result);
 				return array($link['trans_link']);
 			}
 			if ($trans_type != ST_SALESINVOICE) {
@@ -27,10 +27,10 @@
 			} // this is credit note with no parent invoice
 			// invoice: find batch invoice parent trans.
 			$sql = 'SELECT trans_no FROM ' . 'debtor_trans WHERE (trans_link=' . DB::escape($trans_no) . ' AND type=' . get_parent_type($trans_type) . ')';
-			$result = DBOld::query($sql, 'Delivery links cannot be retrieved');
+			$result = DB::query($sql, 'Delivery links cannot be retrieved');
 			$delivery = array();
-			if (DBOld::num_rows($result) > 0) {
-				while ($link = DBOld::fetch($result)) {
+			if (DB::num_rows($result) > 0) {
+				while ($link = DB::fetch($result)) {
 					$delivery[] = $link['trans_no'];
 				}
 			}
@@ -50,7 +50,7 @@
 				$where[] = '(trans_no=' . DB::escape($trans_no) . ' AND version=' . $version . ')';
 			}
 			$sql .= implode(' OR ', $where) . ')';
-			return DBOld::query($sql, 'Concurrent editing conflict');
+			return DB::query($sql, 'Concurrent editing conflict');
 		}
 
 		//----------------------------------------------------------------------------------------
@@ -70,9 +70,9 @@
 				$trans_no[$key] = 'trans_no=' . $trans_no[$key];
 			}
 			$sql .= implode(' OR ', $trans_no) . ')';
-			$res = DBOld::query($sql, 'document version retreival');
+			$res = DB::query($sql, 'document version retreival');
 			$vers = array();
-			while ($mysql = DBOld::fetch($res)) {
+			while ($mysql = DB::fetch($res)) {
 				$vers[$mysql['trans_no']] = $mysql['version'];
 			}
 			return $vers;
@@ -135,7 +135,7 @@
 		dimension_id=" . DB::escape($dimension_id) . ", dimension2_id=" . DB::escape($dimension2_id) . "
 		WHERE trans_no=$trans_no AND type=" . DB::escape($trans_type);
 			}
-			DBOld::query($sql, "The debtor transaction record could not be inserted");
+			DB::query($sql, "The debtor transaction record could not be inserted");
 			DB_AuditTrail::add($trans_type, $trans_no, $date_, $new ? '' : _("Updated."));
 			return $trans_no;
 		}
@@ -191,19 +191,19 @@
 			AND cust_branch.branch_code = debtor_trans.branch_code
 			AND cust_branch.tax_group_id = tax_groups.id ";
 			}
-			$result = DBOld::query($sql, "Cannot retreive a debtor transaction");
-			if (DBOld::num_rows($result) == 0) {
+			$result = DB::query($sql, "Cannot retreive a debtor transaction");
+			if (DB::num_rows($result) == 0) {
 				// can't return nothing
 				Errors::show_db_error("no debtor trans found for given params", $sql, true);
 				exit;
 			}
-			if (DBOld::num_rows($result) > 1) {
+			if (DB::num_rows($result) > 1) {
 				// can't return multiple
 				Errors::show_db_error("duplicate debtor transactions found for given params", $sql, true);
 				exit;
 			}
-			//return DBOld::fetch($result);
-			$row = DBOld::fetch($result);
+			//return DB::fetch($result);
+			$row = DB::fetch($result);
 			$row['email'] = $row['email2'];
 			return $row;
 		}
@@ -213,8 +213,8 @@
 		{
 			$sql = "SELECT trans_no FROM debtor_trans WHERE type=" . DB::escape($type) . "
 		AND trans_no=" . DB::escape($type_no);
-			$result = DBOld::query($sql, "Cannot retreive a debtor transaction");
-			return (DBOld::num_rows($result) > 0);
+			$result = DB::query($sql, "Cannot retreive a debtor transaction");
+			return (DB::num_rows($result) > 0);
 		}
 
 		//----------------------------------------------------------------------------------------
@@ -222,8 +222,8 @@
 		public static function get_order($type, $type_no)
 		{
 			$sql = "SELECT order_ FROM debtor_trans WHERE type=" . DB::escape($type) . " AND trans_no=" . DB::escape($type_no);
-			$result = DBOld::query($sql, "The debtor transaction could not be queried");
-			$row = DBOld::fetch_row($result);
+			$result = DB::query($sql, "The debtor transaction could not be queried");
+			$row = DB::fetch_row($result);
 			return $row[0];
 		}
 
@@ -236,8 +236,8 @@
 		WHERE debtor_trans.type=" . DB::escape($type) . " AND debtor_trans.trans_no=" . DB::escape($type_no) . "
 		AND debtors_master.debtor_no = debtor_trans.debtor_no
 		AND	cust_branch.branch_code = debtor_trans.branch_code";
-			$result = DBOld::query($sql, "could not get customer details from trans");
-			return DBOld::fetch($result);
+			$result = DB::query($sql, "could not get customer details from trans");
+			return DB::fetch($result);
 		}
 
 		//----------------------------------------------------------------------------------------
@@ -247,7 +247,7 @@
 			$sql
 			 = "UPDATE debtor_trans SET ov_amount=0, ov_discount=0, ov_gst=0, ov_freight=0,
 		ov_freight_tax=0, alloc=0, version=version+1 WHERE type=" . DB::escape($type) . " AND trans_no=" . DB::escape($type_no);
-			DBOld::query($sql, "could not void debtor transactions for type=$type and trans_no=$type_no");
+			DB::query($sql, "could not void debtor transactions for type=$type and trans_no=$type_no");
 		}
 
 		//----------------------------------------------------------------------------------------
@@ -270,7 +270,7 @@
 		//----------------------------------------------------------------------------------------
 		public static function get_link($type, $type_no)
 		{
-			$row = DBOld::query("SELECT trans_link from debtor_trans
+			$row = DB::query("SELECT trans_link from debtor_trans
 		WHERE type=" . DB::escape($type) . " AND trans_no=" . DB::escape($type_no),
 				"could not get transaction link for type=$type and trans_no=$type_no");
 			return $row[0];

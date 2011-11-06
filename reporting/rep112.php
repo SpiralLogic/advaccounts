@@ -34,11 +34,11 @@
 				WHERE debtor_trans.debtor_no = debtors_master.debtor_no
 				AND debtor_trans.type = " . DB::escape($type) . "
 				AND debtor_trans.trans_no = " . DB::escape($trans_no);
-		$result = DBOld::query($sql, "The remittance cannot be retrieved");
-		if (DBOld::num_rows($result) == 0) {
+		$result = DB::query($sql, "The remittance cannot be retrieved");
+		if (DB::num_rows($result) == 0) {
 			return false;
 		}
-		return DBOld::fetch($result);
+		return DB::fetch($result);
 	}
 
 	function get_allocations_for_receipt($debtor_id, $type, $trans_no)
@@ -50,7 +50,7 @@
 		AND trans.debtor_no=" . DB::escape($debtor_id),
 			"cust_allocations as alloc");
 		$sql .= " ORDER BY trans_no";
-		return DBOld::query($sql, "Cannot retreive alloc to transactions");
+		return DB::query($sql, "Cannot retreive alloc to transactions");
 	}
 
 	function print_receipts()
@@ -109,7 +109,7 @@
 				$total_allocated = 0;
 				$rep->TextCol(0, 4, $doc_Towards, -2);
 				$rep->NewLine(2);
-				while ($myrow2 = DBOld::fetch($result))
+				while ($myrow2 = DB::fetch($result))
 				{
 					$rep->TextCol(0, 1, $systypes_array[$myrow2['type']], -2);
 					$rep->TextCol(1, 2, $myrow2['reference'], -2);

@@ -29,7 +29,7 @@
 		$printtitle = 0; //Flag for printing type name
 		//Get Accounts directly under this group/type
 		$result = get_gl_accounts(null, null, $type);
-		while ($account = DBOld::fetch($result))
+		while ($account = DB::fetch($result))
 		{
 			$per_balance = get_gl_trans_from_to($from, $to, $account["account_code"], $dimension, $dimension2);
 			if ($compare == 2) {
@@ -64,7 +64,7 @@
 		}
 		//Get Account groups/types under this group/type
 		$result = get_account_types(false, false, $type);
-		while ($accounttype = DBOld::fetch($result))
+		while ($accounttype = DB::fetch($result))
 		{
 			//Print Type Title if has sub types and not previously printed
 			if (!$printtitle) {
@@ -235,7 +235,7 @@
 		$salesper = 0.0;
 		$salesacc = 0.0;
 		$classresult = get_account_classes(false, 0);
-		while ($class = DBOld::fetch($classresult))
+		while ($class = DB::fetch($classresult))
 		{
 			$class_per_total = 0;
 			$class_acc_total = 0;
@@ -247,7 +247,7 @@
 			$rep->NewLine();
 			//Get Account groups/types under this group/type with no parents
 			$typeresult = get_account_types(false, $class['cid'], -1);
-			while ($accounttype = DBOld::fetch($typeresult))
+			while ($accounttype = DB::fetch($typeresult))
 			{
 				$classtotal = display_type(
 					$accounttype["id"], $accounttype["name"], $from, $to, $begin, $end, $compare, $convert, $dec,

@@ -79,8 +79,8 @@
 		 Dates::date2sql($_POST['FromDate']) . "' AND
 		tran_date <= '" . Dates::date2sql($_POST['ToDate']) . "' AND (dimension_id = " .
 		 $row['id'] . " OR dimension2_id = " . $row['id'] . ")";
-		$res = DBOld::query($sql, "Sum of transactions could not be calculated");
-		$row = DBOld::fetch_row($res);
+		$res = DB::query($sql, "Sum of transactions could not be calculated");
+		$row = DB::fetch_row($res);
 		return $row[0];
 	}
 

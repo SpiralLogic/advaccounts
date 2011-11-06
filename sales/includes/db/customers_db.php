@@ -59,8 +59,8 @@
 			  debtors_master.credit_limit,
 			  credit_status.dissallow_invoices,
 			  credit_status.reason_description";
-		$result = DBOld::query($sql, "The customer details could not be retrieved");
-		if (DBOld::num_rows($result) == 0) {
+		$result = DB::query($sql, "The customer details could not be retrieved");
+		if (DB::num_rows($result) == 0) {
 			/* Because there is no balance - so just retrieve the header information about the customer - the choice is do one query to get the balance and transactions for those customers who have a balance and two queries for those who don't have a balance OR always do two queries - I opted for the former */
 			$nil_balance = true;
 			$sql
@@ -74,12 +74,12 @@
     		     debtors_master.payment_terms = payment_terms.terms_indicator
     		     AND debtors_master.credit_status = credit_status.id
     		     AND debtors_master.debtor_no = " . DB::escape($customer_id);
-			$result = DBOld::query($sql, "The customer details could not be retrieved");
+			$result = DB::query($sql, "The customer details could not be retrieved");
 		}
 		else {
 			$nil_balance = false;
 		}
-		$customer_record = DBOld::fetch($result);
+		$customer_record = DB::fetch($result);
 		if ($nil_balance == true) {
 			$customer_record["Balance"]  = 0;
 			$customer_record["Due"]      = 0;
@@ -92,15 +92,15 @@
 	function get_customer($customer_id)
 	{
 		$sql = "SELECT * FROM debtors_master WHERE debtor_no=" . DB::escape($customer_id);
-		$result = DBOld::query($sql, "could not get customer");
-		return DBOld::fetch($result);
+		$result = DB::query($sql, "could not get customer");
+		return DB::fetch($result);
 	}
 
 	function get_customer_name($customer_id)
 	{
 		$sql = "SELECT name FROM debtors_master WHERE debtor_no=" . DB::escape($customer_id);
-		$result = DBOld::query($sql, "could not get customer");
-		$row = DBOld::fetch_row($result);
+		$result = DB::query($sql, "could not get customer");
+		$row = DB::fetch_row($result);
 		return $row[0];
 	}
 
@@ -112,23 +112,23 @@
 			FROM  debtors_master,  credit_status
 			WHERE  debtors_master.credit_status =  credit_status.id
 				AND  debtors_master.debtor_no = " . DB::escape($customer_id);
-		$result = DBOld::query($sql, "could not query customers");
-		return DBOld::fetch($result);
+		$result = DB::query($sql, "could not query customers");
+		return DB::fetch($result);
 	}
 
 	function get_area_name($id)
 	{
 		$sql = "SELECT description FROM areas WHERE area_code=" . DB::escape($id);
-		$result = DBOld::query($sql, "could not get sales type");
-		$row = DBOld::fetch_row($result);
+		$result = DB::query($sql, "could not get sales type");
+		$row = DB::fetch_row($result);
 		return $row[0];
 	}
 
 	function get_salesman_name($id)
 	{
 		$sql = "SELECT salesman_name FROM salesman WHERE salesman_code=" . DB::escape($id);
-		$result = DBOld::query($sql, "could not get sales type");
-		$row = DBOld::fetch_row($result);
+		$result = DB::query($sql, "could not get sales type");
+		$row = DB::fetch_row($result);
 		return $row[0];
 	}
 

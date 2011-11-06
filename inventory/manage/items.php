@@ -112,7 +112,7 @@
 			$input_error = 1;
 			Errors::error(_('The item code cannot contain any of the following characters -  & + OR a space OR quotes'));
 			JS::set_focus('NewStockID');
-		} elseif ($new_item && DBOld::num_rows(Item_Code::get_kit($_POST['NewStockID']))) {
+		} elseif ($new_item && DB::num_rows(Item_Code::get_kit($_POST['NewStockID']))) {
 			$input_error = 1;
 			Errors::error(_("This item code is already assigned to stock item or sale kit."));
 			JS::set_focus('NewStockID');
@@ -135,8 +135,8 @@
 					$_POST['dimension_id'], $_POST['dimension2_id'],
 					check_value('no_sale'), check_value('editable')
 				);
-				DBOld::update_record_status($_POST['NewStockID'], $_POST['inactive'], 'stock_master', 'stock_id');
-				DBOld::update_record_status($_POST['NewStockID'], $_POST['inactive'], 'item_codes', 'item_code');
+				DB::update_record_status($_POST['NewStockID'], $_POST['inactive'], 'stock_master', 'stock_id');
+				DB::update_record_status($_POST['NewStockID'], $_POST['inactive'], 'item_codes', 'item_code');
 				$Ajax->activate('stock_id'); // in case of status change
 				Errors::notice(_("Item has been updated."));
 			} else { //it is a NEW part
@@ -183,8 +183,8 @@
 		foreach (
 			$sqls as $sql => $err
 		) {
-			$result = DBOld::query($sql, "could not query stock usage");
-			$myrow = DBOld::fetch_row($result);
+			$result = DB::query($sql, "could not query stock usage");
+			$myrow = DB::fetch_row($result);
 			if ($myrow[0] > 0) {
 				$msg = $err;
 				break;
@@ -192,11 +192,11 @@
 		}
 		if ($msg == '') {
 			$kits = Item_Code::get_where_used($stock_id);
-			$num_kits = DBOld::num_rows($kits);
+			$num_kits = DB::num_rows($kits);
 			if ($num_kits) {
 				$msg = _("This item cannot be deleted because some code aliases or foreign codes was entered for it, or there are kits defined using this item as component") . ':<br>';
 				while ($num_kits--) {
-					$kit = DBOld::fetch($kits);
+					$kit = DB::fetch($kits);
 					$msg .= "'" . $kit[0] . "'";
 					if ($num_kits) {
 						$msg .= ',';

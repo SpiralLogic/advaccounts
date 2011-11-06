@@ -35,7 +35,7 @@
 		$sql
 		 .= " ORDER BY stock_master.category_id,
 				stock_master.stock_id";
-		return DBOld::query($sql, "No transactions were returned");
+		return DB::query($sql, "No transactions were returned");
 	}
 
 	function get_kits($category = 0)
@@ -52,7 +52,7 @@
 			$sql .= " AND c.category_id = " . DB::escape($category);
 		}
 		$sql .= " GROUP BY i.item_code";
-		return DBOld::query($sql, "No kits were returned");
+		return DB::query($sql, "No kits were returned");
 	}
 
 	//----------------------------------------------------------------------------------------------------
@@ -131,7 +131,7 @@
 		$result = fetch_items($category);
 		$catgor = '';
 		$_POST['sales_type_id'] = $salestype;
-		while ($myrow = DBOld::fetch($result))
+		while ($myrow = DB::fetch($result))
 		{
 			if ($catgor != $myrow['description']) {
 				$rep->Line($rep->row - $rep->lineHeight);
@@ -175,7 +175,7 @@
 		$rep->Line($rep->row - 4);
 		$result = get_kits($category);
 		$catgor = '';
-		while ($myrow = DBOld::fetch($result))
+		while ($myrow = DB::fetch($result))
 		{
 			if ($catgor != $myrow['cat_name']) {
 				if ($catgor == '') {

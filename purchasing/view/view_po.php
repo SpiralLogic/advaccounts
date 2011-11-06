@@ -68,13 +68,13 @@
 	//----------------------------------------------------------------------------------------------------
 	$k = 0;
 	$grns_result = get_po_grns($_GET['trans_no']);
-	if (DBOld::num_rows($grns_result) > 0) {
+	if (DB::num_rows($grns_result) > 0) {
 		echo "</td><td valign=top>"; // outer table
 		Display::heading(_("Deliveries"));
 		start_table(Config::get('tables_style'));
 		$th = array(_("#"), _("Reference"), _("Delivered On"));
 		table_header($th);
-		while ($myrow = DBOld::fetch($grns_result)) {
+		while ($myrow = DB::fetch($grns_result)) {
 			alt_table_row_color($k);
 			label_cell(ui_view::get_trans_view_str(ST_SUPPRECEIVE, $myrow["id"]));
 			label_cell($myrow["reference"]);
@@ -85,13 +85,13 @@
 	}
 	$invoice_result = get_po_invoices_credits($_GET['trans_no']);
 	$k = 0;
-	if (DBOld::num_rows($invoice_result) > 0) {
+	if (DB::num_rows($invoice_result) > 0) {
 		echo "</td><td valign=top>"; // outer table
 		Display::heading(_("Invoices/Credits"));
 		start_table(Config::get('tables_style'));
 		$th = array(_("#"), _("Date"), _("Total"));
 		table_header($th);
-		while ($myrow = DBOld::fetch($invoice_result)) {
+		while ($myrow = DB::fetch($invoice_result)) {
 			alt_table_row_color($k);
 			label_cell(ui_view::get_trans_view_str($myrow["type"], $myrow["trans_no"]));
 			label_cell(Dates::sql2date($myrow["tran_date"]));

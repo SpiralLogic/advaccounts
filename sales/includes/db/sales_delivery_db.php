@@ -18,7 +18,7 @@
 		if (is_array($trans_no)) {
 			$trans_no = key($trans_no);
 		}
-		DBOld::begin_transaction();
+		DB::begin_transaction();
 		$customer = get_customer($delivery->customer_id);
 		$delivery_items_total = $delivery->get_items_total_dispatch();
 		$freight_tax = $delivery->get_shipping_tax();
@@ -123,22 +123,22 @@
 		if ($trans_no == 0) {
 			Refs::save(ST_CUSTDELIVERY, $delivery_no, $delivery->reference);
 		}
-		DBOld::commit_transaction();
+		DB::commit_transaction();
 		return $delivery_no;
 	}
 
 	//--------------------------------------------------------------------------------------------------
 	function void_sales_delivery($type, $type_no)
 	{
-		DBOld::begin_transaction();
+		DB::begin_transaction();
 		void_gl_trans($type, $type_no, true);
 		// reverse all the changes in the sales order
 		$items_result = get_customer_trans_details($type, $type_no);
 		$order = Sales_Trans::get_order($type, $type_no);
 		if ($order) {
 			$order_items = get_sales_order_details($order, ST_SALESORDER);
-			while ($row = DBOld::fetch($items_result)) {
-				$order_line = DBOld::fetch($order_items);
+			while ($row = DB::fetch($items_result)) {
+				$order_line = DB::fetch($order_items);
 				update_parent_line(ST_CUSTDELIVERY, $order_line['id'], -$row['quantity']);
 			}
 		}
@@ -149,7 +149,7 @@
 		// do this last because other voidings can depend on it
 		// DO NOT MOVE THIS ABOVE VOIDING or we can end up with trans with alloc < 0
 		Sales_Trans::void($type, $type_no);
-		DBOld::commit_transaction();
+		DB::commit_transaction();
 	}
 
 ?>

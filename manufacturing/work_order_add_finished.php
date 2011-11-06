@@ -89,7 +89,7 @@
 		if (($_POST['ProductionType'] == 1) && !SysPrefs::allow_negative_stock()) {
 			$err = false;
 			$result = get_wo_requirements($_POST['selected_id']);
-			while ($row = DBOld::fetch($result))
+			while ($row = DB::fetch($result))
 			{
 				if ($row['mb_flag'] == 'D') // service, non stock
 				{

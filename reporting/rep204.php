@@ -48,7 +48,7 @@
 		$sql
 		 .= "ORDER BY grn_batch.supplier_id,
 			grn_batch.id";
-		return DBOld::query($sql, "No transactions were returned");
+		return DB::query($sql, "No transactions were returned");
 	}
 
 	//----------------------------------------------------------------------------------------------------
@@ -87,7 +87,7 @@
 		$Supplier = '';
 		$SuppTot_Val = 0;
 		$res = getTransactions($fromsupp);
-		While ($GRNs = DBOld::fetch($res)) {
+		While ($GRNs = DB::fetch($res)) {
 			$dec2 = Num::qty_dec($GRNs['item_code']);
 			if ($Supplier != $GRNs['supplier_id']) {
 				if ($Supplier != '') {

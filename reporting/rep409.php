@@ -73,7 +73,7 @@
 			$rep->TextCol(0, 5, _("Work Order Requirements"), -2);
 			$rep->NewLine(2);
 			$has_marked = false;
-			while ($myrow2 = DBOld::fetch($result))
+			while ($myrow2 = DB::fetch($result))
 			{
 				$qoh = 0;
 				$show_qoh = true;
@@ -117,9 +117,9 @@
 			$rep->NewLine(1);
 			$rep->TextCol(0, 5, " *** = " . _("Insufficient stock"), -2);
 			$comments = DB_Comments::get(ST_WORKORDER, $i);
-			if ($comments && DBOld::num_rows($comments)) {
+			if ($comments && DB::num_rows($comments)) {
 				$rep->NewLine();
-				while ($comment = DBOld::fetch($comments))
+				while ($comment = DB::fetch($comments))
 				{
 					$rep->TextColLines(0, 6, $comment['memo_'], -2);
 				}

@@ -75,30 +75,30 @@
 		$curr = DB::escape($selected_id);
 		// PREVENT DELETES IF DEPENDENT RECORDS IN debtors_master
 		$sql = "SELECT COUNT(*) FROM debtors_master WHERE curr_code = $curr";
-		$result = DBOld::query($sql);
-		$myrow = DBOld::fetch_row($result);
+		$result = DB::query($sql);
+		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {
 			Errors::error(_("Cannot delete this currency, because customer accounts have been created referring to this currency."));
 			return false;
 		}
 		$sql = "SELECT COUNT(*) FROM suppliers WHERE curr_code = $curr";
-		$result = DBOld::query($sql);
-		$myrow = DBOld::fetch_row($result);
+		$result = DB::query($sql);
+		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {
 			Errors::error(_("Cannot delete this currency, because supplier accounts have been created referring to this currency."));
 			return false;
 		}
 		$sql = "SELECT COUNT(*) FROM company WHERE curr_default = $curr";
-		$result = DBOld::query($sql);
-		$myrow = DBOld::fetch_row($result);
+		$result = DB::query($sql);
+		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {
 			Errors::error(_("Cannot delete this currency, because the company preferences uses this currency."));
 			return false;
 		}
 		// see if there are any bank accounts that use this currency
 		$sql = "SELECT COUNT(*) FROM bank_accounts WHERE bank_curr_code = $curr";
-		$result = DBOld::query($sql);
-		$myrow = DBOld::fetch_row($result);
+		$result = DB::query($sql);
+		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {
 			Errors::error(_("Cannot delete this currency, because thre are bank accounts that use this currency."));
 			return false;
@@ -131,7 +131,7 @@
 		inactive_control_column($th);
 		table_header($th);
 		$k = 0; //row colour counter
-		while ($myrow = DBOld::fetch($result))
+		while ($myrow = DB::fetch($result))
 		{
 			if ($myrow[1] == $company_currency) {
 				start_row("class='currencybg'");

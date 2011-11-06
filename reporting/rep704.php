@@ -117,7 +117,7 @@
 		$rep->Info($params, $cols, $headers, $aligns);
 		$rep->Header();
 		$accounts = get_gl_accounts($fromacc, $toacc);
-		while ($account = DBOld::fetch($accounts))
+		while ($account = DB::fetch($accounts))
 		{
 			if (is_account_balancesheet($account["account_code"])) {
 				$begin = "";
@@ -130,7 +130,7 @@
 			}
 			$prev_balance = get_gl_balance_from_to($begin, $from, $account["account_code"], $dimension, $dimension2);
 			$trans = get_gl_transactions($from, $to, -1, $account['account_code'], $dimension, $dimension2);
-			$rows = DBOld::num_rows($trans);
+			$rows = DB::num_rows($trans);
 			if ($prev_balance == 0.0 && $rows == 0) {
 				continue;
 			}
@@ -146,7 +146,7 @@
 			$total = $prev_balance;
 			$rep->NewLine(2);
 			if ($rows > 0) {
-				while ($myrow = DBOld::fetch($trans))
+				while ($myrow = DB::fetch($trans))
 				{
 					$total += $myrow['amount'];
 					$rep->TextCol(0, 1, $systypes_array[$myrow["type"]], -2);

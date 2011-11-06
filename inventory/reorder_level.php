@@ -41,7 +41,7 @@
 	$j = 1;
 	$k = 0; //row colour counter
 	$result = get_loc_details($_POST['stock_id']);
-	while ($myrow = DBOld::fetch($result))
+	while ($myrow = DB::fetch($result))
 	{
 		alt_table_row_color($k);
 		if (isset($_POST['UpdateData']) && Validation::is_num($myrow["loc_code"])) {

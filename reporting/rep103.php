@@ -65,7 +65,7 @@
 			salesman.salesman_name,
 			debtors_master.debtor_no,
 			cust_branch.branch_code";
-		return DBOld::query($sql, "No transactions were returned");
+		return DB::query($sql, "No transactions were returned");
 	}
 
 	function getTransactions($debtorno, $branchcode, $date)
@@ -78,8 +78,8 @@
 		AND branch_code=" . DB::escape($branchcode) . "
 		AND (type=" . ST_SALESINVOICE . " OR type=" . ST_CUSTCREDIT . ")
 		AND trandate >='$date'";
-		$result = DBOld::query($sql, "No transactions were returned");
-		$row = DBOld::fetch_row($result);
+		$result = DB::query($sql, "No transactions were returned");
+		$row = DB::fetch_row($result);
 		return $row[0];
 	}
 
@@ -155,7 +155,7 @@
 		$result = get_customer_details_for_report($area, $folk);
 		$carea = '';
 		$sman = '';
-		while ($myrow = DBOld::fetch($result))
+		while ($myrow = DB::fetch($result))
 		{
 			$printcustomer = true;
 			if ($more != '' || $less != '') {

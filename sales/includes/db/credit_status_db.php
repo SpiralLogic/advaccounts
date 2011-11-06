@@ -14,14 +14,14 @@
 		$sql
 		 = "INSERT INTO credit_status (reason_description, dissallow_invoices)
 		VALUES (" . DB::escape($description) . "," . DB::escape($disallow_invoicing) . ")";
-		DBOld::query($sql, "could not add credit status");
+		DB::query($sql, "could not add credit status");
 	}
 
 	function update_credit_status($status_id, $description, $disallow_invoicing)
 	{
 		$sql = "UPDATE credit_status SET reason_description=" . DB::escape($description) . ",
 		dissallow_invoices=" . DB::escape($disallow_invoicing) . " WHERE id=" . DB::escape($status_id);
-		DBOld::query($sql, "could not update credit status");
+		DB::query($sql, "could not update credit status");
 	}
 
 	function get_all_credit_status($all = false)
@@ -30,20 +30,20 @@
 		if (!$all) {
 			$sql .= " WHERE !inactive";
 		}
-		return DBOld::query($sql, "could not get all credit status");
+		return DB::query($sql, "could not get all credit status");
 	}
 
 	function get_credit_status($status_id)
 	{
 		$sql = "SELECT * FROM credit_status WHERE id=" . DB::escape($status_id);
-		$result = DBOld::query($sql, "could not get credit status");
-		return DBOld::fetch($result);
+		$result = DB::query($sql, "could not get credit status");
+		return DB::fetch($result);
 	}
 
 	function delete_credit_status($status_id)
 	{
 		$sql = "DELETE FROM credit_status WHERE id=" . DB::escape($status_id);
-		DBOld::query($sql, "could not delete credit status");
+		DB::query($sql, "could not delete credit status");
 	}
 
 ?>

@@ -20,7 +20,7 @@
 	$adjustment_items = get_stock_adjustment_items($trans_no);
 	$k = 0;
 	$header_shown = false;
-	while ($adjustment = DBOld::fetch($adjustment_items))
+	while ($adjustment = DB::fetch($adjustment_items))
 	{
 		if (!$header_shown) {
 			$adjustment_type = get_movement_type($adjustment['person_id']);

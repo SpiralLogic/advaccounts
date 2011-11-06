@@ -57,7 +57,7 @@
 			$sql .= " AND sales_order_details.quantity - sales_order_details.qty_sent > 0";
 		}
 		$sql .= " ORDER BY sales_orders.order_no";
-		return DBOld::query($sql, "Error getting order details");
+		return DB::query($sql, "Error getting order details");
 	}
 
 	//----------------------------------------------------------------------------------------------------
@@ -126,7 +126,7 @@
 		$rep->Header();
 		$orderno = 0;
 		$result = GetSalesOrders($from, $to, $category, $location, $backorder);
-		while ($myrow = DBOld::fetch($result))
+		while ($myrow = DB::fetch($result))
 		{
 			if ($rep->row < $rep->bottomMargin + (2 * $rep->lineHeight)) {
 				$orderno = 0;

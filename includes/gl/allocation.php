@@ -93,7 +93,7 @@
 				$trans_no = $this->trans_no;
 			}
 			if ($type == ST_BANKPAYMENT || $type == ST_BANKDEPOSIT) {
-				$bank_trans = DBOld::fetch(Bank_Trans::get($type, $trans_no));
+				$bank_trans = DB::fetch(Bank_Trans::get($type, $trans_no));
 				$this->person_type = $bank_trans['person_type_id'] == PT_SUPPLIER;
 			} else {
 				$this->person_type = $type == ST_SUPPCREDIT || $type == ST_SUPPAYMENT;
@@ -119,7 +119,7 @@
 			} else {
 				$trans_items = get_allocatable_to_cust_transactions($this->person_id);
 			}
-			while ($myrow = DBOld::fetch($trans_items))
+			while ($myrow = DB::fetch($trans_items))
 			{
 				$this->add_item(
 					$myrow["type"], $myrow["trans_no"],
@@ -147,7 +147,7 @@
 					$trans_no, $type
 				);
 			}
-			while ($myrow = DBOld::fetch($trans_items))
+			while ($myrow = DB::fetch($trans_items))
 			{
 				$this->add_or_update_item(
 					$myrow["type"], $myrow["trans_no"],
@@ -164,7 +164,7 @@
 		//
 		function write()
 		{
-			DBOld::begin_transaction();
+			DB::begin_transaction();
 			if ($this->person_type) {
 				clear_supp_alloctions($this->type, $this->trans_no, $this->date_);
 			} else {
@@ -221,7 +221,7 @@
 					$total_allocated
 				);
 			}
-			DBOld::commit_transaction();
+			DB::commit_transaction();
 		}
 
 		public static function show_allocatable($show_totals)

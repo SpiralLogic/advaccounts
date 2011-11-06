@@ -51,7 +51,7 @@
 			return $this->conn->prepare($sql);
 		}
 
-		public function exec($sql, $type, $data)
+		public function exec($sql, $type, $data = null)
 		{
 			try {
 				$prepared = $this->prepare($sql);
@@ -92,17 +92,21 @@
 			return $this;
 		}
 
+		public function cancel()
+		{
+			$this->intransaction = false;
+			$this->conn->rollBack();
+			return $this;
+		}
+
 		public function query($sql, $fetchas = PDO::FETCH_OBJ)
 		{
 			try {
-				$query = $this->conn->query($sql);
+				$query = $this->conn->prepare($sql);
 				if ($fetchas == false) {
-					return $query;
+					return $query->execute();
 				}
-				$results = array();
-				while ($row = $query->fetch($fetchas)) {
-					$results[] = $row;
-				}
+				$results = $query->fetchAll($fetchas);
 			}
 			catch (PDOException $e) {
 				return static::_error($e);
@@ -126,6 +130,18 @@
 			}
 		}
 
+		public function errorCode()
+		{
+			return $this->conn->errorCode();
+		}
+
+		public function errorInfo()
+		{
+			return $this->conn->errorInfo();
+		}
+		public  function getAttribute(PDO $value)
+			{					return $this->conn->getAttribute($value);
+			 }
 		protected function _error(PDOException $e, $exit = false)
 		{
 			if (function_exists('xdebug_call_file')) {

@@ -21,7 +21,7 @@
 		AND locations.loc_code = wo_requirements.loc_code
 		AND workcentres.id=workcentre";
 
-		return DBOld::query($sql, "The work order requirements could not be retrieved");
+		return DB::query($sql, "The work order requirements could not be retrieved");
 	}
 
 	//--------------------------------------------------------------------------------------
@@ -30,7 +30,7 @@
 		// create Work Order Requirements based on the bom
 		$result = Manufacturing::get_bom($stock_id);
 
-		while ($myrow = DBOld::fetch($result))
+		while ($myrow = DB::fetch($result))
 		{
 
 			$sql = "INSERT INTO wo_requirements (workorder_id, stock_id, workcentre, units_req, loc_code)
@@ -40,7 +40,7 @@
 			 $myrow["quantity"] . "', '" .
 			 $myrow["loc_code"] . "')";
 
-			DBOld::query($sql, "The work order requirements could not be added");
+			DB::query($sql, "The work order requirements could not be added");
 		}
 	}
 
@@ -48,7 +48,7 @@
 
 	function delete_wo_requirements($woid) {
 		$sql = "DELETE FROM wo_requirements WHERE workorder_id=" . DB::escape($woid);
-		DBOld::query($sql, "The work order requirements could not be deleted");
+		DB::query($sql, "The work order requirements could not be deleted");
 	}
 
 	//--------------------------------------------------------------------------------------
@@ -57,7 +57,7 @@
 		$sql = "UPDATE wo_requirements SET units_issued = units_issued + " . DB::escape($quantity) . "
 		WHERE workorder_id = " . DB::escape($woid) . " AND stock_id = " . DB::escape($stock_id);
 
-		DBOld::query($sql, "The work requirements issued quantity couldn't be updated");
+		DB::query($sql, "The work requirements issued quantity couldn't be updated");
 	}
 
 	//--------------------------------------------------------------------------------------
@@ -66,7 +66,7 @@
 		$sql = "UPDATE wo_requirements SET units_issued = 0 WHERE workorder_id = "
 		 . DB::escape($woid);
 
-		DBOld::query($sql, "The work requirements issued quantity couldn't be voided");
+		DB::query($sql, "The work requirements issued quantity couldn't be voided");
 	}
 
 	//--------------------------------------------------------------------------------------

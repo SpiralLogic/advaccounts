@@ -72,7 +72,8 @@
 				static::$messages[] = array('type' => $type,
 					'message' => $message,
 					'file' => $file,
-					'line' => $line);
+					'line' => $line
+					);
 			} else if ($type & ~E_NOTICE) { // log all not displayed messages
 				error_log(User::get()->loginname . ':' . basename($file) . ":$line: $message");
 			}
@@ -131,9 +132,9 @@
 					 */
 		static function show_db_error($msg, $sql_statement = null, $exit = true)
 		{
-			$db = DBOld::getInstance();
+
 			$warning = $msg == null;
-			$db_error = DBOld::error_no();
+			$db_error = DB::error_no();
 			//	$str = "<span class='errortext'><b>" . _("DATABASE ERROR :") . "</b> $msg</span><br>";
 			if ($warning) {
 				$str = "<b>" . _("Debug mode database warning:") . "</b><br>";
@@ -142,7 +143,7 @@
 			}
 			if ($db_error != 0) {
 				$str .= "error code : " . $db_error . "<br>";
-				$str .= "error message : " . DBOld::error_msg($db) . "<br>";
+				$str .= "error message : " . DB::error_msg() . "<br>";
 			}
 			if (Config::get('debug')) {
 				$str .= "sql that failed was : " . $sql_statement . "<br>";
@@ -171,13 +172,13 @@
 
 		static function check_db_error($msg, $sql_statement, $exit_if_error = true, $rollback_if_error = true)
 		{
-			$db_error = DBOld::error_no();
+			$db_error = DB::error_no();
 			if ($db_error != 0) {
 				if (User::get()->user == 1 && (Config::get('debug') || !Errors::nice_db_error($db_error))) {
 					Errors::show_db_error($msg, $sql_statement, false);
 				}
 				if ($rollback_if_error) {
-					DBOld::query("rollback", "could not rollback");
+					DB::query("rollback", "could not rollback");
 				}
 				if ($exit_if_error) {
 					throw new DB_Exception($db_error);

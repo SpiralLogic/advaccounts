@@ -40,7 +40,7 @@
 		default_dim_required=$default_dim_required,
 		default_delivery_required=$default_delivery_required
 		WHERE coy_code=1";
-			DBOld::query($sql, "The company gl setup could not be updated ");
+			DB::query($sql, "The company gl setup could not be updated ");
 		}
 
 		public static function update_setup($coy_name, $coy_no, $gst_no, $tax_prd, $tax_last, $postal_address, $phone, $fax, $email, $coy_logo, $domicile, $Dimension, $curr_default, $f_year, $no_item_list, $no_customer_list, $no_supplier_list, $base_sales, $time_zone, $add_pct, $round_to, $login_tout) {
@@ -69,18 +69,18 @@
 		round_to=$round_to,
 		login_tout = " . DB::escape($login_tout) . "
 		WHERE coy_code=1";
-			DBOld::query($sql, "The company setup could not be updated ");
+			DB::query($sql, "The company setup could not be updated ");
 			DB_Company::get_prefs();
 		}
 
 		public static function get_prefs() {
 			if (!isset($_SESSION['company_prefs'])) {
 				$sql = "SELECT * FROM company WHERE coy_code=1";
-				$result = DBOld::query($sql, "The company preferences could not be retrieved");
-				if (DBOld::num_rows($result) == 0) {
+				$result = DB::query($sql, "The company preferences could not be retrieved");
+				if (DB::num_rows($result) == 0) {
 					Errors::show_db_error("FATAL : Could not find company prefs", $sql);
 				}
-				$_SESSION['company_prefs'] = DBOld::fetch($result);
+				$_SESSION['company_prefs'] = DB::fetch($result);
 			}
 			return $_SESSION['company_prefs'];
 		}
@@ -96,44 +96,44 @@
 			$to = Dates::date2sql($to_date);
 			$sql = "INSERT INTO fiscal_year (begin, end, closed)
 		VALUES (" . DB::escape($from) . "," . DB::escape($to) . ", " . DB::escape($closed) . ")";
-			DBOld::query($sql, "could not add fiscal year");
+			DB::query($sql, "could not add fiscal year");
 		}
 
 		public static function update_fiscalyear($id, $closed) {
 			$sql = "UPDATE fiscal_year SET closed=" . DB::escape($closed) . "
 		WHERE id=" . DB::escape($id);
-			DBOld::query($sql, "could not update fiscal year");
+			DB::query($sql, "could not update fiscal year");
 		}
 
 		public static function get_all_fiscalyears() {
 			$sql = "SELECT * FROM fiscal_year ORDER BY begin";
-			return DBOld::query($sql, "could not get all fiscal years");
+			return DB::query($sql, "could not get all fiscal years");
 		}
 
 		public static function get_fiscalyear($id) {
 			$sql = "SELECT * FROM fiscal_year WHERE id=" . DB::escape($id);
-			$result = DBOld::query($sql, "could not get fiscal year");
-			return DBOld::fetch($result);
+			$result = DB::query($sql, "could not get fiscal year");
+			return DB::fetch($result);
 		}
 
 		public static function get_current_fiscalyear() {
 			$year = DB_Company::get_pref('f_year');
 			$sql = "SELECT * FROM fiscal_year WHERE id=" . DB::escape($year);
-			$result = DBOld::query($sql, "could not get current fiscal year");
-			return DBOld::fetch($result);
+			$result = DB::query($sql, "could not get current fiscal year");
+			return DB::fetch($result);
 		}
 
 		public static function delete_fiscalyear($id) {
-			DBOld::begin_transaction();
+			DB::begin_transaction();
 			$sql = "DELETE FROM fiscal_year WHERE id=" . DB::escape($id);
-			DBOld::query($sql, "could not delete fiscal year");
-			DBOld::commit_transaction();
+			DB::query($sql, "could not delete fiscal year");
+			DB::commit_transaction();
 		}
 
 		public static function get_base_sales_type() {
 			$sql = "SELECT base_sales FROM company WHERE coy_code=1";
-			$result = DBOld::query($sql, "could not get base sales type");
-			$myrow = DBOld::fetch($result);
+			$result = DB::query($sql, "could not get base sales type");
+			$myrow = DB::fetch($result);
 			return $myrow[0];
 		}
 
@@ -159,7 +159,7 @@
 			VALUES (" . DB::escape($terms) . ",
 			0, " . DB::escape($dayNumber) . ")";
 			}
-			DBOld::query($sql, "The payment term could not be added");
+			DB::query($sql, "The payment term could not be added");
 		}
 
 		public static function update_payment_terms($selected_id, $daysOrFoll, $terms, $dayNumber) {
@@ -174,27 +174,27 @@
 			days_before_due=0
 			WHERE terms_indicator = " . DB::escape($selected_id);
 			}
-			DBOld::query($sql, "The payment term could not be updated");
+			DB::query($sql, "The payment term could not be updated");
 		}
 
 		public static function delete_payment_terms($selected_id) {
 			$sql = "DELETE FROM payment_terms WHERE terms_indicator=" . DB::escape($selected_id);
-			DBOld::query($sql, "could not delete a payment terms");
+			DB::query($sql, "could not delete a payment terms");
 		}
 
 		public static function get_payment_terms($selected_id) {
 			$sql = "SELECT *, (t.days_before_due=0) AND (t.day_in_following_month=0) as cash_sale
 	 FROM payment_terms t WHERE terms_indicator=" . DB::escape($selected_id);
 
-			$result = DBOld::query($sql, "could not get payment term");
+			$result = DB::query($sql, "could not get payment term");
 
-			return DBOld::fetch($result);
+			return DB::fetch($result);
 		}
 
 		public static function get_payment_terms_all($show_inactive) {
 			$sql = "SELECT * FROM payment_terms";
 			if (!$show_inactive) $sql .= " WHERE !inactive";
-			return DBOld::query($sql, "could not get payment terms");
+			return DB::query($sql, "could not get payment terms");
 		}
 
 		/*
@@ -222,8 +222,8 @@
 
 			$sql = "SELECT sum(cnt) FROM (" . implode(' UNION ', $sqls) . ") as counts";
 
-			$result = DBOld::query($sql, "check relations for " . implode(',', $tables) . " failed");
-			$count = DBOld::fetch($result);
+			$result = DB::query($sql, "check relations for " . implode(',', $tables) . " failed");
+			$count = DB::fetch($result);
 
 			return $count[0];
 		}

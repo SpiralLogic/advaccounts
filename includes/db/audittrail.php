@@ -54,10 +54,10 @@
 			 . " WHERE gl_date<='" . Dates::date2sql($todate) . "'"
 			 . " AND NOT ISNULL(gl_seq)"
 			 . " ORDER BY a.fiscal_year, a.gl_date, a.id";
-			$result = DBOld::query($sql, "Cannot select transactions for closing");
-			if (DBOld::num_rows($result)) {
+			$result = DB::query($sql, "Cannot select transactions for closing");
+			if (DB::num_rows($result)) {
 				$last_year = $counter = 0;
-				while ($row = DBOld::fetch($result)) {
+				while ($row = DB::fetch($result)) {
 					if ($row['fiscal_year'] == null) {
 						$errors = 1;
 					} elseif ($last_year != $row['fiscal_year']) {
@@ -86,9 +86,9 @@
 			 . " WHERE gl_date>='" . Dates::date2sql($fromdate) . "'"
 			 . " AND !ISNULL(gl_seq)"
 			 . " ORDER BY a.fiscal_year, a.gl_date, a.id";
-			$result = DBOld::query($sql, "Cannot select transactions for openning");
-			if (DBOld::num_rows($result)) {
-				while ($row = DBOld::fetch($result)) {
+			$result = DB::query($sql, "Cannot select transactions for openning");
+			if (DB::num_rows($result)) {
+				while ($row = DB::fetch($result)) {
 					if ($row['fiscal_year'] == null) {
 						continue;
 					}
@@ -106,7 +106,7 @@
 			 . " WHERE type=" . DB::escape($type)
 			 . " AND trans_no=" . DB::escape($trans_no)
 			 . " AND gl_seq>0";
-			$res = DBOld::query($sql, "Cannot check transaction");
-			return DBOld::num_rows($res);
+			$res = DB::query($sql, "Cannot check transaction");
+			return DB::num_rows($res);
 		}
 	}

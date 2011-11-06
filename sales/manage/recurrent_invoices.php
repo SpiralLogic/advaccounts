@@ -50,7 +50,7 @@
 				) . "')";
 				$note = _('New recurrent invoice has been added');
 			}
-			DBOld::query($sql, "The recurrent invoice could not be updated or added");
+			DB::query($sql, "The recurrent invoice could not be updated or added");
 			Errors::notice($note);
 			$Mode = 'RESET';
 		}
@@ -59,7 +59,7 @@
 		$cancel_delete = 0;
 		if ($cancel_delete == 0) {
 			$sql = "DELETE FROM recurrent_invoices WHERE id=" . DB::escape($selected_id);
-			DBOld::query($sql, "could not delete recurrent invoice");
+			DB::query($sql, "could not delete recurrent invoice");
 			Errors::notice(_('Selected recurrent invoice has been deleted'));
 		} //end if Delete area
 		$Mode = 'RESET';
@@ -72,13 +72,13 @@
 	function get_sales_group_name($group_no)
 	{
 		$sql = "SELECT description FROM groups WHERE id = " . DB::escape($group_no);
-		$result = DBOld::query($sql, "could not get group");
-		$row = DBOld::fetch($result);
+		$result = DB::query($sql, "could not get group");
+		$row = DB::fetch($result);
 		return $row[0];
 	}
 
 	$sql = "SELECT * FROM recurrent_invoices ORDER BY description, group_no, debtor_no";
-	$result = DBOld::query($sql, "could not get recurrent invoices");
+	$result = DB::query($sql, "could not get recurrent invoices");
 	start_form();
 	start_table(Config::get('tables_style') . "  width=70%");
 	$th = array(
@@ -87,7 +87,7 @@
 	);
 	table_header($th);
 	$k = 0;
-	while ($myrow = DBOld::fetch($result))
+	while ($myrow = DB::fetch($result))
 	{
 		$begin = Dates::sql2date($myrow["begin"]);
 		$end = Dates::sql2date($myrow["end"]);
@@ -121,8 +121,8 @@
 		if ($Mode == 'Edit') {
 			//editing an existing area
 			$sql = "SELECT * FROM recurrent_invoices WHERE id=" . DB::escape($selected_id);
-			$result = DBOld::query($sql, "could not get recurrent invoice");
-			$myrow = DBOld::fetch($result);
+			$result = DB::query($sql, "could not get recurrent invoice");
+			$myrow = DB::fetch($result);
 			$_POST['description'] = $myrow["description"];
 			$_POST['order_no'] = $myrow["order_no"];
 			$_POST['debtor_no'] = $myrow["debtor_no"];

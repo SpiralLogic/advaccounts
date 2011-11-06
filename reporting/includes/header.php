@@ -163,16 +163,16 @@
 			$id = $myrow['salesman'];
 		}
 		$sql = "SELECT salesman_name  FROM salesman WHERE salesman_code='$id'";
-		$result = DBOld::query($sql, "could not get sales person");
-		$row = DBOld::fetch($result);
+		$result = DB::query($sql, "could not get sales person");
+		$row = DB::fetch($result);
 		if (empty($row['salesman_name'])) {
 			$user = User::get()->name;
 		} else {
 			$user = $row['salesman_name'];
 		}
 		//$sql = "SELECT salesman_name  FROM sales_order WHERE salesman_code='$id'";
-		//$result = DBOld::query($sql, "could not get sales person");
-		//$row = DBOld::fetch($result);
+		//$result = DB::query($sql, "could not get sales person");
+		//$row = DB::fetch($result);
 		$this->Text($mcol + 180, $user);
 		//$this->TextWrap($col, $this->row, $width, $row['salesman_name'], 'C');
 		//$this->TextWrap($col, $this->row, $width, $_SESSION['current_user'], 'C');
@@ -251,8 +251,8 @@
 	if ($doctype == ST_PURCHORDER) {
 		$id = $branch['salesman'];
 		$sql = "SELECT salesman_name  FROM salesman WHERE salesman_code='$id'";
-		$result = DBOld::query($sql, "could not get sales person");
-		$row = DBOld::fetch($result);
+		$result = DB::query($sql, "could not get sales person");
+		$row = DB::fetch($result);
 		$this->TextWrap($col, $this->row, $width, $row['salesman_name'], 'C');
 		$this->TextWrap($col, $this->row, $width, $_SESSION['current_user'], 'C');
 	} #  __ADVANCEDEDIT__ END #
@@ -345,8 +345,8 @@
 		} else {
 			$id = $myrow['payment_terms'];
 			$sql = "SELECT terms FROM payment_terms WHERE terms_indicator='$id'";
-			$result = DBOld::query($sql, "could not get paymentterms");
-			$row = DBOld::fetch($result);
+			$result = DB::query($sql, "could not get paymentterms");
+			$row = DB::fetch($result);
 			$str = $row["terms"];
 		}
 		$this->Font('italic');

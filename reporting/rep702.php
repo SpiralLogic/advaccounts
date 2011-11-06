@@ -58,7 +58,7 @@
 		}
 		$trans = get_gl_transactions($from, $to, -1, null, 0, 0, $systype);
 		$typeno = $type = 0;
-		while ($myrow = DBOld::fetch($trans))
+		while ($myrow = DB::fetch($trans))
 		{
 			if ($type != $myrow['type'] || $typeno != $myrow['type_no']) {
 				if ($typeno != 0) {

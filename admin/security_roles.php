@@ -101,7 +101,7 @@
 					$_POST['role'], $_POST['name'], $_POST['description'],
 					$sections, $areas
 				);
-				DBOld::update_record_status(
+				DB::update_record_status(
 					$_POST['role'], get_post('inactive'),
 					'security_roles', 'id'
 				);

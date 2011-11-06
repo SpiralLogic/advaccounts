@@ -28,9 +28,9 @@
 
 		protected function _read($id = 0) {
 			$sql = "SELECT * FROM stock_master WHERE id = " . DB::escape($id);
-			$result = DBOld::query($sql, 'Could not retrieve stock information');
-			if (DBOld::num_rows($result) == 1) {
-				$myrow = DBOld::fetch_assoc($result);
+			$result = DB::query($sql, 'Could not retrieve stock information');
+			if (DB::num_rows($result) == 1) {
+				$myrow = DB::fetch_assoc($result);
 				$this->id = $myrow['id'];
 				$this->stock_id = $myrow['stock_id'];
 				$this->name = $myrow['description'];
@@ -75,28 +75,28 @@
 			if ($this->id == 0) {
 				$this->_saveNew();
 			}
-			DBOld::begin_transaction();
+			DB::begin_transaction();
 			$sql = "UPDATE stock_master SET description=" . DB::escape($this->name) . ",
 					long_description=" . DB::escape($this->description) . ",
 					category_id=" . DB::escape($this->category_id) . ",
 					stock_id=" . DB::escape($this->stock_id) . ",
 					units=" . DB::escape($this->units) . "
 		            WHERE id = " . DB::escape($this->id);
-			DBOld::query($sql, "The item could not be updated");
+			DB::query($sql, "The item could not be updated");
 			$sql = "UPDATE item_codes SET stock_id=" . DB::escape($this->stock_id) . ",
 							category_id=" . DB::escape($this->category_id) . ",
 							description=" . DB::escape($this->name) . ",
 							item_code=" . DB::escape($this->stock_id) . "
 							WHERE stockid = " . DB::escape($this->id);
-			DBOld::query($sql, "The item could not be updated");
-			DBOld::commit_transaction();
+			DB::query($sql, "The item could not be updated");
+			DB::commit_transaction();
 			return $this->_status(true, 'Processing', "Item has been updated.");
 		}
 
 		function	getSalePrices() {
 			$sql = "SELECT * FROM prices WHERE stockid = " . $this->id;
-			$result = DBOld::query($sql, 'Could not get item pricing');
-			while ($row = DBOld::fetch_assoc($result)) {
+			$result = DB::query($sql, 'Could not get item pricing');
+			while ($row = DB::fetch_assoc($result)) {
 				$this->prices[$row['id']] = array("curr" => $row['curr_abrev'],
 					"type" => $row['type'],
 					"price" => $row['price']
@@ -107,9 +107,9 @@
 		function	getPurchPrices($option = array()) {
 			$sql = "SELECT * FROM purch_data WHERE stockid = " . $this->id;
 			if ($option['min']) $sql .= " ORDER BY price LIMIT 1";
-			$result = DBOld::query($sql, 'Could not get item pricing');
-			if ($option['min']) return DBOld::fetch_assoc($result);
-			while ($row = DBOld::fetch_assoc($result)) {
+			$result = DB::query($sql, 'Could not get item pricing');
+			if ($option['min']) return DB::fetch_assoc($result);
+			while ($row = DB::fetch_assoc($result)) {
 				$this->prices[$row['supplier_id']] = array("code" => $row['supplier_description'],
 					"price" => $row['price'],
 //					"suppliers_uom" => $row['uom'],
@@ -135,9 +135,9 @@
 				FROM purch_order_details, purch_orders	WHERE purch_order_details.order_no= purch_orders.order_no AND purch_order_details.stockid = $id
 				GROUP BY purch_orders.into_stock_location) p ON p.loc_code=l.loc_code";
 			if ($location !== null) $sql .= " WHERE l.loc_code=" . DB::escape($location);
-			$result = DBOld::query($sql, 'Could not get item stock levels');
-			if ($location !== null) return DBOld::fetch_assoc($result);
-			while ($row = DBOld::fetch_assoc($result)) {
+			$result = DB::query($sql, 'Could not get item stock levels');
+			if ($location !== null) return DB::fetch_assoc($result);
+			while ($row = DB::fetch_assoc($result)) {
 				$this->stockLevels[] = $row;
 			}
 			return $this->stockLevels;
@@ -146,8 +146,8 @@
 		function getStockOnOrder() {
 			$sql = "SELECT SUM(sales_order_details.quantity - sales_order_details.qty_sent) AS demand , sales_orders.from_stk_loc AS loc_code FROM sales_order_details, sales_orders WHERE sales_order_details.order_no= sales_orders.order_no AND sales_orders.trans_type=30 AND sales_orders.trans_type=sales_order_details.trans_type AND sales_order_details.stockid = " . DB::escape($this->id) . "' GROUP BY sales_orders.from_stk_loc";
 
-			$result = DBOld::query($sql, "No transactions were returned");
-			$row = DBOld::fetch($result);
+			$result = DB::query($sql, "No transactions were returned");
+			$row = DB::fetch($result);
 			if ($row === false) {
 				return 0;
 			}
@@ -157,9 +157,9 @@
 		static function search($term) {
 			$term = DB::escape("%$term%");
 			$sql = "SELECT stock_id AS id, description AS label, stock_id AS value FROM stock_master WHERE stock_id LIKE $term OR description LIKE $term LIMIT 200";
-			$result = DBOld::query($sql, 'Couldn\'t Get Items');
+			$result = DB::query($sql, 'Couldn\'t Get Items');
 			$data = '';
-			while ($row = DBOld::fetch_assoc($result)) {
+			while ($row = DB::fetch_assoc($result)) {
 
 				$data[] = $row;
 			}
@@ -199,8 +199,8 @@
 				array_unshift($terms, $stock_id);
 				$weight = 'IF(s.stock_id LIKE ?, 0,20) + IF(p.supplier_description LIKE ?, 0,15) + IF(s.stock_id LIKE ?,0,5) as weight';
 				$termswhere .= ' OR p.supplier_description LIKE ? ';
-				if (Input::session('wa_global_supplier_id', Input::NUMERIC)) {
-					array_unshift($terms, $_SESSION['wa_global_supplier_id']);
+				if (Input::session('supplier_id', Input::NUMERIC)) {
+					array_unshift($terms, $_SESSION['supplier_id']);
 					$weight = ' IF(p.supplier_id = ?,0,30) + ' . $weight;
 				}
 				$stock_id = ' s.stock_id, p.supplier_description, MIN(p.price) as price ';

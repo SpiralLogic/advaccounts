@@ -51,9 +51,9 @@
 		/* returns true ie 1 if the bom contains the parent part as a component
 						ie the bom is recursive otherwise false ie 0 */
 		$sql = "SELECT component FROM bom WHERE parent=" . DB::escape($component_to_check);
-		$result = DBOld::query($sql, "could not check recursive bom");
+		$result = DB::query($sql, "could not check recursive bom");
 		if ($result != 0) {
-			while ($myrow = DBOld::fetch_row($result))
+			while ($myrow = DB::fetch_row($result))
 			{
 				if ($myrow[0] == $ultimate_parent) {
 					return 1;
@@ -77,7 +77,7 @@
 		);
 		table_header($th);
 		$k = 0;
-		while ($myrow = DBOld::fetch($result))
+		while ($myrow = DB::fetch($result))
 		{
 			alt_table_row_color($k);
 			label_cell($myrow["component"]);
@@ -109,7 +109,7 @@
 			WHERE parent=" . DB::escape($selected_parent) . "
 			AND id=" . DB::escape($selected_component);
 			Errors::check_db_error("Could not update this bom component", $sql);
-			DBOld::query($sql, "could not update bom");
+			DB::query($sql, "could not update bom");
 			Errors::notice(_('Selected component has been updated'));
 			$Mode = 'RESET';
 		} else {
@@ -125,14 +125,14 @@
 				AND component=" . DB::escape($_POST['component']) . "
 				AND workcentre_added=" . DB::escape($_POST['workcentre_added']) . "
 				AND loc_code=" . DB::escape($_POST['loc_code']);
-				$result = DBOld::query($sql, "check failed");
-				if (DBOld::num_rows($result) == 0) {
+				$result = DB::query($sql, "check failed");
+				if (DB::num_rows($result) == 0) {
 					$sql
 					 = "INSERT INTO bom (parent, component, workcentre_added, loc_code, quantity)
 					VALUES (" . DB::escape($selected_parent) . ", " . DB::escape($_POST['component']) . ","
 					 . DB::escape($_POST['workcentre_added']) . ", " . DB::escape($_POST['loc_code']) . ", "
 					 . input_num('quantity') . ")";
-					DBOld::query($sql, "check failed");
+					DB::query($sql, "check failed");
 					Errors::notice(_("A new component part has been added to the bill of material for this item."));
 					$Mode = 'RESET';
 				} else {
@@ -150,7 +150,7 @@
 	//--------------------------------------------------------------------------------------------------
 	if ($Mode == 'Delete') {
 		$sql = "DELETE FROM bom WHERE id=" . DB::escape($selected_id);
-		DBOld::query($sql, "Could not delete this bom components");
+		DB::query($sql, "Could not delete this bom components");
 		Errors::notice(_("The component item has been deleted from this bom"));
 		$Mode = 'RESET';
 	}
@@ -188,8 +188,8 @@
 				 . "bom,stock_master
 				WHERE id=" . DB::escape($selected_id) . "
 				AND stock_master.stock_id=bom.component";
-				$result = DBOld::query($sql, "could not get bom");
-				$myrow = DBOld::fetch($result);
+				$result = DB::query($sql, "could not get bom");
+				$myrow = DB::fetch($result);
 				$_POST['loc_code'] = $myrow["loc_code"];
 				$_POST['component'] = $myrow["component"]; // by Tom Moulton
 				$_POST['workcentre_added'] = $myrow["workcentre_added"];

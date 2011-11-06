@@ -55,7 +55,7 @@
 		$sql
 		 .= " ORDER BY stock_master.category_id,
 			stock_master.stock_id";
-		return DBOld::query($sql, "No transactions were returned");
+		return DB::query($sql, "No transactions were returned");
 	}
 
 	//----------------------------------------------------------------------------------------------------
@@ -109,7 +109,7 @@
 		$res = getTransactions($category, $location);
 		$total = $grandtotal = 0.0;
 		$catt = '';
-		while ($trans = DBOld::fetch($res))
+		while ($trans = DB::fetch($res))
 		{
 			if ($catt != $trans['cat_description']) {
 				if ($catt != '') {

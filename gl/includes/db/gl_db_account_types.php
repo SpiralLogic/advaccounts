@@ -13,7 +13,7 @@
 		$sql = "INSERT INTO chart_types (id, name, class_id, parent)
 		VALUES ($id, " . DB::escape($name) . ", " . DB::escape($class_id) . ", " . DB::escape($parent) . ")";
 
-		return DBOld::query($sql);
+		return DB::query($sql);
 	}
 
 	function update_account_type($id, $name, $class_id, $parent) {
@@ -21,7 +21,7 @@
 		class_id=" . DB::escape($class_id) . ", parent=" . DB::escape($parent)
 		 . " WHERE id = " . DB::escape($id);
 
-		return DBOld::query($sql, "could not update account type");
+		return DB::query($sql, "could not update account type");
 	}
 
 	function get_account_types($all = false, $class_id = false, $parent = false) {
@@ -37,44 +37,44 @@
 			$sql .= " AND parent=" . DB::escape($parent);
 		$sql .= " ORDER BY class_id, id";
 
-		return DBOld::query($sql, "could not get account types");
+		return DB::query($sql, "could not get account types");
 	}
 
 	function get_account_type($id) {
 		$sql = "SELECT * FROM chart_types WHERE id = " . DB::escape($id);
 
-		$result = DBOld::query($sql, "could not get account type");
+		$result = DB::query($sql, "could not get account type");
 
-		return DBOld::fetch($result);
+		return DB::fetch($result);
 	}
 
 	function get_account_type_name($id) {
 		$sql = "SELECT name FROM chart_types WHERE id = " . DB::escape($id);
 
-		$result = DBOld::query($sql, "could not get account type");
+		$result = DB::query($sql, "could not get account type");
 
-		$row = DBOld::fetch_row($result);
+		$row = DB::fetch_row($result);
 		return $row[0];
 	}
 
 	function delete_account_type($id) {
 		$sql = "DELETE FROM chart_types WHERE id = " . DB::escape($id);
 
-		DBOld::query($sql, "could not delete account type");
+		DB::query($sql, "could not delete account type");
 	}
 
 	function add_account_class($id, $name, $ctype) {
 		$sql = "INSERT INTO chart_class (cid, class_name, ctype)
 		VALUES (" . DB::escape($id) . ", " . DB::escape($name) . ", " . DB::escape($ctype) . ")";
 
-		return DBOld::query($sql);
+		return DB::query($sql);
 	}
 
 	function update_account_class($id, $name, $ctype) {
 		$sql = "UPDATE chart_class SET class_name=" . DB::escape($name) . ",
 		ctype=" . DB::escape($ctype) . " WHERE cid = " . DB::escape($id);
 
-		return DBOld::query($sql);
+		return DB::query($sql);
 	}
 
 	function get_account_classes($all = false, $balance = -1) {
@@ -87,30 +87,30 @@
 			$sql .= " AND ctype>0 AND ctype<" . CL_INCOME;
 		$sql .= " ORDER BY cid";
 
-		return DBOld::query($sql, "could not get account classes");
+		return DB::query($sql, "could not get account classes");
 	}
 
 	function get_account_class($id) {
 		$sql = "SELECT * FROM chart_class WHERE cid = " . DB::escape($id);
 
-		$result = DBOld::query($sql, "could not get account type");
+		$result = DB::query($sql, "could not get account type");
 
-		return DBOld::fetch($result);
+		return DB::fetch($result);
 	}
 
 	function get_account_class_name($id) {
 		$sql = "SELECT class_name FROM chart_class WHERE cid =" . DB::escape($id);
 
-		$result = DBOld::query($sql, "could not get account type");
+		$result = DB::query($sql, "could not get account type");
 
-		$row = DBOld::fetch_row($result);
+		$row = DB::fetch_row($result);
 		return $row[0];
 	}
 
 	function delete_account_class($id) {
 		$sql = "DELETE FROM chart_class WHERE cid = " . DB::escape($id);
 
-		DBOld::query($sql, "could not delete account type");
+		DB::query($sql, "could not delete account type");
 	}
 
 ?>

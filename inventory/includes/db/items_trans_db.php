@@ -21,14 +21,14 @@
 
 		$update_no = -1;
 
-		DBOld::begin_transaction();
+		DB::begin_transaction();
 
 		$sql = "UPDATE stock_master SET material_cost=" . DB::escape($material_cost) . ",
 		labour_cost=" . DB::escape($labour_cost) . ",
 		overhead_cost=" . DB::escape($overhead_cost) . ",
 		last_cost=" . DB::escape($last_cost) . "
 		WHERE stock_id=" . DB::escape($stock_id);
-		DBOld::query($sql, "The cost details for the inventory item could not be updated");
+		DB::query($sql, "The cost details for the inventory item could not be updated");
 
 		$qoh = get_qoh_on_date($_POST['stock_id']);
 
@@ -55,7 +55,7 @@
 		}
 
 		DB_AuditTrail::add(ST_COSTUPDATE, $update_no, $date_);
-		DBOld::commit_transaction();
+		DB::commit_transaction();
 
 		return $update_no;
 	}

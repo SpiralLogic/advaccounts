@@ -94,10 +94,10 @@
 		 = "SELECT item_code, quantity_ordered, quantity_received, qty_invoiced
 		FROM purch_order_details
 		WHERE order_no=" . DB::escape($_SESSION['PO']->order_no) . " ORDER BY po_detail_item";
-		$result = DBOld::query($sql, "could not query purch order details");
+		$result = DB::query($sql, "could not query purch order details");
 		Errors::check_db_error("Could not check that the details of the purchase order had not been changed by another user ", $sql);
 		$line_no = 1;
-		while ($myrow = DBOld::fetch($result)) {
+		while ($myrow = DB::fetch($result)) {
 			$ln_item = $_SESSION['PO']->line_items[$line_no];
 			// only compare against items that are outstanding
 			$qty_outstanding = $ln_item->quantity - $ln_item->qty_received;
@@ -200,7 +200,7 @@
 			$Ajax->activate('_page_body');
 			Page::footer_exit();
 		}
-		$_SESSION['wa_global_supplier_id'] = $_SESSION['PO']->supplier_id;
+		$_SESSION['supplier_id'] = $_SESSION['PO']->supplier_id;
 		$grn = add_grn($_SESSION['PO'], $_POST['DefaultReceivedDate'], $_POST['ref'], $_POST['Location']);
 		$_SESSION['delivery_po'] = $_SESSION['PO']->order_no;
 		Dates::new_doc_date($_POST['DefaultReceivedDate']);

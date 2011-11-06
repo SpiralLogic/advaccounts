@@ -17,10 +17,10 @@
 	}
 	// get the pay-to bank payment info
 	$result = Bank_Trans::get(ST_BANKDEPOSIT, $trans_no);
-	if (DBOld::num_rows($result) != 1) {
+	if (DB::num_rows($result) != 1) {
 		Errors::show_db_error("duplicate payment bank transaction found", "");
 	}
-	$to_trans = DBOld::fetch($result);
+	$to_trans = DB::fetch($result);
 	$company_currency = Banking::get_company_currency();
 	$show_currencies = false;
 	if ($to_trans['bank_curr_code'] != $company_currency) {
@@ -60,7 +60,7 @@
 	end_table(1);
 	Display::is_voided(ST_BANKDEPOSIT, $trans_no, _("This deposit has been voided."));
 	$items = get_gl_trans(ST_BANKDEPOSIT, $trans_no);
-	if (DBOld::num_rows($items) == 0) {
+	if (DB::num_rows($items) == 0) {
 		Errors::warning(_("There are no items for this deposit."));
 	} else {
 		Display::heading(_("Items for this Deposit"));
@@ -89,7 +89,7 @@
 		table_header($th);
 		$k = 0; //row colour counter
 		$total_amount = 0;
-		while ($item = DBOld::fetch($items))
+		while ($item = DB::fetch($items))
 		{
 			if ($item["account"] != $to_trans["account_code"]) {
 				alt_table_row_color($k);

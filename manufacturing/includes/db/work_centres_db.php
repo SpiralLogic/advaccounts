@@ -13,35 +13,35 @@
 		$sql = "INSERT INTO workcentres (name, description)
 		VALUES (" . DB::escape($name) . "," . DB::escape($description) . ")";
 
-		DBOld::query($sql, "could not add work centre");
+		DB::query($sql, "could not add work centre");
 	}
 
 	function update_work_centre($type_id, $name, $description) {
 		$sql = "UPDATE workcentres SET name=" . DB::escape($name) . ", description=" . DB::escape($description) . "
 		WHERE id=" . DB::escape($type_id);
 
-		DBOld::query($sql, "could not update work centre");
+		DB::query($sql, "could not update work centre");
 	}
 
 	function get_all_work_centres($all = false) {
 		$sql = "SELECT * FROM workcentres";
 		if (!$all) $sql .= " WHERE !inactive";
 
-		return DBOld::query($sql, "could not get all work centres");
+		return DB::query($sql, "could not get all work centres");
 	}
 
 	function get_work_centre($type_id) {
 		$sql = "SELECT * FROM workcentres WHERE id=" . DB::escape($type_id);
 
-		$result = DBOld::query($sql, "could not get work centre");
+		$result = DB::query($sql, "could not get work centre");
 
-		return DBOld::fetch($result);
+		return DB::fetch($result);
 	}
 
 	function delete_work_centre($type_id) {
 		$sql = "DELETE FROM workcentres WHERE id=" . DB::escape($type_id);
 
-		DBOld::query($sql, "could not delete work centre");
+		DB::query($sql, "could not delete work centre");
 	}
 
 ?>

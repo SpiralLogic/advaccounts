@@ -18,7 +18,7 @@
 	{
 		$date = Dates::date2sql($date);
 		$sql = "UPDATE recurrent_invoices SET last_sent='$date' WHERE id=" . DB::escape($id);
-		DBOld::query($sql, "The recurrent invoice could not be updated or added");
+		DB::query($sql, "The recurrent invoice could not be updated or added");
 	}
 
 	function create_recurrent_invoices($customer_id, $branch_id, $order_no, $tmpl_no)
@@ -53,11 +53,11 @@
 		if (Dates::is_date_in_fiscalyear($date)) {
 			$invs = array();
 			$sql = "SELECT * FROM recurrent_invoices WHERE id=" . DB::escape($_GET['recurrent']);
-			$result = DBOld::query($sql, "could not get recurrent invoice");
-			$myrow = DBOld::fetch($result);
+			$result = DB::query($sql, "could not get recurrent invoice");
+			$myrow = DB::fetch($result);
 			if ($myrow['debtor_no'] == 0) {
 				$cust = get_cust_branches_from_group($myrow['group_no']);
-				while ($row = DBOld::fetch($cust))
+				while ($row = DB::fetch($cust))
 				{
 					$invs[] = create_recurrent_invoices(
 						$row['debtor_no'], $row['branch_code'], $myrow['order_no'], $myrow['id']
@@ -97,13 +97,13 @@
 	function get_sales_group_name($group_no)
 	{
 		$sql = "SELECT description FROM groups WHERE id = " . DB::escape($group_no);
-		$result = DBOld::query($sql, "could not get group");
-		$row = DBOld::fetch($result);
+		$result = DB::query($sql, "could not get group");
+		$row = DB::fetch($result);
 		return $row[0];
 	}
 
 	$sql = "SELECT * FROM recurrent_invoices ORDER BY description, group_no, debtor_no";
-	$result = DBOld::query($sql, "could not get recurrent invoices");
+	$result = DB::query($sql, "could not get recurrent invoices");
 	start_table(Config::get('tables_style') . "  width=70%");
 	$th = array(
 		_("Description"), _("Template No"), _("Customer"), _("Branch") . "/" . _("Group"), _("Days"),
@@ -113,7 +113,7 @@
 	$k = 0;
 	$today = Dates::add_days(Dates::Today(), 1);
 	$due = false;
-	while ($myrow = DBOld::fetch($result))
+	while ($myrow = DB::fetch($result))
 	{
 		$begin = Dates::sql2date($myrow["begin"]);
 		$end = Dates::sql2date($myrow["end"]);

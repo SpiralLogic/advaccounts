@@ -27,8 +27,8 @@
 		FROM bank_trans bt, bank_accounts ba
 		WHERE ba.id = bt.bank_act AND ba.account_code = " . DB::escape($account) . " AND bt.trans_date<='" . Dates::date2sql($date_) . "'
 		GROUP BY ba.bank_curr_code";
-		$result = DBOld::query($sql, "Transactions for bank account $acc_id could not be calculated");
-		while ($row = DBOld::fetch($result))
+		$result = DB::query($sql, "Transactions for bank account $acc_id could not be calculated");
+		while ($row = DB::fetch($result))
 		{
 			if ($row['for_amount'] == 0) {
 				continue;
@@ -59,8 +59,8 @@
 	{
 		$trans_no = SysTypes::get_next_trans_no(ST_JOURNAL);
 		$sql = "SELECT * FROM bank_accounts";
-		$result = DBOld::query($sql, "could not retreive bank accounts");
-		while ($myrow = DBOld::fetch($result))
+		$result = DB::query($sql, "could not retreive bank accounts");
+		while ($myrow = DB::fetch($result))
 		{
 			add_exchange_variation(ST_JOURNAL, $trans_no, null, $myrow['id'], $myrow['account_code'],
 				$myrow['currency_code']);
@@ -76,7 +76,7 @@
 	function add_bank_transfer($from_account, $to_account, $date_,
 														 $amount, $ref, $memo_, $charge = 0)
 	{
-		DBOld::begin_transaction();
+		DB::begin_transaction();
 		$trans_type = ST_BANKTRANSFER;
 		$currency = Banking::get_bank_account_currency($from_account);
 		$trans_no = SysTypes::get_next_trans_no($trans_type);
@@ -112,7 +112,7 @@
 		DB_Comments::add($trans_type, $trans_no, $date_, $memo_);
 		Refs::save($trans_type, $trans_no, $ref);
 		DB_AuditTrail::add($trans_type, $trans_no, $date_);
-		DBOld::commit_transaction();
+		DB::commit_transaction();
 		return $trans_no;
 	}
 
@@ -135,7 +135,7 @@
 		}
 		$do_exchange_variance = false;
 		if ($use_transaction) {
-			DBOld::begin_transaction();
+			DB::begin_transaction();
 		}
 		$currency = Banking::get_bank_account_currency($from_account);
 		$bank_gl_account = get_bank_gl_account($from_account);
@@ -208,7 +208,7 @@
 		Refs::save($trans_type, $trans_no, $ref);
 		DB_AuditTrail::add($trans_type, $trans_no, $date_);
 		if ($use_transaction) {
-			DBOld::commit_transaction();
+			DB::commit_transaction();
 		}
 		return array($trans_type, $trans_no);
 	}

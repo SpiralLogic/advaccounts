@@ -12,7 +12,7 @@
 	//----------------------------------------------------------------------------------------
 	function add_sales_order($order)
 	{
-		DBOld::begin_transaction();
+		DB::begin_transaction();
 		$order_no = SysTypes::get_next_trans_no($order->trans_type);
 		$del_date = Dates::date2sql($order->due_date);
 		$order_type = 0; // this is default on new order
@@ -24,7 +24,7 @@
 		 . DB::escape($order->salesman) . "," . DB::escape($order->Comments) . ",'" . Dates::date2sql($order->document_date) . "', " . DB::escape($order->sales_type) . ", " . DB::escape($order->ship_via) . "," . DB::escape($order->deliver_to) . "," . DB::escape(
 			$order->delivery_address
 		) . ", " . DB::escape($order->name) . ", " . DB::escape($order->phone) . ", " . DB::escape($order->email) . ", " . DB::escape($order->freight_cost) . ", " . DB::escape($order->Location) . ", " . DB::escape($del_date) . ")";
-		DBOld::query($sql, "order Cannot be Added");
+		DB::query($sql, "order Cannot be Added");
 		$order->trans_no = array($order_no => 0);
 		if (Config::get('accounts_stock_emailnotify') == 1) {
 			$st_ids = array();
@@ -42,8 +42,8 @@
 				WHERE loc_stock.loc_code=locations.loc_code
 				AND loc_stock.stock_id = '" . $line->stock_id . "'
 				AND loc_stock.loc_code = '" . $order->Location . "'";
-				$res = DBOld::query($sql, "a location could not be retreived");
-				$loc = DBOld::fetch($res);
+				$res = DB::query($sql, "a location could not be retreived");
+				$loc = DB::fetch($res);
 				if ($loc['email'] != "") {
 					$qoh = get_qoh_on_date($line->stock_id, $order->Location);
 					$qoh -= Manufacturing::get_demand_qty($line->stock_id, $order->Location);
@@ -61,11 +61,11 @@
 			$sql .= $order_no . "," . $order->trans_type . "," . DB::escape($line->stock_id) . ", " . DB::escape($line->description) . ", $line->price,
 				$line->quantity,
 				$line->discount_percent)";
-			DBOld::query($sql, "order Details Cannot be Added");
+			DB::query($sql, "order Details Cannot be Added");
 		} /* inserted line items into sales order details */
 		DB_AuditTrail::add($order->trans_type, $order_no, $order->document_date);
 		Refs::save($order->trans_type, $order_no, $order->reference);
-		DBOld::commit_transaction();
+		DB::commit_transaction();
 		if (Config::get('accounts_stock_emailnotify') == 1 && count($st_ids) > 0) {
 			require_once(APP_PATH . "/reporting/includes/email.php");
 			$company = DB_Company::get_prefs();
@@ -93,14 +93,14 @@
 	//----------------------------------------------------------------------------------------
 	function delete_sales_order($order_no, $trans_type)
 	{
-		DBOld::begin_transaction();
+		DB::begin_transaction();
 		$sql = "DELETE FROM sales_orders WHERE order_no=" . DB::escape($order_no) . " AND trans_type=" . DB::escape($trans_type);
-		DBOld::query($sql, "order Header Delete");
+		DB::query($sql, "order Header Delete");
 		$sql = "DELETE FROM sales_order_details WHERE order_no =" . DB::escape($order_no) . " AND trans_type=" . DB::escape($trans_type);
-		DBOld::query($sql, "order Detail Delete");
+		DB::query($sql, "order Detail Delete");
 		Refs::delete_reference($trans_type, $order_no);
 		DB_AuditTrail::add($trans_type, $order_no, Dates::Today(), _("Deleted."));
-		DBOld::commit_transaction();
+		DB::commit_transaction();
 	}
 
 	//----------------------------------------------------------------------------------------
@@ -112,7 +112,7 @@
 			$order as $so_num => $so_ver
 		) {
 			$sql = 'UPDATE sales_orders SET version=version+1 WHERE order_no=' . $so_num . ' AND version=' . $so_ver . " AND trans_type=30";
-			DBOld::query($sql, 'Concurrent editing conflict while sales order update');
+			DB::query($sql, 'Concurrent editing conflict while sales order update');
 		}
 	}
 
@@ -123,7 +123,7 @@
 		$ord_date = Dates::date2sql($order->document_date);
 		$order_no = key($order->trans_no);
 		$version = current($order->trans_no);
-		DBOld::begin_transaction();
+		DB::begin_transaction();
 		$sql = "UPDATE sales_orders SET type =" . DB::escape($order->so_type) . " ,
 		debtor_no = " . DB::escape($order->customer_id) . ",
 		branch_code = " . DB::escape($order->Branch) . ",
@@ -145,9 +145,9 @@
 		version = " . ($version + 1) . "
 	 WHERE order_no=" . $order_no . "
 	 AND trans_type=" . $order->trans_type . " AND version=" . $version;
-		DBOld::query($sql, "order Cannot be Updated, this can be concurrent edition conflict");
+		DB::query($sql, "order Cannot be Updated, this can be concurrent edition conflict");
 		$sql = "DELETE FROM sales_order_details WHERE order_no =" . $order_no . " AND trans_type=" . $order->trans_type;
-		DBOld::query($sql, "Old order Cannot be Deleted");
+		DB::query($sql, "Old order Cannot be Deleted");
 		if (Config::get('accounts_stock_emailnotify') == 1) {
 			$st_ids = array();
 			$st_names = array();
@@ -157,6 +157,7 @@
 		foreach (
 			$order->line_items as $line
 		) {
+
 			if (Config::get('accounts_stock_emailnotify') == 1 && is_inventory_item($line->stock_id)) {
 				$sql
 				 = "SELECT loc_stock.*, locations.location_name, locations.email
@@ -164,8 +165,9 @@
 				WHERE loc_stock.loc_code=locations.loc_code
 				 AND loc_stock.stock_id = " . DB::escape($line->stock_id) . "
 				 AND loc_stock.loc_code = " . DB::escape($order->Location);
-				$res = DBOld::query($sql, "a location could not be retreived");
-				$loc = DBOld::fetch($res);
+				$res = DB::query($sql, "a location could not be retreived");
+
+					$loc = DB::fetch($res);
 				if ($loc['email'] != "") {
 					$qoh = get_qoh_on_date($line->stock_id, $order->Location);
 					$qoh -= Manufacturing::get_demand_qty($line->stock_id, $order->Location);
@@ -189,12 +191,16 @@
 				 : 0
 			) . "," . $order_no . "," . $order->trans_type . "," . DB::escape($line->stock_id) . "," . DB::escape($line->description) . ", " . DB::escape($line->price) . ", " . DB::escape($line->quantity) . ", " . DB::escape($line->discount_percent) . ", " . DB::escape($line->qty_done)
 			 . " )";
-			DBOld::query($sql, "Old order Cannot be Inserted");
+
+			DB::query($sql, "Old order Cannot be Inserted");
 		} /* inserted line items into sales order details */
 		DB_AuditTrail::add($order->trans_type, $order_no, $order->document_date, _("Updated."));
+
 		Refs::delete($order->trans_type, $order_no);
 		Refs::save($order->trans_type, $order_no, $order->reference);
-		DBOld::commit_transaction();
+
+		DB::commit_transaction();
+
 		if (Config::get('accounts_stock_emailnotify') == 1 && count($st_ids) > 0) {
 			require_once(APP_PATH . "/reporting/includes/class.mail.php");
 			$company = DB_Company::get_prefs();
@@ -250,15 +256,15 @@
 		AND shippers.shipper_id = sales_orders.ship_via
 		AND sales_orders.trans_type = " . DB::escape($trans_type) . "
 		AND sales_orders.order_no = " . DB::escape($order_no);
-		$result = DBOld::query($sql, "order Retreival");
-		$num = DBOld::num_rows($result);
+		$result = DB::query($sql, "order Retreival");
+		$num = DB::num_rows($result);
 		if ($num > 1) {
-			Errors::show_db_error("FATAL : sales order query returned a duplicate - " . DBOld::num_rows($result), $sql, true);
+			Errors::show_db_error("FATAL : sales order query returned a duplicate - " . DB::num_rows($result), $sql, true);
 		}
 		else if ($num == 1) {
-			return DBOld::fetch($result);
+			return DB::fetch($result);
 		} else {
-			Errors::show_db_error("FATAL : sales order return nothing - " . DBOld::num_rows($result), $sql, true);
+			Errors::show_db_error("FATAL : sales order return nothing - " . DB::num_rows($result), $sql, true);
 		}
 	}
 
@@ -272,7 +278,7 @@
 	FROM sales_order_details, stock_master
 	WHERE sales_order_details.stk_code = stock_master.stock_id
 	AND order_no =" . DB::escape($order_no) . " AND trans_type = " . DB::escape($trans_type) . " ORDER BY id";
-		return DBOld::query($sql, "Retreive order Line Items");
+		return DB::query($sql, "Retreive order Line Items");
 	}
 
 	//----------------------------------------------------------------------------------------
@@ -299,9 +305,9 @@
 		$order->due_date = Dates::sql2date($myrow["delivery_date"]);
 		$order->document_date = Dates::sql2date($myrow["ord_date"]);
 		$result = get_sales_order_details($order_no, $order->trans_type);
-		if (DBOld::num_rows($result) > 0) {
+		if (DB::num_rows($result) > 0) {
 			$line_no = 0;
-			while ($myrow = DBOld::fetch($result)) {
+			while ($myrow = DB::fetch($result)) {
 				$order->add_to_cart(
 					$line_no, $myrow["stk_code"], $myrow["quantity"], $myrow["unit_price"], $myrow["discount_percent"], $myrow["qty_done"], $myrow["standard_cost"], $myrow["description"],
 					$myrow["id"]
@@ -316,13 +322,13 @@
 	function sales_order_has_deliveries($order_no)
 	{
 		$sql = "SELECT SUM(qty_sent) FROM sales_order_details WHERE order_no=" . DB::escape($order_no) . " AND trans_type=" . ST_SALESORDER . "";
-		$result = DBOld::query($sql, "could not query for sales order usage");
-		$row = DBOld::fetch_row($result);
+		$result = DB::query($sql, "could not query for sales order usage");
+		$row = DB::fetch_row($result);
 		if ($row[0] > 0) {
 			return true;
 		} // 2010-04-21 added check for eventually voided deliveries, Joe Hunt
 		/*$sql = "SELECT order_ FROM debtor_trans WHERE type=" . ST_CUSTDELIVERY . " AND order_=" . DB::escape($order_no);
-		$result = DBOld::query($sql, "The related delivery notes could not be retreived");
+		$result = DB::query($sql, "The related delivery notes could not be retreived");
 		;*/
 	}
 
@@ -333,7 +339,7 @@
 		$sql
 		 = "UPDATE sales_order_details
 		SET quantity = qty_sent WHERE order_no = " . DB::escape($order_no) . " AND trans_type=" . ST_SALESORDER . "";
-		DBOld::query($sql, "The sales order detail record could not be updated");
+		DB::query($sql, "The sales order detail record could not be updated");
 	}
 
 	//---------------------------------------------------------------------------------------------------------------
@@ -346,9 +352,9 @@
 		 = "SELECT debtors_master.debtor_no, debtors_master.payment_terms, payment_terms.* FROM debtors_master,
 		payment_terms WHERE debtors_master.payment_terms = payment_terms.terms_indicator AND
 		debtors_master.debtor_no = " . DB::escape($debtorno);
-		$result = DBOld::query($sql, "The customer details could not be retrieved");
-		$myrow = DBOld::fetch($result);
-		if (DBOld::num_rows($result) == 0) {
+		$result = DB::query($sql, "The customer details could not be retrieved");
+		$myrow = DB::fetch($result);
+		if (DB::num_rows($result) == 0) {
 			return $invdate;
 		}
 		if ($myrow['day_in_following_month'] > 0) {
@@ -380,8 +386,8 @@
 		WHERE debtors_master.sales_type=sales_types.id
 		AND debtors_master.credit_status=credit_status.id
 		AND debtors_master.debtor_no = " . DB::escape($customer_id);
-		$result = DBOld::query($sql, "Customer Record Retreive");
-		return DBOld::fetch($result);
+		$result = DB::query($sql, "Customer Record Retreive");
+		return DB::fetch($result);
 	}
 
 	function get_branch_to_order($customer_id, $branch_id)
@@ -397,7 +403,7 @@
 				AND locations.loc_code=default_location
 				AND cust_branch.branch_code=" . DB::escape($branch_id) . "
 				AND cust_branch.debtor_no = " . DB::escape($customer_id);
-		return DBOld::query($sql, "Customer Branch Record Retreive");
+		return DB::query($sql, "Customer Branch Record Retreive");
 	}
 
 ?>

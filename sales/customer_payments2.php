@@ -171,8 +171,8 @@
 		FROM debtors_master, credit_status
 		WHERE debtors_master.credit_status = credit_status.id
 			AND debtors_master.debtor_no = " . DB::escape($_POST['customer_id']);
-		$result = DBOld::query($sql, "could not query customers");
-		$myrow = DBOld::fetch($result);
+		$result = DB::query($sql, "could not query customers");
+		$myrow = DB::fetch($result);
 		$_POST['HoldAccount'] = $myrow["dissallow_invoices"];
 		$_POST['pymt_discount'] = $myrow["pymt_discount"];
 		$_POST['ref'] = Refs::get_next(12);

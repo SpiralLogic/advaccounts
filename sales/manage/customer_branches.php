@@ -102,11 +102,11 @@
 				$note = _('New customer branch has been added');
 			}
 			//run the sql from either of the above possibilites
-			DBOld::query($sql, "The branch record could not be inserted or updated");
+			DB::query($sql, "The branch record could not be inserted or updated");
 			Errors::notice($note);
 			$Mode = 'RESET';
 			if (Input::request('popup')) {
-				JS::set_focus("Select" . ($_POST['branch_code'] == -1 ? DBOld::insert_id() : $_POST['branch_code']));
+				JS::set_focus("Select" . ($_POST['branch_code'] == -1 ? DB::insert_id() : $_POST['branch_code']));
 			}
 		}
 	}
@@ -116,8 +116,8 @@
 		$sql = "SELECT COUNT(*) FROM debtor_trans WHERE branch_code=" . DB::escape(
 			$_POST['branch_code']
 		) . " AND debtor_no = " . DB::escape($_POST['customer_id']);
-		$result = DBOld::query($sql, "could not query debtortrans");
-		$myrow = DBOld::fetch_row($result);
+		$result = DB::query($sql, "could not query debtortrans");
+		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {
 			Errors::error(_("Cannot delete this branch because customer transactions have been created to this branch."));
 		}
@@ -125,8 +125,8 @@
 			$sql = "SELECT COUNT(*) FROM sales_orders WHERE branch_code=" . DB::escape(
 				$_POST['branch_code']
 			) . " AND debtor_no = " . DB::escape($_POST['customer_id']);
-			$result = DBOld::query($sql, "could not query sales orders");
-			$myrow = DBOld::fetch_row($result);
+			$result = DB::query($sql, "could not query sales orders");
+			$myrow = DB::fetch_row($result);
 			if ($myrow[0] > 0) {
 				Errors::error(_("Cannot delete this branch because sales orders exist for it. Purge old sales orders first."));
 			}
@@ -134,7 +134,7 @@
 				$sql = "DELETE FROM cust_branch WHERE branch_code=" . DB::escape(
 					$_POST['branch_code']
 				) . " AND debtor_no=" . DB::escape($_POST['customer_id']);
-				DBOld::query($sql, "could not delete branch");
+				DB::query($sql, "could not delete branch");
 				Errors::notice(_('Selected customer branch has been deleted'));
 			}
 		} //end ifs to test if the branch can be deleted
@@ -243,8 +243,8 @@
 			 = "SELECT * FROM cust_branch
 			WHERE branch_code=" . DB::escape($_POST['branch_code']) . "
 			AND debtor_no=" . DB::escape($_POST['customer_id']);
-			$result = DBOld::query($sql, "check failed");
-			$myrow = DBOld::fetch($result);
+			$result = DB::query($sql, "check failed");
+			$myrow = DB::fetch($result);
 			JS::set_focus('br_name');
 			$_POST['branch_code'] = $myrow["branch_code"];
 			$_POST['br_name'] = $myrow["br_name"];
@@ -275,8 +275,8 @@
 			$sql
 			 = "SELECT name, address, email, debtor_ref
 			FROM debtors_master WHERE debtor_no = " . DB::escape($_POST['customer_id']);
-			$result = DBOld::query($sql, "check failed");
-			$myrow = DBOld::fetch($result);
+			$result = DB::query($sql, "check failed");
+			$myrow = DB::fetch($result);
 			$_POST['br_name'] = $myrow["name"];
 			$_POST['br_ref'] = $myrow["debtor_ref"];
 			$_POST['contact_name'] = _('Main Branch');

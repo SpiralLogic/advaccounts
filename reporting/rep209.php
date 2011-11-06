@@ -32,8 +32,8 @@
 		WHERE purch_orders.supplier_id = suppliers.supplier_id
 		AND locations.loc_code = into_stock_location
 		AND purch_orders.order_no = " . DB::escape($order_no);
-		$result = DBOld::query($sql, "The order cannot be retrieved");
-		return DBOld::fetch($result);
+		$result = DB::query($sql, "The order cannot be retrieved");
+		return DB::fetch($result);
 	}
 
 	function get_po_details($order_no)
@@ -45,7 +45,7 @@
 		ON purch_order_details.item_code=stock_master.stock_id
 		WHERE order_no =" . DB::escape($order_no) . " ";
 		$sql .= " ORDER BY po_detail_item";
-		return DBOld::query($sql, "Retreive order Line Items");
+		return DB::query($sql, "Retreive order Line Items");
 	}
 
 	function print_po()
@@ -94,7 +94,7 @@
 			$rep->Header2($myrow, null, $myrow, $baccount, ST_PURCHORDER);
 			$result = get_po_details($i);
 			$SubTotal = 0;
-			while ($myrow2 = DBOld::fetch($result))
+			while ($myrow2 = DB::fetch($result))
 			{
 				if ($myrow2['item_code'] != 'freight' || $myrow['freight'] != $myrow2['unit_price']) {
 					$data = get_purchase_data($myrow['supplier_id'], $myrow2['item_code']);

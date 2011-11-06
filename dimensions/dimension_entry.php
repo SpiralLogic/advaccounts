@@ -171,7 +171,7 @@
 		$_POST['memo_'] = DB_Comments::get_string(ST_DIMENSION, $selected_id);
 		$tags_result = Tags::get_all_associated_with_record(TAG_DIMENSION, $selected_id);
 		$tagids = array();
-		while ($tag = DBOld::fetch($tags_result))
+		while ($tag = DB::fetch($tags_result))
 		{
 			$tagids[] = $tag['id'];
 		}

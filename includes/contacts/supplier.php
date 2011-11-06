@@ -87,12 +87,12 @@
 			$this->_defaults();
 			$this->id = $id;
 			$sql = "SELECT * FROM suppliers WHERE supplier_id = " . DB::escape($id);
-			$result = DBOld::query($sql, "check failed");
-			if (DBOld::num_rows($result) != 1) {
+			$result = DB::query($sql, "check failed");
+			if (DB::num_rows($result) != 1) {
 				$this->_status(false, 'read', "Supplier could not be found!");
 				return false;
 			}
-			$result = DBOld::fetch_assoc($result);
+			$result = DB::fetch_assoc($result);
 			$this->setFromArray($result);
 			$this->credit_limit = Num::price_format($this->credit_limit);
 			return $this->id;
@@ -100,7 +100,7 @@
 
 		protected function _saveNew()
 		{
-			DBOld::begin_transaction();
+			DB::begin_transaction();
 			$sql
 			 = "INSERT INTO suppliers (supp_name, supp_ref, address, supp_address, phone, phone2, fax, gst_no, email, website,
 				contact, supp_account_no, bank_account, credit_limit, dimension_id, dimension2_id, curr_code,
@@ -109,9 +109,9 @@
 			 . DB::escape($this->email) . ", " . DB::escape($this->website) . ", " . DB::escape($this->contact_name) . ", " . DB::escape($this->account_no) . ", " . DB::escape($this->bank_account) . ", " . DB::escape($this->credit_limit) . ", " . DB::escape($this->dimension_id) . ", "
 			 . DB::escape($this->dimension2_id) . ", " . DB::escape($this->curr_code) . ", " . DB::escape($this->payment_terms) . ", " . DB::escape($this->payable_account) . ", " . DB::escape($this->purchase_account) . ", " . DB::escape($this->payment_discount_account) . ", " . DB::escape($this->notes)
 			 . ", " . DB::escape($this->tax_group_id) . ")";
-			DBOld::query($sql, "The supplier could not be added");
-			$this->id = DBOld::insert_id();
-			DBOld::commit_transaction();
+			DB::query($sql, "The supplier could not be added");
+			$this->id = DB::insert_id();
+			DB::commit_transaction();
 			$this->_status(true, 'Saving', "A Supplier has been added.");
 		}
 
@@ -131,7 +131,7 @@
 			if ($this->id == 0) {
 				$this->_saveNew();
 			}
-			DBOld::begin_transaction();
+			DB::begin_transaction();
 			$sql = "UPDATE suppliers SET name=" . DB::escape($this->name) . ",
 			supp_ref=" . DB::escape(substr($this->name, 0, 29)) . ",
 			address=" . DB::escape($this->address) . ",
@@ -156,17 +156,17 @@
             credit_limit=" . User::numeric($this->credit_limit) . ",
             notes=" . DB::escape($this->notes) . "
             WHERE debtor_no = " . DB::escape($this->id);
-			DBOld::query($sql, "The supplier could not be updated");
-			DBOld::commit_transaction();
+			DB::query($sql, "The supplier could not be updated");
+			DB::commit_transaction();
 			return $this->_status(true, 'Processing', "Supplier has been updated.");
 		}
 
 		public static function search($terms)
 		{
 			$sql = "SELECT supplier_id as id, supp_ref as label, supp_ref as value FROM suppliers where supp_ref LIKE '%" . $terms . "%' LIMIT 20";
-			$result = DBOld::query($sql, 'Couldn\'t Get Supplier');
+			$result = DB::query($sql, 'Couldn\'t Get Supplier');
 			$data = '';
-			while ($row = DBOld::fetch_assoc($result)) {
+			while ($row = DB::fetch_assoc($result)) {
 				foreach ($row as &$value) {
 					$value = htmlspecialchars_decode($value);
 				}

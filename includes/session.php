@@ -38,7 +38,9 @@
 
 		public static function hasLogin()
 		{
+
 			static::init()->checkLogin();
+
 		}
 
 		final protected function __construct()
@@ -83,12 +85,15 @@
 			// logout.php is the only page we should have always
 			// accessable regardless of access level and current login status.
 			$currentUser = User::get();
+
 			if (strstr($_SERVER['PHP_SELF'], 'logout.php') == false) {
 				$currentUser->timeout();
 				if (!$currentUser->logged_in()) {
 					$this->showLogin();
 				}
-				$succeed = (Config::get('db.' . $_POST["company_login_name"])) && $currentUser->login($_POST["company_login_name"], $_POST["user_name_entry_field"], $_POST["password"]);
+
+					$succeed = (Config::get('db.' . $_POST["company_login_name"])) && $currentUser->login($_POST["company_login_name"], $_POST["user_name_entry_field"], $_POST["password"]);
+
 				// select full vs fallback ui mode on login
 				$currentUser->ui_mode = $_POST['ui_mode'];
 				if (!$succeed) {
@@ -100,7 +105,7 @@
 				if (Input::session('change_password') && strstr($_SERVER['PHP_SELF'], 'change_current_user_password.php') == false) {
 					meta_forward('/admin/change_current_user_password.php', 'selected_id=' . $currentUser->username);
 				}
-				DBOld::getInstance();
+
 			}
 		}
 

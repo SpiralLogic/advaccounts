@@ -51,8 +51,8 @@
 	//----------------------------------------------------------------------------------------------------
 	if ($Mode == 'Delete') {
 		$sql = "SELECT * FROM users WHERE pos=" . DB::escape($selected_id);
-		$res = DBOld::query($sql, "canot check pos usage");
-		if (DBOld::num_rows($res)) {
+		$res = DB::query($sql, "canot check pos usage");
+		if (DB::num_rows($res)) {
 			Errors::error(_("Cannot delete this POS because it is used in users setup."));
 		}
 		else {
@@ -78,7 +78,7 @@
 	inactive_control_column($th);
 	table_header($th);
 	$k = 0;
-	while ($myrow = DBOld::fetch($result))
+	while ($myrow = DB::fetch($result))
 	{
 		alt_table_row_color($k);
 		label_cell($myrow["pos_name"], "nowrap");

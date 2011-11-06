@@ -47,7 +47,7 @@
 			AND supp_trans.tran_date <= '$todate'
 			AND ABS(supp_trans.ov_amount + supp_trans.ov_gst + supp_trans.ov_discount) > 0.004
 			ORDER BY supp_trans.tran_date";
-		return DBOld::query($sql, "The supplier details could not be retrieved");
+		return DB::query($sql, "The supplier details could not be retrieved");
 	}
 
 	//----------------------------------------------------------------------------------------------------
@@ -151,8 +151,8 @@
 			$sql .= " WHERE supplier_id=" . DB::escape($fromsupp);
 		}
 		$sql .= " ORDER BY supp_name";
-		$result = DBOld::query($sql, "The suppliers could not be retrieved");
-		while ($myrow = DBOld::fetch($result))
+		$result = DB::query($sql, "The suppliers could not be retrieved");
+		while ($myrow = DB::fetch($result))
 		{
 			if (!$convert && $currency != $myrow['curr_code']) {
 				continue;
@@ -200,11 +200,11 @@
 			$rep->NewLine(1, 2);
 			if (!$summaryOnly) {
 				$res = get_invoices($myrow['supplier_id'], $to);
-				if (DBOld::num_rows($res) == 0) {
+				if (DB::num_rows($res) == 0) {
 					continue;
 				}
 				$rep->Line($rep->row + 4);
-				while ($trans = DBOld::fetch($res))
+				while ($trans = DB::fetch($res))
 				{
 					$rep->NewLine(1, 2);
 					$rep->TextCol(0, 1, $systypes_array[$trans['type']], -2);

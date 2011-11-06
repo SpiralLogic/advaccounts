@@ -43,7 +43,7 @@
 	AND trans_date >= '$date_after'
 	AND trans_date <= '$date_to'
 	ORDER BY trans_date,bank_trans.id";
-	$result = DBOld::query($sql, "The transactions for '" . $_POST['bank_account'] . "' could not be retrieved");
+	$result = DB::query($sql, "The transactions for '" . $_POST['bank_account'] . "' could not be retrieved");
 	div_start('trans_tbl');
 	$act = get_bank_account($_POST["bank_account"]);
 	Display::heading($act['bank_account_name'] . " - " . $act['bank_curr_code']);
@@ -56,10 +56,10 @@
 	$sql = "SELECT SUM(amount) FROM bank_trans WHERE bank_act="
 	 . DB::escape($_POST['bank_account']) . "
 	AND trans_date < '$date_after'";
-	$before_qty = DBOld::query($sql, "The starting balance on hand could not be calculated");
+	$before_qty = DB::query($sql, "The starting balance on hand could not be calculated");
 	start_row("class='inquirybg'");
 	label_cell("<b>" . _("Opening Balance") . " - " . $_POST['TransAfterDate'] . "</b>", "colspan=4");
-	$bfw_row = DBOld::fetch_row($before_qty);
+	$bfw_row = DB::fetch_row($before_qty);
 	$bfw = $bfw_row[0];
 	Display::debit_or_credit_cells($bfw);
 	label_cell("");
@@ -68,7 +68,7 @@
 	$running_total = $bfw;
 	$j = 1;
 	$k = 0; //row colour counter
-	while ($myrow = DBOld::fetch($result))
+	while ($myrow = DB::fetch($result))
 	{
 		alt_table_row_color($k);
 		$running_total += $myrow["amount"];

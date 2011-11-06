@@ -51,8 +51,8 @@
 	if ($Mode == 'Delete') {
 		// PREVENT DELETES IF DEPENDENT RECORDS IN 'stock_master'
 		$sql = "SELECT COUNT(*) FROM stock_master WHERE category_id=" . DB::escape($selected_id);
-		$result = DBOld::query($sql, "could not query stock master");
-		$myrow = DBOld::fetch_row($result);
+		$result = DB::query($sql, "could not query stock master");
+		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {
 			Errors::error(_("Cannot delete this item category because items have been created using this item category."));
 		} else {
@@ -75,7 +75,7 @@
 	if (!check_value('show_inactive')) {
 		$sql .= " AND !c.inactive";
 	}
-	$result = DBOld::query($sql, "could not get stock categories");
+	$result = DB::query($sql, "could not get stock categories");
 	start_form();
 	start_table(Config::get('tables_style') . "  width=90%");
 	$th = array(
@@ -86,7 +86,7 @@
 	inactive_control_column($th);
 	table_header($th);
 	$k = 0; //row colour counter
-	while ($myrow = DBOld::fetch($result))
+	while ($myrow = DB::fetch($result))
 	{
 		alt_table_row_color($k);
 		label_cell($myrow["description"]);

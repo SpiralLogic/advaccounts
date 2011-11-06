@@ -99,7 +99,7 @@
 			 . DB::escape($_POST['trans_no']) . "," . DB::escape($_POST['description']) . ", "
 			 . DB::escape($filename) . ", " . DB::escape($unique_name) . ", " . DB::escape($filesize)
 			 . ", " . DB::escape($filetype) . ", '$date')";
-			DBOld::query($sql, "Attachment could not be inserted");
+			DB::query($sql, "Attachment could not be inserted");
 			Errors::notice(_("Attachment has been inserted."));
 		} else {
 			$sql
@@ -114,7 +114,7 @@
 			filetype=" . DB::escape($filetype);
 			}
 			$sql .= "tran_date='$date' WHERE id=" . DB::escape($selected_id);
-			DBOld::query($sql, "Attachment could not be updated");
+			DB::query($sql, "Attachment could not be updated");
 			Errors::notice(_("Attachment has been updated."));
 		}
 		$Mode = 'RESET';
@@ -126,7 +126,7 @@
 			unlink($dir . "/" . $row['unique_name']);
 		}
 		$sql = "DELETE FROM attachments WHERE id = " . DB::escape($selected_id);
-		DBOld::query($sql, "Could not delete attachment");
+		DB::query($sql, "Could not delete attachment");
 		Errors::notice(_("Attachment has been deleted."));
 		$Mode = 'RESET';
 	}
@@ -149,14 +149,14 @@
 	{
 		$sql = "SELECT * FROM attachments WHERE type_no=" . DB::escape($type)
 		 . " ORDER BY trans_no";
-		return DBOld::query($sql, "Could not retrieve attachments");
+		return DB::query($sql, "Could not retrieve attachments");
 	}
 
 	function get_attachment($id)
 	{
 		$sql = "SELECT * FROM attachments WHERE id=" . DB::escape($id);
-		$result = DBOld::query($sql, "Could not retrieve attachments");
-		return DBOld::fetch($result);
+		$result = DB::query($sql, "Could not retrieve attachments");
+		return DB::fetch($result);
 	}
 
 	function display_rows($type)
@@ -168,7 +168,7 @@
 		start_table(Config::get('tables_style'));
 		table_header($th);
 		$k = 0;
-		while ($row = DBOld::fetch($rows))
+		while ($row = DB::fetch($rows))
 		{
 			alt_table_row_color($k);
 			label_cell(ui_view::get_trans_view_str($type, $row['trans_no']));

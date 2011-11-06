@@ -27,7 +27,7 @@
 	if (isset($_GET['AddedID'])) {
 		$order_no = $_GET['AddedID'];
 		$trans_type = ST_PURCHORDER;
-		$supplier = new Contacts_Supplier($_SESSION['wa_global_supplier_id']);
+		$supplier = new Contacts_Supplier($_SESSION['supplier_id']);
 		if (!isset($_GET['Updated'])) {
 			Errors::notice(_("Purchase Order: " . $_SESSION['history'][ST_PURCHORDER] . " has been entered"));
 		}
@@ -203,12 +203,12 @@
 				$sql
 				 = "SELECT long_description as description , units, mb_flag
 				FROM stock_master WHERE stock_id = " . DB::escape($_POST['stock_id']);
-				$result = DBOld::query($sql, "The stock details for " . $_POST['stock_id'] . " could not be retrieved");
-				if (DBOld::num_rows($result) == 0) {
+				$result = DB::query($sql, "The stock details for " . $_POST['stock_id'] . " could not be retrieved");
+				if (DB::num_rows($result) == 0) {
 					$allow_update = false;
 				}
 				if ($allow_update) {
-					$myrow = DBOld::fetch($result);
+					$myrow = DB::fetch($result);
 					$_SESSION['PO']->add_to_order(
 						$_POST['line_no'], $_POST['stock_id'], input_num('qty'), $_POST['description'], input_num('price'), $myrow["units"], $_POST['req_del_date'], 0, 0,
 					 $_POST['discount'] / 100
@@ -336,14 +336,14 @@
 		FROM purch_data INNER JOIN suppliers
 		ON purch_data.supplier_id=suppliers.supplier_id
 		WHERE stock_id = " . DB::escape($line_item->stock_id) . ' ORDER BY price';
-				$result = DBOld::query($sql);
+				$result = DB::query($sql);
 				$myrow = array();
-				if (DBOld::num_rows($result) > 0) {
-					if (DBOld::num_rows($result) == 1) {
-						$myrow[] = DBOld::fetch($result, 'pricing');
+				if (DB::num_rows($result) > 0) {
+					if (DB::num_rows($result) == 1) {
+						$myrow[] = DB::fetch($result, 'pricing');
 					}
 					else {
-						$myrow = DBOld::fetch($result, 'pricing');
+						$myrow = DB::fetch($result, 'pricing');
 					}
 					if (isset($po_lines[$myrow[0]['supplier_id']])) {
 						$po_lines[$myrow[0]['supplier_id']]++;
@@ -358,7 +358,7 @@
 				);
 			}
 			arsort($po_lines);
-			$_SESSION['wa_global_supplier_id'] = key($po_lines);
+			$_SESSION['supplier_id'] = key($po_lines);
 			if ($_GET['DS']) {
 				$item_info = get_item('DS');
 				$_POST['StkLocation'] = 'DRP';

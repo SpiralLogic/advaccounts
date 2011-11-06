@@ -16,11 +16,11 @@
 		$trans_no = $_GET["trans_no"];
 	}
 	$result = Bank_Trans::get(ST_BANKTRANSFER, $trans_no);
-	if (DBOld::num_rows($result) != 2) {
+	if (DB::num_rows($result) != 2) {
 		Errors::show_db_error("Bank transfer does not contain two records");
 	}
-	$trans1 = DBOld::fetch($result);
-	$trans2 = DBOld::fetch($result);
+	$trans1 = DB::fetch($result);
+	$trans2 = DB::fetch($result);
 	if ($trans1["amount"] < 0) {
 		$from_trans = $trans1; // from trans is the negative one
 		$to_trans = $trans2;

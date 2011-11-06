@@ -35,35 +35,35 @@
 			(abbr, name, decimals) VALUES( " . DB::escape($abbr) . ",
 	  		" . DB::escape($description) . ", " . DB::escape($decimals) . ")";
 			}
-			DBOld::query($sql, "an item unit could not be updated");
+			DB::query($sql, "an item unit could not be updated");
 		}
 
 		function delete($unit)
 		{
 			$sql = "DELETE FROM item_units WHERE abbr=" . DB::escape($unit);
-			DBOld::query($sql, "an unit of measure could not be deleted");
+			DB::query($sql, "an unit of measure could not be deleted");
 		}
 
 		function get($unit)
 		{
 			$sql = "SELECT * FROM item_units WHERE abbr=" . DB::escape($unit);
-			$result = DBOld::query($sql, "an unit of measure could not be retrieved");
-			return DBOld::fetch($result);
+			$result = DB::query($sql, "an unit of measure could not be retrieved");
+			return DB::fetch($result);
 		}
 
 		function desc($unit)
 		{
 			$sql = "SELECT description FROM item_units WHERE abbr=" . DB::escape($unit);
-			$result = DBOld::query($sql, "could not unit description");
-			$row = DBOld::fetch_row($result);
+			$result = DB::query($sql, "could not unit description");
+			$row = DB::fetch_row($result);
 			return $row[0];
 		}
 
 		function used($unit)
 		{
 			$sql = "SELECT COUNT(*) FROM stock_master WHERE units=" . DB::escape($unit);
-			$result = DBOld::query($sql, "could not query stock master");
-			$myrow = DBOld::fetch_row($result);
+			$result = DB::query($sql, "could not query stock master");
+			$myrow = DB::fetch_row($result);
 			return ($myrow[0] > 0);
 		}
 
@@ -74,7 +74,7 @@
 				$sql .= " WHERE !inactive";
 			}
 			$sql .= " ORDER BY name";
-			return DBOld::query($sql, "could not get stock categories");
+			return DB::query($sql, "could not get stock categories");
 		}
 
 		// 2008-06-15. Added Joe Hunt to get a measure of unit by given stock_id
@@ -83,8 +83,8 @@
 			$sql
 			 = "SELECT decimals FROM item_units,	stock_master
 		WHERE abbr=units AND stock_id=" . DB::escape($stock_id) . " LIMIT 1";
-			$result = DBOld::query($sql, "could not get unit decimals");
-			$row = DBOld::fetch_row($result);
+			$result = DB::query($sql, "could not get unit decimals");
+			$row = DB::fetch_row($result);
 			return $row[0];
 		}
 	}

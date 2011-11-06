@@ -43,9 +43,9 @@
 	 . " WHERE gl.type= " . DB::escape($_GET['type_id'])
 	 . " AND gl.type_no = " . DB::escape($_GET['trans_no'])
 	 . " ORDER BY counter";
-	$result = DBOld::query($sql, "could not get transactions");
+	$result = DB::query($sql, "could not get transactions");
 	//alert("sql = ".$sql);
-	if (DBOld::num_rows($result) == 0) {
+	if (DB::num_rows($result) == 0) {
 		echo "<p><center>" . _("No general ledger transactions have been created for") . " " .
 		 $systypes_array[$_GET['type_id']] . " " . _("number") . " " . $_GET['trans_no'] . "</center></p><br><br>";
 		end_page(true);
@@ -72,7 +72,7 @@
 	}
 	$k = 0; //row colour counter
 	$heading_shown = false;
-	while ($myrow = DBOld::fetch($result))
+	while ($myrow = DB::fetch($result))
 	{
 		if ($myrow['amount'] == 0) {
 			continue;

@@ -191,8 +191,8 @@
 		}
 		elseif ($trans_type == ST_SALESINVOICE) {
 			$sql = "SELECT trans_type_from, trans_no_from FROM cust_allocations WHERE trans_type_to=" . ST_SALESINVOICE . " AND trans_no_to=" . DB::escape($order_no);
-			$result = DBOld::query($sql, "could not retrieve customer allocation");
-			$row = DBOld::fetch($result);
+			$result = DB::query($sql, "could not retrieve customer allocation");
+			$row = DB::fetch($result);
 			if ($row !== false) {
 				submenu_print(_("Print &Receipt"), $row['trans_type_from'], $row['trans_no_from'] . "-" . $row['trans_type_from'], 'prtopt');
 			}
@@ -216,7 +216,7 @@
 	//-----------------------------------------------------------------------------
 	function copy_to_cart()
 	{
-		$cart = &$_SESSION['Items'];
+		$cart = $_SESSION['Items'];
 		$cart->reference = $_POST['ref'];
 		$cart->Comments = $_POST['Comments'];
 		$cart->document_date = $_POST['OrderDate'];

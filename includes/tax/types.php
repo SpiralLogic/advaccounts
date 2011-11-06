@@ -15,7 +15,7 @@
 		VALUES (" . DB::escape($name) . ", " . DB::escape($sales_gl_code)
 			 . ", " . DB::escape($purchasing_gl_code) . ", $rate)";
 
-			DBOld::query($sql, "could not add tax type");
+			DB::query($sql, "could not add tax type");
 		}
 
 		public static function update($type_id, $name, $sales_gl_code, $purchasing_gl_code, $rate) {
@@ -25,7 +25,7 @@
 		rate=$rate
 		WHERE id=" . DB::escape($type_id);
 
-			DBOld::query($sql, "could not update tax type");
+			DB::query($sql, "could not update tax type");
 		}
 
 		public static function get_all($all = false) {
@@ -38,13 +38,13 @@
 		AND tax_types.purchasing_gl_code = Chart2.account_code";
 
 			if (!$all) $sql .= " AND !tax_types.inactive";
-			return DBOld::query($sql, "could not get all tax types");
+			return DB::query($sql, "could not get all tax types");
 		}
 
 		public static function get_all_simple() {
 			$sql = "SELECT * FROM tax_types";
 
-			return DBOld::query($sql, "could not get all tax types");
+			return DB::query($sql, "could not get all tax types");
 		}
 
 		public static function get($type_id) {
@@ -56,32 +56,32 @@
 		WHERE tax_types.sales_gl_code = Chart1.account_code
 		AND tax_types.purchasing_gl_code = Chart2.account_code AND id=" . DB::escape($type_id);
 
-			$result = DBOld::query($sql, "could not get tax type");
-			return DBOld::fetch($result);
+			$result = DB::query($sql, "could not get tax type");
+			return DB::fetch($result);
 		}
 
 		public static function get_default_rate($type_id) {
 			$sql = "SELECT rate FROM tax_types WHERE id=" . DB::escape($type_id);
 
-			$result = DBOld::query($sql, "could not get tax type rate");
+			$result = DB::query($sql, "could not get tax type rate");
 
-			$row = DBOld::fetch_row($result);
+			$row = DB::fetch_row($result);
 			return $row[0];
 		}
 
 		public static function delete($type_id) {
-			DBOld::begin_transaction();
+			DB::begin_transaction();
 
 			$sql = "DELETE FROM tax_types WHERE id=" . DB::escape($type_id);
 
-			DBOld::query($sql, "could not delete tax type");
+			DB::query($sql, "could not delete tax type");
 
 			// also delete any item tax exemptions associated with this type
 			$sql = "DELETE FROM item_tax_type_exemptions WHERE tax_type_id=$type_id";
 
-			DBOld::query($sql, "could not delete item tax type exemptions");
+			DB::query($sql, "could not delete item tax type exemptions");
 
-			DBOld::commit_transaction();
+			DB::commit_transaction();
 		}
 
 		/*
@@ -102,8 +102,8 @@
 			if ($selected_id != -1)
 				$sql .= " AND id!=" . DB::escape($selected_id);
 
-			$res = DBOld::query($sql, "could not query gl account uniqueness");
-			$row = DBOld::fetch($res);
+			$res = DB::query($sql, "could not query gl account uniqueness");
+			$row = DB::fetch($res);
 
 			return $gl_code2 == -1 ? ($row[0] <= 1) : ($row[0] == 0);
 		}

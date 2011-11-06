@@ -50,7 +50,7 @@
 		protected function delete()
 		{
 			$sql = "DELETE FROM cust_branch WHERE branch_code=" . $this->branch_code;
-			DBOld::query($sql, "cannot delete branch");
+			DB::query($sql, "cannot delete branch");
 			unset($this->branch_code);
 			$this->_new();
 			return $this->_status(true, 'delete', "Branch deleted.");
@@ -126,7 +126,7 @@
 			if ($this->branch_ref != 'accounts') {
 				$this->branch_ref = substr($this->br_name, 0, 30);
 			}
-			DBOld::begin_transaction();
+			DB::begin_transaction();
 			$sql
 			 = "UPDATE cust_branch SET
 			br_name=" . DB::escape($this->name) . ",
@@ -156,14 +156,14 @@
             branch_ref=" . DB::escape($this->branch_ref) . "
               WHERE branch_code =" . DB::escape($this->branch_code) . "
     	        AND debtor_no=" . DB::escape($this->debtor_no);
-			DBOld::query($sql, "The customer could not be updated");
-			DBOld::commit_transaction();
+			DB::query($sql, "The customer could not be updated");
+			DB::commit_transaction();
 			return $this->_status(true, 'Processing', "Branch has been updated.");
 		}
 
 		protected function _saveNew()
 		{
-			DBOld::begin_transaction();
+			DB::begin_transaction();
 			$sql
 			 = "INSERT INTO cust_branch (debtor_no, br_name, branch_ref, br_address, city, state, postcode,
 				salesman, phone, phone2, fax, contact_name, area, email, tax_group_id, sales_account, sales_discount_account, receivables_account, payment_discount_account, default_location,
@@ -172,9 +172,9 @@
 			 . ", " . DB::escape($this->phone) . ", " . DB::escape($this->phone2) . ", " . DB::escape($this->fax) . "," . DB::escape($this->contact_name) . ", " . DB::escape($this->area) . ", " . DB::escape($this->email) . ", " . DB::escape($this->tax_group_id) . ", " . DB::escape($this->sales_account)
 			 . ", " . DB::escape($this->sales_discount_account) . ", " . DB::escape($this->receivables_account) . ", " . DB::escape($this->payment_discount_account) . ", " . DB::escape($this->default_location) . ", " . DB::escape($this->br_post_address) . "," . DB::escape($this->disable_trans) . ", "
 			 . DB::escape($this->group_no) . ", " . DB::escape($this->default_ship_via) . ", " . DB::escape($this->notes) . ", " . DB::escape($this->inactive) . ")";
-			DBOld::query($sql, "The branch could not be added");
-			$this->branch_code = DBOld::insert_id();
-			DBOld::commit_transaction();
+			DB::query($sql, "The branch could not be added");
+			$this->branch_code = DB::insert_id();
+			DB::commit_transaction();
 			$this->_status(true, 'Saving', "New branch has been added");
 		}
 

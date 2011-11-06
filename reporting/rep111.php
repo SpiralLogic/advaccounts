@@ -67,7 +67,7 @@
 			$result = get_sales_order_details($i, ST_SALESQUOTE);
 			$SubTotal = 0;
 			$TaxTotal = 0;
-			while ($myrow2 = DBOld::fetch($result))
+			while ($myrow2 = DB::fetch($result))
 			{
 				$Net = Num::round(((1 - $myrow2["discount_percent"]) * $myrow2["unit_price"] * $myrow2["quantity"]), User::price_dec());
 				$SubTotal += $Net;

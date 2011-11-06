@@ -93,7 +93,7 @@
 				$rep->Header2($myrow, $branch, $sales_order, $baccount, $j);
 				$result = get_customer_trans_details($j, $i);
 				$SubTotal = 0;
-				while ($myrow2 = DBOld::fetch($result)) {
+				while ($myrow2 = DB::fetch($result)) {
 					if ($myrow2["quantity"] == 0) {
 						continue;
 					}
@@ -129,9 +129,9 @@
 					}
 				}
 				$comments = DB_Comments::get($j, $i);
-				if ($comments && DBOld::num_rows($comments)) {
+				if ($comments && DB::num_rows($comments)) {
 					$rep->NewLine();
-					while ($comment = DBOld::fetch($comments))
+					while ($comment = DB::fetch($comments))
 					{
 						$rep->TextColLines(0, 6, $comment['memo_'], -2);
 					}
@@ -154,7 +154,7 @@
 				$rep->TextCol(7, 8, $DisplayFreight, -2);
 				$rep->NewLine();
 				$tax_items = get_trans_tax_details($j, $i);
-				while ($tax_item = DBOld::fetch($tax_items)) {
+				while ($tax_item = DB::fetch($tax_items)) {
 					$DisplayTax = Num::format($sign * $tax_item['amount'], $dec);
 					if ($tax_item['included_in_price']) {
 						$rep->TextCol(

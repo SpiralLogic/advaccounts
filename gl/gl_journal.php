@@ -74,7 +74,7 @@
 		if ($trans_no) {
 			$result = get_gl_trans($type, $trans_no);
 			if ($result) {
-				while ($row = DBOld::fetch($result)) {
+				while ($row = DB::fetch($result)) {
 					if ($row['amount'] == 0) {
 						continue;
 					}

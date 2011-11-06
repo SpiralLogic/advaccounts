@@ -74,7 +74,7 @@
 				$note = _('New payment terms have been added');
 			}
 			//run the sql from either of the above possibilites
-			DBOld::query($sql, "The payment term could not be added or updated");
+			DB::query($sql, "The payment term could not be added or updated");
 			Errors::notice($note);
 			$Mode = 'RESET';
 		}
@@ -82,20 +82,20 @@
 	if ($Mode == 'Delete') {
 		// PREVENT DELETES IF DEPENDENT RECORDS IN debtors_master
 		$sql = "SELECT COUNT(*) FROM debtors_master WHERE payment_terms = " . DB::escape($selected_id);
-		$result = DBOld::query($sql, "check failed");
-		$myrow = DBOld::fetch_row($result);
+		$result = DB::query($sql, "check failed");
+		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {
 			Errors::error(_("Cannot delete this payment term, because customer accounts have been created referring to this term."));
 		} else {
 			$sql = "SELECT COUNT(*) FROM suppliers WHERE payment_terms = " . DB::escape($selected_id);
-			$result = DBOld::query($sql, "check failed");
-			$myrow = DBOld::fetch_row($result);
+			$result = DB::query($sql, "check failed");
+			$myrow = DB::fetch_row($result);
 			if ($myrow[0] > 0) {
 				Errors::error(_("Cannot delete this payment term, because supplier accounts have been created referring to this term"));
 			} else {
 				//only delete if used in neither customer or supplier accounts
 				$sql = "DELETE FROM payment_terms WHERE terms_indicator=" . DB::escape($selected_id);
-				DBOld::query($sql, "could not delete a payment terms");
+				DB::query($sql, "could not delete a payment terms");
 				Errors::notice(_('Selected payment terms have been deleted'));
 			}
 		}
@@ -113,14 +113,14 @@
 	if (!check_value('show_inactive')) {
 		$sql .= " WHERE !inactive";
 	}
-	$result = DBOld::query($sql, "could not get payment terms");
+	$result = DB::query($sql, "could not get payment terms");
 	start_form();
 	start_table(Config::get('tables_style'));
 	$th = array(_("Description"), _("Following Month On"), _("Due After (Days)"), "", "");
 	inactive_control_column($th);
 	table_header($th);
 	$k = 0; //row colour counter
-	while ($myrow = DBOld::fetch($result))
+	while ($myrow = DB::fetch($result))
 	{
 		if ($myrow["day_in_following_month"] == 0) {
 			$full_text = _("N/A");
@@ -152,8 +152,8 @@
 			$sql
 			 = "SELECT * FROM payment_terms
 			WHERE terms_indicator=" . DB::escape($selected_id);
-			$result = DBOld::query($sql, "could not get payment term");
-			$myrow = DBOld::fetch($result);
+			$result = DB::query($sql, "could not get payment term");
+			$myrow = DB::fetch($result);
 			$_POST['terms'] = $myrow["terms"];
 			$days_before_due = $myrow["days_before_due"];
 			$day_in_following_month = $myrow["day_in_following_month"];

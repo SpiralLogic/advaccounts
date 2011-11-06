@@ -29,7 +29,7 @@
 	{
 		$test['descr']    = _('MySQL version') . ' >3.23.58';
 		$test['type']     = 3;
-		$test['test']     = mysql_get_server_info();
+		$test['test']     = DB::getAttribute(PDO::ATTR_SERVER_VERSION);
 		$test['result']   = $test['test'] > '3.23.58';
 		$test['comments'] = _('Upgrade MySQL server to version at least 3.23.58');
 		return $test;

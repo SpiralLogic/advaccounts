@@ -23,8 +23,8 @@
 			$sql = "SELECT stock_id, SUM(qty) FROM stock_moves WHERE tran_date <= '$date'";
 			if ($location != '') $sql .= " AND loc_code = " . DB::escape($location);
 			$sql .= " GROUP BY stock_id";
-			$result = DBOld::query($sql, "QOH calulcation failed");
-			while ($row = DBOld::fetch($result)) {
+			$result = DB::query($sql, "QOH calulcation failed");
+			while ($row = DB::fetch($result)) {
 				static::$qoh_stock[$row[0]] = $row[1];
 			}
 		}
@@ -42,8 +42,8 @@
 				$sql .= "sales_orders.from_stk_loc =" . DB::escape($location) . " AND ";
 			$sql .= "sales_order_details.stk_code = " . DB::escape($stock_id);
 
-			$result = DBOld::query($sql, "No transactions were returned");
-			$row = DBOld::fetch($result);
+			$result = DB::query($sql, "No transactions were returned");
+			$row = DB::fetch($result);
 			if ($row === false)
 				return 0;
 			return $row['QtyDemand'];
@@ -70,14 +70,14 @@
 				$sql = "SELECT parent, component, quantity FROM "
 				 . "bom WHERE parent = " . DB::escape($stock_id);
 				if ($location != "") $sql .= " AND loc_code = " . DB::escape($location);
-				$result = DBOld::query($sql, "Could not search bom");
+				$result = DB::query($sql, "Could not search bom");
 				$bom = array();
 				// Even if we get no results, remember that fact
 				$bom[] = array($stock_id, '', 0);
-				while ($row = DBOld::fetch_row($result)) {
+				while ($row = DB::fetch_row($result)) {
 					$bom[] = array($row[0], $row[1], $row[2]);
 				}
-				DBOld::free_result($result);
+				DB::free_result($result);
 				static::$bom_list[$stock_id] = $bom;
 			}
 			$len = count($bom);
@@ -111,8 +111,8 @@
 				   stock_master.stock_id=sales_order_details.stk_code AND
 				   (stock_master.mb_flag='" . STOCK_MANUFACTURE . "' OR stock_master.mb_flag='A')
 				   GROUP BY sales_order_details.stk_code";
-			$result = DBOld::query($sql, "No transactions were returned");
-			while ($row = DBOld::fetch_row($result)) {
+			$result = DB::query($sql, "No transactions were returned");
+			while ($row = DB::fetch_row($result)) {
 				$demand_qty += Manufacturing::stock_demand_manufacture($row[0], $row[1], $stock_id, $location);
 			}
 			return $demand_qty;
@@ -127,10 +127,10 @@
 			if ($location != "")
 				$sql .= "AND purch_orders.into_stock_location=" . DB::escape($location) . " ";
 			$sql .= "AND purch_order_details.item_code=" . DB::escape($stock_id);
-			$qoo_result = DBOld::query($sql, "could not receive quantity on order for item");
+			$qoo_result = DB::query($sql, "could not receive quantity on order for item");
 
-			if (DBOld::num_rows($qoo_result) == 1) {
-				$qoo_row = DBOld::fetch_row($qoo_result);
+			if (DB::num_rows($qoo_result) == 1) {
+				$qoo_row = DB::fetch_row($qoo_result);
 				$qoo = $qoo_row[0];
 } else {
 				$qoo = 0;
@@ -147,9 +147,9 @@
 			if ($location != "")
 				$sql .= "AND wo_requirements.loc_code=" . DB::escape($location) . " ";
 			$sql .= "AND workorders.released=1";
-			$qoo_result = DBOld::query($sql, "could not receive quantity on order for item");
-			if (DBOld::num_rows($qoo_result) == 1) {
-				$qoo_row = DBOld::fetch_row($qoo_result);
+			$qoo_result = DB::query($sql, "could not receive quantity on order for item");
+			if (DB::num_rows($qoo_result) == 1) {
+				$qoo_row = DB::fetch_row($qoo_result);
 				$qoo = $qoo_row[0];
 			}
 			else
@@ -162,9 +162,9 @@
 				if ($location != "")
 					$sql .= "AND workorders.loc_code=" . DB::escape($location) . " ";
 				$sql .= "AND workorders.released=1";
-				$qoo_result = DBOld::query($sql, "could not receive quantity on order for item");
-				if (DBOld::num_rows($qoo_result) == 1) {
-					$qoo_row = DBOld::fetch_row($qoo_result);
+				$qoo_result = DB::query($sql, "could not receive quantity on order for item");
+				if (DB::num_rows($qoo_result) == 1) {
+					$qoo_row = DB::fetch_row($qoo_result);
 					$qoo += $qoo_row[0];
 				}
 			}
@@ -174,12 +174,12 @@
 		public static function get_mb_flag($stock_id) {
 			$sql = "SELECT mb_flag FROM stock_master WHERE stock_id = "
 			 . DB::escape($stock_id);
-			$result = DBOld::query($sql, "retreive mb_flag from item");
+			$result = DB::query($sql, "retreive mb_flag from item");
 
-			if (DBOld::num_rows($result) == 0)
+			if (DB::num_rows($result) == 0)
 				return -1;
 
-			$myrow = DBOld::fetch_row($result);
+			$myrow = DB::fetch_row($result);
 			return $myrow[0];
 		}
 
@@ -195,7 +195,7 @@
 		AND workcentres.id=bom.workcentre_added
 		AND bom.loc_code = locations.loc_code ORDER BY bom.id";
 
-			return DBOld::query($sql, "The bill of material could not be retrieved");
+			return DB::query($sql, "The bill of material could not be retrieved");
 		}
 
 		//--------------------------------------------------------------------------------------
@@ -203,7 +203,7 @@
 		function has_bom($item) {
 			$result = Manufacturing::get_bom($item);
 
-			return (DBOld::num_rows($result) != 0);
+			return (DB::num_rows($result) != 0);
 		}
 
 		function has_stock_holding($mb_flag) {

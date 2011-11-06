@@ -140,7 +140,7 @@
 				if ($_POST['type'] == WO_ASSEMBLY) {
 					// check bom if assembling
 					$result = Manufacturing::get_bom(Input::post('stock_id'));
-					while ($bom_item = DBOld::fetch($result))
+					while ($bom_item = DB::fetch($result))
 					{
 						if (Manufacturing::has_stock_holding($bom_item["ResourceType"])) {
 							$quantity = $bom_item["quantity"] * input_num('quantity');
@@ -321,8 +321,8 @@
 		date_row(_("Date") . ":", 'date_', '', true);
 		hidden('RequDate', '');
 		$sql = "SELECT DISTINCT account_code FROM bank_accounts";
-		$rs = DBOld::query($sql, "could not get bank accounts");
-		$r = DBOld::fetch_row($rs);
+		$rs = DB::query($sql, "could not get bank accounts");
+		$r = DB::fetch_row($rs);
 		if (!isset($_POST['Labour'])) {
 			$_POST['Labour'] = Num::price_format(0);
 			$_POST['cr_lab_acc'] = $r[0];

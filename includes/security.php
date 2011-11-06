@@ -61,8 +61,8 @@
 		public static function get_role($id)
 		{
 			$sql = "SELECT * FROM security_roles WHERE id='$id'";
-			$ret = DBOld::query($sql, "could not retrieve security roles");
-			$row = DBOld::fetch($ret);
+			$ret = DB::query($sql, "could not retrieve security roles");
+			$row = DB::fetch($ret);
 			if ($row != false) {
 				$row['areas'] = explode(';', $row['areas']);
 				$row['sections'] = explode(';', $row['sections']);
@@ -80,7 +80,7 @@
 			 . DB::escape($description) . ","
 			 . DB::escape(implode(';', $sections)) . ","
 			 . DB::escape(implode(';', $areas)) . ")";
-			DBOld::query($sql, "could not add new security role");
+			DB::query($sql, "could not add new security role");
 		}
 
 		//--------------------------------------------------------------------------------------------------
@@ -91,22 +91,22 @@
 			 . ",sections=" . DB::escape(implode(';', $sections))
 			 . ",areas=" . DB::escape(implode(';', $areas))
 			 . " WHERE id=$id";
-			DBOld::query($sql, "could not update role");
+			DB::query($sql, "could not update role");
 		}
 
 		//--------------------------------------------------------------------------------------------------
 		public static function get_profile($id)
 		{
 			$sql = "DELETE FROM security_roles WHERE id=$id";
-			DBOld::query($sql, "could not delete role");
+			DB::query($sql, "could not delete role");
 		}
 
 		//--------------------------------------------------------------------------------------------------
 		public static function check_role_used($id)
 		{
 			$sql = "SELECT count(*) FROM users WHERE role_id=$id";
-			$ret = DBOld::query($sql, 'cannot check role usage');
-			$row = DBOld::fetch($ret);
+			$ret = DB::query($sql, 'cannot check role usage');
+			$row = DB::fetch($ret);
 			return $row[0];
 		}
 	}

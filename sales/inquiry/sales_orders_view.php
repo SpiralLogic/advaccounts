@@ -187,7 +187,7 @@
 	{
 		$Ajax = Ajax::instance();
 		$sql = "UPDATE sales_orders SET type = !type WHERE order_no=$id";
-		DBOld::query($sql, "Can't change sales order type");
+		DB::query($sql, "Can't change sales order type");
 		$Ajax->activate('orders_tbl');
 	}
 

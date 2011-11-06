@@ -13,7 +13,7 @@
 
 	function add_stock_transfer($Items, $location_from, $location_to, $date_, $type, $reference, $memo_) {
 
-		DBOld::begin_transaction();
+		DB::begin_transaction();
 
 		$transfer_id = SysTypes::get_next_trans_no(ST_LOCTRANSFER);
 
@@ -28,7 +28,7 @@
 		Refs::save(ST_LOCTRANSFER, $transfer_id, $reference);
 		DB_AuditTrail::add(ST_LOCTRANSFER, $transfer_id, $date_);
 
-		DBOld::commit_transaction();
+		DB::commit_transaction();
 
 		return $transfer_id;
 	}
@@ -53,15 +53,15 @@
 
 	function get_stock_transfer($trans_no) {
 		$result = get_stock_transfer_items($trans_no);
-		if (DBOld::num_rows($result) < 2) {
+		if (DB::num_rows($result) < 2) {
 			Errors::show_db_error("transfer with less than 2 items : $trans_no", "");
 		}
 
 		// this function is very bad that it assumes that 1st record and 2nd record contain the
 		// from and to locations - if get_stock_moves uses a different ordering than trans_no then
 		// it will bomb
-		$move1 = DBOld::fetch($result);
-		$move2 = DBOld::fetch($result);
+		$move1 = DB::fetch($result);
+		$move2 = DB::fetch($result);
 
 		// return an array of (From, To)
 		if ($move1['qty'] < 0)
@@ -75,7 +75,7 @@
 	function get_stock_transfer_items($trans_no) {
 		$result = get_stock_moves(ST_LOCTRANSFER, $trans_no);
 
-		if (DBOld::num_rows($result) == 0) {
+		if (DB::num_rows($result) == 0) {
 			return null;
 		}
 
@@ -112,9 +112,9 @@
 			$error_msg = "The stock movement record cannot be inserted";
 		}
 
-		DBOld::query($sql, $error_msg);
+		DB::query($sql, $error_msg);
 
-		return DBOld::insert_id();
+		return DB::insert_id();
 	}
 
 	function update_stock_move_pid($type, $stock_id, $from, $to, $pid, $cost) {
@@ -125,7 +125,7 @@
 		 . "	AND stock_id=" . DB::escape($stock_id)
 		 . "  AND tran_date>='$from' AND tran_date<='$to'
 				AND person_id = " . DB::escape($pid);
-		DBOld::query($sql, "The stock movement standard_cost cannot be updated");
+		DB::query($sql, "The stock movement standard_cost cannot be updated");
 	}
 
 	//--------------------------------------------------------------------------------------------------
@@ -144,7 +144,7 @@
 			$sql .= " AND stock_moves.visible=1";
 		}
 
-		return DBOld::query($sql, "Could not get stock moves");
+		return DB::query($sql, "Could not get stock moves");
 	}
 
 	//--------------------------------------------------------------------------------------------------
@@ -153,7 +153,7 @@
 		$sql = "UPDATE stock_moves SET qty=0, price=0, discount_percent=0,
 			standard_cost=0	WHERE type=" . DB::escape($type) . " AND trans_no=" . DB::escape($type_no);
 
-		DBOld::query($sql, "Could not void stock moves");
+		DB::query($sql, "Could not void stock moves");
 	}
 
 	//--------------------------------------------------------------------------------------------------

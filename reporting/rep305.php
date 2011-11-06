@@ -37,7 +37,7 @@
         AND grn_batch.delivery_date>='$from'
         AND grn_batch.delivery_date<='$to'
         ORDER BY stock_master.stock_id, grn_batch.delivery_date";
-		return DBOld::query($sql, "No transactions were returned");
+		return DB::query($sql, "No transactions were returned");
 	}
 
 	//----------------------------------------------------------------------------------------------------
@@ -70,7 +70,7 @@
 		$res = getTransactions($from, $to);
 		$total = $qtotal = $grandtotal = 0.0;
 		$stock_id = '';
-		while ($trans = DBOld::fetch($res))
+		while ($trans = DB::fetch($res))
 		{
 			if ($stock_id != $trans['item_code']) {
 				if ($stock_id != '') {

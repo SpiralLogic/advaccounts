@@ -35,8 +35,8 @@
 		static function item_heading($stock_id)
 		{
 			if ($stock_id != "") {
-				$result = DBOld::query("SELECT description, units FROM stock_master WHERE stock_id=" . DB::escape($stock_id));
-				$myrow = DBOld::fetch_row($result);
+				$result = DB::query("SELECT description, units FROM stock_master WHERE stock_id=" . DB::escape($stock_id));
+				$myrow = DB::fetch_row($result);
 				static::heading("$stock_id - $myrow[0]");
 				$units = $myrow[1];
 				static::heading(_("in units of : ") . $units);
@@ -162,9 +162,9 @@
 		static function comments_row($type, $id)
 		{
 			$comments = DB_Comments::get($type, $id);
-			if ($comments and DBOld::num_rows($comments)) {
+			if ($comments and DB::num_rows($comments)) {
 				echo "<tr><td colspan=15>";
-				while ($comment = DBOld::fetch($comments)) {
+				while ($comment = DB::fetch($comments)) {
 					echo $comment["memo_"] . "<br>";
 				}
 				echo "</td></tr>";
@@ -188,7 +188,7 @@
 		//--------------------------------------------------------------------------------------
 		static function customer_trans_tax_details($tax_items, $columns)
 		{
-			while ($tax_item = DBOld::fetch($tax_items)) {
+			while ($tax_item = DB::fetch($tax_items)) {
 				$tax = Num::format($tax_item['amount'], User::price_dec());
 				if ($tax_item['included_in_price']) {
 					label_row(_("Included") . " " . $tax_item['tax_type_name'] . " (" . $tax_item['rate'] . "%) " . _("Amount") . ": $tax", "", "colspan=$columns align=right", "align=right");
@@ -203,7 +203,7 @@
 		static function supp_trans_tax_details($tax_items, $columns, $tax_recorded = 0)
 		{
 			$tax_total = 0;
-			while ($tax_item = DBOld::fetch($tax_items)) {
+			while ($tax_item = DB::fetch($tax_items)) {
 				$tax = Num::format(abs($tax_item['amount']), User::price_dec());
 				if ($tax_item['included_in_price']) {
 					label_row(_("Included") . " " . $tax_item['tax_type_name'] . " (" . $tax_item['rate'] . "%) " . _("Amount") . ": $tax", "colspan=$columns align=right", "align=right");
@@ -247,7 +247,7 @@
 		static function display_allocations($alloc_result, $total)
 		{
 			global $systypes_array;
-			if (!$alloc_result || DBOld::num_rows($alloc_result) == 0) {
+			if (!$alloc_result || DB::num_rows($alloc_result) == 0) {
 				return;
 			}
 			Display::heading(_("Allocations"));
@@ -255,7 +255,7 @@
 			$th = array(_("Type"), _("Number"), _("Date"), _("Total Amount"), _("Left to Allocate"), _("This Allocation"));
 			table_header($th);
 			$k = $total_allocated = 0;
-			while ($alloc_row = DBOld::fetch($alloc_result)) {
+			while ($alloc_row = DB::fetch($alloc_result)) {
 				alt_table_row_color($k);
 				label_cell($systypes_array[$alloc_row['type']]);
 				label_cell(ui_view::get_trans_view_str($alloc_row['type'], $alloc_row['trans_no']));
@@ -322,7 +322,7 @@
 				}
 				$result = get_quick_entry_lines($id);
 				$totrate = 0;
-				while ($row = DBOld::fetch($result)) {
+				while ($row = DB::fetch($result)) {
 					$qe_lines[] = $row;
 					switch (strtolower($row['action'])) {
 					case "t": // post taxes calculated on base amount
@@ -383,7 +383,7 @@
 							$taxgroup = $cart->tax_group_id;
 							$rates = 0;
 							$res = Tax_Groups::get_for_item($cart->tax_group_id);
-							while ($row = DBOld::fetch($res)) {
+							while ($row = DB::fetch($res)) {
 								$rates += $row['rate'];
 							}
 							if ($rates == 0) {

@@ -18,7 +18,7 @@
 			 . "," . DB::escape($email) . ", " . DB::escape($role_id) . ", " . DB::escape($language)
 			 . ", " . DB::escape($pos) . "," . DB::escape($profile) . "," . DB::escape($rep_popup)
 			 . " )";
-			DBOld::query($sql, "could not add user for $user_id");
+			DB::query($sql, "could not add user for $user_id");
 		}
 
 		//-----------------------------------------------------------------------------------------------
@@ -26,7 +26,7 @@
 		{
 			$sql = "UPDATE users SET password=" . DB::escape($password) . ",
 				user_id = " . DB::escape($user_id) . " WHERE id=" . DB::escape($id);
-			DBOld::query($sql, "could not update user password for $user_id");
+			DB::query($sql, "could not update user password for $user_id");
 		}
 
 		//-----------------------------------------------------------------------------------------------
@@ -45,7 +45,7 @@
 				pos=" . DB::escape($pos) . ",
 				user_id = " . DB::escape($user_id)
 			 . " WHERE id=" . DB::escape($id);
-			DBOld::query($sql, "could not update user for $user_id");
+			DB::query($sql, "could not update user for $user_id");
 		}
 
 		//-----------------------------------------------------------------------------------------------
@@ -79,7 +79,7 @@
 				sticky_doc_date=" . DB::escape($stickydate) . ",
 				startup_tab=" . DB::escape($startup_tab) . "
 				WHERE id = " . DB::escape($id);
-			DBOld::query($sql, "could not update user display prefs for $id");
+			DB::query($sql, "could not update user display prefs for $id");
 		}
 
 		//-----------------------------------------------------------------------------------------------
@@ -91,15 +91,15 @@
 			if (!$all) {
 				$sql .= " AND !u.inactive";
 			}
-			return DBOld::query($sql, "could not get users");
+			return DB::query($sql, "could not get users");
 		}
 
 		//-----------------------------------------------------------------------------------------------
 		public static function	get($id)
 		{
 			$sql = "SELECT * FROM users WHERE id=" . DB::escape($id);
-			$result = DBOld::query($sql, "could not get user $id");
-			return DBOld::fetch($result);
+			$result = DB::query($sql, "could not get user $id");
+			return DB::fetch($result);
 		}
 
 		//-----------------------------------------------------------------------------------------------
@@ -108,33 +108,38 @@
 		public static function	get_by_login($user_id)
 		{
 			$sql = "SELECT * FROM users WHERE user_id=" . DB::escape($user_id);
-			$result = DBOld::query($sql, "could not get user $user_id");
-			return DBOld::fetch($result);
+			$result = DB::query($sql, "could not get user $user_id");
+
+			return DB::fetch($result);
 		}
 
 		//-----------------------------------------------------------------------------------------------
 		public static function	delete($id)
 		{
 			$sql = "DELETE FROM users WHERE id=" . DB::escape($id);
-			DBOld::query($sql, "could not delete user $id");
+			DB::query($sql, "could not delete user $id");
 		}
 
 		//-----------------------------------------------------------------------------------------------
 		public static function	get_for_login($user_id, $password)
 		{
-			DBOld::getInstance();
+
 			// do not exclude inactive records or you lost access after source upgrade
 			// on sites using pre 2.2 database
+
 			$user = new Auth($user_id);
+
 			$md5password = md5($password);
 			$result = DB::select('user_id')->from('users')->where('password=', $md5password)->fetch();
 			if (count($result) > 0) {
 				$_SESSION['change_password'] = true;
 			}
 			$password = $user->hash_password($password);
+
 			$sql = "SELECT * FROM users WHERE user_id = " . DB::escape($user_id) . " AND"
 			 . " (password=" . DB::escape($password) . " OR password=" . DB::escape($md5password) . ")";
-			return DBOld::query($sql, "could not get validate user login for $user_id");
+
+			return DB::query($sql, "could not get validate user login for $user_id");
 		}
 
 		//-----------------------------------------------------------------------------------------------
@@ -142,7 +147,7 @@
 		{
 			$sql = "UPDATE users SET last_visit_date='" . date("Y-m-d H:i:s") . "'
 				WHERE user_id=" . DB::escape($user_id);
-			DBOld::query($sql, "could not update last visit date for user $user_id");
+			DB::query($sql, "could not update last visit date for user $user_id");
 		}
 
 		//-----------------------------------------------------------------------------------------------
@@ -150,8 +155,8 @@
 		{
 			$sql = "SELECT COUNT(*) FROM audit_trail WHERE audit_trail.user="
 			 . DB::escape($id);
-			$result = DBOld::query($sql, "Cant check user activity");
-			$ret = DBOld::fetch($result);
+			$result = DB::query($sql, "Cant check user activity");
+			$ret = DB::fetch($result);
 			return $ret[0];
 		}
 
@@ -161,8 +166,8 @@
 			if (!Config::get('ui_users_showonline') || !isset($_SESSION['get_text'])) {
 				return "";
 			}
-			$result = DBOld::query("SHOW TABLES LIKE 'useronline'");
-			if (DBOld::num_rows($result) == 1) {
+			$result = DB::query("SHOW TABLES LIKE 'useronline'");
+			if (DB::num_rows($result) == 1) {
 				$timeoutseconds = 120;
 				$timestamp = time();
 				$timeout = $timestamp - $timeoutseconds;
@@ -190,15 +195,15 @@
 					$ip = $_SERVER['REMOTE_ADDR'];
 				}
 				// Add user to database
-				DBOld::query(
+				DB::query(
 					"INSERT INTO useronline (timestamp, ip, file) VALUES ('" . $timestamp . "','" . $ip . "','" .
 					 $_SERVER['PHP_SELF'] . "')"
 				);
 				//Remove users that were not online within $timeoutseconds.
-				DBOld::query("DELETE FROM useronline WHERE timestamp<" . $timeout);
+				DB::query("DELETE FROM useronline WHERE timestamp<" . $timeout);
 				// Select online users
-				$result = DBOld::query("SELECT DISTINCT ip FROM useronline");
-				$users = DBOld::num_rows($result);
+				$result = DB::query("SELECT DISTINCT ip FROM useronline");
+				$users = DB::num_rows($result);
 			} else {
 				$users = 1;
 			}

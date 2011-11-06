@@ -52,15 +52,15 @@
 		$acc = DB::escape($selected_id);
 		// PREVENT DELETES IF DEPENDENT RECORDS IN 'bank_trans'
 		$sql = "SELECT COUNT(*) FROM bank_trans WHERE bank_act=$acc";
-		$result = DBOld::query($sql, "check failed");
-		$myrow = DBOld::fetch_row($result);
+		$result = DB::query($sql, "check failed");
+		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {
 			$cancel_delete = 1;
 			Errors::error(_("Cannot delete this bank account because transactions have been created using this account."));
 		}
 		$sql = "SELECT COUNT(*) FROM sales_pos WHERE pos_account=$acc";
-		$result = DBOld::query($sql, "check failed");
-		$myrow = DBOld::fetch_row($result);
+		$result = DB::query($sql, "check failed");
+		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {
 			$cancel_delete = 1;
 			Errors::error(_("Cannot delete this bank account because POS definitions have been created using this account."));
@@ -85,7 +85,7 @@
 		$sql .= " AND !account.inactive";
 	}
 	$sql .= " ORDER BY account_code, bank_curr_code";
-	$result = DBOld::query($sql, "could not get bank accounts");
+	$result = DB::query($sql, "could not get bank accounts");
 	Errors::check_db_error("The bank accounts set up could not be retreived", $sql);
 	start_form();
 	start_table(Config::get('tables_style') . "  width='80%'");
@@ -96,7 +96,7 @@
 	inactive_control_column($th);
 	table_header($th);
 	$k = 0;
-	while ($myrow = DBOld::fetch($result))
+	while ($myrow = DB::fetch($result))
 	{
 		alt_table_row_color($k);
 		label_cell($myrow["bank_account_name"], "nowrap");

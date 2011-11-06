@@ -74,8 +74,8 @@
 			return 0;
 		} // cannot delete system default profile
 		$sql = "SELECT * FROM users WHERE print_profile=" . DB::escape($name);
-		$res = DBOld::query($sql, 'cannot check printing profile usage');
-		return DBOld::num_rows($res);
+		$res = DB::query($sql, 'cannot check printing profile usage');
+		return DB::num_rows($res);
 	}
 
 	//-------------------------------------------------------------------------------------------
@@ -133,7 +133,7 @@
 	end_table(1);
 	$result = Printer::get_profile(get_post('profile_id'));
 	$prints = array();
-	while ($myrow = DBOld::fetch($result)) {
+	while ($myrow = DB::fetch($result)) {
 		$prints[$myrow['report']] = $myrow['printer'];
 	}
 	start_table(Config::get('tables_style'));

@@ -30,7 +30,7 @@
 		$sql .= ") AND debtor_trans_type=" . DB::escape($debtor_trans_type) . "
 		AND stock_master.stock_id=debtor_trans_details.stock_id
 		ORDER BY id";
-		return DBOld::query($sql, "The debtor transaction detail could not be queried");
+		return DB::query($sql, "The debtor transaction detail could not be queried");
 	}
 
 	//----------------------------------------------------------------------------------------
@@ -40,7 +40,7 @@
 		unit_tax=0, discount_percent=0, standard_cost=0
 		WHERE debtor_trans_no=" . DB::escape($type_no) . "
 		AND debtor_trans_type=" . DB::escape($type);
-		DBOld::query($sql, "The debtor transaction details could not be voided");
+		DB::query($sql, "The debtor transaction details could not be voided");
 		// clear the stock move items
 		void_stock_move($type, $type_no);
 	}
@@ -68,7 +68,7 @@
 			 ", " . DB::escape($description) . ",
 				$quantity, $unit_price, $unit_tax, $discount_percent, $std_cost)";
 		}
-		DBOld::query($sql, "The debtor transaction detail could not be written");
+		DB::query($sql, "The debtor transaction detail could not be written");
 	}
 
 ?>

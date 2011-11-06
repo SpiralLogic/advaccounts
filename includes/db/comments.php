@@ -12,7 +12,7 @@
 		public static function get($type, $type_no) {
 			$sql = "SELECT * FROM comments WHERE type="
 			 . DB::escape($type) . " AND id=" . DB::escape($type_no);
-			return DBOld::query($sql, "could not query comments transaction table");
+			return DB::query($sql, "could not query comments transaction table");
 		}
 
 		//--------------------------------------------------------------------------------------------------
@@ -22,7 +22,7 @@
 				$sql = "INSERT INTO comments (type, id, date_, memo_)
 	    		VALUES (" . DB::escape($type) . ", " . DB::escape($type_no)
 				 . ", '$date', " . DB::escape($memo_) . ")";
-				DBOld::query($sql, "could not add comments transaction entry");
+				DB::query($sql, "could not add comments transaction entry");
 			}
 		}
 
@@ -36,7 +36,7 @@
 				$sql = "UPDATE comments SET memo_=" . DB::escape($memo_)
 				 . " WHERE type=" . DB::escape($type) . " AND id=" . DB::escape($id)
 				 . " AND date_='$date'";
-				DBOld::query($sql, "could not update comments");
+				DB::query($sql, "could not update comments");
 			}
 		}
 
@@ -46,7 +46,7 @@
 			$sql = "DELETE FROM comments WHERE type=" . DB::escape($type)
 			 . " AND id=" . DB::escape($type_no);
 
-			DBOld::query($sql, "could not delete from comments transaction table");
+			DB::query($sql, "could not delete from comments transaction table");
 		}
 		//--------------------------------------------------------------------------------------------------
 		//--------------------------------------------------------------------------------------
@@ -54,7 +54,7 @@
 		{
 			$str_return = "";
 			$result     = DB_Comments::get($type, $type_no);
-			while ($comment = DBOld::fetch($result)) {
+			while ($comment = DB::fetch($result)) {
 				if (strlen($str_return)) {
 					$str_return = $str_return . " \n";
 				}

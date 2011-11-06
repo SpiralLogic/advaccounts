@@ -299,11 +299,11 @@
 				}
 			}
 		}
-		if (DBOld::num_rows($result) == 0) {
+		if (DB::num_rows($result) == 0) {
 			return false;
 		}
 		/*Set up a table to show the outstanding GRN items for selection */
-		while ($myrow = DBOld::fetch($result)) {
+		while ($myrow = DB::fetch($result)) {
 			$grn_already_on_invoice = false;
 			foreach (
 				$supp_trans->grn_items as $entered_grn

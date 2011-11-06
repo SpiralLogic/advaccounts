@@ -56,8 +56,8 @@
 		if ($dimension2 != 0) {
 			$sql .= " AND dimension2_id = " . ($dimension2 < 0 ? 0 : DB::escape($dimension2));
 		}
-		$result = DBOld::query($sql, "Transactions for account $account could not be calculated");
-		return DBOld::fetch($result);
+		$result = DB::query($sql, "Transactions for account $account could not be calculated");
+		return DB::fetch($result);
 	}
 
 	//----------------------------------------------------------------------------------------------------
@@ -69,7 +69,7 @@
 		$printtitle = 0; //Flag for printing type name
 		//Get Accounts directly under this group/type
 		$result = get_gl_accounts(null, null, $type);
-		while ($account = DBOld::fetch($result))
+		while ($account = DB::fetch($result))
 		{
 			$bal = getPeriods($yr, $mo, $account["account_code"], $dimension, $dimension2);
 			if (!$bal['per01'] && !$bal['per02'] && !$bal['per03'] && !$bal['per04'] && !$bal['per05']
@@ -110,7 +110,7 @@
 		}
 		//Get Account groups/types under this group/type
 		$result = get_account_types(false, false, $type);
-		while ($accounttype = DBOld::fetch($result))
+		while ($accounttype = DB::fetch($result))
 		{
 			//Print Type Title if has sub types and not previously printed
 			if (!$printtitle) {
@@ -189,8 +189,8 @@
 		//$mo = date('m'):
 		// from now
 		$sql = "SELECT begin, end, YEAR(end) AS yr, MONTH(end) AS mo FROM fiscal_year WHERE id=" . DB::escape($year);
-		$result = DBOld::query($sql, "could not get fiscal year");
-		$row = DBOld::fetch($result);
+		$result = DB::query($sql, "could not get fiscal year");
+		$row = DB::fetch($result);
 		$year = Dates::sql2date($row['begin']) . " - " . Dates::sql2date($row['end']);
 		$yr = $row['yr'];
 		$mo = $row['mo'];
@@ -287,7 +287,7 @@
 		$rep->Header();
 		$sales = Array(1 => 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 		$classresult = get_account_classes(false, 0);
-		while ($class = DBOld::fetch($classresult))
+		while ($class = DB::fetch($classresult))
 		{
 			$ctotal = Array(1 => 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 			$convert = Systypes::get_class_type_convert($class["ctype"]);
@@ -298,7 +298,7 @@
 			$rep->NewLine();
 			//Get Account groups/types under this group/type with no parents
 			$typeresult = get_account_types(false, $class['cid'], -1);
-			while ($accounttype = DBOld::fetch($typeresult))
+			while ($accounttype = DB::fetch($typeresult))
 			{
 				$classtotal = display_type(
 					$accounttype["id"], $accounttype["name"], $yr, $mo, $convert, $dec, $rep, $dimension, $dimension2

@@ -78,15 +78,15 @@
 			return false;
 		}
 		$sql = "SELECT COUNT(*) FROM cust_branch WHERE tax_group_id=" . DB::escape($selected_id);
-		$result = DBOld::query($sql, "could not query customers");
-		$myrow = DBOld::fetch_row($result);
+		$result = DB::query($sql, "could not query customers");
+		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {
 			Errors::warning(_("Cannot delete this tax group because customer branches been created referring to it."));
 			return false;
 		}
 		$sql = "SELECT COUNT(*) FROM suppliers WHERE tax_group_id=" . DB::escape($selected_id);
-		$result = DBOld::query($sql, "could not query suppliers");
-		$myrow = DBOld::fetch_row($result);
+		$result = DB::query($sql, "could not query suppliers");
+		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {
 			Errors::warning(_("Cannot delete this tax group because suppliers been created referring to it."));
 			return false;
@@ -116,7 +116,7 @@
 	inactive_control_column($th);
 	table_header($th);
 	$k = 0;
-	while ($myrow = DBOld::fetch($result))
+	while ($myrow = DB::fetch($result))
 	{
 		alt_table_row_color($k);
 		label_cell($myrow["name"]);
@@ -146,7 +146,7 @@
 			$_POST['tax_shipping'] = $group["tax_shipping"];
 			$items = Tax_Groups::get_for_item($selected_id);
 			$i = 0;
-			while ($tax_item = DBOld::fetch($items))
+			while ($tax_item = DB::fetch($items))
 			{
 				$_POST['tax_type_id' . $i] = $tax_item["tax_type_id"];
 				$_POST['rate' . $i] = Num::percent_format($tax_item["rate"]);

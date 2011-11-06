@@ -48,7 +48,7 @@
 		stock_master.description
 		ORDER BY stock_master.category_id,
 		stock_master.stock_id";
-		return DBOld::query($sql, "No transactions were returned");
+		return DB::query($sql, "No transactions were returned");
 	}
 
 	function getPeriods($stockid, $location)
@@ -70,8 +70,8 @@
 			AND loc_code ='$location'
 			AND (type=13 OR type=11)
 			AND visible=1";
-		$TransResult = DBOld::query($sql, "No transactions were returned");
-		return DBOld::fetch($TransResult);
+		$TransResult = DB::query($sql, "No transactions were returned");
+		return DB::fetch($TransResult);
 	}
 
 	//----------------------------------------------------------------------------------------------------
@@ -130,7 +130,7 @@
 		$rep->Header();
 		$res = getTransactions($category, $location);
 		$catt = '';
-		while ($trans = DBOld::fetch($res))
+		while ($trans = DB::fetch($res))
 		{
 			if ($catt != $trans['cat_description']) {
 				if ($catt != '') {

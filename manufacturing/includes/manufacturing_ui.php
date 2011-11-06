@@ -13,7 +13,7 @@
 	function display_bom($item_check)
 	{
 		$result = Manufacturing::get_bom($item_check);
-		if (DBOld::num_rows($result) == 0) {
+		if (DB::num_rows($result) == 0) {
 			Display::note(_("The bill of material for this item is empty."), 0, 1);
 		} else {
 			start_table(Config::get('tables_style'));
@@ -25,7 +25,7 @@
 			$j = 1;
 			$k = 0; //row colour counter
 			$total_cost = 0;
-			while ($myrow = DBOld::fetch($result))
+			while ($myrow = DB::fetch($result))
 			{
 				alt_table_row_color($k);
 				label_cell($myrow["component"]);
@@ -57,7 +57,7 @@
 	function display_wo_requirements($woid, $quantity, $show_qoh = false, $date = null)
 	{
 		$result = get_wo_requirements($woid);
-		if (DBOld::num_rows($result) == 0) {
+		if (DB::num_rows($result) == 0) {
 			Display::note(_("There are no Requirements for this Order."), 1, 0);
 		} else {
 			start_table(Config::get('tables_style') . "  width=90%");
@@ -71,7 +71,7 @@
 			if ($date == null) {
 				$date = Dates::Today();
 			}
-			while ($myrow = DBOld::fetch($result))
+			while ($myrow = DB::fetch($result))
 			{
 				$qoh = 0;
 				$show_qoh = true;
@@ -120,7 +120,7 @@
 	function display_wo_productions($woid)
 	{
 		$result = get_work_order_productions($woid);
-		if (DBOld::num_rows($result) == 0) {
+		if (DB::num_rows($result) == 0) {
 			Display::note(_("There are no Productions for this Order."), 1, 1);
 		} else {
 			start_table(Config::get('tables_style'));
@@ -128,7 +128,7 @@
 			table_header($th);
 			$k = 0; //row colour counter
 			$total_qty = 0;
-			while ($myrow = DBOld::fetch($result))
+			while ($myrow = DB::fetch($result))
 			{
 				alt_table_row_color($k);
 				$total_qty += $myrow['quantity'];
@@ -151,14 +151,14 @@
 	function display_wo_issues($woid)
 	{
 		$result = get_work_order_issues($woid);
-		if (DBOld::num_rows($result) == 0) {
+		if (DB::num_rows($result) == 0) {
 			Display::note(_("There are no Issues for this Order."), 0, 1);
 		} else {
 			start_table(Config::get('tables_style'));
 			$th = array(_("#"), _("Reference"), _("Date"));
 			table_header($th);
 			$k = 0; //row colour counter
-			while ($myrow = DBOld::fetch($result))
+			while ($myrow = DB::fetch($result))
 			{
 				alt_table_row_color($k);
 				label_cell(ui_view::get_trans_view_str(28, $myrow["issue_no"]));
@@ -176,14 +176,14 @@
 		global $wo_cost_types;
 		//$result = Bank_Trans::get(null, null, PT_WORKORDER, $woid);
 		$result = get_gl_wo_cost_trans($woid);
-		if (DBOld::num_rows($result) == 0) {
+		if (DB::num_rows($result) == 0) {
 			Display::note(_("There are no additional costs for this Order."), 0, 1);
 		} else {
 			start_table(Config::get('tables_style'));
 			$th = array(_("#"), _("Type"), _("Date"), _("Amount"));
 			table_header($th);
 			$k = 0; //row colour counter
-			while ($myrow = DBOld::fetch($result))
+			while ($myrow = DB::fetch($result))
 			{
 				alt_table_row_color($k);
 				label_cell(ui_view::get_gl_view_str(ST_WORKORDER, $myrow["type_no"], $myrow["type_no"]));

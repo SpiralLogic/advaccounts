@@ -15,7 +15,7 @@
 		VALUES (" . DB::escape($stockid) . ", " . DB::escape($stock_id) . ", " . DB::escape($sales_type_id)
 		 . ", " . DB::escape($curr_abrev) . ", " . DB::escape($price) . ")";
 
-		DBOld::query($sql, "an item price could not be added");
+		DB::query($sql, "an item price could not be added");
 	}
 
 	function update_item_price($price_id, $sales_type_id, $curr_abrev, $price) {
@@ -23,12 +23,12 @@
 		$sql = "UPDATE prices SET sales_type_id=" . DB::escape($sales_type_id) . ",
 		curr_abrev=" . DB::escape($curr_abrev) . ",
 		price=" . DB::escape($price) . " WHERE id=" . DB::escape($price_id);
-		DBOld::query($sql, "an item price could not be updated");
+		DB::query($sql, "an item price could not be updated");
 	}
 
 	function delete_item_price($price_id) {
 		$sql = "DELETE FROM prices WHERE id= " . DB::escape($price_id);
-		DBOld::query($sql, "an item price could not be deleted");
+		DB::query($sql, "an item price could not be deleted");
 	}
 
 	function get_prices($stock_id) {
@@ -37,23 +37,23 @@
 		WHERE prices.sales_type_id = sales_types.id
 		AND stock_id=" . DB::escape($stock_id)
 		 . " ORDER BY curr_abrev, sales_type_id";
-		return DBOld::query($sql, "item prices could not be retreived");
+		return DB::query($sql, "item prices could not be retreived");
 	}
 
 	function get_stock_price($price_id) {
 		$sql = "SELECT * FROM prices WHERE id=" . DB::escape($price_id);
 
-		$result = DBOld::query($sql, "price could not be retreived");
+		$result = DB::query($sql, "price could not be retreived");
 
-		return DBOld::fetch($result);
+		return DB::fetch($result);
 	}
 
 	function get_standard_cost($stock_id) {
 		$sql = "SELECT IF(s.mb_flag='" . STOCK_SERVICE . "', 0, material_cost + labour_cost + overhead_cost) AS std_cost
 			FROM stock_master s WHERE stock_id=" . DB::escape($stock_id);
-		$result = DBOld::query($sql, "The standard cost cannot be retrieved");
+		$result = DB::query($sql, "The standard cost cannot be retrieved");
 
-		$myrow = DBOld::fetch_row($result);
+		$myrow = DB::fetch_row($result);
 
 		return $myrow[0];
 	}

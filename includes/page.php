@@ -193,7 +193,7 @@
 		}
 
 		//--------------------------------------------------------------------------------------
-		public static function display_footer_exit()
+		public static function footer_exit()
 		{
 			br(2);
 			end_page(false, false, true);

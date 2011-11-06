@@ -92,7 +92,7 @@
 			if ($this->id == 0) {
 				$status = $this->_saveNew();
 			} else {
-				DBOld::begin_transaction();
+				DB::begin_transaction();
 				$sql = "UPDATE debtors_master SET name=" . DB::escape($this->name) . ",
 			debtor_ref=" . DB::escape(substr($this->name, 0, 29)) . ",
 			address=" . DB::escape($this->address) . ",
@@ -109,9 +109,9 @@
             sales_type = " . DB::escape($this->sales_type) . ",
             notes=" . DB::escape($this->notes) . "
             WHERE debtor_no = " . DB::escape($this->id);
-				DBOld::query($sql, "The customer could not be updated");
-				DBOld::update_record_status($this->id, $this->inactive, 'debtors_master', 'debtor_no');
-				DBOld::commit_transaction();
+				DB::query($sql, "The customer could not be updated");
+				DB::update_record_status($this->id, $this->inactive, 'debtors_master', 'debtor_no');
+				DB::commit_transaction();
 				$status = "Customer has been updated.";
 			}
 			$this->accounts->save(array('debtor_no' => $this->id));
@@ -141,16 +141,16 @@
 		protected
 		function _saveNew()
 		{
-			DBOld::begin_transaction();
+			DB::begin_transaction();
 			$sql
 			 = "INSERT INTO debtors_master (name, debtor_ref, address, tax_id, email, dimension_id, dimension2_id,
 			curr_code, credit_status, payment_terms, discount, pymt_discount,credit_limit,
 			sales_type, notes) VALUES (" . DB::escape($this->name) . ", " . DB::escape(substr($this->name, 0, 29)) . ", " . DB::escape($this->address) . ", " . DB::escape($this->tax_id) . ",
 			" . DB::escape($this->email) . ", " . DB::escape($this->dimension_id) . ", " . DB::escape($this->dimension2_id) . ", " . DB::escape($this->curr_code) . ", " . DB::escape($this->credit_status) . ", " . DB::escape($this->payment_terms) . ", " . User::numeric($this->discount) / 100 . "," .
 			 User::numeric($this->pymt_discount) / 100 . ", " . User::numeric($this->credit_limit) . ", " . DB::escape($this->sales_type) . ", " . DB::escape($this->notes) . ")";
-			DBOld::query($sql, "The customer could not be added");
-			$this->id = DBOld::insert_id();
-			DBOld::commit_transaction();
+			DB::query($sql, "The customer could not be added");
+			$this->id = DB::insert_id();
+			DB::commit_transaction();
 			foreach ($this->branches as $branch) {
 				if ($branch->name == 'New Address') {
 					$branch->name = $this->name;
@@ -223,9 +223,9 @@
     				AND (debtor_trans.ov_amount + debtor_trans.ov_gst + debtor_trans.ov_freight +
 				debtor_trans.ov_freight_tax + debtor_trans.ov_discount) != 0
     				ORDER BY debtor_trans.branch_code, debtor_trans.tran_date";
-			$result = DBOld::query($sql);
+			$result = DB::query($sql);
 			$results = array();
-			while ($row = DBOld::fetch_assoc($result)) {
+			while ($row = DB::fetch_assoc($result)) {
 				$results[] = $row;
 			}
 			return $results;
@@ -268,7 +268,7 @@
 				return $this->_status(false, 'delete', "Cannot delete this customer because there are contact records set up against it.");
 			}
 			$sql = "DELETE FROM debtors_master WHERE debtor_no=" . $this->id;
-			DBOld::query($sql, "cannot delete customer");
+			DB::query($sql, "cannot delete customer");
 			unset($this->id);
 			$this->_new();
 			return $this->_status(true, 'delete', "Customer deleted.");
@@ -378,9 +378,9 @@
 			 = "(SELECT debtor_no as id, name as label, debtor_no as value, name as description FROM debtors_master WHERE name LIKE $term1 $where ORDER BY name LIMIT 20)
 						UNION (SELECT debtor_no as id, name as label, debtor_no as value, name as description FROM debtors_master
 						WHERE debtor_ref LIKE $term1 OR name LIKE $term2 OR debtor_no LIKE $term1 $where ORDER BY debtor_no, name LIMIT 20)";
-			$result = DBOld::query($sql, 'Couldn\'t Get Customers');
+			$result = DB::query($sql, 'Couldn\'t Get Customers');
 			$data = '';
-			while ($row = DBOld::fetch_assoc($result)) {
+			while ($row = DB::fetch_assoc($result)) {
 				foreach ($row as &$value) {
 					$value = htmlspecialchars_decode($value);
 				}

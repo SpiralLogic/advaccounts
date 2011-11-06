@@ -152,7 +152,7 @@
 		$running_total = $bfw;
 		$j = 1;
 		$k = 0; //row colour counter
-		while ($myrow = DBOld::fetch($result))
+		while ($myrow = DB::fetch($result))
 		{
 			alt_table_row_color($k);
 			$running_total += $myrow["amount"];
@@ -192,7 +192,7 @@
 			end_row();
 		}
 		end_table(2);
-		if (DBOld::num_rows($result) == 0) {
+		if (DB::num_rows($result) == 0) {
 			Errors::warning(_("No general ledger transactions have been created for the specified criteria."), 0, 1);
 		}
 	}

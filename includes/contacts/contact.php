@@ -70,7 +70,7 @@
 			if ((int)$this->id == 0) {
 				$this->_saveNew();
 			}
-			DBOld::begin_transaction();
+			DB::begin_transaction();
 			$sql = "UPDATE contacts SET
 			name=" . DB::escape($this->name) . ",
 			phone1=" . DB::escape($this->phone1) . ",
@@ -78,8 +78,8 @@
 			email=" . DB::escape($this->email) . ",
 			department=" . DB::escape($this->department) . " WHERE parent_id =" . DB::escape($this->parent_id) . "
     	    AND id=" . DB::escape($this->id);
-			DBOld::query($sql, "The customer could not be updated");
-			DBOld::commit_transaction();
+			DB::query($sql, "The customer could not be updated");
+			DB::commit_transaction();
 			return $this->_status(true, 'Processing', "Contact has been updated.");
 		}
 	}

@@ -53,8 +53,8 @@
 			if ($salesmanid == null) {
 				$salesman_name = $this->name;
 				$sql = "SELECT salesman_code FROM salesman WHERE salesman_name = " . DB::escape($salesman_name);
-				$query = DBOld::query($sql, 'Couldn\'t find current salesman');
-				$result = DBOld::fetch_assoc($query);
+				$query = DB::query($sql, 'Couldn\'t find current salesman');
+				$result = DB::fetch_assoc($query);
 				if (!empty($result['salesman_code'])) {
 					$this->salesmanid = $result['salesman_code'];
 				}
@@ -76,11 +76,14 @@
 
 		public function login($company, $loginname, $password)
 		{
+
 			$this->set_company($company);
 			$this->logged = false;
 			$Auth_Result = Users::get_for_login($loginname, $password);
-			if (DBOld::num_rows($Auth_Result) > 0) {
-				$myrow = DBOld::fetch($Auth_Result);
+
+			if (DB::num_rows($Auth_Result) > 0) {
+
+					$myrow = DB::fetch($Auth_Result);
 				if (!$myrow["inactive"]) {
 					$this->role_set = array();
 					$this->access = $myrow["role_id"];
@@ -145,14 +148,7 @@
 			return $this->can_access($page_level);
 		}
 
-		public function get_db_connection($id = -1)
-		{
-			$id = $id == -1 ? $this->company : 1;
-			$connection = Config::get('db.' . $id);
-			$db = mysql_connect($connection["host"], $connection["dbuser"], $connection["dbpassword"]);
-			mysql_select_db($connection["dbname"], $db);
-			return $db;
-		}
+
 
 		public function update_prefs(
 			$price_dec, $qty_dec, $exrate_dec, $percent_dec, $showgl, $showcodes, $date_format, $date_sep, $tho_sep, $dec_sep, $theme, $pagesize, $show_hints, $profile, $rep_popup,

@@ -39,7 +39,7 @@
 		AND supp_trans.tran_date <='" . $date . "'
 		ORDER BY supp_trans.type,
 			supp_trans.trans_no";
-		return DBOld::query($sql, "No transactions were returned");
+		return DB::query($sql, "No transactions were returned");
 	}
 
 	//----------------------------------------------------------------------------------------------------
@@ -107,14 +107,14 @@
 		$sql
 		 .= "suppliers.payment_terms = payment_terms.terms_indicator
 		ORDER BY supp_name";
-		$result = DBOld::query($sql, "The customers could not be retrieved");
-		while ($myrow = DBOld::fetch($result))
+		$result = DB::query($sql, "The customers could not be retrieved");
+		while ($myrow = DB::fetch($result))
 		{
 			if (!$convert && $currency != $myrow['curr_code']) {
 				continue;
 			}
 			$res = getTransactions($myrow['supplier_id'], $to);
-			if ($no_zeros && DBOld::num_rows($res) == 0) {
+			if ($no_zeros && DB::num_rows($res) == 0) {
 				continue;
 			}
 			$rep->fontSize += 2;
@@ -124,12 +124,12 @@
 			}
 			$rep->fontSize -= 2;
 			$rep->NewLine(1, 2);
-			if (DBOld::num_rows($res) == 0) {
+			if (DB::num_rows($res) == 0) {
 				continue;
 			}
 			$rep->Line($rep->row + 4);
 			$total[0] = $total[1] = 0.0;
-			while ($trans = DBOld::fetch($res))
+			while ($trans = DB::fetch($res))
 			{
 				if ($no_zeros && $trans['TranTotal'] == 0 && $trans['Balance'] == 0) {
 					continue;

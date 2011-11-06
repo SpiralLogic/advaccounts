@@ -43,7 +43,7 @@
 	AND tran_date >= '" . $after_date . "'
 	AND tran_date <= '" . $before_date . "'
 	AND stock_id = " . DB::escape($_POST['stock_id']) . " ORDER BY tran_date,trans_id";
-	$result = DBOld::query($sql, "could not query stock moves");
+	$result = DB::query($sql, "could not query stock moves");
 	Errors::check_db_error("The stock movements for the selected criteria could not be retrieved", $sql);
 	div_start('doc_tbl');
 	start_table(Config::get('tables_style'));
@@ -55,8 +55,8 @@
 	$sql = "SELECT SUM(qty) FROM stock_moves WHERE stock_id=" . DB::escape($_POST['stock_id']) . "
 	AND loc_code=" . DB::escape($_POST['StockLocation']) . "
 	AND tran_date < '" . $after_date . "'";
-	$before_qty = DBOld::query($sql, "The starting quantity on hand could not be calculated");
-	$before_qty_row = DBOld::fetch_row($before_qty);
+	$before_qty = DB::query($sql, "The starting quantity on hand could not be calculated");
+	$before_qty_row = DB::fetch_row($before_qty);
 	$after_qty = $before_qty = $before_qty_row[0];
 	if (!isset($before_qty_row[0])) {
 		$after_qty = $before_qty = 0;
@@ -71,7 +71,7 @@
 	$k = 0; //row colour counter
 	$total_in = 0;
 	$total_out = 0;
-	while ($myrow = DBOld::fetch($result))
+	while ($myrow = DB::fetch($result))
 	{
 		alt_table_row_color($k);
 		$trandate = Dates::sql2date($myrow["tran_date"]);
@@ -100,8 +100,8 @@
 		{
 			// get the supplier name
 			$sql = "SELECT supp_name FROM suppliers WHERE supplier_id = '" . $myrow["person_id"] . "'";
-			$supp_result = DBOld::query($sql, "check failed");
-			$supp_row = DBOld::fetch($supp_result);
+			$supp_result = DB::query($sql, "check failed");
+			$supp_row = DB::fetch($supp_result);
 			if (strlen($supp_row['supp_name']) > 0) {
 				$person = $supp_row['supp_name'];
 			}

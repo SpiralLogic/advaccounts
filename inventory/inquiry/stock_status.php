@@ -52,7 +52,7 @@
 	$dec = Num::qty_dec($_POST['stock_id']);
 	$j = 1;
 	$k = 0; //row colour counter
-	while ($myrow = DBOld::fetch($loc_details))
+	while ($myrow = DB::fetch($loc_details))
 	{
 		alt_table_row_color($k);
 		$demand_qty = Manufacturing::get_demand_qty($_POST['stock_id'], $myrow["loc_code"]);

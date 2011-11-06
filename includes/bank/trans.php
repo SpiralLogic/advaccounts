@@ -47,7 +47,7 @@
 			if ($err_msg == "") {
 				$err_msg = "The bank transaction could not be inserted";
 			}
-			DBOld::query($sql, $err_msg);
+			DB::query($sql, $err_msg);
 		}
 
 		//----------------------------------------------------------------------------------------
@@ -55,8 +55,8 @@
 		{
 			$sql = "SELECT trans_no FROM bank_trans WHERE type=" . DB::escape($type)
 			 . " AND trans_no=" . DB::escape($type_no);
-			$result = DBOld::query($sql, "Cannot retreive a bank transaction");
-			return (DBOld::num_rows($result) > 0);
+			$result = DB::query($sql, "Cannot retreive a bank transaction");
+			return (DB::num_rows($result) > 0);
 		}
 
 		//----------------------------------------------------------------------------------------
@@ -79,19 +79,19 @@
 				$sql .= " AND bank_trans.person_id = " . DB::escape($person_id);
 			}
 			$sql .= " ORDER BY trans_date, bank_trans.id";
-			return DBOld::query($sql, "query for bank transaction");
+			return DB::query($sql, "query for bank transaction");
 		}
 
 		//----------------------------------------------------------------------------------------
 		public static function void($type, $type_no, $nested = false)
 		{
 			if (!$nested) {
-				DBOld::begin_transaction();
+				DB::begin_transaction();
 			}
 			$sql
 			 = "UPDATE bank_trans SET amount=0
 		WHERE type=" . DB::escape($type) . " AND trans_no=" . DB::escape($type_no);
-			DBOld::query($sql, "could not void bank transactions for type=$type and trans_no=$type_no");
+			DB::query($sql, "could not void bank transactions for type=$type and trans_no=$type_no");
 			void_gl_trans($type, $type_no, true);
 			// in case it's a customer trans - probably better to check first
 			void_cust_allocations($type, $type_no);
@@ -101,7 +101,7 @@
 			void_supp_trans($type, $type_no);
 			void_trans_tax_details($type, $type_no);
 			if (!$nested) {
-				DBOld::commit_transaction();
+				DB::commit_transaction();
 			}
 		}
 		//----------------------------------------------------------------------------------

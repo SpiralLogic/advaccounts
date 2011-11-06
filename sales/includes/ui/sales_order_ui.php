@@ -15,8 +15,8 @@
 		// calculate item price to sum of kit element prices factor for
 		// value distribution over all exploded kit items
 		$item = Item_Code::is_kit($new_item);
-		if (DBOld::num_rows($item) == 1) {
-			$item = DBOld::fetch($item);
+		if (DB::num_rows($item) == 1) {
+			$item = DB::fetch($item);
 			if (!$item['is_foreign'] && $item['item_code'] == $item['stock_id']) {
 				foreach (
 					$order->line_items as $order_item
@@ -38,8 +38,8 @@
 			$price_factor = $price / $std_price;
 		}
 		$kit = Item_Code::get_kit($new_item);
-		$item_num = DBOld::num_rows($kit);
-		while ($item = DBOld::fetch($kit)) {
+		$item_num = DB::num_rows($kit);
+		while ($item = DB::fetch($kit)) {
 			$std_price = get_kit_price($item['stock_id'], $order->customer_currency, $order->sales_type, $order->price_factor, get_post('OrderDate'), true);
 			// rounding differences are included in last price item in kit
 			$item_num--;
@@ -92,10 +92,10 @@
 			$order->dimension2_id = $myrow['dimension2_id'];
 		}
 		$result = get_branch_to_order($customer_id, $branch_id);
-		if (DBOld::num_rows($result) == 0) {
+		if (DB::num_rows($result) == 0) {
 			return _("The selected customer and branch are not valid, or the customer does not have any branches.");
 		}
-		$myrow = DBOld::fetch($result);
+		$myrow = DB::fetch($result);
 		$order->set_branch($branch_id, $myrow["tax_group_id"], $myrow["tax_group_name"], $myrow["phone"], $myrow["email"]);
 		//$address = trim($myrow["br_post_address"]) != '' ? $myrow["br_post_address"] : (trim($myrow["br_address"]) != '' ?		$myrow["br_address"] : $deliver);
 		$address = $myrow['br_address'] . "\n";

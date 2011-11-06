@@ -73,8 +73,8 @@
             sales_type = " . DB::escape($_POST['sales_type']) . ",
             notes=" . DB::escape($_POST['notes']) . "
             WHERE debtor_no = " . DB::escape($_POST['customer_id']);
-			DBOld::query($sql, "The customer could not be updated");
-			DBOld::update_record_status(
+			DB::query($sql, "The customer could not be updated");
+			DB::update_record_status(
 				$_POST['customer_id'], $_POST['inactive'],
 				'debtors_master', 'debtor_no'
 			);
@@ -82,7 +82,7 @@
 			Errors::notice(_("Customer has been updated."));
 		}
 		else { //it is a new customer
-			DBOld::begin_transaction();
+			DB::begin_transaction();
 			$sql
 			 = "INSERT INTO debtors_master (name, debtor_ref, address, tax_id, email, dimension_id, dimension2_id,
 			curr_code, credit_status, payment_terms, discount, pymt_discount,credit_limit,  
@@ -95,10 +95,10 @@
 			) . ", " . input_num('discount') / 100 . ",
 			" . input_num('pymt_discount') / 100 . ", " . input_num('credit_limit')
 			 . ", " . DB::escape($_POST['sales_type']) . ", " . DB::escape($_POST['notes']) . ")";
-			DBOld::query($sql, "The customer could not be added");
-			$_POST['customer_id'] = DBOld::insert_id();
+			DB::query($sql, "The customer could not be added");
+			$_POST['customer_id'] = DB::insert_id();
 			$new_customer = false;
-			DBOld::commit_transaction();
+			DB::commit_transaction();
 			Errors::notice(_("A new customer has been added."));
 			$Ajax->activate('_page_body');
 		}
@@ -115,24 +115,24 @@
 		// PREVENT DELETES IF DEPENDENT RECORDS IN 'debtor_trans'
 		$sel_id = DB::escape($_POST['customer_id']);
 		$sql = "SELECT COUNT(*) FROM debtor_trans WHERE debtor_no=$sel_id";
-		$result = DBOld::query($sql, "check failed");
-		$myrow = DBOld::fetch_row($result);
+		$result = DB::query($sql, "check failed");
+		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {
 			$cancel_delete = 1;
 			Errors::error(_("This customer cannot be deleted because there are transactions that refer to it."));
 		}
 		else {
 			$sql = "SELECT COUNT(*) FROM sales_orders WHERE debtor_no=$sel_id";
-			$result = DBOld::query($sql, "check failed");
-			$myrow = DBOld::fetch_row($result);
+			$result = DB::query($sql, "check failed");
+			$myrow = DB::fetch_row($result);
 			if ($myrow[0] > 0) {
 				$cancel_delete = 1;
 				Errors::error(_("Cannot delete the customer record because orders have been created against it."));
 			}
 			else {
 				$sql = "SELECT COUNT(*) FROM cust_branch WHERE debtor_no=$sel_id";
-				$result = DBOld::query($sql, "check failed");
-				$myrow = DBOld::fetch_row($result);
+				$result = DB::query($sql, "check failed");
+				$myrow = DB::fetch_row($result);
 				if ($myrow[0] > 0) {
 					$cancel_delete = 1;
 					Errors::error(_("Cannot delete this customer because there are branch records set up against it."));
@@ -142,7 +142,7 @@
 		}
 		if ($cancel_delete == 0) { //ie not cancelled the delete as a result of above tests
 			$sql = "DELETE FROM debtors_master WHERE debtor_no=$sel_id";
-			DBOld::query($sql, "cannot delete customer");
+			DB::query($sql, "cannot delete customer");
 			Errors::notice(_("Selected customer has been deleted."));
 			unset($_POST['customer_id']);
 			$new_customer = true;
@@ -184,8 +184,8 @@
 	}
 	else {
 		$sql = "SELECT * FROM debtors_master WHERE debtor_no = " . DB::escape($_POST['customer_id']);
-		$result = DBOld::query($sql, "check failed");
-		$myrow = DBOld::fetch($result);
+		$result = DB::query($sql, "check failed");
+		$myrow = DB::fetch($result);
 		$_POST['CustName'] = $myrow["name"];
 		$_POST['cust_ref'] = $myrow["debtor_ref"];
 		$_POST['address'] = $myrow["address"];

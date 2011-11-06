@@ -36,7 +36,7 @@
 		$typestotal = 0;
 		//Get Accounts directly under this group/type
 		$result = get_gl_accounts(null, null, $type);
-		while ($account = DBOld::fetch($result))
+		while ($account = DB::fetch($result))
 		{
 			$prev_balance = get_gl_balance_from_to("", $from, $account["account_code"], $dimension, $dimension2);
 			$curr_balance = get_gl_trans_from_to($from, $to, $account["account_code"], $dimension, $dimension2);
@@ -58,7 +58,7 @@
 		$levelptr = 1;
 		//Get Account groups/types under this group/type
 		$result = get_account_types(false, false, $type);
-		while ($accounttype = DBOld::fetch($result))
+		while ($accounttype = DB::fetch($result))
 		{
 			$typestotal += display_type(
 				$accounttype["id"], $accounttype["name"], $from, $to,
@@ -124,7 +124,7 @@
 			$parent      = -1;
 			//Get classes for BS
 			$classresult = get_account_classes(false, 1);
-			while ($class = DBOld::fetch($classresult))
+			while ($class = DB::fetch($classresult))
 			{
 				$classclose = 0.0;
 				$convert    = Systypes::get_class_type_convert($class["ctype"]);
@@ -134,7 +134,7 @@
 				table_section_title($class["class_name"]);
 				//Get Account groups/types under this group/type
 				$typeresult = get_account_types(false, $class['cid'], -1);
-				while ($accounttype = DBOld::fetch($typeresult))
+				while ($accounttype = DB::fetch($typeresult))
 				{
 					$TypeTotal = display_type(
 						$accounttype["id"], $accounttype["name"], $from, $to,

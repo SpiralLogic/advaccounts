@@ -14,7 +14,7 @@
 	{
 		$m_cost = 0;
 		$result = Manufacturing::get_bom($stock_id);
-		while ($bom_item = DBOld::fetch($result))
+		while ($bom_item = DB::fetch($result))
 		{
 			$standard_cost = get_standard_cost($bom_item['component']);
 			$m_cost += ($bom_item['quantity'] * $standard_cost);
@@ -23,8 +23,8 @@
 		Num::price_decimal($m_cost, $dec);
 		$sql = "SELECT material_cost FROM stock_master WHERE stock_id = "
 		 . DB::escape($stock_id);
-		$result = DBOld::query($sql);
-		$myrow = DBOld::fetch($result);
+		$result = DB::query($sql);
+		$myrow = DB::fetch($result);
 		$material_cost = $myrow['material_cost'];
 		$qoh = get_qoh_on_date($stock_id, null, $date_);
 		if ($qoh < 0) {
@@ -37,7 +37,7 @@
 		$sql
 		 = "UPDATE stock_master SET material_cost=$material_cost
 		WHERE stock_id=" . DB::escape($stock_id);
-		DBOld::query($sql, "The cost details for the inventory item could not be updated");
+		DB::query($sql, "The cost details for the inventory item could not be updated");
 	}
 
 	function add_overhead_cost($stock_id, $qty, $date_, $costs)
@@ -49,8 +49,8 @@
 		}
 		$sql = "SELECT overhead_cost FROM stock_master WHERE stock_id = "
 		 . DB::escape($stock_id);
-		$result = DBOld::query($sql);
-		$myrow = DBOld::fetch($result);
+		$result = DB::query($sql);
+		$myrow = DB::fetch($result);
 		$overhead_cost = $myrow['overhead_cost'];
 		$qoh = get_qoh_on_date($stock_id, null, $date_);
 		if ($qoh < 0) {
@@ -62,7 +62,7 @@
 		$overhead_cost = Num::round($overhead_cost, $dec);
 		$sql = "UPDATE stock_master SET overhead_cost=" . DB::escape($overhead_cost) . "
 		WHERE stock_id=" . DB::escape($stock_id);
-		DBOld::query($sql, "The cost details for the inventory item could not be updated");
+		DB::query($sql, "The cost details for the inventory item could not be updated");
 	}
 
 	function add_labour_cost($stock_id, $qty, $date_, $costs)
@@ -74,8 +74,8 @@
 		}
 		$sql = "SELECT labour_cost FROM stock_master WHERE stock_id = "
 		 . DB::escape($stock_id);
-		$result = DBOld::query($sql);
-		$myrow = DBOld::fetch($result);
+		$result = DB::query($sql);
+		$myrow = DB::fetch($result);
 		$labour_cost = $myrow['labour_cost'];
 		$qoh = get_qoh_on_date($stock_id, null, $date_);
 		if ($qoh < 0) {
@@ -87,7 +87,7 @@
 		$labour_cost = Num::round($labour_cost, $dec);
 		$sql = "UPDATE stock_master SET labour_cost=" . DB::escape($labour_cost) . "
 		WHERE stock_id=" . DB::escape($stock_id);
-		DBOld::query($sql, "The cost details for the inventory item could not be updated");
+		DB::query($sql, "The cost details for the inventory item could not be updated");
 	}
 
 	function add_issue_cost($stock_id, $qty, $date_, $costs)
@@ -97,8 +97,8 @@
 		}
 		$sql = "SELECT material_cost FROM stock_master WHERE stock_id = "
 		 . DB::escape($stock_id);
-		$result = DBOld::query($sql);
-		$myrow = DBOld::fetch($result);
+		$result = DB::query($sql);
+		$myrow = DB::fetch($result);
 		$material_cost = $myrow['material_cost'];
 		$dec = User::price_dec();
 		Num::price_decimal($material_cost, $dec);
@@ -113,7 +113,7 @@
 		$sql = "UPDATE stock_master SET material_cost=material_cost+"
 		 . DB::escape($material_cost)
 		 . " WHERE stock_id=" . DB::escape($stock_id);
-		DBOld::query($sql, "The cost details for the inventory item could not be updated");
+		DB::query($sql, "The cost details for the inventory item could not be updated");
 	}
 
 	function add_work_order($wo_ref, $loc_code, $units_reqd, $stock_id,
@@ -122,7 +122,7 @@
 		if (!($type == WO_ADVANCED)) {
 			return add_work_order_quick($wo_ref, $loc_code, $units_reqd, $stock_id, $type, $date_, $memo_, $costs, $cr_acc, $labour, $cr_lab_acc);
 		}
-		DBOld::begin_transaction();
+		DB::begin_transaction();
 		add_material_cost($stock_id, $units_reqd, $date_);
 		$date = Dates::date2sql($date_);
 		$required = Dates::date2sql($required_by);
@@ -132,12 +132,12 @@
     	VALUES (" . DB::escape($wo_ref) . ", " . DB::escape($loc_code) . ", "
 		 . DB::escape($units_reqd) . ", " . DB::escape($stock_id) . ",
 		" . DB::escape($type) . ", '$date', " . DB::escape($required) . ")";
-		DBOld::query($sql, "could not add work order");
-		$woid = DBOld::insert_id();
+		DB::query($sql, "could not add work order");
+		$woid = DB::insert_id();
 		DB_Comments::add(ST_WORKORDER, $woid, $required_by, $memo_);
 		Refs::save(ST_WORKORDER, $woid, $wo_ref);
 		DB_AuditTrail::add(ST_WORKORDER, $woid, $date_);
-		DBOld::commit_transaction();
+		DB::commit_transaction();
 		return $woid;
 	}
 
@@ -145,7 +145,7 @@
 	function update_work_order($woid, $loc_code, $units_reqd, $stock_id,
 														 $date_, $required_by, $memo_)
 	{
-		DBOld::begin_transaction();
+		DB::begin_transaction();
 		add_material_cost($_POST['old_stk_id'], -$_POST['old_qty'], $date_);
 		add_material_cost($stock_id, $units_reqd, $date_);
 		$date = Dates::date2sql($date_);
@@ -155,24 +155,24 @@
 		required_by=" . DB::escape($required) . ",
 		date_='$date'
 		WHERE id = " . DB::escape($woid);
-		DBOld::query($sql, "could not update work order");
+		DB::query($sql, "could not update work order");
 		DB_Comments::update(ST_WORKORDER, $woid, null, $memo_);
 		DB_AuditTrail::add(ST_WORKORDER, $woid, $date_, _("Updated."));
-		DBOld::commit_transaction();
+		DB::commit_transaction();
 	}
 
 	function delete_work_order($woid)
 	{
-		DBOld::begin_transaction();
+		DB::begin_transaction();
 		add_material_cost($_POST['stock_id'], -$_POST['quantity'], $_POST['date_']);
 		// delete the work order requirements
 		delete_wo_requirements($woid);
 		// delete the actual work order
 		$sql = "DELETE FROM workorders WHERE id=" . DB::escape($woid);
-		DBOld::query($sql, "The work order could not be deleted");
+		DB::query($sql, "The work order could not be deleted");
 		DB_Comments::delete(ST_WORKORDER, $woid);
 		DB_AuditTrail::add(ST_WORKORDER, $woid, $_POST['date_'], _("Canceled."));
-		DBOld::commit_transaction();
+		DB::commit_transaction();
 	}
 
 	//--------------------------------------------------------------------------------------
@@ -186,19 +186,19 @@
 		AND	locations.loc_code=workorders.loc_code
 		AND workorders.id=" . DB::escape($woid) . "
 		GROUP BY workorders.id";
-		$result = DBOld::query($sql, "The work order issues could not be retrieved");
-		if (!$allow_null && DBOld::num_rows($result) == 0) {
+		$result = DB::query($sql, "The work order issues could not be retrieved");
+		if (!$allow_null && DB::num_rows($result) == 0) {
 			Errors::show_db_error("Could not find work order $woid", $sql);
 		}
-		return DBOld::fetch($result);
+		return DB::fetch($result);
 	}
 
 	//--------------------------------------------------------------------------------------
 	function work_order_has_productions($woid)
 	{
 		$sql = "SELECT COUNT(*) FROM wo_manufacture WHERE workorder_id=" . DB::escape($woid);
-		$result = DBOld::query($sql, "query work order for productions");
-		$myrow = DBOld::fetch_row($result);
+		$result = DB::query($sql, "query work order for productions");
+		$myrow = DB::fetch_row($result);
 		return ($myrow[0] > 0);
 	}
 
@@ -206,8 +206,8 @@
 	function work_order_has_issues($woid)
 	{
 		$sql = "SELECT COUNT(*) FROM wo_issues WHERE workorder_id=" . DB::escape($woid);
-		$result = DBOld::query($sql, "query work order for issues");
-		$myrow = DBOld::fetch_row($result);
+		$result = DB::query($sql, "query work order for issues");
+		$myrow = DB::fetch_row($result);
 		return ($myrow[0] > 0);
 	}
 
@@ -215,40 +215,40 @@
 	function work_order_has_payments($woid)
 	{
 		$result = get_gl_wo_cost_trans($woid);
-		return (DBOld::num_rows($result) != 0);
+		return (DB::num_rows($result) != 0);
 	}
 
 	//--------------------------------------------------------------------------------------
 	function release_work_order($woid, $releaseDate, $memo_)
 	{
-		DBOld::begin_transaction();
+		DB::begin_transaction();
 		$myrow = get_work_order($woid);
 		$stock_id = $myrow["stock_id"];
 		$date = Dates::date2sql($releaseDate);
 		$sql
 		 = "UPDATE workorders SET released_date='$date',
 		released=1 WHERE id = " . DB::escape($woid);
-		DBOld::query($sql, "could not release work order");
+		DB::query($sql, "could not release work order");
 		// create Work Order Requirements based on the bom
 		create_wo_requirements($woid, $stock_id);
 		DB_Comments::add(ST_WORKORDER, $woid, $releaseDate, $memo_);
 		DB_AuditTrail::add(ST_WORKORDER, $woid, $releaseDate, _("Released."));
-		DBOld::commit_transaction();
+		DB::commit_transaction();
 	}
 
 	//--------------------------------------------------------------------------------------
 	function close_work_order($woid)
 	{
 		$sql = "UPDATE workorders SET closed=1 WHERE id = " . DB::escape($woid);
-		DBOld::query($sql, "could not close work order");
+		DB::query($sql, "could not close work order");
 	}
 
 	//--------------------------------------------------------------------------------------
 	function work_order_is_closed($woid)
 	{
 		$sql = "SELECT closed FROM workorders WHERE id = " . DB::escape($woid);
-		$result = DBOld::query($sql, "could not query work order");
-		$row = DBOld::fetch_row($result);
+		$result = DB::query($sql, "could not query work order");
+		$row = DB::fetch_row($result);
 		return ($row[0] > 0);
 	}
 
@@ -258,13 +258,13 @@
 		$sql = "UPDATE workorders SET units_issued = units_issued + " . DB::escape($quantity) . ",
 		closed = ((units_issued >= units_reqd) OR " . DB::escape($force_close) . ")
 		WHERE id = " . DB::escape($woid);
-		DBOld::query($sql, "The work order issued quantity couldn't be updated");
+		DB::query($sql, "The work order issued quantity couldn't be updated");
 	}
 
 	//--------------------------------------------------------------------------------------
 	function void_work_order($woid)
 	{
-		DBOld::begin_transaction();
+		DB::begin_transaction();
 		$work_order = get_work_order($woid);
 		if (!($work_order["type"] == WO_ADVANCED)) {
 			$date = Dates::sql2date($work_order['date_']);
@@ -280,7 +280,7 @@
 			}
 			$sql = "UPDATE workorders SET closed=1,units_reqd=0,units_issued=0 WHERE id = "
 			 . DB::escape($woid);
-			DBOld::query($sql, "The work order couldn't be voided");
+			DB::query($sql, "The work order couldn't be voided");
 			// void all related stock moves
 			void_stock_move(ST_WORKORDER, $woid);
 			// void any related gl trans
@@ -293,18 +293,18 @@
 			add_material_cost($work_order['stock_id'], -$work_order['units_reqd'], $date); // remove avg. cost for qty
 			$result = get_work_order_productions($woid); // check the produced quantity
 			$qty = 0;
-			while ($row = DBOld::fetch($result))
+			while ($row = DB::fetch($result))
 			{
 				$qty += $row['quantity'];
 				// clear the production record
 				$sql = "UPDATE wo_manufacture SET quantity=0 WHERE id=" . $$row['id'];
-				DBOld::query($sql, "Cannot void a wo production");
+				DB::query($sql, "Cannot void a wo production");
 				void_stock_move(ST_MANURECEIVE, $row['id']); // and void the stock moves;
 			}
 			$result = get_additional_issues($woid); // check the issued quantities
 			$cost = 0;
 			$issue_no = 0;
-			while ($row = DBOld::fetch($result))
+			while ($row = DB::fetch($result))
 			{
 				$std_cost = get_standard_cost($row['stock_id']);
 				$icost = $std_cost * $row['qty_issued'];
@@ -315,7 +315,7 @@
 				// void the actual issue items and their quantities
 				$sql = "UPDATE wo_issue_items SET qty_issued = 0 WHERE issue_id="
 				 . DB::escape($row['id']);
-				DBOld::query($sql, "A work order issue item could not be voided");
+				DB::query($sql, "A work order issue item could not be voided");
 			}
 			if ($issue_no != 0) {
 				void_stock_move(ST_MANUISSUE, $issue_no);
@@ -333,7 +333,7 @@
 			}
 			$sql = "UPDATE workorders SET closed=1,units_reqd=0,units_issued=0 WHERE id = "
 			 . DB::escape($woid);
-			DBOld::query($sql, "The work order couldn't be voided");
+			DB::query($sql, "The work order couldn't be voided");
 			// void all related stock moves
 			void_stock_move(ST_WORKORDER, $woid);
 			// void any related gl trans
@@ -341,7 +341,7 @@
 			// clear the requirements units received
 			void_wo_requirements($woid);
 		}
-		DBOld::commit_transaction();
+		DB::commit_transaction();
 	}
 
 	//--------------------------------------------------------------------------------------
@@ -349,7 +349,7 @@
 	{
 		$cost = 0;
 		$result = get_gl_wo_cost_trans($woid, $cost_type);
-		while ($row = DBOld::fetch($result))
+		while ($row = DB::fetch($result))
 		{
 			$cost += -$row['amount'];
 		}

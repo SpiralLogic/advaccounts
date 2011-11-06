@@ -14,7 +14,7 @@
 		$sql = "INSERT INTO sales_pos (pos_name, pos_location, pos_account, cash_sale, credit_sale) VALUES (" . DB::escape($name)
 		 . "," . DB::escape($location) . "," . DB::escape($account)
 		 . ",$cash,$credit)";
-		DBOld::query($sql, "could not add point of sale");
+		DB::query($sql, "could not add point of sale");
 	}
 
 	function update_sales_point($id, $name, $location, $account, $cash, $credit)
@@ -25,7 +25,7 @@
 		 . ",cash_sale =$cash"
 		 . ",credit_sale =$credit"
 		 . " WHERE id = " . DB::escape($id);
-		DBOld::query($sql, "could not update sales type");
+		DB::query($sql, "could not update sales type");
 	}
 
 	function get_all_sales_points($all = false)
@@ -37,7 +37,7 @@
 		if (!$all) {
 			$sql .= " WHERE !pos.inactive";
 		}
-		return DBOld::query($sql, "could not get all POS definitions");
+		return DB::query($sql, "could not get all POS definitions");
 	}
 
 	function get_sales_point($id)
@@ -47,22 +47,22 @@
 		LEFT JOIN locations as loc on pos.pos_location=loc.loc_code
 		LEFT JOIN bank_accounts as acc on pos.pos_account=acc.id
 		WHERE pos.id=" . DB::escape($id);
-		$result = DBOld::query($sql, "could not get POS definition");
-		return DBOld::fetch($result);
+		$result = DB::query($sql, "could not get POS definition");
+		return DB::fetch($result);
 	}
 
 	function get_sales_point_name($id)
 	{
 		$sql = "SELECT pos_name FROM sales_pos WHERE id=" . DB::escape($id);
-		$result = DBOld::query($sql, "could not get POS name");
-		$row = DBOld::fetch_row($result);
+		$result = DB::query($sql, "could not get POS name");
+		$row = DB::fetch_row($result);
 		return $row[0];
 	}
 
 	function delete_sales_point($id)
 	{
 		$sql = "DELETE FROM sales_pos WHERE id=" . DB::escape($id);
-		DBOld::query($sql, "The point of sale record could not be deleted");
+		DB::query($sql, "The point of sale record could not be deleted");
 	}
 
 ?>

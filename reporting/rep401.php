@@ -38,7 +38,7 @@
 		ORDER BY
 			bom.parent,
 			bom.component";
-		return DBOld::query($sql, "No transactions were returned");
+		return DB::query($sql, "No transactions were returned");
 	}
 
 	//----------------------------------------------------------------------------------------------------
@@ -67,7 +67,7 @@
 		$rep->Header();
 		$res = getTransactions($frompart, $topart);
 		$parent = '';
-		while ($trans = DBOld::fetch($res))
+		while ($trans = DB::fetch($res))
 		{
 			if ($parent != $trans['parent']) {
 				if ($parent != '') {

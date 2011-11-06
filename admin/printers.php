@@ -48,13 +48,13 @@
 	if ($Mode == 'Delete') {
 		// PREVENT DELETES IF DEPENDENT RECORDS IN print_profiles
 		$sql = "SELECT COUNT(*) FROM print_profiles WHERE printer = " . DB::escape($selected_id);
-		$result = DBOld::query($sql, "check printers relations failed");
-		$myrow = DBOld::fetch_row($result);
+		$result = DB::query($sql, "check printers relations failed");
+		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {
 			Errors::error(_("Cannot delete this printer definition, because print profile have been created using it."));
 		} else {
 			$sql = "DELETE FROM printers WHERE id=" . DB::escape($selected_id);
-			DBOld::query($sql, "could not delete printer definition");
+			DB::query($sql, "could not delete printer definition");
 			Errors::notice(_('Selected printer definition has been deleted'));
 		}
 		$Mode = 'RESET';
@@ -70,7 +70,7 @@
 	$th = array(_("Name"), _("Description"), _("Host"), _("Printer Queue"), '', '');
 	table_header($th);
 	$k = 0; //row colour counter
-	while ($myrow = DBOld::fetch($result))
+	while ($myrow = DB::fetch($result))
 	{
 		alt_table_row_color($k);
 		label_cell($myrow['name']);

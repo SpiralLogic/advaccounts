@@ -26,7 +26,7 @@
 			{
 				$sql .= "id = " . DB::escape($id);
 			}
-			DBOld::query($sql, "an item code could not be updated");
+			DB::query($sql, "an item code could not be updated");
 		}
 
 		public static function	add($item_code, $stock_id, $description, $category, $qty, $foreign = 0)
@@ -37,20 +37,20 @@
 					VALUES( " . DB::escape($item_code) . "," . DB::escape($stock_id) . ",
 			  		" . DB::escape($description) . "," . DB::escape($category)
 			 . "," . DB::escape($qty) . "," . DB::escape($foreign) . ")";
-			DBOld::query($sql, "an item code could not be added");
+			DB::query($sql, "an item code could not be added");
 		}
 
 		public static function	delete($id)
 		{
 			$sql = "DELETE FROM item_codes WHERE id=" . DB::escape($id);
-			DBOld::query($sql, "an item code could not be deleted");
+			DB::query($sql, "an item code could not be deleted");
 		}
 
 		public static function	get($id)
 		{
 			$sql = "SELECT * FROM item_codes WHERE id=" . DB::escape($id);
-			$result = DBOld::query($sql, "item code could not be retrieved");
-			return DBOld::fetch($result);
+			$result = DB::query($sql, "item code could not be retrieved");
+			return DB::fetch($result);
 		}
 
 		public static function	get_all($stock_id, $foreign = 1)
@@ -61,14 +61,14 @@
 				WHERE stock_id=" . DB::escape($stock_id) . "
 				AND i.category_id=c.category_id
 				AND i.is_foreign=" . DB::escape($foreign);
-			$result = DBOld::query($sql, "all item codes could not be retrieved");
+			$result = DB::query($sql, "all item codes could not be retrieved");
 			return $result;
 		}
 
 		public static function	delete_kit($item_code)
 		{
 			$sql = "DELETE FROM item_codes WHERE item_code=" . DB::escape($item_code);
-			DBOld::query($sql, "an item kit could not be deleted");
+			DB::query($sql, "an item kit could not be deleted");
 		}
 
 		public static function	get_kit($item_code)
@@ -85,14 +85,14 @@
 			WHERE
 				kit.stock_id=comp.item_code
 				AND kit.item_code=" . DB::escape($item_code);
-			$result = DBOld::query($sql, "item kit could not be retrieved");
+			$result = DB::query($sql, "item kit could not be retrieved");
 			return $result;
 		}
 
 		public static function	is_kit($item_code)
 		{
 			$sql = "SELECT * FROM item_codes WHERE item_code=" . DB::escape($item_code);
-			return DBOld::query($sql, "Could not do shit for some reason");
+			return DB::query($sql, "Could not do shit for some reason");
 		}
 
 		//
@@ -102,7 +102,7 @@
 		{
 			$result = static::get_kit($kit_code);
 			if ($result != 0) {
-				while ($myrow = DBOld::fetch($result))
+				while ($myrow = DB::fetch($result))
 				{
 					if ($myrow['id'] == $old_id) {
 						continue;
@@ -124,8 +124,8 @@
 		{
 			$sql = "SELECT description, category_id FROM item_codes "
 			 . " WHERE item_code=" . DB::escape($kit_code);
-			$res = DBOld::query($sql, "kit name query failed");
-			return DBOld::fetch($res);
+			$res = DB::query($sql, "kit name query failed");
+			return DB::fetch($res);
 		}
 
 		public static function	update_kit_props($kit_code, $name, $category)
@@ -133,7 +133,7 @@
 			$sql = "UPDATE item_codes SET description="
 			 . DB::escape($name) . ",category_id=" . DB::escape($category)
 			 . " WHERE item_code=" . DB::escape($kit_code);
-			DBOld::query($sql, "kit name update failed");
+			DB::query($sql, "kit name update failed");
 		}
 
 		public static function	get_defaults($stock_id)
@@ -142,8 +142,8 @@
 			 = "SELECT units, decimals, description, category_id
 			FROM stock_master,item_units
 			WHERE stock_id=" . DB::escape($stock_id);
-			$result = DBOld::query($sql, "item code defaults could not be retrieved");
-			return DBOld::fetch($result);
+			$result = DB::query($sql, "item code defaults could not be retrieved");
+			return DB::fetch($result);
 		}
 
 		public static function	get_where_used($item_code)
@@ -152,7 +152,7 @@
 			 . "item_codes "
 			 . " WHERE stock_id=" . DB::escape($item_code) . "
 				AND item_code!=" . DB::escape($item_code);
-			return DBOld::query($sql, "where used query failed");
+			return DB::query($sql, "where used query failed");
 		}
 	}
 

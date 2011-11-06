@@ -48,7 +48,7 @@
 				 . input_num('price', 0) . ", " . DB::escape($_POST['suppliers_uom']) . ", "
 				 . input_num('conversion_factor') . ", "
 				 . DB::escape($_POST['supplier_description']) . ")";
-				DBOld::query($sql, "The supplier purchasing details could not be added");
+				DB::query($sql, "The supplier purchasing details could not be added");
 				Errors::notice(_("This supplier purchasing data has been added."));
 			} else
 			{
@@ -58,7 +58,7 @@
 				supplier_description=" . DB::escape($_POST['supplier_description']) . "
 				WHERE stock_id=" . DB::escape($_POST['stock_id']) . " AND
 				supplier_id=" . DB::escape($selected_id);
-				DBOld::query($sql, "The supplier purchasing details could not be updated");
+				DB::query($sql, "The supplier purchasing details could not be updated");
 				Errors::notice(_("Supplier purchasing data has been updated."));
 			}
 			$Mode = 'RESET';
@@ -71,7 +71,7 @@
 		}
 		$sql = "DELETE FROM purch_data WHERE supplier_id=" . DB::escape($selected_id) . "
 		AND stock_id=" . DB::escape($_POST['stock_id']);
-		DBOld::query($sql, "could not delete purchasing data");
+		DB::query($sql, "could not delete purchasing data");
 		Errors::notice(_("The purchasing data item has been sucessfully deleted."));
 		$Mode = 'RESET';
 	}
@@ -110,9 +110,9 @@
 		FROM purch_data INNER JOIN suppliers
 		ON purch_data.supplier_id=suppliers.supplier_id
 		WHERE stock_id = " . DB::escape($_POST['stock_id']);
-		$result = DBOld::query($sql, "The supplier purchasing details for the selected part could not be retrieved");
+		$result = DB::query($sql, "The supplier purchasing details for the selected part could not be retrieved");
 		div_start('price_table');
-		if (DBOld::num_rows($result) == 0) {
+		if (DB::num_rows($result) == 0) {
 			Errors::warning(_("There is no supplier prices set up for the product selected"));
 		} else {
 			if (Input::request('frame')) {
@@ -126,7 +126,7 @@
 			);
 			table_header($th);
 			$k = $j = 0; //row colour counter
-			while ($myrow = DBOld::fetch($result))
+			while ($myrow = DB::fetch($result))
 			{
 				alt_table_row_color($k);
 				label_cell(Dates::sql2date($myrow['last_update']), "style='white-space:nowrap;'");
@@ -157,8 +157,8 @@
 		INNER JOIN suppliers ON purch_data.supplier_id=suppliers.supplier_id
 		WHERE purch_data.supplier_id=" . DB::escape($selected_id) . "
 		AND purch_data.stock_id=" . DB::escape($_POST['stock_id']);
-		$result = DBOld::query($sql, "The supplier purchasing details for the selected supplier and item could not be retrieved");
-		$myrow = DBOld::fetch($result);
+		$result = DB::query($sql, "The supplier purchasing details for the selected supplier and item could not be retrieved");
+		$myrow = DB::fetch($result);
 		$supp_name = $myrow["supp_name"];
 		$_POST['price'] = Num::price_decimal($myrow["price"], $dec2);
 		$_POST['suppliers_uom'] = $myrow["suppliers_uom"];

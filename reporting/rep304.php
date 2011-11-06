@@ -62,7 +62,7 @@
 		$sql
 		 .= " GROUP BY stock_master.stock_id, debtors_master.name ORDER BY stock_master.category_id,
 			stock_master.stock_id, debtors_master.name";
-		return DBOld::query($sql, "No transactions were returned");
+		return DB::query($sql, "No transactions were returned");
 	}
 
 	//----------------------------------------------------------------------------------------------------
@@ -132,7 +132,7 @@
 		$total1 = $grandtotal1 = 0.0;
 		$total2 = $grandtotal2 = 0.0;
 		$catt = '';
-		while ($trans = DBOld::fetch($res))
+		while ($trans = DB::fetch($res))
 		{
 			if ($catt != $trans['cat_description']) {
 				if ($catt != '') {

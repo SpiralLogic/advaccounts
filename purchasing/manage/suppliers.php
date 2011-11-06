@@ -60,8 +60,8 @@
 				tax_group_id=" . DB::escape($_POST['tax_group_id']) . " WHERE supplier_id = " . DB::escape(
 					$_POST['supplier_id']
 				);
-				DBOld::query($sql, "The supplier could not be updated");
-				DBOld::update_record_status(
+				DB::query($sql, "The supplier could not be updated");
+				DB::update_record_status(
 					$_POST['supplier_id'], $_POST['inactive'],
 					'suppliers', 'supplier_id'
 				);
@@ -95,8 +95,8 @@
 				 . DB::escape($_POST['payment_discount_account']) . ", "
 				 . DB::escape($_POST['notes']) . ", "
 				 . DB::escape($_POST['tax_group_id']) . ")";
-				DBOld::query($sql, "The supplier could not be added");
-				$_POST['supplier_id'] = DBOld::insert_id();
+				DB::query($sql, "The supplier could not be added");
+				$_POST['supplier_id'] = DB::insert_id();
 				$new_supplier = false;
 				Errors::notice(_("A new supplier has been added."));
 				$Ajax->activate('_page_body');
@@ -109,15 +109,15 @@
 		$cancel_delete = 0;
 		// PREVENT DELETES IF DEPENDENT RECORDS IN 'supp_trans' , purch_orders
 		$sql = "SELECT COUNT(*) FROM supp_trans WHERE supplier_id=" . DB::escape($_POST['supplier_id']);
-		$result = DBOld::query($sql, "check failed");
-		$myrow = DBOld::fetch_row($result);
+		$result = DB::query($sql, "check failed");
+		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {
 			$cancel_delete = 1;
 			Errors::error(_("Cannot delete this supplier because there are transactions that refer to this supplier."));
 		} else {
 			$sql = "SELECT COUNT(*) FROM purch_orders WHERE supplier_id=" . DB::escape($_POST['supplier_id']);
-			$result = DBOld::query($sql, "check failed");
-			$myrow = DBOld::fetch_row($result);
+			$result = DB::query($sql, "check failed");
+			$myrow = DB::fetch_row($result);
 			if ($myrow[0] > 0) {
 				$cancel_delete = 1;
 				Errors::error(_("Cannot delete the supplier record because purchase orders have been created against this supplier."));
@@ -125,7 +125,7 @@
 		}
 		if ($cancel_delete == 0) {
 			$sql = "DELETE FROM suppliers WHERE supplier_id=" . DB::escape($_POST['supplier_id']);
-			DBOld::query($sql, "check failed");
+			DB::query($sql, "check failed");
 			unset($_SESSION['supplier_id']);
 			$new_supplier = true;
 			$Ajax->activate('_page_body');

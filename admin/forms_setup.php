@@ -15,12 +15,12 @@
 	//-------------------------------------------------------------------------------------------------
 	if (isset($_POST['setprefs'])) {
 		$systypes = SysTypes::get_systypes();
-		DBOld::begin_transaction();
-		while ($type = DBOld::fetch($systypes))
+		DB::begin_transaction();
+		while ($type = DB::fetch($systypes))
 		{
 			Refs::save_next_reference($type["type_id"], $_POST['id' . $type["type_id"]]);
 		}
-		DBOld::commit_transaction();
+		DB::commit_transaction();
 		Errors::notice(_("Forms settings have been updated."));
 	}
 	start_form();
@@ -30,7 +30,7 @@
 	$th = array(_("Form"), _("Next Reference"));
 	table_header($th);
 	$i = 0;
-	while ($type = DBOld::fetch($systypes))
+	while ($type = DB::fetch($systypes))
 	{
 		if ($i++ == ST_CUSTCREDIT) {
 			table_section(2);

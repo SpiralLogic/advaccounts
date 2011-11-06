@@ -58,7 +58,7 @@
 		$bdate = Dates::date2sql($_POST['TransFromDate']);
 		$edate = Dates::date2sql($_POST['TransToDate']);
 		$taxes = get_tax_summary($_POST['TransFromDate'], $_POST['TransToDate']);
-		while ($tx = DBOld::fetch($taxes))
+		while ($tx = DB::fetch($taxes))
 		{
 			$payable = $tx['payable'];
 			$collectible = $tx['collectible'];

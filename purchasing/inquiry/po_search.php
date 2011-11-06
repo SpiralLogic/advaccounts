@@ -131,7 +131,7 @@
 		}
 	} //end not order number selected
 	$sql .= " GROUP BY porder.order_no";
-	$result = DBOld::query($sql, "No orders were returned");
+	$result = DB::query($sql, "No orders were returned");
 	/*show a table of the orders returned by the sql */
 	$cols = array(
 		_("#") => array(

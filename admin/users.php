@@ -67,7 +67,7 @@
 					$_POST['phone'], $_POST['email'], $_POST['Access'], $_POST['language'],
 					$_POST['profile'], check_value('rep_popup'), $_POST['pos']
 				);
-				$id = DBOld::insert_id();
+				$id = DB::insert_id();
 				// use current user display preferences as start point for new user
 				Users::update_display_prefs(
 					$id, User::price_dec(), User::qty_dec(), User::exrate_dec(),
@@ -105,7 +105,7 @@
 	inactive_control_column($th);
 	table_header($th);
 	$k = 0; //row colour counter
-	while ($myrow = DBOld::fetch($result))
+	while ($myrow = DB::fetch($result))
 	{
 		alt_table_row_color($k);
 		$last_visit_date = Dates::sql2date($myrow["last_visit_date"]);

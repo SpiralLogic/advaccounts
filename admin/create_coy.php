@@ -49,7 +49,7 @@
 	//---------------------------------------------------------------------------------------------
 	function handle_submit()
 	{
-		DBOld::getInstance();
+
 		$comp_subdirs = Config::get('company_subdirs');
 		$error = false;
 		if (!check_data()) {
@@ -79,7 +79,7 @@
 						Errors::error(_('Cannot create new company due to bugs in sql file.'));
 						$error = true;
 					} else if (isset($_POST['admpassword']) && $_POST['admpassword'] != "") {
-						DBOld::query(
+						DB::query(
 							"UPDATE users set password = '" . md5(
 								$_POST['admpassword']
 							) . "' WHERE user_id = 'admin'"
@@ -90,7 +90,7 @@
 					$error = true;
 				}
 			}
-			DBOld::getInstance();
+
 			if ($error) {
 				remove_connection($id);
 				return false;
@@ -101,7 +101,7 @@
 				if (($db = DB_Utils::create($conn)) == 0) {
 					Errors::error(_("Error connecting to Database: ") . $conn['dbname'] . _(", Please correct it"));
 				} elseif ($_POST['admpassword'] != "") {
-					DBOld::query(
+					DB::query(
 						"UPDATE users set password = '" . md5(
 							$_POST['admpassword']
 						) . "' WHERE user_id = 'admin'"

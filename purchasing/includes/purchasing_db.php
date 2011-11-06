@@ -38,9 +38,9 @@
 		 = "SELECT price, conversion_factor FROM purch_data
 		WHERE supplier_id = " . DB::escape($supplier_id) . "
 		AND stock_id = " . DB::escape($stock_id);
-		$result = DBOld::query($sql, "The supplier pricing details for " . $stock_id . " could not be retrieved");
-		if (DBOld::num_rows($result) == 1) {
-			$myrow = DBOld::fetch($result);
+		$result = DB::query($sql, "The supplier pricing details for " . $stock_id . " could not be retrieved");
+		if (DB::num_rows($result) == 1) {
+			$myrow = DB::fetch($result);
 			return $myrow["price"] / $myrow['conversion_factor'];
 		} else {
 			return 0;
@@ -53,9 +53,9 @@
 		 = "SELECT conversion_factor FROM purch_data
 		WHERE supplier_id = " . DB::escape($supplier_id) . "
 		AND stock_id = " . DB::escape($stock_id);
-		$result = DBOld::query($sql, "The supplier pricing details for " . $stock_id . " could not be retrieved");
-		if (DBOld::num_rows($result) == 1) {
-			$myrow = DBOld::fetch($result);
+		$result = DB::query($sql, "The supplier pricing details for " . $stock_id . " could not be retrieved");
+		if (DB::num_rows($result) == 1) {
+			$myrow = DB::fetch($result);
 			return $myrow['conversion_factor'];
 		} else {
 			return 1;
@@ -69,8 +69,8 @@
 		 = "SELECT * FROM purch_data
 		WHERE supplier_id = " . DB::escape($supplier_id) . "
 		AND stock_id = " . DB::escape($stock_id);
-		$result = DBOld::query($sql, "The supplier pricing details for " . $stock_id . " could not be retrieved");
-		return DBOld::fetch($result);
+		$result = DB::query($sql, "The supplier pricing details for " . $stock_id . " could not be retrieved");
+		return DB::fetch($result);
 	}
 
 	function add_or_update_purchase_data($supplier_id, $stock_id, $price, $supplier_code = "", $uom = "")
@@ -83,7 +83,7 @@
 			conversion_factor, supplier_description) VALUES (" . DB::escape($supplier_id)
 			 . ", " . DB::escape($stock_id) . ", " . DB::escape($price) . ", "
 			 . DB::escape($uom) . ", 1, " . DB::escape($supplier_code) . ")";
-			DBOld::query($sql, "The supplier purchasing details could not be added");
+			DB::query($sql, "The supplier purchasing details could not be added");
 			return;
 		}
 		$price = round($price * $data['conversion_factor'], User::price_dec());
@@ -95,7 +95,7 @@
 			$sql .= ",supplier_description=" . DB::escape($supplier_code);
 		}
 		$sql .= " WHERE stock_id=" . DB::escape($stock_id) . " AND supplier_id=" . DB::escape($supplier_id);
-		DBOld::query($sql, "The supplier purchasing details could not be updated");
+		DB::query($sql, "The supplier purchasing details could not be updated");
 		return true;
 	}
 

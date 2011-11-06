@@ -30,7 +30,7 @@
 				$sql = "INSERT INTO groups (description) VALUES (" . DB::escape($_POST['description']) . ")";
 				$note = _('New sales group has been added');
 			}
-			DBOld::query($sql, "The sales group could not be updated or added");
+			DB::query($sql, "The sales group could not be updated or added");
 			Errors::notice($note);
 			$Mode = 'RESET';
 		}
@@ -39,15 +39,15 @@
 		$cancel_delete = 0;
 		// PREVENT DELETES IF DEPENDENT RECORDS IN 'debtors_master'
 		$sql = "SELECT COUNT(*) FROM cust_branch WHERE group_no=" . DB::escape($selected_id);
-		$result = DBOld::query($sql, "check failed");
-		$myrow = DBOld::fetch_row($result);
+		$result = DB::query($sql, "check failed");
+		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {
 			$cancel_delete = 1;
 			Errors::error(_("Cannot delete this group because customers have been created using this group."));
 		}
 		if ($cancel_delete == 0) {
 			$sql = "DELETE FROM groups WHERE id=" . DB::escape($selected_id);
-			DBOld::query($sql, "could not delete sales group");
+			DB::query($sql, "could not delete sales group");
 			Errors::notice(_('Selected sales group has been deleted'));
 		} //end if Delete area
 		$Mode = 'RESET';
@@ -66,14 +66,14 @@
 		$sql .= " WHERE !inactive";
 	}
 	$sql .= " ORDER BY description";
-	$result = DBOld::query($sql, "could not get groups");
+	$result = DB::query($sql, "could not get groups");
 	start_form();
 	start_table(Config::get('tables_style') . "  width=30%");
 	$th = array(_("Group Name"), "", "");
 	inactive_control_column($th);
 	table_header($th);
 	$k = 0;
-	while ($myrow = DBOld::fetch($result))
+	while ($myrow = DB::fetch($result))
 	{
 		alt_table_row_color($k);
 		label_cell($myrow["description"]);
@@ -91,8 +91,8 @@
 		if ($Mode == 'Edit') {
 			//editing an existing area
 			$sql = "SELECT * FROM groups WHERE id=" . DB::escape($selected_id);
-			$result = DBOld::query($sql, "could not get group");
-			$myrow = DBOld::fetch($result);
+			$result = DB::query($sql, "could not get group");
+			$myrow = DB::fetch($result);
 			$_POST['description'] = $myrow["description"];
 		}
 		hidden("selected_id", $selected_id);

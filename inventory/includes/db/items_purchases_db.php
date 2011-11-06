@@ -22,7 +22,7 @@
 		 . $conversion_factor . ", "
 		 . DB::escape($supplier_description) . ")";
 
-		DBOld::query($sql, "The supplier purchasing details could not be added");
+		DB::query($sql, "The supplier purchasing details could not be added");
 	}
 
 	function update_item_purchasing_data($selected_id, $stock_id, $price,
@@ -33,13 +33,13 @@
 		supplier_description=" . DB::escape($supplier_description) . "
 		WHERE stock_id=" . DB::escape($stock_id) . " AND
 		supplier_id=" . DB::escape($selected_id);
-		DBOld::query($sql, "The supplier purchasing details could not be updated");
+		DB::query($sql, "The supplier purchasing details could not be updated");
 	}
 
 	function delete_item_purchasing_data($selected_id, $stock_id) {
 		$sql = "DELETE FROM purch_data WHERE supplier_id=" . DB::escape($selected_id) . "
 		AND stock_id=" . DB::escape($stock_id);
-		DBOld::query($sql, "could not delete purchasing data");
+		DB::query($sql, "could not delete purchasing data");
 	}
 
 	function get_items_purchasing_data($stock_id) {
@@ -48,7 +48,7 @@
 		ON purch_data.supplier_id=suppliers.supplier_id
 		WHERE stock_id = " . DB::escape($stock_id);
 
-		return DBOld::query($sql, "The supplier purchasing details for the selected part could not be retrieved");
+		return DB::query($sql, "The supplier purchasing details for the selected part could not be retrieved");
 	}
 
 	function get_item_purchasing_data($selected_id, $stock_id) {
@@ -57,9 +57,9 @@
 		WHERE purch_data.supplier_id=" . DB::escape($selected_id) . "
 		AND purch_data.stock_id=" . DB::escape($stock_id);
 
-		$result = DBOld::query($sql, "The supplier purchasing details for the selected supplier and item could not be retrieved");
+		$result = DB::query($sql, "The supplier purchasing details for the selected supplier and item could not be retrieved");
 
-		return DBOld::fetch($result);
+		return DB::fetch($result);
 	}
 
 ?>

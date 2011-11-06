@@ -98,7 +98,7 @@
 	table_header($th);
 	$k = 0; //row colour counter
 	$calculated = false;
-	while ($myrow = DBOld::fetch($prices_list))
+	while ($myrow = DB::fetch($prices_list))
 	{
 		alt_table_row_color($k);
 		label_cell($myrow["curr_abrev"]);
@@ -109,7 +109,7 @@
 		end_row();
 	}
 	end_table();
-	if (DBOld::num_rows($prices_list) == 0) {
+	if (DB::num_rows($prices_list) == 0) {
 		if (DB_Company::get_pref('add_pct') != -1) {
 			$calculated = true;
 		}
