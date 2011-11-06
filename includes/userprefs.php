@@ -122,9 +122,7 @@
 			$sep = Config::get('separators_date', $this->date_sep);
 			if ($this->date_format == 0) {
 				return "m" . $sep . "d" . $sep . "Y";
-			}
-			elseif ($this->date_format == 1)
-			{
+			} elseif ($this->date_format == 1) {
 				return "d" . $sep . "m" . $sep . "Y";
 			} else {
 				return "Y" . $sep . "m" . $sep . "d";

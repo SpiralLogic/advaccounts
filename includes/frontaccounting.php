@@ -17,10 +17,8 @@
 		public $settings;
 		public $applications;
 		public $selected_application;
-		// GUI
 		public $menu;
 
-		//public $Renderer;
 		function __construct()
 		{
 			Session::hasLogin();

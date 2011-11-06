@@ -26,8 +26,7 @@
 	//
 	function find_submit($prefix, $numeric = true)
 	{
-		foreach ($_POST as $postkey => $postval)
-		{
+		foreach ($_POST as $postkey => $postval) {
 			if (strpos($postkey, $prefix) === 0) {
 				$id = substr($postkey, strlen($prefix));
 				return $numeric ? (int)$id : $id;
@@ -86,42 +85,33 @@
 		$aspect = '';
 		if ($atype === null) {
 			$aspect = User::fallback() ? " aspect='fallback'" : " style='display:none;'";
-		}
-		elseif (!is_bool($atype)) { // necessary: switch uses '=='
+		} elseif (!is_bool($atype)) { // necessary: switch uses '=='
 			$aspect = "aspect='$atype' ";
 			$types = explode(' ', $atype);
 			foreach ($types as $type) {
 				switch ($type) {
-				case 'selector':
-					$aspect = " aspect='selector' rel = '$value'";
-					$value = _("Select");
-					if ($icon === false) {
-						$icon = ICON_SUBMIT;
-					}
-					break;
-				case 'default':
-					if ($icon === false) {
-						$icon = ICON_SUBMIT;
-					}
-					break;
-				case 'cancel':
-					if ($icon === false) {
-						$icon = ICON_ESCAPE;
-					}
-					break;
+					case 'selector':
+						$aspect = " aspect='selector' rel = '$value'";
+						$value = _("Select");
+						if ($icon === false) {
+							$icon = ICON_SUBMIT;
+						}
+						break;
+					case 'default':
+						if ($icon === false) {
+							$icon = ICON_SUBMIT;
+						}
+						break;
+					case 'cancel':
+						if ($icon === false) {
+							$icon = ICON_ESCAPE;
+						}
+						break;
 				}
 			}
 		}
-		$submit_str = "<button class=\""
-		 . (($atype === true || $atype === false) ? (($atype) ? 'ajaxsubmit' : 'inputsubmit') : $atype)
-		 . "\" type=\"submit\""
-		 . $aspect
-		 . " name=\"$name\"  id=\"$name\" value=\"$value\""
-		 . ($title ? " title='$title'" : '')
-		 . ">"
-		 . ($icon ? "<img src='/themes/" . User::theme() . "/images/$icon' height='12'>" : '')
-		 . "<span>$value</span>"
-		 . "</button>\n";
+		$submit_str = "<button class=\"" . (($atype === true || $atype === false) ? (($atype) ? 'ajaxsubmit' : 'inputsubmit') : $atype) . "\" type=\"submit\"" . $aspect . " name=\"$name\"  id=\"$name\" value=\"$value\"" . ($title ? " title='$title'" : '') . ">" . ($icon
+		 ? "<img src='/themes/" . User::theme() . "/images/$icon' height='12'>" : '') . "<span>$value</span>" . "</button>\n";
 		if ($echo) {
 			echo $submit_str;
 		} else {
@@ -165,21 +155,17 @@
 		if ($async === 'both') {
 			$async = 'default';
 			$cancel = 'cancel';
-		}
-		else if ($async === 'default') {
+		} else if ($async === 'default') {
 			$cancel = true;
-		}
-		else if ($async === 'cancel') {
+		} else if ($async === 'cancel') {
 			$async = true;
 		}
 		if ($add) {
 			submit('ADD_ITEM', _("Add new"), true, $title, $async);
-		}
-		else {
+		} else {
 			submit('UPDATE_ITEM', _("Update"), true, _('Submit changes'), $async);
 			if ($clone) {
-				submit('CLONE', _("Clone"), true,
-					_('Edit new record with current data'), $async);
+				submit('CLONE', _("Clone"), true, _('Edit new record with current data'), $async);
 			}
 			submit('RESET', _("Cancel"), true, _('Cancel edition'), $cancel);
 		}
@@ -229,16 +215,14 @@
 
 	function submit_js_confirm($name, $msg)
 	{
-		JS::beforeload(
-			"_validate.$name=function(){ return confirm('" . strtr($msg, array("\n" => '\\n')) . "');};");
+		JS::beforeload("_validate.$name=function(){ return confirm('" . strtr($msg, array("\n" => '\\n')) . "');};");
 	}
 
 	;
 	//-----------------------------------------------------------------------------------
 	function set_icon($icon, $title = false)
 	{
-		return "<img src='/themes/" . User::theme() . "/images/$icon' width='12' height='12' border='0'" . ($title
-		 ? " title='$title'" : "") . " />\n";
+		return "<img src='/themes/" . User::theme() . "/images/$icon' width='12' height='12' border='0'" . ($title ? " title='$title'" : "") . " />\n";
 	}
 
 	function button($name, $value, $title = false, $icon = false, $aspect = '')
@@ -255,28 +239,17 @@
 			{
 				$icon = ICON_DELETE;
 			}
-			return "<button type='submit' class='editbutton' name='" .
-			 htmlentities(strtr($name, array('.' => '=2E',
-				 ' ' => '=20',
-				 '=' => '=3D',
-				 '[' => '=5B'
-			 ))) .
-			 "' value='1'" . ($title ? " title='$title'" : " title='$value'")
-			 . ($aspect ? " aspect='$aspect'" : '')
-			 . $rel
-			 . " />" . set_icon($icon) . "</button>\n";
+			return "<button type='submit' class='editbutton' name='" . htmlentities(strtr($name, array(
+																																																'.' => '=2E',
+																																																' ' => '=20',
+																																																'=' => '=3D',
+																																																'[' => '=5B'))) . "' value='1'" . ($title ? " title='$title'" : " title='$value'") . ($aspect ? " aspect='$aspect'" : '') . $rel . " />" . set_icon($icon) . "</button>\n";
 		} else {
-			return "<input type='submit' class='editbutton' name='"
-			 . htmlentities(strtr($name, array('.' => '=2E',
-				 ' ' => '=20',
-				 '=' => '=3D',
-				 '[' => '=5B'
-			 )))
-			 . "' value='$value'"
-			 . ($title ? " title='$title'" : '')
-			 . ($aspect ? " aspect='$aspect'" : '')
-			 . $rel
-			 . " />\n";
+			return "<input type='submit' class='editbutton' name='" . htmlentities(strtr($name, array(
+																																															 '.' => '=2E',
+																																															 ' ' => '=20',
+																																															 '=' => '=3D',
+																																															 '[' => '=5B'))) . "' value='$value'" . ($title ? " title='$title'" : '') . ($aspect ? " aspect='$aspect'" : '') . $rel . " />\n";
 		}
 	}
 
@@ -320,19 +293,13 @@
 		}
 		if ($submit_on_change !== false) {
 			if ($submit_on_change === true) {
-				$submit_on_change
-				 = "JsHttpRequest.request(\"_{$name}_update\", this.form);";
+				$submit_on_change = "JsHttpRequest.request(\"_{$name}_update\", this.form);";
 			}
 		}
 		if ($value === null) {
 			$value = get_post($name, 0);
 		}
-		$str .= "<input"
-		 . ($value == 1 ? ' checked' : '')
-		 . " type='checkbox' name='$name' id='$name' value='1'"
-		 . ($submit_on_change ? " onclick='$submit_on_change'" : '')
-		 . ($title ? " title='$title'" : '')
-		 . " >\n";
+		$str .= "<input" . ($value == 1 ? ' checked' : '') . " type='checkbox' name='$name' id='$name' value='1'" . ($submit_on_change ? " onclick='$submit_on_change'" : '') . ($title ? " title='$title'" : '') . " >\n";
 		$Ajax->addUpdate($name, $name, $value);
 		return $str;
 	}
@@ -342,8 +309,7 @@
 		echo checkbox($label, $name, $value, $submit_on_change, $title);
 	}
 
-	function check_cells($label, $name, $value = null, $submit_on_change = false, $title = false,
-											 $params = '')
+	function check_cells($label, $name, $value = null, $submit_on_change = false, $title = false, $params = '')
 	{
 		if ($label != null) {
 			echo "<td>$label</td>\n";
@@ -462,8 +428,7 @@
 	}
 
 	//-----------------------------------------------------------------------------------
-	function text_cells($label, $name, $value = null, $size = "", $max = "", $title = false,
-											$labparams = "", $post_label = "", $inparams = "")
+	function text_cells($label, $name, $value = null, $size = "", $max = "", $title = false, $labparams = "", $post_label = "", $inparams = "")
 	{
 		$Ajax = Ajax::instance();
 		JS::default_focus($name);
@@ -474,9 +439,7 @@
 		if ($value === null) {
 			$value = get_post($name);
 		}
-		echo "<input $inparams type=\"text\" name=\"$name\" size=\"$size\" maxlength=\"$max\" value=\"$value\""
-		 . ($title ? " title='$title'" : '')
-		 . ">";
+		echo "<input $inparams type=\"text\" name=\"$name\" size=\"$size\" maxlength=\"$max\" value=\"$value\"" . ($title ? " title='$title'" : '') . ">";
 		if ($post_label != "") {
 			echo " " . $post_label;
 		}
@@ -484,13 +447,12 @@
 		$Ajax->addUpdate($name, $name, $value);
 	}
 
-	function text_cells_ex($label, $name, $size, $max = null, $init = null, $title = null,
-												 $labparams = null, $post_label = null, $submit_on_change = false)
+	function text_cells_ex($label, $name, $size, $max = null, $init = null, $title = null, $labparams = null, $post_label = null, $submit_on_change = false)
 	{
 		$Ajax = Ajax::instance();
 		JS::default_focus($name);
 		if (!isset($_POST[$name]) || $_POST[$name] == "") {
-			if ($init) {
+			if ($init !== null) {
 				$_POST[$name] = $init;
 			} else {
 				$_POST[$name] = "";
@@ -504,8 +466,7 @@
 		}
 		echo "<td>";
 		$class = $submit_on_change ? 'class="searchbox"' : '';
-		echo "<input $class type=\"text\" name=\"$name\" size=\"$size\" maxlength=\"$max\" value=\"" . $_POST[$name] . "\""
-		 . ($title ? " title='$title'" : '') . " >";
+		echo "<input $class type=\"text\" name=\"$name\" size=\"$size\" maxlength=\"$max\" value=\"" . $_POST[$name] . "\"" . ($title ? " title='$title'" : '') . " >";
 		if ($post_label) {
 			echo " " . $post_label;
 		}
@@ -575,8 +536,7 @@
 	//  When $check!=null current date is displayed in red when set to other
 	//	than current date.
 	//
-	function date_cells($label, $name, $title = null, $check = null, $inc_days = 0,
-											$inc_months = 0, $inc_years = 0, $params = null, $submit_on_change = false, $options = array())
+	function date_cells($label, $name, $title = null, $check = null, $inc_days = 0, $inc_months = 0, $inc_years = 0, $params = null, $submit_on_change = false, $options = array())
 	{
 		$Ajax = Ajax::instance();
 		if (!isset($_POST[$name]) || $_POST[$name] == "") {
@@ -607,24 +567,20 @@
 			$aspect .= ' style="color:#FF0000"';
 		}
 		//	 JS::default_focus($name);
-		echo "<input id='$name' type=\"text\" name=\"$name\" $class $aspect size=\"9\" maxlength=\"12\" value=\""
-		 . $_POST[$name] . "\""
-		 . ($title ? " title='$title'" : '') . " > $post_label";
+		echo "<input id='$name' type=\"text\" name=\"$name\" $class $aspect size=\"9\" maxlength=\"12\" value=\"" . $_POST[$name] . "\"" . ($title ? " title='$title'" : '') . " > $post_label";
 		echo "</td>\n";
-		DatePicker::add($name, array('numberOfMonths' => 3,
-			'showButtonPanel' => true,
-			'showCurrentAtPos' => 2,
-			'dateFormat' => 'dd/mm/yy'
-		), $options);
+		DatePicker::add($name, array(
+																'numberOfMonths'   => 3,
+																'showButtonPanel'  => true,
+																'showCurrentAtPos' => 2,
+																'dateFormat'       => 'dd/mm/yy'), $options);
 		$Ajax->addUpdate($name, $name, $_POST[$name]);
 	}
 
-	function date_row($label, $name, $title = null, $check = null, $inc_days = 0, $inc_months = 0,
-										$inc_years = 0, $params = null, $submit_on_change = false)
+	function date_row($label, $name, $title = null, $check = null, $inc_days = 0, $inc_months = 0, $inc_years = 0, $params = null, $submit_on_change = false)
 	{
 		echo "<tr><td class='label'>$label</td>";
-		date_cells(null, $name, $title, $check, $inc_days, $inc_months,
-			$inc_years, $params, $submit_on_change);
+		date_cells(null, $name, $title, $check, $inc_days, $inc_months, $inc_years, $params, $submit_on_change);
 		echo "</tr>\n";
 	}
 
@@ -711,8 +667,7 @@
 		} else {
 			echo "class='amount' ";
 		}
-		echo "type=\"text\" name=\"$name\"  maxlength=\"$max\" dec=\"$dec\" value=\"" .
-		 $_POST[$name] . "\">";
+		echo "type=\"text\" name=\"$name\"  maxlength=\"$max\" dec=\"$dec\" value=\"" . $_POST[$name] . "\">";
 		if ($post_label) {
 			echo "<span id='_{$name}_label'> $post_label</span>";
 			$Ajax->addUpdate($name, '_' . $name . '_label', $post_label);
@@ -806,9 +761,7 @@
 		if ($value === null) {
 			$value = (!isset($_POST[$name]) ? "" : $_POST[$name]);
 		}
-		echo "<td><textarea name='$name' cols='$cols' rows='$rows'"
-		 . ($title ? " title='$title'" : '')
-		 . ">$value</textarea></td>\n";
+		echo "<td><textarea name='$name' cols='$cols' rows='$rows'" . ($title ? " title='$title'" : '') . ">$value</textarea></td>\n";
 		$Ajax->addUpdate($name, $name, $value);
 	}
 
@@ -831,15 +784,11 @@
 		$name = "Inactive" . $id;
 		$value = $value ? 1 : 0;
 		if (check_value('show_inactive')) {
-			if (isset($_POST['LInact'][$id])
-			 && (get_post('_Inactive' . $id . '_update')
-				|| get_post('Update'))
-			 && (check_value('Inactive' . $id) != $value)
+			if (isset($_POST['LInact'][$id]) && (get_post('_Inactive' . $id . '_update') || get_post('Update')) && (check_value('Inactive' . $id) != $value)
 			) {
 				DB::update_record_status($id, !$value, $table, $key);
 			}
-			echo '<td align="center">' . checkbox(null, $name, $value, true, '', "align='center'")
-			 . hidden("LInact[$id]", $value, false) . '</td>';
+			echo '<td align="center">' . checkbox(null, $name, $value, true, '', "align='center'") . hidden("LInact[$id]", $value, false) . '</td>';
 		}
 	}
 
@@ -848,12 +797,7 @@
 	//
 	function inactive_control_row($th)
 	{
-		echo	"<tr><td colspan=" . (count($th)) . ">"
-		 . "<div style='float:left;'>"
-		 . checkbox(null, 'show_inactive', null, true) . _("Show also Inactive")
-		 . "</div><div style='float:right;'>"
-		 . submit('Update', _('Update'), false, '', null)
-		 . "</div></td></tr>";
+		echo	"<tr><td colspan=" . (count($th)) . ">" . "<div style='float:left;'>" . checkbox(null, 'show_inactive', null, true) . _("Show also Inactive") . "</div><div style='float:right;'>" . submit('Update', _('Update'), false, '', null) . "</div></td></tr>";
 	}
 
 	//
@@ -872,34 +816,21 @@
 
 	function customer_credit_row($customer, $credit, $parms = '')
 	{
-		label_row(_("Current Credit:"),
-		 "<a target='_blank' " . ($credit < 0 ? 'class="redfg"' : '')
-			. "href='/sales/inquiry/customer_inquiry.php?frame=1&customer_id=" . $customer . "'"
-			. " onclick=\"javascript:openWindow(this.href,this.target); return false;\" >"
-			. Num::price_format($credit)
-			. "</a>", $parms);
+		label_row(_("Current Credit:"), "<a target='_blank' " . ($credit < 0 ? 'class="redfg"' : '') . "href='/sales/inquiry/customer_inquiry.php?frame=1&customer_id=" . $customer . "'" . " onclick=\"javascript:openWindow(this.href,this.target); return false;\" >" . Num::price_format($credit) . "</a>",
+							$parms);
 	}
 
 	function supplier_credit_row($supplier, $credit, $parms = '')
 	{
-		label_row(_("Current Credit:"),
-		 "<a target='_blank' " . ($credit < 0 ? 'class="redfg"' : '')
-			. "href='/purchasing/inquiry/supplier_inquiry.php?supplier_id=" . $supplier . "'"
-			. " onclick=\"javascript:openWindow(this.href,this.target); return false;\" >"
-			. Num::price_format($credit)
-			. "</a>", $parms);
+		label_row(_("Current Credit:"), "<a target='_blank' " . ($credit < 0 ? 'class="redfg"' : '') . "href='/purchasing/inquiry/supplier_inquiry.php?supplier_id=" . $supplier . "'" . " onclick=\"javascript:openWindow(this.href,this.target); return false;\" >" . Num::price_format($credit) . "</a>",
+							$parms);
 	}
 
 	function bank_balance_row($bank_acc, $parms = '')
 	{
 		$to = Dates::add_days(Dates::Today(), 1);
 		$bal = get_balance_before_for_bank_account($bank_acc, $to);
-		label_row(_("Bank Balance:"),
-		 "<a target='_blank' " . ($bal < 0 ? 'class="redfg"' : '')
-			. "href='/gl/inquiry/bank_inquiry.php?bank_account=" . $bank_acc . "'"
-			. " onclick=\"javascript:openWindow(this.href,this.target); return false;\" >&nbsp;"
-			. Num::price_format($bal)
-			. "</a>", $parms);
+		label_row(_("Bank Balance:"), "<a target='_blank' " . ($bal < 0 ? 'class="redfg"' : '') . "href='/gl/inquiry/bank_inquiry.php?bank_account=" . $bank_acc . "'" . " onclick=\"javascript:openWindow(this.href,this.target); return false;\" >&nbsp;" . Num::price_format($bal) . "</a>", $parms);
 	}
 
 ?>

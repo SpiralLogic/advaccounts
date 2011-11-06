@@ -13,7 +13,7 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "Costed Bill Of Material Inquiry"));
 	include_once(APP_PATH . "manufacturing/includes/manufacturing_ui.php");
-	Validation::check(Validation::BOM_ITEMS, _("There are no manufactured or kit items defined in the system."), BOM_ITEMS);
+	Validation::check(Validation::BOM_ITEMS, _("There are no manufactured or kit items defined in the system."), STOCK_MANUFACTURE);
 	if (isset($_GET['stock_id'])) {
 		$_POST['stock_id'] = $_GET['stock_id'];
 	}
