@@ -208,7 +208,7 @@
 		if (Config::get('valid_charged_to_delivered_price') == True && $margin != 0) {
 			if ($_POST['order_price' . $n] != input_num('ChgPrice' . $n)) {
 				if ($_POST['order_price' . $n] == 0 || input_num('ChgPrice' . $n) / $_POST['order_price' . $n] > (1 + ($margin / 100))) {
-					if ($_SESSION['err_over_charge'] != true) {
+					if (Session::get()->err_over_charge != true) {
 						Errors::error(
 							_("The price being invoiced is more than the purchase order price by more than the allowed over-charge percentage. The system is set up to prohibit this. See the system administrator to modify the set up parameters if necessary.") . _(
 								"The over-charge percentage allowance is :"
@@ -346,6 +346,7 @@
 	else {
 		display_grn_items(Purchase_Trans::instance(), 1);
 		display_gl_items(Purchase_Trans::instance(), 1);
+		div_start('inv_tot');
 		invoice_totals(Purchase_Trans::instance());
 		div_end();
 	}

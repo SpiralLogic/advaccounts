@@ -151,14 +151,12 @@
 		} else {
 			$rate = input_num('_ex_rate');
 		}
-		Dates::new_doc_date($_POST['DateBanked']);
+
 		if (check_value('createinvoice')) {
-			Gl_Allocation::create_miscorder($_POST['customer_id'], $_POST['BranchID'], $_POST['memo_'], $_POST['ref'], input_num('amount'), input_num('discount'));
+
+			Gl_Allocation::create_miscorder(new Contacts_Customer($_POST['customer_id']), $_POST['BranchID'], $_POST['DateBanked'], $_POST['memo_'], $_POST['ref'], input_num('amount'), input_num('discount'));
 		}
-		$payment_no = write_customer_payment(0, $_POST['customer_id'], $_POST['BranchID'],
-			$_POST['bank_account'], $_POST['DateBanked'], $_POST['ref'],
-			input_num('amount'), input_num('discount'),
-			$_POST['memo_'], $rate, input_num('charge'));
+		$payment_no = write_customer_payment(0, $_POST['customer_id'], $_POST['BranchID'], $_POST['bank_account'], $_POST['DateBanked'], $_POST['ref'], input_num('amount'), input_num('discount'), $_POST['memo_'], $rate, input_num('charge'));
 		$_SESSION['alloc']->trans_no = $payment_no;
 		$_SESSION['alloc']->write();
 		meta_forward($_SERVER['PHP_SELF'], "AddedID=$payment_no");

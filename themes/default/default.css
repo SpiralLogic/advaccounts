@@ -294,6 +294,13 @@ div.banner a + a { border-top: 2px groove #999 }
 
 #summary {
 	position: fixed;
+	left:5px;
+	background-color: white;
+
+}
+#summary th {
+	font-size:smaller;
+
 }
 
 .js .tabs {

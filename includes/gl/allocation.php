@@ -328,15 +328,16 @@
 			return true;
 		}
 
-		public static function create_miscorder($customer, $branch, $memo, $ref, $amount, $discount = 0)
+		public static function create_miscorder(Contacts_Customer $customer, $branch_id, $date, $memo, $ref, $amount, $discount = 0)
 		{
 			processing_start();
 			$type = ST_SALESINVOICE;
 			$doc = new Sales_Order(ST_SALESINVOICE, 0);
 			$doc->trans_type = $type;
-			$doc->document_date = Dates::new_doc_date();
+			$doc->due_date = $doc->document_date = Dates::new_doc_date($date);
+			$doc->set_customer($customer->id,$customer->name,$customer->curr_code,$customer->discount,$customer->payment_terms);
+			$doc->set_branch($customer->branches[$branch_id]->id,$customer->branches[$branch_id]->tax_group_id);
 			$doc->pos = User::pos();
-			$doc->due_date = $doc->document_date;
 			$doc->cust_ref = $ref;
 			$doc->Comments = "Invoice for Customer Payment: " . $doc->cust_ref;
 			$doc->add_to_cart(0, 'MiscSale', '1', Taxes::get_tax_free_price_for_item('MiscSale', $amount, 0, true, $doc->tax_group_array), $discount / 100, 1, 0, 'Order: ' . $memo);
