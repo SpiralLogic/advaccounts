@@ -66,7 +66,7 @@
 			}
 		}
 
-		public static function quote($value, $type) {
+		public static function quote($value, $type=null) {
 			return static::_get()->quote($value, $type);
 		}
 
