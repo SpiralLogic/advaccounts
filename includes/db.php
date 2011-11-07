@@ -6,8 +6,7 @@
 	 * Time: 4:41 AM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	class DB
-	{
+	class DB {
 		const SELECT = 0;
 		const INSERT = 1;
 		const UPDATE = 2;
@@ -18,18 +17,16 @@
 		protected static $data = array();
 		protected static $prepared = null;
 
-		final function __construct()
-		{
+		final function __construct() {
 		}
 
-		protected static function _get($db = null, $config = array())
-		{
+		protected static function _get($db = null, $config = array()) {
 			if ($db === null && static::$current) {
 				return static::$current;
 			}
 			elseif ($db === null) {
 				$config = $config ? : Config::get('db_default');
-				$db     = $config['name'];
+				$db = $config['name'];
 			}
 			if (!isset($conn[$db])) {
 				static::$conn[$db] = static::$current = DB_Connection::instance($db, $config);
@@ -37,8 +34,7 @@
 			return static::$current;
 		}
 
-		public static function db($db)
-		{
+		public static function db($db) {
 			if (!isset(static::$conn[$db])) {
 				throw new DB_Exception('There is no connection: ' . $db);
 			}
@@ -46,8 +42,7 @@
 			return static::$current;
 		}
 
-		public static function query($sql, $err_msg = null)
-		{
+		public static function query($sql, $err_msg = null) {
 			if (Config::get('debug_sql')) {
 				if (class_exists('FB')) {
 					FB::info($sql);
@@ -58,47 +53,57 @@
 					echo "</pre>\n";
 				}
 			}
-			static::$prepared = null;
-			static::$prepared = static::prepare($sql);
-			static::$prepared->execute(static::$data ? : null);
-			static::$data = array();
-			return static::$prepared;
-		}
-
-		public static function quote($value)
-		{
-			return static::_get()->quote($value);
-		}
-
-		public static function escape($value, $null = false, $paramaterzed = true)
-		{
-			if ($paramaterzed) {
-				static::$data[] = trim($value);
-
-				return ' ? ';
+			try {
+				static::$prepared = null;
+				static::$prepared = static::prepare($sql);
+				static::$prepared->execute();
+				static::$data = array();
+				return static::$prepared;
 			}
+			catch (PDOException $e) {
+				$error = '<p>DATABASE ERROR: <pre>' . var_export($e->getTrace(), true) . '</pre></p><p><pre>' . var_export($e->errorInfo, true) . '</pre></p>';
+				Errors::error($error);
+			}
+		}
+
+		public static function quote($value, $type) {
+			return static::_get()->quote($value, $type);
+		}
+
+		public static function escape($value, $null = false, $paramaterzed = true) {
+
 			$value = trim($value);
-			//reset default if second parameter is skipped
-			$null = ($null === null) ? (false) : ($null);
 			//check for null/unset/empty strings
 			if ((!isset($value)) || (is_null($value)) || ($value === "")) {
-				$value = ($null) ? ("NULL") : ("''");
+				$value = ($null) ? 'NULL' : '';
+				$type = PDO::PARAM_NULL;
+			} elseif (is_string($value)) {
+				$type = PDO::PARAM_STR;
+			} elseif (is_numeric($value) && is_int($value)) {
+				$type = PDO::PARAM_INT;
+			} elseif (is_bool($value)) {
+				$type = PDO::PARAM_BOOL;
 			} else {
-				//value is a string and should be quoted; determine best method based on available extensions
-				$value = static::quote($value);
+				$type = null;
 			}
-			return  $value;
 
+			if ($paramaterzed) {
+				static::$data[] = array($value, $type);
+				return ' ? ';
+			}
+			$value = static::quote($value, $type);
+			return $value;
 		}
 
-		public static function prepare($sql)
-		{
+		public static function prepare($sql) {
 			static::$_prepared[static::_get()->name()] = $prepared = static::_get()->prepare($sql);
+			foreach (static::$data as $k => $v) {
+				$prepared->bindValue($k + 1, $v[0], $v[1]);
+			}
 			return $prepared;
 		}
 
-		public static function execute($data)
-		{
+		public static function execute($data) {
 			if (static::$_prepared) {
 				if (Config::get('debug_sql')) {
 					$sql = static::$_prepared[static::$current->name()]->queryString;
@@ -114,34 +119,28 @@
 			}
 		}
 
-		public static function insert_id()
-		{
+		public static function insert_id() {
 			return static::_get()->lastInsertId();
 		}
 
-		public static function select()
-		{
+		public static function select() {
 			$columns = func_get_args();
 			return new DB_Select($columns, static::_get());
 		}
 
-		public static function update($into)
-		{
+		public static function update($into) {
 			return new DB_Update($into, static::_get());
 		}
 
-		public static function insert($into)
-		{
+		public static function insert($into) {
 			return new DB_Insert($into, static::_get());
 		}
 
-		public static function delete($into)
-		{
+		public static function delete($into) {
 			return new DB_Delete($into, static::_get());
 		}
 
-		public static function fetch($result = null)
-		{
+		public static function fetch($result = null) {
 			if ($result === null) {
 				return DB_Query::_fetch(static::_get());
 			} else {
@@ -149,93 +148,77 @@
 			}
 		}
 
-		public static function fetch_row($result)
-		{
+		public static function fetch_row($result) {
 			return $result->fetch(PDO::FETCH_NUM);
 		}
 
-		public static function fetch_assoc($result)
-		{
+		public static function fetch_assoc($result) {
 			return $result->fetch(PDO::FETCH_ASSOC);
 		}
 
-		public static function begin()
-		{
+		public static function begin() {
 			return static::_get()->begin();
 		}
 
-		public static function commit()
-		{
+		public static function commit() {
 			return static::_get()->commit();
 		}
 
-		public static function cancel()
-		{
+		public static function cancel() {
 			return static::_get()->cancel();
 		}
 
-		public static function error_no()
-		{
+		public static function error_no() {
 			return static::_get()->errorCode();
 		}
 
-		public static function error_msg()
-		{
+		public static function error_msg() {
 			$info = static::_get()->errorInfo();
 			return $info[2];
 		}
 
-		public static function getAttribute(PDO $value)
-		{
+		public static function getAttribute(PDO $value) {
 			return static::_get()->getAttribute($value);
 		}
 
-		public static function free_result($result)
-		{
+		public static function free_result($result) {
 			if ($result) {
 				return $result->closeCursor();
 			}
 		}
 
-		public static function num_rows($result)
-		{
+		public static function num_rows($result) {
 
 			return $result->rowCount();
 		}
 
-		public static function num_fields($result)
-		{
+		public static function num_fields($result) {
 			return $result->columnCount();
 		}
 
 		//DB wrapper functions to change only once for whole application
 
-		public static function num_affected_rows($results)
-		{
+		public static function num_affected_rows($results) {
 
 			return $results->rowCount();
 		}
 
-		public static function begin_transaction()
-		{
+		public static function begin_transaction() {
 			DB::begin("could not start a transaction");
 		}
 
-		public static function commit_transaction()
-		{
+		public static function commit_transaction() {
 			DB::commit("could not commit a transaction");
 		}
 
-		public static function cancel_transaction()
-		{
+		public static function cancel_transaction() {
 			DB::cancel("could not commit a transaction");
 		}
 
 		//-----------------------------------------------------------------------------
 		//	Update record activity status.
 		//
-		public static function update_record_status($id, $status, $table, $key)
-		{
+		public static function update_record_status($id, $status, $table, $key) {
 			$sql = "UPDATE " . $table . " SET inactive = " . DB::escape($status) . " WHERE $key=" . DB::escape($id);
 			DB::query($sql, "Can't update record status");
 		}

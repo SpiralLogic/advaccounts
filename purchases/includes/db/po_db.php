@@ -12,10 +12,12 @@
 	//----------------------------------------------------------------------------------------
 
 	function delete_po($po) {
+
 		$sql = "DELETE FROM purch_orders WHERE order_no=" . DB::escape($po);
+
 		DB::query($sql, "The order header could not be deleted");
 
-		$sql = "DELETE FROM purch_order_details WHERE order_no =" . DB::escape($po);
+		$sql = "DELETE FROM purch_order_details WHERE order_no =" . DB::escape($po,false,false);
 		DB::query($sql, "The order detail lines could not be deleted");
 	}
 

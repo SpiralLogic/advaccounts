@@ -144,6 +144,7 @@
 			 }
 		protected function _error(PDOException $e, $exit = false)
 		{
+
 			if (function_exists('xdebug_call_file')) {
 				$error = '<p>DATABASE ERROR: <br>At file ' . xdebug_call_file() . ':' . xdebug_call_line() . ':<br>' . $e->getMessage() . '</p>';
 			}
