@@ -23,6 +23,7 @@
 		// customized per company versions
 		$path = "/company/reporting";
 		$rep_file = $path . "/rep$rep.php";
+
 		if (file_exists($rep_file)) {
 			// add local include path for custom reports
 			set_include_path($path . PATH_SEPARATOR . get_include_path());
@@ -85,9 +86,9 @@
 			 ? $_GET['PARAM_' . $i] : $def_pars[$i];
 		}
 	}
-	if (isset($_POST['REP_ID'])) $rep_file = find_report_file($_POST['REP_ID']);
 
+	if (isset($_POST['REP_ID'])) $rep_file = find_report_file($_POST['REP_ID']);
 	if (!empty($rep_file)) require($rep_file);
 	exit();
 
-?>
+

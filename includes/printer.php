@@ -29,7 +29,7 @@
 		}
 
 		public static function get_printer($id) {
-			$sql    = "SELECT * FROM printers WHERE id=" . DB::escape($id);
+			$sql = "SELECT * FROM printers WHERE id=" . DB::escape($id);
 			$result = DB::query($sql, "could not get printer definition");
 			return DB::fetch($result);
 		}
@@ -62,10 +62,9 @@
 		//	Get destination for report defined in given printing profile.
 		//
 		public static function get_report($profile, $report) {
-			$sql = "SELECT printer FROM print_profiles WHERE "
-			 . "profile=" . DB::escape($profile) . " AND report=";
+			$sql = "SELECT printer FROM print_profiles WHERE  profile=" . DB::escape($profile, false, false) . " AND report=" . DB::escape($report, false, false);
 
-			$result = DB::query($sql . DB::escape($report), 'report printer lookup failed');
+			$result = DB::query($sql, 'report printer lookup failed');
 
 			if (!$result) return false;
 			$ret = DB::fetch($result);
