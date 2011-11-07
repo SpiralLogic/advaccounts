@@ -23,7 +23,7 @@
 			set_exception_handler('adv_exception_handler');
 			if (Config::get('debug') && CurrentUser::instance()->user == 1) {
 				if (preg_match('/Chrome/i', $_SERVER['HTTP_USER_AGENT'])) {
-					include(dirname('.') . DS . 'fb.php');
+					include(APP_PATH . DS . 'includes/fb.php');
 					FB::useFile(APP_PATH . DS . 'includes/chromelogs', DS . 'tmp' . DS . 'chromelogs');
 				} else {
 					include(APP_PATH . DS . 'includes/FirePHP/FirePHP.class.php');

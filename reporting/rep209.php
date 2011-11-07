@@ -139,7 +139,7 @@
 					$rep->row = $newrow;
 
 					if ($rep->row < $rep->bottomMargin + (15 * $rep->lineHeight))
-						$rep->Header2($myrow, $branch, $myrow, $baccount, ST_PURCHORDER);
+						$rep->Header2($myrow, null, $myrow, $baccount, ST_PURCHORDER);
 				}
 			}
 			if ($myrow['comments'] != "") {
