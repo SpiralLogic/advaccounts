@@ -130,9 +130,9 @@
 					$rep->TextCol(5, 6, $DisplayPrice, -2);
 					$rep->TextCol(6, 7, $DisplayNet, -2);
 					$rep->row = $newrow;
-					if ($rep->row < $rep->bottomMargin + (15 * $rep->lineHeight)) {
-						$rep->Header2($myrow, $branch, $myrow, $baccount, ST_PURCHORDER);
-					}
+
+					if ($rep->row < $rep->bottomMargin + (15 * $rep->lineHeight))
+						$rep->Header2($myrow, null, $myrow, $baccount, ST_PURCHORDER);
 				}
 			}
 			if ($myrow['comments'] != "") {
