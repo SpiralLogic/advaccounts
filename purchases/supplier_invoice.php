@@ -268,7 +268,6 @@
 				$id = substr($postkey, strlen("qty_recd"));
 				$id = (int)$id;
 				commit_item_data($id);
-				$Ajax->activate('inv_tot');
 			}
 		}
 	}
@@ -347,6 +346,7 @@
 	else {
 		display_grn_items(Purchase_Trans::instance(), 1);
 		display_gl_items(Purchase_Trans::instance(), 1);
+		div_start('inv_tot');
 		invoice_totals(Purchase_Trans::instance());
 		div_end();
 	}

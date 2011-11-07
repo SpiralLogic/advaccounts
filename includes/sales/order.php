@@ -286,12 +286,13 @@
 			}
 		}
 
-		function set_branch($branch_id, $tax_group_id, $tax_group_name, $phone = '', $email = '', $name = '')
+		function set_branch($branch_id, $tax_group_id, $tax_group_name=false, $phone = '', $email = '', $name = '')
 		{
 			$this->Branch = $branch_id;
 			$this->phone = $phone;
 			$this->email = $email;
 			$this->tax_group_id = $tax_group_id;
+
 			$this->tax_group_array = Tax_Groups::get_tax_group_items_as_array($tax_group_id);
 		}
 
