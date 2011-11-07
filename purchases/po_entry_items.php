@@ -104,6 +104,7 @@
 	//---------------------------------------------------------------------------------------------------
 	function handle_cancel_po()
 	{
+
 		//need to check that not already dispatched or invoiced by the supplier
 		if (($_SESSION['PO']->order_no != 0) && $_SESSION['PO']->any_already_received() == 1) {
 			Errors::error(
@@ -111,17 +112,22 @@
 					"The line item quantities may be modified to quantities more than already received. prices cannot be altered for lines that have already been received and quantities cannot be reduced below the quantity already received."
 				)
 			);
+
 			return;
+
 		}
 		if ($_SESSION['PO']->order_no != 0) {
-			delete_po($_SESSION['PO']->order_no);
+
+				delete_po($_SESSION['PO']->order_no);
 		}
 		else {
-			unset($_SESSION['PO']);
+
+				unset($_SESSION['PO']);
 			meta_forward('/index.php', 'application=Purchases');
 		}
+
 		$_SESSION['PO']->clear_items();
-		$_SESSION['PO'] = new Purchase_Order;
+		$_SESSION['PO'] = new Purchase_Order();
 		Errors::notice(_("This purchase order has been cancelled."));
 		hyperlink_params("/purchases/po_entry_items.php", _("Enter a new purchase order"), "NewOrder=Yes");
 		echo "<br>";
