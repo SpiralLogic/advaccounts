@@ -339,7 +339,7 @@
 			$this->NewLine(2);
 		}
 
-		function Header2($myrow, $branch, $sales_order, $bankaccount, $doctype)
+		function Header2($myrow, $branch=null, $sales_order=null, $bankaccount=null, $doctype=null)
 		{
 			global $print_as_quote, $packing_slip;
 			$this->pageNumber++;
@@ -883,6 +883,7 @@
 					$fname = $dir . '/' . uniqid('') . '.pdf';
 				}
 				$this->Output($fname, 'F');
+
 				if ($email == 1) {
 					$emailtype = true;
 					if ($this->currency != $myrow['curr_code']) {
@@ -936,6 +937,7 @@
 					unlink($fname);
 				} else {
 					$printer = Printer::get_report(User::print_profile(), $_POST['REP_ID']);
+
 					if ($printer == false) {
 						if (Ajax::in_ajax()) {
 							$Ajax = Ajax::instance();

@@ -29,54 +29,55 @@
 	echo "<br>";
 	start_table(Config::get('tables_style2') . " width=95%");
 	echo "<tr valign=top><td>"; // outer table
-	/*Now the customer charged to details in a sub table*/
-	start_table(Config::get('tables_style') . "  width=100%");
-	$th = array(_("Charge To"));
-	table_header($th);
-	label_row(null, $myrow["DebtorName"] . "<br>" . nl2br($myrow["address"]), "nowrap");
-	end_table();
-	/*end of the small table showing charge to account details */
-	echo "</td><td>"; // outer table
-	/*end of the main table showing the company name and charge to details */
-	start_table(Config::get('tables_style') . "  width=100%");
-	$th = array(_("Charge Branch"));
-	table_header($th);
-	label_row(null, $branch["br_name"] . "<br>" . nl2br($branch["br_address"]), "nowrap");
-	end_table();
-	echo "</td><td>"; // outer table
-	start_table(Config::get('tables_style') . "  width=100%");
-	$th = array(_("Delivered To"));
-	table_header($th);
+
+	start_table("class='tableheader2' ". "  width=100%");
+	start_row();
+	label_row(_("Reference"), $myrow["reference"]);
+	label_row(_("Currency"), $sales_order["curr_code"]);
 	label_row(
-		null, $sales_order["deliver_to"] . "<br>" . nl2br($sales_order["delivery_address"]),
-		"nowrap"
-	);
-	end_table();
-	echo "</td><td>"; // outer table
-	start_table(Config::get('tables_style') . "  width=100%");
-	start_row();
-	label_cells(_("Reference"), $myrow["reference"], "class='tableheader2'");
-	label_cells(_("Currency"), $sales_order["curr_code"], "class='tableheader2'");
-	label_cells(
 		_("Our Order No"),
-		ui_view::get_customer_trans_view_str(ST_SALESORDER, $sales_order["order_no"]), "class='tableheader2'"
-	);
+		ui_view::get_customer_trans_view_str(ST_SALESORDER, $sales_order["order_no"])	);
 	end_row();
 	start_row();
-	label_cells(_("Customer Purchase Order #"), $sales_order["customer_ref"], "class='tableheader2'");
-	label_cells(_("Shipping Company"), $myrow["shipper_name"], "class='tableheader2'");
-	label_cells(_("Sales Type"), $myrow["sales_type"], "class='tableheader2'");
+	label_row(_("Customer Purchase Order #"), $sales_order["customer_ref"]);
+	label_row(_("Shipping Company"), $myrow["shipper_name"]);
+	label_row(_("Sales Type"), $myrow["sales_type"]);
 	end_row();
 	start_row();
-	label_cells(_("Dispatch Date"), Dates::sql2date($myrow["tran_date"]), "class='tableheader2'", "nowrap");
-	label_cells(_("Due Date"), Dates::sql2date($myrow["due_date"]), "class='tableheader2'", "nowrap");
+	label_row(_("Dispatch Date"), Dates::sql2date($myrow["tran_date"]),"", "nowrap");
+	label_row(_("Due Date"), Dates::sql2date($myrow["due_date"]), "", "nowrap");
 	end_row();
 	Display::comments_row(ST_CUSTDELIVERY, $trans_id);
 	end_table();
-	echo "</td></tr>";
+
+	echo "</td><td>";
+	/*Now the customer charged to details in a sub table*/
+		start_table(Config::get('tables_style2') . "  width=100%");
+		$th = array(_("Charge To"));
+		table_header($th);
+		label_row(null, $myrow["DebtorName"] . "<br>" . nl2br($myrow["address"]), "nowrap");
+		end_table();
+		/*end of the small table showing charge to account details */
+		echo "</td><td>"; // outer table
+		/*end of the main table showing the company name and charge to details */
+		start_table(Config::get('tables_style2') . "  width=100%" );
+		$th = array(_("Charge Branch"));
+		table_header($th);
+		label_row(null, $branch["br_name"] . "<br>" . nl2br($branch["br_address"]), "nowrap");
+		end_table();
+		echo "</td><td>"; // outer table
+		start_table(Config::get('tables_style2') . "  width=100%" );
+		$th = array(_("Delivered To"));
+		table_header($th);
+		label_row(
+			null, $sales_order["deliver_to"] . "<br>" . nl2br($sales_order["delivery_address"]),
+			"nowrap"
+		);
+		end_table();
+		echo "</td><td>"; // outer table
 	end_table(1); // outer table
 	$result = get_customer_trans_details(ST_CUSTDELIVERY, $trans_id);
-	start_table(Config::get('tables_style') . "  width=95%");
+	start_table(Config::get('tables_style2') );
 	if (DB::num_rows($result) > 0) {
 		$th = array(
 			_("Item Code"), _("Item Description"), _("Quantity"),
@@ -122,7 +123,7 @@
 	);
 	label_row(_("Shipping"), $display_freight, "colspan=6 align=right", "nowrap align=right");
 	$tax_items = get_trans_tax_details(ST_CUSTDELIVERY, $trans_id);
-	ui_view::Display::customer_trans_tax_details($tax_items, 6);
+	Display::customer_trans_tax_details($tax_items, 6);
 	$display_total = Num::price_format($myrow["ov_freight"] + $myrow["ov_amount"] + $myrow["ov_freight_tax"] + $myrow["ov_gst"]);
 	label_row(
 		_("TOTAL VALUE"), $display_total, "colspan=6 align=right",
