@@ -99,7 +99,7 @@
 		}
 		elseif (!Validation::is_num('ChargeFreightCost', 0)) {
 			Errors::error(_("Freight cost cannot be less than zero"));
-			ui_view::set_focus('ChargeFreightCost');
+			JS::set_focus('ChargeFreightCost');
 		}
 	}
 	//-----------------------------------------------------------------------------
@@ -107,28 +107,28 @@
 	{
 		if (!isset($_POST['DispatchDate']) || !Dates::is_date($_POST['DispatchDate'])) {
 			Errors::error(_("The entered date of delivery is invalid."));
-			ui_view::set_focus('DispatchDate');
+			JS::set_focus('DispatchDate');
 			return false;
 		}
 		if (!Dates::is_date_in_fiscalyear($_POST['DispatchDate'])) {
 			Errors::error(_("The entered date of delivery is not in fiscal year."));
-			ui_view::set_focus('DispatchDate');
+			JS::set_focus('DispatchDate');
 			return false;
 		}
 		if (!isset($_POST['due_date']) || !Dates::is_date($_POST['due_date'])) {
 			Errors::error(_("The entered dead-line for invoice is invalid."));
-			ui_view::set_focus('due_date');
+			JS::set_focus('due_date');
 			return false;
 		}
 		if ($_SESSION['Items']->trans_no == 0) {
 			if (!Refs::is_valid($_POST['ref'])) {
 				Errors::error(_("You must enter a reference."));
-				ui_view::set_focus('ref');
+				JS::set_focus('ref');
 				return false;
 			}
 			if ($_SESSION['Items']->trans_no == 0 && !is_new_reference($_POST['ref'], ST_CUSTDELIVERY)) {
 				Errors::error(_("The entered reference is already in use."));
-				ui_view::set_focus('ref');
+				JS::set_focus('ref');
 				return false;
 			}
 		}
@@ -137,7 +137,7 @@
 		}
 		if (!Validation::is_num('ChargeFreightCost', 0)) {
 			Errors::error(_("The entered shipping value is not numeric."));
-			ui_view::set_focus('ChargeFreightCost');
+			JS::set_focus('ChargeFreightCost');
 			return false;
 		}
 		if ($_SESSION['Items']->has_items_dispatch() == 0 && input_num('ChargeFreightCost') == 0) {
@@ -203,7 +203,7 @@
 					$_SESSION['Items']->line_items[$line]->qty_dispatched = input_num('Line' . $line);
 				}
 				else {
-					ui_view::set_focus('Line' . $line);
+					JS::set_focus('Line' . $line);
 					$ok = 0;
 				}
 			}

@@ -225,7 +225,7 @@
 				_('Confirm changes'), ICON_UPDATE);
 			button_cell('CancelItemChanges', _("Cancel"),
 				_('Cancel changes'), ICON_CANCEL);
-			ui_view::set_focus('amount');
+			JS::set_focus('amount');
 		} else {
 			submit_cells('AddItem', _("Add Item"), "colspan=2",
 				_('Add new item to document'), true);

@@ -16,7 +16,7 @@
 	require_once("bootstrap.php");
 	$app = Session::get()->App;
 	Extensions::add_access();
-	if (isset($_GET['application'])) {
+	if (Input::get('application')) {
 		$app->selected_application = $_GET['application'];
 	} else {
 		$app->selected_application = Config::get('apps.default');

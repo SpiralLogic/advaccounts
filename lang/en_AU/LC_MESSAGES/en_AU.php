@@ -1801,7 +1801,7 @@ return array(
 	'The entered date is invalid. Please enter a valid date for the payment.' => '',
 	'The entered amount is invalid or negative and cannot be processed.' => '',
 	'The entered discount is not a valid number.' => '',
-	'The balance of the amount and discout is zero or negative. Please enter valid amounts.' => '',
+	'The balance of the amount and discount is zero or negative. Please enter valid amounts.' => '',
 	'From Customer:' => '',
 	'Branch:' => '',
 	'This customer account is on hold.' => '',

@@ -20,7 +20,7 @@
 		final function __construct() {
 		}
 
-		protected static function _get($db = null, $config = array()) {
+		 static function _get($db = null, $config = array()) {
 			if ($db === null && static::$current) {
 				return static::$current;
 			}
@@ -34,7 +34,7 @@
 			return static::$current;
 		}
 
-		public static function db($db) {
+		public static function set($db) {
 			if (!isset(static::$conn[$db])) {
 				throw new DB_Exception('There is no connection: ' . $db);
 			}
@@ -54,7 +54,7 @@
 				}
 			}
 			try {
-				static::$prepared = null;
+
 				static::$prepared = static::prepare($sql);
 				static::$prepared->execute();
 				static::$data = array();
@@ -66,28 +66,30 @@
 			}
 		}
 
-		public static function quote($value, $type=null) {
+		public static function quote($value, $type = null) {
 			return static::_get()->quote($value, $type);
 		}
 
-		public static function escape($value, $null = false, $paramaterzed = true) {
+		public static function escape($value, $null = false, $paramaterized = true) {
 
 			$value = trim($value);
 			//check for null/unset/empty strings
 			if ((!isset($value)) || (is_null($value)) || ($value === "")) {
 				$value = ($null) ? 'NULL' : '';
 				$type = PDO::PARAM_NULL;
-			} elseif (is_string($value)) {
-				$type = PDO::PARAM_STR;
-			} elseif (is_numeric($value) && is_int($value)) {
+			} elseif (is_numeric($value) || is_int($value)) {
+				$value = (int)$value;
 				$type = PDO::PARAM_INT;
 			} elseif (is_bool($value)) {
+				$value = (bool)$value;
 				$type = PDO::PARAM_BOOL;
+			} elseif (is_string($value)) {
+				$value = (string)$value;
+				$type = PDO::PARAM_STR;
 			} else {
 				$type = null;
 			}
-
-			if ($paramaterzed) {
+			if ($paramaterized) {
 				static::$data[] = array($value, $type);
 				return ' ? ';
 			}
@@ -96,10 +98,11 @@
 		}
 
 		public static function prepare($sql) {
-			static::$_prepared[static::_get()->name()] = $prepared = static::_get()->prepare($sql);
+			$prepared = static::_get()->prepare($sql);
 			foreach (static::$data as $k => $v) {
 				$prepared->bindValue($k + 1, $v[0], $v[1]);
 			}
+			static::$prepared = $prepared;
 			return $prepared;
 		}
 
@@ -107,9 +110,7 @@
 			if (static::$_prepared) {
 				if (Config::get('debug_sql')) {
 					$sql = static::$_prepared[static::$current->name()]->queryString;
-					foreach (
-						$data as $k => $v
-					) {
+					foreach ($data as $k => $v) {
 						$sql = preg_replace('/\?/i', " '$v' ", $sql, 1); // outputs '123def abcdef abcdef' str_replace(,,$sql);
 					}
 					FB::info($sql);
@@ -119,7 +120,7 @@
 			}
 		}
 
-		public static function insert_id() {
+		 	public static function insert_id() {
 			return static::_get()->lastInsertId();
 		}
 

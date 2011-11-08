@@ -24,18 +24,18 @@
 	Security::set_page(
 		(!Input::session('Items') ? : $_SESSION['Items']->trans_type),
 		array(
-				 ST_SALESORDER   => 'SA_SALESORDER',
-				 ST_SALESQUOTE   => 'SA_SALESQUOTE',
-				 ST_CUSTDELIVERY => 'SA_SALESDELIVERY',
-				 ST_SALESINVOICE => 'SA_SALESINVOICE'
+			ST_SALESORDER => 'SA_SALESORDER',
+			ST_SALESQUOTE => 'SA_SALESQUOTE',
+			ST_CUSTDELIVERY => 'SA_SALESDELIVERY',
+			ST_SALESINVOICE => 'SA_SALESINVOICE'
 		),
 		array(
-				 'NewOrder'              => 'SA_SALESORDER',
-				 'ModifySalesOrder'      => 'SA_SALESORDER',
-				 'NewQuotation'          => 'SA_SALESQUOTE',
-				 'ModifyQuotationNumber' => 'SA_SALESQUOTE',
-				 'NewDelivery'           => 'SA_SALESDELIVERY',
-				 'NewInvoice'            => 'SA_SALESINVOICE'
+			'NewOrder' => 'SA_SALESORDER',
+			'ModifySalesOrder' => 'SA_SALESORDER',
+			'NewQuotation' => 'SA_SALESQUOTE',
+			'ModifyQuotationNumber' => 'SA_SALESQUOTE',
+			'NewDelivery' => 'SA_SALESDELIVERY',
+			'NewInvoice' => 'SA_SALESINVOICE'
 		)
 	);
 	JS::open_window(900, 500);
@@ -138,8 +138,7 @@
 	else {
 		check_edit_conflicts();
 	}
-	function page_complete($order_no, $trans_type, $trans_name = 'Transaction', $edit = false, $update = false)
-	{
+	function page_complete($order_no, $trans_type, $trans_name = 'Transaction', $edit = false, $update = false) {
 		$customer = new Contacts_Customer($_SESSION['Jobsboard']->customer_id);
 		$emails = $customer->getEmailAddresses();
 		Errors::notice(
@@ -214,8 +213,7 @@
 	}
 
 	//-----------------------------------------------------------------------------
-	function copy_to_cart()
-	{
+	function copy_to_cart() {
 		$cart = $_SESSION['Items'];
 		$cart->reference = $_POST['ref'];
 		$cart->Comments = $_POST['Comments'];
@@ -249,8 +247,7 @@
 	}
 
 	//-----------------------------------------------------------------------------
-	function copy_from_cart()
-	{
+	function copy_from_cart() {
 		$cart = &$_SESSION['Items'];
 		$_POST['ref'] = $cart->reference;
 		$_POST['Comments'] = $cart->Comments;
@@ -276,16 +273,14 @@
 	}
 
 	//--------------------------------------------------------------------------------
-	function line_start_focus()
-	{
+	function line_start_focus() {
 		$Ajax = Ajax::instance();
 		$Ajax->activate('items_table');
 		JS::set_focus('_stock_id_edit');
 	}
 
 	//--------------------------------------------------------------------------------
-	function can_process()
-	{
+	function can_process() {
 		if (!get_post('customer_id')) {
 			Errors::error(_("There is no customer selected."));
 			JS::set_focus('customer_id');
@@ -299,6 +294,10 @@
 		if (!Dates::is_date($_POST['OrderDate'])) {
 			Errors::error(_("The entered date is invalid."));
 			JS::set_focus('OrderDate');
+			return false;
+		}
+		if (!Input::session('Items')) {
+			Errors::error(_("You are not currently editing an order! (Using the browser back button after committing an order does not go back to editing)"));
 			return false;
 		}
 		if ($_SESSION['Items']->trans_type != ST_SALESORDER && $_SESSION['Items']->trans_type != ST_SALESQUOTE && !Dates::is_date_in_fiscalyear($_POST['OrderDate'])) {
@@ -415,8 +414,7 @@
 		$Ajax->activate('items_table');
 	}
 	//--------------------------------------------------------------------------------
-	function check_item_data()
-	{
+	function check_item_data() {
 		if (!User::get()->can_access('SA_SALESCREDIT') && (!Validation::is_num('qty', 0) || !Validation::is_num('Disc', 0, 100))) {
 			Errors::error(_("The item could not be updated because you are attempting to set the quantity ordered to less than 0, or the discount percent to more than 100."));
 			JS::set_focus('qty');
@@ -428,7 +426,7 @@
 			return false;
 		}
 		elseif (!User::get()->can_access('SA_SALESCREDIT') && isset($_POST['LineNo']) && isset($_SESSION['Items']->line_items[$_POST['LineNo']])
-						&& !Validation::is_num(
+		 && !Validation::is_num(
 			 'qty',
 			 $_SESSION['Items']->line_items[$_POST['LineNo']]->qty_done
 		 )
@@ -455,8 +453,7 @@
 	}
 
 	//--------------------------------------------------------------------------------
-	function handle_update_item()
-	{
+	function handle_update_item() {
 		if ($_POST['UpdateItem'] != '' && check_item_data()) {
 			$_SESSION['Items']->update_cart_item($_POST['LineNo'], input_num('qty'), input_num('price'), input_num('Disc') / 100, $_POST['description']);
 		}
@@ -464,8 +461,7 @@
 	}
 
 	//--------------------------------------------------------------------------------
-	function handle_delete_item($line_no)
-	{
+	function handle_delete_item($line_no) {
 		if ($_SESSION['Items']->some_already_delivered($line_no) == 0) {
 			$_SESSION['Items']->remove_from_cart($line_no);
 		}
@@ -476,8 +472,7 @@
 	}
 
 	//--------------------------------------------------------------------------------
-	function handle_new_item()
-	{
+	function handle_new_item() {
 		if (!check_item_data()) {
 			return;
 		}
@@ -487,8 +482,7 @@
 	}
 
 	//--------------------------------------------------------------------------------
-	function handle_cancel_order()
-	{
+	function handle_cancel_order() {
 		$Ajax = Ajax::instance();
 		if ($_SESSION['Items']->trans_type == ST_CUSTDELIVERY) {
 			Errors::notice(_("Direct delivery entry has been cancelled as requested."), 1);
@@ -523,8 +517,7 @@
 	}
 
 	//------------------------------------------------------- -------------------------
-	function create_cart($type, $trans_no)
-	{
+	function create_cart($type, $trans_no) {
 		processing_start();
 		$doc_type = $type;
 		if (isset($_GET['NewQuoteToSalesOrder'])) {
@@ -645,23 +638,15 @@
 	}
 	start_form();
 	hidden('cart_id');
-	$customer_error = display_order_header($_SESSION['Items'], ($_SESSION['Items']->any_already_delivered() == 0), $idate);
+	$customer_error = (!Input::session('Items'))? _("There is no order currently being edited") : display_order_header($_SESSION['Items'], ($_SESSION['Items']->any_already_delivered() == 0), $idate);
 	if ($customer_error == "") {
 		start_table(Config::get('tables_style'), 10);
-		echo "
-<tr>
-    <td>";
+		echo "<tr><td>";
 		display_order_summary($orderitems, $_SESSION['Items'], true);
-		echo "
-    </td>
-</tr>";
-		echo "
-<tr>
-    <td>";
+		echo "</td></tr>";
+		echo "<tr><td>";
 		display_delivery_details($_SESSION['Items']);
-		echo "
-    </td>
-</tr>";
+		echo "</td></tr>";
 		end_table(1);
 		if ($_SESSION['Items']->trans_no == 0) {
 			submit_center_first('ProcessOrder', $porder, _('Check entered data and save document'), 'default');
@@ -683,3 +668,4 @@
 	Item::addEditDialog();
 	end_page();
 	unset($_SESSION['order_no']);
+

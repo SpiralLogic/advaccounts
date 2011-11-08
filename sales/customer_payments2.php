@@ -48,55 +48,55 @@
 	{
 		if (!get_post('customer_id')) {
 			Errors::error(_("There is no customer selected."));
-			ui_view::set_focus('customer_id');
+			JS::set_focus('customer_id');
 			return false;
 		}
 		if (!get_post('BranchID')) {
 			Errors::error(_("This customer has no branch defined."));
-			ui_view::set_focus('BranchID');
+			JS::set_focus('BranchID');
 			return false;
 		}
 		if (!isset($_POST['DateBanked']) || !Dates::is_date($_POST['DateBanked'])) {
 			Errors::error(_("The entered date is invalid. Please enter a valid date for the payment."));
-			ui_view::set_focus('DateBanked');
+			JS::set_focus('DateBanked');
 			return false;
 		}
 		elseif (!Dates::is_date_in_fiscalyear($_POST['DateBanked'])) {
 			Errors::error(_("The entered date is not in fiscal year."));
-			ui_view::set_focus('DateBanked');
+			JS::set_focus('DateBanked');
 			return false;
 		}
 		if (!Refs::is_valid($_POST['ref'])) {
 			Errors::error(_("You must enter a reference."));
-			ui_view::set_focus('ref');
+			JS::set_focus('ref');
 			return false;
 		}
 		if (!is_new_reference($_POST['ref'], ST_CUSTPAYMENT)) {
 			Errors::error(_("The entered reference is already in use."));
-			ui_view::set_focus('ref');
+			JS::set_focus('ref');
 			return false;
 		}
 		if (!Validation::is_num('amount', 0)) {
 			Errors::error(_("The entered amount is invalid or negative and cannot be processed."));
-			ui_view::set_focus('amount');
+			JS::set_focus('amount');
 			return false;
 		}
 		if (isset($_POST['charge']) && !Validation::is_num('charge', 0)) {
 			Errors::error(_("The entered amount is invalid or negative and cannot be processed."));
-			ui_view::set_focus('charge');
+			JS::set_focus('charge');
 			return false;
 		}
 		if (isset($_POST['charge']) && input_num('charge') > 0) {
 			$charge_acct = DB_Company::get_pref('bank_charge_act');
 			if (get_gl_account($charge_acct) == false) {
 				Errors::error(_("The Bank Charge Account has not been set in System and General GL Setup."));
-				ui_view::set_focus('charge');
+				JS::set_focus('charge');
 				return false;
 			}
 		}
 		if (isset($_POST['_ex_rate']) && !Validation::is_num('_ex_rate', 0.000001)) {
 			Errors::error(_("The exchange rate must be numeric and greater than zero."));
-			ui_view::set_focus('_ex_rate');
+			JS::set_focus('_ex_rate');
 			return false;
 		}
 		if ($_POST['discount'] == "") {
@@ -104,13 +104,13 @@
 		}
 		if (!Validation::is_num('discount')) {
 			Errors::error(_("The entered discount is not a valid number."));
-			ui_view::set_focus('discount');
+			JS::set_focus('discount');
 			return false;
 		}
 		//if ((input_num('amount') - input_num('discount') <= 0)) {
 		if (input_num('amount') <= 0) {
-			Errors::error(_("The balance of the amount and discout is zero or negative. Please enter valid amounts."));
-			ui_view::set_focus('discount');
+			Errors::error(_("The balance of the amount and discount is zero or negative. Please enter valid amounts."));
+			JS::set_focus('discount');
 			return false;
 		}
 		$_SESSION['alloc']->amount = input_num('amount');

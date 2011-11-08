@@ -39,7 +39,7 @@
 	function check_edit_conflicts($cartname = 'Items')
 	{
 		$Ajax = Ajax::instance();
-		if (Input::post('cart_id') && Input::post('cart_id') != $_SESSION[$cartname]->cart_id) {
+		if (Input::post('cart_id') && Input::Session($cartname) && Input::post('cart_id') != Input::session($cartname)->cart_id) {
 			Errors::error(_('This edit session has been abandoned by opening sales document in another browser tab. You cannot edit more than one sales document at once.'));
 			$Ajax->activate('_page_body');
 			Page::footer_exit();
