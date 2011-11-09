@@ -415,13 +415,13 @@
 		}
 		Display::heading($heading);
 		if ($mode == 1) {
-			if (!$supp_trans->is_invoice && !isset($_POST['invoice_no'])) {
+		/*	if (!$supp_trans->is_invoice && !isset($_POST['invoice_no'])) {
 				echo "</td>";
 				date_cells(_("Received between"), 'receive_begin', "", null, -30, 0, 0, "valign=middle");
 				date_cells(_("and"), 'receive_end', '', null, 1, 0, 0, "valign=middle");
 				submit_cells('RefreshInquiry', _("Search"), '', _('Refresh Inquiry'), true);
 				echo "<td>";
-			}
+			}*/
 			if ($heading2 != "") {
 				Errors::warning($heading2, 0, 0, "class='overduefg'");
 			}
@@ -520,7 +520,7 @@
 			}
 			else {
 				Errors::warning(_("There are no received items for the selected supplier that have been invoiced."));
-				Errors::warning(_note(_("Credits can only be applied to invoiced items."), 0, 0));
+				Errors::notice(_("Credits can only be applied to invoiced items."), 0, 0);
 			}
 			echo "</td>";
 			end_row();

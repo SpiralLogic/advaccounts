@@ -239,7 +239,7 @@
 						WHERE (s.stock_id LIKE ? $termswhere)  $where
 						AND s.category_id = c.category_id $where2 $sales_type GROUP BY s.stock_id
 						ORDER BY weight, s.category_id, s.stock_id LIMIT 30";
-			DB::prepare($sql);
+				DB::prepare($sql);
 			return DB::execute($terms);
 		}
 

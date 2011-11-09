@@ -20,7 +20,7 @@
 		final function __construct() {
 		}
 
-		 static function _get($db = null, $config = array()) {
+		static function _get($db = null, $config = array()) {
 			if ($db === null && static::$current) {
 				return static::$current;
 			}
@@ -43,26 +43,18 @@
 		}
 
 		public static function query($sql, $err_msg = null) {
-			if (Config::get('debug_sql')) {
-				if (class_exists('FB')) {
-					FB::info($sql);
-				} else {
-					echo "<font face=arial size=2 color=000099><b>SQL..</b></font>";
-					echo "<pre>";
-					echo $sql;
-					echo "</pre>\n";
-				}
-			}
+
 			try {
 
-				static::$prepared = static::prepare($sql);
-				static::$prepared->execute();
+				$prepared = static::prepare($sql);
+			$prepared->execute();
 				static::$data = array();
+				static::$prepared=$prepared;
 				return static::$prepared;
 			}
 			catch (PDOException $e) {
 				$error = '<p>DATABASE ERROR: <pre>' . var_export($e->getTrace(), true) . '</pre></p><p><pre>' . var_export($e->errorInfo, true) . '</pre></p>';
-				Errors::error($error);
+				//Errors::error($error);
 			}
 		}
 
@@ -71,7 +63,6 @@
 		}
 
 		public static function escape($value, $null = false, $paramaterized = true) {
-
 			$value = trim($value);
 			//check for null/unset/empty strings
 			if ((!isset($value)) || (is_null($value)) || ($value === "")) {
@@ -98,29 +89,37 @@
 		}
 
 		public static function prepare($sql) {
-			$prepared = static::_get()->prepare($sql);
+			static::$prepared = static::_get()->prepare($sql);
 			foreach (static::$data as $k => $v) {
-				$prepared->bindValue($k + 1, $v[0], $v[1]);
+				static::$prepared->bindValue($k + 1, $v[0], $v[1]);
+				if (Config::get('debug_sql')) {
+					$sql = preg_replace('/\?/i', " '$v[0]' ", $sql, 1); // outputs '123def abcdef abcdef' str_replace(,,$sql);
+				}
 			}
-			static::$prepared = $prepared;
-			return $prepared;
+			if (Config::get('debug_sql')) {
+				FB::info($sql);
+			}
+			return 			static::$prepared;
+			;
 		}
 
 		public static function execute($data) {
-			if (static::$_prepared) {
+
+			if (static::$prepared) {
 				if (Config::get('debug_sql')) {
-					$sql = static::$_prepared[static::$current->name()]->queryString;
+					$sql = static::$prepared[static::$current->name()]->queryString;
 					foreach ($data as $k => $v) {
 						$sql = preg_replace('/\?/i', " '$v' ", $sql, 1); // outputs '123def abcdef abcdef' str_replace(,,$sql);
 					}
 					FB::info($sql);
 				}
-				static::$_prepared[static::$current->name()]->execute($data);
-				return static::$_prepared[static::$current->name()]->fetchAll(PDO::FETCH_ASSOC);
+
+				static::$prepared->execute($data);
+				return static::$prepared->fetchAll(PDO::FETCH_ASSOC);
 			}
 		}
 
-		 	public static function insert_id() {
+		public static function insert_id() {
 			return static::_get()->lastInsertId();
 		}
 
@@ -150,11 +149,14 @@
 		}
 
 		public static function fetch_row($result) {
-			return $result->fetch(PDO::FETCH_NUM);
+			return static::$prepared->fetch(PDO::FETCH_NUM);
 		}
 
 		public static function fetch_assoc($result) {
 			return $result->fetch(PDO::FETCH_ASSOC);
+		}
+		public static function fetch_all($result) {
+			return $result->fetchAll(PDO::FETCH_ASSOC);
 		}
 
 		public static function begin() {
@@ -190,7 +192,7 @@
 
 		public static function num_rows($result) {
 
-			return $result->rowCount();
+			return static::$prepared->rowCount();
 		}
 
 		public static function num_fields($result) {

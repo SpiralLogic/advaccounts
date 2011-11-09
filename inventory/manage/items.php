@@ -174,16 +174,17 @@
 	function check_usage($stock_id, $dispmsg = true)
 	{
 		$sqls = array(
-			"SELECT COUNT(*) FROM stock_moves WHERE stock_id=" . DB::escape($stock_id)          => _('Cannot delete this item because there are stock movements that refer to this item.'),
-			"SELECT COUNT(*) FROM bom WHERE component=" . DB::escape($stock_id)                 => _('Cannot delete this item record because there are bills of material that require this part as a component.'),
-			"SELECT COUNT(*) FROM sales_order_details WHERE stk_code=" . DB::escape($stock_id)  => _('Cannot delete this item because there are existing purchase order items for it.'),
-			"SELECT COUNT(*) FROM purch_order_details WHERE item_code=" . DB::escape($stock_id) => _('Cannot delete this item because there are existing purchase order items for it.')
+			"SELECT COUNT(*) FROM stock_moves WHERE stock_id="          => _('Cannot delete this item because there are stock movements that refer to this item.'),
+			"SELECT COUNT(*) FROM bom WHERE component=" => _('Cannot delete this item record because there are bills of material that require this part as a component.'),
+			"SELECT COUNT(*) FROM sales_order_details WHERE stk_code="  => _('Cannot delete this item because there are existing purchase order items for it.'),
+			"SELECT COUNT(*) FROM purch_order_details WHERE item_code="  => _('Cannot delete this item because there are existing purchase order items for it.')
 		);
 		$msg = '';
 		foreach (
 			$sqls as $sql => $err
 		) {
-			$result = DB::query($sql, "could not query stock usage");
+
+			$result = DB::query($sql .  DB::escape($stock_id), "could not query stock usage");
 			$myrow = DB::fetch_row($result);
 			if ($myrow[0] > 0) {
 				$msg = $err;

@@ -45,9 +45,7 @@
 
 		public function prepare($sql)
 		{
-			if (Config::get('debug_sql')) {
-				(class_exists('FB')) ? FB::info($sql) : var_dump($sql);
-			}
+
 			return $this->conn->prepare($sql);
 		}
 
@@ -55,9 +53,7 @@
 		{
 			try {
 				$prepared = $this->prepare($sql);
-				if (Config::get('debug_sql')) {
-					(class_exists('FB')) ? FB::info($data) : var_dump($data);
-				}
+
 				switch ($type) {
 				case DB::SELECT:
 					return new DB_Result($prepared, $data);

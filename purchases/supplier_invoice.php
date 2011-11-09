@@ -22,7 +22,7 @@
 		$invoice_no = $_GET['AddedID'];
 		$trans_type = ST_SUPPINVOICE;
 		echo "<center>";
-		Errors::notice(_("Supplier invoice has been processed."));
+		Errors::notice(_("Supplier ".$_SESSION['history'][ST_SUPPINVOICE]."invoice has been processed."));
 		Display::note(ui_view::get_trans_view_str($trans_type, $invoice_no, _("View this Invoice")));
 		hyperlink_no_params("/purchases/inquiry/po_search.php", _("Purchase Order Maintainants"));
 		hyperlink_params($_SERVER['PHP_SELF'], _("Enter Another Invoice"), "New=1");
@@ -178,6 +178,7 @@
 			Purchase_Trans::instance()->add_gl_codes_to_trans(DB_Company::get_pref('default_cogs_act'), 'Cost of Goods Sold', 0, 0, get_post('ChgTotal'), 'Rounding Correction');
 		}
 		$invoice_no = add_supp_invoice(Purchase_Trans::instance());
+		$_SESSION['history'][ST_SUPPINVOICE] = $_POST['Reference'];
 		Purchase_Trans::instance()->clear_items();
 		Purchase_Trans::killInstance();
 		meta_forward($_SERVER['PHP_SELF'], "AddedID=$invoice_no");
