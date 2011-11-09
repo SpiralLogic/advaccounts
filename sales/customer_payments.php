@@ -153,7 +153,7 @@
 		}
 
 		if (check_value('createinvoice')) {
-
+var_dump($_POST);
 			Gl_Allocation::create_miscorder(new Contacts_Customer($_POST['customer_id']), $_POST['BranchID'], $_POST['DateBanked'], $_POST['memo_'], $_POST['ref'], input_num('amount'), input_num('discount'));
 		}
 		$payment_no = write_customer_payment(0, $_POST['customer_id'], $_POST['BranchID'], $_POST['bank_account'], $_POST['DateBanked'], $_POST['ref'], input_num('amount'), input_num('discount'), $_POST['memo_'], $rate, input_num('charge'));
