@@ -219,7 +219,7 @@
 	$th = array(_("Deposit Date"), _("Total Deposit<br>Amount"));
 	table_header($th);
 	start_row();
-	date_cells("", "deposit_date", _('Date of funds to deposit'), get_post('deposit_date') == '', 0, 0, 0, null, true, array('rebind' => false));
+	date_cells("", "deposit_date", _('Date of funds to deposit'), get_post('deposit_date') == '', 0, 0, 0, null, false, array('rebind' => false));
 	amount_cell($_POST['deposited'], false, '', "deposited");
 	hidden("to_deposit", $_POST['to_deposit'], true);
 	end_row();
@@ -232,7 +232,7 @@
 	 = "SELECT	type, trans_no, ref, trans_date,
 				amount,	person_id, person_type_id, reconciled, id
 		FROM bank_trans
-		WHERE undeposited=1 AND trans_date <= '" . Dates::date2sql($date) . "' AND reconciled IS NULL
+		WHERE undeposited=1 AND trans_date <= '" . Dates::date2sql($date) . "' AND reconciled IS NULL AND amount>0
 		ORDER BY trans_date DESC,bank_trans.id ";
 	$cols = array(
 		_("Type") => array(

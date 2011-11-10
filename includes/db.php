@@ -19,7 +19,7 @@
 		final function __construct() {
 		}
 
-	protected static function _get($db = null, $config = array()) {
+		protected static function _get($db = null, $config = array()) {
 			if ($db === null && static::$current) {
 				return static::$current;
 			}
@@ -46,13 +46,13 @@
 			try {
 
 				$prepared = static::prepare($sql);
-			$prepared->execute();
+				$prepared->execute();
 				static::$data = array();
-				static::$prepared=$prepared;
+				static::$prepared = $prepared;
 				return static::$prepared;
 			}
 			catch (PDOException $e) {
-				$error = '<p>DATABASE ERROR: '.$err_msg.' <pre>' . var_export($e->getTrace(), true) . '</pre></p><p><pre>' . var_export($e->errorInfo, true) . '</pre></p>';
+				$error = '<p>DATABASE ERROR: ' . $err_msg . ' <pre>' . var_export($e->getTrace(), true) . '</pre></p><p><pre>' . var_export($e->errorInfo, true) . '</pre></p>';
 				//Errors::error($error);
 			}
 		}
@@ -67,9 +67,12 @@
 			if ((!isset($value)) || (is_null($value)) || ($value === "")) {
 				$value = ($null) ? 'NULL' : '';
 				$type = PDO::PARAM_NULL;
-			} elseif (is_numeric($value) || is_int($value)) {
+			} elseif (is_numeric($value) && is_int($value)) {
 				$value = (int)$value;
 				$type = PDO::PARAM_INT;
+			} elseif (is_float($value)) {
+				$value = (double)$value;
+				$type = null;
 			} elseif (is_bool($value)) {
 				$value = (bool)$value;
 				$type = PDO::PARAM_BOOL;
@@ -98,7 +101,7 @@
 			if (Config::get('debug_sql')) {
 				FB::info($sql);
 			}
-			return 			static::$prepared;
+			return static::$prepared;
 			;
 		}
 
@@ -154,6 +157,7 @@
 		public static function fetch_assoc($result) {
 			return $result->fetch(PDO::FETCH_ASSOC);
 		}
+
 		public static function fetch_all($result) {
 			return $result->fetchAll(PDO::FETCH_ASSOC);
 		}
