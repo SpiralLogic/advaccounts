@@ -77,7 +77,7 @@
 		return $price;
 	}
 
-	function get_wprice($stock_id, $currency, $sales_type_id, $factor = null, $date = null)
+	function get_price($stock_id, $currency, $sales_type_id, $factor = null, $date = null)
 	{
 		if ($date == null) {
 			$date = Dates::new_doc_date();
