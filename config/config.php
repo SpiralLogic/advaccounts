@@ -7,7 +7,7 @@
 	 * To change this template use File | Settings | File Templates.
 	 */
 	return array(
-		'debug'														=> false,
+		'debug'														=> true,
 		'debug_sql'												=> false,
 		'debug_pdf'												=> false,
 		'debug_query_log'									=> false,

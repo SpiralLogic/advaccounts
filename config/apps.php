@@ -17,5 +17,5 @@
 			'dimensions',
 			'gl',
 			'system',),
-		'default'=> 'sales'
+		'default'=> 'Sales'
 	);
