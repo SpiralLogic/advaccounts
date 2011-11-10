@@ -14,6 +14,7 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	include_once(APP_PATH . "sales/includes/ui/sales_order_ui.php");
 	include_once(APP_PATH . "sales/includes/sales_ui.php");
+
 	JS::open_window(900, 500);
 	JS::headerFile('/js/payalloc.js');
 	Page::start(_($help_context = "Customer Payment Entry"), Input::request('frame'));

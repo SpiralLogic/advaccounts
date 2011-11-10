@@ -67,7 +67,7 @@
 
 	function prt_link($row)
 	{
-		return Reporting::print_doc_link($row['order_no'], _("Print"), true, 18, ICON_PRINT, 'button');
+		return Reporting::print_doc_link($row['order_no'], _("Print"), true, 18, ICON_PRINT, 'button printlink');
 	}
 
 	function receive_link($row)

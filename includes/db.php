@@ -11,7 +11,6 @@
 		const INSERT = 1;
 		const UPDATE = 2;
 		const DELETE = 4;
-		protected static $_prepared = array();
 		protected static $conn = array();
 		protected static $current = false;
 		protected static $data = array();
@@ -20,7 +19,7 @@
 		final function __construct() {
 		}
 
-		static function _get($db = null, $config = array()) {
+	protected static function _get($db = null, $config = array()) {
 			if ($db === null && static::$current) {
 				return static::$current;
 			}
@@ -53,7 +52,7 @@
 				return static::$prepared;
 			}
 			catch (PDOException $e) {
-				$error = '<p>DATABASE ERROR: <pre>' . var_export($e->getTrace(), true) . '</pre></p><p><pre>' . var_export($e->errorInfo, true) . '</pre></p>';
+				$error = '<p>DATABASE ERROR: '.$err_msg.' <pre>' . var_export($e->getTrace(), true) . '</pre></p><p><pre>' . var_export($e->errorInfo, true) . '</pre></p>';
 				//Errors::error($error);
 			}
 		}
@@ -107,7 +106,7 @@
 
 			if (static::$prepared) {
 				if (Config::get('debug_sql')) {
-					$sql = static::$prepared[static::$current->name()]->queryString;
+					$sql = static::$prepared->queryString;
 					foreach ($data as $k => $v) {
 						$sql = preg_replace('/\?/i', " '$v' ", $sql, 1); // outputs '123def abcdef abcdef' str_replace(,,$sql);
 					}
@@ -201,9 +200,9 @@
 
 		//DB wrapper functions to change only once for whole application
 
-		public static function num_affected_rows($results) {
+		public static function num_affected_rows($result) {
 
-			return $results->rowCount();
+			return $result->rowCount();
 		}
 
 		public static function begin_transaction() {

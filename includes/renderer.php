@@ -96,6 +96,8 @@
 		function display_applications(&$waapp)
 		{
 			$selected_app = $waapp->get_selected_application();
+
+			if ($selected_app->direct) meta_forward($selected_app->direct);
 			foreach ($selected_app->modules as $module) {
 				// image
 				echo "<table width='100%'><tr>";

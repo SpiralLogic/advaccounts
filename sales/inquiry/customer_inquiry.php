@@ -159,10 +159,10 @@
 		if ($row['type'] != ST_CUSTPAYMENT && $row['type'] != ST_CUSTREFUND && $row['type'] != ST_BANKDEPOSIT
 		) // customer payment or bank deposit printout not defined yet.
 		{
-			return Reporting::print_doc_link($row['trans_no'] . "-" . $row['type'], _("Print"), true, $row['type'], ICON_PRINT, 'button');
+			return Reporting::print_doc_link($row['trans_no'] . "-" . $row['type'], _("Print"), true, $row['type'], ICON_PRINT, 'button printlink');
 		}
 		else {
-			return Reporting::print_doc_link($row['trans_no'] . "-" . $row['type'], _("Receipt"), true, $row['type'], ICON_PRINT, 'button');
+			return Reporting::print_doc_link($row['trans_no'] . "-" . $row['type'], _("Receipt"), true, $row['type'], ICON_PRINT, 'button printlink');
 		}
 	}
 
