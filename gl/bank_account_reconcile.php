@@ -250,7 +250,7 @@
 			'fun' => 'trans_view',
 			'ord' => ''
 		), _("Reference"),
-		_("Date") => 'date',
+		_("Date") => array('date',			'ord' => ''),
 		_("Debit") => array(
 			'align' => 'right',
 			'fun' => 'fmt_debit'
