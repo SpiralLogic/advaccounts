@@ -293,13 +293,49 @@ div.banner a + a { border-top: 2px groove #999 }
 }
 
 #summary {
-	position: fixed;
-	left:5px;
-	background-color: white;
+	position:              fixed;
+	left:                  15px;
+	background-color:      #dcdcdc;
+	-webkit-border-radius: 5px;
+	-webkit-box-shadow:    3px 6px 20px 5px rgba(3, 3, 3, .25);
+	-moz-box-shadow:       3px 6px 20px 5px rgba(3, 3, 3, .25);
+	box-shadow:            3px 6px 20px 5px rgba(3, 3, 3, .25);
+	width:                 130px;
+	padding:               3px 3px;
+	top: 170px;
+
+}
+#summary input {
+	text-align:center;
+}
+#summary table {
+	border: none;
+	margin-top:3px;
+	background:white;
+	padding:               6px 6px;
+	-webkit-border-radius: 4px;
+	width:                 125px;
 
 }
 #summary th {
-	font-size:smaller;
+	text-align:            center;
+	padding:               2 12px;
+	font-size:1em;
+	
+}
+#summary tr  {
+	-webkit-border-radius: 10px 0;
+}
+#summary button {
+	padding: 3px 10px;
+	margin:5px;
+	font-size:10px;
+}
+
+#summary td {
+	margin:  12px;
+	padding: 12px;
+	text-align:            center;
 
 }
 
@@ -488,7 +524,6 @@ div.banner a + a { border-top: 2px groove #999 }
 .Inventory #_tabs2 ul.menu li {
 	list-style: none;
 	float:      left;
-
 	text-align: center;
 	background: -webkit-gradient(linear, 100% 100%, 100% 0%, from(#B81D1D), to(#E38881), color-stop(.5, #DB4949));
 	background: -moz-linear-gradient(100% 100% 90deg, #B81D1D, #E38881, #DB4949 100%);
@@ -498,7 +533,6 @@ div.banner a + a { border-top: 2px groove #999 }
 
 	background: -webkit-gradient(linear, 100% 19%, 100% 71%, from(#858585), to(#9E9E9E), color-stop(0, #C7C7C7));
 	background: -moz-linear-gradient(19% 100% 90deg, #858585, #9E9E9E, #C7C7C7 71%);
-
 	text-align: center;
 
 }
@@ -528,6 +562,92 @@ div.banner a + a { border-top: 2px groove #999 }
 .Inventory #wrapper, .Inventory #results {
 	width:      100%;
 	background: #fff url(images/wrapbg3.gif) repeat-x;
+
+}
+
+.GL #_tabs2 {
+
+	background: #464646;
+	background: -webkit-gradient(linear, 100% 19%, 100% 71%, from(#858585), to(#9E9E9E), color-stop(0, #C7C7C7));
+	background: -moz-linear-gradient(19% 100% 90deg, #858585, #9E9E9E, #C7C7C7 71%);
+	border-top: 2px solid #939393;
+	position:   relative;
+
+}
+.GL #_tabs2 ul.menu li {
+	list-style: none;
+	float:      left;
+
+	text-align: center;
+	background: -webkit-gradient(linear, 100% 100%, 100% 0%, from(#ffd65e), to(#ffd65e), color-stop(.5, #febf04));
+	background: #ffd65e;
+	background: -moz-linear-gradient(top,  #ffd65e 0%, #ffd65e 50%, #febf04 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffd65e), color-stop(50%,#ffd65e), color-stop(100%,#febf04));
+	background: -webkit-linear-gradient(top,  #ffd65e 0%,#ffd65e 50%,#febf04 100%);
+	background: -o-linear-gradient(top,  #ffd65e 0%,#ffd65e 50%,#febf04 100%);
+	background: -ms-linear-gradient(top,  #ffd65e 0%,#ffd65e 50%,#febf04 100%);
+	background: linear-gradient(top,  #ffd65e 0%,#ffd65e 50%,#febf04 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffd65e', endColorstr='#febf04',GradientType=0 );
+
+}
+
+.GL #_tabs2 ul a {
+
+	background: -webkit-gradient(linear, 100% 19%, 100% 71%, from(#858585), to(#9E9E9E), color-stop(0, #C7C7C7));
+	background: -moz-linear-gradient(19% 100% 90deg, #858585, #9E9E9E, #C7C7C7 71%);
+	text-align: center;
+
+}
+.GL #_tabs2 ul  a:hover {
+
+	background: #ffe08c;
+	background: -moz-linear-gradient(top,  #ffe08c 0%, #febf04 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffe08c), color-stop(100%,#febf04));
+	background: -webkit-linear-gradient(top,  #ffe08c 0%,#febf04 100%);
+	background: -o-linear-gradient(top,  #ffe08c 0%,#febf04 100%);
+	background: -ms-linear-gradient(top,  #ffe08c 0%,#febf04 100%);
+	background: linear-gradient(top,  #ffe08c 0%,#febf04 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffe08c', endColorstr='#febf04',GradientType=0 );
+
+
+}
+
+.GL #_tabs2 ul li.active a {
+	background: #ffe08c;
+	background: -moz-linear-gradient(top,  #ffe08c 0%, #febf04 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffe08c), color-stop(100%,#febf04));
+	background: -webkit-linear-gradient(top,  #ffe08c 0%,#febf04 100%);
+	background: -o-linear-gradient(top,  #ffe08c 0%,#febf04 100%);
+	background: -ms-linear-gradient(top,  #ffe08c 0%,#febf04 100%);
+	background: linear-gradient(top,  #ffe08c 0%,#febf04 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffe08c', endColorstr='#febf04',GradientType=0 );
+
+	color:      white;
+}
+
+.GL .menu_group {
+	box-shadow:       0 1px 0 rgba(255, 255, 255, 0.6) inset;
+	background: #ffe08c;
+	background: -moz-linear-gradient(top,  #ffe08c 0%, #febf04 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffe08c), color-stop(100%,#febf04));
+	background: -webkit-linear-gradient(top,  #ffe08c 0%,#febf04 100%);
+	background: -o-linear-gradient(top,  #ffe08c 0%,#febf04 100%);
+	background: -ms-linear-gradient(top,  #ffe08c 0%,#febf04 100%);
+	background: linear-gradient(top,  #ffe08c 0%,#febf04 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffe08c', endColorstr='#febf04',GradientType=0 );
+
+
+	border:           1px solid #7096AB;
+	box-shadow:       none;
+}
+
+/* main wrapper */
+.GL #wrapper, .GL #results {
+	width:      100%;
+	background: #fff url(images/wrapbg4.gif) repeat-x;
+
+
+
 
 }
 
@@ -573,7 +693,6 @@ table .headingtext {
 	font-weight: bold;
 	display:     block;
 }
-
 
 .menu_group {
 	font-size:        13px;
@@ -754,9 +873,9 @@ input.amount, td.amount {
 	border:           1px solid #7096AB;
 	box-shadow:       none;
 	color:            #333;
-	line-height: 1.4;
+	line-height:      1.4;
 
-		text-shadow: 0 1px 0;
+	text-shadow:      0 1px 0;
 }
 
 .ajaxsubmit:hover, .inputsubmit:hover, .editbutton:hover, .button:hover, .button-large:hover {
@@ -796,7 +915,7 @@ input.amount, td.amount {
 }
 
 .button.printlink, .button-large {
-	padding:     .4em 1em;
+	padding: .4em 1em;
 
 }
 
@@ -883,14 +1002,16 @@ input.hasDatepicker {
 	clear:            left;
 	color:            #808080;
 	background-color: #fff;
-	text-align: 			center;
-	margin:       5px auto 0;
+	text-align:       center;
+	margin:           5px auto 0;
 	padding:          5px 15px;
 	border-top:       1px solid #ccc;
 }
+
 #footer span {
-	padding:    0 12px 0 12px;
+	padding: 0 12px 0 12px;
 }
+
 #footer .power {
 	font-size:  1.0em;
 	background: url(images/news.gif) no-repeat center left #fff;

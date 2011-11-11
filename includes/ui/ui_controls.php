@@ -314,6 +314,7 @@
 	function table_header($labels, $params = '')
 	{
 		echo '<thead>';
+		$labels=(array) $labels;
 		foreach ($labels as $label)
 		{
 			labelheader_cell($label, $params);
