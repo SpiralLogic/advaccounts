@@ -214,8 +214,8 @@
 	amount_cell($_POST['deposited'], false, '', "deposited");
 	hidden("to_deposit", $_POST['to_deposit'], true);
 	end_row();
-
 	end_table();
+	submit_center('Deposit', _("Deposit"), true, '', false);
 
 	div_end();
 	echo "<hr>";
