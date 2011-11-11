@@ -67,16 +67,14 @@
 	//-------------------------------------------------------------------------------------
 	if (isset($_POST['add']) || isset($_POST['delete'])) {
 		DB::begin_transaction();
-		for (
-			$i = 0, $da = $_POST['begin']; Dates::date1_greater_date2($_POST['end'], $da); $i++
-		)
+		for ($i = 0, $da = $_POST['begin']; Dates::date1_greater_date2($_POST['end'], $da); $i++)
 		{
 			if (isset($_POST['add'])) {
 				add_update_gl_budget_trans(
 					$da, $_POST['account'], $_POST['dim1'],
 					$_POST['dim2'], input_num('amount' . $i)
 				);
-} else {
+			} else {
 				delete_gl_budget_trans($da, $_POST['account'], $_POST['dim1'], $_POST['dim2']);
 			}
 			$da = Dates::add_months($da, 1);
@@ -95,8 +93,11 @@
 	}
 	//-------------------------------------------------------------------------------------
 	start_form();
+
 	if (Validation::check(Validation::GL_ACCOUNTS)) {
-		$dim = DB_Company::get_pref('use_dimension');
+		var_dump($myrow);
+
+			$dim = DB_Company::get_pref('use_dimension');
 		start_table(Config::get('tables_style2'));
 		fiscalyears_list_row(_("Fiscal Year:"), 'fyear', null);
 		gl_all_accounts_list_row(_("Account Code:"), 'account', null);

@@ -12,11 +12,11 @@
 	/* Author Rob Mallon */
 	$page_security = 'SA_RECONCILE';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	JS::open_window(800, 500);
+	JS::open_window(800, 500);	JS::footerFile('/js/reconcile.js');
+
 	Page::start(_($help_context = "Reconcile Bank Account"));
 	Validation::check(Validation::BANK_ACCOUNTS, _("There are no bank accounts defined in the system."));
-	function check_date()
-	{
+	function check_date() {
 		if (!Dates::is_date(get_post('reconcile_date'))) {
 			Errors::error(_("Invalid reconcile date format"));
 			JS::set_focus('reconcile_date');
@@ -29,8 +29,7 @@
 	//	This function can be used directly in table pager
 	//	if we would like to change page layout.
 	//
-	function rec_checkbox($row)
-	{
+	function rec_checkbox($row) {
 		$name = "rec_" . $row['id'];
 		$hidden = 'last[' . $row['id'] . ']';
 		$value = $row['reconciled'] != '';
@@ -38,8 +37,7 @@
 		return checkbox(null, $name, $value, true, _('Reconcile this transaction')) . hidden($hidden, $value, false);
 	}
 
-	function ungroup($row)
-	{
+	function ungroup($row) {
 		if ($row['type'] != 15) {
 			return;
 		}
@@ -47,42 +45,35 @@
     class="ajaxsubmit">Ungroup</button>' . hidden("ungroup_" . $row['id'], $row['ref'], true);
 	}
 
-	function systype_name($dummy, $type)
-	{
+	function systype_name($dummy, $type) {
 		global $systypes_array;
 		return $systypes_array[$type];
 	}
 
-	function trans_view($trans)
-	{
+	function trans_view($trans) {
 		return ui_view::get_trans_view_str($trans["type"], $trans["trans_no"]);
 	}
 
-	function gl_view($row)
-	{
+	function gl_view($row) {
 		return ui_view::get_gl_view_str($row["type"], $row["trans_no"]);
 	}
 
-	function fmt_debit($row)
-	{
+	function fmt_debit($row) {
 		$value = $row["amount"];
 		return $value >= 0 ? Num::price_format($value) : '';
 	}
 
-	function fmt_credit($row)
-	{
+	function fmt_credit($row) {
 		$value = -$row["amount"];
 		return $value > 0 ? Num::price_format($value) : '';
 	}
 
-	function fmt_person($row)
-	{
+	function fmt_person($row) {
 		return Banking::payment_person_name($row["person_type_id"], $row["person_id"]);
 	}
 
 	$update_pager = false;
-	function update_data()
-	{
+	function update_data() {
 		global $update_pager;
 		$Ajax = Ajax::instance();
 		unset($_POST["beg_balance"]);
@@ -94,8 +85,7 @@
 	//---------------------------------------------------------------------------------------------
 	// Update db record if respective checkbox value has changed.
 	//
-	function change_tpl_flag($reconcile_id)
-	{
+	function change_tpl_flag($reconcile_id) {
 		$Ajax = Ajax::instance();
 		if (!check_date() && check_value("rec_" . $reconcile_id)) // temporary fix
 		{
@@ -204,16 +194,41 @@
 	echo "<hr>";
 	div_start('summary');
 	start_table();
-	$th = array(_("Reconcile Date"), _("Beginning<br>Balance"), _("Ending<br>Balance"), _("Account<br>Total"), _("Reconciled<br>Amount"), _("Difference"));
-	table_header($th);
+
+	table_header(_("Reconcile Date"));
 	start_row();
 	date_cells("", "reconcile_date", _('Date of bank statement to reconcile'), get_post('bank_date') == '', 0, 0, 0, null, true);
+	end_row();
+
+	table_header(_("Beginning Balance"));
+	start_row();
+
 	amount_cells_ex("", "beg_balance", 15);
+	end_row();
+
+	table_header(_("Ending Balance"));
+	start_row();
+
 	amount_cells_ex("", "end_balance", 15);
 	$reconciled = input_num('reconciled');
 	$difference = input_num("end_balance") - input_num("beg_balance") - $reconciled;
+	end_row();
+
+	table_header(_("Account Total"));
+	start_row();
+
 	amount_cell($total);
+	end_row();
+
+	table_header(_("Reconciled Amount"));
+	start_row();
+
 	amount_cell($reconciled, false, '', "reconciled");
+	end_row();
+
+	table_header(_("Difference"));
+	start_row();
+
 	amount_cell($difference, false, '', "difference");
 	end_row();
 	end_table();

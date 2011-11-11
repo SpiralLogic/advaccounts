@@ -47,8 +47,8 @@
 			//if (!property_exists(__CLASS__, $validate)) return Errors::error("TABLE $validate doesn't exist", true);
 			if ($extra === false) return 0;
 			if ($extra !== null) {
-			if ( empty($extra)) throw new Adv_Exception("Extra information not provided for ".$validate);
-				if (is_string($extra)) $extra  = DB::escape($extra);
+				if (empty($extra)) throw new Adv_Exception("Extra information not provided for " . $validate);
+				if (is_string($extra)) $extra = DB::escape($extra);
 			} else {
 				$extra = '';
 			}
@@ -60,7 +60,9 @@
 				end_page();
 				exit;
 			} else {
+
 				return $myrow[0];
+
 			}
 		}
 

@@ -15,8 +15,7 @@
 	JS::footerFile('/js/reconcile.js');
 	Page::start(_($help_context = "Undeposited Funds"), Input::request('frame'));
 	Validation::check(Validation::BANK_ACCOUNTS, _("There are no bank accounts defined in the system."));
-	function check_date()
-	{
+	function check_date() {
 		if (!Dates::is_date(get_post('deposit_date'))) {
 			Errors::error(_("Invalid deposit date format"));
 			JS::setFocus('deposit_date');
@@ -42,8 +41,7 @@
 	//	if we would like to change page layout.
 	//	if we would like to change page layout.
 	//
-	function dep_checkbox($row)
-	{
+	function dep_checkbox($row) {
 		$name = "dep_" . $row['id'];
 		$hidden = 'amount_' . $row['id'];
 		$value = $row['amount'];
@@ -52,42 +50,35 @@
 		return checkbox(null, $name, $chk_value, true, _('Deposit this transaction')) . hidden($hidden, $value, false);
 	}
 
-	function systype_name($dummy, $type)
-	{
+	function systype_name($dummy, $type) {
 		global $systypes_array;
 		return $systypes_array[$type];
 	}
 
-	function trans_view($trans)
-	{
+	function trans_view($trans) {
 		return ui_view::get_trans_view_str($trans["type"], $trans["trans_no"]);
 	}
 
-	function gl_view($row)
-	{
+	function gl_view($row) {
 		return ui_view::get_gl_view_str($row["type"], $row["trans_no"]);
 	}
 
-	function fmt_debit($row)
-	{
+	function fmt_debit($row) {
 		$value = $row["amount"];
 		return $value >= 0 ? Num::price_format($value) : '';
 	}
 
-	function fmt_credit($row)
-	{
+	function fmt_credit($row) {
 		$value = -$row["amount"];
 		return $value > 0 ? Num::price_format($value) : '';
 	}
 
-	function fmt_person($row)
-	{
+	function fmt_person($row) {
 		return Banking::payment_person_name($row["person_type_id"], $row["person_id"]);
 	}
 
 	$update_pager = false;
-	function update_data()
-	{
+	function update_data() {
 		global $update_pager;
 		$Ajax = Ajax::instance();
 		$Ajax->activate('summary');
@@ -97,8 +88,7 @@
 	//---------------------------------------------------------------------------------------------
 	// Update db record if respective checkbox value has changed.
 	//
-	function change_tpl_flag($deposit_id)
-	{
+	function change_tpl_flag($deposit_id) {
 		$Ajax = Ajax::instance();
 		if (!check_date() && check_value("dep_" . $deposit_id)) // temporary fix
 		{
@@ -209,22 +199,24 @@
 	$_POST['deposited'] = $_POST['to_deposit'];
 	$Ajax->activate('summary');
 	start_form();
-	start_table("class='tablestyle_noborder'");
-	start_row();
-	end_row();
-	end_table();
+
 	echo "<hr>";
 	div_start('summary');
-	start_table(Config::get('tables_style'));
-	$th = array(_("Deposit Date"), _("Total Deposit<br>Amount"));
-	table_header($th);
+	start_table();
+
+	table_header(_("Deposit Date"));
 	start_row();
 	date_cells("", "deposit_date", _('Date of funds to deposit'), get_post('deposit_date') == '', 0, 0, 0, null, false, array('rebind' => false));
+	end_row();
+
+	table_header(_("Total Amount"));
+	start_row();
 	amount_cell($_POST['deposited'], false, '', "deposited");
 	hidden("to_deposit", $_POST['to_deposit'], true);
 	end_row();
+
 	end_table();
-	submit_center('Deposit', _("Deposit"), true, '', false);
+
 	div_end();
 	echo "<hr>";
 	$date = Dates::add_days($_POST['deposit_date'], 10);
