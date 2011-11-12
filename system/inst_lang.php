@@ -144,7 +144,7 @@
 				$conn[$i]['code'] == $lang
 				 ? ''
 				 :
-				 "<a href='javascript:deleteLanguage(" . $i . ")'>$delete</a>"
+				 "<a href=''>$delete</a>"
 			);
 			end_row();
 		}
@@ -191,7 +191,7 @@
 		file_row(_("Language File") . " (MO)", 'uploadfile2');
 		end_table(0);
 		Errors::warning(_("Select your language files from your local harddisk."), 0, 1);
-		echo "<center><input onclick='javascript:updateLanguage()' type='button' style='width:150px' value='" . _("Save") . "'></center>";
+		echo "<center><input  type='button' style='width:150px' value='" . _("Save") . "'></center>";
 		end_form();
 	}
 

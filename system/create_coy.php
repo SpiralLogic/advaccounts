@@ -218,7 +218,7 @@
 				$i == $coyno
 				 ? ''
 				 :
-				 "<a href='javascript:deleteCompany(" . $i . ")'>$delete</a>"
+				 "<a href=''>$delete</a>"
 			);
 			end_row();
 		}
@@ -276,7 +276,7 @@
 		text_row_ex(_("New script Admin Password"), 'admpassword', 20);
 		end_table();
 		Errors::warning(_("Choose from Database scripts in SQL folder. No Database is created without a script."), 0, 1);
-		echo "<center><input onclick='javascript:updateCompany()' type='button' style='width:150px' value='" . _("Save") . "'></center>";
+		echo "<center><input  type='button' style='width:150px' value='" . _("Save") . "'></center>";
 		end_form();
 	}
 

@@ -199,17 +199,17 @@
 	}
 	$sql
 	 = "SELECT
-  		trans.type, 
-		trans.trans_no, 
-		trans.order_, 
+  		trans.type,
+		trans.trans_no,
+		trans.order_,
 		trans.reference,
-		trans.tran_date, 
-		trans.due_date, 
+		trans.tran_date,
+		trans.due_date,
 		debtor.name,
 		debtor.debtor_no,
 		branch.br_name,
 		debtor.curr_code,
-		(trans.ov_amount + trans.ov_gst + trans.ov_freight 
+		(trans.ov_amount + trans.ov_gst + trans.ov_freight
 			+ trans.ov_freight_tax + trans.ov_discount)	AS TotalAmount, ";
 	if (isset($_POST['filterType']) && $_POST['filterType'] != ALL_TEXT) {
 		$sql .= "@bal := @bal+(trans.ov_amount + trans.ov_gst + trans.ov_freight + trans.ov_freight_tax + trans.ov_discount), ";
@@ -237,10 +237,13 @@
 				$sql .= "TotalAmount LIKE " . DB::escape('%' . substr($ajaxsearch, 1) . '%',false,false) . ") ";
 				continue;
 			}
-			;
 			if (stripos($ajaxsearch, '/') > 0) {
 				$sql .= " tran_date LIKE '%" . Dates::date2sql($ajaxsearch, false) . "%' OR";
+				continue;
 			}
+			if (is_numeric($ajaxsearch)) {
+							$sql .= " debtor_no = $ajaxsearch OR ";
+						}
 			$ajaxsearch = DB::escape("%" . $ajaxsearch . "%",false,false);
 			$sql
 			 .= " name LIKE $ajaxsearch OR trans_no LIKE $ajaxsearch OR reference LIKE $ajaxsearch
@@ -285,7 +288,7 @@
 			$today = Dates::date2sql(Dates::Today());
 			$sql
 			 .= " AND trans.due_date < '$today'
-				AND (trans.ov_amount + trans.ov_gst + trans.ov_freight_tax + 
+				AND (trans.ov_amount + trans.ov_gst + trans.ov_freight_tax +
 				trans.ov_freight + trans.ov_discount - trans.alloc > 0) ";
 		}
 	}

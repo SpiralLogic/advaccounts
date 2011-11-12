@@ -9,6 +9,7 @@
 		private static $_headerFiles = array();
 		private static $_footerFiles = array();
 		private static $_focus = false;
+		private static $_openWindow = false;
 
 		private function __construct()
 		{
@@ -17,9 +18,15 @@
 		public static function open_window($width, $height)
 		{
 			if (Config::get('ui_windows_popups')) {
-				$js = "function openWindow(url, title)\n{\n var left = (screen.width - $width) / 2;\n var top = (screen.height - $height) / 2;\n"
-				 . " return window.open(url, title, 'width=$width,height=$height,left='+left+',top='+top+',screenX='+left+',screenY='+top+',status=no,scrollbars=yes');\n}\n";
+				$js = "Adv.openWindow = function(url, title)\n{\n var left = (screen.width - $width) / 2;\n var top = (screen.height - $height) / 2;\n"
+							. " return window.open(url, title, 'width=$width,height=$height,left='+left+',top='+top+',screenX='+left+',screenY='+top+',status=no,scrollbars=yes');\n}\n";
 				static::beforeload($js);
+				if (static::$_openWindow) {
+					return;
+				}
+				$js = "$('.openWindow').click(function() { Adv.openWindow(this.href,this.target); return false;});";
+				static::addLive($js);
+				static::$_openWindow = true;
 			}
 		}
 
@@ -80,10 +87,10 @@ JS
 		static function png_fix()
 		{
 			$js = "function fixPNG(myImage)\n{\n var arVersion = navigator.appVersion.split(\"MSIE\")\n var version = parseFloat(arVersion[1])\n if ((version >= 5.5) && (version < 7) && (document.body.filters))\n {\n"
-			 . "  var imgID = (myImage.id) ? \"id='\" + myImage.id + \"' \" : \"\"\n  var imgClass = (myImage.className) ? \"class='\" + myImage.className + \"' \" : \"\"\n  var imgTitle = (myImage.title) ?\n"
-			 . "    \"title='\" + myImage.title  + \"' \" : \"title='\" + myImage.alt + \"' \"\n  var imgStyle = \"display:inline-block;\" + myImage.style.cssText\n  var strNewHTML = \"<span \" + imgID + imgClass + imgTitle\n    + \" style=\\\"\" + \"width:\" + myImage.width\n"
-			 . "    + \"px; height:\" + myImage.height\n    + \"px;\" + imgStyle + \";\"\n    + \"filter:progid:DXImageTransform.Microsoft.AlphaImageLoader\"\n    + \"(src=\'\" + myImage.src + \"\', sizingMethod='scale');\\\"></span>\"\n  myImage.outerHTML = strNewHTML\n }\n"
-			 . "}\n";
+						. "  var imgID = (myImage.id) ? \"id='\" + myImage.id + \"' \" : \"\"\n  var imgClass = (myImage.className) ? \"class='\" + myImage.className + \"' \" : \"\"\n  var imgTitle = (myImage.title) ?\n"
+						. "    \"title='\" + myImage.title  + \"' \" : \"title='\" + myImage.alt + \"' \"\n  var imgStyle = \"display:inline-block;\" + myImage.style.cssText\n  var strNewHTML = \"<span \" + imgID + imgClass + imgTitle\n    + \" style=\\\"\" + \"width:\" + myImage.width\n"
+						. "    + \"px; height:\" + myImage.height\n    + \"px;\" + imgStyle + \";\"\n    + \"filter:progid:DXImageTransform.Microsoft.AlphaImageLoader\"\n    + \"(src=\'\" + myImage.src + \"\', sizingMethod='scale');\\\"></span>\"\n  myImage.outerHTML = strNewHTML\n }\n"
+						. "}\n";
 			JS::beforeload($js);
 		}
 

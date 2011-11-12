@@ -64,9 +64,9 @@ Adv.extend({
 Adv.extend({Forms:(function() {
 	return {
 		setFormValue:function(id, value, disabled) {
-			var el = $('[name="' + id + '"]');
+			var el = $(document.getElementsByName(id));
 			if (!el.length) {
-				el = $('#' + id);
+				el = $(document.getElementById(id));
 			}
 			if (typeof disabled === 'boolean') {
 				el.prop('disabled', disabled);

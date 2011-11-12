@@ -2,15 +2,16 @@
 
 	$page_security = 'SA_CUSTOMER';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	$_SESSION['App']->selected_application = 'contacts';
+	$_SESSION['App']->selected_application = 'Contacts';
+
 	if (isset($_POST['name'])) {
 		$data['customer'] = $customer = new Contacts_Customer($_POST);
 		$data['customer']->save();
-	} elseif (Input::post_get('id', Input::NUMERIC) > 0) {
-		$data['customer'] = $customer = new Contacts_Customer(Input::post_get('id'));
+	} elseif (Input::request('id', Input::NUMERIC) > 0) {
+		$data['customer'] = $customer = new Contacts_Customer(Input::request('id', Input::NUMERIC));
 		$data['contact_log'] = Contacts_ContactLog::read($customer->id, Contacts_ContactLog::CUSTOMER);
 		$data['transactions'] = '<pre>' . print_r($customer->getTransactions(), true) . '</pre>';
-		$_SESSION['wa_global_customer_id'] = $customer->id;
+		$_SESSION['global_customer_id'] = $customer->id;
 	} else {
 		$data['customer'] = $customer = new Contacts_Customer();
 	}
@@ -280,4 +281,4 @@
 		/** @noinspection PhpUndefinedMethodInspection */
 	}
 	HTML::_div();
-	end_page(true, true);
+	end_page(false, true);

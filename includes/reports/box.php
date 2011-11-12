@@ -185,7 +185,7 @@
 				}
 				$st = "<input type='text' name='$name' value='$date'>";
 				if (Config::get('ui_forms_datepicker')) {
-					$st .= "<a href=\"javascript:date_picker(document.forms[0].$name);\">	<img src='/themes/default/images/cal.gif' width='16' height='16' border='0' alt='" . _('Click Here to Pick up the date') . "'></a>\n";
+				DatePicker::add($name);
 				}
 				return $st;
 				break;

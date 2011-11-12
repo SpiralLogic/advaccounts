@@ -59,14 +59,22 @@ function allocate_none(doc) {
 var allocations = {
 	'.amount':function (e) {
 		e.onblur = function () {
-
-
 			blur_alloc(this);
 		};
 		e.onfocus = function () {
 			focus_alloc(this);
 		};
-	}
+	},
+	'.allocateAll':function (e) {
+		e.onclick = function () {
+			allocate_all(this.name.substr(5));
+		}
+	},
+	'.allocateNone':function (e) {
+			e.onclick = function () {
+				allocate_none(this.name.substr(5));
+			}
+		}
 }
 
 Behaviour.register(allocations);

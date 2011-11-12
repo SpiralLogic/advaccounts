@@ -21,7 +21,6 @@
 			} else {
 				JS::onload($js);
 			}
-
 			self::$_count++;
 		}
 	}

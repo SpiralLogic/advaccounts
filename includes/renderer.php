@@ -45,7 +45,7 @@
 				echo "  <li><a href='" . PATH_TO_ROOT . "/system/display_prefs.php?'>" . _("Preferences") . "</a></li>\n";
 				echo "  <li><a href='" . PATH_TO_ROOT . "/system/change_current_user_password.php?selected_id=" . User::get()->username . "'>" . _("Change password") . "</a></li>\n";
 				if (Config::get('help_baseurl') != null) {
-					echo "  <li><a target = '_blank' onclick=" . '"' . "javascript:openWindow(this.href,this.target); return false;" . '" ' . "href='" . Page::help_url() . "'>" . _("Help") . "</a></li>";
+					echo "  <li><a target = '_blank' class='.openWindow' href='" . Page::help_url() . "'>" . _("Help") . "</a></li>";
 				}
 				echo "  <li><a href='" . PATH_TO_ROOT . "/access/logout.php?'>" . _("Logout") . "</a></li>";
 				echo "</ul>\n";

@@ -15,6 +15,5 @@ $(function($)
 			  return '+-*/'.indexOf(ch) > -1 && !(ch == '-' && (value == '' || value == '0.00'));
 		  }
 
-	  });
-
+	  })
   });

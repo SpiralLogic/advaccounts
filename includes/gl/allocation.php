@@ -251,11 +251,11 @@
 					$un_allocated = round($alloc_item->amount - $alloc_item->amount_allocated, 6);
 					amount_cell($un_allocated, false, '', 'maxval' . $counter);
 					label_cell(
-						"<a href='javascript:' name=Alloc$counter onclick='allocate_all(this.name.substr(5));return true;'>"
+						"<a href='#' name=Alloc$counter class='button allocateAll'>"
 						 . _("All") . "</a>"
 					);
 					label_cell(
-						"<a href='javascript:' name=DeAll$counter onclick='allocate_none(this.name.substr(5));return true;'>"
+						"<a href='#' name=DeAll$counter class='button allocateNone'>"
 						 . _("None") . "</a>" . hidden(
 							"un_allocated" . $counter,
 							Num::price_format($un_allocated), false

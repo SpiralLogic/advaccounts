@@ -816,13 +816,13 @@
 
 	function customer_credit_row($customer, $credit, $parms = '')
 	{
-		label_row(_("Current Credit:"), "<a target='_blank' " . ($credit < 0 ? 'class="redfg"' : '') . "href='/sales/inquiry/customer_inquiry.php?frame=1&customer_id=" . $customer . "'" . " onclick=\"javascript:openWindow(this.href,this.target); return false;\" >" . Num::price_format($credit) . "</a>",
+		label_row(_("Current Credit:"), "<a target='_blank' " . ($credit < 0 ? 'class="redfg openWindow"' : '') . "href='/sales/inquiry/customer_inquiry.php?frame=1&customer_id=" . $customer . "'" . " >" . Num::price_format($credit) . "</a>",
 							$parms);
 	}
 
 	function supplier_credit_row($supplier, $credit, $parms = '')
 	{
-		label_row(_("Current Credit:"), "<a target='_blank' " . ($credit < 0 ? 'class="redfg"' : '') . "href='/purchases/inquiry/supplier_inquiry.php?supplier_id=" . $supplier . "'" . " onclick=\"javascript:openWindow(this.href,this.target); return false;\" >" . Num::price_format($credit) . "</a>",
+		label_row(_("Current Credit:"), "<a target='_blank' " . ($credit < 0 ? 'class="redfg openWindow"' : '') . "href='/purchases/inquiry/supplier_inquiry.php?supplier_id=" . $supplier . "' >" . Num::price_format($credit) . "</a>",
 							$parms);
 	}
 
@@ -830,7 +830,7 @@
 	{
 		$to = Dates::add_days(Dates::Today(), 1);
 		$bal = get_balance_before_for_bank_account($bank_acc, $to);
-		label_row(_("Bank Balance:"), "<a target='_blank' " . ($bal < 0 ? 'class="redfg"' : '') . "href='/gl/inquiry/bank_inquiry.php?bank_account=" . $bank_acc . "'" . " onclick=\"javascript:openWindow(this.href,this.target); return false;\" >&nbsp;" . Num::price_format($bal) . "</a>", $parms);
+		label_row(_("Bank Balance:"), "<a target='_blank' " . ($bal < 0 ? 'class="redfg openWindow"' : '') . "href='/gl/inquiry/bank_inquiry.php?bank_account=" . $bank_acc . "'" . " >&nbsp;" . Num::price_format($bal) . "</a>", $parms);
 	}
 
 ?>
