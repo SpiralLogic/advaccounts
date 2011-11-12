@@ -83,7 +83,7 @@
 		if (!isset($_POST["account"])) {
 			$_POST["account"] = null;
 		}
-		$act_name = $_POST["account"] ? get_gl_account_name($_POST["account"]) : "";
+		$act_name = $_POST["account"] ? GL_Account::get_name($_POST["account"]) : "";
 		$dim = DB_Company::get_pref('use_dimension');
 		/*Now get the transactions  */
 		if (!isset($_POST['Dimension'])) {
@@ -92,7 +92,7 @@
 		if (!isset($_POST['Dimension2'])) {
 			$_POST['Dimension2'] = 0;
 		}
-		$result = get_gl_transactions(
+		$result = GL_Trans::get(
 			$_POST['TransFromDate'], $_POST['TransToDate'], -1,
 			$_POST["account"], $_POST['Dimension'], $_POST['Dimension2'], null,
 			input_num('amount_min'), input_num('amount_max')
@@ -127,7 +127,7 @@
 		}
 		$th = array_merge($first_cols, $account_col, $dim_cols, $remaining_cols);
 		table_header($th);
-		if ($_POST["account"] != null && is_account_balancesheet($_POST["account"])) {
+		if ($_POST["account"] != null && GL_Account::is_balancesheet($_POST["account"])) {
 			$begin = "";
 		} else {
 			$begin = Dates::begin_fiscalyear();
@@ -138,7 +138,7 @@
 		}
 		$bfw = 0;
 		if ($show_balances) {
-			$bfw = get_gl_balance_from_to(
+			$bfw = GL_Trans::get_balance_from_to(
 				$begin, $_POST['TransFromDate'], $_POST["account"], $_POST['Dimension'],
 				$_POST['Dimension2']
 			);
@@ -161,7 +161,7 @@
 			label_cell(ui_view::get_gl_view_str($myrow["type"], $myrow["type_no"], $myrow["type_no"], true));
 			label_cell($trandate);
 			if ($_POST["account"] == null) {
-				label_cell($myrow["account"] . ' ' . get_gl_account_name($myrow["account"]));
+				label_cell($myrow["account"] . ' ' . GL_Account::get_name($myrow["account"]));
 			}
 			if ($dim >= 1) {
 				label_cell(get_dimension_string($myrow['dimension_id'], true));

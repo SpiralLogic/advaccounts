@@ -92,14 +92,14 @@
 			 = "UPDATE bank_trans SET amount=0
 		WHERE type=" . DB::escape($type) . " AND trans_no=" . DB::escape($type_no);
 			DB::query($sql, "could not void bank transactions for type=$type and trans_no=$type_no");
-			void_gl_trans($type, $type_no, true);
+			GL_Trans::void($type, $type_no, true);
 			// in case it's a customer trans - probably better to check first
 			void_cust_allocations($type, $type_no);
 			Sales_Trans::void($type, $type_no);
 			// in case it's a supplier trans - probably better to check first
 			void_supp_allocations($type, $type_no);
 			void_supp_trans($type, $type_no);
-			void_trans_tax_details($type, $type_no);
+			GL_Trans::void_tax_details($type, $type_no);
 			if (!$nested) {
 				DB::commit_transaction();
 			}

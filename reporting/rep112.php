@@ -94,7 +94,7 @@
 				if (!$myrow) {
 					continue;
 				}
-				$baccount = get_default_bank_account($myrow['curr_code']);
+				$baccount = GL_BankAccount::get_default($myrow['curr_code']);
 				$params['bankaccount'] = $baccount['id'];
 				$rep->title = _('RECEIPT');
 				$rep->Header2($myrow, null, $myrow, $baccount, ST_CUSTPAYMENT);

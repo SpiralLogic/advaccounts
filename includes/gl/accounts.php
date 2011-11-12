@@ -9,7 +9,9 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	function add_gl_account($account_code, $account_name, $account_type, $account_code2) {
+class GL_Account {
+
+	function add($account_code, $account_name, $account_type, $account_code2) {
 		$sql = "INSERT INTO chart_master (account_code, account_code2, account_name, account_type)
 		VALUES (" . DB::escape($account_code) . ", " . DB::escape($account_code2) . ", "
 		 . DB::escape($account_name) . ", " . DB::escape($account_type) . ")";
@@ -17,7 +19,7 @@
 		return DB::query($sql);
 	}
 
-	function update_gl_account($account_code, $account_name, $account_type, $account_code2) {
+	function update($account_code, $account_name, $account_type, $account_code2) {
 		$sql = "UPDATE chart_master SET account_name=" . DB::escape($account_name)
 		 . ",account_type=" . DB::escape($account_type) . ", account_code2=" . DB::escape($account_code2)
 		 . " WHERE account_code = " . DB::escape($account_code);
@@ -71,7 +73,7 @@
 
 	//---------------------------------------------------------------------------------------------
 
-	function get_sql_for_bank_account_reconcile($bank_account, $date) {
+	function get_sql_for_reconcile($bank_account, $date) {
 		$sql = "SELECT	type, trans_no, ref, trans_date,
 				amount,	person_id, person_type_id, reconciled, id
 		FROM bank_trans
@@ -82,7 +84,7 @@
 		return $sql;
 	}
 
-	function reset_sql_for_bank_account_reconcile($bank_account, $date) {
+	function reset_sql_for_reconcile($bank_account, $date) {
 		$sql = "UPDATE	reconciled
 		FROM bank_trans
 		WHERE bank_trans.bank_act = " . DB::escape($bank_account) . "
@@ -93,13 +95,13 @@
 
 	//---------------------------------------------------------------------------------------------
 
-	function delete_gl_account($code) {
+	function delete($code) {
 		$sql = "DELETE FROM chart_master WHERE account_code=" . DB::escape($code);
 
 		DB::query($sql, "could not delete gl account");
 	}
 
-	function get_gl_accounts($from = null, $to = null, $type = null) {
+	function get_all($from = null, $to = null, $type = null) {
 		$sql = "SELECT chart_master.*,chart_types.name AS AccountTypeName
 		FROM chart_master,chart_types
 		WHERE chart_master.account_type=chart_types.id";
@@ -114,14 +116,14 @@
 		return DB::query($sql, "could not get gl accounts");
 	}
 
-	function get_gl_account($code) {
+	function get($code) {
 		$sql = "SELECT * FROM chart_master WHERE account_code=" . DB::escape($code);
 
 		$result = DB::query($sql, "could not get gl account");
 		return DB::fetch($result);
 	}
 
-	function is_account_balancesheet($code) {
+	function is_balancesheet($code) {
 		$sql = "SELECT chart_class.ctype FROM chart_class, "
 		 . "chart_types, chart_master
 		WHERE chart_master.account_type=chart_types.id AND
@@ -133,7 +135,7 @@
 		return $row[0] > 0 && $row[0] < CL_INCOME;
 	}
 
-	function get_gl_account_name($code) {
+	function get_name($code) {
 		$sql = "SELECT account_name from chart_master WHERE account_code=" . DB::escape($code);
 
 		$result = DB::query($sql, "could not retreive the account name for $code");
@@ -146,4 +148,4 @@
 		Errors::show_db_error("could not retreive the account name for $code", $sql, true);
 	}
 
-?>
+}

@@ -66,7 +66,7 @@
 	//--------------------------------------------------------------------------------------------------
 	if (isset($_POST['process']) && can_process() == true) {
 		DB::begin_transaction();
-		add_gl_trans_std_cost(
+		GL_Trans::add_std_cost(
 			ST_WORKORDER, $_POST['selected_id'], $_POST['date_'], $_POST['cr_acc'],
 			0, 0, $wo_cost_types[$_POST['PaymentType']], -input_num('costs'), PT_WORKORDER,
 			$_POST['PaymentType']
@@ -80,7 +80,7 @@
 				"Cannot insert a destination bank transaction"
 			);
 		}
-		add_gl_trans_std_cost(
+		GL_Trans::add_std_cost(
 			ST_WORKORDER, $_POST['selected_id'], $_POST['date_'], $_POST['db_acc'],
 			$_POST['dim1'], $_POST['dim2'],
 			$wo_cost_types[$_POST['PaymentType']], input_num('costs'), PT_WORKORDER,

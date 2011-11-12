@@ -6,7 +6,7 @@
 	 * Time: 5:46 AM
 	 *
 	 */
-	Class DB_Insert extends DB_Query
+	Class DB_Query_Insert extends DB_Query
 	{
 		protected $table;
 		protected $values = array();

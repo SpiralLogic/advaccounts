@@ -70,9 +70,9 @@
 		}
 		else {
 			DB_Comments::delete(ST_SALESINVOICE, $invoice_no);
-			void_gl_trans(ST_SALESINVOICE, $invoice_no, true);
+			GL_Trans::void(ST_SALESINVOICE, $invoice_no, true);
 			void_cust_allocations(ST_SALESINVOICE, $invoice_no); // ?
-			void_trans_tax_details(ST_SALESINVOICE, $invoice_no);
+			GL_Trans::void_tax_details(ST_SALESINVOICE, $invoice_no);
 		}
 		$total = 0;
 		foreach ($invoice->line_items as $line_no => $invoice_line) {
@@ -138,7 +138,7 @@
 		foreach ($taxes as $taxitem) {
 			if ($taxitem['Net'] != 0) {
 				$ex_rate = Banking::get_exchange_rate_from_home_currency(Banking::get_customer_currency($invoice->customer_id), $date_);
-				add_trans_tax_details(ST_SALESINVOICE, $invoice_no, $taxitem['tax_type_id'],
+				GL_Trans::add_tax_details(ST_SALESINVOICE, $invoice_no, $taxitem['tax_type_id'],
 															$taxitem['rate'], $invoice->tax_included, $taxitem['Value'],
 															$taxitem['Net'], $ex_rate, $date_, $invoice->reference);
 				$total += add_gl_trans_customer(ST_SALESINVOICE, $invoice_no, $date_, $taxitem['sales_gl_code'], 0, 0,
@@ -147,7 +147,7 @@
 			}
 		}
 		/*Post a balance post if $total != 0 */
-		add_gl_balance(ST_SALESINVOICE, $invoice_no, $date_, -$total, PT_CUSTOMER, $invoice->customer_id);
+		GL_Trans::add_balance(ST_SALESINVOICE, $invoice_no, $date_, -$total, PT_CUSTOMER, $invoice->customer_id);
 		DB_Comments::add(10, $invoice_no, $date_, $invoice->Comments);
 		if ($trans_no == 0) {
 			Refs::save(ST_SALESINVOICE, $invoice_no, $invoice->reference);
@@ -161,7 +161,7 @@
 	{
 		DB::begin_transaction();
 		Bank_Trans::void($type, $type_no, true);
-		void_gl_trans($type, $type_no, true);
+		GL_Trans::void($type, $type_no, true);
 		// reverse all the changes in parent document(s)
 		$items_result = get_customer_trans_details($type, $type_no);
 		$deliveries = Sales_Trans::get_parent($type, $type_no);
@@ -174,7 +174,7 @@
 		}
 		// clear details after they've been reversed in the sales order
 		void_customer_trans_details($type, $type_no);
-		void_trans_tax_details($type, $type_no);
+		GL_Trans::void_tax_details($type, $type_no);
 		void_cust_allocations($type, $type_no);
 		// do this last because other voidings can depend on it - especially voiding
 		// DO NOT MOVE THIS ABOVE VOIDING or we can end up with trans with alloc < 0

@@ -36,10 +36,10 @@
 			$new_cost = $material_cost + $labour_cost + $overhead_cost;
 			$value_of_change = $qoh * ($new_cost - $last_cost);
 			$memo_ = "Cost was " . $last_cost . " changed to " . $new_cost . " x quantity on hand of $qoh";
-			add_gl_trans_std_cost(ST_COSTUPDATE, $update_no, $date_, $stock_gl_code["adjustment_account"],
+			GL_Trans::add_std_cost(ST_COSTUPDATE, $update_no, $date_, $stock_gl_code["adjustment_account"],
 														$stock_gl_code["dimension_id"],
 														$stock_gl_code["dimension2_id"], $memo_, (-$value_of_change));
-			add_gl_trans_std_cost(ST_COSTUPDATE, $update_no, $date_, $stock_gl_code["inventory_account"], 0, 0, $memo_,
+			GL_Trans::add_std_cost(ST_COSTUPDATE, $update_no, $date_, $stock_gl_code["inventory_account"], 0, 0, $memo_,
 														$value_of_change);
 		}
 		DB_AuditTrail::add(ST_COSTUPDATE, $update_no, $date_);

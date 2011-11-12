@@ -103,7 +103,7 @@
 	//----------------------------------------------------------------------------------------
 	function handle_add_deposit()
 	{
-		$trans_no = add_bank_transfer($_POST['FromBankAccount'], $_POST['ToBankAccount'],
+		$trans_no = GL_Bank::add_bank_transfer($_POST['FromBankAccount'], $_POST['ToBankAccount'],
 			$_POST['DatePaid'], input_num('amount'), $_POST['ref'],
 			$_POST['memo_'], input_num('charge'));
 		meta_forward($_SERVER['PHP_SELF'], "AddedID = $trans_no");

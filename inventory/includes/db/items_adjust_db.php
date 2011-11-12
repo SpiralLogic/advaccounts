@@ -31,7 +31,7 @@
 	//-------------------------------------------------------------------------------------------------------------
 	function void_stock_adjustment($type_no)
 	{
-		void_gl_trans(ST_INVADJUST, $type_no);
+		GL_Trans::void(ST_INVADJUST, $type_no);
 		void_stock_move(ST_INVADJUST, $type_no);
 	}
 
@@ -58,10 +58,10 @@
 									 $date_, $reference, $quantity, $standard_cost, $type);
 		if ($standard_cost > 0) {
 			$stock_gl_codes = Item::get_gl_code($stock_id);
-			add_gl_trans_std_cost(ST_INVADJUST, $adj_id, $date_,
+			GL_Trans::add_std_cost(ST_INVADJUST, $adj_id, $date_,
 														$stock_gl_codes['adjustment_account'], $stock_gl_codes['dimension_id'],
 														$stock_gl_codes['dimension2_id'], $memo_, ($standard_cost * -($quantity)));
-			add_gl_trans_std_cost(ST_INVADJUST, $adj_id, $date_,
+			GL_Trans::add_std_cost(ST_INVADJUST, $adj_id, $date_,
 														$stock_gl_codes['inventory_account'], 0, 0, $memo_, ($standard_cost * $quantity));
 		}
 	}

@@ -329,7 +329,7 @@
 		}
 		DB::begin_transaction();
 		Bank_Trans::void(ST_SUPPRECEIVE, $grn_batch, true);
-		void_gl_trans(ST_SUPPRECEIVE, $grn_batch, true);
+		GL_Trans::void(ST_SUPPRECEIVE, $grn_batch, true);
 		// clear the quantities of the grn items in the POs and invoices
 		$result = get_grn_items($grn_batch);
 		if (DB::num_rows($result) > 0) {

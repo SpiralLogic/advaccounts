@@ -105,7 +105,7 @@
 		);
 	}
 	label_row(_("Shipping"), $display_freight, "colspan=6 align=right", "nowrap align=right");
-	$tax_items = get_trans_tax_details(ST_CUSTCREDIT, $trans_id);
+	$tax_items = GL_Trans::get_tax_details(ST_CUSTCREDIT, $trans_id);
 	Display::customer_trans_tax_details($tax_items, 6);
 	label_row(
 		"<font color=red>" . _("TOTAL CREDIT") . "</font",

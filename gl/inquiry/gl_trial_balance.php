@@ -54,7 +54,7 @@
         </tr>";
 		echo $tableheader;
 		$k = 0;
-		$accounts = get_gl_accounts();
+		$accounts = GL_Account::get_all();
 		$pdeb     = $pcre = $cdeb = $ccre = $tdeb = $tcre = $pbal = $cbal = $tbal = 0;
 		$begin    = Dates::begin_fiscalyear();
 		if (Dates::date1_greater_date2($begin, $_POST['TransFromDate'])) {
@@ -63,9 +63,9 @@
 		$begin = Dates::add_days($begin, -1);
 		while ($account = DB::fetch($accounts))
 		{
-			$prev = get_balance($account["account_code"], 0, 0, $begin, $_POST['TransFromDate'], false, false);
-			$curr = get_balance($account["account_code"], 0, 0, $_POST['TransFromDate'], $_POST['TransToDate'], true, true);
-			$tot  = get_balance($account["account_code"], 0, 0, $begin, $_POST['TransToDate'], false, true);
+			$prev = GL_Trans::get_balance($account["account_code"], 0, 0, $begin, $_POST['TransFromDate'], false, false);
+			$curr = GL_Trans::get_balance($account["account_code"], 0, 0, $_POST['TransFromDate'], $_POST['TransToDate'], true, true);
+			$tot  = GL_Trans::get_balance($account["account_code"], 0, 0, $begin, $_POST['TransToDate'], false, true);
 			if (check_value("NoZero") && !$prev['balance'] && !$curr['balance'] && !$tot['balance']) {
 				continue;
 			}
@@ -98,9 +98,9 @@
 			$tbal += $tot['balance'];
 			end_row();
 		}
-		//$prev = get_balance(null, $begin, $_POST['TransFromDate'], false, false);
-		//$curr = get_balance(null, $_POST['TransFromDate'], $_POST['TransToDate'], true, true);
-		//$tot = get_balance(null, $begin, $_POST['TransToDate'], false, true);
+		//$prev = GL_Trans::get_balance(null, $begin, $_POST['TransFromDate'], false, false);
+		//$curr = GL_Trans::get_balance(null, $_POST['TransFromDate'], $_POST['TransToDate'], true, true);
+		//$tot = GL_Trans::get_balance(null, $begin, $_POST['TransToDate'], false, true);
 		if (!check_value('Balance')) {
 			start_row("class='inquirybg' style='font-weight:bold'");
 			label_cell(_("Total") . " - " . $_POST['TransToDate'], "colspan=2");

@@ -43,7 +43,7 @@
 		if ($err_msg == "") {
 			$err_msg = "The customer GL transaction could not be inserted";
 		}
-		return add_gl_trans($type, $type_no, $date_, $account, $dimension, $dimension2, "", $amount,
+		return GL_Trans::add($type, $type_no, $date_, $account, $dimension, $dimension2, "", $amount,
 			Banking::get_customer_currency($customer_id),
 			PT_CUSTOMER, $customer_id, $err_msg, $rate);
 	}

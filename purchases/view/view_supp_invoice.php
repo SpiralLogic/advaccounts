@@ -47,7 +47,7 @@
 	$display_sub_tot = Num::format($total_gl + $total_grn, User::price_dec());
 	start_table("width=95%  " . Config::get('tables_style'));
 	label_row(_("Sub Total"), $display_sub_tot, "align=right", "nowrap align=right width=15%");
-	$tax_items = get_trans_tax_details(ST_SUPPINVOICE, $trans_no);
+	$tax_items = GL_Trans::get_tax_details(ST_SUPPINVOICE, $trans_no);
 	$tax_total = Display::supp_trans_tax_details($tax_items, 1, $supp_trans->ov_gst);
 	$display_total = Num::format($supp_trans->ov_amount + $supp_trans->ov_gst, User::price_dec());
 	label_row(_("TOTAL INVOICE"), $display_total, "colspan=1 align=right", "nowrap align=right");

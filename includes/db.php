@@ -127,19 +127,19 @@
 
 		public static function select() {
 			$columns = func_get_args();
-			return new DB_Select($columns, static::_get());
+			return new DB_Query_Select($columns, static::_get());
 		}
 
 		public static function update($into) {
-			return new DB_Update($into, static::_get());
+			return new DB_Query_Update($into, static::_get());
 		}
 
 		public static function insert($into) {
-			return new DB_Insert($into, static::_get());
+			return new DB_Query_Insert($into, static::_get());
 		}
 
 		public static function delete($into) {
-			return new DB_Delete($into, static::_get());
+			return new DB_Query_Delete($into, static::_get());
 		}
 
 		public static function fetch($result = null) {

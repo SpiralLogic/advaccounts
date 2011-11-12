@@ -36,11 +36,11 @@
 	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 		if (can_process()) {
 			if ($selected_id != -1) {
-				if (update_account_class($selected_id, $_POST['name'], $_POST['ctype'])) {
+				if (GL_AccountClass::update($selected_id, $_POST['name'], $_POST['ctype'])) {
 					Errors::notice(_('Selected account class settings has been updated'));
 				}
 			} else {
-				if (add_account_class($_POST['id'], $_POST['name'], $_POST['ctype'])) {
+				if (GL_AccountClass::add($_POST['id'], $_POST['name'], $_POST['ctype'])) {
 					Errors::notice(_('New account class has been added'));
 					$Mode = 'RESET';
 				}
@@ -68,7 +68,7 @@
 	//-----------------------------------------------------------------------------------
 	if ($Mode == 'Delete') {
 		if (can_delete($selected_id)) {
-			delete_account_class($selected_id);
+			GL_AccountClass::delete($selected_id);
 			Errors::notice(_('Selected account class has been deleted'));
 		}
 		$Mode = 'RESET';
@@ -79,7 +79,7 @@
 		$_POST['id'] = $_POST['name'] = $_POST['ctype'] = '';
 	}
 	//-----------------------------------------------------------------------------------
-	$result = get_account_classes(check_value('show_inactive'));
+	$result = GL_AccountClass::get_all(check_value('show_inactive'));
 	start_form();
 	start_table(Config::get('tables_style'));
 	$th = array(_("Class ID"), _("Class Name"), _("Class Type"), "", "");
@@ -112,7 +112,7 @@
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {
 			//editing an existing status code
-			$myrow = get_account_class($selected_id);
+			$myrow = GL_AccountClass::get($selected_id);
 			$_POST['id'] = $myrow["cid"];
 			$_POST['name'] = $myrow["class_name"];
 			if (Config::get('accounts_gl_oldconvertstyle') == 1) {

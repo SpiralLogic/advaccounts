@@ -88,7 +88,7 @@
 		}
 		if (isset($_POST['charge']) && input_num('charge') > 0) {
 			$charge_acct = DB_Company::get_pref('bank_charge_act');
-			if (get_gl_account($charge_acct) == false) {
+			if (GL_Account::get($charge_acct) == false) {
 				Errors::error(_("The Bank Charge Account has not been set in System and General GL Setup."));
 				JS::set_focus('charge');
 				return false;

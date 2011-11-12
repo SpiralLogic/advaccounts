@@ -122,7 +122,7 @@
 		"nowrap align=right width=15%"
 	);
 	label_row(_("Shipping"), $display_freight, "colspan=6 align=right", "nowrap align=right");
-	$tax_items = get_trans_tax_details(ST_CUSTDELIVERY, $trans_id);
+	$tax_items = GL_Trans::get_tax_details(ST_CUSTDELIVERY, $trans_id);
 	Display::customer_trans_tax_details($tax_items, 6);
 	$display_total = Num::price_format($myrow["ov_freight"] + $myrow["ov_amount"] + $myrow["ov_freight_tax"] + $myrow["ov_gst"]);
 	label_row(

@@ -92,7 +92,7 @@
 		}
 		if (isset($_POST['charge']) && input_num('charge') > 0) {
 			$charge_acct = DB_Company::get_pref('bank_charge_act');
-			if (get_gl_account($charge_acct) == false) {
+			if (GL_Account::get($charge_acct) == false) {
 				Errors::error(_("The Bank Charge Account has not been set in System and General GL Setup."));
 				JS::set_focus('charge');
 				return false;
@@ -196,7 +196,7 @@ var_dump($_POST);
 		$display_discount_percent = Num::percent_format($_POST['pymt_discount'] * 100) . "%";
 		table_section(2);
 		if (!list_updated('bank_account')) {
-			$_POST['bank_account'] = get_default_customer_bank_account($_POST['customer_id']);
+			$_POST['bank_account'] = GL_BankAccount::get_customer_default($_POST['customer_id']);
 		}
 		bank_accounts_list_row(_("Into Bank Account:"), 'bank_account', null, true);
 		text_row(_("Reference:"), 'ref', null, 20, 40);

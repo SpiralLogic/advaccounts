@@ -6,7 +6,7 @@
 	 * Time: 12:24 AM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	abstract class DB_Query extends DB_Where
+	abstract class DB_Query extends DB_Query_Where
 	{
 		protected static $query = null;
 		protected $compiled_query = false;

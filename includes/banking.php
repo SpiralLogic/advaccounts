@@ -174,12 +174,12 @@
 				$exc_var_act = DB_Company::get_pref('exchange_diff_act');
 				if (Dates::date1_greater_date2($date, $pyt_date)) {
 					$memo = $systypes_array[$pyt_type] . " " . $pyt_no;
-					add_gl_trans($type, $trans_no, $date, $ar_ap_act, 0, 0, $memo, -$diff, null, $person_type, $person_id);
-					add_gl_trans($type, $trans_no, $date, $exc_var_act, 0, 0, $memo, $diff, null, $person_type, $person_id);
+					GL_Trans::add($type, $trans_no, $date, $ar_ap_act, 0, 0, $memo, -$diff, null, $person_type, $person_id);
+					GL_Trans::add($type, $trans_no, $date, $exc_var_act, 0, 0, $memo, $diff, null, $person_type, $person_id);
 				} else {
 					$memo = $systypes_array[$type] . " " . $trans_no;
-					add_gl_trans($pyt_type, $pyt_no, $pyt_date, $ar_ap_act, 0, 0, $memo, -$diff, null, $person_type, $person_id);
-					add_gl_trans($pyt_type, $pyt_no, $pyt_date, $exc_var_act, 0, 0, $memo, $diff, null, $person_type, $person_id);
+					GL_Trans::add($pyt_type, $pyt_no, $pyt_date, $ar_ap_act, 0, 0, $memo, -$diff, null, $person_type, $person_id);
+					GL_Trans::add($pyt_type, $pyt_no, $pyt_date, $exc_var_act, 0, 0, $memo, $diff, null, $person_type, $person_id);
 				}
 			}
 		}
@@ -229,7 +229,7 @@
 			case PT_MISC :
 				return $person_id;
 			case PT_QUICKENTRY :
-				$qe = get_quick_entry($person_id);
+				$qe = GL_QuickEntry::get($person_id);
 				return ($full ? $payment_person_types[$type] . " " : "") . $qe["description"];
 			case PT_WORKORDER :
 				global $wo_cost_types;

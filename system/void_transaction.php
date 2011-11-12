@@ -23,7 +23,7 @@
 		switch ($type)
 		{
 		case ST_JOURNAL : // it's a journal entry
-			if (!exists_gl_trans($type, $type_no)) {
+			if (!GL_Trans::exists($type, $type_no)) {
 				return false;
 			}
 			break;

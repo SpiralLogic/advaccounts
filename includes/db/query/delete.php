@@ -7,14 +7,14 @@
 	 * To change this template use File | Settings | File Templates.
 	 */
 
-	class DB_Delete extends DB_Query {
+	class DB_Query_Delete extends DB_Query {
 
 		protected $table;
 
-		public function __construct($table = false) {
+		public function __construct($table = false,$db) {
 			$this->table = $table;
 			$this->type = DB::DELETE;
-			parent::__construct();
+			parent::__construct($db);
 		}
 
 		public function execute() {

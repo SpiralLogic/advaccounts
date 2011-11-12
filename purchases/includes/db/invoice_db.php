@@ -161,7 +161,7 @@
 			if (!$supp_trans->is_invoice) {
 				$entered_gl_code->amount = -$entered_gl_code->amount;
 			}
-			add_gl_tax_details($entered_gl_code->gl_code,
+			GL_Trans::add_gl_tax_details($entered_gl_code->gl_code,
 												 $trans_type, $invoice_id, $entered_gl_code->amount,
 												 $ex_rate, $date_, $supp_trans->supp_reference);
 		}
@@ -213,11 +213,11 @@
 					$deliveries[1] /= $deliveries[0];
 					$amt = ($mat_cost - $deliveries[1]) * $deliveries[0]; // $amt in home currency
 					if ($amt != 0.0) {
-						add_gl_trans($trans_type, $invoice_id, $date_, $stock_gl_code["cogs_account"],
+						GL_Trans::add($trans_type, $invoice_id, $date_, $stock_gl_code["cogs_account"],
 												 $stock_gl_code['dimension_id'], $stock_gl_code['dimension2_id'], _("Cost diff."),
 												 $amt, null, null, null,
 												 "The general ledger transaction could not be added for the price variance of the inventory item");
-						add_gl_trans($trans_type, $invoice_id, $date_, $iv_act,
+						GL_Trans::add($trans_type, $invoice_id, $date_, $iv_act,
 												 0, 0, _("Cost diff."), -$amt, null, null, null,
 												 "The general ledger transaction could not be added for the price variance of the inventory item");
 					}
@@ -241,7 +241,7 @@
 					$taxitem['Value'] = -$taxitem['Value'];
 				}
 				// here we suppose that tax is never included in price (we are company customer).
-				add_trans_tax_details($trans_type, $invoice_id,
+				GL_Trans::add_tax_details($trans_type, $invoice_id,
 															$taxitem['tax_type_id'], $taxitem['rate'], 0, $taxitem['Value'],
 															$taxitem['Net'], $ex_rate, $date_, $supp_trans->supp_reference);
 				if (!$supp_trans->is_invoice) {
@@ -254,7 +254,7 @@
 			}
 		}
 		/*Post a balance post if $total != 0 */
-		add_gl_balance($trans_type, $invoice_id, $date_, -$total, PT_SUPPLIER, $supp_trans->supplier_id);
+		GL_Trans::add_balance($trans_type, $invoice_id, $date_, -$total, PT_SUPPLIER, $supp_trans->supplier_id);
 		DB_Comments::add($trans_type, $invoice_id, $date_, $supp_trans->Comments);
 		Refs::save($trans_type, $invoice_id, $supp_trans->reference);
 		if ($invoice_no != 0) {
@@ -330,7 +330,7 @@
 							false, 0, 0, $details_row['discount'], $details_row['exp_price']);
 					} else {
 						$supp_trans->add_gl_codes_to_trans(
-							$details_row["gl_code"], get_gl_account_name($details_row["gl_code"]), 0, 0,
+							$details_row["gl_code"], GL_Account::get_name($details_row["gl_code"]), 0, 0,
 							$details_row["FullUnitPrice"], $details_row["memo_"]);
 					}
 				}
@@ -359,7 +359,7 @@
 		DB::begin_transaction();
 		$trans = get_supp_trans($type_no, $type);
 		Bank_Trans::void($type, $type_no, true);
-		void_gl_trans($type, $type_no, true);
+		GL_Trans::void($type, $type_no, true);
 		void_supp_allocations($type, $type_no);
 		void_supp_trans($type, $type_no);
 		$result = get_supp_invoice_items($type, $type_no);
@@ -426,7 +426,7 @@
 			void_stock_move($type, $type_no);
 		}
 		void_supp_invoice_items($type, $type_no);
-		void_trans_tax_details($type, $type_no);
+		GL_Trans::void_tax_details($type, $type_no);
 		DB::commit_transaction();
 	}
 

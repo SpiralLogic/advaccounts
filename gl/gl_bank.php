@@ -117,7 +117,7 @@
 		}
 	}
 	if (isset($_POST['Process'])) {
-		$trans = add_bank_transaction(
+		$trans = GL_Bank::add_bank_transaction(
 			$_SESSION['pay_items']->trans_type, $_POST['bank_account'],
 			$_SESSION['pay_items'], $_POST['date_'],
 			$_POST['PayType'], $_POST['person_id'], get_post('PersonDetailID'),

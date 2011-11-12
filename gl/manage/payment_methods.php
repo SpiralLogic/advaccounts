@@ -25,7 +25,7 @@
 		}
 		if ($input_error != 1) {
 			if ($selected_id != -1) {
-				update_bank_account(
+				GL_BankAccount::update(
 					$selected_id, $_POST['account_code'],
 					$_POST['account_type'], $_POST['bank_account_name'],
 					$_POST['bank_name'], $_POST['bank_account_number'],
@@ -34,7 +34,7 @@
 				);
 				Errors::notice(_('Bank account has been updated'));
 			} else {
-				add_bank_account(
+				GL_BankAccount::add(
 					$_POST['account_code'], $_POST['account_type'],
 					$_POST['bank_account_name'], $_POST['bank_name'],
 					$_POST['bank_account_number'], $_POST['bank_address'],
@@ -66,7 +66,7 @@
 			Errors::error(_("Cannot delete this bank account because POS definitions have been created using this account."));
 		}
 		if (!$cancel_delete) {
-			delete_bank_account($selected_id);
+			GL_BankAccount::delete($selected_id);
 			Errors::notice(_('Selected bank account has been deleted'));
 		} //end if Delete bank account
 		$Mode = 'RESET';
@@ -122,7 +122,7 @@
 	start_table(Config::get('tables_style2'));
 	if ($is_editing) {
 		if ($Mode == 'Edit') {
-			$myrow = get_bank_account($selected_id);
+			$myrow = GL_BankAccount::get($selected_id);
 			$_POST['account_code'] = $myrow["account_code"];
 			$_POST['account_type'] = $myrow["account_type"];
 			$_POST['bank_name'] = $myrow["bank_name"];

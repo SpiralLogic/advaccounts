@@ -175,7 +175,7 @@
 	{
 		global $wo_cost_types;
 		//$result = Bank_Trans::get(null, null, PT_WORKORDER, $woid);
-		$result = get_gl_wo_cost_trans($woid);
+		$result = GL_Trans::get_wo_cost($woid);
 		if (DB::num_rows($result) == 0) {
 			Display::note(_("There are no additional costs for this Order."), 0, 1);
 		} else {

@@ -19,11 +19,11 @@
 		$company_record = DB_Company::get_prefs();
 		$payment_no = Sales_Trans::write(ST_CUSTPAYMENT, $trans_no, $customer_id, $branch_id,
 			$date_, $ref, $amount, $discount, $tax, 0, 0, 0, 0, 0, 0, $date_, 0, $rate);
-		$bank_gl_account = get_bank_gl_account($bank_account);
+		$bank_gl_account = GL_BankAccount::get_gl($bank_account);
 		if ($trans_no != 0) {
 			DB_Comments::delete(ST_CUSTPAYMENT, $trans_no);
 			Bank_Trans::void(ST_CUSTPAYMENT, $trans_no, true);
-			void_gl_trans(ST_CUSTPAYMENT, $trans_no, true);
+			GL_Trans::void(ST_CUSTPAYMENT, $trans_no, true);
 			void_cust_allocations(ST_CUSTPAYMENT, $trans_no, $date_);
 		}
 		$total = 0;
@@ -64,7 +64,7 @@
 			$taxes = Tax_Groups::get_for_item($tax_group);
 		}
 		/*Post a balance post if $total != 0 */
-		add_gl_balance(ST_CUSTPAYMENT, $payment_no, $date_, -$total, PT_CUSTOMER, $customer_id);
+		GL_Trans::add_balance(ST_CUSTPAYMENT, $payment_no, $date_, -$total, PT_CUSTOMER, $customer_id);
 		/*now enter the bank_trans entry */
 		Bank_Trans::add(ST_CUSTPAYMENT, $payment_no, $bank_account, $ref,
 			$date_, $amount - $charge, PT_CUSTOMER, $customer_id,
@@ -80,7 +80,7 @@
 	{
 		DB::begin_transaction();
 		Bank_Trans::void($type, $type_no, true);
-		void_gl_trans($type, $type_no, true);
+		GL_Trans::void($type, $type_no, true);
 		void_cust_allocations($type, $type_no);
 		Sales_Trans::void($type, $type_no);
 		DB::commit_transaction();

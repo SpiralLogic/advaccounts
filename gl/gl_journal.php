@@ -72,7 +72,7 @@
 		$cart = new Item_Cart($type);
 		$cart->order_id = $trans_no;
 		if ($trans_no) {
-			$result = get_gl_trans($type, $trans_no);
+			$result = GL_Trans::get_many($type, $trans_no);
 			if ($result) {
 				while ($row = DB::fetch($result)) {
 					if ($row['amount'] == 0) {
@@ -151,7 +151,7 @@
 		$cart->reference = $_POST['ref'];
 		$cart->memo_ = $_POST['memo_'];
 		$cart->tran_date = $_POST['date_'];
-		$trans_no = write_journal_entries($cart, check_value('Reverse'));
+		$trans_no = GL_Trans::write_journal_entries($cart, check_value('Reverse'));
 		$cart->clear_items();
 		Dates::new_doc_date($_POST['date_']);
 		unset($_SESSION['journal_items']);

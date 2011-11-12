@@ -89,7 +89,7 @@
 		$rep->Font();
 		$rep->Info($params, $cols, $headers, $aligns, $cols2, $headers2, $aligns2);
 		$rep->Header();
-		$accounts = get_gl_accounts();
+		$accounts = GL_Account::get_all();
 		$pdeb = $pcre = $cdeb = $ccre = $tdeb = $tcre = $pbal = $cbal = $tbal = 0;
 		$begin = Dates::begin_fiscalyear();
 		if (Dates::date1_greater_date2($begin, $from)) {
@@ -98,9 +98,9 @@
 		$begin = Dates::add_days($begin, -1);
 		while ($account = DB::fetch($accounts))
 		{
-			$prev = get_balance($account["account_code"], $dimension, $dimension2, $begin, $from, false, false);
-			$curr = get_balance($account["account_code"], $dimension, $dimension2, $from, $to, true, true);
-			$tot = get_balance($account["account_code"], $dimension, $dimension2, $begin, $to, false, true);
+			$prev = GL_Trans::get_balance($account["account_code"], $dimension, $dimension2, $begin, $from, false, false);
+			$curr = GL_Trans::get_balance($account["account_code"], $dimension, $dimension2, $from, $to, true, true);
+			$tot = GL_Trans::get_balance($account["account_code"], $dimension, $dimension2, $begin, $to, false, true);
 			if ($zero == 0 && !$prev['balance'] && !$curr['balance'] && !$tot['balance']) {
 				continue;
 			}
@@ -154,9 +154,9 @@
 		$rep->Line($rep->row);
 		$rep->NewLine();
 		$rep->Font('bold');
-		//$prev = get_balance(null, $dimension, $dimension2, $begin, $from, false, false);
-		//$curr = get_balance(null, $dimension, $dimension2, $from, $to, true, true);
-		//$tot = get_balance(null, $dimension, $dimension2, $begin, $to, false, true);
+		//$prev = GL_Trans::get_balance(null, $dimension, $dimension2, $begin, $from, false, false);
+		//$curr = GL_Trans::get_balance(null, $dimension, $dimension2, $from, $to, true, true);
+		//$tot = GL_Trans::get_balance(null, $dimension, $dimension2, $begin, $to, false, true);
 		if ($balances == 0) {
 			$rep->TextCol(0, 2, _("Total"));
 			$rep->AmountCol(2, 3, $pdeb, $dec);

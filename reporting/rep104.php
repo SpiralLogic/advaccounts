@@ -75,7 +75,7 @@
 		if ($currency == ALL_TEXT) {
 			$currency = $home_curr;
 		}
-		$curr = get_currency($currency);
+		$curr = GL_Currency::get($currency);
 		$curr_sel = $currency . " - " . $curr['currency'];
 		if ($category == ALL_NUMERIC) {
 			$category = 0;

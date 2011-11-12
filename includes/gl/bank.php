@@ -9,6 +9,7 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
+class GL_Bank {
 	function add_exchange_variation($trans_type, $trans_no, $date_, $acc_id, $account,
 																	$currency, $person_type_id = null, $person_id = "")
 	{
@@ -36,7 +37,7 @@
 			$rate = Banking::get_exchange_rate_from_home_currency($row['bank_curr_code'], $date_);
 			$for_amount += Num::round($row['for_amount'] * $rate, User::price_dec());
 		}
-		$amount = get_gl_trans_from_to("", $date_, $account);
+		$amount = GL_Trans::get_from_to("", $date_, $account);
 		$diff = $amount - $for_amount;
 		if ($diff != 0) {
 			if ($trans_type == null) {
@@ -48,9 +49,9 @@
 			if ($person_type_id == null) {
 				$person_type_id = PT_MISC;
 			}
-			add_gl_trans($trans_type, $trans_no, $date_, $account, 0, 0, _("Exchange Variance"),
+			GL_Trans::add($trans_type, $trans_no, $date_, $account, 0, 0, _("Exchange Variance"),
 				-$diff, null, $person_type_id, $person_id);
-			add_gl_trans($trans_type, $trans_no, $date_, DB_Company::get_pref('exchange_diff_act'), 0, 0,
+			GL_Trans::add($trans_type, $trans_no, $date_, DB_Company::get_pref('exchange_diff_act'), 0, 0,
 				_("Exchange Variance"), $diff, null, $person_type_id, $person_id);
 		}
 	}
@@ -62,7 +63,7 @@
 		$result = DB::query($sql, "could not retreive bank accounts");
 		while ($myrow = DB::fetch($result))
 		{
-			add_exchange_variation(ST_JOURNAL, $trans_no, null, $myrow['id'], $myrow['account_code'],
+			GL_Bank::add_exchange_variation(ST_JOURNAL, $trans_no, null, $myrow['id'], $myrow['account_code'],
 				$myrow['currency_code']);
 		}
 	}
@@ -80,34 +81,34 @@
 		$trans_type = ST_BANKTRANSFER;
 		$currency = Banking::get_bank_account_currency($from_account);
 		$trans_no = SysTypes::get_next_trans_no($trans_type);
-		$from_gl_account = get_bank_gl_account($from_account);
-		$to_gl_account = get_bank_gl_account($to_account);
+		$from_gl_account = GL_BankAccount::get_gl($from_account);
+		$to_gl_account = GL_BankAccount::get_gl($to_account);
 		$total = 0;
 		// do the source account postings
-		$total += add_gl_trans($trans_type, $trans_no, $date_, $from_gl_account, 0, 0, "",
+		$total += GL_Trans::add($trans_type, $trans_no, $date_, $from_gl_account, 0, 0, "",
 			-($amount + $charge), $currency);
 		Bank_Trans::add($trans_type, $trans_no, $from_account, $ref,
 			$date_, -($amount + $charge),
 			PT_MISC, "", $currency,
 			"Cannot insert a source bank transaction");
-		add_exchange_variation($trans_type, $trans_no, $date_, $from_account, $from_gl_account,
+		GL_Bank::add_exchange_variation($trans_type, $trans_no, $date_, $from_account, $from_gl_account,
 			$currency, PT_MISC, "");
 		if ($charge != 0) {
 			/* Now Debit bank charge account with charges */
 			$charge_act = DB_Company::get_pref('bank_charge_act');
-			$total += add_gl_trans($trans_type, $trans_no, $date_,
+			$total += GL_Trans::add($trans_type, $trans_no, $date_,
 				$charge_act, 0, 0, "", $charge, $currency);
 		}
 		// do the destination account postings
-		$total += add_gl_trans($trans_type, $trans_no, $date_, $to_gl_account, 0, 0, "",
+		$total += GL_Trans::add($trans_type, $trans_no, $date_, $to_gl_account, 0, 0, "",
 			$amount, $currency);
 		/*Post a balance post if $total != 0 */
-		add_gl_balance($trans_type, $trans_no, $date_, -$total);
+		GL_Trans::add_balance($trans_type, $trans_no, $date_, -$total);
 		Bank_Trans::add($trans_type, $trans_no, $to_account, $ref,
 			$date_, $amount, PT_MISC, "",
 			$currency, "Cannot insert a destination bank transaction");
 		$currency = Banking::get_bank_account_currency($to_account);
-		add_exchange_variation($trans_type, $trans_no, $date_, $to_account, $to_gl_account,
+		GL_Bank::add_exchange_variation($trans_type, $trans_no, $date_, $to_account, $to_gl_account,
 			$currency, PT_MISC, "");
 		DB_Comments::add($trans_type, $trans_no, $date_, $memo_);
 		Refs::save($trans_type, $trans_no, $ref);
@@ -138,7 +139,7 @@
 			DB::begin_transaction();
 		}
 		$currency = Banking::get_bank_account_currency($from_account);
-		$bank_gl_account = get_bank_gl_account($from_account);
+		$bank_gl_account = GL_BankAccount::get_gl($from_account);
 		// the gl items are already inversed/negated for type 2 (deposit)
 		$total_amount = $items->gl_items_total();
 		if ($person_type_id == PT_CUSTOMER) {
@@ -178,7 +179,7 @@
 				Errors::show_db_error("invalid payment entered. Cannot pay to another bank account", "");
 			}
 			// do the destination account postings
-			$total += add_gl_trans($trans_type, $trans_no, $date_, $gl_item->code_id,
+			$total += GL_Trans::add($trans_type, $trans_no, $date_, $gl_item->code_id,
 				$gl_item->dimension_id, $gl_item->dimension2_id, $gl_item->reference,
 				$gl_item->amount, $currency, $person_type_id, $person_id);
 			if ($is_bank_to) {
@@ -187,21 +188,21 @@
 					$person_type_id, $person_id, $currency,
 					"Cannot insert a destination bank transaction");
 				if ($do_exchange_variance) {
-					add_exchange_variation($trans_type, $trans_no, $date_, $is_bank_to, $gl_item->code_id,
+					GL_Bank::add_exchange_variation($trans_type, $trans_no, $date_, $is_bank_to, $gl_item->code_id,
 						$currency, $person_type_id, $person_id);
 				}
 			}
 			// store tax details if the gl account is a tax account
 			$amount = $gl_item->amount;
 			$ex_rate = Banking::get_exchange_rate_from_home_currency($currency, $date_);
-			add_gl_tax_details($gl_item->code_id, $trans_type, $trans_no, -$amount,
+			GL_Trans::add_gl_tax_details($gl_item->code_id, $trans_type, $trans_no, -$amount,
 				$ex_rate, $date_, $memo_);
 		}
 		// do the source account postings
-		add_gl_trans($trans_type, $trans_no, $date_, $bank_gl_account, 0, 0, $memo_,
+		GL_Trans::add($trans_type, $trans_no, $date_, $bank_gl_account, 0, 0, $memo_,
 			-$total, null, $person_type_id, $person_id);
 		if ($do_exchange_variance) {
-			add_exchange_variation($trans_type, $trans_no, $date_, $from_account, $bank_gl_account,
+			GL_Bank::add_exchange_variation($trans_type, $trans_no, $date_, $from_account, $bank_gl_account,
 				$currency, $person_type_id, $person_id);
 		}
 		DB_Comments::add($trans_type, $trans_no, $date_, $memo_);
@@ -214,4 +215,4 @@
 	}
 
 	//----------------------------------------------------------------------------------------
-?>
+}

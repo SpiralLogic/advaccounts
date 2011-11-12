@@ -68,7 +68,7 @@
 		$totals_arr = array();
 		$printtitle = 0; //Flag for printing type name
 		//Get Accounts directly under this group/type
-		$result = get_gl_accounts(null, null, $type);
+		$result = GL_Account::get_all(null, null, $type);
 		while ($account = DB::fetch($result))
 		{
 			$bal = getPeriods($yr, $mo, $account["account_code"], $dimension, $dimension2);
@@ -109,7 +109,7 @@
 			$rep->NewLine();
 		}
 		//Get Account groups/types under this group/type
-		$result = get_account_types(false, false, $type);
+		$result = GL_AccountType::get_all(false, false, $type);
 		while ($accounttype = DB::fetch($result))
 		{
 			//Print Type Title if has sub types and not previously printed
@@ -286,7 +286,7 @@
 		$rep->Info($params, $cols, $headers, $aligns);
 		$rep->Header();
 		$sales = Array(1 => 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-		$classresult = get_account_classes(false, 0);
+		$classresult = GL_AccountClass::get_all(false, 0);
 		while ($class = DB::fetch($classresult))
 		{
 			$ctotal = Array(1 => 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
@@ -297,7 +297,7 @@
 			$rep->Font();
 			$rep->NewLine();
 			//Get Account groups/types under this group/type with no parents
-			$typeresult = get_account_types(false, $class['cid'], -1);
+			$typeresult = GL_AccountType::get_all(false, $class['cid'], -1);
 			while ($accounttype = DB::fetch($typeresult))
 			{
 				$classtotal = display_type(

@@ -45,7 +45,7 @@
 	ORDER BY trans_date,bank_trans.id";
 	$result = DB::query($sql, "The transactions for '" . $_POST['bank_account'] . "' could not be retrieved");
 	div_start('trans_tbl');
-	$act = get_bank_account($_POST["bank_account"]);
+	$act = GL_BankAccount::get($_POST["bank_account"]);
 	Display::heading($act['bank_account_name'] . " - " . $act['bank_curr_code']);
 	start_table(Config::get('tables_style'));
 	$th = array(

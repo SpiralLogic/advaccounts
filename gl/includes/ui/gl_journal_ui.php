@@ -13,7 +13,7 @@
 	function display_order_header($order)
 	{
 		$Ajax = Ajax::instance();
-		$qes = has_quick_entries(QE_JOURNAL);
+		$qes = GL_QuickEntry::has(QE_JOURNAL);
 		$new = $Order->order_id == 0;
 		start_outer_table(Config::get('tables_style2') . " width=90%");
 		table_section(1);
@@ -33,7 +33,7 @@
 			table_section(3, "50%");
 			start_row();
 			quick_entries_list_cells(_("Quick Entry") . ":", 'person_id', null, QE_JOURNAL, true);
-			$qid = get_quick_entry(get_post('person_id'));
+			$qid = GL_QuickEntry::get(get_post('person_id'));
 			if (list_updated('person_id')) {
 				unset($_POST['totamount']); // enable default
 				$Ajax->activate('totamount');

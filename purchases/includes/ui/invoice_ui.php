@@ -187,12 +187,12 @@
 		}
 		start_outer_table(Config::get('tables_style') . "  width=90%");
 		if ($mode == 1) {
-			$qes = has_quick_entries(QE_SUPPINV);
+			$qes = GL_QuickEntry::has(QE_SUPPINV);
 			if ($qes !== false) {
 				echo "<div style='float:right;'>";
 				echo _("Quick Entry:") . "&nbsp;";
 				echo quick_entries_list('qid', null, QE_SUPPINV, true);
-				$qid = get_quick_entry(get_post('qid'));
+				$qid = GL_QuickEntry::get(get_post('qid'));
 				if (list_updated('qid')) {
 					unset($_POST['totamount']); // enable default
 					$Ajax->activate('totamount');

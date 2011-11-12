@@ -7,7 +7,7 @@
 	 * To change this template use File | Settings | File Templates.
 	 */
 
-	class DB_Result implements \Countable, \Iterator {
+	class DB_Query_Result implements \Countable, \Iterator {
 
 		public $prepared;
 		protected $current;

@@ -116,10 +116,10 @@
 		$rep->Font();
 		$rep->Info($params, $cols, $headers, $aligns);
 		$rep->Header();
-		$accounts = get_gl_accounts($fromacc, $toacc);
+		$accounts = GL_Account::get_all($fromacc, $toacc);
 		while ($account = DB::fetch($accounts))
 		{
-			if (is_account_balancesheet($account["account_code"])) {
+			if (GL_Account::is_balancesheet($account["account_code"])) {
 				$begin = "";
 			} else {
 				$begin = Dates::begin_fiscalyear();
@@ -128,8 +128,8 @@
 				}
 				$begin = Dates::add_days($begin, -1);
 			}
-			$prev_balance = get_gl_balance_from_to($begin, $from, $account["account_code"], $dimension, $dimension2);
-			$trans = get_gl_transactions($from, $to, -1, $account['account_code'], $dimension, $dimension2);
+			$prev_balance = GL_Trans::get_balance_from_to($begin, $from, $account["account_code"], $dimension, $dimension2);
+			$trans = GL_Trans::get($from, $to, -1, $account['account_code'], $dimension, $dimension2);
 			$rows = DB::num_rows($trans);
 			if ($prev_balance == 0.0 && $rows == 0) {
 				continue;

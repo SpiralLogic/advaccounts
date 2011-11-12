@@ -43,9 +43,9 @@
 			$delivery->trans_no = array($delivery_no => 0);
 		}
 		else {
-			void_gl_trans(ST_CUSTDELIVERY, $delivery_no, true);
+			GL_Trans::void(ST_CUSTDELIVERY, $delivery_no, true);
 			void_stock_move(ST_CUSTDELIVERY, $delivery_no);
-			void_trans_tax_details(ST_CUSTDELIVERY, $delivery_no);
+			GL_Trans::void_tax_details(ST_CUSTDELIVERY, $delivery_no);
 			DB_Comments::delete(ST_CUSTDELIVERY, $delivery_no);
 		}
 		foreach ($delivery->line_items as $line_no => $delivery_line) {
@@ -92,13 +92,13 @@
 						? $customer["dimension2_id"]
 						:
 						$stock_gl_code["dimension2_id"]));
-					add_gl_trans_std_cost(ST_CUSTDELIVERY, $delivery_no,
+					GL_Trans::add_std_cost(ST_CUSTDELIVERY, $delivery_no,
 																$delivery->document_date, $stock_gl_code["cogs_account"], $dim, $dim2, "",
 																$delivery_line->standard_cost * $delivery_line->qty_dispatched,
 																PT_CUSTOMER, $delivery->customer_id,
 																"The cost of sales GL posting could not be inserted");
 					/*now the stock entry*/
-					add_gl_trans_std_cost(ST_CUSTDELIVERY, $delivery_no, $delivery->document_date,
+					GL_Trans::add_std_cost(ST_CUSTDELIVERY, $delivery_no, $delivery->document_date,
 																$stock_gl_code["inventory_account"], 0, 0, "",
 						(-$delivery_line->standard_cost * $delivery_line->qty_dispatched),
 																PT_CUSTOMER, $delivery->customer_id,
@@ -114,7 +114,7 @@
 		foreach ($taxes as $taxitem) {
 			if ($taxitem['Net'] != 0) {
 				$ex_rate = Banking::get_exchange_rate_from_home_currency(Banking::get_customer_currency($delivery->customer_id), $delivery->document_date);
-				add_trans_tax_details(ST_CUSTDELIVERY, $delivery_no, $taxitem['tax_type_id'],
+				GL_Trans::add_tax_details(ST_CUSTDELIVERY, $delivery_no, $taxitem['tax_type_id'],
 															$taxitem['rate'], $delivery->tax_included, $taxitem['Value'],
 															$taxitem['Net'], $ex_rate, $delivery->document_date, $delivery->reference);
 			}
@@ -131,7 +131,7 @@
 	function void_sales_delivery($type, $type_no)
 	{
 		DB::begin_transaction();
-		void_gl_trans($type, $type_no, true);
+		GL_Trans::void($type, $type_no, true);
 		// reverse all the changes in the sales order
 		$items_result = get_customer_trans_details($type, $type_no);
 		$order = Sales_Trans::get_order($type, $type_no);
@@ -144,7 +144,7 @@
 		}
 		// clear details after they've been reversed in the sales order
 		void_customer_trans_details($type, $type_no);
-		void_trans_tax_details($type, $type_no);
+		GL_Trans::void_tax_details($type, $type_no);
 		void_cust_allocations($type, $type_no);
 		// do this last because other voidings can depend on it
 		// DO NOT MOVE THIS ABOVE VOIDING or we can end up with trans with alloc < 0

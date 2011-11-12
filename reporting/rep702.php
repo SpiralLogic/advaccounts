@@ -56,7 +56,7 @@
 		if ($systype == -1) {
 			$systype = null;
 		}
-		$trans = get_gl_transactions($from, $to, -1, null, 0, 0, $systype);
+		$trans = GL_Trans::get($from, $to, -1, null, 0, 0, $systype);
 		$typeno = $type = 0;
 		while ($myrow = DB::fetch($trans))
 		{

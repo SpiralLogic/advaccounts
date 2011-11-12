@@ -50,13 +50,13 @@
 			return false;
 		}
 		if ($selected_id != "") {
-			update_currency(
+			GL_Currency::update(
 				$_POST['Abbreviation'], $_POST['Symbol'], $_POST['CurrencyName'],
 				$_POST['country'], $_POST['hundreds_name'], check_value('auto_update')
 			);
 			Errors::notice(_('Selected currency settings has been updated'));
 		} else {
-			add_currency(
+			GL_Currency::add(
 				$_POST['Abbreviation'], $_POST['Symbol'], $_POST['CurrencyName'],
 				$_POST['country'], $_POST['hundreds_name'], check_value('auto_update')
 			);
@@ -112,7 +112,7 @@
 		global $selected_id, $Mode;
 		if (check_can_delete()) {
 			//only delete if used in neither customer or supplier, comp prefs, bank trans accounts
-			delete_currency($selected_id);
+			GL_Currency::delete($selected_id);
 			Errors::notice(_('Selected currency has been deleted'));
 		}
 		$Mode = 'RESET';
@@ -122,7 +122,7 @@
 	function display_currencies()
 	{
 		$company_currency = Banking::get_company_currency();
-		$result = get_currencies(check_value('show_inactive'));
+		$result = GL_Currency::get_all(check_value('show_inactive'));
 		start_table(Config::get('tables_style'));
 		$th = array(
 			_("Abbreviation"), _("Symbol"), _("Currency Name"),
@@ -171,7 +171,7 @@
 		if ($selected_id != '') {
 			if ($Mode == 'Edit') {
 				//editing an existing currency
-				$myrow = get_currency($selected_id);
+				$myrow = GL_Currency::get($selected_id);
 				$_POST['Abbreviation'] = $myrow["curr_abrev"];
 				$_POST['Symbol'] = $myrow["curr_symbol"];
 				$_POST['CurrencyName'] = $myrow["currency"];

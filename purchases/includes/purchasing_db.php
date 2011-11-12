@@ -26,7 +26,7 @@
 		if ($err_msg == "") {
 			$err_msg = "The supplier GL transaction could not be inserted";
 		}
-		return add_gl_trans($type, $type_no, $date_, $account, $dimension, $dimension2, $memo,
+		return GL_Trans::add($type, $type_no, $date_, $account, $dimension, $dimension2, $memo,
 			$amount, Banking::get_supplier_currency($supplier_id),
 			PT_SUPPLIER, $supplier_id, $err_msg, $rate);
 	}

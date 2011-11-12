@@ -38,11 +38,11 @@
 	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 		if (can_process()) {
 			if ($selected_id != -1) {
-				if (update_account_type($selected_id, $_POST['name'], $_POST['class_id'], $_POST['parent'])) {
+				if (GL_AccountType::update($selected_id, $_POST['name'], $_POST['class_id'], $_POST['parent'])) {
 					Errors::notice(_('Selected account type has been updated'));
 				}
 			} else {
-				if (add_account_type($_POST['id'], $_POST['name'], $_POST['class_id'], $_POST['parent'])) {
+				if (GL_AccountType::add($_POST['id'], $_POST['name'], $_POST['class_id'], $_POST['parent'])) {
 					Errors::notice(_('New account type has been added'));
 					$Mode = 'RESET';
 				}
@@ -80,7 +80,7 @@
 	//-----------------------------------------------------------------------------------
 	if ($Mode == 'Delete') {
 		if (can_delete($selected_id)) {
-			delete_account_type($selected_id);
+			GL_AccountType::delete($selected_id);
 			Errors::notice(_('Selected account group has been deleted'));
 		}
 		$Mode = 'RESET';
@@ -92,7 +92,7 @@
 		unset($_POST['class_id']);
 	}
 	//-----------------------------------------------------------------------------------
-	$result = get_account_types(check_value('show_inactive'));
+	$result = GL_AccountType::get_all(check_value('show_inactive'));
 	start_form();
 	start_table(Config::get('tables_style'));
 	$th = array(_("ID"), _("Name"), _("Subgroup Of"), _("Class Type"), "", "");
@@ -102,11 +102,11 @@
 	while ($myrow = DB::fetch($result))
 	{
 		alt_table_row_color($k);
-		$bs_text = get_account_class_name($myrow["class_id"]);
+		$bs_text = GL_AccountClass::get_name($myrow["class_id"]);
 		if ($myrow["parent"] == ANY_NUMERIC) {
 			$parent_text = "";
 		} else {
-			$parent_text = get_account_type_name($myrow["parent"]);
+			$parent_text = GL_AccountType::get_name($myrow["parent"]);
 		}
 		label_cell($myrow["id"]);
 		label_cell($myrow["name"]);
@@ -124,7 +124,7 @@
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {
 			//editing an existing status code
-			$myrow = get_account_type($selected_id);
+			$myrow = GL_AccountType::get($selected_id);
 			$_POST['id'] = $myrow["id"];
 			$_POST['name'] = $myrow["name"];
 			$_POST['parent'] = $myrow["parent"];

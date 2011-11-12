@@ -66,7 +66,7 @@
 			break;
 		case PT_QUICKENTRY :
 			quick_entries_list_row(_("Type") . ":", 'person_id', null, ($payment ? QE_PAYMENT : QE_DEPOSIT), true);
-			$qid = get_quick_entry(get_post('person_id'));
+			$qid = GL_QuickEntry::get(get_post('person_id'));
 			if (list_updated('person_id')) {
 				unset($_POST['totamount']); // enable default
 				$Ajax->activate('totamount');

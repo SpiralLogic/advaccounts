@@ -133,7 +133,7 @@
 		void_stock_move(ST_MANUISSUE, $type_no);
 
 		// void any related gl trans
-		void_gl_trans(ST_MANUISSUE, $type_no, true);
+		GL_Trans::void(ST_MANUISSUE, $type_no, true);
 
 		DB::commit_transaction();
 	}

@@ -7,7 +7,7 @@
 	 * To change this template use File | Settings | File Templates.
 	 */
 
-	abstract class DB_Where {
+	abstract class DB_Query_Where {
 
 		public $data = array();
 		protected $where = array();

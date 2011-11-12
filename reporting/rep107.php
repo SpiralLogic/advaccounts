@@ -63,7 +63,7 @@
 				}
 				$sign = $j == ST_SALESINVOICE ? 1 : -1;
 				$myrow = Sales_Trans::get($i, $j);
-				$baccount = get_default_bank_account($myrow['curr_code']);
+				$baccount = GL_BankAccount::get_default($myrow['curr_code']);
 				$params['bankaccount'] = $baccount['id'];
 				$branch = get_branch($myrow["branch_code"]);
 				$branch['disable_branch'] = $paylink; // helper
@@ -153,7 +153,7 @@
 				$rep->TextCol(3, 7, $doc_Shipping, -2);
 				$rep->TextCol(7, 8, $DisplayFreight, -2);
 				$rep->NewLine();
-				$tax_items = get_trans_tax_details($j, $i);
+				$tax_items = GL_Trans::get_tax_details($j, $i);
 				while ($tax_item = DB::fetch($tax_items)) {
 					$DisplayTax = Num::format($sign * $tax_item['amount'], $dec);
 					if ($tax_item['included_in_price']) {

@@ -72,9 +72,9 @@
 		else {
 			DB_Comments::delete(ST_CUSTCREDIT, $credit_no);
 			void_cust_allocations(ST_CUSTCREDIT, $credit_no, $credit_date);
-			void_gl_trans(ST_CUSTCREDIT, $credit_no, true);
+			GL_Trans::void(ST_CUSTCREDIT, $credit_no, true);
 			void_stock_move(ST_CUSTCREDIT, $credit_no);
-			void_trans_tax_details(ST_CUSTCREDIT, $credit_no);
+			GL_Trans::void_tax_details(ST_CUSTCREDIT, $credit_no);
 		}
 		if ($credit_invoice) {
 			$invoice_alloc_balance = get_DebtorTrans_allocation_balance(ST_SALESINVOICE, $credit_invoice);
@@ -131,7 +131,7 @@
 		foreach ($taxes as $taxitem) {
 			if ($taxitem['Net'] != 0) {
 				$ex_rate = Banking::get_exchange_rate_from_home_currency(Banking::get_customer_currency($credit_note->customer_id), $credit_note->document_date);
-				add_trans_tax_details(ST_CUSTCREDIT, $credit_no, $taxitem['tax_type_id'],
+				GL_Trans::add_tax_details(ST_CUSTCREDIT, $credit_no, $taxitem['tax_type_id'],
 															$taxitem['rate'], $credit_note->tax_included, $taxitem['Value'],
 															$taxitem['Net'], $ex_rate,
 															$credit_note->document_date, $credit_note->reference);
@@ -141,7 +141,7 @@
 			}
 		}
 		/*Post a balance post if $total != 0 */
-		add_gl_balance(ST_CUSTCREDIT, $credit_no, $credit_date, -$total, PT_CUSTOMER, $credit_note->customer_id);
+		GL_Trans::add_balance(ST_CUSTCREDIT, $credit_no, $credit_date, -$total, PT_CUSTOMER, $credit_note->customer_id);
 		DB_Comments::add(ST_CUSTCREDIT, $credit_no, $credit_date, $credit_note->Comments);
 		if ($trans_no == 0) {
 			Refs::save(ST_CUSTCREDIT, $credit_no, $credit_note->reference);
@@ -202,7 +202,7 @@
 		$standard_cost = get_standard_cost($order_line->stock_id);
 		if ($standard_cost != 0) {
 			/*first the cost of sales entry*/
-			$total += add_gl_trans_std_cost(ST_CUSTCREDIT, $credit_no, $date_, $stock_gl_codes["cogs_account"],
+			$total += GL_Trans::add_std_cost(ST_CUSTCREDIT, $credit_no, $date_, $stock_gl_codes["cogs_account"],
 																			$dim, $dim2, "", -($standard_cost * $order_line->qty_dispatched),
 																			PT_CUSTOMER, $order->customer_id,
 																			"The cost of sales GL posting could not be inserted");
@@ -214,7 +214,7 @@
 				$stock_gl_code = Item::get_gl_code($order_line->stock_id);
 				$stock_entry_account = $stock_gl_code["inventory_account"];
 			}
-			$total += add_gl_trans_std_cost(ST_CUSTCREDIT, $credit_no, $date_, $stock_entry_account, 0, 0,
+			$total += GL_Trans::add_std_cost(ST_CUSTCREDIT, $credit_no, $date_, $stock_entry_account, 0, 0,
 																			"", ($standard_cost * $order_line->qty_dispatched),
 																			PT_CUSTOMER, $order->customer_id,
 																			"The stock side (or write off) of the cost of sales GL posting could not be inserted");

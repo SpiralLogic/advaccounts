@@ -83,7 +83,7 @@
 				add_stock_move(ST_MANURECEIVE, $bom_item["component"], $advanced,
 											 $bom_item["loc_code"], $date_, "", -$bom_item["quantity"] * $units_reqd, 0);
 			}
-			$total_cost += add_gl_trans_std_cost(ST_WORKORDER, $woid, $date_, $bom_accounts["inventory_account"], 0, 0,
+			$total_cost += GL_Trans::add_std_cost(ST_WORKORDER, $woid, $date_, $bom_accounts["inventory_account"], 0, 0,
 																					 null, -$bom_cost);
 		}
 		if ($advanced) {
@@ -96,7 +96,7 @@
 				$standard_cost = get_standard_cost($item['stock_id']);
 				$issue_cost = $standard_cost * $item['qty_issued'] * $units_reqd / $wo['units_reqd'];
 				$issue = Item::get_gl_code($item['stock_id']);
-				$total_cost += add_gl_trans_std_cost(ST_WORKORDER, $woid, $date_, $issue["inventory_account"], 0, 0,
+				$total_cost += GL_Trans::add_std_cost(ST_WORKORDER, $woid, $date_, $issue["inventory_account"], 0, 0,
 																						 null, -$issue_cost);
 				$issue_total += $issue_cost;
 			}
@@ -111,7 +111,7 @@
 		// credit additional costs
 		$item_accounts = Item::get_gl_code($stock_id);
 		if ($costs != 0.0) {
-			add_gl_trans_std_cost(ST_WORKORDER, $woid, $date_, $cr_acc,
+			GL_Trans::add_std_cost(ST_WORKORDER, $woid, $date_, $cr_acc,
 														0, 0, $wo_cost_types[WO_OVERHEAD], -$costs, PT_WORKORDER, WO_OVERHEAD);
 			$is_bank_to = Banking::is_bank_account($cr_acc);
 			if ($is_bank_to) {
@@ -119,13 +119,13 @@
 												$date_, -$costs, PT_WORKORDER, WO_OVERHEAD, Banking::get_company_currency(),
 												"Cannot insert a destination bank transaction");
 			}
-			add_gl_trans_std_cost(ST_WORKORDER, $woid, $date_, $item_accounts["assembly_account"],
+			GL_Trans::add_std_cost(ST_WORKORDER, $woid, $date_, $item_accounts["assembly_account"],
 														$item_accounts["dimension_id"], $item_accounts["dimension2_id"],
 														$wo_cost_types[WO_OVERHEAD], $costs,
 														PT_WORKORDER, WO_OVERHEAD);
 		}
 		if ($labour != 0.0) {
-			add_gl_trans_std_cost(ST_WORKORDER, $woid, $date_, $cr_lab_acc,
+			GL_Trans::add_std_cost(ST_WORKORDER, $woid, $date_, $cr_lab_acc,
 														0, 0, $wo_cost_types[WO_LABOUR], -$labour, PT_WORKORDER, WO_LABOUR);
 			$is_bank_to = Banking::is_bank_account($cr_lab_acc);
 			if ($is_bank_to) {
@@ -133,13 +133,13 @@
 												$date_, -$labour, PT_WORKORDER, WO_LABOUR, Banking::get_company_currency(),
 												"Cannot insert a destination bank transaction");
 			}
-			add_gl_trans_std_cost(ST_WORKORDER, $woid, $date_, $item_accounts["assembly_account"],
+			GL_Trans::add_std_cost(ST_WORKORDER, $woid, $date_, $item_accounts["assembly_account"],
 														$item_accounts["dimension_id"], $item_accounts["dimension2_id"],
 														$wo_cost_types[WO_LABOUR], $labour,
 														PT_WORKORDER, WO_LABOUR);
 		}
 		// debit total components $total_cost
-		add_gl_trans_std_cost(ST_WORKORDER, $woid, $date_, $item_accounts["inventory_account"],
+		GL_Trans::add_std_cost(ST_WORKORDER, $woid, $date_, $item_accounts["inventory_account"],
 													0, 0, null, -$total_cost);
 	}
 

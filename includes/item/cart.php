@@ -105,7 +105,7 @@
 			$this->gl_items[$index]->amount        = $amount;
 			$this->gl_items[$index]->reference     = $reference;
 			if ($description == null) {
-				$this->gl_items[$index]->description = get_gl_account_name($code_id);
+				$this->gl_items[$index]->description = GL_Account::get_name($code_id);
 } else {
 				$this->gl_items[$index]->description = $description;
 			}

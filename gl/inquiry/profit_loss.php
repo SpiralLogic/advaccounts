@@ -44,14 +44,14 @@
 		unset($totals_arr);
 		$totals_arr = array();
 		//Get Accounts directly under this group/type
-		$result = get_gl_accounts(null, null, $type);
+		$result = GL_Account::get_all(null, null, $type);
 		while ($account = DB::fetch($result))
 		{
-			$per_balance = get_gl_trans_from_to($from, $to, $account["account_code"], $dimension, $dimension2);
+			$per_balance = GL_Trans::get_from_to($from, $to, $account["account_code"], $dimension, $dimension2);
 			if ($compare == 2) {
-				$acc_balance = get_budget_trans_from_to($begin, $end, $account["account_code"], $dimension, $dimension2);
+				$acc_balance = GL_Trans::get_budget_from_to($begin, $end, $account["account_code"], $dimension, $dimension2);
 			} else {
-				$acc_balance = get_gl_trans_from_to($begin, $end, $account["account_code"], $dimension, $dimension2);
+				$acc_balance = GL_Trans::get_from_to($begin, $end, $account["account_code"], $dimension, $dimension2);
 			}
 			if (!$per_balance && !$acc_balance) {
 				continue;
@@ -73,7 +73,7 @@
 		}
 		$levelptr = 1;
 		//Get Account groups/types under this group/type
-		$result = get_account_types(false, false, $type);
+		$result = GL_AccountType::get_all(false, false, $type);
 		while ($accounttype = DB::fetch($result))
 		{
 			$totals_arr = display_type(
@@ -94,7 +94,7 @@
 				end_row();
 			}
 			//START Patch#1 : Display  only direct child types
-			$acctype1 = get_account_type($type);
+			$acctype1 = GL_AccountType::get($type);
 			$parent1 = $acctype1["parent"];
 			if ($drilldown && $parent1 == $_POST["AccGrp"]
 			) //END Patch#2
@@ -194,7 +194,7 @@
 			$parent = -1;
 			$classper = $classacc = $salesper = $salesacc = 0.0;
 			//Get classes for PL
-			$classresult = get_account_classes(false, 0);
+			$classresult = GL_AccountClass::get_all(false, 0);
 			while ($class = DB::fetch($classresult))
 			{
 				$class_per_total = 0;
@@ -204,7 +204,7 @@
 				table_section_title($class["class_name"], 4);
 				echo $tableheader;
 				//Get Account groups/types under this group/type
-				$typeresult = get_account_types(false, $class['cid'], -1);
+				$typeresult = GL_AccountType::get_all(false, $class['cid'], -1);
 				while ($accounttype = DB::fetch($typeresult))
 				{
 					$TypeTotal = display_type(
@@ -245,12 +245,12 @@
 			//Level Pointer : Global variable defined in order to control display of root
 			global $levelptr;
 			$levelptr = 0;
-			$accounttype = get_account_type($_POST["AccGrp"]);
+			$accounttype = GL_AccountType::get($_POST["AccGrp"]);
 			$classid = $accounttype["class_id"];
-			$class = get_account_class($classid);
+			$class = GL_AccountClass::get($classid);
 			$convert = Systypes::get_class_type_convert($class["ctype"]);
 			//Print Class Name
-			table_section_title(get_account_type_name($_POST["AccGrp"]), 4);
+			table_section_title(GL_AccountType::get_name($_POST["AccGrp"]), 4);
 			echo $tableheader;
 			$classtotal = display_type(
 				$accounttype["id"], $accounttype["name"], $from, $to, $begin, $end, $compare, $convert,

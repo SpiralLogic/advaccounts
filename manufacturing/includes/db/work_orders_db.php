@@ -214,7 +214,7 @@
 	//--------------------------------------------------------------------------------------
 	function work_order_has_payments($woid)
 	{
-		$result = get_gl_wo_cost_trans($woid);
+		$result = GL_Trans::get_wo_cost($woid);
 		return (DB::num_rows($result) != 0);
 	}
 
@@ -284,7 +284,7 @@
 			// void all related stock moves
 			void_stock_move(ST_WORKORDER, $woid);
 			// void any related gl trans
-			void_gl_trans(ST_WORKORDER, $woid, true);
+			GL_Trans::void(ST_WORKORDER, $woid, true);
 			// clear the requirements units received
 			void_wo_requirements($woid);
 		} else {
@@ -337,7 +337,7 @@
 			// void all related stock moves
 			void_stock_move(ST_WORKORDER, $woid);
 			// void any related gl trans
-			void_gl_trans(ST_WORKORDER, $woid, true);
+			GL_Trans::void(ST_WORKORDER, $woid, true);
 			// clear the requirements units received
 			void_wo_requirements($woid);
 		}
@@ -348,7 +348,7 @@
 	function get_gl_wo_cost($woid, $cost_type)
 	{
 		$cost = 0;
-		$result = get_gl_wo_cost_trans($woid, $cost_type);
+		$result = GL_Trans::get_wo_cost($woid, $cost_type);
 		while ($row = DB::fetch($result))
 		{
 			$cost += -$row['amount'];

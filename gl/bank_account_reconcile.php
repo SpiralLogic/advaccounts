@@ -97,14 +97,14 @@
 		}
 		$_POST['bank_date'] = Dates::date2sql(get_post('reconcile_date'));
 		$reconcile_value = check_value("rec_" . $reconcile_id) ? ("'" . $_POST['bank_date'] . "'") : 'NULL';
-		update_reconciled_values($reconcile_id, $reconcile_value, $_POST['reconcile_date'], input_num('end_balance'), $_POST['bank_account']);
+		GL_Account::update_reconciled_values($reconcile_id, $reconcile_value, $_POST['reconcile_date'], input_num('end_balance'), $_POST['bank_account']);
 		$Ajax->activate('reconciled');
 		$Ajax->activate('difference');
 		return true;
 	}
 
 	if (Input::post('reset')) {
-		reset_sql_for_bank_account_reconcile($_POST['bank_account'], get_post('reconcile_date'));
+		GL_Account::reset_sql_for_reconcile($_POST['bank_account'], get_post('reconcile_date'));
 		update_data();
 	}
 	$groupid = find_submit("_ungroup_");
@@ -174,7 +174,7 @@
 	end_row();
 	end_table();
 	$_SESSION['wa_current_reconcile_date'] = $_POST['bank_date'];
-	$result = get_max_reconciled(get_post('reconcile_date'), $_POST['bank_account']);
+	$result = GL_Account::get_max_reconciled(get_post('reconcile_date'), $_POST['bank_account']);
 	if ($row = DB::fetch($result)) {
 		$_POST["reconciled"] = Num::price_format($row["end_balance"] - $row["beg_balance"]);
 		$total = $row["total"];
@@ -184,7 +184,7 @@
 			$_POST["end_balance"] = Num::price_format($row["end_balance"]);
 			if (get_post('bank_date')) {
 				// if it is the last updated bank statement retrieve ending balance
-				$row = get_ending_reconciled($_POST['bank_account'], $_POST['bank_date']);
+				$row = GL_Account::get_ending_reconciled($_POST['bank_account'], $_POST['bank_date']);
 				if ($row) {
 					$_POST["end_balance"] = Num::price_format($row["ending_reconcile_balance"]);
 				}
@@ -238,8 +238,8 @@
 	if (!isset($_POST['bank_account'])) {
 		$_POST['bank_account'] = "";
 	}
-	$sql = get_sql_for_bank_account_reconcile($_POST['bank_account'], get_post('reconcile_date'));
-	$act = get_bank_account($_POST["bank_account"]);
+	$sql = GL_Account::get_sql_for_reconcile($_POST['bank_account'], get_post('reconcile_date'));
+	$act = GL_BankAccount::get($_POST["bank_account"]);
 	Display::heading($act['bank_account_name'] . " - " . $act['bank_curr_code']);
 	$cols = array(
 		_("Type") => array(

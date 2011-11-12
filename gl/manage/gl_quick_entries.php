@@ -84,13 +84,13 @@
 	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 		if (can_process()) {
 			if ($selected_id != -1) {
-				update_quick_entry(
+				GL_QuickEntry::update(
 					$selected_id, $_POST['description'], $_POST['type'],
 					input_num('base_amount'), $_POST['base_desc']
 				);
 				Errors::notice(_('Selected quick entry has been updated'));
 			} else {
-				add_quick_entry(
+				GL_QuickEntry::add(
 					$_POST['description'], $_POST['type'],
 					input_num('base_amount'), $_POST['base_desc']
 				);
@@ -101,13 +101,13 @@
 	}
 	if ($Mode2 == 'ADD_ITEM2' || $Mode2 == 'UPDATE_ITEM2') {
 		if ($selected_id2 != -1) {
-			update_quick_entry_line(
+			GL_QuickEntry::update_line(
 				$selected_id2, $selected_id, $_POST['actn'], $_POST['dest_id'], input_num('amount', 0),
 				$_POST['dimension_id'], $_POST['dimension2_id']
 			);
 			Errors::notice(_('Selected quick entry line has been updated'));
 		} else {
-			add_quick_entry_line(
+			GL_QuickEntry::add_line(
 				$selected_id, $_POST['actn'], $_POST['dest_id'], input_num('amount', 0),
 				$_POST['dimension_id'], $_POST['dimension2_id']
 			);
@@ -117,8 +117,8 @@
 	}
 	//-----------------------------------------------------------------------------------
 	if ($Mode == 'Delete') {
-		if (!has_quick_entry_lines($selected_id)) {
-			delete_quick_entry($selected_id);
+		if (!GL_QuickEntry::has_lines($selected_id)) {
+			GL_QuickEntry::delete($selected_id);
 			Errors::notice(_('Selected quick entry has been deleted'));
 			$Mode = 'RESET';
 		} else {
@@ -127,7 +127,7 @@
 		}
 	}
 	if ($Mode2 == 'BDel') {
-		delete_quick_entry_line($selected_id2);
+		GL_QuickEntry::delete_line($selected_id2);
 		Errors::notice(_('Selected quick entry line has been deleted'));
 		$Mode2 = 'RESET2';
 	}
@@ -144,7 +144,7 @@
 		 = $_POST['dimension_id'] = $_POST['dimension2_id'] = '';
 	}
 	//-----------------------------------------------------------------------------------
-	$result = get_quick_entries();
+	$result = GL_QuickEntry::get_all();
 	start_form();
 	start_table(Config::get('tables_style'));
 	$th = array(_("Description"), _("Type"), "", "");
@@ -169,7 +169,7 @@
 		//if ($Mode == 'Edit')
 		//{
 		//editing an existing status code
-		$myrow = get_quick_entry($selected_id);
+		$myrow = GL_QuickEntry::get($selected_id);
 		$_POST['id'] = $myrow["id"];
 		$_POST['description'] = $myrow["description"];
 		$_POST['type'] = $myrow["type"];
@@ -187,7 +187,7 @@
 	end_form();
 	if ($selected_id != -1) {
 		Display::heading(_("Quick Entry Lines") . " - " . $_POST['description']);
-		$result = get_quick_entry_lines($selected_id);
+		$result = GL_QuickEntry::get_lines($selected_id);
 		start_form();
 		start_table(Config::get('tables_style2'));
 		$dim = DB_Company::get_pref('use_dimension');
@@ -242,7 +242,7 @@
 		if ($selected_id2 != -1) {
 			if ($Mode2 == 'BEd') {
 				//editing an existing status code
-				$myrow = get_quick_entry_line($selected_id2);
+				$myrow = GL_QuickEntry::has_line($selected_id2);
 				$_POST['id'] = $myrow["id"];
 				$_POST['dest_id'] = $myrow["dest_id"];
 				$_POST['actn'] = $myrow["action"];

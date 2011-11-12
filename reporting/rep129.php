@@ -52,7 +52,7 @@
 			$i = $from; $i <= $to; $i++
 		) {
 			$myrow = get_sales_order_header($i, ST_SALESORDER);
-			$baccount = get_default_bank_account($myrow['curr_code']);
+			$baccount = GL_BankAccount::get_default($myrow['curr_code']);
 			$params['bankaccount'] = $baccount['id'];
 			$branch = get_branch($myrow["branch_code"]);
 			if ($email == 1) {

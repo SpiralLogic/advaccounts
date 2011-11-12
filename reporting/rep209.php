@@ -78,7 +78,7 @@
 		for ($i = $from; $i <= $to; $i++)
 		{
 			$myrow = get_po($i);
-			$baccount = get_default_bank_account($myrow['curr_code']);
+			$baccount = GL_BankAccount::get_default($myrow['curr_code']);
 			$params['bankaccount'] = $baccount['id'];
 			if ($email == 1) {
 				$rep = new FrontReport("", "", User::pagesize());

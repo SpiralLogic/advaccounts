@@ -28,14 +28,14 @@
 		$totals_arr = array();
 		$printtitle = 0; //Flag for printing type name
 		//Get Accounts directly under this group/type
-		$result = get_gl_accounts(null, null, $type);
+		$result = GL_Account::get_all(null, null, $type);
 		while ($account = DB::fetch($result))
 		{
-			$per_balance = get_gl_trans_from_to($from, $to, $account["account_code"], $dimension, $dimension2);
+			$per_balance = GL_Trans::get_from_to($from, $to, $account["account_code"], $dimension, $dimension2);
 			if ($compare == 2) {
-				$acc_balance = get_budget_trans_from_to($begin, $end, $account["account_code"], $dimension, $dimension2);
+				$acc_balance = GL_Trans::get_budget_from_to($begin, $end, $account["account_code"], $dimension, $dimension2);
 			} else {
-				$acc_balance = get_gl_trans_from_to($begin, $end, $account["account_code"], $dimension, $dimension2);
+				$acc_balance = GL_Trans::get_from_to($begin, $end, $account["account_code"], $dimension, $dimension2);
 			}
 			if (!$per_balance && !$acc_balance) {
 				continue;
@@ -63,7 +63,7 @@
 			$code_acc_balance += $acc_balance;
 		}
 		//Get Account groups/types under this group/type
-		$result = get_account_types(false, false, $type);
+		$result = GL_AccountType::get_all(false, false, $type);
 		while ($accounttype = DB::fetch($result))
 		{
 			//Print Type Title if has sub types and not previously printed
@@ -234,7 +234,7 @@
 		$classacc = 0.0;
 		$salesper = 0.0;
 		$salesacc = 0.0;
-		$classresult = get_account_classes(false, 0);
+		$classresult = GL_AccountClass::get_all(false, 0);
 		while ($class = DB::fetch($classresult))
 		{
 			$class_per_total = 0;
@@ -246,7 +246,7 @@
 			$rep->Font();
 			$rep->NewLine();
 			//Get Account groups/types under this group/type with no parents
-			$typeresult = get_account_types(false, $class['cid'], -1);
+			$typeresult = GL_AccountType::get_all(false, $class['cid'], -1);
 			while ($accounttype = DB::fetch($typeresult))
 			{
 				$classtotal = display_type(

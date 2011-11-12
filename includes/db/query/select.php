@@ -6,7 +6,7 @@
 	 * Time: 5:35 AM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	class DB_Select extends DB_Query
+	class DB_Query_Select extends DB_Query
 	{
 		protected $select = array();
 		protected $from = array();

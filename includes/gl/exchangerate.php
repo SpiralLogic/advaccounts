@@ -9,8 +9,11 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
+
+class GL_ExchangeRate {
 	//---------------------------------------------------------------------------------------------
-	function get_exchange_rate($rate_id) {
+
+	public static function get($rate_id) {
 		$sql = "SELECT * FROM exchange_rates WHERE id=" . DB::escape($rate_id);
 		$result = DB::query($sql, "could not get exchange rate for $rate_id");
 
@@ -18,7 +21,7 @@
 	}
 
 	// Retrieves buy exchange rate for given currency/date, zero if no result
-	function get_date_exchange_rate($curr_code, $date_) {
+	public static function get_date($curr_code, $date_) {
 		$date = Dates::date2sql($date_);
 		$sql = "SELECT rate_buy FROM exchange_rates WHERE curr_code=" . DB::escape($curr_code)
 		 . " AND date_='$date'";
@@ -32,7 +35,7 @@
 
 	//---------------------------------------------------------------------------------------------
 
-	function update_exchange_rate($curr_code, $date_, $buy_rate, $sell_rate) {
+	public static function update($curr_code, $date_, $buy_rate, $sell_rate) {
 		if (Banking::is_company_currency($curr_code))
 			Errors::show_db_error("Exchange rates cannot be set for company currency", "", true);
 
@@ -46,7 +49,7 @@
 
 	//---------------------------------------------------------------------------------------------
 
-	function add_exchange_rate($curr_code, $date_, $buy_rate, $sell_rate) {
+	public static function add($curr_code, $date_, $buy_rate, $sell_rate) {
 		if (Banking::is_company_currency($curr_code))
 			Errors::show_db_error("Exchange rates cannot be set for company currency", "", true);
 
@@ -60,7 +63,7 @@
 
 	//---------------------------------------------------------------------------------------------
 
-	function delete_exchange_rate($rate_id) {
+	public static function delete($rate_id) {
 		$sql = "DELETE FROM exchange_rates WHERE id=" . DB::escape($rate_id);
 		DB::query($sql, "could not delete exchange rate $rate_id");
 	}
@@ -68,18 +71,18 @@
 	//-----------------------------------------------------------------------------
 	//	Retrieve exchange rate as of date $date from external source (usually inet)
 	//
-	function retrieve_exrate($curr_b, $date) {
+	public static function retrieve($curr_b, $date) {
 		global $Hooks;
 
 		if (method_exists($Hooks, 'retrieve_exrate'))
 			return $Hooks->retrieve_exrate($curr_b, $date);
 		else
-			return get_extern_rate($curr_b, 'ECB', $date);
+			return static::get_external($curr_b, 'ECB', $date);
 	}
 
 	//-----------------------------------------------------------------------------
 
-	function get_extern_rate($curr_b, $provider = 'ECB', $date) {
+	public static function get_external($curr_b, $provider = 'ECB', $date) {
 		$curr_a = DB_Company::get_pref('curr_default');
 		if ($provider == 'ECB') {
 			$filename = "/stats/eurofxref/eurofxref-daily.xml";
@@ -170,4 +173,4 @@
 		return $val;
 	} /* end function get_extern_rate */
 
-?>
+}

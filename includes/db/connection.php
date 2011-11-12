@@ -56,7 +56,7 @@
 
 				switch ($type) {
 				case DB::SELECT:
-					return new DB_Result($prepared, $data);
+					return new DB_Query_Result($prepared, $data);
 				case DB::INSERT:
 					$prepared->execute($data);
 					return $this->lastInsertId();

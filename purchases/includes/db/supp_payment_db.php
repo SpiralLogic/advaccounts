@@ -15,7 +15,7 @@
 		DB::begin_transaction();
 		$supplier_currency = Banking::get_supplier_currency($supplier_id);
 		$bank_account_currency = Banking::get_bank_account_currency($bank_account);
-		$bank_gl_account = get_bank_gl_account($bank_account);
+		$bank_gl_account = GL_BankAccount::get_gl($bank_account);
 		if ($rate == 0) {
 			$supp_amount = Banking::exchange_from_to($amount, $bank_account_currency, $supplier_currency, $date_);
 			$supp_discount = Banking::exchange_from_to($discount, $bank_account_currency, $supplier_currency, $date_);
@@ -51,7 +51,7 @@
 				-($supp_amount + $supp_charge), $supplier_id, "", $rate);
 		}
 		/*Post a balance post if $total != 0 */
-		add_gl_balance($trans_type, $payment_id, $date_, -$total, PT_SUPPLIER, $supplier_id);
+		GL_Trans::add_balance($trans_type, $payment_id, $date_, -$total, PT_SUPPLIER, $supplier_id);
 		/*now enter the bank_trans entry */
 		Bank_Trans::add($trans_type, $payment_id, $bank_account, $ref,
 			$date_, -($amount + $supp_charge), PT_SUPPLIER,
@@ -68,7 +68,7 @@
 	{
 		DB::begin_transaction();
 		Bank_Trans::void($type, $type_no, true);
-		void_gl_trans($type, $type_no, true);
+		GL_Trans::void($type, $type_no, true);
 		void_supp_allocations($type, $type_no);
 		void_supp_trans($type, $type_no);
 		DB::commit_transaction();

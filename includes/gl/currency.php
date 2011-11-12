@@ -9,9 +9,11 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
+
+class GL_Currency {
 	//---------------------------------------------------------------------------------------------
 
-	function update_currency($curr_abrev, $symbol, $currency, $country,
+	public static function update($curr_abrev, $symbol, $currency, $country,
 													 $hundreds_name, $auto_update) {
 		$sql = "UPDATE currencies SET currency=" . DB::escape($currency)
 		 . ", curr_symbol=" . DB::escape($symbol) . ",	country=" . DB::escape($country)
@@ -24,7 +26,7 @@
 
 	//---------------------------------------------------------------------------------------------
 
-	function add_currency($curr_abrev, $symbol, $currency, $country,
+	public static function add($curr_abrev, $symbol, $currency, $country,
 												$hundreds_name, $auto_update) {
 		$sql = "INSERT INTO currencies (curr_abrev, curr_symbol, currency,
 			country, hundreds_name, auto_update)
@@ -37,7 +39,7 @@
 
 	//---------------------------------------------------------------------------------------------
 
-	function delete_currency($curr_code) {
+	public static function delete($curr_code) {
 		$sql = "DELETE FROM currencies WHERE curr_abrev=" . DB::escape($curr_code);
 		DB::query($sql, "could not delete currency	$curr_code");
 
@@ -47,7 +49,7 @@
 
 	//---------------------------------------------------------------------------------------------
 
-	function get_currency($curr_code) {
+	public static function get($curr_code) {
 		$sql = "SELECT * FROM currencies WHERE curr_abrev=" . DB::escape($curr_code);
 		$result = DB::query($sql, "could not get currency $curr_code");
 
@@ -57,7 +59,7 @@
 
 	//---------------------------------------------------------------------------------------------
 
-	function get_currencies($all = false) {
+	public static function get_all($all = false) {
 		$sql = "SELECT * FROM currencies";
 		if (!$all) $sql .= " WHERE !inactive";
 		return DB::query($sql, "could not get currencies");
@@ -65,4 +67,4 @@
 
 	//---------------------------------------------------------------------------------------------
 
-?>
+}

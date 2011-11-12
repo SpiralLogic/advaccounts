@@ -6,7 +6,7 @@
 	 * Time: 5:46 AM
 	 *
 	 */
-	Class DB_Update extends DB_Insert
+	Class DB_Query_Update extends DB_Query_Insert
 	{
 		public function __construct($table = false, $db)
 		{
