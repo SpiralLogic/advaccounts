@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 	//----------------------------------------------------------------------------------------
 	class Sales_Debtor_Trans {
-		function get($debtor_trans_type, $debtor_trans_no) {
+		public static function get($debtor_trans_type, $debtor_trans_no) {
 		if (!is_array($debtor_trans_no)) {
 			$debtor_trans_no = array(0 => $debtor_trans_no);
 		}
@@ -35,7 +35,7 @@
 	}
 
 	//----------------------------------------------------------------------------------------
-	function void($type, $type_no) {
+	public static function void($type, $type_no) {
 		$sql
 		 = "UPDATE debtor_trans_details SET quantity=0, unit_price=0,
 		unit_tax=0, discount_percent=0, standard_cost=0
@@ -47,7 +47,7 @@
 	}
 
 	//----------------------------------------------------------------------------------------
-	function add($debtor_trans_type, $debtor_trans_no, $stock_id, $description,
+	public static function add($debtor_trans_type, $debtor_trans_no, $stock_id, $description,
 																						$quantity, $unit_price, $unit_tax, $discount_percent, $std_cost, $line_id = 0) {
 		if ($line_id != 0) {
 			$sql
@@ -71,5 +71,19 @@
 		}
 		DB::query($sql, "The debtor transaction detail could not be written");
 	}
+		//----------------------------------------------------------------------------------------
+		// add a debtor-related gl transaction
+		// $date_ is display date (non-sql)
+		// $amount is in CUSTOMER'S currency
+		public static function add_gl_trans($type, $type_no, $date_, $account, $dimension, $dimension2,
+																	 $amount, $customer_id, $err_msg = "", $rate = 0)
+		{
+			if ($err_msg == "") {
+				$err_msg = "The customer GL transaction could not be inserted";
+			}
+			return GL_Trans::add($type, $type_no, $date_, $account, $dimension, $dimension2, "", $amount,
+				Banking::get_customer_currency($customer_id),
+				PT_CUSTOMER, $customer_id, $err_msg, $rate);
+		}
 
 	}

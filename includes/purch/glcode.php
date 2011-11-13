@@ -6,7 +6,7 @@
 	 * Time: 7:07 AM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	class Purchase_GLCode
+	class Purch_GLCode
 	{
 		public $Counter;
 		public $gl_code;

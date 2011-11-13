@@ -9,7 +9,8 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	function add_supp_payment($supplier_id, $date_, $bank_account,
+	class Purch_Payment {
+	public static function add($supplier_id, $date_, $bank_account,
 														$amount, $discount, $ref, $memo_, $rate = 0, $charge = 0)
 	{
 		DB::begin_transaction();
@@ -28,26 +29,26 @@
 		// it's a supplier payment
 		$trans_type = ST_SUPPAYMENT;
 		/* Create a supp_trans entry for the supplier payment */
-		$payment_id = add_supp_trans($trans_type, $supplier_id, $date_, $date_,
+		$payment_id = Purch_Trans::add($trans_type, $supplier_id, $date_, $date_,
 			$ref, "", -$supp_amount, 0, -$supp_discount, "", $rate);
 		// Now debit creditors account with payment + discount
 		$total = 0;
-		$supplier_accounts = get_supplier_accounts($supplier_id);
-		$total += add_gl_trans_supplier($trans_type, $payment_id, $date_, $supplier_accounts["payable_account"], 0, 0,
+		$supplier_accounts = Purch_Creditor::get_accounts_name($supplier_id);
+		$total += Purch_Trans::add_gl($trans_type, $payment_id, $date_, $supplier_accounts["payable_account"], 0, 0,
 		 $supp_amount + $supp_discount, $supplier_id, "", $rate);
 		// Now credit discount received account with discounts
 		if ($supp_discount != 0) {
-			$total += add_gl_trans_supplier($trans_type, $payment_id, $date_,
+			$total += Purch_Trans::add_gl($trans_type, $payment_id, $date_,
 				$supplier_accounts["payment_discount_account"], 0, 0,
 				-$supp_discount, $supplier_id, "", $rate);
 		}
 		if ($supp_charge != 0) {
 			$charge_act = DB_Company::get_pref('bank_charge_act');
-			$total += add_gl_trans_supplier($trans_type, $payment_id, $date_, $charge_act, 0, 0,
+			$total += Purch_Trans::add_gl($trans_type, $payment_id, $date_, $charge_act, 0, 0,
 				$supp_charge, $supplier_id, "", $rate);
 		}
 		if ($supp_amount != 0) {
-			$total += add_gl_trans_supplier($trans_type, $payment_id, $date_, $bank_gl_account, 0, 0,
+			$total += Purch_Trans::add_gl($trans_type, $payment_id, $date_, $bank_gl_account, 0, 0,
 				-($supp_amount + $supp_charge), $supplier_id, "", $rate);
 		}
 		/*Post a balance post if $total != 0 */
@@ -64,14 +65,14 @@
 	}
 
 	//------------------------------------------------------------------------------------------------
-	function void_supp_payment($type, $type_no)
+	public static function void($type, $type_no)
 	{
 		DB::begin_transaction();
 		Bank_Trans::void($type, $type_no, true);
 		GL_Trans::void($type, $type_no, true);
-		void_supp_allocations($type, $type_no);
-		void_supp_trans($type, $type_no);
+		Purch_Allocation::void($type, $type_no);
+		Purch_Trans::void($type, $type_no);
 		DB::commit_transaction();
 	}
 
-?>
+	}

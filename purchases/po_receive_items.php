@@ -201,7 +201,7 @@
 			Page::footer_exit();
 		}
 		$_SESSION['supplier_id'] = $_SESSION['PO']->supplier_id;
-		$grn = add_grn($_SESSION['PO'], $_POST['DefaultReceivedDate'], $_POST['ref'], $_POST['Location']);
+		$grn = Purch_GRN::add($_SESSION['PO'], $_POST['DefaultReceivedDate'], $_POST['ref'], $_POST['Location']);
 		$_SESSION['delivery_po'] = $_SESSION['PO']->order_no;
 		Dates::new_doc_date($_POST['DefaultReceivedDate']);
 		unset($_SESSION['PO']->line_items);
@@ -213,7 +213,7 @@
 	if (isset($_GET['PONumber']) && $_GET['PONumber'] > 0 && !isset($_POST['Update'])) {
 		create_new_po();
 		/*read in all the selected order into the Items cart  */
-		read_po($_GET['PONumber'], $_SESSION['PO']);
+		Purch_Order::get($_GET['PONumber'], $_SESSION['PO']);
 	}
 	//--------------------------------------------------------------------------------------------------
 	if (isset($_POST['Update']) || isset($_POST['ProcessGoodsReceived'])) {

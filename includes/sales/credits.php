@@ -62,7 +62,7 @@
 			// 2008-06-14 extra $alloc, 2008-11-12 dimension_id Joe Hunt
 			if ($trans_no == 0) {
 				$credit_note->trans_no = array($credit_no => 0);
-				set_document_parent($credit_note);
+				Sales_Trans::set_parent($credit_note);
 			} else {
 				DB_Comments::delete(ST_CUSTCREDIT, $credit_no);
 				Sales_Allocation::void(ST_CUSTCREDIT, $credit_no, $credit_date);
@@ -72,7 +72,7 @@
 			}
 			if ($credit_invoice) {
 				$invoice_alloc_balance = Sales_Allocation::get_balance(ST_SALESINVOICE, $credit_invoice);
-				Sales_Trans::update_version(get_parent_type(ST_CUSTCREDIT), $credit_note->src_docs);
+				Sales_Trans::update_version(Sales_Trans::get_parent_type(ST_CUSTCREDIT), $credit_note->src_docs);
 				if ($invoice_alloc_balance > 0) { //the invoice is not already fully allocated
 					$total = $credit_note_total + $credit_note->freight_cost + $items_added_tax + $freight_added_tax;
 					$allocate_amount = ($invoice_alloc_balance > $total) ? $total : $invoice_alloc_balance;
@@ -90,7 +90,7 @@
 			$total = 0;
 			foreach ($credit_note->line_items as $credit_line) {
 				if ($credit_invoice && $credit_line->qty_dispatched != $credit_line->qty_old) {
-					update_parent_line(11, $credit_line->src_id, ($credit_line->qty_dispatched - $credit_line->qty_old));
+					Sales_Order::update_parent_line(11, $credit_line->src_id, ($credit_line->qty_dispatched - $credit_line->qty_old));
 				}
 				$line_taxfree_price = Taxes::get_tax_free_price_for_item($credit_line->stock_id, $credit_line->price, 0, $credit_note->tax_included, $credit_note->tax_group_array);
 				$line_tax = Taxes::get_full_price_for_item($credit_line->stock_id, $credit_line->price, 0, $credit_note->tax_included, $credit_note->tax_group_array) - $line_taxfree_price;
@@ -101,17 +101,17 @@
 			/*Post credit note transaction to GL credit debtors,
 										 debit freight re-charged and debit sales */
 			if (($credit_note_total + $credit_note->freight_cost) != 0) {
-				$total += add_gl_trans_customer(ST_CUSTCREDIT, $credit_no, $credit_date, $branch_data["receivables_account"], 0, 0, -($credit_note_total + $credit_note->freight_cost + $items_added_tax + $freight_added_tax), $credit_note->customer_id,
+				$total += Sales_Debtor_Trans::add_gl_trans(ST_CUSTCREDIT, $credit_no, $credit_date, $branch_data["receivables_account"], 0, 0, -($credit_note_total + $credit_note->freight_cost + $items_added_tax + $freight_added_tax), $credit_note->customer_id,
 																				"The total debtor GL posting for the credit note could not be inserted");
 			}
 			if ($credit_note->freight_cost != 0) {
-				$total += add_gl_trans_customer(ST_CUSTCREDIT, $credit_no, $credit_date, $company_data["freight_act"], 0, 0, $credit_note->get_tax_free_shipping(), $credit_note->customer_id, "The freight GL posting for this credit note could not be inserted");
+				$total += Sales_Debtor_Trans::add_gl_trans(ST_CUSTCREDIT, $credit_no, $credit_date, $company_data["freight_act"], 0, 0, $credit_note->get_tax_free_shipping(), $credit_note->customer_id, "The freight GL posting for this credit note could not be inserted");
 			}
 			foreach ($taxes as $taxitem) {
 				if ($taxitem['Net'] != 0) {
 					$ex_rate = Banking::get_exchange_rate_from_home_currency(Banking::get_customer_currency($credit_note->customer_id), $credit_note->document_date);
 					GL_Trans::add_tax_details(ST_CUSTCREDIT, $credit_no, $taxitem['tax_type_id'], $taxitem['rate'], $credit_note->tax_included, $taxitem['Value'], $taxitem['Net'], $ex_rate, $credit_note->document_date, $credit_note->reference);
-					$total += add_gl_trans_customer(ST_CUSTCREDIT, $credit_no, $credit_date, $taxitem['sales_gl_code'], 0, 0, $taxitem['Value'], $credit_note->customer_id, "A tax GL posting for this credit note could not be inserted");
+					$total += Sales_Debtor_Trans::add_gl_trans(ST_CUSTCREDIT, $credit_no, $credit_date, $taxitem['sales_gl_code'], 0, 0, $taxitem['Value'], $credit_note->customer_id, "A tax GL posting for this credit note could not be inserted");
 				}
 			}
 			/*Post a balance post if $total != 0 */
@@ -180,9 +180,9 @@
 				} else {
 					$sales_account = $stock_gl_codes['sales_account'];
 				}
-				$total += add_gl_trans_customer(ST_CUSTCREDIT, $credit_no, $date_, $sales_account, $dim, $dim2, ($line_taxfree_price * $order_line->qty_dispatched), $order->customer_id, "The credit note GL posting could not be inserted");
+				$total += Sales_Debtor_Trans::add_gl_trans(ST_CUSTCREDIT, $credit_no, $date_, $sales_account, $dim, $dim2, ($line_taxfree_price * $order_line->qty_dispatched), $order->customer_id, "The credit note GL posting could not be inserted");
 				if ($order_line->discount_percent != 0) {
-					$total += add_gl_trans_customer(ST_CUSTCREDIT, $credit_no, $date_, $branch_data["sales_discount_account"], $dim, $dim2, -($line_taxfree_price * $order_line->qty_dispatched * $order_line->discount_percent), $order->customer_id, "The credit note discount GL posting could not be inserted");
+					$total += Sales_Debtor_Trans::add_gl_trans(ST_CUSTCREDIT, $credit_no, $date_, $branch_data["sales_discount_account"], $dim, $dim2, -($line_taxfree_price * $order_line->qty_dispatched * $order_line->discount_percent), $order->customer_id, "The credit note discount GL posting could not be inserted");
 				} /*end of if discount !=0 */
 			} /*if line_price!=0 */
 			return $total;

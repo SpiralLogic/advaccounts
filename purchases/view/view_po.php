@@ -18,8 +18,8 @@
 		die ("<br>" . _("This page must be called with a purchase order number to review."));
 	}
 	Display::heading(_("Purchase Order") . " #" . $_GET['trans_no']);
-	$purchase_order = new Purchase_Order;
-	read_po($_GET['trans_no'], $purchase_order);
+	$purchase_order = new Purch_Order;
+	Purch_Order::get($_GET['trans_no'], $purchase_order);
 	echo "<br>";
 	display_po_summary($purchase_order, true);
 	start_table(Config::get('tables_style') . "  width=90%", 6);
@@ -67,7 +67,7 @@
 	}
 	//----------------------------------------------------------------------------------------------------
 	$k = 0;
-	$grns_result = get_po_grns($_GET['trans_no']);
+	$grns_result = Purch_GRN::get_for_po($_GET['trans_no']);
 	if (DB::num_rows($grns_result) > 0) {
 		echo "</td><td valign=top>"; // outer table
 		Display::heading(_("Deliveries"));
@@ -83,7 +83,7 @@
 		}
 		end_table();
 	}
-	$invoice_result = get_po_invoices_credits($_GET['trans_no']);
+	$invoice_result = Purch_Invoice::get_po_credits($_GET['trans_no']);
 	$k = 0;
 	if (DB::num_rows($invoice_result) > 0) {
 		echo "</td><td valign=top>"; // outer table

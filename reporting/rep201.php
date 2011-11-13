@@ -97,7 +97,7 @@
 		}
 		else
 		{
-			$supp = get_supplier_name($fromsupp);
+			$supp = Purch_Creditor::get_name($fromsupp);
 		}
 		$dec = User::price_dec();
 		if ($currency == ALL_TEXT) {

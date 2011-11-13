@@ -154,7 +154,7 @@
 	table_section(1);
 	if (!$new_supplier) {
 		//SupplierID exists - either passed when calling the form or from the form itself
-		$myrow = get_supplier($_POST['supplier_id']);
+		$myrow = Purch_Creditor::get($_POST['supplier_id']);
 		$_POST['supp_name'] = $myrow["supp_name"];
 		$_POST['supp_ref'] = $myrow["supp_ref"];
 		$_POST['address'] = $myrow["address"];

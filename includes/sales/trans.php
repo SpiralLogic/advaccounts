@@ -26,7 +26,7 @@
 				return 0;
 			} // this is credit note with no parent invoice
 			// invoice: find batch invoice parent trans.
-			$sql = 'SELECT trans_no FROM ' . 'debtor_trans WHERE (trans_link=' . DB::escape($trans_no) . ' AND type=' . get_parent_type($trans_type) . ')';
+			$sql = 'SELECT trans_no FROM ' . 'debtor_trans WHERE (trans_link=' . DB::escape($trans_no) . ' AND type=' . Sales_Trans::get_parent_type($trans_type) . ')';
 			$result = DB::query($sql, 'Delivery links cannot be retrieved');
 			$delivery = array();
 			if (DB::num_rows($result) > 0) {
@@ -36,6 +36,49 @@
 			}
 			return count($delivery) ? $delivery : 0;
 		}
+
+			//-----------------------------------------------------------------------------
+		public static 	function set_parent($cart)
+			{
+				$inv_no = key($cart->trans_no);
+				if (count($cart->src_docs) == 1) {
+					// if this child document has only one parent - update child link
+					$src = array_keys($cart->src_docs);
+					$del_no = reset($src);
+					$sql = 'UPDATE debtor_trans SET trans_link = ' . $del_no .
+					 ' WHERE type=' . DB::escape($cart->trans_type) . ' AND trans_no=' . $inv_no;
+					DB::query($sql, 'UPDATE Child document link cannot be updated');
+				}
+				if ($cart->trans_type != ST_SALESINVOICE) {
+					return 0;
+				}
+				// the rest is batch invoice specific
+				foreach ($cart->line_items as $line) {
+					if ($line->quantity != $line->qty_dispatched) {
+						return 1; // this is partial invoice
+					}
+				}
+				$sql = 'UPDATE debtor_trans SET trans_link = ' . $inv_no .
+				 ' WHERE type=' . Sales_Trans::get_parent_type($cart->trans_type) . ' AND (';
+				$deliveries = array_keys($cart->src_docs);
+				foreach ($deliveries as $key => $del)
+				{
+					$deliveries[$key] = 'trans_no=' . $del;
+				}
+				$sql .= implode(' OR ', $deliveries) . ')';
+				DB::query($sql, 'Delivery links cannot be updated');
+				return 0; // batch or complete invoice
+			}
+
+			//--------------------------------------------------------------------------------------------------
+			public static function get_parent_type($type)
+			{
+				$parent_types = array(ST_CUSTCREDIT => ST_SALESINVOICE,
+					ST_SALESINVOICE => ST_CUSTDELIVERY,
+					ST_CUSTDELIVERY => ST_SALESORDER
+				);
+				return isset($parent_types[$type]) ? $parent_types[$type] : 0;
+			}
 
 		//----------------------------------------------------------------------------------------
 		// Mark changes in debtor_trans_details
@@ -140,6 +183,67 @@
 			return $trans_no;
 		}
 
+			//--------------------------------------------------------------------------------------------------
+			// Generic read debtor transaction into cart
+			//
+			//	$trans_no - array of trans nums; special case trans_no==0 - new doc
+			//
+		public static	function read($doc_type, $trans_no, &$cart)
+			{
+				if (!is_array($trans_no) && $trans_no) {
+					$trans_no = array($trans_no);
+				}
+				$cart->trans_type = $doc_type;
+				if (!$trans_no) { // new document
+					$cart->trans_no = $trans_no;
+				}
+				else {
+					// read header data from first document
+					$myrow = Sales_Trans::get($trans_no[0], $doc_type);
+					if (count($trans_no) > 1) {
+						$cart->trans_no = Sales_Trans::get_version($doc_type, $trans_no);
+					} else {
+						$cart->trans_no = array($trans_no[0] => $myrow["version"]);
+					}
+					$cart->set_sales_type($myrow["tpe"], $myrow["sales_type"], $myrow["tax_included"], 0);
+					$cart->set_customer($myrow["debtor_no"], $myrow["DebtorName"],
+						$myrow["curr_code"], $myrow["discount"], $myrow["payment_terms"]);
+					$cart->set_branch($myrow["branch_code"], $myrow["tax_group_id"],
+						$myrow["tax_group_name"], $myrow["phone"], $myrow["email"]);
+					$cart->reference = $myrow["reference"];
+					$cart->order_no = $myrow["order_"];
+					$cart->trans_link = $myrow["trans_link"];
+					$cart->due_date = Dates::sql2date($myrow["due_date"]);
+					$cart->document_date = Dates::sql2date($myrow["tran_date"]);
+					$cart->dimension_id = $myrow['dimension_id']; // added 2.1 Joe Hunt 2008-11-12
+					$cart->dimension2_id = $myrow['dimension2_id'];
+					$cart->Comments = '';
+					foreach ($trans_no as $trans) {
+						$cart->Comments .= DB_Comments::get_string($doc_type, $trans);
+					}
+					// FIX this should be calculated sum() for multiply parents
+					$cart->set_delivery($myrow["ship_via"], $myrow["br_name"],
+						$myrow["br_address"], $myrow["ov_freight"]);
+					$location = 0;
+					$myrow = get_location($cart); // find location from movement
+					if ($myrow != null) {
+						$cart->set_location($myrow['loc_code'], $myrow['location_name']);
+					}
+					$result = Sales_Debtor_Trans::get($doc_type, $trans_no);
+					if (DB::num_rows($result) > 0) {
+						for ($line_no = 0; $myrow = DB::fetch($result); $line_no++) {
+							$cart->line_items[$line_no] = new Sales_Line(
+								$myrow["stock_id"], $myrow["quantity"],
+								$myrow["unit_price"], $myrow["discount_percent"],
+								$myrow["qty_done"], $myrow["standard_cost"],
+								$myrow["StockDescription"], $myrow["id"], $myrow["debtor_trans_no"]);
+						}
+					}
+				} // !newdoc
+				return true;
+			}
+
+			//----------------------------------------------------------------------------------------
 		//----------------------------------------------------------------------------------------
 		public static function get($trans_id, $trans_type)
 		{

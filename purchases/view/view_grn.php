@@ -17,8 +17,8 @@
 	if (!isset($_GET['trans_no'])) {
 		die ("<BR>" . _("This page must be called with a Purchase Order Delivery number to review."));
 	}
-	$purchase_order = new Purchase_Order;
-	read_grn($_GET["trans_no"], $purchase_order);
+	$purchase_order = new Purch_Order;
+	Purch_GRN::get($_GET["trans_no"], $purchase_order);
 	Display::heading(_("Purchase Order Delivery") . " #" . $_GET['trans_no']);
 	echo "<br>";
 	display_grn_summary($purchase_order);

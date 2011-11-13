@@ -158,7 +158,7 @@ class GL_Bank {
 			$supp_amount = Banking::exchange_from_to($total_amount, $currency, Banking::get_supplier_currency($person_id), $date_);
 			// we need to negate it too
 			$supp_amount = -$supp_amount;
-			$trans_no = add_supp_trans($trans_type, $person_id, $date_, '',
+			$trans_no = Purch_Trans::add($trans_type, $person_id, $date_, '',
 				$ref, "", $supp_amount, 0, 0);
 		} else {
 			$trans_no = SysTypes::get_next_trans_no($trans_type);

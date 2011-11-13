@@ -107,7 +107,7 @@
 						}
 					}
 				} else { // other type of sales transaction
-					read_sales_trans($type, $trans_no, $this);
+					Sales_Trans::read($type, $trans_no, $this);
 					if ($this->order_no) { // free hand credit notes have no order_no
 						$sodata = Sales_Order::get_header($this->order_no, ST_SALESORDER);
 						$this->cust_ref = $sodata["customer_ref"];
@@ -119,7 +119,7 @@
 					}
 					// old derivative transaction edit
 					if (!$view && ($type != ST_CUSTCREDIT || $this->trans_link != 0)) {
-						$src_type = get_parent_type($type);
+						$src_type = Sales_Trans::get_parent_type($type);
 						if ($src_type == ST_SALESORDER) { // get src data from sales_orders
 							$this->src_docs = array($sodata['order_no'] => $sodata['version']);
 							$srcdetails = Sales_Order::get_details($this->order_no, ST_SALESORDER);
@@ -211,7 +211,7 @@
 			if (count($this->src_docs) == 0 && ($this->trans_type == ST_SALESINVOICE || $this->trans_type == ST_CUSTDELIVERY)) {
 				// this is direct document - first add parent
 				$src = (PHP_VERSION < 5) ? $this : clone($this); // make local copy of this cart
-				$src->trans_type = get_parent_type($src->trans_type);
+				$src->trans_type = Sales_Trans::get_parent_type($src->trans_type);
 				$src->reference = 'auto';
 				$src->write(1);
 				$type = $this->trans_type;
@@ -349,6 +349,31 @@
 			$this->line_items[$line_no]->price = $price;
 			$this->line_items[$line_no]->discount_percent = $disc;
 		}
+
+			//--------------------------------------------------------------------------------------------------
+			public static function update_parent_line($doc_type, $line_id, $qty_dispatched)
+			{
+				$doc_type = Sales_Trans::get_parent_type($doc_type);
+				//	echo "update line: $line_id, $doc_type, $qty_dispatched";
+				if ($doc_type == 0) {
+					return false;
+				}
+				else {
+					if ($doc_type == ST_SALESORDER) {
+						$sql
+						 = "UPDATE sales_order_details
+						SET qty_sent = qty_sent + $qty_dispatched
+						WHERE id=" . DB::escape($line_id);
+					} else {
+						$sql
+						 = "UPDATE debtor_trans_details
+						SET qty_done = qty_done + $qty_dispatched
+						WHERE id=" . DB::escape($line_id);
+					}
+				}
+				DB::query($sql, "The parent document detail record could not be updated");
+				return true;
+			}
 
 		function discount_all($discount)
 		{

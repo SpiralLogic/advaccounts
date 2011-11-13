@@ -140,6 +140,18 @@
 			standard_cost=0	WHERE type=" . DB::escape($type) . " AND trans_no=" . DB::escape($type_no);
 		DB::query($sql, "Could not void stock moves");
 	}
-
+	//----------------------------------------------------------------------------------------
+	// $price in customer's currency
+	// $quantity is used as is (if it's neg it's neg, if it's pos it's pos)
+	// $std_cost is in home currency
+	// $show_or_hide 1 show this item in invoice/credit views, 0 to hide it (used for write-off items)
+	// $type is 10 (invoice) or 11 (credit)
+	function add_stock_move_customer($type, $stock_id, $trans_id, $location, $date_, $reference,
+																	 $quantity, $std_cost, $show_or_hide = 1, $price = 0, $discount_percent = 0)
+	{
+		return add_stock_move($type, $stock_id, $trans_id, $location, $date_, $reference,
+			$quantity, $std_cost, 0, $show_or_hide, $price, $discount_percent,
+			"The customer stock movement record cannot be inserted");
+	}
 	//--------------------------------------------------------------------------------------------------
 ?>

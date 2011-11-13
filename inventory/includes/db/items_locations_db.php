@@ -91,4 +91,22 @@
 		Errors::show_db_error("could not retreive the location name for $loc_code", $sql, true);
 	}
 
+		//--------------------------------------------------------------------------------------------------
+		// find inventory location for given transaction
+		//
+		function get_location(&$cart)
+		{
+			$sql = "SELECT locations.* FROM stock_moves,"
+			 . "locations" .
+			 " WHERE type=" . DB::escape($cart->trans_type) .
+			 " AND trans_no=" . key($cart->trans_no) .
+			 " AND qty!=0 " .
+			 " AND locations.loc_code=stock_moves.loc_code";
+			$result = DB::query($sql, 'Retreiving inventory location');
+			if (DB::num_rows($result)) {
+				return DB::fetch($result);
+			}
+			return null;
+		}
+
 ?>

@@ -61,7 +61,7 @@
 		start_outer_table("width=95% " . Config::get('tables_style2'));
 		table_section(1);
 		if (isset($_POST['invoice_no'])) {
-			$trans = get_supp_trans($_POST['invoice_no'], ST_SUPPINVOICE);
+			$trans = Purch_Trans::get($_POST['invoice_no'], ST_SUPPINVOICE);
 			$_POST['supplier_id'] = $trans['supplier_id'];
 			$supp = $trans['supplier_name'] . " - " . $trans['SupplierCurrCode'];
 			label_row(_("Supplier:"), $supp . hidden('supplier_id', $_POST['supplier_id'], false));
@@ -77,7 +77,7 @@
 			// delete all the order items - drastic but necessary because of
 			// change of currency, etc
 			$supp_trans->clear_items();
-			read_supplier_details_to_trans($supp_trans, $_POST['supplier_id']);
+			Purch_Invoice::get_supplier_to_trans($supp_trans, $_POST['supplier_id']);
 			copy_from_trans($supp_trans);
 		}
 		if ($supp_trans->is_invoice) {
@@ -148,7 +148,7 @@
 	//--------------------------------------------------------------------------------------------------
 	function display_gl_controls($supp_trans, $k)
 	{
-		$accs = get_supplier_accounts($supp_trans->supplier_id);
+		$accs = Purch_Creditor::get_accounts_name($supp_trans->supplier_id);
 		$_POST['gl_code'] = $accs['purchase_account'];
 		alt_table_row_color($k);
 		echo gl_all_accounts_list('gl_code', null, true, true);
@@ -281,21 +281,21 @@
 	function display_grn_items_for_selection($supp_trans, $k)
 	{
 		if ($supp_trans->is_invoice) {
-			$result = get_grn_items(0, $supp_trans->supplier_id, true);
+			$result = Purch_GRN::get_items(0, $supp_trans->supplier_id, true);
 		}
 		else {
 			if (isset($_POST['receive_begin']) && isset($_POST['receive_end'])) {
-				$result = get_grn_items(
+				$result = Purch_GRN::get_items(
 					0, $supp_trans->supplier_id, false, true, 0, $_POST['receive_begin'],
 					$_POST['receive_end']
 				);
 			}
 			else {
 				if (isset($_POST['invoice_no'])) {
-					$result = get_grn_items(0, $supp_trans->supplier_id, false, true, $_POST['invoice_no']);
+					$result = Purch_GRN::get_items(0, $supp_trans->supplier_id, false, true, $_POST['invoice_no']);
 				}
 				else {
-					$result = get_grn_items(0, $supp_trans->supplier_id, false, true);
+					$result = Purch_GRN::get_items(0, $supp_trans->supplier_id, false, true);
 				}
 			}
 		}
@@ -465,7 +465,7 @@
 				$supp_trans->grn_items as $entered_grn
 			) {
 				alt_table_row_color($k);
-				$grn_batch = get_grn_batch_from_item($entered_grn->id);
+				$grn_batch = Purch_GRN::get_batch_for_item($entered_grn->id);
 				label_cell(ui_view::get_trans_view_str(ST_SUPPRECEIVE, $grn_batch));
 				if ($mode == 1) {
 					label_cell($entered_grn->id);

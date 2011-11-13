@@ -21,9 +21,9 @@
 	{
 		$trans_no = $_POST["trans_no"];
 	}
-	$supp_trans = new Purchase_Trans();
+	$supp_trans = new Purch_Trans();
 	$supp_trans->is_invoice = false;
-	read_supp_invoice($trans_no, ST_SUPPCREDIT, $supp_trans);
+	Purch_Invoice::get($trans_no, ST_SUPPCREDIT, $supp_trans);
 	Display::heading(_("SUPPLIER CREDIT NOTE") . " # " . $trans_no);
 	echo "<br>";
 	start_table(Config::get('tables_style2'));

@@ -33,7 +33,7 @@
 			unset($_SESSION['PO']);
 		}
 		//session_register("PO");
-		$_SESSION['PO'] = new Purchase_Order;
+		$_SESSION['PO'] = new Purch_Order;
 		$_POST['OrderDate'] = Dates::new_doc_date();
 		if (!Dates::is_date_in_fiscalyear($_POST['OrderDate'])) {
 			$_POST['OrderDate'] = Dates::end_fiscalyear();
@@ -71,8 +71,8 @@
 				$line = &$order->line_items[$line_no];
 				$line->price = get_purchase_price($order->supplier_id, $line->stock_id);
 				$line->quantity
-				 = $line->quantity / get_purchase_conversion_factor($old_supp, $line->stock_id)
-					 * get_purchase_conversion_factor($order->supplier_id, $line->stock_id);
+				 = $line->quantity / Purch_Trans::get_conversion_factor($old_supp, $line->stock_id)
+					 * Purch_Trans::get_conversion_factor($order->supplier_id, $line->stock_id);
 			}
 			$Ajax->activate('items_table');
 		}
@@ -278,7 +278,7 @@
 			$_POST['units'] = $item_info["units"];
 			$_POST['description'] = $item_info['description'];
 			$dec = $item_info["decimals"];
-			$_POST['qty'] = Num::format(get_purchase_conversion_factor($order->supplier_id, Input::post('stock_id')), $dec);
+			$_POST['qty'] = Num::format(Purch_Trans::get_conversion_factor($order->supplier_id, Input::post('stock_id')), $dec);
 			//$_POST['price'] = Num::price_format(get_purchase_price ($order->supplier_id, $_POST['stock_id']));
 			$_POST['price'] = Num::price_decimal(get_purchase_price($order->supplier_id, Input::post('stock_id')), $dec2);
 			$_POST['req_del_date'] = Dates::add_days(Dates::Today(), 10);

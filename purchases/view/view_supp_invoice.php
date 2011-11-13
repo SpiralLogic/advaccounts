@@ -21,9 +21,9 @@
 	{
 		$trans_no = $_POST["trans_no"];
 	}
-	$supp_trans = new Purchase_Trans();
+	$supp_trans = new Purch_Trans();
 	$supp_trans->is_invoice = true;
-	read_supp_invoice($trans_no, ST_SUPPINVOICE, $supp_trans);
+	Purch_Invoice::get($trans_no, ST_SUPPINVOICE, $supp_trans);
 	$supplier_curr_code = Banking::get_supplier_currency($supp_trans->supplier_id);
 	Display::heading(_("SUPPLIER INVOICE") . " # " . $trans_no);
 	echo "<br>";

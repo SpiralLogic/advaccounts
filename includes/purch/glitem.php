@@ -6,7 +6,7 @@
 	 * Time: 7:05 AM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	class Purchase_GLItem
+	class Purch_GLItem
 	{
 		/* Contains relavent information from the purch_order_details as well to provide in cached form,
 					all the info to do the necessary entries without looking up ie additional queries of the database again */

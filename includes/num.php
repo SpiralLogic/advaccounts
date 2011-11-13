@@ -73,4 +73,25 @@
 		{
 			return Num::format($number, User::prefs()->percent_dec());
 		}
+
+
+		public static 	function round_to_nearest($price, $round_to)
+			{
+				if ($price == 0) {
+					return 0;
+				}
+				$pow = pow(10, User::price_dec());
+				if ($pow >= $round_to) {
+					$mod = ($pow % $round_to);
+				} else {
+					$mod = ($round_to % $pow);
+				}
+				if ($mod != 0) {
+					$price = ceil($price) - ($pow - $round_to) / $pow;
+				} else {
+					$price = ceil($price * ($pow / $round_to)) / ($pow / $round_to);
+				}
+				return $price;
+			}
+
 	}

@@ -138,7 +138,7 @@
 		} else {
 			$rate = input_num('_ex_rate');
 		}
-		$payment_id = add_supp_payment(
+		$payment_id = Purch_Payment::add(
 			$_POST['supplier_id'], $_POST['DatePaid'],
 			$_POST['bank_account'], input_num('amount'), input_num('discount'),
 			$_POST['ref'], $_POST['memo_'], $rate, input_num('charge')

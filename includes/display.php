@@ -290,7 +290,7 @@
 				Display::allocations($alloc_result, $total);
 				return;
 			case PT_SUPPLIER :
-				$alloc_result = get_allocatable_to_supp_transactions($person_id, $type_no, $type);
+				$alloc_result = Purch_Allocation::get_allocatable_to_trans($person_id, $type_no, $type);
 				Display::allocations($alloc_result, $total);
 				return;
 			}

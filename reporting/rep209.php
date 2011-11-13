@@ -98,7 +98,7 @@
 			while ($myrow2 = DB::fetch($result))
 			{
 				if ($myrow2['item_code'] != 'freight' || $myrow['freight'] != $myrow2['unit_price']) {
-					$data = get_purchase_data($myrow['supplier_id'], $myrow2['item_code']);
+					$data = Purch_Order::get_data($myrow['supplier_id'], $myrow2['item_code']);
 					if ($data !== false) {
 						if ($data['supplier_description'] != "") {
 							$myrow2['item_code'] = $data['supplier_description'];

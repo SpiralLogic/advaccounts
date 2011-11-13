@@ -29,7 +29,7 @@
 		}
 		$total = 0;
 		/* Bank account entry first */
-		$total += add_gl_trans_customer(ST_CUSTPAYMENT, $payment_no, $date_,
+		$total += Sales_Debtor_Trans::add_gl_trans(ST_CUSTPAYMENT, $payment_no, $date_,
 			$bank_gl_account, 0, 0, $amount - $charge, $customer_id,
 			"Cannot insert a GL transaction for the bank account debit", $rate);
 		if ($branch_id != ANY_NUMERIC) {
@@ -44,20 +44,20 @@
 		}
 		if (($discount + $amount) != 0) {
 			/* Now Credit Debtors account with receipts + discounts */
-			$total += add_gl_trans_customer(ST_CUSTPAYMENT, $payment_no, $date_,
+			$total += Sales_Debtor_Trans::add_gl_trans(ST_CUSTPAYMENT, $payment_no, $date_,
 				$debtors_account, 0, 0, -($discount + $amount), $customer_id,
 				"Cannot insert a GL transaction for the debtors account credit", $rate);
 		}
 		if ($discount != 0) {
 			/* Now Debit discount account with discounts allowed*/
-			$total += add_gl_trans_customer(ST_CUSTPAYMENT, $payment_no, $date_,
+			$total += Sales_Debtor_Trans::add_gl_trans(ST_CUSTPAYMENT, $payment_no, $date_,
 				$discount_account, 0, 0, $discount, $customer_id,
 				"Cannot insert a GL transaction for the payment discount debit", $rate);
 		}
 		if ($charge != 0) {
 			/* Now Debit bank charge account with charges */
 			$charge_act = DB_Company::get_pref('bank_charge_act');
-			$total += add_gl_trans_customer(ST_CUSTPAYMENT, $payment_no, $date_,
+			$total += Sales_Debtor_Trans::add_gl_trans(ST_CUSTPAYMENT, $payment_no, $date_,
 				$charge_act, 0, 0, $charge, $customer_id,
 				"Cannot insert a GL transaction for the payment bank charge debit", $rate);
 		}

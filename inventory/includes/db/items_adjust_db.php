@@ -53,7 +53,7 @@
 		if (Input::post('mb_flag') == STOCK_SERVICE) {
 			Errors::show_db_error("Cannot do inventory adjustment for Service item : $stock_id", "");
 		}
-		update_average_material_cost(null, $stock_id, $standard_cost, $quantity, $date_);
+		Purch_GRN::update_average_material_cost(null, $stock_id, $standard_cost, $quantity, $date_);
 		add_stock_move(ST_INVADJUST, $stock_id, $adj_id, $location,
 									 $date_, $reference, $quantity, $standard_cost, $type);
 		if ($standard_cost > 0) {

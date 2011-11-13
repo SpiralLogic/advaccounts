@@ -35,8 +35,8 @@
 	if (isset($_GET['New'])) {
 		//session_register("SuppInv");
 		//session_register("supp_trans");
-		Purchase_Trans::instance(true);
-		Purchase_Trans::instance()->is_invoice = true;
+		Purch_Trans::instance(true);
+		Purch_Trans::instance()->is_invoice = true;
 		if (isset($_GET['SuppID'])) {
 			$_SESSION['supplier_id'] = $_GET['SuppID'];
 		}
@@ -87,10 +87,10 @@
 			$input_error = true;
 		}
 		if ($input_error == false) {
-			Purchase_Trans::instance()->add_gl_codes_to_trans($_POST['gl_code'], $gl_act_name, null, null, input_num('amount'), $_POST['memo_']);
+			Purch_Trans::instance()->add_gl_codes_to_trans($_POST['gl_code'], $gl_act_name, null, null, input_num('amount'), $_POST['memo_']);
 			$taxexists = false;
 			foreach (
-				Purchase_Trans::instance()->gl_codes as &$gl_item
+				Purch_Trans::instance()->gl_codes as &$gl_item
 			) {
 				if ($gl_item->gl_code == 2430) {
 					$taxexists = true;
@@ -99,7 +99,7 @@
 				}
 			}
 			if (!$taxexists) {
-				Purchase_Trans::instance()->add_gl_codes_to_trans(2430, 'GST Paid', 0, 0, input_num('amount') * .1, 'GST TAX Paid');
+				Purch_Trans::instance()->add_gl_codes_to_trans(2430, 'GST Paid', 0, 0, input_num('amount') * .1, 'GST TAX Paid');
 			}
 			JS::set_focus('gl_code');
 		}
@@ -107,42 +107,42 @@
 	//------------------------------------------------------------------------------------------------
 	function check_data()
 	{
-		if (!Purchase_Trans::instance()->is_valid_trans_to_post()) {
+		if (!Purch_Trans::instance()->is_valid_trans_to_post()) {
 			Errors::error(_("The invoice cannot be processed because the there are no items or values on the invoice.  Invoices are expected to have a charge."));
 			return false;
 		}
-		if (!Refs::is_valid(Purchase_Trans::instance()->reference)) {
+		if (!Refs::is_valid(Purch_Trans::instance()->reference)) {
 			Errors::error(_("You must enter an invoice reference."));
 			JS::set_focus('reference');
 			return false;
 		}
-		while (!is_new_reference(Purchase_Trans::instance()->reference, ST_SUPPINVOICE)) {
+		while (!is_new_reference(Purch_Trans::instance()->reference, ST_SUPPINVOICE)) {
 			//Errors::error(_("The entered reference is already in use."));
 			//JS::set_focus('reference');
 			//return false;
-			Purchase_Trans::instance()->reference = Refs::get_next(ST_SUPPINVOICE);
+			Purch_Trans::instance()->reference = Refs::get_next(ST_SUPPINVOICE);
 		}
-		if (!Refs::is_valid(Purchase_Trans::instance()->supp_reference)) {
+		if (!Refs::is_valid(Purch_Trans::instance()->supp_reference)) {
 			Errors::error(_("You must enter a supplier's invoice reference."));
 			JS::set_focus('supp_reference');
 			return false;
 		}
-		if (!Dates::is_date(Purchase_Trans::instance()->tran_date)) {
+		if (!Dates::is_date(Purch_Trans::instance()->tran_date)) {
 			Errors::error(_("The invoice as entered cannot be processed because the invoice date is in an incorrect format."));
 			JS::set_focus('trans_date');
 			return false;
 		}
-		elseif (!Dates::is_date_in_fiscalyear(Purchase_Trans::instance()->tran_date)) {
+		elseif (!Dates::is_date_in_fiscalyear(Purch_Trans::instance()->tran_date)) {
 			Errors::error(_("The entered date is not in fiscal year."));
 			JS::set_focus('trans_date');
 			return false;
 		}
-		if (!Dates::is_date(Purchase_Trans::instance()->due_date)) {
+		if (!Dates::is_date(Purch_Trans::instance()->due_date)) {
 			Errors::error(_("The invoice as entered cannot be processed because the due date is in an incorrect format."));
 			JS::set_focus('due_date');
 			return false;
 		}
-		$sql = "SELECT Count(*) FROM supp_trans WHERE supplier_id=" . DB::escape(Purchase_Trans::instance()->supplier_id) . " AND supp_reference=" . DB::escape($_POST['supp_reference']) . " AND ov_amount!=0"; // ignore voided invoice references
+		$sql = "SELECT Count(*) FROM supp_trans WHERE supplier_id=" . DB::escape(Purch_Trans::instance()->supplier_id) . " AND supp_reference=" . DB::escape($_POST['supp_reference']) . " AND ov_amount!=0"; // ignore voided invoice references
 		$result = DB::query($sql, "The sql to check for the previous entry of the same invoice failed");
 		$myrow = DB::fetch_row($result);
 		if ($myrow[0] == 1) { /*Transaction reference already entered */
@@ -155,14 +155,14 @@
 	//--------------------------------------------------------------------------------------------------
 	function handle_commit_invoice()
 	{
-		copy_to_trans(Purchase_Trans::instance());
+		copy_to_trans(Purch_Trans::instance());
 		if (!check_data()) {
 			return;
 		}
 		if (get_post('ChgTax', 0) != 0) {
 			$taxexists = false;
 			foreach (
-				Purchase_Trans::instance()->gl_codes as &$gl_item
+				Purch_Trans::instance()->gl_codes as &$gl_item
 			) {
 				if ($gl_item->gl_code == 2430) {
 					$taxexists = true;
@@ -171,16 +171,16 @@
 				}
 			}
 			if (!$taxexists) {
-				Purchase_Trans::instance()->add_gl_codes_to_trans(2430, 'GST Paid', 0, 0, get_post('ChgTax'), 'GST Correction');
+				Purch_Trans::instance()->add_gl_codes_to_trans(2430, 'GST Paid', 0, 0, get_post('ChgTax'), 'GST Correction');
 			}
 		}
 		if (get_post('ChgTotal', 0) != 0) {
-			Purchase_Trans::instance()->add_gl_codes_to_trans(DB_Company::get_pref('default_cogs_act'), 'Cost of Goods Sold', 0, 0, get_post('ChgTotal'), 'Rounding Correction');
+			Purch_Trans::instance()->add_gl_codes_to_trans(DB_Company::get_pref('default_cogs_act'), 'Cost of Goods Sold', 0, 0, get_post('ChgTotal'), 'Rounding Correction');
 		}
-		$invoice_no = add_supp_invoice(Purchase_Trans::instance());
+		$invoice_no = Purch_Invoice::add(Purch_Trans::instance());
 		$_SESSION['history'][ST_SUPPINVOICE] = $_POST['Reference'];
-		Purchase_Trans::instance()->clear_items();
-		Purchase_Trans::killInstance();
+		Purch_Trans::instance()->clear_items();
+		Purch_Trans::killInstance();
 		meta_forward($_SERVER['PHP_SELF'], "AddedID=$invoice_no");
 	}
 
@@ -248,7 +248,7 @@
 				$complete = false;
 			}
 			$_SESSION['err_over_charge'] = false;
-			Purchase_Trans::instance()->add_grn_to_trans(
+			Purch_Trans::instance()->add_grn_to_trans(
 				$n, $_POST['po_detail_item' . $n], $_POST['item_code' . $n], $_POST['description' . $n], $_POST['qty_recd' . $n],
 				$_POST['prev_quantity_inv' . $n], input_num('this_quantity_inv' . $n), $_POST['order_price' . $n], input_num('ChgPrice' . $n),
 				$complete, $_POST['std_cost_unit' . $n], "", input_num('ChgDiscount' . $n), input_num('ExpPrice' . $n)
@@ -275,7 +275,7 @@
 	//--------------------------------------------------------------------------------------------------
 	$id3 = find_submit('Delete');
 	if ($id3 != -1) {
-		Purchase_Trans::instance()->remove_grn_from_trans($id3);
+		Purch_Trans::instance()->remove_grn_from_trans($id3);
 		$Ajax->activate('grn_items');
 		$Ajax->activate('inv_tot');
 	}
@@ -284,9 +284,9 @@
 		if (!isset($taxtotal)) {
 			$taxtotal = 0;
 		}
-		Purchase_Trans::instance()->remove_gl_codes_from_trans($id4);
+		Purch_Trans::instance()->remove_gl_codes_from_trans($id4);
 		foreach (
-			Purchase_Trans::instance()->gl_codes as $key => $gl_item
+			Purch_Trans::instance()->gl_codes as $key => $gl_item
 		) {
 			if ($gl_item->gl_code == 2430) {
 				$taxrecord = $key;
@@ -295,7 +295,7 @@
 			$taxtotal += $gl_item->amount;
 		}
 		if (!is_null($taxrecord)) {
-			Purchase_Trans::instance()->gl_codes[$taxrecord]->amount = $taxtotal * .1;
+			Purch_Trans::instance()->gl_codes[$taxrecord]->amount = $taxtotal * .1;
 		}
 		clear_fields();
 		$Ajax->activate('gl_items');
@@ -306,8 +306,8 @@
 		$id2 = find_submit('void_item_id');
 		if ($id2 != -1) {
 			DB::begin_transaction();
-			$myrow = get_grn_item_detail($id2);
-			$grn = get_grn_batch($myrow['grn_batch_id']);
+			$myrow = Purch_GRN::get_item($id2);
+			$grn = Purch_GRN::get_batch($myrow['grn_batch_id']);
 			$sql
 			 = "UPDATE purch_order_details
 			SET quantity_received = qty_invoiced, quantity_ordered = qty_invoiced WHERE po_detail_item = " . $myrow["po_detail_item"];
@@ -316,7 +316,7 @@
 			 = "UPDATE grn_items
 	    	SET qty_recd = quantity_inv WHERE id = " . $myrow["id"];
 			DB::query($sql, "The quantity invoiced off the items received record could not be updated");
-			update_average_material_cost($grn["supplier_id"], $myrow["item_code"], $myrow["unit_price"], -$myrow["QtyOstdg"], Dates::Today());
+			Purch_GRN::update_average_material_cost($grn["supplier_id"], $myrow["item_code"], $myrow["unit_price"], -$myrow["QtyOstdg"], Dates::Today());
 			add_stock_move(
 				ST_SUPPRECEIVE, $myrow["item_code"], $myrow['grn_batch_id'], $grn['loc_code'], Dates::sql2date($grn["delivery_date"]), "", -$myrow["QtyOstdg"],
 				$myrow['std_cost_unit'], $grn["supplier_id"], 1, $myrow['unit_price']
@@ -327,16 +327,16 @@
 	}
 	if (isset($_POST['go'])) {
 		$Ajax->activate('gl_items');
-		Display::quick_entries(Purchase_Trans::instance(), $_POST['qid'], input_num('totamount'), QE_SUPPINV);
+		Display::quick_entries(Purch_Trans::instance(), $_POST['qid'], input_num('totamount'), QE_SUPPINV);
 		$_POST['totamount'] = Num::price_format(0);
 		$Ajax->activate('totamount');
 		$Ajax->activate('inv_tot');
 	}
 	start_form();
-	invoice_header(Purchase_Trans::instance());
+	invoice_header(Purch_Trans::instance());
 	if ($_SESSION['supplier_id']) {
 		$_POST['supplier_id'] = $_SESSION['supplier_id'];
-		if (Purchase_Trans::instance()) {
+		if (Purch_Trans::instance()) {
 			unset($_SESSION['supplier_id']);
 			unset($_SESSION['delivery_po']);
 		}
@@ -345,10 +345,10 @@
 		Errors::error(_("There is no supplier selected."));
 	}
 	else {
-		display_grn_items(Purchase_Trans::instance(), 1);
-		display_gl_items(Purchase_Trans::instance(), 1);
+		display_grn_items(Purch_Trans::instance(), 1);
+		display_gl_items(Purch_Trans::instance(), 1);
 		div_start('inv_tot');
-		invoice_totals(Purchase_Trans::instance());
+		invoice_totals(Purch_Trans::instance());
 		div_end();
 	}
 	//-----------------------------------------------------------------------------------------

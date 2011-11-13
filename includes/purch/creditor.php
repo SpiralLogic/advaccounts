@@ -9,7 +9,10 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	function get_supplier_details($supplier_id, $to = null) {
+	class Purch_Creditor {
+
+		public static function get_to_trans($supplier_id, $to = null) {
+
 
 		if ($to == null)
 			$todate = date("Y-m-d");
@@ -79,7 +82,7 @@
 	/**
 	 *	 Get how much we owe the supplier for the period
 	 */
-	function get_supplier_oweing($supplier_id, $date_from, $date_to) {
+	public static function get_oweing($supplier_id, $date_from, $date_to) {
 		$date_from = Dates::date2sql($date_from);
 		$date_to = Dates::date2sql($date_to);
 		// Sherifoz 22.06.03 Also get the description
@@ -100,7 +103,7 @@
 		return $results['Total'];
 	}
 
-	function get_supplier($supplier_id) {
+	public static function get($supplier_id) {
 		$sql = "SELECT * FROM suppliers WHERE supplier_id=" . DB::escape($supplier_id);
 
 		$result = DB::query($sql, "could not get supplier");
@@ -108,7 +111,7 @@
 		return DB::fetch($result);
 	}
 
-	function get_supplier_name($supplier_id) {
+	public static function get_name($supplier_id) {
 		$sql = "SELECT supp_name AS name FROM suppliers WHERE supplier_id=" . DB::escape($supplier_id);
 
 		$result = DB::query($sql, "could not get supplier");
@@ -118,7 +121,7 @@
 		return $row[0];
 	}
 
-	function get_supplier_accounts($supplier_id) {
+	public static function get_accounts_name($supplier_id) {
 		$sql = "SELECT payable_account,purchase_account,payment_discount_account FROM suppliers WHERE supplier_id=" . DB::escape($supplier_id);
 
 		$result = DB::query($sql, "could not get supplier");
@@ -126,4 +129,4 @@
 		return DB::fetch($result);
 	}
 
-?>
+	}

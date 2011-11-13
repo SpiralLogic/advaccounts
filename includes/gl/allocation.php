@@ -100,7 +100,7 @@
 			}
 			$this->allocs = array();
 			if ($trans_no) {
-				$trans = $this->person_type ? get_supp_trans($trans_no, $type)
+				$trans = $this->person_type ? Purch_Trans::get($trans_no, $type)
 				 : Sales_Trans::get($trans_no, $type);
 				$this->person_id = $trans[$this->person_type ? 'supplier_id' : 'debtor_no'];
 				$this->person_name = $trans[$this->person_type ? "supplier_name" : "DebtorName"];
@@ -115,7 +115,7 @@
 											for this customer/supplier. First get the transactions that have
 											outstanding balances ie Total-alloc >0 */
 			if ($this->person_type) {
-				$trans_items = get_allocatable_to_supp_transactions($this->person_id);
+				$trans_items = Purch_Allocation::get_allocatable_to_trans($this->person_id);
 			} else {
 				$trans_items = Sales_Allocation::get_to_trans($this->person_id);
 			}
@@ -137,7 +137,7 @@
 										NB existing entries where still some of the trans outstanding entered from
 										above logic will be overwritten with the prev alloc detail below */
 			if ($this->person_type) {
-				$trans_items = get_allocatable_to_supp_transactions(
+				$trans_items = Purch_Allocation::get_allocatable_to_trans(
 					$this->person_id,
 					$trans_no, $type
 				);
@@ -166,7 +166,7 @@
 		{
 			DB::begin_transaction();
 			if ($this->person_type) {
-				clear_supp_alloctions($this->type, $this->trans_no, $this->date_);
+				Purch_Allocation::clear($this->type, $this->trans_no, $this->date_);
 			} else {
 				Sales_Allocation::clear($this->type, $this->trans_no, $this->date_);
 			}
@@ -178,12 +178,12 @@
 			{
 				if ($alloc_item->current_allocated > 0) {
 					if ($this->person_type) {
-						add_supp_allocation(
+						Purch_Allocation::add(
 							$alloc_item->current_allocated,
 							$this->type, $this->trans_no,
 							$alloc_item->type, $alloc_item->type_no, $this->date_
 						);
-						update_supp_trans_allocation(
+						Purch_Allocation::update(
 							$alloc_item->type,
 							$alloc_item->type_no, $alloc_item->current_allocated
 						);
@@ -211,7 +211,7 @@
 				}
 			} /*end of the loop through the array of allocations made */
 			if ($this->person_type) {
-				update_supp_trans_allocation(
+				Purch_Allocation::update(
 					$this->type, $this->trans_no,
 					$total_allocated
 				);

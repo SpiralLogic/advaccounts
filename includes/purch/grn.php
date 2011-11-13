@@ -10,7 +10,9 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	//------------------- update average material cost ------------------------------------------ Joe Hunt Mar-03-2008
-	function update_average_material_cost($supplier, $stock_id, $price, $qty, $date, $adj_only = false)
+	class Purch_GRN {
+		public static function update_average_material_cost($supplier, $stock_id, $price, $qty, $date, $adj_only = false)
+	
 	{
 		if ($supplier != null) {
 			$currency = Banking::get_supplier_currency($supplier);
@@ -68,15 +70,15 @@
 	}
 
 	//-------------------------------------------------------------------------------------------------------------
-	function add_grn(&$po, $date_, $reference, $location)
+	public static function add(&$po, $date_, $reference, $location)
 	{
 		DB::begin_transaction();
-		$grn = add_grn_batch($po->order_no, $po->supplier_id, $reference, $location, $date_);
+		$grn = static::add_batch($po->order_no, $po->supplier_id, $reference, $location, $date_);
 		foreach ($po->line_items as $order_line) {
 			if ($order_line->receive_qty != 0 && $order_line->receive_qty != "" && isset($order_line->receive_qty)) {
 				/*Update sales_order_details for the new quantity received and the standard cost used for postings to GL and recorded in the stock movements for FIFO/LIFO stocks valuations*/
 				//------------------- update average material cost ------------------------------------------ Joe Hunt Mar-03-2008
-				update_average_material_cost($po->supplier_id, $order_line->stock_id, $order_line->price, $order_line->receive_qty, $date_);
+				static::update_average_material_cost($po->supplier_id, $order_line->stock_id, $order_line->price, $order_line->receive_qty, $date_);
 				//----------------------------------------------------------------------------------------------------------------
 				if ($order_line->qty_received == 0) {
 					/*This must be the first receipt of goods against this line */
@@ -84,39 +86,24 @@
 					$order_line->standard_cost = get_standard_cost($order_line->stock_id);
 				}
 				if ($order_line->price <= $order_line->standard_cost) {
-					add_or_update_purchase_data($po->supplier_id, $order_line->stock_id, $order_line->price);
+					Purch_Order::add_or_update_data($po->supplier_id, $order_line->stock_id, $order_line->price);
 				}
 				/*Need to insert a grn item */
-				$grn_item = add_grn_detail_item($grn, $order_line->po_detail_rec, $order_line->stock_id, $order_line->description, $order_line->standard_cost, $order_line->receive_qty, $order_line->price,
+				$grn_item = static::add_item($grn, $order_line->po_detail_rec, $order_line->stock_id, $order_line->description, $order_line->standard_cost, $order_line->receive_qty, $order_line->price,
 																				$order_line->discount);
 				/* Update location stock records - NB  a po cannot be entered for a service/kit parts */
 				add_stock_move(ST_SUPPRECEIVE, $order_line->stock_id, $grn, $location, $date_, "", $order_line->receive_qty, $order_line->standard_cost, $po->supplier_id, 1, $order_line->price);
 			} /*quantity received is != 0 */
 		} /*end of order_line loop */
-		$grn_item = add_grn_detail_item($grn, add_freight_to_po($po, $date_), 'Freight', 'Freight Charges', 0, 1, $po->freight, 0);
+		$grn_item = static::add_item($grn, Purch_Order::add_freight($po, $date_), 'Freight', 'Freight Charges', 0, 1, $po->freight, 0);
 		Refs::save(ST_SUPPRECEIVE, $grn, $reference);
 		DB_AuditTrail::add(ST_SUPPRECEIVE, $grn, $date_);
 		DB::commit_transaction();
 		return $grn;
 	}
 
-	//----------------------------------------------------------------------------------------
-	function	 add_freight_to_po(&$po, $date_)
-	{
-		$sql = "INSERT INTO purch_order_details (order_no, item_code, description, delivery_date, unit_price, quantity_ordered, discount) VALUES (";
-		$sql .= $po->order_no . "," .
-						DB::escape('freight') . "," .
-						DB::escape('Freight Charges') . ",'" .
-						Dates::date2sql($date_) . "'," .
-						DB::escape($po->freight) . ", " .
-						DB::escape(1) . ", " .
-						DB::escape(0) .
-						")";
-		DB::query($sql, "One of the purchase order detail records could not be updated");
-		return DB::insert_id();
-	}
 
-	function add_grn_batch($po_number, $supplier_id, $reference, $location, $date_)
+	public static function add_batch($po_number, $supplier_id, $reference, $location, $date_)
 	{
 		$date = Dates::date2sql($date_);
 		$sql
@@ -127,7 +114,7 @@
 	}
 
 	//-------------------------------------------------------------------------------------------------------------
-	function add_grn_detail_item($grn_batch_id, $po_detail_item, $item_code, $description, $standard_unit_cost, $quantity_received, $price, $discount)
+	public static function add_item($grn_batch_id, $po_detail_item, $item_code, $description, $standard_unit_cost, $quantity_received, $price, $discount)
 	{
 		$sql
 		 = "UPDATE purch_order_details
@@ -145,7 +132,7 @@
 	}
 
 	//----------------------------------------------------------------------------------------
-	function get_grn_batch_from_item($item)
+	public static function get_batch_for_item($item)
 	{
 		$sql = "SELECT grn_batch_id FROM grn_items WHERE id=" . DB::escape($item);
 		$result = DB::query($sql, "Could not retreive GRN batch id");
@@ -153,16 +140,16 @@
 		return $row[0];
 	}
 
-	function get_grn_batch($grn)
+	public static function get_batch($grn)
 	{
 		$sql = "SELECT * FROM grn_batch WHERE id=" . DB::escape($grn);
 		$result = DB::query($sql, "Could not retreive GRN batch id");
 		return DB::fetch($result);
 	}
 
-	function set_grn_item_credited(&$entered_grn, $supplier, $transno, $date)
+	public static function set_item_credited(&$entered_grn, $supplier, $transno, $date)
 	{
-		$mcost = update_average_material_cost($supplier, $entered_grn->item_code, $entered_grn->chg_price, $entered_grn->this_quantity_inv, $date);
+		$mcost = static::update_average_material_cost($supplier, $entered_grn->item_code, $entered_grn->chg_price, $entered_grn->this_quantity_inv, $date);
 		$sql
 		 = "SELECT grn_batch.*, grn_items.*
     	FROM grn_batch, grn_items
@@ -186,7 +173,7 @@
 		add_stock_move(ST_SUPPCREDIT, $entered_grn->item_code, $transno, $myrow['loc_code'], $date, "", $entered_grn->this_quantity_inv, $mcost, $supplier, 1, $entered_grn->chg_price);
 	}
 
-	function get_grn_items($grn_batch_id = 0, $supplier_id = "", $outstanding_only = false, $is_invoiced_only = false, $invoice_no = 0, $begin = "", $end = "")
+	public static function get_items($grn_batch_id = 0, $supplier_id = "", $outstanding_only = false, $is_invoiced_only = false, $invoice_no = 0, $begin = "", $end = "")
 	{
 		$sql = "SELECT "
 					 . "grn_batch.*, "
@@ -241,7 +228,7 @@
 
 	//----------------------------------------------------------------------------------------
 	// get the details for a given grn item
-	function get_grn_item_detail($grn_item_no)
+	public static function get_item($grn_item_no)
 	{
 		$sql
 		 = "SELECT grn_items.*, purch_order_details.unit_price,
@@ -256,9 +243,9 @@
 	}
 
 	//----------------------------------------------------------------------------------------
-	function read_grn_items_to_order($grn_batch, &$order)
+	public static function get_items_to_order($grn_batch, &$order)
 	{
-		$result = get_grn_items($grn_batch);
+		$result = static::get_items($grn_batch);
 		if (DB::num_rows($result) > 0) {
 			while ($myrow = DB::fetch($result)) {
 				if (is_null($myrow["units"])) {
@@ -276,31 +263,31 @@
 
 	//----------------------------------------------------------------------------------------
 	// read a grn into an order class
-	function read_grn($grn_batch, &$order)
+	public static function get($grn_batch, &$order)
 	{
 		$sql = "SELECT *	FROM grn_batch WHERE id=" . DB::escape($grn_batch);
 		$result = DB::query($sql, "The grn sent is not valid");
 		$row = DB::fetch($result);
 		$po_number = $row["purch_order_no"];
-		$result = read_po_header($po_number, $order);
+		$result = Purch_Order::get_header($po_number, $order);
 		if ($result) {
 			$order->orig_order_date = Dates::sql2date($row["delivery_date"]);
 			$order->location = $row["loc_code"];
 			$order->reference = $row["reference"];
-			read_grn_items_to_order($grn_batch, $order);
+			static::get_items_to_order($grn_batch, $order);
 		}
 	}
 
 	//----------------------------------------------------------------------------------------------------------
 	// get the GRNs (batch info not details) for a given po number
-	function get_po_grns($po_number)
+	public static function get_for_po($po_number)
 	{
 		$sql = "SELECT * FROM grn_batch WHERE purch_order_no=" . DB::escape($po_number);
 		return DB::query($sql, "The grns for the po $po_number could not be retreived");
 	}
 
 	//----------------------------------------------------------------------------------------------------------
-	function exists_grn($grn_batch)
+	public static function exists($grn_batch)
 	{
 		$sql = "SELECT id FROM grn_batch WHERE id=" . DB::escape($grn_batch);
 		$result = DB::query($sql, "Cannot retreive a grn");
@@ -308,7 +295,7 @@
 	}
 
 	//----------------------------------------------------------------------------------------------------------
-	function exists_grn_on_invoices($grn_batch)
+	public static function exists_on_invoices($grn_batch)
 	{
 		$sql
 		 = "SELECT supp_invoice_items.id FROM supp_invoice_items,grn_items
@@ -320,18 +307,18 @@
 	}
 
 	//----------------------------------------------------------------------------------------------------------
-	function void_grn($grn_batch)
+	public static function void($grn_batch)
 	{
 		// if this grn is references on any invoices/credit notes, then it
 		// can't be voided
-		if (exists_grn_on_invoices($grn_batch)) {
+		if (static::exists_on_invoices($grn_batch)) {
 			return false;
 		}
 		DB::begin_transaction();
 		Bank_Trans::void(ST_SUPPRECEIVE, $grn_batch, true);
 		GL_Trans::void(ST_SUPPRECEIVE, $grn_batch, true);
 		// clear the quantities of the grn items in the POs and invoices
-		$result = get_grn_items($grn_batch);
+		$result = static::get_items($grn_batch);
 		if (DB::num_rows($result) > 0) {
 			while ($myrow = DB::fetch($result)) {
 				$sql
@@ -350,4 +337,5 @@
 		void_stock_move(ST_SUPPRECEIVE, $grn_batch);
 		DB::commit_transaction();
 		return true;
+	}
 	}

@@ -72,7 +72,7 @@
 		return $row['settled'] == 1;
 	}
 
-	$sql = get_allocatable_from_supp_sql($supplier_id, $settled);
+	$sql = Purch_Allocation::get_allocatable_sql($supplier_id, $settled);
 	$cols = array(
 		_("Transaction Type") => array('fun' => 'systype_name'),
 		_("#") => array('fun' => 'trans_view'),

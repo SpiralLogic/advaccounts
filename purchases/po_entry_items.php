@@ -118,7 +118,7 @@
 		}
 		if ($_SESSION['PO']->order_no != 0) {
 
-				delete_po($_SESSION['PO']->order_no);
+				Purch_Order::delete($_SESSION['PO']->order_no);
 		}
 		else {
 
@@ -127,7 +127,7 @@
 		}
 
 		$_SESSION['PO']->clear_items();
-		$_SESSION['PO'] = new Purchase_Order();
+		$_SESSION['PO'] = new Purch_Order();
 		Errors::notice(_("This purchase order has been cancelled."));
 		hyperlink_params("/purchases/po_entry_items.php", _("Enter a new purchase order"), "NewOrder=Yes");
 		echo "<br>";
@@ -286,7 +286,7 @@
 			copy_to_cart();
 			if ($_SESSION['PO']->order_no == 0) {
 				/*its a new order to be inserted */
-				$order_no = add_po($_SESSION['PO']);
+				$order_no = Purch_Order::add($_SESSION['PO']);
 				Dates::new_doc_date($_SESSION['PO']->orig_order_date);
 				$_SESSION['history'][ST_PURCHORDER] = $_SESSION['PO']->reference;
 				unset($_SESSION['PO']);
@@ -294,7 +294,7 @@
 			}
 			else {
 				/*its an existing order need to update the old order info */
-				$order_no = update_po($_SESSION['PO']);
+				$order_no = Purch_Order::update($_SESSION['PO']);
 				$_SESSION['history'][ST_PURCHORDER] = $_SESSION['PO']->reference;
 				meta_forward($_SERVER['PHP_SELF'], "AddedID=$order_no&Updated=1");
 			}
@@ -325,7 +325,7 @@
 		create_new_po();
 		$_SESSION['PO']->order_no = $_GET['ModifyOrderNumber'];
 		/*read in all the selected order into the Items cart  */
-		read_po($_SESSION['PO']->order_no, $_SESSION['PO']);
+		Purch_Order::get($_SESSION['PO']->order_no, $_SESSION['PO']);
 		copy_from_cart();
 	}
 	if (isset($_POST['CancelUpdate']) || isset($_POST['UpdateLine'])) {

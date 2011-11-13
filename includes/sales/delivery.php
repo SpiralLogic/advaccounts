@@ -69,7 +69,7 @@
 																			 $trans_no ? $delivery_line->id : 0);
 			// Now update sales_order_details for the quantity delivered
 			if ($delivery_line->qty_old != $delivery_line->qty_dispatched) {
-				update_parent_line(ST_CUSTDELIVERY, $delivery_line->src_id,
+				Sales_Order::update_parent_line(ST_CUSTDELIVERY, $delivery_line->src_id,
 													 $delivery_line->qty_dispatched - $delivery_line->qty_old);
 			}
 			if ($delivery_line->qty_dispatched != 0) {
@@ -141,7 +141,7 @@
 			$order_items = Sales_Order::get_details($order, ST_SALESORDER);
 			while ($row = DB::fetch($items_result)) {
 				$order_line = DB::fetch($order_items);
-				update_parent_line(ST_CUSTDELIVERY, $order_line['id'], -$row['quantity']);
+				Sales_Order::update_parent_line(ST_CUSTDELIVERY, $order_line['id'], -$row['quantity']);
 			}
 		}
 		// clear details after they've been reversed in the sales order

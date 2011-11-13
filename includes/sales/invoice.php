@@ -31,7 +31,7 @@
 		if (is_array($delivery_no)) {
 			$delivery_no = 0;
 		}
-		Sales_Trans::update_version(get_parent_type(ST_SALESINVOICE), $invoice->src_docs);
+		Sales_Trans::update_version(Sales_Trans::get_parent_type(ST_SALESINVOICE), $invoice->src_docs);
 		$ov_gst = 0;
 		$taxes = $invoice->get_taxes(); // all taxes with freight_tax
 		foreach ($taxes as $taxitem) {
@@ -66,7 +66,7 @@
 		// 2008-06-14 extra $alloc, 2008-11-12 added dimension_id Joe Hunt
 		if ($trans_no == 0) {
 			$invoice->trans_no = array($invoice_no => 0);
-			set_document_parent($invoice);
+			Sales_Trans::set_parent($invoice);
 		}
 		else {
 			DB_Comments::delete(ST_SALESINVOICE, $invoice_no);
@@ -89,7 +89,7 @@
 																			 $trans_no ? $invoice_line->id : 0);
 			// Update delivery items for the quantity invoiced
 			if ($invoice_line->qty_old != $invoice_line->qty_dispatched) {
-				update_parent_line(ST_SALESINVOICE, $invoice_line->src_id, ($invoice_line->qty_dispatched - $invoice_line->qty_old));
+				Sales_Order::update_parent_line(ST_SALESINVOICE, $invoice_line->src_id, ($invoice_line->qty_dispatched - $invoice_line->qty_old));
 			}
 			if ($invoice_line->qty_dispatched != 0) {
 				$stock_gl_code = Item::get_gl_code($invoice_line->stock_id);
@@ -112,11 +112,11 @@
 						? $customer["dimension2_id"]
 						:
 						$stock_gl_code["dimension2_id"]));
-					$total += add_gl_trans_customer(ST_SALESINVOICE, $invoice_no, $date_, $sales_account, $dim, $dim2,
+					$total += Sales_Debtor_Trans::add_gl_trans(ST_SALESINVOICE, $invoice_no, $date_, $sales_account, $dim, $dim2,
 						(-$line_taxfree_price * $invoice_line->qty_dispatched),
 																					$invoice->customer_id, "The sales price GL posting could not be inserted");
 					if ($invoice_line->discount_percent != 0) {
-						$total += add_gl_trans_customer(ST_SALESINVOICE, $invoice_no, $date_,
+						$total += Sales_Debtor_Trans::add_gl_trans(ST_SALESINVOICE, $invoice_no, $date_,
 																						$branch_data["sales_discount_account"], $dim, $dim2,
 							($line_taxfree_price * $invoice_line->qty_dispatched * $invoice_line->discount_percent),
 																						$invoice->customer_id, "The sales discount GL posting could not be inserted");
@@ -125,12 +125,12 @@
 			} /*quantity dispatched is more than 0 */
 		} /*end of delivery_line loop */
 		if (($items_total + $charge_shipping) != 0) {
-			$total += add_gl_trans_customer(ST_SALESINVOICE, $invoice_no, $date_, $branch_data["receivables_account"], 0, 0,
+			$total += Sales_Debtor_Trans::add_gl_trans(ST_SALESINVOICE, $invoice_no, $date_, $branch_data["receivables_account"], 0, 0,
 				($items_total + $charge_shipping + $items_added_tax + $freight_added_tax),
 																			$invoice->customer_id, "The total debtor GL posting could not be inserted");
 		}
 		if ($charge_shipping != 0) {
-			$total += add_gl_trans_customer(ST_SALESINVOICE, $invoice_no, $date_, $company_data["freight_act"], 0, 0,
+			$total += Sales_Debtor_Trans::add_gl_trans(ST_SALESINVOICE, $invoice_no, $date_, $company_data["freight_act"], 0, 0,
 																			-$invoice->get_tax_free_shipping(), $invoice->customer_id,
 																			"The freight GL posting could not be inserted");
 		}
@@ -141,7 +141,7 @@
 				GL_Trans::add_tax_details(ST_SALESINVOICE, $invoice_no, $taxitem['tax_type_id'],
 															$taxitem['rate'], $invoice->tax_included, $taxitem['Value'],
 															$taxitem['Net'], $ex_rate, $date_, $invoice->reference);
-				$total += add_gl_trans_customer(ST_SALESINVOICE, $invoice_no, $date_, $taxitem['sales_gl_code'], 0, 0,
+				$total += Sales_Debtor_Trans::add_gl_trans(ST_SALESINVOICE, $invoice_no, $date_, $taxitem['sales_gl_code'], 0, 0,
 					(-$taxitem['Value']), $invoice->customer_id,
 																				"A tax GL posting could not be inserted");
 			}
@@ -166,10 +166,10 @@
 		$items_result = Sales_Debtor_Trans::get($type, $type_no);
 		$deliveries = Sales_Trans::get_parent($type, $type_no);
 		if ($deliveries !== 0) {
-			$srcdetails = Sales_Debtor_Trans::get(get_parent_type($type), $deliveries);
+			$srcdetails = Sales_Debtor_Trans::get(Sales_Trans::get_parent_type($type), $deliveries);
 			while ($row = DB::fetch($items_result)) {
 				$src_line = DB::fetch($srcdetails);
-				update_parent_line($type, $src_line['id'], -$row['quantity']);
+				Sales_Order::update_parent_line($type, $src_line['id'], -$row['quantity']);
 			}
 		}
 		// clear details after they've been reversed in the sales order

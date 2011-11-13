@@ -195,7 +195,7 @@
 			}
 			elseif ($_POST['PayType'] == PT_SUPPLIER)
 			{
-				$acc = get_supplier_accounts($_POST['person_id']);
+				$acc = Purch_Creditor::get_accounts_name($_POST['person_id']);
 				$_POST['code_id'] = $acc['payable_account'];
 			}
 				//elseif ($_POST['PayType'] == PT_WORKORDER)
