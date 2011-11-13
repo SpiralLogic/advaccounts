@@ -164,9 +164,7 @@
 		{
 			// First, strip out characters which aren't allowed
 			$illegal_chars = array(':', '\\', '/', '?', '*', '[', ']');
-			for (
-				$i = 0; $i < count($illegal_chars); $i++
-			) {
+			for ($i = 0; $i < count($illegal_chars); $i++) {
 				$name = str_replace($illegal_chars[$i], '', $name);
 			}
 			// Now, if name is longer than 31 chars, truncate it
@@ -205,8 +203,7 @@
 			$year = DB_Company::get_current_fiscalyear();
 			if ($year['closed'] == 0) {
 				$how = _("Active");
-			} else
-			{
+			} else {
 				$how = _("Closed");
 			}
 			$this->fiscal_year = Dates::sql2date($year['begin']) . " - " . Dates::sql2date($year['end']) . "  (" . $how . ")";
@@ -224,9 +221,7 @@
 			if ($tcols > $this->numcols) {
 				$this->numcols = $tcols;
 			}
-			for (
-				$i = 0; $i < $this->numcols; $i++
-			) {
+			for ($i = 0; $i < $this->numcols; $i++) {
 				$this->sheet->setColumn($i, $i, $this->px2units($this->cols[$i + 1] - $this->cols[$i]));
 			}
 		}
@@ -235,9 +230,7 @@
 		{
 			$tcol = $this->numcols - 1;
 			$this->sheet->setRow($this->y, 20);
-			for (
-				$i = 0; $i < $this->numcols; $i++
-			) {
+			for ($i = 0; $i < $this->numcols; $i++) {
 				$this->sheet->writeBlank($this->y, $i, $this->formatTitle);
 			}
 			$this->sheet->writeString($this->y, 0, $this->title, $this->formatTitle);
@@ -255,9 +248,7 @@
 			$this->sheet->writeString($this->y, 1, $str, $this->formatLeft);
 			$this->sheet->writeString($this->y, $tcol - 1, $this->host, $this->formatLeft);
 			$this->sheet->mergeCells($this->y, $tcol - 1, $this->y, $tcol);
-			for (
-				$i = 1; $i < count($this->params); $i++
-			) {
+			for ($i = 1; $i < count($this->params); $i++) {
 				if ($this->params[$i]['from'] != '') {
 					$this->NewLine();
 					$str = $this->params[$i]['text'] . ':';
@@ -282,37 +273,29 @@
 			}
 			$this->NewLine();
 			if ($this->headers2 != null) {
-				for (
-					$i = 0, $j = 0; $i < $this->numcols; $i++
-				) {
+				for ($i = 0, $j = 0; $i < $this->numcols; $i++) {
 					if ($this->cols2[$j] >= $this->cols[$i] && $this->cols2[$j] <= $this->cols[$i + 1]) {
 						if ($this->aligns2[$j] == "right") {
 							$this->sheet->writeString($this->y, $i, $this->headers2[$j], $this->formatHeaderRight);
-						} else
-						{
+						} else {
 							$this->sheet->writeString($this->y, $i, $this->headers2[$j], $this->formatHeaderLeft);
 						}
 						$j++;
-					} else
-					{
+					} else {
 						$this->sheet->writeString($this->y, $i, "", $this->formatHeaderLeft);
 					}
 				}
 				$this->NewLine();
 			}
-			for (
-				$i = 0; $i < $this->numcols; $i++
-			) {
+			for ($i = 0; $i < $this->numcols; $i++) {
 				if (!isset($this->headers[$i])) {
 					$header = "";
-				} else
-				{
+				} else {
 					$header = $this->headers[$i];
 				}
 				if ($this->aligns[$i] == "right") {
 					$this->sheet->writeString($this->y, $i, $header, $this->formatHeaderRight);
-				} else
-				{
+				} else {
 					$this->sheet->writeString($this->y, $i, $header, $this->formatHeaderLeft);
 				}
 			}
@@ -333,9 +316,7 @@
 			$tcol = $this->numcols - 1;
 			$this->sheet->setRow($this->y, 20);
 			// Title
-			for (
-				$i = 0; $i < $this->numcols; $i++
-			) {
+			for ($i = 0; $i < $this->numcols; $i++) {
 				$this->sheet->writeBlank($this->y, $i, $this->formatTitle);
 			}
 			$this->sheet->writeString($this->y, 0, $this->title, $this->formatTitle);
@@ -412,44 +393,35 @@
 			}
 			$this->NewLine();
 			if ($this->headers2 != null) {
-				for (
-					$i = 0, $j = 0; $i < $this->numcols; $i++
-				) {
+				for ($i = 0, $j = 0; $i < $this->numcols; $i++) {
 					if ($this->cols2[$j] >= $this->cols[$i] && $this->cols2[$j] <= $this->cols[$i + 1]) {
 						if ($this->aligns2[$j] == "right") {
 							$this->sheet->writeString($this->y, $i, $this->headers2[$j], $this->formatTopHeaderRight);
-						} else
-						{
+						} else {
 							$this->sheet->writeString($this->y, $i, $this->headers2[$j], $this->formatTopHeaderLeft);
 						}
 						$j++;
-					} else
-					{
+					} else {
 						$this->sheet->writeString($this->y, $i, "", $this->formatTopHeaderLeft);
 					}
 				}
 				$this->NewLine();
 			}
-			for (
-				$i = 0; $i < $this->numcols; $i++
-			) {
+			for ($i = 0; $i < $this->numcols; $i++) {
 				if (!isset($this->headers[$i])) {
 					$header = "";
-				} else
-				{
+				} else {
 					$header = $this->headers[$i];
 				}
 				if ($this->aligns[$i] == "right") {
 					if ($this->headers2 == null) {
 						$this->sheet->writeString($this->y, $i, $header, $this->formatHeaderRight);
-					} else
-					{
+					} else {
 						$this->sheet->writeString($this->y, $i, $header, $this->formatBottomHeaderRight);
 					}
 				} else if ($this->headers2 == null) {
 					$this->sheet->writeString($this->y, $i, $header, $this->formatHeaderLeft);
-				} else
-				{
+				} else {
 					$this->sheet->writeString($this->y, $i, $header, $this->formatBottomHeaderLeft);
 				}
 			}
@@ -475,28 +447,11 @@
 				if ($output_format == 0) {
 					return (date('F j, Y', mktime(12, 0, 0, $month, $day, $year)));
 				} elseif ($output_format == 1) {
-					return (date(
-						'F Y',
-						mktime(
-							12, 0, 0, $month, $day,
-							$year
-						)
-					));
+					return (date('F Y', mktime(12, 0, 0, $month, $day, $year)));
 				} elseif ($output_format == 2) {
-					return (date(
-						'M Y',
-						mktime(
-							12,
-							0,
-							0,
-							$month,
-							$day,
-							$year
-						)
-					));
+					return (date('M Y', mktime(12, 0, 0, $month, $day, $year)));
 				}
-			} else
-			{
+			} else {
 				return $date;
 			}
 		}
@@ -546,8 +501,7 @@
 			$txt = html_entity_decode($txt);
 			if ($this->aligns[$c] == 'right') {
 				$this->sheet->writeString($this->y, $c, $txt, $this->formatRight);
-			} else
-			{
+			} else {
 				$this->sheet->writeString($this->y, $c, $txt, $this->formatLeft);
 			}
 			if ($n - $c > 1) {
@@ -618,8 +572,7 @@
 					if ($spacebreak && (($pos = strrpos($txt2, " ")) !== false)) {
 						$txt2 = substr($txt2, 0, $pos);
 						$ret = substr($txt, $pos + 1);
-					} else
-					{
+					} else {
 						$ret = substr($txt, $k);
 					}
 				}
@@ -681,14 +634,10 @@
 				$year = $MAXYEAR;
 			}
 			$jul = (int)$day;
-			for (
-				$n = 1; $n < $mon; $n++
-			) {
+			for ($n = 1; $n < $mon; $n++) {
 				$jul += $mo[$n];
 			}
-			for (
-				$n = $BASE; $n < $year; $n++
-			) {
+			for ($n = $BASE; $n < $year; $n++) {
 				$jul += 365;
 				if (($n % 4) == 0) {
 					$jul++;
@@ -706,9 +655,7 @@
 
 		function End($email = 0, $subject = null, $myrow = null, $doctype = 0)
 		{
-			for (
-				$i = 0; $i < $this->numcols; $i++
-			) {
+			for ($i = 0; $i < $this->numcols; $i++) {
 				$this->sheet->writeBlank($this->y, $i, $this->formatFooter);
 			}
 			$this->sheet->mergeCells($this->y, 0, $this->y, $this->numcols - 1);
@@ -733,5 +680,3 @@
 			exit();
 		}
 	}
-
-?>

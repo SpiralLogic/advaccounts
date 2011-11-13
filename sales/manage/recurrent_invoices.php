@@ -23,8 +23,7 @@
 		}
 		if ($input_error != 1) {
 			if ($selected_id != -1) {
-				$sql
-				 = "UPDATE recurrent_invoices SET
+				$sql = "UPDATE recurrent_invoices SET
     			description=" . DB::escape($_POST['description']) . ",
     			order_no=" . DB::escape($_POST['order_no']) . ",
     			debtor_no=" . DB::escape($_POST['debtor_no']) . ",
@@ -36,18 +35,10 @@
     			WHERE id = " . DB::escape($selected_id);
 				$note = _('Selected recurrent invoice has been updated');
 			} else {
-				$sql
-				 = "INSERT INTO recurrent_invoices (description, order_no, debtor_no,
-    			group_no, days, monthly, begin, end, last_sent) VALUES (" . DB::escape($_POST['description']) . ", "
-				 . DB::escape($_POST['order_no']) . ", " . DB::escape($_POST['debtor_no']) . ", "
-				 . DB::escape(
-					 $_POST['group_no']
-				 ) . ", " . input_num('days', 0) . ", " . input_num('monthly', 0) . ", '"
-				 . Dates::date2sql($_POST['begin']) . "', '" . Dates::date2sql($_POST['end']) . "', '" . Dates::date2sql(
-					Add_Years(
-						$_POST['begin'], -5
-					)
-				) . "')";
+				$sql = "INSERT INTO recurrent_invoices (description, order_no, debtor_no,
+    			group_no, days, monthly, begin, end, last_sent) VALUES (" . DB::escape($_POST['description']) . ", " . DB::escape($_POST['order_no']) . ", " . DB::escape($_POST['debtor_no']) . ", " . DB::escape($_POST['group_no']) . ", " . input_num('days', 0) . ", " . input_num('monthly',
+																																																																																																																																									0) . ", '" . Dates::date2sql($_POST['begin']) . "', '" . Dates::date2sql($_POST['end']) . "', '" . Dates::date2sql(Add_Years($_POST['begin'],
+																																																																																																																																																																																																							 -5)) . "')";
 				$note = _('New recurrent invoice has been added');
 			}
 			DB::query($sql, "The recurrent invoice could not be updated or added");
@@ -82,13 +73,10 @@
 	start_form();
 	start_table(Config::get('tables_style') . "  width=70%");
 	$th = array(
-		_("Description"), _("Template No"), _("Customer"), _("Branch") . "/" . _("Group"), _("Days"),
-		_("Monthly"), _("Begin"), _("End"), _("Last Created"), "", ""
-	);
+		_("Description"), _("Template No"), _("Customer"), _("Branch") . "/" . _("Group"), _("Days"), _("Monthly"), _("Begin"), _("End"), _("Last Created"), "", "");
 	table_header($th);
 	$k = 0;
-	while ($myrow = DB::fetch($result))
-	{
+	while ($myrow = DB::fetch($result)) {
 		$begin = Dates::sql2date($myrow["begin"]);
 		$end = Dates::sql2date($myrow["end"]);
 		$last_sent = Dates::sql2date($myrow["last_sent"]);

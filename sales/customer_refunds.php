@@ -54,8 +54,7 @@
 			Errors::error(_("The entered date is invalid. Please enter a valid date for the refund."));
 			JS::setfocus('[name="DateBanked"]');
 			return false;
-		}
-		elseif (!Dates::is_date_in_fiscalyear($_POST['DateBanked'])) {
+		} elseif (!Dates::is_date_in_fiscalyear($_POST['DateBanked'])) {
 			Errors::error(_("The entered date is not in fiscal year."));
 			JS::setfocus('[name="DateBanked"]');
 			return false;
@@ -134,12 +133,7 @@
 			$rate = input_num('_ex_rate');
 		}
 		Dates::new_doc_date($_POST['DateBanked']);
-		$refund_id = Sales_Debtor_Refund::add(
-			0, $_POST['customer_id'], $_POST['BranchID'],
-			$_POST['bank_account'], $_POST['DateBanked'], $_POST['ref'],
-			input_num('amount'), input_num('discount'),
-			$_POST['memo_'], $rate, input_num('charge')
-		);
+		$refund_id = Sales_Debtor_Refund::add(0, $_POST['customer_id'], $_POST['BranchID'], $_POST['bank_account'], $_POST['DateBanked'], $_POST['ref'], input_num('amount'), input_num('discount'), $_POST['memo_'], $rate, input_num('charge'));
 		$_SESSION['alloc']->trans_no = $refund_id;
 		$_SESSION['alloc']->write();
 		meta_forward($_SERVER['PHP_SELF'], "AddedID=$refund_id");
@@ -148,8 +142,7 @@
 	function read_customer_data()
 	{
 		global $customer;
-		$sql
-		 = "SELECT debtors_master.pymt_discount,
+		$sql = "SELECT debtors_master.pymt_discount,
 		credit_status.dissallow_invoices
 		FROM debtors_master, credit_status
 		WHERE debtors_master.credit_status = credit_status.id
@@ -165,21 +158,15 @@
 	start_form();
 	start_outer_table(Config::get('tables_style2') . " width=60%", 5);
 	table_section(1);
-	UI::search(
-		'customer', array(
-			'label' => 'Search Customer:',
-			'size' => 20,
-			'url' => '/contacts/search.php'
-		)
-	);
+	UI::search('customer', array(
+															'label' => 'Search Customer:', 'size' => 20, 'url' => '/contacts/search.php'));
 	if (!isset($_POST['bank_account'])) // first page call
 	{
 		$_SESSION['alloc'] = new Gl_Allocation(ST_CUSTREFUND, 0);
 	}
 	if (count($customer->branches) == 0) {
 		customer_branches_list_row(_("Branch:"), $_POST['customer_id'], 'BranchID', null, false, true, true);
-	}
-	else {
+	} else {
 		hidden('BranchID', ANY_NUMERIC);
 	}
 	read_customer_data();
@@ -187,8 +174,7 @@
 	if (isset($_POST['HoldAccount']) && $_POST['HoldAccount'] != 0) {
 		end_outer_table();
 		Errors::error(_("This customer account is on hold."));
-	}
-	else {
+	} else {
 		$display_discount_percent = Num::percent_format($_POST['pymt_discount'] * 100) . "%";
 		table_section(2);
 		bank_accounts_list_row(_("Into Bank Account:"), 'bank_account', null, true);
@@ -222,7 +208,6 @@
 	end_form();
 	if (Input::request('frame')) {
 		end_page(true, true, true);
-	}
-	else {
+	} else {
 		end_page();
 	}

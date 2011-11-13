@@ -25,16 +25,12 @@
 			// customer has changed
 			$Ajax->activate('branch_id');
 		}
-		customer_branches_list_row(
-			_("Branch:"), $_POST['customer_id'],
-			'branch_id', null, false, true, true, true
-		);
+		customer_branches_list_row(_("Branch:"), $_POST['customer_id'], 'branch_id', null, false, true, true, true);
 		//if (($_SESSION['credit_items']->order_no == 0) ||
 		//	($order->customer_id != $_POST['customer_id']) ||
 		//	($order->Branch != $_POST['branch_id']))
 		//	$customer_error = get_customer_details_to_order($order, $_POST['customer_id'], $_POST['branch_id']);
-		if (($order->customer_id != $_POST['customer_id'])
-				|| ($order->Branch != $_POST['branch_id'])
+		if (($order->customer_id != $_POST['customer_id']) || ($order->Branch != $_POST['branch_id'])
 		) {
 			$old_order = (PHP_VERSION < 5) ? $order : clone($order);
 			$customer_error = get_customer_details_to_order($order, $_POST['customer_id'], $_POST['branch_id']);
@@ -81,10 +77,7 @@
 		if (!Banking::is_company_currency($order->customer_currency)) {
 			table_section(2);
 			label_row(_("Customer Currency:"), $order->customer_currency);
-			Display::exchange_rate(
-				$order->customer_currency, Banking::get_company_currency(),
-				$_POST['OrderDate']
-			);
+			Display::exchange_rate($order->customer_currency, Banking::get_company_currency(), $_POST['OrderDate']);
 		}
 		table_section(3);
 		if (!isset($_POST['sales_type_id'])) {
@@ -93,10 +86,7 @@
 		sales_types_list_row(_("Sales Type"), 'sales_type_id', $_POST['sales_type_id'], true);
 		if ($order->sales_type != $_POST['sales_type_id']) {
 			$myrow = Sales_Type::get($_POST['sales_type_id']);
-			$order->set_sales_type(
-				$myrow['id'], $myrow['sales_type'],
-				$myrow['tax_included'], $myrow['factor']
-			);
+			$order->set_sales_type($myrow['id'], $myrow['sales_type'], $myrow['tax_included'], $myrow['factor']);
 			$Ajax->activate('sales_type_id');
 			$change_prices = 1;
 		}
@@ -108,8 +98,7 @@
 		}
 		date_row(_("Date:"), 'OrderDate', '', $order->trans_no == 0, 0, 0, 0, null, true);
 		if (isset($_POST['_OrderDate_changed'])) {
-			if (!Banking::is_company_currency($order->customer_currency)
-					&& (DB_Company::get_base_sales_type() > 0)
+			if (!Banking::is_company_currency($order->customer_currency) && (DB_Company::get_base_sales_type() > 0)
 			) {
 				$change_prices = 1;
 			}
@@ -118,31 +107,20 @@
 		// 2008-11-12 Joe Hunt added dimensions
 		$dim = DB_Company::get_pref('use_dimension');
 		if ($dim > 0) {
-			dimensions_list_row(
-				_("Dimension") . ":", 'dimension_id',
-				null, true, ' ', false, 1, false
-			);
+			dimensions_list_row(_("Dimension") . ":", 'dimension_id', null, true, ' ', false, 1, false);
 		} else {
 			hidden('dimension_id', 0);
 		}
 		if ($dim > 1) {
-			dimensions_list_row(
-				_("Dimension") . " 2:", 'dimension2_id',
-				null, true, ' ', false, 2, false
-			);
+			dimensions_list_row(_("Dimension") . " 2:", 'dimension2_id', null, true, ' ', false, 2, false);
 		} else {
 			hidden('dimension2_id', 0);
 		}
 		end_outer_table(1); // outer table
 		if ($change_prices != 0) {
-			foreach (
-				$order->line_items as $line_no => $item
-			) {
+			foreach ($order->line_items as $line_no => $item) {
 				$line = &$order->line_items[$line_no];
-				$line->price = Item_Price::get_calculated_price(
-					$line->stock_id, $order->customer_currency,
-					$order->sales_type, $order->price_factor, get_post('OrderDate')
-				);
+				$line->price = Item_Price::get_calculated_price($line->stock_id, $order->customer_currency, $order->sales_type, $order->price_factor, get_post('OrderDate'));
 				//		$line->discount_percent = $order->default_discount;
 			}
 			$Ajax->activate('items_table');
@@ -157,9 +135,7 @@
 		div_start('items_table');
 		start_table(Config::get('tables_style') . "  width=90%");
 		$th = array(
-			_("Item Code"), _("Item Description"), _("Quantity"), _("Unit"),
-			_("Price"), _("Discount %"), _("Total"), ''
-		);
+			_("Item Code"), _("Item Description"), _("Quantity"), _("Unit"), _("Price"), _("Discount %"), _("Total"), '');
 		if (count($order->line_items)) {
 			$th[] = '';
 		}
@@ -167,14 +143,8 @@
 		$subtotal = 0;
 		$k = 0; //row colour counter
 		$id = find_submit('Edit');
-		foreach (
-			$order->line_items as $line_no => $line
-		)
-		{
-			$line_total = round(
-				$line->qty_dispatched * $line->price * (1 - $line->discount_percent),
-				User::price_dec()
-			);
+		foreach ($order->line_items as $line_no => $line) {
+			$line_total = round($line->qty_dispatched * $line->price * (1 - $line->discount_percent), User::price_dec());
 			if ($id != $line_no) {
 				alt_table_row_color($k);
 				label_cell("<a target='_blank' href='" . PATH_TO_ROOT . "/inventory/inquiry/stock_status.php?stock_id=" . $line->stock_id . "'>$line->stock_id</a>");
@@ -184,14 +154,8 @@
 				amount_cell($line->price);
 				percent_cell($line->discount_percent * 100);
 				amount_cell($line_total);
-				edit_button_cell(
-					"Edit$line_no", _('Edit'),
-					_('Edit document line')
-				);
-				delete_button_cell(
-					"Delete$line_no", _('Delete'),
-					_('Remove line from document')
-				);
+				edit_button_cell("Edit$line_no", _('Edit'), _('Edit document line'));
+				delete_button_cell("Delete$line_no", _('Delete'), _('Remove line from document'));
 				end_row();
 			} else {
 				credit_edit_item_controls($order, $k, $line_no);
@@ -228,8 +192,7 @@
 		$id = find_submit('Edit');
 		if ($line_no != -1 && $line_no == $id) {
 			$_POST['stock_id'] = $order->line_items[$id]->stock_id;
-			$_POST['qty']
-			 = Num::qty_format($order->line_items[$id]->qty_dispatched, $_POST['stock_id'], $dec);
+			$_POST['qty'] = Num::qty_format($order->line_items[$id]->qty_dispatched, $_POST['stock_id'], $dec);
 			$_POST['price'] = Num::price_format($order->line_items[$id]->price);
 			$_POST['Disc'] = Num::percent_format(($order->line_items[$id]->discount_percent) * 100);
 			$_POST['units'] = $order->line_items[$id]->units;
@@ -249,12 +212,7 @@
 			$dec = $item_info['decimals'];
 			$_POST['qty'] = Num::format(0, $dec);
 			$_POST['units'] = $item_info["units"];
-			$_POST['price'] = Num::price_format(
-				Item_Price::get_calculated_price(
-					Input::post('stock_id'), $order->customer_currency,
-					$order->sales_type, $order->price_factor, $order->document_date
-				)
-			);
+			$_POST['price'] = Num::price_format(Item_Price::get_calculated_price(Input::post('stock_id'), $order->customer_currency, $order->sales_type, $order->price_factor, $order->document_date));
 			// default to the customer's discount %
 			$_POST['Disc'] = Num::percent_format($order->default_discount * 100);
 		}
@@ -264,21 +222,12 @@
 		small_amount_cells(null, 'Disc', Num::percent_format(0), null, null, User::percent_dec());
 		amount_cell(input_num('qty') * input_num('price') * (1 - input_num('Disc') / 100));
 		if ($id != -1) {
-			button_cell(
-				'UpdateItem', _("Update"),
-				_('Confirm changes'), ICON_UPDATE
-			);
-			button_cell(
-				'CancelItemChanges', _("Cancel"),
-				_('Cancel changes'), ICON_CANCEL
-			);
+			button_cell('UpdateItem', _("Update"), _('Confirm changes'), ICON_UPDATE);
+			button_cell('CancelItemChanges', _("Cancel"), _('Cancel changes'), ICON_CANCEL);
 			hidden('line_no', $line_no);
 			JS::set_focus('qty');
 		} else {
-			submit_cells(
-				'AddItem', _("Add Item"), "colspan=2",
-				_('Add new item to document'), true
-			);
+			submit_cells('AddItem', _("Add Item"), "colspan=2", _('Add new item to document'), true);
 		}
 		end_row();
 	}

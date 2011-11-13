@@ -10,17 +10,15 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	//---------------------------------------------------------------------------------------------------
-	function display_grn_summary(&$po, $editable = false) {
+	function display_grn_summary(&$po, $editable = false)
+	{
 		start_table(Config::get('tables_style2') . " width=90%");
 		start_row();
 		label_cells(_("Supplier"), $po->supplier_name, "class='label'");
 		if (!Banking::is_company_currency($po->curr_code)) {
 			label_cells(_("Order Currency"), $po->curr_code, "class='label'");
 		}
-		label_cells(
-			_("For Purchase Order"), ui_view::get_trans_view_str(ST_PURCHORDER, $po->order_no),
-			"class='label'"
-		);
+		label_cells(_("For Purchase Order"), ui_view::get_trans_view_str(ST_PURCHORDER, $po->order_no), "class='label'");
 		label_cells(_("Ordered On"), $po->orig_order_date, "class='label'");
 		label_cells(_("Supplier's Reference"), $po->requisition_no, "class='label'");
 		end_row();

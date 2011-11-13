@@ -31,19 +31,13 @@
 
 	//----------------------------------------------------------------------------------------------------
 	if ($Mode == 'ADD_ITEM' && can_process()) {
-		Sales_Type::add(
-			$_POST['sales_type'], isset($_POST['tax_included']) ? 1 : 0,
-			input_num('factor')
-		);
+		Sales_Type::add($_POST['sales_type'], isset($_POST['tax_included']) ? 1 : 0, input_num('factor'));
 		Errors::notice(_('New sales type has been added'));
 		$Mode = 'RESET';
 	}
 	//----------------------------------------------------------------------------------------------------
 	if ($Mode == 'UPDATE_ITEM' && can_process()) {
-		Sales_Type::update(
-			$selected_id, $_POST['sales_type'], isset($_POST['tax_included']) ? 1 : 0,
-			input_num('factor')
-		);
+		Sales_Type::update($selected_id, $_POST['sales_type'], isset($_POST['tax_included']) ? 1 : 0, input_num('factor'));
 		Errors::notice(_('Selected sales type has been updated'));
 		$Mode = 'RESET';
 	}
@@ -85,8 +79,7 @@
 	table_header($th);
 	$k = 0;
 	$base_sales = DB_Company::get_base_sales_type();
-	while ($myrow = DB::fetch($result))
-	{
+	while ($myrow = DB::fetch($result)) {
 		if ($myrow["id"] == $base_sales) {
 			start_row("class='overduebg'");
 		} else {
@@ -123,8 +116,7 @@
 			$_POST['factor'] = Num::format($myrow["factor"], 4);
 		}
 		hidden('selected_id', $selected_id);
-	}
-	else {
+	} else {
 		$_POST['factor'] = Num::format(1, 4);
 	}
 	text_row_ex(_("Sales Type Name") . ':', 'sales_type', 20);

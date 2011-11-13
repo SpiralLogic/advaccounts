@@ -32,19 +32,13 @@
 
 	//----------------------------------------------------------------------------------------------------
 	if ($Mode == 'ADD_ITEM' && can_process()) {
-		Sales_Point::add(
-			$_POST['name'], $_POST['location'], $_POST['account'],
-			check_value('cash'), check_value('credit')
-		);
+		Sales_Point::add($_POST['name'], $_POST['location'], $_POST['account'], check_value('cash'), check_value('credit'));
 		Errors::notice(_('New point of sale has been added'));
 		$Mode = 'RESET';
 	}
 	//----------------------------------------------------------------------------------------------------
 	if ($Mode == 'UPDATE_ITEM' && can_process()) {
-		Sales_Point::update(
-			$selected_id, $_POST['name'], $_POST['location'],
-			$_POST['account'], check_value('cash'), check_value('credit')
-		);
+		Sales_Point::update($selected_id, $_POST['name'], $_POST['location'], $_POST['account'], check_value('cash'), check_value('credit'));
 		Errors::notice(_('Selected point of sale has been updated'));
 		$Mode = 'RESET';
 	}
@@ -54,8 +48,7 @@
 		$res = DB::query($sql, "canot check pos usage");
 		if (DB::num_rows($res)) {
 			Errors::error(_("Cannot delete this POS because it is used in users setup."));
-		}
-		else {
+		} else {
 			Sales_Point::delete($selected_id);
 			Errors::notice(_('Selected point of sale has been deleted'));
 			$Mode = 'RESET';
@@ -72,14 +65,11 @@
 	start_form();
 	start_table(Config::get('tables_style'));
 	$th = array(
-		_('POS Name'), _('Credit sale'), _('Cash sale'), _('Location'), _('Default account'),
-		'', ''
-	);
+		_('POS Name'), _('Credit sale'), _('Cash sale'), _('Location'), _('Default account'), '', '');
 	inactive_control_column($th);
 	table_header($th);
 	$k = 0;
-	while ($myrow = DB::fetch($result))
-	{
+	while ($myrow = DB::fetch($result)) {
 		alt_table_row_color($k);
 		label_cell($myrow["pos_name"], "nowrap");
 		label_cell($myrow['credit_sale'] ? _('Yes') : _('No'));
@@ -119,8 +109,7 @@
 		check_row(_('Allowed credit sale'), 'credit', check_value('credit_sale'));
 		check_row(_('Allowed cash sale'), 'cash', check_value('cash_sale'));
 		cash_accounts_list_row(_("Default cash account") . ':', 'account');
-	}
-	else {
+	} else {
 		hidden('credit', 1);
 		hidden('account', 0);
 	}

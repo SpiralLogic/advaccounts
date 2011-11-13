@@ -46,15 +46,9 @@
     			WHERE salesman_code = " . DB::escape($selected_id);
 			} else {
 				/*Selected group is null cos no item selected on first time round so must be adding a record must be submitting new entries in the new Sales-person form */
-				$sql
-				 = "INSERT INTO salesman (salesman_name, salesman_phone, salesman_fax, salesman_email,
+				$sql = "INSERT INTO salesman (salesman_name, salesman_phone, salesman_fax, salesman_email,
     			provision, break_pt, provision2)
-    			VALUES (" . DB::escape($_POST['salesman_name']) . ", "
-				 . DB::escape($_POST['salesman_phone']) . ", "
-				 . DB::escape($_POST['salesman_fax']) . ", "
-				 . DB::escape($_POST['salesman_email']) . ", " .
-				 input_num('provision') . ", " . input_num('break_pt') . ", "
-				 . input_num('provision2') . ")";
+    			VALUES (" . DB::escape($_POST['salesman_name']) . ", " . DB::escape($_POST['salesman_phone']) . ", " . DB::escape($_POST['salesman_fax']) . ", " . DB::escape($_POST['salesman_email']) . ", " . input_num('provision') . ", " . input_num('break_pt') . ", " . input_num('provision2') . ")";
 			}
 			//run the sql from either of the above possibilites
 			DB::query($sql, "The insert or update of the sales person failed");
@@ -99,8 +93,7 @@
 	inactive_control_column($th);
 	table_header($th);
 	$k = 0;
-	while ($myrow = DB::fetch($result))
-	{
+	while ($myrow = DB::fetch($result)) {
 		alt_table_row_color($k);
 		label_cell($myrow["salesman_name"]);
 		label_cell($myrow["salesman_phone"]);
@@ -109,10 +102,7 @@
 		label_cell(Num::percent_format($myrow["provision"]) . " %", "nowrap align=right");
 		amount_cell($myrow["break_pt"]);
 		label_cell(Num::percent_format($myrow["provision2"]) . " %", "nowrap align=right");
-		inactive_control_cell(
-			$myrow["salesman_code"], $myrow["inactive"],
-			'salesman', 'salesman_code'
-		);
+		inactive_control_cell($myrow["salesman_code"], $myrow["inactive"], 'salesman', 'salesman_code');
 		edit_button_cell("Edit" . $myrow["salesman_code"], _("Edit"));
 		delete_button_cell("Delete" . $myrow["salesman_code"], _("Delete"));
 		end_row();
@@ -137,8 +127,7 @@
 			$_POST['provision2'] = Num::percent_format($myrow["provision2"]);
 		}
 		hidden('selected_id', $selected_id);
-	}
-	elseif ($Mode != 'ADD_ITEM') {
+	} elseif ($Mode != 'ADD_ITEM') {
 		$_POST['provision'] = Num::percent_format(0);
 		$_POST['break_pt'] = Num::price_format(0);
 		$_POST['provision2'] = Num::percent_format(0);

@@ -22,12 +22,9 @@
 	print_statements();
 	//----------------------------------------------------------------------------------------------------
 	function
-	getTransactions(
-		$debtorno, $date
-	)
+	getTransactions($debtorno, $date)
 	{
-		$sql
-		 = "SELECT debtor_trans.*,
+		$sql = "SELECT debtor_trans.*,
 				(debtor_trans.ov_amount + debtor_trans.ov_gst + debtor_trans.ov_freight +
 				debtor_trans.ov_freight_tax + debtor_trans.ov_discount)
 				AS TotalAmount, debtor_trans.alloc AS Allocated,
@@ -47,8 +44,7 @@
 	//----------------------------------------------------------------------------------------------------
 	function getTransactionPO($no)
 	{
-		$sql
-		 = "SELECT customer_ref
+		$sql = "SELECT customer_ref
         FROM sales_orders
         WHERE order_no=$no";
 		$result = DB::query($sql, "Could not retrieve any branches");
@@ -87,8 +83,7 @@
 		$sql = "SELECT debtor_no, name AS DebtorName, address, tax_id, email,  curr_code, curdate() AS tran_date, payment_terms FROM debtors_master";
 		if ($customer != ALL_NUMERIC) {
 			$sql .= " WHERE debtor_no = " . DB::escape($customer);
-		}
-		else {
+		} else {
 			$sql .= " ORDER by name";
 		}
 		$result = DB::query($sql, "The customers could not be retrieved");
@@ -121,16 +116,13 @@
 				$transactions[] = $transaction;
 			}
 			$prev_branch = 0;
-			for (
-				$i = 0; $i < count($transactions); $i++
-			) {
+			for ($i = 0; $i < count($transactions); $i++) {
 				$myrow2 = $transactions[$i];
 				$DisplayTotal = Num::format(Abs($myrow2["TotalAmount"]), $dec);
 				if ($myrow2["Allocated"] > 0) {
 					$DisplayAlloc = Num::format($myrow2["Allocated"], $dec);
 					$DisplayNet = Num::format($DisplayTotal - $DisplayAlloc, $dec);
-				}
-				else {
+				} else {
 					$DisplayAlloc = '0.00';
 					$DisplayNet = $DisplayTotal;
 				}
@@ -145,8 +137,7 @@
 					$rep->NewLine();
 					if ($rep->currency != $myrow['curr_code']) {
 						include(APP_PATH . "reporting/includes/doctext2.php");
-					}
-					else {
+					} else {
 						include(APP_PATH . "reporting/includes/doctext.php");
 					}
 					$rep->fontSize += 2;
@@ -158,8 +149,7 @@
 				$rep->TextCol(0, 1, $systypes_array[$myrow2['type']], -2);
 				if ($myrow2['type'] == '10') {
 					$rep->TextCol(2, 3, getTransactionPO($myrow2['order_']), -2);
-				}
-				else {
+				} else {
 					$rep->TextCol(2, 3, '', -2);
 				}
 				$rep->TextCol(1, 2, $myrow2['reference'], -2);
@@ -169,22 +159,14 @@
 				}
 				if ($myrow2['type'] == ST_SALESINVOICE) {
 					$rep->TextCol(5, 6, $DisplayTotal, -2);
-				}
-				else {
+				} else {
 					$rep->TextCol(6, 7, $DisplayTotal, -2);
 				}
 				$rep->TextCol(7, 8, $DisplayAlloc, -2);
 				if ($myrow2['type'] == ST_SALESINVOICE || $DisplayNet == 0) {
 					$rep->TextCol(8, 9, $DisplayNet, -2);
-				}
-				else {
-					$rep->TextCol(
-						8, 9,
-						Num::format(
-							$DisplayNet * -1,
-							$dec
-						), -2
-					);
+				} else {
+					$rep->TextCol(8, 9, Num::format($DisplayNet * -1, $dec), -2);
 				}
 				$rep->NewLine();
 				if ($rep->row < $rep->bottomMargin + (10 * $rep->lineHeight)) {
@@ -201,24 +183,15 @@
 				Num::format(($CustomerRecord["Due"] - $CustomerRecord["Overdue1"]), $dec),
 				Num::format(($CustomerRecord["Overdue1"] - $CustomerRecord["Overdue2"]), $dec),
 				Num::format($CustomerRecord["Overdue2"], $dec),
-				Num::format($CustomerRecord["Balance"], $dec)
-			);
+				Num::format($CustomerRecord["Balance"], $dec));
 			$col = array(
-				$rep->cols[0], $rep->cols[0] + 110, $rep->cols[0] + 210, $rep->cols[0] + 310, $rep->cols[0] + 410,
-				$rep->cols[0] + 510
-			);
+				$rep->cols[0], $rep->cols[0] + 110, $rep->cols[0] + 210, $rep->cols[0] + 310, $rep->cols[0] + 410, $rep->cols[0] + 510);
 			$rep->row = $rep->bottomMargin + (10 * $rep->lineHeight - 6);
-			for (
-				$i = 0; $i < 5; $i++
-			)
-			{
+			for ($i = 0; $i < 5; $i++) {
 				$rep->TextWrap($col[$i], $rep->row, $col[$i + 1] - $col[$i], $str[$i], 'right');
 			}
 			$rep->NewLine();
-			for (
-				$i = 0; $i < 5; $i++
-			)
-			{
+			for ($i = 0; $i < 5; $i++) {
 				$rep->TextWrap($col[$i], $rep->row, $col[$i + 1] - $col[$i], $str2[$i], 'right');
 			}
 			if ($email == 1) {

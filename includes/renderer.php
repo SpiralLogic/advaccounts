@@ -87,17 +87,21 @@
 					}
 					echo "<span> </span>| <span>mem: " . Files::convert_size(memory_get_usage(true)) . "</span><span> | </span><span>peak mem: " . Files::convert_size(memory_get_peak_usage(true)) . ' </span><span>|</span><span> load time: ' . Dates::getReadableTime(microtime(true) - ADV_START_TIME) . "</span>";
 				}
-				$loaded = Autoloader::getLoaded();
-				$row = "<table id='loaded'>";
-				while ($v1 = array_shift($loaded)) {
-					$v2 = array_shift($loaded);
-					$row .= "<tr><td>{$v1[0]}</td><td>{$v1[1]}</td><td>{$v1[2]}</td><td>{$v2[0]}</td><td>{$v2[1]}</td><td>{$v2[2]}</td></tr>";
-				}
-				echo $row . "</table>";
-				echo "</div><pre>";
+				echo "</div>";
 			}
 			echo "</div>\n";
 			echo "</div>\n";
+		}
+
+		function display_loaded()
+		{
+			$loaded = Autoloader::getLoaded();
+			$row = "<table id='loaded'>";
+			while ($v1 = array_shift($loaded)) {
+				$v2 = array_shift($loaded);
+				$row .= "<tr><td>{$v1[0]}</td><td>{$v1[1]}</td><td>{$v1[2]}</td><td>{$v2[0]}</td><td>{$v2[1]}</td><td>{$v2[2]}</td></tr>";
+			}
+			echo $row . "</table>";
 		}
 
 		function display_applications(&$waapp)

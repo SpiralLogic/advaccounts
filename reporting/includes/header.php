@@ -45,9 +45,7 @@
 	$this->Line($iline7);
 	$this->LineTo($this->leftMargin, $iline2, $this->leftMargin, $iline4);
 	$col = $this->leftMargin;
-	for (
-		$i = 0; $i < 5; $i++
-	) {
+	for ($i = 0; $i < 5; $i++) {
 		$this->LineTo($col += $width, $iline2, $col, $iline4);
 	}
 	$this->LineTo($right, $iline2, $right, $iline4);
@@ -321,9 +319,8 @@
 		$this->TextWrap($col, $this->row, $width, Dates::sql2date($myrow['delivery_date']), 'C');
 	} elseif ($doctype == ST_WORKORDER) {
 		$this->TextWrap($col, $this->row, $width, $myrow["units_issued"], 'C');
-	} elseif ($doctype != ST_PURCHORDER && $doctype != ST_CUSTCREDIT && $doctype != ST_CUSTPAYMENT && $doctype != ST_CUSTREFUND && $doctype != ST_SUPPAYMENT
-	 && isset
-	 ($myrow['due_date'])
+	} elseif ($doctype != ST_PURCHORDER && $doctype != ST_CUSTCREDIT && $doctype != ST_CUSTPAYMENT && $doctype != ST_CUSTREFUND && $doctype != ST_SUPPAYMENT && isset
+	($myrow['due_date'])
 	) {
 		$this->TextWrap($col, $this->row, $width, Dates::sql2date($myrow['due_date']), 'C');
 	}
@@ -357,9 +354,7 @@
 	$this->Font('bold');
 	$count = count($this->headers);
 	$this->cols[$count] = $right - 3;
-	for (
-		$i = 0; $i < $count; $i++
-	) {
+	for ($i = 0; $i < $count; $i++) {
 		$this->TextCol($i, $i + 1, $this->headers[$i], -2);
 	}
 	$this->Font();
@@ -419,4 +414,3 @@
 	}
 	$this->Font();
 	$temp = $iline6 - $this->lineHeight - 2;
-?>

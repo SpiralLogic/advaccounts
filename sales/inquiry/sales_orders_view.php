@@ -301,7 +301,7 @@
 	}
 	if ($trans_type == ST_SALESORDER) {
 		$cols = array(
-			_("Order #") => array( 'fun' => 'view_link', 'ord' => 'desc'),
+			_("Order #") => array('fun' => 'view_link', 'ord' => 'desc'),
 			array('type' => 'skip'),
 			_("Ref") => array('ord' => ''),
 			_("Customer") => array('ord' => ''),
@@ -322,13 +322,11 @@
 				'type' => 'date', 'ord' => ''), _("Delivery To"), _("Total") => array(
 				'type' => 'amount', 'ord' => ''), 'type' => 'skip', _("Currency") => array('align' => 'center'));
 	}
-	if ($trans_type==ST_CUSTDELIVERY) {
-
+	if ($trans_type == ST_CUSTDELIVERY) {
 	}
 	if ($_POST['order_view_mode'] == 'OutstandingOnly') {
 		Arr::append($cols, array(
-														array('type' => 'skip'),
-														array( 'fun' => 'dispatch_link')));
+														array('type' => 'skip'), array('fun' => 'dispatch_link')));
 	} elseif ($_POST['order_view_mode'] == 'InvoiceTemplates') {
 		Arr::substitute($cols, 3, 1, _("Description"));
 		Arr::append($cols, array(array('insert' => true, 'fun' => 'invoice_link')));
@@ -337,7 +335,8 @@
 			Arr::substitute($cols, 3, 1, _("Description"));
 			Arr::append($cols, array(array('insert' => true, 'fun' => 'delivery_link')));
 		} elseif ($trans_type == ST_SALESQUOTE) {
-			Arr::append($cols, array(array('insert' => true, 'type' => 'skip'),
+			Arr::append($cols, array(
+															array('insert' => true, 'type' => 'skip'),
 															array('insert' => true, 'type' => 'skip'),
 															array('insert' => true, 'fun' => 'edit_link'),
 															array('insert' => true, 'fun' => 'order_link'),
@@ -353,7 +352,6 @@
 					'insert' => true, 'fun' => 'prt_link')));
 		}
 	}
-
 	$table = & db_pager::new_db_pager('orders_tbl', $sql, $cols, null, null, 0, _("Order #"));
 	$table->set_marker('check_overdue', _("Marked items are overdue."));
 	$table->width = "80%";

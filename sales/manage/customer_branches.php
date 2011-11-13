@@ -74,31 +74,13 @@
     	        WHERE branch_code =" . DB::escape($_POST['branch_code']) . "
     	        AND debtor_no=" . DB::escape($_POST['customer_id']);
 				$note = _('Selected customer branch has been updated');
-			}
-			else {
+			} else {
 				/* Selected branch is null cos no item selected on first time round so must be adding a	record must be submitting new entries in the new Customer Branches form */
-				$sql
-				 = "INSERT INTO cust_branch (debtor_no, br_name, branch_ref, br_address,
+				$sql = "INSERT INTO cust_branch (debtor_no, br_name, branch_ref, br_address,
 				salesman, phone, phone2, fax,
 				contact_name, area, email, tax_group_id, sales_account, receivables_account, payment_discount_account, sales_discount_account, default_location,
 				br_post_address, disable_trans, group_no, default_ship_via, notes)
-				VALUES (" . DB::escape($_POST['customer_id']) . "," . DB::escape($_POST['br_name']) . ", "
-				 . DB::escape($_POST['br_ref']) . ", "
-				 . DB::escape($_POST['br_address']) . ", " . DB::escape($_POST['salesman']) . ", "
-				 . DB::escape($_POST['phone']) . ", " . DB::escape($_POST['phone2']) . ", "
-				 . DB::escape($_POST['fax']) . ","
-				 . DB::escape($_POST['contact_name']) . ", " . DB::escape($_POST['area']) . ","
-				 . DB::escape($_POST['email']) . ", " . DB::escape($_POST['tax_group_id']) . ", "
-				 . DB::escape($_POST['sales_account']) . ", "
-				 . DB::escape($_POST['receivables_account']) . ", "
-				 . DB::escape($_POST['payment_discount_account']) . ", "
-				 . DB::escape($_POST['sales_discount_account']) . ", "
-				 . DB::escape($_POST['default_location']) . ", "
-				 . DB::escape($_POST['br_post_address']) . ","
-				 . DB::escape($_POST['disable_trans']) . ", "
-				 . DB::escape($_POST['group_no']) . ", "
-				 . DB::escape($_POST['default_ship_via']) . ", "
-				 . DB::escape($_POST['notes']) . ")";
+				VALUES (" . DB::escape($_POST['customer_id']) . "," . DB::escape($_POST['br_name']) . ", " . DB::escape($_POST['br_ref']) . ", " . DB::escape($_POST['br_address']) . ", " . DB::escape($_POST['salesman']) . ", " . DB::escape($_POST['phone']) . ", " . DB::escape($_POST['phone2']) . ", " . DB::escape($_POST['fax']) . "," . DB::escape($_POST['contact_name']) . ", " . DB::escape($_POST['area']) . "," . DB::escape($_POST['email']) . ", " . DB::escape($_POST['tax_group_id']) . ", " . DB::escape($_POST['sales_account']) . ", " . DB::escape($_POST['receivables_account']) . ", " . DB::escape($_POST['payment_discount_account']) . ", " . DB::escape($_POST['sales_discount_account']) . ", " . DB::escape($_POST['default_location']) . ", " . DB::escape($_POST['br_post_address']) . "," . DB::escape($_POST['disable_trans']) . ", " . DB::escape($_POST['group_no']) . ", " . DB::escape($_POST['default_ship_via']) . ", " . DB::escape($_POST['notes']) . ")";
 				$note = _('New customer branch has been added');
 			}
 			//run the sql from either of the above possibilites
@@ -109,31 +91,22 @@
 				JS::set_focus("Select" . ($_POST['branch_code'] == -1 ? DB::insert_id() : $_POST['branch_code']));
 			}
 		}
-	}
-	elseif ($Mode == 'Delete') {
+	} elseif ($Mode == 'Delete') {
 		//the link to delete a selected record was clicked instead of the submit button
 		// PREVENT DELETES IF DEPENDENT RECORDS IN 'debtor_trans'
-		$sql = "SELECT COUNT(*) FROM debtor_trans WHERE branch_code=" . DB::escape(
-			$_POST['branch_code']
-		) . " AND debtor_no = " . DB::escape($_POST['customer_id']);
+		$sql = "SELECT COUNT(*) FROM debtor_trans WHERE branch_code=" . DB::escape($_POST['branch_code']) . " AND debtor_no = " . DB::escape($_POST['customer_id']);
 		$result = DB::query($sql, "could not query debtortrans");
 		$myrow = DB::fetch_row($result);
 		if ($myrow[0] > 0) {
 			Errors::error(_("Cannot delete this branch because customer transactions have been created to this branch."));
-		}
-		else {
-			$sql = "SELECT COUNT(*) FROM sales_orders WHERE branch_code=" . DB::escape(
-				$_POST['branch_code']
-			) . " AND debtor_no = " . DB::escape($_POST['customer_id']);
+		} else {
+			$sql = "SELECT COUNT(*) FROM sales_orders WHERE branch_code=" . DB::escape($_POST['branch_code']) . " AND debtor_no = " . DB::escape($_POST['customer_id']);
 			$result = DB::query($sql, "could not query sales orders");
 			$myrow = DB::fetch_row($result);
 			if ($myrow[0] > 0) {
 				Errors::error(_("Cannot delete this branch because sales orders exist for it. Purge old sales orders first."));
-			}
-			else {
-				$sql = "DELETE FROM cust_branch WHERE branch_code=" . DB::escape(
-					$_POST['branch_code']
-				) . " AND debtor_no=" . DB::escape($_POST['customer_id']);
+			} else {
+				$sql = "DELETE FROM cust_branch WHERE branch_code=" . DB::escape($_POST['branch_code']) . " AND debtor_no=" . DB::escape($_POST['customer_id']);
 				DB::query($sql, "could not delete branch");
 				Errors::notice(_('Selected customer branch has been deleted'));
 			}
@@ -174,18 +147,7 @@
 	echo customer_list('customer_id', null, false, true);
 	echo "</center><br>";
 	$num_branches = Validation::check(Validation::BRANCHES, '', Input::post('customer_id'));
-	$sql = "SELECT "
-	 . "b.branch_code, "
-	 . "b.branch_ref, "
-	 . "b.br_name, "
-	 . "b.contact_name, "
-	 . "s.salesman_name, "
-	 . "a.description, "
-	 . "b.phone, "
-	 . "b.fax, "
-	 . "b.email, "
-	 . "t.name AS tax_group_name, "
-	 . "b.inactive
+	$sql = "SELECT " . "b.branch_code, " . "b.branch_ref, " . "b.br_name, " . "b.contact_name, " . "s.salesman_name, " . "a.description, " . "b.phone, " . "b.fax, " . "b.email, " . "t.name AS tax_group_name, " . "b.inactive
 		FROM cust_branch b, debtors_master c, areas a, salesman s, tax_groups t
 		WHERE b.debtor_no=c.debtor_no
 		AND b.tax_group_id=t.id
@@ -198,31 +160,11 @@
 	//------------------------------------------------------------------------------------------------
 	if ($num_branches) {
 		$cols = array(
-			'branch_code' => 'skip',
-			_("Short Name"),
-			_("Name"),
-			_("Contact"),
-			_("Sales Person"),
-			_("Area"),
-			_("Phone No"),
-			_("Fax No"),
-			_("E-mail") => 'email',
-			_("Tax Group"),
-			_("Inactive") => 'inactive',
-//		array('fun'=>'inactive'),
+			'branch_code' => 'skip', _("Short Name"), _("Name"), _("Contact"), _("Sales Person"), _("Area"), _("Phone No"), _("Fax No"), _("E-mail") => 'email', _("Tax Group"), _("Inactive") => 'inactive', //		array('fun'=>'inactive'),
 			' ' => array(
-				'insert' => true,
-				'fun' => 'select_link'
-			),
-			array(
-				'insert' => true,
-				'fun' => 'edit_link'
-			),
-			array(
-				'insert' => true,
-				'fun' => 'del_link'
-			)
-		);
+				'insert' => true, 'fun' => 'select_link'), array(
+				'insert' => true, 'fun' => 'edit_link'), array(
+				'insert' => true, 'fun' => 'del_link'));
 		if (!Input::request('popup')) {
 			$cols[' '] = 'skip';
 		}
@@ -239,8 +181,7 @@
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {
 			//editing an existing branch
-			$sql
-			 = "SELECT * FROM cust_branch
+			$sql = "SELECT * FROM cust_branch
 			WHERE branch_code=" . DB::escape($_POST['branch_code']) . "
 			AND debtor_no=" . DB::escape($_POST['customer_id']);
 			$result = DB::query($sql, "check failed");
@@ -269,11 +210,9 @@
 			$_POST['group_no'] = $myrow["group_no"];
 			$_POST['notes'] = $myrow["notes"];
 		}
-	}
-	elseif ($Mode != 'ADD_ITEM') { //end of if $SelectedBranch only do the else when a new record is being entered
+	} elseif ($Mode != 'ADD_ITEM') { //end of if $SelectedBranch only do the else when a new record is being entered
 		if (!$num_branches) {
-			$sql
-			 = "SELECT name, address, email, debtor_ref
+			$sql = "SELECT name, address, email, debtor_ref
 			FROM debtors_master WHERE debtor_no = " . DB::escape($_POST['customer_id']);
 			$result = DB::query($sql, "check failed");
 			$myrow = DB::fetch($result);

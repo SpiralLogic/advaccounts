@@ -57,8 +57,7 @@
 			// skip well known warnings we don't care about.
 			// Please use restrainedly to not risk loss of important messages
 			$excluded_warnings = array('html_entity_decode', 'htmlspecialchars');
-			foreach ($excluded_warnings as $ref)
-			{
+			foreach ($excluded_warnings as $ref) {
 				if (strpos($message, $ref) !== false) {
 					return true;
 				}
@@ -69,11 +68,8 @@
 				extract($last_error);
 			}
 			if ($type & error_reporting()) {
-				static::$messages[] = array('type' => $type,
-					'message' => $message,
-					'file' => $file,
-					'line' => $line
-					);
+				static::$messages[] = array(
+					'type' => $type, 'message' => $message, 'file' => $file, 'line' => $line);
 			} else if ($type & ~E_NOTICE) { // log all not displayed messages
 				error_log(User::get()->loginname . ':' . basename($file) . ":$line: $message");
 			}
@@ -86,10 +82,7 @@
 		static function format()
 		{
 			$msg_class = array(
-				E_USER_ERROR => 'err_msg',
-				E_USER_WARNING => 'warn_msg',
-				E_USER_NOTICE => 'note_msg'
-			);
+				E_USER_ERROR => 'err_msg', E_USER_WARNING => 'warn_msg', E_USER_NOTICE => 'note_msg');
 			$content = '';
 			if (PATH_TO_ROOT == '.' && count(static::$messages)) {
 				return '';
@@ -132,7 +125,6 @@
 					 */
 		static function show_db_error($msg, $sql_statement = null, $exit = true)
 		{
-
 			$warning = $msg == null;
 			$db_error = DB::error_no();
 			//	$str = "<span class='errortext'><b>" . _("DATABASE ERROR :") . "</b> $msg</span><br>";
@@ -151,8 +143,7 @@
 			$str .= "<br><br>";
 			if ($msg) {
 				trigger_error($str, E_USER_ERROR);
-			}
-			else // $msg can be null here only in debug mode, otherwise the error is ignored
+			} else // $msg can be null here only in debug mode, otherwise the error is ignored
 			{
 				trigger_error($str, E_USER_WARNING);
 			}

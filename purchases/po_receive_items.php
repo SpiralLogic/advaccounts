@@ -34,17 +34,13 @@
 		div_start('grn_items');
 		start_table("colspan=7 " . Config::get('tables_style') . " width=90%");
 		$th = array(
-			_("Item Code"), _("Description"), _("Ordered"), _("Units"), _("Received"), _("Outstanding"),
-			_("This Delivery"), _("Price"), _('Discount %'), _("Total")
-		);
+			_("Item Code"), _("Description"), _("Ordered"), _("Units"), _("Received"), _("Outstanding"), _("This Delivery"), _("Price"), _('Discount %'), _("Total"));
 		table_header($th);
 		/*show the line items on the order with the quantity being received for modification */
 		$total = 0;
 		$k = 0; //row colour counter
 		if (count($_SESSION['PO']->line_items) > 0) {
-			foreach (
-				$_SESSION['PO']->line_items as $ln_itm
-			) {
+			foreach ($_SESSION['PO']->line_items as $ln_itm) {
 				alt_table_row_color($k);
 				$qty_outstanding = $ln_itm->quantity - $ln_itm->qty_received;
 				if (!isset($_POST['Update']) && !isset($_POST['ProcessGoodsReceived']) && $ln_itm->receive_qty == 0) { //If no quantites yet input default the balance to be received
@@ -55,8 +51,7 @@
 				label_cell($ln_itm->stock_id);
 				if ($qty_outstanding > 0) {
 					text_cells(null, $ln_itm->stock_id . "Desc", $ln_itm->description, 30, 50);
-				} else
-				{
+				} else {
 					label_cell($ln_itm->description);
 				}
 				$dec = Num::qty_dec($ln_itm->stock_id);
@@ -66,8 +61,7 @@
 				qty_cell($qty_outstanding, false, $dec);
 				if ($qty_outstanding > 0) {
 					qty_cells(null, $ln_itm->line_no, Num::format($ln_itm->receive_qty, $dec), "align=right", null, $dec);
-				} else
-				{
+				} else {
 					label_cell(Num::format($ln_itm->receive_qty, $dec), "align=right");
 				}
 				amount_decimal_cell($ln_itm->price);
@@ -90,8 +84,7 @@
 		/*Now need to check that the order details are the same as they were when they were read into the Items array. If they've changed then someone else must have altered them */
 		// Sherifoz 22.06.03 Compare against COMPLETED items only !!
 		// Otherwise if you try to fullfill item quantities separately will give error.
-		$sql
-		 = "SELECT item_code, quantity_ordered, quantity_received, qty_invoiced
+		$sql = "SELECT item_code, quantity_ordered, quantity_received, qty_invoiced
 		FROM purch_order_details
 		WHERE order_no=" . DB::escape($_SESSION['PO']->order_no) . " ORDER BY po_detail_item";
 		$result = DB::query($sql, "could not query purch order details");
@@ -102,13 +95,7 @@
 			// only compare against items that are outstanding
 			$qty_outstanding = $ln_item->quantity - $ln_item->qty_received;
 			if ($qty_outstanding > 0) {
-				if ($ln_item->qty_inv != $myrow["qty_invoiced"]
-				 || $ln_item->stock_id !=
-					$myrow["item_code"]
-				 || $ln_item->quantity !=
-					$myrow["quantity_ordered"]
-				 || $ln_item->qty_received !=
-					$myrow["quantity_received"]
+				if ($ln_item->qty_inv != $myrow["qty_invoiced"] || $ln_item->stock_id != $myrow["item_code"] || $ln_item->quantity != $myrow["quantity_ordered"] || $ln_item->qty_received != $myrow["quantity_received"]
 				) {
 					return true;
 				}
@@ -147,9 +134,7 @@
 			$_POST['ref'] = Refs::get_next(ST_SUPPRECEIVE);
 		}
 		$something_received = 0;
-		foreach (
-			$_SESSION['PO']->line_items as $order_line
-		) {
+		foreach ($_SESSION['PO']->line_items as $order_line) {
 			if ($order_line->receive_qty > 0) {
 				$something_received = 1;
 				break;
@@ -157,9 +142,7 @@
 		}
 		// Check whether trying to deliver more items than are recorded on the actual purchase order (+ overreceive allowance)
 		$delivery_qty_too_large = 0;
-		foreach (
-			$_SESSION['PO']->line_items as $order_line
-		) {
+		foreach ($_SESSION['PO']->line_items as $order_line) {
 			if ($order_line->receive_qty + $order_line->qty_received > $order_line->quantity * (1 + (SysPrefs::over_receive_allowance() / 100))) {
 				$delivery_qty_too_large = 1;
 				break;
@@ -169,11 +152,7 @@
 			Errors::error(_("There is nothing to process. Please enter valid quantities greater than zero."));
 			return false;
 		} elseif ($delivery_qty_too_large == 1) {
-			Errors::error(
-				_("Entered quantities cannot be greater than the quantity entered on the purchase order including the allowed over-receive percentage") . " (" . SysPrefs::over_receive_allowance() . "%).<br>" . _(
-					"Modify the ordered items on the purchase order if you wish to increase the quantities."
-				)
-			);
+			Errors::error(_("Entered quantities cannot be greater than the quantity entered on the purchase order including the allowed over-receive percentage") . " (" . SysPrefs::over_receive_allowance() . "%).<br>" . _("Modify the ordered items on the purchase order if you wish to increase the quantities."));
 			return false;
 		}
 		return true;
@@ -189,11 +168,8 @@
 		if (check_po_changed()) {
 			Errors::error(_("This order has been changed or invoiced since this delivery was started to be actioned. Processing halted. To enter a delivery against this purchase order, it must be re-selected and re-read again to update the changes made by the other user."));
 			hyperlink_no_params("/purchases/inquiry/po_search.php", _("Select a different purchase order for receiving goods against"));
-			hyperlink_params(
-				"/purchases/po_receive_items.php", _("Re-Read the updated purchase order for receiving goods against"), "PONumber=" .
-			 $_SESSION
-			 ['PO']->order_no
-			);
+			hyperlink_params("/purchases/po_receive_items.php", _("Re-Read the updated purchase order for receiving goods against"), "PONumber=" . $_SESSION
+			['PO']->order_no);
 			unset($_SESSION['PO']->line_items);
 			unset($_SESSION['PO']);
 			unset($_POST['ProcessGoodsReceived']);
@@ -219,9 +195,7 @@
 	if (isset($_POST['Update']) || isset($_POST['ProcessGoodsReceived'])) {
 		/* if update quantities button is hit page has been called and ${$line->line_no} would have be
 								set from the post to the quantity to be received in this receival*/
-		foreach (
-			$_SESSION['PO']->line_items as $line
-		) {
+		foreach ($_SESSION['PO']->line_items as $line) {
 			if (($line->quantity - $line->qty_received) > 0) {
 				$_POST[$line->line_no] = max($_POST[$line->line_no], 0);
 				if (!Validation::is_num($line->line_no)) {
@@ -247,10 +221,7 @@
 	display_grn_summary($_SESSION['PO'], true);
 	Display::heading(_("Items to Receive"));
 	display_po_receive_items();
-	hyperlink_params(
-		"/purchases/po_entry_items.php", _("Edit This Purchase Order"), "ModifyOrderNumber=" .
-	 $_SESSION['PO']->order_no
-	);
+	hyperlink_params("/purchases/po_entry_items.php", _("Edit This Purchase Order"), "ModifyOrderNumber=" . $_SESSION['PO']->order_no);
 	echo '<br>';
 	submit_center_first('Update', _("Update Totals"), '', true);
 	submit_center_last('ProcessGoodsReceived', _("Process Receive Items"), _("Clear all GL entry fields"), 'default');

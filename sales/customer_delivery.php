@@ -22,8 +22,7 @@
 		$page_title = sprintf(_("Modifying Delivery Note # %d."), $_GET['ModifyDelivery']);
 		$help_context = "Modifying Delivery Note";
 		processing_start();
-	}
-	elseif (isset($_GET['OrderNumber'])) {
+	} elseif (isset($_GET['OrderNumber'])) {
 		processing_start();
 	}
 	Page::start($page_title);
@@ -39,8 +38,7 @@
 		hyperlink_params("/sales/customer_invoice.php", _("Invoice This Delivery"), "DeliveryNumber=$dispatch_no");
 		hyperlink_params("/sales/inquiry/sales_orders_view.php", _("Select Another Order For Dispatch"), "OutstandingOnly=1");
 		Page::footer_exit();
-	}
-	elseif (isset($_GET['UpdatedID'])) {
+	} elseif (isset($_GET['UpdatedID'])) {
 		$delivery_no = $_GET['UpdatedID'];
 		Errors::notice(sprintf(_('Delivery Note # %d has been updated.'), $delivery_no));
 		Display::note(ui_view::get_trans_view_str(ST_CUSTDELIVERY, $delivery_no, _("View this delivery")), 0, 1);
@@ -57,10 +55,7 @@
 		$ord = new Sales_Order(ST_SALESORDER, $_GET['OrderNumber'], true);
 		/*read in all the selected order into the Items cart  */
 		if ($ord->count_items() == 0) {
-			hyperlink_params(
-				"/sales/inquiry/sales_orders_view.php",
-				_("Select a different sales order to delivery"), "OutstandingOnly=1"
-			);
+			hyperlink_params("/sales/inquiry/sales_orders_view.php", _("Select a different sales order to delivery"), "OutstandingOnly=1");
 			die ("<br><b>" . _("This order has no items. There is nothing to delivery.") . "</b>");
 		}
 		$ord->trans_type = ST_CUSTDELIVERY;
@@ -71,33 +66,25 @@
 		$ord->document_date = Dates::new_doc_date();
 		$_SESSION['Items'] = $ord;
 		copy_from_cart();
-	}
-	elseif (isset($_GET['ModifyDelivery']) && $_GET['ModifyDelivery'] > 0) {
+	} elseif (isset($_GET['ModifyDelivery']) && $_GET['ModifyDelivery'] > 0) {
 		$_SESSION['Items'] = new Sales_Order(ST_CUSTDELIVERY, $_GET['ModifyDelivery']);
 		if ($_SESSION['Items']->count_items() == 0) {
-			hyperlink_params(
-				"/sales/inquiry/sales_orders_view.php",
-				_("Select a different delivery"), "OutstandingOnly=1"
-			);
-			echo "<br><center><b>" . _("This delivery has all items invoiced. There is nothing to modify.") .
-					 "</center></b>";
+			hyperlink_params("/sales/inquiry/sales_orders_view.php", _("Select a different delivery"), "OutstandingOnly=1");
+			echo "<br><center><b>" . _("This delivery has all items invoiced. There is nothing to modify.") . "</center></b>";
 			Page::footer_exit();
 		}
 		copy_from_cart();
-	}
-	elseif (!processing_active()) {
+	} elseif (!processing_active()) {
 		/* This page can only be called with an order number for invoicing*/
 		Errors::error(_("This page can only be opened if an order or delivery note has been selected. Please select it first."));
 		hyperlink_params("/sales/inquiry/sales_orders_view.php", _("Select a Sales Order to Delivery"), "OutstandingOnly=1");
 		end_page();
 		exit;
-	}
-	else {
+	} else {
 		check_edit_conflicts();
 		if (!check_quantities()) {
 			Errors::error(_("Selected quantity cannot be less than quantity invoiced nor more than quantity	not dispatched on sales order."));
-		}
-		elseif (!Validation::is_num('ChargeFreightCost', 0)) {
+		} elseif (!Validation::is_num('ChargeFreightCost', 0)) {
 			Errors::error(_("Freight cost cannot be less than zero"));
 			JS::set_focus('ChargeFreightCost');
 		}
@@ -184,25 +171,20 @@
 	{
 		$ok = 1;
 		// Update cart delivery quantities/descriptions
-		foreach (
-			$_SESSION['Items']->line_items as $line => $itm
-		) {
+		foreach ($_SESSION['Items']->line_items as $line => $itm) {
 			if (isset($_POST['Line' . $line])) {
 				if ($_SESSION['Items']->trans_no) {
 					$min = $itm->qty_done;
 					$max = $itm->quantity;
-				}
-				else {
+				} else {
 					$min = 0;
 					$max = $itm->quantity - $itm->qty_done;
 				}
 				if ($itm->quantity > 0 && Validation::is_num('Line' . $line, $min, $max)) {
 					$_SESSION['Items']->line_items[$line]->qty_dispatched = input_num('Line' . $line);
-				}
-				elseif ($itm->quantity < 0 && Validation::is_num('Line' . $line, $max, $min)) {
+				} elseif ($itm->quantity < 0 && Validation::is_num('Line' . $line, $max, $min)) {
 					$_SESSION['Items']->line_items[$line]->qty_dispatched = input_num('Line' . $line);
-				}
-				else {
+				} else {
 					JS::set_focus('Line' . $line);
 					$ok = 0;
 				}
@@ -224,16 +206,11 @@
 	function check_qoh()
 	{
 		if (!SysPrefs::allow_negative_stock()) {
-			foreach (
-				$_SESSION['Items']->line_items as $itm
-			) {
+			foreach ($_SESSION['Items']->line_items as $itm) {
 				if ($itm->qty_dispatched && Manufacturing::has_stock_holding($itm->mb_flag)) {
 					$qoh = Item::get_qoh_on_date($itm->stock_id, $_POST['Location'], $_POST['DispatchDate']);
 					if ($itm->qty_dispatched > $qoh) {
-						Errors::error(
-							_("The delivery cannot be processed because there is an insufficient quantity for item:") .
-							" " . $itm->stock_id . " - " . $itm->description
-						);
+						Errors::error(_("The delivery cannot be processed because there is an insufficient quantity for item:") . " " . $itm->stock_id . " - " . $itm->description);
 						return false;
 					}
 				}
@@ -247,8 +224,7 @@
 		$dn = &$_SESSION['Items'];
 		if ($_POST['bo_policy']) {
 			$bo_policy = 0;
-		}
-		else {
+		} else {
 			$bo_policy = 1;
 		}
 		$newdelivery = ($dn->trans_no == 0);
@@ -260,8 +236,7 @@
 		processing_end();
 		if ($newdelivery) {
 			meta_forward($_SERVER['PHP_SELF'], "AddedID=$delivery_no");
-		}
-		else {
+		} else {
 			meta_forward($_SERVER['PHP_SELF'], "UpdatedID=$delivery_no");
 		}
 	}
@@ -284,16 +259,10 @@
 	//	$_POST['ref'] = Refs::get_next(ST_CUSTDELIVERY);
 	if ($_SESSION['Items']->trans_no == 0) {
 		ref_cells(_("Reference"), 'ref', '', null, "class='label'");
-	}
-	else {
+	} else {
 		label_cells(_("Reference"), $_SESSION['Items']->reference, "class='label'");
 	}
-	label_cells(
-		_("For Sales Order"), ui_view::get_customer_trans_view_str(
-													ST_SALESORDER,
-													$_SESSION['Items']->order_no
-												), "class='tableheader2'"
-	);
+	label_cells(_("For Sales Order"), ui_view::get_customer_trans_view_str(ST_SALESORDER, $_SESSION['Items']->order_no), "class='tableheader2'");
 	label_cells(_("Sales Type"), $_SESSION['Items']->sales_type_name, "class='label'");
 	end_row();
 	start_row();
@@ -340,23 +309,17 @@
 	start_table(Config::get('tables_style') . "  width=90%");
 	$new = $_SESSION['Items']->trans_no == 0;
 	$th = array(
-		_("Item Code"), _("Item Description"),
-		$new ? _("Ordered") : _("Max. delivery"), _("Units"), $new ? _("Delivered") : _("Invoiced"),
-		_("This Delivery"), _("Price"), _("Tax Type"), _("Discount"), _("Total")
-	);
+		_("Item Code"), _("Item Description"), $new ? _("Ordered") : _("Max. delivery"), _("Units"), $new ? _("Delivered") : _("Invoiced"), _("This Delivery"), _("Price"), _("Tax Type"), _("Discount"), _("Total"));
 	table_header($th);
 	$k = 0;
 	$has_marked = false;
-	foreach (
-		$_SESSION['Items']->line_items as $line => $ln_itm
-	) {
+	foreach ($_SESSION['Items']->line_items as $line => $ln_itm) {
 		if ($ln_itm->quantity == $ln_itm->qty_done) {
 			continue; //this line is fully delivered
 		}
 		// if it's a non-stock item (eg. service) don't show qoh
 		$show_qoh = true;
-		if (SysPrefs::allow_negative_stock() || !Manufacturing::has_stock_holding($ln_itm->mb_flag)
-				|| $ln_itm->qty_dispatched == 0
+		if (SysPrefs::allow_negative_stock() || !Manufacturing::has_stock_holding($ln_itm->mb_flag) || $ln_itm->qty_dispatched == 0
 		) {
 			$show_qoh = false;
 		}
@@ -367,8 +330,7 @@
 			// oops, we don't have enough of one of the component items
 			start_row("class='stockmankobg'");
 			$has_marked = true;
-		}
-		else {
+		} else {
 			alt_table_row_color($k);
 		}
 		ui_view::stock_status_cell($ln_itm->stock_id);
@@ -386,10 +348,7 @@
 		amount_cell($line_total);
 		end_row();
 	}
-	$_POST['ChargeFreightCost'] = get_post(
-		'ChargeFreightCost',
-		Num::price_format($_SESSION['Items']->freight_cost)
-	);
+	$_POST['ChargeFreightCost'] = get_post('ChargeFreightCost', Num::price_format($_SESSION['Items']->freight_cost));
 	$colspan = 9;
 	start_row();
 	label_cell(_("Shipping Cost"), "colspan=$colspan align=right");
@@ -411,14 +370,8 @@
 	textarea_row(_("Memo"), 'Comments', null, 50, 4);
 	end_table(1);
 	div_end();
-	submit_center_first(
-		'Update', _("Update"),
-		_('Refresh document page'), true
-	);
-	submit_center_last(
-		'process_delivery', _("Process Dispatch"),
-		_('Check entered data and save document'), 'default'
-	);
+	submit_center_first('Update', _("Update"), _('Refresh document page'), true);
+	submit_center_last('process_delivery', _("Process Dispatch"), _('Check entered data and save document'), 'default');
 	end_form();
 	end_page();
 

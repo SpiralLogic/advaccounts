@@ -24,28 +24,24 @@
 	$receipt = Sales_Trans::get($trans_id, $trans_type);
 	if ($trans_type == ST_CUSTPAYMENT) {
 		Display::heading(sprintf(_("Customer Payment #%d"), $trans_id));
-	}
-	else {
+	} else {
 		Display::heading(sprintf(_("Customer Refund #%d"), $trans_id));
 	}
 	echo "<br>";
 	start_table(Config::get('tables_style') . "  width=90%");
 	start_row();
 	start_form();
-	label_cells(_("From Customer"), $receipt['DebtorName'],'class="label"');
-	label_cells(_("Into Bank Account"), $receipt['bank_account_name'],'class="label"');
-	label_cells(_("Date of Deposit"), Dates::sql2date($receipt['tran_date']),'class="label"');
+	label_cells(_("From Customer"), $receipt['DebtorName'], 'class="label"');
+	label_cells(_("Into Bank Account"), $receipt['bank_account_name'], 'class="label"');
+	label_cells(_("Date of Deposit"), Dates::sql2date($receipt['tran_date']), 'class="label"');
 	end_row();
 	start_row();
-	label_cells(_("Payment Currency"), $receipt['curr_code'],'class="label"');
-	label_cells(_("Amount"), Num::price_format($receipt['Total'] - $receipt['ov_discount']),'class="label"');
-	label_cells(_("Discount"), Num::price_format($receipt['ov_discount']),'class="label"');
+	label_cells(_("Payment Currency"), $receipt['curr_code'], 'class="label"');
+	label_cells(_("Amount"), Num::price_format($receipt['Total'] - $receipt['ov_discount']), 'class="label"');
+	label_cells(_("Discount"), Num::price_format($receipt['ov_discount']), 'class="label"');
 	end_row();
 	start_row();
-	label_cells(
-		_("Payment Type"),
-		$bank_transfer_types[$receipt['BankTransType']],'class="label"'
-	);
+	label_cells(_("Payment Type"), $bank_transfer_types[$receipt['BankTransType']], 'class="label"');
 	label_cells(_("Reference"), $receipt['reference'], 'class="label" colspan=1');
 	end_form();
 	end_row();

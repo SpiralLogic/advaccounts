@@ -36,15 +36,12 @@
 	//------------------------------------------------------------------------------------------------
 	function check_overdue($row)
 	{
-		return ($row['OverDue'] == 1
-		 && (abs($row["TotalAmount"]) - $row["Allocated"] != 0));
+		return ($row['OverDue'] == 1 && (abs($row["TotalAmount"]) - $row["Allocated"] != 0));
 	}
 
 	function order_link($row)
 	{
-		return $row['order_'] > 0 ?
-		 ui_view::get_customer_trans_view_str(ST_SALESORDER, $row['order_'])
-		 : "";
+		return $row['order_'] > 0 ? ui_view::get_customer_trans_view_str(ST_SALESORDER, $row['order_']) : "";
 	}
 
 	function systype_name($dummy, $type)
@@ -70,25 +67,15 @@
 
 	function alloc_link($row)
 	{
-		$link
-		 = pager_link(
-			_("Allocation"),
-		 "/sales/allocations/customer_allocate.php?trans_no=" . $row["trans_no"]
-			. "&trans_type=" . $row["type"], ICON_MONEY
-		);
+		$link = pager_link(_("Allocation"), "/sales/allocations/customer_allocate.php?trans_no=" . $row["trans_no"] . "&trans_type=" . $row["type"], ICON_MONEY);
 		if ($row["type"] == ST_CUSTCREDIT && $row['TotalAmount'] > 0) {
 			/*its a credit note which could have an allocation */
 			return $link;
-		}
-		elseif (($row["type"] == ST_CUSTPAYMENT || $row["type"] == ST_CUSTREFUND || $row["type"] == ST_BANKDEPOSIT)
-		 && ($row['TotalAmount'] - $row['Allocated']) > 0
-		)
-		{
+		} elseif (($row["type"] == ST_CUSTPAYMENT || $row["type"] == ST_CUSTREFUND || $row["type"] == ST_BANKDEPOSIT) && ($row['TotalAmount'] - $row['Allocated']) > 0
+		) {
 			/*its a receipt  which could have an allocation*/
 			return $link;
-		}
-		elseif ($row["type"] == ST_CUSTPAYMENT || $row["type"] == ST_CUSTREFUND && $row['TotalAmount'] < 0)
-		{
+		} elseif ($row["type"] == ST_CUSTPAYMENT || $row["type"] == ST_CUSTREFUND && $row['TotalAmount'] < 0) {
 			/*its a negative receipt */
 			return '';
 		}
@@ -96,27 +83,20 @@
 
 	function fmt_debit($row)
 	{
-		$value
-		 = $row['type'] == ST_CUSTCREDIT || $row['type'] == ST_CUSTPAYMENT || $row['type'] == ST_CUSTREFUND
-		 || $row['type'] == ST_BANKDEPOSIT ?
-		 -$row["TotalAmount"] : $row["TotalAmount"];
+		$value = $row['type'] == ST_CUSTCREDIT || $row['type'] == ST_CUSTPAYMENT || $row['type'] == ST_CUSTREFUND || $row['type'] == ST_BANKDEPOSIT ? -$row["TotalAmount"] : $row["TotalAmount"];
 		return $value >= 0 ? Num::price_format($value) : '';
 	}
 
 	function fmt_credit($row)
 	{
-		$value
-		 = !($row['type'] == ST_CUSTCREDIT || $row['type'] == ST_CUSTPAYMENT || $row['type'] == ST_CUSTREFUND
-		 || $row['type'] == ST_BANKDEPOSIT) ?
-		 -$row["TotalAmount"] : $row["TotalAmount"];
+		$value = !($row['type'] == ST_CUSTCREDIT || $row['type'] == ST_CUSTPAYMENT || $row['type'] == ST_CUSTREFUND || $row['type'] == ST_BANKDEPOSIT) ? -$row["TotalAmount"] : $row["TotalAmount"];
 		return $value > 0 ? Num::price_format($value) : '';
 	}
 
 	//------------------------------------------------------------------------------------------------
 	$data_after = Dates::date2sql($_POST['TransAfterDate']);
 	$date_to = Dates::date2sql($_POST['TransToDate']);
-	$sql
-	 = "SELECT
+	$sql = "SELECT
   		trans.type,
 		trans.trans_no,
 		trans.reference,
@@ -137,35 +117,26 @@
     		AND trans.tran_date >= '$data_after'
     		AND trans.tran_date <= '$date_to'";
 	if ($_POST['customer_id'] != ALL_TEXT) {
-		$sql .= " AND trans.debtor_no = " . DB::escape($_POST['customer_id'],false,false);
+		$sql .= " AND trans.debtor_no = " . DB::escape($_POST['customer_id'], false, false);
 	}
 	if (isset($_POST['filterType']) && $_POST['filterType'] != ALL_TEXT) {
 		if ($_POST['filterType'] == '1' || $_POST['filterType'] == '2') {
 			$sql .= " AND trans.type = " . ST_SALESINVOICE . " ";
-		}
-		elseif ($_POST['filterType'] == '3')
-		{
+		} elseif ($_POST['filterType'] == '3') {
 			$sql .= " AND (trans.type = " . ST_CUSTPAYMENT . " OR trans.type = " . ST_CUSTREFUND . ")";
-		}
-		elseif ($_POST['filterType'] == '4')
-		{
+		} elseif ($_POST['filterType'] == '4') {
 			$sql .= " AND trans.type = " . ST_CUSTCREDIT . " ";
 		}
 		if ($_POST['filterType'] == '2') {
 			$today = Dates::date2sql(Dates::Today());
-			$sql
-			 .= " AND trans.due_date < '$today'
-				AND (round(abs(trans.ov_amount + "
-			 . "trans.ov_gst + trans.ov_freight + "
-			 . "trans.ov_freight_tax + trans.ov_discount) - trans.alloc,6) > 0) ";
+			$sql .= " AND trans.due_date < '$today'
+				AND (round(abs(trans.ov_amount + " . "trans.ov_gst + trans.ov_freight + " . "trans.ov_freight_tax + trans.ov_discount) - trans.alloc,6) > 0) ";
 		}
 	} else {
 		$sql .= " AND trans.type <> " . ST_CUSTDELIVERY . " ";
 	}
 	if (!check_value('showSettled')) {
-		$sql .= " AND (round(abs(trans.ov_amount + trans.ov_gst + "
-		 . "trans.ov_freight + trans.ov_freight_tax + "
-		 . "trans.ov_discount) - trans.alloc,6) != 0) ";
+		$sql .= " AND (round(abs(trans.ov_amount + trans.ov_gst + " . "trans.ov_freight + trans.ov_freight_tax + " . "trans.ov_discount) - trans.alloc,6) != 0) ";
 	}
 	//------------------------------------------------------------------------------------------------
 	$cols = array(
@@ -173,41 +144,15 @@
 		_("#") => array('fun' => 'view_link'),
 		_("Reference"),
 		_("Order") => array('fun' => 'order_link'),
-		_("Date") => array(
-			'name' => 'tran_date',
-			'type' => 'date',
-			'ord' => 'asc'
-		),
-		_("Due Date") => array(
-			'type' => 'date',
-			'fun' => 'due_date'
-		),
+		_("Date") => array('name' => 'tran_date', 'type' => 'date', 'ord' => 'asc'),
+		_("Due Date") => array('type' => 'date', 'fun' => 'due_date'),
 		_("Customer"),
 		_("Currency") => array('align' => 'center'),
-		_("Debit") => array(
-			'align' => 'right',
-			'fun' => 'fmt_debit'
-		),
-		_("Credit") => array(
-			'align' => 'right',
-			'insert' => true,
-			'fun' => 'fmt_credit'
-		),
+		_("Debit") => array('align' => 'right', 'fun' => 'fmt_debit'),
+		_("Credit") => array('align' => 'right', 'insert' => true, 'fun' => 'fmt_credit'),
 		_("Allocated") => 'amount',
-		_("Balance") => array(
-			'type' => 'amount',
-			'insert' => true,
-			'fun' => 'fmt_balance'
-		),
-		array(
-			'insert' => true,
-			'fun' => 'alloc_link'
-		)
-	);
-	if ($_POST['customer_id'] != ALL_TEXT) {
-		$cols[_("Customer")] = 'skip';
-		$cols[_("Currency")] = 'skip';
-	}
+		_("Balance") => array('type' => 'amount', 'insert' => true, 'fun' => 'fmt_balance'),
+		array('insert' => true, 'fun' => 'alloc_link'));
 	$table =& db_pager::new_db_pager('doc_tbl', $sql, $cols);
 	$table->set_marker('check_overdue', _("Marked items are overdue."));
 	$table->width = "80%";

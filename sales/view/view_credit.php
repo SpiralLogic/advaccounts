@@ -15,9 +15,7 @@
 	Page::start(_($help_context = "View Credit Note"), true);
 	if (isset($_GET["trans_no"])) {
 		$trans_id = $_GET["trans_no"];
-	}
-	elseif (isset($_POST["trans_no"]))
-	{
+	} elseif (isset($_POST["trans_no"])) {
 		$trans_id = $_POST["trans_no"];
 	}
 	$myrow = Sales_Trans::get($trans_id, ST_CUSTCREDIT);
@@ -59,22 +57,16 @@
 	start_table(Config::get('tables_style') . "  width=95%");
 	if (DB::num_rows($result) > 0) {
 		$th = array(
-			_("Item Code"), _("Item Description"), _("Quantity"),
-			_("Unit"), _("Price"), _("Discount %"), _("Total")
-		);
+			_("Item Code"), _("Item Description"), _("Quantity"), _("Unit"), _("Price"), _("Discount %"), _("Total"));
 		table_header($th);
 		$k = 0; //row colour counter
 		$sub_total = 0;
-		while ($myrow2 = DB::fetch($result))
-		{
+		while ($myrow2 = DB::fetch($result)) {
 			if ($myrow2["quantity"] == 0) {
 				continue;
 			}
 			alt_table_row_color($k);
-			$value = Num::round(
-				((1 - $myrow2["discount_percent"]) * $myrow2["unit_price"] * $myrow2["quantity"]),
-				User::price_dec()
-			);
+			$value = Num::round(((1 - $myrow2["discount_percent"]) * $myrow2["unit_price"] * $myrow2["quantity"]), User::price_dec());
 			$sub_total += $value;
 			if ($myrow2["discount_percent"] == 0) {
 				$display_discount = "";
@@ -99,25 +91,16 @@
 	$display_total = Num::price_format($credit_total);
 	/*Print out the invoice text entered */
 	if ($sub_total != 0) {
-		label_row(
-			_("Sub Total"), $display_sub_tot, "colspan=6 align=right",
-			"nowrap align=right width=15%"
-		);
+		label_row(_("Sub Total"), $display_sub_tot, "colspan=6 align=right", "nowrap align=right width=15%");
 	}
 	label_row(_("Shipping"), $display_freight, "colspan=6 align=right", "nowrap align=right");
 	$tax_items = GL_Trans::get_tax_details(ST_CUSTCREDIT, $trans_id);
 	Display::customer_trans_tax_details($tax_items, 6);
-	label_row(
-		"<font color=red>" . _("TOTAL CREDIT") . "</font",
-		"<font color=red>$display_total</font>", "colspan=6 align=right", "nowrap align=right"
-	);
+	label_row("<font color=red>" . _("TOTAL CREDIT") . "</font", "<font color=red>$display_total</font>", "colspan=6 align=right", "nowrap align=right");
 	end_table(1);
 	$voided = Display::is_voided(ST_CUSTCREDIT, $trans_id, _("This credit note has been voided."));
 	if (!$voided) {
-		Display::allocations_from(
-			PT_CUSTOMER,
-			$myrow['debtor_no'], ST_CUSTCREDIT, $trans_id, $credit_total
-		);
+		Display::allocations_from(PT_CUSTOMER, $myrow['debtor_no'], ST_CUSTCREDIT, $trans_id, $credit_total);
 	}
 	/* end of check to see that there was an invoice record to print */
 	submenu_print(_("&Print This Credit Note"), ST_CUSTCREDIT, $_GET['trans_no'], 'prtopt');

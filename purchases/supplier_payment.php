@@ -45,9 +45,7 @@
 		submenu_print(_("&Email This Remittance"), ST_SUPPAYMENT, $payment_id . "-" . ST_SUPPAYMENT, null, 1);
 		Display::note(ui_view::get_gl_view_str(ST_SUPPAYMENT, $payment_id, _("View the GL &Journal Entries for this Payment")));
 		//    hyperlink_params($path_to_root . "/purchases/allocations/supplier_allocate.php", _("&Allocate this Payment"), "trans_no=$payment_id&trans_type=22");
-		hyperlink_params(
-			$_SERVER['PHP_SELF'], _("Enter another supplier &payment"), "supplier_id=" . $_POST['supplier_id']
-		);
+		hyperlink_params($_SERVER['PHP_SELF'], _("Enter another supplier &payment"), "supplier_id=" . $_POST['supplier_id']);
 		Page::footer_exit();
 	}
 	//----------------------------------------------------------------------------------------
@@ -102,9 +100,7 @@
 			Errors::error(_("The entered date is invalid."));
 			JS::set_focus('DatePaid');
 			return false;
-		}
-		elseif (!Dates::is_date_in_fiscalyear($_POST['DatePaid']))
-		{
+		} elseif (!Dates::is_date_in_fiscalyear($_POST['DatePaid'])) {
 			Errors::error(_("The entered date is not in fiscal year."));
 			JS::set_focus('DatePaid');
 			return false;
@@ -138,11 +134,7 @@
 		} else {
 			$rate = input_num('_ex_rate');
 		}
-		$payment_id = Purch_Payment::add(
-			$_POST['supplier_id'], $_POST['DatePaid'],
-			$_POST['bank_account'], input_num('amount'), input_num('discount'),
-			$_POST['ref'], $_POST['memo_'], $rate, input_num('charge')
-		);
+		$payment_id = Purch_Payment::add($_POST['supplier_id'], $_POST['DatePaid'], $_POST['bank_account'], input_num('amount'), input_num('discount'), $_POST['ref'], $_POST['memo_'], $rate, input_num('charge'));
 		Dates::new_doc_date($_POST['DatePaid']);
 		$_SESSION['alloc']->trans_no = $payment_id;
 		$_SESSION['alloc']->write();

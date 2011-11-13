@@ -55,10 +55,7 @@
 				Item_Price::update($selected_id, $_POST['sales_type_id'], $_POST['curr_abrev'], input_num('price'));
 				$msg = _("This price has been updated.");
 			} else {
-				Item_Price::add(
-					$_POST['stock_id'], $_POST['sales_type_id'],
-					$_POST['curr_abrev'], input_num('price')
-				);
+				Item_Price::add($_POST['stock_id'], $_POST['sales_type_id'], $_POST['curr_abrev'], input_num('price'));
 				$msg = _("The new price has been added.");
 			}
 			Errors::notice($msg);
@@ -87,7 +84,7 @@
 		$Ajax->activate('price_details');
 	}
 	//---------------------------------------------------------------------------------------------------
-	$prices_list = Item_Price::get($_POST['stock_id']);
+	$prices_list = Item_Price::get_all($_POST['stock_id']);
 	div_start('price_table');
 	if (Input::request('frame')) {
 		start_table(Config::get('tables_style') . "  width=90%");
@@ -98,8 +95,7 @@
 	table_header($th);
 	$k = 0; //row colour counter
 	$calculated = false;
-	while ($myrow = DB::fetch($prices_list))
-	{
+	while ($myrow = DB::fetch($prices_list)) {
 		alt_table_row_color($k);
 		label_cell($myrow["curr_abrev"]);
 		label_cell($myrow["sales_type"]);
@@ -130,12 +126,7 @@
 	currencies_list_row(_("Currency:"), 'curr_abrev', null, true);
 	sales_types_list_row(_("Sales Type:"), 'sales_type_id', null, true);
 	if (!isset($_POST['price'])) {
-		$_POST['price'] = Num::price_format(
-			Item_Price::get_kit(
-				get_post('stock_id'),
-				get_post('curr_abrev'), get_post('sales_type_id')
-			)
-		);
+		$_POST['price'] = Num::price_format(Item_Price::get_kit(get_post('stock_id'), get_post('curr_abrev'), get_post('sales_type_id')));
 	}
 	$kit = Item_Code::get_defaults($_POST['stock_id']);
 	small_amount_row(_("Price:"), 'price', null, '', _('per') . ' ' . $kit["units"]);

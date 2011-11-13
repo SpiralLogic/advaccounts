@@ -56,11 +56,7 @@
 
 	function alloc_link($row)
 	{
-		return pager_link(
-			_("Allocate"),
-		 "/sales/allocations/customer_allocate.php?trans_no="
-			. $row["trans_no"] . "&trans_type=" . $row["type"], ICON_MONEY
-		);
+		return pager_link(_("Allocate"), "/sales/allocations/customer_allocate.php?trans_no=" . $row["trans_no"] . "&trans_type=" . $row["type"], ICON_MONEY);
 	}
 
 	function amount_left($row)
@@ -75,27 +71,10 @@
 
 	$sql = Sales_Allocation::get_allocatable_sql($customer_id, $settled);
 	$cols = array(
-		_("Transaction Type") => array('fun' => 'systype_name'),
-		_("#") => array('fun' => 'trans_view'),
-		_("Reference"),
-		_("Date") => array(
-			'name' => 'tran_date',
-			'type' => 'date',
-			'ord' => 'desc'
-		),
-		_("Customer") => array('ord' => ''),
-		_("Currency") => array('align' => 'center'),
-		_("Total") => 'amount',
-		_("Left to Allocate") => array(
-			'align' => 'right',
-			'insert' => true,
-			'fun' => 'amount_left'
-		),
-		array(
-			'insert' => true,
-			'fun' => 'alloc_link'
-		)
-	);
+		_("Transaction Type") => array('fun' => 'systype_name'), _("#") => array('fun' => 'trans_view'), _("Reference"), _("Date") => array(
+			'name' => 'tran_date', 'type' => 'date', 'ord' => 'desc'), _("Customer") => array('ord' => ''), _("Currency") => array('align' => 'center'), _("Total") => 'amount', _("Left to Allocate") => array(
+			'align' => 'right', 'insert' => true, 'fun' => 'amount_left'), array(
+			'insert' => true, 'fun' => 'alloc_link'));
 	if (isset($_POST['customer_id'])) {
 		$cols[_("Customer")] = 'skip';
 		$cols[_("Currency")] = 'skip';

@@ -14,7 +14,6 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	include_once(APP_PATH . "sales/includes/ui/sales_order_ui.php");
 	include_once(APP_PATH . "sales/includes/sales_ui.php");
-
 	JS::open_window(900, 500);
 	JS::headerFile('/js/payalloc.js');
 	Page::start(_($help_context = "Customer Payment Entry"), Input::request('frame'));
@@ -64,8 +63,7 @@
 			Errors::error(_("The entered date is invalid. Please enter a valid date for the payment."));
 			JS::set_focus('DateBanked');
 			return false;
-		}
-		elseif (!Dates::is_date_in_fiscalyear($_POST['DateBanked'])) {
+		} elseif (!Dates::is_date_in_fiscalyear($_POST['DateBanked'])) {
 			Errors::error(_("The entered date is not in fiscal year."));
 			JS::set_focus('DateBanked');
 			return false;
@@ -152,9 +150,8 @@
 		} else {
 			$rate = input_num('_ex_rate');
 		}
-
 		if (check_value('createinvoice')) {
-var_dump($_POST);
+			var_dump($_POST);
 			Gl_Allocation::create_miscorder(new Contacts_Customer($_POST['customer_id']), $_POST['BranchID'], $_POST['DateBanked'], $_POST['memo_'], $_POST['ref'], input_num('amount'), input_num('discount'));
 		}
 		$payment_no = Sales_Debtor_Payment::add(0, $_POST['customer_id'], $_POST['BranchID'], $_POST['bank_account'], $_POST['DateBanked'], $_POST['ref'], input_num('amount'), input_num('discount'), $_POST['memo_'], $rate, input_num('charge'));
@@ -182,8 +179,7 @@ var_dump($_POST);
 	}
 	if (Validation::check(Validation::BRANCHES, _("No Branches for Customer") . $_POST["customer_id"], $_POST['customer_id'])) {
 		customer_branches_list_row(_("Branch:"), $_POST['customer_id'], 'BranchID', null, false, true, true);
-	}
-	else {
+	} else {
 		hidden('BranchID', ANY_NUMERIC);
 	}
 	read_customer_data();
@@ -191,8 +187,7 @@ var_dump($_POST);
 	if (isset($_POST['HoldAccount']) && $_POST['HoldAccount'] != 0) {
 		end_outer_table();
 		Errors::error(_("This customer account is on hold."));
-	}
-	else {
+	} else {
 		$display_discount_percent = Num::percent_format($_POST['pymt_discount'] * 100) . "%";
 		table_section(2);
 		if (!list_updated('bank_account')) {
@@ -231,8 +226,7 @@ var_dump($_POST);
 	}
 	br();
 	end_form();
-	$js
-	 = <<<JS
+	$js = <<<JS
 var ci = $("#createinvoice"), ci_row = ci.closest('tr'),alloc_tbl = $('#alloc_tbl'),hasallocated = false;
   alloc_tbl.find('.amount').each(function() { if (this.value != 0) hasallocated = true});
   if (hasallocated && !ci.prop('checked')) ci_row.hide(); else ci_row.show();

@@ -13,24 +13,24 @@
 	// New version (without vertical lines)
 	global $wo_types_array, $systypes_array;
 	$this->row = $this->pageHeight - $this->topMargin;
-	$upper     = $this->row - 2 * $this->lineHeight;
-	$lower     = $this->bottomMargin + 8 * $this->lineHeight;
-	$iline1    = $upper - 7.5 * $this->lineHeight;
-	$iline2    = $iline1 - 8 * $this->lineHeight;
-	$iline3    = $iline2 - 1.5 * $this->lineHeight;
-	$iline4    = $iline3 - 1.5 * $this->lineHeight;
-	$iline5    = $iline4 - 3 * $this->lineHeight;
-	$iline6    = $iline5 - 1.5 * $this->lineHeight;
-	$iline7    = $lower;
-	$right     = $this->pageWidth - $this->rightMargin;
-	$width     = ($right - $this->leftMargin) / 5;
-	$icol      = $this->pageWidth / 2;
-	$ccol      = $this->cols[0] + 4;
-	$c2col     = $ccol + 60;
-	$ccol2     = $icol / 2;
-	$mcol      = $icol + 8;
-	$mcol2     = $this->pageWidth - $ccol2;
-	$cols      = count($this->cols);
+	$upper = $this->row - 2 * $this->lineHeight;
+	$lower = $this->bottomMargin + 8 * $this->lineHeight;
+	$iline1 = $upper - 7.5 * $this->lineHeight;
+	$iline2 = $iline1 - 8 * $this->lineHeight;
+	$iline3 = $iline2 - 1.5 * $this->lineHeight;
+	$iline4 = $iline3 - 1.5 * $this->lineHeight;
+	$iline5 = $iline4 - 3 * $this->lineHeight;
+	$iline6 = $iline5 - 1.5 * $this->lineHeight;
+	$iline7 = $lower;
+	$right = $this->pageWidth - $this->rightMargin;
+	$width = ($right - $this->leftMargin) / 5;
+	$icol = $this->pageWidth / 2;
+	$ccol = $this->cols[0] + 4;
+	$c2col = $ccol + 60;
+	$ccol2 = $icol / 2;
+	$mcol = $icol + 8;
+	$mcol2 = $this->pageWidth - $ccol2;
+	$cols = count($this->cols);
 	$this->SetDrawColor(205, 205, 205);
 	$this->Line($iline1, 3);
 	$this->SetDrawColor(128, 128, 128);
@@ -45,9 +45,7 @@
 	$this->Line($iline7);
 	$this->LineTo($this->leftMargin, $iline2, $this->leftMargin, $iline4);
 	$col = $this->leftMargin;
-	for (
-		$i = 0; $i < 5; $i++
-	) {
+	for ($i = 0; $i < 5; $i++) {
 		$this->LineTo($col += $width, $iline2, $col, $iline4);
 	}
 	$this->LineTo($right, $iline2, $right, $iline4);
@@ -128,9 +126,9 @@
 	$this->Text($ccol, $doc_Charge_To . ':', $icol);
 	$this->Font('');
 	$this->row = $this->row - $this->lineHeight - 5;
-	$temp      = $this->row;
-	$name      = $myrow['DebtorName'];
-	$addr      = (trim($branch['br_address']) != '') ? $branch['br_address'] : $addr = $myrow['address'];
+	$temp = $this->row;
+	$name = $myrow['DebtorName'];
+	$addr = (trim($branch['br_address']) != '') ? $branch['br_address'] : $addr = $myrow['address'];
 	$this->Text($ccol, $name, $icol);
 	$this->NewLine();
 	$this->TextWrapLines($ccol, $icol - $ccol, $addr);
@@ -141,7 +139,7 @@
 		}
 	}
 	$this->row = $iline2 - $this->lineHeight - 1;
-	$col       = $this->leftMargin;
+	$col = $this->leftMargin;
 	$this->TextWrap($col, $this->row, $width, $doc_Customers_Ref, 'C');
 	$col += $width;
 	$this->TextWrap($col, $this->row, $width, $doc_Our_Ref, 'C');
@@ -152,7 +150,7 @@
 	$col += $width;
 	$this->TextWrap($col, $this->row, $width, $doc_Due_Date, 'C');
 	$this->row = $iline3 - $this->lineHeight - 1;
-	$col       = $this->leftMargin;
+	$col = $this->leftMargin;
 	if (isset($sales_order["customer_ref"])) {
 		$this->TextWrap($col, $this->row, $width, $sales_order["customer_ref"], 'C');
 	} elseif (isset($myrow["debtor_ref"])) {
@@ -170,21 +168,19 @@
 	$this->NewLine();
 	$this->TextWrap($ccol, $this->row, $right - $ccol, "Email:  " . $customer_branch_details['email']);
 	$this->NewLine();
-	$id     = $myrow['payment_terms'];
-	$sql    = "SELECT terms FROM payment_terms WHERE terms_indicator='$id'";
+	$id = $myrow['payment_terms'];
+	$sql = "SELECT terms FROM payment_terms WHERE terms_indicator='$id'";
 	$result = DB::query($sql, "could not get paymentterms");
-	$row    = DB::fetch($result);
-	$str    = $row["terms"];
+	$row = DB::fetch($result);
+	$str = $row["terms"];
 	$this->Font('italic');
 	$this->TextWrap($ccol, $this->row, $right - $ccol, $doc_Payment_Terms . ":  " . $str);
 	$this->Font();
 	$this->row = $iline5 - $this->lineHeight - 1;
 	$this->Font('bold');
-	$count              = count($this->headers);
+	$count = count($this->headers);
 	$this->cols[$count] = $right - 3;
-	for (
-		$i = 0; $i < $count; $i++
-	) {
+	for ($i = 0; $i < $count; $i++) {
 		$this->TextCol($i, $i + 1, $this->headers[$i], -2);
 	}
 	$this->Font();
@@ -217,4 +213,3 @@
 	$this->TextWrapLines($ccol, $right - $ccol, $this->company['legal_text'], 'C');
 	$this->Font();
 	$temp = $iline6 - $this->lineHeight - 2;
-?>

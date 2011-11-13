@@ -73,99 +73,99 @@
 			$orientation = strtoupper($orientation);
 			// Page size name
 			switch (strtoupper($size)) {
-			default:
-			case 'A4':
-				// Portrait
-				if ($orientation == 'P') {
-					$this->pageWidth = 595;
-					$this->pageHeight = 842;
-					if (!isset($margins)) {
-						$this->topMargin = 40;
-						$this->bottomMargin = 30;
-						$this->leftMargin = 40;
-						$this->rightMargin = 30;
+				default:
+				case 'A4':
+					// Portrait
+					if ($orientation == 'P') {
+						$this->pageWidth = 595;
+						$this->pageHeight = 842;
+						if (!isset($margins)) {
+							$this->topMargin = 40;
+							$this->bottomMargin = 30;
+							$this->leftMargin = 40;
+							$this->rightMargin = 30;
+						}
+					} // Landscape
+					else {
+						$this->pageWidth = 842;
+						$this->pageHeight = 595;
+						if (!isset($margins)) {
+							$this->topMargin = 30;
+							$this->bottomMargin = 30;
+							$this->leftMargin = 40;
+							$this->rightMargin = 30;
+						}
 					}
-				} // Landscape
-				else {
-					$this->pageWidth = 842;
-					$this->pageHeight = 595;
-					if (!isset($margins)) {
-						$this->topMargin = 30;
-						$this->bottomMargin = 30;
-						$this->leftMargin = 40;
-						$this->rightMargin = 30;
+					break;
+				case 'A3':
+					// Portrait
+					if ($orientation == 'P') {
+						$this->pageWidth = 842;
+						$this->pageHeight = 1190;
+						if (!isset($margins)) {
+							$this->topMargin = 50;
+							$this->bottomMargin = 50;
+							$this->leftMargin = 50;
+							$this->rightMargin = 40;
+						}
+					} // Landscape
+					else {
+						$this->pageWidth = 1190;
+						$this->pageHeight = 842;
+						if (!isset($margins)) {
+							$this->topMargin = 50;
+							$this->bottomMargin = 50;
+							$this->leftMargin = 50;
+							$this->rightMargin = 40;
+						}
 					}
-				}
-				break;
-			case 'A3':
-				// Portrait
-				if ($orientation == 'P') {
-					$this->pageWidth = 842;
-					$this->pageHeight = 1190;
-					if (!isset($margins)) {
-						$this->topMargin = 50;
-						$this->bottomMargin = 50;
-						$this->leftMargin = 50;
-						$this->rightMargin = 40;
+					break;
+				case 'LETTER':
+					// Portrait
+					if ($orientation == 'P') {
+						$this->pageWidth = 612;
+						$this->pageHeight = 792;
+						if (!isset($margins)) {
+							$this->topMargin = 30;
+							$this->bottomMargin = 30;
+							$this->leftMargin = 30;
+							$this->rightMargin = 25;
+						}
+					} // Landscape
+					else {
+						$this->pageWidth = 792;
+						$this->pageHeight = 612;
+						if (!isset($margins)) {
+							$this->topMargin = 30;
+							$this->bottomMargin = 30;
+							$this->leftMargin = 30;
+							$this->rightMargin = 25;
+						}
 					}
-				} // Landscape
-				else {
-					$this->pageWidth = 1190;
-					$this->pageHeight = 842;
-					if (!isset($margins)) {
-						$this->topMargin = 50;
-						$this->bottomMargin = 50;
-						$this->leftMargin = 50;
-						$this->rightMargin = 40;
+					break;
+				case 'LEGAL':
+					// Portrait
+					if ($orientation == 'P') {
+						$this->pageWidth = 612;
+						$this->pageHeight = 1008;
+						if (!isset($margins)) {
+							$this->topMargin = 50;
+							$this->bottomMargin = 40;
+							$this->leftMargin = 30;
+							$this->rightMargin = 25;
+						}
+					} // Landscape
+					else {
+						$this->pageWidth = 1008;
+						$this->pageHeight = 612;
+						if (!isset($margins)) {
+							$this->topMargin = 50;
+							$this->bottomMargin = 40;
+							$this->leftMargin = 30;
+							$this->rightMargin = 25;
+						}
 					}
-				}
-				break;
-			case 'LETTER':
-				// Portrait
-				if ($orientation == 'P') {
-					$this->pageWidth = 612;
-					$this->pageHeight = 792;
-					if (!isset($margins)) {
-						$this->topMargin = 30;
-						$this->bottomMargin = 30;
-						$this->leftMargin = 30;
-						$this->rightMargin = 25;
-					}
-				} // Landscape
-				else {
-					$this->pageWidth = 792;
-					$this->pageHeight = 612;
-					if (!isset($margins)) {
-						$this->topMargin = 30;
-						$this->bottomMargin = 30;
-						$this->leftMargin = 30;
-						$this->rightMargin = 25;
-					}
-				}
-				break;
-			case 'LEGAL':
-				// Portrait
-				if ($orientation == 'P') {
-					$this->pageWidth = 612;
-					$this->pageHeight = 1008;
-					if (!isset($margins)) {
-						$this->topMargin = 50;
-						$this->bottomMargin = 40;
-						$this->leftMargin = 30;
-						$this->rightMargin = 25;
-					}
-				} // Landscape
-				else {
-					$this->pageWidth = 1008;
-					$this->pageHeight = 612;
-					if (!isset($margins)) {
-						$this->topMargin = 50;
-						$this->bottomMargin = 40;
-						$this->leftMargin = 30;
-						$this->rightMargin = 25;
-					}
-				}
-				break;
+					break;
 			}
 			$this->size = array(0, 0, $this->pageWidth, $this->pageHeight);
 			$this->title = $title;
@@ -184,11 +184,7 @@
 			$enc = strtoupper($_SESSION['language']->encoding);
 			// for the language array in class.pdf.inc
 			$l = array(
-				'a_meta_charset' => $enc,
-				'a_meta_dir' => $rtl,
-				'a_meta_language' => $code,
-				'w_page' => 'page'
-			);
+				'a_meta_charset' => $enc, 'a_meta_dir' => $rtl, 'a_meta_language' => $code, 'w_page' => 'page');
 			parent::__construct($size, $l, $orientation);
 		}
 
@@ -235,18 +231,14 @@
 			$this->host = $_SERVER['SERVER_NAME'];
 			$this->params = $params;
 			$this->cols = $cols;
-			for (
-				$i = 0; $i < count($this->cols); $i++
-			) {
+			for ($i = 0; $i < count($this->cols); $i++) {
 				$this->cols[$i] += $this->leftMargin;
 			}
 			$this->headers = $headers;
 			$this->aligns = $aligns;
 			$this->cols2 = $cols2;
 			if ($this->cols2 != null) {
-				for (
-					$i = 0; $i < count($this->cols2); $i++
-				) {
+				for ($i = 0; $i < count($this->cols2); $i++) {
 					$this->cols2[$i] += $this->leftMargin;
 				}
 			}
@@ -292,9 +284,7 @@
 			$str = $this->fiscal_year;
 			$this->Text($titleCol, $str, $companyCol);
 			$this->Text($companyCol, $this->user);
-			for (
-				$i = 1; $i < count($this->params); $i++
-			) {
+			for ($i = 1; $i < count($this->params); $i++) {
 				if ($this->params[$i]['from'] != '') {
 					$this->NewLine();
 					$str = $this->params[$i]['text'] . ':';
@@ -321,17 +311,13 @@
 			$this->Font('italic');
 			if ($this->headers2 != null) {
 				$count = count($this->headers2);
-				for (
-					$i = 0; $i < $count; $i++
-				) {
+				for ($i = 0; $i < $count; $i++) {
 					$this->TextCol2($i, $i + 1, $this->headers2[$i]);
 				}
 				$this->NewLine();
 			}
 			$count = count($this->headers);
-			for (
-				$i = 0; $i < $count; $i++
-			) {
+			for ($i = 0; $i < $count; $i++) {
 				$this->TextCol($i, $i + 1, $this->headers[$i]);
 			}
 			$this->Font();
@@ -339,7 +325,7 @@
 			$this->NewLine(2);
 		}
 
-		function Header2($myrow, $branch=null, $sales_order=null, $bankaccount=null, $doctype=null)
+		function Header2($myrow, $branch = null, $sales_order = null, $bankaccount = null, $doctype = null)
 		{
 			global $print_as_quote, $packing_slip;
 			$this->pageNumber++;
@@ -417,10 +403,7 @@
 				$prevFontSize = $this->fontSize;
 				$this->fontSize = FOOTER_FONT_SIZE;
 				$this->TextWrap($footerCol, $footerRow - ($this->fontSize + 1), $pageNumCol - $footerCol, $this->footerText, $align = 'center', $border = 0, $fill = 0, $link = NULL, $stretch = 1);
-				$this->TextWrap(
-					$pageNumCol, $footerRow - ($this->fontSize + 1), PAGE_NUM_WIDTH, _("Page") . ' ' . $this->pageNumber . '/' . $this->getAliasNbPages(), $align = 'right', $border = 0,
-					$fill = 0, $link = NULL, $stretch = 1
-				);
+				$this->TextWrap($pageNumCol, $footerRow - ($this->fontSize + 1), PAGE_NUM_WIDTH, _("Page") . ' ' . $this->pageNumber . '/' . $this->getAliasNbPages(), $align = 'right', $border = 0, $fill = 0, $link = NULL, $stretch = 1);
 				$this->fontSize = $prevFontSize;
 			}
 			//
@@ -443,8 +426,7 @@
 				// keeping its aspect ratio intact.
 				if ($this->scaleLogoWidth) {
 					$this->AddImage($logo, $companyCol, $this->row, COMPANY_WIDTH, 0);
-				} else
-				{
+				} else {
 					$this->AddImage($logo, $companyCol, $this->row - (LOGO_HEIGHT * LOGO_Y_POS_ADJ_FACTOR), 0, LOGO_HEIGHT);
 				}
 			} else {
@@ -480,9 +462,7 @@
 					$str = $this->params[5]['text'] . ':';
 					$this->Text($this->leftMargin, $str, $headerFieldCol);
 					$str = '';
-					for (
-						$i = 0; $i < count($this->params[5]['from']); $i++
-					) {
+					for ($i = 0; $i < count($this->params[5]['from']); $i++) {
 						if ($i != 0) {
 							$str .= ', ';
 						}
@@ -551,17 +531,13 @@
 			$this->Font('I');
 			if ($this->headers2 != null) {
 				$count = count($this->headers2);
-				for (
-					$i = 0; $i < $count; $i++
-				) {
+				for ($i = 0; $i < $count; $i++) {
 					$this->TextCol2($i, $i + 1, $this->headers2[$i], $corr = 0, $r = 0, $border = 0, $fill = 0, $link = NULL, $stretch = 1);
 				}
 				$this->NewLine();
 			}
 			$count = count($this->headers);
-			for (
-				$i = 0; $i < $count; $i++
-			) {
+			for ($i = 0; $i < $count; $i++) {
 				$this->TextCol($i, $i + 1, $this->headers[$i], $corr = 0, $r = 0, $border = 0, $fill = 0, $link = NULL, $stretch = 1);
 			}
 			$this->Font();
@@ -589,13 +565,7 @@
 				if ($output_format == 0) {
 					return (date('F j, Y', mktime(12, 0, 0, $month, $day, $year)));
 				} elseif ($output_format == 1) {
-					return (date(
-						'F Y',
-						mktime(
-							12, 0, 0, $month, $day,
-							$year
-						)
-					));
+					return (date('F Y', mktime(12, 0, 0, $month, $day, $year)));
 				} elseif ($output_format == 2) {
 					return (date('M Y', mktime(12, 0, 0, $month, $day, $year)));
 				}
@@ -732,9 +702,7 @@
 		function TextWrapLines($c, $width, $txt, $align = 'left', $border = 0, $fill = 0, $link = NULL, $stretch = 0, $spacebreak = true)
 		{
 			$str = Explode("\n", $txt);
-			for (
-				$i = 0; $i < count($str); $i++
-			) {
+			for ($i = 0; $i < count($str); $i++) {
 				$l = $str[$i];
 				do {
 					$l = $this->TextWrap($c, $this->row, $width, $l, $align, $border, $fill, $link, $stretch, $spacebreak);
@@ -827,10 +795,7 @@
 			// Double underline, far enough below the first underline so as not to overlap
 			// the first underline (depends on current line thickness (aka "line width")
 			if ($type == 2) {
-				parent::line(
-					$this->cols[$c] + $this->cMargin, $this->row - $r - $y_adj - ($this->GetLineWidth() + 2), $this->cols[$c + 1] - $this->cMargin,
-				 $this->row - $r - $y_adj - ($this->GetLineWidth() + 2), $style
-				);
+				parent::line($this->cols[$c] + $this->cMargin, $this->row - $r - $y_adj - ($this->GetLineWidth() + 2), $this->cols[$c + 1] - $this->cMargin, $this->row - $r - $y_adj - ($this->GetLineWidth() + 2), $style);
 			}
 			// If line width was specified, reset it back to the original setting
 			if ($linewidth != 0) {
@@ -850,9 +815,7 @@
 			$this->curLineHeight = $this->fontSize;
 			// Check to see if we're at the bottom and should insert a page break
 			if ($this->row < $this->bottomMargin + ($np * $h)) {
-				$this->{
-				$this->headerFunc
-				}();
+				$this->{$this->headerFunc}();
 			} // call header template chosen by current report
 		}
 
@@ -861,6 +824,7 @@
 			if (Config::get('debug_pdf') == 1) {
 				$pdfcode = $this->Output('', 'S');
 				$pdfcode = str_replace("\n", "\n<br>", htmlspecialchars($pdfcode));
+				ob_clean();
 				echo '<html><body>';
 				echo trim($pdfcode);
 				echo '</body></html>';
@@ -884,7 +848,6 @@
 					$fname = $dir . '/' . uniqid('') . '.pdf';
 				}
 				$this->Output($fname, 'F');
-
 				if ($email == 1) {
 					$emailtype = true;
 					if ($this->currency != $myrow['curr_code']) {
@@ -928,25 +891,18 @@
 						Errors::error('Error: ' . $emailAddress . ': ' . $mail->toerror);
 					} else {
 						$myrow['reference'] = (isset($myrow['reference'])) ? $myrow['reference'] : '';
-						Errors::notice(
-							$this->title . " " . $myrow['reference'] . " " . _("has been sent by email to: ") . str_replace(
-								",", "",
-								$myrow['DebtorName']
-							) . "  &lt;" . $emailAddress . "&gt;"
-						);
+						Errors::notice($this->title . " " . $myrow['reference'] . " " . _("has been sent by email to: ") . str_replace(",", "", $myrow['DebtorName']) . "  &lt;" . $emailAddress . "&gt;");
 					}
 					unlink($fname);
 				} else {
 					$printer = Printer::get_report(User::print_profile(), $_POST['REP_ID']);
-
 					if ($printer == false) {
 						if (Ajax::in_ajax()) {
 							$Ajax = Ajax::instance();
 							if (User::rep_popup()) {
 								$Ajax->popup($fname);
 							} // when embeded pdf viewer used
-							else
-							{
+							else {
 								$Ajax->redirect($fname);
 							} // otherwise use faster method
 						} else {
@@ -960,6 +916,7 @@
 							//	    <a href="'.$fname.'">click here</a> if you are not re-directed.
 							//	  </body>
 							//    </html>';
+							ob_clean();
 							header('Content-type: application/pdf');
 							header("Content-Disposition: inline; filename=$this->filename");
 							header('Expires: 0');
@@ -972,8 +929,7 @@
 						$error = $prn->print_file($fname);
 						if ($error) {
 							Errors::error($error);
-						} else
-						{
+						} else {
 							Errors::notice(_('Report has been sent to network printer ') . $printer['name']);
 						}
 					}
@@ -997,5 +953,3 @@
 			}
 		}
 	}
-
-?>

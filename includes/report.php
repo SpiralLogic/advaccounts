@@ -15,7 +15,7 @@
 
 		function __construct($id, $name, $ar_params = null)
 		{
-			$this->id   = $id;
+			$this->id = $id;
 			$this->name = $name;
 			if ($ar_params) {
 				$this->set_controls($ar_params);
@@ -38,9 +38,7 @@
 			// include reports installed inside extension modules
 			if (count($installed_extensions) > 0) {
 				$extensions = $installed_extensions;
-				foreach (
-					$extensions as $ext
-				) {
+				foreach ($extensions as $ext) {
 					if (($ext['active'] && $ext['type'] == 'module')) {
 						$file = PATH_TO_ROOT . '/' . $ext['path'] . "/reporting/reports_custom.php";
 						if (file_exists($file)) {

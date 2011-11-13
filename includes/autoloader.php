@@ -25,7 +25,7 @@
 
 		public static function includeClass($class)
 		{
-			$className=$class;
+			$className = $class;
 			$path = explode('_', strtolower($class));
 			$class = array_pop($path);
 			$path = realpath(APP_PATH . 'includes' . DS . implode(DS, $path) . DS . $class . '.php');
@@ -34,10 +34,16 @@
 			} catch (Adv_Exception $e) {
 				throw new Adv_Exception('Could not load class ' . $className);
 			}
-			static::$loaded[] = array($className,memory_get_usage(true),microtime(true));
+			static::$loaded[] = array($className, memory_get_usage(true), microtime(true));
 		}
-		public static function getLoaded() {
-			array_walk(static::$loaded,function(&$v) { $v[1]=Files::convert_size($v[1]);$v[2]=Dates::getReadableTime($v[2]-ADV_START_TIME);});
+
+		public static function getLoaded()
+		{
+			array_walk(static::$loaded, function(&$v)
+			{
+				$v[1] = Files::convert_size($v[1]);
+				$v[2] = Dates::getReadableTime($v[2] - ADV_START_TIME);
+			});
 			return static::$loaded;
 		}
 	}

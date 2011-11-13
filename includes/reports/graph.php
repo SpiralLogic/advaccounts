@@ -145,32 +145,32 @@
 		function __construct()
 		{
 			$this->x = $this->y = $this->z = array();
-			$this->biggest_x        = NULL;
-			$this->biggest_y        = NULL;
-			$this->alternate_x      = false;
+			$this->biggest_x = NULL;
+			$this->biggest_y = NULL;
+			$this->alternate_x = false;
 			$this->graphic_2_exists = false;
 			$this->total_parameters = 0;
-			$this->sum_total        = 1;
-			$this->latin_notation   = false;
+			$this->sum_total = 1;
+			$this->latin_notation = false;
 		}
 
 		function display($save = "", $border = false)
 		{
-			$this->legend_exists        = (preg_match("/(5|6)/", $this->type)) ? true : false;
+			$this->legend_exists = (preg_match("/(5|6)/", $this->type)) ? true : false;
 			$this->biggest_graphic_name = (strlen($this->graphic_1) > strlen($this->graphic_2)) ? $this->graphic_1 : $this->graphic_2;
-			$this->height_title         = (!empty($this->title)) ? ($this->string_height($this->tsize) + 15) : 0;
-			$this->space_between_bars   = ($this->type == 1) ? 40 : 30;
-			$this->space_between_dots   = 40;
-			$this->higher_value         = 0;
-			$this->higher_value_str     = 0;
-			$this->width               = 0;
-			$this->height              = 0;
-			$this->graphic_area_width  = 0;
+			$this->height_title = (!empty($this->title)) ? ($this->string_height($this->tsize) + 15) : 0;
+			$this->space_between_bars = ($this->type == 1) ? 40 : 30;
+			$this->space_between_dots = 40;
+			$this->higher_value = 0;
+			$this->higher_value_str = 0;
+			$this->width = 0;
+			$this->height = 0;
+			$this->graphic_area_width = 0;
 			$this->graphic_area_height = 0;
-			$this->graphic_area_x1     = 30;
-			$this->graphic_area_y1     = 20 + $this->height_title;
-			$this->graphic_area_x2     = $this->graphic_area_x1 + $this->graphic_area_width;
-			$this->graphic_area_y2     = $this->graphic_area_y1 + $this->graphic_area_height;
+			$this->graphic_area_x1 = 30;
+			$this->graphic_area_y1 = 20 + $this->height_title;
+			$this->graphic_area_x2 = $this->graphic_area_x1 + $this->graphic_area_width;
+			$this->graphic_area_y2 = $this->graphic_area_y1 + $this->graphic_area_height;
 			if (count($this->z) && (preg_match("/(1|2|3|4)/", $this->type))) {
 				$this->graphic_2_exists = true;
 			}
@@ -201,7 +201,7 @@
 
 		function create_graphic($save = "", $border = false)
 		{
-			$size      = 3;
+			$size = 3;
 			$this->img = imagecreatetruecolor($this->width, $this->height);
 			$this->load_color_palette();
 			// Fill background
@@ -219,21 +219,21 @@
 				if ($this->legend_exists == true) {
 					$this->draw_legend();
 				}
-				$higher_value_y    = $this->graphic_area_y1 + (0.1 * $this->graphic_area_height);
+				$higher_value_y = $this->graphic_area_y1 + (0.1 * $this->graphic_area_height);
 				$higher_value_size = 0.9 * $this->graphic_area_height;
 				$less = 7 * strlen($this->higher_value_str);
 				imageline($this->img, $this->graphic_area_x1, $higher_value_y, $this->graphic_area_x2, $higher_value_y, $this->color['bg_lines']);
 				$this->_imagestring($this->img, $this->size, ($this->graphic_area_x1 - $less - 7), ($higher_value_y - 7), $this->higher_value_str, $this->color['axis_values']);
 				for ($i = 1; $i < 10; $i++) {
 					$dec_y = $i * ($higher_value_size / 10);
-					$x1    = $this->graphic_area_x1;
-					$y1    = $this->graphic_area_y2 - $dec_y;
-					$x2    = $this->graphic_area_x2;
-					$y2    = $this->graphic_area_y2 - $dec_y;
+					$x1 = $this->graphic_area_x1;
+					$y1 = $this->graphic_area_y2 - $dec_y;
+					$x2 = $this->graphic_area_x2;
+					$y2 = $this->graphic_area_y2 - $dec_y;
 					imageline($this->img, $x1, $y1, $x2, $y2, $this->color['bg_lines']);
 					if ($i % 2 == 0) {
 						$value = $this->number_formated($this->higher_value * $i / 10, $this->dec1);
-						$less  = 7 * strlen($value);
+						$less = 7 * strlen($value);
 						$this->_imagestring($this->img, $this->size, ($x1 - $less - 7), ($y2 - 7), $value, $this->color['axis_values']);
 					}
 				}
@@ -243,26 +243,22 @@
 				// Axis Y
 				$this->_imagestring($this->img, $this->size, 20, $this->graphic_area_y1 - 20, $this->axis_y, $this->color['title']);
 				imageline($this->img, $this->graphic_area_x1, $this->graphic_area_y1, $this->graphic_area_x1, $this->graphic_area_y2, $this->color['axis_line']);
-			}
-				// Draw axis and background lines for "horizontal bars"
+			} // Draw axis and background lines for "horizontal bars"
 			else if ($this->type == 2) {
 				if ($this->legend_exists == true) {
 					$this->draw_legend();
 				}
-				$higher_value_x    = $this->graphic_area_x2 - (0.2 * $this->graphic_area_width);
+				$higher_value_x = $this->graphic_area_x2 - (0.2 * $this->graphic_area_width);
 				$higher_value_size = 0.8 * $this->graphic_area_width;
-				imageline($this->img, ($this->graphic_area_x1 + $higher_value_size), $this->graphic_area_y1, ($this->graphic_area_x1 + $higher_value_size), $this->graphic_area_y2,
-									$this->color['bg_lines']);
-				$this->_imagestring($this->img, $this->size, (($this->graphic_area_x1 + $higher_value_size) - ($this->string_width($this->higher_value, $this->size) / 2)),
-					($this->graphic_area_y2 + 2), $this->higher_value_str, $this->color['axis_values']);
+				imageline($this->img, ($this->graphic_area_x1 + $higher_value_size), $this->graphic_area_y1, ($this->graphic_area_x1 + $higher_value_size), $this->graphic_area_y2, $this->color['bg_lines']);
+				$this->_imagestring($this->img, $this->size, (($this->graphic_area_x1 + $higher_value_size) - ($this->string_width($this->higher_value, $this->size) / 2)), ($this->graphic_area_y2 + 2), $this->higher_value_str, $this->color['axis_values']);
 				for ($i = 1, $alt = 15; $i < 10; $i++) {
 					$dec_x = number_format(round($i * ($higher_value_size / 10), 1), 1, ".", "");
 					imageline($this->img, ($this->graphic_area_x1 + $dec_x), $this->graphic_area_y1, ($this->graphic_area_x1 + $dec_x), $this->graphic_area_y2, $this->color['bg_lines']);
 					if ($i % 2 == 0) {
-						$alt   = (strlen($this->biggest_y) > 4 && $alt != 15) ? 15 : 2;
+						$alt = (strlen($this->biggest_y) > 4 && $alt != 15) ? 15 : 2;
 						$value = $this->number_formated($this->higher_value * $i / 10, $this->dec1);
-						$this->_imagestring($this->img, $this->size, (($this->graphic_area_x1 + $dec_x) - ($this->string_width($this->higher_value, $this->size) / 2)), ($this->graphic_area_y2),
-																$value, $this->color['axis_values'], $alt);
+						$this->_imagestring($this->img, $this->size, (($this->graphic_area_x1 + $dec_x) - ($this->string_width($this->higher_value, $this->size) / 2)), ($this->graphic_area_y2), $value, $this->color['axis_values'], $alt);
 					}
 				}
 				// Axis X
@@ -271,8 +267,7 @@
 				// Axis Y
 				$this->_imagestring($this->img, $this->size, 20, ($this->graphic_area_y1 - 20), $this->axis_x, $this->color['title']);
 				imageline($this->img, $this->graphic_area_x1, $this->graphic_area_y1, $this->graphic_area_x1, $this->graphic_area_y2, $this->color['axis_line']);
-			}
-				// Draw legend box for "pie" or "donut"
+			} // Draw legend box for "pie" or "donut"
 			else if (preg_match("/^(5|6)$/", $this->type)) {
 				$this->draw_legend();
 			}
@@ -281,25 +276,25 @@
 			 */
 			if ($this->type == 1) {
 				$num = 1;
-				$x   = $this->graphic_area_x1 + 20;
+				$x = $this->graphic_area_x1 + 20;
 				foreach ($this->x as $i => $parameter) {
 					if (isset($this->z[$i])) {
 						$size = round($this->z[$i] * $higher_value_size / $this->higher_value);
-						$x1   = $x + 10;
-						$y1   = ($this->graphic_area_y2 - $size) + 1;
-						$x2   = $x1 + 20;
-						$y2   = $this->graphic_area_y2 - 1;
+						$x1 = $x + 10;
+						$y1 = ($this->graphic_area_y2 - $size) + 1;
+						$x2 = $x1 + 20;
+						$y2 = $this->graphic_area_y2 - 1;
 						imageline($this->img, ($x1 + 1), ($y1 - 1), $x2, ($y1 - 1), $this->color['bars_2_shadow']);
 						imageline($this->img, ($x2 + 1), ($y1 - 1), ($x2 + 1), $y2, $this->color['bars_2_shadow']);
 						imageline($this->img, ($x2 + 2), ($y1 - 1), ($x2 + 2), $y2, $this->color['bars_2_shadow']);
 						imagefilledrectangle($this->img, $x1, $y1, $x2, $y2, $this->color['bars_2']);
 					}
 					$size = round($this->y[$i] * $higher_value_size / $this->higher_value);
-					$alt  = (($num % 2 == 0) && (strlen($this->biggest_x) > 5)) ? 15 : 2;
-					$x1   = $x;
-					$y1   = ($this->graphic_area_y2 - $size) + 1;
-					$x2   = $x1 + 20;
-					$y2   = $this->graphic_area_y2 - 1;
+					$alt = (($num % 2 == 0) && (strlen($this->biggest_x) > 5)) ? 15 : 2;
+					$x1 = $x;
+					$y1 = ($this->graphic_area_y2 - $size) + 1;
+					$x2 = $x1 + 20;
+					$y2 = $this->graphic_area_y2 - 1;
 					$x += $this->space_between_bars;
 					$num++;
 					imageline($this->img, ($x1 + 1), ($y1 - 1), $x2, ($y1 - 1), $this->color['bars_shadow']);
@@ -308,18 +303,17 @@
 					imagefilledrectangle($this->img, $x1, $y1, $x2, $y2, $this->color['bars']);
 					$this->_imagestring($this->img, $this->size, ((($x1 + $x2) / 2) - (strlen($parameter) * 7 / 2)), ($y2 + 2), $parameter, $this->color['axis_values'], $alt);
 				}
-			}
-				/**
-				 * Draw graphic: HORIZONTAL BARS
-				 */ else if ($this->type == 2) {
+			} /**
+			 * Draw graphic: HORIZONTAL BARS
+			 */ else if ($this->type == 2) {
 				$y = 10;
 				foreach ($this->x as $i => $parameter) {
 					if (isset($this->z[$i])) {
 						$size = round($this->z[$i] * $higher_value_size / $this->higher_value);
-						$x1   = $this->graphic_area_x1 + 1;
-						$y1   = $this->graphic_area_y1 + $y + 10;
-						$x2   = $x1 + $size;
-						$y2   = $y1 + 15;
+						$x1 = $this->graphic_area_x1 + 1;
+						$y1 = $this->graphic_area_y1 + $y + 10;
+						$x2 = $x1 + $size;
+						$y2 = $y1 + 15;
 						imageline($this->img, ($x1), ($y2 + 1), $x2, ($y2 + 1), $this->color['bars_2_shadow']);
 						imageline($this->img, ($x1), ($y2 + 2), $x2, ($y2 + 2), $this->color['bars_2_shadow']);
 						imageline($this->img, ($x2 + 1), ($y1 + 1), ($x2 + 1), ($y2 + 2), $this->color['bars_2_shadow']);
@@ -327,10 +321,10 @@
 						$this->_imagestring($this->img, $this->size, ($x2 + 7), ($y1 + 7), $this->number_formated($this->z[$i], $this->dec2), $this->color['bars_2_shadow']);
 					}
 					$size = round(($this->y[$i] / $this->higher_value) * $higher_value_size);
-					$x1   = $this->graphic_area_x1 + 1;
-					$y1   = $this->graphic_area_y1 + $y;
-					$x2   = $x1 + $size;
-					$y2   = $y1 + 15;
+					$x1 = $this->graphic_area_x1 + 1;
+					$y1 = $this->graphic_area_y1 + $y;
+					$x2 = $x1 + $size;
+					$y2 = $y1 + 15;
 					$y += $this->space_between_bars;
 					imageline($this->img, ($x1), ($y2 + 1), $x2, ($y2 + 1), $this->color['bars_shadow']);
 					imageline($this->img, ($x1), ($y2 + 2), $x2, ($y2 + 2), $this->color['bars_shadow']);
@@ -340,18 +334,17 @@
 					//$this->_imagestring($this->img, $this->size, ($x1 - ((strlen($parameter)*7)+7)), ($y1+2), $parameter, $this->color['axis_values']);
 					$this->_imagestring($this->img, $this->size, 30, ($y1 + 2), $parameter, $this->color['axis_values']);
 				}
-			}
-				/**
-				 * Draw graphic: DOTS or LINE
-				 */ else if (preg_match("/^(3|4)$/", $this->type)) {
+			} /**
+			 * Draw graphic: DOTS or LINE
+			 */ else if (preg_match("/^(3|4)$/", $this->type)) {
 				$x[0] = $this->graphic_area_x1 + 1;
 				foreach ($this->x as $i => $parameter) {
 					if ($this->graphic_2_exists == true) {
-						$size  = round($this->z[$i] * $higher_value_size / $this->higher_value);
+						$size = round($this->z[$i] * $higher_value_size / $this->higher_value);
 						$z[$i] = $this->graphic_area_y2 - $size;
 					}
-					$alt   = (($i % 2 == 0) && (strlen($this->biggest_x) > 5)) ? 15 : 2;
-					$size  = round($this->y[$i] * $higher_value_size / $this->higher_value);
+					$alt = (($i % 2 == 0) && (strlen($this->biggest_x) > 5)) ? 15 : 2;
+					$size = round($this->y[$i] * $higher_value_size / $this->higher_value);
 					$y[$i] = $this->graphic_area_y2 - $size;
 					if ($i != 0) {
 						imageline($this->img, $x[$i], ($this->graphic_area_y1 + 10), $x[$i], ($this->graphic_area_y2 - 1), $this->color['bg_lines']);
@@ -385,18 +378,17 @@
 						}
 					}
 				}
-			}
-				/**
-				 * Draw graphic: PIE or DONUT
-				 */ else if (preg_match("/^(5|6)$/", $this->type)) {
+			} /**
+			 * Draw graphic: PIE or DONUT
+			 */ else if (preg_match("/^(5|6)$/", $this->type)) {
 				$center_x = ($this->graphic_area_x1 + $this->graphic_area_x2) / 2;
 				$center_y = ($this->graphic_area_y1 + $this->graphic_area_y2) / 2;
-				$width    = $this->graphic_area_width;
-				$height   = $this->graphic_area_height;
-				$start    = 0;
-				$sizes    = array();
+				$width = $this->graphic_area_width;
+				$height = $this->graphic_area_height;
+				$start = 0;
+				$sizes = array();
 				foreach ($this->x as $i => $parameter) {
-					$size    = $this->y[$i] * 360 / $this->sum_total;
+					$size = $this->y[$i] * 360 / $this->sum_total;
 					$sizes[] = $size;
 					$start += $size;
 				}
@@ -427,15 +419,14 @@
 						imagefilledarc($this->img, $center_x, $center_y, ($width + 2), ($height + 2), $start, ($start + $size), $this->color[$color], IMG_ARC_EDGED);
 						$start += $size;
 					}
-				}
-					// Draw DONUT
+				} // Draw DONUT
 				else if ($this->type == 6) {
 					foreach ($sizes as $i => $size) {
 						$num_color = $i + 1;
 						while ($num_color > 7) {
 							$num_color -= 5;
 						}
-						$color        = 'arc_' . $num_color;
+						$color = 'arc_' . $num_color;
 						$color_shadow = 'arc_' . $num_color . '_shadow';
 						imagefilledarc($this->img, $center_x, $center_y, $width, $height, $start, ($start + $size), $this->color[$color], IMG_ARC_PIE);
 						$start += $size;
@@ -461,97 +452,97 @@
 		{
 			switch ($this->type) {
 				// Vertical bars
-			case 1:
-				$this->legend_box_width   = ($this->legend_exists == true) ? ($this->string_width($this->biggest_graphic_name, $this->tsize) + 25) : 0;
-				$this->graphic_area_width = ($this->space_between_bars * $this->total_parameters) + 30;
-				$this->graphic_area_x1 += $this->string_width(($this->higher_value_str), $this->size);
-				$this->width += $this->graphic_area_x1 + 20;
-				$this->width += ($this->legend_exists == true) ? 50 : ((7 * strlen($this->axis_x)) + 10);
-				break;
+				case 1:
+					$this->legend_box_width = ($this->legend_exists == true) ? ($this->string_width($this->biggest_graphic_name, $this->tsize) + 25) : 0;
+					$this->graphic_area_width = ($this->space_between_bars * $this->total_parameters) + 30;
+					$this->graphic_area_x1 += $this->string_width(($this->higher_value_str), $this->size);
+					$this->width += $this->graphic_area_x1 + 20;
+					$this->width += ($this->legend_exists == true) ? 50 : ((7 * strlen($this->axis_x)) + 10);
+					break;
 				// Horizontal bars
-			case 2:
-				$this->legend_box_width   = ($this->legend_exists == true) ? ($this->string_width($this->biggest_graphic_name, $this->size) + 25) : 0;
-				$this->graphic_area_width = ($this->string_width($this->higher_value_str, $this->size) > 50) ? (5 * ($this->string_width($this->higher_value_str, $this->size)) * 0.85) : 200;
-				$this->graphic_area_x1 += 7 * strlen($this->biggest_x);
-				$this->width += ($this->legend_exists == true) ? 60 : ((7 * strlen($this->axis_y)) + 30);
-				$this->width += $this->graphic_area_x1;
-				break;
+				case 2:
+					$this->legend_box_width = ($this->legend_exists == true) ? ($this->string_width($this->biggest_graphic_name, $this->size) + 25) : 0;
+					$this->graphic_area_width = ($this->string_width($this->higher_value_str, $this->size) > 50) ? (5 * ($this->string_width($this->higher_value_str, $this->size)) * 0.85) : 200;
+					$this->graphic_area_x1 += 7 * strlen($this->biggest_x);
+					$this->width += ($this->legend_exists == true) ? 60 : ((7 * strlen($this->axis_y)) + 30);
+					$this->width += $this->graphic_area_x1;
+					break;
 				// Dots				// Lines
-			case 3 || 4:
-				$this->legend_box_width   = ($this->legend_exists == true) ? ($this->string_width($this->biggest_graphic_name, $this->size) + 25) : 0;
-				$this->graphic_area_width = ($this->space_between_dots * $this->total_parameters) - 10;
-				$this->graphic_area_x1 += $this->string_width(($this->higher_value_str), $this->size);
-				$this->width += $this->graphic_area_x1 + 20;
-				$this->width += ($this->legend_exists == true) ? 40 : ((7 * strlen($this->axis_x)) + 10);
-				break;
+				case 3 || 4:
+					$this->legend_box_width = ($this->legend_exists == true) ? ($this->string_width($this->biggest_graphic_name, $this->size) + 25) : 0;
+					$this->graphic_area_width = ($this->space_between_dots * $this->total_parameters) - 10;
+					$this->graphic_area_x1 += $this->string_width(($this->higher_value_str), $this->size);
+					$this->width += $this->graphic_area_x1 + 20;
+					$this->width += ($this->legend_exists == true) ? 40 : ((7 * strlen($this->axis_x)) + 10);
+					break;
 				// Pie
-			case 5:
-				$this->legend_box_width   = $this->string_width($this->biggest_x, $this->size) + 85;
-				$this->graphic_area_width = 200;
-				$this->width += 90;
-				break;
+				case 5:
+					$this->legend_box_width = $this->string_width($this->biggest_x, $this->size) + 85;
+					$this->graphic_area_width = 200;
+					$this->width += 90;
+					break;
 				// Donut
-			case 6:
-				$this->legend_box_width   = $this->string_width($this->biggest_x, $this->size) + 85;
-				$this->graphic_area_width = 180;
-				$this->width += 90;
-				break;
+				case 6:
+					$this->legend_box_width = $this->string_width($this->biggest_x, $this->size) + 85;
+					$this->graphic_area_width = 180;
+					$this->width += 90;
+					break;
 			}
 			$this->width += $this->graphic_area_width;
 			$this->width += $this->legend_box_width;
 			$this->graphic_area_x2 = $this->graphic_area_x1 + $this->graphic_area_width;
-			$this->legend_box_x1   = $this->graphic_area_x2 + 40;
-			$this->legend_box_x2   = $this->legend_box_x1 + $this->legend_box_width;
+			$this->legend_box_x1 = $this->graphic_area_x2 + 40;
+			$this->legend_box_x2 = $this->legend_box_x1 + $this->legend_box_width;
 		}
 
 		function calculate_height()
 		{
 			switch ($this->type) {
 				// Vertical bars
-			case 1:
-				$this->legend_box_height   = ($this->graphic_2_exists == true) ? 40 : 0;
-				$this->graphic_area_height = 150;
-				$this->height += 65;
-				break;
+				case 1:
+					$this->legend_box_height = ($this->graphic_2_exists == true) ? 40 : 0;
+					$this->graphic_area_height = 150;
+					$this->height += 65;
+					break;
 				// Horizontal bars
-			case 2:
-				$this->legend_box_height   = ($this->graphic_2_exists == true) ? 40 : 0;
-				$this->graphic_area_height = ($this->space_between_bars * $this->total_parameters) + 10;
-				$this->height += 65;
-				break;
+				case 2:
+					$this->legend_box_height = ($this->graphic_2_exists == true) ? 40 : 0;
+					$this->graphic_area_height = ($this->space_between_bars * $this->total_parameters) + 10;
+					$this->height += 65;
+					break;
 				// Dots
-			case 3:
-				$this->legend_box_height   = ($this->graphic_2_exists == true) ? 40 : 0;
-				$this->graphic_area_height = 150;
-				$this->height += 65;
-				break;
+				case 3:
+					$this->legend_box_height = ($this->graphic_2_exists == true) ? 40 : 0;
+					$this->graphic_area_height = 150;
+					$this->height += 65;
+					break;
 				// Lines
-			case 4:
-				$this->legend_box_height   = ($this->graphic_2_exists == true) ? 40 : 0;
-				$this->graphic_area_height = 150;
-				$this->height += 65;
-				break;
+				case 4:
+					$this->legend_box_height = ($this->graphic_2_exists == true) ? 40 : 0;
+					$this->graphic_area_height = 150;
+					$this->height += 65;
+					break;
 				// Pie
-			case 5:
-				$this->legend_box_height = (!empty($this->axis_x)) ? 30 : 5;
-				$this->legend_box_height += (14 * $this->total_parameters);
-				$this->graphic_area_height = 150;
-				$this->height += 50;
-				break;
+				case 5:
+					$this->legend_box_height = (!empty($this->axis_x)) ? 30 : 5;
+					$this->legend_box_height += (14 * $this->total_parameters);
+					$this->graphic_area_height = 150;
+					$this->height += 50;
+					break;
 				// Donut
-			case 6:
-				$this->legend_box_height = (!empty($this->axis_x)) ? 30 : 5;
-				$this->legend_box_height += (14 * $this->total_parameters);
-				$this->graphic_area_height = 180;
-				$this->height += 50;
-				break;
+				case 6:
+					$this->legend_box_height = (!empty($this->axis_x)) ? 30 : 5;
+					$this->legend_box_height += (14 * $this->total_parameters);
+					$this->graphic_area_height = 180;
+					$this->height += 50;
+					break;
 			}
 			$this->height += $this->height_title;
 			$this->height += ($this->legend_box_height > $this->graphic_area_height) ? ($this->legend_box_height - $this->graphic_area_height) : 0;
 			$this->height += $this->graphic_area_height;
 			$this->graphic_area_y2 = $this->graphic_area_y1 + $this->graphic_area_height;
-			$this->legend_box_y1   = $this->graphic_area_y1 + 10;
-			$this->legend_box_y2   = $this->legend_box_y1 + $this->legend_box_height;
+			$this->legend_box_y1 = $this->graphic_area_y1 + 10;
+			$this->legend_box_y2 = $this->legend_box_y1 + $this->legend_box_height;
 		}
 
 		function draw_legend()
@@ -574,8 +565,7 @@
 				imagefilledrectangle($this->img, $x, $y, ($x + 10), ($y + 10), $color_2);
 				imagerectangle($this->img, $x, $y, ($x + 10), ($y + 10), $this->color['title']);
 				$this->_imagestring($this->img, $this->size, ($x + 15), ($y - 2), $this->graphic_2, $this->color['axis_values']);
-			}
-				// Draw legend values for PIE or DONUT
+			} // Draw legend values for PIE or DONUT
 			else if (preg_match("/^(5|6)$/", $this->type)) {
 				if (!empty($this->axis_x)) {
 					$this->_imagestring($this->img, $this->size, ((($x1 + $x2) / 2) - (strlen($this->axis_x) * 7 / 2)), $y, $this->axis_x, $this->color['title']);
@@ -588,7 +578,7 @@
 					}
 					$color = 'arc_' . $num;
 					$percent = number_format(round(($this->y[$i] * 100 / $this->sum_total), 2), 2, ".", "") . ' %';
-					$less    = (strlen($percent) * 7);
+					$less = (strlen($percent) * 7);
 					if ($num != 1) {
 						imageline($this->img, ($x1 + 15), ($y - 2), ($x2 - 5), ($y - 2), $this->color['bg_lines']);
 					}
@@ -622,9 +612,9 @@
 
 		function calculate_higher_value()
 		{
-			$digits                 = strlen(round($this->biggest_y));
-			$interval               = pow(10, ($digits - 1));
-			$this->higher_value     = round(($this->biggest_y - ($this->biggest_y % $interval) + $interval), 1);
+			$digits = strlen(round($this->biggest_y));
+			$interval = pow(10, ($digits - 1));
+			$this->higher_value = round(($this->biggest_y - ($this->biggest_y % $interval) + $interval), 1);
 			$this->higher_value_str = $this->number_formated($this->higher_value, $this->dec1);
 		}
 
@@ -653,108 +643,108 @@
 		{
 			switch ($this->skin) {
 				// Office
-			case 1:
-				//$this->color['title']       = imagecolorallocate($this->img,  50,  50,  50);
-				$this->color['title'] = imagecolorallocate($this->img, 40, 70, 130);
-				//$this->color['background']  = imagecolorallocate($this->img, 238, 255, 238);
-				$this->color['background']  = imagecolorallocate($this->img, 255, 255, 255);
-				$this->color['axis_values'] = imagecolorallocate($this->img, 50, 50, 50);
-				$this->color['axis_line']   = imagecolorallocate($this->img, 100, 100, 100);
-				$this->color['bg_lines']    = imagecolorallocate($this->img, 220, 220, 220);
-				$this->color['bg_legend']   = imagecolorallocate($this->img, 255, 255, 255);
-				if (preg_match("/^(1|2)$/", $this->type)) {
-					$this->color['bars']          = imagecolorallocate($this->img, 100, 150, 200);
-					$this->color['bars_shadow']   = imagecolorallocate($this->img, 50, 100, 150);
-					$this->color['bars_2']        = imagecolorallocate($this->img, 200, 250, 150);
-					$this->color['bars_2_shadow'] = imagecolorallocate($this->img, 120, 170, 70);
-				} else if (preg_match("/^(3|4)$/", $this->type)) {
-					$this->color['line']   = imagecolorallocate($this->img, 100, 150, 200);
-					$this->color['line_2'] = imagecolorallocate($this->img, 230, 100, 100);
-				} else if (preg_match("/^(5|6)$/", $this->type)) {
-					$this->color['arc_1']        = imagecolorallocate($this->img, 255, 150, 0);
-					$this->color['arc_2']        = imagecolorallocate($this->img, 150, 0, 255);
-					$this->color['arc_3']        = imagecolorallocate($this->img, 0, 255, 255);
-					$this->color['arc_4']        = imagecolorallocate($this->img, 255, 0, 0);
-					$this->color['arc_5']        = imagecolorallocate($this->img, 0, 255, 0);
-					$this->color['arc_6']        = imagecolorallocate($this->img, 0, 0, 255);
-					$this->color['arc_7']        = imagecolorallocate($this->img, 255, 255, 0);
-					$this->color['arc_1_shadow'] = imagecolorallocate($this->img, 127, 75, 0);
-					$this->color['arc_2_shadow'] = imagecolorallocate($this->img, 75, 0, 127);
-					$this->color['arc_3_shadow'] = imagecolorallocate($this->img, 0, 127, 127);
-					$this->color['arc_4_shadow'] = imagecolorallocate($this->img, 127, 0, 0);
-					$this->color['arc_5_shadow'] = imagecolorallocate($this->img, 0, 127, 0);
-					$this->color['arc_6_shadow'] = imagecolorallocate($this->img, 0, 0, 127);
-					$this->color['arc_7_shadow'] = imagecolorallocate($this->img, 127, 127, 0);
-				}
-				break;
+				case 1:
+					//$this->color['title']       = imagecolorallocate($this->img,  50,  50,  50);
+					$this->color['title'] = imagecolorallocate($this->img, 40, 70, 130);
+					//$this->color['background']  = imagecolorallocate($this->img, 238, 255, 238);
+					$this->color['background'] = imagecolorallocate($this->img, 255, 255, 255);
+					$this->color['axis_values'] = imagecolorallocate($this->img, 50, 50, 50);
+					$this->color['axis_line'] = imagecolorallocate($this->img, 100, 100, 100);
+					$this->color['bg_lines'] = imagecolorallocate($this->img, 220, 220, 220);
+					$this->color['bg_legend'] = imagecolorallocate($this->img, 255, 255, 255);
+					if (preg_match("/^(1|2)$/", $this->type)) {
+						$this->color['bars'] = imagecolorallocate($this->img, 100, 150, 200);
+						$this->color['bars_shadow'] = imagecolorallocate($this->img, 50, 100, 150);
+						$this->color['bars_2'] = imagecolorallocate($this->img, 200, 250, 150);
+						$this->color['bars_2_shadow'] = imagecolorallocate($this->img, 120, 170, 70);
+					} else if (preg_match("/^(3|4)$/", $this->type)) {
+						$this->color['line'] = imagecolorallocate($this->img, 100, 150, 200);
+						$this->color['line_2'] = imagecolorallocate($this->img, 230, 100, 100);
+					} else if (preg_match("/^(5|6)$/", $this->type)) {
+						$this->color['arc_1'] = imagecolorallocate($this->img, 255, 150, 0);
+						$this->color['arc_2'] = imagecolorallocate($this->img, 150, 0, 255);
+						$this->color['arc_3'] = imagecolorallocate($this->img, 0, 255, 255);
+						$this->color['arc_4'] = imagecolorallocate($this->img, 255, 0, 0);
+						$this->color['arc_5'] = imagecolorallocate($this->img, 0, 255, 0);
+						$this->color['arc_6'] = imagecolorallocate($this->img, 0, 0, 255);
+						$this->color['arc_7'] = imagecolorallocate($this->img, 255, 255, 0);
+						$this->color['arc_1_shadow'] = imagecolorallocate($this->img, 127, 75, 0);
+						$this->color['arc_2_shadow'] = imagecolorallocate($this->img, 75, 0, 127);
+						$this->color['arc_3_shadow'] = imagecolorallocate($this->img, 0, 127, 127);
+						$this->color['arc_4_shadow'] = imagecolorallocate($this->img, 127, 0, 0);
+						$this->color['arc_5_shadow'] = imagecolorallocate($this->img, 0, 127, 0);
+						$this->color['arc_6_shadow'] = imagecolorallocate($this->img, 0, 0, 127);
+						$this->color['arc_7_shadow'] = imagecolorallocate($this->img, 127, 127, 0);
+					}
+					break;
 				// Matrix
-			case 2:
-				$this->color['title']       = imagecolorallocate($this->img, 255, 255, 255);
-				$this->color['background']  = imagecolorallocate($this->img, 0, 0, 0);
-				$this->color['axis_values'] = imagecolorallocate($this->img, 0, 230, 0);
-				$this->color['axis_line']   = imagecolorallocate($this->img, 0, 200, 0);
-				$this->color['bg_lines']    = imagecolorallocate($this->img, 100, 100, 100);
-				$this->color['bg_legend']   = imagecolorallocate($this->img, 70, 70, 70);
-				if (preg_match("/^(1|2)$/", $this->type)) {
-					$this->color['bars']          = imagecolorallocate($this->img, 50, 200, 50);
-					$this->color['bars_shadow']   = imagecolorallocate($this->img, 0, 150, 0);
-					$this->color['bars_2']        = imagecolorallocate($this->img, 255, 255, 255);
-					$this->color['bars_2_shadow'] = imagecolorallocate($this->img, 220, 220, 220);
-				} else if (preg_match("/^(3|4)$/", $this->type)) {
-					$this->color['line']   = imagecolorallocate($this->img, 220, 220, 220);
-					$this->color['line_2'] = imagecolorallocate($this->img, 0, 180, 0);
-				} else if (preg_match("/^(5|6)$/", $this->type)) {
-					$this->color['arc_1']        = imagecolorallocate($this->img, 255, 255, 255);
-					$this->color['arc_2']        = imagecolorallocate($this->img, 200, 220, 200);
-					$this->color['arc_3']        = imagecolorallocate($this->img, 160, 200, 160);
-					$this->color['arc_4']        = imagecolorallocate($this->img, 135, 180, 135);
-					$this->color['arc_5']        = imagecolorallocate($this->img, 115, 160, 115);
-					$this->color['arc_6']        = imagecolorallocate($this->img, 100, 140, 100);
-					$this->color['arc_7']        = imagecolorallocate($this->img, 90, 120, 90);
-					$this->color['arc_1_shadow'] = imagecolorallocate($this->img, 127, 127, 127);
-					$this->color['arc_2_shadow'] = imagecolorallocate($this->img, 100, 110, 100);
-					$this->color['arc_3_shadow'] = imagecolorallocate($this->img, 80, 100, 80);
-					$this->color['arc_4_shadow'] = imagecolorallocate($this->img, 67, 90, 67);
-					$this->color['arc_5_shadow'] = imagecolorallocate($this->img, 57, 80, 57);
-					$this->color['arc_6_shadow'] = imagecolorallocate($this->img, 50, 70, 50);
-					$this->color['arc_7_shadow'] = imagecolorallocate($this->img, 45, 60, 45);
-				}
-				break;
+				case 2:
+					$this->color['title'] = imagecolorallocate($this->img, 255, 255, 255);
+					$this->color['background'] = imagecolorallocate($this->img, 0, 0, 0);
+					$this->color['axis_values'] = imagecolorallocate($this->img, 0, 230, 0);
+					$this->color['axis_line'] = imagecolorallocate($this->img, 0, 200, 0);
+					$this->color['bg_lines'] = imagecolorallocate($this->img, 100, 100, 100);
+					$this->color['bg_legend'] = imagecolorallocate($this->img, 70, 70, 70);
+					if (preg_match("/^(1|2)$/", $this->type)) {
+						$this->color['bars'] = imagecolorallocate($this->img, 50, 200, 50);
+						$this->color['bars_shadow'] = imagecolorallocate($this->img, 0, 150, 0);
+						$this->color['bars_2'] = imagecolorallocate($this->img, 255, 255, 255);
+						$this->color['bars_2_shadow'] = imagecolorallocate($this->img, 220, 220, 220);
+					} else if (preg_match("/^(3|4)$/", $this->type)) {
+						$this->color['line'] = imagecolorallocate($this->img, 220, 220, 220);
+						$this->color['line_2'] = imagecolorallocate($this->img, 0, 180, 0);
+					} else if (preg_match("/^(5|6)$/", $this->type)) {
+						$this->color['arc_1'] = imagecolorallocate($this->img, 255, 255, 255);
+						$this->color['arc_2'] = imagecolorallocate($this->img, 200, 220, 200);
+						$this->color['arc_3'] = imagecolorallocate($this->img, 160, 200, 160);
+						$this->color['arc_4'] = imagecolorallocate($this->img, 135, 180, 135);
+						$this->color['arc_5'] = imagecolorallocate($this->img, 115, 160, 115);
+						$this->color['arc_6'] = imagecolorallocate($this->img, 100, 140, 100);
+						$this->color['arc_7'] = imagecolorallocate($this->img, 90, 120, 90);
+						$this->color['arc_1_shadow'] = imagecolorallocate($this->img, 127, 127, 127);
+						$this->color['arc_2_shadow'] = imagecolorallocate($this->img, 100, 110, 100);
+						$this->color['arc_3_shadow'] = imagecolorallocate($this->img, 80, 100, 80);
+						$this->color['arc_4_shadow'] = imagecolorallocate($this->img, 67, 90, 67);
+						$this->color['arc_5_shadow'] = imagecolorallocate($this->img, 57, 80, 57);
+						$this->color['arc_6_shadow'] = imagecolorallocate($this->img, 50, 70, 50);
+						$this->color['arc_7_shadow'] = imagecolorallocate($this->img, 45, 60, 45);
+					}
+					break;
 				// Spring
-			case 3:
-				$this->color['title'] = imagecolorallocate($this->img, 250, 50, 50);
-				//$this->color['background']  = imagecolorallocate($this->img, 250, 250, 220);
-				$this->color['background']  = imagecolorallocate($this->img, 255, 255, 255);
-				$this->color['axis_values'] = imagecolorallocate($this->img, 50, 150, 50);
-				$this->color['axis_line']   = imagecolorallocate($this->img, 50, 100, 50);
-				$this->color['bg_lines']    = imagecolorallocate($this->img, 200, 224, 180);
-				//$this->color['bg_legend']   = imagecolorallocate($this->img, 230, 230, 200);
-				$this->color['bg_legend'] = imagecolorallocate($this->img, 255, 255, 255);
-				if (preg_match("/^(1|2)$/", $this->type)) {
-					$this->color['bars']          = imagecolorallocate($this->img, 255, 170, 80);
-					$this->color['bars_shadow']   = imagecolorallocate($this->img, 200, 120, 30);
-					$this->color['bars_2']        = imagecolorallocate($this->img, 250, 230, 80);
-					$this->color['bars_2_shadow'] = imagecolorallocate($this->img, 180, 150, 0);
-				} else if (preg_match("/^(3|4)$/", $this->type)) {
-					$this->color['line']   = imagecolorallocate($this->img, 230, 100, 0);
-					$this->color['line_2'] = imagecolorallocate($this->img, 220, 200, 50);
-				} else if (preg_match("/^(5|6)$/", $this->type)) {
-					$this->color['arc_1']        = imagecolorallocate($this->img, 100, 150, 200);
-					$this->color['arc_2']        = imagecolorallocate($this->img, 200, 250, 150);
-					$this->color['arc_3']        = imagecolorallocate($this->img, 250, 200, 150);
-					$this->color['arc_4']        = imagecolorallocate($this->img, 250, 150, 150);
-					$this->color['arc_5']        = imagecolorallocate($this->img, 250, 250, 150);
-					$this->color['arc_6']        = imagecolorallocate($this->img, 230, 180, 250);
-					$this->color['arc_7']        = imagecolorallocate($this->img, 200, 200, 150);
-					$this->color['arc_1_shadow'] = imagecolorallocate($this->img, 50, 75, 100);
-					$this->color['arc_2_shadow'] = imagecolorallocate($this->img, 100, 125, 75);
-					$this->color['arc_3_shadow'] = imagecolorallocate($this->img, 125, 100, 75);
-					$this->color['arc_4_shadow'] = imagecolorallocate($this->img, 125, 75, 75);
-					$this->color['arc_5_shadow'] = imagecolorallocate($this->img, 125, 125, 75);
-					$this->color['arc_6_shadow'] = imagecolorallocate($this->img, 115, 90, 125);
-					$this->color['arc_7_shadow'] = imagecolorallocate($this->img, 100, 100, 75);
-				}
-				break;
+				case 3:
+					$this->color['title'] = imagecolorallocate($this->img, 250, 50, 50);
+					//$this->color['background']  = imagecolorallocate($this->img, 250, 250, 220);
+					$this->color['background'] = imagecolorallocate($this->img, 255, 255, 255);
+					$this->color['axis_values'] = imagecolorallocate($this->img, 50, 150, 50);
+					$this->color['axis_line'] = imagecolorallocate($this->img, 50, 100, 50);
+					$this->color['bg_lines'] = imagecolorallocate($this->img, 200, 224, 180);
+					//$this->color['bg_legend']   = imagecolorallocate($this->img, 230, 230, 200);
+					$this->color['bg_legend'] = imagecolorallocate($this->img, 255, 255, 255);
+					if (preg_match("/^(1|2)$/", $this->type)) {
+						$this->color['bars'] = imagecolorallocate($this->img, 255, 170, 80);
+						$this->color['bars_shadow'] = imagecolorallocate($this->img, 200, 120, 30);
+						$this->color['bars_2'] = imagecolorallocate($this->img, 250, 230, 80);
+						$this->color['bars_2_shadow'] = imagecolorallocate($this->img, 180, 150, 0);
+					} else if (preg_match("/^(3|4)$/", $this->type)) {
+						$this->color['line'] = imagecolorallocate($this->img, 230, 100, 0);
+						$this->color['line_2'] = imagecolorallocate($this->img, 220, 200, 50);
+					} else if (preg_match("/^(5|6)$/", $this->type)) {
+						$this->color['arc_1'] = imagecolorallocate($this->img, 100, 150, 200);
+						$this->color['arc_2'] = imagecolorallocate($this->img, 200, 250, 150);
+						$this->color['arc_3'] = imagecolorallocate($this->img, 250, 200, 150);
+						$this->color['arc_4'] = imagecolorallocate($this->img, 250, 150, 150);
+						$this->color['arc_5'] = imagecolorallocate($this->img, 250, 250, 150);
+						$this->color['arc_6'] = imagecolorallocate($this->img, 230, 180, 250);
+						$this->color['arc_7'] = imagecolorallocate($this->img, 200, 200, 150);
+						$this->color['arc_1_shadow'] = imagecolorallocate($this->img, 50, 75, 100);
+						$this->color['arc_2_shadow'] = imagecolorallocate($this->img, 100, 125, 75);
+						$this->color['arc_3_shadow'] = imagecolorallocate($this->img, 125, 100, 75);
+						$this->color['arc_4_shadow'] = imagecolorallocate($this->img, 125, 75, 75);
+						$this->color['arc_5_shadow'] = imagecolorallocate($this->img, 125, 125, 75);
+						$this->color['arc_6_shadow'] = imagecolorallocate($this->img, 115, 90, 125);
+						$this->color['arc_7_shadow'] = imagecolorallocate($this->img, 100, 100, 75);
+					}
+					break;
 			}
 		}
 
@@ -774,8 +764,7 @@
 					$size = 9;
 				} else if ($size == 4) {
 					$size = 11;
-				} else
-				{
+				} else {
 					$size = 12;
 				}
 				$y += $size + 3;
@@ -787,5 +776,3 @@
 			}
 		}
 	}
-
-?>

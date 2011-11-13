@@ -58,9 +58,7 @@
 	if (isset($_POST['AddGLCodeToTrans'])) {
 		$Ajax->activate('gl_items');
 		$input_error = false;
-		$sql = "SELECT account_code, account_name FROM chart_master WHERE account_code=" . DB::escape(
-			$_POST['gl_code']
-		);
+		$sql = "SELECT account_code, account_name FROM chart_master WHERE account_code=" . DB::escape($_POST['gl_code']);
 		$result = DB::query($sql, "get account information");
 		if (DB::num_rows($result) == 0) {
 			Errors::error(_("The account code entered is not a valid code, this line cannot be added to the transaction."));
@@ -81,11 +79,7 @@
 			$input_error = true;
 		}
 		if ($input_error == false) {
-			Purch_Trans::instance()->add_gl_codes_to_trans(
-				$_POST['gl_code'], $gl_act_name,
-				$_POST['dimension_id'], $_POST['dimension2_id'],
-				input_num('amount'), $_POST['memo_']
-			);
+			Purch_Trans::instance()->add_gl_codes_to_trans($_POST['gl_code'], $gl_act_name, $_POST['dimension_id'], $_POST['dimension2_id'], input_num('amount'), $_POST['memo_']);
 			JS::set_focus('gl_code');
 		}
 	}
@@ -117,9 +111,7 @@
 			Errors::error(_("The credit note as entered cannot be processed because the date entered is not valid."));
 			JS::set_focus('tran_date');
 			return false;
-		}
-		elseif (!Dates::is_date_in_fiscalyear(Purch_Trans::instance()->tran_date))
-		{
+		} elseif (!Dates::is_date_in_fiscalyear(Purch_Trans::instance()->tran_date)) {
 			Errors::error(_("The entered date is not in fiscal year."));
 			JS::set_focus('tran_date');
 			return false;
@@ -176,14 +168,9 @@
 	{
 		if (check_item_data($n)) {
 			$complete = False;
-			Purch_Trans::instance()->add_grn_to_trans(
-				$n,
-				$_POST['po_detail_item' . $n], $_POST['item_code' . $n],
-				$_POST['description' . $n], $_POST['qty_recd' . $n],
-				$_POST['prev_quantity_inv' . $n], input_num('This_QuantityCredited' . $n),
-				$_POST['order_price' . $n], input_num('ChgPrice' . $n), $complete,
-				$_POST['std_cost_unit' . $n], ""
-			);
+			Purch_Trans::instance()
+			 ->add_grn_to_trans($n, $_POST['po_detail_item' . $n], $_POST['item_code' . $n], $_POST['description' . $n], $_POST['qty_recd' . $n], $_POST['prev_quantity_inv' . $n], input_num('This_QuantityCredited' . $n), $_POST['order_price' . $n], input_num('ChgPrice' . $n), $complete,
+													$_POST['std_cost_unit' . $n], "");
 		}
 	}
 
@@ -193,10 +180,7 @@
 		commit_item_data($id);
 	}
 	if (isset($_POST['InvGRNAll'])) {
-		foreach (
-			$_POST as $postkey => $postval
-		)
-		{
+		foreach ($_POST as $postkey => $postval) {
 			if (strpos($postkey, "qty_recd") === 0) {
 				$id = substr($postkey, strlen("qty_recd"));
 				$id = (int)$id;
@@ -234,8 +218,7 @@
 	invoice_header(Purch_Trans::instance());
 	if ($_POST['supplier_id'] == '') {
 		Errors::error('No supplier found for entered search text');
-	}
-	else {
+	} else {
 		$total_grn_value = display_grn_items(Purch_Trans::instance(), 1);
 		$total_gl_value = display_gl_items(Purch_Trans::instance(), 1);
 		div_start('inv_tot');

@@ -204,5 +204,3 @@
 			$this->pagesize = $pagesize;
 		}
 	}
-
-?>

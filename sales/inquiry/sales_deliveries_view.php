@@ -22,9 +22,7 @@
 	}
 	if (isset($_GET['selected_customer'])) {
 		$selected_customer = $_GET['selected_customer'];
-	}
-	elseif (isset($_POST['selected_customer']))
-	{
+	} elseif (isset($_POST['selected_customer'])) {
 		$selected_customer = $_POST['selected_customer'];
 	} else {
 		$selected_customer = -1;
@@ -32,15 +30,12 @@
 	if (isset($_POST['BatchInvoice'])) {
 		// checking batch integrity
 		$del_count = 0;
-		foreach (
-			$_POST['Sel_'] as $delivery => $branch
-		) {
+		foreach ($_POST['Sel_'] as $delivery => $branch) {
 			$checkbox = 'Sel_' . $delivery;
 			if (check_value($checkbox)) {
 				if (!$del_count) {
 					$del_branch = $branch;
-				}
-				else {
+				} else {
 					if ($del_branch != $branch) {
 						$del_count = 0;
 						break;
@@ -51,15 +46,10 @@
 			}
 		}
 		if (!$del_count) {
-			Errors::error(
-				_(
-					'For batch invoicing you should
+			Errors::error(_('For batch invoicing you should
 		    select at least one delivery. All items must be dispatched to
-		    the same customer branch.'
-				)
-			);
-		}
-		else {
+		    the same customer branch.'));
+		} else {
 			$_SESSION['DeliveryBatch'] = $selected;
 			meta_forward('/sales/customer_invoice.php', 'BatchInvoice=Yes');
 		}
@@ -94,8 +84,7 @@
 	end_row();
 	end_table();
 	//---------------------------------------------------------------------------------------------
-	if (isset($_POST['SelectStockFromList']) && ($_POST['SelectStockFromList'] != "")
-	 && ($_POST['SelectStockFromList'] != ALL_TEXT)
+	if (isset($_POST['SelectStockFromList']) && ($_POST['SelectStockFromList'] != "") && ($_POST['SelectStockFromList'] != ALL_TEXT)
 	) {
 		$selected_stock_item = $_POST['SelectStockFromList'];
 	} else {
@@ -110,24 +99,13 @@
 	function batch_checkbox($row)
 	{
 		$name = "Sel_" . $row['trans_no'];
-		return $row['Done']
-		 ? ''
-		 :
-		 "<input type='checkbox' name='$name' value='1' >"
-			// add also trans_no => branch code for checking after 'Batch' submit
-			. "<input name='Sel_[" . $row['trans_no'] . "]' type='hidden' value='"
-			. $row['branch_code'] . "'>\n";
+		return $row['Done'] ? '' : "<input type='checkbox' name='$name' value='1' >" // add also trans_no => branch code for checking after 'Batch' submit
+															 . "<input name='Sel_[" . $row['trans_no'] . "]' type='hidden' value='" . $row['branch_code'] . "'>\n";
 	}
 
 	function edit_link($row)
 	{
-		return $row["Outstanding"] == 0
-		 ? ''
-		 :
-		 pager_link(
-			 _('Edit'), "/sales/customer_delivery.php?ModifyDelivery="
-			. $row['trans_no'], ICON_EDIT
-		 );
+		return $row["Outstanding"] == 0 ? '' : pager_link(_('Edit'), "/sales/customer_delivery.php?ModifyDelivery=" . $row['trans_no'], ICON_EDIT);
 	}
 
 	function prt_link($row)
@@ -137,24 +115,16 @@
 
 	function invoice_link($row)
 	{
-		return $row["Outstanding"] == 0
-		 ? ''
-		 :
-		 pager_link(
-			 _('Invoice'), "/sales/customer_invoice.php?DeliveryNumber="
-			. $row['trans_no'], ICON_DOC
-		 );
+		return $row["Outstanding"] == 0 ? '' : pager_link(_('Invoice'), "/sales/customer_invoice.php?DeliveryNumber=" . $row['trans_no'], ICON_DOC);
 	}
 
 	function check_overdue($row)
 	{
-		return Dates::date1_greater_date2(Dates::Today(), Dates::sql2date($row["due_date"]))
-		 && $row["Outstanding"] != 0;
+		return Dates::date1_greater_date2(Dates::Today(), Dates::sql2date($row["due_date"])) && $row["Outstanding"] != 0;
 	}
 
 	//------------------------------------------------------------------------------------------------
-	$sql
-	 = "SELECT trans.trans_no,
+	$sql = "SELECT trans.trans_no,
 		debtor.name,
 		branch.branch_code,
 		
@@ -183,65 +153,33 @@
 	//figure out the sql required from the inputs available
 	if (isset($_POST['DeliveryNumber']) && $_POST['DeliveryNumber'] != "") {
 		$delivery = "%" . $_POST['DeliveryNumber'];
-		$sql .= " AND trans.trans_no LIKE " . DB::escape($delivery,false,false);
+		$sql .= " AND trans.trans_no LIKE " . DB::escape($delivery, false, false);
 		$sql .= " GROUP BY trans.trans_no";
 	} else {
 		$sql .= " AND trans.tran_date >= '" . Dates::date2sql($_POST['DeliveryAfterDate']) . "'";
 		$sql .= " AND trans.tran_date <= '" . Dates::date2sql($_POST['DeliveryToDate']) . "'";
 		if ($selected_customer != -1) {
-			$sql .= " AND trans.debtor_no=" . DB::escape($selected_customer,false,false) . " ";
+			$sql .= " AND trans.debtor_no=" . DB::escape($selected_customer, false, false) . " ";
 		}
 		if (isset($selected_stock_item)) {
-			$sql .= " AND line.stock_id=" . DB::escape($selected_stock_item,false,false) . " ";
+			$sql .= " AND line.stock_id=" . DB::escape($selected_stock_item, false, false) . " ";
 		}
 		if (isset($_POST['StockLocation']) && $_POST['StockLocation'] != ALL_TEXT) {
-			$sql .= " AND sorder.from_stk_loc = " . DB::escape($_POST['StockLocation'],false,false) . " ";
+			$sql .= " AND sorder.from_stk_loc = " . DB::escape($_POST['StockLocation'], false, false) . " ";
 		}
 		$sql .= " GROUP BY trans.trans_no ";
 	} //end no delivery number selected
 	$cols = array(
-		_("Delivery #") => array('fun' => 'trans_view'),
-		_("Customer"),
-		_("branch_code") => 'skip',
-		_("Contact"),
-		_("Address"),
-		_("Reference"),
-		_("Cust Ref"),
-		_("Delivery Date") => array(
-			'type' => 'date',
-			'ord' => ''
-		),
-		_("Due By") => array('type' => 'date'),
-		_("Delivery Total") => array(
-			'type' => 'amount',
-			'ord' => ''
-		),
-		_("Currency") => array('align' => 'center'),
-		submit('BatchInvoice', _("Batch"), false, _("Batch Invoicing"))
-		=> array(
-			'insert' => true,
-			'fun' => 'batch_checkbox',
-			'align' => 'center'
-		),
-		array(
-			'insert' => true,
-			'fun' => 'edit_link'
-		),
-		array(
-			'insert' => true,
-			'fun' => 'invoice_link'
-		),
-		array(
-			'insert' => true,
-			'fun' => 'prt_link'
-		)
-	);
+		_("Delivery #") => array('fun' => 'trans_view'), _("Customer"), _("branch_code") => 'skip', _("Contact"), _("Address"), _("Reference"), _("Cust Ref"), _("Delivery Date") => array(
+			'type' => 'date', 'ord' => ''), _("Due By") => array('type' => 'date'), _("Delivery Total") => array(
+			'type' => 'amount', 'ord' => ''), _("Currency") => array('align' => 'center'), submit('BatchInvoice', _("Batch"), false, _("Batch Invoicing")) => array(
+			'insert' => true, 'fun' => 'batch_checkbox', 'align' => 'center'), array(
+			'insert' => true, 'fun' => 'edit_link'), array(
+			'insert' => true, 'fun' => 'invoice_link'), array(
+			'insert' => true, 'fun' => 'prt_link'));
 	//-----------------------------------------------------------------------------------
 	if (isset($_SESSION['Batch'])) {
-		foreach (
-			$_SESSION['Batch'] as $trans => $del
-		)
-		{
+		foreach ($_SESSION['Batch'] as $trans => $del) {
 			unset($_SESSION['Batch'][$trans]);
 		}
 		unset($_SESSION['Batch']);

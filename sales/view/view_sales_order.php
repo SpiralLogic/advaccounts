@@ -16,8 +16,7 @@
 	if ($_GET['trans_type'] == ST_SALESQUOTE) {
 		Page::start(_($help_context = "View Sales Quotation"), true);
 		Display::heading(sprintf(_("Sales Quotation #%d"), $_GET['trans_no']));
-	}
-	else {
+	} else {
 		Page::start(_($help_context = "View Sales Order"), true);
 		Display::heading(sprintf(_("Sales Order #%d"), $_GET['trans_no']));
 	}
@@ -148,9 +147,7 @@
 	$th = array(_("Item Code"), _("Item Description"), _("Quantity"), _("Unit"), _("Price"), _("Discount"), _("Total"), _("Quantity Delivered"));
 	table_header($th);
 	$k = 0; //row colour counter
-	foreach (
-		$_SESSION['View']->line_items as $stock_item
-	) {
+	foreach ($_SESSION['View']->line_items as $stock_item) {
 		$line_total = Num::round($stock_item->quantity * $stock_item->price * (1 - $stock_item->discount_percent), User::price_dec());
 		alt_table_row_color($k);
 		label_cell($stock_item->stock_id);
@@ -164,14 +161,10 @@
 		qty_cell($stock_item->qty_done, false, $dec);
 		end_row();
 	}
-	$qty_remaining = array_sum(
-		array_map(
-			function($line)
-			{
-				return ($line->quantity - $line->qty_done);
-			}, $_SESSION['View']->line_items
-		)
-	);
+	$qty_remaining = array_sum(array_map(function($line)
+	{
+		return ($line->quantity - $line->qty_done);
+	}, $_SESSION['View']->line_items));
 	$items_total = $_SESSION['View']->get_items_total();
 	$display_total = Num::price_format($items_total + $_SESSION['View']->freight_cost);
 	label_row(_("Shipping"), Num::price_format($_SESSION['View']->freight_cost), "align=right colspan=6", "nowrap align=right", 1);

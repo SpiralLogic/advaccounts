@@ -57,9 +57,7 @@
 	if (isset($_POST['order_number'])) {
 		$order_number = $_POST['order_number'];
 	}
-	if (isset($_POST['SelectStockFromList']) && ($_POST['SelectStockFromList'] != "")
-	 && (
-		$_POST['SelectStockFromList'] != ALL_TEXT)
+	if (isset($_POST['SelectStockFromList']) && ($_POST['SelectStockFromList'] != "") && ($_POST['SelectStockFromList'] != ALL_TEXT)
 	) {
 		$selected_stock_item = $_POST['SelectStockFromList'];
 	} else {
@@ -73,10 +71,7 @@
 
 	function edit_link($row)
 	{
-		return pager_link(
-			_("Edit"), "/purchases/po_entry_items.php?" . SID . "ModifyOrderNumber=" .
-		 $row["order_no"], ICON_EDIT
-		);
+		return pager_link(_("Edit"), "/purchases/po_entry_items.php?" . SID . "ModifyOrderNumber=" . $row["order_no"], ICON_EDIT);
 	}
 
 	function prt_link($row)
@@ -88,8 +83,7 @@
 	{
 		if ($row['Received'] > 0) {
 			return pager_link(_("Receive"), "/purchases/po_receive_items.php?PONumber=" . $row["order_no"], ICON_RECEIVE);
-		}
-		elseif ($row['Invoiced'] > 0) {
+		} elseif ($row['Invoiced'] > 0) {
 			return pager_link(_("Invoice"), "/purchases/supplier_invoice.php?New=1&SuppID=" . $row['supplier_id'] . "&PONumber=" . $row["order_no"], ICON_RECEIVE);
 		}
 		//advaccounts/purchases/supplier_invoice.php?New=1
@@ -100,8 +94,7 @@
 		$searchArray = explode(' ', $_POST['ajaxsearch']);
 		unset($_POST['supplier_id']);
 	}
-	$sql
-	 = "SELECT
+	$sql = "SELECT
 	porder.order_no, 
 	porder.reference, 
 	supplier.supp_name,
@@ -119,69 +112,41 @@
 	AND porder.supplier_id = supplier.supplier_id
 	AND location.loc_code = porder.into_stock_location ";
 	if (AJAX_REFERRER && !empty($_POST['ajaxsearch'])) {
-		foreach (
-			$searchArray as $ajaxsearch
-		) {
+		foreach ($searchArray as $ajaxsearch) {
 			if (empty($ajaxsearch)) {
 				continue;
 			}
-			$ajaxsearch = DB::escape("%" . $ajaxsearch . "%",false,false);
-			$sql
-			 .= " AND (supplier.supp_name LIKE $ajaxsearch OR porder.order_no LIKE $ajaxsearch
+			$ajaxsearch = DB::escape("%" . $ajaxsearch . "%", false, false);
+			$sql .= " AND (supplier.supp_name LIKE $ajaxsearch OR porder.order_no LIKE $ajaxsearch
 		 OR porder.reference LIKE $ajaxsearch
 		  OR porder.requisition_no LIKE $ajaxsearch
 		   OR location.location_name LIKE $ajaxsearch)";
 		}
 	} elseif (isset($order_number) && $order_number != "") {
-		$sql .= "AND porder.reference LIKE " . DB::escape('%' . $order_number . '%',false,false);
+		$sql .= "AND porder.reference LIKE " . DB::escape('%' . $order_number . '%', false, false);
 	} else {
 		if ((isset($_POST['StockLocation']) && $_POST['StockLocation'] != ALL_TEXT) || isset($_GET['NFY'])) {
 			$sql .= " AND porder.into_stock_location = ";
-			$sql .= ($_GET['NFY'] == 1) ? "'NFY'" : DB::escape($_POST['StockLocation'],false,false) ;
-		}else{
-					$data_after = Dates::date2sql($_POST['OrdersAfterDate']);
-					$date_before = Dates::date2sql($_POST['OrdersToDate']);
-					$sql .= " AND porder.ord_date >= '$data_after'";
-					$sql .= " AND porder.ord_date <= '$date_before'";
+			$sql .= ($_GET['NFY'] == 1) ? "'NFY'" : DB::escape($_POST['StockLocation'], false, false);
+		} else {
+			$data_after = Dates::date2sql($_POST['OrdersAfterDate']);
+			$date_before = Dates::date2sql($_POST['OrdersToDate']);
+			$sql .= " AND porder.ord_date >= '$data_after'";
+			$sql .= " AND porder.ord_date <= '$date_before'";
 		}
 		if (isset($selected_stock_item)) {
-			$sql .= " AND line.item_code=" . DB::escape($selected_stock_item,false,false);
+			$sql .= " AND line.item_code=" . DB::escape($selected_stock_item, false, false);
 		}
 	} //end not order number selected
 	$sql .= " GROUP BY porder.order_no";
 	$cols = array(
 		_("#") => array(
-			'fun' => 'trans_view',
-			'ord' => ''
-		),
-		_("Reference"),
-		_("Supplier") => array(
-			'ord' => '',
-			'type' => 'id'
-		),
-		_("Supplier ID") => 'skip',
-		_("Location"),
-		_("Supplier's Reference"),
-		_("Order Date") => array(
-			'name' => 'ord_date',
-			'type' => 'date',
-			'ord' => 'desc'
-		),
-		_("Currency") => array('align' => 'center'),
-		_("Order Total") => 'amount',
-		array(
-			'insert' => true,
-			'fun' => 'edit_link'
-		),
-		array(
-			'insert' => true,
-			'fun' => 'prt_link'
-		),
-		array(
-			'insert' => true,
-			'fun' => 'receive_link'
-		),
-	);
+			'fun' => 'trans_view', 'ord' => ''), _("Reference"), _("Supplier") => array(
+			'ord' => '', 'type' => 'id'), _("Supplier ID") => 'skip', _("Location"), _("Supplier's Reference"), _("Order Date") => array(
+			'name' => 'ord_date', 'type' => 'date', 'ord' => 'desc'), _("Currency") => array('align' => 'center'), _("Order Total") => 'amount', array(
+			'insert' => true, 'fun' => 'edit_link'), array(
+			'insert' => true, 'fun' => 'prt_link'), array(
+			'insert' => true, 'fun' => 'receive_link'),);
 	if (get_post('StockLocation') != ALL_TEXT) {
 		$cols[_("Location")] = 'skip';
 	}

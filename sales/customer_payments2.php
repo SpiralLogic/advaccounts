@@ -60,8 +60,7 @@
 			Errors::error(_("The entered date is invalid. Please enter a valid date for the payment."));
 			JS::set_focus('DateBanked');
 			return false;
-		}
-		elseif (!Dates::is_date_in_fiscalyear($_POST['DateBanked'])) {
+		} elseif (!Dates::is_date_in_fiscalyear($_POST['DateBanked'])) {
 			Errors::error(_("The entered date is not in fiscal year."));
 			JS::set_focus('DateBanked');
 			return false;
@@ -116,9 +115,7 @@
 		$_SESSION['alloc']->amount = input_num('amount');
 		if (isset($_POST["TotalNumberOfAllocs"])) {
 			return Gl_Allocation::check_allocations();
-		}
-		else
-		{
+		} else {
 			return true;
 		}
 	}
@@ -148,16 +145,11 @@
 		$comp_currency = Banking::get_company_currency();
 		if ($comp_currency != $bank_currency && $bank_currency != $cust_currency) {
 			$rate = 0;
-		}
-		else
-		{
+		} else {
 			$rate = input_num('_ex_rate');
 		}
 		Dates::new_doc_date($_POST['DateBanked']);
-		$payment_no = write_customer_payment2(0, $_POST['customer_id'], $_POST['BranchID'],
-			$_POST['bank_account'], $_POST['DateBanked'], $_POST['ref'],
-			input_num('amount'), input_num('discount'),
-			$_POST['memo_'], $rate, input_num('charge'));
+		$payment_no = write_customer_payment2(0, $_POST['customer_id'], $_POST['BranchID'], $_POST['bank_account'], $_POST['DateBanked'], $_POST['ref'], input_num('amount'), input_num('discount'), $_POST['memo_'], $rate, input_num('charge'));
 		$_SESSION['alloc']->trans_no = $payment_no;
 		$_SESSION['alloc']->write();
 		meta_forward($_SERVER['PHP_SELF'], "AddedID=$payment_no");
@@ -165,8 +157,7 @@
 	//----------------------------------------------------------------------------------------------
 	function read_customer_data()
 	{
-		$sql
-		 = "SELECT debtors_master.pymt_discount,
+		$sql = "SELECT debtors_master.pymt_discount,
 		credit_status.dissallow_invoices
 		FROM debtors_master, credit_status
 		WHERE debtors_master.credit_status = credit_status.id
@@ -189,8 +180,7 @@
 	}
 	if (Validation::check(Validation::BRANCHES, _("No Branches for Customer"), $_POST['customer_id'])) {
 		customer_branches_list_row(_("Branch:"), $_POST['customer_id'], 'BranchID', null, false, true, true);
-	}
-	else {
+	} else {
 		hidden('BranchID', ANY_NUMERIC);
 	}
 	read_customer_data();
@@ -198,8 +188,7 @@
 	if (isset($_POST['HoldAccount']) && $_POST['HoldAccount'] != 0) {
 		end_outer_table();
 		Errors::error(_("This customer account is on hold."));
-	}
-	else {
+	} else {
 		$display_discount_percent = Num::percent_format($_POST['pymt_discount'] * 100) . "%";
 		table_section(2);
 		bank_accounts_list_row(_("Into Bank Account:"), 'bank_account', null, true);

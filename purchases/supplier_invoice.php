@@ -22,7 +22,7 @@
 		$invoice_no = $_GET['AddedID'];
 		$trans_type = ST_SUPPINVOICE;
 		echo "<center>";
-		Errors::notice(_("Supplier ".$_SESSION['history'][ST_SUPPINVOICE]."invoice has been processed."));
+		Errors::notice(_("Supplier " . $_SESSION['history'][ST_SUPPINVOICE] . "invoice has been processed."));
 		Display::note(ui_view::get_trans_view_str($trans_type, $invoice_no, _("View this Invoice")));
 		hyperlink_no_params("/purchases/inquiry/po_search.php", _("Purchase Order Maintainants"));
 		hyperlink_params($_SERVER['PHP_SELF'], _("Enter Another Invoice"), "New=1");
@@ -71,8 +71,7 @@
 			Errors::error(_("The account code entered is not a valid code, this line cannot be added to the transaction."));
 			JS::set_focus('gl_code');
 			$input_error = true;
-		}
-		else {
+		} else {
 			$myrow = DB::fetch_row($result);
 			$gl_act_name = $myrow[1];
 			if (!Validation::is_num('amount')) {
@@ -89,9 +88,7 @@
 		if ($input_error == false) {
 			Purch_Trans::instance()->add_gl_codes_to_trans($_POST['gl_code'], $gl_act_name, null, null, input_num('amount'), $_POST['memo_']);
 			$taxexists = false;
-			foreach (
-				Purch_Trans::instance()->gl_codes as &$gl_item
-			) {
+			foreach (Purch_Trans::instance()->gl_codes as &$gl_item) {
 				if ($gl_item->gl_code == 2430) {
 					$taxexists = true;
 					$gl_item->amount += input_num('amount') * .1;
@@ -131,8 +128,7 @@
 			Errors::error(_("The invoice as entered cannot be processed because the invoice date is in an incorrect format."));
 			JS::set_focus('trans_date');
 			return false;
-		}
-		elseif (!Dates::is_date_in_fiscalyear(Purch_Trans::instance()->tran_date)) {
+		} elseif (!Dates::is_date_in_fiscalyear(Purch_Trans::instance()->tran_date)) {
 			Errors::error(_("The entered date is not in fiscal year."));
 			JS::set_focus('trans_date');
 			return false;
@@ -161,9 +157,7 @@
 		}
 		if (get_post('ChgTax', 0) != 0) {
 			$taxexists = false;
-			foreach (
-				Purch_Trans::instance()->gl_codes as &$gl_item
-			) {
+			foreach (Purch_Trans::instance()->gl_codes as &$gl_item) {
 				if ($gl_item->gl_code == 2430) {
 					$taxexists = true;
 					$gl_item->amount += get_post('ChgTax');
@@ -210,16 +204,11 @@
 			if ($_POST['order_price' . $n] != input_num('ChgPrice' . $n)) {
 				if ($_POST['order_price' . $n] == 0 || input_num('ChgPrice' . $n) / $_POST['order_price' . $n] > (1 + ($margin / 100))) {
 					if (Session::get()->err_over_charge != true) {
-						Errors::error(
-							_("The price being invoiced is more than the purchase order price by more than the allowed over-charge percentage. The system is set up to prohibit this. See the system administrator to modify the set up parameters if necessary.") . _(
-								"The over-charge percentage allowance is :"
-							) . $margin . "%"
-						);
+						Errors::error(_("The price being invoiced is more than the purchase order price by more than the allowed over-charge percentage. The system is set up to prohibit this. See the system administrator to modify the set up parameters if necessary.") . _("The over-charge percentage allowance is :") . $margin . "%");
 						JS::set_focus('ChgPrice' . $n);
 						$_SESSION['err_over_charge'] = true;
 						return false;
-					}
-					else {
+					} else {
 						$_SESSION['err_over_charge'] = false;
 					}
 				}
@@ -227,10 +216,7 @@
 		}
 		if (Config::get('valid_charged_to_delivered_qty') == True) {
 			if (input_num('this_quantity_inv' . $n) / ($_POST['qty_recd' . $n] - $_POST['prev_quantity_inv' . $n]) > (1 + ($margin / 100))) {
-				Errors::error(
-					_("The quantity being invoiced is more than the outstanding quantity by more than the allowed over-charge percentage. The system is set up to prohibit this. See the system administrator to modify the set up parameters if necessary.") . _("The over-charge percentage allowance is :")
-					 . $margin . "%"
-				);
+				Errors::error(_("The quantity being invoiced is more than the outstanding quantity by more than the allowed over-charge percentage. The system is set up to prohibit this. See the system administrator to modify the set up parameters if necessary.") . _("The over-charge percentage allowance is :") . $margin . "%");
 				JS::set_focus('this_quantity_inv' . $n);
 				return false;
 			}
@@ -243,16 +229,13 @@
 		if (check_item_data($n)) {
 			if (input_num('this_quantity_inv' . $n) >= ($_POST['qty_recd' . $n] - $_POST['prev_quantity_inv' . $n])) {
 				$complete = true;
-			}
-			else {
+			} else {
 				$complete = false;
 			}
 			$_SESSION['err_over_charge'] = false;
-			Purch_Trans::instance()->add_grn_to_trans(
-				$n, $_POST['po_detail_item' . $n], $_POST['item_code' . $n], $_POST['description' . $n], $_POST['qty_recd' . $n],
-				$_POST['prev_quantity_inv' . $n], input_num('this_quantity_inv' . $n), $_POST['order_price' . $n], input_num('ChgPrice' . $n),
-				$complete, $_POST['std_cost_unit' . $n], "", input_num('ChgDiscount' . $n), input_num('ExpPrice' . $n)
-			);
+			Purch_Trans::instance()
+			 ->add_grn_to_trans($n, $_POST['po_detail_item' . $n], $_POST['item_code' . $n], $_POST['description' . $n], $_POST['qty_recd' . $n], $_POST['prev_quantity_inv' . $n], input_num('this_quantity_inv' . $n), $_POST['order_price' . $n], input_num('ChgPrice' . $n), $complete,
+													$_POST['std_cost_unit' . $n], "", input_num('ChgDiscount' . $n), input_num('ExpPrice' . $n));
 		}
 	}
 
@@ -262,9 +245,7 @@
 		commit_item_data($id);
 	}
 	if (isset($_POST['InvGRNAll'])) {
-		foreach (
-			$_POST as $postkey => $postval
-		) {
+		foreach ($_POST as $postkey => $postval) {
 			if (strpos($postkey, "qty_recd") === 0) {
 				$id = substr($postkey, strlen("qty_recd"));
 				$id = (int)$id;
@@ -285,9 +266,7 @@
 			$taxtotal = 0;
 		}
 		Purch_Trans::instance()->remove_gl_codes_from_trans($id4);
-		foreach (
-			Purch_Trans::instance()->gl_codes as $key => $gl_item
-		) {
+		foreach (Purch_Trans::instance()->gl_codes as $key => $gl_item) {
 			if ($gl_item->gl_code == 2430) {
 				$taxrecord = $key;
 				continue;
@@ -308,19 +287,14 @@
 			DB::begin_transaction();
 			$myrow = Purch_GRN::get_item($id2);
 			$grn = Purch_GRN::get_batch($myrow['grn_batch_id']);
-			$sql
-			 = "UPDATE purch_order_details
+			$sql = "UPDATE purch_order_details
 			SET quantity_received = qty_invoiced, quantity_ordered = qty_invoiced WHERE po_detail_item = " . $myrow["po_detail_item"];
 			DB::query($sql, "The quantity invoiced of the purchase order line could not be updated");
-			$sql
-			 = "UPDATE grn_items
+			$sql = "UPDATE grn_items
 	    	SET qty_recd = quantity_inv WHERE id = " . $myrow["id"];
 			DB::query($sql, "The quantity invoiced off the items received record could not be updated");
 			Purch_GRN::update_average_material_cost($grn["supplier_id"], $myrow["item_code"], $myrow["unit_price"], -$myrow["QtyOstdg"], Dates::Today());
-			Inv_Movement::add(
-				ST_SUPPRECEIVE, $myrow["item_code"], $myrow['grn_batch_id'], $grn['loc_code'], Dates::sql2date($grn["delivery_date"]), "", -$myrow["QtyOstdg"],
-				$myrow['std_cost_unit'], $grn["supplier_id"], 1, $myrow['unit_price']
-			);
+			Inv_Movement::add(ST_SUPPRECEIVE, $myrow["item_code"], $myrow['grn_batch_id'], $grn['loc_code'], Dates::sql2date($grn["delivery_date"]), "", -$myrow["QtyOstdg"], $myrow['std_cost_unit'], $grn["supplier_id"], 1, $myrow['unit_price']);
 			DB::commit_transaction();
 			Errors::notice(sprintf(_('All yet non-invoiced items on delivery line # %d has been removed.'), $id2));
 		}
@@ -343,8 +317,7 @@
 	}
 	if ($_POST['supplier_id'] == '') {
 		Errors::error(_("There is no supplier selected."));
-	}
-	else {
+	} else {
 		display_grn_items(Purch_Trans::instance(), 1);
 		display_gl_items(Purch_Trans::instance(), 1);
 		div_start('inv_tot');
@@ -365,8 +338,7 @@
 	end_form();
 	//--------------------------------------------------------------------------------------------------
 	Item::addEditDialog();
-	JS::onload(
-		<<<JS
+	JS::onload(<<<JS
 	    $("#wrapper").delegate('.amount','change',function() {
       var feild = $(this), ChgTax=$('[name="ChgTax"]'),ChgTotal=$('[name="ChgTotal"]'),invTotal=$('#invoiceTotal'), feilds = $(this).parent().parent(), fv = {}, nodes = {
          qty: $('[name^="this_quantity"]',feilds),
@@ -400,7 +372,6 @@
 	var ChgTotal = Number(ChgTotal.val().replace(',',''));
 	price_format(invTotal.attr('id'),total+ChgTax+ChgTotal,2,true); }
 }});
-JS
-	);
+JS);
 	end_page();
 ?>
