@@ -107,7 +107,7 @@
 		}
 		else
 		{
-			$fromc = get_customer_name($fromcust);
+			$fromc = Sales_Debtor::get_name($fromcust);
 		}
 		$cols = array(0, 75, 175, 250, 300, 375, 450, 515);
 		$headers

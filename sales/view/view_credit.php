@@ -21,7 +21,7 @@
 		$trans_id = $_POST["trans_no"];
 	}
 	$myrow = Sales_Trans::get($trans_id, ST_CUSTCREDIT);
-	$branch = get_branch($myrow["branch_code"]);
+	$branch = Sales_Branch::get($myrow["branch_code"]);
 	Display::heading("<font color=red>" . sprintf(_("CREDIT NOTE #%d"), $trans_id) . "</font>");
 	echo "<br>";
 	start_table(Config::get('tables_style2') . " width=95%");
@@ -55,7 +55,7 @@
 	echo "</td></tr>";
 	end_table(1); // outer table
 	$sub_total = 0;
-	$result = get_customer_trans_details(ST_CUSTCREDIT, $trans_id);
+	$result = Sales_Debtor_Trans::get(ST_CUSTCREDIT, $trans_id);
 	start_table(Config::get('tables_style') . "  width=95%");
 	if (DB::num_rows($result) > 0) {
 		$th = array(

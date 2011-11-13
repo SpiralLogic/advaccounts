@@ -235,7 +235,7 @@
 				global $wo_cost_types;
 				return $wo_cost_types[$person_id];
 			case PT_CUSTOMER :
-				return ($full ? $payment_person_types[$type] . " " : "") . get_customer_name($person_id);
+				return ($full ? $payment_person_types[$type] . " " : "") . Sales_Debtor::get_name($person_id);
 			case PT_SUPPLIER :
 				return ($full ? $payment_person_types[$type] . " " : "") . get_supplier_name($person_id);
 			default :

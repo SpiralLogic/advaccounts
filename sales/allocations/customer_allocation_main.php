@@ -73,7 +73,7 @@
 		return $row['settled'] == 1;
 	}
 
-	$sql = get_allocatable_from_cust_sql($customer_id, $settled);
+	$sql = Sales_Allocation::get_allocatable_sql($customer_id, $settled);
 	$cols = array(
 		_("Transaction Type") => array('fun' => 'systype_name'),
 		_("#") => array('fun' => 'trans_view'),

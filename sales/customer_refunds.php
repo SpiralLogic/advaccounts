@@ -134,7 +134,7 @@
 			$rate = input_num('_ex_rate');
 		}
 		Dates::new_doc_date($_POST['DateBanked']);
-		$refund_id = write_customer_refund(
+		$refund_id = Sales_Debtor_Refund::add(
 			0, $_POST['customer_id'], $_POST['BranchID'],
 			$_POST['bank_account'], $_POST['DateBanked'], $_POST['ref'],
 			input_num('amount'), input_num('discount'),

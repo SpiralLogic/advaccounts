@@ -99,7 +99,7 @@
 	//-----------------------------------------------------------------------------
 	if (list_updated('branch_id')) {
 		// when branch is selected via external editor also customer can change
-		$br = get_branch(get_post('branch_id'));
+		$br = Sales_Branch::get(get_post('branch_id'));
 		$_POST['customer_id'] = $br['debtor_no'];
 		$Ajax->activate('customer_id');
 	}
@@ -494,14 +494,14 @@
 		}
 		else {
 			if ($_SESSION['Items']->trans_no != 0) {
-				if ($_SESSION['Items']->trans_type == ST_SALESORDER && sales_order_has_deliveries(key($_SESSION['Items']->trans_no))) {
+				if ($_SESSION['Items']->trans_type == ST_SALESORDER && Sales_Order::has_deliveries(key($_SESSION['Items']->trans_no))) {
 					Errors::error(_("This order cannot be cancelled because some of it has already been invoiced or dispatched. However, the line item quantities may be modified."));
 				}
 				else {
 					$trans_no = key($_SESSION['Items']->trans_no);
 					$trans_type = $_SESSION['Items']->trans_type;
 					if (!isset($_GET['RemovedID'])) {
-						delete_sales_order($trans_no, $trans_type);
+						Sales_Order::delete($trans_no, $trans_type);
 						meta_forward("/jobsboard/jobsboard/removejob/RemovedID/$trans_no/$trans_type", "");
 					}
 				}
@@ -556,7 +556,7 @@
 			if ($type == ST_SALESINVOICE) {
 				$doc->due_date = get_invoice_duedate($doc->customer_id, $doc->document_date);
 				$doc->pos = User::pos();
-				$pos = get_sales_point($doc->pos);
+				$pos = Sales_Point::get($doc->pos);
 				$doc->pos = -1;
 			}
 			else {

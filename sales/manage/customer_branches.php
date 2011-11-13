@@ -27,7 +27,7 @@
 	}
 	$_POST['branch_code'] = $selected_id;
 	if (isset($_GET['SelectedBranch'])) {
-		$br = get_branch($_GET['SelectedBranch']);
+		$br = Sales_Branch::get($_GET['SelectedBranch']);
 		$_POST['customer_id'] = $br['debtor_no'];
 		$selected_id = $_POST['branch_code'] = $br['branch_code'];
 		$Mode = 'Edit';

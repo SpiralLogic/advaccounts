@@ -12,18 +12,20 @@
 	//-----------------------------------------------------------------------------
 	// insert/update sales delivery
 	//
-	function write_sales_delivery(&$delivery, $bo_policy)
+	class Sales_Delivery {
+		function add(&$delivery, $bo_policy)
+
 	{
 		$trans_no = $delivery->trans_no;
 		if (is_array($trans_no)) {
 			$trans_no = key($trans_no);
 		}
 		DB::begin_transaction();
-		$customer = get_customer($delivery->customer_id);
+		$customer = Sales_Debtor::get($delivery->customer_id);
 		$delivery_items_total = $delivery->get_items_total_dispatch();
 		$freight_tax = $delivery->get_shipping_tax();
 		// mark sales order for concurrency conflicts check
-		update_sales_order_version($delivery->src_docs);
+		Sales_Order::update_version($delivery->src_docs);
 		$tax_total = 0;
 		$taxes = $delivery->get_taxes(); // all taxes with freight_tax
 		foreach ($taxes as $taxitem) {
@@ -60,7 +62,7 @@
 				$delivery_line->standard_cost = get_standard_cost($delivery_line->stock_id);
 			}
 			/* add delivery details for all lines */
-			write_customer_trans_detail_item(ST_CUSTDELIVERY, $delivery_no, $delivery_line->stock_id,
+			Sales_Debtor_Trans::add(ST_CUSTDELIVERY, $delivery_no, $delivery_line->stock_id,
 																			 $delivery_line->description, $delivery_line->qty_dispatched,
 																			 $delivery_line->line_price(), $line_tax,
 																			 $delivery_line->discount_percent, $delivery_line->standard_cost,
@@ -108,7 +110,7 @@
 		} /*end of order_line loop */
 		if ($bo_policy == 0) {
 			// if cancelling any remaining quantities
-			close_sales_order($delivery->order_no);
+			Sales_Order::close($delivery->order_no);
 		}
 		// taxes - this is for printing purposes
 		foreach ($taxes as $taxitem) {
@@ -128,28 +130,28 @@
 	}
 
 	//--------------------------------------------------------------------------------------------------
-	function void_sales_delivery($type, $type_no)
+	function void($type, $type_no)
 	{
 		DB::begin_transaction();
 		GL_Trans::void($type, $type_no, true);
 		// reverse all the changes in the sales order
-		$items_result = get_customer_trans_details($type, $type_no);
+		$items_result = Sales_Debtor_Trans::get($type, $type_no);
 		$order = Sales_Trans::get_order($type, $type_no);
 		if ($order) {
-			$order_items = get_sales_order_details($order, ST_SALESORDER);
+			$order_items = Sales_Order::get_details($order, ST_SALESORDER);
 			while ($row = DB::fetch($items_result)) {
 				$order_line = DB::fetch($order_items);
 				update_parent_line(ST_CUSTDELIVERY, $order_line['id'], -$row['quantity']);
 			}
 		}
 		// clear details after they've been reversed in the sales order
-		void_customer_trans_details($type, $type_no);
+		Sales_Debtor_Trans::void($type, $type_no);
 		GL_Trans::void_tax_details($type, $type_no);
-		void_cust_allocations($type, $type_no);
+		Sales_Allocation::void($type, $type_no);
 		// do this last because other voidings can depend on it
 		// DO NOT MOVE THIS ABOVE VOIDING or we can end up with trans with alloc < 0
 		Sales_Trans::void($type, $type_no);
 		DB::commit_transaction();
 	}
 
-?>
+	}

@@ -10,7 +10,8 @@
 					 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 					 See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 					* ********************************************************************* */
-	function get_branch($branch_id)
+class Sales_Branch {
+	public static function get($branch_id)
 	{
 		$sql
 		 = "SELECT cust_branch.*,salesman.salesman_name
@@ -21,7 +22,7 @@
 		return DB::fetch($result);
 	}
 
-	function get_branch_accounts($branch_id)
+	public static function get_accounts($branch_id)
 	{
 		$sql
 		 = "SELECT receivables_account,sales_account, sales_discount_account, payment_discount_account
@@ -30,7 +31,7 @@
 		return DB::fetch($result);
 	}
 
-	function get_branch_name($branch_id)
+	public static function get_name($branch_id)
 	{
 		$sql
 		 = "SELECT br_name FROM cust_branch
@@ -40,7 +41,7 @@
 		return $myrow[0];
 	}
 
-	function get_cust_branches_from_group($group_no)
+	public static function get_from_group($group_no)
 	{
 		$sql
 		 = "SELECT branch_code, debtor_no FROM cust_branch
@@ -48,7 +49,7 @@
 		return DB::query($sql, "could not retreive branches for group " . $group_no);
 	}
 
-	function get_main_branch($customer_no)
+	public static function get_main($customer_no)
 	{
 		$sql
 						= "SELECT *
@@ -59,3 +60,4 @@
 		$myrow  = DB::fetch_assoc($result);
 		return $myrow;
 	}
+}

@@ -76,7 +76,7 @@
 	function get_customer_details_to_order($order, $customer_id, $branch_id)
 	{
 		$ret_error = "";
-		$myrow = get_customer_to_order($customer_id);
+		$myrow = Sales_Order::get_customer($customer_id);
 		$name = $myrow['name'];
 		if ($myrow['dissallow_invoices'] == 1) {
 			$ret_error = _("The selected customer account is currently on hold. Please contact the credit control personnel to discuss.");
@@ -91,7 +91,7 @@
 			$order->dimension_id = $myrow['dimension_id'];
 			$order->dimension2_id = $myrow['dimension2_id'];
 		}
-		$result = get_branch_to_order($customer_id, $branch_id);
+		$result = Sales_Order::get_branch($customer_id, $branch_id);
 		if (DB::num_rows($result) == 0) {
 			return _("The selected customer and branch are not valid, or the customer does not have any branches.");
 		}
@@ -120,7 +120,7 @@
 		}
 		if ($order->cash) {
 			if ($order->pos != -1) {
-				$paym = get_sales_point($order->pos);
+				$paym = Sales_Point::get($order->pos);
 				$order->set_location($paym["pos_location"], $paym["location_name"]);
 			}
 		}
@@ -331,7 +331,7 @@ JS;
 				Session::get()->global_customer = $_POST['customer_id'];
 			} // changed branch
 			else {
-				$row = get_customer_to_order($_POST['customer_id']);
+				$row = Sales_Order::get_customer($_POST['customer_id']);
 				if ($row['dissallow_invoices'] == 1) {
 					$customer_error = _("The selected customer account is currently on hold. Please contact the credit control personnel to discuss.");
 				}

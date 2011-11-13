@@ -43,7 +43,7 @@
 
 	function get_allocations_for_receipt($debtor_id, $type, $trans_no)
 	{
-		$sql = get_alloc_trans_sql("amt, trans.reference, trans.alloc", "trans.trans_no = alloc.trans_no_to
+		$sql = Sales_Allocation::get_sql("amt, trans.reference, trans.alloc", "trans.trans_no = alloc.trans_no_to
 		AND trans.type = alloc.trans_type_to
 		AND alloc.trans_no_from=$trans_no
 		AND alloc.trans_type_from=$type

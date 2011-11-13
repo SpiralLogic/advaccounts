@@ -56,7 +56,7 @@
 			$result = DB::query($sql, "could not get recurrent invoice");
 			$myrow = DB::fetch($result);
 			if ($myrow['debtor_no'] == 0) {
-				$cust = get_cust_branches_from_group($myrow['group_no']);
+				$cust = Sales_Branch::get_from_group($myrow['group_no']);
 				while ($row = DB::fetch($cust))
 				{
 					$invs[] = create_recurrent_invoices(
@@ -139,8 +139,8 @@
 			label_cell("");
 			label_cell(get_sales_group_name($myrow["group_no"]));
 		} else {
-			label_cell(get_customer_name($myrow["debtor_no"]));
-			label_cell(get_branch_name($myrow['group_no']));
+			label_cell(Sales_Debtor::get_name($myrow["debtor_no"]));
+			label_cell(Sales_Branch::get_name($myrow['group_no']));
 		}
 		label_cell($myrow["days"]);
 		label_cell($myrow['monthly']);

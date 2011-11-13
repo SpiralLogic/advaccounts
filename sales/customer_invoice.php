@@ -182,8 +182,8 @@
 			$delivery_notes as $delivery_num
 		) {
 			$myrow = Sales_Trans::get($delivery_num, 13);
-			//$branch = get_branch($myrow["branch_code"]);
-			//$sales_order = get_sales_order_header($myrow["order_"]);
+			//$branch = Sales_Branch::get($myrow["branch_code"]);
+			//$sales_order = Sales_Order::get_header($myrow["order_"]);
 			//$shipping += $sales_order['freight_cost'];
 			$shipping += $myrow['ov_freight'];
 		}
@@ -315,7 +315,7 @@
 	start_table(Config::get('tables_style2') . " width=90%", 5);
 	start_row();
 	label_cells(_("Customer"), $_SESSION['Items']->customer_name, "class='tableheader2'");
-	label_cells(_("Branch"), get_branch_name($_SESSION['Items']->Branch), "class='tableheader2'");
+	label_cells(_("Branch"), Sales_Branch::get_name($_SESSION['Items']->Branch), "class='tableheader2'");
 	label_cells(_("Currency"), $_SESSION['Items']->customer_currency, "class='tableheader2'");
 	end_row();
 	start_row();
@@ -359,7 +359,7 @@
 	}
 	end_row();
 	end_table();
-	$row = get_customer_to_order($_SESSION['Items']->customer_id);
+	$row = Sales_Order::get_customer($_SESSION['Items']->customer_id);
 	if ($row['dissallow_invoices'] == 1) {
 		Errors::error(_("The selected customer account is currently on hold. Please contact the credit control personnel to discuss."));
 		end_form();

@@ -64,8 +64,8 @@
 				continue;
 			}
 			$myrow = Sales_Trans::get($i, ST_CUSTDELIVERY);
-			$branch = get_branch($myrow["branch_code"]);
-			$sales_order = get_sales_order_header($myrow["order_"], ST_SALESORDER); // ?
+			$branch = Sales_Branch::get($myrow["branch_code"]);
+			$sales_order = Sales_Order::get_header($myrow["order_"], ST_SALESORDER); // ?
 			if ($email == 1) {
 				$rep = new FrontReport("", "", User::pagesize());
 				$rep->currency = $cur;
@@ -84,7 +84,7 @@
 				$rep->title = _('DELIVERY NOTE');
 			}
 			$rep->Header2($myrow, $branch, $sales_order, '', ST_CUSTDELIVERY);
-			$result = get_customer_trans_details(ST_CUSTDELIVERY, $i);
+			$result = Sales_Debtor_Trans::get(ST_CUSTDELIVERY, $i);
 			$SubTotal = 0;
 			while ($myrow2 = DB::fetch($result))
 			{

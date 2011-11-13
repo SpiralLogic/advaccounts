@@ -94,7 +94,7 @@
 			DB::query($sql, "could not void bank transactions for type=$type and trans_no=$type_no");
 			GL_Trans::void($type, $type_no, true);
 			// in case it's a customer trans - probably better to check first
-			void_cust_allocations($type, $type_no);
+			Sales_Allocation::void($type, $type_no);
 			Sales_Trans::void($type, $type_no);
 			// in case it's a supplier trans - probably better to check first
 			void_supp_allocations($type, $type_no);

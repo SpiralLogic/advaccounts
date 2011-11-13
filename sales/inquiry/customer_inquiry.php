@@ -65,7 +65,7 @@
 	//------------------------------------------------------------------------------------------------
 	div_start('totals_tbl');
 	if ($_POST['customer_id'] != "" && $_POST['customer_id'] != ALL_TEXT && !isset($_POST['ajaxsearch'])) {
-		$customer_record = get_customer_details($_POST['customer_id'], $_POST['TransToDate']);
+		$customer_record = Sales_Debtor::get_details($_POST['customer_id'], $_POST['TransToDate']);
 		display_customer_summary($customer_record);
 		echo "<br>";
 	}

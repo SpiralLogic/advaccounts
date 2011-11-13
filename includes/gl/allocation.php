@@ -117,7 +117,7 @@
 			if ($this->person_type) {
 				$trans_items = get_allocatable_to_supp_transactions($this->person_id);
 			} else {
-				$trans_items = get_allocatable_to_cust_transactions($this->person_id);
+				$trans_items = Sales_Allocation::get_to_trans($this->person_id);
 			}
 			while ($myrow = DB::fetch($trans_items))
 			{
@@ -142,7 +142,7 @@
 					$trans_no, $type
 				);
 			} else {
-				$trans_items = get_allocatable_to_cust_transactions(
+				$trans_items = Sales_Allocation::get_to_trans(
 					$this->person_id,
 					$trans_no, $type
 				);
@@ -168,7 +168,7 @@
 			if ($this->person_type) {
 				clear_supp_alloctions($this->type, $this->trans_no, $this->date_);
 			} else {
-				clear_cust_alloctions($this->type, $this->trans_no, $this->date_);
+				Sales_Allocation::clear($this->type, $this->trans_no, $this->date_);
 			}
 			// now add the new allocations
 			$total_allocated = 0;
@@ -189,12 +189,12 @@
 						);
 					}
 					else {
-						add_cust_allocation(
+						Sales_Allocation::add(
 							$alloc_item->current_allocated,
 							$this->type, $this->trans_no,
 							$alloc_item->type, $alloc_item->type_no, $this->date_
 						);
-						update_debtor_trans_allocation(
+						Sales_Allocation::update(
 							$alloc_item->type,
 							$alloc_item->type_no, $alloc_item->current_allocated
 						);
@@ -216,7 +216,7 @@
 					$total_allocated
 				);
 			} else {
-				update_debtor_trans_allocation(
+				Sales_Allocation::update(
 					$this->type, $this->trans_no,
 					$total_allocated
 				);

@@ -9,16 +9,7 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	include_once(APP_PATH . "sales/includes/db/sales_order_db.php");
-	include_once(APP_PATH . "sales/includes/db/sales_credit_db.php");
-	include_once(APP_PATH . "sales/includes/db/sales_invoice_db.php");
-	include_once(APP_PATH . "sales/includes/db/sales_delivery_db.php");
-	include_once(APP_PATH . "sales/includes/db/sales_points_db.php");
-	include_once(APP_PATH . "sales/includes/db/custalloc_db.php");
-	include_once(APP_PATH . "sales/includes/db/cust_trans_details_db.php");
-	include_once(APP_PATH . "sales/includes/db/payment_db.php");
-	include_once(APP_PATH . "sales/includes/db/branches_db.php");
-	include_once(APP_PATH . "sales/includes/db/customers_db.php");
+
 	//----------------------------------------------------------------------------------------
 	// $price in customer's currency
 	// $quantity is used as is (if it's neg it's neg, if it's pos it's pos)
@@ -322,7 +313,7 @@
 			if ($myrow != null) {
 				$cart->set_location($myrow['loc_code'], $myrow['location_name']);
 			}
-			$result = get_customer_trans_details($doc_type, $trans_no);
+			$result = Sales_Debtor_Trans::get($doc_type, $trans_no);
 			if (DB::num_rows($result) > 0) {
 				for ($line_no = 0; $myrow = DB::fetch($result); $line_no++) {
 					$cart->line_items[$line_no] = new Sales_Line(

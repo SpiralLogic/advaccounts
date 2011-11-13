@@ -12,8 +12,8 @@
 	//-----------------------------------------------------------------------------
 	//	Add or update Sales Invoice
 	//
-	function write_sales_invoice(&$invoice)
-	{
+	class Sales_Invoice {
+		public static function add(&$invoice) {
 		$trans_no = $invoice->trans_no;
 		if (is_array($trans_no)) {
 			$trans_no = key($trans_no);
@@ -22,8 +22,8 @@
 		$charge_shipping = $invoice->freight_cost;
 		DB::begin_transaction();
 		$company_data = DB_Company::get_prefs();
-		$branch_data = get_branch_accounts($invoice->Branch);
-		$customer = get_customer($invoice->customer_id);
+		$branch_data = Sales_Branch::get_accounts($invoice->Branch);
+		$customer = Sales_Debtor::get($invoice->customer_id);
 		// offer price values without freight costs
 		$items_total = $invoice->get_items_total_dispatch();
 		$freight_tax = $invoice->get_shipping_tax();
@@ -71,7 +71,7 @@
 		else {
 			DB_Comments::delete(ST_SALESINVOICE, $invoice_no);
 			GL_Trans::void(ST_SALESINVOICE, $invoice_no, true);
-			void_cust_allocations(ST_SALESINVOICE, $invoice_no); // ?
+			Sales_Allocation::void(ST_SALESINVOICE, $invoice_no); // ?
 			GL_Trans::void_tax_details(ST_SALESINVOICE, $invoice_no);
 		}
 		$total = 0;
@@ -82,7 +82,7 @@
 			$line_tax = Taxes::get_full_price_for_item($invoice_line->stock_id,
 																								 $invoice_line->price, 0, $invoice->tax_included,
 																								 $invoice->tax_group_array) - $line_taxfree_price;
-			write_customer_trans_detail_item(ST_SALESINVOICE, $invoice_no, $invoice_line->stock_id,
+			Sales_Debtor_Trans::add(ST_SALESINVOICE, $invoice_no, $invoice_line->stock_id,
 																			 $invoice_line->description, $invoice_line->qty_dispatched,
 																			 $invoice_line->line_price(), $line_tax, $invoice_line->discount_percent,
 																			 $invoice_line->standard_cost,
@@ -157,29 +157,29 @@
 	}
 
 	//--------------------------------------------------------------------------------------------------
-	function void_sales_invoice($type, $type_no)
+	public static function void($type, $type_no)
 	{
 		DB::begin_transaction();
 		Bank_Trans::void($type, $type_no, true);
 		GL_Trans::void($type, $type_no, true);
 		// reverse all the changes in parent document(s)
-		$items_result = get_customer_trans_details($type, $type_no);
+		$items_result = Sales_Debtor_Trans::get($type, $type_no);
 		$deliveries = Sales_Trans::get_parent($type, $type_no);
 		if ($deliveries !== 0) {
-			$srcdetails = get_customer_trans_details(get_parent_type($type), $deliveries);
+			$srcdetails = Sales_Debtor_Trans::get(get_parent_type($type), $deliveries);
 			while ($row = DB::fetch($items_result)) {
 				$src_line = DB::fetch($srcdetails);
 				update_parent_line($type, $src_line['id'], -$row['quantity']);
 			}
 		}
 		// clear details after they've been reversed in the sales order
-		void_customer_trans_details($type, $type_no);
+		Sales_Debtor_Trans::void($type, $type_no);
 		GL_Trans::void_tax_details($type, $type_no);
-		void_cust_allocations($type, $type_no);
+		Sales_Allocation::void($type, $type_no);
 		// do this last because other voidings can depend on it - especially voiding
 		// DO NOT MOVE THIS ABOVE VOIDING or we can end up with trans with alloc < 0
 		Sales_Trans::void($type, $type_no);
 		DB::commit_transaction();
 	}
 
-?>
+	}

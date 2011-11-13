@@ -12,7 +12,7 @@
 	$page_security = 'SA_POSSETUP';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "POS settings"));
-	include_once(APP_PATH . "sales/includes/db/sales_points_db.php");
+	include_once(APP_PATH . "sales/includes/db/points.php");
 	Page::simple_mode(true);
 	//----------------------------------------------------------------------------------------------------
 	function can_process()
@@ -32,7 +32,7 @@
 
 	//----------------------------------------------------------------------------------------------------
 	if ($Mode == 'ADD_ITEM' && can_process()) {
-		add_sales_point(
+		Sales_Point::add(
 			$_POST['name'], $_POST['location'], $_POST['account'],
 			check_value('cash'), check_value('credit')
 		);
@@ -41,7 +41,7 @@
 	}
 	//----------------------------------------------------------------------------------------------------
 	if ($Mode == 'UPDATE_ITEM' && can_process()) {
-		update_sales_point(
+		Sales_Point::update(
 			$selected_id, $_POST['name'], $_POST['location'],
 			$_POST['account'], check_value('cash'), check_value('credit')
 		);
@@ -56,7 +56,7 @@
 			Errors::error(_("Cannot delete this POS because it is used in users setup."));
 		}
 		else {
-			delete_sales_point($selected_id);
+			Sales_Point::delete($selected_id);
 			Errors::notice(_('Selected point of sale has been deleted'));
 			$Mode = 'RESET';
 		}
@@ -68,7 +68,7 @@
 		$_POST['show_inactive'] = $sav;
 	}
 	//----------------------------------------------------------------------------------------------------
-	$result = get_all_sales_points(check_value('show_inactive'));
+	$result = Sales_Point::get_all(check_value('show_inactive'));
 	start_form();
 	start_table(Config::get('tables_style'));
 	$th = array(
@@ -101,7 +101,7 @@
 	start_table(Config::get('tables_style2'));
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {
-			$myrow = get_sales_point($selected_id);
+			$myrow = Sales_Point::get($selected_id);
 			$_POST['name'] = $myrow["pos_name"];
 			$_POST['location'] = $myrow["pos_location"];
 			$_POST['account'] = $myrow["pos_account"];

@@ -10,7 +10,8 @@
 						 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 						 See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 						* ********************************************************************* */
-	function get_customer_details($customer_id, $to = null)
+	class Sales_Debtor {
+		function get_details($customer_id, $to = null)
 	{
 		if ($to == null) {
 			$todate = date("Y-m-d");
@@ -89,14 +90,14 @@
 		return $customer_record;
 	}
 
-	function get_customer($customer_id)
+	function get($customer_id)
 	{
 		$sql = "SELECT * FROM debtors_master WHERE debtor_no=" . DB::escape($customer_id);
 		$result = DB::query($sql, "could not get customer");
 		return DB::fetch($result);
 	}
 
-	function get_customer_name($customer_id)
+	function get_name($customer_id)
 	{
 		$sql = "SELECT name FROM debtors_master WHERE debtor_no=" . DB::escape($customer_id);
 		$result = DB::query($sql, "could not get customer");
@@ -104,7 +105,7 @@
 		return $row[0];
 	}
 
-	function get_customer_habit($customer_id)
+	function get_habit($customer_id)
 	{
 		$sql
 		 = "SELECT  debtors_master.pymt_discount,
@@ -116,7 +117,7 @@
 		return DB::fetch($result);
 	}
 
-	function get_area_name($id)
+	function get_area($id)
 	{
 		$sql = "SELECT description FROM areas WHERE area_code=" . DB::escape($id);
 		$result = DB::query($sql, "could not get sales type");
@@ -132,14 +133,15 @@
 		return $row[0];
 	}
 
-	function get_current_cust_credit($customer_id)
+	function get_credit($customer_id)
 	{
-		$custdet = get_customer_details($customer_id);
+		$custdet = Sales_Debtor::get_details($customer_id);
 		return ($customer_id > 0) ? $custdet['credit_limit'] - $custdet['Balance'] : 0;
 	}
 
-	function is_new_customer($id)
+	function is_new($id)
 	{
 		$tables = array('cust_branch', 'debtor_trans', 'recurrent_invoices', 'sales_orders');
 		return !DB_Company::key_in_foreign_table($id, $tables, 'debtor_no');
+	}
 	}

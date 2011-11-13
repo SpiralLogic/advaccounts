@@ -65,10 +65,10 @@
 				$myrow = Sales_Trans::get($i, $j);
 				$baccount = GL_BankAccount::get_default($myrow['curr_code']);
 				$params['bankaccount'] = $baccount['id'];
-				$branch = get_branch($myrow["branch_code"]);
+				$branch = Sales_Branch::get($myrow["branch_code"]);
 				$branch['disable_branch'] = $paylink; // helper
 				if ($j == ST_SALESINVOICE) {
-					$sales_order = get_sales_order_header($myrow["order_"], ST_SALESORDER);
+					$sales_order = Sales_Order::get_header($myrow["order_"], ST_SALESORDER);
 				}
 				else {
 					$sales_order = null;
@@ -91,7 +91,7 @@
 					$rep->title = ($j == ST_SALESINVOICE) ? _('TAX INVOICE') : _('CREDIT NOTE');
 				}
 				$rep->Header2($myrow, $branch, $sales_order, $baccount, $j);
-				$result = get_customer_trans_details($j, $i);
+				$result = Sales_Debtor_Trans::get($j, $i);
 				$SubTotal = 0;
 				while ($myrow2 = DB::fetch($result)) {
 					if ($myrow2["quantity"] == 0) {
@@ -181,7 +181,7 @@
 				$words = ui_view::price_in_words($myrow['Total'], $j);
 				$rep->NewLine();
 				$rep->NewLine();
-				$invBalance = get_DebtorTrans_allocation_balance($myrow['type'], $myrow['trans_no']);
+				$invBalance = Sales_Allocation::get_balance($myrow['type'], $myrow['trans_no']);
 				$rep->TextCol(3, 7, 'Total Received', -2);
 				$rep->AmountCol(7, 8, $myrow['Total'] - $invBalance, $dec, -2);
 				$rep->NewLine();

@@ -190,7 +190,7 @@
 				$Ajax->activate('code_id');
 			}
 			if ($_POST['PayType'] == PT_CUSTOMER) {
-				$acc = get_branch_accounts($_POST['PersonDetailID']);
+				$acc = Sales_Branch::get_accounts($_POST['PersonDetailID']);
 				$_POST['code_id'] = $acc['receivables_account'];
 			}
 			elseif ($_POST['PayType'] == PT_SUPPLIER)

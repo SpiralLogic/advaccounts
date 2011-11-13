@@ -12,7 +12,8 @@
 	/*
 			 Write/update customer payment.
 		 */
-	function write_customer_payment($trans_no, $customer_id, $branch_id, $bank_account,
+	class Sales_Debtor_Payment {
+		function add($trans_no, $customer_id, $branch_id, $bank_account,
 																	$date_, $ref, $amount, $discount, $memo_, $rate = 0, $charge = 0, $tax = 0)
 	{
 		DB::begin_transaction();
@@ -24,7 +25,7 @@
 			DB_Comments::delete(ST_CUSTPAYMENT, $trans_no);
 			Bank_Trans::void(ST_CUSTPAYMENT, $trans_no, true);
 			GL_Trans::void(ST_CUSTPAYMENT, $trans_no, true);
-			void_cust_allocations(ST_CUSTPAYMENT, $trans_no, $date_);
+			Sales_Allocation::void(ST_CUSTPAYMENT, $trans_no, $date_);
 		}
 		$total = 0;
 		/* Bank account entry first */
@@ -32,7 +33,7 @@
 			$bank_gl_account, 0, 0, $amount - $charge, $customer_id,
 			"Cannot insert a GL transaction for the bank account debit", $rate);
 		if ($branch_id != ANY_NUMERIC) {
-			$branch_data = get_branch_accounts($branch_id);
+			$branch_data = Sales_Branch::get_accounts($branch_id);
 			$debtors_account = $branch_data["receivables_account"];
 			$discount_account = $branch_data["payment_discount_account"];
 			$tax_group = Tax_Groups::get_tax_group($branch_data["payment_discount_account"]);
@@ -76,14 +77,14 @@
 	}
 
 	//-------------------------------------------------------------------------------------------------
-	function void_customer_payment($type, $type_no)
+	function void($type, $type_no)
 	{
 		DB::begin_transaction();
 		Bank_Trans::void($type, $type_no, true);
 		GL_Trans::void($type, $type_no, true);
-		void_cust_allocations($type, $type_no);
+		Sales_Allocation::void($type, $type_no);
 		Sales_Trans::void($type, $type_no);
 		DB::commit_transaction();
 	}
 
-?>
+	}

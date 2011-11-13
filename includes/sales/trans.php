@@ -256,13 +256,13 @@
 			switch ($type) {
 			case ST_SALESINVOICE :
 			case ST_CUSTCREDIT	:
-				void_sales_invoice($type, $type_no);
+				Sales_Invoice::void($type, $type_no);
 				break;
 			case ST_CUSTDELIVERY :
-				void_sales_delivery($type, $type_no);
+				Sales_Delivery::void($type, $type_no);
 				break;
 			case ST_CUSTPAYMENT :
-				void_customer_payment($type, $type_no);
+				Sales_Debtor_Payment::void($type, $type_no);
 				break;
 			}
 		}

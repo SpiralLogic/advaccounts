@@ -96,7 +96,7 @@
 			$date = date('Y-m-d');
 			$myrow['order_'] = "";
 			$TransResult = getTransactions($myrow['debtor_no'], $date);
-			$CustomerRecord = get_customer_details($myrow['debtor_no']);
+			$CustomerRecord = Sales_Debtor::get_details($myrow['debtor_no']);
 			if (round($CustomerRecord["Balance"], 2) == 0) {
 				continue;
 			}
@@ -141,7 +141,7 @@
 					continue;
 				}
 				if ($prev_branch != $transactions[$i]['branch_code']) {
-					$rep->Header2($myrow, get_branch($transactions[$i]['branch_code']), null, $baccount, ST_STATEMENT);
+					$rep->Header2($myrow, Sales_Branch::get($transactions[$i]['branch_code']), null, $baccount, ST_STATEMENT);
 					$rep->NewLine();
 					if ($rep->currency != $myrow['curr_code']) {
 						include(APP_PATH . "reporting/includes/doctext2.php");

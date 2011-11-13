@@ -28,7 +28,7 @@
 	Validation::check(Validation::BANK_ACCOUNTS, _("There are no bank accounts defined in the system."));
 	//----------------------------------------------------------------------------------------
 	if (list_updated('PersonDetailID')) {
-		$br = get_branch(get_post('PersonDetailID'));
+		$br = Sales_Branch::get(get_post('PersonDetailID'));
 		$_POST['person_id'] = $br['debtor_no'];
 		$Ajax->activate('person_id');
 	}

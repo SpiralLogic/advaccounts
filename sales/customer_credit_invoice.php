@@ -205,7 +205,7 @@
 		start_table(Config::get('tables_style') . "  width=100%");
 		start_row();
 		label_cells(_("Customer"), $_SESSION['Items']->customer_name, "class='tableheader2'");
-		label_cells(_("Branch"), get_branch_name($_SESSION['Items']->Branch), "class='tableheader2'");
+		label_cells(_("Branch"), Sales_Branch::get_name($_SESSION['Items']->Branch), "class='tableheader2'");
 		label_cells(_("Currency"), $_SESSION['Items']->customer_currency, "class='tableheader2'");
 		end_row();
 		start_row();

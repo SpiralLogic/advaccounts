@@ -286,7 +286,7 @@
 		{
 			switch ($person_type) {
 			case PT_CUSTOMER :
-				$alloc_result = get_allocatable_to_cust_transactions($person_id, $type_no, $type);
+				$alloc_result = Sales_Allocation::get_to_trans($person_id, $type_no, $type);
 				Display::allocations($alloc_result, $total);
 				return;
 			case PT_SUPPLIER :

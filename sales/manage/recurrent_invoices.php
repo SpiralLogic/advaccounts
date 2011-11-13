@@ -99,8 +99,8 @@
 			label_cell("");
 			label_cell(get_sales_group_name($myrow["group_no"]));
 		} else {
-			label_cell(get_customer_name($myrow["debtor_no"]));
-			label_cell(get_branch_name($myrow['group_no']));
+			label_cell(Sales_Debtor::get_name($myrow["debtor_no"]));
+			label_cell(Sales_Branch::get_name($myrow['group_no']));
 		}
 		label_cell($myrow["days"]);
 		label_cell($myrow['monthly']);

@@ -76,7 +76,7 @@
 	$this->TextWrapLines($ccol, $icol, $this->company['postal_address']);
 	$this->NewLine();
 	$this->Font('italic');
-	$customer_branch_details = get_main_branch($myrow['debtor_no']);
+	$customer_branch_details = Sales_Branch::get_main($myrow['debtor_no']);
 	if ($this->company['phone'] != "") {
 		$this->Text($ccol, _("Phone"), $c2col);
 		$this->Text($c2col, $this->company['phone'], $mcol);

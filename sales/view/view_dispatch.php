@@ -23,8 +23,8 @@
 	}
 	// 3 different queries to get the information - what a JOKE !!!!
 	$myrow = Sales_Trans::get($trans_id, ST_CUSTDELIVERY);
-	$branch = get_branch($myrow["branch_code"]);
-	$sales_order = get_sales_order_header($myrow["order_"], ST_SALESORDER);
+	$branch = Sales_Branch::get($myrow["branch_code"]);
+	$sales_order = Sales_Order::get_header($myrow["order_"], ST_SALESORDER);
 	Display::heading(sprintf(_("DISPATCH NOTE #%d"), $trans_id));
 	echo "<br>";
 	start_table(Config::get('tables_style2') . " width=95%");
@@ -76,7 +76,7 @@
 		end_table();
 		echo "</td><td>"; // outer table
 	end_table(1); // outer table
-	$result = get_customer_trans_details(ST_CUSTDELIVERY, $trans_id);
+	$result = Sales_Debtor_Trans::get(ST_CUSTDELIVERY, $trans_id);
 	start_table(Config::get('tables_style2') );
 	if (DB::num_rows($result) > 0) {
 		$th = array(
