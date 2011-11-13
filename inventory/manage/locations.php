@@ -34,14 +34,14 @@
 		}
 		if ($input_error != 1) {
 			if ($selected_id != -1) {
-				update_item_location(
+				Inv_Location::update(
 					$selected_id, $_POST['location_name'], $_POST['delivery_address'],
 					$_POST['phone'], $_POST['phone2'], $_POST['fax'], $_POST['email'], $_POST['contact']
 				);
 				Errors::notice(_('Selected location has been updated'));
 			} else {
 				/*selected_id is null cos no item selected on first time round so must be adding a	record must be submitting new entries in the new Location form */
-				add_item_location(
+				Inv_Location::add(
 					$_POST['loc_code'], $_POST['location_name'], $_POST['delivery_address'],
 					$_POST['phone'], $_POST['phone2'], $_POST['fax'], $_POST['email'], $_POST['contact']
 				);
@@ -114,7 +114,7 @@
 	//----------------------------------------------------------------------------------
 	if ($Mode == 'Delete') {
 		if (can_delete($selected_id)) {
-			delete_item_location($selected_id);
+			Inv_Location::delete($selected_id);
 			Errors::notice(_('Selected location has been deleted'));
 		} //end if Delete Location
 		$Mode = 'RESET';
@@ -159,7 +159,7 @@
 	if ($selected_id != -1) {
 		//editing an existing Location
 		if ($Mode == 'Edit') {
-			$myrow = get_item_location($selected_id);
+			$myrow = Inv_Location::get($selected_id);
 			$_POST['loc_code'] = $myrow["loc_code"];
 			$_POST['location_name'] = $myrow["location_name"];
 			$_POST['delivery_address'] = $myrow["delivery_address"];

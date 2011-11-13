@@ -49,12 +49,12 @@
 			$unit_quantity,	$item_quantity, '" . $bom_item["loc_code"] . "')";
 			DB::query($sql, "The work order requirements could not be added");
 			// insert a -ve stock move for each item
-			add_stock_move(ST_WORKORDER, $bom_item["component"], $woid,
+			Inv_Movement::add(ST_WORKORDER, $bom_item["component"], $woid,
 										 $bom_item["loc_code"], $date_, $wo_ref, -$item_quantity, 0);
 		}
 		// -------------------------------------------------------------------------
 		// insert a +ve stock move for the item being manufactured
-		add_stock_move(ST_WORKORDER, $stock_id, $woid, $loc_code, $date_,
+		Inv_Movement::add(ST_WORKORDER, $stock_id, $woid, $loc_code, $date_,
 									 $wo_ref, $units_reqd, 0);
 		// -------------------------------------------------------------------------
 		work_order_quick_costs($woid, $stock_id, $units_reqd, $date_, 0, $costs, $cr_acc, $labour, $cr_lab_acc);
@@ -80,7 +80,7 @@
 			if ($advanced) {
 				update_wo_requirement_issued($woid, $bom_item['component'], $bom_item["quantity"] * $units_reqd);
 				// insert a -ve stock move for each item
-				add_stock_move(ST_MANURECEIVE, $bom_item["component"], $advanced,
+				Inv_Movement::add(ST_MANURECEIVE, $bom_item["component"], $advanced,
 											 $bom_item["loc_code"], $date_, "", -$bom_item["quantity"] * $units_reqd, 0);
 			}
 			$total_cost += GL_Trans::add_std_cost(ST_WORKORDER, $woid, $date_, $bom_accounts["inventory_account"], 0, 0,
@@ -93,7 +93,7 @@
 			$issue_total = 0;
 			while ($item = DB::fetch($res))
 			{
-				$standard_cost = get_standard_cost($item['stock_id']);
+				$standard_cost = Item_Price::get_standard_cost($item['stock_id']);
 				$issue_cost = $standard_cost * $item['qty_issued'] * $units_reqd / $wo['units_reqd'];
 				$issue = Item::get_gl_code($item['stock_id']);
 				$total_cost += GL_Trans::add_std_cost(ST_WORKORDER, $woid, $date_, $issue["inventory_account"], 0, 0,

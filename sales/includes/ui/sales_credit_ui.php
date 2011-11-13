@@ -139,7 +139,7 @@
 				$order->line_items as $line_no => $item
 			) {
 				$line = &$order->line_items[$line_no];
-				$line->price = get_price(
+				$line->price = Item_Price::get_calculated_price(
 					$line->stock_id, $order->customer_currency,
 					$order->sales_type, $order->price_factor, get_post('OrderDate')
 				);
@@ -250,7 +250,7 @@
 			$_POST['qty'] = Num::format(0, $dec);
 			$_POST['units'] = $item_info["units"];
 			$_POST['price'] = Num::price_format(
-				get_price(
+				Item_Price::get_calculated_price(
 					Input::post('stock_id'), $order->customer_currency,
 					$order->sales_type, $order->price_factor, $order->document_date
 				)

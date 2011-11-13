@@ -43,7 +43,7 @@
 		AND debtor_trans_type=" . DB::escape($type);
 		DB::query($sql, "The debtor transaction details could not be voided");
 		// clear the stock move items
-		void_stock_move($type, $type_no);
+		Inv_Movement::void($type, $type_no);
 	}
 
 	//----------------------------------------------------------------------------------------

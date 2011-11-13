@@ -11,6 +11,23 @@ jQuery.widget("custom.catcomplete", $.ui.autocomplete, {
 		});
 	}
 });
+jQuery.fn.quickEach = (function () {
+	var jq = jQuery([1]);
+	return function (c) {
+		var i = -1,
+		 el, len = this.length;
+		try {
+			while (++i < len && (el = jq[0] = this[i]) && c.call(jq, i, el) !== false) {
+				;
+			}
+		} catch (e) {
+			delete jq[0];
+			throw e;
+		}
+		delete jq[0];
+		return this;
+	};
+}());
 (function (window, $, undefined) {
 	var Adv = {
 		$content:$("#content"),
@@ -64,28 +81,31 @@ Adv.extend({
 Adv.extend({Forms:(function () {
 	return {
 		setFormValue:function (id, value, disabled) {
-			var el = document.getElementsByName(id);
-			if (!el.length) {
-				el = document.getElementById(id);
+			var els = document.getElementsByName(id);
+			if (!els.length) {
+				els = [document.getElementById(id)];
 			}
-			if (typeof disabled === 'boolean') {
-				$(el).prop('disabled', disabled);
-			}
-			if (el.tagName === 'select') {
-				el = $(el);
-				if (el.val() == null || String(value).length == 0) {
-					el.find('option:first').prop('selected', true);
-					el.data('init', el.val());
-					return;
-				}
-			}
-			if (el.is(':checkbox')) {
-				return el.prop('checked', !!value);
-			}
-			if (String(value).length == 0) {
-				value = '';
-			}
-			el.val(value).data('init', value);
+			$.each(els, function (k,el) {
+			if (!el) return;
+										 if (typeof disabled === 'boolean') {
+								 el.disabled=disabled;
+							 }
+							 if (el.tagName === 'select') {
+								 if (el.value == null || String(value).length == 0) {
+									 $(el).find('option:first').prop('selected', true)
+										.data('init', value);
+									 return;
+								 }
+							 }
+							 if (el.type==='checkbox') {
+								 el.checked =  !!value;
+							 }
+							 if (String(value).length == 0) {
+								 value = '';
+							 }
+							 el.value = value; $(el).data('init', value);
+						 }
+			)
 		}
 	}
 })()});

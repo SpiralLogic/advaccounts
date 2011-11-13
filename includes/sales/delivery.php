@@ -46,7 +46,7 @@
 		}
 		else {
 			GL_Trans::void(ST_CUSTDELIVERY, $delivery_no, true);
-			void_stock_move(ST_CUSTDELIVERY, $delivery_no);
+			Inv_Movement::void(ST_CUSTDELIVERY, $delivery_no);
 			GL_Trans::void_tax_details(ST_CUSTDELIVERY, $delivery_no);
 			DB_Comments::delete(ST_CUSTDELIVERY, $delivery_no);
 		}
@@ -59,7 +59,7 @@
 																								 0, $delivery->tax_included, $delivery->tax_group_array) - $line_taxfree_price;
 			if ($trans_no != 0) // Inserted 2008-09-25 Joe Hunt
 			{
-				$delivery_line->standard_cost = get_standard_cost($delivery_line->stock_id);
+				$delivery_line->standard_cost = Item_Price::get_standard_cost($delivery_line->stock_id);
 			}
 			/* add delivery details for all lines */
 			Sales_Debtor_Trans::add(ST_CUSTDELIVERY, $delivery_no, $delivery_line->stock_id,
@@ -73,7 +73,7 @@
 													 $delivery_line->qty_dispatched - $delivery_line->qty_old);
 			}
 			if ($delivery_line->qty_dispatched != 0) {
-				add_stock_move_customer(ST_CUSTDELIVERY, $delivery_line->stock_id, $delivery_no,
+				Inv_Movement::add_for_debtor(ST_CUSTDELIVERY, $delivery_line->stock_id, $delivery_no,
 																$delivery->Location, $delivery->document_date, $delivery->reference,
 																-$delivery_line->qty_dispatched, $delivery_line->standard_cost, 1,
 																$line_price, $delivery_line->discount_percent);

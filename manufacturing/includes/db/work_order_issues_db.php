@@ -45,7 +45,7 @@
 				$item->quantity = -$item->quantity;
 
 			// insert a -ve stock move for each item
-			add_stock_move(ST_MANUISSUE, $item->stock_id, $number,
+			Inv_Movement::add(ST_MANUISSUE, $item->stock_id, $number,
 				$location, $date_, $memo_, -$item->quantity, 0);
 
 			$sql = "INSERT INTO wo_issue_items (issue_id, stock_id, qty_issued)
@@ -130,7 +130,7 @@
 		DB::query($sql, "A work order issue item could not be voided");
 
 		// void all related stock moves
-		void_stock_move(ST_MANUISSUE, $type_no);
+		Inv_Movement::void(ST_MANUISSUE, $type_no);
 
 		// void any related gl trans
 		GL_Trans::void(ST_MANUISSUE, $type_no, true);

@@ -17,13 +17,13 @@
 	}
 	Display::heading($systypes_array[ST_INVADJUST] . " #$trans_no");
 	br(1);
-	$adjustment_items = get_stock_adjustment_items($trans_no);
+	$adjustment_items = Inv_Adjustment::get_items($trans_no);
 	$k = 0;
 	$header_shown = false;
 	while ($adjustment = DB::fetch($adjustment_items))
 	{
 		if (!$header_shown) {
-			$adjustment_type = get_movement_type($adjustment['person_id']);
+			$adjustment_type = Inv_Movement::get_type( $adjustment['person_id']);
 			start_table(Config::get('tables_style2') . " width=90%");
 			start_row();
 			label_cells(_("At Location"), $adjustment['location_name'], "class='tableheader2'");

@@ -67,7 +67,7 @@
 				DB_Comments::delete(ST_CUSTCREDIT, $credit_no);
 				Sales_Allocation::void(ST_CUSTCREDIT, $credit_no, $credit_date);
 				GL_Trans::void(ST_CUSTCREDIT, $credit_no, true);
-				void_stock_move(ST_CUSTCREDIT, $credit_no);
+				Inv_Movement::void(ST_CUSTCREDIT, $credit_no);
 				GL_Trans::void_tax_details(ST_CUSTCREDIT, $credit_no);
 			}
 			if ($credit_invoice) {
@@ -140,9 +140,9 @@
 				if ($credited_invoice) {
 					$reference .= "Ex Inv: " . $credited_invoice;
 				}
-				add_stock_move_customer(ST_CUSTCREDIT, $credit_line->stock_id, key($credit_note->trans_no), $credit_note->Location, $credit_note->document_date, $reference, -$credit_line->qty_dispatched, $credit_line->standard_cost, 0, $price, $credit_line->discount_percent);
+				Inv_Movement::add_for_debtor(ST_CUSTCREDIT, $credit_line->stock_id, key($credit_note->trans_no), $credit_note->Location, $credit_note->document_date, $reference, -$credit_line->qty_dispatched, $credit_line->standard_cost, 0, $price, $credit_line->discount_percent);
 			}
-			add_stock_move_customer(ST_CUSTCREDIT, $credit_line->stock_id, key($credit_note->trans_no), $credit_note->Location, $credit_note->document_date, $reference, $credit_line->qty_dispatched, $credit_line->standard_cost, 0, $price, $credit_line->discount_percent);
+			Inv_Movement::add_for_debtor(ST_CUSTCREDIT, $credit_line->stock_id, key($credit_note->trans_no), $credit_note->Location, $credit_note->document_date, $reference, $credit_line->qty_dispatched, $credit_line->standard_cost, 0, $price, $credit_line->discount_percent);
 		}
 
 		//----------------------------------------------------------------------------------------
@@ -156,7 +156,7 @@
 			$dim2 = ($order->dimension2_id != $customer['dimension2_id'] ? $order->dimension2_id : ($customer['dimension2_id'] != 0 ? $customer["dimension2_id"] : $stock_gl_codes["dimension2_id"]));
 			$total = 0;
 			/* insert gl_trans to credit stock and debit cost of sales at standard cost*/
-			$standard_cost = get_standard_cost($order_line->stock_id);
+			$standard_cost = Item_Price::get_standard_cost($order_line->stock_id);
 			if ($standard_cost != 0) {
 				/*first the cost of sales entry*/
 				$total += GL_Trans::add_std_cost(ST_CUSTCREDIT, $credit_no, $date_, $stock_gl_codes["cogs_account"], $dim, $dim2, "", -($standard_cost * $order_line->qty_dispatched), PT_CUSTOMER, $order->customer_id, "The cost of sales GL posting could not be inserted");

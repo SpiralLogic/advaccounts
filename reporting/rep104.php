@@ -145,10 +145,10 @@
 			$rep->NewLine();
 			$rep->TextCol(0, 1, $myrow['stock_id']);
 			$rep->TextCol(1, 2, $myrow['name']);
-			$price = get_price($myrow['stock_id'], $currency, $salestype);
+			$price = Item_Price::get_calculated_price($myrow['stock_id'], $currency, $salestype);
 			$rep->AmountCol(2, 3, $price, $dec);
 			if ($showGP) {
-				$price2 = get_price($myrow['stock_id'], $home_curr, $salestype);
+				$price2 = Item_Price::get_calculated_price($myrow['stock_id'], $home_curr, $salestype);
 				if ($price2 != 0.0) {
 					$disp = ($price2 - $myrow['Standardcost']) * 100 / $price2;
 				} else {
@@ -195,7 +195,7 @@
 			$rep->NewLine();
 			$rep->TextCol(0, 1, $myrow['kit_code']);
 			$rep->TextCol(1, 2, $myrow['kit_name']);
-			$price = get_kit_price($myrow['kit_code'], $currency, $salestype);
+			$price = Item_Price::get_kit($myrow['kit_code'], $currency, $salestype);
 			$rep->AmountCol(2, 3, $price, $dec);
 			$rep->NewLine(0, 1);
 		}

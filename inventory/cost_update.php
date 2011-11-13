@@ -38,7 +38,7 @@
 			$should_update = false;
 		}
 		if ($should_update) {
-			$update_no = stock_cost_update(
+			$update_no = Item_Price::update_cost(
 				$_POST['stock_id'],
 				input_num('material_cost'), input_num('labour_cost'),
 				input_num('overhead_cost'), $old_cost

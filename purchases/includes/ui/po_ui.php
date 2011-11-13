@@ -69,7 +69,7 @@
 				$order->line_items as $line_no => $item
 			) {
 				$line = &$order->line_items[$line_no];
-				$line->price = get_purchase_price($order->supplier_id, $line->stock_id);
+				$line->price = Item_Price::get_purchase($order->supplier_id, $line->stock_id);
 				$line->quantity
 				 = $line->quantity / Purch_Trans::get_conversion_factor($old_supp, $line->stock_id)
 					 * Purch_Trans::get_conversion_factor($order->supplier_id, $line->stock_id);
@@ -217,7 +217,7 @@
 		}
 		else {
 			label_cells(
-				_("Deliver Into Location"), get_location_name($po->Location),
+				_("Deliver Into Location"), Inv_Location::get_name($po->Location),
 				"class='tableheader2'"
 			);
 		}
@@ -280,7 +280,7 @@
 			$dec = $item_info["decimals"];
 			$_POST['qty'] = Num::format(Purch_Trans::get_conversion_factor($order->supplier_id, Input::post('stock_id')), $dec);
 			//$_POST['price'] = Num::price_format(get_purchase_price ($order->supplier_id, $_POST['stock_id']));
-			$_POST['price'] = Num::price_decimal(get_purchase_price($order->supplier_id, Input::post('stock_id')), $dec2);
+			$_POST['price'] = Num::price_decimal(Item_Price::get_purchase($order->supplier_id, Input::post('stock_id')), $dec2);
 			$_POST['req_del_date'] = Dates::add_days(Dates::Today(), 10);
 			$_POST['discount'] = Num::percent_format(0);
 			$qty_rcvd = '';

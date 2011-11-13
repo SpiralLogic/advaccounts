@@ -338,7 +338,14 @@ div.banner a + a { border-top: 2px groove #999 }
 	text-align:            center;
 
 }
-
+#loaded {
+	margin: 10px auto;
+	width:75%;
+}
+#loaded td {
+margin: 0 30px ;
+	line-height: 11px;
+}
 .js .tabs {
 	display: none;
 }

@@ -18,7 +18,7 @@
 	 ***********************************************************************/
 	$page_security = 'SA_SUPPLIER';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-		$_SESSION['App']->selected_application = 'contacts';
+		Session::get()->App->selected_application = 'contacts';
 	if (AJAX_REFERRER) {
 		if (isset($_GET['term'])) {
 			$data = Contacts_Supplier::search($_GET['term']);

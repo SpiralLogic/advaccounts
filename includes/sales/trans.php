@@ -225,7 +225,7 @@
 					$cart->set_delivery($myrow["ship_via"], $myrow["br_name"],
 						$myrow["br_address"], $myrow["ov_freight"]);
 					$location = 0;
-					$myrow = get_location($cart); // find location from movement
+					$myrow = Inv_Location::get_for_trans($cart); // find location from movement
 					if ($myrow != null) {
 						$cart->set_location($myrow['loc_code'], $myrow['location_name']);
 					}

@@ -94,7 +94,7 @@
 		}
 		else
 		{
-			$loc = get_location_name($location);
+			$loc = Inv_Location::get_name($location);
 		}
 		if ($backorder == 0) {
 			$back = _('All Orders');

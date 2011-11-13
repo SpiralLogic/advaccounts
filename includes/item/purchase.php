@@ -9,7 +9,8 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	function add_item_purchasing_data($supplier_id, $stock_id, $price,
+	class Item_Purchase {
+		public static function add($supplier_id, $stock_id, $price,
 																		$suppliers_uom, $conversion_factor, $supplier_description, $stockid = null)
 	{
 		if ($stockid == null) {
@@ -24,7 +25,7 @@
 		DB::query($sql, "The supplier purchasing details could not be added");
 	}
 
-	function update_item_purchasing_data($selected_id, $stock_id, $price,
+	public static function update($selected_id, $stock_id, $price,
 																			 $suppliers_uom, $conversion_factor, $supplier_description)
 	{
 		$sql = "UPDATE purch_data SET price=" . $price . ",
@@ -36,14 +37,14 @@
 		DB::query($sql, "The supplier purchasing details could not be updated");
 	}
 
-	function delete_item_purchasing_data($selected_id, $stock_id)
+	public static function delete($selected_id, $stock_id)
 	{
 		$sql = "DELETE FROM purch_data WHERE supplier_id=" . DB::escape($selected_id) . "
 		AND stock_id=" . DB::escape($stock_id);
 		DB::query($sql, "could not delete purchasing data");
 	}
 
-	function get_items_purchasing_data($stock_id)
+	public static function get_all($stock_id)
 	{
 		$sql = "SELECT purch_data.*,suppliers.supp_name, suppliers.curr_code
 		FROM purch_data INNER JOIN suppliers
@@ -52,7 +53,7 @@
 		return DB::query($sql, "The supplier purchasing details for the selected part could not be retrieved");
 	}
 
-	function get_item_purchasing_data($selected_id, $stock_id)
+	public static function get($selected_id, $stock_id)
 	{
 		$sql = "SELECT purch_data.*,suppliers.supp_name FROM purch_data
 		INNER JOIN suppliers ON purch_data.supplier_id=suppliers.supplier_id
@@ -61,5 +62,5 @@
 		$result = DB::query($sql, "The supplier purchasing details for the selected supplier and item could not be retrieved");
 		return DB::fetch($result);
 	}
-
+	}
 ?>

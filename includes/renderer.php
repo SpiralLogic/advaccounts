@@ -38,7 +38,7 @@
 			$sel_app = $_SESSION['sel_app'];
 			echo "<div id='content'>\n";
 			if (!$no_menu || AJAX_REFERRER) {
-				$applications = $_SESSION['App']->applications;
+				$applications = Session::get()->App->applications;
 				echo "<div id='top'>\n";
 				echo "<p>" . Config::get('db.' . User::get()->company, 'name') . " | " . $_SERVER['SERVER_NAME'] . " | " . User::get()->name . "</p>\n";
 				echo "<ul>\n";
@@ -81,13 +81,20 @@
 				echo "<div id='footer'>\n";
 				if (isset($_SESSION['current_user'])) {
 					echo "<span class='power'><a target='_blank' href='" . POWERED_URL . "'>" . POWERED_BY . "</a></span>\n";
- 					echo "<span class='date'>" . Dates::Today() . " | " . Dates::Now() . "</span>\n";
+					echo "<span class='date'>" . Dates::Today() . " | " . Dates::Now() . "</span>\n";
 					if ($_SESSION['current_user']->logged_in()) {
 						echo "<span class='date'> " . Users::show_online() . "</span>\n";
 					}
-					echo "<span> </span>| <span>mem: ".Files::convert_size(memory_get_usage(true))."</span><span> | </span><span>peak mem: ".Files::convert_size(memory_get_peak_usage(true)).' </span><span>|</span><span> load time: '. Dates::getReadableTime(microtime(true) - ADV_START_TIME)."</span>";
+					echo "<span> </span>| <span>mem: " . Files::convert_size(memory_get_usage(true)) . "</span><span> | </span><span>peak mem: " . Files::convert_size(memory_get_peak_usage(true)) . ' </span><span>|</span><span> load time: ' . Dates::getReadableTime(microtime(true) - ADV_START_TIME) . "</span>";
 				}
-				echo "</div>\n";
+				$loaded = Autoloader::getLoaded();
+				$row = "<table id='loaded'>";
+				while ($v1 = array_shift($loaded)) {
+					$v2 = array_shift($loaded);
+					$row .= "<tr><td>{$v1[0]}</td><td>{$v1[1]}</td><td>{$v1[2]}</td><td>{$v2[0]}</td><td>{$v2[1]}</td><td>{$v2[2]}</td></tr>";
+				}
+				echo $row . "</table>";
+				echo "</div><pre>";
 			}
 			echo "</div>\n";
 			echo "</div>\n";
@@ -96,8 +103,9 @@
 		function display_applications(&$waapp)
 		{
 			$selected_app = $waapp->get_selected_application();
-
-			if ($selected_app->direct) meta_forward($selected_app->direct);
+			if ($selected_app->direct) {
+				meta_forward($selected_app->direct);
+			}
 			foreach ($selected_app->modules as $module) {
 				// image
 				echo "<table width='100%'><tr>";
@@ -142,3 +150,5 @@
 			}
 		}
 	}
+
+

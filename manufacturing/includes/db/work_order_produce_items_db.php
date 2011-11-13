@@ -43,7 +43,7 @@
 		// -------------------------------------------------------------------------
 		// insert a +ve stock move for the item being manufactured
 		// negative means "unproduce" or unassemble
-		add_stock_move(ST_MANURECEIVE, $details["stock_id"], $id,
+		Inv_Movement::add(ST_MANURECEIVE, $details["stock_id"], $id,
 			$details["loc_code"], $date_, $memo_, $quantity, 0);
 		// update wo quantity and close wo if requested
 		work_order_update_finished_quantity($woid, $quantity, $close_wo);
@@ -106,7 +106,7 @@
 		DB::query($sql, "Cannot void a wo production");
 
 		// void all related stock moves
-		void_stock_move(ST_MANURECEIVE, $type_no);
+		Inv_Movement::void(ST_MANURECEIVE, $type_no);
 
 		// void any related gl trans
 		GL_Trans::void(ST_MANURECEIVE, $type_no, true);

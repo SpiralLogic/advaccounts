@@ -49,16 +49,16 @@
 				Sales_Trans::post_void($type, $type_no);
 				break;
 			case ST_LOCTRANSFER : // it's a stock transfer
-				if (get_stock_transfer_items($type_no) == null) {
+				if (Inv_Transfer::get_items( $type_no) == null) {
 					return false;
 				}
-				void_stock_transfer($type_no);
+				Inv_Transfer::void( $type_no);
 				break;
 			case ST_INVADJUST : // it's a stock adjustment
-				if (get_stock_adjustment_items($type_no) == null) {
+				if (Inv_Adjustment::get_items($type_no) == null) {
 					return false;
 				}
-				void_stock_adjustment($type_no);
+				Inv_Adjustment::void($type_no);
 				break;
 			case ST_PURCHORDER : // it's a PO
 			case ST_SUPPRECEIVE : // it's a GRN

@@ -9,7 +9,8 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	function add_item_location($loc_code, $location_name, $delivery_address, $phone, $phone2, $fax, $email, $contact) {
+	class Inv_Location {
+		public static function add($loc_code, $location_name, $delivery_address, $phone, $phone2, $fax, $email, $contact) {
 		$sql = "INSERT INTO locations (loc_code, location_name, delivery_address, phone, phone2, fax, email, contact)
 		VALUES (" . DB::escape($loc_code) . ", " . DB::escape($location_name) . ", " . DB::escape($delivery_address) . ", "
 		 . DB::escape($phone) . ", " . DB::escape($phone2) . ", " . DB::escape($fax) . ", " . DB::escape($email) . ", "
@@ -26,7 +27,7 @@
 
 	//------------------------------------------------------------------------------------
 
-	function update_item_location($loc_code, $location_name, $delivery_address, $phone, $phone2, $fax, $email, $contact) {
+	public static function update($loc_code, $location_name, $delivery_address, $phone, $phone2, $fax, $email, $contact) {
 		$sql = "UPDATE locations SET location_name=" . DB::escape($location_name) . ",
     	delivery_address=" . DB::escape($delivery_address) . ",
     	phone=" . DB::escape($phone) . ", phone2=" . DB::escape($phone2) . ", fax=" . DB::escape($fax) . ",
@@ -38,7 +39,7 @@
 
 	//------------------------------------------------------------------------------------
 
-	function delete_item_location($item_location) {
+	public static function delete($item_location) {
 		$sql = "DELETE FROM locations WHERE loc_code=" . DB::escape($item_location);
 		DB::query($sql, "a location could not be deleted");
 
@@ -48,7 +49,7 @@
 
 	//------------------------------------------------------------------------------------
 
-	function get_item_location($item_location) {
+	public static function get($item_location) {
 		$sql = "SELECT * FROM locations WHERE loc_code=" . DB::escape($item_location);
 
 		$result = DB::query($sql, "a location could not be retrieved");
@@ -58,7 +59,7 @@
 
 	//------------------------------------------------------------------------------------
 
-	function set_reorder_level($stock_id, $loc_code, $reorder_level) {
+	public static function set_reorder($stock_id, $loc_code, $reorder_level) {
 		$sql = "UPDATE loc_stock SET reorder_level = $reorder_level
 		WHERE stock_id = " . DB::escape($stock_id) . " AND loc_code = " . DB::escape($loc_code);
 
@@ -67,7 +68,7 @@
 
 	//------------------------------------------------------------------------------------
 
-	function get_loc_details($stock_id) {
+	public static function get_details($stock_id) {
 		$sql = "SELECT loc_stock.*, locations.location_name
 		FROM loc_stock, locations
 		WHERE loc_stock.loc_code=locations.loc_code
@@ -77,7 +78,7 @@
 	}
 
 	//------------------------------------------------------------------------------------
-	function get_location_name($loc_code) {
+	public static function get_name($loc_code) {
 		$sql = "SELECT location_name FROM locations WHERE loc_code="
 		 . DB::escape($loc_code);
 
@@ -94,7 +95,7 @@
 		//--------------------------------------------------------------------------------------------------
 		// find inventory location for given transaction
 		//
-		function get_location(&$cart)
+		public static function get_for_trans($cart)
 		{
 			$sql = "SELECT locations.* FROM stock_moves,"
 			 . "locations" .
@@ -108,5 +109,4 @@
 			}
 			return null;
 		}
-
-?>
+	}

@@ -105,7 +105,7 @@
 		}
 		else
 		{
-			$loc = get_location_name($location);
+			$loc = Inv_Location::get_name($location);
 		}
 		$cols = array(0, 50, 150, 180, 210, 240, 270, 300, 330, 390, 435, 480, 525);
 		$per0 = strftime('%b', mktime(0, 0, 0, date('m'), 1, date('Y')));

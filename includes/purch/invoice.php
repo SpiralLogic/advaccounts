@@ -221,9 +221,9 @@ class Purch_Invoice {
 												 0, 0, _("Cost diff."), -$amt, null, null, null,
 												 "The general ledger transaction could not be added for the price variance of the inventory item");
 					}
-					update_stock_move_pid(ST_CUSTDELIVERY, $entered_grn->item_code, $old_date, $date_, 0, $mat_cost);
+					Inv_Transfer::update_pid( ST_CUSTDELIVERY, $entered_grn->item_code, $old_date, $date_, 0, $mat_cost);
 				}
-				update_stock_move_pid(ST_SUPPRECEIVE, $entered_grn->item_code, $old_date, $old_date, $supp_trans->supplier_id, $mat_cost);
+				Inv_Transfer::update_pid( ST_SUPPRECEIVE, $entered_grn->item_code, $old_date, $old_date, $supp_trans->supplier_id, $mat_cost);
 				//}
 			}
 			// ----------------------------------------------------------------------
@@ -414,16 +414,16 @@ class Purch_Invoice {
 					$deliveries = Item::get_deliveries_between($details_row["stock_id"], $old_date, $date_);
 					if ($deliveries[0] != 0) // have deliveries been done during the period?
 					{
-						update_stock_move_pid(ST_CUSTDELIVERY, $details_row["stock_id"], $old_date, $date_, 0, $mat_cost);
+						Inv_Transfer::update_pid( ST_CUSTDELIVERY, $details_row["stock_id"], $old_date, $date_, 0, $mat_cost);
 					}
-					update_stock_move_pid(ST_SUPPRECEIVE, $details_row["stock_id"], $old_date, $old_date,
+					Inv_Transfer::update_pid( ST_SUPPRECEIVE, $details_row["stock_id"], $old_date, $old_date,
 																$grn['supplier_id'], $mat_cost);
 				}
 			}
 		}
 		if ($type == ST_SUPPCREDIT) // void the credits in stock moves
 		{
-			void_stock_move($type, $type_no);
+			Inv_Movement::void($type, $type_no);
 		}
 		Purch_Line::void_for_invoice($type, $type_no);
 		GL_Trans::void_tax_details($type, $type_no);

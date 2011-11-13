@@ -83,7 +83,7 @@
 				if ($order_line->qty_received == 0) {
 					/*This must be the first receipt of goods against this line */
 					/*Need to get the standard cost as it is now so we can process GL jorunals later*/
-					$order_line->standard_cost = get_standard_cost($order_line->stock_id);
+					$order_line->standard_cost = Item_Price::get_standard_cost($order_line->stock_id);
 				}
 				if ($order_line->price <= $order_line->standard_cost) {
 					Purch_Order::add_or_update_data($po->supplier_id, $order_line->stock_id, $order_line->price);
@@ -92,7 +92,7 @@
 				$grn_item = static::add_item($grn, $order_line->po_detail_rec, $order_line->stock_id, $order_line->description, $order_line->standard_cost, $order_line->receive_qty, $order_line->price,
 																				$order_line->discount);
 				/* Update location stock records - NB  a po cannot be entered for a service/kit parts */
-				add_stock_move(ST_SUPPRECEIVE, $order_line->stock_id, $grn, $location, $date_, "", $order_line->receive_qty, $order_line->standard_cost, $po->supplier_id, 1, $order_line->price);
+				Inv_Movement::add(ST_SUPPRECEIVE, $order_line->stock_id, $grn, $location, $date_, "", $order_line->receive_qty, $order_line->standard_cost, $po->supplier_id, 1, $order_line->price);
 			} /*quantity received is != 0 */
 		} /*end of order_line loop */
 		$grn_item = static::add_item($grn, Purch_Order::add_freight($po, $date_), 'Freight', 'Freight Charges', 0, 1, $po->freight, 0);
@@ -170,7 +170,7 @@
 		//$sql = "UPDATE ".''."grn_items SET qty_recd=0, quantity_inv=0 WHERE id=$entered_grn->id";
 		$sql = "UPDATE grn_items SET qty_recd=qty_recd+" . DB::escape($entered_grn->this_quantity_inv) . ",quantity_inv=quantity_inv+" . DB::escape($entered_grn->this_quantity_inv) . " WHERE id=" . DB::escape($entered_grn->id);
 		DB::query($sql);
-		add_stock_move(ST_SUPPCREDIT, $entered_grn->item_code, $transno, $myrow['loc_code'], $date, "", $entered_grn->this_quantity_inv, $mcost, $supplier, 1, $entered_grn->chg_price);
+		Inv_Movement::add(ST_SUPPCREDIT, $entered_grn->item_code, $transno, $myrow['loc_code'], $date, "", $entered_grn->this_quantity_inv, $mcost, $supplier, 1, $entered_grn->chg_price);
 	}
 
 	public static function get_items($grn_batch_id = 0, $supplier_id = "", $outstanding_only = false, $is_invoiced_only = false, $invoice_no = 0, $begin = "", $end = "")
@@ -334,7 +334,7 @@
 		WHERE grn_batch_id=" . DB::escape($grn_batch);
 		DB::query($sql, "A grn detail item could not be voided.");
 		// clear the stock move items
-		void_stock_move(ST_SUPPRECEIVE, $grn_batch);
+		Inv_Movement::void(ST_SUPPRECEIVE, $grn_batch);
 		DB::commit_transaction();
 		return true;
 	}

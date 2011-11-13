@@ -98,7 +98,7 @@
 
 	//-------------------------------------------------------------------------------
 	if (isset($_POST['Process']) && can_process()) {
-		$trans_no = add_stock_adjustment(
+		$trans_no = Inv_Adjustment::add(
 			$_SESSION['adj_items']->line_items,
 			$_POST['StockLocation'], $_POST['AdjDate'], $_POST['type'], $_POST['Increase'],
 			$_POST['ref'], $_POST['memo_']

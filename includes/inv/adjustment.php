@@ -10,7 +10,8 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	//-------------------------------------------------------------------------------------------------------------
-	function add_stock_adjustment($items, $location, $date_, $type, $increase, $reference, $memo_)
+	class Inv_Adjustment {
+		public static function add($items, $location, $date_, $type, $increase, $reference, $memo_)
 	{
 		DB::begin_transaction();
 		$adj_id = SysTypes::get_next_trans_no(ST_INVADJUST);
@@ -18,7 +19,7 @@
 			if (!$increase) {
 				$line_item->quantity = -$line_item->quantity;
 			}
-			add_stock_adjustment_item($adj_id, $line_item->stock_id, $location, $date_, $type, $reference,
+			static::add_item($adj_id, $line_item->stock_id, $location, $date_, $type, $reference,
 																$line_item->quantity, $line_item->standard_cost, $memo_);
 		}
 		DB_Comments::add(ST_INVADJUST, $adj_id, $date_, $memo_);
@@ -29,16 +30,16 @@
 	}
 
 	//-------------------------------------------------------------------------------------------------------------
-	function void_stock_adjustment($type_no)
+	public static function void($type_no)
 	{
 		GL_Trans::void(ST_INVADJUST, $type_no);
-		void_stock_move(ST_INVADJUST, $type_no);
+		Inv_Movement::void(ST_INVADJUST, $type_no);
 	}
 
 	//-------------------------------------------------------------------------------------------------------------
-	function get_stock_adjustment_items($trans_no)
+	public static function get_items($trans_no)
 	{
-		$result = get_stock_moves(ST_INVADJUST, $trans_no);
+		$result = Inv_Movement::get(ST_INVADJUST, $trans_no);
 		if (DB::num_rows($result) == 0) {
 			return null;
 		}
@@ -46,7 +47,7 @@
 	}
 
 	//--------------------------------------------------------------------------------------------------
-	function add_stock_adjustment_item($adj_id, $stock_id, $location, $date_, $type, $reference,
+	public static function add_item($adj_id, $stock_id, $location, $date_, $type, $reference,
 																		 $quantity, $standard_cost, $memo_)
 	{
 		$mb_flag = Manufacturing::get_mb_flag($stock_id);
@@ -54,7 +55,7 @@
 			Errors::show_db_error("Cannot do inventory adjustment for Service item : $stock_id", "");
 		}
 		Purch_GRN::update_average_material_cost(null, $stock_id, $standard_cost, $quantity, $date_);
-		add_stock_move(ST_INVADJUST, $stock_id, $adj_id, $location,
+		Inv_Movement::add(ST_INVADJUST, $stock_id, $adj_id, $location,
 									 $date_, $reference, $quantity, $standard_cost, $type);
 		if ($standard_cost > 0) {
 			$stock_gl_codes = Item::get_gl_code($stock_id);
@@ -65,6 +66,6 @@
 														$stock_gl_codes['inventory_account'], 0, 0, $memo_, ($standard_cost * $quantity));
 		}
 	}
-
+	}
 	//-------------------------------------------------------------------------------------------------------------
 ?>

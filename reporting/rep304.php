@@ -100,7 +100,7 @@
 		}
 		else
 		{
-			$loc = get_location_name($location);
+			$loc = Inv_Location::get_name($location);
 		}
 		if ($fromcust == ALL_NUMERIC) {
 			$fromc = _('All');

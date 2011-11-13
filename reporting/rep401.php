@@ -90,7 +90,7 @@
 			//$rep->TextCol(2, 3, $trans['loc_code']);
 			//$rep->TextCol(3, 4, $trans['workcentre_added']);
 			$wc = get_work_centre($trans['workcentre_added']);
-			$rep->TextCol(2, 3, get_location_name($trans['loc_code']));
+			$rep->TextCol(2, 3, Inv_Location::get_name($trans['loc_code']));
 			$rep->TextCol(3, 4, $wc['name']);
 			$rep->AmountCol(4, 5, $trans['quantity'], $dec);
 		}

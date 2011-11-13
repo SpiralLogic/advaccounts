@@ -16,7 +16,7 @@
 		$result = Manufacturing::get_bom($stock_id);
 		while ($bom_item = DB::fetch($result))
 		{
-			$standard_cost = get_standard_cost($bom_item['component']);
+			$standard_cost = Item_Price::get_standard_cost($bom_item['component']);
 			$m_cost += ($bom_item['quantity'] * $standard_cost);
 		}
 		$dec = User::price_dec();
@@ -282,7 +282,7 @@
 						 . DB::escape($woid);
 			DB::query($sql, "The work order couldn't be voided");
 			// void all related stock moves
-			void_stock_move(ST_WORKORDER, $woid);
+			Inv_Movement::void(ST_WORKORDER, $woid);
 			// void any related gl trans
 			GL_Trans::void(ST_WORKORDER, $woid, true);
 			// clear the requirements units received
@@ -299,14 +299,14 @@
 				// clear the production record
 				$sql = "UPDATE wo_manufacture SET quantity=0 WHERE id=" . $$row['id'];
 				DB::query($sql, "Cannot void a wo production");
-				void_stock_move(ST_MANURECEIVE, $row['id']); // and void the stock moves;
+				Inv_Movement::void(ST_MANURECEIVE, $row['id']); // and void the stock moves;
 			}
 			$result = get_additional_issues($woid); // check the issued quantities
 			$cost = 0;
 			$issue_no = 0;
 			while ($row = DB::fetch($result))
 			{
-				$std_cost = get_standard_cost($row['stock_id']);
+				$std_cost = Item_Price::get_standard_cost($row['stock_id']);
 				$icost = $std_cost * $row['qty_issued'];
 				$cost += $icost;
 				if ($issue_no == 0) {
@@ -318,7 +318,7 @@
 				DB::query($sql, "A work order issue item could not be voided");
 			}
 			if ($issue_no != 0) {
-				void_stock_move(ST_MANUISSUE, $issue_no);
+				Inv_Movement::void(ST_MANUISSUE, $issue_no);
 			} // and void the stock moves
 			if ($cost != 0) {
 				add_issue_cost($work_order['stock_id'], -$qty, $date, $cost);
@@ -335,7 +335,7 @@
 						 . DB::escape($woid);
 			DB::query($sql, "The work order couldn't be voided");
 			// void all related stock moves
-			void_stock_move(ST_WORKORDER, $woid);
+			Inv_Movement::void(ST_WORKORDER, $woid);
 			// void any related gl trans
 			GL_Trans::void(ST_WORKORDER, $woid, true);
 			// clear the requirements units received

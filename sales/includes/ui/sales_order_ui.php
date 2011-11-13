@@ -30,7 +30,7 @@
 				return;
 			}
 		}
-		$std_price = get_kit_price($new_item, $order->customer_currency, $order->sales_type, $order->price_factor, get_post('OrderDate'), true);
+		$std_price = Item_Price::get_kit($new_item, $order->customer_currency, $order->sales_type, $order->price_factor, get_post('OrderDate'), true);
 		if ($std_price == 0) {
 			$price_factor = 0;
 		}
@@ -40,7 +40,7 @@
 		$kit = Item_Code::get_kit($new_item);
 		$item_num = DB::num_rows($kit);
 		while ($item = DB::fetch($kit)) {
-			$std_price = get_kit_price($item['stock_id'], $order->customer_currency, $order->sales_type, $order->price_factor, get_post('OrderDate'), true);
+			$std_price = Item_Price::get_kit($item['stock_id'], $order->customer_currency, $order->sales_type, $order->price_factor, get_post('OrderDate'), true);
 			// rounding differences are included in last price item in kit
 			$item_num--;
 			if ($item_num) {
@@ -409,7 +409,7 @@ JS;
 				$order->line_items as $line_no => $item
 			) {
 				$line = &$order->line_items[$line_no];
-				$line->price = get_kit_price($line->stock_id, $order->customer_currency, $order->sales_type, $order->price_factor, get_post('OrderDate'));
+				$line->price = Item_Price::get_kit($line->stock_id, $order->customer_currency, $order->sales_type, $order->price_factor, get_post('OrderDate'));
 				//		$line->discount_percent = $order->default_discount;
 			}
 			$Ajax->activate('items_table');
@@ -451,7 +451,7 @@ JS;
 			$units = $item_info["units"];
 			$dec = $item_info['decimals'];
 			$_POST['qty'] = Num::format(1, $dec);
-			$price = get_kit_price(Input::post('stock_id'), $order->customer_currency, $order->sales_type, $order->price_factor, get_post('OrderDate'));
+			$price = Item_Price::get_kit(Input::post('stock_id'), $order->customer_currency, $order->sales_type, $order->price_factor, get_post('OrderDate'));
 			$_POST['price'] = Num::price_format($price);
 			$_POST['Disc'] = Num::percent_format($order->default_discount * 100);
 		}

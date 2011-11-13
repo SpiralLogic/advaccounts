@@ -2140,7 +2140,7 @@ JS
 		global $installed_extensions;
 		$tabs = array();
 		foreach (
-			$_SESSION['App']->applications as $app
+			Session::get()->App->applications as $app
 		) {
 			$tabs[$app->id] = access_string($app->name, true);
 		}

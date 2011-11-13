@@ -92,7 +92,7 @@
 		}
 		else
 		{
-			$loc = get_location_name($location);
+			$loc = Inv_Location::get_name($location);
 		}
 		$cols = array(0, 100, 250, 350, 450, 515);
 		$headers = array(_('Category'), '', _('Quantity'), _('Unit Cost'), _('Value'));

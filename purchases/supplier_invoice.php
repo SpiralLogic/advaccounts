@@ -317,7 +317,7 @@
 	    	SET qty_recd = quantity_inv WHERE id = " . $myrow["id"];
 			DB::query($sql, "The quantity invoiced off the items received record could not be updated");
 			Purch_GRN::update_average_material_cost($grn["supplier_id"], $myrow["item_code"], $myrow["unit_price"], -$myrow["QtyOstdg"], Dates::Today());
-			add_stock_move(
+			Inv_Movement::add(
 				ST_SUPPRECEIVE, $myrow["item_code"], $myrow['grn_batch_id'], $grn['loc_code'], Dates::sql2date($grn["delivery_date"]), "", -$myrow["QtyOstdg"],
 				$myrow['std_cost_unit'], $grn["supplier_id"], 1, $myrow['unit_price']
 			);

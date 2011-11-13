@@ -41,7 +41,7 @@
 			date_cells(_("Date Items Received"), 'DefaultReceivedDate', '', true, 0, 0, 0, "class='label'");
 		} else {
 			label_cells(_("Reference"), $po->reference, "class='label'");
-			label_cells(_("Deliver Into Location"), get_location_name($po->Location), "class='label'");
+			label_cells(_("Deliver Into Location"), Inv_Location::get_name($po->Location), "class='label'");
 		}
 		end_row();
 		if (!$editable) {

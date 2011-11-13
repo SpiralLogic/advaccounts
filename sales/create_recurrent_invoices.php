@@ -35,7 +35,7 @@
 			$doc->line_items as $line_no => $item
 		) {
 			$line = &$doc->line_items[$line_no];
-			$line->price = get_price(
+			$line->price = Item_Price::get_calculated_price(
 				$line->stock_id, $doc->customer_currency,
 				$doc->sales_type, $doc->price_factor, $doc->document_date
 			);

@@ -44,12 +44,12 @@
 			}
 			break;
 		case ST_LOCTRANSFER : // it's a stock transfer
-			if (get_stock_transfer_items($type_no) == null) {
+			if (Inv_Transfer::get_items( $type_no) == null) {
 				return false;
 			}
 			break;
 		case ST_INVADJUST : // it's a stock adjustment
-			if (get_stock_adjustment_items($type_no) == null) {
+			if (Inv_Adjustment::get_items($type_no) == null) {
 				return false;
 			}
 			break;

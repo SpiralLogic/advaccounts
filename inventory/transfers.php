@@ -106,7 +106,7 @@
 	}
 	//-------------------------------------------------------------------------------
 	if (isset($_POST['Process'])) {
-		$trans_no = add_stock_transfer(
+		$trans_no = Inv_Transfer::add(
 			$_SESSION['transfer_items']->line_items,
 			$_POST['FromStockLocation'], $_POST['ToStockLocation'],
 			$_POST['AdjDate'], $_POST['type'], $_POST['ref'], $_POST['memo_']

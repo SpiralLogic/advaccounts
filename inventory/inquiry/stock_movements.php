@@ -109,7 +109,7 @@
 		elseif ($myrow["type"] == ST_LOCTRANSFER || $myrow["type"] == ST_INVADJUST)
 		{
 			// get the adjustment type
-			$movement_type = get_movement_type($myrow["person_id"]);
+			$movement_type = Inv_Movement::get_type( $myrow["person_id"]);
 			$person = $movement_type["name"];
 		}
 		elseif ($myrow["type"] == ST_WORKORDER || $myrow["type"] == ST_MANUISSUE
