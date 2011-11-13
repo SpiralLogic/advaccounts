@@ -100,7 +100,7 @@
 		}
 		$order->set_delivery($myrow["default_ship_via"], $name, $address);
 		if ($order->trans_type == ST_SALESINVOICE) {
-			$order->due_date = get_invoice_duedate($customer_id, $order->document_date);
+			$order->due_date = Sales_Order::get_invoice_duedate($customer_id, $order->document_date);
 			if ($order->pos != -1) {
 				$order->cash = Dates::date_diff2($order->due_date, Dates::Today(), 'd') < 2;
 			}
@@ -352,7 +352,7 @@ JS;
 				}
 				$Ajax->activate('_ex_rate');
 				if ($order->trans_type == ST_SALESINVOICE) {
-					$_POST['delivery_date'] = get_invoice_duedate(get_post('customer_id'), get_post('OrderDate'));
+					$_POST['delivery_date'] = Sales_Order::get_invoice_duedate(get_post('customer_id'), get_post('OrderDate'));
 				} else {
 					$_POST['delivery_date'] = Dates::add_days(get_post('OrderDate'), SysPrefs::default_delivery_required_by());
 				}

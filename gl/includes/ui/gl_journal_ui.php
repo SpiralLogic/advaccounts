@@ -14,7 +14,7 @@
 	{
 		$Ajax = Ajax::instance();
 		$qes = GL_QuickEntry::has(QE_JOURNAL);
-		$new = $Order->order_id == 0;
+		$new = $order->order_id == 0;
 		start_outer_table(Config::get('tables_style2') . " width=90%");
 		table_section(1);
 		start_row();
@@ -38,10 +38,7 @@
 				unset($_POST['totamount']); // enable default
 				$Ajax->activate('totamount');
 			}
-			amount_cells(
-				$qid['base_desc'] . ":", 'totamount', Num::price_format($qid['base_amount']),
-				null, "&nbsp;&nbsp;" . submit('go', _("Go"), false, false, true)
-			);
+			amount_cells($qid['base_desc'] . ":", 'totamount', Num::price_format($qid['base_amount']), null, "&nbsp;&nbsp;" . submit('go', _("Go"), false, false, true));
 			end_row();
 		}
 		end_outer_table(1);
@@ -56,20 +53,13 @@
 		start_table(Config::get('tables_style') . " colspan=7 width=95%");
 		if ($dim == 2) {
 			$th = array(
-				_("Account Code"), _("Account Description"), _("Dimension") . " 1",
-				_("Dimension") . " 2", _("Debit"), _("Credit"), _("Memo"), ""
-			);
-		}
-		else if ($dim == 1) {
+				_("Account Code"), _("Account Description"), _("Dimension") . " 1", _("Dimension") . " 2", _("Debit"), _("Credit"), _("Memo"), "");
+		} else if ($dim == 1) {
 			$th = array(
-				_("Account Code"), _("Account Description"), _("Dimension"),
-				_("Debit"), _("Credit"), _("Memo"), ""
-			);
+				_("Account Code"), _("Account Description"), _("Dimension"), _("Debit"), _("Credit"), _("Memo"), "");
 		} else {
 			$th = array(
-				_("Account Code"), _("Account Description"),
-				_("Debit"), _("Credit"), _("Memo"), ""
-			);
+				_("Account Code"), _("Account Description"), _("Debit"), _("Credit"), _("Memo"), "");
 		}
 		if (count($order->gl_items)) {
 			$th[] = '';
@@ -77,18 +67,15 @@
 		table_header($th);
 		$k = 0;
 		$id = find_submit('Edit');
-		foreach (
-			$order->gl_items as $line => $item
-		)
-		{
+		foreach ($order->gl_items as $line => $item) {
 			if ($id != $line) {
 				alt_table_row_color($k);
 				label_cells($item->code_id, $item->description);
 				if ($dim >= 1) {
-					label_cell(get_dimension_string($item->dimension_id, true));
+					label_cell(Dimensions::get_string($item->dimension_id, true));
 				}
 				if ($dim > 1) {
-					label_cell(get_dimension_string($item->dimension2_id, true));
+					label_cell(Dimensions::get_string($item->dimension2_id, true));
 				}
 				if ($item->amount > 0) {
 					amount_cell(abs($item->amount));
@@ -98,14 +85,8 @@
 					amount_cell(abs($item->amount));
 				}
 				label_cell($item->reference);
-				edit_button_cell(
-					"Edit$line", _("Edit"),
-					_('Edit journal line')
-				);
-				delete_button_cell(
-					"Delete$line", _("Delete"),
-					_('Remove line from journal')
-				);
+				edit_button_cell("Edit$line", _("Edit"), _('Edit journal line'));
+				delete_button_cell("Delete$line", _("Delete"), _('Remove line from journal'));
 				end_row();
 			} else {
 				gl_edit_item_controls($order, $dim, $line);
@@ -189,20 +170,11 @@
 		small_amount_cells(null, 'AmountCredit');
 		text_cells_ex(null, 'LineMemo', 35, 255);
 		if ($id != -1) {
-			button_cell(
-				'UpdateItem', _("Update"),
-				_('Confirm changes'), ICON_UPDATE
-			);
-			button_cell(
-				'CancelItemChanges', _("Cancel"),
-				_('Cancel changes'), ICON_CANCEL
-			);
+			button_cell('UpdateItem', _("Update"), _('Confirm changes'), ICON_UPDATE);
+			button_cell('CancelItemChanges', _("Cancel"), _('Cancel changes'), ICON_CANCEL);
 			JS::set_focus('amount');
 		} else {
-			submit_cells(
-				'AddItem', _("Add Item"), "colspan=2",
-				_('Add new line to journal'), true
-			);
+			submit_cells('AddItem', _("Add Item"), "colspan=2", _('Add new line to journal'), true);
 		}
 		end_row();
 	}

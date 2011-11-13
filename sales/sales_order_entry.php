@@ -488,7 +488,7 @@
 			$doc->trans_no = 0;
 			$doc->document_date = Dates::new_doc_date();
 			if ($type == ST_SALESINVOICE) {
-				$doc->due_date = get_invoice_duedate($doc->customer_id, $doc->document_date);
+				$doc->due_date = Sales_Order::get_invoice_duedate($doc->customer_id, $doc->document_date);
 				$doc->pos = User::pos();
 				$pos = Sales_Point::get($doc->pos);
 				$doc->pos = -1;

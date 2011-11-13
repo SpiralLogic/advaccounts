@@ -221,10 +221,10 @@
 				label_cell($entered_gl_code->gl_code);
 				label_cell($entered_gl_code->gl_act_name);
 				if ($dim >= 1) {
-					label_cell(get_dimension_string($entered_gl_code->gl_dim, true));
+					label_cell(Dimensions::get_string($entered_gl_code->gl_dim, true));
 				}
 				if ($dim > 1) {
-					label_cell(get_dimension_string($entered_gl_code->gl_dim2, true));
+					label_cell(Dimensions::get_string($entered_gl_code->gl_dim2, true));
 				}
 				label_cell($entered_gl_code->memo_);
 				amount_cell($entered_gl_code->amount, true);

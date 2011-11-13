@@ -8,7 +8,7 @@
 	 */
 	$page_security = 'SA_CUSTOMER';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-		Session::get()->App->selected_application = 'contacts';
+	Session::get()->App->selected_application = 'contacts';
 	if (AJAX_REFERRER) {
 		if (isset($_GET['postcode']) && isset($_GET['term'])) {
 			$data = Contacts_Postcode::searchByPostcode($_GET['term']);
@@ -25,6 +25,5 @@
 		exit();
 	}
 	Page::start(_($help_context = "Items"), Input::request('popup'));
-	Contacts_Customer::addSearchBox('customer_id', array('cell'       => false,
-																						 'description' => ''));
+	Contacts_Customer::addSearchBox('customer_id', array('cell' => false, 'description' => ''));
 	end_page();

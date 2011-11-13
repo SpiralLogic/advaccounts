@@ -92,7 +92,7 @@
 		$dn->src_docs = $dn->trans_no;
 		$dn->trans_no = 0;
 		$dn->reference = Refs::get_next(ST_SALESINVOICE);
-		$dn->due_date = get_invoice_duedate($dn->customer_id, $dn->document_date);
+		$dn->due_date = Sales_Order::get_invoice_duedate($dn->customer_id, $dn->document_date);
 		$_SESSION['Items'] = $dn;
 		copy_from_cart();
 	} elseif (isset($_GET['ModifyInvoice']) && $_GET['ModifyInvoice'] > 0) {
@@ -125,7 +125,7 @@
 		$Ajax->activate('Items');
 	}
 	if (isset($_POST['_InvoiceDate_changed'])) {
-		$_POST['due_date'] = get_invoice_duedate($_SESSION['Items']->customer_id, $_POST['InvoiceDate']);
+		$_POST['due_date'] = Sales_Order::get_invoice_duedate($_SESSION['Items']->customer_id, $_POST['InvoiceDate']);
 		$Ajax->activate('due_date');
 	}
 	//-----------------------------------------------------------------------------
@@ -327,7 +327,7 @@
 		label_cell($_POST['InvoiceDate']);
 	}
 	if (!isset($_POST['due_date']) || !Dates::is_date($_POST['due_date'])) {
-		$_POST['due_date'] = get_invoice_duedate($_SESSION['Items']->customer_id, $_POST['InvoiceDate']);
+		$_POST['due_date'] = Sales_Order::get_invoice_duedate($_SESSION['Items']->customer_id, $_POST['InvoiceDate']);
 	}
 	if (!$viewing) {
 		date_cells(_("Due Date"), 'due_date', '', null, 0, 0, 0, "class='tableheader2'");

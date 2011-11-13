@@ -179,7 +179,7 @@
 					}
 				}
 				if ($type == ST_SALESINVOICE) {
-					$this->due_date = get_invoice_duedate($this->customer_id, $this->document_date);
+					$this->due_date = Sales_Order::get_invoice_duedate($this->customer_id, $this->document_date);
 					$this->pos = User::pos();
 					$pos = Sales_Point::get($this->pos);
 					$this->cash = !$pos['credit_sale'];
@@ -350,30 +350,27 @@
 			$this->line_items[$line_no]->discount_percent = $disc;
 		}
 
-			//--------------------------------------------------------------------------------------------------
-			public static function update_parent_line($doc_type, $line_id, $qty_dispatched)
-			{
-				$doc_type = Sales_Trans::get_parent_type($doc_type);
-				//	echo "update line: $line_id, $doc_type, $qty_dispatched";
-				if ($doc_type == 0) {
-					return false;
-				}
-				else {
-					if ($doc_type == ST_SALESORDER) {
-						$sql
-						 = "UPDATE sales_order_details
+		//--------------------------------------------------------------------------------------------------
+		public static function update_parent_line($doc_type, $line_id, $qty_dispatched)
+		{
+			$doc_type = Sales_Trans::get_parent_type($doc_type);
+			//	echo "update line: $line_id, $doc_type, $qty_dispatched";
+			if ($doc_type == 0) {
+				return false;
+			} else {
+				if ($doc_type == ST_SALESORDER) {
+					$sql = "UPDATE sales_order_details
 						SET qty_sent = qty_sent + $qty_dispatched
 						WHERE id=" . DB::escape($line_id);
-					} else {
-						$sql
-						 = "UPDATE debtor_trans_details
+				} else {
+					$sql = "UPDATE debtor_trans_details
 						SET qty_done = qty_done + $qty_dispatched
 						WHERE id=" . DB::escape($line_id);
-					}
 				}
-				DB::query($sql, "The parent document detail record could not be updated");
-				return true;
 			}
+			DB::query($sql, "The parent document detail record could not be updated");
+			return true;
+		}
 
 		function discount_all($discount)
 		{
@@ -824,7 +821,7 @@
 		}
 
 		//---------------------------------------------------------------------------------------------------------------
-		public static function get_invoice_duedate($debtorno, $invdate)
+		public static function	get_invoice_duedate($debtorno, $invdate)
 		{
 			if (!Dates::is_date($invdate)) {
 				return Dates::new_doc_date();
