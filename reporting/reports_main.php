@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 	$page_security = 'SA_OPEN';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-
+	JS::footerFile('/js/libs/jquery.megalist.js');
 	Page::start(_($help_context = "Reports and Analysis"));
 	$reports = new Reports_Box();
 	$dim = DB_Company::get_pref('use_dimension');
@@ -405,13 +405,8 @@
 													 _('Destination') => 'DESTINATION'
 											));
 	$reports->add_custom_reports($reports);
-	echo "<script language='javascript'>
-		function onWindowLoad() {
-			showClass(" . $_GET['Class'] . ")
-		}
-	Behaviour.addLoadEvent(onWindowLoad);
-	</script>
-";
+	$js =  " showClass(" . $_GET['Class'] . ")";
+	JS::onload($js);
 	echo $reports->getDisplay();
 
 	end_page();
