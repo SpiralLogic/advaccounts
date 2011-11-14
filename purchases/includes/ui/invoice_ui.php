@@ -24,13 +24,13 @@
 	//--------------------------------------------------------------------------------------------------
 	function copy_to_trans($supp_trans)
 	{
-		$supp_trans->Comments = $_POST['Comments'];
+		$supp_trans->Comments = Input::post('Comments');
 		$supp_trans->tran_date = $_POST['tran_date'];
 		$supp_trans->due_date = $_POST['due_date'];
 		$supp_trans->supp_reference = $_POST['supp_reference'];
 		$supp_trans->reference = $_POST['reference'];
 		$supp_trans->ov_amount = 0; /* for starters */
-		$supp_trans->tax_correction = $_POST['ChgTax']; /* for starters */
+		$supp_trans->tax_correction = Input::post('ChgTax'); /* for starters */
 		if (count($supp_trans->grn_items) > 0) {
 			foreach ($supp_trans->grn_items as $grn) {
 				$supp_trans->ov_amount += Num::round(($grn->this_quantity_inv * $grn->chg_price * (1 - $grn->discount / 100)), User::price_dec());

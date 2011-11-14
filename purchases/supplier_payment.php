@@ -12,7 +12,7 @@
 	$page_security = 'SA_SUPPLIERPAYMNT';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	JS::open_window(900, 500);
-	JS::headerFile('/js/payalloc.js');
+	JS::footerFile('/js/payalloc.js');
 	Page::start(_($help_context = "Supplier Payment Entry"));
 	if (isset($_GET['supplier_id'])) {
 		$_POST['supplier_id'] = $_GET['supplier_id'];
