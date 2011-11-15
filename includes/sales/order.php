@@ -179,7 +179,7 @@
 					}
 				}
 				if ($type == ST_SALESINVOICE) {
-					$this->due_date = get_invoice_duedate($this->customer_id, $this->document_date);
+					$this->due_date = Sales_Order::get_invoice_duedate($this->customer_id, $this->document_date);
 					$this->pos = User::pos();
 					$pos = Sales_Point::get($this->pos);
 					$this->cash = !$pos['credit_sale'];

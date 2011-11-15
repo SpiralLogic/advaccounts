@@ -179,6 +179,7 @@
 		//if($name=='stock_id')	Errors::notice('<pre>'.print_r($_POST, true).'</pre>');
 		//if($name=='curr_default') Errors::notice($opts['search_submit']);
 		if ($result = DB::query($sql)) {
+			DB::fetch_all();
 			while ($contact_row = DB::fetch($result)) {
 				$value = $contact_row[0];
 				$descr = $opts['format'] == null ? $contact_row[1] : call_user_func($opts['format'], $contact_row);

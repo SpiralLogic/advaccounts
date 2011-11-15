@@ -92,7 +92,7 @@
 		$dn->src_docs = $dn->trans_no;
 		$dn->trans_no = 0;
 		$dn->reference = Refs::get_next(ST_SALESINVOICE);
-		$dn->due_date = get_invoice_duedate($dn->customer_id, $dn->document_date);
+		$dn->due_date = Sales_Order::get_invoice_duedate($dn->customer_id, $dn->document_date);
 		$_SESSION['Items'] = $dn;
 		copy_from_cart();
 	} elseif (isset($_GET['ModifyInvoice']) && $_GET['ModifyInvoice'] > 0) {
