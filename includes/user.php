@@ -79,11 +79,9 @@
 
 			$this->set_company($company);
 			$this->logged = false;
-			$Auth_Result = Users::get_for_login($loginname, $password);
+			$myrow = Users::get_for_login($loginname, $password);
 
-			if (DB::num_rows($Auth_Result) > 0) {
-
-					$myrow = DB::fetch($Auth_Result);
+			if ($myrow) {
 				if (!$myrow["inactive"]) {
 					$this->role_set = array();
 					$this->access = $myrow["role_id"];

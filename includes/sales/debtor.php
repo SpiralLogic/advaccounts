@@ -11,7 +11,7 @@
 						 See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 						* ********************************************************************* */
 	class Sales_Debtor {
-		function get_details($customer_id, $to = null)
+		public static function get_details($customer_id, $to = null)
 	{
 		if ($to == null) {
 			$todate = date("Y-m-d");
@@ -24,17 +24,10 @@
 		// removed - debtor_trans.alloc from all summations
 		$value
 				 = "IF(debtor_trans.type=11 OR debtor_trans.type=1 OR debtor_trans.type=12 OR debtor_trans.type=2,
-	-1, 1) *" .
-		 "(debtor_trans.ov_amount + debtor_trans.ov_gst + "
-		 . "debtor_trans.ov_freight + debtor_trans.ov_freight_tax + "
-		 . "debtor_trans.ov_discount)";
+	-1, 1) *" .		 "(debtor_trans.ov_amount + debtor_trans.ov_gst + "		 . "debtor_trans.ov_freight + debtor_trans.ov_freight_tax + "		 . "debtor_trans.ov_discount)";
 		$due = "IF (debtor_trans.type=10,debtor_trans.due_date,debtor_trans.tran_date)";
-		$sql
-						= "SELECT debtors_master.name, debtors_master.curr_code, payment_terms.terms,
-		debtors_master.credit_limit, credit_status.dissallow_invoices, credit_status.reason_description,
-
+		$sql						= "SELECT debtors_master.name, debtors_master.curr_code, payment_terms.terms,		debtors_master.credit_limit, credit_status.dissallow_invoices, credit_status.reason_description,
 		Sum(" . $value . ") AS Balance,
-
 		Sum(IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= 0,$value,0)) AS Due,
 		Sum(IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= $past1,$value,0)) AS Overdue1,
 		Sum(IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= $past2,$value,0)) AS Overdue2
@@ -43,7 +36,6 @@
 			 payment_terms,
 			 credit_status,
 			 debtor_trans
-
 		WHERE
 			 debtors_master.payment_terms = payment_terms.terms_indicator
 			 AND debtors_master.credit_status = credit_status.id
@@ -51,7 +43,6 @@
 			 AND debtor_trans.tran_date <= '$todate'
 			 AND debtor_trans.type <> 13
 			 AND debtors_master.debtor_no = debtor_trans.debtor_no
-
 		GROUP BY
 			  debtors_master.name,
 			  payment_terms.terms,
@@ -90,14 +81,14 @@
 		return $customer_record;
 	}
 
-	function get($customer_id)
+	public static function get($customer_id)
 	{
 		$sql = "SELECT * FROM debtors_master WHERE debtor_no=" . DB::escape($customer_id);
 		$result = DB::query($sql, "could not get customer");
 		return DB::fetch($result);
 	}
 
-	function get_name($customer_id)
+	public static function get_name($customer_id)
 	{
 		$sql = "SELECT name FROM debtors_master WHERE debtor_no=" . DB::escape($customer_id);
 		$result = DB::query($sql, "could not get customer");
@@ -105,7 +96,7 @@
 		return $row[0];
 	}
 
-	function get_habit($customer_id)
+	public static function get_habit($customer_id)
 	{
 		$sql
 		 = "SELECT  debtors_master.pymt_discount,
@@ -117,7 +108,7 @@
 		return DB::fetch($result);
 	}
 
-	function get_area($id)
+	public static function get_area($id)
 	{
 		$sql = "SELECT description FROM areas WHERE area_code=" . DB::escape($id);
 		$result = DB::query($sql, "could not get sales type");
@@ -125,7 +116,7 @@
 		return $row[0];
 	}
 
-	function get_salesman_name($id)
+	public static function get_salesman_name($id)
 	{
 		$sql = "SELECT salesman_name FROM salesman WHERE salesman_code=" . DB::escape($id);
 		$result = DB::query($sql, "could not get sales type");
@@ -133,13 +124,13 @@
 		return $row[0];
 	}
 
-	function get_credit($customer_id)
+	public static function get_credit($customer_id)
 	{
 		$custdet = Sales_Debtor::get_details($customer_id);
 		return ($customer_id > 0) ? $custdet['credit_limit'] - $custdet['Balance'] : 0;
 	}
 
-	function is_new($id)
+	public static function is_new($id)
 	{
 		$tables = array('cust_branch', 'debtor_trans', 'recurrent_invoices', 'sales_orders');
 		return !DB_Company::key_in_foreign_table($id, $tables, 'debtor_no');
