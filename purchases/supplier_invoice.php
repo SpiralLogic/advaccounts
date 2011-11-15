@@ -11,8 +11,7 @@
 	 ***********************************************************************/
 	$page_security = 'SA_SUPPLIERINVOICE';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	include_once(APP_PATH . "purchases/includes/purchasing_db.php");
-	include_once(APP_PATH . "purchases/includes/purchasing_ui.php");
+		include_once(APP_PATH . "purchases/includes/purchasing_ui.php");
 	JS::open_window(900, 500);
 	Page::start(_($help_context = "Enter Supplier Invoice"));
 	//----------------------------------------------------------------------------------------
@@ -33,8 +32,6 @@
 	}
 	//--------------------------------------------------------------------------------------------------
 	if (isset($_GET['New'])) {
-		//session_register("SuppInv");
-		//session_register("supp_trans");
 		Purch_Trans::instance(true);
 		Purch_Trans::instance()->is_invoice = true;
 		if (isset($_GET['SuppID'])) {
@@ -372,6 +369,7 @@
 	var ChgTotal = Number(ChgTotal.val().replace(',',''));
 	price_format(invTotal.attr('id'),total+ChgTax+ChgTotal,2,true); }
 }});
-JS);
+JS
+	);
 	end_page();
 ?>

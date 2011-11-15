@@ -10,11 +10,7 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 		Session::get()->App->selected_application = 'contacts';
 	if (AJAX_REFERRER) {
-		if (isset($_GET['postcode']) && isset($_GET['term'])) {
-			$data = Contacts_Postcode::searchByPostcode($_GET['term']);
-		} elseif (isset($_GET['city']) && isset($_GET['term'])) {
-			$data = Contacts_Postcode::searchByCity($_GET['term']);
-		} elseif (isset($_POST['branch_code'])) {
+		if (isset($_POST['branch_code'])) {
 			if ($_POST['branch_code'] > 0) {
 				$data = new Contacts_Branch(array('branch_code' => $_POST['branch_code']));
 			} elseif ($_POST['id'] > 0) {

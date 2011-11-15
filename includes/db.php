@@ -138,7 +138,10 @@
 			return new DB_Query_Delete($into, static::_get());
 		}
 
-		public static function fetch() {
+		public static function fetch($result=null) {
+			if ($result !== null) {
+				return $result->fetch();
+			}
 			if (static::$prepared === null) {
 				return DB_Query::_fetch(static::_get());
 			}

@@ -15,7 +15,7 @@
 	include_once(APP_PATH . "sales/includes/ui/sales_order_ui.php");
 	include_once(APP_PATH . "sales/includes/sales_ui.php");
 	JS::open_window(900, 500);
-	JS::headerFile('/js/payalloc.js');
+	JS::footerFile('/js/payalloc.js');
 	Page::start(_($help_context = "Customer Payment Entry"), Input::request('frame'));
 	//----------------------------------------------------------------------------------------------
 	Validation::check(Validation::CUSTOMERS, _("There are no customers defined in the system."));
@@ -225,12 +225,16 @@
 		submit_center('AddPaymentItem', _("Add Payment"), true, '', 'default');
 	}
 	br();
+
 	end_form();
+
+
 	$js = <<<JS
 var ci = $("#createinvoice"), ci_row = ci.closest('tr'),alloc_tbl = $('#alloc_tbl'),hasallocated = false;
   alloc_tbl.find('.amount').each(function() { if (this.value != 0) hasallocated = true});
   if (hasallocated && !ci.prop('checked')) ci_row.hide(); else ci_row.show();
 JS;
+
 	JS::addLiveEvent('a, :input', 'click change', $js, 'wrapper', true);
 	(Input::request('frame')) ? end_page() : end_page(true, true, true);
 
