@@ -47,27 +47,27 @@
 
 		static function registerJS($postcode, $city, $state)
 		{
-			$count = static::$count;
-			JS::beforeload(<<<JS
-Adv.extend({
-    postcode: (function() {
-            var sets= [];
-        return {
-        add: function(set,code,state,city) {
-        	sets[set] = {postcode:code,state:state,city:city}
-        },
-            fetch: function(data,ui) {
-            console.log(ui);
-               data = data.value.split('|');
-						    postcode.val(data[1]).trigger('change');
-                state.val(data[2]).trigger('change');
-                city.val(data[0]).trigger('change');
-                return false;
-            }
-        }
-    }())
-})
-JS);
+			$js = <<<JS
+			Adv.extend({
+			    postcode: (function() {
+			            var sets= [];
+			        return {
+									add: function(set,code,state,city) {
+										sets[set] = {postcode:code,state:state,city:city}
+									},
+			            fetch: function(data,ui) {
+			            console.log(ui);
+			               data = data.value.split('|');
+									    postcode.val(data[1]).trigger('change');
+			                state.val(data[2]).trigger('change');
+			                city.val(data[0]).trigger('change');
+			                return false;
+			            }
+			        }
+			    }())
+			})
+JS;
+			JS::beforeload($js);
 			static::$count++;
 		}
 	}

@@ -35,7 +35,7 @@
 			if (!$url) {
 				$url = $_SERVER['PHP_SELF'];
 			}
-			self::$_onload[] = <<< JS
+			self::$_onload[] = <<<JS
       var \${$id};
       Adv.o.autocomplete{$id} = \${$id} =$('#{$id}').autocomplete({
          autoFocus:true,
@@ -61,22 +61,24 @@ JS;
 		{
 			$address = str_replace(array("\r", "\t", "\n", "\v"), ", ", $address);
 			$apikey = Config::get('js.maps_api_key');
-			JS::beforeload(<<<JS
-	Adv.maps = { api_key: '$apikey'}
-JS);
-			self::addLive(<<<JS
+			$js = <<<JS
 
-	var map = $("<div/>").gMap({
+				Adv.maps = { api_key: '$apikey'}
+JS;
+			JS::beforeload($js);
+			$js = <<<JS
+var map = $("<div/>").gMap({
 	address:"{$address}",
 	markers: [{ address:"{$address}", html: "_address", popup: true}],
 	zoom: 10}).appendTo('body').dialog({title: "{$title}", autoOpen: false, show: "slide", hide: "slide", height: 450, width: 1000, modal: true});
-$("{$selector}").click(function() {
+	$("{$selector}").click(function() {
     map.dialog("open");
     return false; });
     $(".ui-widget-overlay").click(function() {
     map.dialog("close");
     return false; });
-JS);
+JS;
+			self::addLive($js);
 			JS::footerFile('/js/libs/jquery.gmap-1.1.0-min.js');
 		}
 
