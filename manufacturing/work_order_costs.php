@@ -30,7 +30,7 @@
 		exit;
 	}
 	//--------------------------------------------------------------------------------------------------
-	$wo_details = get_work_order($_POST['selected_id']);
+	$wo_details = WO_WorkOrder::get($_POST['selected_id']);
 	if (strlen($wo_details[0]) == 0) {
 		Errors::error(_("The order number sent is not valid."));
 		exit;
@@ -48,9 +48,7 @@
 			Errors::error(_("The entered date is invalid."));
 			JS::set_focus('date_');
 			return false;
-		}
-		elseif (!Dates::is_date_in_fiscalyear($_POST['date_']))
-		{
+		} elseif (!Dates::is_date_in_fiscalyear($_POST['date_'])) {
 			Errors::error(_("The entered date is not in fiscal year."));
 			JS::set_focus('date_');
 			return false;
@@ -66,26 +64,12 @@
 	//--------------------------------------------------------------------------------------------------
 	if (isset($_POST['process']) && can_process() == true) {
 		DB::begin_transaction();
-		GL_Trans::add_std_cost(
-			ST_WORKORDER, $_POST['selected_id'], $_POST['date_'], $_POST['cr_acc'],
-			0, 0, $wo_cost_types[$_POST['PaymentType']], -input_num('costs'), PT_WORKORDER,
-			$_POST['PaymentType']
-		);
+		GL_Trans::add_std_cost(ST_WORKORDER, $_POST['selected_id'], $_POST['date_'], $_POST['cr_acc'], 0, 0, $wo_cost_types[$_POST['PaymentType']], -input_num('costs'), PT_WORKORDER, $_POST['PaymentType']);
 		$is_bank_to = Banking::is_bank_account($_POST['cr_acc']);
 		if ($is_bank_to) {
-			Bank_Trans::add(
-				ST_WORKORDER, $_POST['selected_id'], $is_bank_to, "",
-				$_POST['date_'], -input_num('costs'), PT_WORKORDER,
-				$_POST['PaymentType'], Banking::get_company_currency(),
-				"Cannot insert a destination bank transaction"
-			);
+			Bank_Trans::add(ST_WORKORDER, $_POST['selected_id'], $is_bank_to, "", $_POST['date_'], -input_num('costs'), PT_WORKORDER, $_POST['PaymentType'], Banking::get_company_currency(), "Cannot insert a destination bank transaction");
 		}
-		GL_Trans::add_std_cost(
-			ST_WORKORDER, $_POST['selected_id'], $_POST['date_'], $_POST['db_acc'],
-			$_POST['dim1'], $_POST['dim2'],
-			$wo_cost_types[$_POST['PaymentType']], input_num('costs'), PT_WORKORDER,
-			$_POST['PaymentType']
-		);
+		GL_Trans::add_std_cost(ST_WORKORDER, $_POST['selected_id'], $_POST['date_'], $_POST['db_acc'], $_POST['dim1'], $_POST['dim2'], $wo_cost_types[$_POST['PaymentType']], input_num('costs'), PT_WORKORDER, $_POST['PaymentType']);
 		DB::commit_transaction();
 		meta_forward($_SERVER['PHP_SELF'], "AddedID=" . $_POST['selected_id']);
 	}

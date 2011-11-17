@@ -20,70 +20,69 @@
 		if ($void_entry > 0) {
 			return false;
 		}
-		switch ($type)
-		{
-		case ST_JOURNAL : // it's a journal entry
-			if (!GL_Trans::exists($type, $type_no)) {
+		switch ($type) {
+			case ST_JOURNAL : // it's a journal entry
+				if (!GL_Trans::exists($type, $type_no)) {
+					return false;
+				}
+				break;
+			case ST_BANKPAYMENT : // it's a payment
+			case ST_BANKDEPOSIT : // it's a deposit
+			case ST_BANKTRANSFER : // it's a transfer
+				if (!Bank_Trans::exists($type, $type_no)) {
+					return false;
+				}
+				break;
+			case ST_SALESINVOICE : // it's a customer invoice
+			case ST_CUSTCREDIT : // it's a customer credit note
+			case ST_CUSTPAYMENT : // it's a customer payment
+			case ST_CUSTREFUND : // it's a customer refund
+			case ST_CUSTDELIVERY : // it's a customer dispatch
+				if (!Sales_Trans::exists($type, $type_no)) {
+					return false;
+				}
+				break;
+			case ST_LOCTRANSFER : // it's a stock transfer
+				if (Inv_Transfer::get_items($type_no) == null) {
+					return false;
+				}
+				break;
+			case ST_INVADJUST : // it's a stock adjustment
+				if (Inv_Adjustment::get_items($type_no) == null) {
+					return false;
+				}
+				break;
+			case ST_PURCHORDER : // it's a PO
+			case ST_SUPPRECEIVE : // it's a GRN
 				return false;
-			}
-			break;
-		case ST_BANKPAYMENT : // it's a payment
-		case ST_BANKDEPOSIT : // it's a deposit
-		case ST_BANKTRANSFER : // it's a transfer
-			if (!Bank_Trans::exists($type, $type_no)) {
+			case ST_SUPPINVOICE : // it's a suppler invoice
+			case ST_SUPPCREDIT : // it's a supplier credit note
+			case ST_SUPPAYMENT : // it's a supplier payment
+				if (!Purch_Trans::exists($type, $type_no)) {
+					return false;
+				}
+				break;
+			case ST_WORKORDER : // it's a work order
+				if (!WO_WorkOrder::get($type_no, true)) {
+					return false;
+				}
+				break;
+			case ST_MANUISSUE : // it's a work order issue
+				if (!WO_Issue::exists($type_no)) {
+					return false;
+				}
+				break;
+			case ST_MANURECEIVE : // it's a work order production
+				if (!WO_Produce::exists($type_no)) {
+					return false;
+				}
+				break;
+			case ST_SALESORDER: // it's a sales order
+			case ST_SALESQUOTE: // it's a sales quotation
 				return false;
-			}
-			break;
-		case ST_SALESINVOICE : // it's a customer invoice
-		case ST_CUSTCREDIT : // it's a customer credit note
-		case ST_CUSTPAYMENT : // it's a customer payment
-		case ST_CUSTREFUND : // it's a customer refund
-		case ST_CUSTDELIVERY : // it's a customer dispatch
-			if (!Sales_Trans::exists($type, $type_no)) {
+			case ST_COSTUPDATE : // it's a stock cost update
 				return false;
-			}
-			break;
-		case ST_LOCTRANSFER : // it's a stock transfer
-			if (Inv_Transfer::get_items( $type_no) == null) {
-				return false;
-			}
-			break;
-		case ST_INVADJUST : // it's a stock adjustment
-			if (Inv_Adjustment::get_items($type_no) == null) {
-				return false;
-			}
-			break;
-		case ST_PURCHORDER : // it's a PO
-		case ST_SUPPRECEIVE : // it's a GRN
-			return false;
-		case ST_SUPPINVOICE : // it's a suppler invoice
-		case ST_SUPPCREDIT : // it's a supplier credit note
-		case ST_SUPPAYMENT : // it's a supplier payment
-			if (!Purch_Trans::exists($type, $type_no)) {
-				return false;
-			}
-			break;
-		case ST_WORKORDER : // it's a work order
-			if (!get_work_order($type_no, true)) {
-				return false;
-			}
-			break;
-		case ST_MANUISSUE : // it's a work order issue
-			if (!exists_work_order_issue($type_no)) {
-				return false;
-			}
-			break;
-		case ST_MANURECEIVE : // it's a work order production
-			if (!exists_work_order_produce($type_no)) {
-				return false;
-			}
-			break;
-		case ST_SALESORDER: // it's a sales order
-		case ST_SALESQUOTE: // it's a sales quotation
-			return false;
-		case ST_COSTUPDATE : // it's a stock cost update
-			return false;
-			break;
+				break;
 		}
 		return true;
 	}
@@ -162,17 +161,13 @@
 				JS::set_focus('trans_no');
 				return;
 			}
-			$ret = Voiding::void(
-				$_POST['filterType'], $_POST['trans_no'],
-				$_POST['date_'], $_POST['memo_']
-			);
+			$ret = Voiding::void($_POST['filterType'], $_POST['trans_no'], $_POST['date_'], $_POST['memo_']);
 			if ($ret) {
 				Errors::notice(_("Selected transaction has been voided."));
 				unset($_POST['trans_no']);
 				unset($_POST['memo_']);
 				unset($_POST['date_']);
-			}
-			else {
+			} else {
 				Errors::error(_("The entered transaction does not exist or cannot be voided."));
 				JS::set_focus('trans_no');
 			}

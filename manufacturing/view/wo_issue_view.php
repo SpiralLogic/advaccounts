@@ -21,13 +21,11 @@
 	//-------------------------------------------------------------------------------------------------
 	function display_wo_issue($issue_no)
 	{
-		$myrow = get_work_order_issue($issue_no);
+		$myrow = WO_Issue::get($issue_no);
 		br(1);
 		start_table(Config::get('tables_style'));
 		$th = array(
-			_("Issue #"), _("Reference"), _("For Work Order #"),
-			_("Item"), _("From Location"), _("To Work Centre"), _("Date of Issue")
-		);
+			_("Issue #"), _("Reference"), _("For Work Order #"), _("Item"), _("From Location"), _("To Work Centre"), _("Date of Issue"));
 		table_header($th);
 		start_row();
 		label_cell($myrow["issue_no"]);
@@ -46,7 +44,7 @@
 	//-------------------------------------------------------------------------------------------------
 	function display_wo_issue_details($issue_no)
 	{
-		$result = get_work_order_issue_details($issue_no);
+		$result = WO_Issue::get_details($issue_no);
 		if (DB::num_rows($result) == 0) {
 			Errors::warning(_("There are no items for this issue."));
 		} else {
@@ -56,8 +54,7 @@
 			$j = 1;
 			$k = 0; //row colour counter
 			$total_cost = 0;
-			while ($myrow = DB::fetch($result))
-			{
+			while ($myrow = DB::fetch($result)) {
 				alt_table_row_color($k);
 				label_cell($myrow["stock_id"] . " - " . $myrow["description"]);
 				qty_cell($myrow["qty_issued"], false, Num::qty_dec($myrow["stock_id"]));

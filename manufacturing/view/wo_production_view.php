@@ -21,13 +21,11 @@
 	//-------------------------------------------------------------------------------------------------
 	function display_wo_production($prod_id)
 	{
-		$myrow = get_work_order_produce($prod_id);
+		$myrow = WO_Produce::get($prod_id);
 		br(1);
 		start_table(Config::get('tables_style'));
 		$th = array(
-			_("Production #"), _("Reference"), _("For Work Order #"),
-			_("Item"), _("Quantity Manufactured"), _("Date")
-		);
+			_("Production #"), _("Reference"), _("For Work Order #"), _("Item"), _("Quantity Manufactured"), _("Date"));
 		table_header($th);
 		start_row();
 		label_cell($myrow["id"]);

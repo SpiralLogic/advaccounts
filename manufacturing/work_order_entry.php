@@ -19,9 +19,7 @@
 	//---------------------------------------------------------------------------------------
 	if (isset($_GET['trans_no'])) {
 		$selected_id = $_GET['trans_no'];
-	}
-	elseif (isset($_POST['selected_id']))
-	{
+	} elseif (isset($_POST['selected_id'])) {
 		$selected_id = $_POST['selected_id'];
 	}
 	//---------------------------------------------------------------------------------------
@@ -32,19 +30,13 @@
 		Display::note(ui_view::get_trans_view_str($stype, $id, _("View this Work Order")));
 		if ($_GET['type'] != WO_ADVANCED) {
 			$ar = array(
-				'PARAM_0' => $id,
-				'PARAM_1' => $id,
-				'PARAM_2' => 0
-			);
+				'PARAM_0' => $id, 'PARAM_1' => $id, 'PARAM_2' => 0);
 			Display::note(Reporting::print_link(_("Print this Work Order"), 409, $ar), 1);
 			$ar['PARAM_2'] = 1;
 			Display::note(Reporting::print_link(_("Email this Work Order"), 409, $ar), 1);
 			Errors::warning(ui_view::get_gl_view_str($stype, $id, _("View the GL Journal Entries for this Work Order")), 1);
 			$ar = array(
-				'PARAM_0' => $_GET['date'],
-				'PARAM_1' => $_GET['date'],
-				'PARAM_2' => $stype
-			);
+				'PARAM_0' => $_GET['date'], 'PARAM_1' => $_GET['date'], 'PARAM_2' => $stype);
 			Errors::warning(Reporting::print_link(_("Print the GL Journal Entries for this Work Order"), 702, $ar), 1);
 		}
 		safe_exit();
@@ -106,9 +98,7 @@
 			Errors::error(_("The date entered is in an invalid format."));
 			JS::set_focus('date_');
 			return false;
-		}
-		elseif (!Dates::is_date_in_fiscalyear($_POST['date_']))
-		{
+		} elseif (!Dates::is_date_in_fiscalyear($_POST['date_'])) {
 			Errors::error(_("The entered date is not in fiscal year."));
 			JS::set_focus('date_');
 			return false;
@@ -140,26 +130,18 @@
 				if ($_POST['type'] == WO_ASSEMBLY) {
 					// check bom if assembling
 					$result = Manufacturing::get_bom(Input::post('stock_id'));
-					while ($bom_item = DB::fetch($result))
-					{
+					while ($bom_item = DB::fetch($result)) {
 						if (Manufacturing::has_stock_holding($bom_item["ResourceType"])) {
 							$quantity = $bom_item["quantity"] * input_num('quantity');
 							$qoh = Item::get_qoh_on_date($bom_item["component"], $bom_item["loc_code"], $_POST['date_']);
 							if (-$quantity + $qoh < 0) {
-								Errors::error(
-									_("The work order cannot be processed because there is an insufficient quantity for component:") .
-									" " . $bom_item["component"] . " - " .
-									$bom_item["description"] . ".  " . _("Location:") . " " .
-									$bom_item["location_name"]
-								);
+								Errors::error(_("The work order cannot be processed because there is an insufficient quantity for component:") . " " . $bom_item["component"] . " - " . $bom_item["description"] . ".  " . _("Location:") . " " . $bom_item["location_name"]);
 								JS::set_focus('quantity');
 								return false;
 							}
 						}
 					}
-				}
-				elseif ($_POST['type'] == WO_UNASSEMBLY)
-				{
+				} elseif ($_POST['type'] == WO_UNASSEMBLY) {
 					// if unassembling, check item to unassemble
 					$qoh = Item::get_qoh_on_date(Input::post('stock_id'), $_POST['StockLocation'], $_POST['date_']);
 					if (-input_num('quantity') + $qoh < 0) {
@@ -180,7 +162,7 @@
 			//	return false;
 			//}
 			if (isset($selected_id)) {
-				$myrow = get_work_order($selected_id, true);
+				$myrow = WO_WorkOrder::get($selected_id, true);
 				if ($_POST['units_issued'] > input_num('quantity')) {
 					JS::set_focus('quantity');
 					Errors::error(_("The quantity cannot be changed to be less than the quantity already manufactured for this order."));
@@ -199,21 +181,13 @@
 		if (!isset($_POST['cr_lab_acc'])) {
 			$_POST['cr_lab_acc'] = "";
 		}
-		$id = add_work_order(
-			$_POST['wo_ref'], $_POST['StockLocation'], input_num('quantity'),
-			Input::post('stock_id'), $_POST['type'], $_POST['date_'],
-			$_POST['RequDate'], $_POST['memo_'], input_num('Costs'), $_POST['cr_acc'], input_num('Labour'),
-			$_POST['cr_lab_acc']
-		);
+		$id = WO_WorkOrder::add($_POST['wo_ref'], $_POST['StockLocation'], input_num('quantity'), Input::post('stock_id'), $_POST['type'], $_POST['date_'], $_POST['RequDate'], $_POST['memo_'], input_num('Costs'), $_POST['cr_acc'], input_num('Labour'), $_POST['cr_lab_acc']);
 		Dates::new_doc_date($_POST['date_']);
 		meta_forward($_SERVER['PHP_SELF'], "AddedID=$id&type=" . $_POST['type'] . "&date=" . $_POST['date_']);
 	}
 	//-------------------------------------------------------------------------------------
 	if (isset($_POST['UPDATE_ITEM']) && can_process()) {
-		update_work_order(
-			$selected_id, $_POST['StockLocation'], input_num('quantity'),
-			Input::post('stock_id'), $_POST['date_'], $_POST['RequDate'], $_POST['memo_']
-		);
+		WO_WorkOrder::update($selected_id, $_POST['StockLocation'], input_num('quantity'), Input::post('stock_id'), $_POST['date_'], $_POST['RequDate'], $_POST['memo_']);
 		Dates::new_doc_date($_POST['date_']);
 		meta_forward($_SERVER['PHP_SELF'], "UpdatedID=$selected_id");
 	}
@@ -222,23 +196,21 @@
 		//the link to delete a selected record was clicked instead of the submit button
 		$cancel_delete = false;
 		// can't delete it there are productions or issues
-		if (work_order_has_productions($selected_id)
-				|| work_order_has_issues($selected_id)
-				|| work_order_has_payments($selected_id)
+		if (WO_WorkOrder::has_productions($selected_id) || WO_WorkOrder::has_issues($selected_id) || WO_WorkOrder::has_payments($selected_id)
 		) {
 			Errors::error(_("This work order cannot be deleted because it has already been processed."));
 			$cancel_delete = true;
 		}
 		if ($cancel_delete == false) { //ie not cancelled the delete as a result of above tests
 			// delete the actual work order
-			delete_work_order($selected_id);
+			WO_WorkOrder::delete($selected_id);
 			meta_forward($_SERVER['PHP_SELF'], "DeletedID=$selected_id");
 		}
 	}
 	//-------------------------------------------------------------------------------------
 	if (isset($_POST['close'])) {
 		// update the closed flag in the work order
-		close_work_order($selected_id);
+		WO_WorkOrder::close($selected_id);
 		meta_forward($_SERVER['PHP_SELF'], "ClosedID=$selected_id");
 	}
 	//-------------------------------------------------------------------------------------
@@ -251,7 +223,7 @@
 	$existing_comments = "";
 	$dec = 0;
 	if (isset($selected_id)) {
-		$myrow = get_work_order($selected_id);
+		$myrow = WO_WorkOrder::get($selected_id);
 		if (strlen($myrow[0]) == 0) {
 			echo _("The order number sent is not valid.");
 			safe_exit();
