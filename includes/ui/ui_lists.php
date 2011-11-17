@@ -680,19 +680,19 @@ JS;
 			'cells' => true, 'description' => ''), $opts));
 	}
 
-	function sales_kits_list($name, $selected_id = null, $all_option = false, $submit_on_change = false)
+	function sales_kits_list($name, $selected_id = null, $all_option = false, $submit_on_change = false, $legacy = true)
 	{
-		return sales_items_list($name, $selected_id, $all_option, $submit_on_change, 'kits', array('cells' => false));
+		return sales_items_list($name, $selected_id, $all_option, $submit_on_change, 'kits', array('cells' => false), $legacy);
 	}
 
-	function sales_local_items_list_row($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false)
+	function sales_local_items_list_row($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false, $legacy = true)
 	{
 		echo "<tr>";
 		if ($label != null) {
-			echo "<td class='label'>$label</td>\n";
+			echo "<td class='label'>$label</td>\n<td>";
 		}
-		echo sales_items_list($name, $selected_id, $all_option, $submit_on_change, 'local', array('cells' => false));
-		echo "</tr>";
+		echo sales_items_list($name, $selected_id, $all_option, $submit_on_change, 'local', array('cells' => false), $legacy);
+		echo "</td></tr>";
 	}
 
 	//------------------------------------------------------------------------------------
