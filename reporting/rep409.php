@@ -9,8 +9,7 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	$page_security = $_POST['PARAM_0'] == $_POST['PARAM_1'] ?
-	 'SA_MANUFTRANSVIEW' : 'SA_MANUFBULKREP';
+	$page_security = $_POST['PARAM_0'] == $_POST['PARAM_1'] ? 'SA_MANUFTRANSVIEW' : 'SA_MANUFBULKREP';
 	// ----------------------------------------------------------------
 	// $ Revision:	2.0 $
 	// Creator:	Janusz Dobrowolski
@@ -49,9 +48,8 @@
 			$rep->Font();
 			$rep->Info($params, $cols, null, $aligns);
 		}
-		for ($i = $fno[0]; $i <= $tno[0]; $i++)
-		{
-			$myrow = get_work_order($i);
+		for ($i = $fno[0]; $i <= $tno[0]; $i++) {
+			$myrow = WO_WorkOrder::get($i);
 			if ($myrow === false) {
 				continue;
 			}
@@ -63,18 +61,15 @@
 				$rep->title = _('WORK ORDER');
 				$rep->filename = "WorkOrder" . $myrow['reference'] . ".pdf";
 				$rep->Info($params, $cols, null, $aligns);
-			}
-			else
-			{
+			} else {
 				$rep->title = _('WORK ORDER');
 			}
 			$rep->Header2($myrow, null, null, '', 26);
-			$result = get_wo_requirements($i);
+			$result = WO_Requirements::get($i);
 			$rep->TextCol(0, 5, _("Work Order Requirements"), -2);
 			$rep->NewLine(2);
 			$has_marked = false;
-			while ($myrow2 = DB::fetch($result))
-			{
+			while ($myrow2 = DB::fetch($result)) {
 				$qoh = 0;
 				$show_qoh = true;
 				// if it's a non-stock item (eg. service) don't show qoh
@@ -84,21 +79,16 @@
 				if ($show_qoh) {
 					$qoh = Item::get_qoh_on_date($myrow2["stock_id"], $myrow2["loc_code"], $date_);
 				}
-				if ($show_qoh && ($myrow2["units_req"] * $myrow["units_issued"] > $qoh)
-						&& !SysPrefs::allow_negative_stock()
+				if ($show_qoh && ($myrow2["units_req"] * $myrow["units_issued"] > $qoh) && !SysPrefs::allow_negative_stock()
 				) {
 					// oops, we don't have enough of one of the component items
 					$has_marked = true;
-				}
-				else
-				{
+				} else {
 					$has_marked = false;
 				}
 				if ($has_marked) {
 					$str = $myrow2['stock_id'] . " ***";
-				}
-				else
-				{
+				} else {
 					$str = $myrow2['stock_id'];
 				}
 				$rep->TextCol(0, 1, $str, -2);
@@ -119,8 +109,7 @@
 			$comments = DB_Comments::get(ST_WORKORDER, $i);
 			if ($comments && DB::num_rows($comments)) {
 				$rep->NewLine();
-				while ($comment = DB::fetch($comments))
-				{
+				while ($comment = DB::fetch($comments)) {
 					$rep->TextColLines(0, 6, $comment['memo_'], -2);
 				}
 			}

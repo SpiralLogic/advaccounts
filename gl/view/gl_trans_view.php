@@ -22,9 +22,7 @@
 		$trans_name = $systypes_array[$_GET['type_id']];
 		start_table(Config::get('tables_style') . "  width=95%");
 		$th = array(
-			_("General Ledger Transaction Details"), _("Reference"),
-			_("Date"), _("Person/Item")
-		);
+			_("General Ledger Transaction Details"), _("Reference"), _("Date"), _("Person/Item"));
 		table_header($th);
 		start_row();
 		label_cell("$trans_name #" . $_GET['trans_no']);
@@ -36,18 +34,13 @@
 		end_table(1);
 	}
 
-	$sql
-					= "SELECT gl.*, cm.account_name, IF(ISNULL(refs.reference), '', refs.reference) AS reference FROM gl_trans as gl
+	$sql = "SELECT gl.*, cm.account_name, IF(ISNULL(refs.reference), '', refs.reference) AS reference FROM gl_trans as gl
 	LEFT JOIN chart_master as cm ON gl.account = cm.account_code
-	LEFT JOIN refs as refs ON (gl.type=refs.type AND gl.type_no=refs.id)"
-	 . " WHERE gl.type= " . DB::escape($_GET['type_id'])
-	 . " AND gl.type_no = " . DB::escape($_GET['trans_no'])
-	 . " ORDER BY counter";
+	LEFT JOIN refs as refs ON (gl.type=refs.type AND gl.type_no=refs.id)" . " WHERE gl.type= " . DB::escape($_GET['type_id']) . " AND gl.type_no = " . DB::escape($_GET['trans_no']) . " ORDER BY counter";
 	$result = DB::query($sql, "could not get transactions");
 	//alert("sql = ".$sql);
 	if (DB::num_rows($result) == 0) {
-		echo "<p><center>" . _("No general ledger transactions have been created for") . " " .
-		 $systypes_array[$_GET['type_id']] . " " . _("number") . " " . $_GET['trans_no'] . "</center></p><br><br>";
+		echo "<p><center>" . _("No general ledger transactions have been created for") . " " . $systypes_array[$_GET['type_id']] . " " . _("number") . " " . $_GET['trans_no'] . "</center></p><br><br>";
 		end_page(true);
 		exit;
 	}
@@ -55,25 +48,17 @@
 	$dim = DB_Company::get_pref('use_dimension');
 	if ($dim == 2) {
 		$th = array(
-			_("Account Code"), _("Account Name"), _("Dimension") . " 1", _("Dimension") . " 2",
-			_("Debit"), _("Credit"), _("Memo")
-		);
-	}
-	else if ($dim == 1) {
+			_("Account Code"), _("Account Name"), _("Dimension") . " 1", _("Dimension") . " 2", _("Debit"), _("Credit"), _("Memo"));
+	} else if ($dim == 1) {
 		$th = array(
-			_("Account Code"), _("Account Name"), _("Dimension"),
-			_("Debit"), _("Credit"), _("Memo")
-		);
-} else {
+			_("Account Code"), _("Account Name"), _("Dimension"), _("Debit"), _("Credit"), _("Memo"));
+	} else {
 		$th = array(
-			_("Account Code"), _("Account Name"),
-			_("Debit"), _("Credit"), _("Memo")
-		);
+			_("Account Code"), _("Account Name"), _("Debit"), _("Credit"), _("Memo"));
 	}
 	$k = 0; //row colour counter
 	$heading_shown = false;
-	while ($myrow = DB::fetch($result))
-	{
+	while ($myrow = DB::fetch($result)) {
 		if ($myrow['amount'] == 0) {
 			continue;
 		}
@@ -87,10 +72,10 @@
 		label_cell($myrow['account']);
 		label_cell($myrow['account_name']);
 		if ($dim >= 1) {
-			label_cell(get_dimension_string($myrow['dimension_id'], true));
+			label_cell(Dimensions::get_string($myrow['dimension_id'], true));
 		}
 		if ($dim > 1) {
-			label_cell(get_dimension_string($myrow['dimension2_id'], true));
+			label_cell(Dimensions::get_string($myrow['dimension2_id'], true));
 		}
 		Display::debit_or_credit_cells($myrow['amount']);
 		label_cell($myrow['memo_']);

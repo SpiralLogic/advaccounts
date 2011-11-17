@@ -16,9 +16,7 @@
 	Page::start(_($help_context = "Work Order Release to Manufacturing"));
 	if (isset($_GET["trans_no"])) {
 		$selected_id = $_GET["trans_no"];
-	}
-	elseif (isset($_POST["selected_id"]))
-	{
+	} elseif (isset($_POST["selected_id"])) {
 		$selected_id = $_POST["selected_id"];
 	} else {
 		Errors::warning("This page must be called with a work order reference");
@@ -43,7 +41,7 @@
 
 	//------------------------------------------------------------------------------------
 	if (isset($_POST['release'])) {
-		release_work_order($selected_id, $_POST['released_date'], $_POST['memo_']);
+		WO_WorkOrder::release($selected_id, $_POST['released_date'], $_POST['memo_']);
 		Errors::notice(_("The work order has been released to manufacturing."));
 		Display::note(ui_view::get_trans_view_str(ST_WORKORDER, $selected_id, _("View this Work Order")));
 		hyperlink_no_params("search_work_orders.php", _("Select another &work order"));
@@ -53,7 +51,7 @@
 	}
 	//------------------------------------------------------------------------------------
 	start_form();
-	$myrow = get_work_order($selected_id);
+	$myrow = WO_WorkOrder::get($selected_id);
 	$_POST['released'] = $myrow["released"];
 	$_POST['memo_'] = "";
 	if (can_process($myrow)) {

@@ -40,40 +40,35 @@
 			$Ajax->activate('pagehelp');
 			$Ajax->activate('editors');
 		}
-		payment_person_types_list_row($payment ? _("Pay To:") : _("From:"),
-			'PayType', $_POST['PayType'], true);
-		switch ($_POST['PayType'])
-		{
-		case PT_MISC :
-			text_row_ex($payment ? _("To the Order of:") : _("Name:"),
-				'person_id', 40, 50);
-			break;
+		payment_person_types_list_row($payment ? _("Pay To:") : _("From:"), 'PayType', $_POST['PayType'], true);
+		switch ($_POST['PayType']) {
+			case PT_MISC :
+				text_row_ex($payment ? _("To the Order of:") : _("Name:"), 'person_id', 40, 50);
+				break;
 			//case PT_WORKORDER :
 			//	workorders_list_row(_("Work Order:"), 'person_id', null);
 			//	break;
-		case PT_SUPPLIER :
-			supplier_list_row(_("Supplier:"), 'person_id', null, false, true, false, true);
-			break;
-		case PT_CUSTOMER :
-			customer_list_row(_("Customer:"), 'person_id', null, false, true, false, true);
-			if (Input::post('person_id') && Validation::check(Validation::BRANCHES, _("No Branches for Customer"), $_POST['person_id'])) {
-				customer_branches_list_row(_("Branch:"), $_POST['person_id'],
-					'PersonDetailID', null, false, true, true, true);
-			} else {
-				$_POST['PersonDetailID'] = ANY_NUMERIC;
-				hidden('PersonDetailID');
-			}
-			break;
-		case PT_QUICKENTRY :
-			quick_entries_list_row(_("Type") . ":", 'person_id', null, ($payment ? QE_PAYMENT : QE_DEPOSIT), true);
-			$qid = GL_QuickEntry::get(get_post('person_id'));
-			if (list_updated('person_id')) {
-				unset($_POST['totamount']); // enable default
-				$Ajax->activate('totamount');
-			}
-			amount_row($qid['base_desc'] . ":", 'totamount', Num::price_format($qid['base_amount']),
-				null, "&nbsp;&nbsp;" . submit('go', _("Go"), false, false, true));
-			break;
+			case PT_SUPPLIER :
+				supplier_list_row(_("Supplier:"), 'person_id', null, false, true, false, true);
+				break;
+			case PT_CUSTOMER :
+				customer_list_row(_("Customer:"), 'person_id', null, false, true, false, true);
+				if (Input::post('person_id') && Validation::check(Validation::BRANCHES, _("No Branches for Customer"), $_POST['person_id'])) {
+					customer_branches_list_row(_("Branch:"), $_POST['person_id'], 'PersonDetailID', null, false, true, true, true);
+				} else {
+					$_POST['PersonDetailID'] = ANY_NUMERIC;
+					hidden('PersonDetailID');
+				}
+				break;
+			case PT_QUICKENTRY :
+				quick_entries_list_row(_("Type") . ":", 'person_id', null, ($payment ? QE_PAYMENT : QE_DEPOSIT), true);
+				$qid = GL_QuickEntry::get(get_post('person_id'));
+				if (list_updated('person_id')) {
+					unset($_POST['totamount']); // enable default
+					$Ajax->activate('totamount');
+				}
+				amount_row($qid['base_desc'] . ":", 'totamount', Num::price_format($qid['base_amount']), null, "&nbsp;&nbsp;" . submit('go', _("Go"), false, false, true));
+				break;
 			//case payment_person_types::Project() :
 			//	dimensions_list_row(_("Dimension:"), 'person_id', $_POST['person_id'], false, null, true);
 			//	break;
@@ -100,18 +95,14 @@
 		div_start('items_table');
 		start_table(Config::get('tables_style') . " colspan=7 width=95%");
 		if ($dim == 2) {
-			$th = array(_("Account Code"), _("Account Description"), _("Dimension") . " 1",
-				_("Dimension") . " 2", _("Amount"), _("Memo"), ""
-			);
-		}
-		else if ($dim == 1) {
-			$th = array(_("Account Code"), _("Account Description"), _("Dimension"),
-				_("Amount"), _("Memo"), ""
-			);
+			$th = array(
+				_("Account Code"), _("Account Description"), _("Dimension") . " 1", _("Dimension") . " 2", _("Amount"), _("Memo"), "");
+		} else if ($dim == 1) {
+			$th = array(
+				_("Account Code"), _("Account Description"), _("Dimension"), _("Amount"), _("Memo"), "");
 		} else {
-			$th = array(_("Account Code"), _("Account Description"),
-				_("Amount"), _("Memo"), ""
-			);
+			$th = array(
+				_("Account Code"), _("Account Description"), _("Amount"), _("Memo"), "");
 		}
 		if (count($order->gl_items)) {
 			$th[] = '';
@@ -119,17 +110,16 @@
 		table_header($th);
 		$k = 0; //row colour counter
 		$id = find_submit('Edit');
-		foreach ($order->gl_items as $line => $item)
-		{
+		foreach ($order->gl_items as $line => $item) {
 			if ($id != $line) {
 				alt_table_row_color($k);
 				label_cell($item->code_id);
 				label_cell($item->description);
 				if ($dim >= 1) {
-					label_cell(get_dimension_string($item->dimension_id, true));
+					label_cell(Dimensions::get_string($item->dimension_id, true));
 				}
 				if ($dim > 1) {
-					label_cell(get_dimension_string($item->dimension2_id, true));
+					label_cell(Dimensions::get_string($item->dimension2_id, true));
 				}
 				//amount_cell(abs($item->amount));
 				if ($order->trans_type == ST_BANKDEPOSIT) {
@@ -138,10 +128,8 @@
 					amount_cell($item->amount);
 				}
 				label_cell($item->reference);
-				edit_button_cell("Edit$line", _("Edit"),
-					_('Edit document line'));
-				delete_button_cell("Delete$line", _("Delete"),
-					_('Remove line from document'));
+				edit_button_cell("Edit$line", _("Edit"), _('Edit document line'));
+				delete_button_cell("Delete$line", _("Delete"), _('Remove line from document'));
 				end_row();
 			} else {
 				gl_edit_item_controls($order, $dim, $line);
@@ -192,17 +180,13 @@
 			if ($_POST['PayType'] == PT_CUSTOMER) {
 				$acc = Sales_Branch::get_accounts($_POST['PersonDetailID']);
 				$_POST['code_id'] = $acc['receivables_account'];
-			}
-			elseif ($_POST['PayType'] == PT_SUPPLIER)
-			{
+			} elseif ($_POST['PayType'] == PT_SUPPLIER) {
 				$acc = Purch_Creditor::get_accounts_name($_POST['person_id']);
 				$_POST['code_id'] = $acc['payable_account'];
-			}
-				//elseif ($_POST['PayType'] == PT_WORKORDER)
+			} //elseif ($_POST['PayType'] == PT_WORKORDER)
 				//	$_POST['code_id'] = DB_Company::get_pref('default_assembly_act');
 			else {
-				$_POST['code_id']
-				 = DB_Company::get_pref($payment ? 'default_cogs_act' : 'default_inv_sales_act');
+				$_POST['code_id'] = DB_Company::get_pref($payment ? 'default_cogs_act' : 'default_inv_sales_act');
 			}
 			echo gl_all_accounts_list('code_id', null, true, true);
 			if ($dim >= 1) {
@@ -221,14 +205,11 @@
 		amount_cells(null, 'amount');
 		text_cells_ex(null, 'LineMemo', 35, 255);
 		if ($id != -1) {
-			button_cell('UpdateItem', _("Update"),
-				_('Confirm changes'), ICON_UPDATE);
-			button_cell('CancelItemChanges', _("Cancel"),
-				_('Cancel changes'), ICON_CANCEL);
+			button_cell('UpdateItem', _("Update"), _('Confirm changes'), ICON_UPDATE);
+			button_cell('CancelItemChanges', _("Cancel"), _('Cancel changes'), ICON_CANCEL);
 			JS::set_focus('amount');
 		} else {
-			submit_cells('AddItem', _("Add Item"), "colspan=2",
-				_('Add new item to document'), true);
+			submit_cells('AddItem', _("Add Item"), "colspan=2", _('Add new item to document'), true);
 		}
 		end_row();
 	}

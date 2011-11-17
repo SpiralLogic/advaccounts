@@ -26,9 +26,7 @@
 		div_start('items_table');
 		start_table(Config::get('tables_style') . "  width=90% colspan=7");
 		$th = array(
-			_("Item Code"), _("Item Description"), _("Quantity"),
-			_("Unit"), _("Unit Cost"), ''
-		);
+			_("Item Code"), _("Item Description"), _("Quantity"), _("Unit"), _("Unit Cost"), '');
 		if (count($order->line_items)) {
 			$th[] = '';
 		}
@@ -36,10 +34,7 @@
 		//	$total = 0;
 		$k = 0; //row colour counter
 		$id = find_submit('Edit');
-		foreach (
-			$order->line_items as $line_no => $stock_item
-		)
-		{
+		foreach ($order->line_items as $line_no => $stock_item) {
 			//		$total += ($stock_item->standard_cost * $stock_item->quantity);
 			if ($id != $line_no) {
 				alt_table_row_color($k);
@@ -49,14 +44,8 @@
 				label_cell($stock_item->units);
 				amount_cell($stock_item->standard_cost);
 				//			amount_cell($stock_item->standard_cost * $stock_item->quantity);
-				edit_button_cell(
-					"Edit$line_no", _("Edit"),
-					_('Edit document line')
-				);
-				delete_button_cell(
-					"Delete$line_no", _("Delete"),
-					_('Remove line from document')
-				);
+				edit_button_cell("Edit$line_no", _("Edit"), _('Edit document line'));
+				delete_button_cell("Delete$line_no", _("Delete"), _('Remove line from document'));
 				end_row();
 			} else {
 				issue_edit_item_controls($order, $line_no);
@@ -78,10 +67,7 @@
 		$id = find_submit('Edit');
 		if ($line_no != -1 && $line_no == $id) {
 			$_POST['stock_id'] = $order->line_items[$id]->stock_id;
-			$_POST['qty'] = Num::qty_format(
-				$order->line_items[$id]->quantity,
-				$order->line_items[$id]->stock_id, $dec
-			);
+			$_POST['qty'] = Num::qty_format($order->line_items[$id]->quantity, $order->line_items[$id]->stock_id, $dec);
 			$_POST['std_cost'] = Num::price_format($order->line_items[$id]->standard_cost);
 			$_POST['units'] = $order->line_items[$id]->units;
 			hidden('stock_id', $_POST['stock_id']);
@@ -89,11 +75,8 @@
 			label_cell($order->line_items[$id]->description);
 			$Ajax->activate('items_table');
 		} else {
-			$wo_details = get_work_order($_SESSION['issue_items']->order_id);
-			stock_component_items_list_cells(
-				null, 'stock_id',
-				$wo_details["stock_id"], null, false, true
-			);
+			$wo_details = WO_WorkOrder::get($_SESSION['issue_items']->order_id);
+			stock_component_items_list_cells(null, 'stock_id', $wo_details["stock_id"], null, false, true);
 			if (list_updated('stock_id')) {
 				$Ajax->activate('units');
 				$Ajax->activate('qty');
@@ -109,21 +92,12 @@
 		label_cell($_POST['units'], '', 'units');
 		amount_cells(null, 'std_cost', $_POST['std_cost']);
 		if ($id != -1) {
-			button_cell(
-				'UpdateItem', _("Update"),
-				_('Confirm changes'), ICON_UPDATE
-			);
-			button_cell(
-				'CancelItemChanges', _("Cancel"),
-				_('Cancel changes'), ICON_CANCEL
-			);
+			button_cell('UpdateItem', _("Update"), _('Confirm changes'), ICON_UPDATE);
+			button_cell('CancelItemChanges', _("Cancel"), _('Cancel changes'), ICON_CANCEL);
 			hidden('LineNo', $line_no);
 			JS::set_focus('qty');
 		} else {
-			submit_cells(
-				'AddItem', _("Add Item"), "colspan=2",
-				_('Add new item to document'), true
-			);
+			submit_cells('AddItem', _("Add Item"), "colspan=2", _('Add new item to document'), true);
 		}
 		end_row();
 	}
@@ -137,10 +111,7 @@
 		if (!isset($_POST['IssueType'])) {
 			$_POST['IssueType'] = 0;
 		}
-		yesno_list_row(
-			_("Type:"), 'IssueType', $_POST['IssueType'],
-			_("Return Items to Location"), _("Issue Items to Work order")
-		);
+		yesno_list_row(_("Type:"), 'IssueType', $_POST['IssueType'], _("Return Items to Location"), _("Issue Items to Work order"));
 		locations_list_row(_("From Location:"), 'Location');
 		workcenter_list_row(_("To Work Centre:"), 'WorkCentre');
 		date_row(_("Issue Date:"), 'date_');

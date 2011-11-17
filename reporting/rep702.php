@@ -35,20 +35,13 @@
 		}
 		$dec = User::price_dec();
 		$cols = array(0, 100, 240, 300, 400, 460, 520, 580);
-		$headers = array(_('Type/Account'), _('Reference') . '/' . _('Account Name'), _('Date/Dim.'),
-			_('Person/Item/Memo'), _('Debit'), _('Credit')
-		);
+		$headers = array(
+			_('Type/Account'), _('Reference') . '/' . _('Account Name'), _('Date/Dim.'), _('Person/Item/Memo'), _('Debit'), _('Credit'));
 		$aligns = array('left', 'left', 'left', 'left', 'right', 'right');
-		$params = array(0 => $comments,
-			1 => array('text' => _('Period'),
-				'from' => $from,
-				'to' => $to),
-			2 => array('text' => _('Type'),
-				'from' =>
-				$systype == -1 ? _('All') : $systypes_array[$systype],
-				'to' => ''
-			)
-		);
+		$params = array(
+			0 => $comments, 1 => array(
+				'text' => _('Period'), 'from' => $from, 'to' => $to), 2 => array(
+				'text' => _('Type'), 'from' => $systype == -1 ? _('All') : $systypes_array[$systype], 'to' => ''));
 		$rep = new FrontReport(_('List of Journal Entries'), "JournalEntries", User::pagesize());
 		$rep->Font();
 		$rep->Info($params, $cols, $headers, $aligns);
@@ -58,8 +51,7 @@
 		}
 		$trans = GL_Trans::get($from, $to, -1, null, 0, 0, $systype);
 		$typeno = $type = 0;
-		while ($myrow = DB::fetch($trans))
-		{
+		while ($myrow = DB::fetch($trans)) {
 			if ($type != $myrow['type'] || $typeno != $myrow['type_no']) {
 				if ($typeno != 0) {
 					$rep->Line($rep->row + 4);
@@ -85,8 +77,8 @@
 			}
 			$rep->TextCol(0, 1, $myrow['account']);
 			$rep->TextCol(1, 2, $myrow['account_name']);
-			$dim_str = get_dimension_string($myrow['dimension_id']);
-			$dim_str2 = get_dimension_string($myrow['dimension2_id']);
+			$dim_str = Dimensions::get_string($myrow['dimension_id']);
+			$dim_str2 = Dimensions::get_string($myrow['dimension2_id']);
 			if ($dim_str2 != "") {
 				$dim_str .= "/" . $dim_str2;
 			}

@@ -25,17 +25,14 @@
 		Display::note(ui_view::get_trans_view_str($stype, $id, _("View this Work Order")));
 		Display::note(ui_view::get_gl_view_str($stype, $id, _("View the GL Journal Entries for this Work Order")), 1);
 		$ar = array(
-			'PARAM_0' => $_GET['date'],
-			'PARAM_1' => $_GET['date'],
-			'PARAM_2' => $stype
-		);
+			'PARAM_0' => $_GET['date'], 'PARAM_1' => $_GET['date'], 'PARAM_2' => $stype);
 		Display::note(Reporting::print_link(_("Print the GL Journal Entries for this Work Order"), 702, $ar), 1);
 		hyperlink_no_params("search_work_orders.php", _("Select another &Work Order to Process"));
 		end_page();
 		exit;
 	}
 	//--------------------------------------------------------------------------------------------------
-	$wo_details = get_work_order($_POST['selected_id']);
+	$wo_details = WO_WorkOrder::get($_POST['selected_id']);
 	if (strlen($wo_details[0]) == 0) {
 		Errors::error(_("The order number sent is not valid."));
 		exit;
@@ -63,9 +60,7 @@
 			Errors::error(_("The entered date is invalid."));
 			JS::set_focus('date_');
 			return false;
-		}
-		elseif (!Dates::is_date_in_fiscalyear($_POST['date_']))
-		{
+		} elseif (!Dates::is_date_in_fiscalyear($_POST['date_'])) {
 			Errors::error(_("The entered date is not in fiscal year."));
 			JS::set_focus('date_');
 			return false;
@@ -77,7 +72,7 @@
 		}
 		// if unassembling we need to check the qoh
 		if (($_POST['ProductionType'] == 0) && !SysPrefs::allow_negative_stock()) {
-			$wo_details = get_work_order($_POST['selected_id']);
+			$wo_details = WO_WorkOrder::get($_POST['selected_id']);
 			$qoh = Item::get_qoh_on_date($wo_details["stock_id"], $wo_details["loc_code"], $_POST['date_']);
 			if (-input_num('quantity') + $qoh < 0) {
 				Errors::error(_("The unassembling cannot be processed because there is insufficient stock."));
@@ -88,19 +83,15 @@
 		// if production we need to check the qoh of the wo requirements
 		if (($_POST['ProductionType'] == 1) && !SysPrefs::allow_negative_stock()) {
 			$err = false;
-			$result = get_wo_requirements($_POST['selected_id']);
-			while ($row = DB::fetch($result))
-			{
+			$result = WO_Requirements::get($_POST['selected_id']);
+			while ($row = DB::fetch($result)) {
 				if ($row['mb_flag'] == 'D') // service, non stock
 				{
 					continue;
 				}
 				$qoh = Item::get_qoh_on_date($row["stock_id"], $row["loc_code"], $_POST['date_']);
 				if ($qoh - $row['units_req'] * input_num('quantity') < 0) {
-					Errors::error(
-						_("The production cannot be processed because a required item would cause a negative inventory balance :") .
-						" " . $row['stock_id'] . " - " . $row['description']
-					);
+					Errors::error(_("The production cannot be processed because a required item would cause a negative inventory balance :") . " " . $row['stock_id'] . " - " . $row['description']);
 					$err = true;
 				}
 			}
@@ -122,10 +113,7 @@
 		if ($_POST['ProductionType'] == 0) {
 			$_POST['quantity'] = -$_POST['quantity'];
 		}
-		$id = work_order_produce(
-			$_POST['selected_id'], $_POST['ref'], input_num('quantity'),
-			$_POST['date_'], $_POST['memo_'], $close_wo
-		);
+		$id = WO_Produce::add($_POST['selected_id'], $_POST['ref'], input_num('quantity'), $_POST['date_'], $_POST['memo_'], $close_wo);
 		meta_forward($_SERVER['PHP_SELF'], "AddedID=" . $_POST['selected_id'] . "&date=" . $_POST['date_']);
 	}
 	//-------------------------------------------------------------------------------------
@@ -136,10 +124,7 @@
 	//hidden('WOReqQuantity', $_POST['WOReqQuantity']);
 	$dec = Num::qty_dec($wo_details["stock_id"]);
 	if (!isset($_POST['quantity']) || $_POST['quantity'] == '') {
-		$_POST['quantity'] = Num::qty_format(
-			max($wo_details["units_reqd"] - $wo_details["units_issued"], 0),
-			$wo_details["stock_id"], $dec
-		);
+		$_POST['quantity'] = Num::qty_format(max($wo_details["units_reqd"] - $wo_details["units_issued"], 0), $wo_details["stock_id"], $dec);
 	}
 	start_table(Config::get('tables_style2'));
 	br();
@@ -147,10 +132,7 @@
 	if (!isset($_POST['ProductionType'])) {
 		$_POST['ProductionType'] = 1;
 	}
-	yesno_list_row(
-		_("Type:"), 'ProductionType', $_POST['ProductionType'],
-		_("Produce Finished Items"), _("Return Items to Work Order")
-	);
+	yesno_list_row(_("Type:"), 'ProductionType', $_POST['ProductionType'], _("Produce Finished Items"), _("Return Items to Work Order"));
 	small_qty_row(_("Quantity:"), 'quantity', null, null, null, $dec);
 	date_row(_("Date:"), 'date_');
 	textarea_row(_("Memo:"), 'memo_', null, 40, 3);

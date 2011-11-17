@@ -92,19 +92,13 @@
 		if (!isset($_POST['Dimension2'])) {
 			$_POST['Dimension2'] = 0;
 		}
-		$result = GL_Trans::get(
-			$_POST['TransFromDate'], $_POST['TransToDate'], -1,
-			$_POST["account"], $_POST['Dimension'], $_POST['Dimension2'], null,
-			input_num('amount_min'), input_num('amount_max')
-		);
+		$result = GL_Trans::get($_POST['TransFromDate'], $_POST['TransToDate'], -1, $_POST["account"], $_POST['Dimension'], $_POST['Dimension2'], null, input_num('amount_min'), input_num('amount_max'));
 		$colspan = ($dim == 2 ? "6" : ($dim == 1 ? "5" : "4"));
 		if ($_POST["account"] != null) {
 			Display::heading($_POST["account"] . "&nbsp;&nbsp;&nbsp;" . $act_name);
 		}
 		// Only show balances if an account is specified AND we're not filtering by amounts
-		$show_balances = $_POST["account"] != null
-		 && input_num("amount_min") == 0
-		 && input_num("amount_max") == 0;
+		$show_balances = $_POST["account"] != null && input_num("amount_min") == 0 && input_num("amount_max") == 0;
 		start_table(Config::get('tables_style'));
 		$first_cols = array(_("Type"), _("#"), _("Date"));
 		if ($_POST["account"] == null) {
@@ -114,8 +108,7 @@
 		}
 		if ($dim == 2) {
 			$dim_cols = array(_("Dimension") . " 1", _("Dimension") . " 2");
-		}
-		else if ($dim == 1) {
+		} else if ($dim == 1) {
 			$dim_cols = array(_("Dimension"));
 		} else {
 			$dim_cols = array();
@@ -138,10 +131,7 @@
 		}
 		$bfw = 0;
 		if ($show_balances) {
-			$bfw = GL_Trans::get_balance_from_to(
-				$begin, $_POST['TransFromDate'], $_POST["account"], $_POST['Dimension'],
-				$_POST['Dimension2']
-			);
+			$bfw = GL_Trans::get_balance_from_to($begin, $_POST['TransFromDate'], $_POST["account"], $_POST['Dimension'], $_POST['Dimension2']);
 			start_row("class='inquirybg'");
 			label_cell("<b>" . _("Opening Balance") . " - " . $_POST['TransFromDate'] . "</b>", "colspan=$colspan");
 			Display::debit_or_credit_cells($bfw);
@@ -152,8 +142,7 @@
 		$running_total = $bfw;
 		$j = 1;
 		$k = 0; //row colour counter
-		while ($myrow = DB::fetch($result))
-		{
+		while ($myrow = DB::fetch($result)) {
 			alt_table_row_color($k);
 			$running_total += $myrow["amount"];
 			$trandate = Dates::sql2date($myrow["tran_date"]);
@@ -164,10 +153,10 @@
 				label_cell($myrow["account"] . ' ' . GL_Account::get_name($myrow["account"]));
 			}
 			if ($dim >= 1) {
-				label_cell(get_dimension_string($myrow['dimension_id'], true));
+				label_cell(Dimensions::get_string($myrow['dimension_id'], true));
 			}
 			if ($dim > 1) {
-				label_cell(get_dimension_string($myrow['dimension2_id'], true));
+				label_cell(Dimensions::get_string($myrow['dimension2_id'], true));
 			}
 			label_cell(Banking::payment_person_name($myrow["person_type_id"], $myrow["person_id"]));
 			Display::debit_or_credit_cells($myrow["amount"]);

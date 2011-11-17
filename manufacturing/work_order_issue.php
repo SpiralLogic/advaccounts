@@ -49,9 +49,7 @@
 			Errors::error(_("The entered date for the issue is invalid."));
 			JS::set_focus('date_');
 			return false;
-		}
-		elseif (!Dates::is_date_in_fiscalyear($_POST['date_']))
-		{
+		} elseif (!Dates::is_date_in_fiscalyear($_POST['date_'])) {
 			Errors::error(_("The entered date is not in fiscal year."));
 			JS::set_focus('date_');
 			return false;
@@ -68,10 +66,7 @@
 		}
 		$failed_item = $_SESSION['issue_items']->check_qoh($_POST['Location'], $_POST['date_'], !$_POST['IssueType']);
 		if ($failed_item != -1) {
-			Errors::error(
-				_("The issue cannot be processed because an entered item would cause a negative inventory balance :") .
-				 " " . $failed_item->stock_id . " - " . $failed_item->description
-			);
+			Errors::error(_("The issue cannot be processed because an entered item would cause a negative inventory balance :") . " " . $failed_item->stock_id . " - " . $failed_item->description);
 			return false;
 		}
 		return true;
@@ -79,17 +74,9 @@
 
 	if (isset($_POST['Process']) && can_process()) {
 		// if failed, returns a stockID
-		$failed_data = add_work_order_issue(
-			$_SESSION['issue_items']->order_id,
-			$_POST['ref'], $_POST['IssueType'], $_SESSION['issue_items']->line_items,
-			$_POST['Location'], $_POST['WorkCentre'], $_POST['date_'], $_POST['memo_']
-		);
+		$failed_data = WO_Issue::add($_SESSION['issue_items']->order_id, $_POST['ref'], $_POST['IssueType'], $_SESSION['issue_items']->line_items, $_POST['Location'], $_POST['WorkCentre'], $_POST['date_'], $_POST['memo_']);
 		if ($failed_data != null) {
-			Errors::error(
-				_("The process cannot be completed because there is an insufficient total quantity for a component.") . "<br>"
-				 . _("Component is :") . $failed_data[0] . "<br>"
-				 . _("From location :") . $failed_data[1] . "<br>"
-			);
+			Errors::error(_("The process cannot be completed because there is an insufficient total quantity for a component.") . "<br>" . _("Component is :") . $failed_data[0] . "<br>" . _("From location :") . $failed_data[1] . "<br>");
 		} else {
 			meta_forward($_SERVER['PHP_SELF'], "AddedID=" . $_SESSION['issue_items']->order_id);
 		}
@@ -133,10 +120,7 @@
 		if (!check_item_data()) {
 			return;
 		}
-		add_to_issue(
-			$_SESSION['issue_items'], $_POST['stock_id'], input_num('qty'),
-			input_num('std_cost')
-		);
+		add_to_issue($_SESSION['issue_items'], $_POST['stock_id'], input_num('qty'), input_num('std_cost'));
 		line_start_focus();
 	}
 

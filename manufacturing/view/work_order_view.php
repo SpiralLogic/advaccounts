@@ -21,7 +21,7 @@
 	}
 	Display::heading($systypes_array[ST_WORKORDER] . " # " . $woid);
 	br(1);
-	$myrow = get_work_order($woid);
+	$myrow = WO_WorkOrder::get($woid);
 	if ($myrow["type"] == WO_ADVANCED) {
 		display_wo_details($woid, true);
 	} else {

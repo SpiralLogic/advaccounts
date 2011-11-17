@@ -10,16 +10,6 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	//--------------------------------------------------------------------------------
-	function add_to_order($order, $new_item, $new_item_qty, $standard_cost)
-	{
-		if ($order->find_cart_item($new_item)) {
-			Errors::error(_("For Part: '") . $new_item . "' This item is already on this order.  You can change the quantity ordered of the existing line if necessary.");
-		} else {
-			$order->add_to_cart(count($order->line_items), $new_item, $new_item_qty, $standard_cost);
-		}
-	}
-
-	//--------------------------------------------------------------------------------
 	function display_order_header($order)
 	{
 		start_outer_table("width=70% " . Config::get('tables_style2')); // outer table
@@ -33,23 +23,18 @@
 		if (!isset($_POST['Increase'])) {
 			$_POST['Increase'] = 1;
 		}
-		yesno_list_row(
-			_("Type:"), 'Increase', $_POST['Increase'],
-			_("Positive Adjustment"), _("Negative Adjustment")
-		);
+		yesno_list_row(_("Type:"), 'Increase', $_POST['Increase'], _("Positive Adjustment"), _("Negative Adjustment"));
 		end_outer_table(1); // outer table
 	}
 
 	//---------------------------------------------------------------------------------
-	function display_adjustment_items($title, &$order)
+	function display_adjustment_items($title, $order)
 	{
 		Display::heading($title);
 		div_start('items_table');
 		start_table(Config::get('tables_style') . "  width=90%");
 		$th = array(
-			_("Item Code"), _("Item Description"), _("Quantity"),
-			_("Unit"), _("Unit Cost"), _("Total"), ""
-		);
+			_("Item Code"), _("Item Description"), _("Quantity"), _("Unit"), _("Unit Cost"), _("Total"), "");
 		if (count($order->line_items)) {
 			$th[] = '';
 		}
@@ -57,10 +42,7 @@
 		$total = 0;
 		$k = 0; //row colour counter
 		$id = find_submit('Edit');
-		foreach (
-			$order->line_items as $line_no => $stock_item
-		)
-		{
+		foreach ($order->line_items as $line_no => $stock_item) {
 			$total += ($stock_item->standard_cost * $stock_item->quantity);
 			if ($id != $line_no) {
 				alt_table_row_color($k);
@@ -70,14 +52,8 @@
 				label_cell($stock_item->units);
 				amount_decimal_cell($stock_item->standard_cost);
 				amount_cell($stock_item->standard_cost * $stock_item->quantity);
-				edit_button_cell(
-					"Edit$line_no", _("Edit"),
-					_('Edit document line')
-				);
-				delete_button_cell(
-					"Delete$line_no", _("Delete"),
-					_('Remove line from document')
-				);
+				edit_button_cell("Edit$line_no", _("Edit"), _('Edit document line'));
+				delete_button_cell("Delete$line_no", _("Delete"), _('Remove line from document'));
 				end_row();
 			} else {
 				adjustment_edit_item_controls($order, $line_no);
@@ -100,10 +76,7 @@
 		$id = find_submit('Edit');
 		if ($line_no != -1 && $line_no == $id) {
 			$_POST['stock_id'] = $order->line_items[$id]->stock_id;
-			$_POST['qty'] = Num::qty_format(
-				$order->line_items[$id]->quantity,
-				$order->line_items[$id]->stock_id, $dec
-			);
+			$_POST['qty'] = Num::qty_format($order->line_items[$id]->quantity, $order->line_items[$id]->stock_id, $dec);
 			//$_POST['std_cost'] = Num::price_format($order->line_items[$id]->standard_cost);
 			$_POST['std_cost'] = Num::price_decimal($order->line_items[$id]->standard_cost, $dec2);
 			$_POST['units'] = $order->line_items[$id]->units;
@@ -131,21 +104,12 @@
 		amount_cells(null, 'std_cost', null, null, null, $dec2);
 		label_cell("&nbsp;");
 		if ($id != -1) {
-			button_cell(
-				'UpdateItem', _("Update"),
-				_('Confirm changes'), ICON_UPDATE
-			);
-			button_cell(
-				'CancelItemChanges', _("Cancel"),
-				_('Cancel changes'), ICON_CANCEL
-			);
+			button_cell('UpdateItem', _("Update"), _('Confirm changes'), ICON_UPDATE);
+			button_cell('CancelItemChanges', _("Cancel"), _('Cancel changes'), ICON_CANCEL);
 			hidden('LineNo', $line_no);
 			JS::set_focus('qty');
 		} else {
-			submit_cells(
-				'AddItem', _("Add Item"), "colspan=2",
-				_('Add new item to document'), true
-			);
+			submit_cells('AddItem', _("Add Item"), "colspan=2", _('Add new item to document'), true);
 		}
 		end_row();
 	}

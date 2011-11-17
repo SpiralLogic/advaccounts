@@ -46,11 +46,7 @@
 	label_cells(_("Date"), Dates::sql2date($to_trans['trans_date']), "class='tableheader2'");
 	end_row();
 	start_row();
-	label_cells(
-		_("From"), Banking::payment_person_name(
-			$to_trans['person_type_id'], $to_trans['person_id']
-		), "class='tableheader2'", "colspan=$colspan1"
-	);
+	label_cells(_("From"), Banking::payment_person_name($to_trans['person_type_id'], $to_trans['person_id']), "class='tableheader2'", "colspan=$colspan1");
 	label_cells(_("Deposit Type"), $bank_transfer_types[$to_trans['account_type']], "class='tableheader2'");
 	end_row();
 	start_row();
@@ -71,35 +67,27 @@
 		$dim = DB_Company::get_pref('use_dimension');
 		if ($dim == 2) {
 			$th = array(
-				_("Account Code"), _("Account Description"), _("Dimension") . " 1", _("Dimension") . " 2",
-				_("Amount"), _("Memo")
-			);
-		}
-		else if ($dim == 1) {
+				_("Account Code"), _("Account Description"), _("Dimension") . " 1", _("Dimension") . " 2", _("Amount"), _("Memo"));
+		} else if ($dim == 1) {
 			$th = array(
-				_("Account Code"), _("Account Description"), _("Dimension"),
-				_("Amount"), _("Memo")
-			);
+				_("Account Code"), _("Account Description"), _("Dimension"), _("Amount"), _("Memo"));
 		} else {
 			$th = array(
-				_("Account Code"), _("Account Description"),
-				_("Amount"), _("Memo")
-			);
+				_("Account Code"), _("Account Description"), _("Amount"), _("Memo"));
 		}
 		table_header($th);
 		$k = 0; //row colour counter
 		$total_amount = 0;
-		while ($item = DB::fetch($items))
-		{
+		while ($item = DB::fetch($items)) {
 			if ($item["account"] != $to_trans["account_code"]) {
 				alt_table_row_color($k);
 				label_cell($item["account"]);
 				label_cell($item["account_name"]);
 				if ($dim >= 1) {
-					label_cell(get_dimension_string($item['dimension_id'], true));
+					label_cell(Dimensions::get_string($item['dimension_id'], true));
 				}
 				if ($dim > 1) {
-					label_cell(get_dimension_string($item['dimension2_id'], true));
+					label_cell(Dimensions::get_string($item['dimension2_id'], true));
 				}
 				amount_cell($item["amount"]);
 				label_cell($item["memo_"]);

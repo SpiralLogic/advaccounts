@@ -8,7 +8,7 @@
 	 */
 	$page_security = 'SA_CUSTOMER';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-		Session::get()->App->selected_application = 'contacts';
+	Session::get()->App->selected_application = 'contacts';
 	if (AJAX_REFERRER) {
 		if (isset($_POST['branch_code'])) {
 			if ($_POST['branch_code'] > 0) {
@@ -21,6 +21,5 @@
 		exit();
 	}
 	Page::start(_($help_context = "Items"), Input::request('popup'));
-	Contacts_Customer::addSearchBox('customer_id', array('cell'       => false,
-																						 'description' => ''));
+	Contacts_Customer::addSearchBox('customer_id', array('cell' => false, 'description' => ''));
 	end_page();

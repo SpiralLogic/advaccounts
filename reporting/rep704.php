@@ -34,8 +34,7 @@
 			$dimension2 = $_POST['PARAM_5'];
 			$comments = $_POST['PARAM_6'];
 			$destination = $_POST['PARAM_7'];
-		}
-		else if ($dim == 1) {
+		} else if ($dim == 1) {
 			$dimension = $_POST['PARAM_4'];
 			$comments = $_POST['PARAM_5'];
 			$destination = $_POST['PARAM_6'];
@@ -58,67 +57,39 @@
 		//-------------------------------------------------------------------
 		$aligns = array('left', 'left', 'left', 'left', 'left', 'left', 'left', 'right', 'right', 'right');
 		if ($dim == 2) {
-			$headers = array(_('Type'), _('Ref'), _('#'), _('Date'), _('Dimension') . " 1", _('Dimension') . " 2",
-				_('Person/Item'), _('Debit'), _('Credit'), _('Balance')
-			);
-		}
-		elseif ($dim == 1)
-		{
-			$headers = array(_('Type'), _('Ref'), _('#'), _('Date'), _('Dimension'), "", _('Person/Item'),
-				_('Debit'), _('Credit'), _('Balance')
-			);
+			$headers = array(
+				_('Type'), _('Ref'), _('#'), _('Date'), _('Dimension') . " 1", _('Dimension') . " 2", _('Person/Item'), _('Debit'), _('Credit'), _('Balance'));
+		} elseif ($dim == 1) {
+			$headers = array(
+				_('Type'), _('Ref'), _('#'), _('Date'), _('Dimension'), "", _('Person/Item'), _('Debit'), _('Credit'), _('Balance'));
 		} else {
-			$headers = array(_('Type'), _('Ref'), _('#'), _('Date'), "", "", _('Person/Item'),
-				_('Debit'), _('Credit'), _('Balance')
-			);
+			$headers = array(
+				_('Type'), _('Ref'), _('#'), _('Date'), "", "", _('Person/Item'), _('Debit'), _('Credit'), _('Balance'));
 		}
 		if ($dim == 2) {
-			$params = array(0 => $comments,
-				1 => array('text' => _('Period'),
-					'from' => $from,
-					'to' => $to),
-				2 => array('text' => _('Accounts'),
-					'from' => $fromacc,
-					'to' => $toacc),
-				3 => array('text' => _('Dimension') . " 1",
-					'from' => get_dimension_string($dimension),
-					'to' => ''
-				),
-				4 => array('text' => _('Dimension') . " 2",
-					'from' => get_dimension_string($dimension2),
-					'to' => ''
-				)
-			);
-		}
-		else if ($dim == 1) {
-			$params = array(0 => $comments,
-				1 => array('text' => _('Period'),
-					'from' => $from,
-					'to' => $to),
-				2 => array('text' => _('Accounts'),
-					'from' => $fromacc,
-					'to' => $toacc),
-				3 => array('text' => _('Dimension'),
-					'from' => get_dimension_string($dimension),
-					'to' => ''
-				)
-			);
+			$params = array(
+				0 => $comments, 1 => array(
+					'text' => _('Period'), 'from' => $from, 'to' => $to), 2 => array(
+					'text' => _('Accounts'), 'from' => $fromacc, 'to' => $toacc), 3 => array(
+					'text' => _('Dimension') . " 1", 'from' => Dimensions::get_string($dimension), 'to' => ''), 4 => array(
+					'text' => _('Dimension') . " 2", 'from' => Dimensions::get_string($dimension2), 'to' => ''));
+		} else if ($dim == 1) {
+			$params = array(
+				0 => $comments, 1 => array(
+					'text' => _('Period'), 'from' => $from, 'to' => $to), 2 => array(
+					'text' => _('Accounts'), 'from' => $fromacc, 'to' => $toacc), 3 => array(
+					'text' => _('Dimension'), 'from' => Dimensions::get_string($dimension), 'to' => ''));
 		} else {
-			$params = array(0 => $comments,
-				1 => array('text' => _('Period'),
-					'from' => $from,
-					'to' => $to),
-				2 => array('text' => _('Accounts'),
-					'from' => $fromacc,
-					'to' => $toacc)
-			);
+			$params = array(
+				0 => $comments, 1 => array(
+					'text' => _('Period'), 'from' => $from, 'to' => $to), 2 => array(
+					'text' => _('Accounts'), 'from' => $fromacc, 'to' => $toacc));
 		}
 		$rep->Font();
 		$rep->Info($params, $cols, $headers, $aligns);
 		$rep->Header();
 		$accounts = GL_Account::get_all($fromacc, $toacc);
-		while ($account = DB::fetch($accounts))
-		{
+		while ($account = DB::fetch($accounts)) {
 			if (GL_Account::is_balancesheet($account["account_code"])) {
 				$begin = "";
 			} else {
@@ -146,8 +117,7 @@
 			$total = $prev_balance;
 			$rep->NewLine(2);
 			if ($rows > 0) {
-				while ($myrow = DB::fetch($trans))
-				{
+				while ($myrow = DB::fetch($trans)) {
 					$total += $myrow['amount'];
 					$rep->TextCol(0, 1, $systypes_array[$myrow["type"]], -2);
 					$reference = Refs::get_reference($myrow["type"], $myrow["type_no"]);
@@ -155,10 +125,10 @@
 					$rep->TextCol(2, 3, $myrow['type_no'], -2);
 					$rep->DateCol(3, 4, $myrow["tran_date"], true);
 					if ($dim >= 1) {
-						$rep->TextCol(4, 5, get_dimension_string($myrow['dimension_id']));
+						$rep->TextCol(4, 5, Dimensions::get_string($myrow['dimension_id']));
 					}
 					if ($dim > 1) {
-						$rep->TextCol(5, 6, get_dimension_string($myrow['dimension2_id']));
+						$rep->TextCol(5, 6, Dimensions::get_string($myrow['dimension2_id']));
 					}
 					$txt = Banking::payment_person_name($myrow["person_type_id"], $myrow["person_id"], false);
 					$memo = $myrow['memo_'];
