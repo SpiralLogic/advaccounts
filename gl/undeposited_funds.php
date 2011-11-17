@@ -224,7 +224,7 @@
 	 = "SELECT	type, trans_no, ref, trans_date,
 				amount,	person_id, person_type_id, reconciled, id
 		FROM bank_trans
-		WHERE undeposited=1 AND trans_date <= '" . Dates::date2sql($date) . "' AND reconciled IS NULL AND amount<8>0
+		WHERE undeposited=1 AND trans_date <= '" . Dates::date2sql($date) . "' AND reconciled IS NULL AND amount<>0
 		ORDER BY trans_date DESC,bank_trans.id ";
 	$cols = array(
 		_("Type") => array(

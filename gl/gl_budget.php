@@ -95,7 +95,6 @@
 	start_form();
 
 	if (Validation::check(Validation::GL_ACCOUNTS)) {
-		var_dump($myrow);
 
 			$dim = DB_Company::get_pref('use_dimension');
 		start_table(Config::get('tables_style2'));

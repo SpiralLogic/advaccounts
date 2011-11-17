@@ -55,7 +55,7 @@
 	}
 
 	function gl_view($row) {
-		return ui_view::get_gl_view_str($row["type"], $row["trans_no"]);
+		if ($row['type']!=15) return ui_view::get_gl_view_str($row["type"], $row["trans_no"]);
 	}
 
 	function fmt_debit($row) {
@@ -253,12 +253,12 @@
 		_("Date") => array('date',			'ord' => ''),
 		_("Debit") => array(
 			'align' => 'right',
-			'fun' => 'fmt_debit'
+			'fun' => 'fmt_debit',	'ord' => ''
 		),
 		_("Credit") => array(
 			'align' => 'right',
 			'insert' => true,
-			'fun' => 'fmt_credit'
+			'fun' => 'fmt_credit',	'ord' => ''
 		),
 		_("Person/Item") => array('fun' => 'fmt_person'), array(
 			'insert' => true,
@@ -280,14 +280,14 @@
 	submit_center('Reconcile', _("Reconcile"), true, '', null);
 	end_form();
 	//------------------------------------------------------------------------------------------------
-	$js_lib[]
-	 = <<<JS
+	JS::onload(<<<JS
 $(function() {
-$(".tableheader:nth-child(9)").click(function() {
+	$("th:nth-child(9)").click(function() {
 jQuery("#_trans_tbl_span").find("input").value("")
 })
 })
-JS;
+JS
+	);
 	end_page();
 
 ?>
