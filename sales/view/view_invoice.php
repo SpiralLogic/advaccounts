@@ -111,7 +111,11 @@
 	label_row(_("TOTAL INVOICE"), $display_total, "colspan=6 align=right", "nowrap align=right");
 	end_table(1);
 	Display::is_voided(ST_SALESINVOICE, $trans_id, _("This invoice has been voided."));
-	submenu_print(_("&Print This Invoice"), ST_SALESINVOICE, $_GET['trans_no'], 'prtopt');
+	$customer = new Contacts_Customer($myrow['debtor_no']);
+
+		$emails = $customer->getEmailAddresses();
+		submenu_print(_("&Print This Invoice"), ST_SALESINVOICE, $_GET['trans_no'], 'prtopt');
+	submenu_email(_("Email This Invoice"), ST_SALESINVOICE, $_GET['trans_no'], null, $emails, 1);
 	end_page(true);
 
 ?>

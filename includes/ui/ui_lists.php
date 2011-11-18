@@ -409,18 +409,7 @@
 		if ($editkey) {
 			set_editor('customer', $name, $editkey);
 		}
-		$customerBox = new Dialog('Customer Edit', 'customerBox', '');
-		$customerBox->addButtons(array('Close' => '$(this).dialog("close");'));
-		$customerBox->addBeforeClose('$("#customer_id").trigger("change")');
-		$customerBox->setOptions(array(
-			'autoOpen' => false, 'modal' => true, 'width' => '850', 'height' => '715', 'resizeable' => true));
-		$customerBox->show();
-		$js = <<<JS
-		var val = $("#customer_id").val();
 
-		$("#customerBox").html("<iframe src='/contacts/customers.php?popup=1&id="+val+"' width='100%' height='595' scrolling='no' style='border:none' frameborder='0'></iframe>").dialog('open');
-JS;
-		JS::addLiveEvent('#customer_id_label', 'click', $js);
 		return combo_input($name, $selected_id, $sql, 'debtor_no', 'name', array(
 			'format' => '_format_add_curr',
 			'order' => array('debtor_ref'),

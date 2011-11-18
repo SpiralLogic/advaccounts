@@ -50,8 +50,8 @@
 			try {
 				spl_autoload(strtolower($className));
 			} catch (LogicException $e) {
-				echo('<pre>');
 				if (Config::get('debug')) {
+					echo('<pre>');
 					debug_print_backtrace();
 				}
 				session_unset();

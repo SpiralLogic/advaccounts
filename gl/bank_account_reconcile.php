@@ -80,7 +80,8 @@
 
 	function fmt_person($row)
 	{
-		return Banking::payment_person_name($row["person_type_id"], $row["person_id"]);
+
+		return Banking::payment_person_name($row["person_type_id"], $row["person_id"],true, $row["trans_no"]);
 	}
 
 	$update_pager = false;

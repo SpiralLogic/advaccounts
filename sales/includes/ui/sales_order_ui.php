@@ -241,7 +241,7 @@ JS;
 			if (isset($order)) {
 				// can't change the customer/branch if items already received on this order
 				//echo $order->customer_name . " - " . $order->deliver_to;
-				label_row(null, $order->customer_name . " - " . $order->deliver_to);
+				label_row(_('Customer:'), $order->customer_name . " - " . $order->deliver_to,"id='customer_id_label' class='label pointer'");
 				hidden('customer_id', $order->customer_id);
 				hidden('branch_id', $order->Branch);
 				hidden('sales_type', $order->sales_type);

@@ -52,6 +52,7 @@
 		//--------------------------------------------------------------------------------------
 		static function get_string($type, $type_no)
 		{
+
 			$str_return = "";
 			$result     = DB_Comments::get($type, $type_no);
 			while ($comment = DB::fetch($result)) {

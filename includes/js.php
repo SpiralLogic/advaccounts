@@ -48,7 +48,7 @@
 			   });
 		   },
 		   select: function(event, ui) {
-	   	 if ({$callback}(ui.item,event)===false) return false;
+	   	 if ({$callback}(ui.item,event,this)===false) return false;
    	   }
       }).css({'z-index' : '2'}).bind('paste',function() { console.log(\${$id}.val());\${$id}.autocomplete('search',\${$id}.val())});
 JS;

@@ -54,7 +54,7 @@
 		if ($value === null) {
 			$value = get_post($name);
 		}
-		$ret = "<input type=\"hidden\" name=\"$name\" value=\"$value\">";
+		$ret = "<input type=\"hidden\" id=\"$name\" name=\"$name\" value=\"$value\">";
 		$Ajax->addUpdate($name, $name, $value);
 		if ($echo) {
 			echo $ret . "\n";

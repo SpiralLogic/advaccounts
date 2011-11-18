@@ -6,12 +6,10 @@
 	 * Time: 4:29 PM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	class Contacts_Postcode
-	{
+	class Contacts_Postcode {
 		private static $count = 1;
 
-		static function				 searchByPostcode($postcode = "*")
-		{
+		static function				 searchByPostcode($postcode = "*") {
 			$sql = "SELECT ID as id, CONCAT(Locality,', ',Pcode,', ',State) as label,  CONCAT(Locality,'|',Pcode,'|',State) as value FROM postcodes WHERE Pcode LIKE " . DB::escape($postcode . '%') . " ORDER BY Pcode LIMIT 20";
 			$result = DB::query($sql, "Could not find postcode");
 			while (($resultArray[] = DB::fetch_assoc($result)) || array_pop($resultArray)) {
@@ -20,8 +18,7 @@
 			return $resultArray;
 		}
 
-		static function searchByCity($city = "*")
-		{
+		static function searchByCity($city = "*") {
 			$sql = "SELECT ID as id, CONCAT(Locality,', ',Pcode,', ',State) as label,  CONCAT(Locality,'|',Pcode,'|',State) as value FROM postcodes WHERE Locality LIKE " . DB::escape('%' . $city . '%') . " ORDER BY Locality LIMIT 20";
 			$result = DB::query($sql, "Could not find city");
 			while (($resultArray[] = DB::fetch_assoc($result)) || array_pop($resultArray)) {
@@ -30,8 +27,7 @@
 			return $resultArray;
 		}
 
-		static function render($postcode, $city, $state, $options = array())
-		{
+		static function render($postcode, $city, $state, $options = array()) {
 			$o = array('url' => '/contacts/postcode.php');
 			extract(array_merge($o, $options));
 			HTML::tr(true)->td(array('class' => 'label '))->label(array('content' => 'City: ', 'for' => $city[0]), false)->td->td(true);
@@ -45,29 +41,37 @@
 			static::registerJS("#" . $postcode[0], "#" . $city[0], "#" . $state[0]);
 		}
 
-		static function registerJS($postcode, $city, $state)
-		{
+		static function registerJS($postcode, $city, $state) {
+			if (static::$count == 1) static::initjs();
+			$set = static::$count;
 			$js = <<<JS
-			Adv.extend({
-			    postcode: (function() {
-			            var sets= [];
-			        return {
-									add: function(set,code,state,city) {
-										sets[set] = {postcode:code,state:state,city:city}
-									},
-			            fetch: function(data,ui) {
-			            console.log(ui);
-			               data = data.value.split('|');
-									    postcode.val(data[1]).trigger('change');
-			                state.val(data[2]).trigger('change');
-			                city.val(data[0]).trigger('change');
-			                return false;
-			            }
-			        }
-			    }())
-			})
+			Adv.postcode.add('$set','$postcode','$city','$state');
+JS;
+		JS::onload($js);
+			static::$count++;
+		}
+
+		protected static function initjs() {
+			$js = <<<JS
+						Adv.extend({
+						    postcode: (function() {
+						            var sets= [];
+						        return {
+												add: function(set,code,state,city) {
+													sets[set] = {postcode:$(code),state:$(state),city:$(city)}
+												},
+						            fetch: function(data,item,ui) {
+						          		var set=$(ui).data("set");
+						               data = data.value.split('|');
+												    sets[set].postcode.val(data[1]).trigger('change');
+						                sets[set].state.val(data[2]).trigger('change');
+						                sets[set].city.val(data[0]).trigger('change');
+						                return false;
+						            }
+						        }
+						    }())
+						})
 JS;
 			JS::beforeload($js);
-			static::$count++;
 		}
 	}

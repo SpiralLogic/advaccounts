@@ -6,8 +6,7 @@
 	 * Time: 4:07 PM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	class Contacts_Customer extends Contacts_Company
-	{
+	class Contacts_Customer extends Contacts_Company {
 		public $debtor_no = 0;
 		public $name = 'New Customer';
 		public $sales_type;
@@ -21,8 +20,7 @@
 		public $accounts;
 		public $transactions;
 
-		function __construct($id = null)
-		{
+		function __construct($id = null) {
 			$this->debtor_no = $id;
 			$this->id = &$this->debtor_no;
 			parent::__construct($id);
@@ -30,8 +28,7 @@
 			$this->debtor_ref = substr($this->name, 0, 60);
 		}
 
-		protected function _canProcess()
-		{
+		protected function _canProcess() {
 			if (strlen($_POST['name']) == 0) {
 				$this->_status(false, 'Processing', "The customer name cannot be empty.", 'name');
 				return false;
@@ -63,8 +60,7 @@
 			return true;
 		}
 
-		protected function setFromArray($changes = NULL)
-		{
+		protected function setFromArray($changes = NULL) {
 			parent::setFromArray($changes);
 			if (isset($changes['accounts']) && is_array($changes['accounts'])) {
 				$this->accounts = new Contacts_Accounts($changes['accounts']);
@@ -81,8 +77,7 @@
 			}
 		}
 
-		public function save($changes = null)
-		{
+		public function save($changes = null) {
 			if (is_array($changes)) {
 				$this->setFromArray($changes);
 			}
@@ -131,16 +126,14 @@
 		}
 
 		protected
-		function _setDefaults()
-		{
+		function _setDefaults() {
 			$this->defaultBranch = reset($this->branches)->branch_code;
 			$this->defaultContact = (count($this->contacts) > 0) ? reset($this->contacts)->id : 0;
 			$this->contacts[0] = new Contacts_Contact(array('parent_id' => $this->id));
 		}
 
 		protected
-		function _saveNew()
-		{
+		function _saveNew() {
 			DB::begin_transaction();
 			$sql
 			 = "INSERT INTO debtors_master (name, debtor_ref, address, tax_id, email, dimension_id, dimension2_id,
@@ -160,8 +153,7 @@
 		}
 
 		protected
-		function _new()
-		{
+		function _new() {
 			$this->_defaults();
 			$this->accounts = new Contacts_Accounts();
 			$this->branches[0] = new Contacts_Branch();
@@ -172,8 +164,7 @@
 		}
 
 		protected
-		function _defaults()
-		{
+		function _defaults() {
 			$this->dimension_id = $this->dimension2_id = $this->inactive = 0;
 			$this->sales_type = $this->credit_status = 1;
 			$this->name = $this->address = $this->email = $this->tax_id = $this->payment_terms = $this->notes = $this->debtor_ref = '';
@@ -183,8 +174,7 @@
 		}
 
 		protected
-		function _read($id = false)
-		{
+		function _read($id = false) {
 			if ($id === false) {
 				return $this->_status(false, 'read', 'No customer ID to read');
 			}
@@ -199,15 +189,13 @@
 			$this->credit_limit = Num::price_format($this->credit_limit);
 		}
 
-		function _countTransactions()
-		{
+		function _countTransactions() {
 			DB::select('COUNT(*)')->from('debtor_trans')->where('debtor_no=', $this->id);
 			return DB::rowCount();
 		}
 
 		public
-		function getTransactions()
-		{
+		function getTransactions() {
 			if ($this->id == 0) {
 				return;
 			}
@@ -232,29 +220,25 @@
 		}
 
 		protected
-		function _countOrders()
-		{
+		function _countOrders() {
 			DB::select('COUNT(*)')->from('sales_orders')->where('debtor_no=', $this->id);
 			return DB::rowCount();
 		}
 
 		protected
-		function _countBranches()
-		{
+		function _countBranches() {
 			DB::select('COUNT(*)')->from('cust_branch')->where('debtor_no=', $this->id);
 			return DB::rowCount();
 		}
 
 		protected
-		function _countContacts()
-		{
+		function _countContacts() {
 			DB::select('COUNT(*)')->from('contacts')->where('debtor_no=', $this->id);
 			return DB::rowCount();
 		}
 
 		public
-		function delete()
-		{
+		function delete() {
 			if ($this->_countTransactions() > 0) {
 				return $this->_status(false, 'delete', "This customer cannot be deleted because there are transactions that refer to it.");
 			}
@@ -275,8 +259,7 @@
 		}
 
 		protected
-		function _getAccounts()
-		{
+		function _getAccounts() {
 			DB::select()->from('cust_branch')->where('debtor_no=', $this->debtor_no)->and_where('branch_ref=', 'accounts');
 			$this->accounts = DB::fetch()->asClassLate('Contacts_Accounts')->all();
 			if (!$this->accounts && $this->id > 0 && $this->defaultBranch > 0) {
@@ -289,8 +272,7 @@
 		}
 
 		protected
-		function _getBranches()
-		{
+		function _getBranches() {
 			DB::select()
 			 ->from('cust_branch')
 			 ->where('debtor_no=', $this->debtor_no)
@@ -304,8 +286,7 @@
 		}
 
 		protected
-		function _getContacts()
-		{
+		function _getContacts() {
 			DB::select()->from('contacts')->where('parent_id=', $this->debtor_no);
 			$contacts = DB::fetch()->asClassLate('Contacts_Contact');
 			if (count($contacts)) {
@@ -318,8 +299,7 @@
 		}
 
 		public
-		function addBranch($details = null)
-		{
+		function addBranch($details = null) {
 			$branch = new Contacts_Branch($details);
 			$branch->debtor_no = $this->id;
 			$branch->save();
@@ -327,8 +307,7 @@
 		}
 
 		public
-		function getEmailAddresses()
-		{
+		function getEmailAddresses() {
 			$emails = array();
 			if (!empty($this->accounts->email)) {
 				$emails['Accounts'][$this->accounts->id] = array('Accounts', $this->accounts->email);
@@ -346,16 +325,16 @@
 			return (count($emails) > 0) ? $emails : false;
 		}
 
-		public static function search($terms)
-		{
+		public static function search($terms) {
 			$data = array();
+
 			DB::select('debtor_no as id', 'name as label', 'name as value')
 			 ->from('debtors_master')->where('name LIKE ', "$terms%")->limit(20)
-			 ->union()
-			 ->select('debtor_no as id', 'name as label', 'name as value')
+			 ->union()->select('debtor_no as id', 'name as label', 'name as value')
 			 ->from('debtors_master')->where('debtor_ref LIKE', "%$terms%")
 			 ->or_where('name LIKE', "%" . str_replace(' ', "%' AND name LIKE '%", trim($terms)) . "%")
 			 ->or_where('debtor_no LIKE', "%$terms%")->limit(20)->union();
+
 			$results = DB::fetch();
 			foreach ($results as $result) {
 				$data[] = @array_map('htmlspecialchars_decode', $result);
@@ -363,14 +342,12 @@
 			return $data;
 		}
 
-		static function searchOrder($term, $options = array())
-		{
+		static function searchOrder($term, $options = array()) {
 			$defaults = array('inactive' => false, 'selected' => '');
 			$o = array_merge($defaults, $options);
 			$term = explode(' ', $term);
 			$term1 = DB::escape(trim($term[0]) . '%');
-			$term2 = DB::escape('%' . implode(' AND name LIKE ', array_map(function($v)
-			{
+			$term2 = DB::escape('%' . implode(' AND name LIKE ', array_map(function($v) {
 				return trim($v);
 			}, $term)) . '%');
 			$where = ($o['inactive'] ? '' : ' AND inactive = 0 ');
@@ -389,8 +366,21 @@
 			return $data;
 		}
 
-		static function addSearchBox($id, $options = array())
-		{
+		static function addSearchBox($id, $options = array()) {
 			echo UI::searchLine($id, '/contacts/search.php', $options);
+		}
+
+		static function addEditDialog() {
+			$customerBox = new Dialog('Customer Edit', 'customerBox', '');
+			$customerBox->addButtons(array('Close' => '$(this).dialog("close");'));
+			$customerBox->addBeforeClose('$("#customer_id").trigger("change")');
+			$customerBox->setOptions(array(
+				'autoOpen' => false, 'modal' => true, 'width' => '850', 'height' => '715', 'resizeable' => true));
+			$customerBox->show();
+			$js = <<<JS
+				var val = $("#customer_id").val();
+				$("#customerBox").html("<iframe src='/contacts/customers.php?popup=1&id="+val+"' width='100%' height='595' scrolling='no' style='border:none' frameborder='0'></iframe>").dialog('open');
+JS;
+			JS::addLiveEvent('#customer_id_label', 'click', $js);
 		}
 	}

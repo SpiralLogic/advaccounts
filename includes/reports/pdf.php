@@ -694,7 +694,6 @@
 
 		function TextColLines($c, $n, $txt, $corr = 0, $r = 0, $border = 0, $fill = 0, $link = NULL, $stretch = 0)
 		{
-			FB::info(func_get_args());
 			$this->row -= $r;
 			$this->TextWrapLines($this->cols[$c], $this->cols[$n] - $this->cols[$c] + $corr, $txt, $this->aligns[$c], $border, $fill, $link, $stretch, true);
 		}

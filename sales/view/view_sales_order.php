@@ -38,7 +38,8 @@
 	echo "</td></tr>";
 	echo "<tr valign=top><td>";
 	start_table(Config::get('tables_style') . "  width=95%");
-	label_row(_("Customer Name"), $_SESSION['View']->customer_name, "class='label'", "colspan=3");
+	label_row(_("Customer Name"), $_SESSION['View']->customer_name, "id='customer_id_label' class='label pointer'", "colspan=3");
+	hidden("customer_id",$_SESSION['View']->customer_id);
 	start_row();
 	label_cells(_("Customer Purchase Order #"), $_SESSION['View']->cust_ref, "class='label'");
 	label_cells(_("Deliver To Branch"), $_SESSION['View']->deliver_to, "class='label'");
@@ -184,6 +185,7 @@
 	}
 	submenu_option(_("Enter a &New Order"), "/sales/sales_order_entry.php?NewOrder=0'  target='_top' ");
 	//UploadHandler::insert($_GET['trans_no']);
+	Contacts_Customer::addEditDialog();
 	end_page(true);
 
 ?>

@@ -8,6 +8,7 @@
 		$data['customer'] = $customer = new Contacts_Customer($_POST);
 		$data['customer']->save();
 	} elseif (Input::request('id', Input::NUMERIC) > 0) {
+
 		$data['customer'] = $customer = new Contacts_Customer(Input::request('id', Input::NUMERIC));
 		$data['contact_log'] = Contacts_Log::read($customer->id, Contacts_Log::CUSTOMER);
 		$data['transactions'] = '<pre>' . print_r($customer->getTransactions(), true) . '</pre>';
@@ -272,8 +273,6 @@
 		$shortcuts->startTab('Create Quote', 'Create Quote for this customer!', '/sales/sales_order_entry.php?NewQuotation=Yes&customer_id=');
 		$shortcuts->endTab();
 		$shortcuts->startTab('Create Order', 'Create Order for this customer!', '/sales/sales_order_entry.php?NewOrder=Yes&customer_id=');
-		$shortcuts->endTab();
-		$shortcuts->startTab('Print Statement', 'Print Statement for this Customer!', '/reporting/prn_redirect.php?REP_ID=108&PARAM_2=0&PARAM_4=0&PARAM_5&PARAM_0=');
 		$shortcuts->endTab();
 		$shortcuts->startTab('Print Statement', 'Print Statement for this Customer!', '/reporting/prn_redirect.php?REP_ID=108&PARAM_2=0&PARAM_4=0&PARAM_5&PARAM_0=');
 		$shortcuts->endTab();
