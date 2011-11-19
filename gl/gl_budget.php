@@ -95,7 +95,6 @@
 	start_form();
 
 	if (Validation::check(Validation::GL_ACCOUNTS)) {
-		var_dump($myrow);
 
 			$dim = DB_Company::get_pref('use_dimension');
 		start_table(Config::get('tables_style2'));
@@ -157,11 +156,11 @@
 			label_cell($date_);
 			amount_cells(null, 'amount' . $i, null, 15, null, 0);
 			if ($showdims) {
-				$d = get_budget_trans_from_to($date_, $date_, $_POST['account'], $_POST['dim1'], $_POST['dim2']);
+				$d = GL_Trans::get_budget_from_to($date_, $date_, $_POST['account'], $_POST['dim1'], $_POST['dim2']);
 				label_cell(Num::format($d, 0), "nowrap align=right");
 				$btotal += $d;
 			}
-			$lamount = get_gl_trans_from_to(
+			$lamount = GL_Trans::get_from_to(
 				Dates::add_years($date_, -1), Dates::add_years(Dates::end_month($date_), -1), $_POST['account'],
 				$_POST['dim1'], $_POST['dim2']
 			);

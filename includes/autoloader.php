@@ -8,6 +8,8 @@
 	 */
 	class Autoloader
 	{
+		protected static $loaded = array();
+
 		static function init()
 		{
 			ini_set('unserialize_callback_func', 'adv_autoload_handler'); // set your callback_function
@@ -23,14 +25,26 @@
 
 		public static function includeClass($class)
 		{
-			$path  = explode('_', strtolower($class));
+			$className = $class;
+			$path = explode('_', strtolower($class));
 			$class = array_pop($path);
-			$path  = realpath(APP_PATH . 'includes' . DS . implode(DS, $path) . DS . $class . '.php');
+			$path = realpath(APP_PATH . 'includes' . DS . implode(DS, $path) . DS . $class . '.php');
 			try {
 				include $path;
 			} catch (Adv_Exception $e) {
 				throw new Adv_Exception('Could not load class ' . $className);
 			}
+			static::$loaded[] = array($className, memory_get_usage(true), microtime(true));
+		}
+
+		public static function getLoaded()
+		{
+			array_walk(static::$loaded, function(&$v)
+			{
+				$v[1] = Files::convert_size($v[1]);
+				$v[2] = Dates::getReadableTime($v[2] - ADV_START_TIME);
+			});
+			return static::$loaded;
 		}
 	}
 

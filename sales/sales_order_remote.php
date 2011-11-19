@@ -21,7 +21,7 @@
 	function handle_new_remote()
 	{
 		$current_count = count($_SESSION['remote_order']->line_items);
-		add_to_order($_SESSION['remote_order'], $_GET['item'], $_GET['qty'], 10, 0, $_GET['desc'], true);
+		Sales_Order::add_line($_SESSION['remote_order'], $_GET['item'], $_GET['qty'], 10, 0, $_GET['desc'], true);
 		if ($current_count == count($_SESSION['remote_order']->line_items)) {
 			$data['message'] = 'No item with this code.';
 		} else {

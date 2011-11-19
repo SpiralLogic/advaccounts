@@ -194,7 +194,7 @@
 			label_cell($mod['name']);
 			label_cell(
 				$is_mod ?
-				 $mod['title'] : access_string($_SESSION['App']->applications[$mod['tab']]->name, true)
+				 $mod['title'] : access_string(Session::get()->App->applications[$mod['tab']]->name, true)
 			);
 			$ttl = access_string($mod['title']);
 			label_cell($ttl[0]);
@@ -245,7 +245,7 @@
 			label_cell($mod['name']);
 			label_cell(
 				$mod['type'] == 'module' ?
-				 $mod['title'] : access_string($_SESSION['App']->applications[$mod['tab']]->name, true)
+				 $mod['title'] : access_string(Session::get()->App->applications[$mod['tab']]->name, true)
 			);
 			$ttl = access_string($mod['title']);
 			label_cell($ttl[0]);

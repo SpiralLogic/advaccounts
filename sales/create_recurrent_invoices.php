@@ -28,17 +28,12 @@
 		$doc->trans_type = ST_SALESORDER;
 		$doc->trans_no = 0;
 		$doc->document_date = Dates::Today(); // 2006-06-15. Added so Invoices and Deliveries get current day
-		$doc->due_date = get_invoice_duedate($doc->customer_id, $doc->document_date);
+		$doc->due_date = Sales_Order::get_invoice_duedate($doc->customer_id, $doc->document_date);
 		$doc->reference = Refs::get_next($doc->trans_type);
 		//$doc->Comments='';
-		foreach (
-			$doc->line_items as $line_no => $item
-		) {
+		foreach ($doc->line_items as $line_no => $item) {
 			$line = &$doc->line_items[$line_no];
-			$line->price = get_price(
-				$line->stock_id, $doc->customer_currency,
-				$doc->sales_type, $doc->price_factor, $doc->document_date
-			);
+			$line->price = Item_Price::get_calculated_price($line->stock_id, $doc->customer_currency, $doc->sales_type, $doc->price_factor, $doc->document_date);
 		}
 		$cart = $doc;
 		$cart->trans_type = ST_SALESINVOICE;
@@ -56,17 +51,12 @@
 			$result = DB::query($sql, "could not get recurrent invoice");
 			$myrow = DB::fetch($result);
 			if ($myrow['debtor_no'] == 0) {
-				$cust = get_cust_branches_from_group($myrow['group_no']);
-				while ($row = DB::fetch($cust))
-				{
-					$invs[] = create_recurrent_invoices(
-						$row['debtor_no'], $row['branch_code'], $myrow['order_no'], $myrow['id']
-					);
+				$cust = Sales_Branch::get_from_group($myrow['group_no']);
+				while ($row = DB::fetch($cust)) {
+					$invs[] = create_recurrent_invoices($row['debtor_no'], $row['branch_code'], $myrow['order_no'], $myrow['id']);
 				}
 			} else {
-				$invs[] = create_recurrent_invoices(
-					$myrow['debtor_no'], $myrow['group_no'], $myrow['order_no'], $myrow['id']
-				);
+				$invs[] = create_recurrent_invoices($myrow['debtor_no'], $myrow['group_no'], $myrow['order_no'], $myrow['id']);
 			}
 			if (count($invs) > 0) {
 				$min = min($invs);
@@ -77,14 +67,7 @@
 			Errors::notice(sprintf(_("%s recurrent invoice(s) created, # $min - # $max."), count($invs)));
 			if (count($invs) > 0) {
 				$ar = array(
-					'PARAM_0' => $min . "-" . ST_SALESINVOICE,
-					'PARAM_1' => $max . "-" . ST_SALESINVOICE,
-					'PARAM_2' => "",
-					'PARAM_3' => 0,
-					'PARAM_4' => 0,
-					'PARAM_5' => "",
-					'PARAM_6' => ST_SALESINVOICE
-				);
+					'PARAM_0' => $min . "-" . ST_SALESINVOICE, 'PARAM_1' => $max . "-" . ST_SALESINVOICE, 'PARAM_2' => "", 'PARAM_3' => 0, 'PARAM_4' => 0, 'PARAM_5' => "", 'PARAM_6' => ST_SALESINVOICE);
 				Errors::warning(Reporting::print_link(_("&Print Recurrent Invoices # $min - # $max"), 107, $ar), 0, 1);
 				$ar['PARAM_3'] = 1;
 				Errors::warning(Reporting::print_link(_("&Email Recurrent Invoices # $min - # $max"), 107, $ar), 0, 1);
@@ -106,15 +89,12 @@
 	$result = DB::query($sql, "could not get recurrent invoices");
 	start_table(Config::get('tables_style') . "  width=70%");
 	$th = array(
-		_("Description"), _("Template No"), _("Customer"), _("Branch") . "/" . _("Group"), _("Days"),
-		_("Monthly"), _("Begin"), _("End"), _("Last Created"), ""
-	);
+		_("Description"), _("Template No"), _("Customer"), _("Branch") . "/" . _("Group"), _("Days"), _("Monthly"), _("Begin"), _("End"), _("Last Created"), "");
 	table_header($th);
 	$k = 0;
 	$today = Dates::add_days(Dates::Today(), 1);
 	$due = false;
-	while ($myrow = DB::fetch($result))
-	{
+	while ($myrow = DB::fetch($result)) {
 		$begin = Dates::sql2date($myrow["begin"]);
 		$end = Dates::sql2date($myrow["end"]);
 		$last_sent = Dates::sql2date($myrow["last_sent"]);
@@ -125,8 +105,7 @@
 		}
 		$due_date = Dates::add_months($due_date, $myrow['monthly']);
 		$due_date = Dates::add_days($due_date, $myrow['days']);
-		$overdue = Dates::date1_greater_date2($today, $due_date) && Dates::date1_greater_date2($today, $begin)
-		 && Dates::date1_greater_date2($end, $today);
+		$overdue = Dates::date1_greater_date2($today, $due_date) && Dates::date1_greater_date2($today, $begin) && Dates::date1_greater_date2($end, $today);
 		if ($overdue) {
 			start_row("class='overduebg'");
 			$due = true;
@@ -139,8 +118,8 @@
 			label_cell("");
 			label_cell(get_sales_group_name($myrow["group_no"]));
 		} else {
-			label_cell(get_customer_name($myrow["debtor_no"]));
-			label_cell(get_branch_name($myrow['group_no']));
+			label_cell(Sales_Debtor::get_name($myrow["debtor_no"]));
+			label_cell(Sales_Branch::get_name($myrow['group_no']));
 		}
 		label_cell($myrow["days"]);
 		label_cell($myrow['monthly']);
@@ -148,10 +127,7 @@
 		label_cell($end);
 		label_cell($last_sent);
 		if ($overdue) {
-			label_cell(
-				"<a href='/sales/create_recurrent_invoices.php?recurrent=" .
-				 $myrow["id"] . "'>" . _("Create Invoices") . "</a>"
-			);
+			label_cell("<a href='/sales/create_recurrent_invoices.php?recurrent=" . $myrow["id"] . "'>" . _("Create Invoices") . "</a>");
 		} else {
 			label_cell("");
 		}

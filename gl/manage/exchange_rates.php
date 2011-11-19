@@ -27,7 +27,7 @@
 			JS::set_focus('BuyRate');
 			return false;
 		}
-		if (get_date_exchange_rate($_POST['curr_abrev'], $_POST['date_'])) {
+		if (GL_ExchangeRate::get_date($_POST['curr_abrev'], $_POST['date_'])) {
 			Errors::error(_("The exchange rate for the date is already there."));
 			JS::set_focus('date_');
 			return false;
@@ -43,12 +43,12 @@
 			return false;
 		}
 		if ($selected_id != "") {
-			update_exchange_rate(
+			GL_ExchangeRate::update(
 				$_POST['curr_abrev'], $_POST['date_'],
 				input_num('BuyRate'), input_num('BuyRate')
 			);
 		} else {
-			add_exchange_rate(
+			GL_ExchangeRate::add(
 				$_POST['curr_abrev'], $_POST['date_'],
 				input_num('BuyRate'), input_num('BuyRate')
 			);
@@ -64,7 +64,7 @@
 		if ($selected_id == "") {
 			return;
 		}
-		delete_exchange_rate($selected_id);
+		GL_ExchangeRate::delete($selected_id);
 		$selected_id = '';
 		clear_data();
 	}
@@ -92,7 +92,7 @@
 		start_table(Config::get('tables_style2'));
 		if ($selected_id != "") {
 			//editing an existing exchange rate
-			$myrow = get_exchange_rate($selected_id);
+			$myrow = GL_ExchangeRate::get($selected_id);
 			$_POST['date_'] = Dates::sql2date($myrow["date_"]);
 			$_POST['BuyRate'] = Num::exrate_format($myrow["rate_buy"]);
 			hidden('selected_id', $selected_id);
@@ -105,7 +105,7 @@
 		}
 		if (isset($_POST['get_rate'])) {
 			$_POST['BuyRate']
-			 = Num::exrate_format(retrieve_exrate($_POST['curr_abrev'], $_POST['date_']));
+			 = Num::exrate_format(GL_ExchangeRate::retrieve($_POST['curr_abrev'], $_POST['date_']));
 			$Ajax->activate('BuyRate');
 		}
 		small_amount_row(

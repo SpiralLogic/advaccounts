@@ -112,13 +112,13 @@
 				}
 				$rate = 0;
 				if ($date_ == Dates::Today()) {
-					$rate = get_date_exchange_rate($currency, $date_);
+					$rate = GL_ExchangeRate::get_date($currency, $date_);
 					if (!$rate) {
-						$row = get_currency($currency);
+						$row = GL_Currency::get($currency);
 						if ($row['auto_update']) {
-							$rate = retrieve_exrate($currency, $date_);
+							$rate = GL_ExchangeRate::retrieve($currency, $date_);
 							if ($rate) {
-								add_exchange_rate($currency, $date_, $rate, $rate);
+								GL_ExchangeRate::add($currency, $date_, $rate, $rate);
 							}
 						}
 					}
@@ -286,11 +286,11 @@
 		{
 			switch ($person_type) {
 			case PT_CUSTOMER :
-				$alloc_result = get_allocatable_to_cust_transactions($person_id, $type_no, $type);
+				$alloc_result = Sales_Allocation::get_to_trans($person_id, $type_no, $type);
 				Display::allocations($alloc_result, $total);
 				return;
 			case PT_SUPPLIER :
-				$alloc_result = get_allocatable_to_supp_transactions($person_id, $type_no, $type);
+				$alloc_result = Purch_Allocation::get_allocatable_to_trans($person_id, $type_no, $type);
 				Display::allocations($alloc_result, $total);
 				return;
 			}
@@ -316,11 +316,11 @@
 				{
 					$cart->clear_items();
 				}
-				$qe = get_quick_entry($id);
+				$qe = GL_QuickEntry::get($id);
 				if ($descr != '') {
 					$qe['description'] .= ': ' . $descr;
 				}
-				$result = get_quick_entry_lines($id);
+				$result = GL_QuickEntry::get_lines($id);
 				$totrate = 0;
 				while ($row = DB::fetch($result)) {
 					$qe_lines[] = $row;
@@ -403,7 +403,7 @@
 							$cart->add_gl_item($gl_code, $qe_line['dimension_id'], $qe_line['dimension2_id'], $tax, $qe['description']);
 						}
 						else {
-							$acc_name = get_gl_account_name($gl_code);
+							$acc_name = GL_Account::get_name($gl_code);
 							$cart->add_gl_codes_to_trans($gl_code, $acc_name, $qe_line['dimension_id'], $qe_line['dimension2_id'], $tax, $qe['description']);
 						}
 						if (strpos($qe_line['action'], '+')) {
@@ -418,7 +418,7 @@
 						$cart->add_gl_item($qe_line['dest_id'], $qe_line['dimension_id'], $qe_line['dimension2_id'], $part, $qe['description']);
 					}
 					else {
-						$acc_name = get_gl_account_name($qe_line['dest_id']);
+						$acc_name = GL_Account::get_name($qe_line['dest_id']);
 						$cart->add_gl_codes_to_trans($qe_line['dest_id'], $acc_name, $qe_line['dimension_id'], $qe_line['dimension2_id'], $part, $qe['description']);
 					}
 				}

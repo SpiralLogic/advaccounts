@@ -12,7 +12,7 @@
 	$page_security = 'SA_CRSTATUS';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "Credit Status"));
-	include(APP_PATH . "sales/includes/db/credit_status_db.php");
+	include(APP_PATH . "sales/includes/db/creditstatus.php");
 	Page::simple_mode(true);
 	//-----------------------------------------------------------------------------------
 	function can_process()
@@ -27,21 +27,20 @@
 
 	//-----------------------------------------------------------------------------------
 	if ($Mode == 'ADD_ITEM' && can_process()) {
-		add_credit_status($_POST['reason_description'], $_POST['DisallowInvoices']);
+		Sales_CreditStatus::add($_POST['reason_description'], $_POST['DisallowInvoices']);
 		Errors::notice(_('New credit status has been added'));
 		$Mode = 'RESET';
 	}
 	//-----------------------------------------------------------------------------------
 	if ($Mode == 'UPDATE_ITEM' && can_process()) {
 		Errors::notice(_('Selected credit status has been updated'));
-		update_credit_status($selected_id, $_POST['reason_description'], $_POST['DisallowInvoices']);
+		Sales_CreditStatus::update($selected_id, $_POST['reason_description'], $_POST['DisallowInvoices']);
 		$Mode = 'RESET';
 	}
 	//-----------------------------------------------------------------------------------
 	function can_delete($selected_id)
 	{
-		$sql
-		 = "SELECT COUNT(*) FROM debtors_master
+		$sql = "SELECT COUNT(*) FROM debtors_master
 		WHERE credit_status=" . DB::escape($selected_id);
 		$result = DB::query($sql, "could not query customers");
 		$myrow = DB::fetch_row($result);
@@ -55,7 +54,7 @@
 	//-----------------------------------------------------------------------------------
 	if ($Mode == 'Delete') {
 		if (can_delete($selected_id)) {
-			delete_credit_status($selected_id);
+			Sales_CreditStatus::delete($selected_id);
 			Errors::notice(_('Selected credit status has been deleted'));
 		}
 		$Mode = 'RESET';
@@ -67,15 +66,14 @@
 		$_POST['show_inactive'] = $sav;
 	}
 	//-----------------------------------------------------------------------------------
-	$result = get_all_credit_status(check_value('show_inactive'));
+	$result = Sales_CreditStatus::get_all(check_value('show_inactive'));
 	start_form();
 	start_table(Config::get('tables_style') . "  width=40%");
 	$th = array(_("Description"), _("Dissallow Invoices"), '', '');
 	inactive_control_column($th);
 	table_header($th);
 	$k = 0;
-	while ($myrow = DB::fetch($result))
-	{
+	while ($myrow = DB::fetch($result)) {
 		alt_table_row_color($k);
 		if ($myrow["dissallow_invoices"] == 0) {
 			$disallow_text = _("Invoice OK");
@@ -97,7 +95,7 @@
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {
 			//editing an existing status code
-			$myrow = get_credit_status($selected_id);
+			$myrow = Sales_CreditStatus::get($selected_id);
 			$_POST['reason_description'] = $myrow["reason_description"];
 			$_POST['DisallowInvoices'] = $myrow["dissallow_invoices"];
 		}

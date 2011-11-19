@@ -51,10 +51,10 @@
 		for (
 			$i = $from; $i <= $to; $i++
 		) {
-			$myrow = get_sales_order_header($i, ST_SALESORDER);
-			$baccount = get_default_bank_account($myrow['curr_code']);
+			$myrow = Sales_Order::get_header($i, ST_SALESORDER);
+			$baccount = GL_BankAccount::get_default($myrow['curr_code']);
 			$params['bankaccount'] = $baccount['id'];
-			$branch = get_branch($myrow["branch_code"]);
+			$branch = Sales_Branch::get($myrow["branch_code"]);
 			if ($email == 1) {
 				$rep = new FrontReport("", "", User::pagesize());
 				$rep->currency = $cur;
@@ -71,7 +71,7 @@
 				$rep->title = ($print_as_quote == 1 ? _("PROFORMA INVOICE") : _("PROFORMA INVOICE"));
 			}
 			$rep->Header2($myrow, $branch, $myrow, $baccount, ST_PROFORMA);
-			$result = get_sales_order_details($i, ST_SALESORDER);
+			$result = Sales_Order::get_details($i, ST_SALESORDER);
 			$SubTotal = 0;
 			$TaxTotal = 0;
 			while ($myrow2 = DB::fetch($result)) {

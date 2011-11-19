@@ -2,15 +2,17 @@
 
 	$page_security = 'SA_CUSTOMER';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	$_SESSION['App']->selected_application = 'contacts';
+	Session::get()->App->selected_application = 'Contacts';
+
 	if (isset($_POST['name'])) {
 		$data['customer'] = $customer = new Contacts_Customer($_POST);
 		$data['customer']->save();
-	} elseif (Input::post_get('id', Input::NUMERIC) > 0) {
-		$data['customer'] = $customer = new Contacts_Customer(Input::post_get('id'));
-		$data['contact_log'] = Contacts_ContactLog::read($customer->id, Contacts_ContactLog::CUSTOMER);
+	} elseif (Input::request('id', Input::NUMERIC) > 0) {
+
+		$data['customer'] = $customer = new Contacts_Customer(Input::request('id', Input::NUMERIC));
+		$data['contact_log'] = Contacts_Log::read($customer->id, Contacts_Log::CUSTOMER);
 		$data['transactions'] = '<pre>' . print_r($customer->getTransactions(), true) . '</pre>';
-		$_SESSION['wa_global_customer_id'] = $customer->id;
+		$_SESSION['global_customer_id'] = $customer->id;
 	} else {
 		$data['customer'] = $customer = new Contacts_Customer();
 	}
@@ -183,7 +185,7 @@
 			'rows' => 20
 		)
 	);
-	Contacts_ContactLog::read($customer->id, 'C');
+	Contacts_Log::read($customer->id, 'C');
 	/** @noinspection PhpUndefinedMethodInspection */
 	HTML::textarea()->td->td;
 	end_outer_table(1);
@@ -243,7 +245,7 @@
 	HTML::p('New log entry:', array('class' => 'validateTips'));
 	start_table();
 	label_row('Date:', date('Y-m-d H:i:s'));
-	hidden('type', Contacts_ContactLog::CUSTOMER);
+	hidden('type', Contacts_Log::CUSTOMER);
 	text_row('Contact:', 'contact_name', $customer->accounts->contact_name, 40, 40);
 	textarea_row('Entry:', 'message', '', 100, 10);
 	end_table();
@@ -274,10 +276,8 @@
 		$shortcuts->endTab();
 		$shortcuts->startTab('Print Statement', 'Print Statement for this Customer!', '/reporting/prn_redirect.php?REP_ID=108&PARAM_2=0&PARAM_4=0&PARAM_5&PARAM_0=');
 		$shortcuts->endTab();
-		$shortcuts->startTab('Print Statement', 'Print Statement for this Customer!', '/reporting/prn_redirect.php?REP_ID=108&PARAM_2=0&PARAM_4=0&PARAM_5&PARAM_0=');
-		$shortcuts->endTab();
 		$shortcuts->render();
 		/** @noinspection PhpUndefinedMethodInspection */
 	}
 	HTML::_div();
-	end_page(true, true);
+	end_page(false, true);

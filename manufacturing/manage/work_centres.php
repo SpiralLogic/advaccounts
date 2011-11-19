@@ -12,7 +12,6 @@
 	$page_security = 'SA_WORKCENTRES';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "Work Centres"));
-	include(APP_PATH . "manufacturing/includes/manufacturing_db.php");
 	Page::simple_mode(true);
 	//-----------------------------------------------------------------------------------
 	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
@@ -25,10 +24,10 @@
 		}
 		if ($input_error != 1) {
 			if ($selected_id != -1) {
-				update_work_centre($selected_id, $_POST['name'], $_POST['description']);
+				WO_WorkCentre::update($selected_id, $_POST['name'], $_POST['description']);
 				Errors::notice(_('Selected work center has been updated'));
 			} else {
-				add_work_centre($_POST['name'], $_POST['description']);
+				WO_WorkCentre::add($_POST['name'], $_POST['description']);
 				Errors::notice(_('New work center has been added'));
 			}
 			$Mode = 'RESET';
@@ -57,7 +56,7 @@
 	//-----------------------------------------------------------------------------------
 	if ($Mode == 'Delete') {
 		if (can_delete($selected_id)) {
-			delete_work_centre($selected_id);
+			WO_WorkCentre::delete($selected_id);
 			Errors::notice(_('Selected work center has been deleted'));
 		}
 		$Mode = 'RESET';
@@ -69,15 +68,14 @@
 		$_POST['show_inactive'] = $sav;
 	}
 	//-----------------------------------------------------------------------------------
-	$result = get_all_work_centres(check_value('show_inactive'));
+	$result = WO_WorkCentre::get_all(check_value('show_inactive'));
 	start_form();
 	start_table(Config::get('tables_style') . "  width=50%");
 	$th = array(_("Name"), _("description"), "", "");
 	inactive_control_column($th);
 	table_header($th);
 	$k = 0;
-	while ($myrow = DB::fetch($result))
-	{
+	while ($myrow = DB::fetch($result)) {
 		alt_table_row_color($k);
 		label_cell($myrow["name"]);
 		label_cell($myrow["description"]);
@@ -93,7 +91,7 @@
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {
 			//editing an existing status code
-			$myrow = get_work_centre($selected_id);
+			$myrow = WO_WorkCentre::get($selected_id);
 			$_POST['name'] = $myrow["name"];
 			$_POST['description'] = $myrow["description"];
 		}

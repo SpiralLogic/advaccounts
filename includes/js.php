@@ -9,6 +9,7 @@
 		private static $_headerFiles = array();
 		private static $_footerFiles = array();
 		private static $_focus = false;
+		private static $_openWindow = false;
 
 		private function __construct()
 		{
@@ -17,9 +18,14 @@
 		public static function open_window($width, $height)
 		{
 			if (Config::get('ui_windows_popups')) {
-				$js = "function openWindow(url, title)\n{\n var left = (screen.width - $width) / 2;\n var top = (screen.height - $height) / 2;\n"
-				 . " return window.open(url, title, 'width=$width,height=$height,left='+left+',top='+top+',screenX='+left+',screenY='+top+',status=no,scrollbars=yes');\n}\n";
+				$js = "Adv.openWindow = function(url, title)\n{\n var left = (screen.width - $width) / 2;\n var top = (screen.height - $height) / 2;\n" . " return window.open(url, title, 'width=$width,height=$height,left='+left+',top='+top+',screenX='+left+',screenY='+top+',status=no,scrollbars=yes');\n}\n";
 				static::beforeload($js);
+				if (static::$_openWindow) {
+					return;
+				}
+				$js = "$('.openWindow').click(function() { Adv.openWindow(this.href,this.target); return false;});";
+				static::addLive($js);
+				static::$_openWindow = true;
 			}
 		}
 
@@ -29,8 +35,7 @@
 			if (!$url) {
 				$url = $_SERVER['PHP_SELF'];
 			}
-			self::$_onload[]
-			 = <<< JS
+			self::$_onload[] = <<<JS
       var \${$id};
       Adv.o.autocomplete{$id} = \${$id} =$('#{$id}').autocomplete({
          autoFocus:true,
@@ -43,7 +48,7 @@
 			   });
 		   },
 		   select: function(event, ui) {
-	   	 if ({$callback}(ui.item)===false) return false;
+	   	 if ({$callback}(ui.item,event,this)===false) return false;
    	   }
       }).css({'z-index' : '2'}).bind('paste',function() { console.log(\${$id}.val());\${$id}.autocomplete('search',\${$id}.val())});
 JS;
@@ -56,34 +61,30 @@ JS;
 		{
 			$address = str_replace(array("\r", "\t", "\n", "\v"), ", ", $address);
 			$apikey = Config::get('js.maps_api_key');
-			JS::beforeload(<<<JS
-	Adv.maps = { api_key: '$apikey'}
-JS
-			);
-			self::addLive(<<<JS
+			$js = <<<JS
 
-	var map = $("<div/>").gMap({
+				Adv.maps = { api_key: '$apikey'}
+JS;
+			JS::beforeload($js);
+			$js = <<<JS
+var map = $("<div/>").gMap({
 	address:"{$address}",
 	markers: [{ address:"{$address}", html: "_address", popup: true}],
 	zoom: 10}).appendTo('body').dialog({title: "{$title}", autoOpen: false, show: "slide", hide: "slide", height: 450, width: 1000, modal: true});
-$("{$selector}").click(function() {
+	$("{$selector}").click(function() {
     map.dialog("open");
     return false; });
     $(".ui-widget-overlay").click(function() {
     map.dialog("close");
     return false; });
-JS
-			);
+JS;
+			self::addLive($js);
 			JS::footerFile('/js/libs/jquery.gmap-1.1.0-min.js');
 		}
 
 		static function png_fix()
 		{
-			$js = "function fixPNG(myImage)\n{\n var arVersion = navigator.appVersion.split(\"MSIE\")\n var version = parseFloat(arVersion[1])\n if ((version >= 5.5) && (version < 7) && (document.body.filters))\n {\n"
-			 . "  var imgID = (myImage.id) ? \"id='\" + myImage.id + \"' \" : \"\"\n  var imgClass = (myImage.className) ? \"class='\" + myImage.className + \"' \" : \"\"\n  var imgTitle = (myImage.title) ?\n"
-			 . "    \"title='\" + myImage.title  + \"' \" : \"title='\" + myImage.alt + \"' \"\n  var imgStyle = \"display:inline-block;\" + myImage.style.cssText\n  var strNewHTML = \"<span \" + imgID + imgClass + imgTitle\n    + \" style=\\\"\" + \"width:\" + myImage.width\n"
-			 . "    + \"px; height:\" + myImage.height\n    + \"px;\" + imgStyle + \";\"\n    + \"filter:progid:DXImageTransform.Microsoft.AlphaImageLoader\"\n    + \"(src=\'\" + myImage.src + \"\', sizingMethod='scale');\\\"></span>\"\n  myImage.outerHTML = strNewHTML\n }\n"
-			 . "}\n";
+			$js = "function fixPNG(myImage)\n{\n var arVersion = navigator.appVersion.split(\"MSIE\")\n var version = parseFloat(arVersion[1])\n if ((version >= 5.5) && (version < 7) && (document.body.filters))\n {\n" . "  var imgID = (myImage.id) ? \"id='\" + myImage.id + \"' \" : \"\"\n  var imgClass = (myImage.className) ? \"class='\" + myImage.className + \"' \" : \"\"\n  var imgTitle = (myImage.title) ?\n" . "    \"title='\" + myImage.title  + \"' \" : \"title='\" + myImage.alt + \"' \"\n  var imgStyle = \"display:inline-block;\" + myImage.style.cssText\n  var strNewHTML = \"<span \" + imgID + imgClass + imgTitle\n    + \" style=\\\"\" + \"width:\" + myImage.width\n" . "    + \"px; height:\" + myImage.height\n    + \"px;\" + imgStyle + \";\"\n    + \"filter:progid:DXImageTransform.Microsoft.AlphaImageLoader\"\n    + \"(src=\'\" + myImage.src + \"\', sizingMethod='scale');\\\"></span>\"\n  myImage.outerHTML = strNewHTML\n }\n" . "}\n";
 			JS::beforeload($js);
 		}
 
@@ -141,10 +142,7 @@ JS;
 		public static function renderHeader()
 		{
 			HTML::script(null, "document.documentElement.className = document.documentElement.className +' js'", false);
-			foreach (
-				self::$_headerFiles as $dir => $files
-			)
-			{
+			foreach (self::$_headerFiles as $dir => $files) {
 				HTML::script(array('src' => $dir . '/' . implode(',', $files)), false);
 			}
 		}
@@ -153,24 +151,25 @@ JS;
 		{
 			$files = $content = $onReady = '';
 			if (!AJAX_REFERRER) {
-				foreach (
-					self::$_footerFiles as $dir => $file
-				) {
+				foreach (self::$_footerFiles as $dir => $file) {
 					$files .= HTML::setReturn(true)->script(array('src' => $dir . '/' . implode(',', $file)), false)->setReturn(false);
 				}
 				echo $files;
+			} else {
+				self::$_onload = array_merge(self::$_onlive, self::$_onload);
+				self::$_onlive = array();
 			}
-			if (count(self::$_beforeload)) {
+			if (self::$_beforeload) {
 				$content .= implode(";\n", self::$_beforeload);
 			}
-			if (count(self::$_onlive)) {
+			if (self::$_onlive) {
 				$onReady .= 'Adv.Events.onload(function() {' . implode(";", self::$_onlive) . '}';
 				if (count(self::$_toclean)) {
 					$onReady .= ',function() {' . implode(";", self::$_toclean) . '}';
 				}
 				$onReady .= ');';
 			}
-			if (count(self::$_onload)) {
+			if (self::$_onload) {
 				$onReady .= implode(";\n\n", self::$_onload);
 			}
 			if (!empty(self::$_focus)) {
@@ -218,9 +217,7 @@ JS;
 		public static function addEvents($events = array())
 		{
 			if (is_array($events)) {
-				foreach (
-					$events as $event
-				) {
+				foreach ($events as $event) {
 					if (count($event == 3)) {
 						call_user_func_array('JS::addEvent', $event);
 					}
@@ -255,13 +252,10 @@ JS;
 		protected static function register($js = false, &$var)
 		{
 			if (is_array($js)) {
-				foreach (
-					$js as $j
-				) {
+				foreach ($js as $j) {
 					self::register($j, $var);
 				}
-			}
-			else {
+			} else {
 				array_unshift($var, str_replace(array('<script>', '</script>'), '', $js));
 			}
 		}
@@ -269,13 +263,10 @@ JS;
 		protected static function registerFile($file, &$var)
 		{
 			if (is_array($file)) {
-				foreach (
-					$file as $f
-				) {
+				foreach ($file as $f) {
 					self::registerFile($f, $var);
 				}
-			}
-			else {
+			} else {
 				$dir = dirname($file);
 				$file = basename($file);
 				isset($var[$dir]) or $var[$dir] = array();

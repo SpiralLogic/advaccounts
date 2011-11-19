@@ -16,15 +16,13 @@
 	Page::start(_($help_context = "View Sales Invoice"), true);
 	if (isset($_GET["trans_no"])) {
 		$trans_id = $_GET["trans_no"];
-	}
-	elseif (isset($_POST["trans_no"]))
-	{
+	} elseif (isset($_POST["trans_no"])) {
 		$trans_id = $_POST["trans_no"];
 	}
 	// 3 different queries to get the information - what a JOKE !!!!
 	$myrow = Sales_Trans::get($trans_id, ST_SALESINVOICE);
-	$branch = get_branch($myrow["branch_code"]);
-	$sales_order = get_sales_order_header($myrow["order_"], ST_SALESORDER);
+	$branch = Sales_Branch::get($myrow["branch_code"]);
+	$sales_order = Sales_Order::get_header($myrow["order_"], ST_SALESORDER);
 	Display::heading(sprintf(_("SALES INVOICE #%d"), $trans_id));
 	echo "<br>";
 	start_table(Config::get('tables_style2') . " width=95%");
@@ -47,20 +45,14 @@
 	start_table(Config::get('tables_style') . "  width=100%");
 	$th = array(_("Delivered To"));
 	table_header($th);
-	label_row(
-		null, $sales_order["deliver_to"] . "<br>" . nl2br($sales_order["delivery_address"]),
-		"nowrap"
-	);
+	label_row(null, $sales_order["deliver_to"] . "<br>" . nl2br($sales_order["delivery_address"]), "nowrap");
 	end_table();
 	echo "</td><td>"; // outer table
 	start_table(Config::get('tables_style') . "  width=100%");
 	start_row();
 	label_cells(_("Reference"), $myrow["reference"], "class='label'");
 	label_cells(_("Currency"), $sales_order["curr_code"], "class='label'");
-	label_cells(
-		_("Our Order No"),
-		ui_view::get_customer_trans_view_str(ST_SALESORDER, $sales_order["order_no"]), "class='label'"
-	);
+	label_cells(_("Our Order No"), ui_view::get_customer_trans_view_str(ST_SALESORDER, $sales_order["order_no"]), "class='label'");
 	end_row();
 	start_row();
 	label_cells(_("Customer Purchase Order #"), $sales_order["customer_ref"], "class='label'");
@@ -70,37 +62,26 @@
 	start_row();
 	label_cells(_("Invoice Date"), Dates::sql2date($myrow["tran_date"]), "class='label'", "nowrap");
 	label_cells(_("Due Date"), Dates::sql2date($myrow["due_date"]), "class='label'", "nowrap");
-	label_cells(
-		_("Deliveries"), ui_view::get_customer_trans_view_str(
-			ST_CUSTDELIVERY,
-			Sales_Trans::get_parent(ST_SALESINVOICE, $trans_id)
-		), "class='label'"
-	);
+	label_cells(_("Deliveries"), ui_view::get_customer_trans_view_str(ST_CUSTDELIVERY, Sales_Trans::get_parent(ST_SALESINVOICE, $trans_id)), "class='label'");
 	end_row();
 	Display::comments_row(ST_SALESINVOICE, $trans_id);
 	end_table();
 	echo "</td></tr>";
 	end_table(1); // outer table
-	$result = get_customer_trans_details(ST_SALESINVOICE, $trans_id);
+	$result = Sales_Debtor_Trans::get(ST_SALESINVOICE, $trans_id);
 	start_table(Config::get('tables_style') . "  width=95%");
-	if (DB::num_rows($result) > 0) {
+	if (DB::num_rows() > 0) {
 		$th = array(
-			_("Item Code"), _("Item Description"), _("Quantity"),
-			_("Unit"), _("Price"), _("Discount %"), _("Total")
-		);
+			_("Item Code"), _("Item Description"), _("Quantity"), _("Unit"), _("Price"), _("Discount %"), _("Total"));
 		table_header($th);
 		$k = 0; //row colour counter
 		$sub_total = 0;
-		while ($myrow2 = DB::fetch($result))
-		{
+		while ($myrow2 = $result->fetch()) {
 			if ($myrow2["quantity"] == 0) {
 				continue;
 			}
 			alt_table_row_color($k);
-			$value = Num::round(
-				((1 - $myrow2["discount_percent"]) * $myrow2["unit_price"] * $myrow2["quantity"]),
-				User::price_dec()
-			);
+			$value = Num::round(((1 - $myrow2["discount_percent"]) * $myrow2["unit_price"] * $myrow2["quantity"]), User::price_dec());
 			$sub_total += $value;
 			if ($myrow2["discount_percent"] == 0) {
 				$display_discount = "";
@@ -122,21 +103,19 @@
 	$display_sub_tot = Num::price_format($sub_total);
 	$display_freight = Num::price_format($myrow["ov_freight"]);
 	/*Print out the invoice text entered */
-	label_row(
-		_("Sub-total"), $display_sub_tot, "colspan=6 align=right",
-		"nowrap align=right width=15%"
-	);
+	label_row(_("Sub-total"), $display_sub_tot, "colspan=6 align=right", "nowrap align=right width=15%");
 	label_row(_("Shipping"), $display_freight, "colspan=6 align=right", "nowrap align=right");
-	$tax_items = get_trans_tax_details(ST_SALESINVOICE, $trans_id);
+	$tax_items = GL_Trans::get_tax_details(ST_SALESINVOICE, $trans_id);
 	Display::customer_trans_tax_details($tax_items, 6);
 	$display_total = Num::price_format($myrow["ov_freight"] + $myrow["ov_gst"] + $myrow["ov_amount"] + $myrow["ov_freight_tax"]);
-	label_row(
-		_("TOTAL INVOICE"), $display_total, "colspan=6 align=right",
-		"nowrap align=right"
-	);
+	label_row(_("TOTAL INVOICE"), $display_total, "colspan=6 align=right", "nowrap align=right");
 	end_table(1);
 	Display::is_voided(ST_SALESINVOICE, $trans_id, _("This invoice has been voided."));
-	submenu_print(_("&Print This Invoice"), ST_SALESINVOICE, $_GET['trans_no'], 'prtopt');
+	$customer = new Contacts_Customer($myrow['debtor_no']);
+
+		$emails = $customer->getEmailAddresses();
+		submenu_print(_("&Print This Invoice"), ST_SALESINVOICE, $_GET['trans_no'], 'prtopt');
+	submenu_email(_("Email This Invoice"), ST_SALESINVOICE, $_GET['trans_no'], null, $emails, 1);
 	end_page(true);
 
 ?>

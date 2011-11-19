@@ -12,7 +12,7 @@
 	$page_security = 'SA_POSSETUP';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "POS settings"));
-	include_once(APP_PATH . "sales/includes/db/sales_points_db.php");
+	include_once(APP_PATH . "sales/includes/db/points.php");
 	Page::simple_mode(true);
 	//----------------------------------------------------------------------------------------------------
 	function can_process()
@@ -32,19 +32,13 @@
 
 	//----------------------------------------------------------------------------------------------------
 	if ($Mode == 'ADD_ITEM' && can_process()) {
-		add_sales_point(
-			$_POST['name'], $_POST['location'], $_POST['account'],
-			check_value('cash'), check_value('credit')
-		);
+		Sales_Point::add($_POST['name'], $_POST['location'], $_POST['account'], check_value('cash'), check_value('credit'));
 		Errors::notice(_('New point of sale has been added'));
 		$Mode = 'RESET';
 	}
 	//----------------------------------------------------------------------------------------------------
 	if ($Mode == 'UPDATE_ITEM' && can_process()) {
-		update_sales_point(
-			$selected_id, $_POST['name'], $_POST['location'],
-			$_POST['account'], check_value('cash'), check_value('credit')
-		);
+		Sales_Point::update($selected_id, $_POST['name'], $_POST['location'], $_POST['account'], check_value('cash'), check_value('credit'));
 		Errors::notice(_('Selected point of sale has been updated'));
 		$Mode = 'RESET';
 	}
@@ -54,9 +48,8 @@
 		$res = DB::query($sql, "canot check pos usage");
 		if (DB::num_rows($res)) {
 			Errors::error(_("Cannot delete this POS because it is used in users setup."));
-		}
-		else {
-			delete_sales_point($selected_id);
+		} else {
+			Sales_Point::delete($selected_id);
 			Errors::notice(_('Selected point of sale has been deleted'));
 			$Mode = 'RESET';
 		}
@@ -68,18 +61,15 @@
 		$_POST['show_inactive'] = $sav;
 	}
 	//----------------------------------------------------------------------------------------------------
-	$result = get_all_sales_points(check_value('show_inactive'));
+	$result = Sales_Point::get_all(check_value('show_inactive'));
 	start_form();
 	start_table(Config::get('tables_style'));
 	$th = array(
-		_('POS Name'), _('Credit sale'), _('Cash sale'), _('Location'), _('Default account'),
-		'', ''
-	);
+		_('POS Name'), _('Credit sale'), _('Cash sale'), _('Location'), _('Default account'), '', '');
 	inactive_control_column($th);
 	table_header($th);
 	$k = 0;
-	while ($myrow = DB::fetch($result))
-	{
+	while ($myrow = DB::fetch($result)) {
 		alt_table_row_color($k);
 		label_cell($myrow["pos_name"], "nowrap");
 		label_cell($myrow['credit_sale'] ? _('Yes') : _('No'));
@@ -101,7 +91,7 @@
 	start_table(Config::get('tables_style2'));
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {
-			$myrow = get_sales_point($selected_id);
+			$myrow = Sales_Point::get($selected_id);
 			$_POST['name'] = $myrow["pos_name"];
 			$_POST['location'] = $myrow["pos_location"];
 			$_POST['account'] = $myrow["pos_account"];
@@ -119,8 +109,7 @@
 		check_row(_('Allowed credit sale'), 'credit', check_value('credit_sale'));
 		check_row(_('Allowed cash sale'), 'cash', check_value('cash_sale'));
 		cash_accounts_list_row(_("Default cash account") . ':', 'account');
-	}
-	else {
+	} else {
 		hidden('credit', 1);
 		hidden('account', 0);
 	}

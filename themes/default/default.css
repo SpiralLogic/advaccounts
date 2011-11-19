@@ -302,44 +302,59 @@ div.banner a + a { border-top: 2px groove #999 }
 	box-shadow:            3px 6px 20px 5px rgba(3, 3, 3, .25);
 	width:                 130px;
 	padding:               3px 3px;
-	top: 170px;
+	top:                   170px;
 
 }
+
 #summary input {
-	text-align:center;
+	text-align: center;
 }
+
 #summary table {
-	border: none;
-	margin-top:3px;
-	background:white;
+	border:                none;
+	margin-top:            3px;
+	background:            white;
 	padding:               6px 6px;
 	-webkit-border-radius: 4px;
 	width:                 125px;
 
 }
+
 #summary th {
-	text-align:            center;
-	padding:               2 12px;
-	font-size:1em;
-	
+	text-align: center;
+	padding:    2 12px;
+	font-size:  1em;
+
 }
-#summary tr  {
+
+#summary tr {
 	-webkit-border-radius: 10px 0;
 }
+
 #summary button {
-	padding: 3px 10px;
-	margin:5px;
-	font-size:10px;
+	padding:   3px 10px;
+	margin:    5px;
+	font-size: 10px;
 }
 
 #summary td {
-	margin:  12px;
-	padding: 12px;
-	text-align:            center;
+	margin:     12px;
+	padding:    12px;
+	text-align: center;
 
 }
 
-.js .tabs {
+#loaded {
+	margin: 10px auto;
+	width:  75%;
+}
+
+#loaded td {
+	margin:      0 30px;
+	line-height: 11px;
+}
+
+.js .tabs, .js *[aspect=fallback] {
 	display: none;
 }
 
@@ -574,6 +589,7 @@ div.banner a + a { border-top: 2px groove #999 }
 	position:   relative;
 
 }
+
 .GL #_tabs2 ul.menu li {
 	list-style: none;
 	float:      left;
@@ -581,13 +597,13 @@ div.banner a + a { border-top: 2px groove #999 }
 	text-align: center;
 	background: -webkit-gradient(linear, 100% 100%, 100% 0%, from(#ffd65e), to(#ffd65e), color-stop(.5, #febf04));
 	background: #ffd65e;
-	background: -moz-linear-gradient(top,  #ffd65e 0%, #ffd65e 50%, #febf04 100%);
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffd65e), color-stop(50%,#ffd65e), color-stop(100%,#febf04));
-	background: -webkit-linear-gradient(top,  #ffd65e 0%,#ffd65e 50%,#febf04 100%);
-	background: -o-linear-gradient(top,  #ffd65e 0%,#ffd65e 50%,#febf04 100%);
-	background: -ms-linear-gradient(top,  #ffd65e 0%,#ffd65e 50%,#febf04 100%);
-	background: linear-gradient(top,  #ffd65e 0%,#ffd65e 50%,#febf04 100%);
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffd65e', endColorstr='#febf04',GradientType=0 );
+	background: -moz-linear-gradient(top, #ffd65e 0%, #ffd65e 50%, #febf04 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #ffd65e), color-stop(50%, #ffd65e), color-stop(100%, #febf04));
+	background: -webkit-linear-gradient(top, #ffd65e 0%, #ffd65e 50%, #febf04 100%);
+	background: -o-linear-gradient(top, #ffd65e 0%, #ffd65e 50%, #febf04 100%);
+	background: -ms-linear-gradient(top, #ffd65e 0%, #ffd65e 50%, #febf04 100%);
+	background: linear-gradient(top, #ffd65e 0%, #ffd65e 50%, #febf04 100%);
+	filter:     progid:DXImageTransform.Microsoft.gradient(startColorstr = '#ffd65e', endColorstr = '#febf04', GradientType = 0);
 
 }
 
@@ -598,56 +614,52 @@ div.banner a + a { border-top: 2px groove #999 }
 	text-align: center;
 
 }
+
 .GL #_tabs2 ul  a:hover {
 
 	background: #ffe08c;
-	background: -moz-linear-gradient(top,  #ffe08c 0%, #febf04 100%);
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffe08c), color-stop(100%,#febf04));
-	background: -webkit-linear-gradient(top,  #ffe08c 0%,#febf04 100%);
-	background: -o-linear-gradient(top,  #ffe08c 0%,#febf04 100%);
-	background: -ms-linear-gradient(top,  #ffe08c 0%,#febf04 100%);
-	background: linear-gradient(top,  #ffe08c 0%,#febf04 100%);
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffe08c', endColorstr='#febf04',GradientType=0 );
-
+	background: -moz-linear-gradient(top, #ffe08c 0%, #febf04 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #ffe08c), color-stop(100%, #febf04));
+	background: -webkit-linear-gradient(top, #ffe08c 0%, #febf04 100%);
+	background: -o-linear-gradient(top, #ffe08c 0%, #febf04 100%);
+	background: -ms-linear-gradient(top, #ffe08c 0%, #febf04 100%);
+	background: linear-gradient(top, #ffe08c 0%, #febf04 100%);
+	filter:     progid:DXImageTransform.Microsoft.gradient(startColorstr = '#ffe08c', endColorstr = '#febf04', GradientType = 0);
 
 }
 
 .GL #_tabs2 ul li.active a {
 	background: #ffe08c;
-	background: -moz-linear-gradient(top,  #ffe08c 0%, #febf04 100%);
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffe08c), color-stop(100%,#febf04));
-	background: -webkit-linear-gradient(top,  #ffe08c 0%,#febf04 100%);
-	background: -o-linear-gradient(top,  #ffe08c 0%,#febf04 100%);
-	background: -ms-linear-gradient(top,  #ffe08c 0%,#febf04 100%);
-	background: linear-gradient(top,  #ffe08c 0%,#febf04 100%);
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffe08c', endColorstr='#febf04',GradientType=0 );
+	background: -moz-linear-gradient(top, #ffe08c 0%, #febf04 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #ffe08c), color-stop(100%, #febf04));
+	background: -webkit-linear-gradient(top, #ffe08c 0%, #febf04 100%);
+	background: -o-linear-gradient(top, #ffe08c 0%, #febf04 100%);
+	background: -ms-linear-gradient(top, #ffe08c 0%, #febf04 100%);
+	background: linear-gradient(top, #ffe08c 0%, #febf04 100%);
+	filter:     progid:DXImageTransform.Microsoft.gradient(startColorstr = '#ffe08c', endColorstr = '#febf04', GradientType = 0);
 
 	color:      white;
 }
 
 .GL .menu_group {
-	box-shadow:       0 1px 0 rgba(255, 255, 255, 0.6) inset;
+	box-shadow: 0 1px 0 rgba(255, 255, 255, 0.6) inset;
 	background: #ffe08c;
-	background: -moz-linear-gradient(top,  #ffe08c 0%, #febf04 100%);
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffe08c), color-stop(100%,#febf04));
-	background: -webkit-linear-gradient(top,  #ffe08c 0%,#febf04 100%);
-	background: -o-linear-gradient(top,  #ffe08c 0%,#febf04 100%);
-	background: -ms-linear-gradient(top,  #ffe08c 0%,#febf04 100%);
-	background: linear-gradient(top,  #ffe08c 0%,#febf04 100%);
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffe08c', endColorstr='#febf04',GradientType=0 );
+	background: -moz-linear-gradient(top, #ffe08c 0%, #febf04 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #ffe08c), color-stop(100%, #febf04));
+	background: -webkit-linear-gradient(top, #ffe08c 0%, #febf04 100%);
+	background: -o-linear-gradient(top, #ffe08c 0%, #febf04 100%);
+	background: -ms-linear-gradient(top, #ffe08c 0%, #febf04 100%);
+	background: linear-gradient(top, #ffe08c 0%, #febf04 100%);
+	filter:     progid:DXImageTransform.Microsoft.gradient(startColorstr = '#ffe08c', endColorstr = '#febf04', GradientType = 0);
 
-
-	border:           1px solid #7096AB;
-	box-shadow:       none;
+	border:     1px solid #7096AB;
+	box-shadow: none;
 }
 
 /* main wrapper */
 .GL #wrapper, .GL #results {
 	width:      100%;
 	background: #fff url(images/wrapbg4.gif) repeat-x;
-
-
-
 
 }
 
@@ -1251,3 +1263,52 @@ td.tableheader3 {
 .floatleft {
 	float: left;
 }
+/* Recommended styles */
+
+                .megaselectlistcolumn {
+                        width: 31%;
+                        margin: 0 1%;
+                        float: left;
+                }
+
+                .megaselectlist .currentitem {
+                        padding: 0;
+                        border: 0.1em dotted Green;
+                        color: Black;
+                }
+
+                /* Optional styles */
+
+                .megaselectlist {
+                        background-color: #F5F5F5;
+                        border: 1px solid Silver;
+                }
+
+                .megaselectlistcolumn > h2 {
+                        font-size: 1em;
+                        background-color: #ECECEC;
+                        text-align: center;
+                        padding: 2px 0;
+                        margin: 0;
+                }
+
+                .megaselectlist > p {
+                        margin: 0.2em;
+                }
+
+                .megaselectlistcolumn > ul {
+                        padding-left: 1em;
+                        margin: 0;
+                        color: Gray;
+                }
+
+                .megaselectlistcolumn > ul > li {
+                        cursor: pointer;
+                        padding: 0.1em;
+                        font-size: small;
+                }
+
+                .megaselectlistcolumn > ul > li:hover {
+                        background-color: #ECECEC;
+                        color: Black;
+                }

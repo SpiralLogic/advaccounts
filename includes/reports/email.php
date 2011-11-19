@@ -33,7 +33,7 @@
 			$this->mail->WordWrap = 50;
 			$this->mail->Username = 'sales@advancedroadsigns.com.au';
 			$this->mail->Password = '1w1llenberg';
-			$this->mail->From     = "sales@advancedroadsigns.com.au";
+			$this->mail->From = "sales@advancedroadsigns.com.au";
 			$this->mail->FromName = 'Advanced Group Accounts';
 			$this->mail->AddBCC("sales@advancedroadsigns.com.au");
 		}
@@ -86,7 +86,7 @@
 			//$this->mail->Encoding = "quoted-printable";
 			$this->mail->IsHTML(true);
 			$this->mail->AltBody = $html . "\n";
-			$this->mail->Body    = "<html><body>\n" . $html . "\n</body></html>\n";
+			$this->mail->Body = "<html><body>\n" . $html . "\n</body></html>\n";
 		}
 
 		function mime_type($filename)
@@ -131,5 +131,3 @@
 			return $ret;
 		}
 	}
-
-?>

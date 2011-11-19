@@ -371,7 +371,7 @@ function stopEv(ev) {
 /*
  Modified accesskey system. While Alt key is pressed letter keys moves
  focus to next marked link. Alt key release activates focused link.
- */
+ *//*
 function setHotKeys() {
 	document.onkeydown = function (ev) {
 		ev = ev || window.event;
@@ -468,8 +468,8 @@ function setHotKeys() {
 		return true;
 	}
 }
-
+*/
 Behaviour.register(inserts);
 
 Behaviour.addLoadEvent(setFocus);
-Behaviour.addLoadEvent(setHotKeys);
+//Behaviour.addLoadEvent(setHotKeys);

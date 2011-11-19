@@ -76,7 +76,7 @@
 	function close_year($year)
 	{
 		$co = DB_Company::get_prefs();
-		if (get_gl_account($co['retained_earnings_act']) == false || get_gl_account($co['profit_loss_year_act']) == false) {
+		if (GL_Account::get($co['retained_earnings_act']) == false || GL_Account::get($co['profit_loss_year_act']) == false) {
 			Errors::error(_("The Retained Earnings Account or the Profit and Loss Year Account has not been set in System and General GL Setup"));
 			return false;
 		}
@@ -95,11 +95,11 @@
 		if ($balance != 0.0) {
 			$trans_type = ST_JOURNAL;
 			$trans_id = SysTypes::get_next_trans_no($trans_type);
-			add_gl_trans(
+			GL_Trans::add(
 				$trans_type, $trans_id, $to, $co['retained_earnings_act'],
 				0, 0, _("Closing Year"), -$balance
 			);
-			add_gl_trans(
+			GL_Trans::add(
 				$trans_type, $trans_id, $to, $co['profit_loss_year_act'],
 				0, 0, _("Closing Year"), $balance
 			);
@@ -322,7 +322,7 @@
 		{
 			$sql = "DELETE FROM gl_trans WHERE tran_date <= '$to' AND account = '{$row['account']}'";
 			DB::query($sql, "Could not delete gl trans");
-			if (is_account_balancesheet($row['account'])) {
+			if (GL_Account::is_balancesheet($row['account'])) {
 				$trans_no = SysTypes::get_next_trans_no(ST_JOURNAL);
 				$sql
 				 = "INSERT INTO gl_trans (type, type_no, tran_date, account, memo_, amount) VALUES

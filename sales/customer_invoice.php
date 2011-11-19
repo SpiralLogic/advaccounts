@@ -23,11 +23,9 @@
 	if (isset($_GET['ModifyInvoice'])) {
 		$page_title = sprintf(_("Modifying Sales Invoice # %d."), $_GET['ModifyInvoice']);
 		$help_context = "Modifying Sales Invoice";
-	}
-	elseif (isset($_GET['DeliveryNumber'])) {
+	} elseif (isset($_GET['DeliveryNumber'])) {
 		$page_title = _($help_context = "Issue an Invoice for Delivery Note");
-	}
-	elseif (isset($_GET['BatchInvoice'])) {
+	} elseif (isset($_GET['BatchInvoice'])) {
 		$page_title = _($help_context = "Issue Batch Invoice for Delivery Notes");
 	} elseif (isset($_GET['ViewInvoice'])) {
 		$page_title = sprintf(_("View Sales Invoice # %d."), $_GET['ViewInvoice']);
@@ -50,8 +48,7 @@
 		Display::note(ui_view::get_gl_view_str($trans_type, $invoice_no, _("View the GL &Journal Entries for this Invoice")), 1);
 		hyperlink_params("/sales/inquiry/sales_deliveries_view.php", _("Select Another &Delivery For Invoicing"), "OutstandingOnly=1");
 		Page::footer_exit();
-	}
-	elseif (isset($_GET['UpdatedID'])) {
+	} elseif (isset($_GET['UpdatedID'])) {
 		$_SESSION['Items'] = new Sales_Order(ST_SALESINVOICE, $_GET['UpdatedID']);
 		$customer = new Contacts_Customer($_SESSION['Items']->customer_id);
 		$emails = $customer->getEmailAddresses();
@@ -63,11 +60,8 @@
 		submenu_email(_("Email This Invoice"), ST_SALESINVOICE, $invoice_no, null, $emails, 1);
 		hyperlink_no_params("/sales/inquiry/customer_inquiry.php", _("Select A Different &Invoice to Modify"));
 		Page::footer_exit();
-	}
-	elseif (isset($_GET['RemoveDN'])) {
-		for (
-			$line_no = 0; $line_no < count($_SESSION['Items']->line_items); $line_no++
-		) {
+	} elseif (isset($_GET['RemoveDN'])) {
+		for ($line_no = 0; $line_no < count($_SESSION['Items']->line_items); $line_no++) {
 			$line = &$_SESSION['Items']->line_items[$line_no];
 			if ($line->src_no == $_GET['RemoveDN']) {
 				$line->quantity = $line->qty_done;
@@ -85,8 +79,7 @@
 		if (isset($_GET['BatchInvoice'])) {
 			$src = $_SESSION['DeliveryBatch'];
 			unset($_SESSION['DeliveryBatch']);
-		}
-		else {
+		} else {
 			$src = array($_GET['DeliveryNumber']);
 		}
 		/* read in all the selected deliveries into the Items cart  */
@@ -99,17 +92,14 @@
 		$dn->src_docs = $dn->trans_no;
 		$dn->trans_no = 0;
 		$dn->reference = Refs::get_next(ST_SALESINVOICE);
-		$dn->due_date = get_invoice_duedate($dn->customer_id, $dn->document_date);
+		$dn->due_date = Sales_Order::get_invoice_duedate($dn->customer_id, $dn->document_date);
 		$_SESSION['Items'] = $dn;
 		copy_from_cart();
-	}
-	elseif (isset($_GET['ModifyInvoice']) && $_GET['ModifyInvoice'] > 0) {
+	} elseif (isset($_GET['ModifyInvoice']) && $_GET['ModifyInvoice'] > 0) {
 		if (Sales_Trans::get_parent(ST_SALESINVOICE, $_GET['ModifyInvoice']) == 0) { // 1.xx compatibility hack
-			echo"<center><br><b>" . _(
-				"There are no delivery notes for this invoice.<br>
+			echo"<center><br><b>" . _("There are no delivery notes for this invoice.<br>
 		Most likely this invoice was created in Front Accounting version prior to 2.0
-		and therefore can not be modified."
-			) . "</b></center>";
+		and therefore can not be modified.") . "</b></center>";
 			Page::footer_exit();
 		}
 		processing_start();
@@ -128,40 +118,34 @@
 		hyperlink_no_params("/sales/inquiry/sales_deliveries_view.php", _("Select Delivery to Invoice"));
 		end_page();
 		exit;
-	}
-	elseif (!check_quantities()) {
+	} elseif (!check_quantities()) {
 		Errors::error(_("Selected quantity cannot be less than quantity credited nor more than quantity not invoiced yet."));
 	}
 	if (isset($_POST['Update'])) {
 		$Ajax->activate('Items');
 	}
 	if (isset($_POST['_InvoiceDate_changed'])) {
-		$_POST['due_date'] = get_invoice_duedate($_SESSION['Items']->customer_id, $_POST['InvoiceDate']);
+		$_POST['due_date'] = Sales_Order::get_invoice_duedate($_SESSION['Items']->customer_id, $_POST['InvoiceDate']);
 		$Ajax->activate('due_date');
 	}
 	//-----------------------------------------------------------------------------
 	function check_quantities()
 	{
 		$ok = 1;
-		foreach (
-			$_SESSION['Items']->line_items as $line_no => $itm
-		) {
+		foreach ($_SESSION['Items']->line_items as $line_no => $itm) {
 			if (isset($_POST['Line' . $line_no])) {
 				if ($_SESSION['Items']->trans_no) {
 					$min = $itm->qty_done;
 					$max = $itm->quantity;
-				}
-				else {
+				} else {
 					$min = 0;
 					$max = $itm->quantity - $itm->qty_done;
 				}
 				if ($itm->quantity > 0 && Validation::is_num('Line' . $line_no, $min, $max)) {
 					$_SESSION['Items']->line_items[$line_no]->qty_dispatched = input_num('Line' . $line_no);
-				}
-				elseif ($itm->quantity < 0 && Validation::is_num('Line' . $line_no, $max, $min)) {
+				} elseif ($itm->quantity < 0 && Validation::is_num('Line' . $line_no, $max, $min)) {
 					$_SESSION['Items']->line_items[$line_no]->qty_dispatched = input_num('Line' . $line_no);
-				}
-				else {
+				} else {
 					$ok = 0;
 				}
 			}
@@ -178,12 +162,10 @@
 	function set_delivery_shipping_sum($delivery_notes)
 	{
 		$shipping = 0;
-		foreach (
-			$delivery_notes as $delivery_num
-		) {
+		foreach ($delivery_notes as $delivery_num) {
 			$myrow = Sales_Trans::get($delivery_num, 13);
-			//$branch = get_branch($myrow["branch_code"]);
-			//$sales_order = get_sales_order_header($myrow["order_"]);
+			//$branch = Sales_Branch::get($myrow["branch_code"]);
+			//$sales_order = Sales_Order::get_header($myrow["order_"]);
 			//$shipping += $sales_order['freight_cost'];
 			$shipping += $myrow['ov_freight'];
 		}
@@ -278,8 +260,7 @@
 		processing_end();
 		if ($newinvoice) {
 			meta_forward($_SERVER['PHP_SELF'], "AddedID=$invoice_no");
-		}
-		else {
+		} else {
 			meta_forward($_SERVER['PHP_SELF'], "UpdatedID=$invoice_no");
 		}
 	}
@@ -287,17 +268,14 @@
 	$dspans = array();
 	$lastdn = '';
 	$spanlen = 1;
-	for (
-		$line_no = 0; $line_no < count($_SESSION['Items']->line_items); $line_no++
-	) {
+	for ($line_no = 0; $line_no < count($_SESSION['Items']->line_items); $line_no++) {
 		$line = $_SESSION['Items']->line_items[$line_no];
 		if ($line->quantity == $line->qty_done) {
 			continue;
 		}
 		if ($line->src_no == $lastdn) {
 			$spanlen++;
-		}
-		else {
+		} else {
 			if ($lastdn != '') {
 				$dspans[] = $spanlen;
 				$spanlen = 1;
@@ -315,14 +293,13 @@
 	start_table(Config::get('tables_style2') . " width=90%", 5);
 	start_row();
 	label_cells(_("Customer"), $_SESSION['Items']->customer_name, "class='tableheader2'");
-	label_cells(_("Branch"), get_branch_name($_SESSION['Items']->Branch), "class='tableheader2'");
+	label_cells(_("Branch"), Sales_Branch::get_name($_SESSION['Items']->Branch), "class='tableheader2'");
 	label_cells(_("Currency"), $_SESSION['Items']->customer_currency, "class='tableheader2'");
 	end_row();
 	start_row();
 	if ($_SESSION['Items']->trans_no == 0) {
 		ref_cells(_("Reference"), 'ref', '', null, "class='tableheader2'");
-	}
-	else {
+	} else {
 		label_cells(_("Reference"), $_SESSION['Items']->reference, "class='tableheader2'");
 	}
 	label_cells(_("Delivery Notes:"), ui_view::get_customer_trans_view_str(ST_CUSTDELIVERY, array_keys($_SESSION['Items']->src_docs)), "class='tableheader2'");
@@ -350,7 +327,7 @@
 		label_cell($_POST['InvoiceDate']);
 	}
 	if (!isset($_POST['due_date']) || !Dates::is_date($_POST['due_date'])) {
-		$_POST['due_date'] = get_invoice_duedate($_SESSION['Items']->customer_id, $_POST['InvoiceDate']);
+		$_POST['due_date'] = Sales_Order::get_invoice_duedate($_SESSION['Items']->customer_id, $_POST['InvoiceDate']);
 	}
 	if (!$viewing) {
 		date_cells(_("Due Date"), 'due_date', '', null, 0, 0, 0, "class='tableheader2'");
@@ -359,7 +336,7 @@
 	}
 	end_row();
 	end_table();
-	$row = get_customer_to_order($_SESSION['Items']->customer_id);
+	$row = Sales_Order::get_customer($_SESSION['Items']->customer_id);
 	if ($row['dissallow_invoices'] == 1) {
 		Errors::error(_("The selected customer account is currently on hold. Please contact the credit control personnel to discuss."));
 		end_form();
@@ -382,9 +359,7 @@
 	$has_marked = false;
 	$show_qoh = true;
 	$dn_line_cnt = 0;
-	foreach (
-		$_SESSION['Items']->line_items as $line => $ln_itm
-	) {
+	foreach ($_SESSION['Items']->line_items as $line => $ln_itm) {
 		if (!$viewing && $ln_itm->quantity == $ln_itm->qty_done) {
 			continue; // this line was fully invoiced
 		}
@@ -392,8 +367,7 @@
 		ui_view::stock_status_cell($ln_itm->stock_id);
 		if (!$viewing) {
 			textarea_cells(null, 'Line' . $line . 'Desc', $ln_itm->description, 30, 3);
-		} else
-		{
+		} else {
 			label_cell($ln_itm->description);
 		}
 		$dec = Num::qty_dec($ln_itm->stock_id);
@@ -435,8 +409,7 @@
 	if (!isset($_POST['ChargeFreightCost']) || $_POST['ChargeFreightCost'] == "") {
 		if ($_SESSION['Items']->any_already_delivered() == 1) {
 			$_POST['ChargeFreightCost'] = Num::price_format(0);
-		}
-		else {
+		} else {
 			$_POST['ChargeFreightCost'] = Num::price_format($_SESSION['Items']->freight_cost);
 		}
 		if (!Validation::is_num('ChargeFreightCost')) {

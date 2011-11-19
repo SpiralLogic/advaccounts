@@ -19,15 +19,11 @@
 	// ----------------------------------------------------------------
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	//----------------------------------------------------------------------------------------------------
+	//----------------------------------------------------------------------------------------------------
 	print_statements();
 	//----------------------------------------------------------------------------------------------------
-	function
-	getTransactions(
-		$debtorno, $date
-	)
-	{
-		$sql
-		 = "SELECT debtor_trans.*,
+	function getTransactions($debtorno, $date, $incAllocations = false) {
+		$sql = "SELECT debtor_trans.*,
 				(debtor_trans.ov_amount + debtor_trans.ov_gst + debtor_trans.ov_freight +
 				debtor_trans.ov_freight_tax + debtor_trans.ov_discount)
 				AS TotalAmount, debtor_trans.alloc AS Allocated,
@@ -36,19 +32,20 @@
     			FROM debtor_trans
     			WHERE debtor_trans.tran_date <= '$date' AND debtor_trans.debtor_no = " . DB::escape($debtorno) . "
     				AND debtor_trans.type <> " . ST_CUSTDELIVERY . "
+
     				AND (debtor_trans.ov_amount + debtor_trans.ov_gst + debtor_trans.ov_freight +
-				debtor_trans.ov_freight_tax + debtor_trans.ov_discount) != 0
-				 AND (debtor_trans.ov_amount + debtor_trans.ov_gst + debtor_trans.ov_freight +
-				debtor_trans.ov_freight_tax + debtor_trans.ov_discount - " . '' . "debtor_trans.alloc) != 0
-    				ORDER BY debtor_trans.branch_code, debtor_trans.tran_date";
+				debtor_trans.ov_freight_tax + debtor_trans.ov_discount) != 0	";
+
+		if ( $incAllocations) $sql .= " AND (debtor_trans.ov_amount + debtor_trans.ov_gst + debtor_trans.ov_freight +
+				debtor_trans.ov_freight_tax + debtor_trans.ov_discount - debtor_trans.alloc) != 0";
+
+		$sql .= " ORDER BY debtor_trans.branch_code, debtor_trans.tran_date";
 		return DB::query($sql, "No transactions were returned");
 	}
 
 	//----------------------------------------------------------------------------------------------------
-	function getTransactionPO($no)
-	{
-		$sql
-		 = "SELECT customer_ref
+	function getTransactionPO($no) {
+		$sql = "SELECT customer_ref
         FROM sales_orders
         WHERE order_no=$no";
 		$result = DB::query($sql, "Could not retrieve any branches");
@@ -56,8 +53,7 @@
 		return $myrow['customer_ref'];
 	}
 
-	function print_statements()
-	{
+	function print_statements() {
 		global $systypes_array;
 		include_once(APP_PATH . "includes/reports/pdf.php");
 		$doc_Statement = "Statement";
@@ -68,7 +64,9 @@
 		$comments = $_POST['PARAM_3'];
 		$incPayments = $_POST['PARAM_4'];
 		$incNegatives = $_POST['PARAM_5'];
+		$incAllocations = $_POST['PARAM_6'];
 		$doctype = ST_STATEMENT;
+		FB::info($_POST);
 		$doc_Outstanding = $doc_Over = $doc_Days = $doc_Current = $doc_Total_Balance = null;
 		$dec = User::price_dec();
 		$cols = array(4, 80, 120, 180, 230, 280, 320, 385, 450, 515);
@@ -87,26 +85,30 @@
 		$sql = "SELECT debtor_no, name AS DebtorName, address, tax_id, email,  curr_code, curdate() AS tran_date, payment_terms FROM debtors_master";
 		if ($customer != ALL_NUMERIC) {
 			$sql .= " WHERE debtor_no = " . DB::escape($customer);
-		}
-		else {
+		} else {
 			$sql .= " ORDER by name";
 		}
 		$result = DB::query($sql, "The customers could not be retrieved");
 		while ($myrow = DB::fetch($result)) {
 			$date = date('Y-m-d');
 			$myrow['order_'] = "";
-			$TransResult = getTransactions($myrow['debtor_no'], $date);
-			$CustomerRecord = get_customer_details($myrow['debtor_no']);
+			$CustomerRecord = Sales_Debtor::get_details($myrow['debtor_no']);
 			if (round($CustomerRecord["Balance"], 2) == 0) {
 				continue;
 			}
 			if ($CustomerRecord["Balance"] < 0 && !$incNegatives) {
 				continue;
 			}
-			$baccount = get_default_bank_account($myrow['curr_code']);
+			$baccount = GL_BankAccount::get_default($myrow['curr_code']);
 			$params['bankaccount'] = $baccount['id'];
+
+			$TransResult = getTransactions($myrow['debtor_no'], $date, !$incAllocations);
 			if ((DB::num_rows($TransResult) == 0)) { //|| ($CustomerRecord['Balance'] == 0)
 				continue;
+			}
+			$transactions = array();
+			while ($transaction = DB::fetch_assoc($TransResult)) {
+				$transactions[] = $transaction;
 			}
 			if ($email == 1) {
 				$rep = new FrontReport("", "", User::pagesize());
@@ -116,37 +118,30 @@
 				$rep->filename = "Statement" . $myrow['debtor_no'] . ".pdf";
 				$rep->Info($params, $cols, null, $aligns);
 			}
-			$transactions = array();
-			while ($transaction = DB::fetch_assoc($TransResult)) {
-				$transactions[] = $transaction;
-			}
+
 			$prev_branch = 0;
-			for (
-				$i = 0; $i < count($transactions); $i++
-			) {
+			for ($i = 0; $i < count($transactions); $i++) {
 				$myrow2 = $transactions[$i];
 				$DisplayTotal = Num::format(Abs($myrow2["TotalAmount"]), $dec);
 				if ($myrow2["Allocated"] > 0) {
 					$DisplayAlloc = Num::format($myrow2["Allocated"], $dec);
 					$DisplayNet = Num::format($DisplayTotal - $DisplayAlloc, $dec);
-				}
-				else {
+				} else {
 					$DisplayAlloc = '0.00';
 					$DisplayNet = $DisplayTotal;
 				}
-				if ($DisplayNet == 0) {
+				if ($DisplayNet == 0 && !$incAllocations) {
 					continue;
 				}
-				if (($myrow2['type'] == ST_CUSTPAYMENT || $myrow2['type'] == ST_BANKPAYMENT) && !$incPayments) {
+				if (($myrow2['type'] == ST_CUSTPAYMENT || $myrow2['type'] == ST_BANKPAYMENT) && !($incPayments || $incAllocations)) {
 					continue;
 				}
 				if ($prev_branch != $transactions[$i]['branch_code']) {
-					$rep->Header2($myrow, get_branch($transactions[$i]['branch_code']), null, $baccount, ST_STATEMENT);
+					$rep->Header2($myrow, Sales_Branch::get($transactions[$i]['branch_code']), null, $baccount, ST_STATEMENT);
 					$rep->NewLine();
 					if ($rep->currency != $myrow['curr_code']) {
 						include(APP_PATH . "reporting/includes/doctext2.php");
-					}
-					else {
+					} else {
 						include(APP_PATH . "reporting/includes/doctext.php");
 					}
 					$rep->fontSize += 2;
@@ -158,8 +153,7 @@
 				$rep->TextCol(0, 1, $systypes_array[$myrow2['type']], -2);
 				if ($myrow2['type'] == '10') {
 					$rep->TextCol(2, 3, getTransactionPO($myrow2['order_']), -2);
-				}
-				else {
+				} else {
 					$rep->TextCol(2, 3, '', -2);
 				}
 				$rep->TextCol(1, 2, $myrow2['reference'], -2);
@@ -169,22 +163,14 @@
 				}
 				if ($myrow2['type'] == ST_SALESINVOICE) {
 					$rep->TextCol(5, 6, $DisplayTotal, -2);
-				}
-				else {
+				} else {
 					$rep->TextCol(6, 7, $DisplayTotal, -2);
 				}
 				$rep->TextCol(7, 8, $DisplayAlloc, -2);
 				if ($myrow2['type'] == ST_SALESINVOICE || $DisplayNet == 0) {
 					$rep->TextCol(8, 9, $DisplayNet, -2);
-				}
-				else {
-					$rep->TextCol(
-						8, 9,
-						Num::format(
-							$DisplayNet * -1,
-							$dec
-						), -2
-					);
+				} else {
+					$rep->TextCol(8, 9, Num::format($DisplayNet * -1, $dec), -2);
 				}
 				$rep->NewLine();
 				if ($rep->row < $rep->bottomMargin + (10 * $rep->lineHeight)) {
@@ -201,24 +187,15 @@
 				Num::format(($CustomerRecord["Due"] - $CustomerRecord["Overdue1"]), $dec),
 				Num::format(($CustomerRecord["Overdue1"] - $CustomerRecord["Overdue2"]), $dec),
 				Num::format($CustomerRecord["Overdue2"], $dec),
-				Num::format($CustomerRecord["Balance"], $dec)
-			);
+				Num::format($CustomerRecord["Balance"], $dec));
 			$col = array(
-				$rep->cols[0], $rep->cols[0] + 110, $rep->cols[0] + 210, $rep->cols[0] + 310, $rep->cols[0] + 410,
-				$rep->cols[0] + 510
-			);
+				$rep->cols[0], $rep->cols[0] + 110, $rep->cols[0] + 210, $rep->cols[0] + 310, $rep->cols[0] + 410, $rep->cols[0] + 510);
 			$rep->row = $rep->bottomMargin + (10 * $rep->lineHeight - 6);
-			for (
-				$i = 0; $i < 5; $i++
-			)
-			{
+			for ($i = 0; $i < 5; $i++) {
 				$rep->TextWrap($col[$i], $rep->row, $col[$i + 1] - $col[$i], $str[$i], 'right');
 			}
 			$rep->NewLine();
-			for (
-				$i = 0; $i < 5; $i++
-			)
-			{
+			for ($i = 0; $i < 5; $i++) {
 				$rep->TextWrap($col[$i], $rep->row, $col[$i + 1] - $col[$i], $str2[$i], 'right');
 			}
 			if ($email == 1) {
@@ -229,3 +206,4 @@
 			$rep->End();
 		}
 	}
+

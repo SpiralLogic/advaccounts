@@ -9,9 +9,9 @@
 	class Input
 	{
 		const NUMERIC = 'number';
-		const OBJECT  = 'object';
-		const STRING  = 'string';
-		const BOOL    = 'boolean';
+		const OBJECT = 'object';
+		const STRING = 'string';
+		const BOOL = 'boolean';
 		protected static $default_number = 0;
 		protected static $default_string = '';
 		protected static $default_bool = false;
@@ -156,29 +156,29 @@
 
 		protected static function _has(array $array, $var)
 		{
-			$vars  = func_get_args();
+			$vars = func_get_args();
 			$array = array_shift($vars);
 			foreach ($vars as $var) {
 				if (static::_isset($array, $var) === false) {
 					return false;
 				}
 			}
-			return true; 
+			return true;
 		}
 
-		protected static function _isset($array, $var, $type = null, $default = null)
+		protected static function _isset(array $array, $var, $type = null, $default = null)
 		{
-			$value = (!isset($array[$var])) ? null : $array[$var];
+			$value = (is_string($var) && isset($array[$var])) ? $array[$var] : null;
 			switch ($type) {
-			case self::NUMERIC:
-				if (!$value || !is_numeric($value)) {
-					return self::$default_number;
-				}
-				return ($value === self::$default_number) ? true : $value;
-			case self::STRING:
-				if (!$value || !is_string($value)) {
-					return self::$default_string;
-				}
+				case self::NUMERIC:
+					if (!$value || !is_numeric($value)) {
+						return self::$default_number;
+					}
+					return ($value === self::$default_number) ? true : $value;
+				case self::STRING:
+					if (!$value || !is_string($value)) {
+						return self::$default_string;
+					}
 			}
 			return $value;
 		}

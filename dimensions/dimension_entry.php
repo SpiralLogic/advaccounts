@@ -11,16 +11,13 @@
 	 ***********************************************************************/
 	$page_security = 'SA_DIMENSION';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	include_once(APP_PATH . "dimensions/includes/dimensions_db.php");
 	include_once(APP_PATH . "dimensions/includes/dimensions_ui.php");
 	$js = "";
 	Page::start(_($help_context = "Dimension Entry"));
 	//---------------------------------------------------------------------------------------
 	if (isset($_GET['trans_no'])) {
 		$selected_id = $_GET['trans_no'];
-	}
-	elseif (isset($_POST['selected_id']))
-	{
+	} elseif (isset($_POST['selected_id'])) {
 		$selected_id = $_POST['selected_id'];
 	} else {
 		$selected_id = -1;
@@ -105,16 +102,11 @@
 		}
 		if (can_process()) {
 			if ($selected_id == -1) {
-				$id = add_dimension(
-					$_POST['ref'], $_POST['name'], $_POST['type_'], $_POST['date_'], $_POST['due_date'], $_POST['memo_']
-				);
+				$id = Dimensions::add($_POST['ref'], $_POST['name'], $_POST['type_'], $_POST['date_'], $_POST['due_date'], $_POST['memo_']);
 				Tags::add_associations($id, $_POST['dimension_tags']);
 				meta_forward($_SERVER['PHP_SELF'], "AddedID=$id");
 			} else {
-				update_dimension(
-					$selected_id, $_POST['name'], $_POST['type_'], $_POST['date_'], $_POST['due_date'],
-					$_POST['memo_']
-				);
+				Dimensions::update($selected_id, $_POST['name'], $_POST['type_'], $_POST['date_'], $_POST['due_date'], $_POST['memo_']);
 				Tags::update_associations(TAG_DIMENSION, $selected_id, $_POST['dimension_tags']);
 				meta_forward($_SERVER['PHP_SELF'], "UpdatedID=$selected_id");
 			}
@@ -124,14 +116,14 @@
 	if (isset($_POST['delete'])) {
 		$cancel_delete = false;
 		// can't delete it there are productions or issues
-		if (dimension_has_payments($selected_id) || dimension_has_deposits($selected_id)) {
+		if (Dimensions::has_payments($selected_id) || Dimensions::has_deposits($selected_id)) {
 			Errors::error(_("This dimension cannot be deleted because it has already been processed."));
 			JS::set_focus('ref');
 			$cancel_delete = true;
 		}
 		if ($cancel_delete == false) { //ie not cancelled the delete as a result of above tests
 			// delete
-			delete_dimension($selected_id);
+			Dimensions::delete($selected_id);
 			Tags::delete_associations(TAG_DIMENSION, $selected_id, true);
 			meta_forward($_SERVER['PHP_SELF'], "DeletedID=$selected_id");
 		}
@@ -139,19 +131,19 @@
 	//-------------------------------------------------------------------------------------
 	if (isset($_POST['close'])) {
 		// update the closed flag
-		close_dimension($selected_id);
+		Dimensions::close($selected_id);
 		meta_forward($_SERVER['PHP_SELF'], "ClosedID=$selected_id");
 	}
 	if (isset($_POST['reopen'])) {
 		// update the closed flag
-		reopen_dimension($selected_id);
+		Dimensions::reopen($selected_id);
 		meta_forward($_SERVER['PHP_SELF'], "ReopenedID=$selected_id");
 	}
 	//-------------------------------------------------------------------------------------
 	start_form();
 	start_table(Config::get('tables_style2'));
 	if ($selected_id != -1) {
-		$myrow = get_dimension($selected_id);
+		$myrow = Dimensions::get($selected_id);
 		if (strlen($myrow[0]) == 0) {
 			Errors::error(_("The dimension sent is not valid."));
 			Page::footer_exit();
@@ -171,8 +163,7 @@
 		$_POST['memo_'] = DB_Comments::get_string(ST_DIMENSION, $selected_id);
 		$tags_result = Tags::get_all_associated_with_record(TAG_DIMENSION, $selected_id);
 		$tagids = array();
-		while ($tag = DB::fetch($tags_result))
-		{
+		while ($tag = DB::fetch($tags_result)) {
 			$tagids[] = $tag['id'];
 		}
 		$_POST['dimension_tags'] = $tagids;

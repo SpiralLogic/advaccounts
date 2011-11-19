@@ -57,7 +57,7 @@
 		$total = 0;
 		$bdate = Dates::date2sql($_POST['TransFromDate']);
 		$edate = Dates::date2sql($_POST['TransToDate']);
-		$taxes = get_tax_summary($_POST['TransFromDate'], $_POST['TransToDate']);
+		$taxes = GL_Trans::get_tax_summary($_POST['TransFromDate'], $_POST['TransToDate']);
 		while ($tx = DB::fetch($taxes))
 		{
 			$payable = $tx['payable'];

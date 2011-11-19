@@ -86,7 +86,7 @@
 		public static function init()
 		{
 			if (!isset($_SESSION["App"])) {
-				$_SESSION["App"] = new frontaccounting();
+				Session::get()->App = new frontaccounting();
 			}
 		}
 

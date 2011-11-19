@@ -50,11 +50,7 @@
 
 	function alloc_link($row)
 	{
-		return pager_link(
-			_("Allocate"),
-		 "/purchases/allocations/supplier_allocate.php?trans_no="
-			. $row["trans_no"] . "&trans_type=" . $row["type"], ICON_MONEY
-		);
+		return pager_link(_("Allocate"), "/purchases/allocations/supplier_allocate.php?trans_no=" . $row["trans_no"] . "&trans_type=" . $row["type"], ICON_MONEY);
 	}
 
 	function amount_left($row)
@@ -72,32 +68,13 @@
 		return $row['settled'] == 1;
 	}
 
-	$sql = get_allocatable_from_supp_sql($supplier_id, $settled);
+	$sql = Purch_Allocation::get_allocatable_sql($supplier_id, $settled);
 	$cols = array(
-		_("Transaction Type") => array('fun' => 'systype_name'),
-		_("#") => array('fun' => 'trans_view'),
-		_("Reference"),
-		_("Date") => array(
-			'name' => 'tran_date',
-			'type' => 'date',
-			'ord' => 'asc'
-		),
-		_("Supplier") => array('ord' => ''),
-		_("Currency") => array('align' => 'center'),
-		_("Total") => array(
-			'align' => 'right',
-			'fun' => 'amount_total'
-		),
-		_("Left to Allocate") => array(
-			'align' => 'right',
-			'insert' => true,
-			'fun' => 'amount_left'
-		),
-		array(
-			'insert' => true,
-			'fun' => 'alloc_link'
-		)
-	);
+		_("Transaction Type") => array('fun' => 'systype_name'), _("#") => array('fun' => 'trans_view'), _("Reference"), _("Date") => array(
+			'name' => 'tran_date', 'type' => 'date', 'ord' => 'asc'), _("Supplier") => array('ord' => ''), _("Currency") => array('align' => 'center'), _("Total") => array(
+			'align' => 'right', 'fun' => 'amount_total'), _("Left to Allocate") => array(
+			'align' => 'right', 'insert' => true, 'fun' => 'amount_left'), array(
+			'insert' => true, 'fun' => 'alloc_link'));
 	if (isset($_POST['customer_id'])) {
 		$cols[_("Supplier")] = 'skip';
 		$cols[_("Currency")] = 'skip';

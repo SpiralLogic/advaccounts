@@ -13,7 +13,6 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	$js = "";
 	Page::start(_($help_context = "View Dimension"), true);
-	include_once(APP_PATH . "dimensions/includes/dimensions_db.php");
 	include_once(APP_PATH . "dimensions/includes/dimensions_ui.php");
 	//-------------------------------------------------------------------------------------------------
 	if (isset($_GET['trans_no']) && $_GET['trans_no'] != "") {
@@ -24,7 +23,7 @@
 	}
 	Display::heading($systypes_array[ST_DIMENSION] . " # " . $id);
 	br(1);
-	$myrow = get_dimension($id);
+	$myrow = Dimensions::get($id);
 	if (strlen($myrow[0]) == 0) {
 		echo _("The dimension number sent is not valid.");
 		exit;

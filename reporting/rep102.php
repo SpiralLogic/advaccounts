@@ -74,7 +74,7 @@
 		if ($fromcust == ALL_NUMERIC) {
 			$from = _('All');
 		} else {
-			$from = get_customer_name($fromcust);
+			$from = Sales_Debtor::get_name($fromcust);
 		}
 		$dec = User::price_dec();
 		if ($summaryOnly == 1) {
@@ -158,7 +158,7 @@
 			else {
 				$rate = 1.0;
 			}
-			$custrec = get_customer_details($myrow['debtor_no'], $to);
+			$custrec = Sales_Debtor::get_details($myrow['debtor_no'], $to);
 			foreach (
 				$custrec as $i => $value
 			)

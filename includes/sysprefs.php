@@ -60,5 +60,3 @@
 			return Config::get('accounts_allocation_allowance');
 		}
 	}
-
-?>

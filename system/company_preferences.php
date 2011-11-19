@@ -157,7 +157,7 @@
 		_('No base price list')
 	);
 	text_row_ex(_("Add Price from Std Cost:"), 'add_pct', 10, 10, '', null, null, "%");
-	$curr = get_currency($_POST['curr_default']);
+	$curr = GL_Currency::get($_POST['curr_default']);
 	text_row_ex(_("Round to nearest:"), 'round_to', 10, 10, '', null, null, $curr['hundreds_name']);
 	check_row(_("Search Item List"), 'no_item_list', null);
 	check_row(_("Search Customer List"), 'no_customer_list', null);

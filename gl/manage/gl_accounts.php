@@ -55,7 +55,7 @@
 				$_POST['account_tags'] = array();
 			}
 			if ($selected_account) {
-				if (update_gl_account(
+				if (GL_Account::update(
 					$_POST['account_code'], $_POST['account_name'],
 					$_POST['account_type'], $_POST['account_code2']
 				)
@@ -72,7 +72,7 @@
 					Errors::notice(_("Account data has been updated."));
 				}
 			} else {
-				if (add_gl_account(
+				if (GL_Account::add(
 					$_POST['account_code'], $_POST['account_name'],
 					$_POST['account_type'], $_POST['account_code2']
 				)
@@ -186,7 +186,7 @@
 	//--------------------------------------------------------------------------------------
 	if (isset($_POST['delete'])) {
 		if (can_delete($selected_account)) {
-			delete_gl_account($selected_account);
+			GL_Account::delete($selected_account);
 			$selected_account = $_POST['AccountList'] = '';
 			Tags::delete_associations(TAG_ACCOUNT, $selected_account, true);
 			$selected_account = $_POST['AccountList'] = '';
@@ -216,7 +216,7 @@
 	start_table(Config::get('tables_style2'));
 	if ($selected_account != "") {
 		//editing an existing account
-		$myrow = get_gl_account($selected_account);
+		$myrow = GL_Account::get($selected_account);
 		$_POST['account_code'] = $myrow["account_code"];
 		$_POST['account_code2'] = $myrow["account_code2"];
 		$_POST['account_name'] = $myrow["account_name"];

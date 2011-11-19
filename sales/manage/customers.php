@@ -74,27 +74,16 @@
             notes=" . DB::escape($_POST['notes']) . "
             WHERE debtor_no = " . DB::escape($_POST['customer_id']);
 			DB::query($sql, "The customer could not be updated");
-			DB::update_record_status(
-				$_POST['customer_id'], $_POST['inactive'],
-				'debtors_master', 'debtor_no'
-			);
+			DB::update_record_status($_POST['customer_id'], $_POST['inactive'], 'debtors_master', 'debtor_no');
 			$Ajax->activate('customer_id'); // in case of status change
 			Errors::notice(_("Customer has been updated."));
-		}
-		else { //it is a new customer
+		} else { //it is a new customer
 			DB::begin_transaction();
-			$sql
-			 = "INSERT INTO debtors_master (name, debtor_ref, address, tax_id, email, dimension_id, dimension2_id,
+			$sql = "INSERT INTO debtors_master (name, debtor_ref, address, tax_id, email, dimension_id, dimension2_id,
 			curr_code, credit_status, payment_terms, discount, pymt_discount,credit_limit,  
-			sales_type, notes) VALUES (" . DB::escape($_POST['CustName']) . ", " . DB::escape($_POST['cust_ref']) . ", "
-			 . DB::escape($_POST['address']) . ", " . DB::escape($_POST['tax_id']) . ","
-			 . DB::escape($_POST['email']) . ", " . DB::escape($_POST['dimension_id']) . ", "
-			 . DB::escape($_POST['dimension2_id']) . ", " . DB::escape($_POST['curr_code']) . ",
-			" . DB::escape($_POST['credit_status']) . ", " . DB::escape(
-				$_POST['payment_terms']
-			) . ", " . input_num('discount') / 100 . ",
-			" . input_num('pymt_discount') / 100 . ", " . input_num('credit_limit')
-			 . ", " . DB::escape($_POST['sales_type']) . ", " . DB::escape($_POST['notes']) . ")";
+			sales_type, notes) VALUES (" . DB::escape($_POST['CustName']) . ", " . DB::escape($_POST['cust_ref']) . ", " . DB::escape($_POST['address']) . ", " . DB::escape($_POST['tax_id']) . "," . DB::escape($_POST['email']) . ", " . DB::escape($_POST['dimension_id']) . ", " . DB::escape($_POST['dimension2_id']) . ", " . DB::escape($_POST['curr_code']) . ",
+			" . DB::escape($_POST['credit_status']) . ", " . DB::escape($_POST['payment_terms']) . ", " . input_num('discount') / 100 . ",
+			" . input_num('pymt_discount') / 100 . ", " . input_num('credit_limit') . ", " . DB::escape($_POST['sales_type']) . ", " . DB::escape($_POST['notes']) . ")";
 			DB::query($sql, "The customer could not be added");
 			$_POST['customer_id'] = DB::insert_id();
 			$new_customer = false;
@@ -120,16 +109,14 @@
 		if ($myrow[0] > 0) {
 			$cancel_delete = 1;
 			Errors::error(_("This customer cannot be deleted because there are transactions that refer to it."));
-		}
-		else {
+		} else {
 			$sql = "SELECT COUNT(*) FROM sales_orders WHERE debtor_no=$sel_id";
 			$result = DB::query($sql, "check failed");
 			$myrow = DB::fetch_row($result);
 			if ($myrow[0] > 0) {
 				$cancel_delete = 1;
 				Errors::error(_("Cannot delete the customer record because orders have been created against it."));
-			}
-			else {
+			} else {
 				$sql = "SELECT COUNT(*) FROM cust_branch WHERE debtor_no=$sel_id";
 				$result = DB::query($sql, "check failed");
 				$myrow = DB::fetch_row($result);
@@ -154,10 +141,7 @@
 	if (Validation::check(Validation::CUSTOMERS, _('There are no customers.'))) {
 		start_table("class = 'tablestyle_noborder'");
 		start_row();
-		customer_list_cells(
-			_("Select a customer: "), 'customer_id', null,
-			_('New customer'), true, check_value('show_inactive')
-		);
+		customer_list_cells(_("Select a customer: "), 'customer_id', null, _('New customer'), true, check_value('show_inactive'));
 		check_cells(_("Show inactive:"), 'show_inactive', null, true);
 		end_row();
 		end_table();
@@ -165,8 +149,7 @@
 			$Ajax->activate('customer_id');
 			JS::set_focus('customer_id');
 		}
-	}
-	else {
+	} else {
 		hidden('customer_id');
 	}
 	if ($new_customer) {
@@ -181,8 +164,7 @@
 		$_POST['discount'] = $_POST['pymt_discount'] = Num::percent_format(0);
 		$_POST['credit_limit'] = Num::price_format(SysPrefs::default_credit_limit());
 		$_POST['inactive'] = 0;
-	}
-	else {
+	} else {
 		$sql = "SELECT * FROM debtors_master WHERE debtor_no = " . DB::escape($_POST['customer_id']);
 		$result = DB::query($sql, "check failed");
 		$myrow = DB::fetch($result);
@@ -213,8 +195,7 @@
 	text_row(_("GSTNo:"), 'tax_id', null, 40, 40);
 	if ($new_customer) {
 		currencies_list_row(_("Customer's Currency:"), 'curr_code', $_POST['curr_code']);
-	}
-	else {
+	} else {
 		label_row(_("Customer's Currency:"), $_POST['curr_code']);
 		hidden('curr_code', $_POST['curr_code']);
 	}
@@ -242,11 +223,7 @@
 	if (!$new_customer) {
 		start_row();
 		echo '<td>' . _('Customer branches') . ':</td>';
-		hyperlink_params_td(
-			"/sales/manage/customer_branches.php",
-		 '<b>' . (Input::request('popup') ? _("Select or &Add") : _("&Add or Edit ")) . '</b>',
-		 "debtor_no=" . $_POST['customer_id'] . (Input::request('popup') ? '&popup=1' : '')
-		);
+		hyperlink_params_td("/sales/manage/customer_branches.php", '<b>' . (Input::request('popup') ? _("Select or &Add") : _("&Add or Edit ")) . '</b>', "debtor_no=" . $_POST['customer_id'] . (Input::request('popup') ? '&popup=1' : ''));
 		end_row();
 	}
 	textarea_row(_("General Notes:"), 'notes', null, 35, 5);
@@ -255,17 +232,10 @@
 	div_start('controls');
 	if ($new_customer) {
 		submit_center('submit', _("Add New Customer"), true, '', 'default');
-	}
-	else {
-		submit_center_first(
-			'submit', _("Update Customer"),
-			_('Update customer data'), Input::request('popup') ? true : 'default'
-		);
+	} else {
+		submit_center_first('submit', _("Update Customer"), _('Update customer data'), Input::request('popup') ? true : 'default');
 		submit_return('select', get_post('customer_id'), _("Select this customer and return to document entry."));
-		submit_center_last(
-			'delete', _("Delete Customer"),
-			_('Delete customer data if have been never used'), true
-		);
+		submit_center_last('delete', _("Delete Customer"), _('Delete customer data if have been never used'), true);
 	}
 	div_end();
 	hidden('popup', Input::request('popup'));

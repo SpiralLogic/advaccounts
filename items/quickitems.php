@@ -28,11 +28,8 @@
 	$stock_cats = stock_categories_list('category_id');
 	if (!isset($_GET['stock_id'])) {
 		HTML::div('itemSearch');
-		UI::search('item', array('label' => 'Search Item',
-			'size' => 80,
-			'url' => 'search.php',
-			'callback' => 'Items.fetch'
-		));
+		UI::search('item', array(
+			'label' => 'Search Item', 'size' => 80, 'url' => 'search.php', 'callback' => 'Items.fetch'));
 		HTML::div();
 		$id = 0;
 	} else {
@@ -41,10 +38,10 @@
 	$data['item'] = $item = new Item($id);
 	$data['stockLevels'] = $item->getStockLevels();
 	$data = json_encode($data, JSON_NUMERIC_CHECK);
-	JS::onload(<<<JS
-Items.onload($data);
-JS
-	);
+	$js = <<<JS
+	Items.onload($data);
+JS;
+	JS::onload($js);
 	$menu = new MenuUI();
 	$menu->startTab("Items", "Items");
 	echo <<<HTML

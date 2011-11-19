@@ -107,9 +107,7 @@
 			$result = DB::query($sql, 'Could not get item pricing');
 			while ($row = DB::fetch_assoc($result)) {
 				$this->prices[$row['id']] = array(
-					"curr"	=> $row['curr_abrev'],
-					"type"	=> $row['type'],
-					"price" => $row['price']);
+					"curr" => $row['curr_abrev'], "type" => $row['type'], "price" => $row['price']);
 			}
 		}
 
@@ -125,10 +123,8 @@
 			}
 			while ($row = DB::fetch_assoc($result)) {
 				$this->prices[$row['supplier_id']] = array(
-					"code"	=> $row['supplier_description'],
-					"price" => $row['price'],
-//					"suppliers_uom" => $row['uom'],
-					"conv"	=> $row['conversion_factor']);
+					"code" => $row['supplier_description'], "price" => $row['price'], //					"suppliers_uom" => $row['uom'],
+					"conv" => $row['conversion_factor']);
 			}
 			return $this->prices;
 		}
@@ -239,7 +235,7 @@
 						WHERE (s.stock_id LIKE ? $termswhere)  $where
 						AND s.category_id = c.category_id $where2 $sales_type GROUP BY s.stock_id
 						ORDER BY weight, s.category_id, s.stock_id LIMIT 30";
-				DB::prepare($sql);
+			DB::prepare($sql);
 			return DB::execute($terms);
 		}
 
@@ -249,16 +245,13 @@
 			$o = array_merge($default, $options);
 			$stockbox = new Dialog('Item Edit', 'stockbox', '');
 			$stockbox->addButtons(array(
-																 'Save'	=> 'var item =$("#stockframe")[0].contentWindow.Items; item.save(); if (item.get().id==$("#stock_id").val()){ Adv.Forms.setFormValue("description",
-			item.get().description)} $(this).dialog("close")',
-																 'Close' => '$(this).dialog("close");'));
+				'Save' => 'var item =$("#stockframe")[0].contentWindow.Items; item.save(); if (item.get().id==$("#stock_id").val()){ Adv.Forms.setFormValue("description",
+			item.get().description)} $(this).dialog("close")', 'Close' => '$(this).dialog("close");'));
 			$stockbox->setOptions(array(
-																 'autoopen'	 => false,
-																 'modal'			=> true,
-																 'width'			=> '"75%"',
-																 'resizeable' => true));
+				'autoopen' => false, 'modal' => true, 'width' => '"75%"', 'resizeable' => true));
 			$stockbox->show();
 			$action = <<<JS
+
 		$('#stockbox').html("<iframe src='/items/quickitems.php?stock_id="+$(this).data('stock_id')+"&page={$o['page']}' id='stockframe' width='100%' height='600' scrolling='no' style='border:none' frameborder='0'></iframe>").dialog('open');
 JS;
 			JS::addLiveEvent('.stock', 'dblclick', $action, "wrapper", true);
@@ -394,9 +387,7 @@ JS;
 	 		WHERE stock_id=" . DB::escape($stock_id) . " AND stock_master.units=item_units.abbr";
 			$query = DB::query($sql, "The standard cost cannot be retrieved");
 			$result = array(
-				'standard_cost' => 0,
-				'units'				 => 'ea',
-				'decimals'			=> User::price_dec());
+				'standard_cost' => 0, 'units' => 'ea', 'decimals' => User::price_dec());
 			if (DB::num_rows($query) == 0) {
 				$result = DB::fetch($query);
 			}
@@ -467,8 +458,8 @@ JS;
 				}
 				$stock_gl_code = Item::get_gl_code($stock_id);
 				$memo_ = _("Cost was ") . $old_cost . _(" changed to ") . $new_cost . _(" for item ") . "'$stock_id'";
-				add_gl_trans_std_cost(ST_COSTUPDATE, $update_no, $to, $stock_gl_code["cogs_account"], $stock_gl_code["dimension_id"], $stock_gl_code["dimension2_id"], $memo_, $diff);
-				add_gl_trans_std_cost(ST_COSTUPDATE, $update_no, $to, $stock_gl_code["inventory_account"], 0, 0, $memo_, -$diff);
+				GL_Trans::add_std_cost(ST_COSTUPDATE, $update_no, $to, $stock_gl_code["cogs_account"], $stock_gl_code["dimension_id"], $stock_gl_code["dimension2_id"], $memo_, $diff);
+				GL_Trans::add_std_cost(ST_COSTUPDATE, $update_no, $to, $stock_gl_code["inventory_account"], 0, 0, $memo_, -$diff);
 				DB_AuditTrail::add(ST_COSTUPDATE, $update_no, $to);
 			}
 		}

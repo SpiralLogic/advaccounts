@@ -441,7 +441,7 @@ msgid "Search Customer List"
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/admin/company_preferences.php:194
-msgid "Search Supplier List"
+msgid "Search Creditor List"
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/admin/company_preferences.php:196
@@ -962,7 +962,7 @@ msgid "Dimension Required By After:"
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/admin/gl_setup.php:182
-msgid "Suppliers and Purchasing"
+msgid "Creditors and Purchasing"
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/admin/gl_setup.php:184
@@ -974,7 +974,7 @@ msgid "Invoice Over-Charge Allowance:"
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/admin/gl_setup.php:188
-msgid "Suppliers and Purchasing Defaults"
+msgid "Creditors and Purchasing Defaults"
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/admin/gl_setup.php:190
@@ -1292,7 +1292,7 @@ msgid "Cannot delete this payment term, because customer accounts have been crea
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/admin/payment_terms.php:120
-msgid "Cannot delete this payment term, because supplier accounts have been created referring to this term"
+msgid "Cannot delete this payment term, because creditor accounts have been created referring to this term"
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/admin/payment_terms.php:128
@@ -2472,19 +2472,19 @@ msgid "&Outstanding Purchase Orders Maintenance"
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/applications/purchases.php:24
-msgid "&Payments to Suppliers"
+msgid "&Payments to Creditors"
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/applications/purchases.php:27
-msgid "Supplier &Invoices"
+msgid "Creditor &Invoices"
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/applications/purchases.php:29
-msgid "Supplier &Credit Notes"
+msgid "Creditor &Credit Notes"
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/applications/purchases.php:31
-msgid "&Allocate Supplier Payments or Credit Notes"
+msgid "&Allocate Creditor Payments or Credit Notes"
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/applications/purchases.php:35
@@ -2492,19 +2492,19 @@ msgid "Purchase Orders &Inquiry"
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/applications/purchases.php:37
-msgid "Supplier Transaction &Inquiry"
+msgid "Creditor Transaction &Inquiry"
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/applications/purchases.php:40
-msgid "Supplier Allocation &Inquiry"
+msgid "Creditor Allocation &Inquiry"
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/applications/purchases.php:43
-msgid "Supplier and Purchasing &Reports"
+msgid "Creditor and Purchasing &Reports"
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/applications/purchases.php:47
-msgid "&Suppliers"
+msgid "&Creditors"
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/dimensions/dimension_entry.php:27
@@ -3332,7 +3332,7 @@ msgid "Cannot delete this currency, because customer accounts have been created 
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/gl/manage/currencies.php:106
-msgid "Cannot delete this currency, because supplier accounts have been created referring to this currency."
+msgid "Cannot delete this currency, because creditor accounts have been created referring to this currency."
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/gl/manage/currencies.php:115
@@ -4042,7 +4042,7 @@ msgid "The price is calculated."
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/inventory/purchasing_data.php:16
-msgid "Supplier Purchasing Data"
+msgid "Creditor Purchasing Data"
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/inventory/purchasing_data.php:23
@@ -4067,11 +4067,11 @@ msgid "The conversion factor entered was not numeric. The conversion factor is t
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/inventory/purchasing_data.php:67
-msgid "This supplier purchasing data has been added."
+msgid "This creditor purchasing data has been added."
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/inventory/purchasing_data.php:78
-msgid "Supplier purchasing data has been updated."
+msgid "Creditor purchasing data has been updated."
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/inventory/purchasing_data.php:93
@@ -4087,11 +4087,11 @@ msgid "There is no purchasing data set up for the part selected"
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/inventory/purchasing_data.php:150
-msgid "Supplier"
+msgid "Creditor"
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/inventory/purchasing_data.php:151
-msgid "Supplier's Unit"
+msgid "Creditor's Unit"
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/inventory/purchasing_data.php:151
@@ -4099,16 +4099,16 @@ msgid "Conversion Factor"
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/inventory/purchasing_data.php:151
-msgid "Supplier's Description"
-msgstr "Supplier's Product Code:"
+msgid "Creditor's Description"
+msgstr "Creditor's Product Code:"
 
 #: c:\Apache2\htdocs\account226/inventory/purchasing_data.php:213
 #: c:\Apache2\htdocs\account226/inventory/purchasing_data.php:217
-msgid "Supplier:"
+msgid "Creditor:"
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/inventory/purchasing_data.php:221
-msgid "Suppliers Unit of Measure:"
+msgid "Creditors Unit of Measure:"
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/inventory/purchasing_data.php:227
@@ -4116,8 +4116,8 @@ msgid "Conversion Factor (to our UOM):"
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/inventory/purchasing_data.php:229
-msgid "Supplier's Code or Description:"
-msgstr "Supplier's Product Code:"
+msgid "Creditor's Code or Description:"
+msgstr "Creditor's Product Code:"
 
 #: c:\Apache2\htdocs\account226/inventory/reorder_level.php:16
 msgid "Reorder Levels"
@@ -5522,12 +5522,12 @@ msgid "Clear all GL entry fields"
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/purchasing/supplier_credit.php:28
-msgid "Supplier Credit Note"
-msgstr "Supplier Credit Adjustment Note"
+msgid "Creditor Credit Note"
+msgstr "Creditor Credit Adjustment Note"
 
 #: c:\Apache2\htdocs\account226/purchasing/supplier_credit.php:43
-msgid "Supplier credit note has been processed."
-msgstr "Supplier creditadjustment  note has been processed."
+msgid "Creditor credit note has been processed."
+msgstr "Creditor creditadjustment  note has been processed."
 
 #: c:\Apache2\htdocs\account226/purchasing/supplier_credit.php:44
 msgid "View this Credit Note"
@@ -5565,8 +5565,8 @@ msgid "You must enter an credit note reference."
 msgstr "You must enter an credit adjustment note reference."
 
 #: c:\Apache2\htdocs\account226/purchasing/supplier_credit.php:165
-msgid "You must enter a supplier's credit note reference."
-msgstr "You must enter a supplier's credit adjustment note reference."
+msgid "You must enter a creditor's credit note reference."
+msgstr "You must enter a creditor's credit adjustment note reference."
 
 #: c:\Apache2\htdocs\account226/purchasing/supplier_credit.php:172
 msgid "The credit note as entered cannot be processed because the date entered is not valid."
@@ -5594,11 +5594,11 @@ msgid "Enter Credit Note"
 msgstr "Enter Credit Adjustment Note"
 
 #: c:\Apache2\htdocs\account226/purchasing/supplier_invoice.php:28
-msgid "Enter Supplier Invoice"
+msgid "Enter Creditor Invoice"
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/purchasing/supplier_invoice.php:43
-msgid "Supplier invoice has been processed."
+msgid "Creditor invoice has been processed."
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/purchasing/supplier_invoice.php:44
@@ -5610,7 +5610,7 @@ msgid "View the GL Journal Entries for this Invoice"
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/purchasing/supplier_invoice.php:48
-msgid "Entry supplier &payment for this invoice"
+msgid "Entry creditor &payment for this invoice"
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/purchasing/supplier_invoice.php:50
@@ -5626,7 +5626,7 @@ msgid "You must enter an invoice reference."
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/purchasing/supplier_invoice.php:165
-msgid "You must enter a supplier's invoice reference."
+msgid "You must enter a creditor's invoice reference."
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/purchasing/supplier_invoice.php:172
@@ -5668,7 +5668,7 @@ msgid "Enter Invoice"
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/purchasing/supplier_payment.php:32
-msgid "Supplier Payment Entry"
+msgid "Creditor Payment Entry"
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/purchasing/supplier_payment.php:71
@@ -5688,7 +5688,7 @@ msgid "View the GL &Journal Entries for this Payment"
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/purchasing/supplier_payment.php:80
-msgid "Enter another supplier &payment"
+msgid "Enter another creditor &payment"
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/purchasing/supplier_payment.php:120
@@ -5732,7 +5732,7 @@ msgid "Enter Payment"
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/purchasing/allocations/supplier_allocate.php:29
-msgid "Allocate Supplier Payment or Credit Note"
+msgid "Allocate Creditor Payment or Credit Note"
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/purchasing/allocations/supplier_allocate.php:50
@@ -5770,11 +5770,11 @@ msgid "There are no unsettled transactions to allocate."
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/purchasing/allocations/supplier_allocation_main.php:26
-msgid "Supplier Allocations"
+msgid "Creditor Allocations"
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/purchasing/allocations/supplier_allocation_main.php:36
-msgid "Select a Supplier: "
+msgid "Select a Creditor: "
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/purchasing/allocations/supplier_allocation_main.php:39
@@ -5813,7 +5813,7 @@ msgstr ""
 #: c:\Apache2\htdocs\account226/purchasing/inquiry/po_search.php:173
 #: c:\Apache2\htdocs\account226/purchasing/inquiry/po_search_completed.php:157
 #: c:\Apache2\htdocs\account226/purchasing/inquiry/supplier_inquiry.php:215
-msgid "Supplier's Reference"
+msgid "Creditor's Reference"
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/purchasing/inquiry/po_search.php:174
@@ -5839,12 +5839,12 @@ msgid "into location:"
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/purchasing/inquiry/supplier_allocation_inquiry.php:23
-msgid "Supplier Allocation Inquiry"
+msgid "Creditor Allocation Inquiry"
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/purchasing/inquiry/supplier_allocation_inquiry.php:48
-#: c:\Apache2\htdocs\account226/purchasing/manage/suppliers.php:178
-msgid "Select a supplier: "
+#: c:\Apache2\htdocs\account226/purchasing/manage/creditors.php:178
+msgid "Select a creditor: "
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/purchasing/inquiry/supplier_allocation_inquiry.php:55
@@ -5869,11 +5869,11 @@ msgid "Marked items are overdue."
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/purchasing/inquiry/supplier_inquiry.php:25
-msgid "Supplier Inquiry"
+msgid "Creditor Inquiry"
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/purchasing/inquiry/supplier_inquiry.php:47
-msgid "Select a supplier:"
+msgid "Select a creditor:"
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/purchasing/inquiry/supplier_inquiry.php:68
@@ -5906,145 +5906,145 @@ msgstr ""
 msgid "Print Remittance"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/purchasing/manage/suppliers.php:16
-msgid "Suppliers"
+#: c:\Apache2\htdocs\account226/purchasing/manage/creditors.php:16
+msgid "Creditors"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/purchasing/manage/suppliers.php:22
+#: c:\Apache2\htdocs\account226/purchasing/manage/creditors.php:22
 msgid "There are no tax groups defined in the system. At least one tax group is required before proceeding."
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/purchasing/manage/suppliers.php:44
-msgid "The supplier name must be entered."
+#: c:\Apache2\htdocs\account226/purchasing/manage/creditors.php:44
+msgid "The creditor name must be entered."
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/purchasing/manage/suppliers.php:51
-msgid "The supplier short name must be entered."
+#: c:\Apache2\htdocs\account226/purchasing/manage/creditors.php:51
+msgid "The creditor short name must be entered."
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/purchasing/manage/suppliers.php:90
-msgid "Supplier has been updated."
+#: c:\Apache2\htdocs\account226/purchasing/manage/creditors.php:90
+msgid "Creditor has been updated."
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/purchasing/manage/suppliers.php:125
-msgid "A new supplier has been added."
+#: c:\Apache2\htdocs\account226/purchasing/manage/creditors.php:125
+msgid "A new creditor has been added."
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/purchasing/manage/suppliers.php:145
-msgid "Cannot delete this supplier because there are transactions that refer to this supplier."
+#: c:\Apache2\htdocs\account226/purchasing/manage/creditors.php:145
+msgid "Cannot delete this creditor because there are transactions that refer to this creditor."
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/purchasing/manage/suppliers.php:156
-msgid "Cannot delete the supplier record because purchase orders have been created against this supplier."
+#: c:\Apache2\htdocs\account226/purchasing/manage/creditors.php:156
+msgid "Cannot delete the creditor record because purchase orders have been created against this creditor."
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/purchasing/manage/suppliers.php:179
-msgid "New supplier"
+#: c:\Apache2\htdocs\account226/purchasing/manage/creditors.php:179
+msgid "New creditor"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/purchasing/manage/suppliers.php:247
+#: c:\Apache2\htdocs\account226/purchasing/manage/creditors.php:247
 msgid "Name and Contact"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/purchasing/manage/suppliers.php:249
-msgid "Supplier Name:"
+#: c:\Apache2\htdocs\account226/purchasing/manage/creditors.php:249
+msgid "Creditor Name:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/purchasing/manage/suppliers.php:250
-msgid "Supplier Short Name:"
+#: c:\Apache2\htdocs\account226/purchasing/manage/creditors.php:250
+msgid "Creditor Short Name:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/purchasing/manage/suppliers.php:258
+#: c:\Apache2\htdocs\account226/purchasing/manage/creditors.php:258
 msgid "Website:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/purchasing/manage/suppliers.php:259
+#: c:\Apache2\htdocs\account226/purchasing/manage/creditors.php:259
 msgid "Our Customer No:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/purchasing/manage/suppliers.php:261
+#: c:\Apache2\htdocs\account226/purchasing/manage/creditors.php:261
 msgid "Addresses"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/purchasing/manage/suppliers.php:262
+#: c:\Apache2\htdocs\account226/purchasing/manage/creditors.php:262
 msgid "Mailing Address:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/purchasing/manage/suppliers.php:263
+#: c:\Apache2\htdocs\account226/purchasing/manage/creditors.php:263
 msgid "Physical Address:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/purchasing/manage/suppliers.php:267
+#: c:\Apache2\htdocs\account226/purchasing/manage/creditors.php:267
 msgid "Purchasing"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/purchasing/manage/suppliers.php:269
+#: c:\Apache2\htdocs\account226/purchasing/manage/creditors.php:269
 msgid "Bank Name/Account:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/purchasing/manage/suppliers.php:270
+#: c:\Apache2\htdocs\account226/purchasing/manage/creditors.php:270
 msgid "Credit Limit:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/purchasing/manage/suppliers.php:273
-#: c:\Apache2\htdocs\account226/purchasing/manage/suppliers.php:278
-msgid "Supplier's Currency:"
+#: c:\Apache2\htdocs\account226/purchasing/manage/creditors.php:273
+#: c:\Apache2\htdocs\account226/purchasing/manage/creditors.php:278
+msgid "Creditor's Currency:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/purchasing/manage/suppliers.php:281
+#: c:\Apache2\htdocs\account226/purchasing/manage/creditors.php:281
 msgid "Tax Group:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/purchasing/manage/suppliers.php:283
+#: c:\Apache2\htdocs\account226/purchasing/manage/creditors.php:283
 msgid "Payment Terms:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/purchasing/manage/suppliers.php:285
+#: c:\Apache2\htdocs\account226/purchasing/manage/creditors.php:285
 msgid "Accounts"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/purchasing/manage/suppliers.php:287
+#: c:\Apache2\htdocs\account226/purchasing/manage/creditors.php:287
 msgid "Accounts Payable Account:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/purchasing/manage/suppliers.php:289
+#: c:\Apache2\htdocs\account226/purchasing/manage/creditors.php:289
 msgid "Purchase Account:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/purchasing/manage/suppliers.php:306
+#: c:\Apache2\htdocs\account226/purchasing/manage/creditors.php:306
 msgid "General"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/purchasing/manage/suppliers.php:307
+#: c:\Apache2\htdocs\account226/purchasing/manage/creditors.php:307
 msgid "General Notes:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/purchasing/manage/suppliers.php:308
-msgid "Supplier status:"
+#: c:\Apache2\htdocs\account226/purchasing/manage/creditors.php:308
+msgid "Creditor status:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/purchasing/manage/suppliers.php:315
-msgid "Update Supplier"
+#: c:\Apache2\htdocs\account226/purchasing/manage/creditors.php:315
+msgid "Update Creditor"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/purchasing/manage/suppliers.php:316
-msgid "Update supplier data"
+#: c:\Apache2\htdocs\account226/purchasing/manage/creditors.php:316
+msgid "Update creditor data"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/purchasing/manage/suppliers.php:317
-msgid "Select this supplier and return to document entry."
+#: c:\Apache2\htdocs\account226/purchasing/manage/creditors.php:317
+msgid "Select this creditor and return to document entry."
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/purchasing/manage/suppliers.php:318
-msgid "Delete Supplier"
+#: c:\Apache2\htdocs\account226/purchasing/manage/creditors.php:318
+msgid "Delete Creditor"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/purchasing/manage/suppliers.php:319
-msgid "Delete supplier data if have been never used"
+#: c:\Apache2\htdocs\account226/purchasing/manage/creditors.php:319
+msgid "Delete creditor data if have been never used"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/purchasing/manage/suppliers.php:323
-msgid "Add New Supplier Details"
+#: c:\Apache2\htdocs\account226/purchasing/manage/creditors.php:323
+msgid "Add New Creditor Details"
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/purchasing/view/view_grn.php:21
@@ -6125,7 +6125,7 @@ msgid "Invoices/Credits"
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/purchasing/view/view_supp_credit.php:23
-msgid "View Supplier Credit Note"
+msgid "View Creditor Credit Note"
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/purchasing/view/view_supp_credit.php:39
@@ -6151,7 +6151,7 @@ msgid "This credit note has been voided."
 msgstr "This credit adjustment note has been voided."
 
 #: c:\Apache2\htdocs\account226/purchasing/view/view_supp_invoice.php:23
-msgid "View Supplier Invoice"
+msgid "View Creditor Invoice"
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/purchasing/view/view_supp_invoice.php:41
@@ -6167,15 +6167,15 @@ msgid "This invoice has been voided."
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/purchasing/view/view_supp_payment.php:22
-msgid "View Payment to Supplier"
+msgid "View Payment to Creditor"
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/purchasing/view/view_supp_payment.php:47
-msgid "Payment to Supplier"
+msgid "Payment to Creditor"
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/purchasing/view/view_supp_payment.php:53
-msgid "To Supplier"
+msgid "To Creditor"
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/purchasing/view/view_supp_payment.php:59
@@ -6183,7 +6183,7 @@ msgid "Payment Currency"
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/purchasing/view/view_supp_payment.php:66
-msgid "Supplier's Currency"
+msgid "Creditor's Currency"
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/reporting/rep101.php:116
@@ -6463,7 +6463,7 @@ msgid "Balances in Home currency"
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/reporting/rep201.php:124
-msgid "Supplier Balances"
+msgid "Creditor Balances"
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/reporting/rep202.php:124
@@ -6471,7 +6471,7 @@ msgid "currency"
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/reporting/rep202.php:125
-msgid "Aged Supplier Analysis"
+msgid "Aged Creditor Analysis"
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/reporting/rep203.php:95
@@ -6931,11 +6931,11 @@ msgid "Print Receipts"
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/reporting/reports_main.php:119
-msgid "Supplier &Balances"
+msgid "Creditor &Balances"
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/reporting/reports_main.php:126
-msgid "&Aged Supplier Analyses"
+msgid "&Aged Creditor Analyses"
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/reporting/reports_main.php:134
@@ -9570,11 +9570,11 @@ msgid "Purchase price changes"
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/includes/access_levels.inc:158
-msgid "Supplier transactions view"
+msgid "Creditor transactions view"
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/includes/access_levels.inc:159
-msgid "Suppliers changes"
+msgid "Creditors changes"
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/includes/access_levels.inc:160
@@ -9586,35 +9586,35 @@ msgid "Purchase receive"
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/includes/access_levels.inc:162
-msgid "Supplier invoices"
-msgstr "Supplier tax invoices"
+msgid "Creditor invoices"
+msgstr "Creditor tax invoices"
 
 #: c:\Apache2\htdocs\account226/includes/access_levels.inc:163
 msgid "Deleting GRN items during invoice entry"
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/includes/access_levels.inc:164
-msgid "Supplier credit notes"
-msgstr "Supplier credit adjustment notes"
+msgid "Creditor credit notes"
+msgstr "Creditor credit adjustment notes"
 
 #: c:\Apache2\htdocs\account226/includes/access_levels.inc:165
-msgid "Supplier payments"
+msgid "Creditor payments"
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/includes/access_levels.inc:166
-msgid "Supplier payments allocations"
+msgid "Creditor payments allocations"
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/includes/access_levels.inc:168
-msgid "Supplier analytical reports"
+msgid "Creditor analytical reports"
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/includes/access_levels.inc:169
-msgid "Supplier document bulk reports"
+msgid "Creditor document bulk reports"
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/includes/access_levels.inc:170
-msgid "Supplier payments report"
+msgid "Creditor payments report"
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/includes/access_levels.inc:174
@@ -9937,11 +9937,11 @@ msgid "Inventory Adjustment"
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/includes/types.inc:62
-msgid "Supplier Invoice"
-msgstr "Supplier Tax Invoice"
+msgid "Creditor Invoice"
+msgstr "Creditor Tax Invoice"
 
 #: c:\Apache2\htdocs\account226/includes/types.inc:64
-msgid "Supplier Payment"
+msgid "Creditor Payment"
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/includes/types.inc:66
@@ -10074,8 +10074,8 @@ msgid "Taxes included, reduce base"
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/includes/types.inc:258
-msgid "Supplier Invoice/Credit"
-msgstr "Supplier Tax Invoice/Credit Adjustment Note"
+msgid "Creditor Invoice/Credit"
+msgstr "Creditor Tax Invoice/Credit Adjustment Note"
 
 #: c:\Apache2\htdocs\account226/includes/types.inc:274
 msgid "Purchased"
@@ -10214,7 +10214,7 @@ msgstr ""
 
 #: c:\Apache2\htdocs\account226/includes/ui/ui_lists.inc:393
 #: c:\Apache2\htdocs\account226/includes/ui/ui_lists.inc:1307
-msgid "All Suppliers"
+msgid "All Creditors"
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/includes/ui/ui_lists.inc:397
@@ -10222,7 +10222,7 @@ msgid "Press Space tab to filter by name fragment"
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/includes/ui/ui_lists.inc:398
-msgid "Select supplier"
+msgid "Select creditor"
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/includes/ui/ui_lists.inc:442
@@ -10595,7 +10595,7 @@ msgstr ""
 
 #: c:\Apache2\htdocs\account226/purchasing/includes/ui/invoice_ui.inc:99
 #: c:\Apache2\htdocs\account226/purchasing/includes/ui/invoice_ui.inc:102
-msgid "Supplier's Ref.:"
+msgid "Creditor's Ref.:"
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/purchasing/includes/ui/invoice_ui.inc:117
@@ -10653,7 +10653,7 @@ msgid "Items Received Yet to be Invoiced"
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/purchasing/includes/ui/invoice_ui.inc:429
-msgid "Delivery Item Selected For Adding To A Supplier Credit Note"
+msgid "Delivery Item Selected For Adding To A Creditor Credit Note"
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/purchasing/includes/ui/invoice_ui.inc:434
@@ -10701,11 +10701,11 @@ msgid "Line Value"
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/purchasing/includes/ui/invoice_ui.inc:545
-msgid "There are no outstanding items received from this supplier that have not been invoiced by them."
+msgid "There are no outstanding items received from this creditor that have not been invoiced by them."
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/purchasing/includes/ui/invoice_ui.inc:548
-msgid "There are no received items for the selected supplier that have been invoiced."
+msgid "There are no received items for the selected creditor that have been invoiced."
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/purchasing/includes/ui/invoice_ui.inc:549
@@ -10713,11 +10713,11 @@ msgid "Credits can only be applied to invoiced items."
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/purchasing/includes/ui/po_ui.inc:87
-msgid "Supplier Currency:"
+msgid "Creditor Currency:"
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/purchasing/includes/ui/po_ui.inc:118
-msgid "Supplier's Reference:"
+msgid "Creditor's Reference:"
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/purchasing/includes/ui/po_ui.inc:119
@@ -11063,7 +11063,7 @@ msgid "No Customer Filter"
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/reporting/includes/reports_classes.inc:278
-msgid "No Supplier Filter"
+msgid "No Creditor Filter"
 msgstr ""
 
 #: c:\Apache2\htdocs\account226/reporting/includes/reports_classes.inc:286

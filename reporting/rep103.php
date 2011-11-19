@@ -112,14 +112,14 @@
 		}
 		else
 		{
-			$sarea = get_area_name($area);
+			$sarea = get_area($area);
 		}
 		if ($folk == 0) {
 			$salesfolk = _('All Sales Folk');
 		}
 		else
 		{
-			$salesfolk = get_salesman_name($folk);
+			$salesfolk = Sales_Debtor::get_salesman($folk);
 		}
 		if ($more != '') {
 			$morestr = _('Greater than ') . Num::format($more, $dec);

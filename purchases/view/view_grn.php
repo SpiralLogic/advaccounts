@@ -10,31 +10,26 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	$page_security = 'SA_SUPPTRANSVIEW';
-		require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	JS::open_window(900, 500);
 	Page::start(_($help_context = "View Purchase Order Delivery"), true);
 	include(APP_PATH . "purchases/includes/purchasing_ui.php");
 	if (!isset($_GET['trans_no'])) {
 		die ("<BR>" . _("This page must be called with a Purchase Order Delivery number to review."));
 	}
-	$purchase_order = new Purchase_Order;
-	read_grn($_GET["trans_no"], $purchase_order);
+	$purchase_order = new Purch_Order;
+	Purch_GRN::get($_GET["trans_no"], $purchase_order);
 	Display::heading(_("Purchase Order Delivery") . " #" . $_GET['trans_no']);
 	echo "<br>";
 	display_grn_summary($purchase_order);
 	Display::heading(_("Line Details"));
 	start_table("colspan=9 " . Config::get('tables_style') . " width=90%");
 	$th = array(
-		_("Item Code"), _("Item Description"), _("Delivery Date"), _("Quantity"),
-		_("Unit"), _("Price"), _("Line Total"), _("Quantity Invoiced")
-	);
+		_("Item Code"), _("Item Description"), _("Delivery Date"), _("Quantity"), _("Unit"), _("Price"), _("Line Total"), _("Quantity Invoiced"));
 	table_header($th);
 	$total = 0;
 	$k = 0; //row colour counter
-	foreach (
-		$purchase_order->line_items as $stock_item
-	)
-	{
+	foreach ($purchase_order->line_items as $stock_item) {
 		$line_total = $stock_item->qty_received * $stock_item->price;
 		alt_table_row_color($k);
 		label_cell($stock_item->stock_id);
@@ -50,10 +45,7 @@
 		$total += $line_total;
 	}
 	$display_total = Num::format($total, User::price_dec());
-	label_row(
-		_("Total Excluding Tax/Shipping"), $display_total,
-		"colspan=6", "nowrap align=right"
-	);
+	label_row(_("Total Excluding Tax/Shipping"), $display_total, "colspan=6", "nowrap align=right");
 	end_table(1);
 	Display::is_voided(ST_SUPPRECEIVE, $_GET['trans_no'], _("This delivery has been voided."));
 	end_page(true);

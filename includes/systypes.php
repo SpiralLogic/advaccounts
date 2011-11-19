@@ -29,11 +29,11 @@
 			}
 			$unique = false;
 			$result = DB::query($sql, "The next transaction number for $trans_type could not be retrieved");
-			$myrow  = DB::fetch_row($result);
-			$ref    = $myrow[0];
+			$myrow = DB::fetch_row($result);
+			$ref = $myrow[0];
 			while (!$unique) {
 				$ref++;
-				$sql    = "SELECT id FROM refs WHERE `id`=" . $ref . " AND `type`=" . $trans_type;
+				$sql = "SELECT id FROM refs WHERE `id`=" . $ref . " AND `type`=" . $trans_type;
 				$result = DB::query($sql);
 				$unique = (DB::num_rows($result) > 0) ? false : true;
 			}
@@ -44,63 +44,63 @@
 		public static function get_systype_db_info($type)
 		{
 			switch ($type) {
-			case	 ST_JOURNAL		:
-				return array("gl_trans", "type", "type_no", null, "tran_date");
-			case	 ST_BANKPAYMENT	:
-				return array("bank_trans", "type", "trans_no", "ref", "trans_date");
-			case	 ST_BANKDEPOSIT	:
-				return array("bank_trans", "type", "trans_no", "ref", "trans_date");
-			case	 3				 :
-				return null;
-			case	 ST_BANKTRANSFER :
-				return array("bank_trans", "type", "trans_no", "ref", "trans_date");
-			case	 ST_SALESINVOICE :
-				return array("debtor_trans", "type", "trans_no", "reference", "tran_date");
-			case	 ST_CUSTCREDIT	 :
-				return array("debtor_trans", "type", "trans_no", "reference", "tran_date");
-			case	 ST_CUSTPAYMENT	:
-				return array("debtor_trans", "type", "trans_no", "reference", "tran_date");
-			case	 ST_CUSTREFUND	:
-				return array("debtor_trans", "type", "trans_no", "reference", "tran_date");
-			case	 ST_CUSTDELIVERY :
-				return array("debtor_trans", "type", "trans_no", "reference", "tran_date");
-			case	 ST_LOCTRANSFER	:
-				return array("stock_moves", "type", "trans_no", "reference", "tran_date");
-			case	 ST_INVADJUST	:
-				return array("stock_moves", "type", "trans_no", "reference", "tran_date");
-			case	 ST_PURCHORDER	 :
-				return array("purch_orders", null, "order_no", "reference", "tran_date");
-			case	 ST_SUPPINVOICE	:
-				return array("supp_trans", "type", "trans_no", "reference", "tran_date");
-			case	 ST_SUPPCREDIT	 :
-				return array("supp_trans", "type", "trans_no", "reference", "tran_date");
-			case	 ST_SUPPAYMENT	 :
-				return array("supp_trans", "type", "trans_no", "reference", "tran_date");
-			case	 ST_SUPPRECEIVE	:
-				return array("grn_batch", null, "id", "reference", "delivery_date");
-			case	 ST_WORKORDER	:
-				return array("workorders", null, "id", "wo_ref", "released_date");
-			case	 ST_MANUISSUE	:
-				return array("wo_issues", null, "issue_no", "reference", "issue_date");
-			case	 ST_MANURECEIVE	:
-				return array("wo_manufacture", null, "id", "reference", "date_");
-			case	 ST_SALESORDER	 :
-				return array("sales_orders", "trans_type", "order_no", "reference", "ord_date");
-			case	 31				:
-				return array("service_orders", null, "order_no", "cust_ref", "date");
-			case	 ST_SALESQUOTE	 :
-				return array("sales_orders", "trans_type", "order_no", "reference", "ord_date");
-			case	 ST_DIMENSION	:
-				return array("dimensions", null, "id", "reference", "date_");
-			case	 ST_COSTUPDATE	 :
-				return array("gl_trans", "type", "type_no", null, "tran_date");
+				case	 ST_JOURNAL		:
+					return array("gl_trans", "type", "type_no", null, "tran_date");
+				case	 ST_BANKPAYMENT	:
+					return array("bank_trans", "type", "trans_no", "ref", "trans_date");
+				case	 ST_BANKDEPOSIT	:
+					return array("bank_trans", "type", "trans_no", "ref", "trans_date");
+				case	 3				 :
+					return null;
+				case	 ST_BANKTRANSFER :
+					return array("bank_trans", "type", "trans_no", "ref", "trans_date");
+				case	 ST_SALESINVOICE :
+					return array("debtor_trans", "type", "trans_no", "reference", "tran_date");
+				case	 ST_CUSTCREDIT	 :
+					return array("debtor_trans", "type", "trans_no", "reference", "tran_date");
+				case	 ST_CUSTPAYMENT	:
+					return array("debtor_trans", "type", "trans_no", "reference", "tran_date");
+				case	 ST_CUSTREFUND	:
+					return array("debtor_trans", "type", "trans_no", "reference", "tran_date");
+				case	 ST_CUSTDELIVERY :
+					return array("debtor_trans", "type", "trans_no", "reference", "tran_date");
+				case	 ST_LOCTRANSFER	:
+					return array("stock_moves", "type", "trans_no", "reference", "tran_date");
+				case	 ST_INVADJUST	:
+					return array("stock_moves", "type", "trans_no", "reference", "tran_date");
+				case	 ST_PURCHORDER	 :
+					return array("purch_orders", null, "order_no", "reference", "tran_date");
+				case	 ST_SUPPINVOICE	:
+					return array("supp_trans", "type", "trans_no", "reference", "tran_date");
+				case	 ST_SUPPCREDIT	 :
+					return array("supp_trans", "type", "trans_no", "reference", "tran_date");
+				case	 ST_SUPPAYMENT	 :
+					return array("supp_trans", "type", "trans_no", "reference", "tran_date");
+				case	 ST_SUPPRECEIVE	:
+					return array("grn_batch", null, "id", "reference", "delivery_date");
+				case	 ST_WORKORDER	:
+					return array("workorders", null, "id", "wo_ref", "released_date");
+				case	 ST_MANUISSUE	:
+					return array("wo_issues", null, "issue_no", "reference", "issue_date");
+				case	 ST_MANURECEIVE	:
+					return array("wo_manufacture", null, "id", "reference", "date_");
+				case	 ST_SALESORDER	 :
+					return array("sales_orders", "trans_type", "order_no", "reference", "ord_date");
+				case	 31				:
+					return array("service_orders", null, "order_no", "cust_ref", "date");
+				case	 ST_SALESQUOTE	 :
+					return array("sales_orders", "trans_type", "order_no", "reference", "ord_date");
+				case	 ST_DIMENSION	:
+					return array("dimensions", null, "id", "reference", "date_");
+				case	 ST_COSTUPDATE	 :
+					return array("gl_trans", "type", "type_no", null, "tran_date");
 			}
 			Errors::show_db_error("invalid type ($type) sent to get_systype_db_info", "", true);
 		}
 
 		public static function get_systypes()
 		{
-			$sql    = "SELECT * FROM sys_types";
+			$sql = "SELECT * FROM sys_types";
 			$result = DB::query($sql, "could not query systypes table");
 			return $result;
 		}
@@ -114,5 +114,3 @@
 			}
 		}
 	}
-
-?>

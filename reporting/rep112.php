@@ -43,7 +43,7 @@
 
 	function get_allocations_for_receipt($debtor_id, $type, $trans_no)
 	{
-		$sql = get_alloc_trans_sql("amt, trans.reference, trans.alloc", "trans.trans_no = alloc.trans_no_to
+		$sql = Sales_Allocation::get_sql("amt, trans.reference, trans.alloc", "trans.trans_no = alloc.trans_no_to
 		AND trans.type = alloc.trans_type_to
 		AND alloc.trans_no_from=$trans_no
 		AND alloc.trans_type_from=$type
@@ -94,7 +94,7 @@
 				if (!$myrow) {
 					continue;
 				}
-				$baccount = get_default_bank_account($myrow['curr_code']);
+				$baccount = GL_BankAccount::get_default($myrow['curr_code']);
 				$params['bankaccount'] = $baccount['id'];
 				$rep->title = _('RECEIPT');
 				$rep->Header2($myrow, null, $myrow, $baccount, ST_CUSTPAYMENT);

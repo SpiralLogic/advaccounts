@@ -22,8 +22,7 @@
 	if (isset($_GET['NewCredit'])) {
 		$_SESSION['page_title'] = _($help_context = "Customer Credit Note");
 		handle_new_credit(0);
-	}
-	elseif (isset($_GET['ModifyCredit'])) {
+	} elseif (isset($_GET['ModifyCredit'])) {
 		$_SESSION['page_title'] = sprintf(_("Modifying Customer Credit Note #%d"), $_GET['ModifyCredit']);
 		handle_new_credit($_GET['ModifyCredit']);
 		$help_context = "Modifying Customer Credit Note";
@@ -37,7 +36,7 @@
 	//-----------------------------------------------------------------------------
 	if (list_updated('branch_id')) {
 		// when branch is selected via external editor also customer can change
-		$br = get_branch(get_post('branch_id'));
+		$br = Sales_Branch::get(get_post('branch_id'));
 		$_POST['customer_id'] = $br['debtor_no'];
 		$Ajax->activate('customer_id');
 	}
@@ -118,8 +117,7 @@
 				Errors::error(_("You must enter a reference."));
 				JS::set_focus('ref');
 				$input_error = 1;
-			}
-			elseif (!is_new_reference($_POST['ref'], ST_CUSTCREDIT)) {
+			} elseif (!is_new_reference($_POST['ref'], ST_CUSTCREDIT)) {
 				Errors::error(_("The entered reference is already in use."));
 				JS::set_focus('ref');
 				$input_error = 1;
@@ -129,8 +127,7 @@
 			Errors::error(_("The entered date for the credit note is invalid."));
 			JS::set_focus('OrderDate');
 			$input_error = 1;
-		}
-		elseif (!Dates::is_date_in_fiscalyear($_POST['OrderDate'])) {
+		} elseif (!Dates::is_date_in_fiscalyear($_POST['OrderDate'])) {
 			Errors::error(_("The entered date is not in fiscal year."));
 			JS::set_focus('OrderDate');
 			$input_error = 1;
@@ -141,9 +138,7 @@
 	//-----------------------------------------------------------------------------
 	if (isset($_POST['ProcessCredit']) && can_process()) {
 		copy_to_cn();
-		if ($_POST['CreditType'] == "WriteOff"
-		 && (!isset($_POST['WriteOffGLCode'])
-			|| $_POST['WriteOffGLCode'] == '')
+		if ($_POST['CreditType'] == "WriteOff" && (!isset($_POST['WriteOffGLCode']) || $_POST['WriteOffGLCode'] == '')
 		) {
 			Errors::warning(_("For credit notes created to write off the stock, a general ledger account is required to be selected."), 1, 0);
 			Errors::warning(_("Please select an account to write the cost of the stock off to, then click on Process again."), 1, 0);
@@ -183,10 +178,7 @@
 	function handle_update_item()
 	{
 		if ($_POST['UpdateItem'] != "" && check_item_data()) {
-			$_SESSION['Items']->update_cart_item(
-				$_POST['line_no'], input_num('qty'),
-				input_num('price'), input_num('Disc') / 100
-			);
+			$_SESSION['Items']->update_cart_item($_POST['line_no'], input_num('qty'), input_num('price'), input_num('Disc') / 100);
 		}
 		line_start_focus();
 	}
@@ -204,7 +196,7 @@
 		if (!check_item_data()) {
 			return;
 		}
-		add_to_order($_SESSION['Items'], $_POST['stock_id'], input_num('qty'), input_num('price'), input_num('Disc') / 100);
+		Sales_Order::add_line($_SESSION['Items'], $_POST['stock_id'], input_num('qty'), input_num('price'), input_num('Disc') / 100);
 		line_start_focus();
 	}
 
@@ -237,8 +229,7 @@
 		credit_options_controls($_SESSION['Items']);
 		echo "</td></tr>";
 		end_table();
-	}
-	else {
+	} else {
 		Errors::error($customer_error);
 	}
 	echo "<br><center><table><tr>";

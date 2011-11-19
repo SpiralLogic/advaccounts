@@ -38,7 +38,7 @@
 		Errors::warning(_("This is a service and cannot have a stock holding, only the total quantity on outstanding sales orders is shown."), 0, 1);
 		$kitset_or_service = true;
 	}
-	$loc_details = get_loc_details($_POST['stock_id']);
+	$loc_details = Inv_Location::get_details($_POST['stock_id']);
 	start_table(Config::get('tables_style'));
 	if ($kitset_or_service == true) {
 		$th = array(_("Location"), _("Demand"));

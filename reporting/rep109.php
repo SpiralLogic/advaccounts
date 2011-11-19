@@ -55,13 +55,13 @@
 			$i = $from; $i <= $to; $i++
 		) {
 			if ($print_as_quote < 3) {
-				$myrow = get_sales_order_header($i, ST_SALESORDER);
+				$myrow = Sales_Order::get_header($i, ST_SALESORDER);
 			} else {
-				$myrow = get_sales_order_header($i, ST_SALESQUOTE);
+				$myrow = Sales_Order::get_header($i, ST_SALESQUOTE);
 			}
-			$baccount = get_default_bank_account($myrow['curr_code']);
+			$baccount = GL_BankAccount::get_default($myrow['curr_code']);
 			$params['bankaccount'] = $baccount['id'];
-			$branch = get_branch($myrow["branch_code"]);
+			$branch = Sales_Branch::get($myrow["branch_code"]);
 			if ($email == 1) {
 				$rep = new FrontReport("", "", User::pagesize());
 				$rep->currency = $cur;
@@ -85,13 +85,13 @@
 			}
 			if ($print_as_quote == 3) {
 				$rep->Header2($myrow, $branch, $myrow, $baccount, ST_PROFORMAQ);
-				$result = get_sales_order_details($i, ST_SALESQUOTE);
+				$result = Sales_Order::get_details($i, ST_SALESQUOTE);
 			} elseif ($print_as_quote == 2) {
 				$rep->Header2($myrow, $branch, $myrow, $baccount, ST_PROFORMA);
-				$result = get_sales_order_details($i, ST_SALESORDER);
+				$result = Sales_Order::get_details($i, ST_SALESORDER);
 			} else {
 				$rep->Header2($myrow, $branch, $myrow, $baccount, ST_SALESORDER);
-				$result = get_sales_order_details($i, ST_SALESORDER);
+				$result = Sales_Order::get_details($i, ST_SALESORDER);
 			}
 			$SubTotal = 0;
 			$TaxTotal = 0;

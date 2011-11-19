@@ -57,8 +57,8 @@
 			// Necessary for ajax calls. Due to bug in php 4.3.10 for this
 			// version set globally in php.ini
 			ini_set('default_charset', $this->encoding);
-			if (isset($_SESSION['App']) && $changed) {
-				$_SESSION['App']->init();
+			if (isset($_SESSION["App"]) && $changed) {
+				Session::get()->App->init();
 			} // refresh menu
 		}
 

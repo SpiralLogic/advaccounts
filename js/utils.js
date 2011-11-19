@@ -260,12 +260,7 @@ function get_amount(doc, label) {
 }
 
 function goBack() {
-	if (window.history.length <= 1) {
-		window.close();
-	}
-	else {
-		window.history.go(-1);
-	}
+	((window.history.length <= 1) ? window.close() : window.history.go(-1));
 }
 
 function setFocus(name, byId) {

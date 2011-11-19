@@ -18,8 +18,8 @@
 		die ("<br>" . _("This page must be called with a purchase order number to review."));
 	}
 	Display::heading(_("Purchase Order") . " #" . $_GET['trans_no']);
-	$purchase_order = new Purchase_Order;
-	read_po($_GET['trans_no'], $purchase_order);
+	$purchase_order = new Purch_Order;
+	Purch_Order::get($_GET['trans_no'], $purchase_order);
 	echo "<br>";
 	display_po_summary($purchase_order, true);
 	start_table(Config::get('tables_style') . "  width=90%", 6);
@@ -27,22 +27,17 @@
 	Display::heading(_("Line Details"));
 	start_table("colspan=9 " . Config::get('tables_style') . " width=100%");
 	$th = array(
-		_("Item Code"), _("Item Description"), _("Quantity"), _("Unit"), _("Price"), _("Discount"), _("Line Total"), _("Requested By"), _("Quantity Received"),
-		_("Quantity Invoiced")
-	);
+		_("Item Code"), _("Item Description"), _("Quantity"), _("Unit"), _("Price"), _("Discount"), _("Line Total"), _("Requested By"), _("Quantity Received"), _("Quantity Invoiced"));
 	table_header($th);
 	$total = $k = 0;
 	$overdue_items = false;
-	foreach (
-		$purchase_order->line_items as $stock_item
-	) {
+	foreach ($purchase_order->line_items as $stock_item) {
 		$line_total = $stock_item->quantity * $stock_item->price * (1 - $stock_item->discount);
 		// if overdue and outstanding quantities, then highlight as so
 		if (($stock_item->quantity - $stock_item->qty_received > 0) && Dates::date1_greater_date2(Dates::Today(), $stock_item->req_del_date)) {
 			start_row("class='overduebg'");
 			$overdue_items = true;
-		}
-		else {
+		} else {
 			alt_table_row_color($k);
 		}
 		label_cell($stock_item->stock_id);
@@ -67,7 +62,7 @@
 	}
 	//----------------------------------------------------------------------------------------------------
 	$k = 0;
-	$grns_result = get_po_grns($_GET['trans_no']);
+	$grns_result = Purch_GRN::get_for_po($_GET['trans_no']);
 	if (DB::num_rows($grns_result) > 0) {
 		echo "</td><td valign=top>"; // outer table
 		Display::heading(_("Deliveries"));
@@ -83,7 +78,7 @@
 		}
 		end_table();
 	}
-	$invoice_result = get_po_invoices_credits($_GET['trans_no']);
+	$invoice_result = Purch_Invoice::get_po_credits($_GET['trans_no']);
 	$k = 0;
 	if (DB::num_rows($invoice_result) > 0) {
 		echo "</td><td valign=top>"; // outer table

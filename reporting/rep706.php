@@ -28,11 +28,10 @@
 		$totals_arr = array();
 		$printtitle = 0; //Flag for printing type name
 		//Get Accounts directly under this group/type
-		$result = get_gl_accounts(null, null, $type);
-		while ($account = DB::fetch($result))
-		{
-			$prev_balance = get_gl_balance_from_to("", $from, $account["account_code"], $dimension, $dimension2);
-			$curr_balance = get_gl_trans_from_to($from, $to, $account["account_code"], $dimension, $dimension2);
+		$result = GL_Account::get_all(null, null, $type);
+		while ($account = DB::fetch($result)) {
+			$prev_balance = GL_Trans::get_balance_from_to("", $from, $account["account_code"], $dimension, $dimension2);
+			$curr_balance = GL_Trans::get_from_to($from, $to, $account["account_code"], $dimension, $dimension2);
 			if (!$prev_balance && !$curr_balance) {
 				continue;
 			}
@@ -55,9 +54,8 @@
 			$code_period_balance += $curr_balance;
 		}
 		//Get Account groups/types under this group/type
-		$result = get_account_types(false, false, $type);
-		while ($accounttype = DB::fetch($result))
-		{
+		$result = GL_AccountType::get_all(false, false, $type);
+		while ($accounttype = DB::fetch($result)) {
 			//Print Type Title if has sub types and not previously printed
 			if (!$printtitle) {
 				$printtitle = 1;
@@ -67,10 +65,7 @@
 				$rep->Line($rep->row);
 				$rep->NewLine();
 			}
-			$totals_arr = display_type(
-				$accounttype["id"], $accounttype["name"], $from, $to, $convert, $dec,
-				$rep, $dimension, $dimension2, $pg, $graphics
-			);
+			$totals_arr = display_type($accounttype["id"], $accounttype["name"], $from, $to, $convert, $dec, $rep, $dimension, $dimension2, $pg, $graphics);
 			$open_balance_total += $totals_arr[0];
 			$period_balance_total += $totals_arr[1];
 		}
@@ -110,8 +105,7 @@
 			$graphics = $_POST['PARAM_5'];
 			$comments = $_POST['PARAM_6'];
 			$destination = $_POST['PARAM_7'];
-		}
-		else if ($dim == 1) {
+		} else if ($dim == 1) {
 			$dimension = $_POST['PARAM_2'];
 			$decimals = $_POST['PARAM_3'];
 			$graphics = $_POST['PARAM_4'];
@@ -139,53 +133,23 @@
 		$cols = array(0, 50, 200, 350, 425, 500);
 		//------------0--1---2----3----4----5--
 		$headers = array(
-			_('Account'), _('Account Name'), _('Open Balance'), _('Period'),
-			_('Close Balance')
-		);
+			_('Account'), _('Account Name'), _('Open Balance'), _('Period'), _('Close Balance'));
 		$aligns = array('left', 'left', 'right', 'right', 'right');
 		if ($dim == 2) {
 			$params = array(
-				0 => $comments,
-				1 => array(
-					'text' => _('Period'),
-					'from' => $from,
-					'to' => $to
-				),
-				2 => array(
-					'text' => _('Dimension') . " 1",
-					'from' => get_dimension_string($dimension),
-					'to' => ''
-				),
-				3 => array(
-					'text' => _('Dimension') . " 2",
-					'from' => get_dimension_string($dimension2),
-					'to' => ''
-				)
-			);
-		}
-		else if ($dim == 1) {
+				0 => $comments, 1 => array(
+					'text' => _('Period'), 'from' => $from, 'to' => $to), 2 => array(
+					'text' => _('Dimension') . " 1", 'from' => Dimensions::get_string($dimension), 'to' => ''), 3 => array(
+					'text' => _('Dimension') . " 2", 'from' => Dimensions::get_string($dimension2), 'to' => ''));
+		} else if ($dim == 1) {
 			$params = array(
-				0 => $comments,
-				1 => array(
-					'text' => _('Period'),
-					'from' => $from,
-					'to' => $to
-				),
-				2 => array(
-					'text' => _('Dimension'),
-					'from' => get_dimension_string($dimension),
-					'to' => ''
-				)
-			);
+				0 => $comments, 1 => array(
+					'text' => _('Period'), 'from' => $from, 'to' => $to), 2 => array(
+					'text' => _('Dimension'), 'from' => Dimensions::get_string($dimension), 'to' => ''));
 		} else {
 			$params = array(
-				0 => $comments,
-				1 => array(
-					'text' => _('Period'),
-					'from' => $from,
-					'to' => $to
-				)
-			);
+				0 => $comments, 1 => array(
+					'text' => _('Period'), 'from' => $from, 'to' => $to));
 		}
 		$rep = new FrontReport(_('Balance Sheet'), "BalanceSheet", User::pagesize());
 		$rep->Font();
@@ -195,9 +159,8 @@
 		$equity_open = $equity_period = 0.0;
 		$liability_open = $liability_period = 0.0;
 		$econvert = $lconvert = 0;
-		$classresult = get_account_classes(false, 1);
-		while ($class = DB::fetch($classresult))
-		{
+		$classresult = GL_AccountClass::get_all(false, 1);
+		while ($class = DB::fetch($classresult)) {
 			$class_open_total = 0;
 			$class_period_total = 0;
 			$convert = Systypes::get_class_type_convert($class["ctype"]);
@@ -207,13 +170,9 @@
 			$rep->Font();
 			$rep->NewLine();
 			//Get Account groups/types under this group/type with no parents
-			$typeresult = get_account_types(false, $class['cid'], -1);
-			while ($accounttype = DB::fetch($typeresult))
-			{
-				$classtotal = display_type(
-					$accounttype["id"], $accounttype["name"], $from, $to, $convert, $dec,
-					$rep, $dimension, $dimension2, $pg, $graphics
-				);
+			$typeresult = GL_AccountType::get_all(false, $class['cid'], -1);
+			while ($accounttype = DB::fetch($typeresult)) {
+				$classtotal = display_type($accounttype["id"], $accounttype["name"], $from, $to, $convert, $dec, $rep, $dimension, $dimension2, $pg, $graphics);
 				$class_open_total += $classtotal[0];
 				$class_period_total += $classtotal[1];
 			}
@@ -234,9 +193,7 @@
 				$equity_open += $class_open_total;
 				$equity_period += $class_period_total;
 				$econvert = $convert;
-			}
-			elseif ($class['ctype'] == CL_LIABILITIES)
-			{
+			} elseif ($class['ctype'] == CL_LIABILITIES) {
 				$liability_open += $class_open_total;
 				$liability_period += $class_period_total;
 				$lconvert = $convert;

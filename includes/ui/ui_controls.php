@@ -136,7 +136,7 @@
 		}
 		start_table("width=20%");
 		start_row();
-		echo "<td align=center><a class='button' href='javascript:goBack();'>" . ($no_menu ? _("Close") : _("Back")) . "</a></td>\n";
+		echo "<td align=center><a class='button' href='javascript:(window.history.length <= 1) ? window.close() : window.history.go(-1);'>" . ($no_menu ? _("Close") : _("Back")) . "</a></td>\n";
 		end_row();
 		end_table();
 		if ($center) {
@@ -173,8 +173,10 @@
 
 	function viewer_link($label, $url = '', $class = '', $id = '', $icon = null)
 	{
+		if ($url!='') $class .=" openWindow";
 		if ($class != '') {
 			$class = " class='$class'";
+
 		}
 		if ($id != '') {
 			$class = " id='$id'";
@@ -184,7 +186,8 @@
 			if (User::graphic_links() && $icon) {
 				$pars[0] = set_icon($icon, $pars[0]);
 			}
-			$preview_str = "<a target='_blank' $class $id href='" . PATH_TO_ROOT . "/$url' onclick=\"javascript:openWindow(this.href,this.target); return false;\"$pars[1]>$pars[0]</a>";
+
+			$preview_str = "<a target='_blank' $class $id href='" . PATH_TO_ROOT . "/$url' $pars[1]>$pars[0]</a>";
 		} else {
 			$preview_str = $label;
 		}

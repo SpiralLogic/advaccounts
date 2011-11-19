@@ -125,7 +125,7 @@
 			} else // main menu
 			{
 				$app = $_SESSION['sel_app'];
-				$help_page_url = $_SESSION['App']->applications[$app]->help_context;
+				$help_page_url = Session::get()->App->applications[$app]->help_context;
 				$clean = 1;
 			}
 			if (@$old_style_help) {

@@ -16,7 +16,7 @@
 	if (isset($_GET["trans_no"])) {
 		$trans_no = $_GET["trans_no"];
 	}
-	$receipt = get_supp_trans($trans_no, ST_SUPPAYMENT);
+	$receipt = Purch_Trans::get($trans_no, ST_SUPPAYMENT);
 	$company_currency = Banking::get_company_currency();
 	$show_currencies = false;
 	$show_both_amounts = false;

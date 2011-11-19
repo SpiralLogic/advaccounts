@@ -36,10 +36,9 @@
 		function add_to_cart($line_no, $stock_id, $qty, $standard_cost, $description = null)
 		{
 			if (isset($stock_id) && $stock_id != "" && isset($qty)) {
-				$this->line_items[$line_no] = new Item_Line($stock_id, $qty,
-					$standard_cost, $description);
+				$this->line_items[$line_no] = new Item_Line($stock_id, $qty, $standard_cost, $description);
 				return true;
-} else {
+			} else {
 				// shouldn't come here under normal circumstances
 				Errors::show_db_error("unexpected - adding an invalid item or null quantity", "", true);
 			}
@@ -58,7 +57,7 @@
 
 		function update_cart_item($line_no, $qty, $standard_cost)
 		{
-			$this->line_items[$line_no]->quantity      = $qty;
+			$this->line_items[$line_no]->quantity = $qty;
 			$this->line_items[$line_no]->standard_cost = $standard_cost;
 		}
 
@@ -74,8 +73,7 @@
 
 		function check_qoh($location, $date_, $reverse = false)
 		{
-			foreach ($this->line_items as $line_no => $line_item)
-			{
+			foreach ($this->line_items as $line_no => $line_item) {
 				$item_ret = $line_item->check_qoh($location, $date_, $reverse);
 				if ($item_ret != null) {
 					return $line_no;
@@ -99,14 +97,14 @@
 
 		function update_gl_item($index, $code_id, $dimension_id, $dimension2_id, $amount, $reference, $description = null)
 		{
-			$this->gl_items[$index]->code_id       = $code_id;
-			$this->gl_items[$index]->dimension_id  = $dimension_id;
+			$this->gl_items[$index]->code_id = $code_id;
+			$this->gl_items[$index]->dimension_id = $dimension_id;
 			$this->gl_items[$index]->dimension2_id = $dimension2_id;
-			$this->gl_items[$index]->amount        = $amount;
-			$this->gl_items[$index]->reference     = $reference;
+			$this->gl_items[$index]->amount = $amount;
+			$this->gl_items[$index]->reference = $reference;
 			if ($description == null) {
-				$this->gl_items[$index]->description = get_gl_account_name($code_id);
-} else {
+				$this->gl_items[$index]->description = GL_Account::get_name($code_id);
+			} else {
 				$this->gl_items[$index]->description = $description;
 			}
 		}
@@ -124,8 +122,7 @@
 		function gl_items_total()
 		{
 			$total = 0;
-			foreach ($this->gl_items as $gl_item)
-			{
+			foreach ($this->gl_items as $gl_item) {
 				$total += $gl_item->amount;
 			}
 			return $total;
@@ -134,8 +131,7 @@
 		function gl_items_total_debit()
 		{
 			$total = 0;
-			foreach ($this->gl_items as $gl_item)
-			{
+			foreach ($this->gl_items as $gl_item) {
 				if ($gl_item->amount > 0) {
 					$total += $gl_item->amount;
 				}
@@ -146,8 +142,7 @@
 		function gl_items_total_credit()
 		{
 			$total = 0;
-			foreach ($this->gl_items as $gl_item)
-			{
+			foreach ($this->gl_items as $gl_item) {
 				if ($gl_item->amount < 0) {
 					$total += $gl_item->amount;
 				}
@@ -162,6 +157,15 @@
 			$this->line_items = array();
 			unset($this->gl_items);
 			$this->gl_items = array();
+		}
+
+		static function add_line($order, $new_item, $new_item_qty, $standard_cost)
+		{
+			if ($order->find_cart_item($new_item)) {
+				Errors::error(_("For Part: '") . $new_item . "' This item is already on this order.  You can change the quantity ordered of the existing line if necessary.");
+			} else {
+				$order->add_to_cart(count($order->line_items), $new_item, $new_item_qty, $standard_cost);
+			}
 		}
 	}
 

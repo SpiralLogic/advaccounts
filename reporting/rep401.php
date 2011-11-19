@@ -21,8 +21,7 @@
 	print_bill_of_material();
 	function getTransactions($from, $to)
 	{
-		$sql
-		 = "SELECT bom.parent,
+		$sql = "SELECT bom.parent,
 			bom.component,
 			stock_master.description as CompDescription,
 			bom.quantity,
@@ -49,29 +48,22 @@
 		$destination = $_POST['PARAM_3'];
 		if ($destination) {
 			include_once(APP_PATH . "includes/reports/excel.php");
-		}
-		else
-		{
+		} else {
 			include_once(APP_PATH . "includes/reports/pdf.php");
 		}
 		$cols = array(0, 50, 305, 375, 445, 515);
 		$headers = array(_('Component'), _('Description'), _('Loc'), _('Wrk Ctr'), _('Quantity'));
 		$aligns = array('left', 'left', 'left', 'left', 'right');
 		$params = array(
-			0 => $comments,
-			1 => array(
-				'text' => _('Component'),
-				'from' => $frompart,
-				'to'   => $topart)
-		);
+			0 => $comments, 1 => array(
+				'text' => _('Component'), 'from' => $frompart, 'to' => $topart));
 		$rep = new FrontReport(_('Bill of Material Listing'), "BillOfMaterial", User::pagesize());
 		$rep->Font();
 		$rep->Info($params, $cols, $headers, $aligns);
 		$rep->Header();
 		$res = getTransactions($frompart, $topart);
 		$parent = '';
-		while ($trans = DB::fetch($res))
-		{
+		while ($trans = DB::fetch($res)) {
 			if ($parent != $trans['parent']) {
 				if ($parent != '') {
 					$rep->Line($rep->row - 2);
@@ -89,8 +81,8 @@
 			$rep->TextCol(1, 2, $trans['CompDescription']);
 			//$rep->TextCol(2, 3, $trans['loc_code']);
 			//$rep->TextCol(3, 4, $trans['workcentre_added']);
-			$wc = get_work_centre($trans['workcentre_added']);
-			$rep->TextCol(2, 3, get_location_name($trans['loc_code']));
+			$wc = WO_WorkCentre::get($trans['workcentre_added']);
+			$rep->TextCol(2, 3, Inv_Location::get_name($trans['loc_code']));
 			$rep->TextCol(3, 4, $wc['name']);
 			$rep->AmountCol(4, 5, $trans['quantity'], $dec);
 		}

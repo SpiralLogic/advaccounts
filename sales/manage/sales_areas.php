@@ -22,9 +22,7 @@
 		}
 		if ($input_error != 1) {
 			if ($selected_id != -1) {
-				$sql = "UPDATE areas SET description=" . DB::escape(
-					$_POST['description']
-				) . " WHERE area_code = " . DB::escape($selected_id);
+				$sql = "UPDATE areas SET description=" . DB::escape($_POST['description']) . " WHERE area_code = " . DB::escape($selected_id);
 				$note = _('Selected sales area has been updated');
 			} else {
 				$sql = "INSERT INTO areas (description) VALUES (" . DB::escape($_POST['description']) . ")";
@@ -70,8 +68,7 @@
 	inactive_control_column($th);
 	table_header($th);
 	$k = 0;
-	while ($myrow = DB::fetch($result))
-	{
+	while ($myrow = DB::fetch($result)) {
 		alt_table_row_color($k);
 		label_cell($myrow["description"]);
 		inactive_control_cell($myrow["area_code"], $myrow["inactive"], 'areas', 'area_code');

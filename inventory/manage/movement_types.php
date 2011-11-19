@@ -24,10 +24,10 @@
 		}
 		if ($input_error != 1) {
 			if ($selected_id != -1) {
-				update_movement_type($selected_id, $_POST['name']);
+				Inv_Movement::update_type( $selected_id, $_POST['name']);
 				Errors::notice(_('Selected movement type has been updated'));
 			} else {
-				add_movement_type($_POST['name']);
+				Inv_Movement::add_type( $_POST['name']);
 				Errors::notice(_('New movement type has been added'));
 			}
 			$Mode = 'RESET';
@@ -51,7 +51,7 @@
 	//-----------------------------------------------------------------------------------
 	if ($Mode == 'Delete') {
 		if (can_delete($selected_id)) {
-			delete_movement_type($selected_id);
+			Inv_Movement::delete( $selected_id);
 			Errors::notice(_('Selected movement type has been deleted'));
 		}
 		$Mode = 'RESET';
@@ -63,7 +63,7 @@
 		$_POST['show_inactive'] = $sav;
 	}
 	//-----------------------------------------------------------------------------------
-	$result = get_all_movement_type(check_value('show_inactive'));
+	$result = Inv_Movement::get_all_types(  check_value('show_inactive'));
 	start_form();
 	start_table(Config::get('tables_style') . "  width=30%");
 	$th = array(_("Description"), "", "");
@@ -86,7 +86,7 @@
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {
 			//editing an existing status code
-			$myrow = get_movement_type($selected_id);
+			$myrow = Inv_Movement::get_type( $selected_id);
 			$_POST['name'] = $myrow["name"];
 		}
 		hidden('selected_id', $selected_id);

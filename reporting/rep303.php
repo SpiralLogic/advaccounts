@@ -80,7 +80,7 @@
 		if ($location == 'all') {
 			$loc = _('All');
 		} else {
-			$loc = get_location_name($location);
+			$loc = Inv_Location::get_name($location);
 		}
 		if ($shortage) {
 			$short = _('Yes');

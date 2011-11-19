@@ -30,13 +30,13 @@
 	register_shutdown_function('adv_shutdown_function_handler');
 	ob_start('adv_ob_flush_handler', 0);
 	Errors::init();
+
 	// intercept all output to destroy it in case of ajax call
 	// POST vars cleanup needed for direct reuse.
 	// We quote all values later with DB::escape() before db update.
 	array_walk($_POST, function(&$v)
-		{
-			$v = is_string($v) ? trim($v) : $v;
-		});
+	{
+		$v = is_string($v) ? trim($v) : $v;
+	});
 	//$_POST = Security::strip_quotes($_POST);
 	frontaccounting::init();
-

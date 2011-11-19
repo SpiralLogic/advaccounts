@@ -35,8 +35,7 @@
 		$date03 = date('Y-m-d', mktime(0, 0, 0, $mo - 9, 1, $yr));
 		$date02 = date('Y-m-d', mktime(0, 0, 0, $mo - 10, 1, $yr));
 		$date01 = date('Y-m-d', mktime(0, 0, 0, $mo - 11, 1, $yr));
-		$sql
-		 = "SELECT SUM(CASE WHEN tran_date >= '$date01' AND tran_date < '$date02' THEN amount / 1000 ELSE 0 END) AS per01,
+		$sql = "SELECT SUM(CASE WHEN tran_date >= '$date01' AND tran_date < '$date02' THEN amount / 1000 ELSE 0 END) AS per01,
 		   		SUM(CASE WHEN tran_date >= '$date02' AND tran_date < '$date03' THEN amount / 1000 ELSE 0 END) AS per02,
 		   		SUM(CASE WHEN tran_date >= '$date03' AND tran_date < '$date04' THEN amount / 1000 ELSE 0 END) AS per03,
 		   		SUM(CASE WHEN tran_date >= '$date04' AND tran_date < '$date05' THEN amount / 1000 ELSE 0 END) AS per04,
@@ -68,18 +67,10 @@
 		$totals_arr = array();
 		$printtitle = 0; //Flag for printing type name
 		//Get Accounts directly under this group/type
-		$result = get_gl_accounts(null, null, $type);
-		while ($account = DB::fetch($result))
-		{
+		$result = GL_Account::get_all(null, null, $type);
+		while ($account = DB::fetch($result)) {
 			$bal = getPeriods($yr, $mo, $account["account_code"], $dimension, $dimension2);
-			if (!$bal['per01'] && !$bal['per02'] && !$bal['per03'] && !$bal['per04'] && !$bal['per05']
-			 && !$bal['per06']
-			 && !$bal['per07']
-			 && !$bal['per08']
-			 && !$bal['per09']
-			 && !$bal['per10']
-			 && !$bal['per11']
-			 && !$bal['per12']
+			if (!$bal['per01'] && !$bal['per02'] && !$bal['per03'] && !$bal['per04'] && !$bal['per05'] && !$bal['per06'] && !$bal['per07'] && !$bal['per08'] && !$bal['per09'] && !$bal['per10'] && !$bal['per11'] && !$bal['per12']
 			) {
 				continue;
 			}
@@ -93,25 +84,18 @@
 				$rep->NewLine();
 			}
 			$balance = array(
-				1 => $bal['per01'], $bal['per02'], $bal['per03'], $bal['per04'],
-				$bal['per05'], $bal['per06'], $bal['per07'], $bal['per08'],
-				$bal['per09'], $bal['per10'], $bal['per11'], $bal['per12']
-			);
+				1 => $bal['per01'], $bal['per02'], $bal['per03'], $bal['per04'], $bal['per05'], $bal['per06'], $bal['per07'], $bal['per08'], $bal['per09'], $bal['per10'], $bal['per11'], $bal['per12']);
 			$rep->TextCol(0, 1, $account['account_code']);
 			$rep->TextCol(1, 2, $account['account_name']);
-			for (
-				$i = 1; $i <= 12; $i++
-			)
-			{
+			for ($i = 1; $i <= 12; $i++) {
 				$rep->AmountCol($i + 1, $i + 2, $balance[$i] * $convert, $dec);
 				$ctotal[$i] += $balance[$i];
 			}
 			$rep->NewLine();
 		}
 		//Get Account groups/types under this group/type
-		$result = get_account_types(false, false, $type);
-		while ($accounttype = DB::fetch($result))
-		{
+		$result = GL_AccountType::get_all(false, false, $type);
+		while ($accounttype = DB::fetch($result)) {
 			//Print Type Title if has sub types and not previously printed
 			if (!$printtitle) {
 				$printtitle = 1;
@@ -121,13 +105,8 @@
 				$rep->Line($rep->row);
 				$rep->NewLine();
 			}
-			$totals_arr = display_type(
-				$accounttype["id"], $accounttype["name"], $yr, $mo, $convert, $dec, $rep, $dimension, $dimension2
-			);
-			for (
-				$i = 1; $i <= 12; $i++
-			)
-			{
+			$totals_arr = display_type($accounttype["id"], $accounttype["name"], $yr, $mo, $convert, $dec, $rep, $dimension, $dimension2);
+			for ($i = 1; $i <= 12; $i++) {
 				$total[$i] += $totals_arr[$i];
 			}
 		}
@@ -137,18 +116,12 @@
 			$rep->Line($rep->row);
 			$rep->NewLine();
 			$rep->TextCol(0, 2, _('Total') . " " . $typename);
-			for (
-				$i = 1; $i <= 12; $i++
-			)
-			{
+			for ($i = 1; $i <= 12; $i++) {
 				$rep->AmountCol($i + 1, $i + 2, ($total[$i] + $ctotal[$i]) * $convert, $dec);
 			}
 			$rep->NewLine();
 		}
-		for (
-			$i = 1; $i <= 12; $i++
-		)
-		{
+		for ($i = 1; $i <= 12; $i++) {
 			$totals_arr[$i] = $total[$i] + $ctotal[$i];
 		}
 		return $totals_arr;
@@ -165,8 +138,7 @@
 			$dimension2 = $_POST['PARAM_2'];
 			$comments = $_POST['PARAM_3'];
 			$destination = $_POST['PARAM_4'];
-		}
-		else if ($dim == 1) {
+		} else if ($dim == 1) {
 			$year = $_POST['PARAM_0'];
 			$dimension = $_POST['PARAM_1'];
 			$comments = $_POST['PARAM_2'];
@@ -197,9 +169,7 @@
 		$da = 1;
 		if (Config::get('accounts_datesystem') == 1) {
 			list($yr, $mo, $da) = Dates::jalali_to_gregorian($yr, $mo, $da);
-		}
-		elseif (Config::get('accounts_datesystem') == 2)
-		{
+		} elseif (Config::get('accounts_datesystem') == 2) {
 			list($yr, $mo, $da) = Dates::islamic_to_gregorian($yr, $mo, $da);
 		}
 		$per12 = strftime('%b', mktime(0, 0, 0, $mo, $da, $yr));
@@ -215,80 +185,35 @@
 		$per02 = strftime('%b', mktime(0, 0, 0, $mo - 10, $da, $yr));
 		$per01 = strftime('%b', mktime(0, 0, 0, $mo - 11, $da, $yr));
 		$headers = array(
-			_('Account'), _('Account Name'), $per01, $per02, $per03, $per04,
-			$per05, $per06, $per07, $per08, $per09, $per10, $per11, $per12
-		);
+			_('Account'), _('Account Name'), $per01, $per02, $per03, $per04, $per05, $per06, $per07, $per08, $per09, $per10, $per11, $per12);
 		$aligns = array(
-			'left', 'left', 'right', 'right', 'right', 'right', 'right', 'right',
-			'right', 'right', 'right', 'right', 'right', 'right'
-		);
+			'left', 'left', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right');
 		if ($dim == 2) {
 			$params = array(
-				0 => $comments,
-				1 => array(
-					'text' => _("Year"),
-					'from' => $year,
-					'to' => ''
-				),
-				2 => array(
-					'text' => _("Dimension") . " 1",
-					'from' => get_dimension_string($dimension),
-					'to' => ''
-				),
-				3 => array(
-					'text' => _("Dimension") . " 2",
-					'from' => get_dimension_string($dimension2),
-					'to' => ''
-				),
-				4 => array(
-					'text' => _('Info'),
-					'from' => _('Amounts in thousands'),
-					'to' => ''
-				)
-			);
-		}
-		else if ($dim == 1) {
+				0 => $comments, 1 => array(
+					'text' => _("Year"), 'from' => $year, 'to' => ''), 2 => array(
+					'text' => _("Dimension") . " 1", 'from' => Dimensions::get_string($dimension), 'to' => ''), 3 => array(
+					'text' => _("Dimension") . " 2", 'from' => Dimensions::get_string($dimension2), 'to' => ''), 4 => array(
+					'text' => _('Info'), 'from' => _('Amounts in thousands'), 'to' => ''));
+		} else if ($dim == 1) {
 			$params = array(
-				0 => $comments,
-				1 => array(
-					'text' => _("Year"),
-					'from' => $year,
-					'to' => ''
-				),
-				2 => array(
-					'text' => _('Dimension'),
-					'from' => get_dimension_string($dimension),
-					'to' => ''
-				),
-				3 => array(
-					'text' => _('Info'),
-					'from' => _('Amounts in thousands'),
-					'to' => ''
-				)
-			);
+				0 => $comments, 1 => array(
+					'text' => _("Year"), 'from' => $year, 'to' => ''), 2 => array(
+					'text' => _('Dimension'), 'from' => Dimensions::get_string($dimension), 'to' => ''), 3 => array(
+					'text' => _('Info'), 'from' => _('Amounts in thousands'), 'to' => ''));
 		} else {
 			$params = array(
-				0 => $comments,
-				1 => array(
-					'text' => _("Year"),
-					'from' => $year,
-					'to' => ''
-				),
-				2 => array(
-					'text' => _('Info'),
-					'from' => _('Amounts in thousands'),
-					'to' => ''
-				)
-			);
+				0 => $comments, 1 => array(
+					'text' => _("Year"), 'from' => $year, 'to' => ''), 2 => array(
+					'text' => _('Info'), 'from' => _('Amounts in thousands'), 'to' => ''));
 		}
 		$rep = new FrontReport(_('Annual Expense Breakdown'), "AnnualBreakDown", User::pagesize());
 		$rep->Font();
 		$rep->Info($params, $cols, $headers, $aligns);
 		$rep->Header();
 		$sales = Array(1 => 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-		$classresult = get_account_classes(false, 0);
-		while ($class = DB::fetch($classresult))
-		{
+		$classresult = GL_AccountClass::get_all(false, 0);
+		while ($class = DB::fetch($classresult)) {
 			$ctotal = Array(1 => 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 			$convert = Systypes::get_class_type_convert($class["ctype"]);
 			//Print Class Name
@@ -297,16 +222,10 @@
 			$rep->Font();
 			$rep->NewLine();
 			//Get Account groups/types under this group/type with no parents
-			$typeresult = get_account_types(false, $class['cid'], -1);
-			while ($accounttype = DB::fetch($typeresult))
-			{
-				$classtotal = display_type(
-					$accounttype["id"], $accounttype["name"], $yr, $mo, $convert, $dec, $rep, $dimension, $dimension2
-				);
-				for (
-					$i = 1; $i <= 12; $i++
-				)
-				{
+			$typeresult = GL_AccountType::get_all(false, $class['cid'], -1);
+			while ($accounttype = DB::fetch($typeresult)) {
+				$classtotal = display_type($accounttype["id"], $accounttype["name"], $yr, $mo, $convert, $dec, $rep, $dimension, $dimension2);
+				for ($i = 1; $i <= 12; $i++) {
 					$ctotal[$i] += $classtotal[$i];
 				}
 			}
@@ -316,10 +235,7 @@
 			$rep->NewLine();
 			$rep->Font('bold');
 			$rep->TextCol(0, 2, _('Total') . " " . $class["class_name"]);
-			for (
-				$i = 1; $i <= 12; $i++
-			)
-			{
+			for ($i = 1; $i <= 12; $i++) {
 				$rep->AmountCol($i + 1, $i + 2, $ctotal[$i] * $convert, $dec);
 				$sales[$i] += $ctotal[$i];
 			}
@@ -328,10 +244,7 @@
 		}
 		$rep->Font('bold');
 		$rep->TextCol(0, 2, _("Calculated Return"));
-		for (
-			$i = 1; $i <= 12; $i++
-		)
-		{
+		for ($i = 1; $i <= 12; $i++) {
 			$rep->AmountCol($i + 1, $i + 2, $sales[$i] * -1, $dec);
 		}
 		$rep->Font();

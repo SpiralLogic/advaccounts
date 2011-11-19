@@ -20,10 +20,10 @@
 		}
 
 		protected static function _get($db = null, $config = array()) {
+			static::$prepared = null;
 			if ($db === null && static::$current) {
 				return static::$current;
-			}
-			elseif ($db === null) {
+			} elseif ($db === null) {
 				$config = $config ? : Config::get('db_default');
 				$db = $config['name'];
 			}
@@ -42,9 +42,7 @@
 		}
 
 		public static function query($sql, $err_msg = null) {
-
 			try {
-
 				$prepared = static::prepare($sql);
 				$prepared->execute();
 				static::$data = array();
@@ -106,7 +104,6 @@
 		}
 
 		public static function execute($data) {
-
 			if (static::$prepared) {
 				if (Config::get('debug_sql')) {
 					$sql = static::$prepared->queryString;
@@ -115,7 +112,6 @@
 					}
 					FB::info($sql);
 				}
-
 				static::$prepared->execute($data);
 				return static::$prepared->fetchAll(PDO::FETCH_ASSOC);
 			}
@@ -127,39 +123,41 @@
 
 		public static function select() {
 			$columns = func_get_args();
-			return new DB_Select($columns, static::_get());
+			return new DB_Query_Select($columns, static::_get());
 		}
 
 		public static function update($into) {
-			return new DB_Update($into, static::_get());
+			return new DB_Query_Update($into, static::_get());
 		}
 
 		public static function insert($into) {
-			return new DB_Insert($into, static::_get());
+			return new DB_Query_Insert($into, static::_get());
 		}
 
 		public static function delete($into) {
-			return new DB_Delete($into, static::_get());
+			return new DB_Query_Delete($into, static::_get());
 		}
 
-		public static function fetch($result = null) {
-			if ($result === null) {
-				return DB_Query::_fetch(static::_get());
-			} else {
-				return $result->fetch(PDO::FETCH_BOTH);
+		public static function fetch($result=null) {
+			if ($result !== null) {
+				return $result->fetch();
 			}
+			if (static::$prepared === null) {
+				return DB_Query::_fetch(static::_get());
+			}
+			return static::$prepared->fetch(PDO::FETCH_BOTH);
 		}
 
-		public static function fetch_row($result) {
+		public static function fetch_row() {
 			return static::$prepared->fetch(PDO::FETCH_NUM);
 		}
 
-		public static function fetch_assoc($result) {
-			return $result->fetch(PDO::FETCH_ASSOC);
+		public static function fetch_assoc() {
+			return static::$prepared->fetch(PDO::FETCH_ASSOC);
 		}
 
-		public static function fetch_all($result) {
-			return $result->fetchAll(PDO::FETCH_ASSOC);
+		public static function fetch_all() {
+			return static::$prepared->fetchAll(PDO::FETCH_ASSOC);
 		}
 
 		public static function begin() {
@@ -187,26 +185,23 @@
 			return static::_get()->getAttribute($value);
 		}
 
-		public static function free_result($result) {
-			if ($result) {
-				return $result->closeCursor();
+		public static function free_result() {
+			if (static::$prepared) {
+				return static::$prepared->closeCursor();
 			}
 		}
 
-		public static function num_rows($result) {
-
+		public static function num_rows() {
 			return static::$prepared->rowCount();
 		}
 
-		public static function num_fields($result) {
-			return $result->columnCount();
+		public static function num_fields() {
+			return static::$prepared->columnCount();
 		}
 
 		//DB wrapper functions to change only once for whole application
-
-		public static function num_affected_rows($result) {
-
-			return $result->rowCount();
+		public static function num_affected_rows() {
+			return static::$prepared->rowCount();
 		}
 
 		public static function begin_transaction() {

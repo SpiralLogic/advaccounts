@@ -100,14 +100,14 @@
 		}
 		else
 		{
-			$loc = get_location_name($location);
+			$loc = Inv_Location::get_name($location);
 		}
 		if ($fromcust == ALL_NUMERIC) {
 			$fromc = _('All');
 		}
 		else
 		{
-			$fromc = get_customer_name($fromcust);
+			$fromc = Sales_Debtor::get_name($fromcust);
 		}
 		$cols = array(0, 75, 175, 250, 300, 375, 450, 515);
 		$headers

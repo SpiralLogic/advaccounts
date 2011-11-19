@@ -14,9 +14,8 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	include_once(APP_PATH . "sales/includes/ui/sales_order_ui.php");
 	include_once(APP_PATH . "sales/includes/sales_ui.php");
-
 	JS::open_window(900, 500);
-	JS::headerFile('/js/payalloc.js');
+	JS::footerFile('/js/payalloc.js');
 	Page::start(_($help_context = "Customer Payment Entry"), Input::request('frame'));
 	//----------------------------------------------------------------------------------------------
 	Validation::check(Validation::CUSTOMERS, _("There are no customers defined in the system."));
@@ -24,7 +23,7 @@
 	//----------------------------------------------------------------------------------------
 	if (list_updated('BranchID')) {
 		// when branch is selected via external editor also customer can change
-		$br = get_branch(get_post('BranchID'));
+		$br = Sales_Branch::get(get_post('BranchID'));
 		$_POST['customer_id'] = $br['debtor_no'];
 		$Ajax->activate('customer_id');
 	}
@@ -64,8 +63,7 @@
 			Errors::error(_("The entered date is invalid. Please enter a valid date for the payment."));
 			JS::set_focus('DateBanked');
 			return false;
-		}
-		elseif (!Dates::is_date_in_fiscalyear($_POST['DateBanked'])) {
+		} elseif (!Dates::is_date_in_fiscalyear($_POST['DateBanked'])) {
 			Errors::error(_("The entered date is not in fiscal year."));
 			JS::set_focus('DateBanked');
 			return false;
@@ -92,7 +90,7 @@
 		}
 		if (isset($_POST['charge']) && input_num('charge') > 0) {
 			$charge_acct = DB_Company::get_pref('bank_charge_act');
-			if (get_gl_account($charge_acct) == false) {
+			if (GL_Account::get($charge_acct) == false) {
 				Errors::error(_("The Bank Charge Account has not been set in System and General GL Setup."));
 				JS::set_focus('charge');
 				return false;
@@ -152,12 +150,10 @@
 		} else {
 			$rate = input_num('_ex_rate');
 		}
-
 		if (check_value('createinvoice')) {
-var_dump($_POST);
 			Gl_Allocation::create_miscorder(new Contacts_Customer($_POST['customer_id']), $_POST['BranchID'], $_POST['DateBanked'], $_POST['memo_'], $_POST['ref'], input_num('amount'), input_num('discount'));
 		}
-		$payment_no = write_customer_payment(0, $_POST['customer_id'], $_POST['BranchID'], $_POST['bank_account'], $_POST['DateBanked'], $_POST['ref'], input_num('amount'), input_num('discount'), $_POST['memo_'], $rate, input_num('charge'));
+		$payment_no = Sales_Debtor_Payment::add(0, $_POST['customer_id'], $_POST['BranchID'], $_POST['bank_account'], $_POST['DateBanked'], $_POST['ref'], input_num('amount'), input_num('discount'), $_POST['memo_'], $rate, input_num('charge'));
 		$_SESSION['alloc']->trans_no = $payment_no;
 		$_SESSION['alloc']->write();
 		meta_forward($_SERVER['PHP_SELF'], "AddedID=$payment_no");
@@ -165,7 +161,7 @@ var_dump($_POST);
 	//----------------------------------------------------------------------------------------------
 	function read_customer_data()
 	{
-		$myrow = get_customer_habit($_POST['customer_id']);
+		$myrow = Sales_Debtor::get_habit($_POST['customer_id']);
 		$_POST['HoldAccount'] = $myrow["dissallow_invoices"];
 		$_POST['pymt_discount'] = $myrow["pymt_discount"];
 		$_POST['ref'] = Refs::get_next(ST_CUSTPAYMENT);
@@ -182,8 +178,7 @@ var_dump($_POST);
 	}
 	if (Validation::check(Validation::BRANCHES, _("No Branches for Customer") . $_POST["customer_id"], $_POST['customer_id'])) {
 		customer_branches_list_row(_("Branch:"), $_POST['customer_id'], 'BranchID', null, false, true, true);
-	}
-	else {
+	} else {
 		hidden('BranchID', ANY_NUMERIC);
 	}
 	read_customer_data();
@@ -191,12 +186,11 @@ var_dump($_POST);
 	if (isset($_POST['HoldAccount']) && $_POST['HoldAccount'] != 0) {
 		end_outer_table();
 		Errors::error(_("This customer account is on hold."));
-	}
-	else {
+	} else {
 		$display_discount_percent = Num::percent_format($_POST['pymt_discount'] * 100) . "%";
 		table_section(2);
 		if (!list_updated('bank_account')) {
-			$_POST['bank_account'] = get_default_customer_bank_account($_POST['customer_id']);
+			$_POST['bank_account'] = GL_BankAccount::get_customer_default($_POST['customer_id']);
 		}
 		bank_accounts_list_row(_("Into Bank Account:"), 'bank_account', null, true);
 		text_row(_("Reference:"), 'ref', null, 20, 40);
@@ -230,13 +224,16 @@ var_dump($_POST);
 		submit_center('AddPaymentItem', _("Add Payment"), true, '', 'default');
 	}
 	br();
+
 	end_form();
-	$js
-	 = <<<JS
+
+
+	$js = <<<JS
 var ci = $("#createinvoice"), ci_row = ci.closest('tr'),alloc_tbl = $('#alloc_tbl'),hasallocated = false;
   alloc_tbl.find('.amount').each(function() { if (this.value != 0) hasallocated = true});
   if (hasallocated && !ci.prop('checked')) ci_row.hide(); else ci_row.show();
 JS;
+
 	JS::addLiveEvent('a, :input', 'click change', $js, 'wrapper', true);
 	(Input::request('frame')) ? end_page() : end_page(true, true, true);
 

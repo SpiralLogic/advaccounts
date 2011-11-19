@@ -42,7 +42,7 @@
 
 	function get_allocations_for_remittance($supplier_id, $type, $trans_no)
 	{
-		$sql = get_alloc_supp_sql("amt, supp_reference, trans.alloc", "trans.trans_no = alloc.trans_no_to
+		$sql = Purch_Allocation::get_sql("amt, supp_reference, trans.alloc", "trans.trans_no = alloc.trans_no_to
 		AND trans.type = alloc.trans_type_to
 		AND alloc.trans_no_from=" . DB::escape($trans_no) . "
 		AND alloc.trans_type_from=" . DB::escape($type) . "
@@ -96,7 +96,7 @@
 				if (!$myrow) {
 					continue;
 				}
-				$baccount = get_default_bank_account($myrow['curr_code']);
+				$baccount = GL_BankAccount::get_default($myrow['curr_code']);
 				$params['bankaccount'] = $baccount['id'];
 				if ($email == 1) {
 					$rep = new FrontReport("", "", User::pagesize());

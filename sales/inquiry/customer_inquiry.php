@@ -65,7 +65,7 @@
 	//------------------------------------------------------------------------------------------------
 	div_start('totals_tbl');
 	if ($_POST['customer_id'] != "" && $_POST['customer_id'] != ALL_TEXT && !isset($_POST['ajaxsearch'])) {
-		$customer_record = get_customer_details($_POST['customer_id'], $_POST['TransToDate']);
+		$customer_record = Sales_Debtor::get_details($_POST['customer_id'], $_POST['TransToDate']);
 		display_customer_summary($customer_record);
 		echo "<br>";
 	}
@@ -114,39 +114,36 @@
 
 	function credit_link($row)
 	{
-		return $row['type'] == ST_SALESINVOICE && $row["TotalAmount"] - $row["Allocated"] > 0 ? pager_link(
-			_("Credit"), "/sales/customer_credit_invoice.php?InvoiceNumber=" . $row['trans_no'],
-			ICON_CREDIT
-		) : '';
+		return $row['type'] == ST_SALESINVOICE && $row["TotalAmount"] - $row["Allocated"] > 0 ? pager_link(_("Credit"), "/sales/customer_credit_invoice.php?InvoiceNumber=" . $row['trans_no'], ICON_CREDIT) : '';
 	}
 
 	function edit_link($row)
 	{
 		$str = '';
 		switch ($row['type']) {
-		case ST_SALESINVOICE:
-			if (Voiding::get(ST_SALESINVOICE, $row["trans_no"]) === false || AJAX_REFERRER) {
-				if ($row['Allocated'] == 0) {
-					$str = "/sales/customer_invoice.php?ModifyInvoice=" . $row['trans_no'];
-				} else {
-					$str = "/sales/customer_invoice.php?ViewInvoice=" . $row['trans_no'];
+			case ST_SALESINVOICE:
+				if (Voiding::get(ST_SALESINVOICE, $row["trans_no"]) === false || AJAX_REFERRER) {
+					if ($row['Allocated'] == 0) {
+						$str = "/sales/customer_invoice.php?ModifyInvoice=" . $row['trans_no'];
+					} else {
+						$str = "/sales/customer_invoice.php?ViewInvoice=" . $row['trans_no'];
+					}
 				}
-			}
-			break;
-		case ST_CUSTCREDIT:
-			if (Voiding::get(ST_CUSTCREDIT, $row["trans_no"]) === false && $row['Allocated'] == 0) {
-				if ($row['order_'] == 0) {
-					$str = "/sales/credit_note_entry.php?ModifyCredit=" . $row['trans_no'];
-				} else {
-					$str = "/sales/customer_credit_invoice.php?ModifyCredit=" . $row['trans_no'];
+				break;
+			case ST_CUSTCREDIT:
+				if (Voiding::get(ST_CUSTCREDIT, $row["trans_no"]) === false && $row['Allocated'] == 0) {
+					if ($row['order_'] == 0) {
+						$str = "/sales/credit_note_entry.php?ModifyCredit=" . $row['trans_no'];
+					} else {
+						$str = "/sales/customer_credit_invoice.php?ModifyCredit=" . $row['trans_no'];
+					}
 				}
-			}
-			break;
-		case ST_CUSTDELIVERY:
-			if (Voiding::get(ST_CUSTDELIVERY, $row["trans_no"]) === false) {
-				$str = "/sales/customer_delivery.php?ModifyDelivery=" . $row['trans_no'];
-			}
-			break;
+				break;
+			case ST_CUSTDELIVERY:
+				if (Voiding::get(ST_CUSTDELIVERY, $row["trans_no"]) === false) {
+					$str = "/sales/customer_delivery.php?ModifyDelivery=" . $row['trans_no'];
+				}
+				break;
 		}
 		if ($str != "" && (!DB_AuditTrail::is_closed_trans($row['type'], $row["trans_no"]) || $row['type'] == ST_SALESINVOICE)) {
 			return pager_link(_('Edit'), $str, ICON_EDIT);
@@ -160,8 +157,7 @@
 		) // customer payment or bank deposit printout not defined yet.
 		{
 			return Reporting::print_doc_link($row['trans_no'] . "-" . $row['type'], _("Print"), true, $row['type'], ICON_PRINT, 'button printlink');
-		}
-		else {
+		} else {
 			return Reporting::print_doc_link($row['trans_no'] . "-" . $row['type'], _("Receipt"), true, $row['type'], ICON_PRINT, 'button printlink');
 		}
 	}
@@ -171,7 +167,10 @@
 		if ($row['type'] != ST_SALESINVOICE) {
 			return;
 		}
-		return UI::emailDialogue('c', $row['debtor_no'] . '-' . $row['type'] . '-' . $row['trans_no']);
+		HTML::setReturn(true);
+		UI::button(false, 'Email', array(
+			'class' => 'button email-button', 'data-emailid' => $row['debtor_no'] . '-' . $row['type'] . '-' . $row['trans_no']));
+		return HTML::setReturn(false);
 	}
 
 	function check_overdue($row)
@@ -189,33 +188,29 @@
 		unset($_POST['filterType']);
 		if ($searchArray[0] == 'd') {
 			$filter = " AND type = " . ST_CUSTDELIVERY . " ";
-		}
-		elseif ($searchArray[0] == 'i') {
+		} elseif ($searchArray[0] == 'i') {
 			$filter = " AND (type = " . ST_SALESINVOICE . " OR type = " . ST_BANKPAYMENT . ") ";
-		}
-		elseif ($searchArray[0] == 'p') {
+		} elseif ($searchArray[0] == 'p') {
 			$filter = " AND (type = " . ST_CUSTPAYMENT . " OR type = " . ST_CUSTREFUND . " OR type = " . ST_BANKDEPOSIT . ") ";
 		}
 	}
-	$sql
-	 = "SELECT
-  		trans.type, 
-		trans.trans_no, 
-		trans.order_, 
+	$sql = "SELECT
+  		trans.type,
+		trans.trans_no,
+		trans.order_,
 		trans.reference,
-		trans.tran_date, 
-		trans.due_date, 
+		trans.tran_date,
+		trans.due_date,
 		debtor.name,
 		debtor.debtor_no,
 		branch.br_name,
 		debtor.curr_code,
-		(trans.ov_amount + trans.ov_gst + trans.ov_freight 
+		(trans.ov_amount + trans.ov_gst + trans.ov_freight
 			+ trans.ov_freight_tax + trans.ov_discount)	AS TotalAmount, ";
 	if (isset($_POST['filterType']) && $_POST['filterType'] != ALL_TEXT) {
 		$sql .= "@bal := @bal+(trans.ov_amount + trans.ov_gst + trans.ov_freight + trans.ov_freight_tax + trans.ov_discount), ";
 	}
-	$sql
-	 .= "trans.alloc AS Allocated,
+	$sql .= "trans.alloc AS Allocated,
 		((trans.type = " . ST_SALESINVOICE . ")
 			AND trans.due_date < '" . Dates::date2sql(Dates::Today()) . "') AS OverDue
 		FROM debtor_trans as trans, debtors_master as debtor, cust_branch as branch
@@ -223,9 +218,7 @@
 		AND trans.branch_code = branch.branch_code";
 	if (AJAX_REFERRER && !empty($_POST['ajaxsearch'])) {
 		$sql = "SELECT * FROM debtor_trans_view WHERE ";
-		foreach (
-			$searchArray as $ajaxsearch
-		) {
+		foreach ($searchArray as $ajaxsearch) {
 			if (empty($ajaxsearch)) {
 				continue;
 			}
@@ -234,58 +227,52 @@
 				if (substr($ajaxsearch, -1) == 0 && substr($ajaxsearch, -3, 1) == '.') {
 					$ajaxsearch = (substr($ajaxsearch, 0, -1));
 				}
-				$sql .= "TotalAmount LIKE " . DB::escape('%' . substr($ajaxsearch, 1) . '%',false,false) . ") ";
+				$sql .= "TotalAmount LIKE " . DB::escape('%' . substr($ajaxsearch, 1) . '%', false, false) . ") ";
 				continue;
 			}
-			;
 			if (stripos($ajaxsearch, '/') > 0) {
 				$sql .= " tran_date LIKE '%" . Dates::date2sql($ajaxsearch, false) . "%' OR";
+				continue;
 			}
-			$ajaxsearch = DB::escape("%" . $ajaxsearch . "%",false,false);
-			$sql
-			 .= " name LIKE $ajaxsearch OR trans_no LIKE $ajaxsearch OR reference LIKE $ajaxsearch
+			if (is_numeric($ajaxsearch)) {
+				$sql .= " debtor_no = $ajaxsearch OR ";
+			}
+			$ajaxsearch = DB::escape("%" . $ajaxsearch . "%", false, false);
+			$sql .= " name LIKE $ajaxsearch OR trans_no LIKE $ajaxsearch OR reference LIKE $ajaxsearch
 			 OR order_ LIKE $ajaxsearch OR br_name LIKE $ajaxsearch) ";
 		}
 		if (isset($filter) && $filter) {
 			$sql .= $filter;
 		}
-	}
-	else {
-		$sql
-		 .= " AND trans.tran_date >= '$date_after'
+	} else {
+		$sql .= " AND trans.tran_date >= '$date_after'
 			AND trans.tran_date <= '$date_to'";
 	}
 	if ($_POST['reference'] != ALL_TEXT) {
 		$number_like = "%" . $_POST['reference'] . "%";
-		$sql .= " AND trans.reference LIKE " . DB::escape($number_like,false,false);
+		$sql .= " AND trans.reference LIKE " . DB::escape($number_like, false, false);
 	}
 	if (isset($_POST['customer_id']) && $_POST['customer_id'] != ALL_TEXT) {
-		$sql .= " AND trans.debtor_no = " . DB::escape($_POST['customer_id'],false,false);
+		$sql .= " AND trans.debtor_no = " . DB::escape($_POST['customer_id'], false, false);
 	}
 	if (isset($_POST['filterType']) && $_POST['filterType'] != ALL_TEXT) {
 		if ($_POST['filterType'] == '1') {
 			$sql .= " AND (trans.type = " . ST_SALESINVOICE . " OR trans.type = " . ST_BANKPAYMENT . ") ";
-		}
-		elseif ($_POST['filterType'] == '2') {
+		} elseif ($_POST['filterType'] == '2') {
 			$sql .= " AND (trans.type = " . ST_SALESINVOICE . ") ";
-		}
-		elseif ($_POST['filterType'] == '3') {
+		} elseif ($_POST['filterType'] == '3') {
 			$sql .= " AND (trans.type = " . ST_CUSTPAYMENT . " OR trans.type = " . ST_CUSTREFUND . " OR trans.type = " . ST_BANKDEPOSIT . " OR trans.type = " . ST_BANKDEPOSIT . ") ";
-		}
-		elseif ($_POST['filterType'] == '4') {
+		} elseif ($_POST['filterType'] == '4') {
 			$sql .= " AND trans.type = " . ST_CUSTCREDIT . " ";
-		}
-		elseif ($_POST['filterType'] == '5') {
+		} elseif ($_POST['filterType'] == '5') {
 			$sql .= " AND trans.type = " . ST_CUSTDELIVERY . " ";
-		}
-		elseif ($_POST['filterType'] == '6') {
+		} elseif ($_POST['filterType'] == '6') {
 			$sql .= " AND trans.type = " . ST_SALESINVOICE . " ";
 		}
 		if ($_POST['filterType'] == '2') {
 			$today = Dates::date2sql(Dates::Today());
-			$sql
-			 .= " AND trans.due_date < '$today'
-				AND (trans.ov_amount + trans.ov_gst + trans.ov_freight_tax + 
+			$sql .= " AND trans.due_date < '$today'
+				AND (trans.ov_amount + trans.ov_gst + trans.ov_freight_tax +
 				trans.ov_freight + trans.ov_discount - trans.alloc > 0) ";
 		}
 	}
@@ -293,65 +280,18 @@
 	DB::query("set @bal:=0");
 	$cols = array(
 		_("Type") => array(
-			'fun' => 'systype_name',
-			'ord' => ''
-		),
-		_("#") => array(
-			'fun' => 'trans_view',
-			'ord' => ''
-		),
-		_("Order") => array('fun' => 'order_view'),
-		_("Reference") => array('ord' => ''),
-		_("Date") => array(
-			'name' => 'tran_date',
-			'type' => 'date',
-			'ord' => 'desc'
-		),
-		_("Due Date") => array(
-			'type' => 'date',
-			'fun' => 'due_date'
-		),
-		_("Customer") => array('ord' => ''),
-		_("Branch") => array('ord' => ''),
-		_("Currency") => array('align' => 'center'),
-		_("Debit") => array(
-			'align' => 'right',
-			'fun' => 'fmt_debit'
-		),
-		_("Credit") => array(
-			'align' => 'right',
-			'insert' => true,
-			'fun' => 'fmt_credit'
-		),
-		_("RB") => array(
-			'align' => 'right',
-			'type' => 'amount'
-		),
-		array(
-			'insert' => true,
-			'fun' => 'gl_view'
-		),
-		array(
-			'insert' => true,
-			'align' => 'center',
-			'fun' => 'credit_link'
-		),
-		array(
-			'insert' => true,
-			'align' => 'center',
-			'fun' => 'edit_link'
-		),
-		array(
-			'insert' => true,
-			'align' => 'center',
-			'fun' => 'email_link'
-		),
-		array(
-			'insert' => true,
-			'align' => 'center',
-			'fun' => 'prt_link'
-		)
-	);
+			'fun' => 'systype_name', 'ord' => ''), _("#") => array(
+			'fun' => 'trans_view', 'ord' => ''), _("Order") => array('fun' => 'order_view'), _("Reference") => array('ord' => ''), _("Date") => array(
+			'name' => 'tran_date', 'type' => 'date', 'ord' => 'desc'), _("Due Date") => array(
+			'type' => 'date', 'fun' => 'due_date'), _("Customer") => array('ord' => ''), _("Branch") => array('ord' => ''), _("Currency") => array('align' => 'center'), _("Debit") => array(
+			'align' => 'right', 'fun' => 'fmt_debit'), _("Credit") => array(
+			'align' => 'right', 'insert' => true, 'fun' => 'fmt_credit'), _("RB") => array(
+			'align' => 'right', 'type' => 'amount'), array(
+			'insert' => true, 'fun' => 'gl_view'), array(
+			'insert' => true, 'align' => 'center', 'fun' => 'credit_link'), array(
+			'insert' => true, 'align' => 'center', 'fun' => 'edit_link'), array(
+			'insert' => true, 'align' => 'center', 'fun' => 'email_link'), array(
+			'insert' => true, 'align' => 'center', 'fun' => 'prt_link'));
 	if (isset($_POST['customer_id']) && $_POST['customer_id'] != ALL_TEXT) {
 		$cols[_("Customer")] = 'skip';
 		$cols[_("Currency")] = 'skip';
@@ -363,6 +303,7 @@
 	$table->set_marker('check_overdue', _("Marked items are overdue."));
 	$table->width = "80%";
 	display_db_pager($table);
+	UI::emailDialogue('c');
 	end_form();
 	end_page();
 

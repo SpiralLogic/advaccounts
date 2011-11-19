@@ -24,24 +24,20 @@
 	//--------------------------------------------------------------------------------------------------
 	function copy_to_trans($supp_trans)
 	{
-		$supp_trans->Comments = $_POST['Comments'];
+		$supp_trans->Comments = Input::post('Comments');
 		$supp_trans->tran_date = $_POST['tran_date'];
 		$supp_trans->due_date = $_POST['due_date'];
 		$supp_trans->supp_reference = $_POST['supp_reference'];
 		$supp_trans->reference = $_POST['reference'];
 		$supp_trans->ov_amount = 0; /* for starters */
-		$supp_trans->tax_correction = $_POST['ChgTax']; /* for starters */
+		$supp_trans->tax_correction = Input::post('ChgTax'); /* for starters */
 		if (count($supp_trans->grn_items) > 0) {
-			foreach (
-				$supp_trans->grn_items as $grn
-			) {
+			foreach ($supp_trans->grn_items as $grn) {
 				$supp_trans->ov_amount += Num::round(($grn->this_quantity_inv * $grn->chg_price * (1 - $grn->discount / 100)), User::price_dec());
 			}
 		}
 		if (count($supp_trans->gl_codes) > 0) {
-			foreach (
-				$supp_trans->gl_codes as $gl_line
-			) {
+			foreach ($supp_trans->gl_codes as $gl_line) {
 				////////// 2009-08-18 Joe Hunt
 				if (!Taxes::is_tax_account($gl_line->gl_code)) {
 					$supp_trans->ov_amount += $gl_line->amount;
@@ -61,12 +57,11 @@
 		start_outer_table("width=95% " . Config::get('tables_style2'));
 		table_section(1);
 		if (isset($_POST['invoice_no'])) {
-			$trans = get_supp_trans($_POST['invoice_no'], ST_SUPPINVOICE);
+			$trans = Purch_Trans::get($_POST['invoice_no'], ST_SUPPINVOICE);
 			$_POST['supplier_id'] = $trans['supplier_id'];
 			$supp = $trans['supplier_name'] . " - " . $trans['SupplierCurrCode'];
 			label_row(_("Supplier:"), $supp . hidden('supplier_id', $_POST['supplier_id'], false));
-		}
-		else {
+		} else {
 			if (!isset($_POST['supplier_id']) && Session::get()->supplier_id) {
 				$_POST['supplier_id'] = Session::get()->supplier_id;
 			}
@@ -77,23 +72,16 @@
 			// delete all the order items - drastic but necessary because of
 			// change of currency, etc
 			$supp_trans->clear_items();
-			read_supplier_details_to_trans($supp_trans, $_POST['supplier_id']);
+			Purch_Invoice::get_supplier_to_trans($supp_trans, $_POST['supplier_id']);
 			copy_from_trans($supp_trans);
 		}
 		if ($supp_trans->is_invoice) {
 			ref_row(_("Reference:"), 'reference', '', Refs::get_next(ST_SUPPINVOICE));
-		}
-		else {
+		} else {
 			ref_row(_("Reference:"), 'reference', '', Refs::get_next(ST_SUPPCREDIT));
 		}
 		if ($supp_trans->is_invoice && isset($_POST['invoice_no'])) {
-			label_row(
-				_("Supplier's Ref.:"),
-			 $_POST['invoice_no'] . hidden('invoice_no', $_POST['invoice_no'], false) . hidden(
-				 'supp_reference',
-				 $_POST['invoice_no'], false
-			 )
-			);
+			label_row(_("Supplier's Ref.:"), $_POST['invoice_no'] . hidden('invoice_no', $_POST['invoice_no'], false) . hidden('supp_reference', $_POST['invoice_no'], false));
 		} else {
 			text_row(_("Supplier's Ref.:"), 'supp_reference', $_POST['supp_reference'], 20, 20);
 		}
@@ -135,8 +123,7 @@
 		$total = $supp_trans->ov_amount + $tax_total + get_post('ChgTotal');
 		if ($supp_trans->is_invoice) {
 			label_row(_("Invoice Total:"), Num::price_format($total), "colspan=$colspan align=right style='font-weight:bold;'", "align=right id='invoiceTotal' data-total=" . $total . " style='font-weight:bold;'");
-		}
-		else {
+		} else {
 			label_row(_("Credit Note Total"), Num::price_format($total), "colspan=$colspan align=right style='font-weight:bold;color:red;'", "nowrap align=right id='invoiceTotal' data-total=" . $total . "  style='font-weight:bold;color:red;'");
 		}
 		end_table(1);
@@ -148,7 +135,7 @@
 	//--------------------------------------------------------------------------------------------------
 	function display_gl_controls($supp_trans, $k)
 	{
-		$accs = get_supplier_accounts($supp_trans->supplier_id);
+		$accs = Purch_Creditor::get_accounts_name($supp_trans->supplier_id);
 		$_POST['gl_code'] = $accs['purchase_account'];
 		alt_table_row_color($k);
 		echo gl_all_accounts_list('gl_code', null, true, true);
@@ -181,18 +168,17 @@
 		}
 		if ($supp_trans->is_invoice) {
 			$heading = _("GL Items for this Invoice");
-		}
-		else {
+		} else {
 			$heading = _("GL Items for this Credit Note");
 		}
 		start_outer_table(Config::get('tables_style') . "  width=90%");
 		if ($mode == 1) {
-			$qes = has_quick_entries(QE_SUPPINV);
+			$qes = GL_QuickEntry::has(QE_SUPPINV);
 			if ($qes !== false) {
 				echo "<div style='float:right;'>";
 				echo _("Quick Entry:") . "&nbsp;";
 				echo quick_entries_list('qid', null, QE_SUPPINV, true);
-				$qid = get_quick_entry(get_post('qid'));
+				$qid = GL_QuickEntry::get(get_post('qid'));
 				if (list_updated('qid')) {
 					unset($_POST['totamount']); // enable default
 					$Ajax->activate('totamount');
@@ -212,12 +198,10 @@
 		$dim = DB_Company::get_pref('use_dimension');
 		if ($dim == 2) {
 			$th = array(_("Account"), _("Name"), _("Dimension") . " 1", _("Dimension") . " 2", _("Memo"), _("Amount"));
-		}
-		else {
+		} else {
 			if ($dim == 1) {
 				$th = array(_("Account"), _("Name"), _("Dimension"), _("Memo"), _("Amount"));
-			}
-			else {
+			} else {
 				$th = array(_("Account"), _("Name"), _("Memo"), _("Amount"));
 			}
 		}
@@ -229,9 +213,7 @@
 		$total_gl_value = 0;
 		$i = $k = 0;
 		if (count($supp_trans->gl_codes) > 0) {
-			foreach (
-				$supp_trans->gl_codes as $entered_gl_code
-			) {
+			foreach ($supp_trans->gl_codes as $entered_gl_code) {
 				alt_table_row_color($k);
 				if ($mode == 3) {
 					$entered_gl_code->amount = -$entered_gl_code->amount;
@@ -239,10 +221,10 @@
 				label_cell($entered_gl_code->gl_code);
 				label_cell($entered_gl_code->gl_act_name);
 				if ($dim >= 1) {
-					label_cell(get_dimension_string($entered_gl_code->gl_dim, true));
+					label_cell(Dimensions::get_string($entered_gl_code->gl_dim, true));
 				}
 				if ($dim > 1) {
-					label_cell(get_dimension_string($entered_gl_code->gl_dim2, true));
+					label_cell(Dimensions::get_string($entered_gl_code->gl_dim2, true));
 				}
 				label_cell($entered_gl_code->memo_);
 				amount_cell($entered_gl_code->amount, true);
@@ -268,10 +250,7 @@
 			display_gl_controls($supp_trans, $k);
 		}
 		$colspan = ($dim == 2 ? 5 : ($dim == 1 ? 4 : 3));
-		label_row(
-			_("Total"), Num::price_format($total_gl_value), "colspan=" . $colspan . " align=right", "nowrap align=right", ($mode == 1
-			 ? 3 : 0)
-		);
+		label_row(_("Total"), Num::price_format($total_gl_value), "colspan=" . $colspan . " align=right", "nowrap align=right", ($mode == 1 ? 3 : 0));
 		end_table(1);
 		div_end();
 		return $total_gl_value;
@@ -281,21 +260,15 @@
 	function display_grn_items_for_selection($supp_trans, $k)
 	{
 		if ($supp_trans->is_invoice) {
-			$result = get_grn_items(0, $supp_trans->supplier_id, true);
-		}
-		else {
+			$result = Purch_GRN::get_items(0, $supp_trans->supplier_id, true);
+		} else {
 			if (isset($_POST['receive_begin']) && isset($_POST['receive_end'])) {
-				$result = get_grn_items(
-					0, $supp_trans->supplier_id, false, true, 0, $_POST['receive_begin'],
-					$_POST['receive_end']
-				);
-			}
-			else {
+				$result = Purch_GRN::get_items(0, $supp_trans->supplier_id, false, true, 0, $_POST['receive_begin'], $_POST['receive_end']);
+			} else {
 				if (isset($_POST['invoice_no'])) {
-					$result = get_grn_items(0, $supp_trans->supplier_id, false, true, $_POST['invoice_no']);
-				}
-				else {
-					$result = get_grn_items(0, $supp_trans->supplier_id, false, true);
+					$result = Purch_GRN::get_items(0, $supp_trans->supplier_id, false, true, $_POST['invoice_no']);
+				} else {
+					$result = Purch_GRN::get_items(0, $supp_trans->supplier_id, false, true);
 				}
 			}
 		}
@@ -305,9 +278,7 @@
 		/*Set up a table to show the outstanding GRN items for selection */
 		while ($myrow = DB::fetch($result)) {
 			$grn_already_on_invoice = false;
-			foreach (
-				$supp_trans->grn_items as $entered_grn
-			) {
+			foreach ($supp_trans->grn_items as $entered_grn) {
 				if ($entered_grn->id == $myrow["id"]) {
 					$grn_already_on_invoice = true;
 				}
@@ -317,16 +288,13 @@
 					alt_table_row_color($k);
 					$n = $myrow["id"];
 					label_cell(ui_view::get_trans_view_str(25, $myrow["grn_batch_id"]));
-					label_cell(
-						$myrow["id"] .
-						 hidden('qty_recd' . $n, $myrow["qty_recd"], false) .
-						 hidden('item_code' . $n, $myrow["item_code"], false) .
-						 hidden('description' . $n, $myrow["description"], false) .
-						 hidden('prev_quantity_inv' . $n, $myrow['quantity_inv'], false) .
-						 hidden('order_price' . $n, $myrow['unit_price'], false) .
-						 hidden('std_cost_unit' . $n, $myrow['std_cost_unit'], false) .
-						 hidden('po_detail_item' . $n, $myrow['po_detail_item'], false)
-					);
+					label_cell($myrow["id"] . hidden('qty_recd' . $n, $myrow["qty_recd"], false) . hidden('item_code' . $n, $myrow["item_code"], false) . hidden('description' . $n, $myrow["description"], false) . hidden('prev_quantity_inv' . $n, $myrow['quantity_inv'], false) . hidden('order_price' . $n,
+																																																																																																																																										$myrow['unit_price'],
+																																																																																																																																										false) . hidden('std_cost_unit' . $n,
+																																																																																																																																																		$myrow['std_cost_unit'],
+																																																																																																																																																		false) . hidden('po_detail_item' . $n,
+																																																																																																																																																										$myrow['po_detail_item'],
+																																																																																																																																																										false));
 					label_cell(ui_view::get_trans_view_str(ST_PURCHORDER, $myrow["purch_order_no"]));
 					label_cell($myrow["item_code"], "class='stock' data-stock_id='" . $myrow['item_code'] . "'");
 					label_cell($myrow["description"]);
@@ -335,35 +303,18 @@
 					qty_cell($myrow["qty_recd"], false, $dec);
 					qty_cell($myrow["quantity_inv"], false, $dec);
 					if ($supp_trans->is_invoice) {
-						qty_cells(
-							null, 'this_quantity_inv' . $n, Num::format(
-								$myrow["qty_recd"] - $myrow["quantity_inv"], $dec
-							), null, null, $dec
-						);
+						qty_cells(null, 'this_quantity_inv' . $n, Num::format($myrow["qty_recd"] - $myrow["quantity_inv"], $dec), null, null, $dec);
 					} else {
 						qty_cells(null, 'This_QuantityCredited' . $n, Num::format(max($myrow["quantity_inv"], 0), $dec), null, null, $dec);
 					}
 					$dec2 = 0;
-					amount_cells(
-						null, 'ChgPrice' . $n, Num::price_decimal(
-							$myrow["unit_price"], $dec2
-						), null, null, $dec2, 'ChgPriceCalc' . $n
-					);
-					amount_cells(
-						null, 'ExpPrice' . $n, Num::price_decimal(
-							$myrow["unit_price"], $dec2
-						), null, null, $dec2, 'ExpPriceCalc' . $n
-					);
-					small_amount_cells(
-						null, 'ChgDiscount' . $n, Num::percent_format(
-							$myrow['discount'] * 100
-						), null, null, User::percent_dec()
-					);
+					amount_cells(null, 'ChgPrice' . $n, Num::price_decimal($myrow["unit_price"], $dec2), null, null, $dec2, 'ChgPriceCalc' . $n);
+					amount_cells(null, 'ExpPrice' . $n, Num::price_decimal($myrow["unit_price"], $dec2), null, null, $dec2, 'ExpPriceCalc' . $n);
+					small_amount_cells(null, 'ChgDiscount' . $n, Num::percent_format($myrow['discount'] * 100), null, null, User::percent_dec());
 					amount_cell(Num::price_decimal(($myrow["unit_price"] * ($myrow["qty_recd"] - $myrow["quantity_inv"]) * (1 - $myrow['discount'])) / $myrow["qty_recd"], $dec2), false, $dec2, 'Ea' . $n);
 					if ($supp_trans->is_invoice) {
 						amount_cells(null, 'ChgTotal' . $n, Num::price_decimal($myrow["unit_price"] * ($myrow["qty_recd"] - $myrow["quantity_inv"]) * (1 - $myrow['discount']), $dec2), null, null, $dec2, 'ChgTotalCalc' . $n);
-					}
-					else {
+					} else {
 						amount_cell(Num::round($myrow["unit_price"] * max($myrow['quantity_inv'], 0) * (1 - $myrow['discount']), User::price_dec()));
 					}
 					submit_cells('grn_item_id' . $n, _("Add"), '', ($supp_trans->is_invoice ? _("Add to Invoice") : _("Add to Credit Note")), true);
@@ -405,8 +356,7 @@
 			} else {
 				$heading = _("Delivery Item Selected For Adding To A Supplier Credit Note");
 			}
-		}
-		else {
+		} else {
 			if ($supp_trans->is_invoice) {
 				$heading = _("Received Items Charged on this Invoice");
 			} else {
@@ -415,7 +365,7 @@
 		}
 		Display::heading($heading);
 		if ($mode == 1) {
-		/*	if (!$supp_trans->is_invoice && !isset($_POST['invoice_no'])) {
+			/*	if (!$supp_trans->is_invoice && !isset($_POST['invoice_no'])) {
 				echo "</td>";
 				date_cells(_("Received between"), 'receive_begin', "", null, -30, 0, 0, "valign=middle");
 				date_cells(_("and"), 'receive_end', '', null, 1, 0, 0, "valign=middle");
@@ -440,32 +390,24 @@
 		start_table(Config::get('tables_style') . "  width=90%");
 		if ($mode == 1) {
 			$th = array(
-				_("Delivery"), _("Seq #"), _("P.O."), _("Item"), _("Description"), _("Date"),
-				_("Received"), _("Invoiced"), _("Qty"), _("Price"),
-				_("ExpPrice"), _('Discount %'), _('Ea Price'), _("Total"), "", "", ""
-			);
+				_("Delivery"), _("Seq #"), _("P.O."), _("Item"), _("Description"), _("Date"), _("Received"), _("Invoiced"), _("Qty"), _("Price"), _("ExpPrice"), _('Discount %'), _('Ea Price'), _("Total"), "", "", "");
 			//      if ($supp_trans->is_invoice && CurrentUser::get()->can_access('SA_GRNDELETE')) // Added 2008-10-18 by Joe Hunt. Only admins can remove GRNs
 			//         $th[] = "";
 			if (!$supp_trans->is_invoice) {
 				unset($th[14]);
 				$th[8] = _("Qty Yet To Credit");
 			}
-		}
-		else {
+		} else {
 			$th = array(
-				_("Delivery"), _("Item"), _("Description"), _("Quantity"), _("Price"), _("Expected Price"),
-				_("Discount %"), _("Line Value")
-			);
+				_("Delivery"), _("Item"), _("Description"), _("Quantity"), _("Price"), _("Expected Price"), _("Discount %"), _("Line Value"));
 		}
 		table_header($th);
 		$total_grn_value = 0;
 		$i = $k = 0;
 		if (count($supp_trans->grn_items) > 0) {
-			foreach (
-				$supp_trans->grn_items as $entered_grn
-			) {
+			foreach ($supp_trans->grn_items as $entered_grn) {
 				alt_table_row_color($k);
-				$grn_batch = get_grn_batch_from_item($entered_grn->id);
+				$grn_batch = Purch_GRN::get_batch_for_item($entered_grn->id);
 				label_cell(ui_view::get_trans_view_str(ST_SUPPRECEIVE, $grn_batch));
 				if ($mode == 1) {
 					label_cell($entered_grn->id);
@@ -483,11 +425,7 @@
 				amount_decimal_cell($entered_grn->chg_price);
 				amount_decimal_cell($entered_grn->exp_price);
 				percent_cell($entered_grn->discount);
-				amount_decimal_cell(
-					Num::round(
-						($entered_grn->chg_price * abs($entered_grn->this_quantity_inv) * (1 - $entered_grn->discount / 100)) / abs($entered_grn->this_quantity_inv)
-					), User::price_dec()
-				);
+				amount_decimal_cell(Num::round(($entered_grn->chg_price * abs($entered_grn->this_quantity_inv) * (1 - $entered_grn->discount / 100)) / abs($entered_grn->this_quantity_inv)), User::price_dec());
 				amount_cell(Num::round($entered_grn->chg_price * abs($entered_grn->this_quantity_inv) * (1 - $entered_grn->discount / 100), User::price_dec()));
 				if ($mode == 1) {
 					if ($supp_trans->is_invoice && User::get()->can_access('SA_GRNDELETE')) {
@@ -517,8 +455,7 @@
 			echo "<td colspan=" . ($colspan + 1) . ">";
 			if ($supp_trans->is_invoice) {
 				Errors::warning(_("There are no outstanding items received from this supplier that have not been invoiced by them."), 0, 0);
-			}
-			else {
+			} else {
 				Errors::warning(_("There are no received items for the selected supplier that have been invoiced."));
 				Errors::notice(_("Credits can only be applied to invoiced items."), 0, 0);
 			}
@@ -538,8 +475,7 @@
 		}
 		if (substr($supp_trans->terms, 0, 1) == "1") { /*Its a day in the following month when due */
 			$supp_trans->due_date = Dates::add_days(Dates::end_month($supp_trans->tran_date), (int)substr($supp_trans->terms, 1));
-		}
-		else { /*Use the Days Before Due to add to the invoice date */
+		} else { /*Use the Days Before Due to add to the invoice date */
 			$supp_trans->due_date = Dates::add_days($supp_trans->tran_date, (int)substr($supp_trans->terms, 1));
 		}
 	}

@@ -21,8 +21,7 @@
 		$_SESSION['page_title'] = sprintf(_("Modifying Credit Invoice # %d."), $_GET['ModifyCredit']);
 		$help_context = "Modifying Credit Invoice";
 		processing_start();
-	}
-	elseif (isset($_GET['InvoiceNumber'])) {
+	} elseif (isset($_GET['InvoiceNumber'])) {
 		$page_title = _($help_context = "Credit all or part of an Invoice");
 		processing_start();
 	}
@@ -36,8 +35,7 @@
 		Display::note(Reporting::print_doc_link($credit_no, _("&Print This Credit Note"), true, $trans_type), 1);
 		Display::note(ui_view::get_gl_view_str($trans_type, $credit_no, _("View the GL &Journal Entries for this Credit Note")), 1);
 		Page::footer_exit();
-	}
-	elseif (isset($_GET['UpdatedID'])) {
+	} elseif (isset($_GET['UpdatedID'])) {
 		$credit_no = $_GET['UpdatedID'];
 		$trans_type = ST_CUSTCREDIT;
 		Errors::notice(_("Credit Note has been updated"));
@@ -56,8 +54,7 @@
 			;
 			JS::set_focus('CreditDate');
 			return false;
-		}
-		elseif (!Dates::is_date_in_fiscalyear($_POST['CreditDate'])) {
+		} elseif (!Dates::is_date_in_fiscalyear($_POST['CreditDate'])) {
 			Errors::error(_("The entered date is not in fiscal year."));
 			JS::set_focus('CreditDate');
 			return false;
@@ -98,41 +95,32 @@
 		$ci->trans_no = 0;
 		$ci->document_date = Dates::new_doc_date();
 		$ci->reference = Refs::get_next(ST_CUSTCREDIT);
-		for (
-			$line_no = 0; $line_no < count($ci->line_items); $line_no++
-		) {
+		for ($line_no = 0; $line_no < count($ci->line_items); $line_no++) {
 			$ci->line_items[$line_no]->qty_dispatched = '0';
 		}
 		$_SESSION['Items'] = $ci;
 		copy_from_cart();
-	}
-	elseif (isset($_GET['ModifyCredit']) && $_GET['ModifyCredit'] > 0) {
+	} elseif (isset($_GET['ModifyCredit']) && $_GET['ModifyCredit'] > 0) {
 		$_SESSION['Items'] = new Sales_Order(ST_CUSTCREDIT, $_GET['ModifyCredit']);
 		copy_from_cart();
-	}
-	elseif (!processing_active()) {
+	} elseif (!processing_active()) {
 		/* This page can only be called with an invoice number for crediting*/
 		die (_("This page can only be opened if an invoice has been selected for crediting."));
-	}
-	elseif (!check_quantities()) {
+	} elseif (!check_quantities()) {
 		Errors::error(_("Selected quantity cannot be less than zero nor more than quantity not credited yet."));
 	}
 	function check_quantities()
 	{
 		$ok = 1;
-		foreach (
-			$_SESSION['Items']->line_items as $line_no => $itm
-		) {
+		foreach ($_SESSION['Items']->line_items as $line_no => $itm) {
 			if ($itm->quantity == $itm->qty_done) {
 				continue; // this line was fully credited/removed
 			}
 			if (isset($_POST['Line' . $line_no])) {
 				if (Validation::is_num('Line' . $line_no, 0, $itm->quantity)) {
-					$_SESSION['Items']->line_items[$line_no]->qty_dispatched
-					 = input_num('Line' . $line_no);
+					$_SESSION['Items']->line_items[$line_no]->qty_dispatched = input_num('Line' . $line_no);
 				}
-			}
-			else {
+			} else {
 				$ok = 0;
 			}
 			if (isset($_POST['Line' . $line_no . 'Desc'])) {
@@ -186,8 +174,7 @@
 		processing_end();
 		if ($new_credit) {
 			meta_forward($_SERVER['PHP_SELF'], "AddedID=$credit_no");
-		}
-		else {
+		} else {
 			meta_forward($_SERVER['PHP_SELF'], "UpdatedID=$credit_no");
 		}
 	}
@@ -205,7 +192,7 @@
 		start_table(Config::get('tables_style') . "  width=100%");
 		start_row();
 		label_cells(_("Customer"), $_SESSION['Items']->customer_name, "class='tableheader2'");
-		label_cells(_("Branch"), get_branch_name($_SESSION['Items']->Branch), "class='tableheader2'");
+		label_cells(_("Branch"), Sales_Branch::get_name($_SESSION['Items']->Branch), "class='tableheader2'");
 		label_cells(_("Currency"), $_SESSION['Items']->customer_currency, "class='tableheader2'");
 		end_row();
 		start_row();
@@ -213,17 +200,10 @@
 		//		$_POST['ref'] = Refs::get_next(11);
 		if ($_SESSION['Items']->trans_no == 0) {
 			ref_cells(_("Reference"), 'ref', '', null, "class='tableheader2'");
-		}
-		else {
+		} else {
 			label_cells(_("Reference"), $_SESSION['Items']->reference, "class='tableheader2'");
 		}
-		label_cells(
-			_("Crediting Invoice"), ui_view::get_customer_trans_view_str(
-				ST_SALESINVOICE, array_keys(
-					$_SESSION['Items']->src_docs
-				)
-			), "class='tableheader2'"
-		);
+		label_cells(_("Crediting Invoice"), ui_view::get_customer_trans_view_str(ST_SALESINVOICE, array_keys($_SESSION['Items']->src_docs)), "class='tableheader2'");
 		if (!isset($_POST['ShipperID'])) {
 			$_POST['ShipperID'] = $_SESSION['Items']->ship_via;
 		}
@@ -238,24 +218,17 @@
 		echo "</td><td>"; // outer table
 		start_table(Config::get('tables_style') . "  width=100%");
 		label_row(_("Invoice Date"), $_SESSION['Items']->src_date, "class='tableheader2'");
-		date_row(
-			_("Credit Note Date"), 'CreditDate', '',
-		 $_SESSION['Items']->trans_no == 0, 0, 0, 0, "class='tableheader2'"
-		);
+		date_row(_("Credit Note Date"), 'CreditDate', '', $_SESSION['Items']->trans_no == 0, 0, 0, 0, "class='tableheader2'");
 		end_table();
 		echo "</td></tr>";
 		end_table(1); // outer table
 		div_start('credit_items');
 		start_table(Config::get('tables_style') . "  width=90%");
 		$th = array(
-			_("Item Code"), _("Item Description"), _("Invoiced Quantity"), _("Units"),
-			_("Credit Quantity"), _("Price"), _("Discount %"), _("Total")
-		);
+			_("Item Code"), _("Item Description"), _("Invoiced Quantity"), _("Units"), _("Credit Quantity"), _("Price"), _("Discount %"), _("Total"));
 		table_header($th);
 		$k = 0; //row colour counter
-		foreach (
-			$_SESSION['Items']->line_items as $line_no => $ln_itm
-		) {
+		foreach ($_SESSION['Items']->line_items as $line_no => $ln_itm) {
 			if ($ln_itm->quantity == $ln_itm->qty_done) {
 				continue; // this line was fully credited/removed
 			}
@@ -266,10 +239,7 @@
 			$dec = Num::qty_dec($ln_itm->stock_id);
 			qty_cell($ln_itm->quantity, false, $dec);
 			label_cell($ln_itm->units);
-			amount_cells(
-				null, 'Line' . $line_no, Num::format($ln_itm->qty_dispatched, $dec),
-				null, null, $dec
-			);
+			amount_cells(null, 'Line' . $line_no, Num::format($ln_itm->qty_dispatched, $dec), null, null, $dec);
 			$line_total = ($ln_itm->qty_dispatched * $ln_itm->price * (1 - $ln_itm->discount_percent));
 			amount_cell($ln_itm->price);
 			percent_cell($ln_itm->discount_percent * 100);

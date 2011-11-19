@@ -6,11 +6,9 @@
 	 * Time: 5:49 AM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	class Users
-	{
+	class Users {
 		public static function	add($user_id, $real_name, $password, $phone, $email, $role_id,
-																$language, $profile, $rep_popup, $pos)
-		{
+																$language, $profile, $rep_popup, $pos) {
 			$sql
 			 = "INSERT INTO users (user_id, real_name, password,phone, email, role_id, language, pos, print_profile, rep_popup)
 				VALUES (" . DB::escape($user_id) . ",
@@ -22,8 +20,7 @@
 		}
 
 		//-----------------------------------------------------------------------------------------------
-		public static function	update_password($id, $user_id, $password)
-		{
+		public static function	update_password($id, $user_id, $password) {
 			$sql = "UPDATE users SET password=" . DB::escape($password) . ",
 				user_id = " . DB::escape($user_id) . " WHERE id=" . DB::escape($id);
 			DB::query($sql, "could not update user password for $user_id");
@@ -33,8 +30,7 @@
 		public static function	update(
 			$id, $user_id, $real_name, $phone, $email, $role_id,
 			$language, $profile, $rep_popup, $pos
-		)
-		{
+		) {
 			$sql = "UPDATE users SET real_name=" . DB::escape($real_name) .
 			 ", phone=" . DB::escape($phone) . ",
 				email=" . DB::escape($email) . ",
@@ -54,8 +50,7 @@
 			$percent_dec, $showgl, $showcodes, $date_format, $date_sep, $tho_sep,
 			$dec_sep, $theme, $pagesize, $show_hints, $profile, $rep_popup, $query_size,
 			$graphic_links, $lang, $stickydate, $startup_tab
-		)
-		{
+		) {
 			$sql
 			 = "UPDATE users SET
 				prices_dec=" . DB::escape($price_dec) . ",
@@ -83,8 +78,7 @@
 		}
 
 		//-----------------------------------------------------------------------------------------------
-		public static function	get_all($all = false)
-		{
+		public static function	get_all($all = false) {
 			$sql
 			 = "SELECT u.*, r.role FROM users u, security_roles r
 				WHERE u.role_id=r.id";
@@ -95,8 +89,7 @@
 		}
 
 		//-----------------------------------------------------------------------------------------------
-		public static function	get($id)
-		{
+		public static function	get($id) {
 			$sql = "SELECT * FROM users WHERE id=" . DB::escape($id);
 			$result = DB::query($sql, "could not get user $id");
 			return DB::fetch($result);
@@ -105,8 +98,7 @@
 		//-----------------------------------------------------------------------------------------------
 		//	This public static function  is necessary for admin prefs update after upgrade from 2.1
 		//
-		public static function	get_by_login($user_id)
-		{
+		public static function	get_by_login($user_id) {
 			$sql = "SELECT * FROM users WHERE user_id=" . DB::escape($user_id);
 			$result = DB::query($sql, "could not get user $user_id");
 
@@ -114,15 +106,13 @@
 		}
 
 		//-----------------------------------------------------------------------------------------------
-		public static function	delete($id)
-		{
+		public static function	delete($id) {
 			$sql = "DELETE FROM users WHERE id=" . DB::escape($id);
 			DB::query($sql, "could not delete user $id");
 		}
 
 		//-----------------------------------------------------------------------------------------------
-		public static function	get_for_login($user_id, $password)
-		{
+		public static function	get_for_login($user_id, $password) {
 
 			// do not exclude inactive records or you lost access after source upgrade
 			// on sites using pre 2.2 database
@@ -138,21 +128,22 @@
 
 			$sql = "SELECT * FROM users WHERE user_id = " . DB::escape($user_id) . " AND"
 			 . " (password=" . DB::escape($password) . " OR password=" . DB::escape($md5password) . ")";
-
-			return DB::query($sql, "could not get validate user login for $user_id");
+			DB::query($sql, "could not get validate user login for $user_id");
+			$result = DB::fetch();
+			$success = DB::num_rows();
+			DB::insert('user_log')->values(array('user' => $user_id, 'success' => $success))->exec();
+			return $result ? : false;
 		}
 
 		//-----------------------------------------------------------------------------------------------
-		public static function	update_visitdate($user_id)
-		{
+		public static function	update_visitdate($user_id) {
 			$sql = "UPDATE users SET last_visit_date='" . date("Y-m-d H:i:s") . "'
 				WHERE user_id=" . DB::escape($user_id);
 			DB::query($sql, "could not update last visit date for user $user_id");
 		}
 
 		//-----------------------------------------------------------------------------------------------
-		public static function	check_activity($id)
-		{
+		public static function	check_activity($id) {
 			$sql = "SELECT COUNT(*) FROM audit_trail WHERE audit_trail.user="
 			 . DB::escape($id);
 			$result = DB::query($sql, "Cant check user activity");
@@ -161,8 +152,7 @@
 		}
 
 		//-----------------------------------------------------------------------------------------------
-		public static function	show_online()
-		{
+		public static function	show_online() {
 			if (!Config::get('ui_users_showonline') || !isset($_SESSION['get_text'])) {
 				return "";
 			}
@@ -207,6 +197,6 @@
 			} else {
 				$users = 1;
 			}
-			return  _("users online").": $users";
+			return _("users online") . ": $users";
 		}
 	}

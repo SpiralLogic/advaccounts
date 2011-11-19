@@ -33,8 +33,7 @@
 			$dimension2 = $_POST['PARAM_5'];
 			$comments = $_POST['PARAM_6'];
 			$destination = $_POST['PARAM_7'];
-		}
-		else if ($dim == 1) {
+		} else if ($dim == 1) {
 			$dimension = $_POST['PARAM_4'];
 			$comments = $_POST['PARAM_5'];
 			$destination = $_POST['PARAM_6'];
@@ -44,9 +43,7 @@
 		}
 		if ($destination) {
 			include_once(APP_PATH . "includes/reports/excel.php");
-		}
-		else
-		{
+		} else {
 			include_once(APP_PATH . "includes/reports/pdf.php");
 		}
 		$dec = User::price_dec();
@@ -58,49 +55,37 @@
 		//$cols = array(0, 50, 200, 250, 300,	350, 400, 450, 500,	550);
 		$cols = array(0, 50, 150, 210, 270, 330, 390, 450, 510, 570);
 		//------------0--1---2----3----4----5----6----7----8----9--
-		$headers = array(_('Account'), _('Account Name'), _('Debit'), _('Credit'), _('Debit'),
-			_('Credit'), _('Debit'), _('Credit')
-		);
+		$headers = array(
+			_('Account'), _('Account Name'), _('Debit'), _('Credit'), _('Debit'), _('Credit'), _('Debit'), _('Credit'));
 		$aligns = array('left', 'left', 'right', 'right', 'right', 'right', 'right', 'right');
 		if ($dim == 2) {
-			$params = array(0 => $comments,
-				1 => array('text' => _('Period'), 'from' => $from, 'to' => $to),
-				2 => array('text' => _('Dimension') . " 1",
-					'from' => get_dimension_string($dimension), 'to' => ''
-				),
-				3 => array('text' => _('Dimension') . " 2",
-					'from' => get_dimension_string($dimension2), 'to' => ''
-				)
-			);
-		}
-		else if ($dim == 1) {
-			$params = array(0 => $comments,
-				1 => array('text' => _('Period'), 'from' => $from, 'to' => $to),
-				2 => array('text' => _('Dimension'),
-					'from' => get_dimension_string($dimension), 'to' => ''
-				)
-			);
+			$params = array(
+				0 => $comments, 1 => array('text' => _('Period'), 'from' => $from, 'to' => $to), 2 => array(
+					'text' => _('Dimension') . " 1", 'from' => Dimensions::get_string($dimension), 'to' => ''), 3 => array(
+					'text' => _('Dimension') . " 2", 'from' => Dimensions::get_string($dimension2), 'to' => ''));
+		} else if ($dim == 1) {
+			$params = array(
+				0 => $comments, 1 => array('text' => _('Period'), 'from' => $from, 'to' => $to), 2 => array(
+					'text' => _('Dimension'), 'from' => Dimensions::get_string($dimension), 'to' => ''));
 		} else {
-			$params = array(0 => $comments,
-				1 => array('text' => _('Period'), 'from' => $from, 'to' => $to)
-			);
+			$params = array(
+				0 => $comments, 1 => array('text' => _('Period'), 'from' => $from, 'to' => $to));
 		}
 		$rep = new FrontReport(_('Trial Balance'), "TrialBalance", User::pagesize());
 		$rep->Font();
 		$rep->Info($params, $cols, $headers, $aligns, $cols2, $headers2, $aligns2);
 		$rep->Header();
-		$accounts = get_gl_accounts();
+		$accounts = GL_Account::get_all();
 		$pdeb = $pcre = $cdeb = $ccre = $tdeb = $tcre = $pbal = $cbal = $tbal = 0;
 		$begin = Dates::begin_fiscalyear();
 		if (Dates::date1_greater_date2($begin, $from)) {
 			$begin = $from;
 		}
 		$begin = Dates::add_days($begin, -1);
-		while ($account = DB::fetch($accounts))
-		{
-			$prev = get_balance($account["account_code"], $dimension, $dimension2, $begin, $from, false, false);
-			$curr = get_balance($account["account_code"], $dimension, $dimension2, $from, $to, true, true);
-			$tot = get_balance($account["account_code"], $dimension, $dimension2, $begin, $to, false, true);
+		while ($account = DB::fetch($accounts)) {
+			$prev = GL_Trans::get_balance($account["account_code"], $dimension, $dimension2, $begin, $from, false, false);
+			$curr = GL_Trans::get_balance($account["account_code"], $dimension, $dimension2, $from, $to, true, true);
+			$tot = GL_Trans::get_balance($account["account_code"], $dimension, $dimension2, $begin, $to, false, true);
 			if ($zero == 0 && !$prev['balance'] && !$curr['balance'] && !$tot['balance']) {
 				continue;
 			}
@@ -109,23 +94,17 @@
 			if ($balances != 0) {
 				if ($prev['balance'] >= 0.0) {
 					$rep->AmountCol(2, 3, $prev['balance'], $dec);
-				}
-				else
-				{
+				} else {
 					$rep->AmountCol(3, 4, abs($prev['balance']), $dec);
 				}
 				if ($curr['balance'] >= 0.0) {
 					$rep->AmountCol(4, 5, $curr['balance'], $dec);
-				}
-				else
-				{
+				} else {
 					$rep->AmountCol(5, 6, abs($curr['balance']), $dec);
 				}
 				if ($tot['balance'] >= 0.0) {
 					$rep->AmountCol(6, 7, $tot['balance'], $dec);
-				}
-				else
-				{
+				} else {
 					$rep->AmountCol(7, 8, abs($tot['balance']), $dec);
 				}
 			} else {
@@ -154,9 +133,9 @@
 		$rep->Line($rep->row);
 		$rep->NewLine();
 		$rep->Font('bold');
-		//$prev = get_balance(null, $dimension, $dimension2, $begin, $from, false, false);
-		//$curr = get_balance(null, $dimension, $dimension2, $from, $to, true, true);
-		//$tot = get_balance(null, $dimension, $dimension2, $begin, $to, false, true);
+		//$prev = GL_Trans::get_balance(null, $dimension, $dimension2, $begin, $from, false, false);
+		//$curr = GL_Trans::get_balance(null, $dimension, $dimension2, $from, $to, true, true);
+		//$tot = GL_Trans::get_balance(null, $dimension, $dimension2, $begin, $to, false, true);
 		if ($balances == 0) {
 			$rep->TextCol(0, 2, _("Total"));
 			$rep->AmountCol(2, 3, $pdeb, $dec);
@@ -170,23 +149,17 @@
 		$rep->TextCol(0, 2, _("Ending Balance"));
 		if ($pbal >= 0.0) {
 			$rep->AmountCol(2, 3, $pbal, $dec);
-		}
-		else
-		{
+		} else {
 			$rep->AmountCol(3, 4, abs($pbal), $dec);
 		}
 		if ($cbal >= 0.0) {
 			$rep->AmountCol(4, 5, $cbal, $dec);
-		}
-		else
-		{
+		} else {
 			$rep->AmountCol(5, 6, abs($cbal), $dec);
 		}
 		if ($tbal >= 0.0) {
 			$rep->AmountCol(6, 7, $tbal, $dec);
-		}
-		else
-		{
+		} else {
 			$rep->AmountCol(7, 8, abs($tbal), $dec);
 		}
 		$rep->NewLine();

@@ -39,5 +39,4 @@ var balances = {
 Behaviour.register(balances);
 $(function() {
 $("#summary").draggable();
-
 })

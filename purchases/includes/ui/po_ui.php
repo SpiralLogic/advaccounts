@@ -13,8 +13,7 @@
 	// ------------------------------------------------------------------------------
 	function get_supplier_details_to_order($order, $supplier_id)
 	{
-		$sql
-		 = "SELECT * FROM suppliers
+		$sql = "SELECT * FROM suppliers
 		WHERE supplier_id = '$supplier_id'";
 		$result = DB::query($sql, "The supplier details could not be retreived");
 		$myrow = DB::fetch_assoc($result);
@@ -33,7 +32,7 @@
 			unset($_SESSION['PO']);
 		}
 		//session_register("PO");
-		$_SESSION['PO'] = new Purchase_Order;
+		$_SESSION['PO'] = new Purch_Order;
 		$_POST['OrderDate'] = Dates::new_doc_date();
 		if (!Dates::is_date_in_fiscalyear($_POST['OrderDate'])) {
 			$_POST['OrderDate'] = Dates::end_fiscalyear();
@@ -53,8 +52,7 @@
 				$_POST['supplier_id'] = Session::get()->supplier_id;
 			}
 			supplier_list_row(_("Supplier:"), 'supplier_id', null, false, true, false, true);
-		}
-		else {
+		} else {
 			if (isset($_POST['supplier_id'])) {
 				get_supplier_details_to_order($order, $_POST['supplier_id']);
 			}
@@ -65,24 +63,17 @@
 			$old_supp = $order->supplier_id;
 			get_supplier_details_to_order($order, $_POST['supplier_id']);
 			// supplier default price update
-			foreach (
-				$order->line_items as $line_no => $item
-			) {
+			foreach ($order->line_items as $line_no => $item) {
 				$line = &$order->line_items[$line_no];
-				$line->price = get_purchase_price($order->supplier_id, $line->stock_id);
-				$line->quantity
-				 = $line->quantity / get_purchase_conversion_factor($old_supp, $line->stock_id)
-					 * get_purchase_conversion_factor($order->supplier_id, $line->stock_id);
+				$line->price = Item_Price::get_purchase($order->supplier_id, $line->stock_id);
+				$line->quantity = $line->quantity / Purch_Trans::get_conversion_factor($old_supp, $line->stock_id) * Purch_Trans::get_conversion_factor($order->supplier_id, $line->stock_id);
 			}
 			$Ajax->activate('items_table');
 		}
 		Session::get()->supplier_id = $_POST['supplier_id'];
 		if (!Banking::is_company_currency($order->curr_code)) {
 			label_row(_("Supplier Currency:"), $order->curr_code);
-			Display::exchange_rate(
-				$order->curr_code, Banking::get_company_currency(),
-				$_POST['OrderDate']
-			);
+			Display::exchange_rate($order->curr_code, Banking::get_company_currency(), $_POST['OrderDate']);
 		}
 		if ($editable) {
 			ref_row(_("Purchase Order #:"), 'ref', '', Refs::get_next(ST_PURCHORDER));
@@ -99,13 +90,9 @@
 		text_row(_("Supplier's Order #:"), 'Requisition', null, 16, 15);
 		locations_list_row(_("Receive Into:"), 'StkLocation', null, false, true);
 		table_section(3);
-		if (!isset($_POST['StkLocation']) || $_POST['StkLocation'] == ""
-				|| isset($_POST['_StkLocation_update'])
-				|| !isset($_POST['delivery_address'])
-				|| $_POST['delivery_address'] == ""
+		if (!isset($_POST['StkLocation']) || $_POST['StkLocation'] == "" || isset($_POST['_StkLocation_update']) || !isset($_POST['delivery_address']) || $_POST['delivery_address'] == ""
 		) {
-			$sql = "SELECT delivery_address, phone FROM locations WHERE loc_code='" .
-						 $_POST['StkLocation'] . "'";
+			$sql = "SELECT delivery_address, phone FROM locations WHERE loc_code='" . $_POST['StkLocation'] . "'";
 			$result = DB::query($sql, "could not get location info");
 			if (DB::num_rows($result) == 1) {
 				$loc_row = DB::fetch($result);
@@ -129,10 +116,7 @@
 		div_start('items_table');
 		start_table(Config::get('tables_style') . "  width=90%");
 		$th = array(
-			_("Item Code"), _("Description"), _("Quantity"),
-			_("Received"), _("Unit"),
-			_("Required Date"), _("Price"), _('Discount %'), _("Total"), ""
-		);
+			_("Item Code"), _("Description"), _("Quantity"), _("Received"), _("Unit"), _("Required Date"), _("Price"), _('Discount %'), _("Total"), "");
 		if (count($order->line_items)) {
 			$th[] = '';
 		}
@@ -140,9 +124,7 @@
 		$id = find_submit('Edit');
 		$total = 0;
 		$k = 0;
-		foreach (
-			$order->line_items as $line_no => $po_line
-		) {
+		foreach ($order->line_items as $line_no => $po_line) {
 			if ($po_line->Deleted == false) {
 				$line_total = round($po_line->quantity * $po_line->price * (1 - $po_line->discount), User::price_dec(), PHP_ROUND_HALF_EVEN);
 				if (!$editable || ($id != $line_no)) {
@@ -157,14 +139,8 @@
 					percent_cell($po_line->discount * 100);
 					amount_cell($line_total);
 					if ($editable) {
-						edit_button_cell(
-							"Edit$line_no", _("Edit"),
-							_('Edit document line')
-						);
-						delete_button_cell(
-							"Delete$line_no", _("Delete"),
-							_('Remove line from document')
-						);
+						edit_button_cell("Edit$line_no", _("Edit"), _('Edit document line'));
+						delete_button_cell("Delete$line_no", _("Delete"), _('Remove line from document'));
 					}
 					end_row();
 				} else {
@@ -180,10 +156,7 @@
 		small_amount_cells(null, 'freight', Num::price_format(get_post('freight', 0)));
 		$display_total = Num::price_format($total + input_num('freight'));
 		start_row();
-		label_cells(
-			_("Total Excluding Shipping/Tax"), $display_total, "colspan=8 align=right",
-			"nowrap align=right _nofreight='$total'", 2
-		);
+		label_cells(_("Total Excluding Shipping/Tax"), $display_total, "colspan=8 align=right", "nowrap align=right _nofreight='$total'", 2);
 		end_row();
 		end_table(1);
 		div_end();
@@ -200,10 +173,7 @@
 			label_cells(_("Order Currency"), $po->curr_code, "class='tableheader2'");
 		}
 		if (!$is_self) {
-			label_cells(
-				_("Purchase Order"), ui_view::get_trans_view_str(ST_PURCHORDER, $po->order_no),
-				"class='tableheader2'"
-			);
+			label_cells(_("Purchase Order"), ui_view::get_trans_view_str(ST_PURCHORDER, $po->order_no), "class='tableheader2'");
 		}
 		end_row();
 		start_row();
@@ -214,27 +184,17 @@
 			}
 			label_cell(_("Deliver Into Location"), "class='tableheader2'");
 			locations_list_cells(null, 'Location', $_POST['Location']);
-		}
-		else {
-			label_cells(
-				_("Deliver Into Location"), get_location_name($po->Location),
-				"class='tableheader2'"
-			);
+		} else {
+			label_cells(_("Deliver Into Location"), Inv_Location::get_name($po->Location), "class='tableheader2'");
 		}
 		//if ($po->requisition_no != "")
 		//	label_cells(_("Supplier's Reference"), $po->requisition_no, "class='tableheader2'");
 		end_row();
 		if (!$editable) {
-			label_row(
-				_("Delivery Address"), $po->delivery_address, "class='tableheader2'",
-				"colspan=9"
-			);
+			label_row(_("Delivery Address"), $po->delivery_address, "class='tableheader2'", "colspan=9");
 		}
 		if ($po->Comments != "") {
-			label_row(
-				_("Order Comments"), $po->Comments, "class='tableheader2'",
-				"colspan=9"
-			);
+			label_row(_("Order Comments"), $po->Comments, "class='tableheader2'", "colspan=9");
 		}
 		end_table(1);
 	}
@@ -278,9 +238,9 @@
 			$_POST['units'] = $item_info["units"];
 			$_POST['description'] = $item_info['description'];
 			$dec = $item_info["decimals"];
-			$_POST['qty'] = Num::format(get_purchase_conversion_factor($order->supplier_id, Input::post('stock_id')), $dec);
+			$_POST['qty'] = Num::format(Purch_Trans::get_conversion_factor($order->supplier_id, Input::post('stock_id')), $dec);
 			//$_POST['price'] = Num::price_format(get_purchase_price ($order->supplier_id, $_POST['stock_id']));
-			$_POST['price'] = Num::price_decimal(get_purchase_price($order->supplier_id, Input::post('stock_id')), $dec2);
+			$_POST['price'] = Num::price_decimal(Item_Price::get_purchase($order->supplier_id, Input::post('stock_id')), $dec2);
 			$_POST['req_del_date'] = Dates::add_days(Dates::Today(), 10);
 			$_POST['discount'] = Num::percent_format(0);
 			$qty_rcvd = '';
@@ -295,20 +255,11 @@
 		$line_total = input_num('qty') * input_num('price') * (1 - input_num('discount') / 100);
 		amount_cell($line_total, false, '', 'line_total');
 		if ($id != -1) {
-			button_cell(
-				'UpdateLine', _("Update"),
-				_('Confirm changes'), ICON_UPDATE
-			);
-			button_cell(
-				'CancelUpdate', _("Cancel"),
-				_('Cancel changes'), ICON_CANCEL
-			);
+			button_cell('UpdateLine', _("Update"), _('Confirm changes'), ICON_UPDATE);
+			button_cell('CancelUpdate', _("Cancel"), _('Cancel changes'), ICON_CANCEL);
 			JS::set_focus('qty');
 		} else {
-			submit_cells(
-				'EnterLine', _("Add Item"), "colspan=2",
-				_('Add new item to document'), true
-			);
+			submit_cells('EnterLine', _("Add Item"), "colspan=2", _('Add new item to document'), true);
 		}
 		end_row();
 	}
