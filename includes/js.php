@@ -155,18 +155,21 @@ JS;
 					$files .= HTML::setReturn(true)->script(array('src' => $dir . '/' . implode(',', $file)), false)->setReturn(false);
 				}
 				echo $files;
+			} else {
+				self::$_onload = array_merge(self::$_onlive, self::$_onload);
+				self::$_onlive = array();
 			}
-			if (count(self::$_beforeload)) {
+			if (self::$_beforeload) {
 				$content .= implode(";\n", self::$_beforeload);
 			}
-			if (count(self::$_onlive)) {
+			if (self::$_onlive) {
 				$onReady .= 'Adv.Events.onload(function() {' . implode(";", self::$_onlive) . '}';
 				if (count(self::$_toclean)) {
 					$onReady .= ',function() {' . implode(";", self::$_toclean) . '}';
 				}
 				$onReady .= ');';
 			}
-			if (count(self::$_onload)) {
+			if (self::$_onload) {
 				$onReady .= implode(";\n\n", self::$_onload);
 			}
 			if (!empty(self::$_focus)) {

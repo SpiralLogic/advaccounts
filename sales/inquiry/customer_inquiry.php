@@ -167,7 +167,10 @@
 		if ($row['type'] != ST_SALESINVOICE) {
 			return;
 		}
-		return UI::emailDialogue('c', $row['debtor_no'] . '-' . $row['type'] . '-' . $row['trans_no']);
+		HTML::setReturn(true);
+		UI::button(false, 'Email', array(
+			'class' => 'button email-button', 'data-emailid' => $row['debtor_no'] . '-' . $row['type'] . '-' . $row['trans_no']));
+		return HTML::setReturn(false);
 	}
 
 	function check_overdue($row)
@@ -300,6 +303,7 @@
 	$table->set_marker('check_overdue', _("Marked items are overdue."));
 	$table->width = "80%";
 	display_db_pager($table);
+	UI::emailDialogue('c');
 	end_form();
 	end_page();
 

@@ -162,20 +162,12 @@ JS;
 			return HTML::setReturn(false);
 		}
 
-		public static function emailDialogue($contactType, $emailid)
+		public static function emailDialogue($contactType)
 		{
-			static $generated = false;
-			HTML::setReturn(true);
-			UI::button(false, 'Email', array(
-				'class' => 'button email-button', 'data-emailid' => $emailid));
-			$content = HTML::setReturn(false);
-			if ($generated) {
-				return $content;
-			}
 			$emailBox = new Dialog('Select Email Address:', 'emailBox', '');
 			$emailBox->addButtons(array('Close' => '$(this).dialog("close");'));
 			$emailBox->setOptions(array(
-				'autoopen' => false, 'modal' => true, 'width' => 500, 'height' => 350, 'resizeable' => false));
+				'modal' => true, 'width' => 500, 'height' => 350, 'resizeable' => false));
 			$emailBox->show();
 			$action = <<<JS
 	      var emailID= $(this).data('emailid');
@@ -186,7 +178,5 @@ JS;
 	   return false;
 JS;
 			JS::addLiveEvent('.email-button', 'click', $action, 'wrapper', true);
-			$generated = true;
-			return $content;
 		}
 	}
