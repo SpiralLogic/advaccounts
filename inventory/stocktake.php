@@ -74,9 +74,7 @@
 			Errors::error(_("The entered date for the adjustment is invalid."));
 			JS::set_focus('AdjDate');
 			return false;
-		}
-		elseif (!Dates::is_date_in_fiscalyear($_POST['AdjDate']))
-		{
+		} elseif (!Dates::is_date_in_fiscalyear($_POST['AdjDate'])) {
 			Errors::error(_("The entered date is not in fiscal year."));
 			JS::set_focus('AdjDate');
 			return false;
@@ -86,18 +84,12 @@
 
 	//-------------------------------------------------------------------------------
 	if (isset($_POST['Process']) && can_process()) {
-		foreach (
-			$_SESSION['adj_items']->line_items as $line
-		) {
+		foreach ($_SESSION['adj_items']->line_items as $line) {
 			$item = new Item($line->stock_id);
 			$current_stock = $item->getStockLevels($_POST['StockLocation']);
 			$line->quantity -= $current_stock['qty'];
 		}
-		$trans_no = Inv_Adjustment::add(
-			$_SESSION['adj_items']->line_items,
-			$_POST['StockLocation'], $_POST['AdjDate'], $_POST['type'], $_POST['Increase'],
-			$_POST['ref'], $_POST['memo_']
-		);
+		$trans_no = Inv_Adjustment::add($_SESSION['adj_items']->line_items, $_POST['StockLocation'], $_POST['AdjDate'], $_POST['type'], $_POST['Increase'], $_POST['ref'], $_POST['memo_']);
 		Dates::new_doc_date($_POST['AdjDate']);
 		$_SESSION['adj_items']->clear_items();
 		unset($_SESSION['adj_items']);
@@ -124,10 +116,7 @@
 	{
 		if ($_POST['UpdateItem'] != "" && check_item_data()) {
 			$id = $_POST['LineNo'];
-			$_SESSION['adj_items']->update_cart_item(
-				$id, input_num('qty'),
-				input_num('std_cost')
-			);
+			$_SESSION['adj_items']->update_cart_item($id, input_num('qty'), input_num('std_cost'));
 		}
 		line_start_focus();
 	}
@@ -145,10 +134,7 @@
 		if (!check_item_data()) {
 			return;
 		}
-		add_to_order(
-			$_SESSION['adj_items'], $_POST['stock_id'],
-			input_num('qty'), input_num('std_cost')
-		);
+		Item_Cart::add_line($_SESSION['adj_items'], $_POST['stock_id'], input_num('qty'), input_num('std_cost'));
 		line_start_focus();
 	}
 

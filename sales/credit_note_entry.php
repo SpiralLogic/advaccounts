@@ -196,7 +196,7 @@
 		if (!check_item_data()) {
 			return;
 		}
-		add_to_order($_SESSION['Items'], $_POST['stock_id'], input_num('qty'), input_num('price'), input_num('Disc') / 100);
+		Sales_Order::add_line($_SESSION['Items'], $_POST['stock_id'], input_num('qty'), input_num('price'), input_num('Disc') / 100);
 		line_start_focus();
 	}
 

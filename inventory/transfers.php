@@ -63,27 +63,19 @@
 			Errors::error(_("You must enter a reference."));
 			JS::set_focus('ref');
 			$input_error = 1;
-		}
-		elseif (!is_new_reference($_POST['ref'], ST_LOCTRANSFER))
-		{
+		} elseif (!is_new_reference($_POST['ref'], ST_LOCTRANSFER)) {
 			Errors::error(_("The entered reference is already in use."));
 			JS::set_focus('ref');
 			$input_error = 1;
-		}
-		elseif (!Dates::is_date($_POST['AdjDate']))
-		{
+		} elseif (!Dates::is_date($_POST['AdjDate'])) {
 			Errors::error(_("The entered date for the adjustment is invalid."));
 			JS::set_focus('AdjDate');
 			$input_error = 1;
-		}
-		elseif (!Dates::is_date_in_fiscalyear($_POST['AdjDate']))
-		{
+		} elseif (!Dates::is_date_in_fiscalyear($_POST['AdjDate'])) {
 			Errors::error(_("The entered date is not in fiscal year."));
 			JS::set_focus('AdjDate');
 			$input_error = 1;
-		}
-		elseif ($_POST['FromStockLocation'] == $_POST['ToStockLocation'])
-		{
+		} elseif ($_POST['FromStockLocation'] == $_POST['ToStockLocation']) {
 			Errors::error(_("The locations to transfer from and to must be different."));
 			JS::set_focus('FromStockLocation');
 			$input_error = 1;
@@ -91,10 +83,7 @@
 			$failed_item = $tr->check_qoh($_POST['FromStockLocation'], $_POST['AdjDate'], true);
 			if ($failed_item >= 0) {
 				$line = $tr->line_items[$failed_item];
-				Errors::error(
-					_("The quantity entered is greater than the available quantity for this item at the source location :") .
-					 " " . $line->stock_id . " - " . $line->description
-				);
+				Errors::error(_("The quantity entered is greater than the available quantity for this item at the source location :") . " " . $line->stock_id . " - " . $line->description);
 				echo "<br>";
 				$_POST['Edit' . $failed_item] = 1; // enter edit mode
 				$input_error = 1;
@@ -106,11 +95,7 @@
 	}
 	//-------------------------------------------------------------------------------
 	if (isset($_POST['Process'])) {
-		$trans_no = Inv_Transfer::add(
-			$_SESSION['transfer_items']->line_items,
-			$_POST['FromStockLocation'], $_POST['ToStockLocation'],
-			$_POST['AdjDate'], $_POST['type'], $_POST['ref'], $_POST['memo_']
-		);
+		$trans_no = Inv_Transfer::add($_SESSION['transfer_items']->line_items, $_POST['FromStockLocation'], $_POST['ToStockLocation'], $_POST['AdjDate'], $_POST['type'], $_POST['ref'], $_POST['memo_']);
 		Dates::new_doc_date($_POST['AdjDate']);
 		$_SESSION['transfer_items']->clear_items();
 		unset($_SESSION['transfer_items']);
@@ -156,7 +141,7 @@
 		if (!isset($_POST['std_cost'])) {
 			$_POST['std_cost'] = 0;
 		}
-		add_to_order($_SESSION['transfer_items'], $_POST['stock_id'], input_num('qty'), $_POST['std_cost']);
+		Item_Cart::add_line($_SESSION['transfer_items'], $_POST['stock_id'], input_num('qty'), $_POST['std_cost']);
 		line_start_focus();
 	}
 

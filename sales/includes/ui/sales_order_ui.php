@@ -9,62 +9,6 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	//--------------------------------------------------------------------------------
-	function add_to_order($order, $new_item, $new_item_qty, $price, $discount, $description = null, $no_errors = false)
-	{
-		// calculate item price to sum of kit element prices factor for
-		// value distribution over all exploded kit items
-		$item = Item_Code::is_kit($new_item);
-		if (DB::num_rows($item) == 1) {
-			$item = DB::fetch($item);
-			if (!$item['is_foreign'] && $item['item_code'] == $item['stock_id']) {
-				foreach ($order->line_items as $order_item) {
-					if (strcasecmp($order_item->stock_id, $item['stock_id']) == 0 && !$no_errors) {
-						Errors::warning(_("For Part: '") . $item['stock_id'] . "' " . _("This item is already on this document. You have been warned."));
-						break;
-					}
-				}
-				$order->add_to_cart(count($order->line_items), $item['stock_id'], $new_item_qty * $item['quantity'], $price, $discount, 0, 0, $description);
-				return;
-			}
-		}
-		$std_price = Item_Price::get_kit($new_item, $order->customer_currency, $order->sales_type, $order->price_factor, get_post('OrderDate'), true);
-		if ($std_price == 0) {
-			$price_factor = 0;
-		} else {
-			$price_factor = $price / $std_price;
-		}
-		$kit = Item_Code::get_kit($new_item);
-		$item_num = DB::num_rows($kit);
-		while ($item = DB::fetch($kit)) {
-			$std_price = Item_Price::get_kit($item['stock_id'], $order->customer_currency, $order->sales_type, $order->price_factor, get_post('OrderDate'), true);
-			// rounding differences are included in last price item in kit
-			$item_num--;
-			if ($item_num) {
-				$price -= $item['quantity'] * $std_price * $price_factor;
-				$item_price = $std_price * $price_factor;
-			} else {
-				if ($item['quantity']) {
-					$price = $price / $item['quantity'];
-				}
-				$item_price = $price;
-			}
-			$item_price = round($item_price, User::price_dec());
-			if (!$item['is_foreign'] && $item['item_code'] != $item['stock_id']) { // this is sales kit - recurse
-				add_to_order($order, $item['stock_id'], $new_item_qty * $item['quantity'], $item_price, $discount, $std_price);
-			} else { // stock item record eventually with foreign code
-				// check duplicate stock item
-				foreach ($order->line_items as $order_item) {
-					if (strcasecmp($order_item->stock_id, $item['stock_id']) == 0) {
-						Errors::warning(_("For Part: '") . $item['stock_id'] . "' " . _("This item is already on this document. You have been warned."));
-						break;
-					}
-				}
-				$order->add_to_cart(count($order->line_items), $item['stock_id'], $new_item_qty * $item['quantity'], $item_price, $discount);
-			}
-		}
-	}
-
 	//---------------------------------------------------------------------------------
 	function get_customer_details_to_order($order, $customer_id, $branch_id)
 	{
@@ -241,7 +185,7 @@ JS;
 			if (isset($order)) {
 				// can't change the customer/branch if items already received on this order
 				//echo $order->customer_name . " - " . $order->deliver_to;
-				label_row(_('Customer:'), $order->customer_name . " - " . $order->deliver_to,"id='customer_id_label' class='label pointer'");
+				label_row(_('Customer:'), $order->customer_name . " - " . $order->deliver_to, "id='customer_id_label' class='label pointer'");
 				hidden('customer_id', $order->customer_id);
 				hidden('branch_id', $order->Branch);
 				hidden('sales_type', $order->sales_type);

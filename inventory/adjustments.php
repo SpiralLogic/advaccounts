@@ -74,9 +74,7 @@
 			Errors::error(_("The entered date for the adjustment is invalid."));
 			JS::set_focus('AdjDate');
 			return false;
-		}
-		elseif (!Dates::is_date_in_fiscalyear($_POST['AdjDate']))
-		{
+		} elseif (!Dates::is_date_in_fiscalyear($_POST['AdjDate'])) {
 			Errors::error(_("The entered date is not in fiscal year."));
 			JS::set_focus('AdjDate');
 			return false;
@@ -84,10 +82,7 @@
 			$failed_item = $adj->check_qoh($_POST['StockLocation'], $_POST['AdjDate'], !$_POST['Increase']);
 			if ($failed_item >= 0) {
 				$line = $adj->line_items[$failed_item];
-				Errors::error(
-					_("The adjustment cannot be processed because an adjustment item would cause a negative inventory balance :") .
-					 " " . $line->stock_id . " - " . $line->description
-				);
+				Errors::error(_("The adjustment cannot be processed because an adjustment item would cause a negative inventory balance :") . " " . $line->stock_id . " - " . $line->description);
 				$_POST['Edit' . $failed_item] = 1; // enter edit mode
 				unset($_POST['Process']);
 				return false;
@@ -98,11 +93,7 @@
 
 	//-------------------------------------------------------------------------------
 	if (isset($_POST['Process']) && can_process()) {
-		$trans_no = Inv_Adjustment::add(
-			$_SESSION['adj_items']->line_items,
-			$_POST['StockLocation'], $_POST['AdjDate'], $_POST['type'], $_POST['Increase'],
-			$_POST['ref'], $_POST['memo_']
-		);
+		$trans_no = Inv_Adjustment::add($_SESSION['adj_items']->line_items, $_POST['StockLocation'], $_POST['AdjDate'], $_POST['type'], $_POST['Increase'], $_POST['ref'], $_POST['memo_']);
 		Dates::new_doc_date($_POST['AdjDate']);
 		$_SESSION['adj_items']->clear_items();
 		unset($_SESSION['adj_items']);
@@ -129,10 +120,7 @@
 	{
 		if ($_POST['UpdateItem'] != "" && check_item_data()) {
 			$id = $_POST['LineNo'];
-			$_SESSION['adj_items']->update_cart_item(
-				$id, input_num('qty'),
-				input_num('std_cost')
-			);
+			$_SESSION['adj_items']->update_cart_item($id, input_num('qty'), input_num('std_cost'));
 		}
 		line_start_focus();
 	}
@@ -150,10 +138,7 @@
 		if (!check_item_data()) {
 			return;
 		}
-		add_to_order(
-			$_SESSION['adj_items'], $_POST['stock_id'],
-			input_num('qty'), input_num('std_cost')
-		);
+		Item_Cart::add_line($_SESSION['adj_items'], $_POST['stock_id'], input_num('qty'), input_num('std_cost'));
 		line_start_focus();
 	}
 

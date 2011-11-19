@@ -10,15 +10,6 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 	//--------------------------------------------------------------------------------
-	function add_to_order($order, $new_item, $new_item_qty, $standard_cost)
-	{
-		if ($order->find_cart_item($new_item)) {
-			Errors::error(_("For Part: '") . $new_item . "' This item is already on this order.  You can change the quantity ordered of the existing line if necessary.");
-		} else {
-			$order->add_to_cart(count($order->line_items), $new_item, $new_item_qty, $standard_cost);
-		}
-	}
-
 	//--------------------------------------------------------------------------------
 	function display_order_header($order)
 	{
@@ -48,24 +39,15 @@
 		$subtotal = 0;
 		$k = 0; //row colour counter
 		$id = find_submit('Edit');
-		foreach (
-			$order->line_items as $line_no => $stock_item
-		)
-		{
+		foreach ($order->line_items as $line_no => $stock_item) {
 			if ($id != $line_no) {
 				alt_table_row_color($k);
 				ui_view::stock_status_cell($stock_item->stock_id);
 				label_cell($stock_item->description);
 				qty_cell($stock_item->quantity, false, Num::qty_dec($stock_item->stock_id));
 				label_cell($stock_item->units);
-				edit_button_cell(
-					"Edit$line_no", _("Edit"),
-					_('Edit document line')
-				);
-				delete_button_cell(
-					"Delete$line_no", _("Delete"),
-					_('Remove line from document')
-				);
+				edit_button_cell("Edit$line_no", _("Edit"), _('Edit document line'));
+				delete_button_cell("Delete$line_no", _("Delete"), _('Remove line from document'));
 				end_row();
 			} else {
 				transfer_edit_item_controls($order, $line_no);
@@ -106,21 +88,12 @@
 		small_qty_cells(null, 'qty', $_POST['qty'], null, null, $dec);
 		label_cell($_POST['units'], '', 'units');
 		if ($id != -1) {
-			button_cell(
-				'UpdateItem', _("Update"),
-				_('Confirm changes'), ICON_UPDATE
-			);
-			button_cell(
-				'CancelItemChanges', _("Cancel"),
-				_('Cancel changes'), ICON_CANCEL
-			);
+			button_cell('UpdateItem', _("Update"), _('Confirm changes'), ICON_UPDATE);
+			button_cell('CancelItemChanges', _("Cancel"), _('Cancel changes'), ICON_CANCEL);
 			hidden('LineNo', $line_no);
 			JS::set_focus('qty');
 		} else {
-			submit_cells(
-				'AddItem', _("Add Item"), "colspan=2",
-				_('Add new item to document'), true
-			);
+			submit_cells('AddItem', _("Add Item"), "colspan=2", _('Add new item to document'), true);
 		}
 		end_row();
 	}
