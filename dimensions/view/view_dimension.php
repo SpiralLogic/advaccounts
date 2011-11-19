@@ -13,7 +13,6 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	$js = "";
 	Page::start(_($help_context = "View Dimension"), true);
-	include_once(APP_PATH . "dimensions/includes/dimensions.php");
 	include_once(APP_PATH . "dimensions/includes/dimensions_ui.php");
 	//-------------------------------------------------------------------------------------------------
 	if (isset($_GET['trans_no']) && $_GET['trans_no'] != "") {
