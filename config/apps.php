@@ -12,10 +12,9 @@
 			'contacts',
 			'purchases',
 			'inventory',
-			'advanced',
 			'manufacturing',
 			'dimensions',
 			'gl',
+			'advanced',
 			'system',),
-		'default'=> 'Sales'
-	);
+		'default' => 'Sales');
