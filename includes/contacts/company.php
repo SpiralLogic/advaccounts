@@ -24,38 +24,38 @@
 		public $emailAddresses = array();
 
 		protected function addEmailGroup($name, $emails, $trans, $type)
-		{
-		}
+			{
+			}
 
 		public static function getEmailDialogue($emailid)
-		{
-			$emailid = explode('-', $emailid);
-			$id = $emailid[0];
-			$type = $emailid[1];
-			$trans = $emailid[2];
-			$company = get_called_class();
-			$company = new $company($id);
-			$emails = $company->getEmailAddresses();
-			if (count($emails) > 0) {
-				$types = Config::get('systypes_array');
-				$text = $types[$type];
-				$content = submenu_email(_("Email This $text"), $type, $trans, null, $emails, 0, true);
-				if ($type == ST_SALESQUOTE || $type == ST_SALESORDER) {
-					$type = ($type == ST_SALESORDER) ? ST_PROFORMA : ST_PROFORMAQ;
+			{
+				$emailid = explode('-', $emailid);
+				$id = $emailid[0];
+				$type = $emailid[1];
+				$trans = $emailid[2];
+				$company = get_called_class();
+				$company = new $company($id);
+				$emails = $company->getEmailAddresses();
+				if (count($emails) > 0) {
+					$types = $GLOBALS['systypes_array'];
 					$text = $types[$type];
-					$content .= submenu_email(_("Email This ") . $text, $type, $trans, null, $emails, 0, true);
+					$content = submenu_email(_("Email This $text"), $type, $trans, null, $emails, 0, true);
+					if ($type == ST_SALESQUOTE || $type == ST_SALESORDER) {
+						$type = ($type == ST_SALESORDER) ? ST_PROFORMA : ST_PROFORMAQ;
+						$text = $types[$type];
+						$content .= submenu_email(_("Email This ") . $text, $type, $trans, null, $emails, 0, true);
+					}
+					return $content;
 				}
-				return $content;
+				return false;
 			}
-			return false;
-		}
 
 		public static function addInfoDialog($selector, $id = false)
-		{
-			if ($id) {
-				$company = new static($id);
-			}
-			$content = '<div><span class="bold">Shipping Address:</span><br>${address}</br></br>
+			{
+				if ($id) {
+					$company = new static($id);
+				}
+				$content = '<div><span class="bold">Shipping Address:</span><br>${address}</br></br>
 		          		<span class="bold">Mailing Address:</span><br>${post_address}</br></br>
 		          		<span class="bold">Phone: </span>${phone}</br></br>
 		          		<span class="bold">Phone2: </span>${phone2}</br></br>
@@ -64,20 +64,20 @@
 		          		<span class="bold">Email: </span><a href="mailto:${email}">${email}</a></br></br>
 		          		<span class="bold">Website: </span><a target="_new" href="http://${website}">${website}</a></br></br>
 									</div>';
-			$type = array_pop(explode('_', get_called_class()));
-			$details = new Dialog($type . ' Details:', 'company_details', $content, array('minHeight' => 400));
-			$type = strtolower($type);
-			$details->setTemplateData(($id) ? $company : '');
-			if ($id) {
-				$details->addOpenEvent($selector, 'click');
-			} else {
-				$action = <<<JS
+				$type = array_pop(explode('_', get_called_class()));
+				$details = new Dialog($type . ' Details:', 'company_details', $content, array('minHeight' => 400));
+				$type = strtolower($type);
+				$details->setTemplateData(($id) ? $company : '');
+				if ($id) {
+					$details->addOpenEvent($selector, 'click');
+				} else {
+					$action = <<<JS
 
 		            $.post('/includes/contacts/{$type}s.php',{id:$(this).data('id')},function(data) {Adv.o.company_details.render(data.$type); \$company_details.dialog('open');},'json');
 JS;
-				JS::addLiveEvent($selector, 'click', $action, 'wrapper', true);
+					JS::addLiveEvent($selector, 'click', $action, 'wrapper', true);
+				}
+				$details->addButton('Close', '$(this).dialog("close")');
+				$details->show();
 			}
-			$details->addButton('Close', '$(this).dialog("close")');
-			$details->show();
-		}
 	}
