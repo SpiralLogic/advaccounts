@@ -14,6 +14,10 @@
 	{
 		protected static $_instance = null;
 
+		/***
+		 * @static
+		 * @return User
+		 */
 		public static function get()
 			{
 				if (isset($_SESSION["current_user"])) {
@@ -38,6 +42,9 @@
 		public $old_db;
 		public $logged = false;
 		public $ui_mode = 0;
+		/***
+		 * @var \userPrefs
+		 */
 		public $prefs;
 
 		function __construct()

@@ -750,8 +750,8 @@ table .headingtext {
 
 table.tablestyle {
 	border-collapse: collapse;
-	border:          2px solid #e1e1e1;
-	width:           90%;
+	border:          1px solid #e1e1e1;
+	width:           100%;
 }
 
 table.tablestyle td {
@@ -759,13 +759,17 @@ table.tablestyle td {
 	border:              1px solid #e1e1e1;
 	border-top-color:    #dcdcdc;
 	border-bottom-color: #dcdcdc;
-	padding-left:        5px;
 
 }
 
 table.tablestyle2 {
 	border-collapse: collapse;
 	border:          1px solid #cccccc;
+}
+
+table.tablestyle2 th .headingtext {
+	color:       #f9f9f9;
+	font-weight: bold;
 }
 
 table.tablestyle2 td {
@@ -1263,52 +1267,53 @@ td.tableheader3 {
 .floatleft {
 	float: left;
 }
+
 /* Recommended styles */
 
-                .megaselectlistcolumn {
-                        width: 31%;
-                        margin: 0 1%;
-                        float: left;
-                }
+.megaselectlistcolumn {
+	width:  31%;
+	margin: 0 1%;
+	float:  left;
+}
 
-                .megaselectlist .currentitem {
-                        padding: 0;
-                        border: 0.1em dotted Green;
-                        color: Black;
-                }
+.megaselectlist .currentitem {
+	padding: 0;
+	border:  0.1em dotted Green;
+	color:   Black;
+}
 
-                /* Optional styles */
+/* Optional styles */
 
-                .megaselectlist {
-                        background-color: #F5F5F5;
-                        border: 1px solid Silver;
-                }
+.megaselectlist {
+	background-color: #F5F5F5;
+	border:           1px solid Silver;
+}
 
-                .megaselectlistcolumn > h2 {
-                        font-size: 1em;
-                        background-color: #ECECEC;
-                        text-align: center;
-                        padding: 2px 0;
-                        margin: 0;
-                }
+.megaselectlistcolumn > h2 {
+	font-size:        1em;
+	background-color: #ECECEC;
+	text-align:       center;
+	padding:          2px 0;
+	margin:           0;
+}
 
-                .megaselectlist > p {
-                        margin: 0.2em;
-                }
+.megaselectlist > p {
+	margin: 0.2em;
+}
 
-                .megaselectlistcolumn > ul {
-                        padding-left: 1em;
-                        margin: 0;
-                        color: Gray;
-                }
+.megaselectlistcolumn > ul {
+	padding-left: 1em;
+	margin:       0;
+	color:        Gray;
+}
 
-                .megaselectlistcolumn > ul > li {
-                        cursor: pointer;
-                        padding: 0.1em;
-                        font-size: small;
-                }
+.megaselectlistcolumn > ul > li {
+	cursor:    pointer;
+	padding:   0.1em;
+	font-size: small;
+}
 
-                .megaselectlistcolumn > ul > li:hover {
-                        background-color: #ECECEC;
-                        color: Black;
-                }
+.megaselectlistcolumn > ul > li:hover {
+	background-color: #ECECEC;
+	color:            Black;
+}

@@ -14,7 +14,8 @@
 	include_once(APP_PATH . "manufacturing/includes/manufacturing_ui.php");
 	JS::open_window(900, 500);
 	Page::start(_($help_context = "Work Order Entry"));
-	Validation::check(Validation::MANUFACTURE_ITEMS, _("There are no manufacturable items defined in the system."), STOCK_MANUFACTURE);
+	Validation::check(Validation::MANUFACTURE_ITEMS, _("There are no manufacturable items defined in the system."),
+		STOCK_MANUFACTURE);
 	Validation::check(Validation::LOCATIONS, ("There are no inventory locations defined in the system."));
 	//---------------------------------------------------------------------------------------
 	if (isset($_GET['trans_no'])) {
@@ -61,11 +62,11 @@
 	}
 	//---------------------------------------------------------------------------------------
 	function safe_exit()
-	{
-		hyperlink_no_params("", _("Enter a new work order"));
-		hyperlink_no_params("search_work_orders.php", _("Select an existing work order"));
-		Page::footer_exit();
-	}
+		{
+			hyperlink_no_params("", _("Enter a new work order"));
+			hyperlink_no_params("search_work_orders.php", _("Select an existing work order"));
+			Page::footer_exit();
+		}
 
 	//-------------------------------------------------------------------------------------
 	if (!isset($_POST['date_'])) {
@@ -75,103 +76,103 @@
 		}
 	}
 	function can_process()
-	{
-		global $selected_id;
-		if (!isset($selected_id)) {
-			if (!Refs::is_valid($_POST['wo_ref'])) {
-				Errors::error(_("You must enter a reference."));
-				JS::set_focus('wo_ref');
+		{
+			global $selected_id;
+			if (!isset($selected_id)) {
+				if (!Refs::is_valid($_POST['wo_ref'])) {
+					Errors::error(_("You must enter a reference."));
+					JS::set_focus('wo_ref');
+					return false;
+				}
+				if (!is_new_reference($_POST['wo_ref'], ST_WORKORDER)) {
+					Errors::error(_("The entered reference is already in use."));
+					JS::set_focus('wo_ref');
+					return false;
+				}
+			}
+			if (!Validation::is_num('quantity', 0)) {
+				Errors::error(_("The quantity entered is invalid or less than zero."));
+				JS::set_focus('quantity');
 				return false;
 			}
-			if (!is_new_reference($_POST['wo_ref'], ST_WORKORDER)) {
-				Errors::error(_("The entered reference is already in use."));
-				JS::set_focus('wo_ref');
+			if (!Dates::is_date($_POST['date_'])) {
+				Errors::error(_("The date entered is in an invalid format."));
+				JS::set_focus('date_');
+				return false;
+			} elseif (!Dates::is_date_in_fiscalyear($_POST['date_'])) {
+				Errors::error(_("The entered date is not in fiscal year."));
+				JS::set_focus('date_');
 				return false;
 			}
-		}
-		if (!Validation::is_num('quantity', 0)) {
-			Errors::error(_("The quantity entered is invalid or less than zero."));
-			JS::set_focus('quantity');
-			return false;
-		}
-		if (!Dates::is_date($_POST['date_'])) {
-			Errors::error(_("The date entered is in an invalid format."));
-			JS::set_focus('date_');
-			return false;
-		} elseif (!Dates::is_date_in_fiscalyear($_POST['date_'])) {
-			Errors::error(_("The entered date is not in fiscal year."));
-			JS::set_focus('date_');
-			return false;
-		}
-		// only check bom and quantites if quick assembly
-		if (!($_POST['type'] == WO_ADVANCED)) {
-			if (!Manufacturing::has_bom(Input::post('stock_id'))) {
-				Errors::error(_("The selected item to manufacture does not have a bom."));
-				JS::set_focus('stock_id');
-				return false;
-			}
-			if ($_POST['Labour'] == "") {
-				$_POST['Labour'] = Num::price_format(0);
-			}
-			if (!Validation::is_num('Labour', 0)) {
-				Errors::error(_("The labour cost entered is invalid or less than zero."));
-				JS::set_focus('Labour');
-				return false;
-			}
-			if ($_POST['Costs'] == "") {
-				$_POST['Costs'] = Num::price_format(0);
-			}
-			if (!Validation::is_num('Costs', 0)) {
-				Errors::error(_("The cost entered is invalid or less than zero."));
-				JS::set_focus('Costs');
-				return false;
-			}
-			if (!SysPrefs::allow_negative_stock()) {
-				if ($_POST['type'] == WO_ASSEMBLY) {
-					// check bom if assembling
-					$result = Manufacturing::get_bom(Input::post('stock_id'));
-					while ($bom_item = DB::fetch($result)) {
-						if (Manufacturing::has_stock_holding($bom_item["ResourceType"])) {
-							$quantity = $bom_item["quantity"] * input_num('quantity');
-							$qoh = Item::get_qoh_on_date($bom_item["component"], $bom_item["loc_code"], $_POST['date_']);
-							if (-$quantity + $qoh < 0) {
-								Errors::error(_("The work order cannot be processed because there is an insufficient quantity for component:") . " " . $bom_item["component"] . " - " . $bom_item["description"] . ".  " . _("Location:") . " " . $bom_item["location_name"]);
-								JS::set_focus('quantity');
-								return false;
+			// only check bom and quantites if quick assembly
+			if (!($_POST['type'] == WO_ADVANCED)) {
+				if (!Manufacturing::has_bom(Input::post('stock_id'))) {
+					Errors::error(_("The selected item to manufacture does not have a bom."));
+					JS::set_focus('stock_id');
+					return false;
+				}
+				if ($_POST['Labour'] == "") {
+					$_POST['Labour'] = Num::price_format(0);
+				}
+				if (!Validation::is_num('Labour', 0)) {
+					Errors::error(_("The labour cost entered is invalid or less than zero."));
+					JS::set_focus('Labour');
+					return false;
+				}
+				if ($_POST['Costs'] == "") {
+					$_POST['Costs'] = Num::price_format(0);
+				}
+				if (!Validation::is_num('Costs', 0)) {
+					Errors::error(_("The cost entered is invalid or less than zero."));
+					JS::set_focus('Costs');
+					return false;
+				}
+				if (!DB_Company::get_pref('allow_negative_stock')) {
+					if ($_POST['type'] == WO_ASSEMBLY) {
+						// check bom if assembling
+						$result = Manufacturing::get_bom(Input::post('stock_id'));
+						while ($bom_item = DB::fetch($result)) {
+							if (Manufacturing::has_stock_holding($bom_item["ResourceType"])) {
+								$quantity = $bom_item["quantity"] * input_num('quantity');
+								$qoh = Item::get_qoh_on_date($bom_item["component"], $bom_item["loc_code"], $_POST['date_']);
+								if (-$quantity + $qoh < 0) {
+									Errors::error(_("The work order cannot be processed because there is an insufficient quantity for component:") . " " . $bom_item["component"] . " - " . $bom_item["description"] . ".  " . _("Location:") . " " . $bom_item["location_name"]);
+									JS::set_focus('quantity');
+									return false;
+								}
 							}
 						}
+					} elseif ($_POST['type'] == WO_UNASSEMBLY) {
+						// if unassembling, check item to unassemble
+						$qoh = Item::get_qoh_on_date(Input::post('stock_id'), $_POST['StockLocation'], $_POST['date_']);
+						if (-input_num('quantity') + $qoh < 0) {
+							Errors::error(_("The selected item cannot be unassembled because there is insufficient stock."));
+							return false;
+						}
 					}
-				} elseif ($_POST['type'] == WO_UNASSEMBLY) {
-					// if unassembling, check item to unassemble
-					$qoh = Item::get_qoh_on_date(Input::post('stock_id'), $_POST['StockLocation'], $_POST['date_']);
-					if (-input_num('quantity') + $qoh < 0) {
-						Errors::error(_("The selected item cannot be unassembled because there is insufficient stock."));
+				}
+			} else {
+				if (!Dates::is_date($_POST['RequDate'])) {
+					JS::set_focus('RequDate');
+					Errors::error(_("The date entered is in an invalid format."));
+					return false;
+				}
+				//elseif (!Dates::is_date_in_fiscalyear($_POST['RequDate']))
+				//{
+				//	Errors::error(_("The entered date is not in fiscal year."));
+				//	return false;
+				//}
+				if (isset($selected_id)) {
+					$myrow = WO_WorkOrder::get($selected_id, true);
+					if ($_POST['units_issued'] > input_num('quantity')) {
+						JS::set_focus('quantity');
+						Errors::error(_("The quantity cannot be changed to be less than the quantity already manufactured for this order."));
 						return false;
 					}
 				}
 			}
-		} else {
-			if (!Dates::is_date($_POST['RequDate'])) {
-				JS::set_focus('RequDate');
-				Errors::error(_("The date entered is in an invalid format."));
-				return false;
-			}
-			//elseif (!Dates::is_date_in_fiscalyear($_POST['RequDate']))
-			//{
-			//	Errors::error(_("The entered date is not in fiscal year."));
-			//	return false;
-			//}
-			if (isset($selected_id)) {
-				$myrow = WO_WorkOrder::get($selected_id, true);
-				if ($_POST['units_issued'] > input_num('quantity')) {
-					JS::set_focus('quantity');
-					Errors::error(_("The quantity cannot be changed to be less than the quantity already manufactured for this order."));
-					return false;
-				}
-			}
+			return true;
 		}
-		return true;
-	}
 
 	//-------------------------------------------------------------------------------------
 	if (isset($_POST['ADD_ITEM']) && can_process()) {
@@ -181,13 +182,16 @@
 		if (!isset($_POST['cr_lab_acc'])) {
 			$_POST['cr_lab_acc'] = "";
 		}
-		$id = WO_WorkOrder::add($_POST['wo_ref'], $_POST['StockLocation'], input_num('quantity'), Input::post('stock_id'), $_POST['type'], $_POST['date_'], $_POST['RequDate'], $_POST['memo_'], input_num('Costs'), $_POST['cr_acc'], input_num('Labour'), $_POST['cr_lab_acc']);
+		$id = WO_WorkOrder::add($_POST['wo_ref'], $_POST['StockLocation'], input_num('quantity'), Input::post('stock_id'),
+			$_POST['type'], $_POST['date_'], $_POST['RequDate'], $_POST['memo_'], input_num('Costs'), $_POST['cr_acc'],
+			input_num('Labour'), $_POST['cr_lab_acc']);
 		Dates::new_doc_date($_POST['date_']);
 		meta_forward($_SERVER['PHP_SELF'], "AddedID=$id&type=" . $_POST['type'] . "&date=" . $_POST['date_']);
 	}
 	//-------------------------------------------------------------------------------------
 	if (isset($_POST['UPDATE_ITEM']) && can_process()) {
-		WO_WorkOrder::update($selected_id, $_POST['StockLocation'], input_num('quantity'), Input::post('stock_id'), $_POST['date_'], $_POST['RequDate'], $_POST['memo_']);
+		WO_WorkOrder::update($selected_id, $_POST['StockLocation'], input_num('quantity'), Input::post('stock_id'), $_POST['date_'],
+			$_POST['RequDate'], $_POST['memo_']);
 		Dates::new_doc_date($_POST['date_']);
 		meta_forward($_SERVER['PHP_SELF'], "UpdatedID=$selected_id");
 	}
@@ -287,7 +291,7 @@
 			label_row(_("Quantity Manufactured:"), number_format($_POST['units_issued'], Num::qty_dec(Input::post('stock_id'))));
 		}
 		date_row(_("Date") . ":", 'date_', '', true);
-		date_row(_("Date Required By") . ":", 'RequDate', '', null, SysPrefs::default_wo_required_by());
+		date_row(_("Date Required By") . ":", 'RequDate', '', null, DB_Company::get_pref('default_workorder_required'));
 	} else {
 		qty_row(_("Quantity:"), 'quantity', null, null, null, $dec);
 		date_row(_("Date") . ":", 'date_', '', true);

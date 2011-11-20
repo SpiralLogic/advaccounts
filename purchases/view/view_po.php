@@ -17,24 +17,25 @@
 	if (!isset($_GET['trans_no'])) {
 		die ("<br>" . _("This page must be called with a purchase order number to review."));
 	}
-	Display::heading(_("Purchase Order") . " #" . $_GET['trans_no']);
 	$purchase_order = new Purch_Order;
 	Purch_Order::get($_GET['trans_no'], $purchase_order);
 	echo "<br>";
 	display_po_summary($purchase_order, true);
 	start_table(Config::get('tables_style') . "  width=90%", 6);
-	echo "<tr><td valign=top>"; // outer table
 	Display::heading(_("Line Details"));
 	start_table("colspan=9 " . Config::get('tables_style') . " width=100%");
 	$th = array(
-		_("Item Code"), _("Item Description"), _("Quantity"), _("Unit"), _("Price"), _("Discount"), _("Line Total"), _("Requested By"), _("Quantity Received"), _("Quantity Invoiced"));
+		_("Code"), _("Item"), _("Qty"), _("Unit"), _("Price"), _("Disc"), _("Total"), _("Needed By"),
+		_("Received"), _("Invoiced"));
 	table_header($th);
 	$total = $k = 0;
 	$overdue_items = false;
 	foreach ($purchase_order->line_items as $stock_item) {
 		$line_total = $stock_item->quantity * $stock_item->price * (1 - $stock_item->discount);
 		// if overdue and outstanding quantities, then highlight as so
-		if (($stock_item->quantity - $stock_item->qty_received > 0) && Dates::date1_greater_date2(Dates::Today(), $stock_item->req_del_date)) {
+		if (($stock_item->quantity - $stock_item->qty_received > 0) && Dates::date1_greater_date2(Dates::Today(),
+			$stock_item->req_del_date)
+		) {
 			start_row("class='overduebg'");
 			$overdue_items = true;
 		} else {
@@ -97,6 +98,9 @@
 	}
 	echo "</td></tr>";
 	end_table(1); // outer table
+	if (Input::get('popup')) {
+		return;
+	}
 	submenu_print(_("Print This Order"), ST_PURCHORDER, $_GET['trans_no'], 'prtopt');
 	submenu_option(_("&Edit This Order"), "/purchases/po_entry_items.php?ModifyOrderNumber=" . $_GET['trans_no']);
 	//----------------------------------------------------------------------------------------------------

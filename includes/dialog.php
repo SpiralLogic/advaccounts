@@ -95,10 +95,13 @@
 				}
 				if ($this->_template) {
 					$this->contents = '<script id="' . $this->name . '-template" type="text/x-jquery-tmpl">' . $this->contents . '</script>';
+					echo '<div id="' . $this->name . '" title="' . $this->title . '">' . $this->contents . '</div>';
+					$js = '$' . $this->name . '=$("#' . $this->name . '").dialog(' . JS::arrayToOptions($this->options) . ')' . $buttons;
+				} else {
+					JS::beforeload('$' . $this->name . " = $('" . '<div id="' . $this->name . '" title="' . $this->title . '">' . $this->contents
+					 . '</div>)' . "');");
+					$js = '$' . $this->name . '.dialog(' . JS::arrayToOptions($this->options) . ')' . $buttons;
 				}
-				JS::beforeload('$' . $this->name . " = $('" . '<div id="' . $this->name . '" title="' . $this->title . '">' . $this->contents
-				 . '</div>)' . "');");
-				$js = '$' . $this->name . '.dialog(' . JS::arrayToOptions($this->options) . ')' . $buttons;
 				if (!empty($js)) {
 					JS::addEvents($this->events);
 					JS::addLive($js);

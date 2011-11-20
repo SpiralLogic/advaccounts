@@ -387,7 +387,7 @@
 				Errors::error(_("You attempting to make the quantity ordered a quantity less than has already been delivered. The quantity delivered cannot be modified retrospectively."));
 				return false;
 			} // Joe Hunt added 2008-09-22 -------------------------
-			elseif ($_SESSION['Items']->trans_type != ST_SALESORDER && $_SESSION['Items']->trans_type != ST_SALESQUOTE && !SysPrefs::allow_negative_stock() && Item::is_inventory_item($_POST['stock_id'])) {
+			elseif ($_SESSION['Items']->trans_type != ST_SALESORDER && $_SESSION['Items']->trans_type != ST_SALESQUOTE && !DB_Company::get_pref('allow_negative_stock') && Item::is_inventory_item($_POST['stock_id'])) {
 				$qoh = Item::get_qoh_on_date($_POST['stock_id'], $_POST['Location'], $_POST['OrderDate']);
 				if (input_num('qty') > $qoh) {
 					$stock = Item::get($_POST['stock_id']);

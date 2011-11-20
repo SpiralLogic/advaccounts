@@ -59,5 +59,8 @@
 	if (!$voided) {
 		Display::allocations_from(PT_SUPPLIER, $receipt['supplier_id'], ST_SUPPAYMENT, $trans_no, -$receipt['Total']);
 	}
+	if (Input::get('popup')) {
+		return;
+	}
 	end_page(true);
 ?>
