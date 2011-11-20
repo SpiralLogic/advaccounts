@@ -54,46 +54,46 @@
 	}
 	//-------------------------------------------------------------------------------------------------
 	function safe_exit()
-	{
-		hyperlink_no_params("", _("Enter a &new dimension"));
-		echo "<br>";
-		hyperlink_no_params(PATH_TO_ROOT . "/dimensions/inquiry/search_dimensions.php", _("&Select an existing dimension"));
-		Page::footer_exit();
-	}
+		{
+			hyperlink_no_params("", _("Enter a &new dimension"));
+			echo "<br>";
+			hyperlink_no_params(PATH_TO_ROOT . "/dimensions/inquiry/search_dimensions.php", _("&Select an existing dimension"));
+			Page::footer_exit();
+		}
 
 	//-------------------------------------------------------------------------------------
 	function can_process()
-	{
-		global $selected_id;
-		if ($selected_id == -1) {
-			if (!Refs::is_valid($_POST['ref'])) {
-				Errors::error(_("The dimension reference must be entered."));
-				JS::set_focus('ref');
+		{
+			global $selected_id;
+			if ($selected_id == -1) {
+				if (!Refs::is_valid($_POST['ref'])) {
+					Errors::error(_("The dimension reference must be entered."));
+					JS::set_focus('ref');
+					return false;
+				}
+				if (!is_new_reference($_POST['ref'], ST_DIMENSION)) {
+					Errors::error(_("The entered reference is already in use."));
+					JS::set_focus('ref');
+					return false;
+				}
+			}
+			if (strlen($_POST['name']) == 0) {
+				Errors::error(_("The dimension name must be entered."));
+				JS::set_focus('name');
 				return false;
 			}
-			if (!is_new_reference($_POST['ref'], ST_DIMENSION)) {
-				Errors::error(_("The entered reference is already in use."));
-				JS::set_focus('ref');
+			if (!Dates::is_date($_POST['date_'])) {
+				Errors::error(_("The date entered is in an invalid format."));
+				JS::set_focus('date_');
 				return false;
 			}
+			if (!Dates::is_date($_POST['due_date'])) {
+				Errors::error(_("The required by date entered is in an invalid format."));
+				JS::set_focus('due_date');
+				return false;
+			}
+			return true;
 		}
-		if (strlen($_POST['name']) == 0) {
-			Errors::error(_("The dimension name must be entered."));
-			JS::set_focus('name');
-			return false;
-		}
-		if (!Dates::is_date($_POST['date_'])) {
-			Errors::error(_("The date entered is in an invalid format."));
-			JS::set_focus('date_');
-			return false;
-		}
-		if (!Dates::is_date($_POST['due_date'])) {
-			Errors::error(_("The required by date entered is in an invalid format."));
-			JS::set_focus('due_date');
-			return false;
-		}
-		return true;
-	}
 
 	//-------------------------------------------------------------------------------------
 	if (isset($_POST['ADD_ITEM']) || isset($_POST['UPDATE_ITEM'])) {
@@ -102,7 +102,8 @@
 		}
 		if (can_process()) {
 			if ($selected_id == -1) {
-				$id = Dimensions::add($_POST['ref'], $_POST['name'], $_POST['type_'], $_POST['date_'], $_POST['due_date'], $_POST['memo_']);
+				$id = Dimensions::add($_POST['ref'], $_POST['name'], $_POST['type_'], $_POST['date_'], $_POST['due_date'],
+					$_POST['memo_']);
 				Tags::add_associations($id, $_POST['dimension_tags']);
 				meta_forward($_SERVER['PHP_SELF'], "AddedID=$id");
 			} else {
@@ -178,7 +179,7 @@
 	$dim = DB_Company::get_pref('use_dimension');
 	number_list_row(_("Type"), 'type_', null, 1, $dim);
 	date_row(_("Start Date") . ":", 'date_');
-	date_row(_("Date Required By") . ":", 'due_date', '', null, SysPrefs::default_dimension_required_by());
+	date_row(_("Date Required By") . ":", 'due_date', '', null, DB_Company::get_pref('default_dim_required'));
 	tag_list_row(_("Tags:"), 'dimension_tags', 5, TAG_DIMENSION, true);
 	textarea_row(_("Memo:"), 'memo_', null, 40, 5);
 	end_table(1);

@@ -97,23 +97,12 @@
 					$status = $this->_saveNew();
 				} else {
 					DB::begin_transaction();
-					$sql = "UPDATE debtors_master SET name=" . DB::escape($this->name) . ",
-			debtor_ref=" . DB::escape(substr($this->name, 0, 29)) . ",
-			address=" . DB::escape($this->address) . ",
-			tax_id=" . DB::escape($this->tax_id) . ",
-			curr_code=" . DB::escape($this->curr_code) . ",
-			email=" . DB::escape($this->email) . ",
-			dimension_id=" . DB::escape($this->dimension_id) . ",
-			dimension2_id=" . DB::escape($this->dimension2_id) . ",
-            credit_status=" . DB::escape($this->credit_status) . ",
-            payment_terms=" . DB::escape($this->payment_terms) . ",
-            discount=" . User::numeric($this->discount) / 100 . ",
-            pymt_discount=" . User::numeric($this->pymt_discount) / 100 . ",
-            credit_limit=" . User::numeric($this->credit_limit) . ",
-            sales_type = " . DB::escape($this->sales_type) . ",
-            notes=" . DB::escape($this->notes) . "
-            WHERE debtor_no = " . DB::escape($this->id);
-					DB::query($sql, "The customer could not be updated");
+					$data = (array)$this;
+					$data['debtor_ref'] = substr($this->name, 0, 29);
+					$data['discount'] = User::numeric($this->discount) / 100;
+					$data['pymt_discount'] = User::numeric($this->pymt_discount) / 100;
+					$data['credit_limit'] = User::numeric($this->credit_limit);
+					DB::update('debtors_master')->values($data)->where('debtor_no=', $this->id)->exec();
 					DB::update_record_status($this->id, $this->inactive, 'debtors_master', 'debtor_no');
 					DB::commit_transaction();
 					$status = "Customer has been updated.";
@@ -184,7 +173,7 @@
 				$this->name = $this->address = $this->email = $this->tax_id = $this->payment_terms = $this->notes = $this->debtor_ref = '';
 				$this->curr_code = Banking::get_company_currency();
 				$this->discount = $this->pymt_discount = Num::percent_format(0);
-				$this->credit_limit = Num::price_format(SysPrefs::default_credit_limit());
+				$this->credit_limit = Num::price_format(DB_Company::get_pref('default_credit_limit'));
 			}
 
 		protected

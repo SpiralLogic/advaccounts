@@ -51,6 +51,9 @@
 	label_row(_("TOTAL INVOICE"), $display_total, "colspan=1 align=right", "nowrap align=right");
 	end_table(1);
 	Display::is_voided(ST_SUPPINVOICE, $trans_no, _("This invoice has been voided."));
+	if (Input::get('popup')) {
+		return;
+	}
 	end_page(true);
 
 ?>

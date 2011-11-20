@@ -15,12 +15,23 @@
 		protected static $conn = array();
 		protected static $current = false;
 		protected static $data = array();
+		/***
+		 * @var PDOStatement
+		 */
 		protected static $prepared = null;
 
 		final function __construct()
 			{
 			}
 
+		/***
+		 * @static
+		 *
+		 * @param null	$db
+		 * @param array $config
+		 *
+		 * @return DB_Connection
+		 */
 		protected static function _get($db = null, $config = array())
 			{
 				static::$prepared = null;
@@ -52,13 +63,13 @@
 					$prepared->execute();
 					static::$data = array();
 					static::$prepared = $prepared;
-					return static::$prepared;
 				}
 				catch (PDOException $e) {
 					$error = '<p>DATABASE ERROR: ' . $err_msg . ' <pre>' . var_export($e->getTrace(),
 						true) . '</pre></p><p><pre>' . var_export($e->errorInfo, true) . '</pre></p>';
-					//Errors::error($error);
+					Errors::error($error);
 				}
+				return static::$prepared;
 			}
 
 		public static function quote($value, $type = null)
@@ -109,22 +120,22 @@
 					FB::info($sql);
 				}
 				return static::$prepared;
-				;
 			}
 
 		public static function execute($data)
 			{
-				if (static::$prepared) {
-					if (Config::get('debug_sql')) {
-						$sql = static::$prepared->queryString;
-						foreach ($data as $k => $v) {
-							$sql = preg_replace('/\?/i', " '$v' ", $sql, 1); // outputs '123def abcdef abcdef' str_replace(,,$sql);
-						}
-						FB::info($sql);
-					}
-					static::$prepared->execute($data);
-					return static::$prepared->fetchAll(PDO::FETCH_ASSOC);
+				if (!static::$prepared) {
+					return false;
 				}
+				if (Config::get('debug_sql')) {
+					$sql = static::$prepared->queryString;
+					foreach ($data as $v) {
+						$sql = preg_replace('/\?/i', " '$v' ", $sql, 1); // outputs '123def abcdef abcdef' str_replace(,,$sql);
+					}
+					FB::info($sql);
+				}
+				static::$prepared->execute($data);
+				return static::$prepared->fetchAll(PDO::FETCH_ASSOC);
 			}
 
 		public static function insert_id()
@@ -139,7 +150,7 @@
 		 */
 		public static function select($columns = null)
 			{
-				$columns = func_get_args();
+				$columns = (is_string($columns)) ? func_get_args() : array();
 				return new DB_Query_Select($columns, static::_get());
 			}
 
@@ -161,7 +172,7 @@
 		/***
 		 * @static
 		 *
-		 * @param null $result
+		 * @param null|DB_Query_Result|PDOStatement $result
 		 *
 		 * @return mixed|DB_Query_Result|PDOStatement|Array
 		 */
@@ -224,9 +235,7 @@
 
 		public static function free_result()
 			{
-				if (static::$prepared) {
-					return static::$prepared->closeCursor();
-				}
+				return (static::$prepared) ? static::$prepared->closeCursor() : false;
 			}
 
 		public static function num_rows()

@@ -23,7 +23,23 @@
 					if (static::$_openWindow) {
 						return;
 					}
-					$js = "$('.openWindow').click(function() { Adv.openWindow(this.href,this.target); return false;});";
+					$js = <<<JS
+		$('#wrapper').on('click mouseenter','td .openWindow',
+			function(e) {
+				if (e.type=='click') {
+					Adv.openWindow(this.href, this.target);
+					return false;
+				}
+				if (e.type=='mouseenter') {
+					if (Adv.o.order_details) Adv.o.order_details.remove();
+					Adv.o.order_details = $("<iframe>", {src:this.href+"&popup=1", width: $width, height: $height})
+						.css({position:'fixed', background:'white'})
+						.appendTo('#wrapper')
+						.position({my:"left center",at:"right top", of:$(this).parent()}).css({top:20})
+						.on('mouseleave',function() { $(this).remove();});
+				}
+			});
+JS;
 					static::addLive($js);
 					static::$_openWindow = true;
 				}

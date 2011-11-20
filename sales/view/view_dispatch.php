@@ -23,52 +23,42 @@
 	$myrow = Sales_Trans::get($trans_id, ST_CUSTDELIVERY);
 	$branch = Sales_Branch::get($myrow["branch_code"]);
 	$sales_order = Sales_Order::get_header($myrow["order_"], ST_SALESORDER);
+	start_table(Config::get('tables_style2') . "  width=90%");
+	echo "<tr valign=top class='tableheader2'><th colspan=6>";
 	Display::heading(sprintf(_("DISPATCH NOTE #%d"), $trans_id));
-	echo "<br>";
-	start_table(Config::get('tables_style2') . " width=95%");
-	echo "<tr valign=top><td>"; // outer table
-	start_table("class='tableheader2' " . "  width=100%");
+	echo "</td></tr>";
+	echo "<tr valign=top><td colspan=3>";
+	start_table(Config::get('tables_style') . "  width=100% ");
+	label_row(_("Charge To"), $myrow["DebtorName"] . "<br>" . nl2br($myrow["address"]), "class='label' nowrap", "colspan=5");
 	start_row();
-	label_row(_("Reference"), $myrow["reference"]);
-	label_row(_("Currency"), $sales_order["curr_code"]);
-	label_row(_("Our Order No"), ui_view::get_customer_trans_view_str(ST_SALESORDER, $sales_order["order_no"]));
+	label_cells(_("Charge Branch"), $branch["br_name"] . "<br>" . nl2br($branch["br_address"]), "class='label' nowrap",
+		"colspan=2");
+	label_cells(_("Delivered To"), $sales_order["deliver_to"] . "<br>" . nl2br($sales_order["delivery_address"]),
+		"class='label' nowrap",
+		"colspan=2");
 	end_row();
 	start_row();
-	label_row(_("Customer Purchase Order #"), $sales_order["customer_ref"]);
-	label_row(_("Shipping Company"), $myrow["shipper_name"]);
-	label_row(_("Sales Type"), $myrow["sales_type"]);
+	label_cells(_("Reference"), $myrow["reference"], "class='label'");
+	label_cells(_("Currency"), $sales_order["curr_code"], "class='label'");
+	label_cells(_("Our Order No"), ui_view::get_customer_trans_view_str(ST_SALESORDER, $sales_order["order_no"]), "class='label'");
 	end_row();
 	start_row();
-	label_row(_("Dispatch Date"), Dates::sql2date($myrow["tran_date"]), "", "nowrap");
-	label_row(_("Due Date"), Dates::sql2date($myrow["due_date"]), "", "nowrap");
+	label_cells(_("PO#"), $sales_order["customer_ref"], "class='label'");
+	label_cells(_("Shipping Company"), $myrow["shipper_name"], "class='label'");
+	label_cells(_("Sales Type"), $myrow["sales_type"], "class='label'");
+	end_row();
+	start_row();
+	label_cells(_("Dispatch Date"), Dates::sql2date($myrow["tran_date"]), "class='label'", "nowrap");
+	label_cells(_("Due Date"), Dates::sql2date($myrow["due_date"]), "class='label'", "nowrap");
+	label_cells(_("Deliveries"),
+		ui_view::get_customer_trans_view_str(ST_CUSTDELIVERY, Sales_Trans::get_parent(ST_SALESINVOICE, $trans_id)), "class='label'");
 	end_row();
 	Display::comments_row(ST_CUSTDELIVERY, $trans_id);
 	end_table();
-	echo "</td><td>";
-	/*Now the customer charged to details in a sub table*/
-	start_table(Config::get('tables_style2') . "  width=100%");
-	$th = array(_("Charge To"));
-	table_header($th);
-	label_row(null, $myrow["DebtorName"] . "<br>" . nl2br($myrow["address"]), "nowrap");
-	end_table();
-	/*end of the small table showing charge to account details */
-	echo "</td><td>"; // outer table
-	/*end of the main table showing the company name and charge to details */
-	start_table(Config::get('tables_style2') . "  width=100%");
-	$th = array(_("Charge Branch"));
-	table_header($th);
-	label_row(null, $branch["br_name"] . "<br>" . nl2br($branch["br_address"]), "nowrap");
-	end_table();
-	echo "</td><td>"; // outer table
-	start_table(Config::get('tables_style2') . "  width=100%");
-	$th = array(_("Delivered To"));
-	table_header($th);
-	label_row(null, $sales_order["deliver_to"] . "<br>" . nl2br($sales_order["delivery_address"]), "nowrap");
-	end_table();
-	echo "</td><td>"; // outer table
+	echo "</td></tr>";
 	end_table(1); // outer table
 	$result = Sales_Debtor_Trans::get(ST_CUSTDELIVERY, $trans_id);
-	start_table(Config::get('tables_style2'));
+	start_table(Config::get('tables_style') . "  width=95%");
 	if (DB::num_rows($result) > 0) {
 		$th = array(
 			_("Item Code"), _("Item Description"), _("Quantity"), _("Unit"), _("Price"), _("Discount %"), _("Total"));
@@ -110,5 +100,8 @@
 	label_row(_("TOTAL VALUE"), $display_total, "colspan=6 align=right", "nowrap align=right");
 	end_table(1);
 	Display::is_voided(ST_CUSTDELIVERY, $trans_id, _("This dispatch has been voided."));
+	if (Input::get('popup')) {
+		return;
+	}
 	submenu_print(_("&Print This Delivery Note"), ST_CUSTDELIVERY, $_GET['trans_no'], 'prtopt');
 	end_page(true);

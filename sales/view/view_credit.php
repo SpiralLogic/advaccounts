@@ -96,11 +96,15 @@
 	label_row(_("Shipping"), $display_freight, "colspan=6 align=right", "nowrap align=right");
 	$tax_items = GL_Trans::get_tax_details(ST_CUSTCREDIT, $trans_id);
 	Display::customer_trans_tax_details($tax_items, 6);
-	label_row("<font color=red>" . _("TOTAL CREDIT") . "</font", "<font color=red>$display_total</font>", "colspan=6 align=right", "nowrap align=right");
+	label_row("<font color=red>" . _("TOTAL CREDIT") . "</font", "<font color=red>$display_total</font>", "colspan=6 align=right",
+		"nowrap align=right");
 	end_table(1);
 	$voided = Display::is_voided(ST_CUSTCREDIT, $trans_id, _("This credit note has been voided."));
 	if (!$voided) {
 		Display::allocations_from(PT_CUSTOMER, $myrow['debtor_no'], ST_CUSTCREDIT, $trans_id, $credit_total);
+	}
+	if (Input::get('popup')) {
+		return;
 	}
 	/* end of check to see that there was an invoice record to print */
 	submenu_print(_("&Print This Credit Note"), ST_CUSTCREDIT, $_GET['trans_no'], 'prtopt');
