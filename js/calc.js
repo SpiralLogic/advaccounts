@@ -1,6 +1,6 @@
 $(function($)
   {
-	  $("#wrapper").delegate(".amount", 'focus', function()
+	  Adv.o.wrapper.delegate(".amount", 'focus', function()
 	  {
 			var value = $(this).val();
 

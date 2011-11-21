@@ -76,6 +76,11 @@ Adv.extend({
 							 Adv.msgbox.empty();
 							 status.class = (status.status) ? 'note_msg' : 'err_msg';
 							 Adv.msgbox.attr('class', status.class).html(status.message);
+						 },
+						 openWindow:function (url, title, width, height) {
+							 var left = (screen.width - width) / 2;
+							 var top = (screen.height - height) / 2;
+							 return window.open(url, title, 'width=' + width + ',height=' + height + ',left=' + left + ',top=' + top + ',screenX=' + left + ',screenY=' + top + ',status=no,scrollbars=yes');
 						 }
 					 })
 Adv.extend({Forms:(function () {
@@ -85,10 +90,10 @@ Adv.extend({Forms:(function () {
 			if (!els.length) {
 				els = [document.getElementById(id)];
 			}
-			$.each(els, function (k,el) {
-			if (!el) return;
-										 if (typeof disabled === 'boolean') {
-								 el.disabled=disabled;
+			$.each(els, function (k, el) {
+							 if (!el) return;
+							 if (typeof disabled === 'boolean') {
+								 el.disabled = disabled;
 							 }
 							 if (el.tagName === 'select') {
 								 if (el.value == null || String(value).length == 0) {
@@ -97,13 +102,14 @@ Adv.extend({Forms:(function () {
 									 return;
 								 }
 							 }
-							 if (el.type==='checkbox') {
-								 el.checked =  !!value;
+							 if (el.type === 'checkbox') {
+								 el.checked = !!value;
 							 }
 							 if (String(value).length == 0) {
 								 value = '';
 							 }
-							 el.value = value; $(el).data('init', value);
+							 el.value = value;
+							 $(el).data('init', value);
 						 }
 			)
 		}
