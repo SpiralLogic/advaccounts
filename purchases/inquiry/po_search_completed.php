@@ -78,6 +78,13 @@
 	{
 		return Reporting::print_doc_link($row['order_no'], _("Print"), true, 18, ICON_PRINT, 'button printlink');
 	}
+	function email_link($row)
+	{
+		HTML::setReturn(true);
+		UI::button(false, 'Email', array('class' => 'button email-button', 'data-emailid' => $row['id'] . '-' . ST_PURCHORDER . '-' . $row['order_no']));
+
+		return HTML::setReturn(false);
+	}
 
 	function receive_link($row)
 	{
@@ -140,13 +147,19 @@
 	} //end not order number selected
 	$sql .= " GROUP BY porder.order_no";
 	$cols = array(
-		_("#") => array(
-			'fun' => 'trans_view', 'ord' => ''), _("Reference"), _("Supplier") => array(
-			'ord' => '', 'type' => 'id'), _("Supplier ID") => 'skip', _("Location"), _("Supplier's Reference"), _("Order Date") => array(
-			'name' => 'ord_date', 'type' => 'date', 'ord' => 'desc'), _("Currency") => array('align' => 'center'), _("Order Total") => 'amount', array(
-			'insert' => true, 'fun' => 'edit_link'), array(
-			'insert' => true, 'fun' => 'prt_link'), array(
-			'insert' => true, 'fun' => 'receive_link'),);
+		_("#") => array('fun' => 'trans_view', 'ord' => ''),
+		_("Reference"),
+		_("Supplier") => array('ord' => '', 'type' => 'id'),
+		_("Supplier ID") => 'skip',
+		_("Location"),
+		_("Supplier's Reference"),
+		_("Order Date") => array('name' => 'ord_date', 'type' => 'date', 'ord' => 'desc'),
+		_("Currency") => array('align' => 'center'),
+		_("Order Total") => 'amount',
+		array( 'insert' => true, 'fun' => 'edit_link'),
+		array( 'insert' => true, 'fun' => 'email_link'),
+		array( 'insert' => true, 'fun' => 'prt_link'),
+		array( 'insert' => true, 'fun' => 'receive_link'));
 	if (get_post('StockLocation') != ALL_TEXT) {
 		$cols[_("Location")] = 'skip';
 	}
@@ -155,6 +168,8 @@
 	$table->width = "80%";
 	display_db_pager($table);
 	Contacts_Supplier::addInfoDialog('.pagerclick');
+	UI::emailDialogue('s');
+
 	end_form();
 	end_page();
 ?>

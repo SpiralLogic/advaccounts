@@ -18,18 +18,22 @@
 				return;
 			}
 			$js = <<<JS
-		Adv.o.wrapper.off('click.open mouseenter.open').on('click.open mouseenter.open','td .openWindow',
+		Adv.o.wrapper.off('click.open mouseenter.open').on('click.open mouseenter.open mouseleave.open','td .openWindow',
 			function(e) {
 				if (e.type=='click') {
 					Adv.openWindow(this.href, this.target,$width,$height);
 					return false;
 				}
 				if (e.type=='mouseenter') {
+
 				if (Adv.o.popupCurrent) window.clearTimeout(Adv.o.popupCurrent);
 				Adv.o.popupEl= this;
 				Adv.o.popupParent= $(this).parent();
 				Adv.o.popupCurrent = window.setTimeout(Adv.popupWindow,750);
-				}
+				}if (e.type=='mouseleave') {
+window.clearTimeout(Adv.o.popupCurrent);
+}
+
 			});
 			Adv.popupWindow = function() {
 					if (Adv.o.order_details) Adv.o.order_details.remove();
@@ -164,7 +168,7 @@ JS;
 				echo $files;
 			} else {
 				self::$_beforeload = array_merge(self::$_beforeload, self::$_onlive, self::$_onload);
-				self::$_onlive = self::$_onload=array();
+				self::$_onlive = self::$_onload = array();
 			}
 			if (self::$_beforeload) {
 				$content .= implode(";\n", self::$_beforeload);

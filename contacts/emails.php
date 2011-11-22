@@ -11,13 +11,15 @@
 	Session::get()->App->selected_application = 'contacts';
 	if (AJAX_REFERRER) {
 		if (Input::has_post('type', 'id')) {
-			if ($_POST['type'] === 'c') {
+			if ($_POST['type'] === CT_CUSTOMER ) {
 				$content = Contacts_Customer::getEmailDialogue($_POST['id']);
-				if ($content === false) {
-					echo HTML::h3(null, 'No email addresses available.', array('class' => 'center bold top40 font15'), false);
-				} else {
-					echo $content;
-				}
+			} elseif ($_POST['type'] ===CT_SUPPLIER ){
+				$content = Contacts_Supplier::getEmailDialogue($_POST['id']);
+			}
+			if ($content === false) {
+				echo HTML::h3(null, 'No email addresses available.', array('class' => 'center bold top40 font15'), false);
+			} else {
+				echo $content;
 			}
 		}
 	}

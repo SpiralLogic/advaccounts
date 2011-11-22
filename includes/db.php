@@ -171,10 +171,8 @@
 
 		/***
 		 * @static
-		 *
-		 * @param null|DB_Query_Result|PDOStatement $result
-		 *
-		 * @return mixed|DB_Query_Result|PDOStatement|Array
+		 * @param PDOStatement $result The result of the query or whatever cunt
+		 * @return DB_Query_Result This is something
 		 */
 		public static function fetch($result = null)
 			{

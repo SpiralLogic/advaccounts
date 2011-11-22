@@ -1475,6 +1475,30 @@
 		bank_account_types_list_cells(null, $name, $selected_id);
 		echo "</tr>\n";
 	}
+//------------------------------------------------------------------------------------------------
+	function payment_methods_list($name, $selected_id = null)
+	{
+		$payment_methods = DB::select('id','name')->from('payment_methods')->where('inactive=',0)->fetch()->all();
+			return array_selector($name, $selected_id, $payment_methods);
+
+	}
+
+	function payment_methods_list_cells($label, $name, $selected_id = null)
+	{
+		if ($label != null) {
+			echo "<td>$label</td>\n";
+		}
+		echo "<td>";
+		echo payment_methods_list($name, $selected_id);
+		echo "</td>\n";
+	}
+
+	function payment_methods_list_row($label, $name, $selected_id = null)
+	{
+		echo "<tr><td class='label'>$label</td>";
+		bank_account_types_list_cells(null, $name, $selected_id);
+		echo "</tr>\n";
+	}
 
 	//------------------------------------------------------------------------------------------------
 	function payment_person_types_list($name, $selected_id = null, $submit_on_change = false)
