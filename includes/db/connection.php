@@ -47,7 +47,12 @@
 			{
 				return $this->conn->prepare($sql);
 			}
-
+/***
+ * @param $sql
+ * @param $type
+ * @param null $data
+ * @return DB_Query_Result|int
+ */
 		public function exec($sql, $type, $data = null)
 			{
 				try {

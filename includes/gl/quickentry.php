@@ -128,4 +128,134 @@
 			return DB::fetch($result);
 		}
 
+				//--------------------------------------------------------------------------------------
+				//
+				//	Expands selected quick entry $id into GL posings and adds to cart.
+				//		returns calculated amount posted to bank GL account.
+				//
+				public static function show_menu(&$cart, $id, $base, $type, $descr = '')
+				{
+					$bank_amount = 0;
+					if (!isset($id) || $id == null || $id == "") {
+						Errors::error(_("No Quick Entries are defined."));
+						JS::set_focus('totamount');
+					}
+					else {
+						if ($type == QE_DEPOSIT) {
+							$base = -$base;
+						}
+						if ($type != QE_SUPPINV) // only one quick entry on journal/bank transaction
+						{
+							$cart->clear_items();
+						}
+						$qe = GL_QuickEntry::get($id);
+						if ($descr != '') {
+							$qe['description'] .= ': ' . $descr;
+						}
+						$result = GL_QuickEntry::get_lines($id);
+						$totrate = 0;
+						while ($row = DB::fetch($result)) {
+							$qe_lines[] = $row;
+							switch (strtolower($row['action'])) {
+							case "t": // post taxes calculated on base amount
+							case "t+": // ditto & increase base amount
+							case "t-": // ditto & reduce base amount
+								if (substr($row['action'], 0, 1) != 'T') {
+									$totrate += Tax_Types::get_default_rate($row['dest_id']);
+								}
+							}
+						}
+						$first = true;
+						$taxbase = 0;
+						foreach (
+							$qe_lines as $qe_line
+						) {
+							switch (strtolower($qe_line['action'])) {
+							case "=": // post current base amount to GL account
+								$part = $base;
+								break;
+							case "a": // post amount to GL account and reduce base
+								$part = $qe_line['amount'];
+								break;
+							case "a+": // post amount to GL account and increase base
+								$part = $qe_line['amount'];
+								$base += $part;
+								break;
+							case "a-": // post amount to GL account and reduce base
+								$part = $qe_line['amount'];
+								$base -= $part;
+								break;
+							case "%": // store acc*amount% to GL account
+								$part = Num::round($base * $qe_line['amount'] / 100, User::price_dec());
+								break;
+							case "%+": // ditto & increase base amount
+								$part = Num::round($base * $qe_line['amount'] / 100, User::price_dec());
+								$base += $part;
+								break;
+							case "%-": // ditto & reduce base amount
+								$part = Num::round($base * $qe_line['amount'] / 100, User::price_dec());
+								$base -= $part;
+								break;
+							case "t": // post taxes calculated on base amount
+							case "t+": // ditto & increase base amount
+							case "t-": // ditto & reduce base amount
+								if ($first) {
+									$taxbase = $base / ($totrate + 100);
+									$first = false;
+								}
+								if (substr($qe_line['action'], 0, 1) != 'T') {
+									$part = $taxbase;
+								}
+								else {
+									$part = $base / 100;
+								}
+								$item_tax = Tax_Types::get($qe_line['dest_id']);
+								//if ($type == QE_SUPPINV && substr($qe_line['action'],0,1) != 'T')
+								if ($type == QE_SUPPINV) {
+									$taxgroup = $cart->tax_group_id;
+									$rates = 0;
+									$res = Tax_Groups::get_for_item($cart->tax_group_id);
+									while ($row = DB::fetch($res)) {
+										$rates += $row['rate'];
+									}
+									if ($rates == 0) {
+										continue 2;
+									}
+								}
+								$tax = Num::round($part * $item_tax['rate'], User::price_dec());
+								if ($tax == 0) {
+									continue 2;
+								}
+								$gl_code = ($type == QE_DEPOSIT || ($type == QE_JOURNAL && $base < 0)) ? $item_tax['sales_gl_code'] : $item_tax['purchasing_gl_code'];
+								if (!Tax_Types::is_tax_gl_unique($gl_code)) {
+									Errors::error(_("Cannot post to GL account used by more than one tax type."));
+									break 2;
+								}
+								if ($type != QE_SUPPINV) {
+									$cart->add_gl_item($gl_code, $qe_line['dimension_id'], $qe_line['dimension2_id'], $tax, $qe['description']);
+								}
+								else {
+									$acc_name = GL_Account::get_name($gl_code);
+									$cart->add_gl_codes_to_trans($gl_code, $acc_name, $qe_line['dimension_id'], $qe_line['dimension2_id'], $tax, $qe['description']);
+								}
+								if (strpos($qe_line['action'], '+')) {
+									$base += $tax;
+								}
+								elseif (strpos($qe_line['action'], '-')) {
+									$base -= $tax;
+								}
+								continue 2;
+							}
+							if ($type != QE_SUPPINV) {
+								$cart->add_gl_item($qe_line['dest_id'], $qe_line['dimension_id'], $qe_line['dimension2_id'], $part, $qe['description']);
+							}
+							else {
+								$acc_name = GL_Account::get_name($qe_line['dest_id']);
+								$cart->add_gl_codes_to_trans($qe_line['dest_id'], $acc_name, $qe_line['dimension_id'], $qe_line['dimension2_id'], $part, $qe['description']);
+							}
+						}
+					}
+					return $bank_amount;
+				}
+
 	}

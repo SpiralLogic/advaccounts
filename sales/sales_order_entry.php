@@ -1,7 +1,7 @@
 <?php
 
 	/*     * ********************************************************************
-				Copyright (C) FrontAccounting, LLC.
+				Copyright (C) Advanced Group PTY LTD
 				Released under the terms of the GNU General Public License, GPL,
 				as published by the Free Software Foundation, either version 3
 				of the License, or (at your option) any later version.
@@ -121,12 +121,11 @@
 					"ModifyQuotationNumber") . "=$order_no");
 			}
 			submenu_print(_("&Print This " . $trans_name), $trans_type, $order_no, 'prtopt');
-			submenu_email(_("Email This $trans_name"), $trans_type, $order_no, null, $emails, 1);
+			Reporting::email_link($order_no, _("Email This $trans_name"), true, $trans_type, 'EmailLink',null, $emails, 1);
 			if ($trans_type == ST_SALESORDER || $trans_type == ST_SALESQUOTE) {
 				submenu_print(_("Print Proforma Invoice"), ($trans_type == ST_SALESORDER ? ST_PROFORMA : ST_PROFORMAQ), $order_no,
 					'prtopt');
-				submenu_email(_("Email This Proforma Invoice"), ($trans_type == ST_SALESORDER ? ST_PROFORMA : ST_PROFORMAQ), $order_no,
-					null, $emails, 1);
+				Reporting::email_link($order_no,_("Email This Proforma Invoice"), true,($trans_type == ST_SALESORDER ? ST_PROFORMA : ST_PROFORMAQ),'EmailLink', null, $emails, 1);
 			}
 			if ($trans_type == ST_SALESORDER) {
 				submenu_option(_("Make &Delivery Against This Order"), "/sales/customer_delivery.php?OrderNumber=$order_no");

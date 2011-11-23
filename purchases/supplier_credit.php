@@ -1,6 +1,6 @@
 <?php
 	/**********************************************************************
-	Copyright (C) FrontAccounting, LLC.
+	Copyright (C) Advanced Group PTY LTD
 	Released under the terms of the GNU General Public License, GPL,
 	as published by the Free Software Foundation, either version 3
 	of the License, or (at your option) any later version.
@@ -208,7 +208,7 @@
 	}
 	if (isset($_POST['go'])) {
 		$Ajax->activate('gl_items');
-		Display::quick_entries(Purch_Trans::instance(), $_POST['qid'], input_num('totamount'), QE_SUPPINV);
+		GL_QuickEntry::show_menu(Purch_Trans::instance(), $_POST['qid'], input_num('totamount'), QE_SUPPINV);
 		$_POST['totamount'] = Num::price_format(0);
 		$Ajax->activate('totamount');
 		$Ajax->activate('inv_tot');

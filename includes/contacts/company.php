@@ -39,11 +39,11 @@
 				if (count($emails) > 0) {
 					$types = $GLOBALS['systypes_array'];
 					$text = $types[$type];
-					$content = submenu_email(_("Email This $text"), $type, $trans, null, $emails, 0, true);
+					$content = Reporting::email_link($trans, _("Email This $text"), true, $type,'EmailLink', null, $emails, 0, true);
 					if ($type == ST_SALESQUOTE || $type == ST_SALESORDER) {
 						$type = ($type == ST_SALESORDER) ? ST_PROFORMA : ST_PROFORMAQ;
 						$text = $types[$type];
-						$content .= submenu_email(_("Email This ") . $text, $type, $trans, null, $emails, 0, true);
+						$content .= Reporting::email_link($trans, _("Email This ") . $text, true, $type, 'EmailLink', null, $emails, 0, true);
 					}
 					return $content;
 				}

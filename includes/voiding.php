@@ -41,7 +41,7 @@
 					{
 						$delivery = Sales_Trans::get($type_no, $type);
 						if ($delivery['trans_link'] != 0) {
-							if (static::get_entry(10, $delivery['trans_link']) === false) {
+							if (static::get(10, $delivery['trans_link']) === false) {
 								return false;
 							}
 						}

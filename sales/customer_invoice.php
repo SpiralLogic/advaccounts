@@ -1,7 +1,7 @@
 <?php
 
 	/* * ********************************************************************
-						Copyright (C) FrontAccounting, LLC.
+						Copyright (C) Advanced Group PTY LTD
 						Released under the terms of the GNU General Public License, GPL,
 						as published by the Free Software Foundation, either version 3
 						of the License, or (at your option) any later version.
@@ -43,7 +43,7 @@
 		Errors::notice(_("Selected deliveries has been processed"), true);
 		Display::note(ui_view::get_customer_trans_view_str($trans_type, $invoice_no, _("&View This Invoice")), 0, 1);
 		Display::note(Reporting::print_doc_link($invoice_no, _("&Print This Invoice"), true, ST_SALESINVOICE));
-		submenu_email(_("Email This Invoice"), ST_SALESINVOICE, $invoice_no, null, $emails, 1);
+		Reporting::email_link($invoice_no, _("Email This Invoice"), true, ST_SALESINVOICE, 'EmailLink', null, $emails, 1);
 		hyperlink_params("/sales/customer_payments.php", _("Apply a customer payment"));
 		Display::note(ui_view::get_gl_view_str($trans_type, $invoice_no, _("View the GL &Journal Entries for this Invoice")), 1);
 		hyperlink_params("/sales/inquiry/sales_deliveries_view.php", _("Select Another &Delivery For Invoicing"), "OutstandingOnly=1");
@@ -57,7 +57,7 @@
 		Display::note(ui_view::get_trans_view_str(ST_SALESINVOICE, $invoice_no, _("&View This Invoice")));
 		echo '<br>';
 		Display::note(Reporting::print_doc_link($invoice_no, _("&Print This Invoice"), true, ST_SALESINVOICE));
-		submenu_email(_("Email This Invoice"), ST_SALESINVOICE, $invoice_no, null, $emails, 1);
+		Reporting::email_link($invoice_no,_("Email This Invoice"), true, ST_SALESINVOICE,  'EmailLink',null, $emails, 1);
 		hyperlink_no_params("/sales/inquiry/customer_inquiry.php", _("Select A Different &Invoice to Modify"));
 		Page::footer_exit();
 	} elseif (isset($_GET['RemoveDN'])) {

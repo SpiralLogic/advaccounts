@@ -1,6 +1,6 @@
 <?php
 	/**********************************************************************
-	Copyright (C) FrontAccounting, LLC.
+	Copyright (C) Advanced Group PTY LTD
 	Released under the terms of the GNU General Public License, GPL,
 	as published by the Free Software Foundation, either version 3
 	of the License, or (at your option) any later version.
@@ -16,7 +16,7 @@
 	//---------------------------------------------------------------------------------------------
 	function update_extensions($extensions)
 	{
-		if (!frontaccounting::write_extensions($extensions)) {
+		if (!advaccounting::write_extensions($extensions)) {
 			Errors::notice(_("Cannot update system extensions list."));
 			return false;
 		}
@@ -37,7 +37,7 @@
 					$newexts[$key]['active'] = $exts[$key]['active'];
 				}
 			}
-			if (!frontaccounting::write_extensions($newexts, $i)) {
+			if (!advaccounting::write_extensions($newexts, $i)) {
 				Errors::notice(
 					sprintf(
 						_("Cannot update extensions list for company '%s'."),
@@ -314,7 +314,7 @@
 		) {
 			$exts[$i]['active'] = check_value('Active' . $i);
 		}
-		frontaccounting::write_extensions($exts, get_post('extset'));
+		advaccounting::write_extensions($exts, get_post('extset'));
 		$installed_extensions = $exts;
 		Errors::notice(_('Current active extensions set has been saved.'));
 	}

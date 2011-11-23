@@ -22,7 +22,7 @@
 			}
 		}
 
-		function set_controls($ar_params)
+		protected function set_controls($ar_params)
 		{
 			$this->controls = $ar_params;
 		}

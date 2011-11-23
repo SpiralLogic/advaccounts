@@ -26,17 +26,26 @@
 			}
 			return $this->compiled_query;
 		}
-
+/***
+ * @param null $data
+ * @return DB_Query_Result
+ */
 		public function exec($data = null)
 		{
 			return $this->conn->exec($this->getQuery($data), $this->type, $this->data);
 		}
-
+/***
+ * @return DB_Query_Result
+ */
 		public function fetch()
 		{
 			return $this->exec(null);
 		}
-
+/***
+ * @static
+ * @param $db
+ * @return DB_Query_Result
+ */
 		public static function _fetch($db)
 		{
 			static::$query->conn = $db;

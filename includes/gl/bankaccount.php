@@ -1,6 +1,6 @@
 <?php
 	/**********************************************************************
-	Copyright (C) FrontAccounting, LLC.
+	Copyright (C) Advanced Group PTY LTD
 	Released under the terms of the GNU General Public License, GPL,
 	as published by the Free Software Foundation, either version 3
 	of the License, or (at your option) any later version.
@@ -12,7 +12,7 @@
 	//---------------------------------------------------------------------------------------------
 	class GL_BankAccount
 	{
-		public static function clear_default_currency($curr_code)
+		protected static function clear_default_currency($curr_code)
 			{
 				$sql = "UPDATE bank_accounts SET dflt_curr_act=0 WHERE bank_curr_code="
 				 . DB::escape($curr_code);

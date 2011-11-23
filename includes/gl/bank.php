@@ -1,6 +1,6 @@
 <?php
 	/**********************************************************************
-	Copyright (C) FrontAccounting, LLC.
+	Copyright (C) Advanced Group PTY LTD
 	Released under the terms of the GNU General Public License, GPL,
 	as published by the Free Software Foundation, either version 3
 	of the License, or (at your option) any later version.
@@ -10,7 +10,7 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 class GL_Bank {
-	function add_exchange_variation($trans_type, $trans_no, $date_, $acc_id, $account,
+	protected static function add_exchange_variation($trans_type, $trans_no, $date_, $acc_id, $account,
 																	$currency, $person_type_id = null, $person_id = "")
 	{
 		if (Banking::is_company_currency($currency)) {
@@ -56,17 +56,6 @@ class GL_Bank {
 		}
 	}
 
-	function add_exchange_variation_all()
-	{
-		$trans_no = SysTypes::get_next_trans_no(ST_JOURNAL);
-		$sql = "SELECT * FROM bank_accounts";
-		$result = DB::query($sql, "could not retreive bank accounts");
-		while ($myrow = DB::fetch($result))
-		{
-			GL_Bank::add_exchange_variation(ST_JOURNAL, $trans_no, null, $myrow['id'], $myrow['account_code'],
-				$myrow['currency_code']);
-		}
-	}
 
 	//----------------------------------------------------------------------------------
 	//	Add bank tranfer to database.
@@ -91,7 +80,7 @@ class GL_Bank {
 			$date_, -($amount + $charge),
 			PT_MISC, "", $currency,
 			"Cannot insert a source bank transaction");
-		GL_Bank::add_exchange_variation($trans_type, $trans_no, $date_, $from_account, $from_gl_account,
+		static::add_exchange_variation($trans_type, $trans_no, $date_, $from_account, $from_gl_account,
 			$currency, PT_MISC, "");
 		if ($charge != 0) {
 			/* Now Debit bank charge account with charges */
@@ -108,7 +97,7 @@ class GL_Bank {
 			$date_, $amount, PT_MISC, "",
 			$currency, "Cannot insert a destination bank transaction");
 		$currency = Banking::get_bank_account_currency($to_account);
-		GL_Bank::add_exchange_variation($trans_type, $trans_no, $date_, $to_account, $to_gl_account,
+		static::add_exchange_variation($trans_type, $trans_no, $date_, $to_account, $to_gl_account,
 			$currency, PT_MISC, "");
 		DB_Comments::add($trans_type, $trans_no, $date_, $memo_);
 		Refs::save($trans_type, $trans_no, $ref);
@@ -188,7 +177,7 @@ class GL_Bank {
 					$person_type_id, $person_id, $currency,
 					"Cannot insert a destination bank transaction");
 				if ($do_exchange_variance) {
-					GL_Bank::add_exchange_variation($trans_type, $trans_no, $date_, $is_bank_to, $gl_item->code_id,
+					static::add_exchange_variation($trans_type, $trans_no, $date_, $is_bank_to, $gl_item->code_id,
 						$currency, $person_type_id, $person_id);
 				}
 			}
@@ -202,7 +191,7 @@ class GL_Bank {
 		GL_Trans::add($trans_type, $trans_no, $date_, $bank_gl_account, 0, 0, $memo_,
 			-$total, null, $person_type_id, $person_id);
 		if ($do_exchange_variance) {
-			GL_Bank::add_exchange_variation($trans_type, $trans_no, $date_, $from_account, $bank_gl_account,
+			static::add_exchange_variation($trans_type, $trans_no, $date_, $from_account, $bank_gl_account,
 				$currency, $person_type_id, $person_id);
 		}
 		DB_Comments::add($trans_type, $trans_no, $date_, $memo_);

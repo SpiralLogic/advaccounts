@@ -1,6 +1,6 @@
 <?php
 	/**********************************************************************
-	Copyright (C) FrontAccounting, LLC.
+	Copyright (C) Advanced Group PTY LTD
 	Released under the terms of the GNU General Public License, GPL,
 	as published by the Free Software Foundation, either version 3
 	of the License, or (at your option) any later version.
@@ -36,7 +36,7 @@
 		Display::note(ui_view::get_trans_view_str($trans_type, $order_no, _("&View this order"), false, 'button'), 0, 1);
 		Display::note(Reporting::print_doc_link($order_no, _("&Print This Order"), true, $trans_type), 0, 1);
 		submenu_button(_("&Edit This Order"), "/purchases/po_entry_items.php?ModifyOrderNumber=$order_no");
-		submenu_email(_("Email This Order"), $trans_type, $order_no, null, $supplier->getEmailAddresses(), 1);
+		Reporting::email_link($order_no, _("Email This Order"), true, $trans_type, 'EmailLink', null, $supplier->getEmailAddresses(), 1);
 		hyperlink_button("/purchases/po_receive_items.php", _("&Receive Items on this PO"), "PONumber=$order_no");
 		hyperlink_button($_SERVER['PHP_SELF'], _("&New Purchase Order"), "NewOrder=yes");
 		hyperlink_no_params("/purchases/inquiry/po_search.php", _("&Outstanding Purchase Orders"), true, true);

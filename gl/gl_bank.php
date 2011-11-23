@@ -1,6 +1,6 @@
 <?php
 	/**********************************************************************
-	Copyright (C) FrontAccounting, LLC.
+	Copyright (C) Advanced Group PTY LTD
 	Released under the terms of the GNU General Public License, GPL,
 	as published by the Free Software Foundation, either version 3
 	of the License, or (at your option) any later version.
@@ -209,7 +209,7 @@
 		line_start_focus();
 	}
 	if (isset($_POST['go'])) {
-		Display::quick_entries(
+		GL_QuickEntry::show_menu(
 			$_SESSION['pay_items'], $_POST['person_id'], input_num('totamount'),
 			$_SESSION['pay_items']->trans_type == ST_BANKPAYMENT ? QE_PAYMENT : QE_DEPOSIT
 		);

@@ -1,6 +1,6 @@
 <?php
 	/**********************************************************************
-	Copyright (C) FrontAccounting, LLC.
+	Copyright (C) Advanced Group PTY LTD
 	Released under the terms of the GNU General Public License, GPL,
 	as published by the Free Software Foundation, either version 3
 	of the License, or (at your option) any later version.
@@ -106,7 +106,7 @@
 	$customer = new Contacts_Customer($myrow['debtor_no']);
 	$emails = $customer->getEmailAddresses();
 	submenu_print(_("&Print This Invoice"), ST_SALESINVOICE, $_GET['trans_no'], 'prtopt');
-	submenu_email(_("Email This Invoice"), ST_SALESINVOICE, $_GET['trans_no'], null, $emails, 1);
+	Reporting::email_link($_GET['trans_no'], _("Email This Invoice"), true, ST_SALESINVOICE, 'EmailLink',null, $emails, 1);
 	end_page(true);
 
 ?>

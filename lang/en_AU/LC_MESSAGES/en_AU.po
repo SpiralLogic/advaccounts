@@ -18,12 +18,12 @@ msgstr ""
 "X-Poedit-Basepath: c:\\Apache2\\htdocs\\account226\n"
 "X-Poedit-SearchPath-0: c:\\Apache2\\htdocs\\account226\n"
 
-#: c:\Apache2\htdocs\account226/frontaccounting.php:80
-#: c:\Apache2\htdocs\account226/frontaccounting.php:81
+#: c:\Apache2\htdocs\account226/advaccountinghp:80
+#: c:\Apache2\htdocs\account226/advaccountinghp:81
 msgid "Main  Menu"
 msgstr ""
 
-#: c:\Apache2\htdocs\account226/frontaccounting.php:82
+#: c:\Apache2\htdocs\account226/advaccounting.php2
 #: c:\Apache2\htdocs\account226/access/logout.php:17
 msgid "Logout"
 msgstr ""

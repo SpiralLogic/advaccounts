@@ -1,6 +1,6 @@
 <?php
 	/**********************************************************************
-	Copyright (C) FrontAccounting, LLC.
+	Copyright (C) Advanced Group PTY LTD
 	Released under the terms of the GNU General Public License, GPL,
 	as published by the Free Software Foundation, either version 3
 	of the License, or (at your option) any later version.
@@ -228,10 +228,7 @@
 		Display::note(Reporting::print_doc_link($number, $title, true, $type, false, 'button printlink', $id, $email, $extra), 0, 1);
 	}
 
-	function submenu_email($title, $type, $number, $id = null, $emails, $extra = 0, $return = false)
-	{
-		return Reporting::email_link($number, $title, true, $type, 'EmailLink', $id, $emails, $extra, $return);
-	}
+
 
 	//-----------------------------------------------------------------------------------
 	function hyperlink_params($target, $label, $link_params = '', $center = true, $params = '')

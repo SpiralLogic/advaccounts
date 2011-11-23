@@ -42,21 +42,6 @@
 			}
 		}
 
-		//	Removing magic quotes from nested arrays/variables
-		//============================================================================
-		static function strip_quotes($data)
-		{
-			if (get_magic_quotes_gpc()) {
-				if (is_array($data)) {
-					foreach ($data as $k => $v) {
-						$data[$k] = self::strip_quotes($data[$k]);
-					}
-				} else {
-					return stripslashes($data);
-				}
-			}
-			return $data;
-		}
 
 		public static function get_role($id)
 		{

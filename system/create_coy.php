@@ -1,6 +1,6 @@
 <?php
 	/**********************************************************************
-	Copyright (C) FrontAccounting, LLC.
+	Copyright (C) Advanced Group PTY LTD
 	Released under the terms of the GNU General Public License, GPL,
 	as published by the Free Software Foundation, either version 3
 	of the License, or (at your option) any later version.
@@ -113,7 +113,7 @@
 			create_comp_dirs(COMPANY_PATH . "/$id", $comp_subdirs = Config::get('company_subdirs'));
 		}
 		$exts = DB_Company::get_company_extensions();
-		frontaccounting::write_extensions($exts, $id);
+		advaccounting::write_extensions($exts, $id);
 		Errors::notice($new ? _('New company has been created.') : _('Company has been updated.'));
 		return true;
 	}

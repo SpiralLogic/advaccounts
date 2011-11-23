@@ -34,8 +34,8 @@
 		// $old_style_help = 1; // this setting is depreciated and subject to removal in next FA versions
 		// 	locally installed wiki module
 		// Config::get('help_baseurl') = $path_to_root.'/modules/wiki/index.php?n='._('Help').'.';
-		// 	context help feed from frontaccounting.net
-		// Config::get('help_baseurl')  = 'http://frontaccounting.com/fawiki/index.php?n=Help.';
+		// 	context help feed from advaccounting.net
+		// Config::get('help_baseurl')  = 'http://advaccounting.com/fawiki/index.php?n=Help.';
 		// 	not used
 		'help_baseurl'										 => null,
 		/* per user data/cache directory */

@@ -40,7 +40,10 @@
 				$this->select = array_merge($this->select, $columns);
 				return $this;
 			}
-
+/***
+ * @param null $tables
+ * @return DB_Query_Select
+ */
 		public function from($tables = null)
 			{
 				$tables = func_get_args();
