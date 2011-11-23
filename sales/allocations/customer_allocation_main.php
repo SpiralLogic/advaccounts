@@ -11,7 +11,6 @@
 	 ***********************************************************************/
 	$page_security = 'SA_SALESALLOC';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	include_once(APP_PATH . "sales/includes/sales_ui.php");
 	JS::open_window(900, 500);
 	Page::start(_($help_context = "Customer Allocations"));
 	//--------------------------------------------------------------------------------
@@ -44,30 +43,31 @@
 	}
 	//--------------------------------------------------------------------------------
 	function systype_name($dummy, $type)
-	{
-		global $systypes_array;
-		return $systypes_array[$type];
-	}
+		{
+			global $systypes_array;
+			return $systypes_array[$type];
+		}
 
 	function trans_view($trans)
-	{
-		return ui_view::get_trans_view_str($trans["type"], $trans["trans_no"]);
-	}
+		{
+			return ui_view::get_trans_view_str($trans["type"], $trans["trans_no"]);
+		}
 
 	function alloc_link($row)
-	{
-		return pager_link(_("Allocate"), "/sales/allocations/customer_allocate.php?trans_no=" . $row["trans_no"] . "&trans_type=" . $row["type"], ICON_MONEY);
-	}
+		{
+			return pager_link(_("Allocate"),
+			 "/sales/allocations/customer_allocate.php?trans_no=" . $row["trans_no"] . "&trans_type=" . $row["type"], ICON_MONEY);
+		}
 
 	function amount_left($row)
-	{
-		return Num::price_format($row["Total"] - $row["alloc"]);
-	}
+		{
+			return Num::price_format($row["Total"] - $row["alloc"]);
+		}
 
 	function check_settled($row)
-	{
-		return $row['settled'] == 1;
-	}
+		{
+			return $row['settled'] == 1;
+		}
 
 	$sql = Sales_Allocation::get_allocatable_sql($customer_id, $settled);
 	$cols = array(

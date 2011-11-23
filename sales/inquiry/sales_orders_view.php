@@ -11,7 +11,6 @@
 				See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 				* ********************************************************************* */
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	include_once(APP_PATH . "sales/includes/sales_ui.php");
 	$page_security = 'SA_SALESTRANSVIEW';
 	Security::set_page(Input::post('order_view_mode'), array(
 																													'OutstandingOnly' => 'SA_SALESDELIVERY', 'InvoiceTemplates' => 'SA_SALESINVOICE'),

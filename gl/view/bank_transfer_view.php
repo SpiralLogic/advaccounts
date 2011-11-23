@@ -71,7 +71,7 @@
 	);
 	label_cells(_("Reference"), $from_trans['ref'], "class='tableheader2'");
 	end_row();
-	Display::comments_row(ST_BANKTRANSFER, $trans_no);
+	DB_Comments::display_row(ST_BANKTRANSFER, $trans_no);
 	end_table(1);
 	Display::is_voided(ST_BANKTRANSFER, $trans_no, _("This transfer has been voided."));
 	end_page(true);

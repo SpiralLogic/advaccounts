@@ -88,7 +88,7 @@
 		_("Credit"),
 		_("Cash")
 	);
-	//include_once(APP_PATH . "dimensions/includes/dimensions_db.php");
+	//
 	//----------------------------------------------------------------------------------
 	//	Payment types
 	//
@@ -176,15 +176,9 @@
 	define('ALL_TEXT', '');
 	define('ALL_NUMERIC', -1);
 	//----------------------------------------------------------------------------------
-	define('CT_CUSTOMER','c');
-	define('CT_SUPPLIER','s');
-
-
-
+	define('CT_CUSTOMER', 'c');
+	define('CT_SUPPLIER', 's');
 	//----------------------------------------------------------------------------------
-
-
-
 	// Types of stock items
 	define('STOCK_MANUFACTURE', 'M');
 	define('STOCK_PURCHASED', 'B');

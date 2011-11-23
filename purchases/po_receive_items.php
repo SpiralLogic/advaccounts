@@ -11,7 +11,6 @@
 	 ***********************************************************************/
 	$page_security = 'SA_GRN';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	include_once(APP_PATH . "purchases/includes/purchasing_ui.php");
 	JS::open_window(900, 500);
 	Page::start(_($help_context = "Receive Purchase Order Items"));
 	//---------------------------------------------------------------------------------------------------------------
@@ -221,7 +220,7 @@
 	}
 	//--------------------------------------------------------------------------------------------------
 	start_form();
-	display_grn_summary($_SESSION['PO'], true);
+	Purch_GRN::display($_SESSION['PO'], true);
 	Display::heading(_("Items to Receive"));
 	display_po_receive_items();
 	hyperlink_params("/purchases/po_entry_items.php", _("Edit This Purchase Order"),

@@ -12,18 +12,17 @@
 	$page_security = 'SA_CRSTATUS';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "Credit Status"));
-	include(APP_PATH . "sales/includes/db/creditstatus.php");
 	Page::simple_mode(true);
 	//-----------------------------------------------------------------------------------
 	function can_process()
-	{
-		if (strlen($_POST['reason_description']) == 0) {
-			Errors::error(_("The credit status description cannot be empty."));
-			JS::set_focus('reason_description');
-			return false;
+		{
+			if (strlen($_POST['reason_description']) == 0) {
+				Errors::error(_("The credit status description cannot be empty."));
+				JS::set_focus('reason_description');
+				return false;
+			}
+			return true;
 		}
-		return true;
-	}
 
 	//-----------------------------------------------------------------------------------
 	if ($Mode == 'ADD_ITEM' && can_process()) {
@@ -39,17 +38,17 @@
 	}
 	//-----------------------------------------------------------------------------------
 	function can_delete($selected_id)
-	{
-		$sql = "SELECT COUNT(*) FROM debtors_master
+		{
+			$sql = "SELECT COUNT(*) FROM debtors_master
 		WHERE credit_status=" . DB::escape($selected_id);
-		$result = DB::query($sql, "could not query customers");
-		$myrow = DB::fetch_row($result);
-		if ($myrow[0] > 0) {
-			Errors::error(_("Cannot delete this credit status because customer accounts have been created referring to it."));
-			return false;
+			$result = DB::query($sql, "could not query customers");
+			$myrow = DB::fetch_row($result);
+			if ($myrow[0] > 0) {
+				Errors::error(_("Cannot delete this credit status because customer accounts have been created referring to it."));
+				return false;
+			}
+			return true;
 		}
-		return true;
-	}
 
 	//-----------------------------------------------------------------------------------
 	if ($Mode == 'Delete') {

@@ -12,23 +12,22 @@
 	$page_security = 'SA_POSSETUP';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "POS settings"));
-	include_once(APP_PATH . "sales/includes/db/points.php");
 	Page::simple_mode(true);
 	//----------------------------------------------------------------------------------------------------
 	function can_process()
-	{
-		if (strlen($_POST['name']) == 0) {
-			Errors::error(_("The POS name cannot be empty."));
-			JS::set_focus('pos_name');
-			return false;
+		{
+			if (strlen($_POST['name']) == 0) {
+				Errors::error(_("The POS name cannot be empty."));
+				JS::set_focus('pos_name');
+				return false;
+			}
+			if (!check_value('cash') && !check_value('credit')) {
+				Errors::error(_("You must allow cash or credit sale."));
+				JS::set_focus('credit');
+				return false;
+			}
+			return true;
 		}
-		if (!check_value('cash') && !check_value('credit')) {
-			Errors::error(_("You must allow cash or credit sale."));
-			JS::set_focus('credit');
-			return false;
-		}
-		return true;
-	}
 
 	//----------------------------------------------------------------------------------------------------
 	if ($Mode == 'ADD_ITEM' && can_process()) {
@@ -38,7 +37,8 @@
 	}
 	//----------------------------------------------------------------------------------------------------
 	if ($Mode == 'UPDATE_ITEM' && can_process()) {
-		Sales_Point::update($selected_id, $_POST['name'], $_POST['location'], $_POST['account'], check_value('cash'), check_value('credit'));
+		Sales_Point::update($selected_id, $_POST['name'], $_POST['location'], $_POST['account'], check_value('cash'),
+			check_value('credit'));
 		Errors::notice(_('Selected point of sale has been updated'));
 		$Mode = 'RESET';
 	}

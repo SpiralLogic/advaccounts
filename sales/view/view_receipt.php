@@ -46,11 +46,11 @@
 	label_cells(_("Reference"), $receipt['reference'], 'class="label" colspan=1');
 	end_form();
 	end_row();
-	Display::comments_row($trans_type, $trans_id);
+	DB_Comments::display_row($trans_type, $trans_id);
 	end_table(1);
 	$voided = Display::is_voided($trans_type, $trans_id, _("This customer payment has been voided."));
 	if (!$voided && ($trans_type != ST_CUSTREFUND)) {
-		Display::allocations_from(PT_CUSTOMER, $receipt['debtor_no'], ST_CUSTPAYMENT, $trans_id, $receipt['Total']);
+		GL_Allocation::display(PT_CUSTOMER, $receipt['debtor_no'], ST_CUSTPAYMENT, $trans_id, $receipt['Total']);
 	}
 	if (Input::get('popup')) {
 		return;

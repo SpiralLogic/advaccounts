@@ -48,7 +48,7 @@
 	label_cells(_("Sales Type"), $myrow["sales_type"], "class='tableheader2'");
 	label_cells(_("Shipping Company"), $myrow["shipper_name"], "class='tableheader2'");
 	end_row();
-	Display::comments_row(ST_CUSTCREDIT, $trans_id);
+	DB_Comments::display_row(ST_CUSTCREDIT, $trans_id);
 	end_table();
 	echo "</td></tr>";
 	end_table(1); // outer table
@@ -95,13 +95,13 @@
 	}
 	label_row(_("Shipping"), $display_freight, "colspan=6 align=right", "nowrap align=right");
 	$tax_items = GL_Trans::get_tax_details(ST_CUSTCREDIT, $trans_id);
-	Display::customer_trans_tax_details($tax_items, 6);
+	Sales_Trans::display_tax_details($tax_items, 6);
 	label_row("<font color=red>" . _("TOTAL CREDIT") . "</font", "<font color=red>$display_total</font>", "colspan=6 align=right",
 		"nowrap align=right");
 	end_table(1);
 	$voided = Display::is_voided(ST_CUSTCREDIT, $trans_id, _("This credit note has been voided."));
 	if (!$voided) {
-		Display::allocations_from(PT_CUSTOMER, $myrow['debtor_no'], ST_CUSTCREDIT, $trans_id, $credit_total);
+		GL_Allocation::display(PT_CUSTOMER, $myrow['debtor_no'], ST_CUSTCREDIT, $trans_id, $credit_total);
 	}
 	if (Input::get('popup')) {
 		return;

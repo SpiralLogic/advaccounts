@@ -19,8 +19,6 @@
 	//
 	$page_security = 'SA_SALESORDER';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	include_once(APP_PATH . "sales/includes/sales_ui.php");
-	include_once(APP_PATH . "sales/includes/ui/sales_order_ui.php");
 	Security::set_page((!Input::session('Items') ? : $_SESSION['Items']->trans_type), array(
 																																												 ST_SALESORDER => 'SA_SALESORDER', ST_SALESQUOTE => 'SA_SALESQUOTE', ST_CUSTDELIVERY => 'SA_SALESDELIVERY', ST_SALESINVOICE => 'SA_SALESINVOICE'),
 		array(
@@ -107,7 +105,7 @@
 		}
 		Page::footer_exit();
 	} else {
-		check_edit_conflicts();
+		Sales_Order::check_edit_conflicts();
 	}
 	function page_complete($order_no, $trans_type, $trans_name = 'Transaction', $edit = false, $update = false)
 		{
@@ -121,11 +119,12 @@
 					"ModifyQuotationNumber") . "=$order_no");
 			}
 			submenu_print(_("&Print This " . $trans_name), $trans_type, $order_no, 'prtopt');
-			Reporting::email_link($order_no, _("Email This $trans_name"), true, $trans_type, 'EmailLink',null, $emails, 1);
+			Reporting::email_link($order_no, _("Email This $trans_name"), true, $trans_type, 'EmailLink', null, $emails, 1);
 			if ($trans_type == ST_SALESORDER || $trans_type == ST_SALESQUOTE) {
 				submenu_print(_("Print Proforma Invoice"), ($trans_type == ST_SALESORDER ? ST_PROFORMA : ST_PROFORMAQ), $order_no,
 					'prtopt');
-				Reporting::email_link($order_no,_("Email This Proforma Invoice"), true,($trans_type == ST_SALESORDER ? ST_PROFORMA : ST_PROFORMAQ),'EmailLink', null, $emails, 1);
+				Reporting::email_link($order_no, _("Email This Proforma Invoice"), true,
+					($trans_type == ST_SALESORDER ? ST_PROFORMA : ST_PROFORMAQ), 'EmailLink', null, $emails, 1);
 			}
 			if ($trans_type == ST_SALESORDER) {
 				submenu_option(_("Make &Delivery Against This Order"), "/sales/customer_delivery.php?OrderNumber=$order_no");
@@ -346,7 +345,7 @@
 		$trans_type = $_SESSION['Items']->trans_type;
 		Dates::new_doc_date($_SESSION['Items']->document_date);
 		$_SESSION['wa_global_customer_id'] = $_SESSION['Items']->customer_id;
-		processing_end();
+		Sales_Order::finish();
 		$_SESSION['Jobsboard'] = new Sales_Order($trans_type, $_SESSION['order_no']);
 		if ($modified) {
 			if ($trans_type == ST_SALESQUOTE) {
@@ -455,19 +454,19 @@
 						}
 					}
 				} else {
-					processing_end();
+					Sales_Order::finish();
 					meta_forward('/index.php', 'application=orders');
 				}
 			}
 			$Ajax->activate('_page_body');
-			processing_end();
+			Sales_Order::finish();
 			Page::footer_exit();
 		}
 
 	//------------------------------------------------------- -------------------------
 	function create_cart($type, $trans_no)
 		{
-			processing_start();
+			Sales_Order::start();
 			$doc_type = $type;
 			if (isset($_GET['NewQuoteToSalesOrder'])) {
 				$trans_no = $_GET['NewQuoteToSalesOrder'];
@@ -579,14 +578,14 @@
 	start_form();
 	hidden('cart_id');
 	$customer_error = (!Input::session('Items')) ? _("There is no order currently being edited") :
-	 display_order_header($_SESSION['Items'], ($_SESSION['Items']->any_already_delivered() == 0), $idate);
+	 Sales_Order::header($_SESSION['Items'], ($_SESSION['Items']->any_already_delivered() == 0), $idate);
 	if ($customer_error == "") {
 		start_table(Config::get('tables_style'), 10);
 		echo "<tr><td>";
-		display_order_summary($orderitems, $_SESSION['Items'], true);
+		display_summary($orderitems, $_SESSION['Items'], true);
 		echo "</td></tr>";
 		echo "<tr><td>";
-		display_delivery_details($_SESSION['Items']);
+		Sales_Order::display_delivery_details($_SESSION['Items']);
 		echo "</td></tr>";
 		end_table(1);
 		if ($_SESSION['Items']->trans_no == 0) {

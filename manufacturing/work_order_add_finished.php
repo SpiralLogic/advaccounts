@@ -11,7 +11,6 @@
 	 ***********************************************************************/
 	$page_security = 'SA_MANUFRECEIVE';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	include_once(APP_PATH . "manufacturing/includes/manufacturing_ui.php");
 	JS::open_window(900, 500);
 	Page::start(_($help_context = "Produce or Unassemble Finished Items From Work Order"));
 	if (isset($_GET['trans_no']) && $_GET['trans_no'] != "") {
@@ -118,7 +117,7 @@
 		meta_forward($_SERVER['PHP_SELF'], "AddedID=" . $_POST['selected_id'] . "&date=" . $_POST['date_']);
 	}
 	//-------------------------------------------------------------------------------------
-	display_wo_details($_POST['selected_id']);
+	WO_Cost::display($_POST['selected_id']);
 	//-------------------------------------------------------------------------------------
 	start_form();
 	hidden('selected_id', $_POST['selected_id']);

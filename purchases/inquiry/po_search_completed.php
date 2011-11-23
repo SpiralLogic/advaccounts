@@ -11,7 +11,6 @@
 	 ***********************************************************************/
 	$page_security = 'SA_SUPPTRANSVIEW';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	include(APP_PATH . "purchases/includes/purchasing_ui.php");
 	JS::open_window(900, 500);
 	Page::start(_($help_context = "Search Purchase Orders"), Input::request('frame'));
 	if (isset($_GET['order_number'])) {
@@ -65,36 +64,38 @@
 	}
 	//---------------------------------------------------------------------------------------------
 	function trans_view($trans)
-	{
-		return ui_view::get_trans_view_str(ST_PURCHORDER, $trans["order_no"]);
-	}
+		{
+			return ui_view::get_trans_view_str(ST_PURCHORDER, $trans["order_no"]);
+		}
 
 	function edit_link($row)
-	{
-		return pager_link(_("Edit"), "/purchases/po_entry_items.php?" . SID . "ModifyOrderNumber=" . $row["order_no"], ICON_EDIT);
-	}
+		{
+			return pager_link(_("Edit"), "/purchases/po_entry_items.php?" . SID . "ModifyOrderNumber=" . $row["order_no"], ICON_EDIT);
+		}
 
 	function prt_link($row)
-	{
-		return Reporting::print_doc_link($row['order_no'], _("Print"), true, 18, ICON_PRINT, 'button printlink');
-	}
-	function email_link($row)
-	{
-		HTML::setReturn(true);
-		UI::button(false, 'Email', array('class' => 'button email-button', 'data-emailid' => $row['id'] . '-' . ST_PURCHORDER . '-' . $row['order_no']));
+		{
+			return Reporting::print_doc_link($row['order_no'], _("Print"), true, 18, ICON_PRINT, 'button printlink');
+		}
 
-		return HTML::setReturn(false);
-	}
+	function email_link($row)
+		{
+			HTML::setReturn(true);
+			UI::button(false, 'Email',
+				array('class' => 'button email-button', 'data-emailid' => $row['id'] . '-' . ST_PURCHORDER . '-' . $row['order_no']));
+			return HTML::setReturn(false);
+		}
 
 	function receive_link($row)
-	{
-		if ($row['Received'] > 0) {
-			return pager_link(_("Receive"), "/purchases/po_receive_items.php?PONumber=" . $row["order_no"], ICON_RECEIVE);
-		} elseif ($row['Invoiced'] > 0) {
-			return pager_link(_("Invoice"), "/purchases/supplier_invoice.php?New=1&SuppID=" . $row['supplier_id'] . "&PONumber=" . $row["order_no"], ICON_RECEIVE);
+		{
+			if ($row['Received'] > 0) {
+				return pager_link(_("Receive"), "/purchases/po_receive_items.php?PONumber=" . $row["order_no"], ICON_RECEIVE);
+			} elseif ($row['Invoiced'] > 0) {
+				return pager_link(_("Invoice"),
+				 "/purchases/supplier_invoice.php?New=1&SuppID=" . $row['supplier_id'] . "&PONumber=" . $row["order_no"], ICON_RECEIVE);
+			}
+			//advaccounts/purchases/supplier_invoice.php?New=1
 		}
-		//advaccounts/purchases/supplier_invoice.php?New=1
-	}
 
 	//---------------------------------------------------------------------------------------------
 	if (AJAX_REFERRER && !empty($_POST['ajaxsearch'])) {
@@ -156,10 +157,10 @@
 		_("Order Date") => array('name' => 'ord_date', 'type' => 'date', 'ord' => 'desc'),
 		_("Currency") => array('align' => 'center'),
 		_("Order Total") => 'amount',
-		array( 'insert' => true, 'fun' => 'edit_link'),
-		array( 'insert' => true, 'fun' => 'email_link'),
-		array( 'insert' => true, 'fun' => 'prt_link'),
-		array( 'insert' => true, 'fun' => 'receive_link'));
+		array('insert' => true, 'fun' => 'edit_link'),
+		array('insert' => true, 'fun' => 'email_link'),
+		array('insert' => true, 'fun' => 'prt_link'),
+		array('insert' => true, 'fun' => 'receive_link'));
 	if (get_post('StockLocation') != ALL_TEXT) {
 		$cols[_("Location")] = 'skip';
 	}
@@ -169,7 +170,6 @@
 	display_db_pager($table);
 	Contacts_Supplier::addInfoDialog('.pagerclick');
 	UI::emailDialogue('s');
-
 	end_form();
 	end_page();
 ?>

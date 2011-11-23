@@ -15,7 +15,7 @@
 	if (isset($_GET["trans_no"])) {
 		$trans_no = $_GET["trans_no"];
 	}
-	$transfer_items = Inv_Transfer::get( $trans_no);
+	$transfer_items = Inv_Transfer::get($trans_no);
 	$from_trans = $transfer_items[0];
 	$to_trans = $transfer_items[1];
 	Display::heading($systypes_array[ST_LOCTRANSFER] . " #$trans_no");
@@ -28,11 +28,11 @@
 	end_row();
 	start_row();
 	label_cells(_("Reference"), $from_trans['reference'], "class='tableheader2'");
-	$adjustment_type = Inv_Movement::get_type( $from_trans['person_id']);
+	$adjustment_type = Inv_Movement::get_type($from_trans['person_id']);
 	label_cells(_("Adjustment Type"), $adjustment_type['name'], "class='tableheader2'");
 	label_cells(_("Date"), Dates::sql2date($from_trans['tran_date']), "class='tableheader2'");
 	end_row();
-	Display::comments_row(ST_LOCTRANSFER, $trans_no);
+	DB_Comments::display_row(ST_LOCTRANSFER, $trans_no);
 	end_table(1);
 	echo "<br>";
 	start_table(Config::get('tables_style') . "  width=90%");

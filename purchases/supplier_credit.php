@@ -11,7 +11,6 @@
 	 ***********************************************************************/
 	$page_security = 'SA_SUPPLIERCREDIT';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	include_once(APP_PATH . "purchases/includes/purchasing_ui.php");
 	JS::open_window(900, 500);
 	Page::start(_($help_context = "Supplier Credit Note"));
 	//----------------------------------------------------------------------------------------
@@ -36,17 +35,17 @@
 		}
 	}
 	function clear_fields()
-	{
-		$Ajax = Ajax::instance();
-		unset($_POST['gl_code']);
-		unset($_POST['dimension_id']);
-		unset($_POST['dimension2_id']);
-		unset($_POST['amount']);
-		unset($_POST['memo_']);
-		unset($_POST['AddGLCodeToTrans']);
-		$Ajax->activate('gl_items');
-		JS::set_focus('gl_code');
-	}
+		{
+			$Ajax = Ajax::instance();
+			unset($_POST['gl_code']);
+			unset($_POST['dimension_id']);
+			unset($_POST['dimension2_id']);
+			unset($_POST['amount']);
+			unset($_POST['memo_']);
+			unset($_POST['AddGLCodeToTrans']);
+			$Ajax->activate('gl_items');
+			JS::set_focus('gl_code');
+		}
 
 	//------------------------------------------------------------------------------------------------
 	//	GL postings are often entered in the same form to two accounts
@@ -79,100 +78,104 @@
 			$input_error = true;
 		}
 		if ($input_error == false) {
-			Purch_Trans::instance()->add_gl_codes_to_trans($_POST['gl_code'], $gl_act_name, $_POST['dimension_id'], $_POST['dimension2_id'], input_num('amount'), $_POST['memo_']);
+			Purch_Trans::instance()
+			 ->add_gl_codes_to_trans($_POST['gl_code'], $gl_act_name, $_POST['dimension_id'], $_POST['dimension2_id'],
+				input_num('amount'), $_POST['memo_']);
 			JS::set_focus('gl_code');
 		}
 	}
 	//---------------------------------------------------------------------------------------------------
 	function check_data()
-	{
-		global $total_grn_value, $total_gl_value;
-		if (!Purch_Trans::instance()->is_valid_trans_to_post()) {
-			Errors::error(_("The credit note cannot be processed because the there are no items or values on the invoice.  Credit notes are expected to have a charge."));
-			JS::set_focus('');
-			return false;
+		{
+			global $total_grn_value, $total_gl_value;
+			if (!Purch_Trans::instance()->is_valid_trans_to_post()) {
+				Errors::error(_("The credit note cannot be processed because the there are no items or values on the invoice.  Credit notes are expected to have a charge."));
+				JS::set_focus('');
+				return false;
+			}
+			if (!Refs::is_valid(Purch_Trans::instance()->reference)) {
+				Errors::error(_("You must enter an credit note reference."));
+				JS::set_focus('reference');
+				return false;
+			}
+			if (!is_new_reference(Purch_Trans::instance()->reference, ST_SUPPCREDIT)) {
+				Errors::error(_("The entered reference is already in use."));
+				JS::set_focus('reference');
+				return false;
+			}
+			if (!Refs::is_valid(Purch_Trans::instance()->supp_reference)) {
+				Errors::error(_("You must enter a supplier's credit note reference."));
+				JS::set_focus('supp_reference');
+				return false;
+			}
+			if (!Dates::is_date(Purch_Trans::instance()->tran_date)) {
+				Errors::error(_("The credit note as entered cannot be processed because the date entered is not valid."));
+				JS::set_focus('tran_date');
+				return false;
+			} elseif (!Dates::is_date_in_fiscalyear(Purch_Trans::instance()->tran_date)) {
+				Errors::error(_("The entered date is not in fiscal year."));
+				JS::set_focus('tran_date');
+				return false;
+			}
+			if (!Dates::is_date(Purch_Trans::instance()->due_date)) {
+				Errors::error(_("The invoice as entered cannot be processed because the due date is in an incorrect format."));
+				JS::set_focus('due_date');
+				return false;
+			}
+			if (Purch_Trans::instance()->ov_amount < ($total_gl_value + $total_grn_value)) {
+				Errors::error(_("The credit note total as entered is less than the sum of the the general ledger entires (if any) and the charges for goods received. There must be a mistake somewhere, the credit note as entered will not be processed."));
+				return false;
+			}
+			return true;
 		}
-		if (!Refs::is_valid(Purch_Trans::instance()->reference)) {
-			Errors::error(_("You must enter an credit note reference."));
-			JS::set_focus('reference');
-			return false;
-		}
-		if (!is_new_reference(Purch_Trans::instance()->reference, ST_SUPPCREDIT)) {
-			Errors::error(_("The entered reference is already in use."));
-			JS::set_focus('reference');
-			return false;
-		}
-		if (!Refs::is_valid(Purch_Trans::instance()->supp_reference)) {
-			Errors::error(_("You must enter a supplier's credit note reference."));
-			JS::set_focus('supp_reference');
-			return false;
-		}
-		if (!Dates::is_date(Purch_Trans::instance()->tran_date)) {
-			Errors::error(_("The credit note as entered cannot be processed because the date entered is not valid."));
-			JS::set_focus('tran_date');
-			return false;
-		} elseif (!Dates::is_date_in_fiscalyear(Purch_Trans::instance()->tran_date)) {
-			Errors::error(_("The entered date is not in fiscal year."));
-			JS::set_focus('tran_date');
-			return false;
-		}
-		if (!Dates::is_date(Purch_Trans::instance()->due_date)) {
-			Errors::error(_("The invoice as entered cannot be processed because the due date is in an incorrect format."));
-			JS::set_focus('due_date');
-			return false;
-		}
-		if (Purch_Trans::instance()->ov_amount < ($total_gl_value + $total_grn_value)) {
-			Errors::error(_("The credit note total as entered is less than the sum of the the general ledger entires (if any) and the charges for goods received. There must be a mistake somewhere, the credit note as entered will not be processed."));
-			return false;
-		}
-		return true;
-	}
 
 	//---------------------------------------------------------------------------------------------------
 	function handle_commit_credit_note()
-	{
-		copy_to_trans(Purch_Trans::instance());
-		if (!check_data()) {
-			return;
+		{
+			copy_to_trans(Purch_Trans::instance());
+			if (!check_data()) {
+				return;
+			}
+			if (isset($_POST['invoice_no'])) {
+				$invoice_no = Purch_Invoice::add(Purch_Trans::instance(), $_POST['invoice_no']);
+			} else {
+				$invoice_no = Purch_Invoice::add(Purch_Trans::instance());
+			}
+			Purch_Trans::instance()->clear_items();
+			Purch_Trans::killInstance();
+			meta_forward($_SERVER['PHP_SELF'], "AddedID=$invoice_no");
 		}
-		if (isset($_POST['invoice_no'])) {
-			$invoice_no = Purch_Invoice::add(Purch_Trans::instance(), $_POST['invoice_no']);
-		} else {
-			$invoice_no = Purch_Invoice::add(Purch_Trans::instance());
-		}
-		Purch_Trans::instance()->clear_items();
-		Purch_Trans::killInstance();
-		meta_forward($_SERVER['PHP_SELF'], "AddedID=$invoice_no");
-	}
 
 	//--------------------------------------------------------------------------------------------------
 	if (isset($_POST['PostCreditNote'])) {
 		handle_commit_credit_note();
 	}
 	function check_item_data($n)
-	{
-		if (!Validation::is_num('This_QuantityCredited' . $n, 0)) {
-			Errors::error(_("The quantity to credit must be numeric and greater than zero."));
-			JS::set_focus('This_QuantityCredited' . $n);
-			return false;
+		{
+			if (!Validation::is_num('This_QuantityCredited' . $n, 0)) {
+				Errors::error(_("The quantity to credit must be numeric and greater than zero."));
+				JS::set_focus('This_QuantityCredited' . $n);
+				return false;
+			}
+			if (!Validation::is_num('ChgPrice' . $n, 0)) {
+				Errors::error(_("The price is either not numeric or negative."));
+				JS::set_focus('ChgPrice' . $n);
+				return false;
+			}
+			return true;
 		}
-		if (!Validation::is_num('ChgPrice' . $n, 0)) {
-			Errors::error(_("The price is either not numeric or negative."));
-			JS::set_focus('ChgPrice' . $n);
-			return false;
-		}
-		return true;
-	}
 
 	function commit_item_data($n)
-	{
-		if (check_item_data($n)) {
-			$complete = False;
-			Purch_Trans::instance()
-			 ->add_grn_to_trans($n, $_POST['po_detail_item' . $n], $_POST['item_code' . $n], $_POST['description' . $n], $_POST['qty_recd' . $n], $_POST['prev_quantity_inv' . $n], input_num('This_QuantityCredited' . $n), $_POST['order_price' . $n], input_num('ChgPrice' . $n), $complete,
-													$_POST['std_cost_unit' . $n], "");
+		{
+			if (check_item_data($n)) {
+				$complete = False;
+				Purch_Trans::instance()
+				 ->add_grn_to_trans($n, $_POST['po_detail_item' . $n], $_POST['item_code' . $n], $_POST['description' . $n],
+					$_POST['qty_recd' . $n], $_POST['prev_quantity_inv' . $n], input_num('This_QuantityCredited' . $n),
+					$_POST['order_price' . $n], input_num('ChgPrice' . $n), $complete,
+					$_POST['std_cost_unit' . $n], "");
+			}
 		}
-	}
 
 	//-----------------------------------------------------------------------------------------
 	$id = find_submit('grn_item_id');
@@ -215,14 +218,14 @@
 	}
 	//--------------------------------------------------------------------------------------------------
 	start_form();
-	invoice_header(Purch_Trans::instance());
+	Purch_Invoice::header(Purch_Trans::instance());
 	if ($_POST['supplier_id'] == '') {
 		Errors::error('No supplier found for entered search text');
 	} else {
-		$total_grn_value = display_grn_items(Purch_Trans::instance(), 1);
-		$total_gl_value = display_gl_items(Purch_Trans::instance(), 1);
+		$total_grn_value = Purch_GRN::display_items(Purch_Trans::instance(), 1);
+		$total_gl_value = Purch_GLItem::display_items(Purch_Trans::instance(), 1);
 		div_start('inv_tot');
-		invoice_totals(Purch_Trans::instance());
+		Purch_Invoice::totals(Purch_Trans::instance());
 		div_end();
 	}
 	if ($id != -1) {

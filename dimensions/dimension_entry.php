@@ -11,7 +11,6 @@
 	 ***********************************************************************/
 	$page_security = 'SA_DIMENSION';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	include_once(APP_PATH . "dimensions/includes/dimensions_ui.php");
 	$js = "";
 	Page::start(_($help_context = "Dimension Entry"));
 	//---------------------------------------------------------------------------------------

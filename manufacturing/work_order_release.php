@@ -11,7 +11,6 @@
 	 ***********************************************************************/
 	$page_security = 'SA_MANUFRELEASE';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	include_once(APP_PATH . "manufacturing/includes/manufacturing_ui.php");
 	JS::open_window(800, 500);
 	Page::start(_($help_context = "Work Order Release to Manufacturing"));
 	if (isset($_GET["trans_no"])) {
@@ -24,20 +23,20 @@
 	}
 	//------------------------------------------------------------------------------------
 	function can_process($myrow)
-	{
-		if ($myrow['released']) {
-			Errors::error(_("This work order has already been released."));
-			JS::set_focus('released');
-			return false;
+		{
+			if ($myrow['released']) {
+				Errors::error(_("This work order has already been released."));
+				JS::set_focus('released');
+				return false;
+			}
+			// make sure item has components
+			if (!Manufacturing::has_bom($myrow['stock_id'])) {
+				Errors::error(_("This Work Order cannot be released. The selected item to manufacture does not have a bom."));
+				JS::set_focus('stock_id');
+				return false;
+			}
+			return true;
 		}
-		// make sure item has components
-		if (!Manufacturing::has_bom($myrow['stock_id'])) {
-			Errors::error(_("This Work Order cannot be released. The selected item to manufacture does not have a bom."));
-			JS::set_focus('stock_id');
-			return false;
-		}
-		return true;
-	}
 
 	//------------------------------------------------------------------------------------
 	if (isset($_POST['release'])) {

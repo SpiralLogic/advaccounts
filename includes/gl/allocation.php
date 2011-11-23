@@ -330,7 +330,7 @@
 
 		public static function create_miscorder(Contacts_Customer $customer, $branch_id, $date, $memo, $ref, $amount, $discount = 0)
 			{
-				processing_start();
+				Sales_Order::start();
 				$type = ST_SALESINVOICE;
 				$doc = new Sales_Order(ST_SALESINVOICE, 0);
 				$doc->trans_type = ST_SALESINVOICE;
@@ -347,9 +347,62 @@
 					Taxes::get_tax_free_price_for_item('MiscSale', $amount, 0, true, $doc->tax_group_array), $discount / 100, 1, 0,
 				 'Order: ' . $memo);
 				$doc->write(1);
-				processing_end();
+				Sales_Order::finish();
 				$_SESSION['alloc']->add_or_update_item(ST_SALESINVOICE, key($doc->trans_no), $doc->document_date, $doc->due_date, $amount,
 					0, $amount);
+			}
+
+		//--------------------------------------------------------------------------------------
+		static function display($alloc_result, $total)
+			{
+				global $systypes_array;
+				if (!$alloc_result || DB::num_rows($alloc_result) == 0) {
+					return;
+				}
+				Display::heading(_("Allocations"));
+				start_table(Config::get('tables_style') . "  width=90%");
+				$th = array(_("Type"), _("Number"), _("Date"), _("Total Amount"), _("Left to Allocate"), _("This Allocation"));
+				table_header($th);
+				$k = $total_allocated = 0;
+				while ($alloc_row = DB::fetch($alloc_result)) {
+					alt_table_row_color($k);
+					label_cell($systypes_array[$alloc_row['type']]);
+					label_cell(ui_view::get_trans_view_str($alloc_row['type'], $alloc_row['trans_no']));
+					label_cell(Dates::sql2date($alloc_row['tran_date']));
+					$alloc_row['Total'] = Num::round($alloc_row['Total'], User::price_dec());
+					$alloc_row['amt'] = Num::round($alloc_row['amt'], User::price_dec());
+					amount_cell($alloc_row['Total']);
+					//amount_cell($alloc_row['Total'] - $alloc_row['PrevAllocs'] - $alloc_row['amt']);
+					amount_cell($alloc_row['Total'] - $alloc_row['amt']);
+					amount_cell($alloc_row['amt']);
+					end_row();
+					$total_allocated += $alloc_row['amt'];
+				}
+				start_row();
+				label_cell(_("Total Allocated:"), "align=right colspan=5");
+				amount_cell($total_allocated);
+				end_row();
+				start_row();
+				label_cell(_("Left to Allocate:"), "align=right colspan=5");
+				$total = Num::round($total, User::price_dec());
+				amount_cell($total - $total_allocated);
+				end_row();
+				end_table(1);
+			}
+
+		//--------------------------------------------------------------------------------------
+		static function allocations_from($person_type, $person_id, $type, $type_no, $total)
+			{
+				switch ($person_type) {
+					case PT_CUSTOMER :
+						$alloc_result = Sales_Allocation::get_to_trans($person_id, $type_no, $type);
+						GL_Allocation::display($alloc_result, $total);
+						return;
+					case PT_SUPPLIER :
+						$alloc_result = Purch_Allocation::get_allocatable_to_trans($person_id, $type_no, $type);
+						GL_Allocation::display($alloc_result, $total);
+						return;
+				}
 			}
 	}
 

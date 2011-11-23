@@ -11,7 +11,6 @@
 	 ***********************************************************************/
 	$page_security = 'SA_WORKORDERCOST';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	include_once(APP_PATH . "manufacturing/includes/manufacturing_ui.php");
 	JS::open_window(900, 500);
 	Page::start(_($help_context = "Work Order Additional Costs"));
 	if (isset($_GET['trans_no']) && $_GET['trans_no'] != "") {
@@ -37,44 +36,47 @@
 	}
 	//--------------------------------------------------------------------------------------------------
 	function can_process()
-	{
-		global $wo_details;
-		if (!Validation::is_num('costs', 0)) {
-			Errors::error(_("The amount entered is not a valid number or less then zero."));
-			JS::set_focus('costs');
-			return false;
+		{
+			global $wo_details;
+			if (!Validation::is_num('costs', 0)) {
+				Errors::error(_("The amount entered is not a valid number or less then zero."));
+				JS::set_focus('costs');
+				return false;
+			}
+			if (!Dates::is_date($_POST['date_'])) {
+				Errors::error(_("The entered date is invalid."));
+				JS::set_focus('date_');
+				return false;
+			} elseif (!Dates::is_date_in_fiscalyear($_POST['date_'])) {
+				Errors::error(_("The entered date is not in fiscal year."));
+				JS::set_focus('date_');
+				return false;
+			}
+			if (Dates::date_diff2(Dates::sql2date($wo_details["released_date"]), $_POST['date_'], "d") > 0) {
+				Errors::error(_("The additional cost date cannot be before the release date of the work order."));
+				JS::set_focus('date_');
+				return false;
+			}
+			return true;
 		}
-		if (!Dates::is_date($_POST['date_'])) {
-			Errors::error(_("The entered date is invalid."));
-			JS::set_focus('date_');
-			return false;
-		} elseif (!Dates::is_date_in_fiscalyear($_POST['date_'])) {
-			Errors::error(_("The entered date is not in fiscal year."));
-			JS::set_focus('date_');
-			return false;
-		}
-		if (Dates::date_diff2(Dates::sql2date($wo_details["released_date"]), $_POST['date_'], "d") > 0) {
-			Errors::error(_("The additional cost date cannot be before the release date of the work order."));
-			JS::set_focus('date_');
-			return false;
-		}
-		return true;
-	}
 
 	//--------------------------------------------------------------------------------------------------
 	if (isset($_POST['process']) && can_process() == true) {
 		DB::begin_transaction();
-		GL_Trans::add_std_cost(ST_WORKORDER, $_POST['selected_id'], $_POST['date_'], $_POST['cr_acc'], 0, 0, $wo_cost_types[$_POST['PaymentType']], -input_num('costs'), PT_WORKORDER, $_POST['PaymentType']);
+		GL_Trans::add_std_cost(ST_WORKORDER, $_POST['selected_id'], $_POST['date_'], $_POST['cr_acc'], 0, 0,
+			$wo_cost_types[$_POST['PaymentType']], -input_num('costs'), PT_WORKORDER, $_POST['PaymentType']);
 		$is_bank_to = Banking::is_bank_account($_POST['cr_acc']);
 		if ($is_bank_to) {
-			Bank_Trans::add(ST_WORKORDER, $_POST['selected_id'], $is_bank_to, "", $_POST['date_'], -input_num('costs'), PT_WORKORDER, $_POST['PaymentType'], Banking::get_company_currency(), "Cannot insert a destination bank transaction");
+			Bank_Trans::add(ST_WORKORDER, $_POST['selected_id'], $is_bank_to, "", $_POST['date_'], -input_num('costs'), PT_WORKORDER,
+				$_POST['PaymentType'], Banking::get_company_currency(), "Cannot insert a destination bank transaction");
 		}
-		GL_Trans::add_std_cost(ST_WORKORDER, $_POST['selected_id'], $_POST['date_'], $_POST['db_acc'], $_POST['dim1'], $_POST['dim2'], $wo_cost_types[$_POST['PaymentType']], input_num('costs'), PT_WORKORDER, $_POST['PaymentType']);
+		GL_Trans::add_std_cost(ST_WORKORDER, $_POST['selected_id'], $_POST['date_'], $_POST['db_acc'], $_POST['dim1'], $_POST['dim2'],
+			$wo_cost_types[$_POST['PaymentType']], input_num('costs'), PT_WORKORDER, $_POST['PaymentType']);
 		DB::commit_transaction();
 		meta_forward($_SERVER['PHP_SELF'], "AddedID=" . $_POST['selected_id']);
 	}
 	//-------------------------------------------------------------------------------------
-	display_wo_details($_POST['selected_id']);
+	WO_Cost::display($_POST['selected_id']);
 	//-------------------------------------------------------------------------------------
 	start_form();
 	hidden('selected_id', $_POST['selected_id']);

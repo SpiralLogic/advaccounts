@@ -11,7 +11,6 @@
 	 ***********************************************************************/
 	$page_security = 'SA_WORKORDERENTRY';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	include_once(APP_PATH . "manufacturing/includes/manufacturing_ui.php");
 	JS::open_window(900, 500);
 	Page::start(_($help_context = "Work Order Entry"));
 	Validation::check(Validation::MANUFACTURE_ITEMS, _("There are no manufacturable items defined in the system."),

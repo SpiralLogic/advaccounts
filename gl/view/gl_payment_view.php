@@ -45,13 +45,14 @@
 	label_cells(_("Date"), Dates::sql2date($from_trans['trans_date']), "class='tableheader2'");
 	end_row();
 	start_row();
-	label_cells(_("Pay To"), Banking::payment_person_name($from_trans['person_type_id'], $from_trans['person_id']), "class='tableheader2'", "colspan=$colspan1");
+	label_cells(_("Pay To"), Banking::payment_person_name($from_trans['person_type_id'], $from_trans['person_id']),
+		"class='tableheader2'", "colspan=$colspan1");
 	label_cells(_("Payment Type"), $bank_transfer_types[$from_trans['account_type']], "class='tableheader2'");
 	end_row();
 	start_row();
 	label_cells(_("Reference"), $from_trans['ref'], "class='tableheader2'", "colspan=$colspan2");
 	end_row();
-	Display::comments_row(ST_BANKPAYMENT, $trans_no);
+	DB_Comments::display_row(ST_BANKPAYMENT, $trans_no);
 	end_table(1);
 	$voided = Display::is_voided(ST_BANKPAYMENT, $trans_no, _("This payment has been voided."));
 	$items = GL_Trans::get_many(ST_BANKPAYMENT, $trans_no);
@@ -98,7 +99,7 @@
 		label_row(_("Total"), Num::format($total_amount, User::price_dec()), "colspan=" . (2 + $dim) . " align=right", "align=right");
 		end_table(1);
 		if (!$voided) {
-			Display::allocations_from($from_trans['person_type_id'], $from_trans['person_id'], 1, $trans_no, -$from_trans['amount']);
+			GL_Allocation::display($from_trans['person_type_id'], $from_trans['person_id'], 1, $trans_no, -$from_trans['amount']);
 		}
 	}
 	end_page(true);

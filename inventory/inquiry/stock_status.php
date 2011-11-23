@@ -35,7 +35,8 @@
 	$kitset_or_service = false;
 	div_start('status_tbl');
 	if (Input::post('mb_flag') == STOCK_SERVICE) {
-		Errors::warning(_("This is a service and cannot have a stock holding, only the total quantity on outstanding sales orders is shown."), 0, 1);
+		Errors::warning(_("This is a service and cannot have a stock holding, only the total quantity on outstanding sales orders is shown."),
+			0, 1);
 		$kitset_or_service = true;
 	}
 	$loc_details = Inv_Location::get_details($_POST['stock_id']);
@@ -55,7 +56,7 @@
 	while ($myrow = DB::fetch($loc_details))
 	{
 		alt_table_row_color($k);
-		$demand_qty = Manufacturing::get_demand_qty($_POST['stock_id'], $myrow["loc_code"]);
+		$demand_qty = Item::get_demand($_POST['stock_id'], $myrow["loc_code"]);
 		$demand_qty += Manufacturing::get_demand_asm_qty($_POST['stock_id'], $myrow["loc_code"]);
 		$qoh = Item::get_qoh_on_date($_POST['stock_id'], $myrow["loc_code"]);
 		if ($kitset_or_service == false) {

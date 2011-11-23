@@ -23,7 +23,7 @@
 	while ($adjustment = DB::fetch($adjustment_items))
 	{
 		if (!$header_shown) {
-			$adjustment_type = Inv_Movement::get_type( $adjustment['person_id']);
+			$adjustment_type = Inv_Movement::get_type($adjustment['person_id']);
 			start_table(Config::get('tables_style2') . " width=90%");
 			start_row();
 			label_cells(_("At Location"), $adjustment['location_name'], "class='tableheader2'");
@@ -31,7 +31,7 @@
 			label_cells(_("Date"), Dates::sql2date($adjustment['tran_date']), "class='tableheader2'");
 			label_cells(_("Adjustment Type"), $adjustment_type['name'], "class='tableheader2'");
 			end_row();
-			Display::comments_row(ST_INVADJUST, $trans_no);
+			DB_Comments::display_row(ST_INVADJUST, $trans_no);
 			end_table();
 			$header_shown = true;
 			echo "<br>";

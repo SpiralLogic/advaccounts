@@ -12,7 +12,6 @@
 	$page_security = 'SA_WORKORDERCOST';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "Costed Bill Of Material Inquiry"));
-	include_once(APP_PATH . "manufacturing/includes/manufacturing_ui.php");
 	Validation::check(Validation::BOM_ITEMS, _("There are no manufactured or kit items defined in the system."), STOCK_MANUFACTURE);
 	if (isset($_GET['stock_id'])) {
 		$_POST['stock_id'] = $_GET['stock_id'];
@@ -26,7 +25,7 @@
 	end_table();
 	br();
 	Display::heading(_("All Costs Are In:") . " " . Banking::get_company_currency());
-	display_bom(Input::post('stock_id'));
+	Manufacturing::display_bom(Input::post('stock_id'));
 	end_form();
 	end_page();
 ?>

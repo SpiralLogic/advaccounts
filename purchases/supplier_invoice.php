@@ -11,7 +11,6 @@
 	 ***********************************************************************/
 	$page_security = 'SA_SUPPLIERINVOICE';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	include_once(APP_PATH . "purchases/includes/purchasing_ui.php");
 	JS::open_window(900, 500);
 	Page::start(_($help_context = "Enter Supplier Invoice"));
 	//----------------------------------------------------------------------------------------
@@ -312,7 +311,7 @@
 		$Ajax->activate('inv_tot');
 	}
 	start_form();
-	invoice_header(Purch_Trans::instance());
+	Purch_Invoice::header(Purch_Trans::instance());
 	if ($_SESSION['supplier_id']) {
 		$_POST['supplier_id'] = $_SESSION['supplier_id'];
 		if (Purch_Trans::instance()) {
@@ -323,10 +322,10 @@
 	if ($_POST['supplier_id'] == '') {
 		Errors::error(_("There is no supplier selected."));
 	} else {
-		display_grn_items(Purch_Trans::instance(), 1);
-		display_gl_items(Purch_Trans::instance(), 1);
+		Purch_GRN::display_items(Purch_Trans::instance(), 1);
+		Purch_GLItem::display_items(Purch_Trans::instance(), 1);
 		div_start('inv_tot');
-		invoice_totals(Purch_Trans::instance());
+		Purch_Invoice::totals(Purch_Trans::instance());
 		div_end();
 	}
 	//-----------------------------------------------------------------------------------------

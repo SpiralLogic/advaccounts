@@ -11,7 +11,6 @@
 	 ***********************************************************************/
 	$page_security = 'SA_SUPPTRANSVIEW';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	include(APP_PATH . "purchases/includes/purchasing_ui.php");
 	JS::open_window(900, 500);
 	Page::start(_($help_context = "View Purchase Order"), true);
 	if (!isset($_GET['trans_no'])) {
@@ -20,7 +19,7 @@
 	$purchase_order = new Purch_Order;
 	Purch_Order::get($_GET['trans_no'], $purchase_order);
 	echo "<br>";
-	display_po_summary($purchase_order, true);
+	Purch_Order::display_summary($purchase_order, true);
 	start_table(Config::get('tables_style') . "  width=90%", 6);
 	Display::heading(_("Line Details"));
 	start_table("colspan=9 " . Config::get('tables_style') . " width=100%");

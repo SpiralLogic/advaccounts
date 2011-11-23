@@ -50,104 +50,105 @@
 	}
 	//----------------------------------------------------------------------------------------
 	function check_inputs()
-	{
-		if (!get_post('supplier_id')) {
-			Errors::error(_("There is no supplier selected."));
-			JS::set_focus('supplier_id');
-			return false;
-		}
-		if ($_POST['amount'] == "") {
-			$_POST['amount'] = Num::price_format(0);
-		}
-		if (!Validation::is_num('amount', 0)) {
-			Errors::error(_("The entered amount is invalid or less than zero."));
-			JS::set_focus('amount');
-			return false;
-		}
-		if (isset($_POST['charge']) && !Validation::is_num('charge', 0)) {
-			Errors::error(_("The entered amount is invalid or less than zero."));
-			JS::set_focus('charge');
-			return false;
-		}
-		if (isset($_POST['charge']) && input_num('charge') > 0) {
-			$charge_acct = DB_Company::get_pref('bank_charge_act');
-			if (GL_Account::get($charge_acct) == false) {
-				Errors::error(_("The Bank Charge Account has not been set in System and General GL Setup."));
+		{
+			if (!get_post('supplier_id')) {
+				Errors::error(_("There is no supplier selected."));
+				JS::set_focus('supplier_id');
+				return false;
+			}
+			if ($_POST['amount'] == "") {
+				$_POST['amount'] = Num::price_format(0);
+			}
+			if (!Validation::is_num('amount', 0)) {
+				Errors::error(_("The entered amount is invalid or less than zero."));
+				JS::set_focus('amount');
+				return false;
+			}
+			if (isset($_POST['charge']) && !Validation::is_num('charge', 0)) {
+				Errors::error(_("The entered amount is invalid or less than zero."));
 				JS::set_focus('charge');
 				return false;
 			}
+			if (isset($_POST['charge']) && input_num('charge') > 0) {
+				$charge_acct = DB_Company::get_pref('bank_charge_act');
+				if (GL_Account::get($charge_acct) == false) {
+					Errors::error(_("The Bank Charge Account has not been set in System and General GL Setup."));
+					JS::set_focus('charge');
+					return false;
+				}
+			}
+			if (isset($_POST['_ex_rate']) && !Validation::is_num('_ex_rate', 0.000001)) {
+				Errors::error(_("The exchange rate must be numeric and greater than zero."));
+				JS::set_focus('_ex_rate');
+				return false;
+			}
+			if ($_POST['discount'] == "") {
+				$_POST['discount'] = 0;
+			}
+			if (!Validation::is_num('discount', 0)) {
+				Errors::error(_("The entered discount is invalid or less than zero."));
+				JS::set_focus('amount');
+				return false;
+			}
+			//if (input_num('amount') - input_num('discount') <= 0)
+			if (input_num('amount') <= 0) {
+				Errors::error(_("The total of the amount and the discount is zero or negative. Please enter positive values."));
+				JS::set_focus('amount');
+				return false;
+			}
+			if (!Dates::is_date($_POST['DatePaid'])) {
+				Errors::error(_("The entered date is invalid."));
+				JS::set_focus('DatePaid');
+				return false;
+			} elseif (!Dates::is_date_in_fiscalyear($_POST['DatePaid'])) {
+				Errors::error(_("The entered date is not in fiscal year."));
+				JS::set_focus('DatePaid');
+				return false;
+			}
+			if (!Refs::is_valid($_POST['ref'])) {
+				Errors::error(_("You must enter a reference."));
+				JS::set_focus('ref');
+				return false;
+			}
+			if (!is_new_reference($_POST['ref'], ST_SUPPAYMENT)) {
+				Errors::error(_("The entered reference is already in use."));
+				JS::set_focus('ref');
+				return false;
+			}
+			$_SESSION['alloc']->amount = -input_num('amount');
+			if (isset($_POST["TotalNumberOfAllocs"])) {
+				return Gl_Allocation::check_allocations();
+			} else {
+				return true;
+			}
 		}
-		if (isset($_POST['_ex_rate']) && !Validation::is_num('_ex_rate', 0.000001)) {
-			Errors::error(_("The exchange rate must be numeric and greater than zero."));
-			JS::set_focus('_ex_rate');
-			return false;
-		}
-		if ($_POST['discount'] == "") {
-			$_POST['discount'] = 0;
-		}
-		if (!Validation::is_num('discount', 0)) {
-			Errors::error(_("The entered discount is invalid or less than zero."));
-			JS::set_focus('amount');
-			return false;
-		}
-		//if (input_num('amount') - input_num('discount') <= 0)
-		if (input_num('amount') <= 0) {
-			Errors::error(_("The total of the amount and the discount is zero or negative. Please enter positive values."));
-			JS::set_focus('amount');
-			return false;
-		}
-		if (!Dates::is_date($_POST['DatePaid'])) {
-			Errors::error(_("The entered date is invalid."));
-			JS::set_focus('DatePaid');
-			return false;
-		} elseif (!Dates::is_date_in_fiscalyear($_POST['DatePaid'])) {
-			Errors::error(_("The entered date is not in fiscal year."));
-			JS::set_focus('DatePaid');
-			return false;
-		}
-		if (!Refs::is_valid($_POST['ref'])) {
-			Errors::error(_("You must enter a reference."));
-			JS::set_focus('ref');
-			return false;
-		}
-		if (!is_new_reference($_POST['ref'], ST_SUPPAYMENT)) {
-			Errors::error(_("The entered reference is already in use."));
-			JS::set_focus('ref');
-			return false;
-		}
-		$_SESSION['alloc']->amount = -input_num('amount');
-		if (isset($_POST["TotalNumberOfAllocs"])) {
-			return Gl_Allocation::check_allocations();
-		} else {
-			return true;
-		}
-	}
 
 	//----------------------------------------------------------------------------------------
 	function handle_add_payment()
-	{
-		$supp_currency = Banking::get_supplier_currency($_POST['supplier_id']);
-		$bank_currency = Banking::get_bank_account_currency($_POST['bank_account']);
-		$comp_currency = Banking::get_company_currency();
-		if ($comp_currency != $bank_currency && $bank_currency != $supp_currency) {
-			$rate = 0;
-		} else {
-			$rate = input_num('_ex_rate');
+		{
+			$supp_currency = Banking::get_supplier_currency($_POST['supplier_id']);
+			$bank_currency = Banking::get_bank_account_currency($_POST['bank_account']);
+			$comp_currency = Banking::get_company_currency();
+			if ($comp_currency != $bank_currency && $bank_currency != $supp_currency) {
+				$rate = 0;
+			} else {
+				$rate = input_num('_ex_rate');
+			}
+			$payment_id = Purch_Payment::add($_POST['supplier_id'], $_POST['DatePaid'], $_POST['bank_account'], input_num('amount'),
+				input_num('discount'), $_POST['ref'], $_POST['memo_'], $rate, input_num('charge'));
+			Dates::new_doc_date($_POST['DatePaid']);
+			$_SESSION['alloc']->trans_no = $payment_id;
+			$_SESSION['alloc']->write();
+			//unset($_POST['supplier_id']);
+			unset($_POST['bank_account']);
+			unset($_POST['DatePaid']);
+			unset($_POST['currency']);
+			unset($_POST['memo_']);
+			unset($_POST['amount']);
+			unset($_POST['discount']);
+			unset($_POST['ProcessSuppPayment']);
+			meta_forward($_SERVER['PHP_SELF'], "AddedID=$payment_id&supplier_id=" . $_POST['supplier_id']);
 		}
-		$payment_id = Purch_Payment::add($_POST['supplier_id'], $_POST['DatePaid'], $_POST['bank_account'], input_num('amount'), input_num('discount'), $_POST['ref'], $_POST['memo_'], $rate, input_num('charge'));
-		Dates::new_doc_date($_POST['DatePaid']);
-		$_SESSION['alloc']->trans_no = $payment_id;
-		$_SESSION['alloc']->write();
-		//unset($_POST['supplier_id']);
-		unset($_POST['bank_account']);
-		unset($_POST['DatePaid']);
-		unset($_POST['currency']);
-		unset($_POST['memo_']);
-		unset($_POST['amount']);
-		unset($_POST['discount']);
-		unset($_POST['ProcessSuppPayment']);
-		meta_forward($_SERVER['PHP_SELF'], "AddedID=$payment_id&supplier_id=" . $_POST['supplier_id']);
-	}
 
 	//----------------------------------------------------------------------------------------
 	if (isset($_POST['ProcessSuppPayment'])) {
@@ -176,7 +177,7 @@
 	$supplier_currency = Banking::get_supplier_currency($_POST['supplier_id']);
 	$bank_currency = Banking::get_bank_account_currency($_POST['bank_account']);
 	if ($bank_currency != $supplier_currency) {
-		Display::exchange_rate($bank_currency, $supplier_currency, $_POST['DatePaid'], true);
+		GL_ExchangeRate::display($bank_currency, $supplier_currency, $_POST['DatePaid'], true);
 	}
 	amount_row(_("Bank Charge:"), 'charge');
 	end_outer_table(1); // outer table

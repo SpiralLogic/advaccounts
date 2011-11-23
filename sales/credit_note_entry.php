@@ -15,9 +15,6 @@
 	//
 	$page_security = 'SA_SALESCREDIT';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	include_once(APP_PATH . "sales/includes/sales_ui.php");
-	include_once(APP_PATH . "sales/includes/ui/sales_credit_ui.php");
-	include_once(APP_PATH . "sales/includes/ui/sales_order_ui.php");
 	JS::open_window(900, 500);
 	if (isset($_GET['NewCredit'])) {
 		$_SESSION['page_title'] = _($help_context = "Customer Credit Note");
@@ -55,7 +52,7 @@
 		hyperlink_params("/system/attachments.php", _("Add an Attachment"), "filterType=$trans_type&trans_no=$credit_no");
 		Page::footer_exit();
 	} else {
-		check_edit_conflicts();
+		Sales_Order::check_edit_conflicts();
 	}
 	//--------------------------------------------------------------------------------
 	function line_start_focus()
@@ -103,7 +100,7 @@
 	//-----------------------------------------------------------------------------
 	function handle_new_credit($trans_no)
 		{
-			processing_start();
+			Sales_Order::start();
 			$_SESSION['Items'] = new Sales_Order(ST_CUSTCREDIT, $trans_no);
 			copy_from_cn();
 		}
@@ -154,7 +151,7 @@
 		copy_to_cn();
 		$credit_no = $_SESSION['Items']->write($_POST['WriteOffGLCode']);
 		Dates::new_doc_date($_SESSION['Items']->document_date);
-		processing_end();
+		Sales_Order::finish();
 		meta_forward($_SERVER['PHP_SELF'], "AddedID=$credit_no");
 	} /*end of process credit note */
 	//-----------------------------------------------------------------------------
@@ -220,18 +217,18 @@
 		line_start_focus();
 	}
 	//-----------------------------------------------------------------------------
-	if (!processing_active()) {
+	if (!Sales_Order::active()) {
 		handle_new_credit(0);
 	}
 	//-----------------------------------------------------------------------------
 	start_form();
 	hidden('cart_id');
-	$customer_error = display_credit_header($_SESSION['Items']);
+	$customer_error = Sales_Credit::header($_SESSION['Items']);
 	if ($customer_error == "") {
 		start_table(Config::get('tables_style2'), "width=90%", 10);
 		echo "<tr><td>";
-		display_credit_items(_("Credit Note Items"), $_SESSION['Items']);
-		credit_options_controls($_SESSION['Items']);
+		Sales_Credit::display_items(_("Credit Note Items"), $_SESSION['Items']);
+		Sales_Credit::option_controls($_SESSION['Items']);
 		echo "</td></tr>";
 		end_table();
 	} else {

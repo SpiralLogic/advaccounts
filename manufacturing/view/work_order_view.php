@@ -11,7 +11,6 @@
 	 ***********************************************************************/
 	$page_security = 'SA_MANUFTRANSVIEW';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	include_once(APP_PATH . "manufacturing/includes/manufacturing_ui.php");
 	JS::open_window(800, 500);
 	Page::start(_($help_context = "View Work Order"), true);
 	//-------------------------------------------------------------------------------------------------
@@ -23,34 +22,34 @@
 	br(1);
 	$myrow = WO_WorkOrder::get($woid);
 	if ($myrow["type"] == WO_ADVANCED) {
-		display_wo_details($woid, true);
+		WO_Cost::display($woid, true);
 	} else {
-		display_wo_details_quick($woid, true);
+		WO_Cost::display_quick($woid, true);
 	}
 	echo "<center>";
 	// display the WO requirements
 	br(1);
 	if ($myrow["released"] == false) {
 		Display::heading(_("BOM for item:") . " " . $myrow["StockItemName"]);
-		display_bom($myrow["stock_id"]);
+		Manufacturing::display_bom($myrow["stock_id"]);
 	} else {
 		Display::heading(_("Work Order Requirements"));
-		display_wo_requirements($woid, $myrow["units_reqd"]);
+		WO_Requirements::display($woid, $myrow["units_reqd"]);
 		if ($myrow["type"] == WO_ADVANCED) {
 			echo "<br><table cellspacing=7><tr valign=top><td>";
 			Display::heading(_("Issues"));
-			display_wo_issues($woid);
+			WO_Issue::display($woid);
 			echo "</td><td>";
 			Display::heading(_("Productions"));
-			display_wo_productions($woid);
+			WO_Produce::display($woid);
 			echo "</td><td>";
 			Display::heading(_("Additional Costs"));
-			display_wo_payments($woid);
+			WO_Cost::display_payments($woid);
 			echo "</td></tr></table>";
 		} else {
 			echo "<br><table cellspacing=7><tr valign=top><td>";
 			Display::heading(_("Additional Costs"));
-			display_wo_payments($woid);
+			WO_Cost::display_payments($woid);
 			echo "</td></tr></table>";
 		}
 	}

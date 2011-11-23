@@ -13,7 +13,6 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	$js = "";
 	Page::start(_($help_context = "View Dimension"), true);
-	include_once(APP_PATH . "dimensions/includes/dimensions_ui.php");
 	//-------------------------------------------------------------------------------------------------
 	if (isset($_GET['trans_no']) && $_GET['trans_no'] != "") {
 		$id = $_GET['trans_no'];
@@ -39,7 +38,7 @@
 	label_cell(Dates::sql2date($myrow["date_"]));
 	label_cell(Dates::sql2date($myrow["due_date"]));
 	end_row();
-	Display::comments_row(ST_DIMENSION, $id);
+	DB_Comments::display_row(ST_DIMENSION, $id);
 	end_table();
 	if ($myrow["closed"] == true) {
 		Errors::warning(_("This dimension is closed."));
@@ -60,7 +59,7 @@
 	end_table();
 	hidden('trans_no', $id);
 	end_form();
-	display_dimension_balance($id, $_POST['TransFromDate'], $_POST['TransToDate']);
+	Dimensions::display_balance($id, $_POST['TransFromDate'], $_POST['TransToDate']);
 	br(1);
 	end_page(true);
 

@@ -12,7 +12,6 @@
 	$page_security = 'SA_SUPPLIERALLOC';
 	//
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	include(APP_PATH . "purchases/includes/purchasing_ui.php");
 	JS::open_window(900, 500);
 	Page::start(_($help_context = "Supplier Allocation Inquiry"));
 	if (isset($_GET['supplier_id'])) {
@@ -42,49 +41,52 @@
 	end_table();
 	//------------------------------------------------------------------------------------------------
 	function check_overdue($row)
-	{
-		return ($row['TotalAmount'] > $row['Allocated']) && $row['OverDue'] == 1;
-	}
+		{
+			return ($row['TotalAmount'] > $row['Allocated']) && $row['OverDue'] == 1;
+		}
 
 	function systype_name($dummy, $type)
-	{
-		global $systypes_array;
-		return $systypes_array[$type];
-	}
+		{
+			global $systypes_array;
+			return $systypes_array[$type];
+		}
 
 	function view_link($trans)
-	{
-		return ui_view::get_trans_view_str($trans["type"], $trans["trans_no"]);
-	}
+		{
+			return ui_view::get_trans_view_str($trans["type"], $trans["trans_no"]);
+		}
 
 	function due_date($row)
-	{
-		return (($row["type"] == ST_SUPPINVOICE) || ($row["type"] == ST_SUPPCREDIT)) ? $row["due_date"] : "";
-	}
+		{
+			return (($row["type"] == ST_SUPPINVOICE) || ($row["type"] == ST_SUPPCREDIT)) ? $row["due_date"] : "";
+		}
 
 	function fmt_balance($row)
-	{
-		$value = ($row["type"] == ST_BANKPAYMENT || $row["type"] == ST_SUPPCREDIT || $row["type"] == ST_SUPPAYMENT) ? -$row["TotalAmount"] - $row["Allocated"] : $row["TotalAmount"] - $row["Allocated"];
-		return $value;
-	}
+		{
+			$value = ($row["type"] == ST_BANKPAYMENT || $row["type"] == ST_SUPPCREDIT || $row["type"] == ST_SUPPAYMENT) ?
+			 -$row["TotalAmount"] - $row["Allocated"] : $row["TotalAmount"] - $row["Allocated"];
+			return $value;
+		}
 
 	function alloc_link($row)
-	{
-		$link = pager_link(_("Allocations"), "/purchases/allocations/supplier_allocate.php?trans_no=" . $row["trans_no"] . "&trans_type=" . $row["type"], ICON_MONEY);
-		return (($row["type"] == ST_BANKPAYMENT || $row["type"] == ST_SUPPCREDIT || $row["type"] == ST_SUPPAYMENT) && (-$row["TotalAmount"] - $row["Allocated"]) > 0) ? $link : '';
-	}
+		{
+			$link = pager_link(_("Allocations"),
+			 "/purchases/allocations/supplier_allocate.php?trans_no=" . $row["trans_no"] . "&trans_type=" . $row["type"], ICON_MONEY);
+			return (($row["type"] == ST_BANKPAYMENT || $row["type"] == ST_SUPPCREDIT || $row["type"] == ST_SUPPAYMENT) && (-$row["TotalAmount"] - $row["Allocated"]) > 0) ?
+			 $link : '';
+		}
 
 	function fmt_debit($row)
-	{
-		$value = -$row["TotalAmount"];
-		return $value >= 0 ? Num::price_format($value) : '';
-	}
+		{
+			$value = -$row["TotalAmount"];
+			return $value >= 0 ? Num::price_format($value) : '';
+		}
 
 	function fmt_credit($row)
-	{
-		$value = $row["TotalAmount"];
-		return $value > 0 ? Num::price_format($value) : '';
-	}
+		{
+			$value = $row["TotalAmount"];
+			return $value > 0 ? Num::price_format($value) : '';
+		}
 
 	//------------------------------------------------------------------------------------------------
 	$date_after = Dates::date2sql($_POST['TransAfterDate']);

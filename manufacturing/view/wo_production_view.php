@@ -13,32 +13,31 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	JS::open_window(900, 500);
 	Page::start(_($help_context = "View Work Order Production"), true);
-	include_once(APP_PATH . "manufacturing/includes/manufacturing_ui.php");
 	//-------------------------------------------------------------------------------------------------
 	if ($_GET['trans_no'] != "") {
 		$wo_production = $_GET['trans_no'];
 	}
 	//-------------------------------------------------------------------------------------------------
 	function display_wo_production($prod_id)
-	{
-		$myrow = WO_Produce::get($prod_id);
-		br(1);
-		start_table(Config::get('tables_style'));
-		$th = array(
-			_("Production #"), _("Reference"), _("For Work Order #"), _("Item"), _("Quantity Manufactured"), _("Date"));
-		table_header($th);
-		start_row();
-		label_cell($myrow["id"]);
-		label_cell($myrow["reference"]);
-		label_cell(ui_view::get_trans_view_str(ST_WORKORDER, $myrow["workorder_id"]));
-		label_cell($myrow["stock_id"] . " - " . $myrow["StockDescription"]);
-		qty_cell($myrow["quantity"], false, Num::qty_dec($myrow["stock_id"]));
-		label_cell(Dates::sql2date($myrow["date_"]));
-		end_row();
-		Display::comments_row(ST_MANURECEIVE, $prod_id);
-		end_table(1);
-		Display::is_voided(ST_MANURECEIVE, $prod_id, _("This production has been voided."));
-	}
+		{
+			$myrow = WO_Produce::get($prod_id);
+			br(1);
+			start_table(Config::get('tables_style'));
+			$th = array(
+				_("Production #"), _("Reference"), _("For Work Order #"), _("Item"), _("Quantity Manufactured"), _("Date"));
+			table_header($th);
+			start_row();
+			label_cell($myrow["id"]);
+			label_cell($myrow["reference"]);
+			label_cell(ui_view::get_trans_view_str(ST_WORKORDER, $myrow["workorder_id"]));
+			label_cell($myrow["stock_id"] . " - " . $myrow["StockDescription"]);
+			qty_cell($myrow["quantity"], false, Num::qty_dec($myrow["stock_id"]));
+			label_cell(Dates::sql2date($myrow["date_"]));
+			end_row();
+			DB_Comments::display_row(ST_MANURECEIVE, $prod_id);
+			end_table(1);
+			Display::is_voided(ST_MANURECEIVE, $prod_id, _("This production has been voided."));
+		}
 
 	//-------------------------------------------------------------------------------------------------
 	Display::heading($systypes_array[ST_MANURECEIVE] . " # " . $wo_production);
