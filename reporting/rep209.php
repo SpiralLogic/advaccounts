@@ -31,7 +31,7 @@
 		FROM purch_orders, suppliers, locations
 		WHERE purch_orders.supplier_id = suppliers.supplier_id
 		AND locations.loc_code = into_stock_location
-		AND purch_orders.order_no = " . DB::escape($order_no,false,false);
+		AND purch_orders.order_no = " . DB::escape($order_no);
 		$result = DB::query($sql, "The order cannot be retrieved");
 		return DB::fetch($result);
 	}
@@ -43,7 +43,7 @@
 		FROM purch_order_details
 		LEFT JOIN stock_master
 		ON purch_order_details.item_code=stock_master.stock_id
-		WHERE order_no =" . DB::escape($order_no,false,false) . " ";
+		WHERE order_no =" . DB::escape($order_no) . " ";
 		$sql .= " ORDER BY po_detail_item";
 		return DB::query($sql, "Retreive order Line Items");
 	}
@@ -62,7 +62,6 @@
 		if ($to == null) {
 			$to = 0;
 		}
-
 		$dec = User::price_dec();
 		$cols = array(4, 80, 329, 330, 370, 405, 450, 515);
 		// $headers in doctext.inc
@@ -132,7 +131,7 @@
 					$rep->TextCol(6, 7, $DisplayNet, -2);
 					$rep->row = $newrow;
 					if ($rep->row < $rep->bottomMargin + (15 * $rep->lineHeight)) {
-						$rep->Header2($myrow, null, $myrow, $baccount, ST_PURCHORDER);
+						$rep->Header2($myrow, $branch, $myrow, $baccount, ST_PURCHORDER);
 					}
 				}
 			}
@@ -178,7 +177,6 @@
 			}
 		}
 		if ($email == 0) {
-
 			$rep->End();
 		}
 	}

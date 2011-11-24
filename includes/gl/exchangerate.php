@@ -211,11 +211,11 @@
 					}
 					$rate = Num::format($rate, User::exrate_dec());
 					if ($edit_rate) {
-						text_row(_("Exchange Rate:"), '_ex_rate', $rate, 8, 8, null, "", " $from_currency = 1 $to_currency");
+						text_cells(_("Exchange Rate:"), '_ex_rate', $rate, 8, 8, null, "", " $from_currency = 1 $to_currency");
 					}
 					else {
-						label_row(_("Exchange Rate:"),
-							"<span style='vertical-align:top;' id='_ex_rate'>$rate</span> $from_currency = 1 $to_currency");
+						label_cells(_("Exchange Rate:"),
+							"<span style='vertical-align:top;' id='_ex_rate'>$rate</span> $from_currency = 1 $to_currency",'class="label"','');
 					}
 					$Ajax->addUpdate('_ex_rate', '_ex_rate', $rate);
 				}

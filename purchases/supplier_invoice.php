@@ -148,7 +148,7 @@
 	//--------------------------------------------------------------------------------------------------
 	function handle_commit_invoice()
 		{
-			copy_to_trans(Purch_Trans::instance());
+			Purch_Invoice::copy_to_trans(Purch_Trans::instance());
 			if (!check_data()) {
 				return;
 			}

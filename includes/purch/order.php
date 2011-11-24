@@ -520,7 +520,7 @@
 			}
 
 		//---------------------------------------------------------------------------------------------------
-		public static function display_summary(&$po, $is_self = false, $editable = false)
+		public static function summary(&$po, $is_self = false, $editable = false)
 			{
 				start_table(Config::get('tables_style2') . "  width=90%");
 				echo "<tr valign=top class='tableheader2'><th colspan=4>";
@@ -558,7 +558,7 @@
 			}
 
 		//--------------------------------------------------------------------------------
-		function item_controls($order, $stock_id = null)
+		public static function item_controls($order, $stock_id = null)
 			{
 				$Ajax = Ajax::instance();
 				start_row();

@@ -27,7 +27,7 @@
 			$this->menu->add_item(_("Main  Menu"), "index.php");
 			$this->menu->add_item(_("Logout"), "/account/access/logout.php");
 			$this->applications = array();
-			$apps = Config::get('apps.active');
+			$apps = Config::get_all('apps');
 			foreach ($apps as $app) {
 				$app = 'App_' . $app;
 				$this->add_application(new $app());
