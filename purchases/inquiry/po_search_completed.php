@@ -64,45 +64,53 @@
 	}
 	//---------------------------------------------------------------------------------------------
 	function trans_view($trans)
-		{
-			return ui_view::get_trans_view_str(ST_PURCHORDER, $trans["order_no"]);
-		}
+	{
+		return ui_view::get_trans_view_str(ST_PURCHORDER, $trans["order_no"]);
+	}
 
 	function edit_link($row)
-		{
-			return pager_link(_("Edit"), "/purchases/po_entry_items.php?" . SID . "ModifyOrderNumber=" . $row["order_no"], ICON_EDIT);
-		}
+	{
+		return pager_link(_("Edit"), "/purchases/po_entry_items.php?" . SID . "ModifyOrderNumber=" . $row["order_no"], ICON_EDIT);
+	}
 
 	function prt_link($row)
-		{
-			return Reporting::print_doc_link($row['order_no'], _("Print"), true, 18, ICON_PRINT, 'button printlink');
-		}
+	{
+		return Reporting::print_doc_link($row['order_no'], _("Print"), true, 18, ICON_PRINT, 'button printlink');
+	}
 
 	function email_link($row)
-		{
-			HTML::setReturn(true);
-			UI::button(false, 'Email',
-				array('class' => 'button email-button', 'data-emailid' => $row['id'] . '-' . ST_PURCHORDER . '-' . $row['order_no']));
-			return HTML::setReturn(false);
-		}
+	{
+		HTML::setReturn(true);
+		UI::button(
+			false, 'Email',
+			array(
+				'class'				=> 'button email-button',
+				'data-emailid' => $row['id'] . '-' . ST_PURCHORDER . '-' . $row['order_no']
+			)
+		);
+		return HTML::setReturn(false);
+	}
 
 	function receive_link($row)
-		{
-			if ($row['Received'] > 0) {
-				return pager_link(_("Receive"), "/purchases/po_receive_items.php?PONumber=" . $row["order_no"], ICON_RECEIVE);
-			} elseif ($row['Invoiced'] > 0) {
-				return pager_link(_("Invoice"),
-				 "/purchases/supplier_invoice.php?New=1&SuppID=" . $row['supplier_id'] . "&PONumber=" . $row["order_no"], ICON_RECEIVE);
-			}
-			//advaccounts/purchases/supplier_invoice.php?New=1
+	{
+		if ($row['Received'] > 0) {
+			return pager_link(_("Receive"), "/purchases/po_receive_items.php?PONumber=" . $row["order_no"], ICON_RECEIVE);
+		} elseif ($row['Invoiced'] > 0) {
+			return pager_link(
+				_("Invoice"),
+			 "/purchases/supplier_invoice.php?New=1&SuppID=" . $row['supplier_id'] . "&PONumber=" . $row["order_no"], ICON_RECEIVE
+			);
 		}
+		//advaccounts/purchases/supplier_invoice.php?New=1
+	}
 
 	//---------------------------------------------------------------------------------------------
 	if (AJAX_REFERRER && !empty($_POST['ajaxsearch'])) {
 		$searchArray = explode(' ', $_POST['ajaxsearch']);
 		unset($_POST['supplier_id']);
 	}
-	$sql = "SELECT
+	$sql
+	 = "SELECT
 	porder.order_no, 
 	porder.reference, 
 	supplier.supp_name,
@@ -120,12 +128,15 @@
 	AND porder.supplier_id = supplier.supplier_id
 	AND location.loc_code = porder.into_stock_location ";
 	if (AJAX_REFERRER && !empty($_POST['ajaxsearch'])) {
-		foreach ($searchArray as $ajaxsearch) {
+		foreach (
+			$searchArray as $ajaxsearch
+		) {
 			if (empty($ajaxsearch)) {
 				continue;
 			}
 			$ajaxsearch = DB::escape("%" . $ajaxsearch . "%", false, false);
-			$sql .= " AND (supplier.supp_name LIKE $ajaxsearch OR porder.order_no LIKE $ajaxsearch
+			$sql
+			 .= " AND (supplier.supp_name LIKE $ajaxsearch OR porder.order_no LIKE $ajaxsearch
 		 OR porder.reference LIKE $ajaxsearch
 		  OR porder.requisition_no LIKE $ajaxsearch
 		   OR location.location_name LIKE $ajaxsearch)";
@@ -137,7 +148,7 @@
 			$sql .= " AND porder.into_stock_location = ";
 			$sql .= ($_GET['NFY'] == 1) ? "'NFY'" : DB::escape($_POST['StockLocation'], false, false);
 		} else {
-			$data_after = Dates::date2sql($_POST['OrdersAfterDate']);
+			$data_after  = Dates::date2sql($_POST['OrdersAfterDate']);
 			$date_before = Dates::date2sql($_POST['OrdersToDate']);
 			$sql .= " AND porder.ord_date >= '$data_after'";
 			$sql .= " AND porder.ord_date <= '$date_before'";
@@ -148,24 +159,48 @@
 	} //end not order number selected
 	$sql .= " GROUP BY porder.order_no";
 	$cols = array(
-		_("#") => array('fun' => 'trans_view', 'ord' => ''),
+		_("#")					 => array(
+			'fun' => 'trans_view',
+			'ord' => ''
+		),
 		_("Reference"),
-		_("Supplier") => array('ord' => '', 'type' => 'id'),
+		_("Supplier")		=> array(
+			'ord'	=> '',
+			'type' => 'id'
+		),
 		_("Supplier ID") => 'skip',
 		_("Location"),
 		_("Supplier's Reference"),
-		_("Order Date") => array('name' => 'ord_date', 'type' => 'date', 'ord' => 'desc'),
-		_("Currency") => array('align' => 'center'),
+		_("Order Date")	=> array(
+			'name' => 'ord_date',
+			'type' => 'date',
+			'ord'	=> 'desc'
+		),
+		_("Currency")		=> array('align' => 'center'),
 		_("Order Total") => 'amount',
-		array('insert' => true, 'fun' => 'edit_link'),
-		array('insert' => true, 'fun' => 'email_link'),
-		array('insert' => true, 'fun' => 'prt_link'),
-		array('insert' => true, 'fun' => 'receive_link'));
+		array(
+			'insert' => true,
+			'fun'		=> 'edit_link'
+		),
+		array(
+			'insert' => true,
+			'fun'		=> 'email_link'
+		),
+		array(
+			'insert' => true,
+			'fun'		=> 'prt_link'
+		),
+		array(
+			'insert' => true,
+			'fun'		=> 'receive_link'
+		)
+	);
 	if (get_post('StockLocation') != ALL_TEXT) {
 		$cols[_("Location")] = 'skip';
 	}
+	FB::info($sql);
 	//---------------------------------------------------------------------------------------------------
-	$table =& db_pager::new_db_pager('orders_tbl', $sql, $cols);
+	$table        =& db_pager::new_db_pager('orders_tbl', $sql, $cols);
 	$table->width = "80%";
 	display_db_pager($table);
 	Contacts_Supplier::addInfoDialog('.pagerclick');
