@@ -7,7 +7,7 @@
 	 * To change this template use File | Settings | File Templates.
 	 */
 	require_once('bootstrap.php');
-	$filecsv = fopen(APP_PATH . '/upload/test.csv', 'r');
+/*	$filecsv = fopen(APP_PATH . '/upload/test.csv', 'r');
 	$item = array(
 		'category_id' => 6,
 		'tax_type_id' => 1,
@@ -35,4 +35,4 @@
 		var_dump($line);
 	}
 	$item = Item::get('brac-1ah');
-	var_dump($item);
+	var_dump($item);*/

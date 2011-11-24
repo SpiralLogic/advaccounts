@@ -24,7 +24,7 @@
 		echo json_encode($data, JSON_NUMERIC_CHECK);
 		exit();
 	}
-	JS::footerFile("includes/js/customers.js");
+	JS::footerFile("js/customers.js");
 	Page::start(_($help_context = "Customers"), Input::request('popup'));
 	Validation::check(Validation::SALES_TYPES, _("There are no sales types defined. Please define at least one sales type before adding a customer."));
 	Validation::check(Validation::SALESPERSONS, _("There are no sales people defined in the system. At least one sales person is required before proceeding."));

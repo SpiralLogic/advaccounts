@@ -29,7 +29,7 @@
 		echo json_encode($data);
 		exit();
 	}
-	JS::footerFile("includes/js/items.js");
+	JS::footerFile("js/items.js");
 	JS::footerFile('/js/js2/jquery.jeditable.js');
 	JS::footerFile('/js/js2/jquery.dataTables.min.js');
 	Page::start(_($help_context = "Items"), Input::request('popup'));

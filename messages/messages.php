@@ -11,7 +11,7 @@
 		echo json_encode($data);
 		exit();
 	}
-	JS::footerFile("includes/js/messages.js");
+	JS::footerFile("js/messages.js");
 	Page::start(_($help_context = "Messages"), Input::request('popup'));
 	HTML::div(array('style' => 'margin:0 auto;text-align:center'));
 	user_list_row(_("User:"), 'user_id');

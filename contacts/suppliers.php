@@ -36,7 +36,7 @@
 		echo json_encode($data);
 		exit();
 	}
-	JS::footerFile("includes/js/suppliers.js");
+	JS::footerFile("js/suppliers.js");
 	Page::start(_($help_context = "Suppliers"), Input::request('popup'));
 	if (isset($_GET['id'])) {
 		$supplier = new Contacts_Supplier($_GET['id']);

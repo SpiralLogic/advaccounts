@@ -582,7 +582,7 @@
 	if ($customer_error == "") {
 		start_table(Config::get('tables_style'), 10);
 		echo "<tr><td>";
-		display_summary($orderitems, $_SESSION['Items'], true);
+	 Sales_Order::summary($orderitems, $_SESSION['Items'], true);
 		echo "</td></tr>";
 		echo "<tr><td>";
 		Sales_Order::display_delivery_details($_SESSION['Items']);

@@ -376,7 +376,7 @@
 		static function searchOrder($term, $id)
 			{
 				$o = $_SESSION['options'][$id];
-				$term = explode(' ', $term);
+				$term = explode(' ', trim($term));
 				$stock_id = trim(array_shift($term));
 				$terms = array($stock_id, '%' . $stock_id . '%');
 				$terms = array($stock_id, $stock_id . '%', $terms[1], $terms[1], $terms[1]);

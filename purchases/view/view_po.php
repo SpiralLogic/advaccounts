@@ -19,7 +19,7 @@
 	$purchase_order = new Purch_Order;
 	Purch_Order::get($_GET['trans_no'], $purchase_order);
 	echo "<br>";
-	Purch_Order::display_summary($purchase_order, true);
+	Purch_Order::summary($purchase_order, true);
 	start_table(Config::get('tables_style') . "  width=90%", 6);
 	Display::heading(_("Line Details"));
 	start_table("colspan=9 " . Config::get('tables_style') . " width=100%");
