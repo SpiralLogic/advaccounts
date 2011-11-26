@@ -27,6 +27,7 @@
 				$sql = "UPDATE users SET password=" . DB::escape($password) . ",
 				user_id = " . DB::escape($user_id) . " WHERE id=" . DB::escape($id);
 				DB::query($sql, "could not update user password for $user_id");
+				session_regenerate_id();
 			}
 
 		//-----------------------------------------------------------------------------------------------
@@ -46,6 +47,7 @@
 				user_id = " . DB::escape($user_id)
 				 . " WHERE id=" . DB::escape($id);
 				DB::query($sql, "could not update user for $user_id");
+				session_regenerate_id();
 			}
 
 		//-----------------------------------------------------------------------------------------------
@@ -80,6 +82,7 @@
 				startup_tab=" . DB::escape($startup_tab) . "
 				WHERE id = " . DB::escape($id);
 				DB::query($sql, "could not update user display prefs for $id");
+				session_regenerate_id();
 			}
 
 		//-----------------------------------------------------------------------------------------------
