@@ -18,6 +18,7 @@
 	//	Entry Direct Invoice
 	//
 	$page_security = 'SA_SALESORDER';
+
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Security::set_page((!Input::session('Items') ? : $_SESSION['Items']->trans_type), array(
 																																												 ST_SALESORDER => 'SA_SALESORDER', ST_SALESQUOTE => 'SA_SALESQUOTE', ST_CUSTDELIVERY => 'SA_SALESDELIVERY', ST_SALESINVOICE => 'SA_SALESINVOICE'),

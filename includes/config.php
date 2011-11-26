@@ -6,19 +6,29 @@
 	 * Time: 1:53 PM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	include_once(APP_PATH . "config/defines.php");
-	include_once(APP_PATH . "config/access_levels.php");
-	include_once(APP_PATH . "config/types.php");
+	include(APP_PATH . "config/defines.php");
+	include(APP_PATH . "config/access_levels.php");
+	include(APP_PATH . "config/types.php");
 	ini_set("ignore_repeated_errors", "On");
 	ini_set("log_errors", "On");
+/***
+ *
+ */
+	class Config_Exception extends Exception { }
+/***
+ *
+ */
 	class Config
 	{
+		/***
+		 * @var array|null
+		 */
 		static $_vars = null;
-		protected static $_intitalised = false;
+		protected static $_initialised = false;
 
 		public static function init()
 		{
-			if (static::$_intitalised === true) {
+			if (static::$_initialised === true) {
 				return;
 			}
 			if (static::$_vars === null) {
@@ -28,27 +38,28 @@
 				static::$_vars = array();
 				static::load();
 			}
-			static::$_intitalised = true;
+			static::$_initialised = true;
 			static::js();
 		}
 
 		protected static function load($group = 'config')
 		{
 			$file = APP_PATH . "config" . DS . $group . '.php';
-			$groupname = $group;
+			$group_name = $group;
 			if (is_array($group)) {
-				$groupname = implode('.', $group);
-				$groupfile = array_pop($group) . '.php';
-				$grouppath = implode(DS, $group);
-				$file = APP_PATH . "config" . $grouppath . DS . $groupfile;
+				$group_name = implode('.', $group);
+				$group_file = array_pop($group) . '.php';
+				$group_path = implode(DS, $group);
+				$file = APP_PATH . "config" . $group_path . DS . $group_file;
 			}
-			if (static::$_vars && array_key_exists($groupname, static::$_vars)) {
+			if (static::$_vars && array_key_exists($group_name, static::$_vars)) {
 				return;
 			}
 			if (!file_exists($file)) {
-				throw new Adv_Exception("There is no file for config: " . $file);
+				throw new Config_Exception("There is no file for config: " . $file);
 			}
-			static::$_vars[$groupname] = include($file);
+			/** @noinspection PhpIncludeInspection */
+			static::$_vars[$group_name] = include($file);
 		}
 
 		public static function set($var, $value, $group = 'config')
@@ -56,7 +67,13 @@
 			static::$_vars[$group][$var] = $value;
 			return $value;
 		}
-
+/***
+ * @static
+ * @param $var
+ * @param null $array_key
+ * @param null $group
+ * @return mixed
+ */
 		public static function get($var, $array_key = null, $group = null)
 		{
 			static::init();
@@ -66,11 +83,11 @@
 			if ($group != null) {
 				$var = $group . '.' . $var;
 			}
-			$grouparray = explode('.', $var);
-			$var = array_pop($grouparray);
-			$group = implode('.', $grouparray);
+			$group_array = explode('.', $var);
+			$var = array_pop($group_array);
+			$group = implode('.', $group_array);
 			if (!isset(static::$_vars[$group])) {
-				static::load($grouparray);
+				static::load($group_array);
 			}
 			if ($var === null && $array_key === null) {
 				return static::get_all($group);

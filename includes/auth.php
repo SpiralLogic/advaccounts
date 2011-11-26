@@ -30,13 +30,11 @@
 		/**
 		 * Returns the hash object and creates it if necessary
 		 *
-		 * @return	PHPSecLib\Crypt_Hash
+		 * @return	Crypt_Hash
 		 */
 		public function hasher()
 		{
-			if (!class_exists('Crypt_Hash', false)) {
-				include(APP_PATH . 'includes/Crypt/Hash.php');
-			}
+
 			is_null($this->hasher) and $this->hasher = new Crypt_Hash();
 			return $this->hasher;
 		}

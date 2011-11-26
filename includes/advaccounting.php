@@ -10,7 +10,6 @@
 				MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 				See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 			 * ********************************************************************* */
-	include('application.php');
 	class advaccounting
 	{
 		public $user;
@@ -27,7 +26,7 @@
 			$this->menu->add_item(_("Main  Menu"), "index.php");
 			$this->menu->add_item(_("Logout"), "/account/access/logout.php");
 			$this->applications = array();
-			$apps = Config::get_all('apps');
+			$apps = Config::get('apps.active');
 			foreach ($apps as $app) {
 				$app = 'App_' . $app;
 				$this->add_application(new $app());
@@ -90,16 +89,7 @@
 			}
 		}
 
-		/**
-		 * @return Returns the array sorted as required
-		 *
-		 * @param $aryData			 Array containing data to sort
-		 * @param $strIndex			name of column to use as an index
-		 * @param $strSortBy		 Column to sort the array by
-		 * @param $strSortType	 String containing either asc or desc [default to asc]
-		 *
-		 * @desc Naturally sorts an array using by the column $strSortBy
-		 */
+
 		public static function write_extensions($extensions = null, $company = -1)
 		{
 			global $installed_extensions, $next_extension_id;

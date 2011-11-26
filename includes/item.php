@@ -129,7 +129,7 @@
 				return $this->prices;
 			}
 
-		function	getStockLevels($location = null)
+	 	function	getStockLevels($location = null)
 			{
 				if (!$this->id > 0) {
 					return;
@@ -168,7 +168,7 @@
 				return $row['QtyDemand'];
 			}
 
-		function get_all()
+		public static 	function get_all()
 			{
 				$sql = "SELECT * FROM stock_master";
 				return DB::query($sql, "items could not be retreived");
@@ -184,7 +184,7 @@
 		MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 		See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		 ***********************************************************************/
-		function get_qoh_on_date($stock_id, $location = null, $date_ = null, $exclude = 0)
+		public static 	function get_qoh_on_date($stock_id, $location = null, $date_ = null, $exclude = 0)
 			{
 				if ($date_ == null) {
 					$date_ = Dates::Today();
@@ -211,7 +211,7 @@
 			}
 
 		//--------------------------------------------------------------------------------------
-		function get_edit_info($stock_id)
+		public static 	function get_edit_info($stock_id)
 			{
 				$sql = "SELECT material_cost + labour_cost + overhead_cost AS standard_cost, units, decimals
 	 		FROM stock_master,item_units
@@ -226,7 +226,7 @@
 			}
 
 		//--------------------------------------------------------------------------------------
-		function is_inventory_item($stock_id)
+		public static 	function is_inventory_item($stock_id)
 			{
 				$sql = "SELECT stock_id FROM stock_master
 	 		WHERE stock_id=" . DB::escape($stock_id) . " AND mb_flag <> 'D'";
@@ -235,7 +235,7 @@
 			}
 
 		//-------------------------------------------------------------------
-		function last_negative_stock_begin_date($stock_id, $to)
+		public static 	function last_negative_stock_begin_date($stock_id, $to)
 			{
 				$to = Dates::date2sql($to);
 				$sql = "SET @q = 0";
@@ -253,7 +253,7 @@
 			}
 
 		//-------------------------------------------------------------------
-		function get_deliveries_between($stock_id, $from, $to)
+		public static 	function get_deliveries_between($stock_id, $from, $to)
 			{
 				$from = Dates::date2sql($from);
 				$to = Dates::date2sql($to);
@@ -265,7 +265,7 @@
 			}
 
 		//-------------------------------------------------------------------
-		function adjust_deliveries($stock_id, $material_cost, $to)
+		public static function adjust_deliveries($stock_id, $material_cost, $to)
 			{
 				if (!Item::is_inventory_item($stock_id)) {
 					return;
@@ -296,7 +296,7 @@
 				}
 			}
 
-		function get_gl_code($stock_id)
+		public static 	function get_gl_code($stock_id)
 			{
 				/*Gets the GL Codes relevant to the item account  */
 				$sql = "SELECT inventory_account, cogs_account,
@@ -311,12 +311,12 @@
 		// $std_cost - in HOME currency
 		// $show_or_hide - wil this move be visible in reports, etc
 		// $price - in $person_id's currency
-		function img_name($stock_id)
+		public static function img_name($stock_id)
 			{
 				return strtr($stock_id, "><\\/:|*?", '________');
 			}
 
-		function get_stockid($stock_id)
+		public static function get_stockid($stock_id)
 			{
 				$result = current(DB::select('id')->from('stock_master')->where('stock_id LIKE ', $stock_id)->fetch()->all());
 				return $result['id'];
