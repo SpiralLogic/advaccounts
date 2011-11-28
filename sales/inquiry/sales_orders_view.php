@@ -36,22 +36,22 @@
 	if ($trans_type == ST_SALESORDER) {
 		if (Input::get('OutstandingOnly')) {
 			$_POST['order_view_mode'] = 'OutstandingOnly';
-			Session::get()->page_title = _($help_context = "Search Outstanding Sales Orders");
+			Session::i()->page_title = _($help_context = "Search Outstanding Sales Orders");
 		} elseif (isset($_GET['InvoiceTemplates']) && ($_GET['InvoiceTemplates'] == true)) {
 			$_POST['order_view_mode'] = 'InvoiceTemplates';
-			Session::get()->page_title = _($help_context = "Search Template for Invoicing");
+			Session::i()->page_title = _($help_context = "Search Template for Invoicing");
 		} elseif (isset($_GET['DeliveryTemplates']) && ($_GET['DeliveryTemplates'] == true)) {
 			$_POST['order_view_mode'] = 'DeliveryTemplates';
-			Session::get()->page_title = _($help_context = "Select Template for Delivery");
+			Session::i()->page_title = _($help_context = "Select Template for Delivery");
 		} elseif (!isset($_POST['order_view_mode'])) {
 			$_POST['order_view_mode'] = false;
-			Session::get()->page_title = _($help_context = "Search All Sales Orders");
+			Session::i()->page_title = _($help_context = "Search All Sales Orders");
 		}
 	} else {
 		$_POST['order_view_mode'] = "Quotations";
-		Session::get()->page_title = _($help_context = "Search All Sales Quotations");
+		Session::i()->page_title = _($help_context = "Search All Sales Quotations");
 	}
-	Page::start(Session::get()->page_title);
+	Page::start(Session::i()->page_title);
 	if (isset($_GET['selected_customer'])) {
 		$selected_customer = $_GET['selected_customer'];
 	} elseif (isset($_POST['selected_customer'])) {

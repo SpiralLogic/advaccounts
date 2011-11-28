@@ -77,11 +77,11 @@
 		$comments = $_POST['PARAM_1'];
 		$destination = $_POST['PARAM_2'];
 		if ($destination) {
-			include_once(APP_PATH . "includes/reports/excel.php");
+			include_once(APPPATH . "reports/excel.php");
 		}
 		else
 		{
-			include_once(APP_PATH . "includes/reports/pdf.php");
+			include_once(APPPATH . "reports/pdf.php");
 		}
 		$dec = 0;
 		$cols = array(0, 50, 300, 425, 500);

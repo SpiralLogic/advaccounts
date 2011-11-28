@@ -8,7 +8,7 @@
 	 */
 	$page_security = 'SA_CUSTOMER';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	Session::get()->App->selected_application = 'contacts';
+	Session::i()->App->selected_application = 'contacts';
 	if (AJAX_REFERRER) {
 		if (isset($_POST['branch_code'])) {
 			if ($_POST['branch_code'] > 0) {

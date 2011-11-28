@@ -17,14 +17,14 @@
 	start_form();
 	/* show all outstanding receipts and credits to be allocated */
 	if (!isset($_POST['supplier_id'])) {
-		$_POST['supplier_id'] = Session::get()->supplier_id;
+		$_POST['supplier_id'] = Session::i()->supplier_id;
 	}
 	echo "<center>" . _("Select a Supplier: ") . "&nbsp;&nbsp;";
 	echo supplier_list('supplier_id', $_POST['supplier_id'], true, true);
 	echo "<br>";
 	check(_("Show Settled Items:"), 'ShowSettled', null, true);
 	echo "</center><br><br>";
-	Session::get()->supplier_id = $_POST['supplier_id'];
+	Session::i()->supplier_id = $_POST['supplier_id'];
 	if (isset($_POST['supplier_id']) && ($_POST['supplier_id'] == ALL_TEXT)) {
 		unset($_POST['supplier_id']);
 	}
@@ -38,35 +38,36 @@
 	}
 	//--------------------------------------------------------------------------------
 	function systype_name($dummy, $type)
-	{
-		global $systypes_array;
-		return $systypes_array[$type];
-	}
+		{
+			global $systypes_array;
+			return $systypes_array[$type];
+		}
 
 	function trans_view($trans)
-	{
-		return ui_view::get_trans_view_str($trans["type"], $trans["trans_no"]);
-	}
+		{
+			return ui_view::get_trans_view_str($trans["type"], $trans["trans_no"]);
+		}
 
 	function alloc_link($row)
-	{
-		return pager_link(_("Allocate"), "/purchases/allocations/supplier_allocate.php?trans_no=" . $row["trans_no"] . "&trans_type=" . $row["type"], ICON_MONEY);
-	}
+		{
+			return pager_link(_("Allocate"),
+			 "/purchases/allocations/supplier_allocate.php?trans_no=" . $row["trans_no"] . "&trans_type=" . $row["type"], ICON_MONEY);
+		}
 
 	function amount_left($row)
-	{
-		return Num::price_format(-$row["Total"] - $row["alloc"]);
-	}
+		{
+			return Num::price_format(-$row["Total"] - $row["alloc"]);
+		}
 
 	function amount_total($row)
-	{
-		return Num::price_format(-$row["Total"]);
-	}
+		{
+			return Num::price_format(-$row["Total"]);
+		}
 
 	function check_settled($row)
-	{
-		return $row['settled'] == 1;
-	}
+		{
+			return $row['settled'] == 1;
+		}
 
 	$sql = Purch_Allocation::get_allocatable_sql($supplier_id, $settled);
 	$cols = array(

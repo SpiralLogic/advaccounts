@@ -24,7 +24,7 @@
 	//----------------------------------------------------------------------------------------------------
 	function print_invoices()
 	{
-		include_once(APP_PATH . "includes/reports/pdf.php");
+		include_once(APPPATH . "reports/pdf.php");
 		$from = $_POST['PARAM_0'];
 		$to = $_POST['PARAM_1'];
 		$currency = $_POST['PARAM_2'];
@@ -142,10 +142,10 @@
 				$linetype = true;
 				$doctype = $j;
 				if ($rep->currency != $myrow['curr_code']) {
-					include(APP_PATH . "/reporting/includes/doctext2.php");
+					include(DOCROOT . "/reporting/includes/doctext2.php");
 				}
 				else {
-					include(APP_PATH . "/reporting/includes/doctext.php");
+					include(DOCROOT . "/reporting/includes/doctext.php");
 				}
 				$rep->TextCol(3, 7, $doc_Sub_total, -2);
 				$rep->TextCol(7, 8, $DisplaySubTot, -2);

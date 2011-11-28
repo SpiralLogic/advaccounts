@@ -26,7 +26,7 @@
 		$Ajax->activate('customer_id');
 	}
 	if (!isset($_POST['customer_id'])) {
-		$_POST['customer_id'] = Session::get()->global_customer;
+		$_POST['customer_id'] = Session::i()->global_customer;
 	}
 	if (!isset($_POST['DateBanked'])) {
 		$_POST['DateBanked'] = Dates::new_doc_date();
@@ -184,7 +184,7 @@
 		hidden('BranchID', ANY_NUMERIC);
 	}
 	read_customer_data();
-	Session::get()->global_customer = $_POST['customer_id'];
+	Session::i()->global_customer = $_POST['customer_id'];
 	if (isset($_POST['HoldAccount']) && $_POST['HoldAccount'] != 0) {
 		end_outer_table();
 		Errors::error(_("This customer account is on hold."));

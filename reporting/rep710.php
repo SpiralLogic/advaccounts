@@ -57,11 +57,11 @@
 		$comments = $_POST['PARAM_4'];
 		$destination = $_POST['PARAM_5'];
 		if ($destination) {
-			include_once(APP_PATH . "includes/reports/excel.php");
+			include_once(APPPATH . "reports/excel.php");
 		}
 		else
 		{
-			include_once(APP_PATH . "includes/reports/pdf.php");
+			include_once(APPPATH . "reports/pdf.php");
 		}
 		$dec = User::price_dec();
 		$cols = array(0, 60, 120, 180, 240, 340, 400, 460, 520);

@@ -22,7 +22,7 @@
 	Validation::check(Validation::BANK_ACCOUNTS, _("There are no bank accounts defined in the system."));
 	//----------------------------------------------------------------------------------------
 	if (!isset($_POST['supplier_id'])) {
-		$_POST['supplier_id'] = Session::get()->supplier_id;
+		$_POST['supplier_id'] = Session::i()->supplier_id;
 	}
 	if (!isset($_POST['DatePaid'])) {
 		$_POST['DatePaid'] = Dates::new_doc_date();
@@ -168,7 +168,7 @@
 	{
 		$_SESSION['alloc'] = new Gl_Allocation(ST_SUPPAYMENT, 0);
 	}
-	Session::get()->supplier_id = $_POST['supplier_id'];
+	Session::i()->supplier_id = $_POST['supplier_id'];
 	bank_accounts_list_row(_("From Bank Account:"), 'bank_account', null, true);
 	table_section(2);
 	ref_row(_("Reference:"), 'ref', '', Refs::get_next(ST_SUPPAYMENT));

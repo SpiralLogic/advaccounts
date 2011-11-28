@@ -99,7 +99,7 @@
 		$extensions[$id]['active'] = check_value('active');
 		// Currently we support only plugin extensions here.
 		$extensions[$id]['type'] = 'plugin';
-		$directory = APP_PATH . "modules/" . $_POST['path'];
+		$directory = DOCROOT . "modules/" . $_POST['path'];
 		if (!file_exists($directory)) {
 			mkdir($directory);
 		}
@@ -194,7 +194,7 @@
 			label_cell($mod['name']);
 			label_cell(
 				$is_mod ?
-				 $mod['title'] : access_string(Session::get()->App->applications[$mod['tab']]->name, true)
+				 $mod['title'] : access_string(Session::i()->App->applications[$mod['tab']]->name, true)
 			);
 			$ttl = access_string($mod['title']);
 			label_cell($ttl[0]);
@@ -245,7 +245,7 @@
 			label_cell($mod['name']);
 			label_cell(
 				$mod['type'] == 'module' ?
-				 $mod['title'] : access_string(Session::get()->App->applications[$mod['tab']]->name, true)
+				 $mod['title'] : access_string(Session::i()->App->applications[$mod['tab']]->name, true)
 			);
 			$ttl = access_string($mod['title']);
 			label_cell($ttl[0]);

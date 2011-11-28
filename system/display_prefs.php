@@ -20,7 +20,7 @@
 			JS::set_focus('query_size');
 		} else {
 			$chg_theme = User::theme() != $_POST['theme'];
-			$chg_lang = $_SESSION['language']->code != $_POST['language'];
+			$chg_lang = $_SESSION['Language']->code != $_POST['language'];
 			User::get()->update_prefs(
 				$_POST['prices'], $_POST['Quantities'],
 				$_POST['Rates'], $_POST['Percent'],
@@ -34,7 +34,7 @@
 				$_POST['language'], check_value('sticky_doc_date'), $_POST['startup_tab']
 			);
 			if ($chg_lang) {
-				$_SESSION['language']->set_language($_POST['language']);
+				$_SESSION['Language']->set_language($_POST['language']);
 			}
 			// refresh main menu
 			Files::flush_dir(COMPANY_PATH . '/js_cache');
@@ -71,7 +71,7 @@
 	/* The array Config::get('separators_thousands',User::tho_sep()); is set up in config.php for modifications
 		possible separators can be added by modifying the array definition by editing that file */
 	if (!isset($_POST['language'])) {
-		$_POST['language'] = $_SESSION['language']->code;
+		$_POST['language'] = $_SESSION['Language']->code;
 	}
 	table_section_title(_("Language"));
 	languages_list_row(_("Language:"), 'language', $_POST['language']);

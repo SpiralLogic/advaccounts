@@ -25,7 +25,7 @@
 	//------------------------------------------------------------------------------------------------
 	start_form();
 	if (!isset($_POST['supplier_id'])) {
-		$_POST['supplier_id'] = Session::get()->supplier_id;
+		$_POST['supplier_id'] = Session::i()->supplier_id;
 	}
 	start_table("class='tablestyle_noborder'");
 	start_row();
@@ -36,7 +36,7 @@
 	submit_cells('RefreshInquiry', _("Search"), '', _('Refresh Inquiry'), 'default');
 	end_row();
 	end_table();
-	Session::get()->supplier_id = $_POST['supplier_id'];
+	Session::i()->supplier_id = $_POST['supplier_id'];
 	//------------------------------------------------------------------------------------------------
 	function display_supplier_summary($supplier_record)
 		{

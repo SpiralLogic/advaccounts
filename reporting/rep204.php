@@ -58,10 +58,10 @@
 		$comments = $_POST['PARAM_1'];
 		$destination = $_POST['PARAM_2'];
 		if ($destination) {
-			include_once(APP_PATH . "includes/reports/excel.php");
+			include_once(APPPATH . "reports/excel.php");
 		}
 		else {
-			include_once(APP_PATH . "includes/reports/pdf.php");
+			include_once(APPPATH . "reports/pdf.php");
 		}
 		if ($fromsupp == ALL_NUMERIC) {
 			$from = _('All');

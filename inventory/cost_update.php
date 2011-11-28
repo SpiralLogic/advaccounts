@@ -55,12 +55,12 @@
 	//-----------------------------------------------------------------------------------------
 	start_form();
 	if (!Input::post('stock_id')) {
-		$_POST['stock_id'] = Session::get()->global_stock_id;
+		$_POST['stock_id'] = Session::i()->global_stock_id;
 	}
 	echo "<center>" . _("Item:") . "&nbsp;";
 	echo stock_costable_items_list('stock_id', $_POST['stock_id'], false, true);
 	echo "</center><hr>";
-	Session::get()->global_stock_id = $_POST['stock_id'];
+	Session::i()->global_stock_id = $_POST['stock_id'];
 	$sql
 	 = "SELECT description, units, material_cost, labour_cost,
 	overhead_cost, mb_flag

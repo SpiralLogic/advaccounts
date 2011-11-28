@@ -14,7 +14,8 @@
 	Page::start(_($help_context = "Inventory Item Sales prices"), Input::request('frame'));
 	//---------------------------------------------------------------------------------------------------
 	Validation::check(Validation::STOCK_ITEMS, _("There are no items defined in the system."));
-	Validation::check(Validation::SALES_TYPES, _("There are no sales types in the system. Please set up sales types befor entering pricing."));
+	Validation::check(Validation::SALES_TYPES,
+		_("There are no sales types in the system. Please set up sales types befor entering pricing."));
 	Page::simple_mode(true);
 	//---------------------------------------------------------------------------------------------------
 	$input_error = 0;
@@ -34,14 +35,14 @@
 		start_form();
 	}
 	if (!Input::post('stock_id')) {
-		$_POST['stock_id'] = Session::get()->global_stock_id;
+		$_POST['stock_id'] = Session::i()->global_stock_id;
 	}
 	if (!Input::request('frame')) {
 		echo "<center>" . _("Item:") . "&nbsp;";
 		echo sales_items_list('stock_id', $_POST['stock_id'], false, true, '', array(), true);
 		echo "<hr></center>";
 	}
-	Session::get()->global_stock_id = $_POST['stock_id'];
+	Session::i()->global_stock_id = $_POST['stock_id'];
 	//----------------------------------------------------------------------------------------------------
 	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 		if (!Validation::is_num('price', 0)) {
@@ -126,7 +127,8 @@
 	currencies_list_row(_("Currency:"), 'curr_abrev', null, true);
 	sales_types_list_row(_("Sales Type:"), 'sales_type_id', null, true);
 	if (!isset($_POST['price'])) {
-		$_POST['price'] = Num::price_format(Item_Price::get_kit(get_post('stock_id'), get_post('curr_abrev'), get_post('sales_type_id')));
+		$_POST['price'] = Num::price_format(Item_Price::get_kit(get_post('stock_id'), get_post('curr_abrev'),
+			get_post('sales_type_id')));
 	}
 	$kit = Item_Code::get_defaults($_POST['stock_id']);
 	small_amount_row(_("Price:"), 'price', null, '', _('per') . ' ' . $kit["units"]);
