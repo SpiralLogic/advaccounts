@@ -16,7 +16,7 @@
 
 	require_once("bootstrap.php");
 
-	$app = $_SESSION["App"];
+	$app = Session::i()->App;
 	Extensions::add_access();
 	if (Input::get('application')) {
 		$app->selected_application = $_GET['application'];

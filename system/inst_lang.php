@@ -46,11 +46,13 @@
 		$installed_languages[$id]['code'] = $_POST['code'];
 		$installed_languages[$id]['name'] = $_POST['name'];
 		$installed_languages[$id]['encoding'] = $_POST['encoding'];
-		$installed_languages[$id]['rtl'] = (bool)$_POST['rtl'];
-		if (!Files::save_to_file()) {
+		$installed_languages[$id]['rtl'] = (bool)$_POST['rtl'];		$lang = Config::get('languages.installed');
+				$lang = $lang[$id]['code'];	$filename = PATH_TO_ROOT . "/lang/$lang/LC_MESSAGES";
+
+		if (!Files::save_to_file($filename,'')) {
 			return false;
 		}
-		$directory = APP_PATH . "lang/" . $_POST['code'];
+		$directory = DOCROOT . "lang/" . $_POST['code'];
 		if (!file_exists($directory)) {
 			mkdir($directory);
 			mkdir($directory . "/LC_MESSAGES");
@@ -84,10 +86,10 @@
 		$filename = PATH_TO_ROOT . "/lang/$lang/LC_MESSAGES";
 		if ($lang == Config::get('default_lang')) {
 			// on delete set default to current.
-			Config::set('default_lang', $_SESSION['language']->code);
+			Config::set('default_lang', $_SESSION['Language']->code);
 		}
 		Config::remove('languages.installed', $id);
-		if (!Files::save_to_file()) {
+		if (!Files::save_to_file($filename,'')) {
 			return;
 		}
 		$filename = PATH_TO_ROOT . "/lang/$lang";

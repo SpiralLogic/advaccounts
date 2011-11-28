@@ -137,18 +137,18 @@
 	//---------------------------------------------------------------------------------------------
 	start_form();
 	if (!isset($_POST['curr_abrev'])) {
-		$_POST['curr_abrev'] = Session::get()->global_curr_code;
+		$_POST['curr_abrev'] = Session::i()->global_curr_code;
 	}
 	echo "<center>";
 	echo _("Select a currency :") . "  ";
 	echo currencies_list('curr_abrev', null, true);
 	echo "</center>";
 	// if currency sel has changed, clear the form
-	if ($_POST['curr_abrev'] != Session::get()->global_curr_code) {
+	if ($_POST['curr_abrev'] != Session::i()->global_curr_code) {
 		clear_data();
 		$selected_id = "";
 	}
-	Session::get()->global_curr_code = $_POST['curr_abrev'];
+	Session::i()->global_curr_code = $_POST['curr_abrev'];
 	$sql = "SELECT date_, rate_buy, id FROM exchange_rates "
 	 . "WHERE curr_code=" . DB::escape($_POST['curr_abrev'],false,false) . "
 	 ORDER BY date_ DESC";

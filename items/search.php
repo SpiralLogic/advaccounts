@@ -2,10 +2,9 @@
 
 	$page_security = 'SA_ITEM';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	Session::get()->App->selected_application = 'Items';
+	Session::i()->App->selected_application = 'Items';
 	if (AJAX_REFERRER) {
 		if (isset($_GET['term'])) {
-
 			$data = Item::searchOrder($_GET['term'], $_GET['id']);
 		} elseif (isset($_POST['id'])) {
 			if (isset($_POST['name'])) {

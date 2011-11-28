@@ -68,11 +68,11 @@
 		$comments = $_POST['PARAM_3'];
 		$destination = $_POST['PARAM_4'];
 		if ($destination) {
-			include_once(APP_PATH . "includes/reports/excel.php");
+			include_once(APPPATH . "reports/excel.php");
 		}
 		else
 		{
-			include_once(APP_PATH . "includes/reports/pdf.php");
+			include_once(APPPATH . "reports/pdf.php");
 		}
 		$dec = User::price_dec();
 		$rep = new FrontReport(_('Tax Report'), "TaxReport", User::pagesize());

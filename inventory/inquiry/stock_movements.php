@@ -23,7 +23,7 @@
 	}
 	start_form();
 	if (!Input::post('stock_id')) {
-		$_POST['stock_id'] = Session::get()->global_stock_id;
+		$_POST['stock_id'] = Session::i()->global_stock_id;
 	}
 	start_table("class='tablestyle_noborder'");
 	stock_items_list_cells(_("Select an item:"), 'stock_id', $_POST['stock_id'], false, true, false);
@@ -33,7 +33,7 @@
 	submit_cells('ShowMoves', _("Show Movements"), '', _('Refresh Inquiry'), 'default');
 	end_table();
 	end_form();
-	Session::get()->global_stock_id = $_POST['stock_id'];
+	Session::i()->global_stock_id = $_POST['stock_id'];
 	$before_date = Dates::date2sql($_POST['BeforeDate']);
 	$after_date = Dates::date2sql($_POST['AfterDate']);
 	$sql
@@ -109,7 +109,7 @@
 		elseif ($myrow["type"] == ST_LOCTRANSFER || $myrow["type"] == ST_INVADJUST)
 		{
 			// get the adjustment type
-			$movement_type = Inv_Movement::get_type( $myrow["person_id"]);
+			$movement_type = Inv_Movement::get_type($myrow["person_id"]);
 			$person = $movement_type["name"];
 		}
 		elseif ($myrow["type"] == ST_WORKORDER || $myrow["type"] == ST_MANUISSUE

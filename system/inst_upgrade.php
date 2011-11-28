@@ -54,7 +54,7 @@
 	//
 	function get_installers()
 	{
-		$patchdir = APP_PATH . "sql/";
+		$patchdir = DOCROOT . "sql/";
 		$upgrades = array();
 		$datadir = @opendir($patchdir);
 		if ($datadir) {

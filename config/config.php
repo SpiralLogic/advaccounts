@@ -16,7 +16,7 @@
 		// writable by www server. When set to empty string logging is switched off.
 		// Special value 'syslog' can be used for system logger usage (see php manual).
 		//$error_logfile = '';
-		'logs_error_file'									=> APP_PATH . 'tmp/errors.log',
+		'logs_error_file'									=> DOCROOT . 'tmp/errors.log',
 /* use popup windows for views */
 		'ui_windows_popups'								=> true,
 		/* use date picker for all date fields */

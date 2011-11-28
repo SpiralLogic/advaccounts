@@ -77,12 +77,12 @@
 	//--------------------------------------------------------------------------------------------------
 	start_form();
 	if (!Input::post('stock_id')) {
-		$_POST['stock_id'] = Session::get()->global_stock_id;
+		$_POST['stock_id'] = Session::i()->global_stock_id;
 	}
 	echo "<center>" . _("Item:") . "&nbsp;";
 	echo stock_purchasable_items_list('stock_id', $_POST['stock_id'], false, true, false, false);
 	echo "<hr></center>";
-	Session::get()->global_stock_id = $_POST['stock_id'];
+	Session::i()->global_stock_id = $_POST['stock_id'];
 	$result = Item_Code::get_defaults($_POST['stock_id']);
 	$dec = $result['decimals'];
 	$units = $result['units'];

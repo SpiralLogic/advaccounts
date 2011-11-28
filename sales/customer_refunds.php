@@ -20,7 +20,7 @@
 	Validation::check(Validation::BANK_ACCOUNTS, _("There are no bank accounts defined in the system."));
 	//----------------------------------------------------------------------------------------
 	if (!isset($_POST['customer_id'])) {
-		$customer = new Contacts_Customer(Session::get()->global_customer);
+		$customer = new Contacts_Customer(Session::i()->global_customer);
 	}
 	if (!isset($_POST['DateBanked'])) {
 		$_POST['DateBanked'] = Dates::new_doc_date();
@@ -172,7 +172,7 @@
 		hidden('BranchID', ANY_NUMERIC);
 	}
 	read_customer_data();
-	Session::get()->global_customer = $customer->id;
+	Session::i()->global_customer = $customer->id;
 	if (isset($_POST['HoldAccount']) && $_POST['HoldAccount'] != 0) {
 		end_outer_table();
 		Errors::error(_("This customer account is on hold."));

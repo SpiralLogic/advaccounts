@@ -26,7 +26,7 @@
 	//------------------------------------------------------------------------------------------------
 	start_form();
 	if (!isset($_POST['supplier_id'])) {
-		$_POST['supplier_id'] = Session::get()->supplier_id;
+		$_POST['supplier_id'] = Session::i()->supplier_id;
 	}
 	start_table("class='tablestyle_noborder'");
 	start_row();
@@ -36,7 +36,7 @@
 	supp_allocations_list_cell("filterType", null);
 	check_cells(_("show settled:"), 'showSettled', null);
 	submit_cells('RefreshInquiry', _("Search"), '', _('Refresh Inquiry'), 'default');
-	Session::get()->supplier_id = $_POST['supplier_id'];
+	Session::i()->supplier_id = $_POST['supplier_id'];
 	end_row();
 	end_table();
 	//------------------------------------------------------------------------------------------------
