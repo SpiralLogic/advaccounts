@@ -1042,7 +1042,7 @@
 			}
 
 		//---------------------------------------------------------------------------------
-		function summary($title, &$order, $editable_items = false)
+		public static 		function summary($title, &$order, $editable_items = false)
 			{
 				Display::heading($title);
 				div_start('items_table');
@@ -1157,7 +1157,7 @@ JS;
 			}
 
 		// ------------------------------------------------------------------------------
-		function header($order, $editable, $date_text, $display_tax_group = false)
+		public static 		function header($order, $editable, $date_text, $display_tax_group = false)
 			{
 				$Ajax = Ajax::instance();
 				start_outer_table("width=90% " . Config::get('tables_style2'));
@@ -1328,7 +1328,7 @@ JS;
 			}
 
 		//--------------------------------------------------------------------------------
-		function item_controls($order, &$rowcounter, $line_no = -1)
+		public static 			function item_controls($order, &$rowcounter, $line_no = -1)
 			{
 				$Ajax = Ajax::instance();
 				alt_table_row_color($rowcounter);
@@ -1387,7 +1387,7 @@ JS;
 			}
 
 		//--------------------------------------------------------------------------------
-		function display_delivery_details($order)
+		public static 		function display_delivery_details($order)
 			{
 				$Ajax = Ajax::instance();
 				div_start('delivery');

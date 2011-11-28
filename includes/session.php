@@ -13,6 +13,9 @@
 	{
 		private static $_instance = null;
 		public static $lang;
+		/***
+		 * @var gettextNativeSupport|gettext_php_support
+		 */
 		public static $get_text;
 		protected $installed_languages;
 		protected $_session = array();
