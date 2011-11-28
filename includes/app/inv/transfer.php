@@ -136,7 +136,7 @@
 		//---------------------------------------------------------------------------------
 		function item_controls($order, $line_no = -1)
 			{
-				$Ajax = Ajax::instance();
+				$Ajax = Ajax::i();
 				start_row();
 				$id = find_submit('Edit');
 				if ($line_no != -1 && $line_no == $id) {

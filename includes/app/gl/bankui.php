@@ -13,7 +13,7 @@
 	{
 		public static function header($order)
 			{
-				$Ajax = Ajax::instance();
+				$Ajax = Ajax::i();
 				$payment = $order->trans_type == ST_BANKPAYMENT;
 				div_start('pmt_header');
 				start_outer_table("width=90% " . Config::get('tables_style2')); // outer table
@@ -154,7 +154,7 @@
 		//---------------------------------------------------------------------------------
 		public static function item_controls($order, $dim, $Index = null)
 			{
-				$Ajax = Ajax::instance();
+				$Ajax = Ajax::i();
 				$payment = $order->trans_type == ST_BANKPAYMENT;
 				start_row();
 				$id = find_submit('Edit');

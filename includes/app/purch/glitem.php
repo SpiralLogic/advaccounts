@@ -93,7 +93,7 @@
 		//		 = 3 display on view credit
 		function display_items($supp_trans, $mode = 0)
 			{
-				$Ajax = Ajax::instance();
+				$Ajax = Ajax::i();
 				// if displaying in form, and no items, exit
 				if (($mode == 2 || $mode == 3) && count($supp_trans->gl_codes) == 0) {
 					return 0;

@@ -151,7 +151,7 @@
 		//
 		function query()
 		{
-			$Ajax = Ajax::instance();
+			$Ajax = Ajax::i();
 			$Ajax->activate("_{$this->name}_span");
 			$this->data = array();
 			if (!$this->_init()) {
@@ -359,7 +359,7 @@
 		//
 		function select_records()
 		{
-			$Ajax = Ajax::instance();
+			$Ajax = Ajax::i();
 			$page = find_submit($this->name . '_page_', false);
 			$sort = find_submit($this->name . '_sort_', true);
 			if ($page) {
@@ -431,7 +431,7 @@
 				//			return inactive_control_cell($row[$this->inactive_ctrl['key']],
 				//				 $row['inactive'], $this->inactive_ctrl['table'],
 				//				 $this->inactive_ctrl['key']);
-				$Ajax = Ajax::instance();
+				$Ajax = Ajax::i();
 				$key = $this->key ?
 				 $this->key : $this->columns[0]['name']; // TODO - support for complex keys
 				$id = $row[$key];

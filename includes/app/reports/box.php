@@ -33,7 +33,7 @@
 
 		function getDisplay($class = null)
 		{
-			$Ajax = Ajax::instance();
+			$Ajax = Ajax::i();
 			$temp = array_values($this->ar_classes);
 			$display_class = $class == null ? $temp[0] : $this->ar_classes[$class];
 			$class_counter = 0;

@@ -171,9 +171,7 @@
 
 		/***
 		 * @static
-		 *
 		 * @param PDOStatement $result The result of the query or whatever cunt
-		 *
 		 * @return DB_Query_Result This is something
 		 */
 		public static function fetch($result = null)

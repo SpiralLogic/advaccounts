@@ -32,7 +32,7 @@
 		const GETTEXT_PHP = 2;
 
 		public function raise_error($str) {
-			//	echo "$str";
+			Errors::error($str);
 			return 1;
 		}
 
@@ -55,11 +55,7 @@
 			return new gettext_php_support();
 		}
 
-		/**
-		 * Set gettext language code.
-		 *
-		 * @throws GetText_Error
-		 */
+
 		function set_language($lang_code, $encoding) {
 			putenv("LANG=$lang_code");
 			putenv("LC_ALL=$lang_code");
@@ -75,12 +71,9 @@
 				//return PEAR::raise_error($err);
 				return $this->raise_error("1 " . $str);
 			}
-			//return 0;
+			return 0;
 		}
 
-		/**
-		 * Add a translation domain.
-		 */
 		function add_domain($domain, $path = false) {
 			if ($path === false) {
 				bindtextdomain($domain, "./locale/");
@@ -91,11 +84,7 @@
 			textdomain($domain);
 		}
 
-		/**
-		 * Retrieve translation for specified key.
-		 *
-		 * @access private
-		 */
+
 		function _get_translation($key) {
 			return gettext($key);
 		}
@@ -107,28 +96,16 @@
 			$this->_interpolation_vars = array();
 		}
 
-		/**
-		 * Set an interpolation variable.
-		 */
-		function set_var($key, $value) {
+				function set_var($key, $value) {
 			$this->_interpolation_vars[$key] = $value;
 		}
 
-		/**
-		 * Set an associative array of interpolation variables.
-		 */
+
 		function set_vars($hash) {
 			$this->_interpolation_vars = array_merge($this->_interpolation_vars,
 				$hash);
 		}
 
-		/**
-		 * Retrieve translation for specified key.
-		 *
-		 * @param	string $key	-- gettext msgid
-		 *
-		 * @throws GetText_Error
-		 */
 		function gettext($key) {
 			$value = $this->_get_translation($key);
 			if ($value === false) {
@@ -153,12 +130,6 @@
 			return $value;
 		}
 
-		/**
-		 * Retrieve an interpolation variable value.
-		 *
-		 * @return mixed
-		 * @access private
-		 */
 		function _get_var($name) {
 			if (!array_key_exists($name, $this->_interpolation_vars)) {
 				return false;
@@ -185,9 +156,9 @@
 
 		/**
 		 * Set the translation domain.
-		 *
 		 * @param	string $lang_code -- language code
-		 *
+		 * @param         $encoding
+		 * @return int
 		 * @throws GetText_Error
 		 */
 		function set_language($lang_code, $encoding) {
@@ -215,6 +186,7 @@
 					return $err;
 				}
 			}
+			return 0;
 		}
 
 		/**
@@ -223,21 +195,23 @@
 		 * @param string $domain		-- Domain name
 		 * @param string $path			optional -- Repository path
 		 *
+		 * @return int
 		 * @throws GetText_Error
 		 */
 		function add_domain($domain, $path = "./locale/") {
 			if (array_key_exists($domain, $this->_domains)) {
-				return;
+				return 0;
 			}
 			if (!$this->_lang_code) {
 				$this->_jobs[] = array($domain, $path);
-				return;
+				return 0;
 			}
 			$err = $this->_load_domain($domain, $path);
 			if ($err != 0) {
 				return $err;
 			}
 			$this->_end++;
+			return 0;
 		}
 
 		/**
@@ -249,6 +223,7 @@
 		 * @param	string $domain		-- Domain name
 		 * @param	string $path			optional -- Repository
 		 *
+		 * @return int
 		 * @throws GetText_Error
 		 * @access private
 		 */
@@ -280,18 +255,26 @@
 				}
 				$d->_keys = $hash;
 			} else {
+				/** @noinspection PhpIncludeInspection */
 				$d->_keys = include $php_domain;
 			}
 			$this->_domains[] = &$d;
+			return 0;
 		}
 
 		/**
 		 * Implementation of gettext message retrieval.
+		 *
+		 * @param $key
+		 *
+		 * @return mixed
 		 */
 		function _get_translation($key) {
 			for ($i = $this->_end; $i >= 0; $i--)
 			{
+				/** @noinspection PhpUndefinedMethodInspection */
 				if ($this->_domains[$i]->has_key($key)) {
+					/** @noinspection PhpUndefinedMethodInspection */
 					return $this->_domains[$i]->get($key);
 				}
 			}
@@ -329,9 +312,15 @@
 		public $_hash = array();
 		public $_current_key;
 		public $_current_value;
+		public function raise_error($str) {
+				Errors::error($str);
+				return 1;
+			}
 
 		/**
 		 * Parse specified .po file.
+		 *
+		 * @param $file
 		 *
 		 * @return hashtable
 		 * @throws GetText_Error
@@ -360,8 +349,12 @@
 		 * Parse one po line.
 		 *
 		 * @access private
+		 *
+		 * @param $line
+		 *
+		 * @return
 		 */
-		function _parse_line($line, $nbr) {
+		function _parse_line($line) {
 			if (preg_match('/^\s*?#/', $line)) {
 				return;
 			}
@@ -408,11 +401,15 @@
 	class gettext_php_support_compiler {
 		/**
 		 * Write hash in an includable php file.
+		 *
+		 * @param $str
+		 *
+		 * @return int
 		 */
 		public function raise_error($str) {
-			//	echo "$str";
-			return 1;
-		}
+		 			Errors::error($str);
+		 			return 1;
+		 		}
 
 		function compile(&$hash, $source_path) {
 			$dest_path = preg_replace('/\.po$/', '.php', $source_path);
@@ -434,11 +431,9 @@
 			fwrite($fp, ');' . "\n");
 			fwrite($fp, '?>');
 			fclose($fp);
-		}
+		return 0;
 	}
 
-	/**
-	 * get_text related error.
-	 */
-	//class GetText_Error extends PEAR_Error {}
+	}
+
 ?>

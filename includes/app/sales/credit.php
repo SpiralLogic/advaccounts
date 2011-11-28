@@ -223,7 +223,7 @@
 		// ------------------------------------------------------------------------------
 		public static function header($order)
 			{
-				$Ajax = Ajax::instance();
+				$Ajax = Ajax::i();
 				start_outer_table("width=90%  " . Config::get('tables_style'));
 				table_section(1);
 				$customer_error = "";
@@ -399,7 +399,7 @@
 		//---------------------------------------------------------------------------------
 		public static function item_controls($order, $rowcounter, $line_no = -1)
 			{
-				$Ajax = Ajax::instance();
+				$Ajax = Ajax::i();
 				alt_table_row_color($rowcounter);
 				$id = find_submit('Edit');
 				if ($line_no != -1 && $line_no == $id) {
@@ -448,7 +448,7 @@
 		//---------------------------------------------------------------------------------
 		public static function option_controls($credit)
 			{
-				$Ajax = Ajax::instance();
+				$Ajax = Ajax::i();
 				echo "<br>";
 				if (isset($_POST['_CreditType_update'])) {
 					$Ajax->activate('options');

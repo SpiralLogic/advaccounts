@@ -54,6 +54,7 @@
 				$sep = Config::get('separators_date', 0);
 				$date_ = trim($date_);
 				$date_ = str_replace($sep, "", $date_);
+				$day=$month=$year=0;
 				if (strlen($date_) == 6) {
 					if ($how == 0) {
 						$day = substr($date_, 2, 2);
@@ -148,7 +149,7 @@
 
 		static function is_date_in_fiscalyear($date, $convert = false)
 			{
-				return 1;
+			if (!Config::get('use_fiscalyear'))	return 1;
 				$myrow = DB_Company::get_current_fiscalyear();
 				if ($myrow['closed'] == 1) {
 					return 0;
@@ -182,9 +183,11 @@
 			{
 				list($day, $month, $year) = Dates::explode_date_to_dmy($date);
 				if (Config::get('accounts_datesystem') == 1) {
+					/** @noinspection PhpUnusedLocalVariableInspection */
 					list($year, $month, $day) = Dates::gregorian_to_jalali($year, $month, $day);
 				}
 				else if (Config::get('accounts_datesystem') == 2) {
+					/** @noinspection PhpUnusedLocalVariableInspection */
 					list($year, $month, $day) = Dates::gregorian_to_islamic($year, $month, $day);
 				}
 				return Dates::__date($year, $month, 1);
@@ -194,6 +197,7 @@
 			{
 				list($day, $month, $year) = Dates::explode_date_to_dmy($date);
 				if (Config::get('accounts_datesystem') == 1) {
+					/** @noinspection PhpUnusedLocalVariableInspection */
 					list($year, $month, $day) = Dates::gregorian_to_jalali($year, $month, $day);
 					$days_in_month = array(
 						31, 31, 31, 31, 31, 31, 30, 30, 30, 30, 30,
@@ -202,6 +206,7 @@
 					);
 				}
 				else if (Config::get('accounts_datesystem') == 2) {
+					/** @noinspection PhpUnusedLocalVariableInspection */
 					list($year, $month, $day) = Dates::gregorian_to_islamic($year, $month, $day);
 					$days_in_month
 					 = array(30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30, (((((11 * $year) + 14) % 30) < 11) ? 30 : 29));
@@ -300,6 +305,7 @@
 					return "";
 				}
 				$date_ = trim($date_);
+				/** @noinspection PhpUnusedLocalVariableInspection */
 				$year = $month = $day = 0;
 				// Split up the date by the separator based on "how" to split it
 				if ($how == 0) // MMDDYYYY

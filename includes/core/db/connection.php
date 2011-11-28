@@ -8,9 +8,19 @@
 	 */
 	class DB_Connection
 	{
+		/**
+		 * @var array
+		 */
 		protected static $instances = array();
 
-		static function instance($name, $config)
+		/**
+		 * @static
+		 *
+		 * @param $name
+		 * @param $config
+		 *
+		 * @return mixed
+		 */static function instance($name, $config)
 			{
 				if (!isset(static::$instances[$name])) {
 					new static($name, $config);
@@ -18,15 +28,32 @@
 				return static::$instances[$name];
 			}
 
-		protected $name;
-		protected $user;
-		protected $pass;
-		protected $host;
-		protected $port;
-		protected $conn;
-		protected $intransaction = false;
+		/**
+		 * @var
+		 */protected $name;
+		/**
+		 * @var
+		 */protected $user;
+		/**
+		 * @var
+		 */protected $pass;
+		/**
+		 * @var
+		 */protected $host;
+		/**
+		 * @var
+		 */protected $port;
+		/**
+		 * @var PDO
+		 */protected $conn;
+		/**
+		 * @var bool
+		 */protected $intransaction = false;
 
-		protected function __construct($name, array $config)
+		/**
+		 * @param       $name
+		 * @param array $config
+		 */protected function __construct($name, array $config)
 			{
 				$this->name = $name;
 				$this->user = $config['user'];
@@ -38,11 +65,18 @@
 				static::$instances[$name] = $this;
 			}
 
-		public function name()
+		/**
+		 * @return mixed
+		 */public function name()
 			{
 				return $this->name;
 			}
 
+		/**
+		 * @param $sql
+		 * @return PDOStatement
+		 *
+		 */
 		public function prepare($sql)
 			{
 				return $this->conn->prepare($sql);
@@ -71,34 +105,47 @@
 				catch (PDOException $e) {
 					$this->_error($e);
 				}
+				return false;
 			}
 
-		public function begin()
+		/**
+		 * @return DB_Connection
+		 */public function begin()
 			{
 				$this->conn->beginTransaction();
 				return $this;
 			}
 
-		public function lastInsertId()
+		/**
+		 * @return mixed
+		 */public function lastInsertId()
 			{
 				return $this->conn->lastInsertId();
 			}
 
-		public function commit()
+		/**
+		 * @return DB_Connection
+		 */public function commit()
 			{
 				$this->conn->commit();
 				$this->intransaction = false;
 				return $this;
 			}
 
-		public function cancel()
+		/**
+		 * @return DB_Connection
+		 */public function cancel()
 			{
 				$this->intransaction = false;
 				$this->conn->rollBack();
 				return $this;
 			}
 
-		public function query($sql, $fetchas = PDO::FETCH_OBJ)
+		/**
+		 * @param     $sql
+		 * @param int $fetchas
+		 * @return bool
+		 */public function query($sql, $fetchas = PDO::FETCH_OBJ)
 			{
 				try {
 					$query = $this->conn->prepare($sql);
@@ -113,38 +160,56 @@
 				return $results;
 			}
 
-		public function quote($value)
+		/**
+		 * @param $value
+		 * @return mixed
+		 */public function quote($value)
 			{
 				return $this->conn->quote($value);
 			}
 
-		protected function _connect()
-			{
+		/**
+		 *
+		 */protected function _connect()
+			{					$time = microtime(true);
+
 				try {
 					$this->conn = new PDO('mysql:host=' . $this->host . ';dbname=' . $this->name, $this->user, $this->pass);
 					$this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-				}
+					}
 				catch (PDOException $e) {
 					$this->_error($e, true);
 				}
 			}
 
-		public function errorCode()
+		/**
+		 * @return mixed
+		 */public function errorCode()
 			{
 				return $this->conn->errorCode();
 			}
 
-		public function errorInfo()
+		/**
+		 * @return mixed
+		 */public function errorInfo()
 			{
 				return $this->conn->errorInfo();
 			}
 
-		public function getAttribute(PDO $value)
+		/**
+		 * @param PDO|int $value
+		 * @return mixed
+		 */public function getAttribute(PDO $value)
 			{
 				return $this->conn->getAttribute($value);
 			}
 
-		protected function _error(PDOException $e, $exit = false)
+		/**
+		 * @param PDOException $e
+		 * @param bool         $exit
+		 * @return bool
+		 * @throws DB_Exception
+		 */protected function _error(PDOException $e, $exit = false)
 			{
 				if (function_exists('xdebug_call_file')) {
 					$error = '<p>DATABASE ERROR: <br>At file ' . xdebug_call_file() . ':' . xdebug_call_line() . ':<br>' . $e->getMessage() . '</p>';

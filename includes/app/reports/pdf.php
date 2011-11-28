@@ -892,7 +892,7 @@
 					$printer = Printer::get_report(User::print_profile(), $_POST['REP_ID']);
 					if ($printer == false) {
 						if (Ajax::in_ajax()) {
-							$Ajax = Ajax::instance();
+							$Ajax = Ajax::i();
 							if (User::rep_popup()) {
 								$Ajax->popup($fname);
 							} // when embeded pdf viewer used

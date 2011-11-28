@@ -13,7 +13,7 @@
 	 *
 	 */
 	error_reporting(-1);
-	 ini_set('display_errors', 1);
+	ini_set('display_errors', 1);
 	defined('ADV_START_TIME') or define('ADV_START_TIME', microtime(true));
 	define('DS', DIRECTORY_SEPARATOR);
 	define('DOCROOT', realpath(__DIR__) . DS);
@@ -32,20 +32,29 @@
 	 */
 	$path = substr(str_repeat('../', substr_count(str_replace(DOCROOT, '', realpath('.') . DS), DS)), 0, -1);
 	define('PATH_TO_ROOT', (!$path) ? '.' : $path);
-	require COREPATH .DS. 'autoloader.php';
-	Autoloader::add_core_classes(array('Adv_Exception',
-																		'Ajax', 'Arr', 'Auth', 'Autoloader', 'Cache', 'Config', 'DatePicker', 'Dates', 'DB',
-																		'DB_Connection', 'DB_Exception', 'DB_Query', 'DB_Utils', 'DB_Query_Delete', 'DB_Query_Insert',
-																		'DB_Query_Result', 'DB_Query_Select', 'DB_Query_Update', 'DB_Query_Where',
-																		'Dialog',
-																		'Errors', 'Files', 'gettextNativeSupport', 'HTML', 'Input', 'JS', 'JsHttpRequest',
-																		'Language', 'Menu', 'MenuUi', 'Num', 'PHPQuickProfiler', 'Session', 'Status',
-																		'UploadHandler'));Autoloader::add_vendor_classes(array('Crypt_AES','Crypt_DES',
-																																													'Crypt_Hash','Crypt_Random',
-																																													'Crypt_RC4','Crypt_Rijndael',
-																																													'Crypt_RSA','Crypt_TripleDES', 'FB',
-																																													'PHPMailer','SMTP','OLEwriter',
-																																													'TCPDF','Cpdf'));
+	require COREPATH . DS . 'autoloader.php';
+	Autoloader::add_core_classes(
+		array(
+			'Adv_Exception',
+			'Ajax', 'Arr', 'Auth', 'Autoloader', 'Cache', 'Config', 'DatePicker', 'Dates', 'DB',
+			'DB_Connection', 'DB_Exception', 'DB_Query', 'DB_Query_Delete', 'DB_Query_Insert',
+			'DB_Query_Result', 'DB_Query_Select', 'DB_Query_Update', 'DB_Query_Where',
+			'Dialog',
+			'Errors', 'Files', 'gettextNativeSupport', 'HTML', 'Input', 'JS',
+			'Language', 'Menu', 'MenuUi', 'Num',  'Session', 'Status',
+			'UploadHandler'
+		)
+	);
+	Autoloader::add_vendor_classes(
+		array(
+			'Crypt_AES', 'Crypt_DES',
+			'Crypt_Hash', 'Crypt_Random',
+			'Crypt_RC4', 'Crypt_Rijndael',
+			'Crypt_RSA', 'Crypt_TripleDES', 'FB','PHPQuickProfiler','Console',
+			'PHPMailer', 'SMTP', 'OLEwriter','JsHttpRequest',
+			'TCPDF', 'Cpdf'
+		)
+	);
 	Session::init();
 	Config::init();
 	require APPPATH . "main.php";
@@ -58,8 +67,10 @@
 	// intercept all output to destroy it in case of ajax call
 	// POST vars cleanup needed for direct reuse.
 	// We quote all values later with DB::escape() before db update.
-	array_walk($_POST, function(&$v)
+	array_walk(
+		$_POST, function(&$v)
 		{
 			$v = is_string($v) ? trim($v) : $v;
-		});
+		}
+	);
 	advaccounting::init();

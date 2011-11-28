@@ -52,7 +52,7 @@
 	function handle_submit()
 		{
 			global $new_customer;
-			$Ajax = Ajax::instance();
+			$Ajax = Ajax::i();
 			if (!can_process()) {
 				return;
 			}

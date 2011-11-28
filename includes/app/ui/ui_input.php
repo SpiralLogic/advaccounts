@@ -13,7 +13,7 @@
 	// Sets local POST value and adds Value to ajax posting if needed
 	//
 	/*function set_post($name, $value, $ajax_trigger=true) {
-		$Ajax = Ajax::instance();
+		$Ajax = Ajax::i();
 
 		$_POST[$name] = $value;
 		if ($ajax_trigger) $Ajax->activate($name);
@@ -50,7 +50,7 @@
 	//---------------------------------------------------------------------------------
 	function hidden($name, $value = null, $echo = true)
 		{
-			$Ajax = Ajax::instance();
+			$Ajax = Ajax::i();
 			if ($value === null) {
 				$value = get_post($name);
 			}
@@ -292,7 +292,7 @@
 
 	function checkbox($label, $name, $value = null, $submit_on_change = false, $title = false)
 		{
-			$Ajax = Ajax::instance();
+			$Ajax = Ajax::i();
 			$str = '';
 			if ($label) {
 				$str .= $label . "  ";
@@ -347,7 +347,7 @@
 
 	function label_cell($label, $params = "", $id = null)
 		{
-			$Ajax = Ajax::instance();
+			$Ajax = Ajax::i();
 			if (!empty($id)) {
 				$params .= " id='$id'";
 				$Ajax->addUpdate($id, $id, $label);
@@ -439,7 +439,7 @@
 	function text_cells($label, $name, $value = null, $size = "", $max = "", $title = false, $labparams = "", $post_label = "",
 		$inparams = "")
 		{
-			$Ajax = Ajax::instance();
+			$Ajax = Ajax::i();
 			JS::default_focus($name);
 			if ($label != null) {
 				label_cell($label, $labparams);
@@ -460,7 +460,7 @@
 	function text_cells_ex($label, $name, $size, $max = null, $init = null, $title = null, $labparams = null, $post_label = null,
 		$submit_on_change = false)
 		{
-			$Ajax = Ajax::instance();
+			$Ajax = Ajax::i();
 			JS::default_focus($name);
 			if (!isset($_POST[$name]) || $_POST[$name] == "") {
 				if ($init !== null) {
@@ -552,7 +552,7 @@
 	function date_cells($label, $name, $title = null, $check = null, $inc_days = 0, $inc_months = 0, $inc_years = 0, $params = null,
 		$submit_on_change = false, $options = array())
 		{
-			$Ajax = Ajax::instance();
+			$Ajax = Ajax::i();
 			if (!isset($_POST[$name]) || $_POST[$name] == "") {
 				if ($inc_years == 1001) {
 					$_POST[$name] = null;
@@ -650,7 +650,7 @@
 	function amount_cells_ex($label, $name, $size, $max = null, $init = null, $params = null, $post_label = null, $dec = null,
 		$id = null)
 		{
-			$Ajax = Ajax::instance();
+			$Ajax = Ajax::i();
 			if (!isset($dec)) {
 				$dec = User::price_dec();
 			}
@@ -770,7 +770,7 @@
 	//-----------------------------------------------------------------------------------
 	function textarea_cells($label, $name, $value, $cols, $rows, $title = null, $params = "")
 		{
-			$Ajax = Ajax::instance();
+			$Ajax = Ajax::i();
 			JS::default_focus($name);
 			if ($label != null) {
 				echo "<td $params>$label</td>\n";
@@ -798,7 +798,7 @@
 	//
 	function inactive_control_cell($id, $value, $table, $key)
 		{
-			$Ajax = Ajax::instance();
+			$Ajax = Ajax::i();
 			$name = "Inactive" . $id;
 			$value = $value ? 1 : 0;
 			if (check_value('show_inactive')) {
@@ -826,7 +826,7 @@
 	//
 	function inactive_control_column(&$th)
 		{
-			$Ajax = Ajax::instance();
+			$Ajax = Ajax::i();
 			if (check_value('show_inactive')) {
 				Arr::insert($th, count($th) - 2, _("Inactive"));
 			}

@@ -24,10 +24,13 @@
 				set_exception_handler('adv_exception_handler');
 				if (Config::get('debug') && User::get()->user == 1) {
 					if (preg_match('/Chrome/i', $_SERVER['HTTP_USER_AGENT'])) {
+						/** @noinspection PhpIncludeInspection */
 						include(realpath(VENDORPATH . 'fb.php'));
 						FB::useFile(DOCROOT . 'tmp/chromelogs', DS . 'tmp' . DS . 'chromelogs');
 					} else {
+						/** @noinspection PhpIncludeInspection */
 						include(realpath(VENDORPATH . 'FirePHP/FirePHP.class.php'));
+						/** @noinspection PhpIncludeInspection */
 						include(realpath(VENDORPATH . 'FirePHP/fb.php'));
 					}
 					return;
@@ -88,7 +91,7 @@
 					return '';
 				}
 				if (count(static::$messages) == 0) {
-					return;
+					return '';
 				}
 				foreach (static::$messages as $msg) {
 					$type = $msg['type'];
@@ -173,7 +176,6 @@
 					}
 					if ($exit_if_error) {
 						throw new DB_Exception($db_error);
-						end_page();
 					}
 				}
 				return $db_error;

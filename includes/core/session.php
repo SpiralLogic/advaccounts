@@ -11,15 +11,31 @@
 	 ***********************************************************************/
 	class Session extends Input
 	{
+		/**
+		 * @var Session
+		 */
 		private static $_i = null;
+		/**
+		 * @var Language
+		 */
 		public static $lang;
 		/***
 		 * @var gettextNativeSupport|gettext_php_support
 		 */
 		public static $get_text;
+		/**
+		 * @var array
+		 */
 		protected $installed_languages;
+		/**
+		 * @var array
+		 */
 		protected $_session = array();
 
+		/**
+		 * @static
+		 * @return Session
+		 */
 		public static function init()
 			{
 				if (static::$_i === null) {
@@ -28,22 +44,37 @@
 				return static::$_i;
 			}
 
+		/**
+		 * @static
+		 * @return Session|mixed
+		 */
 		public static function i()
 			{
 				return static::init();
 			}
 
+		/**
+		 * @static
+		 *
+		 */
 		public static function kill()
 			{
 				session_unset();
 				session_destroy();
 			}
 
+		/**
+		 * @static
+		 *
+		 */
 		public static function hasLogin()
 			{
-				static::init()->checkLogin();
+				static::i()->checkLogin();
 			}
 
+		/**
+		 *
+		 */
 		final protected function __construct()
 			{
 				ini_set('session.gc_maxlifetime', 36000); // 10hrs
@@ -63,9 +94,12 @@
 				$this->setLanguage();
 				$this->_session = &$_SESSION;
 				// Ajax communication object
-				$GLOBALS['Ajax'] = Ajax::instance();
+				if (class_exists('Ajax')) $GLOBALS['Ajax'] = Ajax::i();
 			}
 
+		/**
+		 *
+		 */
 		protected function setLanguage()
 			{
 				if (!isset($_SESSION['Language']) || !method_exists($_SESSION['Language'], 'set_language')) {
@@ -73,6 +107,7 @@
 					static::$lang = new Language($l['name'], $l['code'], $l['encoding'], isset($l['rtl']) ? 'rtl' : 'ltr');
 					static::$lang->set_language(static::$lang->code);
 					if (file_exists(DOCROOT . "lang/" . static::$lang->code . "/locale.php")) {
+						/** @noinspection PhpIncludeInspection */
 						include(DOCROOT . "lang/" . static::$lang->code . "/locale.php");
 					}
 					$_SESSION['Language'] = static::$lang;
@@ -81,6 +116,9 @@
 				}
 			}
 
+		/**
+		 * @return mixed
+		 */
 		protected function setText()
 			{
 				if (isset($_SESSION['get_text'])) {
@@ -90,6 +128,9 @@
 				static::$get_text = $_SESSION['get_text'] = gettextNativeSupport::init();
 			}
 
+		/**
+		 *
+		 */
 		protected function checkLogin()
 			{
 				// logout.php is the only page we should have always
@@ -117,9 +158,12 @@
 				}
 			}
 
+		/**
+		 *
+		 */
 		protected function showLogin()
 			{
-				$Ajax = Ajax::instance();
+				$Ajax = Ajax::i();
 				if (!Input::post("user_name_entry_field")) {
 					// strip ajax marker from uri, to force synchronous page reload
 					$_SESSION['timeout'] = array(
@@ -133,6 +177,9 @@
 				}
 			}
 
+		/**
+		 *
+		 */
 		protected function loginFail()
 			{
 				header("HTTP/1.1 401 Authorization Required");
@@ -145,12 +192,19 @@
 				die();
 			}
 
-		public function __get($var)
+		/**
+		 * @param $var
+		 *
+		 * @return null
+		 */public function __get($var)
 			{
 				return static::_isset($this->_session, $var) ? : null;
 			}
 
-		public function __set($var, $value)
+		/**
+		 * @param $var
+		 * @param $value
+		 */public function __set($var, $value)
 			{
 				$this->_session[$var] = $value;
 			}

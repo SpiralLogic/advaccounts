@@ -8,18 +8,43 @@
 	 */
 	abstract class DB_Query extends DB_Query_Where
 	{
+		/**
+		 * @var DB_Query
+		 */
 		protected static $query = null;
+		/**
+		 * @var bool
+		 */
 		protected $compiled_query = false;
+		/**
+		 * @var
+		 */
 		protected $type;
+		/**
+		 * @var PDO
+		 */
 		protected $conn;
 
+		/**
+		 * @abstract
+		 *
+		 */
+		public abstract function execute();
+
+		/**
+		 * @param $db
+		 */
 		protected function __construct($db)
 			{
 				$this->conn = $db;
 				static::$query = $this;
 			}
 
-		protected function getQuery($data)
+		/**
+		 * @param $data
+		 *
+		 * @return bool
+		 */protected function getQuery($data)
 			{
 				if (!$this->compiled_query) {
 					$this->compiled_query = $this->execute($data);

@@ -54,11 +54,10 @@
 		// and get_qty_dec
 		public static function  qty_dec($stock_id = null)
 		{
-			if ($stock_id != null) {
-				$dec = Item_Unit::get_decimal($stock_id);
-			}
-			if ($stock_id == null || $dec == -1 || $dec == null) {
+			if (is_null($stock_id)) {
 				$dec = User::prefs()->qty_dec();
+			} else  {
+				$dec = Item_Unit::get_decimal($stock_id);
 			}
 			return $dec;
 		}

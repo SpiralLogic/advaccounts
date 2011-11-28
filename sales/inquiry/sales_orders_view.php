@@ -153,7 +153,7 @@
 	//
 	function change_tpl_flag($id)
 		{
-			$Ajax = Ajax::instance();
+			$Ajax = Ajax::i();
 			$sql = "UPDATE sales_orders SET type = !type WHERE order_no=$id";
 			DB::query($sql, "Can't change sales order type");
 			$Ajax->activate('orders_tbl');

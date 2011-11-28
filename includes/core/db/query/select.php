@@ -46,20 +46,22 @@
  */
 		public function from($tables = null)
 			{
+				if (is_null($tables)) return $this;
 				$tables = func_get_args();
 				$this->from = array_merge($this->from, $tables);
 				return $this;
 			}
 
 		function orderby($by = null)
-			{
+			{				if (is_null($by)) return $this;
+
 				$by = func_get_args();
 				$this->orderby = array_merge($this->orderby, $by);
 				return $this;
 			}
 
 		function groupby($by = null)
-			{
+			{	if (is_null($by)) return $this;
 				$by = func_get_args();
 				$this->groupby = array_merge($this->groupby, $by);
 				return $this;
@@ -99,7 +101,7 @@
 				$sql .= " FROM " . implode(', ', $this->from);
 				$sql .= parent::_buildWhere();
 				if (!empty($this->union_or)) {
-					$data = $this->data;
+					//$data = $this->data;
 					$finalsql = array();
 					foreach ($this->union_or as $k => $v) {
 						$finalsql[] = $sql . ' AND ' . $k . ' ' . $v;

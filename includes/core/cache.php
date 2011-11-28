@@ -8,38 +8,60 @@
 	 */
 	class Cache
 	{
+		/**
+		 * @var Memcached
+		 */
 		protected static $instance = null;
 
-		protected static function _get()
+		/**
+		 * @static
+		 * @return Memcached
+		 */
+		protected static function _i()
 		{
 			if (static::$instance === null) {
 				static::$instance = new Memcached('fa');
-				static::$instance->addServer('127.0.0.1', 11211);print_r(static::$instance->getStats());
-
+				static::$instance->addServer('127.0.0.1', 11211);
 			}
-
+			return static::$instance;
 		}
 
-		public static function set($key, $value)
+		/**
+		 * @static
+		 *
+		 * @param $key
+		 * @param $value
+		 *
+		 * @return mixed
+		 */public static function set($key, $value)
 		{
-			static::_get();
-			static::$instance->set($key, $value);
+			static::_i()->set($key, $value);
 			return $value;
 		}
 
-		public static function get($key)
+		/**
+		 * @static
+		 * @param $key
+		 * @return mixed
+		 */public static function get($key)
 		{
-			static::_get();
-			return static::$instance->get($key);
+			return static::_i()->get($key);
 		}
-		public static function getStats()
-			{
-				static::_get();
-				return static::$instance->getStats();
-			}
-		public static function renew($key, $value)
+
+		/**
+		 * @static
+		 * @return mixed
+		 */public static function getStats()
 		{
-			static::_get();
-			static::$instance->set($key, $value);
+			return static::_i()->getStats();
+		}
+
+		/**
+		 * @static
+		 * @param $key
+		 * @param $value
+		 */public static function renew($key, $value)
+		{
+			static::_i()->set($key, $value);
 		}
 	}

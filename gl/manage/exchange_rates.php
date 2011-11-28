@@ -88,7 +88,7 @@
 	function display_rate_edit()
 	{
 		global $selected_id;
-		$Ajax = Ajax::instance();
+		$Ajax = Ajax::i();
 		start_table(Config::get('tables_style2'));
 		if ($selected_id != "") {
 			//editing an existing exchange rate

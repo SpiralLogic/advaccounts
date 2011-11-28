@@ -138,6 +138,7 @@
 		 * string getJsCode()
 		 *
 		 * Return JavaScript part of the library.
+		 * @return string
 		 */
 		function getJsCode()
 			{

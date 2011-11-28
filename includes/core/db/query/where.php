@@ -14,13 +14,13 @@
 		protected $count = 0;
 
 		/***
-		 * @param        $conditions
+		 * @param    array    $conditions
 		 * @param string $type
 		 * @param null   $uservar
 		 *
 		 * @return DB_Query_Select
 		 */
-		protected function _where($conditions, $type = 'AND', $uservar = null)
+		protected function _where( $conditions, $type = 'AND', $uservar = null)
 			{
 				if (is_array($conditions)) {
 					foreach ($conditions as $condition) {

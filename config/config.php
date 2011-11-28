@@ -54,6 +54,7 @@
 		'auth_salt'												=> '342342134sdfgsgdf',
 		'ui_date_format'									 => 1,
 		'ui_date_seperator'								=> '/',
+		'use_fiscalyear'=>false,
 		/* Default border and spacing for tables
 							 *  Should be moved to CSS */
 		'tables_style'										 => "class='tablestyle'",

@@ -16,7 +16,6 @@
 	class UploadHandler {
 
 		private $options;
-		private $upload_id;
 		private $order_no;
 		private static $inserted;
 
@@ -146,7 +145,7 @@
 				$new_height,
 				$img_width,
 				$img_height
-			) && $write_image($new_img, $new_file_path);
+			) && isset($write_image) && $write_image($new_img, $new_file_path);
 			// Free up memory (imagedestroy does not delete files):
 			@imagedestroy($src_img);
 			@imagedestroy($new_img);
@@ -285,6 +284,7 @@
 			 );
 			$info = array();
 			if (is_array($upload['tmp_name'])) {
+				/** @noinspection PhpUnusedLocalVariableInspection */
 				foreach ($upload['tmp_name'] as $index => $value) {
 					$info[] = $this->handle_file_upload(
 						$upload['tmp_name'][$index],
@@ -391,6 +391,7 @@
 
 	if (!function_exists('getallheaders')) {
 		function getallheaders() {
+			$headers=array();
 			foreach ($_SERVER as $name => $value) {
 				if (substr($name, 0, 5) == 'HTTP_') {
 					$headers[str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($name, 5)))))] = $value;

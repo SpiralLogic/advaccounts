@@ -161,7 +161,7 @@
 	//--------------------------------------------------------------------------------------------------
 	function process_receive_po()
 		{
-			$Ajax = Ajax::instance();
+			$Ajax = Ajax::i();
 			if (!can_process()) {
 				return;
 			}

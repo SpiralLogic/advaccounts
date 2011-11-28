@@ -13,91 +13,154 @@
 	class Autoloader
 	{
 		protected static $loaded = array();
+		protected static $loadperf = array();
+		protected static $time = 0;
 		protected static $classes = array();
 
+		/**
+		 * @static
+		 *
+		 */
 		static function init()
-			{
-				ini_set('unserialize_callback_func', 'adv_autoload_handler'); // set your callback_function
-				spl_autoload_register(array(__CLASS__, 'includeClass'));
-
+		{
+			ini_set('unserialize_callback_func', 'adv_autoload_handler'); // set your callback_function
+			spl_autoload_register(array(__CLASS__, 'includeClass'));
+			if (class_exists('Cache')) {
+				static::$loaded = Cache::get('autoloads');
 			}
+		}
 
-		static function add_path($path = array())
-			{
-				$path = (array)$path;
-				$path[] .= get_include_path();
-				set_include_path(implode(PATH_SEPARATOR, $path));
+		/**
+		 * @static
+		 *
+		 * @param array $path
+		 */static function add_path($path = array())
+		{
+			$path = (array)$path;
+			$path[] .= get_include_path();
+			set_include_path(implode(PATH_SEPARATOR, $path));
+		}
+
+		/**
+		 * @static
+		 * @param array $classes
+		 */static function add_core_classes(array $classes)
+		{
+			static::add_classes((array)$classes, COREPATH);
+		}
+
+		/**
+		 * @static
+		 * @param array $classes
+		 * @param       $type
+		 */protected static function add_classes(array $classes, $type)
+		{
+			foreach (
+				$classes as $class
+			) {
+				static::$classes[strtolower($class)] = $type . static::classpath($class);
 			}
+		}
 
-		static function add_core_classes(array $classes)
-			{
-				static::add_classes((array)$classes, COREPATH);
+		/**
+		 * @static
+		 * @param array $classes
+		 */static function add_vendor_classes(array $classes)
+		{
+			static::add_classes((array)$classes, VENDORPATH);
+		}
+
+		/**
+		 * @static
+		 * @param $class
+		 * @return string
+		 */protected static function classpath($class)
+		{
+			$path      = explode('_', $class);
+			$classfile = DS . array_pop($path) . '.php';
+			return implode(DS, $path) . $classfile;
+		}
+
+		/**
+		 * @static
+		 * @param $path
+		 * @return string
+		 */protected static function tryPath($path)
+		{
+			$filepath = realpath(strtolower($path));
+			if (empty($filepath)) {
+				$filepath = realpath($path);
 			}
+			return $filepath;
+		}
 
-		protected static function add_classes(array $classes, $type)
-			{
-				foreach ($classes as $class) {
-					static::$classes[strtolower($class)] = $type . static::classpath($class);
-				}
+		/**
+		 * @static
+		 * @param $class
+		 * @throws Autoload_Exception
+		 */public static function includeClass($class)
+		{
+			if (isset(static::$loaded[$class])) {
+				return static::load($class, static::$loaded[$class]);
 			}
-
-		static function add_vendor_classes(array $classes)
-			{
-				static::add_classes((array)$classes, VENDORPATH);
+			if (isset(static::$classes[strtolower($class)])) {
+				$path = static::$classes[strtolower($class)];
+			} else {
+				$path = APPPATH . static::classpath($class);
 			}
-
-		protected static function classpath($class)
-			{
-				$path = explode('_', $class);
-				$classfile = DS . array_pop($path) . '.php';
-				return implode(DS, $path) . $classfile;
-			}
-
-		protected static function tryPath($path)
-			{
-				$filepath = realpath(strtolower($path));
-				if (empty($filepath)) {
-					$filepath = realpath($path);
-				}
-				return $filepath;
-			}
-
-		public static function includeClass($class)
-			{
-				if (isset(static::$classes[strtolower($class)])) {
-					$path = static::$classes[strtolower($class)];
-				} else {
-					$path = APPPATH . static::classpath($class);
-				}
+			$filepath = static::tryPath($path);
+			if (!$filepath) {
+				$path     = COREPATH . static::classpath($class);
 				$filepath = static::tryPath($path);
-				if (!$filepath) {
-					$path = COREPATH . static::classpath($class);
-					$filepath = static::tryPath($path);
-				}
-				if (empty($filepath)) {
-					throw new Autoload_Exception('File for class ' . $class . ' does not exist here: ' . $path);
-				}
-				/** @noinspection PhpIncludeInspection */
-				if (!include($filepath)) {
-					throw new Autoload_Exception('Could not load class ' . $class);
-				}
-
-				static::$loaded[$class] = array($class,$filepath, memory_get_usage(true), microtime(true));
+			}
+			if (empty($filepath)) {
+				throw new Autoload_Exception('File for class ' . $class . ' does not exist here: ' . $path);
 			}
 
-		public static function getLoaded()
-			{
-				array_walk(static::$loaded, function(&$v)
-					{
-						$v[1] = Files::convert_size($v[2]);
-						$v[2] = Dates::getReadableTime($v[3] - ADV_START_TIME);
-					});
-				return static::$loaded;
+			return static::load($class, $filepath);
+		}
+
+		/**
+		 * @static
+		 * @param $class
+		 * @param $path
+		 * @throws Autoload_Exception
+		 */protected static function load($class, $path)
+		{
+
+			/** @noinspection PhpIncludeInspection */
+			if (!include($path)) {
+				throw new Autoload_Exception('Could not load class ' . $class);
 			}
-		public static function setLoaded(array $loaded) {
-			foreach ($loaded as $class) {
-				static::$loaded[$class[0]]=$class;
-			}
+
+			static::$loaded[$class]   = $path;
+			static::$loadperf[$class] = array($class, memory_get_usage(true), microtime(true) - static::$time, microtime(true) - ADV_START_TIME);
+			static::$time             = microtime(true);
+		}
+
+		/**
+		 * @static
+		 * @return array
+		 */public static function getPerf()
+		{
+			array_walk(
+				static::$loadperf, function(&$v)
+				{
+					$v[1] = Files::convert_size($v[1]);
+					$v[2] = Dates::getReadableTime($v[2]);
+					$v[3] = Dates::getReadableTime($v[3]);
+				}
+			);
+			return static::$loadperf;
+		}
+
+		/**
+		 * @static
+		 * @return array
+		 */public static function getLoaded()
+		{
+
+			return static::$loaded;
 		}
 	}
 

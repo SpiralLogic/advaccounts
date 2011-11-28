@@ -14,7 +14,7 @@
 	{
 		public static function header($order)
 			{
-				$Ajax = Ajax::instance();
+				$Ajax = Ajax::i();
 				$qes = GL_QuickEntry::has(QE_JOURNAL);
 				$new = $order->order_id == 0;
 				start_outer_table(Config::get('tables_style2') . " width=90%");
@@ -114,7 +114,7 @@
 		//---------------------------------------------------------------------------------
 		public static function item_controls($order, $dim, $Index = null)
 			{
-				$Ajax = Ajax::instance();
+				$Ajax = Ajax::i();
 				start_row();
 				$id = find_submit('Edit');
 				if ($Index != -1 && $Index == $id) {

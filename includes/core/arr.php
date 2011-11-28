@@ -12,7 +12,13 @@
 		//	Inserts $elements into $array at position $index.
 		//	$elements is list of any objects
 		//
-		static function	insert(&$array, $index, $elements)
+		/**
+		 * @static
+		 *
+		 * @param $array
+		 * @param $index
+		 * @param $elements
+		 */static function	insert(&$array, $index, $elements)
 			{
 				if (!is_array($elements)) {
 					$elements = array($elements);
@@ -21,18 +27,33 @@
 				$array = array_merge($head, $elements, $array);
 			}
 
-		static function	remove(&$array, $index, $len = 1)
+		/**
+		 * @static
+		 * @param     $array
+		 * @param     $index
+		 * @param int $len
+		 */static function	remove(&$array, $index, $len = 1)
 			{
 				array_splice($array, $index, $len);
 			}
 
-		static function	substitute(&$array, $index, $len, $elements)
+		/**
+		 * @static
+		 * @param $array
+		 * @param $index
+		 * @param $len
+		 * @param $elements
+		 */static function	substitute(&$array, $index, $len, $elements)
 			{
 				array_splice($array, $index, $len);
 				Arr::insert($array, $index, $elements);
 			}
 
-		static function	append(&$array, $elements)
+		/**
+		 * @static
+		 * @param $array
+		 * @param $elements
+		 */static function	append(&$array, $elements)
 			{
 				foreach ($elements as $key => $el) {
 					if (is_int($key)) {
@@ -44,7 +65,13 @@
 				}
 			}
 
-		static function	search_value($needle, $haystack, $valuekey = null)
+		/**
+		 * @static
+		 * @param      $needle
+		 * @param      $haystack
+		 * @param null $valuekey
+		 * @return null
+		 */static function	search_value($needle, $haystack, $valuekey = null)
 			{
 				foreach ($haystack as $value) {
 					$val = isset($valuekey) ? $value[$valuekey] : $value;
@@ -55,7 +82,13 @@
 				return null;
 			}
 
-		static function	search_key($needle, $haystack, $valuekey = null)
+		/**
+		 * @static
+		 * @param      $needle
+		 * @param      $haystack
+		 * @param null $valuekey
+		 * @return int|null|string
+		 */static function	search_key($needle, $haystack, $valuekey = null)
 			{
 				foreach ($haystack as $key => $value) {
 					$val = isset($valuekey) ? $value[$valuekey] : $value;
@@ -97,6 +130,7 @@
 					arsort($arySort);
 				}
 				//    loop through the sorted and original data
+				/** @noinspection PhpUnusedLocalVariableInspection */
 				foreach ($arySort as $arySortKey => $arySorted) {
 					if ($strIndex) {
 						foreach ($aryData as $aryOriginal) {
