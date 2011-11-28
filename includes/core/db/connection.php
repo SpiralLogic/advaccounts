@@ -179,7 +179,7 @@
 					}
 				catch (PDOException $e) {
 					$this->_error($e, true);
-				}
+				}			var_dump(Dates::getReadableTime(microtime(true)-$time));
 			}
 
 		/**
