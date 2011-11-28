@@ -204,7 +204,8 @@
 		/**
 		 * @param $var
 		 * @param $value
-		 */public function __set($var, $value)
+		 */
+		public function __set($var, $value)
 			{
 				$this->_session[$var] = $value;
 			}
