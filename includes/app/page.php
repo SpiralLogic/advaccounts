@@ -15,7 +15,7 @@
 		public static function simple_mode($numeric_id = true)
 			{
 				global $Mode, $selected_id;
-				$Ajax = Ajax::instance();
+				$Ajax = Ajax::i();
 				$default = $numeric_id ? -1 : '';
 				$selected_id = get_post('selected_id', $default);
 				foreach (array('ADD_ITEM', 'UPDATE_ITEM', 'RESET', 'CLONE') as $m) {
@@ -143,7 +143,7 @@
 		public static function footer($no_menu = false, $is_index = false, $hide_back_link = false)
 			{
 				$Validate = array();
-				$Ajax = Ajax::instance();
+				$Ajax = Ajax::i();
 				$rend = Renderer::get();
 				$rend->menu_footer($no_menu, $is_index);
 				$edits = "editors = " . $Ajax->php2js(set_editor(false, false)) . ";";

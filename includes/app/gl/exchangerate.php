@@ -181,7 +181,7 @@
 		//
 		static function display($from_currency, $to_currency, $date_, $edit_rate = false)
 			{
-				$Ajax = Ajax::instance();
+				$Ajax = Ajax::i();
 				if ($from_currency != $to_currency) {
 					$comp_currency = Banking::get_company_currency();
 					if ($from_currency == $comp_currency) {

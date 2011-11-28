@@ -234,7 +234,7 @@
 	//--------------------------------------------------------------------------------
 	function line_start_focus()
 		{
-			$Ajax = Ajax::instance();
+			$Ajax = Ajax::i();
 			$Ajax->activate('items_table');
 			JS::set_focus('_stock_id_edit');
 		}
@@ -435,7 +435,7 @@
 	//--------------------------------------------------------------------------------
 	function handle_cancel_order()
 		{
-			$Ajax = Ajax::instance();
+			$Ajax = Ajax::i();
 			if ($_SESSION['Items']->trans_type == ST_CUSTDELIVERY) {
 				Errors::notice(_("Direct delivery entry has been cancelled as requested."), 1);
 				submenu_option(_("Enter a New Sales Delivery"), "/sales/sales_order_entry.php?NewDelivery=1");

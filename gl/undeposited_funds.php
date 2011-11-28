@@ -87,7 +87,7 @@
 	function update_data()
 	{
 		global $update_pager;
-		$Ajax = Ajax::instance();
+		$Ajax = Ajax::i();
 		$Ajax->activate('summary');
 		$update_pager = true;
 	}
@@ -97,7 +97,7 @@
 	//
 	function change_tpl_flag($deposit_id)
 	{
-		$Ajax = Ajax::instance();
+		$Ajax = Ajax::i();
 		if (!check_date() && check_value("dep_" . $deposit_id)) // temporary fix
 		{
 			return false;

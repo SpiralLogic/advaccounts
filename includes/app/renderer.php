@@ -104,11 +104,11 @@
 
 		function display_loaded()
 			{
-				$loaded = Autoloader::getLoaded();
+				$loaded = Autoloader::getPerf();
 				$row = "<table id='loaded'>";
 				while ($v1 = array_shift($loaded)) {
 					$v2 = array_shift($loaded);
-					$row .= "<tr><td>{$v1[0]}</td><td>{$v1[1]}</td><td>{$v1[2]}</td><td>{$v2[0]}</td><td>{$v2[1]}</td><td>{$v2[2]}</td></tr>";
+					$row .= "<tr><td>{$v1[0]}</td><td>{$v1[1]}</td><td>{$v1[2]}</td><td>{$v1[3]}</td><td>{$v2[0]}</td><td>{$v2[1]}</td><td>{$v2[2]}</td><td>{$v2[3]}</td></tr>";
 				}
 				echo $row . "</table>";
 			}

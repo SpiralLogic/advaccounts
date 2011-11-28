@@ -129,7 +129,7 @@
 		//---------------------------------------------------------------------------------
 		public static function item_controls($order, $line_no = -1)
 			{
-				$Ajax = Ajax::instance();
+				$Ajax = Ajax::i();
 				start_row();
 				$dec2 = 0;
 				$id = find_submit('Edit');

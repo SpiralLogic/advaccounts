@@ -397,7 +397,7 @@
 		//---------------------------------------------------------------------------------------------------
 		public static function header($order)
 			{
-				$Ajax = Ajax::instance();
+				$Ajax = Ajax::i();
 				$editable = ($order->order_no == 0);
 				start_outer_table("width=90% " . Config::get('tables_style2'));
 				table_section(1);
@@ -466,7 +466,7 @@
 		//---------------------------------------------------------------------------------------------------
 		public static function display_items($order, $editable = true)
 			{
-				$Ajax = Ajax::instance();
+				$Ajax = Ajax::i();
 				Display::heading(_("Order Items"));
 				div_start('items_table');
 				start_table(Config::get('tables_style') . "  width=90%");
@@ -560,7 +560,7 @@
 		//--------------------------------------------------------------------------------
 		public static function item_controls($order, $stock_id = null)
 			{
-				$Ajax = Ajax::instance();
+				$Ajax = Ajax::i();
 				start_row();
 				$dec2 = 0;
 				$id = find_submit('Edit');

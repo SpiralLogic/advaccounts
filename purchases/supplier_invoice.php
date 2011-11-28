@@ -40,7 +40,7 @@
 	//--------------------------------------------------------------------------------------------------
 	function clear_fields()
 		{
-			$Ajax = Ajax::instance();
+			$Ajax = Ajax::i();
 			unset($_POST['gl_code']);
 			unset($_POST['dimension_id']);
 			unset($_POST['dimension2_id']);

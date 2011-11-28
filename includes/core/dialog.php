@@ -36,7 +36,7 @@
 		function setContents($contents)
 			{
 				if (empty($contents)) {
-					return false;
+					return;
 				}
 				if (is_array($contents)) {
 					foreach ($contents as $content) {
@@ -61,7 +61,7 @@
 
 		function addBeforeClose($js)
 			{
-				$this->options['beforeClose'] = 'function(event,ui){$js}';
+				$this->options['beforeClose'] = "function(event,ui){$js}";
 			}
 
 		function addButtons($buttons = array())

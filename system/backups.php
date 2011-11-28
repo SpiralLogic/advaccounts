@@ -64,7 +64,7 @@
 
 	function get_backup_file_combo()
 	{
-		$Ajax = Ajax::instance();
+		$Ajax = Ajax::i();
 		$ar_files = array();
 		JS::default_focus('backups');
 		$dh = opendir(BACKUP_PATH);

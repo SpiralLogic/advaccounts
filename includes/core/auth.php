@@ -8,15 +8,31 @@
 	 */
 	class Auth
 	{
+		/**
+		 * @var
+		 */
 		protected $username;
+		/**
+		 * @var
+		 */
 		protected $id;
+		/**
+		 * @var
+		 */
 		private $hasher;
 
+		/**
+		 * @param $username
+		 */
 		public function __construct($username)
 			{
 				$this->username = $username;
 			}
 
+		/**
+		 * @param $id
+		 * @param $password
+		 */
 		public function update_password($id, $password)
 			{
 				DB::update('users')->value('password', $this->hash_password($password))->value('user_id', $this->username)
@@ -24,7 +40,11 @@
 				session_regenerate_id();
 			}
 
-		public function hash_password($password)
+		/**
+		 * @param $password
+		 *
+		 * @return string
+		 */public function hash_password($password)
 			{
 				return base64_encode($this->hasher()->pbkdf2($password, Config::get('auth_salt'), 10000, 32));
 			}
@@ -40,7 +60,12 @@
 				return $this->hasher;
 			}
 
-		public static function checkPasswordStrength($password, $username = false)
+		/**
+		 * @static
+		 * @param      $password
+		 * @param bool $username
+		 * @return array
+		 */public static function checkPasswordStrength($password, $username = false)
 			{
 				$returns = array(
 					'strength' => 0,

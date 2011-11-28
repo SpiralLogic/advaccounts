@@ -33,10 +33,11 @@
 		/***
 		 * @static
 		 *
-		 * @param mixed $public	$_GET variable to return
+		 * @param       $var
 		 * @param Input $type		Validate whether variable is of this type (Input::NUMERIC, Input::OBJECT, INPUT::STRING, Input::BOOL
 		 * @param null	$default Default value if there is no current variable
 		 *
+		 * @internal param mixed $public $_GET variable to return
 		 * @return bool|int|string|object
 		 */
 		public static function get($var, $type = null, $default = null)
@@ -109,6 +110,7 @@
 		 */
 		public static function has_post($vars)
 			{
+				if (is_null($vars)) return true;
 				return (static::_has($_POST, func_get_args()));
 			}
 
@@ -120,7 +122,8 @@
 		 * @return bool
 		 */
 		public static function has_get($vars)
-			{
+			{				if (is_null($vars)) return true;
+
 				return (static::_has($_GET, func_get_args()));
 			}
 
@@ -132,7 +135,8 @@
 		 * @return bool
 		 */
 		public static function has($vars)
-			{
+			{				if (is_null($vars)) return true;
+
 				return (static::_has($_REQUEST, func_get_args()));
 			}
 
@@ -144,7 +148,8 @@
 		 * @return bool
 		 */
 		public static function has_session($vars)
-			{
+			{				if (is_null($vars)) return true;
+
 				return (static::_has($_SESSION, func_get_args()));
 			}
 
@@ -154,10 +159,10 @@
 				return static::_isset($array, $var, $type, $default);
 			}
 
-		protected static function _has(array $array, $var)
-			{
+		protected static function _has(array $array, $vars)
+			{	if (is_null($vars)) return true;
 				$vars = func_get_args();
-				$array = array_shift($vars);
+			 array_shift($vars);
 				foreach ($vars as $var) {
 					if (static::_isset($array, $var) === false) {
 						return false;
@@ -168,7 +173,7 @@
 
 		protected static function _isset(array $array, $var, $type = null, $default = null)
 			{
-				$value = (is_string($var) && isset($array[$var])) ? $array[$var] : null;
+				$value = (is_string($var) && isset($array[$var])) ? $array[$var] : $default; //chnage back to null if fuckoutz happen
 				switch ($type) {
 					case self::NUMERIC:
 						if (!$value || !is_numeric($value)) {

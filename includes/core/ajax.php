@@ -24,7 +24,7 @@
 		 *
 		 * Returns Ajax Instance
 		 */
-		public static function instance()
+		public static function i()
 			{
 				if (static::$_instance === null) {
 					static::$_instance = new static;
@@ -32,6 +32,9 @@
 				return static::$_instance;
 			}
 
+		/**
+		 *
+		 */
 		function __construct()
 			{
 				$this->JsHttpRequest($_SESSION['Language']->encoding);
@@ -41,6 +44,9 @@
 		//	This function is used in ctrl routines to activate
 		//	update of ajaxified html element selected by given name/id.
 		//
+		/**
+		 * @param $trigname
+		 */
 		function activate($trigname)
 			{
 				if (Ajax::in_ajax()) {
@@ -52,6 +58,9 @@
 		//	Javascript clientside redirection.
 		//	This is the last command added to reponse (if any).
 		//
+		/**
+		 * @param $url
+		 */
 		function redirect($url)
 			{
 				if (Ajax::in_ajax()) {
@@ -63,6 +72,9 @@
 		//
 		// Popup window (target=_blank)
 		//
+		/**
+		 * @param $url
+		 */
 		function popup($url)
 			{
 				$this->_addCommand(true, array('n' => 'pu'), $this->absolute_url($url));
@@ -71,6 +83,12 @@
 		//
 		// Adds an executable Javascript code.
 		//
+		/**
+		 * @param $trigger
+		 * @param $sJS
+		 *
+		 * @return Ajax
+		 */
 		function addScript($trigger, $sJS)
 			{
 				$this->_addCommand($trigger, array('n' => 'js'), $sJS);
@@ -80,7 +98,13 @@
 		//
 		// Assign target attribute with data.
 		//
-		function addAssign($trigger, $sTarget, $sAttribute, $sData)
+		/**
+		 * @param $trigger
+		 * @param $sTarget
+		 * @param $sAttribute
+		 * @param $sData
+		 * @return Ajax
+		 */function addAssign($trigger, $sTarget, $sAttribute, $sData)
 			{
 				$this->_addCommand($trigger, array(
 																					'n' => 'as',
@@ -92,7 +116,12 @@
 		//
 		// Updates input element or label with data.
 		//
-		function addUpdate($trigger, $sTarget, $sData)
+		/**
+		 * @param $trigger
+		 * @param $sTarget
+		 * @param $sData
+		 * @return Ajax
+		 */function addUpdate($trigger, $sTarget, $sData)
 			{
 				$this->_addCommand($trigger, array(
 																					'n' => 'up',
@@ -103,7 +132,12 @@
 		//
 		// Set disable state of element.
 		//
-		function addDisable($trigger, $sTarget, $sData = true)
+		/**
+		 * @param      $trigger
+		 * @param      $sTarget
+		 * @param bool $sData
+		 * @return Ajax
+		 */function addDisable($trigger, $sTarget, $sData = true)
 			{
 				$this->_addCommand($trigger, array(
 																					'n' => 'di',
@@ -114,7 +148,12 @@
 		//
 		// Set state of element to enabled.
 		//
-		function addEnable($trigger, $sTarget, $sData = true)
+		/**
+		 * @param      $trigger
+		 * @param      $sTarget
+		 * @param bool $sData
+		 * @return Ajax
+		 */function addEnable($trigger, $sTarget, $sData = true)
 			{
 				$this->_addCommand($trigger, array(
 																					'n' => 'di',
@@ -125,7 +164,11 @@
 		//
 		// Set current focus.
 		//
-		function addFocus($trigger, $sTarget)
+		/**
+		 * @param $trigger
+		 * @param $sTarget
+		 * @return Ajax
+		 */function addFocus($trigger, $sTarget)
 			{
 				$this->_addCommand($trigger, array('n' => 'fc'), $sTarget);
 				return $this;
@@ -134,7 +177,11 @@
 		//
 		// Internal procedure adding command to response.
 		//
-		function _addCommand($trigger, $aAttributes, $mData)
+		/**
+		 * @param $trigger
+		 * @param $aAttributes
+		 * @param $mData
+		 */function _addCommand($trigger, $aAttributes, $mData)
 			{
 				if ($this->isActive() && ($trigger !== false)) {
 					//		Errors::error('adding '.$trigger.':'.htmlentities($mData));
@@ -154,6 +201,9 @@
 		 }
 	 }
 	 */
+		/**
+		 * @return mixed
+		 */
 		function run()
 			{
 				if (!$this->isActive()) {
@@ -185,15 +235,21 @@
 				//	    exit();
 			}
 
-		static function in_ajax()
+		/**
+		 * @static
+		 * @return bool
+		 */static function in_ajax()
 			{
-				return static::instance()->isActive();
+				return static::i()->isActive();
 			}
 
 		// Returns absolute path of relative $url. To be used in ajax calls
 		// for proper redirection from any referer page.
 		//
-		public function absolute_url($url)
+		/**
+		 * @param $url
+		 * @return string
+		 */public function absolute_url($url)
 			{
 				return strpos($url, '..') === 0 ? dirname($_SERVER['PHP_SELF']) . '/' . $url : $url;
 			}

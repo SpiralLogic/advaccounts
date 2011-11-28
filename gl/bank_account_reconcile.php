@@ -88,7 +88,7 @@
 	function update_data()
 	{
 		global $update_pager;
-		$Ajax = Ajax::instance();
+		$Ajax = Ajax::i();
 		unset($_POST["beg_balance"]);
 		unset($_POST["end_balance"]);
 		$Ajax->activate('summary');
@@ -100,7 +100,7 @@
 	//
 	function change_tpl_flag($reconcile_id)
 	{
-		$Ajax = Ajax::instance();
+		$Ajax = Ajax::i();
 		if (!check_date() && check_value("rec_" . $reconcile_id)) // temporary fix
 		{
 			return false;

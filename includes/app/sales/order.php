@@ -978,7 +978,7 @@
 						 */
 		public static function check_edit_conflicts($cartname = 'Items')
 			{
-				$Ajax = Ajax::instance();
+				$Ajax = Ajax::i();
 				if (Input::post('cart_id') && Input::Session($cartname) && Input::post('cart_id') != Input::session($cartname)->cart_id) {
 					Errors::error(_('This edit session has been abandoned by opening sales document in another browser tab. You cannot edit more than one sales document at once.'));
 					$Ajax->activate('_page_body');
@@ -1159,7 +1159,7 @@ JS;
 		// ------------------------------------------------------------------------------
 		public static function header($order, $editable, $date_text, $display_tax_group = false)
 			{
-				$Ajax = Ajax::instance();
+				$Ajax = Ajax::i();
 				start_outer_table("width=90% " . Config::get('tables_style2'));
 				table_section(1);
 				$customer_error = "";
@@ -1330,7 +1330,7 @@ JS;
 		//--------------------------------------------------------------------------------
 		public static function item_controls($order, &$rowcounter, $line_no = -1)
 			{
-				$Ajax = Ajax::instance();
+				$Ajax = Ajax::i();
 				alt_table_row_color($rowcounter);
 				$id = find_submit('Edit');
 				if ($line_no != -1 && $line_no == $id) // edit old line
@@ -1389,7 +1389,7 @@ JS;
 		//--------------------------------------------------------------------------------
 		public static function display_delivery_details($order)
 			{
-				$Ajax = Ajax::instance();
+				$Ajax = Ajax::i();
 				div_start('delivery');
 				if (get_post('cash', 0)) { // Direct payment sale
 					$Ajax->activate('items_table');

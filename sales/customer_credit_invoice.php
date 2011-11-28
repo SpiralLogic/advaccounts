@@ -268,7 +268,7 @@
 	//-----------------------------------------------------------------------------
 	function display_credit_options()
 		{
-			$Ajax = Ajax::instance();
+			$Ajax = Ajax::i();
 			echo "<br>";
 			if (isset($_POST['_CreditType_update'])) {
 				$Ajax->activate('options');

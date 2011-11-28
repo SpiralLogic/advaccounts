@@ -256,7 +256,8 @@
 					// export tables
 					$out .= "### Structure of table `" . $tablename . "` ###\n\n";
 					$out .= "DROP TABLE IF EXISTS `" . $tablename . "`;\n\n";
-					$out .= $table_sql[$tablename];
+
+					if (isset($table_sql)) $out .= $table_sql[$tablename];
 					// add auto_increment value
 					if ($auto_incr[$tablename]) {
 						$out .= " AUTO_INCREMENT=" . $auto_incr[$tablename];
@@ -317,8 +318,8 @@
 			//mysql_close($con);
 			//if ($zip == "zip")
 			//	$zip = $time;
-			if (Files::save_to_file($backupfile, $out, $zip)) {
-				$out = "";
+			if (Files::save_to_file($backupfile, $out='', $zip)) {
+
 			} else {
 				unlink(BACKUP_PATH . $backupfile);
 				return false;

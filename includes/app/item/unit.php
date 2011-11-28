@@ -18,7 +18,7 @@
 		MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 		See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 		 ***********************************************************************/
-		function write($selected, $abbr, $description, $decimals)
+public static		function write($selected, $abbr, $description, $decimals)
 		{
 			if ($selected != '') {
 				$sql
@@ -38,20 +38,20 @@
 			DB::query($sql, "an item unit could not be updated");
 		}
 
-		function delete($unit)
+		public static	function delete($unit)
 		{
 			$sql = "DELETE FROM item_units WHERE abbr=" . DB::escape($unit);
 			DB::query($sql, "an unit of measure could not be deleted");
 		}
 
-		function get($unit)
+		public static		function get($unit)
 		{
 			$sql = "SELECT * FROM item_units WHERE abbr=" . DB::escape($unit);
 			$result = DB::query($sql, "an unit of measure could not be retrieved");
 			return DB::fetch($result);
 		}
 
-		function desc($unit)
+		public static	function desc($unit)
 		{
 			$sql = "SELECT description FROM item_units WHERE abbr=" . DB::escape($unit);
 			$result = DB::query($sql, "could not unit description");
@@ -59,7 +59,7 @@
 			return $row[0];
 		}
 
-		function used($unit)
+		public static		function used($unit)
 		{
 			$sql = "SELECT COUNT(*) FROM stock_master WHERE units=" . DB::escape($unit);
 			$result = DB::query($sql, "could not query stock master");
@@ -67,7 +67,7 @@
 			return ($myrow[0] > 0);
 		}
 
-		function get_all($all = false)
+		public static		function get_all($all = false)
 		{
 			$sql = "SELECT * FROM item_units";
 			if (!$all) {
@@ -78,7 +78,7 @@
 		}
 
 		// 2008-06-15. Added Joe Hunt to get a measure of unit by given stock_id
-		function get_decimal($stock_id)
+		public static		function get_decimal($stock_id)
 		{
 			$sql
 			 = "SELECT decimals FROM item_units,	stock_master
