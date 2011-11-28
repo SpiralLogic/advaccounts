@@ -45,7 +45,7 @@
 																																													'Crypt_RC4','Crypt_Rijndael',
 																																													'Crypt_RSA','Crypt_TripleDES', 'FB',
 																																													'PHPMailer','SMTP','OLEwriter',
-																																													'TCPDF','Cpdf','Reports_Printer_Remote'));
+																																													'TCPDF','Cpdf'));
 	Session::init();
 	Config::init();
 	require APPPATH . "main.php";

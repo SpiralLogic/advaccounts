@@ -19,6 +19,7 @@
 			{
 				ini_set('unserialize_callback_func', 'adv_autoload_handler'); // set your callback_function
 				spl_autoload_register(array(__CLASS__, 'includeClass'));
+
 			}
 
 		static function add_path($path = array())
@@ -52,6 +53,15 @@
 				return implode(DS, $path) . $classfile;
 			}
 
+		protected static function tryPath($path)
+			{
+				$filepath = realpath(strtolower($path));
+				if (empty($filepath)) {
+					$filepath = realpath($path);
+				}
+				return $filepath;
+			}
+
 		public static function includeClass($class)
 			{
 				if (isset(static::$classes[strtolower($class)])) {
@@ -59,9 +69,10 @@
 				} else {
 					$path = APPPATH . static::classpath($class);
 				}
-				$filepath = realpath($path);
-				if (empty($filepath)) {
-					$filepath = realpath(strtolower($path));
+				$filepath = static::tryPath($path);
+				if (!$filepath) {
+					$path = COREPATH . static::classpath($class);
+					$filepath = static::tryPath($path);
 				}
 				if (empty($filepath)) {
 					throw new Autoload_Exception('File for class ' . $class . ' does not exist here: ' . $path);
@@ -70,18 +81,24 @@
 				if (!include($filepath)) {
 					throw new Autoload_Exception('Could not load class ' . $class);
 				}
-				static::$loaded[$class] = array($class, memory_get_usage(true), microtime(true));
+
+				static::$loaded[$class] = array($class,$filepath, memory_get_usage(true), microtime(true));
 			}
 
 		public static function getLoaded()
 			{
 				array_walk(static::$loaded, function(&$v)
 					{
-						$v[1] = Files::convert_size($v[1]);
-						$v[2] = Dates::getReadableTime($v[2] - ADV_START_TIME);
+						$v[1] = Files::convert_size($v[2]);
+						$v[2] = Dates::getReadableTime($v[3] - ADV_START_TIME);
 					});
 				return static::$loaded;
 			}
+		public static function setLoaded(array $loaded) {
+			foreach ($loaded as $class) {
+				static::$loaded[$class[0]]=$class;
+			}
+		}
 	}
 
 	Autoloader::init();
