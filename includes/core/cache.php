@@ -20,8 +20,9 @@
 		protected static function _i()
 		{
 			if (static::$instance === null) {
-				static::$instance = new Memcached('fa');
+				static::$instance = new Memcached('ADV');
 				static::$instance->addServer('127.0.0.1', 11211);
+				if (isset($_GET['reload_config'])) static::$instance->flush(0);
 			}
 			return static::$instance;
 		}
@@ -35,7 +36,7 @@
 		 * @return mixed
 		 */public static function set($key, $value)
 		{
-			static::_i()->set($key, $value);
+			static::_i()->set($key, $value,time()+(60*60+24));
 			return $value;
 		}
 
@@ -64,4 +65,17 @@
 		{
 			static::_i()->set($key, $value);
 		}
+
+
+
+
+
+
+
+
+
+		public static function flush($time=0)
+			{
+				static::_i()->flush($time);
+			}
 	}

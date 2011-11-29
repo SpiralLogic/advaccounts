@@ -6,7 +6,6 @@
 	 * Time: 2:33 AM
 	 * To change this template use File | Settings | File Templates.
 	 */
-
 	define("ICON_EDIT", "edit.gif");
 	define("ICON_DELETE", "delete.gif");
 	define("ICON_ADD", "ok.gif");
@@ -26,7 +25,6 @@
 	define("ICON_VIEW", "view.gif");
 	define("ICON_SUBMIT", "ok.gif");
 	define("ICON_ESCAPE", "escape.png");
-
 	define('DEFAULT_LOCATION', 'MEL');
 	define('DEFAULT_TAX_GROUP', 1);
 	define('DEFAULT_AREA', 1);
@@ -41,7 +39,6 @@
 	define('COMPANY_PATH', PATH_TO_ROOT . '/company');
 	define('THEME_PATH', PATH_TO_ROOT . '/themes/');
 	define("BACKUP_PATH", COMPANY_PATH . "/backup/");
-
 	// ACCESS LEVELS
 	define('SS_SADMIN', 1 << 8); // site admin
 	define('SS_SETUP', 2 << 8); // company level setup
@@ -121,10 +118,8 @@
 	define('WO_ASSEMBLY', 0);
 	define('WO_UNASSEMBLY', 1);
 	define('WO_ADVANCED', 2);
-
 	define('WO_LABOUR', 0);
 	define('WO_OVERHEAD', 1);
-
 	//----------------------------------------------------------------------------------
 	//	GL account classes
 	//
@@ -135,7 +130,6 @@
 	define('CL_INCOME', 4);
 	define('CL_COGS', 5);
 	define('CL_EXPENSE', 6);
-
 	//----------------------------------------------------------------------------------
 	//	Quick entry types
 	//
@@ -159,21 +153,26 @@
 	define('STOCK_PURCHASED', 'B');
 	define('STOCK_SERVICE', 'D');
 	define('STOCK_INFO', 'I');
-
 	//----------------------------------------------------------------------------------
 	define('TAG_ACCOUNT', 1);
 	define('TAG_DIMENSION', 2);
-
+	global $systypes_array, $bank_account_types, $bank_transfer_types, $payment_person_types, $wo_types_array, $wo_cost_types,
+				 $class_types, $quick_actions, $quick_entry_types, $stock_types, $tag_types, $security_areas, $security_sections;
 	$access_levels = Cache::get('access_levels');
 	if (!$access_levels) {
-		Cache::set('access_levels', include(DOCROOT . "config/access_levels.php"));
+		$access_levels = include(DOCROOT . "config/access_levels.php");
+		Cache::set('access_levels', $access_levels);
 	} else {
-		array_merge($GLOBALS, $access_levels);
+		foreach ($access_levels as $k => $v) {
+			$$k = $v;
+		}
 	}
 	$types = Cache::get('types');
 	if (!$types) {
+		$types = include(DOCROOT . "config/types.php");
 		Cache::set('types', include(DOCROOT . "config/types.php"));
 	} else {
-		array_merge($GLOBALS, $types);
+		foreach ($access_levels as $k => $v) {
+			$$k = $v;
+		}
 	}
-

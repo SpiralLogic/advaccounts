@@ -135,6 +135,7 @@
 		public function can_access($page_level)
 			{
 				global $security_areas;
+
 				if ($page_level === 'SA_OPEN') {
 					return true;
 				}

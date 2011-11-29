@@ -10,7 +10,7 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 
-	$GLOBALS['systypes_array'] = array(
+	$systypes_array = array(
 		ST_JOURNAL => _("Journal Entry"),
 		ST_BANKPAYMENT => _("Bank Payment"),
 		ST_BANKDEPOSIT => _("Bank Deposit"),
@@ -37,40 +37,35 @@
 		ST_COSTUPDATE => _("Cost Update"),
 		ST_DIMENSION => _("Dimension")
 	);
-
-	$GLOBALS['bank_account_types'] = array(
+	$bank_account_types = array(
 		BT_TRANSFER => _("Savings Account"),
 		_("Chequing Account"),
 		_("Credit Account"),
 		_("Cash Account")
 	);
-	$GLOBALS['bank_transfer_types'] = array(
+	$bank_transfer_types = array(
 		BT_TRANSFER => _("Transfer"),
 		_("Cheque"),
 		_("Credit"),
 		_("Cash")
 	);
-
-	$GLOBALS['payment_person_types'] = array(
+	$payment_person_types = array(
 		PT_MISC => _("Miscellaneous"),
 		_("Work Order"),
 		_("Customer"),
 		_("Supplier"),
 		_("Quick Entry")
 	);
-
-	$GLOBALS['wo_types_array'] = array(
+	$wo_types_array = array(
 		WO_ASSEMBLY => _("Assemble"),
 		WO_UNASSEMBLY => _("Unassemble"),
 		WO_ADVANCED => _("Advanced Manufacture")
 	);
-
-	$GLOBALS['wo_cost_types'] = array(
+	$wo_cost_types = array(
 		WO_LABOUR => _("Labour Cost"),
 		WO_OVERHEAD => _("Overhead Cost"),
 	);
-
-	$GLOBALS['class_types'] = array(
+	$class_types = array(
 		CL_ASSETS => _("Assets"),
 		CL_LIABILITIES => _("Liabilities"),
 		CL_EQUITY => _("Equity"),
@@ -78,8 +73,7 @@
 		CL_COGS => _("Cost of Goods Sold"),
 		CL_EXPENSE => _("Expense"),
 	);
-
-	$GLOBALS['quick_actions'] = array(
+	$quick_actions = array(
 		'=' => _('Remainder'), // post current base amount to GL account
 		'a' => _('Amount'), // post amount to GL account
 		'a+' => _('Amount, increase base'), // post amount to GL account and increase base
@@ -94,35 +88,33 @@
 		't+' => _('Taxes included, increase base'), // ditto & increase base amount
 		't-' => _('Taxes included, reduce base') // ditto & reduce base amount
 	);
-
-	$GLOBALS['quick_entry_types'] = array(
+	$quick_entry_types = array(
 		QE_DEPOSIT => _("Bank Deposit"),
 		QE_PAYMENT => _("Bank Payment"),
 		QE_JOURNAL => _("Journal Entry"),
 		QE_SUPPINV => _("Supplier Invoice/Credit")
 	);
-
-	$GLOBALS['stock_types'] = array(
+	$stock_types = array(
 		STOCK_MANUFACTURE => _("Manufactured"),
 		STOCK_PURCHASED => _("Purchased"),
 		STOCK_SERVICE => _("Service"),
 		STOCK_INFO => _("Information")
 	);
-
-	$GLOBALS['tag_types'] = array(
+	$tag_types = array(
 		TAG_ACCOUNT => _("Account"),
 		TAG_DIMENSION => _("Dimension")
 	);
+
 	return array(
-		'class_types' => $GLOBALS['class_types'],
-		'quick_actions' => $GLOBALS['quick_actions'],
-		'quick_entry_types' => $GLOBALS['quick_entry_types'],
-		'stock_types' => $GLOBALS['stock_types'],
-		'tag_types' => $GLOBALS['tag_types'],
-		'systypes_array' => $GLOBALS['systypes_array'],
-		'bank_account_types' => $GLOBALS['bank_account_types'],
-		'bank_transfer_types' => $GLOBALS['bank_transfer_types'],
-		'payment_person_types' => $GLOBALS['payment_person_types'],
-		'wo_types_array' => $GLOBALS['wo_types_array'],
-		'wo_cost_types' => $GLOBALS['wo_cost_types']
+		'class_types' => $class_types,
+		'quick_actions' => $quick_actions,
+		'quick_entry_types' => $quick_entry_types,
+		'stock_types' => $stock_types,
+		'tag_types' => $tag_types,
+		'systypes_array' => $systypes_array,
+		'bank_account_types' => $bank_account_types,
+		'bank_transfer_types' => $bank_transfer_types,
+		'payment_person_types' => $payment_person_types,
+		'wo_types_array' => $wo_types_array,
+		'wo_cost_types' => $wo_cost_types
 	);

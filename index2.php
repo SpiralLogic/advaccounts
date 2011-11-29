@@ -6,7 +6,8 @@
 	 * Time: 6:27 PM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	require_once('bootstrap.php');
+	//require_once('bootstrap.php');
+phpinfo();
 /*	$filecsv = fopen(DOCROOT . '/upload/test.csv', 'r');
 	$item = array(
 		'category_id' => 6,

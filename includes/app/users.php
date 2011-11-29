@@ -167,16 +167,25 @@
 				if (!Config::get('ui_users_showonline') || !isset($_SESSION['get_text'])) {
 					return "";
 				}
+				return _("users online") . ": " . static::get_online();
+			}
+
+		protected static function get_online()
+			{
+				$usersonline = Cache::get('users_online');
+				if ($usersonline) {
+					return $usersonline;
+				}
 				$result = DB::query("SHOW TABLES LIKE 'useronline'");
 				if (DB::num_rows($result) == 1) {
 					$timeoutseconds = 120;
 					$timestamp = time();
 					$timeout = $timestamp - $timeoutseconds;
 					/*
-																			 This will find out if user is from behind proxy server.
-																			 In that case, the script would count them all as 1 user.
-																			 This public static function  tryes to get real IP address.
-																			 */
+																											 This will find out if user is from behind proxy server.
+																											 In that case, the script would count them all as 1 user.
+																											 This public static function  tryes to get real IP address.
+																											 */
 					if (isset($_SERVER['HTTP_CLIENT_IP'])) {
 						$ip = $_SERVER['HTTP_CLIENT_IP'];
 					}
@@ -208,6 +217,7 @@
 				} else {
 					$users = 1;
 				}
-				return _("users online") . ": $users";
+				Cache::set('users_online', $users, time() + 300);
+				return $users;
 			}
 	}
