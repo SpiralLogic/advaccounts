@@ -99,7 +99,8 @@
 		 * @param $class
 		 * @throws Autoload_Exception
 		 */public static function includeClass($class)
-		{
+		{			static::$time             = microtime(true);
+
 			if (isset(static::$loaded[$class])) {
 				return static::load($class, static::$loaded[$class]);
 			}
@@ -135,7 +136,6 @@
 
 			static::$loaded[$class]   = $path;
 			static::$loadperf[$class] = array($class, memory_get_usage(true), microtime(true) - static::$time, microtime(true) - ADV_START_TIME);
-			static::$time             = microtime(true);
 		}
 
 		/**

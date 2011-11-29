@@ -24,28 +24,7 @@
 	 for sections/areas defined in this file, and extid+1 for those defined
 	 by extensions
  */
-	define('SS_SADMIN', 1 << 8); // site admin
-	define('SS_SETUP', 2 << 8); // company level setup
-	define('SS_SPEC', 3 << 8); // special administration
-	define('SS_SALES_C', 11 << 8); // configuration
-	define('SS_SALES', 12 << 8); // transactions
-	define('SS_SALES_A', 13 << 8); // analytic functions/reports/inquires
-	define('SS_PURCH_C', 21 << 8);
-	define('SS_PURCH', 22 << 8);
-	define('SS_PURCH_A', 23 << 8);
-	define('SS_ITEMS_C', 31 << 8);
-	define('SS_ITEMS', 32 << 8);
-	define('SS_ITEMS_A', 33 << 8);
-	define('SS_MANUF_C', 41 << 8);
-	define('SS_MANUF', 42 << 8);
-	define('SS_MANUF_A', 43 << 8);
-	define('SS_DIM_C', 51 << 8);
-	define('SS_DIM', 52 << 8);
-	define('SS_DIM_A', 53 << 8);
-	define('SS_GL_C', 61 << 8);
-	define('SS_GL', 62 << 8);
-	define('SS_GL_A', 63 << 8);
-	define('SS_ADV', 71 << 8);
+
 	$GLOBALS['security_sections'] = array(
 		SS_SADMIN  => _("System administration"),
 		SS_SETUP   => _("Company setup"),

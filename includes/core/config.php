@@ -7,8 +7,6 @@
 	 * To change this template use File | Settings | File Templates.
 	 */
 	include(DOCROOT . "config/defines.php");
-	include(DOCROOT . "config/access_levels.php");
-	include(DOCROOT . "config/types.php");
 	ini_set("ignore_repeated_errors", "On");
 	ini_set("log_errors", "On");
 /***
