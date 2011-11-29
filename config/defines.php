@@ -165,31 +165,15 @@
 	define('TAG_DIMENSION', 2);
 
 	$access_levels = Cache::get('access_levels');
-
 	if (!$access_levels) {
-		$access_levels = include(DOCROOT . "config/access_levels.php");
-		Cache::set('access_levels', $access_levels);
-
-
+		Cache::set('access_levels', include(DOCROOT . "config/access_levels.php"));
 	} else {
-		$GLOBALS['security_sections'] = $access_levels['security_sections'];
-		$GLOBALS['security_areas']    = $access_levels['security_areas'];
+		array_merge($GLOBALS, $access_levels);
 	}
 	$types = Cache::get('types');
 	if (!$types) {
-		$types = include(DOCROOT . "config/types.php");
-		Cache::set('types', $types);
+		Cache::set('types', include(DOCROOT . "config/types.php"));
 	} else {
-		$GLOBALS['class_types']          = $types['class_types'];
-		$GLOBALS['quick_actions']        = $types['quick_actions'];
-		$GLOBALS['quick_entry_types']    = $types['quick_entry_types'];
-		$GLOBALS['stock_types']          = $types['stock_types'];
-		$GLOBALS['tag_types']            = $types['tag_types'];
-		$GLOBALS['systypes_array']       = $types['systypes_array'];
-		$GLOBALS['bank_account_types']   = $types['bank_account_types'];
-		$GLOBALS['bank_transfer_types']  = $types['bank_transfer_types'];
-		$GLOBALS['payment_person_types'] = $types['payment_person_types'];
-		$GLOBALS['wo_types_array']       = $types['wo_types_array'];
-		$GLOBALS['wo_cost_types']        = $types['wo_cost_types'];
+		array_merge($GLOBALS, $types);
 	}
 
