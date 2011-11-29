@@ -8,8 +8,7 @@
 	 */
 	class Security
 	{
-		static function check_page($page_security)
-		{
+		static function check_page($page_security) {
 			if (!User::get()->can_access_page($page_security)) {
 				echo "<center><br><br><br><b>";
 				echo _("The security settings on your account do not permit you to access this function");
@@ -25,8 +24,7 @@
 			 GET start variable and/or some value stored in session variable.
 			 Before the call $page_security should be set to default page_security value.
 		 */
-		static function set_page($value = null, $trans = array(), $gtrans = array())
-		{
+		static function set_page($value = null, $trans = array(), $gtrans = array()) {
 			global $page_security;
 			// first check is this is not start page call
 			foreach ($gtrans as $key => $area) {
@@ -42,9 +40,7 @@
 			}
 		}
 
-
-		public static function get_role($id)
-		{
+		public static function get_role($id) {
 			$sql = "SELECT * FROM security_roles WHERE id='$id'";
 			$ret = DB::query($sql, "could not retrieve security roles");
 			$row = DB::fetch($ret);
@@ -56,8 +52,7 @@
 		}
 
 		//--------------------------------------------------------------------------------------------------
-		public static function add_role($name, $description, $sections, $areas)
-		{
+		public static function add_role($name, $description, $sections, $areas) {
 			$sql
 			 = "INSERT INTO security_roles (role, description, sections, areas)
 			VALUES ("
@@ -69,8 +64,7 @@
 		}
 
 		//--------------------------------------------------------------------------------------------------
-		public static function update_role($id, $name, $description, $sections, $areas)
-		{
+		public static function update_role($id, $name, $description, $sections, $areas) {
 			$sql = "UPDATE security_roles SET role=" . DB::escape($name)
 			 . ",description=" . DB::escape($description)
 			 . ",sections=" . DB::escape(implode(';', $sections))
@@ -80,15 +74,13 @@
 		}
 
 		//--------------------------------------------------------------------------------------------------
-		public static function get_profile($id)
-		{
+		public static function get_profile($id) {
 			$sql = "DELETE FROM security_roles WHERE id=$id";
 			DB::query($sql, "could not delete role");
 		}
 
 		//--------------------------------------------------------------------------------------------------
-		public static function check_role_used($id)
-		{
+		public static function check_role_used($id) {
 			$sql = "SELECT count(*) FROM users WHERE role_id=$id";
 			$ret = DB::query($sql, 'cannot check role usage');
 			$row = DB::fetch($ret);

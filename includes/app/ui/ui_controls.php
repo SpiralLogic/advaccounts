@@ -87,13 +87,6 @@
 		end_table($breaks);
 	}
 
-	//
-	//  outer table spacer
-	//
-	function vertical_space($params = '')
-	{
-		echo "</td></tr><tr><td valign=center $params>";
-	}
 
 	function meta_forward($forward_to, $params = "")
 	{
