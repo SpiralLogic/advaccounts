@@ -14,7 +14,7 @@
 	Page::start(_($help_context = "Foreign Item Codes"));
 	Validation::check(Validation::PURCHASE_ITEMS, _("There are no inventory items defined in the system."), STOCK_PURCHASED);
 	Page::simple_mode(true);
-	//--------------------------------------------------------------------------------------------------
+
 	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 		$input_error = 0;
 		if ($_POST['stock_id'] == "" || !isset($_POST['stock_id'])) {
@@ -61,7 +61,7 @@
 			$Mode = 'RESET';
 		}
 	}
-	//--------------------------------------------------------------------------------------------------
+
 	if ($Mode == 'Delete') {
 		Item_Code::delete($selected_id);
 		Errors::notice(_("Item code has been sucessfully deleted."));
@@ -74,7 +74,7 @@
 	if (list_updated('stock_id')) {
 		$Ajax->activate('_page_body');
 	}
-	//--------------------------------------------------------------------------------------------------
+
 	start_form();
 	if (!Input::post('stock_id')) {
 		$_POST['stock_id'] = Session::i()->global_stock_id;
@@ -116,7 +116,7 @@
 	} //end of while loop
 	end_table();
 	div_end();
-	//-----------------------------------------------------------------------------------------------
+
 	if ($selected_id != '') {
 		if ($Mode == 'Edit') {
 			$myrow = Item_Code::get($selected_id);

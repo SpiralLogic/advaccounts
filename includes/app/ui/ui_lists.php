@@ -9,7 +9,7 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	//----------------------------------------------------------------------------
+
 	//	Universal sql combo generator
 	//	$sql must return selector values and selector texts in columns 0 & 1
 	//	Options are merged with defaults.
@@ -284,7 +284,7 @@
 			return isset($_POST['_' . $name . '_update']) || isset($_POST['_' . $name . '_button']);
 		}
 
-	//----------------------------------------------------------------------------------------------
+
 	//	Universal array combo generator
 	//	$items is array of options 'value' => 'description'
 	//	Options is reduced set of combo_selector options and is merged with defaults.
@@ -365,7 +365,7 @@
 			return $selector;
 		}
 
-	//----------------------------------------------------------------------------------------------
+
 	function _format_add_curr($row)
 		{
 			static $company_currency;
@@ -417,7 +417,7 @@
 			echo "</td></tr>\n";
 		}
 
-	//----------------------------------------------------------------------------------------------
+
 	function customer_list($name, $selected_id = null, $spec_option = false, $submit_on_change = false, $show_inactive = false,
 		$editkey = false, $async = false)
 		{
@@ -462,7 +462,7 @@
 			echo "</td>\n</tr>\n";
 		}
 
-	//------------------------------------------------------------------------------------------------
+
 	function customer_branches_list($customer_id, $name, $selected_id = null, $spec_option = true, $enabled = true,
 		$submit_on_change = false, $editkey = false)
 		{
@@ -478,7 +478,7 @@
 				 $spec_option, 'spec_id' => ALL_TEXT, 'select_submit' => $submit_on_change, 'sel_hint' => _('Select customer branch')));
 		}
 
-	//------------------------------------------------------------------------------------------------
+
 	function customer_branches_list_cells($label, $customer_id, $name, $selected_id = null, $all_option = true, $enabled = true,
 		$submit_on_change = false, $editkey = false)
 		{
@@ -498,7 +498,7 @@
 			echo "</tr>";
 		}
 
-	//------------------------------------------------------------------------------------------------
+
 	function locations_list($name, $selected_id = null, $all_option = false, $submit_on_change = false)
 		{
 			$sql = "SELECT loc_code, location_name, inactive FROM locations";
@@ -525,7 +525,7 @@
 			echo "</tr>\n";
 		}
 
-	//-----------------------------------------------------------------------------------------------
+
 	function currencies_list($name, $selected_id = null, $submit_on_change = false)
 		{
 			$sql = "SELECT curr_abrev, currency, inactive FROM currencies";
@@ -551,7 +551,7 @@
 			echo "</tr>\n";
 		}
 
-	//---------------------------------------------------------------------------------------------------
+
 	function fiscalyears_list($name, $selected_id = null, $submit_on_change = false)
 		{
 			$sql = "SELECT * FROM fiscal_year";
@@ -583,7 +583,7 @@
 			echo "</tr>\n";
 		}
 
-	//------------------------------------------------------------------------------------
+
 	function dimensions_list($name, $selected_id = null, $no_option = false, $showname = ' ', $submit_on_change = false,
 		$showclosed = false, $showtype = 1)
 		{
@@ -664,7 +664,7 @@
 				$editkey, $legacy);
 		}
 
-	//---------------------------------------------------------------------------------------------------
+
 	//
 	// Select item via foreign code.
 	//
@@ -728,7 +728,7 @@
 			echo "</td></tr>";
 		}
 
-	//------------------------------------------------------------------------------------
+
 	function stock_manufactured_items_list($name, $selected_id = null, $all_option = false, $submit_on_change = false)
 		{
 			return stock_items_list($name, $selected_id, $all_option, $submit_on_change,
@@ -751,7 +751,7 @@
 			echo "</tr>\n";
 		}
 
-	//------------------------------------------------------------------------------------
+
 	function stock_component_items_list($name, $parent_stock_id, $selected_id = null, $all_option = false,
 		$submit_on_change = false, $editkey = false)
 		{
@@ -769,7 +769,7 @@
 																																											'where' => "stock_id != '$parent_stock_id'", 'cells' => true));
 		}
 
-	//------------------------------------------------------------------------------------
+
 	function stock_costable_items_list($name, $selected_id = null, $all_option = false, $submit_on_change = false)
 		{
 			return stock_items_list($name, $selected_id, $all_option, $submit_on_change,
@@ -785,7 +785,7 @@
 																																											'where' => "mb_flag!='" . STOCK_SERVICE . "'", 'cells' => true, 'description' => ''));
 		}
 
-	//------------------------------------------------------------------------------------
+
 	function stock_purchasable_items_list($name, $selected_id = null, $all_option = false, $submit_on_change = false, $all = false,
 		$editkey = false, $legacy = false)
 		{
@@ -812,7 +812,7 @@
 			echo "</tr>\n";
 		}
 
-	//------------------------------------------------------------------------------------
+
 	function stock_item_types_list_row($label, $name, $selected_id = null, $enabled = true)
 		{
 			global $stock_types;
@@ -841,7 +841,7 @@
 			echo "</td></tr>\n";
 		}
 
-	//---------------------------------------------------------------------------------------------------------
+
 	function tax_types_list($name, $selected_id = null, $none_option = false, $submit_on_change = false)
 		{
 			$sql = "SELECT id, CONCAT(name, ' (',rate,'%)') as name FROM tax_types";
@@ -866,7 +866,7 @@
 			echo "</tr>\n";
 		}
 
-	//------------------------------------------------------------------------------------
+
 	function tax_groups_list($name, $selected_id = null, $none_option = false, $submit_on_change = false)
 		{
 			$sql = "SELECT id, name FROM tax_groups";
@@ -891,7 +891,7 @@
 			echo "</tr>\n";
 		}
 
-	//------------------------------------------------------------------------------------
+
 	function item_tax_types_list($name, $selected_id = null)
 		{
 			$sql = "SELECT id, name FROM item_tax_types";
@@ -915,7 +915,7 @@
 			echo "</tr>\n";
 		}
 
-	//------------------------------------------------------------------------------------
+
 	function shippers_list($name, $selected_id = null)
 		{
 			$sql = "SELECT shipper_id, shipper_name, inactive FROM shippers";
@@ -939,7 +939,7 @@
 			echo "</tr>\n";
 		}
 
-	//-------------------------------------------------------------------------------------
+
 	function sales_persons_list($name, $selected_id = null, $spec_opt = false)
 		{
 			$sql = "SELECT salesman_code, salesman_name, inactive FROM salesman";
@@ -964,7 +964,7 @@
 			echo "</tr>\n";
 		}
 
-	//-------------------------------------------------------------------------------------
+
 	function user_list($name, $selected_id = null, $spec_opt = false)
 		{
 			$sql = "SELECT id, real_name, inactive FROM users";
@@ -989,7 +989,7 @@
 			echo "</tr>\n";
 		}
 
-	//------------------------------------------------------------------------------------
+
 	function sales_areas_list($name, $selected_id = null)
 		{
 			$sql = "SELECT area_code, description, inactive FROM areas";
@@ -1013,7 +1013,7 @@
 			echo "</tr>\n";
 		}
 
-	//------------------------------------------------------------------------------------
+
 	function sales_groups_list($name, $selected_id = null, $special_option = false)
 		{
 			$sql = "SELECT id, description, inactive FROM groups";
@@ -1039,7 +1039,7 @@
 			echo "</tr>\n";
 		}
 
-	//------------------------------------------------------------------------------------
+
 	function _format_template_items($row)
 		{
 			return ($row[0] . "&nbsp;- &nbsp;" . _("Amount") . "&nbsp;" . $row[1]);
@@ -1072,7 +1072,7 @@
 			echo "</tr>\n";
 		}
 
-	//------------------------------------------------------------------------------------
+
 	function workorders_list($name, $selected_id = null)
 		{
 			$sql = "SELECT id, wo_ref FROM workorders WHERE closed=0";
@@ -1096,7 +1096,7 @@
 			echo "</tr>\n";
 		}
 
-	//------------------------------------------------------------------------------------
+
 	function payment_terms_list($name, $selected_id = null, $disabled = null)
 		{
 			if ($disabled === null) {
@@ -1123,7 +1123,7 @@
 			echo "</tr>\n";
 		}
 
-	//------------------------------------------------------------------------------------
+
 	function credit_status_list($name, $selected_id = null, $disabled = null)
 		{
 			if ($disabled === null) {
@@ -1150,7 +1150,7 @@
 			echo "</tr>\n";
 		}
 
-	//-----------------------------------------------------------------------------------------------
+
 	function sales_types_list($name, $selected_id = null, $submit_on_change = false, $special_option = false)
 		{
 			$sql = "SELECT id, sales_type, inactive FROM sales_types";
@@ -1178,7 +1178,7 @@
 			echo "</tr>\n";
 		}
 
-	//-----------------------------------------------------------------------------------------------
+
 	function movement_types_list($name, $selected_id = null)
 		{
 			$sql = "SELECT id, name FROM movement_types";
@@ -1202,7 +1202,7 @@
 			echo "</tr>\n";
 		}
 
-	//-----------------------------------------------------------------------------------------------
+
 	function _format_date($row)
 		{
 			return Dates::sql2date($row['reconciled']);
@@ -1236,7 +1236,7 @@
 		 echo "</tr>\n";
 	 }
 	 */
-	//-----------------------------------------------------------------------------------------------
+
 	function workcenter_list($name, $selected_id = null, $all_option = false)
 		{
 			$sql = "SELECT id, name, inactive FROM workcentres";
@@ -1264,7 +1264,7 @@
 			echo "</tr>\n";
 		}
 
-	//-----------------------------------------------------------------------------------------------
+
 	function bank_accounts_list($name, $selected_id = null, $submit_on_change = false)
 		{
 			$sql = "SELECT bank_accounts.id, bank_account_name, bank_curr_code, inactive
@@ -1290,7 +1290,7 @@
 			echo "</tr>\n";
 		}
 
-	//-----------------------------------------------------------------------------------------------
+
 	function cash_accounts_list_row($label, $name, $selected_id = null, $submit_on_change = false)
 		{
 			$sql = "SELECT bank_accounts.id, bank_account_name, bank_curr_code, inactive
@@ -1305,7 +1305,7 @@
 			echo "</td></tr>\n";
 		}
 
-	//-----------------------------------------------------------------------------------------------
+
 	function pos_list_row($label, $name, $selected_id = null, $spec_option = false, $submit_on_change = false)
 		{
 			$sql = "SELECT id, pos_name, inactive FROM sales_pos";
@@ -1320,7 +1320,7 @@
 			echo "</td></tr>\n";
 		}
 
-	//-----------------------------------------------------------------------------------------------
+
 	function sale_payment_list_cells($label, $name, $selected_id = null, $submit_on_change = false)
 		{
 			if ($label != null) {
@@ -1331,7 +1331,7 @@
 			echo "</td>\n";
 		}
 
-	//-----------------------------------------------------------------------------------------------
+
 	function class_list($name, $selected_id = null, $submit_on_change = false)
 		{
 			$sql = "SELECT cid, class_name FROM chart_class";
@@ -1356,7 +1356,7 @@
 			echo "</tr>\n";
 		}
 
-	//-----------------------------------------------------------------------------------------------
+
 	function stock_categories_list($name, $selected_id = null, $spec_opt = false, $submit_on_change = false)
 		{
 			$sql = "SELECT category_id, description, inactive FROM stock_category";
@@ -1381,7 +1381,7 @@
 			echo "</tr>\n";
 		}
 
-	//-----------------------------------------------------------------------------------------------
+
 	function gl_account_types_list($name, $selected_id = null, $all_option = false, $all_option_numeric = true)
 		{
 			$sql = "SELECT id, name FROM chart_types";
@@ -1407,7 +1407,7 @@
 			echo "</tr>\n";
 		}
 
-	//-----------------------------------------------------------------------------------------------
+
 	function gl_all_accounts_list($name, $selected_id = null, $skip_bank_accounts = false, $cells = false, $all_option = false,
 		$submit_on_change = false, $all = false)
 		{
@@ -1490,7 +1490,7 @@
 			echo "</tr>\n";
 		}
 
-	//------------------------------------------------------------------------------------------------
+
 	function languages_list($name, $selected_id = null)
 		{
 			$items = array();
@@ -1518,7 +1518,7 @@
 			echo "</tr>\n";
 		}
 
-	//------------------------------------------------------------------------------------------------
+
 	function bank_account_types_list($name, $selected_id = null)
 		{
 			global $bank_account_types;
@@ -1543,7 +1543,7 @@
 			echo "</tr>\n";
 		}
 
-	//------------------------------------------------------------------------------------------------
+
 	function payment_methods_list($name, $selected_id = null)
 		{
 			$result = DB::select('name')->from('payment_methods')->where('inactive=', 0);
@@ -1570,7 +1570,7 @@
 			echo "</tr>\n";
 		}
 
-	//------------------------------------------------------------------------------------------------
+
 	function payment_person_types_list($name, $selected_id = null, $submit_on_change = false)
 		{
 			global $payment_person_types;
@@ -1600,7 +1600,7 @@
 			echo "</tr>\n";
 		}
 
-	//------------------------------------------------------------------------------------------------
+
 	function wo_types_list($name, $selected_id = null)
 		{
 			global $wo_types_array;
@@ -1615,7 +1615,7 @@
 			echo "</td></tr>\n";
 		}
 
-	//------------------------------------------------------------------------------------------------
+
 	function dateformats_list_row($label, $name, $value = null)
 		{
 			echo "<tr><td class='label'>$label</td>\n<td>";
@@ -1829,7 +1829,7 @@
 																																 'select_submit' => $submit_on_change, 'spec_option' => $spec_opt, 'spec_id' => ''));
 		}
 
-	//------------------------------------------------------------------------------------------------
+
 	function quick_entries_list($name, $selected_id = null, $type = null, $submit_on_change = false)
 		{
 			$where = false;
@@ -1887,7 +1887,7 @@
 			echo "</td></tr>\n";
 		}
 
-	//------------------------------------------------------------------------------------------------
+
 	function security_roles_list($name, $selected_id = null, $new_item = false, $submit_on_change = false, $show_inactive = false)
 		{
 			$sql = "SELECT id, role, inactive FROM security_roles";
@@ -1935,7 +1935,7 @@
 			echo "</td></tr>\n";
 		}
 
-	//-----------------------------------------------------------------------------------------------
+
 	function tag_list($name, $height, $type, $multi = false, $all = false, $spec_opt = false)
 		{
 			// Get tags
@@ -1968,7 +1968,7 @@
 			echo "</tr>\n";
 		}
 
-	//---------------------------------------------------------------------------------------------
+
 	//	List of sets of active extensions
 	//
 	function extset_list($name, $value = null, $submit_on_change = false)

@@ -9,7 +9,7 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	//----------------------------------------------------------------------------------------
+
 	// if ($writeoff_acc==0) return goods into $cart->Location
 	// if src_docs!=0 => credit invoice else credit note
 	//
@@ -140,7 +140,7 @@
 				return $credit_no;
 			}
 
-		//----------------------------------------------------------------------------------------
+
 		// Insert a stock movement coming back in to show the credit note and
 		// 	a reversing stock movement to show the write off
 		//
@@ -165,7 +165,7 @@
 					$credit_line->discount_percent);
 			}
 
-		//----------------------------------------------------------------------------------------
+
 		public static function add_gl_costs($order, $order_line, $credit_no, $date_, $credit_type, $write_off_gl_code, &$branch_data)
 			{
 				$stock_gl_codes = Item::get_gl_code($order_line->stock_id);
@@ -340,7 +340,7 @@
 				return $customer_error;
 			}
 
-		//---------------------------------------------------------------------------------
+
 		public static function display_items($title, &$order)
 			{
 				Display::heading($title);
@@ -396,7 +396,7 @@
 				div_end();
 			}
 
-		//---------------------------------------------------------------------------------
+
 		public static function item_controls($order, $rowcounter, $line_no = -1)
 			{
 				$Ajax = Ajax::i();
@@ -445,7 +445,7 @@
 				end_row();
 			}
 
-		//---------------------------------------------------------------------------------
+
 		public static function option_controls($credit)
 			{
 				$Ajax = Ajax::i();
@@ -470,5 +470,5 @@
 				echo "</table>";
 				div_end();
 			}
-		//---------------------------------------------------------------------------------
+
 	}

@@ -9,7 +9,7 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	//---------------------------------------------------------------------------
+
 	//
 	//	Entry/Modify Credit Note for selected Sales Invoice
 	//
@@ -25,7 +25,7 @@
 		Sales_Order::start();
 	}
 	Page::start($page_title);
-	//-----------------------------------------------------------------------------
+
 	if (isset($_GET['AddedID'])) {
 		$credit_no = $_GET['AddedID'];
 		$trans_type = ST_CUSTCREDIT;
@@ -45,7 +45,7 @@
 	} else {
 		Sales_Order::check_edit_conflicts();
 	}
-	//-----------------------------------------------------------------------------
+
 	function can_process()
 		{
 			if (!Dates::is_date($_POST['CreditDate'])) {
@@ -85,7 +85,7 @@
 			return true;
 		}
 
-	//-----------------------------------------------------------------------------
+
 	if (isset($_GET['InvoiceNumber']) && $_GET['InvoiceNumber'] > 0) {
 		$ci = new Sales_Order(ST_SALESINVOICE, $_GET['InvoiceNumber'], true);
 		$ci->trans_type = ST_CUSTCREDIT;
@@ -132,7 +132,7 @@
 			return $ok;
 		}
 
-	//-----------------------------------------------------------------------------
+
 	function copy_to_cart()
 		{
 			$cart = &$_SESSION['Items'];
@@ -146,7 +146,7 @@
 			}
 		}
 
-	//-----------------------------------------------------------------------------
+
 	function copy_from_cart()
 		{
 			$cart = &$_SESSION['Items'];
@@ -159,7 +159,7 @@
 			$_POST['ref'] = $cart->reference;
 		}
 
-	//-----------------------------------------------------------------------------
+
 	if (isset($_POST['ProcessCredit']) && can_process()) {
 		$new_credit = ($_SESSION['Items']->trans_no == 0);
 		if (!isset($_POST['WriteOffGLCode'])) {
@@ -177,11 +177,11 @@
 			meta_forward($_SERVER['PHP_SELF'], "UpdatedID=$credit_no");
 		}
 	}
-	//-----------------------------------------------------------------------------
+
 	if (isset($_POST['Location'])) {
 		$_SESSION['Items']->Location = $_POST['Location'];
 	}
-	//-----------------------------------------------------------------------------
+
 	function display_credit_items()
 		{
 			start_form();
@@ -265,7 +265,7 @@
 			div_end();
 		}
 
-	//-----------------------------------------------------------------------------
+
 	function display_credit_options()
 		{
 			$Ajax = Ajax::i();
@@ -291,11 +291,11 @@
 			div_end();
 		}
 
-	//-----------------------------------------------------------------------------
+
 	if (get_post('Update')) {
 		$Ajax->activate('credit_items');
 	}
-	//-----------------------------------------------------------------------------
+
 	display_credit_items();
 	display_credit_options();
 	echo "<br><center>";

@@ -13,7 +13,7 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	JS::open_window(900, 500);
 	Page::start(_($help_context = "Supplier Allocations"));
-	//--------------------------------------------------------------------------------
+
 	start_form();
 	/* show all outstanding receipts and credits to be allocated */
 	if (!isset($_POST['supplier_id'])) {
@@ -36,7 +36,7 @@
 	if (isset($_POST['supplier_id'])) {
 		$supplier_id = $_POST['supplier_id'];
 	}
-	//--------------------------------------------------------------------------------
+
 	function systype_name($dummy, $type)
 		{
 			global $systypes_array;

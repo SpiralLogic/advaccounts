@@ -99,7 +99,7 @@
 			return $myrow[0];
 		}
 
-		//----------------------------------------------------------------------------------------
+
 		public static function get_percent($stock_id, $add_pct)
 		{
 			$avg = static::get_standard_cost($stock_id);
@@ -109,7 +109,7 @@
 			return Num::round($avg * (1 + $add_pct / 100), User::price_dec());
 		}
 
-		//--------------------------------------------------------------------------------------
+
 		public static function get_calculated_price($stock_id, $currency, $sales_type_id, $factor = null, $date = null)
 		{
 			if ($date == null) {
@@ -175,7 +175,7 @@
 			}
 		}
 
-		//----------------------------------------------------------------------------------------
+
 		//
 		//	Get price for given item or kit.
 		//  When $std==true price is calculated as a sum of all included stock items,
@@ -204,7 +204,7 @@
 			return $kit_price;
 		}
 
-		//----------------------------------------------------------------------------------------
+
 		public static function get_purchase($supplier_id, $stock_id)
 		{
 			$sql = "SELECT price, conversion_factor FROM purch_data

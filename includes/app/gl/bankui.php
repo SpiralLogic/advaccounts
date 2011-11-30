@@ -91,7 +91,7 @@
 				div_end();
 			}
 
-		//---------------------------------------------------------------------------------
+
 		public static function items($title, &$order)
 			{
 				$dim = DB_Company::get_pref('use_dimension');
@@ -151,7 +151,7 @@
 				div_end();
 			}
 
-		//---------------------------------------------------------------------------------
+
 		public static function item_controls($order, $dim, $Index = null)
 			{
 				$Ajax = Ajax::i();
@@ -220,14 +220,14 @@
 				end_row();
 			}
 
-		//---------------------------------------------------------------------------------
+
 		public static function option_controls()
 			{
 				echo "<br><table align='center'>";
 				textarea_row(_("Memo"), 'memo_', null, 50, 3);
 				echo "</table>";
 			}
-		//---------------------------------------------------------------------------------
+
 	}
 
 ?>

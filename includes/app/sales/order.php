@@ -65,7 +65,7 @@
 		public $payment_terms; // cached payment terms
 		public $credit;
 
-		//-------------------------------------------------------------------------
+
 		//
 		//  $trans_no==0 => open new/direct document
 		//  $trans_no!=0 && $view==false => read for view
@@ -87,7 +87,7 @@
 				$this->cart_id = uniqid('');
 			}
 
-		//-------------------------------------------------------------------------
+
 		// Reading document into cart
 		//
 		function read($type, $trans_no = 0, $view = false)
@@ -202,7 +202,7 @@
 				$this->credit = Sales_Debtor::get_credit($this->customer_id);
 			}
 
-		//-------------------------------------------------------------------------
+
 		// Writing new/modified sales document to database.
 		// Makes parent documents for direct delivery/invoice by recurent call.
 		// $policy - 0 or 1:  writeoff/return for IV, back order/cancel for DN
@@ -351,7 +351,7 @@
 				$this->line_items[$line_no]->discount_percent = $disc;
 			}
 
-		//--------------------------------------------------------------------------------------------------
+
 		public static function update_parent_line($doc_type, $line_id, $qty_dispatched)
 			{
 				$doc_type = Sales_Trans::get_parent_type($doc_type);
@@ -599,7 +599,7 @@
 				return $order_no;
 			}
 
-		//----------------------------------------------------------------------------------------
+
 		public static function delete($order_no, $trans_type)
 			{
 				DB::begin_transaction();
@@ -612,7 +612,7 @@
 				DB::commit_transaction();
 			}
 
-		//----------------------------------------------------------------------------------------
+
 		// Mark changes in sales_order_details
 		//
 		public static function update_version($order)
@@ -623,7 +623,7 @@
 				}
 			}
 
-		//----------------------------------------------------------------------------------------
+
 		public static function update($order)
 			{
 				$del_date = Dates::date2sql($order->due_date);
@@ -715,7 +715,7 @@
 				}
 			}
 
-		//----------------------------------------------------------------------------------------
+
 		public static function get_header($order_no, $trans_type)
 			{
 				$sql = "SELECT DISTINCT sales_orders.*,
@@ -757,7 +757,7 @@
 				}
 			}
 
-		//----------------------------------------------------------------------------------------
+
 		public static function get_details($order_no, $trans_type)
 			{
 				$sql = "SELECT sales_order_details.id, stk_code, unit_price, sales_order_details.description,sales_order_details.quantity,
@@ -769,7 +769,7 @@
 				return DB::query($sql, "Retreive order Line Items");
 			}
 
-		//----------------------------------------------------------------------------------------
+
 		public static function get($order_no, &$order, $trans_type)
 			{
 				$myrow = Sales_Order::get_header($order_no, $trans_type);
@@ -804,7 +804,7 @@
 				return true;
 			}
 
-		//----------------------------------------------------------------------------------------
+
 		public static function has_deliveries($order_no)
 			{
 				$sql = "SELECT SUM(qty_sent) FROM sales_order_details WHERE order_no=" . DB::escape($order_no) . " AND trans_type=" . ST_SALESORDER . "";
@@ -818,7 +818,7 @@
 			 ;*/
 			}
 
-		//----------------------------------------------------------------------------------------
+
 		public static function close($order_no)
 			{
 				// set the quantity of each item to the already sent quantity. this will mark item as closed.
@@ -827,7 +827,7 @@
 				DB::query($sql, "The sales order detail record could not be updated");
 			}
 
-		//---------------------------------------------------------------------------------------------------------------
+
 		public static function	get_invoice_duedate($debtorno, $invdate)
 			{
 				if (!Dates::is_date($invdate)) {
@@ -888,7 +888,7 @@
 				return DB::query($sql, "Customer Branch Record Retreive");
 			}
 
-		//--------------------------------------------------------------------------------
+
 		public static function add_line($order, $new_item, $new_item_qty, $price, $discount, $description = null, $no_errors = false)
 			{
 				// calculate item price to sum of kit element prices factor for
@@ -949,7 +949,7 @@
 				}
 			}
 
-		//----------------------------------------------------------------------------
+
 		// helper functions for script execution control
 		//
 		public static function start()
@@ -986,7 +986,7 @@
 				}
 			}
 
-		//---------------------------------------------------------------------------------
+
 		function customer_to_order($order, $customer_id, $branch_id)
 			{
 				$ret_error = "";
@@ -1041,7 +1041,7 @@
 				return $ret_error;
 			}
 
-		//---------------------------------------------------------------------------------
+
 		public static function summary($title, &$order, $editable_items = false)
 			{
 				Display::heading($title);
@@ -1327,7 +1327,7 @@ JS;
 				return $customer_error;
 			}
 
-		//--------------------------------------------------------------------------------
+
 		public static function item_controls($order, &$rowcounter, $line_no = -1)
 			{
 				$Ajax = Ajax::i();
@@ -1386,7 +1386,7 @@ JS;
 				end_row();
 			}
 
-		//--------------------------------------------------------------------------------
+
 		public static function display_delivery_details($order)
 			{
 				$Ajax = Ajax::i();

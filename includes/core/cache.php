@@ -6,8 +6,7 @@
 	 * Time: 4:45 PM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	class Cache
-	{
+	class Cache {
 		/**
 		 * @var Memcached
 		 */
@@ -17,8 +16,7 @@
 		 * @static
 		 * @return Memcached
 		 */
-		protected static function _i()
-		{
+		protected static function _i() {
 			if (static::$instance === null) {
 				static::$instance = new Memcached('ADV');
 				static::$instance->addServer('127.0.0.1', 11211);
@@ -34,9 +32,9 @@
 		 * @param $value
 		 *
 		 * @return mixed
-		 */public static function set($key, $value)
-		{
-			static::_i()->set($key, $value,time()+(60*60+24));
+		 */
+		public static function set($key, $value,$expires=86400) {
+			static::_i()->set($key, $value,time() +$expires);
 			return $value;
 		}
 
@@ -44,16 +42,16 @@
 		 * @static
 		 * @param $key
 		 * @return mixed
-		 */public static function get($key)
-		{
+		 */
+		public static function get($key) {
 			return static::_i()->get($key);
 		}
 
 		/**
 		 * @static
 		 * @return mixed
-		 */public static function getStats()
-		{
+		 */
+		public static function getStats() {
 			return static::_i()->getStats();
 		}
 
@@ -61,21 +59,13 @@
 		 * @static
 		 * @param $key
 		 * @param $value
-		 */public static function renew($key, $value)
-		{
+		 */
+		public static function renew($key, $value) {
 			static::_i()->set($key, $value);
 		}
 
 
-
-
-
-
-
-
-
-		public static function flush($time=0)
-			{
-				static::_i()->flush($time);
-			}
+		public static function flush($time = 0) {
+			static::_i()->flush($time);
+		}
 	}

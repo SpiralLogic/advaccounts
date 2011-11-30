@@ -13,12 +13,12 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	JS::open_window(900, 500);
 	Page::start(_($help_context = "Inventory Item Cost Update"));
-	//--------------------------------------------------------------------------------------
+
 	Validation::check(Validation::COST_ITEMS, _("There are no costable inventory items defined in the system (Purchased or manufactured items)."), STOCK_SERVICE);
 	if (isset($_GET['stock_id'])) {
 		$_POST['stock_id'] = $_GET['stock_id'];
 	}
-	//--------------------------------------------------------------------------------------
+
 	if (isset($_POST['UpdateData'])) {
 		$old_cost = $_POST['OldMaterialCost'] + $_POST['OldLabourCost']
 		 + $_POST['OldOverheadCost'];
@@ -52,7 +52,7 @@
 	if (list_updated('stock_id')) {
 		$Ajax->activate('cost_table');
 	}
-	//-----------------------------------------------------------------------------------------
+
 	start_form();
 	if (!Input::post('stock_id')) {
 		$_POST['stock_id'] = Session::i()->global_stock_id;

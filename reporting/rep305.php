@@ -17,7 +17,7 @@
 	// Title:	GRN Valuation Report
 	// ----------------------------------------------------------------
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	//----------------------------------------------------------------------------------------------------
+
 	print_grn_valuation();
 	function getTransactions($from, $to)
 	{
@@ -39,7 +39,7 @@
 		return DB::query($sql, "No transactions were returned");
 	}
 
-	//----------------------------------------------------------------------------------------------------
+
 	function print_grn_valuation()
 	{
 		$from = $_POST['PARAM_0'];

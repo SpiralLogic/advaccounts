@@ -8,12 +8,12 @@
 	 */
 	class Display
 	{
-		static function heading($msg)
+		public 	static function heading($msg)
 			{
 				echo "<center><span class='headingtext'>$msg</span></center>\n";
 			}
 
-		static function note($msg, $br = 0, $br2 = 0, $extra = "")
+		public 	static function note($msg, $br = 0, $br2 = 0, $extra = "")
 			{
 				for ($i = 0; $i < $br; $i++)
 				{
@@ -32,7 +32,7 @@
 				}
 			}
 
-		static function item_heading($stock_id)
+		public 	static function item_heading($stock_id)
 			{
 				if ($stock_id != "") {
 					$result = DB::query("SELECT description, units FROM stock_master WHERE stock_id=" . DB::escape($stock_id));
@@ -43,7 +43,7 @@
 				}
 			}
 
-		static function backtrace($cond = true, $msg = '')
+		public 	static function backtrace($cond = true, $msg = '')
 			{
 				if ($cond) {
 					if ($msg) {
@@ -73,9 +73,7 @@
 								}
 							}
 						}
-						foreach (
-							$tr['args'] as $n => $a
-						) {
+						foreach ($tr['args'] as $n => $a) {
 							if (is_object($tr['args'][$n])) {
 								$tr['args'][$n] = "(" . get_class($tr['args'][$n]) . " Object)";
 							}
@@ -94,8 +92,8 @@
 				}
 			}
 
-		//--------------------------------------------------------------------------------------
-		static function is_voided($type, $id, $label)
+
+		public 	static function is_voided($type, $id, $label)
 			{
 				$void_entry = Voiding::get($type, $id);
 				if ($void_entry == null) {
@@ -112,8 +110,8 @@
 				return true;
 			}
 
-		//--------------------------------------------------------------------------------------
-		static function debit_or_credit_cells($value)
+
+		public 	static function debit_or_credit_cells($value)
 			{
 				$value = Num::round($value, User::price_dec());
 				if ($value >= 0) {

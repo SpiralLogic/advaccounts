@@ -17,7 +17,7 @@
 	// Title:	Tax Report
 	// ----------------------------------------------------------------
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	//------------------------------------------------------------------
+
 	print_tax_report();
 	function getTaxTransactions($from, $to)
 	{
@@ -58,7 +58,7 @@
 		return DB::fetch($result);
 	}
 
-	//----------------------------------------------------------------------------------------------------
+
 	function print_tax_report()
 	{
 		global $trans_dir, $Hooks, $systypes_array;

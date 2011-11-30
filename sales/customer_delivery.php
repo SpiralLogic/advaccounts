@@ -9,7 +9,7 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	//-----------------------------------------------------------------------------
+
 	//
 	//	Entry/Modify Delivery Note against Sales Order
 	//
@@ -55,7 +55,7 @@
 		hyperlink_params("/sales/inquiry/sales_deliveries_view.php", _("Select A Different Delivery"), "OutstandingOnly=1");
 		Page::footer_exit();
 	}
-	//-----------------------------------------------------------------------------
+
 	if (isset($_GET['OrderNumber']) && $_GET['OrderNumber'] > 0) {
 		$ord = new Sales_Order(ST_SALESORDER, $_GET['OrderNumber'], true);
 		/*read in all the selected order into the Items cart  */
@@ -95,7 +95,7 @@
 			JS::set_focus('ChargeFreightCost');
 		}
 	}
-	//-----------------------------------------------------------------------------
+
 	function check_data()
 		{
 			if (!isset($_POST['DispatchDate']) || !Dates::is_date($_POST['DispatchDate'])) {
@@ -143,7 +143,7 @@
 			return true;
 		}
 
-	//------------------------------------------------------------------------------
+
 	function copy_to_cart()
 		{
 			$cart = &$_SESSION['Items'];
@@ -158,7 +158,7 @@
 			}
 		}
 
-	//------------------------------------------------------------------------------
+
 	function copy_from_cart()
 		{
 			$cart = &$_SESSION['Items'];
@@ -172,7 +172,7 @@
 			$_POST['ref'] = $cart->reference;
 		}
 
-	//------------------------------------------------------------------------------
+
 	function check_quantities()
 		{
 			$ok = 1;
@@ -208,7 +208,7 @@
 			return $ok;
 		}
 
-	//------------------------------------------------------------------------------
+
 	function check_qoh()
 		{
 			if (!DB_Company::get_pref('allow_negative_stock')) {
@@ -225,7 +225,7 @@
 			return true;
 		}
 
-	//------------------------------------------------------------------------------
+
 	if (isset($_POST['process_delivery']) && check_data() && check_qoh()) {
 		$dn = &$_SESSION['Items'];
 		if ($_POST['bo_policy']) {
@@ -249,7 +249,7 @@
 	if (isset($_POST['Update']) || isset($_POST['_Location_update'])) {
 		$Ajax->activate('Items');
 	}
-	//------------------------------------------------------------------------------
+
 	start_form();
 	hidden('cart_id');
 	start_table(Config::get('tables_style2') . " width=90%", 5);

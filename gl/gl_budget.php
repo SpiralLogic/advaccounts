@@ -14,7 +14,7 @@
 	JS::headerFile('budget.js');
 	Page::start(_($help_context = "Budget Entry"));
 	Validation::check(Validation::GL_ACCOUNT_GROUPS, _("There are no account groups defined. Please define at least one account group before entering accounts."));
-	//-------------------------------------------------------------------------------------
+
 	function exists_gl_budget($date_, $account, $dimension, $dimension2) {
 		$sql = "SELECT account FROM budget_trans WHERE account=" . DB::escape($account)
 		 . " AND tran_date='$date_' AND
@@ -64,7 +64,7 @@
 		return $row[0];
 	}
 
-	//-------------------------------------------------------------------------------------
+
 	if (isset($_POST['add']) || isset($_POST['delete'])) {
 		DB::begin_transaction();
 		for ($i = 0, $da = $_POST['begin']; Dates::date1_greater_date2($_POST['end'], $da); $i++)
@@ -91,7 +91,7 @@
 	if (isset($_POST['submit']) || isset($_POST['update'])) {
 		$Ajax->activate('budget_tbl');
 	}
-	//-------------------------------------------------------------------------------------
+
 	start_form();
 
 	if (Validation::check(Validation::GL_ACCOUNTS)) {

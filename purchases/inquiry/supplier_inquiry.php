@@ -22,7 +22,7 @@
 	if (isset($_GET['ToDate'])) {
 		$_POST['TransToDate'] = $_GET['ToDate'];
 	}
-	//------------------------------------------------------------------------------------------------
+
 	start_form();
 	if (!isset($_POST['supplier_id'])) {
 		$_POST['supplier_id'] = Session::i()->supplier_id;
@@ -37,7 +37,7 @@
 	end_row();
 	end_table();
 	Session::i()->supplier_id = $_POST['supplier_id'];
-	//------------------------------------------------------------------------------------------------
+
 	function display_supplier_summary($supplier_record)
 		{
 			$past1 = DB_Company::get_pref('past_due_days');
@@ -62,7 +62,7 @@
 			end_table(1);
 		}
 
-	//------------------------------------------------------------------------------------------------
+
 	div_start('totals_tbl');
 	if (($_POST['supplier_id'] != "") && ($_POST['supplier_id'] != ALL_TEXT)) {
 		$supplier_record = Purch_Creditor::get_to_trans($_POST['supplier_id']);
@@ -72,7 +72,7 @@
 	if (get_post('RefreshInquiry')) {
 		$Ajax->activate('totals_tbl');
 	}
-	//------------------------------------------------------------------------------------------------
+
 	function systype_name($dummy, $type)
 		{
 			global $systypes_array;
@@ -125,7 +125,7 @@
 			return $row['OverDue'] == 1 && (abs($row["TotalAmount"]) - $row["Allocated"] != 0);
 		}
 
-	//------------------------------------------------------------------------------------------------
+
 	if (AJAX_REFERRER && !empty($_POST['ajaxsearch'])) {
 		$searchArray = explode(' ', $_POST['ajaxsearch']);
 		unset($_POST['supplier_id']);
@@ -208,7 +208,7 @@
 		$cols[_("Supplier")] = 'skip';
 		$cols[_("Currency")] = 'skip';
 	}
-	//------------------------------------------------------------------------------------------------
+
 	/*show a table of the transactions returned by the sql */
 	$table =& db_pager::new_db_pager('trans_tbl', $sql, $cols);
 	$table->set_marker('check_overdue', _("Marked items are overdue."));

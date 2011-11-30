@@ -17,7 +17,7 @@
 	// Title:	price Listing
 	// ----------------------------------------------------------------
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	//----------------------------------------------------------------------------------------------------
+
 	print_price_listing();
 	function fetch_items($category = 0)
 	{
@@ -55,7 +55,7 @@
 		return DB::query($sql, "No kits were returned");
 	}
 
-	//----------------------------------------------------------------------------------------------------
+
 	function print_price_listing()
 	{
 		$currency = $_POST['PARAM_0'];

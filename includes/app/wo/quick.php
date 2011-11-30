@@ -9,7 +9,7 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	//--------------------------------------------------------------------------------------
+
 	class WO_Quick
 	{
 		public static function add($wo_ref, $loc_code, $units_reqd, $stock_id, $type, $date_, $memo_, $costs, $cr_acc, $labour,
@@ -36,7 +36,7 @@
 		" . DB::escape($type) . ", " . DB::escape($costs) . ", '$date', '$date', '$date', 1, 1)";
 				DB::query($sql, "could not add work order");
 				$woid = DB::insert_id();
-				//--------------------------------------------------------------------------
+
 				// create Work Order Requirements based on the bom
 				$result = Manufacturing::get_bom($stock_id);
 				while ($bom_item = DB::fetch($result)) {
@@ -64,7 +64,7 @@
 				return $woid;
 			}
 
-		//--------------------------------------------------------------------------------------
+
 		public static function costs($woid, $stock_id, $units_reqd, $date_, $advanced = 0, $costs = 0, $cr_acc = "", $labour = 0,
 			$cr_lab_acc = "")
 			{
@@ -134,5 +134,5 @@
 			}
 	}
 
-	//--------------------------------------------------------------------------------------
+
 ?>

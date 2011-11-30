@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 	class Taxes
 	{
-		//---------------------------------------------------------------------------------
+
 		// returns the price of a given item minus any included taxes
 		// for item $stock_id with line price $price,
 		// with applicable tax rates $tax_group_array or group id $tax_group
@@ -112,7 +112,7 @@
 			}
 
 		#  __ADVANCEDEDIT__ END #
-		//---------------------------------------------------------------------------------
+
 		// return an array of (tax_type_id, tax_type_name, sales_gl_code, purchasing_gl_code, rate)
 		public static function get_taxes_for_item($stock_id, $tax_group_items_array)
 			{
@@ -151,7 +151,7 @@
 				return $ret_tax_array;
 			}
 
-		//-----------------------------------------------------------------------------------
+
 		// return an array of (tax_type_id, tax_type_name, sales_gl_code, purchasing_gl_code, rate, included_in_price, Value)
 		public static function get_tax_for_items($items, $prices, $shipping_cost, $tax_group, $tax_included = null,
 			$tax_items_array = null)
@@ -240,7 +240,7 @@
 				}
 			}
 
-		//--------------------------------------------------------------------------------------
+
 		static function edit_items($taxes, $columns, $tax_included, $leftspan = 0, $tax_correcting = false)
 			{
 				$total = 0;

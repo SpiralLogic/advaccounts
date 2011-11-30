@@ -12,7 +12,7 @@
 	$page_security = 'SA_SETUPCOMPANY';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "Company Setup"));
-	//-------------------------------------------------------------------------------------------------
+
 	if (isset($_POST['update']) && $_POST['update'] != "") {
 		$input_error = 0;
 		if (!Validation::is_num('login_tout', 10)) {
@@ -103,7 +103,7 @@
 		JS::set_focus('coy_name');
 		$Ajax->activate('_page_body');
 	} /* end of if submit */
-	//---------------------------------------------------------------------------------------------
+
 	start_form(true);
 	$myrow = DB_Company::get_prefs();
 	$_POST['coy_name'] = $myrow["coy_name"];
@@ -170,7 +170,7 @@
 	hidden('coy_logo', $_POST['coy_logo']);
 	submit_center('update', _("Update"), true, '', 'default');
 	end_form(2);
-	//-------------------------------------------------------------------------------------------------
+
 	end_page();
 
 ?>

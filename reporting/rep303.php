@@ -17,7 +17,7 @@
 	// Title:	Stock Check Sheet
 	// ----------------------------------------------------------------
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	//----------------------------------------------------------------------------------------------------
+
 	print_stock_check();
 	function getTransactions($category, $location)
 		{
@@ -50,7 +50,7 @@
 			return DB::query($sql, "No transactions were returned");
 		}
 
-	//----------------------------------------------------------------------------------------------------
+
 	function print_stock_check()
 		{
 			$category = $_POST['PARAM_0'];

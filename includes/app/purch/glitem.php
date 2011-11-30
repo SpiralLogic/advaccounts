@@ -26,7 +26,7 @@
 		public $gl_code;
 		public $freight;
 
-		function __construct($id, $po_detail_item, $item_code, $description, $qty_recd, $prev_quantity_inv, $this_quantity_inv,
+		public		function __construct($id, $po_detail_item, $item_code, $description, $qty_recd, $prev_quantity_inv, $this_quantity_inv,
 			$order_price, $chg_price, $Complete, $std_cost_unit, $gl_code, $discount = 0, $exp_price = null)
 			{
 				$this->id = $id;
@@ -45,18 +45,18 @@
 				$this->gl_code = $gl_code;
 			}
 
-		function setFreight($freight)
+		public	function setFreight($freight)
 			{
 				$this->freight = $freight;
 			}
 
-		function full_charge_price($tax_group_id, $tax_group = null)
+		public	function full_charge_price($tax_group_id, $tax_group = null)
 			{
 				return Taxes::get_full_price_for_item($this->item_code, $this->chg_price * (1 - $this->discount), $tax_group_id, 0,
 					$tax_group);
 			}
 
-		function taxfree_charge_price($tax_group_id, $tax_group = null)
+		public	function taxfree_charge_price($tax_group_id, $tax_group = null)
 			{
 				//		if ($tax_group_id==null)
 				//			return $this->chg_price;
@@ -64,8 +64,8 @@
 					0, $tax_group);
 			}
 
-		//--------------------------------------------------------------------------------------------------
-		function display_controls($supp_trans, $k)
+
+		public	function display_controls($supp_trans, $k)
 			{
 				$accs = Purch_Creditor::get_accounts_name($supp_trans->supplier_id);
 				$_POST['gl_code'] = $accs['purchase_account'];
@@ -91,7 +91,7 @@
 		//		 = 1 display on invoice/credit page
 		//		 = 2 display on view invoice
 		//		 = 3 display on view credit
-		function display_items($supp_trans, $mode = 0)
+		public	function display_items($supp_trans, $mode = 0)
 			{
 				$Ajax = Ajax::i();
 				// if displaying in form, and no items, exit

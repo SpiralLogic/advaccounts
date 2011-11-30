@@ -47,7 +47,7 @@
 				DB::query($sql, "could not delete item movement type");
 			}
 
-		//--------------------------------------------------------------------------------------------------
+
 		public static function get($type, $type_no, $visible = false)
 			{
 				$sql = "SELECT stock_moves.*, stock_master.description, " . "stock_master.units,locations.location_name," . "stock_master.material_cost + " . "stock_master.labour_cost + " . "stock_master.overhead_cost AS FixedStandardCost
@@ -61,7 +61,7 @@
 				return DB::query($sql, "Could not get stock moves");
 			}
 
-		//--------------------------------------------------------------------------------------------------
+
 		public static function void($type, $type_no)
 			{
 				$sql = "UPDATE stock_moves SET qty=0, price=0, discount_percent=0,
@@ -87,7 +87,7 @@
 				return DB::insert_id();
 			}
 
-		//----------------------------------------------------------------------------------------
+
 		// $price in customer's currency
 		// $quantity is used as is (if it's neg it's neg, if it's pos it's pos)
 		// $std_cost is in home currency
@@ -99,5 +99,5 @@
 				return Inv_Movement::add($type, $stock_id, $trans_id, $location, $date_, $reference, $quantity, $std_cost, 0,
 					$show_or_hide, $price, $discount_percent, "The customer stock movement record cannot be inserted");
 			}
-		//--------------------------------------------------------------------------------------------------
+
 	}

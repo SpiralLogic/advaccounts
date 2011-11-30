@@ -17,7 +17,7 @@
 	// Title:	Customer Details Listing
 	// ----------------------------------------------------------------
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	//----------------------------------------------------------------------------------------------------
+
 	print_customer_details_listing();
 	function get_customer_details_for_report($area = 0, $salesid = 0)
 	{
@@ -83,7 +83,7 @@
 		return $row[0];
 	}
 
-	//----------------------------------------------------------------------------------------------------
+
 	function print_customer_details_listing()
 	{
 		$from = $_POST['PARAM_0'];

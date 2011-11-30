@@ -57,7 +57,7 @@
 		echo "</center>";
 	}
 
-	//-----------------------------------------------------------------------------------
+
 	function can_process()
 	{
 		if (strlen($_POST['description']) == 0) {
@@ -73,7 +73,7 @@
 		return true;
 	}
 
-	//-----------------------------------------------------------------------------------
+
 	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 		if (can_process()) {
 			if ($selected_id != -1) {
@@ -96,7 +96,7 @@
 		}
 		$Mode2 = 'RESET2';
 	}
-	//-----------------------------------------------------------------------------------
+
 	if ($Mode == 'Delete') {
 		if (!GL_QuickEntry::has_lines($selected_id)) {
 			GL_QuickEntry::delete($selected_id);
@@ -112,7 +112,7 @@
 		Errors::notice(_('Selected quick entry line has been deleted'));
 		$Mode2 = 'RESET2';
 	}
-	//-----------------------------------------------------------------------------------
+
 	if ($Mode == 'RESET') {
 		$selected_id = -1;
 		$_POST['description'] = $_POST['type'] = '';
@@ -123,7 +123,7 @@
 		$selected_id2 = -1;
 		$_POST['actn'] = $_POST['dest_id'] = $_POST['amount'] = $_POST['dimension_id'] = $_POST['dimension2_id'] = '';
 	}
-	//-----------------------------------------------------------------------------------
+
 	$result = GL_QuickEntry::get_all();
 	start_form();
 	start_table(Config::get('tables_style'));
@@ -141,7 +141,7 @@
 	}
 	end_table(1);
 	end_form();
-	//-----------------------------------------------------------------------------------
+
 	start_form();
 	start_table(Config::get('tables_style2'));
 	if ($selected_id != -1) {
@@ -265,7 +265,7 @@
 		submit_add_or_update_center2($selected_id2 == -1, '', true);
 		end_form();
 	}
-	//------------------------------------------------------------------------------------
+
 	end_page();
 
 ?>

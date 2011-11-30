@@ -44,7 +44,7 @@
 
 		//	Current ui mode.
 		// 2008-06-15. Added extra parameter $stock_id and reference for $dec
-		//--------------------------------------------------------------------
+
 		public static function  qty_format($number, $stock_id = null, &$dec)
 		{
 			$dec = Num::qty_dec($stock_id);
@@ -62,7 +62,7 @@
 			return $dec;
 		}
 
-		//-------------------------------------------------------------------
+
 		public static function  exrate_format($number)
 		{
 			return Num::format($number, User::prefs()->exrate_dec());

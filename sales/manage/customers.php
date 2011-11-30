@@ -17,7 +17,7 @@
 		$_POST['customer_id'] = $_GET['debtor_no'];
 	}
 	$new_customer = (!isset($_POST['customer_id']) || $_POST['customer_id'] == "");
-	//--------------------------------------------------------------------------------------------
+
 	function can_process()
 		{
 			if (strlen($_POST['CustName']) == 0) {
@@ -48,7 +48,7 @@
 			return true;
 		}
 
-	//--------------------------------------------------------------------------------------------
+
 	function handle_submit()
 		{
 			global $new_customer;
@@ -93,11 +93,11 @@
 			}
 		}
 
-	//--------------------------------------------------------------------------------------------
+
 	if (isset($_POST['submit'])) {
 		handle_submit();
 	}
-	//--------------------------------------------------------------------------------------------
+
 	if (isset($_POST['delete'])) {
 		//the link to delete a selected record was clicked instead of the submit button
 		$cancel_delete = 0;

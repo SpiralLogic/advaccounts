@@ -157,7 +157,7 @@
 			Errors::error(_("File was not uploaded into the system."));
 		}
 	}
-	//-------------------------------------------------------------------------------
+
 	start_form(true, true);
 	start_outer_table(Config::get('tables_style2'));
 	table_section(1);

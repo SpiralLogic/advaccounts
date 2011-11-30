@@ -74,6 +74,10 @@
 
 		/**
 		 *	 Get how much we owe the supplier for the period
+		 * @param $supplier_id
+		 * @param $date_from
+		 * @param $date_to
+		 * @return mixed
 		 */
 		public static function get_oweing($supplier_id, $date_from, $date_to)
 			{

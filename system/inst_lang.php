@@ -12,7 +12,7 @@
 	$page_security = 'SA_CREATELANGUAGE';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "Install/Update Languages"));
-	//---------------------------------------------------------------------------------------------
+
 	if (isset($_GET['selected_id'])) {
 		$selected_id = $_GET['selected_id'];
 	}
@@ -22,7 +22,7 @@
 	} else {
 		$selected_id = -1;
 	}
-	//---------------------------------------------------------------------------------------------
+
 	function check_data()
 	{
 		if ($_POST['code'] == "" || $_POST['name'] == "" || $_POST['encoding'] == "") {
@@ -32,7 +32,7 @@
 		return true;
 	}
 
-	//---------------------------------------------------------------------------------------------
+
 	function handle_submit()
 	{
 		$installed_languages = Config::get('languages.installed');
@@ -77,7 +77,7 @@
 		return true;
 	}
 
-	//---------------------------------------------------------------------------------------------
+
 	function handle_delete()
 	{
 		$id = $_GET['id'];
@@ -98,7 +98,7 @@
 		meta_forward($_SERVER['PHP_SELF']);
 	}
 
-	//---------------------------------------------------------------------------------------------
+
 	function display_languages()
 	{
 		$lang = $_SESSION["language"]->code;
@@ -154,7 +154,7 @@
 		Errors::warning(_("The marked language is the current language which cannot be deleted."), 0, 0, "class='currentfg'");
 	}
 
-	//---------------------------------------------------------------------------------------------
+
 	function display_language_edit($selected_id)
 	{
 		if ($selected_id != -1) {
@@ -197,7 +197,7 @@
 		end_form();
 	}
 
-	//---------------------------------------------------------------------------------------------
+
 	if (isset($_GET['c'])) {
 		if ($_GET['c'] == 'df') {
 			handle_delete();
@@ -208,11 +208,11 @@
 			}
 		}
 	}
-	//---------------------------------------------------------------------------------------------
+
 	display_languages();
 	hyperlink_no_params($_SERVER['PHP_SELF'], _("Create a new language"));
 	display_language_edit($selected_id);
-	//---------------------------------------------------------------------------------------------
+
 	end_page();
 
 ?>

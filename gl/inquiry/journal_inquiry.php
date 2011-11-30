@@ -13,13 +13,13 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	JS::open_window(800, 500);
 	Page::start(_($help_context = "Journal Inquiry"));
-	//-----------------------------------------------------------------------------------
+
 	// Ajax updates
 	//
 	if (get_post('Search')) {
 		$Ajax->activate('journal_tbl');
 	}
-	//--------------------------------------------------------------------------------------
+
 	if (!isset($_POST['filterType'])) {
 		$_POST['filterType'] = -1;
 	}

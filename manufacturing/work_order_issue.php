@@ -13,14 +13,14 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	JS::open_window(800, 500);
 	Page::start(_($help_context = "Issue Items to Work Order"));
-	//-----------------------------------------------------------------------------------------------
+
 	if (isset($_GET['AddedID'])) {
 		Errors::notice(_("The work order issue has been entered."));
 		Display::note(ui_view::get_trans_view_str(ST_WORKORDER, $_GET['AddedID'], _("View this Work Order")));
 		hyperlink_no_params("search_work_orders.php", _("Select another &Work Order to Process"));
 		Page::footer_exit();
 	}
-	//--------------------------------------------------------------------------------------------------
+
 	function line_start_focus()
 		{
 			$Ajax = Ajax::i();
@@ -28,7 +28,7 @@
 			JS::set_focus('_stock_id_edit');
 		}
 
-	//--------------------------------------------------------------------------------------------------
+
 	function handle_new_order()
 		{
 			if (isset($_SESSION['issue_items'])) {
@@ -40,7 +40,7 @@
 			$_SESSION['issue_items']->order_id = $_GET['trans_no'];
 		}
 
-	//-----------------------------------------------------------------------------------------------
+
 	function can_process()
 		{
 			if (!Dates::is_date($_POST['date_'])) {
@@ -80,7 +80,7 @@
 			meta_forward($_SERVER['PHP_SELF'], "AddedID=" . $_SESSION['issue_items']->order_id);
 		}
 	} /*end of process credit note */
-	//-----------------------------------------------------------------------------------------------
+
 	function check_item_data()
 		{
 			if (!Validation::is_num('qty', 0)) {
@@ -96,7 +96,7 @@
 			return true;
 		}
 
-	//-----------------------------------------------------------------------------------------------
+
 	function handle_update_item()
 		{
 			if ($_POST['UpdateItem'] != "" && check_item_data()) {
@@ -106,14 +106,14 @@
 			line_start_focus();
 		}
 
-	//-----------------------------------------------------------------------------------------------
+
 	function handle_delete_item($id)
 		{
 			$_SESSION['issue_items']->remove_from_cart($id);
 			line_start_focus();
 		}
 
-	//-----------------------------------------------------------------------------------------------
+
 	function handle_new_item()
 		{
 			if (!check_item_data()) {
@@ -123,7 +123,7 @@
 			line_start_focus();
 		}
 
-	//-----------------------------------------------------------------------------------------------
+
 	$id = find_submit('Delete');
 	if ($id != -1) {
 		handle_delete_item($id);
@@ -137,11 +137,11 @@
 	if (isset($_POST['CancelItemChanges'])) {
 		line_start_focus();
 	}
-	//-----------------------------------------------------------------------------------------------
+
 	if (isset($_GET['trans_no'])) {
 		handle_new_order();
 	}
-	//-----------------------------------------------------------------------------------------------
+
 	WO_Cost::display($_SESSION['issue_items']->order_id);
 	echo "<br>";
 	start_form();
@@ -153,7 +153,7 @@
 	end_table();
 	submit_center('Process', _("Process Issue"), true, '', 'default');
 	end_form();
-	//------------------------------------------------------------------------------------------------
+
 	end_page();
 
 ?>

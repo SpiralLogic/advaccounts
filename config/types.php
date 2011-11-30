@@ -10,33 +10,6 @@
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
 
-	$systypes_array = array(
-		ST_JOURNAL => _("Journal Entry"),
-		ST_BANKPAYMENT => _("Bank Payment"),
-		ST_BANKDEPOSIT => _("Bank Deposit"),
-		ST_BANKTRANSFER => _("Funds Transfer"),
-		ST_SALESINVOICE => _("Sales&nbsp;Invoice"),
-		ST_CUSTCREDIT => _("Customer Credit Note"),
-		ST_DEPOSIT_GROUP => _("Group Deposit"),
-		ST_CUSTPAYMENT => _("Payment"),
-		ST_CUSTREFUND => _("Customer Refund"),
-		ST_CUSTDELIVERY => _("Delivery&nbsp;Note"),
-		ST_LOCTRANSFER => _("Location Transfer"),
-		ST_INVADJUST => _("Inventory Adjustment"),
-		ST_PURCHORDER => _("Purchase Order"),
-		ST_SUPPINVOICE => _("Supplier Invoice"),
-		ST_SUPPCREDIT => _("Supplier Credit Note"),
-		ST_SUPPAYMENT => _("Supplier&nbsp;Payment"),
-		ST_SUPPRECEIVE => _("Purchase Order Delivery"),
-		ST_WORKORDER => _("Work Order"),
-		ST_MANUISSUE => _("Work Order Issue"),
-		ST_MANURECEIVE => _("Work Order Production"),
-		ST_SALESORDER => _("Sales Order"),
-		ST_SALESQUOTE => _("Sales Quotation"),
-		ST_PROFORMA => _("Sales Proforma Invoice"),
-		ST_COSTUPDATE => _("Cost Update"),
-		ST_DIMENSION => _("Dimension")
-	);
 	$bank_account_types = array(
 		BT_TRANSFER => _("Savings Account"),
 		_("Chequing Account"),
@@ -48,22 +21,6 @@
 		_("Cheque"),
 		_("Credit"),
 		_("Cash")
-	);
-	$payment_person_types = array(
-		PT_MISC => _("Miscellaneous"),
-		_("Work Order"),
-		_("Customer"),
-		_("Supplier"),
-		_("Quick Entry")
-	);
-	$wo_types_array = array(
-		WO_ASSEMBLY => _("Assemble"),
-		WO_UNASSEMBLY => _("Unassemble"),
-		WO_ADVANCED => _("Advanced Manufacture")
-	);
-	$wo_cost_types = array(
-		WO_LABOUR => _("Labour Cost"),
-		WO_OVERHEAD => _("Overhead Cost"),
 	);
 	$class_types = array(
 		CL_ASSETS => _("Assets"),
@@ -100,21 +57,57 @@
 		STOCK_SERVICE => _("Service"),
 		STOCK_INFO => _("Information")
 	);
+	$systypes_array = array(
+		ST_JOURNAL => _("Journal Entry"),
+		ST_BANKPAYMENT => _("Bank Payment"),
+		ST_BANKDEPOSIT => _("Bank Deposit"),
+		ST_BANKTRANSFER => _("Funds Transfer"),
+		ST_SALESINVOICE => _("Sales&nbsp;Invoice"),
+		ST_CUSTCREDIT => _("Customer Credit Note"),
+		ST_DEPOSIT_GROUP => _("Group Deposit"),
+		ST_CUSTPAYMENT => _("Payment"),
+		ST_CUSTREFUND => _("Customer Refund"),
+		ST_CUSTDELIVERY => _("Delivery&nbsp;Note"),
+		ST_LOCTRANSFER => _("Location Transfer"),
+		ST_INVADJUST => _("Inventory Adjustment"),
+		ST_PURCHORDER => _("Purchase Order"),
+		ST_SUPPINVOICE => _("Supplier Invoice"),
+		ST_SUPPCREDIT => _("Supplier Credit Note"),
+		ST_SUPPAYMENT => _("Supplier&nbsp;Payment"),
+		ST_SUPPRECEIVE => _("Purchase Order Delivery"),
+		ST_WORKORDER => _("Work Order"),
+		ST_MANUISSUE => _("Work Order Issue"),
+		ST_MANURECEIVE => _("Work Order Production"),
+		ST_SALESORDER => _("Sales Order"),
+		ST_SALESQUOTE => _("Sales Quotation"),
+		ST_PROFORMA => _("Sales Proforma Invoice"),
+		ST_COSTUPDATE => _("Cost Update"),
+		ST_DIMENSION => _("Dimension")
+	);
 	$tag_types = array(
 		TAG_ACCOUNT => _("Account"),
 		TAG_DIMENSION => _("Dimension")
 	);
+	$wo_cost_types = array(
+		WO_LABOUR => _("Labour Cost"),
+		WO_OVERHEAD => _("Overhead Cost"),
+	);
+	$wo_types_array = array(
+		WO_ASSEMBLY => _("Assemble"),
+		WO_UNASSEMBLY => _("Unassemble"),
+		WO_ADVANCED => _("Advanced Manufacture")
+	);
 
 	return array(
+		'bank_account_types' => $bank_account_types,
+		'bank_transfer_types' => $bank_transfer_types,
 		'class_types' => $class_types,
+		'payment_person_types' => $payment_person_types,
 		'quick_actions' => $quick_actions,
 		'quick_entry_types' => $quick_entry_types,
 		'stock_types' => $stock_types,
-		'tag_types' => $tag_types,
 		'systypes_array' => $systypes_array,
-		'bank_account_types' => $bank_account_types,
-		'bank_transfer_types' => $bank_transfer_types,
-		'payment_person_types' => $payment_person_types,
-		'wo_types_array' => $wo_types_array,
-		'wo_cost_types' => $wo_cost_types
+		'tag_types' => $tag_types,
+		'wo_cost_types' => $wo_cost_types,
+		'wo_types_array' => $wo_types_array
 	);

@@ -13,7 +13,7 @@
 	$page_security = $_POST['PARAM_0'] == $_POST['PARAM_1'] ?
 	 'SA_SALESTRANSVIEW' : 'SA_SALESBULKREP';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	//----------------------------------------------------------------------------------------------------
+
 	print_sales_orders();
 	$print_as_quote = 0;
 	function print_sales_orders()

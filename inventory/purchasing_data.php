@@ -15,9 +15,9 @@
 	Validation::check(Validation::PURCHASE_ITEMS, _("There are no purchasable inventory items defined in the system."),
 		STOCK_PURCHASED);
 	Validation::check(Validation::SUPPLIERS, _("There are no suppliers defined in the system."));
-	//----------------------------------------------------------------------------------------
+
 	Page::simple_mode(true);
-	//--------------------------------------------------------------------------------------------------
+
 	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 		if (Input::request('frame')) {
 			$_POST['stock_id'] = Session::i()->global_stock_id;
@@ -65,7 +65,7 @@
 			$Mode = 'RESET';
 		}
 	}
-	//--------------------------------------------------------------------------------------------------
+
 	if ($Mode == 'Delete') {
 		if (!Input::post('stock_id')) {
 			$_POST['stock_id'] = Session::i()->global_stock_id;
@@ -86,7 +86,7 @@
 	if (list_updated('stock_id')) {
 		$Ajax->activate('price_table');
 	}
-	//--------------------------------------------------------------------------------------------------
+
 	if (Input::request('frame')) {
 		start_form(false, false, $_SERVER['PHP_SELF'] . '?frame=1');
 	} else {
@@ -150,7 +150,7 @@
 		}
 		div_end();
 	}
-	//-----------------------------------------------------------------------------------------------
+
 	$dec2 = 6;
 	if ($Mode == 'Edit') {
 		$sql

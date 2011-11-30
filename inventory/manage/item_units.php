@@ -13,7 +13,7 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "Units of Measure"));
 	Page::simple_mode(false);
-	//----------------------------------------------------------------------------------
+
 	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 		//initialise no input errors assumed initially before we test
 		$input_error = 0;
@@ -42,7 +42,7 @@
 			$Mode = 'RESET';
 		}
 	}
-	//----------------------------------------------------------------------------------
+
 	if ($Mode == 'Delete') {
 		// PREVENT DELETES IF DEPENDENT RECORDS IN 'stock_master'
 		if (Item_Unit::used($selected_id)) {
@@ -59,7 +59,7 @@
 		unset($_POST);
 		$_POST['show_inactive'] = $sav;
 	}
-	//----------------------------------------------------------------------------------
+
 	$result = Item_Unit::get_all(check_value('show_inactive'));
 	start_form();
 	start_table(Config::get('tables_style') . "  width=40%");
@@ -80,7 +80,7 @@
 	}
 	inactive_control_row($th);
 	end_table(1);
-	//----------------------------------------------------------------------------------
+
 	start_table(Config::get('tables_style2'));
 	if ($selected_id != '') {
 		if ($Mode == 'Edit') {

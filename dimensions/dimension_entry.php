@@ -13,7 +13,7 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	$js = "";
 	Page::start(_($help_context = "Dimension Entry"));
-	//---------------------------------------------------------------------------------------
+
 	if (isset($_GET['trans_no'])) {
 		$selected_id = $_GET['trans_no'];
 	} elseif (isset($_POST['selected_id'])) {
@@ -21,37 +21,37 @@
 	} else {
 		$selected_id = -1;
 	}
-	//---------------------------------------------------------------------------------------
+
 	if (isset($_GET['AddedID'])) {
 		$id = $_GET['AddedID'];
 		Errors::notice(_("The dimension has been entered."));
 		safe_exit();
 	}
-	//---------------------------------------------------------------------------------------
+
 	if (isset($_GET['UpdatedID'])) {
 		$id = $_GET['UpdatedID'];
 		Errors::notice(_("The dimension has been updated."));
 		safe_exit();
 	}
-	//---------------------------------------------------------------------------------------
+
 	if (isset($_GET['DeletedID'])) {
 		$id = $_GET['DeletedID'];
 		Errors::notice(_("The dimension has been deleted."));
 		safe_exit();
 	}
-	//---------------------------------------------------------------------------------------
+
 	if (isset($_GET['ClosedID'])) {
 		$id = $_GET['ClosedID'];
 		Errors::notice(_("The dimension has been closed. There can be no more changes to it.") . " #$id");
 		safe_exit();
 	}
-	//---------------------------------------------------------------------------------------
+
 	if (isset($_GET['ReopenedID'])) {
 		$id = $_GET['ReopenedID'];
 		Errors::notice(_("The dimension has been re-opened. ") . " #$id");
 		safe_exit();
 	}
-	//-------------------------------------------------------------------------------------------------
+
 	function safe_exit()
 		{
 			hyperlink_no_params("", _("Enter a &new dimension"));
@@ -60,7 +60,7 @@
 			Page::footer_exit();
 		}
 
-	//-------------------------------------------------------------------------------------
+
 	function can_process()
 		{
 			global $selected_id;
@@ -94,7 +94,7 @@
 			return true;
 		}
 
-	//-------------------------------------------------------------------------------------
+
 	if (isset($_POST['ADD_ITEM']) || isset($_POST['UPDATE_ITEM'])) {
 		if (!isset($_POST['dimension_tags'])) {
 			$_POST['dimension_tags'] = array();
@@ -112,7 +112,7 @@
 			}
 		}
 	}
-	//--------------------------------------------------------------------------------------
+
 	if (isset($_POST['delete'])) {
 		$cancel_delete = false;
 		// can't delete it there are productions or issues
@@ -128,7 +128,7 @@
 			meta_forward($_SERVER['PHP_SELF'], "DeletedID=$selected_id");
 		}
 	}
-	//-------------------------------------------------------------------------------------
+
 	if (isset($_POST['close'])) {
 		// update the closed flag
 		Dimensions::close($selected_id);
@@ -139,7 +139,7 @@
 		Dimensions::reopen($selected_id);
 		meta_forward($_SERVER['PHP_SELF'], "ReopenedID=$selected_id");
 	}
-	//-------------------------------------------------------------------------------------
+
 	start_form();
 	start_table(Config::get('tables_style2'));
 	if ($selected_id != -1) {
@@ -198,7 +198,7 @@
 		submit_center('ADD_ITEM', _("Add"), true, '', 'default');
 	}
 	end_form();
-	//--------------------------------------------------------------------------------------------
+
 	end_page();
 
 ?>

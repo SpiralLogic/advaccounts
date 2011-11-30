@@ -13,7 +13,7 @@
 			 Write/update customer payment.
 		 */
 	class Sales_Debtor_Payment {
-		function add($trans_no, $customer_id, $branch_id, $bank_account,
+		public function  add($trans_no, $customer_id, $branch_id, $bank_account,
 																	$date_, $ref, $amount, $discount, $memo_, $rate = 0, $charge = 0, $tax = 0)
 	{
 		DB::begin_transaction();
@@ -76,8 +76,8 @@
 		return $payment_no;
 	}
 
-	//-------------------------------------------------------------------------------------------------
-	function void($type, $type_no)
+
+	public function  void($type, $type_no)
 	{
 		DB::begin_transaction();
 		Bank_Trans::void($type, $type_no, true);

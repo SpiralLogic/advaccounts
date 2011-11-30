@@ -21,7 +21,7 @@
 	echo stock_items_list('stock_id', $_POST['stock_id'], false, true);
 	echo "<hr></center>";
 	Session::i()->global_stock_id = $_POST['stock_id'];
-	//-----------------------------------------------------------------------------
+
 	function select_link($row)
 		{
 			return pager_link($row["parent"] . " - " . $row["description"],

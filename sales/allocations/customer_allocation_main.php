@@ -13,7 +13,7 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	JS::open_window(900, 500);
 	Page::start(_($help_context = "Customer Allocations"));
-	//--------------------------------------------------------------------------------
+
 	start_form();
 	/* show all outstanding receipts and credits to be allocated */
 	if (!isset($_POST['customer_id'])) {
@@ -41,7 +41,7 @@
 	if (isset($_POST['customer_id'])) {
 		$customer_id = $_POST['customer_id'];
 	}
-	//--------------------------------------------------------------------------------
+
 	function systype_name($dummy, $type)
 		{
 			global $systypes_array;

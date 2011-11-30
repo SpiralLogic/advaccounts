@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 	class GL_ExchangeRate
 	{
-		//---------------------------------------------------------------------------------------------
+
 		public static function get($rate_id)
 			{
 				$sql = "SELECT * FROM exchange_rates WHERE id=" . DB::escape($rate_id);
@@ -33,7 +33,7 @@
 				return $row[0];
 			}
 
-		//---------------------------------------------------------------------------------------------
+
 		public static function update($curr_code, $date_, $buy_rate, $sell_rate)
 			{
 				if (Banking::is_company_currency($curr_code)) {
@@ -45,7 +45,7 @@
 				DB::query($sql, "could not add exchange rate for $curr_code");
 			}
 
-		//---------------------------------------------------------------------------------------------
+
 		public static function add($curr_code, $date_, $buy_rate, $sell_rate)
 			{
 				if (Banking::is_company_currency($curr_code)) {
@@ -58,14 +58,14 @@
 				DB::query($sql, "could not add exchange rate for $curr_code");
 			}
 
-		//---------------------------------------------------------------------------------------------
+
 		public static function delete($rate_id)
 			{
 				$sql = "DELETE FROM exchange_rates WHERE id=" . DB::escape($rate_id);
 				DB::query($sql, "could not delete exchange rate $rate_id");
 			}
 
-		//-----------------------------------------------------------------------------
+
 		//	Retrieve exchange rate as of date $date from external source (usually inet)
 		//
 		public static function retrieve($curr_b, $date)
@@ -80,7 +80,7 @@
 				}
 			}
 
-		//-----------------------------------------------------------------------------
+
 		public static function get_external($curr_b, $provider = 'ECB', $date)
 			{
 				$curr_a = DB_Company::get_pref('curr_default');
@@ -174,12 +174,12 @@
 				}
 				return $val;
 			} /* end function get_extern_rate */
-		//--------------------------------------------------------------------------------------
+
 		// Displays currency exchange rate for given date.
 		// When there is no exrate for today,
 		// gets it form ECB and stores in local database.
 		//
-		static function display($from_currency, $to_currency, $date_, $edit_rate = false)
+		public	static function display($from_currency, $to_currency, $date_, $edit_rate = false)
 			{
 				$Ajax = Ajax::i();
 				if ($from_currency != $to_currency) {

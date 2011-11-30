@@ -13,7 +13,7 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "Item Categories"));
 	Page::simple_mode(true);
-	//----------------------------------------------------------------------------------
+
 	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 		//initialise no input errors assumed initially before we test
 		$input_error = 0;
@@ -47,7 +47,7 @@
 			$Mode = 'RESET';
 		}
 	}
-	//----------------------------------------------------------------------------------
+
 	if ($Mode == 'Delete') {
 		// PREVENT DELETES IF DEPENDENT RECORDS IN 'stock_master'
 		$sql = "SELECT COUNT(*) FROM stock_master WHERE category_id=" . DB::escape($selected_id);
@@ -70,7 +70,7 @@
 	if (list_updated('mb_flag')) {
 		$Ajax->activate('details');
 	}
-	//----------------------------------------------------------------------------------
+
 	$sql = "SELECT c.*, t.name as tax_name FROM stock_category c, item_tax_types t WHERE c.dflt_tax_type=t.id";
 	if (!check_value('show_inactive')) {
 		$sql .= " AND !c.inactive";
@@ -106,7 +106,7 @@
 	inactive_control_row($th);
 	end_table();
 	echo '<br>';
-	//----------------------------------------------------------------------------------
+
 	div_start('details');
 	start_table(Config::get('tables_style2'));
 	if ($selected_id != -1) {

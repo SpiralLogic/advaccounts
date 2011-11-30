@@ -8,7 +8,7 @@
 	 */
 	class GL_QuickEntry
 	{
-		//---------------------------------------------------------------------------------------------
+
 
 		public static function add($description, $type, $base_amount, $base_desc) {
 			$sql = "INSERT INTO quick_entries (description, type, base_amount, base_desc)
@@ -18,7 +18,7 @@
 			DB::query($sql, "could not insert quick entry for $description");
 		}
 
-		//---------------------------------------------------------------------------------------------
+
 
 		public static function update($selected_id, $description, $type, $base_amount, $base_desc) {
 			$sql = "UPDATE quick_entries	SET description = " . DB::escape($description) . ",
@@ -29,7 +29,7 @@
 			DB::query($sql, "could not update quick entry for $selected_id");
 		}
 
-		//---------------------------------------------------------------------------------------------
+
 
 		public static function delete($selected_id) {
 			$sql = "DELETE FROM quick_entries WHERE id=" . DB::escape($selected_id);
@@ -37,7 +37,7 @@
 			DB::query($sql, "could not delete quick entry $selected_id");
 		}
 
-		//---------------------------------------------------------------------------------------------
+
 
 		public static function add_line($qid, $action, $dest_id, $amount, $dim, $dim2) {
 			$sql = "INSERT INTO quick_entry_lines
@@ -49,7 +49,7 @@
 			DB::query($sql, "could not insert quick entry line for $qid");
 		}
 
-		//---------------------------------------------------------------------------------------------
+
 
 		public static function update_line($selected_id, $qid, $action, $dest_id, $amount, $dim, $dim2) {
 			$sql = "UPDATE quick_entry_lines SET qid = " . DB::escape($qid)
@@ -61,7 +61,7 @@
 			DB::query($sql, "could not update quick entry line for $selected_id");
 		}
 
-		//---------------------------------------------------------------------------------------------
+
 
 		public static function delete_line($selected_id) {
 			$sql = "DELETE FROM quick_entry_lines WHERE id=" . DB::escape($selected_id);
@@ -69,7 +69,7 @@
 			DB::query($sql, "could not delete quick entry line $selected_id");
 		}
 
-		//---------------------------------------------------------------------------------------------
+
 
 		public static function has($type = null) {
 			$sql = "SELECT id FROM quick_entries";
@@ -118,7 +118,7 @@
 			return DB::num_rows($result) > 0;
 		}
 
-		//---------------------------------------------------------------------------------------------
+
 
 		public static function has_line($selected_id) {
 			$sql = "SELECT * FROM quick_entry_lines WHERE id=" . DB::escape($selected_id);
@@ -128,7 +128,7 @@
 			return DB::fetch($result);
 		}
 
-				//--------------------------------------------------------------------------------------
+
 				//
 				//	Expands selected quick entry $id into GL posings and adds to cart.
 				//		returns calculated amount posted to bank GL account.

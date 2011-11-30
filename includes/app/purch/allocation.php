@@ -9,7 +9,7 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	//----------------------------------------------------------------------------------------
+
 	class Purch_Allocation
 	{
 		public static function add($amount, $trans_type_from, $trans_no_from,
@@ -25,14 +25,14 @@
 				DB::query($sql, "A supplier allocation could not be added to the database");
 			}
 
-		//----------------------------------------------------------------------------------------
+
 		public static function delete($trans_id)
 			{
 				$sql = "DELETE FROM supp_allocations WHERE id = " . DB::escape($trans_id);
 				DB::query($sql, "The existing allocation $trans_id could not be deleted");
 			}
 
-		//----------------------------------------------------------------------------------------
+
 		public static function get_balance($trans_type, $trans_no)
 			{
 				$sql = "SELECT (ov_amount+ov_gst-ov_discount-alloc) AS BalToAllocate
@@ -43,7 +43,7 @@
 				return $myrow[0];
 			}
 
-		//----------------------------------------------------------------------------------------
+
 		public static function update($trans_type, $trans_no, $alloc)
 			{
 				$sql = "UPDATE supp_trans SET alloc = alloc + " . DB::escape($alloc) . "
@@ -51,13 +51,13 @@
 				DB::query($sql, "The supp transaction record could not be modified for the allocation against it");
 			}
 
-		//-------------------------------------------------------------------------------------------------------------
+
 		public static function void($type, $type_no, $date = "")
 			{
 				return Purch_Allocation::clear($type, $type_no, $date);
 			}
 
-		//-------------------------------------------------------------------------------------------------------------
+
 		public static function clear($type, $type_no, $date = "")
 			{
 				// clear any allocations for this transaction
@@ -87,7 +87,7 @@
 				DB::query($sql, "could not void supp transactions for type=$type and trans_no=$type_no");
 			}
 
-		//----------------------------------------------------------------------------------------
+
 		public static function get_sql($extra_fields = null, $extra_conditions = null, $extra_tables = null)
 			{
 				$sql = "SELECT
@@ -121,7 +121,7 @@
 				return $sql;
 			}
 
-		//-------------------------------------------------------------------------------------------------------------
+
 		public static function get_allocatable_sql($supplier_id, $settled)
 			{
 				$settled_sql = "";
@@ -137,7 +137,7 @@
 				return $sql;
 			}
 
-		//-------------------------------------------------------------------------------------------------------------
+
 		public static function get_allocatable_to_trans($supplier_id, $trans_no = null, $type = null)
 			{
 				if ($trans_no != null && $type != null) {

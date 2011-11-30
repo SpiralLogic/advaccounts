@@ -9,7 +9,7 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	//----------------------------------------------------------------------------------------
+
 	class Sales_Debtor_Trans
 	{
 		public static function get($debtor_trans_type, $debtor_trans_no)
@@ -36,7 +36,7 @@
 				return DB::query($sql, "The debtor transaction detail could not be queried");
 			}
 
-		//----------------------------------------------------------------------------------------
+
 		public static function void($type, $type_no)
 			{
 				$sql
@@ -49,7 +49,7 @@
 				Inv_Movement::void($type, $type_no);
 			}
 
-		//----------------------------------------------------------------------------------------
+
 		public static function add($debtor_trans_type, $debtor_trans_no, $stock_id, $description,
 			$quantity, $unit_price, $unit_tax, $discount_percent, $std_cost, $line_id = 0)
 			{
@@ -76,7 +76,7 @@
 				DB::query($sql, "The debtor transaction detail could not be written");
 			}
 
-		//----------------------------------------------------------------------------------------
+
 		// add a debtor-related gl transaction
 		// $date_ is display date (non-sql)
 		// $amount is in CUSTOMER'S currency

@@ -13,7 +13,7 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "Credit Status"));
 	Page::simple_mode(true);
-	//-----------------------------------------------------------------------------------
+
 	function can_process()
 		{
 			if (strlen($_POST['reason_description']) == 0) {
@@ -24,19 +24,19 @@
 			return true;
 		}
 
-	//-----------------------------------------------------------------------------------
+
 	if ($Mode == 'ADD_ITEM' && can_process()) {
 		Sales_CreditStatus::add($_POST['reason_description'], $_POST['DisallowInvoices']);
 		Errors::notice(_('New credit status has been added'));
 		$Mode = 'RESET';
 	}
-	//-----------------------------------------------------------------------------------
+
 	if ($Mode == 'UPDATE_ITEM' && can_process()) {
 		Errors::notice(_('Selected credit status has been updated'));
 		Sales_CreditStatus::update($selected_id, $_POST['reason_description'], $_POST['DisallowInvoices']);
 		$Mode = 'RESET';
 	}
-	//-----------------------------------------------------------------------------------
+
 	function can_delete($selected_id)
 		{
 			$sql = "SELECT COUNT(*) FROM debtors_master
@@ -50,7 +50,7 @@
 			return true;
 		}
 
-	//-----------------------------------------------------------------------------------
+
 	if ($Mode == 'Delete') {
 		if (can_delete($selected_id)) {
 			Sales_CreditStatus::delete($selected_id);
@@ -64,7 +64,7 @@
 		unset($_POST);
 		$_POST['show_inactive'] = $sav;
 	}
-	//-----------------------------------------------------------------------------------
+
 	$result = Sales_CreditStatus::get_all(check_value('show_inactive'));
 	start_form();
 	start_table(Config::get('tables_style') . "  width=40%");
@@ -89,7 +89,7 @@
 	inactive_control_row($th);
 	end_table();
 	echo '<br>';
-	//-----------------------------------------------------------------------------------
+
 	start_table(Config::get('tables_style2'));
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {
@@ -105,7 +105,7 @@
 	end_table(1);
 	submit_add_or_update_center($selected_id == -1, '', 'both');
 	end_form();
-	//------------------------------------------------------------------------------------
+
 	end_page();
 
 ?>

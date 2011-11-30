@@ -12,7 +12,7 @@
 	$page_security = 'SA_FORMSETUP';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "Forms Setup"));
-	//-------------------------------------------------------------------------------------------------
+
 	if (isset($_POST['setprefs'])) {
 		$systypes = SysTypes::get_systypes();
 		DB::begin_transaction();
@@ -41,7 +41,7 @@
 	end_outer_table(1);
 	submit_center('setprefs', _("Update"), true, '', 'default');
 	end_form(2);
-	//-------------------------------------------------------------------------------------------------
+
 	end_page();
 
 ?>

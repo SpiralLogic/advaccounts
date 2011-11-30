@@ -267,7 +267,7 @@
 				DB::cancel("could not commit a transaction");
 			}
 
-		//-----------------------------------------------------------------------------
+
 		//	Update record activity status.
 		//
 		public static function update_record_status($id, $status, $table, $key)

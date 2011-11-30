@@ -16,7 +16,7 @@
 	if (isset($_GET['trans_no']) && $_GET['trans_no'] != "") {
 		$_POST['selected_id'] = $_GET['trans_no'];
 	}
-	//--------------------------------------------------------------------------------------------------
+
 	if (isset($_GET['AddedID'])) {
 		$id = $_GET['AddedID'];
 		$stype = ST_WORKORDER;
@@ -30,13 +30,13 @@
 		end_page();
 		exit;
 	}
-	//--------------------------------------------------------------------------------------------------
+
 	$wo_details = WO_WorkOrder::get($_POST['selected_id']);
 	if (strlen($wo_details[0]) == 0) {
 		Errors::error(_("The order number sent is not valid."));
 		exit;
 	}
-	//--------------------------------------------------------------------------------------------------
+
 	function can_process()
 		{
 			global $wo_details;
@@ -102,7 +102,7 @@
 			return true;
 		}
 
-	//--------------------------------------------------------------------------------------------------
+
 	if ((isset($_POST['Process']) || isset($_POST['ProcessAndClose'])) && can_process() == true) {
 		$close_wo = 0;
 		if (isset($_POST['ProcessAndClose']) && ($_POST['ProcessAndClose'] != "")) {
@@ -116,9 +116,9 @@
 			$close_wo);
 		meta_forward($_SERVER['PHP_SELF'], "AddedID=" . $_POST['selected_id'] . "&date=" . $_POST['date_']);
 	}
-	//-------------------------------------------------------------------------------------
+
 	WO_Cost::display($_POST['selected_id']);
-	//-------------------------------------------------------------------------------------
+
 	start_form();
 	hidden('selected_id', $_POST['selected_id']);
 	//hidden('WOReqQuantity', $_POST['WOReqQuantity']);

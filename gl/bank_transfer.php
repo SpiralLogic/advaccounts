@@ -14,7 +14,7 @@
 	JS::open_window(800, 500);
 	Page::start(_($help_context = "Transfer between Bank Accounts"));
 	Validation::check(Validation::BANK_ACCOUNTS, _("There are no bank accounts defined in the system."));
-	//----------------------------------------------------------------------------------------
+
 	if (isset($_GET['AddedID'])) {
 		$trans_no = $_GET['AddedID'];
 		$trans_type = ST_BANKTRANSFER;
@@ -26,7 +26,7 @@
 	if (isset($_POST['_DatePaid_changed'])) {
 		$Ajax->activate('_ex_rate');
 	}
-	//----------------------------------------------------------------------------------------
+
 	function gl_payment_controls()
 		{
 			$home_currency = Banking::get_company_currency();
@@ -54,7 +54,7 @@
 			end_form();
 		}
 
-	//----------------------------------------------------------------------------------------
+
 	function check_valid_entries()
 		{
 			if (!Dates::is_date($_POST['DatePaid'])) {
@@ -100,7 +100,7 @@
 			return true;
 		}
 
-	//----------------------------------------------------------------------------------------
+
 	function handle_add_deposit()
 		{
 			$trans_no = GL_Bank::add_bank_transfer($_POST['FromBankAccount'], $_POST['ToBankAccount'],
@@ -109,7 +109,7 @@
 			meta_forward($_SERVER['PHP_SELF'], "AddedID = $trans_no");
 		}
 
-	//----------------------------------------------------------------------------------------
+
 	if (isset($_POST['AddPayment'])) {
 		if (check_valid_entries() == true) {
 			handle_add_deposit();

@@ -14,7 +14,7 @@
 				 ->values(array('name' => $payment_method, 'undeposited' => $undeposited, 'inactive' => $inactive))->exec();
 			}
 
-		//---------------------------------------------------------------------------------------------
+
 		public static function update($id, $payment_method, $undeposited, $inactive = 0)
 			{
 				DB::update('payment_methods')
@@ -23,7 +23,7 @@
 				 ->exec();
 			}
 
-		//---------------------------------------------------------------------------------------------
+
 		public static function delete($id)
 			{
 				DB::delete('payment_methods')->where('id=', $id)->exec();

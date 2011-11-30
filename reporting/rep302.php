@@ -17,7 +17,7 @@
 	// Title:	Inventory Planning
 	// ----------------------------------------------------------------
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	//----------------------------------------------------------------------------------------------------
+
 	print_inventory_planning();
 	function getTransactions($category, $location)
 		{
@@ -73,7 +73,7 @@
 			return DB::fetch($TransResult);
 		}
 
-	//----------------------------------------------------------------------------------------------------
+
 	function print_inventory_planning()
 		{
 			$category = $_POST['PARAM_0'];

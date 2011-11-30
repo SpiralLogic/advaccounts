@@ -9,7 +9,7 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	//----------------------------------------------------------------------------------------
+
 	class Sales_Allocation {
 	public static function add($amount, $trans_type_from, $trans_no_from,
 															 $trans_type_to, $trans_no_to) {
@@ -22,13 +22,13 @@
 		DB::query($sql, "A customer allocation could not be added to the database");
 	}
 
-	//----------------------------------------------------------------------------------------
+
 	public static function delete($trans_id) {
 		$sql = "DELETE FROM cust_allocations WHERE id = " . DB::escape($trans_id);
 		return DB::query($sql, "The existing allocation $trans_id could not be deleted");
 	}
 
-	//----------------------------------------------------------------------------------------
+
 	public static function get_balance($trans_type, $trans_no) {
 		$sql
 		 = "SELECT (ov_amount+ov_gst+ov_freight+ov_freight_tax-ov_discount-alloc) AS BalToAllocate
@@ -38,7 +38,7 @@
 		return $myrow[0];
 	}
 
-	//----------------------------------------------------------------------------------------
+
 	public static function update($trans_type, $trans_no, $alloc) {
 		$sql
 		 = "UPDATE debtor_trans SET alloc = alloc + $alloc
@@ -46,12 +46,12 @@
 		DB::query($sql, "The debtor transaction record could not be modified for the allocation against it");
 	}
 
-	//-------------------------------------------------------------------------------------------------------------
+
 	public static function void($type, $type_no, $date = "") {
 		return Sales_Allocation::clear($type, $type_no, $date);
 	}
 
-	//-------------------------------------------------------------------------------------------------------------
+
 	public static function clear($type, $type_no, $date = "") {
 		// clear any allocations for this transaction
 		$sql
@@ -80,7 +80,7 @@
 		DB::query($sql, "could not void debtor transactions for type=$type and trans_no=$type_no");
 	}
 
-	//----------------------------------------------------------------------------------------
+
 	public static function get_sql($extra_fields = null, $extra_conditions = null, $extra_tables = null) {
 		$sql
 		 = "SELECT
@@ -110,7 +110,7 @@
 		return $sql;
 	}
 
-	//-------------------------------------------------------------------------------------------------------------
+
 	public static function get_allocatable_sql($customer_id, $settled) {
 		$settled_sql = "";
 		if (!$settled) {
@@ -125,7 +125,7 @@
 		return $sql;
 	}
 
-	//-------------------------------------------------------------------------------------------------------------
+
 	public static function get_to_trans($customer_id, $trans_no = null, $type = null) {
 		if ($trans_no != null and $type != null) {
 			$sql = Sales_Allocation::get_sql("amt", "trans.trans_no = alloc.trans_no_to

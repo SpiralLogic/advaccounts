@@ -17,7 +17,7 @@
 	}
 	Display::heading($systypes_array[ST_INVADJUST] . " #$trans_no");
 	br(1);
-	$adjustment_items = Inv_Adjustment::get_items($trans_no);
+	$adjustment_items = Inv_Adjustment::get($trans_no);
 	$k = 0;
 	$header_shown = false;
 	while ($adjustment = DB::fetch($adjustment_items))

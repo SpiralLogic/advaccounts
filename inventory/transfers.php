@@ -13,12 +13,12 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	JS::open_window(800, 500);
 	Page::start(_($help_context = "Inventory Location Transfers"));
-	//-----------------------------------------------------------------------------------------------
+
 	Validation::check(Validation::COST_ITEMS,
 		_("There are no inventory items defined in the system (Purchased or manufactured items)."), STOCK_SERVICE);
 	Validation::check(Validation::MOVEMENT_TYPES,
 		_("There are no inventory movement types defined in the system. Please define at least one inventory adjustment type."));
-	//-----------------------------------------------------------------------------------------------
+
 	if (isset($_GET['AddedID'])) {
 		$trans_no = $_GET['AddedID'];
 		$trans_type = ST_LOCTRANSFER;
@@ -27,7 +27,7 @@
 		hyperlink_no_params($_SERVER['PHP_SELF'], _("Enter &Another Inventory Transfer"));
 		Page::footer_exit();
 	}
-	//--------------------------------------------------------------------------------------------------
+
 	function line_start_focus()
 		{
 			$Ajax = Ajax::i();
@@ -35,7 +35,7 @@
 			JS::set_focus('_stock_id_edit');
 		}
 
-	//-----------------------------------------------------------------------------------------------
+
 	function handle_new_order()
 		{
 			if (isset($_SESSION['transfer_items'])) {
@@ -51,7 +51,7 @@
 			$_SESSION['transfer_items']->tran_date = $_POST['AdjDate'];
 		}
 
-	//-----------------------------------------------------------------------------------------------
+
 	if (isset($_POST['Process'])) {
 		$tr = &$_SESSION['transfer_items'];
 		$input_error = 0;
@@ -94,7 +94,7 @@
 			unset($_POST['Process']);
 		}
 	}
-	//-------------------------------------------------------------------------------
+
 	if (isset($_POST['Process'])) {
 		$trans_no = Inv_Transfer::add($_SESSION['transfer_items']->line_items, $_POST['FromStockLocation'], $_POST['ToStockLocation'],
 			$_POST['AdjDate'], $_POST['type'], $_POST['ref'], $_POST['memo_']);
@@ -103,7 +103,7 @@
 		unset($_SESSION['transfer_items']);
 		meta_forward($_SERVER['PHP_SELF'], "AddedID=$trans_no");
 	} /*end of process credit note */
-	//-----------------------------------------------------------------------------------------------
+
 	function check_item_data()
 		{
 			if (!Validation::is_num('qty', 0)) {
@@ -114,7 +114,7 @@
 			return true;
 		}
 
-	//-----------------------------------------------------------------------------------------------
+
 	function handle_update_item()
 		{
 			if ($_POST['UpdateItem'] != "" && check_item_data()) {
@@ -127,14 +127,14 @@
 			line_start_focus();
 		}
 
-	//-----------------------------------------------------------------------------------------------
+
 	function handle_delete_item($id)
 		{
 			$_SESSION['transfer_items']->remove_from_cart($id);
 			line_start_focus();
 		}
 
-	//-----------------------------------------------------------------------------------------------
+
 	function handle_new_item()
 		{
 			if (!check_item_data()) {
@@ -147,7 +147,7 @@
 			line_start_focus();
 		}
 
-	//-----------------------------------------------------------------------------------------------
+
 	$id = find_submit('Delete');
 	if ($id != -1) {
 		handle_delete_item($id);
@@ -161,11 +161,11 @@
 	if (isset($_POST['CancelItemChanges'])) {
 		line_start_focus();
 	}
-	//-----------------------------------------------------------------------------------------------
+
 	if (isset($_GET['NewTransfer']) || !isset($_SESSION['transfer_items'])) {
 		handle_new_order();
 	}
-	//-----------------------------------------------------------------------------------------------
+
 	start_form();
 	Inv_Transfer::header($_SESSION['transfer_items']);
 	start_table(Config::get('tables_style') . "  width=70%", 10);

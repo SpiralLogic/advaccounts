@@ -13,12 +13,12 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	JS::open_window(800, 500);
 	Page::start(_($help_context = "Item Stocktake Note"));
-	//-----------------------------------------------------------------------------------------------
+
 	Validation::check(Validation::COST_ITEMS,
 		_("There are no inventory items defined in the system which can be adjusted (Purchased or Manufactured)."), STOCK_SERVICE);
 	Validation::check(Validation::MOVEMENT_TYPES,
 		_("There are no inventory movement types defined in the system. Please define at least one inventory adjustment type."));
-	//-----------------------------------------------------------------------------------------------
+
 	if (isset($_GET['AddedID'])) {
 		$trans_no = $_GET['AddedID'];
 		$trans_type = ST_INVADJUST;
@@ -28,7 +28,7 @@
 		hyperlink_no_params($_SERVER['PHP_SELF'], _("Enter &Another Adjustment"));
 		Page::footer_exit();
 	}
-	//--------------------------------------------------------------------------------------------------
+
 	function line_start_focus()
 		{
 			$Ajax = Ajax::i();
@@ -36,7 +36,7 @@
 			JS::set_focus('_stock_id_edit');
 		}
 
-	//-----------------------------------------------------------------------------------------------
+
 	function handle_new_order()
 		{
 			if (isset($_SESSION['adj_items'])) {
@@ -52,7 +52,7 @@
 			$_SESSION['adj_items']->tran_date = $_POST['AdjDate'];
 		}
 
-	//-----------------------------------------------------------------------------------------------
+
 	function can_process()
 		{
 			$adj = &$_SESSION['adj_items'];
@@ -83,7 +83,7 @@
 			return true;
 		}
 
-	//-------------------------------------------------------------------------------
+
 	if (isset($_POST['Process']) && can_process()) {
 		foreach ($_SESSION['adj_items']->line_items as $line) {
 			$item = new Item($line->stock_id);
@@ -97,7 +97,7 @@
 		unset($_SESSION['adj_items']);
 		meta_forward($_SERVER['PHP_SELF'], "AddedID=$trans_no");
 	} /*end of process credit note */
-	//-----------------------------------------------------------------------------------------------
+
 	function check_item_data()
 		{
 			if (!Validation::is_num('qty', 0)) {
@@ -113,7 +113,7 @@
 			return true;
 		}
 
-	//-----------------------------------------------------------------------------------------------
+
 	function handle_update_item()
 		{
 			if ($_POST['UpdateItem'] != "" && check_item_data()) {
@@ -123,14 +123,14 @@
 			line_start_focus();
 		}
 
-	//-----------------------------------------------------------------------------------------------
+
 	function handle_delete_item($id)
 		{
 			$_SESSION['adj_items']->remove_from_cart($id);
 			line_start_focus();
 		}
 
-	//-----------------------------------------------------------------------------------------------
+
 	function handle_new_item()
 		{
 			if (!check_item_data()) {
@@ -140,7 +140,7 @@
 			line_start_focus();
 		}
 
-	//-----------------------------------------------------------------------------------------------
+
 	$id = find_submit('Delete');
 	if ($id != -1) {
 		handle_delete_item($id);
@@ -154,11 +154,11 @@
 	if (isset($_POST['CancelItemChanges'])) {
 		line_start_focus();
 	}
-	//-----------------------------------------------------------------------------------------------
+
 	if (isset($_GET['NewAdjustment']) || !isset($_SESSION['adj_items'])) {
 		handle_new_order();
 	}
-	//-----------------------------------------------------------------------------------------------
+
 	start_form();
 	Inv_Adjustment::header($_SESSION['adj_items']);
 	start_outer_table(Config::get('tables_style') . "  width=80%", 10);

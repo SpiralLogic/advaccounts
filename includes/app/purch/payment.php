@@ -65,7 +65,7 @@
 				return $payment_id;
 			}
 
-		//------------------------------------------------------------------------------------------------
+
 		public static function void($type, $type_no)
 			{
 				DB::begin_transaction();

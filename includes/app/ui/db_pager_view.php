@@ -9,7 +9,7 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	//--------------------------------------------------------------------------------------------------
+
 	function pager_link($link_text, $url, $icon = false)
 		{
 			if (User::graphic_links() && $icon) {
@@ -35,7 +35,7 @@
 			label_cell(navi_button($name, $value, $enabled), "align='$align'");
 		}
 
-	//-----------------------------------------------------------------------------
+
 	//
 	//    Sql paged table view. Call this function inside form.
 	//

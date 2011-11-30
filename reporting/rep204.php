@@ -18,7 +18,7 @@
 	// Title:	Outstanding GRNs Report
 	// ----------------------------------------------------------------
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	//----------------------------------------------------------------------------------------------------
+
 	print_outstanding_GRN();
 	function getTransactions($fromsupp)
 	{
@@ -51,7 +51,7 @@
 		return DB::query($sql, "No transactions were returned");
 	}
 
-	//----------------------------------------------------------------------------------------------------
+
 	function print_outstanding_GRN()
 	{
 		$fromsupp = $_POST['PARAM_0'];

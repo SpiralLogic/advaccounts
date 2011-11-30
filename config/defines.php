@@ -31,7 +31,7 @@
 	define('DEFAULT_SHIP_VIA', 1);
 	define('APP_TITLE', "Advanced Accounting");
 	define('VERSION', "2.2.12");
-	define('BUILD_VERSION', date("d.m.Y", filemtime(__FILE__)));
+	define('BUILD_VERSION', -3);
 	define('POWERED_BY', "Advanced Accounting");
 	define('POWERED_URL', "http://www.advancedgroup.com.au");
 	define('STORE_PRODUCT_URL', 'http://www.advancedroadsigns.com.au/-p/');
@@ -62,7 +62,7 @@
 	define('SS_GL', 62 << 8);
 	define('SS_GL_A', 63 << 8);
 	define('SS_ADV', 71 << 8);
-	//----------------------------------------------------------------------------------
+
 	//	FrontAccounting system transaction types
 	//
 	define('ST_JOURNAL', 0);
@@ -95,7 +95,7 @@
 	// They are used for documents only.
 	define ('ST_STATEMENT', 91);
 	define ('ST_CHEQUE', 92);
-	//----------------------------------------------------------------------------------
+
 	//		Bank transaction types
 	//
 	define('BT_TRANSFER', 0);
@@ -103,7 +103,7 @@
 	define('BT_CREDIT', 2);
 	define('BT_CASH', 3);
 	//
-	//----------------------------------------------------------------------------------
+
 	//	Payment types
 	//
 	define('PT_MISC', 0);
@@ -112,7 +112,7 @@
 	define('PT_SUPPLIER', 3);
 	define('PT_QUICKENTRY', 4);
 	define('PT_DIMENSION', 5);
-	//----------------------------------------------------------------------------------
+
 	//	Manufacturing types
 	//
 	define('WO_ASSEMBLY', 0);
@@ -120,7 +120,7 @@
 	define('WO_ADVANCED', 2);
 	define('WO_LABOUR', 0);
 	define('WO_OVERHEAD', 1);
-	//----------------------------------------------------------------------------------
+
 	//	GL account classes
 	//
 	define('CL_NONE', 0); // for backward compatibility
@@ -130,36 +130,36 @@
 	define('CL_INCOME', 4);
 	define('CL_COGS', 5);
 	define('CL_EXPENSE', 6);
-	//----------------------------------------------------------------------------------
+
 	//	Quick entry types
 	//
 	define('QE_PAYMENT', '1');
 	define('QE_DEPOSIT', '2');
 	define('QE_JOURNAL', '3');
 	define('QE_SUPPINV', '4');
-	//----------------------------------------------------------------------------------
+
 	//	Special option values for various list selectors.
 	//
 	define('ANY_TEXT', '');
 	define('ANY_NUMERIC', -1);
 	define('ALL_TEXT', '');
 	define('ALL_NUMERIC', -1);
-	//----------------------------------------------------------------------------------
+
 	define('CT_CUSTOMER', 'c');
 	define('CT_SUPPLIER', 's');
-	//----------------------------------------------------------------------------------
+
 	// Types of stock items
 	define('STOCK_MANUFACTURE', 'M');
 	define('STOCK_PURCHASED', 'B');
 	define('STOCK_SERVICE', 'D');
 	define('STOCK_INFO', 'I');
-	//----------------------------------------------------------------------------------
+
 	define('TAG_ACCOUNT', 1);
 	define('TAG_DIMENSION', 2);
 	global $systypes_array, $bank_account_types, $bank_transfer_types, $payment_person_types, $wo_types_array, $wo_cost_types,
 				 $class_types, $quick_actions, $quick_entry_types, $stock_types, $tag_types, $security_areas, $security_sections;
 	$access_levels = Cache::get('access_levels');
-	if (!$access_levels) {
+	if (!$access_levels || isset($_GET['reload_config'])) {
 		$access_levels = include(DOCROOT . "config/access_levels.php");
 		Cache::set('access_levels', $access_levels);
 	} else {
@@ -168,11 +168,11 @@
 		}
 	}
 	$types = Cache::get('types');
-	if (!$types) {
+	if (!$types || isset($_GET['reload_config'])) {
 		$types = include(DOCROOT . "config/types.php");
-		Cache::set('types', include(DOCROOT . "config/types.php"));
+		Cache::set('types', $types);
 	} else {
-		foreach ($access_levels as $k => $v) {
+		foreach ($types as $k => $v) {
 			$$k = $v;
 		}
 	}

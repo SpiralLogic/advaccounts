@@ -23,7 +23,7 @@
 	if (isset($_GET['ToDate'])) {
 		$_POST['TransToDate'] = $_GET['ToDate'];
 	}
-	//------------------------------------------------------------------------------------------------
+
 	start_form();
 	if (!isset($_POST['supplier_id'])) {
 		$_POST['supplier_id'] = Session::i()->supplier_id;
@@ -39,7 +39,7 @@
 	Session::i()->supplier_id = $_POST['supplier_id'];
 	end_row();
 	end_table();
-	//------------------------------------------------------------------------------------------------
+
 	function check_overdue($row)
 		{
 			return ($row['TotalAmount'] > $row['Allocated']) && $row['OverDue'] == 1;
@@ -88,7 +88,7 @@
 			return $value > 0 ? Num::price_format($value) : '';
 		}
 
-	//------------------------------------------------------------------------------------------------
+
 	$date_after = Dates::date2sql($_POST['TransAfterDate']);
 	$date_to = Dates::date2sql($_POST['TransToDate']);
 	// Sherifoz 22.06.03 Also get the description
@@ -141,7 +141,7 @@
 		$cols[_("Supplier")] = 'skip';
 		$cols[_("Currency")] = 'skip';
 	}
-	//------------------------------------------------------------------------------------------------
+
 	$table =& db_pager::new_db_pager('doc_tbl', $sql, $cols);
 	$table->set_marker('check_overdue', _("Marked items are overdue."));
 	$table->width = "90%";

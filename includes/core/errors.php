@@ -15,7 +15,7 @@
 		public static $messages = array(); // container for system messages
 		public static $fatal = false; // container for system messages
 		public static $before_box = ''; // temporary container for output html data before error box
-		//-----------------------------------------------------------------------------
+
 		//    Error handler - collects all php/user messages for
 		//    display in message box.
 		static function init()
@@ -79,7 +79,7 @@
 				return true;
 			}
 
-		//------------------------------------------------------------------------------
+
 		//	Formats system messages before insert them into message <div>
 		// FIX center is unused now
 		static function format()
@@ -112,7 +112,7 @@
 				return $content;
 			}
 
-		//-----------------------------------------------------------------------------
+
 		// Error box <div> element.
 		//
 		static function error_box()

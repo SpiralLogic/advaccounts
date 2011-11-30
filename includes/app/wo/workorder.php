@@ -9,7 +9,7 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	//--------------------------------------------------------------------------------------
+
 	class WO_Cost
 	{
 		public static function add_material($stock_id, $qty, $date_)
@@ -134,7 +134,7 @@
 				return $woid;
 			}
 
-		//--------------------------------------------------------------------------------------
+
 		public static function update($woid, $loc_code, $units_reqd, $stock_id, $date_, $required_by, $memo_)
 			{
 				DB::begin_transaction();
@@ -167,7 +167,7 @@
 				DB::commit_transaction();
 			}
 
-		//--------------------------------------------------------------------------------------
+
 		public static function get($woid, $allow_null = false)
 			{
 				$sql = "SELECT workorders.*, stock_master.description As StockItemName,
@@ -184,7 +184,7 @@
 				return DB::fetch($result);
 			}
 
-		//--------------------------------------------------------------------------------------
+
 		public static function has_productions($woid)
 			{
 				$sql = "SELECT COUNT(*) FROM wo_manufacture WHERE workorder_id=" . DB::escape($woid);
@@ -193,7 +193,7 @@
 				return ($myrow[0] > 0);
 			}
 
-		//--------------------------------------------------------------------------------------
+
 		public static function has_issues($woid)
 			{
 				$sql = "SELECT COUNT(*) FROM wo_issues WHERE workorder_id=" . DB::escape($woid);
@@ -202,14 +202,14 @@
 				return ($myrow[0] > 0);
 			}
 
-		//--------------------------------------------------------------------------------------
+
 		public static function has_payments($woid)
 			{
 				$result = GL_Trans::get_wo_cost($woid);
 				return (DB::num_rows($result) != 0);
 			}
 
-		//--------------------------------------------------------------------------------------
+
 		public static function release($woid, $releaseDate, $memo_)
 			{
 				DB::begin_transaction();
@@ -226,14 +226,14 @@
 				DB::commit_transaction();
 			}
 
-		//--------------------------------------------------------------------------------------
+
 		public static function close($woid)
 			{
 				$sql = "UPDATE workorders SET closed=1 WHERE id = " . DB::escape($woid);
 				DB::query($sql, "could not close work order");
 			}
 
-		//--------------------------------------------------------------------------------------
+
 		public static function is_closed($woid)
 			{
 				$sql = "SELECT closed FROM workorders WHERE id = " . DB::escape($woid);
@@ -242,7 +242,7 @@
 				return ($row[0] > 0);
 			}
 
-		//--------------------------------------------------------------------------------------
+
 		public static function update_finished_quantity($woid, $quantity, $force_close = 0)
 			{
 				$sql = "UPDATE workorders SET units_issued = units_issued + " . DB::escape($quantity) . ",
@@ -251,7 +251,7 @@
 				DB::query($sql, "The work order issued quantity couldn't be updated");
 			}
 
-		//--------------------------------------------------------------------------------------
+
 		public static function void($woid)
 			{
 				DB::begin_transaction();
@@ -329,7 +329,7 @@
 				DB::commit_transaction();
 			}
 
-		//--------------------------------------------------------------------------------------
+
 		public static function get_gl($woid, $cost_type)
 			{
 				$cost = 0;
@@ -340,7 +340,7 @@
 				return $cost;
 			}
 
-		//--------------------------------------------------------------------------------------
+
 		public static function display_payments($woid)
 			{
 				global $wo_cost_types;
@@ -366,7 +366,7 @@
 				}
 			}
 
-		//--------------------------------------------------------------------------------------
+
 		public static function display($woid, $suppress_view_link = false)
 			{
 				global $wo_types_array;
@@ -410,7 +410,7 @@
 				}
 			}
 
-		//--------------------------------------------------------------------------------------
+
 		function display_quick($woid, $suppress_view_link = false)
 			{
 				global $wo_types_array;

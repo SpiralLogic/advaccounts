@@ -14,7 +14,7 @@
 	$js = "";
 	Page::start(_($help_context = "Exchange Rates"));
 	Page::simple_mode(false);
-	//---------------------------------------------------------------------------------------------
+
 	function check_data()
 	{
 		if (!Dates::is_date($_POST['date_'])) {
@@ -35,7 +35,7 @@
 		return true;
 	}
 
-	//---------------------------------------------------------------------------------------------
+
 	function handle_submit()
 	{
 		global $selected_id;
@@ -57,7 +57,7 @@
 		clear_data();
 	}
 
-	//---------------------------------------------------------------------------------------------
+
 	function handle_delete()
 	{
 		global $selected_id;
@@ -69,7 +69,7 @@
 		clear_data();
 	}
 
-	//---------------------------------------------------------------------------------------------
+
 	function edit_link($row)
 	{
 		return button('Edit' . $row["id"], _("Edit"), true, ICON_EDIT);
@@ -84,7 +84,7 @@
 	{
 	}
 
-	//---------------------------------------------------------------------------------------------
+
 	function display_rate_edit()
 	{
 		global $selected_id;
@@ -118,7 +118,7 @@
 		Errors::warning(_("Exchange rates are entered against the company currency."), 1);
 	}
 
-	//---------------------------------------------------------------------------------------------
+
 	function clear_data()
 	{
 		unset($_POST['selected_id']);
@@ -126,15 +126,15 @@
 		unset($_POST['BuyRate']);
 	}
 
-	//---------------------------------------------------------------------------------------------
+
 	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 		handle_submit();
 	}
-	//---------------------------------------------------------------------------------------------
+
 	if ($Mode == 'Delete') {
 		handle_delete();
 	}
-	//---------------------------------------------------------------------------------------------
+
 	start_form();
 	if (!isset($_POST['curr_abrev'])) {
 		$_POST['curr_abrev'] = Session::i()->global_curr_code;

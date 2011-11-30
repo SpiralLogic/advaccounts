@@ -16,7 +16,7 @@
 	if (isset($_GET['order_number'])) {
 		$_POST['order_number'] = $_GET['order_number'];
 	}
-	//-----------------------------------------------------------------------------------
+
 	// Ajax updates
 	//
 	if (get_post('SearchOrders')) {
@@ -35,7 +35,7 @@
 		}
 		$Ajax->activate('orders_tbl');
 	}
-	//---------------------------------------------------------------------------------------------
+
 	start_form();
 	start_table("class='tablestyle_noborder'");
 	start_row();
@@ -48,7 +48,7 @@
 	submit_cells('SearchOrders', _("Search"), '', _('Select documents'), 'default');
 	end_row();
 	end_table();
-	//---------------------------------------------------------------------------------------------
+
 	function trans_view($trans)
 		{
 			return ui_view::get_trans_view_str(ST_PURCHORDER, $trans["order_no"]);
@@ -74,7 +74,7 @@
 			return $row['OverDue'] == 1;
 		}
 
-	//---------------------------------------------------------------------------------------------
+
 	if (isset($_POST['order_number']) && ($_POST['order_number'] != "")) {
 		$order_number = $_POST['order_number'];
 	}

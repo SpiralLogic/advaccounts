@@ -31,7 +31,7 @@
 		public $lappfunctions;
 		public $rappfunctions;
 
-		function module($name, $icon = null)
+		public 	function module($name, $icon = null)
 			{
 				$this->name = $name;
 				$this->icon = $icon;
@@ -39,7 +39,7 @@
 				$this->rappfunctions = array();
 			}
 
-		function add_lapp_function($label, $link = "", $access = 'SA_OPEN')
+		public 	function add_lapp_function($label, $link = "", $access = 'SA_OPEN')
 			{
 				$appfunction = new app_function($label, $link, $access);
 				//array_push($this->lappfunctions,$appfunction);
@@ -47,7 +47,7 @@
 				return $appfunction;
 			}
 
-		function add_rapp_function($label, $link = "", $access = 'SA_OPEN')
+		public 	function add_rapp_function($label, $link = "", $access = 'SA_OPEN')
 			{
 				$appfunction = new app_function($label, $link, $access);
 				//array_push($this->rappfunctions,$appfunction);
@@ -65,7 +65,7 @@
 		public $modules;
 		public $enabled;
 
-		function __construct($id, $name, $enabled = true)
+		public function __construct($id, $name, $enabled = true)
 			{
 				$this->id = $id;
 				$this->name = $name;
@@ -73,7 +73,7 @@
 				$this->modules = array();
 			}
 
-		function add_module($name, $icon = null)
+		public 	function add_module($name, $icon = null)
 			{
 				$module = new module($name, $icon);
 				//array_push($this->modules,$module);
@@ -81,12 +81,12 @@
 				return $module;
 			}
 
-		function add_lapp_function($level, $label, $link = "", $access = 'SA_OPEN')
+		public 	function add_lapp_function($level, $label, $link = "", $access = 'SA_OPEN')
 			{
 				$this->modules[$level]->lappfunctions[] = new app_function($label, $link, $access);
 			}
 
-		function add_rapp_function($level, $label, $link = "", $access = 'SA_OPEN')
+		public 	function add_rapp_function($level, $label, $link = "", $access = 'SA_OPEN')
 			{
 				$this->modules[$level]->rappfunctions[] = new app_function($label, $link, $access);
 			}

@@ -92,7 +92,7 @@
 		$update_pager = true;
 	}
 
-	//---------------------------------------------------------------------------------------------
+
 	// Update db record if respective checkbox value has changed.
 	//
 	function change_tpl_flag($deposit_id)

@@ -23,7 +23,7 @@
 		public $mail;
 		public $toerror = "No vaild email address";
 
-		function __construct($name, $mail)
+		public	function __construct($name, $mail)
 		{
 			$this->mail = new PHPMailer();
 			$this->mail->IsSMTP(); // telling the class to use SMTP
@@ -44,42 +44,42 @@
 			}
 		}
 
-		function to($mail)
+		public function  to($mail)
 		{
 			$this->_checkEmail($mail);
 			$this->mail->AddAddress($mail);
 		}
 
-		function cc($mail)
+		public function  cc($mail)
 		{
 			$this->_checkEmail($mail);
 			$this->mail->AddCC($mail);
 		}
 
-		function bcc($mail)
+		public function  bcc($mail)
 		{
 			$this->_checkEmail($mail);
 			$this->mail->AddBCC($mail);
 		}
 
-		function attachment($file)
+		public function  attachment($file)
 		{
 			$this->mail->AddAttachment($file);
 		}
 
-		function subject($subject)
+		public function  subject($subject)
 		{
 			$this->mail->Subject = $subject;
 		}
 
-		function text($text)
+		public function  text($text)
 		{
 			//$this->mail->ContentType = "Content-Type: text/plain; charset=ISO-8859-1\n";
 			//$this->mail->Encoding = "8bit";
 			$this->mail->Body = $text . "\n";
 		}
 
-		function html($html)
+		public function  html($html)
 		{
 			//$this->mail->ContentType = "text/html; charset=ISO-8859-1";
 			//$this->mail->Encoding = "quoted-printable";
@@ -88,7 +88,7 @@
 			$this->mail->Body = "<html><body>\n" . $html . "\n</body></html>\n";
 		}
 
-		function mime_type($filename)
+		public function  mime_type($filename)
 		{
 			$file = basename($filename, '.zip');
 			if ($filename == $file . '.zip') {
@@ -121,7 +121,7 @@
 			return 'application/unknown';
 		}
 
-		function send()
+		public function  send()
 		{
 			if ($this->toerror) {
 				return false;

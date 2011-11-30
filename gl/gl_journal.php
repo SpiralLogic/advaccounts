@@ -20,7 +20,7 @@
 		$_SESSION['page_title'] = _($help_context = "Journal Entry");
 	}
 	Page::start($_SESSION['page_title']);
-	//--------------------------------------------------------------------------------------------------
+
 	function line_start_focus()
 		{
 			$Ajax = Ajax::i();
@@ -28,7 +28,7 @@
 			JS::set_focus('_code_id_edit');
 		}
 
-	//-----------------------------------------------------------------------------------------------
+
 	if (isset($_GET['AddedID'])) {
 		$trans_no = $_GET['AddedID'];
 		$trans_type = ST_JOURNAL;
@@ -45,7 +45,7 @@
 		hyperlink_no_params(PATH_TO_ROOT . "/gl/inquiry/journal_inquiry.php", _("Return to Journal &Inquiry"));
 		Page::footer_exit();
 	}
-	//--------------------------------------------------------------------------------------------------
+
 	if (isset($_GET['NewJournal'])) {
 		create_cart(0, 0);
 	} elseif (isset($_GET['ModifyGL'])) {
@@ -92,7 +92,7 @@
 			$_SESSION['journal_items'] = &$cart;
 		}
 
-	//-----------------------------------------------------------------------------------------------
+
 	if (isset($_POST['Process'])) {
 		$input_error = 0;
 		if ($_SESSION['journal_items']->count_gl_items() < 1) {
@@ -146,7 +146,7 @@
 			meta_forward($_SERVER['PHP_SELF'], "UpdatedID=$trans_no");
 		}
 	}
-	//-----------------------------------------------------------------------------------------------
+
 	function check_item_data()
 		{
 			if (isset($_POST['dimension_id']) && $_POST['dimension_id'] != 0 && Dimensions::is_closed($_POST['dimension_id'])) {
@@ -187,7 +187,7 @@
 			return true;
 		}
 
-	//-----------------------------------------------------------------------------------------------
+
 	function handle_update_item()
 		{
 			if ($_POST['UpdateItem'] != "" && check_item_data()) {
@@ -202,14 +202,14 @@
 			line_start_focus();
 		}
 
-	//-----------------------------------------------------------------------------------------------
+
 	function handle_delete_item($id)
 		{
 			$_SESSION['journal_items']->remove_gl_item($id);
 			line_start_focus();
 		}
 
-	//-----------------------------------------------------------------------------------------------
+
 	function handle_new_item()
 		{
 			if (!check_item_data()) {
@@ -225,7 +225,7 @@
 			line_start_focus();
 		}
 
-	//-----------------------------------------------------------------------------------------------
+
 	$id = find_submit('Delete');
 	if ($id != -1) {
 		handle_delete_item($id);
@@ -245,7 +245,7 @@
 		$Ajax->activate('totamount');
 		line_start_focus();
 	}
-	//-----------------------------------------------------------------------------------------------
+
 	start_form();
 	GL_JournalUI::header($_SESSION['journal_items']);
 	start_table(Config::get('tables_style2') . " width=90%", 10);
@@ -259,7 +259,7 @@
 	submit_center('Process', _("Process Journal Entry"), true, _('Process journal entry only if debits equal to credits'),
 		'default');
 	end_form();
-	//------------------------------------------------------------------------------------------------
+
 	end_page();
 
 ?>

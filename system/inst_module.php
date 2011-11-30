@@ -13,7 +13,7 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "Install/Activate extensions"));
 	Page::simple_mode(true);
-	//---------------------------------------------------------------------------------------------
+
 	function update_extensions($extensions)
 	{
 		if (!advaccounting::write_extensions($extensions)) {
@@ -79,7 +79,7 @@
 		return true;
 	}
 
-	//---------------------------------------------------------------------------------------------
+
 	function handle_submit()
 	{
 		global $selected_id, $next_extension_id;
@@ -173,7 +173,7 @@
 		return true;
 	}
 
-	//---------------------------------------------------------------------------------------------
+
 	function display_extensions()
 	{
 		start_table(Config::get('tables_style'));
@@ -259,7 +259,7 @@
 		submit_center('Update', _('Update'), true, false, 'default');
 	}
 
-	//---------------------------------------------------------------------------------------------
+
 	function display_ext_edit($selected_id)
 	{
 		global $Mode;
@@ -292,7 +292,7 @@
 		submit_add_or_update_center($selected_id == -1, '', 'both');
 	}
 
-	//---------------------------------------------------------------------------------------------
+
 	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 		if (handle_submit()) {
 			if ($selected_id != -1) {
@@ -322,7 +322,7 @@
 		$selected_id = -1;
 		unset($_POST);
 	}
-	//---------------------------------------------------------------------------------------------
+
 	start_form(true);
 	if (list_updated('extset')) {
 		$Ajax->activate('_page_body');
@@ -337,7 +337,7 @@
 	} else {
 		company_extensions($set);
 	}
-	//---------------------------------------------------------------------------------------------
+
 	end_form();
 	end_page();
 

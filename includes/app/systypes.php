@@ -9,7 +9,7 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	//-----------------------------------------------------------------------------------------
+
 	//	Returns next transaction number.
 	//	Used only for transactions stored in tables without autoincremented key.
 	//
@@ -40,7 +40,7 @@
 			return $ref;
 		}
 
-		//-----------------------------------------------------------------------------
+
 		public static function get_systype_db_info($type)
 		{
 			switch ($type) {

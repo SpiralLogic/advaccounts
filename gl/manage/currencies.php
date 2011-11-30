@@ -13,7 +13,7 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "Currencies"));
 	Page::simple_mode(false);
-	//---------------------------------------------------------------------------------------------
+
 	function check_data()
 	{
 		if (strlen($_POST['Abbreviation']) == 0) {
@@ -42,7 +42,7 @@
 		return true;
 	}
 
-	//---------------------------------------------------------------------------------------------
+
 	function handle_submit()
 	{
 		global $selected_id, $Mode;
@@ -65,7 +65,7 @@
 		$Mode = 'RESET';
 	}
 
-	//---------------------------------------------------------------------------------------------
+
 	function check_can_delete()
 	{
 		global $selected_id;
@@ -106,7 +106,7 @@
 		return true;
 	}
 
-	//---------------------------------------------------------------------------------------------
+
 	function handle_delete()
 	{
 		global $selected_id, $Mode;
@@ -118,7 +118,7 @@
 		$Mode = 'RESET';
 	}
 
-	//---------------------------------------------------------------------------------------------
+
 	function display_currencies()
 	{
 		$company_currency = Banking::get_company_currency();
@@ -163,7 +163,7 @@
 		Errors::warning(_("The marked currency is the home currency which cannot be deleted."), 0, 0, "class='currentfg'");
 	}
 
-	//---------------------------------------------------------------------------------------------
+
 	function display_currency_edit($selected_id)
 	{
 		global $Mode;
@@ -195,15 +195,15 @@
 		submit_add_or_update_center($selected_id == '', '', 'both');
 	}
 
-	//---------------------------------------------------------------------------------------------
+
 	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 		handle_submit();
 	}
-	//---------------------------------------------------------------------------------------------
+
 	if ($Mode == 'Delete') {
 		handle_delete();
 	}
-	//---------------------------------------------------------------------------------------------
+
 	if ($Mode == 'RESET') {
 		$selected_id = '';
 		$_POST['Abbreviation'] = $_POST['Symbol'] = '';
@@ -214,7 +214,7 @@
 	display_currencies();
 	display_currency_edit($selected_id);
 	end_form();
-	//---------------------------------------------------------------------------------------------
+
 	end_page();
 
 ?>

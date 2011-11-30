@@ -18,7 +18,7 @@
 	// Title:	Print Sales Quotations
 	// ----------------------------------------------------------------
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	//----------------------------------------------------------------------------------------------------
+
 	print_sales_quotations();
 	function print_sales_quotations()
 		{

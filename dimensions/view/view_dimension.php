@@ -13,7 +13,7 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	$js = "";
 	Page::start(_($help_context = "View Dimension"), true);
-	//-------------------------------------------------------------------------------------------------
+
 	if (isset($_GET['trans_no']) && $_GET['trans_no'] != "") {
 		$id = $_GET['trans_no'];
 	}

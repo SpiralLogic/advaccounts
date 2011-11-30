@@ -11,7 +11,7 @@
 		public $br_name = 'Accounts Department';
 		public $branch_ref = 'accounts';
 
-		function __construct($id = null) {
+		public	function __construct($id = null) {
 			parent::__construct($id);
 			$this->accounts_id = $this->branch_code;
 		}

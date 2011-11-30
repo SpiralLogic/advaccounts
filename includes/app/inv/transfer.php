@@ -9,7 +9,7 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	//-------------------------------------------------------------------------------------------------------------
+
 	class Inv_Transfer
 	{
 		public static function add($Items, $location_from, $location_to, $date_, $type, $reference, $memo_)
@@ -27,7 +27,7 @@
 				return $transfer_id;
 			}
 
-		//-------------------------------------------------------------------------------------------------------------
+
 		// add 2 stock_moves entries for a stock transfer
 		// $date_ is display date (not sql)
 		// std_cost is in HOME currency
@@ -38,7 +38,7 @@
 				Inv_Movement::add(ST_LOCTRANSFER, $stock_id, $transfer_id, $location_to, $date_, $reference, $quantity, 0, $type);
 			}
 
-		//-------------------------------------------------------------------------------------------------------------
+
 		public static function get($trans_no)
 			{
 				$result = Inv_Transfer::get_items($trans_no);
@@ -58,7 +58,7 @@
 				}
 			}
 
-		//-------------------------------------------------------------------------------------------------------------
+
 		public static function get_items($trans_no)
 			{
 				$result = Inv_Movement::get(ST_LOCTRANSFER, $trans_no);
@@ -68,7 +68,7 @@
 				return $result;
 			}
 
-		//-------------------------------------------------------------------------------------------------------------
+
 		public static function void($type_no)
 			{
 				Inv_Movement::void(ST_LOCTRANSFER, $type_no);
@@ -83,7 +83,7 @@
 				DB::query($sql, "The stock movement standard_cost cannot be updated");
 			}
 
-		//--------------------------------------------------------------------------------
+
 		function header($order)
 			{
 				start_outer_table("width=70%  " . Config::get('tables_style'));
@@ -98,7 +98,7 @@
 				end_outer_table(1); // outer table
 			}
 
-		//---------------------------------------------------------------------------------
+
 		function display_items($title, &$order)
 			{
 				Display::heading($title);
@@ -133,7 +133,7 @@
 				div_end();
 			}
 
-		//---------------------------------------------------------------------------------
+
 		function item_controls($order, $line_no = -1)
 			{
 				$Ajax = Ajax::i();
@@ -171,7 +171,7 @@
 				end_row();
 			}
 
-		//---------------------------------------------------------------------------------
+
 		function option_controls()
 			{
 				echo "<br>";
@@ -179,5 +179,5 @@
 				textarea_row(_("Memo"), 'memo_', null, 50, 3);
 				end_table(1);
 			}
-		//---------------------------------------------------------------------------------
+
 	}

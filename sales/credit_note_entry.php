@@ -9,7 +9,7 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	//---------------------------------------------------------------------------
+
 	//
 	//	Entry/Modify free hand Credit Note
 	//
@@ -27,11 +27,11 @@
 		$_SESSION['page_title'] = _($help_context = "Customer Credit Note");
 	}
 	Page::start($_SESSION['page_title']);
-	//-----------------------------------------------------------------------------
+
 	Validation::check(Validation::STOCK_ITEMS, _("There are no items defined in the system."));
 	Validation::check(Validation::BRANCHES_ACTIVE,
 		_("There are no customers, or there are no customers with branches. Please define customers and customer branches."));
-	//-----------------------------------------------------------------------------
+
 	if (list_updated('branch_id')) {
 		// when branch is selected via external editor also customer can change
 		$br = Sales_Branch::get(get_post('branch_id'));
@@ -54,7 +54,7 @@
 	} else {
 		Sales_Order::check_edit_conflicts();
 	}
-	//--------------------------------------------------------------------------------
+
 	function line_start_focus()
 		{
 			$Ajax = Ajax::i();
@@ -62,7 +62,7 @@
 			JS::set_focus('_stock_id_edit');
 		}
 
-	//-----------------------------------------------------------------------------
+
 	function copy_to_cn()
 		{
 			$cart = &$_SESSION['Items'];
@@ -79,7 +79,7 @@
 			$cart->dimension2_id = $_POST['dimension2_id'];
 		}
 
-	//-----------------------------------------------------------------------------
+
 	function copy_from_cn()
 		{
 			$cart = &$_SESSION['Items'];
@@ -97,7 +97,7 @@
 			$_POST['cart_id'] = $cart->cart_id;
 		}
 
-	//-----------------------------------------------------------------------------
+
 	function handle_new_credit($trans_no)
 		{
 			Sales_Order::start();
@@ -105,7 +105,7 @@
 			copy_from_cn();
 		}
 
-	//-----------------------------------------------------------------------------
+
 	function can_process()
 		{
 			$input_error = 0;
@@ -135,7 +135,7 @@
 			return ($input_error == 0);
 		}
 
-	//-----------------------------------------------------------------------------
+
 	if (isset($_POST['ProcessCredit']) && can_process()) {
 		copy_to_cn();
 		if ($_POST['CreditType'] == "WriteOff" && (!isset($_POST['WriteOffGLCode']) || $_POST['WriteOffGLCode'] == '')
@@ -154,7 +154,7 @@
 		Sales_Order::finish();
 		meta_forward($_SERVER['PHP_SELF'], "AddedID=$credit_no");
 	} /*end of process credit note */
-	//-----------------------------------------------------------------------------
+
 	function check_item_data()
 		{
 			if (!Validation::is_num('qty', 0)) {
@@ -175,7 +175,7 @@
 			return true;
 		}
 
-	//-----------------------------------------------------------------------------
+
 	function handle_update_item()
 		{
 			if ($_POST['UpdateItem'] != "" && check_item_data()) {
@@ -184,14 +184,14 @@
 			line_start_focus();
 		}
 
-	//-----------------------------------------------------------------------------
+
 	function handle_delete_item($line_no)
 		{
 			$_SESSION['Items']->remove_from_cart($line_no);
 			line_start_focus();
 		}
 
-	//-----------------------------------------------------------------------------
+
 	function handle_new_item()
 		{
 			if (!check_item_data()) {
@@ -202,7 +202,7 @@
 			line_start_focus();
 		}
 
-	//-----------------------------------------------------------------------------
+
 	$id = find_submit('Delete');
 	if ($id != -1) {
 		handle_delete_item($id);
@@ -216,11 +216,11 @@
 	if (isset($_POST['CancelItemChanges'])) {
 		line_start_focus();
 	}
-	//-----------------------------------------------------------------------------
+
 	if (!Sales_Order::active()) {
 		handle_new_credit(0);
 	}
-	//-----------------------------------------------------------------------------
+
 	start_form();
 	hidden('cart_id');
 	$customer_error = Sales_Credit::header($_SESSION['Items']);

@@ -16,13 +16,13 @@
 	Validation::check(Validation::MANUFACTURE_ITEMS, _("There are no manufacturable items defined in the system."),
 		STOCK_MANUFACTURE);
 	Validation::check(Validation::LOCATIONS, ("There are no inventory locations defined in the system."));
-	//---------------------------------------------------------------------------------------
+
 	if (isset($_GET['trans_no'])) {
 		$selected_id = $_GET['trans_no'];
 	} elseif (isset($_POST['selected_id'])) {
 		$selected_id = $_POST['selected_id'];
 	}
-	//---------------------------------------------------------------------------------------
+
 	if (isset($_GET['AddedID'])) {
 		$id = $_GET['AddedID'];
 		$stype = ST_WORKORDER;
@@ -41,25 +41,25 @@
 		}
 		safe_exit();
 	}
-	//---------------------------------------------------------------------------------------
+
 	if (isset($_GET['UpdatedID'])) {
 		$id = $_GET['UpdatedID'];
 		Errors::notice(_("The work order been updated."));
 		safe_exit();
 	}
-	//---------------------------------------------------------------------------------------
+
 	if (isset($_GET['DeletedID'])) {
 		$id = $_GET['DeletedID'];
 		Errors::notice(_("Work order has been deleted."));
 		safe_exit();
 	}
-	//---------------------------------------------------------------------------------------
+
 	if (isset($_GET['ClosedID'])) {
 		$id = $_GET['ClosedID'];
 		Errors::notice(_("This work order has been closed. There can be no more issues against it.") . " #$id");
 		safe_exit();
 	}
-	//---------------------------------------------------------------------------------------
+
 	function safe_exit()
 		{
 			hyperlink_no_params("", _("Enter a new work order"));
@@ -67,7 +67,7 @@
 			Page::footer_exit();
 		}
 
-	//-------------------------------------------------------------------------------------
+
 	if (!isset($_POST['date_'])) {
 		$_POST['date_'] = Dates::new_doc_date();
 		if (!Dates::is_date_in_fiscalyear($_POST['date_'])) {
@@ -173,7 +173,7 @@
 			return true;
 		}
 
-	//-------------------------------------------------------------------------------------
+
 	if (isset($_POST['ADD_ITEM']) && can_process()) {
 		if (!isset($_POST['cr_acc'])) {
 			$_POST['cr_acc'] = "";
@@ -187,14 +187,14 @@
 		Dates::new_doc_date($_POST['date_']);
 		meta_forward($_SERVER['PHP_SELF'], "AddedID=$id&type=" . $_POST['type'] . "&date=" . $_POST['date_']);
 	}
-	//-------------------------------------------------------------------------------------
+
 	if (isset($_POST['UPDATE_ITEM']) && can_process()) {
 		WO_WorkOrder::update($selected_id, $_POST['StockLocation'], input_num('quantity'), Input::post('stock_id'), $_POST['date_'],
 			$_POST['RequDate'], $_POST['memo_']);
 		Dates::new_doc_date($_POST['date_']);
 		meta_forward($_SERVER['PHP_SELF'], "UpdatedID=$selected_id");
 	}
-	//--------------------------------------------------------------------------------------
+
 	if (isset($_POST['delete'])) {
 		//the link to delete a selected record was clicked instead of the submit button
 		$cancel_delete = false;
@@ -210,17 +210,17 @@
 			meta_forward($_SERVER['PHP_SELF'], "DeletedID=$selected_id");
 		}
 	}
-	//-------------------------------------------------------------------------------------
+
 	if (isset($_POST['close'])) {
 		// update the closed flag in the work order
 		WO_WorkOrder::close($selected_id);
 		meta_forward($_SERVER['PHP_SELF'], "ClosedID=$selected_id");
 	}
-	//-------------------------------------------------------------------------------------
+
 	if (get_post('_type_update')) {
 		$Ajax->activate('_page_body');
 	}
-	//-------------------------------------------------------------------------------------
+
 	start_form();
 	start_table(Config::get('tables_style2'));
 	$existing_comments = "";

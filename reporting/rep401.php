@@ -17,7 +17,7 @@
 	// Title:	Bill Of Material
 	// ----------------------------------------------------------------
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	//----------------------------------------------------------------------------------------------------
+
 	print_bill_of_material();
 	function getTransactions($from, $to)
 	{
@@ -39,7 +39,7 @@
 		return DB::query($sql, "No transactions were returned");
 	}
 
-	//----------------------------------------------------------------------------------------------------
+
 	function print_bill_of_material()
 	{
 		$frompart = $_POST['PARAM_0'];

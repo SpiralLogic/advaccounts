@@ -16,7 +16,7 @@
 	if (isset($_GET['customer_id'])) {
 		$_POST['customer_id'] = $_GET['customer_id'];
 	}
-	//------------------------------------------------------------------------------------------------
+
 	start_form();
 	if (!isset($_POST['customer_id'])) {
 		$_POST['customer_id'] = Session::i()->global_customer;
@@ -35,7 +35,7 @@
 	end_row();
 	end_table();
 	Session::i()->global_customer = $_POST['customer_id'];
-	//------------------------------------------------------------------------------------------------
+
 	function display_customer_summary($customer_record)
 		{
 			$past1 = DB_Company::get_pref('past_due_days');
@@ -61,7 +61,7 @@
 			end_table();
 		}
 
-	//------------------------------------------------------------------------------------------------
+
 	div_start('totals_tbl');
 	if ($_POST['customer_id'] != "" && $_POST['customer_id'] != ALL_TEXT && !isset($_POST['ajaxsearch'])) {
 		$customer_record = Sales_Debtor::get_details($_POST['customer_id'], $_POST['TransToDate']);
@@ -72,9 +72,10 @@
 	if (get_post('RefreshInquiry')) {
 		$Ajax->activate('totals_tbl');
 	}
-	//------------------------------------------------------------------------------------------------
+
 	function systype_name($dummy, $type)
 		{
+
 			global $systypes_array;
 			return $systypes_array[$type];
 		}
@@ -182,7 +183,7 @@
 			return (isset($row['OverDue']) && $row['OverDue'] == 1) && (abs($row["TotalAmount"]) - $row["Allocated"] != 0);
 		}
 
-	//------------------------------------------------------------------------------------------------
+
 	$date_after = Dates::date2sql($_POST['TransAfterDate']);
 	$date_to = Dates::date2sql($_POST['TransToDate']);
 	if (AJAX_REFERRER && isset($_POST['ajaxsearch'])) {
@@ -280,7 +281,7 @@
 				trans.ov_freight + trans.ov_discount - trans.alloc > 0) ";
 		}
 	}
-	//------------------------------------------------------------------------------------------------
+
 	DB::query("set @bal:=0");
 	$cols = array(
 		_("Type") => array(

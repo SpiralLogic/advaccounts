@@ -59,7 +59,7 @@
 		$selected_id = -1;
 		unset($_POST);
 	}
-	//-------------------------------------------------------------------------------------------------
+
 	function get_sales_group_name($group_no)
 	{
 		$sql = "SELECT description FROM groups WHERE id = " . DB::escape($group_no);
@@ -102,7 +102,7 @@
 	end_table();
 	end_form();
 	echo '<br>';
-	//-------------------------------------------------------------------------------------------------
+
 	start_form();
 	start_table(Config::get('tables_style2'));
 	if ($selected_id != -1) {

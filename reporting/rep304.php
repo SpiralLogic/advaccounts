@@ -17,7 +17,7 @@
 	// Title:	Inventory Sales Report
 	// ----------------------------------------------------------------
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	//----------------------------------------------------------------------------------------------------
+
 	print_inventory_sales();
 	function getTransactions($category, $location, $fromcust, $from, $to)
 	{
@@ -64,7 +64,7 @@
 		return DB::query($sql, "No transactions were returned");
 	}
 
-	//----------------------------------------------------------------------------------------------------
+
 	function print_inventory_sales()
 	{
 		$from = $_POST['PARAM_0'];

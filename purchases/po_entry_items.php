@@ -18,11 +18,11 @@
 	} else {
 		Page::start(_($help_context = "Purchase Order Entry"));
 	}
-	//---------------------------------------------------------------------------------------------------
+
 	Validation::check(Validation::SUPPLIERS, _("There are no suppliers defined in the system."));
 	Validation::check(Validation::PURCHASE_ITEMS, _("There are no purchasable inventory items defined in the system."),
 		STOCK_PURCHASED);
-	//---------------------------------------------------------------------------------------------------------------
+
 	if (isset($_GET['AddedID'])) {
 		$order_no = $_GET['AddedID'];
 		$trans_type = ST_PURCHORDER;
@@ -43,7 +43,7 @@
 		hyperlink_no_params("/purchases/inquiry/po_search.php", _("&Outstanding Purchase Orders"), true, true);
 		Page::footer_exit();
 	}
-	//--------------------------------------------------------------------------------------------------
+
 	function copy_from_cart()
 		{
 			$_POST['supplier_id'] = $_SESSION['PO']->supplier_id;
@@ -70,7 +70,7 @@
 			$_SESSION['PO']->salesman = $_POST['salesman'];
 		}
 
-	//--------------------------------------------------------------------------------------------------
+
 	function line_start_focus()
 		{
 			$Ajax = Ajax::i();
@@ -78,7 +78,7 @@
 			JS::set_focus('_stock_id_edit');
 		}
 
-	//--------------------------------------------------------------------------------------------------
+
 	function unset_form_variables()
 		{
 			unset($_POST['stock_id']);
@@ -87,7 +87,7 @@
 			unset($_POST['req_del_date']);
 		}
 
-	//---------------------------------------------------------------------------------------------------
+
 	function handle_delete_item($line_no)
 		{
 			if ($_SESSION['PO']->some_already_received($line_no) == 0) {
@@ -99,7 +99,7 @@
 			line_start_focus();
 		}
 
-	//---------------------------------------------------------------------------------------------------
+
 	function handle_cancel_po()
 		{
 			//need to check that not already dispatched or invoiced by the supplier
@@ -122,7 +122,7 @@
 			exit;
 		}
 
-	//---------------------------------------------------------------------------------------------------
+
 	function check_data()
 		{
 			$dec = Num::qty_dec($_POST['stock_id']);
@@ -151,7 +151,7 @@
 			return true;
 		}
 
-	//---------------------------------------------------------------------------------------------------
+
 	function handle_update_item()
 		{
 			$allow_update = check_data();
@@ -168,8 +168,8 @@
 			line_start_focus();
 		}
 
-	//---------------------------------------------------------------------------------------------------
-	//---------------------------------------------------------------------------------------------------
+
+
 	function handle_add_new_item()
 		{
 			$allow_update = check_data();
@@ -210,7 +210,7 @@
 			line_start_focus();
 		}
 
-	//---------------------------------------------------------------------------------------------------
+
 	function can_commit()
 		{
 			if (!get_post('supplier_id')) {
@@ -259,7 +259,7 @@
 			return true;
 		}
 
-	//---------------------------------------------------------------------------------------------------
+
 	function handle_commit_order()
 		{
 			if (can_commit()) {
@@ -280,7 +280,7 @@
 			}
 		}
 
-	//---------------------------------------------------------------------------------------------------
+
 	$id = find_submit('Delete');
 	if ($id != -1) {
 		handle_delete_item($id);
@@ -356,7 +356,7 @@
 			}
 		}
 	}
-	//---------------------------------------------------------------------------------------------------
+
 	start_form();
 	if ((isset($_GET['NewOrder']) && $_GET['NewOrder']) && (!isset($_GET['UseOrder']) || !$_GET['UseOrder'])) {
 		echo "
@@ -383,7 +383,7 @@
 		submit_center('CancelOrder', _("Delete This Order"), true, false, 'cancel');
 	}
 	div_end();
-	//---------------------------------------------------------------------------------------------------
+
 	end_form();
 	JS::onUnload('Are you sure you want to leave without commiting changes?');
 	Item::addEditDialog();

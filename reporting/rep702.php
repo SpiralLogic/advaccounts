@@ -17,9 +17,9 @@
 	// Title:	List of Journal Entries
 	// ----------------------------------------------------------------
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	//----------------------------------------------------------------------------------------------------
+
 	print_list_of_journal_entries();
-	//----------------------------------------------------------------------------------------------------
+
 	function print_list_of_journal_entries()
 		{
 			global $systypes_array;

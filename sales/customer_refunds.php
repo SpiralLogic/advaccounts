@@ -15,10 +15,10 @@
 	JS::open_window(900, 500);
 	JS::headerFile('/js/payalloc.js');
 	Page::start(_($help_context = "Customer Refund Entry"), Input::request('frame'));
-	//----------------------------------------------------------------------------------------------
+
 	Validation::check(Validation::CUSTOMERS, _("There are no customers defined in the system."));
 	Validation::check(Validation::BANK_ACCOUNTS, _("There are no bank accounts defined in the system."));
-	//----------------------------------------------------------------------------------------
+
 	if (!isset($_POST['customer_id'])) {
 		$customer = new Contacts_Customer(Session::i()->global_customer);
 	}
@@ -37,7 +37,7 @@
 			_("&View the GL Journal Entries for this Customer Refund")));
 		Page::footer_exit();
 	}
-	//----------------------------------------------------------------------------------------------
+
 	function can_process()
 		{
 			if (!get_post('customer_id')) {
@@ -103,12 +103,12 @@
 			}
 			$_SESSION['alloc']->amount = -1 * input_num('amount');
 			if (isset($_POST["TotalNumberOfAllocs"])) {
-				return Gl_Allocation::check_allocations();
+				return Gl_Allocation::check();
 			}
 			return true;
 		}
 
-	//----------------------------------------------------------------------------------------------
+
 	// validate inputs
 	if (isset($_POST['AddRefundItem'])) {
 		if (!can_process()) {
@@ -122,7 +122,7 @@
 		$_SESSION['alloc']->read();
 		$Ajax->activate('alloc_tbl');
 	}
-	//----------------------------------------------------------------------------------------------
+
 	if (isset($_POST['AddRefundItem'])) {
 		$cust_currency = Banking::get_customer_currency($_POST['customer_id']);
 		$bank_currency = Banking::get_bank_account_currency($_POST['bank_account']);
@@ -140,7 +140,7 @@
 		$_SESSION['alloc']->write();
 		meta_forward($_SERVER['PHP_SELF'], "AddedID=$refund_id");
 	}
-	//----------------------------------------------------------------------------------------------
+
 	function read_customer_data()
 		{
 			global $customer;
@@ -156,7 +156,7 @@
 			$_POST['ref'] = Refs::get_next(12);
 		}
 
-	//----------------------------------------------------------------------------------------------
+
 	start_form();
 	start_outer_table(Config::get('tables_style2') . " width=60%", 5);
 	table_section(1);

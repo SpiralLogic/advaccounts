@@ -111,7 +111,7 @@
 		return true;
 	}
 
-	//----------------------------------------------------------------------------------
+
 	if ($Mode == 'Delete') {
 		if (can_delete($selected_id)) {
 			Inv_Location::delete($selected_id);

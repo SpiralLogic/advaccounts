@@ -95,7 +95,7 @@
 		$update_pager = true;
 	}
 
-	//---------------------------------------------------------------------------------------------
+
 	// Update db record if respective checkbox value has changed.
 	//
 	function change_tpl_flag($reconcile_id)
@@ -174,7 +174,7 @@
 		}
 		$Ajax->activate('_page_body');
 	}
-	//------------------------------------------------------------------------------------------------
+
 	start_form();
 	start_table();
 	start_row();
@@ -233,7 +233,7 @@
 	end_table();
 	div_end();
 	echo "<hr>";
-	//------------------------------------------------------------------------------------------------
+
 	if (!isset($_POST['bank_account'])) {
 		$_POST['bank_account'] = "";
 	}
@@ -255,7 +255,7 @@
 	br(1);
 	submit_center('Reconcile', _("Reconcile"), true, '', null);
 	end_form();
-	//------------------------------------------------------------------------------------------------
+
 	$js = <<<JS
 	$(function() {
 		$("th:nth-child(9)").click(function() {

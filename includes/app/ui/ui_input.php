@@ -19,7 +19,7 @@
 		if ($ajax_trigger) $Ajax->activate($name);
  }
  */
-	//------------------------------------------------------------------------------
+
 	//    Seek for _POST variable with $prefix.
 	//    If var is found returns variable name with prefix stripped,
 	//    and null or -1 otherwise.
@@ -35,7 +35,7 @@
 			return $numeric ? -1 : null;
 		}
 
-	//------------------------------------------------------------------------------
+
 	//
 	//	Read numeric value from user formatted input
 	//
@@ -47,7 +47,7 @@
 			return User::numeric($_POST[$postname]);
 		}
 
-	//---------------------------------------------------------------------------------
+
 	function hidden($name, $value = null, $echo = true)
 		{
 			$Ajax = Ajax::i();
@@ -221,7 +221,7 @@
 		}
 
 	;
-	//-----------------------------------------------------------------------------------
+
 	function set_icon($icon, $title = false)
 		{
 			return "<img src='/themes/" . User::theme() . "/images/$icon' width='12' height='12' border='0'" . ($title ?
@@ -281,7 +281,7 @@
 			button_cell($name, $value, $title, ICON_ADD, 'selector');
 		}
 
-	//-----------------------------------------------------------------------------------
+
 	function check_value($name)
 		{
 			if (!isset($_POST[$name])) {
@@ -334,7 +334,7 @@
 			echo "</tr>\n";
 		}
 
-	//-----------------------------------------------------------------------------------
+
 	function labelheader_cell($label, $params = "")
 		{
 			echo "<th  $params>$label</th>\n";
@@ -435,7 +435,7 @@
 			echo "</tr>\n";
 		}
 
-	//-----------------------------------------------------------------------------------
+
 	function text_cells($label, $name, $value = null, $size = "", $max = "", $title = false, $labparams = "", $post_label = "",
 		$inparams = "")
 		{
@@ -493,7 +493,7 @@
 			echo "</tr>\n";
 		}
 
-	//-----------------------------------------------------------------------------------
+
 	function text_row_ex($label, $name, $size, $max = null, $title = null, $value = null, $params = null, $post_label = null,
 		$params2 = '', $submit_on_change = false)
 		{
@@ -502,7 +502,7 @@
 			echo "</tr>\n";
 		}
 
-	//-----------------------------------------------------------------------------------
+
 	function email_row($label, $name, $value, $size, $max, $title = null, $params = "", $post_label = "")
 		{
 			if (get_post($name)) {
@@ -543,7 +543,7 @@
 			text_row_ex($label, $name, $size, $max, $title, $value, $params, $post_label);
 		}
 
-	//-----------------------------------------------------------------------------------
+
 	//
 	//	Since FA 2.2  $init parameter is superseded by $check.
 	//  When $check!=null current date is displayed in red when set to other
@@ -600,7 +600,7 @@
 			echo "</tr>\n";
 		}
 
-	//-----------------------------------------------------------------------------------
+
 	function password_row($label, $name, $value)
 		{
 			echo "<tr><td class='label'>$label</td>";
@@ -608,7 +608,7 @@
 			echo "</tr>\n";
 		}
 
-	//-----------------------------------------------------------------------------------
+
 	function file_cells($label, $name, $id = "")
 		{
 			if ($id != "") {
@@ -624,13 +624,13 @@
 			echo "</tr>\n";
 		}
 
-	//-----------------------------------------------------------------------------------
+
 	function ref_cells($label, $name, $title = null, $init = null, $params = null, $submit_on_change = false)
 		{
 			text_cells_ex($label, $name, 13, 18, $init, $title, $params, null, $submit_on_change);
 		}
 
-	//-----------------------------------------------------------------------------------
+
 	function ref_row($label, $name, $title = null, $init = null, $submit_on_change = false)
 		{
 			echo "<tr><td class='label'>$label</td>";
@@ -638,7 +638,7 @@
 			echo "</tr>\n";
 		}
 
-	//-----------------------------------------------------------------------------------
+
 	function percent_row($label, $name, $init = null, $params = '')
 		{
 			if (!isset($_POST[$name]) || $_POST[$name] == "") {
@@ -694,7 +694,7 @@
 			$Ajax->addAssign($name, $name, 'dec', $dec);
 		}
 
-	//-----------------------------------------------------------------------------------
+
 	function amount_cells($label, $name, $init = null, $params = null, $post_label = null, $dec = null, $id = null)
 		{
 			amount_cells_ex($label, $name, 10, 15, $init, $params, $post_label, $dec, $id);
@@ -723,7 +723,7 @@
 			echo "</tr>\n";
 		}
 
-	//-----------------------------------------------------------------------------------
+
 	function qty_cells($label, $name, $init = null, $params = null, $post_label = null, $dec = null)
 		{
 			if (!isset($dec)) {
@@ -752,13 +752,13 @@
 			echo "</tr>\n";
 		}
 
-	//-----------------------------------------------------------------------------------
+
 	function small_amount_cells($label, $name, $init = null, $params = null, $post_label = null, $dec = null)
 		{
 			amount_cells_ex($label, $name, 7, 12, $init, $params, $post_label, $dec);
 		}
 
-	//-----------------------------------------------------------------------------------
+
 	function small_qty_cells($label, $name, $init = null, $params = null, $post_label = null, $dec = null)
 		{
 			if (!isset($dec)) {
@@ -767,7 +767,7 @@
 			amount_cells_ex($label, $name, 7, 12, $init, $params, $post_label, $dec);
 		}
 
-	//-----------------------------------------------------------------------------------
+
 	function textarea_cells($label, $name, $value, $cols, $rows, $title = null, $params = "")
 		{
 			$Ajax = Ajax::i();
@@ -790,7 +790,7 @@
 			echo "</tr>\n";
 		}
 
-	//-----------------------------------------------------------------------------------
+
 	//
 	//	When show_inactive page option is set
 	//  displays value of inactive field as checkbox cell.

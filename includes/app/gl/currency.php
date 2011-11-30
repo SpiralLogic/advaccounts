@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 
 class GL_Currency {
-	//---------------------------------------------------------------------------------------------
+
 
 	public static function update($curr_abrev, $symbol, $currency, $country,
 													 $hundreds_name, $auto_update) {
@@ -24,7 +24,7 @@ class GL_Currency {
 		DB::query($sql, "could not update currency for $curr_abrev");
 	}
 
-	//---------------------------------------------------------------------------------------------
+
 
 	public static function add($curr_abrev, $symbol, $currency, $country,
 												$hundreds_name, $auto_update) {
@@ -37,7 +37,7 @@ class GL_Currency {
 		DB::query($sql, "could not add currency for $curr_abrev");
 	}
 
-	//---------------------------------------------------------------------------------------------
+
 
 	public static function delete($curr_code) {
 		$sql = "DELETE FROM currencies WHERE curr_abrev=" . DB::escape($curr_code);
@@ -47,7 +47,7 @@ class GL_Currency {
 		DB::query($sql, "could not delete exchange rates for currency $curr_code");
 	}
 
-	//---------------------------------------------------------------------------------------------
+
 
 	public static function get($curr_code) {
 		$sql = "SELECT * FROM currencies WHERE curr_abrev=" . DB::escape($curr_code);
@@ -57,7 +57,7 @@ class GL_Currency {
 		return $row;
 	}
 
-	//---------------------------------------------------------------------------------------------
+
 
 	public static function get_all($all = false) {
 		$sql = "SELECT * FROM currencies";
@@ -65,6 +65,6 @@ class GL_Currency {
 		return DB::query($sql, "could not get currencies");
 	}
 
-	//---------------------------------------------------------------------------------------------
+
 
 }

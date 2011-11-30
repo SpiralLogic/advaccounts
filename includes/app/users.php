@@ -20,7 +20,7 @@
 			DB::query($sql, "could not add user for $user_id");
 		}
 
-		//-----------------------------------------------------------------------------------------------
+
 		public static function	update_password($id, $user_id, $password) {
 			$sql = "UPDATE users SET password=" . DB::escape($password) . ",
 				user_id = " . DB::escape($user_id) . " WHERE id=" . DB::escape($id);
@@ -28,7 +28,7 @@
 			session_regenerate_id();
 		}
 
-		//-----------------------------------------------------------------------------------------------
+
 		public static function	update(
 			$id, $user_id, $real_name, $phone, $email, $role_id,
 			$language, $profile, $rep_popup, $pos
@@ -47,7 +47,7 @@
 			session_regenerate_id();
 		}
 
-		//-----------------------------------------------------------------------------------------------
+
 		public static function	update_display_prefs(
 			$id, $price_dec, $qty_dec, $exrate_dec,
 			$percent_dec, $showgl, $showcodes, $date_format, $date_sep, $tho_sep,
@@ -81,7 +81,7 @@
 			session_regenerate_id();
 		}
 
-		//-----------------------------------------------------------------------------------------------
+
 		public static function	get_all($all = false) {
 			$sql
 			 = "SELECT u.*, r.role FROM users u, security_roles r
@@ -92,14 +92,14 @@
 			return DB::query($sql, "could not get users");
 		}
 
-		//-----------------------------------------------------------------------------------------------
+
 		public static function	get($id) {
 			$sql = "SELECT * FROM users WHERE id=" . DB::escape($id);
 			$result = DB::query($sql, "could not get user $id");
 			return DB::fetch($result);
 		}
 
-		//-----------------------------------------------------------------------------------------------
+
 		//	This public static function  is necessary for admin prefs update after upgrade from 2.1
 		//
 		public static function	get_by_login($user_id) {
@@ -108,13 +108,13 @@
 			return DB::fetch($result);
 		}
 
-		//-----------------------------------------------------------------------------------------------
+
 		public static function	delete($id) {
 			$sql = "DELETE FROM users WHERE id=" . DB::escape($id);
 			DB::query($sql, "could not delete user $id");
 		}
 
-		//-----------------------------------------------------------------------------------------------
+
 		public static function	get_for_login($user_id, $password) {
 			// do not exclude inactive records or you lost access after source upgrade
 			// on sites using pre 2.2 database
@@ -134,14 +134,14 @@
 			return $result ? : false;
 		}
 
-		//-----------------------------------------------------------------------------------------------
+
 		public static function	update_visitdate($user_id) {
 			$sql = "UPDATE users SET last_visit_date='" . date("Y-m-d H:i:s") . "'
 				WHERE user_id=" . DB::escape($user_id);
 			DB::query($sql, "could not update last visit date for user $user_id");
 		}
 
-		//-----------------------------------------------------------------------------------------------
+
 		public static function	check_activity($id) {
 			$sql = "SELECT COUNT(*) FROM audit_trail WHERE audit_trail.user="
 			 . DB::escape($id);
@@ -150,7 +150,7 @@
 			return $ret[0];
 		}
 
-		//-----------------------------------------------------------------------------------------------
+
 		public static function	show_online() {
 			if (!Config::get('ui_users_showonline') || !isset($_SESSION['get_text'])) {
 				return "";

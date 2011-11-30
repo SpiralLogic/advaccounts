@@ -9,7 +9,7 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	//--------------------------------------------------------------------------
+
 	class User
 	{
 		protected static $_instance = null;
@@ -198,7 +198,7 @@
 			JS::beforeload($js);
 		}
 
-		//--------------------------------------------------------------------------
+
 		public static function	fallback() {
 			return static::get()->ui_mode == 0;
 		}

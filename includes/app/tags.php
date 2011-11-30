@@ -15,7 +15,7 @@
 				return DB::query($sql);
 			}
 
-		//--------------------------------------------------------------------------------------
+
 		public static function update($id, $name, $description, $type = null)
 			{
 				$sql = "UPDATE tags SET name=" . DB::escape($name) . ",
@@ -27,7 +27,7 @@
 				return DB::query($sql);
 			}
 
-		//--------------------------------------------------------------------------------------
+
 		public static function get_all($type, $all = false)
 			{
 				$sql = "SELECT * FROM tags WHERE type=" . DB::escape($type);
@@ -38,7 +38,7 @@
 				return DB::query($sql, "could not get tags");
 			}
 
-		//--------------------------------------------------------------------------------------
+
 		public static function get($id)
 			{
 				$sql = "SELECT * FROM tags WHERE id = " . DB::escape($id);
@@ -46,7 +46,7 @@
 				return DB::fetch($result);
 			}
 
-		//--------------------------------------------------------------------------------------
+
 		public static function get_type($id)
 			{
 				$sql = "SELECT type FROM tags WHERE id = " . DB::escape($id);
@@ -55,7 +55,7 @@
 				return $row[0];
 			}
 
-		//--------------------------------------------------------------------------------------
+
 		public static function get_name($id)
 			{
 				$sql = "SELECT name FROM tags WHERE id = " . DB::escape($id);
@@ -64,7 +64,7 @@
 				return $row[0];
 			}
 
-		//--------------------------------------------------------------------------------------
+
 		public static function get_description($id)
 			{
 				$sql = "SELECT description FROM tags WHERE id = " . DB::escape($id);
@@ -73,14 +73,14 @@
 				return $row[0];
 			}
 
-		//--------------------------------------------------------------------------------------
+
 		public static function delete($id)
 			{
 				$sql = "DELETE FROM tags WHERE id = " . DB::escape($id);
 				DB::query($sql, "could not delete tag");
 			}
 
-		//--------------------------------------------------------------------------------------
+
 		public static function add_associations($recordid, $tagids)
 			{
 				foreach ($tagids as $tagid) {
@@ -93,7 +93,7 @@
 				}
 			}
 
-		//--------------------------------------------------------------------------------------
+
 		public static function update_associations($type, $recordid, $tagids)
 			{
 				// Delete the old associations
@@ -102,7 +102,7 @@
 				Tags::add_associations($recordid, $tagids);
 			}
 
-		//--------------------------------------------------------------------------------------
+
 		// To delete tag associations, we need to specify the tag type.
 		// Otherwise we may inadvertantly delete records for another type of tag
 		//
@@ -128,7 +128,7 @@
 				}
 			}
 
-		//--------------------------------------------------------------------------------------
+
 		public static function get_associated_records($id)
 			{
 				// Which table we query is based on the tag type
@@ -151,7 +151,7 @@
 				return DB::query($sql, "could not get tag associations for tag");
 			}
 
-		//--------------------------------------------------------------------------------------
+
 		public static function get_all_associated_with_record($type, $recordid)
 			{
 				$sql = "SELECT tags.* FROM tag_associations AS ta
@@ -159,7 +159,7 @@
  				WHERE tags.type = $type	AND ta.record_id = " . DB::escape($recordid);
 				return DB::query($sql, "could not get tags associations for record");
 			}
-		//--------------------------------------------------------------------------------------
+
 	}
 
 ?>

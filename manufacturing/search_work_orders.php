@@ -20,7 +20,7 @@
 		$outstanding_only = 0;
 		Page::start(_($help_context = "Search Work Orders"));
 	}
-	//-----------------------------------------------------------------------------------
+
 	// Ajax updates
 	//
 	if (get_post('SearchOrders')) {
@@ -40,11 +40,11 @@
 		}
 		$Ajax->activate('orders_tbl');
 	}
-	//--------------------------------------------------------------------------------------
+
 	if (isset($_GET["stock_id"])) {
 		$_POST['SelectedStockItem'] = $_GET["stock_id"];
 	}
-	//--------------------------------------------------------------------------------------
+
 	start_form(false, false, $_SERVER['PHP_SELF'] . "?outstanding_only=$outstanding_only");
 	start_table("class='tablestyle_noborder'");
 	start_row();
@@ -58,7 +58,7 @@
 	submit_cells('SearchOrders', _("Search"), '', _('Select documents'), 'default');
 	end_row();
 	end_table();
-	//-----------------------------------------------------------------------------
+
 	function check_overdue($row)
 		{
 			return (!$row["closed"]

@@ -21,7 +21,7 @@
 		 $selected_kit =  $_GET['item_code'];
 	 }
 	 */
-	//--------------------------------------------------------------------------------------------------
+
 	function display_kit_items($selected_kit)
 	{
 		$result = Item_Code::get_kit($selected_kit);
@@ -45,7 +45,7 @@
 		div_end();
 	}
 
-	//--------------------------------------------------------------------------------------------------
+
 	function update_component($kit_code, $selected_item)
 	{
 		global $Mode, $selected_kit;
@@ -105,7 +105,7 @@
 		$Ajax->activate('_page_body');
 	}
 
-	//--------------------------------------------------------------------------------------------------
+
 	if (get_post('update_name')) {
 		Item_Code::update_kit_props(get_post('item_code'), get_post('description'), get_post('category'));
 		Errors::notice(_('Kit common properties has been updated'));
@@ -142,7 +142,7 @@
 		unset($_POST['quantity']);
 		unset($_POST['component']);
 	}
-	//--------------------------------------------------------------------------------------------------
+
 	start_form();
 	echo "<center>" . _("Select a sale kit:") . "&nbsp;";
 	echo sales_kits_list('item_code', null, _('New kit'), true);
@@ -155,7 +155,7 @@
 		$Ajax->activate('_page_body');
 	}
 	$selected_kit = $_POST['item_code'];
-	//----------------------------------------------------------------------------------
+
 	if (get_post('item_code') == '') {
 		// New sales kit entry
 		start_table(Config::get('tables_style2'));
@@ -203,7 +203,7 @@
 	end_table(1);
 	submit_add_or_update_center($selected_id == -1, '', 'both');
 	end_form();
-	//----------------------------------------------------------------------------------
+
 	end_page();
 
 ?>

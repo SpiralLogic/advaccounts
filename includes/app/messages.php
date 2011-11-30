@@ -11,11 +11,11 @@
 		protected static $messages = '';
 		protected static $count = 0;
 
-		function __construct()
+		public	function __construct()
 			{
 			}
 
-		static function	getNewUserMessages($userid = false)
+	public	static function	getNewUserMessages($userid = false)
 			{
 				if (!$userid) {
 					return false;
@@ -35,19 +35,19 @@
 					$unread = $row['unread'] - 1;
 					$id = $row['id'];
 					$sql2 = "UPDATE user_messages SET unread={$unread} WHERE  id={$id} AND user=" . $userid;
-					$result2 = DB::query($sql2, 'Could not mark messages as unread');
+					DB::query($sql2, 'Could not mark messages as unread');
 				}
 				return static::$count;
 			}
 
-		static function setNewMessage($userid, $subject, $message)
+		public	static function setNewMessage($userid, $subject, $message)
 			{
 				$sql = "INSERT INTO user_messages (user, subject,message,unread) VALUES (" . DB::escape($userid) . ", " . DB::escape($subject) . ", " . DB::escape($message) . ", 1)";
 				$result = DB::query($sql, "Couldn't add message for $userid");
 				return $result;
 			}
 
-		static function showNewMessages($user = false)
+		public	static function showNewMessages($user = false)
 			{
 				if (!$user && isset($_SESSION['current_user'])) {
 					$user = $_SESSION['current_user']->user;
@@ -57,7 +57,7 @@
 				}
 			}
 
-		static function makeDialog()
+		public	static function makeDialog()
 			{
 				$dialog = new Dialog(static::$count . ' New Messages', 'messagesbox', static::$messages);
 				$dialog->addButtons(array('Close' => '$(this).dialog("close");'));

@@ -25,7 +25,7 @@
 		DB::query($sql, "a location could not be added");
 	}
 
-	//------------------------------------------------------------------------------------
+
 
 	public static function update($loc_code, $location_name, $delivery_address, $phone, $phone2, $fax, $email, $contact) {
 		$sql = "UPDATE locations SET location_name=" . DB::escape($location_name) . ",
@@ -37,7 +37,7 @@
 		DB::query($sql, "a location could not be updated");
 	}
 
-	//------------------------------------------------------------------------------------
+
 
 	public static function delete($item_location) {
 		$sql = "DELETE FROM locations WHERE loc_code=" . DB::escape($item_location);
@@ -47,7 +47,7 @@
 		DB::query($sql, "a location could not be deleted");
 	}
 
-	//------------------------------------------------------------------------------------
+
 
 	public static function get($item_location) {
 		$sql = "SELECT * FROM locations WHERE loc_code=" . DB::escape($item_location);
@@ -57,7 +57,7 @@
 		return DB::fetch($result);
 	}
 
-	//------------------------------------------------------------------------------------
+
 
 	public static function set_reorder($stock_id, $loc_code, $reorder_level) {
 		$sql = "UPDATE loc_stock SET reorder_level = $reorder_level
@@ -66,7 +66,7 @@
 		DB::query($sql, "an item reorder could not be set");
 	}
 
-	//------------------------------------------------------------------------------------
+
 
 	public static function get_details($stock_id) {
 		$sql = "SELECT loc_stock.*, locations.location_name
@@ -77,7 +77,7 @@
 		return DB::query($sql, "an item reorder could not be retreived");
 	}
 
-	//------------------------------------------------------------------------------------
+
 	public static function get_name($loc_code) {
 		$sql = "SELECT location_name FROM locations WHERE loc_code="
 		 . DB::escape($loc_code);
@@ -92,7 +92,7 @@
 		Errors::show_db_error("could not retreive the location name for $loc_code", $sql, true);
 	}
 
-		//--------------------------------------------------------------------------------------------------
+
 		// find inventory location for given transaction
 		//
 		public static function get_for_trans($cart)

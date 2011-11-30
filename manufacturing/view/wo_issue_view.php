@@ -13,11 +13,11 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	JS::open_window(900, 500);
 	Page::start(_($help_context = "View Work Order Issue"), true);
-	//-------------------------------------------------------------------------------------------------
+
 	if ($_GET['trans_no'] != "") {
 		$wo_issue_no = $_GET['trans_no'];
 	}
-	//-------------------------------------------------------------------------------------------------
+
 	function display_wo_issue($issue_no)
 		{
 			$myrow = WO_Issue::get($issue_no);
@@ -40,7 +40,7 @@
 			Display::is_voided(28, $issue_no, _("This issue has been voided."));
 		}
 
-	//-------------------------------------------------------------------------------------------------
+
 	function display_wo_issue_details($issue_no)
 		{
 			$result = WO_Issue::get_details($issue_no);
@@ -72,12 +72,12 @@
 			}
 		}
 
-	//-------------------------------------------------------------------------------------------------
+
 	Display::heading($systypes_array[ST_MANUISSUE] . " # " . $wo_issue_no);
 	display_wo_issue($wo_issue_no);
 	Display::heading(_("Items for this Issue"));
 	display_wo_issue_details($wo_issue_no);
-	//-------------------------------------------------------------------------------------------------
+
 	echo "<br>";
 	end_page(true);
 

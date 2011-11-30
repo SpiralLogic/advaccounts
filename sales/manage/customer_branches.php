@@ -14,14 +14,14 @@
 	//$page_security = 3;
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "Customer Branches"), Input::request('popup'));
-	//-----------------------------------------------------------------------------------------------
+
 	Validation::check(Validation::CUSTOMERS, _("There are no customers defined in the system. Please define a customer to add customer branches."));
 	Validation::check(Validation::SALESPERSONS, _("There are no sales people defined in the system. At least one sales person is required before proceeding."));
 	Validation::check(Validation::SALES_AREA, _("There are no sales areas defined in the system. At least one sales area is required before proceeding."));
 	Validation::check(Validation::SHIPPERS, _("There are no shipping companies defined in the system. At least one shipping company is required before proceeding."));
 	Validation::check(Validation::TAX_GROUP, _("There are no tax groups defined in the system. At least one tax group is required before proceeding."));
 	Page::simple_mode(true);
-	//-----------------------------------------------------------------------------------------------
+
 	if (isset($_GET['debtor_no'])) {
 		$_POST['customer_id'] = strtoupper($_GET['debtor_no']);
 	}
@@ -32,7 +32,7 @@
 		$selected_id = $_POST['branch_code'] = $br['branch_code'];
 		$Mode = 'Edit';
 	}
-	//-----------------------------------------------------------------------------------------------
+
 	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 		//initialise no input errors assumed initially before we test
 		$input_error = 0;
@@ -157,7 +157,7 @@
 	if (!get_post('show_inactive')) {
 		$sql .= " AND !b.inactive";
 	}
-	//------------------------------------------------------------------------------------------------
+
 	if ($num_branches) {
 		$cols = array(
 			'branch_code' => 'skip', _("Short Name"), _("Name"), _("Contact"), _("Sales Person"), _("Area"), _("Phone No"), _("Fax No"), _("E-mail") => 'email', _("Tax Group"), _("Inactive") => 'inactive', //		array('fun'=>'inactive'),

@@ -27,7 +27,7 @@ class GL_Account {
 		return DB::query($sql);
 	}
 
-	//---------------------------------------------------------------------------------------------
+
 
 	function update_reconciled_values($reconcile_id, $reconcile_value, $reconcile_date, $end_balance, $bank_account) {
 		$sql = "UPDATE bank_trans SET reconciled=$reconcile_value"
@@ -43,7 +43,7 @@ class GL_Account {
 		DB::query($sql2, "Error updating reconciliation information");
 	}
 
-	//---------------------------------------------------------------------------------------------
+
 
 	function get_max_reconciled($date, $bank_account) {
 		$date = Dates::date2sql($date);
@@ -61,7 +61,7 @@ class GL_Account {
 		return DB::query($sql, "Cannot retrieve reconciliation data");
 	}
 
-	//---------------------------------------------------------------------------------------------
+
 
 	function get_ending_reconciled($bank_account, $bank_date) {
 		$sql = "SELECT ending_reconcile_balance
@@ -71,7 +71,7 @@ class GL_Account {
 		return DB::fetch($result);
 	}
 
-	//---------------------------------------------------------------------------------------------
+
 
 	function get_sql_for_reconcile($bank_account, $date) {
 		$sql = "SELECT	type, trans_no, ref, trans_date,
@@ -93,7 +93,7 @@ class GL_Account {
 		$result = DB::query($sql);
 	}
 
-	//---------------------------------------------------------------------------------------------
+
 
 	function delete($code) {
 		$sql = "DELETE FROM chart_master WHERE account_code=" . DB::escape($code);

@@ -18,7 +18,7 @@
 		public $selected_application;
 		public $menu;
 
-		function __construct()
+		public 	function __construct()
 		{
 			Session::hasLogin();
 			$installed_extensions = Config::get('extensions.installed');
@@ -45,7 +45,7 @@
 			$this->add_application(new Apps_System());
 		}
 
-		function add_application(&$app)
+		public 	function add_application(&$app)
 		{
 			if ($app->enabled) // skip inactive modules
 			{
@@ -53,7 +53,7 @@
 			}
 		}
 
-		function get_application($id)
+		public 	function get_application($id)
 		{
 			if (isset($this->applications[$id])) {
 				return $this->applications[$id];
@@ -61,7 +61,7 @@
 			return null;
 		}
 
-		function get_selected_application()
+		public 	function get_selected_application()
 		{
 			if (isset($this->selected_application)) {
 				return $this->applications[$this->selected_application];
@@ -72,7 +72,7 @@
 			return null;
 		}
 
-		function display()
+		public 	function display()
 		{
 			$rend = Renderer::get();
 			$rend->header();

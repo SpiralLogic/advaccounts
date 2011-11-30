@@ -14,7 +14,7 @@
 	JS::set_focus('account');
 	JS::open_window(800, 500);
 	Page::start(_($help_context = "General Ledger Inquiry"));
-	//----------------------------------------------------------------------------------------------------
+
 	// Ajax updates
 	//
 	if (get_post('Show')) {
@@ -47,7 +47,7 @@
 	if (!isset($_POST["amount_max"])) {
 		$_POST["amount_max"] = Num::price_format(0);
 	}
-	//----------------------------------------------------------------------------------------------------
+
 	function gl_inquiry_controls()
 	{
 		$dim = DB_Company::get_pref('use_dimension');
@@ -76,7 +76,7 @@
 		end_form();
 	}
 
-	//----------------------------------------------------------------------------------------------------
+
 	function show_results()
 	{
 		global $systypes_array;
@@ -186,14 +186,14 @@
 		}
 	}
 
-	//----------------------------------------------------------------------------------------------------
+
 	gl_inquiry_controls();
 	div_start('trans_tbl');
 	if (get_post('Show') || get_post('account')) {
 		show_results();
 	}
 	div_end();
-	//----------------------------------------------------------------------------------------------------
+
 	end_page();
 
 ?>

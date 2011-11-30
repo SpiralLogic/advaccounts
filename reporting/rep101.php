@@ -17,7 +17,7 @@
 	// Title:	Customer Balances
 	// ----------------------------------------------------------------
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	//----------------------------------------------------------------------------------------------------
+
 	// trial_inquiry_controls();
 	print_customer_balances();
 	function get_open_balance($debtorno, $to, $convert)
@@ -84,7 +84,7 @@
 			return DB::query($sql, "No transactions were returned");
 		}
 
-	//----------------------------------------------------------------------------------------------------
+
 	function print_customer_balances()
 		{
 			global $systypes_array;

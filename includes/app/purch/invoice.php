@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 	class Purch_Invoice
 	{
-		//--------------------------------------------------------------------------------------------------
+
 		public static function get_supplier_to_trans($supp_trans, $supplier_id)
 			{
 				$sql = "SELECT suppliers.supp_name, payment_terms.terms, "
@@ -46,7 +46,7 @@
 				Purch_Trans::get_duedate_from_terms($supp_trans);
 			}
 
-		//--------------------------------------------------------------------------------------------------
+
 		public static function update_supplier_received($id, $po_detail_item, $qty_invoiced, $chg_price = null)
 			{
 				if ($chg_price != null) {
@@ -98,7 +98,7 @@
 				return Num::round($diff, $dec);
 			}
 
-		//----------------------------------------------------------------------------------------
+
 		public static function add($supp_trans, $invoice_no = 0) // do not receive as ref because we change locally
 			{
 				//$company_currency = Banking::get_company_currency();
@@ -338,7 +338,7 @@
 				return $invoice_id;
 			}
 
-		//----------------------------------------------------------------------------------------
+
 		// get all the invoices/credits for a given PO - quite long route to get there !
 		public static function get_po_credits($po_number)
 			{
@@ -355,7 +355,7 @@
 				return DB::query($sql, "The invoices/credits for the po $po_number could not be retreived");
 			}
 
-		//----------------------------------------------------------------------------------------
+
 		public static function get($trans_no, $trans_type, $supp_trans)
 			{
 				$sql
@@ -405,7 +405,7 @@
 				}
 			}
 
-		//----------------------------------------------------------------------------------------
+
 		public static function get_for_item($stock_id, $po_item_id)
 			{
 				$sql
@@ -507,7 +507,7 @@
 				DB::commit_transaction();
 			}
 
-//--------------------------------------------------------------------------------------------------
+
 		public static function copy_from_trans($supp_trans)
 			{
 				$_POST['Comments'] = $supp_trans->Comments;
@@ -519,7 +519,7 @@
 				$_POST['ChgTax'] = $supp_trans->tax_correction;
 			}
 
-		//--------------------------------------------------------------------------------------------------
+
 		public static function copy_to_trans($supp_trans)
 			{
 				$supp_trans->Comments = Input::post('Comments');
@@ -551,7 +551,7 @@
 				}
 			}
 
-		//--------------------------------------------------------------------------------------------------
+
 		public static function header($supp_trans)
 			{
 				$Ajax = Ajax::i();
@@ -643,7 +643,7 @@
 				end_outer_table(1);
 			}
 
-		//--------------------------------------------------------------------------------------------------
+
 		public static function totals($supp_trans)
 			{
 				Purch_Invoice::copy_to_trans($supp_trans);
@@ -673,5 +673,5 @@
 				textarea_row(_("Memo:"), "Comments", null, 50, 3);
 				end_table(1);
 			}
-		//----------------------------------------------------------------------------------------
+
 	}

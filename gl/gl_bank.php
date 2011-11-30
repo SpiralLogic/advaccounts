@@ -23,15 +23,15 @@
 		handle_new_order(ST_BANKDEPOSIT);
 	}
 	Page::start($_SESSION['page_title']);
-	//-----------------------------------------------------------------------------------------------
+
 	Validation::check(Validation::BANK_ACCOUNTS, _("There are no bank accounts defined in the system."));
-	//----------------------------------------------------------------------------------------
+
 	if (list_updated('PersonDetailID')) {
 		$br = Sales_Branch::get(get_post('PersonDetailID'));
 		$_POST['person_id'] = $br['debtor_no'];
 		$Ajax->activate('person_id');
 	}
-	//--------------------------------------------------------------------------------------------------
+
 	function line_start_focus()
 		{
 			$Ajax = Ajax::i();
@@ -39,7 +39,7 @@
 			JS::set_focus('_code_id_edit');
 		}
 
-	//-----------------------------------------------------------------------------------------------
+
 	if (isset($_GET['AddedID'])) {
 		$trans_no = $_GET['AddedID'];
 		$trans_type = ST_BANKPAYMENT;
@@ -61,7 +61,7 @@
 	if (isset($_POST['_date__changed'])) {
 		$Ajax->activate('_ex_rate');
 	}
-	//--------------------------------------------------------------------------------------------------
+
 	function handle_new_order($type)
 		{
 			if (isset($_SESSION['pay_items'])) {
@@ -76,7 +76,7 @@
 			$_SESSION['pay_items']->tran_date = $_POST['date_'];
 		}
 
-	//-----------------------------------------------------------------------------------------------
+
 	if (isset($_POST['Process'])) {
 		$input_error = 0;
 		if ($_SESSION['pay_items']->count_gl_items() < 1) {
@@ -132,7 +132,7 @@
 			 "AddedID=$trans_no" : "AddedDep=$trans_no"
 		);
 	} /*end of process credit note */
-	//-----------------------------------------------------------------------------------------------
+
 	function check_item_data()
 		{
 			//if (!Validation::is_num('amount', 0))
@@ -158,7 +158,7 @@
 			return true;
 		}
 
-	//-----------------------------------------------------------------------------------------------
+
 	function handle_update_item()
 		{
 			$amount = ($_SESSION['pay_items']->trans_type == ST_BANKPAYMENT ? 1 : -1) * input_num('amount');
@@ -172,14 +172,14 @@
 			line_start_focus();
 		}
 
-	//-----------------------------------------------------------------------------------------------
+
 	function handle_delete_item($id)
 		{
 			$_SESSION['pay_items']->remove_gl_item($id);
 			line_start_focus();
 		}
 
-	//-----------------------------------------------------------------------------------------------
+
 	function handle_new_item()
 		{
 			if (!check_item_data()) {
@@ -193,7 +193,7 @@
 			line_start_focus();
 		}
 
-	//-----------------------------------------------------------------------------------------------
+
 	$id = find_submit('Delete');
 	if ($id != -1) {
 		handle_delete_item($id);
@@ -216,7 +216,7 @@
 		$Ajax->activate('totamount');
 		line_start_focus();
 	}
-	//-----------------------------------------------------------------------------------------------
+
 	start_form();
 	GL_BankUI::header($_SESSION['pay_items']);
 	start_table(Config::get('tables_style2') . " width=90%", 10);
@@ -236,7 +236,7 @@
 		 _("Process Payment") : _("Process Deposit"), '', 'default'
 	);
 	end_form();
-	//------------------------------------------------------------------------------------------------
+
 	end_page();
 
 ?>

@@ -8,7 +8,7 @@
 	 */
 	class Page
 	{
-		//------------------------------------------------------------------------------
+
 		//
 		// Helper function for simple db table editor pages
 		//
@@ -97,7 +97,7 @@
 				echo "<!DOCTYPE HTML>\n";
 				echo "<html class='" . $_SESSION['sel_app'] . "' dir='" . $_SESSION['Language']->dir . "' >\n";
 				echo "<head><title>$title</title>";
-				echo "<meta http-equiv='Content-type' content='text/html; charset=$encoding'>";
+				echo "<meta charset='$encoding'>";
 				echo "<link rel='apple-touch-icon' href='/company/images/advanced-icon.png'/>";
 				static::add_css(Config::get('assets.css'));
 				static::send_css();
@@ -180,7 +180,7 @@
 				echo "<link href='{$path}{$css}' rel='stylesheet' type='text/css'> \n";
 			}
 
-		//--------------------------------------------------------------------------------------
+
 		public static function footer_exit()
 			{
 				br(2);

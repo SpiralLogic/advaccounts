@@ -25,7 +25,7 @@
 				return DB::query($sql, "The work order requirements could not be retrieved");
 			}
 
-		//--------------------------------------------------------------------------------------
+
 		public static function add($woid, $stock_id)
 			{
 				// create Work Order Requirements based on the bom
@@ -37,14 +37,14 @@
 				}
 			}
 
-		//--------------------------------------------------------------------------------------
+
 		public static function delete($woid)
 			{
 				$sql = "DELETE FROM wo_requirements WHERE workorder_id=" . DB::escape($woid);
 				DB::query($sql, "The work order requirements could not be deleted");
 			}
 
-		//--------------------------------------------------------------------------------------
+
 		public static function update($woid, $stock_id, $quantity)
 			{
 				$sql = "UPDATE wo_requirements SET units_issued = units_issued + " . DB::escape($quantity) . "
@@ -52,15 +52,15 @@
 				DB::query($sql, "The work requirements issued quantity couldn't be updated");
 			}
 
-		//--------------------------------------------------------------------------------------
+
 		public static function void($woid)
 			{
 				$sql = "UPDATE wo_requirements SET units_issued = 0 WHERE workorder_id = " . DB::escape($woid);
 				DB::query($sql, "The work requirements issued quantity couldn't be voided");
 			}
 
-		//--------------------------------------------------------------------------------------
-		//--------------------------------------------------------------------------------------
+
+
 		function display($woid, $quantity, $show_qoh = false, $date = null)
 			{
 				$result = WO_Requirements::get($woid);

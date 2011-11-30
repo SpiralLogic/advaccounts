@@ -17,9 +17,9 @@
 	// Title:	Salesman Report
 	// ----------------------------------------------------------------
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	//----------------------------------------------------------------------------------------------------
+
 	print_salesman_list();
-	//----------------------------------------------------------------------------------------------------
+
 	function GetSalesmanTrans($from, $to)
 	{
 		$fromdate = Dates::date2sql($from);
@@ -42,7 +42,7 @@
 		return DB::query($sql, "Error getting order details");
 	}
 
-	//----------------------------------------------------------------------------------------------------
+
 	function print_salesman_list()
 	{
 		$from = $_POST['PARAM_0'];

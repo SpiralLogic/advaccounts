@@ -8,7 +8,7 @@
 	 */
 	class Arr
 	{
-		//-----------------------------------------------------------------------------
+
 		//	Inserts $elements into $array at position $index.
 		//	$elements is list of any objects
 		//

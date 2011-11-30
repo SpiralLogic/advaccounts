@@ -9,7 +9,7 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	//-----------------------------------------------------------------------------
+
 	// insert/update sales delivery
 	//
 	class Sales_Delivery {
@@ -129,7 +129,7 @@
 		return $delivery_no;
 	}
 
-	//--------------------------------------------------------------------------------------------------
+
 	function void($type, $type_no)
 	{
 		DB::begin_transaction();

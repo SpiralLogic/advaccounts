@@ -51,7 +51,7 @@
 			meta_forward('/sales/customer_invoice.php', 'BatchInvoice=Yes');
 		}
 	}
-	//-----------------------------------------------------------------------------------
+
 	if (get_post('_DeliveryNumber_changed')) {
 		$disable = get_post('DeliveryNumber') !== '';
 		$Ajax->addDisable(true, 'DeliveryAfterDate', $disable);
@@ -67,7 +67,7 @@
 		}
 		$Ajax->activate('deliveries_tbl');
 	}
-	//-----------------------------------------------------------------------------------
+
 	start_form(false, false, $_SERVER['PHP_SELF'] . "?OutstandingOnly=" . $_POST['OutstandingOnly']);
 	start_table("class='tablestyle_noborder'");
 	start_row();
@@ -80,14 +80,14 @@
 	hidden('OutstandingOnly', $_POST['OutstandingOnly']);
 	end_row();
 	end_table();
-	//---------------------------------------------------------------------------------------------
+
 	if (isset($_POST['SelectStockFromList']) && ($_POST['SelectStockFromList'] != "") && ($_POST['SelectStockFromList'] != ALL_TEXT)
 	) {
 		$selected_stock_item = $_POST['SelectStockFromList'];
 	} else {
 		unset($selected_stock_item);
 	}
-	//---------------------------------------------------------------------------------------------
+
 	function trans_view($trans, $trans_no)
 		{
 			return ui_view::get_customer_trans_view_str(ST_CUSTDELIVERY, $trans['trans_no']);
@@ -123,7 +123,7 @@
 			return Dates::date1_greater_date2(Dates::Today(), Dates::sql2date($row["due_date"])) && $row["Outstanding"] != 0;
 		}
 
-	//------------------------------------------------------------------------------------------------
+
 	$sql = "SELECT trans.trans_no,
 		debtor.name,
 		branch.branch_code,
@@ -178,7 +178,7 @@
 			'insert' => true, 'fun' => 'edit_link'), array(
 			'insert' => true, 'fun' => 'invoice_link'), array(
 			'insert' => true, 'fun' => 'prt_link'));
-	//-----------------------------------------------------------------------------------
+
 	if (isset($_SESSION['Batch'])) {
 		foreach ($_SESSION['Batch'] as $trans => $del) {
 			unset($_SESSION['Batch'][$trans]);

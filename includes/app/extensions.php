@@ -14,6 +14,7 @@
 			$ext               = $installed_extensions[$id];
 			$security_sections = $security_areas = array();
 			if (isset($ext['acc_file'])) {
+				/** @noinspection PhpIncludeInspection */
 				include(PATH_TO_ROOT . ($ext['type'] == 'plugin' ? '/modules/' : '/') . $ext['path'] . '/' . $ext['acc_file']);
 			}
 			return array($security_areas, $security_sections);
@@ -23,6 +24,7 @@
 		{
 			global $security_areas, $security_sections;
 			$installed_extensions = Config::get('extensions.installed');
+			/** @noinspection PhpUnusedLocalVariableInspection */
 			foreach ($installed_extensions as $extid => $ext) {
 				$scode       = 100;
 				$acode       = 100;

@@ -76,7 +76,7 @@
 			Errors::error(_("The entered date is not in fiscal year."));
 		}
 	}
-	//-------------------------------------------------------------------------------------------------
+
 	function get_sales_group_name($group_no)
 		{
 			$sql = "SELECT description FROM groups WHERE id = " . DB::escape($group_no);

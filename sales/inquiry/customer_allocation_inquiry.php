@@ -16,7 +16,7 @@
 	if (isset($_GET['customer_id'])) {
 		$_POST['customer_id'] = $_GET['customer_id'];
 	}
-	//------------------------------------------------------------------------------------------------
+
 	if (!isset($_POST['customer_id'])) {
 		$_POST['customer_id'] = Session::i()->global_customer;
 	}
@@ -32,7 +32,7 @@
 	Session::i()->global_customer = $_POST['customer_id'];
 	end_row();
 	end_table();
-	//------------------------------------------------------------------------------------------------
+
 	function check_overdue($row)
 		{
 			return ($row['OverDue'] == 1 && (abs($row["TotalAmount"]) - $row["Allocated"] != 0));
@@ -95,7 +95,7 @@
 			return $value > 0 ? Num::price_format($value) : '';
 		}
 
-	//------------------------------------------------------------------------------------------------
+
 	$data_after = Dates::date2sql($_POST['TransAfterDate']);
 	$date_to = Dates::date2sql($_POST['TransToDate']);
 	$sql = "SELECT
@@ -140,7 +140,7 @@
 	if (!check_value('showSettled')) {
 		$sql .= " AND (round(abs(trans.ov_amount + trans.ov_gst + " . "trans.ov_freight + trans.ov_freight_tax + " . "trans.ov_discount) - trans.alloc,6) != 0) ";
 	}
-	//------------------------------------------------------------------------------------------------
+
 	$cols = array(
 		_("Type") => array('fun' => 'systype_name'),
 		_("#") => array('fun' => 'view_link'),

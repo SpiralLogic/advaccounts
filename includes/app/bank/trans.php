@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 	class Bank_Trans
 	{
-		//----------------------------------------------------------------------------------
+
 		// add a bank transaction
 		// $amount is in $currency
 		// $date_ is display date (non-sql)
@@ -50,7 +50,7 @@
 			DB::query($sql, $err_msg);
 		}
 
-		//----------------------------------------------------------------------------------------
+
 		public static function exists($type, $type_no)
 		{
 			$sql = "SELECT trans_no FROM bank_trans WHERE type=" . DB::escape($type)
@@ -59,7 +59,7 @@
 			return (DB::num_rows($result) > 0);
 		}
 
-		//----------------------------------------------------------------------------------------
+
 		public static function get($type, $trans_no = null, $person_type_id = null, $person_id = null)
 		{
 			$sql
@@ -82,7 +82,7 @@
 			return DB::query($sql, "query for bank transaction");
 		}
 
-		//----------------------------------------------------------------------------------------
+
 		public static function void($type, $type_no, $nested = false)
 		{
 			if (!$nested) {
@@ -104,5 +104,5 @@
 				DB::commit_transaction();
 			}
 		}
-		//----------------------------------------------------------------------------------
+
 	}

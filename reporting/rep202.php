@@ -17,9 +17,9 @@
 	// Title:	Ages Supplier Analysis
 	// ----------------------------------------------------------------
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	//----------------------------------------------------------------------------------------------------
+
 	print_aged_supplier_analysis();
-	//----------------------------------------------------------------------------------------------------
+
 	function get_invoices($supplier_id, $to)
 		{
 			$todate = Dates::date2sql($to);
@@ -50,7 +50,7 @@
 			return DB::query($sql, "The supplier details could not be retrieved");
 		}
 
-	//----------------------------------------------------------------------------------------------------
+
 	function print_aged_supplier_analysis()
 		{
 			global $systypes_array;

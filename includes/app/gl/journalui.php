@@ -9,7 +9,7 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	//--------------------------------------------------------------------------------
+
 	class GL_JournalUI
 	{
 		public static function header($order)
@@ -47,7 +47,7 @@
 				end_outer_table(1);
 			}
 
-		//---------------------------------------------------------------------------------
+
 		public static function items($title, &$order)
 			{
 				Display::heading($title);
@@ -111,7 +111,7 @@
 				div_end();
 			}
 
-		//---------------------------------------------------------------------------------
+
 		public static function item_controls($order, $dim, $Index = null)
 			{
 				$Ajax = Ajax::i();
@@ -182,7 +182,7 @@
 				end_row();
 			}
 
-		//---------------------------------------------------------------------------------
+
 		public static function option_controls()
 			{
 				echo "<br><table align='center'>";
@@ -191,5 +191,5 @@
 			}
 	}
 
-	//---------------------------------------------------------------------------------
+
 ?>

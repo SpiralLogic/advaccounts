@@ -49,7 +49,7 @@
 			DB::commit_transaction();
 		}
 
-		//--------------------------------------------------------------------------------------
+
 		public static function get($id, $allow_null = false) {
 			$sql = "SELECT * FROM dimensions	WHERE id=" . DB::escape($id);
 			$result = DB::query($sql, "The dimension could not be retrieved");
@@ -59,7 +59,7 @@
 			return DB::fetch($result);
 		}
 
-		//--------------------------------------------------------------------------------------
+
 		public static function get_string($id, $html = false, $space = ' ') {
 			if ($id <= 0) {
 				if ($html) {
@@ -74,18 +74,18 @@
 			return $dim;
 		}
 
-		//--------------------------------------------------------------------------------------
+
 		public static function get_all() {
 			$sql = "SELECT * FROM dimensions ORDER BY date_";
 			return DB::query($sql, "The dimensions could not be retrieved");
 		}
 
-		//--------------------------------------------------------------------------------------
+
 		public static function has_deposits($id) {
 			return Dimensions::has_payments($id);
 		}
 
-		//--------------------------------------------------------------------------------------
+
 		public static function has_payments($id) {
 			$sql = "SELECT SUM(amount) FROM gl_trans WHERE dimension_id = " . DB::escape($id);
 			$res = DB::query($sql, "Transactions could not be calculated");
@@ -98,20 +98,20 @@
 			return ($result['closed'] == '1');
 		}
 
-		//--------------------------------------------------------------------------------------
+
 		public static function close($id) {
 			$sql = "UPDATE dimensions SET closed='1' WHERE id = " . DB::escape($id);
 			DB::query($sql, "could not close dimension");
 		}
 
-		//--------------------------------------------------------------------------------------
+
 		public static function reopen($id) {
 			$sql = "UPDATE dimensions SET closed='0' WHERE id = $id";
 			DB::query($sql, "could not reopen dimension");
 		}
 
-		//--------------------------------------------------------------------------------------
-		function display_balance($id, $from, $to) {
+
+		public 	function display_balance($id, $from, $to) {
 			$from = Dates::date2sql($from);
 			$to = Dates::date2sql($to);
 			$sql
@@ -151,7 +151,7 @@
 				end_table();
 			}
 		}
-		//--------------------------------------------------------------------------------------
+
 	}
 
 ?>

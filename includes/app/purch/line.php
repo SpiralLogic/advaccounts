@@ -8,22 +8,22 @@
 	 */
 	class Purch_Line
 	{
-		Var $line_no;
-		Var $po_detail_rec;
-		Var $stock_id;
-		Var $description;
-		Var $quantity;
-		Var $price;
-		Var $units;
-		Var $req_del_date;
-		Var $qty_inv;
-		Var $qty_received;
+		public $line_no;
+		public $po_detail_rec;
+		public $stock_id;
+		public $description;
+		public $quantity;
+		public $price;
+		public $units;
+		public $req_del_date;
+		public $qty_inv;
+		public $qty_received;
 		public $discount;
-		Var $standard_cost;
-		Var $receive_qty;
-		Var $Deleted;
+		public $standard_cost;
+		public $receive_qty;
+		public $Deleted;
 
-		function __construct($line_no, $stock_item, $item_descr, $qty, $prc, $uom, $req_del_date, $qty_inv, $qty_recd, $discount)
+		public		function __construct($line_no, $stock_item, $item_descr, $qty, $prc, $uom, $req_del_date, $qty_inv, $qty_recd, $discount)
 		{
 			/* Constructor function to add a new LineDetail object with passed params */
 			$this->line_no      = $line_no;
@@ -61,7 +61,7 @@
 			return DB::insert_id();
 		}
 
-		//-------------------------------------------------------------------------------------------------------------
+
 
 		public static function add_gl_item($supp_trans_type, $supp_trans_no, $gl_code, $amount, $memo_, $err_msg = "") {
 			return Purch_Line::add_item($supp_trans_type, $supp_trans_no, "", "", $gl_code, $amount,
@@ -70,7 +70,7 @@
 				0, $memo_, $err_msg);
 		}
 
-		//----------------------------------------------------------------------------------------
+
 
 		public static function get_for_invoice($supp_trans_type, $supp_trans_no) {
 			$sql = "SELECT *, unit_price AS FullUnitPrice FROM supp_invoice_items
@@ -79,7 +79,7 @@
 			return DB::query($sql, "Cannot retreive supplier transaction detail records");
 		}
 
-		//----------------------------------------------------------------------------------------
+
 
 		public static function void_for_invoice($type, $type_no) {
 			$sql = "UPDATE supp_invoice_items SET quantity=0, unit_price=0

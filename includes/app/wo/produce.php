@@ -45,7 +45,7 @@
 				DB::commit_transaction();
 			}
 
-		//--------------------------------------------------------------------------------------------
+
 		public static function get($id)
 			{
 				$sql = "SELECT wo_manufacture.*,workorders.stock_id, " . "stock_master.description AS StockDescription
@@ -57,14 +57,14 @@
 				return DB::fetch($result);
 			}
 
-		//--------------------------------------------------------------------------------------
+
 		public static function get_all($woid)
 			{
 				$sql = "SELECT * FROM wo_manufacture WHERE workorder_id=" . DB::escape($woid) . " ORDER BY id";
 				return DB::query($sql, "The work order issues could not be retrieved");
 			}
 
-		//--------------------------------------------------------------------------------------
+
 		public static function exists($id)
 			{
 				$sql = "SELECT id FROM wo_manufacture WHERE id=" . DB::escape($id);
@@ -72,7 +72,7 @@
 				return (DB::num_rows($result) > 0);
 			}
 
-		//--------------------------------------------------------------------------------------------
+
 		public static function void($type_no)
 			{
 				DB::begin_transaction();
@@ -90,7 +90,7 @@
 				DB::commit_transaction();
 			}
 
-		//--------------------------------------------------------------------------------------
+
 		function display($woid)
 			{
 				$result = WO_Produce::get_all($woid);

@@ -14,7 +14,7 @@
 	Page::start(_($help_context = "Items"), Input::request('popup'));
 	$user_comp = '';
 	$new_item = get_post('stock_id') == '' || get_post('cancel') || get_post('clone');
-	//------------------------------------------------------------------------------------
+
 	if (isset($_GET['stock_id'])) {
 		$_POST['stock_id'] = $stock_id = $_GET['stock_id'];
 	} elseif (isset($_POST['stock_id'])) {
@@ -90,7 +90,7 @@
 		unset($_POST['no_sale']);
 	}
 
-	//------------------------------------------------------------------------------------
+
 	if (isset($_POST['addupdate']) || isset($_POST['addupdatenew'])) {
 		$input_error = 0;
 		if ($upload_file == 'No') {
@@ -170,7 +170,7 @@
 		JS::set_focus('NewStockID');
 		$Ajax->activate('_page_body');
 	}
-	//------------------------------------------------------------------------------------
+
 	function check_usage($stock_id, $dispmsg = true)
 	{
 		$sqls = array(
@@ -214,7 +214,7 @@
 		return true;
 	}
 
-	//------------------------------------------------------------------------------------
+
 	if (isset($_POST['delete']) && strlen($_POST['delete']) > 1) {
 		if (check_usage($_POST['NewStockID'])) {
 			$stock_id = $_POST['NewStockID'];
@@ -230,7 +230,7 @@
 			$Ajax->activate('_page_body');
 		}
 	}
-	//--------------------------------------------------------------------------------------------
+
 	start_form(true);
 	if (Validation::check(Validation::STOCK_ITEMS)) {
 		start_table("class='tablestyle_noborder'");
@@ -253,7 +253,7 @@
 	start_outer_table(Config::get('tables_style2'), 5);
 	table_section(1);
 	table_section_title(_("Item"));
-	//------------------------------------------------------------------------------------
+
 	if ($new_item) {
 		text_row(_("Item Code:"), 'NewStockID', null, 21, 20);
 		$_POST['inactive'] = 0;
@@ -383,6 +383,6 @@
 	div_end();
 	hidden('popup', Input::request('popup'));
 	end_form();
-	//------------------------------------------------------------------------------------
+
 	end_page();
 ?>

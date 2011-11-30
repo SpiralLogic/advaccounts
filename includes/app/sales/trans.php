@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 	class Sales_Trans
 	{
-		//------------------------------------------------------------------------------
+
 		//	Retreive parent document number(s) for given transaction
 		//
 		public static function get_parent($trans_type, $trans_no)
@@ -37,7 +37,7 @@
 				return count($delivery) ? $delivery : 0;
 			}
 
-		//-----------------------------------------------------------------------------
+
 		public static function set_parent($cart)
 			{
 				$inv_no = key($cart->trans_no);
@@ -70,7 +70,7 @@
 				return 0; // batch or complete invoice
 			}
 
-		//--------------------------------------------------------------------------------------------------
+
 		public static function get_parent_type($type)
 			{
 				$parent_types = array(
@@ -81,7 +81,7 @@
 				return isset($parent_types[$type]) ? $parent_types[$type] : 0;
 			}
 
-		//----------------------------------------------------------------------------------------
+
 		// Mark changes in debtor_trans_details
 		//
 		public static function update_version($type, $versions)
@@ -97,7 +97,7 @@
 				return DB::query($sql, 'Concurrent editing conflict');
 			}
 
-		//----------------------------------------------------------------------------------------
+
 		// Gets document header versions for transaction set of type $type
 		// $trans_no = array(num1, num2,...);
 		// returns array(num1=>ver1, num2=>ver2...)
@@ -122,7 +122,7 @@
 				return $vers;
 			}
 
-		//----------------------------------------------------------------------------------------
+
 		// $Total, $Tax, $Freight, $discount all in customer's currency
 		// date_ is display date (non-sql)
 		public static function write($trans_type, $trans_no, $debtor_no, $BranchNo,
@@ -184,7 +184,7 @@
 				return $trans_no;
 			}
 
-		//--------------------------------------------------------------------------------------------------
+
 		// Generic read debtor transaction into cart
 		//
 		//	$trans_no - array of trans nums; special case trans_no==0 - new doc
@@ -244,8 +244,8 @@
 				return true;
 			}
 
-		//----------------------------------------------------------------------------------------
-		//----------------------------------------------------------------------------------------
+
+
 		public static function get($trans_id, $trans_type)
 			{
 				$sql
@@ -313,7 +313,7 @@
 				return $row;
 			}
 
-		//----------------------------------------------------------------------------------------
+
 		public static function exists($type, $type_no)
 			{
 				$sql = "SELECT trans_no FROM debtor_trans WHERE type=" . DB::escape($type) . "
@@ -322,7 +322,7 @@
 				return (DB::num_rows($result) > 0);
 			}
 
-		//----------------------------------------------------------------------------------------
+
 		// retreives the related sales order for a given trans
 		public static function get_order($type, $type_no)
 			{
@@ -332,7 +332,7 @@
 				return $row[0];
 			}
 
-		//----------------------------------------------------------------------------------------
+
 		public static function get_details($type, $type_no)
 			{
 				$sql
@@ -345,7 +345,7 @@
 				return DB::fetch($result);
 			}
 
-		//----------------------------------------------------------------------------------------
+
 		public static function void($type, $type_no)
 			{
 				// clear all values and mark as void
@@ -355,7 +355,7 @@
 				DB::query($sql, "could not void debtor transactions for type=$type and trans_no=$type_no");
 			}
 
-		//----------------------------------------------------------------------------------------
+
 		public static function post_void($type, $type_no)
 			{
 				switch ($type) {
@@ -372,7 +372,7 @@
 				}
 			}
 
-		//----------------------------------------------------------------------------------------
+
 		public static function get_link($type, $type_no)
 			{
 				$row = DB::query("SELECT trans_link from debtor_trans
@@ -381,7 +381,7 @@
 				return $row[0];
 			}
 
-		//--------------------------------------------------------------------------------------
+
 		public static function display_tax_details($tax_items, $columns)
 			{
 				while ($tax_item = DB::fetch($tax_items)) {

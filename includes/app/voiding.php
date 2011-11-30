@@ -55,7 +55,7 @@
 						Inv_Transfer::void($type_no);
 						break;
 					case ST_INVADJUST : // it's a stock adjustment
-						if (Inv_Adjustment::get_items($type_no) == null) {
+						if (Inv_Adjustment::get($type_no) == null) {
 							return false;
 						}
 						Inv_Adjustment::void($type_no);
@@ -104,7 +104,7 @@
 				return true;
 			}
 
-		//--------------------------------------------------------------------------------------------------
+
 		public static function get($type, $type_no)
 			{
 				$sql = "SELECT * FROM voided WHERE type=" . DB::escape($type) . " AND id=" . DB::escape($type_no);
@@ -119,7 +119,7 @@
 				return DB::num_rows($result);
 			}
 
-		//--------------------------------------------------------------------------------------------------
+
 		public static function add($type, $type_no, $date_, $memo_)
 			{
 				$date = Dates::date2sql($date_);
@@ -127,5 +127,5 @@
 			VALUES (" . DB::escape($type) . ", " . DB::escape($type_no) . ", " . DB::escape($date) . ", " . DB::escape($memo_) . ")";
 				DB::query($sql, "could not add voided transaction entry");
 			}
-		//--------------------------------------------------------------------------------------------------
+
 	}

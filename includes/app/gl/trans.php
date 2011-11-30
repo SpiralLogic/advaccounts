@@ -9,7 +9,7 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	//--------------------------------------------------------------------------------
+
 	// Base function for adding a GL transaction
 	// $date_ is display date (non-sql)
 	// $amount is in $currency currency
@@ -60,7 +60,7 @@
 			return $amount_in_home_currency;
 		}
 
-		//--------------------------------------------------------------------------------
+
 		// GL Trans for standard costing, always home currency regardless of person
 		// $date_ is display date (non-sql)
 		// $amount is in HOME currency
@@ -84,7 +84,7 @@
 			}
 		}
 
-		//--------------------------------------------------------------------------------
+
 		public static function  get($from_date, $to_date, $trans_no = 0, $account = null, $dimension = 0, $dimension2 = 0, $filter_type = null, $amount_min = null, $amount_max = null)
 		{
 			$from = Dates::date2sql($from_date);
@@ -118,7 +118,7 @@
 			return DB::query($sql, "The transactions for could not be retrieved");
 		}
 
-		//--------------------------------------------------------------------------------
+
 		public static function  get_many($type, $trans_id)
 		{
 			$sql = "SELECT gl_trans.*, " . "chart_master.account_name FROM " . "gl_trans, chart_master
@@ -127,7 +127,7 @@
 			return DB::query($sql, "The gl transactions could not be retrieved");
 		}
 
-		//--------------------------------------------------------------------------------
+
 		public static function  get_wo_cost($trans_id, $person_id = -1)
 		{
 			$sql = "SELECT gl_trans.*, chart_master.account_name FROM " . "gl_trans, chart_master
@@ -164,7 +164,7 @@
 			return $row[0];
 		}
 
-		//--------------------------------------------------------------------------------
+
 		public static function  get_from_to($from_date, $to_date, $account, $dimension = 0, $dimension2 = 0)
 		{
 			$from = Dates::date2sql($from_date);
@@ -188,7 +188,7 @@
 			return $row[0];
 		}
 
-		//----------------------------------------------------------------------------------------------------
+
 		public static function  get_balance($account, $dimension, $dimension2, $from, $to, $from_incl = true, $to_incl = true)
 		{
 			$sql = "SELECT SUM(IF(amount >= 0, amount, 0)) as debit,
@@ -221,7 +221,7 @@
 			return DB::fetch($result);
 		}
 
-		//--------------------------------------------------------------------------------
+
 		public static function  get_budget_from_to($from_date, $to_date, $account, $dimension = 0, $dimension2 = 0)
 		{
 			$from = Dates::date2sql($from_date);
@@ -245,7 +245,7 @@
 			return $row[0];
 		}
 
-		//--------------------------------------------------------------------------------
+
 		//	Stores journal/bank transaction tax details if applicable
 		//
 		public static function  add_gl_tax_details($gl_code, $trans_type, $trans_no, $amount, $ex_rate, $date, $memo)
@@ -270,7 +270,7 @@
 			static::add_tax_details($trans_type, $trans_no, $tax['id'], $tax['rate'], 0, $amount, $net_amount, $ex_rate, $date, $memo);
 		}
 
-		//--------------------------------------------------------------------------------
+
 		//
 		//	Store transaction tax details for fiscal purposes with 'freezed'
 		//	actual tax type rate.
@@ -285,7 +285,7 @@
 			DB::query($sql, "Cannot save trans tax details");
 		}
 
-		//----------------------------------------------------------------------------------------
+
 		public static function  get_tax_details($trans_type, $trans_no)
 		{
 			$sql = "SELECT trans_tax_details.*, " . "tax_types.name AS tax_type_name
@@ -297,7 +297,7 @@
 			return DB::query($sql, "The transaction tax details could not be retrieved");
 		}
 
-		//----------------------------------------------------------------------------------------
+
 		public static function  void_tax_details($type, $type_no)
 		{
 			$sql = "UPDATE trans_tax_details SET amount=0, net_amount=0
@@ -335,10 +335,10 @@
 			return DB::query($sql, "Cannot retrieve tax summary");
 		}
 
-		//--------------------------------------------------------------------------------
+
 		// Write/update journal entries.
 		//
-		public static function  write_journal_entries(&$cart, $reverse, $use_transaction = true)
+		public static function  write_journal_entries($cart, $reverse, $use_transaction = true)
 		{
 			$date_ = $cart->tran_date;
 			$ref = $cart->reference;
@@ -397,7 +397,7 @@
 			return $trans_id;
 		}
 
-		//--------------------------------------------------------------------------------------------------
+
 		public static function  exists($type, $trans_id)
 		{
 			$sql = "SELECT type_no FROM gl_trans WHERE type=" . DB::escape($type) . " AND type_no=" . DB::escape($trans_id);
@@ -405,7 +405,7 @@
 			return (DB::num_rows($result) > 0);
 		}
 
-		//--------------------------------------------------------------------------------------------------
+
 		public static function  void($type, $trans_id, $nested = false)
 		{
 			if (!$nested) {
@@ -418,7 +418,7 @@
 			}
 		}
 
-		//----------------------------------------------------------------------------------------
+
 		public static function  void_journal_trans($type, $type_no, $use_transaction = true)
 		{
 			if ($use_transaction) {
@@ -432,7 +432,7 @@
 			}
 		}
 
-		//----------------------------------------------------------------------------------------
+
 		public static function  get_value($account, $type, $trans_no)
 		{
 			$sql = "SELECT SUM(amount) FROM gl_trans WHERE account=" . DB::escape($account) . " AND type=" . DB::escape($type) . " AND type_no=" . DB::escape($trans_no);

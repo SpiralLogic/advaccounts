@@ -16,7 +16,7 @@
 	if (isset($_GET['order_number'])) {
 		$order_number = $_GET['order_number'];
 	}
-	//-----------------------------------------------------------------------------------
+
 	// Ajax updates
 	//
 	if (get_post('SearchOrders')) {
@@ -36,7 +36,7 @@
 		}
 		$Ajax->activate('orders_tbl');
 	}
-	//---------------------------------------------------------------------------------------------
+
 	start_form();
 	if (Input::request('frame')) {
 		start_table("class='tablestyle_noborder' style='display:none;'");
@@ -52,7 +52,7 @@
 	submit_cells('SearchOrders', _("Search"), '', _('Select documents'), 'default');
 	end_row();
 	end_table();
-	//---------------------------------------------------------------------------------------------
+
 	if (isset($_POST['order_number'])) {
 		$order_number = $_POST['order_number'];
 	}
@@ -62,7 +62,7 @@
 	} else {
 		unset($selected_stock_item);
 	}
-	//---------------------------------------------------------------------------------------------
+
 	function trans_view($trans)
 	{
 		return ui_view::get_trans_view_str(ST_PURCHORDER, $trans["order_no"]);
@@ -104,7 +104,7 @@
 		//advaccounts/purchases/supplier_invoice.php?New=1
 	}
 
-	//---------------------------------------------------------------------------------------------
+
 	if (AJAX_REFERRER && !empty($_POST['ajaxsearch'])) {
 		$searchArray = explode(' ', $_POST['ajaxsearch']);
 		unset($_POST['supplier_id']);
@@ -199,7 +199,7 @@
 		$cols[_("Location")] = 'skip';
 	}
 	FB::info($sql);
-	//---------------------------------------------------------------------------------------------------
+
 	$table        =& db_pager::new_db_pager('orders_tbl', $sql, $cols);
 	$table->width = "80%";
 	display_db_pager($table);

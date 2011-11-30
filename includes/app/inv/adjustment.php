@@ -9,7 +9,7 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	//-------------------------------------------------------------------------------------------------------------
+
 	class Inv_Adjustment
 	{
 		public static function add($items, $location, $date_, $type, $increase, $reference, $memo_)
@@ -30,15 +30,15 @@
 				return $adj_id;
 			}
 
-		//-------------------------------------------------------------------------------------------------------------
+
 		public static function void($type_no)
 			{
 				GL_Trans::void(ST_INVADJUST, $type_no);
 				Inv_Movement::void(ST_INVADJUST, $type_no);
 			}
 
-		//-------------------------------------------------------------------------------------------------------------
-		public static function get_items($trans_no)
+
+		public static function get($trans_no)
 			{
 				$result = Inv_Movement::get(ST_INVADJUST, $trans_no);
 				if (DB::num_rows($result) == 0) {
@@ -47,7 +47,7 @@
 				return $result;
 			}
 
-		//--------------------------------------------------------------------------------------------------
+
 		public static function add_item($adj_id, $stock_id, $location, $date_, $type, $reference,
 			$quantity, $standard_cost, $memo_)
 			{
@@ -68,7 +68,7 @@
 				}
 			}
 
-		//--------------------------------------------------------------------------------
+
 		public static function header($order)
 			{
 				start_outer_table("width=70% " . Config::get('tables_style2')); // outer table
@@ -86,7 +86,7 @@
 				end_outer_table(1); // outer table
 			}
 
-		//---------------------------------------------------------------------------------
+
 		public static function display_items($title, $order)
 			{
 				Display::heading($title);
@@ -126,7 +126,7 @@
 				div_end();
 			}
 
-		//---------------------------------------------------------------------------------
+
 		public static function item_controls($order, $line_no = -1)
 			{
 				$Ajax = Ajax::i();
@@ -173,7 +173,7 @@
 				end_row();
 			}
 
-		//---------------------------------------------------------------------------------
+
 		public static function option_controls()
 			{
 				echo "<br>";
@@ -181,8 +181,8 @@
 				textarea_row(_("Memo"), 'memo_', null, 50, 3);
 				end_table(1);
 			}
-		//---------------------------------------------------------------------------------
+
 	}
 
-	//-------------------------------------------------------------------------------------------------------------
+
 ?>

@@ -10,7 +10,7 @@
 						MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 						See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 					* ********************************************************************* */
-	//---------------------------------------------------------------------------
+
 	//
 	//	Entry/Modify Sales Invoice against single delivery
 	//	Entry/Modify Batch Sales Invoice against batch of deliveries
@@ -30,7 +30,7 @@
 		$page_title = sprintf(_("View Sales Invoice # %d."), $_GET['ViewInvoice']);
 	}
 	Page::start($page_title);
-	//-----------------------------------------------------------------------------
+
 	Sales_Order::check_edit_conflicts();
 	if (isset($_GET['AddedID'])) {
 		$_SESSION['Items'] = new Sales_Order(ST_SALESINVOICE, $_GET['AddedID']);
@@ -73,7 +73,7 @@
 		$sources = &$_SESSION['Items']->src_docs;
 		unset($sources[$_GET['RemoveDN']]);
 	}
-	//-----------------------------------------------------------------------------
+
 	if ((isset($_GET['DeliveryNumber']) && ($_GET['DeliveryNumber'] > 0)) || isset($_GET['BatchInvoice'])) {
 		Sales_Order::start();
 		if (isset($_GET['BatchInvoice'])) {
@@ -129,7 +129,7 @@
 		$_POST['due_date'] = Sales_Order::get_invoice_duedate($_SESSION['Items']->customer_id, $_POST['InvoiceDate']);
 		$Ajax->activate('due_date');
 	}
-	//-----------------------------------------------------------------------------
+
 	function check_quantities()
 		{
 			$ok = 1;
@@ -186,7 +186,7 @@
 			}
 		}
 
-	//-----------------------------------------------------------------------------
+
 	function copy_from_cart()
 		{
 			$cart = &$_SESSION['Items'];
@@ -201,7 +201,7 @@
 			$_POST['Comments'] = $cart->Comments;
 		}
 
-	//-----------------------------------------------------------------------------
+
 	function check_data()
 		{
 			if (!isset($_POST['InvoiceDate']) || !Dates::is_date($_POST['InvoiceDate'])) {
@@ -250,7 +250,7 @@
 			return true;
 		}
 
-	//-----------------------------------------------------------------------------
+
 	if (isset($_POST['process_invoice']) && check_data()) {
 		$newinvoice = $_SESSION['Items']->trans_no == 0;
 		copy_to_cart();
@@ -285,7 +285,7 @@
 		$lastdn = $line->src_no;
 	}
 	$dspans[] = $spanlen;
-	//-----------------------------------------------------------------------------
+
 	$viewing = isset($_GET['ViewInvoice']);
 	$is_batch_invoice = count($_SESSION['Items']->src_docs) > 1;
 	$is_edition = $_SESSION['Items']->trans_type == ST_SALESINVOICE && $_SESSION['Items']->trans_no != 0;

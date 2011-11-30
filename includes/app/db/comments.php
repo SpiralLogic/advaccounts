@@ -8,7 +8,39 @@
 	 */
 	class DB_Comments
 	{
-		//--------------------------------------------------------------------------------------------------
+
+			public static function add($type, $type_no, $date_, $memo_)
+				{
+					if ($memo_ != null && $memo_ != "") {
+						$date = Dates::date2sql($date_);
+						$sql = "INSERT INTO comments (type, id, date_, memo_)
+		    		VALUES (" . DB::escape($type) . ", " . DB::escape($type_no)
+						 . ", '$date', " . DB::escape($memo_) . ")";
+						DB::query($sql, "could not add comments transaction entry");
+					}
+				}
+
+
+				public static function delete($type, $type_no)
+					{
+						$sql = "DELETE FROM comments WHERE type=" . DB::escape($type)
+						 . " AND id=" . DB::escape($type_no);
+						DB::query($sql, "could not delete from comments transaction table");
+					}
+
+
+				static function display_row($type, $id)
+					{
+						$comments = DB_Comments::get($type, $id);
+						if ($comments and DB::num_rows($comments)) {
+							echo "<tr><td class='label'>Comments</td><td colspan=15>";
+							while ($comment = DB::fetch($comments)) {
+								echo $comment["memo_"] . "<br>";
+							}
+							echo "</td></tr>";
+						}
+					}
+
 		public static function get($type, $type_no)
 			{
 				$sql = "SELECT * FROM comments WHERE type="
@@ -16,43 +48,10 @@
 				return DB::query($sql, "could not query comments transaction table");
 			}
 
-		//--------------------------------------------------------------------------------------------------
-		public static function add($type, $type_no, $date_, $memo_)
-			{
-				if ($memo_ != null && $memo_ != "") {
-					$date = Dates::date2sql($date_);
-					$sql = "INSERT INTO comments (type, id, date_, memo_)
-	    		VALUES (" . DB::escape($type) . ", " . DB::escape($type_no)
-					 . ", '$date', " . DB::escape($memo_) . ")";
-					DB::query($sql, "could not add comments transaction entry");
-				}
-			}
 
-		//--------------------------------------------------------------------------------------------------
-		public static function update($type, $id, $date_, $memo_)
-			{
-				if ($date_ == null) {
-					DB_Comments::delete($type, $id);
-					DB_Comments::add($type, $id, Dates::Today(), $memo_);
-				} else {
-					$date = Dates::date2sql($date_);
-					$sql = "UPDATE comments SET memo_=" . DB::escape($memo_)
-					 . " WHERE type=" . DB::escape($type) . " AND id=" . DB::escape($id)
-					 . " AND date_='$date'";
-					DB::query($sql, "could not update comments");
-				}
-			}
 
-		//--------------------------------------------------------------------------------------------------
-		public static function delete($type, $type_no)
-			{
-				$sql = "DELETE FROM comments WHERE type=" . DB::escape($type)
-				 . " AND id=" . DB::escape($type_no);
-				DB::query($sql, "could not delete from comments transaction table");
-			}
 
-		//--------------------------------------------------------------------------------------------------
-		//--------------------------------------------------------------------------------------
+
 		static function get_string($type, $type_no)
 			{
 				$str_return = "";
@@ -66,16 +65,19 @@
 				return $str_return;
 			}
 
-		//--------------------------------------------------------------------------------------
-		static function display_row($type, $id)
-			{
-				$comments = DB_Comments::get($type, $id);
-				if ($comments and DB::num_rows($comments)) {
-					echo "<tr><td class='label'>Comments</td><td colspan=15>";
-					while ($comment = DB::fetch($comments)) {
-						echo $comment["memo_"] . "<br>";
+
+				public static function update($type, $id, $date_, $memo_)
+					{
+						if ($date_ == null) {
+							DB_Comments::delete($type, $id);
+							DB_Comments::add($type, $id, Dates::Today(), $memo_);
+						} else {
+							$date = Dates::date2sql($date_);
+							$sql = "UPDATE comments SET memo_=" . DB::escape($memo_)
+							 . " WHERE type=" . DB::escape($type) . " AND id=" . DB::escape($id)
+							 . " AND date_='$date'";
+							DB::query($sql, "could not update comments");
+						}
 					}
-					echo "</td></tr>";
-				}
-			}
+
 	}

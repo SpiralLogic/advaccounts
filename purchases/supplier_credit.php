@@ -13,9 +13,9 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	JS::open_window(900, 500);
 	Page::start(_($help_context = "Supplier Credit Note"));
-	//----------------------------------------------------------------------------------------
+
 	Validation::check(Validation::SUPPLIERS, _("There are no suppliers defined in the system."));
-	//---------------------------------------------------------------------------------------------------------------
+
 	if (isset($_GET['AddedID'])) {
 		$invoice_no = $_GET['AddedID'];
 		$trans_type = ST_SUPPCREDIT;
@@ -27,7 +27,7 @@
 		hyperlink_params("/system/attachments.php", _("Add an Attachment"), "filterType=$trans_type&trans_no=$invoice_no");
 		Page::footer_exit();
 	}
-	//---------------------------------------------------------------------------------------------------
+
 	if (isset($_GET['New'])) {
 		Purch_Trans::instance(true)->is_invoice = false;
 		if (isset($_GET['invoice_no'])) {
@@ -47,7 +47,7 @@
 			JS::set_focus('gl_code');
 		}
 
-	//------------------------------------------------------------------------------------------------
+
 	//	GL postings are often entered in the same form to two accounts
 	//  so fileds are cleared only on user demand.
 	//
@@ -84,7 +84,7 @@
 			JS::set_focus('gl_code');
 		}
 	}
-	//---------------------------------------------------------------------------------------------------
+
 	function check_data()
 		{
 			global $total_grn_value, $total_gl_value;
@@ -129,7 +129,7 @@
 			return true;
 		}
 
-	//---------------------------------------------------------------------------------------------------
+
 	function handle_commit_credit_note()
 		{
 			Purch_Invoice::copy_to_trans(Purch_Trans::instance());
@@ -146,7 +146,7 @@
 			meta_forward($_SERVER['PHP_SELF'], "AddedID=$invoice_no");
 		}
 
-	//--------------------------------------------------------------------------------------------------
+
 	if (isset($_POST['PostCreditNote'])) {
 		handle_commit_credit_note();
 	}
@@ -177,7 +177,7 @@
 			}
 		}
 
-	//-----------------------------------------------------------------------------------------
+
 	$id = find_submit('grn_item_id');
 	if ($id != -1) {
 		commit_item_data($id);
@@ -191,7 +191,7 @@
 			}
 		}
 	}
-	//--------------------------------------------------------------------------------------------------
+
 	$id3 = find_submit('Delete');
 	if ($id3 != -1) {
 		Purch_Trans::instance()->remove_grn_from_trans($id3);
@@ -216,7 +216,7 @@
 		$Ajax->activate('totamount');
 		$Ajax->activate('inv_tot');
 	}
-	//--------------------------------------------------------------------------------------------------
+
 	start_form();
 	Purch_Invoice::header(Purch_Trans::instance());
 	if ($_POST['supplier_id'] == '') {

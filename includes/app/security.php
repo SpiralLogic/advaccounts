@@ -51,7 +51,7 @@
 			return $row;
 		}
 
-		//--------------------------------------------------------------------------------------------------
+
 		public static function add_role($name, $description, $sections, $areas) {
 			$sql
 			 = "INSERT INTO security_roles (role, description, sections, areas)
@@ -63,7 +63,7 @@
 			DB::query($sql, "could not add new security role");
 		}
 
-		//--------------------------------------------------------------------------------------------------
+
 		public static function update_role($id, $name, $description, $sections, $areas) {
 			$sql = "UPDATE security_roles SET role=" . DB::escape($name)
 			 . ",description=" . DB::escape($description)
@@ -73,13 +73,13 @@
 			DB::query($sql, "could not update role");
 		}
 
-		//--------------------------------------------------------------------------------------------------
+
 		public static function get_profile($id) {
 			$sql = "DELETE FROM security_roles WHERE id=$id";
 			DB::query($sql, "could not delete role");
 		}
 
-		//--------------------------------------------------------------------------------------------------
+
 		public static function check_role_used($id) {
 			$sql = "SELECT count(*) FROM users WHERE role_id=$id";
 			$ret = DB::query($sql, 'cannot check role usage');

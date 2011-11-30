@@ -57,13 +57,13 @@ class GL_Bank {
 	}
 
 
-	//----------------------------------------------------------------------------------
+
 	//	Add bank tranfer to database.
 	//
 	//	$from_account - source bank account id
 	//	$to_account   -	target bank account id
 	//
-	function add_bank_transfer($from_account, $to_account, $date_,
+public static	function add_bank_transfer($from_account, $to_account, $date_,
 														 $amount, $ref, $memo_, $charge = 0)
 	{
 		DB::begin_transaction();
@@ -106,7 +106,7 @@ class GL_Bank {
 		return $trans_no;
 	}
 
-	//----------------------------------------------------------------------------------
+
 	//	Add bank payment or deposit to database.
 	//
 	//	$from_account - bank account id
@@ -116,7 +116,7 @@ class GL_Bank {
 	// $person_detail_id - customer branch id or not used
 	//
 	// returns an array of (inserted trans type, trans no)
-	function add_bank_transaction($trans_type, $from_account, $items, $date_,
+	public static	function add_bank_transaction($trans_type, $from_account, $items, $date_,
 																$person_type_id, $person_id, $person_detail_id, $ref, $memo_, $use_transaction = true)
 	{
 		// we can only handle type 1 (payment)and type 2 (deposit)
@@ -203,5 +203,5 @@ class GL_Bank {
 		return array($trans_type, $trans_no);
 	}
 
-	//----------------------------------------------------------------------------------------
+
 }

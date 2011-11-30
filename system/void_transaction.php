@@ -13,7 +13,7 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	JS::open_window(800, 500);
 	Page::start(_($help_context = "Void a Transaction"));
-	//----------------------------------------------------------------------------------------
+
 	function exist_transaction($type, $type_no)
 	{
 		$void_entry = Voiding::has($type, $type_no);
@@ -48,7 +48,7 @@
 				}
 				break;
 			case ST_INVADJUST : // it's a stock adjustment
-				if (Inv_Adjustment::get_items($type_no) == null) {
+				if (Inv_Adjustment::get($type_no) == null) {
 					return false;
 				}
 				break;
@@ -122,7 +122,7 @@
 		end_form();
 	}
 
-	//----------------------------------------------------------------------------------------
+
 	function check_valid_entries()
 	{
 		if (DB_AuditTrail::is_closed_trans($_POST['filterType'], $_POST['trans_no'])) {
@@ -148,7 +148,7 @@
 		return true;
 	}
 
-	//----------------------------------------------------------------------------------------
+
 	function handle_void_transaction()
 	{
 		if (check_valid_entries() == true) {
@@ -174,7 +174,7 @@
 		}
 	}
 
-	//----------------------------------------------------------------------------------------
+
 	if (!isset($_POST['date_'])) {
 		$_POST['date_'] = Dates::Today();
 		if (!Dates::is_date_in_fiscalyear($_POST['date_'])) {
@@ -194,7 +194,7 @@
 	if (isset($_POST['CancelVoiding'])) {
 		$Ajax->activate('_page_body');
 	}
-	//----------------------------------------------------------------------------------------
+
 	voiding_controls();
 	end_page();
 

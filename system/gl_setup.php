@@ -12,7 +12,7 @@
 	$page_security = 'SA_GLSETUP';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "System and General GL Setup"));
-	//-------------------------------------------------------------------------------------------------
+
 	function can_process()
 	{
 		if (!Validation::is_num('po_over_receive', 0, 100)) {
@@ -33,7 +33,7 @@
 		return true;
 	}
 
-	//-------------------------------------------------------------------------------------------------
+
 	if (isset($_POST['submit']) && can_process()) {
 		DB_Company::update_gl_setup(
 			$_POST['retained_earnings_act'], $_POST['profit_loss_year_act'],
@@ -61,7 +61,7 @@
 		);
 		Errors::notice(_("The general GL setup has been updated."));
 	} /* end of if submit */
-	//-------------------------------------------------------------------------------------------------
+
 	start_form();
 	//start_outer_table("class='tablestyle'");
 	start_outer_table(Config::get('tables_style2'), 5);
@@ -93,7 +93,7 @@
 	$_POST['default_workorder_required'] = $myrow['default_workorder_required'];
 	$_POST['default_dim_required']       = $myrow['default_dim_required'];
 	$_POST['default_delivery_required']  = $myrow['default_delivery_required'];
-	//---------------
+
 	table_section_title(_("General GL"));
 	// Not used in FA2.0.
 	//gl_all_accounts_list_row(_("Retained Earning Clearing Account:"), 'retained_earnings_act', $_POST['retained_earnings_act']);
@@ -104,13 +104,13 @@
 	gl_all_accounts_list_row(_("Profit/Loss Year:"), 'profit_loss_year_act', $_POST['profit_loss_year_act']);
 	gl_all_accounts_list_row(_("Exchange Variances Account:"), 'exchange_diff_act', $_POST['exchange_diff_act']);
 	gl_all_accounts_list_row(_("Bank Charges Account:"), 'bank_charge_act', $_POST['bank_charge_act']);
-	//---------------
+
 	table_section_title(_("Customers and Sales"));
 	text_row(_("Default Credit Limit:"), 'default_credit_limit', $_POST['default_credit_limit'], 12, 12);
 	check_row(_("Accumulate batch shipping:"), 'accumulate_shipping', null);
 	textarea_row(_("Legal Text on Invoice:"), 'legal_text', $_POST['legal_text'], 32, 3);
 	gl_all_accounts_list_row(_("Shipping Charged Account:"), 'freight_act', $_POST['freight_act']);
-	//---------------
+
 	table_section_title(_("Customers and Sales Defaults"));
 	// default for customer branch
 	gl_all_accounts_list_row(_("Receivable Account:"), 'debtors_act');
@@ -124,14 +124,14 @@
 		_("Delivery Required By:"), 'default_delivery_required',
 		$_POST['default_delivery_required'], 6, 6, '', "", _("days")
 	);
-	//----------------
+
 	table_section(2);
 	table_section_title(_("Dimension Defaults"));
 	text_row(
 		_("Dimension Required By After:"), 'default_dim_required',
 		$_POST['default_dim_required'], 6, 6, '', "", _("days")
 	);
-	//---------------
+
 	table_section_title(_("Suppliers and Purchasing"));
 	percent_row(_("Delivery Over-Receive Allowance:"), 'po_over_receive');
 	percent_row(_("Invoice Over-Charge Allowance:"), 'po_over_charge');
@@ -148,17 +148,17 @@
 	gl_all_accounts_list_row(_("C.O.G.S. Account:"), 'default_cogs_act', $_POST['default_cogs_act']);
 	gl_all_accounts_list_row(_("Inventory Adjustments Account:"), 'default_adj_act', $_POST['default_adj_act']);
 	gl_all_accounts_list_row(_("Item Assembly Costs Account:"), 'default_assembly_act', $_POST['default_assembly_act']);
-	//----------------
+
 	table_section_title(_("Manufacturing Defaults"));
 	text_row(
 		_("Work Order Required By After:"), 'default_workorder_required',
 		$_POST['default_workorder_required'], 6, 6, '', "", _("days")
 	);
-	//----------------
+
 	end_outer_table(1);
 	submit_center('submit', _("Update"), true, '', 'default');
 	end_form(2);
-	//-------------------------------------------------------------------------------------------------
+
 	end_page();
 
 ?>

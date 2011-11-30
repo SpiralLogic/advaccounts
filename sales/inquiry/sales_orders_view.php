@@ -59,14 +59,14 @@
 	} else {
 		$selected_customer = -1;
 	}
-	//---------------------------------------------------------------------------------------------
+
 	if (isset($_POST['SelectStockFromList']) && ($_POST['SelectStockFromList'] != "") && ($_POST['SelectStockFromList'] != ALL_TEXT)
 	) {
 		$selected_stock_item = $_POST['SelectStockFromList'];
 	} else {
 		unset($selected_stock_item);
 	}
-	//---------------------------------------------------------------------------------------------
+
 	//	Query format functions
 	//
 	function check_overdue($row)
@@ -148,7 +148,7 @@
 			['order_no'] . ']', $value, false);
 		}
 
-	//---------------------------------------------------------------------------------------------
+
 	// Update db record if respective checkbox value has changed.
 	//
 	function change_tpl_flag($id)
@@ -170,7 +170,7 @@
 			}
 		}
 	}
-	//---------------------------------------------------------------------------------------------
+
 	//	Order range form
 	//
 	if (get_post('_OrderNumber_changed')) { // enable/disable selection controls
@@ -209,7 +209,7 @@
 	hidden('type', $trans_type);
 	end_row();
 	end_table(1);
-	//---------------------------------------------------------------------------------------------
+
 	//	Orders inquiry table
 	//
 	$sql = "SELECT

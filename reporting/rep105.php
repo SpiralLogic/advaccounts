@@ -17,9 +17,9 @@
 	// Title:	Order Status List
 	// ----------------------------------------------------------------
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	//----------------------------------------------------------------------------------------------------
+
 	print_order_status_list();
-	//----------------------------------------------------------------------------------------------------
+
 	function GetSalesOrders($from, $to, $category = 0, $location = null, $backorder = 0)
 	{
 		$fromdate = Dates::date2sql($from);
@@ -59,7 +59,7 @@
 		return DB::query($sql, "Error getting order details");
 	}
 
-	//----------------------------------------------------------------------------------------------------
+
 	function print_order_status_list()
 	{
 		$from = $_POST['PARAM_0'];

@@ -9,7 +9,7 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	//----------------------------------------------------------------------------------------
+
 	class Manufacturing
 	{
 		public static $bom_list = array();
@@ -183,7 +183,7 @@
 				return $myrow[0];
 			}
 
-		//--------------------------------------------------------------------------------------
+
 		public static function get_bom($item)
 			{
 				$sql = "SELECT bom.*, locations.location_name, workcentres.name AS WorkCentreDescription,
@@ -197,14 +197,14 @@
 				return DB::query($sql, "The bill of material could not be retrieved");
 			}
 
-		//--------------------------------------------------------------------------------------
+
 		public static function has_bom($item)
 			{
 				$result = Manufacturing::get_bom($item);
 				return (DB::num_rows($result) != 0);
 			}
 
-		//--------------------------------------------------------------------------------------
+
 		public static function display_bom($item_check)
 			{
 				$result = Manufacturing::get_bom($item_check);
@@ -247,5 +247,5 @@
 			{
 				return $mb_flag == STOCK_PURCHASED || $mb_flag == STOCK_MANUFACTURE;
 			}
-		//--------------------------------------------------------------------------------------
+
 	}

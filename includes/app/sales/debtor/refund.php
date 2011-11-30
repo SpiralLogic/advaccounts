@@ -68,7 +68,7 @@
 		return $refund_no;
 	}
 
-	//-------------------------------------------------------------------------------------------------
+
 	public static function void($type, $type_no)
 	{
 		DB::begin_transaction();

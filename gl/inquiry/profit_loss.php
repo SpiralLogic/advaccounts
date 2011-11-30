@@ -13,7 +13,7 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	$js = "";
 	Page::start(_($help_context = "Profit & Loss Drilldown"));
-	//----------------------------------------------------------------------------------------------------
+
 	// Ajax updates
 	if (get_post('Show')) {
 		$Ajax->activate('pl_tbl');
@@ -30,7 +30,7 @@
 	if (isset($_GET["AccGrp"])) {
 		$_POST["AccGrp"] = $_GET["AccGrp"];
 	}
-	//----------------------------------------------------------------------------------------------------
+
 	function display_type(
 		$type, $typename, $from, $to, $begin, $end, $compare, $convert,
 		&$dec, &$pdec, &$rep, $dimension = 0, $dimension2 = 0, $drilldown, $path_to_root = PATH_TO_ROOT
@@ -149,7 +149,7 @@
 		hidden('AccGrp');
 	}
 
-	//----------------------------------------------------------------------------------------------------
+
 	function display_profit_and_loss()
 	{
 		global $sel;
@@ -261,7 +261,7 @@
 		div_end();
 	}
 
-	//----------------------------------------------------------------------------------------------------
+
 	start_form();
 	inquiry_controls();
 	display_profit_and_loss();

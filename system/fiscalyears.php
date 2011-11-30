@@ -14,7 +14,7 @@
 	$js = "";
 	Page::start(_($help_context = "Fiscal Years"));
 	Page::simple_mode(true);
-	//---------------------------------------------------------------------------------------------
+
 	function is_date_in_fiscalyears($date)
 	{
 		$date = Dates::date2sql($date);
@@ -72,7 +72,7 @@
 		return true;
 	}
 
-	//---------------------------------------------------------------------------------------------
+
 	function close_year($year)
 	{
 		$co = DB_Company::get_prefs();
@@ -147,7 +147,7 @@
 		$Mode = 'RESET';
 	}
 
-	//---------------------------------------------------------------------------------------------
+
 	function check_can_delete($selected_id)
 	{
 		$myrow = DB_Company::get_fiscalyear($selected_id);
@@ -163,7 +163,7 @@
 		return true;
 	}
 
-	//---------------------------------------------------------------------------------------------
+
 	function delete_attachments_and_comments($type_no, $trans_no)
 	{
 		$sql = "SELECT * FROM attachments WHERE type_no = $type_no AND trans_no = $trans_no";
@@ -384,7 +384,7 @@
 		$Mode = 'RESET';
 	}
 
-	//---------------------------------------------------------------------------------------------
+
 	function display_fiscalyears()
 	{
 		$company_year = DB_Company::get_pref('f_year');
@@ -436,7 +436,7 @@
 		Display::note(_("The marked fiscal year is the current fiscal year which cannot be deleted."), 0, 0, "class='currentfg'");
 	}
 
-	//---------------------------------------------------------------------------------------------
+
 	function display_fiscalyear_edit($selected_id)
 	{
 		global $Mode;
@@ -464,11 +464,11 @@
 		end_form();
 	}
 
-	//---------------------------------------------------------------------------------------------
+
 	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 		handle_submit();
 	}
-	//---------------------------------------------------------------------------------------------
+
 	if ($Mode == 'Delete') {
 		global $selected_id;
 		handle_delete($selected_id);
@@ -476,11 +476,11 @@
 	if ($Mode == 'RESET') {
 		$selected_id = -1;
 	}
-	//---------------------------------------------------------------------------------------------
+
 	display_fiscalyears();
 	echo '<br>';
 	display_fiscalyear_edit($selected_id);
-	//---------------------------------------------------------------------------------------------
+
 	end_page();
 
 ?>

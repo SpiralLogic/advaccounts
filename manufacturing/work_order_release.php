@@ -21,7 +21,7 @@
 		Errors::warning("This page must be called with a work order reference");
 		exit;
 	}
-	//------------------------------------------------------------------------------------
+
 	function can_process($myrow)
 		{
 			if ($myrow['released']) {
@@ -38,7 +38,7 @@
 			return true;
 		}
 
-	//------------------------------------------------------------------------------------
+
 	if (isset($_POST['release'])) {
 		WO_WorkOrder::release($selected_id, $_POST['released_date'], $_POST['memo_']);
 		Errors::notice(_("The work order has been released to manufacturing."));
@@ -48,7 +48,7 @@
 		end_page();
 		exit;
 	}
-	//------------------------------------------------------------------------------------
+
 	start_form();
 	$myrow = WO_WorkOrder::get($selected_id);
 	$_POST['released'] = $myrow["released"];

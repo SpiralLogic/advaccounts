@@ -17,7 +17,7 @@
 	// Title:	Dimension Summary
 	// ----------------------------------------------------------------
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	//----------------------------------------------------------------------------------------------------
+
 	print_dimension_summary();
 	function getTransactions($from, $to)
 	{
@@ -55,7 +55,7 @@
 		return $balance;
 	}
 
-	//----------------------------------------------------------------------------------------------------
+
 	function print_dimension_summary()
 	{
 		$fromdim = $_POST['PARAM_0'];

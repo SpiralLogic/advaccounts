@@ -9,7 +9,7 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	//---------------------------------------------------------------------------------------------
+
 	class GL_BankAccount
 	{
 		protected static function clear_default_currency($curr_code)
@@ -37,7 +37,7 @@
 				DB::query($sql, "could not add a bank account for $account_code");
 			}
 
-		//---------------------------------------------------------------------------------------------
+
 		public static function update($id, $account_code, $account_type, $bank_account_name,
 			$bank_name, $bank_account_number, $bank_address, $bank_curr_code, $dflt_curr_act)
 			{
@@ -55,14 +55,14 @@
 				DB::query($sql, "could not update bank account for $account_code");
 			}
 
-		//---------------------------------------------------------------------------------------------
+
 		public static function delete($id)
 			{
 				$sql = "DELETE FROM bank_accounts WHERE id=" . DB::escape($id);
 				DB::query($sql, "could not delete bank account for $id");
 			}
 
-		//---------------------------------------------------------------------------------------------
+
 		public static function get($id)
 			{
 				$sql = "SELECT * FROM bank_accounts WHERE id=" . DB::escape($id);
@@ -70,7 +70,7 @@
 				return DB::fetch($result);
 			}
 
-		//---------------------------------------------------------------------------------------------
+
 		public static function get_gl($id)
 			{
 				$sql = "SELECT account_code FROM bank_accounts WHERE id=" . DB::escape($id);
@@ -79,7 +79,7 @@
 				return $bank_account['account_code'];
 			}
 
-		//---------------------------------------------------------------------------------------------
+
 		public static function get_default($curr)
 			{
 				/* default bank account is selected as first found account from:

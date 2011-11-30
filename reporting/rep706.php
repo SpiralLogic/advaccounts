@@ -17,7 +17,7 @@
 	// Title:	Balance Sheet
 	// ----------------------------------------------------------------
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	//----------------------------------------------------------------------------------------------------
+
 	function display_type($type, $typename, $from, $to, $convert, &$dec, &$rep, $dimension, $dimension2, &$pg, $graphics)
 	{
 		$code_open_balance = 0;
@@ -91,7 +91,7 @@
 	}
 
 	print_balance_sheet();
-	//----------------------------------------------------------------------------------------------------
+
 	function print_balance_sheet()
 	{
 		$dim = DB_Company::get_pref('use_dimension');

@@ -17,7 +17,7 @@
 	// Title:	Audit Trail
 	// ----------------------------------------------------------------
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	//----------------------------------------------------------------------------------------------------
+
 	print_audit_trail();
 	function getTransactions($from, $to, $type, $user)
 	{
@@ -46,7 +46,7 @@
 		return DB::query($sql, "No transactions were returned");
 	}
 
-	//----------------------------------------------------------------------------------------------------
+
 	function print_audit_trail()
 	{
 		global $systypes_array;

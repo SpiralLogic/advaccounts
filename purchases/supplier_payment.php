@@ -17,10 +17,10 @@
 	if (isset($_GET['supplier_id'])) {
 		$_POST['supplier_id'] = $_GET['supplier_id'];
 	}
-	//----------------------------------------------------------------------------------------
+
 	Validation::check(Validation::SUPPLIERS, _("There are no suppliers defined in the system."));
 	Validation::check(Validation::BANK_ACCOUNTS, _("There are no bank accounts defined in the system."));
-	//----------------------------------------------------------------------------------------
+
 	if (!isset($_POST['supplier_id'])) {
 		$_POST['supplier_id'] = Session::i()->supplier_id;
 	}
@@ -37,7 +37,7 @@
 		$_SESSION['alloc']->read();
 		$Ajax->activate('alloc_tbl');
 	}
-	//----------------------------------------------------------------------------------------
+
 	if (isset($_GET['AddedID'])) {
 		$payment_id = $_GET['AddedID'];
 		Errors::notice(_("Payment has been sucessfully entered"));
@@ -48,7 +48,7 @@
 		hyperlink_params($_SERVER['PHP_SELF'], _("Enter another supplier &payment"), "supplier_id=" . $_POST['supplier_id']);
 		Page::footer_exit();
 	}
-	//----------------------------------------------------------------------------------------
+
 	function check_inputs()
 		{
 			if (!get_post('supplier_id')) {
@@ -117,13 +117,13 @@
 			}
 			$_SESSION['alloc']->amount = -input_num('amount');
 			if (isset($_POST["TotalNumberOfAllocs"])) {
-				return Gl_Allocation::check_allocations();
+				return Gl_Allocation::check();
 			} else {
 				return true;
 			}
 		}
 
-	//----------------------------------------------------------------------------------------
+
 	function handle_add_payment()
 		{
 			$supp_currency = Banking::get_supplier_currency($_POST['supplier_id']);
@@ -150,7 +150,7 @@
 			meta_forward($_SERVER['PHP_SELF'], "AddedID=$payment_id&supplier_id=" . $_POST['supplier_id']);
 		}
 
-	//----------------------------------------------------------------------------------------
+
 	if (isset($_POST['ProcessSuppPayment'])) {
 		/*First off  check for valid inputs */
 		if (check_inputs() == true) {
@@ -159,7 +159,7 @@
 			exit;
 		}
 	}
-	//----------------------------------------------------------------------------------------
+
 	start_form();
 	start_outer_table(Config::get('tables_style2') . " width=60%", 5);
 	table_section(1);

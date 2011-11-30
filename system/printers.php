@@ -13,7 +13,7 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "Printer Locations"));
 	Page::simple_mode(true);
-	//-------------------------------------------------------------------------------------------
+
 	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 		$error = 0;
 		if (empty($_POST['name'])) {
@@ -63,7 +63,7 @@
 		$selected_id = -1;
 		unset($_POST);
 	}
-	//-------------------------------------------------------------------------------------------------
+
 	$result = Printer::get_all();
 	start_form();
 	start_table(Config::get('tables_style'));
@@ -84,7 +84,7 @@
 	end_table();
 	end_form();
 	echo '<br>';
-	//-------------------------------------------------------------------------------------------------
+
 	start_form();
 	start_table(Config::get('tables_style2'));
 	if ($selected_id != -1) {

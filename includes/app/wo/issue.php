@@ -9,7 +9,7 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	//--------------------------------------------------------------------------------------
+
 	class WO_Issue
 	{
 		public static function add($woid, $ref, $to_work_order, $items, $location, $workcentre, $date_, $memo_)
@@ -49,7 +49,7 @@
 				DB::commit_transaction();
 			}
 
-		//--------------------------------------------------------------------------------------
+
 		public static function get_all($woid)
 			{
 				$sql = "SELECT * FROM wo_issues WHERE workorder_id=" . DB::escape($woid) . " ORDER BY issue_no";
@@ -65,7 +65,7 @@
 				return DB::query($sql, "The work order issues could not be retrieved");
 			}
 
-		//--------------------------------------------------------------------------------------
+
 		public static function get($issue_no)
 			{
 				$sql = "SELECT DISTINCT wo_issues.*, workorders.stock_id,
@@ -80,7 +80,7 @@
 				return DB::fetch($result);
 			}
 
-		//--------------------------------------------------------------------------------------
+
 		public static function get_details($issue_no)
 			{
 				$sql = "SELECT wo_issue_items.*," . "stock_master.description, stock_master.units
@@ -91,7 +91,7 @@
 				return DB::query($sql, "The work order issue items could not be retrieved");
 			}
 
-		//--------------------------------------------------------------------------------------
+
 		public static function exists($issue_no)
 			{
 				$sql = "SELECT issue_no FROM wo_issues WHERE issue_no=" . DB::escape($issue_no);
@@ -99,7 +99,7 @@
 				return (DB::num_rows($result) > 0);
 			}
 
-		//--------------------------------------------------------------------------------------
+
 		function display($woid)
 			{
 				$result = WO_Issue::get_all($woid);
@@ -121,7 +121,7 @@
 				}
 			}
 
-		//--------------------------------------------------------------------------------------
+
 		public static function void($type_no)
 			{
 				DB::begin_transaction();
@@ -135,8 +135,8 @@
 				DB::commit_transaction();
 			}
 
-		//--------------------------------------------------------------------------------------
-		//--------------------------------------------------------------------------------
+
+
 		public static function add_to($order, $new_item, $new_item_qty, $standard_cost)
 			{
 				if ($order->find_cart_item($new_item)) {
@@ -146,7 +146,7 @@
 				}
 			}
 
-		//---------------------------------------------------------------------------------
+
 		public static function display_items($title, &$order)
 			{
 				Display::heading($title);
@@ -186,7 +186,7 @@
 				div_end();
 			}
 
-		//---------------------------------------------------------------------------------
+
 		public static function edit_controls($order, $line_no = -1)
 			{
 				$Ajax = Ajax::i();
@@ -229,7 +229,7 @@
 				end_row();
 			}
 
-		//---------------------------------------------------------------------------------
+
 		public static function option_controls()
 			{
 				echo "<br>";
@@ -246,7 +246,7 @@
 				textarea_row(_("Memo"), 'memo_', null, 50, 3);
 				end_table(1);
 			}
-		//---------------------------------------------------------------------------------
+
 	}
 
 ?>

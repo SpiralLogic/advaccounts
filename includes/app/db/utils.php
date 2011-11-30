@@ -6,10 +6,9 @@
 	 * Time: 3:45 AM
 	 * To change this template use File | Settings | File Templates.
 	 */
-	class DB_Utils extends DB
-	{
-		public static function create($connection)
-		{
+	class DB_Utils extends DB {
+
+		public static function create($connection) {
 			$db = mysql_connect($connection["host"], $connection["dbuser"], $connection["dbpassword"]);
 			if (!mysql_select_db($connection["dbname"], $db)) {
 				$sql = "CREATE DATABASE " . $connection["dbname"] . "";
@@ -21,13 +20,12 @@
 			return $db;
 		}
 
-		public static function import($filename, $connection = null, $force = true)
-		{
+		public static function import($filename, $connection = null, $force = true) {
 			$allowed_commands = array(
-				"create"							 => 'table_queries',
-				"alter table"					=> 'table_queries',
-				"insert"							 => 'data_queries',
-				"update"							 => 'data_queries',
+				"create" => 'table_queries',
+				"alter table" => 'table_queries',
+				"insert" => 'data_queries',
+				"update" => 'data_queries',
 				"drop table if exists" => 'drop_queries');
 			$ignored_mysql_errors = array( //errors ignored in normal (non forced) mode
 				'1022', // duplicate key
@@ -128,9 +126,15 @@
 			//shell_exec($shell_command);
 		}
 
-		// returns the content of the gziped $path backup file. use of $mode see below
-		public static function ungzip($mode, $path)
-		{
+		/**
+		 * @static
+		 * @param $mode
+		 * @param $path
+		 * @return array|string
+		 *
+		 * returns the content of the gziped $path backup file. use of $mode see below
+		 */
+		public static function ungzip($mode, $path) {
 			$file_data = gzfile($path);
 			// returns one string or an array of lines
 			if ($mode != "lines") {
@@ -140,9 +144,14 @@
 			}
 		}
 
-		// returns the content of the ziped $path backup file. use of $mode see below
-		public static function unzip($mode, $path)
-		{
+		/**
+		 * @static
+		 * @param $mode
+		 * @param $path
+		 * @return array|string
+		 * returns the content of the ziped $path backup file. use of $mode see below
+		 */
+		public static function unzip($mode, $path) {
 			$all = implode("", file($path));
 			// convert path to name of ziped file
 			$filename = preg_replace("/.*\//", "", $path);
@@ -175,16 +184,22 @@
 			}
 		}
 
-		public static function backup($conn, $ext = 'no', $comm = '')
-		{
+		public static function backup($conn, $ext = 'no', $comm = '') {
 			$filename = $conn['dbname'] . "_" . date("Ymd_Hi") . ".sql";
 			return DB_Utils::export($conn, $filename, $ext, $comm);
 		}
 
-		// generates a dump of $db database
-		// $drop and $zip tell if to include the drop table statement or dry to pack
-		public static function export($conn, $filename, $zip = 'no', $comment = '')
-		{
+		/**
+		 * @static
+		 * @param $conn
+		 * @param $filename
+		 * @param string $zip
+		 * @param string $comment
+		 * @return bool|string
+		 * generates a dump of $db database
+		 * $drop and $zip tell if to include the drop table statement or dry to pack
+		 */
+		public static function export($conn, $filename, $zip = 'no', $comment = '') {
 			$error = false;
 			// set max string size before writing to file
 			$max_size = 1048576 * 2; // 2 MB
@@ -318,8 +333,7 @@
 			//mysql_close($con);
 			//if ($zip == "zip")
 			//	$zip = $time;
-			if (Files::save_to_file($backupfile, $out='', $zip)) {
-
+			if (Files::save_to_file($backupfile, $out = '', $zip)) {
 			} else {
 				unlink(BACKUP_PATH . $backupfile);
 				return false;
@@ -327,10 +341,15 @@
 			return $backupfile;
 		}
 
-		// orders the tables in $tables according to the constraints in $fks
-		// $fks musst be filled like this: $fks[tablename][0]=needed_table1; $fks[tablename][1]=needed_table2; ...
-		public static function order_sql_tables($tables, $fks)
-		{
+		/**
+		 * @static
+		 * @param $tables
+		 * @param $fks
+		 * @return array
+		 * orders the tables in $tables according to the constraints in $fks
+		 * $fks musst be filled like this: $fks[tablename][0]=needed_table1; $fks[tablename][1]=needed_table2; ...
+		 */
+		public static function order_sql_tables($tables, $fks) {
 			// do not order if no contraints exist
 			if (!count($fks)) {
 				return $tables;

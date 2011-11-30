@@ -17,7 +17,7 @@
 	// Title:	Aged Customer Balances
 	// ----------------------------------------------------------------
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	//----------------------------------------------------------------------------------------------------
+
 	print_aged_customer_analysis();
 	function get_invoices($customer_id, $to)
 	{
@@ -51,7 +51,7 @@
 		return DB::query($sql, "The customer details could not be retrieved");
 	}
 
-	//----------------------------------------------------------------------------------------------------
+
 	function print_aged_customer_analysis()
 	{
 		global $systypes_array;

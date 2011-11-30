@@ -13,9 +13,9 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	JS::open_window(900, 500);
 	Page::start(_($help_context = "Enter Supplier Invoice"));
-	//----------------------------------------------------------------------------------------
+
 	Validation::check(Validation::SUPPLIERS, _("There are no suppliers defined in the system."));
-	//---------------------------------------------------------------------------------------------------------------
+
 	if (isset($_GET['AddedID'])) {
 		$invoice_no = $_GET['AddedID'];
 		$trans_type = ST_SUPPINVOICE;
@@ -29,7 +29,7 @@
 		hyperlink_params("/system/attachments.php", _("Add an Attachment"), "filterType=$trans_type&trans_no=$invoice_no");
 		Page::footer_exit();
 	}
-	//--------------------------------------------------------------------------------------------------
+
 	if (isset($_GET['New'])) {
 		Purch_Trans::instance(true);
 		Purch_Trans::instance()->is_invoice = true;
@@ -37,7 +37,7 @@
 			$_SESSION['supplier_id'] = $_GET['SuppID'];
 		}
 	}
-	//--------------------------------------------------------------------------------------------------
+
 	function clear_fields()
 		{
 			$Ajax = Ajax::i();
@@ -51,7 +51,7 @@
 			JS::set_focus('gl_code');
 		}
 
-	//------------------------------------------------------------------------------------------------
+
 	//	GL postings are often entered in the same form to two accounts
 	//  so fileds are cleared only on user demand.
 	//
@@ -98,7 +98,7 @@
 			JS::set_focus('gl_code');
 		}
 	}
-	//------------------------------------------------------------------------------------------------
+
 	function check_data()
 		{
 			if (!Purch_Trans::instance()->is_valid_trans_to_post()) {
@@ -145,7 +145,7 @@
 			return true;
 		}
 
-	//--------------------------------------------------------------------------------------------------
+
 	function handle_commit_invoice()
 		{
 			Purch_Invoice::copy_to_trans(Purch_Trans::instance());
@@ -177,7 +177,7 @@
 			meta_forward($_SERVER['PHP_SELF'], "AddedID=$invoice_no");
 		}
 
-	//--------------------------------------------------------------------------------------------------
+
 	if (isset($_POST['PostInvoice'])) {
 		handle_commit_invoice();
 	}
@@ -240,7 +240,7 @@
 			}
 		}
 
-	//-----------------------------------------------------------------------------------------
+
 	$id = find_submit('grn_item_id');
 	if ($id != -1) {
 		commit_item_data($id);
@@ -254,7 +254,7 @@
 			}
 		}
 	}
-	//--------------------------------------------------------------------------------------------------
+
 	$id3 = find_submit('Delete');
 	if ($id3 != -1) {
 		Purch_Trans::instance()->remove_grn_from_trans($id3);
@@ -328,7 +328,7 @@
 		Purch_Invoice::totals(Purch_Trans::instance());
 		div_end();
 	}
-	//-----------------------------------------------------------------------------------------
+
 	if ($id != -1 || $id2 != -1) {
 		$Ajax->activate('grn_items');
 		$Ajax->activate('inv_tot');
@@ -340,7 +340,7 @@
 	submit_center('PostInvoice', _("Enter Invoice"), true, '', 'default');
 	br();
 	end_form();
-	//--------------------------------------------------------------------------------------------------
+
 	Item::addEditDialog();
 	$js = <<<JS
 		    $("#wrapper").delegate('.amount','change',function() {

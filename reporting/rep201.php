@@ -17,7 +17,7 @@
 	// Title:	Supplier Balances
 	// ----------------------------------------------------------------
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	//----------------------------------------------------------------------------------------------------
+
 	print_supplier_balances();
 	function get_open_balance($supplier_id, $to, $convert)
 		{
@@ -74,7 +74,7 @@
 			return $TransResult;
 		}
 
-	//----------------------------------------------------------------------------------------------------
+
 	function print_supplier_balances()
 		{
 			global $systypes_array;

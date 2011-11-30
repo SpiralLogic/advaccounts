@@ -13,7 +13,7 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "Users"));
 	Page::simple_mode(true);
-	//-------------------------------------------------------------------------------------------------
+
 	function can_process($user)
 	{
 		if (strlen($_POST['user_id']) < 4) {
@@ -45,7 +45,7 @@
 		return true;
 	}
 
-	//-------------------------------------------------------------------------------------------------
+
 	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 		$user = null;
 		if ($_POST['password'] != "") {
@@ -82,13 +82,13 @@
 			$Mode = 'RESET';
 		}
 	}
-	//-------------------------------------------------------------------------------------------------
+
 	if ($Mode == 'Delete') {
 		Users::delete($selected_id);
 		Errors::notice(_("User has been deleted."));
 		$Mode = 'RESET';
 	}
-	//-------------------------------------------------------------------------------------------------
+
 	if ($Mode == 'RESET') {
 		$selected_id = -1;
 		$sav = get_post('show_inactive');
@@ -134,7 +134,7 @@
 	} //END WHILE LIST LOOP
 	inactive_control_row($th);
 	end_table(1);
-	//-------------------------------------------------------------------------------------------------
+
 	start_table(Config::get('tables_style2'));
 	$_POST['email'] = "";
 	if ($selected_id != -1) {

@@ -13,7 +13,7 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "POS settings"));
 	Page::simple_mode(true);
-	//----------------------------------------------------------------------------------------------------
+
 	function can_process()
 		{
 			if (strlen($_POST['name']) == 0) {
@@ -29,20 +29,20 @@
 			return true;
 		}
 
-	//----------------------------------------------------------------------------------------------------
+
 	if ($Mode == 'ADD_ITEM' && can_process()) {
 		Sales_Point::add($_POST['name'], $_POST['location'], $_POST['account'], check_value('cash'), check_value('credit'));
 		Errors::notice(_('New point of sale has been added'));
 		$Mode = 'RESET';
 	}
-	//----------------------------------------------------------------------------------------------------
+
 	if ($Mode == 'UPDATE_ITEM' && can_process()) {
 		Sales_Point::update($selected_id, $_POST['name'], $_POST['location'], $_POST['account'], check_value('cash'),
 			check_value('credit'));
 		Errors::notice(_('Selected point of sale has been updated'));
 		$Mode = 'RESET';
 	}
-	//----------------------------------------------------------------------------------------------------
+
 	if ($Mode == 'Delete') {
 		$sql = "SELECT * FROM users WHERE pos=" . DB::escape($selected_id);
 		$res = DB::query($sql, "canot check pos usage");
@@ -60,7 +60,7 @@
 		unset($_POST);
 		$_POST['show_inactive'] = $sav;
 	}
-	//----------------------------------------------------------------------------------------------------
+
 	$result = Sales_Point::get_all(check_value('show_inactive'));
 	start_form();
 	start_table(Config::get('tables_style'));
@@ -83,7 +83,7 @@
 	}
 	inactive_control_row($th);
 	end_table(1);
-	//----------------------------------------------------------------------------------------------------
+
 	$cash = Validation::check(Validation::CASH_ACCOUNTS);
 	if (!$cash) {
 		Errors::warning(_("To have cash POS first define at least one cash bank account."));

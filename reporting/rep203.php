@@ -17,7 +17,7 @@
 	// Title:	Payment Report
 	// ----------------------------------------------------------------
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	//----------------------------------------------------------------------------------------------------
+
 	print_payment_report();
 	function getTransactions($supplier, $date)
 	{
@@ -42,7 +42,7 @@
 		return DB::query($sql, "No transactions were returned");
 	}
 
-	//----------------------------------------------------------------------------------------------------
+
 	function print_payment_report()
 	{
 		global $systypes_array;

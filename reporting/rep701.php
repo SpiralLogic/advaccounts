@@ -17,7 +17,7 @@
 	// Title:	Chart of GL Accounts
 	// ----------------------------------------------------------------
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	//----------------------------------------------------------------------------------------------------
+
 	function display_type($type, $typename, &$dec, &$rep, $showbalance)
 	{
 		$printtitle = 0; //Flag for printing type name
@@ -68,9 +68,9 @@
 		}
 	}
 
-	//----------------------------------------------------------------------------------------------------
+
 	print_Chart_of_Accounts();
-	//----------------------------------------------------------------------------------------------------
+
 	function print_Chart_of_Accounts()
 	{
 		$showbalance = $_POST['PARAM_0'];

@@ -10,7 +10,7 @@
 				MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 				See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 				* ********************************************************************* */
-	//-----------------------------------------------------------------------------
+
 	//
 	//	Entry/Modify Sales Quotations
 	//	Entry/Modify Sales Order
@@ -74,7 +74,7 @@
 		create_cart($serial, 0);
 	}
 	Page::start($page_title);
-	//-----------------------------------------------------------------------------
+
 	if (list_updated('branch_id')) {
 		// when branch is selected via external editor also customer can change
 		$br = Sales_Branch::get(get_post('branch_id'));
@@ -170,7 +170,7 @@
 			Page::footer_exit();
 		}
 
-	//-----------------------------------------------------------------------------
+
 	function copy_to_cart()
 		{
 			$cart = $_SESSION['Items'];
@@ -204,7 +204,7 @@
 			}
 		}
 
-	//-----------------------------------------------------------------------------
+
 	function copy_from_cart()
 		{
 			$cart = &$_SESSION['Items'];
@@ -231,7 +231,7 @@
 			$_POST['cart_id'] = $cart->cart_id;
 		}
 
-	//--------------------------------------------------------------------------------
+
 	function line_start_focus()
 		{
 			$Ajax = Ajax::i();
@@ -239,7 +239,7 @@
 			JS::set_focus('_stock_id_edit');
 		}
 
-	//--------------------------------------------------------------------------------
+
 	function can_process()
 		{
 			if (!get_post('customer_id')) {
@@ -367,7 +367,7 @@
 	if (isset($_POST['update'])) {
 		$Ajax->activate('items_table');
 	}
-	//--------------------------------------------------------------------------------
+
 	function check_item_data()
 		{
 			if (!User::get()->can_access('SA_SALESCREDIT') && (!Validation::is_num('qty', 0) || !Validation::is_num('Disc', 0, 100))) {
@@ -399,7 +399,7 @@
 			return true;
 		}
 
-	//--------------------------------------------------------------------------------
+
 	function handle_update_item()
 		{
 			if ($_POST['UpdateItem'] != '' && check_item_data()) {
@@ -409,7 +409,7 @@
 			line_start_focus();
 		}
 
-	//--------------------------------------------------------------------------------
+
 	function handle_delete_item($line_no)
 		{
 			if ($_SESSION['Items']->some_already_delivered($line_no) == 0) {
@@ -420,7 +420,7 @@
 			line_start_focus();
 		}
 
-	//--------------------------------------------------------------------------------
+
 	function handle_new_item()
 		{
 			if (!check_item_data()) {
@@ -432,7 +432,7 @@
 			line_start_focus();
 		}
 
-	//--------------------------------------------------------------------------------
+
 	function handle_cancel_order()
 		{
 			$Ajax = Ajax::i();
@@ -518,7 +518,7 @@
 			copy_from_cart();
 		}
 
-	//--------------------------------------------------------------------------------
+
 	if (isset($_POST['CancelOrder'])) {
 		handle_cancel_order();
 	}
@@ -545,7 +545,7 @@
 	if (isset($_POST['CancelItemChanges'])) {
 		line_start_focus();
 	}
-	//--------------------------------------------------------------------------------
+
 	Validation::check(Validation::STOCK_ITEMS, _("There are no inventory items defined in the system."));
 	Validation::check(Validation::BRANCHES_ACTIVE,
 		_("There are no customers, or there are no customers with branches. Please define customers and customer branches."));

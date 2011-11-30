@@ -13,11 +13,11 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	JS::open_window(900, 500);
 	Page::start(_($help_context = "View Work Order Production"), true);
-	//-------------------------------------------------------------------------------------------------
+
 	if ($_GET['trans_no'] != "") {
 		$wo_production = $_GET['trans_no'];
 	}
-	//-------------------------------------------------------------------------------------------------
+
 	function display_wo_production($prod_id)
 		{
 			$myrow = WO_Produce::get($prod_id);
@@ -39,10 +39,10 @@
 			Display::is_voided(ST_MANURECEIVE, $prod_id, _("This production has been voided."));
 		}
 
-	//-------------------------------------------------------------------------------------------------
+
 	Display::heading($systypes_array[ST_MANURECEIVE] . " # " . $wo_production);
 	display_wo_production($wo_production);
-	//-------------------------------------------------------------------------------------------------
+
 	br(2);
 	end_page(true);
 

@@ -19,7 +19,7 @@
 				return $row['reference'];
 			}
 
-		//--------------------------------------------------------------------------------------------------
+
 		public static function add_reference($type, $id, $reference)
 			{
 				$sql = "INSERT INTO refs (type, id, reference)
@@ -28,7 +28,7 @@
 				DB::query($sql, "could not add reference entry");
 			}
 
-		//--------------------------------------------------------------------------------------------------
+
 		public static function update_reference($type, $id, $reference)
 			{
 				$sql = "UPDATE refs SET reference=" . DB::escape($reference)
@@ -36,14 +36,14 @@
 				DB::query($sql, "could not update reference entry");
 			}
 
-		//--------------------------------------------------------------------------------------------------
+
 		public static function delete_reference($type, $id)
 			{
 				$sql = "DELETE FROM refs WHERE type=$type AND id=" . DB::escape($id);
 				return DB::query($sql, "could not delete from reference table");
 			}
 
-		//--------------------------------------------------------------------------------------------------
+
 		public static function find_reference($type, $reference)
 			{
 				$sql = "SELECT id FROM refs WHERE type=" . DB::escape($type)
@@ -52,7 +52,7 @@
 				return (DB::num_rows($result) > 0);
 			}
 
-		//--------------------------------------------------------------------------------------------------
+
 		public static function save_next_reference($type, $reference)
 			{
 				$sql = "UPDATE sys_types SET next_reference=" . DB::escape(trim($reference))
@@ -60,7 +60,7 @@
 				DB::query($sql, "The next transaction ref for $type could not be updated");
 			}
 
-		//--------------------------------------------------------------------------------------------------
+
 		public static function get_next_reference($type)
 			{
 				$sql = "SELECT next_reference FROM sys_types WHERE type_id = " . DB::escape($type);
@@ -111,7 +111,7 @@
 				return static::get_next_reference($type);
 			}
 
-		//------------------------------------
+
 		public static function is_valid($reference)
 			{
 				return strlen(trim($reference)) > 0;
@@ -135,10 +135,10 @@
 					return $reference;
 				}
 			}
-		//------------------------------------
+
 	}
 
-	//----------------------------------------------------------------------------
+
 	function is_new_reference(&$ref, $type)
 		{
 			$db_info = SysTypes::get_systype_db_info($type);

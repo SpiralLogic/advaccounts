@@ -13,7 +13,7 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	$js = "";
 	Page::start(_($help_context = "Balance Sheet Drilldown"));
-	//----------------------------------------------------------------------------------------------------
+
 	// Ajax updates
 	if (get_post('Show')) {
 		$Ajax->activate('balance_tbl');
@@ -27,7 +27,7 @@
 	if (isset($_GET["AccGrp"])) {
 		$_POST["AccGrp"] = $_GET["AccGrp"];
 	}
-	//----------------------------------------------------------------------------------------------------
+
 	function display_type($type, $typename, $from, $to, $convert, $drilldown)
 	{
 		global $levelptr, $k;
@@ -199,7 +199,7 @@
 		div_end();
 	}
 
-	//----------------------------------------------------------------------------------------------------
+
 	start_form();
 	inquiry_controls();
 	display_balance_sheet();

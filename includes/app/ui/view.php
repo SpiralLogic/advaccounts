@@ -11,7 +11,7 @@
 	 ***********************************************************************/
 	class ui_view
 	{
-		//--------------------------------------------------------------------------------------
+
 		static function get_supplier_trans_view_str($type, $trans_no, $label = "", $icon = false, $class = '', $id = '')
 			{
 				$viewer = "purchases/view/";
@@ -40,7 +40,7 @@
 				return viewer_link($label, $viewer, $class, $id, $icon);
 			}
 
-		//--------------------------------------------------------------------------------------
+
 		static function get_gl_view_str($type, $trans_no, $label = "", $force = false, $class = '', $id = '')
 			{
 				if (!$force && !User::show_gl_info()) {
@@ -54,7 +54,7 @@
 				return viewer_link($label, "gl/view/gl_trans_view.php?type_id=$type&trans_no=$trans_no", $class, $id, $icon);
 			}
 
-		//--------------------------------------------------------------------------------------
+
 		static function get_gl_view_str_cell($type, $trans_no, $label = "")
 			{
 				$str = ui_view::get_gl_view_str($type, $trans_no, $label);
@@ -63,7 +63,7 @@
 				}
 			}
 
-		//--------------------------------------------------------------------------------------
+
 		static function get_customer_trans_view_str($type, $trans_no, $label = "", $icon = false, $class = '', $id = '')
 			{
 				$viewer = "sales/view/";
@@ -107,7 +107,7 @@
 				return $preview_str;
 			}
 
-		//--------------------------------------------------------------------------------------
+
 		static function get_banking_trans_view_str($type, $trans_no, $label = "", $icon = false, $class = '', $id = '')
 			{
 				if ($label == "") {
@@ -128,7 +128,7 @@
 				return viewer_link($label, "gl/view/$viewer?trans_no=$trans_no", $class, $id, $icon);
 			}
 
-		//--------------------------------------------------------------------------------------
+
 		static function get_inventory_trans_view_str($type, $trans_no, $label = "", $icon = false, $class = '', $id = '')
 			{
 				$viewer = "inventory/view/";
@@ -148,7 +148,7 @@
 				return viewer_link($label, $viewer, $class, $id, $icon);
 			}
 
-		//--------------------------------------------------------------------------------------
+
 		static function get_manufacturing_trans_view_str($type, $trans_no, $label = "", $icon = false, $class = '', $id = '')
 			{
 				$viewer = "manufacturing/view/";
@@ -171,7 +171,7 @@
 				return viewer_link($label, $viewer, $class, $id, $icon);
 			}
 
-		//--------------------------------------------------------------------------------------
+
 		static function get_dimensions_trans_view_str($type, $trans_no, $label = "", $icon = false, $class = '', $id = '')
 			{
 				if ($type == ST_DIMENSION) {
@@ -203,7 +203,7 @@
 				return viewer_link($label, $viewer, $class, $id, $icon);
 			}
 
-		//--------------------------------------------------------------------------------------
+
 		static function get_trans_view_str($type, $trans_no, $label = "", $icon = false, $class = '', $id = '')
 			{
 				$view_str = ui_view::get_customer_trans_view_str($type, $trans_no, $label, $icon, $class, $id);
@@ -237,7 +237,7 @@
 				return null;
 			}
 
-		//--------------------------------------------------------------------------------------
+
 		static function stock_status($stock_id, $description = null, $echo = true)
 			{
 				if ($description) //hyperlink_params_separate( "/inventory/inquiry/stock_status.php", (User::show_codes()?$stock_id . " - ":"") . $description, "stock_id=$stock_id");
@@ -262,7 +262,7 @@
 				echo "</td>";
 			}
 
-		//--------------------------------------------------------------------------------------
+
 		//
 		//	Simple English version of number to words conversion.
 		//

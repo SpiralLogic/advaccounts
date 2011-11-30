@@ -17,7 +17,7 @@
 	// Title:	Inventory Valuation
 	// ----------------------------------------------------------------
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	//----------------------------------------------------------------------------------------------------
+
 	print_inventory_valuation_report();
 	function getTransactions($category, $location)
 	{
@@ -57,7 +57,7 @@
 		return DB::query($sql, "No transactions were returned");
 	}
 
-	//----------------------------------------------------------------------------------------------------
+
 	function print_inventory_valuation_report()
 	{
 		$category = $_POST['PARAM_0'];

@@ -14,7 +14,7 @@
 		return ((!isset($_POST[$name]) || $_POST[$name] === '') ? $dflt : $_POST[$name]);
 	}
 
-	//---------------------------------------------------------------------------------
+
 	function start_form($multi = false, $dummy = false, $action = "", $name = "")
 	{
 		// $dummy - leaved for compatibility with 2.0 API
@@ -31,7 +31,7 @@
 		}
 	}
 
-	//---------------------------------------------------------------------------------
+
 	function end_form($breaks = 0)
 	{
 		if ($breaks) {
@@ -101,7 +101,7 @@
 		exit;
 	}
 
-	//-----------------------------------------------------------------------------------
+
 	// Find and replace hotkey marker.
 	// if $clean == true marker is removed and clean label is returned
 	// (for use in wiki help system), otherwise result is array of label
@@ -223,7 +223,7 @@
 
 
 
-	//-----------------------------------------------------------------------------------
+
 	function hyperlink_params($target, $label, $link_params = '', $center = true, $params = '')
 	{
 		$id = JS::default_focus();
@@ -263,7 +263,7 @@
 		echo "</td>\n";
 	}
 
-	//-----------------------------------------------------------------------------------
+
 	function hyperlink_params_separate($target, $label, $params, $center = false, $nobr = false)
 	{
 		$id = JS::default_focus();
@@ -287,7 +287,7 @@
 		echo "</td>\n";
 	}
 
-	//--------------------------------------------------------------------------------------------------
+
 	function alt_table_row_color(&$k)
 	{
 		if ($k == 1) {
@@ -315,7 +315,7 @@
 		echo '</thead>';
 	}
 
-	//-----------------------------------------------------------------------------------
+
 	function start_row($param = "")
 	{
 		if ($param != "") {
@@ -405,7 +405,7 @@
 				$Pagehelp[] = $help;*/
 	}
 
-	//------------------------------------------------------------------------------
+
 	// Procedures below are now obsolete. Preserved for eventual future use.
 	/*
 		 External page call with saving current context.

@@ -56,7 +56,7 @@
 		unset($_POST);
 		$_POST['show_inactive'] = $sav;
 	}
-	//-------------------------------------------------------------------------------------------------
+
 	$sql = "SELECT * FROM areas";
 	if (!check_value('show_inactive')) {
 		$sql .= " WHERE !inactive";
@@ -79,7 +79,7 @@
 	inactive_control_row($th);
 	end_table();
 	echo '<br>';
-	//-------------------------------------------------------------------------------------------------
+
 	start_table(Config::get('tables_style2'));
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {
