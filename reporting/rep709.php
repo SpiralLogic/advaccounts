@@ -115,7 +115,7 @@
 			if (!$summaryOnly) {
 				$rep->TextCol(0, 1, $systypes_array[$trans['trans_type']]);
 				if ($trans['memo'] == '') {
-					$trans['memo'] = Refs::get_reference($trans['trans_type'], $trans['trans_no']);
+					$trans['memo'] = Ref::get($trans['trans_type'], $trans['trans_no']);
 				}
 				$rep->TextCol(1, 2, $trans['memo']);
 				$rep->DateCol(2, 3, $trans['tran_date'], true);

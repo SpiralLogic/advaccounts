@@ -105,12 +105,12 @@
 				JS::set_focus('DatePaid');
 				return false;
 			}
-			if (!Refs::is_valid($_POST['ref'])) {
+			if (!Ref::is_valid($_POST['ref'])) {
 				Errors::error(_("You must enter a reference."));
 				JS::set_focus('ref');
 				return false;
 			}
-			if (!is_new_reference($_POST['ref'], ST_SUPPAYMENT)) {
+			if (!Ref::is_new($_POST['ref'], ST_SUPPAYMENT)) {
 				Errors::error(_("The entered reference is already in use."));
 				JS::set_focus('ref');
 				return false;
@@ -171,7 +171,7 @@
 	Session::i()->supplier_id = $_POST['supplier_id'];
 	bank_accounts_list_row(_("From Bank Account:"), 'bank_account', null, true);
 	table_section(2);
-	ref_row(_("Reference:"), 'ref', '', Refs::get_next(ST_SUPPAYMENT));
+	ref_row(_("Reference:"), 'ref', '', Ref::get_next(ST_SUPPAYMENT));
 	date_row(_("Date Paid") . ":", 'DatePaid', '', true, 0, 0, 0, null, true);
 	table_section(3);
 	$supplier_currency = Banking::get_supplier_currency($_POST['supplier_id']);

@@ -78,12 +78,12 @@
 		{
 			global $selected_id;
 			if (!isset($selected_id)) {
-				if (!Refs::is_valid($_POST['wo_ref'])) {
+				if (!Ref::is_valid($_POST['wo_ref'])) {
 					Errors::error(_("You must enter a reference."));
 					JS::set_focus('wo_ref');
 					return false;
 				}
-				if (!is_new_reference($_POST['wo_ref'], ST_WORKORDER)) {
+				if (!Ref::is_new($_POST['wo_ref'], ST_WORKORDER)) {
 					Errors::error(_("The entered reference is already in use."));
 					JS::set_focus('wo_ref');
 					return false;
@@ -239,7 +239,7 @@
 		}
 		$_POST['wo_ref'] = $myrow["wo_ref"];
 		$_POST['stock_id'] = $myrow["stock_id"];
-		$_POST['quantity'] = Num::qty_format($myrow["units_reqd"], Input::post('stock_id'), $dec);
+		$_POST['quantity'] = Item::qty_format($myrow["units_reqd"], Input::post('stock_id'), $dec);
 		$_POST['StockLocation'] = $myrow["loc_code"];
 		$_POST['released'] = $myrow["released"];
 		$_POST['closed'] = $myrow["closed"];
@@ -263,7 +263,7 @@
 		hidden('type', $myrow["type"]);
 	} else {
 		$_POST['units_issued'] = $_POST['released'] = 0;
-		ref_row(_("Reference:"), 'wo_ref', '', Refs::get_next(ST_WORKORDER));
+		ref_row(_("Reference:"), 'wo_ref', '', Ref::get_next(ST_WORKORDER));
 		wo_types_list_row(_("Type:"), 'type', null);
 	}
 	if (get_post('released')) {
@@ -280,14 +280,14 @@
 		locations_list_row(_("Destination Location:"), 'StockLocation', null);
 	}
 	if (!isset($_POST['quantity'])) {
-		$_POST['quantity'] = Num::qty_format(1, Input::post('stock_id'), $dec);
+		$_POST['quantity'] = Item::qty_format(1, Input::post('stock_id'), $dec);
 	} else {
-		$_POST['quantity'] = Num::qty_format($_POST['quantity'], Input::post('stock_id'), $dec);
+		$_POST['quantity'] = Item::qty_format($_POST['quantity'], Input::post('stock_id'), $dec);
 	}
 	if (get_post('type') == WO_ADVANCED) {
 		qty_row(_("Quantity Required:"), 'quantity', null, null, null, $dec);
 		if ($_POST['released']) {
-			label_row(_("Quantity Manufactured:"), number_format($_POST['units_issued'], Num::qty_dec(Input::post('stock_id'))));
+			label_row(_("Quantity Manufactured:"), number_format($_POST['units_issued'], Item::qty_dec(Input::post('stock_id'))));
 		}
 		date_row(_("Date") . ":", 'date_', '', true);
 		date_row(_("Date Required By") . ":", 'RequDate', '', null, DB_Company::get_pref('default_workorder_required'));

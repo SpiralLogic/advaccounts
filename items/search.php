@@ -5,7 +5,7 @@
 	Session::i()->App->selected_application = 'Items';
 	if (AJAX_REFERRER) {
 		if (isset($_GET['term'])) {
-			$data = Item::searchOrder($_GET['term'], $_GET['id']);
+			$data = Item::searchOrder($_GET['term'], $_GET['UniqueID']);
 		} elseif (isset($_POST['id'])) {
 			if (isset($_POST['name'])) {
 				$item = new Item($_POST);

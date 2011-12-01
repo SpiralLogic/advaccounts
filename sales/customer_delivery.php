@@ -68,7 +68,7 @@
 		$ord->src_docs = $ord->trans_no;
 		$ord->order_no = key($ord->trans_no);
 		$ord->trans_no = 0;
-		$ord->reference = Refs::get_next(ST_CUSTDELIVERY);
+		$ord->reference = Ref::get_next(ST_CUSTDELIVERY);
 		$ord->document_date = Dates::new_doc_date();
 		$_SESSION['Items'] = $ord;
 		copy_from_cart();
@@ -114,12 +114,12 @@
 				return false;
 			}
 			if ($_SESSION['Items']->trans_no == 0) {
-				if (!Refs::is_valid($_POST['ref'])) {
+				if (!Ref::is_valid($_POST['ref'])) {
 					Errors::error(_("You must enter a reference."));
 					JS::set_focus('ref');
 					return false;
 				}
-				if ($_SESSION['Items']->trans_no == 0 && !is_new_reference($_POST['ref'], ST_CUSTDELIVERY)) {
+				if ($_SESSION['Items']->trans_no == 0 && !Ref::is_new($_POST['ref'], ST_CUSTDELIVERY)) {
 					Errors::error(_("The entered reference is already in use."));
 					JS::set_focus('ref');
 					return false;
@@ -262,7 +262,7 @@
 	end_row();
 	start_row();
 	//if (!isset($_POST['ref']))
-	//	$_POST['ref'] = Refs::get_next(ST_CUSTDELIVERY);
+	//	$_POST['ref'] = Ref::get_next(ST_CUSTDELIVERY);
 	if ($_SESSION['Items']->trans_no == 0) {
 		ref_cells(_("Reference"), 'ref', '', null, "class='label'");
 	} else {
@@ -343,11 +343,11 @@
 		}
 		ui_view::stock_status_cell($ln_itm->stock_id);
 		text_cells(null, 'Line' . $line . 'Desc', $ln_itm->description, 30, 50);
-		$dec = Num::qty_dec($ln_itm->stock_id);
+		$dec = Item::qty_dec($ln_itm->stock_id);
 		qty_cell($ln_itm->quantity, false, $dec);
 		label_cell($ln_itm->units);
 		qty_cell($ln_itm->qty_done, false, $dec);
-		small_qty_cells(null, 'Line' . $line, Num::qty_format($ln_itm->qty_dispatched, $ln_itm->stock_id, $dec), null, null, $dec);
+		small_qty_cells(null, 'Line' . $line, Item::qty_format($ln_itm->qty_dispatched, $ln_itm->stock_id, $dec), null, null, $dec);
 		$display_discount_percent = Num::percent_format($ln_itm->discount_percent * 100) . "%";
 		$line_total = ($ln_itm->qty_dispatched * $ln_itm->price * (1 - $ln_itm->discount_percent));
 		amount_cell($ln_itm->price);

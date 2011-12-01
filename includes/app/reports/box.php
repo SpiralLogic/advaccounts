@@ -232,7 +232,7 @@
 				case 'CUSTOMERS':
 					$sql = "SELECT debtor_no, name FROM debtors_master";
 					if ($type == 'CUSTOMERS_NO_FILTER') {
-						return "<label>Customer</label>" . combo_input(
+						return combo_input(
 							$name, '', $sql, 'debtor_no', 'name', array(
 								'spec_option' => _("No Customer Filter"),
 								'spec_id' => ALL_NUMERIC

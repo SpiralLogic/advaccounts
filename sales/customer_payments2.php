@@ -66,12 +66,12 @@
 				JS::set_focus('DateBanked');
 				return false;
 			}
-			if (!Refs::is_valid($_POST['ref'])) {
+			if (!Ref::is_valid($_POST['ref'])) {
 				Errors::error(_("You must enter a reference."));
 				JS::set_focus('ref');
 				return false;
 			}
-			if (!is_new_reference($_POST['ref'], ST_CUSTPAYMENT)) {
+			if (!Ref::is_new($_POST['ref'], ST_CUSTPAYMENT)) {
 				Errors::error(_("The entered reference is already in use."));
 				JS::set_focus('ref');
 				return false;
@@ -169,7 +169,7 @@
 			$myrow = DB::fetch($result);
 			$_POST['HoldAccount'] = $myrow["dissallow_invoices"];
 			$_POST['pymt_discount'] = $myrow["pymt_discount"];
-			$_POST['ref'] = Refs::get_next(12);
+			$_POST['ref'] = Ref::get_next(ST_CUSTPAYMENT);
 		}
 
 

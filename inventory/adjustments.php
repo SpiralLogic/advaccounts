@@ -61,12 +61,12 @@
 				JS::set_focus('stock_id');
 				return false;
 			}
-			if (!Refs::is_valid($_POST['ref'])) {
+			if (!Ref::is_valid($_POST['ref'])) {
 				Errors::error(_("You must enter a reference."));
 				JS::set_focus('ref');
 				return false;
 			}
-			if (!is_new_reference($_POST['ref'], ST_INVADJUST)) {
+			if (!Ref::is_new($_POST['ref'], ST_INVADJUST)) {
 				Errors::error(_("The entered reference is already in use."));
 				JS::set_focus('ref');
 				return false;

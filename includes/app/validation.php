@@ -104,6 +104,7 @@
 					return 0;
 				}
 				$num = input_num($postname, $dflt);
+
 				if ($num === false || $num === null) {
 					return 0;
 				}

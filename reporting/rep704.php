@@ -120,7 +120,7 @@
 					while ($myrow = DB::fetch($trans)) {
 						$total += $myrow['amount'];
 						$rep->TextCol(0, 1, $systypes_array[$myrow["type"]], -2);
-						$reference = Refs::get_reference($myrow["type"], $myrow["type_no"]);
+						$reference = Ref::get($myrow["type"], $myrow["type_no"]);
 						$rep->TextCol(1, 2, $reference);
 						$rep->TextCol(2, 3, $myrow['type_no'], -2);
 						$rep->DateCol(3, 4, $myrow["tran_date"], true);

@@ -84,7 +84,7 @@
 			label_cell($myrow["description"]);
 			label_cell($myrow["location_name"]);
 			label_cell($myrow["WorkCentreDescription"]);
-			qty_cell($myrow["quantity"], false, Num::qty_dec($myrow["component"]));
+			qty_cell($myrow["quantity"], false, Item::qty_dec($myrow["component"]));
 			label_cell($myrow["units"]);
 			edit_button_cell("Edit" . $myrow['id'], _("Edit"));
 			delete_button_cell("Delete" . $myrow['id'], _("Delete"));
@@ -193,7 +193,7 @@
 				$_POST['loc_code'] = $myrow["loc_code"];
 				$_POST['component'] = $myrow["component"]; // by Tom Moulton
 				$_POST['workcentre_added'] = $myrow["workcentre_added"];
-				$_POST['quantity'] = Num::format($myrow["quantity"], Num::qty_dec($myrow["component"]));
+				$_POST['quantity'] = Num::format($myrow["quantity"], Item::qty_dec($myrow["component"]));
 				label_row(_("Component:"), $myrow["component"] . " - " . $myrow["description"]);
 			}
 			hidden('selected_id', $selected_id);
@@ -211,7 +211,7 @@
 		hidden('stock_id', $selected_parent);
 		locations_list_row(_("Location to Draw From:"), 'loc_code', null);
 		workcenter_list_row(_("Work Centre Added:"), 'workcentre_added', null);
-		$dec = Num::qty_dec(get_post('component'));
+		$dec = Item::qty_dec(get_post('component'));
 		$_POST['quantity'] = Num::format(input_num('quantity', 1), $dec);
 		qty_row(_("Quantity:"), 'quantity', null, null, null, $dec);
 		end_table(1);

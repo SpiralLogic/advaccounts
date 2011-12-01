@@ -40,12 +40,12 @@
 	function can_process()
 		{
 			global $wo_details;
-			if (!Refs::is_valid($_POST['ref'])) {
+			if (!Ref::is_valid($_POST['ref'])) {
 				Errors::error(_("You must enter a reference."));
 				JS::set_focus('ref');
 				return false;
 			}
-			if (!is_new_reference($_POST['ref'], 29)) {
+			if (!Ref::is_new($_POST['ref'], ST_MANURECEIVE)) {
 				Errors::error(_("The entered reference is already in use."));
 				JS::set_focus('ref');
 				return false;
@@ -122,14 +122,14 @@
 	start_form();
 	hidden('selected_id', $_POST['selected_id']);
 	//hidden('WOReqQuantity', $_POST['WOReqQuantity']);
-	$dec = Num::qty_dec($wo_details["stock_id"]);
+	$dec = Item::qty_dec($wo_details["stock_id"]);
 	if (!isset($_POST['quantity']) || $_POST['quantity'] == '') {
-		$_POST['quantity'] = Num::qty_format(max($wo_details["units_reqd"] - $wo_details["units_issued"], 0), $wo_details["stock_id"],
+		$_POST['quantity'] = Item::qty_format(max($wo_details["units_reqd"] - $wo_details["units_issued"], 0), $wo_details["stock_id"],
 			$dec);
 	}
 	start_table(Config::get('tables_style2'));
 	br();
-	ref_row(_("Reference:"), 'ref', '', Refs::get_next(29));
+	ref_row(_("Reference:"), 'ref', '', Ref::get_next(ST_MANURECEIVE));
 	if (!isset($_POST['ProductionType'])) {
 		$_POST['ProductionType'] = 1;
 	}

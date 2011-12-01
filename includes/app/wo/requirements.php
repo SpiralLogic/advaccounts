@@ -101,7 +101,7 @@
 						}
 						label_cell($myrow["location_name"]);
 						label_cell($myrow["WorkCentreDescription"]);
-						$dec = Num::qty_dec($myrow["stock_id"]);
+						$dec = Item::qty_dec($myrow["stock_id"]);
 						qty_cell($myrow["units_req"], false, $dec);
 						qty_cell($myrow["units_req"] * $quantity, false, $dec);
 						qty_cell($myrow["units_issued"], false, $dec);

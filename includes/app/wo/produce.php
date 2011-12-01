@@ -40,7 +40,7 @@
 				if ($memo_) {
 					DB_Comments::add(ST_MANURECEIVE, $id, $date_, $memo_);
 				}
-				Refs::save(ST_MANURECEIVE, $id, $ref);
+				Ref::save(ST_MANURECEIVE, $id, $ref);
 				DB_AuditTrail::add(ST_MANURECEIVE, $id, $date_, _("Production."));
 				DB::commit_transaction();
 			}
@@ -108,7 +108,7 @@
 						label_cell(ui_view::get_trans_view_str(29, $myrow["id"]));
 						label_cell($myrow['reference']);
 						label_cell(Dates::sql2date($myrow["date_"]));
-						qty_cell($myrow['quantity'], false, Num::qty_dec($myrow['reference']));
+						qty_cell($myrow['quantity'], false, Item::qty_dec($myrow['reference']));
 						end_row();
 					}
 					//end of while

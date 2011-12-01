@@ -14,7 +14,7 @@
 	class Purch_Trans {
 		protected static $_instance = null;
 
-		public static function instance($reset_session = false) {
+		public static function i($reset_session = false) {
 			if (!$reset_session && isset($_SESSION["Purch_Trans"])) {
 				static::$_instance = $_SESSION["Purch_Trans"];
 			} elseif (static::$_instance === null) {

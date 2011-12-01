@@ -20,7 +20,7 @@
 			DB::query($sql, "could not add dimension");
 			$id = DB::insert_id();
 			DB_Comments::add(ST_DIMENSION, $id, $date_, $memo_);
-			Refs::save(ST_DIMENSION, $id, $reference);
+			Ref::save(ST_DIMENSION, $id, $reference);
 			DB::commit_transaction();
 			return $id;
 		}

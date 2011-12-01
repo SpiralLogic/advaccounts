@@ -31,7 +31,7 @@
 			label_cell($myrow["reference"]);
 			label_cell(ui_view::get_trans_view_str(ST_WORKORDER, $myrow["workorder_id"]));
 			label_cell($myrow["stock_id"] . " - " . $myrow["StockDescription"]);
-			qty_cell($myrow["quantity"], false, Num::qty_dec($myrow["stock_id"]));
+			qty_cell($myrow["quantity"], false, Item::qty_dec($myrow["stock_id"]));
 			label_cell(Dates::sql2date($myrow["date_"]));
 			end_row();
 			DB_Comments::display_row(ST_MANURECEIVE, $prod_id);

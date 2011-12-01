@@ -182,7 +182,7 @@ class FB
    * Log object with label to firebug console
    *
    * @see FirePHP::INFO
-   * @param mixes $Object
+   * @param mixed $Object
    * @param string $Label
    * @return true
    */

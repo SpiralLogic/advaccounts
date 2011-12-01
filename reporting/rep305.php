@@ -96,7 +96,7 @@
 			$rep->TextCol(0, 1, $trans['item_code']);
 			$rep->TextCol(1, 2, $trans['description'] . ($trans['inactive'] == 1 ? " (" . _("Inactive") . ")" : ""), -1);
 			$rep->TextCol(2, 3, $trans['order_no']);
-			$qdec = Num::qty_dec($trans['item_code']);
+			$qdec = Item::qty_dec($trans['item_code']);
 			$rep->AmountCol(3, 4, $trans['quantity_received'], $qdec);
 			$rep->AmountCol(4, 5, $trans['unit_price'], $dec);
 			$rep->AmountCol(5, 6, $trans['act_price'], $dec);

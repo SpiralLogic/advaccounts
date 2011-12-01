@@ -64,7 +64,7 @@
 	start_row("class='inquirybg'");
 	label_cell("<b>" . _("Quantity on hand before") . " " . $_POST['AfterDate'] . "</b>", "align=center colspan=5");
 	label_cell("&nbsp;", "colspan=2");
-	$dec = Num::qty_dec($_POST['stock_id']);
+	$dec = Item::qty_dec($_POST['stock_id']);
 	qty_cell($before_qty, false, $dec);
 	end_row();
 	$j = 1;

@@ -47,7 +47,7 @@
 				amount_row(_("Bank Charge:"), 'charge');
 			}
 			table_section(2);
-			ref_row(_("Reference:"), 'ref', '', Refs::get_next(ST_BANKTRANSFER));
+			ref_row(_("Reference:"), 'ref', '', Ref::get_next(ST_BANKTRANSFER));
 			textarea_row(_("Memo:"), 'memo_', null, 40, 4);
 			end_outer_table(1); // outer table
 			submit_center('AddPayment', _("Enter Transfer"), true, '', 'default');
@@ -82,12 +82,12 @@
 				JS::set_focus('charge');
 				return false;
 			}
-			if (!Refs::is_valid($_POST['ref'])) {
+			if (!Ref::is_valid($_POST['ref'])) {
 				Errors::error(_("You must enter a reference ."));
 				JS::set_focus('ref');
 				return false;
 			}
-			if (!is_new_reference($_POST['ref'], ST_BANKTRANSFER)) {
+			if (!Ref::is_new($_POST['ref'], ST_BANKTRANSFER)) {
 				Errors::error(_("The entered reference is already in use."));
 				JS::set_focus('ref');
 				return false;

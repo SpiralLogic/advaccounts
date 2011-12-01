@@ -88,7 +88,7 @@
 		$SuppTot_Val = 0;
 		$res = getTransactions($fromsupp);
 		While ($GRNs = DB::fetch($res)) {
-			$dec2 = Num::qty_dec($GRNs['item_code']);
+			$dec2 = Item::qty_dec($GRNs['item_code']);
 			if ($Supplier != $GRNs['supplier_id']) {
 				if ($Supplier != '') {
 					$rep->NewLine(2);

@@ -60,7 +60,7 @@
 					$supplier_id, $bank_account_currency,
 					"Could not add the supplier payment bank transaction");
 				DB_Comments::add($trans_type, $payment_id, $date_, $memo_);
-				Refs::save($trans_type, $payment_id, $ref);
+				Ref::save($trans_type, $payment_id, $ref);
 				DB::commit_transaction();
 				return $payment_id;
 			}

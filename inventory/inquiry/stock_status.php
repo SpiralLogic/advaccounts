@@ -50,7 +50,7 @@
 		);
 	}
 	table_header($th);
-	$dec = Num::qty_dec($_POST['stock_id']);
+	$dec = Item::qty_dec($_POST['stock_id']);
 	$j = 1;
 	$k = 0; //row colour counter
 	while ($myrow = DB::fetch($loc_details))

@@ -35,7 +35,7 @@
 			alt_table_row_color($k);
 			label_cell($myrow["stock_id"]);
 			label_cell($myrow["comp_name"]);
-			qty_cell($myrow["quantity"], false, $myrow["units"] == '' ? 0 : Num::qty_dec($myrow["comp_name"]));
+			qty_cell($myrow["quantity"], false, $myrow["units"] == '' ? 0 : Item::qty_dec($myrow["comp_name"]));
 			label_cell($myrow["units"] == '' ? _('kit') : $myrow["units"]);
 			edit_button_cell("Edit" . $myrow['id'], _("Edit"));
 			delete_button_cell("Delete" . $myrow['id'], _("Delete"));
@@ -177,7 +177,7 @@
 	if ($Mode == 'Edit') {
 		$myrow = Item_Code::get($selected_id);
 		$_POST['component'] = $myrow["stock_id"];
-		$_POST['quantity'] = Num::format($myrow["quantity"], Num::qty_dec($myrow["stock_id"]));
+		$_POST['quantity'] = Num::format($myrow["quantity"], Item::qty_dec($myrow["stock_id"]));
 	}
 	hidden("selected_id", $selected_id);
 	sales_local_items_list_row(_("Component:"), 'component', null, false, true);

@@ -128,7 +128,7 @@
 				DB::query($sql, "could not add work order");
 				$woid = DB::insert_id();
 				DB_Comments::add(ST_WORKORDER, $woid, $required_by, $memo_);
-				Refs::save(ST_WORKORDER, $woid, $wo_ref);
+				Ref::save(ST_WORKORDER, $woid, $wo_ref);
 				DB_AuditTrail::add(ST_WORKORDER, $woid, $date_);
 				DB::commit_transaction();
 				return $woid;
@@ -396,7 +396,7 @@
 				label_cell($myrow["location_name"]);
 				label_cell(Dates::sql2date($myrow["date_"]));
 				label_cell(Dates::sql2date($myrow["required_by"]));
-				$dec = Num::qty_dec($myrow["stock_id"]);
+				$dec = Item::qty_dec($myrow["stock_id"]);
 				qty_cell($myrow["units_reqd"], false, $dec);
 				if ($myrow["released"] == true) {
 					label_cell(Dates::sql2date($myrow["released_date"]));
@@ -434,7 +434,7 @@
 				ui_view::stock_status_cell($myrow["stock_id"], $myrow["StockItemName"]);
 				label_cell($myrow["location_name"]);
 				label_cell(Dates::sql2date($myrow["date_"]));
-				qty_cell($myrow["units_issued"], false, Num::qty_dec($myrow["stock_id"]));
+				qty_cell($myrow["units_issued"], false, Item::qty_dec($myrow["stock_id"]));
 				end_row();
 				DB_Comments::display_row(ST_WORKORDER, $woid);
 				end_table();

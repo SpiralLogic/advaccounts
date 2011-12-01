@@ -95,7 +95,7 @@
 					$rep->TextCol(1, 2, $myrow2['description'], -2);
 					$rep->TextCol(2, 3, $myrow2['location_name'], -2);
 					$rep->TextCol(3, 4, $myrow2['WorkCentreDescription'], -2);
-					$dec = Num::qty_dec($myrow2["stock_id"]);
+					$dec = Item::qty_dec($myrow2["stock_id"]);
 					$rep->AmountCol(4, 5, $myrow2['units_req'], $dec, -2);
 					$rep->AmountCol(5, 6, $myrow2['units_req'] * $myrow['units_issued'], $dec, -2);
 					$rep->AmountCol(6, 7, $myrow2['units_issued'], $dec, -2);

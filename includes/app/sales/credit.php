@@ -134,7 +134,7 @@
 				GL_Trans::add_balance(ST_CUSTCREDIT, $credit_no, $credit_date, -$total, PT_CUSTOMER, $credit_note->customer_id);
 				DB_Comments::add(ST_CUSTCREDIT, $credit_no, $credit_date, $credit_note->Comments);
 				if ($trans_no == 0) {
-					Refs::save(ST_CUSTCREDIT, $credit_no, $credit_note->reference);
+					Ref::save(ST_CUSTCREDIT, $credit_no, $credit_note->reference);
 				}
 				DB::commit_transaction();
 				return $credit_no;
@@ -278,7 +278,7 @@
 				}
 				Session::i()->global_customer = $_POST['customer_id'];
 				if (!isset($_POST['ref'])) {
-					$_POST['ref'] = Refs::get_next(11);
+					$_POST['ref'] = Ref::get_next(ST_CUSTCREDIT);
 				}
 				if ($order->trans_no == 0) {
 					ref_row(_("Reference") . ':', 'ref');
@@ -361,7 +361,7 @@
 						alt_table_row_color($k);
 						label_cell("<a target='_blank' href='" . PATH_TO_ROOT . "/inventory/inquiry/stock_status.php?stock_id=" . $line->stock_id . "'>$line->stock_id</a>");
 						label_cell($line->description, "nowrap");
-						qty_cell($line->qty_dispatched, false, Num::qty_dec($line->stock_id));
+						qty_cell($line->qty_dispatched, false, Item::qty_dec($line->stock_id));
 						label_cell($line->units);
 						amount_cell($line->price);
 						percent_cell($line->discount_percent * 100);
@@ -404,7 +404,7 @@
 				$id = find_submit('Edit');
 				if ($line_no != -1 && $line_no == $id) {
 					$_POST['stock_id'] = $order->line_items[$id]->stock_id;
-					$_POST['qty'] = Num::qty_format($order->line_items[$id]->qty_dispatched, $_POST['stock_id'], $dec);
+					$_POST['qty'] = Item::qty_format($order->line_items[$id]->qty_dispatched, $_POST['stock_id'], $dec);
 					$_POST['price'] = Num::price_format($order->line_items[$id]->price);
 					$_POST['Disc'] = Num::percent_format(($order->line_items[$id]->discount_percent) * 100);
 					$_POST['units'] = $order->line_items[$id]->units;

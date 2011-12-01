@@ -97,7 +97,7 @@
 			} /*end of order_line loop */
 			$grn_item = static::add_item($grn, Purch_Order::add_freight($po, $date_), 'Freight', 'Freight Charges', 0, 1,
 				$po->freight, 0);
-			Refs::save(ST_SUPPRECEIVE, $grn, $reference);
+			Ref::save(ST_SUPPRECEIVE, $grn, $reference);
 			DB_AuditTrail::add(ST_SUPPRECEIVE, $grn, $date_);
 			DB::commit_transaction();
 			return $grn;
@@ -345,7 +345,7 @@
 			start_row();
 			if ($editable) {
 				if (!isset($_POST['ref'])) {
-					$_POST['ref'] = Refs::get_next(ST_SUPPRECEIVE);
+					$_POST['ref'] = Ref::get_next(ST_SUPPRECEIVE);
 				}
 				ref_cells(_("Reference"), 'ref', '', null, "class='label'");
 				if (!isset($_POST['Location'])) {
@@ -416,7 +416,7 @@
 						label_cell($myrow["item_code"], "class='stock' data-stock_id='" . $myrow['item_code'] . "'");
 						label_cell($myrow["description"]);
 						label_cell(Dates::sql2date($myrow["delivery_date"]));
-						$dec = Num::qty_dec($myrow["item_code"]);
+						$dec = Item::qty_dec($myrow["item_code"]);
 						qty_cell($myrow["qty_recd"], false, $dec);
 						qty_cell($myrow["quantity_inv"], false, $dec);
 						if ($supp_trans->is_invoice) {
@@ -547,7 +547,7 @@
 					}
 					label_cell($entered_grn->item_code, "class='stock' data-stock_id='{$entered_grn->item_code}'");
 					label_cell($entered_grn->description);
-					$dec = Num::qty_dec($entered_grn->item_code);
+					$dec = Item::qty_dec($entered_grn->item_code);
 					if ($mode == 1) {
 						label_cell("");
 						qty_cell($entered_grn->qty_recd, false, $dec);

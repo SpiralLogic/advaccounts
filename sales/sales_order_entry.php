@@ -318,16 +318,16 @@
 				JS::set_focus('name');
 				return false;
 			}
-			if (!Refs::is_valid($_POST['ref'])) {
+			if (!Ref::is_valid($_POST['ref'])) {
 				Errors::error(_("You must enter a reference."));
 				JS::set_focus('ref');
 				return false;
 			}
-			while ($_SESSION['Items']->trans_no == 0 && !is_new_reference($_POST['ref'], $_SESSION['Items']->trans_type)) {
+			while ($_SESSION['Items']->trans_no == 0 && !Ref::is_new($_POST['ref'], $_SESSION['Items']->trans_type)) {
 				//Errors::error(_("The entered reference is already in use."));
 				//JS::set_focus('ref');
 				//return false;
-				$_POST['ref'] = Refs::get_next($_SESSION['Items']->trans_type);
+				$_POST['ref'] = Ref::get_next($_SESSION['Items']->trans_type);
 			}
 			return true;
 		}
@@ -391,7 +391,7 @@
 				if (input_num('qty') > $qoh) {
 					$stock = Item::get($_POST['stock_id']);
 					Errors::error(_("The delivery cannot be processed because there is an insufficient quantity for item:") . " " . $stock['stock_id'] . " - " . $stock['description'] . " - " . _("Quantity On Hand") . " = " . Num::format($qoh,
-						Num::qty_dec($_POST['stock_id'])));
+						Item::qty_dec($_POST['stock_id'])));
 					return false;
 				}
 				return true;
@@ -474,7 +474,7 @@
 				$doc = new Sales_Order(ST_SALESQUOTE, $trans_no);
 				$doc->trans_no = 0;
 				$doc->trans_type = ST_SALESORDER;
-				$doc->reference = Refs::get_next($doc->trans_type);
+				$doc->reference = Ref::get_next($doc->trans_type);
 				$doc->document_date = $doc->due_date = Dates::new_doc_date();
 				$doc->Comments = $doc->Comments . "\n\n" . _("Sales Quotation") . " # " . $trans_no;
 				$_SESSION['Items'] = $doc;
@@ -483,7 +483,7 @@
 				$doc = new Sales_Order(ST_SALESORDER, $trans_no);
 				$doc->trans_no = 0;
 				$doc->trans_type = ST_SALESORDER;
-				$doc->reference = Refs::get_next($doc->trans_type);
+				$doc->reference = Ref::get_next($doc->trans_type);
 				$doc->document_date = $doc->due_date = Dates::new_doc_date();
 				foreach ($doc->line_items as $line_no => $line) {
 					$line->qty_done = $line->qty_dispatched = 0;
@@ -506,7 +506,7 @@
 				} else {
 					$doc->due_date = $doc->document_date;
 				}
-				$doc->reference = Refs::get_next($doc->trans_type);
+				$doc->reference = Ref::get_next($doc->trans_type);
 				//$doc->Comments='';
 				foreach ($doc->line_items as $line_no => $line) {
 					$doc->line_items[$line]->qty_done = 0;

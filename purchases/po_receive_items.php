@@ -53,7 +53,7 @@
 					} else {
 						label_cell($ln_itm->description);
 					}
-					$dec = Num::qty_dec($ln_itm->stock_id);
+					$dec = Item::qty_dec($ln_itm->stock_id);
 					qty_cell($ln_itm->quantity, false, $dec);
 					label_cell($ln_itm->units);
 					qty_cell($ln_itm->qty_received, false, $dec);
@@ -122,16 +122,16 @@
 				JS::set_focus('freight');
 				return false;
 			}
-			if (!Refs::is_valid($_POST['ref'])) {
+			if (!Ref::is_valid($_POST['ref'])) {
 				Errors::error(_("You must enter a reference."));
 				JS::set_focus('ref');
 				return false;
 			}
-			while (!is_new_reference($_POST['ref'], ST_SUPPRECEIVE)) {
+			while (!Ref::is_new($_POST['ref'], ST_SUPPRECEIVE)) {
 				//		Errors::error(_("The entered reference is already in use."));
 				//		JS::set_focus('ref');
 				//		return false;
-				$_POST['ref'] = Refs::get_next(ST_SUPPRECEIVE);
+				$_POST['ref'] = Ref::get_next(ST_SUPPRECEIVE);
 			}
 			$something_received = 0;
 			foreach ($_SESSION['PO']->line_items as $order_line) {
@@ -201,7 +201,7 @@
 			if (($line->quantity - $line->qty_received) > 0) {
 				$_POST[$line->line_no] = max($_POST[$line->line_no], 0);
 				if (!Validation::is_num($line->line_no)) {
-					$_POST[$line->line_no] = Num::format(0, Num::qty_dec($line->stock_id));
+					$_POST[$line->line_no] = Num::format(0, Item::qty_dec($line->stock_id));
 				}
 				if (!isset($_POST['DefaultReceivedDate']) || $_POST['DefaultReceivedDate'] == "") {
 					$_POST['DefaultReceivedDate'] = Dates::new_doc_date();

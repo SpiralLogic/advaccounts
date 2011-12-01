@@ -75,7 +75,7 @@
 			}
 			label_cell($myrow2["stock_id"]);
 			label_cell($myrow2["StockDescription"]);
-			qty_cell($myrow2["quantity"], false, Num::qty_dec($myrow2["stock_id"]));
+			qty_cell($myrow2["quantity"], false, Item::qty_dec($myrow2["stock_id"]));
 			label_cell($myrow2["units"], "align=right");
 			amount_cell($myrow2["unit_price"]);
 			label_cell($display_discount, "align=right");

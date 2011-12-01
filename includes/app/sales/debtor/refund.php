@@ -63,7 +63,7 @@
 			$date_, $amount - $charge, PT_CUSTOMER, $customer_id,
 			Banking::get_customer_currency($customer_id), "", $rate);
 		DB_Comments::add(ST_CUSTREFUND, $refund_no, $date_, $memo_);
-		Refs::save(ST_CUSTREFUND, $refund_no, $ref);
+		Ref::save(ST_CUSTREFUND, $refund_no, $ref);
 		DB::commit_transaction();
 		return $refund_no;
 	}

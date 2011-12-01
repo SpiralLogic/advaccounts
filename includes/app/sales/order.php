@@ -157,7 +157,7 @@
 					if (!Dates::is_date_in_fiscalyear($this->document_date)) {
 						$this->document_date = Dates::end_fiscalyear();
 					}
-					$this->reference = Refs::get_next($this->trans_type);
+					$this->reference = Ref::get_next($this->trans_type);
 					$this->set_salesman();
 					if ($type != ST_SALESORDER && $type != ST_SALESQUOTE) // Added 2.1 Joe Hunt 2008-11-12
 					{
@@ -576,7 +576,7 @@
 					DB::query($sql, "order Details Cannot be Added");
 				} /* inserted line items into sales order details */
 				DB_AuditTrail::add($order->trans_type, $order_no, $order->document_date);
-				Refs::save($order->trans_type, $order_no, $order->reference);
+				Ref::save($order->trans_type, $order_no, $order->reference);
 				DB::commit_transaction();
 				if (Config::get('accounts_stock_emailnotify') == 1 && count($st_ids) > 0) {
 					require_once(DOCROOT . "/reporting/includes/email.php");
@@ -607,7 +607,7 @@
 				DB::query($sql, "order Header Delete");
 				$sql = "DELETE FROM sales_order_details WHERE order_no =" . DB::escape($order_no) . " AND trans_type=" . DB::escape($trans_type);
 				DB::query($sql, "order Detail Delete");
-				Refs::delete_reference($trans_type, $order_no);
+				Ref::delete($trans_type, $order_no);
 				DB_AuditTrail::add($trans_type, $order_no, Dates::Today(), _("Deleted."));
 				DB::commit_transaction();
 			}
@@ -692,8 +692,8 @@
 					DB::query($sql, "Old order Cannot be Inserted");
 				} /* inserted line items into sales order details */
 				DB_AuditTrail::add($order->trans_type, $order_no, $order->document_date, _("Updated."));
-				Refs::delete($order->trans_type, $order_no);
-				Refs::save($order->trans_type, $order_no, $order->reference);
+				Ref::delete($order->trans_type, $order_no);
+				Ref::save($order->trans_type, $order_no, $order->reference);
 				DB::commit_transaction();
 				if (Config::get('accounts_stock_emailnotify') == 1 && count($st_ids) > 0) {
 					require_once(DOCROOT . "/reporting/includes/class.mail.php");
@@ -1081,7 +1081,7 @@
 								// oops, we don't have enough of one of the component items
 								start_row("class='stockmankobg'");
 								$qoh_msg .= $stock_item->stock_id . " - " . $stock_item->description . ": " . _("Quantity On Hand") . " = " . Num::format($qoh,
-									Num::qty_dec($stock_item->stock_id)) . '<br>';
+									Item::qty_dec($stock_item->stock_id)) . '<br>';
 								$has_marked = true;
 							} else {
 								alt_table_row_color($k);
@@ -1092,7 +1092,7 @@
 						label_cell($stock_item->stock_id, "class='stock pointer' data-stock_id='{$stock_item->stock_id}'");
 						//label_cell($stock_item->description, "nowrap" );
 						description_cell($stock_item->description);
-						$dec = Num::qty_dec($stock_item->stock_id);
+						$dec = Item::qty_dec($stock_item->stock_id);
 						qty_cell($stock_item->qty_dispatched, false, $dec);
 						if ($order->trans_no != 0) {
 							qty_cell($stock_item->qty_done, false, $dec);
@@ -1336,7 +1336,7 @@ JS;
 				if ($line_no != -1 && $line_no == $id) // edit old line
 				{
 					$_POST['stock_id'] = $order->line_items[$id]->stock_id;
-					$dec = Num::qty_dec($_POST['stock_id']);
+					$dec = Item::qty_dec($_POST['stock_id']);
 					$_POST['qty'] = Num::format($order->line_items[$id]->qty_dispatched, $dec);
 					$_POST['price'] = Num::price_format($order->line_items[$id]->price);
 					$_POST['Disc'] = Num::percent_format($order->line_items[$id]->discount_percent * 100);
