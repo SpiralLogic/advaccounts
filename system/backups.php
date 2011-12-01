@@ -1,6 +1,6 @@
 <?php
 	/**********************************************************************
-	Copyright (C) FrontAccounting, LLC.
+	Copyright (C) Advanced Group PTY LTD
 	Released under the terms of the GNU General Public License, GPL,
 	as published by the Free Software Foundation, either version 3
 	of the License, or (at your option) any later version.
@@ -64,7 +64,7 @@
 
 	function get_backup_file_combo()
 	{
-		$Ajax = Ajax::instance();
+		$Ajax = Ajax::i();
 		$ar_files = array();
 		JS::default_focus('backups');
 		$dh = opendir(BACKUP_PATH);
@@ -157,7 +157,7 @@
 			Errors::error(_("File was not uploaded into the system."));
 		}
 	}
-	//-------------------------------------------------------------------------------
+
 	start_form(true, true);
 	start_outer_table(Config::get('tables_style2'));
 	table_section(1);

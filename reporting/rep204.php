@@ -1,7 +1,7 @@
 <?php
 
 	/*     * ********************************************************************
-			Copyright (C) FrontAccounting, LLC.
+			Copyright (C) Advanced Group PTY LTD
 			Released under the terms of the GNU General Public License, GPL,
 			as published by the Free Software Foundation, either version 3
 			of the License, or (at your option) any later version.
@@ -18,7 +18,7 @@
 	// Title:	Outstanding GRNs Report
 	// ----------------------------------------------------------------
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	//----------------------------------------------------------------------------------------------------
+
 	print_outstanding_GRN();
 	function getTransactions($fromsupp)
 	{
@@ -51,17 +51,17 @@
 		return DB::query($sql, "No transactions were returned");
 	}
 
-	//----------------------------------------------------------------------------------------------------
+
 	function print_outstanding_GRN()
 	{
 		$fromsupp = $_POST['PARAM_0'];
 		$comments = $_POST['PARAM_1'];
 		$destination = $_POST['PARAM_2'];
 		if ($destination) {
-			include_once(APP_PATH . "includes/reports/excel.php");
+			include_once(APPPATH . "reports/excel.php");
 		}
 		else {
-			include_once(APP_PATH . "includes/reports/pdf.php");
+			include_once(APPPATH . "reports/pdf.php");
 		}
 		if ($fromsupp == ALL_NUMERIC) {
 			$from = _('All');

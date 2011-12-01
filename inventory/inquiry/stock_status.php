@@ -1,6 +1,6 @@
 <?php
 	/**********************************************************************
-	Copyright (C) FrontAccounting, LLC.
+	Copyright (C) Advanced Group PTY LTD
 	Released under the terms of the GNU General Public License, GPL,
 	as published by the Free Software Foundation, either version 3
 	of the License, or (at your option) any later version.
@@ -20,22 +20,23 @@
 	if (Input::post('stock_id')) {
 		$Ajax->activate('status_tbl');
 	}
-	//----------------------------------------------------------------------------------------------------
+
 	Validation::check(Validation::STOCK_ITEMS, _("There are no items defined in the system."));
 	start_form();
 	if (!Input::post('stock_id')) {
-		$_POST['stock_id'] = Session::get()->global_stock_id;
+		$_POST['stock_id'] = Session::i()->global_stock_id;
 	}
 	echo "<center> ";
 	echo stock_items_list_cells(_("Select an item:"), 'stock_id', $_POST['stock_id'], false, true, false, false);
 	echo "<br>";
 	echo "<hr></center>";
-	Session::get()->global_stock_id = $_POST['stock_id'];
+	Session::i()->global_stock_id = $_POST['stock_id'];
 	$mb_flag = Manufacturing::get_mb_flag($_POST['stock_id']);
 	$kitset_or_service = false;
 	div_start('status_tbl');
 	if (Input::post('mb_flag') == STOCK_SERVICE) {
-		Errors::warning(_("This is a service and cannot have a stock holding, only the total quantity on outstanding sales orders is shown."), 0, 1);
+		Errors::warning(_("This is a service and cannot have a stock holding, only the total quantity on outstanding sales orders is shown."),
+			0, 1);
 		$kitset_or_service = true;
 	}
 	$loc_details = Inv_Location::get_details($_POST['stock_id']);
@@ -55,7 +56,7 @@
 	while ($myrow = DB::fetch($loc_details))
 	{
 		alt_table_row_color($k);
-		$demand_qty = Manufacturing::get_demand_qty($_POST['stock_id'], $myrow["loc_code"]);
+		$demand_qty = Item::get_demand($_POST['stock_id'], $myrow["loc_code"]);
 		$demand_qty += Manufacturing::get_demand_asm_qty($_POST['stock_id'], $myrow["loc_code"]);
 		$qoh = Item::get_qoh_on_date($_POST['stock_id'], $myrow["loc_code"]);
 		if ($kitset_or_service == false) {

@@ -1,6 +1,6 @@
 <?php
 	/**********************************************************************
-	Copyright (C) FrontAccounting, LLC.
+	Copyright (C) Advanced Group PTY LTD
 	Released under the terms of the GNU General Public License, GPL,
 	as published by the Free Software Foundation, either version 3
 	of the License, or (at your option) any later version.
@@ -11,7 +11,6 @@
 	 ***********************************************************************/
 	$page_security = 'SA_SUPPTRANSVIEW';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	include(APP_PATH . "purchases/includes/purchasing_ui.php");
 	JS::open_window(900, 500);
 	Page::start(_($help_context = "View Purchase Order"), true);
 	if (!isset($_GET['trans_no'])) {
@@ -20,7 +19,7 @@
 	$purchase_order = new Purch_Order;
 	Purch_Order::get($_GET['trans_no'], $purchase_order);
 	echo "<br>";
-	display_po_summary($purchase_order, true);
+	Purch_Order::summary($purchase_order, true);
 	start_table(Config::get('tables_style') . "  width=90%", 6);
 	Display::heading(_("Line Details"));
 	start_table("colspan=9 " . Config::get('tables_style') . " width=100%");
@@ -61,7 +60,7 @@
 	if ($overdue_items) {
 		Errors::warning(_("Marked items are overdue."), 0, 0, "class='overduefg'");
 	}
-	//----------------------------------------------------------------------------------------------------
+
 	$k = 0;
 	$grns_result = Purch_GRN::get_for_po($_GET['trans_no']);
 	if (DB::num_rows($grns_result) > 0) {
@@ -103,7 +102,7 @@
 	}
 	submenu_print(_("Print This Order"), ST_PURCHORDER, $_GET['trans_no'], 'prtopt');
 	submenu_option(_("&Edit This Order"), "/purchases/po_entry_items.php?ModifyOrderNumber=" . $_GET['trans_no']);
-	//----------------------------------------------------------------------------------------------------
+
 	end_page(true);
 
 ?>

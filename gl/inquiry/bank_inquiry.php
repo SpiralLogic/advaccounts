@@ -1,6 +1,6 @@
 <?php
 	/**********************************************************************
-	Copyright (C) FrontAccounting, LLC.
+	Copyright (C) Advanced Group PTY LTD
 	Released under the terms of the GNU General Public License, GPL,
 	as published by the Free Software Foundation, either version 3
 	of the License, or (at your option) any later version.
@@ -14,13 +14,13 @@
 	JS::open_window(800, 500);
 	Page::start(_($help_context = "Bank Statement"));
 	Validation::check(Validation::BANK_ACCOUNTS, _("There are no bank accounts defined in the system."));
-	//-----------------------------------------------------------------------------------
+
 	// Ajax updates
 	//
 	if (get_post('Show')) {
 		$Ajax->activate('trans_tbl');
 	}
-	//------------------------------------------------------------------------------------------------
+
 	start_form();
 	start_table("class='tablestyle_noborder'");
 	start_row();
@@ -31,7 +31,7 @@
 	end_row();
 	end_table();
 	end_form();
-	//------------------------------------------------------------------------------------------------
+
 	$date_after = Dates::date2sql($_POST['TransAfterDate']);
 	$date_to = Dates::date2sql($_POST['TransToDate']);
 	if (!isset($_POST['bank_account'])) {
@@ -97,7 +97,7 @@
 	end_row();
 	end_table(2);
 	div_end();
-	//------------------------------------------------------------------------------------------------
+
 	end_page();
 
 ?>

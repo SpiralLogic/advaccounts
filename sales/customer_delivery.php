@@ -1,6 +1,6 @@
 <?php
 	/**********************************************************************
-	Copyright (C) FrontAccounting, LLC.
+	Copyright (C) Advanced Group PTY LTD
 	Released under the terms of the GNU General Public License, GPL,
 	as published by the Free Software Foundation, either version 3
 	of the License, or (at your option) any later version.
@@ -9,21 +9,20 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	//-----------------------------------------------------------------------------
+
 	//
 	//	Entry/Modify Delivery Note against Sales Order
 	//
 	$page_security = 'SA_SALESDELIVERY';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	include_once(APP_PATH . "sales/includes/sales_ui.php");
 	JS::open_window(900, 500);
 	$page_title = _($help_context = "Deliver Items for a Sales Order");
 	if (isset($_GET['ModifyDelivery'])) {
 		$page_title = sprintf(_("Modifying Delivery Note # %d."), $_GET['ModifyDelivery']);
 		$help_context = "Modifying Delivery Note";
-		processing_start();
+		Sales_Order::start();
 	} elseif (isset($_GET['OrderNumber'])) {
-		processing_start();
+		Sales_Order::start();
 	}
 	Page::start($page_title);
 	if (isset($_GET['AddedID'])) {
@@ -56,7 +55,7 @@
 		hyperlink_params("/sales/inquiry/sales_deliveries_view.php", _("Select A Different Delivery"), "OutstandingOnly=1");
 		Page::footer_exit();
 	}
-	//-----------------------------------------------------------------------------
+
 	if (isset($_GET['OrderNumber']) && $_GET['OrderNumber'] > 0) {
 		$ord = new Sales_Order(ST_SALESORDER, $_GET['OrderNumber'], true);
 		/*read in all the selected order into the Items cart  */
@@ -81,14 +80,14 @@
 			Page::footer_exit();
 		}
 		copy_from_cart();
-	} elseif (!processing_active()) {
+	} elseif (!Sales_Order::active()) {
 		/* This page can only be called with an order number for invoicing*/
 		Errors::error(_("This page can only be opened if an order or delivery note has been selected. Please select it first."));
 		hyperlink_params("/sales/inquiry/sales_orders_view.php", _("Select a Sales Order to Delivery"), "OutstandingOnly=1");
 		end_page();
 		exit;
 	} else {
-		check_edit_conflicts();
+		Sales_Order::check_edit_conflicts();
 		if (!check_quantities()) {
 			Errors::error(_("Selected quantity cannot be less than quantity invoiced nor more than quantity	not dispatched on sales order."));
 		} elseif (!Validation::is_num('ChargeFreightCost', 0)) {
@@ -96,7 +95,7 @@
 			JS::set_focus('ChargeFreightCost');
 		}
 	}
-	//-----------------------------------------------------------------------------
+
 	function check_data()
 		{
 			if (!isset($_POST['DispatchDate']) || !Dates::is_date($_POST['DispatchDate'])) {
@@ -144,7 +143,7 @@
 			return true;
 		}
 
-	//------------------------------------------------------------------------------
+
 	function copy_to_cart()
 		{
 			$cart = &$_SESSION['Items'];
@@ -159,7 +158,7 @@
 			}
 		}
 
-	//------------------------------------------------------------------------------
+
 	function copy_from_cart()
 		{
 			$cart = &$_SESSION['Items'];
@@ -173,7 +172,7 @@
 			$_POST['ref'] = $cart->reference;
 		}
 
-	//------------------------------------------------------------------------------
+
 	function check_quantities()
 		{
 			$ok = 1;
@@ -209,7 +208,7 @@
 			return $ok;
 		}
 
-	//------------------------------------------------------------------------------
+
 	function check_qoh()
 		{
 			if (!DB_Company::get_pref('allow_negative_stock')) {
@@ -226,7 +225,7 @@
 			return true;
 		}
 
-	//------------------------------------------------------------------------------
+
 	if (isset($_POST['process_delivery']) && check_data() && check_qoh()) {
 		$dn = &$_SESSION['Items'];
 		if ($_POST['bo_policy']) {
@@ -240,7 +239,7 @@
 			Dates::new_doc_date($dn->document_date);
 		}
 		$delivery_no = $dn->write($bo_policy);
-		processing_end();
+		Sales_Order::finish();
 		if ($newdelivery) {
 			meta_forward($_SERVER['PHP_SELF'], "AddedID=$delivery_no");
 		} else {
@@ -250,7 +249,7 @@
 	if (isset($_POST['Update']) || isset($_POST['_Location_update'])) {
 		$Ajax->activate('Items');
 	}
-	//------------------------------------------------------------------------------
+
 	start_form();
 	hidden('cart_id');
 	start_table(Config::get('tables_style2') . " width=90%", 5);
@@ -367,7 +366,7 @@
 	$display_sub_total = Num::price_format($inv_items_total + input_num('ChargeFreightCost'));
 	label_row(_("Sub-total"), $display_sub_total, "colspan=$colspan align=right", "align=right");
 	$taxes = $_SESSION['Items']->get_taxes(input_num('ChargeFreightCost'));
-	$tax_total = Display::edit_tax_items($taxes, $colspan, $_SESSION['Items']->tax_included);
+	$tax_total = Taxes::edit_items($taxes, $colspan, $_SESSION['Items']->tax_included);
 	$display_total = Num::price_format(($inv_items_total + input_num('ChargeFreightCost') + $tax_total));
 	label_row(_("Amount Total"), $display_total, "colspan=$colspan align=right", "align=right");
 	end_table(1);

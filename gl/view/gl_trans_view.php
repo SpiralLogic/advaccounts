@@ -1,6 +1,6 @@
 <?php
 	/**********************************************************************
-	Copyright (C) FrontAccounting, LLC.
+	Copyright (C) Advanced Group PTY LTD
 	Released under the terms of the GNU General Public License, GPL,
 	as published by the Free Software Foundation, either version 3
 	of the License, or (at your option) any later version.
@@ -17,22 +17,22 @@
 		exit;
 	}
 	function display_gl_heading($myrow)
-	{
-		global $systypes_array;
-		$trans_name = $systypes_array[$_GET['type_id']];
-		start_table(Config::get('tables_style') . "  width=95%");
-		$th = array(
-			_("General Ledger Transaction Details"), _("Reference"), _("Date"), _("Person/Item"));
-		table_header($th);
-		start_row();
-		label_cell("$trans_name #" . $_GET['trans_no']);
-		label_cell($myrow["reference"]);
-		label_cell(Dates::sql2date($myrow["tran_date"]));
-		label_cell(Banking::payment_person_name($myrow["person_type_id"], $myrow["person_id"]));
-		end_row();
-		Display::comments_row($_GET['type_id'], $_GET['trans_no']);
-		end_table(1);
-	}
+		{
+			global $systypes_array;
+			$trans_name = $systypes_array[$_GET['type_id']];
+			start_table(Config::get('tables_style') . "  width=95%");
+			$th = array(
+				_("General Ledger Transaction Details"), _("Reference"), _("Date"), _("Person/Item"));
+			table_header($th);
+			start_row();
+			label_cell("$trans_name #" . $_GET['trans_no']);
+			label_cell($myrow["reference"]);
+			label_cell(Dates::sql2date($myrow["tran_date"]));
+			label_cell(Banking::payment_person_name($myrow["person_type_id"], $myrow["person_id"]));
+			end_row();
+			DB_Comments::display_row($_GET['type_id'], $_GET['trans_no']);
+			end_table(1);
+		}
 
 	$sql = "SELECT gl.*, cm.account_name, IF(ISNULL(refs.reference), '', refs.reference) AS reference FROM gl_trans as gl
 	LEFT JOIN chart_master as cm ON gl.account = cm.account_code

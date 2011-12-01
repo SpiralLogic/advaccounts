@@ -1,6 +1,6 @@
 <?php
 	/**********************************************************************
-	Copyright (C) FrontAccounting, LLC.
+	Copyright (C) Advanced Group PTY LTD
 	Released under the terms of the GNU General Public License, GPL,
 	as published by the Free Software Foundation, either version 3
 	of the License, or (at your option) any later version.
@@ -12,7 +12,7 @@
 	$page_security = 'SA_SETUPDISPLAY';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "Display Setup"));
-	//-------------------------------------------------------------------------------------------------
+
 	if (isset($_POST['setprefs'])) {
 		if (!is_numeric($_POST['query_size']) || ($_POST['query_size'] < 1)) {
 			Errors::error($_POST['query_size']);
@@ -20,7 +20,7 @@
 			JS::set_focus('query_size');
 		} else {
 			$chg_theme = User::theme() != $_POST['theme'];
-			$chg_lang = $_SESSION['language']->code != $_POST['language'];
+			$chg_lang = $_SESSION['Language']->code != $_POST['language'];
 			User::get()->update_prefs(
 				$_POST['prices'], $_POST['Quantities'],
 				$_POST['Rates'], $_POST['Percent'],
@@ -34,7 +34,7 @@
 				$_POST['language'], check_value('sticky_doc_date'), $_POST['startup_tab']
 			);
 			if ($chg_lang) {
-				$_SESSION['language']->set_language($_POST['language']);
+				$_SESSION['Language']->set_language($_POST['language']);
 			}
 			// refresh main menu
 			Files::flush_dir(COMPANY_PATH . '/js_cache');
@@ -71,7 +71,7 @@
 	/* The array Config::get('separators_thousands',User::tho_sep()); is set up in config.php for modifications
 		possible separators can be added by modifying the array definition by editing that file */
 	if (!isset($_POST['language'])) {
-		$_POST['language'] = $_SESSION['language']->code;
+		$_POST['language'] = $_SESSION['Language']->code;
 	}
 	table_section_title(_("Language"));
 	languages_list_row(_("Language:"), 'language', $_POST['language']);
@@ -110,7 +110,7 @@
 	end_outer_table(1);
 	submit_center('setprefs', _("Update"), true, '', 'default');
 	end_form(2);
-	//-------------------------------------------------------------------------------------------------
+
 	end_page();
 
 ?>

@@ -1,6 +1,6 @@
 <?php
 	/**********************************************************************
-	Copyright (C) FrontAccounting, LLC.
+	Copyright (C) Advanced Group PTY LTD
 	Released under the terms of the GNU General Public License, GPL,
 	as published by the Free Software Foundation, either version 3
 	of the License, or (at your option) any later version.
@@ -17,7 +17,7 @@
 	// Title:	Aged Customer Balances
 	// ----------------------------------------------------------------
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	//----------------------------------------------------------------------------------------------------
+
 	print_aged_customer_analysis();
 	function get_invoices($customer_id, $to)
 	{
@@ -51,7 +51,7 @@
 		return DB::query($sql, "The customer details could not be retrieved");
 	}
 
-	//----------------------------------------------------------------------------------------------------
+
 	function print_aged_customer_analysis()
 	{
 		global $systypes_array;
@@ -64,9 +64,9 @@
 		$comments = $_POST['PARAM_6'];
 		$destination = $_POST['PARAM_7'];
 		if ($destination) {
-			include_once(APP_PATH . "includes/reports/excel.php");
+			include_once(APPPATH . "reports/excel.php");
 		} else {
-			include_once(APP_PATH . "includes/reports/pdf.php");
+			include_once(APPPATH . "reports/pdf.php");
 		}
 		if ($graphics) {
 			$pg = new Reports_Graph();
@@ -264,7 +264,7 @@
 			$pg->type = $graphics;
 			$pg->skin = Config::get('graphs_skin');
 			$pg->built_in = false;
-			$pg->fontfile = APP_PATH . "reporting/fonts/Vera.ttf";
+			$pg->fontfile = DOCROOT . "reporting/fonts/Vera.ttf";
 			$pg->latin_notation = (Config::get('separators_decimal', User::prefs()->dec_sep()) != ".");
 			$filename = COMPANY_PATH . "/images/test.png";
 			$pg->display($filename, true);

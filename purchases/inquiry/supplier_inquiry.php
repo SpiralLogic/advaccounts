@@ -1,6 +1,6 @@
 <?php
 	/**********************************************************************
-	Copyright (C) FrontAccounting, LLC.
+	Copyright (C) Advanced Group PTY LTD
 	Released under the terms of the GNU General Public License, GPL,
 	as published by the Free Software Foundation, either version 3
 	of the License, or (at your option) any later version.
@@ -11,7 +11,6 @@
 	 ***********************************************************************/
 	$page_security = 'SA_SUPPTRANSVIEW';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	include(APP_PATH . "purchases/includes/purchasing_ui.php");
 	JS::open_window(900, 500);
 	Page::start(_($help_context = "Supplier Inquiry"));
 	if (isset($_GET['supplier_id'])) {
@@ -23,10 +22,10 @@
 	if (isset($_GET['ToDate'])) {
 		$_POST['TransToDate'] = $_GET['ToDate'];
 	}
-	//------------------------------------------------------------------------------------------------
+
 	start_form();
 	if (!isset($_POST['supplier_id'])) {
-		$_POST['supplier_id'] = Session::get()->supplier_id;
+		$_POST['supplier_id'] = Session::i()->supplier_id;
 	}
 	start_table("class='tablestyle_noborder'");
 	start_row();
@@ -37,33 +36,33 @@
 	submit_cells('RefreshInquiry', _("Search"), '', _('Refresh Inquiry'), 'default');
 	end_row();
 	end_table();
-	Session::get()->supplier_id = $_POST['supplier_id'];
-	//------------------------------------------------------------------------------------------------
-	function display_supplier_summary($supplier_record)
-	{
-		$past1 = DB_Company::get_pref('past_due_days');
-		$past2 = 2 * $past1;
-		$nowdue = "1-" . $past1 . " " . _('Days');
-		$pastdue1 = $past1 + 1 . "-" . $past2 . " " . _('Days');
-		$pastdue2 = _('Over') . " " . $past2 . " " . _('Days');
-		start_table("width=90%  " . Config::get('tables_style'));
-		$th = array(
-			_("Currency"), _("Terms"), _("Current"), $nowdue, $pastdue1, $pastdue2, _("Total Balance"), _("Total For Search Period"));
-		table_header($th);
-		start_row();
-		label_cell($supplier_record["curr_code"]);
-		label_cell($supplier_record["terms"]);
-		amount_cell($supplier_record["Balance"] - $supplier_record["Due"]);
-		amount_cell($supplier_record["Due"] - $supplier_record["Overdue1"]);
-		amount_cell($supplier_record["Overdue1"] - $supplier_record["Overdue2"]);
-		amount_cell($supplier_record["Overdue2"]);
-		amount_cell($supplier_record["Balance"]);
-		amount_cell(Purch_Creditor::get_oweing($_POST['supplier_id'], $_POST['TransAfterDate'], $_POST['TransToDate']));
-		end_row();
-		end_table(1);
-	}
+	Session::i()->supplier_id = $_POST['supplier_id'];
 
-	//------------------------------------------------------------------------------------------------
+	function display_supplier_summary($supplier_record)
+		{
+			$past1 = DB_Company::get_pref('past_due_days');
+			$past2 = 2 * $past1;
+			$nowdue = "1-" . $past1 . " " . _('Days');
+			$pastdue1 = $past1 + 1 . "-" . $past2 . " " . _('Days');
+			$pastdue2 = _('Over') . " " . $past2 . " " . _('Days');
+			start_table("width=90%  " . Config::get('tables_style'));
+			$th = array(
+				_("Currency"), _("Terms"), _("Current"), $nowdue, $pastdue1, $pastdue2, _("Total Balance"), _("Total For Search Period"));
+			table_header($th);
+			start_row();
+			label_cell($supplier_record["curr_code"]);
+			label_cell($supplier_record["terms"]);
+			amount_cell($supplier_record["Balance"] - $supplier_record["Due"]);
+			amount_cell($supplier_record["Due"] - $supplier_record["Overdue1"]);
+			amount_cell($supplier_record["Overdue1"] - $supplier_record["Overdue2"]);
+			amount_cell($supplier_record["Overdue2"]);
+			amount_cell($supplier_record["Balance"]);
+			amount_cell(Purch_Creditor::get_oweing($_POST['supplier_id'], $_POST['TransAfterDate'], $_POST['TransToDate']));
+			end_row();
+			end_table(1);
+		}
+
+
 	div_start('totals_tbl');
 	if (($_POST['supplier_id'] != "") && ($_POST['supplier_id'] != ALL_TEXT)) {
 		$supplier_record = Purch_Creditor::get_to_trans($_POST['supplier_id']);
@@ -73,58 +72,60 @@
 	if (get_post('RefreshInquiry')) {
 		$Ajax->activate('totals_tbl');
 	}
-	//------------------------------------------------------------------------------------------------
+
 	function systype_name($dummy, $type)
-	{
-		global $systypes_array;
-		return $systypes_array[$type];
-	}
+		{
+			global $systypes_array;
+			return $systypes_array[$type];
+		}
 
 	function trans_view($trans)
-	{
-		return ui_view::get_trans_view_str($trans["type"], $trans["trans_no"]);
-	}
+		{
+			return ui_view::get_trans_view_str($trans["type"], $trans["trans_no"]);
+		}
 
 	function due_date($row)
-	{
-		return ($row["type"] == ST_SUPPINVOICE) || ($row["type"] == ST_SUPPCREDIT) ? $row["due_date"] : '';
-	}
+		{
+			return ($row["type"] == ST_SUPPINVOICE) || ($row["type"] == ST_SUPPCREDIT) ? $row["due_date"] : '';
+		}
 
 	function gl_view($row)
-	{
-		return ui_view::get_gl_view_str($row["type"], $row["trans_no"]);
-	}
+		{
+			return ui_view::get_gl_view_str($row["type"], $row["trans_no"]);
+		}
 
 	function credit_link($row)
-	{
-		return $row['type'] == ST_SUPPINVOICE && $row["TotalAmount"] - $row["Allocated"] > 0 ? pager_link(_("Credit This"), "/purchases/supplier_credit.php?New=1&invoice_no=" . $row['trans_no'], ICON_CREDIT) : '';
-	}
+		{
+			return $row['type'] == ST_SUPPINVOICE && $row["TotalAmount"] - $row["Allocated"] > 0 ?
+			 pager_link(_("Credit This"), "/purchases/supplier_credit.php?New=1&invoice_no=" . $row['trans_no'], ICON_CREDIT) : '';
+		}
 
 	function fmt_debit($row)
-	{
-		$value = $row["TotalAmount"];
-		return $value >= 0 ? Num::price_format($value) : '';
-	}
+		{
+			$value = $row["TotalAmount"];
+			return $value >= 0 ? Num::price_format($value) : '';
+		}
 
 	function fmt_credit($row)
-	{
-		$value = -$row["TotalAmount"];
-		return $value > 0 ? Num::price_format($value) : '';
-	}
+		{
+			$value = -$row["TotalAmount"];
+			return $value > 0 ? Num::price_format($value) : '';
+		}
 
 	function prt_link($row)
-	{
-		if ($row['type'] == ST_SUPPAYMENT || $row['type'] == ST_BANKPAYMENT || $row['type'] == ST_SUPPCREDIT) {
-			return Reporting::print_doc_link($row['trans_no'] . "-" . $row['type'], _("Print Remittance"), true, ST_SUPPAYMENT, ICON_PRINT);
+		{
+			if ($row['type'] == ST_SUPPAYMENT || $row['type'] == ST_BANKPAYMENT || $row['type'] == ST_SUPPCREDIT) {
+				return Reporting::print_doc_link($row['trans_no'] . "-" . $row['type'], _("Print Remittance"), true, ST_SUPPAYMENT,
+					ICON_PRINT);
+			}
 		}
-	}
 
 	function check_overdue($row)
-	{
-		return $row['OverDue'] == 1 && (abs($row["TotalAmount"]) - $row["Allocated"] != 0);
-	}
+		{
+			return $row['OverDue'] == 1 && (abs($row["TotalAmount"]) - $row["Allocated"] != 0);
+		}
 
-	//------------------------------------------------------------------------------------------------
+
 	if (AJAX_REFERRER && !empty($_POST['ajaxsearch'])) {
 		$searchArray = explode(' ', $_POST['ajaxsearch']);
 		unset($_POST['supplier_id']);
@@ -207,7 +208,7 @@
 		$cols[_("Supplier")] = 'skip';
 		$cols[_("Currency")] = 'skip';
 	}
-	//------------------------------------------------------------------------------------------------
+
 	/*show a table of the transactions returned by the sql */
 	$table =& db_pager::new_db_pager('trans_tbl', $sql, $cols);
 	$table->set_marker('check_overdue', _("Marked items are overdue."));

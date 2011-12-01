@@ -1,6 +1,6 @@
 <?php
 	/**********************************************************************
-	Copyright (C) FrontAccounting, LLC.
+	Copyright (C) Advanced Group PTY LTD
 	Released under the terms of the GNU General Public License, GPL,
 	as published by the Free Software Foundation, either version 3
 	of the License, or (at your option) any later version.
@@ -13,7 +13,7 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "Printing Profiles"));
 	$selected_id = get_post('profile_id', '');
-	//-------------------------------------------------------------------------------------------------
+
 	// Returns array of defined reports
 	//
 	function get_reports()
@@ -61,7 +61,7 @@
 	function clear_form()
 	{
 		global $selected_id;
-		$Ajax          = Ajax::instance();
+		$Ajax          = Ajax::i();
 		$selected_id   = '';
 		$_POST['name'] = '';
 		$Ajax->activate('_page_body');
@@ -78,7 +78,7 @@
 		return DB::num_rows($res);
 	}
 
-	//-------------------------------------------------------------------------------------------
+
 	if (get_post('submit')) {
 		$error = 0;
 		if ($_POST['profile_id'] == '' && empty($_POST['name'])) {

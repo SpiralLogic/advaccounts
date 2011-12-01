@@ -1,6 +1,6 @@
 <?php
 	/**********************************************************************
-	Copyright (C) FrontAccounting, LLC.
+	Copyright (C) Advanced Group PTY LTD
 	Released under the terms of the GNU General Public License, GPL,
 	as published by the Free Software Foundation, either version 3
 	of the License, or (at your option) any later version.
@@ -9,15 +9,12 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 	 ***********************************************************************/
-	//---------------------------------------------------------------------------
+
 	//
 	//	Entry/Modify free hand Credit Note
 	//
 	$page_security = 'SA_SALESCREDIT';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	include_once(APP_PATH . "sales/includes/sales_ui.php");
-	include_once(APP_PATH . "sales/includes/ui/sales_credit_ui.php");
-	include_once(APP_PATH . "sales/includes/ui/sales_order_ui.php");
 	JS::open_window(900, 500);
 	if (isset($_GET['NewCredit'])) {
 		$_SESSION['page_title'] = _($help_context = "Customer Credit Note");
@@ -30,11 +27,11 @@
 		$_SESSION['page_title'] = _($help_context = "Customer Credit Note");
 	}
 	Page::start($_SESSION['page_title']);
-	//-----------------------------------------------------------------------------
+
 	Validation::check(Validation::STOCK_ITEMS, _("There are no items defined in the system."));
 	Validation::check(Validation::BRANCHES_ACTIVE,
 		_("There are no customers, or there are no customers with branches. Please define customers and customer branches."));
-	//-----------------------------------------------------------------------------
+
 	if (list_updated('branch_id')) {
 		// when branch is selected via external editor also customer can change
 		$br = Sales_Branch::get(get_post('branch_id'));
@@ -55,17 +52,17 @@
 		hyperlink_params("/system/attachments.php", _("Add an Attachment"), "filterType=$trans_type&trans_no=$credit_no");
 		Page::footer_exit();
 	} else {
-		check_edit_conflicts();
+		Sales_Order::check_edit_conflicts();
 	}
-	//--------------------------------------------------------------------------------
+
 	function line_start_focus()
 		{
-			$Ajax = Ajax::instance();
+			$Ajax = Ajax::i();
 			$Ajax->activate('items_table');
 			JS::set_focus('_stock_id_edit');
 		}
 
-	//-----------------------------------------------------------------------------
+
 	function copy_to_cn()
 		{
 			$cart = &$_SESSION['Items'];
@@ -82,7 +79,7 @@
 			$cart->dimension2_id = $_POST['dimension2_id'];
 		}
 
-	//-----------------------------------------------------------------------------
+
 	function copy_from_cn()
 		{
 			$cart = &$_SESSION['Items'];
@@ -100,15 +97,15 @@
 			$_POST['cart_id'] = $cart->cart_id;
 		}
 
-	//-----------------------------------------------------------------------------
+
 	function handle_new_credit($trans_no)
 		{
-			processing_start();
+			Sales_Order::start();
 			$_SESSION['Items'] = new Sales_Order(ST_CUSTCREDIT, $trans_no);
 			copy_from_cn();
 		}
 
-	//-----------------------------------------------------------------------------
+
 	function can_process()
 		{
 			$input_error = 0;
@@ -138,7 +135,7 @@
 			return ($input_error == 0);
 		}
 
-	//-----------------------------------------------------------------------------
+
 	if (isset($_POST['ProcessCredit']) && can_process()) {
 		copy_to_cn();
 		if ($_POST['CreditType'] == "WriteOff" && (!isset($_POST['WriteOffGLCode']) || $_POST['WriteOffGLCode'] == '')
@@ -154,10 +151,10 @@
 		copy_to_cn();
 		$credit_no = $_SESSION['Items']->write($_POST['WriteOffGLCode']);
 		Dates::new_doc_date($_SESSION['Items']->document_date);
-		processing_end();
+		Sales_Order::finish();
 		meta_forward($_SERVER['PHP_SELF'], "AddedID=$credit_no");
 	} /*end of process credit note */
-	//-----------------------------------------------------------------------------
+
 	function check_item_data()
 		{
 			if (!Validation::is_num('qty', 0)) {
@@ -178,7 +175,7 @@
 			return true;
 		}
 
-	//-----------------------------------------------------------------------------
+
 	function handle_update_item()
 		{
 			if ($_POST['UpdateItem'] != "" && check_item_data()) {
@@ -187,14 +184,14 @@
 			line_start_focus();
 		}
 
-	//-----------------------------------------------------------------------------
+
 	function handle_delete_item($line_no)
 		{
 			$_SESSION['Items']->remove_from_cart($line_no);
 			line_start_focus();
 		}
 
-	//-----------------------------------------------------------------------------
+
 	function handle_new_item()
 		{
 			if (!check_item_data()) {
@@ -205,7 +202,7 @@
 			line_start_focus();
 		}
 
-	//-----------------------------------------------------------------------------
+
 	$id = find_submit('Delete');
 	if ($id != -1) {
 		handle_delete_item($id);
@@ -219,19 +216,19 @@
 	if (isset($_POST['CancelItemChanges'])) {
 		line_start_focus();
 	}
-	//-----------------------------------------------------------------------------
-	if (!processing_active()) {
+
+	if (!Sales_Order::active()) {
 		handle_new_credit(0);
 	}
-	//-----------------------------------------------------------------------------
+
 	start_form();
 	hidden('cart_id');
-	$customer_error = display_credit_header($_SESSION['Items']);
+	$customer_error = Sales_Credit::header($_SESSION['Items']);
 	if ($customer_error == "") {
 		start_table(Config::get('tables_style2'), "width=90%", 10);
 		echo "<tr><td>";
-		display_credit_items(_("Credit Note Items"), $_SESSION['Items']);
-		credit_options_controls($_SESSION['Items']);
+		Sales_Credit::display_items(_("Credit Note Items"), $_SESSION['Items']);
+		Sales_Credit::option_controls($_SESSION['Items']);
 		echo "</td></tr>";
 		end_table();
 	} else {

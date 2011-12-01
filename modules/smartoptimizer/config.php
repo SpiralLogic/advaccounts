@@ -15,7 +15,7 @@
 	//these types of files will not be gzipped nor minified
 	$settings['gzipExceptions'] = array('gif', 'jpeg', 'jpg', 'png', 'swf');
 	//use this to set Minifier On or Off
-	$settings['minifyjs'] = false;
+	$settings['minifyjs'] = true;
 	//use this to set Minifier On or Off
 	$settings['minifycss'] = true;
 	//use this to set file concatenation On or Off

@@ -1,6 +1,6 @@
 <?php
 	/**********************************************************************
-	Copyright (C) FrontAccounting, LLC.
+	Copyright (C) Advanced Group PTY LTD
 	Released under the terms of the GNU General Public License, GPL,
 	as published by the Free Software Foundation, either version 3
 	of the License, or (at your option) any later version.
@@ -88,19 +88,19 @@
 	function update_data()
 	{
 		global $update_pager;
-		$Ajax = Ajax::instance();
+		$Ajax = Ajax::i();
 		unset($_POST["beg_balance"]);
 		unset($_POST["end_balance"]);
 		$Ajax->activate('summary');
 		$update_pager = true;
 	}
 
-	//---------------------------------------------------------------------------------------------
+
 	// Update db record if respective checkbox value has changed.
 	//
 	function change_tpl_flag($reconcile_id)
 	{
-		$Ajax = Ajax::instance();
+		$Ajax = Ajax::i();
 		if (!check_date() && check_value("rec_" . $reconcile_id)) // temporary fix
 		{
 			return false;
@@ -174,7 +174,7 @@
 		}
 		$Ajax->activate('_page_body');
 	}
-	//------------------------------------------------------------------------------------------------
+
 	start_form();
 	start_table();
 	start_row();
@@ -233,7 +233,7 @@
 	end_table();
 	div_end();
 	echo "<hr>";
-	//------------------------------------------------------------------------------------------------
+
 	if (!isset($_POST['bank_account'])) {
 		$_POST['bank_account'] = "";
 	}
@@ -255,7 +255,7 @@
 	br(1);
 	submit_center('Reconcile', _("Reconcile"), true, '', null);
 	end_form();
-	//------------------------------------------------------------------------------------------------
+
 	$js = <<<JS
 	$(function() {
 		$("th:nth-child(9)").click(function() {

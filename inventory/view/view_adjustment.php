@@ -1,6 +1,6 @@
 <?php
 	/**********************************************************************
-	Copyright (C) FrontAccounting, LLC.
+	Copyright (C) Advanced Group PTY LTD
 	Released under the terms of the GNU General Public License, GPL,
 	as published by the Free Software Foundation, either version 3
 	of the License, or (at your option) any later version.
@@ -17,13 +17,13 @@
 	}
 	Display::heading($systypes_array[ST_INVADJUST] . " #$trans_no");
 	br(1);
-	$adjustment_items = Inv_Adjustment::get_items($trans_no);
+	$adjustment_items = Inv_Adjustment::get($trans_no);
 	$k = 0;
 	$header_shown = false;
 	while ($adjustment = DB::fetch($adjustment_items))
 	{
 		if (!$header_shown) {
-			$adjustment_type = Inv_Movement::get_type( $adjustment['person_id']);
+			$adjustment_type = Inv_Movement::get_type($adjustment['person_id']);
 			start_table(Config::get('tables_style2') . " width=90%");
 			start_row();
 			label_cells(_("At Location"), $adjustment['location_name'], "class='tableheader2'");
@@ -31,7 +31,7 @@
 			label_cells(_("Date"), Dates::sql2date($adjustment['tran_date']), "class='tableheader2'");
 			label_cells(_("Adjustment Type"), $adjustment_type['name'], "class='tableheader2'");
 			end_row();
-			Display::comments_row(ST_INVADJUST, $trans_no);
+			DB_Comments::display_row(ST_INVADJUST, $trans_no);
 			end_table();
 			$header_shown = true;
 			echo "<br>";

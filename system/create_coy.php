@@ -1,6 +1,6 @@
 <?php
 	/**********************************************************************
-	Copyright (C) FrontAccounting, LLC.
+	Copyright (C) Advanced Group PTY LTD
 	Released under the terms of the GNU General Public License, GPL,
 	as published by the Free Software Foundation, either version 3
 	of the License, or (at your option) any later version.
@@ -12,7 +12,7 @@
 	$page_security = 'SA_CREATECOMPANY';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "Create/Update Company"));
-	//---------------------------------------------------------------------------------------------
+
 	if (isset($_GET['selected_id'])) {
 		$selected_id = $_GET['selected_id'];
 	}
@@ -22,7 +22,7 @@
 	} else {
 		$selected_id = -1;
 	}
-	//---------------------------------------------------------------------------------------------
+
 	function check_data()
 	{
 		global $selected_id;
@@ -45,8 +45,8 @@
 		return true;
 	}
 
-	//---------------------------------------------------------------------------------------------
-	//---------------------------------------------------------------------------------------------
+
+
 	function handle_submit()
 	{
 
@@ -113,12 +113,12 @@
 			create_comp_dirs(COMPANY_PATH . "/$id", $comp_subdirs = Config::get('company_subdirs'));
 		}
 		$exts = DB_Company::get_company_extensions();
-		frontaccounting::write_extensions($exts, $id);
+		advaccounting::write_extensions($exts, $id);
 		Errors::notice($new ? _('New company has been created.') : _('Company has been updated.'));
 		return true;
 	}
 
-	//---------------------------------------------------------------------------------------------
+
 	function handle_delete()
 	{
 		$id = $_GET['id'];
@@ -167,7 +167,7 @@
 		Errors::notice(_("Selected company as been deleted"));
 	}
 
-	//---------------------------------------------------------------------------------------------
+
 	function display_companies()
 	{
 		$coyno = User::get()->company;
@@ -226,7 +226,7 @@
 		Errors::warning(_("The marked company is the current company which cannot be deleted."), 0, 0, "class='currentfg'");
 	}
 
-	//---------------------------------------------------------------------------------------------
+
 	function display_company_edit($selected_id)
 	{
 		if ($selected_id != -1) {
@@ -280,7 +280,7 @@
 		end_form();
 	}
 
-	//---------------------------------------------------------------------------------------------
+
 	if (isset($_GET['c']) && $_GET['c'] == 'df') {
 		handle_delete();
 		$selected_id = -1;
@@ -290,11 +290,11 @@
 			$selected_id = -1;
 		}
 	}
-	//---------------------------------------------------------------------------------------------
+
 	display_companies();
 	hyperlink_no_params($_SERVER['PHP_SELF'], _("Create a new company"));
 	display_company_edit($selected_id);
-	//---------------------------------------------------------------------------------------------
+
 	end_page();
 
 ?>

@@ -1,6 +1,6 @@
 <?php
 	/**********************************************************************
-	Copyright (C) FrontAccounting, LLC.
+	Copyright (C) Advanced Group PTY LTD
 	Released under the terms of the GNU General Public License, GPL,
 	as published by the Free Software Foundation, either version 3
 	of the License, or (at your option) any later version.
@@ -11,7 +11,6 @@
 	 ***********************************************************************/
 	$page_security = 'SA_SALESTRANSVIEW';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	include_once(APP_PATH . "sales/includes/sales_ui.php");
 	JS::open_window(900, 600);
 	Page::start(_($help_context = "View Sales Dispatch"), true);
 	if (isset($_GET["trans_no"])) {
@@ -53,7 +52,7 @@
 	label_cells(_("Deliveries"),
 		ui_view::get_customer_trans_view_str(ST_CUSTDELIVERY, Sales_Trans::get_parent(ST_SALESINVOICE, $trans_id)), "class='label'");
 	end_row();
-	Display::comments_row(ST_CUSTDELIVERY, $trans_id);
+	DB_Comments::display_row(ST_CUSTDELIVERY, $trans_id);
 	end_table();
 	echo "</td></tr>";
 	end_table(1); // outer table
@@ -95,7 +94,7 @@
 	label_row(_("Sub-total"), $display_sub_tot, "colspan=6 align=right", "nowrap align=right width=15%");
 	label_row(_("Shipping"), $display_freight, "colspan=6 align=right", "nowrap align=right");
 	$tax_items = GL_Trans::get_tax_details(ST_CUSTDELIVERY, $trans_id);
-	Display::customer_trans_tax_details($tax_items, 6);
+	Sales_Trans::display_tax_details($tax_items, 6);
 	$display_total = Num::price_format($myrow["ov_freight"] + $myrow["ov_amount"] + $myrow["ov_freight_tax"] + $myrow["ov_gst"]);
 	label_row(_("TOTAL VALUE"), $display_total, "colspan=6 align=right", "nowrap align=right");
 	end_table(1);

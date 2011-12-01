@@ -1,6 +1,6 @@
 <?php
 	/**********************************************************************
-	Copyright (C) FrontAccounting, LLC.
+	Copyright (C) Advanced Group PTY LTD
 	Released under the terms of the GNU General Public License, GPL,
 	as published by the Free Software Foundation, either version 3
 	of the License, or (at your option) any later version.
@@ -11,13 +11,12 @@
 	 ***********************************************************************/
 	$page_security = 'SA_MANUFRECEIVE';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	include_once(APP_PATH . "manufacturing/includes/manufacturing_ui.php");
 	JS::open_window(900, 500);
 	Page::start(_($help_context = "Produce or Unassemble Finished Items From Work Order"));
 	if (isset($_GET['trans_no']) && $_GET['trans_no'] != "") {
 		$_POST['selected_id'] = $_GET['trans_no'];
 	}
-	//--------------------------------------------------------------------------------------------------
+
 	if (isset($_GET['AddedID'])) {
 		$id = $_GET['AddedID'];
 		$stype = ST_WORKORDER;
@@ -31,13 +30,13 @@
 		end_page();
 		exit;
 	}
-	//--------------------------------------------------------------------------------------------------
+
 	$wo_details = WO_WorkOrder::get($_POST['selected_id']);
 	if (strlen($wo_details[0]) == 0) {
 		Errors::error(_("The order number sent is not valid."));
 		exit;
 	}
-	//--------------------------------------------------------------------------------------------------
+
 	function can_process()
 		{
 			global $wo_details;
@@ -103,7 +102,7 @@
 			return true;
 		}
 
-	//--------------------------------------------------------------------------------------------------
+
 	if ((isset($_POST['Process']) || isset($_POST['ProcessAndClose'])) && can_process() == true) {
 		$close_wo = 0;
 		if (isset($_POST['ProcessAndClose']) && ($_POST['ProcessAndClose'] != "")) {
@@ -117,9 +116,9 @@
 			$close_wo);
 		meta_forward($_SERVER['PHP_SELF'], "AddedID=" . $_POST['selected_id'] . "&date=" . $_POST['date_']);
 	}
-	//-------------------------------------------------------------------------------------
-	display_wo_details($_POST['selected_id']);
-	//-------------------------------------------------------------------------------------
+
+	WO_Cost::display($_POST['selected_id']);
+
 	start_form();
 	hidden('selected_id', $_POST['selected_id']);
 	//hidden('WOReqQuantity', $_POST['WOReqQuantity']);

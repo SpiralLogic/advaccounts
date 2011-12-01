@@ -1,6 +1,6 @@
 <?php
 	/**********************************************************************
-	Copyright (C) FrontAccounting, LLC.
+	Copyright (C) Advanced Group PTY LTD
 	Released under the terms of the GNU General Public License, GPL,
 	as published by the Free Software Foundation, either version 3
 	of the License, or (at your option) any later version.
@@ -11,7 +11,6 @@
 	 ***********************************************************************/
 	$page_security = 'SA_MANUFRELEASE';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	include_once(APP_PATH . "manufacturing/includes/manufacturing_ui.php");
 	JS::open_window(800, 500);
 	Page::start(_($help_context = "Work Order Release to Manufacturing"));
 	if (isset($_GET["trans_no"])) {
@@ -22,24 +21,24 @@
 		Errors::warning("This page must be called with a work order reference");
 		exit;
 	}
-	//------------------------------------------------------------------------------------
-	function can_process($myrow)
-	{
-		if ($myrow['released']) {
-			Errors::error(_("This work order has already been released."));
-			JS::set_focus('released');
-			return false;
-		}
-		// make sure item has components
-		if (!Manufacturing::has_bom($myrow['stock_id'])) {
-			Errors::error(_("This Work Order cannot be released. The selected item to manufacture does not have a bom."));
-			JS::set_focus('stock_id');
-			return false;
-		}
-		return true;
-	}
 
-	//------------------------------------------------------------------------------------
+	function can_process($myrow)
+		{
+			if ($myrow['released']) {
+				Errors::error(_("This work order has already been released."));
+				JS::set_focus('released');
+				return false;
+			}
+			// make sure item has components
+			if (!Manufacturing::has_bom($myrow['stock_id'])) {
+				Errors::error(_("This Work Order cannot be released. The selected item to manufacture does not have a bom."));
+				JS::set_focus('stock_id');
+				return false;
+			}
+			return true;
+		}
+
+
 	if (isset($_POST['release'])) {
 		WO_WorkOrder::release($selected_id, $_POST['released_date'], $_POST['memo_']);
 		Errors::notice(_("The work order has been released to manufacturing."));
@@ -49,7 +48,7 @@
 		end_page();
 		exit;
 	}
-	//------------------------------------------------------------------------------------
+
 	start_form();
 	$myrow = WO_WorkOrder::get($selected_id);
 	$_POST['released'] = $myrow["released"];

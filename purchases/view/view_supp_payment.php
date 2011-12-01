@@ -1,6 +1,6 @@
 <?php
 	/**********************************************************************
-	Copyright (C) FrontAccounting, LLC.
+	Copyright (C) Advanced Group PTY LTD
 	Released under the terms of the GNU General Public License, GPL,
 	as published by the Free Software Foundation, either version 3
 	of the License, or (at your option) any later version.
@@ -52,12 +52,12 @@
 	}
 	label_cells(_("Reference"), $receipt['ref'], "class='tableheader2'");
 	end_row();
-	Display::comments_row(ST_SUPPAYMENT, $trans_no);
+	DB_Comments::display_row(ST_SUPPAYMENT, $trans_no);
 	end_table(1);
 	$voided = Display::is_voided(ST_SUPPAYMENT, $trans_no, _("This payment has been voided."));
 	// now display the allocations for this payment
 	if (!$voided) {
-		Display::allocations_from(PT_SUPPLIER, $receipt['supplier_id'], ST_SUPPAYMENT, $trans_no, -$receipt['Total']);
+		GL_Allocation::display(PT_SUPPLIER, $receipt['supplier_id'], ST_SUPPAYMENT, $trans_no, -$receipt['Total']);
 	}
 	if (Input::get('popup')) {
 		return;

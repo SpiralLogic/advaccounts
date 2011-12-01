@@ -1,6 +1,6 @@
 <?php
 	/**********************************************************************
-	Copyright (C) FrontAccounting, LLC.
+	Copyright (C) Advanced Group PTY LTD
 	Released under the terms of the GNU General Public License, GPL,
 	as published by the Free Software Foundation, either version 3
 	of the License, or (at your option) any later version.
@@ -12,37 +12,37 @@
 	$page_security = 'SA_POSSETUP';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "POS settings"));
-	include_once(APP_PATH . "sales/includes/db/points.php");
 	Page::simple_mode(true);
-	//----------------------------------------------------------------------------------------------------
-	function can_process()
-	{
-		if (strlen($_POST['name']) == 0) {
-			Errors::error(_("The POS name cannot be empty."));
-			JS::set_focus('pos_name');
-			return false;
-		}
-		if (!check_value('cash') && !check_value('credit')) {
-			Errors::error(_("You must allow cash or credit sale."));
-			JS::set_focus('credit');
-			return false;
-		}
-		return true;
-	}
 
-	//----------------------------------------------------------------------------------------------------
+	function can_process()
+		{
+			if (strlen($_POST['name']) == 0) {
+				Errors::error(_("The POS name cannot be empty."));
+				JS::set_focus('pos_name');
+				return false;
+			}
+			if (!check_value('cash') && !check_value('credit')) {
+				Errors::error(_("You must allow cash or credit sale."));
+				JS::set_focus('credit');
+				return false;
+			}
+			return true;
+		}
+
+
 	if ($Mode == 'ADD_ITEM' && can_process()) {
 		Sales_Point::add($_POST['name'], $_POST['location'], $_POST['account'], check_value('cash'), check_value('credit'));
 		Errors::notice(_('New point of sale has been added'));
 		$Mode = 'RESET';
 	}
-	//----------------------------------------------------------------------------------------------------
+
 	if ($Mode == 'UPDATE_ITEM' && can_process()) {
-		Sales_Point::update($selected_id, $_POST['name'], $_POST['location'], $_POST['account'], check_value('cash'), check_value('credit'));
+		Sales_Point::update($selected_id, $_POST['name'], $_POST['location'], $_POST['account'], check_value('cash'),
+			check_value('credit'));
 		Errors::notice(_('Selected point of sale has been updated'));
 		$Mode = 'RESET';
 	}
-	//----------------------------------------------------------------------------------------------------
+
 	if ($Mode == 'Delete') {
 		$sql = "SELECT * FROM users WHERE pos=" . DB::escape($selected_id);
 		$res = DB::query($sql, "canot check pos usage");
@@ -60,7 +60,7 @@
 		unset($_POST);
 		$_POST['show_inactive'] = $sav;
 	}
-	//----------------------------------------------------------------------------------------------------
+
 	$result = Sales_Point::get_all(check_value('show_inactive'));
 	start_form();
 	start_table(Config::get('tables_style'));
@@ -83,7 +83,7 @@
 	}
 	inactive_control_row($th);
 	end_table(1);
-	//----------------------------------------------------------------------------------------------------
+
 	$cash = Validation::check(Validation::CASH_ACCOUNTS);
 	if (!$cash) {
 		Errors::warning(_("To have cash POS first define at least one cash bank account."));

@@ -1,6 +1,6 @@
 <?php
 	/**********************************************************************
-	Copyright (C) FrontAccounting, LLC.
+	Copyright (C) Advanced Group PTY LTD
 	Released under the terms of the GNU General Public License, GPL,
 	as published by the Free Software Foundation, either version 3
 	of the License, or (at your option) any later version.
@@ -11,7 +11,6 @@
 	 ***********************************************************************/
 	$page_security = 'SA_SALESTRANSVIEW';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	include_once(APP_PATH . "sales/includes/sales_ui.php");
 	JS::open_window(900, 600);
 	if ($_GET['trans_type'] == ST_SALESQUOTE) {
 		Page::start(_($help_context = "View Sales Quotation"), true);
@@ -33,7 +32,7 @@
 	echo "<tr valign=top><td colspan=3>";
 	start_table(Config::get('tables_style') . "  width=100% ");
 	start_row();
-	label_cells(_("Customer Name"), $_SESSION['View']->customer_name, "id='customer_id_label' class='label pointer'");
+	label_cells(_("Customer Name"), $_SESSION['View']->customer_name, "class='label pointer customer_id_label'",'class="pointer customer_id_label"');
 	hidden("customer_id", $_SESSION['View']->customer_id);
 	label_cells(_("Deliver To Branch"), $_SESSION['View']->deliver_to, "class='label'");
 	label_cells(_("Person Ordering"), nl2br($_SESSION['View']->name), "class='label'");

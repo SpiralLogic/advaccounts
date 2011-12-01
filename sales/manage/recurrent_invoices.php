@@ -1,6 +1,6 @@
 <?php
 	/**********************************************************************
-	Copyright (C) FrontAccounting, LLC.
+	Copyright (C) Advanced Group PTY LTD
 	Released under the terms of the GNU General Public License, GPL,
 	as published by the Free Software Foundation, either version 3
 	of the License, or (at your option) any later version.
@@ -59,7 +59,7 @@
 		$selected_id = -1;
 		unset($_POST);
 	}
-	//-------------------------------------------------------------------------------------------------
+
 	function get_sales_group_name($group_no)
 	{
 		$sql = "SELECT description FROM groups WHERE id = " . DB::escape($group_no);
@@ -102,7 +102,7 @@
 	end_table();
 	end_form();
 	echo '<br>';
-	//-------------------------------------------------------------------------------------------------
+
 	start_form();
 	start_table(Config::get('tables_style2'));
 	if ($selected_id != -1) {

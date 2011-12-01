@@ -1,6 +1,6 @@
 <?php
 	/**********************************************************************
-	Copyright (C) FrontAccounting, LLC.
+	Copyright (C) Advanced Group PTY LTD
 	Released under the terms of the GNU General Public License, GPL,
 	as published by the Free Software Foundation, either version 3
 	of the License, or (at your option) any later version.
@@ -12,46 +12,45 @@
 	$page_security = 'SA_CRSTATUS';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "Credit Status"));
-	include(APP_PATH . "sales/includes/db/creditstatus.php");
 	Page::simple_mode(true);
-	//-----------------------------------------------------------------------------------
-	function can_process()
-	{
-		if (strlen($_POST['reason_description']) == 0) {
-			Errors::error(_("The credit status description cannot be empty."));
-			JS::set_focus('reason_description');
-			return false;
-		}
-		return true;
-	}
 
-	//-----------------------------------------------------------------------------------
+	function can_process()
+		{
+			if (strlen($_POST['reason_description']) == 0) {
+				Errors::error(_("The credit status description cannot be empty."));
+				JS::set_focus('reason_description');
+				return false;
+			}
+			return true;
+		}
+
+
 	if ($Mode == 'ADD_ITEM' && can_process()) {
 		Sales_CreditStatus::add($_POST['reason_description'], $_POST['DisallowInvoices']);
 		Errors::notice(_('New credit status has been added'));
 		$Mode = 'RESET';
 	}
-	//-----------------------------------------------------------------------------------
+
 	if ($Mode == 'UPDATE_ITEM' && can_process()) {
 		Errors::notice(_('Selected credit status has been updated'));
 		Sales_CreditStatus::update($selected_id, $_POST['reason_description'], $_POST['DisallowInvoices']);
 		$Mode = 'RESET';
 	}
-	//-----------------------------------------------------------------------------------
-	function can_delete($selected_id)
-	{
-		$sql = "SELECT COUNT(*) FROM debtors_master
-		WHERE credit_status=" . DB::escape($selected_id);
-		$result = DB::query($sql, "could not query customers");
-		$myrow = DB::fetch_row($result);
-		if ($myrow[0] > 0) {
-			Errors::error(_("Cannot delete this credit status because customer accounts have been created referring to it."));
-			return false;
-		}
-		return true;
-	}
 
-	//-----------------------------------------------------------------------------------
+	function can_delete($selected_id)
+		{
+			$sql = "SELECT COUNT(*) FROM debtors_master
+		WHERE credit_status=" . DB::escape($selected_id);
+			$result = DB::query($sql, "could not query customers");
+			$myrow = DB::fetch_row($result);
+			if ($myrow[0] > 0) {
+				Errors::error(_("Cannot delete this credit status because customer accounts have been created referring to it."));
+				return false;
+			}
+			return true;
+		}
+
+
 	if ($Mode == 'Delete') {
 		if (can_delete($selected_id)) {
 			Sales_CreditStatus::delete($selected_id);
@@ -65,7 +64,7 @@
 		unset($_POST);
 		$_POST['show_inactive'] = $sav;
 	}
-	//-----------------------------------------------------------------------------------
+
 	$result = Sales_CreditStatus::get_all(check_value('show_inactive'));
 	start_form();
 	start_table(Config::get('tables_style') . "  width=40%");
@@ -90,7 +89,7 @@
 	inactive_control_row($th);
 	end_table();
 	echo '<br>';
-	//-----------------------------------------------------------------------------------
+
 	start_table(Config::get('tables_style2'));
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {
@@ -106,7 +105,7 @@
 	end_table(1);
 	submit_add_or_update_center($selected_id == -1, '', 'both');
 	end_form();
-	//------------------------------------------------------------------------------------
+
 	end_page();
 
 ?>

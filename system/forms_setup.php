@@ -1,6 +1,6 @@
 <?php
 	/**********************************************************************
-	Copyright (C) FrontAccounting, LLC.
+	Copyright (C) Advanced Group PTY LTD
 	Released under the terms of the GNU General Public License, GPL,
 	as published by the Free Software Foundation, either version 3
 	of the License, or (at your option) any later version.
@@ -12,7 +12,7 @@
 	$page_security = 'SA_FORMSETUP';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "Forms Setup"));
-	//-------------------------------------------------------------------------------------------------
+
 	if (isset($_POST['setprefs'])) {
 		$systypes = SysTypes::get_systypes();
 		DB::begin_transaction();
@@ -41,7 +41,7 @@
 	end_outer_table(1);
 	submit_center('setprefs', _("Update"), true, '', 'default');
 	end_form(2);
-	//-------------------------------------------------------------------------------------------------
+
 	end_page();
 
 ?>

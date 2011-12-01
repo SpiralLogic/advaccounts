@@ -1,7 +1,7 @@
 <?php
 
 	/*     * ********************************************************************
-				Copyright (C) FrontAccounting, LLC.
+				Copyright (C) Advanced Group PTY LTD
 				Released under the terms of the GNU General Public License, GPL,
 				as published by the Free Software Foundation, either version 3
 				of the License, or (at your option) any later version.
@@ -11,7 +11,6 @@
 				See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 				* ********************************************************************* */
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	include_once(APP_PATH . "sales/includes/sales_ui.php");
 	$page_security = 'SA_SALESTRANSVIEW';
 	Security::set_page(Input::post('order_view_mode'), array(
 																													'OutstandingOnly' => 'SA_SALESDELIVERY', 'InvoiceTemplates' => 'SA_SALESINVOICE'),
@@ -37,22 +36,22 @@
 	if ($trans_type == ST_SALESORDER) {
 		if (Input::get('OutstandingOnly')) {
 			$_POST['order_view_mode'] = 'OutstandingOnly';
-			Session::get()->page_title = _($help_context = "Search Outstanding Sales Orders");
+			Session::i()->page_title = _($help_context = "Search Outstanding Sales Orders");
 		} elseif (isset($_GET['InvoiceTemplates']) && ($_GET['InvoiceTemplates'] == true)) {
 			$_POST['order_view_mode'] = 'InvoiceTemplates';
-			Session::get()->page_title = _($help_context = "Search Template for Invoicing");
+			Session::i()->page_title = _($help_context = "Search Template for Invoicing");
 		} elseif (isset($_GET['DeliveryTemplates']) && ($_GET['DeliveryTemplates'] == true)) {
 			$_POST['order_view_mode'] = 'DeliveryTemplates';
-			Session::get()->page_title = _($help_context = "Select Template for Delivery");
+			Session::i()->page_title = _($help_context = "Select Template for Delivery");
 		} elseif (!isset($_POST['order_view_mode'])) {
 			$_POST['order_view_mode'] = false;
-			Session::get()->page_title = _($help_context = "Search All Sales Orders");
+			Session::i()->page_title = _($help_context = "Search All Sales Orders");
 		}
 	} else {
 		$_POST['order_view_mode'] = "Quotations";
-		Session::get()->page_title = _($help_context = "Search All Sales Quotations");
+		Session::i()->page_title = _($help_context = "Search All Sales Quotations");
 	}
-	Page::start(Session::get()->page_title);
+	Page::start(Session::i()->page_title);
 	if (isset($_GET['selected_customer'])) {
 		$selected_customer = $_GET['selected_customer'];
 	} elseif (isset($_POST['selected_customer'])) {
@@ -60,14 +59,14 @@
 	} else {
 		$selected_customer = -1;
 	}
-	//---------------------------------------------------------------------------------------------
+
 	if (isset($_POST['SelectStockFromList']) && ($_POST['SelectStockFromList'] != "") && ($_POST['SelectStockFromList'] != ALL_TEXT)
 	) {
 		$selected_stock_item = $_POST['SelectStockFromList'];
 	} else {
 		unset($selected_stock_item);
 	}
-	//---------------------------------------------------------------------------------------------
+
 	//	Query format functions
 	//
 	function check_overdue($row)
@@ -149,12 +148,12 @@
 			['order_no'] . ']', $value, false);
 		}
 
-	//---------------------------------------------------------------------------------------------
+
 	// Update db record if respective checkbox value has changed.
 	//
 	function change_tpl_flag($id)
 		{
-			$Ajax = Ajax::instance();
+			$Ajax = Ajax::i();
 			$sql = "UPDATE sales_orders SET type = !type WHERE order_no=$id";
 			DB::query($sql, "Can't change sales order type");
 			$Ajax->activate('orders_tbl');
@@ -171,7 +170,7 @@
 			}
 		}
 	}
-	//---------------------------------------------------------------------------------------------
+
 	//	Order range form
 	//
 	if (get_post('_OrderNumber_changed')) { // enable/disable selection controls
@@ -210,7 +209,7 @@
 	hidden('type', $trans_type);
 	end_row();
 	end_table(1);
-	//---------------------------------------------------------------------------------------------
+
 	//	Orders inquiry table
 	//
 	$sql = "SELECT

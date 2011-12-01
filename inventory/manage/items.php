@@ -1,6 +1,6 @@
 <?php
 	/**********************************************************************
-	Copyright (C) FrontAccounting, LLC.
+	Copyright (C) Advanced Group PTY LTD
 	Released under the terms of the GNU General Public License, GPL,
 	as published by the Free Software Foundation, either version 3
 	of the License, or (at your option) any later version.
@@ -14,7 +14,7 @@
 	Page::start(_($help_context = "Items"), Input::request('popup'));
 	$user_comp = '';
 	$new_item = get_post('stock_id') == '' || get_post('cancel') || get_post('clone');
-	//------------------------------------------------------------------------------------
+
 	if (isset($_GET['stock_id'])) {
 		$_POST['stock_id'] = $stock_id = $_GET['stock_id'];
 	} elseif (isset($_POST['stock_id'])) {
@@ -90,7 +90,7 @@
 		unset($_POST['no_sale']);
 	}
 
-	//------------------------------------------------------------------------------------
+
 	if (isset($_POST['addupdate']) || isset($_POST['addupdatenew'])) {
 		$input_error = 0;
 		if ($upload_file == 'No') {
@@ -158,7 +158,7 @@
 				$new_item = true;
 				meta_forward($_SERVER['PHP_SELF']);
 			} else {
-				Session::get()->global_stock_id = $_POST['NewStockID'];
+				Session::i()->global_stock_id = $_POST['NewStockID'];
 				$_POST['stock_id'] = $_POST['NewStockID'];
 			}
 			$Ajax->activate('_page_body');
@@ -170,7 +170,7 @@
 		JS::set_focus('NewStockID');
 		$Ajax->activate('_page_body');
 	}
-	//------------------------------------------------------------------------------------
+
 	function check_usage($stock_id, $dispmsg = true)
 	{
 		$sqls = array(
@@ -214,7 +214,7 @@
 		return true;
 	}
 
-	//------------------------------------------------------------------------------------
+
 	if (isset($_POST['delete']) && strlen($_POST['delete']) > 1) {
 		if (check_usage($_POST['NewStockID'])) {
 			$stock_id = $_POST['NewStockID'];
@@ -230,7 +230,7 @@
 			$Ajax->activate('_page_body');
 		}
 	}
-	//--------------------------------------------------------------------------------------------
+
 	start_form(true);
 	if (Validation::check(Validation::STOCK_ITEMS)) {
 		start_table("class='tablestyle_noborder'");
@@ -253,7 +253,7 @@
 	start_outer_table(Config::get('tables_style2'), 5);
 	table_section(1);
 	table_section_title(_("Item"));
-	//------------------------------------------------------------------------------------
+
 	if ($new_item) {
 		text_row(_("Item Code:"), 'NewStockID', null, 21, 20);
 		$_POST['inactive'] = 0;
@@ -373,16 +373,16 @@
 		submit_center_last('cancel', _("Cancel"), _("Cancel Edition"), 'cancel');
 	}
 	if (get_post('stock_id')) {
-		Session::get()->global_stock_id = get_post('stock_id');
+		Session::i()->global_stock_id = get_post('stock_id');
 		echo "<iframe src='/inventory/purchasing_data.php?frame=1' width='48%' height='450' style='overflow-x: hidden; overflow-y: scroll; ' frameborder='0'></iframe> ";
 	}
 	if (get_post('stock_id')) {
-		Session::get()->global_stock_id = get_post('stock_id');
+		Session::i()->global_stock_id = get_post('stock_id');
 		echo "<iframe style='float:right;' src='/inventory/prices.php?frame=1' width='48%' height='450' style='overflow-x: hidden; overflow-y: scroll; ' frameborder='0'></iframe> ";
 	}
 	div_end();
 	hidden('popup', Input::request('popup'));
 	end_form();
-	//------------------------------------------------------------------------------------
+
 	end_page();
 ?>

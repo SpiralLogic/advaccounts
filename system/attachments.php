@@ -1,6 +1,6 @@
 <?php
 	/**********************************************************************
-	Copyright (C) FrontAccounting, LLC.
+	Copyright (C) Advanced Group PTY LTD
 	Released under the terms of the GNU General Public License, GPL,
 	as published by the Free Software Foundation, either version 3
 	of the License, or (at your option) any later version.
@@ -58,7 +58,7 @@
 	JS::open_window(800, 500);
 	Page::start(_($help_context = "Attach Documents"));
 	Page::simple_mode(true);
-	//----------------------------------------------------------------------------------------
+
 	if (isset($_GET['filterType'])) // catch up external links
 	{
 		$_POST['filterType'] = $_GET['filterType'];
@@ -144,7 +144,7 @@
 		end_form();
 	}
 
-	//----------------------------------------------------------------------------------------
+
 	function get_attached_documents($type)
 	{
 		$sql = "SELECT * FROM attachments WHERE type_no=" . DB::escape($type)
@@ -189,7 +189,7 @@
 		div_end();
 	}
 
-	//----------------------------------------------------------------------------------------
+
 	viewing_controls();
 	if (isset($_POST['filterType'])) {
 		display_rows($_POST['filterType']);

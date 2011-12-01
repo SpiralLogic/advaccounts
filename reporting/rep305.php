@@ -1,6 +1,6 @@
 <?php
 	/**********************************************************************
-	Copyright (C) FrontAccounting, LLC.
+	Copyright (C) Advanced Group PTY LTD
 	Released under the terms of the GNU General Public License, GPL,
 	as published by the Free Software Foundation, either version 3
 	of the License, or (at your option) any later version.
@@ -17,7 +17,7 @@
 	// Title:	GRN Valuation Report
 	// ----------------------------------------------------------------
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	//----------------------------------------------------------------------------------------------------
+
 	print_grn_valuation();
 	function getTransactions($from, $to)
 	{
@@ -39,7 +39,7 @@
 		return DB::query($sql, "No transactions were returned");
 	}
 
-	//----------------------------------------------------------------------------------------------------
+
 	function print_grn_valuation()
 	{
 		$from = $_POST['PARAM_0'];
@@ -47,11 +47,11 @@
 		$comments = $_POST['PARAM_2'];
 		$destination = $_POST['PARAM_3'];
 		if ($destination) {
-			include_once(APP_PATH . "includes/reports/excel.php");
+			include_once(APPPATH . "reports/excel.php");
 		}
 		else
 		{
-			include_once(APP_PATH . "includes/reports/pdf.php");
+			include_once(APPPATH . "reports/pdf.php");
 		}
 		$dec = User::price_dec();
 		$cols = array(0, 75, 225, 275, 345, 390, 445, 515);

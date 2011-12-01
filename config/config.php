@@ -16,7 +16,7 @@
 		// writable by www server. When set to empty string logging is switched off.
 		// Special value 'syslog' can be used for system logger usage (see php manual).
 		//$error_logfile = '';
-		'logs_error_file'									=> APP_PATH . 'tmp/errors.log',
+		'logs_error_file'									=> DOCROOT . 'tmp/errors.log',
 /* use popup windows for views */
 		'ui_windows_popups'								=> true,
 		/* use date picker for all date fields */
@@ -34,8 +34,8 @@
 		// $old_style_help = 1; // this setting is depreciated and subject to removal in next FA versions
 		// 	locally installed wiki module
 		// Config::get('help_baseurl') = $path_to_root.'/modules/wiki/index.php?n='._('Help').'.';
-		// 	context help feed from frontaccounting.net
-		// Config::get('help_baseurl')  = 'http://frontaccounting.com/fawiki/index.php?n=Help.';
+		// 	context help feed from advaccounting.net
+		// Config::get('help_baseurl')  = 'http://advaccounting.com/fawiki/index.php?n=Help.';
 		// 	not used
 		'help_baseurl'										 => null,
 		/* per user data/cache directory */
@@ -54,6 +54,7 @@
 		'auth_salt'												=> '342342134sdfgsgdf',
 		'ui_date_format'									 => 1,
 		'ui_date_seperator'								=> '/',
+		'use_fiscalyear'=>false,
 		/* Default border and spacing for tables
 							 *  Should be moved to CSS */
 		'tables_style'										 => "class='tablestyle'",

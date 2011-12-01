@@ -1,6 +1,6 @@
 <?php
 	/**********************************************************************
-	Copyright (C) FrontAccounting, LLC.
+	Copyright (C) Advanced Group PTY LTD
 	Released under the terms of the GNU General Public License, GPL,
 	as published by the Free Software Foundation, either version 3
 	of the License, or (at your option) any later version.
@@ -17,7 +17,7 @@
 	// Title:	Profit and Loss Statement
 	// ----------------------------------------------------------------
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	//----------------------------------------------------------------------------------------------------
+
 	function display_type($type, $typename, $from, $to, $begin, $end, $compare, $convert, &$dec, &$pdec, &$rep, $dimension, $dimension2, &$pg, $graphics)
 	{
 		$code_per_balance = 0;
@@ -99,7 +99,7 @@
 	}
 
 	print_profit_and_loss_statement();
-	//----------------------------------------------------------------------------------------------------
+
 	function Achieve($d1, $d2)
 	{
 		if ($d1 == 0 && $d2 == 0) {
@@ -114,7 +114,7 @@
 		return $ret;
 	}
 
-	//----------------------------------------------------------------------------------------------------
+
 	function print_profit_and_loss_statement()
 	{
 		$dim = DB_Company::get_pref('use_dimension');
@@ -142,9 +142,9 @@
 			$destination = $_POST['PARAM_6'];
 		}
 		if ($destination) {
-			include_once(APP_PATH . "includes/reports/excel.php");
+			include_once(APPPATH . "reports/excel.php");
 		} else {
-			include_once(APP_PATH . "includes/reports/pdf.php");
+			include_once(APPPATH . "reports/pdf.php");
 		}
 		if ($graphics) {
 			$pg = new Reports_Graph();

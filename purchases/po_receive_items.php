@@ -1,6 +1,6 @@
 <?php
 	/**********************************************************************
-	Copyright (C) FrontAccounting, LLC.
+	Copyright (C) Advanced Group PTY LTD
 	Released under the terms of the GNU General Public License, GPL,
 	as published by the Free Software Foundation, either version 3
 	of the License, or (at your option) any later version.
@@ -11,10 +11,9 @@
 	 ***********************************************************************/
 	$page_security = 'SA_GRN';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	include_once(APP_PATH . "purchases/includes/purchasing_ui.php");
 	JS::open_window(900, 500);
 	Page::start(_($help_context = "Receive Purchase Order Items"));
-	//---------------------------------------------------------------------------------------------------------------
+
 	if (isset($_GET['AddedID'])) {
 		$grn = $_GET['AddedID'];
 		$trans_type = ST_SUPPRECEIVE;
@@ -24,11 +23,11 @@
 		hyperlink_no_params("/purchases/inquiry/po_search.php", _("Select a different &purchase order for receiving items against"));
 		Page::footer_exit();
 	}
-	//--------------------------------------------------------------------------------------------------
+
 	if ((!isset($_GET['PONumber']) || $_GET['PONumber'] == 0) && !isset($_SESSION['PO'])) {
 		die (_("This page can only be opened if a purchase order has been selected. Please select a purchase order first."));
 	}
-	//--------------------------------------------------------------------------------------------------
+
 	function display_po_receive_items()
 		{
 			div_start('grn_items');
@@ -78,7 +77,7 @@
 			div_end();
 		}
 
-	//--------------------------------------------------------------------------------------------------
+
 	function check_po_changed()
 		{
 			/*Now need to check that the order details are the same as they were when they were read into the Items array. If they've changed then someone else must have altered them */
@@ -106,7 +105,7 @@
 			return false;
 		}
 
-	//--------------------------------------------------------------------------------------------------
+
 	function can_process()
 		{
 			if (count($_SESSION['PO']->line_items) <= 0) {
@@ -159,10 +158,10 @@
 			return true;
 		}
 
-	//--------------------------------------------------------------------------------------------------
+
 	function process_receive_po()
 		{
-			$Ajax = Ajax::instance();
+			$Ajax = Ajax::i();
 			if (!can_process()) {
 				return;
 			}
@@ -188,13 +187,13 @@
 			meta_forward($_SERVER['PHP_SELF'], "AddedID=$grn");
 		}
 
-	//--------------------------------------------------------------------------------------------------
+
 	if (isset($_GET['PONumber']) && $_GET['PONumber'] > 0 && !isset($_POST['Update'])) {
-		create_new_po();
+		Purch_Order::create();
 		/*read in all the selected order into the Items cart  */
 		Purch_Order::get($_GET['PONumber'], $_SESSION['PO']);
 	}
-	//--------------------------------------------------------------------------------------------------
+
 	if (isset($_POST['Update']) || isset($_POST['ProcessGoodsReceived'])) {
 		/* if update quantities button is hit page has been called and ${$line->line_no} would have be
 								set from the post to the quantity to be received in this receival*/
@@ -215,13 +214,13 @@
 		}
 		$Ajax->activate('grn_items');
 	}
-	//--------------------------------------------------------------------------------------------------
+
 	if (isset($_POST['ProcessGoodsReceived'])) {
 		process_receive_po();
 	}
-	//--------------------------------------------------------------------------------------------------
+
 	start_form();
-	display_grn_summary($_SESSION['PO'], true);
+	Purch_GRN::display($_SESSION['PO'], true);
 	Display::heading(_("Items to Receive"));
 	display_po_receive_items();
 	hyperlink_params("/purchases/po_entry_items.php", _("Edit This Purchase Order"),
@@ -230,7 +229,7 @@
 	submit_center_first('Update', _("Update Totals"), '', true);
 	submit_center_last('ProcessGoodsReceived', _("Process Receive Items"), _("Clear all GL entry fields"), 'default');
 	end_form();
-	//--------------------------------------------------------------------------------------------------
+
 	end_page();
 ?>
 

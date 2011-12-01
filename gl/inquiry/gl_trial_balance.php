@@ -1,6 +1,6 @@
 <?php
 	/**********************************************************************
-	Copyright (C) FrontAccounting, LLC.
+	Copyright (C) Advanced Group PTY LTD
 	Released under the terms of the GNU General Public License, GPL,
 	as published by the Free Software Foundation, either version 3
 	of the License, or (at your option) any later version.
@@ -13,7 +13,7 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	$js = "";
 	Page::start(_($help_context = "Trial Balance"));
-	//----------------------------------------------------------------------------------------------------
+
 	// Ajax updates
 	//
 	if (get_post('Show')) {
@@ -32,7 +32,7 @@
 		end_form();
 	}
 
-	//----------------------------------------------------------------------------------------------------
+
 	function display_trial_balance()
 	{
 		div_start('balance_tbl');
@@ -122,10 +122,10 @@
 		div_end();
 	}
 
-	//----------------------------------------------------------------------------------------------------
+
 	gl_inquiry_controls();
 	display_trial_balance();
-	//----------------------------------------------------------------------------------------------------
+
 	end_page();
 
 ?>

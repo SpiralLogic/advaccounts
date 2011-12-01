@@ -1,6 +1,6 @@
 <?php
 	/**********************************************************************
-	Copyright (C) FrontAccounting, LLC.
+	Copyright (C) Advanced Group PTY LTD
 	Released under the terms of the GNU General Public License, GPL,
 	as published by the Free Software Foundation, either version 3
 	of the License, or (at your option) any later version.
@@ -16,7 +16,7 @@
 	Validation::check(Validation::WORKCENTRES, _("There are no work centres defined in the system. BOMs require at least one work centre be defined."));
 	Page::simple_mode(true);
 	$selected_component = $selected_id;
-	//--------------------------------------------------------------------------------------------------
+
 	//if (isset($_GET["NewItem"]))
 	//{
 	//	$_POST['stock_id'] = $_GET["NewItem"];
@@ -45,7 +45,7 @@
 		 $selected_component = get_post("selected_component", -1);
 	 }
 	 */
-	//--------------------------------------------------------------------------------------------------
+
 	function check_for_recursive_bom($ultimate_parent, $component_to_check)
 	{
 		/* returns true ie 1 if the bom contains the parent part as a component
@@ -65,7 +65,7 @@
 		} //end if $result is true
 		return 0;
 	} //end of function check_for_recursive_bom
-	//--------------------------------------------------------------------------------------------------
+
 	function display_bom_items($selected_parent)
 	{
 		$result = Manufacturing::get_bom($selected_parent);
@@ -94,7 +94,7 @@
 		div_end();
 	}
 
-	//--------------------------------------------------------------------------------------------------
+
 	function on_submit($selected_parent, $selected_component = -1)
 	{
 		if (!Validation::is_num('quantity', 0)) {
@@ -147,7 +147,7 @@
 		}
 	}
 
-	//--------------------------------------------------------------------------------------------------
+
 	if ($Mode == 'Delete') {
 		$sql = "DELETE FROM bom WHERE id=" . DB::escape($selected_id);
 		DB::query($sql, "Could not delete this bom components");
@@ -158,7 +158,7 @@
 		$selected_id = -1;
 		unset($_POST['quantity']);
 	}
-	//--------------------------------------------------------------------------------------------------
+
 	start_form();
 	start_form(false, true);
 	start_table("class='tablestyle_noborder'");
@@ -169,16 +169,16 @@
 	end_table();
 	br();
 	end_form();
-	//--------------------------------------------------------------------------------------------------
+
 	if (get_post('stock_id') != '') { //Parent Item selected so display bom or edit component
 		$selected_parent = $_POST['stock_id'];
 		if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 			on_submit($selected_parent, $selected_id);
 		}
-		//--------------------------------------------------------------------------------------
+
 		start_form();
 		display_bom_items($selected_parent);
-		//--------------------------------------------------------------------------------------
+
 		echo '<br>';
 		start_table(Config::get('tables_style2'));
 		if ($selected_id != -1) {

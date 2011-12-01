@@ -1,7 +1,7 @@
 <?php
 
 	/**********************************************************************
-	Copyright (C) FrontAccounting, LLC.
+	Copyright (C) Advanced Group PTY LTD
 	Released under the terms of the GNU General Public License, GPL,
 	as published by the Free Software Foundation, either version 3
 	of the License, or (at your option) any later version.
@@ -22,8 +22,9 @@
 	$def_theme = "default";
 	$login_timeout = User::get()->last_act;
 	$title = $login_timeout ? _('Authorization timeout') : APP_TITLE . " " . VERSION . " - " . _("Login");
-	$encoding = isset($_SESSION['language']->encoding) ? $_SESSION['language']->encoding : "utf-8";
-	$rtl = isset($_SESSION['language']->dir) ? $_SESSION['language']->dir : "ltr";
+	$encoding = isset($_SESSION['Language']->encoding) ? $_SESSION['Language']->encoding : "utf-8";
+	$rtl = isset($_SESSION['Language']->dir) ? $_SESSION['Language']->dir : "ltr";
+
 	echo "<!DOCTYPE HTML>\n";
 	echo "<html dir='$rtl' >\n";
 	echo "<head><title>$title</title>\n";

@@ -1,6 +1,6 @@
 <?php
 	/**********************************************************************
-	Copyright (C) FrontAccounting, LLC.
+	Copyright (C) Advanced Group PTY LTD
 	Released under the terms of the GNU General Public License, GPL,
 	as published by the Free Software Foundation, either version 3
 	of the License, or (at your option) any later version.
@@ -17,7 +17,7 @@
 	// Title:	Balance Sheet
 	// ----------------------------------------------------------------
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	//----------------------------------------------------------------------------------------------------
+
 	function display_type($type, $typename, $from, $to, $convert, &$dec, &$rep, $dimension, $dimension2, &$pg, $graphics)
 	{
 		$code_open_balance = 0;
@@ -91,7 +91,7 @@
 	}
 
 	print_balance_sheet();
-	//----------------------------------------------------------------------------------------------------
+
 	function print_balance_sheet()
 	{
 		$dim = DB_Company::get_pref('use_dimension');
@@ -118,9 +118,9 @@
 			$destination = $_POST['PARAM_5'];
 		}
 		if ($destination) {
-			include_once(APP_PATH . "includes/reports/excel.php");
+			include_once(APPPATH . "reports/excel.php");
 		} else {
-			include_once(APP_PATH . "includes/reports/pdf.php");
+			include_once(APPPATH . "reports/pdf.php");
 		}
 		if ($graphics) {
 			$pg = new Reports_Graph();

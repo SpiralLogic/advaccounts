@@ -1,6 +1,6 @@
 <?php
 	/**********************************************************************
-	Copyright (C) FrontAccounting, LLC.
+	Copyright (C) Advanced Group PTY LTD
 	Released under the terms of the GNU General Public License, GPL,
 	as published by the Free Software Foundation, either version 3
 	of the License, or (at your option) any later version.
@@ -12,7 +12,6 @@
 	$page_security = 'SA_SUPPLIERALLOC';
 	//
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	include(APP_PATH . "purchases/includes/purchasing_ui.php");
 	JS::open_window(900, 500);
 	Page::start(_($help_context = "Supplier Allocation Inquiry"));
 	if (isset($_GET['supplier_id'])) {
@@ -24,10 +23,10 @@
 	if (isset($_GET['ToDate'])) {
 		$_POST['TransToDate'] = $_GET['ToDate'];
 	}
-	//------------------------------------------------------------------------------------------------
+
 	start_form();
 	if (!isset($_POST['supplier_id'])) {
-		$_POST['supplier_id'] = Session::get()->supplier_id;
+		$_POST['supplier_id'] = Session::i()->supplier_id;
 	}
 	start_table("class='tablestyle_noborder'");
 	start_row();
@@ -37,56 +36,59 @@
 	supp_allocations_list_cell("filterType", null);
 	check_cells(_("show settled:"), 'showSettled', null);
 	submit_cells('RefreshInquiry', _("Search"), '', _('Refresh Inquiry'), 'default');
-	Session::get()->supplier_id = $_POST['supplier_id'];
+	Session::i()->supplier_id = $_POST['supplier_id'];
 	end_row();
 	end_table();
-	//------------------------------------------------------------------------------------------------
+
 	function check_overdue($row)
-	{
-		return ($row['TotalAmount'] > $row['Allocated']) && $row['OverDue'] == 1;
-	}
+		{
+			return ($row['TotalAmount'] > $row['Allocated']) && $row['OverDue'] == 1;
+		}
 
 	function systype_name($dummy, $type)
-	{
-		global $systypes_array;
-		return $systypes_array[$type];
-	}
+		{
+			global $systypes_array;
+			return $systypes_array[$type];
+		}
 
 	function view_link($trans)
-	{
-		return ui_view::get_trans_view_str($trans["type"], $trans["trans_no"]);
-	}
+		{
+			return ui_view::get_trans_view_str($trans["type"], $trans["trans_no"]);
+		}
 
 	function due_date($row)
-	{
-		return (($row["type"] == ST_SUPPINVOICE) || ($row["type"] == ST_SUPPCREDIT)) ? $row["due_date"] : "";
-	}
+		{
+			return (($row["type"] == ST_SUPPINVOICE) || ($row["type"] == ST_SUPPCREDIT)) ? $row["due_date"] : "";
+		}
 
 	function fmt_balance($row)
-	{
-		$value = ($row["type"] == ST_BANKPAYMENT || $row["type"] == ST_SUPPCREDIT || $row["type"] == ST_SUPPAYMENT) ? -$row["TotalAmount"] - $row["Allocated"] : $row["TotalAmount"] - $row["Allocated"];
-		return $value;
-	}
+		{
+			$value = ($row["type"] == ST_BANKPAYMENT || $row["type"] == ST_SUPPCREDIT || $row["type"] == ST_SUPPAYMENT) ?
+			 -$row["TotalAmount"] - $row["Allocated"] : $row["TotalAmount"] - $row["Allocated"];
+			return $value;
+		}
 
 	function alloc_link($row)
-	{
-		$link = pager_link(_("Allocations"), "/purchases/allocations/supplier_allocate.php?trans_no=" . $row["trans_no"] . "&trans_type=" . $row["type"], ICON_MONEY);
-		return (($row["type"] == ST_BANKPAYMENT || $row["type"] == ST_SUPPCREDIT || $row["type"] == ST_SUPPAYMENT) && (-$row["TotalAmount"] - $row["Allocated"]) > 0) ? $link : '';
-	}
+		{
+			$link = pager_link(_("Allocations"),
+			 "/purchases/allocations/supplier_allocate.php?trans_no=" . $row["trans_no"] . "&trans_type=" . $row["type"], ICON_MONEY);
+			return (($row["type"] == ST_BANKPAYMENT || $row["type"] == ST_SUPPCREDIT || $row["type"] == ST_SUPPAYMENT) && (-$row["TotalAmount"] - $row["Allocated"]) > 0) ?
+			 $link : '';
+		}
 
 	function fmt_debit($row)
-	{
-		$value = -$row["TotalAmount"];
-		return $value >= 0 ? Num::price_format($value) : '';
-	}
+		{
+			$value = -$row["TotalAmount"];
+			return $value >= 0 ? Num::price_format($value) : '';
+		}
 
 	function fmt_credit($row)
-	{
-		$value = $row["TotalAmount"];
-		return $value > 0 ? Num::price_format($value) : '';
-	}
+		{
+			$value = $row["TotalAmount"];
+			return $value > 0 ? Num::price_format($value) : '';
+		}
 
-	//------------------------------------------------------------------------------------------------
+
 	$date_after = Dates::date2sql($_POST['TransAfterDate']);
 	$date_to = Dates::date2sql($_POST['TransToDate']);
 	// Sherifoz 22.06.03 Also get the description
@@ -139,7 +141,7 @@
 		$cols[_("Supplier")] = 'skip';
 		$cols[_("Currency")] = 'skip';
 	}
-	//------------------------------------------------------------------------------------------------
+
 	$table =& db_pager::new_db_pager('doc_tbl', $sql, $cols);
 	$table->set_marker('check_overdue', _("Marked items are overdue."));
 	$table->width = "90%";

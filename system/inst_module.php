@@ -1,6 +1,6 @@
 <?php
 	/**********************************************************************
-	Copyright (C) FrontAccounting, LLC.
+	Copyright (C) Advanced Group PTY LTD
 	Released under the terms of the GNU General Public License, GPL,
 	as published by the Free Software Foundation, either version 3
 	of the License, or (at your option) any later version.
@@ -13,10 +13,10 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "Install/Activate extensions"));
 	Page::simple_mode(true);
-	//---------------------------------------------------------------------------------------------
+
 	function update_extensions($extensions)
 	{
-		if (!frontaccounting::write_extensions($extensions)) {
+		if (!advaccounting::write_extensions($extensions)) {
 			Errors::notice(_("Cannot update system extensions list."));
 			return false;
 		}
@@ -37,7 +37,7 @@
 					$newexts[$key]['active'] = $exts[$key]['active'];
 				}
 			}
-			if (!frontaccounting::write_extensions($newexts, $i)) {
+			if (!advaccounting::write_extensions($newexts, $i)) {
 				Errors::notice(
 					sprintf(
 						_("Cannot update extensions list for company '%s'."),
@@ -79,7 +79,7 @@
 		return true;
 	}
 
-	//---------------------------------------------------------------------------------------------
+
 	function handle_submit()
 	{
 		global $selected_id, $next_extension_id;
@@ -99,7 +99,7 @@
 		$extensions[$id]['active'] = check_value('active');
 		// Currently we support only plugin extensions here.
 		$extensions[$id]['type'] = 'plugin';
-		$directory = APP_PATH . "modules/" . $_POST['path'];
+		$directory = DOCROOT . "modules/" . $_POST['path'];
 		if (!file_exists($directory)) {
 			mkdir($directory);
 		}
@@ -173,7 +173,7 @@
 		return true;
 	}
 
-	//---------------------------------------------------------------------------------------------
+
 	function display_extensions()
 	{
 		start_table(Config::get('tables_style'));
@@ -194,7 +194,7 @@
 			label_cell($mod['name']);
 			label_cell(
 				$is_mod ?
-				 $mod['title'] : access_string(Session::get()->App->applications[$mod['tab']]->name, true)
+				 $mod['title'] : access_string(Session::i()->App->applications[$mod['tab']]->name, true)
 			);
 			$ttl = access_string($mod['title']);
 			label_cell($ttl[0]);
@@ -245,7 +245,7 @@
 			label_cell($mod['name']);
 			label_cell(
 				$mod['type'] == 'module' ?
-				 $mod['title'] : access_string(Session::get()->App->applications[$mod['tab']]->name, true)
+				 $mod['title'] : access_string(Session::i()->App->applications[$mod['tab']]->name, true)
 			);
 			$ttl = access_string($mod['title']);
 			label_cell($ttl[0]);
@@ -259,7 +259,7 @@
 		submit_center('Update', _('Update'), true, false, 'default');
 	}
 
-	//---------------------------------------------------------------------------------------------
+
 	function display_ext_edit($selected_id)
 	{
 		global $Mode;
@@ -292,7 +292,7 @@
 		submit_add_or_update_center($selected_id == -1, '', 'both');
 	}
 
-	//---------------------------------------------------------------------------------------------
+
 	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 		if (handle_submit()) {
 			if ($selected_id != -1) {
@@ -314,7 +314,7 @@
 		) {
 			$exts[$i]['active'] = check_value('Active' . $i);
 		}
-		frontaccounting::write_extensions($exts, get_post('extset'));
+		advaccounting::write_extensions($exts, get_post('extset'));
 		$installed_extensions = $exts;
 		Errors::notice(_('Current active extensions set has been saved.'));
 	}
@@ -322,7 +322,7 @@
 		$selected_id = -1;
 		unset($_POST);
 	}
-	//---------------------------------------------------------------------------------------------
+
 	start_form(true);
 	if (list_updated('extset')) {
 		$Ajax->activate('_page_body');
@@ -337,7 +337,7 @@
 	} else {
 		company_extensions($set);
 	}
-	//---------------------------------------------------------------------------------------------
+
 	end_form();
 	end_page();
 

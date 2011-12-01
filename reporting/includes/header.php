@@ -1,7 +1,7 @@
 <?php
 
 	/*   * ********************************************************************
-		Copyright (C) FrontAccounting, LLC.
+		Copyright (C) Advanced Group PTY LTD
 		Released under the terms of the GNU General Public License, GPL,
 		as published by the Free Software Foundation, either version 3
 		of the License, or (at your option) any later version.
@@ -158,7 +158,7 @@
 		if ($doctype == ST_SALESINVOICE) {
 			$id = $sales_order['salesman'];
 		} else {
-			$id = $myrow['salesman'];
+			$id = isset($myrow['salesman']) ? $myrow['salesman'] : '';
 		}
 		$sql = "SELECT salesman_name  FROM salesman WHERE salesman_code='$id'";
 		$result = DB::query($sql, "could not get sales person");
@@ -262,7 +262,8 @@
 		$this->TextWrap($col, $this->row, $width, $report_contact, 'C');
 	}
 	$col += $width;
-	$report_phone = (!empty($myrow["contact_phone"])) ? $myrow["contact_phone"] : ((isset($branch['phone'])) ? $branch['phone'] : ((isset($myrow['phone'])) ? $myrow['phone'] : ''));
+	$report_phone = (!empty($myrow["contact_phone"])) ? $myrow["contact_phone"] :
+	 ((isset($branch['phone'])) ? $branch['phone'] : ((isset($myrow['phone'])) ? $myrow['phone'] : ''));
 	if ($doctype == ST_WORKORDER) {
 		$this->TextWrap($col, $this->row, $width, $myrow["StockItemName"], 'C');
 	} elseif ($doctype == ST_PURCHORDER) {
@@ -347,7 +348,8 @@
 			$str = $row["terms"];
 		}
 		$this->Font('italic');
-		$this->TextWrap($ccol, $this->row, $right - $ccol, $doc_Payment_Terms . ":  " . $str . "         " . $doc_customer_id . ": " . $customer->id);
+		$this->TextWrap($ccol, $this->row, $right - $ccol,
+		 $doc_Payment_Terms . ":  " . $str . "         " . $doc_customer_id . ": " . $customer->id);
 		$this->Font();
 	}
 	$this->row = $iline5 - $this->lineHeight - 1;

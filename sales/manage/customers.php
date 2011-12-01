@@ -1,7 +1,7 @@
 <?php
 
 	/*     * ********************************************************************
-				 Copyright (C) FrontAccounting, LLC.
+				 Copyright (C) Advanced Group PTY LTD
 				 Released under the terms of the GNU General Public License, GPL,
 				 as published by the Free Software Foundation, either version 3
 				 of the License, or (at your option) any later version.
@@ -17,7 +17,7 @@
 		$_POST['customer_id'] = $_GET['debtor_no'];
 	}
 	$new_customer = (!isset($_POST['customer_id']) || $_POST['customer_id'] == "");
-	//--------------------------------------------------------------------------------------------
+
 	function can_process()
 		{
 			if (strlen($_POST['CustName']) == 0) {
@@ -48,11 +48,11 @@
 			return true;
 		}
 
-	//--------------------------------------------------------------------------------------------
+
 	function handle_submit()
 		{
 			global $new_customer;
-			$Ajax = Ajax::instance();
+			$Ajax = Ajax::i();
 			if (!can_process()) {
 				return;
 			}
@@ -93,11 +93,11 @@
 			}
 		}
 
-	//--------------------------------------------------------------------------------------------
+
 	if (isset($_POST['submit'])) {
 		handle_submit();
 	}
-	//--------------------------------------------------------------------------------------------
+
 	if (isset($_POST['delete'])) {
 		//the link to delete a selected record was clicked instead of the submit button
 		$cancel_delete = 0;

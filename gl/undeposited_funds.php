@@ -1,6 +1,6 @@
 <?php
 	/**********************************************************************
-	Copyright (C) FrontAccounting, LLC.
+	Copyright (C) Advanced Group PTY LTD
 	Released under the terms of the GNU General Public License, GPL,
 	as published by the Free Software Foundation, either version 3
 	of the License, or (at your option) any later version.
@@ -87,17 +87,17 @@
 	function update_data()
 	{
 		global $update_pager;
-		$Ajax = Ajax::instance();
+		$Ajax = Ajax::i();
 		$Ajax->activate('summary');
 		$update_pager = true;
 	}
 
-	//---------------------------------------------------------------------------------------------
+
 	// Update db record if respective checkbox value has changed.
 	//
 	function change_tpl_flag($deposit_id)
 	{
-		$Ajax = Ajax::instance();
+		$Ajax = Ajax::i();
 		if (!check_date() && check_value("dep_" . $deposit_id)) // temporary fix
 		{
 			return false;

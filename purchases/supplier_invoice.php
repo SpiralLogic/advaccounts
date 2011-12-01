@@ -1,6 +1,6 @@
 <?php
 	/**********************************************************************
-	Copyright (C) FrontAccounting, LLC.
+	Copyright (C) Advanced Group PTY LTD
 	Released under the terms of the GNU General Public License, GPL,
 	as published by the Free Software Foundation, either version 3
 	of the License, or (at your option) any later version.
@@ -11,12 +11,11 @@
 	 ***********************************************************************/
 	$page_security = 'SA_SUPPLIERINVOICE';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	include_once(APP_PATH . "purchases/includes/purchasing_ui.php");
 	JS::open_window(900, 500);
 	Page::start(_($help_context = "Enter Supplier Invoice"));
-	//----------------------------------------------------------------------------------------
+
 	Validation::check(Validation::SUPPLIERS, _("There are no suppliers defined in the system."));
-	//---------------------------------------------------------------------------------------------------------------
+
 	if (isset($_GET['AddedID'])) {
 		$invoice_no = $_GET['AddedID'];
 		$trans_type = ST_SUPPINVOICE;
@@ -30,7 +29,7 @@
 		hyperlink_params("/system/attachments.php", _("Add an Attachment"), "filterType=$trans_type&trans_no=$invoice_no");
 		Page::footer_exit();
 	}
-	//--------------------------------------------------------------------------------------------------
+
 	if (isset($_GET['New'])) {
 		Purch_Trans::instance(true);
 		Purch_Trans::instance()->is_invoice = true;
@@ -38,10 +37,10 @@
 			$_SESSION['supplier_id'] = $_GET['SuppID'];
 		}
 	}
-	//--------------------------------------------------------------------------------------------------
+
 	function clear_fields()
 		{
-			$Ajax = Ajax::instance();
+			$Ajax = Ajax::i();
 			unset($_POST['gl_code']);
 			unset($_POST['dimension_id']);
 			unset($_POST['dimension2_id']);
@@ -52,7 +51,7 @@
 			JS::set_focus('gl_code');
 		}
 
-	//------------------------------------------------------------------------------------------------
+
 	//	GL postings are often entered in the same form to two accounts
 	//  so fileds are cleared only on user demand.
 	//
@@ -99,7 +98,7 @@
 			JS::set_focus('gl_code');
 		}
 	}
-	//------------------------------------------------------------------------------------------------
+
 	function check_data()
 		{
 			if (!Purch_Trans::instance()->is_valid_trans_to_post()) {
@@ -146,10 +145,10 @@
 			return true;
 		}
 
-	//--------------------------------------------------------------------------------------------------
+
 	function handle_commit_invoice()
 		{
-			copy_to_trans(Purch_Trans::instance());
+			Purch_Invoice::copy_to_trans(Purch_Trans::instance());
 			if (!check_data()) {
 				return;
 			}
@@ -178,7 +177,7 @@
 			meta_forward($_SERVER['PHP_SELF'], "AddedID=$invoice_no");
 		}
 
-	//--------------------------------------------------------------------------------------------------
+
 	if (isset($_POST['PostInvoice'])) {
 		handle_commit_invoice();
 	}
@@ -203,7 +202,7 @@
 			if (Config::get('valid_charged_to_delivered_price') == True && $margin != 0) {
 				if ($_POST['order_price' . $n] != input_num('ChgPrice' . $n)) {
 					if ($_POST['order_price' . $n] == 0 || input_num('ChgPrice' . $n) / $_POST['order_price' . $n] > (1 + ($margin / 100))) {
-						if (Session::get()->err_over_charge != true) {
+						if (Session::i()->err_over_charge != true) {
 							Errors::error(_("The price being invoiced is more than the purchase order price by more than the allowed over-charge percentage. The system is set up to prohibit this. See the system administrator to modify the set up parameters if necessary.") . _("The over-charge percentage allowance is :") . $margin . "%");
 							JS::set_focus('ChgPrice' . $n);
 							$_SESSION['err_over_charge'] = true;
@@ -241,7 +240,7 @@
 			}
 		}
 
-	//-----------------------------------------------------------------------------------------
+
 	$id = find_submit('grn_item_id');
 	if ($id != -1) {
 		commit_item_data($id);
@@ -255,7 +254,7 @@
 			}
 		}
 	}
-	//--------------------------------------------------------------------------------------------------
+
 	$id3 = find_submit('Delete');
 	if ($id3 != -1) {
 		Purch_Trans::instance()->remove_grn_from_trans($id3);
@@ -306,13 +305,13 @@
 	}
 	if (isset($_POST['go'])) {
 		$Ajax->activate('gl_items');
-		Display::quick_entries(Purch_Trans::instance(), $_POST['qid'], input_num('totamount'), QE_SUPPINV);
+		GL_QuickEntry::show_menu(Purch_Trans::instance(), $_POST['qid'], input_num('totamount'), QE_SUPPINV);
 		$_POST['totamount'] = Num::price_format(0);
 		$Ajax->activate('totamount');
 		$Ajax->activate('inv_tot');
 	}
 	start_form();
-	invoice_header(Purch_Trans::instance());
+	Purch_Invoice::header(Purch_Trans::instance());
 	if ($_SESSION['supplier_id']) {
 		$_POST['supplier_id'] = $_SESSION['supplier_id'];
 		if (Purch_Trans::instance()) {
@@ -323,13 +322,13 @@
 	if ($_POST['supplier_id'] == '') {
 		Errors::error(_("There is no supplier selected."));
 	} else {
-		display_grn_items(Purch_Trans::instance(), 1);
-		display_gl_items(Purch_Trans::instance(), 1);
+		Purch_GRN::display_items(Purch_Trans::instance(), 1);
+		Purch_GLItem::display_items(Purch_Trans::instance(), 1);
 		div_start('inv_tot');
-		invoice_totals(Purch_Trans::instance());
+		Purch_Invoice::totals(Purch_Trans::instance());
 		div_end();
 	}
-	//-----------------------------------------------------------------------------------------
+
 	if ($id != -1 || $id2 != -1) {
 		$Ajax->activate('grn_items');
 		$Ajax->activate('inv_tot');
@@ -341,7 +340,7 @@
 	submit_center('PostInvoice', _("Enter Invoice"), true, '', 'default');
 	br();
 	end_form();
-	//--------------------------------------------------------------------------------------------------
+
 	Item::addEditDialog();
 	$js = <<<JS
 		    $("#wrapper").delegate('.amount','change',function() {

@@ -1,6 +1,6 @@
 <?php
 	/**********************************************************************
-	Copyright (C) FrontAccounting, LLC.
+	Copyright (C) Advanced Group PTY LTD
 	Released under the terms of the GNU General Public License, GPL,
 	as published by the Free Software Foundation, either version 3
 	of the License, or (at your option) any later version.
@@ -13,7 +13,7 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "Sales Persons"));
 	Page::simple_mode(true);
-	//------------------------------------------------------------------------------------------------
+
 	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 		//initialise no input errors assumed initially before we test
 		$input_error = 0;
@@ -81,7 +81,7 @@
 		unset($_POST);
 		$_POST['show_inactive'] = $sav;
 	}
-	//------------------------------------------------------------------------------------------------
+
 	$sql = "SELECT * FROM salesman";
 	if (!check_value('show_inactive')) {
 		$sql .= " WHERE !inactive";
@@ -110,7 +110,7 @@
 	inactive_control_row($th);
 	end_table();
 	echo '<br>';
-	//------------------------------------------------------------------------------------------------
+
 	$_POST['salesman_email'] = "";
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {

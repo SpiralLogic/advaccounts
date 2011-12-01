@@ -1,6 +1,6 @@
 <?php
 	/**********************************************************************
-	Copyright (C) FrontAccounting, LLC.
+	Copyright (C) Advanced Group PTY LTD
 	Released under the terms of the GNU General Public License, GPL,
 	as published by the Free Software Foundation, either version 3
 	of the License, or (at your option) any later version.
@@ -11,13 +11,12 @@
 	 ***********************************************************************/
 	$page_security = 'SA_SUPPTRANSVIEW';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	include(APP_PATH . "purchases/includes/purchasing_ui.php");
 	JS::open_window(900, 500);
 	Page::start(_($help_context = "Search Outstanding Purchase Orders"));
 	if (isset($_GET['order_number'])) {
 		$_POST['order_number'] = $_GET['order_number'];
 	}
-	//-----------------------------------------------------------------------------------
+
 	// Ajax updates
 	//
 	if (get_post('SearchOrders')) {
@@ -36,7 +35,7 @@
 		}
 		$Ajax->activate('orders_tbl');
 	}
-	//---------------------------------------------------------------------------------------------
+
 	start_form();
 	start_table("class='tablestyle_noborder'");
 	start_row();
@@ -49,33 +48,33 @@
 	submit_cells('SearchOrders', _("Search"), '', _('Select documents'), 'default');
 	end_row();
 	end_table();
-	//---------------------------------------------------------------------------------------------
+
 	function trans_view($trans)
-	{
-		return ui_view::get_trans_view_str(ST_PURCHORDER, $trans["order_no"]);
-	}
+		{
+			return ui_view::get_trans_view_str(ST_PURCHORDER, $trans["order_no"]);
+		}
 
 	function edit_link($row)
-	{
-		return pager_link(_("Edit"), "/purchases/po_entry_items.php?ModifyOrderNumber=" . $row["order_no"], ICON_EDIT);
-	}
+		{
+			return pager_link(_("Edit"), "/purchases/po_entry_items.php?ModifyOrderNumber=" . $row["order_no"], ICON_EDIT);
+		}
 
 	function prt_link($row)
-	{
-		return Reporting::print_doc_link($row['order_no'], _("Print"), true, 18, ICON_PRINT, 'button printlink');
-	}
+		{
+			return Reporting::print_doc_link($row['order_no'], _("Print"), true, 18, ICON_PRINT, 'button printlink');
+		}
 
 	function receive_link($row)
-	{
-		return pager_link(_("Receive"), "/purchases/po_receive_items.php?PONumber=" . $row["order_no"], ICON_RECEIVE);
-	}
+		{
+			return pager_link(_("Receive"), "/purchases/po_receive_items.php?PONumber=" . $row["order_no"], ICON_RECEIVE);
+		}
 
 	function check_overdue($row)
-	{
-		return $row['OverDue'] == 1;
-	}
+		{
+			return $row['OverDue'] == 1;
+		}
 
-	//---------------------------------------------------------------------------------------------
+
 	if (isset($_POST['order_number']) && ($_POST['order_number'] != "")) {
 		$order_number = $_POST['order_number'];
 	}

@@ -12,12 +12,12 @@
 		0 => array(
 			'code'     => 'en_AU',
 			'name'     => 'Australia',
-			'encoding' => 'iso-8859-1'
+			'encoding' => 'utf8'
 		),
 		array(
 			'code'     => 'en_GB',
 			'name'     => 'English',
-			'encoding' => 'iso-8859-1'
+			'encoding' => 'utf8'
 		)
 	)
 	);

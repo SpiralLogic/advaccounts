@@ -1,6 +1,6 @@
 <?php
 	/**********************************************************************
-	Copyright (C) FrontAccounting, LLC.
+	Copyright (C) Advanced Group PTY LTD
 	Released under the terms of the GNU General Public License, GPL,
 	as published by the Free Software Foundation, either version 3
 	of the License, or (at your option) any later version.
@@ -17,7 +17,7 @@
 	// Title:	Audit Trail
 	// ----------------------------------------------------------------
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	//----------------------------------------------------------------------------------------------------
+
 	print_audit_trail();
 	function getTransactions($from, $to, $type, $user)
 	{
@@ -46,7 +46,7 @@
 		return DB::query($sql, "No transactions were returned");
 	}
 
-	//----------------------------------------------------------------------------------------------------
+
 	function print_audit_trail()
 	{
 		global $systypes_array;
@@ -57,11 +57,11 @@
 		$comments = $_POST['PARAM_4'];
 		$destination = $_POST['PARAM_5'];
 		if ($destination) {
-			include_once(APP_PATH . "includes/reports/excel.php");
+			include_once(APPPATH . "reports/excel.php");
 		}
 		else
 		{
-			include_once(APP_PATH . "includes/reports/pdf.php");
+			include_once(APPPATH . "reports/pdf.php");
 		}
 		$dec = User::price_dec();
 		$cols = array(0, 60, 120, 180, 240, 340, 400, 460, 520);

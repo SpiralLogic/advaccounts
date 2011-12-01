@@ -1,6 +1,6 @@
 <?php
 	/**********************************************************************
-	Copyright (C) FrontAccounting, LLC.
+	Copyright (C) Advanced Group PTY LTD
 	Released under the terms of the GNU General Public License, GPL,
 	as published by the Free Software Foundation, either version 3
 	of the License, or (at your option) any later version.
@@ -11,7 +11,6 @@
 	 ***********************************************************************/
 	$page_security = 'SA_MANUFTRANSVIEW';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	include_once(APP_PATH . "manufacturing/includes/manufacturing_ui.php");
 	JS::open_window(800, 500);
 	if (isset($_GET['outstanding_only']) && ($_GET['outstanding_only'] == true)) {
 		// curently outstanding simply means not closed
@@ -21,7 +20,7 @@
 		$outstanding_only = 0;
 		Page::start(_($help_context = "Search Work Orders"));
 	}
-	//-----------------------------------------------------------------------------------
+
 	// Ajax updates
 	//
 	if (get_post('SearchOrders')) {
@@ -41,11 +40,11 @@
 		}
 		$Ajax->activate('orders_tbl');
 	}
-	//--------------------------------------------------------------------------------------
+
 	if (isset($_GET["stock_id"])) {
 		$_POST['SelectedStockItem'] = $_GET["stock_id"];
 	}
-	//--------------------------------------------------------------------------------------
+
 	start_form(false, false, $_SERVER['PHP_SELF'] . "?outstanding_only=$outstanding_only");
 	start_table("class='tablestyle_noborder'");
 	start_row();
@@ -59,98 +58,98 @@
 	submit_cells('SearchOrders', _("Search"), '', _('Select documents'), 'default');
 	end_row();
 	end_table();
-	//-----------------------------------------------------------------------------
+
 	function check_overdue($row)
-	{
-		return (!$row["closed"]
-		 && Dates::date_diff2(Dates::Today(), Dates::sql2date($row["required_by"]), "d") > 0);
-	}
+		{
+			return (!$row["closed"]
+			 && Dates::date_diff2(Dates::Today(), Dates::sql2date($row["required_by"]), "d") > 0);
+		}
 
 	function view_link($dummy, $order_no)
-	{
-		return ui_view::get_trans_view_str(ST_WORKORDER, $order_no);
-	}
+		{
+			return ui_view::get_trans_view_str(ST_WORKORDER, $order_no);
+		}
 
 	function view_stock($row)
-	{
-		return ui_view::stock_status($row["stock_id"], $row["description"], false);
-	}
+		{
+			return ui_view::stock_status($row["stock_id"], $row["description"], false);
+		}
 
 	function wo_type_name($dummy, $type)
-	{
-		global $wo_types_array;
-		return $wo_types_array[$type];
-	}
+		{
+			global $wo_types_array;
+			return $wo_types_array[$type];
+		}
 
 	function edit_link($row)
-	{
-		return $row['closed']
-		 ? '<i>' . _('Closed') . '</i>'
-		 :
-		 pager_link(
-			 _("Edit"),
-			"/manufacturing/work_order_entry.php?trans_no=" . $row["id"], ICON_EDIT
-		 );
-	}
+		{
+			return $row['closed']
+			 ? '<i>' . _('Closed') . '</i>'
+			 :
+			 pager_link(
+				 _("Edit"),
+				"/manufacturing/work_order_entry.php?trans_no=" . $row["id"], ICON_EDIT
+			 );
+		}
 
 	function release_link($row)
-	{
-		return $row["closed"]
-		 ? ''
-		 :
-		 ($row["released"] == 0
-			?
-			pager_link(
-				_('Release'),
-			 "/manufacturing/work_order_release.php?trans_no=" . $row["id"]
-			)
-			:
-			pager_link(
-				_('Issue'),
-			 "/manufacturing/work_order_issue.php?trans_no=" . $row["id"]
-			));
-	}
+		{
+			return $row["closed"]
+			 ? ''
+			 :
+			 ($row["released"] == 0
+				?
+				pager_link(
+					_('Release'),
+				 "/manufacturing/work_order_release.php?trans_no=" . $row["id"]
+				)
+				:
+				pager_link(
+					_('Issue'),
+				 "/manufacturing/work_order_issue.php?trans_no=" . $row["id"]
+				));
+		}
 
 	function produce_link($row)
-	{
-		return $row["closed"] || !$row["released"]
-		 ? ''
-		 :
-		 pager_link(
-			 _('Produce'),
-			"/manufacturing/work_order_add_finished.php?trans_no=" . $row["id"]
-		 );
-	}
+		{
+			return $row["closed"] || !$row["released"]
+			 ? ''
+			 :
+			 pager_link(
+				 _('Produce'),
+				"/manufacturing/work_order_add_finished.php?trans_no=" . $row["id"]
+			 );
+		}
 
 	function costs_link($row)
-	{
-		/*
-						 return $row["closed"] || !$row["released"] ? '' :
-							 pager_link(_('Costs'),
-								 "/gl/gl_bank.php?NewPayment=1&PayType="
-								 .PT_WORKORDER. "&PayPerson=" .$row["id"]);
-					 */
-		return $row["closed"] || !$row["released"]
-		 ? ''
-		 :
-		 pager_link(
-			 _('Costs'),
-			"/manufacturing/work_order_costs.php?trans_no=" . $row["id"]
-		 );
-	}
+		{
+			/*
+									 return $row["closed"] || !$row["released"] ? '' :
+										 pager_link(_('Costs'),
+											 "/gl/gl_bank.php?NewPayment=1&PayType="
+											 .PT_WORKORDER. "&PayPerson=" .$row["id"]);
+								 */
+			return $row["closed"] || !$row["released"]
+			 ? ''
+			 :
+			 pager_link(
+				 _('Costs'),
+				"/manufacturing/work_order_costs.php?trans_no=" . $row["id"]
+			 );
+		}
 
 	function view_gl_link($row)
-	{
-		if ($row['closed'] == 0) {
-			return '';
+		{
+			if ($row['closed'] == 0) {
+				return '';
+			}
+			return ui_view::get_gl_view_str(ST_WORKORDER, $row['id']);
 		}
-		return ui_view::get_gl_view_str(ST_WORKORDER, $row['id']);
-	}
 
 	function dec_amount($row, $amount)
-	{
-		return Num::format($amount, $row['decimals']);
-	}
+		{
+			return Num::format($amount, $row['decimals']);
+		}
 
 	$sql
 	 = "SELECT
@@ -179,13 +178,13 @@
 		$sql .= " AND workorder.closed=0";
 	}
 	if (isset($_POST['StockLocation']) && $_POST['StockLocation'] != ALL_TEXT) {
-		$sql .= " AND workorder.loc_code=" . DB::escape($_POST['StockLocation'],false,false);
+		$sql .= " AND workorder.loc_code=" . DB::escape($_POST['StockLocation'], false, false);
 	}
 	if (isset($_POST['OrderNumber']) && $_POST['OrderNumber'] != "") {
-		$sql .= " AND workorder.wo_ref LIKE " . DB::escape('%' . $_POST['OrderNumber'] . '%',false,false);
+		$sql .= " AND workorder.wo_ref LIKE " . DB::escape('%' . $_POST['OrderNumber'] . '%', false, false);
 	}
 	if (isset($_POST['SelectedStockItem']) && $_POST['SelectedStockItem'] != ALL_TEXT) {
-		$sql .= " AND workorder.stock_id=" . DB::escape($_POST['SelectedStockItem'],false,false);
+		$sql .= " AND workorder.stock_id=" . DB::escape($_POST['SelectedStockItem'], false, false);
 	}
 	if (check_value('OverdueOnly')) {
 		$Today = Dates::date2sql(Dates::Today());

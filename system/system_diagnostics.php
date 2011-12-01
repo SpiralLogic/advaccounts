@@ -1,6 +1,6 @@
 <?php
 	/**********************************************************************
-	Copyright (C) FrontAccounting, LLC.
+	Copyright (C) Advanced Group PTY LTD
 	Released under the terms of the GNU General Public License, GPL,
 	as published by the Free Software Foundation, either version 3
 	of the License, or (at your option) any later version.
@@ -263,7 +263,7 @@
 		return $test;
 	}
 
-	//-------------------------------------------------------------------------------------------------
+
 	start_table(Config::get('tables_style') . " width=90%");
 	$th = array(_("Test"), _('Test type'), _("Value"), _("Comments"));
 	table_header($th);

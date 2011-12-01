@@ -1,6 +1,6 @@
 <?php
 	/**********************************************************************
-	Copyright (C) FrontAccounting, LLC.
+	Copyright (C) Advanced Group PTY LTD
 	Released under the terms of the GNU General Public License, GPL,
 	as published by the Free Software Foundation, either version 3
 	of the License, or (at your option) any later version.
@@ -17,7 +17,7 @@
 	// Title:	Customer Details Listing
 	// ----------------------------------------------------------------
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	//----------------------------------------------------------------------------------------------------
+
 	print_customer_details_listing();
 	function get_customer_details_for_report($area = 0, $salesid = 0)
 	{
@@ -83,7 +83,7 @@
 		return $row[0];
 	}
 
-	//----------------------------------------------------------------------------------------------------
+
 	function print_customer_details_listing()
 	{
 		$from = $_POST['PARAM_0'];
@@ -94,11 +94,11 @@
 		$comments = $_POST['PARAM_5'];
 		$destination = $_POST['PARAM_6'];
 		if ($destination) {
-			include_once(APP_PATH . "includes/reports/excel.php");
+			include_once(APPPATH . "reports/excel.php");
 		}
 		else
 		{
-			include_once(APP_PATH . "includes/reports/pdf.php");
+			include_once(APPPATH . "reports/pdf.php");
 		}
 		$dec = 0;
 		if ($area == ALL_NUMERIC) {

@@ -1,6 +1,6 @@
 <?php
 	/**********************************************************************
-	Copyright (C) FrontAccounting, LLC.
+	Copyright (C) Advanced Group PTY LTD
 	Released under the terms of the GNU General Public License, GPL,
 	as published by the Free Software Foundation, either version 3
 	of the License, or (at your option) any later version.
@@ -13,7 +13,7 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "Payment Terms"));
 	Page::simple_mode(true);
-	//-------------------------------------------------------------------------------------------
+
 	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 		$inpug_error = 0;
 		if (!is_numeric($_POST['DayNumber'])) {
@@ -108,7 +108,7 @@
 		unset($_POST);
 		$_POST['show_inactive'] = $sav;
 	}
-	//-------------------------------------------------------------------------------------------------
+
 	$sql = "SELECT * FROM payment_terms";
 	if (!check_value('show_inactive')) {
 		$sql .= " WHERE !inactive";
@@ -143,7 +143,7 @@
 	} //END WHILE LIST LOOP
 	inactive_control_row($th);
 	end_table(1);
-	//-------------------------------------------------------------------------------------------------
+
 	start_table(Config::get('tables_style2'));
 	$day_in_following_month = $days_before_due = 0;
 	if ($selected_id != -1) {

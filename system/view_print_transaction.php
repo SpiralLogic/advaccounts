@@ -1,6 +1,6 @@
 <?php
 	/**********************************************************************
-	Copyright (C) FrontAccounting, LLC.
+	Copyright (C) Advanced Group PTY LTD
 	Released under the terms of the GNU General Public License, GPL,
 	as published by the Free Software Foundation, either version 3
 	of the License, or (at your option) any later version.
@@ -13,7 +13,7 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	JS::open_window(800, 500);
 	Page::start(_($help_context = "View or Print Transactions"));
-	//----------------------------------------------------------------------------------------
+
 	function view_link($trans)
 	{
 		return ui_view::get_trans_view_str($trans["type"], $trans["trans_no"]);
@@ -53,7 +53,7 @@
 		end_table(1);
 	}
 
-	//----------------------------------------------------------------------------------------
+
 	function check_valid_entries()
 	{
 		if (!is_numeric($_POST['FromTransNo']) OR $_POST['FromTransNo'] <= 0) {
@@ -67,7 +67,7 @@
 		return true;
 	}
 
-	//----------------------------------------------------------------------------------------
+
 	function handle_search()
 	{
 		if (check_valid_entries() == true) {
@@ -123,14 +123,14 @@
 		}
 	}
 
-	//----------------------------------------------------------------------------------------
+
 	if (isset($_POST['ProcessSearch'])) {
 		if (!check_valid_entries()) {
 			unset($_POST['ProcessSearch']);
 		}
 		$Ajax->activate('transactions');
 	}
-	//----------------------------------------------------------------------------------------
+
 	start_form(false);
 	viewing_controls();
 	handle_search();

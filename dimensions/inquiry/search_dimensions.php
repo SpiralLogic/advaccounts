@@ -1,6 +1,6 @@
 <?php
 	/**********************************************************************
-	Copyright (C) FrontAccounting, LLC.
+	Copyright (C) Advanced Group PTY LTD
 	Released under the terms of the GNU General Public License, GPL,
 	as published by the Free Software Foundation, either version 3
 	of the License, or (at your option) any later version.
@@ -19,7 +19,7 @@
 		$outstanding_only = 0;
 		Page::start(_($help_context = "Search Dimensions"));
 	}
-	//-----------------------------------------------------------------------------------
+
 	// Ajax updates
 	//
 	if (get_post('SearchOrders')) {
@@ -41,11 +41,11 @@
 		}
 		$Ajax->activate('dim_table');
 	}
-	//--------------------------------------------------------------------------------------
+
 	if (isset($_GET["stock_id"])) {
 		$_POST['SelectedStockItem'] = $_GET["stock_id"];
 	}
-	//--------------------------------------------------------------------------------------
+
 	start_form(false, false, $_SERVER['PHP_SELF'] . "?outstanding_only=$outstanding_only");
 	start_table("class='tablestyle_noborder'");
 	start_row();

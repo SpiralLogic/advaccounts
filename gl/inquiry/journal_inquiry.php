@@ -1,6 +1,6 @@
 <?php
 	/**********************************************************************
-	Copyright (C) FrontAccounting, LLC.
+	Copyright (C) Advanced Group PTY LTD
 	Released under the terms of the GNU General Public License, GPL,
 	as published by the Free Software Foundation, either version 3
 	of the License, or (at your option) any later version.
@@ -13,13 +13,13 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	JS::open_window(800, 500);
 	Page::start(_($help_context = "Journal Inquiry"));
-	//-----------------------------------------------------------------------------------
+
 	// Ajax updates
 	//
 	if (get_post('Search')) {
 		$Ajax->activate('journal_tbl');
 	}
-	//--------------------------------------------------------------------------------------
+
 	if (!isset($_POST['filterType'])) {
 		$_POST['filterType'] = -1;
 	}

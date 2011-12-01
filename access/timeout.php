@@ -1,6 +1,6 @@
 <?php
 	/**********************************************************************
-	Copyright (C) FrontAccounting, LLC.
+	Copyright (C) Advanced Group PTY LTD
 	Released under the terms of the GNU General Public License, GPL,
 	as published by the Free Software Foundation, either version 3
 	of the License, or (at your option) any later version.
@@ -14,7 +14,7 @@
  */
 	$page_security = 'SA_OPEN';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	require(APP_PATH . '/access/login.php');
+	require(DOCROOT . '/access/login.php');
 	if (get_post('SubmitUser') && $_SESSION['current_user']->logged_in()) {
 		// After successfull login repeat last ajax call.
 		// Login form consists all post variables from last ajax call.

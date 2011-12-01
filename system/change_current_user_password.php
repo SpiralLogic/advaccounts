@@ -1,6 +1,6 @@
 <?php
 	/**********************************************************************
-	Copyright (C) FrontAccounting, LLC.
+	Copyright (C) Advanced Group PTY LTD
 	Released under the terms of the GNU General Public License, GPL,
 	as published by the Free Software Foundation, either version 3
 	of the License, or (at your option) any later version.
@@ -13,24 +13,24 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "Change password"));
 	function can_process()
-	{
-		if (strlen($_POST['password']) < 4) {
-			Errors::error(_("The password entered must be at least 4 characters long."));
-			JS::set_focus('password');
-			return false;
+		{
+			if (strlen($_POST['password']) < 4) {
+				Errors::error(_("The password entered must be at least 4 characters long."));
+				JS::set_focus('password');
+				return false;
+			}
+			if (strstr($_POST['password'], User::get()->username) != false) {
+				Errors::error(_("The password cannot contain the user login."));
+				JS::set_focus('password');
+				return false;
+			}
+			if ($_POST['password'] != $_POST['passwordConfirm']) {
+				Errors::error(_("The passwords entered are not the same."));
+				JS::set_focus('password');
+				return false;
+			}
+			return true;
 		}
-		if (strstr($_POST['password'], User::get()->username) != false) {
-			Errors::error(_("The password cannot contain the user login."));
-			JS::set_focus('password');
-			return false;
-		}
-		if ($_POST['password'] != $_POST['passwordConfirm']) {
-			Errors::error(_("The passwords entered are not the same."));
-			JS::set_focus('password');
-			return false;
-		}
-		return true;
-	}
 
 	if (isset($_POST['UPDATE_ITEM'])) {
 		if (can_process()) {
@@ -44,7 +44,7 @@
 				}
 				elseif ($check['strength'] < 3)
 				{
-					Errors::error(_("Password Too Weeak!"));
+					Errors::error(_("Password Too Weak!"));
 				}
 				else {
 					$auth->update_password($_SESSION['current_user']->user, $_POST['password']);

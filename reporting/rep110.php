@@ -1,6 +1,6 @@
 <?php
 	/**********************************************************************
-	Copyright (C) FrontAccounting, LLC.
+	Copyright (C) Advanced Group PTY LTD
 	Released under the terms of the GNU General Public License, GPL,
 	as published by the Free Software Foundation, either version 3
 	of the License, or (at your option) any later version.
@@ -20,13 +20,13 @@
 	// ----------------------------------------------------------------
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	$packing_slip = 0;
-	//----------------------------------------------------------------------------------------------------
+
 	print_deliveries();
-	//----------------------------------------------------------------------------------------------------
+
 	function print_deliveries()
 	{
 		global $packing_slip;
-		require_once(APP_PATH . "includes/reports/pdf.php");
+		require_once(APPPATH . "reports/pdf.php");
 		$from = $_POST['PARAM_0'];
 		$to = $_POST['PARAM_1'];
 		$email = $_POST['PARAM_2'];
@@ -119,9 +119,9 @@
 			$linetype = true;
 			$doctype = ST_CUSTDELIVERY;
 			if ($rep->currency != $myrow['curr_code']) {
-				include(APP_PATH . "reporting/includes/doctext2.php");
+				include(DOCROOT . "reporting/includes/doctext2.php");
 			} else {
-				include(APP_PATH . "reporting/includes/doctext.php");
+				include(DOCROOT . "reporting/includes/doctext.php");
 			}
 			if ($email == 1) {
 				if ($myrow['email'] == '') {

@@ -7,7 +7,7 @@
 	 * To change this template use File | Settings | File Templates.
 	 */
 	/**********************************************************************
-	Copyright (C) FrontAccounting, LLC.
+	Copyright (C) Advanced Group PTY LTD
 	Released under the terms of the GNU General Public License, GPL,
 	as published by the Free Software Foundation, either version 3
 	of the License, or (at your option) any later version.
@@ -18,7 +18,7 @@
 	 ***********************************************************************/
 	$page_security = 'SA_SUPPLIER';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	Session::get()->App->selected_application = 'contacts';
+	Session::i()->App->selected_application = 'contacts';
 	if (AJAX_REFERRER) {
 		if (isset($_GET['term'])) {
 			$data = Contacts_Supplier::search($_GET['term']);
@@ -36,7 +36,7 @@
 		echo json_encode($data);
 		exit();
 	}
-	JS::footerFile("includes/js/suppliers.js");
+	JS::footerFile("js/suppliers.js");
 	Page::start(_($help_context = "Suppliers"), Input::request('popup'));
 	if (isset($_GET['id'])) {
 		$supplier = new Contacts_Supplier($_GET['id']);

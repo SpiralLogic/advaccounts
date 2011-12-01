@@ -1,6 +1,6 @@
 <?php
 	/**********************************************************************
-	Copyright (C) FrontAccounting, LLC.
+	Copyright (C) Advanced Group PTY LTD
 	Released under the terms of the GNU General Public License, GPL,
 	as published by the Free Software Foundation, either version 3
 	of the License, or (at your option) any later version.
@@ -13,7 +13,7 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "Sales Types"));
 	Page::simple_mode(true);
-	//----------------------------------------------------------------------------------------------------
+
 	function can_process()
 	{
 		if (strlen($_POST['sales_type']) == 0) {
@@ -29,19 +29,19 @@
 		return true;
 	}
 
-	//----------------------------------------------------------------------------------------------------
+
 	if ($Mode == 'ADD_ITEM' && can_process()) {
 		Sales_Type::add($_POST['sales_type'], isset($_POST['tax_included']) ? 1 : 0, input_num('factor'));
 		Errors::notice(_('New sales type has been added'));
 		$Mode = 'RESET';
 	}
-	//----------------------------------------------------------------------------------------------------
+
 	if ($Mode == 'UPDATE_ITEM' && can_process()) {
 		Sales_Type::update($selected_id, $_POST['sales_type'], isset($_POST['tax_included']) ? 1 : 0, input_num('factor'));
 		Errors::notice(_('Selected sales type has been updated'));
 		$Mode = 'RESET';
 	}
-	//----------------------------------------------------------------------------------------------------
+
 	if ($Mode == 'Delete') {
 		// PREVENT DELETES IF DEPENDENT RECORDS IN 'debtor_trans'
 		$sql = "SELECT COUNT(*) FROM debtor_trans WHERE tpe=" . DB::escape($selected_id);
@@ -70,7 +70,7 @@
 		unset($_POST);
 		$_POST['show_inactive'] = $sav;
 	}
-	//----------------------------------------------------------------------------------------------------
+
 	$result = Sales_Type::get_all(check_value('show_inactive'));
 	start_form();
 	start_table(Config::get('tables_style') . "  width=30%");
@@ -100,7 +100,7 @@
 	inactive_control_row($th);
 	end_table();
 	Errors::warning(_("Marked sales type is the company base pricelist for prices calculations."), 0, 0, "class='overduefg'");
-	//----------------------------------------------------------------------------------------------------
+
 	if (!isset($_POST['tax_included'])) {
 		$_POST['tax_included'] = 0;
 	}

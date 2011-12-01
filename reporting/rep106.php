@@ -1,6 +1,6 @@
 <?php
 	/**********************************************************************
-	Copyright (C) FrontAccounting, LLC.
+	Copyright (C) Advanced Group PTY LTD
 	Released under the terms of the GNU General Public License, GPL,
 	as published by the Free Software Foundation, either version 3
 	of the License, or (at your option) any later version.
@@ -17,9 +17,9 @@
 	// Title:	Salesman Report
 	// ----------------------------------------------------------------
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	//----------------------------------------------------------------------------------------------------
+
 	print_salesman_list();
-	//----------------------------------------------------------------------------------------------------
+
 	function GetSalesmanTrans($from, $to)
 	{
 		$fromdate = Dates::date2sql($from);
@@ -42,7 +42,7 @@
 		return DB::query($sql, "Error getting order details");
 	}
 
-	//----------------------------------------------------------------------------------------------------
+
 	function print_salesman_list()
 	{
 		$from = $_POST['PARAM_0'];
@@ -51,11 +51,11 @@
 		$comments = $_POST['PARAM_3'];
 		$destination = $_POST['PARAM_4'];
 		if ($destination) {
-			include_once(APP_PATH . "includes/reports/excel.php");
+			include_once(APPPATH . "reports/excel.php");
 		}
 		else
 		{
-			include_once(APP_PATH . "includes/reports/pdf.php");
+			include_once(APPPATH . "reports/pdf.php");
 		}
 		if ($summary == 0) {
 			$sum = _("No");

@@ -1,6 +1,6 @@
 <?php
 	/**********************************************************************
-	Copyright (C) FrontAccounting, LLC.
+	Copyright (C) Advanced Group PTY LTD
 	Released under the terms of the GNU General Public License, GPL,
 	as published by the Free Software Foundation, either version 3
 	of the License, or (at your option) any later version.
@@ -12,14 +12,15 @@
 	$page_security = 'SA_PURCHASEPRICING';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "Supplier Purchasing Data"), Input::request('frame'));
-	Validation::check(Validation::PURCHASE_ITEMS, _("There are no purchasable inventory items defined in the system."), STOCK_PURCHASED);
+	Validation::check(Validation::PURCHASE_ITEMS, _("There are no purchasable inventory items defined in the system."),
+		STOCK_PURCHASED);
 	Validation::check(Validation::SUPPLIERS, _("There are no suppliers defined in the system."));
-	//----------------------------------------------------------------------------------------
+
 	Page::simple_mode(true);
-	//--------------------------------------------------------------------------------------------------
+
 	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 		if (Input::request('frame')) {
-			$_POST['stock_id'] = Session::get()->global_stock_id;
+			$_POST['stock_id'] = Session::i()->global_stock_id;
 		}
 		$input_error = 0;
 		if ($_POST['stock_id'] == "" || !isset($_POST['stock_id'])) {
@@ -64,10 +65,10 @@
 			$Mode = 'RESET';
 		}
 	}
-	//--------------------------------------------------------------------------------------------------
+
 	if ($Mode == 'Delete') {
 		if (!Input::post('stock_id')) {
-			$_POST['stock_id'] = Session::get()->global_stock_id;
+			$_POST['stock_id'] = Session::i()->global_stock_id;
 		}
 		$sql = "DELETE FROM purch_data WHERE supplier_id=" . DB::escape($selected_id) . "
 		AND stock_id=" . DB::escape($_POST['stock_id']);
@@ -85,21 +86,21 @@
 	if (list_updated('stock_id')) {
 		$Ajax->activate('price_table');
 	}
-	//--------------------------------------------------------------------------------------------------
+
 	if (Input::request('frame')) {
 		start_form(false, false, $_SERVER['PHP_SELF'] . '?frame=1');
 	} else {
 		start_form();
 	}
 	if (!Input::post('stock_id')) {
-		$_POST['stock_id'] = Session::get()->global_stock_id;
+		$_POST['stock_id'] = Session::i()->global_stock_id;
 	}
 	if (!Input::request('frame')) {
 		echo "<center>" . _("Item:") . "&nbsp;";
 		echo stock_purchasable_items_list('stock_id', $_POST['stock_id'], false, true, false, false);
 		echo "<hr></center>";
 	}
-	Session::get()->global_stock_id = $_POST['stock_id'];
+	Session::i()->global_stock_id = $_POST['stock_id'];
 	$mb_flag = Manufacturing::get_mb_flag($_POST['stock_id']);
 	if ($mb_flag == -1) {
 		Errors::error(_("Entered item is not defined. Please re-enter."));
@@ -149,7 +150,7 @@
 		}
 		div_end();
 	}
-	//-----------------------------------------------------------------------------------------------
+
 	$dec2 = 6;
 	if ($Mode == 'Edit') {
 		$sql

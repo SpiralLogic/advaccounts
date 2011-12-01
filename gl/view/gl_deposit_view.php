@@ -1,6 +1,6 @@
 <?php
 	/**********************************************************************
-	Copyright (C) FrontAccounting, LLC.
+	Copyright (C) Advanced Group PTY LTD
 	Released under the terms of the GNU General Public License, GPL,
 	as published by the Free Software Foundation, either version 3
 	of the License, or (at your option) any later version.
@@ -46,13 +46,14 @@
 	label_cells(_("Date"), Dates::sql2date($to_trans['trans_date']), "class='tableheader2'");
 	end_row();
 	start_row();
-	label_cells(_("From"), Banking::payment_person_name($to_trans['person_type_id'], $to_trans['person_id']), "class='tableheader2'", "colspan=$colspan1");
+	label_cells(_("From"), Banking::payment_person_name($to_trans['person_type_id'], $to_trans['person_id']),
+		"class='tableheader2'", "colspan=$colspan1");
 	label_cells(_("Deposit Type"), $bank_transfer_types[$to_trans['account_type']], "class='tableheader2'");
 	end_row();
 	start_row();
 	label_cells(_("Reference"), $to_trans['ref'], "class='tableheader2'", "colspan=$colspan2");
 	end_row();
-	Display::comments_row(ST_BANKDEPOSIT, $trans_no);
+	DB_Comments::display_row(ST_BANKDEPOSIT, $trans_no);
 	end_table(1);
 	Display::is_voided(ST_BANKDEPOSIT, $trans_no, _("This deposit has been voided."));
 	$items = GL_Trans::get_many(ST_BANKDEPOSIT, $trans_no);
@@ -97,8 +98,7 @@
 		}
 		label_row(_("Total"), Num::format($total_amount, User::price_dec()), "colspan=" . (2 + $dim) . " align=right", "align=right");
 		end_table(1);
-		Display::allocations_from($to_trans['person_type_id'], $to_trans['person_id'], 2, $trans_no, $to_trans['amount']);
+		GL_Allocation::display($to_trans['person_type_id'], $to_trans['person_id'], 2, $trans_no, $to_trans['amount']);
 	}
-
 	end_page(true);
 ?>

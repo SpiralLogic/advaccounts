@@ -1,6 +1,6 @@
 <?php
 	/**********************************************************************
-	Copyright (C) FrontAccounting, LLC.
+	Copyright (C) Advanced Group PTY LTD
 	Released under the terms of the GNU General Public License, GPL,
 	as published by the Free Software Foundation, either version 3
 	of the License, or (at your option) any later version.
@@ -13,12 +13,12 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	JS::open_window(900, 500);
 	Page::start(_($help_context = "Inventory Item Cost Update"));
-	//--------------------------------------------------------------------------------------
+
 	Validation::check(Validation::COST_ITEMS, _("There are no costable inventory items defined in the system (Purchased or manufactured items)."), STOCK_SERVICE);
 	if (isset($_GET['stock_id'])) {
 		$_POST['stock_id'] = $_GET['stock_id'];
 	}
-	//--------------------------------------------------------------------------------------
+
 	if (isset($_POST['UpdateData'])) {
 		$old_cost = $_POST['OldMaterialCost'] + $_POST['OldLabourCost']
 		 + $_POST['OldOverheadCost'];
@@ -52,15 +52,15 @@
 	if (list_updated('stock_id')) {
 		$Ajax->activate('cost_table');
 	}
-	//-----------------------------------------------------------------------------------------
+
 	start_form();
 	if (!Input::post('stock_id')) {
-		$_POST['stock_id'] = Session::get()->global_stock_id;
+		$_POST['stock_id'] = Session::i()->global_stock_id;
 	}
 	echo "<center>" . _("Item:") . "&nbsp;";
 	echo stock_costable_items_list('stock_id', $_POST['stock_id'], false, true);
 	echo "</center><hr>";
-	Session::get()->global_stock_id = $_POST['stock_id'];
+	Session::i()->global_stock_id = $_POST['stock_id'];
 	$sql
 	 = "SELECT description, units, material_cost, labour_cost,
 	overhead_cost, mb_flag

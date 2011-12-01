@@ -1,6 +1,6 @@
 <?php
 	/**********************************************************************
-	Copyright (C) FrontAccounting, LLC.
+	Copyright (C) Advanced Group PTY LTD
 	Released under the terms of the GNU General Public License, GPL,
 	as published by the Free Software Foundation, either version 3
 	of the License, or (at your option) any later version.
@@ -14,7 +14,7 @@
 	JS::open_window(900, 500);
 	JS::footerFile('/js/allocate.js');
 	Page::start(_($help_context = "Allocate Supplier Payment or Credit Note"));
-	//--------------------------------------------------------------------------------
+
 	function clear_allocations()
 	{
 		if (isset($_SESSION['alloc'])) {
@@ -24,7 +24,7 @@
 		//session_register("alloc");
 	}
 
-	//--------------------------------------------------------------------------------
+
 	function edit_allocations_for_transaction($type, $trans_no)
 	{
 		global $systypes_array;
@@ -48,20 +48,20 @@
 		end_form();
 	}
 
-	//--------------------------------------------------------------------------------
+
 	if (isset($_POST['Process'])) {
-		if (Gl_Allocation::check_allocations()) {
+		if (Gl_Allocation::check()) {
 			$_SESSION['alloc']->write();
 			clear_allocations();
 			$_POST['Cancel'] = 1;
 		}
 	}
-	//--------------------------------------------------------------------------------
+
 	if (isset($_POST['Cancel'])) {
 		clear_allocations();
 		meta_forward("/purchases/allocations/supplier_allocation_main.php");
 	}
-	//--------------------------------------------------------------------------------
+
 	if (isset($_GET['trans_no']) && isset($_GET['trans_type'])) {
 		$_SESSION['alloc'] = new Gl_Allocation($_GET['trans_type'], $_GET['trans_no']);
 	}
@@ -72,7 +72,7 @@
 	if (isset($_SESSION['alloc'])) {
 		edit_allocations_for_transaction($_SESSION['alloc']->type, $_SESSION['alloc']->trans_no);
 	}
-	//--------------------------------------------------------------------------------
+
 	end_page();
 
 ?>

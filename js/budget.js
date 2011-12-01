@@ -1,5 +1,5 @@
 /**********************************************************************
- Copyright (C) FrontAccounting, LLC.
+ Copyright (C) Advanced Group PTY LTD
  Released under the terms of the GNU General Public License, GPL,
  as published by the Free Software Foundation, either version 3
  of the License, or (at your option) any later version.

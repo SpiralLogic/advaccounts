@@ -1,6 +1,6 @@
 <?php
 	/**********************************************************************
-	Copyright (C) FrontAccounting, LLC.
+	Copyright (C) Advanced Group PTY LTD
 	Released under the terms of the GNU General Public License, GPL,
 	as published by the Free Software Foundation, either version 3
 	of the License, or (at your option) any later version.
@@ -14,7 +14,7 @@
 	Page::start(_($help_context = "Foreign Item Codes"));
 	Validation::check(Validation::PURCHASE_ITEMS, _("There are no inventory items defined in the system."), STOCK_PURCHASED);
 	Page::simple_mode(true);
-	//--------------------------------------------------------------------------------------------------
+
 	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 		$input_error = 0;
 		if ($_POST['stock_id'] == "" || !isset($_POST['stock_id'])) {
@@ -61,7 +61,7 @@
 			$Mode = 'RESET';
 		}
 	}
-	//--------------------------------------------------------------------------------------------------
+
 	if ($Mode == 'Delete') {
 		Item_Code::delete($selected_id);
 		Errors::notice(_("Item code has been sucessfully deleted."));
@@ -74,15 +74,15 @@
 	if (list_updated('stock_id')) {
 		$Ajax->activate('_page_body');
 	}
-	//--------------------------------------------------------------------------------------------------
+
 	start_form();
 	if (!Input::post('stock_id')) {
-		$_POST['stock_id'] = Session::get()->global_stock_id;
+		$_POST['stock_id'] = Session::i()->global_stock_id;
 	}
 	echo "<center>" . _("Item:") . "&nbsp;";
 	echo stock_purchasable_items_list('stock_id', $_POST['stock_id'], false, true, false, false);
 	echo "<hr></center>";
-	Session::get()->global_stock_id = $_POST['stock_id'];
+	Session::i()->global_stock_id = $_POST['stock_id'];
 	$result = Item_Code::get_defaults($_POST['stock_id']);
 	$dec = $result['decimals'];
 	$units = $result['units'];
@@ -116,7 +116,7 @@
 	} //end of while loop
 	end_table();
 	div_end();
-	//-----------------------------------------------------------------------------------------------
+
 	if ($selected_id != '') {
 		if ($Mode == 'Edit') {
 			$myrow = Item_Code::get($selected_id);

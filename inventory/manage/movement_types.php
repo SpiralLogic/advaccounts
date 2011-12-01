@@ -1,6 +1,6 @@
 <?php
 	/**********************************************************************
-	Copyright (C) FrontAccounting, LLC.
+	Copyright (C) Advanced Group PTY LTD
 	Released under the terms of the GNU General Public License, GPL,
 	as published by the Free Software Foundation, either version 3
 	of the License, or (at your option) any later version.
@@ -13,7 +13,7 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
 	Page::start(_($help_context = "Inventory Movement Types"));
 	Page::simple_mode(true);
-	//-----------------------------------------------------------------------------------
+
 	if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
 		//initialise no input errors assumed initially before we test
 		$input_error = 0;
@@ -33,7 +33,7 @@
 			$Mode = 'RESET';
 		}
 	}
-	//-----------------------------------------------------------------------------------
+
 	function can_delete($selected_id)
 	{
 		$sql
@@ -48,7 +48,7 @@
 		return true;
 	}
 
-	//-----------------------------------------------------------------------------------
+
 	if ($Mode == 'Delete') {
 		if (can_delete($selected_id)) {
 			Inv_Movement::delete( $selected_id);
@@ -62,7 +62,7 @@
 		unset($_POST);
 		$_POST['show_inactive'] = $sav;
 	}
-	//-----------------------------------------------------------------------------------
+
 	$result = Inv_Movement::get_all_types(  check_value('show_inactive'));
 	start_form();
 	start_table(Config::get('tables_style') . "  width=30%");
@@ -81,7 +81,7 @@
 	}
 	inactive_control_row($th);
 	end_table(1);
-	//-----------------------------------------------------------------------------------
+
 	start_table(Config::get('tables_style2'));
 	if ($selected_id != -1) {
 		if ($Mode == 'Edit') {
@@ -95,7 +95,7 @@
 	end_table(1);
 	submit_add_or_update_center($selected_id == -1, '', 'both');
 	end_form();
-	//------------------------------------------------------------------------------------
+
 	end_page();
 
 ?>

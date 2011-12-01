@@ -1,6 +1,6 @@
 <?php
 	/**********************************************************************
-	Copyright (C) FrontAccounting, LLC.
+	Copyright (C) Advanced Group PTY LTD
 	Released under the terms of the GNU General Public License, GPL,
 	as published by the Free Software Foundation, either version 3
 	of the License, or (at your option) any later version.
@@ -17,9 +17,9 @@
 	// Title:	Annual expense breakdown
 	// ----------------------------------------------------------------
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	//----------------------------------------------------------------------------------------------------
+
 	print_annual_expense_breakdown();
-	//----------------------------------------------------------------------------------------------------
+
 	function getPeriods($yr, $mo, $account, $dimension, $dimension2)
 	{
 		$date13 = date('Y-m-d', mktime(0, 0, 0, $mo + 1, 1, $yr));
@@ -59,7 +59,7 @@
 		return DB::fetch($result);
 	}
 
-	//----------------------------------------------------------------------------------------------------
+
 	function display_type($type, $typename, $yr, $mo, $convert, &$dec, &$rep, $dimension, $dimension2)
 	{
 		$ctotal = array(1 => 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
@@ -127,7 +127,7 @@
 		return $totals_arr;
 	}
 
-	//----------------------------------------------------------------------------------------------------
+
 	function print_annual_expense_breakdown()
 	{
 		$dim = DB_Company::get_pref('use_dimension');
@@ -149,9 +149,9 @@
 			$destination = $_POST['PARAM_2'];
 		}
 		if ($destination) {
-			include_once(APP_PATH . "includes/reports/excel.php");
+			include_once(APPPATH . "reports/excel.php");
 		} else {
-			include_once(APP_PATH . "includes/reports/pdf.php");
+			include_once(APPPATH . "reports/pdf.php");
 		}
 		$dec = 1;
 		//$pdec = User::percent_dec();

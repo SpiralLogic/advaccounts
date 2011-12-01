@@ -1,6 +1,6 @@
 <?php
 	/**********************************************************************
-	Copyright (C) FrontAccounting, LLC.
+	Copyright (C) Advanced Group PTY LTD
 	Released under the terms of the GNU General Public License, GPL,
 	as published by the Free Software Foundation, either version 3
 	of the License, or (at your option) any later version.
@@ -11,7 +11,6 @@
 	 ***********************************************************************/
 	$page_security = 'SA_SUPPTRANSVIEW';
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/bootstrap.php");
-	include_once(APP_PATH . "purchases/includes/purchasing_ui.php");
 	JS::open_window(900, 500);
 	Page::start(_($help_context = "View Supplier Invoice"), true);
 	if (isset($_GET["trans_no"])) {
@@ -38,15 +37,15 @@
 		label_cells(_("Currency"), $supplier_curr_code, "class='tableheader2'");
 	}
 	end_row();
-	Display::comments_row(ST_SUPPINVOICE, $trans_no);
+	DB_Comments::display_row(ST_SUPPINVOICE, $trans_no);
 	end_table(1);
-	$total_gl = display_gl_items($supp_trans, 2);
-	$total_grn = display_grn_items($supp_trans, 2);
+	$total_gl = Purch_GLItem::display_items($supp_trans, 2);
+	$total_grn = Purch_GRN::display_items($supp_trans, 2);
 	$display_sub_tot = Num::format($total_gl + $total_grn, User::price_dec());
 	start_table("width=95%  " . Config::get('tables_style'));
 	label_row(_("Sub Total"), $display_sub_tot, "align=right", "nowrap align=right width=15%");
 	$tax_items = GL_Trans::get_tax_details(ST_SUPPINVOICE, $trans_no);
-	$tax_total = Display::supp_trans_tax_details($tax_items, 1, $supp_trans->ov_gst);
+	$tax_total = Purch_Trans::trans_tax_details($tax_items, 1, $supp_trans->ov_gst);
 	$display_total = Num::format($supp_trans->ov_amount + $supp_trans->ov_gst, User::price_dec());
 	label_row(_("TOTAL INVOICE"), $display_total, "colspan=1 align=right", "nowrap align=right");
 	end_table(1);
